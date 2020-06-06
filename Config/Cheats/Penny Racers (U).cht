@@ -1,8 +1,8 @@
 [73ABB1FB-9CCA6093-C:45]
 Name=Penny Racers (U)
-Cheat0="Super Speed",E9780110 A15A
+Cheat0="Super Speed",8122AEB8 4800
 Cheat0_N=This is Turbo fast,So to slow it down a little more keep the B button pressed down
-Cheat1="Always 1st",E878045A 5959
-Cheat2="Class Select",E87538F9 59??
+Cheat1="Always 1st",8022AD06 0001
+Cheat2="Class Select",8021E1A7 00??
 Cheat2_N=This code is useful because you can play Class AA without having to beat a level!
-Cheat2_O=$5A Class C,$59 Class B,$5B Class AA,$56 1 Play,$55 2 Play,$58 3 Play,$57 4 Play
+Cheat2_O=$00 Class C,$01 Class B,$03 Class AA,$04 1 Play,$05 2 Play,$06 3 Play,$07 4 Play

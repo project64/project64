@@ -1,9 +1,9 @@
 [D741CD80-ACA9B912-C:45]
 Name=Top Gear Overdrive (U)
-Cheat0="Extra Cars & Tracks",E8667548 5959,5000020A 0000,101022F1 000E,E9667540 5659,50000302 0000,111022EA 0101
-Cheat1="Infinite Money",E963A71C 785F
-Cheat2="Infinite Nitro",E963A722 5961
-Cheat3="Laps 2 Race",E865DC38 59??
-Cheat3_O=$59 1 Lap,$5C 2 laps,$5B 3 Laps,$56 4 Laps,$55 5 Laps,$58 6 Laps,$57 7 Laps,$62 8 Laps,$61 9 Laps
-Cheat4="Level Modifier (Championship & Vs Mode)",E8652708 59??
-Cheat4_O=$5A Frigid Peaks - Snowy/Daytime,$59 Fertile Canyon - Day/Lightning,$5C Swampy Depot - Day/Rainbow,$5B Downtown - Clear/Rainbow,$56 Sandy Beaches - Day/Lightning,$55 Fertile Canyon - Night
+Cheat0="Extra Cars & Tracks",801022F0 0001,5000020A 0000,801022F1 000E,811022E8 0501,50000302 0000,811022EA 0101
+Cheat1="Infinite Money",810F50C4 270F
+Cheat2="Infinite Nitro",810F50CE 0009
+Cheat3="Laps 2 Race",801185E0 00??
+Cheat3_O=$01 1 Lap,$02 2 laps,$03 3 Laps,$04 4 Laps,$05 5 Laps,$06 6 Laps,$07 7 Laps,$08 8 Laps,$09 9 Laps
+Cheat4="Level Modifier (Championship & Vs Mode)",8011D0B0 00??
+Cheat4_O=$00 Frigid Peaks - Snowy/Daytime,$01 Fertile Canyon - Day/Lightning,$02 Swampy Depot - Day/Rainbow,$03 Downtown - Clear/Rainbow,$04 Sandy Beaches - Day/Lightning,$05 Fertile Canyon - Night

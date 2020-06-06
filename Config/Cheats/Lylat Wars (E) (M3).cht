@@ -1,0 +1,17 @@
+[F4CBE92C-B392ED12-C:50]
+Name=Lylat Wars (E) (M3)
+Cheat0="Unlimited\Boost",8113E6FC 0000,8113E6FE 0000,811415DC 0000,811415DE 0000,8013E7FD 0000,801416DD 0000
+Cheat1="Have All Medals",50000802 0000,8017A9D9 7777
+Cheat1_N=For Expert & Normal Modes
+Cheat2="Infinite\Hyper Laser",80163B13 0002
+Cheat3="Loads O' Hits",80163B03 00FF
+Cheat4="Infinite\Armor\Slippy",8017418B 00FF
+Cheat5="Infinite\Energy",80141587 00FF,8013E6A7 00FF
+Cheat6="Infinite\Lives",80163B09 0063
+Cheat7="Unlimited\Smart Bombs",80179E0B 0063
+Cheat8="Infinite\Armor\Falco",80174187 00FF
+Cheat9="Infinite\Armor\Peppy",8017418F 00FF
+Cheat10="Infinite\Dual Blue Lasers",80163C13 0002
+Cheat11="Level Select",8017A29F 00??
+Cheat11_O=$00 Corneria,$01 Meteo,$02 Sector X,$03 Area 6,$04 Glitch,$05 Sector Y,$06 Venom 1,$07 Solar,$08 Zoness,$09 Venom 2,$0A Training Mode Level,$0B Macbeth,$0C Titania,$0D Aquas,$0E Fortuna,$10 Katina,$11 Bolse,$12 Sector Z,$13 Venom With Starwolf,$14 Corneria (Multi)
+Cheat12="999 Kills",80163B03 00FF

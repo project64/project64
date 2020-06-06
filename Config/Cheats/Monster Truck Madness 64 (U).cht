@@ -1,6 +1,6 @@
 [B19AD999-7E585118-C:45]
 Name=Monster Truck Madness 64 (U)
-Cheat0="Have\Aztec Valley Track",E868A911 5959
-Cheat1="Have\Alpine Challenge Track",E868A931 5959
-Cheat2="Have\Death Trap Track",E868A951 5959
-Cheat3="Infinite Missiles (Upon Pickup)",D0164BBF 0001,E870B7AC 5961
+Cheat0="Have\Aztec Valley Track",801256BF 0001
+Cheat1="Have\Alpine Challenge Track",801256DF 0001
+Cheat2="Have\Death Trap Track",801256FF 0001
+Cheat3="Infinite Missiles (Upon Pickup)",D0164BBF 0001,801A6054 0009

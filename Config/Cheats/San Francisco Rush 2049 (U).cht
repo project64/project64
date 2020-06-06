@@ -1,14 +1,14 @@
 [B9A9ECA2-17AAE48E-C:45]
 Name=San Francisco Rush 2049 (U)
-Cheat0="Unlock All Cheats",50000B02 0000,1111648C 0101
-Cheat1="Speed Activator",D0037AA4 0020,E96AF5F0 ????
-Cheat1_O=$9C8B 146 mph,$9CAA 170 mph,$9CDA 210 mph,$9CEB 270 mph
-Cheat2="Always Place 1st",E869805A 595A
-Cheat3="Start On Lap Modifier",D014AA38 0000,E86AFD90 59??
-Cheat4="Track Modifier",E86AEAE4 59??
-Cheat4_O=$5A Track 1,$59 Track 2,$5C Track 3,$5B Track 4
-Cheat5="Max Score\Stunt Mode",E96977A2 D04F
-Cheat6="Infinate Ammo\All Players In Battle",E8697EF3 59AA,E86982AB 59AA,E8698663 59AA,E869891B 59AA
+Cheat0="Unlock All Cheats",50000B02 0000,8111648C 0101
+Cheat1="Speed Activator",D0037AA4 0020,8114A298 ????
+Cheat1_O=$4333 146 mph,$4350 170 mph,$4380 210 mph,$4393 270 mph
+Cheat2="Always Place 1st",80152906 0000
+Cheat3="Start On Lap Modifier",D014AA38 0000,8014AA38 00??
+Cheat4="Track Modifier",8014978C 00??
+Cheat4_O=$00 Track 1,$01 Track 2,$02 Track 3,$03 Track 4
+Cheat5="Max Score\Stunt Mode",8115204E 7FFF
+Cheat6="Infinate Ammo\All Players In Battle",80152B9D 0050,80152F55 0050,8015330D 0050,801536C5 0050
 Cheat8="Have All\Gold & Silver Coins\Track 1",E967F868 504F
 Cheat9="Have All\Gold & Silver Coins\Track 2",E967F8C8 504F
 Cheat10="Have All\Gold & Silver Coins\Track 3",E967F828 504F

@@ -1,0 +1,9 @@
+[32CA974B-B2C29C50-C:46]
+Name=Duke Nukem - ZER0 H0UR (F)
+Cheat0="Cheat Menu\Cheat Menu Enabled",801DA748 0001
+Cheat1="Cheat Menu\Have All Weapons",811DA6D0 FFFF
+Cheat2="Cheat Menu\Have All Game Type & Other",810E1B5E 0FFF
+Cheat3="Cheat Menu\All Weapons Enabled",801D8B19 0001,801D8B85 0001,801D9BE5 0001,801D9CE1 0001,801D9D75 0001,801D9D77 0001,801D9DA9 0001,801DA6D9 0001,801DA6E1 0001,801DA74D 0001,801DB895 0001
+Cheat4="Infinite Ammo (All Guns)",810A21D4 A65B
+Cheat5="Invincibility",800DF223 0001
+Cheat6="Enable Debug Menu",800DFCF0 0001

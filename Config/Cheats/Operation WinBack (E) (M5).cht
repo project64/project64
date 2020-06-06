@@ -1,0 +1,22 @@
+[D5898CAF-6007B65B-C:50]
+Name=Operation WinBack (E) (M5)
+Cheat0="Infinite\Health",80179F8B 0064
+Cheat1="Infinite\Ammo and No Reloads",80157C9B 0078,80157C94 0078,80157C90 0063,80179F6F 001E,80157C91 0063,80179F83 0008
+Cheat2="C4 Explosives",80157C93 0001
+Cheat2_N=Slot 1
+Cheat3="Flash Light",80157C95 0001
+Cheat3_N=Slot 2
+Cheat4="C4 Detector",80157C98 0001
+Cheat4_N=Slot 3
+Cheat5="Key",80157C99 0001
+Cheat5_N=Slot 2
+Cheat6="Card Key",80157C9A 0001
+Cheat6_N=Slot 3
+Cheat7="Max Power Mode",8015C8E7 0001
+Cheat8="All Multiplayer Characters",8015C8E1 000F,8015C8E2 00FF,8015C8E3 00FF
+Cheat9="Walk Through Walls/Objects",D0139BC4 0020,8117964C 43C7
+Cheat9_N=Press Z Button And Joystick Forward Dont Stand Too Close To Wall/Object
+Cheat10="Weapon modifier",80179F78 00??
+Cheat10_O=$00 Handgun,$01 Submachine gun,$02 Shotgun,$03 Rocket launcher,$14 Handgun w/ silencer
+Cheat11="Sudden death & trial modes unlocked",8015C8E0 00A0
+Cheat12="Time is always  00:20:38",8010D342 0078

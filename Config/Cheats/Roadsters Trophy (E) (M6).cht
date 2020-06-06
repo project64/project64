@@ -1,0 +1,24 @@
+[74E87A70-6293AED4-C:50]
+Name=Roadsters Trophy (E) (M6)
+Cheat0="Always 1st",800C1F81 0001
+Cheat1="Laps To Race",800A4649 00??
+Cheat1_O=$01 1 Lap,$02 2 laps,$03 3 Laps,$04 4 Laps,$05 5 Laps,$06 6 Laps,$07 7 Laps,$08 8 Laps,$09 9 Laps
+Cheat2="Access All Trophies",800BAA9B 0007,800BACAF 0007
+Cheat2_N=Also gives you all extra features in quick race & Trophy mode
+Cheat3="Max Race Points",800BACBE 00FF
+Cheat4="Have Lots Of Seasons",810BACAA 02F4
+Cheat5="Max Cash",810BACA4 3AFF,810BACA6 F3FA
+Cheat6="Cheats Enabled Modifier",8108F8F0 ????
+Cheat6_O=$0004 Fast Bucks (You Get 250,$0008 Easy Money (You Get 1,$0010 Trophies (Second And Third Championships Wins),$0020 Smurfing (High Pitched Voices),$0040 Big Wheels (Big Foot Cars),$0080 Skywalker (Hover Cars),$0100 Car Radio (Remote Control Cars),$0200 Chopper (Top Down View),$0400 Anyway (Race Circuits Backwards),$0800 Extra Resolution (Able To Change Resolution In Options Screen)
+Cheat7="Easy Win",800BACAD 000A
+Cheat7_N=Right After Start,Go, Quit Race, And you Have Won
+Cheat8="All Cars\Max Upgrade",5000220C 0200,810BAD56 0270
+Cheat9="All Cars\Infinite Supply Of Super Tires",5000220C 0000,810BAD58 0F0F,5000220C 0000,810BAD5A 0F0F
+Cheat10="Special Category A Car\Mind Star 600",810BAE8E 3D70,810BAE90 0F0F,810BAE92 0F0F
+Cheat11="Special Category B Car\Vertige Stallion",810BAE16 2378,810BAE18 0F0F,810BAE1A 0F0F
+Cheat12="Special Category C Car\Mind Star 200R",810BAD86 0A78,810BAD88 0F0F,810BAD8A 0F0F
+Cheat13="Race Direction Options",810A4600 00??
+Cheat13_O=$00 Normal,$01 Reverse,$02 Mirrored Normal,$03 Mirrored Reverse
+Cheat14="View Select",D00C2171 0000,800C2171 00??
+Cheat14_N=Select your View and then at start of Race press C-Up Button
+Cheat14_O=$00 Inside Car,$01 Behind View,$02 Further Behind View,$0B Distant Behind View,$FF Helicopter View

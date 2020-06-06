@@ -1,8 +1,8 @@
 [5F3F49C6-0DC714B0-C:50]
-Name=Top Gear Hyper-Bike (E)
-Cheat0="Access All\Bikes",E95B4942 504F
-Cheat1="Access All\Tracks",E95B4948 594F,E95B4946 504F
-Cheat2="Infinite\Nitro",E95FFC98 9BE8
-Cheat3="Infinite\Nitro Always On",E95FFC84 596A
-Cheat4="Laps 2 Race",E8638910 59??
-Cheat4_O=$59 1 Lap,$5C 2 laps,$5B 3 Laps,$56 4 Laps,$55 5 Laps,$58 6 Laps,$57 7 Laps,$62 8 Laps,$61 9 Laps
+Name=Top Gear Hyper Bike (E)
+Cheat0="Access All\Bikes",8107F6EE FFFF
+Cheat1="Access All\Tracks",8107F6F0 00FF,8107F6F2 FFFF
+Cheat2="Infinite\Nitro",810BA540 4296
+Cheat3="Infinite\Nitro Always On",810BA52C 0010
+Cheat4="Laps 2 Race",800F36B8 00??
+Cheat4_O=$01 1 Lap,$02 2 laps,$03 3 Laps,$04 4 Laps,$05 5 Laps,$06 6 Laps,$07 7 Laps,$08 8 Laps,$09 9 Laps

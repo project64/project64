@@ -1,6 +1,6 @@
 [C9C3A987-5810344C-C:4A]
 Name=Mario Kart 64 (J) (V1.1)
-Cheat0="Have Bonus Mode and All Gold Cups",E86E0B30 59??,E86E0B2F 59??,E86E0B2E 59??,E86E0B2D 59??
-Cheat0_O=$5A Off,$4F On
+Cheat0="Have Bonus Mode and All Gold Cups",8018B4D8 00??,8018B4D9 00??,8018B4DA 00??,8018B4DB 00??
+Cheat0_O=$00 Off,$FF On
 Cheat1="Press F9\For Full Debug Menu",8818B5BF 0002
 Cheat1_N=Press F9 at the Press Start Menu to access the Debug Menu

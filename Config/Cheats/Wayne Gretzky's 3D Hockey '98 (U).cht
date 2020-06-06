@@ -1,13 +1,13 @@
 [5A9D3859-97AAE710-C:45]
 Name=Wayne Gretzky's 3D Hockey '98 (U)
-Cheat0="Team 1\Score pts",E86517B7 59??
-Cheat0_O=$5A Zero Points,$70 30 Points,$7B 50 Points,$A3 75 Points,$BB 99 Points
-Cheat1="Team 2\Score pts",E8654CC7 ????
-Cheat1_O=$595A ero Points,$6F5B 0 Points,$7C55 0 Points,$A457 5 Points,$BC61 9 Points
-Cheat2="Crunched Players",E9610DC4 905A
-Cheat3="Extra Teams",E865AD64 5959
-Cheat4="Get In Fights Constantly",E8624ABA 597A
-Cheat5="Players\Height Size",E96859E0 ????
-Cheat5_O=$905A Midgets,$90DA Normal Size,$901A Large,$99DA Giants
-Cheat6="Players\Head Size",E965DD84 ????
-Cheat6_O=$905A Very Small,$90DA Normal Size,$99DA Very Large
+Cheat0="Team 1\Score pts",8011C061 00??
+Cheat0_O=$00 Zero Points,$1E 30 Points,$23 50 Points,$4B 75 Points,$63 99 Points
+Cheat1="Team 2\Score pts",8011F571 ????
+Cheat1_O=$0000 ero Points,$1E03 0 Points,$2305 0 Points,$4B07 5 Points,$6309 9 Points
+Cheat2="Crunched Players",810DBA6C 3F00
+Cheat3="Extra Teams",80115A0C 0001
+Cheat4="Get In Fights Constantly",800CF766 0020
+Cheat5="Players\Height Size",81120688 ????
+Cheat5_O=$3F00 Midgets,$3F80 Normal Size,$3FC0 Large,$4080 Giants
+Cheat6="Players\Head Size",81118A2C ????
+Cheat6_O=$3F00 Very Small,$3F80 Normal Size,$4080 Very Large

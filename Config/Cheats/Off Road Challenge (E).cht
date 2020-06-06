@@ -1,15 +1,15 @@
 [812289D0-C2E53296-C:50]
 Name=Off Road Challenge (E)
-Cheat0="1 Player\Always Place 1st",E8669329 595A
-Cheat1="Multi and 1 Player\Infinite Gent Turbos\Player 1",E966928E 5B46
+Cheat0="1 Player\Always Place 1st",80103CD7 0000
+Cheat1="Multi and 1 Player\Infinite Gent Turbos\Player 1",81103F3A 02F4
 Cheat1_N=Can be used in 1 Player and Multiplayer Modes for Player 1
-Cheat2="1 Player\Max\Acceleration",E8681C71 5964
-Cheat3="1 Player\Max\Shocks",E8681C79 5964
-Cheat4="1 Player\Max\Speed",E8681C75 5964
-Cheat5="1 Player\Max\Tires",E8681C7D 5964
-Cheat6="Multi and 1 Player\Max Crash Helmets\Player 1",E8669285 59B6
+Cheat2="1 Player\Max\Acceleration",8012C51F 000A
+Cheat3="1 Player\Max\Shocks",8012C527 000A
+Cheat4="1 Player\Max\Speed",8012C523 000A
+Cheat5="1 Player\Max\Tires",8012C52B 000A
+Cheat6="Multi and 1 Player\Max Crash Helmets\Player 1",80103F33 0064
 Cheat6_N=Can be used in 1 Player and Multiplayer Modes for Player 1
-Cheat7="Multi and 1 Player\Infinite Gent Turbos\Player 2",E9669582 5B46
+Cheat7="Multi and 1 Player\Infinite Gent Turbos\Player 2",8110422E 02F4
 Cheat7_N=Multiplayer Mode Only for Player 2
-Cheat8="Multi and 1 Player\Max Crash Helmets\Player 2",E8669579 59B6
+Cheat8="Multi and 1 Player\Max Crash Helmets\Player 2",80104227 0064
 Cheat8_N=Multiplayer Mode Only for Player 2

@@ -1,6 +1,6 @@
 [0198A651-FC219D84-C:50]
-Name=FIFA 99 (E)
-Cheat0="Team on the right of score board has 15 goals",E857CC15 595F
-Cheat1="Team on the left of score board has 15 goals",E857CC19 595F
-Cheat2="Team on the right of score board has 0 goals",E857CC15 595A
-Cheat3="Team on the left of score board has 0 goals",E857CC19 595A
+Name=FIFA 99 (E) (M8)
+Cheat0="Team on the right of score board has 15 goals",800375C3 000F
+Cheat1="Team on the left of score board has 15 goals",800375C7 000F
+Cheat2="Team on the right of score board has 0 goals",800375C3 0000
+Cheat3="Team on the left of score board has 0 goals",800375C7 0000

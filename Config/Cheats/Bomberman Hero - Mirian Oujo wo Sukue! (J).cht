@@ -1,12 +1,12 @@
 [67FF12CC-76BF0212-C:4A]
 Name=Bomberman Hero - Mirian Oujo wo Sukue! (J)
-Cheat0="Full\Bomb Power",E86CA58F 595B
-Cheat1="Full\Fire Power",E86CA58E 595B
-Cheat2="Infinite\Health",E86CA592 5956
-Cheat3="Infinite\Lives",E86CA593 5961
-Cheat4="Extra Gems",D016523B 0000,E86CA58D 59A3
-Cheat5="Max\Bombs",E86CA58F 5962
-Cheat6="Press L to Levitate",D005A2F5 0020,E96998D0 9A23,D005A2F5 0020,D0154154 0000,E86998AC 599A
+Cheat0="Full\Bomb Power",80165239 0003
+Cheat1="Full\Fire Power",8016523A 0003
+Cheat2="Infinite\Health",8016523E 0004
+Cheat3="Infinite\Lives",8016523D 0009
+Cheat4="Extra Gems",D016523B 0000,8016523B 004B
+Cheat5="Max\Bombs",80165239 0008
+Cheat6="Press L to Levitate",D005A2F5 0020,81154178 41CB,D005A2F5 0020,D0154154 0000,80154154 0040
 Cheat6_N=Press L to levitate & let go to come back down
-Cheat7="Max\Score",E86BC957 594F,E86BC956 594F
-Cheat8="Max\Explosion",E86CA58E 5962
+Cheat7="Max\Score",80177601 00FF,80177602 00FF
+Cheat8="Max\Explosion",8016523A 0008

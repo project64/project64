@@ -1,7 +1,7 @@
 [F41B6343-C10661E6-C:50]
 Name=International Superstar Soccer '98 (E)
-Cheat0="Home Team Scores",E870D953 59??
-Cheat0_O=$5A ,$59 1 Goal,$5C 2 Goals,$5B 3 Goals,$56 4 Goals,$55 5 Goals,$58 6 Goals,$57 7 Goals,$62 8 Goals,09 9 Goals,0A 10 Goals,$66 20 Goals,$70 30 Goals,$82 40 Goals,$8C 50 Goals
-Cheat1="Away Team Scores",E870ECCF 59??
-Cheat1_O=$5A ,$59 1 Goal,$5C 2 Goals,$5B 3 Goals,$56 4 Goals,$55 5 Goals,$58 6 Goals,$57 7 Goals,$62 8 Goals,09 9 Goals,0A 10 Goals,$66 20 Goals,$70 30 Goals,$82 40 Goals,$8C 50 Goals
-Cheat2="Infinite player creation points",D03E0CF2 0001,E8946346 59BB
+Cheat0="Home Team Scores",801A86FD 00??
+Cheat0_O=$00 ,$01 1 Goal,$02 2 Goals,$03 3 Goals,$04 4 Goals,$05 5 Goals,$06 6 Goals,$07 7 Goals,$08 8 Goals,$14 20 Goals,$1E 30 Goals,$28 40 Goals,$32 50 Goals
+Cheat1="Away Team Scores",801A9579 00??
+Cheat1_O=$00 ,$01 1 Goal,$02 2 Goals,$03 3 Goals,$04 4 Goals,$05 5 Goals,$06 6 Goals,$07 7 Goals,$08 8 Goals,$14 20 Goals,$1E 30 Goals,$28 40 Goals,$32 50 Goals
+Cheat2="Infinite player creation points",D03E0CF2 0001,803E0CF2 0063

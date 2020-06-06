@@ -1,9 +1,9 @@
 [EDF419A8-BF1904CC-C:45]
 Name=Beetle Adventure Racing! (U) (M3)
-Cheat0="Have\All Cars",E8582249 5963
-Cheat1="Have\All Tracks",E8582245 5958
-Cheat2="Low Timer",E958B42C 909A
-Cheat3="Open All Difficulties",E858224D 595B
-Cheat4="Infinite Continues",E85823A9 5955
-Cheat5="Always Place 1st",E958B42C 6A6A,E958B434 909A
-Cheat6="Multi-Player Unlock All Levels",50000901 0000,1002D000 0001
+Cheat0="Have\All Cars",8002CFF7 000B
+Cheat1="Have\All Tracks",8002CFF3 0006
+Cheat2="Low Timer",81025DD4 3F40
+Cheat3="Open All Difficulties",8002CFFB 0003
+Cheat4="Infinite Continues",8002CC57 0005
+Cheat5="Always Place 1st",81025DD4 1110,81025DDC 3F40
+Cheat6="Multi-Player Unlock All Levels",50000901 0000,8002D000 0001

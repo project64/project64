@@ -1,10 +1,10 @@
 [91691C3D-F4AC5B4D-C:4A]
 Name=Transformers - Beast Wars Metals 64 (J)
-Cheat0="Infinite\Health\Player 1",E968FCCA 785F
-Cheat1="Infinite\Stun Meter\Player 1",E868FCCF 594F
-Cheat2="Infinite\Health\Player 2",E96AFD4A 785F
-Cheat3="Infinite\Stun Meter\Player 2",E86AFD4F 594F
-Cheat4="Play As\Player 1",E86F0DAC 59??
-Cheat4_O=$5A Optimus Primal,$59 Rattrap,$5C Cheetor,$5B Airazor,$56 Megatron,$55 Tarantulas,$58 Waspinator,$57 Terrorsaur
-Cheat5="Play As\Player 2",E86F0DAB 59??
-Cheat5_O=$5A Optimus Primal,$59 Rattrap,$5C Cheetor,$5B Airazor,$56 Megatron,$55 Tarantulas,$58 Waspinator,$57 Terrorsaur
+Cheat0="Infinite\Health\Player 1",8112A576 270F
+Cheat1="Infinite\Stun Meter\Player 1",8012A579 00FF
+Cheat2="Infinite\Health\Player 2",8114AAF6 270F
+Cheat3="Infinite\Stun Meter\Player 2",8014AAF9 00FF
+Cheat4="Play As\Player 1",801BBA54 00??
+Cheat4_O=$00 Optimus Primal,$01 Rattrap,$02 Cheetor,$03 Airazor,$04 Megatron,$05 Tarantulas,$06 Waspinator,$07 Terrorsaur
+Cheat5="Play As\Player 2",801BBA55 00??
+Cheat5_O=$00 Optimus Primal,$01 Rattrap,$02 Cheetor,$03 Airazor,$04 Megatron,$05 Tarantulas,$06 Waspinator,$07 Terrorsaur

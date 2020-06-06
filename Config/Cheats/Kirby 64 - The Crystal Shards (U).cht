@@ -1,10 +1,10 @@
 [46039FB4-0337822C-C:45]
 Name=Kirby 64 - The Crystal Shards (U)
-Cheat0="Get All Crystals",50000701 0000,100D6BC0 0001,50001701 0000,100D6BC8 0007
-Cheat1="Unlock All Difficulty Levels\100 Yard Hop",E861BE0F 595B
-Cheat2="Unlock All Difficulty Levels\Bumper Crop Bump",E861BE0E 595B
-Cheat3="Unlock All Difficulty Levels\Checkerboard Chase",E861BE0D 595B
-Cheat4="Infinite Lives",E861C8A1 59B6
-Cheat5="Infinite Health",E961C1A8 991A
-Cheat6="Can Fly Forever",E9683A32 594A
-Cheat7="All Stages Complete",50002B01 0000,100D6BE0 0002
+Cheat0="Get All Crystals",50000701 0000,800D6BC0 0001,50001701 0000,800D6BC8 0007
+Cheat1="Unlock All Difficulty Levels\100 Yard Hop",800D6BB9 0003
+Cheat2="Unlock All Difficulty Levels\Bumper Crop Bump",800D6BBA 0003
+Cheat3="Unlock All Difficulty Levels\Checkerboard Chase",800D6BBB 0003
+Cheat4="Infinite Lives",800D714F 0064
+Cheat5="Infinite Health",810D6E50 40C0
+Cheat6="Can Fly Forever",8112E7DE 00F0
+Cheat7="All Stages Complete",50002B01 0000,800D6BE0 0002

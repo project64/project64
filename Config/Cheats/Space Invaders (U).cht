@@ -1,9 +1,9 @@
 [EBFE2397-FF74DA34-C:45]
 Name=Space Invaders (U)
-Cheat0="Infinite\Lives",E85FA833 59BB
-Cheat1="Infinite\Points",E95FA836 504F
-Cheat2="Always Have\Vertical Burst",E95FA832 5A56
-Cheat3="Always Have\Horizontal Right",E95FA832 5B56
-Cheat4="Always Have\Horizontal Left",E95FA832 5C56
-Cheat5="Always Have\Diagonal Burst",E95FA832 5556
-Cheat6="Infinite\Shield",E95FA80A 5959
+Cheat0="Infinite\Lives",800B51DD 0063
+Cheat1="Infinite\Points",810B51E2 FFFF
+Cheat2="Always Have\Vertical Burst",810B51DE 0104
+Cheat3="Always Have\Horizontal Right",810B51DE 0204
+Cheat4="Always Have\Horizontal Left",810B51DE 0304
+Cheat5="Always Have\Diagonal Burst",810B51DE 0404
+Cheat6="Infinite\Shield",810B51B6 0001

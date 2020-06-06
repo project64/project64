@@ -1,8 +1,8 @@
 [D81963C7-4271A3AA-C:45]
 Name=Chameleon Twist (U) (V1.1)
-Cheat0="Access All Levels",E876DC62 594F,E876DC68 594F
-Cheat1="Extra Crowns",E8796AB9 5965
-Cheat2="Infinite Health",E86BA345 5964
-Cheat3="Extended Tongue",E9876AC2 504F
-Cheat4="Level Select",E87D5FCD 59??
-Cheat4_O=$5A Stage 1,$59 Stage 2,$5C Stage 3,$5B Stage 4,$56 Stage 5,$55 Stage 6,$58 Stage 7
+Cheat0="Access All Levels",8020850E 00FF,80208510 00FF
+Cheat1="Extra Crowns",80251767 0015
+Cheat2="Infinite Health",80174CF3 000A
+Cheat3="Extended Tongue",8133176E FFFF
+Cheat4="Level Select",8029087B 00??
+Cheat4_O=$00 Stage 1,$01 Stage 2,$02 Stage 3,$03 Stage 4,$04 Stage 5,$05 Stage 6,$06 Stage 7

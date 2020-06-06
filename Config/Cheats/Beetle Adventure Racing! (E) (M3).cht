@@ -1,0 +1,14 @@
+[A1B64A61-D014940B-C:50]
+Name=Beetle Adventure Racing! (E) (M3)
+Cheat0="Access All\Cars",8002CFF7 000B
+Cheat1="Access All\Tracks",8002CFF3 0006
+Cheat2="Access All\Difficulties",8002CFFB 0003
+Cheat3="Access All\Multiplayer Levels",50000901 0000,8002D000 0001
+Cheat4="Access In-Game Cheats",50001301 0000,8002D008 0001
+Cheat5="Display On",81025EC6 0100
+Cheat6="Map Full",81025E6A 0102
+Cheat7="Speed units\Kph or Mph",81025E68 ????
+Cheat7_N=Here you can choose what you would like to be Displayed on your Speed Ometer, As in Kilometres Per Hour, Or Miles Per Hour.
+Cheat7_O=$0100 Kph,$0001 Mph
+Cheat8="Max Race Points",8102CBC0 03E7
+Cheat9="Flat Shading",81025CF6 0000

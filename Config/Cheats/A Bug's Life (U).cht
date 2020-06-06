@@ -1,13 +1,13 @@
 [82DC04FD-CF2D82F4-C:45]
 Name=A Bug's Life (U)
-Cheat0="Infinite\Lives",E8746D90 5961
-Cheat1="Infinite\Health",E8746D83 5956
-Cheat2="Always Have\Super Jump",E9746D80 597A
-Cheat3="Always Have\50 pieces of corn",E8746D8F 598C
-Cheat4="Have F-L-I-K",E8746D8E 595F
-Cheat5="Levitate",D008F2C1 0010,E87470F2 5959,D008F2C1 0010,E8747002 5959
+Cheat0="Infinite\Lives",801E1A38 0009
+Cheat1="Infinite\Health",801E1A2D 0004
+Cheat2="Always Have\Super Jump",811E1A28 0020
+Cheat3="Always Have\50 pieces of corn",801E1A39 0032
+Cheat4="Have F-L-I-K",801E1A3A 000F
+Cheat5="Levitate",D008F2C1 0010,801E199E 0001,D008F2C1 0010,801E19AE 0001
 Cheat5_N="Press R To Levitate & Let go to land (:"
-Cheat6="Unlock All Levels",E95DE8A8 595F
-Cheat7="Have All Goldberry Tokens",E8746D7A 595A
-Cheat8="Start with Berry Weapon",E9746D82 59??
-Cheat8_O=$59 Blueberry,$5C Homing Berry,$5B Goldberry,$56 Super Berry ?
+Cheat6="Unlock All Levels",81099150 000F
+Cheat7="Have All Goldberry Tokens",801E1A26 0000
+Cheat8="Start with Berry Weapon",811E1A2E 00??
+Cheat8_O=$01 Blueberry,$02 Homing Berry,$03 Goldberry,$04 Super Berry ?

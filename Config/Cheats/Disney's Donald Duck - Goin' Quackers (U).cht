@@ -1,14 +1,14 @@
 [C16C421B-A21580F7-C:45]
-Name=Disney's Donald Duck - Goin' Quackers (U)
-Cheat0="Infinite\99 Lives",E871C502 59BB
-Cheat1="Infinite\99 Stars",E871C501 59BB
-Cheat2="Instant\Rage Attack (Press C-Left)",D00CB2A1 0002,E8723C13 5959
-Cheat3="Instant\Hyperactive State [Invincible] (Press C-Right)",D00CB2A1 0001,E872396A 5959
-Cheat4="Instant\Carrier Box [Moon Walk] (Press L)",D00CB2A1 0020,E872E6F1 5959
+Name=Disney's Donald Duck - Goin' Quackers (U) (M4)
+Cheat0="Infinite\99 Lives",801D72AE 0063
+Cheat1="Infinite\99 Stars",801D72AF 0063
+Cheat2="Instant\Rage Attack (Press C-Left)",D00CB2A1 0002,801CE5BD 0001
+Cheat3="Instant\Hyperactive State [Invincible] (Press C-Right)",D00CB2A1 0001,801CE616 0001
+Cheat4="Instant\Carrier Box [Moon Walk] (Press L)",D00CB2A1 0020,801C939F 0001
 Cheat4_N=Press and hold the L Button and you will run floating of any ledge slowing drifting down. If you keep pressing the A Button while Holding L it will act as a Moon Jump.
-Cheat5="Infinite\Time\Gladstones Time Attack",E871C5F9 594F
-Cheat6="Infinite\Time\Nephews Toy Hunting",E871C5F5 59BB
-Cheat7="Have All\Levels and Bonus Stages Unlocked",E871C524 594F,E871C523 594F,E871C522 594F,E871C521 594F,E871C525 594F
+Cheat5="Infinite\Time\Gladstones Time Attack",801D72A7 00FF
+Cheat6="Infinite\Time\Nephews Toy Hunting",801D72A3 0063
+Cheat7="Have All\Levels and Bonus Stages Unlocked",801D72CC 00FF,801D72CD 00FF,801D72CE 00FF,801D72CF 00FF,801D72D3 00FF
 Cheat7_N=Press start in Gyro's Lab and then resume game to see all open
-Cheat8="Have All\Time Attack & Toy Hunting Comnpleated (All Levels)",E871C530 594F,E871C52F 594F,E871C52E 594F,E871C52D 594F,E871C534 594F,E871C533 594F,E871C532 594F,E871C531 594F
+Cheat8="Have All\Time Attack & Toy Hunting Comnpleated (All Levels)",801D72D8 00FF,801D72D9 00FF,801D72DA 00FF,801D72DB 00FF,801D72DC 00FF,801D72DD 00FF,801D72DE 00FF,801D72DF 00FF
 Cheat8_N=Press start in Gyro's Lab and then resume game to see all open

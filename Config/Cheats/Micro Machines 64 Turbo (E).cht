@@ -1,9 +1,9 @@
 [2A49018D-D0034A02-C:50]
-Name=Micro Machines 64 Turbo (E)
-Cheat0="Always 1st",E95F0850 5A5A
-Cheat1="One Lap To Race",E95FDF32 5A59
-Cheat2="Infinite 255 Lives",E85F0816 594F
-Cheat3="Access All Tracks",E95FDF2E 5959
-Cheat4="Always Win Head 2 Head",E95F2CE8 5962
-Cheat5="Always Turbo Level 1",E95F97C8 8A5A,E95F1488 595A
+Name=Micro Machines 64 Turbo (E) (M5)
+Cheat0="Always 1st",810BB1F8 0100
+Cheat1="One Lap To Race",810B88DE 0101
+Cheat2="Infinite 255 Lives",800BB1C2 00FF
+Cheat3="Access All Tracks",810B88DA 0001
+Cheat4="Always Win Head 2 Head",810BD590 0008
+Cheat5="Always Turbo Level 1",810B4070 3100,810BBD30 0000
 Cheat5_N=In Easy Mode
