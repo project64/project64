@@ -85,6 +85,7 @@ void SplitFile(const char * FileName, const char * Target)
         }
         Name.Replace("\\", "-");
         Name.Replace("/", "-");
+        Name.Replace(":", " -");
         if (Name.length() == 0)
         {
             continue;
