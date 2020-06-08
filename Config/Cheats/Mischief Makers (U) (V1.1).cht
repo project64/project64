@@ -1,4 +1,9 @@
 [BFA526B4-0691E430-C:45]
 Name=Mischief Makers (U) (V1.1)
-Cheat0="Infinite\Red Gems",81175B66 270F
-Cheat1="Infinite\Health",810ED0E0 03E8
+Cheat0="Infinite Health\Marina",81057458 03E8
+Cheat1="Infinite Health\Teran",810F4270 03E8
+Cheat2="Infinite\Max Red Gems",81178136 270F
+Cheat3="All Stages & Chapters Unlocked",80171B18 003B
+Cheat4="All 52 Gold Gems Collected",80171B10 0003,80171B11 007E,80171B12 00FF,80171B13 00EF,80171B14 00FF,80171B15 007F,80171B16 00FF,80171B17 00FC
+Cheat5="Level Select",D10BE538 2030,800BE4F1 0004
+Cheat5_N=To access this anytime during game, press L+R+Z to enable the menu.  Press D-Pad Up / Down to move through the menu, D-Pad Left / Right to change level digits and then press Start to enter level. Don not do this whhile in pause mode (Start Button Pause) or the game will freeze.

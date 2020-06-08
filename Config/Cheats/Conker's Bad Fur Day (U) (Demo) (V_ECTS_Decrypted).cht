@@ -1,0 +1,15 @@
+[A08D0F77-6F82E38C-C:45]
+Name=Conker's Bad Fur Day (U) (Demo) (V_ECTS_Decrypted)
+Cheat0="Infinite Health\Player 1",800BCFD7 0006
+Cheat1="Infinite 99 Lives",800B9B84 0063
+Cheat2="Infinite Health\Player 2",800B42CE 0006
+Cheat3="Infinite Health\Player 3",800B45F2 0006
+Cheat4="Infinite Health\Player 4",800B4916 0006
+Cheat5="Infinite Time in Multi",810770DA 8C9E
+Cheat6="Start with Infinite  9  Granades or Bombs",800B9B70 0009
+Cheat6_N=This works for all Players, including player 1 in story mode.
+Cheat7="Infinite Oxygen",810B3E9A 0000
+Cheat8="Press L To Levitate\Player 1",D00D1055 0020,810B3E08 4200
+Cheat9="Infinite 99999 Cash",810B9B88 270F
+Cheat10="(Tap L Twice) To Skip Intro",D00A6289 0020,800A679F 0024
+Cheat10_N=On game start up, as soon as you see the N64 Logo, Tap the L Button twice letting go eachtime.

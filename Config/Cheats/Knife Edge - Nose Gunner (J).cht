@@ -1,0 +1,12 @@
+[931AEF3F-EF196B90-C:4A]
+Name=Knife Edge - Nose Gunner (J)
+Cheat0="Infinite\Armor\Player 1",8011D4DF 0064
+Cheat1="Infinite\Bombs\Player 1",8011D4E7 0003
+Cheat2="Press L For Rapid Fire Select\Player 1",D011BDF1 0020,8011D50F 00??
+Cheat2_O=$14 On Flak,$28 On Nuke & Laser
+Cheat3="Infinite\Armor\Player 2",8011D4E3 0064
+Cheat4="Infinite\Bombs\Player 2",8011D4EB 0003
+Cheat5="Press L For Rapid Fire Select\Player 2",D011BDF9 0020,8011D513 00??
+Cheat5_O=$14 On Flak,$28 On Nuke & Laser
+Cheat6="Level 11 Vulcan Cannon\Player 1",80123A2B 000A
+Cheat7="Level 11 Vulcan Cannon\Player 2",80123BCB 000A

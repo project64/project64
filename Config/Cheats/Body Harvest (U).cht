@@ -25,4 +25,4 @@ Cheat12_O=$00 Nothing,$01 Fuel,$02 Pistol,$03 Shotgun,$04 Rifle,$05 Machine Gun,
 Cheat13="Infinite Ammo All Weapons",50001102 0000,81048146 8000
 Cheat14="Level Select",80047F93 00??
 Cheat14_O=$01 Greece,$02 Java,$03 America,$04 Siberia,$05 Comet
-Cheat15="Press L To Wall Over Water, Climb Hills",D00475D9 0020,8104DCD2 0808
+Cheat15="Press L To Walk Over Water, Climb Hills",D00475D9 0020,8104DCD2 0808

@@ -1,8 +1,16 @@
 [630AA37D-896BD7DB-C:50]
 Name=Destruction Derby 64 (E) (M3)
-Cheat0="Have All\Tracks",50000802 0000,81099498 0101
-Cheat1="Have All\Difficulty Levels",8109B7D6 0003
-Cheat2="Have All\Cars",50000602 0000,8109B7D8 0101
-Cheat3="Max\Points Aid",8112A3CE 02F4
-Cheat4="Max\Collisions Points",812E013A 02F4
-Cheat5="Max\Checkpoint Bonus",812E013E 02F4
+Cheat0="Have All\Cars",50000C01 0000,8009B7D8 0001
+Cheat1="Have All\Tracks",50000C01 0000,80099498 0001
+Cheat2="Have All\Difficulty Levels",8009B7D7 0003
+Cheat3="Max\Points Aid",8112A3CE 03E7
+Cheat4="Max\Collisions Points",812E013A 03E7
+Cheat5="Max\Checkpoint Bonus",812E013E 03E7
+Cheat6="Solo Mode\Infinite Health\Seascape Sprint",D02E0124 0080,802E0133 00E1
+Cheat7="Solo Mode\Infinite Health\Metro Challenge",D02F9018 0080,802F9027 00E1
+Cheat8="Solo Mode\Infinite Health\Terminal Impact",D02C0FA3 0080,802C0FB2 00E1
+Cheat9="Solo Mode\Infinite Health\Destruction Junction",D02A5EB0 0080,802A5EBF 00E1
+Cheat10="Solo Mode\Infinite Health\Midnyte Rumble",D0317C0B 0080,80317C1A 00E1
+Cheat11="Solo Mode\Infinite Health\Bayou Run",D029137C 0080,8029138B 00E1
+Cheat12="Solo Mode\Infinite Health\Alpine Ridge",D02C5224 0080,802C5233 00E1
+Cheat13="Solo Mode\Infinite Health\Sunset Canyon",D030EF68 0080,8030EF77 00E1

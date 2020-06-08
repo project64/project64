@@ -1,8 +1,12 @@
 [D1F7D8AB-293B0446-C:45]
 Name=Asteroids Hyper 64 (U)
 Cheat0="Extra Lives",8007F90E 0063
+Cheat0_N=Not to be used with CLassic Mode, or it will freeze
 Cheat1="Extra Points",8107F8FE FFFF
+Cheat1_N=Not to be used with CLassic Mode, or it will freeze
 Cheat2="Infinite Armageddon",8107F892 0001
+Cheat2_N=Not to be used with CLassic Mode, or it will freeze
 Cheat3="Infinite Items On Pickup",8107F8A2 270F
+Cheat3_N=Not to be used with CLassic Mode, or it will freeze
 Cheat4="Unlock Classic Asteroids",8106DF5A 0001
-Cheat5="Infinite Lives (Classic Asteroids)",8007F90F 002F
+Cheat5="Infinite Lives (Classic Asteroids)",8007F90F 0009

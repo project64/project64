@@ -1,9 +1,9 @@
 [147E0EDB-36C5B12C-C:4A]
 Name=Neon Genesis Evangelion (J)
-Cheat0="(Press F9)\To Refill Health",891F0F18 42C8,891F0F1A 0000
-Cheat0_N=Don't Press F9 after the Enemy is killed, only during the fight!
-Cheat1="(Press F9)\To Kill Enemy",891F2454 0000,891F2456 0000,891F2458 0000,891F245A 0000
-Cheat1_N=Don't Press F9 after the Enemy is killed, only during the fight! and only use on Press F9 Cheat at a time
+Cheat0="(Press GS)\To Refill Health",891F0F18 42C8,891F0F1A 0000
+Cheat0_N=Don't Press GS after the Enemy is killed, only during the fight!
+Cheat1="(Press GS)\To Kill Enemy",891F2454 0000,891F2456 0000,891F2458 0000,891F245A 0000
+Cheat1_N=Don't Press GS after the Enemy is killed, only during the fight! and only use on Press GS Cheat at a time
 Cheat2="(Press L)\ For One Hit Kill",D0149DD5 0020,811F2458 0000,D0149DD5 0020,811F245A 0000
 Cheat2_N=Don't Press L after the Enemy is killed, only during the fight!
 Cheat3="(Press R)\For Level Warp",D00D5115 0015,800D5115 00??

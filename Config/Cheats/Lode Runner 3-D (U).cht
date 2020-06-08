@@ -1,5 +1,8 @@
 [255018DF-57D6AE3A-C:45]
 Name=Lode Runner 3-D (U)
 Cheat0="Infinite Lives",8015299F 0063
-Cheat1="High Gold",80152AFF 0032,8015293B 0032
-Cheat2="All Navigation Pieces",8015298B 0005
+Cheat1="Access Secret Worlds",81152946 0064
+Cheat2="Access All Navigation Cards",8015298B 0005
+Cheat3="Max & Total Gold",8015293B 0063,80152AFF 0063
+Cheat4="Access All In-Game Cheats",81152946 000F,81152956 FFFF
+Cheat4_N=Pause Gameplay To Access

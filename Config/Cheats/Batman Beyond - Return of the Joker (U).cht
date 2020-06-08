@@ -1,6 +1,11 @@
 [204489C1-1286CF2B-C:45]
 Name=Batman Beyond - Return of the Joker (U)
-Cheat0="Infinite\Infinite Health",802086F2 0064
-Cheat1="Infinite\Infinite Lives",802086F1 0063
-Cheat2="Infinite\Infinite Batarangs",802086FE 0063
+Cheat0="Infinite\Health",802086F2 0064
+Cheat1="Infinite\99 Lives",802086F1 0063
+Cheat2="Infinite\99 Dark Knight Discus",802086FE 0063
 Cheat3="Infinite\Max Charge & Magnetic Nun Chaku",802086B9 0064
+Cheat4="Press F9 to Have\Key",88208524 0020
+Cheat5="Weapon Select",802086F7 00??
+Cheat5_O=$00 Standard,$01 Dark Knight Discus,$02 Dark Knight Staff,$03 Magnetic Nun Chaku
+Cheat6="Suit Select",802086F4 00??
+Cheat6_O=$00 Standard,$01 Offensive,$02 Defensive,$03 Nimble

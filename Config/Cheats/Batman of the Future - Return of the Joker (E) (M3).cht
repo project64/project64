@@ -1,6 +1,11 @@
 [259F7F84-7C9EED26-C:50]
 Name=Batman of the Future - Return of the Joker (E) (M3)
-Cheat0="Infinite\Health",801D7F3C 0064
-Cheat1="Infinite\99 Lives",801D7F3D 0063
-Cheat2="Infinite\Infinite 99 Dark Night Discus's",801D7F4A 0063
-Cheat3="Infinite\Max Charge & Magnetic Nun Chaku",801D7F05 0064
+Cheat0="Infinite\Health",801D7F3D 0064
+Cheat1="Infinite\99 Lives",801D7F3E 0064
+Cheat2="Infinite\99 Dark Knight Discus",801D7F4A 0063
+Cheat3="Infinite\Max Charge & Magnetic Nun Chaku",801D7F06 0064
+Cheat4="Press F9 to Have\Key",881D7D70 0020
+Cheat5="Weapon Select",801D7F43 00??
+Cheat5_O=$00 Standard,$01 Dark Knight Discus,$02 Dark Knight Staff,$03 Magnetic Nun Chuku
+Cheat6="Suit Select",801D7F40 00??
+Cheat6_O=$00 Standard,$01 Offensive,$02 Defensive,$03 Nimble

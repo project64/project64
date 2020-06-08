@@ -2,7 +2,7 @@
 Name=WinBack - Covert Operations (U)
 Cheat0="Infinite Health",8017AABB 0064
 Cheat1="Enable\Max Power Mode",8015D417 0001
-Cheat2="Have All Characters",8115D412 FFFF,8115D410 0003,8015D411 0003
+Cheat2="Have\All Characters In Multi",8115D412 FFFF,8115D410 0003,8015D411 0003
 Cheat3="Flashlight Mod",80179448 00??
 Cheat3_O=$01 On,$00 Off
 Cheat4="All Bosses 1 Hit Deaths",811BE482 0000

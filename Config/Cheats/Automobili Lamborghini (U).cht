@@ -1,10 +1,11 @@
 [41B25DC4-1B726786-C:45]
 Name=Automobili Lamborghini (U)
-Cheat0="Extra Vehicles",50000302 0000,800985C3 0001,50000302 0000,800985CB 0001
+Cheat0="Access All Bonus Cars",50000302 0000,800985C3 0001,50000302 0000,800985CB 0001
 Cheat1="Max Points",800CE743 FFFF
-Cheat2="Infinite Time",810CE76E 02F4
-Cheat3="Difficulty Modifier",810CE7A4 00??
-Cheat3_O=$00 Novice,$01 Expert
-Cheat4="Speeds In Modifier",800CE803 00??
+Cheat2="Infinite Time",810CE76E 03E7
+Cheat3="Always 1st Place",810A5F70 0001
+Cheat4="Speedometer Select",800CE803 00??
 Cheat4_O=$00 KM/H,$01 MPH
-Cheat5="Always 1st Place",810A5F70 0001
+Cheat5="Start On Lap Modifier",D00A5F75 0000,810A5F74 00??
+Cheat5_O=$00 Normal,$01 Lap 1,$02 Lap 2,$03 Lap 3,$04 Lap 4,$06 Lap 5,$06 Lap 6,$07 Last Lap from Start
+Cheat6="Track Direction Unlocked (All Levels)",800A4171 0003

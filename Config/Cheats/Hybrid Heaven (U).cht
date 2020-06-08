@@ -8,4 +8,6 @@ Cheat4="Infinite\Max Health",8117DC40 270F,8117DC42 270F
 Cheat5="Level 999",8117DC88 270F
 Cheat6="Press L To Levitate",D005CE51 0020,8124A0B0 3FCB
 Cheat7="Have All\Moves",50005306 0000,81183CE0 0100,50005306 0000,81183CE2 00FF
-Cheat8="Editor's Cheat Level and Battle Select",801CC8C4 0005
+Cheat8="Have All\Moves At Skill Level 250",50000E06 0000,80188F63 00FA,50001306 0000,80188FBD 00FA,50003006 0000,80189047 00FA
+Cheat9="Level and Battle Select",801CC8C4 0005
+Cheat9_N=The level and battle select screen can be accessed by pressing A at the main menu

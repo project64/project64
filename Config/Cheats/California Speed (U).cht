@@ -1,5 +1,6 @@
 [AC16400E-CF5D071A-C:45]
 Name=California Speed (U)
 Cheat0="Always Place 1st",80151C01 0000
-Cheat1="Have All\Tracks",81168F8C FFFF
-Cheat2="Have All\Cars",50001504 0000,800AAE5B 0001
+Cheat1="Have All Tracks",81168F8C FFFF
+Cheat2="Have All Cars",50001504 0000,800AAE5B 0001
+Cheat3="Press R For Nitrous Boost",D013435F 0010,8112BD0C 43CB

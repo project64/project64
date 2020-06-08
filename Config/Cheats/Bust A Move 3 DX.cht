@@ -1,0 +1,13 @@
+[E328B4FA-004A28E1-C:50]
+Name=Bust A Move 3 DX
+Cheat0="Always Have\guide line on",80056CCC 0082
+Cheat1="Pointer always active",D0056FA0 0002,80056FA0 0082
+Cheat2="Play As Select\Player 1",800E3250 00??
+Cheat2_O=$00 Bubbloon,$01 Twinkie,$02 Prettio,$03 Marina,$04 Musashi,$05 Luna,$06 Jack,$07 SSB,$08 Dragoon,$09 Gnome,$10 Monkey,$11 furby? (looks like 2 balloons),$12 Blue Gnome,$13 1 of the two Ballons,$14 Water under ballons
+Cheat3="Play As Select\Player 2",800E3258 00??
+Cheat3_O=$00 Bubbloon,$01 Twinkie,$02 Prettio,$03 Marina,$04 Musashi,$05 Luna,$06 Jack,$07 SSB,$08 Dragoon,$09 Gnome,$10 Monkey,$11 furby? (looks like 2 balloons),$12 Blue Gnome,$13 1 of the two Ballons,$14 Water under ballons
+Cheat4="Next Bubble Select\Player 1",800ECE19 00??
+Cheat4_O=$00 No Bubble,$01 Red,$02 Green,$03 Blue,$04 Yellow,$05 Orange,$06 Purple,$07 White,$08 Black
+Cheat5="Next Bubble Select\Player 2",800ECF09 00??
+Cheat5_O=$00 No Bubble,$01 Red,$02 Green,$03 Blue,$04 Yellow,$05 Orange,$06 Purple,$07 White,$08 Black
+Cheat6="Press GS to Reset Player 2 score to 0",8809D9C0 0000,8809D9C2 0000

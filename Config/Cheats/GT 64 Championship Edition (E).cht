@@ -1,5 +1,6 @@
 [EE4A0E33-8FD588C9-C:50]
 Name=GT 64 - Championship Edition (E) (M3)
-Cheat0="Always first position",80162A80 0001
+Cheat0="Always first position",801608D8 0001
 Cheat1="Only race one lap",80161DF5 0001
-Cheat2="Always have 99 points",80161EC1 0063
+Cheat2="Always Have\99 points",80161EC1 0063
+Cheat3="Press R For Nitrous Boost",D01A3095 0010,811650E8 4077,D01A3095 0010,811650F0 4077

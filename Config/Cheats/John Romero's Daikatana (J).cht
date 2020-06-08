@@ -1,0 +1,12 @@
+[9D7E3C4B-E60F4A6C-C:4A]
+Name=John Romero's Daikatana (J)
+Cheat0="Infinite\Health",801ED251 0064
+Cheat1="Infinite\Armor",801ED273 0064
+Cheat2="Infinite\Experience",801ED253 00FF
+Cheat3="Max\Vitality",801ED255 0007
+Cheat4="Max\Attack",801ED257 0007
+Cheat5="Max\Speed",801ED259 0007
+Cheat6="Max\Acro",801ED25B 0007
+Cheat7="Max\Power",801ED25D 0007
+Cheat8="Infinite\Ammo (All Weapons)",8125E330 A05B
+Cheat9="Have All Weapons",811ED1E2 FFFF

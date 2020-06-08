@@ -8,3 +8,7 @@ Cheat2="Points Select\Player 1",801C6160 00??
 Cheat2_O=$00 0 Points,$15 15 Points,$30 30 Points,$40 40 Points
 Cheat3="Points Select\Player 2",801C6161 00??
 Cheat3_O=$00 0 Points,$15 15 Points,$30 30 Points,$40 40 Points
+Cheat4="Play As\Player 1",800BE351 00??
+Cheat4_O=$00 Zoe Taylor,$01 Vanessa Child,$02 Amanda Coetzer,$03 Jana Novotna,$04 Conchita Martinez,$05 Leon Rodez,$06 Michael Chang,$07 Gustavo Kuerten,$08 Jonas Bjorkman,$09 Mark Philippoussis,$0A Randy Powell,$0B Richard Krajicek
+Cheat5="Play As\Player 2",800BE352 00??
+Cheat5_O=$00 Zoe Taylor,$01 Vanessa Child,$02 Amanda Coetzer,$03 Jana Novotna,$04 Conchita Martinez,$05 Leon Rodez,$06 Michael Chang,$07 Gustavo Kuerten,$08 Jonas Bjorkman,$09 Mark Philippoussis,$0A Randy Powell,$0B Richard Krajicek

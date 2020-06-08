@@ -1,0 +1,23 @@
+[26CD0F54-53EBEFE0-C:4A]
+Name=Choro Q 64 II - Hacha Mecha Grand Prix Race (J)
+Cheat0="Sound Select\Music Mod",8014A558 00??
+Cheat0_O=$00 Off,$0A Medium,$10 High
+Cheat1="Sound Select\SFX Mod",8014A559 00??
+Cheat1_O=$00 Off,$0A Medium,$10 High
+Cheat2="Sound Select\Sound Mod",8014A55A 00??
+Cheat2_O=$00 Stereo,$01 Mono
+Cheat3="{Always First With 1 Lap to Race}",800F7A31 0003
+Cheat4="Infinite\Blue Pointa",801F92A7 0009
+Cheat5="Infinite\Red Weapons Use",801F92A5 0009
+Cheat6="Have\Max Gear Box Upgrades",80165C00 00FF,80165C01 00FF,80165C02 007F
+Cheat7="Have\Max Car Upgrade",80165BF8 00FF,80165BF9 00FF,80165BFA 00FF,80165BFB 005F
+Cheat8="{Unlocked All Stages}",801672EB 000F
+Cheat9="Have\Max Wheel Parts Upgrades",80165C0A 00FF,80165C0B 007F
+Cheat10="Have\Max Tyre Tred Upgrades",80165C10 00FF
+Cheat11="Have\Max Steering Upgrades",80165C1A 006F,80165C1B 000F
+Cheat12="Have\Max Car Strength",A0165C21 00FF
+Cheat12_N=This has Graphical Issues when used.....
+Cheat13="Have\Max Roof Upgrades",81165C2A FFFF
+Cheat14="Have\Max Weapons Upgrades",81165C32 FFFF,80165C33 00FF
+Cheat15="{Weapon Select}",801F92A1 00??
+Cheat15_O=$00 Nothing,$01 Turbo Boost,$02 Invincible,$03 Red Spinning Fish?,$04 Wind Attack,$05 Smoke Bomb,$06 Tyre Buster Tacks,$07 Iron Beam Drop,$08 Cannon,$09 Freeze Bombs,$0A Lightening Cloud Attack,$0B Crafy Mine,$0C Rocket Launcher (Hangs?),$0D Hypno Spinning Birds,$0E 100 Ton Weight,$0F Bolt Launcher,$10 Blue Lazer Cloud

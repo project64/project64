@@ -1,8 +1,8 @@
 [1EA26214-E790900F-C:50]
 Name=Turok - Rage Wars (E)
-Cheat0="Have All Medals",8010EB50 0003,50000601 0000,8010EB4A 00FF
+Cheat0="Have All\Medals",8010EB50 0003,50000601 0000,8010EB4A 00FF
 Cheat0_N=Unlocks the In-Game Cheat Menu.Only works with a Controller-Pak
-Cheat1="Have All Mini Game Icons",8010EB17 0024
+Cheat1="Have All\Mini Game Icons",8010EB17 0024
 Cheat1_N=Only works with a Controller-Pak
 Cheat2="Infinite Lives\Player 1",8033637E 0064
 Cheat3="Infinite Health\Player 1",80336527 0064,80692B86 0064

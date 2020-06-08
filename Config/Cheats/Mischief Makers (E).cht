@@ -1,10 +1,9 @@
 [418BDA98-248A0F58-C:50]
 Name=Mischief Makers (E)
-Cheat0="Marina\Infinite Health",810E1120 0BB8
-Cheat1="Teran\Infinite Health",810E5DA0 03E8
-Cheat2="Infinite Max Red Gems",81169C66 25C2
+Cheat0="Infinite\Health\Marina",810E1120 03E8
+Cheat1="Infinite\Health\Teran",810E5DA0 03E8
+Cheat2="Infinite\Max Red Gems",81169C66 270F
 Cheat3="All Stages & Chapters Unlocked",80163648 003B
 Cheat4="All 52 Gold Gems Collected",80163640 0003,80163641 007E,80163642 00FF,80163643 00EF,80163644 00FF,80163645 007F,80163646 00FF,80163647 00FC
-Cheat5="Marina\Press A To Levitate",D0128BF4 0080,800E1132 0091
-Cheat6="Teran\Press A To Levitate",D0128BF4 0080,800E5DB2 0091
-Cheat7="Infinite Time to Watch Ending",800E6613 0063
+Cheat5="Level Select",D10B0878 2030,800B0871 0004
+Cheat5_N=To access this anytime during game, press L+R+Z to enable the menu.  Press D-Pad Up / Down to move through the menu, D-Pad Left / Right to change level digits and then press Start to enter level. Don not do this whhile in pause mode (Start Button Pause) or the game will freeze.
