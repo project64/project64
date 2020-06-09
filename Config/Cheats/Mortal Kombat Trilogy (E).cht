@@ -3,6 +3,7 @@ Name=Mortal Kombat Trilogy (E)
 Cheat0="Player 1\Energy is",801698AD 00??
 Cheat0_O=$00 Zero,$A6 Unlimited
 Cheat1="Player 2\Energy is",80169B81 00??
+Cheat1_O=$00 Zero,$A6 Unlimited
 Cheat2="Player 1\Aggressor Energy Bar",80169941 0030
 Cheat3="Player 2\Aggressor Energy Bar",80169943 0030
 Cheat4="Infinite Time",8114C2FC 000A

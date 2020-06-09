@@ -5,6 +5,7 @@ Cheat1="Speed Activator",D0037AA4 0020,8114A298 ????
 Cheat1_O=$4333 146 mph,$4350 170 mph,$4380 210 mph,$4393 270 mph
 Cheat2="Always Place 1st",80152906 0000
 Cheat3="Start On Lap Modifier",D014AA38 0000,8014AA38 00??
+Cheat3_O=$01 1 Lap,$02 2 laps,$03 3 Laps,$04 4 Laps,$05 5 Laps,$06 6 Laps,$07 7 Laps,$08 8 Laps,$09 9 Laps
 Cheat4="Track Modifier",8014978C 00??
 Cheat4_O=$00 Track 1,$01 Track 2,$02 Track 3,$03 Track 4
 Cheat5="Max Score\Stunt Mode",8115204E 7FFF
