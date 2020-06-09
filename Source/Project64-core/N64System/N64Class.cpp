@@ -1749,7 +1749,10 @@ bool CN64System::SaveState()
         zipOpenNewFileInZip(file, SaveFile.GetNameExtension().c_str(), NULL, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
         zipWriteInFileInZip(file, &SaveID_0, sizeof(SaveID_0));
         zipWriteInFileInZip(file, &RdramSize, sizeof(uint32_t));
-        zipWriteInFileInZip(file, g_Rom->GetRomAddress(), 0x40);
+        if (!g_Settings->LoadBool(Setting_EnableDisk))
+            zipWriteInFileInZip(file, g_Rom->GetRomAddress(), 0x40);
+        else
+            zipWriteInFileInZip(file, g_Disk->GetDiskAddressID(), 0x40);
         zipWriteInFileInZip(file, &NextViTimer, sizeof(uint32_t));
         zipWriteInFileInZip(file, &m_Reg.m_PROGRAM_COUNTER, sizeof(m_Reg.m_PROGRAM_COUNTER));
         zipWriteInFileInZip(file, m_Reg.m_GPR, sizeof(int64_t) * 32);
@@ -1803,7 +1806,10 @@ bool CN64System::SaveState()
         hSaveFile.SeekToBegin();
         hSaveFile.Write(&SaveID_0, sizeof(uint32_t));
         hSaveFile.Write(&RdramSize, sizeof(uint32_t));
-        hSaveFile.Write(g_Rom->GetRomAddress(), 0x40);
+        if (!g_Settings->LoadBool(Setting_EnableDisk))
+            hSaveFile.Write(g_Rom->GetRomAddress(), 0x40);
+        else
+            hSaveFile.Write(g_Disk->GetDiskAddressID(), 0x40);
         hSaveFile.Write(&NextViTimer, sizeof(uint32_t));
         hSaveFile.Write(&m_Reg.m_PROGRAM_COUNTER, sizeof(m_Reg.m_PROGRAM_COUNTER));
         hSaveFile.Write(m_Reg.m_GPR, sizeof(int64_t) * 32);
@@ -1975,10 +1981,21 @@ bool CN64System::LoadState(const char * FileName)
 
                 uint8_t LoadHeader[64];
                 unzReadCurrentFile(file, LoadHeader, 0x40);
-                if (memcmp(LoadHeader, g_Rom->GetRomAddress(), 0x40) != 0 &&
-                    !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
+                if (!g_Settings->LoadBool(Setting_EnableDisk))
                 {
-                    return false;
+                    if (memcmp(LoadHeader, g_Rom->GetRomAddress(), 0x40) != 0 &&
+                        !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (memcmp(LoadHeader, g_Disk->GetDiskAddressID(), 0x40) != 0 &&
+                        !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
+                    {
+                        return false;
+                    }
                 }
                 Reset(false, true);
 
@@ -2043,10 +2060,21 @@ bool CN64System::LoadState(const char * FileName)
         //Check header
         uint8_t LoadHeader[64];
         hSaveFile.Read(LoadHeader, 0x40);
-        if (memcmp(LoadHeader, g_Rom->GetRomAddress(), 0x40) != 0 &&
-            !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
+        if (!g_Settings->LoadBool(Setting_EnableDisk))
         {
-            return false;
+            if (memcmp(LoadHeader, g_Rom->GetRomAddress(), 0x40) != 0 &&
+                !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if (memcmp(LoadHeader, g_Disk->GetDiskAddressID(), 0x40) != 0 &&
+                !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
+            {
+                return false;
+            }
         }
         Reset(false, true);
         m_MMU_VM.UnProtectMemory(0x80000000, 0x80000000 + g_Settings->LoadDword(Game_RDRamSize) - 4);
