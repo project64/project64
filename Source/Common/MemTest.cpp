@@ -121,21 +121,21 @@ void CMemList::DumpItems(void)
     char path_buffer[_MAX_PATH] = { 0 }, drive[_MAX_DRIVE] = { 0 }, dir[_MAX_DIR] = { 0 };
     char fname[_MAX_FNAME] = { 0 }, ext[_MAX_EXT] = { 0 }, LogFileName[_MAX_PATH] = { 0 };
 
-    GetModuleFileName(m_hModule, path_buffer, sizeof(path_buffer));
+    GetModuleFileNameA(m_hModule, path_buffer, sizeof(path_buffer));
     _splitpath(path_buffer, drive, dir, fname, ext);
     _makepath(LogFileName, drive, dir, fname, "leak.csv");
 
     HANDLE hLogFile = INVALID_HANDLE_VALUE;
     do
     {
-        hLogFile = CreateFile( LogFileName, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL );
+        hLogFile = CreateFileA( LogFileName, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL );
         if (hLogFile == INVALID_HANDLE_VALUE)
         {
             if (GetLastError() == ERROR_SHARING_VIOLATION)
             {
-                TCHAR Msg[3000];
+                char Msg[3000];
                 sprintf(Msg, "%s\nCan not be opened for writing please close app using this file\n\nTry Again ?", LogFileName);
-                int Result = MessageBox(NULL, Msg, "Memory Leak", MB_YESNO | MB_ICONQUESTION | MB_SETFOREGROUND | MB_SERVICE_NOTIFICATION);
+                int Result = MessageBoxA(NULL, Msg, "Memory Leak", MB_YESNO | MB_ICONQUESTION | MB_SETFOREGROUND | MB_SERVICE_NOTIFICATION);
                 if (Result == IDNO)
                 {
                     break;
@@ -162,10 +162,10 @@ void CMemList::DumpItems(void)
     }
     char Msg[3000];
     sprintf(Msg, "%s%s\n\nMemory Leaks detected\n\nOpen the Log File ?", fname, ext);
-    int Result = MessageBox(NULL, Msg, "Memory Leak", MB_YESNO | MB_ICONQUESTION | MB_SETFOREGROUND | MB_SERVICE_NOTIFICATION);
+    int Result = MessageBoxA(NULL, Msg, "Memory Leak", MB_YESNO | MB_ICONQUESTION | MB_SETFOREGROUND | MB_SERVICE_NOTIFICATION);
     if (Result == IDYES)
     {
-        ShellExecute(NULL, "open", LogFileName, NULL, NULL, SW_SHOW);
+        ShellExecuteA(NULL, "open", LogFileName, NULL, NULL, SW_SHOW);
     }
 }
 

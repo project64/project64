@@ -184,7 +184,7 @@ public:
 			}
 		}
 
-		ShellExecute(NULL,"open",LogFileName.c_str(),NULL,NULL,SW_SHOW);
+		ShellExecuteA(NULL,"open",LogFileName.c_str(),NULL,NULL,SW_SHOW);
 		ResetCounters();
 	}
 };

@@ -52,7 +52,7 @@ void CloseDLL(void)
 void DllAbout(void * hParent)
 {
 #ifdef _WIN32
-	MessageBox((HWND)hParent, "need to do", "About", MB_OK | MB_ICONINFORMATION);
+	MessageBox((HWND)hParent, L"need to do", L"About", MB_OK | MB_ICONINFORMATION);
 #endif
 }
 

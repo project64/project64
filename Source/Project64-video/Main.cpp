@@ -373,7 +373,7 @@ void SetWindowDisplaySize(HWND hWnd)
         g_windowedMenu = GetMenu(hWnd);
         if (g_windowedMenu) SetMenu(hWnd, NULL);
 
-        HWND hStatusBar = FindWindowEx(hWnd, NULL, "msctls_statusbar32", NULL); // 1964
+        HWND hStatusBar = FindWindowEx(hWnd, NULL, L"msctls_statusbar32", NULL); // 1964
         if (hStatusBar) ShowWindow(hStatusBar, SW_HIDE);
 
         SetWindowLong(hWnd, GWL_STYLE, 0);
@@ -390,7 +390,7 @@ void SetWindowDisplaySize(HWND hWnd)
         HWND hStatusBar = FindWindowEx(hWnd, NULL, STATUSCLASSNAME, NULL);
         if (hStatusBar == NULL)
         {
-            hStatusBar = FindWindowEx(hWnd, NULL, "msctls_statusbar32", NULL);
+            hStatusBar = FindWindowEx(hWnd, NULL, L"msctls_statusbar32", NULL);
         }
         if (hToolBar != NULL)
         {

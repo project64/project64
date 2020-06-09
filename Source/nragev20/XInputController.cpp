@@ -318,12 +318,12 @@ bool InitXinput()
 {
     //Lets dynamically load in the XInput library
     if (g_hXInputDLL == NULL)
-        g_hXInputDLL = LoadLibrary("Xinput1_4.dll");
+        g_hXInputDLL = LoadLibrary(L"Xinput1_4.dll");
 
     if (g_hXInputDLL == NULL)
     {
         //Ok since 1.4 is present, try 9.1.0 as its present on Vista and newer
-        g_hXInputDLL = LoadLibrary("Xinput9_1_0.dll");
+        g_hXInputDLL = LoadLibrary(L"Xinput9_1_0.dll");
     }
     if (g_hXInputDLL == NULL)
     {

@@ -177,12 +177,12 @@ public:
 
         for (size_t i = 0, n = sizeof(TraceCMB) / sizeof(TraceCMB[0]); i < n; i++)
         {
-            TraceCMB[i].cmb.SetItemData(TraceCMB[i].cmb.AddString("Error"), TraceError);
-            TraceCMB[i].cmb.SetItemData(TraceCMB[i].cmb.AddString("Warning"), TraceWarning);
-            TraceCMB[i].cmb.SetItemData(TraceCMB[i].cmb.AddString("Notice"), TraceNotice);
-            TraceCMB[i].cmb.SetItemData(TraceCMB[i].cmb.AddString("Info"), TraceInfo);
-            TraceCMB[i].cmb.SetItemData(TraceCMB[i].cmb.AddString("Debug"), TraceDebug);
-            TraceCMB[i].cmb.SetItemData(TraceCMB[i].cmb.AddString("Verbose"), TraceVerbose);
+            TraceCMB[i].cmb.SetItemData(TraceCMB[i].cmb.AddString(L"Error"), TraceError);
+            TraceCMB[i].cmb.SetItemData(TraceCMB[i].cmb.AddString(L"Warning"), TraceWarning);
+            TraceCMB[i].cmb.SetItemData(TraceCMB[i].cmb.AddString(L"Notice"), TraceNotice);
+            TraceCMB[i].cmb.SetItemData(TraceCMB[i].cmb.AddString(L"Info"), TraceInfo);
+            TraceCMB[i].cmb.SetItemData(TraceCMB[i].cmb.AddString(L"Debug"), TraceDebug);
+            TraceCMB[i].cmb.SetItemData(TraceCMB[i].cmb.AddString(L"Verbose"), TraceVerbose);
             SetComboBoxIndex(TraceCMB[i].cmb, (uint32_t)GetSetting(TraceCMB[i].SettingId));
         }
         return TRUE;

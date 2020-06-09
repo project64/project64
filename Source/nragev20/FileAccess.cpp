@@ -925,11 +925,11 @@ bool GetDirectory( LPTSTR pszDirectory, WORD wDirID )
 
     if (bReturn && wDirID == DIRECTORY_CONFIG)
     {
-        strcat(pszDirectory,"Config\\");
+        wcscat(pszDirectory,L"Config\\");
     }
     if (bReturn && wDirID == DIRECTORY_LOG)
     {
-        strcat(pszDirectory,"Logs\\");
+        wcscat(pszDirectory,L"Logs\\");
     }
     return bReturn;
 }

@@ -284,7 +284,7 @@ extern "C" void UseUnregisteredSetting(int /*SettingID*/)
 #ifdef _WIN32
 void SetTimerResolution(void)
 {
-    HMODULE hMod = GetModuleHandle("ntdll.dll");
+    HMODULE hMod = GetModuleHandle(L"ntdll.dll");
     if (hMod != NULL)
     {
         typedef LONG(NTAPI* tNtSetTimerResolution)(IN ULONG DesiredResolution, IN BOOLEAN SetResolution, OUT PULONG CurrentResolution);

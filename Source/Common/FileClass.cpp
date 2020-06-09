@@ -53,7 +53,7 @@ CFile::~CFile()
 #endif
     {
         Close();
-}
+    }
 }
 
 bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
@@ -110,7 +110,7 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
     }
 
     // attempt file creation
-    HANDLE hFile = ::CreateFile(lpszFileName, dwAccess, dwShareMode, &sa, dwCreateFlag, FILE_ATTRIBUTE_NORMAL, NULL);
+    HANDLE hFile = ::CreateFileA(lpszFileName, dwAccess, dwShareMode, &sa, dwCreateFlag, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE)
     { //#define ERROR_PATH_NOT_FOUND             3L
         //ULONG err = GetLastError();

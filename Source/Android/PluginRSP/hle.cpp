@@ -335,6 +335,6 @@ void CHle::VerboseMessage(const char *message, ...)
 void CHle::WarnMessage(const char *message, ...)
 {
 #if defined(_WIN32) && defined(_DEBUG)
-    MessageBox(NULL, message, "HLE Warning Message", MB_OK);
+    MessageBoxA(NULL, message, "HLE Warning Message", MB_OK);
 #endif
 }

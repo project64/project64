@@ -376,30 +376,6 @@ DWORD CALLBACK AboutIniBoxProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD /*lPar
                 EnableWindow(GetDlgItem(hDlg, IDC_RDB_HOME), FALSE);
             }
 
-            //Cheat
-            SetDlgItemTextW(hDlg, IDC_CHT, wGS(INI_CURRENT_CHT).c_str());
-            CIniFile CheatIniFile(g_Settings->LoadStringVal(SupportFile_Cheats).c_str());
-            wcsncpy(String, stdstr(CheatIniFile.GetString("Meta", "Author", "")).ToUTF16().c_str(), sizeof(String) / sizeof(String[0]));
-            if (wcslen(String) == 0)
-            {
-                EnableWindow(GetDlgItem(hDlg, IDC_CHT), FALSE);
-                EnableWindow(GetDlgItem(hDlg, IDC_CHT_AUTHOR), FALSE);
-                EnableWindow(GetDlgItem(hDlg, IDC_CHT_VERSION), FALSE);
-                EnableWindow(GetDlgItem(hDlg, IDC_CHT_DATE), FALSE);
-                EnableWindow(GetDlgItem(hDlg, IDC_CHT_HOME), FALSE);
-            }
-            set_about_field(hDlg, IDC_CHT_AUTHOR, wGS(INI_AUTHOR).c_str(), String);
-            wcsncpy(String, stdstr(CheatIniFile.GetString("Meta", "Version", "")).ToUTF16().c_str(), sizeof(String) / sizeof(String[0]));
-            set_about_field(hDlg, IDC_CHT_VERSION, wGS(INI_VERSION).c_str(), String);
-            wcsncpy(String, stdstr(CheatIniFile.GetString("Meta", "Date", "")).ToUTF16().c_str(), sizeof(String) / sizeof(String[0]));
-            set_about_field(hDlg, IDC_CHT_DATE, wGS(INI_DATE).c_str(), String);
-            wcsncpy(CHTHomePage, stdstr(CheatIniFile.GetString("Meta", "Homepage", "")).ToUTF16().c_str(), sizeof(CHTHomePage) / sizeof(CHTHomePage[0]));
-            SetDlgItemTextW(hDlg, IDC_CHT_HOME, wGS(INI_HOMEPAGE).c_str());
-            if (wcslen(CHTHomePage) == 0)
-            {
-                EnableWindow(GetDlgItem(hDlg, IDC_CHT_HOME), FALSE);
-            }
-
             //Extended Info
             SetDlgItemTextW(hDlg, IDC_RDX, wGS(INI_CURRENT_RDX).c_str());
             CIniFile RdxIniFile(g_Settings->LoadStringVal(SupportFile_ExtInfo).c_str());
@@ -430,7 +406,6 @@ DWORD CALLBACK AboutIniBoxProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD /*lPar
         switch (LOWORD(wParam))
         {
         case IDC_RDB_HOME: ShellExecuteW(NULL, L"open", RDBHomePage, NULL, NULL, SW_SHOWNORMAL); break;
-        case IDC_CHT_HOME: ShellExecuteW(NULL, L"open", CHTHomePage, NULL, NULL, SW_SHOWNORMAL); break;
         case IDC_RDX_HOME: ShellExecuteW(NULL, L"open", RDXHomePage, NULL, NULL, SW_SHOWNORMAL); break;
         case IDOK:
         case IDCANCEL:

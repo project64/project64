@@ -159,7 +159,7 @@ void DisplayError(char* Message, ...)
 	vsprintf( Msg, Message, ap );
 	va_end( ap );
 #ifdef _WIN32
-    MessageBox(NULL, Msg, "Error", MB_OK | MB_ICONERROR);
+    MessageBoxA(NULL, Msg, "Error", MB_OK | MB_ICONERROR);
 #else
     fputs(&Msg[0], stderr);
 #endif
@@ -187,7 +187,7 @@ EXPORT void CloseDLL(void)
 EXPORT void DllAbout(void * hParent)
 {
 #ifdef _WIN32
-    MessageBox((HWND)hParent, AboutMsg(), "About", MB_OK | MB_ICONINFORMATION);
+    MessageBoxA((HWND)hParent, AboutMsg(), "About", MB_OK | MB_ICONINFORMATION);
 #else
     puts(AboutMsg());
 #endif
@@ -454,7 +454,7 @@ void ProcessMenuItem(int ID)
 		}
 		break;
 	case ID_COMPILER:		
-		DialogBox((HINSTANCE)hinstDLL, "RSPCOMPILER", HWND_DESKTOP, (DLGPROC)CompilerDlgProc);
+		DialogBoxA((HINSTANCE)hinstDLL, "RSPCOMPILER", HWND_DESKTOP, (DLGPROC)CompilerDlgProc);
 		break;
 	case ID_BREAKONSTARTOFTASK:
 		{
@@ -628,7 +628,7 @@ BOOL CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lPar
 		sprintf(Buffer, "x86: %2.2f KB / %2.2f KB", (float)(RecompPos - RecompCode) / 1024.0F,
 			pLastSecondary?(float)((pLastSecondary - RecompCodeSecondary) / 1024.0F):0);
 
-		SetDlgItemText(hDlg, IDC_COMPILER_BUFFERS, Buffer);
+		SetDlgItemTextA(hDlg, IDC_COMPILER_BUFFERS, Buffer);
 		break;
 	case WM_COMMAND:
 		switch (GET_WM_COMMAND_ID(wParam, lParam))
