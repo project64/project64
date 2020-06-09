@@ -1,7 +1,6 @@
 // Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
-#include "../../Project64-core/Version.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -365,7 +364,7 @@ BEGIN
     CONTROL         ".usa",IDC_USA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,97,134,37,10
 END
 
-IDD_About_Ini DIALOGEX 0, 0, 185, 250
+IDD_About_Ini DIALOGEX 0, 0, 186, 188
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About INI Files"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
@@ -379,17 +378,12 @@ BEGIN
     LTEXT           "Version:",IDC_RDB_VERSION,13,67,164,10
     LTEXT           "Date:",IDC_RDB_DATE,13,76,164,10
     PUSHBUTTON      "visit home page",IDC_RDB_HOME,12,87,163,13
-    GROUPBOX        "Cheat Code file (.CHT)",IDC_CHT,6,107,175,59
-    LTEXT           "Author:",IDC_CHT_AUTHOR,13,118,164,10
-    LTEXT           "Version:",IDC_CHT_VERSION,13,128,164,10
-    LTEXT           "Date:",IDC_CHT_DATE,13,137,164,10
-    PUSHBUTTON      "visit home page",IDC_CHT_HOME,12,148,163,13
-    GROUPBOX        "Extended Rom Info (.RDX)",IDC_RDX,6,168,175,59
-    LTEXT           "Author:",IDC_RDX_AUTHOR,13,178,164,10
-    LTEXT           "Version:",IDC_RDX_VERSION,13,188,164,10
-    LTEXT           "Date:",IDC_RDX_DATE,13,198,164,10
-    PUSHBUTTON      "visit home page",IDC_RDX_HOME,12,210,163,13
-    PUSHBUTTON      "OK",IDOK,134,230,47,13
+    GROUPBOX        "Extended Rom Info (.RDX)",IDC_RDX,6,107,175,59
+    LTEXT           "Author:",IDC_RDX_AUTHOR,13,117,164,10
+    LTEXT           "Version:",IDC_RDX_VERSION,13,127,164,10
+    LTEXT           "Date:",IDC_RDX_DATE,13,137,164,10
+    PUSHBUTTON      "visit home page",IDC_RDX_HOME,12,149,163,13
+    PUSHBUTTON      "OK",IDOK,134,168,47,13
 END
 
 IDD_About DIALOGEX 0, 0, 233, 265
@@ -1540,9 +1534,9 @@ BEGIN
     IDD_About_Ini, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 178
+        RIGHTMARGIN, 179
         TOPMARGIN, 7
-        BOTTOMMARGIN, 243
+        BOTTOMMARGIN, 181
     END
 
     IDD_About, DIALOG
@@ -2071,25 +2065,29 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION        VER_FILE_VERSION
- PRODUCTVERSION     VER_PRODUCT_VERSION
- FILEFLAGSMASK      0x3fL
- FILEFLAGS          VER_FILEFLAGS
- FILEOS             VER_FILEOS
- FILETYPE           VER_FILETYPE
- FILESUBTYPE        0x0L
+ FILEVERSION 2,4,0,1230
+ PRODUCTVERSION 2,4,0,1230
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "FileDescription",  VER_FILE_DESCRIPTION_STR "\0"
-            VALUE "FileVersion",      VER_FILE_VERSION_STR "\0"
-            VALUE "InternalName",     VER_INTERNAL_NAME_STR "\0"
-            VALUE "LegalCopyright",   VER_COPYRIGHT_STR "\0"
-            VALUE "OriginalFilename", VER_ORIGINAL_FILENAME_STR "\0"
-            VALUE "ProductName",      VER_PRODUCTNAME_STR
-            VALUE "ProductVersion",   VER_PRODUCT_VERSION_STR "\0"
+            VALUE "FileDescription", "Project64"
+            VALUE "FileVersion", "2.4.0.1230-g56ccef8e-dirty"
+            VALUE "InternalName", "Project64"
+            VALUE "LegalCopyright", "Copyright (C) 2017"
+            VALUE "OriginalFilename", "Project64.exe"
+            VALUE "ProductName", "Project64"
+            VALUE "ProductVersion", "2.4.0.1230-g56ccef8e-dirty"
         END
     END
     BLOCK "VarFileInfo"
@@ -2220,6 +2218,11 @@ BEGIN
 END
 
 IDD_Debugger_RegVI AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_About_Ini AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

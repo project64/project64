@@ -333,7 +333,6 @@
 #define IDC_RDB_HOME                    1150
 #define IDC_SHELL_INT_TEXT2             1150
 #define IDC_COUNTFACT                   1151
-#define IDC_CHT_HOME                    1151
 #define IDC_SHELL_INT_TEXT3             1151
 #define IDC_RDX_HOME                    1152
 #define IDC_SHELL_INT_TEXT4             1152
@@ -352,10 +351,6 @@
 #define IDC_RDB_VERSION                 1160
 #define IDC_PROTECT_MEMORY              1160
 #define IDC_RDB_DATE                    1161
-#define IDC_CHT                         1162
-#define IDC_CHT_AUTHOR                  1163
-#define IDC_CHT_VERSION                 1164
-#define IDC_CHT_DATE                    1165
 #define IDC_R16_EDIT                    1165
 #define IDC_RDX                         1166
 #define IDC_R17_EDIT                    1166
