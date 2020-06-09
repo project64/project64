@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-
 CIniFileBase::CIniFileBase(CFileBase & FileObject, const char * FileName) :
     m_lastSectionSearch(0),
     m_CurrentSectionFilePos(0),

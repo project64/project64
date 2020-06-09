@@ -1,6 +1,7 @@
-#include <Common/path.h>
-#include <Common/IniFileClass.h>
-#include <Common/StdString.h>
+#include <Common\path.h>
+#include <Common\IniFileClass.h>
+#include <Common\StdString.h>
+#include <Project64-core\N64System\CheatFile.h>
 #include <algorithm>
 #include <set>
 #include <windows.h>
@@ -207,8 +208,8 @@ void JoinFile(const char * Directory, const char * Target)
                 if (Name.size() > 0)
                 {
                     files.insert(Files::value_type(Name, SearchDir));
+                    break;
                 }
-                break;
             }
         } while (SearchDir.FindNext());
     }
@@ -354,17 +355,17 @@ bool ConvertCheatOptions(const char * OptionValue, std::string& Options)
             Name += 1;
             if (strcmp(OptionValue, "????") == 0)
             {
-                uint16_t CodeValue = ConvertXP64Value(strtoul(Item.c_str(), 0, 16));
+                uint16_t CodeValue = ConvertXP64Value((uint16_t)strtoul(Item.c_str(), 0, 16));
                 NewOptions += stdstr_f("%04X %s", CodeValue, stdstr(Name).Trim().c_str());
             }
             else if (strcmp(OptionValue, "??XX") == 0)
             {
-                uint8_t CodeValue = ConvertXP64ValueHi(strtoul(Item.c_str(), 0, 16));
+                uint8_t CodeValue = ConvertXP64ValueHi((uint8_t)strtoul(Item.c_str(), 0, 16));
                 NewOptions += stdstr_f("%02X %s", CodeValue, stdstr(Name).Trim().c_str());
             }
             else if (strcmp(OptionValue, "XX??") == 0)
             {
-                uint8_t CodeValue = ConvertXP64ValueLo(strtoul(Item.c_str(), 0, 16));
+                uint8_t CodeValue = ConvertXP64ValueLo((uint8_t)strtoul(Item.c_str(), 0, 16));
                 NewOptions += stdstr_f("%02X %s", CodeValue, stdstr(Name).Trim().c_str());
             }
             else
@@ -641,6 +642,240 @@ void convertGS(const char* Directory)
 
 }
 
+bool ParseCheatEntry(const stdstr & CheatEntry, const stdstr& CheatOptions, CCheatDetails & Details)
+{
+    bool HaveOptions;
+
+    size_t StartOfName = CheatEntry.find("\"");
+    if (StartOfName == std::string::npos)
+    {
+        return false;
+    }
+    size_t EndOfName = CheatEntry.find("\"", StartOfName + 1);
+    if (EndOfName == std::string::npos)
+    {
+        return false;
+    }
+    Details.SetName(CheatEntry.substr(StartOfName + 1, EndOfName - StartOfName - 1).c_str());
+    const char * CheatString = &CheatEntry.c_str()[EndOfName + 2];
+    HaveOptions = false;
+
+    const char * ReadPos = CheatString;
+    bool FirstEntry = true;
+    CCheatDetails::CodeEntries Entries;
+    CCheatDetails::CodeOptions Options;
+    std::string OptionValue;
+
+    while (ReadPos)
+    {
+        uint32_t CodeCommand = strtoul(ReadPos, 0, 16);
+        ReadPos = strchr(ReadPos, ' ');
+        if (ReadPos == NULL)
+        {
+            break;
+        }
+        ReadPos += 1;
+        std::string ValueStr = ReadPos;
+        const char * ValuePos = ReadPos;
+        ReadPos = strchr(ReadPos, ',');
+        if (ReadPos != NULL)
+        {
+            ValueStr.resize(ReadPos - ValuePos);
+            ReadPos++;
+        }
+
+        //validate Code Entry
+        switch (CodeCommand & 0xFF000000)
+        {
+        case 0x80000000:
+        case 0x81000000:
+        case 0x88000000:
+        case 0x89000000:
+        case 0xA0000000:
+        case 0xA1000000:
+        case 0xD0000000:
+        case 0xD1000000:
+        case 0xD2000000:
+        case 0xD3000000:
+            if (strchr(ValueStr.c_str(), '?') != NULL)
+            {
+                if (CheatOptions.empty())
+                {
+                    DebugBreak();
+                    return false;
+                }
+
+                if (strncmp(ValueStr.c_str(), "????", 4) == 0)
+                {
+                    if (!OptionValue.empty() && OptionValue != "????")
+                    {
+                        return false;
+                    }
+                    OptionValue = "????";
+                }
+                else if (ValueStr.length() == 4 && strncmp(&ValueStr.c_str()[2], "??", 2) == 0)
+                {
+                    if (!OptionValue.empty() && OptionValue != "XX??")
+                    {
+                        return false;
+                    }
+                    OptionValue = "XX??";
+                }
+                else if (ValueStr.length() == 4 && strncmp(&ValueStr.c_str()[0], "??", 2) == 0)
+                {
+                    if (!OptionValue.empty() && OptionValue != "??XX")
+                    {
+                        return false;
+                    }
+                    OptionValue = "??XX";
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            break;
+        case 0x50000000:
+            if (strchr(ValueStr.c_str(), '?') != NULL)
+            {
+                DebugBreak();
+                return false;
+            }
+            break;
+        default:
+            DebugBreak();
+            return false;
+        }
+
+        CCheatDetails::CodeEntry Entry;
+        Entry.Command = CodeCommand;
+        Entry.Value = ValueStr;
+        Entries.push_back(Entry);
+
+        FirstEntry = false;
+    }
+
+    if (!OptionValue.empty())
+    {
+        uint32_t OptionLen = OptionValue == "????" ? 4 : 2;
+        ReadPos = strchr(CheatOptions.c_str(), '$');
+        if (ReadPos)
+        {
+            ReadPos += 1;
+            do
+            {
+                const char* End = strchr(ReadPos, ',');
+                std::string Item = End != NULL ? std::string(ReadPos, End - ReadPos) : ReadPos;
+                ReadPos = strchr(ReadPos, '$');
+                if (ReadPos != NULL)
+                {
+                    ReadPos += 1;
+                }
+                const char* Name = strchr(Item.c_str(), ' ');
+                if (Name == NULL)
+                {
+                    return false;
+                }
+                if (((uint32_t)(Name - Item.c_str())) != OptionLen)
+                {
+                    DebugBreak();
+                    return false;
+                }
+                Name += 1;
+                CCheatDetails::CodeOption Option;
+                Option.Name = stdstr(Name).Trim().c_str();
+                if (OptionValue == "????")
+                {
+                    Option.Value = (uint16_t)strtoul(Item.c_str(), 0, 16);
+                }
+                else if (OptionValue == "??XX" || OptionValue == "XX??")
+                {
+                    Option.Value = (uint8_t)strtoul(Item.c_str(), 0, 16);
+                }
+                else
+                {
+                    DebugBreak();
+                    return false;
+                }
+                Options.push_back(Option);
+            } while (ReadPos);
+        }
+    }
+
+    if (!Details.SetEntries(Entries))
+    {
+        DebugBreak();
+        return false;
+    }
+    Details.SetOptions(Options);
+    return true;
+}
+
+void ConvertNew(const char * Src, const char * Dest)
+{
+    CPath SrcDir(Src, ""), DestDir(Dest, "");
+    if (SrcDir == DestDir)
+    {
+        return;
+    }
+
+    if (DestDir.DirectoryExists())
+    {
+        DestDir.Delete();
+    };
+    DestDir.DirectoryCreate();
+
+    CPath SearchDir(Src, "*.cht");
+    if (SearchDir.FindFirst())
+    {
+        do
+        {
+            CPath OutFile(Dest, SearchDir.GetNameExtension());
+            if (OutFile.Exists())
+            {
+                OutFile.Delete();
+            }
+            CCheatFile DstCheatFile(OutFile);
+
+            CIniFile SrcIniFile(SearchDir);
+            CIniFile::SectionList Sections;
+            SrcIniFile.GetVectorOfSections(Sections);
+
+            enum
+            {
+                MaxCheats = 50000,
+            };
+
+            for (size_t i = 0, n = Sections.size(); i < n; i++)
+            {
+                const char * Section = Sections[i].c_str();
+                std::string GameName = SrcIniFile.GetString(Section, "Name", "");
+                DstCheatFile.SetName(Section, GameName.c_str());
+                for (uint32_t cheat = 0; cheat < MaxCheats; cheat++)
+                {
+                    std::string CheatEntry = SrcIniFile.GetString(Section, stdstr_f("Cheat%d", cheat).c_str(), "");
+                    if (CheatEntry.empty())
+                    {
+                        break;
+                    }
+                    std::string CheatOptions = SrcIniFile.GetString(Section, stdstr_f("Cheat%d_O", cheat).c_str(), "");
+                    CCheatDetails Details;
+                    if (!ParseCheatEntry(CheatEntry, CheatOptions, Details))
+                    {
+                        continue;
+                    }
+                    std::string CheatNote = SrcIniFile.GetString(Section, stdstr_f("Cheat%d_N", cheat).c_str(), "");
+                    if (!CheatNote.empty())
+                    {
+                        Details.SetNote(CheatNote.c_str());
+                    }
+                    DstCheatFile.SetCode(Section, Details);
+                }
+            }
+        } while (SearchDir.FindNext());
+    }
+}
+
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
     if (__argc == 4 && strcmp(__argv[1], "-split") == 0 && CPath(__argv[2]).Exists())
@@ -658,6 +893,10 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
     if (__argc == 3 && strcmp(__argv[1], "-convertGS") == 0 && CPath(__argv[2], "").DirectoryExists())
     {
         convertGS(__argv[2]);
+    }
+    if (__argc == 4 && strcmp(__argv[1], "-convertNew") == 0 && CPath(__argv[2], "").DirectoryExists())
+    {
+        ConvertNew(__argv[2], __argv[3]);
     }
     return 0;
 }
