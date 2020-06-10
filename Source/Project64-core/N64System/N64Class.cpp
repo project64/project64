@@ -1738,7 +1738,6 @@ bool CN64System::SaveState()
         }
     }
 
-    uint32_t SaveID_0 = 0x23D8A6C8, SaveID_1 = 0x56D2CD23;
     uint32_t RdramSize = g_Settings->LoadDword(Game_RDRamSize);
     uint32_t MiInterReg = g_Reg->MI_INTR_REG;
     uint32_t NextViTimer = m_SystemTimer.GetTimer(CSystemTimer::ViTimer);
@@ -1770,7 +1769,6 @@ bool CN64System::SaveState()
         zipWriteInFileInZip(file, m_Reg.m_Peripheral_Interface, sizeof(uint32_t) * 13);
         zipWriteInFileInZip(file, m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8);
         zipWriteInFileInZip(file, m_Reg.m_SerialInterface, sizeof(uint32_t) * 4);
-        zipWriteInFileInZip(file, m_Reg.m_DiskInterface, sizeof(uint32_t) * 22);
         zipWriteInFileInZip(file, (void *const)&m_TLB.TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32);
         zipWriteInFileInZip(file, m_MMU_VM.PifRam(), 0x40);
         zipWriteInFileInZip(file, m_MMU_VM.Rdram(), RdramSize);
@@ -1779,8 +1777,16 @@ bool CN64System::SaveState()
         zipCloseFileInZip(file);
 
         zipOpenNewFileInZip(file, ExtraInfo.GetNameExtension().c_str(), NULL, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
-        zipWriteInFileInZip(file, &SaveID_1, sizeof(SaveID_1));
+
+        //Extra Info v2
+        zipWriteInFileInZip(file, &SaveID_2, sizeof(SaveID_2));
+
+        //Disk Interface Info
+        zipWriteInFileInZip(file, m_Reg.m_DiskInterface, sizeof(uint32_t) * 22);
+
+        //System Timers Info
         m_SystemTimer.SaveData(file);
+
         zipCloseFileInZip(file);
 
         zipClose(file, "");
@@ -1827,7 +1833,6 @@ bool CN64System::SaveState()
         hSaveFile.Write(m_Reg.m_Peripheral_Interface, sizeof(uint32_t) * 13);
         hSaveFile.Write(m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8);
         hSaveFile.Write(m_Reg.m_SerialInterface, sizeof(uint32_t) * 4);
-        hSaveFile.Write(m_Reg.m_DiskInterface, sizeof(uint32_t) * 22);
         hSaveFile.Write(&m_TLB.TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32);
         hSaveFile.Write(g_MMU->PifRam(), 0x40);
         hSaveFile.Write(g_MMU->Rdram(), RdramSize);
@@ -1838,6 +1843,13 @@ bool CN64System::SaveState()
         CFile hExtraInfo(ExtraInfo, CFileBase::modeWrite | CFileBase::modeCreate);
         if (hExtraInfo.IsOpen())
         {
+            //Extra Info v2
+            hExtraInfo.Write(&SaveID_2, sizeof(uint32_t));
+
+            //Disk Interface Info
+            hExtraInfo.Write(m_Reg.m_DiskInterface, sizeof(uint32_t) * 22);
+
+            //System Timers Info
             m_SystemTimer.SaveData(hExtraInfo);
             hExtraInfo.Close();
         }
@@ -1968,13 +1980,7 @@ bool CN64System::LoadState(const char * FileName)
                 continue;
             }
             unzReadCurrentFile(file, &Value, 4);
-            if (Value != 0x23D8A6C8 && Value != 0x56D2CD23)
-            {
-                unzCloseCurrentFile(file);
-                port = unzGoToNextFile(file);
-                continue;
-            }
-            if (!LoadedZipFile && Value == 0x23D8A6C8 && port == UNZ_OK)
+            if (!LoadedZipFile && Value == SaveID_0 && port == UNZ_OK)
             {
                 unzReadCurrentFile(file, &SaveRDRAMSize, sizeof(SaveRDRAMSize));
                 //Check header
@@ -2019,7 +2025,6 @@ bool CN64System::LoadState(const char * FileName)
                 unzReadCurrentFile(file, m_Reg.m_Peripheral_Interface, sizeof(uint32_t) * 13);
                 unzReadCurrentFile(file, m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8);
                 unzReadCurrentFile(file, m_Reg.m_SerialInterface, sizeof(uint32_t) * 4);
-                unzReadCurrentFile(file, m_Reg.m_DiskInterface, sizeof(uint32_t) * 22);
                 unzReadCurrentFile(file, (void *const)&m_TLB.TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32);
                 unzReadCurrentFile(file, m_MMU_VM.PifRam(), 0x40);
                 unzReadCurrentFile(file, m_MMU_VM.Rdram(), SaveRDRAMSize);
@@ -2030,8 +2035,18 @@ bool CN64System::LoadState(const char * FileName)
                 LoadedZipFile = true;
                 continue;
             }
-            if (LoadedZipFile && Value == 0x56D2CD23 && port == UNZ_OK)
+            if (LoadedZipFile && Value == SaveID_1 && port == UNZ_OK)
             {
+                //Extra Info v1
+                //System Timers Info
+                m_SystemTimer.LoadData(file);
+            }
+            if (LoadedZipFile && Value == SaveID_2 && port == UNZ_OK)
+            {
+                //Extra Info v2 (Project64 2.4)
+                //Disk Interface Info
+                unzReadCurrentFile(file, m_Reg.m_DiskInterface, sizeof(uint32_t) * 22);
+                //System Timers Info
                 m_SystemTimer.LoadData(file);
             }
             unzCloseCurrentFile(file);
@@ -2050,7 +2065,7 @@ bool CN64System::LoadState(const char * FileName)
         hSaveFile.SeekToBegin();
 
         hSaveFile.Read(&Value, sizeof(Value));
-        if (Value != 0x23D8A6C8)
+        if (Value != SaveID_0)
         {
             return false;
         }
@@ -2098,7 +2113,6 @@ bool CN64System::LoadState(const char * FileName)
         hSaveFile.Read(m_Reg.m_Peripheral_Interface, sizeof(uint32_t) * 13);
         hSaveFile.Read(m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8);
         hSaveFile.Read(m_Reg.m_SerialInterface, sizeof(uint32_t) * 4);
-        hSaveFile.Read(m_Reg.m_DiskInterface, sizeof(uint32_t) * 22);
         hSaveFile.Read((void *const)&m_TLB.TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32);
         hSaveFile.Read(m_MMU_VM.PifRam(), 0x40);
         hSaveFile.Read(m_MMU_VM.Rdram(), SaveRDRAMSize);
@@ -2111,7 +2125,18 @@ bool CN64System::LoadState(const char * FileName)
         CFile hExtraInfo(ExtraInfo, CFileBase::modeRead);
         if (hExtraInfo.IsOpen())
         {
+            //Extra Info version check
+            hExtraInfo.Read(&Value, sizeof(Value));
+            if (Value != SaveID_1 && Value != SaveID_2)
+                hExtraInfo.SeekToBegin();
+
+            //Disk Interface Info
+            if (Value == SaveID_2)
+                hExtraInfo.Read(m_Reg.m_DiskInterface, sizeof(uint32_t) * 22);
+
+            //System Timers Info
             m_SystemTimer.LoadData(hExtraInfo);
+
             hExtraInfo.Close();
         }
     }
