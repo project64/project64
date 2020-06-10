@@ -17,6 +17,7 @@
 #include <Project64-core/N64System/Mips/Transferpak.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/N64System/Mips/OpcodeName.h>
+#include <Project64-core/N64System/Mips/Disk.h>
 #include <Project64-core/N64System/N64DiskClass.h>
 #include <Project64-core/ExceptionHandler.h>
 #include <Project64-core/Logging.h>
@@ -2132,7 +2133,13 @@ bool CN64System::LoadState(const char * FileName)
 
             //Disk Interface Info
             if (Value == SaveID_2)
+            {
                 hExtraInfo.Read(m_Reg.m_DiskInterface, sizeof(uint32_t) * 22);
+
+                //Recover Disk Seek Address (if the save state is done while loading/saving data)
+                if (g_Disk)
+                    DiskBMReadWrite(false);
+            }
 
             //System Timers Info
             m_SystemTimer.LoadData(hExtraInfo);
