@@ -2047,6 +2047,11 @@ bool CN64System::LoadState(const char * FileName)
                 //Extra Info v2 (Project64 2.4)
                 //Disk Interface Info
                 unzReadCurrentFile(file, m_Reg.m_DiskInterface, sizeof(uint32_t) * 22);
+
+                //Recover Disk Seek Address (if the save state is done while loading/saving data)
+                if (g_Disk)
+                    DiskBMReadWrite(false);
+
                 //System Timers Info
                 m_SystemTimer.LoadData(file);
             }
