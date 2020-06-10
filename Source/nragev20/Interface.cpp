@@ -35,6 +35,7 @@
 #include "PakIO.h"
 #include "Version.h"
 #include "XInputController.h"
+#include <Common\StdString.h>
 
 // Prototypes //
 BOOL CALLBACK ControllerTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam );
@@ -105,7 +106,7 @@ BOOL CALLBACK MainDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
                 TCHAR tszBuffer[DEFAULT_BUFFER], tszMsg[DEFAULT_BUFFER / 2];
 
                 LoadString( g_hResourceDLL, IDS_VERSTRING, tszBuffer, DEFAULT_BUFFER / 2);
-                _stprintf(tszMsg, tszBuffer, VER_FILE_VERSION_STR);
+                _stprintf(tszMsg, tszBuffer, stdstr(VER_FILE_VERSION_STR).ToUTF16().c_str());
                 SetDlgItemText( hDlg, IDC_VERSIONSTRING, tszMsg );
             }
 

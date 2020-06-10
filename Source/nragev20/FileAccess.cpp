@@ -1105,8 +1105,8 @@ bool SaveLastBrowseDir( TCHAR *pszFileName, DWORD dwType )
 // Handy, because it handles all our file type extensions for us.
 bool BrowseFile( HWND hDlg, TCHAR *pszFileName, DWORD dwType, bool fSave )
 {
-    TCHAR pszFilter[DEFAULT_BUFFER];
-    TCHAR pszTitle[DEFAULT_BUFFER];
+    TCHAR pszFilter[DEFAULT_BUFFER] = { 0 };
+    TCHAR pszTitle[DEFAULT_BUFFER] = { 0 };
     DWORD dwFlags = /*OFN_DONTADDTORECENT |*/ OFN_NOCHANGEDIR;
     dwFlags |= (fSave)  ? OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT
                         : OFN_HIDEREADONLY | OFN_FILEMUSTEXIST;
