@@ -1750,9 +1750,15 @@ bool CN64System::SaveState()
         zipWriteInFileInZip(file, &SaveID_0, sizeof(SaveID_0));
         zipWriteInFileInZip(file, &RdramSize, sizeof(uint32_t));
         if (g_Settings->LoadBool(Setting_EnableDisk) && g_Disk)
-            zipWriteInFileInZip(file, g_Disk->GetDiskAddressID(), 0x40);
+        {
+            //Keep Base ROM Information (64DD IPL / Compatible Game ROM)
+            zipWriteInFileInZip(file, &g_Rom->GetRomAddress()[0x10], 0x20);
+            zipWriteInFileInZip(file, g_Disk->GetDiskAddressID(), 0x20);
+        }
         else
+        {
             zipWriteInFileInZip(file, g_Rom->GetRomAddress(), 0x40);
+        }
         zipWriteInFileInZip(file, &NextViTimer, sizeof(uint32_t));
         zipWriteInFileInZip(file, &m_Reg.m_PROGRAM_COUNTER, sizeof(m_Reg.m_PROGRAM_COUNTER));
         zipWriteInFileInZip(file, m_Reg.m_GPR, sizeof(int64_t) * 32);
@@ -1814,9 +1820,15 @@ bool CN64System::SaveState()
         hSaveFile.Write(&SaveID_0, sizeof(uint32_t));
         hSaveFile.Write(&RdramSize, sizeof(uint32_t));
         if (g_Settings->LoadBool(Setting_EnableDisk) && g_Disk)
-            hSaveFile.Write(g_Disk->GetDiskAddressID(), 0x40);
+        {
+            //Keep Base ROM Information (64DD IPL / Compatible Game ROM)
+            hSaveFile.Write(&g_Rom->GetRomAddress()[0x10], 0x20);
+            hSaveFile.Write(g_Disk->GetDiskAddressID(), 0x20);
+        }
         else
+        {
             hSaveFile.Write(g_Rom->GetRomAddress(), 0x40);
+        }
         hSaveFile.Write(&NextViTimer, sizeof(uint32_t));
         hSaveFile.Write(&m_Reg.m_PROGRAM_COUNTER, sizeof(m_Reg.m_PROGRAM_COUNTER));
         hSaveFile.Write(m_Reg.m_GPR, sizeof(int64_t) * 32);
@@ -1990,7 +2002,9 @@ bool CN64System::LoadState(const char * FileName)
                 unzReadCurrentFile(file, LoadHeader, 0x40);
                 if (g_Settings->LoadBool(Setting_EnableDisk) && g_Disk)
                 {
-                    if (memcmp(LoadHeader, g_Disk->GetDiskAddressID(), 0x40) != 0 &&
+                    //Base ROM Information (64DD IPL / Compatible Game ROM) & Disk Info Check
+                    if (memcmp(LoadHeader, &g_Rom->GetRomAddress()[0x10], 0x20) != 0 &&
+                        memcmp(&LoadHeader[0x20], g_Disk->GetDiskAddressID(), 0x20) != 0 &&
                         !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
                     {
                         return false;
@@ -2083,7 +2097,9 @@ bool CN64System::LoadState(const char * FileName)
         hSaveFile.Read(LoadHeader, 0x40);
         if (g_Settings->LoadBool(Setting_EnableDisk) && g_Disk)
         {
-            if (memcmp(LoadHeader, g_Disk->GetDiskAddressID(), 0x40) != 0 &&
+            //Base ROM Information (64DD IPL / Compatible Game ROM) & Disk Info Check
+            if (memcmp(LoadHeader, &g_Rom->GetRomAddress()[0x10], 0x20) != 0 &&
+                memcmp(&LoadHeader[0x20], g_Disk->GetDiskAddressID(), 0x20) != 0 &&
                 !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
             {
                 return false;
