@@ -1,9 +1,4 @@
-# Project64
-
-Project64 is a Nintendo 64 emulator for Windows and Android.
-
-<sub>(Android app currently unavailable for download as of June 13, 2020.)</sub>
-
+# Project64 - A Nintendo 64 Emulator for Windows
 
 #### System Requirements
 
@@ -18,7 +13,7 @@ Project64 is a Nintendo 64 emulator for Windows and Android.
 
 ## How to use
 
-<sub>(Games not included - DO NOT ask for ROMs or where to download them.)</sub>
+<sub>(Games not included - do **NOT** ask for ROMs or where to download them.)</sub>
 
 ### Windows
 
@@ -26,7 +21,7 @@ Installer for the latest stable release: https://www.pj64-emu.com/download/proje
 
 Follow the instructions in the setup window to complete the installation.
 
-#### Support
+### Support
 
 Visit the FAQ page for help: https://www.pj64-emu.com/support-project64.html
 
