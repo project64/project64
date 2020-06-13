@@ -1,5 +1,7 @@
 # Project64 - A Nintendo 64 Emulator for Windows
 
+**Ever since it's launch in 2001, Project64 has been the most popular Nintendo 64 emulator in the world. Written in the programming language C++, Project64 is the definitive experience for playing your favorite games from the classic console on your PC.**
+
 ## System Requirements
 
 * OS
@@ -13,7 +15,8 @@
 * Sound card
     * DirectX 9 compatible or higher.
 * Storage
-    * 2.28 MB available space<sub>(Stable Release Version v2.3.2)</sub>
+    * 2.28 MB available space
+    <sub>*(Stable Version 2.3.2; file sizes for different versions of Project64 may vary)*</sub>
 
 ## How to use
 
@@ -23,22 +26,22 @@ Installer for the latest stable release: https://www.pj64-emu.com/download/proje
 
 Follow the instructions in the setup window to complete the installation.
 
-## Support
-
-Visit the FAQ page for help: https://www.pj64-emu.com/support-project64.html
-
-Join the official Project64 Discord Server to seek additional help from Project64 developers and the community: https://discord.gg/ys69Dak
-
 ## Development Builds
 
-Development Builds are based off the latest source at GitHub. This allows you to use the latest changes straight away, though these changes may not be fully tested and have issues. Download at your own risk.
+Development Builds are based off the latest source at GitHub. This allows you to use the latest changes straight away, though these changes may not be fully tested and have issues. **Download at your own risk.**
 
 Official buildbot: https://www.pj64-emu.com/nightly-builds
 
 AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/projects/status/sbtwyhaexslyhgx3?svg=true
 )](https://ci.appveyor.com/project/project64/project64/branch/master)
 
-<sub>Please note: x64 builds are **not** recommended for regular use! They are incomplete and very experimental, and currently _slower_ than 32-bit builds.</sub>
+<sub>Note: x64 builds are **NOT** recommended for regular use. They are incomplete and very experimental. Due to this, x64 builds are currently _slower_ than 32-bit builds.</sub>
+
+## Support
+
+Visit the FAQ page for help: https://www.pj64-emu.com/support-project64.html
+
+Join the official Project64 Discord Server to report bugs/issues and seek additional help from Project64 developers and the community: https://discord.gg/ys69Dak
 
 ## License
 
