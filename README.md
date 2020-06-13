@@ -12,12 +12,12 @@
     * DirectX 9 compatible or higher.
 * Sound card
     * DirectX 9 compatible or higher.
+* Storage
+    * 2.28 MB available space<sub>(Stable Release Version v2.3.2)</sub>
 
 ## How to use
 
 <sub>(Games not included - do **NOT** ask for ROMs or where to download them.)</sub>
-
-### Windows
 
 Installer for the latest stable release: https://www.pj64-emu.com/download/project64-latest
 
