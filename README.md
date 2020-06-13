@@ -1,5 +1,6 @@
 # Project64 - A Nintendo 64 Emulator for Windows
-**As the most popular and premier Nintendo 64 emulator in the world, Project64 is the ultimate way to experience your favorite games from the classic Nintendo 64 console.**
+
+**Ever since it's launch in 2001, Project64 has been the most popular and premier Nintendo 64 emulator in the world. Project64 is the definitive experience playing your favorite games from the classic Nintendo 64 console on your PC.**
 
 ## System Requirements
 
