@@ -1,4 +1,4 @@
-# Project 64
+# Project64
 
 Project64 is a Nintendo 64 emulator for Windows and Android.
 
@@ -15,10 +15,6 @@ Follow the instructions in the setup window to complete the installation.
 * CPU: Any SSE2 CPU
 * RAM: 512MB or more
 * Graphics card: DirectX 9 card or higher
-
-### Android
-Project64 is available for free in the Google Play store. The [Project 64 app](https://play.google.com/store/apps/details?id=emu.project64&hl=en&rdid=emu.project64&pli=1) can be downloaded to an Android phone or tablet.
-Allow the requested permissions on your device as Project64 needs to be able to read your device's storage to read game files, save states, and configuration in order to run.
 
 ### Development Builds
 Development Builds are based off the latest source at GitHub. This allows you to use the latest changes straight away, though these changes may not be fully tested and have issues.
