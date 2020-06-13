@@ -16,7 +16,7 @@
     * DirectX 9 compatible or higher.
 * Storage
     * 2.28 MB available space.
-    <sub>*(Stable Release Version 2.3.2)*</sub>
+    <sub>*(Stable Release Version 2.3.2; file sizes for different versions of Project64 may vary)*</sub>
 
 ## How to use
 
