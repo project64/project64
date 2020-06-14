@@ -26,10 +26,10 @@
 // Izbornik datoteke
 # 100 # "& datoteka"
 # 101 # "& Otvori ROM"
-# 102 # "ROM i informacije ...."
+# 102 # "ROM i informacije..."
 # 103 # "Pokrenite emulaciju"
 # 104 # "& Krajnja emulacija"
-# 105 # "Odaberite ROM direktorijum ..."
+# 105 # "Odaberite ROM direktorijum..."
 # 106 # "Osveži listu ROM-a"
 # 107 # "Najnoviji ROM"
 # 108 # "Najnoviji ROM direktoriji"
@@ -59,12 +59,12 @@
 # 140 # "Opcije"
 # 141 # "i preko cijelog ekrana"
 # 142 # "I uvijek u & vrhu"
-# 143 # "Konfiguriranje grafičkog dodatka ..."
-# 144 # "Konfiguriranje audio dodatka ..."
-# 145 # "Konfiguriranje dodatka kontrolera ..."
-# 146 # "Konfiguriranje RSP dodatka ..."
+# 143 # "Konfiguriranje grafičkog dodatka..."
+# 144 # "Konfiguriranje audio dodatka..."
+# 145 # "Konfiguriranje dodatka kontrolera.."
+# 146 # "Konfiguriranje RSP dodatka..."
 # 147 # "Prikaži upotrebu CPU-a"
-# 148 # "& postavke ..."
+# 148 # "& postavke.."
 
 // Meni za uklanjanje pogrešaka
 # 160 # "i ispravljanje pogrešaka"
@@ -441,7 +441,7 @@
 # 1030 # "Šifra ažurirana"
 
 // Cheat Popup Menu
-# 1040 # "Dodaj novu šifru ..."
+# 1040 # "Dodaj novu šifru..."
 # 1041 # "Uredi"
 # 1042 # "Obriši"
 
@@ -478,7 +478,7 @@
 # 2003 # "Nije uspela dodeliti memoriju"
 # 2004 # "Zadani ili odabrani video dodatak nedostaje ili je nevažeći. \ N \ nTrebate ući u Postavke i odabrati video (grafički) dodatak. \ NProvjerite da li imate najmanje jednu kompatibilnu datoteku dodataka u svojoj mapi dodataka."
 # 2005 # "Zadani ili odabrani audio dodatak nedostaje ili je neispravan. \ N \ nTrebate ući u Postavke i odabrati audio (zvučni) dodatak. \ NProverite da li imate mapu jedne kompatibilne datoteke dodataka u svojoj mapi dodataka."
-# 2006 # "Zadani ili odabrani RSP dodatak nedostaje ili je nevažeći. \ N \ nTrebate ući u Postavke i odabrati RSP (Reality Signal Processor) dodatak. \ NProvjerite da li imate najmanje jednu kompatibilnu datoteku dodataka u svojoj mapi dodataka. . "
+# 2006 # "Zadani ili odabrani RSP dodatak nedostaje ili je nevažeći. \ N \ nTrebate ući u Postavke i odabrati RSP (Reality Signal Processor) dodatak. \ NProvjerite da li imate najmanje jednu kompatibilnu datoteku dodataka u svojoj mapi dodataka. "
 # 2007 # "Zadani ili odabrani ulazni dodatak nedostaje ili je neispravan. \ N \ nTrebate ući u Postavke i odabrati ulazni (regulator) dodatak. \ NProverite da li imate mapu jedne kompatibilne datoteke dodataka u svojoj mapi dodataka."
 # 2008 # "Nije uspjelo učitavanje dodatka:"
 # 2009 # "Nije uspjelo učitavanje riječi. \ N \ nProvjerite ROM i njegove postavke."
@@ -496,7 +496,7 @@
 # 2021 # "Nepoznata radnja memorije \ n \ nEmulacija je zaustavljena"
 # 2022 # "Neodvršeni R4300i kod kod"
 # 2023 # "Izvođenje iz nekarpiranog prostora. \ N \ nProvjerite ROM i njegove postavke."
-# 2024 # "Čini se da ovo sačuvano stanje ne odgovara tekućem ROM-u. \ N \ nDržave moraju biti spremljene i učitane između 100% identičnih ROM-ova. \ NPosebno REGION i VERSION moraju biti isti. \ NUmetanje ovog stanja je vjerovatno će prouzrokovati pad igre i / ili emulatora. \ n \ n Jeste li sigurni da želite nastaviti s učitavanjem? "
+# 2024 # "Čini se da ovo sačuvano stanje ne odgovara tekućem ROM-u. \ N \ nDržave moraju biti spremljene i učitane između 100% identičnih ROM-ova. \ NPosebno REGION i VERSION moraju biti isti. \ NUmetanje ovog stanja je vjerovatno će prouzrokovati pad igre i / ili emulatora. \ n \ n Jeste li sigurni da želite nastaviti s učitavanjem?"
 # 2025 # "Greška"
 # 2026 # "Slijed autorskih prava nije pronađen u LUT-u. Igra više neće funkcionirati."
 # 2027 # "Neuspjeh u zaštiti od kopiranja"
@@ -569,7 +569,7 @@
 # 3104 # "Pauza"
 # 3105 # "Nastavi"
 # 3106 # "Brzina igre"
-# 3107 # "Trenutno stanje uštede ..."
+# 3107 # "Trenutno stanje uštede...
 # 3108 # "Automatski"
 # 3109 # "Slot"
 # 3110 # "Poništi"
