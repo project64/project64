@@ -178,13 +178,21 @@ void GetXInputControllerKeys( const int indexController, LPDWORD Keys )
     if ( !gController->bConfigured )
         return;
 
+	ULONGLONG time = GetTickCount() / 1000;
+	if (g_pcControllers[indexController].XcheckTime != NULL && (time - g_pcControllers[indexController].XcheckTime) < 3)
+		return;
+
     DWORD result;
     XINPUT_STATE state;
 
     result = fnXInputGetState(gController->nControl, &state);
 
-    if( result != ERROR_SUCCESS )
-        return;
+	if (result == ERROR_DEVICE_NOT_CONNECTED) {
+		g_pcControllers[indexController].XcheckTime = time;
+	}
+	else {
+		g_pcControllers[indexController].XcheckTime = NULL;
+	}
 
     DWORD wButtons = state.Gamepad.wButtons;
 
