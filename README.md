@@ -22,11 +22,13 @@
 
 <sub>(Games not included - do **NOT** ask for ROMs or where to download them.)</sub>
 
+### Stable Builds
+
 Installer for the latest stable release: https://www.pj64-emu.com/download/project64-latest
 
 Follow the instructions in the setup window to complete the installation.
 
-## Development Builds
+### Development Builds
 
 Development Builds are based off the latest source at GitHub. This allows you to use the latest changes straight away, though these changes may not be fully tested and have issues. **Download at your own risk.**
 
