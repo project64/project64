@@ -409,7 +409,7 @@ EXPORT void CALL InitiateControllers(
             if (g_pcControllers[i].fXInput)
             {
                 InitiateXInputController(&g_pcControllers[i].xiController, i);
-                continue;
+                //continue;
             }
 
             // Search for right Controller
@@ -923,7 +923,7 @@ void FillControls(CONTROL * Controls)
             {
             case PAK_MEM:
                 Controls[i].Plugin = PLUGIN_MEMPAK;
-                Controls[i].RawData = false;
+                //Controls[i].RawData = false;
                 break;
             case PAK_RUMBLE:
                 Controls[i].Plugin = PLUGIN_RUMBLE_PAK;
@@ -1053,7 +1053,7 @@ void DoShortcut( int iControl, int iShortcut )
             {
                 EnterCriticalSection( &g_critical );
                 g_pcControllers[iControl].PakType = PAK_RUMBLE;
-                g_pcControllers[iControl].fPakInitialized = false;
+                g_pcControllers[iControl].fPakInitialized = true;
 
                 if( g_pcControllers[iControl].fRawData )
                     if (CreateEffectHandle( iControl, g_pcControllers[iControl].bRumbleTyp, g_pcControllers[iControl].bRumbleStrength ) )

@@ -155,6 +155,8 @@ typedef struct _CONTROLLER      // AN N64 CONTROLLER
 
     unsigned bBackgroundInput;  // allow input while main window isn't focused?
 
+	unsigned XcheckTime;		// checks for newly connected gamepads timer
+
     BYTE bRumbleTyp;                // what type of rumble effect? none, constant, ramp, or direct?
 
     GUID guidFFDevice;              // GUID of the device that rumble gets sent to
