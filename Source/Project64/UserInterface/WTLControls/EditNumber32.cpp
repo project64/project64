@@ -97,11 +97,11 @@ void CEditNumber32::FormatClipboard()
 {
     LPTSTR  lptstr, lptstrCopy;
     HGLOBAL hglb;
-    if (!this->OpenClipboard() || !IsClipboardFormatAvailable(CF_TEXT))
+    if (!this->OpenClipboard() || !IsClipboardFormatAvailable(CF_UNICODETEXT))
     {
         return;
     }
-    hglb = GetClipboardData(CF_TEXT);
+    hglb = GetClipboardData(CF_UNICODETEXT);
     if (hglb != NULL)
     {
         lptstr = (LPTSTR)GlobalLock(hglb);
@@ -127,10 +127,10 @@ void CEditNumber32::FormatClipboard()
             return;
         }
         lptstrCopy = (LPTSTR)GlobalLock(hglb);
-        memcpy(lptstrCopy, lptstr, wcslen(lptstr) + 1);
+        memcpy(lptstrCopy, lptstr, (wcslen(lptstr) + 1) * sizeof(TCHAR));
         GlobalUnlock(lptstr);
         GlobalUnlock(hglb);
-        SetClipboardData(CF_TEXT, hglb);
+        SetClipboardData(CF_UNICODETEXT, hglb);
         CloseClipboard();
     }
 }
@@ -146,7 +146,7 @@ LRESULT CEditNumber32::OnPaste(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
     //Paste
     bHandled = false;
 
-    if (!IsClipboardFormatAvailable(CF_TEXT))
+    if (!IsClipboardFormatAvailable(CF_UNICODETEXT))
     {
         bHandled = true;
         return true;
@@ -157,7 +157,7 @@ LRESULT CEditNumber32::OnPaste(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
         return true;
     }
 
-    HGLOBAL hglb = GetClipboardData(CF_TEXT);
+    HGLOBAL hglb = GetClipboardData(CF_UNICODETEXT);
     if (hglb != NULL)
     {
         LPTSTR  lptstr = (LPTSTR)GlobalLock(hglb);
@@ -181,7 +181,7 @@ LRESULT CEditNumber32::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
     int start, end;
     GetSel(start, end);
     wchar_t WindowText[200];
-    GetWindowText(WindowText, sizeof(WindowText));
+    GetWindowText(WindowText, sizeof(WindowText) / sizeof(WindowText[0]));
     size_t Len = wcslen(WindowText);
 
     wchar_t head = Len > 0 ? WindowText[0] : 0;
@@ -283,7 +283,7 @@ void CEditNumber32::SetDisplayType(DisplayType Type)
 uint32_t CEditNumber32::GetValue(void)
 {
     wchar_t text[200];
-    GetWindowText(text, sizeof(text));
+    GetWindowText(text, sizeof(text) / sizeof(text[0]));
     if (m_DisplayType == DisplayDec)
     {
         return _wtoi(text);
