@@ -1,26 +1,25 @@
-# Project64 - A Nintendo 64 Emulator for Windows
+# Project64 - Nintendo 64 Emulator
 
-**Ever since it's launch in 2001, Project64 has been the most popular Nintendo 64 emulator in the world. Written in the programming language C++, Project64 is the definitive experience for playing your favorite games from the classic console on your PC.**
+Project64 is a free and open-source emulator for the Nintendo 64 and 64DD written in C++.
+
+It offers a simple-to-use user interface and includes a featureful debugger for developers.
 
 ## System Requirements
 
-* OS
-    * Windows XP or higher.
+* Operating System
+  * Windows XP/Vista/7/8/10
 * CPU
-    * Any CPU with SSE2 support.
+  * Intel or AMD processor with SSE2 support
 * RAM
-    * 512MB or more.
-* Graphics card
-    * DirectX 9 compatible or higher.
-* Sound card
-    * DirectX 9 compatible or higher.
-* Storage
-    * 2.28 MB available space
-    <sub>*(Stable Version 2.3.2; file sizes for different versions of Project64 may vary)*</sub>
+  * 512MB or more
+* Graphics card:
+  * DirectX 8 capable (Jabo's Direct3D8)
+  * OpenGL 1.1 capable (Project64 Video)
+  * OpenGL 3.3 capable (GLideN64)
 
 ## How to use
 
-<sub>(Games not included - do **NOT** ask for ROMs or where to download them.)</sub>
+<sub>(Games not included - do not ask for ROMs.)</sub>
 
 ### Stable Builds
 
@@ -30,7 +29,7 @@ Follow the instructions in the setup window to complete the installation.
 
 ### Development Builds
 
-Development Builds are based off the latest source at GitHub. This allows you to use the latest changes straight away, though these changes may not be fully tested and have issues. **Download at your own risk.**
+Development Builds are based off the latest source at GitHub. This allows you to use the latest changes straight away, though these changes may not be fully tested and have issues.
 
 Official buildbot: https://www.pj64-emu.com/nightly-builds
 
