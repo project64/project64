@@ -40,8 +40,6 @@ AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/project
 
 ## Support
 
-Visit the FAQ page for help: https://www.pj64-emu.com/support-project64.html
-
 Join the official Project64 Discord Server to report bugs/issues and seek additional help from Project64 developers and the community: https://discord.gg/ys69Dak
 
 ## License
