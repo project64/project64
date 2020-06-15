@@ -16,6 +16,7 @@ It offers a simple-to-use user interface and includes a featureful debugger for 
   * DirectX 8 capable (Jabo's Direct3D8)
   * OpenGL 1.1 capable (Project64 Video)
   * OpenGL 3.3 capable (GLideN64)
+  * OpenGL 3.3 capable (Angrylion RDP Plus)
 
 ## How to use
 
