@@ -12,14 +12,14 @@ It offers a simple-to-use user interface and includes a featureful debugger for 
   * Intel or AMD processor with SSE2 support
 * RAM
   * 512MB or more
-* Graphics card:
+* Graphics card
   * DirectX 8 capable (Jabo's Direct3D8)
   * OpenGL 1.1 capable (Project64 Video)
   * OpenGL 3.3 capable (GLideN64)
 
 ## How to use
 
-<sub>(Games not included - do not ask for ROMs.)</sub>
+<sub>(Games not included - do **NOT** ask for ROMs.)</sub>
 
 ### Stable Builds
 
@@ -40,7 +40,7 @@ AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/project
 
 ## Support
 
-Join the official Project64 Discord Server to report bugs/issues and seek additional help from Project64 developers and the community: https://discord.gg/ys69Dak
+[**Join the official Project64 Discord Server**](https://discord.gg/ys69Dak) to report bugs/issues and seek additional help from the Project64 developers, contributors and community.
 
 ## License
 
