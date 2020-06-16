@@ -179,3 +179,6 @@ EXPORT void CALL WM_KeyUp(uint32_t /*wParam*/, uint32_t /*lParam*/)
 {
 }
 
+EXPORT void CALL PluginLoaded(void)
+{
+}
