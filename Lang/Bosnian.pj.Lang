@@ -23,8 +23,8 @@
 / *************************************************** ********************************
 * Meni                                                                           *
 **************************************************** ******************************* /
-// Izbornik datoteke
-# 100 # "& datoteka"
+// Izbornik Datoteke
+# 100 # "& Datoteka"
 # 101 # "& Otvori ROM"
 # 102 # "ROM i informacije..."
 # 103 # "Pokrenite emulaciju"
@@ -33,7 +33,7 @@
 # 106 # "Osveži listu ROM-a"
 # 107 # "Najnoviji ROM"
 # 108 # "Najnoviji ROM direktoriji"
-# 109 # "E & xit"
+# 109 # "Exit"
 # 110 # "Otvori i kombinovano"
 
 
@@ -70,7 +70,7 @@
 # 160 # "i ispravljanje pogrešaka"
 
 // Jezik meni
-# 175 # "i jezik"
+# 175 # "Jezik"
 
 // Izbornik pomoći
 # 180 # "Pomoć"
@@ -167,13 +167,13 @@
 # 307 # "Bilješke (korisnik)"
 # 308 # "Cartridge ID"
 # 309 # "proizvođač"
-# 310 # "zemlja"
-# 311 # "programer"
+# 310 # "Zemlja"
+# 311 # "Programer"
 # 312 # "CRC1"
 # 313 # "CRC2"
 # 314 # "CIC čip"
 # 315 # "Datum objavljivanja"
-# 316 # "žanr"
+# 316 # "Žanr"
 # 317 # "Igrači"
 # 318 # "Prisilne povratne informacije"
 # 319 # "Format datoteke"
@@ -325,7 +325,7 @@
 # 581 # "8 MB"
 
 // Napredno povezivanje blokova
-# 600 # "uključeno"
+# 600 # "Uključeno"
 # 601 # "Isključeno"
 
 // Spremi tip
