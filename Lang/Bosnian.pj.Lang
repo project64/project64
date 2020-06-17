@@ -24,11 +24,11 @@
 * Meni                                                                           *
 **************************************************** ******************************* /
 // Izbornik Datoteke
-# 100 # "& Datoteka"
-# 101 # "& Otvori ROM"
+# 100 # "Datoteka"
+# 101 # "Otvori ROM"
 # 102 # "ROM i informacije..."
 # 103 # "Pokrenite emulaciju"
-# 104 # "& Krajnja emulacija"
+# 104 # "Krajnja emulacija"
 # 105 # "Odaberite ROM direktorijum..."
 # 106 # "Osveži listu ROM-a"
 # 107 # "Najnoviji ROM"
@@ -50,21 +50,21 @@
 # 129 # "Trenutna ušteda i tata"
 # 130 # "Trikovi ..."
 # 131 # "GS dugme"
-# 132 # "R & esume"
+# 132 # "Resume"
 # 133 # "Meko resetiranje"
-# 134 # "& Hard Reset"
+# 134 # "Hard Reset"
 # 135 # "Zamjena i disk"
 
 // Izbornik mogućnosti
 # 140 # "Opcije"
 # 141 # "i preko cijelog ekrana"
-# 142 # "I uvijek u & vrhu"
+# 142 # "I uvijek u vrhu"
 # 143 # "Konfiguriranje grafičkog dodatka..."
 # 144 # "Konfiguriranje audio dodatka..."
 # 145 # "Konfiguriranje dodatka kontrolera.."
 # 146 # "Konfiguriranje RSP dodatka..."
 # 147 # "Prikaži upotrebu CPU-a"
-# 148 # "& postavke.."
+# 148 # "Postavke.."
 
 // Meni za uklanjanje pogrešaka
 # 160 # "i ispravljanje pogrešaka"
@@ -75,7 +75,7 @@
 // Izbornik pomoći
 # 180 # "Pomoć"
 # 181 # "O Conf & ig datotekama"
-# 182 # "& O projektu64"
+# 182 # "O projektu64"
 # 183 # "Podrška i forum"
 # 184 # "i početna stranica"
 
@@ -91,7 +91,7 @@
 # 198 # "Slot 8"
 # 199 # "Slot 9"
 # 200 # "Slot 10"
-# 201 # "Odabran je Slot (% ws)"
+# 201 # "Odabran je Slot (%ws)"
 
 // Pojavni meni
 # 210 # "Igraj igru"
@@ -491,7 +491,7 @@
 # 2016 # "Došlo je do pogreške prilikom pokušaja otvaranja zip datoteke."
 # 2017 # "Datoteka učitana ne čini se valjanim N64 ROM-om. \ N \ nOvjerite svoje ROM-ove s GoodN64."
 # 2018 # "Nepoznata zemlja"
-# 2019. # "Nepoznati CIC čip"
+# 2019.# "Nepoznati CIC čip"
 # 2020 # "Nepoznati format datoteke"
 # 2021 # "Nepoznata radnja memorije \ n \ nEmulacija je zaustavljena"
 # 2022 # "Neodvršeni R4300i kod kod"
