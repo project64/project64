@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #include "ControllerSpec1.1.h"
+#include "InputConfigUI.h"
 #include "Version.h"
 #include <stdio.h>
 
@@ -61,9 +62,12 @@ to allow the user to configure the dll
 input:    a handle to the window that calls this function
 output:   none
 *******************************************************************/
-EXPORT void CALL DllConfig(void * /*hParent*/)
+#ifdef _WIN32
+EXPORT void CALL DllConfig(void * hParent)
 {
+    ConfigInput(hParent);
 }
+#endif
 
 /******************************************************************
 Function: DllTest

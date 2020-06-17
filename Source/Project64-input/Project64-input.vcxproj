@@ -47,16 +47,29 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="InputConfigUI.cpp" />
     <ClCompile Include="InputMain.cpp" />
+    <ClCompile Include="wtl-BitmapPicture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="InputConfigUI.h" />
     <ClInclude Include="ControllerSpec1.1.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="wtl-BitmapPicture.h" />
+    <ClInclude Include="wtl.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Version.h.in" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project64-input.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Controller.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.vcxproj">
+      <Project>{b4a4b994-9111-42b1-93c2-6f1ca8bc4421}</Project>
+    </ProjectReference>
   </ItemGroup>
 </Project>
