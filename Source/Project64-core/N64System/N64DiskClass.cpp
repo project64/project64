@@ -381,6 +381,7 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
         m_DiskType = Test[5];
         uint16_t ROM_LBA_END = (Test[0xE0] << 8) | Test[0xE1];
         uint16_t RAM_LBA_START = (Test[0xE2] << 8) | Test[0xE3];
+        uint16_t RAM_LBA_END = (Test[0xE4] << 8) | Test[0xE5];
 
         if ((ROM_LBA_END + SYSTEM_LBAS) >= RAM_START_LBA[m_DiskType] ||
             ((RAM_LBA_START + SYSTEM_LBAS) != RAM_START_LBA[m_DiskType] && RAM_LBA_START != 0xFFFF))
@@ -392,19 +393,22 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
         }
 
         uint32_t ROM_SIZE = LBAToByte(SYSTEM_LBAS, ROM_LBA_END + 1);
-        uint32_t RAM_SIZE = RAM_SIZES[m_DiskType];
+        uint32_t RAM_SIZE = 0;
+        if (RAM_LBA_START != 0xFFFF && RAM_LBA_END != 0xFFFF)
+            RAM_SIZE = LBAToByte(SYSTEM_LBAS + RAM_LBA_START, RAM_LBA_END + 1 - RAM_LBA_START);
+        uint32_t FULL_RAM_SIZE = RAM_SIZES[m_DiskType];
 
-        if ((0x200 + ROM_SIZE) > DiskFileSize)
+        if ((0x200 + ROM_SIZE + RAM_SIZE) != DiskFileSize)
         {
             m_DiskFile.Close();
             SetError(MSG_FAIL_IMAGE);
-            WriteTrace(TraceN64System, TraceError, "Malformed D64 disk image, expected minimum filesize of %08X, filesize: %08X", (0x200 + ROM_SIZE), DiskFileSize);
+            WriteTrace(TraceN64System, TraceError, "Malformed D64 disk image, expected filesize of 0x200 + 0x%X + 0x%X = %08X, actual filesize: %08X", ROM_SIZE, RAM_SIZE, (0x200 + ROM_SIZE + RAM_SIZE), DiskFileSize);
             return false;
         }
 
         //Allocate File with Max RAM Area size
-        WriteTrace(TraceN64System, TraceError, "Allocate D64 ROM %08X + RAM %08X", ROM_SIZE, RAM_SIZE);
-        if (!AllocateDiskImage(0x200 + ROM_SIZE + RAM_SIZE))
+        WriteTrace(TraceN64System, TraceError, "Allocate D64 ROM %08X + RAM %08X", ROM_SIZE, FULL_RAM_SIZE);
+        if (!AllocateDiskImage(0x200 + ROM_SIZE + FULL_RAM_SIZE))
         {
             m_DiskFile.Close();
             return false;
@@ -633,11 +637,35 @@ uint32_t CN64Disk::GetDiskAddressBlock(uint16_t head, uint16_t track, uint16_t b
         }
 
         offset = MAMEStartOffset[dd_zone] + tr_off * TRACKSIZE(dd_zone) + block * BLOCKSIZE(dd_zone) + sector * sectorsize;
+
+        if (offset < (BLOCKSIZE(0) * SYSTEM_LBAS) && sector == 0)
+        {
+            uint16_t block = offset / (BLOCKSIZE(0));
+            uint16_t block_sys = m_DiskSysAddress / (BLOCKSIZE(0));
+            uint16_t block_id = m_DiskIDAddress / (BLOCKSIZE(0));
+
+            if (block < 12 && block != block_sys)
+                offset = 0xFFFFFFFF;
+            else if (block > 12 && block < 16 && block != block_id)
+                offset = 0xFFFFFFFF;
+        }
     }
     else if (m_DiskFormat == DiskFormatSDK)
     {
         //SDK
         offset = LBAToByte(0, PhysToLBA(head, track, block)) + sector * sectorsize;
+
+        if (offset < (BLOCKSIZE(0) * SYSTEM_LBAS) && sector == 0)
+        {
+            uint16_t block = offset / (BLOCKSIZE(0));
+            uint16_t block_sys = m_DiskSysAddress / (BLOCKSIZE(0));
+            uint16_t block_id = m_DiskIDAddress / (BLOCKSIZE(0));
+
+            if (block < 12 && block != block_sys)
+                offset = 0xFFFFFFFF;
+            else if (block > 12 && block < 16 && block != block_id)
+                offset = 0xFFFFFFFF;
+        }
     }
     else
     {
@@ -882,7 +910,7 @@ uint32_t CN64Disk::LBAToByte(uint32_t lba, uint32_t nlbas)
             totalbytes += blocksize;
             lba++;
             init_flag = false;
-            if ((nlbas != 0) && (lba > MAX_LBA))
+            if (((nlbas - 1) != 0) && (lba > MAX_LBA))
             {
                 return 0xFFFFFFFF;
             }
