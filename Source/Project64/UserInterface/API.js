@@ -51,6 +51,7 @@ const _gprNames = [
 //  to them in Javascript so they don't get garbage collected before native code uses them.
 const _strongBackingReferences = (function() {
     const _references = [];
+    const noop = function () { };
 
     return {
         "add": function _strongBackingReferences_add(obj)
@@ -67,6 +68,11 @@ const _strongBackingReferences = (function() {
         },
         "singleUseCallback": function _strongBackingReferences_singleUseCallback(callback)
         {
+            if (callback === undefined)
+            {
+                return noop;
+            }
+
             const singleUseCallback = function ()
             {
                 callback.apply(undefined, arguments);
@@ -896,7 +902,10 @@ function Socket(fd)
     
     var _onconnect_base = function(){
         connected = 1;
-        _onconnect();
+        if (_onconnect !== undefined)
+        {
+            _onconnect();
+        }
     }
     
     var _bufferSize = 2048
