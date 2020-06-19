@@ -2003,8 +2003,8 @@ bool CN64System::LoadState(const char * FileName)
                 if (g_Settings->LoadBool(Setting_EnableDisk) && g_Disk)
                 {
                     //Base ROM Information (64DD IPL / Compatible Game ROM) & Disk Info Check
-                    if (memcmp(LoadHeader, &g_Rom->GetRomAddress()[0x10], 0x20) != 0 &&
-                        memcmp(&LoadHeader[0x20], g_Disk->GetDiskAddressID(), 0x20) != 0 &&
+                    if ((memcmp(LoadHeader, &g_Rom->GetRomAddress()[0x10], 0x20) != 0 ||
+                        memcmp(&LoadHeader[0x20], g_Disk->GetDiskAddressID(), 0x20) != 0) &&
                         !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
                     {
                         return false;
@@ -2098,8 +2098,8 @@ bool CN64System::LoadState(const char * FileName)
         if (g_Settings->LoadBool(Setting_EnableDisk) && g_Disk)
         {
             //Base ROM Information (64DD IPL / Compatible Game ROM) & Disk Info Check
-            if (memcmp(LoadHeader, &g_Rom->GetRomAddress()[0x10], 0x20) != 0 &&
-                memcmp(&LoadHeader[0x20], g_Disk->GetDiskAddressID(), 0x20) != 0 &&
+            if ((memcmp(LoadHeader, &g_Rom->GetRomAddress()[0x10], 0x20) != 0 ||
+                memcmp(&LoadHeader[0x20], g_Disk->GetDiskAddressID(), 0x20) != 0) &&
                 !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
             {
                 return false;
