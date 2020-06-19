@@ -1,5 +1,5 @@
 [E328B4FA-004A28E1-C:50]
-Name=Bust A Move 3 DX
+Name=Bust-A-Move 3 DX
 Cheat0="Always Have\guide line on",80056CCC 0082
 Cheat1="Pointer always active",D0056FA0 0002,80056FA0 0082
 Cheat2="Play As Select\Player 1",800E3250 00??
