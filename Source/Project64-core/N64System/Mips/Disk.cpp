@@ -267,6 +267,8 @@ void DiskBMUpdate()
             //User Sector
             if (!DiskBMReadWrite(true))
                 g_Reg->ASIC_STATUS |= DD_STATUS_DATA_RQ;
+            else
+                g_Reg->ASIC_BM_STATUS |= DD_BM_STATUS_MICRO;
             dd_current += 1;
         }
         else if (dd_current < SECTORS_PER_BLOCK + 1)
@@ -278,6 +280,8 @@ void DiskBMUpdate()
                 dd_current = 0;
                 if (!DiskBMReadWrite(true))
                     g_Reg->ASIC_STATUS |= DD_STATUS_DATA_RQ;
+                else
+                    g_Reg->ASIC_BM_STATUS |= DD_BM_STATUS_MICRO;
                 dd_current += 1;
                 g_Reg->ASIC_BM_STATUS &= ~DD_BM_STATUS_BLOCK;
             }
@@ -307,6 +311,8 @@ void DiskBMUpdate()
             //User Sector
             if (!DiskBMReadWrite(false))
                 g_Reg->ASIC_STATUS |= DD_STATUS_DATA_RQ;
+            else
+                g_Reg->ASIC_BM_STATUS |= DD_BM_STATUS_MICRO;
             dd_current += 1;
         }
         else if (dd_current < SECTORS_PER_BLOCK + 4)
