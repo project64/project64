@@ -45,8 +45,8 @@ public:
     bool GetValue(int64_t& value);
     bool GetValue(float& value);
     bool GetValue(double& value);
-    bool GetValueString(const char*& value, int& length);
-    bool GetValueHexString(const char*& value, int& length);
+    bool GetValueString(const wchar_t*& value, int& length);
+    bool GetValueHexString(const wchar_t*& value, int& length);
 
     BEGIN_MSG_MAP_EX(CEditMixed)
         //MSG_WM_CHAR(OnChar)

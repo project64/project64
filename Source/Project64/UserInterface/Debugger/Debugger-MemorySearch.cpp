@@ -1652,7 +1652,7 @@ void CDebugMemorySearch::Search(void)
                 }
             }
             
-            m_MemoryScanner.SetValue<const char*>(value._string);
+            m_MemoryScanner.SetValue<const wchar_t*>(value._string);
             m_MemoryScanner.SetStringValueLength(stringValueLength);
             break;
         case ValueType_unkstring:
@@ -1662,7 +1662,7 @@ void CDebugMemorySearch::Search(void)
                 goto value_parse_error;
             }
         
-            m_MemoryScanner.SetValue<const char*>(value._string);
+            m_MemoryScanner.SetValue<const wchar_t*>(value._string);
             m_MemoryScanner.SetStringValueLength(stringValueLength);
             break;
         default:
@@ -2313,7 +2313,7 @@ CEditMixed::~CEditMixed(void)
 {
     if (m_String != NULL)
     {
-        free(m_String);
+        delete[] m_String;
     }
 }
 
@@ -2331,11 +2331,11 @@ void CEditMixed::ReloadString(void)
 {
     if (m_String != NULL)
     {
-        free(m_String);
+        delete[] m_String;
     }
 
     m_StringLength = GetWindowTextLength();
-    m_String = (wchar_t*) malloc(m_StringLength + 1);
+    m_String = new wchar_t[m_StringLength + 1];
     GetWindowText(m_String, m_StringLength + 1);
 }
 
@@ -2526,7 +2526,7 @@ bool CEditMixed::GetValue(double& value)
     return true;
 }
 
-bool CEditMixed::GetValueString(const char*& value, int& length)
+bool CEditMixed::GetValueString(const wchar_t*& value, int& length)
 {
     ReloadString();
 
@@ -2535,12 +2535,12 @@ bool CEditMixed::GetValueString(const char*& value, int& length)
         return false;
     }
 
-    value = (const char*)m_String;
+    value = m_String;
     length = m_StringLength;
     return true;
 }
 
-bool CEditMixed::GetValueHexString(const char*& value, int& length)
+bool CEditMixed::GetValueHexString(const wchar_t*& value, int& length)
 {
     ReloadString();
 
@@ -2558,18 +2558,19 @@ bool CEditMixed::GetValueHexString(const char*& value, int& length)
     }
 
     
-    char *hexString = (char*)malloc(numBytes);
+    char *hexString = new char[numBytes];
+    wchar_t *wchexString = new wchar_t[numBytes];
+
     CMemoryScanner::ParseHexString(hexString, string.c_str());
-    wchar_t *wchexString = (wchar_t*)malloc(numBytes * sizeof(wchar_t));
     wcscpy(wchexString, stdstr(hexString).ToUTF16().c_str());
 
-    free(hexString);
-    free(m_String);
+    delete[] hexString;
+    delete[] m_String;
 
     m_String = wchexString;
     m_StringLength = numBytes;
 
-    value = (const char*)m_String;
+    value = m_String;
     length = m_StringLength;
     return true;
 }
