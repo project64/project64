@@ -744,7 +744,7 @@ void CMemoryScanner::FirstScanLoopString(DisplayFormat resultDisplayFormat)
         }
 
         result.m_Address = addr | m_VAddrBits;
-        result.Set((const char*)NULL);
+        result.Set((const wchar_t*)NULL);
         m_Results.push_back(result);
     next_addr:;
     }
@@ -773,7 +773,7 @@ void CMemoryScanner::FirstScanLoopIString(DisplayFormat resultDisplayFormat)
         }
 
         result.m_Address = addr | m_VAddrBits;
-        result.Set((const char*)NULL);
+        result.Set((const wchar_t*)NULL);
         m_Results.push_back(result);
     next_addr:;
     }
@@ -782,7 +782,7 @@ void CMemoryScanner::FirstScanLoopIString(DisplayFormat resultDisplayFormat)
 // scan for text of unknown single-byte encoding
 void CMemoryScanner::FirstScanLoopUnkString(void)
 {
-    const uint8_t* str = (const uint8_t*)m_Value._string;
+    const char* str = stdstr().FromUTF16(m_Value._string).c_str();
     int length = m_StringValueLength;
     
     uint32_t startAddr = m_RangeStartAddress;
@@ -846,7 +846,7 @@ void CMemoryScanner::FirstScanLoopUnkString(void)
         }
 
         result.m_Address = addr | m_VAddrBits;
-        result.Set((const char*)NULL);
+        result.Set((const wchar_t*)NULL);
         m_Results.push_back(result);
 
     next_addr:;
