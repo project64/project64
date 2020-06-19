@@ -508,7 +508,7 @@ bool CHexEditCtrl::UpdateCaretUI(bool bEnsureVisible, bool bTop)
 
 void CHexEditCtrl::Text(int x, int y, const char *text, COLORREF bg, COLORREF fg, CRect *rcOut)
 {
-    std::wstring textOuput = stdstr(text).ToUTF16();
+    std::wstring textOuput = stdstr(text).ToUTF16(CP_ACP);
     size_t length = textOuput.length();
     int calcWidth = length * m_CharWidth;
 
@@ -657,38 +657,17 @@ void CHexEditCtrl::GetAsciiCellPos(int index, CRect* rc)
 
 char CHexEditCtrl::ByteAscii(uint8_t value)
 {
-    if (value <= 0x1F)
-    {
-        return '.';
-    }
-
-    if (value >= 0x20 && value <= 0x7E)
+    // ISO 8859-1
+    if ((value >= 0x20 && value <= 0x7E) || value >= 0xA1)
     {
         return (char)value;
     }
 
-    switch (value)
-    {
-    case 0x7F:
-    case 0x81:
-    case 0x8D:
-    case 0x8F:
-    case 0x90:
-    case 0x9D:
-        // undefined in windows-1252
-        return '.';
-    }
-
-    return (char)value;
+    return '.';
 }
 
 uint8_t CHexEditCtrl::HexCharValue(char c)
 {
-    if (!isxdigit(c))
-    {
-        return 0;
-    }
-
     if (c >= '0' && c <= '9') return (c - '0');
     if (c >= 'A' && c <= 'F') return (c - 'A') + 0x0A;
     if (c >= 'a' && c <= 'f') return (c - 'a') + 0x0A;
