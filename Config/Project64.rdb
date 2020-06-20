@@ -7261,6 +7261,14 @@ RDRAM Size=8
 Status=Compatible
 Save Type=Sram
 
+[D06E3B75-2F91C48A-C:54]
+32bit=No
+Fixed Audio=0
+Good Name=Mario Artist Paint Studio (J) (1999-02-11 Proto)
+RDRAM Size=8
+Status=Compatible
+Counter Factor=1
+
 
 //================  PD  ================
 //
