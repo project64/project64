@@ -45,17 +45,35 @@
     <PreBuildEvent>
       <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(Platform)" "$(SolutionDir)Source\Project64-input\Version.h.in" "$(SolutionDir)Source\Project64-input\Version.h"</Command>
     </PreBuildEvent>
+    <Link>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">dinput8.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Root)Source\3rdParty\directx\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImageHasSafeExceptionHandlers Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ImageHasSafeExceptionHandlers>
+    </Link>
+    <Link>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">dinput8.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Root)Source\3rdParty\directx\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImageHasSafeExceptionHandlers Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ImageHasSafeExceptionHandlers>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DirectInput.cpp" />
     <ClCompile Include="InputConfigUI.cpp" />
     <ClCompile Include="InputMain.cpp" />
+    <ClCompile Include="CProject64Input.cpp" />
     <ClCompile Include="wtl-BitmapPicture.cpp" />
+    <ClCompile Include="wtl-ScanButton.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Button.h" />
+    <ClInclude Include="N64Controller.h" />
+    <ClInclude Include="DirectInput.h" />
     <ClInclude Include="InputConfigUI.h" />
     <ClInclude Include="ControllerSpec1.1.h" />
+    <ClInclude Include="CProject64Input.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="wtl-BitmapPicture.h" />
+    <ClInclude Include="wtl-ScanButton.h" />
     <ClInclude Include="wtl.h" />
   </ItemGroup>
   <ItemGroup>

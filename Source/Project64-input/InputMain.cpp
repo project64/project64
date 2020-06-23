@@ -11,6 +11,7 @@
 #include "ControllerSpec1.1.h"
 #include "InputConfigUI.h"
 #include "Version.h"
+#include "CProject64Input.h"
 #include <stdio.h>
 
 /******************************************************************
@@ -121,8 +122,12 @@ EXPORT void CALL GetKeys(int32_t /*Control*/, BUTTONS * /*Keys*/)
               the emulator to know how to handle each controller.
   output:   none
 *******************************************************************/
-EXPORT void CALL InitiateControllers(CONTROL_INFO * /*ControlInfo*/)
+EXPORT void CALL InitiateControllers(CONTROL_INFO * ControlInfo)
 {
+    if (g_InputPlugin != nullptr)
+    {
+        g_InputPlugin->InitiateControllers(ControlInfo);
+    }
 }
 
 /******************************************************************
@@ -185,4 +190,20 @@ EXPORT void CALL WM_KeyUp(uint32_t /*wParam*/, uint32_t /*lParam*/)
 
 EXPORT void CALL PluginLoaded(void)
 {
+}
+
+#include <Windows.h>
+
+extern "C" int WINAPI DllMain(HINSTANCE hinst, DWORD fdwReason, LPVOID /*lpReserved*/)
+{
+    if (fdwReason == DLL_PROCESS_ATTACH)
+    {
+        g_InputPlugin = new CProject64Input(hinst);
+    }
+    else if (fdwReason == DLL_PROCESS_DETACH)
+    {
+        delete g_InputPlugin;
+        g_InputPlugin = NULL;
+    }
+    return TRUE;
 }

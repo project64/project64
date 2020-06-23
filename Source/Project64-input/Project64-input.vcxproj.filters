@@ -24,6 +24,15 @@
     <ClCompile Include="wtl-BitmapPicture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CProject64Input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectInput.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wtl-ScanButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ControllerSpec1.1.h">
@@ -39,6 +48,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="wtl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CProject64Input.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wtl-ScanButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="N64Controller.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
