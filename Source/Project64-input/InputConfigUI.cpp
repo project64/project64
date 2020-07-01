@@ -26,15 +26,21 @@ public:
     CControllerSettings(uint32_t ControllerNumber);
     BOOL OnInitDialog(CWindow /*wndFocus*/, LPARAM /*lInitParam*/);
     HBRUSH OnCtlColorStatic(CDCHandle dc, CWindow wndStatic);
+    bool OnApply();
 
 private:
+    void ButtonChannged(void);
+    static void stButtonChanged(size_t data) { ((CControllerSettings *)data)->ButtonChannged(); }
+
     std::wstring m_Title;
     uint32_t m_ControllerNumber;
     uint32_t m_ScanCount;
     CBitmapPicture m_ControllerImg;
     CScanButton ButtonUDPad, ButtonDDPad, ButtonLDPad, ButtonRDPad;
     CScanButton ButtonCUp, ButtonCDown, ButtonCLeft, ButtonCRight;
-    CScanButton ButtonA, ButtonB;
+    CScanButton ButtonA, ButtonB, ButtonStart;
+    CScanButton ButtonZtrigger, ButtonRTrigger, ButtonLTrigger;
+    CScanButton ButtonAnalogU, ButtonAnalogD, ButtonAnalogL, ButtonAnalogR;
 };
 
 CControllerSettings::CControllerSettings(uint32_t ControllerNumber) :
@@ -49,7 +55,15 @@ CControllerSettings::CControllerSettings(uint32_t ControllerNumber) :
     ButtonCUp(g_InputPlugin->Controllers(ControllerNumber).U_CBUTTON, IDC_EDIT_CBUTTON_UP, IDC_BTN_CBUTTON_UP),
     ButtonCDown(g_InputPlugin->Controllers(ControllerNumber).D_CBUTTON, IDC_EDIT_CBUTTON_DOWN, IDC_BTN_CBUTTON_DOWN),
     ButtonCLeft(g_InputPlugin->Controllers(ControllerNumber).L_CBUTTON, IDC_EDIT_CBUTTON_LEFT, IDC_BTN_CBUTTON_LEFT),
-    ButtonCRight(g_InputPlugin->Controllers(ControllerNumber).R_CBUTTON, IDC_EDIT_CBUTTON_RIGHT, IDC_BTN_CBUTTON_RIGHT)
+    ButtonCRight(g_InputPlugin->Controllers(ControllerNumber).R_CBUTTON, IDC_EDIT_CBUTTON_RIGHT, IDC_BTN_CBUTTON_RIGHT),
+    ButtonStart(g_InputPlugin->Controllers(ControllerNumber).START_BUTTON, IDC_EDIT_BUTTON_START, IDC_BTN_BUTTON_START),
+    ButtonZtrigger(g_InputPlugin->Controllers(ControllerNumber).Z_TRIG, IDC_EDIT_BUTTON_Z, IDC_BTN_BUTTON_Z),
+    ButtonRTrigger(g_InputPlugin->Controllers(ControllerNumber).R_TRIG, IDC_EDIT_RTRIGGER, IDC_BTN_RTRIGGER),
+    ButtonLTrigger(g_InputPlugin->Controllers(ControllerNumber).L_TRIG, IDC_EDIT_LTRIGGER, IDC_BTN_LTRIGGER),
+    ButtonAnalogU(g_InputPlugin->Controllers(ControllerNumber).U_ANALOG, IDC_EDIT_ANALOG_UP, IDC_BTN_ANALOG_UP),
+    ButtonAnalogD(g_InputPlugin->Controllers(ControllerNumber).D_ANALOG, IDC_EDIT_ANALOG_DOWN, IDC_BTN_ANALOG_DOWN),
+    ButtonAnalogL(g_InputPlugin->Controllers(ControllerNumber).L_ANALOG, IDC_EDIT_ANALOG_LEFT, IDC_BTN_ANALOG_LEFT),
+    ButtonAnalogR(g_InputPlugin->Controllers(ControllerNumber).R_ANALOG, IDC_EDIT_ANALOG_RIGHT, IDC_BTN_ANALOG_RIGHT)
 {
     m_Title = stdstr_f("Player %d", ControllerNumber + 1).ToUTF16();
     SetTitle(m_Title.c_str());
@@ -57,18 +71,26 @@ CControllerSettings::CControllerSettings(uint32_t ControllerNumber) :
 
 BOOL CControllerSettings::OnInitDialog(CWindow /*wndFocus*/, LPARAM /*lInitParam*/)
 {
+    GetDlgItem(IDC_BTN_SETUP).EnableWindow(false);
+    GetDlgItem(IDC_BTN_DEFAULTS).EnableWindow(false);
+    GetDlgItem(IDC_BTN_LOAD).EnableWindow(false);
+    GetDlgItem(IDC_BTN_SAVE).EnableWindow(false);
+    GetDlgItem(IDC_TACK_RANGE).EnableWindow(false);
+
     m_ControllerImg.SubclassWindow(GetDlgItem(IDC_BMP_CONTROLLER));
     m_ControllerImg.SetBitmap(MAKEINTRESOURCE(IDB_CONTROLLER));
-    ButtonUDPad.SubclassWindow(m_hWnd);
-    ButtonDDPad.SubclassWindow(m_hWnd);
-    ButtonLDPad.SubclassWindow(m_hWnd);
-    ButtonRDPad.SubclassWindow(m_hWnd);
-    ButtonA.SubclassWindow(m_hWnd);
-    ButtonB.SubclassWindow(m_hWnd);
-    ButtonCUp.SubclassWindow(m_hWnd);
-    ButtonCDown.SubclassWindow(m_hWnd);
-    ButtonCLeft.SubclassWindow(m_hWnd);
-    ButtonCRight.SubclassWindow(m_hWnd);
+    CScanButton * Buttons[] = {
+        &ButtonUDPad, &ButtonDDPad, &ButtonLDPad, &ButtonRDPad, &ButtonA, &ButtonB,
+        &ButtonCUp, &ButtonCDown, &ButtonCLeft, &ButtonCRight, &ButtonStart,
+        &ButtonZtrigger, &ButtonRTrigger, &ButtonLTrigger,
+        &ButtonAnalogU, &ButtonAnalogD, &ButtonAnalogL, &ButtonAnalogR
+    };
+
+    for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
+    {
+        Buttons[i]->SubclassWindow(m_hWnd);
+        Buttons[i]->SetChangeCallback(stButtonChanged, (size_t)this);
+    }
     return TRUE;
 }
 
@@ -83,6 +105,16 @@ HBRUSH CControllerSettings::OnCtlColorStatic(CDCHandle dc, CWindow wndStatic)
     dc.SetTextColor(GetSysColor(COLOR_WINDOWTEXT));
     dc.SetBkColor(GetSysColor(COLOR_WINDOW));
     return ::GetSysColorBrush(COLOR_WINDOW);
+}
+
+bool CControllerSettings::OnApply()
+{
+    return true;
+}
+
+void CControllerSettings::ButtonChannged(void)
+{
+    CPropertySheetWindow(GetParent()).SetModified(m_hWnd);
 }
 
 class CInputConfigUI: 

@@ -9,7 +9,9 @@ CScanButton::CScanButton(BUTTON & Button, int DisplayCtrlId, int ScanBtnId) :
     m_ScanBtnId(ScanBtnId),
     m_ScanBtnProc(nullptr),
     m_ScanCount(0),
-    m_ScanStart(0)
+    m_ScanStart(0),
+    m_ChangeCallback(nullptr),
+    m_ChangeCallbackData(0)
 {
 }
 
@@ -20,6 +22,12 @@ void CScanButton::SubclassWindow(CWindow Wnd)
     m_ScanBtnThunk.Init((WNDPROC)ScanButtonProc, this);
     m_ScanBtnProc = (WNDPROC)m_ScanBtn.SetWindowLongPtrW(GWLP_WNDPROC, (LONG_PTR)m_ScanBtnThunk.GetWNDPROC());
     DisplayButton();
+}
+
+void CScanButton::SetChangeCallback(ChangeCallback callback, size_t callbackdata)
+{
+    m_ChangeCallback = callback;
+    m_ChangeCallbackData = callbackdata;
 }
 
 void CScanButton::DisplayButton(void)
@@ -48,8 +56,17 @@ void CScanButton::OnTimer(UINT_PTR nIDEvent)
         bool Stop = false;
         if (g_InputPlugin)
         {
-            CDirectInput::ScanResult Result = g_InputPlugin->ScanDevices(m_Button);
-            if (Result == CDirectInput::SCAN_SUCCEED)
+            BUTTON Button = m_Button;
+            CDirectInput::ScanResult Result = g_InputPlugin->ScanDevices(Button);
+            if (Result == CDirectInput::SCAN_SUCCEED && (Button.Offset != m_Button.Offset || Button.AxisID != m_Button.AxisID || Button.BtnType != m_Button.BtnType))
+            {
+                m_Button = Button;
+                if (m_ChangeCallback != nullptr)
+                {
+                    m_ChangeCallback(m_ChangeCallbackData);
+                }
+            }
+            if (Result == CDirectInput::SCAN_SUCCEED || Result == CDirectInput::SCAN_ESCAPE)
             {
                 Stop = true;
                 DisplayButton();
@@ -83,9 +100,12 @@ void CScanButton::OnTimer(UINT_PTR nIDEvent)
             CWindow Dialog = m_ScanBtn.GetParent().GetParent();
             Dialog.SetWindowText(L"Configure Input");
 
-            m_Overlay.DestroyWindow();
-            m_Overlay = NULL;
-
+            if (m_Overlay.m_hWnd != NULL)
+            {
+                m_Overlay.DestroyWindow();
+                m_Overlay = NULL;
+            }
+ 
             g_InputPlugin->EndScanDevices();
             m_DisplayCtrl.Invalidate();
         }
@@ -103,12 +123,15 @@ void CScanButton::MakeOverlay(void)
     CWindow ControllerDlg = m_ScanBtn.GetParent().GetParent();
     CRect size;
     ControllerDlg.GetWindowRect(&size);
+#ifndef _DEBUG
     m_Overlay = CreateWindowEx(WS_EX_TOPMOST | WS_EX_TRANSPARENT, L"BlockerClass", L"Blocker", WS_POPUP, size.left, size.top, size.Width(), size.Height(), ControllerDlg, nullptr, g_InputPlugin->hInst(), NULL);
     if (m_Overlay == NULL)
     {
         return;
     }
+    m_Overlay.SetFocus();
     m_Overlay.ShowWindow(SW_SHOWNOACTIVATE);
+#endif
 }
 
 UINT_PTR CALLBACK CScanButton::ScanButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -142,6 +165,10 @@ UINT_PTR CALLBACK CScanButton::ScanButtonProc(HWND hWnd, UINT uMsg, WPARAM wPara
 UINT_PTR CALLBACK  CScanButton::BlockerProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     if (msg == WM_CREATE)
+    {
+        return 0;
+    }
+    if (msg == WM_KEYDOWN || msg == WM_KEYUP)
     {
         return 0;
     }

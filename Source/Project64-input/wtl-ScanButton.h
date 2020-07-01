@@ -10,9 +10,12 @@ class CScanButton
     }; 
 
 public:
+    typedef void(*ChangeCallback)(size_t Data);
+
     CScanButton(BUTTON & Button, int DisplayCtrlId, int ScanBtnId);
 
     void SubclassWindow(CWindow Wnd);
+    void SetChangeCallback(ChangeCallback callback, size_t callbackdata);
 
 private:
     CScanButton(void);
@@ -34,4 +37,6 @@ private:
     uint32_t m_ScanCount;
     time_t m_ScanStart;
     CWindow m_Overlay;
+    ChangeCallback m_ChangeCallback;
+    size_t m_ChangeCallbackData;
 };
