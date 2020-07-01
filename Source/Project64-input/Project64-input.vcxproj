@@ -61,11 +61,14 @@
     <ClCompile Include="InputConfigUI.cpp" />
     <ClCompile Include="InputMain.cpp" />
     <ClCompile Include="CProject64Input.cpp" />
+    <ClCompile Include="InputSettings.cpp" />
     <ClCompile Include="wtl-BitmapPicture.cpp" />
     <ClCompile Include="wtl-ScanButton.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
+    <ClInclude Include="InputSettings.h" />
+    <ClInclude Include="InputSettingsID.h" />
     <ClInclude Include="N64Controller.h" />
     <ClInclude Include="DirectInput.h" />
     <ClInclude Include="InputConfigUI.h" />
@@ -88,6 +91,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.vcxproj">
       <Project>{b4a4b994-9111-42b1-93c2-6f1ca8bc4421}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Settings\Settings.vcxproj">
+      <Project>{8b9961b1-88d9-4ea3-a752-507a00dd9f3d}</Project>
     </ProjectReference>
   </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@
 #include "ControllerSpec1.1.h"
 #include "DirectInput.h"
 #include "N64Controller.h"
+#include <Common\CriticalSection.h>
 #include <memory>
 
 class CProject64Input
@@ -15,6 +16,7 @@ public:
     void EndScanDevices(void);
     CDirectInput::ScanResult ScanDevices(BUTTON & Button);
     std::wstring ButtonAssignment(BUTTON & Button);
+    bool SaveController(uint32_t ControlIndex);
 
     inline HINSTANCE hInst(void) const { return m_hinst; }
     inline bool IsScanning(void) const { return m_Scanning; }
@@ -26,6 +28,7 @@ private:
     CProject64Input(const CProject64Input&);
     CProject64Input& operator=(const CProject64Input&);
 
+    CriticalSection m_CS;
     N64CONTROLLER m_Controllers[4];
     std::unique_ptr<CDirectInput> m_DirectInput;
     HINSTANCE m_hinst;

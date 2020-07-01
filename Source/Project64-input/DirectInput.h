@@ -1,6 +1,7 @@
 #pragma once
 #include "ControllerSpec1.1.h"
 #include "Button.h"
+#include "N64Controller.h"
 #define DIRECTINPUT_VERSION 0x0800
 #include <Windows.h>
 #include <dinput.h>
@@ -21,6 +22,7 @@ public:
     ~CDirectInput();
 
     void Initiate(CONTROL_INFO * ControlInfo);
+    void MapControllerDevice(N64CONTROLLER & Controller);
     ScanResult ScanDevices(BUTTON & Button);
     std::wstring ButtonAssignment(BUTTON & Button);
 

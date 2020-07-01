@@ -50,6 +50,44 @@ void CDirectInput::Initiate(CONTROL_INFO * ControlInfo)
     m_hWnd = (HWND)ControlInfo->hwnd;
 }
 
+void CDirectInput::MapControllerDevice(N64CONTROLLER & Controller)
+{
+    BUTTON * Buttons[] =
+    {
+        &Controller.U_DPAD,
+        &Controller.D_DPAD,
+        &Controller.L_DPAD,
+        &Controller.R_DPAD,
+        &Controller.A_BUTTON,
+        &Controller.B_BUTTON,
+        &Controller.U_CBUTTON,
+        &Controller.D_CBUTTON,
+        &Controller.L_CBUTTON,
+        &Controller.R_CBUTTON,
+        &Controller.START_BUTTON,
+        &Controller.Z_TRIG,
+        &Controller.R_TRIG,
+        &Controller.L_TRIG,
+        &Controller.U_ANALOG,
+        &Controller.D_ANALOG,
+        &Controller.L_ANALOG,
+        &Controller.R_ANALOG,
+    };
+
+    for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
+    {
+        DEVICE_MAP::iterator itr = m_Devices.find(Buttons[i]->DeviceGuid);
+        if (itr != m_Devices.end())
+        {
+            Buttons[i]->Device = &itr->second;
+        }
+        else
+        {
+            Buttons[i]->Device = nullptr;
+        }
+    }
+}
+
 BOOL CDirectInput::stEnumMakeDeviceList(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef)
 {
     return ((CDirectInput *)pvRef)->EnumMakeDeviceList(lpddi);

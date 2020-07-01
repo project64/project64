@@ -109,7 +109,7 @@ HBRUSH CControllerSettings::OnCtlColorStatic(CDCHandle dc, CWindow wndStatic)
 
 bool CControllerSettings::OnApply()
 {
-    return true;
+    return g_InputPlugin->SaveController(m_ControllerNumber);
 }
 
 void CControllerSettings::ButtonChannged(void)

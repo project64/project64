@@ -33,6 +33,9 @@
     <ClCompile Include="wtl-ScanButton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="InputSettings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ControllerSpec1.1.h">
@@ -63,6 +66,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="N64Controller.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InputSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InputSettingsID.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -12,6 +12,7 @@
 #include "InputConfigUI.h"
 #include "Version.h"
 #include "CProject64Input.h"
+#include "InputSettings.h"
 #include <stdio.h>
 
 /******************************************************************
@@ -23,6 +24,7 @@ output:   none
 *******************************************************************/
 EXPORT void CALL CloseDLL(void)
 {
+    CleanupInputSettings();
 }
 
 /******************************************************************
@@ -190,6 +192,7 @@ EXPORT void CALL WM_KeyUp(uint32_t /*wParam*/, uint32_t /*lParam*/)
 
 EXPORT void CALL PluginLoaded(void)
 {
+    SetupInputSettings();
 }
 
 #include <Windows.h>
