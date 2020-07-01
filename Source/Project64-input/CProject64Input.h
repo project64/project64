@@ -12,6 +12,7 @@ public:
     ~CProject64Input();
 
     void InitiateControllers(CONTROL_INFO * ControlInfo);
+    void GetKeys(int32_t Control, BUTTONS * Keys);
     void StartScanDevices(int32_t DisplayCtrlId);
     void EndScanDevices(void);
     CDirectInput::ScanResult ScanDevices(BUTTON & Button);
@@ -34,6 +35,7 @@ private:
     HINSTANCE m_hinst;
     bool m_Scanning;
     int32_t m_DisplayCtrlId;
+    int32_t m_iFirstController;
 };
 
 extern CProject64Input * g_InputPlugin;

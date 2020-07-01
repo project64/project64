@@ -25,6 +25,8 @@ public:
     void MapControllerDevice(N64CONTROLLER & Controller);
     ScanResult ScanDevices(BUTTON & Button);
     std::wstring ButtonAssignment(BUTTON & Button);
+    bool IsButtonPressed(BUTTON & Button);
+    void UpdateDeviceData(void);
 
 private:
     CDirectInput();
@@ -33,7 +35,8 @@ private:
 
     static BOOL CALLBACK stEnumMakeDeviceList(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef);
     BOOL EnumMakeDeviceList(LPCDIDEVICEINSTANCE lpddi);
-    ScanResult ScanKeyboard(LPDIRECTINPUTDEVICE8 didHandle, BUTTON & pButton);
+    ScanResult ScanKeyboard(const GUID & DeviceGuid, LPDIRECTINPUTDEVICE8 didHandle, BUTTON & pButton);
+    bool AcquireDevice(LPDIRECTINPUTDEVICE8 lpDirectInputDevice);
     void LoadConfig(void);
 
     typedef struct
@@ -42,6 +45,12 @@ private:
         uint32_t dwDevType;
         std::string InstanceName;
         std::string ProductName;
+        union INPUTSTATE
+        {
+            DIJOYSTATE Joy;
+            DIMOUSESTATE2 Mouse;
+            uint8_t Keyboard[256];
+        } State;
     } DEVICE;
 
     struct GUIDComparer

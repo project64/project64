@@ -6,7 +6,8 @@ CProject64Input * g_InputPlugin = nullptr;
 CProject64Input::CProject64Input(HINSTANCE hinst) :
     m_hinst(hinst),
     m_Scanning(false),
-    m_DisplayCtrlId(0)
+    m_DisplayCtrlId(0),
+    m_iFirstController(0)
 {
     memset(m_Controllers, 0, sizeof(m_Controllers));
 }
@@ -28,6 +29,34 @@ void CProject64Input::InitiateControllers(CONTROL_INFO * ControlInfo)
         g_Settings->LoadController(0, m_Controllers[i]);
         m_DirectInput->MapControllerDevice(m_Controllers[i]);
     }
+}
+
+void CProject64Input::GetKeys(int32_t Control, BUTTONS * Keys)
+{
+    if (Control >= sizeof(m_Controllers) / sizeof(m_Controllers[0]))
+    {
+        return;
+    }
+    CGuard guard(m_CS);
+    if (Control == m_iFirstController)
+    {
+        m_DirectInput->UpdateDeviceData();
+    }
+    N64CONTROLLER & Controller = m_Controllers[Control];
+    Keys->R_DPAD = m_DirectInput->IsButtonPressed(Controller.R_DPAD);
+    Keys->L_DPAD = m_DirectInput->IsButtonPressed(Controller.L_DPAD);
+    Keys->D_DPAD = m_DirectInput->IsButtonPressed(Controller.D_DPAD);
+    Keys->U_DPAD = m_DirectInput->IsButtonPressed(Controller.U_DPAD);
+    Keys->START_BUTTON = m_DirectInput->IsButtonPressed(Controller.START_BUTTON);
+    Keys->Z_TRIG = m_DirectInput->IsButtonPressed(Controller.Z_TRIG);
+    Keys->B_BUTTON = m_DirectInput->IsButtonPressed(Controller.B_BUTTON);
+    Keys->A_BUTTON = m_DirectInput->IsButtonPressed(Controller.A_BUTTON);
+    Keys->R_CBUTTON = m_DirectInput->IsButtonPressed(Controller.R_CBUTTON);
+    Keys->L_CBUTTON = m_DirectInput->IsButtonPressed(Controller.L_CBUTTON);
+    Keys->D_CBUTTON = m_DirectInput->IsButtonPressed(Controller.D_CBUTTON);
+    Keys->U_CBUTTON = m_DirectInput->IsButtonPressed(Controller.U_CBUTTON);
+    Keys->R_TRIG = m_DirectInput->IsButtonPressed(Controller.R_TRIG);
+    Keys->L_TRIG = m_DirectInput->IsButtonPressed(Controller.L_TRIG);
 }
 
 void CProject64Input::StartScanDevices(int32_t DisplayCtrlId)

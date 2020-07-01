@@ -112,8 +112,9 @@ input:    - Controller Number (0 to 3)
 the controller state.
 output:   none
 *******************************************************************/
-EXPORT void CALL GetKeys(int32_t /*Control*/, BUTTONS * /*Keys*/)
+EXPORT void CALL GetKeys(int32_t Control, BUTTONS * Keys)
 {
+    g_InputPlugin->GetKeys(Control, Keys);
 }
 
 /******************************************************************

@@ -102,7 +102,7 @@ BOOL CDirectInput::EnumMakeDeviceList(LPCDIDEVICEINSTANCE lpddi)
         return DIENUM_CONTINUE;
     }
 
-    DEVICE Device;
+    DEVICE Device = { 0 };
     Device.didHandle = nullptr;
     Device.dwDevType = lpddi->dwDevType;
     Device.ProductName = stdstr().FromUTF16(lpddi->tszProductName);
@@ -173,7 +173,7 @@ CDirectInput::ScanResult CDirectInput::ScanDevices(BUTTON & Button)
         uint8_t DeviceType = LOBYTE(device.dwDevType);
         if (DeviceType == DI8DEVTYPE_KEYBOARD)
         {
-            Result = ScanKeyboard(device.didHandle, Button);
+            Result = ScanKeyboard(itr->first, device.didHandle, Button);
         }
         else if (DeviceType == DI8DEVTYPE_MOUSE)
         {
@@ -215,7 +215,51 @@ std::wstring CDirectInput::ButtonAssignment(BUTTON & Button)
     return L"Unknown";
 }
 
-CDirectInput::ScanResult CDirectInput::ScanKeyboard(LPDIRECTINPUTDEVICE8 didHandle, BUTTON & pButton)
+bool CDirectInput::IsButtonPressed(BUTTON & Button)
+{
+    if (Button.Device == nullptr)
+    {
+        return false;
+    }
+    DEVICE & Device = *(DEVICE *)Button.Device;
+    switch (Button.BtnType)
+    {
+    case BTNTYPE_KEYBUTTON:
+        return (Device.State.Keyboard[Button.Offset] & 0x80) != 0;
+    }
+    return false;
+}
+
+void CDirectInput::UpdateDeviceData(void)
+{
+    for (DEVICE_MAP::iterator itr = m_Devices.begin(); itr != m_Devices.end(); itr++)
+    {
+        DEVICE & device = itr->second;
+        LPDIRECTINPUTDEVICE8 & didHandle = device.didHandle;
+        if (didHandle == nullptr)
+        {
+            continue;
+        }
+        if (FAILED(didHandle->Poll()) && !AcquireDevice(didHandle))
+        {
+            continue;
+        }
+        
+        switch (LOBYTE(device.dwDevType))
+        {
+        case DI8DEVTYPE_KEYBOARD:
+            didHandle->GetDeviceState(sizeof(device.State.Keyboard), &device.State.Keyboard);
+            break;
+        case DI8DEVTYPE_MOUSE:
+            didHandle->GetDeviceState(sizeof(device.State.Mouse), &device.State.Mouse);
+            break;
+        default:
+            didHandle->GetDeviceState(sizeof(device.State.Joy), &device.State.Joy);
+        }
+    }
+}
+
+CDirectInput::ScanResult CDirectInput::ScanKeyboard(const GUID & DeviceGuid, LPDIRECTINPUTDEVICE8 didHandle, BUTTON & pButton)
 {
     if (didHandle == nullptr)
     {
@@ -242,9 +286,33 @@ CDirectInput::ScanResult CDirectInput::ScanKeyboard(LPDIRECTINPUTDEVICE8 didHand
         pButton.Offset = (uint8_t)i;
         pButton.AxisID = 0;
         pButton.BtnType = BTNTYPE_KEYBUTTON;
+        pButton.DeviceGuid = DeviceGuid;
+        pButton.Device = nullptr;
         return SCAN_SUCCEED;
     }
     return SCAN_FAILED;
+}
+
+bool CDirectInput::AcquireDevice(LPDIRECTINPUTDEVICE8 lpDirectInputDevice)
+{
+    HRESULT hResult = lpDirectInputDevice->Acquire();
+    if (hResult == DIERR_INPUTLOST)
+    {
+        for (uint32_t i = 0; i < 10; i++)
+        {
+            hResult = lpDirectInputDevice->Acquire();
+            if (hResult != DIERR_INPUTLOST)
+            {
+                break;
+            }
+        }
+    }        
+    if (SUCCEEDED(hResult))
+    {
+        lpDirectInputDevice->Poll();
+        return true;
+    }
+    return false;
 }
 
 void CDirectInput::LoadConfig(void)
