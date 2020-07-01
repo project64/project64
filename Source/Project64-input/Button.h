@@ -1,5 +1,6 @@
 #pragma once
 #include <Common\stdtypes.h>
+#include <guiddef.h>
 
 enum BtnType
 {
@@ -19,9 +20,11 @@ enum BtnType
     BTNTYPE_MOUSEAXE = 7,
 };
 
-typedef struct
+typedef struct _BUTTON
 {
     uint8_t Offset;
     uint8_t AxisID;
     BtnType BtnType;
+    GUID DeviceGuid;
+    void * Device;
 } BUTTON;
