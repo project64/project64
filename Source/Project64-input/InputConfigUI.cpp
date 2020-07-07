@@ -21,6 +21,7 @@ public:
         MSG_WM_INITDIALOG(OnInitDialog)
         MSG_WM_CTLCOLORSTATIC(OnCtlColorStatic)
         COMMAND_HANDLER_EX(IDC_CHK_PLUGGED_IN, BN_CLICKED, ItemChanged)
+        COMMAND_HANDLER_EX(IDC_CMB_DEVICE, CBN_SELCHANGE, ItemChanged)
         NOTIFY_HANDLER_EX(IDC_TACK_RANGE, NM_RELEASEDCAPTURE, ItemChangedNotify);
         MESSAGE_HANDLER(WM_HSCROLL, OnScroll)
         CHAIN_MSG_MAP(CPropertyPageImpl<CControllerSettings>)
@@ -43,6 +44,7 @@ private:
     uint32_t m_ScanCount;
     CBitmapPicture m_ControllerImg;
     CButton m_PluggedIn;
+    CComboBox m_cmbDevice;
     CTrackBarCtrl m_Range;
     CScanButton m_ButtonUDPad, m_ButtonDDPad, m_ButtonLDPad, m_ButtonRDPad;
     CScanButton m_ButtonCUp, m_ButtonCDown, m_ButtonCLeft, m_ButtonCRight;
@@ -93,6 +95,19 @@ BOOL CControllerSettings::OnInitDialog(CWindow /*wndFocus*/, LPARAM /*lInitParam
     CWindow(GetDlgItem(IDC_LABEL_RANGE)).SetWindowText(stdstr_f("%d%%", m_Range.GetPos()).ToUTF16().c_str());
     m_PluggedIn.Attach(GetDlgItem(IDC_CHK_PLUGGED_IN));
     m_PluggedIn.SetCheck(ControlInfo.Present != 0 ? BST_CHECKED : BST_UNCHECKED);
+    m_cmbDevice.Attach(GetDlgItem(IDC_CMB_DEVICE));
+    m_cmbDevice.SetItemData(m_cmbDevice.AddString(L"None"), PLUGIN_NONE);
+    m_cmbDevice.SetItemData(m_cmbDevice.AddString(L"Mem Pak"), PLUGIN_MEMPAK);
+    m_cmbDevice.SetItemData(m_cmbDevice.AddString(L"Rumble Pak"), PLUGIN_RUMBLE_PAK);
+    m_cmbDevice.SetCurSel(0);
+    for (DWORD i = 0, n = m_cmbDevice.GetCount(); i < n; i++)
+    {
+        if (m_cmbDevice.GetItemData(i) == (DWORD)ControlInfo.Plugin)
+        {
+            m_cmbDevice.SetCurSel(i);
+            break;
+        }
+    }
 
     m_ControllerImg.SubclassWindow(GetDlgItem(IDC_BMP_CONTROLLER));
     m_ControllerImg.SetBitmap(MAKEINTRESOURCE(IDB_CONTROLLER));
@@ -130,6 +145,7 @@ bool CControllerSettings::OnApply()
     CONTROL & ControlInfo = g_InputPlugin->ControlInfo(m_ControllerNumber);
     Controller.Range = (uint8_t)m_Range.GetPos();
     ControlInfo.Present = (m_PluggedIn.GetCheck() == BST_CHECKED) ? 1 : 0;
+    ControlInfo.Plugin = m_cmbDevice.GetItemData(m_cmbDevice.GetCurSel());
     return g_InputPlugin->SaveController(m_ControllerNumber);
 }
 

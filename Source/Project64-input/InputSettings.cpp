@@ -54,9 +54,11 @@ void CInputSettings::LoadController(uint32_t ControlIndex, CONTROL & ControllerI
     }
 
     InputSettingID PresentSettings[] = { Set_Control0_Present };
+    InputSettingID PluginSettings[] = { Set_Control0_Plugin };
     InputSettingID RangeSettings[] = { Set_Control0_Range };
 
     ControllerInfo.Present = ControlIndex < (sizeof(PresentSettings) / sizeof(PresentSettings[0])) ? GetSetting((short)PresentSettings[ControlIndex]) != 0 : 0;
+    ControllerInfo.Plugin = ControlIndex < (sizeof(PluginSettings) / sizeof(PluginSettings[0])) ? GetSetting((short)PluginSettings[ControlIndex]) : PLUGIN_NONE;
     Controller.Range = (uint8_t)(ControlIndex < (sizeof(RangeSettings) / sizeof(RangeSettings[0])) ? GetSetting((short)RangeSettings[ControlIndex]) : 100);
     if (Controller.Range == 0) { Controller.Range = 1; }
     if (Controller.Range > 100) { Controller.Range = 100; }
@@ -105,6 +107,11 @@ void CInputSettings::SaveController(uint32_t ControlIndex, const CONTROL & Contr
     {
         SetSetting((short)PresentSettings[ControlIndex], ControllerInfo.Present);
     }
+    InputSettingID PluginSettings[] = { Set_Control0_Plugin };
+    if (ControlIndex < (sizeof(PluginSettings) / sizeof(PluginSettings[0])))
+    {
+        SetSetting((short)PluginSettings[ControlIndex], ControllerInfo.Plugin);
+    }
 
     InputSettingID RangeSettings[] = { Set_Control0_Range };
     if (ControlIndex < (sizeof(RangeSettings) / sizeof(RangeSettings[0])))
@@ -145,6 +152,7 @@ void CInputSettings::RegisterSettings(void)
 {
     SetModuleName("Input");
     RegisterSetting(Set_Control0_Present, Data_DWORD_General, "Present", "Controller 1", 1, nullptr);
+    RegisterSetting(Set_Control0_Plugin, Data_DWORD_General, "Plugin", "Controller 1", PLUGIN_MEMPAK, nullptr);
     RegisterSetting(Set_Control0_Range, Data_DWORD_General, "Range", "Controller 1", 100, nullptr);
     RegisterSetting(Set_Control0_U_DPAD, Data_String_General, "DPadUp", "Controller 1", 0, "{6F1D2B61-D5A0-11CF-BFC7-444553540000} 17 0 5");
     RegisterSetting(Set_Control0_D_DPAD, Data_String_General, "DPadDown", "Controller 1", 0, "{6F1D2B61-D5A0-11CF-BFC7-444553540000} 25 0 5");
