@@ -37,9 +37,9 @@ typedef union
         unsigned Reserved1 : 1;
         unsigned Reserved2 : 1;
 
-        signed   Y_AXIS : 8;
-
         signed   X_AXIS : 8;
+
+        signed   Y_AXIS : 8;
     };
 } BUTTONS;
 #pragma warning(pop)
@@ -76,7 +76,7 @@ class CCONTROL
 {
 public:
     CCONTROL(int32_t &Present, int32_t &RawData, int32_t &PlugType);
-    inline bool  Present(void) const { return m_Present != 0; }
+    inline bool Present(void) const { return m_Present != 0; }
     inline uint32_t Buttons(void) const { return m_Buttons.Value; }
     inline PluginType Plugin(void) const { return static_cast<PluginType>(m_PlugType); }
 private:
@@ -84,8 +84,8 @@ private:
 
     int32_t & m_Present;
     int32_t & m_RawData;
-    int32_t      & m_PlugType;
-    BUTTONS    m_Buttons;
+    int32_t & m_PlugType;
+    BUTTONS m_Buttons;
 
     CCONTROL(void);                         // Disable default constructor
     CCONTROL(const CCONTROL&);              // Disable copy constructor

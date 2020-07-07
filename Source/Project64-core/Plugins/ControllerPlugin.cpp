@@ -149,7 +149,7 @@ void CControl_Plugin::UpdateKeys(void)
     if (!m_AllocatedControllers) { return; }
     for (int32_t cont = 0; cont < sizeof(m_Controllers) / sizeof(m_Controllers[0]); cont++)
     {
-        if (!m_Controllers[cont]->m_Present) { continue; }
+        if (!m_Controllers[cont]->Present()) { continue; }
         if (!m_Controllers[cont]->m_RawData)
         {
             GetKeys(cont, &m_Controllers[cont]->m_Buttons);

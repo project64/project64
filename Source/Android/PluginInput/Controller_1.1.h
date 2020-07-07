@@ -68,9 +68,9 @@ typedef union
         unsigned Reserved1 : 1;
         unsigned Reserved2 : 1;
 
-        signed   Y_AXIS : 8;
-
         signed   X_AXIS : 8;
+
+        signed   Y_AXIS : 8;
     };
 } BUTTONS;
 #pragma warning(pop)
