@@ -2,6 +2,7 @@
 #include <Common\stdtypes.h>
 #include <string>
 #include "N64Controller.h"
+#include "ControllerSpec1.1.h"
 
 class CInputSettings
 {
@@ -9,8 +10,8 @@ public:
     CInputSettings();
     ~CInputSettings();
 
-    void LoadController(uint32_t ControlIndex, N64CONTROLLER & Controller);
-    void SaveController(uint32_t ControlIndex, const N64CONTROLLER & Controller);
+    void LoadController(uint32_t ControlIndex, CONTROL & ControllerInfo, N64CONTROLLER & Controller);
+    void SaveController(uint32_t ControlIndex, const CONTROL & ControllerInfo, const N64CONTROLLER & Controller);
 
 private:
     CInputSettings(const CInputSettings&);

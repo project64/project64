@@ -26,7 +26,7 @@ void CProject64Input::InitiateControllers(CONTROL_INFO * ControlInfo)
     m_DirectInput->Initiate(ControlInfo);
     for (size_t i = 0, n = sizeof(m_Controllers) / sizeof(m_Controllers[0]); i < n; i++)
     {
-        g_Settings->LoadController(0, m_Controllers[i]);
+        g_Settings->LoadController(i, m_ControlInfo.Controls[i], m_Controllers[i]);
         m_DirectInput->MapControllerDevice(m_Controllers[i]);
     }
 }
@@ -96,6 +96,6 @@ bool CProject64Input::SaveController(uint32_t ControlIndex)
     {
         return false;
     }
-    g_Settings->SaveController(ControlIndex, m_Controllers[ControlIndex]);
+    g_Settings->SaveController(ControlIndex, m_ControlInfo.Controls[ControlIndex], m_Controllers[ControlIndex]);
     return true;
 }
