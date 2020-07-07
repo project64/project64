@@ -8,8 +8,9 @@
 #pragma warning(disable : 4302) // warning C4302: 'type cast': truncation from 'LPCTSTR' to 'WORD'
 #pragma warning(disable : 4457) // warning C4457: declaration of 'pstr' hides function parameter
 #include <atlbase.h>
-#include <wtl/atlapp.h>
-#include <wtl/atldlgs.h>
-#include <wtl/atlmisc.h>
+#include <WTL/atlapp.h>
+#include <WTL/atldlgs.h>
+#include <WTL/atlmisc.h>
+#include <WTL/atlctrls.h>
 #include <WTL/atlcrack.h>
 #pragma warning(pop)

@@ -23,6 +23,7 @@ public:
     inline bool IsScanning(void) const { return m_Scanning; }
     inline int32_t DisplayCtrlId(void) const { return m_DisplayCtrlId; }
     inline N64CONTROLLER & Controllers(int32_t Controller) { return m_Controllers[Controller]; }
+    inline CONTROL & ControlInfo(int32_t Controller) { return m_ControlInfo.Controls[Controller]; }
 
 private:
     CProject64Input();
@@ -30,6 +31,7 @@ private:
     CProject64Input& operator=(const CProject64Input&);
 
     CriticalSection m_CS;
+    CONTROL_INFO m_ControlInfo;
     N64CONTROLLER m_Controllers[4];
     std::unique_ptr<CDirectInput> m_DirectInput;
     HINSTANCE m_hinst;

@@ -20,6 +20,8 @@ public:
     BEGIN_MSG_MAP(CDebugSettings)
         MSG_WM_INITDIALOG(OnInitDialog)
         MSG_WM_CTLCOLORSTATIC(OnCtlColorStatic)
+        NOTIFY_HANDLER_EX(IDC_TACK_RANGE, NM_RELEASEDCAPTURE, ItemChangedNotify);
+        MESSAGE_HANDLER(WM_HSCROLL, OnScroll)
         CHAIN_MSG_MAP(CPropertyPageImpl<CControllerSettings>)
     END_MSG_MAP()
 
@@ -29,6 +31,8 @@ public:
     bool OnApply();
 
 private:
+    LRESULT OnScroll(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT	ItemChangedNotify(NMHDR* /*pNMHDR*/);
     void ButtonChannged(void);
     static void stButtonChanged(size_t data) { ((CControllerSettings *)data)->ButtonChannged(); }
 
@@ -36,34 +40,35 @@ private:
     uint32_t m_ControllerNumber;
     uint32_t m_ScanCount;
     CBitmapPicture m_ControllerImg;
-    CScanButton ButtonUDPad, ButtonDDPad, ButtonLDPad, ButtonRDPad;
-    CScanButton ButtonCUp, ButtonCDown, ButtonCLeft, ButtonCRight;
-    CScanButton ButtonA, ButtonB, ButtonStart;
-    CScanButton ButtonZtrigger, ButtonRTrigger, ButtonLTrigger;
-    CScanButton ButtonAnalogU, ButtonAnalogD, ButtonAnalogL, ButtonAnalogR;
+    CTrackBarCtrl m_Range;
+    CScanButton m_ButtonUDPad, m_ButtonDDPad, m_ButtonLDPad, m_ButtonRDPad;
+    CScanButton m_ButtonCUp, m_ButtonCDown, m_ButtonCLeft, m_ButtonCRight;
+    CScanButton m_ButtonA, m_ButtonB, m_ButtonStart;
+    CScanButton m_ButtonZtrigger, m_ButtonRTrigger, m_ButtonLTrigger;
+    CScanButton m_ButtonAnalogU, m_ButtonAnalogD, m_ButtonAnalogL, m_ButtonAnalogR;
 };
 
 CControllerSettings::CControllerSettings(uint32_t ControllerNumber) :
     m_ControllerNumber(ControllerNumber),
     m_ScanCount(0),
-    ButtonUDPad(g_InputPlugin->Controllers(ControllerNumber).U_DPAD, IDC_EDIT_DIGITIAL_UP, IDC_BTN_DIGITIAL_UP),
-    ButtonDDPad(g_InputPlugin->Controllers(ControllerNumber).D_DPAD, IDC_EDIT_DIGITIAL_DOWN, IDC_BTN_DIGITIAL_DOWN),
-    ButtonLDPad(g_InputPlugin->Controllers(ControllerNumber).L_DPAD, IDC_EDIT_DIGITIAL_LEFT, IDC_BTN_DIGITIAL_LEFT),
-    ButtonRDPad(g_InputPlugin->Controllers(ControllerNumber).R_DPAD, IDC_EDIT_DIGITIAL_RIGHT, IDC_BTN_DIGITIAL_RIGHT),
-    ButtonA(g_InputPlugin->Controllers(ControllerNumber).A_BUTTON, IDC_EDIT_BUTTON_A, IDC_BTN_BUTTON_A),
-    ButtonB(g_InputPlugin->Controllers(ControllerNumber).B_BUTTON, IDC_EDIT_BUTTON_B, IDC_BTN_BUTTON_B),
-    ButtonCUp(g_InputPlugin->Controllers(ControllerNumber).U_CBUTTON, IDC_EDIT_CBUTTON_UP, IDC_BTN_CBUTTON_UP),
-    ButtonCDown(g_InputPlugin->Controllers(ControllerNumber).D_CBUTTON, IDC_EDIT_CBUTTON_DOWN, IDC_BTN_CBUTTON_DOWN),
-    ButtonCLeft(g_InputPlugin->Controllers(ControllerNumber).L_CBUTTON, IDC_EDIT_CBUTTON_LEFT, IDC_BTN_CBUTTON_LEFT),
-    ButtonCRight(g_InputPlugin->Controllers(ControllerNumber).R_CBUTTON, IDC_EDIT_CBUTTON_RIGHT, IDC_BTN_CBUTTON_RIGHT),
-    ButtonStart(g_InputPlugin->Controllers(ControllerNumber).START_BUTTON, IDC_EDIT_BUTTON_START, IDC_BTN_BUTTON_START),
-    ButtonZtrigger(g_InputPlugin->Controllers(ControllerNumber).Z_TRIG, IDC_EDIT_BUTTON_Z, IDC_BTN_BUTTON_Z),
-    ButtonRTrigger(g_InputPlugin->Controllers(ControllerNumber).R_TRIG, IDC_EDIT_RTRIGGER, IDC_BTN_RTRIGGER),
-    ButtonLTrigger(g_InputPlugin->Controllers(ControllerNumber).L_TRIG, IDC_EDIT_LTRIGGER, IDC_BTN_LTRIGGER),
-    ButtonAnalogU(g_InputPlugin->Controllers(ControllerNumber).U_ANALOG, IDC_EDIT_ANALOG_UP, IDC_BTN_ANALOG_UP),
-    ButtonAnalogD(g_InputPlugin->Controllers(ControllerNumber).D_ANALOG, IDC_EDIT_ANALOG_DOWN, IDC_BTN_ANALOG_DOWN),
-    ButtonAnalogL(g_InputPlugin->Controllers(ControllerNumber).L_ANALOG, IDC_EDIT_ANALOG_LEFT, IDC_BTN_ANALOG_LEFT),
-    ButtonAnalogR(g_InputPlugin->Controllers(ControllerNumber).R_ANALOG, IDC_EDIT_ANALOG_RIGHT, IDC_BTN_ANALOG_RIGHT)
+    m_ButtonUDPad(g_InputPlugin->Controllers(ControllerNumber).U_DPAD, IDC_EDIT_DIGITIAL_UP, IDC_BTN_DIGITIAL_UP),
+    m_ButtonDDPad(g_InputPlugin->Controllers(ControllerNumber).D_DPAD, IDC_EDIT_DIGITIAL_DOWN, IDC_BTN_DIGITIAL_DOWN),
+    m_ButtonLDPad(g_InputPlugin->Controllers(ControllerNumber).L_DPAD, IDC_EDIT_DIGITIAL_LEFT, IDC_BTN_DIGITIAL_LEFT),
+    m_ButtonRDPad(g_InputPlugin->Controllers(ControllerNumber).R_DPAD, IDC_EDIT_DIGITIAL_RIGHT, IDC_BTN_DIGITIAL_RIGHT),
+    m_ButtonA(g_InputPlugin->Controllers(ControllerNumber).A_BUTTON, IDC_EDIT_BUTTON_A, IDC_BTN_BUTTON_A),
+    m_ButtonB(g_InputPlugin->Controllers(ControllerNumber).B_BUTTON, IDC_EDIT_BUTTON_B, IDC_BTN_BUTTON_B),
+    m_ButtonCUp(g_InputPlugin->Controllers(ControllerNumber).U_CBUTTON, IDC_EDIT_CBUTTON_UP, IDC_BTN_CBUTTON_UP),
+    m_ButtonCDown(g_InputPlugin->Controllers(ControllerNumber).D_CBUTTON, IDC_EDIT_CBUTTON_DOWN, IDC_BTN_CBUTTON_DOWN),
+    m_ButtonCLeft(g_InputPlugin->Controllers(ControllerNumber).L_CBUTTON, IDC_EDIT_CBUTTON_LEFT, IDC_BTN_CBUTTON_LEFT),
+    m_ButtonCRight(g_InputPlugin->Controllers(ControllerNumber).R_CBUTTON, IDC_EDIT_CBUTTON_RIGHT, IDC_BTN_CBUTTON_RIGHT),
+    m_ButtonStart(g_InputPlugin->Controllers(ControllerNumber).START_BUTTON, IDC_EDIT_BUTTON_START, IDC_BTN_BUTTON_START),
+    m_ButtonZtrigger(g_InputPlugin->Controllers(ControllerNumber).Z_TRIG, IDC_EDIT_BUTTON_Z, IDC_BTN_BUTTON_Z),
+    m_ButtonRTrigger(g_InputPlugin->Controllers(ControllerNumber).R_TRIG, IDC_EDIT_RTRIGGER, IDC_BTN_RTRIGGER),
+    m_ButtonLTrigger(g_InputPlugin->Controllers(ControllerNumber).L_TRIG, IDC_EDIT_LTRIGGER, IDC_BTN_LTRIGGER),
+    m_ButtonAnalogU(g_InputPlugin->Controllers(ControllerNumber).U_ANALOG, IDC_EDIT_ANALOG_UP, IDC_BTN_ANALOG_UP),
+    m_ButtonAnalogD(g_InputPlugin->Controllers(ControllerNumber).D_ANALOG, IDC_EDIT_ANALOG_DOWN, IDC_BTN_ANALOG_DOWN),
+    m_ButtonAnalogL(g_InputPlugin->Controllers(ControllerNumber).L_ANALOG, IDC_EDIT_ANALOG_LEFT, IDC_BTN_ANALOG_LEFT),
+    m_ButtonAnalogR(g_InputPlugin->Controllers(ControllerNumber).R_ANALOG, IDC_EDIT_ANALOG_RIGHT, IDC_BTN_ANALOG_RIGHT)
 {
     m_Title = stdstr_f("Player %d", ControllerNumber + 1).ToUTF16();
     SetTitle(m_Title.c_str());
@@ -71,19 +76,25 @@ CControllerSettings::CControllerSettings(uint32_t ControllerNumber) :
 
 BOOL CControllerSettings::OnInitDialog(CWindow /*wndFocus*/, LPARAM /*lInitParam*/)
 {
+    N64CONTROLLER & Controller = g_InputPlugin->Controllers(m_ControllerNumber);
     GetDlgItem(IDC_BTN_SETUP).EnableWindow(false);
     GetDlgItem(IDC_BTN_DEFAULTS).EnableWindow(false);
     GetDlgItem(IDC_BTN_LOAD).EnableWindow(false);
     GetDlgItem(IDC_BTN_SAVE).EnableWindow(false);
-    GetDlgItem(IDC_TACK_RANGE).EnableWindow(false);
+    m_Range.Attach(GetDlgItem(IDC_SLIDER_RANGE));
+    m_Range.SetTicFreq(1);
+    m_Range.SetRangeMin(1);
+    m_Range.SetRangeMax(100);
+    m_Range.SetPos(Controller.Range);
+    CWindow(GetDlgItem(IDC_LABEL_RANGE)).SetWindowText(stdstr_f("%d%%", m_Range.GetPos()).ToUTF16().c_str());
 
     m_ControllerImg.SubclassWindow(GetDlgItem(IDC_BMP_CONTROLLER));
     m_ControllerImg.SetBitmap(MAKEINTRESOURCE(IDB_CONTROLLER));
     CScanButton * Buttons[] = {
-        &ButtonUDPad, &ButtonDDPad, &ButtonLDPad, &ButtonRDPad, &ButtonA, &ButtonB,
-        &ButtonCUp, &ButtonCDown, &ButtonCLeft, &ButtonCRight, &ButtonStart,
-        &ButtonZtrigger, &ButtonRTrigger, &ButtonLTrigger,
-        &ButtonAnalogU, &ButtonAnalogD, &ButtonAnalogL, &ButtonAnalogR
+        &m_ButtonUDPad, &m_ButtonDDPad, &m_ButtonLDPad, &m_ButtonRDPad, &m_ButtonA, &m_ButtonB,
+        &m_ButtonCUp, &m_ButtonCDown, &m_ButtonCLeft, &m_ButtonCRight, &m_ButtonStart,
+        &m_ButtonZtrigger, &m_ButtonRTrigger, &m_ButtonLTrigger,
+        &m_ButtonAnalogU, &m_ButtonAnalogD, &m_ButtonAnalogL, &m_ButtonAnalogR
     };
 
     for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
@@ -109,7 +120,25 @@ HBRUSH CControllerSettings::OnCtlColorStatic(CDCHandle dc, CWindow wndStatic)
 
 bool CControllerSettings::OnApply()
 {
+    N64CONTROLLER & Controller = g_InputPlugin->Controllers(m_ControllerNumber);
+    Controller.Range = (uint8_t)m_Range.GetPos();
     return g_InputPlugin->SaveController(m_ControllerNumber);
+}
+
+LRESULT CControllerSettings::OnScroll(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
+{
+    LONG SliderId = CWindow((HWND)lParam).GetWindowLong(GWL_ID);
+    if (SliderId == IDC_SLIDER_RANGE)
+    {
+        CWindow(GetDlgItem(IDC_LABEL_RANGE)).SetWindowText(stdstr_f("%d%%", m_Range.GetPos()).ToUTF16().c_str());
+    }
+    return 0;
+}
+
+LRESULT	CControllerSettings::ItemChangedNotify(NMHDR* /*pNMHDR*/)
+{
+    SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
+    return 0;
 }
 
 void CControllerSettings::ButtonChannged(void)

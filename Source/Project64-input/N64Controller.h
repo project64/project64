@@ -21,4 +21,5 @@ typedef struct
     BUTTON D_ANALOG;
     BUTTON L_ANALOG;
     BUTTON R_ANALOG;
+    uint8_t Range;
 } N64CONTROLLER;
