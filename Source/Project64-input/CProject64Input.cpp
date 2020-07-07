@@ -7,7 +7,7 @@ CProject64Input::CProject64Input(HINSTANCE hinst) :
     m_hinst(hinst),
     m_Scanning(false),
     m_DisplayCtrlId(0),
-    m_iFirstController(0)
+    m_iFirstController(-1)
 {
     memset(m_Controllers, 0, sizeof(m_Controllers));
 }
@@ -19,15 +19,21 @@ CProject64Input::~CProject64Input()
 void CProject64Input::InitiateControllers(CONTROL_INFO * ControlInfo)
 {
     CGuard guard(m_CS);
+    m_ControlInfo = *ControlInfo;
     if (m_DirectInput.get() == NULL)
     {
         m_DirectInput.reset(new CDirectInput(m_hinst));
     }
     m_DirectInput->Initiate(ControlInfo);
+    m_iFirstController = -1;
     for (size_t i = 0, n = sizeof(m_Controllers) / sizeof(m_Controllers[0]); i < n; i++)
     {
         g_Settings->LoadController(i, m_ControlInfo.Controls[i], m_Controllers[i]);
         m_DirectInput->MapControllerDevice(m_Controllers[i]);
+        if (m_ControlInfo.Controls[i].Present != 0 && m_iFirstController < 0)
+        {
+            m_iFirstController = i;
+        }
     }
 }
 

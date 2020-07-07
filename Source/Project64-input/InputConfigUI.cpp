@@ -20,6 +20,7 @@ public:
     BEGIN_MSG_MAP(CDebugSettings)
         MSG_WM_INITDIALOG(OnInitDialog)
         MSG_WM_CTLCOLORSTATIC(OnCtlColorStatic)
+        COMMAND_HANDLER_EX(IDC_CHK_PLUGGED_IN, BN_CLICKED, ItemChanged)
         NOTIFY_HANDLER_EX(IDC_TACK_RANGE, NM_RELEASEDCAPTURE, ItemChangedNotify);
         MESSAGE_HANDLER(WM_HSCROLL, OnScroll)
         CHAIN_MSG_MAP(CPropertyPageImpl<CControllerSettings>)
@@ -32,6 +33,7 @@ public:
 
 private:
     LRESULT OnScroll(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    void ItemChanged(UINT Code, int id, HWND ctl);
     LRESULT	ItemChangedNotify(NMHDR* /*pNMHDR*/);
     void ButtonChannged(void);
     static void stButtonChanged(size_t data) { ((CControllerSettings *)data)->ButtonChannged(); }
@@ -40,6 +42,7 @@ private:
     uint32_t m_ControllerNumber;
     uint32_t m_ScanCount;
     CBitmapPicture m_ControllerImg;
+    CButton m_PluggedIn;
     CTrackBarCtrl m_Range;
     CScanButton m_ButtonUDPad, m_ButtonDDPad, m_ButtonLDPad, m_ButtonRDPad;
     CScanButton m_ButtonCUp, m_ButtonCDown, m_ButtonCLeft, m_ButtonCRight;
@@ -77,6 +80,7 @@ CControllerSettings::CControllerSettings(uint32_t ControllerNumber) :
 BOOL CControllerSettings::OnInitDialog(CWindow /*wndFocus*/, LPARAM /*lInitParam*/)
 {
     N64CONTROLLER & Controller = g_InputPlugin->Controllers(m_ControllerNumber);
+    CONTROL & ControlInfo = g_InputPlugin->ControlInfo(m_ControllerNumber);
     GetDlgItem(IDC_BTN_SETUP).EnableWindow(false);
     GetDlgItem(IDC_BTN_DEFAULTS).EnableWindow(false);
     GetDlgItem(IDC_BTN_LOAD).EnableWindow(false);
@@ -87,6 +91,8 @@ BOOL CControllerSettings::OnInitDialog(CWindow /*wndFocus*/, LPARAM /*lInitParam
     m_Range.SetRangeMax(100);
     m_Range.SetPos(Controller.Range);
     CWindow(GetDlgItem(IDC_LABEL_RANGE)).SetWindowText(stdstr_f("%d%%", m_Range.GetPos()).ToUTF16().c_str());
+    m_PluggedIn.Attach(GetDlgItem(IDC_CHK_PLUGGED_IN));
+    m_PluggedIn.SetCheck(ControlInfo.Present != 0 ? BST_CHECKED : BST_UNCHECKED);
 
     m_ControllerImg.SubclassWindow(GetDlgItem(IDC_BMP_CONTROLLER));
     m_ControllerImg.SetBitmap(MAKEINTRESOURCE(IDB_CONTROLLER));
@@ -121,7 +127,9 @@ HBRUSH CControllerSettings::OnCtlColorStatic(CDCHandle dc, CWindow wndStatic)
 bool CControllerSettings::OnApply()
 {
     N64CONTROLLER & Controller = g_InputPlugin->Controllers(m_ControllerNumber);
+    CONTROL & ControlInfo = g_InputPlugin->ControlInfo(m_ControllerNumber);
     Controller.Range = (uint8_t)m_Range.GetPos();
+    ControlInfo.Present = (m_PluggedIn.GetCheck() == BST_CHECKED) ? 1 : 0;
     return g_InputPlugin->SaveController(m_ControllerNumber);
 }
 
@@ -133,6 +141,11 @@ LRESULT CControllerSettings::OnScroll(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
         CWindow(GetDlgItem(IDC_LABEL_RANGE)).SetWindowText(stdstr_f("%d%%", m_Range.GetPos()).ToUTF16().c_str());
     }
     return 0;
+}
+
+void CControllerSettings::ItemChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
+{
+    SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
 }
 
 LRESULT	CControllerSettings::ItemChangedNotify(NMHDR* /*pNMHDR*/)
