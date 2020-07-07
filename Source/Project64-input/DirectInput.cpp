@@ -230,6 +230,35 @@ bool CDirectInput::IsButtonPressed(BUTTON & Button)
     return false;
 }
 
+int8_t CDirectInput::AxisPos(BUTTON & PosBtn, BUTTON & NegBtn, uint8_t Range)
+{
+    int8_t Pos = 0;
+    if (PosBtn.Device != nullptr)
+    {
+        DEVICE & Device = *(DEVICE *)PosBtn.Device;
+        switch (PosBtn.BtnType)
+        {
+        case BTNTYPE_KEYBUTTON:
+            Pos += (Device.State.Keyboard[PosBtn.Offset] & 0x80) != 0 ? 127 : 0;
+        }
+    }
+    if (NegBtn.Device != nullptr)
+    {
+        DEVICE & Device = *(DEVICE *)NegBtn.Device;
+        switch (NegBtn.BtnType)
+        {
+        case BTNTYPE_KEYBUTTON:
+            Pos -= (Device.State.Keyboard[NegBtn.Offset] & 0x80) != 0 ? 127 : 0;
+        }
+    }
+
+    if (Pos != 0)
+    {
+        Pos = (int8_t)(Pos * (Range / 100.0));
+    }
+    return Pos;
+}
+
 void CDirectInput::UpdateDeviceData(void)
 {
     for (DEVICE_MAP::iterator itr = m_Devices.begin(); itr != m_Devices.end(); itr++)

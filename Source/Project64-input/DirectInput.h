@@ -26,6 +26,7 @@ public:
     ScanResult ScanDevices(BUTTON & Button);
     std::wstring ButtonAssignment(BUTTON & Button);
     bool IsButtonPressed(BUTTON & Button);
+    int8_t AxisPos(BUTTON & PosBtn, BUTTON & NegBtn, uint8_t Range);
     void UpdateDeviceData(void);
 
 private:
