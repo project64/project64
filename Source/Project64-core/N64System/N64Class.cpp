@@ -17,6 +17,7 @@
 #include <Project64-core/N64System/Mips/Transferpak.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/N64System/Mips/OpcodeName.h>
+#include <Project64-core/N64System/Mips/Disk.h>
 #include <Project64-core/N64System/N64DiskClass.h>
 #include <Project64-core/ExceptionHandler.h>
 #include <Project64-core/Logging.h>
@@ -1738,7 +1739,6 @@ bool CN64System::SaveState()
         }
     }
 
-    uint32_t SaveID_0 = 0x23D8A6C8, SaveID_1 = 0x56D2CD23;
     uint32_t RdramSize = g_Settings->LoadDword(Game_RDRamSize);
     uint32_t MiInterReg = g_Reg->MI_INTR_REG;
     uint32_t NextViTimer = m_SystemTimer.GetTimer(CSystemTimer::ViTimer);
@@ -1749,7 +1749,16 @@ bool CN64System::SaveState()
         zipOpenNewFileInZip(file, SaveFile.GetNameExtension().c_str(), NULL, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
         zipWriteInFileInZip(file, &SaveID_0, sizeof(SaveID_0));
         zipWriteInFileInZip(file, &RdramSize, sizeof(uint32_t));
-        zipWriteInFileInZip(file, g_Rom->GetRomAddress(), 0x40);
+        if (g_Settings->LoadBool(Setting_EnableDisk) && g_Disk)
+        {
+            //Keep Base ROM Information (64DD IPL / Compatible Game ROM)
+            zipWriteInFileInZip(file, &g_Rom->GetRomAddress()[0x10], 0x20);
+            zipWriteInFileInZip(file, g_Disk->GetDiskAddressID(), 0x20);
+        }
+        else
+        {
+            zipWriteInFileInZip(file, g_Rom->GetRomAddress(), 0x40);
+        }
         zipWriteInFileInZip(file, &NextViTimer, sizeof(uint32_t));
         zipWriteInFileInZip(file, &m_Reg.m_PROGRAM_COUNTER, sizeof(m_Reg.m_PROGRAM_COUNTER));
         zipWriteInFileInZip(file, m_Reg.m_GPR, sizeof(int64_t) * 32);
@@ -1775,8 +1784,16 @@ bool CN64System::SaveState()
         zipCloseFileInZip(file);
 
         zipOpenNewFileInZip(file, ExtraInfo.GetNameExtension().c_str(), NULL, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
-        zipWriteInFileInZip(file, &SaveID_1, sizeof(SaveID_1));
+
+        //Extra Info v2
+        zipWriteInFileInZip(file, &SaveID_2, sizeof(SaveID_2));
+
+        //Disk Interface Info
+        zipWriteInFileInZip(file, m_Reg.m_DiskInterface, sizeof(uint32_t) * 22);
+
+        //System Timers Info
         m_SystemTimer.SaveData(file);
+
         zipCloseFileInZip(file);
 
         zipClose(file, "");
@@ -1802,7 +1819,16 @@ bool CN64System::SaveState()
         hSaveFile.SeekToBegin();
         hSaveFile.Write(&SaveID_0, sizeof(uint32_t));
         hSaveFile.Write(&RdramSize, sizeof(uint32_t));
-        hSaveFile.Write(g_Rom->GetRomAddress(), 0x40);
+        if (g_Settings->LoadBool(Setting_EnableDisk) && g_Disk)
+        {
+            //Keep Base ROM Information (64DD IPL / Compatible Game ROM)
+            hSaveFile.Write(&g_Rom->GetRomAddress()[0x10], 0x20);
+            hSaveFile.Write(g_Disk->GetDiskAddressID(), 0x20);
+        }
+        else
+        {
+            hSaveFile.Write(g_Rom->GetRomAddress(), 0x40);
+        }
         hSaveFile.Write(&NextViTimer, sizeof(uint32_t));
         hSaveFile.Write(&m_Reg.m_PROGRAM_COUNTER, sizeof(m_Reg.m_PROGRAM_COUNTER));
         hSaveFile.Write(m_Reg.m_GPR, sizeof(int64_t) * 32);
@@ -1830,6 +1856,13 @@ bool CN64System::SaveState()
         CFile hExtraInfo(ExtraInfo, CFileBase::modeWrite | CFileBase::modeCreate);
         if (hExtraInfo.IsOpen())
         {
+            //Extra Info v2
+            hExtraInfo.Write(&SaveID_2, sizeof(uint32_t));
+
+            //Disk Interface Info
+            hExtraInfo.Write(m_Reg.m_DiskInterface, sizeof(uint32_t) * 22);
+
+            //System Timers Info
             m_SystemTimer.SaveData(hExtraInfo);
             hExtraInfo.Close();
         }
@@ -1960,23 +1993,30 @@ bool CN64System::LoadState(const char * FileName)
                 continue;
             }
             unzReadCurrentFile(file, &Value, 4);
-            if (Value != 0x23D8A6C8 && Value != 0x56D2CD23)
-            {
-                unzCloseCurrentFile(file);
-                port = unzGoToNextFile(file);
-                continue;
-            }
-            if (!LoadedZipFile && Value == 0x23D8A6C8 && port == UNZ_OK)
+            if (!LoadedZipFile && Value == SaveID_0 && port == UNZ_OK)
             {
                 unzReadCurrentFile(file, &SaveRDRAMSize, sizeof(SaveRDRAMSize));
                 //Check header
 
                 uint8_t LoadHeader[64];
                 unzReadCurrentFile(file, LoadHeader, 0x40);
-                if (memcmp(LoadHeader, g_Rom->GetRomAddress(), 0x40) != 0 &&
-                    !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
+                if (g_Settings->LoadBool(Setting_EnableDisk) && g_Disk)
                 {
-                    return false;
+                    //Base ROM Information (64DD IPL / Compatible Game ROM) & Disk Info Check
+                    if ((memcmp(LoadHeader, &g_Rom->GetRomAddress()[0x10], 0x20) != 0 ||
+                        memcmp(&LoadHeader[0x20], g_Disk->GetDiskAddressID(), 0x20) != 0) &&
+                        !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (memcmp(LoadHeader, g_Rom->GetRomAddress(), 0x40) != 0 &&
+                        !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
+                    {
+                        return false;
+                    }
                 }
                 Reset(false, true);
 
@@ -2010,8 +2050,23 @@ bool CN64System::LoadState(const char * FileName)
                 LoadedZipFile = true;
                 continue;
             }
-            if (LoadedZipFile && Value == 0x56D2CD23 && port == UNZ_OK)
+            if (LoadedZipFile && Value == SaveID_1 && port == UNZ_OK)
             {
+                //Extra Info v1
+                //System Timers Info
+                m_SystemTimer.LoadData(file);
+            }
+            if (LoadedZipFile && Value == SaveID_2 && port == UNZ_OK)
+            {
+                //Extra Info v2 (Project64 2.4)
+                //Disk Interface Info
+                unzReadCurrentFile(file, m_Reg.m_DiskInterface, sizeof(uint32_t) * 22);
+
+                //Recover Disk Seek Address (if the save state is done while loading/saving data)
+                if (g_Disk)
+                    DiskBMReadWrite(false);
+
+                //System Timers Info
                 m_SystemTimer.LoadData(file);
             }
             unzCloseCurrentFile(file);
@@ -2030,7 +2085,7 @@ bool CN64System::LoadState(const char * FileName)
         hSaveFile.SeekToBegin();
 
         hSaveFile.Read(&Value, sizeof(Value));
-        if (Value != 0x23D8A6C8)
+        if (Value != SaveID_0)
         {
             return false;
         }
@@ -2040,10 +2095,23 @@ bool CN64System::LoadState(const char * FileName)
         //Check header
         uint8_t LoadHeader[64];
         hSaveFile.Read(LoadHeader, 0x40);
-        if (memcmp(LoadHeader, g_Rom->GetRomAddress(), 0x40) != 0 &&
-            !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
+        if (g_Settings->LoadBool(Setting_EnableDisk) && g_Disk)
         {
-            return false;
+            //Base ROM Information (64DD IPL / Compatible Game ROM) & Disk Info Check
+            if ((memcmp(LoadHeader, &g_Rom->GetRomAddress()[0x10], 0x20) != 0 ||
+                memcmp(&LoadHeader[0x20], g_Disk->GetDiskAddressID(), 0x20) != 0) &&
+                !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if (memcmp(LoadHeader, g_Rom->GetRomAddress(), 0x40) != 0 &&
+                !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
+            {
+                return false;
+            }
         }
         Reset(false, true);
         m_MMU_VM.UnProtectMemory(0x80000000, 0x80000000 + g_Settings->LoadDword(Game_RDRamSize) - 4);
@@ -2079,7 +2147,24 @@ bool CN64System::LoadState(const char * FileName)
         CFile hExtraInfo(ExtraInfo, CFileBase::modeRead);
         if (hExtraInfo.IsOpen())
         {
+            //Extra Info version check
+            hExtraInfo.Read(&Value, sizeof(Value));
+            if (Value != SaveID_1 && Value != SaveID_2)
+                hExtraInfo.SeekToBegin();
+
+            //Disk Interface Info
+            if (Value == SaveID_2)
+            {
+                hExtraInfo.Read(m_Reg.m_DiskInterface, sizeof(uint32_t) * 22);
+
+                //Recover Disk Seek Address (if the save state is done while loading/saving data)
+                if (g_Disk)
+                    DiskBMReadWrite(false);
+            }
+
+            //System Timers Info
             m_SystemTimer.LoadData(hExtraInfo);
+
             hExtraInfo.Close();
         }
     }

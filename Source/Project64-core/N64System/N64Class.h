@@ -184,4 +184,9 @@ private:
 
     //list of function that have been called .. used in profiling
     FUNC_CALLS m_FunctionCalls;
+
+    //list of Save State File IDs
+    const uint32_t SaveID_0 = 0x23D8A6C8;   //Main Save State Info (*.pj)
+    const uint32_t SaveID_1 = 0x56D2CD23;   //Extra Data v1 (System Timing) Info (*.dat)
+    const uint32_t SaveID_2 = 0x750A6BEB;   //Extra Data v2 (Timing + Disk Registers) (*.dat)
 };
