@@ -1,12 +1,12 @@
-﻿// ============ RDB for PJ64 v2.2. GoodN64 v321 =====================================
-// PJ64 v2.2 Official RDB
-// Not for use with PJ64 v1.6 or previous
+﻿// ============ RDB for PJ64 v2.4. GoodN64 v327 =====================================
+// PJ64 v2.4 Official RDB
+// Not for use with previous versions of PJ64
 //---- START OF RDB FILE HEADER ---------------------------------------------------------
 
 [Meta]
-Author=Project64 team
-Version=2.2.4
-Date=2015/03/28
+Author=Project64 Team
+Version=2.4.0
+Date=2020/06/21
 Homepage=www.pj64-emu.com
 
 [Microcode Identifiers]
@@ -1405,13 +1405,6 @@ Internal Name=Diddy Kong Racing
 Status=Compatible
 32bit=No
 
-[F389A35A-17785562-C:4A]
-Good Name=Diddy Kong Racing (J)
-Internal Name=Diddy Kong Racing
-Status=Bad ROM?
-Core Note=Use good dump
-32bit=No
-
 [53D440E7-7519B011-C:45]
 Good Name=Diddy Kong Racing (U) (M2) (V1.0)
 Internal Name=Diddy Kong Racing
@@ -1703,7 +1696,8 @@ Status=Compatible
 [02B1538F-C94B88D0-C:45]
 Good Name=Elmo's Number Journey (U)
 Internal Name=Elmo's Number Journe
-Status=Compatible
+Status=Issues (core)
+Core Note=Carnival level crashes on Medium or Hard difficulty
 
 [E13AE2DC-4FB65CE8-C:4A]
 Good Name=Eltale Monsters (J)
@@ -2184,6 +2178,7 @@ Culling=1
 Good Name=Golden Nugget 64 (U)
 Internal Name=GOLDEN NUGGET 64
 Status=Compatible
+Core Note=Old [!] ROM is bad
 Linking=Off
 
 [0414CA61-2E57B8AA-C:50]
@@ -3544,7 +3539,6 @@ Status=Compatible
 Good Name=Mission Impossible (F)
 Internal Name=MISSION IMPOSSIBLE
 Status=Compatible
-Core Note=Bad dump?
 
 [93EB3F7E-81675E44-C:44]
 Good Name=Mission Impossible (G)
@@ -3557,7 +3551,12 @@ Internal Name=MISSION IMPOSSIBLE
 Status=Compatible
 
 [5F6A04E2-D4FA070D-C:53]
-Good Name=Mission Impossible (S)
+Good Name=Mission Impossible (S) (V1.0)
+Internal Name=MISSION IMPOSSIBLE
+Status=Compatible
+
+[5F6DDEA2-4DD9E759-C:53]
+Good Name=Mission Impossible (S) (V1.1)
 Internal Name=MISSION IMPOSSIBLE
 Status=Compatible
 
@@ -4324,7 +4323,7 @@ Status=Compatible
 Good Name=Pokemon Snap (A)
 Internal Name=POKEMON SNAP
 Status=Issues (plugin)
-Plugin Note= broken; needs accurate FB emu
+Plugin Note=broken; needs accurate FB emu
 Counter Factor=1
 Cheat0=D1382D1C 802C,80382D0F 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3C44 2881,811E3C44 2001,D11E3C46 0098,811E3C46 0001 //Make Picture selectable
@@ -4335,7 +4334,7 @@ CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 Good Name=Pokemon Snap (E)
 Internal Name=POKEMON SNAP
 Status=Issues (plugin)
-Plugin Note= broken; needs accurate FB emu
+Plugin Note=broken; needs accurate FB emu
 Counter Factor=1
 Cheat0=D1381BFC 802C,80381BEF 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3824 2881,811E3824 2001,D11E3826 0098,811E3826 0001 //Make Picture selectable
@@ -4346,7 +4345,7 @@ CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 Good Name=Pokemon Snap (F)
 Internal Name=POKEMON SNAP
 Status=Issues (plugin)
-Plugin Note= broken; needs accurate FB emu
+Plugin Note=broken; needs accurate FB emu
 Counter Factor=1
 Cheat0=D1381BFC 802C,80381BEF 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3744 2881,811E3744 2001,D11E3746 0098,811E3746 0001 //Make Picture selectable
@@ -4357,7 +4356,7 @@ CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 Good Name=Pokemon Snap (G)
 Internal Name=POKEMON SNAP
 Status=Issues (plugin)
-Plugin Note= broken; needs accurate FB emu
+Plugin Note=broken; needs accurate FB emu
 Counter Factor=1
 Cheat0=D1381BDC 802C,80381BCF 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3744 2881,811E3744 2001,D11E3746 0098,811E3746 0001 //Make Picture selectable
@@ -4368,7 +4367,8 @@ CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 Good Name=Pokemon Snap (I)
 Internal Name=POKEMON SNAP
 Status=Issues (plugin)
-Plugin Note= broken; needs accurate FB emu
+Core Note=Old [!] ROM is bad
+Plugin Note=broken; needs accurate FB emu
 Counter Factor=1
 Cheat0=D1381BFC 802C,80381BEF 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3994 2881,811E3994 2001,D11E3996 0098,811E3996 0001 //Make Picture selectable
@@ -4379,7 +4379,7 @@ CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 Good Name=Pokemon Snap (J) (V1.0)
 Internal Name=POKEMON SNAP
 Status=Issues (plugin)
-Plugin Note= broken; needs accurate FB emu
+Plugin Note=broken; needs accurate FB emu
 Counter Factor=1
 Cheat0=D136D22C 802A,8036D21F 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E1EC4 2881,811E1EC4 2001,D11E1EC6 0098,811E1EC6 0001 //Make Picture selectable
@@ -4390,7 +4390,7 @@ CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 Good Name=Pokemon Snap (J) (V1.1)
 Internal Name=POKEMON SNAP
 Status=Issues (plugin)
-Plugin Note= broken; needs accurate FB emu
+Plugin Note=broken; needs accurate FB emu
 Counter Factor=1
 Cheat0=D136D22C 802A,8036D21F 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E1EC4 2881,811E1EC4 2001,D11E1EC6 0098,811E1EC6 0001 //Make Picture selectable
@@ -4401,7 +4401,7 @@ CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 Good Name=Pokemon Snap (S)
 Internal Name=POKEMON SNAP
 Status=Issues (plugin)
-Plugin Note= broken; needs accurate FB emu
+Plugin Note=broken; needs accurate FB emu
 Counter Factor=1
 Cheat0=D1381BFC 802C,80381BEF 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E38C4 2881,811E38C4 2001,D11E38C6 0098,811E38C6 0001 //Make Picture selectable
@@ -4412,7 +4412,7 @@ CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 Good Name=Pokemon Snap (U)
 Internal Name=POKEMON SNAP
 Status=Issues (plugin)
-Plugin Note= broken; needs accurate FB emu
+Plugin Note=broken; needs accurate FB emu
 Counter Factor=1
 Cheat0=D1382D1C 802C,80382D0F 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3184 2881,811E3184 2001,D11E3186 0098,811E3186 0001 //Make Picture selectable
@@ -4423,7 +4423,7 @@ CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 Good Name=Pokemon Snap Station (U)
 Internal Name=POKEMON SNAP
 Status=Issues (plugin)
-Plugin Note= broken; needs accurate FB emu
+Plugin Note=broken; needs accurate FB emu
 Counter Factor=1
 Cheat0=D1382D1C 802C,80382D0F 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E30F4 2881,811E30F4 2001,D11E30F6 0098,811E30F6 0001 //Make Picture selectable
