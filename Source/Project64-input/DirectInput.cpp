@@ -1,5 +1,6 @@
 #include "DirectInput.h"
 #include <Common\StdString.h>
+#include <Common\SyncEvent.h>
 
 CDirectInput::CDirectInput(HINSTANCE hinst) :
     m_hDirectInputDLL(nullptr),
@@ -25,10 +26,7 @@ CDirectInput::CDirectInput(HINSTANCE hinst) :
             }
         }
 
-        if (m_pDIHandle != nullptr)
-        {
-            m_pDIHandle->EnumDevices(DI8DEVCLASS_ALL, stEnumMakeDeviceList, this, DIEDFL_ATTACHEDONLY);
-        }
+        RefreshDeviceList();
     }
 }
 
@@ -98,6 +96,12 @@ BOOL CDirectInput::EnumMakeDeviceList(LPCDIDEVICEINSTANCE lpddi)
     if (DeviceType == DI8DEVTYPE_DEVICE)
     {
         // ignore generic devices
+        return DIENUM_CONTINUE;
+    }
+
+    DEVICE_MAP::iterator itr = m_Devices.find(lpddi->guidInstance);
+    if (itr != m_Devices.end())
+    {
         return DIENUM_CONTINUE;
     }
 
@@ -207,7 +211,7 @@ std::wstring CDirectInput::ButtonAssignment(BUTTON & Button)
             return L"Keyboard: ???";
         }
     }
-    else if (Button.BtnType == BTNTYPE_UNASSIGNED)
+    if (Button.BtnType == BTNTYPE_UNASSIGNED)
     {
         return L"";
     }
@@ -284,6 +288,19 @@ void CDirectInput::UpdateDeviceData(void)
         default:
             didHandle->GetDeviceState(sizeof(device.State.Joy), &device.State.Joy);
         }
+    }
+}
+
+void CDirectInput::DevicesChanged(void)
+{
+    RefreshDeviceList();
+}
+
+void CDirectInput::RefreshDeviceList(void)
+{
+    if (m_pDIHandle != nullptr)
+    {
+        m_pDIHandle->EnumDevices(DI8DEVCLASS_ALL, stEnumMakeDeviceList, this, DIEDFL_ATTACHEDONLY);
     }
 }
 

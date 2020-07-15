@@ -1,6 +1,7 @@
 #pragma once
 #include "ControllerSpec1.1.h"
 #include "Button.h"
+#include "DeviceNotification.h"
 #include "N64Controller.h"
 #define DIRECTINPUT_VERSION 0x0800
 #include <Windows.h>
@@ -28,6 +29,7 @@ public:
     bool IsButtonPressed(BUTTON & Button);
     int8_t AxisPos(BUTTON & PosBtn, BUTTON & NegBtn, uint8_t Range);
     void UpdateDeviceData(void);
+    void DevicesChanged(void);
 
 private:
     CDirectInput();
@@ -38,7 +40,7 @@ private:
     BOOL EnumMakeDeviceList(LPCDIDEVICEINSTANCE lpddi);
     ScanResult ScanKeyboard(const GUID & DeviceGuid, LPDIRECTINPUTDEVICE8 didHandle, uint8_t * KeyboardState, BUTTON & pButton);
     bool AcquireDevice(LPDIRECTINPUTDEVICE8 lpDirectInputDevice);
-    void LoadConfig(void);
+    void RefreshDeviceList(void);
 
     typedef struct
     {
@@ -63,6 +65,7 @@ private:
     };
     typedef std::map<GUID, DEVICE, GUIDComparer> DEVICE_MAP;
 
+    DeviceNotification m_DeviceNotification;
     DEVICE_MAP m_Devices;
     HMODULE m_hDirectInputDLL;
     LPDIRECTINPUT8 m_pDIHandle;

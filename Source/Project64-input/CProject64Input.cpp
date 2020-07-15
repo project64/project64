@@ -16,6 +16,15 @@ CProject64Input::~CProject64Input()
 {
 }
 
+void CProject64Input::DevicesChanged(void)
+{
+    CGuard guard(m_CS);
+    if (m_DirectInput.get() != nullptr)
+    {
+        m_DirectInput->DevicesChanged();
+    }
+}
+
 void CProject64Input::InitiateControllers(CONTROL_INFO * ControlInfo)
 {
     CGuard guard(m_CS);
@@ -101,10 +110,13 @@ std::wstring CProject64Input::ButtonAssignment(BUTTON & Button)
 
 bool CProject64Input::SaveController(uint32_t ControlIndex)
 {
+    CGuard guard(m_CS);
+
     if (ControlIndex >= sizeof(m_Controllers) / sizeof(m_Controllers[0]))
     {
         return false;
     }
     g_Settings->SaveController(ControlIndex, m_ControlInfo.Controls[ControlIndex], m_Controllers[ControlIndex]);
+    m_DirectInput->MapControllerDevice(m_Controllers[ControlIndex]);
     return true;
 }

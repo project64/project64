@@ -11,6 +11,7 @@ public:
     CProject64Input(HINSTANCE hinst);
     ~CProject64Input();
 
+    void DevicesChanged(void);
     void InitiateControllers(CONTROL_INFO * ControlInfo);
     void GetKeys(int32_t Control, BUTTONS * Keys);
     void StartScanDevices(int32_t DisplayCtrlId);
