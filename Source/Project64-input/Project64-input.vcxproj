@@ -57,6 +57,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DeviceNotification.cpp" />
     <ClCompile Include="DirectInput.cpp" />
     <ClCompile Include="InputConfigUI.cpp" />
     <ClCompile Include="InputMain.cpp" />
@@ -67,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
+    <ClInclude Include="DeviceNotification.h" />
     <ClInclude Include="InputSettings.h" />
     <ClInclude Include="InputSettingsID.h" />
     <ClInclude Include="N64Controller.h" />
