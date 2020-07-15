@@ -119,3 +119,16 @@ bool CProject64Input::SaveController(uint32_t ControlIndex)
     m_DirectInput->MapControllerDevice(m_Controllers[ControlIndex]);
     return true;
 }
+
+bool CProject64Input::ResetController(uint32_t ControlIndex)
+{
+    CGuard guard(m_CS);
+
+    if (ControlIndex >= sizeof(m_Controllers) / sizeof(m_Controllers[0]))
+    {
+        return false;
+    }
+    g_Settings->ResetController(ControlIndex, m_ControlInfo.Controls[ControlIndex], m_Controllers[ControlIndex]);
+    m_DirectInput->MapControllerDevice(m_Controllers[ControlIndex]);
+    return true;
+}

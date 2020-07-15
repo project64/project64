@@ -12,6 +12,7 @@ public:
 
     void LoadController(uint32_t ControlIndex, CONTROL & ControllerInfo, N64CONTROLLER & Controller);
     void SaveController(uint32_t ControlIndex, const CONTROL & ControllerInfo, const N64CONTROLLER & Controller);
+    void ResetController(uint32_t ControlIndex, CONTROL & ControllerInfo, N64CONTROLLER & Controller);
 
 private:
     CInputSettings(const CInputSettings&);

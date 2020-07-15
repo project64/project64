@@ -121,6 +121,43 @@ void CInputSettings::SaveController(uint32_t ControlIndex, const CONTROL & Contr
     FlushSettings();
 }
 
+void CInputSettings::ResetController(uint32_t ControlIndex, CONTROL & ControllerInfo, N64CONTROLLER & Controller)
+{
+    struct {
+        const BUTTON & Button;
+        InputSettingID SettingId;
+        uint32_t ControlIndex;
+    }
+    Buttons[] =
+    {
+        { Controller.U_DPAD, Set_Control0_U_DPAD, 0 },
+        { Controller.D_DPAD, Set_Control0_D_DPAD, 0 },
+        { Controller.L_DPAD, Set_Control0_L_DPAD, 0 },
+        { Controller.R_DPAD, Set_Control0_R_DPAD, 0 },
+        { Controller.A_BUTTON, Set_Control0_A_BUTTON, 0 },
+        { Controller.B_BUTTON, Set_Control0_B_BUTTON, 0 },
+        { Controller.U_CBUTTON, Set_Control0_U_CBUTTON, 0 },
+        { Controller.D_CBUTTON, Set_Control0_D_CBUTTON, 0 },
+        { Controller.L_CBUTTON, Set_Control0_L_CBUTTON, 0 },
+        { Controller.R_CBUTTON, Set_Control0_R_CBUTTON, 0 },
+        { Controller.START_BUTTON, Set_Control0_START_BUTTON, 0 },
+        { Controller.Z_TRIG, Set_Control0_Z_TRIG, 0 },
+        { Controller.R_TRIG, Set_Control0_R_TRIG, 0 },
+        { Controller.L_TRIG, Set_Control0_L_TRIG, 0 },
+        { Controller.U_ANALOG, Set_Control0_U_ANALOG, 0 },
+        { Controller.D_ANALOG, Set_Control0_D_ANALOG, 0 },
+        { Controller.L_ANALOG, Set_Control0_L_ANALOG, 0 },
+        { Controller.R_ANALOG, Set_Control0_R_ANALOG, 0 },
+    };
+
+    for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
+    {
+        SetSettingSz((short)Buttons[i].SettingId, NULL);
+    }
+    FlushSettings();
+    LoadController(ControlIndex, ControllerInfo, Controller);
+}
+
 BUTTON CInputSettings::StrToButton(const char * Buffer)
 {
     BUTTON Button = { 0 };

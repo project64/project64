@@ -20,6 +20,7 @@ public:
     BEGIN_MSG_MAP(CControllerSettings)
         MSG_WM_INITDIALOG(OnInitDialog)
         MSG_WM_CTLCOLORSTATIC(OnCtlColorStatic)
+        COMMAND_HANDLER_EX(IDC_BTN_DEFAULTS, BN_CLICKED, DefaultBtnClicked)
         COMMAND_HANDLER_EX(IDC_BTN_SETUP, BN_CLICKED, SetupBtnClicked)
         COMMAND_HANDLER_EX(IDC_CHK_PLUGGED_IN, BN_CLICKED, ItemChanged)
         COMMAND_HANDLER_EX(IDC_CMB_DEVICE, CBN_SELCHANGE, ItemChanged)
@@ -39,9 +40,11 @@ private:
     LRESULT OnScroll(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnScanSuccess(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnScanCanceled(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    void DefaultBtnClicked(UINT Code, int id, HWND ctl);
     void SetupBtnClicked(UINT Code, int id, HWND ctl);
     void ItemChanged(UINT Code, int id, HWND ctl);
     LRESULT	ItemChangedNotify(NMHDR* /*pNMHDR*/);
+    void DisplayController(void);
     void ButtonChannged(void);
     static void stButtonChanged(size_t data) { ((CControllerSettings *)data)->ButtonChannged(); }
 
@@ -89,32 +92,17 @@ CControllerSettings::CControllerSettings(uint32_t ControllerNumber) :
 
 BOOL CControllerSettings::OnInitDialog(CWindow /*wndFocus*/, LPARAM /*lInitParam*/)
 {
-    N64CONTROLLER & Controller = g_InputPlugin->Controllers(m_ControllerNumber);
-    CONTROL & ControlInfo = g_InputPlugin->ControlInfo(m_ControllerNumber);
-    GetDlgItem(IDC_BTN_DEFAULTS).EnableWindow(false);
     GetDlgItem(IDC_BTN_LOAD).EnableWindow(false);
     GetDlgItem(IDC_BTN_SAVE).EnableWindow(false);
     m_Range.Attach(GetDlgItem(IDC_SLIDER_RANGE));
     m_Range.SetTicFreq(1);
     m_Range.SetRangeMin(1);
     m_Range.SetRangeMax(100);
-    m_Range.SetPos(Controller.Range);
-    CWindow(GetDlgItem(IDC_LABEL_RANGE)).SetWindowText(stdstr_f("%d%%", m_Range.GetPos()).ToUTF16().c_str());
     m_PluggedIn.Attach(GetDlgItem(IDC_CHK_PLUGGED_IN));
-    m_PluggedIn.SetCheck(ControlInfo.Present != 0 ? BST_CHECKED : BST_UNCHECKED);
     m_cmbDevice.Attach(GetDlgItem(IDC_CMB_DEVICE));
     m_cmbDevice.SetItemData(m_cmbDevice.AddString(L"None"), PLUGIN_NONE);
     m_cmbDevice.SetItemData(m_cmbDevice.AddString(L"Mem Pak"), PLUGIN_MEMPAK);
     m_cmbDevice.SetItemData(m_cmbDevice.AddString(L"Rumble Pak"), PLUGIN_RUMBLE_PAK);
-    m_cmbDevice.SetCurSel(0);
-    for (DWORD i = 0, n = m_cmbDevice.GetCount(); i < n; i++)
-    {
-        if (m_cmbDevice.GetItemData(i) == (DWORD)ControlInfo.Plugin)
-        {
-            m_cmbDevice.SetCurSel(i);
-            break;
-        }
-    }
 
     m_ControllerImg.SubclassWindow(GetDlgItem(IDC_BMP_CONTROLLER));
     m_ControllerImg.SetBitmap(MAKEINTRESOURCE(IDB_CONTROLLER));
@@ -130,6 +118,7 @@ BOOL CControllerSettings::OnInitDialog(CWindow /*wndFocus*/, LPARAM /*lInitParam
         Buttons[i]->SubclassWindow(m_hWnd);
         Buttons[i]->SetChangeCallback(stButtonChanged, (size_t)this);
     }
+    DisplayController();
     return TRUE;
 }
 
@@ -196,6 +185,13 @@ LRESULT CControllerSettings::OnScanCanceled(UINT /*uMsg*/, WPARAM /*wParam*/, LP
     return 0;
 }
 
+void CControllerSettings::DefaultBtnClicked(UINT Code, int id, HWND ctl)
+{
+    g_InputPlugin->ResetController(m_ControllerNumber);
+    DisplayController();
+    SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
+}
+
 void CControllerSettings::SetupBtnClicked(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
     m_SetupIndex = 0;
@@ -211,6 +207,35 @@ LRESULT	CControllerSettings::ItemChangedNotify(NMHDR* /*pNMHDR*/)
 {
     SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
     return 0;
+}
+
+void CControllerSettings::DisplayController(void)
+{
+    N64CONTROLLER & Controller = g_InputPlugin->Controllers(m_ControllerNumber);
+    CONTROL & ControlInfo = g_InputPlugin->ControlInfo(m_ControllerNumber);
+    m_cmbDevice.SetCurSel(0);
+    for (DWORD i = 0, n = m_cmbDevice.GetCount(); i < n; i++)
+    {
+        if (m_cmbDevice.GetItemData(i) == (DWORD)ControlInfo.Plugin)
+        {
+            m_cmbDevice.SetCurSel(i);
+            break;
+        }
+    }
+    m_PluggedIn.SetCheck(ControlInfo.Present != 0 ? BST_CHECKED : BST_UNCHECKED);
+    m_Range.SetPos(Controller.Range);
+    CWindow(GetDlgItem(IDC_LABEL_RANGE)).SetWindowText(stdstr_f("%d%%", m_Range.GetPos()).ToUTF16().c_str());
+    CScanButton * Buttons[] = {
+        &m_ButtonUDPad, &m_ButtonDDPad, &m_ButtonLDPad, &m_ButtonRDPad, &m_ButtonA, &m_ButtonB,
+        &m_ButtonCUp, &m_ButtonCDown, &m_ButtonCLeft, &m_ButtonCRight, &m_ButtonStart,
+        &m_ButtonZtrigger, &m_ButtonRTrigger, &m_ButtonLTrigger,
+        &m_ButtonAnalogU, &m_ButtonAnalogD, &m_ButtonAnalogL, &m_ButtonAnalogR
+    };
+
+    for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
+    {
+        Buttons[i]->DisplayButton();
+    }
 }
 
 void CControllerSettings::ButtonChannged(void)
