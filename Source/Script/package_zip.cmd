@@ -58,6 +58,7 @@ copy "%base_dir%\Plugin%VSPlatform%\Audio\Project64-Audio.dll" "%base_dir%\Bin\P
 copy "%base_dir%\Plugin%VSPlatform%\GFX\Jabo_Direct3D8.dll" "%base_dir%\Bin\Package\Plugin%VSPlatform%\GFX"
 copy "%base_dir%\Plugin%VSPlatform%\GFX\Project64-Video.dll" "%base_dir%\Bin\Package\Plugin%VSPlatform%\GFX"
 copy "%base_dir%\Plugin%VSPlatform%\Input\PJ64_NRage.dll" "%base_dir%\Bin\Package\Plugin%VSPlatform%\Input"
+copy "%base_dir%\Plugin%VSPlatform%\Input\Project64-Input.dll" "%base_dir%\Bin\Package\Plugin%VSPlatform%\Input"
 copy "%base_dir%\Plugin%VSPlatform%\RSP\RSP 1.7.dll" "%base_dir%\Bin\Package\Plugin%VSPlatform%\RSP"
 
 cd %base_dir%\Bin\Package
