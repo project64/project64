@@ -71,6 +71,7 @@ void CProject64Input::StartScanDevices(int32_t DisplayCtrlId)
 {
     m_Scanning = true;
     m_DisplayCtrlId = DisplayCtrlId;
+    m_DirectInput->UpdateDeviceData();
 }
 
 void CProject64Input::EndScanDevices(void)

@@ -17,13 +17,16 @@ class CControllerSettings :
 public:
     enum { IDD = IDD_Controller };
 
-    BEGIN_MSG_MAP(CDebugSettings)
+    BEGIN_MSG_MAP(CControllerSettings)
         MSG_WM_INITDIALOG(OnInitDialog)
         MSG_WM_CTLCOLORSTATIC(OnCtlColorStatic)
+        COMMAND_HANDLER_EX(IDC_BTN_SETUP, BN_CLICKED, SetupBtnClicked)
         COMMAND_HANDLER_EX(IDC_CHK_PLUGGED_IN, BN_CLICKED, ItemChanged)
         COMMAND_HANDLER_EX(IDC_CMB_DEVICE, CBN_SELCHANGE, ItemChanged)
         NOTIFY_HANDLER_EX(IDC_TACK_RANGE, NM_RELEASEDCAPTURE, ItemChangedNotify);
         MESSAGE_HANDLER(WM_HSCROLL, OnScroll)
+        MESSAGE_HANDLER(CScanButton::WM_SCAN_SUCCESS, OnScanSuccess)
+        MESSAGE_HANDLER(CScanButton::WM_SCAN_CANCELED, OnScanCanceled)
         CHAIN_MSG_MAP(CPropertyPageImpl<CControllerSettings>)
     END_MSG_MAP()
 
@@ -34,6 +37,9 @@ public:
 
 private:
     LRESULT OnScroll(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnScanSuccess(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnScanCanceled(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    void SetupBtnClicked(UINT Code, int id, HWND ctl);
     void ItemChanged(UINT Code, int id, HWND ctl);
     LRESULT	ItemChangedNotify(NMHDR* /*pNMHDR*/);
     void ButtonChannged(void);
@@ -42,6 +48,7 @@ private:
     std::wstring m_Title;
     uint32_t m_ControllerNumber;
     uint32_t m_ScanCount;
+    int32_t m_SetupIndex;
     CBitmapPicture m_ControllerImg;
     CButton m_PluggedIn;
     CComboBox m_cmbDevice;
@@ -56,6 +63,7 @@ private:
 CControllerSettings::CControllerSettings(uint32_t ControllerNumber) :
     m_ControllerNumber(ControllerNumber),
     m_ScanCount(0),
+    m_SetupIndex(-1),
     m_ButtonUDPad(g_InputPlugin->Controllers(ControllerNumber).U_DPAD, IDC_EDIT_DIGITIAL_UP, IDC_BTN_DIGITIAL_UP),
     m_ButtonDDPad(g_InputPlugin->Controllers(ControllerNumber).D_DPAD, IDC_EDIT_DIGITIAL_DOWN, IDC_BTN_DIGITIAL_DOWN),
     m_ButtonLDPad(g_InputPlugin->Controllers(ControllerNumber).L_DPAD, IDC_EDIT_DIGITIAL_LEFT, IDC_BTN_DIGITIAL_LEFT),
@@ -83,7 +91,6 @@ BOOL CControllerSettings::OnInitDialog(CWindow /*wndFocus*/, LPARAM /*lInitParam
 {
     N64CONTROLLER & Controller = g_InputPlugin->Controllers(m_ControllerNumber);
     CONTROL & ControlInfo = g_InputPlugin->ControlInfo(m_ControllerNumber);
-    GetDlgItem(IDC_BTN_SETUP).EnableWindow(false);
     GetDlgItem(IDC_BTN_DEFAULTS).EnableWindow(false);
     GetDlgItem(IDC_BTN_LOAD).EnableWindow(false);
     GetDlgItem(IDC_BTN_SAVE).EnableWindow(false);
@@ -146,6 +153,7 @@ bool CControllerSettings::OnApply()
     Controller.Range = (uint8_t)m_Range.GetPos();
     ControlInfo.Present = (m_PluggedIn.GetCheck() == BST_CHECKED) ? 1 : 0;
     ControlInfo.Plugin = m_cmbDevice.GetItemData(m_cmbDevice.GetCurSel());
+
     return g_InputPlugin->SaveController(m_ControllerNumber);
 }
 
@@ -157,6 +165,41 @@ LRESULT CControllerSettings::OnScroll(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
         CWindow(GetDlgItem(IDC_LABEL_RANGE)).SetWindowText(stdstr_f("%d%%", m_Range.GetPos()).ToUTF16().c_str());
     }
     return 0;
+}
+
+LRESULT CControllerSettings::OnScanSuccess(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+    if (m_SetupIndex < 0)
+    {
+        return 0;
+    }
+
+    CScanButton * Buttons[] = {
+        &m_ButtonUDPad, &m_ButtonDDPad, &m_ButtonLDPad, &m_ButtonRDPad, 
+        &m_ButtonAnalogU, &m_ButtonAnalogD, &m_ButtonAnalogL, &m_ButtonAnalogR,
+        &m_ButtonCUp, &m_ButtonCDown, &m_ButtonCLeft, &m_ButtonCRight, 
+        &m_ButtonB, &m_ButtonA, &m_ButtonStart, &m_ButtonZtrigger,
+        &m_ButtonLTrigger, &m_ButtonRTrigger
+    };
+
+    m_SetupIndex += 1;
+    if (m_SetupIndex < (sizeof(Buttons) / sizeof(Buttons[0])))
+    {
+        Buttons[m_SetupIndex]->DetectKey();
+    }
+    return 0;
+}
+
+LRESULT CControllerSettings::OnScanCanceled(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+    m_SetupIndex = -1;
+    return 0;
+}
+
+void CControllerSettings::SetupBtnClicked(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
+{
+    m_SetupIndex = 0;
+    m_ButtonUDPad.DetectKey();
 }
 
 void CControllerSettings::ItemChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)

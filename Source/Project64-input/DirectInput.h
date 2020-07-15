@@ -36,7 +36,7 @@ private:
 
     static BOOL CALLBACK stEnumMakeDeviceList(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef);
     BOOL EnumMakeDeviceList(LPCDIDEVICEINSTANCE lpddi);
-    ScanResult ScanKeyboard(const GUID & DeviceGuid, LPDIRECTINPUTDEVICE8 didHandle, BUTTON & pButton);
+    ScanResult ScanKeyboard(const GUID & DeviceGuid, LPDIRECTINPUTDEVICE8 didHandle, uint8_t * KeyboardState, BUTTON & pButton);
     bool AcquireDevice(LPDIRECTINPUTDEVICE8 lpDirectInputDevice);
     void LoadConfig(void);
 

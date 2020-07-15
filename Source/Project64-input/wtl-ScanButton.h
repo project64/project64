@@ -10,20 +10,25 @@ class CScanButton
     }; 
 
 public:
+    enum
+    {
+        WM_SCAN_SUCCESS = WM_USER + 0x140,
+        WM_SCAN_CANCELED = WM_USER + 0x141,
+    };
     typedef void(*ChangeCallback)(size_t Data);
 
     CScanButton(BUTTON & Button, int DisplayCtrlId, int ScanBtnId);
 
     void SubclassWindow(CWindow Wnd);
     void SetChangeCallback(ChangeCallback callback, size_t callbackdata);
+    void DetectKey(void);
+    void DisplayButton(void);
 
 private:
     CScanButton(void);
     CScanButton(const CScanButton&);
     CScanButton& operator=(const CScanButton&);
 
-    void DisplayButton(void);
-    void OnScan(void);
     void OnTimer(UINT_PTR nIDEvent);
     void MakeOverlay(void);
     static UINT_PTR CALLBACK ScanButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

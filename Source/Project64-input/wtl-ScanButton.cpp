@@ -35,7 +35,7 @@ void CScanButton::DisplayButton(void)
     m_DisplayCtrl.SetWindowText(g_InputPlugin->ButtonAssignment(m_Button).c_str());
 }
 
-void CScanButton::OnScan(void)
+void CScanButton::DetectKey(void)
 {
     enum
     {
@@ -53,7 +53,7 @@ void CScanButton::OnTimer(UINT_PTR nIDEvent)
 {
     if (nIDEvent == DETECT_KEY_TIMER)
     {
-        bool Stop = false;
+        bool Stop = false, ScanSuccess = false;
         if (g_InputPlugin)
         {
             BUTTON Button = m_Button;
@@ -68,6 +68,7 @@ void CScanButton::OnTimer(UINT_PTR nIDEvent)
             }
             if (Result == CDirectInput::SCAN_SUCCEED || Result == CDirectInput::SCAN_ESCAPE)
             {
+                ScanSuccess = Result == CDirectInput::SCAN_SUCCEED;
                 Stop = true;
                 DisplayButton();
             }
@@ -108,6 +109,7 @@ void CScanButton::OnTimer(UINT_PTR nIDEvent)
  
             g_InputPlugin->EndScanDevices();
             m_DisplayCtrl.Invalidate();
+            m_DisplayCtrl.GetParent().SendMessage(ScanSuccess ? WM_SCAN_SUCCESS : WM_SCAN_CANCELED);
         }
     }
 }
@@ -147,7 +149,7 @@ UINT_PTR CALLBACK CScanButton::ScanButtonProc(HWND hWnd, UINT uMsg, WPARAM wPara
         _this->m_ScanBtn.GetWindowRect(&rect);
         if (PtInRect(&rect, ptCursor))
         {
-            _this->OnScan();
+            _this->DetectKey();
         }
     }
     else if (uMsg == WM_TIMER)

@@ -7,7 +7,6 @@ CDirectInput::CDirectInput(HINSTANCE hinst) :
     m_hinst(hinst),
     m_hWnd(nullptr)
 {
-    LoadConfig();
     if (m_hDirectInputDLL == nullptr)
     {
         m_hDirectInputDLL = LoadLibrary(L"dinput8.dll");
@@ -173,7 +172,7 @@ CDirectInput::ScanResult CDirectInput::ScanDevices(BUTTON & Button)
         uint8_t DeviceType = LOBYTE(device.dwDevType);
         if (DeviceType == DI8DEVTYPE_KEYBOARD)
         {
-            Result = ScanKeyboard(itr->first, device.didHandle, Button);
+            Result = ScanKeyboard(itr->first, device.didHandle, device.State.Keyboard, Button);
         }
         else if (DeviceType == DI8DEVTYPE_MOUSE)
         {
@@ -288,7 +287,7 @@ void CDirectInput::UpdateDeviceData(void)
     }
 }
 
-CDirectInput::ScanResult CDirectInput::ScanKeyboard(const GUID & DeviceGuid, LPDIRECTINPUTDEVICE8 didHandle, BUTTON & pButton)
+CDirectInput::ScanResult CDirectInput::ScanKeyboard(const GUID & DeviceGuid, LPDIRECTINPUTDEVICE8 didHandle, uint8_t * KeyboardState, BUTTON & pButton)
 {
     if (didHandle == nullptr)
     {
@@ -304,6 +303,11 @@ CDirectInput::ScanResult CDirectInput::ScanKeyboard(const GUID & DeviceGuid, LPD
 
     for (size_t i = 0, n = sizeof(cKeys) / sizeof(cKeys[0]); i < n; i++)
     {
+        if (KeyboardState[i] == cKeys[i])
+        {
+            continue;
+        }
+        KeyboardState[i] = cKeys[i];
         if ((cKeys[i] & 0x80) == 0)
         {
             continue;
@@ -342,9 +346,4 @@ bool CDirectInput::AcquireDevice(LPDIRECTINPUTDEVICE8 lpDirectInputDevice)
         return true;
     }
     return false;
-}
-
-void CDirectInput::LoadConfig(void)
-{
-
 }
