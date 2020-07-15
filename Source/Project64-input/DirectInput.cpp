@@ -340,7 +340,6 @@ void CDirectInput::GetAxis(N64CONTROLLER & Controller, BUTTONS * Keys)
         case BTNTYPE_JOYSLIDER:
         case BTNTYPE_JOYAXE:
             l_Value = (plRawState[btnButton.Offset] - MAX_AXIS_VALUE) * -1;
-            OutputDebugString(stdstr_f("%d: l_Value: %d\n", i, l_Value).ToUTF16().c_str());
 
             if (btnButton.AxisID == AI_AXE_NEGATIVE)
             {
