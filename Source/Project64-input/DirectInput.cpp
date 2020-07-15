@@ -178,13 +178,9 @@ CDirectInput::ScanResult CDirectInput::ScanDevices(BUTTON & Button)
         {
             Result = ScanKeyboard(itr->first, device.didHandle, device.State.Keyboard, Button);
         }
-        else if (DeviceType == DI8DEVTYPE_MOUSE)
+        else if (DeviceType != DI8DEVTYPE_MOUSE)
         {
-            //dwReturn = ScanMouse(&g_devList[i], lpdwCounter, pButton);
-        }
-        else
-        {
-           // dwReturn = ScanGamePad(&g_devList[i], lpdwCounter, pButton, i);
+            Result = ScanGamePad(itr->first, device.didHandle, device.State.Joy, Button);
         }
 
         if (Result != SCAN_FAILED)
@@ -197,6 +193,64 @@ CDirectInput::ScanResult CDirectInput::ScanDevices(BUTTON & Button)
 
 std::wstring CDirectInput::ButtonAssignment(BUTTON & Button)
 {
+    static const char * iGamepad[] = 
+    {
+        "X-axis",
+        "Y-axis",
+        "Z-axis",
+        "X-rotation",
+        "Y-rotation",
+        "Z-rotation",
+        "Slider",
+        "Slider",
+        "PoV",
+        "PoV",
+        "PoV",
+        "PoV",
+        "Button" 
+    };
+    static const char * AxeID[] = 
+    { 
+        " +",
+        " -",
+        " /\\",
+        " >",
+        " \\/",
+        " <" 
+    };
+
+    if (Button.BtnType == BTNTYPE_JOYBUTTON)
+    {
+        return stdstr_f("Button %u", Button.Offset).ToUTF16();
+    }
+    if (Button.BtnType == BTNTYPE_JOYAXE)
+    {
+        stdstr_f Offset("%u", Button.Offset);
+        if (Button.Offset < (sizeof(iGamepad) / sizeof(iGamepad[0])))
+        {
+            Offset = iGamepad[Button.Offset];
+        }
+        stdstr_f AxisId(" %u", Button.AxisID);
+        if (Button.AxisID < (sizeof(AxeID) / sizeof(AxeID[0])))
+        {
+            AxisId = AxeID[Button.AxisID];
+        }
+        return stdstr_f("%s%s", Offset.c_str(), AxisId.c_str()).ToUTF16();
+    }
+    if (Button.BtnType == BTNTYPE_JOYPOV)
+    {
+        stdstr_f Offset("%u", Button.Offset);
+        if (Button.Offset < (sizeof(iGamepad) / sizeof(iGamepad[0])))
+        {
+            Offset = iGamepad[Button.Offset];
+        }
+        stdstr_f AxisId(" %u", Button.AxisID);
+        if ((Button.AxisID + 2) < (sizeof(AxeID) / sizeof(AxeID[0])))
+        {
+            AxisId = AxeID[Button.AxisID + 2];
+        }
+        return stdstr_f("%s%s", Offset.c_str(), AxisId.c_str()).ToUTF16();
+    }
     if (Button.BtnType == BTNTYPE_KEYBUTTON)
     {
         DEVICE_MAP::iterator itr = m_Devices.find(GUID_SysKeyboard);
@@ -229,37 +283,110 @@ bool CDirectInput::IsButtonPressed(BUTTON & Button)
     {
     case BTNTYPE_KEYBUTTON:
         return (Device.State.Keyboard[Button.Offset] & 0x80) != 0;
+    case BTNTYPE_JOYBUTTON:
+        return (Device.State.Joy.rgbButtons[Button.Offset] & 0x80) != 0;
+    case BTNTYPE_JOYPOV:
+        return JoyPadPovPressed((AI_POV)Button.AxisID, ((uint32_t *)&Device.State.Joy)[Button.Offset]);
     }
     return false;
 }
 
-int8_t CDirectInput::AxisPos(BUTTON & PosBtn, BUTTON & NegBtn, uint8_t Range)
+void CDirectInput::GetAxis(N64CONTROLLER & Controller, BUTTONS * Keys)
 {
-    int8_t Pos = 0;
-    if (PosBtn.Device != nullptr)
+    enum
     {
-        DEVICE & Device = *(DEVICE *)PosBtn.Device;
-        switch (PosBtn.BtnType)
-        {
-        case BTNTYPE_KEYBUTTON:
-            Pos += (Device.State.Keyboard[PosBtn.Offset] & 0x80) != 0 ? 127 : 0;
-        }
-    }
-    if (NegBtn.Device != nullptr)
-    {
-        DEVICE & Device = *(DEVICE *)NegBtn.Device;
-        switch (NegBtn.BtnType)
-        {
-        case BTNTYPE_KEYBUTTON:
-            Pos -= (Device.State.Keyboard[NegBtn.Offset] & 0x80) != 0 ? 127 : 0;
-        }
-    }
+        N64DIVIDER = 258,
+    };
 
-    if (Pos != 0)
+    Keys->X_AXIS = 0;
+    Keys->Y_AXIS = 0;
+
+    bool b_Value;
+    long l_Value = 0;
+
+    long lAxisValueX = 0;
+    long lAxisValueY = 0;
+
+    int bPadDeadZone = 5;
+    long lDeadZoneValue = bPadDeadZone * RANGE_RELATIVE / 100;
+    float fDeadZoneRelation = (float)RANGE_RELATIVE / (float)(RANGE_RELATIVE - lDeadZoneValue);
+
+    struct
     {
-        Pos = (int8_t)(Pos * (Range / 100.0));
+        BUTTON & Button;
+        bool Negative;
     }
-    return Pos;
+    Buttons[] =
+    {
+        { Controller.R_ANALOG, false },
+        { Controller.L_ANALOG, true },
+        { Controller.D_ANALOG, true },
+        { Controller.U_ANALOG, false },
+    };
+
+    for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
+    {
+        bool fNegInput = Buttons[i].Negative;
+        BUTTON & btnButton = Buttons[i].Button;
+        if (btnButton.Device == nullptr)
+        {
+            continue;
+        }
+        DEVICE & Device = *(DEVICE *)btnButton.Device;
+        LPLONG plRawState = (LPLONG)&Device.State.Joy;
+
+        switch (btnButton.BtnType)
+        {
+        case BTNTYPE_JOYSLIDER:
+        case BTNTYPE_JOYAXE:
+            l_Value = (plRawState[btnButton.Offset] - MAX_AXIS_VALUE) * -1;
+            OutputDebugString(stdstr_f("%d: l_Value: %d\n", i, l_Value).ToUTF16().c_str());
+
+            if (btnButton.AxisID == AI_AXE_NEGATIVE)
+            {
+                fNegInput = !fNegInput;
+
+                b_Value = (l_Value <= -lDeadZoneValue);
+                if (b_Value)
+                    l_Value = (long)((float)(l_Value + lDeadZoneValue) * fDeadZoneRelation);
+            }
+            else
+            {
+                b_Value = (l_Value >= lDeadZoneValue);
+                if (b_Value)
+                    l_Value = (long)((float)(l_Value - lDeadZoneValue) * fDeadZoneRelation);
+            }
+            break;
+        case BTNTYPE_KEYBUTTON:
+            if ((Device.State.Keyboard[btnButton.Offset] & 0x80) != 0)
+            {
+                b_Value = true;
+                l_Value = MAX_AXIS_VALUE;
+            }
+            else
+            {
+                b_Value = false;
+            }
+            break;
+        default:
+            b_Value = false;
+        }
+
+        if (b_Value)
+        {
+            if (fNegInput)
+                l_Value = -l_Value;
+
+            if (i < 2)
+                lAxisValueX += l_Value;
+            else
+                lAxisValueY += l_Value;
+        }
+    }
+    if (lAxisValueX > MAX_AXIS_VALUE) { lAxisValueX = MAX_AXIS_VALUE; }
+    if (lAxisValueY > MAX_AXIS_VALUE) { lAxisValueY = MAX_AXIS_VALUE; }
+    Keys->X_AXIS = lAxisValueX / N64DIVIDER;
+    Keys->Y_AXIS = lAxisValueY / N64DIVIDER;
 }
 
 void CDirectInput::UpdateDeviceData(void)
@@ -343,6 +470,122 @@ CDirectInput::ScanResult CDirectInput::ScanKeyboard(const GUID & DeviceGuid, LPD
     return SCAN_FAILED;
 }
 
+CDirectInput::ScanResult CDirectInput::ScanGamePad(const GUID & DeviceGuid, LPDIRECTINPUTDEVICE8 didHandle, DIJOYSTATE & BaseState, BUTTON & pButton)
+{
+    DIJOYSTATE JoyState = { 0 };
+    HRESULT hr = didHandle->GetDeviceState(sizeof(DIJOYSTATE), &JoyState);
+    if (FAILED(hr))
+    {
+        didHandle->Acquire();
+        return SCAN_FAILED;
+    }
+
+    uint32_t JoyPad[][2] = 
+    { 
+        { FIELD_OFFSET(DIJOYSTATE, lX) / sizeof(uint32_t), BTNTYPE_JOYAXE },
+        { FIELD_OFFSET(DIJOYSTATE, lY) / sizeof(uint32_t), BTNTYPE_JOYAXE },
+        { FIELD_OFFSET(DIJOYSTATE, lZ) / sizeof(uint32_t), BTNTYPE_JOYAXE },
+        { FIELD_OFFSET(DIJOYSTATE, lRx) / sizeof(uint32_t), BTNTYPE_JOYAXE },
+        { FIELD_OFFSET(DIJOYSTATE, lRy) / sizeof(uint32_t), BTNTYPE_JOYAXE },
+        { FIELD_OFFSET(DIJOYSTATE, lRz) / sizeof(uint32_t), BTNTYPE_JOYAXE },
+        { FIELD_OFFSET(DIJOYSTATE, rglSlider[0]) / sizeof(uint32_t), BTNTYPE_JOYSLIDER },
+        { FIELD_OFFSET(DIJOYSTATE, rglSlider[1]) / sizeof(uint32_t), BTNTYPE_JOYSLIDER },
+        { FIELD_OFFSET(DIJOYSTATE, rgdwPOV[0]) / sizeof(uint32_t), BTNTYPE_JOYPOV },
+        { FIELD_OFFSET(DIJOYSTATE, rgdwPOV[1]) / sizeof(uint32_t), BTNTYPE_JOYPOV },
+        { FIELD_OFFSET(DIJOYSTATE, rgdwPOV[2]) / sizeof(uint32_t), BTNTYPE_JOYPOV },
+        { FIELD_OFFSET(DIJOYSTATE, rgdwPOV[3]) / sizeof(uint32_t), BTNTYPE_JOYPOV }
+    };
+
+    uint8_t bAxeDirection = 0;
+    int32_t foundJoyPad = -1;
+    for (int32_t i = 0, n = sizeof(JoyPad) / sizeof(JoyPad[0]); i < n; i++)
+    {
+        uint32_t lValue = ((int32_t*)&JoyState)[JoyPad[i][0]];
+        uint32_t BaseValue = ((int32_t*)&BaseState)[JoyPad[i][0]];
+        if (lValue == BaseValue)
+        {
+            continue;
+        }
+        ((int32_t*)&(BaseState))[JoyPad[i][0]] = lValue;
+
+        if ((JoyPad[i][1] == BTNTYPE_JOYAXE) || (JoyPad[i][1] == BTNTYPE_JOYSLIDER))
+        {
+            enum
+            {
+                AXIS_TOP_VALUE = MAX_AXIS_VALUE / 2,
+                AXIS_BOTTOM_VALUE = MAX_AXIS_VALUE + AXIS_TOP_VALUE,
+            };
+            if (lValue < AXIS_TOP_VALUE && BaseValue >= AXIS_TOP_VALUE)
+            {
+                bAxeDirection = AI_AXE_POSITIVE;
+                foundJoyPad = i;
+                break;
+            }
+            else if (lValue > AXIS_BOTTOM_VALUE && BaseValue <= AXIS_BOTTOM_VALUE)
+            {
+                bAxeDirection = AI_AXE_NEGATIVE;
+                foundJoyPad = i;
+                break;
+            }
+        }
+        if (JoyPad[i][1] == BTNTYPE_JOYPOV)
+        {            
+            AI_POV pov[] =
+            {
+                AI_POV_UP,
+                AI_POV_DOWN,
+                AI_POV_LEFT,
+                AI_POV_RIGHT,
+            };
+
+            for (size_t p = 0; p < (sizeof(pov) / sizeof(pov[0])); p++)
+            {
+                if (JoyPadPovPressed(pov[p], lValue) && !JoyPadPovPressed(pov[p], BaseValue))
+                {
+                    bAxeDirection = (uint8_t)pov[p];
+                    foundJoyPad = i;
+                    break;
+                }
+            }
+            if (foundJoyPad >= 0)
+            {
+                break;
+            }
+        }
+    }
+
+    if (foundJoyPad >= 0)
+    {    
+        pButton.Offset = (uint8_t)JoyPad[foundJoyPad][0];
+        pButton.AxisID = (uint8_t)bAxeDirection;
+        pButton.BtnType = (BtnType)JoyPad[foundJoyPad][1];
+        pButton.DeviceGuid = DeviceGuid;
+        pButton.Device = nullptr;
+        return SCAN_SUCCEED;
+    }
+
+    for (uint8_t i = 0, n = sizeof(JoyState.rgbButtons) / sizeof(JoyState.rgbButtons[0]); i < n; i++)
+    {
+        if (BaseState.rgbButtons[i] == JoyState.rgbButtons[i])
+        {
+            continue;
+        }
+        BaseState.rgbButtons[i] = JoyState.rgbButtons[i];
+
+        if ((JoyState.rgbButtons[i] & 0x80) == 0)
+        {
+            continue;
+        }
+        pButton.Offset = i;
+        pButton.AxisID = 0;
+        pButton.BtnType = BTNTYPE_JOYBUTTON;
+        pButton.DeviceGuid = DeviceGuid;
+        pButton.Device = nullptr;
+        return SCAN_SUCCEED;
+    }
+    return SCAN_FAILED;
+}
+
 bool CDirectInput::AcquireDevice(LPDIRECTINPUTDEVICE8 lpDirectInputDevice)
 {
     HRESULT hResult = lpDirectInputDevice->Acquire();
@@ -361,6 +604,32 @@ bool CDirectInput::AcquireDevice(LPDIRECTINPUTDEVICE8 lpDirectInputDevice)
     {
         lpDirectInputDevice->Poll();
         return true;
+    }
+    return false;
+}
+
+bool CDirectInput::JoyPadPovPressed(AI_POV Pov, int32_t Angle)
+{
+    enum
+    {
+        POV_ANGLE_THRESH = 5675
+    };
+
+    if (LOWORD(Angle) == 0xFFFF)
+    {
+        return false;
+    }
+
+    switch (Pov)
+    {
+    case AI_POV_UP:
+        return ((Angle >= 36000 - POV_ANGLE_THRESH) || (Angle <= 0 + POV_ANGLE_THRESH));
+    case AI_POV_RIGHT:
+        return ((Angle >= 9000 - POV_ANGLE_THRESH) && (Angle <= 9000 + POV_ANGLE_THRESH));
+    case AI_POV_DOWN:
+        return ((Angle >= 18000 - POV_ANGLE_THRESH) && (Angle <= 18000 + POV_ANGLE_THRESH));
+    case AI_POV_LEFT:
+        return ((Angle >= 27000 - POV_ANGLE_THRESH) && (Angle <= 27000 + POV_ANGLE_THRESH));
     }
     return false;
 }

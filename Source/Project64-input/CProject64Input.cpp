@@ -72,8 +72,7 @@ void CProject64Input::GetKeys(int32_t Control, BUTTONS * Keys)
     Keys->U_CBUTTON = m_DirectInput->IsButtonPressed(Controller.U_CBUTTON);
     Keys->R_TRIG = m_DirectInput->IsButtonPressed(Controller.R_TRIG);
     Keys->L_TRIG = m_DirectInput->IsButtonPressed(Controller.L_TRIG);
-    Keys->Y_AXIS = m_DirectInput->AxisPos(Controller.U_ANALOG, Controller.D_ANALOG, Controller.Range);
-    Keys->X_AXIS = m_DirectInput->AxisPos(Controller.R_ANALOG, Controller.L_ANALOG, Controller.Range);
+    m_DirectInput->GetAxis(Controller, Keys);
 }
 
 void CProject64Input::StartScanDevices(int32_t DisplayCtrlId)

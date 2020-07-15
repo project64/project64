@@ -11,6 +11,25 @@
 
 class CDirectInput 
 {
+    enum
+    {
+        CONFIG_THRESHOLD = 50,
+        MAX_AXIS_VALUE = 0x7FFF,
+        RANGE_RELATIVE = 0x8000,
+        AI_AXE_POSITIVE = 0,
+        AI_AXE_NEGATIVE = 1,
+        THRESHOLD = 50,
+        ABS_THRESHOLD = (RANGE_RELATIVE * THRESHOLD / 100)
+    };
+
+    enum AI_POV
+    {
+        AI_POV_UP = 0,
+        AI_POV_RIGHT = 1,
+        AI_POV_DOWN = 2,
+        AI_POV_LEFT = 3,
+    };
+
 public:
     enum ScanResult
     {
@@ -27,7 +46,7 @@ public:
     ScanResult ScanDevices(BUTTON & Button);
     std::wstring ButtonAssignment(BUTTON & Button);
     bool IsButtonPressed(BUTTON & Button);
-    int8_t AxisPos(BUTTON & PosBtn, BUTTON & NegBtn, uint8_t Range);
+    void GetAxis(N64CONTROLLER & Controller, BUTTONS * Keys);
     void UpdateDeviceData(void);
     void DevicesChanged(void);
 
@@ -39,8 +58,10 @@ private:
     static BOOL CALLBACK stEnumMakeDeviceList(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef);
     BOOL EnumMakeDeviceList(LPCDIDEVICEINSTANCE lpddi);
     ScanResult ScanKeyboard(const GUID & DeviceGuid, LPDIRECTINPUTDEVICE8 didHandle, uint8_t * KeyboardState, BUTTON & pButton);
+    ScanResult ScanGamePad(const GUID & DeviceGuid, LPDIRECTINPUTDEVICE8 didHandle, DIJOYSTATE & BaseState, BUTTON & pButton);
     bool AcquireDevice(LPDIRECTINPUTDEVICE8 lpDirectInputDevice);
     void RefreshDeviceList(void);
+    bool JoyPadPovPressed(AI_POV Pov, int32_t Angle);
 
     typedef struct
     {
