@@ -268,7 +268,7 @@ void CSettingTypeApplication::Save(uint32_t Index, const std::string & Value)
 
 void CSettingTypeApplication::Save(uint32_t /*Index*/, const char * Value)
 {
-    if (m_DefaultSetting != Default_None &&
+    if (m_DefaultSetting != Default_None && Value != NULL &&
         ((m_DefaultSetting == Default_Constant && strcmp(m_DefaultStr,Value) == 0) ||
         (m_DefaultSetting != Default_Constant && strcmp(g_Settings->LoadStringVal(m_DefaultSetting).c_str(),Value) == 0)))
     {

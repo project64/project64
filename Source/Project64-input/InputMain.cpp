@@ -1,89 +1,19 @@
-/**********************************************************************************
-Common Controller plugin spec, version #1.1
-**********************************************************************************/
-#pragma once
-
-#include <Common/stdtypes.h>
-
-enum { PLUGIN_TYPE_CONTROLLER = 4 };
-
-/*** Conteroller plugin's ****/
-enum
-{
-    PLUGIN_NONE = 1,
-    PLUGIN_MEMPAK = 2,
-    PLUGIN_RUMBLE_PAK = 3,
-    PLUGIN_TANSFER_PAK = 4,
-    PLUGIN_RAW = 5,
-};
-
-#if defined(_WIN32)
-#define EXPORT      extern "C" __declspec(dllexport)
-#define CALL        __cdecl
-#else
-#define EXPORT      extern "C"  __attribute__((visibility("default")))
-#define CALL
-#endif
-
-/***** Structures *****/
-typedef struct
-{
-    uint16_t Version;        /* Should be set to 0x0101 */
-    uint16_t Type;           /* Set to PLUGIN_TYPE_CONTROLLER */
-    char Name[100];          /* Name of the DLL */
-    int32_t Reserved1;
-    int32_t Reserved2;
-} PLUGIN_INFO;
-
-typedef struct
-{
-    int32_t Present;
-    int32_t RawData;
-    int32_t Plugin;
-} CONTROL;
-
-#pragma warning(push)
-#pragma warning(disable : 4201) // warning C4201: nonstandard extension used : nameless struct/union
-
-typedef union
-{
-    uint32_t Value;
-    struct
-    {
-        unsigned R_DPAD : 1;
-        unsigned L_DPAD : 1;
-        unsigned D_DPAD : 1;
-        unsigned U_DPAD : 1;
-        unsigned START_BUTTON : 1;
-        unsigned Z_TRIG : 1;
-        unsigned B_BUTTON : 1;
-        unsigned A_BUTTON : 1;
-
-        unsigned R_CBUTTON : 1;
-        unsigned L_CBUTTON : 1;
-        unsigned D_CBUTTON : 1;
-        unsigned U_CBUTTON : 1;
-        unsigned R_TRIG : 1;
-        unsigned L_TRIG : 1;
-        unsigned Reserved1 : 1;
-        unsigned Reserved2 : 1;
-
-        signed   X_AXIS : 8;
-
-        signed   Y_AXIS : 8;
-    };
-} BUTTONS;
-#pragma warning(pop)
-
-typedef struct
-{
-    void * hMainWindow;
-    void * hinst;
-
-    int32_t MemoryBswaped;  // memory in client- or server-native endian
-    uint8_t * HEADER;   // the ROM header (first 40h bytes of the ROM)
-    CONTROL * Controls; // pointer to array of 4 controllers, i.e.:  CONTROL Controls[4];
-} CONTROL_INFO;
+/****************************************************************************
+*                                                                           *
+* Project64-audio - A Nintendo 64 audio plugin.                             *
+* http://www.pj64-emu.com/                                                  *
+* Copyright (C) 2020 Project64. All rights reserved.                        *
+*                                                                           *
+* License:                                                                  *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
+*                                                                           *
+****************************************************************************/
+#include "ControllerSpec1.1.h"
+#include "InputConfigUI.h"
+#include "Version.h"
+#include "CProject64Input.h"
+#include "InputSettings.h"
+#include <stdio.h>
 
 /******************************************************************
 Function: CloseDLL
@@ -92,7 +22,10 @@ down allowing the dll to de-initialise.
 input:    none
 output:   none
 *******************************************************************/
-EXPORT void CALL CloseDLL(void);
+EXPORT void CALL CloseDLL(void)
+{
+    CleanupInputSettings();
+}
 
 /******************************************************************
 Function: ControllerCommand
@@ -110,7 +43,9 @@ the data that is being processed looks like this:
 initilize controller: 01 03 00 FF FF FF
 read controller:      01 04 01 FF FF FF FF
 *******************************************************************/
-EXPORT void CALL ControllerCommand(int Control, uint8_t * Command);
+EXPORT void CALL ControllerCommand(int32_t /*Control*/, uint8_t * /*Command*/)
+{
+}
 
 /******************************************************************
 Function: DllAbout
@@ -119,7 +54,9 @@ to give further information about the DLL.
 input:    a handle to the window that calls this function
 output:   none
 *******************************************************************/
-EXPORT void CALL DllAbout(void * hParent);
+/*EXPORT void CALL DllAbout(void * hParent)
+{
+}*/
 
 /******************************************************************
 Function: DllConfig
@@ -128,7 +65,12 @@ to allow the user to configure the dll
 input:    a handle to the window that calls this function
 output:   none
 *******************************************************************/
-EXPORT void CALL DllConfig(void * hParent);
+#ifdef _WIN32
+EXPORT void CALL DllConfig(void * hParent)
+{
+    ConfigInput(hParent);
+}
+#endif
 
 /******************************************************************
 Function: DllTest
@@ -137,7 +79,9 @@ to allow the user to test the dll
 input:    a handle to the window that calls this function
 output:   none
 *******************************************************************/
-EXPORT void CALL DllTest(void * hParent);
+EXPORT void CALL DllTest(void * /*hParent*/)
+{
+}
 
 /******************************************************************
 Function: GetDllInfo
@@ -147,7 +91,18 @@ input:    a pointer to a PLUGIN_INFO stucture that needs to be
 filled by the function. (see def above)
 output:   none
 *******************************************************************/
-EXPORT void CALL GetDllInfo(PLUGIN_INFO * PluginInfo);
+EXPORT void CALL GetDllInfo(PLUGIN_INFO * PluginInfo)
+{
+    PluginInfo->Version = CONTROLLER_SPECS_VERSION;
+    PluginInfo->Type = PLUGIN_TYPE_CONTROLLER;
+#ifdef _DEBUG
+    sprintf(PluginInfo->Name, "Project64 Input Plugin (Debug): %s", VER_FILE_VERSION_STR);
+#else
+    sprintf(PluginInfo->Name, "Project64 Input Plugin: %s", VER_FILE_VERSION_STR);
+#endif
+    PluginInfo->MemoryBswaped = true;
+    PluginInfo->NormalMemory = false;
+}
 
 /******************************************************************
 Function: GetKeys
@@ -157,18 +112,26 @@ input:    - Controller Number (0 to 3)
 the controller state.
 output:   none
 *******************************************************************/
-EXPORT void CALL GetKeys(int32_t Control, BUTTONS * Keys);
+EXPORT void CALL GetKeys(int32_t Control, BUTTONS * Keys)
+{
+    g_InputPlugin->GetKeys(Control, Keys);
+}
 
 /******************************************************************
-Function: InitiateControllers
-Purpose:  This function initialises how each of the controllers
-should be handled.
-input:    - The handle to the main window.
-- A controller structure that needs to be filled for
-the emulator to know how to handle each controller.
-output:   none
+  Function: InitiateControllers
+  Purpose:  This function initialises how each of the controllers
+            should be handled.
+  input:    - A controller structure that needs to be filled for
+              the emulator to know how to handle each controller.
+  output:   none
 *******************************************************************/
-EXPORT void CALL InitiateControllers(CONTROL_INFO ControlInfo);
+EXPORT void CALL InitiateControllers(CONTROL_INFO * ControlInfo)
+{
+    if (g_InputPlugin != nullptr)
+    {
+        g_InputPlugin->InitiateControllers(ControlInfo);
+    }
+}
 
 /******************************************************************
 Function: ReadController
@@ -181,7 +144,9 @@ output:   none
 note:     This function is only needed if the DLL is allowing raw
 data.
 *******************************************************************/
-EXPORT void CALL ReadController(int Control, uint8_t * Command);
+EXPORT void CALL ReadController(int /*Control*/, uint8_t * /*Command*/)
+{
+}
 
 /******************************************************************
 Function: RomClosed
@@ -189,7 +154,9 @@ Purpose:  This function is called when a rom is closed.
 input:    none
 output:   none
 *******************************************************************/
-EXPORT void CALL RomClosed(void);
+EXPORT void CALL RomClosed(void)
+{
+}
 
 /******************************************************************
 Function: RomOpen
@@ -198,7 +165,9 @@ emulation thread)
 input:    none
 output:   none
 *******************************************************************/
-EXPORT void CALL RomOpen(void);
+EXPORT void CALL RomOpen(void)
+{
+}
 
 /******************************************************************
 Function: WM_KeyDown
@@ -207,7 +176,9 @@ plugin.
 input:    wParam and lParam of the WM_KEYDOWN message.
 output:   none
 *******************************************************************/
-EXPORT void CALL WM_KeyDown(uint32_t wParam, uint32_t lParam);
+EXPORT void CALL WM_KeyDown(uint32_t /*wParam*/, uint32_t /*lParam*/)
+{
+}
 
 /******************************************************************
 Function: WM_KeyUp
@@ -216,4 +187,27 @@ plugin.
 input:    wParam and lParam of the WM_KEYDOWN message.
 output:   none
 *******************************************************************/
-EXPORT void CALL WM_KeyUp(uint32_t wParam, uint32_t lParam);
+EXPORT void CALL WM_KeyUp(uint32_t /*wParam*/, uint32_t /*lParam*/)
+{
+}
+
+EXPORT void CALL PluginLoaded(void)
+{
+    SetupInputSettings();
+}
+
+#include <Windows.h>
+
+extern "C" int WINAPI DllMain(HINSTANCE hinst, DWORD fdwReason, LPVOID /*lpReserved*/)
+{
+    if (fdwReason == DLL_PROCESS_ATTACH)
+    {
+        g_InputPlugin = new CProject64Input(hinst);
+    }
+    else if (fdwReason == DLL_PROCESS_DETACH)
+    {
+        delete g_InputPlugin;
+        g_InputPlugin = NULL;
+    }
+    return TRUE;
+}

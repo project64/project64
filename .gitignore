@@ -50,6 +50,8 @@ Thumbs.db
 /Plugin/Input/AndroidInput_d.dll
 /Plugin/Input/PJ64_NRage.dll
 /Plugin/Input/PJ64_NRage_d.dll
+/Plugin/Input/Project64-Input.dll
+/Plugin/Input/Project64-Input_d.dll
 /Plugin/RSP/lib
 /Plugin/RSP/map
 /Plugin/RSP/pdb
@@ -76,6 +78,8 @@ Thumbs.db
 /Plugin64/Input/AndroidInput_d.dll
 /Plugin64/Input/PJ64_NRage.dll
 /Plugin64/Input/PJ64_NRage_d.dll
+/Plugin64/Input/Project64-Input.dll
+/Plugin64/Input/Project64-Input_d.dll
 /Plugin64/RSP/lib
 /Plugin64/RSP/map
 /Plugin64/RSP/pdb
@@ -86,6 +90,7 @@ Thumbs.db
 /Source/nragev20/Version.h
 /Source/Project64-audio/Version.h
 /Source/Project64-core/Version.h
+/Source/Project64-input/Version.h
 /Source/Project64-video/Version.h
 /Source/RSP/Version.h
 /Save
