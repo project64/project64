@@ -12,3 +12,4 @@ Windows 2.4
 - large address aware
 - Ability to change defaults
 - Add GlideN64
+- Add New controller plugin
