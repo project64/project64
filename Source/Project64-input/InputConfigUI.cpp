@@ -23,7 +23,6 @@ public:
         COMMAND_HANDLER_EX(IDC_BTN_DEFAULTS, BN_CLICKED, DefaultBtnClicked)
         COMMAND_HANDLER_EX(IDC_BTN_SETUP, BN_CLICKED, SetupBtnClicked)
         COMMAND_HANDLER_EX(IDC_CHK_PLUGGED_IN, BN_CLICKED, ItemChanged)
-        COMMAND_HANDLER_EX(IDC_CMB_DEVICE, CBN_SELCHANGE, ItemChanged)
         NOTIFY_HANDLER_EX(IDC_TACK_RANGE, NM_RELEASEDCAPTURE, ItemChangedNotify);
         MESSAGE_HANDLER(WM_HSCROLL, OnScroll)
         MESSAGE_HANDLER(CScanButton::WM_SCAN_SUCCESS, OnScanSuccess)
@@ -54,7 +53,6 @@ private:
     int32_t m_SetupIndex;
     CBitmapPicture m_ControllerImg;
     CButton m_PluggedIn;
-    CComboBox m_cmbDevice;
     CTrackBarCtrl m_Range;
     CScanButton m_ButtonUDPad, m_ButtonDDPad, m_ButtonLDPad, m_ButtonRDPad;
     CScanButton m_ButtonCUp, m_ButtonCDown, m_ButtonCLeft, m_ButtonCRight;
@@ -92,17 +90,11 @@ CControllerSettings::CControllerSettings(uint32_t ControllerNumber) :
 
 BOOL CControllerSettings::OnInitDialog(CWindow /*wndFocus*/, LPARAM /*lInitParam*/)
 {
-    GetDlgItem(IDC_BTN_LOAD).EnableWindow(false);
-    GetDlgItem(IDC_BTN_SAVE).EnableWindow(false);
     m_Range.Attach(GetDlgItem(IDC_SLIDER_RANGE));
     m_Range.SetTicFreq(1);
     m_Range.SetRangeMin(1);
     m_Range.SetRangeMax(100);
     m_PluggedIn.Attach(GetDlgItem(IDC_CHK_PLUGGED_IN));
-    m_cmbDevice.Attach(GetDlgItem(IDC_CMB_DEVICE));
-    m_cmbDevice.SetItemData(m_cmbDevice.AddString(L"None"), PLUGIN_NONE);
-    m_cmbDevice.SetItemData(m_cmbDevice.AddString(L"Mem Pak"), PLUGIN_MEMPAK);
-    m_cmbDevice.SetItemData(m_cmbDevice.AddString(L"Rumble Pak"), PLUGIN_RUMBLE_PAK);
 
     m_ControllerImg.SubclassWindow(GetDlgItem(IDC_BMP_CONTROLLER));
     m_ControllerImg.SetBitmap(MAKEINTRESOURCE(IDB_CONTROLLER));
@@ -141,7 +133,6 @@ bool CControllerSettings::OnApply()
     CONTROL & ControlInfo = g_InputPlugin->ControlInfo(m_ControllerNumber);
     Controller.Range = (uint8_t)m_Range.GetPos();
     ControlInfo.Present = (m_PluggedIn.GetCheck() == BST_CHECKED) ? 1 : 0;
-    ControlInfo.Plugin = m_cmbDevice.GetItemData(m_cmbDevice.GetCurSel());
 
     return g_InputPlugin->SaveController(m_ControllerNumber);
 }
@@ -213,15 +204,6 @@ void CControllerSettings::DisplayController(void)
 {
     N64CONTROLLER & Controller = g_InputPlugin->Controllers(m_ControllerNumber);
     CONTROL & ControlInfo = g_InputPlugin->ControlInfo(m_ControllerNumber);
-    m_cmbDevice.SetCurSel(0);
-    for (DWORD i = 0, n = m_cmbDevice.GetCount(); i < n; i++)
-    {
-        if (m_cmbDevice.GetItemData(i) == (DWORD)ControlInfo.Plugin)
-        {
-            m_cmbDevice.SetCurSel(i);
-            break;
-        }
-    }
     m_PluggedIn.SetCheck(ControlInfo.Present != 0 ? BST_CHECKED : BST_UNCHECKED);
     m_Range.SetPos(Controller.Range);
     CWindow(GetDlgItem(IDC_LABEL_RANGE)).SetWindowText(stdstr_f("%d%%", m_Range.GetPos()).ToUTF16().c_str());
