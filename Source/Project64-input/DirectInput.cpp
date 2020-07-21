@@ -307,7 +307,7 @@ void CDirectInput::GetAxis(N64CONTROLLER & Controller, BUTTONS * Keys)
     long lAxisValueX = 0;
     long lAxisValueY = 0;
 
-    int bPadDeadZone = 5;
+    uint8_t bPadDeadZone = Controller.DeadZone;
     long lDeadZoneValue = bPadDeadZone * RANGE_RELATIVE / 100;
     float fDeadZoneRelation = (float)RANGE_RELATIVE / (float)(RANGE_RELATIVE - lDeadZoneValue);
 

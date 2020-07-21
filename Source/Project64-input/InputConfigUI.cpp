@@ -54,6 +54,7 @@ private:
     CBitmapPicture m_ControllerImg;
     CButton m_PluggedIn;
     CTrackBarCtrl m_Range;
+    CTrackBarCtrl m_DeadZone;
     CScanButton m_ButtonUDPad, m_ButtonDDPad, m_ButtonLDPad, m_ButtonRDPad;
     CScanButton m_ButtonCUp, m_ButtonCDown, m_ButtonCLeft, m_ButtonCRight;
     CScanButton m_ButtonA, m_ButtonB, m_ButtonStart;
@@ -90,6 +91,10 @@ CControllerSettings::CControllerSettings(uint32_t ControllerNumber) :
 
 BOOL CControllerSettings::OnInitDialog(CWindow /*wndFocus*/, LPARAM /*lInitParam*/)
 {
+    m_DeadZone.Attach(GetDlgItem(IDC_SLIDE_DEADZONE));
+    m_DeadZone.SetTicFreq(1);
+    m_DeadZone.SetRangeMin(1);
+    m_DeadZone.SetRangeMax(100);
     m_Range.Attach(GetDlgItem(IDC_SLIDER_RANGE));
     m_Range.SetTicFreq(1);
     m_Range.SetRangeMin(1);
@@ -132,6 +137,7 @@ bool CControllerSettings::OnApply()
     N64CONTROLLER & Controller = g_InputPlugin->Controllers(m_ControllerNumber);
     CONTROL & ControlInfo = g_InputPlugin->ControlInfo(m_ControllerNumber);
     Controller.Range = (uint8_t)m_Range.GetPos();
+    Controller.DeadZone = (uint8_t)m_DeadZone.GetPos();
     ControlInfo.Present = (m_PluggedIn.GetCheck() == BST_CHECKED) ? 1 : 0;
 
     return g_InputPlugin->SaveController(m_ControllerNumber);
@@ -143,6 +149,12 @@ LRESULT CControllerSettings::OnScroll(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
     if (SliderId == IDC_SLIDER_RANGE)
     {
         CWindow(GetDlgItem(IDC_LABEL_RANGE)).SetWindowText(stdstr_f("%d%%", m_Range.GetPos()).ToUTF16().c_str());
+        SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
+    }
+    if (SliderId == IDC_SLIDE_DEADZONE)
+    {
+        CWindow(GetDlgItem(IDC_GROUP_DEADZONE)).SetWindowText(stdstr_f("Deadzone: %d%%", m_DeadZone.GetPos()).ToUTF16().c_str());
+        SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
     }
     return 0;
 }
@@ -206,7 +218,9 @@ void CControllerSettings::DisplayController(void)
     CONTROL & ControlInfo = g_InputPlugin->ControlInfo(m_ControllerNumber);
     m_PluggedIn.SetCheck(ControlInfo.Present != 0 ? BST_CHECKED : BST_UNCHECKED);
     m_Range.SetPos(Controller.Range);
+    m_DeadZone.SetPos(Controller.DeadZone);
     CWindow(GetDlgItem(IDC_LABEL_RANGE)).SetWindowText(stdstr_f("%d%%", m_Range.GetPos()).ToUTF16().c_str());
+    CWindow(GetDlgItem(IDC_GROUP_DEADZONE)).SetWindowText(stdstr_f("Deadzone: %d%%", m_DeadZone.GetPos()).ToUTF16().c_str());
     CScanButton * Buttons[] = {
         &m_ButtonUDPad, &m_ButtonDDPad, &m_ButtonLDPad, &m_ButtonRDPad, &m_ButtonA, &m_ButtonB,
         &m_ButtonCUp, &m_ButtonCDown, &m_ButtonCLeft, &m_ButtonCRight, &m_ButtonStart,
