@@ -3,6 +3,7 @@
 #include "Button.h"
 #include "DeviceNotification.h"
 #include "N64Controller.h"
+#include <Common\CriticalSection.h>
 #define DIRECTINPUT_VERSION 0x0800
 #include <Windows.h>
 #include <dinput.h>
@@ -45,10 +46,12 @@ public:
     void MapControllerDevice(N64CONTROLLER & Controller);
     ScanResult ScanDevices(BUTTON & Button);
     std::wstring ButtonAssignment(BUTTON & Button);
+    std::wstring ControllerDevices(N64CONTROLLER & Controller);
     bool IsButtonPressed(BUTTON & Button);
     void GetAxis(N64CONTROLLER & Controller, BUTTONS * Keys);
     void UpdateDeviceData(void);
     void DevicesChanged(void);
+    void DeviceAdded(void);
 
 private:
     CDirectInput();
@@ -88,6 +91,7 @@ private:
 
     DeviceNotification m_DeviceNotification;
     DEVICE_MAP m_Devices;
+    CriticalSection m_DeviceCS;
     HMODULE m_hDirectInputDLL;
     LPDIRECTINPUT8 m_pDIHandle;
     HINSTANCE m_hinst;

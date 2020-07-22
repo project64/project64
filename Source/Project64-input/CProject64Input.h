@@ -12,12 +12,14 @@ public:
     ~CProject64Input();
 
     void DevicesChanged(void);
+    void DeviceAdded(void);
     void InitiateControllers(CONTROL_INFO * ControlInfo);
     void GetKeys(int32_t Control, BUTTONS * Keys);
     void StartScanDevices(int32_t DisplayCtrlId);
     void EndScanDevices(void);
     CDirectInput::ScanResult ScanDevices(BUTTON & Button);
     std::wstring ButtonAssignment(BUTTON & Button);
+    std::wstring ControllerDevices(uint32_t ControlIndex);
     bool SaveController(uint32_t ControlIndex);
     bool ResetController(uint32_t ControlIndex);
 

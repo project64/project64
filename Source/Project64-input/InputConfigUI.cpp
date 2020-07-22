@@ -188,7 +188,7 @@ LRESULT CControllerSettings::OnScanCanceled(UINT /*uMsg*/, WPARAM /*wParam*/, LP
     return 0;
 }
 
-void CControllerSettings::DefaultBtnClicked(UINT Code, int id, HWND ctl)
+void CControllerSettings::DefaultBtnClicked(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
     g_InputPlugin->ResetController(m_ControllerNumber);
     DisplayController();
@@ -232,10 +232,12 @@ void CControllerSettings::DisplayController(void)
     {
         Buttons[i]->DisplayButton();
     }
+    GetDlgItem(IDC_BOUND_DEVICE).SetWindowText(g_InputPlugin->ControllerDevices(m_ControllerNumber).c_str());
 }
 
 void CControllerSettings::ButtonChannged(void)
 {
+    GetDlgItem(IDC_BOUND_DEVICE).SetWindowText(g_InputPlugin->ControllerDevices(m_ControllerNumber).c_str());
     CPropertySheetWindow(GetParent()).SetModified(m_hWnd);
 }
 
@@ -246,15 +248,21 @@ public:
     CInputConfigUI();
     ~CInputConfigUI();
 
+    void UpdateDeviceMapping(void);
     void OnSheetInitialized();
 
 private:
     CControllerSettings m_pgController0, m_pgController1, m_pgController2, m_pgController3;
 };
 
+CInputConfigUI * g_ConfigUI = nullptr;
+
 void ConfigInput(void * hParent)
 {
-    CInputConfigUI().DoModal((HWND)hParent);
+    CInputConfigUI ConfigUI;
+    g_ConfigUI = &ConfigUI;
+    ConfigUI.DoModal((HWND)hParent);
+    g_ConfigUI = nullptr;
 }
 
 CInputConfigUI::CInputConfigUI() :
@@ -277,4 +285,24 @@ CInputConfigUI::~CInputConfigUI()
 void CInputConfigUI::OnSheetInitialized()
 {
     ModifyStyleEx(WS_EX_CONTEXTHELP,0);
+}
+
+void CInputConfigUI::UpdateDeviceMapping(void)
+{
+    for (size_t i = 0, n = GetPageCount(); i < n; i++)
+    {
+        HWND hPage = IndexToHwnd(i);
+        if (hPage != nullptr)
+        {
+            CWindow(::GetDlgItem(hPage, IDC_BOUND_DEVICE)).SetWindowText(g_InputPlugin->ControllerDevices(i).c_str());
+        }
+    }
+}
+
+void ConfigUIDeviceAdded(void)
+{
+    if (g_ConfigUI != nullptr)
+    {
+        g_ConfigUI->UpdateDeviceMapping();
+    }
 }

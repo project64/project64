@@ -1,6 +1,8 @@
 #include "DirectInput.h"
 #include <Common\StdString.h>
 #include <Common\SyncEvent.h>
+#include <set>
+#include "CProject64Input.h"
 
 CDirectInput::CDirectInput(HINSTANCE hinst) :
     m_hDirectInputDLL(nullptr),
@@ -32,6 +34,8 @@ CDirectInput::CDirectInput(HINSTANCE hinst) :
 
 CDirectInput::~CDirectInput()
 {
+    CGuard Guard(m_DeviceCS);
+
     for (DEVICE_MAP::iterator itr = m_Devices.begin(); itr != m_Devices.end(); itr++)
     {
         if (itr->second.didHandle != nullptr)
@@ -71,6 +75,7 @@ void CDirectInput::MapControllerDevice(N64CONTROLLER & Controller)
         &Controller.R_ANALOG,
     };
 
+    CGuard Guard(m_DeviceCS);
     for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
     {
         DEVICE_MAP::iterator itr = m_Devices.find(Buttons[i]->DeviceGuid);
@@ -99,10 +104,13 @@ BOOL CDirectInput::EnumMakeDeviceList(LPCDIDEVICEINSTANCE lpddi)
         return DIENUM_CONTINUE;
     }
 
-    DEVICE_MAP::iterator itr = m_Devices.find(lpddi->guidInstance);
-    if (itr != m_Devices.end())
     {
-        return DIENUM_CONTINUE;
+        CGuard Guard(m_DeviceCS);
+        DEVICE_MAP::iterator itr = m_Devices.find(lpddi->guidInstance);
+        if (itr != m_Devices.end())
+        {
+            return DIENUM_CONTINUE;
+        }
     }
 
     DEVICE Device = { 0 };
@@ -142,11 +150,15 @@ BOOL CDirectInput::EnumMakeDeviceList(LPCDIDEVICEINSTANCE lpddi)
         return DIENUM_CONTINUE;
     }
 
-    std::pair<DEVICE_MAP::iterator, bool> res = m_Devices.insert(DEVICE_MAP::value_type(lpddi->guidInstance, Device));
-    if (!res.second)
     {
-        Device.didHandle->Release();
+        CGuard Guard(m_DeviceCS);
+        std::pair<DEVICE_MAP::iterator, bool> res = m_Devices.insert(DEVICE_MAP::value_type(lpddi->guidInstance, Device));
+        if (!res.second)
+        {
+            Device.didHandle->Release();
+        }
     }
+    g_InputPlugin->DeviceAdded();
     return DIENUM_CONTINUE;
 }
 
@@ -154,6 +166,7 @@ CDirectInput::ScanResult CDirectInput::ScanDevices(BUTTON & Button)
 {
     ScanResult Result = SCAN_FAILED;
 
+    CGuard Guard(m_DeviceCS);
     for (DEVICE_MAP::iterator itr = m_Devices.begin(); itr != m_Devices.end(); itr++)
     {
         DEVICE &device = itr->second;
@@ -270,6 +283,64 @@ std::wstring CDirectInput::ButtonAssignment(BUTTON & Button)
         return L"";
     }
     return L"Unknown";
+}
+
+std::wstring CDirectInput::ControllerDevices(N64CONTROLLER & Controller)
+{
+    BUTTON * Buttons[] =
+    {
+        &Controller.U_DPAD,
+        &Controller.D_DPAD,
+        &Controller.L_DPAD,
+        &Controller.R_DPAD,
+        &Controller.A_BUTTON,
+        &Controller.B_BUTTON,
+        &Controller.U_CBUTTON,
+        &Controller.D_CBUTTON,
+        &Controller.L_CBUTTON,
+        &Controller.R_CBUTTON,
+        &Controller.START_BUTTON,
+        &Controller.Z_TRIG,
+        &Controller.R_TRIG,
+        &Controller.L_TRIG,
+        &Controller.U_ANALOG,
+        &Controller.D_ANALOG,
+        &Controller.L_ANALOG,
+        &Controller.R_ANALOG,
+    };
+    typedef std::set<GUID, GUIDComparer> GUID_LIST;
+    GUID_LIST DeviceGuids;
+
+    for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
+    {
+        GUID_LIST::iterator itr = DeviceGuids.find(Buttons[i]->DeviceGuid);
+        if (itr != DeviceGuids.end())
+        {
+            continue;
+        }
+        DeviceGuids.insert(Buttons[i]->DeviceGuid);
+    }
+
+    std::wstring DeviceList;
+    CGuard Guard(m_DeviceCS);
+    bool UnknownDevice = false;
+    for (GUID_LIST::iterator itr = DeviceGuids.begin(); itr != DeviceGuids.end(); itr++)
+    {
+        DEVICE_MAP::iterator DeviceItr = m_Devices.find(*itr);
+        if (DeviceItr == m_Devices.end())
+        {
+            UnknownDevice = true;
+            continue;
+        }
+        if (!DeviceList.empty()) { DeviceList += L", "; }
+        DeviceList += stdstr(DeviceItr->second.ProductName).ToUTF16();
+    }
+    if (UnknownDevice)
+    {
+        if (!DeviceList.empty()) { DeviceList += L", "; }
+        DeviceList += L"Unknown Device";
+    }
+    return DeviceList;
 }
 
 bool CDirectInput::IsButtonPressed(BUTTON & Button)
@@ -390,6 +461,7 @@ void CDirectInput::GetAxis(N64CONTROLLER & Controller, BUTTONS * Keys)
 
 void CDirectInput::UpdateDeviceData(void)
 {
+    CGuard Guard(m_DeviceCS);
     for (DEVICE_MAP::iterator itr = m_Devices.begin(); itr != m_Devices.end(); itr++)
     {
         DEVICE & device = itr->second;

@@ -1,5 +1,6 @@
 #include "CProject64Input.h"
 #include "InputSettings.h"
+#include "InputConfigUI.h"
 
 CProject64Input * g_InputPlugin = nullptr;
 
@@ -23,6 +24,11 @@ void CProject64Input::DevicesChanged(void)
     {
         m_DirectInput->DevicesChanged();
     }
+}
+
+void CProject64Input::DeviceAdded(void)
+{
+    ConfigUIDeviceAdded();
 }
 
 void CProject64Input::InitiateControllers(CONTROL_INFO * ControlInfo)
@@ -105,6 +111,20 @@ std::wstring CProject64Input::ButtonAssignment(BUTTON & Button)
         return m_DirectInput->ButtonAssignment(Button);
     }
     return L"Unknown";
+}
+
+std::wstring CProject64Input::ControllerDevices(uint32_t ControlIndex)
+{
+    if (ControlIndex >= sizeof(m_Controllers) / sizeof(m_Controllers[0]))
+    {
+        return false;
+    }
+
+    if (m_DirectInput.get() != NULL)
+    {
+        return m_DirectInput->ControllerDevices(m_Controllers[ControlIndex]);
+    }
+    return L"";
 }
 
 bool CProject64Input::SaveController(uint32_t ControlIndex)
