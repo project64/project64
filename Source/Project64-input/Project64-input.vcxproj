@@ -63,6 +63,7 @@
     <ClCompile Include="InputMain.cpp" />
     <ClCompile Include="CProject64Input.cpp" />
     <ClCompile Include="InputSettings.cpp" />
+    <ClCompile Include="OptionsUI.cpp" />
     <ClCompile Include="wtl-BitmapPicture.cpp" />
     <ClCompile Include="wtl-ScanButton.cpp" />
   </ItemGroup>
@@ -76,6 +77,7 @@
     <ClInclude Include="InputConfigUI.h" />
     <ClInclude Include="ControllerSpec1.1.h" />
     <ClInclude Include="CProject64Input.h" />
+    <ClInclude Include="OptionsUI.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="wtl-BitmapPicture.h" />
     <ClInclude Include="wtl-ScanButton.h" />

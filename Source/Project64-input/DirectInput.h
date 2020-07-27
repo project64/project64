@@ -15,7 +15,8 @@ class CDirectInput
     enum
     {
         CONFIG_THRESHOLD = 50,
-        MAX_AXIS_VALUE = 0x7FFF,
+        MIN_AXIS_VALUE = -32767,
+        MAX_AXIS_VALUE = 32767,
         RANGE_RELATIVE = 0x8000,
         AI_AXE_POSITIVE = 0,
         AI_AXE_NEGATIVE = 1,
@@ -51,7 +52,6 @@ public:
     void GetAxis(N64CONTROLLER & Controller, BUTTONS * Keys);
     void UpdateDeviceData(void);
     void DevicesChanged(void);
-    void DeviceAdded(void);
 
 private:
     CDirectInput();

@@ -26,6 +26,7 @@ static char * Control0_R_ANALOG_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000
 static const uint32_t Default_DeadZone = 25;
 static const uint32_t Default_Range = 100;
 static const uint32_t Default_Plugin = PLUGIN_MEMPAK;
+static const bool Default_RealN64Range = true;
 
 CInputSettings::CInputSettings()
 {
@@ -80,14 +81,16 @@ void CInputSettings::LoadController(uint32_t ControlIndex, CONTROL & ControllerI
     InputSettingID PluginSettings[] = { Set_Control0_Plugin };
     InputSettingID RangeSettings[] = { Set_Control0_Range };
     InputSettingID DeadZoneSettings[] = { Set_Control0_Deadzone };
+    InputSettingID RealN64RangeSettings[] = { Set_Control0_RealN64Range };
 
     ControllerInfo.Present = ControlIndex < (sizeof(PresentSettings) / sizeof(PresentSettings[0])) ? GetSetting((short)PresentSettings[ControlIndex]) != 0 : 0;
-    ControllerInfo.Plugin = ControlIndex < (sizeof(PluginSettings) / sizeof(PluginSettings[0])) ? GetSetting((short)PluginSettings[ControlIndex]) : PLUGIN_NONE;
-    Controller.Range = (uint8_t)(ControlIndex < (sizeof(RangeSettings) / sizeof(RangeSettings[0])) ? GetSetting((short)RangeSettings[ControlIndex]) : 100);
+    ControllerInfo.Plugin = ControlIndex < (sizeof(PluginSettings) / sizeof(PluginSettings[0])) ? GetSetting((short)PluginSettings[ControlIndex]) : Default_Plugin;
+    Controller.Range = (uint8_t)(ControlIndex < (sizeof(RangeSettings) / sizeof(RangeSettings[0])) ? GetSetting((short)RangeSettings[ControlIndex]) : Default_Range);
     if (Controller.Range == 0) { Controller.Range = 1; }
     if (Controller.Range > 100) { Controller.Range = 100; }
-    Controller.DeadZone = (uint8_t)(ControlIndex < (sizeof(DeadZoneSettings) / sizeof(DeadZoneSettings[0])) ? GetSetting((short)DeadZoneSettings[ControlIndex]) : 5);
+    Controller.DeadZone = (uint8_t)(ControlIndex < (sizeof(DeadZoneSettings) / sizeof(DeadZoneSettings[0])) ? GetSetting((short)DeadZoneSettings[ControlIndex]) : Default_DeadZone);
     if (Controller.DeadZone > 100) { Controller.DeadZone = 100; }
+    Controller.RealN64Range = (ControlIndex < (sizeof(RealN64RangeSettings) / sizeof(RealN64RangeSettings[0])) ? GetSetting((short)RealN64RangeSettings[ControlIndex]) != 0 : Default_RealN64Range);
 }
 
 void CInputSettings::SaveController(uint32_t ControlIndex, const CONTROL & ControllerInfo, const N64CONTROLLER & Controller)
@@ -124,6 +127,7 @@ void CInputSettings::SaveController(uint32_t ControlIndex, const CONTROL & Contr
     InputSettingID PluginSettings[] = { Set_Control0_Plugin };
     InputSettingID RangeSettings[] = { Set_Control0_Range };
     InputSettingID DeadzoneSettings[] = { Set_Control0_Deadzone };
+    InputSettingID RealN64RangeSettings[] = { Set_Control0_RealN64Range };
 
     for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
     {
@@ -151,6 +155,10 @@ void CInputSettings::SaveController(uint32_t ControlIndex, const CONTROL & Contr
     if (ControlIndex < (sizeof(DeadzoneSettings) / sizeof(DeadzoneSettings[0])))
     {
         SetSetting((short)DeadzoneSettings[ControlIndex], Controller.DeadZone);
+    }
+    if (ControlIndex < (sizeof(RealN64RangeSettings) / sizeof(RealN64RangeSettings[0])))
+    {
+        SetSetting((short)RealN64RangeSettings[ControlIndex], Controller.RealN64Range ? 1 : 0);
     }
     FlushSettings();
 }
@@ -233,6 +241,7 @@ void CInputSettings::RegisterSettings(void)
     RegisterSetting(Set_Control0_Plugin, Data_DWORD_General, "Plugin", "Controller 1", Default_Plugin, nullptr);
     RegisterSetting(Set_Control0_Range, Data_DWORD_General, "Range", "Controller 1", Default_Range, nullptr);
     RegisterSetting(Set_Control0_Deadzone, Data_DWORD_General, "Deadzone", "Controller 1", Default_DeadZone, nullptr);
+    RegisterSetting(Set_Control0_RealN64Range, Data_DWORD_General, "RealN64Range", "Controller 1", Default_RealN64Range, nullptr);
     RegisterSetting(Set_Control0_U_DPAD, Data_String_General, "DPadUp", "Controller 1", 0, Control0_U_DPAD_Default);
     RegisterSetting(Set_Control0_D_DPAD, Data_String_General, "DPadDown", "Controller 1", 0, Control0_D_DPAD_Default);
     RegisterSetting(Set_Control0_L_DPAD, Data_String_General, "DPadLeft", "Controller 1", 0, Control0_L_DPAD_Default);

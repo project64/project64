@@ -6,6 +6,7 @@ enum InputSettingID
     Set_Control0_Plugin,
     Set_Control0_Range,
     Set_Control0_Deadzone,
+    Set_Control0_RealN64Range,
     Set_Control0_U_DPAD,
     Set_Control0_D_DPAD,
     Set_Control0_L_DPAD,

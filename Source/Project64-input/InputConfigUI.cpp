@@ -3,6 +3,7 @@
 #include "wtl.h"
 #include "wtl-BitmapPicture.h"
 #include "wtl-ScanButton.h"
+#include "OptionsUI.h"
 #include <Common\stdtypes.h>
 #include <Common\StdString.h>
 #include "resource.h"
@@ -26,6 +27,7 @@ public:
         MSG_WM_CTLCOLORSTATIC(OnCtlColorStatic)
         COMMAND_HANDLER_EX(IDC_BTN_DEFAULTS, BN_CLICKED, DefaultBtnClicked)
         COMMAND_HANDLER_EX(IDC_BTN_SETUP, BN_CLICKED, SetupBtnClicked)
+        COMMAND_HANDLER_EX(IDC_BTN_OPTIONS, BN_CLICKED, OptionsBtnClicked)
         COMMAND_HANDLER_EX(IDC_CHK_PLUGGED_IN, BN_CLICKED, ItemChanged)
         NOTIFY_HANDLER_EX(IDC_TACK_RANGE, NM_RELEASEDCAPTURE, ItemChangedNotify);
         MESSAGE_HANDLER(WM_HSCROLL, OnScroll)
@@ -45,6 +47,7 @@ private:
     LRESULT OnScanCanceled(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     void DefaultBtnClicked(UINT Code, int id, HWND ctl);
     void SetupBtnClicked(UINT Code, int id, HWND ctl);
+    void OptionsBtnClicked(UINT Code, int id, HWND ctl);
     void ItemChanged(UINT Code, int id, HWND ctl);
     LRESULT	ItemChangedNotify(NMHDR* /*pNMHDR*/);
     void DisplayController(void);
@@ -207,6 +210,11 @@ void CControllerSettings::SetupBtnClicked(UINT /*Code*/, int /*id*/, HWND /*ctl*
 {
     m_SetupIndex = 0;
     m_ButtonUDPad.DetectKey();
+}
+
+void CControllerSettings::OptionsBtnClicked(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
+{
+    ConfigOption(m_ControllerNumber, m_ControlInfo, m_Controller);
 }
 
 void CControllerSettings::ItemChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)

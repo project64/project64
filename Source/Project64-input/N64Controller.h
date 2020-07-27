@@ -23,4 +23,5 @@ typedef struct
     BUTTON R_ANALOG;
     uint8_t Range;
     uint8_t DeadZone;
+    bool RealN64Range;
 } N64CONTROLLER;

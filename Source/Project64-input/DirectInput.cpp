@@ -453,8 +453,24 @@ void CDirectInput::GetAxis(N64CONTROLLER & Controller, BUTTONS * Keys)
                 lAxisValueY += l_Value;
         }
     }
+
+    if (Controller.RealN64Range && (lAxisValueX || lAxisValueY))
+    {
+        long lAbsoluteX = (lAxisValueX > 0) ? lAxisValueX : -lAxisValueX;
+        long lAbsoluteY = (lAxisValueY > 0) ? lAxisValueY : -lAxisValueY;
+
+        long lRangeX = lAbsoluteX > lAbsoluteY ? MAX_AXIS_VALUE : MAX_AXIS_VALUE * lAbsoluteX / lAbsoluteY;
+        long lRangeY = lAbsoluteX > lAbsoluteY ? MAX_AXIS_VALUE * lAbsoluteY / lAbsoluteX : MAX_AXIS_VALUE;
+
+        double dRangeDiagonal = sqrt((double)(lRangeX * lRangeX + lRangeY * lRangeY));
+        double dRel = MAX_AXIS_VALUE / dRangeDiagonal;
+        lAxisValueX = (long)(lAxisValueX * dRel);
+        lAxisValueY = (long)(lAxisValueY * dRel);
+    }
     if (lAxisValueX > MAX_AXIS_VALUE) { lAxisValueX = MAX_AXIS_VALUE; }
+    if (lAxisValueX < MIN_AXIS_VALUE) { lAxisValueX = MIN_AXIS_VALUE; }
     if (lAxisValueY > MAX_AXIS_VALUE) { lAxisValueY = MAX_AXIS_VALUE; }
+    if (lAxisValueY < MIN_AXIS_VALUE) { lAxisValueY = MIN_AXIS_VALUE; }
     Keys->X_AXIS = lAxisValueX / N64DIVIDER;
     Keys->Y_AXIS = lAxisValueY / N64DIVIDER;
 }
