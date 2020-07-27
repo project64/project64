@@ -113,16 +113,11 @@ std::wstring CProject64Input::ButtonAssignment(BUTTON & Button)
     return L"Unknown";
 }
 
-std::wstring CProject64Input::ControllerDevices(uint32_t ControlIndex)
+std::wstring CProject64Input::ControllerDevices(const N64CONTROLLER & Controller)
 {
-    if (ControlIndex >= sizeof(m_Controllers) / sizeof(m_Controllers[0]))
-    {
-        return false;
-    }
-
     if (m_DirectInput.get() != NULL)
     {
-        return m_DirectInput->ControllerDevices(m_Controllers[ControlIndex]);
+        return m_DirectInput->ControllerDevices(Controller);
     }
     return L"";
 }
@@ -140,15 +135,9 @@ bool CProject64Input::SaveController(uint32_t ControlIndex)
     return true;
 }
 
-bool CProject64Input::ResetController(uint32_t ControlIndex)
+bool CProject64Input::ResetController(uint32_t ControlIndex, CONTROL & ControlInfo, N64CONTROLLER & Controller)
 {
-    CGuard guard(m_CS);
-
-    if (ControlIndex >= sizeof(m_Controllers) / sizeof(m_Controllers[0]))
-    {
-        return false;
-    }
-    g_Settings->ResetController(ControlIndex, m_ControlInfo.Controls[ControlIndex], m_Controllers[ControlIndex]);
-    m_DirectInput->MapControllerDevice(m_Controllers[ControlIndex]);
+    g_Settings->ResetController(ControlIndex, ControlInfo, Controller);
+    m_DirectInput->MapControllerDevice(Controller);
     return true;
 }

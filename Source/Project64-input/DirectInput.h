@@ -46,7 +46,7 @@ public:
     void MapControllerDevice(N64CONTROLLER & Controller);
     ScanResult ScanDevices(BUTTON & Button);
     std::wstring ButtonAssignment(BUTTON & Button);
-    std::wstring ControllerDevices(N64CONTROLLER & Controller);
+    std::wstring ControllerDevices(const N64CONTROLLER & Controller);
     bool IsButtonPressed(BUTTON & Button);
     void GetAxis(N64CONTROLLER & Controller, BUTTONS * Keys);
     void UpdateDeviceData(void);

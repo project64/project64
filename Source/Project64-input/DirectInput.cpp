@@ -285,9 +285,9 @@ std::wstring CDirectInput::ButtonAssignment(BUTTON & Button)
     return L"Unknown";
 }
 
-std::wstring CDirectInput::ControllerDevices(N64CONTROLLER & Controller)
+std::wstring CDirectInput::ControllerDevices(const N64CONTROLLER & Controller)
 {
-    BUTTON * Buttons[] =
+    const BUTTON * Buttons[] =
     {
         &Controller.U_DPAD,
         &Controller.D_DPAD,

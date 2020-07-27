@@ -19,9 +19,9 @@ public:
     void EndScanDevices(void);
     CDirectInput::ScanResult ScanDevices(BUTTON & Button);
     std::wstring ButtonAssignment(BUTTON & Button);
-    std::wstring ControllerDevices(uint32_t ControlIndex);
+    std::wstring ControllerDevices(const N64CONTROLLER & Controller);
     bool SaveController(uint32_t ControlIndex);
-    bool ResetController(uint32_t ControlIndex);
+    bool ResetController(uint32_t ControlIndex, CONTROL & ControlInfo, N64CONTROLLER & Controller);
 
     inline HINSTANCE hInst(void) const { return m_hinst; }
     inline bool IsScanning(void) const { return m_Scanning; }

@@ -7,9 +7,13 @@
 #include <Common\StdString.h>
 #include "resource.h"
 
+class CInputConfigUI;
+
 class CControllerSettings :
     public CPropertyPageImpl<CControllerSettings>
 {
+    friend CInputConfigUI;
+
     enum
     {
         DETECT_KEY_TIMER = 1
@@ -51,6 +55,8 @@ private:
     uint32_t m_ControllerNumber;
     uint32_t m_ScanCount;
     int32_t m_SetupIndex;
+    N64CONTROLLER m_Controller;
+    CONTROL m_ControlInfo;
     CBitmapPicture m_ControllerImg;
     CButton m_PluggedIn;
     CTrackBarCtrl m_Range;
@@ -66,24 +72,26 @@ CControllerSettings::CControllerSettings(uint32_t ControllerNumber) :
     m_ControllerNumber(ControllerNumber),
     m_ScanCount(0),
     m_SetupIndex(-1),
-    m_ButtonUDPad(g_InputPlugin->Controllers(ControllerNumber).U_DPAD, IDC_EDIT_DIGITIAL_UP, IDC_BTN_DIGITIAL_UP),
-    m_ButtonDDPad(g_InputPlugin->Controllers(ControllerNumber).D_DPAD, IDC_EDIT_DIGITIAL_DOWN, IDC_BTN_DIGITIAL_DOWN),
-    m_ButtonLDPad(g_InputPlugin->Controllers(ControllerNumber).L_DPAD, IDC_EDIT_DIGITIAL_LEFT, IDC_BTN_DIGITIAL_LEFT),
-    m_ButtonRDPad(g_InputPlugin->Controllers(ControllerNumber).R_DPAD, IDC_EDIT_DIGITIAL_RIGHT, IDC_BTN_DIGITIAL_RIGHT),
-    m_ButtonA(g_InputPlugin->Controllers(ControllerNumber).A_BUTTON, IDC_EDIT_BUTTON_A, IDC_BTN_BUTTON_A),
-    m_ButtonB(g_InputPlugin->Controllers(ControllerNumber).B_BUTTON, IDC_EDIT_BUTTON_B, IDC_BTN_BUTTON_B),
-    m_ButtonCUp(g_InputPlugin->Controllers(ControllerNumber).U_CBUTTON, IDC_EDIT_CBUTTON_UP, IDC_BTN_CBUTTON_UP),
-    m_ButtonCDown(g_InputPlugin->Controllers(ControllerNumber).D_CBUTTON, IDC_EDIT_CBUTTON_DOWN, IDC_BTN_CBUTTON_DOWN),
-    m_ButtonCLeft(g_InputPlugin->Controllers(ControllerNumber).L_CBUTTON, IDC_EDIT_CBUTTON_LEFT, IDC_BTN_CBUTTON_LEFT),
-    m_ButtonCRight(g_InputPlugin->Controllers(ControllerNumber).R_CBUTTON, IDC_EDIT_CBUTTON_RIGHT, IDC_BTN_CBUTTON_RIGHT),
-    m_ButtonStart(g_InputPlugin->Controllers(ControllerNumber).START_BUTTON, IDC_EDIT_BUTTON_START, IDC_BTN_BUTTON_START),
-    m_ButtonZtrigger(g_InputPlugin->Controllers(ControllerNumber).Z_TRIG, IDC_EDIT_BUTTON_Z, IDC_BTN_BUTTON_Z),
-    m_ButtonRTrigger(g_InputPlugin->Controllers(ControllerNumber).R_TRIG, IDC_EDIT_RTRIGGER, IDC_BTN_RTRIGGER),
-    m_ButtonLTrigger(g_InputPlugin->Controllers(ControllerNumber).L_TRIG, IDC_EDIT_LTRIGGER, IDC_BTN_LTRIGGER),
-    m_ButtonAnalogU(g_InputPlugin->Controllers(ControllerNumber).U_ANALOG, IDC_EDIT_ANALOG_UP, IDC_BTN_ANALOG_UP),
-    m_ButtonAnalogD(g_InputPlugin->Controllers(ControllerNumber).D_ANALOG, IDC_EDIT_ANALOG_DOWN, IDC_BTN_ANALOG_DOWN),
-    m_ButtonAnalogL(g_InputPlugin->Controllers(ControllerNumber).L_ANALOG, IDC_EDIT_ANALOG_LEFT, IDC_BTN_ANALOG_LEFT),
-    m_ButtonAnalogR(g_InputPlugin->Controllers(ControllerNumber).R_ANALOG, IDC_EDIT_ANALOG_RIGHT, IDC_BTN_ANALOG_RIGHT)
+    m_Controller(g_InputPlugin->Controllers(ControllerNumber)),
+    m_ControlInfo(g_InputPlugin->ControlInfo(ControllerNumber)),
+    m_ButtonUDPad(m_Controller.U_DPAD, IDC_EDIT_DIGITIAL_UP, IDC_BTN_DIGITIAL_UP),
+    m_ButtonDDPad(m_Controller.D_DPAD, IDC_EDIT_DIGITIAL_DOWN, IDC_BTN_DIGITIAL_DOWN),
+    m_ButtonLDPad(m_Controller.L_DPAD, IDC_EDIT_DIGITIAL_LEFT, IDC_BTN_DIGITIAL_LEFT),
+    m_ButtonRDPad(m_Controller.R_DPAD, IDC_EDIT_DIGITIAL_RIGHT, IDC_BTN_DIGITIAL_RIGHT),
+    m_ButtonA(m_Controller.A_BUTTON, IDC_EDIT_BUTTON_A, IDC_BTN_BUTTON_A),
+    m_ButtonB(m_Controller.B_BUTTON, IDC_EDIT_BUTTON_B, IDC_BTN_BUTTON_B),
+    m_ButtonCUp(m_Controller.U_CBUTTON, IDC_EDIT_CBUTTON_UP, IDC_BTN_CBUTTON_UP),
+    m_ButtonCDown(m_Controller.D_CBUTTON, IDC_EDIT_CBUTTON_DOWN, IDC_BTN_CBUTTON_DOWN),
+    m_ButtonCLeft(m_Controller.L_CBUTTON, IDC_EDIT_CBUTTON_LEFT, IDC_BTN_CBUTTON_LEFT),
+    m_ButtonCRight(m_Controller.R_CBUTTON, IDC_EDIT_CBUTTON_RIGHT, IDC_BTN_CBUTTON_RIGHT),
+    m_ButtonStart(m_Controller.START_BUTTON, IDC_EDIT_BUTTON_START, IDC_BTN_BUTTON_START),
+    m_ButtonZtrigger(m_Controller.Z_TRIG, IDC_EDIT_BUTTON_Z, IDC_BTN_BUTTON_Z),
+    m_ButtonRTrigger(m_Controller.R_TRIG, IDC_EDIT_RTRIGGER, IDC_BTN_RTRIGGER),
+    m_ButtonLTrigger(m_Controller.L_TRIG, IDC_EDIT_LTRIGGER, IDC_BTN_LTRIGGER),
+    m_ButtonAnalogU(m_Controller.U_ANALOG, IDC_EDIT_ANALOG_UP, IDC_BTN_ANALOG_UP),
+    m_ButtonAnalogD(m_Controller.D_ANALOG, IDC_EDIT_ANALOG_DOWN, IDC_BTN_ANALOG_DOWN),
+    m_ButtonAnalogL(m_Controller.L_ANALOG, IDC_EDIT_ANALOG_LEFT, IDC_BTN_ANALOG_LEFT),
+    m_ButtonAnalogR(m_Controller.R_ANALOG, IDC_EDIT_ANALOG_RIGHT, IDC_BTN_ANALOG_RIGHT)
 {
     m_Title = stdstr_f("Player %d", ControllerNumber + 1).ToUTF16();
     SetTitle(m_Title.c_str());
@@ -135,11 +143,11 @@ HBRUSH CControllerSettings::OnCtlColorStatic(CDCHandle dc, CWindow wndStatic)
 bool CControllerSettings::OnApply()
 {
     N64CONTROLLER & Controller = g_InputPlugin->Controllers(m_ControllerNumber);
-    CONTROL & ControlInfo = g_InputPlugin->ControlInfo(m_ControllerNumber);
+    Controller = m_Controller;
     Controller.Range = (uint8_t)m_Range.GetPos();
     Controller.DeadZone = (uint8_t)m_DeadZone.GetPos();
+    CONTROL & ControlInfo = g_InputPlugin->ControlInfo(m_ControllerNumber);
     ControlInfo.Present = (m_PluggedIn.GetCheck() == BST_CHECKED) ? 1 : 0;
-
     return g_InputPlugin->SaveController(m_ControllerNumber);
 }
 
@@ -190,7 +198,7 @@ LRESULT CControllerSettings::OnScanCanceled(UINT /*uMsg*/, WPARAM /*wParam*/, LP
 
 void CControllerSettings::DefaultBtnClicked(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
-    g_InputPlugin->ResetController(m_ControllerNumber);
+    g_InputPlugin->ResetController(m_ControllerNumber, m_ControlInfo, m_Controller);
     DisplayController();
     SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
 }
@@ -214,11 +222,9 @@ LRESULT	CControllerSettings::ItemChangedNotify(NMHDR* /*pNMHDR*/)
 
 void CControllerSettings::DisplayController(void)
 {
-    N64CONTROLLER & Controller = g_InputPlugin->Controllers(m_ControllerNumber);
-    CONTROL & ControlInfo = g_InputPlugin->ControlInfo(m_ControllerNumber);
-    m_PluggedIn.SetCheck(ControlInfo.Present != 0 ? BST_CHECKED : BST_UNCHECKED);
-    m_Range.SetPos(Controller.Range);
-    m_DeadZone.SetPos(Controller.DeadZone);
+    m_PluggedIn.SetCheck(m_ControlInfo.Present != 0 ? BST_CHECKED : BST_UNCHECKED);
+    m_Range.SetPos(m_Controller.Range);
+    m_DeadZone.SetPos(m_Controller.DeadZone);
     CWindow(GetDlgItem(IDC_LABEL_RANGE)).SetWindowText(stdstr_f("%d%%", m_Range.GetPos()).ToUTF16().c_str());
     CWindow(GetDlgItem(IDC_GROUP_DEADZONE)).SetWindowText(stdstr_f("Deadzone: %d%%", m_DeadZone.GetPos()).ToUTF16().c_str());
     CScanButton * Buttons[] = {
@@ -232,12 +238,12 @@ void CControllerSettings::DisplayController(void)
     {
         Buttons[i]->DisplayButton();
     }
-    GetDlgItem(IDC_BOUND_DEVICE).SetWindowText(g_InputPlugin->ControllerDevices(m_ControllerNumber).c_str());
+    GetDlgItem(IDC_BOUND_DEVICE).SetWindowText(g_InputPlugin->ControllerDevices(m_Controller).c_str());
 }
 
 void CControllerSettings::ButtonChannged(void)
 {
-    GetDlgItem(IDC_BOUND_DEVICE).SetWindowText(g_InputPlugin->ControllerDevices(m_ControllerNumber).c_str());
+    GetDlgItem(IDC_BOUND_DEVICE).SetWindowText(g_InputPlugin->ControllerDevices(m_Controller).c_str());
     CPropertySheetWindow(GetParent()).SetModified(m_hWnd);
 }
 
@@ -289,12 +295,20 @@ void CInputConfigUI::OnSheetInitialized()
 
 void CInputConfigUI::UpdateDeviceMapping(void)
 {
+    CControllerSettings * Pages[] = {
+        &m_pgController0,
+        &m_pgController1,
+        &m_pgController2,
+        &m_pgController3
+    };
+
     for (size_t i = 0, n = GetPageCount(); i < n; i++)
     {
         HWND hPage = IndexToHwnd(i);
-        if (hPage != nullptr)
+        if (hPage != nullptr && i < (sizeof(Pages) / sizeof(Pages[0])))
         {
-            CWindow(::GetDlgItem(hPage, IDC_BOUND_DEVICE)).SetWindowText(g_InputPlugin->ControllerDevices(i).c_str());
+            N64CONTROLLER & Controller = Pages[i]->m_Controller;
+            CWindow(::GetDlgItem(hPage, IDC_BOUND_DEVICE)).SetWindowText(g_InputPlugin->ControllerDevices(Controller).c_str());
         }
     }
 }
