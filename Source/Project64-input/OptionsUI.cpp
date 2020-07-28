@@ -27,6 +27,7 @@ public:
         CenterWindow(GetParent());
         SetWindowText(stdstr_f("Options - Player %d", m_ControlIndex + 1).ToUTF16().c_str());
         CButton(GetDlgItem(IDC_REAL_N64_RANGE)).SetCheck(m_Controller.RealN64Range ? BST_CHECKED : BST_UNCHECKED);
+        CButton(GetDlgItem(IDC_REMOVE_DUPLICATE)).SetCheck(m_Controller.RemoveDuplicate ? BST_CHECKED : BST_UNCHECKED);
         return TRUE;
     }
     LRESULT OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
@@ -36,6 +37,12 @@ public:
         if (RealN64Range != m_Controller.RealN64Range)
         {
             m_Controller.RealN64Range = RealN64Range;
+            bChanged = true;
+        }
+        bool RemoveDuplicate = CButton(GetDlgItem(IDC_REMOVE_DUPLICATE)).GetCheck() == BST_CHECKED;
+        if (RemoveDuplicate != m_Controller.RemoveDuplicate)
+        {
+            m_Controller.RemoveDuplicate = RemoveDuplicate;
             bChanged = true;
         }
         if (bChanged)

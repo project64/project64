@@ -60,11 +60,11 @@ void CScanButton::OnTimer(UINT_PTR nIDEvent)
             CDirectInput::ScanResult Result = g_InputPlugin->ScanDevices(Button);
             if (Result == CDirectInput::SCAN_SUCCEED && (Button.Offset != m_Button.Offset || Button.AxisID != m_Button.AxisID || Button.BtnType != m_Button.BtnType))
             {
-                m_Button = Button;
                 if (m_ChangeCallback != nullptr)
                 {
-                    m_ChangeCallback(m_ChangeCallbackData);
+                    m_ChangeCallback(m_ChangeCallbackData, Button);
                 }
+                m_Button = Button;
             }
             if (Result == CDirectInput::SCAN_SUCCEED || Result == CDirectInput::SCAN_ESCAPE)
             {

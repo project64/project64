@@ -24,4 +24,5 @@ typedef struct
     uint8_t Range;
     uint8_t DeadZone;
     bool RealN64Range;
+    bool RemoveDuplicate;
 } N64CONTROLLER;

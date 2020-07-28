@@ -27,6 +27,7 @@ static const uint32_t Default_DeadZone = 25;
 static const uint32_t Default_Range = 100;
 static const uint32_t Default_Plugin = PLUGIN_MEMPAK;
 static const bool Default_RealN64Range = true;
+static const bool Default_RemoveDuplicate = true;
 
 CInputSettings::CInputSettings()
 {
@@ -82,6 +83,7 @@ void CInputSettings::LoadController(uint32_t ControlIndex, CONTROL & ControllerI
     InputSettingID RangeSettings[] = { Set_Control0_Range };
     InputSettingID DeadZoneSettings[] = { Set_Control0_Deadzone };
     InputSettingID RealN64RangeSettings[] = { Set_Control0_RealN64Range };
+    InputSettingID RemoveDuplicateSettings[] = { Set_Control0_RemoveDuplicate };
 
     ControllerInfo.Present = ControlIndex < (sizeof(PresentSettings) / sizeof(PresentSettings[0])) ? GetSetting((short)PresentSettings[ControlIndex]) != 0 : 0;
     ControllerInfo.Plugin = ControlIndex < (sizeof(PluginSettings) / sizeof(PluginSettings[0])) ? GetSetting((short)PluginSettings[ControlIndex]) : Default_Plugin;
@@ -91,6 +93,7 @@ void CInputSettings::LoadController(uint32_t ControlIndex, CONTROL & ControllerI
     Controller.DeadZone = (uint8_t)(ControlIndex < (sizeof(DeadZoneSettings) / sizeof(DeadZoneSettings[0])) ? GetSetting((short)DeadZoneSettings[ControlIndex]) : Default_DeadZone);
     if (Controller.DeadZone > 100) { Controller.DeadZone = 100; }
     Controller.RealN64Range = (ControlIndex < (sizeof(RealN64RangeSettings) / sizeof(RealN64RangeSettings[0])) ? GetSetting((short)RealN64RangeSettings[ControlIndex]) != 0 : Default_RealN64Range);
+    Controller.RemoveDuplicate = (ControlIndex < (sizeof(RemoveDuplicateSettings) / sizeof(RemoveDuplicateSettings[0])) ? GetSetting((short)RemoveDuplicateSettings[ControlIndex]) != 0 : Default_RemoveDuplicate);
 }
 
 void CInputSettings::SaveController(uint32_t ControlIndex, const CONTROL & ControllerInfo, const N64CONTROLLER & Controller)
@@ -128,6 +131,7 @@ void CInputSettings::SaveController(uint32_t ControlIndex, const CONTROL & Contr
     InputSettingID RangeSettings[] = { Set_Control0_Range };
     InputSettingID DeadzoneSettings[] = { Set_Control0_Deadzone };
     InputSettingID RealN64RangeSettings[] = { Set_Control0_RealN64Range };
+    InputSettingID RemoveDuplicateSettings[] = { Set_Control0_RemoveDuplicate };
 
     for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
     {
@@ -159,6 +163,10 @@ void CInputSettings::SaveController(uint32_t ControlIndex, const CONTROL & Contr
     if (ControlIndex < (sizeof(RealN64RangeSettings) / sizeof(RealN64RangeSettings[0])))
     {
         SetSetting((short)RealN64RangeSettings[ControlIndex], Controller.RealN64Range ? 1 : 0);
+    }
+    if (ControlIndex < (sizeof(RemoveDuplicateSettings) / sizeof(RemoveDuplicateSettings[0])))
+    {
+        SetSetting((short)RemoveDuplicateSettings[ControlIndex], Controller.RemoveDuplicate ? 1 : 0);
     }
     FlushSettings();
 }
@@ -242,6 +250,7 @@ void CInputSettings::RegisterSettings(void)
     RegisterSetting(Set_Control0_Range, Data_DWORD_General, "Range", "Controller 1", Default_Range, nullptr);
     RegisterSetting(Set_Control0_Deadzone, Data_DWORD_General, "Deadzone", "Controller 1", Default_DeadZone, nullptr);
     RegisterSetting(Set_Control0_RealN64Range, Data_DWORD_General, "RealN64Range", "Controller 1", Default_RealN64Range, nullptr);
+    RegisterSetting(Set_Control0_RemoveDuplicate, Data_DWORD_General, "Remove Duplicate", "Controller 1", Default_RemoveDuplicate, nullptr);
     RegisterSetting(Set_Control0_U_DPAD, Data_String_General, "DPadUp", "Controller 1", 0, Control0_U_DPAD_Default);
     RegisterSetting(Set_Control0_D_DPAD, Data_String_General, "DPadDown", "Controller 1", 0, Control0_D_DPAD_Default);
     RegisterSetting(Set_Control0_L_DPAD, Data_String_General, "DPadLeft", "Controller 1", 0, Control0_L_DPAD_Default);

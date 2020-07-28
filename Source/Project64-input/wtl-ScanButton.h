@@ -15,7 +15,7 @@ public:
         WM_SCAN_SUCCESS = WM_USER + 0x140,
         WM_SCAN_CANCELED = WM_USER + 0x141,
     };
-    typedef void(*ChangeCallback)(size_t Data);
+    typedef void(*ChangeCallback)(size_t Data, const BUTTON & Button);
 
     CScanButton(BUTTON & Button, int DisplayCtrlId, int ScanBtnId);
 

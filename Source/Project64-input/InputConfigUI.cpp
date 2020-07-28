@@ -10,6 +10,8 @@
 
 class CInputConfigUI;
 
+CInputConfigUI * g_ConfigUI = nullptr;
+
 class CControllerSettings :
     public CPropertyPageImpl<CControllerSettings>
 {
@@ -39,6 +41,7 @@ public:
     CControllerSettings(uint32_t ControllerNumber);
     BOOL OnInitDialog(CWindow /*wndFocus*/, LPARAM /*lInitParam*/);
     HBRUSH OnCtlColorStatic(CDCHandle dc, CWindow wndStatic);
+    void RemoveMapping(const BUTTON & Button);
     bool OnApply();
 
 private:
@@ -51,8 +54,8 @@ private:
     void ItemChanged(UINT Code, int id, HWND ctl);
     LRESULT	ItemChangedNotify(NMHDR* /*pNMHDR*/);
     void DisplayController(void);
-    void ButtonChannged(void);
-    static void stButtonChanged(size_t data) { ((CControllerSettings *)data)->ButtonChannged(); }
+    void ButtonChannged(const BUTTON & Button);
+    static void stButtonChanged(size_t data, const BUTTON & Button) { ((CControllerSettings *)data)->ButtonChannged(Button); }
 
     std::wstring m_Title;
     uint32_t m_ControllerNumber;
@@ -69,6 +72,21 @@ private:
     CScanButton m_ButtonA, m_ButtonB, m_ButtonStart;
     CScanButton m_ButtonZtrigger, m_ButtonRTrigger, m_ButtonLTrigger;
     CScanButton m_ButtonAnalogU, m_ButtonAnalogD, m_ButtonAnalogL, m_ButtonAnalogR;
+};
+
+class CInputConfigUI :
+    public CPropertySheetImpl<CInputConfigUI>
+{
+public:
+    CInputConfigUI();
+    ~CInputConfigUI();
+
+    void UpdateDeviceMapping(void);
+    void RemoveMapping(const BUTTON & Button);
+    void OnSheetInitialized();
+
+private:
+    CControllerSettings m_pgController0, m_pgController1, m_pgController2, m_pgController3;
 };
 
 CControllerSettings::CControllerSettings(uint32_t ControllerNumber) :
@@ -249,27 +267,60 @@ void CControllerSettings::DisplayController(void)
     GetDlgItem(IDC_BOUND_DEVICE).SetWindowText(g_InputPlugin->ControllerDevices(m_Controller).c_str());
 }
 
-void CControllerSettings::ButtonChannged(void)
+void CControllerSettings::ButtonChannged(const BUTTON & Button)
 {
+    if (g_ConfigUI != nullptr)
+    {
+        g_ConfigUI->RemoveMapping(Button);
+    }
     GetDlgItem(IDC_BOUND_DEVICE).SetWindowText(g_InputPlugin->ControllerDevices(m_Controller).c_str());
     CPropertySheetWindow(GetParent()).SetModified(m_hWnd);
 }
 
-class CInputConfigUI: 
-    public CPropertySheetImpl<CInputConfigUI>
+void CControllerSettings::RemoveMapping(const BUTTON & Button)
 {
-public:
-    CInputConfigUI();
-    ~CInputConfigUI();
+    if (!m_Controller.RemoveDuplicate)
+    {
+        return;
+    }
+    BUTTON * buttons[] = 
+    {
+        &m_Controller.U_DPAD, &m_Controller.D_DPAD, &m_Controller.L_DPAD, &m_Controller.R_DPAD,
+        &m_Controller.A_BUTTON, &m_Controller.B_BUTTON, &m_Controller.START_BUTTON, &m_Controller.Z_TRIG,
+        &m_Controller.U_CBUTTON, &m_Controller.D_CBUTTON, &m_Controller.L_CBUTTON, &m_Controller.R_CBUTTON,
+        &m_Controller.U_ANALOG, &m_Controller.D_ANALOG, &m_Controller.L_ANALOG, &m_Controller.R_ANALOG,
+        &m_Controller.R_TRIG, &m_Controller.L_TRIG,
+    };
 
-    void UpdateDeviceMapping(void);
-    void OnSheetInitialized();
+    bool Changed = false;
+    BUTTON EmptyButton = { 0 };
+    for (size_t b = 0; b < (sizeof(buttons) / sizeof(buttons[0])); b++)
+    {
+        if (buttons[b]->Offset == Button.Offset &&
+            buttons[b]->AxisID == Button.AxisID &&
+            buttons[b]->BtnType == Button.BtnType &&
+            memcmp(&buttons[b]->DeviceGuid, &Button.DeviceGuid, sizeof(Button.DeviceGuid)) == 0)
+        {
+            *buttons[b] = EmptyButton;
+            Changed = true;
+        }
+    }
 
-private:
-    CControllerSettings m_pgController0, m_pgController1, m_pgController2, m_pgController3;
-};
+    if (Changed)
+    {
+        CScanButton * ScanButtons[] = {
+            &m_ButtonUDPad, &m_ButtonDDPad, &m_ButtonLDPad, &m_ButtonRDPad, &m_ButtonA, &m_ButtonB,
+            &m_ButtonCUp, &m_ButtonCDown, &m_ButtonCLeft, &m_ButtonCRight, &m_ButtonStart,
+            &m_ButtonZtrigger, &m_ButtonRTrigger, &m_ButtonLTrigger,
+            &m_ButtonAnalogU, &m_ButtonAnalogD, &m_ButtonAnalogL, &m_ButtonAnalogR
+        };
 
-CInputConfigUI * g_ConfigUI = nullptr;
+        for (size_t i = 0, n = sizeof(ScanButtons) / sizeof(ScanButtons[0]); i < n; i++)
+        {
+            ScanButtons[i]->DisplayButton();
+        }
+    }
+}
 
 void ConfigInput(void * hParent)
 {
@@ -318,6 +369,21 @@ void CInputConfigUI::UpdateDeviceMapping(void)
             N64CONTROLLER & Controller = Pages[i]->m_Controller;
             CWindow(::GetDlgItem(hPage, IDC_BOUND_DEVICE)).SetWindowText(g_InputPlugin->ControllerDevices(Controller).c_str());
         }
+    }
+}
+
+void CInputConfigUI::RemoveMapping(const BUTTON & Button)
+{
+    CControllerSettings * Pages[] = {
+        &m_pgController0,
+        &m_pgController1,
+        &m_pgController2,
+        &m_pgController3
+    };
+
+    for (size_t i = 0, n = (sizeof(Pages) / sizeof(Pages[0])); i < n; i++)
+    {
+        Pages[i]->RemoveMapping(Button);
     }
 }
 
