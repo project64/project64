@@ -327,7 +327,8 @@ void CControllerSettings::EnablePage(bool Enable)
 
 void CControllerSettings::RemoveMapping(const BUTTON & Button)
 {
-    if (!m_Controller.RemoveDuplicate)
+    BUTTON EmptyButton = { 0 };
+    if (!m_Controller.RemoveDuplicate || memcmp(&Button, &EmptyButton, sizeof(Button)) == 0)
     {
         return;
     }
@@ -341,7 +342,6 @@ void CControllerSettings::RemoveMapping(const BUTTON & Button)
     };
 
     bool Changed = false;
-    BUTTON EmptyButton = { 0 };
     for (size_t b = 0; b < (sizeof(buttons) / sizeof(buttons[0])); b++)
     {
         if (buttons[b]->Offset == Button.Offset &&

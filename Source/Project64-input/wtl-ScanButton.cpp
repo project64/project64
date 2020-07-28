@@ -53,6 +53,7 @@ void CScanButton::OnTimer(UINT_PTR nIDEvent)
 {
     if (nIDEvent == DETECT_KEY_TIMER)
     {
+        BUTTON EmptyButton = { 0 };
         bool Stop = false, ScanSuccess = false;
         if (g_InputPlugin)
         {
@@ -60,11 +61,21 @@ void CScanButton::OnTimer(UINT_PTR nIDEvent)
             CDirectInput::ScanResult Result = g_InputPlugin->ScanDevices(Button);
             if (Result == CDirectInput::SCAN_SUCCEED && (Button.Offset != m_Button.Offset || Button.AxisID != m_Button.AxisID || Button.BtnType != m_Button.BtnType))
             {
+                m_ScanBtn.KillTimer(DETECT_KEY_TIMER);
                 if (m_ChangeCallback != nullptr)
                 {
                     m_ChangeCallback(m_ChangeCallbackData, Button);
                 }
                 m_Button = Button;
+            }
+            if (Result == CDirectInput::SCAN_ESCAPE && (EmptyButton.Offset != m_Button.Offset || EmptyButton.AxisID != m_Button.AxisID || EmptyButton.BtnType != m_Button.BtnType))
+            {
+                m_ScanBtn.KillTimer(DETECT_KEY_TIMER);
+                if (m_ChangeCallback != nullptr)
+                {
+                    m_ChangeCallback(m_ChangeCallbackData, EmptyButton);
+                }
+                m_Button = EmptyButton;
             }
             if (Result == CDirectInput::SCAN_SUCCEED || Result == CDirectInput::SCAN_ESCAPE)
             {
@@ -83,6 +94,12 @@ void CScanButton::OnTimer(UINT_PTR nIDEvent)
             }
             else
             {
+                if (m_ChangeCallback != nullptr)
+                {
+                    m_ChangeCallback(m_ChangeCallbackData, EmptyButton);
+                }
+                m_Button = EmptyButton;
+                DisplayButton();
                 Stop = true;
             }
         }
