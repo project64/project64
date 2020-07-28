@@ -30,7 +30,7 @@ public:
         COMMAND_HANDLER_EX(IDC_BTN_DEFAULTS, BN_CLICKED, DefaultBtnClicked)
         COMMAND_HANDLER_EX(IDC_BTN_SETUP, BN_CLICKED, SetupBtnClicked)
         COMMAND_HANDLER_EX(IDC_BTN_OPTIONS, BN_CLICKED, OptionsBtnClicked)
-        COMMAND_HANDLER_EX(IDC_CHK_PLUGGED_IN, BN_CLICKED, ItemChanged)
+        COMMAND_HANDLER_EX(IDC_CHK_PLUGGED_IN, BN_CLICKED, PluggedInChanged)
         NOTIFY_HANDLER_EX(IDC_TACK_RANGE, NM_RELEASEDCAPTURE, ItemChangedNotify);
         MESSAGE_HANDLER(WM_HSCROLL, OnScroll)
         MESSAGE_HANDLER(CScanButton::WM_SCAN_SUCCESS, OnScanSuccess)
@@ -51,10 +51,11 @@ private:
     void DefaultBtnClicked(UINT Code, int id, HWND ctl);
     void SetupBtnClicked(UINT Code, int id, HWND ctl);
     void OptionsBtnClicked(UINT Code, int id, HWND ctl);
-    void ItemChanged(UINT Code, int id, HWND ctl);
+    void PluggedInChanged(UINT Code, int id, HWND ctl);
     LRESULT	ItemChangedNotify(NMHDR* /*pNMHDR*/);
     void DisplayController(void);
     void ButtonChannged(const BUTTON & Button);
+    void EnablePage(bool Enable);
     static void stButtonChanged(size_t data, const BUTTON & Button) { ((CControllerSettings *)data)->ButtonChannged(Button); }
 
     std::wstring m_Title;
@@ -145,6 +146,7 @@ BOOL CControllerSettings::OnInitDialog(CWindow /*wndFocus*/, LPARAM /*lInitParam
         Buttons[i]->SetChangeCallback(stButtonChanged, (size_t)this);
     }
     DisplayController();
+    EnablePage(m_PluggedIn.GetCheck() == BST_CHECKED);
     return TRUE;
 }
 
@@ -235,9 +237,10 @@ void CControllerSettings::OptionsBtnClicked(UINT /*Code*/, int /*id*/, HWND /*ct
     ConfigOption(m_ControllerNumber, m_ControlInfo, m_Controller);
 }
 
-void CControllerSettings::ItemChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
+void CControllerSettings::PluggedInChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
     SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
+    EnablePage(m_PluggedIn.GetCheck() == BST_CHECKED);
 }
 
 LRESULT	CControllerSettings::ItemChangedNotify(NMHDR* /*pNMHDR*/)
@@ -275,6 +278,51 @@ void CControllerSettings::ButtonChannged(const BUTTON & Button)
     }
     GetDlgItem(IDC_BOUND_DEVICE).SetWindowText(g_InputPlugin->ControllerDevices(m_Controller).c_str());
     CPropertySheetWindow(GetParent()).SetModified(m_hWnd);
+}
+
+void CControllerSettings::EnablePage(bool Enable)
+{
+    GetDlgItem(IDC_SLIDE_DEADZONE).EnableWindow(Enable);
+    GetDlgItem(IDC_SLIDER_RANGE).EnableWindow(Enable);
+    GetDlgItem(IDC_EDIT_LTRIGGER).EnableWindow(Enable);
+    GetDlgItem(IDC_EDIT_RTRIGGER).EnableWindow(Enable);
+    GetDlgItem(IDC_EDIT_DIGITIAL_UP).EnableWindow(Enable);
+    GetDlgItem(IDC_EDIT_DIGITIAL_DOWN).EnableWindow(Enable);
+    GetDlgItem(IDC_EDIT_DIGITIAL_LEFT).EnableWindow(Enable);
+    GetDlgItem(IDC_EDIT_DIGITIAL_RIGHT).EnableWindow(Enable);
+    GetDlgItem(IDC_EDIT_ANALOG_UP).EnableWindow(Enable);
+    GetDlgItem(IDC_EDIT_ANALOG_DOWN).EnableWindow(Enable);
+    GetDlgItem(IDC_EDIT_ANALOG_LEFT).EnableWindow(Enable);
+    GetDlgItem(IDC_EDIT_ANALOG_RIGHT).EnableWindow(Enable);
+    GetDlgItem(IDC_EDIT_CBUTTON_UP).EnableWindow(Enable);
+    GetDlgItem(IDC_EDIT_CBUTTON_DOWN).EnableWindow(Enable);
+    GetDlgItem(IDC_EDIT_CBUTTON_LEFT).EnableWindow(Enable);
+    GetDlgItem(IDC_EDIT_CBUTTON_RIGHT).EnableWindow(Enable);
+    GetDlgItem(IDC_EDIT_BUTTON_B).EnableWindow(Enable);
+    GetDlgItem(IDC_EDIT_BUTTON_A).EnableWindow(Enable);
+    GetDlgItem(IDC_EDIT_BUTTON_START).EnableWindow(Enable);
+    GetDlgItem(IDC_EDIT_BUTTON_Z).EnableWindow(Enable);
+    GetDlgItem(IDC_BTN_LTRIGGER).EnableWindow(Enable);
+    GetDlgItem(IDC_BTN_RTRIGGER).EnableWindow(Enable);
+    GetDlgItem(IDC_BTN_DIGITIAL_UP).EnableWindow(Enable);
+    GetDlgItem(IDC_BTN_DIGITIAL_DOWN).EnableWindow(Enable);
+    GetDlgItem(IDC_BTN_DIGITIAL_LEFT).EnableWindow(Enable);
+    GetDlgItem(IDC_BTN_DIGITIAL_RIGHT).EnableWindow(Enable);
+    GetDlgItem(IDC_BTN_ANALOG_UP).EnableWindow(Enable);
+    GetDlgItem(IDC_BTN_ANALOG_DOWN).EnableWindow(Enable);
+    GetDlgItem(IDC_BTN_ANALOG_LEFT).EnableWindow(Enable);
+    GetDlgItem(IDC_BTN_ANALOG_RIGHT).EnableWindow(Enable);
+    GetDlgItem(IDC_BTN_CBUTTON_UP).EnableWindow(Enable);
+    GetDlgItem(IDC_BTN_CBUTTON_DOWN).EnableWindow(Enable);
+    GetDlgItem(IDC_BTN_CBUTTON_LEFT).EnableWindow(Enable);
+    GetDlgItem(IDC_BTN_CBUTTON_RIGHT).EnableWindow(Enable);
+    GetDlgItem(IDC_BTN_BUTTON_B).EnableWindow(Enable);
+    GetDlgItem(IDC_BTN_BUTTON_A).EnableWindow(Enable);
+    GetDlgItem(IDC_BTN_BUTTON_START).EnableWindow(Enable);
+    GetDlgItem(IDC_BTN_BUTTON_Z).EnableWindow(Enable);
+    GetDlgItem(IDC_BTN_SETUP).EnableWindow(Enable);
+    GetDlgItem(IDC_BTN_DEFAULTS).EnableWindow(Enable);
+    GetDlgItem(IDC_BTN_OPTIONS).EnableWindow(Enable);
 }
 
 void CControllerSettings::RemoveMapping(const BUTTON & Button)
