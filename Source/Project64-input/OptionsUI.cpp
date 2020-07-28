@@ -28,8 +28,29 @@ public:
         SetWindowText(stdstr_f("Options - Player %d", m_ControlIndex + 1).ToUTF16().c_str());
         CButton(GetDlgItem(IDC_REAL_N64_RANGE)).SetCheck(m_Controller.RealN64Range ? BST_CHECKED : BST_UNCHECKED);
         CButton(GetDlgItem(IDC_REMOVE_DUPLICATE)).SetCheck(m_Controller.RemoveDuplicate ? BST_CHECKED : BST_UNCHECKED);
+
+        CComboBox ControllerPak(GetDlgItem(IDC_PAKTYPE));
+        int Index = ControllerPak.AddString(L"None");
+        ControllerPak.SetItemData(Index, PLUGIN_NONE);
+        if (m_ControlInfo.Plugin == PLUGIN_NONE)
+        {
+            ControllerPak.SetCurSel(Index);
+        }
+        Index = ControllerPak.AddString(L"Mem Pak");
+        ControllerPak.SetItemData(Index, PLUGIN_MEMPAK);
+        if (m_ControlInfo.Plugin == PLUGIN_MEMPAK)
+        {
+            ControllerPak.SetCurSel(Index);
+        }
+        Index = ControllerPak.AddString(L"Rumble Pak");
+        ControllerPak.SetItemData(Index, PLUGIN_RUMBLE_PAK);
+        if (m_ControlInfo.Plugin == PLUGIN_RUMBLE_PAK)
+        {
+            ControllerPak.SetCurSel(Index);
+        }
         return TRUE;
     }
+
     LRESULT OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
     {
         bool bChanged = false;
@@ -45,6 +66,15 @@ public:
             m_Controller.RemoveDuplicate = RemoveDuplicate;
             bChanged = true;
         }
+
+        CComboBox ControllerPak(GetDlgItem(IDC_PAKTYPE));
+        int32_t Pak = ControllerPak.GetItemData(ControllerPak.GetCurSel());
+        if (Pak != m_ControlInfo.Plugin)
+        {
+            m_ControlInfo.Plugin = Pak;
+            bChanged = true;
+        }
+
         if (bChanged)
         {
             GetParent().SendMessage(PSM_CHANGED);
