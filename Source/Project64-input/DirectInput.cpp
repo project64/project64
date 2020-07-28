@@ -310,11 +310,16 @@ std::wstring CDirectInput::ControllerDevices(const N64CONTROLLER & Controller)
     };
     typedef std::set<GUID, GUIDComparer> GUID_LIST;
     GUID_LIST DeviceGuids;
+    GUID EmptyGuid = { 0 };
 
     for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
     {
         GUID_LIST::iterator itr = DeviceGuids.find(Buttons[i]->DeviceGuid);
         if (itr != DeviceGuids.end())
+        {
+            continue;
+        }
+        if (memcmp(&Buttons[i]->DeviceGuid, &EmptyGuid, sizeof(EmptyGuid)) == 0)
         {
             continue;
         }
