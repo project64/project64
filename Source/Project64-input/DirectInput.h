@@ -17,11 +17,12 @@ class CDirectInput
         CONFIG_THRESHOLD = 50,
         MIN_AXIS_VALUE = -32767,
         MAX_AXIS_VALUE = 32767,
+        AXIS_TOP_VALUE = MAX_AXIS_VALUE / 2,
+        AXIS_BOTTOM_VALUE = MAX_AXIS_VALUE + AXIS_TOP_VALUE,
         RANGE_RELATIVE = 0x8000,
         AI_AXE_POSITIVE = 0,
         AI_AXE_NEGATIVE = 1,
         THRESHOLD = 50,
-        ABS_THRESHOLD = (RANGE_RELATIVE * THRESHOLD / 100)
     };
 
     enum AI_POV

@@ -363,6 +363,9 @@ bool CDirectInput::IsButtonPressed(BUTTON & Button)
         return (Device.State.Joy.rgbButtons[Button.Offset] & 0x80) != 0;
     case BTNTYPE_JOYPOV:
         return JoyPadPovPressed((AI_POV)Button.AxisID, ((uint32_t *)&Device.State.Joy)[Button.Offset]);
+    case BTNTYPE_JOYSLIDER:
+    case BTNTYPE_JOYAXE:
+        return Button.AxisID ? ((uint32_t *)&Device.State.Joy)[Button.Offset] < AXIS_TOP_VALUE : ((uint32_t *)&Device.State.Joy)[Button.Offset] > AXIS_BOTTOM_VALUE;
     }
     return false;
 }
@@ -403,44 +406,58 @@ void CDirectInput::GetAxis(N64CONTROLLER & Controller, BUTTONS * Keys)
     for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
     {
         bool fNegInput = Buttons[i].Negative;
-        BUTTON & btnButton = Buttons[i].Button;
-        if (btnButton.Device == nullptr)
+        BUTTON & Button = Buttons[i].Button;
+        if (Button.Device == nullptr)
         {
             continue;
         }
-        DEVICE & Device = *(DEVICE *)btnButton.Device;
+        DEVICE & Device = *(DEVICE *)Button.Device;
         LPLONG plRawState = (LPLONG)&Device.State.Joy;
 
-        switch (btnButton.BtnType)
+        switch (Button.BtnType)
         {
         case BTNTYPE_JOYSLIDER:
         case BTNTYPE_JOYAXE:
-            l_Value = (plRawState[btnButton.Offset] - MAX_AXIS_VALUE) * -1;
+            l_Value = (plRawState[Button.Offset] - MAX_AXIS_VALUE) * -1;
 
-            if (btnButton.AxisID == AI_AXE_NEGATIVE)
+            if (Button.AxisID == AI_AXE_NEGATIVE)
             {
                 fNegInput = !fNegInput;
 
                 b_Value = (l_Value <= -lDeadZoneValue);
                 if (b_Value)
+                {
                     l_Value = (long)((float)(l_Value + lDeadZoneValue) * fDeadZoneRelation);
+                }
             }
             else
             {
                 b_Value = (l_Value >= lDeadZoneValue);
                 if (b_Value)
+                {
                     l_Value = (long)((float)(l_Value - lDeadZoneValue) * fDeadZoneRelation);
+                }
             }
             break;
         case BTNTYPE_KEYBUTTON:
-            if ((Device.State.Keyboard[btnButton.Offset] & 0x80) != 0)
+            b_Value = (Device.State.Keyboard[Button.Offset] & 0x80) != 0;
+            if (b_Value)
             {
-                b_Value = true;
                 l_Value = MAX_AXIS_VALUE;
             }
-            else
+            break;
+        case BTNTYPE_JOYBUTTON:
+            b_Value = (Device.State.Joy.rgbButtons[Button.Offset] & 0x80) != 0;
+            if (b_Value)
             {
-                b_Value = false;
+                l_Value = MAX_AXIS_VALUE;
+            }
+            break;
+        case BTNTYPE_JOYPOV:
+            b_Value = JoyPadPovPressed((AI_POV)Button.AxisID, ((uint32_t *)&Device.State.Joy)[Button.Offset]);
+            if (b_Value)
+            {
+                l_Value = MAX_AXIS_VALUE;
             }
             break;
         default:
@@ -449,13 +466,15 @@ void CDirectInput::GetAxis(N64CONTROLLER & Controller, BUTTONS * Keys)
 
         if (b_Value)
         {
-            if (fNegInput)
-                l_Value = -l_Value;
-
+            l_Value = fNegInput ? -l_Value : l_Value;
             if (i < 2)
+            {
                 lAxisValueX += l_Value;
+            }
             else
+            {
                 lAxisValueY += l_Value;
+            }
         }
     }
 
@@ -590,35 +609,39 @@ CDirectInput::ScanResult CDirectInput::ScanGamePad(const GUID & DeviceGuid, LPDI
 
     uint8_t bAxeDirection = 0;
     int32_t foundJoyPad = -1;
+
     for (int32_t i = 0, n = sizeof(JoyPad) / sizeof(JoyPad[0]); i < n; i++)
     {
         uint32_t lValue = ((int32_t*)&JoyState)[JoyPad[i][0]];
         uint32_t BaseValue = ((int32_t*)&BaseState)[JoyPad[i][0]];
-        if (lValue == BaseValue)
-        {
-            continue;
-        }
-        ((int32_t*)&(BaseState))[JoyPad[i][0]] = lValue;
 
         if ((JoyPad[i][1] == BTNTYPE_JOYAXE) || (JoyPad[i][1] == BTNTYPE_JOYSLIDER))
         {
-            enum
+            if ((lValue < AXIS_TOP_VALUE && BaseValue < AXIS_TOP_VALUE) || (lValue > AXIS_BOTTOM_VALUE && BaseValue > AXIS_BOTTOM_VALUE))
             {
-                AXIS_TOP_VALUE = MAX_AXIS_VALUE / 2,
-                AXIS_BOTTOM_VALUE = MAX_AXIS_VALUE + AXIS_TOP_VALUE,
-            };
-            if (lValue < AXIS_TOP_VALUE && BaseValue >= AXIS_TOP_VALUE)
+                continue;
+            }
+            ((int32_t*)&(BaseState))[JoyPad[i][0]] = lValue;
+            if (lValue < AXIS_TOP_VALUE)
             {
                 bAxeDirection = AI_AXE_POSITIVE;
                 foundJoyPad = i;
                 break;
             }
-            else if (lValue > AXIS_BOTTOM_VALUE && BaseValue <= AXIS_BOTTOM_VALUE)
+            else if (lValue > AXIS_BOTTOM_VALUE)
             {
                 bAxeDirection = AI_AXE_NEGATIVE;
                 foundJoyPad = i;
                 break;
             }
+        }
+        else
+        {
+            if (lValue == BaseValue)
+            {
+                continue;
+            }
+            ((int32_t*)&(BaseState))[JoyPad[i][0]] = lValue;
         }
         if (JoyPad[i][1] == BTNTYPE_JOYPOV)
         {            
