@@ -80,7 +80,7 @@ void CModifiedEditBox::SetChanged(bool Changed)
 stdstr CModifiedEditBox::GetWindowText(void)
 {
     ATLASSERT(::IsWindow(m_hWnd));
-    return ::GetCWindowText(this);
+    return ::GetCWindowText(*this);
 }
 
 void CModifiedEditBox::SetTextField(HWND hWnd)

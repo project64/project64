@@ -20,9 +20,6 @@
     <Filter Include="Source Files\User Interface Source\Debugger Source">
       <UniqueIdentifier>{89244064-68f5-44d9-9021-7a592d910e43}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Multilanguage Source">
-      <UniqueIdentifier>{94e87bf5-3b11-4f61-8a4a-333690ecf588}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Plugin Source">
       <UniqueIdentifier>{242ae4a5-b150-44e6-b31c-027acd6d38b0}</UniqueIdentifier>
     </Filter>
@@ -42,9 +39,6 @@
     </Filter>
     <Filter Include="Header Files\User Interface Headers\WTL Controls Headers">
       <UniqueIdentifier>{838a58e7-e1d2-45d3-bcf0-dcedad19610c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Multilanguage Headers">
-      <UniqueIdentifier>{5531af4d-33bb-4e84-8a55-c971a18ec7bf}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Settings">
       <UniqueIdentifier>{8eaf5c00-c88d-418e-a27c-d658c547ab79}</UniqueIdentifier>
@@ -131,9 +125,6 @@
     </ClCompile>
     <ClCompile Include="Settings\NotificationSettings.cpp">
       <Filter>Source Files\Settings Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Multilanguage\LanguageSelector.cpp">
-      <Filter>Source Files\Multilanguage Source</Filter>
     </ClCompile>
     <ClCompile Include="UserInterface\RomInformationClass.cpp">
       <Filter>Source Files\User Interface Source</Filter>
@@ -246,13 +237,19 @@
     <ClCompile Include="UserInterface\SupportWindow.cpp">
       <Filter>Source Files\User Interface Source</Filter>
     </ClCompile>
+    <ClCompile Include="UserInterface\WelcomeScreen.cpp">
+      <Filter>Source Files\User Interface Source</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\WTLControls\wtl-BitmapPicture.cpp">
+      <Filter>Source Files\User Interface Source\WTL Controls Source</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\WTLControls\GetCWindowText.cpp">
+      <Filter>Source Files\User Interface Source\WTL Controls Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UserInterface\resource.h">
       <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Multilanguage\LanguageSelector.h">
-      <Filter>Header Files\Multilanguage Headers</Filter>
     </ClInclude>
     <ClInclude Include="UserInterface\CheatClassUI.h">
       <Filter>Header Files\User Interface Headers</Filter>
@@ -481,6 +478,12 @@
     </ClInclude>
     <ClInclude Include="UserInterface\Debugger\Debugger-RegisterTabData.h">
       <Filter>Header Files\User Interface Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\WelcomeScreen.h">
+      <Filter>Header Files\User Interface Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\WTLControls\wtl-BitmapPicture.h">
+      <Filter>Header Files\User Interface Headers\WTL Controls Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

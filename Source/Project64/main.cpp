@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include <Project64-core/AppInit.h>
-#include "Multilanguage\LanguageSelector.h"
-#include "Settings/UISettings.h"
+#include <Project64-core\AppInit.h>
+#include "UserInterface\WelcomeScreen.h"
+#include "Settings\UISettings.h"
 
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
@@ -11,7 +11,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         AppInit(&Notify(), CPath(CPath::MODULE_DIRECTORY), __argc, __argv);
         if (!g_Lang->IsLanguageLoaded())
         {
-            CLanguageSelector().Select();
+            WelcomeScreen().DoModal();
         }
 
         //Create the main window with Menu

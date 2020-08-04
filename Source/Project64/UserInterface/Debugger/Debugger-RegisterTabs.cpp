@@ -936,8 +936,8 @@ stdstr CRegisterTabs::CopyTabRegisters(int id)
     {
         str += stdstr_f(
             "\r\n%s %s",
-            ::GetCWindowText(label).c_str(),
-            ::GetCWindowText(edit).c_str());
+            ::GetCWindowText(*label).c_str(),
+            ::GetCWindowText(*edit).c_str());
     });
 
     switch (id)
@@ -1042,7 +1042,7 @@ uint64_t CEditReg64::GetValue()
 
 stdstr CEditReg64::GetValueText()
 {
-    return ::GetCWindowText(this);
+    return ::GetCWindowText(*this);
 }
 
 LRESULT CEditReg64::OnLostFocus(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)

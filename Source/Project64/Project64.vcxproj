@@ -51,7 +51,6 @@
     <ClCompile Include="UserInterface\Debugger\CPULog.cpp" />
     <ClCompile Include="UserInterface\Debugger\Debugger-CPULogView.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Multilanguage\LanguageSelector.cpp" />
     <ClCompile Include="Plugins\PluginList.cpp" />
     <ClCompile Include="Settings\GuiSettings.cpp" />
     <ClCompile Include="Settings\NotificationSettings.cpp" />
@@ -110,17 +109,19 @@
     <ClCompile Include="UserInterface\Settings\SettingsPage.cpp" />
     <ClCompile Include="UserInterface\SupportEnterCode.cpp" />
     <ClCompile Include="UserInterface\SupportWindow.cpp" />
+    <ClCompile Include="UserInterface\WelcomeScreen.cpp" />
     <ClCompile Include="UserInterface\WTLControls\EditNumber32.cpp" />
+    <ClCompile Include="UserInterface\WTLControls\GetCWindowText.cpp" />
     <ClCompile Include="UserInterface\WTLControls\HexEditCtrl.cpp" />
     <ClCompile Include="UserInterface\WTLControls\ModifiedEditBox.cpp" />
     <ClCompile Include="UserInterface\WTLControls\PartialGroupBox.cpp" />
+    <ClCompile Include="UserInterface\WTLControls\wtl-BitmapPicture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DiscordRPC.h" />
     <ClInclude Include="UserInterface\Debugger\CPULog.h" />
     <ClInclude Include="UserInterface\Debugger\Debugger-CPULogView.h" />
     <ClInclude Include="N64System\Debugger\OpInfo.h" />
-    <ClInclude Include="Multilanguage\LanguageSelector.h" />
     <ClInclude Include="N64System.h" />
     <ClInclude Include="Settings\GuiSettings.h" />
     <ClInclude Include="Settings\NotificationSettings.h" />
@@ -184,6 +185,7 @@
     <ClInclude Include="UserInterface\Settings\SettingsPage.h" />
     <ClInclude Include="UserInterface\SupportEnterCode.h" />
     <ClInclude Include="UserInterface\SupportWindow.h" />
+    <ClInclude Include="UserInterface\WelcomeScreen.h" />
     <ClInclude Include="UserInterface\WTLControls\DisplayMode.h" />
     <ClInclude Include="UserInterface\WTLControls\EditNumber32.h" />
     <ClInclude Include="UserInterface\WTLControls\GetCWindowText.h" />
@@ -193,6 +195,7 @@
     <ClInclude Include="UserInterface\WTLControls\ModifiedEditBox.h" />
     <ClInclude Include="UserInterface\WTLControls\PartialGroupBox.h" />
     <ClInclude Include="UserInterface\WTLControls\TooltipDialog.h" />
+    <ClInclude Include="UserInterface\WTLControls\wtl-BitmapPicture.h" />
     <ClInclude Include="WTLApp.h" />
   </ItemGroup>
   <ItemGroup>

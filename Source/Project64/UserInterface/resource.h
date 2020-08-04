@@ -47,6 +47,7 @@
 #define IDR_CHEAT_MENU                  160
 #define IDD_Debugger_AddBreakpoint      160
 #define IDD_Lang_Select                 161
+#define IDD_Welcome                     161
 #define IDD_Settings_GameRecompiler     162
 #define IDD_Settings_GamePlugin         163
 #define IDD_Settings_GameStatus         164
@@ -233,6 +234,7 @@
 #define IDC_INFO3                       1083
 #define IDC_START_ON_ROM_OPEN           1084
 #define IDC_LABEL1                      1084
+#define IDC_BMP_LOGO                    1084
 #define IDC_BLOCK_LINKING               1085
 #define IDC_LABEL2                      1085
 #define IDC_LABEL3                      1086
@@ -243,6 +245,7 @@
 #define IDC_SAVE_TYPE                   1089
 #define IDC_MENU_ITEMS                  1089
 #define IDC_PAGELIST                    1090
+#define IDC_GAME_DIR_STATIC             1090
 #define IDC_CPU_TYPE_TEXT               1092
 #define IDC_ZIP                         1092
 #define IDC_SETTING_INFO                1092
@@ -715,7 +718,9 @@
 #define IDC_COPYTABREGISTERS_BTN        1574
 #define IDC_MEMORY_SIZE_NOTE            1574
 #define IDC_F0_LBL                      1575
+#define IDC_GAME_DIR                    1575
 #define IDC_F1_LBL                      1576
+#define IDC_SELECT_GAME_DIR             1576
 #define IDC_F2_LBL                      1577
 #define IDC_F3_LBL                      1578
 #define IDC_F4_LBL                      1579
@@ -933,9 +938,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        219
+#define _APS_NEXT_RESOURCE_VALUE        220
 #define _APS_NEXT_COMMAND_VALUE         40121
-#define _APS_NEXT_CONTROL_VALUE         1575
+#define _APS_NEXT_CONTROL_VALUE         1577
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif
