@@ -29,7 +29,7 @@ Follow the instructions in the setup window to complete the installation.
 
 ### Development Builds
 
-Development Builds are based off the latest source at GitHub. This allows you to use the latest changes straight away, though these changes may not be fully tested and have issues.
+Development Builds are based off the latest source at GitHub. This allows you to use the latest changes straight away, though these changes may not be fully tested and have issues. 
 
 Official buildbot: https://www.pj64-emu.com/nightly-builds
 
@@ -40,7 +40,7 @@ AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/project
 
 ## Support
 
-[**Join the official Project64 Discord Server**](https://discord.gg/ys69Dak) to report bugs/issues and seek additional help from the Project64 developers, contributors and community.
+[**Join the official Project64 Discord Server**](https://discord.gg/ys69Dak) to report bugs/issues and seek additional help from the Project64 developers, contributors and community: https://discord.gg/ys69Dak
 
 ## License
 
