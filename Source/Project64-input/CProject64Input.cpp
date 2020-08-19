@@ -41,7 +41,7 @@ void CProject64Input::InitiateControllers(CONTROL_INFO * ControlInfo)
     }
     m_DirectInput->Initiate(ControlInfo);
     m_iFirstController = -1;
-    for (size_t i = 0, n = sizeof(m_Controllers) / sizeof(m_Controllers[0]); i < n; i++)
+    for (uint32_t i = 0, n = sizeof(m_Controllers) / sizeof(m_Controllers[0]); i < n; i++)
     {
         g_Settings->LoadController(i, m_ControlInfo.Controls[i], m_Controllers[i]);
         m_DirectInput->MapControllerDevice(m_Controllers[i]);

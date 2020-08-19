@@ -46,14 +46,10 @@
       <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(Platform)" "$(SolutionDir)Source\Project64-input\Version.h.in" "$(SolutionDir)Source\Project64-input\Version.h"</Command>
     </PreBuildEvent>
     <Link>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">dinput8.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Root)Source\3rdParty\directx\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImageHasSafeExceptionHandlers Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ImageHasSafeExceptionHandlers>
-    </Link>
-    <Link>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">dinput8.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Root)Source\3rdParty\directx\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImageHasSafeExceptionHandlers Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ImageHasSafeExceptionHandlers>
+      <AdditionalDependencies>dinput8.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="'$(Platform)'=='Win32'">$(Root)Source\3rdParty\directx\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Platform)'=='x64'">$(Root)Source\3rdParty\directx\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

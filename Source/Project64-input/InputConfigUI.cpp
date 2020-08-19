@@ -409,7 +409,7 @@ void CInputConfigUI::UpdateDeviceMapping(void)
         &m_pgController3
     };
 
-    for (size_t i = 0, n = GetPageCount(); i < n; i++)
+    for (uint32_t i = 0, n = GetPageCount(); i < n; i++)
     {
         HWND hPage = IndexToHwnd(i);
         if (hPage != nullptr && i < (sizeof(Pages) / sizeof(Pages[0])))
