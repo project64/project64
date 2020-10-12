@@ -77,9 +77,27 @@ enum CICChip
 
 enum Country
 {
-    NTSC_BETA = 0x37, X_NTSC = 0x41, Germany = 0x44, USA = 0x45, french = 0x46, Italian = 0x49,
-    Japan = 0x4A, Europe = 0x50, Spanish = 0x53, Australia = 0x55, X_PAL = 0x58, Y_PAL = 0x59,
-    UnknownCountry = 0
+    Country_NTSC_BETA = 0x37,
+    Country_Asian_NTSC = 0x41,
+    Country_Brazilian = 0x42,
+    Country_Chinese = 0x43,
+    Country_Germany = 0x44,
+    Country_NorthAmerica = 0x45,
+    Country_French = 0x46,
+    Country_Gateway64_NTSC = 0x47,
+    Country_Dutch = 0x48,
+    Country_Italian = 0x49,
+    Country_Japan = 0x4A,
+    Country_Korean = 0x4B,
+    Country_Gateway64_PAL = 0x4C,
+    Country_Canadian = 0x4E,
+    Country_Europe = 0x50,
+    Country_Spanish = 0x53,
+    Country_Australia = 0x55,
+    Country_Scandinavian = 0x57,
+    Country_EuropeanX_PAL = 0x58,
+    Country_EuropeanY_PAL = 0x59,
+    Country_Unknown = 0
 };
 
 enum PROFILE_TIMERS

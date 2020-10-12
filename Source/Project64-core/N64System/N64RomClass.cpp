@@ -324,11 +324,11 @@ void CN64Rom::CalculateRomCrc()
     uint32_t v0, v1;
     uint32_t length = 0x00100000;
 
-    // CIC_NUS_6101	at=0x5D588B65 , s6=0x3F
-    // CIC_NUS_6102	at=0x5D588B65 , s6=0x3F
-    // CIC_NUS_6103	at=0x6C078965 , s6=0x78
-    // CIC_NUS_6105	at=0x5d588b65 , s6=0x91
-    // CIC_NUS_6106	at=0x6C078965 , s6=0x85
+    // CIC_NUS_6101 at=0x5D588B65 , s6=0x3F
+    // CIC_NUS_6102 at=0x5D588B65 , s6=0x3F
+    // CIC_NUS_6103 at=0x6C078965 , s6=0x78
+    // CIC_NUS_6105 at=0x5d588b65 , s6=0x91
+    // CIC_NUS_6106 at=0x6C078965 , s6=0x85
 
     // 64DD IPL (JPN) at=0x02E90EDD , s6=0xdd
     // 64DD IPL (USA) at=0x02E90EDD , s6=0xde
@@ -445,12 +445,12 @@ bool CN64Rom::IsLoadedRomDDIPL()
 {
     switch (CicChipID())
     {
-        case CIC_NUS_8303:
-        case CIC_NUS_DDUS:
-        case CIC_NUS_DDTL:
-            return true;
-        default:
-            return false;
+    case CIC_NUS_8303:
+    case CIC_NUS_DDUS:
+    case CIC_NUS_DDTL:
+        return true;
+    default:
+        return false;
     }
 }
 

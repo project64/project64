@@ -28,7 +28,7 @@ public:
     void SaveRomSettingID(bool temp);
     void ClearRomSettingID();
     CICChip CicChipID();
-    uint8_t *  GetRomAddress() { return m_ROMImage; }
+    uint8_t * GetRomAddress() { return m_ROMImage; }
     uint32_t GetRomSize() const { return m_RomFileSize; }
     const std::string & GetRomMD5() const { return m_MD5; }
     const std::string & GetRomName() const { return m_RomName; }
