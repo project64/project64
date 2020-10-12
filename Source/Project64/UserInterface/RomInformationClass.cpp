@@ -123,19 +123,19 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
 
             switch (RomHeader[0x3D])
             {
-            case NTSC_BETA: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Beta"); break;
-            case X_NTSC:    SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"NTSC"); break;
-            case Germany:   SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Germany"); break;
-            case USA:       SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"America"); break;
-            case french:    SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"France"); break;
-            case Italian:   SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Italy"); break;
-            case Japan:     SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Japan"); break;
-            case Europe:    SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Europe"); break;
-            case Spanish:   SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Spain"); break;
-            case Australia: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Australia"); break;
-            case X_PAL:     SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"PAL"); break;
-            case Y_PAL:     SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"PAL"); break;
-            case 0: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"None"); break;
+            case Country_NTSC_BETA: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Beta"); break;
+            case Country_Asian_NTSC: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"NTSC"); break;
+            case Country_Germany: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Germany"); break;
+            case Country_NorthAmerica: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"America"); break;
+            case Country_French:  SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"France"); break;
+            case Country_Italian: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Italy"); break;
+            case Country_Japan: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Japan"); break;
+            case Country_Europe: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Europe"); break;
+            case Country_Spanish: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Spain"); break;
+            case Country_Australia: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Australia"); break;
+            case Country_EuropeanX_PAL: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"PAL"); break;
+            case Country_EuropeanY_PAL: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"PAL"); break;
+            case Country_Unknown: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"None"); break;
             default:
                 SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, stdstr_f(" Unknown %c (%02X)", RomHeader[0x3D], RomHeader[0x3D]).ToUTF16().c_str());
             }
@@ -203,19 +203,19 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
 
             switch (DiskHeader[0x00])
             {
-            case NTSC_BETA: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Beta"); break;
-            case X_NTSC:    SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"NTSC"); break;
-            case Germany:   SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Germany"); break;
-            case USA:       SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"America"); break;
-            case french:    SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"France"); break;
-            case Italian:   SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Italy"); break;
-            case Japan:     SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Japan"); break;
-            case Europe:    SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Europe"); break;
-            case Spanish:   SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Spain"); break;
-            case Australia: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Australia"); break;
-            case X_PAL:     SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"PAL"); break;
-            case Y_PAL:     SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"PAL"); break;
-            case 0: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"None"); break;
+            case Country_NTSC_BETA: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Beta"); break;
+            case Country_Asian_NTSC: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"NTSC"); break;
+            case Country_Germany: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Germany"); break;
+            case Country_NorthAmerica: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"America"); break;
+            case Country_French: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"France"); break;
+            case Country_Italian: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Italy"); break;
+            case Country_Japan: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Japan"); break;
+            case Country_Europe: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Europe"); break;
+            case Country_Spanish: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Spain"); break;
+            case Country_Australia: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Australia"); break;
+            case Country_EuropeanX_PAL: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"PAL"); break;
+            case Country_EuropeanY_PAL: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"PAL"); break;
+            case Country_Unknown: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"None"); break;
             default:
                 SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, stdstr_f(" Unknown %c (%02X)", DiskHeader[0x03], DiskHeader[0x03]).ToUTF16().c_str());
             }

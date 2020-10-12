@@ -27,7 +27,7 @@ CN64Rom::CN64Rom() :
     m_ROMImageBase(NULL),
     m_RomFileSize(0),
     m_ErrorMsg(EMPTY_STRING),
-    m_Country(UnknownCountry),
+    m_Country(Country_Unknown),
     m_CicChip(CIC_UNKNOWN)
 {
 }
@@ -849,18 +849,7 @@ void CN64Rom::SaveRomSettingID(bool temp)
     g_Settings->SaveString(Game_GameName, m_RomName.c_str());
     g_Settings->SaveString(Game_IniKey, m_RomIdent.c_str());
     g_Settings->SaveString(Game_UniqueSaveDir, stdstr_f("%s-%s", m_RomName.c_str(), m_MD5.c_str()).c_str());
-
-    switch (GetCountry())
-    {
-    case Germany: case french:  case Italian:
-    case Europe:  case Spanish: case Australia:
-    case X_PAL:   case Y_PAL:
-        g_Settings->SaveDword(Game_SystemType, SYSTEM_PAL);
-        break;
-    default:
-        g_Settings->SaveDword(Game_SystemType, SYSTEM_NTSC);
-        break;
-    }
+    g_Settings->SaveDword(Game_SystemType, IsPal() ? SYSTEM_PAL : SYSTEM_NTSC);
 }
 
 void CN64Rom::ClearRomSettingID()
@@ -872,6 +861,23 @@ void CN64Rom::ClearRomSettingID()
 void CN64Rom::SetError(LanguageStringID ErrorMsg)
 {
     m_ErrorMsg = ErrorMsg;
+}
+
+bool CN64Rom::IsPal()
+{
+    switch (m_Country)
+    {
+    case Country_Germany:
+    case Country_French:
+    case Country_Italian:
+    case Country_Europe:
+    case Country_Spanish:
+    case Country_Australia:
+    case Country_EuropeanX_PAL:
+    case Country_EuropeanY_PAL:
+        return true;
+    }
+    return false;
 }
 
 void CN64Rom::UnallocateRomImage()

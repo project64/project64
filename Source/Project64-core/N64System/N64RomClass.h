@@ -34,6 +34,7 @@ public:
     const std::string & GetRomName() const { return m_RomName; }
     const std::string & GetFileName() const { return m_FileName; }
     Country GetCountry() const { return m_Country; }
+    bool IsPal();
     void UnallocateRomImage();
 
     //Get a message id for the reason that you failed to load the rom

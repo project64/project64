@@ -816,12 +816,12 @@ Country CN64Disk::GetDiskCountryCode()
     switch (*(uint32_t*)&GetDiskAddressSys()[0])
     {
         case DISK_COUNTRY_JPN:
-            return Japan;
+            return Country_Japan;
         case DISK_COUNTRY_USA:
-            return USA;
+            return Country_NorthAmerica;
         case DISK_COUNTRY_DEV:
         default:
-            return UnknownCountry;
+            return Country_Unknown;
     }
 }
 
