@@ -148,11 +148,11 @@ void CRomList::AddRomToList(const char * RomLocation)
 void CRomList::FillRomList(strlist & FileList, const char * Directory)
 {
     WriteTrace(TraceRomList, TraceDebug, "Start (m_GameDir = %s, Directory: %s)", (const char *)m_GameDir, Directory);
-    CPath SearchPath((const char *)m_GameDir, "*");
-    SearchPath.AppendDirectory(Directory);
+    CPath SearchDir((const char *)m_GameDir, "*");
+    SearchDir.AppendDirectory(Directory);
 
     WriteTrace(TraceRomList, TraceVerbose, "SearchPath: %s", (const char *)SearchPath);
-    if (!SearchPath.FindFirst(CPath::FIND_ATTRIBUTE_ALLFILES))
+    if (!SearchDir.FindFirst(CPath::FIND_ATTRIBUTE_ALLFILES))
     {
         WriteTrace(TraceRomList, TraceVerbose, "No files found");
         WriteTrace(TraceRomList, TraceDebug, "Done (Directory: %s)", Directory);
@@ -168,20 +168,20 @@ void CRomList::FillRomList(strlist & FileList, const char * Directory)
             break;
         }
 
-        if (SearchPath.IsDirectory())
+        if (SearchDir.IsDirectory())
         {
             if (g_Settings->LoadBool(RomList_GameDirRecursive))
             {
                 CPath CurrentDir(Directory);
-                CurrentDir.AppendDirectory(SearchPath.GetLastDirectory().c_str());
+                CurrentDir.AppendDirectory(SearchDir.GetLastDirectory().c_str());
                 FillRomList(FileList, CurrentDir);
             }
             continue;
         }
 
-        AddFileNameToList(FileList, Directory, SearchPath);
+        AddFileNameToList(FileList, Directory, SearchDir);
 
-        stdstr Extension = stdstr(SearchPath.GetExtension()).ToLower();
+        stdstr Extension = stdstr(SearchDir.GetExtension()).ToLower();
         for (uint8_t i = 0; i < sizeof(ROM_extensions) / sizeof(ROM_extensions[0]); i++)
         {
             if (Extension != ROM_extensions[i])
@@ -191,7 +191,7 @@ void CRomList::FillRomList(strlist & FileList, const char * Directory)
             WriteTrace(TraceRomList, TraceVerbose, "File has matching extension: \"%s\"", ROM_extensions[i]);
             if (Extension != "7z")
             {
-                AddRomToList(SearchPath);
+                AddRomToList(SearchDir);
             }
 #ifdef _WIN32
             else
@@ -199,7 +199,7 @@ void CRomList::FillRomList(strlist & FileList, const char * Directory)
                 WriteTrace(TraceRomList, TraceVerbose, "Looking at contents of 7z file");
                 try
                 {
-                    C7zip ZipFile(SearchPath);
+                    C7zip ZipFile(SearchDir);
                     if (!ZipFile.OpenSuccess())
                     {
                         continue;
@@ -322,7 +322,7 @@ void CRomList::FillRomList(strlist & FileList, const char * Directory)
 #endif
             break;
         }
-    } while (SearchPath.FindNext());
+    } while (SearchDir.FindNext());
 #ifdef _WIN32
     m_ZipIniFile->FlushChanges();
 #endif
