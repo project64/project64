@@ -121,9 +121,9 @@ void CSettingTypeApplication::ResetAll()
     }
     CIniFile::SectionList sections;
     m_SettingsIniFile->GetVectorOfSections(sections);
-    for (size_t i = 0; i < sections.size(); i++)
+    for (CIniFile::SectionList::const_iterator itr = sections.begin(); itr != sections.end(); itr++)
     {
-        m_SettingsIniFile->DeleteSection(sections[i].c_str());
+        m_SettingsIniFile->DeleteSection(itr->c_str());
     }
 }
 
@@ -156,14 +156,14 @@ bool CSettingTypeApplication::Load(uint32_t Index, bool & Value) const
         }
         else
         {
-			if (g_Settings->IndexBasedSetting(m_DefaultSetting))
-			{
-				g_Settings->LoadBoolIndex(m_DefaultSetting, Index, Value);
-			}
-			else
-			{
-				g_Settings->LoadBool(m_DefaultSetting, Value);
-			}
+            if (g_Settings->IndexBasedSetting(m_DefaultSetting))
+            {
+                g_Settings->LoadBoolIndex(m_DefaultSetting, Index, Value);
+            }
+            else
+            {
+                g_Settings->LoadBool(m_DefaultSetting, Value);
+            }
         }
     }
     return bRes;
@@ -203,13 +203,13 @@ void CSettingTypeApplication::LoadDefault(uint32_t Index, bool & Value) const
         {
             Value = m_DefaultValue != 0;
         }
-		else if (g_Settings->IndexBasedSetting(m_DefaultSetting))
-		{
-			g_Settings->LoadBoolIndex(m_DefaultSetting, Index, Value);
-		}
-		else
-		{
-			g_Settings->LoadBool(m_DefaultSetting, Value);
+        else if (g_Settings->IndexBasedSetting(m_DefaultSetting))
+        {
+            g_Settings->LoadBoolIndex(m_DefaultSetting, Index, Value);
+        }
+        else
+        {
+            g_Settings->LoadBool(m_DefaultSetting, Value);
         }
     }
 }
@@ -233,7 +233,7 @@ void CSettingTypeApplication::LoadDefault(uint32_t /*Index*/, std::string & Valu
 //Update the settings
 void CSettingTypeApplication::Save(uint32_t Index, bool Value)
 {
-	bool indexed = g_Settings->IndexBasedSetting(m_DefaultSetting);
+    bool indexed = g_Settings->IndexBasedSetting(m_DefaultSetting);
 
     if (m_DefaultSetting != Default_None &&
         ((m_DefaultSetting == Default_Constant && m_DefaultValue == (uint32_t)Value) ||
