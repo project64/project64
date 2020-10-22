@@ -16,6 +16,7 @@
 #include <Common/Platform.h>
 #include <Common/MemoryManagement.h>
 #include <Common/SmartPointer.h>
+#include <Common/IniFileClass.h>
 #include <memory>
 
 #ifdef _WIN32
@@ -27,7 +28,7 @@ CN64Rom::CN64Rom() :
     m_ROMImageBase(NULL),
     m_RomFileSize(0),
     m_ErrorMsg(EMPTY_STRING),
-    m_Country(UnknownCountry),
+    m_Country(Country_Unknown),
     m_CicChip(CIC_UNKNOWN)
 {
 }
@@ -324,11 +325,11 @@ void CN64Rom::CalculateRomCrc()
     uint32_t v0, v1;
     uint32_t length = 0x00100000;
 
-    // CIC_NUS_6101	at=0x5D588B65 , s6=0x3F
-    // CIC_NUS_6102	at=0x5D588B65 , s6=0x3F
-    // CIC_NUS_6103	at=0x6C078965 , s6=0x78
-    // CIC_NUS_6105	at=0x5d588b65 , s6=0x91
-    // CIC_NUS_6106	at=0x6C078965 , s6=0x85
+    // CIC_NUS_6101 at=0x5D588B65 , s6=0x3F
+    // CIC_NUS_6102 at=0x5D588B65 , s6=0x3F
+    // CIC_NUS_6103 at=0x6C078965 , s6=0x78
+    // CIC_NUS_6105 at=0x5d588b65 , s6=0x91
+    // CIC_NUS_6106 at=0x6C078965 , s6=0x85
 
     // 64DD IPL (JPN) at=0x02E90EDD , s6=0xdd
     // 64DD IPL (USA) at=0x02E90EDD , s6=0xde
@@ -445,12 +446,12 @@ bool CN64Rom::IsLoadedRomDDIPL()
 {
     switch (CicChipID())
     {
-        case CIC_NUS_8303:
-        case CIC_NUS_DDUS:
-        case CIC_NUS_DDTL:
-            return true;
-        default:
-            return false;
+    case CIC_NUS_8303:
+    case CIC_NUS_DDUS:
+    case CIC_NUS_DDTL:
+        return true;
+    default:
+        return false;
     }
 }
 
@@ -654,6 +655,25 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
     }
 
     m_RomIdent = stdstr_f("%08X-%08X-C:%X", CRC1, CRC2, m_ROMImage[0x3D]);
+    {
+        CIniFileBase::SectionList GameIdentifiers;
+        CIniFile RomDatabase(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
+        RomDatabase.GetVectorOfSections(GameIdentifiers);
+
+        if (GameIdentifiers.find(m_RomIdent.c_str()) == GameIdentifiers.end())
+        {
+            char InternalName[22] = { 0 };
+            memcpy(InternalName, (void *)(m_ROMImage + 0x20), 20);
+            CN64Rom::CleanRomName(InternalName);
+
+            std::string AltIdentifier = stdstr_f("%s-C:%X", stdstr(InternalName).Trim().ToUpper().c_str(), m_Country);
+            AltIdentifier = RomDatabase.GetString(AltIdentifier.c_str(), "Alt Identifier", "");
+            if (!AltIdentifier.empty())
+            {
+                m_RomIdent = AltIdentifier;
+            }
+        }
+    }
     WriteTrace(TraceN64System, TraceDebug, "Ident: %s", m_RomIdent.c_str());
 
     if (!LoadBootCodeOnly && g_Rom == this)
@@ -849,18 +869,7 @@ void CN64Rom::SaveRomSettingID(bool temp)
     g_Settings->SaveString(Game_GameName, m_RomName.c_str());
     g_Settings->SaveString(Game_IniKey, m_RomIdent.c_str());
     g_Settings->SaveString(Game_UniqueSaveDir, stdstr_f("%s-%s", m_RomName.c_str(), m_MD5.c_str()).c_str());
-
-    switch (GetCountry())
-    {
-    case Germany: case french:  case Italian:
-    case Europe:  case Spanish: case Australia:
-    case X_PAL:   case Y_PAL:
-        g_Settings->SaveDword(Game_SystemType, SYSTEM_PAL);
-        break;
-    default:
-        g_Settings->SaveDword(Game_SystemType, SYSTEM_NTSC);
-        break;
-    }
+    g_Settings->SaveDword(Game_SystemType, IsPal() ? SYSTEM_PAL : SYSTEM_NTSC);
 }
 
 void CN64Rom::ClearRomSettingID()
@@ -872,6 +881,23 @@ void CN64Rom::ClearRomSettingID()
 void CN64Rom::SetError(LanguageStringID ErrorMsg)
 {
     m_ErrorMsg = ErrorMsg;
+}
+
+bool CN64Rom::IsPal()
+{
+    switch (m_Country)
+    {
+    case Country_Germany:
+    case Country_French:
+    case Country_Italian:
+    case Country_Europe:
+    case Country_Spanish:
+    case Country_Australia:
+    case Country_EuropeanX_PAL:
+    case Country_EuropeanY_PAL:
+        return true;
+    }
+    return false;
 }
 
 void CN64Rom::UnallocateRomImage()

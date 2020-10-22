@@ -497,7 +497,7 @@ bool CIniFileBase::DeleteSection(const char * lpSectionName)
     CGuard Guard(m_CS);
 
     if (!m_File.IsOpen()) { return false; }
-    
+
     SaveCurrentSection();
     if (!MoveToSectionNameData(lpSectionName, true))
     {
@@ -517,10 +517,10 @@ bool CIniFileBase::DeleteSection(const char * lpSectionName)
             if (result <= 1) { continue; }
             if (strlen(CleanLine(Input)) <= 1) { continue; }
 
-            if (Input[0] != '[') 
-            { 
+            if (Input[0] != '[')
+            {
                 NextLine = (m_File.GetPosition() - DataSize) + ReadPos;
-                continue; 
+                continue;
             }
             NextSectionStart = NextLine != 0 ? NextLine : (m_File.GetPosition() - DataSize) + ReadPos;
             break;
@@ -869,7 +869,7 @@ void CIniFileBase::GetVectorOfSections(SectionList & sections)
 
     for (FILELOC::const_iterator iter = m_SectionsPos.begin(); iter != m_SectionsPos.end(); iter++)
     {
-        sections.push_back(iter->first);
+        sections.insert(iter->first);
     }
 }
 

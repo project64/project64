@@ -19,17 +19,17 @@
 #include <memory>
 
 CN64Disk::CN64Disk() :
-m_DiskImage(NULL),
-m_DiskImageBase(NULL),
-m_DiskHeader(NULL),
-m_DiskHeaderBase(NULL),
-m_ErrorMsg(EMPTY_STRING),
-m_DiskBufAddress(0),
-m_DiskSysAddress(0),
-m_DiskIDAddress(0),
-m_DiskRomAddress(0),
-m_DiskRamAddress(0),
-m_isShadowDisk(false)
+    m_DiskImage(NULL),
+    m_DiskImageBase(NULL),
+    m_DiskHeader(NULL),
+    m_DiskHeaderBase(NULL),
+    m_ErrorMsg(EMPTY_STRING),
+    m_DiskBufAddress(0),
+    m_DiskSysAddress(0),
+    m_DiskIDAddress(0),
+    m_DiskRomAddress(0),
+    m_DiskRamAddress(0),
+    m_isShadowDisk(false)
 {
 }
 
@@ -221,9 +221,14 @@ void CN64Disk::SaveDiskSettingID(bool temp)
 
     switch (GetCountry())
     {
-    case Germany: case french:  case Italian:
-    case Europe:  case Spanish: case Australia:
-    case X_PAL:   case Y_PAL:
+    case Country_Germany:
+    case Country_French:
+    case Country_Italian:
+    case Country_Europe:
+    case Country_Spanish:
+    case Country_Australia:
+    case Country_EuropeanX_PAL:
+    case Country_EuropeanY_PAL:
         g_Settings->SaveDword(Game_SystemType, SYSTEM_PAL);
         break;
     default:
@@ -790,7 +795,7 @@ bool CN64Disk::IsSysSectorGood(uint32_t block, uint32_t sectorsize)
         //Always 0xFFFFFFFF
         if (*(uint32_t*)&m_DiskImage[(block * 0x4D08) + 0x18] != 0xFFFFFFFF)
             return false;
-        
+
         uint8_t alt = 0xC;  //Retail
         if ((block & 2) != 0)
             alt = 0xA;      //Development
@@ -811,12 +816,12 @@ Country CN64Disk::GetDiskCountryCode()
     switch (*(uint32_t*)&GetDiskAddressSys()[0])
     {
         case DISK_COUNTRY_JPN:
-            return Japan;
+            return Country_Japan;
         case DISK_COUNTRY_USA:
-            return USA;
+            return Country_NorthAmerica;
         case DISK_COUNTRY_DEV:
         default:
-            return UnknownCountry;
+            return Country_Unknown;
     }
 }
 
@@ -945,7 +950,7 @@ uint16_t CN64Disk::LBAToPhys(uint32_t lba)
     uint16_t vzone_lba = 0;
     if (vzone != 0)
         vzone_lba = VZONE_LBA_TBL[m_DiskType][vzone - 1];
-    
+
     //Calculate Physical Track
     uint16_t track = (lba - vzone_lba) >> 1;
 

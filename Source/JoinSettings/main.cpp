@@ -70,9 +70,9 @@ void SplitFile(const char * FileName, const char * Target)
     CIniFile CheatIniFile(FileName);
     CheatIniFile.GetVectorOfSections(Sections);
 
-    for (size_t i = 0, n = Sections.size(); i < n; i++)
+    for (CIniFile::SectionList::const_iterator SectionItr = Sections.begin(); SectionItr != Sections.end(); SectionItr++)
     {
-        const char * Section = Sections[i].c_str();
+        const char * Section = SectionItr->c_str();
 
         CIniFile::KeyValueData data;
         CheatIniFile.GetKeyValueData(Section, data);
@@ -136,9 +136,9 @@ void RegionSection(CFile &TargetIniFile, Files &files, const char * Region, cons
 
         bool found = false;
         stdstr_f searchStr(":%s", RegionCode);
-        for (size_t i = 0, n = Sections.size(); i < n; i++)
+        for (CIniFile::SectionList::const_iterator SectionItr = Sections.begin(); SectionItr != Sections.end(); SectionItr++)
         {
-            const char * Section = Sections[i].c_str();
+            const char * Section = SectionItr->c_str();
             const char * pos = strstr(Section, searchStr.c_str());
             if (pos == NULL)
             {
@@ -147,15 +147,15 @@ void RegionSection(CFile &TargetIniFile, Files &files, const char * Region, cons
             found = true;
             break;
         }
-        
+
         if (!found)
         {
             continue;
         }
 
-        for (size_t i = 0, n = Sections.size(); i < n; i++)
+        for (CIniFile::SectionList::const_iterator SectionItr = Sections.begin(); SectionItr != Sections.end(); SectionItr++)
         {
-            const char * Section = Sections[i].c_str();
+            const char * Section = SectionItr->c_str();
 
             CIniFile::KeyValueData data;
             GameIniFile.GetKeyValueData(Section, data);
@@ -200,9 +200,9 @@ void JoinFile(const char * Directory, const char * Target)
 
             CIniFile::SectionList Sections;
             GameIniFile.GetVectorOfSections(Sections);
-            for (size_t i = 0, n = Sections.size(); i < n; i++)
+            for (CIniFile::SectionList::const_iterator SectionItr = Sections.begin(); SectionItr != Sections.end(); SectionItr++)
             {
-                const char * Section = Sections[i].c_str();
+                const char * Section = SectionItr->c_str();
                 stdstr Name = GameIniFile.GetString(Section, "Name", Section);
                 Name.Trim("\t =");
                 if (Name.size() > 0)
@@ -239,7 +239,7 @@ void JoinFile(const char * Directory, const char * Target)
         {
             CIniFile::KeyValueData data;
             MetaIniFile.GetKeyValueData("Meta", data);
-            
+
             LineData = stdstr_f("[Meta]\r\n");
             TargetIniFile.Write(LineData.c_str(), (int)LineData.length());
             for (CIniFile::KeyValueData::const_iterator itr = data.begin(); itr != data.end(); itr++)
@@ -282,9 +282,9 @@ void UpdateNames(const char* Directory, const char* RdbFile)
             CIniFile::SectionList Sections;
             CheatFile.GetVectorOfSections(Sections);
             CheatFile.SetCustomSort(CustomSortData);
-            for (size_t i = 0, n = Sections.size(); i < n; i++)
+            for (CIniFile::SectionList::const_iterator SectionItr = Sections.begin(); SectionItr != Sections.end(); SectionItr++)
             {
-                const char * Section = Sections[i].c_str();
+                const char * Section = SectionItr->c_str();
                 std::string Name = RdbIni.GetString(Section, "Good Name", "");
                 if (Name.empty())
                 {
@@ -616,9 +616,9 @@ void convertGS(const char* Directory)
             CIniFile::SectionList Sections;
             CheatFile.GetVectorOfSections(Sections);
             CheatFile.SetCustomSort(CustomSortData);
-            for (size_t i = 0, n = Sections.size(); i < n; i++)
+            for (CIniFile::SectionList::const_iterator SectionItr = Sections.begin(); SectionItr != Sections.end(); SectionItr++)
             {
-                const char * Section = Sections[i].c_str();
+                const char * Section = SectionItr->c_str();
                 for (uint32_t cheat = 0; cheat < MaxCheats; cheat++)
                 {
                     std::string CheatEntry = CheatFile.GetString(Section, stdstr_f("Cheat%d", cheat).c_str(), "");
@@ -846,9 +846,9 @@ void ConvertNew(const char * Src, const char * Dest)
                 MaxCheats = 50000,
             };
 
-            for (size_t i = 0, n = Sections.size(); i < n; i++)
+            for (CIniFile::SectionList::const_iterator SectionItr = Sections.begin(); SectionItr != Sections.end(); SectionItr++)
             {
-                const char * Section = Sections[i].c_str();
+                const char * Section = SectionItr->c_str();
                 std::string GameName = SrcIniFile.GetString(Section, "Name", "");
                 DstCheatFile.SetName(Section, GameName.c_str());
                 for (uint32_t cheat = 0; cheat < MaxCheats; cheat++)

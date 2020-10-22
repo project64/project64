@@ -119,10 +119,8 @@
     <ClCompile Include="UserInterface\WTLControls\wtl-BitmapPicture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DiscordRPC.h" />
     <ClInclude Include="UserInterface\Debugger\CPULog.h" />
     <ClInclude Include="UserInterface\Debugger\Debugger-CPULogView.h" />
-    <ClInclude Include="N64System\Debugger\OpInfo.h" />
     <ClInclude Include="N64System.h" />
     <ClInclude Include="Settings\GuiSettings.h" />
     <ClInclude Include="Settings\NotificationSettings.h" />
@@ -158,7 +156,6 @@
     <ClInclude Include="UserInterface\Debugger\ScriptHook.h" />
     <ClInclude Include="UserInterface\Debugger\ScriptInstance.h" />
     <ClInclude Include="UserInterface\Debugger\ScriptSystem.h" />
-    <ClInclude Include="UserInterface\Debugger\stdafx.h" />
     <ClInclude Include="UserInterface\Debugger\Symbols.h" />
     <ClInclude Include="UserInterface\EnhancementConfig.h" />
     <ClInclude Include="UserInterface\MainWindow.h" />

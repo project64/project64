@@ -601,15 +601,15 @@ bool CN64System::SelectAndLoadFileImageIPL(Country country, bool combo)
     LanguageStringID IPLROMError;
     switch (country)
     {
-        case Country::Japan:
+        case Country_Japan:
             IPLROMPathSetting = File_DiskIPLPath;
             IPLROMError = MSG_IPL_REQUIRED;
             break;
-        case Country::USA:
+        case Country_NorthAmerica:
             IPLROMPathSetting = File_DiskIPLUSAPath;
             IPLROMError = MSG_USA_IPL_REQUIRED;
             break;
-        case Country::UnknownCountry:
+        case Country_Unknown:
         default:
             IPLROMPathSetting = File_DiskIPLTOOLPath;
             IPLROMError = MSG_TOOL_IPL_REQUIRED;
@@ -990,7 +990,7 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
     //Start 64DD in Reset State and Motor Not Spinning
     m_Reg.ASIC_STATUS = DD_STATUS_RST_STATE | DD_STATUS_MTR_N_SPIN;
     m_Reg.ASIC_ID_REG = 0x00030000;
-    if (g_DDRom && (g_DDRom->CicChipID() == CIC_NUS_DDTL || (g_Disk && g_Disk->GetCountry() == Country::UnknownCountry)))
+    if (g_DDRom && (g_DDRom->CicChipID() == CIC_NUS_DDTL || (g_Disk && g_Disk->GetCountry() == Country_Unknown)))
         m_Reg.ASIC_ID_REG = 0x00040000;
 
     //m_Reg.REVISION_REGISTER   = 0x00000511;
@@ -1018,11 +1018,8 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
         m_Reg.m_GPR[29].DW = 0xFFFFFFFFA4001FF0;
         m_Reg.m_GPR[30].DW = 0x0000000000000000;
 
-        switch (g_Rom->GetCountry())
+        if (g_Rom->IsPal())
         {
-        case Germany: case french:  case Italian:
-        case Europe:  case Spanish: case Australia:
-        case X_PAL:   case Y_PAL:
             switch (g_Rom->CicChipID())
             {
             case CIC_UNKNOWN:
@@ -1051,9 +1048,9 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
             m_Reg.m_GPR[20].DW = 0x0000000000000000;
             m_Reg.m_GPR[23].DW = 0x0000000000000006;
             m_Reg.m_GPR[31].DW = 0xFFFFFFFFA4001554;
-            break;
-        case NTSC_BETA: case X_NTSC: case USA: case Japan:
-        default:
+        }
+        else
+        {
             switch (g_Rom->CicChipID())
             {
             case CIC_UNKNOWN:

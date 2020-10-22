@@ -10,14 +10,15 @@
 #include <map>
 #include <vector>
 #include <list>
+#include <set>
 #include <memory>
 
 class CIniFileBase
 {
 public:
     typedef std::map<std::string, std::string> KeyValueData;
-    typedef std::vector<std::string> SectionList;
-	typedef std::list<std::string> strlist;
+    typedef std::set<std::string> SectionList;
+    typedef std::list<std::string> strlist;
     typedef std::pair<const std::string *, const std::string *> KeyValueItem;
     typedef std::vector<KeyValueItem> KeyValueVector;
     typedef void(*SortData)(KeyValueVector &);
@@ -68,7 +69,7 @@ private:
     typedef std::map<std::string, long> FILELOC;
     typedef FILELOC::iterator FILELOC_ITR;
     typedef std::map<std::string, std::string, insensitive_compare> KeyValueList;
-    
+
     std::string m_CurrentSection;
     bool m_CurrentSectionDirty;
     int m_CurrentSectionFilePos; // Where in the file is the current Section

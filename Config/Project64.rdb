@@ -5872,6 +5872,9 @@ SMM-TLB=0
 Self Texture=1
 RDRAM Size=8
 
+[THE LEGEND OF ZELDA-C:45]
+Alt Identifier=EC7011B7-7616D72B-C:45
+
 [EC7011B7-7616D72B-C:45]
 Good Name=The Legend of Zelda - Ocarina of Time (U) (V1.0)
 Internal Name=THE LEGEND OF ZELDA

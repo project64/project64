@@ -103,7 +103,7 @@ LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
     CPath GameDir(GetCWindowText(GetDlgItem(IDC_GAME_DIR)).c_str(), "");
     if (GameDir.DirectoryExists())
     {
-        g_Settings->SaveString(RomList_GameDir, GameDir.GetDirectory().c_str());
+        g_Settings->SaveString(RomList_GameDir, GameDir.GetDriveDirectory().c_str());
         Notify().AddRecentDir(GameDir);
     }
     EndDialog(0);

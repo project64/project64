@@ -356,9 +356,6 @@
     <ClInclude Include="UserInterface\SupportWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\Debugger\OpInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="UserInterface\WTLControls\TooltipDialog.h">
       <Filter>Header Files\User Interface Headers\WTL Controls Headers</Filter>
     </ClInclude>
@@ -431,9 +428,6 @@
     <ClInclude Include="UserInterface\Debugger\ScriptSystem.h">
       <Filter>Header Files\User Interface Headers\Debugger Headers</Filter>
     </ClInclude>
-    <ClInclude Include="UserInterface\Debugger\stdafx.h">
-      <Filter>Header Files\User Interface Headers\Debugger Headers</Filter>
-    </ClInclude>
     <ClInclude Include="UserInterface\Debugger\Symbols.h">
       <Filter>Header Files\User Interface Headers\Debugger Headers</Filter>
     </ClInclude>
@@ -463,9 +457,6 @@
     </ClInclude>
     <ClInclude Include="UserInterface\Settings\SettingsPage-DiskDrive.h">
       <Filter>Header Files\User Interface Headers\Settings Header</Filter>
-    </ClInclude>
-    <ClInclude Include="DiscordRPC.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UserInterface\WTLControls\HexEditCtrl.h">
       <Filter>Header Files\User Interface Headers\WTL Controls Headers</Filter>
