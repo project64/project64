@@ -40,7 +40,7 @@ AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/project
 
 ## Support
 
-[**Join the official Project64 Discord Server**](https://discord.gg/ys69Dak) to report any bugs/issues and seek help from Project64 developers, contributors and the community.
+[**Join the official Project64 Discord Server**](https://discord.gg/Cg3zquF) to report any bugs/issues and seek help from Project64 developers, contributors and the community.
 
 ## License
 
