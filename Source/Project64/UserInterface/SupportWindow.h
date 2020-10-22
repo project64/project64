@@ -1,4 +1,6 @@
 #pragma once
+#include <Project64\UserInterface\WTLControls\wtl-BitmapPicture.h>
+#include "resource.h"
 
 class CSupportWindow :
     public CDialogImpl<CSupportWindow>
@@ -16,12 +18,16 @@ public:
 
     enum { IDD = IDD_Support_Project64 };
 
-    CSupportWindow(void);
+    CSupportWindow(CProjectSupport & Support);
     ~CSupportWindow(void);
 
-    void Show(HWND hParent);
+    void Show(HWND hParent, bool Delay);
 
 private:
+    CSupportWindow();
+    CSupportWindow(const CSupportWindow&);
+    CSupportWindow& operator=(const CSupportWindow&);
+
     LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
     LRESULT OnColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnEraseBackground(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled);
@@ -34,11 +40,12 @@ private:
 
     CHyperLink m_EnterLink;
 
-    static DWORD CALLBACK SupportWindowProc(HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam);
     static void CALLBACK TimerProc(HWND, UINT, UINT_PTR idEvent, DWORD);
 
-    static HWND m_hParent;
+    CProjectSupport & m_Support;
+    CBitmapPicture m_Logo;
+    bool m_Delay;
+    uint32_t m_TimeOutTime;
+    HWND m_hParent;
     static CSupportWindow * m_this;
-    static uint32_t m_RunCount;
-    static uint32_t m_TimeOutTime;
 };

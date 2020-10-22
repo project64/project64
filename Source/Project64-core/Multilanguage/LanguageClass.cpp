@@ -114,6 +114,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MENU_ABOUT_PJ64, "&About Project64");
     DEF_STR(MENU_FORUM, "Support &Forum");
     DEF_STR(MENU_HOMEPAGE, "&Homepage");
+    DEF_STR(MENU_SUPPORT_PROJECT64, "Support Project64");
 
     //Current Save Slot menu
     DEF_STR(MENU_SLOT_DEFAULT, "Default");
@@ -460,17 +461,20 @@ void CLanguage::LoadDefaultStrings(void)
     * Support Window                                                                 *
     *********************************************************************************/
     DEF_STR(MSG_SUPPORT_TITLE, "Support Project64");
-    DEF_STR(MSG_SUPPORT_INFO, "Project64 is a software package designed to emulate a Nintendo64 video game system on a Microsoft Windows based PC. This allows you to play real N64 software in much the same way as it would be on the original hardware system.\n\nIf you like Project64 and have gotten some value out of it then please support project64 as either a thank you, or your desire to see it continually improved.\n\nIf you have supported project64:");
-    DEF_STR(MSG_SUPPORT_ENTER_CODE, "Enter notification code");
+    DEF_STR(MSG_SUPPORT_INFO, "Project64 is a free and open source Nintendo64 emulator. This allows you to play real N64 software in much the same way as it would be on the original hardware system.\n\nI am sorry about the inconvenience of this prompt, but you are being asked to wait for a few seconds in order to enjoy the result of hundreds of hours of work.\n\nIf you can and would like to support Project64 or you have gotten some value out of it then please support project64 as either a thank you, or your a desire to see removal of this prompt.\n\nIf you have supported Project64:");
+    DEF_STR(MSG_SUPPORT_ENTER_CODE, "Enter/Request Notification Code");
     DEF_STR(MSG_SUPPORT_PROJECT64, "Support Project64");
     DEF_STR(MSG_SUPPORT_CONTINUE, "Continue");
     DEF_STR(MSG_SUPPORT_ENTER_SUPPORT_CODE, "Please enter the support code");
-    DEF_STR(MSG_SUPPORT_INCORRECT_CODE, "Incorrect support code");
+    DEF_STR(MSG_SUPPORT_INCORRECT_CODE, "Failed to validate the code\n\nMake sure the code matches in email based on your machine");
     DEF_STR(MSG_SUPPORT_COMPLETE, "Thank you");
-    DEF_STR(MSG_SUPPORT_ENTER_CODE_TITLE, "Enter code");
-    DEF_STR(MSG_SUPPORT_ENTER_CODE_DESC, "Please enter the code in the email");
+    DEF_STR(MSG_SUPPORT_ENTER_CODE_TITLE, "Please enter your support code");
+    DEF_STR(MSG_SUPPORT_ENTER_CODE_DESC, "Please enter the code you recieved in the email.\n\nThis email will be sent to the email address used to support project64.\n\nPlease note that the code is will only work for a unique machine. This computer id is:");
     DEF_STR(MSG_SUPPORT_OK, "OK");
     DEF_STR(MSG_SUPPORT_CANCEL, "Cancel");
+    DEF_STR(MSG_SUPPORT_REQUESTCODE_TITLE, "Request Code");
+    DEF_STR(MSG_SUPPORT_REQUESTCODE_SUCCESS, "Code has been sent to your email");
+    DEF_STR(MSG_SUPPORT_REQUESTCODE_FAIL, "Failed to send code, please make sure it is the email you supported with");
 
     /*********************************************************************************
     * Messages                                                                       *

@@ -53,7 +53,7 @@ enum MainMenuID
     ID_PROFILE_PROFILE, ID_PROFILE_RESETCOUNTER, ID_PROFILE_GENERATELOG,
 
     //Help Menu
-    ID_HELP_SUPPORTFORUM, ID_HELP_HOMEPAGE, ID_HELP_ABOUTSETTINGFILES, ID_HELP_ABOUT,
+    ID_HELP_SUPPORT_PROJECT64, ID_HELP_SUPPORTFORUM, ID_HELP_HOMEPAGE, ID_HELP_ABOUTSETTINGFILES, ID_HELP_ABOUT,
 };
 
 class CMainMenu :
@@ -83,6 +83,7 @@ private:
     void OnLodState(HWND hWnd);
     void OnCheats(HWND hWnd);
     void OnSettings(HWND hWnd);
+    void OnSupportProject64(HWND hWnd);
 
     void FillOutMenu(HMENU hMenu);
     std::wstring GetSaveSlotString(int Slot);
@@ -98,12 +99,12 @@ private:
     typedef std::list<SettingID> SettingList;
     typedef std::list<UISettingID> UISettingList;
 
-    CMainGui   * m_Gui;
+    CMainGui * m_Gui;
 
-    void *        m_AccelTable;
-    bool          m_ResetAccelerators;
-    CShortCuts    m_ShortCuts;
-    SettingList   m_ChangeSettingList;
+    void * m_AccelTable;
+    bool m_ResetAccelerators;
+    CShortCuts m_ShortCuts;
+    SettingList m_ChangeSettingList;
     UISettingList m_ChangeUISettingList;
     CriticalSection m_CS;
 };

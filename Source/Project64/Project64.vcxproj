@@ -91,6 +91,7 @@
     <ClCompile Include="UserInterface\MenuClass.cpp" />
     <ClCompile Include="UserInterface\MenuShortCuts.cpp" />
     <ClCompile Include="UserInterface\Notification.cpp" />
+    <ClCompile Include="UserInterface\ProjectSupport.cpp" />
     <ClCompile Include="UserInterface\RomBrowserClass.cpp" />
     <ClCompile Include="UserInterface\RomInformationClass.cpp" />
     <ClCompile Include="UserInterface\SettingsConfig.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="UserInterface\MenuClass.h" />
     <ClInclude Include="UserInterface\MenuShortCuts.h" />
     <ClInclude Include="UserInterface\Notification.h" />
+    <ClInclude Include="UserInterface\ProjectSupport.h" />
     <ClInclude Include="UserInterface\resource.h" />
     <ClInclude Include="UserInterface\RomBrowser.h" />
     <ClInclude Include="UserInterface\RomInformationClass.h" />

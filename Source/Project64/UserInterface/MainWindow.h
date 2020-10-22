@@ -14,6 +14,7 @@
 #include <Project64/UserInterface/Debugger/debugger.h>
 #include <Project64-core/Plugins/PluginClass.h>
 #include <Project64\UserInterface\CheatClassUI.h>
+#include <Project64\UserInterface\ProjectSupport.h>
 
 class CGfxPlugin;      //Plugin that controls the rendering
 class CAudioPlugin;    //Plugin for audio, need the hwnd
@@ -95,10 +96,12 @@ public:
     void * GetStatusBar(void) const { return m_hStatusWnd; }
     void * GetModuleInstance(void) const;
 
+    inline CProjectSupport & Support(void) { return m_Support; }
+
 private:
-    CMainGui(void);					// Disable default constructor
-    CMainGui(const CMainGui&);			// Disable copy constructor
-    CMainGui& operator=(const CMainGui&);	// Disable assignment
+    CMainGui(void);
+    CMainGui(const CMainGui&);
+    CMainGui& operator=(const CMainGui&);
 
     friend class CGfxPlugin;
     friend class CAudioPlugin;
@@ -126,26 +129,27 @@ private:
     static void GamePaused(CMainGui * Gui);
     static void GameCpuRunning(CMainGui * Gui);
 
-    CBaseMenu     * m_Menu;
+    CBaseMenu * m_Menu;
 
-    HWND           m_hMainWindow, m_hStatusWnd;
-    DWORD          m_ThreadId;
-    CCheatsUI      m_CheatsUI;
+    HWND m_hMainWindow, m_hStatusWnd;
+    DWORD m_ThreadId;
+    CCheatsUI m_CheatsUI;
+    CProjectSupport m_Support;
 
-    const bool     m_bMainWindow;
-    bool           m_Created;
-    bool           m_AttachingMenu;
-    bool           m_MakingVisible;
-    bool           m_ResetPlugins;
+    const bool m_bMainWindow;
+    bool m_Created;
+    bool m_AttachingMenu;
+    bool m_MakingVisible;
+    bool m_ResetPlugins;
     RESET_PLUGIN * m_ResetInfo;
 
     CriticalSection m_CS;
 
-    bool        m_SaveMainWindowPos;
-    LONG        m_SaveMainWindowTop;
-    LONG        m_SaveMainWindowLeft;
+    bool m_SaveMainWindowPos;
+    LONG m_SaveMainWindowTop;
+    LONG m_SaveMainWindowLeft;
 
-    bool        m_SaveRomBrowserPos;
-    LONG        m_SaveRomBrowserTop;
-    LONG        m_SaveRomBrowserLeft;
+    bool m_SaveRomBrowserPos;
+    LONG m_SaveRomBrowserTop;
+    LONG m_SaveRomBrowserLeft;
 };

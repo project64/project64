@@ -246,6 +246,9 @@
     <ClCompile Include="UserInterface\WTLControls\GetCWindowText.cpp">
       <Filter>Source Files\User Interface Source\WTL Controls Source</Filter>
     </ClCompile>
+    <ClCompile Include="UserInterface\ProjectSupport.cpp">
+      <Filter>Source Files\User Interface Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UserInterface\resource.h">
@@ -484,6 +487,9 @@
     </ClInclude>
     <ClInclude Include="UserInterface\WTLControls\wtl-BitmapPicture.h">
       <Filter>Header Files\User Interface Headers\WTL Controls Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\ProjectSupport.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

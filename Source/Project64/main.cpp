@@ -22,7 +22,6 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         g_Debugger = &Debugger;
         g_Plugins->SetRenderWindows(&MainWindow, &HiddenWindow);
         Notify().SetMainWindow(&MainWindow);
-        CSupportWindow SupportWindow;
         bool isROMLoaded = false;
 
         if (g_Settings->LoadStringVal(Cmd_RomFile).length() > 0 && g_Settings->LoadStringVal(Cmd_ComboDiskFile).length() > 0)
@@ -64,26 +63,23 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
             }
         }
 
-        //Handle Main Window if ROM is not loaded and running
         if (!isROMLoaded)
         {
-            SupportWindow.Show(reinterpret_cast<HWND>(MainWindow.GetWindowHandle()));
+            CSupportWindow(MainWindow.Support()).Show((HWND)MainWindow.GetWindowHandle(), true);
             if (UISettingsLoadBool(RomBrowser_Enabled))
             {
                 WriteTrace(TraceUserInterface, TraceDebug, "Show Rom Browser");
-                //Display the rom browser
                 MainWindow.ShowRomList();
-                MainWindow.Show(true);	//Show the main window
+                MainWindow.Show(true);
                 MainWindow.HighLightLastRom();
             }
             else
             {
                 WriteTrace(TraceUserInterface, TraceDebug, "Show Main Window");
-                MainWindow.Show(true);	//Show the main window
+                MainWindow.Show(true);
             }
         }
 
-        //Process Messages till program is closed
         WriteTrace(TraceUserInterface, TraceDebug, "Entering Message Loop");
         MainWindow.ProcessAllMessages();
         WriteTrace(TraceUserInterface, TraceDebug, "Message Loop Finished");

@@ -271,7 +271,7 @@ void CMainMenu::OnLodState(HWND hWnd)
     g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_LoadGame);
 }
 
-void CMainMenu::OnCheats(HWND hWnd)
+void CMainMenu::OnCheats(HWND /*hWnd*/)
 {
     m_Gui->DisplayCheatsUI(false);
 }
@@ -279,6 +279,11 @@ void CMainMenu::OnCheats(HWND hWnd)
 void CMainMenu::OnSettings(HWND hWnd)
 {
     CSettingConfig().Display(hWnd);
+}
+
+void CMainMenu::OnSupportProject64(HWND hWnd)
+{
+    CSupportWindow(m_Gui->Support()).Show(hWnd, false);
 }
 
 bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuID)
@@ -568,6 +573,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         g_Notify->DisplayMessage(3, stdstr_f(GS(MENU_SLOT_SAVE), GetSaveSlotString((MenuID - ID_CURRENT_SAVE_1) + 1).c_str()).c_str());
         g_Settings->SaveDword(Game_CurrentSaveState, (DWORD)((MenuID - ID_CURRENT_SAVE_1) + 1));
         break;
+    case ID_HELP_SUPPORT_PROJECT64: OnSupportProject64(hWnd); break;
     case ID_HELP_SUPPORTFORUM: ShellExecute(NULL, L"open", L"http://forum.pj64-emu.com/", NULL, NULL, SW_SHOWMAXIMIZED); break;
     case ID_HELP_HOMEPAGE: ShellExecute(NULL, L"open", L"http://www.pj64-emu.com", NULL, NULL, SW_SHOWMAXIMIZED); break;
     case ID_HELP_ABOUT: m_Gui->AboutBox(); break;
@@ -1284,7 +1290,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     /* Help Menu
     ****************/
     MenuItemList HelpMenu;
-
+    HelpMenu.push_back(MENU_ITEM(ID_HELP_SUPPORT_PROJECT64, MENU_SUPPORT_PROJECT64));
     HelpMenu.push_back(MENU_ITEM(ID_HELP_SUPPORTFORUM, MENU_FORUM));
     HelpMenu.push_back(MENU_ITEM(ID_HELP_HOMEPAGE, MENU_HOMEPAGE));
     HelpMenu.push_back(MENU_ITEM(SPLITER));

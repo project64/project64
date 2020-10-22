@@ -83,6 +83,7 @@
 #define IDD_Debugger_ExceptionBP        207
 #define IDD_Debugger_Search_SetValue    210
 #define IDD_Settings_DiskDrive          215
+#define IDD_Support_RequestCode         216
 #define IDC_MENU_ITEM_TEXT              1000
 #define IDC_CLOSE_BUTTON                1001
 #define IDC_LIST2                       1003
@@ -276,8 +277,11 @@
 #define IDC_DESCRIPTION                 1102
 #define IDC_DIR_FRAME3                  1103
 #define IDC_OVER_CLOCK_MODIFIER         1103
+#define IDC_REQUEST_DESCPTION           1103
 #define IDC_DIR_FRAME4                  1104
+#define IDC_REQUEST_LINK                1104
 #define IDC_DIR_FRAME5                  1105
+#define IDC_MACHINE_ID                  1105
 #define IDC_MAXROMS_TXT                 1111
 #define IDC_ROMSEL_TEXT2                1112
 #define IDC_R0_EDIT                     1112
@@ -722,6 +726,7 @@
 #define IDC_F1_LBL                      1576
 #define IDC_SELECT_GAME_DIR             1576
 #define IDC_F2_LBL                      1577
+#define IDC_EMAIL                       1577
 #define IDC_F3_LBL                      1578
 #define IDC_F4_LBL                      1579
 #define IDC_F5_LBL                      1580
@@ -938,9 +943,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        220
+#define _APS_NEXT_RESOURCE_VALUE        221
 #define _APS_NEXT_COMMAND_VALUE         40121
-#define _APS_NEXT_CONTROL_VALUE         1577
+#define _APS_NEXT_CONTROL_VALUE         1578
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

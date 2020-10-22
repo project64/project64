@@ -107,6 +107,7 @@ enum LanguageStringID
     MENU_ABOUT_PJ64 = 182,
     MENU_FORUM = 183,
     MENU_HOMEPAGE = 184,
+    MENU_SUPPORT_PROJECT64 = 185,
 
     //Current Save Slot menu
     MENU_SLOT_DEFAULT = 190,
@@ -506,6 +507,9 @@ enum LanguageStringID
     MSG_SUPPORT_ENTER_CODE_DESC = 1209,
     MSG_SUPPORT_OK = 1210,
     MSG_SUPPORT_CANCEL = 1211,
+    MSG_SUPPORT_REQUESTCODE_TITLE = 1212,
+    MSG_SUPPORT_REQUESTCODE_SUCCESS = 1213,
+    MSG_SUPPORT_REQUESTCODE_FAIL = 1214,
 
     /*********************************************************************************
     * Messages                                                                       *
