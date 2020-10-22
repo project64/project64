@@ -2,7 +2,7 @@
 
 Project64 is a free and open-source emulator for the Nintendo 64 and 64DD written in C++.
 
-It offers a simple-to-use user interface and includes a featureful debugger for developers.
+The emulator offers a simple-to-use user interface and includes a featureful debugger for developers.
 
 ## System Requirements
 
@@ -40,7 +40,7 @@ AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/project
 
 ## Support
 
-[**Join the official Project64 Discord Server**](https://discord.gg/ys69Dak) to report bugs/issues and seek additional help from the Project64 developers, contributors and community.
+[**Join the official Project64 Discord Server**](https://discord.gg/ys69Dak) to report any bugs/issues and seek help from Project64 developers, contributors and the community.
 
 ## License
 
