@@ -59,6 +59,10 @@ CRomList::CRomList() :
 #endif
         g_Settings->RegisterChangeCB(RomList_GameDir, this, (CSettings::SettingChangedFunc)RefreshSettings);
     }
+    if (m_RomIniFile)
+    {
+        m_RomIniFile->GetVectorOfSections(m_GameIdentifiers);
+    }
     WriteTrace(TraceRomList, TraceVerbose, "Done");
 }
 
@@ -582,9 +586,17 @@ void CRomList::FillRomExtensionInfo(ROM_INFO * pRomInfo)
     strcpy(pRomInfo->Name, "#321#");
     strcpy(pRomInfo->Status, "Unknown");
 
-    //Get File Identifier
     char Identifier[100];
     sprintf(Identifier, "%08X-%08X-C:%X", pRomInfo->CRC1, pRomInfo->CRC2, pRomInfo->Country);
+    if (m_GameIdentifiers.find(Identifier) == m_GameIdentifiers.end())
+    {
+        std::string AltIdentifier = stdstr_f("%s-C:%X", stdstr(pRomInfo->InternalName).Trim().ToUpper().c_str(), pRomInfo->Country);
+        AltIdentifier = m_RomIniFile->GetString(AltIdentifier.c_str(), "Alt Identifier", "");
+        if (!AltIdentifier.empty())
+        {
+            strcpy(Identifier, AltIdentifier.c_str());
+        }
+    }
 
     //Rom Notes
     strncpy(pRomInfo->UserNotes, m_NotesIniFile->GetString(Identifier, "Note", "").c_str(), sizeof(pRomInfo->UserNotes) / sizeof(char));

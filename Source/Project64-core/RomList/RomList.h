@@ -95,6 +95,7 @@ private:
     CIniFile * m_ZipIniFile;
 #endif
     CThread m_RefreshThread;
+    CIniFileBase::SectionList m_GameIdentifiers;
 
     #define DISKSIZE_MAME 0x0435B0C0
     #define DISKSIZE_SDK 0x03DEC800

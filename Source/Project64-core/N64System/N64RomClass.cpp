@@ -16,6 +16,7 @@
 #include <Common/Platform.h>
 #include <Common/MemoryManagement.h>
 #include <Common/SmartPointer.h>
+#include <Common/IniFileClass.h>
 #include <memory>
 
 #ifdef _WIN32
@@ -654,6 +655,25 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
     }
 
     m_RomIdent = stdstr_f("%08X-%08X-C:%X", CRC1, CRC2, m_ROMImage[0x3D]);
+    {
+        CIniFileBase::SectionList GameIdentifiers;
+        CIniFile RomDatabase(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
+        RomDatabase.GetVectorOfSections(GameIdentifiers);
+
+        if (GameIdentifiers.find(m_RomIdent.c_str()) == GameIdentifiers.end())
+        {
+            char InternalName[22] = { 0 };
+            memcpy(InternalName, (void *)(m_ROMImage + 0x20), 20);
+            CN64Rom::CleanRomName(InternalName);
+
+            std::string AltIdentifier = stdstr_f("%s-C:%X", stdstr(InternalName).Trim().ToUpper().c_str(), m_Country);
+            AltIdentifier = RomDatabase.GetString(AltIdentifier.c_str(), "Alt Identifier", "");
+            if (!AltIdentifier.empty())
+            {
+                m_RomIdent = AltIdentifier;
+            }
+        }
+    }
     WriteTrace(TraceN64System, TraceDebug, "Ident: %s", m_RomIdent.c_str());
 
     if (!LoadBootCodeOnly && g_Rom == this)
