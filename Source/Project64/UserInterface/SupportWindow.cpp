@@ -33,7 +33,7 @@ void CSupportWindow::Show(HWND hParent, bool Delay)
         }
 
         m_Support.IncrementRunCount();
-        if (m_Support.RunCount() < 7)
+        if (m_Support.RunCount() < 7 || !m_Support.ShowSuppotWindow())
         {
             return;
         }
@@ -116,7 +116,7 @@ LRESULT CSupportWindow::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 
     MoveWindow(Left, Top, rcWin.Width(), rcWin.Height(), TRUE);
 
-    /*if (m_Delay && m_RunCount >= 10)
+    if (m_Delay && m_Support.RunCount() >= 15)
     {
         CMenuHandle menu = GetSystemMenu(false);
         menu.RemoveMenu(SC_CLOSE, MF_BYCOMMAND);
@@ -127,7 +127,7 @@ LRESULT CSupportWindow::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
         GetDlgItem(IDCANCEL).EnableWindow(false);
         srand ((uint32_t)time(NULL));
         SetTimer(0, 1000, NULL);
-    }*/
+    }
     return TRUE;
 }
 

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <Common\md5.h>
+#include <time.h>
 #include <windows.h>
 #include <Wininet.h>
 
@@ -106,8 +107,27 @@ std::string CProjectSupport::GenerateMachineID(void)
 
 void CProjectSupport::IncrementRunCount()
 {
+    time_t now = time(nullptr);
+    if (m_SupportInfo.LastUpdated <= now && ((now - m_SupportInfo.LastUpdated) / 60) < 60)
+    {
+        return;
+    }
     m_SupportInfo.RunCount += 1;
+    m_SupportInfo.LastUpdated = now;
     SaveSupportInfo();
+}
+
+bool CProjectSupport::ShowSuppotWindow()
+{
+    return true;
+    time_t now = time(nullptr);
+    if (m_SupportInfo.LastShown <= now && ((now - m_SupportInfo.LastShown) / 60) < 60)
+    {
+        return false;
+    }
+    m_SupportInfo.LastShown = now;
+    SaveSupportInfo();
+    return true;
 }
 
 bool CProjectSupport::PerformRequest(const wchar_t * Url, const std::string & PostData, DWORD & StatusCode, std::vector<std::string> & Headers)
@@ -259,7 +279,7 @@ void CProjectSupport::LoadSupportInfo(void)
         }
     }
 
-    if (OutData.size() > 0)
+    if (OutData.size() == sizeof(SupportInfo) + 32)
     {
         SupportInfo * Info = (SupportInfo *)OutData.data();
         const char * CurrentHash = (const char *)(OutData.data() + sizeof(SupportInfo));
