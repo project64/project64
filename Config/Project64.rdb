@@ -5873,7 +5873,25 @@ Self Texture=1
 RDRAM Size=8
 
 [THE LEGEND OF ZELDA-C:45]
-Alt Identifier=EC7011B7-7616D72B-C:45
+Alt Identifier=11223344-55667788-C:45
+
+[11223344-55667788-C:45]
+Good Name=The Legend of Zelda - Ocarina of Time (U) (Randomizer)
+Internal Name=THE LEGEND OF ZELDA
+Status=Compatible
+32bit=No
+Aspect Correction=1
+Cheat0=801DA5CB 0002 //Subscreen Delay Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
+Culling=1
+Emulate Clear=1
+RDRAM Size=8
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
+Self Texture=1
 
 [EC7011B7-7616D72B-C:45]
 Good Name=The Legend of Zelda - Ocarina of Time (U) (V1.0)
