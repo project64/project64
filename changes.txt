@@ -13,3 +13,4 @@ Windows 2.4
 - Ability to change defaults
 - Add GlideN64
 - Add New controller plugin
+- Saves in unique directory
