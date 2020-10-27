@@ -128,11 +128,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Setting_Enhancement, new CSettingTypeApplication("Settings", "Enable Enhancement", (uint32_t)false));
     
 	AddHandler(Setting_RememberCheats, new CSettingTypeApplication("Settings", "Remember Cheats", (uint32_t)false));
-#ifdef ANDROID
-    AddHandler(Setting_UniqueSaveDir, new CSettingTypeTempBool(true));
-#else
-    AddHandler(Setting_UniqueSaveDir, new CSettingTypeApplication("Settings", "Unique Game Dir", (uint32_t)false));
-#endif
+    AddHandler(Setting_UniqueSaveDir, new CSettingTypeApplication("Settings", "Unique Game Dir", true));
     AddHandler(Setting_CurrentLanguage, new CSettingTypeApplication("Settings", "Current Language", ""));
     AddHandler(Setting_EnableDisk, new CSettingTypeTempBool(false));
     AddHandler(Setting_LanguageDirDefault, new CSettingTypeRelativePath("Lang", ""));
