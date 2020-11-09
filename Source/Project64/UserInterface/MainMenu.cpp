@@ -575,7 +575,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         break;
     case ID_HELP_SUPPORT_PROJECT64: OnSupportProject64(hWnd); break;
     case ID_HELP_SUPPORTFORUM: ShellExecute(NULL, L"open", L"http://forum.pj64-emu.com/", NULL, NULL, SW_SHOWMAXIMIZED); break;
-    case ID_HELP_HOMEPAGE: ShellExecute(NULL, L"open", L"http://www.pj64-emu.com", NULL, NULL, SW_SHOWMAXIMIZED); break;
+    case ID_HELP_WEBSITE: ShellExecute(NULL, L"open", L"http://www.pj64-emu.com", NULL, NULL, SW_SHOWMAXIMIZED); break;
     case ID_HELP_ABOUT: m_Gui->AboutBox(); break;
     case ID_HELP_ABOUTSETTINGFILES: m_Gui->AboutIniBox(); break;
     default:
@@ -1292,7 +1292,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     MenuItemList HelpMenu;
     HelpMenu.push_back(MENU_ITEM(ID_HELP_SUPPORT_PROJECT64, MENU_SUPPORT_PROJECT64));
     HelpMenu.push_back(MENU_ITEM(ID_HELP_SUPPORTFORUM, MENU_FORUM));
-    HelpMenu.push_back(MENU_ITEM(ID_HELP_HOMEPAGE, MENU_HOMEPAGE));
+    HelpMenu.push_back(MENU_ITEM(ID_HELP_WEBSITE, MENU_WEBSITE));
     HelpMenu.push_back(MENU_ITEM(SPLITER));
     if (!inBasicMode)
     {

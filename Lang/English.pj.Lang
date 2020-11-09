@@ -3,9 +3,9 @@
 *********************************************************************************/
 //About DLL
 #1  #  "English"		// LANGUAGE ID
-#2  #  "Tooie"			// Author
-#3  #  "2.2"			// Version
-#4  #  "March, 2015"		// Date
+#2  #  "Zilmar"			// Author
+#3  #  "3.0"			// Version
+#4  #  "November, 2020"		// Date
 
 //About DLL Dialog
 #5  #  "Current Language"
@@ -76,7 +76,7 @@
 #181#  "About Conf&ig Files"
 #182#  "&About Project64"
 #183# "Support &Forum"
-#184# "&Homepage"
+#184# "&Website"
 
 //Current Save Slot menu
 #190#  "Default"
