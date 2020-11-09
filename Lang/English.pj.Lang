@@ -75,8 +75,10 @@
 #180#  "&Help"
 #181#  "About Conf&ig Files"
 #182#  "&About Project64"
-#183# "Support &Forum"
-#184# "&Website"
+#183#  "Support &Forum"
+#184#  "&Website"
+#185#  "&Support Project64"
+#186#  "&Discord"
 
 //Current Save Slot menu
 #190#  "Default"

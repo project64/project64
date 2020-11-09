@@ -105,9 +105,9 @@ enum LanguageStringID
     MENU_HELP = 180,
     MENU_ABOUT_INI = 181,
     MENU_ABOUT_PJ64 = 182,
-    MENU_FORUM = 183,
     MENU_WEBSITE = 184,
     MENU_SUPPORT_PROJECT64 = 185,
+    MENU_DISCORD = 186,
 
     //Current Save Slot menu
     MENU_SLOT_DEFAULT = 190,
