@@ -577,7 +577,6 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_HELP_DISCORD: ShellExecute(NULL, L"open", L"https://discord.gg/Cg3zquF", NULL, NULL, SW_SHOWMAXIMIZED); break;
     case ID_HELP_WEBSITE: ShellExecute(NULL, L"open", L"http://www.pj64-emu.com", NULL, NULL, SW_SHOWMAXIMIZED); break;
     case ID_HELP_ABOUT: m_Gui->AboutBox(); break;
-    case ID_HELP_ABOUTSETTINGFILES: m_Gui->AboutIniBox(); break;
     default:
         if (MenuID >= ID_RECENT_ROM_START && MenuID < ID_RECENT_ROM_END)
         {
@@ -1294,10 +1293,6 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     HelpMenu.push_back(MENU_ITEM(ID_HELP_DISCORD, MENU_DISCORD));
     HelpMenu.push_back(MENU_ITEM(ID_HELP_WEBSITE, MENU_WEBSITE));
     HelpMenu.push_back(MENU_ITEM(SPLITER));
-    if (!inBasicMode)
-    {
-        HelpMenu.push_back(MENU_ITEM(ID_HELP_ABOUTSETTINGFILES, MENU_ABOUT_INI));
-    }
     HelpMenu.push_back(MENU_ITEM(ID_HELP_ABOUT, MENU_ABOUT_PJ64));
 
     /* Main Title bar Menu

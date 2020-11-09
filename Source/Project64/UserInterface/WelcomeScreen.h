@@ -16,7 +16,7 @@ class WelcomeScreen :
     public CDialogImpl<WelcomeScreen>
 {
 public:
-    BEGIN_MSG_MAP_EX(CEnhancementConfig)
+    BEGIN_MSG_MAP_EX(WelcomeScreen)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
         MESSAGE_HANDLER(WM_CTLCOLORSTATIC, OnColorStatic)
         MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBackground)
@@ -24,7 +24,7 @@ public:
         COMMAND_ID_HANDLER(IDOK, OnOkCmd)
     END_MSG_MAP()
 
-    enum { IDD = IDD_Lang_Select };
+    enum { IDD = IDD_Welcome };
     
     WelcomeScreen(void);
 

@@ -52,46 +52,32 @@ public:
     CMainGui(bool bMainWindow, const char * WindowTitle = "");
     ~CMainGui(void);
 
-    //Message Processing
     WPARAM ProcessAllMessages(void);
     bool ProcessGuiMessages(void);
-
-    //debugging functions
     void EnterLogOptions(void);
-
-    //Get Information about the window
-    int Height(void); //Get the Height of the window
-    int Width(void); //Get the Width of the window
+    int Height(void); 
+    int Width(void);
     float DPIScale(HWND hWnd);
 
-    //Manipulate the state of the window
-    void SetPos(int X, int Y);    //Move the window to this screen location
-    void Show(bool ShowWindow); //Show or Hide the current window
+    void SetPos(int X, int Y);
+    void Show(bool ShowWindow);
     void MakeWindowOnTop(bool OnTop);
     void BringToTop(void);
-    void Caption(LPCWSTR Caption);  //Set the caption of the window
+    void Caption(LPCWSTR Caption);
     void SaveWindowLoc(void);
 
-    //Menu Function
     void SetWindowMenu(CBaseMenu * Menu);
     void RefreshMenu(void);
     CBaseMenu * GetMenuClass(void) { return m_Menu; }
 
-    // Status bar
     void SetStatusText(int Panel, const wchar_t * Text);
     void ShowStatusBar(bool ShowBar);
-
-    //About Window
-    void AboutIniBox(void);
     void AboutBox(void);
 
-    //Plugins
     bool ResetPluginsInUiThread(CPlugins * plugins, CN64System * System);
 
-    //Cheats
     void DisplayCheatsUI(bool BlockExecution);
 
-    //Get Window Handle
     void * GetWindowHandle(void) const { return m_hMainWindow; }
     void * GetStatusBar(void) const { return m_hStatusWnd; }
     void * GetModuleInstance(void) const;
@@ -117,7 +103,6 @@ private:
     void ShowRomBrowser(void);
 
     friend DWORD CALLBACK AboutBoxProc(HWND, DWORD, DWORD, DWORD);
-    friend DWORD CALLBACK AboutIniBoxProc(HWND, DWORD, DWORD, DWORD);
     static LRESULT CALLBACK MainGui_Proc(HWND, DWORD, DWORD, DWORD);
 
     friend void RomBowserEnabledChanged(CMainGui * Gui);

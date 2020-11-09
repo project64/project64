@@ -365,28 +365,6 @@ BEGIN
     CONTROL         ".usa",IDC_USA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,97,134,37,10
 END
 
-IDD_About_Ini DIALOGEX 0, 0, 186, 188
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "About INI Files"
-FONT 8, "MS Shell Dlg", 0, 0, 0x0
-BEGIN
-    GROUPBOX        " Current Language ",IDC_LAN,5,3,175,42
-    LTEXT           "Author:",IDC_LAN_AUTHOR,13,14,164,10
-    LTEXT           "Version:",IDC_LAN_VERSION,13,24,164,10
-    LTEXT           "Date:",IDC_LAN_DATE,13,34,164,10
-    GROUPBOX        "ROM Database (.RDB)",IDC_RDB,5,46,175,59
-    LTEXT           "Author:",IDC_RDB_AUTHOR,13,57,164,10
-    LTEXT           "Version:",IDC_RDB_VERSION,13,67,164,10
-    LTEXT           "Date:",IDC_RDB_DATE,13,76,164,10
-    PUSHBUTTON      "visit home page",IDC_RDB_HOME,12,87,163,13
-    GROUPBOX        "Extended Rom Info (.RDX)",IDC_RDX,6,107,175,59
-    LTEXT           "Author:",IDC_RDX_AUTHOR,13,117,164,10
-    LTEXT           "Version:",IDC_RDX_VERSION,13,127,164,10
-    LTEXT           "Date:",IDC_RDX_DATE,13,137,164,10
-    PUSHBUTTON      "visit home page",IDC_RDX_HOME,12,149,163,13
-    PUSHBUTTON      "OK",IDOK,134,168,47,13
-END
-
 IDD_About DIALOGEX 0, 0, 233, 265
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
@@ -1548,14 +1526,6 @@ BEGIN
         LEFTMARGIN, 4
         TOPMARGIN, 4
         BOTTOMMARGIN, 200
-    END
-
-    IDD_About_Ini, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 179
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 181
     END
 
     IDD_About, DIALOG
