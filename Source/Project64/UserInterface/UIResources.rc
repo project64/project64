@@ -365,22 +365,17 @@ BEGIN
     CONTROL         ".usa",IDC_USA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,97,134,37,10
 END
 
-IDD_About DIALOGEX 0, 0, 233, 265
+IDD_About DIALOGEX 0, 0, 247, 265
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    LTEXT           "Core Project64 Team:",IDC_TEAM,15,87,168,17
-    LTEXT           "Zilmar",IDC_ZILMAR,15,108,49,11
-    LTEXT           "founder. Core and application programmer. Web site.",IDC_ZILMAR_DETAILS,69,107,151,24
-    LTEXT           "Jabo",IDC_JABO,15,133,49,11
-    LTEXT           "video, audio and input plugin programmer",IDC_JABO_DETAILS,69,133,151,24
-    LTEXT           "Smiff",IDC_SMIFF,15,159,49,11
-    LTEXT           "bug tracking, testing, suggestions, rdb.",IDC_SMIFF_DETAILS,69,159,151,24
-    LTEXT           "Gent",IDC_GENT,15,188,49,11
-    LTEXT           "cheat database, testing, end user support",IDC_GENT_DETAILS,69,188,151,24
-    LTEXT           "Thanks also goes to:",IDC_THANKS,16,214,168,17
-    LTEXT           "Jahra!n, Witten, RadeonUser, Trotterwatch, Pixi",IDC_THANK_LIST,17,231,203,27
-    LTEXT           "Version: 1.7.0.x",IDC_VERSION,15,72,169,11,SS_NOTIFY
+    CONTROL         "",IDC_BMP_LOGO,"Static",SS_BLACKFRAME,15,0,232,74
+    LTEXT           "Special Thanks to previous core members:",IDC_THANKS_CORE,10,169,231,8
+    LTEXT           "Jabo, Smiff, Gent",IDC_CORE_THANK_LIST,10,186,231,8
+    LTEXT           "Version: 1.7.0.x",IDC_VERSION,10,79,231,11,SS_NOTIFY
+    LTEXT           "About Project64",IDC_ABOUT_PROJECT,10,92,231,17
+    LTEXT           "Thanks also goes to:",IDC_THANKYOU,10,217,231,8
+    LTEXT           "List of people to thank",IDC_THANKYOU_LIST,10,234,231,27
 END
 
 IDD_Logging_General DIALOGEX 0, 0, 200, 154
@@ -535,21 +530,6 @@ BEGIN
     CONTROL         "Unsigned",IDC_CHK_UNSIGNED,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,307,78,40,9
     CONTROL         "Ignore case",IDC_CHK_IGNORECASE,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,222,78,50,9
     CONTROL         "Unknown encoding",IDC_CHK_UNKENCODING,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,276,78,71,9
-END
-
-IDD_About_UserInfo DIALOGEX 0, 0, 186, 97
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Dialog"
-FONT 8, "MS Shell Dlg", 0, 0, 0x0
-BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,61,76,50,14
-    GROUPBOX        "Static",IDC_STATIC,7,3,172,68
-    LTEXT           "Static",IDC_LABEL1,15,17,45,10
-    EDITTEXT        IDC_INFO1,69,15,104,15,ES_AUTOHSCROLL | ES_READONLY
-    LTEXT           "Static",IDC_LABEL2,15,36,45,10
-    EDITTEXT        IDC_INFO2,69,33,104,15,ES_AUTOHSCROLL | ES_READONLY
-    LTEXT           "Static",IDC_LABEL3,15,53,45,10
-    EDITTEXT        IDC_INFO3,69,51,104,15,ES_AUTOHSCROLL | ES_READONLY
 END
 
 IDD_Settings_Config DIALOGEX 0, 0, 357, 217
@@ -1530,6 +1510,7 @@ BEGIN
 
     IDD_About, DIALOG
     BEGIN
+        RIGHTMARGIN, 233
     END
 
     IDD_Logging_General, DIALOG
@@ -1586,14 +1567,6 @@ BEGIN
     IDD_Debugger_Search, DIALOG
     BEGIN
         BOTTOMMARGIN, 256
-    END
-
-    IDD_About_UserInfo, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 179
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 90
     END
 
     IDD_Settings_Config, DIALOG
@@ -1885,8 +1858,6 @@ IDB_TRI_STATE           BITMAP                  "Bitmaps\\tri-state.bmp"
 IDB_LISTITEMS           BITMAP                  "Bitmaps\\ListItems.bmp"
 
 IDB_ABOUT_LOGO          BITMAP                  "Bitmaps\\AboutScreenLogo.bmp"
-
-IDB_ABOUT_LOGO_HDPI     BITMAP                  "Bitmaps\\AboutScreenLogoHDPI.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2210,7 +2181,7 @@ BEGIN
     0
 END
 
-IDD_About_Ini AFX_DIALOG_LAYOUT
+IDD_ABOUT_INI AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
@@ -2231,6 +2202,11 @@ BEGIN
 END
 
 IDD_Support_RequestCode AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_About AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

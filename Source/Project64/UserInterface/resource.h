@@ -32,9 +32,7 @@
 #define IDD_Cheats_Add                  138
 #define IDD_Settings_ShellInt           139
 #define IDD_Settings_RomBrowser         140
-#define IDD_About_UserInfo              141
 #define IDB_ABOUT_LOGO                  143
-#define IDB_ABOUT_LOGO_HDPI             144
 #define IDD_Settings_General            144
 #define IDD_Settings_Accelerator        145
 #define IDD_Settings_Config             149
@@ -208,6 +206,7 @@
 #define IDC_TEAM                        1070
 #define IDC_AUTO_DIR                    1071
 #define IDC_ZILMAR_DETAILS              1071
+#define IDC_ABOUT_PROJECT               1071
 #define IDC_AUTO_DEFAULT                1072
 #define IDC_JABO_DETAILS                1072
 #define IDC_SELECT_AUTO_DIR             1073
@@ -224,18 +223,17 @@
 #define IDC_GENT                        1078
 #define IDC_SNAP_DIR                    1079
 #define IDC_THANKS                      1079
+#define IDC_THANKS_CORE                 1079
 #define IDC_SNAP_DEFAULT                1080
 #define IDC_THANK_LIST                  1080
+#define IDC_CORE_THANK_LIST             1080
 #define IDC_SELECT_SNAP_DIR             1081
-#define IDC_INFO1                       1081
-#define IDC_INFO2                       1082
-#define IDC_INFO3                       1083
+#define IDC_THANKYOU                    1081
+#define IDC_THANK_LIST2                 1082
+#define IDC_THANKYOU_LIST               1082
 #define IDC_START_ON_ROM_OPEN           1084
-#define IDC_LABEL1                      1084
 #define IDC_BMP_LOGO                    1084
 #define IDC_BLOCK_LINKING               1085
-#define IDC_LABEL2                      1085
-#define IDC_LABEL3                      1086
 #define IDC_RDRAM_SIZE                  1087
 #define IDC_VERSION                     1087
 #define IDC_CPU_TYPE                    1088
@@ -918,7 +916,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        221
+#define _APS_NEXT_RESOURCE_VALUE        222
 #define _APS_NEXT_COMMAND_VALUE         40121
 #define _APS_NEXT_CONTROL_VALUE         1578
 #define _APS_NEXT_SYMED_VALUE           102

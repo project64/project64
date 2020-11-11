@@ -72,7 +72,6 @@ public:
 
     void SetStatusText(int Panel, const wchar_t * Text);
     void ShowStatusBar(bool ShowBar);
-    void AboutBox(void);
 
     bool ResetPluginsInUiThread(CPlugins * plugins, CN64System * System);
 
@@ -102,7 +101,6 @@ private:
     void SetWindowCaption(const wchar_t * Caption);
     void ShowRomBrowser(void);
 
-    friend DWORD CALLBACK AboutBoxProc(HWND, DWORD, DWORD, DWORD);
     static LRESULT CALLBACK MainGui_Proc(HWND, DWORD, DWORD, DWORD);
 
     friend void RomBowserEnabledChanged(CMainGui * Gui);

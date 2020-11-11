@@ -4,9 +4,9 @@
 #include "Debugger/ScriptSystem.h"
 #include "DiscordRPC.h"
 #include <Project64-core/N64System/N64DiskClass.h>
+#include <Project64\UserInterface\About.h>
 #include <windows.h>
 #include <commdlg.h>
-
 
 CMainMenu::CMainMenu(CMainGui * hMainWindow) :
     CBaseMenu(),
@@ -576,7 +576,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_HELP_SUPPORT_PROJECT64: OnSupportProject64(hWnd); break;
     case ID_HELP_DISCORD: ShellExecute(NULL, L"open", L"https://discord.gg/Cg3zquF", NULL, NULL, SW_SHOWMAXIMIZED); break;
     case ID_HELP_WEBSITE: ShellExecute(NULL, L"open", L"http://www.pj64-emu.com", NULL, NULL, SW_SHOWMAXIMIZED); break;
-    case ID_HELP_ABOUT: m_Gui->AboutBox(); break;
+    case ID_HELP_ABOUT: CAboutDlg(m_Gui->Support()).DoModal(); break;
     default:
         if (MenuID >= ID_RECENT_ROM_START && MenuID < ID_RECENT_ROM_END)
         {

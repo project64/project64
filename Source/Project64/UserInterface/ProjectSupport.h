@@ -25,6 +25,7 @@ public:
     bool ShowSuppotWindow();
 
     inline uint32_t RunCount() const { return m_SupportInfo.RunCount; }
+    inline const char * Name(void) const { return m_SupportInfo.Name; }
     inline const char * MachineID(void) const { return m_SupportInfo.MachineID; }
     inline bool Validated(void) const { return m_SupportInfo.Validated; }
 

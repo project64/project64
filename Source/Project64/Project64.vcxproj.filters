@@ -249,6 +249,9 @@
     <ClCompile Include="UserInterface\ProjectSupport.cpp">
       <Filter>Source Files\User Interface Source</Filter>
     </ClCompile>
+    <ClCompile Include="UserInterface\About.cpp">
+      <Filter>Source Files\User Interface Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UserInterface\resource.h">
@@ -481,6 +484,9 @@
     </ClInclude>
     <ClInclude Include="UserInterface\ProjectSupport.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\About.h">
+      <Filter>Header Files\User Interface Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
