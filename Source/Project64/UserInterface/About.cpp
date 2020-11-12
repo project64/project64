@@ -16,7 +16,7 @@ LRESULT CAboutDlg::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
     {
         AboutMsg += stdstr_f("Thank you %s for the support!\n\n", m_Support.Name());
     }
-    AboutMsg += "Project64 is a completely free and open-source emulator for the Nintendo 64 and 64DD written in C++.\n\nCapable of playing your favorite N64 games on your PC with high definition graphics, excellent compatibility, save states, built - in cheat codes, and more.";
+    AboutMsg += "Project64 is a completely free and open-source emulator for the Nintendo 64 and 64DD written in C++.\n\nCapable of playing your favorite N64 games on your PC with high-definition graphics and sound, excellent compatibility, save states, built-in cheat codes, and more.";
 
     CDC hDC = GetDC();
     float DPIScale = hDC.GetDeviceCaps(LOGPIXELSX) / 96.0f;
@@ -33,7 +33,7 @@ LRESULT CAboutDlg::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
     SetWindowDetais(IDC_THANKS_CORE, IDC_ABOUT_PROJECT, L"Special Thanks to previous core members:", m_BoldFont);
     SetWindowDetais(IDC_CORE_THANK_LIST, IDC_THANKS_CORE, L"Jabo, Smiff, Gent", m_TextFont);
     SetWindowDetais(IDC_THANKYOU, IDC_CORE_THANK_LIST, L"Thanks also goes to:", m_BoldFont);
-    SetWindowDetais(IDC_THANKYOU_LIST, IDC_THANKYOU, L"Jahra!n, Witten, RadeonUser, Azimer, Shygoo, Frank, LuigiBlood, Theboy181, Gonetz, BlueToonYoshi, Kimbjo, Melchior, Retroben", m_TextFont);
+    SetWindowDetais(IDC_THANKYOU_LIST, IDC_THANKYOU, L"Jahra!n, Witten, RadeonUser, Azimer, Shygoo, Frank, LuigiBlood, Alen Alic, Theboy181, Gonetz, BlueToonYoshi, Kimbjo, Melchior, Retroben", m_TextFont);
 
     return TRUE;
 }
