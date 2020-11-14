@@ -33,7 +33,7 @@ LRESULT CAboutDlg::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
     SetWindowDetais(IDC_THANKS_CORE, IDC_ABOUT_PROJECT, L"Special Thanks to previous core members:", m_BoldFont);
     SetWindowDetais(IDC_CORE_THANK_LIST, IDC_THANKS_CORE, L"Jabo, Smiff, Gent", m_TextFont);
     SetWindowDetais(IDC_THANKYOU, IDC_CORE_THANK_LIST, L"Thanks also goes to:", m_BoldFont);
-    SetWindowDetais(IDC_THANKYOU_LIST, IDC_THANKYOU, L"Jahra!n, Witten, RadeonUser, Azimer, Shygoo, Frank, LuigiBlood, Theboy181, Gonetz, BlueToonYoshi, Kimbjo, Melchior, Retroben", m_TextFont);
+    SetWindowDetais(IDC_THANKYOU_LIST, IDC_THANKYOU, L"Jahra!n, Witten, RadeonUser, Azimer, Shygoo, Frank, LuigiBlood, theboy181, Gonetz, BlueToonYoshi, Kimbjo, Melchior, retroben, AIO, krom", m_TextFont);
 
     return TRUE;
 }
