@@ -12,6 +12,7 @@
 #include "stdafx.h"
 #include "DebuggerUI.h"
 #include "DMALog.h"
+#include <fstream>
 
 CDebugDMALogView::CDebugDMALogView(CDebuggerUI* debugger) :
 CDebugDialog<CDebugDMALogView>(debugger)
@@ -70,17 +71,21 @@ void CDebugDMALogView::RefreshList()
     int startIndex;
     int dmaLogSize = m_Debugger->DMALog()->GetNumEntries();
     
+    HWND hWndExportBtn = GetDlgItem(IDC_EXPORT_BTN);
+
     if (dmaLogSize == 0)
     {
         // Reset
         m_DMAList.DeleteAllItems();
         startIndex = 0;
         m_bFilterChanged = false;
+        ::EnableWindow(hWndExportBtn, FALSE);
     }
     else
     {
         // Continue from last index
         startIndex = m_nLastStartIndex;
+        ::EnableWindow(hWndExportBtn, TRUE);
     }
     
     m_DMAList.SetRedraw(FALSE);
@@ -128,6 +133,65 @@ void CDebugDMALogView::RefreshList()
     m_DMAList.SetRedraw(TRUE);
     
     m_nLastStartIndex = dmaLogSize;
+}
+
+void CDebugDMALogView::Export(void)
+{
+    OPENFILENAME openfilename;
+    TCHAR filePath[_MAX_PATH];
+
+    memset(&filePath, 0, sizeof(filePath));
+    memset(&openfilename, 0, sizeof(openfilename));
+    
+    wsprintf(filePath, L"*.csv");
+
+    const TCHAR* filters = (
+        /*1*/ L"Comma separated values (*.csv)\0*.csv;\0"
+        /*2*/ L"Plain text (*.txt)\0*.txt;\0"
+    );
+
+    const char *extensions[] = { "", ".csv", ".txt" };
+
+    openfilename.lStructSize = sizeof(openfilename);
+    openfilename.hwndOwner = (HWND)m_hWnd;
+    openfilename.lpstrFilter = filters;
+    openfilename.lpstrFile = filePath;
+    openfilename.lpstrInitialDir = L".";
+    openfilename.nMaxFile = MAX_PATH;
+    openfilename.Flags = OFN_HIDEREADONLY;
+
+    if (GetSaveFileName(&openfilename))
+    {
+        stdstr path;
+        path.FromUTF16(filePath);
+
+        if (openfilename.nFileExtension == 0)
+        {
+            path += extensions[openfilename.nFilterIndex];
+        }
+
+        std::ofstream file;
+        file.open(path, std::ios::out | std::ios::binary);
+
+        if (!file.is_open())
+        {
+            return;
+        }
+
+        file << "ROM Address,RAM Address,Length\r\n";
+
+        size_t numEntries = m_DMALog->GetNumEntries();
+
+        for (size_t nEntry = 0; nEntry < numEntries; nEntry++)
+        {
+            DMALOGENTRY* entry = m_DMALog->GetEntryByIndex(nEntry);
+
+            file << stdstr_f("0x%08X,0x%08X,0x%08X\r\n",
+                entry->romAddr, entry->ramAddr, entry->length);
+        }
+
+        file.close();
+    }
 }
 
 LRESULT CDebugDMALogView::OnActivate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
@@ -232,6 +296,9 @@ LRESULT CDebugDMALogView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& 
     case IDC_CLEAR_BTN:
         m_DMALog->ClearEntries();
         RefreshList();
+        break;
+    case IDC_EXPORT_BTN:
+        Export();
         break;
     }
     return FALSE;

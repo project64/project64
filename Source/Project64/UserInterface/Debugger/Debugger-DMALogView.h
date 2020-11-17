@@ -32,6 +32,7 @@ private:
     };
 
     void RefreshList(void);
+    void Export(void);
 
     CDMALog* m_DMALog;
 
