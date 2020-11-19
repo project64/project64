@@ -101,9 +101,11 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(SupportFile_VideoRDBDefault, new CSettingTypeRelativePath("Config", "Video.rdb"));
     AddHandler(SupportFile_AudioRDB, new CSettingTypeApplicationPath("Settings", "AudioRDB", SupportFile_AudioRDBDefault));
     AddHandler(SupportFile_AudioRDBDefault, new CSettingTypeRelativePath("Config", "Audio.rdb"));
-	AddHandler(SupportFile_Cheats, new CSettingTypeApplicationPath("Settings", "Cheats", SupportFile_CheatsDefault));
-	AddHandler(SupportFile_CheatsDefault, new CSettingTypeRelativePath("Config", "Project64.cht"));
-	AddHandler(SupportFile_Enhancements, new CSettingTypeApplicationPath("Settings", "Enhancement", SupportFile_EnhancementsDefault));
+    AddHandler(SupportFile_CheatDir, new CSettingTypeApplicationPath("Settings", "CheatDir", SupportFile_CheatDirDefault));
+    AddHandler(SupportFile_CheatDirDefault, new CSettingTypeRelativePath("Config\\Cheats", ""));
+    AddHandler(SupportFile_UserCheatDir, new CSettingTypeApplicationPath("Settings", "UserCheatDir", SupportFile_UserCheatDirDefault));
+    AddHandler(SupportFile_UserCheatDirDefault, new CSettingTypeRelativePath("Config\\Cheats-User", ""));
+    AddHandler(SupportFile_Enhancements, new CSettingTypeApplicationPath("Settings", "Enhancement", SupportFile_EnhancementsDefault));
 	AddHandler(SupportFile_EnhancementsDefault, new CSettingTypeRelativePath("Config", "Project64.enh"));
 	AddHandler(SupportFile_Notes, new CSettingTypeApplicationPath("Settings", "Notes", SupportFile_NotesDefault));
     AddHandler(SupportFile_NotesDefault, new CSettingTypeRelativePath("Config", "Project64.rdn"));
@@ -435,13 +437,9 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Logging_LogUnknown, new CSettingTypeApplication("Logging", "Log Rom Header", false));
 
     // cheats
-    AddHandler(Cheat_Modified, new CSettingTypeGame("CheatModified",false));
-    AddHandler(Cheat_Entry, new CSettingTypeCheats("", Cheat_UserEntry));
-    AddHandler(Cheat_Notes, new CSettingTypeCheats("_N", Cheat_UserNotes));
-    AddHandler(Cheat_Options, new CSettingTypeCheats("_O", Cheat_UserOptions));
-    AddHandler(Cheat_UserEntry, new CSettingTypeGameIndex("Cheat", "", ""));
-    AddHandler(Cheat_UserNotes, new CSettingTypeGameIndex("Cheat", "_N", ""));
-    AddHandler(Cheat_UserOptions, new CSettingTypeGameIndex("Cheat", "_O", ""));
+    AddHandler(Cheat_Entry, new CSettingTypeCheats(""));
+    AddHandler(Cheat_Notes, new CSettingTypeCheats("_N"));
+    AddHandler(Cheat_Options, new CSettingTypeCheats("_O"));
     AddHandler(Cheat_Active, new CSettingTypeGameIndex("Cheat", "Active", false));
     AddHandler(Cheat_Extension, new CSettingTypeGameIndex("Cheat", ".exten", "??? - Not Set"));
 

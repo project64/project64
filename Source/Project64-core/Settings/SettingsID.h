@@ -36,9 +36,11 @@ enum SettingID
     SupportFile_VideoRDBDefault,
     SupportFile_AudioRDB,
     SupportFile_AudioRDBDefault,
-	SupportFile_Cheats,
-	SupportFile_CheatsDefault,
-	SupportFile_Enhancements,
+    SupportFile_CheatDir,
+    SupportFile_CheatDirDefault,
+    SupportFile_UserCheatDir,
+    SupportFile_UserCheatDirDefault,
+    SupportFile_Enhancements,
 	SupportFile_EnhancementsDefault,
 	SupportFile_Notes,
     SupportFile_NotesDefault,
@@ -334,13 +336,9 @@ enum SettingID
     Logging_LogUnknown,
 
     //Cheats
-    Cheat_Modified,
     Cheat_Entry,
     Cheat_Notes,
     Cheat_Options,
-    Cheat_UserEntry,
-    Cheat_UserNotes,
-    Cheat_UserOptions,
     Cheat_Active,
     Cheat_Extension,
 

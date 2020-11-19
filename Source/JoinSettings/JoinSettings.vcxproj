@@ -40,9 +40,6 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
-    <PostBuildEvent>
-      <Command>"$(OutDir)\JoinSettings.exe" -join "$(SolutionDir)Config\Cheats"  "$(SolutionDir)Config\Project64.cht"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

@@ -78,8 +78,8 @@ public:
     void SaveStringIndex(SettingID Type, uint32_t index, const char * Buffer);
 
     // Delete a setting
-    void   DeleteSetting(SettingID Type);
-    void   DeleteSettingIndex(SettingID Type, uint32_t index);
+    void DeleteSetting(SettingID Type);
+    void DeleteSettingIndex(SettingID Type, uint32_t index);
 
     //Register Notification of change
     void RegisterChangeCB(SettingID Type, void * Data, SettingChangedFunc Func);

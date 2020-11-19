@@ -455,9 +455,6 @@
     <ClInclude Include="Plugin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Version.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Settings\RecompilerSettings.h">
       <Filter>Header Files\Settings</Filter>
     </ClInclude>

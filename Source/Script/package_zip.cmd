@@ -48,7 +48,7 @@ copy "%base_dir%\Plugin%VSPlatform%\GFX\GLideN64\translations\*.Lang" "%base_dir
 copy "%base_dir%\Bin\Release%VSPlatform%\Project64.exe" "%base_dir%\Bin\Package"
 copy "%base_dir%\Config\Video.rdb" "%base_dir%\Bin\Package\Config"
 copy "%base_dir%\Config\Audio.rdb" "%base_dir%\Bin\Package\Config"
-copy "%base_dir%\Config\Project64.cht" "%base_dir%\Bin\Package\Config"
+copy "%base_dir%\Config\Cheats\*.cht" "%base_dir%\Bin\Package\Config\Cheats"
 copy "%base_dir%\Config\Project64.enh" "%base_dir%\Bin\Package\Config"
 copy "%base_dir%\Config\Project64.rdb" "%base_dir%\Bin\Package\Config"
 copy "%base_dir%\Config\Project64.rdx" "%base_dir%\Bin\Package\Config"
