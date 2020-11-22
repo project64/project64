@@ -243,7 +243,7 @@ void CTLB::SetupTLB_Entry(int index, bool Random)
         {
             continue;
         }
-        if (m_FastTlb[FastIndx].PHYSSTART > 0x1FFFFFFF)
+        if (m_FastTlb[FastIndx].PHYSEND > 0x1FFFFFFF)
         {
             continue;
         }
