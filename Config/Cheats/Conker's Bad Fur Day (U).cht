@@ -36,3 +36,5 @@ Cheat21_O=$3F00 Slow Conker,$3F80 Normal Conker,$3FF0 Fast Conker,$4030 Super Fa
 Cheat22="Weapon Select In Multi (On Pick Up)",80180873 00??
 Cheat22_N=Select what Weapon you would like in Multi Player and then on a Weapon Pickup you will have the weapon of your choice.to change for another just Enable the one of your choice to have that instead.(you must have a weapon already to change for the next.
 Cheat22_O=$01 Sword,$02 Nothing,$03 Yellow Chain-Ssaw,$04 Throwing Knives,$05 Riffle,$06 Long Pistol with Sight,$07 Rocket Launcher,$08 Buck Shot,$0A High Powred Riffle With Scope,$0C Two Automatic Machine Guns,$13 Gas Mask
+Cheat23="Wait Animation Trigger",800CC5C8 00??
+Cheat23_O=$00 Default at most, $02 Wait animations disabled
