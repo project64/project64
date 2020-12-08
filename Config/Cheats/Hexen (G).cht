@@ -21,6 +21,7 @@ Cheat12="Invincibility\Player 2",8113F2B8 FFFF
 Cheat13="Have Infinite\Blue Mana\Player 2",8013F2E9 00CF
 Cheat14="Have Infinite\Green Mana\Player 2",8013F2EB 00CF
 Cheat15="Have All\Keys\Player 2",8113F6D8 07FF
+Cheat16="Boots Of Speed Select\Player 2",8113F6D4 ????
 Cheat16_O=$0000 Off,$03FF On
 Cheat17="Icon Of The Defender Select\Player 2",8113F6C8 ????
 Cheat17_N=Do not use with Invincibillity Cheat

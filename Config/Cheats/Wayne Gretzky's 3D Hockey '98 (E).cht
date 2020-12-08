@@ -12,5 +12,5 @@ Cheat5_O=$3F00 Midgets,$3F80 Normal Size,$3FC0 Large,$4080 Giants
 Cheat6="Players\Head Size",8111CBEC ????
 Cheat6_O=$3F00 Very Small,$3F80 Normal Size,$4080 Very Large
 Cheat7="Difficulty Mod",801247F9 00??
-Cheat7_O=$00 Very Easy,$01 Easy,$02 Medium,$03 Hard,$04
+Cheat7_O=$00 Very Easy,$01 Easy,$02 Medium,$03 Hard
 Cheat8="Anger metre always full",800D9B38 00FF,800D9826 00FF
