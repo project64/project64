@@ -255,43 +255,6 @@ LRESULT CALLBACK CDebugCommandsView::HookProc(int nCode, WPARAM wParam, LPARAM l
     return 0;
 }
 
-LRESULT CDebugCommandsView::OnOpKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
-{
-    if (wParam == VK_UP)
-    {
-        m_SelectedAddress -= 4;
-        BeginOpEdit(m_SelectedAddress);
-        bHandled = TRUE;
-    }
-    else if (wParam == VK_DOWN)
-    {
-        m_SelectedAddress += 4;
-        BeginOpEdit(m_SelectedAddress);
-        bHandled = TRUE;
-    }
-    else if (wParam == VK_RETURN)
-    {
-        wchar_t text[256] = { 0 };
-        m_OpEdit.GetWindowText(text, (sizeof(text) / sizeof(text[0])) - 1);
-        uint32_t op;
-        bool bValid = CAssembler::AssembleLine(stdstr().FromUTF16(text).c_str(), &op, m_SelectedAddress);
-        if (bValid)
-        {
-            m_OpEdit.SetWindowText(L"");
-            EditOp(m_SelectedAddress, op);
-            m_SelectedAddress += 4;
-            BeginOpEdit(m_SelectedAddress);
-        }
-        bHandled = TRUE;
-    }
-    else if (wParam == VK_ESCAPE)
-    {
-        EndOpEdit();
-        bHandled = TRUE;
-    }
-    return 1;
-}
-
 void CDebugCommandsView::ClearBranchArrows()
 {
     m_BranchArrows.clear();
@@ -1628,7 +1591,7 @@ BOOL CDebugCommandsView::IsOpEdited(uint32_t address)
     return FALSE;
 }
 
-void CDebugCommandsView::EditOp(uint32_t address, uint32_t op)
+void CDebugCommandsView::EditOp(uint32_t address, uint32_t op, bool bRefresh)
 {
     uint32_t currentOp;
     if (!m_Debugger->DebugLoad_VAddr(address, currentOp))
@@ -1648,7 +1611,10 @@ void CDebugCommandsView::EditOp(uint32_t address, uint32_t op)
         m_EditedOps.push_back({ address, currentOp });
     }
 
-    ShowAddress(m_StartAddress, TRUE);
+    if (bRefresh)
+    {
+        ShowAddress(m_StartAddress, TRUE);
+    }
 }
 
 void CDebugCommandsView::RestoreOp(uint32_t address)
@@ -1704,13 +1670,107 @@ void CDebugCommandsView::ToggleHistoryButtons()
 
 // Opcode editor
 
+LRESULT CDebugCommandsView::OnOpEditKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
+{
+    if (wParam == VK_UP)
+    {
+        m_SelectedAddress -= 4;
+        BeginOpEdit(m_SelectedAddress);
+        bHandled = TRUE;
+    }
+    else if (wParam == VK_DOWN)
+    {
+        m_SelectedAddress += 4;
+        BeginOpEdit(m_SelectedAddress);
+        bHandled = TRUE;
+    }
+    else if (wParam == VK_RETURN)
+    {
+        wchar_t text[256] = { 0 };
+        m_OpEdit.GetWindowText(text, (sizeof(text) / sizeof(text[0])) - 1);
+        uint32_t op;
+        bool bValid = CAssembler::AssembleLine(stdstr().FromUTF16(text).c_str(), &op, m_SelectedAddress);
+        if (bValid)
+        {
+            m_OpEdit.SetWindowText(L"");
+            EditOp(m_SelectedAddress, op);
+            m_SelectedAddress += 4;
+            BeginOpEdit(m_SelectedAddress);
+        }
+        bHandled = TRUE;
+    }
+    else if (wParam == VK_ESCAPE)
+    {
+        EndOpEdit();
+        bHandled = TRUE;
+    }
+    return 1;
+}
+
+LRESULT CDebugCommandsView::OnOpEditChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+{
+    // handle multiline input
+    size_t length = m_OpEdit.GetWindowTextLength();
+    wchar_t* text = new wchar_t[length + 1];
+    m_OpEdit.GetWindowText(text, length + 1);
+
+    if (wcschr(text, L'\n') == NULL)
+    {
+        delete[] text;
+        return FALSE;
+    }
+
+    EndOpEdit();
+
+    for (size_t i = 0; i < length; i++)
+    {
+        if (text[i] == '\r')
+        {
+            text[i] = '\n';
+        }
+    }
+
+    wchar_t *tokctx;
+    wchar_t *line = wcstok_s(text, L"\n", &tokctx);
+
+    while (line != NULL)
+    {
+        if (wcslen(line) != 0)
+        {
+            uint32_t op;
+            bool bValid = CAssembler::AssembleLine(stdstr().FromUTF16(line).c_str(), &op, m_SelectedAddress);
+
+            if (bValid)
+            {
+                EditOp(m_SelectedAddress, op, false);
+                m_SelectedAddress += 4;
+            }
+            else
+            {
+                ShowAddress(m_StartAddress, TRUE);
+                BeginOpEdit(m_SelectedAddress);
+                m_OpEdit.SetWindowText(line);
+                delete[] text;
+                return FALSE;
+            }
+        }
+
+        line = wcstok_s(NULL, L"\n", &tokctx);
+    }
+
+    ShowAddress(m_StartAddress, TRUE);
+    BeginOpEdit(m_SelectedAddress);
+    delete[] text;
+    return FALSE;
+}
+
 LRESULT CEditOp::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
     if (m_CommandsWindow == NULL)
     {
         return FALSE;
     }
-    return m_CommandsWindow->OnOpKeyDown(uMsg, wParam, lParam, bHandled);
+    return m_CommandsWindow->OnOpEditKeyDown(uMsg, wParam, lParam, bHandled);
 }
 
 void CEditOp::SetCommandsWindow(CDebugCommandsView* commandsWindow)

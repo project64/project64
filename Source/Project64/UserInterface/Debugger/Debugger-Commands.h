@@ -60,7 +60,7 @@ private:
         MESSAGE_HANDLER(WM_KEYDOWN, OnKeyDown)
         MESSAGE_HANDLER(WM_KEYUP, OnKeyUp)
         MESSAGE_HANDLER(WM_CHAR, OnKeyUp)
-        END_MSG_MAP()
+    END_MSG_MAP()
 
 public:
     void SetCommandsWindow(CDebugCommandsView* commandsWindow);
@@ -120,12 +120,15 @@ private:
         COMMAND_HANDLER(ID_POPUPMENU_FOLLOWJUMP, BN_CLICKED, OnPopupmenuFollowJump)
         COMMAND_HANDLER(ID_POPUPMENU_VIEWMEMORY, BN_CLICKED, OnPopupmenuViewMemory)
         COMMAND_HANDLER(ID_POPUPMENU_TOGGLEBP, BN_CLICKED, OnPopupmenuToggleBP)
-        COMMAND_HANDLER(ID_POPUPMENU_CLEARBPS, BN_CLICKED, OnPopupmenuClearBP   )
+        COMMAND_HANDLER(ID_POPUPMENU_CLEARBPS, BN_CLICKED, OnPopupmenuClearBP)
+        COMMAND_HANDLER(IDC_OP_EDIT, EN_CHANGE, OnOpEditChanged)
+
         NOTIFY_HANDLER_EX(IDC_CMD_LIST, NM_CLICK, OnCommandListClicked)
         NOTIFY_HANDLER_EX(IDC_CMD_LIST, NM_DBLCLK, OnCommandListDblClicked)
         NOTIFY_HANDLER_EX(IDC_CMD_LIST, NM_RCLICK, OnCommandListRightClicked)
         NOTIFY_HANDLER_EX(IDC_REG_TABS, TCN_SELCHANGE, OnRegisterTabChange)
         NOTIFY_HANDLER_EX(IDC_CMD_LIST, NM_CUSTOMDRAW, OnCustomDrawList)
+        
         MSG_WM_DESTROY(OnDestroy)
         CHAIN_MSG_MAP(CDialogResize<CDebugCommandsView>)
         MSG_WM_EXITSIZEMOVE(OnExitSizeMove)
@@ -207,8 +210,8 @@ private:
     LRESULT OnPopupmenuToggleBP(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
     LRESULT OnPopupmenuClearBP(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
     LRESULT OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-
-    LRESULT OnOpKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnOpEditChanged(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnOpEditKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
     LRESULT OnCommandListClicked(NMHDR* pNMHDR);
     LRESULT OnCommandListDblClicked(NMHDR* pNMHDR);
@@ -219,7 +222,7 @@ private:
     void OnExitSizeMove(void);
 
     void ClearEditedOps();
-    void EditOp(uint32_t address, uint32_t op);
+    void EditOp(uint32_t address, uint32_t op, bool bRefresh = true);
     void RestoreOp(uint32_t address);
     void RestoreAllOps();
     BOOL IsOpEdited(uint32_t address);
