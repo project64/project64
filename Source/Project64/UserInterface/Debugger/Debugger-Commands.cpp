@@ -1286,7 +1286,14 @@ LRESULT CDebugCommandsView::OnPopupmenuViewMemory(WORD /*wNotifyCode*/, WORD /*w
 
 LRESULT CDebugCommandsView::OnPopupmenuToggleBP(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
 {
-    m_Breakpoints->EBPToggle(m_SelectedAddress);
+    if (m_Breakpoints->ExecutionBPExists(m_SelectedAddress))
+    {
+        m_Breakpoints->RemoveExecution(m_SelectedAddress);
+    }
+    else
+    {
+        m_Breakpoints->AddExecution(m_SelectedAddress);
+    }
     ShowAddress(m_StartAddress, TRUE);
     return FALSE;
 }
