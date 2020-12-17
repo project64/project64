@@ -121,8 +121,8 @@ span.tag2 {
 	<div class="property">
 		<div class="propertyname">mem.u8|u16|u32|s8|s16|s32|float|double</div>
 		<div class="propertydesc">
-			Arrays for reading and modifying values in virtual memory.
-			Virtual addresses are always used for indeces regardless of type size.
+			Arrays for reading and writing values in virtual memory.
+			Virtual addresses are always used for indices regardless of type size.
 			<pre class="example">
 var addr_power = 0x8033B21E
 
@@ -281,7 +281,7 @@ events.onexec(0x802CB1C0, function()
 })
 </pre>
 			<pre class="example">
-events.onexec(ADDR_ANY, function(pc))
+events.onexec(ADDR_ANY, function(pc)
 {
     // Log every step!
     console.log('CPU is executing 0x' + pc.hex())
@@ -844,6 +844,12 @@ server.on('connection', function(socket)
 		</div>
 	</div>
 	<div class="property">
+		<div class="propertyname">socket.close()</div>
+		<div class="propertydesc">
+			Closes the socket.
+		</div>
+	</div>
+	<div class="property">
 		<div class="propertyname">socket.on('data', callback)</div>
 		<div class="propertydesc">
 			Starts reading data from the socket asynchronously. When data arrives, it is passed to <span class="snip">callback</span> as a Buffer object.
@@ -868,9 +874,9 @@ server.on('connection', function(socket)
 			<pre>
 <b>ADDR_ANY</b>              0x00000000 : 0xFFFFFFFF Any 32-bit address
 
-<b>ADDR_ANY_KUSEG</b>        0x00000000 : 0x7FFFFFFF  MIPS user mode TLB mapped segment
-<b>ADDR_ANY_KSEG0</b>        0x80000000 : 0x9FFFFFFF  MIPS cached unmapped segment
-<b>ADDR_ANY_KSEG1</b>        0xA0000000 : 0xBFFFFFFF  MIPS uncached unmapped segment
+<b>ADDR_ANY_KUSEG</b>        0x00000000 : 0x7FFFFFFF MIPS user mode TLB mapped segment
+<b>ADDR_ANY_KSEG0</b>        0x80000000 : 0x9FFFFFFF MIPS cached unmapped segment
+<b>ADDR_ANY_KSEG1</b>        0xA0000000 : 0xBFFFFFFF MIPS uncached unmapped segment
 <b>ADDR_ANY_KSEG2</b>        0xC0000000 : 0xFFFFFFFF MIPS kernel mode TLB mapped segment
 
 <b>ADDR_ANY_RDRAM</b>        0x80000000 : 0x807FFFFF Cached RDRAM
