@@ -13,18 +13,20 @@
 
 #include "DebuggerUI.h"
 
-//char* CEditEval::m_EvalString;
-
 CDebugScripts::CDebugScripts(CDebuggerUI* debugger) :
-    CDebugDialog<CDebugScripts>(debugger)
+    CDebugDialog<CDebugScripts>(debugger),
+    m_SelectedScriptName(NULL),
+    m_hQuitScriptDirWatchEvent(NULL),
+    m_hScriptDirWatchThread(NULL)
 {
-    m_SelectedScriptName = (char*)malloc(MAX_PATH);
-    //CScriptSystem::SetScriptsWindow(this);
 }
 
 CDebugScripts::~CDebugScripts(void)
 {
-    free(m_SelectedScriptName);
+    if (m_SelectedScriptName != NULL)
+    {
+        free(m_SelectedScriptName);
+    }
 }
 
 LRESULT CDebugScripts::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
@@ -38,11 +40,11 @@ LRESULT CDebugScripts::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
         CLEARTYPE_QUALITY, FF_DONTCARE, L"Consolas"
     );
 
-    m_InstanceInfoEdit.Attach(GetDlgItem(IDC_CTX_INFO_EDIT));
-
     m_ScriptList.Attach(GetDlgItem(IDC_SCRIPT_LIST));
-    m_ScriptList.AddColumn(L"Script", 0, 0);
-    m_ScriptList.SetColumnWidth(0, 100);
+    m_ScriptList.AddColumn(L"Status", 0);
+    m_ScriptList.AddColumn(L"Script", 1);
+    m_ScriptList.SetColumnWidth(0, 16);
+    m_ScriptList.SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER);
     m_ScriptList.SetExtendedListViewStyle(LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER);
     m_ScriptList.ModifyStyle(LVS_OWNERDRAWFIXED, 0, 0);
 
@@ -55,59 +57,84 @@ LRESULT CDebugScripts::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     m_ConsoleEdit.SetLimitText(0);
     m_ConsoleEdit.SetFont(monoFont);
 
+    int statusPaneWidths[] = { -1 };
+    m_StatusBar.Attach(GetDlgItem(IDC_STATUSBAR));
+    m_StatusBar.SetParts(1, statusPaneWidths);
+
     RefreshList();
 
     LoadWindowPos();
     WindowCreated();
+
+    m_hQuitScriptDirWatchEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+    m_hScriptDirWatchThread = CreateThread(NULL, 0, ScriptDirWatchProc, (void*)this, 0, NULL);
     return 0;
+}
+
+LRESULT CDebugScripts::OnDestroy(void)
+{
+    SetEvent(m_hQuitScriptDirWatchEvent);
+    WaitForSingleObject(m_hScriptDirWatchThread, INFINITE);
+    CloseHandle(m_hQuitScriptDirWatchEvent);
+    CloseHandle(m_hScriptDirWatchThread);
+    return 0;
+}
+
+LRESULT CDebugScripts::OnCtlColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+{
+    HDC hDC = (HDC)wParam;
+    HWND hCtrl = (HWND)lParam;
+    WORD ctrlId = (WORD) ::GetWindowLong(hCtrl, GWL_ID);
+
+    if (ctrlId == IDC_CONSOLE_EDIT)
+    {
+        SetBkColor(hDC, RGB(255, 255, 255));
+        SetDCBrushColor(hDC, RGB(255, 255, 255));
+        return (LRESULT)GetStockObject(DC_BRUSH);
+    }
+
+    return FALSE;
+}
+
+DWORD WINAPI CDebugScripts::ScriptDirWatchProc(void* ctx)
+{
+    CDebugScripts* _this = (CDebugScripts*)ctx;
+
+    HANDLE hEvents[2];
+
+    hEvents[0] = FindFirstChangeNotification(L"Scripts", FALSE, FILE_NOTIFY_CHANGE_FILE_NAME);
+
+    if (hEvents[0] == INVALID_HANDLE_VALUE)
+    {
+        return 0;
+    }
+
+    hEvents[1] = _this->m_hQuitScriptDirWatchEvent;
+
+    while (true)
+    {
+        DWORD status = WaitForMultipleObjects(2, hEvents, FALSE, INFINITE);
+
+        switch (status)
+        {
+        case WAIT_OBJECT_0:
+            if (FindNextChangeNotification(hEvents[0]) == FALSE)
+            {
+                return 0;
+            }
+            _this->PostMessage(WM_REFRESH_LIST, 0, 0);
+            break;
+        case WAIT_OBJECT_0 + 1:
+            return 0;
+        default:
+            return 0;
+        }
+    }
 }
 
 void CDebugScripts::OnExitSizeMove(void)
 {
     SaveWindowPos(true);
-}
-
-void CDebugScripts::ConsolePrint(const char* text)
-{
-    ::ShowWindow(*this, SW_SHOWNOACTIVATE);
-
-    // Get scrollbar state
-    SCROLLINFO scroll;
-    scroll.cbSize = sizeof(SCROLLINFO);
-    scroll.fMask = SIF_ALL;
-    m_ConsoleEdit.GetScrollInfo(SB_VERT, &scroll);
-
-    m_ConsoleEdit.SetRedraw(FALSE);
-
-    m_ConsoleEdit.AppendText(stdstr(text).ToUTF16().c_str());
-
-    m_ConsoleEdit.SetRedraw(TRUE);
-
-    if ((scroll.nPage + scroll.nPos) - 1 == (uint32_t)scroll.nMax)
-    {
-        m_ConsoleEdit.ScrollCaret();
-    }
-}
-
-void CDebugScripts::RefreshConsole()
-{
-    CGuard guard(m_CS);
-
-    m_Debugger->OpenScriptsWindow();
-    CScriptSystem* scriptSystem = m_Debugger->ScriptSystem();
-    vector<char*>* logData = scriptSystem->LogData();
-
-    while (logData->size() != 0)
-    {
-        ConsolePrint((*logData)[0]);
-        free((*logData)[0]);
-        logData->erase(logData->begin() + 0);
-    }
-}
-
-void CDebugScripts::ConsoleClear()
-{
-    m_ConsoleEdit.SetWindowText(L"");
 }
 
 void CDebugScripts::ConsoleCopy()
@@ -133,35 +160,27 @@ void CDebugScripts::ConsoleCopy()
     CloseClipboard();
 }
 
+void CDebugScripts::ConsolePrint(const char* text)
+{
+    if (m_hWnd != NULL)
+    {
+        SendMessage(WM_CONSOLE_PRINT, (WPARAM)text);
+    }
+}
+
+void CDebugScripts::ConsoleClear()
+{
+    if (m_hWnd != NULL)
+    {
+        SendMessage(WM_CONSOLE_CLEAR);
+    }
+}
+
 void CDebugScripts::RefreshList()
 {
-    CGuard guard(m_CS);
-
-    int nIndex = m_ScriptList.GetSelectedIndex();
-
-    CPath SearchPath("Scripts", "*");
-
-    if (!SearchPath.FindFirst(CPath::FIND_ATTRIBUTE_ALLFILES))
+    if (m_hWnd != NULL)
     {
-        return;
-    }
-
-    m_ScriptList.SetRedraw(false);
-    m_ScriptList.DeleteAllItems();
-
-    do
-    {
-        stdstr scriptFileName = SearchPath.GetNameExtension();
-        m_ScriptList.AddItem(0, 0, scriptFileName.ToUTF16().c_str());
-    } while (SearchPath.FindNext());
-
-    m_ScriptList.SetRedraw(true);
-    m_ScriptList.Invalidate();
-
-    if (nIndex >= 0)
-    {
-        m_ScriptList.SelectItem(nIndex);
-        RefreshStatus();
+        PostMessage(WM_REFRESH_LIST);
     }
 }
 
@@ -173,9 +192,11 @@ LRESULT CDebugScripts::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*
         EndDialog(0);
         break;
     case ID_POPUP_RUN:
+    case IDC_RUN_BTN:
         RunSelected();
         break;
     case ID_POPUP_STOP:
+    case IDC_STOP_BTN:
         StopSelected();
         break;
     case ID_POPUP_SCRIPT_EDIT:
@@ -187,6 +208,9 @@ LRESULT CDebugScripts::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*
     case IDC_COPY_BTN:
         ConsoleCopy();
         break;
+    case IDC_SCRIPTDIR_BTN:
+        ShellExecute(NULL, L"open", L"Scripts", NULL, NULL, SW_SHOW);
+        break;
     }
     return FALSE;
 }
@@ -197,7 +221,10 @@ LRESULT CDebugScripts::OnScriptListDblClicked(NMHDR* pNMHDR)
     NMITEMACTIVATE* pIA = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
     int nItem = pIA->iItem;
 
-    m_ScriptList.SelectItem(nItem);
+    if (nItem == -1)
+    {
+        return 0;
+    }
 
     ToggleSelected();
 
@@ -206,66 +233,55 @@ LRESULT CDebugScripts::OnScriptListDblClicked(NMHDR* pNMHDR)
 
 void CDebugScripts::RefreshStatus()
 {
-    CGuard guard(m_CS);
     INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
 
-    char* szState = "";
-    switch (state)
-    {
-    case STATE_RUNNING: szState = "Running"; break;
-    case STATE_STARTED: szState = "Started"; break;
-    case STATE_STOPPED: szState = "Stopped"; break;
-    case STATE_INVALID: szState = "Not running"; break;
-    }
-
-    stdstr instanceInfo = stdstr_f("%s (%s)", m_SelectedScriptName, szState);
-
-    m_InstanceInfoEdit.SetWindowText(instanceInfo.ToUTF16().c_str());
-
+    stdstr statusText;
+    CPath(stdstr_f("Scripts\\%s", m_SelectedScriptName)).GetFullyQualified(statusText);
+    
     if (state == STATE_RUNNING)
     {
+        statusText += " (Running)";
         m_EvalEdit.EnableWindow(TRUE);
     }
     else
     {
+        if (state == STATE_STARTED)
+        {
+            statusText += " (Started)";
+        }
         m_EvalEdit.EnableWindow(FALSE);
     }
-}
 
-LRESULT CDebugScripts::OnScriptListClicked(NMHDR* pNMHDR)
-{
-    // Select instance for console input
-    NMITEMACTIVATE* pIA = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
-    int nItem = pIA->iItem;
-
-    wchar_t ScriptName[MAX_PATH];
-    m_ScriptList.GetItemText(nItem, 0, ScriptName, MAX_PATH);
-    strcpy(m_SelectedScriptName, stdstr().FromUTF16(ScriptName).c_str());
-
-    RefreshStatus();
-
-    return 0;
+    m_StatusBar.SetText(0, statusText.ToUTF16().c_str());
 }
 
 LRESULT CDebugScripts::OnScriptListRClicked(NMHDR* pNMHDR)
 {
-    OnScriptListClicked(pNMHDR);
+    NMITEMACTIVATE* pIA = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
+    int nItem = pIA->iItem;
+
+    if (nItem == -1)
+    {
+        return 0;
+    }
+
+    INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
 
     HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_SCRIPT_POPUP));
     HMENU hPopupMenu = GetSubMenu(hMenu, 0);
 
-    /*
-    if (m_Breakpoints->m_RBP.size() == 0 && m_Breakpoints->m_WBP.size() == 0)
+    if (state == STATE_STARTED || state == STATE_RUNNING)
     {
-        EnableMenuItem(hPopupMenu, ID_POPUPMENU_CLEARALLBPS, MF_DISABLED | MF_GRAYED);
+        EnableMenuItem(hPopupMenu, ID_POPUP_RUN, MF_DISABLED | MF_GRAYED);
     }
-    */
-
+    else
+    {
+        EnableMenuItem(hPopupMenu, ID_POPUP_STOP, MF_DISABLED | MF_GRAYED);
+    }
+    
     POINT mouse;
     GetCursorPos(&mouse);
-
     TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, mouse.x, mouse.y, 0, m_hWnd, NULL);
-
     DestroyMenu(hMenu);
 
     return 0;
@@ -291,7 +307,7 @@ LRESULT CDebugScripts::OnScriptListCustomDraw(NMHDR* pNMHDR)
     DWORD nItem = pLVCD->nmcd.dwItemSpec;
 
     wchar_t scriptName[MAX_PATH];
-    m_ScriptList.GetItemText(nItem, 0, scriptName, MAX_PATH);
+    m_ScriptList.GetItemText(nItem, 1, scriptName, MAX_PATH);
 
     INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(stdstr("").FromUTF16(scriptName).c_str());
 
@@ -307,6 +323,116 @@ LRESULT CDebugScripts::OnScriptListCustomDraw(NMHDR* pNMHDR)
     return CDRF_DODEFAULT;
 }
 
+LRESULT CDebugScripts::OnScriptListItemChanged(NMHDR* pNMHDR)
+{
+    NMLISTVIEW* lpStateChange = reinterpret_cast<NMLISTVIEW*>(pNMHDR);
+    if ((lpStateChange->uNewState ^  lpStateChange->uOldState) & LVIS_SELECTED)
+    {
+        if (lpStateChange->iItem == -1)
+        {
+            return FALSE;
+        }
+
+        wchar_t ScriptName[MAX_PATH];
+
+        m_ScriptList.GetItemText(lpStateChange->iItem, 1, ScriptName, MAX_PATH);
+
+        if (m_SelectedScriptName != NULL)
+        {
+            free(m_SelectedScriptName);
+        }
+
+        m_SelectedScriptName = strdup(stdstr().FromUTF16(ScriptName).c_str());
+
+        INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
+
+        ::EnableWindow(GetDlgItem(IDC_STOP_BTN), state == STATE_RUNNING || state == STATE_STARTED);
+        ::EnableWindow(GetDlgItem(IDC_RUN_BTN), state == STATE_STOPPED || state == STATE_INVALID);
+
+        RefreshStatus();
+    }
+    return FALSE;
+}
+
+LRESULT CDebugScripts::OnConsoleLog(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+    const char *text = (const char*)wParam;
+
+    ::ShowWindow(*this, SW_SHOWNOACTIVATE);
+
+    SCROLLINFO scroll;
+    scroll.cbSize = sizeof(SCROLLINFO);
+    scroll.fMask = SIF_ALL;
+    m_ConsoleEdit.GetScrollInfo(SB_VERT, &scroll);
+
+    m_ConsoleEdit.SetRedraw(FALSE);
+    m_ConsoleEdit.AppendText(stdstr(text).ToUTF16().c_str());
+    m_ConsoleEdit.SetRedraw(TRUE);
+
+    if ((scroll.nPage + scroll.nPos) - 1 == (uint32_t)scroll.nMax)
+    {
+        m_ConsoleEdit.ScrollCaret();
+    }
+    return FALSE;
+}
+
+LRESULT CDebugScripts::OnConsoleClear(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+    m_ConsoleEdit.SetWindowText(L"");
+    return FALSE;
+}
+
+LRESULT CDebugScripts::OnRefreshList(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+    int nIndex = m_ScriptList.GetSelectedIndex();
+
+    CPath SearchPath("Scripts", "*");
+
+    if (!SearchPath.FindFirst(CPath::FIND_ATTRIBUTE_ALLFILES))
+    {
+        return FALSE;
+    }
+
+    m_ScriptList.SetRedraw(false);
+    m_ScriptList.DeleteAllItems();
+
+    size_t nItem = 0;
+
+    do
+    {
+        stdstr scriptFileName = SearchPath.GetNameExtension();
+        INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(scriptFileName.c_str());
+        const wchar_t *statusIcon = L"";
+
+        switch (state)
+        {
+        case STATE_STARTED:
+            statusIcon = L"*";
+            break;
+        case STATE_RUNNING:
+            statusIcon = L">";
+            break;
+        default:
+            statusIcon = L"-";
+            break;
+        }
+
+        m_ScriptList.AddItem(nItem, 0, statusIcon);
+        m_ScriptList.SetItemText(nItem, 1, scriptFileName.ToUTF16().c_str());
+        nItem++;
+    } while (SearchPath.FindNext());
+
+    m_ScriptList.SetRedraw(true);
+    m_ScriptList.Invalidate();
+
+    if (nIndex >= 0)
+    {
+        m_ScriptList.SelectItem(nIndex);
+        RefreshStatus();
+    }
+    return FALSE;
+}
+
 void CDebugScripts::EvaluateInSelectedInstance(const char* code)
 {
     INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
@@ -314,9 +440,46 @@ void CDebugScripts::EvaluateInSelectedInstance(const char* code)
     if (state == STATE_RUNNING || state == STATE_STARTED)
     {
         CScriptInstance* instance = m_Debugger->ScriptSystem()->GetInstance(m_SelectedScriptName);
-        //instance->EvalAsync(code);
         instance->Eval(code);
     }
+}
+
+void CDebugScripts::RunSelected()
+{
+    INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
+
+    if (state == STATE_INVALID || state == STATE_STOPPED)
+    {
+        m_Debugger->ScriptSystem()->RunScript(m_SelectedScriptName);
+    }
+    else
+    {
+        m_Debugger->Debug_LogScriptsWindow("[Error: Script is already running]\n");
+    }
+}
+
+void CDebugScripts::StopSelected()
+{
+    m_Debugger->ScriptSystem()->StopScript(m_SelectedScriptName);
+}
+
+void CDebugScripts::ToggleSelected()
+{
+    INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
+
+    if (state == STATE_INVALID || state == STATE_STOPPED)
+    {
+        RunSelected();
+    }
+    else
+    {
+        StopSelected();
+    }
+}
+
+void CDebugScripts::EditSelected()
+{
+    ShellExecute(NULL, L"edit", stdstr(m_SelectedScriptName).ToUTF16().c_str(), NULL, L"Scripts", SW_SHOWNORMAL);
 }
 
 // Console input
@@ -389,44 +552,4 @@ LRESULT CEditEval::OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BO
     }
     bHandled = FALSE;
     return 0;
-}
-
-void CDebugScripts::RunSelected()
-{
-    INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
-
-    if (state == STATE_INVALID || state == STATE_STOPPED)
-    {
-        m_Debugger->ScriptSystem()->RunScript(m_SelectedScriptName);
-    }
-    else
-    {
-        m_Debugger->Debug_LogScriptsWindow("[Error: Script is already running]\n");
-    }
-}
-
-void CDebugScripts::StopSelected()
-{
-    m_Debugger->ScriptSystem()->StopScript(m_SelectedScriptName);
-
-    //m_Debugger->Debug_RefreshScriptsWindow();
-}
-
-void CDebugScripts::ToggleSelected()
-{
-    INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
-
-    if (state == STATE_INVALID || state == STATE_STOPPED)
-    {
-        RunSelected();
-    }
-    else
-    {
-        StopSelected();
-    }
-}
-
-void CDebugScripts::EditSelected()
-{
-    ShellExecute(NULL, L"edit", stdstr(m_SelectedScriptName).ToUTF16().c_str(), NULL, L"Scripts", SW_SHOWNORMAL);
 }
