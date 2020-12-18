@@ -156,7 +156,7 @@ void CDebugScripts::ConsoleCopy()
     m_ConsoleEdit.GetWindowText(memBuf, nChars);
 
     GlobalUnlock(hMem);
-    SetClipboardData(CF_TEXT, hMem);
+    SetClipboardData(CF_UNICODETEXT, hMem);
 
     GlobalFree(hMem);
     CloseClipboard();
