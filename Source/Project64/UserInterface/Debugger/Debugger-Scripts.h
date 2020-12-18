@@ -12,6 +12,7 @@
 #pragma once
 #include "DebuggerUI.h"
 #include "ScriptSystem.h"
+#include <Project64/UserInterface/WTLControls/TooltipDialog.h>
 
 class CScriptList : public CListViewCtrl
 {
@@ -78,8 +79,9 @@ public:
 };
 
 class CDebugScripts :
-    public CDebugDialog < CDebugScripts >,
-    public CDialogResize<CDebugScripts>
+    public CDebugDialog<CDebugScripts>,
+    public CDialogResize<CDebugScripts>,
+    public CToolTipDialog<CDebugScripts>
 {
 private:
     enum {
@@ -161,4 +163,12 @@ public:
         DLGRESIZE_CONTROL(IDC_SCRIPTDIR_BTN, DLSZ_MOVE_Y)
         DLGRESIZE_CONTROL(IDC_STATUSBAR, DLSZ_SIZE_X | DLSZ_MOVE_Y)
     END_DLGRESIZE_MAP()
+
+    BEGIN_TOOLTIP_MAP()
+        TOOLTIP(IDC_CLEAR_BTN, "Clear console output")
+        TOOLTIP(IDC_COPY_BTN, "Copy console output to the clipboard")
+        TOOLTIP(IDC_RUN_BTN, "Run selected script")
+        TOOLTIP(IDC_STOP_BTN, "Stop selected script")
+        TOOLTIP(IDC_SCRIPTDIR_BTN, "Open scripts directory in file explorer")
+    END_TOOLTIP_MAP()
 };

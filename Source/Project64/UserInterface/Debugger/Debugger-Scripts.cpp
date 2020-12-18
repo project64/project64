@@ -15,6 +15,7 @@
 
 CDebugScripts::CDebugScripts(CDebuggerUI* debugger) :
     CDebugDialog<CDebugScripts>(debugger),
+    CToolTipDialog<CDebugScripts>(),
     m_SelectedScriptName(NULL),
     m_hQuitScriptDirWatchEvent(NULL),
     m_hScriptDirWatchThread(NULL)
@@ -33,6 +34,7 @@ LRESULT CDebugScripts::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
 {
     DlgResize_Init(false, true);
     DlgSavePos_Init(DebuggerUI_ScriptsPos);
+    DlgToolTip_Init();
 
     HFONT monoFont = CreateFont(-11, 0, 0, 0,
         FW_DONTCARE, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
@@ -446,6 +448,11 @@ void CDebugScripts::EvaluateInSelectedInstance(const char* code)
 
 void CDebugScripts::RunSelected()
 {
+    if (m_SelectedScriptName == NULL)
+    {
+        return;
+    }
+
     INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
 
     if (state == STATE_INVALID || state == STATE_STOPPED)
