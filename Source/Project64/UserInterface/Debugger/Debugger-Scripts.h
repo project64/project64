@@ -12,6 +12,7 @@
 #pragma once
 #include "DebuggerUI.h"
 #include "ScriptSystem.h"
+#include <Project64/UserInterface/WTLControls/TooltipDialog.h>
 
 class CScriptList : public CListViewCtrl
 {
@@ -49,7 +50,7 @@ public:
 
     BEGIN_MSG_MAP_EX(CEditEval)
         MESSAGE_HANDLER(WM_KEYDOWN, OnKeyDown)
-        END_MSG_MAP()
+    END_MSG_MAP()
 };
 
 class CEditConsole : public CWindowImpl<CEditEval, CEdit>
@@ -74,22 +75,37 @@ public:
 
     BEGIN_MSG_MAP_EX(CEditEval)
         MESSAGE_HANDLER(WM_KEYDOWN, OnKeyDown)
-        END_MSG_MAP()
+    END_MSG_MAP()
 };
 
 class CDebugScripts :
-    public CDebugDialog < CDebugScripts >,
-    public CDialogResize<CDebugScripts>
+    public CDebugDialog<CDebugScripts>,
+    public CDialogResize<CDebugScripts>,
+    public CToolTipDialog<CDebugScripts>
 {
 private:
-    CEdit m_InstanceInfoEdit;
+    enum {
+        WM_REFRESH_LIST = WM_USER + 1,
+        WM_CONSOLE_PRINT = WM_USER + 2,
+        WM_CONSOLE_CLEAR = WM_USER + 3
+    };
+
     CEditEval m_EvalEdit;
     CEditConsole m_ConsoleEdit;
     CScriptList m_ScriptList;
+    CStatusBarCtrl m_StatusBar;
     char* m_SelectedScriptName;
 
+    HANDLE m_hQuitScriptDirWatchEvent;
+    HANDLE m_hScriptDirWatchThread;
+    static DWORD WINAPI ScriptDirWatchProc(void *ctx);
+
+    void RunSelected();
+    void StopSelected();
+    void ToggleSelected();
+    void EditSelected();
     void RefreshStatus();
-    CriticalSection m_CS;
+    void ConsoleCopy();
 
 public:
     enum { IDD = IDD_Debugger_Scripts };
@@ -97,51 +113,62 @@ public:
     CDebugScripts(CDebuggerUI * debugger);
     virtual ~CDebugScripts(void);
 
+    void EvaluateInSelectedInstance(const char* code);
     void ConsolePrint(const char* text);
     void ConsoleClear();
-    void ConsoleCopy();
-
     void RefreshList();
-    void RefreshConsole();
-
-    void EvaluateInSelectedInstance(const char* code);
-    void RunSelected();
-    void StopSelected();
-    void ToggleSelected();
-    void EditSelected();
 
     LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT OnDestroy(void)
-    {
-        return 0;
-    }
-
+    LRESULT OnCtlColorStatic(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnDestroy(void);
     LRESULT OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
     LRESULT OnScriptListDblClicked(NMHDR* pNMHDR);
-    LRESULT OnScriptListClicked(NMHDR* pNMHDR);
     LRESULT OnScriptListRClicked(NMHDR* pNMHDR);
     LRESULT OnScriptListCustomDraw(NMHDR* pNMHDR);
+    LRESULT OnScriptListItemChanged(NMHDR* pNMHDR);
     void OnExitSizeMove(void);
+
+    LRESULT OnConsoleLog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnConsoleClear(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnRefreshList(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
     BEGIN_MSG_MAP_EX(CDebugScripts)
         COMMAND_CODE_HANDLER(BN_CLICKED, OnClicked)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
+        MESSAGE_HANDLER(WM_CTLCOLORSTATIC, OnCtlColorStatic)
         NOTIFY_HANDLER_EX(IDC_SCRIPT_LIST, NM_DBLCLK, OnScriptListDblClicked)
-        NOTIFY_HANDLER_EX(IDC_SCRIPT_LIST, NM_CLICK, OnScriptListClicked)
         NOTIFY_HANDLER_EX(IDC_SCRIPT_LIST, NM_RCLICK, OnScriptListRClicked)
         NOTIFY_HANDLER_EX(IDC_SCRIPT_LIST, NM_CUSTOMDRAW, OnScriptListCustomDraw)
-        CHAIN_MSG_MAP_MEMBER(m_ScriptList)
+        NOTIFY_HANDLER_EX(IDC_SCRIPT_LIST, LVN_ITEMCHANGED, OnScriptListItemChanged)
         MSG_WM_DESTROY(OnDestroy)
-        CHAIN_MSG_MAP(CDialogResize<CDebugScripts>)
         MSG_WM_EXITSIZEMOVE(OnExitSizeMove);
-        END_MSG_MAP()
+        MESSAGE_HANDLER(WM_CONSOLE_PRINT, OnConsoleLog)
+        MESSAGE_HANDLER(WM_CONSOLE_CLEAR, OnConsoleClear)
+        MESSAGE_HANDLER(WM_REFRESH_LIST, OnRefreshList)
+        CHAIN_MSG_MAP(CDialogResize<CDebugScripts>)
+        CHAIN_MSG_MAP_MEMBER(m_ScriptList)
+    END_MSG_MAP()
 
     BEGIN_DLGRESIZE_MAP(CDebugScripts)
-        DLGRESIZE_CONTROL(IDC_CTX_INFO_EDIT, DLSZ_SIZE_X)
-        DLGRESIZE_CONTROL(IDC_EVAL_EDIT, DLSZ_SIZE_X | DLSZ_MOVE_Y)
         DLGRESIZE_CONTROL(IDC_CONSOLE_EDIT, DLSZ_SIZE_X | DLSZ_SIZE_Y)
         DLGRESIZE_CONTROL(IDC_SCRIPT_LIST, DLSZ_SIZE_Y)
-        DLGRESIZE_CONTROL(IDC_CLEAR_BTN, DLSZ_MOVE_X)
-        DLGRESIZE_CONTROL(IDC_COPY_BTN, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_CLEAR_BTN, DLSZ_MOVE_X | DLSZ_MOVE_Y)
+        DLGRESIZE_CONTROL(IDC_COPY_BTN, DLSZ_MOVE_X | DLSZ_MOVE_Y)
+        DLGRESIZE_CONTROL(IDC_SCRIPTS_GRP, DLSZ_SIZE_Y)
+        DLGRESIZE_CONTROL(IDC_OUTPUT_GRP, DLSZ_SIZE_X | DLSZ_SIZE_Y)
+        DLGRESIZE_CONTROL(IDC_EVAL_LBL, DLSZ_MOVE_Y)
+        DLGRESIZE_CONTROL(IDC_EVAL_EDIT, DLSZ_SIZE_X | DLSZ_MOVE_Y)
+        DLGRESIZE_CONTROL(IDC_RUN_BTN, DLSZ_MOVE_Y)
+        DLGRESIZE_CONTROL(IDC_STOP_BTN, DLSZ_MOVE_Y)
+        DLGRESIZE_CONTROL(IDC_SCRIPTDIR_BTN, DLSZ_MOVE_Y)
+        DLGRESIZE_CONTROL(IDC_STATUSBAR, DLSZ_SIZE_X | DLSZ_MOVE_Y)
     END_DLGRESIZE_MAP()
+
+    BEGIN_TOOLTIP_MAP()
+        TOOLTIP(IDC_CLEAR_BTN, "Clear console output")
+        TOOLTIP(IDC_COPY_BTN, "Copy console output to the clipboard")
+        TOOLTIP(IDC_RUN_BTN, "Run selected script")
+        TOOLTIP(IDC_STOP_BTN, "Stop selected script")
+        TOOLTIP(IDC_SCRIPTDIR_BTN, "Open scripts directory in file explorer")
+    END_TOOLTIP_MAP()
 };

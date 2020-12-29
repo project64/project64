@@ -362,7 +362,6 @@
 #define IDC_HI_EDIT                     1183
 #define IDC_LO_EDIT                     1184
 #define IDC_BP_LIST                     1185
-#define IDC_CTX_INFO_EDIT               1185
 #define IDC_ADDBP_BTN                   1186
 #define IDC_REMOVESYMBOL_BTN            1186
 #define IDC_RMBP_BTN                    1187
@@ -453,8 +452,11 @@
 #define IDC_CLEAR_BTN                   1302
 #define IDC_DMA_RAM_EDIT                1303
 #define IDC_COPY_BTN                    1303
+#define IDC_SCRIPTDIR_BTN               1304
 #define IDC_EXPORT_BTN                  1305
+#define IDC_RUN_BTN                     1305
 #define IDC_DMA_ROM_EDIT                1306
+#define IDC_STOP_BTN                    1306
 #define IDC_TRACE_STATIC                1307
 #define IDC_RAM_STATIC                  1308
 #define IDC_ROM_STATIC                  1309
@@ -701,8 +703,11 @@
 #define IDC_F2_LBL                      1577
 #define IDC_EMAIL                       1577
 #define IDC_F3_LBL                      1578
+#define IDC_SCRIPTS_GRP                 1578
 #define IDC_F4_LBL                      1579
+#define IDC_OUTPUT_GRP                  1579
 #define IDC_F5_LBL                      1580
+#define IDC_EVAL_LBL                    1580
 #define IDC_F6_LBL                      1581
 #define IDC_F7_LBL                      1582
 #define IDC_F8_LBL                      1583

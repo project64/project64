@@ -132,15 +132,6 @@ void CScriptInstance::StartScriptProc()
     DuplicateHandle(GetCurrentProcess(), GetCurrentThread(), GetCurrentProcess(), &m_hThread, 0, FALSE, DUPLICATE_SAME_ACCESS);
     SetState(STATE_STARTED);
 
-    bool bWasUnpaused = false;
-
-    if (!g_Settings->LoadBool(GameRunning_CPU_Paused) && g_MMU)
-    {
-        // Pause CPU during startup phase
-        bWasUnpaused = true;
-        g_System->ExternalEvent(SysEvent_PauseCPU_AppLostFocus);
-    }
-
     duk_context* ctx = m_Ctx;
 
     duk_push_object(ctx);
@@ -174,11 +165,6 @@ void CScriptInstance::StartScriptProc()
             SetState(STATE_STOPPED);
             return;
         }
-    }
-
-    if (bWasUnpaused)
-    {
-        g_System->ExternalEvent(SysEvent_ResumeCPU_AppGainedFocus);
     }
 
     if (HaveEvents())
