@@ -1,13 +1,36 @@
 [E340A49C-74318D41-C:4A]
 Name=Baku Bomberman (J)
-Cheat0="Invincible\Player 1",800AEE01 0001
-Cheat1="Have\Pumped up Red Remote Bombs",802AC653 0004
-Cheat2="Infinite\Lives",802AB857 0063
-Cheat3="Infinite\Gems",802AB85F 0063
-Cheat4="Infinite\Credits",802AB85B 0009
-Cheat5="Infinite\Time",802AB873 0001
-Cheat6="Carry 20 Bombs At A Time",800AEE0F 0014
-Cheat7="Infinite\Energy\Player 1",800AEE07 0002
-Cheat8="Infinite\Energy\Player 2",800AEECF 0002
-Cheat9="Infinite\Energy\Player 3",800AEF97 0002
-Cheat10="Infinite\Energy\Player 4",800AF05F 0002
+
+$Carry 20 Bombs At A Time
+800AEE0F 0014
+
+$Have\Pumped up Red Remote Bombs
+802AC653 0004
+
+$Infinite\Credits
+802AB85B 0009
+
+$Infinite\Energy\Player 1
+800AEE07 0002
+
+$Infinite\Energy\Player 2
+800AEECF 0002
+
+$Infinite\Energy\Player 3
+800AEF97 0002
+
+$Infinite\Energy\Player 4
+800AF05F 0002
+
+$Infinite\Gems
+802AB85F 0063
+
+$Infinite\Lives
+802AB857 0063
+
+$Infinite\Time
+802AB873 0001
+
+$Invincible\Player 1
+800AEE01 0001
+

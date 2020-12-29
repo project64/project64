@@ -1,5 +1,18 @@
 [D06F15D7-2F90EA28-C:4A]
 Name=Mario Artist Paint Studio (J)
-Cheat0="Unlock All Sea World Animals",81142374 0101,81142376 0101,80142378 0001
-Cheat1="Unlock All Jurassic World Dinosaurs",8114237C 0101,8114237E 0101,80142380 0001
-Cheat2="Unlock All Planet Mars Characters",81142384 0101,81142386 0101,80142388 0001
+
+$Unlock All Jurassic World Dinosaurs
+8114237C 0101
+8114237E 0101
+80142380 0001
+
+$Unlock All Planet Mars Characters
+81142384 0101
+81142386 0101
+80142388 0001
+
+$Unlock All Sea World Animals
+81142374 0101
+81142376 0101
+80142378 0001
+

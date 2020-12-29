@@ -1,7 +1,16 @@
 [6DFDCDC3-4DE701C8-C:45]
 Name=NHL Breakaway 98 (U)
-Cheat0="Activate Cheat Menu",80053F38 0001
-Cheat1="Home Team Goals",8012BBBC 00??
-Cheat1_O=$00 No Score,$FF Max Score
-Cheat2="Away Team Goals",8012BBBD 00??
-Cheat2_O=$00 No Score,$FF Max Score
+
+$Activate Cheat Menu
+80053F38 0001
+
+$Away Team Goals
+8012BBBD 00??
+00 No Score
+FF Max Score
+
+$Home Team Goals
+8012BBBC 00??
+00 No Score
+FF Max Score
+

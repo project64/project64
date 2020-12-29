@@ -1,5 +1,12 @@
 [0AC61D39-ABFA03A6-C:50]
 Name=Rugrats in Paris - The Movie (E)
-Cheat0="Tickets\Red",8111F8C6 FFFF
-Cheat1="Tickets\Gold",8111F8C8 FFFF
-Cheat2="Access all items In Inventory",8111F8BE 1FFF
+
+$Access all items In Inventory
+8111F8BE 1FFF
+
+$Tickets\Gold
+8111F8C8 FFFF
+
+$Tickets\Red
+8111F8C6 FFFF
+

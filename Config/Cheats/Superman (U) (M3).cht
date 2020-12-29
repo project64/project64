@@ -1,8 +1,21 @@
 [A2E8F35B-C9DC87D9-C:45]
 Name=Superman (U) (M3)
-Cheat0="Fly Through 1st & Last Ring Only To Complete Challenge",801442E9 0063
-Cheat1="Infinite Freezing Breath",8122CDE8 42C8
-Cheat2="Infinite Health",8122CDD4 42C8
-Cheat3="Infinite Laser Eye",8122CDE4 42C8
-Cheat4="Infinite Running Boosts",8122CDDC 42C8
-Cheat5="Infinite X-Ray Vision",8122CDE0 42C8
+
+$Fly Through 1st & Last Ring Only To Complete Challenge
+801442E9 0063
+
+$Infinite Freezing Breath
+8122CDE8 42C8
+
+$Infinite Health
+8122CDD4 42C8
+
+$Infinite Laser Eye
+8122CDE4 42C8
+
+$Infinite Running Boosts
+8122CDDC 42C8
+
+$Infinite X-Ray Vision
+8122CDE0 42C8
+

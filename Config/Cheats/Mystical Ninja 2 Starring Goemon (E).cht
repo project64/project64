@@ -1,8 +1,23 @@
 [7F9345D3-841ECADE-C:50]
 Name=Mystical Ninja 2 Starring Goemon (E) (M3)
-Cheat0="Play As\Player 1",80088E02 00??
-Cheat0_O=$00 Goemon,$01 Ebisumaru,$02 Sasuke,$03 Yae
-Cheat1="Unlimited Gate Opener Things",80088EC6 0099
-Cheat2="Unlimited Health\Player 1",80088ED4 0004
-Cheat3="Unlimited Shield\Player 1",80088ED5 0004,8015D3C4 0001
-Cheat4="Always Have\Most Powerful Weapon",80088ED9 0003
+
+$Always Have\Most Powerful Weapon
+80088ED9 0003
+
+$Play As\Player 1
+80088E02 00??
+00 Goemon
+01 Ebisumaru
+02 Sasuke
+03 Yae
+
+$Unlimited Gate Opener Things
+80088EC6 0099
+
+$Unlimited Health\Player 1
+80088ED4 0004
+
+$Unlimited Shield\Player 1
+80088ED5 0004
+8015D3C4 0001
+

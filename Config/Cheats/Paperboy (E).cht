@@ -1,13 +1,34 @@
 [AC976B38-C3A9C97A-C:50]
 Name=Paperboy (E)
-Cheat0="Level Select",8006A6A7 0001
-Cheat0_N=Also accesses All Bonus Levels
-Cheat1="Invincibility",81268D1A 0001
-Cheat2="Infinite Newspapers",81268D12 0001
-Cheat3="Big Newspapers",81268D5A 0001
-Cheat4="Throw Newspapers Forwards",81268D46 0001
-Cheat5="Throw Newspapers Backwards",81268D4A 0001
-Cheat6="Turbo Mode",81268D36 0001
-Cheat7="Super Jump Springs",81268D3A 0001
-Cheat8="Rocket Boosters",81268D3E 0001
-Cheat9="99 Total Houses",8106A61A 0063
+
+$99 Total Houses
+8106A61A 0063
+
+$Big Newspapers
+81268D5A 0001
+
+$Infinite Newspapers
+81268D12 0001
+
+$Invincibility
+81268D1A 0001
+
+$Level Select
+Note=Also accesses All Bonus Levels
+8006A6A7 0001
+
+$Rocket Boosters
+81268D3E 0001
+
+$Super Jump Springs
+81268D3A 0001
+
+$Throw Newspapers Backwards
+81268D4A 0001
+
+$Throw Newspapers Forwards
+81268D46 0001
+
+$Turbo Mode
+81268D36 0001
+

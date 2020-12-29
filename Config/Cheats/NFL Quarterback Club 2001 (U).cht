@@ -1,5 +1,12 @@
 [28784622-FFB22985-C:45]
 Name=NFL Quarterback Club 2001 (U)
-Cheat0="Infinite Player Creation Pts",8107A0F2 00C8
-Cheat1="Always 1st Down",800785D2 0001
-Cheat2="1 Down Per Possession",800785D2 0004
+
+$1 Down Per Possession
+800785D2 0004
+
+$Always 1st Down
+800785D2 0001
+
+$Infinite Player Creation Pts
+8107A0F2 00C8
+

@@ -1,136 +1,436 @@
 [F03C24CA-C5237BCC-C:45]
 Name=Clay Fighter 63 1-3 (U)
-Cheat0="Extra Characters/Secret Options",801A2B41 000F
-Cheat1="Stage Modifier",801A2B2B 00??
-Cheat1_O=$00 Candy Factory,$01 Claynaveral Hangar,$02 Camp Claynaveral,$03 Outhouse,$04 Mudville Mansion,$05 Ghastly Graveyard,$06 Spooky Spire,$07 Happy Harry's Hut,$08 Freezing Fortress,$09 Refuse Room,$0A Grotto Gulch,$0B Rubbage Room,$0C Rubbage Reef,$0D Kiln's Laboratory,$0E Kiln's Hideout,$0F Fiery Furnace,$10 Research Room,$11 Clayribbean Cruise,$12 Santa's Workship,$13 Kooky Courtyard,$14 Santa's Toy Factory,$15 Boogerhenge,$16 Backwash Bay,$17 Tureen Toilet,$18 Tribal Tower,$19 Aquadome
-Cheat2="Infinite Time To Choose Your Fighter",81200BEC 03A7
-Cheat3="Player 1 Character Modifier",801A2B2F 00??
-Cheat3_O=$01 Blob,$02 Bonker,$03 Boogerman,$04 Dr. Kiln,$05 Earthworm Jim,$08 Houngan,$09 Icky Bod Clay,$0A Kung Pow,$0D Sumo Santa,$0E Taffy,$0F T-Hoppy
-Cheat4="Refuse Room, Grotto Gulch, Santa's Worshop\Player 1\Cant be Stunned",801F1B0B 0000
-Cheat5="Refuse Room, Grotto Gulch, Santa's Worshop\Player 1\Infinite Energy",801F1B13 00AA
-Cheat6="Refuse Room, Grotto Gulch, Santa's Worshop\Player 1\No Energy",801F1B13 0000
-Cheat7="Refuse Room, Grotto Gulch, Santa's Worshop\Player 1\Full Super Bar",811F1B1A 0200
-Cheat8="Refuse Room, Grotto Gulch, Santa's Worshop\Player 2\Cant be Stunned",801F4FAB 0000
-Cheat9="Refuse Room, Grotto Gulch, Santa's Worshop\Player 2\Infinite Energy",801F4FB3 00AA
-Cheat10="Refuse Room, Grotto Gulch, Santa's Worshop\Player 2\No Energy",801F4FB3 0000
-Cheat11="Refuse Room, Grotto Gulch, Santa's Worshop\Player 2\Full Super Bar",811F4FBA 0200
-Cheat12="Tribal Tower\Player 1\Cant be Stunned",801F1BAB 0000
-Cheat13="Tribal Tower\Player 1\Infinite Energy",801F1BB3 00AA
-Cheat14="Tribal Tower\Player 1\No Energy",801F1BB3 0000
-Cheat15="Tribal Tower\Player 1\Full Super Bar",811F1BBA 0200
-Cheat16="Tribal Tower\Player 2\Cant be Stunned",801F504B 0000
-Cheat17="Tribal Tower\Player 2\Infinite Energy",801F5053 00AA
-Cheat18="Tribal Tower\Player 2\No Energy",801F5053 0000
-Cheat19="Tribal Tower\Player 2\Full Super Bar",811F505A 0200
-Cheat20="Aquadome\Player 1\Cant be Stunned",801F1E3B 0000
-Cheat21="Aquadome\Player 1\Infinite Energy",801F1E33 00AA
-Cheat22="Aquadome\Player 1\No Energy",801F1E33 0000
-Cheat23="Aquadome\Player 1\Full Super Bar",811F1E3A 0200
-Cheat24="Aquadome\Player 2\Cant be Stunned",801F52CB 0000
-Cheat25="Aquadome\Player 2\Infinite Energy",801F52D3 00AA
-Cheat26="Aquadome\Player 2\No Energy",801F52D3 0000
-Cheat27="Aquadome\Player 2\Full Super Bar",811F52DA 0200
-Cheat28="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 1\Cant be Stunned",801F233B 0000
-Cheat29="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 1\Infinite Energy",801F2343 00AA
-Cheat30="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 1\No Energy",801F2343 0000
-Cheat31="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 1\Full Super Bar",811F234A 0200
-Cheat32="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 2\Cant be Stunned",801F57DB 0000
-Cheat33="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 2\Infinite Energy",801F57E3 00AA
-Cheat34="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 2\No Energy",801F57E3 0000
-Cheat35="Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 2\Full Super Bar",811F57EA 0200
-Cheat36="Freezing Fortress\Player 1\Cant be Stunned",801F239B 0000
-Cheat37="Freezing Fortress\Player 1\Infinite Energy",801F23A3 00AA
-Cheat38="Freezing Fortress\Player 1\No Energy",801F23A3 0000
-Cheat39="Freezing Fortress\Player 1\Full Super Bar",811F23AA 0200
-Cheat40="Freezing Fortress\Player 2\Cant be Stunned",801F583B 0000
-Cheat41="Freezing Fortress\Player 2\Infinite Energy",801F5843 00AA
-Cheat42="Freezing Fortress\Player 2\No Energy",801F5843 0000
-Cheat43="Freezing Fortress\Player 2\Full Super Bar",811F584A 0200
-Cheat44="Rubbage Reef\Player 1\Cant be Stunned",801F241B 0000
-Cheat45="Rubbage Reef\Player 1\Infinite Energy",801F2423 00AA
-Cheat46="Rubbage Reef\Player 1\No Energy",801F2423 0000
-Cheat47="Rubbage Reef\Player 1\Full Super Bar",811F242A 0200
-Cheat48="Rubbage Reef\Player 2\Cant be Stunned",801F58BB 0000
-Cheat49="Rubbage Reef\Player 2\Infinite Energy",801F58C3 00AA
-Cheat50="Rubbage Reef\Player 2\No Energy",801F58C3 0000
-Cheat51="Rubbage Reef\Player 2\Full Super Bar",811F58CA 0200
-Cheat52="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 1\Cant be Stunned",801F244B 0000
-Cheat53="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 1\Infinite Energy",801F2453 00AA
-Cheat54="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 1\No Energy",801F2453 0000
-Cheat55="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 1\Full Super Bar",811F245A 0200
-Cheat56="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 2\Cant be Stunned",801F58EB 0000
-Cheat57="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 2\Infinite Energy",801F58F3 00AA
-Cheat58="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 2\No Energy",801F58F3 0000
-Cheat59="Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 2\Full Super Bar",811F58FA 0200
-Cheat60="Clayribbean Cruise\Player 1\Cant be Stunned",801F24FB 0000
-Cheat61="Clayribbean Cruise\Player 1\Infinite Energy",801F2503 00AA
-Cheat62="Clayribbean Cruise\Player 1\No Energy",801F2503 0000
-Cheat63="Clayribbean Cruise\Player 1\Full Super Bar",811F250A 0200
-Cheat64="Clayribbean Cruise\Player 2\Cant be Stunned",801F599B 0000
-Cheat65="Clayribbean Cruise\Player 2\Infinite Energy",801F59A3 00AA
-Cheat66="Clayribbean Cruise\Player 2\No Energy",801F59A3 0000
-Cheat67="Clayribbean Cruise\Player 2\Full Super Bar",811F59AA 0200
-Cheat68="Backwash Bay\Player 1\Cant be Stunned",801F258B 0000
-Cheat69="Backwash Bay\Player 1\Infinite Energy",801F2593 00AA
-Cheat70="Backwash Bay\Player 1\No Energy",801F2593 0000
-Cheat71="Backwash Bay\Player 1\Full Super Bar",811F259A 0200
-Cheat72="Backwash Bay\Player 2\Cant be Stunned",801F5A2B 0000
-Cheat73="Backwash Bay\Player 2\Infinite Energy",801F5A33 00AA
-Cheat74="Backwash Bay\Player 2\No Energy",801F5A33 0000
-Cheat75="Backwash Bay\Player 2\Full Super Bar",811F5A3A 0200
-Cheat76="Ghastly Graveyard\Player 1\Cant be Stunned",801F262B 0000
-Cheat77="Ghastly Graveyard\Player 1\Infinite Energy",801F2633 00AA
-Cheat78="Ghastly Graveyard\Player 1\No Energy",801F2633 0000
-Cheat79="Ghastly Graveyard\Player 1\Full Super Bar",811F263A 0200
-Cheat80="Ghastly Graveyard\Player 2\Cant be Stunned",801F5ACB 0000
-Cheat81="Ghastly Graveyard\Player 2\Infinite Energy",801F5AD3 00AA
-Cheat82="Ghastly Graveyard\Player 2\No Energy",801F5AD3 0000
-Cheat83="Ghastly Graveyard\Player 2\Full Super Bar",811F5ADA 0200
-Cheat84="Candy Factory\Player 1\Cant be Stunned",801F270B 0000
-Cheat85="Candy Factory\Player 1\Infinite Energy",801F2713 00AA
-Cheat86="Candy Factory\Player 1\No Energy",801F2713 0000
-Cheat87="Candy Factory\Player 1\Full Super Bar",811F271A 0200
-Cheat88="Candy Factory\Player 2\Cant be Stunned",801F5BAB 0000
-Cheat89="Candy Factory\Player 2\Infinite Energy",801F5BB3 00AA
-Cheat90="Candy Factory\Player 2\No Energy",801F5BB3 0000
-Cheat91="Candy Factory\Player 2\Full Super Bar",811F5BBA 0200
-Cheat92="Kooky Courtyard\Player 1\Cant be Stunned",801F280B 0000
-Cheat93="Kooky Courtyard\Player 1\Infinite Energy",801F2813 00AA
-Cheat94="Kooky Courtyard\Player 1\No Energy",801F2813 0000
-Cheat95="Kooky Courtyard\Player 1\Full Super Bar",811F281A 0200
-Cheat96="Kooky Courtyard\Player 2\Cant be Stunned",801F5CAB 0000
-Cheat97="Kooky Courtyard\Player 2\Infinite Energy",801F5CB3 00AA
-Cheat98="Kooky Courtyard\Player 2\No Energy",801F5CB3 0000
-Cheat99="Kooky Courtyard\Player 2\Full Super Bar",811F5CBA 0200
-Cheat100="Santa's Toy Factory\Player 1\Cant be Stunned",801F2C3B 0000
-Cheat101="Santa's Toy Factory\Player 1\Infinite Energy",801F2C43 00AA
-Cheat102="Santa's Toy Factory\Player 1\No Energy",801F2C43 0000
-Cheat103="Santa's Toy Factory\Player 1\Full Super Bar",811F2C4A 0200
-Cheat104="Santa's Toy Factory\Player 2\Cant be Stunned",801F60DB 0000
-Cheat105="Santa's Toy Factory\Player 2\Infinite Energy",801F60E3 00AA
-Cheat106="Santa's Toy Factory\Player 2\No Energy",801F60E3 0000
-Cheat107="Santa's Toy Factory\Player 2\Full Super Bar",811F60EA 0200
-Cheat108="Boogerhenge, Tureen Toilet\Player 1\Cant be Stunned",801F2FDB 0000
-Cheat109="Boogerhenge, Tureen Toilet\Player 1\Infinite Energy",801F2FE3 00AA
-Cheat110="Boogerhenge, Tureen Toilet\Player 1\No Energy",801F2FE3 0000
-Cheat111="Boogerhenge, Tureen Toilet\Player 1\Full Super Bar",811F2FEA 0200
-Cheat112="Boogerhenge, Tureen Toilet\Player 2\Cant be Stunned",801F647B 0000
-Cheat113="Boogerhenge, Tureen Toilet\Player 2\Infinite Energy",801F6483 00AA
-Cheat114="Boogerhenge, Tureen Toilet\Player 2\No Energy",801F6483 0000
-Cheat115="Boogerhenge, Tureen Toilet\Player 2\Full Super Bar",811F648A 0200
-Cheat116="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 1\Cant be Stunned",801F3BBB 0000
-Cheat117="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 1\Infinite Energy",801F3BC3 00AA
-Cheat118="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 1\No Energy",801F3BC3 0000
-Cheat119="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 1\Full Super Bar",811F3BCA 0200
-Cheat120="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 2\Cant be Stunned",801F705B 0000
-Cheat121="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 2\Infinite Energy",801F7063 00AA
-Cheat122="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 2\No Energy",801F7063 0000
-Cheat123="Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 2\Full Super Bar",811F706A 0200
-Cheat124="Rubbage Room\Player 1\Cant be Stunned",801F464B 0000
-Cheat125="Rubbage Room\Player 1\Infinite Energy",801F4653 00AA
-Cheat126="Rubbage Room\Player 1\No Energy",801F4653 0000
-Cheat127="Rubbage Room\Player 1\Full Super Bar",811F465A 0200
-Cheat128="Rubbage Room\Player 2\Cant be Stunned",801F7AEB 0000
-Cheat129="Rubbage Room\Player 2\Infinite Energy",801F7AF3 00AA
-Cheat130="Rubbage Room\Player 2\No Energy",801F7AF3 0000
-Cheat131="Rubbage Room\Player 2\Full Super Bar",811F7AFA 0200
+
+$Aquadome\Player 1\Cant be Stunned
+801F1E3B 0000
+
+$Aquadome\Player 1\Full Super Bar
+811F1E3A 0200
+
+$Aquadome\Player 1\Infinite Energy
+801F1E33 00AA
+
+$Aquadome\Player 1\No Energy
+801F1E33 0000
+
+$Aquadome\Player 2\Cant be Stunned
+801F52CB 0000
+
+$Aquadome\Player 2\Full Super Bar
+811F52DA 0200
+
+$Aquadome\Player 2\Infinite Energy
+801F52D3 00AA
+
+$Aquadome\Player 2\No Energy
+801F52D3 0000
+
+$Backwash Bay\Player 1\Cant be Stunned
+801F258B 0000
+
+$Backwash Bay\Player 1\Full Super Bar
+811F259A 0200
+
+$Backwash Bay\Player 1\Infinite Energy
+801F2593 00AA
+
+$Backwash Bay\Player 1\No Energy
+801F2593 0000
+
+$Backwash Bay\Player 2\Cant be Stunned
+801F5A2B 0000
+
+$Backwash Bay\Player 2\Full Super Bar
+811F5A3A 0200
+
+$Backwash Bay\Player 2\Infinite Energy
+801F5A33 00AA
+
+$Backwash Bay\Player 2\No Energy
+801F5A33 0000
+
+$Boogerhenge, Tureen Toilet\Player 1\Cant be Stunned
+801F2FDB 0000
+
+$Boogerhenge, Tureen Toilet\Player 1\Full Super Bar
+811F2FEA 0200
+
+$Boogerhenge, Tureen Toilet\Player 1\Infinite Energy
+801F2FE3 00AA
+
+$Boogerhenge, Tureen Toilet\Player 1\No Energy
+801F2FE3 0000
+
+$Boogerhenge, Tureen Toilet\Player 2\Cant be Stunned
+801F647B 0000
+
+$Boogerhenge, Tureen Toilet\Player 2\Full Super Bar
+811F648A 0200
+
+$Boogerhenge, Tureen Toilet\Player 2\Infinite Energy
+801F6483 00AA
+
+$Boogerhenge, Tureen Toilet\Player 2\No Energy
+801F6483 0000
+
+$Candy Factory\Player 1\Cant be Stunned
+801F270B 0000
+
+$Candy Factory\Player 1\Full Super Bar
+811F271A 0200
+
+$Candy Factory\Player 1\Infinite Energy
+801F2713 00AA
+
+$Candy Factory\Player 1\No Energy
+801F2713 0000
+
+$Candy Factory\Player 2\Cant be Stunned
+801F5BAB 0000
+
+$Candy Factory\Player 2\Full Super Bar
+811F5BBA 0200
+
+$Candy Factory\Player 2\Infinite Energy
+801F5BB3 00AA
+
+$Candy Factory\Player 2\No Energy
+801F5BB3 0000
+
+$Clayribbean Cruise\Player 1\Cant be Stunned
+801F24FB 0000
+
+$Clayribbean Cruise\Player 1\Full Super Bar
+811F250A 0200
+
+$Clayribbean Cruise\Player 1\Infinite Energy
+801F2503 00AA
+
+$Clayribbean Cruise\Player 1\No Energy
+801F2503 0000
+
+$Clayribbean Cruise\Player 2\Cant be Stunned
+801F599B 0000
+
+$Clayribbean Cruise\Player 2\Full Super Bar
+811F59AA 0200
+
+$Clayribbean Cruise\Player 2\Infinite Energy
+801F59A3 00AA
+
+$Clayribbean Cruise\Player 2\No Energy
+801F59A3 0000
+
+$Extra Characters/Secret Options
+801A2B41 000F
+
+$Freezing Fortress\Player 1\Cant be Stunned
+801F239B 0000
+
+$Freezing Fortress\Player 1\Full Super Bar
+811F23AA 0200
+
+$Freezing Fortress\Player 1\Infinite Energy
+801F23A3 00AA
+
+$Freezing Fortress\Player 1\No Energy
+801F23A3 0000
+
+$Freezing Fortress\Player 2\Cant be Stunned
+801F583B 0000
+
+$Freezing Fortress\Player 2\Full Super Bar
+811F584A 0200
+
+$Freezing Fortress\Player 2\Infinite Energy
+801F5843 00AA
+
+$Freezing Fortress\Player 2\No Energy
+801F5843 0000
+
+$Ghastly Graveyard\Player 1\Cant be Stunned
+801F262B 0000
+
+$Ghastly Graveyard\Player 1\Full Super Bar
+811F263A 0200
+
+$Ghastly Graveyard\Player 1\Infinite Energy
+801F2633 00AA
+
+$Ghastly Graveyard\Player 1\No Energy
+801F2633 0000
+
+$Ghastly Graveyard\Player 2\Cant be Stunned
+801F5ACB 0000
+
+$Ghastly Graveyard\Player 2\Full Super Bar
+811F5ADA 0200
+
+$Ghastly Graveyard\Player 2\Infinite Energy
+801F5AD3 00AA
+
+$Ghastly Graveyard\Player 2\No Energy
+801F5AD3 0000
+
+$Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 1\Cant be Stunned
+801F244B 0000
+
+$Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 1\Full Super Bar
+811F245A 0200
+
+$Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 1\Infinite Energy
+801F2453 00AA
+
+$Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 1\No Energy
+801F2453 0000
+
+$Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 2\Cant be Stunned
+801F58EB 0000
+
+$Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 2\Full Super Bar
+811F58FA 0200
+
+$Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 2\Infinite Energy
+801F58F3 00AA
+
+$Happy Harry's Hut, Spooky Spire, Mudville Mansion\Player 2\No Energy
+801F58F3 0000
+
+$Infinite Time To Choose Your Fighter
+81200BEC 03A7
+
+$Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 1\Cant be Stunned
+801F3BBB 0000
+
+$Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 1\Full Super Bar
+811F3BCA 0200
+
+$Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 1\Infinite Energy
+801F3BC3 00AA
+
+$Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 1\No Energy
+801F3BC3 0000
+
+$Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 2\Cant be Stunned
+801F705B 0000
+
+$Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 2\Full Super Bar
+811F706A 0200
+
+$Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 2\Infinite Energy
+801F7063 00AA
+
+$Kiln's Laboratory, Kiln's Hideout, Fiery Furnace, Research Room\Player 2\No Energy
+801F7063 0000
+
+$Kooky Courtyard\Player 1\Cant be Stunned
+801F280B 0000
+
+$Kooky Courtyard\Player 1\Full Super Bar
+811F281A 0200
+
+$Kooky Courtyard\Player 1\Infinite Energy
+801F2813 00AA
+
+$Kooky Courtyard\Player 1\No Energy
+801F2813 0000
+
+$Kooky Courtyard\Player 2\Cant be Stunned
+801F5CAB 0000
+
+$Kooky Courtyard\Player 2\Full Super Bar
+811F5CBA 0200
+
+$Kooky Courtyard\Player 2\Infinite Energy
+801F5CB3 00AA
+
+$Kooky Courtyard\Player 2\No Energy
+801F5CB3 0000
+
+$Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 1\Cant be Stunned
+801F233B 0000
+
+$Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 1\Full Super Bar
+811F234A 0200
+
+$Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 1\Infinite Energy
+801F2343 00AA
+
+$Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 1\No Energy
+801F2343 0000
+
+$Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 2\Cant be Stunned
+801F57DB 0000
+
+$Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 2\Full Super Bar
+811F57EA 0200
+
+$Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 2\Infinite Energy
+801F57E3 00AA
+
+$Outhouse,Claynaveral Hangar,Camp Claynaveral\Player 2\No Energy
+801F57E3 0000
+
+$Player 1 Character Modifier
+801A2B2F 00??
+01 Blob
+02 Bonker
+03 Boogerman
+04 Dr. Kiln
+05 Earthworm Jim
+08 Houngan
+09 Icky Bod Clay
+0A Kung Pow
+0D Sumo Santa
+0E Taffy
+0F T-Hoppy
+
+$Refuse Room, Grotto Gulch, Santa's Worshop\Player 1\Cant be Stunned
+801F1B0B 0000
+
+$Refuse Room, Grotto Gulch, Santa's Worshop\Player 1\Full Super Bar
+811F1B1A 0200
+
+$Refuse Room, Grotto Gulch, Santa's Worshop\Player 1\Infinite Energy
+801F1B13 00AA
+
+$Refuse Room, Grotto Gulch, Santa's Worshop\Player 1\No Energy
+801F1B13 0000
+
+$Refuse Room, Grotto Gulch, Santa's Worshop\Player 2\Cant be Stunned
+801F4FAB 0000
+
+$Refuse Room, Grotto Gulch, Santa's Worshop\Player 2\Full Super Bar
+811F4FBA 0200
+
+$Refuse Room, Grotto Gulch, Santa's Worshop\Player 2\Infinite Energy
+801F4FB3 00AA
+
+$Refuse Room, Grotto Gulch, Santa's Worshop\Player 2\No Energy
+801F4FB3 0000
+
+$Rubbage Reef\Player 1\Cant be Stunned
+801F241B 0000
+
+$Rubbage Reef\Player 1\Full Super Bar
+811F242A 0200
+
+$Rubbage Reef\Player 1\Infinite Energy
+801F2423 00AA
+
+$Rubbage Reef\Player 1\No Energy
+801F2423 0000
+
+$Rubbage Reef\Player 2\Cant be Stunned
+801F58BB 0000
+
+$Rubbage Reef\Player 2\Full Super Bar
+811F58CA 0200
+
+$Rubbage Reef\Player 2\Infinite Energy
+801F58C3 00AA
+
+$Rubbage Reef\Player 2\No Energy
+801F58C3 0000
+
+$Rubbage Room\Player 1\Cant be Stunned
+801F464B 0000
+
+$Rubbage Room\Player 1\Full Super Bar
+811F465A 0200
+
+$Rubbage Room\Player 1\Infinite Energy
+801F4653 00AA
+
+$Rubbage Room\Player 1\No Energy
+801F4653 0000
+
+$Rubbage Room\Player 2\Cant be Stunned
+801F7AEB 0000
+
+$Rubbage Room\Player 2\Full Super Bar
+811F7AFA 0200
+
+$Rubbage Room\Player 2\Infinite Energy
+801F7AF3 00AA
+
+$Rubbage Room\Player 2\No Energy
+801F7AF3 0000
+
+$Santa's Toy Factory\Player 1\Cant be Stunned
+801F2C3B 0000
+
+$Santa's Toy Factory\Player 1\Full Super Bar
+811F2C4A 0200
+
+$Santa's Toy Factory\Player 1\Infinite Energy
+801F2C43 00AA
+
+$Santa's Toy Factory\Player 1\No Energy
+801F2C43 0000
+
+$Santa's Toy Factory\Player 2\Cant be Stunned
+801F60DB 0000
+
+$Santa's Toy Factory\Player 2\Full Super Bar
+811F60EA 0200
+
+$Santa's Toy Factory\Player 2\Infinite Energy
+801F60E3 00AA
+
+$Santa's Toy Factory\Player 2\No Energy
+801F60E3 0000
+
+$Stage Modifier
+801A2B2B 00??
+00 Candy Factory
+01 Claynaveral Hangar
+02 Camp Claynaveral
+03 Outhouse
+04 Mudville Mansion
+05 Ghastly Graveyard
+06 Spooky Spire
+07 Happy Harry's Hut
+08 Freezing Fortress
+09 Refuse Room
+0A Grotto Gulch
+0B Rubbage Room
+0C Rubbage Reef
+0D Kiln's Laboratory
+0E Kiln's Hideout
+0F Fiery Furnace
+10 Research Room
+11 Clayribbean Cruise
+12 Santa's Workship
+13 Kooky Courtyard
+14 Santa's Toy Factory
+15 Boogerhenge
+16 Backwash Bay
+17 Tureen Toilet
+18 Tribal Tower
+19 Aquadome
+
+$Tribal Tower\Player 1\Cant be Stunned
+801F1BAB 0000
+
+$Tribal Tower\Player 1\Full Super Bar
+811F1BBA 0200
+
+$Tribal Tower\Player 1\Infinite Energy
+801F1BB3 00AA
+
+$Tribal Tower\Player 1\No Energy
+801F1BB3 0000
+
+$Tribal Tower\Player 2\Cant be Stunned
+801F504B 0000
+
+$Tribal Tower\Player 2\Full Super Bar
+811F505A 0200
+
+$Tribal Tower\Player 2\Infinite Energy
+801F5053 00AA
+
+$Tribal Tower\Player 2\No Energy
+801F5053 0000
+

@@ -543,7 +543,6 @@ void CCheatList::DeleteCheat(LPARAM Enhancement)
         }
         m_Cheats.erase(itr);
         g_Enhancements->UpdateCheats(m_Cheats);
-        //RecordCurrentValues();
         RefreshItems();
         break;
     }

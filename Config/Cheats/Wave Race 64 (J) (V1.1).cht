@@ -1,11 +1,33 @@
 [44995484-20A5FC5E-C:4A]
 Name=Wave Race 64 (J) (V1.1)
-Cheat0="Misses Don't Count",801D053F 0000
-Cheat1="Infinite Time Stunt Mode",801D06CE 00FF
-Cheat2="Super Speed",801D0537 0005,D0161DC1 0010,801D0537 0020
-Cheat3="99 Points",801D8E13 0063
-Cheat4="Infinite Course Out Time",801D06F3 00FF
-Cheat5="Maximum Power\Player 1",801D0537 0005
-Cheat6="Maximum Power\Player 2",801D0B5A 0005,801D0DFA 0005
-Cheat7="Only Play Glacier Coast",800E84C3 0007
-Cheat8="Always First Place",801D040F 0000
+
+$99 Points
+801D8E13 0063
+
+$Always First Place
+801D040F 0000
+
+$Infinite Course Out Time
+801D06F3 00FF
+
+$Infinite Time Stunt Mode
+801D06CE 00FF
+
+$Maximum Power\Player 1
+801D0537 0005
+
+$Maximum Power\Player 2
+801D0B5A 0005
+801D0DFA 0005
+
+$Misses Don't Count
+801D053F 0000
+
+$Only Play Glacier Coast
+800E84C3 0007
+
+$Super Speed
+801D0537 0005
+D0161DC1 0010
+801D0537 0020
+

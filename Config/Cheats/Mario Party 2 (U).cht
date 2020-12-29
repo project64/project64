@@ -1,15 +1,70 @@
 [9EA95858-AF72B618-C:45]
 Name=Mario Party 2 (U)
-Cheat0="Infinite Coins Main Menu",810F8CD2 FFFF
-Cheat1="Lower Right Char\Rolls 10",800DF5A9 000A
-Cheat2="Lower Right Char\Item On Pick-Up",800FD375 00??
-Cheat2_O=$00 Mushroom,$01 Skeleton Key,$02 Plunder Chest,$03 Bowser Bomb,$04 Dueling Glove,$05 Warp Block,$06 Golden Mushroom,$07 Boo Bell,$08 Bowser Suit,$09 Magic Lamp
-Cheat3="Upper Left Char\Rolls 10",800DF4C5 000A
-Cheat4="Upper Left Char\Item On Pick-Up",800FD2D9 00??
-Cheat4_O=$00 Mushroom,$01 Skeleton Key,$02 Plunder Chest,$03 Bowser Bomb,$04 Dueling Glove,$05 Warp Block,$06 Golden Mushroom,$07 Boo Bell,$08 Bowser Suit,$09 Magic Lamp
-Cheat5="Upper Right Char\Rolls 10",800DF511 000A
-Cheat6="Upper Right Char\Item On Pick-Up",800DF30D 00??
-Cheat6_O=$00 Mushroom,$01 Skeleton Key,$02 Plunder Chest,$03 Bowser Bomb,$04 Dueling Glove,$05 Warp Block,$06 Golden Mushroom,$07 Boo Bell,$08 Bowser Suit,$09 Magic Lamp
-Cheat7="Lower Left Char\Rolls 10",800DF55D 000A
-Cheat8="Lower Left Char\Item On Pick-Up",800FD341 00??
-Cheat8_O=$00 Mushroom,$01 Skeleton Key,$02 Plunder Chest,$03 Bowser Bomb,$04 Dueling Glove,$05 Warp Block,$06 Golden Mushroom,$07 Boo Bell,$08 Bowser Suit,$09 Magic Lamp
+
+$Infinite Coins Main Menu
+810F8CD2 FFFF
+
+$Lower Left Char\Item On Pick-Up
+800FD341 00??
+00 Mushroom
+01 Skeleton Key
+02 Plunder Chest
+03 Bowser Bomb
+04 Dueling Glove
+05 Warp Block
+06 Golden Mushroom
+07 Boo Bell
+08 Bowser Suit
+09 Magic Lamp
+
+$Lower Left Char\Rolls 10
+800DF55D 000A
+
+$Lower Right Char\Item On Pick-Up
+800FD375 00??
+00 Mushroom
+01 Skeleton Key
+02 Plunder Chest
+03 Bowser Bomb
+04 Dueling Glove
+05 Warp Block
+06 Golden Mushroom
+07 Boo Bell
+08 Bowser Suit
+09 Magic Lamp
+
+$Lower Right Char\Rolls 10
+800DF5A9 000A
+
+$Upper Left Char\Item On Pick-Up
+800FD2D9 00??
+00 Mushroom
+01 Skeleton Key
+02 Plunder Chest
+03 Bowser Bomb
+04 Dueling Glove
+05 Warp Block
+06 Golden Mushroom
+07 Boo Bell
+08 Bowser Suit
+09 Magic Lamp
+
+$Upper Left Char\Rolls 10
+800DF4C5 000A
+
+$Upper Right Char\Item On Pick-Up
+800DF30D 00??
+00 Mushroom
+01 Skeleton Key
+02 Plunder Chest
+03 Bowser Bomb
+04 Dueling Glove
+05 Warp Block
+06 Golden Mushroom
+07 Boo Bell
+08 Bowser Suit
+09 Magic Lamp
+
+$Upper Right Char\Rolls 10
+800DF511 000A
+

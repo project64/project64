@@ -1,7 +1,20 @@
 [A60ED171-3D85D06E-C:45]
 Name=Spider-Man (U)
-Cheat0="Unlocked\All Costumes",810ECD7E FFFF
-Cheat1="Unlocked\All Levels",810ECD74 0105,810ECDB0 FFFF
-Cheat2="Have All Characters In Viewer",810ECD80 FFFF,810ECD82 FFFF
-Cheat3="Infinite\Health",800F5F26 0001
-Cheat4="Infinite\Webbing",800F5F53 0001
+
+$Have All Characters In Viewer
+810ECD80 FFFF
+810ECD82 FFFF
+
+$Infinite\Health
+800F5F26 0001
+
+$Infinite\Webbing
+800F5F53 0001
+
+$Unlocked\All Costumes
+810ECD7E FFFF
+
+$Unlocked\All Levels
+810ECD74 0105
+810ECDB0 FFFF
+

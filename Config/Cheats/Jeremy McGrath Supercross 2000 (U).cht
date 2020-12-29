@@ -1,7 +1,18 @@
 [BB30B1A5-FCF712CE-C:45]
 Name=Jeremy McGrath Supercross 2000 (U)
-Cheat0="Extra Points",800711E7 00FF
-Cheat1="Enable Tabletop Freestyle",81071832 0001
-Cheat2="Enable Chasm Freestyle",81071834 0001
-Cheat3="Enable Jim Jam Freestyle",81071838 0001
-Cheat4="Enable Moon Freestyle",8107183C 0001
+
+$Enable Chasm Freestyle
+81071834 0001
+
+$Enable Jim Jam Freestyle
+81071838 0001
+
+$Enable Moon Freestyle
+8107183C 0001
+
+$Enable Tabletop Freestyle
+81071832 0001
+
+$Extra Points
+800711E7 00FF
+

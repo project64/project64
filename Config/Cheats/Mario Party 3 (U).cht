@@ -1,31 +1,112 @@
 [7C3829D9-6E8247CE-C:45]
 Name=Mario Party 3 (U)
-Cheat0="Top Left Character\Coin Options",810D1112 00??
-Cheat0_N=If you want to have full 255 Coins,1st use the 100 Option then put on 255. this will stop the numbers from changing  & spoiling the result.
-Cheat0_O=$00 0 Coins,$0A 10 Coins,$64 100 Coins,$FF 255 Coins
-Cheat1="Top Left Character\Star Options",800D1116 00??
-Cheat1_O=$00 0 Stars,$64 99 Stars
-Cheat2="Top Right Character\Coin Options",810D114A 00??
-Cheat2_O=$00 0 Coins,$0A 10 Coins,$64 100 Coins,$FF 255 Coins
-Cheat3="Top Right Character\Star Options",800D114E 00??
-Cheat3_O=$00 0 Stars,$64 99 Stars
-Cheat4="Lower Left Character\Coin Options",810D1182 00??
-Cheat4_O=$00 0 Coins,$0A 10 Coins,$64 100 Coins,$FF 255 Coins
-Cheat5="Lower Left Character\Star Options",800D1186 00??
-Cheat5_O=$00 0 Stars,$64 99 Stars
-Cheat6="Lower Right Character\Coin Options",810D11BA 00??
-Cheat6_O=$00 0 Coins,$0A 10 Coins,$64 100 Coins,$FF 255 Coins
-Cheat7="Lower Right Character\Star Options",800D11BE 00??
-Cheat7_O=$00 0 Stars,$64 99 Stars
-Cheat8="Top Left Character\Dice Always",800CDBD5 00??
-Cheat8_N=With this option you can calculate exactly how many you need to get on the position of your choice.
-Cheat8_O=$00 Rolls In Random,$01 Rolls In 1,$02 Rolls In 2,$03 Rolls In 3,$04 Rolls In 4,$05 Rolls In 5,$06 Rolls In 6,$07 Rolls In 7,$08 Rolls In 8,$09 Rolls In 9,$0A Rolls In 10
-Cheat9="Top Right Character\Dice Always",800CDC21 00??
-Cheat9_N=With this option you can calculate exactly how many you need to get on the position of your choice.
-Cheat9_O=$00 Rolls In Random,$01 Rolls In 1,$02 Rolls In 2,$03 Rolls In 3,$04 Rolls In 4,$05 Rolls In 5,$06 Rolls In 6,$07 Rolls In 7,$08 Rolls In 8,$09 Rolls In 9,$0A Rolls In 10
-Cheat10="Lower Left Character\Dice Always",800CDC6D 00??
-Cheat10_N=With this option you can calculate exactly how many you need to get on the position of your choice.
-Cheat10_O=$00 Rolls In Random,$01 Rolls In 1,$02 Rolls In 2,$03 Rolls In 3,$04 Rolls In 4,$05 Rolls In 5,$06 Rolls In 6,$07 Rolls In 7,$08 Rolls In 8,$09 Rolls In 9,$0A Rolls In 10
-Cheat11="Lower Right Character\Dice Always",800CDCB9 00??
-Cheat11_N=With this option you can calculate exactly how many you need to get on the position of your choice.
-Cheat11_O=$00 Rolls In Random,$01 Rolls In 1,$02 Rolls In 2,$03 Rolls In 3,$04 Rolls In 4,$05 Rolls In 5,$06 Rolls In 6,$07 Rolls In 7,$08 Rolls In 8,$09 Rolls In 9,$0A Rolls In 10
+
+$Lower Left Character\Coin Options
+810D1182 00??
+00 0 Coins
+0A 10 Coins
+64 100 Coins
+FF 255 Coins
+
+$Lower Left Character\Dice Always
+Note=With this option you can calculate exactly how many you need to get on the position of your choice.
+800CDC6D 00??
+00 Rolls In Random
+01 Rolls In 1
+02 Rolls In 2
+03 Rolls In 3
+04 Rolls In 4
+05 Rolls In 5
+06 Rolls In 6
+07 Rolls In 7
+08 Rolls In 8
+09 Rolls In 9
+0A Rolls In 10
+
+$Lower Left Character\Star Options
+800D1186 00??
+00 0 Stars
+64 99 Stars
+
+$Lower Right Character\Coin Options
+810D11BA 00??
+00 0 Coins
+0A 10 Coins
+64 100 Coins
+FF 255 Coins
+
+$Lower Right Character\Dice Always
+Note=With this option you can calculate exactly how many you need to get on the position of your choice.
+800CDCB9 00??
+00 Rolls In Random
+01 Rolls In 1
+02 Rolls In 2
+03 Rolls In 3
+04 Rolls In 4
+05 Rolls In 5
+06 Rolls In 6
+07 Rolls In 7
+08 Rolls In 8
+09 Rolls In 9
+0A Rolls In 10
+
+$Lower Right Character\Star Options
+800D11BE 00??
+00 0 Stars
+64 99 Stars
+
+$Top Left Character\Coin Options
+Note=If you want to have full 255 Coins,1st use the 100 Option then put on 255. this will stop the numbers from changing  & spoiling the result.
+810D1112 00??
+00 0 Coins
+0A 10 Coins
+64 100 Coins
+FF 255 Coins
+
+$Top Left Character\Dice Always
+Note=With this option you can calculate exactly how many you need to get on the position of your choice.
+800CDBD5 00??
+00 Rolls In Random
+01 Rolls In 1
+02 Rolls In 2
+03 Rolls In 3
+04 Rolls In 4
+05 Rolls In 5
+06 Rolls In 6
+07 Rolls In 7
+08 Rolls In 8
+09 Rolls In 9
+0A Rolls In 10
+
+$Top Left Character\Star Options
+800D1116 00??
+00 0 Stars
+64 99 Stars
+
+$Top Right Character\Coin Options
+810D114A 00??
+00 0 Coins
+0A 10 Coins
+64 100 Coins
+FF 255 Coins
+
+$Top Right Character\Dice Always
+Note=With this option you can calculate exactly how many you need to get on the position of your choice.
+800CDC21 00??
+00 Rolls In Random
+01 Rolls In 1
+02 Rolls In 2
+03 Rolls In 3
+04 Rolls In 4
+05 Rolls In 5
+06 Rolls In 6
+07 Rolls In 7
+08 Rolls In 8
+09 Rolls In 9
+0A Rolls In 10
+
+$Top Right Character\Star Options
+800D114E 00??
+00 0 Stars
+64 99 Stars
+

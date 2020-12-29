@@ -1,8 +1,19 @@
 [CEDCDE1E-513A0502-C:50]
 Name=Bust-A-Move 2 - Arcade Edition (E)
-Cheat0="Infinite Credit",80120171 00FF
-Cheat1="Bubble Pointer Puzzle",801807CD 0001
-Cheat2="Bubble Pointer 1P V CPU",8017E1FD 0001
-Cheat3="Access Another World",8116D100 0001
-Cheat3_N=This is for Puzzle Mode
-Cheat4="Max Points Aid",81170E4A 25C2
+
+$Access Another World
+Note=This is for Puzzle Mode
+8116D100 0001
+
+$Bubble Pointer 1P V CPU
+8017E1FD 0001
+
+$Bubble Pointer Puzzle
+801807CD 0001
+
+$Infinite Credit
+80120171 00FF
+
+$Max Points Aid
+81170E4A 25C2
+

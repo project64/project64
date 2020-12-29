@@ -1,32 +1,151 @@
 [54310E7D-6B5430D8-C:50]
 Name=Wipeout 64 (E)
-Cheat0="Freeze Checkpoint Timer",810CE1D2 BCCC
-Cheat1="Always 1st\Player 1",810A9248 0001
-Cheat2="Weapon Select\Feisar 1",811BC4F6 ????
-Cheat2_O=$0000 No Weapon,$0101 3 Missiles,$0202 Homing Missile,$0303 Mines,$0505 Electrical Impulse,$0606 Energy Up,$0707 Auto Pilot,$0808 Shield,$0909 Speed Boost,$0C0C Quake Disrupter,$0D0D Single Missile,$0E0E Big Mine,$0F0F Feisar Special,$1010 Auricom Special,$1111 Direx Special,$1212 Ag Systems Special,$1313 Piranha Special
-Cheat3="Weapon Select\AG Systems",811BC1DE ????
-Cheat3_O=$0000 No Weapon,$0101 3 Missiles,$0202 Homing Missile,$0303 Mines,$0505 Electrical Impulse,$0606 Energy Up,$0707 Auto Pilot,$0808 Shield,$0909 Speed Boost,$0C0C Quake Disrupter,$0D0D Single Missile,$0E0E Big Mine,$0F0F Feisar Special,$1010 Auricom Special,$1111 Direx Special,$1212 Ag Systems Special,$1313 Piranha Special
-Cheat4="Weapon Select\Auricom",811BCE3E ????
-Cheat4_O=$0000 No Weapon,$0101 3 Missiles,$0202 Homing Missile,$0303 Mines,$0505 Electrical Impulse,$0606 Energy Up,$0707 Auto Pilot,$0808 Shield,$0909 Speed Boost,$0C0C Quake Disrupter,$0D0D Single Missile,$0E0E Big Mine,$0F0F Feisar Special,$1010 Auricom Special,$1111 Direx Special,$1212 Ag Systems Special,$1313 Piranha Special
-Cheat5="Weapon Select\Direx",811BC80E ????
-Cheat5_O=$0000 No Weapon,$0101 3 Missiles,$0202 Homing Missile,$0303 Mines,$0505 Electrical Impulse,$0606 Energy Up,$0707 Auto Pilot,$0808 Shield,$0909 Speed Boost,$0C0C Quake Disrupter,$0D0D Single Missile,$0E0E Big Mine,$0F0F Feisar Special,$1010 Auricom Special,$1111 Direx Special,$1212 Ag Systems Special,$1313 Piranha Special
-Cheat6="Weapon Select\Piranah",811BC80E ????
-Cheat6_O=$0000 No Weapon,$0101 3 Missiles,$0202 Homing Missile,$0303 Mines,$0505 Electrical Impulse,$0606 Energy Up,$0707 Auto Pilot,$0808 Shield,$0909 Speed Boost,$0C0C Quake Disrupter,$0D0D Single Missile,$0E0E Big Mine,$0F0F Feisar Special,$1010 Auricom Special,$1111 Direx Special,$1212 Ag Systems Special,$1313 Piranha Special
-Cheat7="Infinite Auto Pilot\Feisar 1\Player 1",811BC4FE 005B
-Cheat7_N=Use with Weapon Select, Press B Button to never run out. Unselect to run out.
-Cheat8="Infinite Auto Pilot\AG Systems\Player 1",801BCE47 005B
-Cheat8_N=Use with Weapon Select, Press B Button to never run out. Unselect to run out.
-Cheat9="Infinite Auto Pilot\Direx\Player 1",801BC817 005B
-Cheat9_N=Use with Weapon Select, Press B Button to never run out. Unselect to run out.
-Cheat10="Infinite Auto Pilot\Piranah\Player 1",801BC817 005B
-Cheat10_N=Use with Weapon Select, Press B Button to never run out. Unselect to run out.
-Cheat11="Infinite Auto Pilot\Auricom\Player 1",801BC1E7 005B
-Cheat11_N=Use with Weapon Select, Press B Button to never run out. Unselect to run out.
-Cheat12="[In-Game Cheat Unlock]\[Ultimate Unlock All]",80091255 0001,8009125C 0020
-Cheat12_N=This Unlocks All Levels, Tracks, Velocitar and Super Combo, Piranha 2 Ship, Cyclone Weapons Power Up and all 28 Gold Awards unlocked
-Cheat13="[In-Game Cheat Unlock]\Infinite Ammo\Player 1",80091254 0001
-Cheat14="[In-Game Cheat Unlock]\Infinite Shield Energy\Player 1",80091256 0001
-Cheat15="[In-Game Cheat Unlock]\Cyclone Weapon",800924C4 00??
-Cheat15_O=$00 Off,$01 On
-Cheat16="[In-Game Cheat Unlock]\Infinite Ammo\Player 2",80092970 0001
-Cheat17="[In-Game Cheat Unlock]\Infinite Shield Energy\Player 2",80092972 0001
+
+$[In-Game Cheat Unlock]\[Ultimate Unlock All]
+Note=This Unlocks All Levels, Tracks, Velocitar and Super Combo, Piranha 2 Ship, Cyclone Weapons Power Up and all 28 Gold Awards unlocked
+80091255 0001
+8009125C 0020
+
+$[In-Game Cheat Unlock]\Cyclone Weapon
+800924C4 00??
+00 Off
+01 On
+
+$[In-Game Cheat Unlock]\Infinite Ammo\Player 1
+80091254 0001
+
+$[In-Game Cheat Unlock]\Infinite Ammo\Player 2
+80092970 0001
+
+$[In-Game Cheat Unlock]\Infinite Shield Energy\Player 1
+80091256 0001
+
+$[In-Game Cheat Unlock]\Infinite Shield Energy\Player 2
+80092972 0001
+
+$Always 1st\Player 1
+810A9248 0001
+
+$Freeze Checkpoint Timer
+810CE1D2 BCCC
+
+$Infinite Auto Pilot\AG Systems\Player 1
+Note=Use with Weapon Select, Press B Button to never run out. Unselect to run out.
+801BCE47 005B
+
+$Infinite Auto Pilot\Auricom\Player 1
+Note=Use with Weapon Select, Press B Button to never run out. Unselect to run out.
+801BC1E7 005B
+
+$Infinite Auto Pilot\Direx\Player 1
+Note=Use with Weapon Select, Press B Button to never run out. Unselect to run out.
+801BC817 005B
+
+$Infinite Auto Pilot\Feisar 1\Player 1
+Note=Use with Weapon Select, Press B Button to never run out. Unselect to run out.
+811BC4FE 005B
+
+$Infinite Auto Pilot\Piranah\Player 1
+Note=Use with Weapon Select, Press B Button to never run out. Unselect to run out.
+801BC817 005B
+
+$Weapon Select\AG Systems
+811BC1DE ????
+0000 No Weapon
+0101 3 Missiles
+0202 Homing Missile
+0303 Mines
+0505 Electrical Impulse
+0606 Energy Up
+0707 Auto Pilot
+0808 Shield
+0909 Speed Boost
+0C0C Quake Disrupter
+0D0D Single Missile
+0E0E Big Mine
+0F0F Feisar Special
+1010 Auricom Special
+1111 Direx Special
+1212 Ag Systems Special
+1313 Piranha Special
+
+$Weapon Select\Auricom
+811BCE3E ????
+0000 No Weapon
+0101 3 Missiles
+0202 Homing Missile
+0303 Mines
+0505 Electrical Impulse
+0606 Energy Up
+0707 Auto Pilot
+0808 Shield
+0909 Speed Boost
+0C0C Quake Disrupter
+0D0D Single Missile
+0E0E Big Mine
+0F0F Feisar Special
+1010 Auricom Special
+1111 Direx Special
+1212 Ag Systems Special
+1313 Piranha Special
+
+$Weapon Select\Direx
+811BC80E ????
+0000 No Weapon
+0101 3 Missiles
+0202 Homing Missile
+0303 Mines
+0505 Electrical Impulse
+0606 Energy Up
+0707 Auto Pilot
+0808 Shield
+0909 Speed Boost
+0C0C Quake Disrupter
+0D0D Single Missile
+0E0E Big Mine
+0F0F Feisar Special
+1010 Auricom Special
+1111 Direx Special
+1212 Ag Systems Special
+1313 Piranha Special
+
+$Weapon Select\Feisar 1
+811BC4F6 ????
+0000 No Weapon
+0101 3 Missiles
+0202 Homing Missile
+0303 Mines
+0505 Electrical Impulse
+0606 Energy Up
+0707 Auto Pilot
+0808 Shield
+0909 Speed Boost
+0C0C Quake Disrupter
+0D0D Single Missile
+0E0E Big Mine
+0F0F Feisar Special
+1010 Auricom Special
+1111 Direx Special
+1212 Ag Systems Special
+1313 Piranha Special
+
+$Weapon Select\Piranah
+811BC80E ????
+0000 No Weapon
+0101 3 Missiles
+0202 Homing Missile
+0303 Mines
+0505 Electrical Impulse
+0606 Energy Up
+0707 Auto Pilot
+0808 Shield
+0909 Speed Boost
+0C0C Quake Disrupter
+0D0D Single Missile
+0E0E Big Mine
+0F0F Feisar Special
+1010 Auricom Special
+1111 Direx Special
+1212 Ag Systems Special
+1313 Piranha Special
+

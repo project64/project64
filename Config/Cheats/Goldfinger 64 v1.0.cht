@@ -1,19 +1,59 @@
 [B2242748-FFBD61DA-C:45]
 Name=Goldfinger 64 v1.0
-Cheat0="Infinite\Ammo (All Levels)",80079E3B 0001
-Cheat1="Infinite\Health (All levels)",8100C0F4 0801,8100C0F6 8090,8100C0F8 AFA4,8100C0FA 0000,81060240 0004,81060242 7600,81060244 3C02,81060246 8008,81060248 8C42,8106024A 9EE0,8106024C 3401,8106024E 3F80,81060250 A441,81060252 00DC,81060254 0800,81060256 303F
-Cheat2="Have All\Objectives Complete",80036FD3 0001
-Cheat3="Have All\64 Characters In Multi Player",8002B197 0040
-Cheat3_N=Enables all Characters selectable to play as in Multi-Player
-Cheat4="(Everything Unlocked)\Save File 1",50002902 0000,810699EE ????
-Cheat4_N=This Unlocks All Levels and Cheat Menu Items
-Cheat4_O=$0000 Clear Save Slot,$FFFF Unlocked
-Cheat5="(Everything Unlocked)\Save File 2",50002902 0000,8106992E ????
-Cheat5_N=This Unlocks All Levels and Cheat Menu Items
-Cheat5_O=$0000 Clear Save Slot,$FFFF Unlocked
-Cheat6="(Everything Unlocked)\Save File 3",50002902 0000,81069A4E ????
-Cheat6_N=This Unlocks All Levels and Cheat Menu Items
-Cheat6_O=$0000 Clear Save Slot,$FFFF Unlocked
-Cheat7="(Everything Unlocked)\Save File 4",50002902 0000,8106998E ????
-Cheat7_N=This Unlocks All Levels and Cheat Menu Items
-Cheat7_O=$0000 Clear Save Slot,$FFFF Unlocked
+
+$(Everything Unlocked)\Save File 1
+Note=This Unlocks All Levels and Cheat Menu Items
+50002902 0000
+810699EE ????
+0000 Clear Save Slot
+FFFF Unlocked
+
+$(Everything Unlocked)\Save File 2
+Note=This Unlocks All Levels and Cheat Menu Items
+50002902 0000
+8106992E ????
+0000 Clear Save Slot
+FFFF Unlocked
+
+$(Everything Unlocked)\Save File 3
+Note=This Unlocks All Levels and Cheat Menu Items
+50002902 0000
+81069A4E ????
+0000 Clear Save Slot
+FFFF Unlocked
+
+$(Everything Unlocked)\Save File 4
+Note=This Unlocks All Levels and Cheat Menu Items
+50002902 0000
+8106998E ????
+0000 Clear Save Slot
+FFFF Unlocked
+
+$Have All\64 Characters In Multi Player
+Note=Enables all Characters selectable to play as in Multi-Player
+8002B197 0040
+
+$Have All\Objectives Complete
+80036FD3 0001
+
+$Infinite\Ammo (All Levels)
+80079E3B 0001
+
+$Infinite\Health (All levels)
+8100C0F4 0801
+8100C0F6 8090
+8100C0F8 AFA4
+8100C0FA 0000
+81060240 0004
+81060242 7600
+81060244 3C02
+81060246 8008
+81060248 8C42
+8106024A 9EE0
+8106024C 3401
+8106024E 3F80
+81060250 A441
+81060252 00DC
+81060254 0800
+81060256 303F
+

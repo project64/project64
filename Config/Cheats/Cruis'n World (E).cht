@@ -1,30 +1,75 @@
 [83F3931E-CB72223D-C:50]
 Name=Cruis'n World (E)
-Cheat0="Infinite Time",813D0C1C 4296
-Cheat1="Access\Florida & Moon Tracks",813BF2A4 0101
-Cheat1_N=This is for Championship Mode Only
-Cheat2="Max Power Level,& Paint Job / Two Tone",813BEDA2 0512
-Cheat3="Access\All Cars & Upgrades",813BED58 1FFF,803BED22 0005
-Cheat4="Unlocked Pro & Master difficulty level",803BEDD5 0003
-Cheat5="Dancing Girl Always On",803BED53 0001,803C20AF 0054
-Cheat6="Cannot Spin Out",803CDC73 0000
-Cheat7="Disable\Left Lane Traffic",8033C83B 0001
-Cheat7_N=This is for Championship Mode Only
-Cheat8="Disable\Right Lane Traffic",8033C83F 0001
-Cheat8_N=This is for Championship Mode Only
-Cheat9="Max\Trick points",803BF21F 0063
-Cheat10="Max\Championship Points",813BFB4E 270F
-Cheat11="Always 1st\Player 1",803CDF03 0001
-Cheat12="Unlimited Nitro\Player 1",803C74C7 0003
-Cheat12_N=Press C-Button Down For Boost, This Code is for Championship Mode Only
-Cheat13="Stop Elapsed Time\Player 1",813C7558 3C80
-Cheat14="Always 1st\Player 2",803CE3DB 0001
-Cheat15="Unlimited Nitro\Player 2",803C7703 0003
-Cheat15_N=Press C-Button Down For Boost, This Code is for Championship Mode Only
-Cheat16="Stop Elapsed Time\Player 2",813C7794 3C80
-Cheat17="Always 1st\Player 3",803CDA2B 0001
-Cheat18="Unlimited Nitro\Player 3",803C704F 0064
-Cheat18_N=Press C-Button Down For Boost, This Code is for Championship Mode Only
-Cheat19="Always 1st\Player 4",803CD553 0001
-Cheat20="Unlimited Nitro Player 4",803C728B 0003
-Cheat20_N=Press C-Button Down For Boost, This Code is for Championship Mode Only
+
+$Access\All Cars & Upgrades
+813BED58 1FFF
+803BED22 0005
+
+$Access\Florida & Moon Tracks
+Note=This is for Championship Mode Only
+813BF2A4 0101
+
+$Always 1st\Player 1
+803CDF03 0001
+
+$Always 1st\Player 2
+803CE3DB 0001
+
+$Always 1st\Player 3
+803CDA2B 0001
+
+$Always 1st\Player 4
+803CD553 0001
+
+$Cannot Spin Out
+803CDC73 0000
+
+$Dancing Girl Always On
+803BED53 0001
+803C20AF 0054
+
+$Disable\Left Lane Traffic
+Note=This is for Championship Mode Only
+8033C83B 0001
+
+$Disable\Right Lane Traffic
+Note=This is for Championship Mode Only
+8033C83F 0001
+
+$Infinite Time
+813D0C1C 4296
+
+$Max Power Level,& Paint Job / Two Tone
+813BEDA2 0512
+
+$Max\Championship Points
+813BFB4E 270F
+
+$Max\Trick points
+803BF21F 0063
+
+$Stop Elapsed Time\Player 1
+813C7558 3C80
+
+$Stop Elapsed Time\Player 2
+813C7794 3C80
+
+$Unlimited Nitro Player 4
+Note=Press C-Button Down For Boost, This Code is for Championship Mode Only
+803C728B 0003
+
+$Unlimited Nitro\Player 1
+Note=Press C-Button Down For Boost, This Code is for Championship Mode Only
+803C74C7 0003
+
+$Unlimited Nitro\Player 2
+Note=Press C-Button Down For Boost, This Code is for Championship Mode Only
+803C7703 0003
+
+$Unlimited Nitro\Player 3
+Note=Press C-Button Down For Boost, This Code is for Championship Mode Only
+803C704F 0064
+
+$Unlocked Pro & Master difficulty level
+803BEDD5 0003
+

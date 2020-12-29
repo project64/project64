@@ -1,37 +1,96 @@
 [E9219533-13FBAFBD-C:45]
 Name=Ready 2 Rumble Boxing Round 2 (U)
-Cheat0="Infinite\Health\Player 1",810FF6B6 0064
-Cheat0_N=Do not use this with No Health
-Cheat1="No Health\Player 1",810FF6B6 0000
-Cheat1_N=Do not use this with Infinite Health
-Cheat2="Infinite\Stamina\Player 1",810FF6BA 0064
-Cheat2_N=Do not use this with No Stamina
-Cheat3="No Stamina\Player 1",810FF6BA 0000
-Cheat3_N=Do not use this with Infinite Stamina
-Cheat4="Max RUMBLE\Player 1",810FF6C2 0090
-Cheat4_N=Do not use this with Never RUMBLE
-Cheat5="Never RUMBLE\Player 1",810FF6C2 0000
-Cheat5_N=Do not use this with Max RUMBLE
-Cheat6="Infinite\Health\Player 2",81100316 0064
-Cheat6_N=Do not use this with No Health
-Cheat7="No Health\Player 2",81100316 0000
-Cheat7_N=Do not use this with Infinite Health
-Cheat8="Infinite\Stamina\Player 2",8110031A 0064
-Cheat8_N=Do not use this with No Stamina
-Cheat9="No Stamina\Player 2",8110031A 0000
-Cheat9_N=Do not use this with Infinite Stamina
-Cheat10="Max RUMBLE\Player 2",81100322 0090
-Cheat10_N=Do not use this with Never RUMBLE
-Cheat11="Never RUMBLE\Player 2",81100322 0000
-Cheat11_N=Do not use this with Max RUMBLE
-Cheat12="Infinite\Time",810FE352 0E10
-Cheat13="Championship Mode\Top Rank",810F81BA 000A
-Cheat14="Championship Mode\Max Money",810F81C8 7FFF,810F81CA FFFF
-Cheat15="Championship Mode\Infinite Money",810F81CA FFFF
-Cheat16="Championship Mode\Max Strength",810F81CC 447A,810F81CE 0000
-Cheat17="Championship Mode\Max Stamina",810F81D0 447A,810F81D2 0000
-Cheat18="Championship Mode\Max Endurance",810F81D4 447A,810F81D6 0000
-Cheat19="Championship Mode\Max Dexterity",810F81D8 447A,810F81DA 0000
-Cheat20="Championship Mode\Max Experience",810F81DC 447A,810F81DE 0000
-Cheat21="Enable Extra Characters",80101E6F 0003,80101E73 0003,80101E77 0003,80101E7B 0003,80101E7F 0003,80101E83 0003,80101E87 0003
-Cheat22="Win 1 Fight to Complete Arcade Mode",80101F0B 000B
+
+$Championship Mode\Infinite Money
+810F81CA FFFF
+
+$Championship Mode\Max Dexterity
+810F81D8 447A
+810F81DA 0000
+
+$Championship Mode\Max Endurance
+810F81D4 447A
+810F81D6 0000
+
+$Championship Mode\Max Experience
+810F81DC 447A
+810F81DE 0000
+
+$Championship Mode\Max Money
+810F81C8 7FFF
+810F81CA FFFF
+
+$Championship Mode\Max Stamina
+810F81D0 447A
+810F81D2 0000
+
+$Championship Mode\Max Strength
+810F81CC 447A
+810F81CE 0000
+
+$Championship Mode\Top Rank
+810F81BA 000A
+
+$Enable Extra Characters
+80101E6F 0003
+80101E73 0003
+80101E77 0003
+80101E7B 0003
+80101E7F 0003
+80101E83 0003
+80101E87 0003
+
+$Infinite\Health\Player 1
+Note=Do not use this with No Health
+810FF6B6 0064
+
+$Infinite\Health\Player 2
+Note=Do not use this with No Health
+81100316 0064
+
+$Infinite\Stamina\Player 1
+Note=Do not use this with No Stamina
+810FF6BA 0064
+
+$Infinite\Stamina\Player 2
+Note=Do not use this with No Stamina
+8110031A 0064
+
+$Infinite\Time
+810FE352 0E10
+
+$Max RUMBLE\Player 1
+Note=Do not use this with Never RUMBLE
+810FF6C2 0090
+
+$Max RUMBLE\Player 2
+Note=Do not use this with Never RUMBLE
+81100322 0090
+
+$Never RUMBLE\Player 1
+Note=Do not use this with Max RUMBLE
+810FF6C2 0000
+
+$Never RUMBLE\Player 2
+Note=Do not use this with Max RUMBLE
+81100322 0000
+
+$No Health\Player 1
+Note=Do not use this with Infinite Health
+810FF6B6 0000
+
+$No Health\Player 2
+Note=Do not use this with Infinite Health
+81100316 0000
+
+$No Stamina\Player 1
+Note=Do not use this with Infinite Stamina
+810FF6BA 0000
+
+$No Stamina\Player 2
+Note=Do not use this with Infinite Stamina
+8110031A 0000
+
+$Win 1 Fight to Complete Arcade Mode
+80101F0B 000B
+

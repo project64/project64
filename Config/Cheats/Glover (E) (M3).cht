@@ -1,28 +1,84 @@
 [F5237301-99E3EE93-C:50]
 Name=Glover (E) (M3)
-Cheat0="Infinite\Energy",8029129F 0003
-Cheat1="Infinite\99 Lives",8029129B 0063
-Cheat2="Have Spell\Enlarge Spell",812912B4 03E8
-Cheat3="1000 Garibs",80291297 0064
-Cheat4="Have Spell\Speed Up Spell",812912B8 03E8
-Cheat5="Have Spell\Death Spell",812912A8 03E8
-Cheat6="Have Spell\Sticky Fingers Spell",812912B2 03E8
-Cheat7="All levels unlocked",80298CFD 00A0
-Cheat7_N=At the main menu, where it says:  Start, practice, options, &  time trial,  hold  D-pad up,   then the glove,  playing-with-the-ball icon, will  jump down into the lower left corner of the screen, then press the A button, and a level select screen will be available with all ordinary and boss levels, etc. available
-Cheat8="Cheat Modifier\1",80298CFE 00??
-Cheat8_O=$01 Low gravity,$02 Big ball,$03 Both of the above
-Cheat9="Cheat Modifier\2",80298CFF 00??
-Cheat9_O=$01 Locate caribs,$02 Call ball,$08 Unlimited lives,$10 Power ball,$20 Control ball,$40 Infinite energy,$7B All of the above
-Cheat10="[100% Complete]\Save Slot 1",801EBA37 0007,50000801 0000,801EBA28 00FF
-Cheat10_N=All green crystals collected and Bonuslevels solved.
-Cheat11="[100% Complete]\Save Slot 2",801EBA53 0007,50000801 0000,801EBA44 00FF
-Cheat11_N=All green crystals collected and Bonuslevels solved.
-Cheat12="[100% Complete]\Save Slot 3",801EBA6F 0007,50000801 0000,801EBA60 00FF
-Cheat12_N=All green crystals collected and Bonuslevels solved.
-Cheat13="[100% Complete]\Save Slot 4",801EBA8B 0007,50000801 0000,801EBA7C 00FF
-Cheat13_N=All green crystals collected and Bonuslevels solved.
-Cheat14="[100% Complete]\Save Slot 5",801EBAA7 0007,50000801 0000,801EBA98 00FF
-Cheat14_N=All green crystals collected and Bonuslevels solved.
-Cheat15="[100% Complete]\Save Slot 6",801EBAC3 0007,50000801 0000,801EBAB4 00FF
-Cheat15_N=All green crystals collected and Bonuslevels solved.
-Cheat16="Super Jump",D02AFA14 0080,801EE771 0013
+
+$1000 Garibs
+80291297 0064
+
+$[100% Complete]\Save Slot 1
+Note=All green crystals collected and Bonuslevels solved.
+801EBA37 0007
+50000801 0000
+801EBA28 00FF
+
+$[100% Complete]\Save Slot 2
+Note=All green crystals collected and Bonuslevels solved.
+801EBA53 0007
+50000801 0000
+801EBA44 00FF
+
+$[100% Complete]\Save Slot 3
+Note=All green crystals collected and Bonuslevels solved.
+801EBA6F 0007
+50000801 0000
+801EBA60 00FF
+
+$[100% Complete]\Save Slot 4
+Note=All green crystals collected and Bonuslevels solved.
+801EBA8B 0007
+50000801 0000
+801EBA7C 00FF
+
+$[100% Complete]\Save Slot 5
+Note=All green crystals collected and Bonuslevels solved.
+801EBAA7 0007
+50000801 0000
+801EBA98 00FF
+
+$[100% Complete]\Save Slot 6
+Note=All green crystals collected and Bonuslevels solved.
+801EBAC3 0007
+50000801 0000
+801EBAB4 00FF
+
+$All levels unlocked
+Note=At the main menu, where it says:  Start, practice, options, &  time trial,  hold  D-pad up,   then the glove,  playing-with-the-ball icon, will  jump down into the lower left corner of the screen, then press the A button, and a level select screen will be available with all ordinary and boss levels, etc. available
+80298CFD 00A0
+
+$Cheat Modifier\1
+80298CFE 00??
+01 Low gravity
+02 Big ball
+03 Both of the above
+
+$Cheat Modifier\2
+80298CFF 00??
+01 Locate caribs
+02 Call ball
+08 Unlimited lives
+10 Power ball
+20 Control ball
+40 Infinite energy
+7B All of the above
+
+$Have Spell\Death Spell
+812912A8 03E8
+
+$Have Spell\Enlarge Spell
+812912B4 03E8
+
+$Have Spell\Speed Up Spell
+812912B8 03E8
+
+$Have Spell\Sticky Fingers Spell
+812912B2 03E8
+
+$Infinite\99 Lives
+8029129B 0063
+
+$Infinite\Energy
+8029129F 0003
+
+$Super Jump
+D02AFA14 0080
+801EE771 0013
+

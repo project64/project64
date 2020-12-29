@@ -1,27 +1,82 @@
 [D715CC70-271CF5D6-C:50]
 Name=War Gods (E)
-Cheat0="Infinite Time",8033F6FB 0064
-Cheat1="Enable Cheat Menu",80336973 0001
-Cheat2="Skill Select\Player 2",80335C20 00??
-Cheat2_N=Max Skill makes the player more Skillful while easier to hurt where as Weak Skill is Non Skillful yet harder to harm.
-Cheat2_O=$80 Max Skill,$00 Weak Skill
-Cheat3="Skill Select\Player 1",80335C1D 00??
-Cheat3_N=Max Skill makes the player more Skillful while easier to hurt where as Weak Skill is Non Skillful yet harder to harm.
-Cheat3_O=$80 Max Skill,$00 Weak Skill
-Cheat4="Difficulty Select",80336953 00??
-Cheat4_O=$00 Very Easy,$01 Easy,$02 Medium,$03 Hard,$04 Very hard
-Cheat5="Infinite Max Continues",80336963 0005
-Cheat6="Easy Fatality Select",8033584F 00??
-Cheat6_O=$00 Always Off,$01 Always On
-Cheat7="Press D-Pad\Right to Play As Exor",D033C263 0008,800EAF87 000B
-Cheat7_N=Press D-Pad Right at the character Select screen to Replace Maximus with Exor. Do not use with the Play As Cheat
-Cheat8="Press D-Pad\Left to Play As Grox",D033C263 0004,800EAF87 000A
-Cheat8_N=Press D-Pad Left at the character Select screen to Replace Maximus with Grox. Do not use with the Play As Cheat
-Cheat9="Music Select",80336954 00??
-Cheat9_O=$00 Off,$01 On
-Cheat10="Level Select",80335C27 00??
-Cheat10_O=$00 Off,$01 Pagan,$02 Anubis,$03 Warhead,$04 Ahau Kin,$05 Voodoo,$06 Kabuki
-Cheat11="Fatalities Select",8033695C 00??
-Cheat11_O=$00 Off,$01 On
-Cheat12="Play As",800EAF87 00??
-Cheat12_O=$00 Warhead,$01 Tak,$02 Voodoo,$03 Pagan,$04 Kabuki Jo,$05 Vallah,$06 Ahau Kin,$07 Anubis,$08 CY-5,$09 Maximus,$0A Grox,$0B Exor
+
+$Difficulty Select
+80336953 00??
+00 Very Easy
+01 Easy
+02 Medium
+03 Hard
+04 Very hard
+
+$Easy Fatality Select
+8033584F 00??
+00 Always Off
+01 Always On
+
+$Enable Cheat Menu
+80336973 0001
+
+$Fatalities Select
+8033695C 00??
+00 Off
+01 On
+
+$Infinite Max Continues
+80336963 0005
+
+$Infinite Time
+8033F6FB 0064
+
+$Level Select
+80335C27 00??
+00 Off
+01 Pagan
+02 Anubis
+03 Warhead
+04 Ahau Kin
+05 Voodoo
+06 Kabuki
+
+$Music Select
+80336954 00??
+00 Off
+01 On
+
+$Play As
+800EAF87 00??
+00 Warhead
+01 Tak
+02 Voodoo
+03 Pagan
+04 Kabuki Jo
+05 Vallah
+06 Ahau Kin
+07 Anubis
+08 CY-5
+09 Maximus
+0A Grox
+0B Exor
+
+$Press D-Pad\Left to Play As Grox
+Note=Press D-Pad Left at the character Select screen to Replace Maximus with Grox. Do not use with the Play As Cheat
+D033C263 0004
+800EAF87 000A
+
+$Press D-Pad\Right to Play As Exor
+Note=Press D-Pad Right at the character Select screen to Replace Maximus with Exor. Do not use with the Play As Cheat
+D033C263 0008
+800EAF87 000B
+
+$Skill Select\Player 1
+Note=Max Skill makes the player more Skillful while easier to hurt where as Weak Skill is Non Skillful yet harder to harm.
+80335C1D 00??
+80 Max Skill
+00 Weak Skill
+
+$Skill Select\Player 2
+Note=Max Skill makes the player more Skillful while easier to hurt where as Weak Skill is Non Skillful yet harder to harm.
+80335C20 00??
+80 Max Skill
+00 Weak Skill
+

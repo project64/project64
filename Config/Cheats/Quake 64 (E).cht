@@ -1,23 +1,71 @@
 [16931D74-65DC6D34-C:50]
 Name=Quake 64 (E)
-Cheat0="Infinite\Ammo",50000402 0000,8016426D 0064,50000402 0000,8116426C 03E7
-Cheat1="Have\All Weapons",8016422B 007F
-Cheat2="Debug Mode",8006C4E3 0001
-Cheat3="Have\All Keys",80164229 000F
-Cheat4="Infinite\Armor",81164184 42C8
-Cheat5="Infinite\Health",81164170 42C8
-Cheat6="Infinite\Bio Suit",811641C0 42C8
-Cheat7="Have\Quad Damage",811641BC 42C8
-Cheat8="Have\Ring of Shadows",81164228 ????
-Cheat8_O=$42C8 On,$0000 Off
-Cheat9="Rapid Fire",D00CB220 0020,801641AD 0001
-Cheat10="Multi\Infinite Health\Player 1",81166AD0 42C8
-Cheat11="Multi\Infinite Armor\Player 1",81166AE4 42C8
-Cheat12="Multi\Infinite Bio Suit\Player 1",81166B20 42C8
-Cheat13="Multi\Have All Weapons\Player 1",80166B8B 007F
-Cheat14="Multi\Infinite Ammo\Player 1",50000402 0000,81166BCC 03E7
-Cheat15="Multi\Infinite Health\Player 2",81166DA0 42C8
-Cheat16="Multi\Infinite Armor\Player 2",81166DB4 42C8
-Cheat17="Multi\Infinite Bio Suit\Player 2",81166DF0 42C8
-Cheat18="Multi\Have All Weapons\Player 2",80166E5B 007F
-Cheat19="Multi\Infinite Ammo\Player 2",50000402 0000,81166E9C 03E7
+
+$Debug Mode
+8006C4E3 0001
+
+$Have\All Keys
+80164229 000F
+
+$Have\All Weapons
+8016422B 007F
+
+$Have\Quad Damage
+811641BC 42C8
+
+$Have\Ring of Shadows
+81164228 ????
+42C8 On
+0000 Off
+
+$Infinite\Ammo
+50000402 0000
+8016426D 0064
+50000402 0000
+8116426C 03E7
+
+$Infinite\Armor
+81164184 42C8
+
+$Infinite\Bio Suit
+811641C0 42C8
+
+$Infinite\Health
+81164170 42C8
+
+$Multi\Have All Weapons\Player 1
+80166B8B 007F
+
+$Multi\Have All Weapons\Player 2
+80166E5B 007F
+
+$Multi\Infinite Ammo\Player 1
+50000402 0000
+81166BCC 03E7
+
+$Multi\Infinite Ammo\Player 2
+50000402 0000
+81166E9C 03E7
+
+$Multi\Infinite Armor\Player 1
+81166AE4 42C8
+
+$Multi\Infinite Armor\Player 2
+81166DB4 42C8
+
+$Multi\Infinite Bio Suit\Player 1
+81166B20 42C8
+
+$Multi\Infinite Bio Suit\Player 2
+81166DF0 42C8
+
+$Multi\Infinite Health\Player 1
+81166AD0 42C8
+
+$Multi\Infinite Health\Player 2
+81166DA0 42C8
+
+$Rapid Fire
+D00CB220 0020
+801641AD 0001
+

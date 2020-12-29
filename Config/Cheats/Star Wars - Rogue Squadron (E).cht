@@ -1,18 +1,51 @@
 [7EE0E8BB-49E411AA-C:50]
 Name=Star Wars - Rogue Squadron (E) (M3) (V1.0)
-Cheat0="Infinite Lives",81130B38 01C0
-Cheat0_N=This Also accesses advanced Shields & Radar
-Cheat1="Invincibility",80130B2D 00FF
-Cheat1_N=This Also Accesses All Levels And Makes All Crafts Available
-Cheat2="Infinite Secondary Weapon",8010CA02 0063,80130B23 00??
-Cheat2_O=$01 Ion Cannon,$02 Missiles,$03 Seeker Missiles,$04 Bombs,$05 Proton Bombs,$07 Cluster Missiles,$08 Seeker Torpedos,$09 Seeker Cluster Missiles
-Cheat3="Completion Time 0:00",80130B85 3FCB
-Cheat4="Enemies Destroyed 756",81130B64 03E7
-Cheat5="Accuracy 100%",80130B5F 0063
-Cheat6="Friendly Saves 756",80130B66 03E7
-Cheat7="Bonus Collected 756",80130B67 03E7
-Cheat8="Always Pass Mission",80130AF4 0001
-Cheat9="Accesses\All Levels,Ships & Advanced Weapons",80130B3B 00FF
-Cheat10="Access\69 Buick Electra",81130B3A 000E
-Cheat10_N=Replaces The V-Wing
-Cheat11="Access AT-ST Level",81130B38 1250
+
+$Access AT-ST Level
+81130B38 1250
+
+$Access\69 Buick Electra
+Note=Replaces The V-Wing
+81130B3A 000E
+
+$Accesses\All Levels,Ships & Advanced Weapons
+80130B3B 00FF
+
+$Accuracy 100%
+80130B5F 0063
+
+$Always Pass Mission
+80130AF4 0001
+
+$Bonus Collected 756
+80130B67 03E7
+
+$Completion Time 0:00
+80130B85 3FCB
+
+$Enemies Destroyed 756
+81130B64 03E7
+
+$Friendly Saves 756
+80130B66 03E7
+
+$Infinite Lives
+Note=This Also accesses advanced Shields & Radar
+81130B38 01C0
+
+$Infinite Secondary Weapon
+8010CA02 0063
+80130B23 00??
+01 Ion Cannon
+02 Missiles
+03 Seeker Missiles
+04 Bombs
+05 Proton Bombs
+07 Cluster Missiles
+08 Seeker Torpedos
+09 Seeker Cluster Missiles
+
+$Invincibility
+Note=This Also Accesses All Levels And Makes All Crafts Available
+80130B2D 00FF
+

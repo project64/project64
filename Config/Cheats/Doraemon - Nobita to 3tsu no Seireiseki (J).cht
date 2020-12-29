@@ -1,6 +1,14 @@
 [BFF7B1C2-AEBF148E-C:4A]
 Name=Doraemon - Nobita to 3tsu no Seireiseki (J)
-Cheat0="Infinite\Lives",800F38C5 000A
-Cheat1="Infinite\Energy",800FB897 00FF
-Cheat2="Infinite\Bells",800F38C3 00??
-Cheat2_O=$63 99 Bells,$00 No Bells
+
+$Infinite\Bells
+800F38C3 00??
+63 99 Bells
+00 No Bells
+
+$Infinite\Energy
+800FB897 00FF
+
+$Infinite\Lives
+800F38C5 000A
+

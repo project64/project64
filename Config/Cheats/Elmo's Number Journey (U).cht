@@ -1,6 +1,13 @@
 [02B1538F-C94B88D0-C:45]
 Name=Elmo's Number Journey (U)
-Cheat0="Found All Numbers",810ACFB2 000C
-Cheat1="Infinite Strikes",810A7A76 0000
-Cheat2="Have No Numbers",810ACFB2 0000
-Cheat2_N=Keep you kid busy for hours!!!
+
+$Found All Numbers
+810ACFB2 000C
+
+$Have No Numbers
+Note=Keep you kid busy for hours!!!
+810ACFB2 0000
+
+$Infinite Strikes
+810A7A76 0000
+

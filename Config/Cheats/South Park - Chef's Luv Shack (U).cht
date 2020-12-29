@@ -1,10 +1,23 @@
 [C00CA948-8E60D34B-C:45]
 Name=South Park - Chef's Luv Shack (U)
-Cheat0="Max Or No Score\Player 1",81104772 ????
-Cheat0_O=$FFFF Max Score,$0000 No Score
-Cheat1="Max Or No Score\Player 2",81104776 ????
-Cheat1_O=$FFFF Max Score,$0000 No Score
-Cheat2="Max Or No Score\Player 3",8110477A ????
-Cheat2_O=$FFFF Max Score,$0000 No Score
-Cheat3="Max Or No Score\Player 4",8110477E ????
-Cheat3_O=$FFFF Max Score,$0000 No Score
+
+$Max Or No Score\Player 1
+81104772 ????
+FFFF Max Score
+0000 No Score
+
+$Max Or No Score\Player 2
+81104776 ????
+FFFF Max Score
+0000 No Score
+
+$Max Or No Score\Player 3
+8110477A ????
+FFFF Max Score
+0000 No Score
+
+$Max Or No Score\Player 4
+8110477E ????
+FFFF Max Score
+0000 No Score
+

@@ -1,19 +1,56 @@
 [49E46C2D-7B1A110C-C:4A]
 Name=Fighting Cup (J)
-Cheat0="Start with Stars Modifier\Player 1",D0208E17 0000,80208E17 00??
-Cheat0_O=$00 No Stars,$06 Max Stars
-Cheat1="Start with Stars Modifier\Player 2",D020ACDF 0000,8020ACDF 00??
-Cheat1_O=$00 No Stars,$06 Max Stars
-Cheat2="Have 1 Star\Ryuji",80306A0E 0001
-Cheat3="Have 1 Star\Bob",80306A0F 0001
-Cheat4="Have 1 Star\Pierre",80306A10 0001
-Cheat5="Have 1 Star\Meiling",80306A11 0001
-Cheat6="Have 1 Star\Leon",80306A12 0001
-Cheat7="Have 1 Star\Abdul",80306A13 0001
-Cheat8="Have 1 Star\Ninja",80306A14 0001
-Cheat9="Have 1 Star\Tomahawk",80306A15 0001
-Cheat10="Have 1 Star\Valerie",80306A16 0001
-Cheat11="Infinite Health\Player 1",80208F61 0000,80203E83 0000
-Cheat12="Infinite Health\Player 2",80203E87 0000,8020AE29 0000
-Cheat13="Start on stage 100 on Survival to get Joker",802EED3B 0063
-Cheat14="Stop timer for Fastest to get Robot",810AD29C 3F80
+
+$Have 1 Star\Abdul
+80306A13 0001
+
+$Have 1 Star\Bob
+80306A0F 0001
+
+$Have 1 Star\Leon
+80306A12 0001
+
+$Have 1 Star\Meiling
+80306A11 0001
+
+$Have 1 Star\Ninja
+80306A14 0001
+
+$Have 1 Star\Pierre
+80306A10 0001
+
+$Have 1 Star\Ryuji
+80306A0E 0001
+
+$Have 1 Star\Tomahawk
+80306A15 0001
+
+$Have 1 Star\Valerie
+80306A16 0001
+
+$Infinite Health\Player 1
+80208F61 0000
+80203E83 0000
+
+$Infinite Health\Player 2
+80203E87 0000
+8020AE29 0000
+
+$Start on stage 100 on Survival to get Joker
+802EED3B 0063
+
+$Start with Stars Modifier\Player 1
+D0208E17 0000
+80208E17 00??
+00 No Stars
+06 Max Stars
+
+$Start with Stars Modifier\Player 2
+D020ACDF 0000
+8020ACDF 00??
+00 No Stars
+06 Max Stars
+
+$Stop timer for Fastest to get Robot
+810AD29C 3F80
+

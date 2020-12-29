@@ -1,10 +1,28 @@
 [E7D20193-C1158E93-C:50]
 Name=Hot Wheels Turbo Racing (E) (M3)
-Cheat0="Allways 1st",8111B14A 0000
-Cheat1="Max Tournament Points",811270B6 03E7
-Cheat2="Infinite Turbos",8111B39C 0800
-Cheat3="Access All Cars",811270A4 FFFF,811270A6 FFFF
-Cheat4="A Few Extra Cars",811270AA FFFF
-Cheat5="Bonus Tracks",811270AE FFFF
-Cheat6="Race At Night",801270CF 0080
-Cheat7="Mirror Mode",801270CE 0001
+
+$A Few Extra Cars
+811270AA FFFF
+
+$Access All Cars
+811270A4 FFFF
+811270A6 FFFF
+
+$Allways 1st
+8111B14A 0000
+
+$Bonus Tracks
+811270AE FFFF
+
+$Infinite Turbos
+8111B39C 0800
+
+$Max Tournament Points
+811270B6 03E7
+
+$Mirror Mode
+801270CE 0001
+
+$Race At Night
+801270CF 0080
+

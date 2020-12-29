@@ -1,5 +1,12 @@
 [69256460-B9A3F586-C:45]
 Name=Jeopardy! (U)
-Cheat0="Max Money\Player 1",81058122 FFFF
-Cheat1="Max Money\Player 2",81058124 FFFF
-Cheat2="Max Money\Player 3",81058126 FFFF
+
+$Max Money\Player 1
+81058122 FFFF
+
+$Max Money\Player 2
+81058124 FFFF
+
+$Max Money\Player 3
+81058126 FFFF
+

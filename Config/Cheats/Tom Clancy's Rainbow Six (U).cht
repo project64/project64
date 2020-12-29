@@ -1,5 +1,12 @@
 [392A0C42-B790E77D-C:45]
 Name=Tom Clancy's Rainbow Six (U)
-Cheat0="All Missions Unlocked",810C1F10 000B
-Cheat1="Infinite Health",8105518A 2400
-Cheat2="Infinite Ammo",8103A180 2400
+
+$All Missions Unlocked
+810C1F10 000B
+
+$Infinite Ammo
+8103A180 2400
+
+$Infinite Health
+8105518A 2400
+

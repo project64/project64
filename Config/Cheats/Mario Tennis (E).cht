@@ -1,8 +1,23 @@
 [839F3AD5-406D15FA-C:50]
 Name=Mario Tennis (E)
-Cheat0="Have All\Characters Available",810657A0 FFFF
-Cheat1="Have All\Courts Available",810657A4 FFFF
-Cheat2="Score\Player 1",80152DFA 00??
-Cheat2_O=$00 0,$01 15,$02 30,$03 40
-Cheat3="Score\Player 2",80152DFB 00??
-Cheat3_O=$00 0,$01 15,$02 30,$03 40
+
+$Have All\Characters Available
+810657A0 FFFF
+
+$Have All\Courts Available
+810657A4 FFFF
+
+$Score\Player 1
+80152DFA 00??
+00 0
+01 15
+02 30
+03 40
+
+$Score\Player 2
+80152DFB 00??
+00 0
+01 15
+02 30
+03 40
+

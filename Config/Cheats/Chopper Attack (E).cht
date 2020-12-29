@@ -1,35 +1,129 @@
 [2E359339-3FA5EDA6-C:50]
 Name=Chopper Attack (E)
-Cheat0="Max Score",81129716 FFFF
-Cheat1="Infinite Weapon\1st Position",8012972B 0063
-Cheat2="Infinite Weapon\2nd Position",8012972F 0063
-Cheat3="Infinite Weapon\3rd Position",80129733 0063
-Cheat4="Infinite Weapon\4th Position",80129737 0063
-Cheat5="Infinite Weapon\5th Position",8012973B 0063
-Cheat6="Weapon Modifier\Gun Weapon",80129A13 00??
-Cheat6_O=$00 No Weapon,$01 Normal Shot,$02 2-Way Shot,$03 3-Way Shot,$04 4-Way Shot
-Cheat7="Gun 4-Way Shot",80129A13 0004
-Cheat8="Infinite Fuel",81129A16 FFFF
-Cheat9="Infinite Shield",811299B8 03E8
-Cheat10="Opens All 5 Item Slots",8012974B 0005
-Cheat11="Weapon Modifier\1st Position",80129729 00??
-Cheat11_N=Must to be used with the Infinite Weapon Codes & the open all 5 item slot code.
-Cheat11_O=$00 Nothing,$01 AGM,$02 AAM,$03 AGAM,$04 Dummy,$05 Rocket,$06 Cluster,$07 H-Cluster,$08 H-Plasma
-Cheat12="Weapon Modifier\2nd Position",8012972D 00??
-Cheat12_N=Must to be used with the Infinite Weapon Codes & the open all 5 item slot code.
-Cheat12_O=$00 Nothing,$01 AGM,$02 AAM,$03 AGAM,$04 Dummy,$05 Rocket,$06 Cluster,$07 H-Cluster,$08 H-Plasma
-Cheat13="Weapon Modifier\3rd Position",801297E1 00??
-Cheat13_N=Must to be used with the Infinite Weapon Codes & the open all 5 item slot code.
-Cheat13_O=$00 Nothing,$01 AGM,$02 AAM,$03 AGAM,$04 Dummy,$05 Rocket,$06 Cluster,$07 H-Cluster,$08 H-Plasma
-Cheat14="Weapon Modifier\4th Position",801297E5 00??
-Cheat14_N=Must to be used with the Infinite Weapon Codes & the open all 5 item slot code.
-Cheat14_O=$00 Nothing,$01 AGM,$02 AAM,$03 AGAM,$04 Dummy,$05 Rocket,$06 Cluster,$07 H-Cluster,$08 H-Plasma
-Cheat15="Weapon Modifier\5th Position",801297E9 00??
-Cheat15_N=Must to be used with the Infinite Weapon Codes & the open all 5 item slot code.
-Cheat15_O=$00 Nothing,$01 AGM,$02 AAM,$03 AGAM,$04 Dummy,$05 Rocket,$06 Cluster,$07 H-Cluster,$08 H-Plasma
-Cheat16="Score Attack Mode",81129762 0001
-Cheat17="Stage Select On",81129766 0001
-Cheat18="Option On",8112976A 0001
-Cheat19="Clear Mission Selector",8112976C 00??
-Cheat19_O=$01 1,$02 2,$03 3,$04 4,$05 5,$06 6,$07 7,$08 8
-Cheat20="Texture Mode",81129774 0001
+
+$Clear Mission Selector
+8112976C 00??
+01 1
+02 2
+03 3
+04 4
+05 5
+06 6
+07 7
+08 8
+
+$Gun 4-Way Shot
+80129A13 0004
+
+$Infinite Fuel
+81129A16 FFFF
+
+$Infinite Shield
+811299B8 03E8
+
+$Infinite Weapon\1st Position
+8012972B 0063
+
+$Infinite Weapon\2nd Position
+8012972F 0063
+
+$Infinite Weapon\3rd Position
+80129733 0063
+
+$Infinite Weapon\4th Position
+80129737 0063
+
+$Infinite Weapon\5th Position
+8012973B 0063
+
+$Max Score
+81129716 FFFF
+
+$Opens All 5 Item Slots
+8012974B 0005
+
+$Option On
+8112976A 0001
+
+$Score Attack Mode
+81129762 0001
+
+$Stage Select On
+81129766 0001
+
+$Texture Mode
+81129774 0001
+
+$Weapon Modifier\1st Position
+Note=Must to be used with the Infinite Weapon Codes & the open all 5 item slot code.
+80129729 00??
+00 Nothing
+01 AGM
+02 AAM
+03 AGAM
+04 Dummy
+05 Rocket
+06 Cluster
+07 H-Cluster
+08 H-Plasma
+
+$Weapon Modifier\2nd Position
+Note=Must to be used with the Infinite Weapon Codes & the open all 5 item slot code.
+8012972D 00??
+00 Nothing
+01 AGM
+02 AAM
+03 AGAM
+04 Dummy
+05 Rocket
+06 Cluster
+07 H-Cluster
+08 H-Plasma
+
+$Weapon Modifier\3rd Position
+Note=Must to be used with the Infinite Weapon Codes & the open all 5 item slot code.
+801297E1 00??
+00 Nothing
+01 AGM
+02 AAM
+03 AGAM
+04 Dummy
+05 Rocket
+06 Cluster
+07 H-Cluster
+08 H-Plasma
+
+$Weapon Modifier\4th Position
+Note=Must to be used with the Infinite Weapon Codes & the open all 5 item slot code.
+801297E5 00??
+00 Nothing
+01 AGM
+02 AAM
+03 AGAM
+04 Dummy
+05 Rocket
+06 Cluster
+07 H-Cluster
+08 H-Plasma
+
+$Weapon Modifier\5th Position
+Note=Must to be used with the Infinite Weapon Codes & the open all 5 item slot code.
+801297E9 00??
+00 Nothing
+01 AGM
+02 AAM
+03 AGAM
+04 Dummy
+05 Rocket
+06 Cluster
+07 H-Cluster
+08 H-Plasma
+
+$Weapon Modifier\Gun Weapon
+80129A13 00??
+00 No Weapon
+01 Normal Shot
+02 2-Way Shot
+03 3-Way Shot
+04 4-Way Shot
+

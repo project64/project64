@@ -1,9 +1,24 @@
 [20B53662-7B61899F-C:50]
 Name=South Park (E) (M3)
-Cheat0="Have Cheats Menu",800D77D6 01FF
-Cheat1="Infinite Energy",802FD209 0064
-Cheat2="Infinite Credits",802FD215 0064
-Cheat3="Infinite Sponge Darts",802FD223 0064
-Cheat4="Infinite Suckers",802FD222 0064
-Cheat5="Infinite Balls",802FD21F 0064
-Cheat6="Start with 9999 Monster Score",812FD20E 270F
+
+$Have Cheats Menu
+800D77D6 01FF
+
+$Infinite Balls
+802FD21F 0064
+
+$Infinite Credits
+802FD215 0064
+
+$Infinite Energy
+802FD209 0064
+
+$Infinite Sponge Darts
+802FD223 0064
+
+$Infinite Suckers
+802FD222 0064
+
+$Start with 9999 Monster Score
+812FD20E 270F
+
