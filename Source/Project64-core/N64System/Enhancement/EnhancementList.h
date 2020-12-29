@@ -9,22 +9,24 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
+#include <vector>
+#include <string>
+#include <Project64-core\N64System\Enhancement\Enhancement.h>
 
-#pragma warning(disable:4786)
-#include "Support.h"
+struct EnhancementItemList_compare
+{
+    bool operator() (const std::string & a, const std::string & b) const
+    {
+        return _stricmp(a.c_str(), b.c_str()) < 0;
+    }
+};
 
-#include <Project64-core/Multilanguage.h>
-#include <Project64-core/Settings.h>
+class CEnhancementList :
+    public std::map<std::string, CEnhancement, EnhancementItemList_compare>
+{
+public:
+    CEnhancementList();
 
-#include "WTLApp.h"
-#include "UserInterface/MenuShortCuts.h"
-#include "UserInterface/RomBrowser.h"
-#include "UserInterface/MainWindow.h"
-#include "UserInterface/MenuClass.h"
-#include "UserInterface/MainMenu.h"
-#include "UserInterface/Notification.h"
-#include <Project64-core/N64System/FramePerSecondClass.h>
-#include "UserInterface/resource.h"
-#include "UserInterface/SettingsConfig.h"
-#include "UserInterface/CheatClassUI.h"
-#include "UserInterface/SupportWindow.h"
+    void AddItem(const CEnhancement & Details);
+    iterator FindItem(const std::string & Name);
+};

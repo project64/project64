@@ -25,6 +25,7 @@
 #include <Project64-core/N64System/Recompiler/LoopAnalysis.h>
 #include <Project64-core/N64System/Recompiler/x86/x86RecompilerOps.h>
 #include <Project64-core/N64System/N64Class.h>
+#include <Project64-core/N64System/N64RomClass.h>
 #include <Project64-core/ExceptionHandler.h>
 #include <Project64-core/Debugger.h>
 #include <stdio.h>

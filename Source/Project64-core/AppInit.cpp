@@ -9,6 +9,7 @@
 #include <Project64-core/Plugins/PluginClass.h>
 #include <Project64-core/N64System/N64RomClass.h>
 #include <Project64-core/N64System/N64DiskClass.h>
+#include <Project64-core\N64System\Enhancement\Enhancements.h>
 #include "Settings/SettingType/SettingsType-Application.h"
 
 static void FixDirectories(void);
@@ -257,6 +258,7 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
             return false;
         }
 #endif
+        g_Enhancements = new CEnhancements();
 
         //Create the plugin container
         WriteTrace(TraceAppInit, TraceInfo, "Create Plugins");
@@ -281,12 +283,13 @@ void AppCleanup(void)
     WriteTrace(TraceAppCleanup, TraceDebug, "cleaning up global objects");
     CleanupTrace();
 
-    if (g_Rom)      { delete g_Rom; g_Rom = NULL; }
-    if (g_DDRom)      { delete g_DDRom; g_DDRom = NULL; }
-    if (g_Disk)      { delete g_Disk; g_Disk = NULL; }
-    if (g_Plugins)  { delete g_Plugins; g_Plugins = NULL; }
+    if (g_Enhancements) { delete g_Enhancements; g_Enhancements = NULL; }
+    if (g_Rom) { delete g_Rom; g_Rom = NULL; }
+    if (g_DDRom) { delete g_DDRom; g_DDRom = NULL; }
+    if (g_Disk) { delete g_Disk; g_Disk = NULL; }
+    if (g_Plugins) { delete g_Plugins; g_Plugins = NULL; }
     if (g_Settings) { delete g_Settings; g_Settings = NULL; }
-    if (g_Lang)     { delete g_Lang; g_Lang = NULL; }
+    if (g_Lang) { delete g_Lang; g_Lang = NULL; }
 
     CMipsMemoryVM::FreeReservedMemory();
     TraceDone();

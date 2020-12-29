@@ -78,7 +78,7 @@ void CGameSettings::RefreshGameSettings()
     {
         m_CountPerOp = 2;
     }
-	if (g_Settings->LoadBool(Setting_Enhancement))
+	/*if (g_Settings->LoadBool(Setting_Enhancement))
 	{
 		for (int i = 0; i < CCheats::MaxCheats; i++)
 		{
@@ -90,7 +90,7 @@ void CGameSettings::RefreshGameSettings()
 				m_OverClockModifier = g_Settings->LoadDwordIndex(Enhancement_OverclockValue, i);
 			}
 		}
-	}
+	}*/
 	if (m_OverClockModifier < 1) { m_OverClockModifier = 1; }
     if (m_OverClockModifier > 20) { m_OverClockModifier = 20; }
 	RefreshSyncToAudio();

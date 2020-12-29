@@ -180,12 +180,7 @@ void CSystemEvents::ExecuteEvents()
             g_Notify->ChangeFullScreen();
             break;
         case SysEvent_GSButtonPressed:
-            if (m_System->HasCheatsSlectionChanged())
-            {
-                m_System->SetCheatsSlectionChanged(false);
-                m_System->m_Cheats.LoadCheats(false, m_Plugins);
-            }
-            m_System->m_Cheats.ApplyGSButton();
+            m_System->ApplyGSButton();
             break;
         case SysEvent_PauseCPU_FromMenu:
             if (!g_Settings->LoadBool(GameRunning_CPU_Paused))

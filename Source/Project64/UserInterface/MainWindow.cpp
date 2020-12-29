@@ -941,13 +941,9 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                             CSettingConfig SettingConfig(true);
                             SettingConfig.Display(hWnd);
                         }
-                        else if (LOWORD(wParam) == ID_POPUPMENU_CHOOSEENHANCEMENT)
-                        {
-                            CEnhancementConfig().Display(hWnd);
-                        }
                         else if (LOWORD(wParam) == ID_POPUPMENU_EDITCHEATS)
                         {
-                            CCheatsUI().Display(hWnd, true);
+                            _this->m_CheatsUI.Display(hWnd, true);
                         }
 
                         if (g_Rom)
@@ -969,10 +965,6 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                         {
                             CSettingConfig SettingConfig(true);
                             SettingConfig.Display(hWnd);
-                        }
-                        else if (LOWORD(wParam) == ID_POPUPMENU_CHOOSEENHANCEMENT)
-                        {
-                            CEnhancementConfig().Display(hWnd);
                         }
                         else if (LOWORD(wParam) == ID_POPUPMENU_EDITCHEATS)
                         {

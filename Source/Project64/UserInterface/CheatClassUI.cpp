@@ -9,12 +9,11 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include <Project64-core/Settings/SettingType/SettingsType-Cheats.h>
-#include <Project64-core/N64System/CheatClass.h>
+#include <Project64-core\N64System\Enhancement\Enhancements.h>
 
 CCheatsUI::CCheatsUI(void) :
-    m_EditCheat(m_SelectCheat),
-    m_SelectCheat(m_EditCheat),
+    m_EditCheat(m_Cheats, m_SelectCheat),
+    m_SelectCheat(m_Cheats, m_EditCheat),
     m_bModal(false)
 {
 }
@@ -25,6 +24,7 @@ CCheatsUI::~CCheatsUI()
 
 void CCheatsUI::Display(HWND hParent, bool BlockExecution)
 {
+    m_Cheats = g_Enhancements->Cheats();
     if (g_BaseSystem)
     {
         g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_Cheats);
@@ -160,59 +160,8 @@ LRESULT CCheatsUI::OnStateChange(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWnd
     return 0;
 }
 
-std::string CCheatsUI::GetCheatName(int CheatNo, bool AddExtension)
-{
-    if (CheatNo > CCheats::MaxCheats) { g_Notify->BreakPoint(__FILE__, __LINE__); }
-    stdstr LineEntry = g_Settings->LoadStringIndex(Cheat_Entry, CheatNo);
-    if (LineEntry.length() == 0) { return LineEntry; }
-
-    //Find the start and end of the name which is surrounded in ""
-    int StartOfName = LineEntry.find("\"");
-    if (StartOfName == -1) { return ""; }
-    int EndOfName = LineEntry.find("\"", StartOfName + 1);
-    if (EndOfName == -1) { return ""; }
-
-    stdstr Name = LineEntry.substr(StartOfName + 1, EndOfName - StartOfName - 1);
-    const char * CodeString = &(LineEntry.c_str())[EndOfName + 2];
-    if (!CCheats::IsValid16BitCode(CodeString))
-    {
-        Name.Format("*** %s", Name.c_str());
-        Name.Replace("\\", "\\*** ");
-    }
-    if (AddExtension && CheatUsesCodeExtensions(LineEntry))
-    {
-        stdstr CheatValue(g_Settings->LoadStringIndex(Cheat_Extension, CheatNo));
-        Name.Format("%s (=>%s)", Name.c_str(), CheatValue.c_str());
-    }
-    return Name;
-}
-
-bool CCheatsUI::CheatUsesCodeExtensions(const std::string & LineEntry)
-{
-    //Find the start and end of the name which is surronded in ""
-    if (LineEntry.length() == 0){ return false; }
-    int StartOfName = LineEntry.find("\"");
-    if (StartOfName == -1) { return false; }
-    int EndOfName = LineEntry.find("\"", StartOfName + 1);
-    if (EndOfName == -1) { return false; }
-
-    //Read through the gameshark entries till you find a ??
-    const char *ReadPos = &(LineEntry.c_str())[EndOfName + 2];
-    bool CodeExtension = false;
-
-    for (int i = 0; i < CCheats::MaxGSEntries && CodeExtension == false; i++)
-    {
-        if (strchr(ReadPos, ' ') == NULL) { break; }
-        ReadPos = strchr(ReadPos, ' ') + 1;
-        if (ReadPos[0] == '?' && ReadPos[1] == '?') { CodeExtension = true; }
-        if (ReadPos[2] == '?' && ReadPos[3] == '?') { CodeExtension = true; }
-        if (strchr(ReadPos, ',') == NULL) { continue; }
-        ReadPos = strchr(ReadPos, ',') + 1;
-    }
-    return CodeExtension;
-}
-
-CCheatList::CCheatList(CEditCheat & EditCheat) :
+CCheatList::CCheatList(CEnhancementList & Cheats, CEditCheat & EditCheat) :
+    m_Cheats(Cheats),
     m_EditCheat(EditCheat),
     m_hSelectedItem(NULL),
     m_DeleteingEntries(false)
@@ -260,37 +209,28 @@ LRESULT CCheatList::OnChangeCodeExtension(UINT /*uMsg*/, WPARAM /*wParam*/, LPAR
     TVITEM item = { 0 };
     item.mask = TVIF_PARAM;
     item.hItem = m_hSelectedItem;
-    if (!m_hCheatTree.GetItem(&item))
+    if (!m_hCheatTree.GetItem(&item) || item.lParam == NULL)
     {
         return 0;
     }
 
-    std::string LineEntry = g_Settings->LoadStringIndex(Cheat_Entry, item.lParam);
-    if (!CCheatsUI::CheatUsesCodeExtensions(LineEntry))
+    CEnhancement * Enhancement = (CEnhancement *)item.lParam;
+    if (Enhancement->CodeOptionSize() == 0 || Enhancement->GetOptions().empty())
     {
         return 0;
     }
 
-    std::string Options;
-    if (g_Settings->LoadStringIndex(Cheat_Options, item.lParam, Options) && Options.length() > 0)
+    CEnhancementCodeEx(Enhancement).DoModal();
+    stdstr Name = Enhancement->GetNameAndExtension();
+    const char * ChildName = strrchr(Name.c_str(), '\\');
+    if (ChildName != nullptr)
     {
-        CCheatsCodeEx(item.lParam).DoModal();
+        Name = &ChildName[1];
     }
-
-    std::string CheatName(CCheatsUI::GetCheatName(item.lParam, true));
-    const char * Cheat = strrchr(CheatName.c_str(), '\\');
-    if (Cheat == NULL)
-    {
-        Cheat = CheatName.c_str();
-    }
-    else
-    {
-        Cheat += 1;
-    }
-    std::wstring wcCheat = stdstr(Cheat).ToUTF16();
+    std::wstring wName = Name.ToUTF16();
     item.mask = TVIF_TEXT;
-    item.pszText = (LPWSTR)wcCheat.c_str();
-    item.cchTextMax = CheatName.length();
+    item.pszText = (LPWSTR)wName.c_str();
+    item.cchTextMax = wName.length();
     m_hCheatTree.SetItem(&item);
     return 0;
 }
@@ -317,9 +257,9 @@ LRESULT CCheatList::OnPopupDelete(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWn
 LRESULT CCheatList::OnUnmark(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
     ChangeChildrenStatus(TVI_ROOT, false);
-    if (g_BaseSystem)
+    if (g_Enhancements != nullptr)
     {
-        g_BaseSystem->SetCheatsSlectionChanged(true);
+        g_Enhancements->UpdateCheats();
     }
     return 0;
 }
@@ -345,12 +285,11 @@ LRESULT CCheatList::OnTreeClicked(NMHDR* lpnmh)
                 TVITEM item = { 0 };
                 item.mask = TVIF_PARAM;
                 item.hItem = ht.hItem;
-                m_hCheatTree.GetItem(&item);
-                std::string LineEntry = g_Settings->LoadStringIndex(Cheat_Entry, item.lParam);
-                if (CCheatsUI::CheatUsesCodeExtensions(LineEntry))
+                m_hCheatTree.GetItem(&item);        
+                if (item.lParam != NULL)
                 {
-                    std::string CheatExtension;
-                    if (!g_Settings->LoadStringIndex(Cheat_Extension, item.lParam, CheatExtension))
+                    CEnhancement * Enhancement = (CEnhancement *)item.lParam;
+                    if (Enhancement->CodeOptionSize() != 0 && Enhancement->GetOptions().size() > 0 && !Enhancement->OptionSelected())
                     {
                         SendMessage(UM_CHANGECODEEXTENSION, 0, (LPARAM)ht.hItem);
                         TV_SetCheckState(ht.hItem, TV_STATE_CLEAR);
@@ -374,10 +313,10 @@ LRESULT CCheatList::OnTreeClicked(NMHDR* lpnmh)
         case TV_STATE_CLEAR: TV_SetCheckState(ht.hItem, TV_STATE_CHECKED); break;
         case TV_STATE_INDETERMINATE: TV_SetCheckState(ht.hItem, TV_STATE_CLEAR); break;
         }
-
-        if (g_BaseSystem)
+    
+        if (g_Enhancements != nullptr)
         {
-            g_BaseSystem->SetCheatsSlectionChanged(true);
+            g_Enhancements->UpdateCheats();
         }
     }
     return 0;
@@ -438,23 +377,22 @@ LRESULT CCheatList::OnTreeDClicked(NMHDR* lpnmh)
 LRESULT CCheatList::OnTreeSelChanged(NMHDR * /*lpnmh*/)
 {
     HTREEITEM hItem = m_hCheatTree.GetSelectedItem();
+    GetDlgItem(IDC_NOTES).SetWindowText(L"");
     if (m_hCheatTree.GetChildItem(hItem) == NULL)
     {
         TVITEM item = { 0 };
         item.mask = TVIF_PARAM;
         item.hItem = hItem;
         m_hCheatTree.GetItem(&item);
-
-        stdstr Notes(g_Settings->LoadStringIndex(Cheat_Notes, item.lParam));
-        GetDlgItem(IDC_NOTES).SetWindowText(Notes.ToUTF16().c_str());
-        if (m_EditCheat.m_hWnd != NULL)
+        if (item.lParam != NULL)
         {
-            m_EditCheat.SendMessage(CEditCheat::WM_EDITCHEAT, item.lParam, 0);
+            CEnhancement * Enhancement = (CEnhancement *)item.lParam;
+            GetDlgItem(IDC_NOTES).SetWindowText(stdstr(Enhancement->GetNote()).ToUTF16().c_str());
+            if (m_EditCheat.m_hWnd != NULL)
+            {
+                m_EditCheat.SendMessage(CEditCheat::WM_EDITCHEAT, item.lParam, 0);
+            }
         }
-    }
-    else
-    {
-        GetDlgItem(IDC_NOTES).SetWindowText(L"");
     }
     return 0;
 }
@@ -466,22 +404,25 @@ void CCheatList::RefreshItems()
     m_DeleteingEntries = true;
     TreeView_DeleteAllItems(m_hCheatTree);
     m_DeleteingEntries = false;
-    for (int i = 0; i < CCheats::MaxCheats; i++)
-    {
-        std::string Name = CCheatsUI::GetCheatName(i, true);
-        if (Name.length() == 0) { break; }
 
-        AddCodeLayers(i, stdstr(Name).ToUTF16(), TVI_ROOT, g_Settings->LoadBoolIndex(Cheat_Active, i) != 0);
+    for (CEnhancementList::iterator itr = m_Cheats.begin(); itr != m_Cheats.end(); itr++)
+    {
+        std::string Name = itr->second.GetNameAndExtension();
+        if (Name.length() == 0) 
+        { 
+            continue; 
+        }
+        AddCodeLayers((LPARAM)&itr->second, stdstr(Name).ToUTF16(), TVI_ROOT, itr->second.Active());
     }
 }
 
-void CCheatList::AddCodeLayers(int CheatNumber, const std::wstring &CheatName, HTREEITEM hParent, bool CheatActive)
+void CCheatList::AddCodeLayers(LPARAM Enhancement, const std::wstring &Name, HTREEITEM hParent, bool CheatActive)
 {
     TV_INSERTSTRUCT tv;
 
     wchar_t Text[500], Item[500];
-    if (CheatName.length() > (sizeof(Text) - 5)) { g_Notify->BreakPoint(__FILE__, __LINE__); }
-    wcscpy(Text, CheatName.c_str());
+    if (Name.length() > (sizeof(Text) - 5)) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+    wcscpy(Text, Name.c_str());
     if (wcschr(Text, L'\\') > 0) { *wcschr(Text, L'\\') = 0; }
 
     tv.item.mask = TVIF_TEXT;
@@ -500,11 +441,11 @@ void CCheatList::AddCodeLayers(int CheatNumber, const std::wstring &CheatName, H
             }
             size_t StartPos = wcslen(Text) + 1;
             std::wstring TempCheatName;
-            if (StartPos < CheatName.length())
+            if (StartPos < Name.length())
             {
-                TempCheatName = CheatName.substr(StartPos);
+                TempCheatName = Name.substr(StartPos);
             }
-            AddCodeLayers(CheatNumber, TempCheatName, tv.item.hItem, CheatActive);
+            AddCodeLayers(Enhancement, TempCheatName, tv.item.hItem, CheatActive);
             return;
         }
         tv.item.hItem = TreeView_GetNextSibling(m_hCheatTree, tv.item.hItem);
@@ -513,13 +454,13 @@ void CCheatList::AddCodeLayers(int CheatNumber, const std::wstring &CheatName, H
     tv.hInsertAfter = TVI_SORT;
     tv.item.mask = TVIF_TEXT | TVIF_PARAM;
     tv.item.pszText = Text;
-    tv.item.lParam = CheatNumber;
+    tv.item.lParam = Enhancement;
     tv.hParent = hParent;
     hParent = TreeView_InsertItem(m_hCheatTree, &tv);
     TV_SetCheckState(hParent, CheatActive ? TV_STATE_CHECKED : TV_STATE_CLEAR);
 
-    if (wcscmp(Text, CheatName.c_str()) == 0) { return; }
-    AddCodeLayers(CheatNumber, CheatName.substr(wcslen(Text) + 1), hParent, CheatActive);
+    if (wcscmp(Text, Name.c_str()) == 0) { return; }
+    AddCodeLayers(Enhancement, Name.substr(wcslen(Text) + 1), hParent, CheatActive);
 }
 
 void CCheatList::ChangeChildrenStatus(HTREEITEM hParent, bool Checked)
@@ -533,22 +474,18 @@ void CCheatList::ChangeChildrenStatus(HTREEITEM hParent, bool Checked)
         item.mask = TVIF_PARAM;
         item.hItem = hParent;
         m_hCheatTree.GetItem(&item);
-
-        if (Checked)
+        if (item.lParam == NULL)
         {
-            std::string LineEntry = g_Settings->LoadStringIndex(Cheat_Entry, item.lParam);
-            if (CCheatsUI::CheatUsesCodeExtensions(LineEntry))
-            {
-                std::string CheatExten;
-                if (!g_Settings->LoadStringIndex(Cheat_Extension, item.lParam, CheatExten) || CheatExten.empty())
-                {
-                    return;
-                }
-            }
+            return;
+        }
+        CEnhancement * Enhancement = (CEnhancement *)item.lParam;
+        if (Checked && Enhancement->CodeOptionSize() != 0 && Enhancement->GetOptions().size() > 0 && !Enhancement->OptionSelected())
+        {
+            return;
         }
 
         TV_SetCheckState(hParent, Checked ? TV_STATE_CHECKED : TV_STATE_CLEAR);
-        g_Settings->SaveBoolIndex(Cheat_Active, item.lParam, Checked);
+        Enhancement->SetActive(Checked);
         return;
     }
     TV_CHECK_STATE state = TV_STATE_UNKNOWN;
@@ -596,60 +533,20 @@ void CCheatList::CheckParentStatus(HTREEITEM hParent)
     }
 }
 
-void CCheatList::DeleteCheat(int Index)
+void CCheatList::DeleteCheat(LPARAM Enhancement)
 {
-    for (int CheatNo = Index; CheatNo < CCheats::MaxCheats; CheatNo++)
+    for (CEnhancementList::iterator itr = m_Cheats.begin(); itr != m_Cheats.end(); itr++)
     {
-        stdstr LineEntry = g_Settings->LoadStringIndex(Cheat_Entry, CheatNo + 1);
-        if (LineEntry.empty())
+        if (Enhancement != (LPARAM)&itr->second)
         {
-            g_Settings->DeleteSettingIndex(Cheat_Options, CheatNo);
-            g_Settings->DeleteSettingIndex(Cheat_Notes, CheatNo);
-            g_Settings->DeleteSettingIndex(Cheat_Extension, CheatNo);
-            g_Settings->DeleteSettingIndex(Cheat_Entry, CheatNo);
-            g_Settings->DeleteSettingIndex(Cheat_Active, CheatNo);
-            break;
+            continue;
         }
-        stdstr Value;
-        if (g_Settings->LoadStringIndex(Cheat_Options, CheatNo + 1, Value))
-        {
-            g_Settings->SaveStringIndex(Cheat_Options, CheatNo, Value);
-        }
-        else
-        {
-            g_Settings->DeleteSettingIndex(Cheat_Options, CheatNo);
-        }
-
-        if (g_Settings->LoadStringIndex(Cheat_Notes, CheatNo + 1, Value))
-        {
-            g_Settings->SaveStringIndex(Cheat_Notes, CheatNo, Value);
-        }
-        else
-        {
-            g_Settings->DeleteSettingIndex(Cheat_Notes, CheatNo);
-        }
-
-        if (g_Settings->LoadStringIndex(Cheat_Extension, CheatNo + 1, Value))
-        {
-            g_Settings->SaveStringIndex(Cheat_Extension, CheatNo, Value);
-        }
-        else
-        {
-            g_Settings->DeleteSettingIndex(Cheat_Extension, CheatNo);
-        }
-
-        bool bValue;
-        if (g_Settings->LoadBoolIndex(Cheat_Active, CheatNo + 1, bValue))
-        {
-            g_Settings->SaveBoolIndex(Cheat_Active, CheatNo, bValue);
-        }
-        else
-        {
-            g_Settings->DeleteSettingIndex(Cheat_Active, CheatNo);
-        }
-        g_Settings->SaveStringIndex(Cheat_Entry, CheatNo, LineEntry);
+        m_Cheats.erase(itr);
+        g_Enhancements->UpdateCheats(m_Cheats);
+        //RecordCurrentValues();
+        RefreshItems();
+        break;
     }
-    CSettingTypeCheats::FlushChanges();
 }
 
 CCheatList::TV_CHECK_STATE CCheatList::TV_GetCheckState(HTREEITEM hItem)
@@ -710,9 +607,10 @@ void CCheatList::MenuSetText(HMENU hMenu, int MenuPos, const wchar_t * Title, co
     SetMenuItemInfoW(hMenu, MenuPos, true, &MenuInfo);
 }
 
-CEditCheat::CEditCheat(CCheatList & CheatList) :
+CEditCheat::CEditCheat(CEnhancementList & Cheats, CCheatList & CheatList) :
+    m_Cheats(Cheats),
     m_CheatList(CheatList),
-    m_EditCheat(-1)
+    m_EditEnhancement(nullptr)
 {
 }
 
@@ -730,149 +628,126 @@ LRESULT CEditCheat::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPar
     GetDlgItem(IDC_CHEATNOTES).SetWindowText(wGS(CHEAT_ADDCHEAT_NOTES).c_str());
     GetDlgItem(IDC_NEWCHEAT).SetWindowText(wGS(CHEAT_ADDCHEAT_NEW).c_str());
     GetDlgItem(IDC_ADD).SetWindowText(wGS(CHEAT_ADDCHEAT_ADD).c_str());
-    RecordCheatValues();
+    RecordCurrentValues();
     return 0;
 }
 
 LRESULT CEditCheat::OnEditCheat(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-    m_EditCheat = (int32_t)wParam;
-    if (m_EditCheat < 0)
+    if (ValuesChanged())
     {
         return 0;
     }
 
-    if (CheatChanged())
+    m_EditEnhancement = (CEnhancement *)wParam;
+    if (m_EditEnhancement == NULL)
     {
         return 0;
     }
-
-    std::string CheatEntryStr = g_Settings->LoadStringIndex(Cheat_Entry, m_EditCheat);
-    int32_t len = strrchr(CheatEntryStr.c_str(), '"') - strchr(CheatEntryStr.c_str(), '"') - 1;
-    stdstr CheatName(strchr(CheatEntryStr.c_str(), '"') + 1);
-    CheatName.resize(len);
-    GetDlgItem(IDC_CODE_NAME).SetWindowText(CheatName.ToUTF16().c_str());
-
-    const char * ReadPos = strrchr(CheatEntryStr.c_str(), '"') + 2;
+    GetDlgItem(IDC_CODE_NAME).SetWindowText(stdstr(m_EditEnhancement->GetName()).ToUTF16().c_str());
     stdstr Buffer;
-    do
+    const CEnhancement::CodeEntries & Entries = m_EditEnhancement->GetEntries();
+    for (size_t i = 0, n = Entries.size(); i < n; i++)
     {
-        const char * End = strchr(ReadPos, ',');
-        if (End)
-        {
-            Buffer.append(ReadPos, End - ReadPos);
-        }
-        else
-        {
-            Buffer.append(ReadPos);
-        }
-
-        ReadPos = strchr(ReadPos, ',');
-        if (ReadPos != NULL)
+        const CEnhancement::CodeEntry Entry = Entries[i];
+        if (!Buffer.empty())
         {
             Buffer.append("\r\n");
-            ReadPos += 1;
         }
-    } while (ReadPos);
+        Buffer += stdstr_f("%08X %s", Entry.Command, Entry.Value.c_str());
+    }
     GetDlgItem(IDC_CHEAT_CODES).SetWindowText(Buffer.ToUTF16().c_str());
 
-    //Add option values to screen
-    std::string CheatOptionStr = g_Settings->LoadStringIndex(Cheat_Options, m_EditCheat);
-    ReadPos = strchr(CheatOptionStr.c_str(), '$');
-    Buffer.erase();
-    if (ReadPos)
+    const CEnhancement::CodeOptions & Options = m_EditEnhancement->GetOptions();
+    Buffer.clear();
+    for (size_t i = 0, n = Options.size(); i < n; i++)
     {
-        ReadPos += 1;
-        do
+        const CEnhancement::CodeOption Option = Options[i];
+        if (!Buffer.empty())
         {
-            const char * End = strchr(ReadPos, ',');
-            if (End)
-            {
-                Buffer.append(ReadPos, End - ReadPos);
-            }
-            else
-            {
-                Buffer.append(ReadPos);
-            }
-            ReadPos = strchr(ReadPos, '$');
-            if (ReadPos != NULL)
-            {
-                Buffer.append("\r\n");
-                ReadPos += 1;
-            }
-        } while (ReadPos);
+            Buffer.append("\r\n");
+        }
+        Buffer += stdstr_f(m_EditEnhancement->CodeOptionSize() == 2 ? "%02X %s" : "%04X %s", Option.Value, Option.Name.c_str());
     }
     GetDlgItem(IDC_CHEAT_OPTIONS).SetWindowText(Buffer.ToUTF16().c_str());
-
-    stdstr CheatNotesStr = g_Settings->LoadStringIndex(Cheat_Notes, m_EditCheat);
-    GetDlgItem(IDC_NOTES).SetWindowText(CheatNotesStr.ToUTF16().c_str());
+    GetDlgItem(IDC_NOTES).SetWindowText(stdstr(m_EditEnhancement->GetNote()).ToUTF16().c_str());
+    GetDlgItem(IDC_ADD).SetWindowTextW(wGS(CHEAT_EDITCHEAT_UPDATE).c_str());
 
     SendMessage(WM_COMMAND, MAKELPARAM(IDC_CHEAT_CODES, EN_CHANGE), (LPARAM)(HWND)GetDlgItem(IDC_CHEAT_CODES));
-    GetDlgItem(IDC_ADD).SetWindowTextW(wGS(CHEAT_EDITCHEAT_UPDATE).c_str());
-    RecordCheatValues();
+    RecordCurrentValues();
     return 0;
 }
 
 LRESULT CEditCheat::OnAddCheat(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
     std::string NewCheatName = GetItemText(IDC_CODE_NAME);
-    int i = 0;
-    for (i = 0; i < CCheats::MaxCheats; i++)
+    for (CEnhancementList::const_iterator itr = m_Cheats.begin(); itr != m_Cheats.end(); itr++)
     {
-        if (m_EditCheat == i)
+        const CEnhancement & Enhancement = itr->second;
+        if (_stricmp(Enhancement.GetName().c_str(), NewCheatName.c_str()) != 0)
         {
             continue;
         }
-        std::string CheatName = CCheatsUI::GetCheatName(i, false);
-        if (CheatName.length() == 0)
+        if (m_EditEnhancement == &Enhancement)
         {
-            if (m_EditCheat < 0)
-            {
-                m_EditCheat = i;
-            }
-            break;
+            continue;
         }
-        if (_stricmp(CheatName.c_str(), NewCheatName.c_str()) == 0)
-        {
-            g_Notify->DisplayWarning(GS(MSG_CHEAT_NAME_IN_USE));
-            GetDlgItem(IDC_CODE_NAME).SetFocus();
-            return true;
-        }
-    }
-    if (m_EditCheat < 0 && i == CCheats::MaxCheats)
-    {
-        g_Notify->DisplayError(GS(MSG_MAX_CHEATS));
-        return true;
+        g_Notify->DisplayWarning(GS(MSG_CHEAT_NAME_IN_USE));
+        GetDlgItem(IDC_CODE_NAME).SetFocus();
+        return 0;
     }
 
-    bool validcodes, validoptions, nooptions;
+
+    bool validcodes = false, validoptions = false, nooptions = false;
     CodeFormat Format;
-    stdstr_f Cheat("\"%s\"%s", NewCheatName.c_str(), ReadCodeString(validcodes, validoptions, nooptions, Format).c_str());
-    stdstr Options = ReadOptionsString(validoptions, Format);
+    CEnhancement::CodeEntries Entries = ReadCodeEntries(validcodes, validoptions, nooptions, Format);
+    CEnhancement::CodeOptions Options;
+    if (validcodes && !nooptions)
+    {
+        Options = ReadOptions(validoptions, Format);
+    }
+    if (!validcodes || !validoptions)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return 0;
+    }
 
-    g_Settings->SaveStringIndex(Cheat_Entry, m_EditCheat, Cheat.c_str());
-    g_Settings->SaveStringIndex(Cheat_Notes, m_EditCheat, GetItemText(IDC_NOTES));
-    g_Settings->SaveStringIndex(Cheat_Options, m_EditCheat, Options);
-    RecordCheatValues();
-    CSettingTypeCheats::FlushChanges();
+    if (m_EditEnhancement != nullptr)
+    {
+        m_EditEnhancement->SetName(NewCheatName.c_str());
+        m_EditEnhancement->SetEntries(Entries);
+        m_EditEnhancement->SetOptions(Options);
+        m_EditEnhancement->SetNote(GetItemText(IDC_NOTES).c_str());
+    }
+    else
+    {
+        CEnhancement Enhancement("Cheat");
+        Enhancement.SetName(NewCheatName.c_str());
+        Enhancement.SetEntries(Entries);
+        Enhancement.SetOptions(Options);
+        Enhancement.SetNote(GetItemText(IDC_NOTES).c_str());
+        m_Cheats.AddItem(Enhancement);
+    }
+    g_Enhancements->UpdateCheats(m_Cheats);
+    RecordCurrentValues();
     m_CheatList.RefreshItems();
     return 0;
 }
 
 LRESULT CEditCheat::OnNewCheat(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-    if (CheatChanged())
+    if (ValuesChanged())
     {
         return 0;
     }
-    m_EditCheat = -1;
+    m_EditEnhancement = nullptr;
     SetDlgItemText(IDC_CODE_NAME, L"");
     SetDlgItemText(IDC_CHEAT_CODES, L"");
     SetDlgItemText(IDC_CHEAT_OPTIONS, L"");
     SetDlgItemText(IDC_NOTES, L"");
     GetDlgItem(IDC_ADD).EnableWindow(false);
     GetDlgItem(IDC_CHEAT_OPTIONS).EnableWindow(false);
-    RecordCheatValues();
+    RecordCurrentValues();
     return 0;
 }
 
@@ -880,10 +755,10 @@ LRESULT CEditCheat::OnCodeNameChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /
 {
     bool validcodes, validoptions, nooptions;
     CodeFormat  Format;
-    ReadCodeString(validcodes, validoptions, nooptions, Format);
+    ReadCodeEntries(validcodes, validoptions, nooptions, Format);
     if (!nooptions)
     {
-        ReadOptionsString(validoptions, Format);
+        ReadOptions(validoptions, Format);
     }
 
     bool CanAdd = validcodes && (validoptions || nooptions) && GetDlgItem(IDC_CODE_NAME).GetWindowTextLength() > 0;
@@ -895,7 +770,7 @@ LRESULT CEditCheat::OnCheatCodeChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND 
 {
     bool validcodes, validoptions, nooptions;
     CodeFormat Format;
-    ReadCodeString(validcodes, validoptions, nooptions, Format);
+    ReadCodeEntries(validcodes, validoptions, nooptions, Format);
 
     if (Format > 0 && !GetDlgItem(IDC_LABEL_OPTIONS).IsWindowEnabled())
     {
@@ -912,7 +787,7 @@ LRESULT CEditCheat::OnCheatCodeChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND 
 
     if (!nooptions)
     {
-        ReadOptionsString(validoptions, Format);
+        ReadOptions(validoptions, Format);
     }
 
     bool CanAdd = validcodes && (validoptions || nooptions) && GetDlgItem(IDC_CODE_NAME).GetWindowTextLength() > 0;
@@ -924,10 +799,10 @@ LRESULT CEditCheat::OnCheatOptionsChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HW
 {
     bool ValidCodes, ValidOptions, NoOptions;
     CodeFormat Format;
-    ReadCodeString(ValidCodes, ValidOptions, NoOptions, Format);
+    ReadCodeEntries(ValidCodes, ValidOptions, NoOptions, Format);
     if (!NoOptions)
     {
-        ReadOptionsString(ValidOptions, Format);
+        ReadOptions(ValidOptions, Format);
     }
 
     bool CanAdd = ValidCodes && (ValidOptions || NoOptions) && GetDlgItem(IDC_CODE_NAME).GetWindowTextLength() > 0;
@@ -935,12 +810,13 @@ LRESULT CEditCheat::OnCheatOptionsChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HW
     return 0;
 }
 
-std::string CEditCheat::ReadCodeString(bool &ValidCodes, bool &ValidOptions, bool &NoOptions, CodeFormat & Format)
+CEnhancement::CodeEntries CEditCheat::ReadCodeEntries(bool &ValidCodes, bool &ValidOptions, bool &NoOptions, CodeFormat & Format)
 {
     const char * FormatNormal = "XXXXXXXX XXXX";
     const char * FormatOptionLB = "XXXXXXXX XX??";
     const char * FormatOptionW = "XXXXXXXX ????";
 
+    CEnhancement::CodeEntries Entries;
     ValidCodes = true;
     ValidOptions = true;
     NoOptions = true;
@@ -953,8 +829,6 @@ std::string CEditCheat::ReadCodeString(bool &ValidCodes, bool &ValidOptions, boo
         ValidCodes = false;
     }
 
-    std::string CodeString;
-    int NumCodes = 0;
     for (int i = 0; i < NumLines; i++)
     {
         wchar_t wc_str[128];
@@ -982,11 +856,21 @@ std::string CEditCheat::ReadCodeString(bool &ValidCodes, bool &ValidOptions, boo
             }
         }
 
+        CEnhancement::CodeEntry Entry;
+        Entry.Command = strtoul(str.c_str(), 0, 16);
+        const char * ReadPos = strchr(str.c_str(), ' ');
+        if (ReadPos != nullptr)
+        {
+            Entry.Value = ReadPos + 1;
+            Entries.push_back(Entry);
+        }
+        else
+        {
+            Entries.clear();
+            break;
+        }
         if (strcmp(TempFormat, FormatNormal) == 0)
         {
-            CodeString += ",";
-            CodeString += str.c_str();
-            NumCodes += 1;
             if (Format == CodeFormat_Invalid)
             {
                 Format = CodeFormat_Normal;
@@ -996,9 +880,6 @@ std::string CEditCheat::ReadCodeString(bool &ValidCodes, bool &ValidOptions, boo
         {
             if (Format != CodeFormat_Word)
             {
-                CodeString += ",";
-                CodeString += str.c_str();
-                NumCodes += 1;
                 Format = CodeFormat_LowerByte;
                 NoOptions = false;
                 ValidOptions = false;
@@ -1012,9 +893,6 @@ std::string CEditCheat::ReadCodeString(bool &ValidCodes, bool &ValidOptions, boo
         {
             if (Format != CodeFormat_LowerByte)
             {
-                CodeString += ",";
-                CodeString += str.c_str();
-                NumCodes += 1;
                 Format = CodeFormat_Word;
                 NoOptions = false;
                 ValidOptions = false;
@@ -1030,20 +908,20 @@ std::string CEditCheat::ReadCodeString(bool &ValidCodes, bool &ValidOptions, boo
         }
     }
 
-    if (CodeString.length() == 0)
+    if (Entries.empty())
     {
         ValidCodes = false;
     }
-    return CodeString;
+    return Entries;
 }
 
-std::string CEditCheat::ReadOptionsString(bool &validoptions, CodeFormat Format)
+CEnhancement::CodeOptions CEditCheat::ReadOptions(bool &validoptions, CodeFormat Format)
 {
+    CEnhancement::CodeOptions Options;
     validoptions = true;
 
     CEdit CheatOptions(GetDlgItem(IDC_CHEAT_OPTIONS));
     int NumLines = CheatOptions.GetLineCount();
-    int NumOptions = 0;
     std::string OptionsStr;
 
     for (int i = 0; i < NumLines; i++)
@@ -1057,6 +935,7 @@ std::string CEditCheat::ReadOptionsString(bool &validoptions, CodeFormat Format)
         wc_str[len] = 0;
 
         std::string str = stdstr().FromUTF16(wc_str);
+        CEnhancement::CodeOption Option;
 
         switch (Format)
         {
@@ -1077,14 +956,9 @@ std::string CEditCheat::ReadOptionsString(bool &validoptions, CodeFormat Format)
                     break;
                 }
 
-                for (int c = 0; c < 2; c++)
-                {
-                    str[c] = (char)toupper(str[c]);
-                }
-
-                OptionsStr += OptionsStr.empty() ? "$" : ",$";
-                OptionsStr += str.c_str();
-                NumOptions += 1;
+                Option.Name = &str[3];
+                Option.Value = (uint16_t)strtoul(str.c_str(), 0, 16);
+                Options.push_back(Option);
             }
             else
             {
@@ -1109,15 +983,9 @@ std::string CEditCheat::ReadOptionsString(bool &validoptions, CodeFormat Format)
                     validoptions = false;
                     break;
                 }
-
-                for (int c = 0; c < 4; c++)
-                {
-                    str[c] = (char)toupper(str[c]);
-                }
-
-                OptionsStr += OptionsStr.empty() ? "$" : ",$";
-                OptionsStr += str.c_str();
-                NumOptions += 1;
+                Option.Name = &str[5];
+                Option.Value = (uint16_t)strtoul(str.c_str(), 0, 16);
+                Options.push_back(Option);
             }
             else
             {
@@ -1125,17 +993,20 @@ std::string CEditCheat::ReadOptionsString(bool &validoptions, CodeFormat Format)
                 break;
             }
             break;
+        default:
+            validoptions = false;
+            break;
         }
     }
 
-    if (NumOptions < 1)
+    if (Options.size() == 0)
     {
         validoptions = false;
     }
-    return OptionsStr;
+    return Options;
 }
 
-void CEditCheat::RecordCheatValues(void)
+void CEditCheat::RecordCurrentValues(void)
 {
     m_EditName = GetItemText(IDC_CODE_NAME);
     m_EditCode = GetItemText(IDC_CHEAT_CODES);
@@ -1143,7 +1014,7 @@ void CEditCheat::RecordCheatValues(void)
     m_EditNotes = GetItemText(IDC_NOTES);
 }
 
-bool CEditCheat::CheatChanged(void)
+bool CEditCheat::ValuesChanged(void)
 {
     bool Changed = false;
     if (m_EditName != GetItemText(IDC_CODE_NAME) ||
@@ -1184,48 +1055,47 @@ std::string CEditCheat::GetItemText(int nIDDlgItem)
     return stdstr().FromUTF16(Result.c_str());
 }
 
-CCheatsCodeEx::CCheatsCodeEx(int EditCheat) :
-    m_EditCheat(EditCheat)
+CEnhancementCodeEx::CEnhancementCodeEx(CEnhancement * Enhancement) :
+    m_Enhancement(Enhancement)
 {
 }
 
-LRESULT CCheatsCodeEx::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CEnhancementCodeEx::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
     SetWindowText(wGS(CHEAT_CODE_EXT_TITLE).c_str());
     GetDlgItem(IDC_NOTE).SetWindowText(wGS(CHEAT_CODE_EXT_TXT).c_str());
     GetDlgItem(IDOK).SetWindowText(wGS(CHEAT_OK).c_str());
     GetDlgItem(IDCANCEL).SetWindowText(wGS(CHEAT_CANCEL).c_str());
 
-    stdstr CheatName = CCheatsUI::GetCheatName(m_EditCheat, false);
-    GetDlgItem(IDC_CHEAT_NAME).SetWindowText(CheatName.ToUTF16().c_str());
-
-    std::string Options(g_Settings->LoadStringIndex(Cheat_Options, m_EditCheat));
-    std::string CurrentExt(g_Settings->LoadStringIndex(Cheat_Extension, m_EditCheat));
-    const char * ReadPos = Options.c_str();
+    GetDlgItem(IDC_CHEAT_NAME).SetWindowText(stdstr(m_Enhancement->GetName()).ToUTF16().c_str());
+    
     CListBox CheatList = GetDlgItem(IDC_CHEAT_LIST);
-    while (*ReadPos != 0)
+    CEnhancement::CodeOptions Options = m_Enhancement->GetOptions();
+    bool OptionSelected = m_Enhancement->OptionSelected();
+    uint16_t SelectedOption = m_Enhancement->SelectedOption();
+    for (size_t i = 0, n = Options.size(); i < n; i++)
     {
-        const char * NextComma = strchr(ReadPos, ',');
-        int len = NextComma == NULL ? strlen(ReadPos) : NextComma - ReadPos;
-        stdstr CheatExt(ReadPos);
-        CheatExt.resize(len);
-        int index = CheatList.AddString(CheatExt.ToUTF16().c_str());
-        if (CheatExt == CurrentExt)
+        stdstr_f Option(m_Enhancement->CodeOptionSize() == 2 ? "$%02X %s" : "$%04X %s", Options[i].Value, Options[i].Name.c_str());
+        int index = CheatList.AddString(Option.ToUTF16().c_str());
+        if (index >= 0)
         {
-            CheatList.SetCurSel(index);
+            CheatList.SetItemData(index, Options[i].Value);
+            if (OptionSelected && SelectedOption == Options[i].Value)
+            {
+                CheatList.SetCurSel(index);
+            }
         }
-        ReadPos = NextComma ? NextComma + 1 : ReadPos + strlen(ReadPos);
     }
     return 0;
 }
 
-LRESULT CCheatsCodeEx::OnListDblClick(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CEnhancementCodeEx::OnListDblClick(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
     PostMessage(WM_COMMAND, IDOK, 0);
     return 0;
 }
 
-LRESULT CCheatsCodeEx::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CEnhancementCodeEx::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
     CListBox CheatList = GetDlgItem(IDC_CHEAT_LIST);
     int index = CheatList.GetCurSel();
@@ -1234,21 +1104,16 @@ LRESULT CCheatsCodeEx::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
         index = 0;
     }
 
-    int length = CheatList.GetTextLen(index);
-    std::wstring CheatExten;
-    CheatExten.resize(length + 1);
-    CheatList.GetText(index, (wchar_t *)CheatExten.c_str());
-
-    g_Settings->SaveStringIndex(Cheat_Extension, m_EditCheat, stdstr().FromUTF16(CheatExten.c_str()).c_str());
-    if (g_BaseSystem)
+    m_Enhancement->SetSelectedOption((uint16_t)(CheatList.GetItemData(index)));
+    if (g_Enhancements != nullptr)
     {
-        g_BaseSystem->SetCheatsSlectionChanged(true);
+        g_Enhancements->UpdateCheats();
     }
     EndDialog(0);
     return 0;
 }
 
-LRESULT CCheatsCodeEx::OnCloseCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CEnhancementCodeEx::OnCloseCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
     EndDialog(0);
     return 0;

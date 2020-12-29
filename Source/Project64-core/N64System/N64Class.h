@@ -26,7 +26,6 @@
 #include <Project64-core/Logging.h>
 
 #include "Mips/TLBClass.h"
-#include "CheatClass.h"
 #include "FramePerSecondClass.h"
 #include "SpeedLimiterClass.h"
 
@@ -52,7 +51,6 @@ public:
     CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesReadOnly, bool SyncSystem);
     virtual ~CN64System(void);
 
-    CCheats    m_Cheats;
     bool  m_EndEmulation;
     SAVE_CHIP_TYPE m_SaveUsing;
 
@@ -78,6 +76,7 @@ public:
     void   Reset(bool bInitReg, bool ClearMenory);
     void   GameReset();
     void   PluginReset();
+    void   ApplyGSButton(void);
 
     void   Pause();
     void   RunRSP();
@@ -87,8 +86,6 @@ public:
 
     bool   DmaUsed() const { return m_DMAUsed; }
     void   SetDmaUsed(bool DMAUsed) { m_DMAUsed = DMAUsed; }
-    void   SetCheatsSlectionChanged(bool changed) { m_CheatsSlectionChanged = changed; }
-    bool   HasCheatsSlectionChanged(void) const { return m_CheatsSlectionChanged; }
     uint32_t  GetButtons(int32_t Control) const { return m_Buttons[Control]; }
     CPlugins * GetPlugins() { return m_Plugins; }
 
@@ -165,8 +162,7 @@ private:
     uint32_t        m_TLBLoadAddress;
     uint32_t        m_TLBStoreAddress;
     uint32_t        m_SyncCount;
-    bool            m_SyncCpu;
-    bool            m_CheatsSlectionChanged;
+    bool            m_SyncSystem;
     CRandom         m_Random;
 
     //When Syncing cores this is the PC where it last Sync'ed correctly

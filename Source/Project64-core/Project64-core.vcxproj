@@ -44,9 +44,11 @@
     <ClCompile Include="Logging.cpp" />
     <ClCompile Include="MemoryExceptionFilter.cpp" />
     <ClCompile Include="Multilanguage\LanguageClass.cpp" />
-    <ClCompile Include="N64System\CheatClass.cpp" />
-    <ClCompile Include="N64System\CheatFile.cpp" />
     <ClCompile Include="N64System\EmulationThread.cpp" />
+    <ClCompile Include="N64System\Enhancement\Enhancement.cpp" />
+    <ClCompile Include="N64System\Enhancement\EnhancementFile.cpp" />
+    <ClCompile Include="N64System\Enhancement\EnhancementList.cpp" />
+    <ClCompile Include="N64System\Enhancement\Enhancements.cpp" />
     <ClCompile Include="N64System\FramePerSecondClass.cpp" />
     <ClCompile Include="N64System\Interpreter\InterpreterCPU.cpp" />
     <ClCompile Include="N64System\Interpreter\InterpreterOps.cpp" />
@@ -106,7 +108,6 @@
     <ClCompile Include="Settings\SettingType\SettingsType-Application.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-ApplicationIndex.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-ApplicationPath.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-Cheats.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-Enhancements.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-GameSetting.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-GameSettingIndex.cpp" />
@@ -140,8 +141,10 @@
     <ClInclude Include="Logging.h" />
     <ClInclude Include="Multilanguage.h" />
     <ClInclude Include="Multilanguage\LanguageClass.h" />
-    <ClInclude Include="N64System\CheatClass.h" />
-    <ClInclude Include="N64System\CheatFile.h" />
+    <ClInclude Include="N64System\Enhancement\Enhancement.h" />
+    <ClInclude Include="N64System\Enhancement\EnhancementFile.h" />
+    <ClInclude Include="N64System\Enhancement\EnhancementList.h" />
+    <ClInclude Include="N64System\Enhancement\Enhancements.h" />
     <ClInclude Include="N64System\FramePerSecondClass.h" />
     <ClInclude Include="N64System\Interpreter\InterpreterCPU.h" />
     <ClInclude Include="N64System\Interpreter\InterpreterOps32.h" />
@@ -214,7 +217,6 @@
     <ClInclude Include="Settings\SettingType\SettingsType-ApplicationIndex.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-ApplicationPath.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-Base.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-Cheats.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-Enhancements.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-GameSetting.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-GameSettingIndex.h" />

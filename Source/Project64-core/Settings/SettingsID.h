@@ -335,23 +335,6 @@ enum SettingID
     Logging_LogRomHeader,
     Logging_LogUnknown,
 
-    //Cheats
-    Cheat_Entry,
-    Cheat_Notes,
-    Cheat_Options,
-    Cheat_Active,
-    Cheat_Extension,
-
-	//Enhancement
-	Enhancement_Name,
-	Enhancement_Active,
-	Enhancement_OnByDefault,
-	Enhancement_Overclock,
-	Enhancement_OverclockValue,
-	Enhancement_Gameshark,
-	Enhancement_GamesharkCode,
-	Enhancement_Notes,
-
 	FirstUISettings, LastUISettings = FirstUISettings + MaxPluginSetting,
     FirstRSPDefaultSet, LastRSPDefaultSet = FirstRSPDefaultSet + MaxPluginSetting,
     FirstRSPSettings, LastRSPSettings = FirstRSPSettings + MaxPluginSetting,

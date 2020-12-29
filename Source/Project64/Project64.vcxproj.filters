@@ -207,9 +207,6 @@
     <ClCompile Include="UserInterface\Settings\SettingsPage-Defaults.cpp">
       <Filter>Source Files\User Interface Source\Settings Source</Filter>
     </ClCompile>
-    <ClCompile Include="UserInterface\EnhancementConfig.cpp">
-      <Filter>Source Files\User Interface Source</Filter>
-    </ClCompile>
     <ClCompile Include="UserInterface\Debugger\CPULog.cpp">
       <Filter>Source Files\User Interface Source\Debugger Source</Filter>
     </ClCompile>
@@ -445,9 +442,6 @@
     </ClInclude>
     <ClInclude Include="UserInterface\Settings\SettingsPage-Defaults.h">
       <Filter>Header Files\User Interface Headers\Settings Header</Filter>
-    </ClInclude>
-    <ClInclude Include="UserInterface\EnhancementConfig.h">
-      <Filter>Header Files\User Interface Headers</Filter>
     </ClInclude>
     <ClInclude Include="UserInterface\Debugger\CPULog.h">
       <Filter>Header Files\User Interface Headers\Debugger Headers</Filter>

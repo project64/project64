@@ -19,6 +19,8 @@
 #include <Project64-core/N64System/Mips/OpcodeName.h>
 #include <Project64-core/N64System/Mips/Disk.h>
 #include <Project64-core/N64System/N64DiskClass.h>
+#include <Project64-core/N64System/Enhancement/Enhancements.h>
+#include <Project64-core/N64System/N64RomClass.h>
 #include <Project64-core/ExceptionHandler.h>
 #include <Project64-core/Logging.h>
 #include <Project64-core/Debugger.h>
@@ -39,7 +41,7 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     m_SyncCPU(NULL),
     m_SyncPlugins(NULL),
     m_MMU_VM(SavesReadOnly),
-    m_Cheats(m_MMU_VM),
+    //m_Cheats(m_MMU_VM),
     m_TLB(this),
     m_Reg(this, this),
     m_Recomp(NULL),
@@ -57,8 +59,7 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     m_SyncCount(0),
     m_thread(NULL),
     m_hPauseEvent(true),
-    m_CheatsSlectionChanged(false),
-    m_SyncCpu(SyncSystem),
+    m_SyncSystem(SyncSystem),
     m_Random(randomizer_seed)
 {
     WriteTrace(TraceN64System, TraceDebug, "Start");
@@ -71,7 +72,6 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     }
     m_Limiter.SetHertz(gameHertz);
     g_Settings->SaveDword(GameRunning_ScreenHertz, gameHertz);
-    m_Cheats.LoadCheats(!g_Settings->LoadDword(Setting_RememberCheats), Plugins);
     WriteTrace(TraceN64System, TraceDebug, "Setting up system");
     CInterpreterCPU::BuildCPU();
 
@@ -840,6 +840,14 @@ void CN64System::PluginReset()
 #endif
 }
 
+void CN64System::ApplyGSButton(void)
+{
+    if ((m_Reg.STATUS_REGISTER & STATUS_IE) != 0)
+    {
+        g_Enhancements->ApplyGSButton(m_MMU_VM, !m_SyncSystem);
+    }
+}
+
 void CN64System::Reset(bool bInitReg, bool ClearMenory)
 {
     WriteTrace(TraceN64System, TraceDebug, "Start (bInitReg: %s, ClearMenory: %s)", bInitReg ? "true" : "false", ClearMenory ? "true" : "false");
@@ -1419,9 +1427,6 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
         m_LastSuccessSyncPC[i] = m_LastSuccessSyncPC[i - 1];
     }
     m_LastSuccessSyncPC[0] = m_Reg.m_PROGRAM_COUNTER;
-    //    if (PROGRAM_COUNTER == 0x8009BBD8) {
-    //        g_Notify->BreakPoint(__FILE__, __LINE__);
-    //    }
 }
 
 void CN64System::SyncSystem()
@@ -2432,16 +2437,7 @@ void CN64System::RefreshScreen()
     }
     if ((m_Reg.STATUS_REGISTER & STATUS_IE) != 0)
     {
-        if (HasCheatsSlectionChanged())
-        {
-            if (this == g_BaseSystem && g_SyncSystem != NULL)
-            {
-                g_SyncSystem->SetCheatsSlectionChanged(true);
-            }
-            SetCheatsSlectionChanged(false);
-            m_Cheats.LoadCheats(false, g_BaseSystem->m_Plugins);
-        }
-        m_Cheats.ApplyCheats();
+        g_Enhancements->ApplyActive(m_MMU_VM, !m_SyncSystem);
     }
     //    if (bProfiling)    { m_Profile.StartTimer(ProfilingAddr != Timer_None ? ProfilingAddr : Timer_R4300); }
 }

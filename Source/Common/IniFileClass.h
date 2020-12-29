@@ -127,4 +127,4 @@ protected:
     CFileStorage  m_FileObject;
 };
 
-typedef CIniFileT<CFile>   CIniFile;
+typedef CIniFileT<CFile> CIniFile;

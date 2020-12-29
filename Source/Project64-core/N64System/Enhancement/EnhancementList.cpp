@@ -8,23 +8,29 @@
 * GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
 *                                                                           *
 ****************************************************************************/
-#pragma once
+#include "stdafx.h"
+#include <Project64-core\N64System\Enhancement\EnhancementList.h>
 
-#pragma warning(disable:4786)
-#include "Support.h"
+CEnhancementList::CEnhancementList()
+{
+}
 
-#include <Project64-core/Multilanguage.h>
-#include <Project64-core/Settings.h>
+void CEnhancementList::AddItem(const CEnhancement & Details)
+{
+    insert(value_type(Details.GetName(), Details));
+    //push_back(std::pair<std::string, CEnhancement>(Details.GetName(), Details));
+}
 
-#include "WTLApp.h"
-#include "UserInterface/MenuShortCuts.h"
-#include "UserInterface/RomBrowser.h"
-#include "UserInterface/MainWindow.h"
-#include "UserInterface/MenuClass.h"
-#include "UserInterface/MainMenu.h"
-#include "UserInterface/Notification.h"
-#include <Project64-core/N64System/FramePerSecondClass.h>
-#include "UserInterface/resource.h"
-#include "UserInterface/SettingsConfig.h"
-#include "UserInterface/CheatClassUI.h"
-#include "UserInterface/SupportWindow.h"
+CEnhancementList::iterator CEnhancementList::FindItem(const std::string & Name)
+{
+    return find(Name);
+    /*iterator itr = end();
+    for (iterator itr2 = begin(); itr2 != end(); itr2++)
+    {
+        if (itr2->first == Name)
+        {
+            itr = itr2;
+        }
+    }
+    return itr;*/
+}

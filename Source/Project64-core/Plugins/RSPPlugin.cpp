@@ -14,6 +14,7 @@
 #include <Project64-core/N64System/Mips/RegisterClass.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/N64System/N64DiskClass.h>
+#include <Project64-core/N64System/N64RomClass.h>
 #include "RSPPlugin.h"
 #include "GFXPlugin.h"
 #include <Project64-core/Plugins/AudioPlugin.h>

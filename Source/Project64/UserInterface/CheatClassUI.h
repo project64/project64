@@ -10,6 +10,8 @@
 ****************************************************************************/
 #pragma once
 #include <Project64\WTLApp.h>
+#include <Project64-core\N64System\Enhancement\Enhancement.h>
+#include <Project64-core\N64System\Enhancement\EnhancementList.h>
 
 class CEditCheat;
 
@@ -36,7 +38,7 @@ public:
 
     enum { IDD = IDD_Cheats_List };
 
-    CCheatList(CEditCheat & EditCheat);
+    CCheatList(CEnhancementList & Cheats, CEditCheat & EditCheat);
     ~CCheatList();
 
     void RefreshItems();
@@ -57,16 +59,17 @@ private:
     LRESULT OnTreeRClicked(NMHDR* lpnmh);
     LRESULT OnTreeDClicked(NMHDR* lpnmh);
     LRESULT OnTreeSelChanged(NMHDR* lpnmh);
-    void AddCodeLayers(int CheatNumber, const std::wstring &CheatName, HTREEITEM hParent, bool CheatActive);
+    void AddCodeLayers(LPARAM ListID, const std::wstring &Name, HTREEITEM hParent, bool CheatActive);
     void ChangeChildrenStatus(HTREEITEM hParent, bool Checked);
     void CheckParentStatus(HTREEITEM hParent);
-    void DeleteCheat(int Index);
+    void DeleteCheat(LPARAM Enhancement);
     TV_CHECK_STATE TV_GetCheckState(HTREEITEM hItem);
     bool TV_SetCheckState(HTREEITEM hItem, TV_CHECK_STATE state);
     static void MenuSetText(HMENU hMenu, int MenuPos, const wchar_t * Title, const wchar_t * ShortCut);
 
     enum { IDC_MYTREE = 0x500 };
 
+    CEnhancementList & m_Cheats;
     CEditCheat & m_EditCheat;
     CTreeViewCtrl m_hCheatTree;
     HTREEITEM m_hSelectedItem;
@@ -102,7 +105,7 @@ public:
 
     enum { IDD = IDD_Cheats_Add };
 
-    CEditCheat(CCheatList & CheatList);
+    CEditCheat(CEnhancementList & Cheats, CCheatList & CheatList);
     ~CEditCheat();
 
 private:
@@ -118,26 +121,27 @@ private:
     LRESULT OnCheatCodeChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
     LRESULT OnCheatOptionsChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 
-    std::string ReadCodeString(bool &ValidCodes, bool &ValidOptions, bool &NoOptions, CodeFormat & Format);
-    std::string ReadOptionsString(bool &validoptions, CodeFormat Format);
+    CEnhancement::CodeEntries ReadCodeEntries(bool &ValidCodes, bool &ValidOptions, bool &NoOptions, CodeFormat & Format);
+    CEnhancement::CodeOptions ReadOptions(bool &validoptions, CodeFormat Format);
 
-    void RecordCheatValues(void);
-    bool CheatChanged(void);
+    void RecordCurrentValues(void);
+    bool ValuesChanged(void);
     std::string GetItemText(int nIDDlgItem);
 
+    CEnhancementList & m_Cheats;
     CCheatList & m_CheatList;
     std::string m_EditName;
     std::string m_EditCode;
     std::string m_EditOptions;
     std::string m_EditNotes;
-    int32_t m_EditCheat;
+    CEnhancement * m_EditEnhancement;
 };
 
-class CCheatsCodeEx :
-    public CDialogImpl<CCheatsCodeEx>
+class CEnhancementCodeEx :
+    public CDialogImpl<CEnhancementCodeEx>
 {
 public:
-    BEGIN_MSG_MAP_EX(CCheatsCodeEx)
+    BEGIN_MSG_MAP_EX(CEnhancementCodeEx)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
         COMMAND_HANDLER(IDC_CHEAT_LIST, LBN_DBLCLK, OnListDblClick)
         COMMAND_ID_HANDLER(IDOK, OnOkCmd)
@@ -146,19 +150,19 @@ public:
 
     enum { IDD = IDD_Cheats_CodeEx };
 
-    CCheatsCodeEx(int EditCheat);
+    CEnhancementCodeEx(CEnhancement * Enhancement);
 
 private:
-    CCheatsCodeEx();
-    CCheatsCodeEx(const CCheatsCodeEx&);
-    CCheatsCodeEx& operator=(const CCheatsCodeEx&);
+    CEnhancementCodeEx();
+    CEnhancementCodeEx(const CEnhancementCodeEx&);
+    CEnhancementCodeEx& operator=(const CEnhancementCodeEx&);
 
     LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnListDblClick(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
     LRESULT OnOkCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
     LRESULT OnCloseCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 
-    int32_t m_EditCheat;
+    CEnhancement * m_Enhancement;
 };
 
 class CCheatsUI :
@@ -166,7 +170,7 @@ class CCheatsUI :
 {
     friend CCheatList;
     friend CEditCheat;
-    friend CCheatsCodeEx;
+    friend CEnhancementCodeEx;
 
 public:
     BEGIN_MSG_MAP_EX(CCheatsUI)
@@ -189,9 +193,7 @@ private:
     LRESULT OnCloseCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
     LRESULT OnStateChange(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 
-    static std::string GetCheatName(int CheatNo, bool AddExtension);
-    static bool CheatUsesCodeExtensions(const std::string &LineEntry);
-
+    CEnhancementList m_Cheats;
     CEditCheat m_EditCheat;
     CCheatList m_SelectCheat;
     CButton m_StateBtn;

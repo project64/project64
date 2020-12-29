@@ -88,6 +88,12 @@
     <Filter Include="Header Files\N64 System\Recompiler\Arm">
       <UniqueIdentifier>{98453fda-8903-4074-8c4c-831c3f2bd63d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\N64 System\Enhancement">
+      <UniqueIdentifier>{8fb36b94-03cc-4d51-96c9-bc4c475e54fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\N64 System\Enhancement">
+      <UniqueIdentifier>{ec73ae9e-54e8-4cbe-93fb-1d98d6755619}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -103,9 +109,6 @@
       <Filter>Source Files\Settings\SettingType</Filter>
     </ClCompile>
     <ClCompile Include="Settings\SettingType\SettingsType-ApplicationPath.cpp">
-      <Filter>Source Files\Settings\SettingType</Filter>
-    </ClCompile>
-    <ClCompile Include="Settings\SettingType\SettingsType-Cheats.cpp">
       <Filter>Source Files\Settings\SettingType</Filter>
     </ClCompile>
     <ClCompile Include="Settings\SettingType\SettingsType-GameSetting.cpp">
@@ -191,9 +194,6 @@
     </ClCompile>
     <ClCompile Include="Plugins\RSPPlugin.cpp">
       <Filter>Source Files\Plugins</Filter>
-    </ClCompile>
-    <ClCompile Include="N64System\CheatClass.cpp">
-      <Filter>Source Files\N64 System</Filter>
     </ClCompile>
     <ClCompile Include="N64System\EmulationThread.cpp">
       <Filter>Source Files\N64 System</Filter>
@@ -342,8 +342,17 @@
     <ClCompile Include="Settings\SettingType\SettingsType-Enhancements.cpp">
       <Filter>Source Files\Settings\SettingType</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\CheatFile.cpp">
-      <Filter>Source Files\N64 System</Filter>
+    <ClCompile Include="N64System\Enhancement\EnhancementFile.cpp">
+      <Filter>Source Files\N64 System\Enhancement</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Enhancement\Enhancement.cpp">
+      <Filter>Source Files\N64 System\Enhancement</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Enhancement\Enhancements.cpp">
+      <Filter>Source Files\N64 System\Enhancement</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Enhancement\EnhancementList.cpp">
+      <Filter>Source Files\N64 System\Enhancement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -366,9 +375,6 @@
       <Filter>Header Files\Settings\SettingType</Filter>
     </ClInclude>
     <ClInclude Include="Settings\SettingType\SettingsType-Base.h">
-      <Filter>Header Files\Settings\SettingType</Filter>
-    </ClInclude>
-    <ClInclude Include="Settings\SettingType\SettingsType-Cheats.h">
       <Filter>Header Files\Settings\SettingType</Filter>
     </ClInclude>
     <ClInclude Include="Settings\SettingType\SettingsType-GameSetting.h">
@@ -481,9 +487,6 @@
     </ClInclude>
     <ClInclude Include="Settings\LoggingSettings.h">
       <Filter>Header Files\Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="N64System\CheatClass.h">
-      <Filter>Header Files\N64 System</Filter>
     </ClInclude>
     <ClInclude Include="N64System\FramePerSecondClass.h">
       <Filter>Header Files\N64 System</Filter>
@@ -662,8 +665,17 @@
     <ClInclude Include="Settings\SettingType\SettingsType-Enhancements.h">
       <Filter>Header Files\Settings\SettingType</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\CheatFile.h">
-      <Filter>Header Files\N64 System</Filter>
+    <ClInclude Include="N64System\Enhancement\EnhancementFile.h">
+      <Filter>Header Files\N64 System\Enhancement</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Enhancement\Enhancement.h">
+      <Filter>Header Files\N64 System\Enhancement</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Enhancement\Enhancements.h">
+      <Filter>Header Files\N64 System\Enhancement</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Enhancement\EnhancementList.h">
+      <Filter>Header Files\N64 System\Enhancement</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
