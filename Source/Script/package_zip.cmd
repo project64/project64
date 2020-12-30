@@ -30,6 +30,7 @@ IF %ERRORLEVEL% NEQ 0 GOTO EndErr
 rd "%base_dir%\Bin\Package" /Q /S > NUL 2>&1
 md "%base_dir%\Bin\Package"
 md "%base_dir%\Bin\Package\Config"
+md "%base_dir%\Bin\Package\Config\Cheats"
 md "%base_dir%\Bin\Package\Lang"
 md "%base_dir%\Bin\Package\Plugin%VSPlatform%"
 md "%base_dir%\Bin\Package\Plugin%VSPlatform%\Audio"

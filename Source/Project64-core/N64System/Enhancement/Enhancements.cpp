@@ -91,6 +91,10 @@ void CEnhancements::UpdateCheats(const CEnhancementList & Cheats)
     CGuard Guard(m_CS);
     if (strcmp(m_CheatFile->FileName(), OutFile) != 0)
     {
+        if (!OutFile.DirectoryExists())
+        {
+            OutFile.DirectoryCreate();
+        }
         SectionFiles::const_iterator CheatFileItr = m_CheatFiles.find(m_SectionIdent);
         if (m_CheatFiles.end() != CheatFileItr)
         {
@@ -156,6 +160,7 @@ void CEnhancements::LoadCheats(CMipsMemoryVM * MMU)
     WaitScanDone();
     CGuard Guard(m_CS);
     SectionFiles::const_iterator CheatFileItr = m_CheatFiles.find(m_SectionIdent);
+    bool FoundFile = false;
     if (CheatFileItr != m_CheatFiles.end())
     {
         CPath CheatFile(CheatFileItr->second);
@@ -163,9 +168,15 @@ void CEnhancements::LoadCheats(CMipsMemoryVM * MMU)
         {
             m_CheatFile = std::make_unique<CEnhancmentFile>(CheatFile, "Cheat");
             m_CheatFile->GetEnhancementList(m_SectionIdent.c_str(), m_Cheats);
+            FoundFile = true;
         }
     }
 
+    if (!FoundFile)
+    {
+        m_CheatFile = nullptr;
+        m_Cheats.clear();
+    }
     ResetCodes(MMU);
     for (CEnhancementList::const_iterator itr = m_Cheats.begin(); itr != m_Cheats.end(); itr++)
     {

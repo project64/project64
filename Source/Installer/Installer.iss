@@ -44,6 +44,7 @@ Source: "{#BaseDir}\apidoc.htm"; DestDir: "{app}"
 
 [Dirs]
 Name: "{app}\Config"; Permissions: everyone-full
+Name: "{app}\Config\Cheats-User"; Permissions: everyone-full
 Name: "{app}\Logs"; Permissions: everyone-full
 Name: "{app}\Save"; Permissions: everyone-full
 Name: "{app}\Screenshots"; Permissions: everyone-full
