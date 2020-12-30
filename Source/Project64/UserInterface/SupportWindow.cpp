@@ -27,7 +27,7 @@ void CSupportWindow::Show(HWND hParent, bool Delay)
     m_Delay = Delay;
     if (Delay)
     {
-        if (UISettingsLoadDword(SupportWindows_RunCount) == -1 || m_Support.Validated())
+        if (m_Support.Validated())
         {
             return;
         }
@@ -184,10 +184,6 @@ LRESULT CSupportWindow::OnEnterCode(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndC
 {
     CSupportEnterCode EnterCodeWindow(m_Support);
     EnterCodeWindow.DoModal(m_hWnd);
-    if (UISettingsLoadDword(SupportWindows_RunCount) == -1)
-    {
-        EndDialog(wID);
-    }
     if (m_Support.Validated())
     {
         EndDialog(wID);

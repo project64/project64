@@ -14,6 +14,10 @@ CProjectSupport::CProjectSupport() :
 
 bool CProjectSupport::RequestCode(const char * Email)
 {
+    if (Email == nullptr || strlen(Email) == 0 || stricmp(Email, "thank you from project64") == 0)
+    {
+        return false;
+    }
     stdstr_f PostData("task=RequestCode&email=%s&machine=%s", Email, MachineID());
     std::vector<std::string> Headers;
     DWORD StatusCode;

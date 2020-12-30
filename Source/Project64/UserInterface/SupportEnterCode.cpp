@@ -18,6 +18,7 @@ public:
     enum { IDD = IDD_Support_RequestCode };
 
     CRequestCode(CProjectSupport & Support);
+    void ShowOldCodeMsg();
 
 private:
     CRequestCode(void);
@@ -31,6 +32,7 @@ private:
     LRESULT OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 
     CProjectSupport & m_Support;
+    bool m_ShowOldCodeMsg;
 };
 
 CSupportEnterCode::CSupportEnterCode(CProjectSupport & Support) :
@@ -157,9 +159,13 @@ LRESULT CSupportEnterCode::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCt
     bool ValidCode = false;
     if (_wcsicmp(code,L"thank you from project64") == 0)
     {
-        UISettingsSaveDword(SupportWindows_RunCount, (uint32_t)-1);
-        CSettingTypeApplication::Flush();
-        ValidCode = true;
+        SetDlgItemText(IDC_CODE, L"");
+        CRequestCode RequestWindow(m_Support);
+        RequestWindow.ShowOldCodeMsg();
+        RequestWindow.DoModal(m_hWnd);
+        GetDlgItem(IDOK).EnableWindow(TRUE);
+        GetDlgItem(IDCANCEL).EnableWindow(TRUE);
+        return TRUE;
     }
     else if (m_Support.ValidateCode(stdstr().FromUTF16(code).c_str()))
     {
@@ -180,8 +186,14 @@ LRESULT CSupportEnterCode::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCt
 }
 
 CRequestCode::CRequestCode(CProjectSupport & Support) :
-    m_Support(Support)
+    m_Support(Support),
+    m_ShowOldCodeMsg(false)
 {
+}
+
+void CRequestCode::ShowOldCodeMsg()
+{
+    m_ShowOldCodeMsg = true;
 }
 
 LRESULT CSupportEnterCode::OnRequestCode(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
@@ -193,6 +205,10 @@ LRESULT CSupportEnterCode::OnRequestCode(WORD /*wNotifyCode*/, WORD /*wID*/, HWN
 
 LRESULT CRequestCode::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
+    if (m_ShowOldCodeMsg)
+    {
+        SetDlgItemText(IDC_DESCRIPTION, L"We have changed the code to be unique to a machine, please enter the email you used to support Project64 with.");
+    }
     return TRUE;
 }
 
