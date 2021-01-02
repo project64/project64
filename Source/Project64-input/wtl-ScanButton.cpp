@@ -20,7 +20,7 @@ void CScanButton::SubclassWindow(CWindow Wnd)
     m_DisplayCtrl = Wnd.GetDlgItem(m_DisplayCtrlId);
     m_ScanBtn = Wnd.GetDlgItem(m_ScanBtnId);
     m_ScanBtnThunk.Init((WNDPROC)ScanButtonProc, this);
-    m_ScanBtnProc = (WNDPROC)m_ScanBtn.SetWindowLongPtrW(GWLP_WNDPROC, (LONG_PTR)m_ScanBtnThunk.GetWNDPROC());
+    m_ScanBtnProc = (WNDPROC)m_ScanBtn.SetWindowLongPtr(GWLP_WNDPROC, (LONG_PTR)m_ScanBtnThunk.GetWNDPROC());
     DisplayButton();
 }
 

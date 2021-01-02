@@ -1,22 +1,15 @@
-// Windows Template Library - WTL version 8.1
-// Copyright (C) Microsoft Corporation. All rights reserved.
+// Windows Template Library - WTL version 10.0
+// Copyright (C) Microsoft Corporation, WTL Team. All rights reserved.
 //
 // This file is a part of the Windows Template Library.
 // The use and distribution terms for this software are covered by the
-// Common Public License 1.0 (http://opensource.org/licenses/cpl1.0.php)
-// which can be found in the file CPL.TXT at the root of this distribution.
-// By using this software in any fashion, you are agreeing to be bound by
-// the terms of this license. You must not remove this notice, or
-// any other, from this software.
+// Microsoft Public License (http://opensource.org/licenses/MS-PL)
+// which can be found in the file MS-PL.txt at the root folder.
 
 #ifndef __ATLRES_H__
 #define __ATLRES_H__
 
 #pragma once
-
-#if defined(_WIN32_WCE) && !defined(__ATLRESCE_H__)
-	#error Use atlresCE.h instead of atlres.h for Windows CE
-#endif
 
 
 #ifdef RC_INVOKED
@@ -24,23 +17,21 @@
 
   #define _INC_WINDOWS
 
-  #ifndef _WIN32_WCE
-    #define VS_VERSION_INFO     1
+  #define VS_VERSION_INFO     1
 
-    #ifdef APSTUDIO_INVOKED
-      #define APSTUDIO_HIDDEN_SYMBOLS // Ignore following symbols
-    #endif // APSTUDIO_INVOKED
+  #ifdef APSTUDIO_INVOKED
+    #define APSTUDIO_HIDDEN_SYMBOLS // Ignore following symbols
+  #endif // APSTUDIO_INVOKED
 
-    #ifndef WINVER
-      #define WINVER 0x0400   // default to Windows Version 4.0
-    #endif // !WINVER
+  #ifndef WINVER
+    #define WINVER 0x0500
+  #endif // !WINVER
 
-    #include <winresrc.h>
+  #include <winresrc.h>
 
     // operation messages sent to DLGINIT
-    #define LB_ADDSTRING    (WM_USER+1)
-    #define CB_ADDSTRING    (WM_USER+3)
-  #endif // !_WIN32_WCE
+  #define LB_ADDSTRING    (WM_USER+1)
+  #define CB_ADDSTRING    (WM_USER+3)
 
   #ifdef APSTUDIO_INVOKED
     #undef APSTUDIO_HIDDEN_SYMBOLS
@@ -150,6 +141,9 @@
 #define ID_EDIT_SELECT_ALL              0xE12A
 #define ID_EDIT_UNDO                    0xE12B
 #define ID_EDIT_REDO                    0xE12C
+#define ID_EDIT_DELETE                  ID_EDIT_CLEAR
+#define ID_EDIT_FIND_NEXT               ID_EDIT_REPEAT
+#define ID_EDIT_FIND_PREVIOUS           0xE12D
 
 // Window commands
 #define ID_WINDOW_NEW                   0xE130
@@ -184,6 +178,8 @@
 #define ID_NEXT_PANE                    0xE150
 #define ID_PREV_PANE                    0xE151
 #define ID_PANE_CLOSE                   0xE152
+#define ID_PANE_NEXT                    ID_NEXT_PANE
+#define ID_PANE_PREVIOUS                ID_PREV_PANE
 
 // Format
 #define ID_FORMAT_FONT                  0xE160
@@ -217,7 +213,7 @@
 #define ID_VIEW_TOOLBAR                 0xE800
 #define ID_VIEW_STATUS_BAR              0xE801
 #define ID_VIEW_REFRESH                 0xE803
-#define ID_VIEW_RIBBON                  0xE804 // Ribbon
+#define ID_VIEW_RIBBON                  0xE804
 
 ///////////////////////////////////////////////////////////////////////////////
 // Standard control IDs

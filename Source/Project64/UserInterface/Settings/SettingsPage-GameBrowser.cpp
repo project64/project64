@@ -60,12 +60,12 @@ void COptionsGameBrowserPage::UpdateFieldList(const ROMBROWSER_FIELDS_LIST & Fie
         int Pos = Fields[i].Pos();
         if (Pos < 0)
         {
-            m_Avaliable.SetItemData(m_Avaliable.AddStringW(wGS(Fields[i].LangID()).c_str()), i);
+            m_Avaliable.SetItemData(m_Avaliable.AddString(wGS(Fields[i].LangID()).c_str()), i);
             continue;
         }
         int listCount = m_Using.GetCount();
         if (Pos > listCount) { Pos = listCount; }
-        m_Using.SetItemData(m_Using.InsertStringW(Pos, wGS(Fields[i].LangID()).c_str()), i);
+        m_Using.SetItemData(m_Using.InsertString(Pos, wGS(Fields[i].LangID()).c_str()), i);
     }
 }
 
@@ -113,7 +113,7 @@ void COptionsGameBrowserPage::AddFieldClicked(UINT /*Code*/, int /*id*/, HWND /*
     m_Avaliable.SetCurSel(index);
 
     //Add to list
-    index = m_Using.AddStringW(wGS(m_Fields[i].LangID()).c_str());
+    index = m_Using.AddString(wGS(m_Fields[i].LangID()).c_str());
     m_Using.SetItemData(index, i);
     m_Using.SetCurSel(index);
 
@@ -139,7 +139,7 @@ void COptionsGameBrowserPage::RemoveFieldClicked(UINT /*Code*/, int /*id*/, HWND
     m_Using.SetCurSel(index);
 
     //Add to list
-    index = m_Avaliable.AddStringW(wGS(m_Fields[i].LangID()).c_str());
+    index = m_Avaliable.AddString(wGS(m_Fields[i].LangID()).c_str());
     m_Avaliable.SetItemData(index, i);
     m_Avaliable.SetCurSel(index);
 
@@ -158,7 +158,7 @@ void COptionsGameBrowserPage::MoveFieldUpClicked(UINT /*Code*/, int /*id*/, HWND
     int i = m_Using.GetItemData(index);
     m_Using.DeleteString(index);
 
-    index = m_Using.InsertStringW(index - 1, wGS(m_Fields[i].LangID()).c_str());
+    index = m_Using.InsertString(index - 1, wGS(m_Fields[i].LangID()).c_str());
     m_Using.SetItemData(index, i);
     m_Using.SetCurSel(index);
 
@@ -177,7 +177,7 @@ void COptionsGameBrowserPage::MoveFieldDownClicked(UINT /*Code*/, int /*id*/, HW
     int i = m_Using.GetItemData(index);
     m_Using.DeleteString(index);
 
-    index = m_Using.InsertStringW(index + 1, wGS(m_Fields[i].LangID()).c_str());
+    index = m_Using.InsertString(index + 1, wGS(m_Fields[i].LangID()).c_str());
     m_Using.SetItemData(index, i);
     m_Using.SetCurSel(index);
 

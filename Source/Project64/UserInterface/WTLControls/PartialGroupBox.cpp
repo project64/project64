@@ -23,7 +23,7 @@ BOOL CPartialGroupBox::Attach(HWND hWnd)
 		return FALSE;
 	}
 	WNDPROC pProc = m_thunk.GetWNDPROC();
-	WNDPROC pfnWndProc = (WNDPROC)::SetWindowLongPtrW(hWnd, GWLP_WNDPROC, (LONG_PTR)pProc);
+	WNDPROC pfnWndProc = (WNDPROC)::SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)pProc);
 	if (pfnWndProc == NULL)
 		return FALSE;
 	m_pfnSuperWindowProc = pfnWndProc;
@@ -65,10 +65,10 @@ void CPartialGroupBox::OnPaint(HDC /*hDC*/)
 	dc.SelectBrush(GetSysColorBrush(COLOR_BTNFACE));
 
 	wchar_t grptext[500];
-	::GetWindowTextW(m_hWnd, grptext, sizeof(grptext) / sizeof(grptext[0]));
+	::GetWindowText(m_hWnd, grptext, sizeof(grptext) / sizeof(grptext[0]));
 
 	CRect fontsizerect(0, 0, 0, 0);
-	dc.DrawTextW(grptext, -1, fontsizerect, DT_SINGLELINE | DT_LEFT | DT_CALCRECT);
+	dc.DrawText(grptext, -1, fontsizerect, DT_SINGLELINE | DT_LEFT | DT_CALCRECT);
 
 	CRect framerect(controlrect);
 	framerect.top += (fontsizerect.Height()) / 2;
@@ -116,6 +116,6 @@ void CPartialGroupBox::OnPaint(HDC /*hDC*/)
 		dc.SetBkMode(OPAQUE);
 		dc.SetBkColor(GetSysColor(COLOR_BTNFACE));
 
-		dc.DrawTextW(grptext, -1, fontrect, DT_SINGLELINE | DT_LEFT);
+		dc.DrawText(grptext, -1, fontrect, DT_SINGLELINE | DT_LEFT);
 	}
 }

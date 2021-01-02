@@ -1,22 +1,15 @@
-// Windows Template Library - WTL version 8.1
-// Copyright (C) Microsoft Corporation. All rights reserved.
+// Windows Template Library - WTL version 10.0
+// Copyright (C) Microsoft Corporation, WTL Team. All rights reserved.
 //
 // This file is a part of the Windows Template Library.
 // The use and distribution terms for this software are covered by the
-// Common Public License 1.0 (http://opensource.org/licenses/cpl1.0.php)
-// which can be found in the file CPL.TXT at the root of this distribution.
-// By using this software in any fashion, you are agreeing to be bound by
-// the terms of this license. You must not remove this notice, or
-// any other, from this software.
+// Microsoft Public License (http://opensource.org/licenses/MS-PL)
+// which can be found in the file MS-PL.txt at the root folder.
 
 #ifndef __ATLTHEME_H__
 #define __ATLTHEME_H__
 
 #pragma once
-
-#ifdef _WIN32_WCE
-	#error atltheme.h is not supported on Windows CE
-#endif
 
 #ifndef __ATLAPP_H__
 	#error atltheme.h requires atlapp.h to be included first
@@ -26,22 +19,7 @@
 	#error atltheme.h requires atlwin.h to be included first
 #endif
 
-#if (_WIN32_WINNT < 0x0501)
-	#error atltheme.h requires _WIN32_WINNT >= 0x0501
-#endif // (_WIN32_WINNT < 0x0501)
-
-#if defined(_WTL_USE_VSSYM32) || (defined(NTDDI_VERSION) && (NTDDI_VERSION >= NTDDI_LONGHORN))
-  #include <vssym32.h>
-#else
-  #ifndef TMSCHEMA_H
-  #include <tmschema.h>
-  #endif
-#endif
-
-#ifndef _UXTHEME_H_
-#include <uxtheme.h>
-#endif
-#pragma comment(lib, "uxtheme.lib")
+#include <vssym32.h>
 
 // Note: To create an application that also runs on older versions of Windows,
 // use delay load of uxtheme.dll and ensure that no calls to the Theme API are
@@ -61,18 +39,6 @@
 // Delay load is NOT AUTOMATIC for VC++ 7, you have to link to delayimp.lib, 
 // and add uxtheme.dll in the Linker.Input.Delay Loaded DLLs section of the 
 // project properties.
-#if (_MSC_VER < 1300) && !defined(_WTL_NO_THEME_DELAYLOAD)
-  #pragma comment(lib, "delayimp.lib")
-  #pragma comment(linker, "/delayload:uxtheme.dll")
-#endif // (_MSC_VER < 1300) && !defined(_WTL_NO_THEME_DELAYLOAD)
-
-// Hack: Signatures in uxtheme.h changed - the only way to check which variant of uxtheme.h
-// is included is to check for presence of new defines MAX_THEMECOLOR and MAX_THEMESIZE
-#ifndef _WTL_NEW_UXTHEME
-  #if defined(MAX_THEMECOLOR) && defined(MAX_THEMESIZE)
-    #define _WTL_NEW_UXTHEME
-  #endif // defined(MAX_THEMECOLOR) && defined(MAX_THEMESIZE)
-#endif // _WTL_NEW_UXTHEME
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -197,11 +163,14 @@ public:
 		return ::DrawThemeBackground(m_hTheme, hDC, nPartID, nStateID, pRect, pClipRect);
 	}
 
+// Missing in original uxtheme.h
+#ifdef DTBG_CLIPRECT
 	HRESULT DrawThemeBackgroundEx(HDC hDC, int nPartID, int nStateID, LPCRECT pRect, const DTBGOPTS* pOptions = NULL)
 	{
 		ATLASSERT(m_hTheme != NULL);
 		return ::DrawThemeBackgroundEx(m_hTheme, hDC, nPartID, nStateID, pRect, pOptions);
 	}
+#endif // DTBG_CLIPRECT
 
 	HRESULT DrawThemeText(HDC hDC, int nPartID, int nStateID, LPCWSTR pszText, int nCharCount, DWORD dwTextFlags, DWORD dwTextFlags2, LPCRECT pRect)
 	{
@@ -221,7 +190,7 @@ public:
 		return ::GetThemeBackgroundExtent(m_hTheme, hDC, nPartID, nStateID, pContentRect, pExtentRect);
 	}
 
-	HRESULT GetThemePartSize(HDC hDC, int nPartID, int nStateID, LPRECT pRect, enum THEMESIZE eSize, LPSIZE pSize) const
+	HRESULT GetThemePartSize(HDC hDC, int nPartID, int nStateID, LPCRECT pRect, enum THEMESIZE eSize, LPSIZE pSize) const
 	{
 		ATLASSERT(m_hTheme != NULL);
 		return ::GetThemePartSize(m_hTheme, hDC, nPartID, nStateID, pRect, eSize, pSize);
@@ -236,12 +205,7 @@ public:
 	HRESULT GetThemeTextMetrics(HDC hDC, int nPartID, int nStateID, PTEXTMETRICW pTextMetric) const
 	{
 		ATLASSERT(m_hTheme != NULL);
-#ifdef _WTL_NEW_UXTHEME
 		return ::GetThemeTextMetrics(m_hTheme, hDC, nPartID, nStateID, pTextMetric);
-#else // !_WTL_NEW_UXTHEME
-		// Note: The cast to PTEXTMETRIC is because uxtheme.h incorrectly uses it instead of PTEXTMETRICW
-		return ::GetThemeTextMetrics(m_hTheme, hDC, nPartID, nStateID, (PTEXTMETRIC)pTextMetric);
-#endif // !_WTL_NEW_UXTHEME
 	}
 
 	HRESULT GetThemeBackgroundRegion(HDC hDC, int nPartID, int nStateID, LPCRECT pRect, HRGN* pRegion) const
@@ -326,23 +290,13 @@ public:
 	HRESULT GetThemeFont(int nPartID, HDC hDC, int nStateID, int nPropID, LOGFONTW* pFont) const
 	{
 		ATLASSERT(m_hTheme != NULL);
-#ifdef _WTL_NEW_UXTHEME
 		return ::GetThemeFont(m_hTheme, hDC, nPartID, nStateID, nPropID, pFont);
-#else // !_WTL_NEW_UXTHEME
-		// Note: The cast to LOGFONT* is because uxtheme.h incorrectly uses it instead of LOGFONTW*
-		return ::GetThemeFont(m_hTheme, hDC, nPartID, nStateID, nPropID, (LOGFONT*)pFont);
-#endif // !_WTL_NEW_UXTHEME
 	}
 
 	HRESULT GetThemeFont(HDC hDC, int nPartID, int nStateID, int nPropID, LOGFONTW* pFont) const
 	{
 		ATLASSERT(m_hTheme != NULL);
-#ifdef _WTL_NEW_UXTHEME
 		return ::GetThemeFont(m_hTheme, hDC, nPartID, nStateID, nPropID, pFont);
-#else // !_WTL_NEW_UXTHEME
-		// Note: The cast to LOGFONT* is because uxtheme.h incorrectly uses it instead of LOGFONTW*
-		return ::GetThemeFont(m_hTheme, hDC, nPartID, nStateID, nPropID, (LOGFONT*)pFont);
-#endif // !_WTL_NEW_UXTHEME
 	}
 
 	HRESULT GetThemeRect(int nPartID, int nStateID, int nPropID, LPRECT pRect) const
@@ -402,12 +356,7 @@ public:
 	HRESULT GetThemeSysFont(int nFontID, LOGFONTW* plf) const
 	{
 		ATLASSERT(m_hTheme != NULL);
-#ifdef _WTL_NEW_UXTHEME
 		return ::GetThemeSysFont(m_hTheme, nFontID, plf);
-#else // !_WTL_NEW_UXTHEME
-		// Note: The cast to LOGFONT* is because uxtheme.h incorrectly uses it instead of LOGFONTW*
-		return ::GetThemeSysFont(m_hTheme, nFontID, (LOGFONT*)plf);
-#endif // !_WTL_NEW_UXTHEME
 	}
 
 	HRESULT GetThemeSysString(int nStringID, LPWSTR pszStringBuff, int cchMaxStringChars) const
@@ -422,7 +371,6 @@ public:
 		return ::GetThemeSysInt(m_hTheme, nIntID, pnValue);
 	}
 
-#ifdef _WTL_NEW_UXTHEME
 	HTHEME OpenThemeDataEx(HWND hWnd, LPCWSTR pszClassList, DWORD dwFlags)
 	{
 		if(!IsThemingSupported())
@@ -433,6 +381,7 @@ public:
 		return m_hTheme;
 	}
 
+#if (_WIN32_WINNT >= 0x0600)
 	HRESULT DrawThemeTextEx(HDC hDC, int nPartID, int nStateID, LPCWSTR pszText, int cchText, DWORD dwTextFlags, LPRECT lpRect, const DTTOPTS* pOptions)
 	{
 		ATLASSERT(m_hTheme != NULL);
@@ -444,7 +393,7 @@ public:
 		ATLASSERT(m_hTheme != NULL);
 		return ::GetThemeTransitionDuration(m_hTheme, nPartID, nFromStateID, nToStateID, nPropID, &dwDuration);
 	}
-#endif // _WTL_NEW_UXTHEME
+#endif // (_WIN32_WINNT >= 0x0600)
 
 #if (_WIN32_WINNT >= 0x0600)
 	HRESULT GetThemeBitmap(int nPartID, int nStateID, int nPropID, ULONG uFlags, HBITMAP& hBitmap)
@@ -459,6 +408,26 @@ public:
 		return ::GetThemeStream(m_hTheme, nPartID, nStateID, nPropID, ppvStream, pcbStream, hInstance);
 	}
 #endif // (_WIN32_WINNT >= 0x0600)
+
+#if (_WIN32_WINNT >= 0x0602)
+	HRESULT GetThemeAnimationProperty(int iStoryboardId, int iTargetId, TA_PROPERTY eProperty, VOID* pvProperty, DWORD cbSize, DWORD* pcbSizeOut)
+	{
+		ATLASSERT(m_hTheme != NULL);
+		return ::GetThemeAnimationProperty(m_hTheme, iStoryboardId, iTargetId, eProperty, pvProperty, cbSize, pcbSizeOut);
+	}
+
+	HRESULT GetThemeAnimationTransform(int iStoryboardId, int iTargetId, DWORD dwTransformIndex, TA_TRANSFORM* pTransform, DWORD cbSize, DWORD* pcbSizeOut)
+	{
+		ATLASSERT(m_hTheme != NULL);
+		return ::GetThemeAnimationTransform(m_hTheme, iStoryboardId, iTargetId, dwTransformIndex, pTransform, cbSize, pcbSizeOut);
+	}
+
+	HRESULT GetThemeTimingFunction(int iTimingFunctionId, TA_TIMINGFUNCTION* pTimingFunction, DWORD cbSize, DWORD* pcbSizeOut)
+	{
+		ATLASSERT(m_hTheme != NULL);
+		return ::GetThemeTimingFunction(m_hTheme, iTimingFunctionId, pTimingFunction, cbSize, pcbSizeOut);
+	}
+#endif // (_WIN32_WINNT >= 0x0602)
 };
 
 __declspec(selectany) int CTheme::m_nIsThemingSupported = -1;
@@ -493,17 +462,17 @@ inline bool AtlDrawThemeClientEdge(HTHEME hTheme, HWND hWnd, HRGN hRgnUpdate = N
 		return false;
 
 	// Get border size
-	int cxBorder = GetSystemMetrics(SM_CXBORDER);
-	int cyBorder = GetSystemMetrics(SM_CYBORDER);
+	int cxBorder = ::GetSystemMetrics(SM_CXBORDER);
+	int cyBorder = ::GetSystemMetrics(SM_CYBORDER);
 	if(SUCCEEDED(::GetThemeInt(hTheme, nPartID, nStateID, TMT_SIZINGBORDERWIDTH, &cxBorder)))
 		cyBorder = cxBorder;
 
-	RECT rect;
+	RECT rect = {};
 	::GetWindowRect(hWnd, &rect);            
 
 	// Remove the client edge from the update region
-	int cxEdge = GetSystemMetrics(SM_CXEDGE);
-	int cyEdge = GetSystemMetrics(SM_CYEDGE);
+	int cxEdge = ::GetSystemMetrics(SM_CXEDGE);
+	int cyEdge = ::GetSystemMetrics(SM_CYEDGE);
 	::InflateRect(&rect, -cxEdge, -cyEdge);
 	CRgn rgn;
 	rgn.CreateRectRgnIndirect(&rect);
@@ -522,15 +491,10 @@ inline bool AtlDrawThemeClientEdge(HTHEME hTheme, HWND hWnd, HRGN hRgnUpdate = N
 	::DrawThemeBackground(hTheme, dc, nPartID, nStateID, &rect, NULL);
 
 	// Use background brush too, since theme border might not cover everything
-	if(cxBorder < cxEdge && cyBorder < cyEdge)
+	if((cxBorder < cxEdge) && (cyBorder < cyEdge))
 	{
 		if(hBrush == NULL)
-// need conditional code because types don't match in winuser.h
-#ifdef _WIN64
 			hBrush = (HBRUSH)::GetClassLongPtr(hWnd, GCLP_HBRBACKGROUND);
-#else
-			hBrush = (HBRUSH)UlongToPtr(::GetClassLongPtr(hWnd, GCLP_HBRBACKGROUND));
-#endif
 
 		::InflateRect(&rect, cxBorder - cxEdge, cyBorder - cyEdge);
 		dc.FillRect(&rect, hBrush);
@@ -580,7 +544,7 @@ public:
 		if(m_lpstrThemeClassList == NULL)
 			return false;
 
-		SecureHelper::strcpyW_x(m_lpstrThemeClassList, cchLen, lpstrThemeClassList);
+		ATL::Checked::wcscpy_s(m_lpstrThemeClassList, cchLen, lpstrThemeClassList);
 
 		return true;
 	}
@@ -591,7 +555,7 @@ public:
 		if(cchListBuffer < cchLen)
 			return false;
 
-		SecureHelper::strcpyW_x(lpstrThemeClassList, cchListBuffer, m_lpstrThemeClassList);
+		ATL::Checked::wcscpy_s(lpstrThemeClassList, cchListBuffer, m_lpstrThemeClassList);
 
 		return true;
 	}
@@ -608,6 +572,7 @@ public:
 			m_dwExtendedStyle = dwExtendedStyle;
 		else
 			m_dwExtendedStyle = (m_dwExtendedStyle & ~dwMask) | (dwExtendedStyle & dwMask);
+
 		return dwPrevStyle;
 	}
 
@@ -624,7 +589,8 @@ public:
 		ATLASSERT(m_lpstrThemeClassList != NULL);
 		if(m_lpstrThemeClassList == NULL)
 			return NULL;
-		CloseThemeData();
+		this->CloseThemeData();
+
 		return TBase::OpenThemeData(pT->m_hWnd, m_lpstrThemeClassList);
 	}
 
@@ -632,12 +598,13 @@ public:
 	{
 		if(!SetThemeClassList(pszClassList))
 			return NULL;
+
 		return OpenThemeData();
 	}
 
 	HRESULT SetWindowTheme(LPCWSTR pszSubAppName, LPCWSTR pszSubIDList)
 	{
-		if(!IsThemingSupported())
+		if(!this->IsThemingSupported())
 			return S_FALSE;
 
 		T* pT = static_cast<T*>(this);
@@ -647,7 +614,7 @@ public:
 
 	HTHEME GetWindowTheme() const
 	{
-		if(!IsThemingSupported())
+		if(!this->IsThemingSupported())
 			return NULL;
 
 		const T* pT = static_cast<const T*>(this);
@@ -657,7 +624,7 @@ public:
 
 	HRESULT EnableThemeDialogTexture(DWORD dwFlags)
 	{
-		if(!IsThemingSupported())
+		if(!this->IsThemingSupported())
 			return S_FALSE;
 
 		T* pT = static_cast<T*>(this);
@@ -667,7 +634,7 @@ public:
 
 	BOOL IsThemeDialogTextureEnabled() const
 	{
-		if(!IsThemingSupported())
+		if(!this->IsThemingSupported())
 			return FALSE;
 
 		const T* pT = static_cast<const T*>(this);
@@ -677,22 +644,18 @@ public:
 
 	HRESULT DrawThemeParentBackground(HDC hDC, const RECT* pRect = NULL)
 	{
-		if(!IsThemingSupported())
+		if(!this->IsThemingSupported())
 			return S_FALSE;
 
 		T* pT = static_cast<T*>(this);
 		ATLASSERT(::IsWindow(pT->m_hWnd));
-#ifdef _WTL_NEW_UXTHEME
 		return ::DrawThemeParentBackground(pT->m_hWnd, hDC, pRect);
-#else
-		return ::DrawThemeParentBackground(pT->m_hWnd, hDC, (RECT*)pRect);
-#endif
 	}
 
-#ifdef _WTL_NEW_UXTHEME
+#if (_WIN32_WINNT >= 0x0600)
 	HRESULT SetWindowThemeAttribute(WINDOWTHEMEATTRIBUTETYPE type, PVOID pvAttribute, DWORD cbAttribute)
 	{
-		if(!IsThemingSupported())
+		if(!this->IsThemingSupported())
 			return S_FALSE;
 
 		T* pT = static_cast<T*>(this);
@@ -702,7 +665,7 @@ public:
 
 	HRESULT SetWindowThemeNonClientAttributes(DWORD dwAttributes, DWORD dwMask)
 	{
-		if(!IsThemingSupported())
+		if(!this->IsThemingSupported())
 			return S_FALSE;
 
 		T* pT = static_cast<T*>(this);
@@ -713,14 +676,14 @@ public:
 
 	HRESULT DrawThemeParentBackgroundEx(HDC hDC, DWORD dwFlags, const RECT* lpRect = NULL)
 	{
-		if(!IsThemingSupported())
+		if(!this->IsThemingSupported())
 			return S_FALSE;
 
 		T* pT = static_cast<T*>(this);
 		ATLASSERT(::IsWindow(pT->m_hWnd));
 		return ::DrawThemeParentBackgroundEx(pT->m_hWnd, hDC, dwFlags, lpRect);
 	}
-#endif // _WTL_NEW_UXTHEME
+#endif // (_WIN32_WINNT >= 0x0600)
 
 // Message map and handlers
 	// Note: If you handle any of these messages in your derived class,
@@ -736,22 +699,25 @@ public:
 	{
 		if(m_lpstrThemeClassList != NULL)
 			OpenThemeData();
+
 		bHandled = FALSE;
 		return 1;
 	}
 
 	LRESULT OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
 	{
-		CloseThemeData();
+		this->CloseThemeData();
+
 		bHandled = FALSE;
 		return 1;
 	}
 
 	LRESULT OnThemeChanged(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
 	{
-		CloseThemeData();
+		this->CloseThemeData();
 		if(m_lpstrThemeClassList != NULL)
-			OpenThemeData();
+			this->OpenThemeData();
+
 		bHandled = FALSE;
 		return 1;
 	}
@@ -762,20 +728,21 @@ public:
 		ATLASSERT(::IsWindow(pT->m_hWnd));
 		LRESULT lRet = 0;
 		bHandled = FALSE;
-		if(IsThemingSupported() && ((pT->GetExStyle() & WS_EX_CLIENTEDGE) != 0))
+		if(this->IsThemingSupported() && ((pT->GetExStyle() & WS_EX_CLIENTEDGE) != 0))
 		{
 			if((m_dwExtendedStyle & THEME_EX_3DCLIENTEDGE) != 0)
 			{
 				lRet = ::DefWindowProc(pT->m_hWnd, uMsg, wParam, lParam);
 				bHandled = TRUE;
 			}
-			else if((m_hTheme != NULL) && ((m_dwExtendedStyle & THEME_EX_THEMECLIENTEDGE) != 0))
+			else if((this->m_hTheme != NULL) && ((m_dwExtendedStyle & THEME_EX_THEMECLIENTEDGE) != 0))
 			{
 				HRGN hRgn = (wParam != 1) ? (HRGN)wParam : NULL;
 				if(pT->DrawThemeClientEdge(hRgn))
 					bHandled = TRUE;
 			}
 		}
+
 		return lRet;
 	}
 
@@ -783,14 +750,14 @@ public:
 	bool DrawThemeClientEdge(HRGN hRgnUpdate)
 	{
 		T* pT = static_cast<T*>(this);
-		return AtlDrawThemeClientEdge(m_hTheme, pT->m_hWnd, hRgnUpdate, NULL, 0, 0);
+		return AtlDrawThemeClientEdge(this->m_hTheme, pT->m_hWnd, hRgnUpdate, NULL, 0, 0);
 	}
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 // Buffered Paint and Animation
 
-#ifdef _WTL_NEW_UXTHEME
+#if (_WIN32_WINNT >= 0x0600)
 
 ///////////////////////////////////////////////////////////////////////////////
 // CBufferedPaintBase - Buffered Paint support for othe classes
@@ -955,7 +922,7 @@ public:
 		T* pT = static_cast<T*>(this);
 		if(wParam != NULL)
 		{
-			RECT rect = { 0 };
+			RECT rect = {};
 			pT->GetClientRect(&rect);
 			pT->DoPaint((HDC)wParam, rect);
 		}
@@ -1051,6 +1018,11 @@ public:
 	{
 		return (::BufferedPaintRenderAnimation(hWnd, hDC) != FALSE);
 	}
+
+	static HRESULT StopAllAnimations(HWND hWnd)
+	{
+		return ::BufferedPaintStopAllAnimations(hWnd);
+	}
 };
 
 
@@ -1125,7 +1097,7 @@ public:
 		T* pT = static_cast<T*>(this);
 		if(wParam != NULL)
 		{
-			RECT rect = { 0 };
+			RECT rect = {};
 			pT->GetClientRect(&rect);
 			pT->DoPaint((HDC)wParam, rect, m_NewState);
 		}
@@ -1211,8 +1183,8 @@ public:
 	END_MSG_MAP()
 };
 
-#endif // _WTL_NEW_UXTHEME
+#endif // (_WIN32_WINNT >= 0x0600)
 
-}; // namespace WTL
+} // namespace WTL
 
 #endif // __ATLTHEME_H__

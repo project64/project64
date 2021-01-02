@@ -67,7 +67,7 @@ protected:
 #ifdef _DEBUG
         m_bModal = false;
 #endif //_DEBUG
-        m_hWnd = ::CreateDialogParamW(_AtlBaseModule.GetResourceInstance(), MAKEINTRESOURCEW(static_cast<T*>(this)->IDD), hParent, T::StartDialogProc, NULL);
+        m_hWnd = ::CreateDialogParam(_AtlBaseModule.GetResourceInstance(), MAKEINTRESOURCE(static_cast<T*>(this)->IDD), hParent, T::StartDialogProc, NULL);
         if (m_hWnd == NULL)
         {
             return false;
