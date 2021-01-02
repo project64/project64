@@ -28,6 +28,9 @@
     <ClInclude Include="atldlgs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="atldwm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="atlfind.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -46,7 +49,7 @@
     <ClInclude Include="atlres.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="atlresce.h">
+    <ClInclude Include="atlribbon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="atlscrl.h">
@@ -59,9 +62,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="atluser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="atlwince.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="atlwinx.h">

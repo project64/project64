@@ -39,18 +39,18 @@
     <ClInclude Include="atlctrlx.h" />
     <ClInclude Include="atlddx.h" />
     <ClInclude Include="atldlgs.h" />
+    <ClInclude Include="atldwm.h" />
     <ClInclude Include="atlfind.h" />
     <ClInclude Include="atlframe.h" />
     <ClInclude Include="atlgdi.h" />
     <ClInclude Include="atlmisc.h" />
     <ClInclude Include="atlprint.h" />
     <ClInclude Include="atlres.h" />
-    <ClInclude Include="atlresce.h" />
+    <ClInclude Include="atlribbon.h" />
     <ClInclude Include="atlscrl.h" />
     <ClInclude Include="atlsplit.h" />
     <ClInclude Include="atltheme.h" />
     <ClInclude Include="atluser.h" />
-    <ClInclude Include="atlwince.h" />
     <ClInclude Include="atlwinx.h" />
   </ItemGroup>
 </Project>
