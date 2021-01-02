@@ -60,7 +60,7 @@ LRESULT CALLBACK RSP_Registers_Proc ( HWND, UINT, WPARAM, LPARAM );
 HWND RSP_Registers_hDlg, hTab, hStatic, hGPR[32], hCP0[16], hHIDDEN[12],
 	hVECT1[16], hVECT2[16];
 int InRSPRegisterWindow = FALSE;
-FARPROC RefreshProc;
+WNDPROC RefreshProc;
 
 /*** RSP Registers ***/
 UWORD32   RSP_GPR[32], RSP_Flags[4];
@@ -86,7 +86,7 @@ void Create_RSP_Register_Window ( int Child ) {
 				(LPVOID)TRUE,0, &ThreadID);
 		} else {
             if (IsIconic((HWND)RSP_Registers_hDlg)) {
-                SendMessage(RSP_Registers_hDlg, WM_SYSCOMMAND, SC_RESTORE, NULL);
+                SendMessage(RSP_Registers_hDlg, WM_SYSCOMMAND, SC_RESTORE, 0);
             }
 			SetForegroundWindow(RSP_Registers_hDlg);
 		}	
@@ -515,7 +515,7 @@ void SetupRSP_RegistersMain (HWND hDlg) {
 
 	hStatic = CreateWindowEx(0,"STATIC","", WS_CHILD|WS_VISIBLE, 5,6,616,290,hDlg,0,hinstDLL,NULL );
 #ifdef _M_IX86
-	RefreshProc = (FARPROC)SetWindowLong(hStatic, GWL_WNDPROC, (long)RefreshRSP_RegProc);
+	RefreshProc = (WNDPROC)SetWindowLong(hStatic, GWL_WNDPROC, (long)RefreshRSP_RegProc);
 #else
 	DebugBreak();
 #endif

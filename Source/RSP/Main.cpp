@@ -159,7 +159,7 @@ void DisplayError(char* Message, ...)
 	vsprintf( Msg, Message, ap );
 	va_end( ap );
 #ifdef _WIN32
-    MessageBoxA(NULL, Msg, "Error", MB_OK | MB_ICONERROR);
+    MessageBox(NULL, Msg, "Error", MB_OK | MB_ICONERROR);
 #else
     fputs(&Msg[0], stderr);
 #endif
