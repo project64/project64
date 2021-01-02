@@ -66,7 +66,7 @@ bool CBaseMenu::AddMenu(HMENU hMenu, MenuItemList Items)
             String += MenuItem->ShortCut();
             Text = String;
         }
-        AppendMenuW(hMenu, uFlags, ItemID, Text.c_str());
+        AppendMenu(hMenu, uFlags, ItemID, Text.c_str());
     }
     return true;
 }

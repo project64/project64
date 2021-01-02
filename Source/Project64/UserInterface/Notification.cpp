@@ -56,7 +56,7 @@ void CNotificationImp::DisplayWarning(const char * Message) const
     {
         Parent = reinterpret_cast<HWND>(m_hWnd->GetWindowHandle());
     }
-    MessageBoxW(Parent, stdstr(Message).ToUTF16().c_str(), wGS(MSG_MSGBOX_WARNING_TITLE).c_str(), MB_OK | MB_ICONWARNING | MB_SETFOREGROUND);
+    MessageBox(Parent, stdstr(Message).ToUTF16().c_str(), wGS(MSG_MSGBOX_WARNING_TITLE).c_str(), MB_OK | MB_ICONWARNING | MB_SETFOREGROUND);
 }
 
 void CNotificationImp::DisplayWarning(LanguageStringID StringID) const
@@ -79,7 +79,7 @@ void CNotificationImp::DisplayError(const char * Message) const
     {
         Parent = reinterpret_cast<HWND>(m_hWnd->GetWindowHandle());
     }
-    MessageBoxW(Parent, stdstr(Message).ToUTF16().c_str(), wGS(MSG_MSGBOX_ERROR_TITLE).c_str(), MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
+    MessageBox(Parent, stdstr(Message).ToUTF16().c_str(), wGS(MSG_MSGBOX_ERROR_TITLE).c_str(), MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
 }
 
 void CNotificationImp::DisplayMessage(int DisplayTime, LanguageStringID StringID) const
@@ -140,7 +140,7 @@ bool CNotificationImp::AskYesNoQuestion(const char * Question) const
     {
         Parent = reinterpret_cast<HWND>(m_hWnd->GetWindowHandle());
     }
-    int result = MessageBoxW(Parent, stdstr(Question).ToUTF16().c_str(), wGS(MSG_MSGBOX_WARNING_TITLE).c_str(), MB_YESNO | MB_ICONWARNING | MB_DEFBUTTON2 | MB_SETFOREGROUND);
+    int result = MessageBox(Parent, stdstr(Question).ToUTF16().c_str(), wGS(MSG_MSGBOX_WARNING_TITLE).c_str(), MB_YESNO | MB_ICONWARNING | MB_DEFBUTTON2 | MB_SETFOREGROUND);
     return result == IDYES;
 }
 
@@ -161,7 +161,7 @@ void CNotificationImp::FatalError(const char  * Message) const
 
     HWND Parent = NULL;
     if (m_hWnd) { Parent = reinterpret_cast<HWND>(m_hWnd->GetWindowHandle()); }
-    MessageBoxW(Parent, stdstr(Message).ToUTF16().c_str(), L"Error", MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
+    MessageBox(Parent, stdstr(Message).ToUTF16().c_str(), L"Error", MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
     ExitThread(0);
 }
 

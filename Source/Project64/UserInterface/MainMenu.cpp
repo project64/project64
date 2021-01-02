@@ -607,7 +607,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         }
         if (MenuID >= ID_LANG_START && MenuID < ID_LANG_END)
         {
-            MENUITEMINFOW menuinfo;
+            MENUITEMINFO menuinfo;
             wchar_t String[300];
 
             menuinfo.cbSize = sizeof(MENUITEMINFO);
@@ -615,7 +615,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             menuinfo.fType = MFT_STRING;
             menuinfo.dwTypeData = String;
             menuinfo.cch = sizeof(String);
-            GetMenuItemInfoW((HMENU)m_MenuHandle, MenuID, FALSE, &menuinfo);
+            GetMenuItemInfo((HMENU)m_MenuHandle, MenuID, FALSE, &menuinfo);
 
             g_Lang->SetLanguage(stdstr().FromUTF16(String).c_str());
             m_Gui->ResetRomBrowserColomuns();

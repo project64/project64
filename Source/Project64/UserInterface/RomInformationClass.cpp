@@ -73,7 +73,7 @@ void RomInformation::DisplayInformation(HWND hParent) const
 {
     if (m_FileName.length() == 0) { return; }
 
-    DialogBoxParamW(GetModuleHandle(NULL), MAKEINTRESOURCEW(IDD_Rom_Information), hParent, (DLGPROC)RomInfoProc, (DWORD)this);
+    DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_Rom_Information), hParent, (DLGPROC)RomInfoProc, (DWORD)this);
 }
 
 DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
@@ -88,56 +88,56 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
 
         if (_this->m_pDiskInfo == NULL)
         {
-            SetWindowTextW(hDlg, wGS(INFO_TITLE).c_str());
+            SetWindowText(hDlg, wGS(INFO_TITLE).c_str());
 
-            SetDlgItemTextW(hDlg, IDC_ROM_NAME, wGS(INFO_ROM_NAME_TEXT).c_str());
-            SetDlgItemTextW(hDlg, IDC_FILE_NAME, wGS(INFO_FILE_NAME_TEXT).c_str());
-            SetDlgItemTextW(hDlg, IDC_LOCATION, wGS(INFO_LOCATION_TEXT).c_str());
-            SetDlgItemTextW(hDlg, IDC_ROM_MD5, wGS(INFO_MD5_TEXT).c_str());
-            SetDlgItemTextW(hDlg, IDC_ROM_SIZE, wGS(INFO_SIZE_TEXT).c_str());
-            SetDlgItemTextW(hDlg, IDC_CART_ID, wGS(INFO_CART_ID_TEXT).c_str());
-            SetDlgItemTextW(hDlg, IDC_MANUFACTURER, wGS(INFO_MANUFACTURER_TEXT).c_str());
-            SetDlgItemTextW(hDlg, IDC_COUNTRY, wGS(INFO_COUNTRY_TEXT).c_str());
-            SetDlgItemTextW(hDlg, IDC_CRC1, wGS(INFO_CRC1_TEXT).c_str());
-            SetDlgItemTextW(hDlg, IDC_CRC2, wGS(INFO_CRC2_TEXT).c_str());
-            SetDlgItemTextW(hDlg, IDC_CIC_CHIP, wGS(INFO_CIC_CHIP_TEXT).c_str());
-            SetDlgItemTextW(hDlg, IDC_CLOSE_BUTTON, wGS(BOTTOM_CLOSE).c_str());
+            SetDlgItemText(hDlg, IDC_ROM_NAME, wGS(INFO_ROM_NAME_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_FILE_NAME, wGS(INFO_FILE_NAME_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_LOCATION, wGS(INFO_LOCATION_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_ROM_MD5, wGS(INFO_MD5_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_ROM_SIZE, wGS(INFO_SIZE_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_CART_ID, wGS(INFO_CART_ID_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_MANUFACTURER, wGS(INFO_MANUFACTURER_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_COUNTRY, wGS(INFO_COUNTRY_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_CRC1, wGS(INFO_CRC1_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_CRC2, wGS(INFO_CRC2_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_CIC_CHIP, wGS(INFO_CIC_CHIP_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_CLOSE_BUTTON, wGS(BOTTOM_CLOSE).c_str());
 
-            SetDlgItemTextW(hDlg, IDC_INFO_ROMNAME, stdstr(_this->m_pRomInfo->GetRomName()).ToUTF16(stdstr::CODEPAGE_932).c_str());
+            SetDlgItemText(hDlg, IDC_INFO_ROMNAME, stdstr(_this->m_pRomInfo->GetRomName()).ToUTF16(stdstr::CODEPAGE_932).c_str());
 
-            SetDlgItemTextW(hDlg, IDC_INFO_FILENAME, stdstr(CPath(_this->m_pRomInfo->GetFileName()).GetNameExtension()).ToUTF16(CP_ACP).c_str());
-            SetDlgItemTextW(hDlg, IDC_INFO_LOCATION, stdstr(CPath(_this->m_pRomInfo->GetFileName()).GetDriveDirectory()).ToUTF16(CP_ACP).c_str());
+            SetDlgItemText(hDlg, IDC_INFO_FILENAME, stdstr(CPath(_this->m_pRomInfo->GetFileName()).GetNameExtension()).ToUTF16(CP_ACP).c_str());
+            SetDlgItemText(hDlg, IDC_INFO_LOCATION, stdstr(CPath(_this->m_pRomInfo->GetFileName()).GetDriveDirectory()).ToUTF16(CP_ACP).c_str());
 
-            SetDlgItemTextW(hDlg, IDC_INFO_MD5, stdstr(_this->m_pRomInfo->GetRomMD5()).ToUTF16().c_str());
-            SetDlgItemTextW(hDlg, IDC_INFO_ROMSIZE, stdstr_f("%.1f MBit", (float)_this->m_pRomInfo->GetRomSize() / 0x20000).ToUTF16().c_str());
+            SetDlgItemText(hDlg, IDC_INFO_MD5, stdstr(_this->m_pRomInfo->GetRomMD5()).ToUTF16().c_str());
+            SetDlgItemText(hDlg, IDC_INFO_ROMSIZE, stdstr_f("%.1f MBit", (float)_this->m_pRomInfo->GetRomSize() / 0x20000).ToUTF16().c_str());
 
             BYTE * RomHeader = _this->m_pRomInfo->GetRomAddress();
-            SetDlgItemTextW(hDlg, IDC_INFO_CARTID, stdstr_f("%c%c", RomHeader[0x3F], RomHeader[0x3E]).ToUTF16().c_str());
+            SetDlgItemText(hDlg, IDC_INFO_CARTID, stdstr_f("%c%c", RomHeader[0x3F], RomHeader[0x3E]).ToUTF16().c_str());
 
             switch (RomHeader[0x38])
             {
-            case 'N': SetDlgItemTextW(hDlg, IDC_INFO_MANUFACTURER, L"Nintendo"); break;
-            case 0:   SetDlgItemTextW(hDlg, IDC_INFO_MANUFACTURER, L"None"); break;
-            default:  SetDlgItemTextW(hDlg, IDC_INFO_MANUFACTURER, L"(Unknown)"); break;
+            case 'N': SetDlgItemText(hDlg, IDC_INFO_MANUFACTURER, L"Nintendo"); break;
+            case 0:   SetDlgItemText(hDlg, IDC_INFO_MANUFACTURER, L"None"); break;
+            default:  SetDlgItemText(hDlg, IDC_INFO_MANUFACTURER, L"(Unknown)"); break;
             }
 
             switch (RomHeader[0x3D])
             {
-            case Country_NTSC_BETA: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Beta"); break;
-            case Country_Asian_NTSC: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"NTSC"); break;
-            case Country_Germany: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Germany"); break;
-            case Country_NorthAmerica: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"America"); break;
-            case Country_French:  SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"France"); break;
-            case Country_Italian: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Italy"); break;
-            case Country_Japan: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Japan"); break;
-            case Country_Europe: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Europe"); break;
-            case Country_Spanish: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Spain"); break;
-            case Country_Australia: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Australia"); break;
-            case Country_EuropeanX_PAL: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"PAL"); break;
-            case Country_EuropeanY_PAL: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"PAL"); break;
-            case Country_Unknown: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"None"); break;
+            case Country_NTSC_BETA: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"Beta"); break;
+            case Country_Asian_NTSC: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"NTSC"); break;
+            case Country_Germany: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"Germany"); break;
+            case Country_NorthAmerica: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"America"); break;
+            case Country_French:  SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"France"); break;
+            case Country_Italian: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"Italy"); break;
+            case Country_Japan: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"Japan"); break;
+            case Country_Europe: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"Europe"); break;
+            case Country_Spanish: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"Spain"); break;
+            case Country_Australia: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"Australia"); break;
+            case Country_EuropeanX_PAL: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"PAL"); break;
+            case Country_EuropeanY_PAL: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"PAL"); break;
+            case Country_Unknown: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"None"); break;
             default:
-                SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, stdstr_f(" Unknown %c (%02X)", RomHeader[0x3D], RomHeader[0x3D]).ToUTF16().c_str());
+                SetDlgItemText(hDlg, IDC_INFO_COUNTRY, stdstr_f(" Unknown %c (%02X)", RomHeader[0x3D], RomHeader[0x3D]).ToUTF16().c_str());
             }
 
             switch (_this->m_pRomInfo->CicChipID())
@@ -145,12 +145,12 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
             case CIC_NUS_8303:
             case CIC_NUS_DDUS:
             case CIC_NUS_DDTL:
-                SetDlgItemTextW(hDlg, IDC_INFO_CRC1, stdstr_f("0x%08X", (*(uint16_t *)(RomHeader + 0x608) << 16) | *(uint16_t *)(RomHeader + 0x60C)).ToUTF16().c_str());
-                SetDlgItemTextW(hDlg, IDC_INFO_CRC2, stdstr_f("0x%08X", (*(uint16_t *)(RomHeader + 0x638) << 16) | *(uint16_t *)(RomHeader + 0x63C)).ToUTF16().c_str());
+                SetDlgItemText(hDlg, IDC_INFO_CRC1, stdstr_f("0x%08X", (*(uint16_t *)(RomHeader + 0x608) << 16) | *(uint16_t *)(RomHeader + 0x60C)).ToUTF16().c_str());
+                SetDlgItemText(hDlg, IDC_INFO_CRC2, stdstr_f("0x%08X", (*(uint16_t *)(RomHeader + 0x638) << 16) | *(uint16_t *)(RomHeader + 0x63C)).ToUTF16().c_str());
                 break;
             default:
-                SetDlgItemTextW(hDlg, IDC_INFO_CRC1, stdstr_f("0x%08X", *(uint32_t *)(RomHeader + 0x10)).ToUTF16().c_str());
-                SetDlgItemTextW(hDlg, IDC_INFO_CRC2, stdstr_f("0x%08X", *(DWORD *)(RomHeader + 0x14)).ToUTF16().c_str());
+                SetDlgItemText(hDlg, IDC_INFO_CRC1, stdstr_f("0x%08X", *(uint32_t *)(RomHeader + 0x10)).ToUTF16().c_str());
+                SetDlgItemText(hDlg, IDC_INFO_CRC2, stdstr_f("0x%08X", *(DWORD *)(RomHeader + 0x14)).ToUTF16().c_str());
                 break;
             }
 
@@ -164,63 +164,63 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
             case CIC_NUS_DDTL: CicChip = L"CIC-NUS-????"; break;
             default: CicChip = stdstr_f("CIC-NUS-610%d", _this->m_pRomInfo->CicChipID()).ToUTF16(); break;
             }
-            SetDlgItemTextW(hDlg, IDC_INFO_CIC, CicChip.c_str());
+            SetDlgItemText(hDlg, IDC_INFO_CIC, CicChip.c_str());
         }
         else
         {
-            SetWindowTextW(hDlg, wGS(INFO_TITLE).c_str());
+            SetWindowText(hDlg, wGS(INFO_TITLE).c_str());
 
-            SetDlgItemTextW(hDlg, IDC_ROM_NAME, wGS(INFO_ROM_NAME_TEXT).c_str());
-            SetDlgItemTextW(hDlg, IDC_FILE_NAME, wGS(INFO_FILE_NAME_TEXT).c_str());
-            SetDlgItemTextW(hDlg, IDC_LOCATION, wGS(INFO_LOCATION_TEXT).c_str());
-            //SetDlgItemTextW(hDlg, IDC_ROM_MD5, wGS(INFO_MD5_TEXT).c_str());
-            //SetDlgItemTextW(hDlg, IDC_ROM_SIZE, wGS(INFO_SIZE_TEXT).c_str());
-            SetDlgItemTextW(hDlg, IDC_CART_ID, wGS(INFO_CART_ID_TEXT).c_str());
-            //SetDlgItemTextW(hDlg, IDC_MANUFACTURER, wGS(INFO_MANUFACTURER_TEXT).c_str());
-            SetDlgItemTextW(hDlg, IDC_COUNTRY, wGS(INFO_COUNTRY_TEXT).c_str());
-            //SetDlgItemTextW(hDlg, IDC_CRC1, wGS(INFO_CRC1_TEXT).c_str());
-            //SetDlgItemTextW(hDlg, IDC_CRC2, wGS(INFO_CRC2_TEXT).c_str());
-            //SetDlgItemTextW(hDlg, IDC_CIC_CHIP, wGS(INFO_CIC_CHIP_TEXT).c_str());
-            SetDlgItemTextW(hDlg, IDC_CLOSE_BUTTON, wGS(BOTTOM_CLOSE).c_str());
+            SetDlgItemText(hDlg, IDC_ROM_NAME, wGS(INFO_ROM_NAME_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_FILE_NAME, wGS(INFO_FILE_NAME_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_LOCATION, wGS(INFO_LOCATION_TEXT).c_str());
+            //SetDlgItemText(hDlg, IDC_ROM_MD5, wGS(INFO_MD5_TEXT).c_str());
+            //SetDlgItemText(hDlg, IDC_ROM_SIZE, wGS(INFO_SIZE_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_CART_ID, wGS(INFO_CART_ID_TEXT).c_str());
+            //SetDlgItemText(hDlg, IDC_MANUFACTURER, wGS(INFO_MANUFACTURER_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_COUNTRY, wGS(INFO_COUNTRY_TEXT).c_str());
+            //SetDlgItemText(hDlg, IDC_CRC1, wGS(INFO_CRC1_TEXT).c_str());
+            //SetDlgItemText(hDlg, IDC_CRC2, wGS(INFO_CRC2_TEXT).c_str());
+            //SetDlgItemText(hDlg, IDC_CIC_CHIP, wGS(INFO_CIC_CHIP_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_CLOSE_BUTTON, wGS(BOTTOM_CLOSE).c_str());
 
-            SetDlgItemTextW(hDlg, IDC_INFO_ROMNAME, _this->m_pDiskInfo->GetRomName().ToUTF16(stdstr::CODEPAGE_932).c_str());
+            SetDlgItemText(hDlg, IDC_INFO_ROMNAME, _this->m_pDiskInfo->GetRomName().ToUTF16(stdstr::CODEPAGE_932).c_str());
 
-            SetDlgItemTextW(hDlg, IDC_INFO_FILENAME, stdstr(CPath(_this->m_pDiskInfo->GetFileName()).GetNameExtension()).ToUTF16(CP_ACP).c_str());
-            SetDlgItemTextW(hDlg, IDC_INFO_LOCATION, stdstr(CPath(_this->m_pDiskInfo->GetFileName()).GetDriveDirectory()).ToUTF16(CP_ACP).c_str());
+            SetDlgItemText(hDlg, IDC_INFO_FILENAME, stdstr(CPath(_this->m_pDiskInfo->GetFileName()).GetNameExtension()).ToUTF16(CP_ACP).c_str());
+            SetDlgItemText(hDlg, IDC_INFO_LOCATION, stdstr(CPath(_this->m_pDiskInfo->GetFileName()).GetDriveDirectory()).ToUTF16(CP_ACP).c_str());
 
-            //SetDlgItemTextW(hDlg, IDC_INFO_MD5, _this->m_pRomInfo->GetRomMD5().ToUTF16().c_str());
-            //SetDlgItemTextW(hDlg, IDC_INFO_ROMSIZE, stdstr_f("%.1f MBit", (float)_this->m_pDiskInfo->GetRomSize() / 0x20000).ToUTF16().c_str());
+            //SetDlgItemText(hDlg, IDC_INFO_MD5, _this->m_pRomInfo->GetRomMD5().ToUTF16().c_str());
+            //SetDlgItemText(hDlg, IDC_INFO_ROMSIZE, stdstr_f("%.1f MBit", (float)_this->m_pDiskInfo->GetRomSize() / 0x20000).ToUTF16().c_str());
 
             BYTE * DiskHeader = _this->m_pDiskInfo->GetDiskAddressID();
-            SetDlgItemTextW(hDlg, IDC_INFO_CARTID, stdstr_f("%c%c", DiskHeader[0x02], DiskHeader[0x01]).ToUTF16().c_str());
+            SetDlgItemText(hDlg, IDC_INFO_CARTID, stdstr_f("%c%c", DiskHeader[0x02], DiskHeader[0x01]).ToUTF16().c_str());
 
             /*switch (DiskHeader[0x00])
             {
-            case 'N': SetDlgItemTextW(hDlg, IDC_INFO_MANUFACTURER, L"Nintendo"); break;
-            case 0:   SetDlgItemTextW(hDlg, IDC_INFO_MANUFACTURER, L"None"); break;
-            default:  SetDlgItemTextW(hDlg, IDC_INFO_MANUFACTURER, L"(Unknown)"); break;
+            case 'N': SetDlgItemText(hDlg, IDC_INFO_MANUFACTURER, L"Nintendo"); break;
+            case 0:   SetDlgItemText(hDlg, IDC_INFO_MANUFACTURER, L"None"); break;
+            default:  SetDlgItemText(hDlg, IDC_INFO_MANUFACTURER, L"(Unknown)"); break;
             }*/
 
             switch (DiskHeader[0x00])
             {
-            case Country_NTSC_BETA: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Beta"); break;
-            case Country_Asian_NTSC: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"NTSC"); break;
-            case Country_Germany: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Germany"); break;
-            case Country_NorthAmerica: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"America"); break;
-            case Country_French: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"France"); break;
-            case Country_Italian: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Italy"); break;
-            case Country_Japan: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Japan"); break;
-            case Country_Europe: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Europe"); break;
-            case Country_Spanish: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Spain"); break;
-            case Country_Australia: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Australia"); break;
-            case Country_EuropeanX_PAL: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"PAL"); break;
-            case Country_EuropeanY_PAL: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"PAL"); break;
-            case Country_Unknown: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"None"); break;
+            case Country_NTSC_BETA: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"Beta"); break;
+            case Country_Asian_NTSC: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"NTSC"); break;
+            case Country_Germany: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"Germany"); break;
+            case Country_NorthAmerica: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"America"); break;
+            case Country_French: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"France"); break;
+            case Country_Italian: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"Italy"); break;
+            case Country_Japan: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"Japan"); break;
+            case Country_Europe: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"Europe"); break;
+            case Country_Spanish: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"Spain"); break;
+            case Country_Australia: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"Australia"); break;
+            case Country_EuropeanX_PAL: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"PAL"); break;
+            case Country_EuropeanY_PAL: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"PAL"); break;
+            case Country_Unknown: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"None"); break;
             default:
-                SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, stdstr_f(" Unknown %c (%02X)", DiskHeader[0x03], DiskHeader[0x03]).ToUTF16().c_str());
+                SetDlgItemText(hDlg, IDC_INFO_COUNTRY, stdstr_f(" Unknown %c (%02X)", DiskHeader[0x03], DiskHeader[0x03]).ToUTF16().c_str());
             }
-            SetDlgItemTextW(hDlg, IDC_INFO_CRC1, stdstr_f("0x%08X", (_this->m_pDiskInfo->CalculateCrc())).ToUTF16().c_str());
-            SetDlgItemTextW(hDlg, IDC_INFO_CRC2, stdstr_f("0x%08X", (~_this->m_pDiskInfo->CalculateCrc())).ToUTF16().c_str());
+            SetDlgItemText(hDlg, IDC_INFO_CRC1, stdstr_f("0x%08X", (_this->m_pDiskInfo->CalculateCrc())).ToUTF16().c_str());
+            SetDlgItemText(hDlg, IDC_INFO_CRC2, stdstr_f("0x%08X", (~_this->m_pDiskInfo->CalculateCrc())).ToUTF16().c_str());
             /*
             std::wstring CicChip;
             switch (_this->m_pRomInfo->CicChipID())
@@ -231,7 +231,7 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
             case CIC_NUS_DDUS: CicChip = L"CIC-NUS-????"; break;
             default: CicChip = stdstr_f("CIC-NUS-610%d", _this->m_pRomInfo->CicChipID()).ToUTF16(); break;
             }
-            SetDlgItemTextW(hDlg, IDC_INFO_CIC, CicChip.c_str());
+            SetDlgItemText(hDlg, IDC_INFO_CIC, CicChip.c_str());
             */
         }
     }

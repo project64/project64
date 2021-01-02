@@ -114,11 +114,11 @@ int32_t CRomBrowser::CalcSortPosition(uint32_t lParam)
             }
             LastTestPos = TestPos;
 
-            LVITEMW lvItem;
+            LVITEM lvItem;
             memset(&lvItem, 0, sizeof(lvItem));
             lvItem.mask = LVIF_PARAM;
             lvItem.iItem = TestPos;
-            if (!SendMessageW(m_hRomList, LVM_GETITEMW, 0, (LPARAM)&lvItem))
+            if (!SendMessage(m_hRomList, LVM_GETITEM, 0, (LPARAM)&lvItem))
             {
                 return End;
             }
@@ -157,7 +157,7 @@ int32_t CRomBrowser::CalcSortPosition(uint32_t lParam)
                     memset(&lvItem, 0, sizeof(lvItem));
                     lvItem.mask = LVIF_PARAM;
                     lvItem.iItem = NewTestPos;
-                    if (!SendMessageW(m_hRomList, LVM_GETITEMW, 0, (LPARAM)&lvItem))
+                    if (!SendMessage(m_hRomList, LVM_GETITEM, 0, (LPARAM)&lvItem))
                     {
                         return End;
                     }
@@ -193,7 +193,7 @@ int32_t CRomBrowser::CalcSortPosition(uint32_t lParam)
                     memset(&lvItem, 0, sizeof(lvItem));
                     lvItem.mask = LVIF_PARAM;
                     lvItem.iItem = NewTestPos;
-                    if (!SendMessageW(m_hRomList, LVM_GETITEMW, 0, (LPARAM)&lvItem)) { return End; }
+                    if (!SendMessage(m_hRomList, LVM_GETITEM, 0, (LPARAM)&lvItem)) { return End; }
 
                     Result = RomList_CompareItems(lParam, lvItem.lParam, (uint32_t)&SortFieldInfo);
                     if (Result >= 0)
@@ -235,11 +235,11 @@ int32_t CRomBrowser::CalcSortPosition(uint32_t lParam)
         SortFieldInfo.Key = index;
         SortFieldInfo.KeyAscend = UISettingsLoadBoolIndex(RomBrowser_SortAscendingIndex, SortIndex) != 0;
 
-        LVITEMW lvItem;
-        memset(&lvItem, 0, sizeof(LVITEMW));
+        LVITEM lvItem;
+        memset(&lvItem, 0, sizeof(LVITEM));
         lvItem.mask = LVIF_PARAM;
         lvItem.iItem = End;
-        if (!SendMessageW(m_hRomList, LVM_GETITEMW, 0, (LPARAM)&lvItem)) { return End; }
+        if (!SendMessage(m_hRomList, LVM_GETITEM, 0, (LPARAM)&lvItem)) { return End; }
 
         int32_t Result = RomList_CompareItems(lParam, lvItem.lParam, (uint32_t)&SortFieldInfo);
         if (Result < 0)
@@ -256,14 +256,14 @@ int32_t CRomBrowser::CalcSortPosition(uint32_t lParam)
 
 void CRomBrowser::RomAddedToList(int32_t ListPos)
 {
-    LVITEMW lvItem;
+    LVITEM lvItem;
     memset(&lvItem, 0, sizeof(lvItem));
     lvItem.mask = LVIF_TEXT | LVIF_PARAM;
     lvItem.iItem = CalcSortPosition(ListPos);
     lvItem.lParam = (LPARAM)ListPos;
-    lvItem.pszText = LPSTR_TEXTCALLBACKW;
+    lvItem.pszText = LPSTR_TEXTCALLBACK;
 
-    int32_t index = SendMessageW(m_hRomList, LVM_INSERTITEMW, 0, (LPARAM)&lvItem);
+    int32_t index = SendMessage(m_hRomList, LVM_INSERTITEM, 0, (LPARAM)&lvItem);
     int32_t iItem = ListView_GetNextItem(m_hRomList, -1, LVNI_SELECTED);
 
     //if the last rom then highlight the item
@@ -300,7 +300,7 @@ void CRomBrowser::RomListReset(void)
 
 void CRomBrowser::CreateRomListControl(void)
 {
-    m_hRomList = CreateWindowW(WC_LISTVIEWW, NULL, WS_TABSTOP | WS_VISIBLE | WS_CHILD | LVS_OWNERDRAWFIXED | LVS_SINGLESEL | LVS_REPORT, 0, 0, 0, 0, m_MainWindow, (HMENU)IDC_ROMLIST, GetModuleHandle(NULL), NULL);
+    m_hRomList = CreateWindow(WC_LISTVIEW, NULL, WS_TABSTOP | WS_VISIBLE | WS_CHILD | LVS_OWNERDRAWFIXED | LVS_SINGLESEL | LVS_REPORT, 0, 0, 0, 0, m_MainWindow, (HMENU)IDC_ROMLIST, GetModuleHandle(NULL), NULL);
     ResetRomBrowserColomuns();
     LoadRomList();
 }
@@ -335,7 +335,7 @@ void CRomBrowser::HighLightLastRom(void)
     //Make sure Rom browser is visible
     if (!RomBrowserVisible()) { return; }
 
-    LVITEMW lvItem;
+    LVITEM lvItem;
     lvItem.mask = LVIF_PARAM;
 
     int32_t ItemCount = ListView_GetItemCount(m_hRomList);
@@ -343,7 +343,7 @@ void CRomBrowser::HighLightLastRom(void)
     {
         //Get The next item
         lvItem.iItem = index;
-        if (!SendMessageW(m_hRomList, LVM_GETITEMW, 0, (LPARAM)&lvItem)) { return; }
+        if (!SendMessage(m_hRomList, LVM_GETITEM, 0, (LPARAM)&lvItem)) { return; }
 
         //Get the rom info for that item
         if (lvItem.lParam < 0 || lvItem.lParam >= (LPARAM)m_RomInfo.size())
@@ -369,7 +369,7 @@ void CRomBrowser::HighLightLastRom(void)
 
 void CRomBrowser::MenuSetText(HMENU hMenu, int32_t MenuPos, const wchar_t * Title, char * ShortCut)
 {
-    MENUITEMINFOW MenuInfo;
+    MENUITEMINFO MenuInfo;
     wchar_t String[256];
 
     if (Title == NULL || wcslen(Title) == 0) { return; }
@@ -382,17 +382,17 @@ void CRomBrowser::MenuSetText(HMENU hMenu, int32_t MenuPos, const wchar_t * Titl
     MenuInfo.dwTypeData = String;
     MenuInfo.cch = 256;
 
-    GetMenuItemInfoW(hMenu, MenuPos, TRUE, &MenuInfo);
+    GetMenuItemInfo(hMenu, MenuPos, TRUE, &MenuInfo);
     wcscpy(String, Title);
     if (wcschr(String, '\t') != NULL) { *(wcschr(String, '\t')) = '\0'; }
     if (ShortCut) { swprintf(String, sizeof(String) / sizeof(String[0]), L"%s\t%s", String, stdstr(ShortCut).ToUTF16().c_str()); }
-    SetMenuItemInfoW(hMenu, MenuPos, TRUE, &MenuInfo);
+    SetMenuItemInfo(hMenu, MenuPos, TRUE, &MenuInfo);
 }
 
 void CRomBrowser::ResetRomBrowserColomuns(void)
 {
     size_t Coloumn, index;
-    LV_COLUMNW lvColumn;
+    LV_COLUMN lvColumn;
     wchar_t szString[300];
 
     GetFieldInfo(m_Fields);
@@ -425,7 +425,7 @@ void CRomBrowser::ResetRomBrowserColomuns(void)
         m_FieldType[Coloumn] = m_Fields[index].ID();
         lvColumn.cx = m_Fields[index].ColWidth();
         wcsncpy(szString, wGS(m_Fields[index].LangID()).c_str(), sizeof(szString) / sizeof(szString[0]));
-        SendMessage(m_hRomList, LVM_INSERTCOLUMNW, (WPARAM)(int32_t)(Coloumn), (LPARAM)(const LV_COLUMNW *)(&lvColumn));
+        SendMessage(m_hRomList, LVM_INSERTCOLUMN, (WPARAM)(int32_t)(Coloumn), (LPARAM)(const LV_COLUMN *)(&lvColumn));
     }
 }
 
@@ -481,14 +481,14 @@ bool CRomBrowser::RomListDrawItem(int32_t idCtrl, uint32_t lParam)
 
     RECT rcItem, rcDraw;
     wchar_t String[300];
-    LVITEMW lvItem;
+    LVITEM lvItem;
     HBRUSH hBrush = (HBRUSH)(COLOR_WINDOW + 1);
     LV_COLUMN lvc;
     int32_t nColumn;
 
     lvItem.mask = LVIF_PARAM;
     lvItem.iItem = ditem->itemID;
-    if (!SendMessageW(m_hRomList, LVM_GETITEMW, 0, (LPARAM)&lvItem)) { return false; }
+    if (!SendMessage(m_hRomList, LVM_GETITEM, 0, (LPARAM)&lvItem)) { return false; }
     lvItem.state = ListView_GetItemState(m_hRomList, ditem->itemID, -1);
     bool bSelected = (lvItem.state & LVIS_SELECTED) != 0;
 
@@ -527,7 +527,7 @@ bool CRomBrowser::RomListDrawItem(int32_t idCtrl, uint32_t lParam)
     lvItem.iSubItem = 0;
     lvItem.cchTextMax = sizeof(String) / sizeof(String[0]);
     lvItem.pszText = String;
-    SendMessageW(m_hRomList, LVM_GETITEMTEXTW, (WPARAM)ditem->itemID, (LPARAM)&lvItem);
+    SendMessage(m_hRomList, LVM_GETITEMTEXT, (WPARAM)ditem->itemID, (LPARAM)&lvItem);
 
     memcpy(&rcDraw, &rcItem, sizeof(RECT));
     rcDraw.right -= 3;
@@ -541,7 +541,7 @@ bool CRomBrowser::RomListDrawItem(int32_t idCtrl, uint32_t lParam)
         text = stdstr(pRomInfo->FileName).ToUTF16();
     }
 
-    DrawTextW(ditem->hDC, text.c_str(), text.length(), &rcDraw, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER | DT_WORD_ELLIPSIS);
+    DrawText(ditem->hDC, text.c_str(), text.length(), &rcDraw, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER | DT_WORD_ELLIPSIS);
 
     memset(&lvc, 0, sizeof(lvc));
     lvc.mask = LVCF_FMT | LVCF_WIDTH;
@@ -553,7 +553,7 @@ bool CRomBrowser::RomListDrawItem(int32_t idCtrl, uint32_t lParam)
         lvItem.iSubItem = nColumn;
         lvItem.cchTextMax = sizeof(String) / sizeof(String[0]);
         lvItem.pszText = String;
-        SendMessageW(m_hRomList, LVM_GETITEMTEXTW, ditem->itemID, (LPARAM)&lvItem);
+        SendMessage(m_hRomList, LVM_GETITEMTEXT, ditem->itemID, (LPARAM)&lvItem);
         memcpy(&rcDraw, &rcItem, sizeof(RECT));
         rcDraw.right -= 3;
         text = String;
@@ -566,7 +566,7 @@ bool CRomBrowser::RomListDrawItem(int32_t idCtrl, uint32_t lParam)
             text = stdstr(pRomInfo->FileName).ToUTF16();
         }
 
-        DrawTextW(ditem->hDC, text.c_str(), text.length(), &rcDraw, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER | DT_WORD_ELLIPSIS);
+        DrawText(ditem->hDC, text.c_str(), text.length(), &rcDraw, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER | DT_WORD_ELLIPSIS);
     }
     return true;
 }
@@ -581,7 +581,7 @@ bool CRomBrowser::RomListNotify(int32_t idCtrl, uint32_t pnmh)
     case LVN_COLUMNCLICK: RomList_ColoumnSortList(pnmh); break;
     case NM_RETURN:       RomList_OpenRom(pnmh); break;
     case NM_DBLCLK:       RomList_OpenRom(pnmh); break;
-    case LVN_GETDISPINFOW: RomList_GetDispInfo(pnmh); break;
+    case LVN_GETDISPINFO: RomList_GetDispInfo(pnmh); break;
     case NM_RCLICK:       RomList_PopupMenu(pnmh); break;
     case NM_CLICK:
     {
@@ -687,7 +687,7 @@ int32_t CALLBACK CRomBrowser::RomList_CompareItems(uint32_t lParam1, uint32_t lP
 
 void CRomBrowser::RomList_GetDispInfo(uint32_t pnmh)
 {
-    LV_DISPINFOW * lpdi = (LV_DISPINFOW *)pnmh;
+    LV_DISPINFO * lpdi = (LV_DISPINFO *)pnmh;
     if (lpdi->item.lParam < 0 || lpdi->item.lParam >= (LPARAM)m_RomInfo.size())
     {
         return;
@@ -795,7 +795,7 @@ void CRomBrowser::RomList_OpenRom(uint32_t /*pnmh*/)
     memset(&lvItem, 0, sizeof(LV_ITEM));
     lvItem.mask = LVIF_PARAM;
     lvItem.iItem = iItem;
-    if (!SendMessageW(m_hRomList, LVM_GETITEMW, 0, (LPARAM)&lvItem)) { return; }
+    if (!SendMessage(m_hRomList, LVM_GETITEM, 0, (LPARAM)&lvItem)) { return; }
     if (lvItem.lParam < 0 || lvItem.lParam >= (LPARAM)m_RomInfo.size())
     {
         return;
@@ -821,7 +821,7 @@ void CRomBrowser::RomList_PopupMenu(uint32_t /*pnmh*/)
         memset(&lvItem, 0, sizeof(LV_ITEM));
         lvItem.mask = LVIF_PARAM;
         lvItem.iItem = iItem;
-        if (!SendMessageW(m_hRomList, LVM_GETITEMW, 0, (LPARAM)&lvItem)) { return; }
+        if (!SendMessage(m_hRomList, LVM_GETITEM, 0, (LPARAM)&lvItem)) { return; }
         if (lvItem.lParam < 0 || lvItem.lParam >= (LPARAM)m_RomInfo.size())
         {
             return;
@@ -878,7 +878,7 @@ void CRomBrowser::RomList_PopupMenu(uint32_t /*pnmh*/)
             if (GfxMenu)
             {
                 MENUITEMINFO lpmii;
-                InsertMenuW(hPopupMenu, 7, MF_POPUP | MF_BYPOSITION, (uint32_t)GfxMenu, wGS(POPUP_GFX_PLUGIN).c_str());
+                InsertMenu(hPopupMenu, 7, MF_POPUP | MF_BYPOSITION, (uint32_t)GfxMenu, wGS(POPUP_GFX_PLUGIN).c_str());
                 lpmii.cbSize = sizeof(MENUITEMINFO);
                 lpmii.fMask = MIIM_STATE;
                 lpmii.fState = 0;
@@ -962,7 +962,7 @@ int32_t CALLBACK CRomBrowser::SelectRomDirCallBack(HWND hwnd, uint32_t uMsg, uin
         if (lpData)
         {
             SendMessage(hwnd, BFFM_SETSELECTION, TRUE, lpData);
-            SetWindowTextW(hwnd, wGS(DIR_SELECT_ROM).c_str());
+            SetWindowText(hwnd, wGS(DIR_SELECT_ROM).c_str());
         }
         break;
     }
@@ -973,7 +973,7 @@ void CRomBrowser::SelectRomDir(void)
 {
     wchar_t SelectedDir[MAX_PATH];
     LPITEMIDLIST pidl;
-    BROWSEINFOW bi;
+    BROWSEINFO bi;
 
     std::wstring title = wGS(SELECT_ROM_DIR);
 
@@ -987,7 +987,7 @@ void CRomBrowser::SelectRomDir(void)
     bi.lpfn = (BFFCALLBACK)SelectRomDirCallBack;
     bi.lParam = (uint32_t)RomDir.c_str();
     WriteTrace(TraceUserInterface, TraceDebug, "2");
-    if ((pidl = SHBrowseForFolderW(&bi)) != NULL)
+    if ((pidl = SHBrowseForFolder(&bi)) != NULL)
     {
         WriteTrace(TraceUserInterface, TraceDebug, "3");
         char Directory[_MAX_PATH];

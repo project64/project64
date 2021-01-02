@@ -366,13 +366,13 @@ void CMainGui::MakeWindowOnTop(bool OnTop)
 void CMainGui::Caption(LPCWSTR Caption)
 {
     CGuard Guard(m_CS);
-    SetWindowTextW(m_hMainWindow, Caption);
+    SetWindowText(m_hMainWindow, Caption);
 }
 
 void CMainGui::Create(const char * WindowTitle)
 {
     stdstr_f VersionDisplay("Project64 %s", VER_FILE_VERSION_STR);
-    m_hMainWindow = CreateWindowExW(WS_EX_ACCEPTFILES, VersionDisplay.ToUTF16().c_str(), stdstr(WindowTitle).ToUTF16().c_str(), WS_OVERLAPPED | WS_CLIPCHILDREN |
+    m_hMainWindow = CreateWindowEx(WS_EX_ACCEPTFILES, VersionDisplay.ToUTF16().c_str(), stdstr(WindowTitle).ToUTF16().c_str(), WS_OVERLAPPED | WS_CLIPCHILDREN |
         WS_CLIPSIBLINGS | WS_SYSMENU | WS_MINIMIZEBOX, 5, 5, 640, 480,
         NULL, NULL, GetModuleHandle(NULL), this);
     m_Created = m_hMainWindow != NULL;
@@ -533,10 +533,10 @@ void CMainGui::SetStatusText(int Panel, const wchar_t * Text)
     Msg[(sizeof(Message[0]) / sizeof(Message[0][0])) - 1] = 0;
     if (GetCurrentThreadId() == m_ThreadId)
     {
-        SendMessageW((HWND)m_hStatusWnd, SB_SETTEXTW, Panel, (LPARAM)Msg);
+        SendMessage((HWND)m_hStatusWnd, SB_SETTEXT, Panel, (LPARAM)Msg);
     }
     else {
-        PostMessageW((HWND)m_hStatusWnd, SB_SETTEXTW, Panel, (LPARAM)Msg);
+        PostMessage((HWND)m_hStatusWnd, SB_SETTEXT, Panel, (LPARAM)Msg);
     }
 }
 

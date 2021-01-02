@@ -37,7 +37,7 @@ void CSettingConfig::Display(void * ParentWindow)
 #ifdef _DEBUG
         m_bModal = true;
 #endif //_DEBUG
-        ::DialogBoxParamW(_AtlBaseModule.GetResourceInstance(), MAKEINTRESOURCEW(IDD), (HWND)ParentWindow, StartDialogProc, NULL);
+        ::DialogBoxParam(_AtlBaseModule.GetResourceInstance(), MAKEINTRESOURCE(IDD), (HWND)ParentWindow, StartDialogProc, NULL);
     }
 
     if (g_BaseSystem)
@@ -65,8 +65,8 @@ void CSettingConfig::UpdateAdvanced(bool AdvancedMode, HTREEITEM hItem)
         }
         else if (AdvancedMode && Page == m_GeneralOptionsPage)
         {
-            m_PagesTreeList.InsertItemW(TVIF_TEXT | TVIF_PARAM, wGS(m_AdvancedPage->PageTitle()).c_str(), 0, 0, 0, 0, (ULONG)m_AdvancedPage, hItem, TVI_FIRST);
-            m_PagesTreeList.InsertItemW(TVIF_TEXT | TVIF_PARAM, wGS(m_DefaultsPage->PageTitle()).c_str(), 0, 0, 0, 0, (ULONG)m_DefaultsPage, hItem, TVI_FIRST);
+            m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM, wGS(m_AdvancedPage->PageTitle()).c_str(), 0, 0, 0, 0, (ULONG)m_AdvancedPage, hItem, TVI_FIRST);
+            m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM, wGS(m_DefaultsPage->PageTitle()).c_str(), 0, 0, 0, 0, (ULONG)m_DefaultsPage, hItem, TVI_FIRST);
             break;
         }
 		else
@@ -118,7 +118,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
         }
         else
         {
-            ::SetWindowTextW(m_hWnd, wGS(OPTIONS_TITLE).c_str());
+            ::SetWindowText(m_hWnd, wGS(OPTIONS_TITLE).c_str());
         }
 
         if (UISettingsLoadBool(Setting_PluginPageFirst))
@@ -190,14 +190,14 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
             }
             if (i == 0)
             {
-                hSectionItem = m_PagesTreeList.InsertItemW(TVIF_TEXT | TVIF_PARAM, Section->GetPageTitle(), 0, 0, 0, 0, (ULONG)Page, TVI_ROOT, TVI_LAST);
+                hSectionItem = m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM, Section->GetPageTitle(), 0, 0, 0, 0, (ULONG)Page, TVI_ROOT, TVI_LAST);
                 continue;
             }
             if (hSectionItem == NULL)
             {
                 continue;
             }
-            m_PagesTreeList.InsertItemW(TVIF_TEXT | TVIF_PARAM, wGS(Page->PageTitle()).c_str(), 0, 0, 0, 0, (ULONG)Page, hSectionItem, TVI_LAST);
+            m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM, wGS(Page->PageTitle()).c_str(), 0, 0, 0, 0, (ULONG)Page, hSectionItem, TVI_LAST);
         }
         if (bFirstItem && hSectionItem != NULL)
         {

@@ -20,7 +20,7 @@ void WelcomeScreen::SelectGameDir(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
     wchar_t Buffer[MAX_PATH], Directory[MAX_PATH];
     LPITEMIDLIST pidl;
-    BROWSEINFOW bi;
+    BROWSEINFO bi;
 
     stdstr InitialDir = g_Settings->LoadStringVal(RomList_GameDir);
     std::wstring wTitle = L"Select Game Directory";
@@ -31,9 +31,9 @@ void WelcomeScreen::SelectGameDir(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
     bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS;
     bi.lpfn = (BFFCALLBACK)SelectDirCallBack;
     bi.lParam = (DWORD)InitialDir.c_str();
-    if ((pidl = SHBrowseForFolderW(&bi)) != NULL)
+    if ((pidl = SHBrowseForFolder(&bi)) != NULL)
     {
-        if (SHGetPathFromIDListW(pidl, Directory))
+        if (SHGetPathFromIDList(pidl, Directory))
         {
             stdstr path;
             CPath SelectedDir(path.FromUTF16(Directory), "");

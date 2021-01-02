@@ -37,9 +37,9 @@ COptionsShortCutsPage::COptionsShortCutsPage(HWND hParent, const RECT & rcDispay
 
     m_MenuItems.ModifyStyle(0, TVS_SHOWSELALWAYS);
 
-    m_CpuState.SetItemData(m_CpuState.AddStringW(wGS(ACCEL_CPUSTATE_1).c_str()), CMenuShortCutKey::RUNNING_STATE_NOT_RUNNING);
-    m_CpuState.SetItemData(m_CpuState.AddStringW(wGS(ACCEL_CPUSTATE_3).c_str()), CMenuShortCutKey::RUNNING_STATE_WINDOWED);
-    m_CpuState.SetItemData(m_CpuState.AddStringW(wGS(ACCEL_CPUSTATE_4).c_str()), CMenuShortCutKey::RUNNING_STATE_FULLSCREEN);
+    m_CpuState.SetItemData(m_CpuState.AddString(wGS(ACCEL_CPUSTATE_1).c_str()), CMenuShortCutKey::RUNNING_STATE_NOT_RUNNING);
+    m_CpuState.SetItemData(m_CpuState.AddString(wGS(ACCEL_CPUSTATE_3).c_str()), CMenuShortCutKey::RUNNING_STATE_WINDOWED);
+    m_CpuState.SetItemData(m_CpuState.AddString(wGS(ACCEL_CPUSTATE_4).c_str()), CMenuShortCutKey::RUNNING_STATE_FULLSCREEN);
     m_CpuState.SetCurSel(0);
 
     int VirtualKeyListSize;
@@ -99,7 +99,7 @@ void COptionsShortCutsPage::OnCpuStateChanged(UINT /*Code*/, int /*id*/, HWND /*
 
         if (hParent == NULL)
         {
-            hParent = m_MenuItems.InsertItemW(TVIF_TEXT | TVIF_PARAM, wGS(Item->second.Section()).c_str(), 0, 0, 0, 0, Item->second.Section(), TVI_ROOT, TVI_LAST);
+            hParent = m_MenuItems.InsertItem(TVIF_TEXT | TVIF_PARAM, wGS(Item->second.Section()).c_str(), 0, 0, 0, 0, Item->second.Section(), TVI_ROOT, TVI_LAST);
         }
 
         wstring str = wGS(Item->second.Title());
@@ -116,7 +116,7 @@ void COptionsShortCutsPage::OnCpuStateChanged(UINT /*Code*/, int /*id*/, HWND /*
             pos = str.find(L"...", pos);
         }
 
-        HTREEITEM hItem = m_MenuItems.InsertItemW(TVIF_TEXT | TVIF_PARAM, str.c_str(), 0, 0, 0, 0, (DWORD_PTR)&Item->second, hParent, TVI_LAST);
+        HTREEITEM hItem = m_MenuItems.InsertItem(TVIF_TEXT | TVIF_PARAM, str.c_str(), 0, 0, 0, 0, (DWORD_PTR)&Item->second, hParent, TVI_LAST);
 
         const SHORTCUT_KEY_LIST & ShortCutList = Item->second.GetAccelItems();
         for (SHORTCUT_KEY_LIST::const_iterator ShortCut_item = ShortCutList.begin(); ShortCut_item != ShortCutList.end(); ShortCut_item++)

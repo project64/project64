@@ -590,7 +590,7 @@ void CCheatList::MenuSetText(HMENU hMenu, int MenuPos, const wchar_t * Title, co
         return;
     }
 
-    MENUITEMINFOW MenuInfo = { 0 };
+    MENUITEMINFO MenuInfo = { 0 };
     wchar_t String[256];
     MenuInfo.cbSize = sizeof(MENUITEMINFO);
     MenuInfo.fMask = MIIM_TYPE;
@@ -599,11 +599,11 @@ void CCheatList::MenuSetText(HMENU hMenu, int MenuPos, const wchar_t * Title, co
     MenuInfo.dwTypeData = String;
     MenuInfo.cch = 256;
 
-    GetMenuItemInfoW(hMenu, MenuPos, true, &MenuInfo);
+    GetMenuItemInfo(hMenu, MenuPos, true, &MenuInfo);
     wcscpy(String, Title);
     if (wcschr(String, '\t') != NULL) { *(wcschr(String, '\t')) = '\0'; }
     if (ShortCut) { _swprintf(String, L"%s\t%s", String, ShortCut); }
-    SetMenuItemInfoW(hMenu, MenuPos, true, &MenuInfo);
+    SetMenuItemInfo(hMenu, MenuPos, true, &MenuInfo);
 }
 
 CEditCheat::CEditCheat(CEnhancementList & Cheats, CCheatList & CheatList) :
@@ -670,7 +670,7 @@ LRESULT CEditCheat::OnEditCheat(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/,
     }
     GetDlgItem(IDC_CHEAT_OPTIONS).SetWindowText(Buffer.ToUTF16().c_str());
     GetDlgItem(IDC_NOTES).SetWindowText(stdstr(m_EditEnhancement->GetNote()).ToUTF16().c_str());
-    GetDlgItem(IDC_ADD).SetWindowTextW(wGS(CHEAT_EDITCHEAT_UPDATE).c_str());
+    GetDlgItem(IDC_ADD).SetWindowText(wGS(CHEAT_EDITCHEAT_UPDATE).c_str());
 
     SendMessage(WM_COMMAND, MAKELPARAM(IDC_CHEAT_CODES, EN_CHANGE), (LPARAM)(HWND)GetDlgItem(IDC_CHEAT_CODES));
     RecordCurrentValues();
