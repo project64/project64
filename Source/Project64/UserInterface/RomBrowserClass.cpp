@@ -715,6 +715,7 @@ void CRomBrowser::RomList_GetDispInfo(uint32_t pnmh)
     case RB_Manufacturer:
         switch (pRomInfo->Manufacturer)
         {
+        case 'C':wcsncpy(lpdi->item.pszText, L"Nintendo", lpdi->item.cchTextMax / sizeof(wchar_t)); break;
         case 'N':wcsncpy(lpdi->item.pszText, L"Nintendo", lpdi->item.cchTextMax / sizeof(wchar_t)); break;
         case 0:  wcsncpy(lpdi->item.pszText, L"None", lpdi->item.cchTextMax / sizeof(wchar_t)); break;
         default: swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"(Unknown %c (%X))", pRomInfo->Manufacturer, pRomInfo->Manufacturer); break;

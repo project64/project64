@@ -116,6 +116,7 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
 
             switch (RomHeader[0x38])
             {
+            case 'C': SetDlgItemText(hDlg, IDC_INFO_MANUFACTURER, L"Nintendo"); break;
             case 'N': SetDlgItemText(hDlg, IDC_INFO_MANUFACTURER, L"Nintendo"); break;
             case 0:   SetDlgItemText(hDlg, IDC_INFO_MANUFACTURER, L"None"); break;
             default:  SetDlgItemText(hDlg, IDC_INFO_MANUFACTURER, L"(Unknown)"); break;
