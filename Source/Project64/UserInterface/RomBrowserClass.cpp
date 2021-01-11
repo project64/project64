@@ -57,7 +57,7 @@ void CRomBrowser::GetFieldInfo(ROMBROWSER_FIELDS_LIST & Fields, bool UseDefault 
     AddField(Fields, "Notes (default plugins)", 3, RB_PluginNotes, 188, RB_NOTES_PLUGIN, UseDefault);
     AddField(Fields, "Notes (User)", -1, RB_UserNotes, 100, RB_NOTES_USER, UseDefault);
     AddField(Fields, "Cartridge ID", -1, RB_CartridgeID, 100, RB_CART_ID, UseDefault);
-    AddField(Fields, "Manufacturer", -1, RB_Manufacturer, 100, RB_MANUFACTUER, UseDefault);
+    AddField(Fields, "Media", -1, RB_Media, 100, RB_MANUFACTUER, UseDefault);
     AddField(Fields, "Country", -1, RB_Country, 100, RB_COUNTRY, UseDefault);
     AddField(Fields, "Developer", -1, RB_Developer, 100, RB_DEVELOPER, UseDefault);
     AddField(Fields, "CRC1", -1, RB_Crc1, 100, RB_CRC1, UseDefault);
@@ -669,7 +669,7 @@ int32_t CALLBACK CRomBrowser::RomList_CompareItems(uint32_t lParam1, uint32_t lP
     case RB_PluginNotes: result = (int32_t)lstrcmpiA(pRomInfo1->PluginNotes, pRomInfo2->PluginNotes); break;
     case RB_UserNotes: result = (int32_t)lstrcmpiA(pRomInfo1->UserNotes, pRomInfo2->UserNotes); break;
     case RB_CartridgeID: result = (int32_t)lstrcmpiA(pRomInfo1->CartID, pRomInfo2->CartID); break;
-    case RB_Manufacturer: result = (int32_t)pRomInfo1->Manufacturer - (int32_t)pRomInfo2->Manufacturer; break;
+    case RB_Media: result = (int32_t)pRomInfo1->Media - (int32_t)pRomInfo2->Media; break;
     case RB_Country: result = (int32_t)pRomInfo1->Country - (int32_t)pRomInfo2->Country; break;
     case RB_Developer: result = (int32_t)lstrcmpiA(pRomInfo1->Developer, pRomInfo2->Developer); break;
     case RB_Crc1: result = (int32_t)pRomInfo1->CRC1 - (int32_t)pRomInfo2->CRC1; break;
@@ -712,13 +712,14 @@ void CRomBrowser::RomList_GetDispInfo(uint32_t pnmh)
     case RB_Status: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->Status).ToUTF16().c_str(), lpdi->item.cchTextMax / sizeof(wchar_t)); break;
     case RB_RomSize: swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"%.1f MBit", (float)pRomInfo->RomSize / 0x20000); break;
     case RB_CartridgeID: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->CartID).ToUTF16().c_str(), lpdi->item.cchTextMax / sizeof(wchar_t)); break;
-    case RB_Manufacturer:
-        switch (pRomInfo->Manufacturer)
+    case RB_Media:
+        switch (pRomInfo->Media)
         {
-        case 'C':wcsncpy(lpdi->item.pszText, L"Nintendo", lpdi->item.cchTextMax / sizeof(wchar_t)); break;
-        case 'N':wcsncpy(lpdi->item.pszText, L"Nintendo", lpdi->item.cchTextMax / sizeof(wchar_t)); break;
+        case 'C':wcsncpy(lpdi->item.pszText, L"N64 Cartridge (Disk Compatible)", lpdi->item.cchTextMax / sizeof(wchar_t)); break;
+        case 'N':wcsncpy(lpdi->item.pszText, L"N64 Cartridge", lpdi->item.cchTextMax / sizeof(wchar_t)); break;
+        case 'Z':wcsncpy(lpdi->item.pszText, L"Aleck64", lpdi->item.cchTextMax / sizeof(wchar_t)); break;
         case 0:  wcsncpy(lpdi->item.pszText, L"None", lpdi->item.cchTextMax / sizeof(wchar_t)); break;
-        default: swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"(Unknown %c (%X))", pRomInfo->Manufacturer, pRomInfo->Manufacturer); break;
+        default: swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"(Unknown %c (%X))", pRomInfo->Media, pRomInfo->Media); break;
         }
         break;
     case RB_Country:

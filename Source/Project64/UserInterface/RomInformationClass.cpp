@@ -96,7 +96,7 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
             SetDlgItemText(hDlg, IDC_ROM_MD5, wGS(INFO_MD5_TEXT).c_str());
             SetDlgItemText(hDlg, IDC_ROM_SIZE, wGS(INFO_SIZE_TEXT).c_str());
             SetDlgItemText(hDlg, IDC_CART_ID, wGS(INFO_CART_ID_TEXT).c_str());
-            SetDlgItemText(hDlg, IDC_MANUFACTURER, wGS(INFO_MANUFACTURER_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_MEDIA, wGS(INFO_MEDIA_TEXT).c_str());
             SetDlgItemText(hDlg, IDC_COUNTRY, wGS(INFO_COUNTRY_TEXT).c_str());
             SetDlgItemText(hDlg, IDC_CRC1, wGS(INFO_CRC1_TEXT).c_str());
             SetDlgItemText(hDlg, IDC_CRC2, wGS(INFO_CRC2_TEXT).c_str());
@@ -116,10 +116,11 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
 
             switch (RomHeader[0x38])
             {
-            case 'C': SetDlgItemText(hDlg, IDC_INFO_MANUFACTURER, L"Nintendo"); break;
-            case 'N': SetDlgItemText(hDlg, IDC_INFO_MANUFACTURER, L"Nintendo"); break;
-            case 0:   SetDlgItemText(hDlg, IDC_INFO_MANUFACTURER, L"None"); break;
-            default:  SetDlgItemText(hDlg, IDC_INFO_MANUFACTURER, L"(Unknown)"); break;
+            case 'C': SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"N64 Cartridge (Disk Compatible)"); break;
+            case 'N': SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"N64 Cartridge"); break;
+            case 'Z': SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"Aleck64"); break;
+            case 0:   SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"None"); break;
+            default:  SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"(Unknown)"); break;
             }
 
             switch (RomHeader[0x3D])
@@ -177,7 +178,7 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
             //SetDlgItemText(hDlg, IDC_ROM_MD5, wGS(INFO_MD5_TEXT).c_str());
             //SetDlgItemText(hDlg, IDC_ROM_SIZE, wGS(INFO_SIZE_TEXT).c_str());
             SetDlgItemText(hDlg, IDC_CART_ID, wGS(INFO_CART_ID_TEXT).c_str());
-            //SetDlgItemText(hDlg, IDC_MANUFACTURER, wGS(INFO_MANUFACTURER_TEXT).c_str());
+            //SetDlgItemText(hDlg, IDC_MEDIA, wGS(INFO_MEDIA_TEXT).c_str());
             SetDlgItemText(hDlg, IDC_COUNTRY, wGS(INFO_COUNTRY_TEXT).c_str());
             //SetDlgItemText(hDlg, IDC_CRC1, wGS(INFO_CRC1_TEXT).c_str());
             //SetDlgItemText(hDlg, IDC_CRC2, wGS(INFO_CRC2_TEXT).c_str());
@@ -197,9 +198,9 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
 
             /*switch (DiskHeader[0x00])
             {
-            case 'N': SetDlgItemText(hDlg, IDC_INFO_MANUFACTURER, L"Nintendo"); break;
-            case 0:   SetDlgItemText(hDlg, IDC_INFO_MANUFACTURER, L"None"); break;
-            default:  SetDlgItemText(hDlg, IDC_INFO_MANUFACTURER, L"(Unknown)"); break;
+            case 'N': SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"Nintendo"); break;
+            case 0:   SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"None"); break;
+            default:  SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"(Unknown)"); break;
             }*/
 
             switch (DiskHeader[0x00])

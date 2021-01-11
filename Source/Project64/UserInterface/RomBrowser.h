@@ -111,7 +111,7 @@ private:
         RB_FileName = 0, RB_InternalName = 1, RB_GoodName = 2,
         RB_Name = 3, RB_Status = 4, RB_RomSize = 5,
         RB_CoreNotes = 6, RB_PluginNotes = 7, RB_UserNotes = 8,
-        RB_CartridgeID = 9, RB_Manufacturer = 10, RB_Country = 11,
+        RB_CartridgeID = 9, RB_Media = 10, RB_Country = 11,
         RB_Developer = 12, RB_Crc1 = 13, RB_Crc2 = 14,
         RB_CICChip = 15, RB_ReleaseDate = 16, RB_Genre = 17,
         RB_Players = 18, RB_ForceFeedback = 19, RB_FileFormat = 20
