@@ -196,13 +196,12 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
             BYTE * DiskHeader = _this->m_pDiskInfo->GetDiskAddressID();
             SetDlgItemText(hDlg, IDC_INFO_CARTID, stdstr_f("%c%c", DiskHeader[0x02], DiskHeader[0x01]).ToUTF16().c_str());
 
-            *switch (DiskHeader[0x43670])
+            /*switch (DiskHeader[0x00])
             {
-            case 'D': SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"64DD Disk"); break;
-            case 'E': SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"64DD Disk Expansion"); break;
+            case 'N': SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"Nintendo"); break;
             case 0:   SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"None"); break;
             default:  SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"(Unknown)"); break;
-            }*
+            }*/
 
             switch (DiskHeader[0x00])
             {
