@@ -198,7 +198,8 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
 
             /*switch (DiskHeader[0x00])
             {
-            case 'N': SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"Nintendo"); break;
+            case 'D': SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"64DD Disk"); break;
+            case 'E': SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"64DD Disk Expansion"); break;
             case 0:   SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"None"); break;
             default:  SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"(Unknown)"); break;
             }*/
