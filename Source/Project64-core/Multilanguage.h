@@ -577,6 +577,8 @@ enum LanguageStringID
     MSG_MSGBOX_WARNING_TITLE = 2060,
     MSG_USA_IPL_REQUIRED = 2061,
     MSG_TOOL_IPL_REQUIRED = 2062,
+    MSG_CHEAT_INVALID_MSG = 2063,
+    MSG_CHEAT_INVALID_TITLE = 2064,
 
     /*********************************************************************************
     * Android                                                                        *

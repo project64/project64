@@ -536,7 +536,8 @@
 #2059#  "Nintendo 64DD Japanese Retail IPL ROM not found.\nIt is required to play japanese region 64DD disk images.\n\nPlease select the required ROM in the Settings."
 #2061#  "Nintendo 64DD American Retail IPL ROM not found.\nIt is required to play american region 64DD disk images.\n\nPlease select the required ROM in the Settings."
 #2062#  "Nintendo 64DD Development IPL ROM not found.\nIt is required to play development 64DD disk images.\n\nPlease select the required ROM in the Settings."
-
+#2063#  "Failed to update cheat, it is invalid"
+#2064#  "Invalid Cheat"
 
 /*********************************************************************************
 * Android                                                                        *

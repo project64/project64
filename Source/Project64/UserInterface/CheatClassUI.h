@@ -14,6 +14,7 @@
 #include <Project64-core\N64System\Enhancement\EnhancementList.h>
 
 class CEditCheat;
+class CCheatsUI;
 
 class CCheatList :
     public CDialogImpl<CCheatList>
@@ -79,6 +80,8 @@ private:
 class CEditCheat :
     public CDialogImpl<CEditCheat>
 {
+    friend CCheatsUI;
+
 public:
     enum
     {

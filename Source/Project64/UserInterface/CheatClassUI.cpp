@@ -112,6 +112,11 @@ LRESULT CCheatsUI::OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/
 
 LRESULT CCheatsUI::OnCloseCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
+    if (m_EditCheat.ValuesChanged())
+    {
+        return 0;
+    }
+
     if (g_BaseSystem)
     {
         g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_Cheats);
@@ -1034,7 +1039,24 @@ bool CEditCheat::ValuesChanged(void)
     }
     if (Result == IDYES)
     {
-        SendMessage(WM_COMMAND, MAKELPARAM(IDC_ADD, 0));
+        bool validcodes, validoptions, nooptions;
+        CodeFormat  Format;
+        ReadCodeEntries(validcodes, validoptions, nooptions, Format);
+        if (!nooptions)
+        {
+            ReadOptions(validoptions, Format);
+        }
+
+        bool CanAdd = validcodes && (validoptions || nooptions) && GetDlgItem(IDC_CODE_NAME).GetWindowTextLength() > 0;
+        if (CanAdd)
+        {
+            SendMessage(WM_COMMAND, MAKELPARAM(IDC_ADD, 0));
+        }
+        else
+        {
+            MessageBox(wGS(MSG_CHEAT_INVALID_MSG).c_str(), wGS(MSG_CHEAT_INVALID_TITLE).c_str(), MB_ICONERROR);
+            return true;
+        }
     }
     return false;
 }

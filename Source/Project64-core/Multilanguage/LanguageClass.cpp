@@ -542,6 +542,8 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MSG_IPL_REQUIRED, "Nintendo 64DD Japanese Retail IPL ROM not found.\nIt is required to play japanese region 64DD disk images.\n\nPlease select the required ROM in the Settings.");
     DEF_STR(MSG_USA_IPL_REQUIRED, "Nintendo 64DD American Retail IPL ROM not found.\nIt is required to play american region 64DD disk images.\n\nPlease select the required ROM in the Settings.");
     DEF_STR(MSG_TOOL_IPL_REQUIRED, "Nintendo 64DD Development IPL ROM not found.\nIt is required to play development 64DD disk images.\n\nPlease select the required ROM in the Settings.");
+    DEF_STR(MSG_CHEAT_INVALID_MSG, "Failed to update cheat, it is invalid");
+    DEF_STR(MSG_CHEAT_INVALID_TITLE, "Invalid Cheat");
 
     /*********************************************************************************
     * Android                                                                        *
