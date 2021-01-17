@@ -304,7 +304,7 @@ void CRomList::FillRomList(strlist & FileList, const char * Directory)
                         RomInfo.CartID[0] = *(RomData + 0x3F);
                         RomInfo.CartID[1] = *(RomData + 0x3E);
                         RomInfo.CartID[2] = '\0';
-                        RomInfo.Manufacturer = *(RomData + 0x38);
+                        RomInfo.Media = *(RomData + 0x38);
                         RomInfo.Country = *(RomData + 0x3D);
                         RomInfo.CRC1 = *(uint32_t *)(RomData + 0x10);
                         RomInfo.CRC2 = *(uint32_t *)(RomData + 0x14);
@@ -535,7 +535,7 @@ bool CRomList::FillRomInfo(ROM_INFO * pRomInfo)
             pRomInfo->CartID[0] = *(RomData + 0x3F);
             pRomInfo->CartID[1] = *(RomData + 0x3E);
             pRomInfo->CartID[2] = '\0';
-            pRomInfo->Manufacturer = *(RomData + 0x38);
+            pRomInfo->Media = *(RomData + 0x38);
             pRomInfo->Country = *(RomData + 0x3D);
             pRomInfo->CRC1 = *(uint32_t *)(RomData + 0x10);
             pRomInfo->CRC2 = *(uint32_t *)(RomData + 0x14);
@@ -556,7 +556,7 @@ bool CRomList::FillRomInfo(ROM_INFO * pRomInfo)
             pRomInfo->CartID[0] = *(RomData + 0x100);
             pRomInfo->CartID[1] = *(RomData + 0x101);
             pRomInfo->CartID[2] = *(RomData + 0x102);
-            pRomInfo->Manufacturer = '\0';
+            pRomInfo->Media = '\0';
             pRomInfo->Country = *(RomData + 0x100);
             pRomInfo->CRC1 = 0;
             for (uint32_t i = 0; i < 0x200; i += 4)

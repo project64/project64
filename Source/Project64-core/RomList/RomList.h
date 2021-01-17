@@ -47,7 +47,7 @@ public:
         int32_t SelColor;
         uint32_t SelTextColor;
         int32_t RomSize;
-        uint8_t Manufacturer;
+        uint8_t Media;
         uint8_t Country;
         uint32_t CRC1;
         uint32_t CRC2;

@@ -165,7 +165,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(RB_NOTES_PLUGIN, "Notes (default plugins)");
     DEF_STR(RB_NOTES_USER, "Notes (user)");
     DEF_STR(RB_CART_ID, "Cartridge ID");
-    DEF_STR(RB_MANUFACTUER, "Manufacturer");
+    DEF_STR(RB_MANUFACTUER, "Media");
     DEF_STR(RB_COUNTRY, "Country");
     DEF_STR(RB_DEVELOPER, "Developer");
     DEF_STR(RB_CRC1, "CRC1");
@@ -393,7 +393,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(INFO_LOCATION_TEXT, "Location:");
     DEF_STR(INFO_SIZE_TEXT, "ROM size:");
     DEF_STR(INFO_CART_ID_TEXT, "Cartridge ID:");
-    DEF_STR(INFO_MANUFACTURER_TEXT, "Manufacturer:");
+    DEF_STR(INFO_MEDIA_TEXT, "Media:");
     DEF_STR(INFO_COUNTRY_TEXT, "Country:");
     DEF_STR(INFO_CRC1_TEXT, "CRC1:");
     DEF_STR(INFO_CRC2_TEXT, "CRC2:");

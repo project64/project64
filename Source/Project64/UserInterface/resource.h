@@ -109,7 +109,7 @@
 #define IDC_CHK_VADDR                   1011
 #define IDC_CHK_HEX                     1011
 #define IDC_DISPLAY_FRAMERATE           1012
-#define IDC_INFO_MANUFACTURER           1012
+#define IDC_INFO_MEDIA           1012
 #define IDC_ALT                         1012
 #define IDC_LIST                        1012
 #define IDC_HLE_AUDIO                   1012
@@ -376,7 +376,7 @@
 #define IDC_ROM_SIZE                    1194
 #define IDC_REG_TABS                    1194
 #define IDC_CART_ID                     1195
-#define IDC_MANUFACTURER                1196
+#define IDC_MEDIA                1196
 #define IDC_COUNTRY                     1197
 #define IDC_CRC1                        1198
 #define IDC_CRC2                        1199
