@@ -31,10 +31,12 @@ public:
     
     void ApplyActive(CMipsMemoryVM & MMU, bool UpdateChanges);
     void ApplyGSButton(CMipsMemoryVM & MMU, bool UpdateChanges);
-    void UpdateCheats(const CEnhancementList & Cheats );
+    void UpdateCheats(const CEnhancementList & Cheats);
     void UpdateCheats(void);
-
+    void UpdateEnhancements(const CEnhancementList & Enhancements);
+    
     inline const CEnhancementList & Cheats(void) const { return m_Cheats; }
+    inline const CEnhancementList & Enhancements(void) const { return m_Enhancements; }
 
 private:
     struct GAMESHARK_CODE
@@ -63,6 +65,7 @@ private:
 
     void ResetCodes(CMipsMemoryVM * MMU);
     void LoadCheats(CMipsMemoryVM * MMU);
+    void LoadEnhancements(const char * Ident, SectionFiles & Files, std::unique_ptr<CEnhancmentFile> & File, CEnhancementList & EnhancementList);
     void ApplyGameSharkCodes(CMipsMemoryVM & MMU, CODES & CodeEntry, uint32_t CurrentEntry);
     uint32_t EntrySize(const CODES & CodeEntry, uint32_t CurrentEntry);
     void ModifyMemory8(CMipsMemoryVM & MMU, uint32_t Address, uint8_t Value);
@@ -79,9 +82,10 @@ private:
 
     CriticalSection m_CS;
     std::string m_SectionIdent;
-    SectionFiles m_CheatFiles;
-    std::unique_ptr<CEnhancmentFile> m_CheatFile;
+    SectionFiles m_CheatFiles, m_EnhancementFiles;
+    std::unique_ptr<CEnhancmentFile> m_CheatFile, m_EnhancementFile;
     CEnhancementList m_Cheats;
+    CEnhancementList m_Enhancements;
     CODES_ARRAY m_ActiveCodes;
     CODES_ARRAY m_GSButtonCodes;
     ORIGINAL_VALUES16 m_OriginalValues16;

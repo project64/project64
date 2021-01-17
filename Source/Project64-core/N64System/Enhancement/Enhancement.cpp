@@ -32,8 +32,9 @@ class CSettingEnhancementActive :
     public CSettingTypeGame
 {
 public:
-    CSettingEnhancementActive(const char * Name, const char * Ident) :
-        CSettingTypeGame("",false)
+    CSettingEnhancementActive(const char * Name, const char * Ident, bool Default) :
+        CSettingTypeGame("",false),
+        m_Default(Default)
     {
         m_KeyNameIdex = GenerateKeyName(Name, Ident, "Active");
     }
@@ -49,7 +50,7 @@ public:
         {
             return Active;
         }
-        return false;
+        return m_Default;
     }
 
     void SetActive(bool Active)
@@ -71,6 +72,9 @@ public:
         CSettingTypeGame::Delete(0);
         Flush();
     }
+
+private:
+    bool m_Default;
 };
 
 class CSettingEnhancementSelectedOption :
@@ -119,6 +123,7 @@ CEnhancement::CEnhancement(const char * Ident) :
     m_Ident(Ident),
     m_CodeOptionSize(0),
     m_SelectedOption(0xFFFF0000),
+    m_OnByDefault(false),
     m_Active(false),
     m_Valid(false)
 {
@@ -128,6 +133,7 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
     m_Ident(Ident),
     m_CodeOptionSize(0),
     m_SelectedOption(0xFFFF0000),
+    m_OnByDefault(false),
     m_Active(false),
     m_Valid(false)
 {
@@ -163,6 +169,10 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
         if (stricmp(Key.c_str(), "Note") == 0)
         {
             m_Note = &Pos[1];
+        }
+        else if (stricmp(Key.c_str(), "OnByDefault") == 0)
+        {
+            m_OnByDefault = Pos[1] == '1';
         }
         else
         {
@@ -213,7 +223,7 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-    m_Active = CSettingEnhancementActive(m_Name.c_str(), m_Ident.c_str()).Active();
+    m_Active = CSettingEnhancementActive(m_Name.c_str(), m_Ident.c_str(), m_OnByDefault).Active();
     uint16_t SelectedValue = 0;
     if (CSettingEnhancementSelectedOption(m_Name.c_str(), m_Ident.c_str()).SelectedValue(SelectedValue))
     {
@@ -224,11 +234,16 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
 
 void CEnhancement::SetName(const char * Name)
 {
-    CSettingEnhancementActive(m_Name.c_str(), m_Ident.c_str()).Delete();
+    std::string NewName = stdstr(Name != NULL ? Name : "").Trim("\t ,");
+    if (NewName == m_Name)
+    {
+        return;
+    }
+    CSettingEnhancementActive(m_Name.c_str(), m_Ident.c_str(), m_OnByDefault).Delete();
     CSettingEnhancementSelectedOption(m_Name.c_str(), m_Ident.c_str()).Delete();
     m_Name = stdstr(Name != NULL ? Name : "").Trim("\t ,");
     m_NameAndExtension = m_Name;
-    if (m_Active) { CSettingEnhancementActive(m_Name.c_str(), m_Ident.c_str()).SetActive(true); }
+    if (m_Active != m_OnByDefault) { CSettingEnhancementActive(m_Name.c_str(), m_Ident.c_str(), m_OnByDefault).SetActive(m_OnByDefault); }
     if (OptionSelected()) { CSettingEnhancementSelectedOption(m_Name.c_str(), m_Ident.c_str()).SetOption(SelectedOption()); }
     CheckValid();
 }
@@ -268,7 +283,13 @@ void CEnhancement::SetActive(bool Active)
         return;
     }
     m_Active = Active;
-    CSettingEnhancementActive(m_Name.c_str(), m_Ident.c_str()).SetActive(m_Active);
+    CSettingEnhancementActive(m_Name.c_str(), m_Ident.c_str(), m_OnByDefault).SetActive(m_Active);
+}
+
+void CEnhancement::SetOnByDefault(bool OnByDefault)
+{
+    m_OnByDefault = OnByDefault;
+    m_Active = CSettingEnhancementActive(m_Name.c_str(), m_Ident.c_str(), m_OnByDefault).Active();
 }
 
 void CEnhancement::CheckValid(void)

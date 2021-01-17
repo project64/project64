@@ -945,6 +945,10 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                         {
                             _this->m_CheatsUI.Display(hWnd, true);
                         }
+                        else if (LOWORD(wParam) == ID_POPUPMENU_CHOOSEENHANCEMENT)
+                        {
+                            _this->m_EnhancementUI.Display(hWnd, true);
+                        }
 
                         if (g_Rom)
                         {

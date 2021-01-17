@@ -14,7 +14,6 @@
 #include "Settings/SettingType/SettingsType-Application.h"
 #include "Settings/SettingType/SettingsType-ApplicationPath.h"
 #include "Settings/SettingType/SettingsType-ApplicationIndex.h"
-#include "Settings/SettingType/SettingsType-Enhancements.h"
 #include "Settings/SettingType/SettingsType-GameSetting.h"
 #include "Settings/SettingType/SettingsType-GameSettingIndex.h"
 #include "Settings/SettingType/SettingsType-RelativePath.h"
@@ -46,7 +45,6 @@ CSettings::~CSettings()
     CSettingTypeApplication::CleanUp();
     CSettingTypeRomDatabase::CleanUp();
     CSettingTypeGame::CleanUp();
-	CSettingTypeEnhancements::CleanUp();
 
     for (SETTING_MAP::iterator iter = m_SettingInfo.begin(); iter != m_SettingInfo.end(); iter++)
     {
@@ -103,8 +101,10 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(SupportFile_CheatDirDefault, new CSettingTypeRelativePath("Config\\Cheats", ""));
     AddHandler(SupportFile_UserCheatDir, new CSettingTypeApplicationPath("Settings", "UserCheatDir", SupportFile_UserCheatDirDefault));
     AddHandler(SupportFile_UserCheatDirDefault, new CSettingTypeRelativePath("Config\\Cheats-User", ""));
-    AddHandler(SupportFile_Enhancements, new CSettingTypeApplicationPath("Settings", "Enhancement", SupportFile_EnhancementsDefault));
-	AddHandler(SupportFile_EnhancementsDefault, new CSettingTypeRelativePath("Config", "Project64.enh"));
+    AddHandler(SupportFile_EnhancementDir, new CSettingTypeApplicationPath("Settings", "EnhancementDir", SupportFile_EnhancementDirDefault));
+    AddHandler(SupportFile_EnhancementDirDefault, new CSettingTypeRelativePath("Config\\Enhancement", ""));
+    AddHandler(SupportFile_UserEnhancementDir, new CSettingTypeApplicationPath("Settings", "UserEnhancementDir", SupportFile_UserEnhancementDirDefault));
+    AddHandler(SupportFile_UserEnhancementDirDefault, new CSettingTypeRelativePath("Config\\Enhancement-User", ""));
 	AddHandler(SupportFile_Notes, new CSettingTypeApplicationPath("Settings", "Notes", SupportFile_NotesDefault));
     AddHandler(SupportFile_NotesDefault, new CSettingTypeRelativePath("Config", "Project64.rdn"));
     AddHandler(SupportFile_ExtInfo, new CSettingTypeApplicationPath("Settings", "ExtInfo", SupportFile_ExtInfoDefault));
@@ -125,7 +125,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Setting_ForceInterpreterCPU, new CSettingTypeApplication("Settings", "Force Interpreter CPU", true));
 #endif
     AddHandler(Setting_FixedRdramAddress, new CSettingTypeApplication("Settings", "Fixed Rdram Address", (uint32_t)0));
-    AddHandler(Setting_Enhancement, new CSettingTypeApplication("Settings", "Enable Enhancement", (uint32_t)false));
+    AddHandler(Setting_Enhancement, new CSettingTypeApplication("Settings", "Enable Enhancement", (uint32_t)true));
     
 	AddHandler(Setting_RememberCheats, new CSettingTypeApplication("Settings", "Remember Cheats", (uint32_t)false));
     AddHandler(Setting_UniqueSaveDir, new CSettingTypeApplication("Settings", "Unique Game Dir", true));
@@ -687,7 +687,6 @@ bool CSettings::Initialize(const char * BaseDirectory, const char * AppName)
     CSettingTypeApplication::Initialize();
     CSettingTypeRomDatabase::Initialize();
     CSettingTypeGame::Initialize();
-	CSettingTypeEnhancements::Initialize();
 
     g_Settings->SaveString(Setting_ApplicationName, AppName);
     WriteTrace(TraceAppInit, TraceDebug, "Done");

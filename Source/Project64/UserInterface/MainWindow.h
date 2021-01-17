@@ -14,6 +14,7 @@
 #include <Project64/UserInterface/Debugger/debugger.h>
 #include <Project64-core/Plugins/PluginClass.h>
 #include <Project64\UserInterface\CheatClassUI.h>
+#include <Project64\UserInterface\EnhancementUI.h>
 #include <Project64\UserInterface\ProjectSupport.h>
 
 class CGfxPlugin;      //Plugin that controls the rendering
@@ -117,6 +118,7 @@ private:
     HWND m_hMainWindow, m_hStatusWnd;
     DWORD m_ThreadId;
     CCheatsUI m_CheatsUI;
+    CEnhancementUI m_EnhancementUI;
     CProjectSupport m_Support;
 
     const bool m_bMainWindow;

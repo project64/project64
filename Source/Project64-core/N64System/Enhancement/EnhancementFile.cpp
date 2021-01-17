@@ -325,6 +325,10 @@ void CEnhancmentFile::SaveCurrentSection(void)
             continue;
         }
         Section += stdstr_f("$%s%s", Enhancement.GetName().c_str(), m_LineFeed);
+        if (Enhancement.GetOnByDefault())
+        {
+            Section += stdstr_f("OnByDefault=1%s", m_LineFeed);
+        }
         if (!Enhancement.GetNote().empty())
         {
             Section += stdstr_f("Note=%s%s", Enhancement.GetNote().c_str(), m_LineFeed);

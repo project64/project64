@@ -36,6 +36,7 @@ enum PauseType
     PauseType_Settings,
     PauseType_Cheats,
     PauseType_ChangingBPs,
+    PauseType_Enhancement,
 };
 
 enum CPU_TYPE

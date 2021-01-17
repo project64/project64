@@ -327,6 +327,7 @@
 #define IDC_R12_EDIT                    1145
 #define IDC_PAL                         1146
 #define IDC_R13_EDIT                    1146
+#define IDC_ENABLE_ENHANCEMENTS         1146
 #define IDC_USA                         1147
 #define IDC_R14_EDIT                    1147
 #define IDC_R15_EDIT                    1148

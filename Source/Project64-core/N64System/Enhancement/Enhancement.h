@@ -37,6 +37,7 @@ public:
     void SetOptions(const CodeOptions & Options);
     void SetSelectedOption(uint16_t Value);
     void SetActive(bool Active);
+    void SetOnByDefault(bool OnByDefault);
 
     inline const std::string & GetName(void) const { return m_Name; }
     inline const std::string & GetNameAndExtension(void) const { return m_NameAndExtension; }
@@ -46,6 +47,7 @@ public:
     inline uint32_t CodeOptionSize(void) const { return m_CodeOptionSize; }
     inline bool Valid(void) const { return m_Valid; }
     inline bool Active(void) const { return m_Active; }
+    inline bool GetOnByDefault(void) const { return m_OnByDefault; }
     bool OptionSelected() const { return (m_SelectedOption & 0xFFFF0000) == 0; }
     uint16_t SelectedOption() const { return (uint16_t)(m_SelectedOption & 0xFFFF); }
 
@@ -64,6 +66,7 @@ private:
     std::string m_OptionValue;
     uint32_t m_CodeOptionSize;
     uint32_t m_SelectedOption;
+    bool m_OnByDefault;
     bool m_Active;
     bool m_Valid;
 };

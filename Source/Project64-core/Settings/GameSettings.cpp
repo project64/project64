@@ -78,19 +78,6 @@ void CGameSettings::RefreshGameSettings()
     {
         m_CountPerOp = 2;
     }
-	/*if (g_Settings->LoadBool(Setting_Enhancement))
-	{
-		for (int i = 0; i < CCheats::MaxCheats; i++)
-		{
-			std::string Name = g_Settings->LoadStringIndex(Enhancement_Name, i);
-			if (Name.length() == 0) { break; }
-
-			if (g_Settings->LoadBoolIndex(Enhancement_Active, i) && g_Settings->LoadBoolIndex(Enhancement_Overclock, i))
-			{
-				m_OverClockModifier = g_Settings->LoadDwordIndex(Enhancement_OverclockValue, i);
-			}
-		}
-	}*/
 	if (m_OverClockModifier < 1) { m_OverClockModifier = 1; }
     if (m_OverClockModifier > 20) { m_OverClockModifier = 20; }
 	RefreshSyncToAudio();

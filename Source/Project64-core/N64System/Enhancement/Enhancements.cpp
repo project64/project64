@@ -89,7 +89,7 @@ void CEnhancements::UpdateCheats(const CEnhancementList & Cheats)
 #endif
 
     CGuard Guard(m_CS);
-    if (strcmp(m_CheatFile->FileName(), OutFile) != 0)
+    if (m_CheatFile.get() == nullptr || strcmp(m_CheatFile->FileName(), OutFile) != 0)
     {
         if (!OutFile.DirectoryExists())
         {
@@ -125,6 +125,46 @@ void CEnhancements::UpdateCheats(void)
     m_UpdateCheats = true;
 }
 
+void CEnhancements::UpdateEnhancements(const CEnhancementList & Enhancements)
+{
+    std::string GameName = g_Settings->LoadStringVal(Rdb_GoodName);
+    CPath OutFile(g_Settings->LoadStringVal(SupportFile_UserEnhancementDir), stdstr_f("%s.enh", GameName.c_str()).c_str());
+#ifdef _WIN32
+    OutFile.NormalizePath(CPath(CPath::MODULE_DIRECTORY));
+#endif
+
+    CGuard Guard(m_CS);
+    if (m_EnhancementFile.get() == nullptr ||strcmp(m_EnhancementFile->FileName(), OutFile) != 0)
+    {
+        if (!OutFile.DirectoryExists())
+        {
+            OutFile.DirectoryCreate();
+        }
+        SectionFiles::const_iterator EnhancementFileItr = m_EnhancementFiles.find(m_SectionIdent);
+        if (m_EnhancementFiles.end() != EnhancementFileItr)
+        {
+            m_EnhancementFiles.erase(EnhancementFileItr);
+        }
+        m_EnhancementFile = std::make_unique<CEnhancmentFile>(OutFile, "Enhancement");
+        m_EnhancementFiles.insert(SectionFiles::value_type(m_SectionIdent, OutFile));
+    }
+
+    m_EnhancementFile->SetName(m_SectionIdent.c_str(), GameName.c_str());
+    m_EnhancementFile->RemoveEnhancements(m_SectionIdent.c_str());
+    for (CEnhancementList::const_iterator itr = Enhancements.begin(); itr != Enhancements.end(); itr++)
+    {
+        const CEnhancement & Enhancement = itr->second;
+        if (!Enhancement.Valid())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            continue;
+        }
+        m_EnhancementFile->AddEnhancement(m_SectionIdent.c_str(), Enhancement);
+    }
+    m_EnhancementFile->SaveCurrentSection();
+    m_UpdateCheats = true;
+}
+
 void CEnhancements::ResetCodes(CMipsMemoryVM * MMU)
 {
     m_ActiveCodes.clear();
@@ -155,28 +195,36 @@ void CEnhancements::ResetCodes(CMipsMemoryVM * MMU)
     m_OriginalValues16.clear();
 }
 
-void CEnhancements::LoadCheats(CMipsMemoryVM * MMU)
+void CEnhancements::LoadEnhancements(const char * Ident, SectionFiles & Files, std::unique_ptr<CEnhancmentFile> & File, CEnhancementList & EnhancementList)
 {
-    WaitScanDone();
-    CGuard Guard(m_CS);
-    SectionFiles::const_iterator CheatFileItr = m_CheatFiles.find(m_SectionIdent);
+    SectionFiles::const_iterator CheatFileItr = Files.find(m_SectionIdent);
     bool FoundFile = false;
-    if (CheatFileItr != m_CheatFiles.end())
+    if (CheatFileItr != Files.end())
     {
         CPath CheatFile(CheatFileItr->second);
         if (CheatFile.Exists())
         {
-            m_CheatFile = std::make_unique<CEnhancmentFile>(CheatFile, "Cheat");
-            m_CheatFile->GetEnhancementList(m_SectionIdent.c_str(), m_Cheats);
+            File = std::make_unique<CEnhancmentFile>(CheatFile, Ident);
+            File->GetEnhancementList(m_SectionIdent.c_str(), EnhancementList);
             FoundFile = true;
         }
     }
 
     if (!FoundFile)
     {
-        m_CheatFile = nullptr;
-        m_Cheats.clear();
+        File = nullptr;
+        EnhancementList.clear();
     }
+}
+
+void CEnhancements::LoadCheats(CMipsMemoryVM * MMU)
+{
+    WaitScanDone();
+    CGuard Guard(m_CS);
+
+    LoadEnhancements("Cheat", m_CheatFiles, m_CheatFile, m_Cheats);
+    LoadEnhancements("Enhancement", m_EnhancementFiles, m_EnhancementFile, m_Enhancements);
+
     ResetCodes(MMU);
     for (CEnhancementList::const_iterator itr = m_Cheats.begin(); itr != m_Cheats.end(); itr++)
     {
@@ -439,7 +487,7 @@ void CEnhancements::ModifyMemory16(CMipsMemoryVM & MMU, uint32_t Address, uint16
 
 void CEnhancements::ScanFileThread(void)
 {
-    SectionFiles Files;
+    SectionFiles CheatFiles;
     CPath File(g_Settings->LoadStringVal(SupportFile_CheatDir), "*.cht");
 #ifdef _WIN32
     File.NormalizePath(CPath(CPath::MODULE_DIRECTORY));
@@ -453,7 +501,7 @@ void CEnhancements::ScanFileThread(void)
             EnhancmentFile.GetSections(Sections);
             for (CEnhancmentFile::SectionList::const_iterator itr = Sections.begin(); itr != Sections.end(); itr++)
             {
-                Files.insert(SectionFiles::value_type(itr->c_str(), File));
+                CheatFiles.insert(SectionFiles::value_type(itr->c_str(), File));
             }
         } while (m_Scan && File.FindNext());
     }
@@ -471,14 +519,52 @@ void CEnhancements::ScanFileThread(void)
             EnhancmentFile.GetSections(Sections);
             for (CEnhancmentFile::SectionList::const_iterator itr = Sections.begin(); itr != Sections.end(); itr++)
             {
-                Files[itr->c_str()] = (const char *)File;
+                CheatFiles[itr->c_str()] = (const char *)File;
+            }
+        } while (m_Scan && File.FindNext());
+    }
+
+    File = CPath(g_Settings->LoadStringVal(SupportFile_EnhancementDir), "*.enh");
+#ifdef _WIN32
+    File.NormalizePath(CPath(CPath::MODULE_DIRECTORY));
+#endif
+    SectionFiles EnhancementFiles;
+    if (File.FindFirst() && m_Scan)
+    {
+        do
+        {
+            CEnhancmentFile EnhancmentFile(File, "Enhancment");
+            CEnhancmentFile::SectionList Sections;
+            EnhancmentFile.GetSections(Sections);
+            for (CEnhancmentFile::SectionList::const_iterator itr = Sections.begin(); itr != Sections.end(); itr++)
+            {
+                EnhancementFiles.insert(SectionFiles::value_type(itr->c_str(), File));
+            }
+        } while (m_Scan && File.FindNext());
+    }
+
+    File = CPath(g_Settings->LoadStringVal(SupportFile_UserEnhancementDir), "*.enh");
+#ifdef _WIN32
+    File.NormalizePath(CPath(CPath::MODULE_DIRECTORY));
+#endif
+    if (m_Scan && File.FindFirst())
+    {
+        do
+        {
+            CEnhancmentFile EnhancmentFile(File, "Enhancment");
+            CEnhancmentFile::SectionList Sections;
+            EnhancmentFile.GetSections(Sections);
+            for (CEnhancmentFile::SectionList::const_iterator itr = Sections.begin(); itr != Sections.end(); itr++)
+            {
+                EnhancementFiles[itr->c_str()] = (const char *)File;
             }
         } while (m_Scan && File.FindNext());
     }
 
     {
         CGuard Guard(m_CS);
-        m_CheatFiles = Files;
+        m_CheatFiles = CheatFiles;
+        m_EnhancementFiles = EnhancementFiles;
         m_Scanned = true;
     }
 }

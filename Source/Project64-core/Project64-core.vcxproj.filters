@@ -339,9 +339,6 @@
     <ClCompile Include="Settings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Settings\SettingType\SettingsType-Enhancements.cpp">
-      <Filter>Source Files\Settings\SettingType</Filter>
-    </ClCompile>
     <ClCompile Include="N64System\Enhancement\EnhancementFile.cpp">
       <Filter>Source Files\N64 System\Enhancement</Filter>
     </ClCompile>
@@ -661,9 +658,6 @@
     </ClInclude>
     <ClInclude Include="Settings\SettingsID.h">
       <Filter>Header Files\Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="Settings\SettingType\SettingsType-Enhancements.h">
-      <Filter>Header Files\Settings\SettingType</Filter>
     </ClInclude>
     <ClInclude Include="N64System\Enhancement\EnhancementFile.h">
       <Filter>Header Files\N64 System\Enhancement</Filter>

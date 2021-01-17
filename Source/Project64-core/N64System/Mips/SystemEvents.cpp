@@ -34,6 +34,7 @@ const char * SystemEventName(SystemEvent event)
     case SysEvent_PauseCPU_Settings: return "SysEvent_PauseCPU_Settings";
     case SysEvent_PauseCPU_Cheats: return "SysEvent_PauseCPU_Cheats";
     case SysEvent_PauseCPU_ChangingBPs: return "SysEvent_PauseCPU_ChangingBPs";
+    case SysEvent_PauseCPU_Enhancement: return "SysEvent_PauseCPU_Enhancement";
     case SysEvent_ResumeCPU_FromMenu: return "SysEvent_ResumeCPU_FromMenu";
     case SysEvent_ResumeCPU_AppGainedActive: return "SysEvent_ResumeCPU_AppGainedActive";
     case SysEvent_ResumeCPU_AppGainedFocus: return "SysEvent_ResumeCPU_AppGainedFocus";
@@ -249,6 +250,13 @@ void CSystemEvents::ExecuteEvents()
             if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
             {
                 g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_ChangingBPs);
+                bPause = true;
+            }
+            break;
+        case SysEvent_PauseCPU_Enhancement:
+            if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
+            {
+                g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_Enhancement);
                 bPause = true;
             }
             break;

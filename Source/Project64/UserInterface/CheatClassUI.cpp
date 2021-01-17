@@ -402,7 +402,7 @@ void CCheatList::RefreshItems()
     if (m_hWnd == NULL) { return; }
 
     m_DeleteingEntries = true;
-    TreeView_DeleteAllItems(m_hCheatTree);
+    m_hCheatTree.DeleteAllItems();
     m_DeleteingEntries = false;
 
     for (CEnhancementList::iterator itr = m_Cheats.begin(); itr != m_Cheats.end(); itr++)
@@ -421,7 +421,7 @@ void CCheatList::AddCodeLayers(LPARAM Enhancement, const std::wstring &Name, HTR
     TV_INSERTSTRUCT tv;
 
     wchar_t Text[500], Item[500];
-    if (Name.length() > (sizeof(Text) - 5)) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+    if (Name.length() > ((sizeof(Text) / sizeof(Text[0])) - 5)) { g_Notify->BreakPoint(__FILE__, __LINE__); }
     wcscpy(Text, Name.c_str());
     if (wcschr(Text, L'\\') > 0) { *wcschr(Text, L'\\') = 0; }
 

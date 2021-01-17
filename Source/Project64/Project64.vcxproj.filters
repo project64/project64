@@ -249,6 +249,9 @@
     <ClCompile Include="UserInterface\About.cpp">
       <Filter>Source Files\User Interface Source</Filter>
     </ClCompile>
+    <ClCompile Include="UserInterface\EnhancementUI.cpp">
+      <Filter>Source Files\User Interface Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UserInterface\resource.h">
@@ -480,6 +483,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UserInterface\About.h">
+      <Filter>Header Files\User Interface Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\EnhancementUI.h">
       <Filter>Header Files\User Interface Headers</Filter>
     </ClInclude>
   </ItemGroup>

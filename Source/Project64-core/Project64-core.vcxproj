@@ -108,7 +108,6 @@
     <ClCompile Include="Settings\SettingType\SettingsType-Application.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-ApplicationIndex.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-ApplicationPath.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-Enhancements.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-GameSetting.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-GameSettingIndex.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-RDBCpuType.cpp" />
@@ -217,7 +216,6 @@
     <ClInclude Include="Settings\SettingType\SettingsType-ApplicationIndex.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-ApplicationPath.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-Base.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-Enhancements.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-GameSetting.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-GameSettingIndex.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-RDBCpuType.h" />

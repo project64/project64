@@ -214,6 +214,7 @@ void CN64System::ExternalEvent(SystemEvent action)
     case SysEvent_PauseCPU_SearchMemory:
     case SysEvent_PauseCPU_Settings:
     case SysEvent_PauseCPU_Cheats:
+    case SysEvent_PauseCPU_Enhancement:
         if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
         {
             QueueEvent(action);
@@ -288,6 +289,12 @@ void CN64System::ExternalEvent(SystemEvent action)
         break;
     case SysEvent_ResumeCPU_ChangingBPs:
         if (g_Settings->LoadDword(GameRunning_CPU_PausedType) == PauseType_ChangingBPs)
+        {
+            m_hPauseEvent.Trigger();
+        }
+        break;
+    case SysEvent_ResumeCPU_Enhancement:
+        if (g_Settings->LoadDword(GameRunning_CPU_PausedType) == PauseType_Enhancement)
         {
             m_hPauseEvent.Trigger();
         }
