@@ -42,7 +42,7 @@ public:
     BOOL OnInitDialog(CWindow /*wndFocus*/, LPARAM /*lInitParam*/);
     HBRUSH OnCtlColorStatic(CDCHandle dc, CWindow wndStatic);
     void RemoveMapping(const BUTTON & Button);
-    bool OnApply();
+    LRESULT OnApply();
 
 private:
     LRESULT OnScroll(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -163,7 +163,7 @@ HBRUSH CControllerSettings::OnCtlColorStatic(CDCHandle dc, CWindow wndStatic)
     return ::GetSysColorBrush(COLOR_WINDOW);
 }
 
-bool CControllerSettings::OnApply()
+LRESULT CControllerSettings::OnApply()
 {
     N64CONTROLLER & Controller = g_InputPlugin->Controllers(m_ControllerNumber);
     Controller = m_Controller;
@@ -171,7 +171,7 @@ bool CControllerSettings::OnApply()
     Controller.DeadZone = (uint8_t)m_DeadZone.GetPos();
     CONTROL & ControlInfo = g_InputPlugin->ControlInfo(m_ControllerNumber);
     ControlInfo.Present = (m_PluggedIn.GetCheck() == BST_CHECKED) ? 1 : 0;
-    return g_InputPlugin->SaveController(m_ControllerNumber);
+    return g_InputPlugin->SaveController(m_ControllerNumber) ? PSNRET_NOERROR : PSNRET_INVALID_NOCHANGEPAGE;
 }
 
 LRESULT CControllerSettings::OnScroll(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)

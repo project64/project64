@@ -71,12 +71,12 @@ public:
         return TRUE;
     }
 
-    bool OnApply()
+    LRESULT OnApply()
     {
         g_settings->SetAudioEnabled(m_btnMute.GetCheck() != BST_CHECKED);
         g_settings->SetVolume(100 - m_Volume.GetPos());
         FlushSettings();
-        return true;
+        return PSNRET_NOERROR;
     }
 
 private:
@@ -117,11 +117,11 @@ public:
         return TRUE;
     }
 
-    bool OnApply()
+    LRESULT OnApply()
     {
         g_settings->SetBuffer(m_Buffer.GetPos());
         FlushSettings();
-        return true;
+        return PSNRET_NOERROR;
     }
 
 private:
@@ -188,7 +188,7 @@ public:
         return TRUE;
     }
 
-    bool OnApply()
+    LRESULT OnApply()
     {
         struct {
             CComboBox & cmb;
@@ -206,7 +206,7 @@ public:
             SetSetting(TraceCMB[i].SettingId, TraceCMB[i].cmb.GetItemData(TraceCMB[i].cmb.GetCurSel()));
         }
         FlushSettings();
-        return true;
+        return PSNRET_NOERROR;
     }
 
 private:

@@ -305,7 +305,7 @@ public:
         return TRUE;
     }
 
-    bool OnApply()
+    LRESULT OnApply()
     {
         wchar_t spinVRAM[100];
         m_spinVRAM.GetWindowText(spinVRAM, sizeof(spinVRAM));
@@ -322,7 +322,7 @@ public:
             g_settings->WriteSettings();
         }
         m_options_page->UpdateTextureSettings();
-        return true;
+        return PSNRET_NOERROR;
     }
 private:
     void ItemChanged(UINT /*Code*/, int id, HWND /*ctl*/)
@@ -473,7 +473,7 @@ public:
         return TRUE;
     }
 
-    bool OnApply()
+    LRESULT OnApply()
     {
         g_settings->SetFiltering((CSettings::Filtering_t)m_cmbFiltering.GetItemData(m_cmbFiltering.GetCurSel()));
         g_settings->SetAspectmode((CSettings::AspectMode_t)m_cmbAspect.GetItemData(m_cmbAspect.GetCurSel()));
@@ -514,7 +514,7 @@ public:
         {
             g_settings->WriteSettings();
         }
-        return true;
+        return PSNRET_NOERROR;
     }
 private:
     void ItemChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
@@ -608,7 +608,7 @@ public:
         return TRUE;
     }
 
-    bool OnApply()
+    LRESULT OnApply()
     {
         struct {
             CComboBox & cmb;
@@ -631,7 +631,7 @@ public:
         {
             SetSetting(TraceCMB[i].SettingId, TraceCMB[i].cmb.GetItemData(TraceCMB[i].cmb.GetCurSel()));
         }
-        return true;
+        return PSNRET_NOERROR;
     }
 private:
     void ItemChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
@@ -770,7 +770,7 @@ public:
         return TRUE;
     }
 
-    bool OnApply()
+    LRESULT OnApply()
     {
         wchar_t texcache[100];
         m_textTexCache.GetWindowText(texcache, sizeof(texcache));
@@ -795,7 +795,7 @@ public:
         {
             g_settings->WriteSettings();
         }
-        return true;
+        return PSNRET_NOERROR;
     }
 private:
     void ItemChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
