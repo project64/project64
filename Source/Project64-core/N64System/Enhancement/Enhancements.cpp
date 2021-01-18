@@ -226,7 +226,13 @@ void CEnhancements::LoadCheats(CMipsMemoryVM * MMU)
     LoadEnhancements("Enhancement", m_EnhancementFiles, m_EnhancementFile, m_Enhancements);
 
     ResetCodes(MMU);
-    for (CEnhancementList::const_iterator itr = m_Cheats.begin(); itr != m_Cheats.end(); itr++)
+    LoadActive(m_Cheats);
+    LoadActive(m_Enhancements);
+}
+
+void CEnhancements::LoadActive(CEnhancementList & List)
+{
+    for (CEnhancementList::const_iterator itr = List.begin(); itr != List.end(); itr++)
     {
         const CEnhancement & Enhancement = itr->second;
         if (!Enhancement.Valid() || !Enhancement.Active())

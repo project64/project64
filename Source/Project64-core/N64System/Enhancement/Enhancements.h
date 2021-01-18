@@ -65,6 +65,7 @@ private:
 
     void ResetCodes(CMipsMemoryVM * MMU);
     void LoadCheats(CMipsMemoryVM * MMU);
+    void LoadActive(CEnhancementList & List);
     void LoadEnhancements(const char * Ident, SectionFiles & Files, std::unique_ptr<CEnhancmentFile> & File, CEnhancementList & EnhancementList);
     void ApplyGameSharkCodes(CMipsMemoryVM & MMU, CODES & CodeEntry, uint32_t CurrentEntry);
     uint32_t EntrySize(const CODES & CodeEntry, uint32_t CurrentEntry);
