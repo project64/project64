@@ -53,7 +53,7 @@ void CEnhancements::ApplyActive(CMipsMemoryVM & MMU, bool UpdateChanges)
     }
 }
 
-void CEnhancements::ApplyGSButton(CMipsMemoryVM & MMU, bool UpdateChanges)
+void CEnhancements::ApplyGSButton(CMipsMemoryVM & MMU, bool /*UpdateChanges*/)
 {
     for (size_t i = 0, n = m_ActiveCodes.size(); i < n; i++)
     {

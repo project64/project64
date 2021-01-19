@@ -11,10 +11,10 @@
 #include <Common/StdString.h>
 #include <Settings/Settings.h>
 #include <Project64-video/trace.h>
-#include "Gfx_1.3.h"
 #include "ScreenResolution.h"
 #include "SettingsID.h"
 #include "trace.h"
+#include "Gfx_1.3.h"
 
 CSettings::CSettings() :
     m_Set_basic_mode(0),
@@ -749,7 +749,7 @@ void CSettings::ReadGameSettings(const char * name)
     m_alt_tex_size = GetSetting(Set_alt_tex_size) != 0;
     m_use_sts1_only = GetSetting(Set_use_sts1_only) != 0;
     m_force_calc_sphere = GetSetting(Set_force_calc_sphere) != 0;
-    m_correct_viewport = GetSetting(Set_correct_viewport);
+    m_correct_viewport = GetSetting(Set_correct_viewport) != 0;
     m_increase_texrect_edge = GetSetting(Set_increase_texrect_edge) != 0;
     m_decrease_fillrect_edge = GetSetting(Set_decrease_fillrect_edge) != 0;
     m_texture_correction = GetSetting(Set_texture_correction) != 0;
@@ -762,9 +762,9 @@ void CSettings::ReadGameSettings(const char * name)
     m_clip_zmin = GetSetting(Set_clip_zmin) != 0;
     m_clip_zmax = GetSetting(Set_clip_zmax) != 0;
     m_fast_crc = GetSetting(Set_fast_crc) != 0;
-    m_adjust_aspect = GetSetting(Set_adjust_aspect);
-    m_zmode_compare_less = GetSetting(Set_zmode_compare_less);
-    m_old_style_adither = GetSetting(Set_old_style_adither);
+    m_adjust_aspect = GetSetting(Set_adjust_aspect) != 0;
+    m_zmode_compare_less = GetSetting(Set_zmode_compare_less) != 0;
+    m_old_style_adither = GetSetting(Set_old_style_adither) != 0;
     m_n64_z_scale = GetSetting(Set_n64_z_scale) != 0;
     m_RdramSize = GetSystemSetting(m_Set_RDRamSize);
 
@@ -772,7 +772,7 @@ void CSettings::ReadGameSettings(const char * name)
     if (m_ScreenRes >= GetScreenResolutionCount()) { m_ScreenRes = GetDefaultScreenRes(); }
 
     //frame buffer
-    short fb_Settings[] =
+    VideoSettings fb_Settings[] =
     {
         g_romopen ? Set_optimize_texrect : Set_optimize_texrect_default,
         Set_ignore_aux_copy,
@@ -945,12 +945,7 @@ void CSettings::LogLevelChanged(void)
     g_ModuleLogLevel[TraceRDPCommands] = GetSetting(Set_Logging_RDPCommands);
 }
 
-#ifdef _WIN32
-#include <Windows.h>
-#endif
 void UseUnregisteredSetting(int /*SettingID*/)
 {
-#ifdef _WIN32
-    DebugBreak();
-#endif
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }

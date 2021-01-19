@@ -2232,7 +2232,7 @@ void R4300iOp::REGIMM_TGEIU()
     int64_t imm64;
 
     imm64 = imm32;
-    if (_GPR[m_Opcode.rs].DW >= (uint64_t)imm64)
+    if (_GPR[m_Opcode.rs].UDW >= (uint64_t)imm64)
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
     }
@@ -2252,7 +2252,7 @@ void R4300iOp::REGIMM_TLTIU()
     int64_t imm64;
 
     imm64 = imm32;
-    if (_GPR[m_Opcode.rs].DW < (uint64_t)imm64)
+    if (_GPR[m_Opcode.rs].UDW < (uint64_t)imm64)
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
     }

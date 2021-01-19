@@ -18,9 +18,9 @@
 #include <stdlib.h>
 #include <stddef.h>		// offsetof
 #include <Common/MemTest.h>
-#include "rdp.h"
 #include "Config.h"
 #include "Settings.h"
+#include "rdp.h"
 
 #if defined __VISUALC__
 #define GLIDE64_TRY __try

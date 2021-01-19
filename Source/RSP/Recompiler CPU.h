@@ -27,7 +27,7 @@
 #include "OpCode.h"
 #include "Types.h"
 
-extern DWORD CompilePC, NextInstruction, JumpTableSize;
+extern uint32_t CompilePC, NextInstruction, JumpTableSize;
 extern Boolean ChangedPC;
 
 #define CompilerWarning if (ShowErrors) DisplayError

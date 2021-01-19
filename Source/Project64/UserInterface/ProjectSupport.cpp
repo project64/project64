@@ -14,7 +14,7 @@ CProjectSupport::CProjectSupport() :
 
 bool CProjectSupport::RequestCode(const char * Email)
 {
-    if (Email == nullptr || strlen(Email) == 0 || stricmp(Email, "thank you from project64") == 0)
+    if (Email == nullptr || strlen(Email) == 0 || _stricmp(Email, "thank you from project64") == 0)
     {
         return false;
     }

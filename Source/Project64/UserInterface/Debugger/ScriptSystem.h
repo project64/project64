@@ -24,10 +24,10 @@ public:
     CScriptSystem(CDebuggerUI* debugger);
     ~CScriptSystem();
     // Run a script in its own context/thread
-    void RunScript(char* path);
+    void RunScript(const char * path);
 
     // Kill a script context/thread by its path
-    void StopScript(char* path);
+    void StopScript(const char * path);
 
     const char* APIScript();
 

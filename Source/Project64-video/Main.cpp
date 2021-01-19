@@ -11,6 +11,11 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
+#ifdef _WIN32
+#include <Windows.h>
+#include <commctrl.h>
+#endif
+
 #include <Project64-video/Renderer/Renderer.h>
 #include <string.h>
 #include <Common/StdString.h>
@@ -35,12 +40,6 @@
 #include "DepthBufferRender.h"
 #include "trace.h"
 #include "ScreenResolution.h"
-
-#ifdef _WIN32
-#include <Windows.h>
-#include <commctrl.h>
-#endif
-
 #include <stdarg.h>
 
 #ifdef ANDROID

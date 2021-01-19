@@ -13,6 +13,7 @@
 #include "DebuggerUI.h"
 #include "ScriptSystem.h"
 #include <Project64/UserInterface/WTLControls/TooltipDialog.h>
+#include <string>
 
 class CScriptList : public CListViewCtrl
 {
@@ -94,7 +95,7 @@ private:
     CEditConsole m_ConsoleEdit;
     CScriptList m_ScriptList;
     CStatusBarCtrl m_StatusBar;
-    char* m_SelectedScriptName;
+    std::string m_SelectedScriptName;
 
     HANDLE m_hQuitScriptDirWatchEvent;
     HANDLE m_hScriptDirWatchThread;

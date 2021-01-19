@@ -152,9 +152,9 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     return TRUE;
 }
 
-void CDebugCommandsView::GameCpuRunningChanged(CDebugCommandsView* _this)
+void CDebugCommandsView::GameCpuRunningChanged(CDebugCommandsView * DebugCommandsView)
 {
-    _this->RecompilerCheck();
+    DebugCommandsView->RecompilerCheck();
 }
 
 void CDebugCommandsView::RecompilerCheck(void)

@@ -645,14 +645,18 @@ uint32_t CN64Disk::GetDiskAddressBlock(uint16_t head, uint16_t track, uint16_t b
 
         if (offset < (BLOCKSIZE(0) * SYSTEM_LBAS) && sector == 0)
         {
-            uint16_t block = offset / (BLOCKSIZE(0));
-            uint16_t block_sys = m_DiskSysAddress / (BLOCKSIZE(0));
-            uint16_t block_id = m_DiskIDAddress / (BLOCKSIZE(0));
+            uint16_t AddressBlock = (uint16_t)(offset / (BLOCKSIZE(0)));
+            uint16_t block_sys = (uint16_t)(m_DiskSysAddress / (BLOCKSIZE(0)));
+            uint16_t block_id = (uint16_t)(m_DiskIDAddress / (BLOCKSIZE(0)));
 
-            if (block < 12 && block != block_sys)
+            if (AddressBlock < 12 && AddressBlock != block_sys)
+            {
                 offset = 0xFFFFFFFF;
-            else if (block > 12 && block < 16 && block != block_id)
+            }
+            else if (AddressBlock > 12 && AddressBlock < 16 && AddressBlock != block_id)
+            {
                 offset = 0xFFFFFFFF;
+            }
         }
     }
     else if (m_DiskFormat == DiskFormatSDK)
@@ -662,14 +666,18 @@ uint32_t CN64Disk::GetDiskAddressBlock(uint16_t head, uint16_t track, uint16_t b
 
         if (offset < (BLOCKSIZE(0) * SYSTEM_LBAS) && sector == 0)
         {
-            uint16_t block = offset / (BLOCKSIZE(0));
-            uint16_t block_sys = m_DiskSysAddress / (BLOCKSIZE(0));
-            uint16_t block_id = m_DiskIDAddress / (BLOCKSIZE(0));
+            uint16_t AddressBlock = (uint16_t)(offset / (BLOCKSIZE(0)));
+            uint16_t block_sys = (uint16_t)(m_DiskSysAddress / (BLOCKSIZE(0)));
+            uint16_t block_id = (uint16_t)(m_DiskIDAddress / (BLOCKSIZE(0)));
 
-            if (block < 12 && block != block_sys)
+            if (AddressBlock < 12 && AddressBlock != block_sys)
+            {
                 offset = 0xFFFFFFFF;
-            else if (block > 12 && block < 16 && block != block_id)
+            }
+            else if (AddressBlock > 12 && AddressBlock < 16 && AddressBlock != block_id)
+            {
                 offset = 0xFFFFFFFF;
+            }
         }
     }
     else
@@ -771,7 +779,7 @@ bool CN64Disk::IsSysSectorGood(uint32_t block, uint32_t sectorsize)
     //Checks if all sectors are identical (meant only to be used for System Area for MAME and SDK formats)
     for (int j = 1; j < SECTORS_PER_BLOCK; j++)
     {
-        for (int k = 0; k < sectorsize; k++)
+        for (uint32_t k = 0; k < sectorsize; k++)
         {
             if (m_DiskImage[(block * 0x4D08) + (j * sectorsize) + k] != m_DiskImage[(block * 0x4D08) + k])
             {
@@ -889,6 +897,7 @@ uint32_t CN64Disk::LBAToVZone(uint32_t lba)
             return vzone;
         }
     }
+    return 0;
 };
 
 uint32_t CN64Disk::LBAToByte(uint32_t lba, uint32_t nlbas)
@@ -896,7 +905,7 @@ uint32_t CN64Disk::LBAToByte(uint32_t lba, uint32_t nlbas)
     bool init_flag = true;
     uint32_t totalbytes = 0;
     uint32_t blocksize = 0;
-    uint32_t vzone, pzone = 0;
+    uint32_t vzone = 0, pzone = 0;
     if (nlbas != 0)
     {
         for (; nlbas != 0; nlbas--)
@@ -935,7 +944,7 @@ uint16_t CN64Disk::LBAToPhys(uint32_t lba)
         block = 0;
 
     //Get Virtual & Physical Disk Zones
-    uint16_t vzone = LBAToVZone(lba);
+    uint16_t vzone = (uint16_t)LBAToVZone(lba);
     uint16_t pzone = VZoneToPZone(vzone, m_DiskType);
 
     //Get Disk Head
@@ -952,7 +961,7 @@ uint16_t CN64Disk::LBAToPhys(uint32_t lba)
         vzone_lba = VZONE_LBA_TBL[m_DiskType][vzone - 1];
 
     //Calculate Physical Track
-    uint16_t track = (lba - vzone_lba) >> 1;
+    uint16_t track = (uint16_t)((lba - vzone_lba) >> 1);
 
     //Get the start track from current zone
     uint16_t track_zone_start = SCYL_ZONE_TBL[0][pzone];

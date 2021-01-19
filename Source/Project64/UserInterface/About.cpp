@@ -6,7 +6,7 @@ CAboutDlg::CAboutDlg(CProjectSupport & Support) :
 {
 }
 
-LRESULT CAboutDlg::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
+LRESULT CAboutDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     m_Logo.SubclassWindow(GetDlgItem(IDC_BMP_LOGO));
     m_Logo.SetBitmap(MAKEINTRESOURCE(IDB_ABOUT_LOGO));
@@ -59,7 +59,7 @@ void CAboutDlg::SetWindowDetais(int nIDDlgItem, int nAboveIDDlgItem, const wchar
     CWindow AboveWnd = GetDlgItem(nAboveIDDlgItem);
     AboveWnd.GetWindowRect(&rcWin);
     ::MapWindowPoints(NULL, m_hWnd, (LPPOINT)&rcWin, 2);
-    LONG Top = rcWin.bottom + (8 * DPIScale);
+    LONG Top = rcWin.bottom + (LONG)(8 * DPIScale);
 
     Wnd.GetWindowRect(&rcWin);
     ::MapWindowPoints(NULL, m_hWnd, (LPPOINT)&rcWin, 2);
@@ -89,7 +89,7 @@ LRESULT CAboutDlg::OnEraseBackground(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPar
     return TRUE;
 }
 
-LRESULT CAboutDlg::OnOkCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
+LRESULT CAboutDlg::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     EndDialog(0);
     return TRUE;

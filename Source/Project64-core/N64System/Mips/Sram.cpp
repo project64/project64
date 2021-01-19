@@ -46,10 +46,8 @@ bool CSram::LoadSram()
     return true;
 }
 
-void CSram::DmaFromSram(uint8_t * dest, int32_t StartOffset, int32_t len)
+void CSram::DmaFromSram(uint8_t * dest, int32_t StartOffset, uint32_t len)
 {
-    uint32_t i;
-
     if (!m_File.IsOpen())
     {
         if (!LoadSram())
@@ -68,7 +66,7 @@ void CSram::DmaFromSram(uint8_t * dest, int32_t StartOffset, int32_t len)
     }
     else
     {
-        for (i = 0; i < len; i++)
+        for (uint32_t i = 0; i < len; i++)
         {
             m_File.Seek((StartOffset + i) ^ 3, CFile::begin);
             m_File.Read((uint8_t*)(((uint32_t)dest + i) ^ 3), 1);
@@ -76,10 +74,8 @@ void CSram::DmaFromSram(uint8_t * dest, int32_t StartOffset, int32_t len)
     }
 }
 
-void CSram::DmaToSram(uint8_t * Source, int32_t StartOffset, int32_t len)
+void CSram::DmaToSram(uint8_t * Source, int32_t StartOffset, uint32_t len)
 {
-    uint32_t i;
-
     if (m_ReadOnly)
     {
         return;
@@ -103,7 +99,7 @@ void CSram::DmaToSram(uint8_t * Source, int32_t StartOffset, int32_t len)
     }
     else
     {
-        for (i = 0; i < len; i++)
+        for (uint32_t i = 0; i < len; i++)
         {
             m_File.Seek((StartOffset + i) ^ 3, CFile::begin);
             m_File.Write((uint8_t*)(((uint32_t)Source + i) ^ 3), 1);

@@ -1,7 +1,9 @@
 #include "discord_rpc.h"
 #include "discord_register.h"
 
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
+#endif
 #define NOMCX
 #define NOSERVICE
 #define NOIME

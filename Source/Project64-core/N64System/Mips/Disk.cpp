@@ -343,13 +343,13 @@ void DiskBMUpdate()
     }
 }
 
-bool DiskBMReadWrite(bool write)
+bool DiskBMReadWrite(bool /*write*/)
 {
     //Returns true if error
     uint16_t head = ((g_Reg->ASIC_CUR_TK >> 16) / 0x1000) & 1;
     uint16_t track = (g_Reg->ASIC_CUR_TK >> 16) & 0xFFF;
-    uint16_t block = dd_start_block;
-    uint16_t sector = dd_current;
+    uint16_t block = (uint16_t)dd_start_block;
+    uint16_t sector = (uint16_t)dd_current;
     uint16_t sectorsize = (((g_Reg->ASIC_HOST_SECBYTE & 0x00FF0000) >> 16) + 1);
     
     uint32_t addr = g_Disk->GetDiskAddressBlock(head, track, block, sector, sectorsize);

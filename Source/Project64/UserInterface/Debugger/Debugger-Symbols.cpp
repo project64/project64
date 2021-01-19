@@ -203,10 +203,10 @@ LRESULT    CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
             switch (symbol.m_Type)
             {
             case SYM_U8:
-                m_Debugger->DebugStore_VAddr<uint8_t>(symbol.m_Address, atoi(EnteredString.c_str()));
+                m_Debugger->DebugStore_VAddr<uint8_t>(symbol.m_Address, (uint8_t)atoi(EnteredString.c_str()));
                 break;
             case SYM_U16:
-                m_Debugger->DebugStore_VAddr<uint16_t>(symbol.m_Address, atoi(EnteredString.c_str()));
+                m_Debugger->DebugStore_VAddr<uint16_t>(symbol.m_Address, (uint16_t)atoi(EnteredString.c_str()));
                 break;
             case SYM_U32:
                 m_Debugger->DebugStore_VAddr<uint32_t>(symbol.m_Address, atoi(EnteredString.c_str()));
@@ -215,10 +215,10 @@ LRESULT    CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
                 m_Debugger->DebugStore_VAddr<uint64_t>(symbol.m_Address, atoll(EnteredString.c_str()));
                 break;
             case SYM_S8:
-                m_Debugger->DebugStore_VAddr<int8_t>(symbol.m_Address, atoi(EnteredString.c_str()));
+                m_Debugger->DebugStore_VAddr<int8_t>(symbol.m_Address, (int8_t)atoi(EnteredString.c_str()));
                 break;
             case SYM_S16:
-                m_Debugger->DebugStore_VAddr<int16_t>(symbol.m_Address, atoi(EnteredString.c_str()));
+                m_Debugger->DebugStore_VAddr<int16_t>(symbol.m_Address, (int16_t)atoi(EnteredString.c_str()));
                 break;
             case SYM_S32:
                 m_Debugger->DebugStore_VAddr<int>(symbol.m_Address, atoi(EnteredString.c_str()));
@@ -227,7 +227,7 @@ LRESULT    CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
                 m_Debugger->DebugStore_VAddr<int64_t>(symbol.m_Address, atoll(EnteredString.c_str()));
                 break;
             case SYM_FLOAT:
-                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address, atof(EnteredString.c_str()));
+                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address, (float)atof(EnteredString.c_str()));
                 break;
             case SYM_DOUBLE:
                 m_Debugger->DebugStore_VAddr<double>(symbol.m_Address, atof(EnteredString.c_str()));
@@ -236,46 +236,46 @@ LRESULT    CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
                 x = EnteredString.c_str();
                 y = strchr(x, ',');
                 memcpy(szValue, x, y - x);
-                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address, atof(szValue));
+                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address, (float)atof(szValue));
 
                 x = x + (y - x) + 1;
                 memcpy(szValue, x, strlen(x));
-                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address + sizeof(float), atof(szValue));
+                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address + sizeof(float), (float)atof(szValue));
                 break;
             case SYM_VECTOR3:
                 x = EnteredString.c_str();
                 y = strchr(x, ',');
                 memcpy(szValue, x, y - x);
-                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address, atof(szValue));
+                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address, (float)atof(szValue));
 
                 x = x + (y - x) + 1;
                 y = strchr(x, ',');
                 memcpy(szValue, x, y - x);
-                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address + sizeof(float), atof(szValue));
+                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address + sizeof(float), (float)atof(szValue));
 
                 x = x + (y - x) + 1;
                 memcpy(szValue, x, strlen(x));
-                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address + (sizeof(float) * 2), atof(szValue));
+                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address + (sizeof(float) * 2), (float)atof(szValue));
                 break;
             case SYM_VECTOR4:
                 x = EnteredString.c_str();
                 y = strchr(x, ',');
                 memcpy(szValue, x, y - x);
-                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address, atof(szValue));
+                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address, (float)atof(szValue));
 
                 x = x + (y - x) + 1;
                 y = strchr(x, ',');
                 memcpy(szValue, x, y - x);
-                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address + sizeof(float), atof(szValue));
+                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address + sizeof(float), (float)atof(szValue));
 
                 x = x + (y - x) + 1;
                 y = strchr(x, ',');
                 memcpy(szValue, x, y - x);
-                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address + (sizeof(float) * 2), atof(szValue));
+                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address + (sizeof(float) * 2), (float)atof(szValue));
 
                 x = x + (y - x) + 1;
                 memcpy(szValue, x, strlen(x));
-                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address + (sizeof(float) * 3), atof(szValue));
+                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address + (sizeof(float) * 3), (float)atof(szValue));
                 break;
             }
         }

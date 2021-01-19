@@ -433,10 +433,10 @@ void DrawImage(DRAWIMAGE & d)
 
             // ** Load the texture, constant portions have been set above
             // SetTileSize ()
-            rdp.tiles(0).ul_s = tb_u;
-            rdp.tiles(0).ul_t = tb_v;
-            rdp.tiles(0).lr_s = tb_u + x_size - 1;
-            rdp.tiles(0).lr_t = tb_v + y_size - 1;
+            rdp.tiles(0).ul_s = (uint16_t)tb_u;
+            rdp.tiles(0).ul_t = (uint16_t)tb_v;
+            rdp.tiles(0).lr_s = (uint16_t)(tb_u + x_size - 1);
+            rdp.tiles(0).lr_t = (uint16_t)(tb_v + y_size - 1);
 
             // LoadTile ()
             rdp.cmd0 = ((int)rdp.tiles(0).ul_s << 14) | ((int)rdp.tiles(0).ul_t << 2);
@@ -1354,7 +1354,7 @@ void uc6_sprite2d()
 
     WriteTrace(TraceRDP, TraceDebug, "uc6:uc6_sprite2d #%d, #%d", rdp.tri_n, rdp.tri_n + 1);
     uint32_t addr = segoffset(rdp.cmd1) >> 1;
-    DRAWIMAGE d;
+    DRAWIMAGE d = { 0 };
 
     d.imagePtr = segoffset(((uint32_t*)gfx.RDRAM)[(addr + 0) >> 1]);       // 0,1
     uint16_t stride = (((uint16_t *)gfx.RDRAM)[(addr + 4) ^ 1]);      // 4
@@ -1420,9 +1420,9 @@ void uc6_sprite2d()
             if (g_settings->hacks(CSettings::hack_WCWnitro))
             {
                 int scaleY = (int)d.scaleY;
-                d.imageH /= scaleY;
-                d.imageY /= scaleY;
-                stride *= scaleY;
+                d.imageH /= (uint16_t)scaleY;
+                d.imageY /= (uint16_t)scaleY;
+                stride *= (uint16_t)scaleY;
                 d.scaleY = 1.0f;
             }
             WriteTrace(TraceRDP, TraceDebug, "imagePtr: %08lx", d.imagePtr);

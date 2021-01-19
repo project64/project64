@@ -10,7 +10,7 @@
 ****************************************************************************/
 #pragma once
 
-enum
+enum VideoSettings : uint16_t
 {
     // General Settings
     Set_vsync, Set_Rotate, Set_texenh_options, Set_wrpVRAM,

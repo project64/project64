@@ -16,7 +16,6 @@
 CDebugScripts::CDebugScripts(CDebuggerUI* debugger) :
     CDebugDialog<CDebugScripts>(debugger),
     CToolTipDialog<CDebugScripts>(),
-    m_SelectedScriptName(NULL),
     m_hQuitScriptDirWatchEvent(NULL),
     m_hScriptDirWatchThread(NULL)
 {
@@ -24,10 +23,6 @@ CDebugScripts::CDebugScripts(CDebuggerUI* debugger) :
 
 CDebugScripts::~CDebugScripts(void)
 {
-    if (m_SelectedScriptName != NULL)
-    {
-        free(m_SelectedScriptName);
-    }
 }
 
 LRESULT CDebugScripts::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
@@ -235,10 +230,10 @@ LRESULT CDebugScripts::OnScriptListDblClicked(NMHDR* pNMHDR)
 
 void CDebugScripts::RefreshStatus()
 {
-    INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
+    INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName.c_str());
 
     stdstr statusText;
-    CPath(stdstr_f("Scripts\\%s", m_SelectedScriptName)).GetFullyQualified(statusText);
+    CPath(stdstr_f("Scripts\\%s", m_SelectedScriptName.c_str())).GetFullyQualified(statusText);
     
     if (state == STATE_RUNNING)
     {
@@ -267,7 +262,7 @@ LRESULT CDebugScripts::OnScriptListRClicked(NMHDR* pNMHDR)
         return 0;
     }
 
-    INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
+    INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName.c_str());
 
     HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_SCRIPT_POPUP));
     HMENU hPopupMenu = GetSubMenu(hMenu, 0);
@@ -338,15 +333,9 @@ LRESULT CDebugScripts::OnScriptListItemChanged(NMHDR* pNMHDR)
         wchar_t ScriptName[MAX_PATH];
 
         m_ScriptList.GetItemText(lpStateChange->iItem, 1, ScriptName, MAX_PATH);
+        m_SelectedScriptName = stdstr().FromUTF16(ScriptName).c_str();
 
-        if (m_SelectedScriptName != NULL)
-        {
-            free(m_SelectedScriptName);
-        }
-
-        m_SelectedScriptName = strdup(stdstr().FromUTF16(ScriptName).c_str());
-
-        INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
+        INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName.c_str());
 
         ::EnableWindow(GetDlgItem(IDC_STOP_BTN), state == STATE_RUNNING || state == STATE_STARTED);
         ::EnableWindow(GetDlgItem(IDC_RUN_BTN), state == STATE_STOPPED || state == STATE_INVALID);
@@ -437,27 +426,27 @@ LRESULT CDebugScripts::OnRefreshList(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 
 void CDebugScripts::EvaluateInSelectedInstance(const char* code)
 {
-    INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
+    INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName.c_str());
 
     if (state == STATE_RUNNING || state == STATE_STARTED)
     {
-        CScriptInstance* instance = m_Debugger->ScriptSystem()->GetInstance(m_SelectedScriptName);
+        CScriptInstance* instance = m_Debugger->ScriptSystem()->GetInstance(m_SelectedScriptName.c_str());
         instance->Eval(code);
     }
 }
 
 void CDebugScripts::RunSelected()
 {
-    if (m_SelectedScriptName == NULL)
+    if (m_SelectedScriptName.empty())
     {
         return;
     }
 
-    INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
+    INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName.c_str());
 
     if (state == STATE_INVALID || state == STATE_STOPPED)
     {
-        m_Debugger->ScriptSystem()->RunScript(m_SelectedScriptName);
+        m_Debugger->ScriptSystem()->RunScript(m_SelectedScriptName.c_str());
     }
     else
     {
@@ -467,12 +456,12 @@ void CDebugScripts::RunSelected()
 
 void CDebugScripts::StopSelected()
 {
-    m_Debugger->ScriptSystem()->StopScript(m_SelectedScriptName);
+    m_Debugger->ScriptSystem()->StopScript(m_SelectedScriptName.c_str());
 }
 
 void CDebugScripts::ToggleSelected()
 {
-    INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
+    INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName.c_str());
 
     if (state == STATE_INVALID || state == STATE_STOPPED)
     {

@@ -1561,8 +1561,8 @@ bool gfxLfbReadRegion(gfxBuffer_t src_buffer, uint32_t src_x, uint32_t src_y, ui
 {
     unsigned char *buf;
     unsigned int i, j;
-    unsigned short *frameBuffer = (unsigned short*)dst_data;
-    unsigned short *depthBuffer = (unsigned short*)dst_data;
+    unsigned short *TargetFrameBuffer = (unsigned short*)dst_data;
+    unsigned short *TargetDepthBuffer = (unsigned short*)dst_data;
     WriteTrace(TraceGlitch, TraceDebug, "src_buffer: %d src_x: %d src_y: %d src_width: %d src_height: %d dst_stride: %d", src_buffer, src_x, src_y, src_width, src_height, dst_stride);
 
     switch (src_buffer)
@@ -1590,7 +1590,7 @@ bool gfxLfbReadRegion(gfxBuffer_t src_buffer, uint32_t src_x, uint32_t src_y, ui
         {
             for (i = 0; i < src_width; i++)
             {
-                frameBuffer[j*(dst_stride / 2) + i] =
+                TargetFrameBuffer[j*(dst_stride / 2) + i] =
                     ((buf[(src_height - j - 1)*src_width * 4 + i * 4 + 0] >> 3) << 11) |
                     ((buf[(src_height - j - 1)*src_width * 4 + i * 4 + 1] >> 2) << 5) |
                     (buf[(src_height - j - 1)*src_width * 4 + i * 4 + 2] >> 3);
@@ -1608,7 +1608,7 @@ bool gfxLfbReadRegion(gfxBuffer_t src_buffer, uint32_t src_x, uint32_t src_y, ui
         {
             for (i = 0; i < src_width; i++)
             {
-                depthBuffer[j*(dst_stride / 2) + i] =
+                TargetDepthBuffer[j*(dst_stride / 2) + i] =
                     ((unsigned short*)buf)[(src_height - j - 1)*src_width * 4 + i * 4];
             }
         }

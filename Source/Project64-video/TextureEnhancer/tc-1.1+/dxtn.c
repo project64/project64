@@ -17,6 +17,7 @@
 #include <assert.h>
 
 #include <stdio.h>
+#include <Common\stdtypes.h>
 
 #include "types.h"
 #include "internal.h"
@@ -868,7 +869,7 @@ dxt5_rgba_decode_1(const void *texture, int stride,
         rgba[ACOMP] = alpha1;
     }
     else if (alpha0 > alpha1) {
-        rgba[ACOMP] = ((8 - acode) * alpha0 + (acode - 1) * alpha1) / 7;
+        rgba[ACOMP] = (uint8_t)(((8 - acode) * alpha0 + (acode - 1) * alpha1) / 7);
     }
     else if (acode == 6) {
         rgba[ACOMP] = 0;
@@ -877,6 +878,6 @@ dxt5_rgba_decode_1(const void *texture, int stride,
         rgba[ACOMP] = 255;
     }
     else {
-        rgba[ACOMP] = ((6 - acode) * alpha0 + (acode - 1) * alpha1) / 5;
+        rgba[ACOMP] = (uint8_t)(((6 - acode) * alpha0 + (acode - 1) * alpha1) / 5);
     }
 }

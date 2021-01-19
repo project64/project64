@@ -914,7 +914,6 @@ void CN64System::Reset(bool bInitReg, bool ClearMenory)
 
 bool CN64System::SetActiveSystem(bool bActive)
 {
-    bool bReset = false;
     bool bRes = true;
 
     if (bActive && g_System == this)

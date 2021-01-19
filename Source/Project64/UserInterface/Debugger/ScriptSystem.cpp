@@ -68,7 +68,7 @@ const char* CScriptSystem::APIScript()
     return m_APIScript;
 }
 
-void CScriptSystem::RunScript(char* path)
+void CScriptSystem::RunScript(const char * path)
 {
     CGuard guard(m_CS);
     CScriptInstance* scriptInstance = new CScriptInstance(m_Debugger);
@@ -79,7 +79,7 @@ void CScriptSystem::RunScript(char* path)
     scriptInstance->Start(pathSaved);
 }
 
-void CScriptSystem::StopScript(char* path)
+void CScriptSystem::StopScript(const char* path)
 {
     CScriptInstance* scriptInstance = GetInstance(path);
 

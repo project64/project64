@@ -1188,7 +1188,7 @@ TxQuantize::ARGB8888_RGB565_ErrD(uint32* src, uint32* dst, int width, int height
     /* Floyd-Steinberg error-diffusion halftoning */
 
     int i, x, y;
-    int qr, qg, qb; /* quantized incoming values */
+    int qr = 0, qg = 0, qb = 0; /* quantized incoming values */
     int ir, ig, ib; /* incoming values */
     int t;
     int *errR = new int[width];
@@ -1397,7 +1397,7 @@ TxQuantize::ARGB8888_ARGB4444_ErrD(uint32* src, uint32* dst, int width, int heig
     bool ditherAlpha = 0;
 
     int i, x, y;
-    int qr, qg, qb, qa; /* quantized incoming values */
+    int qr = 0, qg = 0, qb = 0, qa = 0; /* quantized incoming values */
     int ir, ig, ib, ia; /* incoming values */
     int t;
     int *errR = new int[width];

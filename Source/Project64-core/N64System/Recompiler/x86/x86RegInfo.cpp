@@ -319,12 +319,12 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
         else
         {
             x86FpuValues RegPos = x86_ST_Unknown;
-            for (uint32_t i = 0; i < 8; i++)
+            for (uint32_t z = 0; z < 8; z++)
             {
-                if (m_x86fpu_MappedTo[i] == Reg)
+                if (m_x86fpu_MappedTo[z] == Reg)
                 {
                     RegPos = (x86FpuValues)i;
-                    i = 8;
+                    z = 8;
                 }
             }
 

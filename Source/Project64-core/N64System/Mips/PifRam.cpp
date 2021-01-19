@@ -516,7 +516,7 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
             {
             case PLUGIN_RUMBLE_PAK: Rumblepak::ReadFrom(address, data); break;
             case PLUGIN_MEMPAK: g_Mempak->ReadFrom(Control, address, data); break;
-            case PLUGIN_TANSFER_PAK: Transferpak::ReadFrom(address, data); break;
+            case PLUGIN_TANSFER_PAK: Transferpak::ReadFrom((uint16_t)address, data); break;
             case PLUGIN_RAW: if (g_Plugins->Control()->ControllerCommand) { g_Plugins->Control()->ControllerCommand(Control, Command); } break;
             default:
                 memset(&Command[5], 0, 0x20);
@@ -548,7 +548,7 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
                 g_Notify->DisplayError("What am I meant to do with this Controller Command");
             }
         }
-        if (Controllers[Control].Present == true)
+        if (Controllers[Control].Present != 0)
         {
             uint32_t address = (Command[3] << 8) | (Command[4] & 0xE0);
             uint8_t* data = &Command[5];
@@ -557,7 +557,7 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
             {
             case PLUGIN_MEMPAK: g_Mempak->WriteTo(Control, address, data); break;
             case PLUGIN_RUMBLE_PAK: Rumblepak::WriteTo(Control, address, data); break;
-            case PLUGIN_TANSFER_PAK: Transferpak::WriteTo(address, data); break;
+            case PLUGIN_TANSFER_PAK: Transferpak::WriteTo((uint16_t)address, data); break;
             case PLUGIN_RAW: if (g_Plugins->Control()->ControllerCommand) { g_Plugins->Control()->ControllerCommand(Control, Command); } break;
             }
 

@@ -35,10 +35,10 @@ void Texture2x_32(uint8 *srcPtr, uint32 srcPitch, uint8 *dstPtr, uint32 dstPitch
     uint32 g1;
     uint32 r1;
     uint32 a1;
-    uint32 b2;
-    uint32 g2;
-    uint32 r2;
-    uint32 a2;
+    uint32 b2 = 0;
+    uint32 g2 = 0;
+    uint32 r2 = 0;
+    uint32 a2 = 0;
     uint32 b3;
     uint32 g3;
     uint32 r3;

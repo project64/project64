@@ -94,7 +94,7 @@ void CDebugStackView::Refresh()
     for (int i = 0; i < 0x10; i++)
     {
         wchar_t t[4];
-        swprintf(t, L"%02X", i * 0x10);
+        swprintf(t, sizeof(t) / sizeof(t[0]), L"%02X", i * 0x10);
         m_StackList.AddItem(i, 0, t);
 
         for (int j = 0; j < 4; j++)

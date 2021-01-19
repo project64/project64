@@ -1320,13 +1320,13 @@ void rdp_texrect()
 #define SIGN16(x) (((x) & 0x8000) ? ((x) | ~0xffff) : ((x) & 0xffff))
 
     //calculate texture coordinates
-    for (int i = 0; i < 2; i++)
+    for (int z = 0; z < 2; z++)
     {
-        if (rdp.cur_cache[i] && (rdp.tex & (i + 1)))
+        if (rdp.cur_cache[z] && (rdp.tex & (z + 1)))
         {
             float sx = 1, sy = 1;
             int x_i = off_x_i, y_i = off_y_i;
-            TILE & tile = rdp.tiles(rdp.cur_tile + i);
+            TILE & tile = rdp.tiles(rdp.cur_tile + z);
             //shifting
             if (tile.shift_s)
             {
@@ -1359,7 +1359,7 @@ void rdp_texrect()
                 }
             }
 
-            if (rdp.aTBuffTex[i]) //hwfbe texture
+            if (rdp.aTBuffTex[z]) //hwfbe texture
             {
                 float t0_off_x;
                 float t0_off_y;
@@ -1373,42 +1373,42 @@ void rdp_texrect()
                     t0_off_x = off_x_i / 32.0f;
                     t0_off_y = off_y_i / 32.0f;
                 }
-                t0_off_x += rdp.aTBuffTex[i]->u_shift;// + tile.ul_s; //commented for Paper Mario motion blur
-                t0_off_y += rdp.aTBuffTex[i]->v_shift;// + tile.ul_t;
-                texUV[i].ul_u = t0_off_x * sx;
-                texUV[i].ul_v = t0_off_y * sy;
+                t0_off_x += rdp.aTBuffTex[z]->u_shift;// + tile.ul_s; //commented for Paper Mario motion blur
+                t0_off_y += rdp.aTBuffTex[z]->v_shift;// + tile.ul_t;
+                texUV[z].ul_u = t0_off_x * sx;
+                texUV[z].ul_v = t0_off_y * sy;
 
-                texUV[i].lr_u = texUV[i].ul_u + off_size_x * sx;
-                texUV[i].lr_v = texUV[i].ul_v + off_size_y * sy;
+                texUV[z].lr_u = texUV[z].ul_u + off_size_x * sx;
+                texUV[z].lr_v = texUV[z].ul_v + off_size_y * sy;
 
-                texUV[i].ul_u *= rdp.aTBuffTex[i]->u_scale;
-                texUV[i].ul_v *= rdp.aTBuffTex[i]->v_scale;
-                texUV[i].lr_u *= rdp.aTBuffTex[i]->u_scale;
-                texUV[i].lr_v *= rdp.aTBuffTex[i]->v_scale;
+                texUV[z].ul_u *= rdp.aTBuffTex[z]->u_scale;
+                texUV[z].ul_v *= rdp.aTBuffTex[z]->v_scale;
+                texUV[z].lr_u *= rdp.aTBuffTex[z]->u_scale;
+                texUV[z].lr_v *= rdp.aTBuffTex[z]->v_scale;
                 WriteTrace(TraceRDP, TraceDebug, "tbuff_tex[%d] ul_u: %f, ul_v: %f, lr_u: %f, lr_v: %f",
-                    i, texUV[i].ul_u, texUV[i].ul_v, texUV[i].lr_u, texUV[i].lr_v);
+                    z, texUV[z].ul_u, texUV[z].ul_v, texUV[z].lr_u, texUV[z].lr_v);
             }
             else //common case
             {
                 //kill 10.5 format overflow by SIGN16 macro
-                texUV[i].ul_u = SIGN16(x_i) / 32.0f;
-                texUV[i].ul_v = SIGN16(y_i) / 32.0f;
+                texUV[z].ul_u = SIGN16(x_i) / 32.0f;
+                texUV[z].ul_v = SIGN16(y_i) / 32.0f;
 
-                texUV[i].ul_u -= tile.f_ul_s;
-                texUV[i].ul_v -= tile.f_ul_t;
+                texUV[z].ul_u -= tile.f_ul_s;
+                texUV[z].ul_v -= tile.f_ul_t;
 
-                texUV[i].lr_u = texUV[i].ul_u + off_size_x * sx;
-                texUV[i].lr_v = texUV[i].ul_v + off_size_y * sy;
+                texUV[z].lr_u = texUV[z].ul_u + off_size_x * sx;
+                texUV[z].lr_v = texUV[z].ul_v + off_size_y * sy;
 
-                texUV[i].ul_u = rdp.cur_cache[i]->c_off + rdp.cur_cache[i]->c_scl_x * texUV[i].ul_u;
-                texUV[i].lr_u = rdp.cur_cache[i]->c_off + rdp.cur_cache[i]->c_scl_x * texUV[i].lr_u;
-                texUV[i].ul_v = rdp.cur_cache[i]->c_off + rdp.cur_cache[i]->c_scl_y * texUV[i].ul_v;
-                texUV[i].lr_v = rdp.cur_cache[i]->c_off + rdp.cur_cache[i]->c_scl_y * texUV[i].lr_v;
+                texUV[z].ul_u = rdp.cur_cache[z]->c_off + rdp.cur_cache[z]->c_scl_x * texUV[z].ul_u;
+                texUV[z].lr_u = rdp.cur_cache[z]->c_off + rdp.cur_cache[z]->c_scl_x * texUV[z].lr_u;
+                texUV[z].ul_v = rdp.cur_cache[z]->c_off + rdp.cur_cache[z]->c_scl_y * texUV[z].ul_v;
+                texUV[z].lr_v = rdp.cur_cache[z]->c_off + rdp.cur_cache[z]->c_scl_y * texUV[z].lr_v;
             }
         }
         else
         {
-            texUV[i].ul_u = texUV[i].ul_v = texUV[i].lr_u = texUV[i].lr_v = 0;
+            texUV[z].ul_u = texUV[z].ul_v = texUV[z].lr_u = texUV[z].lr_v = 0;
         }
     }
     rdp.cur_tile = prev_tile;
@@ -1816,20 +1816,20 @@ void rdp_settilesize()
         if (tile_set)
         {
             // coords in 10.2 format
-            rdp.tiles(tile).ul_s = ul_s;
-            rdp.tiles(tile).ul_t = ul_t;
-            rdp.tiles(tile).lr_s = lr_s;
-            rdp.tiles(tile).lr_t = lr_t;
+            rdp.tiles(tile).ul_s = (uint16_t)ul_s;
+            rdp.tiles(tile).ul_t = (uint16_t)ul_t;
+            rdp.tiles(tile).lr_s = (uint16_t)lr_s;
+            rdp.tiles(tile).lr_t = (uint16_t)lr_t;
             tile_set = 0;
         }
     }
     else
     {
         // coords in 10.2 format
-        rdp.tiles(tile).ul_s = ul_s;
-        rdp.tiles(tile).ul_t = ul_t;
-        rdp.tiles(tile).lr_s = lr_s;
-        rdp.tiles(tile).lr_t = lr_t;
+        rdp.tiles(tile).ul_s = (uint16_t)ul_s;
+        rdp.tiles(tile).ul_t = (uint16_t)ul_t;
+        rdp.tiles(tile).lr_s = (uint16_t)lr_s;
+        rdp.tiles(tile).lr_t = (uint16_t)lr_t;
     }
 
     // handle wrapping
@@ -1914,7 +1914,7 @@ static inline void loadBlock(uint32_t *src, uint32_t *dst, uint32_t off, int dxt
         do
         {
             v10 = __ROL__(v10, 8);
-            *(uint8_t *)v5 = v10;
+            *(uint8_t *)v5 = (uint8_t)v10;
             v5 = (uint32_t *)((char *)v5 + 1);
             --v9;
         } while (v9);
@@ -1942,7 +1942,7 @@ static inline void loadBlock(uint32_t *src, uint32_t *dst, uint32_t off, int dxt
             do
             {
                 v14 = __ROL__(v14, 8);
-                *(uint8_t *)v5 = v14;
+                *(uint8_t *)v5 = (uint8_t)v14;
                 v5 = (uint32_t *)((char *)v5 + 1);
                 --v13;
             } while (v13);
@@ -2074,7 +2074,7 @@ void rdp_loadblock()
         loadBlock((uint32_t *)gfx.RDRAM, (uint32_t *)dst, off, _dxt, cnt);
 
     rdp.timg.addr += cnt << 3;
-    rdp.tiles(tile).lr_t = ul_t + ((dxt*cnt) >> 11);
+    rdp.tiles(tile).lr_t = (uint16_t)(ul_t + ((dxt*cnt) >> 11));
 
     rdp.update |= UPDATE_TEXTURE;
 
@@ -2905,7 +2905,6 @@ void rdp_setcolorimage()
             {
                 if (g_settings->fb_hwfbe_enabled() && !rdp.copy_ci_index && (rdp.copy_zi_index || g_settings->hacks(CSettings::hack_BAR)))
                 {
-                    gfxLOD_t LOD = g_scr_res_x > 1024 ? GFX_LOD_LOG2_1024 : GFX_LOD_LOG2_2048;
                     gfxAuxBufferExt(GFX_BUFFER_TEXTUREAUXBUFFER_EXT);
                     WriteTrace(TraceRDP, TraceDebug, "rdp_setcolorimage - set texture depth buffer to TMU0");
                 }
@@ -3235,7 +3234,7 @@ EXPORT void CALL FBRead(uint32_t addr)
                 uint32_t h = rdp.frame_buffers[0].height;
                 rdp.frame_buffers[0].height = rdp.maincimg[1].height;
                 CopyFrameBuffer(GFX_BUFFER_FRONTBUFFER);
-                rdp.frame_buffers[0].height = h;
+                rdp.frame_buffers[0].height = (uint16_t)h;
             }
             else
             {
@@ -3517,9 +3516,9 @@ void DetectFrameBufferUsage()
             {
                 int ind = (rdp.ci_count > 0) ? rdp.ci_count - 1 : 0;
                 uint32_t height = rdp.frame_buffers[ind].height;
-                rdp.frame_buffers[ind].height = ci_height;
+                rdp.frame_buffers[ind].height = (uint16_t)ci_height;
                 CopyFrameBuffer();
-                rdp.frame_buffers[ind].height = height;
+                rdp.frame_buffers[ind].height = (uint16_t)height;
             }
             if (rdp.swap_ci_index < 0)
             {
@@ -3550,7 +3549,7 @@ void DetectFrameBufferUsage()
                     uint32_t h = rdp.frame_buffers[0].height;
                     rdp.frame_buffers[0].height = rdp.maincimg[0].height;
                     CopyFrameBuffer();
-                    rdp.frame_buffers[0].height = h;
+                    rdp.frame_buffers[0].height = (uint16_t)h;
                 }
                 else //conker
                 {
@@ -3734,10 +3733,10 @@ void lle_triangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
             (flip/* && xleft > xright*/))
         {
             if (shade) {
-                vtx->r = CSCALE(r + drdx*dx);
-                vtx->g = CSCALE(g + dgdx*dx);
-                vtx->b = CSCALE(b + dbdx*dx);
-                vtx->a = CSCALE(a + dadx*dx);
+                vtx->r = (uint8_t)CSCALE(r + drdx*dx);
+                vtx->g = (uint8_t)CSCALE(g + dgdx*dx);
+                vtx->b = (uint8_t)CSCALE(b + dbdx*dx);
+                vtx->a = (uint8_t)CSCALE(a + dadx*dx);
             }
             if (texture) {
                 vtx->ou = SSCALE(s + dsdx*dx, w + dwdx*dx);
@@ -3753,10 +3752,10 @@ void lle_triangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
             (flip && xleft > xright))
         {
             if (shade) {
-                vtx->r = CSCALE(r);
-                vtx->g = CSCALE(g);
-                vtx->b = CSCALE(b);
-                vtx->a = CSCALE(a);
+                vtx->r = (uint8_t)CSCALE(r);
+                vtx->g = (uint8_t)CSCALE(g);
+                vtx->b = (uint8_t)CSCALE(b);
+                vtx->a = (uint8_t)CSCALE(a);
             }
             if (texture) {
                 vtx->ou = SSCALE(s, w);
@@ -3787,10 +3786,10 @@ void lle_triangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
             (flip/* && xleft >= xright*/))
         {
             if (shade) {
-                vtx->r = CSCALE(r + drdx*dx);
-                vtx->g = CSCALE(g + dgdx*dx);
-                vtx->b = CSCALE(b + dbdx*dx);
-                vtx->a = CSCALE(a + dadx*dx);
+                vtx->r = (uint8_t)CSCALE(r + drdx*dx);
+                vtx->g = (uint8_t)CSCALE(g + dgdx*dx);
+                vtx->b = (uint8_t)CSCALE(b + dbdx*dx);
+                vtx->a = (uint8_t)CSCALE(a + dadx*dx);
             }
             if (texture) {
                 vtx->ou = SSCALE(s + dsdx*dx, w + dwdx*dx);
@@ -3806,10 +3805,10 @@ void lle_triangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
             (flip && xleft >= xright))
         {
             if (shade) {
-                vtx->r = CSCALE(r);
-                vtx->g = CSCALE(g);
-                vtx->b = CSCALE(b);
-                vtx->a = CSCALE(a);
+                vtx->r = (uint8_t)CSCALE(r);
+                vtx->g = (uint8_t)CSCALE(g);
+                vtx->b = (uint8_t)CSCALE(b);
+                vtx->a = (uint8_t)CSCALE(a);
             }
             if (texture) {
                 vtx->ou = SSCALE(s, w);
@@ -3850,10 +3849,10 @@ void lle_triangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
             (flip/* && xleft >= xright*/))
         {
             if (shade) {
-                vtx->r = CSCALE(r + drdx*dx);
-                vtx->g = CSCALE(g + dgdx*dx);
-                vtx->b = CSCALE(b + dbdx*dx);
-                vtx->a = CSCALE(a + dadx*dx);
+                vtx->r = (uint8_t)CSCALE(r + drdx*dx);
+                vtx->g = (uint8_t)CSCALE(g + dgdx*dx);
+                vtx->b = (uint8_t)CSCALE(b + dbdx*dx);
+                vtx->a = (uint8_t)CSCALE(a + dadx*dx);
             }
             if (texture) {
                 vtx->ou = SSCALE(s + dsdx*dx, w + dwdx*dx);
@@ -3869,10 +3868,10 @@ void lle_triangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
             (flip && xleft >= xright))
         {
             if (shade) {
-                vtx->r = CSCALE(r);
-                vtx->g = CSCALE(g);
-                vtx->b = CSCALE(b);
-                vtx->a = CSCALE(a);
+                vtx->r = (uint8_t)CSCALE(r);
+                vtx->g = (uint8_t)CSCALE(g);
+                vtx->b = (uint8_t)CSCALE(b);
+                vtx->a = (uint8_t)CSCALE(a);
             }
             if (texture) {
                 vtx->ou = SSCALE(s, w);

@@ -101,7 +101,7 @@ static void fb_setscissor()
         if (rdp.scissor_o.lr_x - rdp.scissor_o.ul_x > (uint32_t)(cur_fb.width >> 1))
         {
             if (cur_fb.height == 0 || (cur_fb.width >= rdp.scissor_o.lr_x - 1 && cur_fb.width <= rdp.scissor_o.lr_x + 1))
-                cur_fb.height = rdp.scissor_o.lr_y;
+                cur_fb.height = (uint16_t)rdp.scissor_o.lr_y;
         }
         WriteTrace(TraceRDP, TraceDebug, "fb_setscissor. lr_x = %d, lr_y = %d, fb_width = %d, fb_height = %d", rdp.scissor_o.lr_x, rdp.scissor_o.lr_y, cur_fb.width, cur_fb.height);
     }
@@ -121,7 +121,7 @@ static void fb_uc2_movemem()
             short trans_y = ((short*)gfx.RDRAM)[(a + 5) ^ 1] >> 2;
             uint32_t height = scale_y + trans_y;
             if (height < rdp.scissor_o.lr_y)
-                cur_fb.height = height;
+                cur_fb.height = (uint16_t)height;
         }
     }
 }
@@ -140,7 +140,7 @@ static void fb_rect()
         if (rdp.frame_buffers[rdp.ci_count - 1].height < lr_y)
         {
             WriteTrace(TraceRDP, TraceDebug, "fb_rect. ul_x: %d, lr_x: %d, fb_height: %d -> %d", ul_x, lr_x, rdp.frame_buffers[rdp.ci_count - 1].height, lr_y);
-            rdp.frame_buffers[rdp.ci_count - 1].height = lr_y;
+            rdp.frame_buffers[rdp.ci_count - 1].height = (uint16_t)lr_y;
         }
     }
 }
@@ -169,7 +169,7 @@ static void fb_settextureimage()
                 rdp.main_ci_last_tex_addr = addr;
                 if (cur_fb.height == 0)
                 {
-                    cur_fb.height = rdp.scissor_o.lr_y;
+                    cur_fb.height = (uint16_t)rdp.scissor_o.lr_y;
                     rdp.main_ci_end = cur_fb.addr + ((cur_fb.width * cur_fb.height) << cur_fb.size >> 1);
                 }
             }
@@ -327,7 +327,7 @@ static void fb_setcolorimage()
     else if (cur_fb.width == 16)
         cur_fb.height = 16;
     else if (rdp.ci_count > 0)
-        cur_fb.height = rdp.scissor_o.lr_y;
+        cur_fb.height = (uint16_t)rdp.scissor_o.lr_y;
     else
         cur_fb.height = 0;
     cur_fb.format = (rdp.cmd0 >> 21) & 0x7;

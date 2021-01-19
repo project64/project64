@@ -308,7 +308,7 @@ static void read_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, uint8_t
                 {
                     for (int i = 0; i < 32; i++)
                     {
-                        data[i] = gb_cart->rtc_latch_data[gb_cart->ram_bank - 0x08];
+                        data[i] = (uint8_t)(gb_cart->rtc_latch_data[gb_cart->ram_bank - 0x08]);
                     }
                 }
                 else
@@ -316,7 +316,7 @@ static void read_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, uint8_t
                     memoryUpdateMBC3Clock(gb_cart);
                     for (int i = 0; i < 32; i++)
                     {
-                        data[i] = gb_cart->rtc_data[gb_cart->ram_bank - 0x08];
+                        data[i] = (uint8_t)(gb_cart->rtc_data[gb_cart->ram_bank - 0x08]);
                     }
                 }
             }
@@ -390,17 +390,17 @@ static void write_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, const 
     }
 }
 
-static void read_gb_cart_mbc4(struct gb_cart* gb_cart, uint16_t address, uint8_t* data)
+static void read_gb_cart_mbc4(struct gb_cart * /*gb_cart*/, uint16_t /*address*/, uint8_t * /*data*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-static void write_gb_cart_mbc4(struct gb_cart* gb_cart, uint16_t address, const uint8_t* data)
+static void write_gb_cart_mbc4(struct gb_cart * /*gb_cart*/, uint16_t /*address*/, const uint8_t * /*data*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-static void read_gb_cart_mbc5(struct gb_cart* gb_cart, uint16_t address, uint8_t* data)
+static void read_gb_cart_mbc5(struct gb_cart * gb_cart, uint16_t address, uint8_t * data)
 {
     size_t offset;
 
@@ -468,17 +468,17 @@ static void write_gb_cart_mbc5(struct gb_cart* gb_cart, uint16_t address, const 
     }
 }
 
-static void read_gb_cart_mmm01(struct gb_cart* gb_cart, uint16_t address, uint8_t* data)
+static void read_gb_cart_mmm01(struct gb_cart * /*gb_cart*/, uint16_t /*address*/, uint8_t * /*data*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-static void write_gb_cart_mmm01(struct gb_cart* gb_cart, uint16_t address, const uint8_t* data)
+static void write_gb_cart_mmm01(struct gb_cart * /*gb_cart*/, uint16_t /*address*/, const uint8_t * /*data*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-static void read_gb_cart_pocket_cam(struct gb_cart* gb_cart, uint16_t address, uint8_t* data)
+static void read_gb_cart_pocket_cam(struct gb_cart * gb_cart, uint16_t address, uint8_t * data)
 {
     size_t offset;
 
@@ -569,32 +569,32 @@ static void write_gb_cart_pocket_cam(struct gb_cart* gb_cart, uint16_t address, 
     }
 }
 
-static void read_gb_cart_bandai_tama5(struct gb_cart* gb_cart, uint16_t address, uint8_t* data)
+static void read_gb_cart_bandai_tama5(struct gb_cart * /*gb_cart*/, uint16_t /*address*/, uint8_t * /*data*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-static void write_gb_cart_bandai_tama5(struct gb_cart* gb_cart, uint16_t address, const uint8_t* data)
+static void write_gb_cart_bandai_tama5(struct gb_cart * /*gb_cart*/, uint16_t /*address*/, const uint8_t * /*data*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-static void read_gb_cart_huc1(struct gb_cart* gb_cart, uint16_t address, uint8_t* data)
+static void read_gb_cart_huc1(struct gb_cart * /*gb_cart*/, uint16_t /*address*/, uint8_t * /*data*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-static void write_gb_cart_huc1(struct gb_cart* gb_cart, uint16_t address, const uint8_t* data)
+static void write_gb_cart_huc1(struct gb_cart * /*gb_cart*/, uint16_t /*address*/, const uint8_t * /*data*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-static void read_gb_cart_huc3(struct gb_cart* gb_cart, uint16_t address, uint8_t* data)
+static void read_gb_cart_huc3(struct gb_cart * /*gb_cart*/, uint16_t /*address*/, uint8_t * /*data*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-static void write_gb_cart_huc3(struct gb_cart* gb_cart, uint16_t address, const uint8_t* data)
+static void write_gb_cart_huc3(struct gb_cart * /*gb_cart*/, uint16_t /*address*/, const uint8_t * /*data*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }

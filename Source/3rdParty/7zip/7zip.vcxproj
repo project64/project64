@@ -34,7 +34,8 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <PrecompiledHeader />
-      <DisableSpecificWarnings>4127;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4127;4456;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
