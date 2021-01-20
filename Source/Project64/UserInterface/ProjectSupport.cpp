@@ -70,7 +70,7 @@ bool CProjectSupport::ValidateCode(const char * Code)
             }
         }
 
-        if (Name.length() > 0 && Email.length() > 0)
+        if (Email.length() > 0)
         {
             strncpy(m_SupportInfo.Code, Code, sizeof(m_SupportInfo.Code));
             strncpy(m_SupportInfo.Email, Email.c_str(), sizeof(m_SupportInfo.Email));
