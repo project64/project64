@@ -11,6 +11,7 @@
 // Based from MAME's N64DD driver code by Happy_
 #include "stdafx.h"
 #include "Disk.h"
+#include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/N64System/N64DiskClass.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
@@ -107,7 +108,7 @@ void DiskCommand()
 
     if (isSeek)
     {
-        if ((DISK_SEEK_TYPE)g_Settings->LoadDword(Game_DiskSeekTiming) == DiskSeek_Turbo)
+        if (g_System->DiskSeekTimingType() == DiskSeek_Turbo)
         {
             //Instant Response for Turbo
 
@@ -117,7 +118,7 @@ void DiskCommand()
             //Set timer for motor
             g_SystemTimer->SetTimer(g_SystemTimer->DDMotorTimer, 0, false);
         }
-        else /* if ((DISK_SEEK_TYPE)g_Settings->LoadDword(Game_DiskSeekTiming) == DiskSeek_Slow) */
+        else /* if (g_System->DiskSeekTimingType() == DiskSeek_Slow) */
         {
             //Emulate Seek Times, send interrupt later
             uint32_t seektime = 0;

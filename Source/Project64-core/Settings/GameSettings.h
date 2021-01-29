@@ -45,6 +45,7 @@ public:
     inline static SYSTEM_TYPE SystemType(void) { return m_SystemType; }
     inline static CPU_TYPE CpuType(void) { return m_CpuType; }
     inline static uint32_t OverClockModifier(void) { return m_OverClockModifier; }
+    inline static DISK_SEEK_TYPE DiskSeekTimingType(void) { return m_DiskSeekTimingType; };
 
 	void RefreshSyncToAudio(void);
 
@@ -80,4 +81,5 @@ private:
     static SYSTEM_TYPE m_SystemType;
     static CPU_TYPE m_CpuType;
     static uint32_t m_OverClockModifier;
+    static DISK_SEEK_TYPE m_DiskSeekTimingType;
 };
