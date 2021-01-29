@@ -80,6 +80,7 @@
 #define IDD_Debugger_Search_SetValue    210
 #define IDD_Settings_DiskDrive          215
 #define IDD_Support_RequestCode         216
+#define IDD_Settings_GameDiskDrive      217
 #define IDC_MENU_ITEM_TEXT              1000
 #define IDC_CLOSE_BUTTON                1001
 #define IDC_LIST2                       1003
@@ -265,6 +266,7 @@
 #define IDC_ROM_FASTSP                  1101
 #define IDC_INFO                        1101
 #define IDC_OVER_CLOCK_MODIFIER_TEXT    1101
+#define IDC_DISKSEEKTIMING_TEXT1        1101
 #define IDC_AUDIO_SIGNAL                1102
 #define IDC_DIR_TEXTURE_FRAME           1102
 #define IDC_ENTER_CODE                  1102
@@ -707,9 +709,12 @@
 #define IDC_SCRIPTS_GRP                 1578
 #define IDC_F4_LBL                      1579
 #define IDC_OUTPUT_GRP                  1579
+#define IDC_DISKSEEKTIMING_TEXT2        1579
 #define IDC_F5_LBL                      1580
 #define IDC_EVAL_LBL                    1580
+#define IDC_DISKSEEKTIMING              1580
 #define IDC_F6_LBL                      1581
+#define IDC_DISKSEEKTIMING2             1581
 #define IDC_F7_LBL                      1582
 #define IDC_F8_LBL                      1583
 #define IDC_F9_LBL                      1584
@@ -922,9 +927,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        222
+#define _APS_NEXT_RESOURCE_VALUE        225
 #define _APS_NEXT_COMMAND_VALUE         40121
-#define _APS_NEXT_CONTROL_VALUE         1578
+#define _APS_NEXT_CONTROL_VALUE         1582
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

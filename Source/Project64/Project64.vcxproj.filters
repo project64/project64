@@ -252,6 +252,9 @@
     <ClCompile Include="UserInterface\EnhancementUI.cpp">
       <Filter>Source Files\User Interface Source</Filter>
     </ClCompile>
+    <ClCompile Include="UserInterface\Settings\SettingsPage-Game-DiskDrive.cpp">
+      <Filter>Source Files\User Interface Source\Settings Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UserInterface\resource.h">
@@ -487,6 +490,9 @@
     </ClInclude>
     <ClInclude Include="UserInterface\EnhancementUI.h">
       <Filter>Header Files\User Interface Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\Settings\SettingsPage-Game-DiskDrive.h">
+      <Filter>Header Files\User Interface Headers\Settings Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
