@@ -1243,6 +1243,8 @@ BEGIN
     CONTROL         "Unaligned DMA",IDC_UNALIGNED_DMA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,118,91,10
     CONTROL         "Protect Memory",IDC_PROTECT_MEMORY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,102,118,91,10
     RTEXT           "Note: 8 MB is forced for Unknown ROMs.",IDC_MEMORY_SIZE_NOTE,6,22,205,8
+    COMBOBOX        IDC_DISKSEEKTIMING,102,132,109,49,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Disk Seek Timing:",IDC_DISKSEEKTIMING_TEXT1,6,134,91,10
 END
 
 IDD_Enhancement_Config DIALOGEX 0, 0, 206, 214
@@ -1390,6 +1392,14 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,109,62,50,14
 END
 
+IDD_Settings_GameDiskDrive DIALOGEX 0, 0, 218, 182
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    COMBOBOX        IDC_DISKSEEKTIMING2,102,8,109,49,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Disk Seek Timing:",IDC_DISKSEEKTIMING_TEXT2,6,10,91,10
+END
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1849,6 +1859,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 76
     END
+
+    IDD_Settings_GameDiskDrive, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 216
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 176
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -2221,6 +2239,10 @@ BEGIN
     0
 END
 
+IDD_Settings_GameDiskDrive AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
 
 /////////////////////////////////////////////////////////////////////////////
 //

@@ -587,6 +587,7 @@ public:
 #include "SettingsPage-Game-General.h"
 #include "SettingsPage-Game-Plugin.h"
 #include "SettingsPage-Game-Recompiler.h"
+#include "SettingsPage-Game-DiskDrive.h"
 #include "SettingsPage-Game-Status.h"
 #include "SettingsPage-GameBrowser.h"
 #include "SettingsPage-KeyboardShortcuts.h"

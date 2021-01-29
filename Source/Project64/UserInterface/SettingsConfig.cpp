@@ -164,6 +164,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
         GameSettings->AddPage(new CGameGeneralPage(this->m_hWnd, rcSettingInfo));
         GameSettings->AddPage(new CGameRecompilePage(this->m_hWnd, rcSettingInfo));
         GameSettings->AddPage(new CGamePluginPage(this->m_hWnd, rcSettingInfo));
+        GameSettings->AddPage(new CGameDiskDrivePage(this->m_hWnd, rcSettingInfo));
         if (g_Settings->LoadBool(Setting_RdbEditor))
         {
             GameSettings->AddPage(new CGameStatusPage(this->m_hWnd, rcSettingInfo));

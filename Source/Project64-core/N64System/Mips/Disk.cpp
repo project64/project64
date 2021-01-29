@@ -107,60 +107,73 @@ void DiskCommand()
 
     if (isSeek)
     {
-        //Emulate Seek Times, send interrupt later
-        uint32_t seektime = 0;
-
-        //Start Motor, can take half a second, delay the response
-        if (g_Reg->ASIC_STATUS & DD_STATUS_MTR_N_SPIN)
+        if ((DISK_SEEK_TYPE)g_Settings->LoadDword(Game_DiskSeekTiming) == DiskSeek_Turbo)
         {
-            seektime += (0x5A00000 / 2);
-            g_Reg->ASIC_STATUS &= ~DD_STATUS_MTR_N_SPIN;
+            //Instant Response for Turbo
+
+            //Set timer for seek response
+            g_SystemTimer->SetTimer(g_SystemTimer->DDSeekTimer, 0, false);
+
+            //Set timer for motor
+            g_SystemTimer->SetTimer(g_SystemTimer->DDMotorTimer, 0, false);
         }
-
-        //Get Zone to calculate seek times
-        uint32_t track = g_Reg->ASIC_CUR_TK >> 16 & 0x0FFF;
-        uint32_t zone = 0;
-        uint32_t zonebound = 0;
-        for (uint8_t i = 0; i < 8; i++)
+        else /* if ((DISK_SEEK_TYPE)g_Settings->LoadDword(Game_DiskSeekTiming) == DiskSeek_Slow) */
         {
-            zonebound += ddZoneTrackSize[i];
-            if (track < zonebound)
+            //Emulate Seek Times, send interrupt later
+            uint32_t seektime = 0;
+
+            //Start Motor, can take half a second, delay the response
+            if (g_Reg->ASIC_STATUS & DD_STATUS_MTR_N_SPIN)
             {
-                zone = i;
-                if (g_Reg->ASIC_CUR_TK & 0x10000000)
-                    zone++;
+                seektime += (0x5A00000 / 2);
+                g_Reg->ASIC_STATUS &= ~DD_STATUS_MTR_N_SPIN;
+            }
+
+            //Get Zone to calculate seek times
+            uint32_t track = g_Reg->ASIC_CUR_TK >> 16 & 0x0FFF;
+            uint32_t zone = 0;
+            uint32_t zonebound = 0;
+            for (uint8_t i = 0; i < 8; i++)
+            {
+                zonebound += ddZoneTrackSize[i];
+                if (track < zonebound)
+                {
+                    zone = i;
+                    if (g_Reg->ASIC_CUR_TK & 0x10000000)
+                        zone++;
+                    break;
+                }
+            }
+
+            //Add seek delay depending on the zone (this is inaccurate timing, but close enough)
+            seektime += 0x179200;
+
+            switch (zone)
+            {
+            case 0:
+            case 1:
+            default:
+                seektime += track * 38;
+                break;
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+                seektime += 0x13C * 38 + (track - 0x13C) * 46;
+                break;
+            case 8:
+                seektime += 0x13C * 38 + 0x2E9 * 46 + (track - 0x425) * 58;
                 break;
             }
+
+            //Set timer for seek response
+            g_SystemTimer->SetTimer(g_SystemTimer->DDSeekTimer, seektime, false);
+
+            //Set timer for motor to shutdown in 5 seconds, reset the timer if other seek commands were sent
+            g_SystemTimer->SetTimer(g_SystemTimer->DDMotorTimer, 0x5A00000 * 5, false);
         }
-
-        //Add seek delay depending on the zone (this is inaccurate timing, but close enough)
-        seektime += 0x179200;
-
-        switch (zone)
-        {
-        case 0:
-        case 1:
-        default:
-            seektime += track * 38;
-            break;
-        case 2:
-        case 3:
-        case 4:
-        case 5:
-        case 6:
-        case 7:
-            seektime += 0x13C * 38 + (track - 0x13C) * 46;
-            break;
-        case 8:
-            seektime += 0x13C * 38 + 0x2E9 * 46 + (track - 0x425) * 58;
-            break;
-        }
-
-        //Set timer for seek response
-        g_SystemTimer->SetTimer(g_SystemTimer->DDSeekTimer, seektime, false);
-
-        //Set timer for motor to shutdown in 5 seconds, reset the timer if other seek commands were sent
-        g_SystemTimer->SetTimer(g_SystemTimer->DDMotorTimer, 0x5A00000 * 5, false);
     }
     else
     {
