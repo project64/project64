@@ -159,15 +159,14 @@ BEGIN
     CONTROL         "Disable Screen Saver when running rom",IDC_SCREEN_SAVER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,39,206,10
     CONTROL         "Enable Discord Rich Presence",IDC_DISCORD_RPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,54,206,10
-    CONTROL         "Enable Enhancements",IDC_ENABLE_ENHANCEMENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,69,206,10
-    CONTROL         "Hide Advanced Settings",IDC_BASIC_MODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,84,206,10
-    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,4,99,208,1
-    LTEXT           "Max # of Roms Remembered (Max 10):",IDC_MAXROMS_TXT,6,107,145,10
-    EDITTEXT        IDC_REMEMBER,148,105,26,12,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "roms",IDC_ROMSEL_TEXT2,178,108,31,10
-    LTEXT           "Max # of Rom Dirs Remembered (Max 10):",IDC_MAXROMDIR_TXT,6,122,145,10
-    EDITTEXT        IDC_REMEMBERDIR,148,120,26,12,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "dirs",IDC_ROMSEL_TEXT4,178,124,34,10
+    CONTROL         "Hide Advanced Settings",IDC_BASIC_MODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,69,206,10
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,4,84,208,1
+    LTEXT           "Max # of Roms Remembered (Max 10):",IDC_MAXROMS_TXT,6,92,145,10
+    EDITTEXT        IDC_REMEMBER,148,90,26,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "roms",IDC_ROMSEL_TEXT2,178,93,31,10
+    LTEXT           "Max # of Rom Dirs Remembered (Max 10):",IDC_MAXROMDIR_TXT,6,107,145,10
+    EDITTEXT        IDC_REMEMBERDIR,148,105,26,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "dirs",IDC_ROMSEL_TEXT4,178,109,34,10
 END
 
 IDD_Rom_Information DIALOGEX 0, 0, 239, 207
@@ -341,13 +340,14 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,8,191,10
     CONTROL         "Automatically compress instant saves",IDC_ZIP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,23,191,10
     CONTROL         "Enable Debugger",IDC_DEBUGGER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,38,191,10
+    CONTROL         "Always use interpreter core",IDC_INTERPRETER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,53,191,10
     CONTROL         "Remember selected cheats",IDC_REMEMBER_CHEAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,68,191,10
     CONTROL         "Check if project64 is already running",IDC_CHECK_RUNNING,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,83,189,10
-    CONTROL         "Frame rate display",IDC_DISPLAY_FRAMERATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,113,86,10
-    COMBOBOX        IDC_FRAME_DISPLAY_TYPE,101,112,99,57,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Unique Game Save Directory",IDC_UNIQUE_SAVE_DIR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,98,189,10
-    CONTROL         "Always use interpreter core",IDC_INTERPRETER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,53,191,10
+    CONTROL         "Enable Enhancements",IDC_ENABLE_ENHANCEMENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,98,189,10
+    CONTROL         "Unique Game Save Directory",IDC_UNIQUE_SAVE_DIR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,113,189,10
+    CONTROL         "Frame rate display",IDC_DISPLAY_FRAMERATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,128,86,10
+    COMBOBOX        IDC_FRAME_DISPLAY_TYPE,101,129,99,57,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
 END
 
 IDD_Settings_ShellInt DIALOGEX 0, 0, 231, 206
@@ -2243,6 +2243,12 @@ IDD_Settings_GameDiskDrive AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
+
+IDD_Settings_Advanced AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
