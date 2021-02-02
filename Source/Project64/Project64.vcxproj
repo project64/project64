@@ -100,6 +100,7 @@
     <ClCompile Include="UserInterface\Settings\SettingsPage-Defaults.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-Directories.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-DiskDrive.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-Game-DiskDrive.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-Game-General.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-Game-Plugin.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-Game-Recompiler.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="UserInterface\Settings\SettingsPage-Defaults.h" />
     <ClInclude Include="UserInterface\Settings\SettingsPage-Directories.h" />
     <ClInclude Include="UserInterface\Settings\SettingsPage-DiskDrive.h" />
+    <ClInclude Include="UserInterface\Settings\SettingsPage-Game-DiskDrive.h" />
     <ClInclude Include="UserInterface\Settings\SettingsPage-Game-General.h" />
     <ClInclude Include="UserInterface\Settings\SettingsPage-Game-Plugin.h" />
     <ClInclude Include="UserInterface\Settings\SettingsPage-Game-Recompiler.h" />

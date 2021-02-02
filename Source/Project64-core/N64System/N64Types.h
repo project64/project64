@@ -59,6 +59,11 @@ enum SAVE_DISK_TYPE
     SaveDisk_ShadowFile = 0, SaveDisk_RAMFile = 1,
 };
 
+enum DISK_SEEK_TYPE
+{
+    DiskSeek_Turbo = 0, DiskSeek_Slow = 1,
+};
+
 enum FUNC_LOOKUP_METHOD
 {
     FuncFind_Default = -1, FuncFind_PhysicalLookup = 1, FuncFind_VirtualLookup = 2, FuncFind_ChangeMemory = 3,

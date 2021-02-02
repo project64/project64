@@ -84,6 +84,7 @@ enum SettingID
 	Default_UnalignedDMA,
 	Default_RandomizeSIPIInterrupts,
 	Default_SMM_Protect_Memory,
+    Default_DiskSeekTiming,
 
     //RDB Settings
     Rdb_GoodName,
@@ -125,6 +126,7 @@ enum SettingID
     Rdb_UnalignedDMA,
     Rdb_RandomizeSIPIInterrupts,
 	Rdb_RPCKey,
+    Rdb_DiskSeekTiming,
 
     //Individual Game Settings
     Game_IniKey,
@@ -183,6 +185,7 @@ enum SettingID
     Game_UnalignedDMA,
     Game_RandomizeSIPIInterrupts,
 	Game_RPCKey,
+    Game_DiskSeekTiming,
 
     // General Game running info
     GameRunning_LoadingInProgress,

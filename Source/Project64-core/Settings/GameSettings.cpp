@@ -40,6 +40,7 @@ uint32_t CGameSettings::m_LookUpMode; //FUNC_LOOKUP_METHOD
 SYSTEM_TYPE CGameSettings::m_SystemType = SYSTEM_NTSC;
 CPU_TYPE CGameSettings::m_CpuType = CPU_Recompiler;
 uint32_t CGameSettings::m_OverClockModifier = 1;
+DISK_SEEK_TYPE CGameSettings::m_DiskSeekTimingType = DiskSeek_Turbo;
 
 void CGameSettings::RefreshGameSettings()
 {
@@ -80,6 +81,7 @@ void CGameSettings::RefreshGameSettings()
     }
 	if (m_OverClockModifier < 1) { m_OverClockModifier = 1; }
     if (m_OverClockModifier > 20) { m_OverClockModifier = 20; }
+    m_DiskSeekTimingType = (DISK_SEEK_TYPE)g_Settings->LoadDword(Game_DiskSeekTiming);
 	RefreshSyncToAudio();
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }
@@ -92,5 +94,5 @@ void CGameSettings::SpeedChanged(int SpeedLimit)
 
 void CGameSettings::RefreshSyncToAudio(void)
 {
-	m_bSyncToAudio = g_Settings->LoadBool(Game_SyncViaAudio) && g_Settings->LoadBool(Setting_SyncViaAudioEnabled);
+	m_bSyncToAudio = g_Settings->LoadBool(Game_SyncViaAudio) && g_Settings->LoadBool(Setting_SyncViaAudioEnabled) && g_Settings->LoadBool(Plugin_EnableAudio);
 }

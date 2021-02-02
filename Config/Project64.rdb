@@ -7289,6 +7289,7 @@ Good Name=Mario Artist Paint Studio (J) (1999-02-11 Proto)
 RDRAM Size=8
 Status=Compatible
 Counter Factor=1
+DiskSeekTiming=1
 
 
 //================  PD  ================

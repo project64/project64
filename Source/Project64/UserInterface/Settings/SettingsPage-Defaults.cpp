@@ -32,6 +32,7 @@ CDefaultsOptionsPage::CDefaultsOptionsPage(HWND hParent, const RECT & rcDispay)
     SetDlgItemText(IDC_UNALIGNED_DMA, wGS(ROM_UNALIGNED_DMA).c_str());
     SetDlgItemText(IDC_RANDOMIZE_SIPI_INTERRUPTS, wGS(ROM_RANDOMIZE_SIPI_INTERRUPTS).c_str());
     SetDlgItemText(IDC_PROTECT_MEMORY, wGS(ADVANCE_SMM_PROTECT).c_str());
+    SetDlgItemText(IDC_DISKSEEKTIMING_TEXT1, wGS(ROM_DISK_SEEK_TIMING).c_str());
 
     CModifiedComboBox * ComboBox;
     ComboBox = AddModComboBox(GetDlgItem(IDC_RDRAM_SIZE), Default_RDRamSize);
@@ -67,6 +68,15 @@ CDefaultsOptionsPage::CDefaultsOptionsPage(HWND hParent, const RECT & rcDispay)
     AddModCheckBox(GetDlgItem(IDC_UNALIGNED_DMA), Default_UnalignedDMA);
     AddModCheckBox(GetDlgItem(IDC_RANDOMIZE_SIPI_INTERRUPTS), Default_RandomizeSIPIInterrupts);
     AddModCheckBox(GetDlgItem(IDC_PROTECT_MEMORY), Default_SMM_Protect_Memory);
+    AddModCheckBox(GetDlgItem(IDC_DISKSEEKTIMING), Default_DiskSeekTiming);
+
+    ComboBox = AddModComboBox(GetDlgItem(IDC_DISKSEEKTIMING), Default_DiskSeekTiming);
+    if (ComboBox)
+    {
+        //ComboBox->SetTextField(GetDlgItem(IDC_COUNTFACT_TEXT));
+        ComboBox->AddItem(wGS(ROM_DISK_SEEK_TIMING_TURBO).c_str(), DiskSeek_Turbo);
+        ComboBox->AddItem(wGS(ROM_DISK_SEEK_TIMING_SLOW).c_str(), DiskSeek_Slow);
+    }
 
     if (!g_Settings->LoadBool(Setting_SyncViaAudioEnabled))
     {
