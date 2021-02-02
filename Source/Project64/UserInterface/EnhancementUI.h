@@ -27,8 +27,11 @@ class CEnhancementUI :
 public:
     BEGIN_MSG_MAP_EX(CEnhancementUI)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
+        MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
         COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
+        COMMAND_ID_HANDLER(ID_POPUP_EDIT, OnEditEnhancement)
         COMMAND_ID_HANDLER(ID_POPUP_ADDENHANCEMENT, OnAddEnhancement)
+        NOTIFY_HANDLER_EX(IDC_ENHANCEMENTLIST, NM_CLICK, OnEnhancementListClicked)
         NOTIFY_HANDLER_EX(IDC_ENHANCEMENTLIST, NM_RCLICK, OnEnhancementListRClicked)
         NOTIFY_HANDLER_EX(IDC_ENHANCEMENTLIST, NM_DBLCLK, OnEnhancementListDClicked)
     END_MSG_MAP()
@@ -45,13 +48,18 @@ private:
     CEnhancementUI(const CEnhancementUI&);
     CEnhancementUI& operator=(const CEnhancementUI&);
 
-    LRESULT	OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-    LRESULT OnAddEnhancement(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
-    LRESULT OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
-    LRESULT OnEnhancementListRClicked(NMHDR* pNMHDR);
-    LRESULT OnEnhancementListDClicked(NMHDR* pNMHDR);
+    LRESULT	OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnEditEnhancement(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    LRESULT OnAddEnhancement(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled );
+    LRESULT OnCloseCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    LRESULT OnEnhancementListClicked(NMHDR* lpnmh);
+    LRESULT OnEnhancementListRClicked(NMHDR * pNMHDR);
+    LRESULT OnEnhancementListDClicked(NMHDR * pNMHDR);
 
-    void AddCodeLayers(LPARAM ListID, const std::wstring &Name, HTREEITEM hParent, bool Active);
+    void AddCodeLayers(LPARAM ListID, const std::wstring & Name, HTREEITEM hParent, bool Active);
+    void ChangeChildrenStatus(HTREEITEM hParent, bool Checked);
+    void CheckParentStatus(HTREEITEM hParent);
     void RefreshList(void);
     TV_CHECK_STATE TV_GetCheckState(HTREEITEM hItem);
     bool TV_SetCheckState(HTREEITEM hItem, TV_CHECK_STATE state);

@@ -865,7 +865,7 @@ void CRomBrowser::RomList_PopupMenu(uint32_t /*pnmh*/)
     else
     {
         bool inBasicMode = g_Settings->LoadBool(UserInterface_BasicMode);
-        bool CheatsRemembered = g_Settings->LoadBool(Setting_RememberCheats);
+        bool CheatsRemembered = !inBasicMode && g_Settings->LoadBool(Setting_RememberCheats);
         bool Enhancement = !inBasicMode && g_Settings->LoadBool(Setting_Enhancement);
 
         if (!Enhancement) { DeleteMenu(hPopupMenu, 11, MF_BYPOSITION); }

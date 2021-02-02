@@ -594,10 +594,14 @@ void CEnhancements::WaitScanDone()
 
 void CEnhancements::GameChanged(void)
 {
+    bool inBasicMode = g_Settings->LoadBool(UserInterface_BasicMode);
+    bool CheatsRemembered = !inBasicMode && g_Settings->LoadBool(Setting_RememberCheats);
+
     m_SectionIdent = g_Settings->LoadStringVal(Game_IniKey);
     LoadCheats(nullptr);
-    if (!g_Settings->LoadDword(Setting_RememberCheats) && !m_ActiveCodes.empty())
+    if (!CheatsRemembered && !m_ActiveCodes.empty())
     {
+        bool reset = false;
         for (CEnhancementList::iterator itr = m_Cheats.begin(); itr != m_Cheats.end(); itr++)
         {
             if (!itr->second.Active())
@@ -605,8 +609,13 @@ void CEnhancements::GameChanged(void)
                 continue;
             }
             itr->second.SetActive(false);
+            reset = true;
         }
-        m_ActiveCodes.clear();
+        if (reset)
+        {
+            m_ActiveCodes.clear();
+            LoadActive(m_Enhancements);
+        }
     }
 }
 

@@ -83,6 +83,7 @@ enum LanguageStringID
     MENU_RESET_SOFT = 133,
     MENU_RESET_HARD = 134,
     MENU_SWAPDISK = 135,
+    MENU_ENHANCEMENT = 136,
 
     //Options Menu
     MENU_OPTIONS = 140,
@@ -510,6 +511,11 @@ enum LanguageStringID
     MSG_SUPPORT_REQUESTCODE_TITLE = 1212,
     MSG_SUPPORT_REQUESTCODE_SUCCESS = 1213,
     MSG_SUPPORT_REQUESTCODE_FAIL = 1214,
+
+    /*********************************************************************************
+    * Enhancements                                                                   *
+    *********************************************************************************/
+    ENHANCEMENT_TITLE = 1300,
 
     /*********************************************************************************
     * Messages                                                                       *

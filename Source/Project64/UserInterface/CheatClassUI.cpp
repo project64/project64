@@ -101,6 +101,7 @@ LRESULT CCheatsUI::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPara
     int32_t Y = (((rcParent.Height()) - DlgHeight) / 2) + rcParent.top;
     SetWindowPos(NULL, X, Y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
     m_SelectCheat.RefreshItems();
+    ShowWindow(SW_SHOW);
     return 0;
 }
 
@@ -1021,12 +1022,15 @@ void CEditCheat::RecordCurrentValues(void)
 bool CEditCheat::ValuesChanged(void)
 {
     bool Changed = false;
-    if (m_EditName != GetItemText(IDC_CODE_NAME) ||
-        m_EditCode != GetItemText(IDC_CHEAT_CODES) ||
-        m_EditOptions != GetItemText(IDC_CHEAT_OPTIONS) ||
-        m_EditNotes != GetItemText(IDC_NOTES))
+    if (m_hWnd != nullptr)
     {
-        Changed = true;
+        if (m_EditName != GetItemText(IDC_CODE_NAME) ||
+            m_EditCode != GetItemText(IDC_CHEAT_CODES) ||
+            m_EditOptions != GetItemText(IDC_CHEAT_OPTIONS) ||
+            m_EditNotes != GetItemText(IDC_NOTES))
+        {
+            Changed = true;
+        }
     }
     if (!Changed)
     {

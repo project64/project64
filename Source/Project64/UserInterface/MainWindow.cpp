@@ -347,6 +347,11 @@ void CMainGui::DisplayCheatsUI(bool BlockExecution)
     m_CheatsUI.Display(m_hMainWindow, BlockExecution);
 }
 
+void CMainGui::DisplayEnhancements(bool BlockExecution)
+{
+    m_EnhancementUI.Display(m_hMainWindow, BlockExecution);
+}
+
 void CMainGui::BringToTop(void)
 {
     CGuard Guard(m_CS);
@@ -397,7 +402,8 @@ WPARAM CMainGui::ProcessAllMessages(void)
             SetEvent(m_ResetInfo->hEvent);
             m_ResetInfo = NULL;
         }
-        if (m_CheatsUI.m_hWnd != NULL && IsDialogMessage(m_CheatsUI.m_hWnd, &msg))
+        if ((m_CheatsUI.m_hWnd != NULL && IsDialogMessage(m_CheatsUI.m_hWnd, &msg)) ||
+            (m_EnhancementUI.m_hWnd != NULL && IsDialogMessage(m_EnhancementUI.m_hWnd, &msg)))
         {
             continue;
         }

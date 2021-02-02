@@ -107,7 +107,7 @@ void CEnhancementUI::Display(HWND hParent, bool BlockExecution)
 
 LRESULT	CEnhancementUI::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-    SetWindowText(wGS(CHEAT_TITLE).c_str());
+    SetWindowText(wGS(ENHANCEMENT_TITLE).c_str());
 
     m_TreeList.Attach(GetDlgItem(IDC_ENHANCEMENTLIST));
     LONG Style = m_TreeList.GetWindowLong(GWL_STYLE);
@@ -120,13 +120,51 @@ LRESULT	CEnhancementUI::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
     m_TreeList.SetImageList(hImageList, TVSIL_STATE);
 
     m_Enhancements = g_Enhancements->Enhancements();
+
+    CRect rcDlg, rcParent;
+    GetWindowRect(&rcDlg);
+    GetParent().GetWindowRect(&rcParent);
+    int32_t DlgWidth = rcDlg.Width();
+    int32_t DlgHeight = rcDlg.Height();
+    int32_t X = (((rcParent.Width()) - DlgWidth) / 2) + rcParent.left;
+    int32_t Y = (((rcParent.Height()) - DlgHeight) / 2) + rcParent.top;
+    SetWindowPos(NULL, X, Y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+    
     RefreshList();
+    ShowWindow(SW_SHOW);
     return TRUE;
 }
 
-LRESULT CEnhancementUI::OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CEnhancementUI::OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
-    EndDialog(wID);
+    m_TreeList.Detach();
+    return 0;
+}
+
+LRESULT CEnhancementUI::OnCloseCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+    if (m_bModal)
+    {
+        EndDialog(0);
+    }
+    else
+    {
+        DestroyWindow();
+    }
+    return TRUE;
+}
+
+LRESULT CEnhancementUI::OnEditEnhancement(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+    TVITEM item = { 0 };
+    item.mask = TVIF_PARAM;
+    item.hItem = m_hSelectedItem;
+    if (!m_TreeList.GetItem(&item) || item.lParam == NULL)
+    {
+        return 0;
+    }
+
+    CEditEnhancement(*this, (CEnhancement *)item.lParam).DoModal(m_hWnd);
     return TRUE;
 }
 
@@ -135,6 +173,47 @@ LRESULT CEnhancementUI::OnAddEnhancement(WORD /*wNotifyCode*/, WORD /*wID*/, HWN
     CEditEnhancement(*this, nullptr).DoModal(m_hWnd);
     RefreshList();
     return TRUE;
+}
+
+LRESULT CEnhancementUI::OnEnhancementListClicked(NMHDR* lpnmh)
+{
+    uint32_t dwpos = GetMessagePos();
+    TVHITTESTINFO ht = { 0 };
+    ht.pt.x = GET_X_LPARAM(dwpos);
+    ht.pt.y = GET_Y_LPARAM(dwpos);
+    ::MapWindowPoints(HWND_DESKTOP, lpnmh->hwndFrom, &ht.pt, 1);
+
+    TreeView_HitTest(lpnmh->hwndFrom, &ht);
+
+    if (TVHT_ONITEMSTATEICON & ht.flags)
+    {
+        switch (TV_GetCheckState(ht.hItem))
+        {
+        case TV_STATE_CLEAR:
+        case TV_STATE_INDETERMINATE:
+            TV_SetCheckState(ht.hItem, TV_STATE_CHECKED);
+            ChangeChildrenStatus(ht.hItem, true);
+            CheckParentStatus(m_TreeList.GetParentItem(ht.hItem));
+            break;
+        case TV_STATE_CHECKED:
+            TV_SetCheckState(ht.hItem, TV_STATE_CLEAR);
+            ChangeChildrenStatus(ht.hItem, false);
+            CheckParentStatus(m_TreeList.GetParentItem(ht.hItem));
+            break;
+        }
+        switch (TV_GetCheckState(ht.hItem))
+        {
+        case TV_STATE_CHECKED: TV_SetCheckState(ht.hItem, TV_STATE_INDETERMINATE); break;
+        case TV_STATE_CLEAR: TV_SetCheckState(ht.hItem, TV_STATE_CHECKED); break;
+        case TV_STATE_INDETERMINATE: TV_SetCheckState(ht.hItem, TV_STATE_CLEAR); break;
+        }
+
+        if (g_Enhancements != nullptr)
+        {
+            g_Enhancements->UpdateCheats();
+        }
+    }
+    return 0;
 }
 
 LRESULT CEnhancementUI::OnEnhancementListRClicked(NMHDR* pNMHDR)
@@ -237,6 +316,76 @@ void CEnhancementUI::AddCodeLayers(LPARAM Enhancement, const std::wstring & Name
 
     if (wcscmp(Text, Name.c_str()) == 0) { return; }
     AddCodeLayers(Enhancement, Name.substr(wcslen(Text) + 1), hParent, Active);
+}
+
+void CEnhancementUI::ChangeChildrenStatus(HTREEITEM hParent, bool Checked)
+{
+    HTREEITEM hItem = m_TreeList.GetChildItem(hParent);;
+    if (hItem == NULL)
+    {
+        if (hParent == TVI_ROOT) { return; }
+
+        TVITEM item = { 0 };
+        item.mask = TVIF_PARAM;
+        item.hItem = hParent;
+        m_TreeList.GetItem(&item);
+        if (item.lParam == NULL)
+        {
+            return;
+        }
+        CEnhancement * Enhancement = (CEnhancement *)item.lParam;
+        if (Checked && Enhancement->CodeOptionSize() != 0 && Enhancement->GetOptions().size() > 0 && !Enhancement->OptionSelected())
+        {
+            return;
+        }
+
+        TV_SetCheckState(hParent, Checked ? TV_STATE_CHECKED : TV_STATE_CLEAR);
+        Enhancement->SetActive(Checked);
+        return;
+    }
+    TV_CHECK_STATE state = TV_STATE_UNKNOWN;
+    while (hItem != NULL)
+    {
+        TV_CHECK_STATE ChildState = TV_GetCheckState(hItem);
+        if ((ChildState != TV_STATE_CHECKED || !Checked) &&
+            (ChildState != TV_STATE_CLEAR || Checked))
+        {
+            ChangeChildrenStatus(hItem, Checked);
+        }
+        ChildState = TV_GetCheckState(hItem);
+        if (state == TV_STATE_UNKNOWN) { state = ChildState; }
+        if (state != ChildState) { state = TV_STATE_INDETERMINATE; }
+        hItem = m_TreeList.GetNextSiblingItem(hItem);
+    }
+    if (state != TV_STATE_UNKNOWN)
+    {
+        TV_SetCheckState(hParent, state);
+    }
+}
+
+void CEnhancementUI::CheckParentStatus(HTREEITEM hParent)
+{
+    if (hParent == NULL)
+    {
+        return;
+    }
+    HTREEITEM hItem = m_TreeList.GetChildItem(hParent);
+    TV_CHECK_STATE InitialState = TV_GetCheckState(hParent);
+    TV_CHECK_STATE CurrentState = TV_GetCheckState(hItem);
+    while (hItem != NULL)
+    {
+        if (TV_GetCheckState(hItem) != CurrentState)
+        {
+            CurrentState = TV_STATE_INDETERMINATE;
+            break;
+        }
+        hItem = m_TreeList.GetNextSiblingItem(hItem);
+    }
+    TV_SetCheckState(hParent, CurrentState);
+    if (InitialState != CurrentState)
+    {
+        CheckParentStatus(m_TreeList.GetParentItem(hParent));
+    }
 }
 
 void CEnhancementUI::RefreshList()

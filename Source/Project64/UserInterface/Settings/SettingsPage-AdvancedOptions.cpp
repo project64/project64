@@ -26,6 +26,7 @@ CAdvancedOptionsPage::CAdvancedOptionsPage(HWND hParent, const RECT & rcDispay)
     SetDlgItemText(IDC_REMEMBER_CHEAT, wGS(OPTION_REMEMBER_CHEAT).c_str());
     SetDlgItemText(IDC_UNIQUE_SAVE_DIR, wGS(OPTION_UNIQUE_SAVE_DIR).c_str());
     SetDlgItemText(IDC_CHECK_RUNNING, wGS(OPTION_CHECK_RUNNING).c_str());
+    SetDlgItemText(IDC_ENABLE_ENHANCEMENTS, wGS(OPTION_ENABLE_ENHANCEMENTS).c_str());
     SetDlgItemText(IDC_DISPLAY_FRAMERATE, wGS(OPTION_CHANGE_FR).c_str());
 
     AddModCheckBox(GetDlgItem(IDC_START_ON_ROM_OPEN), Setting_AutoStart);
@@ -35,6 +36,7 @@ CAdvancedOptionsPage::CAdvancedOptionsPage(HWND hParent, const RECT & rcDispay)
     AddModCheckBox(GetDlgItem(IDC_REMEMBER_CHEAT), Setting_RememberCheats);
     AddModCheckBox(GetDlgItem(IDC_UNIQUE_SAVE_DIR), Setting_UniqueSaveDir);
     AddModCheckBox(GetDlgItem(IDC_CHECK_RUNNING), Setting_CheckEmuRunning);
+    AddModCheckBox(GetDlgItem(IDC_ENABLE_ENHANCEMENTS), Setting_Enhancement);
     AddModCheckBox(GetDlgItem(IDC_DISPLAY_FRAMERATE), UserInterface_DisplayFrameRate);
 
     CModifiedComboBox * ComboBox;

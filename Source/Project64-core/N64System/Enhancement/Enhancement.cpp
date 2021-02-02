@@ -59,7 +59,7 @@ public:
         {
             return;
         }
-        Save(0, Active);
+        m_SettingsIniFile->SaveNumber(SectionName(), m_KeyNameIdex.c_str(), Active ? 1 : 0);
         Flush();
     }
 
@@ -69,7 +69,7 @@ public:
         {
             return;
         }
-        CSettingTypeGame::Delete(0);
+        CSettingTypeApplication::Delete(0);
         Flush();
     }
 

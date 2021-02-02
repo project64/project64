@@ -127,7 +127,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Setting_FixedRdramAddress, new CSettingTypeApplication("Settings", "Fixed Rdram Address", (uint32_t)0));
     AddHandler(Setting_Enhancement, new CSettingTypeApplication("Settings", "Enable Enhancement", (uint32_t)true));
     
-	AddHandler(Setting_RememberCheats, new CSettingTypeApplication("Settings", "Remember Cheats", (uint32_t)false));
+	AddHandler(Setting_RememberCheats, new CSettingTypeApplication("Settings", "Remember Cheats", (bool)false));
     AddHandler(Setting_UniqueSaveDir, new CSettingTypeApplication("Settings", "Unique Game Dir", true));
     AddHandler(Setting_CurrentLanguage, new CSettingTypeApplication("Settings", "Current Language", ""));
     AddHandler(Setting_EnableDisk, new CSettingTypeTempBool(false));

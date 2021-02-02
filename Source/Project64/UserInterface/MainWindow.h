@@ -77,6 +77,7 @@ public:
     bool ResetPluginsInUiThread(CPlugins * plugins, CN64System * System);
 
     void DisplayCheatsUI(bool BlockExecution);
+    void DisplayEnhancements(bool BlockExecution);
 
     void * GetWindowHandle(void) const { return m_hMainWindow; }
     void * GetStatusBar(void) const { return m_hStatusWnd; }

@@ -53,6 +53,7 @@
 #133#  "&Soft Reset"
 #134#  "&Hard Reset"
 #135#  "Swap &Disk"
+#136#  "Enhancement..."
 
 //Options Menu
 #140#  "&Options"
@@ -470,6 +471,11 @@
 #1212#  "Request Code"
 #1213#  "Code has been sent to your email"
 #1214#  "Failed to send code, please make sure it is the email you supported with"
+
+/*********************************************************************************
+* Enhancements                                                                   *
+*********************************************************************************/
+#1300#  "Enhancements"
 
 /*********************************************************************************
 * Messages                                                                       *

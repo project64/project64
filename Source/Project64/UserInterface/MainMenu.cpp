@@ -270,6 +270,11 @@ void CMainMenu::OnLodState(HWND hWnd)
     g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_LoadGame);
 }
 
+void CMainMenu::OnEnhancements(HWND /*hWnd*/)
+{
+    m_Gui->DisplayEnhancements(false);
+}
+
 void CMainMenu::OnCheats(HWND /*hWnd*/)
 {
     m_Gui->DisplayCheatsUI(false);
@@ -357,6 +362,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         g_BaseSystem->ExternalEvent(SysEvent_LoadMachineState);
         break;
     case ID_SYSTEM_LOAD: OnLodState(hWnd); break;
+    case ID_SYSTEM_ENHANCEMENT: OnEnhancements(hWnd); break;
     case ID_SYSTEM_CHEAT: OnCheats(hWnd); break;
     case ID_SYSTEM_GSBUTTON:
         g_BaseSystem->ExternalEvent(SysEvent_GSButtonPressed);
@@ -733,6 +739,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     bool RomLoading = g_Settings->LoadBool(GameRunning_LoadingInProgress);
     bool RomLoaded = g_Settings->LoadStringVal(Game_GameName).length() > 0;
     bool RomList = UISettingsLoadBool(RomBrowser_Enabled) && !CPURunning;
+    bool Enhancement = !inBasicMode && g_Settings->LoadBool(Setting_Enhancement);
 
     CMenuShortCutKey::RUNNING_STATE RunningState = CMenuShortCutKey::RUNNING_STATE_NOT_RUNNING;
     if (g_Settings->LoadBool(GameRunning_CPU_Running))
@@ -940,6 +947,10 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     SystemMenu.push_back(MENU_ITEM(SPLITER));
     SystemMenu.push_back(MENU_ITEM(SUB_MENU, MENU_CURRENT_SAVE, EMPTY_STDSTR, &CurrentSaveMenu));
     SystemMenu.push_back(MENU_ITEM(SPLITER));
+    if (Enhancement)
+    {
+        SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_ENHANCEMENT, MENU_ENHANCEMENT, m_ShortCuts.ShortCutString(ID_SYSTEM_ENHANCEMENT, RunningState)));
+    }
     SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_CHEAT, MENU_CHEAT, m_ShortCuts.ShortCutString(ID_SYSTEM_CHEAT, RunningState)));
     SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_GSBUTTON, MENU_GS_BUTTON, m_ShortCuts.ShortCutString(ID_SYSTEM_GSBUTTON, RunningState)));
 

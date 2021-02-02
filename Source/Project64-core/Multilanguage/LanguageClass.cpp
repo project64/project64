@@ -90,6 +90,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MENU_RESET_SOFT, "&Soft Reset");
     DEF_STR(MENU_RESET_HARD, "&Hard Reset");
     DEF_STR(MENU_SWAPDISK, "Swap &Disk");
+    DEF_STR(MENU_ENHANCEMENT, "Enhancement...");
 
     //Options Menu
     DEF_STR(MENU_OPTIONS, "&Options");
@@ -475,6 +476,11 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MSG_SUPPORT_REQUESTCODE_TITLE, "Request Code");
     DEF_STR(MSG_SUPPORT_REQUESTCODE_SUCCESS, "Code has been sent to your email");
     DEF_STR(MSG_SUPPORT_REQUESTCODE_FAIL, "Failed to send code, please make sure it is the email you supported with");
+
+    /*********************************************************************************
+    * Enhancements                                                                         *
+    *********************************************************************************/
+    DEF_STR(ENHANCEMENT_TITLE, "Enhancements");
 
     /*********************************************************************************
     * Messages                                                                       *

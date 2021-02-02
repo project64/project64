@@ -19,7 +19,7 @@ enum MainMenuID
     //System Menu
     ID_SYSTEM_RESET_SOFT, ID_SYSTEM_RESET_HARD, ID_SYSTEM_PAUSE, ID_SYSTEM_BITMAP,
     ID_SYSTEM_LIMITFPS, ID_SYSTEM_SWAPDISK, ID_SYSTEM_RESTORE, ID_SYSTEM_LOAD, ID_SYSTEM_SAVE,
-    ID_SYSTEM_SAVEAS, ID_SYSTEM_CHEAT, ID_SYSTEM_GSBUTTON,
+    ID_SYSTEM_SAVEAS, ID_SYSTEM_ENHANCEMENT, ID_SYSTEM_CHEAT, ID_SYSTEM_GSBUTTON,
 
     //Current Save Slot
     ID_CURRENT_SAVE_1, ID_CURRENT_SAVE_2, ID_CURRENT_SAVE_3, ID_CURRENT_SAVE_4, ID_CURRENT_SAVE_5,
@@ -81,6 +81,7 @@ private:
     void OnScreenShot(void);
     void OnSaveAs(HWND hWnd);
     void OnLodState(HWND hWnd);
+    void OnEnhancements(HWND hWnd);
     void OnCheats(HWND hWnd);
     void OnSettings(HWND hWnd);
     void OnSupportProject64(HWND hWnd);
