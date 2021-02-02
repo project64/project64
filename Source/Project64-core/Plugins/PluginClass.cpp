@@ -413,6 +413,10 @@ void CPlugins::ConfigPlugin(void* hParent, PLUGIN_TYPE Type)
             }
         }
         m_Audio->DllConfig(hParent);
+		if (g_BaseSystem)
+		{
+			g_BaseSystem->RefreshSyncToAudio();
+		}
         break;
     case PLUGIN_TYPE_CONTROLLER:
         if (m_Control == NULL || m_Control->DllConfig == NULL) { break; }

@@ -94,5 +94,5 @@ void CGameSettings::SpeedChanged(int SpeedLimit)
 
 void CGameSettings::RefreshSyncToAudio(void)
 {
-	m_bSyncToAudio = g_Settings->LoadBool(Game_SyncViaAudio) && g_Settings->LoadBool(Setting_SyncViaAudioEnabled);
+	m_bSyncToAudio = g_Settings->LoadBool(Game_SyncViaAudio) && g_Settings->LoadBool(Setting_SyncViaAudioEnabled) && g_Settings->LoadBool(Plugin_EnableAudio);
 }
