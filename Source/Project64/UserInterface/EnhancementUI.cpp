@@ -75,7 +75,8 @@ private:
 };
 
 CEnhancementUI::CEnhancementUI(void) :
-    m_hSelectedItem(NULL)
+    m_hSelectedItem(NULL),
+    m_bModal(false)
 {
 }
 
@@ -87,9 +88,7 @@ void CEnhancementUI::Display(HWND hParent, bool BlockExecution)
     }
     if (BlockExecution)
     {
-#ifdef _DEBUG
         m_bModal = true;
-#endif
         DoModal(hParent);
     }
     else if (m_hWnd != NULL)
@@ -98,9 +97,7 @@ void CEnhancementUI::Display(HWND hParent, bool BlockExecution)
     }
     else
     {
-#ifdef _DEBUG
         m_bModal = false;
-#endif
         Create(hParent);
     }
 }

@@ -67,4 +67,5 @@ private:
     CEnhancementList m_Enhancements;
     CTreeViewCtrl m_TreeList;
     HTREEITEM m_hSelectedItem;
+    bool m_bModal;
 };
