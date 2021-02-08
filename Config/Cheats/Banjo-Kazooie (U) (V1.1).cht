@@ -54,7 +54,7 @@ $Have Zero Time all Levels
 81386004 3000
 
 $Infinite\Air
-81385F8E 0E10
+813851AE 0E10
 
 $Infinite\Always Have All Jinjos
 80385F7B 00FF
@@ -66,8 +66,7 @@ $Infinite\Gold Feathers
 80385F73 00FF
 
 $Infinite\Health
-80385F83 0008
-80385F87 0008
+803851A3 0008
 
 $Infinite\Jiggies
 80385FCB 00FF
