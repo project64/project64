@@ -41,23 +41,26 @@ private:
 
     CEnhancementUI & m_EnhancementUI;
     CEnhancement::CodeEntries m_Entries;
+    CEnhancement::PluginList m_PluginList;
     CEnhancement * m_EditEnhancement;
 };
 
 class CEditGS :
-    public CDialogImpl < CEditGS >
+    public CDialogImpl<CEditGS>
 {
 public:
     BEGIN_MSG_MAP_EX(CEditGS)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
         COMMAND_HANDLER(IDC_CHEAT_CODES, EN_CHANGE, OnCheatChanged)
+        COMMAND_HANDLER_EX(IDC_CHK_LIMIT_PLUGINS, BN_CLICKED, OnPluginBtn)
+        COMMAND_ID_HANDLER(IDC_BTN_PLUGIN, OnEditPlugins)
         COMMAND_ID_HANDLER(IDOK, OnOkCmd)
         COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
     END_MSG_MAP()
 
     enum { IDD = IDD_Enhancement_GS };
 
-    CEditGS(CEnhancement::CodeEntries & Entries);
+    CEditGS(CEnhancement::CodeEntries & Entries, CEnhancement::PluginList & PluginList);
 
 private:
     CEditGS();
@@ -65,6 +68,8 @@ private:
     CEditGS& operator=(const CEditGS&);
 
     LRESULT	OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnPluginBtn(UINT Code, int id, HWND ctl);
+    LRESULT OnEditPlugins(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
     LRESULT OnCloseCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
     LRESULT OnOkCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
     LRESULT OnCheatChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
@@ -72,6 +77,38 @@ private:
     bool CheatCode(CEnhancement::CodeEntries & Entries);
 
     CEnhancement::CodeEntries & m_Entries;
+    CEnhancement::PluginList & m_PluginList;
+};
+
+class CEditPluginList :
+    public CDialogImpl<CEditPluginList>
+{
+public:
+    BEGIN_MSG_MAP_EX(CEditPluginList)
+        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
+        COMMAND_ID_HANDLER(ID_ADD, OnAddBtn)
+        COMMAND_ID_HANDLER(ID_REMOVE, OnRemoveBtn)
+        COMMAND_ID_HANDLER(IDOK, OnOkCmd)
+        COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
+    END_MSG_MAP()
+
+    enum { IDD = IDD_Enhancement_Plugins };
+
+    CEditPluginList(CEnhancement::PluginList & List);
+
+private:
+    CEditPluginList();
+    CEditPluginList(const CEditPluginList&);
+    CEditPluginList& operator=(const CEditPluginList&);
+
+    LRESULT	OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnAddBtn(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+    LRESULT OnRemoveBtn(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+    LRESULT OnCloseCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    LRESULT OnOkCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    
+    CListBox m_PluginListBox;
+    CEnhancement::PluginList & m_PluginList;
 };
 
 CEnhancementUI::CEnhancementUI(void) :
@@ -443,6 +480,7 @@ CEditEnhancement::CEditEnhancement(CEnhancementUI & EnhancementUI, CEnhancement 
 LRESULT	CEditEnhancement::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
     m_Entries = m_EditEnhancement != nullptr ? m_EditEnhancement->GetEntries() : CEnhancement::CodeEntries();
+    m_PluginList = m_EditEnhancement != nullptr ? m_EditEnhancement->GetPluginList() : CEnhancement::PluginList();
     GetDlgItem(IDC_OVERCLOCK).EnableWindow(false);
     GetDlgItem(IDC_OVER_CLOCK_MODIFIER).EnableWindow(false);
     GetDlgItem(IDC_CODE_NAME).SetWindowText(m_EditEnhancement != nullptr ? stdstr(m_EditEnhancement->GetName()).ToUTF16().c_str() : L"");
@@ -455,7 +493,7 @@ LRESULT	CEditEnhancement::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 LRESULT CEditEnhancement::OnGamesharkBtn(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
     CButton(GetDlgItem(IDC_GAMESHARK)).SetCheck(m_Entries.size() > 0 ? BST_CHECKED : BST_UNCHECKED);
-    CEditGS(m_Entries).DoModal(m_hWnd);
+    CEditGS(m_Entries, m_PluginList).DoModal(m_hWnd);
     CButton(GetDlgItem(IDC_GAMESHARK)).SetCheck(m_Entries.size() > 0 ? BST_CHECKED : BST_UNCHECKED);
     return 0;
 }
@@ -480,6 +518,7 @@ LRESULT CEditEnhancement::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl
         m_EditEnhancement->SetName(GetCWindowText(GetDlgItem(IDC_CODE_NAME)).c_str());
         m_EditEnhancement->SetOnByDefault(CButton(GetDlgItem(IDC_AUTOON)).GetCheck() == BST_CHECKED);
         m_EditEnhancement->SetEntries(m_Entries);
+        m_EditEnhancement->SetPluginList(m_PluginList);
         m_EditEnhancement->SetNote(GetCWindowText(GetDlgItem(IDC_NOTES)).c_str());
     }
     else
@@ -488,6 +527,7 @@ LRESULT CEditEnhancement::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl
         Enhancement.SetName(GetCWindowText(GetDlgItem(IDC_CODE_NAME)).c_str());
         Enhancement.SetOnByDefault(CButton(GetDlgItem(IDC_AUTOON)).GetCheck() == BST_CHECKED);
         Enhancement.SetEntries(m_Entries);
+        Enhancement.SetPluginList(m_PluginList);
         Enhancement.SetNote(GetCWindowText(GetDlgItem(IDC_NOTES)).c_str());
         Enhancements.AddItem(Enhancement);
     }
@@ -498,8 +538,9 @@ LRESULT CEditEnhancement::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl
 }
 
 
-CEditGS::CEditGS(CEnhancement::CodeEntries & Entries) :
-    m_Entries(Entries)
+CEditGS::CEditGS(CEnhancement::CodeEntries & Entries, CEnhancement::PluginList & PluginList) :
+    m_Entries(Entries),
+    m_PluginList(PluginList)
 {
 }
 
@@ -517,7 +558,22 @@ LRESULT	CEditGS::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*
     }
     CEdit CheatCodes(GetDlgItem(IDC_CHEAT_CODES));
     CheatCodes.SetWindowText(Buffer.ToUTF16().c_str());
+    CButton(GetDlgItem(IDC_CHK_LIMIT_PLUGINS)).SetCheck(m_PluginList.size() > 0 ? BST_CHECKED : BST_UNCHECKED);
     return TRUE;
+}
+
+LRESULT CEditGS::OnPluginBtn(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
+{
+    CButton(GetDlgItem(IDC_CHK_LIMIT_PLUGINS)).SetCheck(m_PluginList.size() > 0 ? BST_CHECKED : BST_UNCHECKED);
+    CEditPluginList(m_PluginList).DoModal(m_hWnd);
+    CButton(GetDlgItem(IDC_CHK_LIMIT_PLUGINS)).SetCheck(m_PluginList.size() > 0 ? BST_CHECKED : BST_UNCHECKED);
+    return 0;
+}
+
+LRESULT CEditGS::OnEditPlugins(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+    OnPluginBtn(0, 0, 0);
+    return 0;
 }
 
 LRESULT CEditGS::OnCheatChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
@@ -612,4 +668,85 @@ bool CEditGS::CheatCode(CEnhancement::CodeEntries & Entries)
         }
     }
     return ValidCode;
+}
+
+CEditPluginList::CEditPluginList(CEnhancement::PluginList & List) :
+    m_PluginList(List)
+{
+}
+
+LRESULT	CEditPluginList::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
+{
+    m_PluginListBox.Attach(GetDlgItem(IDC_PLUGIN_LIST));
+    for (size_t i = 0, n = m_PluginList.size(); i < n; i++)
+    {
+        m_PluginListBox.AddString(stdstr(m_PluginList[i]).ToUTF16().c_str());
+    }
+    return TRUE;
+}
+
+LRESULT CEditPluginList::OnAddBtn(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
+{
+    CWindow hEdit = GetDlgItem(IDC_ADD_EDIT); 
+    stdstr PluginName = stdstr(GetCWindowText(hEdit)).Trim();
+    std::wstring wPluginName = PluginName.ToUTF16();
+    if (PluginName.empty())
+    {
+        return 0;
+    }
+    for (int i = 0, n = m_PluginListBox.GetCount(); i < n; i++)
+    {
+        int nLen = m_PluginListBox.GetTextLen(i);
+        if (nLen == 0)
+        {
+            continue;
+        }
+        std::wstring WindowText;
+        WindowText.resize(nLen + 1);
+        m_PluginListBox.GetText(i, (wchar_t *)WindowText.c_str());
+        if (strcmp(stdstr().FromUTF16(WindowText.c_str()).c_str(), PluginName.c_str()) == 0)
+        {
+            return 0;
+        }
+    }
+    hEdit.SetWindowText(L"");
+    m_PluginListBox.AddString(wPluginName.c_str());
+    return 0;
+}
+
+LRESULT CEditPluginList::OnRemoveBtn(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
+{
+    int index = m_PluginListBox.GetCurSel();
+    if (index >= 0)
+    {
+        m_PluginListBox.DeleteString(index);
+    }
+    return 0;
+}
+
+LRESULT CEditPluginList::OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
+{
+    EndDialog(wID);
+    return 0;
+}
+
+LRESULT CEditPluginList::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
+{
+    CEnhancement::PluginList PluginList;
+    for (int i = 0, n = m_PluginListBox.GetCount(); i < n; i++)
+    {
+        int nLen = m_PluginListBox.GetTextLen(i);
+        if (nLen == 0)
+        {
+            continue;
+        }
+        std::wstring WindowText;
+        WindowText.resize(nLen + 1);
+        m_PluginListBox.GetText(i, (wchar_t *)WindowText.c_str());
+
+        PluginList.push_back(stdstr().FromUTF16(WindowText.c_str()));
+    }
+    m_PluginList = PluginList;
+    EndDialog(wID);
+    return 0;
 }

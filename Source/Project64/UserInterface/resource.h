@@ -2,7 +2,13 @@
 // Microsoft Visual C++ generated include file.
 // Used by UIResources.rc
 //
+#define VERSION_REVISION                0
+#define VER_VER_DEBUG                   0
+#define VERSION_MAJOR                   2
 #define IDAPPLY                         3
+#define VERSION_MINOR                   4
+#define ID_ADD                          4
+#define ID_REMOVE                       5
 #define IDI_PJ64_Icon                   101
 #define IDD_Rom_Information             104
 #define IDD_Key_Prompt                  108
@@ -81,6 +87,7 @@
 #define IDD_Settings_DiskDrive          215
 #define IDD_Support_RequestCode         216
 #define IDD_Settings_GameDiskDrive      217
+#define IDD_Enhancement_Plugins         218
 #define IDC_MENU_ITEM_TEXT              1000
 #define IDC_CLOSE_BUTTON                1001
 #define IDC_LIST2                       1003
@@ -110,7 +117,7 @@
 #define IDC_CHK_VADDR                   1011
 #define IDC_CHK_HEX                     1011
 #define IDC_DISPLAY_FRAMERATE           1012
-#define IDC_INFO_MEDIA           1012
+#define IDC_INFO_MEDIA                  1012
 #define IDC_ALT                         1012
 #define IDC_LIST                        1012
 #define IDC_HLE_AUDIO                   1012
@@ -378,7 +385,7 @@
 #define IDC_ROM_SIZE                    1194
 #define IDC_REG_TABS                    1194
 #define IDC_CART_ID                     1195
-#define IDC_MEDIA                1196
+#define IDC_MEDIA                       1196
 #define IDC_COUNTRY                     1197
 #define IDC_CRC1                        1198
 #define IDC_CRC2                        1199
@@ -605,6 +612,7 @@
 #define IDC_CHK_CPU                     1473
 #define IDC_CHK_OV                      1474
 #define IDC_CHK_TRAP                    1475
+#define VERSION_BUILD                   1475
 #define IDC_CHK_VCEI                    1476
 #define IDC_CHK_FPE                     1477
 #define IDC_CHK_WATCH                   1478
@@ -716,9 +724,14 @@
 #define IDC_F6_LBL                      1581
 #define IDC_DISKSEEKTIMING2             1581
 #define IDC_F7_LBL                      1582
+#define IDC_CHK_LIMIT_PLUGINS           1582
 #define IDC_F8_LBL                      1583
+#define IDC_BTN_PLUGIN                  1583
 #define IDC_F9_LBL                      1584
+#define IDC_LIST1                       1584
+#define IDC_PLUGIN_LIST                 1584
 #define IDC_F10_LBL                     1585
+#define IDC_ADD_EDIT                    1585
 #define IDC_F11_LBL                     1586
 #define IDC_F12_LBL                     1587
 #define IDC_F13_LBL                     1588
@@ -929,7 +942,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        225
 #define _APS_NEXT_COMMAND_VALUE         40121
-#define _APS_NEXT_CONTROL_VALUE         1582
+#define _APS_NEXT_CONTROL_VALUE         1586
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

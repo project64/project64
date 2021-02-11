@@ -28,6 +28,7 @@ public:
     };
     typedef std::vector<CodeEntry> CodeEntries;
     typedef std::vector<CodeOption> CodeOptions;
+    typedef std::vector<std::string> PluginList;
 
     CEnhancement(const char * Ident);
     CEnhancement(const char * Ident, const char * Entry);
@@ -35,6 +36,7 @@ public:
     void SetNote(const char * Note);
     void SetEntries(const CodeEntries & Entries);
     void SetOptions(const CodeOptions & Options);
+    void SetPluginList(const PluginList & List);
     void SetSelectedOption(uint16_t Value);
     void SetActive(bool Active);
     void SetOnByDefault(bool OnByDefault);
@@ -44,6 +46,7 @@ public:
     inline const std::string & GetNote(void) const { return m_Note; }
     inline const CodeEntries & GetEntries(void) const { return m_Entries; }
     inline const CodeOptions & GetOptions(void) const { return m_Options; }
+    inline const PluginList & GetPluginList(void) const { return m_PluginList; }
     inline uint32_t CodeOptionSize(void) const { return m_CodeOptionSize; }
     inline bool Valid(void) const { return m_Valid; }
     inline bool Active(void) const { return m_Active; }
@@ -61,6 +64,7 @@ private:
     std::string m_Name;
     std::string m_NameAndExtension;
     std::string m_Note;
+    PluginList m_PluginList;
     CodeEntries m_Entries;
     CodeOptions m_Options;
     std::string m_OptionValue;

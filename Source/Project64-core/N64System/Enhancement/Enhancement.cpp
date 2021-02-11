@@ -166,7 +166,15 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
         }
         Key.resize(Seperator);
 
-        if (stricmp(Key.c_str(), "Note") == 0)
+        if (stricmp(Key.c_str(), "PluginList") == 0)
+        {
+            strvector Plugins = stdstr(&Pos[1]).Tokenize(",");
+            for (size_t i = 0, n = Plugins.size(); i < n; i++)
+            {
+                m_PluginList.push_back(Plugins[i]);
+            }
+        }
+        else if (stricmp(Key.c_str(), "Note") == 0)
         {
             m_Note = &Pos[1];
         }
@@ -257,6 +265,11 @@ void CEnhancement::SetEntries(const CodeEntries & Entries)
 {
     m_Entries = Entries;
     CheckValid();
+}
+
+void CEnhancement::SetPluginList(const PluginList & List)
+{
+    m_PluginList = List;
 }
 
 void CEnhancement::SetOptions(const CodeOptions & Options)

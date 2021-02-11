@@ -325,6 +325,20 @@ void CEnhancmentFile::SaveCurrentSection(void)
             continue;
         }
         Section += stdstr_f("$%s%s", Enhancement.GetName().c_str(), m_LineFeed);
+        if (!Enhancement.GetPluginList().empty())
+        {
+            const CEnhancement::PluginList & List = Enhancement.GetPluginList();
+            std::string PluginList;
+            for (size_t i = 0, n = List.size(); i < n; i++)
+            {
+                if (i > 0)
+                {
+                    PluginList += ",";
+                }
+                PluginList += List[i].c_str();
+            }
+            Section += stdstr_f("PluginList=%s%s", PluginList.c_str() , m_LineFeed);
+        }
         if (Enhancement.GetOnByDefault())
         {
             Section += stdstr_f("OnByDefault=1%s", m_LineFeed);
