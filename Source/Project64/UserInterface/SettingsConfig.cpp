@@ -95,9 +95,9 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
     //Set the text for all gui Items
     SetDlgItemText(IDC_RESET_PAGE, wGS(BOTTOM_RESET_PAGE).c_str());
     SetDlgItemText(IDC_RESET_ALL, wGS(BOTTOM_RESET_ALL).c_str());
-    SetDlgItemText(IDOK, wGS(CHEAT_OK).c_str());
-    SetDlgItemText(IDCANCEL, wGS(CHEAT_CANCEL).c_str());
-    SetDlgItemText(IDAPPLY, wGS(BOTTOM_APPLY).c_str());
+    SetDlgItemText(IDC_OK, wGS(CHEAT_OK).c_str());
+    SetDlgItemText(IDC_CANCEL, wGS(CHEAT_CANCEL).c_str());
+    SetDlgItemText(IDC_APPLY, wGS(BOTTOM_APPLY).c_str());
 
     if (m_GameConfig)
     {
@@ -216,14 +216,14 @@ LRESULT CSettingConfig::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& /*
 {
     switch (wID)
     {
-    case IDAPPLY:
+    case IDC_APPLY:
         ApplySettings(true);
         break;
-    case IDOK:
+    case IDC_OK:
         ApplySettings(false);
         EndDialog(1);
         break;
-    case IDCANCEL:
+    case IDC_CANCEL:
         EndDialog(0);
         break;
     case IDC_RESET_PAGE:
@@ -278,7 +278,7 @@ void CSettingConfig::ApplySettings(bool UpdateScreen)
 
     if (UpdateScreen)
     {
-        ::EnableWindow(GetDlgItem(IDAPPLY), false);
+        ::EnableWindow(GetDlgItem(IDC_APPLY), false);
         ::EnableWindow(GetDlgItem(IDC_RESET_PAGE), m_CurrentPage->EnableReset());
     }
 
@@ -354,7 +354,7 @@ LRESULT CSettingConfig::OnPageListClicked(NMHDR*)
 
 LRESULT	CSettingConfig::OnSettingPageChanged(UINT /*uMsg*/, WPARAM /*wPage*/, LPARAM /*lParam*/)
 {
-    ::EnableWindow(GetDlgItem(IDAPPLY), true);
+    ::EnableWindow(GetDlgItem(IDC_APPLY), true);
     ::EnableWindow(GetDlgItem(IDC_RESET_PAGE), m_CurrentPage->EnableReset());
     BoldChangedPages(m_PagesTreeList.GetRootItem());
     return 0;

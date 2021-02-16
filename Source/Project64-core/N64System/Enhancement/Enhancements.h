@@ -17,6 +17,7 @@
 #include <string>
 
 class CMipsMemoryVM;
+class CPlugins;
 
 class CEnhancements
 {
@@ -29,12 +30,14 @@ public:
     CEnhancements();
     ~CEnhancements();
     
-    void ApplyActive(CMipsMemoryVM & MMU, bool UpdateChanges);
+    void ApplyActive(CMipsMemoryVM & MMU, CPlugins * Plugins, bool UpdateChanges);
     void ApplyGSButton(CMipsMemoryVM & MMU, bool UpdateChanges);
     void UpdateCheats(const CEnhancementList & Cheats);
     void UpdateCheats(void);
     void UpdateEnhancements(const CEnhancementList & Enhancements);
-    
+    void ResetActive(CPlugins * Plugins);
+    void Load(CMipsMemoryVM * MMU, CPlugins * Plugins);
+
     inline const CEnhancementList & Cheats(void) const { return m_Cheats; }
     inline const CEnhancementList & Enhancements(void) const { return m_Enhancements; }
 
@@ -64,8 +67,7 @@ private:
     typedef std::map<uint32_t, MEM_VALUE8> ORIGINAL_VALUES8;
 
     void ResetCodes(CMipsMemoryVM * MMU);
-    void LoadCheats(CMipsMemoryVM * MMU);
-    void LoadActive(CEnhancementList & List);
+    void LoadActive(CEnhancementList & List, CPlugins * Plugins);
     void LoadEnhancements(const char * Ident, SectionFiles & Files, std::unique_ptr<CEnhancmentFile> & File, CEnhancementList & EnhancementList);
     void ApplyGameSharkCodes(CMipsMemoryVM & MMU, CODES & CodeEntry, uint32_t CurrentEntry);
     uint32_t EntrySize(const CODES & CodeEntry, uint32_t CurrentEntry);
@@ -79,10 +81,8 @@ private:
     static uint16_t ConvertXP64Value(uint16_t Value);
 
     static uint32_t stScanFileThread(void * lpThreadParameter) { ((CEnhancements *)lpThreadParameter)->ScanFileThread(); return 0; }
-    static void stGameChanged(void * lpData) { ((CEnhancements *)lpData)->GameChanged(); }
 
     CriticalSection m_CS;
-    std::string m_SectionIdent;
     SectionFiles m_CheatFiles, m_EnhancementFiles;
     std::unique_ptr<CEnhancmentFile> m_CheatFile, m_EnhancementFile;
     CEnhancementList m_Cheats;

@@ -14,6 +14,11 @@
 #include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
 #include <Project64-core\N64System\Recompiler\RecompilerClass.h>
 #include <Project64-core\N64System\SystemGlobals.h>
+#include <Project64-core\Plugins\PluginClass.h>
+#include <Project64-core\Plugins\GFXPlugin.h>
+#include <Project64-core\Plugins\AudioPlugin.h>
+#include <Project64-core\Plugins\RSPPlugin.h>
+#include <Project64-core\Plugins\ControllerPlugin.h>
 #include <Common\path.h>
 #include <Common\Util.h>
 
@@ -24,23 +29,21 @@ CEnhancements::CEnhancements() :
     m_UpdateCheats(false)
 {
     m_ScanFileThread.Start(this);
-    g_Settings->RegisterChangeCB(Game_IniKey, this, stGameChanged);
 }
 
 CEnhancements::~CEnhancements()
 {
-    g_Settings->UnregisterChangeCB(Game_IniKey, this, stGameChanged);
     m_Scan = false;
     WaitScanDone();
 }
 
-void CEnhancements::ApplyActive(CMipsMemoryVM & MMU, bool UpdateChanges)
+void CEnhancements::ApplyActive(CMipsMemoryVM & MMU, CPlugins * Plugins, bool UpdateChanges)
 {
     CGuard Guard(m_CS);
     if (m_UpdateCheats && UpdateChanges)
     {
         m_UpdateCheats = false;
-        LoadCheats(&MMU);
+        Load(&MMU, Plugins);
     }
     for (size_t i = 0, n = m_ActiveCodes.size(); i < n; i++)
     {
@@ -83,6 +86,7 @@ void CEnhancements::ApplyGSButton(CMipsMemoryVM & MMU, bool /*UpdateChanges*/)
 void CEnhancements::UpdateCheats(const CEnhancementList & Cheats)
 {
     std::string GameName = g_Settings->LoadStringVal(Rdb_GoodName);
+    std::string SectionIdent = g_Settings->LoadStringVal(Game_IniKey);
     CPath OutFile(g_Settings->LoadStringVal(SupportFile_UserCheatDir), stdstr_f("%s.cht", GameName.c_str()).c_str());
 #ifdef _WIN32
     OutFile.NormalizePath(CPath(CPath::MODULE_DIRECTORY));
@@ -95,17 +99,17 @@ void CEnhancements::UpdateCheats(const CEnhancementList & Cheats)
         {
             OutFile.DirectoryCreate();
         }
-        SectionFiles::const_iterator CheatFileItr = m_CheatFiles.find(m_SectionIdent);
+        SectionFiles::const_iterator CheatFileItr = m_CheatFiles.find(SectionIdent);
         if (m_CheatFiles.end() != CheatFileItr)
         {
             m_CheatFiles.erase(CheatFileItr);
         }
         m_CheatFile = std::make_unique<CEnhancmentFile>(OutFile, "Cheat");
-        m_CheatFiles.insert(SectionFiles::value_type(m_SectionIdent, OutFile));
+        m_CheatFiles.insert(SectionFiles::value_type(SectionIdent, OutFile));
     }
 
-    m_CheatFile->SetName(m_SectionIdent.c_str(), GameName.c_str());
-    m_CheatFile->RemoveEnhancements(m_SectionIdent.c_str());
+    m_CheatFile->SetName(SectionIdent.c_str(), GameName.c_str());
+    m_CheatFile->RemoveEnhancements(SectionIdent.c_str());
     for (CEnhancementList::const_iterator itr = Cheats.begin(); itr != Cheats.end(); itr++)
     {
         const CEnhancement & Enhancement = itr->second;
@@ -114,7 +118,7 @@ void CEnhancements::UpdateCheats(const CEnhancementList & Cheats)
             g_Notify->BreakPoint(__FILE__, __LINE__);
             continue;
         }
-        m_CheatFile->AddEnhancement(m_SectionIdent.c_str(), Enhancement);
+        m_CheatFile->AddEnhancement(SectionIdent.c_str(), Enhancement);
     }
     m_CheatFile->SaveCurrentSection();
     m_UpdateCheats = true;
@@ -128,6 +132,7 @@ void CEnhancements::UpdateCheats(void)
 void CEnhancements::UpdateEnhancements(const CEnhancementList & Enhancements)
 {
     std::string GameName = g_Settings->LoadStringVal(Rdb_GoodName);
+    std::string SectionIdent = g_Settings->LoadStringVal(Game_IniKey);
     CPath OutFile(g_Settings->LoadStringVal(SupportFile_UserEnhancementDir), stdstr_f("%s.enh", GameName.c_str()).c_str());
 #ifdef _WIN32
     OutFile.NormalizePath(CPath(CPath::MODULE_DIRECTORY));
@@ -140,17 +145,17 @@ void CEnhancements::UpdateEnhancements(const CEnhancementList & Enhancements)
         {
             OutFile.DirectoryCreate();
         }
-        SectionFiles::const_iterator EnhancementFileItr = m_EnhancementFiles.find(m_SectionIdent);
+        SectionFiles::const_iterator EnhancementFileItr = m_EnhancementFiles.find(SectionIdent);
         if (m_EnhancementFiles.end() != EnhancementFileItr)
         {
             m_EnhancementFiles.erase(EnhancementFileItr);
         }
         m_EnhancementFile = std::make_unique<CEnhancmentFile>(OutFile, "Enhancement");
-        m_EnhancementFiles.insert(SectionFiles::value_type(m_SectionIdent, OutFile));
+        m_EnhancementFiles.insert(SectionFiles::value_type(SectionIdent, OutFile));
     }
 
-    m_EnhancementFile->SetName(m_SectionIdent.c_str(), GameName.c_str());
-    m_EnhancementFile->RemoveEnhancements(m_SectionIdent.c_str());
+    m_EnhancementFile->SetName(SectionIdent.c_str(), GameName.c_str());
+    m_EnhancementFile->RemoveEnhancements(SectionIdent.c_str());
     for (CEnhancementList::const_iterator itr = Enhancements.begin(); itr != Enhancements.end(); itr++)
     {
         const CEnhancement & Enhancement = itr->second;
@@ -159,10 +164,36 @@ void CEnhancements::UpdateEnhancements(const CEnhancementList & Enhancements)
             g_Notify->BreakPoint(__FILE__, __LINE__);
             continue;
         }
-        m_EnhancementFile->AddEnhancement(m_SectionIdent.c_str(), Enhancement);
+        m_EnhancementFile->AddEnhancement(SectionIdent.c_str(), Enhancement);
     }
     m_EnhancementFile->SaveCurrentSection();
     m_UpdateCheats = true;
+}
+
+void CEnhancements::ResetActive(CPlugins * Plugins)
+{
+    bool inBasicMode = g_Settings->LoadBool(UserInterface_BasicMode);
+    bool CheatsRemembered = !inBasicMode && g_Settings->LoadBool(Setting_RememberCheats);
+
+    if (CheatsRemembered || m_ActiveCodes.empty())
+    {
+        return;
+    }
+    bool reset = false;
+    for (CEnhancementList::iterator itr = m_Cheats.begin(); itr != m_Cheats.end(); itr++)
+    {
+        if (!itr->second.Active())
+        {
+            continue;
+        }
+        itr->second.SetActive(false);
+        reset = true;
+    }
+    if (reset)
+    {
+        m_ActiveCodes.clear();
+        LoadActive(m_Enhancements, Plugins);
+    }
 }
 
 void CEnhancements::ResetCodes(CMipsMemoryVM * MMU)
@@ -197,7 +228,8 @@ void CEnhancements::ResetCodes(CMipsMemoryVM * MMU)
 
 void CEnhancements::LoadEnhancements(const char * Ident, SectionFiles & Files, std::unique_ptr<CEnhancmentFile> & File, CEnhancementList & EnhancementList)
 {
-    SectionFiles::const_iterator CheatFileItr = Files.find(m_SectionIdent);
+    std::string SectionIdent = g_Settings->LoadStringVal(Game_IniKey);
+    SectionFiles::const_iterator CheatFileItr = Files.find(SectionIdent);
     bool FoundFile = false;
     if (CheatFileItr != Files.end())
     {
@@ -205,7 +237,7 @@ void CEnhancements::LoadEnhancements(const char * Ident, SectionFiles & Files, s
         if (CheatFile.Exists())
         {
             File = std::make_unique<CEnhancmentFile>(CheatFile, Ident);
-            File->GetEnhancementList(m_SectionIdent.c_str(), EnhancementList);
+            File->GetEnhancementList(SectionIdent.c_str(), EnhancementList);
             FoundFile = true;
         }
     }
@@ -217,7 +249,7 @@ void CEnhancements::LoadEnhancements(const char * Ident, SectionFiles & Files, s
     }
 }
 
-void CEnhancements::LoadCheats(CMipsMemoryVM * MMU)
+void CEnhancements::Load(CMipsMemoryVM * MMU, CPlugins * Plugins)
 {
     WaitScanDone();
     CGuard Guard(m_CS);
@@ -226,11 +258,11 @@ void CEnhancements::LoadCheats(CMipsMemoryVM * MMU)
     LoadEnhancements("Enhancement", m_EnhancementFiles, m_EnhancementFile, m_Enhancements);
 
     ResetCodes(MMU);
-    LoadActive(m_Cheats);
-    LoadActive(m_Enhancements);
+    LoadActive(m_Cheats, nullptr);
+    LoadActive(m_Enhancements, Plugins);
 }
 
-void CEnhancements::LoadActive(CEnhancementList & List)
+void CEnhancements::LoadActive(CEnhancementList & List, CPlugins * Plugins)
 {
     for (CEnhancementList::const_iterator itr = List.begin(); itr != List.end(); itr++)
     {
@@ -238,6 +270,40 @@ void CEnhancements::LoadActive(CEnhancementList & List)
         if (!Enhancement.Valid() || !Enhancement.Active())
         {
             continue;
+        }
+
+        if (Plugins != nullptr && !Enhancement.GetPluginList().empty())
+        {
+            bool LoadEntry = false;
+            const CEnhancement::PluginList & PluginList = Enhancement.GetPluginList();
+            for (size_t i = 0, n = PluginList.size(); i < n; i++)
+            {
+                std::string PluginName = stdstr(PluginList[i]).Trim();
+                if (Plugins->Gfx() != NULL && strstr(Plugins->Gfx()->PluginName(), PluginName.c_str()) != nullptr)
+                {
+                    LoadEntry = true;
+                    break;
+                }
+                if (Plugins->Audio() != NULL && strstr(Plugins->Audio()->PluginName(), PluginName.c_str()) != nullptr)
+                {
+                    LoadEntry = true;
+                    break;
+                }
+                if (Plugins->RSP() != NULL && strstr(Plugins->RSP()->PluginName(), PluginName.c_str()) != nullptr)
+                {
+                    LoadEntry = true;
+                    break;
+                }
+                if (Plugins->Control() != NULL && strstr(Plugins->Control()->PluginName(), PluginName.c_str()) != nullptr)
+                {
+                    LoadEntry = true;
+                    break;
+                }
+            }
+            if (!LoadEntry)
+            {
+                continue;
+            }
         }
 
         const CEnhancement::CodeEntries Entries = Enhancement.GetEntries();
@@ -589,33 +655,6 @@ void CEnhancements::WaitScanDone()
             break;
         }
         pjutil::Sleep(100);
-    }
-}
-
-void CEnhancements::GameChanged(void)
-{
-    bool inBasicMode = g_Settings->LoadBool(UserInterface_BasicMode);
-    bool CheatsRemembered = !inBasicMode && g_Settings->LoadBool(Setting_RememberCheats);
-
-    m_SectionIdent = g_Settings->LoadStringVal(Game_IniKey);
-    LoadCheats(nullptr);
-    if (!CheatsRemembered && !m_ActiveCodes.empty())
-    {
-        bool reset = false;
-        for (CEnhancementList::iterator itr = m_Cheats.begin(); itr != m_Cheats.end(); itr++)
-        {
-            if (!itr->second.Active())
-            {
-                continue;
-            }
-            itr->second.SetActive(false);
-            reset = true;
-        }
-        if (reset)
-        {
-            m_ActiveCodes.clear();
-            LoadActive(m_Enhancements);
-        }
     }
 }
 

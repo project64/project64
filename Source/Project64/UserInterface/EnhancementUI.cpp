@@ -86,8 +86,8 @@ class CEditPluginList :
 public:
     BEGIN_MSG_MAP_EX(CEditPluginList)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
-        COMMAND_ID_HANDLER(ID_ADD, OnAddBtn)
-        COMMAND_ID_HANDLER(ID_REMOVE, OnRemoveBtn)
+        COMMAND_ID_HANDLER(IDC_ADD, OnAddBtn)
+        COMMAND_ID_HANDLER(IDC_REMOVE, OnRemoveBtn)
         COMMAND_ID_HANDLER(IDOK, OnOkCmd)
         COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
     END_MSG_MAP()

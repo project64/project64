@@ -40,9 +40,9 @@ private:
 
     typedef std::list<CConfigSettingSection *> SETTING_SECTIONS;
 
-    CTreeViewCtrl    m_PagesTreeList;
+    CTreeViewCtrl m_PagesTreeList;
     SETTING_SECTIONS m_Sections;
-    CSettingsPage *  m_CurrentPage, *m_GeneralOptionsPage, *m_AdvancedPage, *m_DefaultsPage, *m_DiskDrivePage;
-    bool             m_GameConfig;
-    bool             m_bTVNSelChangedSupported;
+    CSettingsPage * m_CurrentPage, *m_GeneralOptionsPage, *m_AdvancedPage, *m_DefaultsPage, *m_DiskDrivePage;
+    bool m_GameConfig;
+    bool m_bTVNSelChangedSupported;
 };

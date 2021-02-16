@@ -128,6 +128,8 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
             g_Settings->SaveBool(Game_LoadSaveAtStart, false);
         }
     }
+    g_Enhancements->ResetActive(Plugins);
+    g_Enhancements->UpdateCheats();
 
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }
@@ -359,7 +361,6 @@ bool CN64System::LoadFileImage(const char * FileLoc)
             g_Settings->SaveString(Game_File, FileLoc);
         }
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
-
         WriteTrace(TraceN64System, TraceDebug, "Finished Loading (GoodName: %s)", g_Settings->LoadStringVal(Rdb_GoodName).c_str());
     }
     else
@@ -2443,7 +2444,7 @@ void CN64System::RefreshScreen()
     }
     if ((m_Reg.STATUS_REGISTER & STATUS_IE) != 0)
     {
-        g_Enhancements->ApplyActive(m_MMU_VM, !m_SyncSystem);
+        g_Enhancements->ApplyActive(m_MMU_VM, g_BaseSystem->m_Plugins, !m_SyncSystem);
     }
     //    if (bProfiling)    { m_Profile.StartTimer(ProfilingAddr != Timer_None ? ProfilingAddr : Timer_R4300); }
 }

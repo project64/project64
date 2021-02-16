@@ -142,9 +142,9 @@ public:
     bool ResetInUiThread(CN64System * System);
     void GameReset(void);
 
-    inline CGfxPlugin      * Gfx(void) const { return m_Gfx; }
-    inline CAudioPlugin    * Audio(void) const { return m_Audio; }
-    inline CRSP_Plugin     * RSP(void) const { return m_RSP; }
+    inline CGfxPlugin * Gfx(void) const { return m_Gfx; }
+    inline CAudioPlugin * Audio(void) const { return m_Audio; }
+    inline CRSP_Plugin * RSP(void) const { return m_RSP; }
     inline CControl_Plugin * Control(void) const { return m_Control; }
 
     inline RenderWindow * MainWindow(void) const { return m_MainWindow; }
