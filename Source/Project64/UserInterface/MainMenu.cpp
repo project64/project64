@@ -302,6 +302,10 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         //Now we have created again, we can start up emulation
         if (g_BaseSystem)
         {
+            if (g_Settings->LoadBool(Setting_AutoStart) == 0)
+            {
+                WriteTrace(TraceN64System, TraceDebug, "Manually starting rom");
+            }
             g_BaseSystem->StartEmulation(true);
         }
         else

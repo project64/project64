@@ -516,11 +516,7 @@ bool CN64System::RunFileImage(const char * FileLoc)
             g_Settings->SaveString(File_DiskIPLTOOLPath, FileLoc);
     }
 
-    if (g_Settings->LoadBool(Setting_AutoStart) != 0)
-    {
-        WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
-        RunLoadedImage();
-    }
+    RunLoadedImage();
     return true;
 }
 
@@ -538,11 +534,7 @@ bool CN64System::RunDiskImage(const char * FileLoc)
     }
 
     g_Settings->SaveBool(Setting_EnableDisk, true);
-    if (g_Settings->LoadBool(Setting_AutoStart) != 0)
-    {
-        WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
-        RunLoadedImage();
-    }
+    RunLoadedImage();
     return true;
 }
 
@@ -564,11 +556,7 @@ bool CN64System::RunDiskComboImage(const char * FileLoc, const char * FileLocDis
     }
 
     g_Settings->SaveBool(Setting_EnableDisk, true);
-    if (g_Settings->LoadBool(Setting_AutoStart) != 0)
-    {
-        WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
-        RunLoadedImage();
-    }
+    RunLoadedImage();
     return true;
 }
 
@@ -578,7 +566,11 @@ void CN64System::RunLoadedImage(void)
     g_BaseSystem = new CN64System(g_Plugins, (uint32_t)time(NULL), false, false);
     if (g_BaseSystem)
     {
-        g_BaseSystem->StartEmulation(true);
+        if (g_Settings->LoadBool(Setting_AutoStart) != 0)
+        {
+            WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
+            g_BaseSystem->StartEmulation(true);
+        }
     }
     else
     {
