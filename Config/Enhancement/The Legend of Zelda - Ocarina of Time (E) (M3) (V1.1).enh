@@ -1,0 +1,7 @@
+[B2055FBD-0BAB4E0C-C:50]
+Name=The Legend of Zelda - Ocarina of Time (E) (M3) (V1.1)
+
+$Subscreen Delay Fix
+PluginList=Glide64 For PJ64,Jabo's Direct3D8
+OnByDefault=1
+801D864B 0002
