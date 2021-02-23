@@ -236,7 +236,10 @@ void CEnhancements::LoadEnhancements(const char * Ident, SectionFiles & Files, s
         CPath CheatFile(CheatFileItr->second);
         if (CheatFile.Exists())
         {
-            File = std::make_unique<CEnhancmentFile>(CheatFile, Ident);
+            if (File.get() == nullptr || strcmp(File->FileName(), CheatFile) != 0)
+            {
+                File = std::make_unique<CEnhancmentFile>(CheatFile, Ident);
+            }
             File->GetEnhancementList(SectionIdent.c_str(), EnhancementList);
             FoundFile = true;
         }
