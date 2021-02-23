@@ -311,7 +311,7 @@ void CEnhancement::CheckValid(void)
     m_OptionValue = "";
     m_CodeOptionSize = 0;
 
-    if (m_Name.empty() || m_Entries.size() == 0)
+    if (m_Name.empty())
     {
         return;
     }
