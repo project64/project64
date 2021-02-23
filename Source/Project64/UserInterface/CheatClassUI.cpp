@@ -750,6 +750,7 @@ LRESULT CEditCheat::OnNewCheat(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
     SetDlgItemText(IDC_CHEAT_CODES, L"");
     SetDlgItemText(IDC_CHEAT_OPTIONS, L"");
     SetDlgItemText(IDC_NOTES, L"");
+    GetDlgItem(IDC_ADD).SetWindowText(wGS(CHEAT_ADDCHEAT_ADD).c_str());
     GetDlgItem(IDC_ADD).EnableWindow(false);
     GetDlgItem(IDC_CHEAT_OPTIONS).EnableWindow(false);
     RecordCurrentValues();
