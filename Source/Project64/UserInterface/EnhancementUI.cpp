@@ -278,15 +278,15 @@ LRESULT CEnhancementUI::OnEnhancementListRClicked(NMHDR* pNMHDR)
     return TRUE;
 }
 
-LRESULT CEnhancementUI::OnEnhancementListDClicked(NMHDR* pNMHDR)
+LRESULT CEnhancementUI::OnEnhancementListDClicked(NMHDR * lpnmh)
 {
     uint32_t dwpos = GetMessagePos();
     TVHITTESTINFO ht = { 0 };
     ht.pt.x = GET_X_LPARAM(dwpos);
     ht.pt.y = GET_Y_LPARAM(dwpos);
-    ::MapWindowPoints(HWND_DESKTOP, pNMHDR->hwndFrom, &ht.pt, 1);
+    ::MapWindowPoints(HWND_DESKTOP, lpnmh->hwndFrom, &ht.pt, 1);
 
-    TreeView_HitTest(pNMHDR->hwndFrom, &ht);
+    TreeView_HitTest(lpnmh->hwndFrom, &ht);
 
     if ((ht.flags & TVHT_ONITEMLABEL) == 0 || ht.hItem == 0)
     {
@@ -302,6 +302,25 @@ LRESULT CEnhancementUI::OnEnhancementListDClicked(NMHDR* pNMHDR)
 
     CEditEnhancement(*this, (CEnhancement *)item.lParam).DoModal(m_hWnd);
     RefreshList();
+    return 0;
+}
+
+LRESULT CEnhancementUI::OnEnhancementListSelChanged(NMHDR * lpnmh)
+{
+    HTREEITEM hItem = m_TreeList.GetSelectedItem();
+    GetDlgItem(IDC_NOTES).SetWindowText(L"");
+    if (m_TreeList.GetChildItem(hItem) == nullptr)
+    {
+        TVITEM item = { 0 };
+        item.mask = TVIF_PARAM;
+        item.hItem = hItem;
+        m_TreeList.GetItem(&item);
+        if (item.lParam != NULL)
+        {
+            CEnhancement * Enhancement = (CEnhancement *)item.lParam;
+            GetDlgItem(IDC_NOTES).SetWindowText(stdstr(Enhancement->GetNote()).ToUTF16().c_str());
+        }
+    }
     return 0;
 }
 
