@@ -1,4 +1,4 @@
-﻿// PJ64 v2.2 Official RDX (Rom Database eXtension)
+// PJ64 v2.2 Official RDX (Rom Database eXtension)
 // Not for use with PJ64 v1.6 or previous
 // ----------------------------------------------------
 
@@ -1335,6 +1335,12 @@ ReleaseDate=1997/11/24
 Genre=Racing-Misc
 Players=4
 ForceFeedback=Yes
+
+[906C3F77-CE495EA1-C:45]
+Good Name=DINO PLANET
+Developer=Rare
+Genre=Adventure
+Players=1
 
 [C16C421B-A21580F7-C:45]
 Good Name=Disney's Donald Duck - Goin' Quackers (U) [!]
@@ -5223,7 +5229,7 @@ Players=4
 ForceFeedback=Yes
 
 [451ACA0F-7863BC8A-C:44]
-Good Name=Rugrats - Die gro�e Schatzsuche (G)
+Good Name=Rugrats - Die große Schatzsuche (G)
 Developer=Infogrammes
 ReleaseDate=1999/06/01
 Genre=Party
