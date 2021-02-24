@@ -5,7 +5,7 @@
 # 1 # "Bosanski" // ID JEZIKA
 # 2 # "Alen Alic" // Autor
 # 3 # "2.3" // Verzija
-# 4 # "June, 2020" // Datum
+# 4 # "February, 2021" // Datum
 
 // O DLL dijalogu
 # 5 # "Trenutni jezik"
@@ -58,7 +58,7 @@
 // Izbornik mogućnosti
 # 140 # "Opcije"
 # 141 # "i preko cijelog ekrana"
-# 142 # "I uvijek u vrhu"
+# 142 # "I uvijek na vrhu"
 # 143 # "Konfiguriranje grafičkog dodatka..."
 # 144 # "Konfiguriranje audio dodatka..."
 # 145 # "Konfiguriranje dodatka kontrolera.."
@@ -75,7 +75,7 @@
 // Izbornik pomoći
 # 180 # "Pomoć"
 # 181 # "O Conf & ig datotekama"
-# 182 # "O projektu64"
+# 182 # "O Projektu64"
 # 183 # "Podrška i forum"
 # 184 # "i početna stranica"
 
@@ -403,17 +403,17 @@
 # 1000 # "Trikovi"
 # 1001 # "Trikovi:"
 # 1002 # "Napomene:"
-# 1003 # "Označi sve"
-# 1004 # "Označi sve"
+# 1003 # "Označi sve:"
+# 1004 # "Označi sve:"
 
 // Dodaj Cheat
-# 1005 # "Dodaj šifru"
+# 1005 # "Dodaj šifru:"
 # 1006 # "Ime:"
 # 1007 # "Kod:"
 # 1008 # "Umetni"
 # 1009 # "Obriši"
 # 1010 # "Beležnice:"
-# 1011 # "Dodaj u DB"
+# 1011 # "Dodaj u DB:"
 
 // Proširenje koda
 # 1012 # "Proširenja kodova"
@@ -428,7 +428,7 @@
 # 1019 # "od"
 # 1020 # "do"
 # 1021 # "i napomene:"
-# 1022 # "Dodaj šifru"
+# 1022 # "Dodaj šifru:"
 # 1023 # "Nova prevara"
 # 1024 # "<adresa> <vrijednost>"
 # 1025 # "Opcije:"
@@ -437,7 +437,7 @@
 // Uredi Cheat
 # 1027 # "Uredi varalica"
 # 1028 # "Ažuriraj šifru"
-# 1029 # "Varalica je promijenjena. \ N \ nŽelite li ažurirati?"
+# 1029 # "Varalica je promijenjena. \ N \ Želite li ažurirati?"
 # 1030 # "Šifra ažurirana"
 
 // Cheat Popup Menu
@@ -557,8 +557,8 @@
 # 3016 # "Project64 za Android"
 # 3017 # "Licenca"
 # 3018 # "Revizija"
-# 3019 # "Project64 za Android \ u2122 je luka za Windows verziju projekta64. Verzija Android \ u2122 može igrati većinu N64 igara."
-# 3020 # "Autori projekta64."
+# 3019 # "Project64 za Android \ u2122 je luka za Windows verziju Projekta64. Verzija Android \ u2122 može igrati većinu N64 igara."
+# 3020 # "Autori Projekta64."
 # 3021 # "Razmirica"
 
 // U meniju igre
