@@ -38,8 +38,8 @@ public:
     void ResetActive(CPlugins * Plugins);
     void Load(CMipsMemoryVM * MMU, CPlugins * Plugins);
 
-    inline const CEnhancementList & Cheats(void) const { return m_Cheats; }
-    inline const CEnhancementList & Enhancements(void) const { return m_Enhancements; }
+    CEnhancementList Cheats(void);
+    CEnhancementList Enhancements(void);
 
 private:
     struct GAMESHARK_CODE

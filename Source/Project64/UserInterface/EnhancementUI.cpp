@@ -305,7 +305,7 @@ LRESULT CEnhancementUI::OnEnhancementListDClicked(NMHDR * lpnmh)
     return 0;
 }
 
-LRESULT CEnhancementUI::OnEnhancementListSelChanged(NMHDR * lpnmh)
+LRESULT CEnhancementUI::OnEnhancementListSelChanged(NMHDR * /*lpnmh*/)
 {
     HTREEITEM hItem = m_TreeList.GetSelectedItem();
     GetDlgItem(IDC_NOTES).SetWindowText(L"");
@@ -394,6 +394,10 @@ void CEnhancementUI::ChangeChildrenStatus(HTREEITEM hParent, bool Checked)
 
         TV_SetCheckState(hParent, Checked ? TV_STATE_CHECKED : TV_STATE_CLEAR);
         Enhancement->SetActive(Checked);
+        if (g_Enhancements != nullptr)
+        {
+            g_Enhancements->UpdateCheats();
+        }
         return;
     }
     TV_CHECK_STATE state = TV_STATE_UNKNOWN;

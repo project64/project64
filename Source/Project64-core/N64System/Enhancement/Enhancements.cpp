@@ -240,6 +240,7 @@ void CEnhancements::LoadEnhancements(const char * Ident, SectionFiles & Files, s
             {
                 File = std::make_unique<CEnhancmentFile>(CheatFile, Ident);
             }
+            EnhancementList.clear();
             File->GetEnhancementList(SectionIdent.c_str(), EnhancementList);
             FoundFile = true;
         }
@@ -263,6 +264,26 @@ void CEnhancements::Load(CMipsMemoryVM * MMU, CPlugins * Plugins)
     ResetCodes(MMU);
     LoadActive(m_Cheats, nullptr);
     LoadActive(m_Enhancements, Plugins);
+}
+
+CEnhancementList CEnhancements::Cheats(void)
+{
+    CEnhancementList List;
+    {
+        CGuard Guard(m_CS);
+        List = m_Cheats;
+    }
+    return List;
+}
+
+CEnhancementList CEnhancements::Enhancements(void)
+{
+    CEnhancementList List;
+    {
+        CGuard Guard(m_CS);
+        List = m_Enhancements;
+    }
+    return List;
 }
 
 void CEnhancements::LoadActive(CEnhancementList & List, CPlugins * Plugins)

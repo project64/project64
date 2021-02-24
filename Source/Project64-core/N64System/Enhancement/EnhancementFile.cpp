@@ -165,10 +165,6 @@ void CEnhancmentFile::OpenFile(void)
 
 bool CEnhancmentFile::MoveToSection(const char * Section, bool ChangeCurrentSection)
 {
-    if (strcmp(Section, m_CurrentSection.c_str()) == 0)
-    {
-        return true;
-    }
     if (ChangeCurrentSection)
     {
         SaveCurrentSection();

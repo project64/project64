@@ -492,6 +492,10 @@ void CCheatList::ChangeChildrenStatus(HTREEITEM hParent, bool Checked)
 
         TV_SetCheckState(hParent, Checked ? TV_STATE_CHECKED : TV_STATE_CLEAR);
         Enhancement->SetActive(Checked);
+        if (g_Enhancements != nullptr)
+        {
+            g_Enhancements->UpdateCheats();
+        }
         return;
     }
     TV_CHECK_STATE state = TV_STATE_UNKNOWN;
