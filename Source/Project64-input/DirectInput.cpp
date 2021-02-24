@@ -365,7 +365,7 @@ bool CDirectInput::IsButtonPressed(BUTTON & Button)
         return JoyPadPovPressed((AI_POV)Button.AxisID, ((uint32_t *)&Device.State.Joy)[Button.Offset]);
     case BTNTYPE_JOYSLIDER:
     case BTNTYPE_JOYAXE:
-        return Button.AxisID ? ((uint32_t *)&Device.State.Joy)[Button.Offset] < AXIS_TOP_VALUE : ((uint32_t *)&Device.State.Joy)[Button.Offset] > AXIS_BOTTOM_VALUE;
+        return Button.AxisID ? ((uint32_t*)&Device.State.Joy)[Button.Offset] > AXIS_BOTTOM_VALUE : ((uint32_t *)&Device.State.Joy)[Button.Offset] < AXIS_TOP_VALUE;
     }
     return false;
 }
