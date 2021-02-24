@@ -423,20 +423,11 @@ void CDirectInput::GetAxis(N64CONTROLLER & Controller, BUTTONS * Keys)
             if (Button.AxisID == AI_AXE_NEGATIVE)
             {
                 fNegInput = !fNegInput;
-
-                b_Value = (l_Value <= -lDeadZoneValue);
-                if (b_Value)
-                {
-                    l_Value = (long)((float)(l_Value + lDeadZoneValue) * fDeadZoneRelation);
-                }
+                b_Value = (l_Value < 0);
             }
             else
             {
-                b_Value = (l_Value >= lDeadZoneValue);
-                if (b_Value)
-                {
-                    l_Value = (long)((float)(l_Value - lDeadZoneValue) * fDeadZoneRelation);
-                }
+                b_Value = (l_Value > 0);
             }
             break;
         case BTNTYPE_KEYBUTTON:
@@ -478,11 +469,24 @@ void CDirectInput::GetAxis(N64CONTROLLER & Controller, BUTTONS * Keys)
         }
     }
 
+    long lAbsoluteX = (lAxisValueX > 0) ? lAxisValueX : -lAxisValueX;
+    long lAbsoluteY = (lAxisValueY > 0) ? lAxisValueY : -lAxisValueY;
+
+
+    if (lAbsoluteX * lAbsoluteX + lAbsoluteY * lAbsoluteY > lDeadZoneValue * lDeadZoneValue)
+    {
+        double dMagnitudeDiagonal = sqrt((double)lAbsoluteX * lAbsoluteX + (double)lAbsoluteY * lAbsoluteY);
+        double dRel = ((dMagnitudeDiagonal - lDeadZoneValue) / dMagnitudeDiagonal * fDeadZoneRelation);
+        lAxisValueX = (long)(lAxisValueX * dRel);
+        lAxisValueY = (long)(lAxisValueY * dRel);
+    }
+    else
+    {
+        lAxisValueX = lAxisValueY = 0;
+    }
+
     if (Controller.RealN64Range && (lAxisValueX || lAxisValueY))
     {
-        long lAbsoluteX = (lAxisValueX > 0) ? lAxisValueX : -lAxisValueX;
-        long lAbsoluteY = (lAxisValueY > 0) ? lAxisValueY : -lAxisValueY;
-
         long lRangeX = lAbsoluteX > lAbsoluteY ? MAX_AXIS_VALUE : MAX_AXIS_VALUE * lAbsoluteX / lAbsoluteY;
         long lRangeY = lAbsoluteX > lAbsoluteY ? MAX_AXIS_VALUE * lAbsoluteY / lAbsoluteX : MAX_AXIS_VALUE;
 
