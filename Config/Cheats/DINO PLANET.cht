@@ -21,6 +21,10 @@ $Disable Environment Updates
 81013E14 3C04
 81013E16 0001
 
+$Disable Unused Options Menu
+8008C853 003C
+8008C857 003F
+
 $Food Bags
 805C4DBF 00??
 20 Small Food Bag
@@ -183,6 +187,10 @@ $Teleport Tricky to Player (Press D-Pad Down)
 8109B110 8E46
 8109B112 0008
 
+$Ultra Widescreen (21:9)
+810BCE30 4017
+810BCE32 AE14
+
 $Walk Through Walls / Levitate
 Note=L plus Dpad Up to disable clipping, L plus Dpad Down to re-enable clipping, L to levitate
 81012144 081F
@@ -265,3 +273,7 @@ D00CD3F4 0008
 817F10F0 0100
 D00CD3F4 0004
 817F10F0 0001
+
+$Widescreen (16:9)
+810BCE30 3FE3
+810BCE32 D70A
