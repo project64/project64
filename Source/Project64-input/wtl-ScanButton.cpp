@@ -1,6 +1,6 @@
 #include "wtl-ScanButton.h"
 #include "CProject64Input.h"
-#include <Common\StdString.h>
+#include <Common/StdString.h>
 #include <time.h>
 
 CScanButton::CScanButton(BUTTON & Button, int DisplayCtrlId, int ScanBtnId) :

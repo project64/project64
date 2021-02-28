@@ -1,7 +1,7 @@
 #include "OptionsUI.h"
 #include "wtl.h"
 #include "resource.h"
-#include <Common\StdString.h>
+#include <Common/StdString.h>
 
 class COptionsDlg :
     public CDialogImpl<COptionsDlg>

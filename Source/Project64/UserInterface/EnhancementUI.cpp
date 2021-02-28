@@ -10,7 +10,7 @@
 ****************************************************************************/
 #include "stdafx.h"
 #include <Project64\UserInterface\EnhancementUI.h>
-#include <Project64-core\N64System\Enhancement\Enhancements.h>
+#include <Project64-core/N64System/Enhancement/Enhancements.h>
 
 class CEditEnhancement :
     public CDialogImpl < CEditEnhancement >

@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include <Project64-core\AppInit.h>
-#include "UserInterface\WelcomeScreen.h"
-#include "Settings\UISettings.h"
+#include <Project64-core/AppInit.h>
+#include "UserInterface/WelcomeScreen.h"
+#include "Settings/UISettings.h"
 
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {

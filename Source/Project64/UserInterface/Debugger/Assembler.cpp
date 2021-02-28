@@ -16,7 +16,7 @@
 #include "stdafx.h"
 
 #include "Assembler.h"
-#include "Project64-core\N64System\Mips\OpCode.h"
+#include "Project64-core/N64System/Mips/OpCode.h"
 
 ASM_PARSE_ERROR CAssembler::m_ParseError = ERR_NONE;
 uint32_t CAssembler::m_Address = 0;

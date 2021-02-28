@@ -35,7 +35,7 @@
 #include "PakIO.h"
 #include "Version.h"
 #include "XInputController.h"
-#include <Common\StdString.h>
+#include <Common/StdString.h>
 
 // Prototypes //
 BOOL CALLBACK ControllerTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam );

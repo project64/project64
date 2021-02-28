@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <memory>
-#include <Common\path.h>
-#include <Common\FileClass.h>
-#include <Common\StdString.h>
+#include <Common/path.h>
+#include <Common/FileClass.h>
+#include <Common/StdString.h>
 
 int main()
 {

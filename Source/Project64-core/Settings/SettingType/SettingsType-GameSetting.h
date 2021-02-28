@@ -9,7 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
-#include <Project64-core\Settings\SettingType\SettingsType-Application.h>
+#include <Project64-core/Settings/SettingType/SettingsType-Application.h>
 
 class CSettingTypeGame :
     public CSettingTypeApplication

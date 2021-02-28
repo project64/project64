@@ -9,7 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
-#include <Common\stdtypes.h>
+#include <Common/stdtypes.h>
 #include <map>
 
 class CBreakpoints :

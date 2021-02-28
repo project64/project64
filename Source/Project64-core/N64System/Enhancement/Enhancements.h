@@ -9,10 +9,10 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
-#include <Project64-core\N64System\Enhancement\EnhancementFile.h>
-#include <Project64-core\N64System\Enhancement\EnhancementList.h>
-#include <Common\Thread.h>
-#include <Common\CriticalSection.h>
+#include <Project64-core/N64System/Enhancement/EnhancementFile.h>
+#include <Project64-core/N64System/Enhancement/EnhancementList.h>
+#include <Common/Thread.h>
+#include <Common/CriticalSection.h>
 #include <map>
 #include <string>
 

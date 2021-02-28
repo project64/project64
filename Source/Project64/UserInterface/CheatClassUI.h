@@ -10,8 +10,8 @@
 ****************************************************************************/
 #pragma once
 #include <Project64\WTLApp.h>
-#include <Project64-core\N64System\Enhancement\Enhancement.h>
-#include <Project64-core\N64System\Enhancement\EnhancementList.h>
+#include <Project64-core/N64System/Enhancement/Enhancement.h>
+#include <Project64-core/N64System/Enhancement/EnhancementList.h>
 
 class CEditCheat;
 class CCheatsUI;

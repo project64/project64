@@ -17,7 +17,7 @@
 #include <assert.h>
 
 #include <stdio.h>
-#include <Common\stdtypes.h>
+#include <Common/stdtypes.h>
 
 #include "types.h"
 #include "internal.h"

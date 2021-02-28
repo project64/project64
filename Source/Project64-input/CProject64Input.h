@@ -2,7 +2,7 @@
 #include "ControllerSpec1.1.h"
 #include "DirectInput.h"
 #include "N64Controller.h"
-#include <Common\CriticalSection.h>
+#include <Common/CriticalSection.h>
 #include <memory>
 
 class CProject64Input
