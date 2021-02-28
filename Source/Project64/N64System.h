@@ -6,7 +6,7 @@
 #pragma once
 
 #include "Support.h"
-#include <string>				//needed for stl string (std::string)
+#include <string>				// Needed for stl string (std::string)
 #include <float.h>
 #include <math.h>
 
@@ -15,7 +15,8 @@
 
 #include <Project64-core/N64System/ProfilingClass.h>
 
-//General Mips Information
+// General MIPS information
+
 #include <Project64-core/N64System/N64RomClass.h>
 #include <Project64-core/N64System/SpeedLimiterClass.h>
 #include <Project64-core/N64System/Mips/OpCode.h>
