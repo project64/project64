@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
+#include <Common/stdafx.h>
 #include <vector>
 #include <string>
 #include <Project64-core/N64System/Enhancement/Enhancement.h>
