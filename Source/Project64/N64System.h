@@ -1,17 +1,12 @@
-/****************************************************************************
-*                                                                           *
-* Project64 - A Nintendo 64 emulator.                                      *
-* http://www.pj64-emu.com/                                                  *
-* Copyright (C) 2012 Project64. All rights reserved.                        *
-*                                                                           *
-* License:                                                                  *
-* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
-*                                                                           *
-****************************************************************************/
+// Project64 - A Nintendo 64 emulator
+// http://www.pj64-emu.com/
+// Copyright (C) 2001-2021 Project64. All rights reserved.
+// GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
+
 #pragma once
 
 #include "Support.h"
-#include <string>				//needed for stl string (std::string)
+#include <string>				// Needed for stl string (std::string)
 #include <float.h>
 #include <math.h>
 
@@ -20,7 +15,8 @@
 
 #include <Project64-core/N64System/ProfilingClass.h>
 
-//General Mips Information
+// General MIPS information
+
 #include <Project64-core/N64System/N64RomClass.h>
 #include <Project64-core/N64System/SpeedLimiterClass.h>
 #include <Project64-core/N64System/Mips/OpCode.h>
