@@ -9,7 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include <Project64-core\N64System\Enhancement\EnhancementList.h>
+#include <Project64-core/N64System/Enhancement/EnhancementList.h>
 
 CEnhancementList::CEnhancementList()
 {

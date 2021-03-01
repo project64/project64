@@ -9,7 +9,7 @@
 #include <Project64-core/Plugins/PluginClass.h>
 #include <Project64-core/N64System/N64RomClass.h>
 #include <Project64-core/N64System/N64DiskClass.h>
-#include <Project64-core\N64System\Enhancement\Enhancements.h>
+#include <Project64-core/N64System/Enhancement/Enhancements.h>
 #include "Settings/SettingType/SettingsType-Application.h"
 
 static void FixDirectories(void);

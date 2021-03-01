@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "GetCWindowText.h"
-#include <Common\StdString.h>
+#include <Common/StdString.h>
 
 std::string GetCWindowText(const CWindow & window)
 {

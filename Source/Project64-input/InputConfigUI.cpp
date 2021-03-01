@@ -4,8 +4,8 @@
 #include "wtl-BitmapPicture.h"
 #include "wtl-ScanButton.h"
 #include "OptionsUI.h"
-#include <Common\stdtypes.h>
-#include <Common\StdString.h>
+#include <Common/stdtypes.h>
+#include <Common/StdString.h>
 #include "resource.h"
 
 class CInputConfigUI;

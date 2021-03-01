@@ -12,7 +12,7 @@
 
 #include <stdafx.h>
 
-#include <Project64-core\N64System\Mips\OpCode.h>
+#include <Project64-core/N64System/Mips/OpCode.h>
 
 class COpInfo
 {

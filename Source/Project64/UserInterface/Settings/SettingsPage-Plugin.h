@@ -10,7 +10,7 @@
 ****************************************************************************/
 #pragma once
 
-#include <Project64-core\Plugin.h>
+#include <Project64-core/Plugin.h>
 
 class COptionPluginPage :
     public CSettingsPageImpl<COptionPluginPage>,

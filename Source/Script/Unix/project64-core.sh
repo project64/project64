@@ -5,6 +5,7 @@ mkdir -p $obj/Multilanguage
 mkdir -p $obj/N64System/Mips
 mkdir -p $obj/N64System/interp
 mkdir -p $obj/N64System/dynarec
+mkdir -p $obj/N64System/enhan
 mkdir -p $obj/Plugins
 mkdir -p $obj/Settings/type
 
@@ -29,7 +30,10 @@ $CC -o $obj/AppInit.asm                 $src/AppInit.cpp $C_FLAGS
 $CC -o $obj/logging.asm                 $src/Logging.cpp $C_FLAGS
 $CC -o $obj/MemoryExceptionFilter.asm   $src/MemoryExceptionFilter.cpp $C_FLAGS
 $CC -o $obj/Multilanguage/LangClass.asm $src/Multilanguage/LanguageClass.cpp $C_FLAGS
-$CC -o $obj/N64System/CheatClass.asm    $src/N64System/CheatClass.cpp $C_FLAGS
+$CC -o $obj/N64System/enhan/Enhance.asm $src/N64System/Enhancement/Enhancement.cpp $C_FLAGS
+$CC -o $obj/N64System/enhan/List.asm    $src/N64System/Enhancement/EnhancementList.cpp $C_FLAGS
+$CC -o $obj/N64System/enhan/File.asm    $src/N64System/Enhancement/EnhancementFile.cpp $C_FLAGS
+$CC -o $obj/N64System/enhan/Enhans.asm  $src/N64System/Enhancement/Enhancements.cpp $C_FLAGS
 $CC -o $obj/N64System/EmuThread.asm     $src/N64System/EmulationThread.cpp $C_FLAGS
 $CC -o $obj/N64System/FPSClass.asm      $src/N64System/FramePerSecondClass.cpp $C_FLAGS
 $CC -o $obj/N64System/interp/CPU.asm    $src/N64System/Interpreter/InterpreterCPU.cpp $C_FLAGS
@@ -67,6 +71,7 @@ $CC -o $obj/N64System/dynarec/Ops.asm   $src/N64System/Recompiler/x86/x86Recompi
 $CC -o $obj/N64System/dynarec/Reg.asm   $src/N64System/Recompiler/x86/x86RegInfo.cpp $C_FLAGS
 $CC -o $obj/N64System/dynarec/Sect.asm  $src/N64System/Recompiler/SectionInfo.cpp $C_FLAGS
 $CC -o $obj/N64System/dynarec/log.asm   $src/N64System/Recompiler/RecompilerCodeLog.cpp $C_FLAGS
+$CC -o $obj/N64System/dynarec/RegB.asm  $src/N64System/Recompiler/RegBase.cpp $C_FLAGS
 $CC -o $obj/N64System/dynarec/x86op.asm $src/N64System/Recompiler/x86/x86ops.cpp $C_FLAGS
 $CC -o $obj/N64System/SpeedLimiter.asm  $src/N64System/SpeedLimiterClass.cpp $C_FLAGS
 $CC -o $obj/N64System/SystemGlobals.asm $src/N64System/SystemGlobals.cpp $C_FLAGS
@@ -82,11 +87,10 @@ $CC -o $obj/Settings/Game.asm           $src/Settings/GameSettings.cpp $C_FLAGS
 $CC -o $obj/Settings/Logging.asm        $src/Settings/LoggingSettings.cpp $C_FLAGS
 $CC -o $obj/Settings/N64System.asm      $src/Settings/N64SystemSettings.cpp $C_FLAGS
 $CC -o $obj/Settings/Recompiler.asm     $src/Settings/RecompilerSettings.cpp $C_FLAGS
-$CC -o $obj/Settings/SettingsClass.asm  $src/Settings/SettingsClass.cpp $C_FLAGS
+$CC -o $obj/Settings.asm                $src/Settings.cpp $C_FLAGS
 $CC -o $obj/Settings/type/App.asm       $src/Settings/SettingType/SettingsType-Application.cpp $C_FLAGS
 $CC -o $obj/Settings/type/AppIndex.asm  $src/Settings/SettingType/SettingsType-ApplicationIndex.cpp $C_FLAGS
 $CC -o $obj/Settings/type/AppPath.asm   $src/Settings/SettingType/SettingsType-ApplicationPath.cpp $C_FLAGS
-$CC -o $obj/Settings/type/Cheats.asm    $src/Settings/SettingType/SettingsType-Cheats.cpp $C_FLAGS
 $CC -o $obj/Settings/type/GSetting.asm  $src/Settings/SettingType/SettingsType-GameSetting.cpp $C_FLAGS
 $CC -o $obj/Settings/type/GSettingX.asm $src/Settings/SettingType/SettingsType-GameSettingIndex.cpp $C_FLAGS
 $CC -o $obj/Settings/type/RDBCpu.asm    $src/Settings/SettingType/SettingsType-RDBCpuType.cpp $C_FLAGS
@@ -110,7 +114,10 @@ $AS -o $obj/AppInit.o                   $obj/AppInit.asm
 $AS -o $obj/logging.o                   $obj/logging.asm
 $AS -o $obj/MemoryExceptionFilter.o     $obj/MemoryExceptionFilter.asm
 $AS -o $obj/Multilanguage/LangClass.o   $obj/Multilanguage/LangClass.asm
-$AS -o $obj/N64System/CheatClass.o      $obj/N64System/CheatClass.asm
+$AS -o $obj/N64System/enhan/Enhance.o   $obj/N64System/enhan/Enhance.asm
+$AS -o $obj/N64System/enhan/List.o      $obj/N64System/enhan/List.asm
+$AS -o $obj/N64System/enhan/File.o      $obj/N64System/enhan/File.asm
+$AS -o $obj/N64System/enhan/Enhans.o    $obj/N64System/enhan/Enhans.asm
 $AS -o $obj/N64System/EmuThread.o       $obj/N64System/EmuThread.asm
 $AS -o $obj/N64System/FPSClass.o        $obj/N64System/FPSClass.asm
 $AS -o $obj/N64System/interp/CPU.o      $obj/N64System/interp/CPU.asm
@@ -148,6 +155,7 @@ $AS -o $obj/N64System/dynarec/Ops.o     $obj/N64System/dynarec/Ops.asm
 $AS -o $obj/N64System/dynarec/Reg.o     $obj/N64System/dynarec/Reg.asm
 $AS -o $obj/N64System/dynarec/Sect.o    $obj/N64System/dynarec/Sect.asm
 $AS -o $obj/N64System/dynarec/log.o     $obj/N64System/dynarec/log.asm
+$AS -o $obj/N64System/dynarec/RegB.o    $obj/N64System/dynarec/RegB.asm
 $AS -o $obj/N64System/dynarec/x86op.o   $obj/N64System/dynarec/x86op.asm
 $AS -o $obj/N64System/SpeedLimiter.o    $obj/N64System/SpeedLimiter.asm
 $AS -o $obj/N64System/SystemGlobals.o   $obj/N64System/SystemGlobals.asm
@@ -163,11 +171,10 @@ $AS -o $obj/Settings/Game.o             $obj/Settings/Game.asm
 $AS -o $obj/Settings/Logging.o          $obj/Settings/Logging.asm
 $AS -o $obj/Settings/N64System.o        $obj/Settings/N64System.asm
 $AS -o $obj/Settings/Recompiler.o       $obj/Settings/Recompiler.asm
-$AS -o $obj/Settings/SettingsClass.o    $obj/Settings/SettingsClass.asm
+$AS -o $obj/Settings.o                  $obj/Settings.asm
 $AS -o $obj/Settings/type/App.o         $obj/Settings/type/App.asm
 $AS -o $obj/Settings/type/AppIndex.o    $obj/Settings/type/AppIndex.asm
 $AS -o $obj/Settings/type/AppPath.o     $obj/Settings/type/AppPath.asm
-$AS -o $obj/Settings/type/Cheats.o      $obj/Settings/type/Cheats.asm
 $AS -o $obj/Settings/type/GSetting.o    $obj/Settings/type/GSetting.asm
 $AS -o $obj/Settings/type/GSettingX.o   $obj/Settings/type/GSettingX.asm
 $AS -o $obj/Settings/type/RDBCpu.o      $obj/Settings/type/RDBCpu.asm
@@ -190,7 +197,10 @@ $obj/AppInit.o \
 $obj/logging.o \
 $obj/MemoryExceptionFilter.o \
 $obj/Multilanguage/LangClass.o \
-$obj/N64System/CheatClass.o \
+$obj/N64System/enhan/Enhance.o \
+$obj/N64System/enhan/List.o \
+$obj/N64System/enhan/File.o \
+$obj/N64System/enhan/Enhans.o \
 $obj/N64System/EmuThread.o \
 $obj/N64System/FPSClass.o \
 $obj/N64System/interp/CPU.o \
@@ -228,6 +238,7 @@ $obj/N64System/dynarec/Ops.o \
 $obj/N64System/dynarec/Reg.o \
 $obj/N64System/dynarec/Sect.o \
 $obj/N64System/dynarec/log.o \
+$obj/N64System/dynarec/RegB.o \
 $obj/N64System/dynarec/x86op.o \
 $obj/N64System/SpeedLimiter.o \
 $obj/N64System/SystemGlobals.o \
@@ -243,11 +254,10 @@ $obj/Settings/Game.o \
 $obj/Settings/Logging.o \
 $obj/Settings/N64System.o \
 $obj/Settings/Recompiler.o \
-$obj/Settings/SettingsClass.o \
+$obj/Settings.o \
 $obj/Settings/type/App.o \
 $obj/Settings/type/AppIndex.o \
 $obj/Settings/type/AppPath.o \
-$obj/Settings/type/Cheats.o \
 $obj/Settings/type/GSetting.o \
 $obj/Settings/type/GSettingX.o \
 $obj/Settings/type/RDBCpu.o \

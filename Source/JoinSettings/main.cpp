@@ -1,7 +1,7 @@
-#include <Common\path.h>
-#include <Common\IniFileClass.h>
-#include <Common\StdString.h>
-#include <Project64-core\N64System\Enhancement\EnhancementFile.h>
+#include <Common/path.h>
+#include <Common/IniFileClass.h>
+#include <Common/StdString.h>
+#include <Project64-core/N64System/Enhancement/EnhancementFile.h>
 #include <algorithm>
 #include <set>
 #include <windows.h>

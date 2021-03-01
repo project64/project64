@@ -1,6 +1,6 @@
 #include "DirectInput.h"
-#include <Common\StdString.h>
-#include <Common\SyncEvent.h>
+#include <Common/StdString.h>
+#include <Common/SyncEvent.h>
 #include <set>
 #include "CProject64Input.h"
 

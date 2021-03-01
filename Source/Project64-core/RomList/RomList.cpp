@@ -155,7 +155,7 @@ void CRomList::FillRomList(strlist & FileList, const char * Directory)
     CPath SearchDir((const char *)m_GameDir, "*");
     SearchDir.AppendDirectory(Directory);
 
-    WriteTrace(TraceRomList, TraceVerbose, "SearchPath: %s", (const char *)SearchPath);
+    WriteTrace(TraceRomList, TraceVerbose, "SearchDir: %s", (const char *)SearchDir);
     if (!SearchDir.FindFirst(CPath::FIND_ATTRIBUTE_ALLFILES))
     {
         WriteTrace(TraceRomList, TraceVerbose, "No files found");
@@ -165,7 +165,7 @@ void CRomList::FillRomList(strlist & FileList, const char * Directory)
 
     do
     {
-        WriteTrace(TraceRomList, TraceVerbose, "Found: \"%s\" m_StopRefresh = %s", (const char *)SearchPath, m_StopRefresh ? "true" : "false");
+        WriteTrace(TraceRomList, TraceVerbose, "Found: \"%s\" m_StopRefresh = %s", (const char *)SearchDir, m_StopRefresh ? "true" : "false");
         if (m_StopRefresh)
         {
             WriteTrace(TraceRomList, TraceVerbose, "stop refresh set, stopping");

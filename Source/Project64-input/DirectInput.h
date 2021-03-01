@@ -3,7 +3,7 @@
 #include "Button.h"
 #include "DeviceNotification.h"
 #include "N64Controller.h"
-#include <Common\CriticalSection.h>
+#include <Common/CriticalSection.h>
 #define DIRECTINPUT_VERSION 0x0800
 #include <Windows.h>
 #include <dinput.h>

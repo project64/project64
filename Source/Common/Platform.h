@@ -4,6 +4,7 @@
 #include <alloca.h>
 #include <stdarg.h>
 
+#define stricmp strcasecmp
 #define _stricmp strcasecmp
 #define _strnicmp strncasecmp
 #define _snprintf snprintf

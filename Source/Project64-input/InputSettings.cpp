@@ -1,5 +1,5 @@
 #include <Settings/Settings.h>
-#include <Common\StdString.h>
+#include <Common/StdString.h>
 #include "InputSettingsID.h"
 #include "InputSettings.h"
 

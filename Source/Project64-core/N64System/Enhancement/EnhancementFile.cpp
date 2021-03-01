@@ -9,7 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include <Project64-core\N64System\Enhancement\EnhancementFile.h>
+#include <Project64-core/N64System/Enhancement/EnhancementFile.h>
 
 #pragma warning(disable:4996)
 
