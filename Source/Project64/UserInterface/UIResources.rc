@@ -470,18 +470,23 @@ BEGIN
     PUSHBUTTON      "Close",IDCANCEL,154,110,50,14
 END
 
-IDD_Welcome DIALOGEX 0, 0, 234, 126
+IDD_Welcome DIALOGEX 0, 0, 234, 167
 STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
 CAPTION "Project64 - Welcome"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,90,108,50,12
+    DEFPUSHBUTTON   "OK",IDOK,90,149,50,12
     LTEXT           "Select Language:",IDC_SELECT_LANG,12,77,86,12
     COMBOBOX        IDC_LANG_SEL,82,77,130,120,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     CONTROL         "",IDC_BMP_LOGO,"Static",SS_BLACKFRAME,1,0,232,74
-    LTEXT           "Game Directory:",IDC_GAME_DIR_STATIC,12,91,86,12
+    LTEXT           "Game Directory:",IDC_GAME_DIR_STATIC,12,92,86,12
     EDITTEXT        IDC_GAME_DIR,82,91,130,12,ES_AUTOHSCROLL
     PUSHBUTTON      "...",IDC_SELECT_GAME_DIR,215,91,14,12
+    CONTROL         "GlideN64\n________\nModern Design\nFor newer computers",IDC_RADIO_GLIDEN64,
+                    "Button",BS_AUTORADIOBUTTON | BS_MULTILINE,76,107,80,35
+    CONTROL         "Project64-Video\n_____________\nWorks on basically any computer",IDC_RADIO_PJ64_VIDEO,
+                    "Button",BS_AUTORADIOBUTTON | BS_MULTILINE,157,107,73,35
+    LTEXT           "Video Plugin:",IDC_VIDEO_PLUGIN_STATIC,12,108,61,14
 END
 
 IDD_Debugger_Memory DIALOGEX 0, 0, 321, 199
@@ -1589,7 +1594,7 @@ BEGIN
     IDD_Welcome, DIALOG
     BEGIN
         RIGHTMARGIN, 233
-        BOTTOMMARGIN, 120
+        BOTTOMMARGIN, 161
     END
 
     IDD_Debugger_Memory, DIALOG

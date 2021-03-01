@@ -49,7 +49,7 @@ LRESULT WelcomeScreen::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
 {
     m_Logo.SubclassWindow(GetDlgItem(IDC_BMP_LOGO));
     m_Logo.SetBitmap(MAKEINTRESOURCE(IDB_ABOUT_LOGO));
-
+ 
     LanguageList LangList = g_Lang->GetLangList();
     CComboBox LangCB(GetDlgItem(IDC_LANG_SEL));
     for (LanguageList::iterator Language = LangList.begin(); Language != LangList.end(); Language++)
@@ -64,10 +64,11 @@ LRESULT WelcomeScreen::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     {
         LangCB.SetCurSel(0);
     }
+    CButton(GetDlgItem(IDC_RADIO_GLIDEN64)).SetCheck(BST_CHECKED);
     return TRUE;
 }
 
-LRESULT WelcomeScreen::OnColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT WelcomeScreen::OnCtlColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
     HDC hdcStatic = (HDC)wParam;
     SetTextColor(hdcStatic, RGB(0, 0, 0));
@@ -75,18 +76,24 @@ LRESULT WelcomeScreen::OnColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPar
     return (LONG)(LRESULT)((HBRUSH)GetStockObject(NULL_BRUSH));
 }
 
-LRESULT WelcomeScreen::OnEraseBackground(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+BOOL WelcomeScreen::OnEraseBackground(CDCHandle dc)
 {
     static HPEN outline = CreatePen(PS_SOLID, 1, 0x00FFFFFF);
     static HBRUSH fill = CreateSolidBrush(0x00FFFFFF);
-    SelectObject((HDC)wParam, outline);
-    SelectObject((HDC)wParam, fill);
+    dc.SelectPen(outline);
+    dc.SelectBrush(fill);
 
     RECT rect;
     GetClientRect(&rect);
-
-    Rectangle((HDC)wParam, rect.left, rect.top, rect.right, rect.bottom);
+    dc.Rectangle(&rect);
     return TRUE;
+}
+
+HBRUSH WelcomeScreen::OnCtlColorStatic(CDCHandle dc, CStatic /*wndStatic*/)
+{
+    dc.SetBkColor(RGB(255, 255, 255));
+    dc.SetDCBrushColor(RGB(255, 255, 255));
+    return (HBRUSH)GetStockObject(DC_BRUSH);
 }
 
 LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
@@ -106,6 +113,8 @@ LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
         g_Settings->SaveString(RomList_GameDir, GameDir.GetDriveDirectory().c_str());
         Notify().AddRecentDir(GameDir);
     }
+
+    g_Settings->SaveString(Plugin_GFX_Default, CButton(GetDlgItem(IDC_RADIO_GLIDEN64)).GetCheck() == BST_CHECKED ? "GFX\\GLideN64\\GLideN64.dll" : "GFX\\Project64-Video.dll");
     EndDialog(0);
     return TRUE;
 }

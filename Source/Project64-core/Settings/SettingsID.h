@@ -302,6 +302,7 @@ enum SettingID
     //Plugins
     Plugin_RSP_Current,
     Plugin_RSP_CurVer,
+    Plugin_GFX_Default,
     Plugin_GFX_Current,
     Plugin_GFX_CurVer,
     Plugin_AUDIO_Current,

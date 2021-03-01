@@ -243,6 +243,7 @@
 #define IDC_MENU_ITEMS                  1089
 #define IDC_PAGELIST                    1090
 #define IDC_GAME_DIR_STATIC             1090
+#define IDC_VIDEO_PLUGIN_STATIC         1091
 #define IDC_CPU_TYPE_TEXT               1092
 #define IDC_ZIP                         1092
 #define IDC_SETTING_INFO                1092
@@ -864,6 +865,9 @@
 #define IDC_OK                          1723
 #define IDC_CANCEL                      1724
 #define IDC_APPLY                       1725
+#define IDC_RADIO_GLIDEN64              1728
+#define IDC_RADIO_JABO                  1729
+#define IDC_RADIO_PJ64_VIDEO            1729
 #define ID_POPUPMENU_PLAYGAMEWITHDISK   40008
 #define ID_POPUPMENU_ADDSYMBOL          40013
 #define ID_POPUPMENU_VIEWDISASM         40017
@@ -937,7 +941,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        225
 #define _APS_NEXT_COMMAND_VALUE         40121
-#define _APS_NEXT_CONTROL_VALUE         1726
+#define _APS_NEXT_CONTROL_VALUE         1730
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif
