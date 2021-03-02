@@ -167,6 +167,10 @@ LRESULT CEnhancementUI::OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPa
 
 LRESULT CEnhancementUI::OnCloseCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
+    if (g_BaseSystem)
+    {
+        g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_Enhancement);
+    }
     if (m_bModal)
     {
         EndDialog(0);
