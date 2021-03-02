@@ -1,13 +1,3 @@
-/****************************************************************************
-*                                                                           *
-* Project64-audio - A Nintendo 64 audio plugin.                             *
-* http://www.pj64-emu.com/                                                  *
-* Copyright (C) 2020 Project64. All rights reserved.                        *
-*                                                                           *
-* License:                                                                  *
-* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
-*                                                                           *
-****************************************************************************/
 #include "ControllerSpec1.1.h"
 #include "InputConfigUI.h"
 #include "Version.h"

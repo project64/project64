@@ -1,14 +1,8 @@
-/****************************************************************************
-*                                                                           *
-* Project64-audio - A Nintendo 64 audio plugin.                             *
-* http://www.pj64-emu.com/                                                  *
-* Copyright (C) 2017 Project64. All rights reserved.                        *
-* Copyright (C) 2000-2015 Azimer. All rights reserved.                      *
-*                                                                           *
-* License:                                                                  *
-* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
-*                                                                           *
-****************************************************************************/
+// Project64 - A Nintendo 64 emulator
+// http://www.pj64-emu.com/
+// Copyright(C) 2001-2021 Project64
+// Copyright(C) 2000-2015 Azimer
+// GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 #include "SoundBase.h"
 #include <Common/Util.h>
 #include <Project64-audio/AudioSettings.h>

@@ -1,13 +1,3 @@
-/****************************************************************************
-*                                                                           *
-* Project64-audio - A Nintendo 64 audio plugin.                             *
-* http://www.pj64-emu.com/                                                  *
-* Copyright (C) 2017 Project64. All rights reserved.                        *
-*                                                                           *
-* License:                                                                  *
-* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
-*                                                                           *
-****************************************************************************/
 #include "ConfigUI.h"
 #pragma warning(push)
 #pragma warning(disable : 4091) // warning C4091: 'typedef ': ignored on left of 'tagGPFIDL_FLAGS' when no variable is declared

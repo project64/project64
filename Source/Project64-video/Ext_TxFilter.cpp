@@ -1,15 +1,8 @@
-/***************************************************************************
-*                                                                          *
-* Project64-video - A Nintendo 64 gfx plugin.                              *
-* http://www.pj64-emu.com/                                                 *
-* Copyright (C) 2017 Project64. All rights reserved.                       *
-* Copyright (C) 2007 Hiroshi Morii                                         *
-*                                                                          *
-* License:                                                                 *
-* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                       *
-* version 2 of the License, or (at your option) any later version.         *
-*                                                                          *
-****************************************************************************/
+// Project64 - A Nintendo 64 emulator
+// http://www.pj64-emu.com/
+// Copyright(C) 2001-2021 Project64
+// Copyright(C) 2007 Hiroshi Morii
+// GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 #include <memory.h>
 #include <stdlib.h>
 #include "Ext_TxFilter.h"

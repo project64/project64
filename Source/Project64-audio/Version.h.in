@@ -1,13 +1,3 @@
-/****************************************************************************
-*                                                                           *
-* Project64-audio - A Nintendo 64 audio plugin.                             *
-* http://www.pj64-emu.com/                                                  *
-* Copyright (C) 2017 Project64. All rights reserved.                        *
-*                                                                           *
-* License:                                                                  *
-* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
-*                                                                           *
-****************************************************************************/
 #define STRINGIZE2(s) #s
 #define STRINGIZE(s) STRINGIZE2(s)
 
@@ -30,7 +20,7 @@
 #define VER_PRODUCT_VERSION_STR     VER_FILE_VERSION_STR
 #define VER_ORIGINAL_FILENAME_STR   VER_PRODUCTNAME_STR ".dll"
 #define VER_INTERNAL_NAME_STR       VER_PRODUCTNAME_STR
-#define VER_COPYRIGHT_STR           "Copyright (C) 2017"
+#define VER_COPYRIGHT_STR           "Copyright (C) 2021"
 
 #ifdef _DEBUG
 #define VER_VER_DEBUG             VS_FF_DEBUG
