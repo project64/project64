@@ -2,7 +2,7 @@
 
 Project64 is a free and open-source emulator for the Nintendo 64 and 64DD written in C++.
 
-The emulator offers a simple-to-use user interface and includes a featureful debugger for developers.
+The emulator is easy to use and includes powerful features for developers, ROM hackers, and more.
 
 ## System Requirements
 
