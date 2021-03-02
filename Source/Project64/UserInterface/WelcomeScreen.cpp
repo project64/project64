@@ -104,7 +104,12 @@ LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
         Notify().AddRecentDir(GameDir);
     }
 
-    g_Settings->SaveString(Plugin_GFX_Default, CButton(GetDlgItem(IDC_RADIO_GLIDEN64)).GetCheck() == BST_CHECKED ? "GFX\\GLideN64\\GLideN64.dll" : "GFX\\Project64-Video.dll");
+    string Project64VideoPluginPath = g_Settings->LoadStringVal(Plugin_GFX_Default);
+    if (Project64VideoPluginPath.find("Project64-Video") == string::npos) {
+        Project64VideoPluginPath = "GFX\\Project64-Video.dll";
+    }
+    g_Settings->SaveString(Plugin_GFX_Default, CButton(GetDlgItem(IDC_RADIO_GLIDEN64)).GetCheck() == BST_CHECKED ? "GFX\\GLideN64\\GLideN64.dll" : Project64VideoPluginPath);
+    g_Settings->SaveString(Plugin_GFX_Current, g_Settings->LoadStringVal(Plugin_GFX_Default));
     EndDialog(0);
     return TRUE;
 }
