@@ -59,7 +59,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
             }
             else
             {
-                // Extension is *.ndd/*.d64, so it should be a N64 disk image
+                // File extension is *.ndd/*.d64, so it should be an N64 disk image
                 isROMLoaded = CN64System::RunDiskImage(g_Settings->LoadStringVal(Cmd_RomFile).c_str());
             }
         }
