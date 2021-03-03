@@ -14,8 +14,9 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
             WelcomeScreen().DoModal();
         }
 
-        //Create the main window with Menu
-        WriteTrace(TraceUserInterface, TraceDebug, "Create Main Window");
+        // Create the main window with menu
+		
+        WriteTrace(TraceUserInterface, TraceDebug, "Create main window");
         CMainGui MainWindow(true, stdstr_f("Project64 %s", VER_FILE_VERSION_STR).c_str()), HiddenWindow(false);
         CMainMenu MainMenu(&MainWindow);
         CDebuggerUI Debugger;
@@ -26,9 +27,9 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 
         if (g_Settings->LoadStringVal(Cmd_RomFile).length() > 0 && g_Settings->LoadStringVal(Cmd_ComboDiskFile).length() > 0)
         {
-            //Handle Combo Loading (N64 ROM AND 64DD Disk)
+            // Handle combo loading (N64 ROM and 64DD Disk)
 
-            MainWindow.Show(true);	//Show the main window
+            MainWindow.Show(true);	// Show the main window
 
             stdstr extcombo = CPath(g_Settings->LoadStringVal(Cmd_ComboDiskFile)).GetExtension();
             stdstr ext = CPath(g_Settings->LoadStringVal(Cmd_RomFile)).GetExtension();
@@ -38,27 +39,27 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
             {
                 if ((!(_stricmp(ext.c_str(), "ndd") == 0)) && (!(_stricmp(ext.c_str(), "d64") == 0)))
                 {
-                    //Cmd_ComboDiskFile must be a 64DD disk image
-                    //Cmd_RomFile must be a N64 ROM image
+                    // Cmd_ComboDiskFile must be a 64DD disk image
+                    // Cmd_RomFile must be an N64 ROM image
                     isROMLoaded = CN64System::RunDiskComboImage(g_Settings->LoadStringVal(Cmd_RomFile).c_str(), g_Settings->LoadStringVal(Cmd_ComboDiskFile).c_str());
                 }
             }
         }
         else if (g_Settings->LoadStringVal(Cmd_RomFile).length() > 0)
         {
-            //Handle Single Game (N64 ROM or 64DD Disk)
+            // Handle single game (N64 ROM or 64DD Disk)
 
-            MainWindow.Show(true);	//Show the main window
+            MainWindow.Show(true);	// Show the main window
 
             stdstr ext = CPath(g_Settings->LoadStringVal(Cmd_RomFile)).GetExtension();
             if ((!(_stricmp(ext.c_str(), "ndd") == 0)) && (!(_stricmp(ext.c_str(), "d64") == 0)))
             {
-                //File Extension is not *.ndd/*.d64 so it should be a N64 ROM
+                // File extension is not *.ndd/*.d64 so it should be an N64 ROM
                 isROMLoaded = CN64System::RunFileImage(g_Settings->LoadStringVal(Cmd_RomFile).c_str());
             }
             else
             {
-                //Ext is *.ndd/*.d64, so it should be a disk file.
+                // Extension is *.ndd/*.d64, so it should be a N64 disk image
                 isROMLoaded = CN64System::RunDiskImage(g_Settings->LoadStringVal(Cmd_RomFile).c_str());
             }
         }
@@ -68,21 +69,21 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
             CSupportWindow(MainWindow.Support()).Show((HWND)MainWindow.GetWindowHandle(), true);
             if (UISettingsLoadBool(RomBrowser_Enabled))
             {
-                WriteTrace(TraceUserInterface, TraceDebug, "Show Rom Browser");
+                WriteTrace(TraceUserInterface, TraceDebug, "Show ROM browser");
                 MainWindow.ShowRomList();
                 MainWindow.Show(true);
                 MainWindow.HighLightLastRom();
             }
             else
             {
-                WriteTrace(TraceUserInterface, TraceDebug, "Show Main Window");
+                WriteTrace(TraceUserInterface, TraceDebug, "Show main window");
                 MainWindow.Show(true);
             }
         }
 
-        WriteTrace(TraceUserInterface, TraceDebug, "Entering Message Loop");
+        WriteTrace(TraceUserInterface, TraceDebug, "Entering message loop");
         MainWindow.ProcessAllMessages();
-        WriteTrace(TraceUserInterface, TraceDebug, "Message Loop Finished");
+        WriteTrace(TraceUserInterface, TraceDebug, "Message loop finished");
 
         if (g_BaseSystem)
         {
@@ -90,7 +91,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
             delete g_BaseSystem;
             g_BaseSystem = NULL;
         }
-        WriteTrace(TraceUserInterface, TraceDebug, "System Closed");
+        WriteTrace(TraceUserInterface, TraceDebug, "System closed");
     }
     catch (...)
     {
