@@ -26,6 +26,8 @@ git clone https://github.com/project64/project64.git
 
 Open the `Project64.sln` file in Visual Studio. You can now build the solution from the Build menu.
 
+Building a Release build will also generate an installer file alongside the output binary that you can use to test the installation process.
+
 In the current state of Project64 (March 2021) you will get errors from trying to build the Android projects. These error messages don't mean anything for the Windows builds. You can safely unload the offending projects from the Solution View to reduce clutter in the Build Log if you are only planning to contribute to the Windows builds.
 
 ## Recommended additional steps
