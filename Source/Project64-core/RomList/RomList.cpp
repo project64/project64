@@ -310,7 +310,7 @@ void CRomList::FillRomList(strlist & FileList, const char * Directory)
                 }
                 catch (...)
                 {
-                    WriteTrace(TraceUserInterface, TraceError, "exception processing %s", (LPCSTR)SearchPath);
+                    WriteTrace(TraceUserInterface, TraceError, "exception processing %s", (LPCSTR)SearchDir);
                 }
             }
 #endif
