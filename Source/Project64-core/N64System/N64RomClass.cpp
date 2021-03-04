@@ -510,18 +510,16 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
 
         //this should be a 7zip file
         char * SubFile = strstr(const_cast<char*>(FullPath.c_str()), "?");
-        if (SubFile == NULL)
-        {
-            //Pop up a dialog and select file
-            //allocate memory for sub name and copy selected file name to var
-            WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
-            return false; //remove once dialog is done
-        }
-        else
+        if (SubFile != NULL)
         {
             *SubFile = '\0';
             SubFile += 1;
         }
+    	//else load first found file until dialog is implemented
+        //{
+	        //Pop up a dialog and select file
+	        //allocate memory for sub name and copy selected file name to var
+        //}
 
         C7zip ZipFile(FullPath.c_str());
         ZipFile.SetNotificationCallback((C7zip::LP7ZNOTIFICATION)NotificationCB, this);
@@ -565,6 +563,11 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
 
             if (!IsValidRomImage(m_ROMImage))
             {
+            	if (i < ZipFile.NumFiles() - 1)
+            	{
+                    UnallocateRomImage();
+                    continue;
+            	}
                 SetError(MSG_FAIL_IMAGE);
                 WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
                 return false;
@@ -703,17 +706,16 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
 
         //this should be a 7zip file
         char * SubFile = strstr(const_cast<char*>(FullPath.c_str()), "?");
-        if (SubFile == NULL)
-        {
-            //Pop up a dialog and select file
-            //allocate memory for sub name and copy selected file name to var
-            return false; //remove once dialog is done
-        }
-        else
+        if (SubFile != NULL)
         {
             *SubFile = '\0';
             SubFile += 1;
         }
+        //else load first found file until dialog is implemented
+        //{
+            //Pop up a dialog and select file
+            //allocate memory for sub name and copy selected file name to var
+        //}
 
         C7zip ZipFile(FullPath.c_str());
         ZipFile.SetNotificationCallback((C7zip::LP7ZNOTIFICATION)NotificationCB, this);
@@ -755,6 +757,11 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
 
             if (!IsValidRomImage(m_ROMImage))
             {
+                if (i < ZipFile.NumFiles() - 1)
+                {
+                    UnallocateRomImage();
+                    continue;
+                }
                 SetError(MSG_FAIL_IMAGE_IPL);
                 return false;
             }
