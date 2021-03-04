@@ -231,7 +231,7 @@ void CRomList::FillRomList(strlist & FileList, const char * Directory)
                         }
                         WriteTrace(TraceUserInterface, TraceDebug, "7");
                         memset(&RomInfo, 0, sizeof(ROM_INFO));
-                        stdstr_f zipFileName("%s?%s", (LPCSTR)SearchPath, FileName.c_str());
+                        stdstr_f zipFileName("%s?%s", (LPCSTR)SearchDir, FileName.c_str());
                         ZipFile.SetNotificationCallback((C7zip::LP7ZNOTIFICATION)NotificationCB, this);
 
                         strncpy(RomInfo.szFullFileName, zipFileName.c_str(), sizeof(RomInfo.szFullFileName) - 1);
