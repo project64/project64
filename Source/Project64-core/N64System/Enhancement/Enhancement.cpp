@@ -4,6 +4,9 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64Class.h>
 
+const char * CEnhancement::CheatIdent = "Cheat";
+const char * CEnhancement::EnhancementIdent = "Enhancement";
+
 #pragma warning(disable:4996)
 
 static std::string GenerateKeyName(const char * Name, const char * Ident, const char * PostIdent)

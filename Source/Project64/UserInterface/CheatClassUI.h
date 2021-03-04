@@ -78,14 +78,6 @@ public:
         WM_EDITCHEAT = WM_USER + 0x120,
     };
 
-    enum CodeFormat
-    {
-        CodeFormat_Invalid = -1,
-        CodeFormat_Normal = 0,
-        CodeFormat_LowerByte = 1,
-        CodeFormat_Word = 2,
-    };
-
     BEGIN_MSG_MAP_EX(CEditCheat)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
         MESSAGE_HANDLER(WM_EDITCHEAT, OnEditCheat)
@@ -114,9 +106,9 @@ private:
     LRESULT OnCheatCodeChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
     LRESULT OnCheatOptionsChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 
-    CEnhancement::CodeEntries ReadCodeEntries(bool &ValidCodes, bool &ValidOptions, bool &NoOptions, CodeFormat & Format);
-    CEnhancement::CodeOptions ReadOptions(bool &validoptions, CodeFormat Format);
+    bool ReadEnhancement(CEnhancement & Enhancement);
 
+    void DetailsChanged(void);
     void RecordCurrentValues(void);
     bool ValuesChanged(void);
     std::string GetItemText(int nIDDlgItem);

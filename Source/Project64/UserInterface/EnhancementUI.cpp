@@ -540,7 +540,7 @@ LRESULT CEditEnhancement::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl
     }
     else
     {
-        CEnhancement Enhancement("Enhancement");
+        CEnhancement Enhancement(CEnhancement::EnhancementIdent);
         Enhancement.SetName(GetCWindowText(GetDlgItem(IDC_CODE_NAME)).c_str());
         Enhancement.SetOnByDefault(CButton(GetDlgItem(IDC_AUTOON)).GetCheck() == BST_CHECKED);
         Enhancement.SetEntries(m_Entries);

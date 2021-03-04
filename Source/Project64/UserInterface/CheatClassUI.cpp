@@ -696,35 +696,21 @@ LRESULT CEditCheat::OnAddCheat(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
         return 0;
     }
 
-
-    bool validcodes = false, validoptions = false, nooptions = false;
-    CodeFormat Format;
-    CEnhancement::CodeEntries Entries = ReadCodeEntries(validcodes, validoptions, nooptions, Format);
-    CEnhancement::CodeOptions Options;
-    if (validcodes && !nooptions)
+    CEnhancement Enhancement(CEnhancement::CheatIdent);
+    if (!ReadEnhancement(Enhancement))
     {
-        Options = ReadOptions(validoptions, Format);
-    }
-    if (!validcodes || !validoptions)
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
         return 0;
     }
 
     if (m_EditEnhancement != nullptr)
     {
         m_EditEnhancement->SetName(NewCheatName.c_str());
-        m_EditEnhancement->SetEntries(Entries);
-        m_EditEnhancement->SetOptions(Options);
+        m_EditEnhancement->SetEntries(Enhancement.GetEntries());
+        m_EditEnhancement->SetOptions(Enhancement.GetOptions());
         m_EditEnhancement->SetNote(GetItemText(IDC_NOTES).c_str());
     }
     else
     {
-        CEnhancement Enhancement("Cheat");
-        Enhancement.SetName(NewCheatName.c_str());
-        Enhancement.SetEntries(Entries);
-        Enhancement.SetOptions(Options);
-        Enhancement.SetNote(GetItemText(IDC_NOTES).c_str());
         m_Cheats.AddItem(Enhancement);
     }
     g_Enhancements->UpdateCheats(m_Cheats);
@@ -753,82 +739,31 @@ LRESULT CEditCheat::OnNewCheat(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
 
 LRESULT CEditCheat::OnCodeNameChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-    bool validcodes, validoptions, nooptions;
-    CodeFormat  Format;
-    ReadCodeEntries(validcodes, validoptions, nooptions, Format);
-    if (!nooptions)
-    {
-        ReadOptions(validoptions, Format);
-    }
-
-    bool CanAdd = validcodes && (validoptions || nooptions) && GetDlgItem(IDC_CODE_NAME).GetWindowTextLength() > 0;
-    GetDlgItem(IDC_ADD).EnableWindow(CanAdd);
+    DetailsChanged();
     return 0;
 }
 
 LRESULT CEditCheat::OnCheatCodeChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-    bool validcodes, validoptions, nooptions;
-    CodeFormat Format;
-    ReadCodeEntries(validcodes, validoptions, nooptions, Format);
-
-    if (Format > 0 && !GetDlgItem(IDC_LABEL_OPTIONS).IsWindowEnabled())
-    {
-        GetDlgItem(IDC_LABEL_OPTIONS).EnableWindow(true);
-        GetDlgItem(IDC_LABEL_OPTIONS_FORMAT).EnableWindow(true);
-        GetDlgItem(IDC_CHEAT_OPTIONS).EnableWindow(true);
-    }
-    if (Format <= 0 && GetDlgItem(IDC_LABEL_OPTIONS).IsWindowEnabled())
-    {
-        GetDlgItem(IDC_LABEL_OPTIONS).EnableWindow(false);
-        GetDlgItem(IDC_LABEL_OPTIONS_FORMAT).EnableWindow(false);
-        GetDlgItem(IDC_CHEAT_OPTIONS).EnableWindow(false);
-    }
-
-    if (!nooptions)
-    {
-        ReadOptions(validoptions, Format);
-    }
-
-    bool CanAdd = validcodes && (validoptions || nooptions) && GetDlgItem(IDC_CODE_NAME).GetWindowTextLength() > 0;
-    GetDlgItem(IDC_ADD).EnableWindow(CanAdd);
+    DetailsChanged();
     return 0;
 }
 
 LRESULT CEditCheat::OnCheatOptionsChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-    bool ValidCodes, ValidOptions, NoOptions;
-    CodeFormat Format;
-    ReadCodeEntries(ValidCodes, ValidOptions, NoOptions, Format);
-    if (!NoOptions)
-    {
-        ReadOptions(ValidOptions, Format);
-    }
-
-    bool CanAdd = ValidCodes && (ValidOptions || NoOptions) && GetDlgItem(IDC_CODE_NAME).GetWindowTextLength() > 0;
-    GetDlgItem(IDC_ADD).EnableWindow(CanAdd);
+    DetailsChanged();
     return 0;
 }
 
-CEnhancement::CodeEntries CEditCheat::ReadCodeEntries(bool &ValidCodes, bool &ValidOptions, bool &NoOptions, CodeFormat & Format)
+bool CEditCheat::ReadEnhancement(CEnhancement & Enhancement)
 {
-    const char * FormatNormal = "XXXXXXXX XXXX";
-    const char * FormatOptionLB = "XXXXXXXX XX??";
-    const char * FormatOptionW = "XXXXXXXX ????";
+    CEnhancement TestEnhancement(CEnhancement::CheatIdent);
+    TestEnhancement.SetName(GetItemText(IDC_CODE_NAME).c_str());
+    TestEnhancement.SetNote(GetItemText(IDC_NOTES).c_str());
 
     CEnhancement::CodeEntries Entries;
-    ValidCodes = true;
-    ValidOptions = true;
-    NoOptions = true;
-    Format = CodeFormat_Invalid;
-
     CEdit CheatCodes(GetDlgItem(IDC_CHEAT_CODES));
     int NumLines = CheatCodes.GetLineCount();
-    if (NumLines == 0)
-    {
-        ValidCodes = false;
-    }
-
     for (int i = 0; i < NumLines; i++)
     {
         wchar_t wc_str[128];
@@ -839,23 +774,6 @@ CEnhancement::CodeEntries CEditCheat::ReadCodeEntries(bool &ValidCodes, bool &Va
         }
         wc_str[len] = 0;
         std::string str = stdstr().FromUTF16(wc_str);
-        char TempFormat[128] = { 0 };
-        for (size_t c = 0; c < str.length(); c++)
-        {
-            if (isxdigit(str[c]))
-            {
-                TempFormat[c] = 'X';
-            }
-            else if ((str[c] == ' ') || (str[c] == '?'))
-            {
-                TempFormat[c] = str[c];
-            }
-            else
-            {
-                TempFormat[c] = '#';
-            }
-        }
-
         CEnhancement::CodeEntry Entry;
         Entry.Command = strtoul(str.c_str(), 0, 16);
         const char * ReadPos = strchr(str.c_str(), ' ');
@@ -866,64 +784,19 @@ CEnhancement::CodeEntries CEditCheat::ReadCodeEntries(bool &ValidCodes, bool &Va
         }
         else
         {
-            Entries.clear();
-            break;
-        }
-        if (strcmp(TempFormat, FormatNormal) == 0)
-        {
-            if (Format == CodeFormat_Invalid)
-            {
-                Format = CodeFormat_Normal;
-            }
-        }
-        else if (strcmp(TempFormat, FormatOptionLB) == 0)
-        {
-            if (Format != CodeFormat_Word)
-            {
-                Format = CodeFormat_LowerByte;
-                NoOptions = false;
-                ValidOptions = false;
-            }
-            else
-            {
-                ValidCodes = false;
-            }
-        }
-        else if (strcmp(TempFormat, FormatOptionW) == 0)
-        {
-            if (Format != CodeFormat_LowerByte)
-            {
-                Format = CodeFormat_Word;
-                NoOptions = false;
-                ValidOptions = false;
-            }
-            else
-            {
-                ValidCodes = false;
-            }
-        }
-        else
-        {
-            ValidCodes = false;
+            return false;
         }
     }
-
-    if (Entries.empty())
-    {
-        ValidCodes = false;
-    }
-    return Entries;
-}
-
-CEnhancement::CodeOptions CEditCheat::ReadOptions(bool &validoptions, CodeFormat Format)
-{
-    CEnhancement::CodeOptions Options;
-    validoptions = true;
+    TestEnhancement.SetEntries(Entries);
 
     CEdit CheatOptions(GetDlgItem(IDC_CHEAT_OPTIONS));
-    int NumLines = CheatOptions.GetLineCount();
+    NumLines = CheatOptions.GetLineCount();
     std::string OptionsStr;
-
+    CEnhancement::CodeOptions Options;
+    if (NumLines > 0 && TestEnhancement.CodeOptionSize() == 0)
+    {
+        return false;
+    }
     for (int i = 0; i < NumLines; i++)
     {
         wchar_t wc_str[128];
@@ -936,74 +809,47 @@ CEnhancement::CodeOptions CEditCheat::ReadOptions(bool &validoptions, CodeFormat
 
         std::string str = stdstr().FromUTF16(wc_str);
         CEnhancement::CodeOption Option;
-
-        switch (Format)
+        Option.Value = (uint16_t)strtoul(str.c_str(), 0, 16);
+        if ((uint32_t)len > TestEnhancement.CodeOptionSize() && str[TestEnhancement.CodeOptionSize()] != ' ')
         {
-        case CodeFormat_LowerByte:
-            if (len >= 2) {
-                for (int c = 0; c < 2; c++)
-                {
-                    if (!isxdigit(str[c]))
-                    {
-                        validoptions = false;
-                        break;
-                    }
-                }
-
-                if ((str[2] != ' ') && (len > 2))
-                {
-                    validoptions = false;
-                    break;
-                }
-
-                Option.Name = &str[3];
-                Option.Value = (uint16_t)strtoul(str.c_str(), 0, 16);
-                Options.push_back(Option);
-            }
-            else
-            {
-                validoptions = false;
-                break;
-            }
-            break;
-        case CodeFormat_Word:
-            if (len >= 4)
-            {
-                for (int c = 0; c < 4; c++)
-                {
-                    if (!isxdigit(str[c]))
-                    {
-                        validoptions = false;
-                        break;
-                    }
-                }
-
-                if (str[4] != ' ' && (len > 4))
-                {
-                    validoptions = false;
-                    break;
-                }
-                Option.Name = &str[5];
-                Option.Value = (uint16_t)strtoul(str.c_str(), 0, 16);
-                Options.push_back(Option);
-            }
-            else
-            {
-                validoptions = false;
-                break;
-            }
-            break;
-        default:
-            validoptions = false;
-            break;
+            return false;
+        }
+        const char * ReadPos = strchr(str.c_str(), ' ');
+        if (ReadPos != nullptr)
+        {
+            Option.Name = ReadPos + 1;
+            Options.push_back(Option);
+        }
+        else
+        {
+            return false;
         }
     }
-
-    if (Options.size() == 0)
+    TestEnhancement.SetOptions(Options);
+    if (!TestEnhancement.Valid())
     {
-        validoptions = false;
+        return false;
     }
-    return Options;
+    Enhancement = TestEnhancement;
+    return true;
+}
+
+void CEditCheat::DetailsChanged(void)
+{
+    CEnhancement Enhancement(CEnhancement::CheatIdent);
+    if (!ReadEnhancement(Enhancement))
+    {
+        GetDlgItem(IDC_ADD).EnableWindow(false);
+    }
+    else
+    {
+        bool HasOptions = Enhancement.CodeOptionSize() > 0;
+
+        GetDlgItem(IDC_LABEL_OPTIONS).EnableWindow(HasOptions);
+        GetDlgItem(IDC_LABEL_OPTIONS_FORMAT).EnableWindow(HasOptions);
+        GetDlgItem(IDC_CHEAT_OPTIONS).EnableWindow(HasOptions);
+        GetDlgItem(IDC_ADD).EnableWindow(true);
+    }
 }
 
 void CEditCheat::RecordCurrentValues(void)
@@ -1038,16 +884,8 @@ bool CEditCheat::ValuesChanged(void)
     }
     if (Result == IDYES)
     {
-        bool validcodes, validoptions, nooptions;
-        CodeFormat  Format;
-        ReadCodeEntries(validcodes, validoptions, nooptions, Format);
-        if (!nooptions)
-        {
-            ReadOptions(validoptions, Format);
-        }
-
-        bool CanAdd = validcodes && (validoptions || nooptions) && GetDlgItem(IDC_CODE_NAME).GetWindowTextLength() > 0;
-        if (CanAdd)
+        CEnhancement Enhancement(CEnhancement::CheatIdent);
+        if (!ReadEnhancement(Enhancement))
         {
             SendMessage(WM_COMMAND, MAKELPARAM(IDC_ADD, 0));
         }

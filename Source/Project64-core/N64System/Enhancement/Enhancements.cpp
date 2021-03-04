@@ -94,7 +94,7 @@ void CEnhancements::UpdateCheats(const CEnhancementList & Cheats)
         {
             m_CheatFiles.erase(CheatFileItr);
         }
-        m_CheatFile = std::make_unique<CEnhancmentFile>(OutFile, "Cheat");
+        m_CheatFile = std::make_unique<CEnhancmentFile>(OutFile, CEnhancement::CheatIdent);
         m_CheatFiles.insert(SectionFiles::value_type(SectionIdent, OutFile));
     }
 
@@ -140,7 +140,7 @@ void CEnhancements::UpdateEnhancements(const CEnhancementList & Enhancements)
         {
             m_EnhancementFiles.erase(EnhancementFileItr);
         }
-        m_EnhancementFile = std::make_unique<CEnhancmentFile>(OutFile, "Enhancement");
+        m_EnhancementFile = std::make_unique<CEnhancmentFile>(OutFile, CEnhancement::EnhancementIdent);
         m_EnhancementFiles.insert(SectionFiles::value_type(SectionIdent, OutFile));
     }
 
@@ -248,8 +248,8 @@ void CEnhancements::Load(CMipsMemoryVM * MMU, CPlugins * Plugins)
     WaitScanDone();
     CGuard Guard(m_CS);
 
-    LoadEnhancements("Cheat", m_CheatFiles, m_CheatFile, m_Cheats);
-    LoadEnhancements("Enhancement", m_EnhancementFiles, m_EnhancementFile, m_Enhancements);
+    LoadEnhancements(CEnhancement::CheatIdent, m_CheatFiles, m_CheatFile, m_Cheats);
+    LoadEnhancements(CEnhancement::EnhancementIdent, m_EnhancementFiles, m_EnhancementFile, m_Enhancements);
 
     ResetCodes(MMU);
     LoadActive(m_Cheats, nullptr);
@@ -582,7 +582,7 @@ void CEnhancements::ScanFileThread(void)
     {
         do
         {
-            CEnhancmentFile EnhancmentFile(File, "Cheat");
+            CEnhancmentFile EnhancmentFile(File, CEnhancement::CheatIdent);
             CEnhancmentFile::SectionList Sections;
             EnhancmentFile.GetSections(Sections);
             for (CEnhancmentFile::SectionList::const_iterator itr = Sections.begin(); itr != Sections.end(); itr++)
@@ -600,7 +600,7 @@ void CEnhancements::ScanFileThread(void)
     {
         do
         {
-            CEnhancmentFile EnhancmentFile(File, "Cheat");
+            CEnhancmentFile EnhancmentFile(File, CEnhancement::CheatIdent);
             CEnhancmentFile::SectionList Sections;
             EnhancmentFile.GetSections(Sections);
             for (CEnhancmentFile::SectionList::const_iterator itr = Sections.begin(); itr != Sections.end(); itr++)

@@ -6,6 +6,9 @@
 class CEnhancement
 {
 public:
+    static const char * CheatIdent;
+    static const char * EnhancementIdent;
+
     struct CodeEntry
     {
         uint32_t Command;
@@ -46,7 +49,6 @@ public:
 
 private:
     CEnhancement();
-    CEnhancement& operator=(const CEnhancement&);
 
     void CheckValid();
 
