@@ -744,6 +744,7 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
 
             if (!AllocateRomImage(RomFileSize))
             {
+                WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
                 return false;
             }
 
@@ -752,6 +753,7 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
             if (!ZipFile.GetFile(i, m_ROMImage, RomFileSize))
             {
                 SetError(MSG_FAIL_IMAGE_IPL);
+                WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
                 return false;
             }
 
@@ -763,6 +765,7 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
                     continue;
                 }
                 SetError(MSG_FAIL_IMAGE_IPL);
+                WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
                 return false;
             }
             g_Notify->DisplayMessage(5, MSG_BYTESWAP);
@@ -776,6 +779,7 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
         if (!Loaded7zFile)
         {
             SetError(MSG_7Z_FILE_NOT_FOUND);
+            WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
             return false;
         }
     }
