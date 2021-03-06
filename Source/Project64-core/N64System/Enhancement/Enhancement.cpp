@@ -184,9 +184,33 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
     //Gameshark Code
     while (CurrentLine < Lines.size())
     {
+        char TempFormat[128] = { 0 };
         const char * Line = Lines[CurrentLine].c_str();
-        const char * Pos = strchr(Line, ' ');
-        if (strlen(Line) != 13 || Pos == nullptr || (Pos - Line) != 8)
+        size_t LineLen = strlen(Line);
+        if (LineLen >= (sizeof(TempFormat) / sizeof(TempFormat[0])))
+        {
+            break;
+        }
+
+        for (size_t i = 0, n = LineLen; i < n; i++)
+        {
+            if (isxdigit(Line[i]))
+            {
+                TempFormat[i] = 'X';
+            }
+            else if (Line[i] == ' ' || Line[i] == '?' || Line[i] == ':')
+            {
+                TempFormat[i] = Line[i];
+            }
+            else
+            {
+                TempFormat[i] = '#';
+            }
+        }
+        if (strcmp(TempFormat, "XXXXXXXX XXXX") != 0 &&
+            strcmp(TempFormat, "XXXXXXXX XX??") != 0 &&
+            strcmp(TempFormat, "XXXXXXXX ????") != 0 &&
+            strcmp(TempFormat, "XXXXXXXX XXXX:XXXX") != 0)
         {
             break;
         }

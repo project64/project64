@@ -112,9 +112,7 @@ Note=Here you can Choose Options with Mario with His Cap on & An Extra in His Ha
 38 Flying Mario Cap In Hand
 
 $Have\Debug Mode
-A032D598 00??
-01 On
-00 Off
+A032D598 0001:0000
 
 $Have\Level Select
 A032D58C 0001

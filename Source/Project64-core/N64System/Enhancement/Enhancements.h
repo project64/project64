@@ -32,10 +32,25 @@ public:
     CEnhancementList Enhancements(void);
 
 private:
-    struct GAMESHARK_CODE
+    class GAMESHARK_CODE
     {
-        uint32_t Command;
-        uint16_t Value;
+    public:
+        GAMESHARK_CODE(const GAMESHARK_CODE&);
+        GAMESHARK_CODE(uint32_t Command, uint16_t Value, bool HasDisableValue, uint16_t DisableValue);
+    
+        uint32_t Command(void) const { return m_Command; }
+        uint16_t Value(void) const { return m_Value; }
+        bool HasDisableValue(void) const { return m_HasDisableValue; }
+        uint16_t DisableValue(void) const { return m_DisableValue; }
+
+    private:
+        GAMESHARK_CODE();
+        GAMESHARK_CODE& operator=(const GAMESHARK_CODE&);
+
+        uint32_t m_Command;
+        uint16_t m_Value;
+        bool m_HasDisableValue;
+        uint16_t m_DisableValue;
     };
 
     struct MEM_VALUE16
@@ -61,8 +76,8 @@ private:
     void LoadEnhancements(const char * Ident, SectionFiles & Files, std::unique_ptr<CEnhancmentFile> & File, CEnhancementList & EnhancementList);
     void ApplyGameSharkCodes(CMipsMemoryVM & MMU, CODES & CodeEntry, uint32_t CurrentEntry);
     uint32_t EntrySize(const CODES & CodeEntry, uint32_t CurrentEntry);
-    void ModifyMemory8(CMipsMemoryVM & MMU, uint32_t Address, uint8_t Value);
-    void ModifyMemory16(CMipsMemoryVM & MMU, uint32_t Address, uint16_t Value);
+    void ModifyMemory8(CMipsMemoryVM & MMU, uint32_t Address, uint8_t Value, bool HasDisableValue, uint8_t DisableValue);
+    void ModifyMemory16(CMipsMemoryVM & MMU, uint32_t Address, uint16_t Value, bool HasDisableValue, uint16_t DisableValue);
     void ScanFileThread(void);
     void WaitScanDone(void);
     void GameChanged(void);

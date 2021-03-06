@@ -793,10 +793,6 @@ bool CEditCheat::ReadEnhancement(CEnhancement & Enhancement)
     NumLines = CheatOptions.GetLineCount();
     std::string OptionsStr;
     CEnhancement::CodeOptions Options;
-    if (NumLines > 0 && TestEnhancement.CodeOptionSize() == 0)
-    {
-        return false;
-    }
     for (int i = 0; i < NumLines; i++)
     {
         wchar_t wc_str[128];
@@ -848,7 +844,7 @@ void CEditCheat::DetailsChanged(void)
         GetDlgItem(IDC_LABEL_OPTIONS).EnableWindow(HasOptions);
         GetDlgItem(IDC_LABEL_OPTIONS_FORMAT).EnableWindow(HasOptions);
         GetDlgItem(IDC_CHEAT_OPTIONS).EnableWindow(HasOptions);
-        GetDlgItem(IDC_ADD).EnableWindow(true);
+        GetDlgItem(IDC_ADD).EnableWindow(Enhancement.CodeOptionSize() == 0 || Enhancement.GetOptions().size() > 0);
     }
 }
 
@@ -885,7 +881,7 @@ bool CEditCheat::ValuesChanged(void)
     if (Result == IDYES)
     {
         CEnhancement Enhancement(CEnhancement::CheatIdent);
-        if (!ReadEnhancement(Enhancement))
+        if (ReadEnhancement(Enhancement) && (Enhancement.CodeOptionSize() == 0 || Enhancement.GetOptions().size() > 0))
         {
             SendMessage(WM_COMMAND, MAKELPARAM(IDC_ADD, 0));
         }

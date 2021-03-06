@@ -12,6 +12,22 @@
 #include <Common/path.h>
 #include <Common/Util.h>
 
+CEnhancements::GAMESHARK_CODE::GAMESHARK_CODE(const GAMESHARK_CODE&rhs)
+{
+    m_Command = rhs.m_Command;
+    m_Value = rhs.m_Value;
+    m_HasDisableValue = rhs.m_HasDisableValue;
+    m_DisableValue = rhs.m_DisableValue;
+}
+
+CEnhancements::GAMESHARK_CODE::GAMESHARK_CODE(uint32_t Command, uint16_t Value, bool HasDisableValue, uint16_t DisableValue) :
+    m_Command(Command),
+    m_Value(Value),
+    m_HasDisableValue(HasDisableValue),
+    m_DisableValue(DisableValue)
+{
+}
+
 CEnhancements::CEnhancements() :
     m_ScanFileThread(stScanFileThread),
     m_Scan(true),
@@ -54,19 +70,19 @@ void CEnhancements::ApplyGSButton(CMipsMemoryVM & MMU, bool /*UpdateChanges*/)
         for (size_t CurrentEntry = 0; CurrentEntry < CodeEntry.size(); CurrentEntry++)
         {
             const GAMESHARK_CODE & Code = CodeEntry[CurrentEntry];
-            switch (Code.Command & 0xFF000000) {
+            switch (Code.Command() & 0xFF000000) {
             case 0x88000000:
-                ModifyMemory8(MMU, 0x80000000 | (Code.Command & 0xFFFFFF), (uint8_t)Code.Value);
+                ModifyMemory8(MMU, 0x80000000 | (Code.Command() & 0xFFFFFF), (uint8_t)Code.Value(), Code.HasDisableValue(), (uint8_t)Code.DisableValue());
                 break;
             case 0x89000000:
-                ModifyMemory16(MMU, 0x80000000 | (Code.Command & 0xFFFFFF), Code.Value);
+                ModifyMemory16(MMU, 0x80000000 | (Code.Command() & 0xFFFFFF), Code.Value(), Code.HasDisableValue(), Code.DisableValue());
                 break;
                 // Xplorer64
             case 0xA8000000:
-                ModifyMemory8(MMU, 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF), (uint8_t)ConvertXP64Value(Code.Value));
+                ModifyMemory8(MMU, 0x80000000 | (ConvertXP64Address(Code.Command()) & 0xFFFFFF), (uint8_t)ConvertXP64Value(Code.Value()), Code.HasDisableValue(), (uint8_t)Code.DisableValue());
                 break;
             case 0xA9000000:
-                ModifyMemory16(MMU, 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF), ConvertXP64Value(Code.Value));
+                ModifyMemory16(MMU, 0x80000000 | (ConvertXP64Address(Code.Command()) & 0xFFFFFF), ConvertXP64Value(Code.Value()), Code.HasDisableValue(), Code.DisableValue());
                 break;
             }
         }
@@ -322,29 +338,37 @@ void CEnhancements::LoadActive(CEnhancementList & List, CPlugins * Plugins)
 
         const CEnhancement::CodeEntries Entries = Enhancement.GetEntries();
         CODES Code;
+        Code.reserve(Entries.size());
         for (size_t i = 0, n = Entries.size(); i < n; i++)
         {
-            GAMESHARK_CODE CodeEntry;
-            CodeEntry.Command = Entries[i].Command;
+            uint32_t Command = Entries[i].Command;
+            uint16_t Value = 0, DisableValue = 0;
+            bool HasDisableValue = false;
+
             if (strncmp(Entries[i].Value.c_str(), "????", 4) == 0)
             {
-                CodeEntry.Value = Enhancement.SelectedOption();
+                Value = Enhancement.SelectedOption();
             }
             else if (strncmp(Entries[i].Value.c_str(), "??", 2) == 0)
             {
-                CodeEntry.Value = (uint8_t)(strtoul(&(Entries[i].Value.c_str()[2]), 0, 16), 0, 16);
-                CodeEntry.Value |= Enhancement.SelectedOption() << 16;
+                Value = (uint8_t)(strtoul(&(Entries[i].Value.c_str()[2]), 0, 16), 0, 16);
+                Value |= Enhancement.SelectedOption() << 16;
             }
             else if (strncmp(&Entries[i].Value[2], "??", 2) == 0)
             {
-                CodeEntry.Value = (uint16_t)(strtoul(Entries[i].Value.c_str(), 0, 16) << 16);
-                CodeEntry.Value |= Enhancement.SelectedOption();
+                Value = (uint16_t)(strtoul(Entries[i].Value.c_str(), 0, 16) << 16);
+                Value |= Enhancement.SelectedOption();
             }
             else
             {
-                CodeEntry.Value = (uint16_t)strtoul(Entries[i].Value.c_str(), 0, 16);
+                Value = (uint16_t)strtoul(Entries[i].Value.c_str(), 0, 16);
             }
-            Code.push_back(CodeEntry);
+            if (Entries[i].Value.size() > 8 && Entries[i].Value[4] == ':')
+            {
+                HasDisableValue = true;
+                DisableValue = (uint16_t)strtoul(&Entries[i].Value[5], 0, 16);
+            }
+            Code.emplace_back(GAMESHARK_CODE(Command, Value, HasDisableValue, DisableValue));
         }
         m_ActiveCodes.push_back(Code);
     }
@@ -361,7 +385,7 @@ void CEnhancements::ApplyGameSharkCodes(CMipsMemoryVM & MMU, CODES & CodeEntry, 
     uint16_t wMemory;
     uint8_t bMemory;
 
-    switch (Code.Command & 0xFF000000)
+    switch (Code.Command() & 0xFF000000)
     {
     case 0x50000000: // Gameshark / AR
         if ((CurrentEntry + 1) >= (int)CodeEntry.size())
@@ -372,31 +396,31 @@ void CEnhancements::ApplyGameSharkCodes(CMipsMemoryVM & MMU, CODES & CodeEntry, 
 
         {
             const GAMESHARK_CODE & NextCodeEntry = CodeEntry[CurrentEntry + 1];
-            int numrepeats = (Code.Command & 0x0000FF00) >> 8;
-            int offset = Code.Command & 0x000000FF;
+            int numrepeats = (Code.Command() & 0x0000FF00) >> 8;
+            int offset = Code.Command() & 0x000000FF;
             uint32_t Address;
-            int incr = Code.Value;
+            int incr = Code.Value();
             int i;
 
-            switch (NextCodeEntry.Command & 0xFF000000) {
+            switch (NextCodeEntry.Command() & 0xFF000000) {
             case 0x10000000: // Xplorer64
             case 0x80000000:
-                Address = 0x80000000 | (NextCodeEntry.Command & 0xFFFFFF);
-                wMemory = NextCodeEntry.Value;
+                Address = 0x80000000 | (NextCodeEntry.Command() & 0xFFFFFF);
+                wMemory = NextCodeEntry.Value();
                 for (i = 0; i < numrepeats; i++)
                 {
-                    ModifyMemory8(MMU, Address, (uint8_t)wMemory);
+                    ModifyMemory8(MMU, Address, (uint8_t)wMemory, NextCodeEntry.HasDisableValue(), (uint8_t)NextCodeEntry.DisableValue());
                     Address += offset;
                     wMemory += (uint16_t)incr;
                 }
                 break;
             case 0x11000000: // Xplorer64
             case 0x81000000:
-                Address = 0x80000000 | (NextCodeEntry.Command & 0xFFFFFF);
-                wMemory = NextCodeEntry.Value;
+                Address = 0x80000000 | (NextCodeEntry.Command() & 0xFFFFFF);
+                wMemory = NextCodeEntry.Value();
                 for (i = 0; i < numrepeats; i++)
                 {
-                    ModifyMemory16(MMU, Address, wMemory);
+                    ModifyMemory16(MMU, Address, wMemory, NextCodeEntry.HasDisableValue(), NextCodeEntry.DisableValue());
                     Address += offset;
                     wMemory += (uint16_t)incr;
                 }
@@ -408,41 +432,41 @@ void CEnhancements::ApplyGameSharkCodes(CMipsMemoryVM & MMU, CODES & CodeEntry, 
     case 0x30000000:
     case 0x82000000:
     case 0x84000000:
-        ModifyMemory8(MMU, 0x80000000 | (Code.Command & 0xFFFFFF), (uint8_t)Code.Value);
+        ModifyMemory8(MMU, 0x80000000 | (Code.Command() & 0xFFFFFF), (uint8_t)Code.Value(), Code.HasDisableValue(), (uint8_t)Code.DisableValue());
         break;
     case 0x81000000:
-        ModifyMemory16(MMU, 0x80000000 | (Code.Command & 0xFFFFFF), Code.Value);
+        ModifyMemory16(MMU, 0x80000000 | (Code.Command() & 0xFFFFFF), Code.Value(), Code.HasDisableValue(), Code.DisableValue());
         break;
     case 0xA0000000:
-        ModifyMemory8(MMU, 0xA0000000 | (Code.Command & 0xFFFFFF), (uint8_t)Code.Value);
+        ModifyMemory8(MMU, 0xA0000000 | (Code.Command() & 0xFFFFFF), (uint8_t)Code.Value(), Code.HasDisableValue(), (uint8_t)Code.DisableValue());
         break;
     case 0xA1000000:
-        ModifyMemory16(MMU, 0xA0000000 | (Code.Command & 0xFFFFFF), Code.Value);
+        ModifyMemory16(MMU, 0xA0000000 | (Code.Command() & 0xFFFFFF), Code.Value(), Code.HasDisableValue(), Code.DisableValue());
         break;
     case 0xD0000000:
-        MMU.LB_VAddr(0x80000000 | (Code.Command & 0xFFFFFF), bMemory);
-        if (bMemory == Code.Value)
+        MMU.LB_VAddr(0x80000000 | (Code.Command() & 0xFFFFFF), bMemory);
+        if (bMemory == Code.Value())
         {
             ApplyGameSharkCodes(MMU, CodeEntry, CurrentEntry + 1);
         }
         break;
     case 0xD1000000:
-        MMU.LH_VAddr(0x80000000 | (Code.Command & 0xFFFFFF), wMemory);
-        if (wMemory == Code.Value)
+        MMU.LH_VAddr(0x80000000 | (Code.Command() & 0xFFFFFF), wMemory);
+        if (wMemory == Code.Value())
         {
             ApplyGameSharkCodes(MMU, CodeEntry, CurrentEntry + 1);
         }
         break;
     case 0xD2000000:
-        MMU.LB_VAddr(0x80000000 | (Code.Command & 0xFFFFFF), bMemory);
-        if (bMemory != Code.Value)
+        MMU.LB_VAddr(0x80000000 | (Code.Command() & 0xFFFFFF), bMemory);
+        if (bMemory != Code.Value())
         {
             ApplyGameSharkCodes(MMU, CodeEntry, CurrentEntry + 1);
         }
         break;
     case 0xD3000000:
-        MMU.LH_VAddr(0x80000000 | (Code.Command & 0xFFFFFF), wMemory);
-        if (wMemory != Code.Value)
+        MMU.LH_VAddr(0x80000000 | (Code.Command() & 0xFFFFFF), wMemory);
+        if (wMemory != Code.Value())
         {
             ApplyGameSharkCodes(MMU, CodeEntry, CurrentEntry + 1);
         }
@@ -450,32 +474,32 @@ void CEnhancements::ApplyGameSharkCodes(CMipsMemoryVM & MMU, CODES & CodeEntry, 
     case 0x31000000:
     case 0x83000000:
     case 0x85000000:
-        ModifyMemory16(MMU, 0x80000000 | (Code.Command & 0xFFFFFF), Code.Value);
+        ModifyMemory16(MMU, 0x80000000 | (Code.Command() & 0xFFFFFF), Code.Value(), Code.HasDisableValue(), Code.DisableValue());
         break;
     case 0xE8000000:
-        ModifyMemory8(MMU, 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF), (uint8_t)ConvertXP64Value(Code.Value));
+        ModifyMemory8(MMU, 0x80000000 | (ConvertXP64Address(Code.Command()) & 0xFFFFFF), (uint8_t)ConvertXP64Value(Code.Value()), Code.HasDisableValue(), (uint8_t)Code.DisableValue());
         break;
     case 0xE9000000:
-        ModifyMemory16(MMU, 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF), ConvertXP64Value(Code.Value));
+        ModifyMemory16(MMU, 0x80000000 | (ConvertXP64Address(Code.Command()) & 0xFFFFFF), ConvertXP64Value(Code.Value()), Code.HasDisableValue(), Code.DisableValue());
         break;
     case 0xC8000000:
-        ModifyMemory8(MMU, 0xA0000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF), (uint8_t)Code.Value);
+        ModifyMemory8(MMU, 0xA0000000 | (ConvertXP64Address(Code.Command()) & 0xFFFFFF), (uint8_t)Code.Value(), Code.HasDisableValue(), (uint8_t)Code.DisableValue());
         break;
     case 0xC9000000:
-        ModifyMemory16(MMU, 0xA0000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF), ConvertXP64Value(Code.Value));
+        ModifyMemory16(MMU, 0xA0000000 | (ConvertXP64Address(Code.Command()) & 0xFFFFFF), ConvertXP64Value(Code.Value()), Code.HasDisableValue(), Code.DisableValue());
         break;
     case 0xB8000000:
     case 0xBA000000:
-        MMU.LB_VAddr(0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF), bMemory);
-        if (bMemory == ConvertXP64Value(Code.Value))
+        MMU.LB_VAddr(0x80000000 | (ConvertXP64Address(Code.Command()) & 0xFFFFFF), bMemory);
+        if (bMemory == ConvertXP64Value(Code.Value()))
         {
             ApplyGameSharkCodes(MMU, CodeEntry, CurrentEntry + 1);
         }
         break;
     case 0xB9000000:
     case 0xBB000000:
-        MMU.LH_VAddr(0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF), wMemory);
-        if (wMemory == ConvertXP64Value(Code.Value))
+        MMU.LH_VAddr(0x80000000 | (ConvertXP64Address(Code.Command()) & 0xFFFFFF), wMemory);
+        if (wMemory == ConvertXP64Value(Code.Value()))
         {
             ApplyGameSharkCodes(MMU, CodeEntry, CurrentEntry + 1);
         }
@@ -498,7 +522,7 @@ uint32_t CEnhancements::EntrySize(const CODES & CodeEntry, uint32_t CurrentEntry
         return 0;
     }
     const GAMESHARK_CODE & Code = CodeEntry[CurrentEntry];
-    switch (Code.Command & 0xFF000000)
+    switch (Code.Command() & 0xFF000000)
     {
     case 0x50000000: // Gameshark / AR
         if ((CurrentEntry + 1) >= (int)CodeEntry.size())
@@ -506,7 +530,7 @@ uint32_t CEnhancements::EntrySize(const CODES & CodeEntry, uint32_t CurrentEntry
             return 1;
         }
 
-        switch (CodeEntry[CurrentEntry + 1].Command & 0xFF000000)
+        switch (CodeEntry[CurrentEntry + 1].Command() & 0xFF000000)
         {
         case 0x10000000: // Xplorer64
         case 0x80000000:
@@ -530,12 +554,19 @@ uint32_t CEnhancements::EntrySize(const CODES & CodeEntry, uint32_t CurrentEntry
     return 1;
 }
 
-void CEnhancements::ModifyMemory8(CMipsMemoryVM & MMU, uint32_t Address, uint8_t Value)
+void CEnhancements::ModifyMemory8(CMipsMemoryVM & MMU, uint32_t Address, uint8_t Value, bool HasDisableValue, uint8_t DisableValue)
 {
     MEM_VALUE8 OriginalValue;
-    if (!MMU.LB_VAddr(Address, OriginalValue.Original))
+    if (HasDisableValue)
     {
-        return;
+        OriginalValue.Original = DisableValue;
+    }
+    else
+    {
+        if (!MMU.LB_VAddr(Address, OriginalValue.Original))
+        {
+            return;
+        }
     }
     if (OriginalValue.Original == Value)
     {
@@ -550,12 +581,19 @@ void CEnhancements::ModifyMemory8(CMipsMemoryVM & MMU, uint32_t Address, uint8_t
     std::pair<ORIGINAL_VALUES8::iterator, bool> itr = m_OriginalValues8.insert(ORIGINAL_VALUES8::value_type(Address, OriginalValue));
 }
 
-void CEnhancements::ModifyMemory16(CMipsMemoryVM & MMU, uint32_t Address, uint16_t Value)
+void CEnhancements::ModifyMemory16(CMipsMemoryVM & MMU, uint32_t Address, uint16_t Value, bool HasDisableValue, uint16_t DisableValue)
 {
     MEM_VALUE16 OriginalValue;
-    if (!MMU.LH_VAddr(Address, OriginalValue.Original))
+    if (HasDisableValue)
     {
-        return;
+        OriginalValue.Original = DisableValue;
+    }
+    else
+    {
+        if (!MMU.LH_VAddr(Address, OriginalValue.Original))
+        {
+            return;
+        }
     }
     if (OriginalValue.Original == Value)
     {
