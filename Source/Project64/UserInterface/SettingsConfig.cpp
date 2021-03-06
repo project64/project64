@@ -223,6 +223,7 @@ LRESULT CSettingConfig::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& /*
         ApplySettings(false);
         EndDialog(1);
         break;
+    case IDCANCEL:
     case IDC_CANCEL:
         EndDialog(0);
         break;
