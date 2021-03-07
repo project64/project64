@@ -1,16 +1,102 @@
+* text=auto
+
+# C/C++ source files
+
+*.c             text diff=c
+*.cc            text diff=cpp
+*.cxx           text diff=cpp
+*.cpp           text diff=cpp
+*.c++           text diff=cpp
+*.hpp           text diff=cpp
+*.h             text diff=c
+*.h++           text diff=cpp
+*.hh            text diff=cpp
+
+# Java source files
+
+*.java          text diff=java
+*.gradle        text diff=java
+*.gradle.kts    text diff=java
+
+# Web source files
+
+*.css           text diff=css
+*.htm           text diff=html
+*.html          text diff=html
+*.js            text
+*.jsp           text
+*.jspf          text
+*.jspx          text
+*.properties    text
+*.xml           text
+
+# Inno setup files
+
+*.isl           text
+*.iss           text
+
 # All files that are binary and should not be normalized
 
-# Images
-*.png binary
-*.jpg binary
-*.psd binary
-*.gif binary
-*.bmp binary
-*.ico binary
-*.cur binary
+# Binary Java files
 
-# Binary data
-*.exe binary
-*.dll binary
-*.e32 binary
-*.lib binary
+*.class         binary
+*.ear           binary
+*.jar           binary
+*.war           binary
+*.jks           binary
+
+# Compiled object files
+
+*.slo           binary
+*.lo            binary
+*.o             binary
+*.obj           binary
+
+# Precompiled headers
+
+*.gch           binary
+*.pch           binary
+
+# Compiled dynamic libraries
+
+*.so            binary
+*.dylib         binary
+
+# Compiled Static libraries
+
+*.lai           binary
+*.la            binary
+*.a             binary
+*.lib           binary
+
+# Binary data and executables
+
+*.exe           binary
+*.out           binary
+*.app           binary
+*.dll           binary
+*.e32           binary
+
+# Archives
+
+*.7z            binary
+*.gz            binary
+*.tar           binary
+*.tgz           binary
+*.zip           binary
+*.rar           binary
+*.cab           binary
+
+# Images
+
+*.png           binary
+*.jpg           binary
+*.jpeg          binary
+*.psd           binary
+*.gif           binary
+*.bmp           binary
+*.ico           binary
+*.cur           binary
+*.svg           binary
+*.tif           binary
+*.tiff          binary
