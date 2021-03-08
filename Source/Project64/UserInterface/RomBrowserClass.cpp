@@ -43,8 +43,8 @@ void CRomBrowser::GetFieldInfo(ROMBROWSER_FIELDS_LIST & Fields, bool UseDefault 
     AddField(Fields, "Name", 0, RB_Name, 218, RB_NAME, UseDefault);
     AddField(Fields, "Status", 1, RB_Status, 92, RB_STATUS, UseDefault);
     AddField(Fields, "Rom Size", -1, RB_RomSize, 100, RB_ROMSIZE, UseDefault);
-    AddField(Fields, "Notes (Core)", 2, RB_CoreNotes, 120, RB_NOTES_CORE, UseDefault);
-    AddField(Fields, "Notes (default plugins)", 3, RB_PluginNotes, 188, RB_NOTES_PLUGIN, UseDefault);
+    AddField(Fields, "Notes (Core)", -1, RB_CoreNotes, 120, RB_NOTES_CORE, UseDefault);
+    AddField(Fields, "Notes (default plugins)", -1, RB_PluginNotes, 188, RB_NOTES_PLUGIN, UseDefault);
     AddField(Fields, "Notes (User)", -1, RB_UserNotes, 100, RB_NOTES_USER, UseDefault);
     AddField(Fields, "Cartridge ID", -1, RB_CartridgeID, 100, RB_CART_ID, UseDefault);
     AddField(Fields, "Media", -1, RB_Media, 100, RB_MANUFACTUER, UseDefault);
