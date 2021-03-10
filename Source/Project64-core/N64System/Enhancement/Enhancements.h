@@ -100,4 +100,6 @@ private:
     bool m_Scan;
     bool m_Scanned;
     bool m_UpdateCheats;
+    bool m_OverClock;
+    uint32_t m_OverClockModifier;
 };

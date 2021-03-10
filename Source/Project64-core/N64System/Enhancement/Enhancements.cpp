@@ -32,7 +32,9 @@ CEnhancements::CEnhancements() :
     m_ScanFileThread(stScanFileThread),
     m_Scan(true),
     m_Scanned(false),
-    m_UpdateCheats(false)
+    m_UpdateCheats(false),
+    m_OverClock(false),
+    m_OverClockModifier(1)
 {
     m_ScanFileThread.Start(this);
 }
@@ -267,9 +269,14 @@ void CEnhancements::Load(CMipsMemoryVM * MMU, CPlugins * Plugins)
     LoadEnhancements(CEnhancement::CheatIdent, m_CheatFiles, m_CheatFile, m_Cheats);
     LoadEnhancements(CEnhancement::EnhancementIdent, m_EnhancementFiles, m_EnhancementFile, m_Enhancements);
 
+    m_OverClock = false;
+    m_OverClockModifier = 1;
+
     ResetCodes(MMU);
     LoadActive(m_Cheats, nullptr);
     LoadActive(m_Enhancements, Plugins);
+
+    CGameSettings::SetOverClockModifier(m_OverClock, m_OverClockModifier);
 }
 
 CEnhancementList CEnhancements::Cheats(void)
@@ -336,41 +343,52 @@ void CEnhancements::LoadActive(CEnhancementList & List, CPlugins * Plugins)
             }
         }
 
-        const CEnhancement::CodeEntries Entries = Enhancement.GetEntries();
-        CODES Code;
-        Code.reserve(Entries.size());
-        for (size_t i = 0, n = Entries.size(); i < n; i++)
+        if (Enhancement.OverClock())
         {
-            uint32_t Command = Entries[i].Command;
-            uint16_t Value = 0, DisableValue = 0;
-            bool HasDisableValue = false;
-
-            if (strncmp(Entries[i].Value.c_str(), "????", 4) == 0)
-            {
-                Value = Enhancement.SelectedOption();
-            }
-            else if (strncmp(Entries[i].Value.c_str(), "??", 2) == 0)
-            {
-                Value = (uint8_t)(strtoul(&(Entries[i].Value.c_str()[2]), 0, 16), 0, 16);
-                Value |= Enhancement.SelectedOption() << 16;
-            }
-            else if (strncmp(&Entries[i].Value[2], "??", 2) == 0)
-            {
-                Value = (uint16_t)(strtoul(Entries[i].Value.c_str(), 0, 16) << 16);
-                Value |= Enhancement.SelectedOption();
-            }
-            else
-            {
-                Value = (uint16_t)strtoul(Entries[i].Value.c_str(), 0, 16);
-            }
-            if (Entries[i].Value.size() > 8 && Entries[i].Value[4] == ':')
-            {
-                HasDisableValue = true;
-                DisableValue = (uint16_t)strtoul(&Entries[i].Value[5], 0, 16);
-            }
-            Code.emplace_back(GAMESHARK_CODE(Command, Value, HasDisableValue, DisableValue));
+            m_OverClock = true;
+            m_OverClockModifier = Enhancement.OverClockModifier();
         }
-        m_ActiveCodes.push_back(Code);
+        const CEnhancement::CodeEntries Entries = Enhancement.GetEntries();
+        if (Entries.size() > 0)
+        {
+            CODES Code;
+            Code.reserve(Entries.size());
+            for (size_t i = 0, n = Entries.size(); i < n; i++)
+            {
+                uint32_t Command = Entries[i].Command;
+                uint16_t Value = 0, DisableValue = 0;
+                bool HasDisableValue = false;
+
+                if (strncmp(Entries[i].Value.c_str(), "????", 4) == 0)
+                {
+                    Value = Enhancement.SelectedOption();
+                }
+                else if (strncmp(Entries[i].Value.c_str(), "??", 2) == 0)
+                {
+                    Value = (uint8_t)(strtoul(&(Entries[i].Value.c_str()[2]), 0, 16), 0, 16);
+                    Value |= Enhancement.SelectedOption() << 16;
+                }
+                else if (strncmp(&Entries[i].Value[2], "??", 2) == 0)
+                {
+                    Value = (uint16_t)(strtoul(Entries[i].Value.c_str(), 0, 16) << 16);
+                    Value |= Enhancement.SelectedOption();
+                }
+                else
+                {
+                    Value = (uint16_t)strtoul(Entries[i].Value.c_str(), 0, 16);
+                }
+                if (Entries[i].Value.size() > 8 && Entries[i].Value[4] == ':')
+                {
+                    HasDisableValue = true;
+                    DisableValue = (uint16_t)strtoul(&Entries[i].Value[5], 0, 16);
+                }
+                Code.emplace_back(GAMESHARK_CODE(Command, Value, HasDisableValue, DisableValue));
+            }
+            if (Code.size() > 0)
+            {
+                m_ActiveCodes.push_back(std::move(Code));
+            }
+        }
     }
 }
 

@@ -329,6 +329,10 @@ void CEnhancmentFile::SaveCurrentSection(void)
         {
             Section += stdstr_f("OnByDefault=1%s", m_LineFeed);
         }
+        if (Enhancement.OverClock())
+        {
+            Section += stdstr_f("OverClock=%d%s", Enhancement.OverClockModifier(), m_LineFeed);
+        }
         if (!Enhancement.GetNote().empty())
         {
             Section += stdstr_f("Note=%s%s", Enhancement.GetNote().c_str(), m_LineFeed);

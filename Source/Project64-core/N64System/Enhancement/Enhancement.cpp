@@ -118,6 +118,8 @@ CEnhancement::CEnhancement(const char * Ident) :
     m_SelectedOption(0xFFFF0000),
     m_OnByDefault(false),
     m_Active(false),
+    m_OverClock(false),
+    m_OverClockModifier(1),
     m_Valid(false)
 {
 }
@@ -128,6 +130,8 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
     m_SelectedOption(0xFFFF0000),
     m_OnByDefault(false),
     m_Active(false),
+    m_OverClock(false),
+    m_OverClockModifier(1),
     m_Valid(false)
 {
     stdstr EntryLine(Entry);
@@ -174,6 +178,10 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
         else if (stricmp(Key.c_str(), "OnByDefault") == 0)
         {
             m_OnByDefault = Pos[1] == '1';
+        }
+        else if (stricmp(Key.c_str(), "OverClock") == 0)
+        {
+            SetOverClock(true, atoi(&Pos[1]));
         }
         else
         {
@@ -320,6 +328,20 @@ void CEnhancement::SetOnByDefault(bool OnByDefault)
 {
     m_OnByDefault = OnByDefault;
     m_Active = CSettingEnhancementActive(m_Name.c_str(), m_Ident.c_str(), m_OnByDefault).Active();
+}
+
+void CEnhancement::SetOverClock(bool OverClock, uint32_t OverClockModifier)
+{
+    m_OverClock = OverClock;
+    m_OverClockModifier = OverClockModifier;
+    if (m_OverClockModifier < 1)
+    {
+        m_OverClockModifier = 1;
+    }
+    if (m_OverClockModifier > 20)
+    {
+        m_OverClockModifier = 20;
+    }
 }
 
 void CEnhancement::CheckValid(void)

@@ -31,6 +31,8 @@ SYSTEM_TYPE CGameSettings::m_SystemType = SYSTEM_NTSC;
 CPU_TYPE CGameSettings::m_CpuType = CPU_Recompiler;
 uint32_t CGameSettings::m_OverClockModifier = 1;
 DISK_SEEK_TYPE CGameSettings::m_DiskSeekTimingType = DiskSeek_Turbo;
+bool CGameSettings::m_EnhancmentOverClock = false;
+uint32_t CGameSettings::m_EnhancmentOverClockModifier = 1;
 
 void CGameSettings::RefreshGameSettings()
 {
@@ -85,4 +87,21 @@ void CGameSettings::SpeedChanged(int SpeedLimit)
 void CGameSettings::RefreshSyncToAudio(void)
 {
 	m_bSyncToAudio = g_Settings->LoadBool(Game_SyncViaAudio) && g_Settings->LoadBool(Setting_SyncViaAudioEnabled) && g_Settings->LoadBool(Plugin_EnableAudio);
+}
+
+void CGameSettings::SetOverClockModifier(bool EnhancmentOverClock, uint32_t EnhancmentOverClockModifier)
+{
+    m_EnhancmentOverClock = EnhancmentOverClock;
+    m_EnhancmentOverClockModifier = EnhancmentOverClockModifier;
+
+    if (m_EnhancmentOverClock)
+    {
+        m_OverClockModifier = m_EnhancmentOverClockModifier;
+    }
+    else
+    {
+        m_OverClockModifier = g_Settings->LoadDword(Game_OverClockModifier);
+    }
+    if (m_OverClockModifier < 1) { m_OverClockModifier = 1; }
+    if (m_OverClockModifier > 20) { m_OverClockModifier = 20; }
 }

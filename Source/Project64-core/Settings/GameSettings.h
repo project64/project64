@@ -38,6 +38,7 @@ public:
     inline static DISK_SEEK_TYPE DiskSeekTimingType(void) { return m_DiskSeekTimingType; };
 
 	void RefreshSyncToAudio(void);
+    static void SetOverClockModifier(bool EnhancmentOverClock, uint32_t EnhancmentOverClockModifier);
 
 protected:
     static void SpeedChanged(int32_t SpeedLimit);
@@ -72,4 +73,6 @@ private:
     static CPU_TYPE m_CpuType;
     static uint32_t m_OverClockModifier;
     static DISK_SEEK_TYPE m_DiskSeekTimingType;
+    static bool m_EnhancmentOverClock;
+    static uint32_t m_EnhancmentOverClockModifier;
 };
