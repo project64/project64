@@ -285,7 +285,7 @@ void DetectCpuSpecs(void)
 			cpuid
 			or [AMD_Features], edx
 		}
-#else
+#elif defined(_M_X64)
 		int cpuInfo[4];
 		__cpuid(cpuInfo, 1);
 		Intel_Features = cpuInfo[3];
