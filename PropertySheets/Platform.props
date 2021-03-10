@@ -225,4 +225,21 @@
   </ItemDefinitionGroup>
   <!-- END x64 -->
 
+  <!-- ARM64 --> 
+  <PropertyGroup Condition="'$(Platform)'=='ARM64'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)ARM64\</OutDir>
+    <IntDir>$(SolutionDir)build\$(Configuration)ARM64\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(ConfigurationType)|$(Platform)'=='StaticLibrary|ARM64'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)ARM64\lib\</OutDir>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup Condition="'$(Platform)'=='ARM64'">
+    <Link>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+    </Link>
+  </ItemDefinitionGroup>
+  <!-- END ARM64 -->
+
 </Project>

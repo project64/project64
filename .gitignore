@@ -22,9 +22,11 @@ Thumbs.db
 /.vs
 /Bin/Debug
 /Bin/Debug64
+/Bin/DebugARM64
 /Bin/Package
 /Bin/Release
 /Bin/Release64
+/Bin/ReleaseARM64
 /build
 /Config/Cheats-User
 /Config/Enhancement-User
@@ -89,6 +91,34 @@ Thumbs.db
 /Plugin64/RSP/RSP_d 1.7.dll
 /Plugin64/RSP/RSP-HLE_d.dll
 /Plugin64/RSP/RSP-HLE.dll
+/PluginARM64/AndroidAudio
+/PluginARM64/Audio/AndroidAudio_d.dll
+/PluginARM64/Audio/AndroidAudio.dll
+/PluginARM64/Audio/Project64-Audio_d.dll
+/PluginARM64/Audio/Project64-Audio.dll
+/PluginARM64/GFX/lib
+/PluginARM64/GFX/map
+/PluginARM64/GFX/pdb
+/PluginARM64/GFX/PJ64Glide64_d.dll
+/PluginARM64/GFX/PJ64Glide64.dll
+/PluginARM64/GFX/Project64-Video_d.dll
+/PluginARM64/GFX/Project64-Video.dll
+/PluginARM64/Input/AndroidInput_d.dll
+/PluginARM64/Input/AndroidInput.dll
+/PluginARM64/Input/lib
+/PluginARM64/Input/map
+/PluginARM64/Input/pdb
+/PluginARM64/Input/PJ64_NRage_d.dll
+/PluginARM64/Input/PJ64_NRage.dll
+/PluginARM64/Input/Project64-Input_d.dll
+/PluginARM64/Input/Project64-Input.dll
+/PluginARM64/RSP/lib
+/PluginARM64/RSP/map
+/PluginARM64/RSP/pdb
+/PluginARM64/RSP/RSP 1.7.dll
+/PluginARM64/RSP/RSP_d 1.7.dll
+/PluginARM64/RSP/RSP-HLE_d.dll
+/PluginARM64/RSP/RSP-HLE.dll
 /Save
 /Source/nragev20/Version.h
 /Source/Project64-audio/Version.h
