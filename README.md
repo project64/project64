@@ -1,8 +1,6 @@
 # Project64 - Nintendo 64 Emulator
 
-Project64 is a free and open-source emulator for the Nintendo 64 and 64DD written in C++.
-
-The emulator is easy to use and includes powerful features for developers, ROM hackers, and more.
+Project64 is a free and open-source emulator for the Nintendo 64 and Nintendo 64 Disk Drive written in C++ currently for Windows (planned support for other platforms in the future)
 
 ## System Requirements
 
@@ -16,22 +14,14 @@ The emulator is easy to use and includes powerful features for developers, ROM h
   * DirectX 8 capable (Jabo's Direct3D8)
   * OpenGL 1.1 capable (Project64 Video)
   * OpenGL 3.3 capable (GLideN64)
-
-## How to use
-
-<sub>(Games not included - do **NOT** ask for ROMs.)</sub>
-
+  
 ### Stable Builds
 
 Installer for the latest stable release: https://www.pj64-emu.com/download/project64-latest
 
 Follow the instructions in the setup window to complete the installation.
 
-### Development Builds
-
-Development Builds are based off the latest source at GitHub. This allows you to use the latest changes straight away, though these changes may not be fully tested and have issues.
-
-Official buildbot: https://www.pj64-emu.com/nightly-builds
+Download nightly builds here: https://www.pj64-emu.com/nightly-builds
 
 AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/projects/status/sbtwyhaexslyhgx3?svg=true
 )](https://ci.appveyor.com/project/project64/project64/branch/master)
@@ -40,9 +30,33 @@ AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/project
 
 ## Support
 
-[**Join the official Project64 Discord Server**](https://discord.gg/Cg3zquF) to report any bugs/issues and seek help from Project64 developers, contributors and the community.
+[**Join the official Project64 Discord server**](https://discord.gg/Cg3zquF) to seek help from Project64 developers, contributors, and the community!
+
+### Compiling
+
+```
+Visual Studio Community
+```
+
+Load .sln project file and compile
+
+## Contributing
+
+Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) before contributing.
+
+## Versioning
+
+We use semantic versioning for Project64. For the versions available, see the [tags on this repository](https://github.com/project64/project64/tags)
+
+## Authors
+
+* **Zilmar** - *Current maintainer* - [Zilmar](https://github.com/PurpleBooth)
+* **Jabo** - *Previous member* - [Jabo](https://github.com/PurpleBooth)
+* **Smiff** - *Previous member* - [Smiff](https://github.com/PurpleBooth)
+* **Gent** - *Previous member* - [Gent](https://github.com/PurpleBooth)
+
+See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
 ## License
 
-Project64 is licensed under the
-[GNU General Public License v2.0](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html).
+This project is licensed under the GPLv2 License - see the [LICENSE.md](https://github.com/project64/project64/blob/master/license.md) file for details
