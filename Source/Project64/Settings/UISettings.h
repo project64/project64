@@ -4,26 +4,26 @@
 
 enum UISettingID
 {
-    //information - temp keys
+    // Information - temporary keys
     Info_ShortCutsChanged,
 
-    //Support Files
+    // Support files
     SupportFile_ShortCuts,
     SupportFile_ShortCutsDefault,
 
-    //Settings location
+    // Settings location
     Setting_PluginPageFirst,
     Setting_DisableScrSaver,
 	Setting_EnableDiscordRPC,
     Setting_AutoSleep,
     Setting_AutoFullscreen,
 
-    //RDB TLB Settings
+    // RDB TLB settings
     Rdb_Status,
     Rdb_NotesCore,
     Rdb_NotesPlugin,
 
-    //User Interface
+    // User interface
     UserInterface_InFullScreen,
     UserInterface_MainWindowTop,
     UserInterface_MainWindowLeft,
@@ -41,19 +41,19 @@ enum UISettingID
     RomBrowser_SortAscendingIndex,
     RomBrowser_Maximized,
 
-    //Directory Info
+    // Directory info
     Directory_LastSave,
     Directory_RecentGameDirCount,
     Directory_RecentGameDirIndex,
 
-    //Recent Game
+    // Recent game
     File_RecentGameFileCount,
     File_RecentGameFileIndex,
 
-    //Support Window
+    // Support window
     SupportWindows_RunCount,
 
-    //Debugger UI window positions and sizes
+    // Debugger UI window positions and sizes
     DebuggerUI_CommandsPos,
     DebuggerUI_MemoryPos,
     DebuggerUI_MemoryDumpPos,

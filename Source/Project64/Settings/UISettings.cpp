@@ -10,26 +10,26 @@
 
 void RegisterUISettings (void)
 {
-    //information - temp keys
+    // Information - temporary keys
     g_Settings->AddHandler((SettingID)(FirstUISettings + Info_ShortCutsChanged), new CSettingTypeTempBool(false));
 
-    //Support Files
+    // Support files
     g_Settings->AddHandler((SettingID)(FirstUISettings + SupportFile_ShortCuts), new CSettingTypeApplicationPath("", "ShortCuts", (SettingID)(FirstUISettings + SupportFile_ShortCutsDefault)));
     g_Settings->AddHandler((SettingID)(FirstUISettings + SupportFile_ShortCutsDefault), new CSettingTypeRelativePath("Config", "Project64.sc3"));
 
-    //Settings location
+    // Settings location
     g_Settings->AddHandler((SettingID)(FirstUISettings + Setting_PluginPageFirst), new CSettingTypeApplication("Settings", "Plugin Page First", false));
     g_Settings->AddHandler((SettingID)(FirstUISettings + Setting_DisableScrSaver), new CSettingTypeApplication("Settings", "Disable Screen Saver", (uint32_t)true));
 	g_Settings->AddHandler((SettingID)(FirstUISettings + Setting_EnableDiscordRPC), new CSettingTypeApplication("Settings", "Enable Discord RPC", true));
     g_Settings->AddHandler((SettingID)(FirstUISettings + Setting_AutoSleep), new CSettingTypeApplication("Settings", "Auto Sleep", (uint32_t)true));
     g_Settings->AddHandler((SettingID)(FirstUISettings + Setting_AutoFullscreen), new CSettingTypeApplication("Settings", "Auto Full Screen", (uint32_t)false));
 
-    //RDB Settings
+    // RDB settings
     g_Settings->AddHandler((SettingID)(FirstUISettings + Rdb_Status), new CSettingTypeRomDatabase("Status", "Unknown"));
     g_Settings->AddHandler((SettingID)(FirstUISettings + Rdb_NotesCore), new CSettingTypeRomDatabase("Core Note", ""));
     g_Settings->AddHandler((SettingID)(FirstUISettings + Rdb_NotesPlugin), new CSettingTypeRomDatabase("Plugin Note", ""));
 
-    //User Interface
+    // User interface
     g_Settings->AddHandler((SettingID)(FirstUISettings + UserInterface_InFullScreen), new CSettingTypeTempBool(false));
     g_Settings->AddHandler((SettingID)(FirstUISettings + UserInterface_MainWindowTop), new CSettingTypeApplication("Main Window", "Top", Default_None));
     g_Settings->AddHandler((SettingID)(FirstUISettings + UserInterface_MainWindowLeft), new CSettingTypeApplication("Main Window", "Left", Default_None));
@@ -56,7 +56,7 @@ void RegisterUISettings (void)
 
     g_Settings->AddHandler((SettingID)(FirstUISettings + SupportWindows_RunCount), new CSettingTypeApplication("Support Project64", "Run Count", (uint32_t)0));
 
-    //Debugger UI
+    // Debugger UI
     g_Settings->AddHandler((SettingID)(FirstUISettings + DebuggerUI_CommandsPos), new CSettingTypeApplication("Debugger UI", "Commands Pos", Default_None));
     g_Settings->AddHandler((SettingID)(FirstUISettings + DebuggerUI_MemoryPos), new CSettingTypeApplication("Debugger UI", "Memory Pos", Default_None));
     g_Settings->AddHandler((SettingID)(FirstUISettings + DebuggerUI_MemoryDumpPos), new CSettingTypeApplication("Debugger UI", "Memory Dump Pos", Default_None));
