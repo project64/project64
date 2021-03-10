@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#if defined(__arm__) || defined(_M_ARM)
+#if defined(__arm__) || defined(_M_ARM) || defined(_M_ARM64)
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>

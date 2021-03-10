@@ -11,7 +11,7 @@ typedef CX86RegInfo CRegInfo;
 
 typedef CX64RegInfo CRegInfo;
 
-#elif defined(__arm__) || defined(_M_ARM)
+#elif defined(__arm__) || defined(_M_ARM) || defined(_M_ARM64)
 
 #include <Project64-core/N64System/Recompiler/Arm/ArmRegInfo.h>
 

@@ -30,7 +30,7 @@
 
 #if defined(__i386__) || defined(_M_IX86)
 class CX86RecompilerOps;
-#elif defined(__arm__) || defined(_M_ARM)
+#elif defined(__arm__) || defined(_M_ARM) || defined(_M_ARM64)
 class CArmRecompilerOps;
 #endif
 
@@ -111,7 +111,7 @@ private:
 
 #if defined(__i386__) || defined(_M_IX86)
     friend class CX86RecompilerOps;
-#elif defined(__arm__) || defined(_M_ARM)
+#elif defined(__arm__) || defined(_M_ARM) || defined(_M_ARM64)
     friend class CArmRegInfo;
     friend class CArmRecompilerOps;
 #endif

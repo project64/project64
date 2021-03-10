@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#if defined(__arm__) || defined(_M_ARM)
+#if defined(__arm__) || defined(_M_ARM) || defined(_M_ARM64)
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/Disk.h>
 #include <Project64-core/N64System/Mips/OpcodeName.h>
@@ -4807,7 +4807,7 @@ void CArmRecompilerOps::CompileCop1Test()
     ArmReg TempReg1 = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
     ArmReg TempReg2 = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
     MoveVariableToArmReg(&g_Reg->STATUS_REGISTER, "STATUS_REGISTER", TempReg1);
-    MoveConstToArmReg(TempReg2, STATUS_CU1, "STATUS_CU1");
+    //MoveConstToArmReg(TempReg2, STATUS_CU1, "STATUS_CU1");
     AndArmRegToArmReg(TempReg1, TempReg1, TempReg2);
     CompareArmRegToConst(TempReg1, 0);
     m_RegWorkingSet.SetArmRegProtected(TempReg1, false);

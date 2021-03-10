@@ -15,7 +15,7 @@ CCompiledFunc::CCompiledFunc( const CCodeBlock & CodeBlock ) :
     m_MemLocation[0] = CodeBlock.MemLocation(0);
     m_MemLocation[1] = CodeBlock.MemLocation(1);
 
-#if defined(__arm__) || defined(_M_ARM)
+#if defined(__arm__) || defined(_M_ARM) || defined(_M_ARM64)
     // make sure function starts at odd address so that the system knows it is thumb mode
     if ((((uint32_t)m_Function) % 2) == 0)
     {

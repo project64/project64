@@ -1,5 +1,5 @@
 #pragma once
-#if defined(__arm__) || defined(_M_ARM)
+#if defined(__arm__) || defined(_M_ARM) || defined(_M_ARM64)
 #include <Project64-core/Settings/DebugSettings.h>
 
 class CArmRegInfo;
