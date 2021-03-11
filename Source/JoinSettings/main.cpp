@@ -123,7 +123,7 @@ typedef std::map<std::string, std::string> Files;
 
 void RegionSection(CFile &TargetIniFile, Files &files, const char * Region, const char * RegionCode)
 {
-    stdstr_f LineData = stdstr_f("//--------------- %s Region Cheat Codes ---------------\r\n\r\n", Region);
+    stdstr_f LineData = stdstr_f("//--------------- %s Region cheat codes ---------------\r\n\r\n", Region);
     TargetIniFile.Write(LineData.c_str(), (int)LineData.length());
 
     bool first = true;
@@ -226,9 +226,9 @@ void JoinFile(const char * Directory, const char * Target)
     }
     if (strcmp(CPath(Target).GetExtension().c_str(), "cht") == 0)
     {
-        stdstr_f LineData = stdstr_f("// Project64 Official Cheats Database\r\n");
+        stdstr_f LineData = stdstr_f("// Project64 official cheat database\r\n");
         TargetIniFile.Write(LineData.c_str(), (int)LineData.length());
-        LineData = stdstr_f("// Not for use with PJ64 v1.6 or previous\r\n");
+        LineData = stdstr_f("// Not for use with Project64 v1.6 or lower\r\n");
         TargetIniFile.Write(LineData.c_str(), (int)LineData.length());
         LineData = stdstr_f("// ----------------------------------------------------\r\n\r\n");
         TargetIniFile.Write(LineData.c_str(), (int)LineData.length());
