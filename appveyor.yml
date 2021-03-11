@@ -23,7 +23,7 @@ before_build:
     }
     If ($env:PLATFORM -eq 'ARM64') {
       Write-Host 'Building for ARM64. Using Win32 UpdateVersion.'
-      MSBuild.exe /p:Platform=Win32 Source\UpdateVersion
+      MSBuild.exe /p:Platform=Win32 $env:APPVEYOR_BUILD_FOLDER\Source\UpdateVersion
     }
 build:
   project: Project64.sln
