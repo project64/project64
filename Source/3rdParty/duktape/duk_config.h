@@ -230,9 +230,9 @@
 #endif
 
 /* ARM */
-#if defined(__arm__) || defined(__thumb__) || defined(_ARM) || defined(_M_ARM)
+#if defined(__arm__) || defined(__thumb__) || defined(_ARM) || defined(_M_ARM) || defined(_M_ARM64)
 #define DUK_F_ARM
-#if defined(__LP64__) || defined(_LP64) || defined(__arm64) || defined(__arm64__)
+#if defined(__LP64__) || defined(_LP64) || defined(__arm64) || defined(__arm64__) || defined(_M_ARM64)
 #define DUK_F_ARM64
 #else
 #define DUK_F_ARM32
@@ -1403,7 +1403,7 @@
     defined(DUK_F_BCC) || \
     (defined(__WORDSIZE) && (__WORDSIZE == 32))
 #define DUK_F_32BIT_PTRS
-#elif defined(DUK_F_X64) || \
+#elif defined(DUK_F_X64) || defined(DUK_F_ARM64) || \
       (defined(__WORDSIZE) && (__WORDSIZE == 64))
 #define DUK_F_64BIT_PTRS
 #else
