@@ -3,6 +3,7 @@ image: Visual Studio 2015
 platform:
 - Win32
 - x64
+- ARM64
 configuration:
 - Release
 
@@ -11,6 +12,10 @@ before_build:
     If ($env:APPVEYOR_BUILD_VERSION -Like "1.0*") {
       $version = Source/Script/SetGitProperties.cmd
       appveyor UpdateBuild -Version $version
+    }
+    If ($env:PLATFORM -eq 'ARM64') {
+      Write-Host 'Building for ARM64. Using Win32 UpdateVersion.'
+      MSBuild.exe /p:Platform=Win32 Source\UpdateVersion
     }
 build:
   project: Project64.sln
