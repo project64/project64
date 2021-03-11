@@ -1,23 +1,36 @@
 version: 1.0.{build}
-platform:
-- ARM64
-- x64
-- Win32
-configuration:
-- Release
+# image: Visual Studio 2019
+# platform:
+# - ARM64
+# - x64
+# - Win32
+# configuration:
+# - Release
 
-for:
--
-  matrix:
-    except:
-      - platform: ARM64
-  image: Visual Studio 2015
+# for:
+# -
+#   matrix:
+#     except:
+#       - platform: ARM64
+#   image: Visual Studio 2015
+# -
+#   matrix:
+#     only:
+#       - platform: ARM64
+#   image: Visual Studio 2019
 
--
+environment:
+  global:
+    configuration: Release
+
   matrix:
-    only:
-      - platform: ARM64
-  image: Visual Studio 2019
+  - platform: ARM64
+    image: Visual Studio 2019
+  - platform: Win32
+    image: Visual Studio 2015
+  - platform: x64
+    image: Visual Studio 2015
+
 
 before_build:
 - ps: >-
