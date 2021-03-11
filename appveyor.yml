@@ -1,9 +1,8 @@
 version: 1.0.{build}
-image: Visual Studio 2015
 platform:
-- Win32
 - x64
 - ARM64
+- Win32
 configuration:
 - Release
 
@@ -13,6 +12,9 @@ for:
     only:
       - platform: ARM64
         image: Visual Studio 2019
+    except:
+      - platform: ARM64
+        image: Visual Studio 2015
 
 before_build:
 - ps: >-
