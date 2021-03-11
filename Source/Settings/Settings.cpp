@@ -185,7 +185,7 @@ void RegisterSetting(short SettingID, SETTING_DATA_TYPE Type, const char * Name,
     case Data_DWORD_RDB_Setting:
         if (DefaultDW != 0)
         {
-            //create default
+            // Create default
             DefaultID = SettingID + g_PluginSettings.DefaultStartRange;
             g_PluginSettings.RegisterSetting(g_PluginSettings.handle, DefaultID, g_PluginSettings.NoDefault,
                 Data_DWORD, SettingType_ConstValue, g_PluginSettingName, "", DefaultDW);
@@ -200,7 +200,7 @@ void RegisterSetting(short SettingID, SETTING_DATA_TYPE Type, const char * Name,
     case Data_String_RDB_Setting:
         if (DefaultStr != NULL && strlen(DefaultStr) > 0)
         {
-            //create default
+            // Create default
             DefaultID = SettingID + g_PluginSettings.DefaultStartRange;
             g_PluginSettings.RegisterSetting(g_PluginSettings.handle, DefaultID, g_PluginSettings.NoDefault,
                 Data_String, SettingType_ConstString, g_PluginSettingName, DefaultStr, 0);
