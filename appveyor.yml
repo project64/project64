@@ -1,11 +1,19 @@
 version: 1.0.{build}
-image: Visual Studio 2015
 platform:
 - Win32
 - x64
 - ARM64
 configuration:
 - Release
+
+environment:
+  matrix:
+    - PLATFORM: Win32
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+    - PLATFORM: x64
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+    - PLATFORM: ARM64
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
 
 before_build:
 - ps: >-
