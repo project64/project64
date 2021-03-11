@@ -70,12 +70,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64-input", "Source\P
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|ARM64 = Debug|ARM64
 		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
-		Release|ARM64 = Release|ARM64
+		Debug|ARM64 = Debug|ARM64
 		Release|Win32 = Release|Win32
 		Release|x64 = Release|x64
+		Release|ARM64 = Release|ARM64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B4A4B994-9111-42B1-93C2-6F1CA8BC4421}.Debug|ARM64.ActiveCfg = Debug|ARM64
