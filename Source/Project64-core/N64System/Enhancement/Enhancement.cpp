@@ -217,6 +217,7 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
         }
         if (strcmp(TempFormat, "XXXXXXXX XXXX") != 0 &&
             strcmp(TempFormat, "XXXXXXXX XX??") != 0 &&
+            strcmp(TempFormat, "XXXXXXXX ??XX") != 0 &&
             strcmp(TempFormat, "XXXXXXXX ????") != 0 &&
             strcmp(TempFormat, "XXXXXXXX XXXX:XXXX") != 0)
         {
