@@ -52,10 +52,10 @@ We use semantic versioning for Project64. For the versions available, see the [t
 
 ## Authors
 
-* **Zilmar** - *Current maintainer* - [Zilmar](https://github.com/PurpleBooth)
-* **Jabo** - *Previous member* - [Jabo](https://github.com/PurpleBooth)
-* **Smiff** - *Previous member* - [Smiff](https://github.com/PurpleBooth)
-* **Gent** - *Previous member* - [Gent](https://github.com/PurpleBooth)
+* **Zilmar** - *Current maintainer* - [Zilmar](https://github.com/project64)
+* **Jabo** - *Previous member* - Jabo
+* **Smiff** - *Previous member* - Smiff
+* **Gent** - *Previous member* - Gent
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
