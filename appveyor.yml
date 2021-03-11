@@ -1,7 +1,7 @@
 version: 1.0.{build}
 platform:
-- x64
 - ARM64
+- x64
 - Win32
 configuration:
 - Release
@@ -18,6 +18,7 @@ for:
 
 before_build:
 - ps: >-
+    Write-Host "With image: $env:APPVEYOR_BUILD_WORKER_IMAGE"
     If ($env:APPVEYOR_BUILD_VERSION -Like "1.0*") {
       $version = Source/Script/SetGitProperties.cmd
       appveyor UpdateBuild -Version $version
