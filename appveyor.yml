@@ -11,12 +11,13 @@ for:
   matrix:
     except:
       - platform: ARM64
-        image: Visual Studio 2015
+  image: Visual Studio 2015
+
 -
   matrix:
     only:
       - platform: ARM64
-        image: Visual Studio 2019
+  image: Visual Studio 2019
 
 before_build:
 - ps: >-
