@@ -9373,3 +9373,1533 @@ Good Name=F-ZERO X Expansion Kit (U)
 Status=Compatible
 Culling=1
 Fixed Audio=0
+
+//================  N64 HACKS/MODS  ================
+
+[21FEAE88-A4101424-C:45]
+Good Name=SM64 The Missing Stars v1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[9CC44345-D6DF4426-C:45]
+Good Name=Super Mario Star Road (Final Version)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[9BE9D119-1EFEAFE5-C:45]
+Good Name=StarRevenge Redone
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[ABFC3122-88D7F94C-C:45]
+Good Name=Star Revenge 2 - Night of Doom (English)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[2CD9A13D-DDA89A4E-C:45]
+Good Name=Super Mario New Star (Update 2) (English)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[DABB2330-854470A2-C:45]
+Good Name=Star Revenge 6 - Luigi's Adventure v1.2
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[1FD957AD-05F83E14-C:45]
+Good Name=Super Mario 74 (English V1.4 Fixed Warps)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[E8276F64-21E5C5AB-C:45]
+Good Name=Super Mario 74 Extreme Edition (English Final)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[072B8BAA-6B9113C4-C:45]
+Good Name=Star Revenge Redone V2.0
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[8848708B-CC09D5F9-C:45]
+Good Name=SM64 The Green Stars v1.3
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[904A708B-DCF289E5-C:45]
+Good Name=SM64 The Green Stars v1.3
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[73EB200A-BB2EB3DB-C:45]
+Good Name=Star Revenge 6.5 - Wrath of the Dim. Flower
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[2C24F934-D844451B-C:45]
+Good Name=Star Revenge 6.9 - Luigi lost in Time
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[9E7AC294-20303C2A-C:45]
+Good Name=Star Revenge 7 - Park of Time
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[9B9A0352-D2ED08D5-C:45]
+Good Name=Star Revenge 7.5 - Kedowser's Return v1.0.1a
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[7301E2C3-BE9383E5-C:45]
+Good Name=Super Mario and the Marvel Adventure v1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[4ADF9C39-B14D4544-C:45]
+Good Name=Luigi's Mansion 64
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[FE7B4D0E-F0F23957-C:45]
+Good Name=SM64 It's A Crash
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[CF42DF16-FEA559EB-C:45]
+Good Name=SM64 Boonster's Peril
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+
+[1496719E-645F5BE4-C:45]
+Good Name=SM64 Shining Stars
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[4B85851B-1A22FBD6-C:45]
+Good Name=Shining Stars 2 - Mirror Madness V1.7
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[FF95988A-548A491D-C:45]
+Good Name=SM64 Kirby Edition V1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[E0A36935-4130715B-C:45]
+Good Name=Star Revenge 2.5 - Remnant of Doom v1.0.3
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[AA686A30-BCEA3963-C:45]
+Good Name=Star Revenge 3 - Mario On An Saoire 64
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[BF0A2D35-7AA399AA-C:45]
+Good Name=Star Revenge 4 - The Kedama Takeover 64
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[E188DDCC-06AB944D-C:45]
+Good Name=Star Revenge 0.5 - Unused Levels V1.0.1b
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[70F902BF-B238BD29-C:45]
+Good Name=SM64 Seaside Town
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[F6E8F554-82556325-C:45]
+Good Name=Super Mario Warp Zone 2
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[2DEB68C3-379ED88C-C:45]
+Good Name=SM64 Multiplayer (1.3.1)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[7C0961A8-9FB87D06-C:45]
+Good Name=SM64 Openworld Quest
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[5AE2B156-C43A321A-C:45]
+Good Name=SM64 Twisted Adventures v2.0
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[7046737D-3FB93CD5-C:45]
+Good Name=Hallowoomy on Spoopy Island
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[DCFF3466-BE8A048A-C:45]
+Good Name=Luigi and the Forest Ruins Rebooted (v1.5 Final)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[57806F5B-949179B7-C:45]
+Good Name=Luigi's Mansion 64.5 (Easy Mode)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[D0E06F24-EBAEBEDC-C:45]
+Good Name=Luigi's Mansion 64.5 (Super Player Mode)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[87C28E01-308C0E9B-C:45]
+Good Name=Star Revenge 4.5 - The Kedama Takeover Rewritten v1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[EC340D12-EA9AD3F3-C:45]
+Good Name=Super Mario Star Road Multiplayer (1.2.1)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[CB7EE655-82C623BA-C:45]
+Good Name=SM64 Chaos Edition V2.0
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[0AE17AAE-F247736B-C:45]
+Good Name=SM64 Last Impact V1.1
+Status=Compatible
+32bit=No
+Counter Factor=1
+Unaligned DMA=1
+
+[9C68461F-27BF2FE7-C:45]
+Good Name=Super Mario 64 Extra (v1.0)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[A622B59D-4F0EF65C-C:45]
+Good Name=Super Mario and Planet Stardust's Rampage
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[DEFB5087-1958A1AA-C:45]
+Good Name=Super Mario 65 The Rainbow Stars V1.4.2
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[6374A376-E9D5A68C-C:45]
+Good Name=Super Mario The Galactic Journey V1.3
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[87C55B0B-9FA23EE8-C:45]
+Good Name=Super Mario Cyclone Fighter V1.0.1b (English)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[21E236F4-B36AC735-C:45]
+Good Name=SM64 The Missing Stars v2.0
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[70E84DEC-0087E5C5-C:45]
+Good Name=Star Revenge 5 - Neo Blue Realm v1.1a
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[00D69C1D-72BB8B47-C:45]
+Good Name=Star Revenge 8 - Scepter of Hope (fixed v1.1)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[AC5F8120-CC0EDB47-C:45]
+Good Name=Star Revenge 8 - Scepter of Hope v1.2b
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[40F32C95-455A7C9B-C:45]
+Good Name=Star Revenge 2 Act 1 - To the Moon
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[79E1BA00-63B46F86-C:45]
+Good Name=SM64 The Green Stars v2.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[03368AB2-D65A132E-C:45]
+Good Name=SM64 The Green Stars (Luigi Edition)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[C518C826-2D08AA6B-C:45]
+Good Name=SM64 1.5 Ztar Attack! v1.2
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[6C287C1D-509D5897-C:45]
+Good Name=Super Mario 64 (U) (Widescreen Patch)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[87A440ED-62857DB4-C:45]
+Good Name=Super Mario 64 (U) (Parallel Lakitu Cam)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[EC8D8DCA-BAE538F2-C:45]
+Good Name=SM64 Sapphire 1.0
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[836365F1-58358C20-C:45]
+Good Name=Star Revenge 2.5 - Remnant of Doom v1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[6AC3081C-280FBCA2-C:45]
+Good Name=Shining Stars 3 - Sanctuary of the Star Comet V1.3.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[52DCCCC0-BA07C327-C:45]
+Good Name=Star Revenge 5.5 - Destroyed Memories v1.0.2
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[52DCCCC2-4F33C7E8-C:45]
+Good Name=Star Revenge 5.5 - Destroyed Memories v1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[5E28AE7E-1B0626A0-C:45]
+Good Name=SM64 Shining Stars v4.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[C5D6CD64-E73EA710-C:45]
+Good Name=Shining Stars 2 - Mirror Madness v4.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[074A2A7A-DF31F6DF-C:45]
+Good Name=Shining Stars 3 - Sanctuary of the Star Comet V2.0
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[C801B759-BD1427F6-C:45]
+Good Name=SM64 Ocarina of Time
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[EE840066-C8326868-C:45]
+Good Name=TB8's Classic Pack 64
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[6C0488A6-F53CFDEF-C:45]
+Good Name=Super Mario Super Star
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[DC493C8D-E033E6F2-C:45]
+Good Name=SM64 Last Impact V1.2
+Status=Compatible
+32bit=No
+Counter Factor=1
+Unaligned DMA=1
+
+[ABAAA3B5-396141CD-C:45]
+Good Name=SM64 Stars of the Beast v1.2
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[B96BB0F2-5751DB14-C:45]
+Good Name=Super Mario Island
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[BA1C0F25-206438DE-C:45]
+Good Name=Super Mario 64 and the Koopa Power
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[E58AFA2E-049AB620-C:45]
+Good Name=Jumping Over It with Nathaniel Bandy
+Status=Compatible
+Counter Factor=1
+Fast SP=No
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
+Unaligned DMA=1
+
+[4B5D1A62-683371BE-C:45]
+Good Name=Super Mario 64 Remastered v1.5
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[E5E9F5FB-E1C4551D-C:45]
+Good Name=Super Mario 64 60FPS V2 (U)
+Status=Compatible
+Unaligned DMA=1
+
+[85A772F1-D5E7CDCA-C:45]
+Good Name=Super Mario 64 60FPS V2 Widescreen (U)
+Status=Compatible
+Unaligned DMA=1
+
+[2AF24EA5-128A5B7D-C:45]
+Good Name=SM64 The Mushroom Cup 1.0.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[30E1A033-70833276-C:45]
+Good Name=Star Revenge 6 - Luigi's Adventure v1.3.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[CCC55428-58C9B95C-C:45]
+Good Name=Star Revenge 6.5 - Wrath of the Dimensional Flower v1.1.1
+Status=Compatible
+Counter Factor=1
+Linking=Off
+Unaligned DMA=1
+
+[11B32AEF-57A59139-C:45]
+Good Name=Star Revenge 2 Act 1 - To the Moon v1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[CC3EE466-3338D014-C:45]
+Good Name=Star Revenge 1 - Star Takeover v1.2a
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[7C7E545D-CEC2EC27-C:45]
+Good Name=Star Revenge 4.5 - The Kedama Takeover Rewritten v1.2
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[CA4AF171-0C808361-C:45]
+Good Name=Star Revenge 5 - Neo Blue Realm v1.2
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[7C2CC4A2-94612707-C:45]
+Good Name=Super Mario Fantasy 64
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[24158175-122F8BB0-C:45]
+Good Name=Ztar Attack 2 - A Blast to the Past v1.0b
+Status=Compatible
+Counter Factor=1
+32bit=No
+Unaligned DMA=1
+
+[D50347DB-B743E736-C:45]
+Good Name=Some Kind of a Crash Game v1.4 (Mariocrash.z64)
+Status=Compatible
+Counter Factor=1
+Fast SP=No
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
+Unaligned DMA=1
+
+[C1A11E5C-D22B962E-C:45]
+Good Name=SM64 The Mushroom Cup v1.2
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[E553A5BB-3CA1DD41-C:45]
+Good Name=The Super Mario Bros. Super Show 64
+Status=Compatible
+Counter Factor=1
+32bit=No
+Fast SP=No
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
+Linking=Off
+Unaligned DMA=1
+
+[8A7C1B38-A127C514-C:45]
+Good Name=The Super Mario Bros. Super Show 64 (Widescreen)
+Status=Compatible
+Counter Factor=1
+32bit=No
+Fast SP=No
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
+Linking=Off
+Unaligned DMA=1
+
+[8120C0D9-D05FC8D9-C:45]
+Good Name=PENGUIN
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[9775BACC-7442BA9A-C:45]
+Good Name=Yoshi's Adventure 64 1.2b
+Status=Compatible
+Counter Factor=1
+32bit=No
+Unaligned DMA=1
+
+[50534DB6-34165C1E-C:45]
+Good Name=Yoshi's Adventure 128 - Attack of the Factory v1.0.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[8120C0F9-120F37CD-C:45]
+Good Name=PENGUIN v1.0.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[08629404-82545FC5-C:45]
+Good Name=Super Mario 64 and the Koopa Power v1.0.2
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[93673DE6-A2E6DD3F-C:45]
+Good Name=The Super Mario Bros. Super Show 64 v1.1
+Status=Compatible
+Counter Factor=1
+32bit=No
+Fast SP=No
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
+Linking=Off
+Unaligned DMA=1
+
+[E28731A3-46891D21-C:45]
+Good Name=The Super Mario Bros. Super Show 64 v1.1 (Widescreen)
+Status=Compatible
+Counter Factor=1
+32bit=No
+Fast SP=No
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
+Linking=Off
+Unaligned DMA=1
+
+[2E0C1457-C861A879-C:45]
+Good Name=Super Mario Cyclone Fighter v2.0
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[DA85370D-E8D80268-C:45]
+Good Name=Star Revenge 8 - Scepter of Hope v1.3
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[936963C0-758647D6-C:45]
+Good Name=The Super Mario Bros. Super Show 64 v1.2
+Status=Compatible
+Counter Factor=1
+32bit=No
+Fast SP=No
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
+Linking=Off
+Unaligned DMA=1
+
+[E2873C43-0CCDB9AC-C:45]
+Good Name=The Super Mario Bros. Super Show 64 v1.2 (Widescreen)
+Status=Compatible
+Counter Factor=1
+32bit=No
+Fast SP=No
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
+Linking=Off
+Unaligned DMA=1
+
+[18F9FB82-518E7D86-C:45]
+Good Name=Star Revenge 3.5 - Vacation of Cursed Dreams v1.2a
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[952999FE-5D8741A4-C:45]
+Good Name=Star Revenge 1.5 - Star Takeover Redone v2.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[5BC5CCD1-6CFE61BF-C:45]
+Good Name=SUPER MARIO BROS. 64
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[740E6D4D-783B0C27-C:45]
+Good Name=SM64 Seaside Town v1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[B440532A-A3BF855B-C:45]
+Good Name=Super Mario Apocalypse
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[9D7CE3AD-5C5AB9CC-C:45]
+Good Name=Star Revenge 3.9 - Dreamish Block Beats
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[1ED5B0BC-5BD0D550-C:45]
+Good Name=SM64 The Green Comet (v1.0.1)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[4267D5D4-4378E31A-C:45]
+Good Name=SM64 Peach's Memory Cut Levels
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[5E35EE33-6A7D767B-C:45]
+Good Name=Star Revenge 2.5 - Remnant of Doom v1.2
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[9D7CE4A5-A08217FC-C:45]
+Good Name=Star Revenge 3.9 - Dreamish Block Beats v1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[A6FCD8FC-F0D20259-C:45]
+Good Name=All Star Adventure v1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[2EF3F24C-F4AB50F6-C:45]
+Good Name=Mario and the Magic Trials
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[B12785E7-E2BD6242-C:45]
+Good Name=Waluigi's Taco Stand 64
+Status=Compatible
+Counter Factor=2
+Linking=Off
+Unaligned DMA=1
+
+[5950AEBC-C23EEED7-C:45]
+Good Name=SM64 Ztar Attack Rebooted v1.2
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[399583C7-0F6968D3-C:45]
+Good Name=Super Mario 76 Strange Adventure
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[F502E584-933304BF-C:45]
+Good Name=SM64 Ocarina of Time (Updated)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[80AA9870-0BEF5B37-C:45]
+Good Name=Super Luigi 64 v2.0
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[1F9B4128-FD80B87E-C:45]
+Good Name=Super Slide 64 (V1.0.1)
+Status=Compatible
+Counter Factor=1
+Linking=Off
+Unaligned DMA=1
+
+[2C8F381A-181F60B7-C:45]
+Good Name=Star Revenge 7 - Park of Time v1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[B984220C-DFBE0C2D-C:45]
+Good Name=Super Mario and the Cursed Castles v1.02
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[1C9E9591-EF3152F1-C:45]
+Good Name=Star Revenge 6.9 - Luigi lost in Time v1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[3FA5F651-5C64DB39-C:45]
+Good Name=Star Revenge 7.5 - Kedowser's Return v1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[D7308ADE-C4ECCF67-C:45]
+Good Name=Star Revenge 0.5 - Unused Levels v1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[FF471163-0493DC90-C:45]
+Good Name=Star Revenge 6.25 F3 Demo
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[4520B998-C202C804-C:45]
+Good Name=Star Revenge 1.5 - Star Takeover Redone v2.1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[6C618959-26BAF835-C:45]
+Good Name=Super Mario 64 Peach's Memory
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[3C738226-874A44A4-C:45]
+Good Name=All Star Adventure v2.3
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[F5D60D1C-1BA05A98-C:45]
+Good Name=Star Revenge 4 - The Kedama Takeover v1.1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[D30D2550-3B9025D8-C:45]
+Good Name=Ztar Attack 3 (F3 2019 Demo)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[A05E1C58-AB9A26FE-C:45]
+Good Name=Zelda 64 Dawn & Dusk v1.0 (U) (1.0)
+SMM-Protect=1
+Status=Compatible
+
+[984CD1D2-EC61EED8-C:45]
+Good Name=Zelda 64 Dawn & Dusk v1.0 (U) (1.1)
+SMM-Protect=1
+Status=Compatible
+
+[5DCA1CB0-39C035A2-C:45]
+Good Name=Zelda 64 Dawn & Dusk v1.0 (U) (1.2)
+SMM-Protect=1
+Status=Compatible
+
+[05F2807D-615555AA-C:45]
+Good Name=Zelda 64 Dawn & Dusk v2.0 (JU) (1.0)
+SMM-Protect=1
+Status=Compatible
+
+[05BC6617-664E7CA9-C:45]
+Good Name=Zelda 64 Dawn & Dusk v2.0 (JU) (1.1)
+SMM-Protect=1
+Status=Compatible
+
+[3C1CA1D5-BE199CC1-C:45]
+Good Name=Zelda 64 Dawn & Dusk v2.0 (JU) (1.2)
+SMM-Protect=1
+Status=Compatible
+
+[46334441-3E256124-C:45]
+Good Name=Let's Plant A Tree 64
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[E876843E-375EAB81-C:45]
+Good Name=Star Revenge 5 - Neo Blue Realm v1.3
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[84BA9B8A-3080826F-C:45]
+Good Name=SM64 Halloween Mayhem
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[EEB11D00-37CF1C5A-C:45]
+Good Name=Hallowoomy on Spoopy Island v1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[6B2E6A74-1EC88C67-C:45]
+Good Name=Ultra Mario 64 (Demo)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[DEB992B2-55FC9187-C:45]
+Good Name=Smash Remix 0.9
+Status=Compatible
+Counter Factor=1
+Culling=1
+SMM-Cache=0
+SMM-FUNC=0
+SMM-TLB=0
+ViRefresh=2200
+Unaligned DMA=1
+
+[0A738D62-8C765F34-C:45]
+Good Name=Super Mario 64 Land
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[08AE8D46-3F92F93A-C:45]
+Good Name=Super Melee Adventure 64 (Mario)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[085EF0A8-51AFE1D9-C:45]
+Good Name=Super Melee Adventure 64 (Luigi)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[08AE8A0E-2078892A-C:45]
+Good Name=Super Melee Adventure 64 (Fox)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[08AE8C2E-4662B62A-C:45]
+Good Name=Super Melee Adventure 64 (C. Falcon)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[08AF75C6-9D459A48-C:45]
+Good Name=Super Melee Adventure 64 (Ness)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[4246E6B0-F112A468-C:45]
+Good Name=Super Mario 64 Land v1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[3F5C0A44-C90824BA-C:45]
+Good Name=Sunshine Secret Book 64 V1.0
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[09290212-12922E0B-C:45]
+Good Name=Star Revenge 6.25 - Luigi's Adventure DX v1.0.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[09290212-386DB69A-C:45]
+Good Name=Star Revenge 6.25 - Luigi's Adventure DX v1.0.2.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[1A233EE6-F93F7ED0-C:45]
+Good Name=Super Mario The Lost Dreams V1.0
+Status=Compatible
+Counter Factor=1
+32bit=No
+Fast SP=No
+Linking=Off
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
+Unaligned DMA=1
+
+[DDCBDA92-B368EEC5-C:45]
+Good Name=Smash Remix 0.9.1
+Internal Name=SmashRemix
+Status=Compatible
+Counter Factor=1
+Culling=1
+SMM-Cache=0
+SMM-FUNC=0
+SMM-TLB=0
+ViRefresh=2200
+Unaligned DMA=1
+
+[1A2341EA-17E80F97-C:45]
+Good Name=Super Mario The Lost Dreams V1.1
+Status=Compatible
+Counter Factor=1
+32bit=No
+Fast SP=No
+Linking=Off
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
+Unaligned DMA=1
+
+[AF2FA9FA-3F02351D-C:45]
+Good Name=Super Mario 74 (English V1.6)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[EA269E8B-E0886F4A-C:45]
+Good Name=Speed Star Adventure v1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[252FC909-C6552BC8-C:45]
+Good Name=Seaside Village
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[3BC4808B-09AB12E4-C:45]
+Good Name=Super Mario 64 (U) (Analog Camera Patch)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[76AD61B3-FA33C27D-C:45]
+Good Name=Star Revenge 6.25 - Luigi's Adventure DX v1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[01CE221E-1457165A-C:45]
+Good Name=Super Mario Sunshine 64
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[0F114195-477C3DD7-C:45]
+Good Name=Mario Party 64 v1.03
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[FA3AA571-673C45D2-C:45]
+Good Name=Smash Remix 0.9.2
+Internal Name=SmashRemix
+Status=Compatible
+Counter Factor=1
+Culling=1
+SMM-Cache=0
+SMM-FUNC=0
+SMM-TLB=0
+ViRefresh=2200
+Unaligned DMA=1
+
+[3AA73B10-137B4AA1-C:45]
+Good Name=Super Mario's Jammin' Journey 64 v1.2
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[0F1143A7-5DC7E288-C:45]
+Good Name=Mario Party 64 v1.1.2
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[0A60327C-07578E6B-C:45]
+Good Name=Unfair Mario 64
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[261FF157-4F417E6F-C:45]
+Good Name=The 200 IQ Super Quiz!
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[125C6F53-865BD9CA-C:45]
+Good Name=Mario Odyssey 64
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[DE0886FA-F88D4B48-C:45]
+Good Name=Super Mario Run 64
+Status=Compatible
+Unaligned DMA=1
+
+[1FD681B7-6A916F3C-C:45]
+Good Name=Gamer Mario's Destiny 64 v1.01 (GMD64)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[E1B80D52-EFC57F55-C:45]
+Good Name=Bounce Tales 64 1.0 Fix
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[C0502D5D-04AEAFAA-C:45]
+Good Name=Luigi and the Forest Ruins Rebooted v3.1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[19FCCDAA-25669A90-C:45]
+Good Name=Super Mario's Jammin' Journey 64 v1.3
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[B5F6D578-9D3ADAEE-C:45]
+Good Name=Project Power '95 - SM64 Beta Revival - DEMO (U)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[EE5F9A40-3BBF6688-C:45]
+Good Name=Super Mario 64 - Arguably Better Edition R3.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[C40C4337-9CFD8808-C:45]
+Good Name=Super Mario 64 - Arguably Better Edition R3.1 (Widescreen)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[396A7558-F97BE0E7-C:45]
+Good Name=Super Pizza Time 64
+Status=Compatible
+Unaligned DMA=1
+
+[8E3C1049-BD8DB4B6-C:45]
+Good Name=Super Mario 64 (Widescreen Hack by gamemasterplc) (U)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[F1BB0C7C-77EA1DE8-C:45]
+Good Name=Smash Remix 0.9.3
+Internal Name=SmashRemix
+Status=Compatible
+Counter Factor=1
+Culling=1
+SMM-Cache=0
+SMM-FUNC=0
+SMM-TLB=0
+ViRefresh=2200
+Unaligned DMA=1
+
+[00B61AB1-8B79A53C-C:45]
+Good Name=Smash Remix 0.9.3b
+Internal Name=SmashRemix
+Status=Compatible
+Counter Factor=1
+Culling=1
+SMM-Cache=0
+SMM-FUNC=0
+SMM-TLB=0
+ViRefresh=2200
+Unaligned DMA=1
+
+[1E3E437F-5F1C663A-C:45]
+Good Name=The Fate of the Bombiwa 1.0.3
+Status=Compatible
+SMM-Protect=1
+Unaligned DMA=1
+
+[69DB6088-5DF4A2E3-C:45]
+Good Name=SM64 Shining Stars Repainted
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[38C29680-9E1B9471-C:45]
+Good Name=Paper Mario - Master Quest
+Status=Compatible
+Counter Factor=1
+32bit=No
+Reg Cache=No
+Unaligned DMA=1
+
+[40D195A0-8CA46F23-C:45]
+Good Name=Smash Remix 0.9.3c
+Internal Name=SmashRemix
+Status=Compatible
+Counter Factor=1
+Culling=1
+SMM-Cache=0
+SMM-FUNC=0
+SMM-TLB=0
+ViRefresh=2200
+Unaligned DMA=1
+
+[01BCCB2F-1B8FB03A-C:45]
+Good Name=BUP 64
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[C7F68E6A-42F66B1C-C:45]
+Good Name=Bup.EXE 64
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[AEA5DB41-7FF9677B-C:45]
+Good Name=Super Mario 64 Maker v1.3
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[29E7DDC5-5894A21E-C:45]
+Good Name=The Legend of Zelda - The Missing Link (v1.1)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[29E723A5-6EB9C98A-C:45]
+Good Name=The Legend of Zelda - The Missing Link (v1.2) (v1.3)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[2F296567-02201857-C:45]
+Good Name=The Legend of Zelda - The Missing Link (v1.4)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[5C6D30E8-2CAC01B6-C:45]
+Good Name=All Star Adventure Extreme Edition
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[681048D4-10AA0D72-C:45]
+Good Name=Lost Universe 1.5 - Kappowser's Legacy v1.3
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[5D8D84F2-0F411796-C:45]
+Good Name=Star Revenge 0 - Galaxy of Origins v1.0.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[C2577D1C-918E8B07-C:45]
+Good Name=Star Revenge 3.5 - Vacation of Cursed Dreams v1.3
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[00FCE453-7D0C73E8-C:45]
+Good Name=Star Revenge 3.9 - Dreamish Block Beats v2.0
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[B40FEB3E-94925C24-C:45]
+Good Name=Another Mario Adventure v1.7
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[53F8977C-56468F88-C:45]
+Good Name=Another Mario Adventure v1.7 (Widescreen)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[65C17CD6-70C0AF14-C:45]
+Good Name=The Legend of Zelda - Ocarina of Time Redux 2.0 (U)
+Status=Compatible
+32bit=No
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
+Unaligned DMA=1
+
+[38902B61-E3C1FC54-C:45]
+Good Name=The Hole to Hyrule
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[FA5EE6EB-0392B054-C:45]
+Good Name=Super Mario The Lost Dreams V1.2
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[B9780148-0B53F368-C:45]
+Good Name=Super Mario Odyssey 64 V5
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[6BDD01EE-1D1A5A97-C:45]
+Good Name=SM64 Trouble Town V1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[1B5AAD82-368B88C1-C:45]
+Good Name=Smash Remix 0.9.4
+Internal Name=SmashRemix
+Status=Compatible
+Counter Factor=1
+Culling=1
+SMM-Cache=0
+SMM-FUNC=0
+SMM-TLB=0
+ViRefresh=2200
+Unaligned DMA=1
+
+[642AF8F6-1CDB82A7-C:45]
+Good Name=The Legend of Zelda - Ocarina of Time Redux 2.1 (U)
+Status=Compatible
+32bit=No
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
+Unaligned DMA=1
+
+[0F4FCFAC-2D957902-C:45]
+Good Name=Super Mario's Jammin' Journey 64 v1.4
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[0EBA31A5-18630D86-C:45]
+Good Name=Super Mario 64 Remastered v1.7
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[0D7ECD83-108484F8-C:45]
+Good Name=Star Revenge 2 Act 2 - Night of Doom v1.3
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[447A57BD-065F95FC-C:45]
+Good Name=SM64 Randomizer v0.5.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[36507A5C-59C8FB33-C:45]
+Good Name=Realm Invasion v1.0
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[14A697D8-F5652B12-C:45]
+Good Name=Super Mario Star Road (N64 Compatible, 2019)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[DEE7B0A5-70379C1F-C:45]
+Good Name=Super Mario 65 - The Rainbow Stars (Final Fixed Version)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[1A0C2C10-FEDA3A85-C:45]
+Good Name=Super Retro Land
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[56F8EB0C-8B6A866A-C:45]
+Good Name=Mario on Indigo Island 1.3c
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[56BBC205-B336113F-C:45]
+Good Name=Shrek Retold 64
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[B9B5831B-7F3DEBAF-C:45]
+Good Name=Smash Remix 0.9.5
+Internal Name=SmashRemix
+Status=Compatible
+Counter Factor=1
+Culling=1
+SMM-Cache=0
+SMM-FUNC=0
+SMM-TLB=0
+ViRefresh=2200
+Unaligned DMA=1
+
+[71049F59-F8259058-C:45]
+Good Name=Super Mario 32 v3.2
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[E771EA62-93C184D5-C:45]
+Good Name=Puzzles For Yoshis
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[A22D686A-35E725D1-C:45]
+Good Name=Any Other Color
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[BE6D3C09-3BDD25D5-C:45]
+Good Name=SM64 Royal Legacy v1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[0107AF1F-D464A91C-C:45]
+Good Name=Star Revenge 5.5 - Destroyed Memories v1.3
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[75321334-672A0433-C:45]
+Good Name=Another Mario Adventure v1.10
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[8EDD2B56-F86B3A6A-C:45]
+Good Name=Another Mario Adventure v1.10 (Widescreen)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[F099270C-B3639549-C:45]
+Good Name=The Legend of Zelda - Master of Time
+Status=Compatible
+32bit=No
+Counter Factor=1
+SMM-Protect=1
+Unaligned DMA=1
+
+[CEE7DD5F-4046AC23-C:45]
+Good Name=Star Revenge 1.5 - Star Takeover Redone v2.2.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[C257651C-B8002B08-C:45]
+Good Name=Star Revenge 3.5 - Vacation of Cursed Dreams v1.3.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[DFB4BDE3-B3A9886F-C:45]
+Good Name=The Yoshi Garden
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[AA2DA202-68767E82-C:45]
+Good Name=Mario and the Mystic Purple Stars v1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[CF2E9419-6F97E25D-C:45]
+Good Name=Dark Hyrule Fantasy - Villa Muerti Demo Patch
+Status=Compatible
+32bit=No
+Counter Factor=1
+SMM-Protect=1
+Unaligned DMA=1
+
+[859877D2-B8B01E1C-C:45]
+Good Name=Lug's Delightful Dioramas V1.02 English
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[85987622-368A0748-C:45]
+Good Name=Lug's Delightful Dioramas V1.02 German
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[AC4C46BD-4756FD63-C:45]
+Good Name=Super Mario and the Grand Star v1.2
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[974BE602-15CE9DE8-C:45]
+Good Name=PPSH v1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[14054F38-8AAF4670-C:45]
+Good Name=Super Mario Star Road - The Green Comet V1.3
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[1C352CBE-2D73D8C8-C:45]
+Good Name=Super Mario 74 - Ten Years After (v1.74.1)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[A9C4E2D8-22229399-C:45]
+Good Name=Super Luigi 64 - The Flower Cup v1.3
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[B2A0C741-483C1B82-C:45]
+Good Name=Super Luigi 64 - The Flower Cup (Hardcore) v1.3
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[904626B3-4A2E48D5-C:45]
+Good Name=Return To Yoshi's Island 64 DEMO
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[F162CD39-CC4C1ADC-C:45]
+Good Name=Duddy's Piano World The Con-troll-er 1.01
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[116B8961-59EEB46C-C:45]
+Good Name=SM64 The Dark Stars 1.01
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
