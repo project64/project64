@@ -25,11 +25,11 @@ environment:
 
   matrix:
   - platform: ARM64
-    image: Visual Studio 2019
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
   - platform: Win32
-    image: Visual Studio 2015
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
   - platform: x64
-    image: Visual Studio 2015
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
 
 
 before_build:
