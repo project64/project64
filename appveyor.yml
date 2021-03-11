@@ -1,41 +1,18 @@
 version: 1.0.{build}
-# image: Visual Studio 2019
-# platform:
-# - ARM64
-# - x64
-# - Win32
-# configuration:
-# - Release
-
-# for:
-# -
-#   matrix:
-#     except:
-#       - platform: ARM64
-#   image: Visual Studio 2015
-# -
-#   matrix:
-#     only:
-#       - platform: ARM64
-#   image: Visual Studio 2019
 
 environment:
   global:
     configuration: Release
-
   matrix:
-  - platform: ARM64
-    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
   - platform: Win32
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
   - platform: x64
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-
+  - platform: ARM64
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
 
 before_build:
 - ps: >-
-    Write-Host "With image: $env:APPVEYOR_BUILD_WORKER_IMAGE"
-
     If ($env:APPVEYOR_BUILD_VERSION -Like "1.0*") {
       $version = Source/Script/SetGitProperties.cmd
       appveyor UpdateBuild -Version $version
