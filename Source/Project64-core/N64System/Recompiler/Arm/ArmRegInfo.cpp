@@ -76,6 +76,11 @@ bool CArmRegInfo::operator==(const CArmRegInfo& right) const
     return true;
 }
 
+bool CArmRegInfo::operator!=(const CArmRegInfo& right) const
+{
+   return !CArmRegInfo::operator==(right);
+}
+
 bool CArmRegInfo::ShouldPushPopReg(ArmReg Reg)
 {
     if (m_ArmReg_MappedTo[Reg] == NotMapped)
