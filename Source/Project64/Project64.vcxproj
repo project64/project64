@@ -47,7 +47,7 @@
       <SubSystem>Windows</SubSystem>
       <MinimumRequiredVersion Condition="'$(Platform)'=='Win32'">5.01</MinimumRequiredVersion>
       <MinimumRequiredVersion Condition="'$(Platform)'=='x64'">5.02</MinimumRequiredVersion>
-      <MinimumRequiredVersion Condition="'$(Platform)'=='ARM64'">5.02</MinimumRequiredVersion>
+      <MinimumRequiredVersion Condition="'$(Platform)'=='ARM64'">6.02</MinimumRequiredVersion>
       <StackReserveSize>1</StackReserveSize>
       <DataExecutionPrevention>false</DataExecutionPrevention>
       <LargeAddressAware>true</LargeAddressAware>
@@ -229,7 +229,7 @@
       <Project>{b4a4b994-9111-42b1-93c2-6f1ca8bc4421}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\nragev20\NRage_Input_V2.vcxproj" Condition="'$(Platform)' != 'ARM64'">
+    <ProjectReference Include="..\nragev20\NRage_Input_V2.vcxproj">
       <Project>{fd617e80-9e40-4138-85da-b94633972e6a}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Project64-audio\Project64-audio.vcxproj">
@@ -238,7 +238,7 @@
     <ProjectReference Include="..\Project64-core\Project64-core.vcxproj">
       <Project>{00c7b43a-ded7-4df0-b072-9a5783ef866d}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Project64-video\Project64-video.vcxproj" Condition="'$(Platform)' != 'ARM64'">
+    <ProjectReference Include="..\Project64-video\Project64-video.vcxproj">
       <Project>{a4d13408-a794-4199-8fc7-4a9a32505005}</Project>
     </ProjectReference>
     <ProjectReference Include="..\RSP\RSP.vcxproj">

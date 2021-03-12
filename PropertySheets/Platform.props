@@ -236,7 +236,11 @@
   </PropertyGroup>
 
   <ItemDefinitionGroup Condition="'$(Platform)'=='ARM64'">
+    <Lib>
+      <TargetMachine>MachineARM64</TargetMachine>
+    </Lib>
     <Link>
+      <TargetMachine>MachineARM64</TargetMachine>
       <RandomizedBaseAddress>true</RandomizedBaseAddress>
     </Link>
   </ItemDefinitionGroup>
