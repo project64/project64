@@ -1,14 +1,14 @@
 # C/C++ source files
 
-*.c             text diff=c
-*.cc            text diff=cpp
-*.cxx           text diff=cpp
-*.cpp           text diff=cpp
-*.c++           text diff=cpp
-*.hpp           text diff=cpp
-*.h             text diff=c
-*.h++           text diff=cpp
-*.hh            text diff=cpp
+*.c             text=auto diff=c
+*.cc            text=auto diff=cpp
+*.cxx           text=auto diff=cpp
+*.cpp           text=auto diff=cpp
+*.c++           text=auto diff=cpp
+*.hpp           text=auto diff=cpp
+*.h             text=auto diff=c
+*.h++           text=auto diff=cpp
+*.hh            text=auto diff=cpp
 
 # Java source files
 
