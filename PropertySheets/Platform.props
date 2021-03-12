@@ -2,8 +2,8 @@
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup Label="Globals">
-    <WindowsTargetPlatformVersion Condition="'$(WindowsTargetPlatformVersion)' == '' AND $(PlatformToolsetVersion) >= 142">10.0</WindowsTargetPlatformVersion>
-    <WindowsTargetPlatformVersion Condition="'$(WindowsTargetPlatformVersion)' == '' AND '$(VisualStudioVersion)' >= 16.0">10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(WindowsTargetPlatformVersion)' == '' AND '$(PlatformToolsetVersion)' != '' AND $(PlatformToolsetVersion) >= 142">10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(WindowsTargetPlatformVersion)' == '' AND '$(PlatformToolsetVersion)' != ''AND '$(VisualStudioVersion)' >= 16.0">10.0.19041.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformMinVersion>8.1</WindowsTargetPlatformMinVersion>
   </PropertyGroup>
 
