@@ -3,13 +3,13 @@
 
   <PropertyGroup Label="Globals">
     <WindowsTargetPlatformVersion Condition="'$(WindowsTargetPlatformVersion)' == '' AND '$(PlatformToolsetVersion)' != '' AND $(PlatformToolsetVersion) >= 142">10.0</WindowsTargetPlatformVersion>
-    <WindowsTargetPlatformVersion Condition="'$(WindowsTargetPlatformVersion)' == '' AND '$(PlatformToolsetVersion)' != ''AND '$(VisualStudioVersion)' >= 16.0">10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(WindowsTargetPlatformVersion)' == '' AND '$(PlatformToolsetVersion)' != '' AND '$(VisualStudioVersion)' >= 16.0">10.0.19041.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformMinVersion>8.1</WindowsTargetPlatformMinVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Configuration">
-    <PlatformToolset Condition="'$(DefaultPlatformToolset)'!='' AND $(PlatformToolsetVersion)&lt;142">$(DefaultPlatformToolset)_xp</PlatformToolset>
-    <PlatformToolset Condition="'$(DefaultPlatformToolset)'>='v142'">$(DefaultPlatformToolset)</PlatformToolset>
+    <PlatformToolset Condition="'$(DefaultPlatformToolset)'!='' AND '$(PlatformToolsetVersion)' != '' AND $(PlatformToolsetVersion)&lt;142">$(DefaultPlatformToolset)_xp</PlatformToolset>
+    <PlatformToolset Condition="'$(PlatformToolsetVersion)' != '' AND $(PlatformToolsetVersion) >= 142">$(DefaultPlatformToolset)</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
 
