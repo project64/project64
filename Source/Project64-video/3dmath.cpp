@@ -6,7 +6,7 @@
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 #include "Gfx_1.3.h"
 extern "C" {
-#ifndef NOSSE
+#if !defined(NOSSE) && !defined(_M_ARM64)
 #include <xmmintrin.h>
 #endif
 }

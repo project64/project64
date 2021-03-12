@@ -28,7 +28,6 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ShowIncludes Condition="'$(ShowIncludes)' == 'true'">true</ShowIncludes>
     </ClCompile>
   </ItemDefinitionGroup>
 
@@ -93,7 +92,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CallingConvention>Cdecl</CallingConvention>
       <CompileAs>Default</CompileAs>
-      <ShowIncludes>false</ShowIncludes>
+      <ShowIncludes Condition="'$(ShowIncludes)' == 'true'">true</ShowIncludes>
       <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
       <EnablePREfast>false</EnablePREfast>
       <UseFullPaths>false</UseFullPaths>
