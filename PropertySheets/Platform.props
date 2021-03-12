@@ -2,14 +2,21 @@
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup Label="Globals">
-    <WindowsTargetPlatformVersion Condition="'$(WindowsTargetPlatformVersion)' == '' AND $(PlatformToolsetVersion) >= 142">10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(WindowsTargetPlatformVersion)' == '' AND '$(PlatformToolset)' == 'v142'">10.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformVersion Condition="'$(WindowsTargetPlatformVersion)' == '' AND '$(VisualStudioVersion)' >= 16.0">10.0.19041.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformMinVersion>8.1</WindowsTargetPlatformMinVersion>
   </PropertyGroup>
 
+  <Target Name="erasme">
+    <Message Text="VisualStudioVersion: [$(VisualStudioVersion)]" />
+    <Message Text="PlatformToolset: [$(PlatformToolset)]" />
+    <Message Text="WindowsTargetPlatformVersion: [$(WindowsTargetPlatformVersion)]" />
+    <Message Text="WindowsTargetPlatformMinVersion: [$(WindowsTargetPlatformMinVersion)]" />
+  </Target>
+
   <PropertyGroup Label="Configuration">
-    <PlatformToolset Condition="'$(DefaultPlatformToolset)'!='' AND $(PlatformToolsetVersion)&lt;142">$(DefaultPlatformToolset)_xp</PlatformToolset>
-    <PlatformToolset Condition="'$(DefaultPlatformToolset)'>='v142'">$(DefaultPlatformToolset)</PlatformToolset>
+    <PlatformToolset Condition="'$(DefaultPlatformToolset)'!='' AND '$(DefaultPlatformToolset)'!='v142'">$(DefaultPlatformToolset)_xp</PlatformToolset>
+    <PlatformToolset Condition="'$(DefaultPlatformToolset)'=='v142'">$(DefaultPlatformToolset)</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
 
