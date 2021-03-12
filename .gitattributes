@@ -1,5 +1,3 @@
-* text=auto
-
 # C/C++ source files
 
 *.c             text diff=c
