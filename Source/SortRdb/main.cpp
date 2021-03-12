@@ -326,7 +326,7 @@ int main (int argc, char *argv[])
 	if (PDNameSections.size() > 0)
 	{
 		fprintf(fp,"//================  PD  ================\n");
-		fprintf(fp,"//\n// ROMs below are public domain/homebrew and other non-commercial releases\n\n");
+		fprintf(fp,"//\n// ROMs below are public domain, homebrew, and other non-commercial ROMs\n\n");
 		for (strmap::iterator itr = PDNameSections.begin(); itr != PDNameSections.end(); itr++)
 		{
 			std::string GoodName = itr->first;
