@@ -28,6 +28,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ShowIncludes Condition="'$(ShowIncludes)' == 'true'">true</ShowIncludes>
     </ClCompile>
   </ItemDefinitionGroup>
 
