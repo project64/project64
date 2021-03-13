@@ -7,27 +7,27 @@ enum UISettingID
     Asserts_Version,
     Screen_Orientation,
 
-    //Recent Game
+    // Recent game
     File_RecentGameFileCount,
     File_RecentGameFileIndex,
 
-    //Touch Screen
+    // Touch screen
     TouchScreen_ButtonScale,
     TouchScreen_Layout,
 
-    //Controller Config
+    // Controller config
     Controller_ConfigFile,
     Controller_CurrentProfile,
     Controller_Deadzone,
     Controller_Sensitivity,
 
-    //Support Window
+    // Support window
     SupportWindow_FirstRun,
     SupportWindow_AlwaysShow,
     SupportWindow_ShowingSupportWindow,
     SupportWindow_RunCount,
 
-    //Game Settings
+    // Game settings
     Game_RunCount,
 };
 
