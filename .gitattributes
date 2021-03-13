@@ -117,3 +117,7 @@
 *.svg           binary
 *.tif           binary
 *.tiff          binary
+
+# Windows scripting files
+*.cmd           text eol=crlf
+*.vbs           text eol=crlf
