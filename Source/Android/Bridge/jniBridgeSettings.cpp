@@ -27,4 +27,3 @@ void CJniBridegSettings::RefreshSettings(void *)
 {
 	m_bCPURunning  = g_Settings->LoadBool(GameRunning_CPU_Running);
 }
-
