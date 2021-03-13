@@ -20,5 +20,9 @@ FOR /F "tokens=1 delims=" %%A in ('git describe --tags --long --dirty') do SET c
 
 if %Platform%==x64 set BuildMode=%BuildMode%64
 
+REM If host OS is ARM64, use this tool flavor of UpdateVersion. Else, use Win32 (default).
+for /F "tokens=3" %%A in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v "PROCESSOR_ARCHITECTURE"') DO (set HOST_PROCESSOR_ARCHITECTURE=%%A)
+if "%HOST_PROCESSOR_ARCHITECTURE%|%Platform%"=="ARM64|ARM64" set BuildMode=%BuildMode%ARM64
+
 echo "%base_dir%\Bin\%BuildMode%\UpdateVersion.exe" %InFile% %OutFile% "%current_tag%"
 "%base_dir%\Bin\%BuildMode%\UpdateVersion.exe" %InFile% %OutFile% "%current_tag%"
