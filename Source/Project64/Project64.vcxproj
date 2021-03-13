@@ -48,7 +48,7 @@
       <MinimumRequiredVersion Condition="'$(Platform)'=='x64'">5.02</MinimumRequiredVersion>
       <MinimumRequiredVersion Condition="'$(Platform)'=='ARM64'">6.02</MinimumRequiredVersion>
       <StackReserveSize>1</StackReserveSize>
-      <DataExecutionPrevention>false</DataExecutionPrevention>
+      <DataExecutionPrevention Condition="'$(Platform)'=='Win32'">false</DataExecutionPrevention>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
     <Manifest Condition="'$(PlatformToolset)'!='v90'">
