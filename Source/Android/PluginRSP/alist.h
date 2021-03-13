@@ -1,8 +1,3 @@
-// Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
-// Copyright(C) 2001-2021 Project64
-// Copyright(C) 2014 Bobby Smiles
-// GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 #pragma once
 class CHle;
 
@@ -33,9 +28,7 @@ void alist_iirf( CHle * hle, bool init, uint16_t dmemo, uint16_t dmemi, uint16_t
 void alist_resample_zoh( CHle * hle, uint16_t dmemo, uint16_t dmemi, uint16_t count, uint32_t pitch, uint32_t pitch_accu);
 void alist_filter( CHle * hle, uint16_t dmem, uint16_t count, uint32_t address, const uint32_t* lut_address);
 
-/*
-* Audio flags
-*/
+// Audio flags
 
 #define A_INIT          0x01
 #define A_CONTINUE      0x00
