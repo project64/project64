@@ -9,14 +9,14 @@ public:
     CNotificationImp(void);
 	virtual ~CNotificationImp();
 
-    //Error Messages
+    // Error messages
     void DisplayError(const char * Message) const;
     void DisplayError(LanguageStringID StringID) const;
 
     void FatalError(const char * Message) const;
     void FatalError(LanguageStringID StringID) const;
 
-    //User Feedback
+    // User feedback
     void DisplayWarning(const char * Message) const;
     void DisplayWarning(LanguageStringID StringID) const;
 
@@ -25,7 +25,7 @@ public:
 
     void DisplayMessage2(const char * Message) const;
 
-    // Ask a Yes/No Question to the user, yes = true, no = false
+    // Ask a yes/no question to the user, yes = true, no = false
     bool AskYesNoQuestion(const char * Question) const;
     void BreakPoint(const char * FileName, int32_t LineNumber);
 
