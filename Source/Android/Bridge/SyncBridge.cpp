@@ -22,5 +22,4 @@ void SyncBridge::SwapWindow()
     }
 }
 
-
 #endif
