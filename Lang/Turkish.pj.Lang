@@ -3,7 +3,7 @@
 *********************************************************************************/
 //About DLL
 #1  #  "Turkish"		// LANGUAGE ID
-#2  #  "Grk"			// Author
+#2  #  ""			// Author
 #3  #  "2.3.2"			// Version
 #4  #  "10 November, 2019"	// Date
 
@@ -50,8 +50,8 @@
 #130#  "Hileler..."
 #131#  "Game Shark (GS) Butonu"
 #132#  "Devam Et"
-#133#  "&Yazılımsal (Soft) Sıfırlama"
-#134#  "&Donanımsal (Hard) Sıfırlama"
+#133#  "&Soft Reset
+#134#  "&Hard Reset
 #135#  "Diski &Değiştir"
 
 //Options Menu
