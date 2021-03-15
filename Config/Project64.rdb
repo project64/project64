@@ -9490,7 +9490,6 @@ Status=Compatible
 Counter Factor=1
 Unaligned DMA=1
 
-
 [1496719E-645F5BE4-C:45]
 Good Name=SM64 Shining Stars
 Status=Compatible
@@ -10798,7 +10797,7 @@ Counter Factor=1
 Unaligned DMA=1
 
 [F099270C-B3639549-C:45]
-Good Name=The Legend of Zelda - Master of Time
+Good Name=The Legend of Zelda - Master Of Time
 Status=Compatible
 32bit=No
 Counter Factor=1
@@ -10899,6 +10898,62 @@ Unaligned DMA=1
 
 [116B8961-59EEB46C-C:45]
 Good Name=SM64 The Dark Stars 1.01
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[635A42C5-BDC58EDC-C:45]
+Good Name=Super Mario 74 Extreme Edition (English)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[AECC567C-F5CD7F4F-C:45]
+Good Name=The Phantom's Christmas Call (English)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[50CC5675-A3D3F253-C:45]
+Good Name=The Phantom's Christmas Call (German)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[B1ADDCBE-98943F8E-C:45]
+Good Name=The Phantom's Call v2.0 (English)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+ViRefresh=5000
+
+[B1ADDCBE-D88D7C40-C:45]
+Good Name=The Phantom's Call v2.0 (German)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+ViRefresh=5000
+
+[AC08C45A-E8CC514A-C:45]
+Good Name=Night of Doom - The Green Comet
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[B6596335-6BEED606-C:45]
+Good Name=Goomba's Easter Egg Hunt
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[49FB827B-FE1F9C77-C:45]
+Good Name=Super Mario 64 3D World V3
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[1499D5AA-55E1870A-C:45]
+Good Name=Mario and the Mystic Purple Stars v1.3 Final
 Status=Compatible
 Counter Factor=1
 Unaligned DMA=1
