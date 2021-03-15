@@ -9,25 +9,25 @@ RDRAM Size
 - 4 (default)
 - 8
 
-An emulated RDRAM size of 4MB is the standard amount of memory an N64 console has.
+An emulated RDRAM size of 4MB is the standard amount of memory a Nintendo 64 console has.
 
-An emulated RDRAM size of 8MB represents an N64 console with the 4MB memory expansion accessory installed, plus the original 4MB. This results in larger state saves and can lower performance. Most games do not benefit at all from the Expansion Pak. Some games require the Expansion Pak (e.g. Zelda2), some games give you more with it (e.g. Perfect Dark), some games just use it to raise resolution (in which case we recommend you don't use the Expansion Pak since graphics are HLE anyway, see below).
+An emulated RDRAM size of 8MB represents an N64 console with the 4MB memory expansion accessory installed, plus the original 4MB. This results in larger state saves and can lower performance. Most games do not benefit at all from the Expansion Pak. Some games require the Expansion Pak (e.g. Majora's Mask), some games give you more with it (e.g. Perfect Dark), some games just use it to raise resolution (in which case we recommend you don't use the Expansion Pak since graphics are HLE anyway, see below).
 
 Notes:
 - if a game supports the Expansion Pak as an option it will usually tell you in its introduction screens (usually two lines, like "Expansion Pak supported, Expansion Pak detected"). If a game doesn't support the Pak, or absolutely requires it, it probably won't say anything.
 - you gain nothing by using the Expansion Pak on a game that doesn't support it - you just waste resources.
 - further, if a game has optional Expansion Pak support where the Pak is used only to raise screen resolution, it is generally recommended you set this to No, because there's no point wasting resources on higher native resolutions when the graphics are high level emulated (hence largely resolution independent) anyway, also it can often cause severe aspect ratio problems in the video plugin.
-- in rare cases, for reasons unkown to me, the Project64 video plugin requires the Expansion Pak to avoid an Access Violation (even in games that don't use the Expansion Pak). The RDB is already set up for this for all known cases.
+- in rare cases, for reasons unknown to me, the Project64 video plugin requires the Expansion Pak to avoid an Access Violation (even in games that don't use the Expansion Pak). The RDB is already set up for this for all known cases.
 - the above two points explain why the setting may sometimes appear to be logically incorrect - it has been set that way for a good reason!
 - this setting should already be correctly configured for every game by the RDB, don't change it unless you know what you're doing!
 
 Save Type
 ---------
 - First Save Type (default)
-- 4kbit Eeprom
-- 16kbit Eeprom
-- Sram
-- FlashRam
+- 4kbit EEPROM
+- 16kbit EEPROM
+- SRAM
+- FlashRAM
 
 You can set any of the four possible native cartridge save types here, but the only one that should be needed is 16kbit EEPROM, because it is not possible for the emulator to detect the difference between a game asking for 16kbit and a game asking for 4kbit - Project64 assumes 4kbit, the more common size. If a game actually needs 16kbit it will either fail to save or not boot unless set to 16kbit EEPROM. The other settings are included for the rare possibility that the autodetect goes wrong - generally, don't set them. Note that MemPak is treated separately and will work in addition to whatever is selected here.
 
@@ -137,16 +137,16 @@ Reg Cache
 - true (default)
 - false
 
-Probably the recompiler's most significant optimisation technique, register caching usually dramatically improves the efficiency of the recompiler, and usually without side effects. The reason this is included as an option is that sometimes register caching will produce an error in a game. Register caching can cause many kinds of obscure errors, such as events in a game not triggering, or a game becoming stuck in a loop, or graphics being messed up, as well as obvious errors such as a crash. If you find you are having stability problems with the recompiler and not the interpreter, try disabling register caching to see if you can get past the point/game with at least some of the performance of the recompiler.
+Probably the recompiler's most significant optimization technique, register caching usually dramatically improves the efficiency of the recompiler, and usually without side effects. The reason this is included as an option is that sometimes register caching will produce an error in a game. Register caching can cause many kinds of obscure errors, such as events in a game not triggering, or a game becoming stuck in a loop, or graphics being messed up, as well as obvious errors such as a crash. If you find you are having stability problems with the recompiler and not the interpreter, try disabling register caching to see if you can get past the point/game with at least some of the performance of the recompiler.
 
 Linking
 -------
 - true (default)
 - false
 
-Advanced Block Linking is one of Project64's speed optimisation techniques, it usually provides a speed vs. smoothness trade-off that you'd want to set globally (for all games) under the General tab, according to whether you have a fast or slow PC. On is usually (often significantly) faster than Off but may be less smooth. This depends on the game. A few games run particularly badly with this On, or may require this to be On or Off, which is why the RDB sometimes does set this control.
+Advanced Block Linking is one of Project64's speed optimization techniques, it usually provides a speed vs. smoothness trade-off that you'd want to set globally (for all games) under the General tab, according to whether you have a fast or slow PC. On is usually (often significantly) faster than Off but may be less smooth. This depends on the game. A few games run particularly badly with this On, or may require this to be On or Off, which is why the RDB sometimes does set this control.
 this control is a performance option for the recompiler, where setting On gives more speed (higher maximum and overall average speed) and setting Off gives better "smoothness" (higher consistency of speed, less variation from one part of a game to another, fewer jerks and slowdowns, but a lower overall speed).
-The effect of having ABL on vs. off is probably most noticeable in fast moving racing games such as Didddy Kong Racing and Mario Kart.
+The effect of having ABL on vs. off is probably most noticeable in fast moving racing games such as Diddy Kong Racing and Mario Kart.
 
 Notes:
 - Project64 game compatibility was only thoroughly tested with ABL enabled, due to time constraints. If you turn ABL off, there is a possibility that some ROMs may need their settings adjusted - occasionally a higher self-mod code method is needed. There is also a chance that some games will not work at all with ABL turned off, so be prepared to turn it back on
@@ -221,7 +221,7 @@ TLB: PAddr Start
 - 0 (default)
 - more than 0
 
-Rom In Memory
+ROM In Memory
 -------------
 - true
 - false (default)
@@ -264,7 +264,7 @@ Direct3D8-ForceFilter
 - 0 (default)
 - 1
 
-**** Rom Settings - Database Settings ***
+**** ROM Settings - Database Settings ***
 
 Resolution Height
 -----------------
@@ -299,7 +299,7 @@ Self Texture
 - 0 (default)
 - 1
 
-This is a framebuffer control. Some games use a temporary buffer (not part of the rendering queue) into which they render a scene to later use in the game, a classic example is the picture of link on the ZeldaOoT subscreen. This can be achieved with very little performance hit hence it is enabled where we know it is used. Do not enable it unless needed, it's a waste of resources and could cause problems with some games.
+This is a framebuffer control. Some games use a temporary buffer (not part of the rendering queue) into which they render a scene to later use in the game, a classic example is the picture of Link on the Zelda Ocarina of Time subscreen. This can be achieved with very little performance hit hence it is enabled where we know it is used. Do not enable it unless needed, it's a waste of resources and could cause problems with some games.
 
 Primary Frame Buffer
 --------------------
