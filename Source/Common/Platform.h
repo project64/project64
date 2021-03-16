@@ -14,7 +14,7 @@ int _vscprintf (const char * format, va_list pargs);
 
 #endif
 
-//FPU rounding code
+// FPU rounding code
 #ifdef _WIN32
 typedef enum { FE_TONEAREST = 0, FE_TOWARDZERO, FE_UPWARD, FE_DOWNWARD } eRoundType;
 int fesetround(int RoundType);
