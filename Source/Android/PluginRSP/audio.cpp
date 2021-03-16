@@ -1,3 +1,9 @@
+// Project64 - A Nintendo 64 emulator
+// http://www.pj64-emu.com/
+// Copyright(C) 2001-2021 Project64
+// Copyright(C) 2014 Bobby Smiles
+// GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
+
 #include "stdafx.h"
 #include <assert.h>
 #include "audio.h"
