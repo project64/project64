@@ -66,7 +66,7 @@ void* AllocateAddressSpace(size_t size, void * base_address)
 bool FreeAddressSpace(void* addr, size_t size)
 {
 #ifdef _WIN32
-    size = 0; //unused
+    size = 0; // Unused
     return VirtualFree(addr, 0, MEM_RELEASE) != 0;
 #else
     msync(addr, size, MS_SYNC);
@@ -96,7 +96,7 @@ bool DecommitMemory(void* addr, size_t size)
 #ifdef _WIN32
     return VirtualFree((void*)addr, size, MEM_DECOMMIT) != 0;
 #else
-    // instead of unmapping the address, we're just gonna trick
+    // Instead of unmapping the address, we're just gonna trick
     // the TLB to mark this as a new mapped area which, due to
     // demand paging, will not be committed until used.
 
