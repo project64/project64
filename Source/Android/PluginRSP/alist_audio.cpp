@@ -1,10 +1,3 @@
-// Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
-// Copyright(C) 2001-2021 Project64
-// Copyright(C) 2014 Bobby Smiles
-// Copyright(C) 2009 Richard Goedeken
-// Copyright(C) 2002 Hacktarux
-// GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 #include "stdafx.h"
 #include <string.h>
 
@@ -16,7 +9,8 @@
 
 enum { DMEM_BASE = 0x5c0 };
 
-/* helper functions */
+// Helper functions
+
 static uint32_t get_address(CHle * hle, uint32_t so)
 {
     return alist_get_address(hle, so, hle->alist_audio().segments, N_SEGMENTS);
@@ -32,7 +26,8 @@ static void clear_segments(CHle * hle)
     memset(hle->alist_audio().segments, 0, N_SEGMENTS*sizeof(hle->alist_audio().segments[0]));
 }
 
-/* audio commands definition */
+// Audio commands definition
+
 static void SPNOOP(CHle * UNUSED(hle), uint32_t UNUSED(w1), uint32_t UNUSED(w2))
 {
 }
@@ -142,7 +137,7 @@ static void ADPCM(CHle * hle, uint32_t w1, uint32_t w2)
         hle,
         flags & 0x1,
         flags & 0x2,
-        false,          /* unsupported in this ucode */
+        false,          // Unsupported in this microcode
         hle->alist_audio().out,
         hle->alist_audio().in,
         align(hle->alist_audio().count, 32),
@@ -260,7 +255,8 @@ static void POLEF(CHle * hle, uint32_t w1, uint32_t w2)
         address);
 }
 
-/* global functions */
+// Global functions
+
 void alist_process_audio(CHle * hle)
 {
     static const acmd_callback_t ABI[0x10] = {
