@@ -1,10 +1,3 @@
-// Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
-// Copyright(C) 2001-2021 Project64
-// Copyright(C) 2012 Bobby Smiles
-// Copyright(C) 2009 Richard Goedeken
-// Copyright(C) 2002 Hacktarux
-// GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 #include "stdafx.h"
 #include "mem.h"
 #include "ucodes.h"
@@ -12,7 +5,8 @@
 
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 
-/* helper functions prototypes */
+// Helper functions prototypes
+
 static unsigned int sum_bytes(const uint8_t *bytes, uint32_t size);
 
 CHle::CHle(const RSP_INFO & Rsp_Info) :
@@ -88,7 +82,8 @@ void CHle::hle_execute(void)
     }
 }
 
-/* local functions */
+// Local functions
+
 static unsigned int sum_bytes(const uint8_t * bytes, unsigned int size)
 {
     unsigned int sum = 0;
@@ -101,16 +96,19 @@ static unsigned int sum_bytes(const uint8_t * bytes, unsigned int size)
     return sum;
 }
 
-/**
-* Try to figure if the RSP was launched using osSpTask* functions
-* and not run directly (in which case DMEM[0xfc0-0xfff] is meaningless).
-*
-* Previously, the ucode_size field was used to determine this,
-* but it is not robust enough (hi Pokemon Stadium !) because games could write anything
-* in this field : most ucode_boot discard the value and just use 0xf7f anyway.
-*
-* Using ucode_boot_size should be more robust in this regard.
-**/
+/*
+TODO:
+
+Try to figure if the RSP was launched using osSpTask* functions
+and not run directly (in which case DMEM[0xfc0-0xfff] is meaningless).
+
+Previously, the ucode_size field was used to determine this,
+but it is not robust enough (hi Pokémon Stadium!) because games could write anything
+in this field: most ucode_boot discard the value and just use 0xf7f anyway.
+
+Using ucode_boot_size should be more robust in this regard.
+*/
+
 bool CHle::is_task(void)
 {
     return (*dmem_u32(this, TASK_UCODE_BOOT_SIZE) <= 0x1000);
@@ -118,7 +116,7 @@ bool CHle::is_task(void)
 
 bool CHle::try_fast_task_dispatching(void)
 {
-    /* identify task ucode by its type */
+    // Identify task microcode by its type
     switch (*dmem_u32(this, TASK_TYPE))
     {
     case 1:
@@ -148,7 +146,7 @@ bool CHle::try_fast_task_dispatching(void)
 
 bool CHle::try_fast_audio_dispatching(void)
 {
-    /* identify audio ucode by using the content of ucode_data */
+    // Identify audio microcode by using the content of ucode_data
     uint32_t ucode_data = *dmem_u32(this, TASK_UCODE_DATA);
     uint32_t v;
 
@@ -159,13 +157,13 @@ bool CHle::try_fast_audio_dispatching(void)
             v = *dram_u32(this, ucode_data + 0x28);
             switch (v)
             {
-            case 0x1e24138c: /* audio ABI (most common) */
+            case 0x1e24138c: // Audio ABI (most common)
                 alist_process_audio(this);
                 return true;
-            case 0x1dc8138c: /* GoldenEye */
+            case 0x1dc8138c: // GoldenEye 007
                 alist_process_audio_ge(this);
                 return true;
-            case 0x1e3c1390: /* BlastCorp, DiddyKongRacing */
+            case 0x1e3c1390: // Blast Corp, Diddy Kong Racing
                 alist_process_audio_bc(this);
                 return true;
             default:
@@ -177,40 +175,40 @@ bool CHle::try_fast_audio_dispatching(void)
             v = *dram_u32(this, ucode_data + 0x10);
             switch (v)
             {
-            case 0x11181350: /* MarioKart, WaveRace (E) */
+            case 0x11181350: // Mario Kart, Wave Race (E)
                 alist_process_nead_mk(this);
                 return true;
-            case 0x111812e0: /* StarFox (J) */
+            case 0x111812e0: // StarFox 64 (J)
                 alist_process_nead_sfj(this);
                 return true;
-            case 0x110412ac: /* WaveRace (J RevB) */
+            case 0x110412ac: // Wave Race (J Rev B)
                 alist_process_nead_wrjb(this);
                 return true;
-            case 0x110412cc: /* StarFox/LylatWars (except J) */
+            case 0x110412cc: // StarFox/LylatWars (except J)
                 alist_process_nead_sf(this);
                 return true;
-            case 0x1cd01250: /* FZeroX */
+            case 0x1cd01250: // F-Zero X
                 alist_process_nead_fz(this);
                 return true;
-            case 0x1f08122c: /* YoshisStory */
+            case 0x1f08122c: // Yoshi's Story
                 alist_process_nead_ys(this);
                 return true;
-            case 0x1f38122c: /* 1080° Snowboarding */
+            case 0x1f38122c: // 1080° Snowboarding
                 alist_process_nead_1080(this);
                 return true;
-            case 0x1f681230: /* Zelda OoT / Zelda MM (J, J RevA) */
+            case 0x1f681230: // Zelda Ocarina of Time / Zelda Majora's Mask (J, J Rev A)
                 alist_process_nead_oot(this);
                 return true;
-            case 0x1f801250: /* Zelda MM (except J, J RevA, E Beta), PokemonStadium 2 */
+            case 0x1f801250: // Zelda Majora's Mask (except J, J Rev A, E Beta), Pokémon Stadium 2
                 alist_process_nead_mm(this);
                 return true;
-            case 0x109411f8: /* Zelda MM (E Beta) */
+            case 0x109411f8: // Zelda Majora's Mask (E Beta)
                 alist_process_nead_mmb(this);
                 return true;
-            case 0x1eac11b8: /* AnimalCrossing */
+            case 0x1eac11b8: // Animal Crossing
                 alist_process_nead_ac(this);
                 return true;
-            case 0x00010010: /* MusyX v2 (IndianaJones, BattleForNaboo) */
+            case 0x00010010: // MusyX v2 (Indiana Jones, Battle For Naboo)
                 musyx_v2_task(this);
                 return true;
             default:
@@ -224,24 +222,24 @@ bool CHle::try_fast_audio_dispatching(void)
         switch (v)
         {
         case 0x00000001: /* MusyX v1
-                         RogueSquadron, ResidentEvil2, PolarisSnoCross,
-                         TheWorldIsNotEnough, RugratsInParis, NBAShowTime,
-                         HydroThunder, Tarzan, GauntletLegend, Rush2049 */
+                         Rogue Squadron, Resident Evil 2, Polaris Sno Cross,
+                         The World Is Not Enough, Rugrats In Paris, NBA Show Time,
+                         Hydro Thunder, Tarzan, Gauntlet Legend, Rush 2049 */
             musyx_v1_task(this);
             return true;
-        case 0x0000127c: /* naudio (many games) */
+        case 0x0000127c: // naudio (many games)
             alist_process_naudio(this);
             return true;
-        case 0x00001280: /* BanjoKazooie */
+        case 0x00001280: // Banjo Kazooie
             alist_process_naudio_bk(this);
             return true;
-        case 0x1c58126c: /* DonkeyKong */
+        case 0x1c58126c: // Donkey Kong
             alist_process_naudio_dk(this);
             return true;
-        case 0x1ae8143c: /* BanjoTooie, JetForceGemini, MickeySpeedWayUSA, PerfectDark */
+        case 0x1ae8143c: // Banjo Tooie, Jet Force Gemini, Mickey SpeedWay USA, Perfect Dark
             alist_process_naudio_mp3(this);
             return true;
-        case 0x1ab0140c: /* ConkerBadFurDay */
+        case 0x1ab0140c: // Conker's Bad Fur Day
             alist_process_naudio_cbfd(this);
             return true;
         default:
@@ -257,12 +255,12 @@ void CHle::normal_task_dispatching(void)
         sum_bytes((const uint8_t *)dram_u32(this, *dmem_u32(this, TASK_UCODE)), min(*dmem_u32(this, TASK_UCODE_SIZE), 0xf80) >> 1);
 
     switch (sum) {
-        /* StoreVe12: found in Zelda Ocarina of Time [misleading task->type == 4] */
+        // StoreVe12: found in Zelda Ocarina of Time [misleading task->type == 4]
     case 0x278:
-        /* Nothing to emulate */
+        // Nothing to emulate
         return;
 
-        /* GFX: Twintris [misleading task->type == 0] */
+        // GFX: Twintris [misleading task->type == 0]
     case 0x212ee:
         if (m_ForwardGFX)
         {
@@ -271,17 +269,17 @@ void CHle::normal_task_dispatching(void)
         }
         break;
 
-        /* JPEG: found in Pokemon Stadium J */
+        // JPEG: found in Pokémon Stadium J
     case 0x2c85a:
         jpeg_decode_PS0(this);
         return;
 
-        /* JPEG: found in Zelda Ocarina of Time, Pokemon Stadium 1, Pokemon Stadium 2 */
+        // JPEG: found in Zelda Ocarina of Time, Pokémon Stadium 1, Pokémon Stadium 2
     case 0x2caa6:
         jpeg_decode_PS(this);
         return;
 
-        /* JPEG: found in Ogre Battle, Bottom of the 9th */
+        // JPEG: found in Ogre Battle, Bottom of the 9th
     case 0x130de:
     case 0x278b0:
         jpeg_decode_OB(this);
@@ -300,7 +298,7 @@ void CHle::non_task_dispatching(void)
 
     if (sum == 0x9e2)
     {
-        /* CIC x105 ucode (used during boot of CIC x105 games) */
+        // CIC x105 microcode (used during boot of CIC x105 games)
         cicx105_ucode(this);
         return;
     }
@@ -320,7 +318,7 @@ void CHle::VerboseMessage(const char *message, ...)
 #if defined(_WIN32) && defined(_DEBUG)
     // These can get annoying.
 #if 0
-    MessageBox(NULL, message, "HLE Verbose Message", MB_OK);
+    MessageBox(NULL, message, "HLE verbose message", MB_OK);
 #endif
 #endif
 }
@@ -328,6 +326,6 @@ void CHle::VerboseMessage(const char *message, ...)
 void CHle::WarnMessage(const char *message, ...)
 {
 #if defined(_WIN32) && defined(_DEBUG)
-    MessageBoxA(NULL, message, "HLE Warning Message", MB_OK);
+    MessageBoxA(NULL, message, "HLE warning message", MB_OK);
 #endif
 }
