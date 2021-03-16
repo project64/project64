@@ -1,46 +1,43 @@
-// Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
-// Copyright(C) 2001-2021 Project64
-// Copyright(C) 2014 Bobby Smiles
-// GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 #pragma once
 
 class CHle;
 
-/* cic_x105 ucode */
+// cic_x105 microcode
+
 void cicx105_ucode(CHle * hle);
 
-/* audio list ucodes - audio */
+// Audio list microcodes
+
 enum { N_SEGMENTS = 16 };
 
 struct alist_audio_t
 {
-    /* segments */
+    // Segments
     uint32_t segments[N_SEGMENTS];
 
-    /* main buffers */
+    // Main buffers
     uint16_t in;
     uint16_t out;
     uint16_t count;
 
-    /* auxiliary buffers */
+    // Auxiliary buffers
     uint16_t dry_right;
     uint16_t wet_left;
     uint16_t wet_right;
 
-    /* gains */
+    // Gains
     int16_t dry;
     int16_t wet;
 
-    /* envelopes (0:left, 1:right) */
+    // Envelopes (0:left, 1:right)
     int16_t vol[2];
     int16_t target[2];
     int32_t rate[2];
 
-    /* ADPCM loop point address */
+    // ADPCM loop point address
     uint32_t loop;
 
-    /* storage for ADPCM table and polef coefficients */
+    // Storage for ADPCM table and polef coefficients
     int16_t table[16 * 8];
 };
 
@@ -48,22 +45,23 @@ void alist_process_audio(CHle * hle);
 void alist_process_audio_ge(CHle * hle);
 void alist_process_audio_bc(CHle * hle);
 
-/* audio list ucodes - naudio */
+// Audio list microcodes - naudio
+
 struct alist_naudio_t
 {
-    /* gains */
+    // Gains
     int16_t dry;
     int16_t wet;
 
-    /* envelopes (0:left, 1:right) */
+    // Envelopes (0:left, 1:right)
     int16_t vol[2];
     int16_t target[2];
     int32_t rate[2];
 
-    /* ADPCM loop point address */
+    // ADPCM loop point address
     uint32_t loop;
 
-    /* storage for ADPCM table and polef coefficients */
+    // Storage for ADPCM table and polef coefficients
     int16_t table[16 * 8];
 };
 
@@ -73,25 +71,26 @@ void alist_process_naudio_dk(CHle * hle);
 void alist_process_naudio_mp3(CHle * hle);
 void alist_process_naudio_cbfd(CHle * hle);
 
-/* audio list ucodes - nead */
+// Audio list microcodes - nead
+
 struct alist_nead_t
 {
-    /* main buffers */
+    // Main buffers
     uint16_t in;
     uint16_t out;
     uint16_t count;
 
-    /* envmixer ramps */
+    // Envmixer ramps
     uint16_t env_values[3];
     uint16_t env_steps[3];
 
-    /* ADPCM loop point address */
+    // ADPCM loop point address
     uint32_t loop;
 
-    /* storage for ADPCM table and polef coefficients */
+    // Storage for ADPCM table and polef coefficients
     int16_t table[16 * 8];
 
-    /* filter audio command state */
+    // Filter audio command state
     uint16_t filter_count;
     uint32_t filter_lut_address[2];
 };
@@ -108,14 +107,14 @@ void alist_process_nead_mm(CHle * hle);
 void alist_process_nead_mmb(CHle * hle);
 void alist_process_nead_ac(CHle * hle);
 
-/* mp3 ucode */
+// MP3 microcode
 void mp3_task(CHle * hle, unsigned int index, uint32_t address);
 
-/* musyx ucodes */
+// Musyx microcodes
 void musyx_v1_task(CHle * hle);
 void musyx_v2_task(CHle * hle);
 
-/* jpeg ucodes */
+// JPEG microcodes
 void jpeg_decode_PS0(CHle * hle);
 void jpeg_decode_PS(CHle * hle);
 void jpeg_decode_OB(CHle * hle);
