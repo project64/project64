@@ -73,10 +73,10 @@ private:
 
     std::string m_CurrentSection;
     bool m_CurrentSectionDirty;
-    int m_CurrentSectionFilePos; // Where in the file is the current Section
+    int m_CurrentSectionFilePos; // Where in the file is the current section
     KeyValueList m_CurrentSectionData;
 
-    long m_lastSectionSearch; // When Scanning for a section, what was the last scanned pos
+    long m_lastSectionSearch; // When scanning for a section, what was the last scanned POS
 
     bool m_ReadOnly;
     bool m_InstantFlush;
@@ -102,7 +102,7 @@ public:
     CIniFileT(const char * FileName) :
         CIniFileBase(m_FileObject, FileName)
     {
-        //Try to open file for reading
+        // Try to open file for reading
         OpenIniFile();
     }
 
@@ -115,7 +115,7 @@ public:
         }
         else
         {
-            //Try to open file for reading
+            // Try to open file for reading
             OpenIniFile(bCreate);
         }
     }
