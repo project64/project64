@@ -88,7 +88,7 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
         _ASSERTE(false);
     }
 
-    // map share mode
+    // Map share mode
     ULONG dwShareMode = 0;
 
     dwShareMode = FILE_SHARE_READ | FILE_SHARE_WRITE;
@@ -96,20 +96,20 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
     if ((nOpenFlags & shareDenyRead) == shareDenyRead)   { dwShareMode &= ~FILE_SHARE_READ; }
     if ((nOpenFlags & shareExclusive) == shareExclusive) { dwShareMode = 0; }
 
-    // map modeNoInherit flag
+    // Map modeNoInherit flag
     SECURITY_ATTRIBUTES sa;
     sa.nLength = sizeof(sa);
     sa.lpSecurityDescriptor = NULL;
     sa.bInheritHandle = (nOpenFlags & modeNoInherit) == 0;
 
-    // map creation flags
+    // Map creation flags
     ULONG dwCreateFlag = OPEN_EXISTING;
     if (nOpenFlags & modeCreate)
     {
         dwCreateFlag = ((nOpenFlags & modeNoTruncate) != 0) ? OPEN_ALWAYS : CREATE_ALWAYS;
     }
 
-    // attempt file creation
+    // Attempt file creation
     HANDLE hFile = ::CreateFileA(lpszFileName, dwAccess, dwShareMode, &sa, dwCreateFlag, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE)
     { //#define ERROR_PATH_NOT_FOUND             3L
@@ -232,7 +232,7 @@ bool CFile::Write(const void* lpBuf, uint32_t nCount)
 {
     if (nCount == 0)
     {
-        return true;     // avoid Win32 "null-write" option
+        return true;     // Avoid Win32 "null-write" option
     }
 
 #ifdef USE_WINDOWS_API
@@ -260,7 +260,7 @@ uint32_t CFile::Read(void* lpBuf, uint32_t nCount)
 {
     if (nCount == 0)
     {
-        return 0;   // avoid Win32 "null-read"
+        return 0;   // Avoid Win32 "null-read"
     }
 
 #ifdef USE_WINDOWS_API
