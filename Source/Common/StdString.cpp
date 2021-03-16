@@ -145,7 +145,7 @@ stdstr & stdstr::TrimLeft(const char * chars2remove)
         }
         else
         {
-            erase(begin(), end()); // make empty
+            erase(begin(), end()); // Make empty
         }
     }
     return *this;
@@ -162,7 +162,7 @@ stdstr & stdstr::TrimRight(const char * chars2remove)
         }
         else
         {
-            erase(begin(), end()); // make empty
+            erase(begin(), end()); // Make empty
         }
     }
     return *this;
@@ -179,7 +179,7 @@ stdstr & stdstr::Trim(const char * chars2remove)
         }
         else
         {
-            erase(begin(), end()); // make empty
+            erase(begin(), end()); // Make empty
         }
 
         pos = find_last_not_of(chars2remove);
@@ -189,7 +189,7 @@ stdstr & stdstr::Trim(const char * chars2remove)
         }
         else
         {
-            erase(begin(), end()); // make empty
+            erase(begin(), end()); // Make empty
         }
     }
     return *this;
