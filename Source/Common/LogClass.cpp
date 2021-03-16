@@ -92,9 +92,9 @@ void CLog::Log( const char * Message )
     m_FileSize += message_len;
 	if (m_TruncateFileLog && m_FileSize > m_MaxFileSize)
 	{
-		// check file size
+		// Check file size
         m_FileSize = m_hLogFile.GetLength();
-		// if larger then max size then
+		// If larger then maximum size then
 		if (m_FileSize > m_MaxFileSize)
 		{
 			if (!m_FlushOnWrite)
@@ -105,7 +105,7 @@ void CLog::Log( const char * Message )
 
 			uint32_t end = m_hLogFile.SeekToEnd();
 
-			// move to reduce size
+			// Move to reduce size
 			m_hLogFile.Seek((end - m_MaxFileSize) + m_FileChangeSize,CFile::begin);
 
 			// Find next end of line
@@ -131,7 +131,7 @@ void CLog::Log( const char * Message )
 				NextEnter += dwRead;
 			} while(dwRead != 0);
 
-			// copy content of log to the new file
+			// Copy content of log to the new file
 			uint32_t ReadPos = (end - m_MaxFileSize) + m_FileChangeSize + NextEnter;
 			uint32_t SizeToRead, WritePos = 0;
 			do 
@@ -158,7 +158,7 @@ void CLog::Log( const char * Message )
 				WritePos += dwRead;
 			} while (SizeToRead > 0);
 
-			//clean up
+			// Clean up
 			m_hLogFile.SetEndOfFile();
 			m_hLogFile.Flush();
             m_FileSize = m_hLogFile.GetLength();
