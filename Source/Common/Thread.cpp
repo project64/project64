@@ -26,7 +26,7 @@ CThread::~CThread()
     WriteTrace(TraceThread, TraceDebug, "Start");
     if (CThread::GetCurrentThreadId() == m_threadID)
     {
-        WriteTrace(TraceThread, TraceError, "Deleting from thread!!!");
+        WriteTrace(TraceThread, TraceError, "Deleting from thread!");
     }
     if (CThread::GetCurrentThreadId() != m_threadID && isRunning())
     {
