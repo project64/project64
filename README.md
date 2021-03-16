@@ -56,9 +56,6 @@ We use semantic versioning for Project64. For the versions available, see the [t
 * **Jabo** - *Previous contributor* - Jabo
 * **Smiff** - *Previous contributor* - Smiff
 * **Gent** - *Previous contributor* - Gent
-* **Bobby Smiles** - *Previous contributor* - Bobby Smiles
-* **Richard Goedeken** - *Previous contributor* - Richard Goedeken
-* **Hacktarux** - *Previous contributor* - Hacktarux
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
