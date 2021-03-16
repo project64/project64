@@ -1,6 +1,5 @@
-// Path.cpp: implementation of the CPath class.
-//
-//////////////////////////////////////////////////////////////////////
+// Path.cpp: Implementation of the CPath class
+
 #include "stdafx.h"
 #ifdef _WIN32
 #pragma warning(push)
@@ -18,10 +17,9 @@
 #endif
 #include "Platform.h"
 
-/*
- * g_ModuleLogLevel may be NULL while AppInit() is still in session in path.cpp.
- * The added check to compare to NULL here is at least a temporary workaround.
- */
+// g_ModuleLogLevel may be NULL while AppInit() is still in session in path.cpp.
+// The added check to compare to NULL here is at least a temporary workaround.
+
 #undef WriteTrace
 #ifdef _WIN32
 #define WriteTrace(m, s, format, ...) if (g_ModuleLogLevel != NULL && g_ModuleLogLevel[(m)] >= (s)) { WriteTraceFull((m), (s), __FILE__, __LINE__, __FUNCTION__, (format), ## __VA_ARGS__); }
@@ -29,9 +27,7 @@
 #define WriteTrace(m, s, format, ...) if (g_ModuleLogLevel != NULL && g_ModuleLogLevel[(m)] >= (s)) { WriteTraceFull((m), (s), __FILE__, __LINE__, __PRETTY_FUNCTION__, (format), ## __VA_ARGS__); }
 #endif
 
-//////////////////////////////////////////////////////////////////////
 // Constants
-//////////////////////////////////////////////////////////////////////
 
 #ifdef _WIN32
 const char DRIVE_DELIMITER = ':';
@@ -48,9 +44,8 @@ const char EXTENSION_DELIMITER = '.';
 void * CPath::m_hInst = NULL;
 #endif
 
-//////////////////////////////////////////////////////////////////////
 // Helpers
-//////////////////////////////////////////////////////////////////////
+
 #ifdef _WIN32
 void CPath::SethInst(void * hInst)
 {
@@ -62,15 +57,12 @@ void * CPath::GethInst()
     return m_hInst;
 }
 #endif
-//////////////////////////////////////////////////////////////////////
-// Initialisation
-//////////////////////////////////////////////////////////////////////
 
-//-------------------------------------------------------------
-// Task    : Helper function for the various CPath constructors.
-//           Initializes the data members and establishes various
-//           class invariants
-//-------------------------------------------------------------
+// Initialization
+
+// Task: Helper function for the various CPath constructors.
+// Initializes the data members and establishes various class invariants.
+
 inline void CPath::Init()
 {
     m_dwFindFileAttributes = 0;
@@ -82,10 +74,8 @@ inline void CPath::Init()
 #endif
 }
 
-//-------------------------------------------------------------
-// Task    : Helper function for the various CPath destructors.
-//           Cleans up varios internals
-//-------------------------------------------------------------
+// Task: Helper function for the various CPath destructors. Cleans up various internals.
+
 inline void CPath::Exit()
 {
 #ifdef _WIN32
@@ -103,31 +93,26 @@ inline void CPath::Exit()
 #endif
 }
 
-//////////////////////////////////////////////////////////////////////
 // Construction/Destruction
-//////////////////////////////////////////////////////////////////////
 
-//-------------------------------------------------------------
-// Task    : Constructs a path
-//-------------------------------------------------------------
+// Task: Constructs a path
+
 CPath::CPath()
 {
     Init();
     Empty();
 }
 
-//-------------------------------------------------------------
-// Task    : Constructs a path as copy of another
-//-------------------------------------------------------------
+// Task: Constructs a path as copy of another
+
 CPath::CPath(const CPath& rPath)
 {
     Init();
     m_strPath = rPath.m_strPath;
 }
 
-//-------------------------------------------------------------
-// Task    : Constructs a path and points it 2 lpszPath
-//-------------------------------------------------------------
+// Task: Constructs a path and points it to lpszPath
+
 CPath::CPath(const char * lpszPath)
 {
     Init();
@@ -148,9 +133,8 @@ CPath::CPath(const char * lpszPath, const char * NameExten)
     WriteTrace(TracePath, TraceDebug, "Done (m_strPath: \"%s\")", m_strPath.c_str());
 }
 
-//-------------------------------------------------------------
-// Task    : Constructs a path and points it 2 strPath
-//-------------------------------------------------------------
+// Task: Constructs a path and points it to strPath
+
 CPath::CPath(const std::string& strPath)
 {
     Init();
@@ -158,9 +142,8 @@ CPath::CPath(const std::string& strPath)
     cleanPathString(m_strPath);
 }
 
-//-------------------------------------------------------------
-// Task    : Constructs a path and points it 2 strPath
-//-------------------------------------------------------------
+// Task: Constructs a path and points it to strPath
+
 CPath::CPath(const std::string& strPath, const char * NameExten)
 {
     Init();
@@ -172,9 +155,8 @@ CPath::CPath(const std::string& strPath, const char * NameExten)
     SetNameExtension(NameExten);
 }
 
-//-------------------------------------------------------------
-// Task    : Constructs a path and points it 2 strPath
-//-------------------------------------------------------------
+// Task: Constructs a path and points it to strPath
+
 CPath::CPath(const std::string& strPath, const std::string& NameExten)
 {
     Init();
@@ -186,18 +168,16 @@ CPath::CPath(const std::string& strPath, const std::string& NameExten)
     SetNameExtension(NameExten.c_str());
 }
 
-//-------------------------------------------------------------
-// Task    : Cleanup and destruct a path object
-//-------------------------------------------------------------
+// Task: Cleanup and destruct a path object
+
 CPath::~CPath()
 {
     Exit();
 }
 
-//-------------------------------------------------------------
-// Post    : Return TRUE if paths are equal
-// Task    : Check if the two path are the same
-//-------------------------------------------------------------
+// Post: Return TRUE if paths are equal
+// Task: Check if the two path are the same
+
 bool CPath::operator ==(const CPath& rPath) const
 {
     // Get fully qualified versions of the paths
@@ -211,18 +191,16 @@ bool CPath::operator ==(const CPath& rPath) const
     return _stricmp(FullyQualified1.c_str(), FullyQualified2.c_str()) == 0;
 }
 
-//-------------------------------------------------------------
-// Post    : Return TRUE if paths are different
-// Task    : Check if the two path are different
-//-------------------------------------------------------------
+// Post: Return TRUE if paths are different
+// Task: Check if the two path are different
+
 bool CPath::operator !=(const CPath& rPath) const
 {
     return !(*this == rPath);
 }
 
-//-------------------------------------------------------------
-// Task    : Assign a path 2 another
-//-------------------------------------------------------------
+// Task: Assign a path to another
+
 CPath& CPath::operator =(const CPath& rPath)
 {
     if (this != &rPath)
@@ -232,34 +210,33 @@ CPath& CPath::operator =(const CPath& rPath)
     return *this;
 }
 
-//-------------------------------------------------------------
-// Post    : Return the path, so that assignements can be chained
-// Task    : Assign a string 2 a path
-//-------------------------------------------------------------
+// Post: Return the path, so that assignments can be chained
+// Task: Assign a string to a path
+
 CPath& CPath::operator =(const char * lpszPath)
 {
     m_strPath = lpszPath ? lpszPath : "";
     return *this;
 }
 
-//-------------------------------------------------------------
-// Post    : Return the path, so that assignements can be chained
-// Task    : Assign a string 2 a path
-//-------------------------------------------------------------
+// Post: Return the path, so that assignments can be chained
+// Task: Assign a string to a path
+
 CPath& CPath::operator =(const std::string& strPath)
 {
     m_strPath = strPath;
     return *this;
 }
 
-//-------------------------------------------------------------
-// Post    : Converts path 2 string
-// Task    : Convert path 2 string
-//           Warning: because this pointer 2 string point in the data
-//           of this class, it is possible 2 cast the result of this
-//           function in any non-constant pointer and alter the data.
-//           Very dangerous
-//-------------------------------------------------------------
+/*
+Post: Converts path to string
+Task: Convert path to string
+Warning: because this pointer to string point in the data
+of this class, it is possible to cast the result of this
+function in any non-constant pointer and alter the data.
+Very dangerous!
+*/
+
 CPath::operator const char *() const
 {
     return (const char *)m_strPath.c_str();
@@ -290,20 +267,21 @@ CPath::CPath(DIR_MODULE_FILE /*sdt*/)
 }
 #endif
 
-//-------------------------------------------------------------
-// Post    : Returns the drive component without a colon, e.g. "c"
-//           Returns the directory component with a leading backslash,
-//              but no trailing backslash, e.g. "\dir\subdir"
-//           Returns name compleletely without delimiters, e.g "letter"
-//           Returns extension completely without delimiters, e.g. "doc"
-// Globals :
-// I/O     :
-// Task    : Return the individual components of this path.
-//           For any given argument, you can pass NULL if you are not
-//           interested in that component.
-//           Do not rely on pNames being <= 8 characters, extensions
-//           being <= 3 characters, or drives being 1 character
-//-------------------------------------------------------------
+/*
+Post: Returns the drive component without a colon, e.g. "c"
+Returns the directory component with a leading backslash,
+but no trailing backslash, e.g. "\dir\subdir"
+Returns name completely without delimiters, e.g "letter"
+Returns extension completely without delimiters, e.g. "doc"
+Globals:
+I/O:
+Task: Return the individual components of this path.
+For any given argument, you can pass NULL if you are not
+interested in that component.
+Do not rely on pNames being <= 8 characters, extensions
+being <= 3 characters, or drives being 1 character
+*/
+
 #ifdef _WIN32
 void CPath::GetComponents(std::string* pDrive, std::string* pDirectory, std::string* pName, std::string* pExtension) const
 {
@@ -423,9 +401,8 @@ void CPath::GetComponents(std::string* pDirectory, std::string* pName, std::stri
 }
 #endif
 
-//-------------------------------------------------------------
-// Task    : Get drive and directory from path
-//-------------------------------------------------------------
+// Task: Get drive and directory from path
+
 #ifdef _WIN32
 void CPath::GetDriveDirectory(std::string& rDriveDirectory) const
 {
@@ -449,9 +426,8 @@ std::string CPath::GetDriveDirectory(void) const
 }
 #endif
 
-//-------------------------------------------------------------
-// Task    : Get directory from path
-//-------------------------------------------------------------
+// Task: Get directory from path
+
 void CPath::GetDirectory(std::string& rDirectory) const
 {
 #ifdef _WIN32
@@ -468,9 +444,8 @@ std::string CPath::GetDirectory(void) const
     return rDirectory;
 }
 
-//-------------------------------------------------------------
-// Task    : Get filename and extension from path
-//-------------------------------------------------------------
+// Task: Get filename and extension from path
+
 void CPath::GetNameExtension(std::string& rNameExtension) const
 {
     std::string Name;
@@ -496,9 +471,8 @@ std::string CPath::GetNameExtension(void) const
     return rNameExtension;
 }
 
-//-------------------------------------------------------------
-// Task    : Get filename from path
-//-------------------------------------------------------------
+// Task: Get filename from path
+
 void CPath::GetName(std::string& rName) const
 {
 #ifdef _WIN32
@@ -515,9 +489,8 @@ std::string CPath::GetName(void) const
     return rName;
 }
 
-//-------------------------------------------------------------
-// Task    : Get file extension from path
-//-------------------------------------------------------------
+// Task: Get file extension from path
+
 void CPath::GetExtension(std::string& rExtension) const
 {
 #ifdef _WIN32
@@ -534,9 +507,8 @@ std::string CPath::GetExtension(void) const
     return rExtension;
 }
 
-//-------------------------------------------------------------
-// Task    : Get current directory
-//-------------------------------------------------------------
+// Task: Get current directory
+
 void CPath::GetLastDirectory(std::string& rDirectory) const
 {
     std::string Directory;
@@ -562,9 +534,8 @@ std::string CPath::GetLastDirectory(void) const
     return rDirecotry;
 }
 
-//-------------------------------------------------------------
-// Task    : Get fully qualified path
-//-------------------------------------------------------------
+// Task: Get fully qualified path
+
 void CPath::GetFullyQualified(std::string& rFullyQualified) const
 {
 #ifdef _WIN32
@@ -577,10 +548,9 @@ void CPath::GetFullyQualified(std::string& rFullyQualified) const
 #endif
 }
 
-//-------------------------------------------------------------
-// Post    : Return TRUE if path does not start from filesystem root
-// Task    : Check if path is a relative one (e.g. doesn't start with C:\...)
-//-------------------------------------------------------------
+// Post: Return TRUE if path does not start from filesystem root
+// Task: Check if path is a relative one (e.g. doesn't start with C:\...)
+
 bool CPath::IsRelative() const
 {
 #ifdef _WIN32
@@ -601,9 +571,8 @@ bool CPath::IsRelative() const
     return true;
 }
 
-//-------------------------------------------------------------
-// Task    : Set path components
-//-------------------------------------------------------------
+// Task: Set path components
+
 #ifdef _WIN32
 void CPath::SetComponents(const char * lpszDrive, const char * lpszDirectory, const char * lpszName, const char * lpszExtension)
 {
@@ -648,15 +617,14 @@ void CPath::SetComponents(const char * lpszDirectory, const char * lpszName, con
         }
         strncat(buff_fullname,lpszExtension,sizeof(buff_fullname)-1);
     }
-    buff_fullname[sizeof(buff_fullname) - 1] = 0; //Make sure it is null terminated
+    buff_fullname[sizeof(buff_fullname) - 1] = 0; // Make sure it is null terminated
     m_strPath.erase();
     m_strPath = buff_fullname;
 }
 #endif
 
-//-------------------------------------------------------------
-// Task    : Set path's drive
-//-------------------------------------------------------------
+// Task: Set path's drive
+
 #ifdef _WIN32
 void CPath::SetDrive(char chDrive)
 {
@@ -670,12 +638,11 @@ void CPath::SetDrive(char chDrive)
 }
 #endif
 
-//-------------------------------------------------------------
-// Task    : Set path's directory
-//-------------------------------------------------------------
+// Task: Set path's directory
+
 void CPath::SetDirectory(const char * lpszDirectory, bool bEnsureAbsolute /*= false*/)
 {
-    WriteTrace(TracePath, TraceDebug, "start (lpszDirectory: \"%s\" bEnsureAbsolute: %s)", lpszDirectory ? lpszDirectory : "(null)", bEnsureAbsolute ? "true" : "false");
+    WriteTrace(TracePath, TraceDebug, "Start (lpszDirectory: \"%s\" bEnsureAbsolute: %s)", lpszDirectory ? lpszDirectory : "(null)", bEnsureAbsolute ? "true" : "false");
     std::string	Directory = lpszDirectory;
     std::string	Name;
     std::string	Extension;
@@ -701,9 +668,9 @@ void CPath::SetDirectory(const char * lpszDirectory, bool bEnsureAbsolute /*= fa
 }
 
 #ifdef _WIN32
-//-------------------------------------------------------------
-// Task    : Set path's drive and directory
-//-------------------------------------------------------------
+
+// Task: Set path's drive and directory
+
 void CPath::SetDriveDirectory(const char * lpszDriveDirectory)
 {
     std::string	DriveDirectory = lpszDriveDirectory;
@@ -721,9 +688,8 @@ void CPath::SetDriveDirectory(const char * lpszDriveDirectory)
 }
 #endif
 
-//-------------------------------------------------------------
-// Task    : Set path's filename
-//-------------------------------------------------------------
+// Task: Set path's filename
+
 void CPath::SetName(const char * lpszName)
 {
     std::string	Directory;
@@ -739,9 +705,8 @@ void CPath::SetName(const char * lpszName)
 #endif
 }
 
-//-------------------------------------------------------------
-// Task    : Set path's filename
-//-------------------------------------------------------------
+// Task: Set path's filename
+
 void CPath::SetName(int iName)
 {
     std::string	Directory;
@@ -762,9 +727,8 @@ void CPath::SetName(int iName)
 #endif
 }
 
-//-------------------------------------------------------------
-// Task    : Set path's file extension
-//-------------------------------------------------------------
+// Task: Set path's file extension
+
 void CPath::SetExtension(const char * lpszExtension)
 {
     std::string	Directory;
@@ -780,9 +744,8 @@ void CPath::SetExtension(const char * lpszExtension)
 #endif
 }
 
-//-------------------------------------------------------------
-// Task    : Set path's file extension
-//-------------------------------------------------------------
+// Task: Set path's file extension
+
 void CPath::SetExtension(int iExtension)
 {
     std::string	Directory;
@@ -803,9 +766,8 @@ void CPath::SetExtension(int iExtension)
 #endif
 }
 
-//-------------------------------------------------------------
-// Task    : Set path's filename and extension
-//-------------------------------------------------------------
+// Task: Set path's filename and extension
+
 void CPath::SetNameExtension(const char * lpszNameExtension)
 {
     std::string	Directory;
@@ -820,9 +782,8 @@ void CPath::SetNameExtension(const char * lpszNameExtension)
 #endif
 }
 
-//-------------------------------------------------------------
-// Task    : Append a subdirectory 2 path's directory
-//-------------------------------------------------------------
+// Task: Append a subdirectory to path's directory
+
 void CPath::AppendDirectory(const char * lpszSubDirectory)
 {
     std::string	Directory;
@@ -835,7 +796,7 @@ void CPath::AppendDirectory(const char * lpszSubDirectory)
         return;
     }
 
-    // Strip out any preceeding backslash
+    // Strip out any preceding backslash
     StripLeadingBackslash(SubDirectory);
     EnsureTrailingBackslash(SubDirectory);
 
@@ -855,11 +816,12 @@ void CPath::AppendDirectory(const char * lpszSubDirectory)
 #endif
 }
 
-//-------------------------------------------------------------
-// Pre     : If pLastDirectory is given we will store the name of the
-//           deepest directory (the one we're just exiting) in it
-// Task    : Remove deepest subdirectory from path
-//-------------------------------------------------------------
+/*
+Pre: If pLastDirectory is given we will store the name of the
+deepest directory (the one we're exiting) in it
+Task: Remove deepest subdirectory from path
+*/
+
 void CPath::UpDirectory(std::string *pLastDirectory /*= NULL*/)
 {
     std::string Directory;
@@ -885,9 +847,8 @@ void CPath::UpDirectory(std::string *pLastDirectory /*= NULL*/)
     SetDirectory(Directory.c_str());
 }
 
-//-------------------------------------------------------------
-// Task    : Set path 2 current directory
-//-------------------------------------------------------------
+// Task: Set path to current directory
+
 void CPath::CurrentDirectory()
 {
     char buff_path[260];
@@ -904,9 +865,8 @@ void CPath::CurrentDirectory()
 #endif
 }
 
-//-------------------------------------------------------------
-// Task    : Set path 2 the name of specified module
-//-------------------------------------------------------------
+// Task: Set path to the name of specified module
+
 #ifdef _WIN32
 void CPath::Module(void * hInstance)
 {
@@ -918,26 +878,23 @@ void CPath::Module(void * hInstance)
     m_strPath = buff_path;
 }
 
-//-------------------------------------------------------------
-// Task    : Set path 2 the name of current module
-//-------------------------------------------------------------
+// Task: Set path to the name of current module
+
 void CPath::Module()
 {
     Module(m_hInst);
 }
 
-//-------------------------------------------------------------
-// Task    : Set path 2 the directory of specified module
-//-------------------------------------------------------------
+// Task: Set path to the directory of specified module
+
 void CPath::ModuleDirectory(void * hInstance)
 {
     Module(hInstance);
     SetNameExtension("");
 }
 
-//-------------------------------------------------------------
-// Task    : Set path 2 the directory of current module
-//-------------------------------------------------------------
+// Task: Set path to the directory of current module
+
 void CPath::ModuleDirectory()
 {
     Module();
@@ -945,10 +902,9 @@ void CPath::ModuleDirectory()
 }
 #endif
 
-//---------------------------------------------------------------------------
-// Post    : Return TRUE if a directory
-// Task    : Check if this path represents a directory
-//---------------------------------------------------------------------------
+// Post: Return TRUE if it is a directory
+// Task: Check if this path represents a directory
+
 bool CPath::IsDirectory() const
 {
     // Check if this path has a filename
@@ -958,14 +914,15 @@ bool CPath::IsDirectory() const
     return file_name.empty();
 }
 
-//-------------------------------------------------------------
-// Post    : Return TRUE if directory exists
-// Task    : To determine if the directory exists, we need to
-//           create a test path with a wildcard (*.*) extension
-//           and see if FindFirstFile returns anything.  We don't
-//           use CPath::FindFirst() because that routine parses out
-//           '.' and '..', which fails for empty directories
-//-------------------------------------------------------------
+/*
+Post: Return TRUE if directory exists
+Task: To determine if the directory exists, we need to
+create a test path with a wildcard (*.*) extension
+and see if FindFirstFile returns anything.  We don't
+use CPath::FindFirst() because that routine parses out
+'.' and '..', which fails for empty directories
+*/
+
 bool CPath::DirectoryExists() const
 {
     WriteTrace(TracePath, TraceDebug, "m_strPath = %s",m_strPath.c_str());
@@ -999,10 +956,9 @@ bool CPath::DirectoryExists() const
     return res;
 }
 
-//-------------------------------------------------------------
-// Post    : Return TRUE if these is such a file
-// Task    : Check if file exists
-//-------------------------------------------------------------
+// Post: Return TRUE if these is such a file
+// Task: Check if file exists
+
 bool CPath::Exists() const
 {
 #ifdef _WIN32
@@ -1055,23 +1011,22 @@ bool CPath::SelectFile(void * hwndOwner, const char * InitialDir, const char * F
 }
 #endif
 
-//-------------------------------------------------------------
-// Post    : Return TRUE on success
-// Task    : Delete file
-//-------------------------------------------------------------
+// Post: Return TRUE on success
+// Task: Delete file
+
 bool CPath::Delete(bool bEvenIfReadOnly) const
 {
 #ifdef _WIN32
     uint32_t dwAttr = ::GetFileAttributesA(m_strPath.c_str());
     if (dwAttr == (uint32_t)-1)
     {
-        // File does not exist.
+        // File does not exist
         return false;
     }
 
     if (((dwAttr & FILE_ATTRIBUTE_READONLY) == FILE_ATTRIBUTE_READONLY) && !bEvenIfReadOnly)
     {
-        // File is read-only, and we're not allowed 2 delete it
+        // File is read-only, and we're not allowed to delete it
         return false;
     }
 
@@ -1082,13 +1037,14 @@ bool CPath::Delete(bool bEvenIfReadOnly) const
 #endif
 }
 
-//-------------------------------------------------------------
-// Post    : Return TRUE on success, false if there is such a target file
-//           and we weren't granted permission 2 overwrite file or some error
-// Task    : Copy file
-//           Since ::CopyFile will not overwrite read only files
-//           we will make sure the target file is writable first
-//-------------------------------------------------------------
+/*
+Post: Return TRUE on success, false if there is such a target file
+and we weren't granted permission to overwrite file or if we get an error
+Task: Copy file
+Since ::CopyFile will not overwrite read-only files
+we will make sure the target file is writable first
+*/
+
 bool CPath::CopyTo(const char * lpcszTargetFile, bool bOverwrite)
 {
     if (lpcszTargetFile == NULL)
@@ -1115,50 +1071,50 @@ bool CPath::CopyTo(const char * lpcszTargetFile, bool bOverwrite)
         }
     }
 
-    // CopyFile will set the target's attributes 2 the same as
+    // CopyFile will set the target's attributes to the same as
     // the source after copying
     return CopyFileA(m_strPath.c_str(), lpcszTargetFile, !bOverwrite) != 0;
 #else
 
     bool res = true;
-    WriteTrace(TracePath, TraceDebug, "opening \"%s\" for reading",m_strPath.c_str());
+    WriteTrace(TracePath, TraceDebug, "Opening \"%s\" for reading",m_strPath.c_str());
     FILE * infile = fopen(m_strPath.c_str(), "rb");
     if(infile == NULL)
     {
-        WriteTrace(TracePath, TraceWarning, "failed to open m_strPath = %s",m_strPath.c_str());
+        WriteTrace(TracePath, TraceWarning, "Failed to open m_strPath = %s",m_strPath.c_str());
         res = false;
     }
     else
     {
-        WriteTrace(TracePath, TraceDebug, "opened \"%s\"",m_strPath.c_str());
+        WriteTrace(TracePath, TraceDebug, "Opened \"%s\"",m_strPath.c_str());
     }
 
     FILE * outfile = NULL;
     if (res)
     {
-        WriteTrace(TracePath, TraceDebug, "opening \"%s\" for writing",lpcszTargetFile);
+        WriteTrace(TracePath, TraceDebug, "Opening \"%s\" for writing",lpcszTargetFile);
         outfile = fopen(lpcszTargetFile, "wb");
         if (outfile == NULL)
         {
-            WriteTrace(TracePath, TraceWarning, "failed to open m_strPath = %s errno=%d",lpcszTargetFile, errno);
+            WriteTrace(TracePath, TraceWarning, "Failed to open m_strPath = %s errno=%d",lpcszTargetFile, errno);
             res = false;
         }
         else
         {
-            WriteTrace(TracePath, TraceDebug, "opened \"%s\"",lpcszTargetFile);
+            WriteTrace(TracePath, TraceDebug, "Opened \"%s\"",lpcszTargetFile);
         }
     }
 
     if (res)
     {
-        WriteTrace(TracePath, TraceDebug, "copying data");
+        WriteTrace(TracePath, TraceDebug, "Copying data");
         while (!feof(infile))
         {
             char buffer[1024];
             size_t bytes = fread(buffer, 1, sizeof(buffer), infile); 
             if (ferror(infile))
             {
-                WriteTrace(TracePath, TraceWarning, "failed to read from %s", m_strPath.c_str());
+                WriteTrace(TracePath, TraceWarning, "Failed to read from %s", m_strPath.c_str());
                 res = false;
                 break;
             }
@@ -1168,7 +1124,7 @@ bool CPath::CopyTo(const char * lpcszTargetFile, bool bOverwrite)
             }
             if (ferror(outfile))
             {
-                WriteTrace(TracePath, TraceWarning, "failed to write to %s, ferror(outfile) = %X", lpcszTargetFile, ferror(outfile));
+                WriteTrace(TracePath, TraceWarning, "Failed to write to %s, ferror(outfile) = %X", lpcszTargetFile, ferror(outfile));
                 res = false;
                 break;
             }
@@ -1205,11 +1161,10 @@ bool CPath::CopyTo(const char * lpcszTargetFile, bool bOverwrite)
 #endif
 }
 
-//-------------------------------------------------------------
-// Post    : Return TRUE on success, false if there is such a target file
-//           and we weren't granted permission 2 overwrite file or some error
-// Task    : Move file
-//-------------------------------------------------------------
+// Post: Return TRUE on success, false if there is such a target file
+// and we weren't granted permission to overwrite file or get an error
+// Task: Move file
+
 bool CPath::MoveTo(const char * lpcszTargetFile, bool bOverwrite)
 {
 #ifdef _WIN32
@@ -1237,10 +1192,9 @@ bool CPath::MoveTo(const char * lpcszTargetFile, bool bOverwrite)
 #endif
 }
 
-//-------------------------------------------------------------
-// Post    : Return TRUE if attributes do match
-// Task    : Compare finder attributes
-//-------------------------------------------------------------
+// Post: Return TRUE if attributes match
+// Task: Compare finder attributes
+
 bool CPath::AttributesMatch(uint32_t dwTargetAttributes, uint32_t dwFileAttributes)
 {
     if (dwTargetAttributes == FIND_ATTRIBUTE_ALLFILES)
@@ -1254,34 +1208,28 @@ bool CPath::AttributesMatch(uint32_t dwTargetAttributes, uint32_t dwFileAttribut
     return (((dwTargetAttributes & dwFileAttributes) != 0) && ((FIND_ATTRIBUTE_SUBDIR & dwTargetAttributes) == (FIND_ATTRIBUTE_SUBDIR & dwFileAttributes)));
 }
 
-//-------------------------------------------------------------
-// Post    : Return TRUE if any match found
-// Task    : Find the first file that meets this path and the specified attributes
-//           You can specify the current attributes of the file or directory
-//           The attributes are represented by a combination (|) of the following
-//           constants:
-//
-//           _A_ARCH    Archive. Set whenever the file is
-//                      changed, and cleared by the BACKUP command
-//           _A_HIDDEN  Hidden file. Not normally seen with
-//                      the DIR command, unless the /AH option
-//                      is used. Returns information about normal
-//                      files as well as files with this attribute
-//           FIND_ATTRIBUTE_FILES  Normal. File can be read or written to
-//                                 without restriction
-//           _A_RDONLY  Read-only. File cannot be opened for writing,
-//                      and a file with the same name cannot be created
-//           FIND_ATTRIBUTE_SUBDIR Subdirectory
-//           _A_SYSTEM  System file. Not normally seen with the DIR
-//                      command, unless the /AS option is used
-//
-//           These attributes do not follow a simple additive logic
-//           Note that FIND_ATTRIBUTE_FILES is 0x00, so it effectively cannot be
-//           removed from the attribute set. You will therefore always
-//           get normal files, and may also get Archive, Hidden, etc.
-//           if you specify those attributes
-//           See aso: FindFirstFile, FindNextFile
-//-------------------------------------------------------------
+/*
+Post: Return TRUE if any match found
+Task: Find the first file that meets this path and the specified attributes
+You can specify the current attributes of the file or directory
+The attributes are represented by a combination (|) of the following
+constants:
+_A_ARCH - Archive. Set whenever the file is changed, and cleared by the BACKUP command.
+_A_HIDDEN - Hidden file. Not normally seen with the DIR command, unless the /AH option is used.
+Returns information about normal files as well as files with this attribute:
+FIND_ATTRIBUTE_FILES - Normal. File can be read or written to without restriction.
+_A_RDONLY - Read-only. File cannot be opened for writing, and a file with the same name cannot be created.
+FIND_ATTRIBUTE_SUBDIR - Subdirectory
+_A_SYSTEM - System file. Not normally seen with the DIR command, unless the /AS option is used.
+
+These attributes do not follow a simple additive logic.
+Note that FIND_ATTRIBUTE_FILES is 0x00, so it effectively cannot be
+removed from the attribute set. You will therefore always
+get normal files, and may also get Archive, Hidden, etc.
+if you specify those attributes
+See also: FindFirstFile, FindNextFile
+*/
+
 bool CPath::FindFirst(uint32_t dwAttributes /*= FIND_ATTRIBUTE_FILES*/)
 {
     // Close handle to any previous enumeration
@@ -1292,20 +1240,20 @@ bool CPath::FindFirst(uint32_t dwAttributes /*= FIND_ATTRIBUTE_FILES*/)
     BOOL bGotFile;
     BOOL bWantSubdirectory = (BOOL)(FIND_ATTRIBUTE_SUBDIR & dwAttributes);
 
-    // i.) Finding first candidate file
+    // Finding first candidate file
     WIN32_FIND_DATAA FindData;
     m_hFindFile = FindFirstFileA(m_strPath.c_str(), &FindData);
     bGotFile = (m_hFindFile != INVALID_HANDLE_VALUE);
 
     while (bGotFile)
     {
-        // ii.) Compare candidate to attributes, and filter out the "." and ".." folders
+        // Compare candidate to attributes, and filter out the "." and ".." folders
         if (!AttributesMatch(m_dwFindFileAttributes, FindData.dwFileAttributes))
             goto LABEL_GetAnother;
         if (bWantSubdirectory && (FindData.cFileName[0] == '.'))
             goto LABEL_GetAnother;
 
-        // iii.) Found match, prepare result
+        // Found a match, prepare result
         if ((FIND_ATTRIBUTE_SUBDIR & FindData.dwFileAttributes) != 0)
             StripTrailingBackslash(m_strPath);
 
@@ -1315,7 +1263,7 @@ bool CPath::FindFirst(uint32_t dwAttributes /*= FIND_ATTRIBUTE_FILES*/)
             EnsureTrailingBackslash(m_strPath);
         return TRUE;
 
-        // iv.) Not found match, get another
+        // Not found a match, get another
     LABEL_GetAnother:
         bGotFile = FindNextFileA(m_hFindFile, &FindData);
     }
@@ -1337,11 +1285,9 @@ bool CPath::FindFirst(uint32_t dwAttributes /*= FIND_ATTRIBUTE_FILES*/)
     return false;
 }
 
-//-------------------------------------------------------------
 // Post    : Return TRUE if a new match found
-// Task    : Find the next file that meets the conditions specified
-//           in the last FindFirst call
-//-------------------------------------------------------------
+// Task    : Find the next file that meets the conditions specified in the last FindFirst call
+
 bool CPath::FindNext()
 {
 #ifdef _WIN32
@@ -1393,7 +1339,7 @@ bool CPath::FindNext()
 
         WriteTrace(TracePath, TraceVerbose, "m_dwFindFileAttributes = %X dwFileAttributes = %X AttributesMatch: %s",m_dwFindFileAttributes, dwFileAttributes, AttributesMatch(m_dwFindFileAttributes, dwFileAttributes) ? "true" : "false");
 
-        // ii.) Compare candidate to attributes, and filter out the "." and ".." folders
+        // Compare candidate to attributes, and filter out the "." and ".." folders
         if (!AttributesMatch(m_dwFindFileAttributes, dwFileAttributes) ||
             strcmp(pEntry->d_name,".") == 0 ||
             strcmp(pEntry->d_name,"..") == 0 ||
@@ -1438,10 +1384,9 @@ bool CPath::FindNext()
     return false;
 }
 
-//-------------------------------------------------------------
-// Post    : Return TRUE on success
-// Task    : Change current working directory of application 2 path
-//-------------------------------------------------------------
+// Post: Return TRUE on success
+// Task: Change current working directory of application to path
+
 bool CPath::ChangeDirectory()
 {
 #ifdef _WIN32
@@ -1504,12 +1449,10 @@ void CPath::NormalizePath(CPath BaseDir)
 	}
 }
 
-//-------------------------------------------------------------
-// Pre     : If bCreateIntermediates is TRUE, create all eventually
-//           missing parent directories too
-// Post    : Return TRUE on success
-// Task    : Create new directory
-//-------------------------------------------------------------
+// Pre: If bCreateIntermediates is TRUE, create all eventually missing parent directories too
+// Post: Return TRUE on success
+// Task: Create new directory
+
 bool CPath::DirectoryCreate(bool bCreateIntermediates /*= TRUE*/)
 {
     WriteTrace(TracePath, TraceDebug, "m_strPath = %s bCreateIntermediates = %s",m_strPath.c_str(),bCreateIntermediates ? "true" : "false");
@@ -1534,12 +1477,12 @@ bool CPath::DirectoryCreate(bool bCreateIntermediates /*= TRUE*/)
     bSuccess = mkdir(PathText.c_str(), S_IRWXU) == 0;
     if (!bSuccess)
     {
-        WriteTrace(TracePath, TraceWarning, "failed to create \"%s\" errno: %d",PathText.c_str(), errno);
+        WriteTrace(TracePath, TraceWarning, "Failed to create \"%s\" errno: %d",PathText.c_str(), errno);
     }
 #endif
     if (!bSuccess && bCreateIntermediates)
     {
-        WriteTrace(TracePath, TraceDebug, "failed creating intermediates");
+        WriteTrace(TracePath, TraceDebug, "Failed creating intermediates");
         std::string::size_type nDelimiter = PathText.rfind(DIRECTORY_DELIMITER);
         if (nDelimiter == std::string::npos)
         {
@@ -1555,11 +1498,10 @@ bool CPath::DirectoryCreate(bool bCreateIntermediates /*= TRUE*/)
     return bSuccess;
 }
 
-//Helpers
+// Helpers
 
-//------------------------------------------------------------------------
-// Task    : Remove first character (if any) if it's chLeading
-//------------------------------------------------------------------------
+// Task: Remove first character (if any) if it's chLeading
+
 void CPath::cleanPathString(std::string& rDirectory) const
 {
     std::string::size_type pos = rDirectory.find(DIRECTORY_DELIMITER2);
@@ -1592,14 +1534,13 @@ void CPath::StripLeadingChar(std::string& rText, char chLeading) const
         rText = rText.substr(1);
 }
 
-//------------------------------------------------------------------------
-// Task    : Remove first character if \
-//------------------------------------------------------------------------
+// Task: Remove first character if '\'
+
 void CPath::StripLeadingBackslash(std::string& Directory) const
 {
     std::string::size_type nLength = Directory.length();
 
-    // If Directory is of the form '\', don't do it
+    // If directory is of the form '\', don't do it
     if (nLength <= 1)
         return;
 
@@ -1607,9 +1548,8 @@ void CPath::StripLeadingBackslash(std::string& Directory) const
         Directory = Directory.substr(1);
 }
 
-//------------------------------------------------------------------------
-// Task    : Remove last character (if any) if it's chTrailing
-//------------------------------------------------------------------------
+// Task: Remove last character (if any) if it's chTrailing
+
 void CPath::StripTrailingChar(std::string& rText, char chTrailing) const
 {
     std::string::size_type nLength = rText.length();
@@ -1620,9 +1560,8 @@ void CPath::StripTrailingChar(std::string& rText, char chTrailing) const
         rText.resize(nLength - 1);
 }
 
-//------------------------------------------------------------------------
-// Task    : Remove last character if \
-//------------------------------------------------------------------------
+// Task: Remove last character if '\'
+
 void CPath::StripTrailingBackslash(std::string& rDirectory) const
 {
     for (;;)
@@ -1642,10 +1581,8 @@ void CPath::StripTrailingBackslash(std::string& rDirectory) const
     }
 }
 
-//------------------------------------------------------------------------
-// Task    : Add a backslash to the end of Directory if there is
-//           not already one there
-//------------------------------------------------------------------------
+// Task: Add a backslash to the end of the directory if there is not already one there
+
 void CPath::EnsureTrailingBackslash(std::string& Directory) const
 {
     std::string::size_type nLength = Directory.length();
@@ -1656,10 +1593,8 @@ void CPath::EnsureTrailingBackslash(std::string& Directory) const
     }
 }
 
-//------------------------------------------------------------------------
-// Task    : Add a backslash to the beginning of Directory if there
-//           is not already one there
-//------------------------------------------------------------------------
+// Task: Add a backslash to the beginning of the directory if there is not already one there
+
 void CPath::EnsureLeadingBackslash(std::string & Directory) const
 {
     if (Directory.empty() || (Directory[0] != DIRECTORY_DELIMITER))
