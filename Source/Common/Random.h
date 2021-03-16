@@ -1,9 +1,6 @@
-/*
- * Defines the CRandom class.
- *
- * This class implements the Lehmer Random Number Generator.
- *
- */
+// Defines the CRandom class
+// This class implements the Lehmer Random Number Generator
+
 #pragma once
 #include <Common/stdtypes.h>
 
