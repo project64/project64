@@ -1,11 +1,3 @@
-// Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
-// Copyright(C) 2001-2021 Project64
-// Copyright(C) 2012 Bobby Smiles
-// Copyright(C) 2009 Richard Goedeken
-// Copyright(C) 2002 Hacktarux
-// GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
-
 #include "stdafx.h"
 #include <stdlib.h>
 
@@ -17,27 +9,27 @@
 typedef void(*tile_line_emitter_t)(CHle * hle, const int16_t *y, const int16_t *u, uint32_t address);
 typedef void(*subblock_transform_t)(int16_t *dst, const int16_t *src);
 
-/* standard jpeg ucode decoder */
+// Standard JPEG microcode decoder
 static void jpeg_decode_std(CHle * hle,
     const char *const version,
     const subblock_transform_t transform_luma,
     const subblock_transform_t transform_chroma,
     const tile_line_emitter_t emit_line);
 
-/* helper functions */
+// Helper functions
 static uint8_t clamp_u8(int16_t x);
 static int16_t clamp_s12(int16_t x);
 static uint16_t clamp_RGBA_component(int16_t x);
 
-/* pixel conversion & formatting */
+// Pixel conversion and formatting
 static uint32_t GetUYVY(int16_t y1, int16_t y2, int16_t u, int16_t v);
 static uint16_t GetRGBA(int16_t y, int16_t u, int16_t v);
 
-/* tile line emitters */
+// Tile line emitters
 static void EmitYUVTileLine(CHle * hle, const int16_t *y, const int16_t *u, uint32_t address);
 static void EmitRGBATileLine(CHle * hle, const int16_t *y, const int16_t *u, uint32_t address);
 
-/* macroblocks operations */
+// Macroblocks operations
 static void decode_macroblock_ob(int16_t *macroblock, int32_t *y_dc, int32_t *u_dc, int32_t *v_dc, const int16_t *qtable);
 static void decode_macroblock_std(const subblock_transform_t transform_luma,
     const subblock_transform_t transform_chroma,
@@ -47,7 +39,7 @@ static void decode_macroblock_std(const subblock_transform_t transform_luma,
 static void EmitTilesMode0(CHle * hle, const tile_line_emitter_t emit_line, const int16_t *macroblock, uint32_t address);
 static void EmitTilesMode2(CHle * hle, const tile_line_emitter_t emit_line, const int16_t *macroblock, uint32_t address);
 
-/* subblocks operations */
+// Sub blocks operations
 static void TransposeSubBlock(int16_t *dst, const int16_t *src);
 static void ZigZagSubBlock(int16_t *dst, const int16_t *src);
 static void ReorderSubBlock(int16_t *dst, const int16_t *src, const unsigned int *table);
@@ -59,7 +51,7 @@ static void InverseDCTSubBlock(int16_t *dst, const int16_t *src);
 static void RescaleYSubBlock(int16_t *dst, const int16_t *src);
 static void RescaleUVSubBlock(int16_t *dst, const int16_t *src);
 
-/* transposed dequantization table */
+// Transposed dequantization table
 static const int16_t DEFAULT_QTABLE[SUBBLOCK_SIZE] = {
     16, 12, 14, 14, 18, 24, 49, 72,
     11, 12, 13, 17, 22, 35, 64, 92,
@@ -71,7 +63,7 @@ static const int16_t DEFAULT_QTABLE[SUBBLOCK_SIZE] = {
     61, 55, 56, 62, 77, 92, 101, 99
 };
 
-/* zig-zag indices */
+// Zig-zag indices
 static const unsigned int ZIGZAG_TABLE[SUBBLOCK_SIZE] = {
     0, 1, 5, 6, 14, 15, 27, 28,
     2, 4, 7, 13, 16, 26, 29, 42,
@@ -83,7 +75,7 @@ static const unsigned int ZIGZAG_TABLE[SUBBLOCK_SIZE] = {
     35, 36, 48, 49, 57, 58, 62, 63
 };
 
-/* transposition indices */
+// Transposition indices
 static const unsigned int TRANSPOSE_TABLE[SUBBLOCK_SIZE] = {
     0, 8, 16, 24, 32, 40, 48, 56,
     1, 9, 17, 25, 33, 41, 49, 57,
@@ -100,40 +92,37 @@ static const unsigned int TRANSPOSE_TABLE[SUBBLOCK_SIZE] = {
 static const float IDCT_C3 = 1.175875602f;
 static const float IDCT_C6 = 0.541196100f;
 static const float IDCT_K[10] = {
-    0.765366865f,   /*  C2-C6         */
-    -1.847759065f,   /* -C2-C6         */
-    -0.390180644f,   /*  C5-C3         */
-    -1.961570561f,   /* -C5-C3         */
-    1.501321110f,   /*  C1+C3-C5-C7   */
-    2.053119869f,   /*  C1+C3-C5+C7   */
-    3.072711027f,   /*  C1+C3+C5-C7   */
-    0.298631336f,   /* -C1+C3+C5-C7   */
-    -0.899976223f,   /*  C7-C3         */
-    -2.562915448f    /* -C1-C3         */
+    0.765366865f,   //  C2-C6
+    -1.847759065f,   // -C2-C6
+    -0.390180644f,   //  C5-C3
+    -1.961570561f,   // -C5-C3
+    1.501321110f,   //  C1+C3-C5-C7
+    2.053119869f,   //  C1+C3-C5+C7
+    3.072711027f,   //  C1+C3+C5-C7
+    0.298631336f,   // -C1+C3+C5-C7
+    -0.899976223f,   //  C7-C3
+    -2.562915448f    // -C1-C3
 };
 
-/* global functions */
+// Global functions
 
-/***************************************************************************
-* JPEG decoding ucode found in Japanese exclusive version of Pokemon Stadium.
-**************************************************************************/
+// JPEG decoding microcode found in Japanese-exclusive version of Pokémon Stadium
+
 void jpeg_decode_PS0(CHle * hle)
 {
     jpeg_decode_std(hle, "PS0", RescaleYSubBlock, RescaleUVSubBlock, EmitYUVTileLine);
 }
 
-/***************************************************************************
-* JPEG decoding ucode found in Ocarina of Time, Pokemon Stadium 1 and
-* Pokemon Stadium 2.
-**************************************************************************/
+// JPEG decoding microcode found in Ocarina of Time, Pokémon Stadium 1, and Pokémon Stadium 2
+
 void jpeg_decode_PS(CHle * hle)
 {
     jpeg_decode_std(hle, "PS", NULL, NULL, EmitRGBATileLine);
 }
 
-/***************************************************************************
-* JPEG decoding ucode found in Ogre Battle and Bottom of the 9th.
-**************************************************************************/
+
+// JPEG decoding microcode found in Ogre Battle and Bottom of the 9th
+
 void jpeg_decode_OB(CHle * hle)
 {
     int16_t qtable[SUBBLOCK_SIZE];
@@ -173,7 +162,8 @@ void jpeg_decode_OB(CHle * hle)
     }
 }
 
-/* local functions */
+// Local functions
+
 static void jpeg_decode_std(CHle * hle, const char *const version, const subblock_transform_t transform_luma, const subblock_transform_t transform_chroma, const tile_line_emitter_t emit_line)
 {
     int16_t qtables[3][SUBBLOCK_SIZE];
@@ -186,7 +176,7 @@ static void jpeg_decode_std(CHle * hle, const char *const version, const subbloc
     uint32_t qtableV_ptr;
     unsigned int subblock_count;
     unsigned int macroblock_size;
-    /* macroblock contains at most 6 subblocks */
+    // Macroblock contains at most 6 sub blocks
     int16_t macroblock[6 * SUBBLOCK_SIZE];
     uint32_t data_ptr;
 
@@ -375,7 +365,7 @@ static void decode_macroblock_ob(int16_t *macroblock, int32_t *y_dc, int32_t *u_
     for (sb = 0; sb < 6; ++sb) {
         int16_t tmp_sb[SUBBLOCK_SIZE];
 
-        /* update DC */
+        // Update DC
         int32_t dc = (int32_t)macroblock[0];
         switch (sb) {
         case 0:
@@ -462,7 +452,7 @@ static void ReorderSubBlock(int16_t *dst, const int16_t *src, const unsigned int
 {
     unsigned int i;
 
-    /* source and destination sublocks cannot overlap */
+    // Source and destination sub blocks cannot overlap
     assert(abs(dst - src) > SUBBLOCK_SIZE);
 
     for (i = 0; i < SUBBLOCK_SIZE; ++i)
@@ -498,12 +488,14 @@ static void RShiftSubBlock(int16_t *dst, const int16_t *src, unsigned int shift)
         dst[i] = src[i] >> shift;
 }
 
-/***************************************************************************
- * Fast 2D IDCT using separable formulation and normalization
- * Computations use single precision floats
- * Implementation based on Wikipedia :
- * http://fr.wikipedia.org/wiki/Transform%C3%A9e_en_cosinus_discr%C3%A8te
- **************************************************************************/
+/*
+TODO: find a better, more general resource for this
+Fast 2D IDCT using separable formulation and normalization
+Computations use single precision floats
+Implementation based on Wikipedia:
+https://fr.wikipedia.org/wiki/Transform%C3%A9e_en_cosinus_discr%C3%A8te
+*/
+ 
 static void InverseDCT1D(const float *const x, float *dst, unsigned int stride)
 {
     float e[4];
@@ -550,7 +542,7 @@ static void InverseDCTSubBlock(int16_t *dst, const int16_t *src)
     float block[SUBBLOCK_SIZE];
     unsigned int i, j;
 
-    /* idct 1d on rows (+transposition) */
+    // IDCT 1D on rows (+transposition)
     for (i = 0; i < 8; ++i)
     {
         for (j = 0; j < 8; ++j)
@@ -560,12 +552,12 @@ static void InverseDCTSubBlock(int16_t *dst, const int16_t *src)
         InverseDCT1D(x, &block[i], 8);
     }
 
-    /* idct 1d on columns (thanks to previous transposition) */
+    // IDCT 1D on columns (thanks to previous transposition)
     for (i = 0; i < 8; ++i)
     {
         InverseDCT1D(&block[i * 8], x, 1);
 
-        /* C4 = 1 normalization implies a division by 8 */
+        // C4 = 1 normalization implies a division by 8
         for (j = 0; j < 8; ++j)
         {
             dst[i + j * 8] = (int16_t)x[j] >> 3;
