@@ -5,7 +5,7 @@ BOOL CPartialGroupBox::Attach(HWND hWnd)
 	ATLASSUME(m_hWnd == NULL);
 	ATLASSERT(::IsWindow(hWnd));
 
-	// Allocate the thunk structure here, where we can fail gracefully.
+	// Allocate the thunk structure here, where we can fail gracefully
 
 	BOOL result = m_thunk.Init(GetWindowProc(), this);
 	if (result == FALSE)
@@ -43,7 +43,7 @@ void CPartialGroupBox::OnPaint(HDC /*hDC*/)
 {
 	CPaintDC dc(m_hWnd);
 
-	//paint groupbox manually
+	// Paint group box manually
 	CRect controlrect;
 	GetClientRect(controlrect);
 	//::MapWindowPoints(HWND_DESKTOP, GetParent(), (LPPOINT)(LPRECT)controlrect, (sizeof(RECT)/sizeof(POINT)));
@@ -102,7 +102,7 @@ void CPartialGroupBox::OnPaint(HDC /*hDC*/)
 		dc.FillRect(fontrect, GetSysColor(COLOR_BTNFACE));
 		fontrect.DeflateRect(2, 0);
 
-		//Draw Caption
+		// Draw caption
 		dc.SetBkMode(OPAQUE);
 		dc.SetBkColor(GetSysColor(COLOR_BTNFACE));
 
