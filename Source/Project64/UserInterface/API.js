@@ -46,9 +46,9 @@ const _gprNames = [
     't8', 't9', 'k0', 'k1', 'gp', 'sp', 'fp', 'ra'
 ]
 
-
 // When we give callbacks or objects to native code, we need to make sure we keep a strong backing reference
-//  to them in Javascript so they don't get garbage collected before native code uses them.
+// to them in JavaScript so they don't get garbage collected before native code uses them
+
 const _strongBackingReferences = (function() {
     const _references = [];
     const noop = function () { };
@@ -84,7 +84,6 @@ const _strongBackingReferences = (function() {
         }
     };
 }) ();
-
 
 const GPR_R0 = (1 << 0)
 const GPR_AT = (1 << 1)
@@ -889,7 +888,7 @@ function Socket(fd)
     
     if(fd)
     {
-        // assume this was constructed from Server
+        // Assume this was constructed from server
         _fd = fd;
         connected = true;
     } else {
@@ -950,7 +949,7 @@ function Socket(fd)
             _native.read(_fd, _bufferSize, _strongBackingReferences.singleUseCallback(_read));
             break;
         case 'close':
-            // note: does nothing if ondata not set
+            // Note: does nothing if ondata not set
             _onclose = callback
             break;
         }
@@ -984,7 +983,7 @@ function Server(settings)
     }
     
     // Intermediate callback
-    //  convert clientFd to Socket and accept next client
+    // convert clientFd to Socket and accept next client
     var _acceptClient = function(clientFd)
     {
         _onconnection(new Socket(clientFd))
