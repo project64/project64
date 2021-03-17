@@ -137,11 +137,11 @@ private:
     static void WatchRomDirChanged(CRomBrowser * _this);
     static void AddField(ROMBROWSER_FIELDS_LIST & Fields, const char * Name, int32_t Pos, int32_t ID, int32_t Width, LanguageStringID LangID, bool UseDefault);
 
-    //Callback
+    // Callback
     static int CALLBACK SelectRomDirCallBack(HWND hwnd, uint32_t uMsg, uint32_t lp, uint32_t lpData);
     static int CALLBACK RomList_CompareItems(uint32_t lParam1, uint32_t lParam2, uint32_t lParamSort);
     
-    //Watch Directory Changed function
+    // Watch directory changed function
     HANDLE m_WatchThread, m_WatchStopEvent;
     DWORD  m_WatchThreadID;
 
