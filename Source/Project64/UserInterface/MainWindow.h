@@ -7,10 +7,10 @@
 #include <Project64\UserInterface\EnhancementUI.h>
 #include <Project64\UserInterface\ProjectSupport.h>
 
-class CGfxPlugin;      //Plugin that controls the rendering
-class CAudioPlugin;    //Plugin for audio, need the hwnd
-class CControl_Plugin; //Controller needs hwnd to see if it is the focused window
-class CBaseMenu;           //Menu for the gui
+class CGfxPlugin;      // Plugin that controls the rendering
+class CAudioPlugin;    // Plugin for audio, need the hwnd
+class CControl_Plugin; // Controller needs hwnd to see if it is the focused window
+class CBaseMenu;           // Menu for the GUI
 class CN64System;
 class CriticalSection;
 
@@ -88,7 +88,7 @@ private:
     void ChangeWinSize(long width, long height);
     void Create(const char * WindowTitle);
     void CreateStatusBar(void);
-    void Resize(DWORD fwSizeType, WORD nWidth, WORD nHeight); //responding to WM_SIZE
+    void Resize(DWORD fwSizeType, WORD nWidth, WORD nHeight); // Responding to WM_SIZE
     void AddRecentRom(const char * ImagePath);
     void SetWindowCaption(const wchar_t * Caption);
     void ShowRomBrowser(void);
