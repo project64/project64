@@ -72,7 +72,7 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
     {
     case WM_INITDIALOG:
     {
-        //record class for future usage
+        // Record class for future usage
         SetProp(hDlg, L"this", (RomInformation *)lParam);
         RomInformation * _this = (RomInformation *)lParam;
 
