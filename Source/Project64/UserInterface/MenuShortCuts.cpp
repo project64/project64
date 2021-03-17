@@ -419,7 +419,7 @@ void CShortCuts::Load(bool InitialValues)
     AddShortCut(ID_CURRENT_SAVE_9, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_9, CMenuShortCutKey::ACCESS_GAME_RUNNING);
     AddShortCut(ID_CURRENT_SAVE_10, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_10, CMenuShortCutKey::ACCESS_GAME_RUNNING);
 
-    //Option Menu
+    // Option menu
     AddShortCut(ID_OPTIONS_FULLSCREEN, STR_SHORTCUT_OPTIONS, MENU_FULL_SCREEN, CMenuShortCutKey::ACCESS_GAME_RUNNING);
     AddShortCut(ID_OPTIONS_ALWAYSONTOP, STR_SHORTCUT_OPTIONS, MENU_ON_TOP, CMenuShortCutKey::ACCESS_NOT_IN_FULLSCREEN);
     AddShortCut(ID_OPTIONS_CONFIG_GFX, STR_SHORTCUT_OPTIONS, MENU_CONFG_GFX, CMenuShortCutKey::ACCESS_NOT_IN_FULLSCREEN);
@@ -533,7 +533,7 @@ HACCEL CShortCuts::GetAcceleratorTable(void)
 {
     CGuard CS(m_CS);
 
-    //Generate a ACCEL list
+    // Generate an ACCEL list
     int size = 0, MaxSize = m_ShortCuts.size() * 5;
     ACCEL * AccelList = new ACCEL[MaxSize];
     CMenuShortCutKey::RUNNING_STATE RunningState = CMenuShortCutKey::RunningState();
