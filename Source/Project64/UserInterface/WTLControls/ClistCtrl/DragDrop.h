@@ -1,4 +1,3 @@
-
 #pragma once
 #include <vector>
 #include <shlobj.h>
@@ -426,11 +425,11 @@ public:
 		
 			if ( m_bAllowDrop )
 			{
-				// store drag data for later use in DragOver
+				// Store drag data for later use in DragOver
 				m_FormatEtc = m_vFormatEtc[ nFormatEtc ];
 				m_StgMedium = StgMedium;
 				
-				// get client cursor position
+				// Get client cursor position
 				CWindow hWnd( m_hTargetWnd );
 				CPoint point( pt.x, pt.y );
 				hWnd.ScreenToClient( &point );
@@ -453,7 +452,7 @@ public:
 		
 		if ( m_bAllowDrop && m_FormatEtc.cfFormat != CF_NULL && m_StgMedium.tymed != TYMED_NULL )
 		{
-			// get client cursor position
+			// Get client cursor position
 			CWindow hWnd( m_hTargetWnd );
 			CPoint point( pt.x, pt.y );
 			hWnd.ScreenToClient( &point );
@@ -496,7 +495,7 @@ public:
 			STGMEDIUM StgMedium;
 			if ( pDataObject->GetData( &m_FormatEtc, &StgMedium ) == S_OK )
 			{
-				// get client cursor position
+				// Get client cursor position
 				CWindow hWnd( m_hTargetWnd );
 				CPoint point( pt.x, pt.y );
 				hWnd.ScreenToClient( &point );
@@ -681,11 +680,11 @@ public:
 	{
 		m_hTargetWnd = pDelegate->m_hWnd;
 		
-		// instantiate new drop target object
+		// Instantiate new drop target object
 		m_pDropTarget = new CDropTargetT< T >( m_hTargetWnd );
 		m_pDropTarget->Register( pDelegate );
 		
-		// register drop target
+		// Register drop target
 		if ( FAILED( RegisterDragDrop( m_hTargetWnd, m_pDropTarget ) ) )
 		{
 			delete m_pDropTarget;
@@ -693,18 +692,18 @@ public:
 			return FALSE;
 		}
 		
-		// is this a drop target only?
+		// Is this a drop target only?
 		if ( !bDropSource )
 			return TRUE;
 		
-		// instantiate new drop source object
+		// Instantiate new drop source object
 		m_pDropSource = new CDropSource;
 		m_pDropSource->AddRef();
 		
 		m_pDataObject = new CDataObjectT< T >( m_pDropSource );
 		m_pDataObject->AddRef();
 		
-		// register drop source delegate for data render
+		// Register drop source delegate for data render
 		return m_pDataObject->Register( pDelegate );
 	}
 	
@@ -764,7 +763,7 @@ public:
 			
 		IDragSourceHelper *pDragSourceHelper = NULL;
 		
-		// instantiate drag source helper object
+		// Instantiate drag source helper object
 		if ( pDragImage != NULL )
 		{
 			if ( FAILED( CoCreateInstance( CLSID_DragDropHelper, NULL, CLSCTX_INPROC_SERVER, IID_IDragSourceHelper, (LPVOID*)&pDragSourceHelper ) ) )
@@ -777,7 +776,7 @@ public:
 		DWORD dwEffects = DROPEFFECT_NONE;
 		dwEffects = ::DoDragDrop( m_pDataObject, m_pDropSource, dwValidEffects, &dwEffects ) == DRAGDROP_S_DROP ? DROPEFFECT_NONE : dwEffects;
 		
-		// destroy drag source helper object
+		// Destroy drag source helper object
 		if ( pDragSourceHelper != NULL )
 			pDragSourceHelper->Release();
 		
