@@ -45,12 +45,12 @@ public:
 		if ( CWindowImpl< CTitleTip >::Create( hWndParent, Area, NULL, WS_POPUP, WS_EX_TOOLWINDOW | WS_EX_TOPMOST ) == NULL )
 			return FALSE;
 		
-		// create the tooltip
+		// Create the tooltip
 		if ( !m_ttToolTip.Create( m_hWnd ) )
 			return FALSE;
 		m_ttToolTip.SetMaxTipWidth( SHRT_MAX );
 		
-		// get system message font
+		// Get system message font
 		WTL::CLogFont logFont;
 		logFont.SetMessageBoxFont();
 		if ( !m_fntTitleFont.IsNull() )
@@ -75,12 +75,12 @@ public:
 			
 		CRect rcTextExtent( rcRect );
 				
-		// calculate item text extent...
+		// Calculate item text extent
 		dcClient.DrawTextW( strItemText.ToUTF16().c_str(), (int)strItemText.length(), rcTextExtent, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER | DT_CALCRECT );
 		
 		dcClient.SelectFont( hOldFont );
 		
-		// do not show titletip if entire text is visible
+		// Do not show title tip if entire text is visible
 		if ( rcTextExtent.Width() <= rcRect.Width() - 1 )
 			return FALSE;
 		
@@ -92,7 +92,7 @@ public:
 			m_ttToolTip.AddTool( m_hWnd, (LPCTSTR)m_strToolTip. substr(0,SHRT_MAX).c_str() );
 		}
 		
-		// show titletip at new location
+		// Show title tip at new location
 		if ( !SetWindowPos( NULL, rcRect.left - 4, rcRect.top, rcTextExtent.Width() + 11, rcRect.Height(), SWP_NOZORDER | SWP_SHOWWINDOW | SWP_NOACTIVATE | SWP_NOCOPYBITS ) )
 			return FALSE;
 		
@@ -147,7 +147,7 @@ public:
 		CWindow wndParent( m_hWndParent );
 		UINT nHitTest = (UINT)wndParent.SendMessage( WM_NCHITTEST, 0, MAKELPARAM( ptMouse.x, ptMouse.y ) );
 		
-		// forward notifcation through to parent
+		// Forward notification through to parent
 		if ( nHitTest == HTCLIENT )
 		{
 			wndParent.ScreenToClient( &ptMouse );
