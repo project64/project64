@@ -146,7 +146,6 @@ private:
 
 	TParamList m_ParamList;
 
-
 };
 
 typedef CModifiedComboBoxT<WPARAM>   CModifiedComboBox;
