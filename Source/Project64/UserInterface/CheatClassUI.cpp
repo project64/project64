@@ -322,11 +322,11 @@ LRESULT CCheatList::OnTreeRClicked(NMHDR* lpnmh)
 {
     if (g_Settings->LoadBool(UserInterface_BasicMode)) { return true; }
 
-    //Work out what item is selected
+    // Work out what item is selected
     TVHITTESTINFO ht = { 0 };
     uint32_t dwpos = GetMessagePos();
 
-    // include <windowsx.h> and <windows.h> header files
+    // Include <windowsx.h> and <windows.h> header files
     ht.pt.x = GET_X_LPARAM(dwpos);
     ht.pt.y = GET_Y_LPARAM(dwpos);
     ::MapWindowPoints(HWND_DESKTOP, lpnmh->hwndFrom, &ht.pt, 1);
@@ -334,7 +334,7 @@ LRESULT CCheatList::OnTreeRClicked(NMHDR* lpnmh)
     TreeView_HitTest(lpnmh->hwndFrom, &ht);
     m_hSelectedItem = ht.hItem;
 
-    //Show Menu
+    // Show menu
     HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_CHEAT_MENU));
     HMENU hPopupMenu = GetSubMenu(hMenu, 0);
     POINT Mouse;
