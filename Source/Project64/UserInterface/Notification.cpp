@@ -167,10 +167,10 @@ void CNotificationImp::FatalError(const char  * Message) const
 
 void CNotificationImp::AddRecentDir(const char * RomDir)
 {
-    //Validate the passed string
+    // Validate the passed string
     if (HIWORD(RomDir) == NULL) { return; }
 
-    //Get Information about the stored rom list
+    // Get information about the stored ROM list
     size_t MaxRememberedDirs = UISettingsLoadDword(Directory_RecentGameDirCount);
     strlist RecentDirs;
     size_t i;
@@ -184,7 +184,7 @@ void CNotificationImp::AddRecentDir(const char * RomDir)
         RecentDirs.push_back(RecentDir);
     }
 
-    //See if the dir is already in the list if so then move it to the top of the list
+    // See if the directory is already in the list, if so then move it to the top of the list
     strlist::iterator iter;
     for (iter = RecentDirs.begin(); iter != RecentDirs.end(); iter++)
     {
@@ -225,7 +225,7 @@ void CNotificationImp::ShowRomBrowser(void)
     if (m_hWnd == NULL) { return; }
     if (UISettingsLoadBool(RomBrowser_Enabled))
     {
-        //Display the rom browser
+        //Display the ROM browser
         m_hWnd->ShowRomList();
         m_hWnd->HighLightLastRom();
     }
