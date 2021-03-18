@@ -132,7 +132,7 @@ const ASM_INSTRUCTION CAssembler::m_Instructions[] =
     { "daddu",   R4300i_SPECIAL_DADDU,   base_spec, syn_arith },
     { "dsub",    R4300i_SPECIAL_DSUB,    base_spec, syn_arith },
     { "dsubu",   R4300i_SPECIAL_DSUBU,   base_spec, syn_arith },
-    { "tge",     R4300i_SPECIAL_TGE,     base_spec, syn_arith2 }, // note: no code field
+    { "tge",     R4300i_SPECIAL_TGE,     base_spec, syn_arith2 }, // Note: no code field
     { "tgeu",    R4300i_SPECIAL_TGEU,    base_spec, syn_arith2 }, //
     { "tlt",     R4300i_SPECIAL_TLT,     base_spec, syn_arith2 }, //
     { "tltu",    R4300i_SPECIAL_TLTU,    base_spec, syn_arith2 }, //
@@ -310,8 +310,8 @@ bool CAssembler::AssembleLine(const char* line, uint32_t* opcode, uint32_t addre
 
     char* name = strtok_s(line_c, " \t", &m_TokContext);
     
-    // attempt to assemble the line
-    // if a syntax error occurs, check if the command has alternative syntax forms and retry
+    // Attempt to assemble the line
+    // If a syntax error occurs, check if the command has alternative syntax forms and retry
 
     for(int nFallback = 0;; nFallback++)
     {
@@ -327,7 +327,7 @@ bool CAssembler::AssembleLine(const char* line, uint32_t* opcode, uint32_t addre
 
         if (nFallback > 0)
         {
-            // prepare for re-tokenization
+            // Prepare for re-tokenization
             strncpy(line_c, line, 128);
             StrToLower(line_c);
             name = strtok_s(line_c, " \t", &m_TokContext);
@@ -351,7 +351,7 @@ bool CAssembler::AssembleLine(const char* line, uint32_t* opcode, uint32_t addre
             }
         }
 
-        // assembled without errors
+        // Assembled without errors
         return true;
 
     next_fallback:;
@@ -436,11 +436,11 @@ uint32_t CAssembler::pop_val()
     //    return 0;
     //}
 
-    int base = 0; // hex or dec
+    int base = 0; // Hexadecimal or decimal
 
     if (*v == '$')
     {
-        base = 16; // hex
+        base = 16; // Hexadecimal
         v++;
     }
 
