@@ -457,7 +457,7 @@ void CDebuggerUI::TLBChanged()
     Debug_RefreshTLBWindow();
 }
 
-// Exception handling - break on exception vector if exception bp is set
+// Exception handling - break on exception vector if exception BP is set
 void CDebuggerUI::HandleCPUException(void)
 {
     int exc = (g_Reg->CAUSE_REGISTER >> 2) & 0x1F;
@@ -467,7 +467,7 @@ void CDebuggerUI::HandleCPUException(void)
     
     if ((ExceptionBreakpoints() & (1 << exc)))
     {
-        if (exc == 15) // floating-point exception
+        if (exc == 15) // Floating-point exception
         {
             if (fpExc & FpExceptionBreakpoints())
             {
@@ -475,7 +475,7 @@ void CDebuggerUI::HandleCPUException(void)
             }
             return;
         }
-        else if (exc == 0) // interrupt exception
+        else if (exc == 0) // Interrupt exception
         {
             if (intr & IntrBreakpoints())
             {
@@ -487,14 +487,14 @@ void CDebuggerUI::HandleCPUException(void)
                     }
                     return;
                 }
-                else // other interrupts
+                else // Other interrupts
                 {
                     goto have_bp;
                 }
             }
             return;
         }
-        else // other exceptions
+        else // Other exceptions
         {
             goto have_bp;
         }
@@ -522,7 +522,7 @@ void CDebuggerUI::HandleCartToRamDMA(void)
     m_DMALog->AddEntry(dmaRomAddr, dmaRamAddr, dmaLen);
     Debug_RefreshDMALogWindow();
     
-    // break if write breakpoint exists anywhere in target buffer
+    // Break if write breakpoint exists anywhere in target buffer
     if (m_Breakpoints->WriteBPExistsInChunk(dmaRamAddr, dmaLen))
     {
         g_Settings->SaveBool(Debugger_SteppingOps, true);
@@ -586,7 +586,7 @@ void CDebuggerUI::CPUStepStarted()
         if (pc == 0x80000000 || pc == 0x80000080 ||
             pc == 0xA0000100 || pc == 0x80000180)
         {
-            if ((g_Reg->STATUS_REGISTER >> 1) & 3) // if exl/erl bits are set
+            if ((g_Reg->STATUS_REGISTER >> 1) & 3) // If EXL/ERL bits are set
             {
                 HandleCPUException();
             }
@@ -657,7 +657,7 @@ void CDebuggerUI::CPUStepEnded()
     {
         m_StackTrace->PopEntry();
     }
-    else if (op == R4300i_CP0 && funct == R4300i_COP0_CO_ERET) // TODO may need more work
+    else if (op == R4300i_CP0 && funct == R4300i_COP0_CO_ERET) // TODO: may need more work
     {
         m_StackTrace->ClearEntries();
     }
