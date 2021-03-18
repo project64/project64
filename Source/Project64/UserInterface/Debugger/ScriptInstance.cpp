@@ -105,7 +105,7 @@ void CScriptInstance::SetState(INSTANCE_STATE state)
 
 void CScriptInstance::StateChanged()
 {
-    // todo mutex might be needed here
+    // TODO: mutex might be needed here
 
     m_Debugger->Debug_RefreshScriptsWindow();
     //m_ScriptSystem->DeleteStoppedInstances();
@@ -179,7 +179,7 @@ void CScriptInstance::StartEventLoop()
 {
     SetState(STATE_RUNNING);
 
-    // Todo interrupt with an apc when an event is removed and event count is 0
+    // TODO: interrupt with an APC when an event is removed and event count is 0
     while (HaveEvents())
     {
         IOLISTENER* lpListener;
@@ -300,7 +300,7 @@ void CScriptInstance::CloseAllAsyncFiles()
 
 void CScriptInstance::RemoveAsyncFile(HANDLE fd)
 {
-    // Stop tracking an fd and remove all of its listeners
+    // Stop tracking an FD and remove all of its listeners
     for (uint32_t i = 0; i < m_AsyncFiles.size(); i++)
     {
         IOFD iofd = m_AsyncFiles[i];
@@ -357,8 +357,9 @@ void CScriptInstance::RemoveListenerByIndex(UINT index)
     }
     else
     {
+		// TODO: Remove/fix?
         // This isn't a good replacement and the script aspects of the debugger shouldn't
-        // be used in WindowsXP
+        // be used in Windows XP
         CancelIo(lpListener->fd);
     }
 
@@ -367,7 +368,7 @@ void CScriptInstance::RemoveListenerByIndex(UINT index)
     m_Listeners.erase(m_Listeners.begin() + index);
 }
 
-// Free listener & its buffer, remove from list
+// Free listener & it's buffer, remove from list
 void CScriptInstance::RemoveListener(IOLISTENER* lpListener)
 {
     for (UINT i = 0; i < m_Listeners.size(); i++)
@@ -415,19 +416,19 @@ void CScriptInstance::InvokeListenerCallback(IOLISTENER* lpListener)
         }
         else
         {
-            // handle must have closed, safe to untrack fd and remove all associated listeners
+            // Handle must have closed, safe to untrack FD and remove all associated listeners
             RemoveAsyncFile(lpListener->fd);
 
-            // pass null to callback
+            // Pass null to callback
             duk_push_null(m_Ctx);
         }
         break;
     case EVENT_WRITE:
         nargs = 1;
-        duk_push_uint(m_Ctx, lpListener->dataLen); // num bytes written
+        duk_push_uint(m_Ctx, lpListener->dataLen); // Number of bytes written
         break;
     case EVENT_ACCEPT:
-        // pass client socket fd to callback
+        // Pass client socket FD to callback
         nargs = 1;
         duk_push_uint(m_Ctx, (UINT)lpListener->childFd);
         break;
@@ -585,8 +586,6 @@ void CScriptInstance::QueueAPC(PAPCFUNC userProc, ULONG_PTR param)
     }
 }
 
-/****************************/
-
 duk_ret_t CScriptInstance::js_ioSockConnect(duk_context* ctx)
 {
     CScriptInstance* _this = FetchInstance(ctx);
@@ -668,7 +667,7 @@ duk_ret_t CScriptInstance::js_ioSockAccept(duk_context* ctx)
     HANDLE fd = (HANDLE)duk_get_uint(ctx, 0);
     void* jsCallback = duk_get_heapptr(ctx, 1);
 
-    void* data = malloc(sizeof(SOCKADDR) * 4); // issue?
+    void* data = malloc(sizeof(SOCKADDR) * 4); // Issue?
 
     IOLISTENER* lpListener = _this->AddListener(fd, EVENT_ACCEPT, jsCallback, data, 0);
 
@@ -678,7 +677,7 @@ duk_ret_t CScriptInstance::js_ioSockAccept(duk_context* ctx)
     int ok = AcceptEx(
         (SOCKET)fd,
         (SOCKET)lpListener->childFd,
-        lpListener->data, // local and remote SOCKADDR
+        lpListener->data, // Local and remote SOCKADDR
         0,
         sizeof(SOCKADDR_IN) + 16,
         sizeof(SOCKADDR_IN) + 16,
@@ -706,7 +705,7 @@ duk_ret_t CScriptInstance::js_ioRead(duk_context* ctx)
     size_t bufferSize = duk_get_uint(ctx, 1);
     void* jsCallback = duk_get_heapptr(ctx, 2);
 
-    void* data = malloc(bufferSize); // freed after event is fired
+    void* data = malloc(bufferSize); // Freed after event is fired
 
     IOLISTENER* lpListener = _this->AddListener(fd, EVENT_READ, jsCallback, data, bufferSize);
     BOOL status = ReadFile(fd, lpListener->data, lpListener->dataLen, NULL, (LPOVERLAPPED)lpListener);
@@ -729,7 +728,7 @@ duk_ret_t CScriptInstance::js_ioWrite(duk_context* ctx)
     void* jsData = duk_to_buffer(ctx, 1, &dataLen);
     void* jsCallback = duk_get_heapptr(ctx, 2);
 
-    char* data = (char*)malloc(dataLen + 1); // freed after event is fired
+    char* data = (char*)malloc(dataLen + 1); // Freed after event is fired
     memcpy(data, jsData, dataLen);
     data[dataLen] = '\0';
 
@@ -991,7 +990,7 @@ duk_ret_t CScriptInstance::js_GetROMInt(duk_context* ctx)
         goto return_err;
     }
 
-    uint8_t* rom = g_Rom->GetRomAddress(); // little endian
+    uint8_t* rom = g_Rom->GetRomAddress(); // Little endian
     uint32_t romSize = g_Rom->GetRomSize();
 
     if (address > romSize)
@@ -1060,7 +1059,7 @@ duk_ret_t CScriptInstance::js_GetROMFloat(duk_context* ctx)
         goto return_err;
     }
 
-    uint8_t* rom = g_Rom->GetRomAddress(); // little endian
+    uint8_t* rom = g_Rom->GetRomAddress(); // Little endian
     uint32_t romSize = g_Rom->GetRomSize();
 
     if (address > romSize)
@@ -1351,7 +1350,7 @@ duk_ret_t CScriptInstance::js_MsgBox(duk_context* ctx)
     return 1;
 }
 
-// Return zero-terminated string from ram
+// Return zero-terminated string from RAM
 duk_ret_t CScriptInstance::js_GetRDRAMString(duk_context* ctx)
 {
     CScriptInstance* _this = FetchInstance(ctx);
@@ -1373,8 +1372,8 @@ duk_ret_t CScriptInstance::js_GetRDRAMString(duk_context* ctx)
     uint8_t test = 0xFF;
     int len = 0;
 
-    // determine length of string
-    while (len < maxLen && _this->m_Debugger->DebugLoad_VAddr(address + len, test) && test != 0) // todo protect from ram overrun
+    // Determine length of string
+    while (len < maxLen && _this->m_Debugger->DebugLoad_VAddr(address + len, test) && test != 0) // TODO: protect from RAM overrun
     {
         if ((address & 0xFFFFFF) + len >= g_MMU->RdramSize())
         {
@@ -1394,11 +1393,11 @@ duk_ret_t CScriptInstance::js_GetRDRAMString(duk_context* ctx)
 
     duk_pop_n(ctx, nargs);
     duk_push_string(ctx, (char*)str);
-    free(str); // duk creates internal copy
+    free(str); // Duk creates internal copy
     return 1;
 }
 
-// Return zero-terminated string from rom
+// Return zero-terminated string from ROM
 duk_ret_t CScriptInstance::js_GetROMString(duk_context* ctx)
 {
     // (address[, maxLen])
@@ -1444,11 +1443,11 @@ duk_ret_t CScriptInstance::js_GetROMString(duk_context* ctx)
 
     duk_pop(ctx);
     duk_push_string(ctx, str);
-    free(str); // duk creates internal copy
+    free(str); // Duk creates internal copy
     return 1;
 }
 
-// Return zero-terminated string from rom
+// Return zero-terminated string from ROM
 duk_ret_t CScriptInstance::js_GetROMBlock(duk_context* ctx)
 {
     uint32_t address = duk_get_uint(ctx, 0);
@@ -1619,7 +1618,7 @@ duk_ret_t CScriptInstance::js_FSWrite(duk_context* ctx)
     
     if (duk_is_string(ctx, 1))
     {
-        // string
+        // String
         const char* str = duk_get_string(ctx, 1);
         length = strlen(str);
 
@@ -1627,7 +1626,7 @@ duk_ret_t CScriptInstance::js_FSWrite(duk_context* ctx)
     }
     else
     {
-        // buffer
+        // Buffer
         buffer = (const char*)duk_get_buffer_data(ctx, 1, &length);
         
         if (buffer == NULL)
@@ -1929,8 +1928,6 @@ duk_ret_t CScriptInstance::js_FSReadDir(duk_context* ctx)
     FindClose(hFind);
     return 1;
 }
-
-////////////
 
 static BOOL ConnectEx(SOCKET s, const SOCKADDR* name, int namelen, PVOID lpSendBuffer,
     DWORD dwSendDataLength, LPDWORD lpdwBytesSent, LPOVERLAPPED lpOverlapped)
