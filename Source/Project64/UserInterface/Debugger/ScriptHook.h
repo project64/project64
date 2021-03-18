@@ -32,9 +32,9 @@ public:
     void InvokeAll();
     void InvokeById(int callbackId);
     void InvokeByParam(uint32_t param);
-    /* invoke if param >= cb.param && param < cb.param2*/
+    // invoke if param >= cb.param && param < cb.param2
     void InvokeByAddressInRange(uint32_t address);
-    /* invoke if param >= cb.param && param < cb.param2 && (value & cb.param4) == cb.param3 */
+    // invoke if param >= cb.param && param < cb.param2 && (value & cb.param4) == cb.param3
     void InvokeByAddressInRange_MaskedOpcode(uint32_t pc, uint32_t value);
     void InvokeByAddressInRange_GPRValue(uint32_t pc);
     void RemoveById(int callbackId);
