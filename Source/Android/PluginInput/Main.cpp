@@ -15,10 +15,11 @@ void ShowAboutWindow (void * hParent);
 /******************************************************************
 Function: CloseDLL
 Purpose:  This function is called when the emulator is closing
-down allowing the dll to de-initialise.
+down allowing the DLL to de-initialize.
 input:    none
 output:   none
 *******************************************************************/
+
 EXPORT void CALL CloseDLL (void)
 {
 }
@@ -27,8 +28,8 @@ EXPORT void CALL CloseDLL (void)
 Function: ControllerCommand
 Purpose:  To process the raw data that has just been sent to a
 specific controller.
-input:    - Controller Number (0 to 3) and -1 signalling end of
-processing the pif ram.
+input:    - Controller Number (0 to 3) and -1 signaling end of
+processing the PIF RAM.
 - Pointer of data to be processed.
 output:   none
 
@@ -36,9 +37,10 @@ note:     This function is only needed if the DLL is allowing raw
 data, or the plugin is set to raw
 
 the data that is being processed looks like this:
-initilize controller: 01 03 00 FF FF FF
+initialize controller: 01 03 00 FF FF FF
 read controller:      01 04 01 FF FF FF FF
 *******************************************************************/
+
 EXPORT void CALL ControllerCommand ( int /*Control*/, uint8_t * /*Command*/)
 {
 }
@@ -50,6 +52,7 @@ to give further information about the DLL.
 input:    a handle to the window that calls this function
 output:   none
 *******************************************************************/
+
 EXPORT void CALL DllAbout ( void * hParent )
 {
 #ifdef _WIN32
@@ -60,10 +63,11 @@ EXPORT void CALL DllAbout ( void * hParent )
 /******************************************************************
 Function: DllConfig
 Purpose:  This function is optional function that is provided
-to allow the user to configure the dll
+to allow the user to configure the DLL
 input:    a handle to the window that calls this function
 output:   none
 *******************************************************************/
+
 EXPORT void CALL DllConfig ( void * /*hParent*/ )
 {
 }
@@ -71,10 +75,11 @@ EXPORT void CALL DllConfig ( void * /*hParent*/ )
 /******************************************************************
 Function: DllTest
 Purpose:  This function is optional function that is provided
-to allow the user to test the dll
+to allow the user to test the DLL
 input:    a handle to the window that calls this function
 output:   none
 *******************************************************************/
+
 EXPORT void CALL DllTest ( void * /*hParent*/ )
 {
 }
@@ -82,19 +87,20 @@ EXPORT void CALL DllTest ( void * /*hParent*/ )
 /******************************************************************
 Function: GetDllInfo
 Purpose:  This function allows the emulator to gather information
-about the dll by filling in the PluginInfo structure.
-input:    a pointer to a PLUGIN_INFO stucture that needs to be
+about the DLL by filling in the PluginInfo structure.
+input:    a pointer to a PLUGIN_INFO structure that needs to be
 filled by the function. (see def above)
 output:   none
 *******************************************************************/
+
 EXPORT void CALL GetDllInfo ( PLUGIN_INFO * PluginInfo )
 {
     PluginInfo->Version = 0x0101;
     PluginInfo->Type = PLUGIN_TYPE_CONTROLLER;
 #ifdef _DEBUG
-    sprintf(PluginInfo->Name, "Android Input Debug Plugin %s", VER_FILE_VERSION_STR);
+    sprintf(PluginInfo->Name, "Android input debug plugin %s", VER_FILE_VERSION_STR);
 #else
-    sprintf(PluginInfo->Name, "Android Input Plugin %s", VER_FILE_VERSION_STR);
+    sprintf(PluginInfo->Name, "Android input plugin %s", VER_FILE_VERSION_STR);
 #endif
 }
 
@@ -106,6 +112,7 @@ input:    - Controller Number (0 to 3)
 the controller state.
 output:   none
 *******************************************************************/
+
 EXPORT void CALL GetKeys(int Control, BUTTONS * Keys )
 {
     if (Control == 0)
@@ -116,13 +123,14 @@ EXPORT void CALL GetKeys(int Control, BUTTONS * Keys )
 
 /******************************************************************
 Function: InitiateControllers
-Purpose:  This function initialises how each of the controllers
+Purpose:  This function initializes how each of the controllers
 should be handled.
 input:    - The handle to the main window.
 - A controller structure that needs to be filled for
 the emulator to know how to handle each controller.
 output:   none
 *******************************************************************/
+
 EXPORT void CALL InitiateControllers (CONTROL_INFO ControlInfo)
 {
     g_control_info = ControlInfo;
@@ -132,36 +140,39 @@ EXPORT void CALL InitiateControllers (CONTROL_INFO ControlInfo)
 
 /******************************************************************
 Function: ReadController
-Purpose:  To process the raw data in the pif ram that is about to
+Purpose:  To process the raw data in the PIF RAM that is about to
 be read.
-input:    - Controller Number (0 to 3) and -1 signalling end of
-processing the pif ram.
+input:    - Controller Number (0 to 3) and -1 signaling end of
+processing the PIF RAM.
 - Pointer of data to be processed.
 output:   none
 note:     This function is only needed if the DLL is allowing raw
 data.
 *******************************************************************/
+
 EXPORT void CALL ReadController ( int /*Control*/, uint8_t * /*Command*/ )
 {
 }
 
 /******************************************************************
 Function: RomClosed
-Purpose:  This function is called when a rom is closed.
+Purpose:  This function is called when a ROM is closed.
 input:    none
 output:   none
 *******************************************************************/
+
 EXPORT void CALL RomClosed (void)
 {
 }
 
 /******************************************************************
 Function: RomOpen
-Purpose:  This function is called when a rom is open. (from the
+Purpose:  This function is called when a ROM is open. (from the
 emulation thread)
 input:    none
 output:   none
 *******************************************************************/
+
 EXPORT void CALL RomOpen (void)
 {
     memset(&g_buttons, 0, sizeof(g_buttons));
@@ -174,6 +185,7 @@ plugin.
 input:    wParam and lParam of the WM_KEYDOWN message.
 output:   none
 *******************************************************************/
+
 EXPORT void CALL WM_KeyDown( uint32_t /*wParam*/, uint32_t /*lParam*/ )
 {
 }
@@ -185,6 +197,7 @@ plugin.
 input:    wParam and lParam of the WM_KEYDOWN message.
 output:   none
 *******************************************************************/
+
 EXPORT void CALL WM_KeyUp( uint32_t /*wParam*/, uint32_t /*lParam*/ )
 {
 }

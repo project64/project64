@@ -10,7 +10,7 @@ class SyncBridge :
 public:
 	SyncBridge (JavaBridge * javaBridge);
 
-    //Render window functions
+    // Render window functions
 	void GfxThreadInit();
     void GfxThreadDone();
     void SwapWindow();

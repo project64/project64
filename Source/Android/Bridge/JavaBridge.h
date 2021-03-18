@@ -11,18 +11,18 @@ class JavaBridge :
 public:
     JavaBridge(JavaVM* vm);
 
-    //Render window functions
+    // Render window functions
     void GfxThreadInit();
     void GfxThreadDone();
     void SwapWindow();
 
-    //Rom List
+    // ROM List
     void RomListReset(void);
     void RomListAddItem(const char * FullFileName, const char * FileName, const char * GoodName, uint32_t TextColor);
     void RomListLoaded(void);
     void RecentRomsUpdated(void);
 
-    //Notification
+    // Notification
     void DisplayError(const char * Message);
     void DisplayMessage(const char * Message, int DisplayTime);
     void DisplayMessage2(const char * Message);

@@ -32,7 +32,7 @@ void CNotificationImp::DisplayError(const char * Message) const
 #ifdef ANDROID
     g_JavaBridge->DisplayError(Message);
 #else
-    Message = NULL; // not used
+    Message = NULL; // Not used
 #endif
 }
 
@@ -67,7 +67,7 @@ void CNotificationImp::DisplayWarning(const char * Message) const
 #ifdef ANDROID
     g_JavaBridge->DisplayError(Message);
 #else
-    Message = NULL; // not used
+    Message = NULL; // Not used
 #endif
 }
 
@@ -84,14 +84,14 @@ void CNotificationImp::DisplayMessage(int DisplayTime, LanguageStringID StringID
     DisplayMessage(DisplayTime, g_Lang->GetString(StringID).c_str());
 }
 
-//User Feedback
+// User feedback
 void CNotificationImp::DisplayMessage(int DisplayTime, const char * Message) const
 {
 #ifdef ANDROID
     if (g_JavaBridge == NULL) { return; }
     g_JavaBridge->DisplayMessage(Message, DisplayTime);
 #else
-    // ignore warning usage
+    // Ignore warning usage
     DisplayTime = DisplayTime;
     Message = Message;
 #endif
@@ -104,12 +104,12 @@ void CNotificationImp::DisplayMessage2(const char * Message) const
 
     g_JavaBridge->DisplayMessage2(Message);
 #else
-    // ignore warning usage
+    // Ignore warning usage
     Message = Message;
 #endif
 }
 
-// Ask a Yes/No Question to the user, yes = true, no = false
+// Ask a yes/no question to the user, yes = true, no = false
 bool CNotificationImp::AskYesNoQuestion(const char * /*Question*/) const
 {
     return false;

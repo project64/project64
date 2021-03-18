@@ -3,6 +3,7 @@
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2014 Bobby Smiles
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
+
 #pragma once
 
 extern const int16_t RESAMPLE_LUT[64 * 4];
@@ -13,7 +14,7 @@ static inline int16_t adpcm_predict_sample(uint8_t byte, uint8_t mask,
     unsigned lshift, unsigned rshift)
 {
     int16_t sample = (uint16_t)(byte & mask) << lshift;
-    sample >>= rshift; /* signed */
+    sample >>= rshift; // signed
     return sample;
 }
 

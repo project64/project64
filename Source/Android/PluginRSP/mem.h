@@ -3,6 +3,7 @@
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2014 Bobby Smiles
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
+
 #pragma once
 #include <assert.h>
 
@@ -69,7 +70,7 @@ static inline void dmem_store_u32(CHle * hle, const uint32_t* src, uint16_t addr
     store_u32(hle->dmem(), address & 0xfff, src, count);
 }
 
-/* convenient functions DRAM access */
+// Convenient functions DRAM access
 static inline uint8_t* dram_u8(CHle * hle, uint32_t address)
 {
     return u8(hle->dram(), address & 0xffffff);

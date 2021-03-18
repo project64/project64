@@ -5,12 +5,13 @@
 // Copyright(C) 2009 Richard Goedeken
 // Copyright(C) 2002 Hacktarux
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
+
 #include "stdafx.h"
 
 #include "alist.h"
 #include "mem.h"
 
-enum { NAUDIO_COUNT = 0x170 }; /* ie 184 samples */
+enum { NAUDIO_COUNT = 0x170 }; // i.e. 184 samples
 enum {
     NAUDIO_MAIN = 0x4f0,
     NAUDIO_MAIN2 = 0x660,
@@ -20,7 +21,8 @@ enum {
     NAUDIO_WET_RIGHT = 0xe20
 };
 
-/* audio commands definition */
+// Audio commands definition
+
 static void UNKNOWN(CHle * hle, uint32_t w1, uint32_t w2)
 {
     uint8_t acmd = (w1 >> 24);
@@ -40,7 +42,7 @@ static void NAUDIO_0000(CHle * hle, uint32_t w1, uint32_t w2)
 
 static void NAUDIO_02B0(CHle * hle, uint32_t UNUSED(w1), uint32_t w2)
 {
-    /* emulate code at 0x12b0 (inside SETVOL), because PC always execute in IMEM */
+    // Emulate code at 0x12b0 (inside SETVOL), because PC always execute in IMEM
     hle->alist_naudio().rate[1] &= ~0xffff;
     hle->alist_naudio().rate[1] |= (w2 & 0xffff);
 }
@@ -179,7 +181,7 @@ static void ADPCM(CHle * hle, uint32_t w1, uint32_t w2)
         hle,
         flags & 0x1,
         flags & 0x2,
-        false,          /* unsuported by this ucode */
+        false,          // Unsupported by this microcode
         dmemo,
         dmemi,
         (count + 0x1f) & ~0x1f,
@@ -199,7 +201,7 @@ static void RESAMPLE(CHle * hle, uint32_t w1, uint32_t w2)
     alist_resample(
         hle,
         flags & 0x1,
-        false,          /* TODO: check which ABI supports it */
+        false,          // TODO: check which ABI supports it
         dmemo,
         dmemi,
         NAUDIO_COUNT,
@@ -224,7 +226,8 @@ static void MP3(CHle * hle, uint32_t w1, uint32_t w2)
     mp3_task(hle, index, address);
 }
 
-/* global functions */
+// Global functions
+
 void alist_process_naudio(CHle * hle)
 {
     static const acmd_callback_t ABI[0x10] =
@@ -240,7 +243,8 @@ void alist_process_naudio(CHle * hle)
 
 void alist_process_naudio_bk(CHle * hle)
 {
-    /* TODO: see what differs from alist_process_naudio */
+    // TODO: see what differs from alist_process_naudio
+	
     static const acmd_callback_t ABI[0x10] = {
         SPNOOP,         ADPCM,          CLEARBUFF,      ENVMIXER,
         LOADBUFF,       RESAMPLE,       SAVEBUFF,       NAUDIO_0000,
@@ -253,7 +257,8 @@ void alist_process_naudio_bk(CHle * hle)
 
 void alist_process_naudio_dk(CHle * hle)
 {
-    /* TODO: see what differs from alist_process_naudio */
+    // TODO: see what differs from alist_process_naudio
+	
     static const acmd_callback_t ABI[0x10] = {
         SPNOOP,         ADPCM,          CLEARBUFF,      ENVMIXER,
         LOADBUFF,       RESAMPLE,       SAVEBUFF,       MIXER,
@@ -278,7 +283,8 @@ void alist_process_naudio_mp3(CHle * hle)
 
 void alist_process_naudio_cbfd(CHle * hle)
 {
-    /* TODO: see what differs from alist_process_naudio_mp3 */
+    // TODO: see what differs from alist_process_naudio_mp3
+	
     static const acmd_callback_t ABI[0x10] = {
         UNKNOWN,        ADPCM,          CLEARBUFF,      ENVMIXER,
         LOADBUFF,       RESAMPLE,       SAVEBUFF,       MP3,

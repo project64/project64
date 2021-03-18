@@ -116,7 +116,7 @@ static void watch_uninstall(const char *baseDir)
         inotify_rm_watch(fileDescriptor, IN_DELETE);
         __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "closing the INOTIFY instance");
         close(fileDescriptor);
-        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "Waiting to test if dir removed");
+        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "Waiting to test if directory removed");
         pjutil::Sleep(2000);
         __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "Sleep Done");
 
@@ -144,10 +144,10 @@ EXPORT jint CALL JNI_OnLoad(JavaVM* vm, void* reserved)
         __android_log_print(ANDROID_LOG_ERROR, "jniBridge", "Failed to get the environment using GetEnv()");
         return -1;
     }
-    /*
-    * Create mThreadKey so we can keep track of the JNIEnv assigned to each thread
-    * Refer to http://developer.android.com/guide/practices/design/jni.html for the rationale behind this
-    */
+
+    // Create mThreadKey so we can keep track of the JNIEnv assigned to each thread
+    // Refer to http://developer.android.com/guide/practices/design/jni.html for the rationale behind this
+
     if (pthread_key_create(&g_ThreadKey, Android_JNI_ThreadDestroyed) != 0)
     {
         __android_log_print(ANDROID_LOG_ERROR, "jniBridge", "Error initializing pthread key");
@@ -172,7 +172,7 @@ void AddRecentRom(const char * ImagePath)
     if (ImagePath == NULL) { return; }
     WriteTrace(TraceUserInterface, TraceDebug, "Start (ImagePath: %s)", ImagePath);
 
-    //Get Information about the stored rom list
+    // Get information about the stored ROM list
     size_t MaxRememberedFiles = UISettingsLoadDword(File_RecentGameFileCount);
     strlist RecentGames;
     size_t i;
@@ -186,7 +186,7 @@ void AddRecentRom(const char * ImagePath)
         RecentGames.push_back(RecentGame);
     }
 
-    //See if the game is already in the list if so then move it to the top of the list
+    // See if the game is already in the list, and if so then move it to the top of the list
     strlist::iterator iter;
     for (iter = RecentGames.begin(); iter != RecentGames.end(); iter++)
     {
@@ -238,7 +238,7 @@ void GameCpuRunning(void * /*NotUsed*/)
         {
             if (g_JavaBridge)
             {
-                WriteTrace(TraceUserInterface, TraceDebug, "Notify java emulation stopped");
+                WriteTrace(TraceUserInterface, TraceDebug, "Notify Java emulation stopped");
                 g_JavaBridge->EmulationStarted();
             }
             else
@@ -248,7 +248,7 @@ void GameCpuRunning(void * /*NotUsed*/)
         }
         else
         {
-            WriteTrace(TraceUserInterface, TraceError, "Failed to get java environment");
+            WriteTrace(TraceUserInterface, TraceError, "Failed to get Java environment");
         }
     }
     else
@@ -257,7 +257,7 @@ void GameCpuRunning(void * /*NotUsed*/)
         {
             if (g_JavaBridge)
             {
-                WriteTrace(TraceUserInterface, TraceDebug, "Notify java emulation stopped");
+                WriteTrace(TraceUserInterface, TraceDebug, "Notify Java emulation stopped");
                 g_JavaBridge->EmulationStopped();
             }
             else
@@ -266,11 +266,11 @@ void GameCpuRunning(void * /*NotUsed*/)
             }
 
             // call in to java that emulation done
-            WriteTrace(TraceUserInterface, TraceDebug, "clean up global activity");
+            WriteTrace(TraceUserInterface, TraceDebug, "Clean up global activity");
             env->DeleteGlobalRef(g_Activity);
             g_Activity = NULL;
 
-            WriteTrace(TraceUserInterface, TraceDebug, "clean up global gl thread");
+            WriteTrace(TraceUserInterface, TraceDebug, "Clean up global gl thread");
             if (g_JavaBridge)
             {
                 g_JavaBridge->GfxThreadDone();
@@ -306,7 +306,7 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_appInit(JNIEnv* env, j
 
     if (g_JavaVM == NULL)
     {
-        Notify().DisplayError("No java VM");
+        Notify().DisplayError("No Java VM");
         return false;
     }
 
@@ -392,7 +392,7 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_IsSettingSet(JNIEnv* e
 
 EXPORT void CALL Java_emu_project64_jni_NativeExports_LoadRomList(JNIEnv* env, jclass cls)
 {
-    WriteTrace(TraceUserInterface, TraceDebug, "start");
+    WriteTrace(TraceUserInterface, TraceDebug, "Start");
     if (g_JavaRomList == NULL)
     {
         g_JavaRomList = new CJavaRomList;
@@ -451,14 +451,14 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_ExternalEvent(JNIEnv* env,
 
 EXPORT void CALL Java_emu_project64_jni_NativeExports_ResetApplicationSettings(JNIEnv* env, jclass cls)
 {
-    WriteTrace(TraceUserInterface, TraceDebug, "start");
+    WriteTrace(TraceUserInterface, TraceDebug, "Start");
     CSettingTypeApplication::ResetAll();
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
 EXPORT jbyteArray CALL Java_emu_project64_jni_NativeExports_GetString(JNIEnv* env, jclass cls, int StringID)
 {
-    WriteTrace(TraceUserInterface, TraceDebug, "start (StringID: %d)", StringID);
+    WriteTrace(TraceUserInterface, TraceDebug, "Start (StringID: %d)", StringID);
     jbyteArray result = NULL;
     if (g_Lang)
     {
@@ -479,7 +479,7 @@ EXPORT jbyteArray CALL Java_emu_project64_jni_NativeExports_GetString(JNIEnv* en
 
 EXPORT void CALL Java_emu_project64_jni_NativeExports_SetSpeed(JNIEnv* env, jclass cls, int Speed)
 {
-    WriteTrace(TraceUserInterface, TraceDebug, "start (Speed: %d)", Speed);
+    WriteTrace(TraceUserInterface, TraceDebug, "Start (Speed: %d)", Speed);
     if (g_BaseSystem)
     {
         g_BaseSystem->SetSpeed(Speed);
@@ -490,7 +490,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_SetSpeed(JNIEnv* env, jcla
 EXPORT int CALL Java_emu_project64_jni_NativeExports_GetSpeed(JNIEnv* env, jclass cls)
 {
     int speed = 0;
-    WriteTrace(TraceUserInterface, TraceDebug, "start");
+    WriteTrace(TraceUserInterface, TraceDebug, "Start");
     if (g_BaseSystem)
     {
         speed = g_BaseSystem->GetSpeed();
@@ -502,7 +502,7 @@ EXPORT int CALL Java_emu_project64_jni_NativeExports_GetSpeed(JNIEnv* env, jclas
 EXPORT int CALL Java_emu_project64_jni_NativeExports_GetBaseSpeed(JNIEnv* env, jclass cls)
 {
     int speed = 0;
-    WriteTrace(TraceUserInterface, TraceDebug, "start");
+    WriteTrace(TraceUserInterface, TraceDebug, "Start");
     if (g_BaseSystem)
     {
         speed = g_BaseSystem->GetBaseSpeed();
@@ -629,7 +629,7 @@ static void Android_JNI_ThreadDestroyed(void* value)
 {
     __android_log_print(ANDROID_LOG_ERROR, "Android_JNI_ThreadDestroyed", "start");
 
-    /* The thread is being destroyed, detach it from the Java VM and set the mThreadKey value to NULL as required */
+    // The thread is being destroyed, detach it from the Java VM and set the mThreadKey value to NULL as required
     JNIEnv *env = (JNIEnv*)value;
     if (env != NULL)
     {
@@ -641,10 +641,11 @@ static void Android_JNI_ThreadDestroyed(void* value)
 
 JNIEnv* Android_JNI_GetEnv(void)
 {
-    /* From http://developer.android.com/guide/practices/jni.html
+    /*
+	* From http://developer.android.com/guide/practices/jni.html
     * All threads are Linux threads, scheduled by the kernel.
     * They're usually started from managed code (using Thread.start), but they can also be created elsewhere and then
-    * attached to the JavaVM. For example, a thread started with pthread_create can be attached with the
+    * attached to the Java VM. For example, a thread started with pthread_create can be attached with the
     * JNI AttachCurrentThread or AttachCurrentThreadAsDaemon functions. Until a thread is attached, it has no JNIEnv,
     * and cannot make JNI calls.
     * Attaching a natively-created thread causes a java.lang.Thread object to be constructed and added to the "main"
@@ -657,7 +658,7 @@ JNIEnv* Android_JNI_GetEnv(void)
     int status = g_JavaVM->AttachCurrentThread(&env, NULL);
     if (status < 0)
     {
-        __android_log_print(ANDROID_LOG_ERROR, "jniBridge", "failed to attach current thread");
+        __android_log_print(ANDROID_LOG_ERROR, "jniBridge", "Failed to attach current thread");
         return 0;
     }
 

@@ -5,12 +5,14 @@
 // Copyright(C) 2009 Richard Goedeken
 // Copyright(C) 2002 Hacktarux
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
+
 #include "stdafx.h"
 
 #include "alist.h"
 #include "mem.h"
 
-/* audio commands definition */
+// Audio commands definition
+
 static void UNKNOWN(CHle * hle, uint32_t w1, uint32_t w2)
 {
     uint8_t acmd = (w1 >> 24);
@@ -107,7 +109,7 @@ static void RESAMPLE(CHle * hle, uint32_t w1, uint32_t w2)
     alist_resample(
         hle,
         flags & 0x1,
-        false,          /* TODO: check which ABI supports it */
+        false,          // TODO: check which ABI supports it
         hle->alist_nead().out,
         hle->alist_nead().in,
         (hle->alist_nead().count + 0xf) & ~0xf,
@@ -174,14 +176,14 @@ static void ENVMIXER_MK(CHle * hle, uint32_t w1, uint32_t w2)
     uint16_t dmem_wl = (w2 >>  4) & 0xff0;
     uint16_t dmem_wr = (w2 <<  4) & 0xff0;
 
-    xors[2] = 0;    /* unsupported by this ucode */
-    xors[3] = 0;    /* unsupported by this ucode */
+    xors[2] = 0;    // Unsupported by this microcode
+    xors[3] = 0;    // Unsupported by this microcode
     xors[0] = 0 - (int16_t)((w1 & 0x2) >> 1);
     xors[1] = 0 - (int16_t)((w1 & 0x1)     );
 
     alist_envmix_nead(
         hle,
-        false,  /* unsupported by this ucode */
+        false,  // Unsupported by this microcode
         dmem_dl, dmem_dr,
         dmem_wl, dmem_wr,
         dmemi, count,
@@ -268,7 +270,7 @@ static void ADDMIXER(CHle * hle, uint32_t w1, uint32_t w2)
 
 static void HILOGAIN(CHle * hle, uint32_t w1, uint32_t w2)
 {
-    int8_t   gain  = (w1 >> 16); /* Q4.4 signed */
+    int8_t   gain  = (w1 >> 16); // Q4.4 signed
     uint16_t count = w1;
     uint16_t dmem  = (w2 >> 16);
 
@@ -282,12 +284,12 @@ static void FILTER(CHle * hle, uint32_t w1, uint32_t w2)
 
     if (flags > 1) {
         hle->alist_nead().filter_count          = w1;
-        hle->alist_nead().filter_lut_address[0] = address; /* t6 */
+        hle->alist_nead().filter_lut_address[0] = address; // t6
     }
     else {
         uint16_t dmem = w1;
 
-        hle->alist_nead().filter_lut_address[1] = address + 0x10; /* t5 */
+        hle->alist_nead().filter_lut_address[1] = address + 0x10; // t5
         alist_filter(hle, dmem, hle->alist_nead().filter_count, address, hle->alist_nead().filter_lut_address);
     }
 }

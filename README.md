@@ -50,12 +50,12 @@ Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c6
 
 We use semantic versioning for Project64. For the versions available, see the [tags on this repository](https://github.com/project64/project64/tags)
 
-## Authors
+## Author / Contributors
 
 * **Zilmar** - *Current maintainer* - [Zilmar](https://github.com/project64)
-* **Jabo** - *Previous member* - Jabo
-* **Smiff** - *Previous member* - Smiff
-* **Gent** - *Previous member* - Gent
+* **Jabo** - *Previous contributor* - Jabo
+* **Smiff** - *Previous contributor* - Smiff
+* **Gent** - *Previous contributor* - Gent
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
