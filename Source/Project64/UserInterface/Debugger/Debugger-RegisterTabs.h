@@ -132,7 +132,7 @@ private:
         "Virtual coherency (data)"
     };
 
-    // for static dlgprocs, assumes single instance
+    // For static dlgprocs, assumes single instance
     static bool m_bColorsEnabled;
     static CDebuggerUI* m_Debugger;
 
