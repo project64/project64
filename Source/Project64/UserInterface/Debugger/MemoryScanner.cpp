@@ -298,7 +298,7 @@ uint32_t CScanResult::GetVirtualAddress(void)
     }
     else
     {
-        // convert physical to virtual kseg0
+        // Convert physical to virtual kseg0
         return (m_Address | 0x80000000);
     }
 }
@@ -470,9 +470,6 @@ bool CScanResult::SetStrLengthSafe(int length)
 //    m_bSelected = bSelected;
 //}
 
-
-/*********************/
-
 CMemoryScanner::CMemoryScanner(void) :
     m_DidFirstScan(false),
     m_ValueType(ValueType_uint8),
@@ -550,13 +547,13 @@ bool CMemoryScanner::SetAddressRange(uint32_t startAddress, uint32_t endAddress)
     {
         m_VAddrBits = startAddress & 0xE0000000;
 
-        // don't allow TLB
+        // Don't allow TLB
         if (!RangeCheck(startAddress, endAddress, 0x80000000, 0xBFFFFFFF))
         {
             return false;
         }
 
-        // use physical addresses internally
+        // Use physical addresses internally
         startAddress = startAddress & 0x1FFFFFFF;
         endAddress = endAddress & 0x1FFFFFFF;
     }
@@ -589,7 +586,7 @@ bool CMemoryScanner::SetAddressRange(uint32_t startAddress, uint32_t endAddress)
     }
     else
     {
-        return false; // invalid range
+        return false; // Invalid range
     }
     
     m_Memory = GetMemoryPool(startAddress);
@@ -711,7 +708,7 @@ void CMemoryScanner::RemoveResult(size_t index)
     m_Results.erase(m_Results.begin() + index);
 }
 
-// scan for text or hex array
+// Scan for text or hexadecimal array
 void CMemoryScanner::FirstScanLoopString(DisplayFormat resultDisplayFormat)
 {
     int length = m_StringValueLength;
@@ -740,7 +737,7 @@ void CMemoryScanner::FirstScanLoopString(DisplayFormat resultDisplayFormat)
     }
 }
 
-// scan for text (case-insensitive)
+// Scan for text (case-insensitive)
 void CMemoryScanner::FirstScanLoopIString(DisplayFormat resultDisplayFormat)
 {
     int length = m_StringValueLength;
@@ -769,7 +766,7 @@ void CMemoryScanner::FirstScanLoopIString(DisplayFormat resultDisplayFormat)
     }
 }
 
-// scan for text of unknown single-byte encoding
+// Scan for text of unknown single-byte encoding
 void CMemoryScanner::FirstScanLoopUnkString(void)
 {
     const char* str = stdstr().FromUTF16(m_Value._string).c_str();
@@ -921,7 +918,7 @@ bool CMemoryScanner::FirstScan(DisplayFormat resDisplayFormat)
 #define _NextScanLoopPrimitive64(T, Compare) NextScanLoopPrimitive64<T>(Compare<T>)
 #define _NextScanLoopPrimitiveResults64(T, Compare) NextScanLoopPrimitiveResults64<T>(Compare<T>)
 
-// compare result's current value in memory against m_Value
+// Compare result's current value in memory against m_Value
 #define NEXT_SCAN_PRIMITIVES_AGAINST_VALUE(CompareFunc) \
     switch(m_ValueType)                                 \
     {                                                   \
@@ -937,7 +934,7 @@ bool CMemoryScanner::FirstScan(DisplayFormat resDisplayFormat)
     case ValueType_double: _NextScanLoopPrimitive64(double,   CompareFunc); break; \
     }
 
-// compare result's current value in memory against result's old value
+// Compare result's current value in memory against result's old value
 #define NEXT_SCAN_PRIMITIVES_AGAINST_RESULTS(CompareFunc) \
     switch(m_ValueType)                                   \
     {                                                     \
