@@ -2,7 +2,7 @@
 
 #include "DebuggerUI.h"
 
-// todo maybe add char* ownerName and use a TreeView
+// TODO: Maybe add char* ownerName and use a TreeView
 
 class CDebugSymbols :
     public CDebugDialog<CDebugSymbols>,
