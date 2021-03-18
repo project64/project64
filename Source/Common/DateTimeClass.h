@@ -10,4 +10,4 @@ public:
 
 private:
     time_t m_time;
-}; 
+};

@@ -61,7 +61,7 @@ public:
     uint32_t SeekToEnd   ( void );
     void  SeekToBegin ( void );
 
-    // Overridables
+    // Overridable
     virtual uint32_t GetPosition() const;
     virtual int32_t Seek(int32_t lOff, SeekPosition nFrom);
     virtual bool SetLength(uint32_t dwNewLen);

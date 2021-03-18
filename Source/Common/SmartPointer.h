@@ -1,12 +1,12 @@
 #pragma once
 
-//The template class definition for smart pointer
+// The template class definition for smart pointer
 template<class _Ty>
 class AUTO_PTR
 {
 public:
     typedef _Ty element_type;
-    //ctor
+    // CTOR
     explicit AUTO_PTR(_Ty *pVal = 0) throw() :
         m_Owns(pVal != 0),
         m_AutoPtr(pVal)
@@ -14,14 +14,14 @@ public:
     {
     }
 
-    //copy ctor
+    // Copy CTOR
     AUTO_PTR(const AUTO_PTR<_Ty>& ptrCopy) throw() :
         m_Owns(ptrCopy.m_Owns),
         m_AutoPtr(ptrCopy.release())
     {
     }
 
-    //overloading = operator
+    // Overloading = operator
     AUTO_PTR<_Ty>& operator=(AUTO_PTR<_Ty>& ptrCopy) throw()
     {
         if (this != &ptrCopy)
@@ -42,7 +42,7 @@ public:
         }
         return (*this);
     }
-    //dtor
+    // DTOR
     ~AUTO_PTR()
     {
         if (m_Owns)
@@ -50,25 +50,25 @@ public:
             delete m_AutoPtr;
         }
     }
-    //overloading * operator
+    // Overloading * operator
     _Ty& operator*() const throw()
     {
         return (*get());
     }
 
-    //overloading -> operator
+    // Overloading -> operator
     _Ty *operator->() const throw()
     {
         return (get());
     }
 
-    //function to get the pointer to the class
+    // Function to get the pointer to the class
     _Ty *get() const throw()
     {
         return (m_AutoPtr);
     }
 
-    //function to get the pointer to the class and take ownership
+    // Function to get the pointer to the class and take ownership
     _Ty *release() const throw()
     {
         ((AUTO_PTR<_Ty> *)this)->m_Owns = false;

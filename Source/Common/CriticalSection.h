@@ -31,4 +31,3 @@ private:
 	CGuard(const CGuard& copy);
 	CGuard &operator=(const CGuard& rhs);
 };
-

@@ -1,9 +1,8 @@
 #pragma once
 
-/*
- * Some versions of Microsoft Visual C/++ compilers before Visual Studio 2010
- * have <stdint.h> removed in favor of these nonstandard built-in types:
- */
+// Some versions of Microsoft Visual C/++ compilers before Visual Studio 2010
+// have <stdint.h> removed in favor of these non-standard built-in types:
+
 #if defined(_MSC_VER) && (_MSC_VER < 1600)
 typedef signed __int8           int8_t;
 typedef signed __int16          int16_t;
