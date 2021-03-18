@@ -81,7 +81,7 @@ void CDebugStackTrace::Refresh()
         return;
     }
 
-    SetWindowText(stdstr_f("Stack Trace (%d)", m_EntriesIndex).ToUTF16().c_str());
+    SetWindowText(stdstr_f("Stack trace (%d)", m_EntriesIndex).ToUTF16().c_str());
 
     m_List.SetRedraw(FALSE);
     m_List.DeleteAllItems();
