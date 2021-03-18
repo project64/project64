@@ -49,7 +49,7 @@ private:
 
     CriticalSection m_CS;
 
-    void RegisterHook(const char* hookId, CScriptHook* cbList); // associate string id with callback list
+    void RegisterHook(const char* hookId, CScriptHook* cbList); // Associate string ID with callback list
     void UnregisterHooks();
 
     HDC m_ScreenDC;
