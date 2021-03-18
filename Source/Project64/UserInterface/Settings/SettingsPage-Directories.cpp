@@ -35,7 +35,7 @@ m_InUpdateSettings(false)
     m_TextureDefault.Attach(GetDlgItem(IDC_TEXTURE_DEFAULT));
     m_TextureSelected.Attach(GetDlgItem(IDC_TEXTURE_OTHER));
 
-    //Set Text language for the dialog box
+    // Set text language for the dialog box
     ::SetWindowText(m_PluginGroup.m_hWnd, wGS(DIR_PLUGIN).c_str());
     ::SetWindowText(m_AutoSaveGroup.m_hWnd, wGS(DIR_AUTO_SAVE).c_str());
     ::SetWindowText(m_InstantSaveGroup.m_hWnd, wGS(DIR_INSTANT_SAVE).c_str());
@@ -50,8 +50,8 @@ int CALLBACK COptionsDirectoriesPage::SelectDirCallBack(HWND hwnd, DWORD uMsg, D
     switch (uMsg)
     {
     case BFFM_INITIALIZED:
-        // WParam is TRUE since you are passing a path.
-        // It would be FALSE if you were passing a pidl.
+        // WParam is TRUE since you are passing a path
+        // It would be FALSE if you were passing a PIDL
         if (lpData)
         {
             SendMessage(hwnd, BFFM_SETSELECTION, TRUE, lpData);
