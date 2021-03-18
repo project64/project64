@@ -277,4 +277,3 @@ private:
         TOOLTIP(IDC_CHK_VADDR, "Checked = Use virtual address space (CPU), Unchecked = Use physical address space (RCP)")
     END_TOOLTIP_MAP()
 };
-
