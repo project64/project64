@@ -35,6 +35,7 @@ bool CDebugDMALogView::FilterEntry(int dmaLogIndex)
     return true;
 }
 */
+
 void CDebugDMALogView::RefreshList()
 {
     if (g_Rom == NULL)
@@ -105,7 +106,7 @@ void CDebugDMALogView::RefreshList()
             sig.u32 = _byteswap_ulong(*(uint32_t*)&rom[lpEntry->romAddr]);
         }
 
-        // Todo checkbox to display all in hex
+        // TODO: checkbox to display all in hex
         if (isalnum(sig.sz[0]) && isalnum(sig.sz[1]) && isalnum(sig.sz[2]) && isalnum(sig.sz[3]))
         {
             m_DMAList.AddItem(itemIndex, 4, stdstr((char*)sig.sz).ToUTF16().c_str());
@@ -392,7 +393,7 @@ LRESULT CDebugDMALogView::OnCustomDrawList(NMHDR* pNMHDR)
     
     DMALOGENTRY* lpEntry = m_DMALog->GetEntryByIndex(nItem);
     
-    if (nItem >= 1) // continuation
+    if (nItem >= 1) // Continuation
     {
         DMALOGENTRY* lpPrevEntry = m_DMALog->GetEntryByIndex(nItem - 1);
 
@@ -403,7 +404,7 @@ LRESULT CDebugDMALogView::OnCustomDrawList(NMHDR* pNMHDR)
         }
     }
 
-    if (nEntries >= 2 && nItem <= nEntries - 2) // head
+    if (nEntries >= 2 && nItem <= nEntries - 2) // Head
     {
         DMALOGENTRY* lpNextEntry = m_DMALog->GetEntryByIndex(nItem + 1);
 
