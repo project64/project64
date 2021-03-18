@@ -62,7 +62,7 @@ void CScriptSystem::RunScript(const char * path)
 {
     CGuard guard(m_CS);
     CScriptInstance* scriptInstance = new CScriptInstance(m_Debugger);
-    char* pathSaved = (char*)malloc(strlen(path)+1); // freed via DeleteStoppedInstances
+    char* pathSaved = (char*)malloc(strlen(path)+1); // Freed via DeleteStoppedInstances
     strcpy(pathSaved, path);
 
     m_RunningInstances.push_back({ pathSaved, scriptInstance });
