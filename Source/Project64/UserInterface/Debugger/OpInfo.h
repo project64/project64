@@ -21,7 +21,7 @@ public:
 
     bool IsStaticJump()
     {
-        // j, jal
+        // J, JAL
 
         uint32_t op = m_OpCode.op;
 
@@ -35,7 +35,7 @@ public:
 
     bool IsJump()
     {
-        // j, jal, jr, jalr, exception
+        // J, JAL, JR, JALR, exception
 
         uint32_t op = m_OpCode.op;
 
@@ -147,13 +147,13 @@ public:
                 m_OpCode.op >= R4300i_SC && m_OpCode.op <= R4300i_SD);
     }
 
-    // addiu sp, sp, x
+    // ADDIU SP, SP, X
     bool IsStackShift()
     {
         return (m_OpCode.op == R4300i_ADDIU || m_OpCode.op == R4300i_ADDI) && m_OpCode.rt == 29;
     }
 
-    // addiu sp, sp, <negative value>
+    // ADDIU SP, SP, <negative value>
     bool IsStackAlloc() 
     {
         if (!IsStackShift())
@@ -164,7 +164,7 @@ public:
         return (short)m_OpCode.immediate < 0;
     }
 
-    // addiu sp, sp, <positive value>
+    // ADDIU SP, SP, <positive value>
     bool IsStackFree() 
     {
         if (!IsStackShift())
