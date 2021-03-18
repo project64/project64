@@ -9,7 +9,7 @@ CDiskDrivePage::CDiskDrivePage(HWND hParent, const RECT & rcDispay)
         return;
     }
 
-    //Set the text for all gui Items
+    // Set the text for all GUI items
     SetDlgItemText(IDC_IPLDIR_JP_TXT, wGS(OPTION_IPL_ROM_PATH).c_str());
     SetDlgItemText(IDC_IPLDIR_US_TXT, wGS(OPTION_IPL_ROM_USA_PATH).c_str());
     SetDlgItemText(IDC_IPLDIR_TL_TXT, wGS(OPTION_IPL_ROM_TOOL_PATH).c_str());
@@ -140,7 +140,7 @@ void CDiskDrivePage::UpdatePageSettings(void)
 
 void CDiskDrivePage::SelectFile(LanguageStringID /*Title*/, CModifiedEditBox & EditBox)
 {
-    const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+    const char * Filter = "64DD IPL ROM image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
 
     CPath FileName;
     if (FileName.SelectFile(m_hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
