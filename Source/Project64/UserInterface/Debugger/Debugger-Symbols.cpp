@@ -119,7 +119,7 @@ LRESULT    CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
 
     int nSelectedCol = -1;
 
-    // hit test for column
+    // Hit test for column
 
     POINT mousePt;
     RECT listRect;
@@ -153,11 +153,11 @@ LRESULT    CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
     {
     case SymbolsListView_Col_Address:
         // Open it in memory viewer/commands viewer
-        if (symbol.m_Type == SYM_CODE) // code
+        if (symbol.m_Type == SYM_CODE) // Code
         {
             m_Debugger->Debug_ShowCommandsLocation(symbol.m_Address, true);
         }
-        else // data/number
+        else // Data/number
         {
             m_Debugger->Debug_ShowMemoryLocation(symbol.m_Address, true);
         }
@@ -167,7 +167,7 @@ LRESULT    CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
         {
             ValueType t = (ValueType)m_SetValueDlg.GetEnteredData();
 
-            //Is there a better way?
+            // TODO: Is there a better way?
             m_Debugger->SymbolTable()->RemoveSymbolById(id);
             m_Debugger->SymbolTable()->AddSymbol(t, symbol.m_Address, symbol.m_Name, symbol.m_Description);
         }
