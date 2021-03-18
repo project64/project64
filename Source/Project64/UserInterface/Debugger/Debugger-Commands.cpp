@@ -91,7 +91,7 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     m_bIgnorePCChange = true;
     m_PCEdit.SetValue(0x80000180, DisplayMode::ZeroExtend);
 
-    // Setup View PC button
+    // Setup view PC button
     m_ViewPCButton.EnableWindow(FALSE);
     m_StepButton.EnableWindow(FALSE);
     m_StepOverButton.EnableWindow(FALSE);
@@ -162,6 +162,7 @@ void CDebugCommandsView::RecompilerCheck(void)
         !g_Settings->LoadBool(Setting_ForceInterpreterCPU) &&
         (CPU_TYPE)g_Settings->LoadDword(Game_CpuType) != CPU_Interpreter)
     {
+		// TODO: Remove this or fix?
         MessageBox(L"Debugger support for the recompiler core is experimental.\n\n"
             L"For optimal experience, enable \"Always use interpreter core\" "
             L"in advanced settings and restart the emulator.",
@@ -259,7 +260,7 @@ void CDebugCommandsView::AddBranchArrow(int startPos, int endPos)
     {
         BRANCHARROW arrow = m_BranchArrows[j];
 
-        // Arrow's start or end pos within another arrow's stride
+        // Arrow's start or end position within another arrow's stride
         if ((startPos >= arrow.startPos && startPos <= arrow.endPos) ||
             (endPos >= arrow.startPos && endPos <= arrow.endPos) ||
             (arrow.startPos <= startPos && arrow.startPos >= endPos))
@@ -554,7 +555,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
             }
         }
 
-        // Detect reads and writes to mapped registers, cart header data, etc
+        // Detect reads and writes to mapped registers, cart header data, etc.
         const char* annotation = NULL;
         bool bLoadStoreAnnotation = false;
 
@@ -648,7 +649,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
         }
     }
 
-    if (!top) // update registers when called via breakpoint/stepping
+    if (!top) // Update registers when called via breakpoint/stepping
     {
         m_RegisterTabs.RefreshEdits();
     }
@@ -693,35 +694,35 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
         return CDRF_DODEFAULT;
     }
 
-    if (nSubItem == CCommandList::COL_ADDRESS) // addr
+    if (nSubItem == CCommandList::COL_ADDRESS) // ADDR
     {
         CBreakpoints::BPSTATE bpState = m_Breakpoints->ExecutionBPExists(address);
 
         if (bpState == CBreakpoints::BP_SET)
         {
-            // breakpoint
+            // Breakpoint
             pLVCD->clrTextBk = RGB(0x44, 0x00, 0x00);
             pLVCD->clrText = (address == pc && isDebugging()) ?
-                RGB(0xFF, 0xFF, 0x00) : // breakpoint & current pc
+                RGB(0xFF, 0xFF, 0x00) : // Breakpoint & current PC
                 RGB(0xFF, 0xCC, 0xCC);
         }
         else if (bpState == CBreakpoints::BP_SET_TEMP)
         {
-            // breakpoint
+            // Breakpoint
             pLVCD->clrTextBk = RGB(0x66, 0x44, 0x00);
             pLVCD->clrText = (address == pc && isDebugging()) ?
-                RGB(0xFF, 0xFF, 0x00) : // breakpoint & current pc
+                RGB(0xFF, 0xFF, 0x00) : // Breakpoint & current PC
                 RGB(0xFF, 0xEE, 0xCC);
         }
         else if (address == pc && isStepping())
         {
-            // pc
+            // PC
             pLVCD->clrTextBk = RGB(0x88, 0x88, 0x88);
             pLVCD->clrText = RGB(0xFF, 0xFF, 0);
         }
         else
         {
-            //default
+            // Default
             pLVCD->clrTextBk = RGB(0xEE, 0xEE, 0xEE);
             pLVCD->clrText = RGB(0x44, 0x44, 0x44);
         }
@@ -730,7 +731,7 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
 
     // (nSubItem == 1 || nSubItem == 2)
 
-    // cmd & args
+    // Command and arguments
     COpInfo OpInfo;
     OPCODE& OpCode = OpInfo.m_OpCode;
     bool bAddrOkay = m_Debugger->DebugLoad_VAddr(address, OpCode.Hex);
@@ -794,10 +795,10 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
         return CDRF_DODEFAULT;
     }
 
-    // color register usage
-    // todo localise to temp register context (dont look before/after jumps and frame shifts)
-    COLORREF clrUsedRegister = RGB(0xF5, 0xF0, 0xFF); // light purple
-    COLORREF clrAffectedRegister = RGB(0xFF, 0xF0, 0xFF); // light pink
+    // Color register usage
+    // TODO: localize to temp register context (don't look before/after jumps and frame shifts)
+    COLORREF clrUsedRegister = RGB(0xF5, 0xF0, 0xFF); // Light purple
+    COLORREF clrAffectedRegister = RGB(0xFF, 0xF0, 0xFF); // Light pink
 
     int pcUsedRegA = 0, pcUsedRegB = 0, pcChangedReg = 0;
     int curUsedRegA = 0, curUsedRegB = 0, curChangedReg = 0;
@@ -865,16 +866,16 @@ void CDebugCommandsView::DrawBranchArrows(HDC listDC)
 {
     COLORREF colors[] =
     {
-        RGB(240, 240, 240), // white
-        RGB(30, 135, 255), // blue
-        RGB(255, 0, 200), // pink
-        RGB(215, 155, 0), // yellow
-        RGB(100, 180, 0), // green
-        RGB(200, 100, 255), // purple
-        RGB(120, 120, 120), // gray
-        RGB(0, 220, 160), // cyan
-        RGB(255, 100, 0), // orange
-        RGB(255, 255, 0), // yellow
+        RGB(240, 240, 240), // White
+        RGB(30, 135, 255), // Blue
+        RGB(255, 0, 200), // Pink
+        RGB(215, 155, 0), // Yellow
+        RGB(100, 180, 0), // Green
+        RGB(200, 100, 255), // Purple
+        RGB(120, 120, 120), // Gray
+        RGB(0, 220, 160), // Cyan
+        RGB(255, 100, 0), // Orange
+        RGB(255, 255, 0), // Yellow
     };
 
     int nColors = sizeof(colors) / sizeof(COLORREF);
@@ -930,13 +931,13 @@ void CDebugCommandsView::DrawBranchArrows(HDC listDC)
 
         int marginX = baseX - (4 + arrow.margin * 3);
 
-        // draw start pointer
+        // Draw start pointer
         SetPixel(listDC, begX + 0, begY - 1, color);
         SetPixel(listDC, begX + 1, begY - 2, color);
         SetPixel(listDC, begX + 0, begY + 1, color);
         SetPixel(listDC, begX + 1, begY + 2, color);
 
-        // draw outline
+        // Draw outline
         CPen hPenOutline(CreatePen(PS_SOLID, 3, bgColor));
         SelectObject(listDC, hPenOutline);
         MoveToEx(listDC, begX - 1, begY, NULL);
@@ -947,7 +948,7 @@ void CDebugCommandsView::DrawBranchArrows(HDC listDC)
             LineTo(listDC, endX + 2, endY);
         }
 
-        // draw fill line
+        // Draw fill line
         CPen hPen(CreatePen(PS_SOLID, 1, color));
         SelectObject(listDC, hPen);
         MoveToEx(listDC, begX - 1, begY, NULL);
@@ -958,7 +959,7 @@ void CDebugCommandsView::DrawBranchArrows(HDC listDC)
             LineTo(listDC, endX + 2, endY);
         }
 
-        // draw end pointer
+        // Draw end pointer
         if (bEndVisible)
         {
             SetPixel(listDC, endX - 0, endY - 1, color);
@@ -1061,13 +1062,13 @@ void CDebugCommandsView::CPUStepOver()
 
     if (opInfo.IsJAL())
     {
-        // put temp BP on return address and resume
+        // Put temp BP on return address and resume
         m_Breakpoints->AddExecution(g_Reg->m_PROGRAM_COUNTER + 8, true);
         CPUResume();
     }
     else
     {
-        // normal step
+        // Normal step
         if (WaitingForStep())
         {
             m_StepEvent.Trigger();
@@ -1114,7 +1115,7 @@ LRESULT CDebugCommandsView::OnSymbolsButton(WORD /*wNotifyCode*/, WORD /*wID*/, 
 
 LRESULT CDebugCommandsView::OnPopupmenuRunTo(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
 {
-    // Add temp bp and resume
+    // Add temp BP and resume
     m_Breakpoints->AddExecution(m_SelectedAddress, true);
     return FALSE;
 }
@@ -1491,7 +1492,7 @@ void CDebugCommandsView::RedrawCommandsAndRegisters()
 
     m_RegisterTabs.RedrawCurrentTab();
 
-    // Fix cmd list header
+    // Fix command list header
     listHead.ResizeClient(listRect.Width(), headRect.Height());
 }
 
@@ -1698,7 +1699,7 @@ LRESULT CDebugCommandsView::OnOpEditKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM
 
 LRESULT CDebugCommandsView::OnOpEditChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
 {
-    // handle multiline input
+    // Handle multiline input
     size_t length = m_OpEdit.GetWindowTextLength();
     wchar_t* text = new wchar_t[length + 1];
     m_OpEdit.GetWindowText(text, length + 1);
