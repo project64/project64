@@ -15,7 +15,7 @@ enum ValueType
     ValueType_int64,
     ValueType_float,
     ValueType_double,
-    // non-primitives:
+    // Non-primitives:
     ValueType_string,
     ValueType_istring,
     ValueType_unkstring
@@ -34,10 +34,10 @@ enum SearchType
     SearchType_GreaterThanValue,
     SearchType_LessThanOrEqualToValue,
     SearchType_GreaterThanOrEqualToValue,
-    // first scan only:
+    // First scan only:
     SearchType_UnknownValue,
     SearchType_JalTo,
-    // next scan only:
+    // Next scan only:
     SearchType_ChangedValue,
     SearchType_UnchangedValue,
     SearchType_IncreasedValue,
@@ -250,7 +250,7 @@ private:
         }
     }
     
-    // for int64 and double
+    // For int64 and double
     template <class T>
     void FirstScanLoopPrimitive64(bool(*CompareFunc)(T, T), DisplayFormat resultDisplayFormat)
     {
@@ -276,7 +276,7 @@ private:
         }
     }
 
-    // compare result's current value in memory against m_Value
+    // Compare result's current value in memory against m_Value
     template <class T>
     void NextScanLoopPrimitive(bool(*CompareFunc)(T, T))
     {
@@ -301,7 +301,7 @@ private:
         m_Results.swap(m_NewResults);
     }
 
-    // compare result's current value in memory against m_Value (for 64 bit types)
+    // Compare result's current value in memory against m_Value (for 64-bit types)
     template <class T>
     void NextScanLoopPrimitive64(bool(*CompareFunc)(T, T))
     {
@@ -328,7 +328,7 @@ private:
         m_Results.swap(m_NewResults);
     }
 
-    // compare result's current value in memory against result's old value
+    // Compare result's current value in memory against result's old value
     template <class T>
     void NextScanLoopPrimitiveResults(bool(*CompareFunc)(T, T))
     {
@@ -354,7 +354,7 @@ private:
         m_Results.swap(m_NewResults);
     }
 
-    // compare result's current value in memory against result's old value (for 64 bit types)
+    // Compare result's current value in memory against result's old value (for 64-bit types)
     template <class T>
     void NextScanLoopPrimitiveResults64(bool(*CompareFunc)(T, T))
     {
