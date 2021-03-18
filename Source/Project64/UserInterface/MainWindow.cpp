@@ -38,15 +38,16 @@ CMainGui::CMainGui(bool bMainWindow, const char * WindowTitle) :
 
     if (m_bMainWindow)
     {
-        g_Settings->RegisterChangeCB((SettingID)(FirstUISettings + RomBrowser_Enabled), this, (CSettings::SettingChangedFunc)RomBowserEnabledChanged);
-        g_Settings->RegisterChangeCB((SettingID)(FirstUISettings + RomBrowser_ColoumnsChanged), this, (CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
-		g_Settings->RegisterChangeCB((SettingID)(FirstUISettings + Setting_EnableDiscordRPC), this, (CSettings::SettingChangedFunc)DiscordRPCChanged);
+        g_Settings->RegisterChangeCB((SettingID)RomBrowser_Enabled, this, (CSettings::SettingChangedFunc)RomBowserEnabledChanged);
+        g_Settings->RegisterChangeCB((SettingID)RomBrowser_ColoumnsChanged, this, (CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
+		g_Settings->RegisterChangeCB((SettingID)Setting_EnableDiscordRPC, this, (CSettings::SettingChangedFunc)DiscordRPCChanged);
         g_Settings->RegisterChangeCB(RomList_GameDirRecursive, this, (CSettings::SettingChangedFunc)RomBrowserListChanged);
         g_Settings->RegisterChangeCB(RomList_ShowFileExtensions, this, (CSettings::SettingChangedFunc)RomBrowserListChanged);
         g_Settings->RegisterChangeCB(GameRunning_LoadingInProgress, this, (CSettings::SettingChangedFunc)LoadingInProgressChanged);
         g_Settings->RegisterChangeCB(GameRunning_CPU_Running, this, (CSettings::SettingChangedFunc)GameCpuRunning);
         g_Settings->RegisterChangeCB(GameRunning_CPU_Paused, this, (CSettings::SettingChangedFunc)GamePaused);
         g_Settings->RegisterChangeCB(Game_File, this, (CSettings::SettingChangedFunc)GameLoaded);
+        g_Settings->RegisterChangeCB((SettingID)UserInterface_ShowStatusBar, this, (CSettings::SettingChangedFunc)ShowStatusBarChanged);
 
 		if (UISettingsLoadBool(Setting_EnableDiscordRPC))
 		{
@@ -65,16 +66,17 @@ CMainGui::~CMainGui(void)
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
     if (m_bMainWindow)
     {
-        g_Settings->UnregisterChangeCB((SettingID)(FirstUISettings + RomBrowser_Enabled), this, (CSettings::SettingChangedFunc)RomBowserEnabledChanged);
-        g_Settings->UnregisterChangeCB((SettingID)(FirstUISettings + RomBrowser_ColoumnsChanged), this, (CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
-		g_Settings->UnregisterChangeCB((SettingID)(FirstUISettings + Setting_EnableDiscordRPC), this, (CSettings::SettingChangedFunc)DiscordRPCChanged);
+        g_Settings->UnregisterChangeCB((SettingID)RomBrowser_Enabled, this, (CSettings::SettingChangedFunc)RomBowserEnabledChanged);
+        g_Settings->UnregisterChangeCB((SettingID)RomBrowser_ColoumnsChanged, this, (CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
+		g_Settings->UnregisterChangeCB((SettingID)Setting_EnableDiscordRPC, this, (CSettings::SettingChangedFunc)DiscordRPCChanged);
 		g_Settings->UnregisterChangeCB(RomList_GameDirRecursive, this, (CSettings::SettingChangedFunc)RomBrowserListChanged);
         g_Settings->UnregisterChangeCB(RomList_ShowFileExtensions, this, (CSettings::SettingChangedFunc)RomBrowserListChanged);
         g_Settings->UnregisterChangeCB(GameRunning_LoadingInProgress, this, (CSettings::SettingChangedFunc)LoadingInProgressChanged);
         g_Settings->UnregisterChangeCB(GameRunning_CPU_Running, this, (CSettings::SettingChangedFunc)GameCpuRunning);
         g_Settings->UnregisterChangeCB(GameRunning_CPU_Paused, this, (CSettings::SettingChangedFunc)GamePaused);
         g_Settings->UnregisterChangeCB(Game_File, this, (CSettings::SettingChangedFunc)GameLoaded);
-		
+        g_Settings->UnregisterChangeCB((SettingID)UserInterface_ShowStatusBar, this, (CSettings::SettingChangedFunc)ShowStatusBarChanged);
+
 		if (UISettingsLoadBool(Setting_EnableDiscordRPC))
 		{
 			CDiscord::Shutdown();
@@ -253,6 +255,18 @@ void CMainGui::GameCpuRunning(CMainGui * Gui)
     }
 }
 
+void CMainGui::ShowStatusBarChanged(CMainGui * Gui)
+{
+    if (!Gui->bCPURunning())
+    {
+        ShowWindow(Gui->m_hStatusWnd, g_Settings->LoadBool((SettingID)UserInterface_ShowStatusBar) ? SW_SHOW : SW_HIDE);
+        
+        RECT rc;
+        GetClientRect(Gui->m_hMainWindow, &rc);
+        Gui->ResizeRomList((WORD)(rc.right - rc.left), (WORD)(rc.bottom - rc.top));
+    }
+}
+
 void RomBowserColoumnsChanged(CMainGui * Gui)
 {
     Gui->ResetRomBrowserColomuns();
@@ -286,9 +300,9 @@ void CMainGui::ChangeWinSize(long width, long height)
     wndpl.length = sizeof(wndpl);
     GetWindowPlacement(m_hMainWindow, &wndpl);
 
-    if ((HWND)m_hStatusWnd != NULL)
+    if (m_hStatusWnd != nullptr && IsWindowVisible(m_hStatusWnd))
     {
-        GetClientRect((HWND)m_hStatusWnd, &swrect);
+        GetClientRect(m_hStatusWnd, &swrect);
         SetRect(&rc1, 0, 0, width, height + swrect.bottom);
     }
     else
@@ -299,6 +313,11 @@ void CMainGui::ChangeWinSize(long width, long height)
     AdjustWindowRectEx(&rc1, GetWindowLong(m_hMainWindow, GWL_STYLE), GetMenu(m_hMainWindow) != NULL, GetWindowLong(m_hMainWindow, GWL_EXSTYLE));
 
     MoveWindow(m_hMainWindow, wndpl.rcNormalPosition.left, wndpl.rcNormalPosition.top, rc1.right - rc1.left, rc1.bottom - rc1.top, TRUE);
+}
+
+void * CMainGui::GetStatusBar(void) const
+{
+    return g_Settings->LoadBool((SettingID)UserInterface_ShowStatusBar) ? m_hStatusWnd : nullptr;
 }
 
 void * CMainGui::GetModuleInstance(void) const
@@ -378,6 +397,7 @@ void CMainGui::CreateStatusBar(void)
 {
     m_hStatusWnd = (HWND)CreateStatusWindow(WS_CHILD | WS_VISIBLE, L"", m_hMainWindow, StatusBarID);
     SendMessage((HWND)m_hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
+    ShowWindow(m_hStatusWnd, g_Settings->LoadBool((SettingID)UserInterface_ShowStatusBar) ? SW_SHOW : SW_HIDE);
 }
 
 WPARAM CMainGui::ProcessAllMessages(void)
@@ -431,14 +451,14 @@ void CMainGui::Resize(DWORD /*fwSizeType*/, WORD nWidth, WORD nHeight)
 {
     RECT clrect, swrect;
     GetClientRect(m_hMainWindow, &clrect);
-    GetClientRect((HWND)m_hStatusWnd, &swrect);
+    GetClientRect(m_hStatusWnd, &swrect);
 
     int Parts[2];
     Parts[0] = (int) (nWidth - 135 * DPIScale(m_hStatusWnd));
     Parts[1] = nWidth;
 
-    SendMessage((HWND)m_hStatusWnd, SB_SETPARTS, 2, (LPARAM)&Parts[0]);
-    MoveWindow((HWND)m_hStatusWnd, 0, clrect.bottom - swrect.bottom, nWidth, nHeight, TRUE);
+    SendMessage(m_hStatusWnd, SB_SETPARTS, 2, (LPARAM)&Parts[0]);
+    MoveWindow(m_hStatusWnd, 0, clrect.bottom - swrect.bottom, nWidth, nHeight, TRUE);
 }
 
 void CMainGui::Show(bool Visible)
@@ -481,7 +501,8 @@ int CMainGui::Width(void)
     return rect.right - rect.left;
 }
 
-float CMainGui::DPIScale(HWND hWnd) {
+float CMainGui::DPIScale(HWND hWnd) 
+{
     return CClientDC(hWnd).GetDeviceCaps(LOGPIXELSX) / 96.0f;
 }
 
@@ -530,16 +551,17 @@ void CMainGui::SetStatusText(int Panel, const wchar_t * Text)
     Msg[(sizeof(Message[0]) / sizeof(Message[0][0])) - 1] = 0;
     if (GetCurrentThreadId() == m_ThreadId)
     {
-        SendMessage((HWND)m_hStatusWnd, SB_SETTEXT, Panel, (LPARAM)Msg);
+        SendMessage(m_hStatusWnd, SB_SETTEXT, Panel, (LPARAM)Msg);
     }
-    else {
-        PostMessage((HWND)m_hStatusWnd, SB_SETTEXT, Panel, (LPARAM)Msg);
+    else 
+    {
+        PostMessage(m_hStatusWnd, SB_SETTEXT, Panel, (LPARAM)Msg);
     }
 }
 
 void CMainGui::ShowStatusBar(bool ShowBar)
 {
-    ShowWindow((HWND)m_hStatusWnd, ShowBar ? SW_SHOW : SW_HIDE);
+    ShowWindow(m_hStatusWnd, ShowBar ? SW_SHOW : SW_HIDE);
 }
 
 void CMainGui::SaveWindowLoc(void)

@@ -23,7 +23,7 @@ COptionsGameBrowserPage::COptionsGameBrowserPage(HWND hParent, const RECT & rcDi
     SetDlgItemText(IDC_UP, wGS(RB_UP).c_str());
     SetDlgItemText(IDC_DOWN, wGS(RB_DOWN).c_str());
 
-    AddModCheckBox(GetDlgItem(IDC_USE_ROMBROWSER), RomBrowser_Enabled);
+    AddModCheckBox(GetDlgItem(IDC_USE_ROMBROWSER), (SettingID)RomBrowser_Enabled);
     AddModCheckBox(GetDlgItem(IDC_RECURSION), RomList_GameDirRecursive);
     AddModCheckBox(GetDlgItem(IDC_SHOW_FILE_EXTENSIONS), RomList_ShowFileExtensions);
 

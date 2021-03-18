@@ -246,6 +246,8 @@
 #470#  "American Retail 64DD IPL ROM Path:"
 #471#  "Development 64DD IPL ROM Path:"
 #472#  "Disk Save Type:"
+#473#  "Enable Enhancements"
+#474#  "Show Status Bar"
 
 //ROM Browser Tab
 #480#  "Max # of ROMs remembered (0-10):"

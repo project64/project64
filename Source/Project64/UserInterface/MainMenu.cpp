@@ -57,7 +57,7 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
 
     for (UISettingList::const_iterator iter = m_ChangeUISettingList.begin(); iter != m_ChangeUISettingList.end(); iter++)
     {
-        g_Settings->RegisterChangeCB((SettingID)(FirstUISettings + *iter), this, (CSettings::SettingChangedFunc)SettingsChanged);
+        g_Settings->RegisterChangeCB((SettingID)*iter, this, (CSettings::SettingChangedFunc)SettingsChanged);
     }
     for (SettingList::const_iterator iter = m_ChangeSettingList.begin(); iter != m_ChangeSettingList.end(); iter++)
     {
@@ -69,7 +69,7 @@ CMainMenu::~CMainMenu()
 {
     for (UISettingList::const_iterator iter = m_ChangeUISettingList.begin(); iter != m_ChangeUISettingList.end(); iter++)
     {
-        g_Settings->UnregisterChangeCB((SettingID)(FirstUISettings + *iter), this, (CSettings::SettingChangedFunc)SettingsChanged);
+        g_Settings->UnregisterChangeCB((SettingID)*iter, this, (CSettings::SettingChangedFunc)SettingsChanged);
     }
     for (SettingList::const_iterator iter = m_ChangeSettingList.begin(); iter != m_ChangeSettingList.end(); iter++)
     {

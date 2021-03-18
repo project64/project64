@@ -18,6 +18,7 @@ CAdvancedOptionsPage::CAdvancedOptionsPage(HWND hParent, const RECT & rcDispay)
     SetDlgItemText(IDC_CHECK_RUNNING, wGS(OPTION_CHECK_RUNNING).c_str());
     SetDlgItemText(IDC_ENABLE_ENHANCEMENTS, wGS(OPTION_ENABLE_ENHANCEMENTS).c_str());
     SetDlgItemText(IDC_DISPLAY_FRAMERATE, wGS(OPTION_CHANGE_FR).c_str());
+    SetDlgItemText(IDC_SHOW_STATUS_BAR, wGS(OPTION_SHOW_STATUS_BAR).c_str());
 
     AddModCheckBox(GetDlgItem(IDC_START_ON_ROM_OPEN), Setting_AutoStart);
     AddModCheckBox(GetDlgItem(IDC_ZIP), Setting_AutoZipInstantSave);
@@ -28,6 +29,7 @@ CAdvancedOptionsPage::CAdvancedOptionsPage(HWND hParent, const RECT & rcDispay)
     AddModCheckBox(GetDlgItem(IDC_CHECK_RUNNING), Setting_CheckEmuRunning);
     AddModCheckBox(GetDlgItem(IDC_ENABLE_ENHANCEMENTS), Setting_Enhancement);
     AddModCheckBox(GetDlgItem(IDC_DISPLAY_FRAMERATE), UserInterface_DisplayFrameRate);
+    AddModCheckBox(GetDlgItem(IDC_SHOW_STATUS_BAR), (SettingID)UserInterface_ShowStatusBar);
 
     CModifiedComboBox * ComboBox;
     ComboBox = AddModComboBox(GetDlgItem(IDC_FRAME_DISPLAY_TYPE), UserInterface_FrameDisplayType);

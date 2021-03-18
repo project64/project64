@@ -70,7 +70,7 @@ public:
     void DisplayEnhancements(bool BlockExecution);
 
     void * GetWindowHandle(void) const { return m_hMainWindow; }
-    void * GetStatusBar(void) const { return m_hStatusWnd; }
+    void * GetStatusBar(void) const;
     void * GetModuleInstance(void) const;
 
     inline CProjectSupport & Support(void) { return m_Support; }
@@ -103,7 +103,8 @@ private:
     static void GameLoaded(CMainGui * Gui);
     static void GamePaused(CMainGui * Gui);
     static void GameCpuRunning(CMainGui * Gui);
-
+    static void ShowStatusBarChanged(CMainGui * Gui);
+    
     CBaseMenu * m_Menu;
 
     HWND m_hMainWindow, m_hStatusWnd;

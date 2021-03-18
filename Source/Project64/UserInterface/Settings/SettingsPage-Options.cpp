@@ -21,16 +21,16 @@ m_SettingsConfig(SettingsConfig)
     SetDlgItemText(IDC_ROMSEL_TEXT4, wGS(RB_DIRS).c_str());
     SetDlgItemText(IDC_IPLDIR_TXT, wGS(OPTION_IPL_ROM_PATH).c_str());
 
-    AddModCheckBox(GetDlgItem(IDC_AUTOSLEEP), Setting_AutoSleep);
-    AddModCheckBox(GetDlgItem(IDC_LOAD_FULLSCREEN), Setting_AutoFullscreen);
-    AddModCheckBox(GetDlgItem(IDC_SCREEN_SAVER), Setting_DisableScrSaver);
-	AddModCheckBox(GetDlgItem(IDC_DISCORD_RPC), Setting_EnableDiscordRPC);
+    AddModCheckBox(GetDlgItem(IDC_AUTOSLEEP), (SettingID)Setting_AutoSleep);
+    AddModCheckBox(GetDlgItem(IDC_LOAD_FULLSCREEN), (SettingID)Setting_AutoFullscreen);
+    AddModCheckBox(GetDlgItem(IDC_SCREEN_SAVER), (SettingID)Setting_DisableScrSaver);
+	AddModCheckBox(GetDlgItem(IDC_DISCORD_RPC), (SettingID)Setting_EnableDiscordRPC);
     AddModCheckBox(GetDlgItem(IDC_BASIC_MODE), UserInterface_BasicMode);
 
-    CModifiedEditBox * TxtBox = AddModTextBox(GetDlgItem(IDC_REMEMBER), File_RecentGameFileCount, false);
+    CModifiedEditBox * TxtBox = AddModTextBox(GetDlgItem(IDC_REMEMBER), (SettingID)File_RecentGameFileCount, false);
     TxtBox->SetTextField(GetDlgItem(IDC_MAXROMS_TXT));
 
-    TxtBox = AddModTextBox(GetDlgItem(IDC_REMEMBERDIR), Directory_RecentGameDirCount, false);
+    TxtBox = AddModTextBox(GetDlgItem(IDC_REMEMBERDIR), (SettingID)Directory_RecentGameDirCount, false);
     TxtBox->SetTextField(GetDlgItem(IDC_MAXROMDIR_TXT));
 
     UpdatePageSettings();

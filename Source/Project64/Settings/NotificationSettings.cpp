@@ -10,13 +10,13 @@ CNotificationSettings::~CNotificationSettings()
 {
     if (g_Settings)
     {
-        g_Settings->UnregisterChangeCB((SettingID)(FirstUISettings + UserInterface_InFullScreen), this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->UnregisterChangeCB((SettingID)UserInterface_InFullScreen, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
     }
 }
 
 void CNotificationSettings::RegisterNotifications()
 {
-    g_Settings->RegisterChangeCB((SettingID)(FirstUISettings + UserInterface_InFullScreen), this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+    g_Settings->RegisterChangeCB((SettingID)UserInterface_InFullScreen, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
     RefreshSettings();
 }
 

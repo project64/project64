@@ -16,7 +16,7 @@ CGameStatusPage::CGameStatusPage(HWND hParent, const RECT & rcDispay)
     stdstr Status = UISettingsLoadStringVal(Rdb_Status);
 
     CModifiedComboBoxTxt * ComboBox;
-    ComboBox = AddModComboBoxTxt(GetDlgItem(IDC_STATUS_TYPE), Rdb_Status);
+    ComboBox = AddModComboBoxTxt(GetDlgItem(IDC_STATUS_TYPE), (SettingID)Rdb_Status);
     if (ComboBox)
     {
         for (CIniFile::strlist::iterator item = Keys.begin(); item != Keys.end(); item++)
@@ -28,9 +28,9 @@ CGameStatusPage::CGameStatusPage(HWND hParent, const RECT & rcDispay)
         ComboBox->SetTextField(GetDlgItem(IDC_STATUS_TEXT));
     }
     CModifiedEditBox * TxtBox;
-    TxtBox = AddModTextBox(GetDlgItem(IDC_NOTES_CORE), Rdb_NotesCore, true);
+    TxtBox = AddModTextBox(GetDlgItem(IDC_NOTES_CORE), (SettingID)Rdb_NotesCore, true);
     TxtBox->SetTextField(GetDlgItem(IDC_NOTES_CORE_TEXT));
-    TxtBox = AddModTextBox(GetDlgItem(IDC_NOTES_PLUGIN), Rdb_NotesPlugin, true);
+    TxtBox = AddModTextBox(GetDlgItem(IDC_NOTES_PLUGIN), (SettingID)Rdb_NotesPlugin, true);
     TxtBox->SetTextField(GetDlgItem(IDC_NOTES_PLUGIN_TEXT));
 
     UpdatePageSettings();

@@ -384,6 +384,10 @@ void SetWindowDisplaySize(HWND hWnd)
         {
             hStatusBar = FindWindowEx(hWnd, NULL, L"msctls_statusbar32", NULL);
         }
+        if (hStatusBar != nullptr && !IsWindowVisible(hStatusBar))
+        {
+            hStatusBar = nullptr;
+        }
         if (hToolBar != NULL)
         {
             GetWindowRect(hToolBar, &toolbarRect);

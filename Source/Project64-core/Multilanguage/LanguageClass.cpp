@@ -236,6 +236,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(OPTION_IPL_ROM_TOOL_PATH, "Development 64DD IPL ROM Path:");
     DEF_STR(OPTION_DISKSAVETYPE, "Disk Save Type:");
     DEF_STR(OPTION_ENABLE_ENHANCEMENTS, "Enable Enhancements");
+    DEF_STR(OPTION_SHOW_STATUS_BAR, "Show Status Bar");
 
     //ROM Browser Tab
     DEF_STR(RB_MAX_ROMS, "Max # of ROMs remembered (0-10):");

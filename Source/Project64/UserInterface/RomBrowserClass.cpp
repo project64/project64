@@ -434,11 +434,11 @@ void CRomBrowser::ResizeRomList(WORD nWidth, WORD nHeight)
                 UISettingsSaveDword(RomBrowser_Height, nHeight);
             }
         }
-        if (IsWindow((HWND)m_StatusWindow))
+        if (IsWindow(m_StatusWindow) && IsWindowVisible(m_StatusWindow))
         {
             RECT rc;
 
-            GetWindowRect((HWND)m_StatusWindow, &rc);
+            GetWindowRect(m_StatusWindow, &rc);
             nHeight -= (WORD)(rc.bottom - rc.top);
         }
         MoveWindow(m_hRomList, 0, 0, nWidth, nHeight, TRUE);

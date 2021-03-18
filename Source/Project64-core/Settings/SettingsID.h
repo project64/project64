@@ -329,7 +329,7 @@ enum SettingID
     Logging_LogRomHeader,
     Logging_LogUnknown,
 
-	FirstUISettings, LastUISettings = FirstUISettings + MaxPluginSetting,
+	FirstUISettings = MaxPluginSetting + 1, LastUISettings = FirstUISettings + MaxPluginSetting,
     FirstRSPDefaultSet, LastRSPDefaultSet = FirstRSPDefaultSet + MaxPluginSetting,
     FirstRSPSettings, LastRSPSettings = FirstRSPSettings + MaxPluginSetting,
     FirstGfxDefaultSet, LastGfxDefaultSet = FirstGfxDefaultSet + MaxPluginSetting,

@@ -4,6 +4,8 @@
 
 enum UISettingID
 {
+    StartUISetting = SettingID::FirstUISettings,
+
     // Information - temporary keys
     Info_ShortCutsChanged,
 
@@ -28,6 +30,7 @@ enum UISettingID
     UserInterface_MainWindowTop,
     UserInterface_MainWindowLeft,
     UserInterface_AlwaysOnTop,
+    UserInterface_ShowStatusBar,
 
     RomBrowser_Enabled,
     RomBrowser_ColoumnsChanged,

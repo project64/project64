@@ -174,11 +174,6 @@ protected:
         return NULL;
     }
 
-    CModifiedEditBox * AddModTextBox(HWND hWnd, UISettingID Type, bool bString)
-    {
-        return AddModTextBox(hWnd, (SettingID)(FirstUISettings + Type), bString);
-    }
-
     void AddModCheckBox(HWND hWnd, SettingID Type)
     {
         ButtonList::iterator item = m_ButtonList.find(Type);
@@ -193,11 +188,6 @@ protected:
 
             m_ButtonList.insert(ButtonList::value_type(Type, Button));
         }
-    }
-
-    void AddModCheckBox(HWND hWnd, UISettingID Type)
-    {
-        AddModCheckBox(hWnd, (SettingID)(FirstUISettings + Type));
     }
 
     CModifiedComboBox * AddModComboBox(HWND hWnd, SettingID Type)
@@ -234,11 +224,6 @@ protected:
         ComboBox->Attach(hWnd);
         m_ComboBoxTxtList.insert(ComboBoxTxtList::value_type(Type, ComboBox));
         return ComboBox;
-    }
-
-    CModifiedComboBoxTxt * AddModComboBoxTxt(HWND hWnd, UISettingID Type)
-    {
-        return AddModComboBoxTxt(hWnd, (SettingID)(FirstUISettings + Type));
     }
 
     void UpdateCheckBoxes(void)
