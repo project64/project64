@@ -93,7 +93,7 @@ int32_t CRomBrowser::CalcSortPosition(uint32_t lParam)
         SortFieldInfo.Key = index;
         SortFieldInfo.KeyAscend = UISettingsLoadBoolIndex(RomBrowser_SortAscendingIndex, SortIndex);
 
-        //calc new start and end
+        // Calculate new start and end
         int32_t LastTestPos = -1;
         while (Start < End)
         {
@@ -132,7 +132,7 @@ int32_t CRomBrowser::CalcSortPosition(uint32_t lParam)
             }
             else
             {
-                //Find new start
+                // Find new start
                 float Left = (float)Start;
                 float Right = (float)TestPos;
                 while (Left < Right)
@@ -168,7 +168,7 @@ int32_t CRomBrowser::CalcSortPosition(uint32_t lParam)
                 }
                 Start = (int32_t)((float)Right);
 
-                //Find new end
+                // Find new end
                 Left = (float)TestPos;
                 Right = (float)End;
                 while (Left < Right)
@@ -205,7 +205,7 @@ int32_t CRomBrowser::CalcSortPosition(uint32_t lParam)
         }
     }
 
-    //Compare end with item to see if we should do it after or before it
+    // Compare end with item to see if we should do it after or before it
     for (int32_t SortIndex = 0; SortIndex < NoOfSortKeys; SortIndex++)
     {
         std::string SortFieldName = UISettingsLoadStringIndex(RomBrowser_SortFieldIndex, SortIndex);
@@ -256,7 +256,7 @@ void CRomBrowser::RomAddedToList(int32_t ListPos)
     int32_t index = SendMessage(m_hRomList, LVM_INSERTITEM, 0, (LPARAM)&lvItem);
     int32_t iItem = ListView_GetNextItem(m_hRomList, -1, LVNI_SELECTED);
 
-    //if the last rom then highlight the item
+    // If the last ROM then highlight the item
     if (iItem < 0 && _stricmp(m_RomInfo[ListPos].szFullFileName, m_LastRom.c_str()) == 0)
     {
         ListView_SetItemState(m_hRomList, index, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
@@ -322,7 +322,7 @@ void CRomBrowser::HighLightLastRom(void)
     }
     m_LastRom = UISettingsLoadStringIndex(File_RecentGameFileIndex, 0);
 
-    //Make sure Rom browser is visible
+    // Make sure ROM browser is visible
     if (!RomBrowserVisible()) { return; }
 
     LVITEM lvItem;
@@ -331,11 +331,11 @@ void CRomBrowser::HighLightLastRom(void)
     int32_t ItemCount = ListView_GetItemCount(m_hRomList);
     for (int32_t index = 0; index < ItemCount; index++)
     {
-        //Get The next item
+        // Get The next item
         lvItem.iItem = index;
         if (!SendMessage(m_hRomList, LVM_GETITEM, 0, (LPARAM)&lvItem)) { return; }
 
-        //Get the rom info for that item
+        // Get the ROM info for that item
         if (lvItem.lParam < 0 || lvItem.lParam >= (LPARAM)m_RomInfo.size())
         {
             return;
@@ -347,7 +347,7 @@ void CRomBrowser::HighLightLastRom(void)
             return;
         }
 
-        //if the last rom then highlight the item
+        // If the last ROM then highlight the item
         if (_stricmp(pRomInfo->szFullFileName, m_LastRom.c_str()) == 0)
         {
             ListView_SetItemState(m_hRomList, index, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
@@ -387,7 +387,7 @@ void CRomBrowser::ResetRomBrowserColomuns(void)
 
     GetFieldInfo(m_Fields);
 
-    //Remove all current coloumns
+    // Remove all current columns
     memset(&lvColumn, 0, sizeof(lvColumn));
     lvColumn.mask = LVCF_FMT;
     while (ListView_GetColumn(m_hRomList, 0, &lvColumn))
@@ -395,7 +395,7 @@ void CRomBrowser::ResetRomBrowserColomuns(void)
         ListView_DeleteColumn(m_hRomList, 0);
     }
 
-    //Add Colomuns
+    // Add Columns
     lvColumn.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
     lvColumn.fmt = LVCFMT_LEFT;
     lvColumn.pszText = szString;
@@ -512,7 +512,7 @@ bool CRomBrowser::RomListDrawItem(int32_t idCtrl, uint32_t lParam)
     FillRect(ditem->hDC, &ditem->rcItem, hBrush);
     SetBkMode(ditem->hDC, TRANSPARENT);
 
-    //Draw
+    // Draw
     ListView_GetItemRect(m_hRomList, ditem->itemID, &rcItem, LVIR_LABEL);
     lvItem.iSubItem = 0;
     lvItem.cchTextMax = sizeof(String) / sizeof(String[0]);
@@ -824,11 +824,11 @@ void CRomBrowser::RomList_PopupMenu(uint32_t /*pnmh*/)
         m_SelectedRom = pRomInfo->szFullFileName;
     }
 
-    //Load the menu
+    // Load the menu
     HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_POPUP));
     HMENU hPopupMenu = (HMENU)GetSubMenu(hMenu, 0);
 
-    //Fix up menu
+    // Fix up menu
     MenuSetText(hPopupMenu, 0, wGS(POPUP_PLAY).c_str(), NULL);
     MenuSetText(hPopupMenu, 1, wGS(POPUP_PLAYDISK).c_str(), NULL);
     MenuSetText(hPopupMenu, 3, wGS(MENU_REFRESH).c_str(), NULL);
@@ -879,11 +879,11 @@ void CRomBrowser::RomList_PopupMenu(uint32_t /*pnmh*/)
         }
     }
 
-    //Get the current Mouse location
+    // Get the current mouse location
     POINT Mouse;
     GetCursorPos(&Mouse);
 
-    //Show the menu
+    // Show the menu
     TrackPopupMenu(hPopupMenu, 0, Mouse.x, Mouse.y, 0, m_MainWindow, NULL);
     DestroyMenu(hMenu);
 }
@@ -949,8 +949,8 @@ int32_t CALLBACK CRomBrowser::SelectRomDirCallBack(HWND hwnd, uint32_t uMsg, uin
     switch (uMsg)
     {
     case BFFM_INITIALIZED:
-        // WParam is TRUE since you are passing a path.
-        // It would be FALSE if you were passing a pidl.
+        // WParam is TRUE since you are passing a path
+        // It would be FALSE if you were passing a PIDL
         if (lpData)
         {
             SendMessage(hwnd, BFFM_SETSELECTION, TRUE, lpData);
@@ -1006,25 +1006,25 @@ void CRomBrowser::SelectRomDir(void)
 
 void CRomBrowser::FixRomListWindow(void)
 {
-    //Change the window Style
+    // Change the window style
     long Style = GetWindowLong(m_MainWindow, GWL_STYLE) | WS_SIZEBOX | WS_MAXIMIZEBOX;
     SetWindowLong(m_MainWindow, GWL_STYLE, Style);
 
-    //Get the current window size
+    // Get the current window size
     RECT rect;
     GetWindowRect(m_MainWindow, &rect);
 
-    //We find the middle position of the screen, we use this if theres no setting
+    // We find the middle position of the screen, we use this if there is no setting
     int32_t X = (GetSystemMetrics(SM_CXSCREEN) - (rect.right - rect.left)) / 2;
     int32_t	Y = (GetSystemMetrics(SM_CYSCREEN) - (rect.bottom - rect.top)) / 2;
 
-    //Load the value from settings, if none is available, default to above
+    // Load the value from settings, if none is available, default to above
     UISettingsLoadDword(RomBrowser_Top, (uint32_t &)Y);
     UISettingsLoadDword(RomBrowser_Left, (uint32_t &)X);
 
     SetWindowPos(m_MainWindow, NULL, X, Y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 
-    //Fix height and width
+    // Fix height and width
     int32_t Width = UISettingsLoadDword(RomBrowser_Width);
     int32_t Height = UISettingsLoadDword(RomBrowser_Height);
 
@@ -1055,11 +1055,11 @@ void CRomBrowser::ShowRomList(void)
     FixRomListWindow();
     m_AllowSelectionLastRom = true;
 
-    //Make sure selected item is visible
+    // Make sure selected item is visible
     int32_t iItem = ListView_GetNextItem(m_hRomList, -1, LVNI_SELECTED);
     ListView_EnsureVisible(m_hRomList, iItem, FALSE);
 
-    //Mark the window as visible
+    // Mark the window as visible
     m_Visible = true;
 
     RECT rcWindow;
@@ -1070,7 +1070,7 @@ void CRomBrowser::ShowRomList(void)
 
     InvalidateRect(m_hRomList, NULL, TRUE);
 
-    //Start thread to watch for dir changed
+    // Start thread to watch for directory change
     WatchThreadStart();
     m_ShowingRomBrowser = false;
 }
@@ -1083,20 +1083,20 @@ void CRomBrowser::HideRomList(void)
     SaveRomListColoumnInfo();
     WatchThreadStop();
 
-    //Make sure the window does disappear
+    // Make sure the window does disappear
     Sleep(100);
 
-    //Disable the rom list
+    // Disable the ROM list
     EnableWindow(m_hRomList, FALSE);
     ShowWindow(m_hRomList, SW_HIDE);
 
     if (UISettingsLoadBool(RomBrowser_Maximized)) { ShowWindow(m_MainWindow, SW_RESTORE); }
 
-    //Change the window style
+    // Change the window style
     long Style = GetWindowLong(m_MainWindow, GWL_STYLE) &	~(WS_SIZEBOX | WS_MAXIMIZEBOX);
     SetWindowLong(m_MainWindow, GWL_STYLE, Style);
 
-    //Move window to correct location
+    // Move window to correct location
     RECT rect;
     GetWindowRect(m_MainWindow, &rect);
     int32_t X = (GetSystemMetrics(SM_CXSCREEN) - (rect.right - rect.left)) / 2;
@@ -1105,10 +1105,10 @@ void CRomBrowser::HideRomList(void)
     UISettingsLoadDword(UserInterface_MainWindowLeft, (uint32_t &)X);
     SetWindowPos(m_MainWindow, NULL, X, Y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 
-    //Mark the window as not visible
+    // Mark the window as not visible
     m_Visible = false;
 
-    //Make the main window visible again
+    // Make the main window visible again
     ShowWindow(m_MainWindow, SW_SHOW);
     BringWindowToTop(m_MainWindow);
     PostMessage(m_MainWindow, WM_MAKE_FOCUS, 0, 0);
@@ -1118,18 +1118,18 @@ bool CRomBrowser::RomDirNeedsRefresh(void)
 {
     bool InWatchThread = (m_WatchThreadID == GetCurrentThreadId());
 
-    //Get Old MD5 of file names
+    // Get old MD5 of file names
     stdstr FileName = g_Settings->LoadStringVal(RomList_RomListCache);
     if (!CPath(FileName).Exists())
     {
-        //if file does not exist then refresh the data
+        // If file does not exist then refresh the data
         return true;
     }
 
     CFile hFile(FileName.c_str(), CFileBase::modeRead);
     if (!hFile.IsOpen())
     {
-        //Could not validate, assume it is fine
+        // Could not validate, assume it is fine
         return false;
     }
 
@@ -1137,7 +1137,7 @@ bool CRomBrowser::RomDirNeedsRefresh(void)
     hFile.Read(&CurrentFileMD5, sizeof(CurrentFileMD5));
     hFile.Close();
 
-    //Get Current MD5 of file names
+    // Get current MD5 of file names
     strlist FileNames;
     if (!GetRomFileNames(FileNames, CPath(g_Settings->LoadStringVal(RomList_GameDir)), stdstr(""), InWatchThread))
     {
@@ -1205,7 +1205,7 @@ void CRomBrowser::WatchThreadStart(void)
 {
     if (m_WatchThread != NULL)
     {
-        // thread already running
+        // Thread already running
         return;
     }
     WriteTrace(TraceUserInterface, TraceDebug, "1");

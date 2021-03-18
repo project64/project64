@@ -17,14 +17,14 @@ public:
     // Make sure we are not in full screen
     void WindowMode(void) const;
 
-    //Error Messages
+    // Error messages
     virtual void DisplayError(const char * Message) const;
     virtual void DisplayError(LanguageStringID StringID) const;
 
     virtual void FatalError(const char * Message) const;
     virtual void FatalError(LanguageStringID StringID) const;
 
-    //User Feedback
+    // User feedback
     virtual void DisplayWarning(const char * Message) const;
     virtual void DisplayWarning(LanguageStringID StringID) const;
 
@@ -33,17 +33,17 @@ public:
 
     virtual void DisplayMessage2(const char * Message) const;
 
-    // Ask a Yes/No Question to the user, yes = true, no = false
+    // Ask a yes/no question to the user, yes = true, no = false
     virtual bool AskYesNoQuestion(const char * Question) const;
 
     virtual void BreakPoint(const char * FileName, int32_t LineNumber);
 
     void SetWindowCaption(const wchar_t * Caption);
 
-    //Remember roms loaded and Rom Dir selected
+    // Remember ROMS loaded and ROM directory selected
     void AddRecentDir(const char * RomDir);
 
-    //Gui for responses
+    // GUI for responses
     void SetMainWindow(CMainGui * Gui);
     void RefreshMenu(void);
     void HideRomBrowser(void);

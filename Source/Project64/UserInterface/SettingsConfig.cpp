@@ -92,7 +92,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 
     CConfigSettingSection * SettingsSection;
 
-    //Set the text for all gui Items
+    // Set the text for all GUI items
     SetDlgItemText(IDC_RESET_PAGE, wGS(BOTTOM_RESET_PAGE).c_str());
     SetDlgItemText(IDC_RESET_ALL, wGS(BOTTOM_RESET_ALL).c_str());
     SetDlgItemText(IDC_OK, wGS(CHEAT_OK).c_str());
@@ -103,7 +103,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
     {
         if (g_Settings->LoadBool(Setting_RdbEditor))
         {
-            SetWindowText(stdstr_f("%s ** RDB Edit Mode **", ConfigRomTitle.c_str()).ToUTF16().c_str());
+            SetWindowText(stdstr_f("%s ** RDB edit mode **", ConfigRomTitle.c_str()).ToUTF16().c_str());
         }
         else
         {
@@ -114,7 +114,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
     {
         if (g_Settings->LoadBool(Setting_RdbEditor))
         {
-            SetWindowText(stdstr_f("%s ** RDB Edit Mode **", GS(OPTIONS_TITLE)).ToUTF16().c_str());
+            SetWindowText(stdstr_f("%s ** RDB edit mode **", GS(OPTIONS_TITLE)).ToUTF16().c_str());
         }
         else
         {
@@ -157,7 +157,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
         }
     }
 
-    //Game Settings
+    // Game settings
     if (!GameIni.empty())
     {
         CConfigSettingSection * GameSettings = new CConfigSettingSection(ConfigRomTitle.ToUTF16().c_str());
@@ -315,7 +315,7 @@ LRESULT CSettingConfig::OnPageListItemChanged(NMHDR* /*phdr*/)
     return 0;   // retval ignored
 }
 
-// fallback to using HitTest if TVN_SELCHANGED isn't working
+// Fallback to using HitTest if TVN_SELCHANGED isn't working
 LRESULT CSettingConfig::OnPageListClicked(NMHDR*)
 {
 	if (m_bTVNSelChangedSupported)

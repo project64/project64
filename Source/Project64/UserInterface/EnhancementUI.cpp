@@ -559,7 +559,6 @@ LRESULT CEditEnhancement::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl
     return TRUE;
 }
 
-
 CEditGS::CEditGS(CEnhancement::CodeEntries & Entries, CEnhancement::PluginList & PluginList) :
     m_Entries(Entries),
     m_PluginList(PluginList)

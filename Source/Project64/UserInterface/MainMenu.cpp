@@ -299,12 +299,12 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_FILE_ROM_INFO: OnRomInfo(hWnd); break;
     case ID_FILE_STARTEMULATION:
         m_Gui->SaveWindowLoc();
-        //Now we have created again, we can start up emulation
+        // Now we have created again, we can start up emulation
         if (g_BaseSystem)
         {
             if (g_Settings->LoadBool(Setting_AutoStart) == 0)
             {
-                WriteTrace(TraceN64System, TraceDebug, "Manually starting rom");
+                WriteTrace(TraceN64System, TraceDebug, "Manually starting ROM");
             }
             g_BaseSystem->StartEmulation(true);
         }
@@ -347,7 +347,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_SYSTEM_SWAPDISK:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_SWAPDISK");
         {
-            // Open Disk
+            // Open disk
             stdstr FileName = ChooseDiskFileToOpen(hWnd);
             if (FileName.length() != 0)
             {
@@ -646,7 +646,7 @@ stdstr CMainMenu::GetFileLastMod(const CPath & FileName)
     {
         SYSTEMTIME stUTC, stLocal;
 
-        // Convert the last-write time to local time.
+        // Convert the last-write time to local time
         FileTimeToSystemTime(&LastWriteTime, &stUTC);
         SystemTimeToTzSpecificLocalTime(NULL, &stUTC, &stLocal);
 
@@ -679,7 +679,7 @@ std::wstring CMainMenu::GetSaveSlotString(int Slot)
 
     stdstr LastSaveTime;
 
-    //check first save name
+    // Check first save name
     CPath FileName(g_Settings->LoadStringVal(Directory_InstantSave).c_str(), "");
     if (g_Settings->LoadBool(Setting_UniqueSaveDir))
     {
@@ -737,7 +737,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
 
     MENU_ITEM Item;
 
-    //Get all flags
+    // Get all flags
     bool inBasicMode = g_Settings->LoadBool(UserInterface_BasicMode);
     bool CPURunning = g_Settings->LoadBool(GameRunning_CPU_Running);
     bool RomLoading = g_Settings->LoadBool(GameRunning_LoadingInProgress);
@@ -751,7 +751,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         RunningState = UISettingsLoadBool(UserInterface_InFullScreen) ? CMenuShortCutKey::RUNNING_STATE_FULLSCREEN : CMenuShortCutKey::RUNNING_STATE_WINDOWED;
     }
 
-    //Get the system information to make the menu
+    // Get the system information to make the menu
     LanguageList LangList = g_Lang->GetLangList();
 
     MenuItemList LangMenu;
@@ -766,7 +766,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         LangMenu.push_back(Item);
     }
 
-    //Go through the settings to create a list of Recent Roms
+    // Go through the settings to create a list of recent ROMS
     MenuItemList RecentRomMenu;
     DWORD count, RomsToRemember = UISettingsLoadDword(File_RecentGameFileCount);
 
@@ -782,8 +782,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         RecentRomMenu.push_back(MENU_ITEM(ID_RECENT_ROM_START + count, EMPTY_STRING, EMPTY_STDSTR, NULL, MenuString.ToUTF16(CP_ACP).c_str()));
     }
 
-    /* Recent Dir
-    ****************/
+    // Recent directory
     MenuItemList RecentDirMenu;
     DWORD DirsToRemember = UISettingsLoadDword(Directory_RecentGameDirCount);
 
@@ -800,8 +799,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         RecentDirMenu.push_back(MENU_ITEM(ID_RECENT_DIR_START + count, EMPTY_STRING, EMPTY_STDSTR, NULL, MenuString.ToUTF16(CP_ACP).c_str()));
     }
 
-    /* File Menu
-    ****************/
+    // File menu
     MenuItemList FileMenu;
     Item.Reset(ID_FILE_OPEN_ROM, MENU_OPEN, m_ShortCuts.ShortCutString(ID_FILE_OPEN_ROM, RunningState));
     FileMenu.push_back(Item);
@@ -864,8 +862,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     FileMenu.push_back(MENU_ITEM(SPLITER));
     FileMenu.push_back(MENU_ITEM(ID_FILE_EXIT, MENU_EXIT, m_ShortCuts.ShortCutString(ID_FILE_EXIT, RunningState)));
 
-    /* Current Save
-    ****************/
+    // Current save
     MenuItemList CurrentSaveMenu;
     DWORD _CurrentSaveState = g_Settings->LoadDword(Game_CurrentSaveState);
     Item.Reset(ID_CURRENT_SAVE_DEFAULT, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_DEFAULT, RunningState), NULL, GetSaveSlotString(0));
@@ -903,8 +900,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     if (_CurrentSaveState == 10) { Item.SetItemTicked(true); }
     CurrentSaveMenu.push_back(Item);
 
-    /* System Menu
-    ****************/
+    // System menu
     MenuItemList SystemMenu;
     MenuItemList ResetMenu;
     if (inBasicMode)
@@ -958,8 +954,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_CHEAT, MENU_CHEAT, m_ShortCuts.ShortCutString(ID_SYSTEM_CHEAT, RunningState)));
     SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_GSBUTTON, MENU_GS_BUTTON, m_ShortCuts.ShortCutString(ID_SYSTEM_GSBUTTON, RunningState)));
 
-    /* Option Menu
-    ****************/
+    // Option menu
     MenuItemList OptionMenu;
     Item.Reset(ID_OPTIONS_FULLSCREEN, MENU_FULL_SCREEN, m_ShortCuts.ShortCutString(ID_OPTIONS_FULLSCREEN, RunningState));
     Item.SetItemEnabled(CPURunning);
@@ -1014,8 +1009,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     }
     OptionMenu.push_back(MENU_ITEM(ID_OPTIONS_SETTINGS, MENU_SETTINGS, m_ShortCuts.ShortCutString(ID_OPTIONS_SETTINGS, RunningState)));
 
-    /* Profile Menu
-    ****************/
+    // Profile menu
     MenuItemList DebugProfileMenu;
     if (HaveDebugger())
     {
@@ -1030,8 +1024,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         DebugProfileMenu.push_back(Item);
     }
 
-    /* Debugger Menu
-    ****************/
+    // Debugger menu
     MenuItemList DebugMenu;
     MenuItemList DebugLoggingMenu;
     MenuItemList DebugAppLoggingMenu;
@@ -1041,8 +1034,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     MenuItemList DebugNotificationMenu;
     if (HaveDebugger())
     {
-        /* Debug - Interrupt
-        *******************/
+        // Debug - Interrupt
         Item.Reset(ID_DEBUGGER_INTERRUPT_SP, EMPTY_STRING, EMPTY_STDSTR, NULL, L"SP Interrupt");
         Item.SetItemEnabled(CPURunning);
         DebugInterrupt.push_back(Item);
@@ -1062,10 +1054,9 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         Item.SetItemEnabled(CPURunning);
         DebugInterrupt.push_back(Item);
 
-        /* Debug - R4300i
-        *******************/
+        // Debug - R4300i
 
-        //ID_DEBUGGER_LOGOPTIONS
+        // ID_DEBUGGER_LOGOPTIONS
         Item.Reset(ID_DEBUGGER_BREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"&Commands...");
         DebugR4300Menu.push_back(Item);
         Item.Reset(ID_DEBUGGER_CPULOG, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Command Log...");
@@ -1086,8 +1077,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         Item.Reset(SUB_MENU, EMPTY_STRING, EMPTY_STDSTR, &DebugInterrupt, L"&Generate Interrupt");
         DebugR4300Menu.push_back(Item);
 
-        /* Debug - Memory
-        ****************/
+        // Debug - Memory
         Item.Reset(ID_DEBUGGER_MEMORY, EMPTY_STRING, EMPTY_STDSTR, NULL, L"View...");
         DebugMemoryMenu.push_back(Item);
         Item.Reset(ID_DEBUGGER_SEARCHMEMORY, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Search...");
@@ -1101,8 +1091,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         Item.Reset(ID_DEBUGGER_DMALOG, EMPTY_STRING, EMPTY_STDSTR, NULL, L"DMA Log...");
         DebugMemoryMenu.push_back(Item);
 
-        /* Debug - App logging
-        *******************/
+        // Debug - App logging
         Item.Reset(ID_DEBUGGER_TRACE_MD5, EMPTY_STRING, EMPTY_STDSTR, NULL, L"MD5");
         Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceMD5) == TraceVerbose);
         DebugAppLoggingMenu.push_back(Item);
@@ -1181,8 +1170,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         if (g_Settings->LoadBool(Debugger_AppLogFlush)) { Item.SetItemTicked(true); }
         DebugAppLoggingMenu.push_back(Item);
 
-        /* Debug - Logging
-        *******************/
+        // Debug - logging
         Item.Reset(ID_DEBUGGER_LOGOPTIONS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Log Options...");
         DebugLoggingMenu.push_back(Item);
 
@@ -1190,8 +1178,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         if (g_Settings->LoadBool(Logging_GenerateLog)) { Item.SetItemTicked(true); }
         DebugLoggingMenu.push_back(Item);
 
-        /* Debugger Main Menu
-        ****************/
+        // Debugger main menu
         Item.Reset(ID_DEBUGGER_BREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Commands...");
         DebugMenu.push_back(Item);
         Item.Reset(ID_DEBUGGER_MEMORY, EMPTY_STRING, EMPTY_STDSTR, NULL, L"View Memory...");
@@ -1201,34 +1188,29 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
 
         DebugMenu.push_back(MENU_ITEM(SPLITER));
 
-        /* Debug - Memory
-        *******************/
+        // Debug - memory
         Item.Reset(SUB_MENU, EMPTY_STRING, EMPTY_STDSTR, &DebugMemoryMenu, L"Memory");
         DebugMenu.push_back(Item);
 
-        /* Debug - R4300i
-        *******************/
+        // Debug - R4300i
         Item.Reset(SUB_MENU, EMPTY_STRING, EMPTY_STDSTR, &DebugR4300Menu, L"&R4300i");
         DebugMenu.push_back(Item);
 
-        /* Debug - RSP
-        *******************/
+        // Debug - RSP
         if (g_Plugins && g_Plugins->RSP() != NULL && IsMenu((HMENU)g_Plugins->RSP()->GetDebugMenu()))
         {
             Item.Reset(ID_PLUGIN_MENU, EMPTY_STRING, EMPTY_STDSTR, g_Plugins->RSP()->GetDebugMenu(), L"&RSP");
             DebugMenu.push_back(Item);
         }
 
-        /* Debug - RDP
-        *******************/
+        // Debug - RDP
         if (g_Plugins && g_Plugins->Gfx() != NULL && IsMenu((HMENU)g_Plugins->Gfx()->GetDebugMenu()))
         {
             Item.Reset(ID_PLUGIN_MENU, EMPTY_STRING, EMPTY_STDSTR, g_Plugins->Gfx()->GetDebugMenu(), L"&RDP");
             DebugMenu.push_back(Item);
         }
 
-        /* Notification Menu
-        *******************/
+        // Notification menu
         Item.Reset(ID_DEBUG_SHOW_UNHANDLED_MEM, EMPTY_STRING, EMPTY_STDSTR, NULL, L"On Unhandled Memory Actions");
         if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
         {
@@ -1283,7 +1265,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         }
         DebugMenu.push_back(Item);
         DebugMenu.push_back(MENU_ITEM(SPLITER));
-        Item.Reset(ID_DEBUG_RECORD_RECOMPILER_ASM, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Record Recompiler Asm");
+        Item.Reset(ID_DEBUG_RECORD_RECOMPILER_ASM, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Record Recompiler ASM");
         if (g_Settings->LoadBool(Debugger_RecordRecompilerAsm))
         {
             Item.SetItemTicked(true);
@@ -1291,8 +1273,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         DebugMenu.push_back(Item);
     }
 
-    /* Help Menu
-    ****************/
+    // Help menu
     MenuItemList HelpMenu;
     HelpMenu.push_back(MENU_ITEM(ID_HELP_SUPPORT_PROJECT64, MENU_SUPPORT_PROJECT64));
     HelpMenu.push_back(MENU_ITEM(ID_HELP_DISCORD, MENU_DISCORD));
@@ -1300,8 +1281,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     HelpMenu.push_back(MENU_ITEM(SPLITER));
     HelpMenu.push_back(MENU_ITEM(ID_HELP_ABOUT, MENU_ABOUT_PJ64));
 
-    /* Main Title bar Menu
-    ***********************/
+    // Main title bar Menu
     MenuItemList MainTitleMenu;
     Item.Reset(SUB_MENU, MENU_FILE, EMPTY_STDSTR, &FileMenu);
     if (RomLoading) { Item.SetItemEnabled(false); }
@@ -1335,7 +1315,7 @@ void CMainMenu::RebuildAccelerators(void)
 {
     CGuard Guard(m_CS);
 
-    //Delete the old accel list
+    // Delete the old accel list
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
 
     HACCEL m_OldAccelTable = (HACCEL)m_AccelTable;
@@ -1352,19 +1332,19 @@ void CMainMenu::ResetMenu(void)
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
     if (!UISettingsLoadBool(UserInterface_InFullScreen))
     {
-        //Create a new window with all the items
+        // Create a new window with all the items
         WriteTrace(TraceUserInterface, TraceDebug, "Create Menu");
         HMENU hMenu = CreateMenu();
         FillOutMenu(hMenu);
         WriteTrace(TraceUserInterface, TraceDebug, "Create Menu Done");
 
-        //save old menu to destroy latter
+        // Save old menu to destroy latter
         HMENU OldMenuHandle;
         {
             CGuard Guard(m_CS);
             OldMenuHandle = m_MenuHandle;
 
-            //save handle and re-attach to a window
+            // Save handle and re-attach to a window
             WriteTrace(TraceUserInterface, TraceDebug, "Attach Menu");
             m_MenuHandle = hMenu;
         }
@@ -1381,7 +1361,7 @@ void CMainMenu::ResetMenu(void)
         }
         WriteTrace(TraceUserInterface, TraceDebug, "Destroy Old Menu");
 
-        //Destroy the old menu
+        // Destroy the old menu
         DestroyMenu((HMENU)OldMenuHandle);
     }
 

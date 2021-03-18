@@ -56,7 +56,7 @@ CMainGui::CMainGui(bool bMainWindow, const char * WindowTitle) :
 		}
     }
 
-    //if this fails then it has already been created
+    // If this fails then it has already been created
     RegisterWinClass();
     Create(WindowTitle);
 }
@@ -114,7 +114,7 @@ void CMainGui::AddRecentRom(const char * ImagePath)
 {
     if (HIWORD(ImagePath) == NULL) { return; }
 
-    //Get Information about the stored rom list
+    // Get information about the stored ROM list
     size_t MaxRememberedFiles = UISettingsLoadDword(File_RecentGameFileCount);
     strlist RecentGames;
     size_t i;
@@ -128,7 +128,7 @@ void CMainGui::AddRecentRom(const char * ImagePath)
         RecentGames.push_back(RecentGame);
     }
 
-    //See if the dir is already in the list if so then move it to the top of the list
+    // See if the directory is already in the list, if so then move it to the top of the list
     strlist::iterator iter;
     for (iter = RecentGames.begin(); iter != RecentGames.end(); iter++)
     {
@@ -207,7 +207,7 @@ void CMainGui::GameLoaded(CMainGui * Gui)
     stdstr FileLoc = g_Settings->LoadStringVal(Game_File);
     if (FileLoc.length() > 0)
     {
-        WriteTrace(TraceUserInterface, TraceDebug, "Add Recent Rom");
+        WriteTrace(TraceUserInterface, TraceDebug, "Add Recent ROM");
         Gui->AddRecentRom(FileLoc.c_str());
         Gui->SetWindowCaption(stdstr(g_Settings->LoadStringVal(Rdb_GoodName)).ToUTF16().c_str());
 		
@@ -236,7 +236,7 @@ void CMainGui::GameCpuRunning(CMainGui * Gui)
             std::string Status = UISettingsLoadStringVal(Rdb_Status);
 
             char String[100];
-            RomIniFile.GetString("Rom Status", stdstr_f("%s.AutoFullScreen", Status.c_str()).c_str(), "true", String, sizeof(String));
+            RomIniFile.GetString("ROM Status", stdstr_f("%s.AutoFullScreen", Status.c_str()).c_str(), "true", String, sizeof(String));
             if (_stricmp(String, "true") == 0)
             {
                 g_Notify->ChangeFullScreen();
@@ -595,7 +595,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
     {
     case WM_CREATE:
         {
-            //record class for future usage
+            // Record class for future usage
             LPCREATESTRUCT lpcs = (LPCREATESTRUCT)lParam;
             CMainGui * _this = (CMainGui *)lpcs->lpCreateParams;
             SetProp(hWnd, L"Class", _this);
@@ -603,7 +603,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             _this->m_hMainWindow = hWnd;
             _this->CreateStatusBar();
 
-            //Move the Main window to the location last executed from or center the window
+            // Move the main window to the location last executed from or center the window
             int X = (GetSystemMetrics(SM_CXSCREEN) - _this->Width()) / 2;
             int	Y = (GetSystemMetrics(SM_CYSCREEN) - _this->Height()) / 2;
 
@@ -663,16 +663,16 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             {
                 if (_this->RomBrowserVisible())
                 {
-                    // save that browser is maximized
+                    // Save that browser is maximized
                 }
                 break;
             }
 
-            //get the current position of the window
+            // Get the current position of the window
             RECT WinRect;
             GetWindowRect(hWnd, &WinRect);
 
-            //save the location of the window
+            // Save the location of the window
             if (_this->RomBrowserVisible())
             {
                 _this->m_SaveRomBrowserPos = true;
