@@ -10,7 +10,7 @@ CGamePluginPage::CGamePluginPage(HWND hParent, const RECT & rcDispay)
         return;
     }
 
-    //Set the text for all gui Items
+    // Set the text for all GUI items
     SetDlgItemText(RSP_ABOUT, wGS(PLUG_ABOUT).c_str());
     SetDlgItemText(GFX_ABOUT, wGS(PLUG_ABOUT).c_str());
     SetDlgItemText(AUDIO_ABOUT, wGS(PLUG_ABOUT).c_str());
@@ -106,7 +106,7 @@ void CGamePluginPage::ShowAboutButton(int id)
         return;
     }
 
-    //Load the plugin
+    // Load the plugin
     UINT LastErrorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
     HMODULE hLib = LoadLibrary(stdstr((const char *)Plugin->FullPath).ToUTF16().c_str());
     SetErrorMode(LastErrorMode);
@@ -115,11 +115,11 @@ void CGamePluginPage::ShowAboutButton(int id)
         return;
     }
 
-    //Get DLL about
+    // Get DLL about
     void(CALL *DllAbout) (HWND hWnd);
     DllAbout = (void(CALL *)(HWND))GetProcAddress(hLib, "DllAbout");
 
-    //call the function from the dll
+    // Call the function from the DLL
     DllAbout(m_hWnd);
 
     FreeLibrary(hLib);
