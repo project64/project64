@@ -2,7 +2,7 @@
 #include "Types.h"
 
 #pragma warning(push)
-#pragma warning(disable : 4201) // nonstandard extension used : nameless struct/union
+#pragma warning(disable : 4201) // Non-standard extension used: nameless struct/union
 
 typedef union tagOPCODE {
 	uint32_t Hex;
@@ -48,7 +48,8 @@ typedef union tagOPCODE {
 
 #pragma warning(pop)
 
-//RSP OpCodes
+//RSP opcodes
+
 #define	RSP_SPECIAL				 0
 #define	RSP_REGIMM				 1
 #define RSP_J					 2
@@ -78,7 +79,8 @@ typedef union tagOPCODE {
 #define RSP_LC2					50
 #define RSP_SC2					58
 
-/* RSP Special opcodes */
+// RSP special opcodes
+
 #define RSP_SPECIAL_SLL			 0
 #define RSP_SPECIAL_SRL			 2
 #define RSP_SPECIAL_SRA			 3
@@ -99,23 +101,27 @@ typedef union tagOPCODE {
 #define RSP_SPECIAL_SLT			42
 #define RSP_SPECIAL_SLTU		43
 
-/* RSP RegImm opcodes */
+// RSP RegImm opcodes
+
 #define RSP_REGIMM_BLTZ			 0
 #define RSP_REGIMM_BGEZ			 1
 #define RSP_REGIMM_BLTZAL		16
 #define RSP_REGIMM_BGEZAL		17
 
-/* RSP COP0 opcodes */
+// RSP COP0 opcodes
+
 #define	RSP_COP0_MF				 0 
 #define	RSP_COP0_MT				 4
 
-/* RSP COP2 opcodes */
+// RSP COP2 opcodes
+
 #define	RSP_COP2_MF				 0 
 #define	RSP_COP2_CF				 2
 #define	RSP_COP2_MT				 4 
 #define	RSP_COP2_CT				 6
 
-/* RSP Vector opcodes */
+// RSP vector opcodes
+
 #define	RSP_VECTOR_VMULF		 0
 #define	RSP_VECTOR_VMULU		 1
 #define	RSP_VECTOR_VRNDP		 2
@@ -161,7 +167,8 @@ typedef union tagOPCODE {
 #define	RSP_VECTOR_VRSQH		54
 #define	RSP_VECTOR_VNOOP		55
 
-/* RSP LSC2 opcodes */
+// RSP LSC2 opcodes
+
 #define RSP_LSC2_BV				 0
 #define RSP_LSC2_SV				 1
 #define RSP_LSC2_LV				 2
