@@ -1,4 +1,5 @@
-/************************* OpCode functions *************************/
+// Opcode functions
+
 void RSP_Opcode_SPECIAL ( void );
 void RSP_Opcode_REGIMM  ( void );
 void RSP_Opcode_J       ( void );
@@ -27,7 +28,9 @@ void RSP_Opcode_SH      ( void );
 void RSP_Opcode_SW      ( void );
 void RSP_Opcode_LC2     ( void );
 void RSP_Opcode_SC2     ( void );
-/********************** R4300i OpCodes: Special **********************/
+
+// R4300i Opcodes: Special
+
 void RSP_Special_SLL    ( void );
 void RSP_Special_SRL    ( void );
 void RSP_Special_SRA    ( void );
@@ -47,21 +50,29 @@ void RSP_Special_XOR    ( void );
 void RSP_Special_NOR    ( void );
 void RSP_Special_SLT    ( void );
 void RSP_Special_SLTU   ( void );
-/********************** R4300i OpCodes: RegImm **********************/
+
+// R4300i Opcodes: RegImm
+
 void RSP_Opcode_BLTZ    ( void );
 void RSP_Opcode_BGEZ    ( void );
 void RSP_Opcode_BLTZAL  ( void );
 void RSP_Opcode_BGEZAL  ( void );
-/************************** Cop0 functions *************************/
+
+// COP0 functions
+
 void RSP_Cop0_MF        ( void );
 void RSP_Cop0_MT        ( void );
-/************************** Cop2 functions *************************/
+
+// COP2 functions
+
 void RSP_Cop2_MF        ( void );
 void RSP_Cop2_CF        ( void );
 void RSP_Cop2_MT        ( void );
 void RSP_Cop2_CT        ( void );
 void RSP_COP2_VECTOR    ( void );
-/************************** Vect functions **************************/
+
+// Vector functions
+
 void RSP_Vector_VMULF   ( void );
 void RSP_Vector_VMULU	( void );
 void RSP_Vector_VMUDL   ( void );
@@ -103,7 +114,9 @@ void RSP_Vector_VRSQ    ( void );
 void RSP_Vector_VRSQL   ( void );
 void RSP_Vector_VRSQH   ( void );
 void RSP_Vector_VNOOP   ( void );
-/************************** lc2 functions **************************/
+
+// LC2 functions
+
 void RSP_Opcode_LBV     ( void );
 void RSP_Opcode_LSV     ( void );
 void RSP_Opcode_LLV     ( void );
@@ -115,7 +128,9 @@ void RSP_Opcode_LUV     ( void );
 void RSP_Opcode_LHV     ( void );
 void RSP_Opcode_LFV     ( void );
 void RSP_Opcode_LTV     ( void );
-/************************** lc2 functions **************************/
+
+// LC2 functions
+
 void RSP_Opcode_SBV     ( void );
 void RSP_Opcode_SSV     ( void );
 void RSP_Opcode_SLV     ( void );
@@ -128,5 +143,7 @@ void RSP_Opcode_SHV     ( void );
 void RSP_Opcode_SFV     ( void );
 void RSP_Opcode_STV     ( void );
 void RSP_Opcode_SWV     ( void );
-/************************** Other functions **************************/
+
+// Other functions
+
 void rsp_UnknownOpcode  ( void );
