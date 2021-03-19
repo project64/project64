@@ -58,17 +58,17 @@ enum {
 	Set_BreakOnStart, Set_CPUCore, Set_LogRDP, Set_LogX86Code, Set_Profiling, Set_IndvidualBlock,
 	Set_ShowErrors, 
 
-	//Compiler settings
+	// Compiler settings
 	Set_CheckDest, Set_Accum, Set_Mmx, Set_Mmx2, Set_Sse, Set_Sections,
 	Set_ReOrdering, Set_GPRConstants, Set_Flags, Set_AlignVector,
 
-	//Game Settings
+	// Game settings
 	Set_JumpTableSize, Set_Mfc0Count, Set_SemaphoreExit
 };
 
 short Set_AudioHle = 0, Set_GraphicsHle = 0;
 
-/************ DLL info **************/
+// DLL info
 const char * AppName ( void ) 
 {
 	static stdstr_f Name("RSP %s", VER_FILE_VERSION_STR);
@@ -76,11 +76,12 @@ const char * AppName ( void )
 }
 const char * AboutMsg ( void ) 
 {
-	static stdstr_f Msg("RSP emulation Plugin\nMade for Project64 (c)\nVersion %s\n\nby Jabo & Zilmar", VER_FILE_VERSION_STR);
+	static stdstr_f Msg("RSP emulation plugin\nMade for Project64 (c)\nVersion %s\n\nby Jabo & Zilmar", VER_FILE_VERSION_STR);
 	return Msg.c_str();
 }
 
-/************ Functions ***********/
+// Functions
+
 uint32_t AsciiToHex(char * HexValue)
 {
     size_t Finish, Count;
@@ -142,10 +143,11 @@ void DisplayError(char* Message, ...)
 /******************************************************************
   Function: CloseDLL
   Purpose:  This function is called when the emulator is closing
-            down allowing the dll to de-initialise.
+            down allowing the DLL to de-initialize.
   input:    none
   output:   none
-*******************************************************************/ 
+*******************************************************************/
+
 EXPORT void CloseDLL(void)
 {
 	FreeMemory();
@@ -157,7 +159,8 @@ EXPORT void CloseDLL(void)
             to give further information about the DLL.
   input:    a handle to the window that calls this function
   output:   none
-*******************************************************************/ 
+*******************************************************************/
+
 EXPORT void DllAbout(void * hParent)
 {
 #ifdef _WIN32
@@ -198,11 +201,12 @@ void FixMenuState(void)
 /******************************************************************
   Function: GetDllInfo
   Purpose:  This function allows the emulator to gather information
-            about the dll by filling in the PluginInfo structure.
-  input:    a pointer to a PLUGIN_INFO stucture that needs to be
+            about the DLL by filling in the PluginInfo structure.
+  input:    a pointer to a PLUGIN_INFO structure that needs to be
             filled by the function. (see def above)
   output:   none
-*******************************************************************/ 
+*******************************************************************/
+
 EXPORT void GetDllInfo(PLUGIN_INFO * PluginInfo)
 {
 	PluginInfo->Version = 0x0103;
@@ -219,9 +223,9 @@ EXPORT void GetDllInfo(PLUGIN_INFO * PluginInfo)
 /******************************************************************
   Function: GetRspDebugInfo
   Purpose:  This function allows the emulator to gather information
-            about the debug capabilities of the dll by filling in
+            about the debug capabilities of the DLL by filling in
 			the DebugInfo structure.
-  input:    a pointer to a RSPDEBUG_INFO stucture that needs to be
+  input:    a pointer to a RSPDEBUG_INFO structure that needs to be
             filled by the function. (see def above)
   output:   none
 *******************************************************************/ 
@@ -260,7 +264,7 @@ EXPORT void GetRspDebugInfo(RSPDEBUG_INFO * DebugInfo)
   input:    Rsp_Info is passed to this function which is defined
             above.
 			CycleCount is the number of cycles between switching
-			control between teh RSP and r4300i core.
+			control between the RSP and r4300i core.
   output:   none
 *******************************************************************/ 
 
@@ -275,12 +279,12 @@ void DetectCpuSpecs(void)
 	__try {
 #ifdef _M_IX86
 		_asm {
-			/* Intel features */
+			// Intel features
 			mov eax, 1
 			cpuid
 			mov [Intel_Features], edx
 
-			/* AMD features */
+			// AMD features
 			mov eax, 80000001h
 			cpuid
 			or [AMD_Features], edx
@@ -297,10 +301,12 @@ void DetectCpuSpecs(void)
 		AMD_Features = Intel_Features = 0;
     }
 #else
+
 /*
- * To do:  With GCC, there is <cpuid.h>, but __cpuid() there is a macro and
- *         needs five arguments, not two.  Also, GCC lacks SEH.
- */
+TODO: With GCC, there is <cpuid.h>, but __cpuid() there is a macro and
+needs five arguments, not two.  Also, GCC lacks SEH.
+*/
+
 	AMD_Features = Intel_Features = 0;
 #endif
 
@@ -345,13 +351,14 @@ EXPORT void InitiateRSP(RSP_INFO Rsp_Info, uint32_t * CycleCount)
 /******************************************************************
   Function: InitiateRSPDebugger
   Purpose:  This function is called when the DLL is started to give
-            information from the emulator that the n64 RSP 
-			interface needs to intergrate the debugger with the
+            information from the emulator that the N64 RSP 
+			interface needs to integrate the debugger with the
 			rest of the emulator.
   input:    DebugInfo is passed to this function which is defined
             above.
   output:   none
-*******************************************************************/ 
+*******************************************************************/
+
 EXPORT void InitiateRSPDebugger(DEBUG_INFO Debug_Info)
 {
 	DebugInfo = Debug_Info;
@@ -522,10 +529,11 @@ void ProcessMenuItem(int ID)
 
 /******************************************************************
   Function: RomOpen
-  Purpose:  This function is called when a rom is opened.
+  Purpose:  This function is called when a ROM is opened.
   input:    none
   output:   none
-*******************************************************************/ 
+*******************************************************************/
+
 EXPORT void RomOpen(void)
 {
 	ClearAllx86Code();
@@ -540,10 +548,11 @@ EXPORT void RomOpen(void)
 
 /******************************************************************
   Function: RomClosed
-  Purpose:  This function is called when a rom is closed.
+  Purpose:  This function is called when a ROM is closed.
   input:    none
   output:   none
-*******************************************************************/ 
+*******************************************************************/
+
 EXPORT void RomClosed(void)
 {
 	if (Profiling)
@@ -772,12 +781,12 @@ EXPORT void PluginLoaded(void)
 	RegisterSetting(Set_LogRDP,         Data_DWORD_General,"Log RDP",        NULL,LogRDP,NULL);
 	RegisterSetting(Set_LogX86Code,     Data_DWORD_General,"Log X86 Code",   NULL,LogX86Code,NULL);
 	RegisterSetting(Set_Profiling,      Data_DWORD_General,"Profiling",      NULL,Profiling,NULL);
-	RegisterSetting(Set_IndvidualBlock, Data_DWORD_General,"Indvidual Block",NULL,IndvidualBlock,NULL);
+	RegisterSetting(Set_IndvidualBlock, Data_DWORD_General,"Individual Block",NULL,IndvidualBlock,NULL);
 	RegisterSetting(Set_ShowErrors,     Data_DWORD_General,"Show Errors",    NULL,ShowErrors,NULL);
 
-	//Compiler settings
-	RegisterSetting(Set_CheckDest,      Data_DWORD_General,"Check Dest Vector", NULL,Compiler.bDest,NULL);
-	RegisterSetting(Set_Accum,          Data_DWORD_General,"Check Dest Accum", NULL,Compiler.bAccum,NULL);
+	// Compiler settings
+	RegisterSetting(Set_CheckDest,      Data_DWORD_General,"Check Destination Vector", NULL,Compiler.bDest,NULL);
+	RegisterSetting(Set_Accum,          Data_DWORD_General,"Check Destination Accumulator", NULL,Compiler.bAccum,NULL);
 	RegisterSetting(Set_Mmx,            Data_DWORD_General,"Use MMX", NULL,Compiler.mmx,NULL);
 	RegisterSetting(Set_Mmx2,           Data_DWORD_General,"Use MMX2", NULL,Compiler.mmx2,NULL);
 	RegisterSetting(Set_Sse,            Data_DWORD_General,"Use SSE", NULL,Compiler.sse,NULL);
