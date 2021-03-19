@@ -15,7 +15,7 @@ extern "C" {
 #define CALL
 #endif
 
-/************ Profiling **************/
+// Profiling
 #define Default_ProfilingOn			FALSE
 #define Default_IndvidualBlock		FALSE
 #define Default_ShowErrors			FALSE
@@ -27,21 +27,18 @@ extern "C" {
 #define PLUGIN_TYPE_CONTROLLER		4
 
 typedef struct {
-    uint16_t Version;        /* Should be set to 0x0101 */
-    uint16_t Type;           /* Set to PLUGIN_TYPE_RSP */
-	char Name[100];      /* Name of the DLL */
+    uint16_t Version;        // Should be set to 0x0101
+    uint16_t Type;           // Set to PLUGIN_TYPE_RSP
+	char Name[100];      // Name of the DLL
 
-	/* If DLL supports memory these memory options then set them to TRUE or FALSE
-	   if it does not support it */
-    int NormalMemory;   /* a normal BYTE array */ 
-    int MemoryBswaped;  /* a normal BYTE array where the memory has been pre
-                              bswap on a dword (32 bits) boundry */
+	// If DLL supports memory these memory options then set them to TRUE or FALSE if it does not support it
+    int NormalMemory;   // A normal BYTE array
+    int MemoryBswaped;  // A normal BYTE array where the memory has been pre-bswap'd on a DWORD (32-bit) boundary
 } PLUGIN_INFO;
 
 typedef struct {
     void * hInst;
-    int MemoryBswaped;    /* If this is set to TRUE, then the memory has been pre
-                              bswap on a dword (32 bits) boundry */
+    int MemoryBswaped;    // If this is set to TRUE, then the memory has been pre-bswap'd on a DWORD (32-bit) boundary
     uint8_t * HEADER;
     uint8_t * RDRAM;
     uint8_t * DMEM;
@@ -77,7 +74,7 @@ typedef struct {
 
 typedef struct {
     long left, top, right, bottom;
-} rectangle; /* <windows.h> equivalent:  RECT */
+} rectangle; // <windows.h> equivalent:  RECT
 typedef struct {
     void * hdc;
     Boolean fErase;
@@ -85,15 +82,15 @@ typedef struct {
     Boolean fRestore;
     Boolean fIncUpdate;
     uint8_t rgbReserved[32];
-} window_paint; /* <windows.h> equivalent:  PAINTSTRUCT */
+} window_paint; // <windows.h> equivalent:  PAINTSTRUCT
 
 typedef struct {
-	/* Menu */
-	/* Items should have an ID between 5001 and 5100 */
+	// Menu
+	// Items should have an ID between 5001 and 5100
     void * hRSPMenu;
 	void (*ProcessMenuItem) ( int ID );
 
-	/* Break Points */
+	// Breakpoints
     int UseBPoints;
 	char BPPanelName[20];
 	void (*Add_BPoint)      ( void );
@@ -105,7 +102,7 @@ typedef struct {
     void (*RemoveBpoint)  (void * hList, int index);
 	void (*RemoveAllBpoint) ( void );
 	
-	/* RSP command Window */
+	// RSP command window
 	void (*Enter_RSP_Commands_Window) ( void );
 } RSPDEBUG_INFO;
 
