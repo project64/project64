@@ -37,21 +37,21 @@ void CompilerToggleBuffer (void);
 Boolean RSP_DoSections(void);
 
 typedef struct {
-	DWORD StartPC, CurrPC;		/* block start */
+	DWORD StartPC, CurrPC;		// Block start
 	
 	struct {
-		DWORD TargetPC;			/* Target for this unknown branch */
-		DWORD * X86JumpLoc;		/* Our x86 dword to fill */
-	} BranchesToResolve[200];	/* Branches inside or outside block */
+		DWORD TargetPC;			// Target for this unknown branch
+		DWORD * X86JumpLoc;		// Our x86 DWORD to fill
+	} BranchesToResolve[200];	// Branches inside or outside block
 	
-	DWORD ResolveCount;			/* Branches with NULL jump table */
+	DWORD ResolveCount;			// Branches with NULL jump table
 } RSP_BLOCK;
 
 extern RSP_BLOCK CurrentBlock;
 
 typedef struct {
-    Boolean bIsRegConst[32];    /* Boolean toggle for constant */
-	DWORD MipsRegConst[32];		/* Value of register 32-bit */
+    Boolean bIsRegConst[32];    // Boolean toggle for constant
+	DWORD MipsRegConst[32];		// Value of register 32-bit
 	DWORD BranchLabels[250];
 	DWORD LabelCount;
 	DWORD BranchLocations[250];
@@ -64,15 +64,15 @@ extern RSP_CODE RspCode;
 #define MipsRegConst(i) (RspCode.MipsRegConst[i])
 
 typedef struct {
-    Boolean mmx, mmx2, sse;     /* CPU specs and compiling */
-    Boolean bFlags;             /* RSP Flag Analysis */
-    Boolean bReOrdering;        /* Instruction reordering */
-    Boolean bSections;          /* Microcode sections */
-    Boolean bDest;              /* Vector destionation toggle */
-    Boolean bAccum;             /* Accumulator toggle */
-    Boolean bGPRConstants;      /* Analyze GPR constants */
-    Boolean bAlignVector;       /* Align known vector loads */
-    Boolean bAudioUcode;        /* Audio ucode analysis */
+    Boolean mmx, mmx2, sse;     // CPU specs and compiling
+    Boolean bFlags;             // RSP flag analysis
+    Boolean bReOrdering;        // Instruction reordering
+    Boolean bSections;          // Microcode sections
+    Boolean bDest;              // Vector destination toggle
+    Boolean bAccum;             // Accumulator toggle
+    Boolean bGPRConstants;      // Analyze GPR constants
+    Boolean bAlignVector;       // Align known vector loads
+    Boolean bAudioUcode;        // Audio microcode analysis
 } RSP_COMPILER;
 
 extern RSP_COMPILER Compiler;
