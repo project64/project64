@@ -897,7 +897,7 @@ char * RSPSpecialName ( DWORD OpCode, DWORD PC )
 	OPCODE command;
 	command.Hex = OpCode;
 	
-	PC = PC; // unused
+	PC = PC; // Unused
 
 	if (strcmp(mnemonics_special[command.funct], unused_op) == 0)
 	{
@@ -978,7 +978,7 @@ char * RSPRegimmName ( DWORD OpCode, DWORD PC )
 		);
 	}
 	else if (command.rt == RSP_REGIMM_BGEZAL && command.rs == 0)
-	{ /* MIPS pseudo-instruction:  BAL (Branch and Link) */
+	{ // MIPS pseudo-instruction:  BAL (branch and link)
 		sprintf(
 			CommandName,
 			"BAL\t0x%04X",
@@ -1003,7 +1003,7 @@ char * RSPCop0Name ( DWORD OpCode, DWORD PC )
 	OPCODE command;
 	command.Hex = OpCode;
 
-	PC = PC; // unused
+	PC = PC; // Unused
 
 	if (strcmp(mnemonics_cop0[command.rs], unused_op) == 0)
 	{
@@ -1034,7 +1034,7 @@ char * RSPCop2Name ( DWORD OpCode, DWORD PC )
 	OPCODE command;
 	command.Hex = OpCode;
 
-	PC = PC; // unused
+	PC = PC; // Unused
 
 	if ( ( command.rs & 0x10 ) == 0 )
 	{
@@ -1047,7 +1047,7 @@ char * RSPCop2Name ( DWORD OpCode, DWORD PC )
 				command.Ascii[0]
 			);
 		}
-		else if (command.rs & 002) /* CFC2 or CTC2 */
+		else if (command.rs & 002) // CFC2 or CTC2
 		{
 			sprintf(CommandName, "%s\t%s, %d",
 				mnemonics_cop2[command.rs],
@@ -1077,7 +1077,7 @@ char * RSPCop2Name ( DWORD OpCode, DWORD PC )
 			);
 		}
 		else if (command.funct >= RSP_VECTOR_VRCP && command.funct < RSP_VECTOR_VNOOP)
-		{ /* RSP division -- VRCP[L,H], VRSQ[L,H], and VMOV */
+		{ // RSP division -- VRCP[L,H], VRSQ[L,H], and VMOV
 			sprintf(CommandName, "%s\t$v%d[%d], $v%d%s",
 				mnemonics_vector[command.funct],
 				command.sa,
@@ -1109,7 +1109,7 @@ char * RSPLc2Name ( DWORD OpCode, DWORD PC )
 	OPCODE command;
 	command.Hex = OpCode;
 
-	PC = PC; // unused
+	PC = PC; // Unused
 
 	if (strcmp(mnemonics_lwc2[command.rd], unused_op) == 0)
 	{
@@ -1143,7 +1143,7 @@ char * RSPSc2Name ( DWORD OpCode, DWORD PC )
 	OPCODE command;
 	command.Hex = OpCode;
 
-	PC = PC; // unused
+	PC = PC; // Unused
 
 	if (strcmp(mnemonics_swc2[command.rd], unused_op) == 0)
 	{
@@ -1210,6 +1210,7 @@ char * RSPOpcodeName ( DWORD OpCode, DWORD PC )
 			);
 			break;
 		}
+		// TODO: add example code?
 		/* else { fall through to show the full BEQ } */
 	case RSP_BNE:
 		sprintf(CommandName, "%s\t%s, %s, 0x%04X",
