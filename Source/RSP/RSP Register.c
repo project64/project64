@@ -36,7 +36,7 @@ HWND RSP_Registers_hDlg, hTab, hStatic, hGPR[32], hCP0[16], hHIDDEN[12],
 int InRSPRegisterWindow = FALSE;
 WNDPROC RefreshProc;
 
-/*** RSP Registers ***/
+// RSP registers
 UWORD32   RSP_GPR[32], RSP_Flags[4];
 UDWORD  RSP_ACCUM[8];
 VECTOR  RSP_Vect[32];
