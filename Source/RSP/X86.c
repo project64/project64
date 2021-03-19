@@ -8,7 +8,7 @@
 #include "log.h"
 #include "Types.h"
 
-#pragma warning(disable : 4152) // nonstandard extension, function/data pointer conversion in expression
+#pragma warning(disable : 4152) // Non-standard extension, function/data pointer conversion in expression
 
 #define PUTDST8(dest,value)  (*((BYTE *)(dest))=(BYTE)(value)); dest += 1;
 #define PUTDST16(dest,value) (*((WORD *)(dest))=(WORD)(value)); dest += 2;
@@ -136,7 +136,7 @@ void AddConstToX86Reg(int x86Reg, size_t Const)
     const size_t sign_extension_mask = ~(zero_extension_mask);
     const size_t extension_from_8bit = Const & sign_extension_mask;
 
-/* To do:  if 64-bit x86, then what if `Const' upper DWORD set? */
+// TODO:  If 64-bit x86, then what if `Const' upper DWORD set?
 	CPU_Message("      add %s, %Xh",x86_Name(x86Reg),Const);
 	if (extension_from_8bit != 0 && extension_from_8bit != sign_extension_mask) {
 		switch (x86Reg) {
@@ -1084,10 +1084,10 @@ void JsLabel32(char *Label, DWORD Value) {
 	PUTDST32(RecompPos,Value);
 }
 
-/* 
-** NOTE: this op can get really complex with muls
-** if we need this rewrite it into 1 function
-**/
+// TODO: Rewrite this?
+// NOTE: This op can get really complex with muls
+// If we need this, rewrite it into 1 function
+
 
 void LeaSourceAndOffset(int x86DestReg, int x86SourceReg, size_t offset) {
 	WORD x86Command = 0;
@@ -1118,7 +1118,7 @@ void LeaSourceAndOffset(int x86DestReg, int x86SourceReg, size_t offset) {
 		DisplayError("LeaSourceAndOffset\nUnknown x86 Register");
 	}
 
-// To do:  Check high DWORD of offset for 64-bit x86.
+// TODO: Check high DWORD of offset for 64-bit x86
 	if ((offset & 0x00000000FFFFFF80) != 0 && (offset & ~0x7F) != ~0x7F) {
 		PUTDST16(RecompPos,x86Command);
 		PUTDST32(RecompPos,offset);
