@@ -24,7 +24,7 @@ int AddRSP_BPoint( DWORD Location, int Confirm )
 
 	if (NoOfBpoints == MaxBPoints)
 	{
-		DisplayError("Max amount of Break Points set");
+		DisplayError("Max amount of break points set");
 		return FALSE;
 	}
 
@@ -32,7 +32,7 @@ int AddRSP_BPoint( DWORD Location, int Confirm )
 	{
 		if (BPoint[count].Location == Location)
 		{
-			DisplayError("You already have this Break Point");
+			DisplayError("You already have this break point");
 			return FALSE;
 		}
 	}
@@ -77,7 +77,7 @@ void CreateBPPanel ( void * hDlg, rectangle rcBox )
 {
 	if (hRSPLocation != NULL) { return; }
 
-	rcBox = rcBox; // remove warning of unused
+	rcBox = rcBox; // Remove warning of unused
 
 	BPoint_Win_hDlg = hDlg;
 	
@@ -100,7 +100,7 @@ void HideBPPanel ( void )
 
 void PaintBPPanel ( window_paint ps )
 {
-	TextOut( ps.hdc, 29,60,"Break when the Program Counter equals",37);
+	TextOut( ps.hdc, 29,60,"Break when the program counter equals",37);
 	TextOut( ps.hdc, 59,85,"0x",2);
 }
 
