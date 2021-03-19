@@ -224,7 +224,7 @@ void SseMoveRegToReg				( int Dest, int Source );
 void SseXorRegToReg					( int Dest, int Source );
 
 #pragma warning(push)
-#pragma warning(disable : 4201) // nonstandard extension used : nameless struct/union
+#pragma warning(disable : 4201) // Non-standard extension used: nameless struct/union
 
 typedef union {
 	struct {
