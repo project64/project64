@@ -272,7 +272,7 @@ void Log_MT_CP0 ( unsigned int PC, int CP0Reg, int Value ) {
 	case 14: Log_Message("%03X: Stored 0x%08X in DPC_PIPEBUSY_REG",PC,Value); break;
 	case 15: Log_Message("%03X: Stored 0x%08X in DPC_TMEM_REG",PC,Value); break;
 	default:
-		Log_Message("%03X: Unkown RSP CP0 register %d",PC,CP0Reg);
+		Log_Message("%03X: Unknown RSP CP0 register %d",PC,CP0Reg);
 		break;*/
 	}
 }
