@@ -10,7 +10,7 @@ CGameGeneralPage::CGameGeneralPage(HWND hParent, const RECT & rcDispay)
         return;
     }
 
-    //Set the text for all gui Items
+    // Set the text for all GUI items
     SetDlgItemText(IDC_GOOD_NAME_TEXT, wGS(RB_GOODNAME).c_str());
 
     SetDlgItemText(IDC_MEMORY_SIZE_TEXT, wGS(ROM_MEM_SIZE).c_str());

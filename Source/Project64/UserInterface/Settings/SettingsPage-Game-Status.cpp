@@ -12,7 +12,7 @@ CGameStatusPage::CGameStatusPage(HWND hParent, const RECT & rcDispay)
 
     CIniFile RomIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
 	CIniFile::strlist Keys;
-    RomIniFile.GetKeyList("Rom Status", Keys);
+    RomIniFile.GetKeyList("ROM Status", Keys);
     stdstr Status = UISettingsLoadStringVal(Rdb_Status);
 
     CModifiedComboBoxTxt * ComboBox;

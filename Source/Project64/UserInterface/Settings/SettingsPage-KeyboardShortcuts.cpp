@@ -76,7 +76,7 @@ void COptionsShortCutsPage::OnCpuStateChanged(UINT /*Code*/, int /*id*/, HWND /*
             continue;
         }
 
-        //find Parent
+        // Find parent
         HTREEITEM hParent = m_MenuItems.GetChildItem(TVI_ROOT);
         while (hParent)
         {
@@ -139,7 +139,7 @@ void COptionsShortCutsPage::OnRemoveClicked(UINT /*Code*/, int /*id*/, HWND /*ct
 
     CShortCutItem * ShortCut = (CShortCutItem *)m_MenuItems.GetItemData(hSelectedItem);
 
-    //Make sure an item is selected
+    // Make sure an item is selected
     int index = m_CurrentKeys.GetCurSel();
     if (index < 0)
     {
@@ -162,7 +162,7 @@ void COptionsShortCutsPage::OnDetectKeyClicked(UINT /*Code*/, int /*id*/, HWND /
 
 void COptionsShortCutsPage::OnAssignClicked(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
-    //Get the virtual key info
+    // Get the virtual key info
     int index = m_VirtualKeyList.GetCurSel();
     if (index < 0)
     {
@@ -216,7 +216,7 @@ void COptionsShortCutsPage::OnAssignClicked(UINT /*Code*/, int /*id*/, HWND /*ct
 
 void COptionsShortCutsPage::OnShortCutChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
-    //Get the virtual key info
+    // Get the virtual key info
     int index = m_VirtualKeyList.GetCurSel();
     if (index < 0) { return; }
     WORD key = (WORD)m_VirtualKeyList.GetItemData(index);

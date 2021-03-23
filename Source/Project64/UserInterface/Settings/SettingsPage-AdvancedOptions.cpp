@@ -9,7 +9,7 @@ CAdvancedOptionsPage::CAdvancedOptionsPage(HWND hParent, const RECT & rcDispay)
         return;
     }
 
-    //Set the text for all gui Items
+    // Set the text for all GUI items
     SetDlgItemText(IDC_START_ON_ROM_OPEN, wGS(ADVANCE_AUTO_START).c_str());
     SetDlgItemText(IDC_ZIP, wGS(ADVANCE_COMPRESS).c_str());
     SetDlgItemText(IDC_DEBUGGER, wGS(ADVANCE_DEBUGGER).c_str());

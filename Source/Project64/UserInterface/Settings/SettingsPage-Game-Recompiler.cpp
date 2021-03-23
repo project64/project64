@@ -10,7 +10,7 @@ CGameRecompilePage::CGameRecompilePage(HWND hParent, const RECT & rcDispay)
         return;
     }
 
-    //Set the text for all gui Items
+    // Set the text for all GUI items
     SetDlgItemText(IDC_CPU_TYPE_TEXT, wGS(ROM_CPU_STYLE).c_str());
     SetDlgItemText(IDC_FUNCFIND_TEXT, wGS(ROM_FUNC_FIND).c_str());
 
