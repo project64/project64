@@ -1,11 +1,6 @@
-/////////////////////////////////////////////////////////////////////////////
-// 
-// CListCtrl - A WTL list control with Windows Vista style item selection.
-//
+// CListCtrl - A WTL list control with Windows Vista style item selection
 // Revision:      1.5
 // Last modified: 2nd November 2016
-//
-/////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
@@ -103,7 +98,7 @@ public:
 	{
 		if (m_wndItemEdit.IsWindow())
 		{
-			// patch memory window crash
+			// Patch memory window crash
 			m_wndItemEdit.UnsubclassWindow();
 		}
 	}
@@ -224,7 +219,7 @@ public:
 	
 	BOOL Initialise()
 	{
-		// load list images
+		// Load list images
 		if ( !m_ilListItems.CreateFromImage( IDB_LISTITEMS, 16, 0, RGB( 255, 0, 255 ), IMAGE_BITMAP, LR_CREATEDIBSECTION ) )
 			return FALSE;
 		
@@ -233,20 +228,20 @@ public:
 		if ( m_curHyperLink.LoadCursor( IDC_HYPERLINK ) == NULL )
 			return FALSE;
 		
-		// load interface settings
+		// Load interface settings
 		if ( !LoadSettings() )
 			return FALSE;
 			
-		// give control a static border
+		// Give control a static border
 		ModifyStyle( WS_BORDER, WS_CLIPCHILDREN );
 		ModifyStyleEx( WS_EX_CLIENTEDGE, WS_EX_STATICEDGE, SWP_FRAMECHANGED );		
 		
-		// register drag drop
+		// Register drag drop
 		m_oleDragDrop.Register( this );
 		m_oleDragDrop.AddTargetFormat( m_nHeaderClipboardFormat );
 		m_oleDragDrop.AddSourceFormat( m_nHeaderClipboardFormat );
 		
-		// create the tooltip
+		// Create the tooltip
 		if ( !m_ttToolTip.Create( m_hWnd ) )
 			return FALSE;
 		m_ttToolTip.SetMaxTipWidth( SHRT_MAX );
@@ -282,12 +277,12 @@ public:
 		
 		m_nHeaderClipboardFormat = (CLIPFORMAT)RegisterClipboardFormat( _T( "HEADERCLIPBOARDFORMAT" ) );
 		
-		// get number of lines to scroll
+		// Get number of lines to scroll
 #if (_WIN32_WINNT >= 0x0400) || (_WIN32_WINDOWS > 0x0400)
 		SystemParametersInfo( SPI_GETWHEELSCROLLLINES, 0, &m_nMouseWheelScroll, 0 );
 #endif
 		
-		// get system message font
+		// Get system message font
 		CLogFont logFont;
 		logFont.SetMessageBoxFont();
 		if ( !m_fntListFont.IsNull() )
@@ -295,7 +290,7 @@ public:
 		if ( m_fntListFont.CreateFontIndirect( &logFont ) == NULL )
 			return FALSE;
 		
-		// get system underline font
+		// Get system underline font
 		logFont.lfUnderline = BYTE(TRUE);
 		if ( !m_fntUnderlineFont.IsNull() )
 			m_fntUnderlineFont.DeleteObject();
@@ -312,20 +307,20 @@ public:
 		
 		dcClient.SelectFont( hOldFont );
 		
-		// has system font changed
+		// Has system font changed
 		if ( m_nItemHeight != sizeExtent.cy + ITEM_HEIGHT_MARGIN )
 		{
 			m_nItemHeight = sizeExtent.cy + ITEM_HEIGHT_MARGIN;
 			m_nHeaderHeight = m_nItemHeight;
 			
-			// create drop arrows window
+			// Create drop arrows window
 			if ( m_wndDropArrows.IsWindow() )
 				m_wndDropArrows.DestroyWindow();			
 			if ( !m_wndDropArrows.Create( m_hWnd, m_nHeaderHeight, TRUE ) )
 				return FALSE;
 		}
 		
-		// create titletip window
+		// Create title tip window
 		if ( m_wndTitleTip.IsWindow() )
 			m_wndTitleTip.DestroyWindow();			
 		if ( !m_wndTitleTip.Create( m_hWnd ) )
@@ -411,7 +406,7 @@ public:
 	
 	void AddColumn( CListColumn& listColumn )
 	{
-		// minimum column width
+		// Minimum column width
 		if ( listColumn.m_strText.empty() && listColumn.m_nImage != ITEM_IMAGE_NONE )
 		{
 			CSize sizeIcon;
@@ -420,10 +415,10 @@ public:
 			listColumn.m_nFlags |= ITEM_FLAGS_CENTRE;
 		}
 		
-		// correct incompatible flag mask values
+		// Correct incompatible flag mask values
 		listColumn.m_nFlags = ValidateFlags( listColumn.m_nFlags );
 		
-		// initial data index
+		// Initial data index
 		listColumn.m_nIndex = GetColumnCount();
 		
 		m_aColumns.Add( listColumn );
@@ -491,7 +486,7 @@ public:
 		if ( nColumn < 0 || nColumn >= GetColumnCount() ) 
 			return FALSE;
 		
-		// set new column size if not fixed
+		// Set new column size if not fixed
 		if ( !m_aColumns[ nColumn ].m_bFixed )
 		{
 			m_aColumns[ nColumn ].m_nWidth = nWidth;
@@ -586,7 +581,7 @@ public:
 			rcColumn.left += nWidth;
 		}
 		
-		// offset column by scroll position
+		// Offset column by scroll position
 		rcColumn.OffsetRect( -GetScrollPos( SB_HORZ ), 0 );
 		
 		return TRUE;
@@ -614,13 +609,13 @@ public:
 	
 	int GetItemCount()
 	{
-		ATLASSERT( FALSE ); // must be implemented in a derived class
+		ATLASSERT( FALSE ); // Must be implemented in a derived class
 		return 0;
 	}
 	
 	stdstr GetItemText( int nItem, int nSubItem )
 	{
-		ATLASSERT( FALSE ); // must be implemented in a derived class
+		ATLASSERT( FALSE ); // Must be implemented in a derived class
 		return _T( "" );
 	}
 	
@@ -634,7 +629,7 @@ public:
 		if ( strItemText.empty() )
 			return FALSE;
 		
-		// get date-time from item text: yyyymmddhhmmss
+		// Get date-time from item text: yyyymmddhhmmss
 		stItemDate.wYear = (WORD)_ttoi( strItemText.substr(0, 4 ).c_str() );
 		stItemDate.wMonth = (WORD)_ttoi( strItemText.substr( 4, 2 ).c_str() );
 		stItemDate.wDay = (WORD)_ttoi( strItemText.substr( 6, 2 ).c_str() );
@@ -648,27 +643,27 @@ public:
 	
 	int GetItemImage( int nItem, int nSubItem )
 	{
-		return ITEM_IMAGE_NONE; // may be implemented in a derived class
+		return ITEM_IMAGE_NONE; // May be implemented in a derived class
 	}
 	
 	UINT GetItemFormat( int nItem, int nSubItem )
 	{
-		return GetColumnFormat( IndexToOrder( nSubItem ) ); // may be implemented in a derived class
+		return GetColumnFormat( IndexToOrder( nSubItem ) ); // May be implemented in a derived class
 	}
 	
 	UINT GetItemFlags( int nItem, int nSubItem )
 	{
-		return GetColumnFlags( IndexToOrder( nSubItem ) ); // may be implemented in a derived class
+		return GetColumnFlags( IndexToOrder( nSubItem ) ); // May be implemented in a derived class
 	}
 	
 	BOOL GetItemComboList( int nItem, int nSubItem, CListArray < stdstr >& aComboList )
 	{
-		return GetColumnComboList( IndexToOrder( nSubItem ), aComboList ); // may be implemented in a derived class
+		return GetColumnComboList( IndexToOrder( nSubItem ), aComboList ); // May be implemented in a derived class
 	}
 	
 	HFONT GetItemFont( int /*nItem*/, int /*nSubItem*/ )
 	{
-		return m_fntListFont; // may be implemented in a derived class
+		return m_fntListFont; // May be implemented in a derived class
 	}
 	
 	BOOL GetItemColours( int nItem, int nSubItem, COLORREF& rgbBackground, COLORREF& rgbText )
@@ -680,23 +675,23 @@ public:
 	
 	stdstr virtual GetItemToolTip( int /*nItem*/, int /*nSubItem*/ )
 	{
-		return _T( "" ); // may be implemented in a derived class
+		return _T( "" ); // May be implemented in a derived class
 	}
 	stdstr virtual GetHeaderToolTip(int /*column*/)
 	{
-		return _T("");	//implemented by child class
+		return _T("");	// Implemented by child class
 	}
 
 
 	BOOL SetItemText( int nItem, int nSubItem, LPCTSTR lpszText )
 	{
-		ATLASSERT( FALSE ); // must be implemented in a derived class
+		ATLASSERT( FALSE ); // Must be implemented in a derived class
 		return FALSE;
 	}
 	
 	BOOL SetItemComboIndex( int nItem, int nSubItem, int nIndex )
 	{
-		ATLASSERT( FALSE ); // must be implemented in a derived class
+		ATLASSERT( FALSE ); // Must be implemented in a derived class
 		return FALSE;
 	}
 	
@@ -704,7 +699,7 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		
-		// set date-time in format (yyyymmddhhmmss)
+		// Set date-time in format (yyyymmddhhmmss)
 		stdstr strFormatDate;
 		strFormatDate.Format( _T( "%04d%02d%02d%02d%02d%02d" ), stItemDate.wYear, stItemDate.wMonth, stItemDate.wDay, stItemDate.wHour, stItemDate.wMinute, stItemDate.wSecond );
 		
@@ -730,42 +725,42 @@ public:
 		
 	BOOL SetItemImage( int nItem, int nSubItem, int nImage )
 	{
-		ATLASSERT( FALSE ); // must be implemented in a derived class
+		ATLASSERT( FALSE ); // Must be implemented in a derived class
 		return FALSE;
 	}
 	
 	BOOL SetItemFormat( int nItem, int nSubItem, UINT nFormat, UINT nFlags = ITEM_FLAGS_NONE )
 	{
-		ATLASSERT( FALSE ); // must be implemented in a derived class
+		ATLASSERT( FALSE ); // Must be implemented in a derived class
 		return FALSE;
 	}
 	
 	BOOL SetItemFormat( int nItem, int nSubItem, UINT nFormat, UINT nFlags, CListArray < stdstr >& aComboList )
 	{
-		ATLASSERT( FALSE ); // must be implemented in a derived class
+		ATLASSERT( FALSE ); // Must be implemented in a derived class
 		return FALSE;
 	}
 	
 	BOOL SetItemFont( int nItem, int nSubItem, HFONT hFont )
 	{
-		ATLASSERT( FALSE ); // must be implemented in a derived class
+		ATLASSERT( FALSE ); // Must be implemented in a derived class
 		return FALSE;
 	}
 	
 	BOOL SetItemColours( int nItem, int nSubItem, COLORREF rgbBackground, COLORREF rgbText )
 	{
-		ATLASSERT( FALSE ); // must be implemented in a derived class
+		ATLASSERT( FALSE ); // Must be implemented in a derived class
 		return FALSE;
 	}
 		
 	void ReverseItems()
 	{
-		ATLASSERT( FALSE ); // must be implemented in a derived class
+		ATLASSERT( FALSE ); // Must be implemented in a derived class
 	}
 	
 	void SortItems( int nColumn, BOOL bAscending )
 	{
-		ATLASSERT( FALSE ); // must be implemented in a derived class
+		ATLASSERT( FALSE ); // Must be implemented in a derived class
 	}
 	
 	BOOL GetItemRect( int nItem, int nSubItem, CRect& rcItem )
@@ -779,7 +774,7 @@ public:
 		CRect rcClient;
 		GetClientRect( rcClient );
 		
-		// calculate item rect based on scroll position
+		// Calculate item rect based on scroll position
 		rcItem = rcClient;
 		rcItem.top = ( m_bShowHeader ? m_nHeaderHeight : 0 ) + ( ( nItem - nTopItem ) * m_nItemHeight );
 		rcItem.bottom = rcItem.top + m_nItemHeight;
@@ -831,10 +826,10 @@ public:
 		GetClientRect( rcClient );
 		rcClient.top = ( m_bShowHeader ? m_nHeaderHeight : 0 );
 		
-		// calculate number of items per control height (include partial item)
+		// Calculate number of items per control height (include partial item)
 		div_t divHeight = div( rcClient.Height(), m_nItemHeight );
 			
-		// round up to nearest item count
+		// Round up to nearest item count
 		return max( bPartial && divHeight.rem > 0 ? divHeight.quot + 1 : divHeight.quot, 1 );
 	}
 	
@@ -846,11 +841,11 @@ public:
 		if ( nItem < nTopItem || nItem >= pT->GetItemCount() )
 			return FALSE;
 		
-		// check whether item is visible
+		// Check whether item is visible
 		if ( nItem < nTopItem || nItem >= nTopItem + GetCountPerPage( bPartial ) )
 			return FALSE;
 		
-		// check whether subitem is visible
+		// Check whether subitem is visible
 		if ( m_bFocusSubItem && nSubItem != NULL_SUBITEM )
 		{
 			CRect rcColumn;
@@ -886,7 +881,7 @@ public:
 		{
 			int nScrollItem = NULL_ITEM;
 			
-			// scroll list up/down to include item
+			// Scroll list up/down to include item
 			if ( rcItem.top < rcClient.top || rcItem.Height() > rcClient.Height() )
 				nScrollItem = nItem;
 			else if ( rcItem.bottom > rcClient.bottom )
@@ -906,7 +901,7 @@ public:
 
 			int nScrollPos = 0;
 
-			// scroll list left/right to include subitem
+			// Scroll list left/right to include subitem
 			if ( rcColumn.Width() > rcClient.Width() || rcColumn.left < 0 )
 				nScrollPos = rcColumn.left;
 			else if ( rcColumn.right > rcClient.right )
@@ -954,11 +949,11 @@ public:
 			infoScroll.nMax = ( pT->GetItemCount() * m_nItemHeight ) + ( m_bShowHeader ? m_nHeaderHeight : 0 );
 			infoScroll.nPage = rcClient.Height() - ( m_bShowHeader ? m_nHeaderHeight : 0 );
 			
-			// are we within client range?
+			// Are we within client range?
 			if ( (UINT)infoScroll.nMax <= infoScroll.nPage + ( m_bShowHeader ? m_nHeaderHeight : 0 ) )
 				infoScroll.nMax = 0;
 				    
-			// set vertical scroll bar
+			// Set vertical scroll bar
 			m_bEnableVertScroll = SetScrollInfo( SB_VERT, &infoScroll, TRUE ) ? ( infoScroll.nMax > 0 ) : FALSE;
 		}
 		
@@ -967,11 +962,11 @@ public:
 			infoScroll.nMax = GetTotalWidth( bRecalc );
 			infoScroll.nPage = rcClient.Width();
 			
-			// are we within client range?
+			// Are we within client range?
 			if ( infoScroll.nPage >= (UINT)infoScroll.nMax )
 				infoScroll.nMax = 0;
 				
-			// set horizontal scroll bar
+			// Set horizontal scroll bar
 			m_bEnableHorizScroll = SetScrollInfo( SB_HORZ, &infoScroll, TRUE ) ? ( infoScroll.nMax > (int)infoScroll.nPage ) : FALSE;
 		}
 	}
@@ -1008,10 +1003,10 @@ public:
 		BOOL bNewSelect = !( bSelectRange || ( nFlags & MK_CONTROL ) );
 		BOOL bEnsureVisible = FALSE;
 
-		// are we starting a new select sequence?
+		// Are we starting a new select sequence?
 		if ( bNewSelect || bSelectRange )
 		{
-			// are we simply reselecting the same item?
+			// Are we simply reselecting the same item?
 			if ( m_setSelectedItems.size() == 1 && *m_setSelectedItems.begin() == nItem )
 			{
 				bSelectItem = FALSE;
@@ -1022,14 +1017,14 @@ public:
 			else
 				m_setSelectedItems.clear();
 		}
-		else // we adding to or removing from select sequence
+		else // We adding to or removing from select sequence
 		{
 			if ( m_bSingleSelect )
 				m_setSelectedItems.clear();
 			
 			set < int >::iterator posSelectedItem = m_setSelectedItems.find( nItem );
 			
-			// is this item already selected?
+			// Is this item already selected?
 			if ( posSelectedItem != m_setSelectedItems.end() )
 			{
 				bSelectItem = FALSE;
@@ -1040,7 +1035,7 @@ public:
 			}
 		}
 		
-		// are we adding this item to the select sequence?
+		// Are we adding this item to the select sequence?
 		if ( bSelectItem )
 		{
 			bEnsureVisible = TRUE;
@@ -1062,11 +1057,11 @@ public:
 			m_nFocusItem = nItem;
 			m_nFocusSubItem = m_setSelectedItems.size() > 1 ? NULL_SUBITEM : nSubItem;
 			
-			// notify parent of selected item
+			// Notify parent of selected item
 			NotifyParent( m_nFocusItem, m_nFocusSubItem, LCN_SELECTED );
 		}
 		
-		// start visible timer (scrolls list to partially hidden item)
+		// Start visible timer (scrolls list to partially hidden item)
 		if ( !IsItemVisible( nItem, m_setSelectedItems.size() > 1 ? NULL_SUBITEM : nSubItem, FALSE ) )
 			SetTimer( ITEM_VISIBLE_TIMER, ITEM_VISIBLE_PERIOD );
 		else if ( m_nFocusItem != NULL_ITEM && m_nFocusSubItem != NULL_SUBITEM )
@@ -1110,7 +1105,7 @@ public:
 	
 	BOOL HitTestHeader( CPoint point, int& nColumn, UINT& nFlags )
 	{
-		// reset hittest flags
+		// Reset hittest flags
 		nFlags = HITTEST_FLAG_NONE;
 		
 		if ( !m_bShowHeader )
@@ -1120,35 +1115,35 @@ public:
 		if ( !GetClientRect( rcClient ) )
 			return FALSE;
 		
-		// are we over the header?
+		// Are we over the header?
 		if ( point.y < rcClient.top || point.y > m_nHeaderHeight )
 			return FALSE;
 		
 		int nDividerPos = 0;
 		int nColumnCount = GetColumnCount();
 	
-		// get hit-test subitem
+		// Get hit-test subitem
 		for ( nColumn = 0; nColumn < nColumnCount; nColumn++ )
 		{
 			int nColumnWidth = GetColumnWidth( nColumn );
 			nDividerPos += nColumnWidth;
 
-			// offset divider position with current scroll position
+			// Offset divider position with current scroll position
 			int nRelativePos = nDividerPos - GetScrollPos( SB_HORZ );
 
-			// are we over the divider zone?
+			// Are we over the divider zone?
 			if ( point.x >= nRelativePos - DRAG_HEADER_OFFSET - 1 && point.x <= nRelativePos + DRAG_HEADER_OFFSET )
 			{
 				nFlags |= HITTEST_FLAG_HEADER_DIVIDER;
 				
-				// are we to the left of the divider (or over last column divider)?
+				// Are we to the left of the divider (or over last column divider)?
 				if ( ( point.x >= nRelativePos - DRAG_HEADER_OFFSET - 1 && point.x < nRelativePos ) || nColumn + 1 >= nColumnCount - 1 )
 				{
 					nFlags |= HITTEST_FLAG_HEADER_LEFT;
 					return TRUE;
 				}
 
-				// find last zero-length column after this column
+				// Find last zero-length column after this column
 				for ( int nNextColumn = nColumn + 1; nNextColumn < nColumnCount; nNextColumn++ )
 				{
 					if ( GetColumnWidth( nNextColumn ) > 0 )
@@ -1161,7 +1156,7 @@ public:
 				return TRUE;
 			}
 
-			// are we over a column?
+			// Are we over a column?
 			if ( point.x > nRelativePos - nColumnWidth && point.x < nRelativePos )
 				return TRUE;
 		}	
@@ -1173,11 +1168,11 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		
-		// are we over the header?
+		// Are we over the header?
 		if ( point.y < ( m_bShowHeader ? m_nHeaderHeight : 0 ) )
 			return FALSE;
 		
-		// calculate hit test item
+		// Calculate hit test item
 		nItem = GetTopItem() + (int)( ( point.y - ( m_bShowHeader ? m_nHeaderHeight : 0 ) ) / m_nItemHeight );
 		
 		if ( nItem < 0 || nItem >= pT->GetItemCount() )
@@ -1186,16 +1181,16 @@ public:
 		int nTotalWidth = 0;
 		int nColumnCount = GetColumnCount();
 	
-		// get hit-test subitem
+		// Get hit-test subitem
 		for ( nSubItem = 0; nSubItem < nColumnCount; nSubItem++ )
 		{
 			int nColumnWidth = GetColumnWidth( nSubItem );
 			nTotalWidth += nColumnWidth;
 
-			// offset position with current scroll position
+			// Offset position with current scroll position
 			int nRelativePos = nTotalWidth - GetScrollPos( SB_HORZ );
 
-			// are we over a subitem?
+			// Are we over a subitem?
 			if ( point.x > nRelativePos - nColumnWidth && point.x < nRelativePos )
 				return TRUE;
 		}
@@ -1214,7 +1209,7 @@ public:
 		CClientDC dcClient( m_hWnd );
 		HFONT hOldFont = dcClient.SelectFont( m_fntListFont );
 		
-		// set to column text width if zero-length
+		// Set to column text width if zero-length
 		CSize sizeExtent;
 		if ( !dcClient.GetTextExtent( listColumn.m_strText.c_str(), -1, &sizeExtent ) )
 			return FALSE;
@@ -1225,7 +1220,7 @@ public:
 		if ( !m_ilItemImages.IsNull() )
 			m_ilItemImages.GetIconSize( sizeIcon );
 		
-		// calculate maximum column width required
+		// Calculate maximum column width required
 		for ( int nItem = 0; nItem < pT->GetItemCount(); nItem++ )
 		{
 			if ( !dcClient.GetTextExtent( pT->GetItemText( nItem, listColumn.m_nIndex ), -1, &sizeExtent ) )
@@ -1254,21 +1249,21 @@ public:
 		
 		if ( bColumnScroll )
 		{
-			// have we finished scrolling list to accommodate new column size?
+			// Have we finished scrolling list to accommodate new column size?
 			if ( !m_bColumnSizing || !m_bEnableHorizScroll || nCurrentPos - m_nStartScrollPos > 0 )
 			{
 				KillTimer( RESIZE_COLUMN_TIMER );
 				
-				// reset resize start point
+				// Reset resize start point
 				m_nStartPos = nCurrentPos;
 				m_bResizeTimer = FALSE;
 			}
 			else if ( nCurrentPos < m_nStartPos && GetScrollPos( SB_HORZ ) >= nScrollLimit )
 			{
-				// reset start column size
+				// Reset start column size
 				m_nStartSize = max( GetColumnWidth( m_nColumnSizing ) + ( nCurrentPos - m_nStartScrollPos ), 0 );
 				
-				// resize column
+				// Resize column
 				SetColumnWidth( m_nColumnSizing, m_nStartSize );
 			}
 		}
@@ -1276,24 +1271,24 @@ public:
 		{
 			int nColumnSize = max( m_nStartSize + ( nCurrentPos - m_nStartPos ), 0 );
 			
-			// are we scrolled fully to the right and wanting to reduce the size of a column?
+			// Are we scrolled fully to the right and wanting to reduce the size of a column?
 			if ( m_bEnableHorizScroll && GetScrollPos( SB_HORZ ) >= nScrollLimit && nColumnSize < GetColumnWidth( m_nColumnSizing ) )
 			{
 				if ( !m_bResizeTimer )
 				{
-					// only start the scroll timer once
+					// Only start the scroll timer once
 					m_bResizeTimer = TRUE;
 
-					// set new start scroll position
+					// Set new start scroll position
 					m_nStartScrollPos = nCurrentPos;
 
-					// start column resize / scroll timer
+					// Start column resize / scroll timer
 					SetTimer( RESIZE_COLUMN_TIMER, RESIZE_COLUMN_PERIOD );
 				}
 			}
 			else
 			{
-				// resizing is done in scroll timer (if started)
+				// Resizing is done in scroll timer (if started)
 				if ( !m_bResizeTimer )
 					SetColumnWidth( m_nColumnSizing, nColumnSize );
 			}
@@ -1315,7 +1310,7 @@ public:
 		if ( !GetColumn( m_nHighlightColumn, listColumn ) )
 			return;
 		
-		// store drag column
+		// Store drag column
 		m_nDragColumn = m_nHighlightColumn;
 		
 		CClientDC dcClient( m_hWnd );
@@ -1325,7 +1320,7 @@ public:
 		
 		int nContextState = dcHeader.SaveDC();
 		
-		// create drag header bitmap
+		// Create drag header bitmap
 		CBitmapHandle bmpHeader;
 		bmpHeader.CreateCompatibleBitmap( dcClient, rcHeaderItem.Width(), rcHeaderItem.Height() );
 		dcHeader.SelectBitmap( bmpHeader );
@@ -1338,10 +1333,10 @@ public:
 		rcHeaderText.left += m_nHighlightColumn == 0 ? 4 : 3;
 		rcHeaderText.OffsetRect( 0, 1 );
 		
-		// margin header text
+		// Margin header text
 		rcHeaderText.DeflateRect( 4, 0, 5, 0 );
 		
-		// has this header item an associated image?
+		// Has this header item an associated image?
 		if ( listColumn.m_nImage != ITEM_IMAGE_NONE )
 		{
 			CSize sizeIcon;
@@ -1355,7 +1350,7 @@ public:
 				
 			m_ilListItems.DrawEx( listColumn.m_nImage, dcHeader, rcHeaderImage, CLR_DEFAULT, CLR_DEFAULT, ILD_TRANSPARENT );
 
-			// offset header text (for image)
+			// Offset header text (for image)
 			rcHeaderText.left += sizeIcon.cx + 4;
 		}
 		
@@ -1372,7 +1367,7 @@ public:
 		else
 			nFormat |= DT_LEFT;
 			
-		// draw header text
+		// Draw header text
 		if ( !listColumn.m_strText.empty() )
 			dcHeader.DrawText( listColumn.m_strText.c_str(), (int)listColumn.m_strText.length(), rcHeaderText, nFormat );
 
@@ -1388,10 +1383,10 @@ public:
 		shDragImage.hbmpDragImage = bmpHeader;
 		shDragImage.crColorKey = m_rgbBackground;
 		
-		// start header drag operation
+		// Start header drag operation
 		m_oleDragDrop.DoDragDrop( &shDragImage, DROPEFFECT_MOVE );
 		
-		// hide drop arrows after moving column
+		// Hide drop arrows after moving column
 		m_wndDropArrows.Hide();
 		
 		if ( m_bButtonDown )
@@ -1403,7 +1398,7 @@ public:
 			m_ptSelectPoint = 0;
 		}
 		
-		// finish moving a column
+		// Finish moving a column
 		if ( m_nHighlightColumn != NULL_COLUMN )
 		{
 			m_nHighlightColumn = NULL_COLUMN;
@@ -1422,7 +1417,7 @@ public:
 		m_nHotColumn = NULL_COLUMN;
 		UINT nHeaderFlags = HITTEST_FLAG_NONE;
 		
-		// are we over the header?
+		// Are we over the header?
 		if ( HitTestHeader( point, m_nHotColumn, nHeaderFlags ) )
 		{
 			CRect rcColumn;
@@ -1445,13 +1440,13 @@ public:
 			CRect rcColumn;
 			int nColumnCount = GetColumnCount();
 			
-			// set closest divider position
+			// Set closest divider position
 			if ( GetColumnRect( m_nHotDivider < nColumnCount ? m_nHotDivider : nColumnCount - 1, rcColumn ) )
 				ptDivider.x = m_nHotDivider < nColumnCount ? rcColumn.left : rcColumn.right;
 			
 			ClientToScreen( &ptDivider );
 			
-			// track drop window
+			// Track drop window
 			m_wndDropArrows.Show( ptDivider );
 			return TRUE;
 		}
@@ -1474,14 +1469,14 @@ public:
 		
 		if ( nSortIndex != m_nSortColumn )
 		{
-			// sort by new column
+			// Sort by new column
 			m_bSortAscending = TRUE;
 			m_nSortColumn = nSortIndex;
 			pT->SortItems( m_nSortColumn, m_bSortAscending );
 		}
 		else
 		{
-			// toggle sort order if sorting same column
+			// Toggle sort order if sorting same column
 			m_bSortAscending = !m_bSortAscending;
 			pT->ReverseItems();
 		}
@@ -1500,7 +1495,7 @@ public:
 	
 	BOOL DragItem()
 	{
-		ATLASSERT( FALSE ); // must be implemented in a derived class
+		ATLASSERT( FALSE ); // Must be implemented in a derived class
 		return FALSE;
 	}
 	
@@ -1519,22 +1514,22 @@ public:
 		if ( m_rcGroupSelect.IsRectEmpty() )
 			return FALSE;
 		
-		// select items in group
+		// Select items in group
 		AutoSelect( point );
 		
-		// start auto scroll timer
+		// Start auto scroll timer
 		SetTimer( ITEM_AUTOSCROLL_TIMER, ITEM_SCROLL_PERIOD );
 		
 		DWORD dwCurrentTick = GetTickCount();
 		
-		// timer messages are a low priority, therefore we need to simulate the timer when moving the mouse
+		// Timer messages are a low priority, therefore we need to simulate the timer when moving the mouse
 		if ( ( dwCurrentTick - m_dwScrollTick ) > ITEM_SCROLL_PERIOD - 10 )
 		{
 			if ( AutoScroll( point ) )
 				m_dwScrollTick = dwCurrentTick;
 		}
 		
-		// redraw list immediately
+		// Redraw list immediately
 		return RedrawWindow();
 	}
 	
@@ -1625,7 +1620,7 @@ public:
 			}
 		}
 		
-		// was scrolling performed?
+		// Was scrolling performed?
 		return bAutoScroll;
 	}
 	
@@ -1633,11 +1628,11 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		
-		// any scroll required?
+		// Any scroll required?
 		if ( nBeginItem == nEndItem )
 			return FALSE;
 		
-		// calculate scroll offset
+		// Calculate scroll offset
 		m_nScrollOffset = abs( nEndItem - nBeginItem ) * m_nItemHeight;
 		m_nScrollUnit = min( max( m_nScrollOffset / m_nItemHeight, ITEM_SCROLL_UNIT_MIN ), ITEM_SCROLL_UNIT_MAX );
 		m_nScrollDelta = ( m_nScrollOffset - m_nScrollUnit ) / m_nScrollUnit;
@@ -1667,7 +1662,7 @@ public:
 		rcItem.top = 0;
 		rcItem.bottom = rcItem.top;
 		
-		// draw all visible items into bitmap
+		// Draw all visible items into bitmap
 		for ( int nItem = min( nBeginItem, nEndItem ); nItem < pT->GetItemCount(); rcItem.top = rcItem.bottom, nItem++ )
 		{
 			rcItem.bottom = rcItem.top + m_nItemHeight;
@@ -1675,7 +1670,7 @@ public:
 			if ( rcItem.top > rcScrollList.bottom )
 				break;
 			
-			// may be implemented in a derived class
+			// May be implemented in a derived class
 			pT->DrawItem( dcScrollList.m_hDC, nItem, rcItem );
 		}
 		
@@ -1683,7 +1678,7 @@ public:
 		
 		ScrollList();
 		
-		// start scrolling timer
+		// Start scrolling timer
 		SetTimer( ITEM_SCROLL_TIMER, ITEM_SCROLL_PERIOD );
 		
 		return TRUE;
@@ -1725,7 +1720,7 @@ public:
 		CSize sizScrollBitmap;
 		m_bmpScrollList.GetSize( sizScrollBitmap );
 		
-		// draw scrolled list
+		// Draw scrolled list
 		dcClient.BitBlt( 0, rcClient.top, rcClient.Width(), rcClient.Height(), dcScrollList, 0, m_bScrollDown ? ( sizScrollBitmap.cy - ( GetCountPerPage() * m_nItemHeight ) - m_nScrollOffset ) : m_nScrollOffset, SRCCOPY );
 
 		dcScrollList.SelectBitmap( hOldBitmap );
@@ -1790,7 +1785,7 @@ public:
 		if ( stFormatDate.wYear == 0 )
 			return _T( "" );
 		
-		// format date to local format
+		// Format date to local format
 		TCHAR szDateFormat[ DATE_STRING ];
 		return GetDateFormat( LOCALE_USER_DEFAULT, DATE_SHORTDATE, &stFormatDate, NULL, szDateFormat, DATE_STRING ) == 0 ? _T( "" ) : szDateFormat;
 	}
@@ -1802,7 +1797,7 @@ public:
 		stFormatTime.wMonth = 0;
 		stFormatTime.wDay = 0;
 		
-		// format time to local format
+		// Format time to local format
 		TCHAR szTimeFormat[ DATE_STRING ];
 		return GetTimeFormat( LOCALE_USER_DEFAULT, 0, &stFormatTime, NULL, szTimeFormat, DATE_STRING ) == 0 ? _T( "" ) : szTimeFormat;
 	}
@@ -1821,7 +1816,7 @@ public:
 		listNotify.m_lpszItemText = NULL;
 		listNotify.m_lpItemDate = NULL;
 
-		// forward notification to parent
+		// Forward notification to parent
 		FORWARD_WM_NOTIFY( pT->GetParent(), listNotify.m_hdrNotify.idFrom, &listNotify.m_hdrNotify, ::SendMessage );
 	}
 	
@@ -1829,11 +1824,11 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		
-		// do not show titletip if editing
+		// Do not show title tip if editing
 		if ( m_bEditItem )
 			return FALSE;
 		
-		// is titletip already shown for this item?
+		// Is title tip already shown for this item?
 		if ( nItem == m_nTitleTipItem && nSubItem == m_nTitleTipSubItem )
 			return FALSE;
 		
@@ -1851,7 +1846,7 @@ public:
 //		rcItemText.left += nSubItem == 0 ? 4 : 3;
 //		rcItemText.DeflateRect( 4, 0 );
 		
-		// offset item text (for image)
+		// Offset item text (for image)
 		if ( !m_ilItemImages.IsNull() && pT->GetItemImage( nItem, nIndex ) != ITEM_IMAGE_NONE )
 		{
 			CSize sizeIcon;
@@ -1859,7 +1854,7 @@ public:
 			rcItemText.left += sizeIcon.cx + 4;
 		}
 				
-		// is current cursor position over item text (not over an icon)?
+		// Is current cursor position over item text (not over an icon)?
 		if ( !rcItemText.PtInRect( point ) )
 			return FALSE;
 		
@@ -1869,7 +1864,7 @@ public:
 		{
 			case ITEM_FORMAT_CHECKBOX:
 			case ITEM_FORMAT_CHECKBOX_3STATE:	
-			case ITEM_FORMAT_PROGRESS:			break; // no titletip for checkboxes or progress
+			case ITEM_FORMAT_PROGRESS:			break; // No title tip for checkboxes or progress
 			case ITEM_FORMAT_DATETIME:			{
 													SYSTEMTIME stItemDate;
 													if ( !GetItemDate( nItem, nIndex, stItemDate ) )
@@ -1998,10 +1993,10 @@ public:
 	
 	void OnSize( UINT /*nType*/, CSize /*size*/ )
 	{
-		// stop any pending scroll
+		// Stop any pending scroll
 		EndScroll();
 		
-		// end any pending edit
+		// End any pending edit
 		if ( m_bEditItem )
 			SetFocus();
 			
@@ -2011,10 +2006,10 @@ public:
 	
 	void OnHScroll( int nSBCode, short /*nPos*/, HWND /*hScrollBar*/ )
 	{
-		// stop any pending scroll
+		// Stop any pending scroll
 		EndScroll();
 		
-		// end any pending edit
+		// End any pending edit
 		if ( m_bEditItem )
 			SetFocus();
 		
@@ -2046,11 +2041,11 @@ public:
 										infoScroll.cbSize = sizeof( SCROLLINFO );
 										infoScroll.fMask = SIF_TRACKPOS;
 										
-										// get 32-bit scroll position
+										// Get 32-bit scroll position
 										if ( !GetScrollInfo( SB_HORZ, &infoScroll ) )
 											return;
 										
-										// has scroll position changed?
+										// Has scroll position changed?
 										if ( infoScroll.nTrackPos == nScrollPos )
 											return;
 										
@@ -2068,7 +2063,7 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		
-		// end any pending edit
+		// End any pending edit
 		if ( m_bEditItem )
 			SetFocus();
 		
@@ -2104,11 +2099,11 @@ public:
 										infoScroll.cbSize = sizeof( SCROLLINFO );
 										infoScroll.fMask = SIF_TRACKPOS;
 										
-										// get 32-bit scroll position
+										// Get 32-bit scroll position
 										if ( !GetScrollInfo( SB_VERT, &infoScroll ) )
 											return;
 										
-										// has scroll position changed?
+										// Has scroll position changed?
 										if ( infoScroll.nTrackPos == nScrollPos )
 											return;
 										
@@ -2120,7 +2115,7 @@ public:
 			default:				return;
 		}
 		
-		// store original top item before scrolling
+		// Store original top item before scrolling
 		int nTopItem = GetTopItem();
 		ResetScrollBars( SB_VERT, nScrollPos, FALSE );
 		
@@ -2156,7 +2151,8 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 				
-		// We have a bug here with setcapture() and the tooltip notiying the parent with mouse messages.
+		// TODO: Fix?
+		// We have a bug here with setcapture() and the tooltip notifying the parent with mouse messages.
 		// Hard to explain, but what I think happens is that this click is sent by the tooltip, which then
 		// releases capture, so it gets no more mouse events, thus not receiving the actual double click
 		// on the tool tip, and what results is two single clicks for this parent control.
@@ -2169,18 +2165,18 @@ public:
 		m_ptDownPoint = point;
 		m_ptSelectPoint = CPoint( point.x + GetScrollPos( SB_HORZ ), point.y + GetScrollPos( SB_VERT ) );
 
-		// stop any pending scroll
+		// Stop any pending scroll
 		EndScroll();
 		
 		SetFocus();
 		
-		// capture all mouse input
+		// Capture all mouse input
 		SetCapture();
 		
 		int nColumn = NULL_COLUMN;
 		UINT nHeaderFlags = HITTEST_FLAG_NONE;
 				
-		// are we over the header?
+		// Are we over the header?
 		if ( HitTestHeader( point, nColumn, nHeaderFlags ) )
 		{
 			CListColumn listColumn;
@@ -2191,7 +2187,7 @@ public:
 			{
 				SetCursor( m_curDivider );
 			
-				// begin column resizing
+				// Begin column resizing
 				m_bColumnSizing = TRUE;
 				m_nColumnSizing = nColumn;
 				m_nStartSize = listColumn.m_nWidth;
@@ -2216,14 +2212,14 @@ public:
 		}
 		else
 		{
-			// do not begin group select from first columns
+			// Do not begin group select from first columns
 			if ( !( nFlags & MK_SHIFT ) && !( nFlags & MK_CONTROL ) && nSubItem != 0 )
 			{
 				m_bBeginSelect = TRUE;
 				m_nFirstSelected = nItem;
 			}
 			
-			// only select item if not already selected
+			// Only select item if not already selected
 			if ( ( nFlags & MK_SHIFT ) || ( nFlags & MK_CONTROL ) || !IsSelected( nItem ) || m_setSelectedItems.size() <= 1 )
 				SelectItem( nItem, nSubItem, nFlags );
 			
@@ -2271,10 +2267,10 @@ public:
 		if ( m_bButtonDown )
 			ReleaseCapture();
 		
-		// finish resizing or selecting a column
+		// Finish resizing or selecting a column
 		if ( m_bColumnSizing || m_nHighlightColumn != NULL_COLUMN )
 		{
-			// are we changing the sort order?
+			// Are we changing the sort order?
 			if ( !m_bColumnSizing && m_nHighlightColumn != NULL_COLUMN && m_bSortEnabled) // Changed by Rowan 05/12/2006
 			//if ( !m_bColumnSizing && m_nHighlightColumn != NULL_COLUMN)
 				SortColumn( m_nHighlightColumn );
@@ -2293,7 +2289,7 @@ public:
 		m_ptDownPoint = 0;
 		m_ptSelectPoint = 0;
 		
-		// have we finished a group select?
+		// Have we finished a group select?
 		if ( m_bGroupSelect )
 		{
 			m_bGroupSelect = FALSE;
@@ -2304,11 +2300,11 @@ public:
 			int nItem = NULL_ITEM;
 			int nSubItem = NULL_SUBITEM;
 			
-			// de-select item if current item is selected
+			// Deselect item if current item is selected
 			if ( HitTest( point, nItem, nSubItem ) && IsSelected( nItem ) && m_setSelectedItems.size() > 1 && !( nFlags & MK_SHIFT ) && !( nFlags & MK_CONTROL ) )
 				SelectItem( nItem, nSubItem, nFlags );
 				
-			// notify parent of left-click item
+			// Notify parent of left-click item
 			NotifyParent( nItem, nSubItem, LCN_LEFTCLICK );
 		}
 	}
@@ -2318,13 +2314,13 @@ public:
 		
 		HideTitleTip( FALSE );
 		
-		// handle double-clicks (for drawing)
+		// Handle double-clicks (for drawing)
 		SendMessage( WM_LBUTTONDOWN, 0, MAKELPARAM( point.x, point.y ) );
 
 		int nColumn = NULL_COLUMN;
 		UINT nHeaderFlags = HITTEST_FLAG_NONE;
 		
-		// resize column if double-click on a divider
+		// Resize column if double-click on a divider
 		if ( HitTestHeader( point, nColumn, nHeaderFlags ) && ( nHeaderFlags & HITTEST_FLAG_HEADER_DIVIDER ) )
 			AutoSizeColumn( nColumn );
 		
@@ -2335,13 +2331,13 @@ public:
 		
 		//WriteTraceF(TraceInfo, "List Ctrl Double Click, Item: %d", nItem);
 		
-		// notify parent of double-clicked item
+		// Notify parent of double-clicked item
 		NotifyParent( nItem, nSubItem, LCN_DBLCLICK );
 	}
 	
 	void OnRButtonDown( UINT nFlags, CPoint point ) 
 	{
-		// stop any pending scroll
+		// Stop any pending scroll
 		EndScroll();
 		
 		SetFocus();
@@ -2353,7 +2349,7 @@ public:
 		
 		if (m_bRightClickSelect)
 		{
-			// only select item if not already selected (de-select in OnLButtonUp)
+			// Only select item if not already selected (deselect in OnLButtonUp)
 			if (HitTest(point, nItem, nSubItem) && !IsSelected(nItem))
 				SelectItem(nItem, nSubItem, nFlags);
 		}
@@ -2367,7 +2363,7 @@ public:
 		if ( !HitTest( point, nItem, nSubItem ) )
 			ResetSelected();
 		
-		// notify parent of right-click item
+		// Notify parent of right-click item
 		NotifyParent( nItem, nSubItem, LCN_RIGHTCLICK );
 	}
 
@@ -2392,27 +2388,27 @@ public:
 			trkMouse.dwFlags = TME_LEAVE;
 			trkMouse.hwndTrack = m_hWnd;
 			
-			// notify when the mouse leaves button
+			// Notify when the mouse leaves button
 			_TrackMouseEvent( &trkMouse );
 		}
 		
 		if ( m_bButtonDown )
 		{
-			// are we resizing a column?
+			// Are we resizing a column?
 			if ( m_bColumnSizing )
 			{
 				ResizeColumn();
 				return;
 			}
 			
-			// are we beginning to drag a column? 
+			// Are we beginning to drag a column? 
 			if ( m_nHighlightColumn != NULL_COLUMN && ( point.x < m_ptDownPoint.x - DRAG_HEADER_OFFSET || point.x > m_ptDownPoint.x + DRAG_HEADER_OFFSET || point.y < m_ptDownPoint.y - DRAG_HEADER_OFFSET || point.y > m_ptDownPoint.y + DRAG_HEADER_OFFSET ) )
 			{
 				DragColumn();
 				return;
 			}
 			
-			// are we beginning a group select or dragging an item?
+			// Are we beginning a group select or dragging an item?
 			if ( point.x < m_ptDownPoint.x - DRAG_ITEM_OFFSET || point.x > m_ptDownPoint.x + DRAG_ITEM_OFFSET || point.y < m_ptDownPoint.y - DRAG_ITEM_OFFSET || point.y > m_ptDownPoint.y + DRAG_ITEM_OFFSET )
 			{
 				if ( m_bBeginSelect || !m_bDragDrop )
@@ -2424,11 +2420,11 @@ public:
 					
 					if ( HitTest( point, nItem, nSubItem ) )
 					{
-						// select the drag item (if not already selected)
+						// Select the drag item (if not already selected)
 						if ( !IsSelected( nItem ) )
 							SelectItem( nItem, nSubItem, nFlags );
 						
-						// begin drag item operation
+						// Begin drag item operation
 						pT->DragItem();
 					}
 				}
@@ -2445,7 +2441,7 @@ public:
 			int nColumn = NULL_COLUMN;
 			UINT nHeaderFlags = HITTEST_FLAG_NONE;
 			
-			// are we over the header?
+			// Are we over the header?
 			BOOL bHitTestHeader = HitTestHeader( point, nColumn, nHeaderFlags );
 						
 			if ( bHitTestHeader )
@@ -2456,7 +2452,7 @@ public:
 					SetCursor( m_curDivider );
 				else
 				{
-					// get tooltip for this item
+					// Get tooltip for this item
 					stdstr strToolTip = pT->GetHeaderToolTip(nColumn);
 					if(!strToolTip.empty())
 					{
@@ -2478,7 +2474,7 @@ public:
 			{
 				if ( m_nHotItem != NULL_ITEM && m_nHotSubItem != NULL_SUBITEM )
 				{
-					// redraw old hot item
+					// Redraw old hot item
 					int nIndex = GetColumnIndex( m_nHotSubItem );
 					if ( pT->GetItemFormat( m_nHotItem, nIndex ) == ITEM_FORMAT_HYPERLINK && !( pT->GetItemFlags( m_nHotItem, nIndex ) & ITEM_FLAGS_READ_ONLY ) )
 						InvalidateItem( m_nHotItem, m_nHotSubItem );
@@ -2493,10 +2489,10 @@ public:
 			}
 			else
 			{
-				// has the hot item changed?
+				// Has the hot item changed?
 				if ( nItem != m_nHotItem || nSubItem != m_nHotSubItem )
 				{
-					// redraw old hot item
+					// Redraw old hot item
 					int nIndex = GetColumnIndex( m_nHotSubItem );
 					if ( pT->GetItemFormat( m_nHotItem, nIndex ) == ITEM_FORMAT_HYPERLINK && !( pT->GetItemFlags( m_nHotItem, nIndex ) & ITEM_FLAGS_READ_ONLY ) )
 						InvalidateItem( m_nHotItem, m_nHotSubItem );
@@ -2511,14 +2507,14 @@ public:
 				UINT nItemFormat = pT->GetItemFormat( m_nHotItem, nIndex );
 				UINT nItemFlags = pT->GetItemFlags( m_nHotItem, nIndex );
 				
-				// draw new hot hyperlink item
+				// Draw new hot hyperlink item
 				if ( nItemFormat == ITEM_FORMAT_HYPERLINK && !( nItemFlags & ITEM_FLAGS_READ_ONLY ) )
 				{
 					InvalidateItem( m_nHotItem, m_nHotSubItem );
 					SetCursor( m_curHyperLink );
 				}
 				
-				// get tooltip for this item
+				// Get tooltip for this item
 				stdstr strToolTip = pT->GetItemToolTip( m_nHotItem, nIndex );
 				
 				CRect rcSubItem;
@@ -2533,7 +2529,7 @@ public:
 					m_ttToolTip.DelTool( m_hWnd, TOOLTIP_TOOL_ID );
 				}
 				
-				// show titletips for this item
+				// Show title tips for this item
 				ShowTitleTip( point, m_nHotItem, m_nHotSubItem );
 			}
 		}
@@ -2561,7 +2557,7 @@ public:
 	{
 		HideTitleTip();
 		
-		// end any pending edit
+		// End any pending edit
 		if ( m_bEditItem )
 			SetFocus();
 		
@@ -2591,11 +2587,11 @@ public:
 											int nFocusItem = NULL_ITEM;
 											int nFocusSubItem = NULL_SUBITEM;
 											
-											// get current focus item
+											// Get current focus item
 											if ( !GetFocusItem( nFocusItem, nFocusSubItem ) )
 												break;
 											
-											// make sure current focus item is visible before editing
+											// Make sure current focus item is visible before editing
 											if ( !EditItem( nFocusItem, nFocusSubItem ) )
 												break;
 										}
@@ -2608,7 +2604,7 @@ public:
 											CPoint ptMouse( GET_X_LPARAM( dwPoint ), GET_Y_LPARAM( dwPoint ) );
 											ScreenToClient( &ptMouse );
 		
-											// automatically scroll when group selecting
+											// Automatically scroll when group selecting
 											AutoScroll( ptMouse );
 											AutoSelect( ptMouse );
 										}
@@ -2623,7 +2619,7 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		
-		// stop any pending scroll
+		// Stop any pending scroll
 		EndScroll();
 		
 		BOOL bCtrlKey = ( ( GetKeyState( VK_CONTROL ) & 0x8000 ) != 0 );
@@ -2709,7 +2705,7 @@ public:
 								stdstr strStart;
 								strStart += nChar;
 								
-								// has there been another keypress since last search period?
+								// Has there been another keypress since last search period?
 								if ( ( dwCurrentTick - m_dwSearchTick ) < SEARCH_PERIOD )
 								{
 									if ( m_strSearchString.substr(0, 1 ) != strStart )
@@ -2717,7 +2713,7 @@ public:
 									
 									stdstr strFocusText = pT->GetItemText( nFocusItem, nSortIndex );
 									
-									// are we continuing to type characters under current focus item?
+									// Are we continuing to type characters under current focus item?
 									if ( m_strSearchString.length() > 1 && _tcsicmp(m_strSearchString.c_str(),strFocusText.substr(0, m_strSearchString.length() ).c_str() ) == 0 )
 									{
 										m_dwSearchTick = GetTickCount();
@@ -2733,7 +2729,7 @@ public:
 								
 								m_dwSearchTick = GetTickCount();
 								
-								// scan for next search string
+								// Scan for next search string
 								for ( int nFirst = nStartItem; nFirst < pT->GetItemCount(); nFirst++ )
 								{
 									stdstr strItemText = pT->GetItemText( nFirst, nSortIndex );
@@ -2746,7 +2742,7 @@ public:
 									}
 								}
 								
-								// re-scan from top if not found search string
+								// Rescan from top if not found search string
 								for ( int nSecond = 0; nSecond < pT->GetItemCount(); nSecond++ )
 								{
 									stdstr strItemText = pT->GetItemText( nSecond, nSortIndex );
@@ -2799,7 +2795,7 @@ public:
 		
 		switch ( pListNotify->m_nExitChar )
 		{
-			case VK_ESCAPE:	break; // do nothing
+			case VK_ESCAPE:	break; // Do nothing
 			case VK_DELETE:	pT->SetItemText( pListNotify->m_nItem, nIndex, _T( "" ) );
 							NotifyParent( pListNotify->m_nItem, pListNotify->m_nSubItem, LCN_MODIFIED );
 							break;
@@ -2833,7 +2829,7 @@ public:
 			if ( lpDragHeader == NULL )
 				return DROPEFFECT_NONE;
 			
-			// dragged column must originate from this control
+			// Dragged column must originate from this control
 			if ( *( (HWND*)lpDragHeader ) == m_hWnd )
 				dwEffect = DropColumn( point ) ? DROPEFFECT_MOVE : DROPEFFECT_NONE;
 			
@@ -2853,7 +2849,7 @@ public:
 			if ( lpDragHeader == NULL )
 				return DROPEFFECT_NONE;
 			
-			// dragged column must originate from this control
+			// Dragged column must originate from this control
 			if ( *( (HWND*)lpDragHeader ) == m_hWnd )
 				dwEffect = DropColumn( point ) ? DROPEFFECT_MOVE : DROPEFFECT_NONE;
 			
@@ -2873,7 +2869,7 @@ public:
 				if ( !GetColumn( m_nDragColumn, listColumn ) )
 					return FALSE;
 			
-				// move column to new position
+				// Move column to new position
 				m_aColumns.RemoveAt( m_nDragColumn );
 				m_aColumns.InsertAt( ( m_nDragColumn < m_nHotColumn ? ( m_nHotDivider == 0 ? 0 : m_nHotDivider - 1 ) : m_nHotDivider ), listColumn );
 				Invalidate();
@@ -2882,7 +2878,7 @@ public:
 			return TRUE;
 		}			
 		
-		// not supported
+		// Not supported
 		return FALSE;
 	}
 	
@@ -2903,7 +2899,7 @@ public:
 			if ( lpDragHeader == NULL )
 				return FALSE;
 			
-			// store this window handle
+			// Store this window handle
 			*( (HWND*)lpDragHeader ) = m_hWnd;
 			
 			GlobalUnlock( pStgMedium->hGlobal );
@@ -2953,13 +2949,13 @@ public:
 			
 			if ( m_bTileBackground )
 			{
-				// calculate tile image maximum rows and columns
+				// Calculate tile image maximum rows and columns
 				div_t divRows = div( (int)rcClient.Height(), (int)sizBackground.cy );
 				int nTileRows = divRows.rem > 0 ? divRows.quot + 1 : divRows.quot;
 				div_t divColumns = div( (int)rcClient.Width(), (int)sizBackground.cx );
 				int nTileColumns = divColumns.rem > 0 ? divColumns.quot + 1 : divColumns.quot;
 				
-				// draw tiled background image
+				// Draw tiled background image
 				for ( int nRow = 0; nRow <= nTileRows; nRow++ )
 				{
 					for ( int nColumn = 0; nColumn <= nTileColumns; nColumn++ )
@@ -2970,21 +2966,21 @@ public:
 			{
 				CRect rcCentreImage( rcClient );
 				
-				// horizontally centre image if smaller than the client width
+				// Horizontally center image if smaller than the client width
 				if ( sizBackground.cx < rcClient.Width() )
 				{
 					rcCentreImage.left = ( rcClient.Width() / 2 ) - (int)( sizBackground.cx / 2 );
 					rcCentreImage.right = rcCentreImage.left + sizBackground.cx;
 				}
 				
-				// vertically centre image if smaller than the client height
+				// Vertically center image if smaller than the client height
 				if ( sizBackground.cy + 16 < rcClient.Height() )
 				{
 					rcCentreImage.top = ( rcClient.Height() / 2 ) - (int)( ( sizBackground.cy + 16 ) / 2 );
 					rcCentreImage.bottom = rcCentreImage.top + sizBackground.cy;
 				}
 				
-				// draw centred background image
+				// Draw centered background image
 				dcPaint.BitBlt( rcCentreImage.left, rcCentreImage.top, rcCentreImage.Width(), rcCentreImage.Height(), dcBackgroundImage, 0, 0, SRCCOPY );
 			}
 
@@ -3035,7 +3031,7 @@ public:
 			if ( rcHeaderItem.left > rcClip.right )
 				break;
 
-			// draw header and divider
+			// Draw header and divider
 			if ( nColumn == m_nHighlightColumn )
 			{
 				dcPaint.SetBkColor( m_rgbHeaderHighlight );
@@ -3061,15 +3057,15 @@ public:
 
 			if(listColumn.m_nImage == ITEM_IMAGE_NONE )
 			{
-				// offset text bounding rectangle to account for sorting arrow
+				// Offset text bounding rectangle to account for sorting arrow
 				if ( bShowArrow && !listColumn.m_bFixed && listColumn.m_nIndex == m_nSortColumn )
 					rcHeaderText.right -= 15;
 			}
 
-			// margin header text
+			// Margin header text
 			rcHeaderText.DeflateRect( 4, 0, 5, 0 );
 
-			// has this header item an associated image?
+			// Has this header item an associated image?
 			if ( listColumn.m_nImage != ITEM_IMAGE_NONE )
 			{
 				CSize sizeIcon;
@@ -3086,7 +3082,7 @@ public:
 				else
 					m_ilListItems.DrawEx( listColumn.m_nImage, dcPaint, rcHeaderImage, CLR_DEFAULT, CLR_DEFAULT, ILD_TRANSPARENT );
 
-				// offset header text (for image)
+				// Offset header text (for image)
 				rcHeaderText.left += sizeIcon.cx + 4;
 			}
 
@@ -3103,11 +3099,11 @@ public:
 			else
 				nFormat |= DT_LEFT;
 
-			// draw header text
+			// Draw header text
 			if ( !rcHeaderText.IsRectEmpty() && !listColumn.m_strText.empty() )
 				dcPaint.DrawText( listColumn.m_strText.c_str(), (int)listColumn.m_strText.length(), rcHeaderText, nFormat );
 
-			// draw sorting arrow
+			// Draw sorting arrow
 			if ( bShowArrow && !listColumn.m_bFixed && listColumn.m_nIndex == m_nSortColumn )
 			{
 				CSize sizeIcon;
@@ -3123,7 +3119,7 @@ public:
 			}
 		}
 
-		// draw a frame around all header columns
+		// Draw a frame around all header columns
 
 		if ( nHeaderWidth > 0 )
 			dcPaint.Draw3dRect( CRect( rcHeader.left, rcHeader.top, rcHeader.right + 2, rcHeader.bottom ), m_rgbHeaderBorder, m_rgbHeaderShadow );
@@ -3187,7 +3183,7 @@ public:
 		rcItem.top = ( m_bShowHeader ? m_nHeaderHeight : 0 );
 		rcItem.bottom = rcItem.top;
 		
-		// draw all visible items
+		// Draw all visible items
 		for ( int nItem = GetTopItem(); nItem < pT->GetItemCount(); rcItem.top = rcItem.bottom, nItem++ )
 		{
 			rcItem.bottom = rcItem.top + m_nItemHeight;
@@ -3197,7 +3193,7 @@ public:
 			if ( rcItem.top > rcClip.bottom || rcItem.left > rcClip.right )
 				break;
 			
-			// may be implemented in a derived class
+			// May be implemented in a derived class
 			pT->DrawItem( dcPaint, nItem, rcItem );
 		}
 	}
@@ -3217,7 +3213,7 @@ public:
 		BOOL bSelectedItem = IsSelected( nItem );
 		//BOOL bControlFocus = ( GetFocus() == m_hWnd || m_bEditItem );
 		
-		// draw selected background
+		// Draw selected background
 		if ( bSelectedItem )
 		{
 			dcPaint.SetBkColor( m_rgbSelectedItem );
@@ -3245,7 +3241,7 @@ public:
 			UINT nItemFormat = pT->GetItemFormat( nItem, listColumn.m_nIndex );
 			UINT nItemFlags = pT->GetItemFlags( nItem, listColumn.m_nIndex );
 			
-			// custom draw subitem format
+			// Custom draw subitem format
 			if ( nItemFormat == ITEM_FORMAT_CUSTOM )
 			{
 				pT->DrawCustomItem( dcPaint, nItem, nSubItem, rcSubItem );
@@ -3288,7 +3284,7 @@ public:
 			//rcItemText.left += nSubItem == 0 ? 4 : 3;
 			//rcItemText.DeflateRect( 4, 0 );
 			
-			// draw subitem image if supplied
+			// Draw subitem image if supplied
 			if ( !m_ilItemImages.IsNull() && nItemImage != ITEM_IMAGE_NONE && ( !m_bEditItem || ( m_bEditItem && !bFocusSubItem ) ) )
 			{
 				CSize sizeIcon;
@@ -3302,7 +3298,7 @@ public:
 				
 				m_ilItemImages.DrawEx( nItemImage, dcPaint, rcItemImage, CLR_DEFAULT, CLR_DEFAULT, ILD_TRANSPARENT );
 					
-				// offset item text (for image)
+				// Offset item text (for image)
 				rcItemText.left += sizeIcon.cx + 4;
 			}
 			
@@ -3373,10 +3369,10 @@ public:
 														CRect rcProgress( rcSubItem );
 														rcProgress.DeflateRect( 3, 2 );
 														
-														// draw progress border
+														// Draw progress border
 														DrawRoundRect( dcPaint, rcProgress, m_rgbHeaderShadow, m_rgbHeaderBackground );
 														
-														// fill progress bar area
+														// Fill progress bar area
 														rcProgress.DeflateRect( 3, 3 );
 														rcProgress.right = rcProgress.left + (int)( (double)rcProgress.Width() * ( ( max( min( atof( strItemText ), 100 ), 0 ) ) / 100.0 ) );
 														DrawGradient( dcPaint, rcProgress, m_rgbProgressTop, m_rgbProgressBottom );
@@ -3387,7 +3383,7 @@ public:
 														dcPaint.SelectFont( m_fntUnderlineFont );
 														dcPaint.SetTextColor( m_rgbHyperLink );
 													}
-				default:							// draw item text
+				default:							// Draw item text
 					{
 						size_t len = strlen(strItemText);
 						if ( len > 0 )
@@ -3415,7 +3411,7 @@ public:
 		GetClientRect( rcClient );
 		rcClient.top = ( m_bShowHeader ? m_nHeaderHeight : 0 );
 		
-		// limit box to list client area if scrolled to limits
+		// Limit box to list client area if scrolled to limits
 		if ( nHorzScroll > ( GetTotalWidth() - rcClient.Width() ) )
 			rcGroupSelect.right = min( rcClient.right, rcGroupSelect.right );
 		if ( nHorzScroll == 0 )
@@ -3425,7 +3421,7 @@ public:
 		if ( nVertScroll == 0 )
 			rcGroupSelect.top = max( rcClient.top, rcGroupSelect.top );
 		
-		// limit bitmap to client area
+		// Limit bitmap to client area
 		CRect rcSelectArea( rcGroupSelect );
 		rcSelectArea.IntersectRect( rcSelectArea, rcClient );
 		
@@ -3438,7 +3434,7 @@ public:
 		bmpBackground.CreateCompatibleBitmap( dcPaint, rcSelectArea.Width(), rcSelectArea.Height() ); 
 		dcBackground.SelectBitmap( bmpBackground );
 		
-		// take a copy of existing backgroud
+		// Take a copy of existing background
 		dcBackground.BitBlt( 0, 0, rcSelectArea.Width(), rcSelectArea.Height(), dcPaint, rcSelectArea.left, rcSelectArea.top, SRCCOPY );
 		
 		CDC dcGroupSelect;
@@ -3450,7 +3446,7 @@ public:
 		bmpGroupSelect.CreateCompatibleBitmap( dcPaint, rcSelectArea.Width(), rcSelectArea.Height() ); 
 		dcGroupSelect.SelectBitmap( bmpGroupSelect );
 		
-		// draw group select box
+		// Draw group select box
 		dcGroupSelect.SetBkColor( m_rgbItemFocus );
 		dcGroupSelect.ExtTextOut( 0, 0, ETO_OPAQUE, CRect( CPoint( 0 ), rcSelectArea.Size() ), _T( "" ), 0, NULL );
 		
@@ -3460,13 +3456,13 @@ public:
 		blendFunction.SourceConstantAlpha = 180;
 		blendFunction.AlphaFormat = 0;
 		
-		// blend existing background with selection box
+		// Blend existing background with selection box
 		dcGroupSelect.AlphaBlend( 0, 0, rcSelectArea.Width(), rcSelectArea.Height(), dcBackground, 0, 0, rcSelectArea.Width(), rcSelectArea.Height(), blendFunction ); 
 		
-		// draw blended selection box
+		// Draw blended selection box
 		dcPaint.BitBlt( rcSelectArea.left, rcSelectArea.top, rcSelectArea.Width(), rcSelectArea.Height(), dcGroupSelect, 0, 0, SRCCOPY );
 		
-		// draw selection box frame
+		// Draw selection box frame
 		CBrush bshSelectFrame;
 		bshSelectFrame.CreateSolidBrush( m_rgbItemText );
 		dcPaint.FrameRect( rcGroupSelect, bshSelectFrame );
@@ -3477,7 +3473,7 @@ public:
 	
 	void DrawCustomItem( CDCHandle dcPaint, int /*nItem*/, int /*nSubItem*/, CRect& /*rcSubItem*/ )
 	{
-		ATLASSERT( FALSE ); // must be implemented in a derived class
+		ATLASSERT( FALSE ); // Must be implemented in a derived class
 	}
 };
 
@@ -3551,7 +3547,7 @@ public:
 		for ( int nSubItem = 0; nSubItem < GetColumnCount(); nSubItem++ )
 			listItem.m_aSubItems.Add( listSubItem );
 
-		// set item details for first subitem
+		// Set item details for first subitem
 		listItem.m_aSubItems[ 0 ].m_strText = lpszText;
 		listItem.m_aSubItems[ 0 ].m_nImage = nImage;
 
@@ -3574,7 +3570,7 @@ public:
 		for ( int nSubItem = 0; nSubItem < GetColumnCount(); nSubItem++ )
 			listItem.m_aSubItems.Add( listSubItem );
 
-		// set item details for first subitem
+		// Set item details for first subitem
 		listItem.m_aSubItems[ 0 ].m_strText = lpszText;
 		listItem.m_aSubItems[ 0 ].m_nImage = nImage;
 

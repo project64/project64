@@ -205,7 +205,7 @@ void CHexEditCtrl::Draw(void)
         m_bShowHotAddress = false;
         int64_t addrDelta = (int64_t)m_BaseAddress - (int64_t)m_DrawnBaseAddress;
 
-        // scroll optimization
+        // Scroll optimization
         if ((addrDelta % m_NumBytesPerRow) == 0 && abs(addrDelta) < (m_NumVisibleBytes - m_NumBytesPerRow))
         {
             int rowDelta = (int)(addrDelta / m_NumBytesPerRow);
@@ -283,10 +283,10 @@ void CHexEditCtrl::Draw(void)
         
         if (IsSelected(address))
         {
-            // override owner-provided colors if selected
+            // Override owner-provided colors if selected
             if (newByte->bkColor != BKCOLOR_DEFAULT)
             {
-                // blend owner color with selection color if bkcolor isn't default
+                // Blend owner color with selection color if bkcolor isn't default
                 newByte->bkColor = BlendColor(BKCOLOR_SEL_FOCUSED, newByte->bkColor);
                 newByte->color = COLOR_SEL_FOCUSED;
             }
@@ -302,14 +302,14 @@ void CHexEditCtrl::Draw(void)
             newByte->bkColor = BlendColor(BKCOLOR_HOT, newByte->bkColor);
         }
 
-        // redraw cell if value or colors have changed
+        // Redraw cell if value or colors have changed
         if (*newByte != *oldByte)
         {
             CRect rcHex, rcAscii;
             GetHexCellPos(startCellIndex + i, &rcHex);
             GetAsciiCellPos(startCellIndex + i, &rcAscii);
 
-            // check if a similar HXBYTEINFO has already been drawn
+            // Check if a similar HXBYTEINFO has already been drawn
             std::unordered_map<HXBYTEINFO, HXRECTPAIR>::const_iterator drawnByte = drawnByteRects.find(*newByte);
             
             if (drawnByte != drawnByteRects.end())
@@ -390,7 +390,7 @@ void CHexEditCtrl::HitTest(int x, int y, HXHITTEST* pht)
 
     int headerHeight = m_CharHeight;
 
-    // clamp row
+    // Clamp row
     int row = (y - headerHeight) / m_CharHeight;
     row = max(0, row);
     row = min(m_NumVisibleRows - 1, row);
@@ -410,8 +410,8 @@ void CHexEditCtrl::HitTest(int x, int y, HXHITTEST* pht)
         int groupCharIdx = (x - groupX) / (m_CharWidth);
         uint32_t address = SatAdd32(rowAddress, nGroup * m_NumBytesPerGroup + groupCharIdx / 2);
         pht->hexAddress = address;
-        pht->hexCellSide = (groupCharIdx & 1) ? HX_RIGHT : HX_LEFT; // todo fix for wrap
-        pht->asciiAddress = address; // approximate
+        pht->hexCellSide = (groupCharIdx & 1) ? HX_RIGHT : HX_LEFT; // TODO: Fix for wrap
+        pht->asciiAddress = address; // Approximate
         pht->asciiCellSide = HX_LEFT;
     }
     else if (x >= m_AsciiColumnRect.left && x < m_AsciiColumnRect.right)
@@ -425,12 +425,12 @@ void CHexEditCtrl::HitTest(int x, int y, HXHITTEST* pht)
         int idx = (asciiX / m_CharWidth);
         pht->asciiAddress = SatAdd32(rowAddress, idx);
         pht->asciiCellSide = ((asciiX % m_CharWidth) > (m_CharWidth / 2)) ? HX_RIGHT : HX_LEFT;
-        pht->hexAddress = SatAdd32(rowAddress, (m_NumBytesPerRow - 1)); // approximate
+        pht->hexAddress = SatAdd32(rowAddress, (m_NumBytesPerRow - 1)); // Approximate
         pht->hexCellSide = HX_RIGHT;
     }
     else if (x < m_HexDataColumnRect.left)
     {
-        // approximate
+        // Approximate
         pht->hexAddress = rowAddress;
         pht->hexCellSide = HX_LEFT;
         pht->asciiAddress = rowAddress;
@@ -438,7 +438,7 @@ void CHexEditCtrl::HitTest(int x, int y, HXHITTEST* pht)
     }
     else if (x >= m_AsciiColumnRect.right)
     {
-        // approximate
+        // Approximate
         pht->hexAddress = SatAdd32(rowAddress, (m_NumBytesPerRow - 1));
         pht->hexCellSide = HX_RIGHT;
         pht->asciiAddress = SatAdd32(rowAddress, (m_NumBytesPerRow - 1));
@@ -474,7 +474,7 @@ bool CHexEditCtrl::UpdateCaretUI(bool bEnsureVisible, bool bTop)
     {
         if ((int)((m_RealSelEndAddress - m_BaseAddress) % m_NumBytesPerRow) == m_NumBytesPerRow - 1)
         {
-            // left-to-right selection ends on the end of a row
+            // Left-to-right selection ends on the end of a row
             index--;
             xoffs = m_CharWidth;
         }
@@ -488,13 +488,13 @@ bool CHexEditCtrl::UpdateCaretUI(bool bEnsureVisible, bool bTop)
         {
             if ((int)((m_RealSelEndAddress - m_BaseAddress) % m_NumBytesPerRow) == m_NumBytesPerRow - 1)
             {
-                // left-to-right selection ends on the end of a row
+                // Left-to-right selection ends on the end of a row
                 index--;
                 xoffs = m_CharWidth * 2;
             }
             else if ((int)((m_RealSelEndAddress - m_BaseAddress) % m_NumBytesPerGroup) == m_NumBytesPerGroup - 1)
             {
-                // left-to-right selection ends on the end of a group
+                // Left-to-right selection ends on the end of a group
                 xoffs = -m_CharWidth;
             }
         }
@@ -516,7 +516,7 @@ void CHexEditCtrl::Text(int x, int y, const char *text, COLORREF bg, COLORREF fg
     COLORREF orgBg = ::SetBkColor(m_BackDC, bg);
     COLORREF orgFg = ::SetTextColor(m_BackDC, fg);
     ::DrawText(m_BackDC, textOuput.c_str(), -1, &rc, DT_TOP | DT_NOPREFIX | DT_CALCRECT);
-    rc.right = rc.left + calcWidth; // just in case
+    rc.right = rc.left + calcWidth; // Just in case
     ::DrawText(m_BackDC, textOuput.c_str(), -1, &rc, DT_TOP | DT_NOPREFIX);
     InvalidateRect(&rc, false);
     ::SetBkColor(m_BackDC, orgBg);
@@ -590,7 +590,7 @@ void CHexEditCtrl::DrawAddressColumn()
         }
         else
         {
-            // wrapped
+            // Wrapped
             Text(0, y, "          ", BKCOLOR_ADDR, COLOR_ADDR, &rcAddress);
         }
     }
@@ -870,7 +870,7 @@ void CHexEditCtrl::OnLButtonDblClk(UINT /*nFlags*/, CPoint point)
 
     if (m_FocusedColumn == HX_COL_HEXDATA)
     {
-        // select word
+        // Select word
         uint32_t offset = (ht.hexAddress - m_BaseAddress);
         uint32_t wordOffset = offset - (offset % m_NumBytesPerGroup);
         uint32_t wordAddress = m_BaseAddress + wordOffset;
@@ -885,7 +885,7 @@ void CHexEditCtrl::OnLButtonDblClk(UINT /*nFlags*/, CPoint point)
     }
     if (m_FocusedColumn == HX_COL_ASCII)
     {
-        // select row
+        // Select row
         uint32_t offset = (ht.asciiAddress - m_BaseAddress);
         uint32_t rowOffset = (ht.asciiAddress - m_BaseAddress) - (offset % m_NumBytesPerRow);
         uint32_t rowAddress = m_BaseAddress + rowOffset;
@@ -1362,7 +1362,7 @@ void CHexEditCtrl::OnKeyDown(UINT nChar, UINT /*nRepCnt*/, UINT /*nFlags*/)
 
         UpdateCaretUI(true);
     }
-    else if (nChar == VK_NEXT || nChar == VK_PRIOR) // page down, page up
+    else if (nChar == VK_NEXT || nChar == VK_PRIOR) // Page down, page up
     {
         int delta = (nChar == VK_NEXT) ? m_NumVisibleBytes : -m_NumVisibleBytes;
 
@@ -1437,11 +1437,11 @@ void CHexEditCtrl::OnKeyDown(UINT nChar, UINT /*nRepCnt*/, UINT /*nFlags*/)
 
 int CHexEditCtrl::GetSelDirection(void)
 {
-    if (m_SelStartAddress < m_SelEndAddress) return 1; // right
-    if (m_SelStartAddress > m_SelEndAddress) return -1; // left
-    if (m_SelStartCellSide == m_SelEndCellSide) return 0; // no selection
-    if (m_SelStartCellSide == HX_LEFT && m_SelEndCellSide == HX_RIGHT) return 1; // right (single byte)
-    if (m_SelStartCellSide == HX_RIGHT && m_SelEndCellSide == HX_LEFT) return -1; // left (single byte)
+    if (m_SelStartAddress < m_SelEndAddress) return 1; // Right
+    if (m_SelStartAddress > m_SelEndAddress) return -1; // Left
+    if (m_SelStartCellSide == m_SelEndCellSide) return 0; // No selection
+    if (m_SelStartCellSide == HX_LEFT && m_SelEndCellSide == HX_RIGHT) return 1; // Right (single byte)
+    if (m_SelStartCellSide == HX_RIGHT && m_SelEndCellSide == HX_LEFT) return -1; // Left (single byte)
     return 0;
 }
 

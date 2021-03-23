@@ -33,4 +33,3 @@ public:
 		return m_bString;
 	}
 };
-

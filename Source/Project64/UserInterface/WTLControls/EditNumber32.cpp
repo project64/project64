@@ -31,7 +31,7 @@ bool CEditNumber32::IsHexConvertableText(LPTSTR _text)
         }
     }
     if (!bPaste) { return bPaste; }
-    //Check
+    // Check
     unsigned int i = 0;
     if (wcslen(_text) >= 2)
     {
@@ -133,7 +133,7 @@ LRESULT CEditNumber32::OnValidateValue(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 
 LRESULT CEditNumber32::OnPaste(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
 {
-    //Paste
+    // Paste
     bHandled = false;
 
     if (!IsClipboardFormatAvailable(CF_UNICODETEXT))
@@ -151,7 +151,7 @@ LRESULT CEditNumber32::OnPaste(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
     if (hglb != NULL)
     {
         LPTSTR  lptstr = (LPTSTR)GlobalLock(hglb);
-        //Check invalid hex string
+        // Check invalid hex string
         if (!IsHexConvertableText(lptstr))
         {
             bHandled = true;
@@ -194,7 +194,7 @@ LRESULT CEditNumber32::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
         {
             if (wParam == 8 && (second == L'x' || second == L'X') && head == L'0' && end == 1)
             {
-                //does not allow to delete '0' before x
+                // Does not allow to delete '0' before x
                 bHandled = true;
             }
             else {
@@ -205,7 +205,7 @@ LRESULT CEditNumber32::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 
         if (second == L'x' || second == L'X')
         {
-            //does not allow to change head except select includes first and second
+            // Does not allow to change head except select includes first and second
             if (start <= 1 && end <= 1)
             {
                 bHandled = true;

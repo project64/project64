@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "ListTypes.h"
@@ -35,25 +34,25 @@ public:
 		m_nExitChar = 0;
 		m_nMaxLen = nMaxLen;
 		
-		// destroy old edit control...
+		// Destroy old edit control
 		if ( IsWindow() )
 			DestroyWindow();
 		
 		DWORD dwStyle = WS_CHILD | ES_AUTOHSCROLL | WS_BORDER;
 		
-		// right-justify numbers
+		// Right-justify numbers
 		if ( nFlags & ( ITEM_FLAGS_EDIT_NUMBER | ITEM_FLAGS_EDIT_FLOAT ) )
 			dwStyle |= ES_RIGHT;
 		
 		if ( nFlags & ITEM_FLAGS_EDIT_UPPER )
 			dwStyle |= ES_UPPERCASE;
 		
-		// create edit control
+		// Create edit control
 		CRect Area( rcRect.left - 2, rcRect.top - 3, rcRect.right + 3, rcRect.bottom + 2 );
 		if ( CWindowImpl< CListEdit, CEdit >::Create( hWndParent, Area, NULL, dwStyle ) == NULL )
 			return FALSE;
 		
-		// get system message font
+		// Get system message font
 		CLogFont logFont;
 		logFont.SetMessageBoxFont();
 		if ( !m_fntEditFont.IsNull() )
@@ -65,7 +64,7 @@ public:
 		SetMargins( ITEM_EDIT_MARGIN, ITEM_EDIT_MARGIN );		
 		SetWindowText( lpszItemText );
 		
-		// show edit control
+		// Show edit control
 		ShowWindow( SW_SHOW );
 		
 		SetSelAll();
@@ -76,7 +75,7 @@ public:
 	
 	BOOL IsValid( TCHAR nChar )
 	{
-		// validate number and float input
+		// Validate number and float input
 		if ( !( m_nFlags & ( ITEM_FLAGS_EDIT_HEX | ITEM_FLAGS_EDIT_NUMBER | ITEM_FLAGS_EDIT_FLOAT ) ) || nChar == VK_BACK )
 			return TRUE;
 		
@@ -88,7 +87,7 @@ public:
             WindowText.resize(nValueLength);
             GetWindowTextW((wchar_t *)WindowText.c_str(), nValueLength + 1);
         }
-		// get selected positions
+		// Get selected positions
 		int nStartChar;
 		int nEndChar;
 		GetSel( nStartChar, nEndChar );
@@ -100,7 +99,7 @@ public:
 				return FALSE;
 			}
 		}
-		// are we changing the sign?
+		// Are we changing the sign?
 		if ( ( m_nFlags & ITEM_FLAGS_EDIT_NEGATIVE ) && nChar == _T( '-' ) )
 		{
 			BOOL bNegative = FALSE;
@@ -119,12 +118,12 @@ public:
 			
 			SetWindowText(WindowText.c_str());
 			
-			// restore select position
+			// Restore select position
 			SetSel( bNegative ? nStartChar - 1 : nStartChar + 1, bNegative ? nEndChar - 1 : nEndChar + 1 );
 			return FALSE;
 		}
 		
-		// construct new value string using entered character
+		// Construct new value string using entered character
 		std::wstring strNewValue = WindowText.substr(0, nStartChar ) + nChar + WindowText.substr(WindowText.length() - nEndChar );
 		
 		int nGreaterThan = 0;
@@ -183,18 +182,18 @@ public:
 								break;
 			}
 
-			// invalid if text contains more than one '>', '<', '=' or '.'
+			// Invalid if text contains more than one '>', '<', '=' or '.'
 			if ( nGreaterThan > 1 || nLessThan > 1 || nEquals > 1 || nDecimalPoint > 1 )
 				return FALSE;
 		}
 
-		// invalid if text contains '=>' or '=<'
+		// Invalid if text contains '=>' or '=<'
 		if ( nGreaterIndex != -1 && nEqualIndex != -1 && nGreaterIndex > nEqualIndex )
 			return FALSE;
 		if ( nLessIndex != -1 && nEqualIndex != -1 && nLessIndex > nEqualIndex )
 			return FALSE;
 
-		// invalid if digits exist before operator
+		// Invalid if digits exist before operator
 		if ( nDigitIndex != -1 && nGreaterIndex != -1 && nGreaterIndex > nDigitIndex )
 			return FALSE;
 		if ( nDigitIndex != -1 && nLessIndex != -1 && nLessIndex > nDigitIndex )
@@ -234,7 +233,7 @@ public:
 			listNotify.m_lpszItemText = strValue.c_str();
 			listNotify.m_lpItemDate = NULL;
 
-			// forward notification to parent
+			// Forward notification to parent
 			FORWARD_WM_NOTIFY( wndParent, listNotify.m_hdrNotify.idFrom, &listNotify.m_hdrNotify, ::SendMessage );
 		}
 		

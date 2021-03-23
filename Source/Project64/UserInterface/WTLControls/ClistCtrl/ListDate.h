@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "ListTypes.h"
@@ -35,7 +34,7 @@ public:
 		m_nFlags = nFlags;
 		m_nExitChar = 0;
 		
-		// destroy old date control...
+		// Destroy old date control
 		if ( IsWindow() )
 			DestroyWindow();
 			
@@ -47,15 +46,15 @@ public:
 		if ( nFlags & ITEM_FLAGS_TIME_ONLY )
 			dwStyle |= DTS_UPDOWN;
 		
-		// create date-time control
+		// Create date-time control
 		CRect Area( rcRect.left + 3, rcRect.top + 2, rcRect.right - 3, rcRect.bottom - 2 );
 		if ( CWindowImpl< CListDate, CDateTimePickerCtrl >::Create( hWndParent, Area, NULL, dwStyle ) == NULL )
 			return FALSE;
 		
-		// remove border
+		// Remove border
 		ModifyStyleEx( WS_EX_CLIENTEDGE, 0, SWP_FRAMECHANGED );
 		
-		// get system message font
+		// Get system message font
 		CLogFont logFont;
 		logFont.SetMessageBoxFont();
 		if ( !m_fntDateFont.IsNull() )
@@ -78,7 +77,7 @@ public:
 		else
 			SetFormat(stdstr_f("%s %s",szDateFormat,szTimeFormat ).ToUTF16().c_str());
 		
-		// get current date if setting time-only
+		// Get current date if setting time-only
 		if ( nFlags & ITEM_FLAGS_TIME_ONLY )
 		{
 			SYSTEMTIME stCurrentDate;
@@ -92,7 +91,7 @@ public:
 		
 		SetSystemTime( ( !( nFlags & ITEM_FLAGS_TIME_ONLY ) && stItemDate.wYear == 0 ) ? GDT_NONE : GDT_VALID, &stItemDate );
 		
-		// show date-time control
+		// Show date-time control
 		ShowWindow( SW_SHOW );
 		
 		SetFocus();
@@ -110,15 +109,15 @@ public:
 	
 	void OnKillFocus( HWND hNewWnd )
 	{
-		// have we dropped down the calendar control?
+		// Have we dropped down the calendar control?
 		if ( hNewWnd != NULL && GetMonthCal() == hNewWnd )
 			return;
 		
-		// have we selected a new date from the calendar control?
+		// Have we selected a new date from the calendar control?
 		if ( GetFocus() == m_hWnd )
 			return;
 		
-		// hide calendar control in case it's not closed by losing focus
+		// Hide calendar control in case it's not closed by losing focus
 		if ( GetMonthCal().IsWindow() )
 			GetMonthCal().ShowWindow( SW_HIDE );
 		
@@ -156,7 +155,7 @@ public:
 			listNotify.m_lpszItemText = bValidDate ? _T( "1" ) : _T( "0" );
 			listNotify.m_lpItemDate = &stItemDate;
 
-			// forward notification to parent
+			// Forward notification to parent
 			FORWARD_WM_NOTIFY( wndParent, listNotify.m_hdrNotify.idFrom, &listNotify.m_hdrNotify, ::SendMessage );
 		}
 		

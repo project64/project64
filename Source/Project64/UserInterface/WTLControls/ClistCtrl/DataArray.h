@@ -28,6 +28,7 @@
 
 // template class helpers with functions for comparing elements
 // override if using complex types without operator==
+
 template <class T>
 class CListCtrlArrayEqualHelper
 {
@@ -182,7 +183,7 @@ public:
 			if(TEqual::IsEqual(m_aT[i], t))
 				return i;
 		}
-		return -1;  // not found
+		return -1;  // Not found
 	}
 
 	BOOL SetAtIndex(int nIndex, const T& t)

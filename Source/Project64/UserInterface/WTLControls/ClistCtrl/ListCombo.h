@@ -1,4 +1,3 @@
-
 #pragma once
 #include "ListTypes.h"
 #include <wtl/atlcrack.h>
@@ -49,7 +48,7 @@ public:
 		m_rgbStaticBackground = GetSysColor( COLOR_HIGHLIGHT );
 		m_rgbStaticText = GetSysColor( COLOR_HIGHLIGHTTEXT );
 		
-		// destroy old combo control...
+		// Destroy old combo control
 		if ( IsWindow() )
 			DestroyWindow();
 			
@@ -63,12 +62,12 @@ public:
 		if ( nFlags & ITEM_FLAGS_EDIT_UPPER )
 			dwStyle |= CBS_UPPERCASE;
 		
-		// create combo control
+		// Create combo control
 		CRect Area( ( ( dwStyle & CBS_DROPDOWNLIST ) == CBS_DROPDOWNLIST ) ? rcRect.left + 3 : rcRect.left + 1, rcRect.top, rcRect.right, rcRect.bottom + ( 6 * rcRect.Height() ) );
 		if ( CWindowImpl< CListCombo, CComboBox >::Create( hWndParent, Area, NULL, dwStyle ) == NULL )
 			return FALSE;
 			
-		// get system message font
+		// Get system message font
 		CLogFont logFont;
 		logFont.SetMessageBoxFont();
 		if ( !m_fntComboFont.IsNull() )
@@ -77,7 +76,7 @@ public:
 			return FALSE;
 		SetFont( m_fntComboFont, FALSE );
 		
-		// subclass edit control to capture keyboard input
+		// Subclass edit control to capture keyboard input
 		HWND hEditControl = GetWindow( GW_CHILD );
 		if ( hEditControl != NULL )
 			m_wndEditCtrl.SubclassWindow( hEditControl );
@@ -97,25 +96,25 @@ public:
 			SetEditSel( 0, -1 );
 		}
 		
-		// set static edit height
+		// Set static edit height
 		SetItemHeight( -1, rcRect.Height() - 6 );
 		
 		COMBOBOXINFO infoComboBox = { sizeof( COMBOBOXINFO ) };
 		if ( !::GetComboBoxInfo( m_hWnd, &infoComboBox ) )
 			return FALSE;
 		
-		// store combobox details for painting		
+		// Store combo box details for painting
 		m_rcStatic = infoComboBox.rcItem;
 		m_rcButton = infoComboBox.rcButton;
 		m_rcButton.DeflateRect( 0, 1 );
 		m_rcButton.OffsetRect( -2, 0 );
 		
-		// show combo control
+		// Show combo control
 		ShowWindow( SW_SHOW );
 
 		SetFocus();
 		
-		// force redraw now
+		// Force redraw now
 		RedrawWindow();
 		
 		return TRUE;
@@ -123,7 +122,7 @@ public:
 	
 	BOOL IsValid( TCHAR nChar )
 	{
-		// validate number and float input
+		// Validate number and float input
 		if ( !( m_nFlags & ( ITEM_FLAGS_EDIT_NUMBER | ITEM_FLAGS_EDIT_FLOAT ) ) || nChar == VK_BACK )
 			return TRUE;
 		
@@ -132,12 +131,12 @@ public:
 		strValue.reserve(nValueLength);
 		GetWindowText( (wchar_t *)strValue.c_str(), nValueLength );
 		
-		// get selected positions
+		// Get selected positions
 		DWORD dwSelection = GetEditSel();		
 		int nStartChar = LOWORD( dwSelection );
 		int nEndChar = HIWORD( dwSelection );
 		
-		// are we changing the sign?
+		// Are we changing the sign?
 		if ( ( m_nFlags & ITEM_FLAGS_EDIT_NEGATIVE ) && nChar == _T( '-' ) )
 		{
 			BOOL bNegative = FALSE;
@@ -156,12 +155,12 @@ public:
 			
 			SetWindowText( strValue.c_str() );
 			
-			// restore select position
+			// Restore select position
 			SetEditSel( bNegative ? nStartChar - 1 : nStartChar + 1, bNegative ? nEndChar - 1 : nEndChar + 1 );
 			return FALSE;
 		}
 		
-		// construct new value string using entered character
+		// Construct new value string using entered character
 		std::wstring strNewValue = strValue.substr(0, nStartChar ) + nChar + strValue.substr(nEndChar, strValue.length() - nEndChar );
 		
 		int nGreaterThan = 0;
@@ -210,18 +209,18 @@ public:
 								break;
 			}
 
-			// invalid if text contains more than one '>', '<', '=' or '.'
+			// Invalid if text contains more than one '>', '<', '=' or '.'
 			if ( nGreaterThan > 1 || nLessThan > 1 || nEquals > 1 || nDecimalPoint > 1 )
 				return FALSE;
 		}
 
-		// invalid if text contains '=>' or '=<'
+		// Invalid if text contains '=>' or '=<'
 		if ( nGreaterIndex != -1 && nEqualIndex != -1 && nGreaterIndex > nEqualIndex )
 			return FALSE;
 		if ( nLessIndex != -1 && nEqualIndex != -1 && nLessIndex > nEqualIndex )
 			return FALSE;
 
-		// invalid if digits exist before operator
+		// Invalid if digits exist before operator
 		if ( nDigitIndex != -1 && nGreaterIndex != -1 && nGreaterIndex > nDigitIndex )
 			return FALSE;
 		if ( nDigitIndex != -1 && nLessIndex != -1 && nLessIndex > nDigitIndex )
@@ -263,11 +262,11 @@ public:
 			trkMouse.dwFlags = TME_LEAVE;
 			trkMouse.hwndTrack = m_hWnd;
 			
-			// notify when the mouse leaves button
+			// Notify when the mouse leaves button
 			_TrackMouseEvent( &trkMouse );
 		}
 		
-		// do not show button as pressed when first created
+		// Do not show button as pressed when first created
 		m_bActivate = TRUE;
 		
 		InvalidateRect( m_rcButton );
@@ -301,13 +300,13 @@ public:
 			
 		int nContextState = dcMemory.SaveDC();		
 		
-		// do not repaint background if drawing button only
+		// Do not repaint background if drawing button only
 		if ( !rcClip.EqualRect( m_rcButton ) )
 		{
 			CWindow wndParent( GetParent() );
 			if ( wndParent.IsWindow() )
 			{
-				// draw background from parent
+				// Draw background from parent
 				CPoint ptOrigin( 0 );
 				MapWindowPoints( wndParent, &ptOrigin, 1 );
 				dcMemory.OffsetWindowOrg( ptOrigin.x, ptOrigin.y, &ptOrigin );
@@ -329,7 +328,7 @@ public:
 			dcMemory.SetBkColor( m_rgbStaticBackground );
 			dcMemory.ExtTextOut( m_rcStatic.left, m_rcStatic.top, ETO_OPAQUE, m_rcStatic, _T( "" ), 0, NULL );
 			
-			// draw static text
+			// Draw static text
 			int nIndex = GetCurSel();
 			if ( nIndex != CB_ERR )
 			{
@@ -353,7 +352,7 @@ public:
 			}
 		}
 		
-		// draw drop down button
+		// Draw drop down button
 		dcMemory.DrawFrameControl( m_rcButton, DFC_SCROLL, DFCS_SCROLLDOWN | ( bPressed ? DFCS_FLAT | DFCS_PUSHED : 0 ) );
 
 		dcMemory.RestoreDC( nContextState );
@@ -402,7 +401,7 @@ public:
 			listNotify.m_lpszItemText = strValue.c_str();
 			listNotify.m_lpItemDate = NULL;
 
-			// forward notification to parent
+			// Forward notification to parent
 			FORWARD_WM_NOTIFY( wndParent, listNotify.m_hdrNotify.idFrom, &listNotify.m_hdrNotify, ::SendMessage );
 		}
 		
