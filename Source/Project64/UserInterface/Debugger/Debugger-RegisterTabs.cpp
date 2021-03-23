@@ -297,7 +297,7 @@ void CRegisterTabs::RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam)
 
     uint32_t value = wcstoul(text, NULL, 16);
     wsprintf(text, L"%08X", value);
-    editCtrl.SetWindowText(text); // reformat text
+    editCtrl.SetWindowText(text); // Reformat text
 
     if (srcTabId == TabFPR)
     {
@@ -468,7 +468,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         return TRUE;
     }
 
-    // color textboxes
+    // Color textboxes
     if (msg == WM_CTLCOLOREDIT)
     {
         HDC hdc = (HDC)wParam;
@@ -549,7 +549,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         return FALSE;
     }
 
-    // right click labels
+    // Right click labels
     if (msg == WM_CONTEXTMENU)
     {
         if (m_Debugger == NULL)
@@ -574,7 +574,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         {
             int nReg = TabData::GPR.GetLabelIndex(ctrlId);
 
-            if (nReg <= 0) // ignore R0
+            if (nReg <= 0) // Ignore R0
             {
                 return FALSE;
             }
@@ -586,7 +586,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         return FALSE;
     }
 
-    // click labels
+    // Click labels
     if (msg == WM_COMMAND && HIWORD(wParam) == STN_CLICKED || HIWORD(wParam) == STN_DBLCLK)
     {
         if (m_Debugger == NULL)
@@ -611,7 +611,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         {
             int nReg = TabData::GPR.GetLabelIndex(ctrlId);
 
-            if (nReg <= 0) // ignore R0
+            if (nReg <= 0) // Ignore R0
             {
                 return FALSE;
             }
@@ -623,7 +623,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         return FALSE;
     }
 
-    // color labels
+    // Color labels
     if (msg == WM_CTLCOLORSTATIC)
     {
         if (m_Debugger == NULL)
@@ -1036,7 +1036,7 @@ stdstr CEditReg64::GetValueText()
 
 LRESULT CEditReg64::OnLostFocus(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
 {
-    SetValue(GetValue()); // clean up
+    SetValue(GetValue()); // Clean up
     bHandled = FALSE;
     return 0;
 }

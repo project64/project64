@@ -102,7 +102,7 @@ LRESULT    CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl
         GetDlgItemText(IDC_FILENAME, FileName, sizeof(FileName));
         if (wcslen(FileName) == 0)
         {
-            g_Notify->DisplayWarning("Please Choose target file");
+            g_Notify->DisplayWarning("Please choose target file");
             ::SetFocus(GetDlgItem(IDC_FILENAME));
             return false;
         }
@@ -110,7 +110,7 @@ LRESULT    CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl
         {
             DumpPC = StartPC;
         }
-        //disable buttons
+        // Disable buttons
         ::EnableWindow(GetDlgItem(IDC_E_START_ADDR), FALSE);
         ::EnableWindow(GetDlgItem(IDC_E_END_ADDR), FALSE);
         ::EnableWindow(GetDlgItem(IDC_E_ALT_PC), FALSE);
@@ -123,7 +123,7 @@ LRESULT    CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl
         g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_DumpMemory);
         if (!DumpMemory(FileName, Format, StartPC, EndPC, DumpPC))
         {
-            //enable buttons
+            // Enable buttons
             g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_DumpMemory);
             return false;
         }

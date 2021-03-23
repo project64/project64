@@ -21,7 +21,7 @@ uint8_t* CDebugMMU::GetPhysicalPtr(uint32_t paddr, WORD* flags)
     bool bCartRom = false;
 
     if ((paddr < g_MMU->RdramSize()) || 
-        (paddr >= 0x04000000 && paddr <= 0x04001FFF)) // RDRAM & DMEM/IMEM
+        (paddr >= 0x04000000 && paddr <= 0x04001FFF)) // RDRAM and DMEM/IMEM
     {
         ptr = (uint8_t*)(g_MMU->Rdram() + paddr);
     }
@@ -55,7 +55,7 @@ uint8_t* CDebugMMU::GetPhysicalPtr(uint32_t paddr, WORD* flags)
     }
     else
     {
-        // note: write-only registers are excluded
+        // Note: write-only registers are excluded
         switch (paddr)
         {
         case 0x03F00000: ptr = (uint8_t*)&g_Reg->RDRAM_CONFIG_REG; break;
@@ -176,7 +176,7 @@ bool CDebugMMU::GetPhysicalByte(uint32_t paddr, uint8_t* value)
     {
         uint32_t saveOffset = paddr & 0x000FFFFF;
 
-        if (g_System->m_SaveUsing == SaveChip_Sram && saveOffset <= 0x7FFF) // sram
+        if (g_System->m_SaveUsing == SaveChip_Sram && saveOffset <= 0x7FFF) // SRAM
         {
             uint32_t wordpaddr = paddr & ~3;
             uint8_t data[4];
@@ -186,7 +186,7 @@ bool CDebugMMU::GetPhysicalByte(uint32_t paddr, uint8_t* value)
             *value = data[nByte ^ 3];
             return true;
         }
-        else if (g_System->m_SaveUsing == SaveChip_FlashRam && saveOffset <= 3) // flash ram status
+        else if (g_System->m_SaveUsing == SaveChip_FlashRam && saveOffset <= 3) // Flash RAM status
         {
             CFlashram* flashRam = g_MMU->GetFlashram();
             uint32_t flashStatus = flashRam->ReadFromFlashStatus(0x08000000);

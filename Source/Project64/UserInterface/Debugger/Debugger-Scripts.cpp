@@ -439,7 +439,7 @@ void CDebugScripts::RunSelected()
     }
     else
     {
-        m_Debugger->Debug_LogScriptsWindow("[Error: Script is already running]\n");
+        m_Debugger->Debug_LogScriptsWindow("[Error: script is already running]\n");
     }
 }
 
@@ -513,7 +513,7 @@ LRESULT CEditEval::OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BO
         SetWindowText(L"");
         int historySize = m_History.size();
 
-        // remove duplicate
+        // Remove duplicate
         for (int i = 0; i < historySize; i++)
         {
             if (wcscmp(code, m_History[i]) == 0)
@@ -525,7 +525,7 @@ LRESULT CEditEval::OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BO
             }
         }
 
-        // remove oldest if maxed
+        // Remove oldest if maxed
         if (historySize >= HISTORY_MAX_ENTRIES)
         {
             m_History.erase(m_History.begin() + 0);

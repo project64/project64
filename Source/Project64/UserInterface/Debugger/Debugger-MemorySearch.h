@@ -43,8 +43,6 @@ public:
     END_MSG_MAP()
 };
 
-//////////////
-
 class CSetValueDlg : public CDialogImpl<CSetValueDlg>
 {
 public:
@@ -99,10 +97,6 @@ private:
         MSG_WM_DESTROY(OnDestroy)
     END_MSG_MAP()
 };
-
-//////////////
-
-
 
 class CDebugMemorySearch :
     public CDebugDialog<CDebugMemorySearch>,
@@ -230,13 +224,12 @@ private:
 
     CPath GetWatchListPath(void);
 
-    /* generic ui util */
+    // Generic UI utility
     void FixListHeader(CListViewCtrl& listCtrl);
     void SetComboBoxSelByData(CComboBox& cb, DWORD_PTR data);
     bool MouseHovering(WORD ctrlId, int hMargin = 0, int vMargin = 0);
     int  GetNumVisibleRows(CListViewCtrl& list);
-    /*******************/
-
+    
     bool m_bJalSelected;
     bool m_bJalHexWasChecked;
     bool m_bJalUnsignedWasChecked;

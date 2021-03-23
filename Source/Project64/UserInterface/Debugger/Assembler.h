@@ -7,8 +7,8 @@ typedef void(*ASM_SYNTAX_FN)(uint32_t* opcode);
 typedef struct {
     const char* name;
     uint32_t val;
-    uint32_t(*base)(uint32_t val); // value shift
-    const ASM_SYNTAX_FN* syntax; // arguments
+    uint32_t(*base)(uint32_t val); // Value shift
+    const ASM_SYNTAX_FN* syntax; // Arguments
 } ASM_INSTRUCTION;
 
 typedef struct {

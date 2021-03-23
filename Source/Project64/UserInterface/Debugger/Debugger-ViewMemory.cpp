@@ -567,11 +567,11 @@ LRESULT CDebugMemoryView::OnHxCtrlKeyPressed(LPNMHDR lpNMHDR)
         m_Breakpoints->ClearMemLocks();
         break;
     case 'F':
-        // todo put selection in the textbox
+        // TODO: put selection in the textbox
         m_Debugger->OpenMemorySearch();
         break;
     case 'S':
-        // todo set start and end addrs to selection
+        // TODO: set start and end address to selection
         m_Debugger->OpenMemoryDump();
         break;
     case 'T':
@@ -786,8 +786,8 @@ LRESULT CDebugMemoryView::OnHxGetByteInfo(LPNMHDR lpNMHDR)
             continue;
         }
 
-        // always use virtual addresses for breakpoint & symbol info
-        // todo should be the other way around
+        // Always use virtual addresses for breakpoint and symbol info
+        // TODO: should be the other way around
         uint32_t vaddress = m_bVirtualMemory ? address : address + 0x80000000;
 
         CSymbol symbol;
@@ -938,7 +938,7 @@ LRESULT CDebugMemoryView::OnHxHotAddrChanged(LPNMHDR /*lpNMHDR*/)
 
 LRESULT CDebugMemoryView::OnHxBaseAddrChanged(LPNMHDR /*lpNMHDR*/)
 {
-    // address was updated from the control
+    // Address was updated from the control
     uint32_t address = m_HexEditCtrl.GetBaseAddress();
     m_bIgnoreAddressInput = true;
     m_MemAddr.SetValue(address, DisplayMode::ZeroExtend);
@@ -973,7 +973,7 @@ LRESULT CDebugMemoryView::OnHxPaste(LPNMHDR lpNMHDR)
     if (nmp->column == HX_COL_HEXDATA)
     {
         char* data = NULL;
-        // todo move this function to some utility class
+        // TODO: move this function to some utility class
         int length = CMemoryScanner::ParseHexString(NULL, text);
 
         if (length != 0)
@@ -1143,7 +1143,7 @@ void CDebugMemoryView::CloseTab(int nItem)
     {
         if (nItem == m_TabCtrl.GetItemCount() - 1)
         {
-            // last tab
+            // Last tab
             m_TabCtrl.SetCurSel(nItem - 1);
         }
         else if (nItem == nSelItem)

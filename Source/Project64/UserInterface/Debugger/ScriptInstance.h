@@ -13,9 +13,9 @@
 class CScriptSystem;
 
 typedef enum {
-    STATE_STARTED, // initial evaluation & execution
-    STATE_RUNNING, // event loop running with pending events
-    STATE_STOPPED,  // no pending events
+    STATE_STARTED, // Initial evaluation and execution
+    STATE_RUNNING, // Event loop running with pending events
+    STATE_STOPPED,  // No pending events
     STATE_INVALID
 } INSTANCE_STATE;
 
@@ -32,11 +32,11 @@ class CScriptInstance
         OVERLAPPED  ovl;
         IOEVENTTYPE eventType;
         HANDLE      fd;
-        HANDLE      childFd; // accepted socket
+        HANDLE      childFd; // Accepted socket
         bool        bSocket;
         UINT        id;
         void*       data;
-        DWORD       dataLen; // changed to bytes transferred after event is fired
+        DWORD       dataLen; // Changed to bytes transferred after event is fired
         void*       callback;
     } IOLISTENER;
 
@@ -122,14 +122,15 @@ private:
 
     //static void CALLBACK EvalAsyncCallback(ULONG_PTR evalWait);
 
-    bool AddFile(const char* path, const char* mode, int* fd); // return fd
+    bool AddFile(const char* path, const char* mode, int* fd); // Return FD
     void CloseFile(int fd);
     FILE* GetFilePointer(int fd);
     void CloseAllFiles();
 
     const char* EvalFile(const char* jsPath);
 
-    // Handle to to dynamically load CancelIoEx for Windows XP compatibility
+	// TODO: fix/remove?
+    // Handle dynamically loading CancelIoEx for Windows XP compatibility
     HMODULE m_hKernel;
     Dynamic_CancelIoEx m_CancelIoEx;
 
@@ -146,7 +147,7 @@ private:
     static duk_ret_t js_ioSockConnect(duk_context*); // async
     static duk_ret_t js_ioRead(duk_context*); // async
     static duk_ret_t js_ioWrite(duk_context*); // async
-    static duk_ret_t js_ioClose(duk_context*); // (fd) ; file or socket
+    static duk_ret_t js_ioClose(duk_context*); // (FD) ; file or socket
     static duk_ret_t js_MsgBox(duk_context*); // (message, caption)
     static duk_ret_t js_AddCallback(duk_context*); // (hookId, callback, tag) ; external events
     static duk_ret_t js_RemoveCallback(duk_context*); // (callbackId)
@@ -177,8 +178,8 @@ private:
     static duk_ret_t js_ConsoleClear(duk_context*);
 
     static duk_ret_t js_BreakHere(duk_context*);
-    static duk_ret_t js_Pause(duk_context*); // () ; pauses emulation
-    static duk_ret_t js_ShowCommands(duk_context*); // ([address]) ; shows commands window
+    static duk_ret_t js_Pause(duk_context*); // () ; Pauses emulation
+    static duk_ret_t js_ShowCommands(duk_context*); // ([address]) ; Shows commands window
 
     static duk_ret_t js_ScreenPrint(duk_context*); // (x, y, text)
 

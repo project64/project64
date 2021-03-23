@@ -412,7 +412,7 @@ void CDebugCPULogView::Export(void)
     }
 }
 
-// util
+// Utility
 
 int CDebugCPULogView::GetNumVisibleRows(CListViewCtrl& list)
 {
