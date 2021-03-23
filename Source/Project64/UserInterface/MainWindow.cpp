@@ -843,7 +843,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             }
             if (_this->m_bMainWindow && bCPURunning())
             {
-                if (!fActive && UISettingsLoadBool(UserInterface_InFullScreen))
+                if (!fActive && UISettingsLoadBool(UserInterface_InFullScreen) && UISettingsLoadBool(UserInterface_ExitFullscreenOnLoseFocus))
                 {
                     Notify().WindowMode();
                     if (bAutoSleep() && g_BaseSystem)

@@ -31,6 +31,7 @@ enum UISettingID
     UserInterface_MainWindowLeft,
     UserInterface_AlwaysOnTop,
     UserInterface_ShowStatusBar,
+    UserInterface_ExitFullscreenOnLoseFocus,
 
     RomBrowser_Enabled,
     RomBrowser_ColoumnsChanged,

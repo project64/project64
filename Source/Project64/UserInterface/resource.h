@@ -335,6 +335,7 @@
 #define IDC_R14_EDIT                    1147
 #define IDC_SHOW_STATUS_BAR             1147
 #define IDC_R15_EDIT                    1148
+#define IDC_EXIT_FULLSCREEN_ON_LOSE_FOCUS 1148
 #define IDC_SHELL_INT_TEXT              1149
 #define IDC_COUNTFACT                   1151
 #define IDC_MEMORY_SIZE_TEXT            1153

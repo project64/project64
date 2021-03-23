@@ -248,6 +248,7 @@
 #472#  "Disk Save Type:"
 #473#  "Enable Enhancements"
 #474#  "Show Status Bar"
+#475#  "Exit full screen on lose focus"
 
 //ROM Browser Tab
 #480#  "Max # of ROMs remembered (0-10):"
