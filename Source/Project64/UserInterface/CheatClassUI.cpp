@@ -14,6 +14,7 @@ CCheatsUI::~CCheatsUI()
 
 void CCheatsUI::Display(HWND hParent, bool BlockExecution)
 {
+    g_Enhancements->Load();
     m_Cheats = g_Enhancements->Cheats();
     if (g_BaseSystem)
     {

@@ -145,6 +145,7 @@ LRESULT	CEnhancementUI::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
     DeleteObject(hBmp);
     m_TreeList.SetImageList(hImageList, TVSIL_STATE);
 
+    g_Enhancements->Load();
     m_Enhancements = g_Enhancements->Enhancements();
 
     CRect rcDlg, rcParent;

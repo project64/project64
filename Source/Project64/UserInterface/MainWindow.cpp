@@ -963,12 +963,12 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                         else if (LOWORD(wParam) == ID_POPUPMENU_EDITCHEATS)
                         {
                             g_Enhancements->ResetActive(nullptr);
-                            g_Enhancements->Load(nullptr, nullptr);
+                            g_Enhancements->LoadActive(nullptr, nullptr);
                             _this->m_CheatsUI.Display(hWnd, true);
                         }
                         else if (LOWORD(wParam) == ID_POPUPMENU_CHOOSEENHANCEMENT)
                         {
-                            g_Enhancements->Load(nullptr, nullptr);
+                            g_Enhancements->LoadActive(nullptr, nullptr);
                             _this->m_EnhancementUI.Display(hWnd, true);
                         }
 

@@ -26,7 +26,8 @@ public:
     void UpdateCheats(void);
     void UpdateEnhancements(const CEnhancementList & Enhancements);
     void ResetActive(CPlugins * Plugins);
-    void Load(CMipsMemoryVM * MMU, CPlugins * Plugins);
+    void Load(void);
+    void LoadActive(CMipsMemoryVM * MMU, CPlugins * Plugins);
 
     CEnhancementList Cheats(void);
     CEnhancementList Enhancements(void);

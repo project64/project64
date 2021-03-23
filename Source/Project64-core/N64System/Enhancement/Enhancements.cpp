@@ -51,7 +51,7 @@ void CEnhancements::ApplyActive(CMipsMemoryVM & MMU, CPlugins * Plugins, bool Up
     if (m_UpdateCheats && UpdateChanges)
     {
         m_UpdateCheats = false;
-        Load(&MMU, Plugins);
+        LoadActive(&MMU, Plugins);
     }
     for (size_t i = 0, n = m_ActiveCodes.size(); i < n; i++)
     {
@@ -261,14 +261,20 @@ void CEnhancements::LoadEnhancements(const char * Ident, SectionFiles & Files, s
     }
 }
 
-void CEnhancements::Load(CMipsMemoryVM * MMU, CPlugins * Plugins)
+void CEnhancements::Load(void)
 {
     WaitScanDone();
     CGuard Guard(m_CS);
 
     LoadEnhancements(CEnhancement::CheatIdent, m_CheatFiles, m_CheatFile, m_Cheats);
     LoadEnhancements(CEnhancement::EnhancementIdent, m_EnhancementFiles, m_EnhancementFile, m_Enhancements);
+}
 
+void CEnhancements::LoadActive(CMipsMemoryVM * MMU, CPlugins * Plugins)
+{
+    Load();
+
+    CGuard Guard(m_CS);
     m_OverClock = false;
     m_OverClockModifier = 1;
 
