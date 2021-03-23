@@ -6,7 +6,7 @@
 #include "RSP Registers.h"
 #include "memory.h"
 
-// #define RSP_SAFE_DMA /* unoptimized dma transfers */
+// #define RSP_SAFE_DMA // Unoptimized DMA transfers
 
 void SP_DMA_READ (void)
 {
@@ -17,13 +17,13 @@ void SP_DMA_READ (void)
 
 	if (addr > 0x7FFFFF)
 	{
-        DisplayError("SP DMA READ\nSP_DRAM_ADDR_REG not in RDRam space");
+        DisplayError("SP DMA READ\nSP_DRAM_ADDR_REG not in RDRAM space");
 		return;
 	}
 	
 	if ((*RSPInfo.SP_RD_LEN_REG & 0xFFF) + 1  + (*RSPInfo.SP_MEM_ADDR_REG & 0xFFF) > 0x1000)
 	{
-        DisplayError("SP DMA READ\ncould not fit copy in memory segment");
+        DisplayError("SP DMA READ\nCould not fit copy in memory segment");
 		return;
 	}
 
@@ -74,7 +74,7 @@ void SP_DMA_READ (void)
 	}
 #endif
 
-	/* FIXME: could this be a problem DMEM to IMEM (?) */
+	// TODO: Could this be a problem DMEM to IMEM?
 	if (CPUCore == RecompilerCPU && (*RSPInfo.SP_MEM_ADDR_REG & 0x1000) != 0)
 	{
 		SetJumpTable(End);
@@ -93,13 +93,13 @@ void SP_DMA_WRITE (void)
 
 	if (addr > 0x7FFFFF)
 	{
-        DisplayError("SP DMA WRITE\nSP_DRAM_ADDR_REG not in RDRam space");
+        DisplayError("SP DMA WRITE\nSP_DRAM_ADDR_REG not in RDRAM space");
 		return;
 	}
 
 	if ((*RSPInfo.SP_WR_LEN_REG & 0xFFF) + 1  + (*RSPInfo.SP_MEM_ADDR_REG & 0xFFF) > 0x1000)
 	{
-        DisplayError("SP DMA WRITE\ncould not fit copy in memory segment");
+        DisplayError("SP DMA WRITE\nCould not fit copy in memory segment");
 		return;
 	}
 

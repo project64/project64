@@ -1,4 +1,5 @@
-/************************* OpCode functions *************************/
+// OpCode functions
+
 void Compile_SPECIAL       ( void );
 void Compile_REGIMM        ( void );
 void Compile_J             ( void );
@@ -27,7 +28,9 @@ void Compile_SH            ( void );
 void Compile_SW            ( void );
 void Compile_LC2           ( void );
 void Compile_SC2           ( void );
-/********************** R4300i OpCodes: Special **********************/
+
+// R4300i OpCodes: Special
+
 void Compile_Special_SLL   ( void );
 void Compile_Special_SRL   ( void );
 void Compile_Special_SRA   ( void );
@@ -47,21 +50,29 @@ void Compile_Special_XOR   ( void );
 void Compile_Special_NOR   ( void );
 void Compile_Special_SLT   ( void );
 void Compile_Special_SLTU  ( void );
-/********************** R4300i OpCodes: RegImm **********************/
+
+// R4300i OpCodes: RegImm
+
 void Compile_RegImm_BLTZ   ( void );
 void Compile_RegImm_BGEZ   ( void );
 void Compile_RegImm_BLTZAL ( void );
 void Compile_RegImm_BGEZAL ( void );
-/************************** Cop0 functions *************************/
+
+// COP0 functions
+
 void Compile_Cop0_MF       ( void );
 void Compile_Cop0_MT       ( void );
-/************************** Cop2 functions *************************/
+
+// COP2 functions
+
 void Compile_Cop2_MF       ( void );
 void Compile_Cop2_CF       ( void );
 void Compile_Cop2_MT       ( void );
 void Compile_Cop2_CT       ( void );
 void Compile_COP2_VECTOR  ( void );
-/************************** Vect functions **************************/
+
+// Vector functions
+
 void Compile_Vector_VMULF  ( void );
 void Compile_Vector_VMULU  ( void );
 void Compile_Vector_VMUDL  ( void );
@@ -103,7 +114,9 @@ void Compile_Vector_VRSQ   ( void );
 void Compile_Vector_VRSQL  ( void );
 void Compile_Vector_VRSQH  ( void );
 void Compile_Vector_VNOOP  ( void );
-/************************** lc2 functions **************************/
+
+// LC2 functions
+
 void Compile_Opcode_LBV    ( void );
 void Compile_Opcode_LSV    ( void );
 void Compile_Opcode_LLV    ( void );
@@ -115,7 +128,9 @@ void Compile_Opcode_LUV    ( void );
 void Compile_Opcode_LHV    ( void );
 void Compile_Opcode_LFV    ( void );
 void Compile_Opcode_LTV    ( void );
-/************************** sc2 functions **************************/
+
+// SC2 functions
+
 void Compile_Opcode_SBV    ( void );
 void Compile_Opcode_SSV    ( void );
 void Compile_Opcode_SLV    ( void );
@@ -128,5 +143,7 @@ void Compile_Opcode_SHV    ( void );
 void Compile_Opcode_SFV    ( void );
 void Compile_Opcode_SWV    ( void );
 void Compile_Opcode_STV    ( void );
-/************************** Other functions **************************/
+
+// Other functions
+
 void Compile_UnknownOpcode (void);

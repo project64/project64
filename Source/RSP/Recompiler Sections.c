@@ -12,15 +12,12 @@
 #include "x86.h"
 #include "Types.h"
 
-#pragma warning(disable : 4152) // nonstandard extension, function/data pointer conversion in expression
+#pragma warning(disable : 4152) // Non-standard extension, function/data pointer conversion in expression
 
 void RSP_Sections_VMUDH ( OPCODE RspOp, DWORD AccumStyle ) {
 	char Reg[256];
 
-	/*****************************************
-	** VMUDH 
-	**  - affects the upper 32-bits
-	******************************************/
+// VMUDH - affects the upper 32-bits
 
 	if (AccumStyle == Low16BitAccum) {
 		MmxXorRegToReg(x86_MM0, x86_MM0);
@@ -30,13 +27,13 @@ void RSP_Sections_VMUDH ( OPCODE RspOp, DWORD AccumStyle ) {
 
 	RSPOpC = RspOp;
 
-	/**** Load source registers ****/
+	// Load source registers
 	sprintf(Reg, "RSP_Vect[%i].HW[0]", RspOp.rd);
 	MmxMoveQwordVariableToReg(x86_MM0, &RSP_Vect[RspOp.rd].HW[0], Reg);
 	sprintf(Reg, "RSP_Vect[%i].HW[4]", RspOp.rd);
 	MmxMoveQwordVariableToReg(x86_MM1, &RSP_Vect[RspOp.rd].HW[4], Reg);
 
-	/******* VMUDH *******/
+	// VMUDH
 	if ((RspOp.rs & 0x0f) < 2) {
 		sprintf(Reg, "RSP_Vect[%i].HW[0]", RspOp.rt);
 		MmxMoveQwordVariableToReg(x86_MM2, &RSP_Vect[RspOp.rt].HW[0], Reg);
@@ -74,10 +71,7 @@ void RSP_Sections_VMUDH ( OPCODE RspOp, DWORD AccumStyle ) {
 void RSP_Sections_VMADH ( OPCODE RspOp, DWORD AccumStyle ) {
 	char Reg[256];
 
-	/*****************************************
-	** VMADH 
-	**  - affects the upper 32-bits
-	******************************************/
+// VMADH - affects the upper 32-bits
 
 	if (AccumStyle == Low16BitAccum) {
 		return;
@@ -85,13 +79,13 @@ void RSP_Sections_VMADH ( OPCODE RspOp, DWORD AccumStyle ) {
 
 	RSPOpC = RspOp;
 
-	/**** Load source registers ****/
+	// Load source registers
 	sprintf(Reg, "RSP_Vect[%i].HW[0]", RspOp.rd);
 	MmxMoveQwordVariableToReg(x86_MM0 + 2, &RSP_Vect[RspOp.rd].HW[0], Reg);
 	sprintf(Reg, "RSP_Vect[%i].HW[4]", RspOp.rd);
 	MmxMoveQwordVariableToReg(x86_MM1 + 2, &RSP_Vect[RspOp.rd].HW[4], Reg);
 
-	/******* VMUDH *******/
+	// VMUDH
 	if ((RspOp.rs & 0x0f) < 2) {
 		sprintf(Reg, "RSP_Vect[%i].HW[0]", RspOp.rt);
 		MmxMoveQwordVariableToReg(x86_MM2 + 2, &RSP_Vect[RspOp.rt].HW[0], Reg);
@@ -132,10 +126,7 @@ void RSP_Sections_VMADH ( OPCODE RspOp, DWORD AccumStyle ) {
 void RSP_Sections_VMUDL ( OPCODE RspOp, DWORD AccumStyle ) {
 	char Reg[256];
 
-	/*****************************************
-	** VMUDL 
-	**  - affects the lower 16-bits
-	******************************************/
+// VMUDL - affects the lower 16-bits
 
 	if (AccumStyle != Low16BitAccum) {
 		MmxXorRegToReg(x86_MM0, x86_MM0);
@@ -145,13 +136,13 @@ void RSP_Sections_VMUDL ( OPCODE RspOp, DWORD AccumStyle ) {
 
 	RSPOpC = RspOp;
 
-	/**** Load source registers ****/
+	// Load source registers
 	sprintf(Reg, "RSP_Vect[%i].HW[0]", RspOp.rd);
 	MmxMoveQwordVariableToReg(x86_MM0, &RSP_Vect[RspOp.rd].HW[0], Reg);
 	sprintf(Reg, "RSP_Vect[%i].HW[4]", RspOp.rd);
 	MmxMoveQwordVariableToReg(x86_MM1, &RSP_Vect[RspOp.rd].HW[4], Reg);
 
-	/******* VMUDL *******/
+	// VMUDL
 	if ((RspOp.rs & 0x0f) < 2) {
 		sprintf(Reg, "RSP_Vect[%i].HW[0]", RspOp.rt);
 		MmxMoveQwordVariableToReg(x86_MM2, &RSP_Vect[RspOp.rt].HW[0], Reg);
@@ -174,10 +165,7 @@ void RSP_Sections_VMUDL ( OPCODE RspOp, DWORD AccumStyle ) {
 void RSP_Sections_VMADL ( OPCODE RspOp, DWORD AccumStyle ) {
 	char Reg[256];
 
-	/*****************************************
-	** VMADL
-	**  - affects the lower 16-bits
-	******************************************/
+// VMADL - affects the lower 16-bits
 
 	if (AccumStyle != Low16BitAccum) {
 		return;
@@ -185,13 +173,13 @@ void RSP_Sections_VMADL ( OPCODE RspOp, DWORD AccumStyle ) {
 
 	RSPOpC = RspOp;
 
-	/**** Load source registers ****/
+	// Load source registers
 	sprintf(Reg, "RSP_Vect[%i].HW[0]", RspOp.rd);
 	MmxMoveQwordVariableToReg(x86_MM0 + 2, &RSP_Vect[RspOp.rd].HW[0], Reg);
 	sprintf(Reg, "RSP_Vect[%i].HW[4]", RspOp.rd);
 	MmxMoveQwordVariableToReg(x86_MM1 + 2, &RSP_Vect[RspOp.rd].HW[4], Reg);
 
-	/******* VMADL *******/
+	// VMADL
 	if ((RspOp.rs & 0x0f) < 2) {
 		sprintf(Reg, "RSP_Vect[%i].HW[0]", RspOp.rt);
 		MmxMoveQwordVariableToReg(x86_MM2 + 2, &RSP_Vect[RspOp.rt].HW[0], Reg);
@@ -217,10 +205,7 @@ void RSP_Sections_VMADL ( OPCODE RspOp, DWORD AccumStyle ) {
 void RSP_Sections_VMUDM ( OPCODE RspOp, DWORD AccumStyle ) {
 	char Reg[256];
 
-	/*****************************************
-	** VMUDM
-	**  - affects the middle 32-bits, s16*u16
-	******************************************/
+// VMUDM - affects the middle 32-bits, s16*u16
 
 	if (AccumStyle == High16BitAccum) {
 		MmxXorRegToReg(x86_MM0, x86_MM0);
@@ -230,13 +215,13 @@ void RSP_Sections_VMUDM ( OPCODE RspOp, DWORD AccumStyle ) {
 
 	RSPOpC = RspOp;
 
-	/**** Load source registers ****/
+	// Load source registers
 	sprintf(Reg, "RSP_Vect[%i].HW[0]", RspOp.rd);
 	MmxMoveQwordVariableToReg(x86_MM0, &RSP_Vect[RspOp.rd].HW[0], Reg);
 	sprintf(Reg, "RSP_Vect[%i].HW[4]", RspOp.rd);
 	MmxMoveQwordVariableToReg(x86_MM1, &RSP_Vect[RspOp.rd].HW[4], Reg);
 
-	/******* VMUDM *******/
+	// VMUDM
 	if (AccumStyle != Middle16BitAccum) {
 		if ((RspOp.rs & 0x0f) < 2) {
 			sprintf(Reg, "RSP_Vect[%i].HW[0]", RspOp.rt);
@@ -262,7 +247,7 @@ void RSP_Sections_VMUDM ( OPCODE RspOp, DWORD AccumStyle ) {
 			sprintf(Reg, "RSP_Vect[%i].UHW[4]", RSPOpC.rt);
 			MmxMoveQwordVariableToReg(x86_MM5, &RSP_Vect[RSPOpC.rt].UHW[4], Reg);
 
-			/* Copy the signed portion */
+			// Copy the signed portion
 			MmxMoveRegToReg(x86_MM2, x86_MM0);
 			MmxMoveRegToReg(x86_MM3, x86_MM1);
 
@@ -278,7 +263,7 @@ void RSP_Sections_VMUDM ( OPCODE RspOp, DWORD AccumStyle ) {
 		} else if ((RSPOpC.rs & 0xF) >= 8) {
 			RSP_Element2Mmx(x86_MM4);
 
-			/* Copy the signed portion */
+			// Copy the signed portion
 			MmxMoveRegToReg(x86_MM2, x86_MM0);
 			MmxMoveRegToReg(x86_MM3, x86_MM1);
 
@@ -294,7 +279,7 @@ void RSP_Sections_VMUDM ( OPCODE RspOp, DWORD AccumStyle ) {
 		} else {
 			RSP_MultiElement2Mmx(x86_MM4, x86_MM5);
 
-			/* Copy the signed portion */
+			// Copy the signed portion
 			MmxMoveRegToReg(x86_MM2, x86_MM0);
 			MmxMoveRegToReg(x86_MM3, x86_MM1);
 
@@ -309,7 +294,7 @@ void RSP_Sections_VMUDM ( OPCODE RspOp, DWORD AccumStyle ) {
 			MmxPmullwRegToReg(x86_MM3, x86_MM5);
 		}
 
-		/* Add them up */
+		// Add them up
 		MmxPaddwRegToReg(x86_MM0, x86_MM2);
 		MmxPaddwRegToReg(x86_MM1, x86_MM3);
 	}
@@ -318,10 +303,7 @@ void RSP_Sections_VMUDM ( OPCODE RspOp, DWORD AccumStyle ) {
 void RSP_Sections_VMADM ( OPCODE RspOp, DWORD AccumStyle ) {
 	char Reg[256];
 
-	/*****************************************
-	** VMADM
-	**  - affects the middle 32-bits, s16*u16
-	******************************************/
+// VMADM - affects the middle 32-bits, s16*u16
 
 	if (AccumStyle == High16BitAccum) {
 		MmxXorRegToReg(x86_MM0, x86_MM0);
@@ -331,13 +313,13 @@ void RSP_Sections_VMADM ( OPCODE RspOp, DWORD AccumStyle ) {
 
 	RSPOpC = RspOp;
 
-	/**** Load source registers ****/
+	// Load source registers
 	sprintf(Reg, "RSP_Vect[%i].HW[0]", RspOp.rd);
 	MmxMoveQwordVariableToReg(x86_MM0 + 2, &RSP_Vect[RspOp.rd].HW[0], Reg);
 	sprintf(Reg, "RSP_Vect[%i].HW[4]", RspOp.rd);
 	MmxMoveQwordVariableToReg(x86_MM1 + 2, &RSP_Vect[RspOp.rd].HW[4], Reg);
 
-	/******* VMADM *******/
+	// VMADM
 	if (AccumStyle != Middle16BitAccum) {
 		if ((RspOp.rs & 0x0f) < 2) {
 			sprintf(Reg, "RSP_Vect[%i].HW[0]", RspOp.rt);
@@ -363,7 +345,7 @@ void RSP_Sections_VMADM ( OPCODE RspOp, DWORD AccumStyle ) {
 			sprintf(Reg, "RSP_Vect[%i].UHW[4]", RSPOpC.rt);
 			MmxMoveQwordVariableToReg(x86_MM5 + 2, &RSP_Vect[RSPOpC.rt].UHW[4], Reg);
 
-			/* Copy the signed portion */
+			// Copy the signed portion
 			MmxMoveRegToReg(x86_MM2 + 2, x86_MM0 + 2);
 			MmxMoveRegToReg(x86_MM3 + 2, x86_MM1 + 2);
 
@@ -379,7 +361,7 @@ void RSP_Sections_VMADM ( OPCODE RspOp, DWORD AccumStyle ) {
 		} else if ((RSPOpC.rs & 0xF) >= 8) {
 			RSP_Element2Mmx(x86_MM4 + 2);
 
-			/* Copy the signed portion */
+			// Copy the signed portion
 			MmxMoveRegToReg(x86_MM2 + 2, x86_MM0 + 2);
 			MmxMoveRegToReg(x86_MM3 + 2, x86_MM1 + 2);
 
@@ -395,7 +377,7 @@ void RSP_Sections_VMADM ( OPCODE RspOp, DWORD AccumStyle ) {
 		} else {
 			RSP_MultiElement2Mmx(x86_MM4 + 2, x86_MM5 + 2);
 
-			/* Copy the signed portion */
+			// Copy the signed portion
 			MmxMoveRegToReg(x86_MM2 + 2, x86_MM0 + 2);
 			MmxMoveRegToReg(x86_MM3 + 2, x86_MM1 + 2);
 
@@ -410,7 +392,7 @@ void RSP_Sections_VMADM ( OPCODE RspOp, DWORD AccumStyle ) {
 			MmxPmullwRegToReg(x86_MM3 + 2, x86_MM5 + 2);
 		}
 
-		/* Add them up */
+		// Add them up
 		MmxPaddwRegToReg(x86_MM0 + 2, x86_MM2 + 2);
 		MmxPaddwRegToReg(x86_MM1 + 2, x86_MM3 + 2);
 	}
@@ -422,10 +404,7 @@ void RSP_Sections_VMADM ( OPCODE RspOp, DWORD AccumStyle ) {
 void RSP_Sections_VMUDN ( OPCODE RspOp, DWORD AccumStyle ) {
 	char Reg[256];
 
-	/*****************************************
-	** VMUDN
-	**  - affects the middle 32-bits, u16*s16
-	******************************************/
+// VMUDN - affects the middle 32-bits, u16*s16
 
 	if (AccumStyle == High16BitAccum) {
 		MmxXorRegToReg(x86_MM0, x86_MM0);
@@ -435,10 +414,10 @@ void RSP_Sections_VMUDN ( OPCODE RspOp, DWORD AccumStyle ) {
 
 	RSPOpC = RspOp;
 
-	/******* VMUDN *******/
+	// VMUDN
 	if (AccumStyle != Middle16BitAccum) {
 
-		/**** Load source registers ****/
+		// Load source registers
 		sprintf(Reg, "RSP_Vect[%i].HW[0]", RspOp.rd);
 		MmxMoveQwordVariableToReg(x86_MM0, &RSP_Vect[RspOp.rd].HW[0], Reg);
 		sprintf(Reg, "RSP_Vect[%i].HW[4]", RspOp.rd);
@@ -465,12 +444,10 @@ void RSP_Sections_VMUDN ( OPCODE RspOp, DWORD AccumStyle ) {
 		}
 	} else {
 
-		/***
-		** NOTE: for code clarity, this is the same as VMUDM,
-		** just the mmx registers are swapped, this is easier
-		****/
+		// NOTE: for code clarity, this is the same as VMUDM,
+		// just the MMX registers are swapped, this is easier
 
-		/**** Load source registers ****/
+		// Load source registers
 		sprintf(Reg, "RSP_Vect[%i].HW[0]", RspOp.rd);
 		MmxMoveQwordVariableToReg(x86_MM4, &RSP_Vect[RspOp.rd].HW[0], Reg);
 		sprintf(Reg, "RSP_Vect[%i].HW[4]", RspOp.rd);
@@ -488,7 +465,7 @@ void RSP_Sections_VMUDN ( OPCODE RspOp, DWORD AccumStyle ) {
 			RSP_MultiElement2Mmx(x86_MM0, x86_MM1);
 		}
 
-		/* Copy the signed portion */
+		// Copy the signed portion
 		MmxMoveRegToReg(x86_MM2, x86_MM0);
 		MmxMoveRegToReg(x86_MM3, x86_MM1);
 
@@ -502,7 +479,7 @@ void RSP_Sections_VMUDN ( OPCODE RspOp, DWORD AccumStyle ) {
 		MmxPmullwRegToReg(x86_MM2, x86_MM4);
 		MmxPmullwRegToReg(x86_MM3, x86_MM5);
 
-		/* Add them up */
+		// Add them up
 		MmxPaddwRegToReg(x86_MM0, x86_MM2);
 		MmxPaddwRegToReg(x86_MM1, x86_MM3);
 	}
@@ -511,10 +488,7 @@ void RSP_Sections_VMUDN ( OPCODE RspOp, DWORD AccumStyle ) {
 void RSP_Sections_VMADN ( OPCODE RspOp, DWORD AccumStyle ) {
 	char Reg[256];
 
-	/*****************************************
-	** VMADN
-	**  - affects the middle 32-bits, u16*s16
-	******************************************/
+	// VMADN - affects the middle 32-bits, u16*s16
 
 	if (AccumStyle == High16BitAccum) {
 		return;
@@ -522,9 +496,9 @@ void RSP_Sections_VMADN ( OPCODE RspOp, DWORD AccumStyle ) {
 
 	RSPOpC = RspOp;
 
-	/******* VMADN *******/
+	// VMADN
 	if (AccumStyle != Middle16BitAccum) {
-		/**** Load source registers ****/
+		// Load source registers
 		sprintf(Reg, "RSP_Vect[%i].HW[0]", RspOp.rd);
 		MmxMoveQwordVariableToReg(x86_MM0 + 2, &RSP_Vect[RspOp.rd].HW[0], Reg);
 		sprintf(Reg, "RSP_Vect[%i].HW[4]", RspOp.rd);
@@ -551,12 +525,10 @@ void RSP_Sections_VMADN ( OPCODE RspOp, DWORD AccumStyle ) {
 		}
 	} else {
 
-		/*
-		** NOTE: for code clarity, this is the same as VMADM,
-		** just the mmx registers are swapped, this is easier
-		*/
+		// NOTE: for code clarity, this is the same as VMADM,
+		// just the MMX registers are swapped, this is easier
 
-		/**** Load source registers ****/
+		// Load source registers
 		sprintf(Reg, "RSP_Vect[%i].HW[0]", RspOp.rd);
 		MmxMoveQwordVariableToReg(x86_MM4 + 2, &RSP_Vect[RspOp.rd].HW[0], Reg);
 		sprintf(Reg, "RSP_Vect[%i].HW[4]", RspOp.rd);
@@ -574,7 +546,7 @@ void RSP_Sections_VMADN ( OPCODE RspOp, DWORD AccumStyle ) {
 			RSP_MultiElement2Mmx(x86_MM0 + 2, x86_MM1 + 2);
 		}
 
-		/* Copy the signed portion */
+		// Copy the signed portion
 		MmxMoveRegToReg(x86_MM2 + 2, x86_MM0 + 2);
 		MmxMoveRegToReg(x86_MM3 + 2, x86_MM1 + 2);
 
@@ -588,15 +560,14 @@ void RSP_Sections_VMADN ( OPCODE RspOp, DWORD AccumStyle ) {
 		MmxPmullwRegToReg(x86_MM2 + 2, x86_MM4 + 2);
 		MmxPmullwRegToReg(x86_MM3 + 2, x86_MM5 + 2);
 
-		/* Add them up */
+		// Add them up
 		MmxPaddwRegToReg(x86_MM0 + 2, x86_MM2 + 2);
 		MmxPaddwRegToReg(x86_MM1 + 2, x86_MM3 + 2);
 	}
 
-	/* 
-	** only thing is when we are responsible for clamping
-	** so we adopt unsigned here?
-	*/
+	// Only thing is when we are responsible for clamping
+	// So we adopt unsigned here?
+	
 	MmxPaddswRegToReg(x86_MM0, x86_MM0 + 2);
 	MmxPaddswRegToReg(x86_MM1, x86_MM1 + 2);
 
@@ -605,10 +576,7 @@ void RSP_Sections_VMADN ( OPCODE RspOp, DWORD AccumStyle ) {
 void RSP_Sections_VMULF ( OPCODE RspOp, DWORD AccumStyle ) {
 	char Reg[256];
 
-	/*****************************************
-	** VMULF 
-	**  - affects the middle 32-bits, s16*s16*2
-	******************************************/
+	// VMULF - affects the middle 32-bits, s16*s16*2
 
 	if (AccumStyle == High16BitAccum) {
 		MmxXorRegToReg(x86_MM0, x86_MM0);
@@ -618,13 +586,13 @@ void RSP_Sections_VMULF ( OPCODE RspOp, DWORD AccumStyle ) {
 
 	RSPOpC = RspOp;
 
-	/**** Load source registers ****/
+	// Load source registers
 	sprintf(Reg, "RSP_Vect[%i].HW[0]", RspOp.rd);
 	MmxMoveQwordVariableToReg(x86_MM0, &RSP_Vect[RspOp.rd].HW[0], Reg);
 	sprintf(Reg, "RSP_Vect[%i].HW[4]", RspOp.rd);
 	MmxMoveQwordVariableToReg(x86_MM1, &RSP_Vect[RspOp.rd].HW[4], Reg);
 
-	/******* VMULF *******/
+	// VMULF
 	if ((RspOp.rs & 0x0f) < 2) {
 		sprintf(Reg, "RSP_Vect[%i].HW[0]", RspOp.rt);
 		MmxMoveQwordVariableToReg(x86_MM2, &RSP_Vect[RspOp.rt].HW[0], Reg);
@@ -665,10 +633,7 @@ void RSP_Sections_VMULF ( OPCODE RspOp, DWORD AccumStyle ) {
 void RSP_Sections_VMACF ( OPCODE RspOp, DWORD AccumStyle ) {
 	char Reg[256];
 
-	/*****************************************
-	** VMACF 
-	**  - affects the upper 32-bits, s16*s16*2
-	******************************************/
+	// VMACF - affects the upper 32-bits, s16*s16*2
 
 	if (AccumStyle == High16BitAccum) {
 		return;
@@ -676,13 +641,13 @@ void RSP_Sections_VMACF ( OPCODE RspOp, DWORD AccumStyle ) {
 
 	RSPOpC = RspOp;
 
-	/**** Load source registers ****/
+	// Load source registers
 	sprintf(Reg, "RSP_Vect[%i].HW[0]", RspOp.rd);
 	MmxMoveQwordVariableToReg(x86_MM0 + 2, &RSP_Vect[RspOp.rd].HW[0], Reg);
 	sprintf(Reg, "RSP_Vect[%i].HW[4]", RspOp.rd);
 	MmxMoveQwordVariableToReg(x86_MM1 + 2, &RSP_Vect[RspOp.rd].HW[4], Reg);
 
-	/******* VMACF *******/
+	// VMACF
 	if ((RspOp.rs & 0x0f) < 2) {
 		sprintf(Reg, "RSP_Vect[%i].HW[0]", RspOp.rt);
 		MmxMoveQwordVariableToReg(x86_MM2 + 2, &RSP_Vect[RspOp.rt].HW[0], Reg);
@@ -722,9 +687,9 @@ void RSP_Sections_VMACF ( OPCODE RspOp, DWORD AccumStyle ) {
 	MmxPaddswRegToReg(x86_MM1, x86_MM1 + 2);
 }
 
-/******************** Microcode Sections *********************/
+// Microcode sections
 
-static DWORD Section_000_VMADN; /* Yah i know, but leave it */
+static DWORD Section_000_VMADN; // Yeah I know, but leave it
 
 Boolean Check_Section_000(void)
 {
@@ -733,13 +698,9 @@ Boolean Check_Section_000(void)
 
 	RSP_LW_IMEM(CompilePC + 0x00, &op0.Hex);
 
-	/************************************
-	** Example: (mario audio microcode)
-	** 
-	** 0x574 VMUDN	$v30, $v3, $v23
-	** 0x578 VMADN	$v30, $v4, $v23
-	** 
-	*************************************/
+// Example: (Mario audio microcode)
+// 0x574 VMUDN	$v30, $v3, $v23
+// 0x578 VMADN	$v30, $v4, $v23
 
 	if (!(op0.op == RSP_CP2 && (op0.rs & 0x10) != 0 && op0.funct == RSP_VECTOR_VMUDN)) {
 		return FALSE;
@@ -760,12 +721,12 @@ Boolean Check_Section_000(void)
 		}
 	}
 
-	/* We need at least 1 VMADN */
+	// We need at least 1 VMADN
 	if (Section_000_VMADN == 0) {
 		return FALSE;
 	}
 
-	/* FIXME: check dest & flushes */
+	// TODO: check destination and flushes
 	if (TRUE == WriteToAccum(7, CompilePC + 0x4 + (Section_000_VMADN * 4) - 0x4)) {
 		return FALSE;
 	}
@@ -838,12 +799,9 @@ Boolean Check_Section_001(void)
 
 	RSP_LW_IMEM(CompilePC + 0x00, &op0.Hex);
 
-	/************************************
-	** Example: (mario audio microcode)
-	** 
-	** 0xCC0	VMULF	$v28, $v28, $v10 [6]
-	** 0xCC4	VMACF	$v28, $v17, $v16
-	*************************************/
+// Example: (Mario audio microcode)
+// 0xCC0	VMULF	$v28, $v28, $v10 [6]
+// 0xCC4	VMACF	$v28, $v17, $v16
 
 	if (!(op0.op == RSP_CP2 && (op0.rs & 0x10) != 0 && op0.funct == RSP_VECTOR_VMULF)) {
 		return FALSE;
@@ -864,7 +822,7 @@ Boolean Check_Section_001(void)
 		}
 	}
 
-	/* We need at least 1 VMACF */
+	// We need at least 1 VMACF
 	if (Section_001_VMACF == 0) {
 		return FALSE;
 	}
@@ -873,7 +831,7 @@ Boolean Check_Section_001(void)
 		return FALSE;
 	}
 
-	/* dests are checked elsewhere, this is fine */
+	// Destinations are checked elsewhere, this is fine
 	if (TRUE == WriteToAccum(7, CompilePC + 0x4 + (Section_001_VMACF * 4) - 0x4)) {
 		return FALSE;
 	}
@@ -931,9 +889,8 @@ Boolean Check_Section_002(void)
 		RSP_LW_IMEM(CompilePC + (Count * 0x04), &op[Count].Hex);
 	}
 
-	/************************************
-	** Example: (mario audio microcode)
-	** 
+	/*
+	** Example: (Mario audio microcode)
 	** 5F4 VMUDH $v2, $v21, $v27 [6]
 	** 5F8 VMADH $v2, $v20, $v27 [7]
 	** 5FC VMADH $v2, $v19, $v30 [0]
@@ -944,9 +901,9 @@ Boolean Check_Section_002(void)
 	** 610 VMADH $v2, $v14, $v30 [5]
 	** 614 VMADH $v2, $v13, $v30 [6]
 	** 618 VMADH $v2, $v30, $v31 [5]
-	** 61C VSAW	$v26 [9], $v7, $v28 
-	** 620 VSAW	$v28 [8], $v7, $v28 
-	************************************/
+	** 61C VSAW	$v26 [9], $v7, $v28
+	** 620 VSAW	$v28 [8], $v7, $v28
+	*/
 
 	if (IsMmxEnabled == FALSE) {
 		return FALSE;
@@ -1004,12 +961,12 @@ void Compile_Section_002 ( void ) {
 	vmudh = op[0];
 	RSP_Sections_VMUDH(vmudh, High16BitAccum);
 	
-	/******* VMADHs *******/
+	// VMADHs
 	for (Count = 1; Count < 10; Count++) {
 		RSP_Sections_VMADH(op[Count], High16BitAccum);
 	}
 
-	/***** VSAWs *****/
+	// VSAWs
 	vsaw = op[10];
 	MmxXorRegToReg(x86_MM4, x86_MM4);
 	sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.sa);
@@ -1037,14 +994,12 @@ Boolean Check_Section_003(void)
 		RSP_LW_IMEM(CompilePC + (Count * 0x04), &op[Count].Hex);
 	}
 
-	/************************************
-	** Example: (zelda audio microcode)
-	** 
-	** VMUDM $v23, $v31, $v23 [7]
-	** VMADH $v23, $v31, $v22 [7]
-	** VMADM $v22, $v25, $v18 [4]
-	** VMADN $v23, $v31, $v30 [0]
-	************************************/
+
+// Example: (Zelda audio microcode)
+// VMUDM $v23, $v31, $v23 [7]
+// VMADH $v23, $v31, $v22 [7]
+// VMADM $v22, $v25, $v18 [4]
+// VMADN $v23, $v31, $v30 [0]
 
 	if (op[0].Hex == 0x4BF7FDC5 && op[1].Hex == 0x4BF6FDCF && op[2].Hex == 0x4B92CD8D && op[3].Hex == 0x4B1EFDCE) {
 		if (TRUE == WriteToAccum(7, CompilePC + 0xc))

@@ -3,21 +3,22 @@
 
 #include <Common/stdtypes.h>
 
-/*
- * pointer to RSP operation code functions or "func"
- * This is the type of all RSP interpreter and recompiler functions.
- */
+// Pointer to RSP operation code functions or "func"
+// This is the type of all RSP interpreter and recompiler functions
+
 typedef void(*p_func)(void);
 
+// TODO: Rewrite/remove/address?
 /*
- * `BOOL` is Windows-specific so is going to tend to be avoided.
- * `int` is the exact replacement.
- *
- * However, saying "int" all the time for true/false is a little ambiguous.
- *
- * Maybe in the future, with C++ (or C99) rewrites, we can switch to `bool`.
- * Until then, a simple type definition will help emphasize true/false logic.
- */
+`BOOL` is Windows-specific so is going to tend to be avoided.
+`int` is the exact replacement.
+
+However, saying "int" all the time for true/false is a little ambiguous.
+
+Maybe in the future, with C++ (or C99) rewrites, we can switch to `bool`.
+Until then, a simple type definition will help emphasize true/false logic.
+*/
+
 typedef int Boolean;
 #if !defined(FALSE) && !defined(TRUE)
 #define FALSE           0

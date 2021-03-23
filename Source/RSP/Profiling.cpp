@@ -19,7 +19,7 @@ typedef PROFILE_ENRTIES::value_type   PROFILE_VALUE;
 typedef struct { SPECIAL_TIMERS Timer; char * Name; } TIMER_NAME;
 
 	DWORD m_CurrentTimerAddr, CurrentDisplayCount;
-	DWORD m_StartTimeHi, m_StartTimeLo; //The Current Timer start time
+	DWORD m_StartTimeHi, m_StartTimeLo; // The current timer start time
 	PROFILE_ENRTIES m_Entries;
 
 public:	
@@ -28,7 +28,7 @@ public:
 		m_CurrentTimerAddr = Timer_None;
 	}
 	
-	//recording timing against current timer, returns the address of the timer stoped
+	// Recording timing against current timer, returns the address of the timer stopped
 	DWORD StartTimer ( DWORD Address )
 	{
 		DWORD OldTimerAddr = StopTimer();
@@ -86,13 +86,13 @@ public:
 		return OldTimerAddr;
 	}
 
-	//Reset all the counters back to 0
+	// Reset all the counters back to 0
 	void ResetCounters ( void )
 	{
 		m_Entries.clear();
 	}
 
-	//Generate a log file with the current results, this will also reset the counters
+	// Generate a log file with the current results, this will also reset the counters
 	void GenerateLog   ( void )
 	{
 		stdstr LogFileName;
@@ -101,21 +101,21 @@ public:
 			Log.Open("RSP Profiling.txt");
 			LogFileName = Log.FileName();
 
-			//Get the total time
+			// Get the total time
 			__int64 TotalTime = 0;
 			for (PROFILE_ENRTY itemTime = m_Entries.begin(); itemTime != m_Entries.end(); itemTime++ )
 			{
 				TotalTime += itemTime->second;
 			}
 
-			//Create a sortable list of items
+			// Create a sortable list of items
 			std::vector<PROFILE_VALUE *> ItemList;
 			for (PROFILE_ENRTY Entry = m_Entries.begin(); Entry != m_Entries.end(); Entry++ )
 			{
 				ItemList.push_back(&(*Entry));
 			}
 
-			//sort the list with a basic bubble sort
+			// Sort the list with a basic bubble sort
 			if (ItemList.size() > 0)
 			{
 				for (size_t OuterPass = 0; OuterPass < (ItemList.size() - 1); OuterPass++ )
@@ -135,7 +135,7 @@ public:
 			TIMER_NAME TimerNames[] = {
 				{Timer_Compiling,     "RSP: Compiling"},
 				{Timer_RSP_Running,   "RSP: Running"},
-				{Timer_R4300_Running, "R4300: Running"},
+				{Timer_R4300_Running, "R4300i: Running"},
 				{Timer_RDP_Running,   "RDP: Running"},
 			};
 

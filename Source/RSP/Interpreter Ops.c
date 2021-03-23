@@ -13,6 +13,8 @@
 #include "Types.h"
 
 #include <float.h>
+
+// TODO: Is this still an issue? If so, investigate, and if not, remove this!
 /*
  * Unfortunately, GCC 4.8.2 stable still has a bug with their <float.h> that
  * includes a different copy of <float.h> from a different directory.
@@ -22,6 +24,7 @@
  * It also is possible to emulate the RSP divide op-codes using a hardware-
  * accurate LUT instead of any floating-point functions, so that works, too.
  */
+
 #ifndef _MCW_RC
 #define	_MCW_RC		0x00000300
 #endif
@@ -32,7 +35,8 @@
 extern UWORD32 Recp, RecpResult, SQroot, SQrootResult;
 extern Boolean AudioHle, GraphicsHle;
 
-/************************* OpCode functions *************************/
+// Opcode functions
+
 void RSP_Opcode_SPECIAL ( void ) {
 	RSP_Special[ RSPOpC.funct ]();
 }
@@ -164,7 +168,8 @@ void RSP_Opcode_SC2 (void) {
 	RSP_Sc2 [ RSPOpC.rd ]();
 }
 
-/********************** R4300i OpCodes: Special **********************/
+// R4300i Opcodes: Special
+
 void RSP_Special_SLL ( void ) {
 	RSP_GPR[RSPOpC.rd].W = RSP_GPR[RSPOpC.rt].W << RSPOpC.sa;
 }
@@ -249,7 +254,8 @@ void RSP_Special_SLTU (void) {
 	RSP_GPR[RSPOpC.rd].UW = (RSP_GPR[RSPOpC.rs].UW < RSP_GPR[RSPOpC.rt].UW) ? 1 : 0;
 }
 
-/********************** R4300i OpCodes: RegImm **********************/
+// R4300i Opcodes: RegImm
+
 void RSP_Opcode_BLTZ ( void ) {
 	RSP_NextInstruction = DELAY_SLOT;
 	RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W <  0);
@@ -272,7 +278,8 @@ void RSP_Opcode_BGEZAL ( void ) {
 	RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W >= 0);
 }
 
-/************************** Cop0 functions *************************/
+// COP0 functions
+
 void RSP_Cop0_MF (void) {
 	if (LogRDP && CPUCore == InterpreterCPU)
 	{		
@@ -307,7 +314,7 @@ void RSP_Cop0_MF (void) {
 	case 11: RSP_GPR[RSPOpC.rt].W = *RSPInfo.DPC_STATUS_REG; break;
 	case 12: RSP_GPR[RSPOpC.rt].W = *RSPInfo.DPC_CLOCK_REG; break;
 	default:
-		DisplayError("have not implemented RSP MF CP0 reg %s (%d)",COP0_Name(RSPOpC.rd),RSPOpC.rd);
+		DisplayError("We have not implemented RSP MF CP0 reg %s (%d)",COP0_Name(RSPOpC.rd),RSPOpC.rd);
 	}
 }
 
@@ -390,11 +397,12 @@ void RSP_Cop0_MT (void) {
 		if ( ( RSP_GPR[RSPOpC.rt].W & DPC_CLR_CLOCK_CTR ) != 0) { /* DisplayError("RSP: DPC_STATUS_REG: DPC_CLR_CLOCK_CTR"); */ }
 		break;
 	default:
-		DisplayError("have not implemented RSP MT CP0 reg %s (%d)",COP0_Name(RSPOpC.rd),RSPOpC.rd);
+		DisplayError("We have not implemented RSP MT CP0 reg %s (%d)",COP0_Name(RSPOpC.rd),RSPOpC.rd);
 	}
 }
 
-/************************** Cop2 functions *************************/
+// COP2 functions
+
 void RSP_Cop2_MF (void) {
 	int element = (RSPOpC.sa >> 1);
 	RSP_GPR[RSPOpC.rt].B[1] = RSP_Vect[RSPOpC.rd].B[15 - element];
@@ -432,7 +440,8 @@ void RSP_COP2_VECTOR (void) {
 	RSP_Vector[ RSPOpC.funct ]();
 }
 
-/************************** Vect functions **************************/
+// Vector functions
+
 void RSP_Vector_VMULF (void) {
 	int el, del;
 	UWORD32 temp;
@@ -1264,7 +1273,7 @@ void RSP_Vector_VMRG (void) {
 		} else {
 			result.HW[el] = RSP_Vect[RSPOpC.rt].HW[del];
 		}
-		RSP_ACCUM[el].HW[1] = result.HW[el]; //suggested by angrylion
+		RSP_ACCUM[el].HW[1] = result.HW[el]; // Suggested by Angrylion
 	}
 	RSP_Vect[RSPOpC.sa] = result;
 }
@@ -1548,7 +1557,8 @@ void RSP_Vector_VRSQH (void) {
 
 void RSP_Vector_VNOOP (void) {}
 
-/************************** lc2 functions **************************/
+// LC2 functions
+
 void RSP_Opcode_LBV ( void ) {
 	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 0)) & 0xFFF;
 	RSP_LBV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
@@ -1604,7 +1614,8 @@ void RSP_Opcode_LTV ( void ) {
 	RSP_LTV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
-/************************** sc2 functions **************************/
+// SC2 functions
+
 void RSP_Opcode_SBV ( void ) {
 	uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 0)) & 0xFFF;
 	RSP_SBV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
@@ -1673,9 +1684,9 @@ void rsp_UnknownOpcode (void) {
 
 	if (InRSPCommandsWindow) {
 		SetRSPCommandViewto( *PrgCount );
-		DisplayError("Unhandled Opcode\n%s\n\nStoping Emulation!", RSPOpcodeName(RSPOpC.Hex,*PrgCount));
+		DisplayError("Unhandled Opcode\n%s\n\nStopping emulation", RSPOpcodeName(RSPOpC.Hex,*PrgCount));
 	} else {
-		sprintf(Message,"Unhandled Opcode\n%s\n\nStoping Emulation!\n\nDo you wish to enter the debugger ?", 
+		sprintf(Message,"Unhandled Opcode\n%s\n\nStopping emulation.\n\nWOuld you like to open the debugger?", 
 			RSPOpcodeName(RSPOpC.Hex,*PrgCount));
 		response = MessageBox(NULL,Message,"Error", MB_YESNO | MB_ICONERROR);
 		if (response == IDYES) {		

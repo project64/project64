@@ -30,7 +30,7 @@ int AllocateMemory (void) {
 	if (JumpTables == NULL){
 		JumpTables = (BYTE *)VirtualAlloc( NULL, 0x1000 * MaxMaps, MEM_COMMIT, PAGE_READWRITE );
 		if( JumpTables == NULL ) {  
-			DisplayError("Not enough memory for Jump Table!");
+			DisplayError("Not enough memory for jump table!");
 			return FALSE;
 		}
 	}
@@ -141,7 +141,7 @@ void RSP_LFV_DMEM ( uint32_t Addr, int vect, int element ) {
 void RSP_LH_DMEM ( uint32_t Addr, uint16_t * Value ) {
 	if ((Addr & 0x1) != 0) {
 		if (Addr > 0xFFE) {
-			DisplayError("hmmmm.... Problem with:\nRSP_LH_DMEM");
+			DisplayError("There is a problem with:\nRSP_LH_DMEM");
 			return;
 		}
 		Addr &= 0xFFF;
@@ -260,7 +260,7 @@ void RSP_LW_DMEM ( uint32_t Addr, uint32_t * Value ) {
 	if ((Addr & 0x3) != 0) {
 		Addr &= 0xFFF;
 		if (Addr > 0xFFC) {
-			DisplayError("hmmmm.... Problem with:\nRSP_LW_DMEM");
+			DisplayError("There is a problem with:\nRSP_LW_DMEM");
 			return;
 		}
 		*Value  = *(uint8_t *)(RSPInfo.DMEM + ((Addr + 0) ^ 3)) << 24;
@@ -516,7 +516,7 @@ void RSP_SW_DMEM ( uint32_t Addr, uint32_t Value ) {
 	Addr &= 0xFFF;
 	if ((Addr & 0x3) != 0) {
 		if (Addr > 0xFFC) {
-			DisplayError("hmmmm.... Problem with:\nRSP_SW_DMEM");
+			DisplayError("There is a problem with:\nRSP_SW_DMEM");
 			return;
 		}
 		*(uint8_t *)(RSPInfo.DMEM + ((Addr + 0) ^ 3)) = (Value >> 24) & 0xFF;

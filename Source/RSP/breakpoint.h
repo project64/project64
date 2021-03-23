@@ -21,4 +21,3 @@ void RemoveAllBpoint ( void );
 int  AddRSP_BPoint ( DWORD Location, int Confirm );
 int  CheckForRSPBPoint ( DWORD Location );
 void RemoveRSPBreakPoint (DWORD Location);
-

@@ -388,14 +388,14 @@ DWORD RunInterpreterCPU(DWORD Cycles) {
 				if (InRSPCommandsWindow) {
 					Enter_RSP_Commands_Window();
 					if (Stepping_Commands) {
-						DisplayError ( "Encounted a R4300i Breakpoint" );
+						DisplayError ( "Encountered an R4300i breakpoint" );
 					} else {
-						DisplayError ( "Encounted a R4300i Breakpoint\n\nNow Stepping" );
+						DisplayError ( "Encountered an R4300i breakpoint\n\nNow stepping" );
 						SetRSPCommandViewto( *PrgCount );
 						SetRSPCommandToStepping();
 					}
 				} else {
-					DisplayError ( "Encounted a RSP Breakpoint\n\nEntering Command Window" );
+					DisplayError ( "Encountered an RSP breakpoint\n\nEntering command window" );
 					Enter_RSP_Commands_Window();
 				}
 			}
@@ -413,12 +413,11 @@ DWORD RunInterpreterCPU(DWORD Cycles) {
 			}
 		}
 
-
 		RDP_LogLoc(*PrgCount);
 
 		RSP_LW_IMEM(*PrgCount, &RSPOpC.Hex);
 		RSP_Opcode[ RSPOpC.op ]();
-		RSP_GPR[0].W = 0x00000000; /* MIPS $zero hard-wired to 0 */
+		RSP_GPR[0].W = 0x00000000; // MIPS $zero hard-wired to 0
 
 		switch (RSP_NextInstruction) {
 		case NORMAL: 
