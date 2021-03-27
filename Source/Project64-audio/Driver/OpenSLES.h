@@ -7,6 +7,7 @@
 // Copyright(C) 2003 JttL
 // Copyright(C) 2002 Hacktarux
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
+
 #pragma once
 #include <Common/SyncEvent.h>
 #include <Project64-audio/Audio_1.1.h>
