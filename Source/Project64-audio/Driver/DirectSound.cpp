@@ -3,6 +3,7 @@
 // Copyright(C) 2001-2021 Project64.
 // Copyright(C) 2000-2015 Azimer
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
+
 #include <windows.h>
 #include <mmreg.h>
 #include <dsound.h>
@@ -87,7 +88,7 @@ void DirectSoundDriver::StopAudio()
         m_AudioIsDone = true;
         if (WaitForSingleObject((HANDLE)m_handleAudioThread, 5000) == WAIT_TIMEOUT)
         {
-            WriteTrace(TraceAudioDriver, TraceError, "time out on close");
+            WriteTrace(TraceAudioDriver, TraceError, "Time out on close");
 
             TerminateThread((HANDLE)m_handleAudioThread, 1);
         }
@@ -184,7 +185,7 @@ void DirectSoundDriver::AudioThreadProc()
 
     if (!m_AudioIsDone)
     {
-        WriteTrace(TraceAudioDriver, TraceDebug, "Audio Thread Started...");
+        WriteTrace(TraceAudioDriver, TraceDebug, "Audio thread started...");
         DWORD dwStatus;
         lpdsbuff->GetStatus(&dwStatus);
         if ((dwStatus & DSBSTATUS_PLAYING) == 0)
@@ -223,7 +224,7 @@ void DirectSoundDriver::AudioThreadProc()
         // This means we had a buffer segment skipped
         if (next_pos != write_pos)
         {
-            WriteTrace(TraceAudioDriver, TraceDebug, "segment skipped");
+            WriteTrace(TraceAudioDriver, TraceDebug, "Buffer segment skipped");
         }
 
         // Store our last position
@@ -244,7 +245,7 @@ void DirectSoundDriver::AudioThreadProc()
         // Time to write out to the buffer
         LPVOID lpvPtr1, lpvPtr2;
         DWORD dwBytes1, dwBytes2;
-        WriteTrace(TraceAudioDriver, TraceVerbose, "Lock Buffer");
+        WriteTrace(TraceAudioDriver, TraceVerbose, "Lock buffer");
         if (lpdsbuff->Lock(write_pos, m_LOCK_SIZE, &lpvPtr1, &dwBytes1, &lpvPtr2, &dwBytes2, 0) != DS_OK)
         {
             WriteTrace(TraceAudioDriver, TraceError, "Error locking sound buffer");
@@ -262,8 +263,8 @@ void DirectSoundDriver::AudioThreadProc()
             }
         }
 
-        // Fills dwBytes to the Sound Buffer
-        WriteTrace(TraceAudioDriver, TraceVerbose, "Unlock Buffer");
+        // Fills dwBytes to the sound buffer
+        WriteTrace(TraceAudioDriver, TraceVerbose, "Unlock buffer");
         if (FAILED(lpdsbuff->Unlock(lpvPtr1, dwBytes1, lpvPtr2, dwBytes2)))
         {
             WriteTrace(TraceAudioDriver, TraceError, "Error unlocking sound buffer");
@@ -276,5 +277,5 @@ void DirectSoundDriver::AudioThreadProc()
     {
         lpdsbuf->Stop();
     }
-    WriteTrace(TraceAudioDriver, TraceDebug, "Audio Thread Terminated...");
+    WriteTrace(TraceAudioDriver, TraceDebug, "Audio thread terminated...");
 }
