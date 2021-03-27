@@ -3,6 +3,7 @@
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2000-2015 Azimer
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
+
 #include "SoundBase.h"
 #include <Common/Util.h>
 #include <Project64-audio/AudioSettings.h>
@@ -164,7 +165,7 @@ void SoundDriverBase::BufferAudio()
         m_AI_DMAPrimaryBytes -= 4;
         if (m_AI_DMAPrimaryBytes == 0)
         {
-            WriteTrace(TraceAudioDriver, TraceVerbose, "Emptied Primary Buffer");
+            WriteTrace(TraceAudioDriver, TraceVerbose, "Emptied primary buffer");
             m_AI_DMAPrimaryBytes = m_AI_DMASecondaryBytes; m_AI_DMAPrimaryBuffer = m_AI_DMASecondaryBuffer; // Switch
             m_AI_DMASecondaryBytes = 0; m_AI_DMASecondaryBuffer = NULL;
             *g_AudioInfo.AI_STATUS_REG = AI_STATUS_DMA_BUSY;
