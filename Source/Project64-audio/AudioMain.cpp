@@ -7,6 +7,7 @@
 // Copyright(C) 2003 JttL
 // Copyright(C) 2002 Hacktarux
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
+
 #include <Common/Util.h>
 #ifdef _WIN32
 #include <Project64-audio/Driver/DirectSound.h>
@@ -30,7 +31,7 @@ void SetTimerResolution ( void );
 #define ENDIAN_SWAP_BYTE    (~0 & 0x7 & 3)
 #define BES(address)    ((address) ^ ENDIAN_SWAP_BYTE)
 
-/* Read header for type definition */
+// Read header for type definition
 AUDIO_INFO g_AudioInfo;
 
 bool g_PluginInit = false;
@@ -71,7 +72,7 @@ EXPORT void CALL AiDacrateChanged(int SystemType)
     WriteTrace(TraceAudioInterface, TraceDebug, "Start (SystemType: %d)", SystemType);
     if (!g_PluginInit)
     {
-        WriteTrace(TraceAudioInterface, TraceNotice, "Plugin has not been initilized");
+        WriteTrace(TraceAudioInterface, TraceNotice, "Plugin has not been initialized");
         WriteTrace(TraceAudioInterface, TraceDebug, "Done");
         return;
     }
@@ -97,7 +98,7 @@ EXPORT void CALL AiDacrateChanged(int SystemType)
 
         if (Frequency < 8000)
         {
-            WriteTrace(TraceAudioDriver, TraceDebug, "Not Audio Data!");
+            WriteTrace(TraceAudioDriver, TraceDebug, "Not audio data!");
             return;
         }
 
@@ -156,7 +157,7 @@ EXPORT void CALL AiUpdate(int32_t Wait)
     }
     else
     {
-        pjutil::Sleep(1); // TODO:  Fixme -- Ai Update appears to be problematic
+        pjutil::Sleep(1); // TODO:  Fix this: Ai update appears to be problematic
     }
     WriteTrace(TraceAudioInterface, TraceDebug, "Done");
 }
@@ -200,9 +201,9 @@ EXPORT void CALL GetDllInfo(PLUGIN_INFO * PluginInfo)
     PluginInfo->Version = 0x0101;
     PluginInfo->Type = PLUGIN_TYPE_AUDIO;
 #ifdef _DEBUG
-    sprintf(PluginInfo->Name, "Project64 Audio Plugin (Debug): %s", VER_FILE_VERSION_STR);
+    sprintf(PluginInfo->Name, "Project64 audio plugin (Debug): %s", VER_FILE_VERSION_STR);
 #else
-    sprintf(PluginInfo->Name, "Project64 Audio Plugin: %s", VER_FILE_VERSION_STR);
+    sprintf(PluginInfo->Name, "Project64 audio plugin: %s", VER_FILE_VERSION_STR);
 #endif
     PluginInfo->MemoryBswaped = true;
     PluginInfo->NormalMemory = false;
