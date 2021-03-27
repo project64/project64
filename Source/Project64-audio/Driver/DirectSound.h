@@ -9,8 +9,8 @@ class DirectSoundDriver :
 public:
     DirectSoundDriver();
     bool Initialize();
-    void StopAudio();							// Stops the Audio PlayBack (as if paused)
-    void StartAudio();							// Starts the Audio PlayBack (as if unpaused)
+    void StopAudio();							// Stops the audio playback (as if paused)
+    void StartAudio();							// Starts the audio playback (as if unpaused)
     void SetFrequency(uint32_t Frequency, uint32_t BufferSize);
     void SetVolume(uint32_t Volume);
 
