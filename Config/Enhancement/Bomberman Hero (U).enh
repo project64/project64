@@ -1,0 +1,7 @@
+[4446FDD6-E3788208-C:45]
+Name=Bomberman Hero (U)
+
+$Lagfix
+Note=For consistent 60fps.
+8004A822 000D
+
