@@ -1,9 +1,9 @@
 #pragma once
 
-//Plugin controller
+// Plugin controller
 #include <Project64-core/Plugins/PluginClass.h>
 
-//Base Plugin class, all plugin derive from this, handles core  functions
+// Base plugin class, all plugins derive from this and it handles core functions
 #include <Project64-core/Plugins/PluginBase.h>
 
 #include "Plugins/GFXPlugin.h"
