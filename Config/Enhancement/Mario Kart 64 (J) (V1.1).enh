@@ -7,3 +7,8 @@ OnByDefault=1
 81001A1E 0002
 81001C74 240A
 81001C76 0002
+
+$Sixty Frames
+Note=Single player only for now.
+80000FC3 0000
+800014AF 0001
