@@ -25,7 +25,7 @@ public:
 
     bool Initialize(const char * BaseDirectory, const char * AppName);
 
-    //return the values
+    // Return the values
     bool LoadBool(SettingID Type);
     bool LoadBool(SettingID Type, bool & Value);
     bool LoadBoolIndex(SettingID Type, uint32_t index);
@@ -41,7 +41,7 @@ public:
     bool LoadStringIndex(SettingID Type, uint32_t index, std::string & Value);
     bool LoadStringIndex(SettingID Type, uint32_t index, char * Buffer, uint32_t BufferSize);
 
-    //Load the default value for the setting
+    // Load the default value for the setting
     bool LoadDefaultBool(SettingID Type);
     void LoadDefaultBool(SettingID Type, bool & Value);
     bool LoadDefaultBoolIndex(SettingID Type, uint32_t index);
@@ -57,7 +57,7 @@ public:
     void LoadDefaultStringIndex(SettingID Type, uint32_t index, std::string & Value);
     void LoadDefaultStringIndex(SettingID Type, uint32_t index, char * Buffer, uint32_t BufferSize);
 
-    //Update the settings
+    // Update the settings
     void SaveBool(SettingID Type, bool Value);
     void SaveBoolIndex(SettingID Type, uint32_t index, bool Value);
     void SaveDword(SettingID Type, uint32_t Value);
@@ -71,17 +71,17 @@ public:
     void DeleteSetting(SettingID Type);
     void DeleteSettingIndex(SettingID Type, uint32_t index);
 
-    //Register Notification of change
+    // Register notification of change
     void RegisterChangeCB(SettingID Type, void * Data, SettingChangedFunc Func);
     void UnregisterChangeCB(SettingID Type, void * Data, SettingChangedFunc Func);
 
-    // information about setting
+    // Information about setting
     SettingType GetSettingType(SettingID Type);
     bool IndexBasedSetting(SettingID Type);
     void SettingTypeChanged(SettingType Type);
     bool IsSettingSet(SettingID Type);
 
-    // static functions for plugins
+    // Static functions for plugins
     static uint32_t  GetSetting(CSettings * _this, SettingID Type);
     static const char * GetSettingSz(CSettings * _this, SettingID Type, char * Buffer, uint32_t BufferSize);
     static void SetSetting(CSettings * _this, SettingID ID, uint32_t Value);
@@ -93,7 +93,7 @@ public:
     static void sRegisterChangeCB(CSettings * _this, SettingID Type, void * Data, SettingChangedFunc Func);
     static void sUnregisterChangeCB(CSettings * _this, SettingID Type, void * Data, SettingChangedFunc Func);
 
-    //Notification
+    // Notification
     void NotifyCallBacks(SettingID Type);
     void AddHandler(SettingID TypeID, CSettingType * Handler);
 

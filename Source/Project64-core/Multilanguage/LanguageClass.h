@@ -1,9 +1,9 @@
 #pragma once
 
 #pragma warning(disable:4786)
-#include <string>   //stl string
-#include <map>      //stl map
-#include <list>     //stl list
+#include <string>   // STL string
+#include <map>      // STL map
+#include <list>     // STL list
 #include <Common/stdtypes.h>
 
 typedef std::map<int32_t, std::string, std::less<int32_t> > LANG_STRINGS;

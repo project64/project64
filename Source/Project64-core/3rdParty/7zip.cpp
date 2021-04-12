@@ -36,7 +36,7 @@ m_Opened(false)
     InFile_Open(&m_archiveStream.file, FileName);
     if (m_archiveStream.file.handle == INVALID_HANDLE_VALUE)
     {
-        //PrintError("can not open input file");
+        //PrintError("Can not open input file");
         return;
     }
     m_FileSize = GetFileSize(m_archiveStream.file.handle, NULL);
@@ -58,7 +58,7 @@ m_Opened(false)
     }
     else
     {
-        //SzArEx_Open will delete the passed db if it fails
+        // SzArEx_Open will delete the passed database if it fails
         m_db = NULL;
     }
 }
@@ -227,13 +227,13 @@ std::wstring C7zip::FileNameIndex(int index)
     std::wstring filename;
     if (m_db == NULL || m_db->FileNameOffsets == 0)
     {
-        /* no filename */
+        // No filename
         return filename;
     }
     int namelen = SzArEx_GetFileNameUtf16(m_db, index, NULL);
     if (namelen <= 0)
     {
-        /* no filename */
+        // No filename
         return filename;
     }
     filename.resize(namelen);

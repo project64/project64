@@ -4,16 +4,15 @@ enum LanguageStringID
 {
     EMPTY_STRING = 0,
 
-    /*********************************************************************************
-    * Meta Information                                                               *
-    *********************************************************************************/
-    //About DLL
+    // Meta Information
+
+    // About DLL
     LANGUAGE_NAME = 1,
     LANGUAGE_AUTHOR = 2,
     LANGUAGE_VERSION = 3,
     LANGUAGE_DATE = 4,
 
-    //About DLL Dialog
+    // About DLL dialog
     INI_CURRENT_LANG = 5,
     INI_AUTHOR = 6,
     INI_VERSION = 7,
@@ -23,12 +22,11 @@ enum LanguageStringID
     INI_CURRENT_CHT = 11,
     INI_CURRENT_RDX = 12,
 
-    //About INI title
+    // About INI title
     INI_TITLE = 20,
 
-    /*********************************************************************************
-    * Numbers                                                                        *
-    *********************************************************************************/
+    // Numbers
+
     NUMBER_0 = 50,
     NUMBER_1 = 51,
     NUMBER_2 = 52,
@@ -40,10 +38,9 @@ enum LanguageStringID
     NUMBER_8 = 58,
     NUMBER_9 = 59,
 
-    /*********************************************************************************
-    * Menu                                                                           *
-    *********************************************************************************/
-    //File Menu
+    // Menu
+
+    // File menu
     MENU_FILE = 100,
     MENU_OPEN = 101,
     MENU_ROM_INFO = 102,
@@ -56,7 +53,7 @@ enum LanguageStringID
     MENU_EXIT = 109,
     MENU_OPEN_COMBO = 110,
 
-    //System Menu
+    // System menu
     MENU_SYSTEM = 120,
     MENU_RESET = 121,
     MENU_PAUSE = 122,
@@ -75,7 +72,7 @@ enum LanguageStringID
     MENU_SWAPDISK = 135,
     MENU_ENHANCEMENT = 136,
 
-    //Options Menu
+    // Options menu
     MENU_OPTIONS = 140,
     MENU_FULL_SCREEN = 141,
     MENU_ON_TOP = 142,
@@ -86,20 +83,20 @@ enum LanguageStringID
     MENU_SHOW_CPU = 147,
     MENU_SETTINGS = 148,
 
-    //Debugger Menu
+    // Debugger menu
     MENU_DEBUGGER = 160,
 
-    //Language Menu
+    // Language menu
     MENU_LANGUAGE = 175,
 
-    //Help Menu
+    // Help menu
     MENU_HELP = 180,
     MENU_ABOUT_PJ64 = 182,
     MENU_WEBSITE = 184,
     MENU_SUPPORT_PROJECT64 = 185,
     MENU_DISCORD = 186,
 
-    //Current Save Slot menu
+    // Current save slot menu
     MENU_SLOT_DEFAULT = 190,
     MENU_SLOT_1 = 191,
     MENU_SLOT_2 = 192,
@@ -113,7 +110,7 @@ enum LanguageStringID
     MENU_SLOT_10 = 200,
     MENU_SLOT_SAVE = 201,
 
-    //Pop up Menu
+    // Pop up menu
     POPUP_PLAY = 210,
     POPUP_INFO = 211,
     POPUP_SETTINGS = 212,
@@ -122,7 +119,7 @@ enum LanguageStringID
     POPUP_PLAYDISK = 215,
 	POPUP_ENHANCEMENTS = 216,
 
-    //selecting save slot
+    // Selecting save slot
     SAVE_SLOT_DEFAULT = 220,
     SAVE_SLOT_1 = 221,
     SAVE_SLOT_2 = 222,
@@ -135,7 +132,7 @@ enum LanguageStringID
     SAVE_SLOT_9 = 229,
     SAVE_SLOT_10 = 230,
 
-    // Menu Descriptions (TODO: unused ? implement or remove)
+    // Menu descriptions (TODO: Unused? Implement or remove)
     MENUDES_OPEN = 250,
     MENUDES_ROM_INFO = 251,
     MENUDES_START = 252,
@@ -174,10 +171,10 @@ enum LanguageStringID
     MENUDES_GAME_SETTINGS = 285,
     MENUDES_GAME_CHEATS = 286,
 
-    /*********************************************************************************
-    * Rom Browser                                                                    *
-    *********************************************************************************/
-    //Rom Browser Fields
+
+    // ROM browser
+
+    // ROM browser fields
     RB_FILENAME = 300,
     RB_INTERNALNAME = 301,
     RB_GOODNAME = 302,
@@ -201,19 +198,18 @@ enum LanguageStringID
     RB_NAME = 321,
 
 
-    //Select Rom
+    // Select ROM
     SELECT_ROM_DIR = 320,
 
-    //Messages
+    // Messages
     RB_NOT_GOOD_FILE = 340,
 
-    /*********************************************************************************
-    * Options                                                                        *
-    *********************************************************************************/
-    //Options Title
+    // Options
+
+    // Options title
     OPTIONS_TITLE = 400,
 
-    //Tabs
+    // Tabs
     TAB_PLUGIN = 401,
     TAB_DIRECTORY = 402,
     TAB_OPTIONS = 403,
@@ -229,7 +225,7 @@ enum LanguageStringID
     TAB_DISKDRIVE = 413,
     TAB_DISKSETTINGS = 414,
 
-    //Plugin Dialog
+    // Plugin dialog
     PLUG_ABOUT = 420,
     PLUG_RSP = 421,
     PLUG_GFX = 422,
@@ -239,7 +235,7 @@ enum LanguageStringID
     PLUG_HLE_AUDIO = 426,
     PLUG_DEFAULT = 427,
 
-    //Directory Dialog
+    // Directory dialog
     DIR_PLUGIN = 440,
     DIR_ROM = 441,
     DIR_AUTO_SAVE = 442,
@@ -254,7 +250,7 @@ enum LanguageStringID
     DIR_TEXTURE = 451,
     DIR_SELECT_TEXTURE = 452,
 
-    //Options (general) Tab
+    // Options (general) tab
     OPTION_AUTO_SLEEP = 460,
     OPTION_AUTO_FULLSCREEN = 461,
     OPTION_BASIC_MODE = 462,
@@ -273,7 +269,7 @@ enum LanguageStringID
     OPTION_SHOW_STATUS_BAR = 474,
     OPTION_EXIT_FULLSCREEN_ON_LOSE_FOCUS = 475,
 
-    //Rom Browser Tab
+    // ROM browser tab
     RB_MAX_ROMS = 480,
     RB_ROMS = 481,
     RB_MAX_DIRS = 482,
@@ -289,7 +285,7 @@ enum LanguageStringID
     RB_REFRESH = 492,
     RB_FILEEXT = 493,
 
-    //Advanced Options
+    // Advanced options
     ADVANCE_INFO = 500,
     ADVANCE_DEFAULTS = 501,
     ADVANCE_CPU_STYLE = 502,
@@ -306,7 +302,7 @@ enum LanguageStringID
     ADVANCE_SMM_PROTECT = 513,
     ADVANCE_SMM_TLB = 514,
 
-    //Rom Options
+    // ROM options
     ROM_CPU_STYLE = 520,
     ROM_VIREFRESH = 521,
     ROM_MEM_SIZE = 522,
@@ -335,12 +331,12 @@ enum LanguageStringID
     ROM_DISK_SEEK_TIMING_TURBO = 5441,
     ROM_DISK_SEEK_TIMING_SLOW = 5442,
 
-    //Core Styles
+    // Core styles
     CORE_INTERPTER = 540,
     CORE_RECOMPILER = 541,
     CORE_SYNC = 542,
 
-    //Self Mod Methods
+    // Self-mod methods
     SMCM_NONE = 560,
     SMCM_CACHE = 561,
     SMCM_PROECTED = 562,
@@ -349,35 +345,35 @@ enum LanguageStringID
     SMCM_CHECK_ADV = 565,
     SMCM_CACHE2 = 566,
 
-    //Function Lookup memthod
+    // Function lookup method
     FLM_PLOOKUP = 570,
     FLM_VLOOKUP = 571,
     FLM_CHANGEMEM = 572,
 
-    //RDRAM Size
+    // RDRAM size
     RDRAM_4MB = 580,
     RDRAM_8MB = 581,
 
-    //Advanced Block Linking
+    // Advanced block linking
     ABL_ON = 600,
     ABL_OFF = 601,
 
-    //Save Type
+    // Save type
     SAVE_FIRST_USED = 620,
     SAVE_4K_EEPROM = 621,
     SAVE_16K_EEPROM = 622,
     SAVE_SRAM = 623,
     SAVE_FLASHRAM = 624,
 
-    //Shell Integration Tab
+    // Shell integration tab
     SHELL_TEXT = 640,
 
-    //Rom Notes
+    // ROM notes
     NOTE_STATUS = 660,
     NOTE_CORE = 661,
     NOTE_PLUGIN = 662,
 
-    // Accelerator Selector
+    // Accelerator selector
     ACCEL_CPUSTATE_TITLE = 680,
     ACCEL_MENUITEM_TITLE = 681,
     ACCEL_CURRENTKEYS_TITLE = 682,
@@ -392,7 +388,7 @@ enum LanguageStringID
     ACCEL_CPUSTATE_4 = 691,
     ACCEL_DETECTKEY = 692,
 
-    // Frame Rate Option
+    // Frame rate option
     STR_FR_VIS = 700,
     STR_FR_DLS = 701,
     STR_FR_PERCENT = 702,
@@ -403,23 +399,22 @@ enum LanguageStringID
     STR_INSREASE_SPEED = 710,
     STR_DECREASE_SPEED = 711,
 
-    //Bottom page buttons
+    // Bottom page buttons
     BOTTOM_RESET_PAGE = 720,
     BOTTOM_RESET_ALL = 721,
     BOTTOM_APPLY = 722,
     BOTTOM_CLOSE = 723,
     
-    //Disk Save Type
+    // Disk save type
     DISKSAVE_SHADOW = 730,
     DISKSAVE_RAM = 731,
 
-    /*********************************************************************************
-    * ROM Information                                                                *
-    *********************************************************************************/
-    //Rom Info Title Title
+    // ROM information
+
+    // ROM info title
     INFO_TITLE = 800,
 
-    //Rom Info Text
+    // ROM info text
     INFO_ROM_NAME_TEXT = 801,
     INFO_FILE_NAME_TEXT = 802,
     INFO_LOCATION_TEXT = 803,
@@ -432,17 +427,16 @@ enum LanguageStringID
     INFO_CIC_CHIP_TEXT = 810,
     INFO_MD5_TEXT = 811,
 
-    /*********************************************************************************
-    * Cheats                                                                         *
-    *********************************************************************************/
-    //Cheat List
+    // Cheats
+
+    // Cheat list
     CHEAT_TITLE = 1000,
     CHEAT_LIST_FRAME = 1001,
     CHEAT_NOTES_FRAME = 1002,
     CHEAT_MARK_ALL = 1003,
     CHEAT_MARK_NONE = 1004,
 
-    //Add Cheat
+    // Add cheat
     CHEAT_ADDCHEAT_FRAME = 1005,
     CHEAT_ADDCHEAT_NAME = 1006,
     CHEAT_ADDCHEAT_CODE = 1007,
@@ -451,13 +445,13 @@ enum LanguageStringID
     CHEAT_ADDCHEAT_NOTES = 1010,
     CHEAT_ADD_TO_DB = 1011,
 
-    //Code extension
+    // Code extension
     CHEAT_CODE_EXT_TITLE = 1012,
     CHEAT_CODE_EXT_TXT = 1013,
     CHEAT_OK = 1014,
     CHEAT_CANCEL = 1015,
 
-    //Digital Value
+    // Digital value
     CHEAT_QUANTITY_TITLE = 1016,
     CHEAT_CHOOSE_VALUE = 1017,
     CHEAT_VALUE = 1018,
@@ -470,18 +464,18 @@ enum LanguageStringID
     CHEAT_ADDCHEAT_OPT = 1025,
     CHEAT_ADDCHEAT_OPTDES = 1026,
 
-    //Edit Cheat
+    // Edit cheat
     CHEAT_EDITCHEAT_WINDOW = 1027,
     CHEAT_EDITCHEAT_UPDATE = 1028,
     CHEAT_CHANGED_MSG = 1029,
     CHEAT_CHANGED_TITLE = 1030,
 
-    //Cheat Popup Menu
+    // Cheat popup menu
     CHEAT_ADDNEW = 1040,
     CHEAT_EDIT = 1041,
     CHEAT_DELETE = 1042,
 
-    // short cut editor
+    // Short cut editor
     STR_SHORTCUT_RESET_TITLE = 1100,
     STR_SHORTCUT_RESET_TEXT = 1101,
     STR_SHORTCUT_FILEMENU = 1102,
@@ -489,9 +483,8 @@ enum LanguageStringID
     STR_SHORTCUT_OPTIONS = 1104,
     STR_SHORTCUT_SAVESLOT = 1105,
 
-    /*********************************************************************************
-    * Support Window                                                                       *
-    *********************************************************************************/
+    // Support window
+
     MSG_SUPPORT_TITLE = 1200,
     MSG_SUPPORT_INFO = 1201,
     MSG_SUPPORT_ENTER_CODE = 1202,
@@ -508,14 +501,12 @@ enum LanguageStringID
     MSG_SUPPORT_REQUESTCODE_SUCCESS = 1213,
     MSG_SUPPORT_REQUESTCODE_FAIL = 1214,
 
-    /*********************************************************************************
-    * Enhancements                                                                   *
-    *********************************************************************************/
+    // Enhancements
+
     ENHANCEMENT_TITLE = 1300,
 
-    /*********************************************************************************
-    * Messages                                                                       *
-    *********************************************************************************/
+    // Messages
+
     MSG_CPU_PAUSED = 2000,
     MSG_CPU_RESUMED = 2001,
     MSG_PERM_LOOP = 2002,
@@ -582,9 +573,8 @@ enum LanguageStringID
     MSG_CHEAT_INVALID_MSG = 2063,
     MSG_CHEAT_INVALID_TITLE = 2064,
 
-    /*********************************************************************************
-    * Android                                                                        *
-    *********************************************************************************/
+    // Android
+
     ANDROID_SETTINGS = 3000,
     ANDROID_FORUM = 3001,
     ANDROID_REPORT_BUG = 3002,
@@ -610,7 +600,7 @@ enum LanguageStringID
 	ANDROID_SUPPORT_PJ64 = 3022,
 	ANDROID_REVIEW_PJ64 = 3023,
 
-    //In game menu
+    // In-game menu
     ANDROID_MENU_SETTINGS = 3100,
     ANDROID_MENU_SAVESTATE = 3101,
     ANDROID_MENU_LOADSTATE = 3102,
@@ -626,7 +616,7 @@ enum LanguageStringID
     ANDROID_MENU_RESETFUNCTIONTIMES = 3112,
     ANDROID_MENU_DUMPFUNCTIONTIMES = 3113,
 
-    //Video plugin
+    // Video plugin
     ANDROID_VIDEO_NATIVE_RES = 3200,
 };
 

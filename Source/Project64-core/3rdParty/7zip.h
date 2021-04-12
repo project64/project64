@@ -55,13 +55,13 @@ private:
     int                m_CurrentFile;
     bool               m_Opened;
 
-    //Used for extraction
-    UInt32 m_blockIndex; // it can have any value before first call (if outBuffer = 0)
-    Byte * m_outBuffer; // it must be 0 before first call for each new archive.
-    size_t m_outBufferSize;  // it can have any value before first call (if outBuffer = 0)
+    // Used for extraction
+    UInt32 m_blockIndex; // It can have any value before first call (if outBuffer = 0)
+    Byte * m_outBuffer; // It must be 0 before first call for each new archive
+    size_t m_outBufferSize;  // It can have any value before first call (if outBuffer = 0)
 
     static void * AllocAllocImp(void *p, size_t size);
-    static void AllocFreeImp(void *p, void *address); /* address can be 0 */
+    static void AllocFreeImp(void *p, void *address); // Address can be 0
 
     static SRes SzFileReadImp(void *object, void *buffer, size_t *processedSize);
     static SRes SzFileSeekImp(void *p, Int64 *pos, ESzSeek origin);
