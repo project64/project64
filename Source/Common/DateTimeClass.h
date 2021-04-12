@@ -1,5 +1,5 @@
 #pragma once
-#include "stdtypes.h"
+#include <stdint.h>
 
 class CDateTime
 {

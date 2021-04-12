@@ -4,7 +4,7 @@
 extern "C" {
 #endif
 
-#include <Common/stdtypes.h>
+#include <stdint.h>
 #include "Types.h"
 
 #if defined(_WIN32)

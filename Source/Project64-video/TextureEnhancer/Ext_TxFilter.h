@@ -5,7 +5,7 @@
 // Copyright(C) 2003 Rice1964
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 #pragma once
-#include <Common/stdtypes.h>
+#include <stdint.h>
 
 #define NO_OPTIONS          0x00000000
 

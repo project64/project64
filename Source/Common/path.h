@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "stdtypes.h"
+#include <stdint.h>
 
 class CPath
 {

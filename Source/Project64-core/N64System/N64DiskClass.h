@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Project64-core/N64System/N64Types.h>
-#include <Common/stdtypes.h>
+#include <stdint.h>
 
 class CN64Disk
 {

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include <Common/stdtypes.h>
+#include <stdint.h>
 
 #include "Rsp.h"
 #include "RSP Registers.h"

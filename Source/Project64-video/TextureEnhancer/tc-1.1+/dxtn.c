@@ -10,7 +10,7 @@
 #include <assert.h>
 
 #include <stdio.h>
-#include <Common/stdtypes.h>
+#include <stdint.h>
 
 #include "types.h"
 #include "internal.h"

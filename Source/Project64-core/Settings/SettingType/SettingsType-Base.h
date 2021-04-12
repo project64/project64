@@ -2,7 +2,7 @@
 
 #include <Project64-core/Settings.h>
 #include <Common/StdString.h>
-#include <Common/stdtypes.h>
+#include <stdint.h>
 
 enum SettingType
 {

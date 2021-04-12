@@ -6,7 +6,7 @@
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 
 #pragma once
-#include <Common/stdtypes.h>
+#include <stdint.h>
 
 typedef uint8_t gfxAlpha_t;
 typedef uint32_t gfxColor_t;

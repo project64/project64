@@ -4,7 +4,7 @@
 #include "wtl-BitmapPicture.h"
 #include "wtl-ScanButton.h"
 #include "OptionsUI.h"
-#include <Common/stdtypes.h>
+#include <stdint.h>
 #include <Common/StdString.h>
 #include "resource.h"
 

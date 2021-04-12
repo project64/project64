@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stddef.h>
-#include <Common/stdtypes.h>
+#include <stdint.h>
 
 struct gb_cart
 {

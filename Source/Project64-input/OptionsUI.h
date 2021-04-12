@@ -1,5 +1,5 @@
 #pragma once
-#include <Common/stdtypes.h>
+#include <stdint.h>
 #include "ControllerSpec1.1.h"
 #include "N64Controller.h"
 

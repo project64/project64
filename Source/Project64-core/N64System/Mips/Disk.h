@@ -1,7 +1,6 @@
 // Based from MAME's N64DD driver code by Happy_
 #pragma once
-
-#include <Common/stdtypes.h>
+#include <stdint.h>
 
 void DiskCommand(void);
 void DiskReset(void);

@@ -5,7 +5,7 @@
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 
 #pragma once
-#include <Common/stdtypes.h>
+#include <stdint.h>
 #include "Rsp.h"
 #include "ucodes.h"
 

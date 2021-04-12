@@ -1,6 +1,5 @@
 #pragma once
-
-#include <Common/stdtypes.h>
+#include <stdint.h>
 
 /*
  * The limits of COP1 extend to native SSE2 register capabilities, but for

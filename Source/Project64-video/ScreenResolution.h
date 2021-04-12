@@ -1,5 +1,5 @@
 #pragma once
-#include <Common/stdtypes.h>
+#include <stdint.h>
 
 #ifdef ANDROID
 void UpdateScreenResolution(int ScreenWidth, int ScreenHeight);

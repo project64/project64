@@ -1,7 +1,7 @@
 #ifndef __Types_h
 #define __Types_h
 
-#include <Common/stdtypes.h>
+#include <stdint.h>
 
 // Pointer to RSP operation code functions or "func"
 // This is the type of all RSP interpreter and recompiler functions

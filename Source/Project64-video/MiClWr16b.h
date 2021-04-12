@@ -4,7 +4,7 @@
 // Copyright(C) 2003-2009 Sergey 'Gonetz' Lipski
 // Copyright(C) 2002 Dave2001
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
-#include <Common/stdtypes.h>
+#include <stdint.h>
 #include <string.h>
 typedef uint32_t uint32_t;
 

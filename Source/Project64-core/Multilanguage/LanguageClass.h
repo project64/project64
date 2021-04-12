@@ -1,10 +1,10 @@
 #pragma once
 
 #pragma warning(disable:4786)
-#include <string>   //stl string
-#include <map>      //stl map
-#include <list>     //stl list
-#include <Common/stdtypes.h>
+#include <string>
+#include <map>
+#include <list>
+#include <stdint.h>
 
 typedef std::map<int32_t, std::string, std::less<int32_t> > LANG_STRINGS;
 typedef LANG_STRINGS::value_type LANG_STR;

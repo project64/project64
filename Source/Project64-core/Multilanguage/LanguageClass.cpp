@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <stdio.h>
-#include <Common/stdtypes.h>
+#include <stdint.h>
 #include <Common/path.h>
 
 CLanguage * g_Lang = NULL;

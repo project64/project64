@@ -6,7 +6,7 @@
 
 #pragma once
 #include <Project64-video/Renderer/types.h>
-#include <Common/stdtypes.h>
+#include <stdint.h>
 
 #define NO_OPTIONS          0x00000000
 

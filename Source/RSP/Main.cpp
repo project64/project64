@@ -11,7 +11,7 @@
 #include <string.h>
 
 #include <Common/StdString.h>
-#include <Common/stdtypes.h>
+#include <stdint.h>
 #include "../Settings/Settings.h"
 
 extern "C" {

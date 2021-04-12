@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include <Common/stdtypes.h>
+#include <stdint.h>
 
 enum UISettingID
 {

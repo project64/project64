@@ -6,8 +6,8 @@
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 #pragma once
 
-#include <Common/stdtypes.h>
 #include <Project64-video/Renderer/Renderer.h>
+#include <stdint.h>
 
 extern char out_buf[2048];
 

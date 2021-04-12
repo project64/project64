@@ -1,6 +1,6 @@
 #include <Settings/Settings.h>
 #include <Common/Platform.h>
-#include <Common/stdtypes.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 

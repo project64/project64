@@ -1,8 +1,7 @@
 // Common controller plugin specification, version 1.1
 
 #pragma once
-
-#include <Common/stdtypes.h>
+#include <stdint.h>
 
 enum { PLUGIN_TYPE_CONTROLLER = 4 };
 

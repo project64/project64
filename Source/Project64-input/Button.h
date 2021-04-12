@@ -1,5 +1,5 @@
 #pragma once
-#include <Common/stdtypes.h>
+#include <stdint.h>
 #include <guiddef.h>
 
 enum BtnType

@@ -2,8 +2,7 @@
 Project64 Controller plugin spec, version #1.1
 **********************************************************************************/
 #pragma once
-
-#include <Common/stdtypes.h>
+#include <stdint.h>
 
 enum { PLUGIN_TYPE_CONTROLLER = 4 };
 

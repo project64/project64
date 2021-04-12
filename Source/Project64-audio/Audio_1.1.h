@@ -11,7 +11,7 @@ the plugin.
 **********************************************************************************/
 #pragma once
 
-#include <Common/stdtypes.h>
+#include <stdint.h>
 
 enum { PLUGIN_TYPE_AUDIO = 3 };
 
