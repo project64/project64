@@ -41,18 +41,18 @@ TxFilter::TxFilter(int maxwidth, int maxheight, int maxbpp, int options,
     int cachesize, const char *path, const char *ident,
     dispInfoFuncExt callback) :
     _numcore(0),
-    _tex1(NULL),
-    _tex2(NULL),
+    _tex1(nullptr),
+    _tex2(nullptr),
     _maxwidth(0),
     _maxheight(0),
     _maxbpp(0),
     _options(0),
     _cacheSize(0),
-    _txQuantize(NULL),
-    _txTexCache(NULL),
-    _txHiResCache(NULL),
-    _txUtil(NULL),
-    _txImage(NULL),
+    _txQuantize(nullptr),
+    _txTexCache(nullptr),
+    _txHiResCache(nullptr),
+    _txUtil(nullptr),
+    _txImage(nullptr),
     _initialized(false)
 {
     /* HACKALERT: the emulator misbehaves and sometimes forgets to shutdown */
@@ -90,8 +90,8 @@ TxFilter::TxFilter(int maxwidth, int maxheight, int maxbpp, int options,
 
     _initialized = 0;
 
-    _tex1 = NULL;
-    _tex2 = NULL;
+    _tex1 = nullptr;
+    _tex2 = nullptr;
 
     /* XXX: anything larger than 1024 * 1024 is overkill */
     _maxwidth = maxwidth > 1024 ? 1024 : maxwidth;
@@ -600,7 +600,7 @@ TxFilter::dmptx(uint8 *src, int width, int height, int rowStridePixel, uint16 gf
     if (!_path.empty() && !_ident.empty())
     {
         /* dump it to disk */
-        FILE *fp = NULL;
+        FILE *fp = nullptr;
         CPath tmpbuf(_path.c_str(), "");
 
         /* create directories */
@@ -631,7 +631,7 @@ TxFilter::dmptx(uint8 *src, int width, int height, int rowStridePixel, uint16 gf
         {
             tmpbuf.SetNameExtension(stdstr_f("%ls#%08X#%01X#%01X_all.png", _ident.c_str(), (uint32)(r_crc64 & 0xffffffff), (n64fmt >> 8), (n64fmt & 0xf)).c_str());
         }
-        if ((fp = fopen(tmpbuf, "wb")) != NULL)
+        if ((fp = fopen(tmpbuf, "wb")) != nullptr)
         {
             _txImage->writePNG(src, fp, width, height, (rowStridePixel << 2), 0x0003, 0);
             fclose(fp);

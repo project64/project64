@@ -100,7 +100,7 @@ LRESULT CDebugTlb::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& /*bHand
 
 void CDebugTlb::RefreshTLBWindow(void)
 {
-    if (m_hWnd == NULL)
+    if (m_hWnd == nullptr)
     {
         return;
     }

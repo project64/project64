@@ -55,7 +55,7 @@ LRESULT CDebugStackView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCt
     switch (wID)
     {
     case IDC_MEM_BTN:
-        if (g_Reg != NULL)
+        if (g_Reg != nullptr)
         {
             m_Debugger->Debug_ShowMemoryLocation(g_Reg->m_GPR[29].UW[0], true);
         }
@@ -69,7 +69,7 @@ LRESULT CDebugStackView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCt
 
 void CDebugStackView::Refresh()
 {
-    if (g_Reg == NULL)
+    if (g_Reg == nullptr)
     {
         return;
     }

@@ -195,7 +195,7 @@ GLuint CompileShader(GLenum type, const std::string &source)
     GLuint shader = glCreateShader(type);
 
     const char *sourceArray[1] = { source.c_str() };
-    glShaderSource(shader, 1, sourceArray, NULL);
+    glShaderSource(shader, 1, sourceArray, nullptr);
     glCompileShader(shader);
 
     GLint compileResult;
@@ -207,7 +207,7 @@ GLuint CompileShader(GLenum type, const std::string &source)
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength);
 
         std::vector<GLchar> infoLog(infoLogLength);
-        glGetShaderInfoLog(shader, (GLsizei)infoLog.size(), NULL, infoLog.data());
+        glGetShaderInfoLog(shader, (GLsizei)infoLog.size(), nullptr, infoLog.data());
 
         WriteTrace(TraceGlitch, TraceError, "Shader compilation failed: %s", std::string(infoLog.begin(), infoLog.end()).c_str());
         return 0;
@@ -223,7 +223,7 @@ void check_link(GLuint program)
     if (!success)
     {
         char log[1024];
-        glGetProgramInfoLog(program, 1024, NULL, log);
+        glGetProgramInfoLog(program, 1024, nullptr, log);
         //LOGINFO(log);
     }
 }

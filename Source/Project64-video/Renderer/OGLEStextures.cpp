@@ -15,7 +15,7 @@
 #include <Project64-video/Renderer/Renderer.h>
 
 int TMU_SIZE = 8 * 2048 * 2048;
-static unsigned char* texture = NULL;
+static unsigned char* texture = nullptr;
 
 int packed_pixels_support = -1;
 int ati_sucks = -1;
@@ -40,7 +40,7 @@ typedef struct _texlist
 } texlist;
 
 static int nbTex = 0;
-static texlist *list = NULL;
+static texlist *list = nullptr;
 
 #ifdef _WIN32
 extern PFNGLDELETERENDERBUFFERSEXTPROC glDeleteRenderbuffersEXT;
@@ -53,7 +53,7 @@ void remove_tex(unsigned int idmin, unsigned int idmax)
     int n = 0;
     texlist *aux = list;
     int sz = nbTex;
-    if (aux == NULL) return;
+    if (aux == nullptr) return;
     t = (unsigned int*)malloc(sz * sizeof(int));
     while (aux && aux->id >= idmin && aux->id < idmax)
     {
@@ -65,7 +65,7 @@ void remove_tex(unsigned int idmin, unsigned int idmax)
         list = aux;
         nbTex--;
     }
-    while (aux != NULL && aux->next != NULL)
+    while (aux != nullptr && aux->next != nullptr)
     {
         if (aux->next->id >= idmin && aux->next->id < idmax)
         {
@@ -89,7 +89,7 @@ void add_tex(unsigned int id)
     texlist *aux = list;
     texlist *aux2;
     //printf("ADDTEX nbtex is now %d (%06x)\n", nbTex, id);
-    if (list == NULL || id < list->id)
+    if (list == nullptr || id < list->id)
     {
         nbTex++;
         list = (texlist*)malloc(sizeof(texlist));
@@ -97,9 +97,9 @@ void add_tex(unsigned int id)
         list->id = id;
         return;
     }
-    while (aux->next != NULL && aux->next->id < id) aux = aux->next;
+    while (aux->next != nullptr && aux->next->id < id) aux = aux->next;
     // ZIGGY added this test so that add_tex now accept re-adding an existing texture
-    if (aux->next != NULL && aux->next->id == id) return;
+    if (aux->next != nullptr && aux->next->id == id) return;
     nbTex++;
     aux2 = aux->next;
     aux->next = (texlist*)malloc(sizeof(texlist));
@@ -112,7 +112,7 @@ void init_textures()
     tex0_width = tex0_height = tex1_width = tex1_height = 2;
     // ZIGGY because remove_tex isn't called (Pj64 doesn't like it), it's better
     // to leave these so that they'll be reused (otherwise we have a memory leak)
-    // 	list = NULL;
+    // 	list = nullptr;
     // 	nbTex = 0;
 
     if (!texture)	texture = (unsigned char*)malloc(2048 * 2048 * 4);
@@ -124,9 +124,9 @@ void free_textures()
     // ZIGGY for some reasons, Pj64 doesn't like remove_tex on exit
     remove_tex(0x00000000, 0xFFFFFFFF);
 #endif
-    if (texture != NULL) {
+    if (texture != nullptr) {
         free(texture);
-        texture = NULL;
+        texture = nullptr;
     }
 }
 

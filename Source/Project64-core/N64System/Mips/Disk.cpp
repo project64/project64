@@ -79,7 +79,7 @@ void DiskCommand()
         g_Reg->ASIC_STATUS &= ~DD_STATUS_DISK_CHNG;
         //F-Zero X + Expansion Kit fix so it doesn't enable "swapping" at boot
         dd_swapdelay = 0;
-        if (g_Disk != NULL)
+        if (g_Disk != nullptr)
             g_Reg->ASIC_STATUS |= DD_STATUS_DISK_PRES;
         break;
     case 0x00120000:
@@ -181,7 +181,7 @@ void DiskReset(void)
     WriteTrace(TraceN64System, TraceDebug, "DD RESET");
     g_Reg->ASIC_STATUS |= DD_STATUS_RST_STATE;
     dd_swapdelay = 0;
-    if (g_Disk != NULL)
+    if (g_Disk != nullptr)
         g_Reg->ASIC_STATUS |= DD_STATUS_DISK_PRES;
 }
 
@@ -246,7 +246,7 @@ void DiskGapSectorCheck()
     }
 
     //Delay Disk Swapping by removing the disk for a certain amount of time, then insert the newly loaded disk (after 50 Status Register reads, here).
-    if (!(g_Reg->ASIC_STATUS & DD_STATUS_DISK_PRES) && g_Disk != NULL && g_Settings->LoadBool(GameRunning_LoadingInProgress) == false)
+    if (!(g_Reg->ASIC_STATUS & DD_STATUS_DISK_PRES) && g_Disk != nullptr && g_Settings->LoadBool(GameRunning_LoadingInProgress) == false)
     {
         dd_swapdelay++;
         if (dd_swapdelay >= 50)

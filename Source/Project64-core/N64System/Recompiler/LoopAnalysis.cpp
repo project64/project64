@@ -82,7 +82,7 @@ bool LoopAnalysis::SetupEnterSection(CCodeSection * Section, bool & bChanged, bo
         CCodeSection * Parent = *iter;
 
         CPU_Message("%s: Parent Section ID %d Test: %X Section Test: %X CompiledLocation: %X", __FUNCTION__, Parent->m_SectionID, m_Test, Parent->m_Test, Parent->m_CompiledLocation);
-        if (Parent->m_Test != m_Test && (m_EnterSection != Section || Parent->m_CompiledLocation == NULL) && Parent->m_InLoop)
+        if (Parent->m_Test != m_Test && (m_EnterSection != Section || Parent->m_CompiledLocation == nullptr) && Parent->m_InLoop)
         {
             CPU_Message("%s: Ignore Parent Section ID %d Test: %X  Section Test: %X CompiledLocation: %X", __FUNCTION__, Parent->m_SectionID, m_Test, Parent->m_Test, Parent->m_CompiledLocation);
             bSkipedSection = true;
@@ -140,7 +140,7 @@ bool LoopAnalysis::SetupEnterSection(CCodeSection * Section, bool & bChanged, bo
 
 bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
 {
-    if (Section == NULL) { return true; }
+    if (Section == nullptr) { return true; }
     if (!Section->m_InLoop) { return true; }
 
     CPU_Message("%s: Section %d Block PC: 0x%X", __FUNCTION__, Section->m_SectionID, m_BlockInfo->VAddrEnter());
@@ -253,13 +253,13 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                 m_NextInstruction = DELAY_SLOT;
 #ifdef CHECKED_BUILD
                 if (Section->m_Cont.TargetPC != m_PC + 8 &&
-                    Section->m_ContinueSection != NULL &&
+                    Section->m_ContinueSection != nullptr &&
                     Section->m_Cont.TargetPC != (uint32_t)-1)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 if (Section->m_Jump.TargetPC != m_PC + ((int16_t)m_Command.offset << 2) + 4 &&
-                    Section->m_JumpSection != NULL &&
+                    Section->m_JumpSection != nullptr &&
                     Section->m_Jump.TargetPC != (uint32_t)-1)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -278,13 +278,13 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                 m_NextInstruction = LIKELY_DELAY_SLOT;
 #ifdef CHECKED_BUILD
                 if (Section->m_Cont.TargetPC != m_PC + 8 &&
-                    Section->m_ContinueSection != NULL &&
+                    Section->m_ContinueSection != nullptr &&
                     Section->m_Cont.TargetPC != (uint32_t)-1)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 if (Section->m_Jump.TargetPC != m_PC + 4 &&
-                    Section->m_JumpSection != NULL &&
+                    Section->m_JumpSection != nullptr &&
                     Section->m_Jump.TargetPC != (uint32_t)-1)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -410,7 +410,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                 if (m_Command.rs != 0 || m_Command.rt != 0)
                 {
                     if (Section->m_Cont.TargetPC != m_PC + 8 &&
-                        Section->m_ContinueSection != NULL &&
+                        Section->m_ContinueSection != nullptr &&
                         Section->m_Cont.TargetPC != (uint32_t)-1)
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -445,13 +445,13 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                 m_NextInstruction = DELAY_SLOT;
 #ifdef CHECKED_BUILD
                 if (Section->m_Cont.TargetPC != m_PC + 8 &&
-                    Section->m_ContinueSection != NULL &&
+                    Section->m_ContinueSection != nullptr &&
                     Section->m_Cont.TargetPC != (uint32_t)-1)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 if (Section->m_Jump.TargetPC != m_PC + ((int16_t)m_Command.offset << 2) + 4 &&
-                    Section->m_JumpSection != NULL &&
+                    Section->m_JumpSection != nullptr &&
                     Section->m_Jump.TargetPC != (uint32_t)-1)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -572,7 +572,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                     m_NextInstruction = LIKELY_DELAY_SLOT;
 #ifdef CHECKED_BUILD
                     if (Section->m_Cont.TargetPC != m_PC + 8 &&
-                        Section->m_ContinueSection != NULL &&
+                        Section->m_ContinueSection != nullptr &&
                         Section->m_Cont.TargetPC != (uint32_t)-1)
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -597,7 +597,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                     m_NextInstruction = DELAY_SLOT;
 #ifdef CHECKED_BUILD
                     if (Section->m_Cont.TargetPC != m_PC + 8 &&
-                        Section->m_ContinueSection != NULL &&
+                        Section->m_ContinueSection != nullptr &&
                         Section->m_Cont.TargetPC != (uint32_t)-1)
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -639,7 +639,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
             m_NextInstruction = LIKELY_DELAY_SLOT;
 #ifdef CHECKED_BUILD
             if (Section->m_Cont.TargetPC != m_PC + 8 &&
-                Section->m_ContinueSection != NULL &&
+                Section->m_ContinueSection != nullptr &&
                 Section->m_Cont.TargetPC != (uint32_t)-1)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -953,12 +953,12 @@ void LoopAnalysis::SPECIAL_JALR()
 void LoopAnalysis::SPECIAL_SYSCALL(CCodeSection * Section)
 {
 #ifdef CHECKED_BUILD
-    if (Section->m_ContinueSection != NULL &&
+    if (Section->m_ContinueSection != nullptr &&
         Section->m_Cont.TargetPC != (uint32_t)-1)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-    if (Section->m_JumpSection != NULL &&
+    if (Section->m_JumpSection != nullptr &&
         Section->m_Jump.TargetPC != (uint32_t)-1)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -973,12 +973,12 @@ void LoopAnalysis::SPECIAL_SYSCALL(CCodeSection * Section)
 void LoopAnalysis::SPECIAL_BREAK(CCodeSection * Section)
 {
 #ifdef CHECKED_BUILD
-    if (Section->m_ContinueSection != NULL &&
+    if (Section->m_ContinueSection != nullptr &&
         Section->m_Cont.TargetPC != (uint32_t)-1)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-    if (Section->m_JumpSection != NULL &&
+    if (Section->m_JumpSection != nullptr &&
         Section->m_Jump.TargetPC != (uint32_t)-1)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);

@@ -268,14 +268,14 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
 
 void CEnhancement::SetName(const char * Name)
 {
-    std::string NewName = stdstr(Name != NULL ? Name : "").Trim("\t ,");
+    std::string NewName = stdstr(Name != nullptr ? Name : "").Trim("\t ,");
     if (NewName == m_Name)
     {
         return;
     }
     CSettingEnhancementActive(m_Name.c_str(), m_Ident.c_str(), m_OnByDefault).Delete();
     CSettingEnhancementSelectedOption(m_Name.c_str(), m_Ident.c_str()).Delete();
-    m_Name = stdstr(Name != NULL ? Name : "").Trim("\t ,");
+    m_Name = stdstr(Name != nullptr ? Name : "").Trim("\t ,");
     m_NameAndExtension = m_Name;
     if (m_Active != m_OnByDefault) { CSettingEnhancementActive(m_Name.c_str(), m_Ident.c_str(), m_OnByDefault).SetActive(m_OnByDefault); }
     if (OptionSelected()) { CSettingEnhancementSelectedOption(m_Name.c_str(), m_Ident.c_str()).SetOption(SelectedOption()); }
@@ -284,7 +284,7 @@ void CEnhancement::SetName(const char * Name)
 
 void CEnhancement::SetNote(const char * Note)
 {
-    m_Note = Note != NULL ? Note : "";
+    m_Note = Note != nullptr ? Note : "";
 }
 
 void CEnhancement::SetEntries(const CodeEntries & Entries)
@@ -372,7 +372,7 @@ void CEnhancement::CheckValid(void)
         case 0xD1000000:
         case 0xD2000000:
         case 0xD3000000:
-            if (strchr(itr->Value.c_str(), '?') != NULL)
+            if (strchr(itr->Value.c_str(), '?') != nullptr)
             {
                 if (strncmp(itr->Value.c_str(), "????", 4) == 0)
                 {
@@ -408,7 +408,7 @@ void CEnhancement::CheckValid(void)
             }
             break;
         case 0x50000000:
-            if (strchr(itr->Value.c_str(), '?') != NULL)
+            if (strchr(itr->Value.c_str(), '?') != nullptr)
             {
                 return;
             }

@@ -216,7 +216,7 @@ void init_combiner()
     strcpy(fragment_shader, fragment_shader_header);
     strcat(fragment_shader, s);
     strcat(fragment_shader, fragment_shader_end);
-    glShaderSourceARB(fragment_depth_shader_object, 1, (const GLcharARB**)&fragment_shader, NULL);
+    glShaderSourceARB(fragment_depth_shader_object, 1, (const GLcharARB**)&fragment_shader, nullptr);
     free(fragment_shader);
 
     glCompileShaderARB(fragment_depth_shader_object);
@@ -230,13 +230,13 @@ void init_combiner()
     strcpy(fragment_shader, fragment_shader_header);
     strcat(fragment_shader, fragment_shader_default);
     strcat(fragment_shader, fragment_shader_end);
-    glShaderSourceARB(fragment_shader_object, 1, (const GLcharARB**)&fragment_shader, NULL);
+    glShaderSourceARB(fragment_shader_object, 1, (const GLcharARB**)&fragment_shader, nullptr);
     free(fragment_shader);
 
     glCompileShaderARB(fragment_shader_object);
 
     vertex_shader_object = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
-    glShaderSourceARB(vertex_shader_object, 1, &vertex_shader, NULL);
+    glShaderSourceARB(vertex_shader_object, 1, &vertex_shader, nullptr);
     glCompileShaderARB(vertex_shader_object);
 
     // depth program
@@ -363,7 +363,7 @@ typedef struct _shader_program_key
     GLhandleARB program_object;
 } shader_program_key;
 
-static shader_program_key* shader_programs = NULL;
+static shader_program_key* shader_programs = nullptr;
 static int number_of_programs = 0;
 static int color_combiner_key;
 static int alpha_combiner_key;
@@ -431,7 +431,7 @@ void compile_shader()
         }
     }
 
-    if (shader_programs != NULL)
+    if (shader_programs != nullptr)
         shader_programs = (shader_program_key*)realloc(shader_programs, (number_of_programs + 1) * sizeof(shader_program_key));
     else
         shader_programs = (shader_program_key*)malloc(sizeof(shader_program_key));
@@ -478,7 +478,7 @@ void compile_shader()
     if (chroma_enabled) strcat(fragment_shader, fragment_shader_chroma);
 
     shader_programs[number_of_programs].fragment_shader_object = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
-    glShaderSourceARB(shader_programs[number_of_programs].fragment_shader_object, 1, (const GLcharARB**)&fragment_shader, NULL);
+    glShaderSourceARB(shader_programs[number_of_programs].fragment_shader_object, 1, (const GLcharARB**)&fragment_shader, nullptr);
     free(fragment_shader);
 
     glCompileShaderARB(shader_programs[number_of_programs].fragment_shader_object);
@@ -537,7 +537,7 @@ void compile_shader()
 void free_combiners()
 {
     free(shader_programs);
-    shader_programs = NULL;
+    shader_programs = nullptr;
     number_of_programs = 0;
 }
 

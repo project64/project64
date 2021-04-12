@@ -9,23 +9,23 @@
 CPj64Module _Module;
 
 CDebuggerUI::CDebuggerUI() :
-    m_MemoryDump(NULL),
-    m_MemoryView(NULL),
-    m_MemorySearch(NULL),
-    m_DebugTLB(NULL),
-    m_CommandsView(NULL),
-    m_Scripts(NULL),
-    m_Symbols(NULL),
-    m_Breakpoints(NULL),
-    m_ScriptSystem(NULL),
-    m_StackTrace(NULL),
-    m_StackView(NULL),
-    m_DMALogView(NULL),
-    m_CPULogView(NULL),
-    m_ExcBreakpoints(NULL),
-    m_DMALog(NULL),
-    m_CPULog(NULL),
-    m_SymbolTable(NULL),
+    m_MemoryDump(nullptr),
+    m_MemoryView(nullptr),
+    m_MemorySearch(nullptr),
+    m_DebugTLB(nullptr),
+    m_CommandsView(nullptr),
+    m_Scripts(nullptr),
+    m_Symbols(nullptr),
+    m_Breakpoints(nullptr),
+    m_ScriptSystem(nullptr),
+    m_StackTrace(nullptr),
+    m_StackView(nullptr),
+    m_DMALogView(nullptr),
+    m_CPULogView(nullptr),
+    m_ExcBreakpoints(nullptr),
+    m_DMALog(nullptr),
+    m_CPULog(nullptr),
+    m_SymbolTable(nullptr),
     m_StepEvent(false)
 {
     g_Debugger = this;
@@ -132,83 +132,83 @@ void CDebuggerUI::Debug_Reset(void)
     {
         m_MemoryDump->HideWindow();
         delete m_MemoryDump;
-        m_MemoryDump = NULL;
+        m_MemoryDump = nullptr;
     }
     if (m_MemorySearch)
     {
         m_MemorySearch->HideWindow();
         delete m_MemorySearch;
-        m_MemorySearch = NULL;
+        m_MemorySearch = nullptr;
     }
     if (m_DebugTLB)
     {
         m_DebugTLB->HideWindow();
         delete m_DebugTLB;
-        m_DebugTLB = NULL;
+        m_DebugTLB = nullptr;
     }
     if (m_MemoryView)
     {
         m_MemoryView->HideWindow();
         delete m_MemoryView;
-        m_MemoryView = NULL;
+        m_MemoryView = nullptr;
     }
     if (m_CommandsView)
     {
         m_CommandsView->HideWindow();
         delete m_CommandsView;
-        m_CommandsView = NULL;
+        m_CommandsView = nullptr;
     }
     if (m_Scripts)
     {
         m_Scripts->HideWindow();
         delete m_Scripts;
-        m_Scripts = NULL;
+        m_Scripts = nullptr;
     }
     if (m_Symbols)
     {
         m_Symbols->HideWindow();
         delete m_Symbols;
-        m_Symbols = NULL;
+        m_Symbols = nullptr;
     }
     if (m_DMALogView)
     {
         m_DMALogView->HideWindow();
         delete m_DMALogView;
-        m_DMALogView = NULL;
+        m_DMALogView = nullptr;
     }
     if (m_CPULogView)
     {
         m_CPULogView->HideWindow();
         delete m_CPULogView;
-        m_CPULogView = NULL;
+        m_CPULogView = nullptr;
     }
     if (m_StackTrace)
     {
         m_StackTrace->HideWindow();
         delete m_StackTrace;
-        m_StackTrace = NULL;
+        m_StackTrace = nullptr;
     }
     if (m_StackView)
     {
         m_StackView->HideWindow();
         delete m_StackView;
-        m_StackView = NULL;
+        m_StackView = nullptr;
     }
     if (m_ExcBreakpoints)
     {
         m_ExcBreakpoints->HideWindow();
         delete m_ExcBreakpoints;
-        m_ExcBreakpoints = NULL;
+        m_ExcBreakpoints = nullptr;
     }
 }
 
 void CDebuggerUI::OpenMemoryDump()
 {
-    if (g_MMU == NULL)
+    if (g_MMU == nullptr)
     {
         return;
     }
-    if (m_MemoryDump == NULL)
+    if (m_MemoryDump == nullptr)
     {
         m_MemoryDump = new CDumpMemory(this);
     }
@@ -220,7 +220,7 @@ void CDebuggerUI::OpenMemoryDump()
 
 void CDebuggerUI::OpenMemoryWindow(void)
 {
-    if (m_MemoryView == NULL)
+    if (m_MemoryView == nullptr)
     {
         m_MemoryView = new CDebugMemoryView(this);
     }
@@ -241,11 +241,11 @@ void CDebuggerUI::Debug_ShowMemoryLocation(uint32_t Address, bool VAddr)
 
 void CDebuggerUI::OpenTLBWindow(void)
 {
-    if (g_MMU == NULL)
+    if (g_MMU == nullptr)
     {
         return;
     }
-    if (m_DebugTLB == NULL)
+    if (m_DebugTLB == nullptr)
     {
         m_DebugTLB = new CDebugTlb(this);
     }
@@ -273,7 +273,7 @@ void CDebuggerUI::Debug_RefreshDMALogWindow(void)
 
 void CDebuggerUI::OpenMemorySearch()
 {
-    if (m_MemorySearch == NULL)
+    if (m_MemorySearch == nullptr)
     {
         m_MemorySearch = new CDebugMemorySearch(this);
     }
@@ -285,7 +285,7 @@ void CDebuggerUI::OpenMemorySearch()
 
 void CDebuggerUI::OpenCommandWindow()
 {
-    if (m_CommandsView == NULL)
+    if (m_CommandsView == nullptr)
     {
         m_CommandsView = new CDebugCommandsView(this, m_StepEvent);
     }
@@ -303,7 +303,7 @@ void CDebuggerUI::Debug_ShowCommandsLocation(uint32_t address, bool top)
 
 void CDebuggerUI::OpenScriptsWindow()
 {
-    if (m_Scripts == NULL)
+    if (m_Scripts == nullptr)
     {
         m_Scripts = new CDebugScripts(this);
     }
@@ -312,7 +312,7 @@ void CDebuggerUI::OpenScriptsWindow()
 
 void CDebuggerUI::Debug_RefreshScriptsWindow()
 {
-    if (m_Scripts != NULL)
+    if (m_Scripts != nullptr)
     {
         m_Scripts->RefreshList();
     }
@@ -320,7 +320,7 @@ void CDebuggerUI::Debug_RefreshScriptsWindow()
 
 void CDebuggerUI::Debug_LogScriptsWindow(const char* text)
 {
-    if (m_Scripts != NULL)
+    if (m_Scripts != nullptr)
     {
         m_Scripts->ConsolePrint(text);
     }
@@ -328,7 +328,7 @@ void CDebuggerUI::Debug_LogScriptsWindow(const char* text)
 
 void CDebuggerUI::Debug_ClearScriptsWindow()
 {
-    if (m_Scripts != NULL)
+    if (m_Scripts != nullptr)
     {
         m_Scripts->ConsoleClear();
     }
@@ -336,7 +336,7 @@ void CDebuggerUI::Debug_ClearScriptsWindow()
 
 void CDebuggerUI::OpenSymbolsWindow()
 {
-    if (m_Symbols == NULL)
+    if (m_Symbols == nullptr)
     {
         m_Symbols = new CDebugSymbols(this);
     }
@@ -345,7 +345,7 @@ void CDebuggerUI::OpenSymbolsWindow()
 
 void CDebuggerUI::Debug_RefreshSymbolsWindow()
 {
-    if (m_Symbols != NULL)
+    if (m_Symbols != nullptr)
     {
         m_Symbols->Refresh();
     }
@@ -353,7 +353,7 @@ void CDebuggerUI::Debug_RefreshSymbolsWindow()
 
 void CDebuggerUI::OpenDMALogWindow(void)
 {
-    if (m_DMALogView == NULL)
+    if (m_DMALogView == nullptr)
     {
         m_DMALogView = new CDebugDMALogView(this);
     }
@@ -362,7 +362,7 @@ void CDebuggerUI::OpenDMALogWindow(void)
 
 void CDebuggerUI::OpenCPULogWindow(void)
 {
-    if (m_CPULogView == NULL)
+    if (m_CPULogView == nullptr)
     {
         m_CPULogView = new CDebugCPULogView(this);
     }
@@ -371,7 +371,7 @@ void CDebuggerUI::OpenCPULogWindow(void)
 
 void CDebuggerUI::OpenExcBreakpointsWindow(void)
 {
-    if (m_ExcBreakpoints == NULL)
+    if (m_ExcBreakpoints == nullptr)
     {
         m_ExcBreakpoints = new CDebugExcBreakpoints(this);
     }
@@ -380,7 +380,7 @@ void CDebuggerUI::OpenExcBreakpointsWindow(void)
 
 void CDebuggerUI::OpenStackTraceWindow(void)
 {
-    if (m_StackTrace == NULL)
+    if (m_StackTrace == nullptr)
     {
         m_StackTrace = new CDebugStackTrace(this);
     }
@@ -389,7 +389,7 @@ void CDebuggerUI::OpenStackTraceWindow(void)
 
 void CDebuggerUI::OpenStackViewWindow(void)
 {
-    if (m_StackView == NULL)
+    if (m_StackView == nullptr)
     {
         m_StackView = new CDebugStackView(this);
     }
@@ -398,7 +398,7 @@ void CDebuggerUI::OpenStackViewWindow(void)
 
 void CDebuggerUI::Debug_RefreshStackWindow(void)
 {
-    if (m_StackView != NULL)
+    if (m_StackView != nullptr)
     {
         m_StackView->Refresh();
     }
@@ -406,7 +406,7 @@ void CDebuggerUI::Debug_RefreshStackWindow(void)
 
 void CDebuggerUI::Debug_RefreshStackTraceWindow(void)
 {
-    if (m_StackTrace != NULL && m_StackTrace->m_hWnd != NULL)
+    if (m_StackTrace != nullptr && m_StackTrace->m_hWnd != nullptr)
     {
         m_StackTrace->Refresh();
     }
@@ -414,7 +414,7 @@ void CDebuggerUI::Debug_RefreshStackTraceWindow(void)
 
 void CDebuggerUI::Debug_RefreshCPULogWindow(void)
 {
-    if (m_CPULogView != NULL)
+    if (m_CPULogView != nullptr)
     {
         m_CPULogView->RefreshList();
     }
@@ -640,7 +640,7 @@ void CDebuggerUI::CPUStep()
 // Called after opcode has been executed
 void CDebuggerUI::CPUStepEnded()
 {
-    if (m_StackTrace == NULL)
+    if (m_StackTrace == nullptr)
     {
         return;
     }
@@ -665,7 +665,7 @@ void CDebuggerUI::CPUStepEnded()
 
 void CDebuggerUI::FrameDrawn()
 {
-    static HWND hMainWnd = NULL;
+    static HWND hMainWnd = nullptr;
 
     static HFONT monoFont = CreateFont(-11, 0, 0, 0,
         FW_DONTCARE, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
@@ -673,11 +673,11 @@ void CDebuggerUI::FrameDrawn()
         PROOF_QUALITY, FF_DONTCARE, L"Consolas"
     );
 
-    if (hMainWnd == NULL)
+    if (hMainWnd == nullptr)
     {
         RenderWindow* mainWindow = g_Plugins->MainWindow();
 
-        if (mainWindow == NULL)
+        if (mainWindow == nullptr)
         {
             return;
         }
@@ -711,45 +711,45 @@ void CDebuggerUI::WaitForStep(void)
 
 bool CDebuggerUI::ExecutionBP(uint32_t address)
 {
-    return m_Breakpoints != NULL && m_Breakpoints->ExecutionBPExists(address, true) != CBreakpoints::BP_NOT_SET;
+    return m_Breakpoints != nullptr && m_Breakpoints->ExecutionBPExists(address, true) != CBreakpoints::BP_NOT_SET;
 }
 
 bool CDebuggerUI::ReadBP8(uint32_t address)
 {
-    return m_Breakpoints != NULL && m_Breakpoints->ReadBPExists8(address) != CBreakpoints::BP_NOT_SET;
+    return m_Breakpoints != nullptr && m_Breakpoints->ReadBPExists8(address) != CBreakpoints::BP_NOT_SET;
 }
 
 bool CDebuggerUI::ReadBP16(uint32_t address)
 {
-    return m_Breakpoints != NULL && m_Breakpoints->ReadBPExists16(address) != CBreakpoints::BP_NOT_SET;
+    return m_Breakpoints != nullptr && m_Breakpoints->ReadBPExists16(address) != CBreakpoints::BP_NOT_SET;
 }
 
 bool CDebuggerUI::ReadBP32(uint32_t address)
 {
-    return m_Breakpoints != NULL && m_Breakpoints->ReadBPExists32(address) != CBreakpoints::BP_NOT_SET;
+    return m_Breakpoints != nullptr && m_Breakpoints->ReadBPExists32(address) != CBreakpoints::BP_NOT_SET;
 }
 
 bool CDebuggerUI::ReadBP64(uint32_t address)
 {
-    return m_Breakpoints != NULL && m_Breakpoints->ReadBPExists64(address) != CBreakpoints::BP_NOT_SET;
+    return m_Breakpoints != nullptr && m_Breakpoints->ReadBPExists64(address) != CBreakpoints::BP_NOT_SET;
 }
 
 bool CDebuggerUI::WriteBP8(uint32_t address)
 {
-    return m_Breakpoints != NULL && m_Breakpoints->WriteBPExists8(address) != CBreakpoints::BP_NOT_SET;
+    return m_Breakpoints != nullptr && m_Breakpoints->WriteBPExists8(address) != CBreakpoints::BP_NOT_SET;
 }
 
 bool CDebuggerUI::WriteBP16(uint32_t address)
 {
-    return m_Breakpoints != NULL && m_Breakpoints->WriteBPExists16(address) != CBreakpoints::BP_NOT_SET;
+    return m_Breakpoints != nullptr && m_Breakpoints->WriteBPExists16(address) != CBreakpoints::BP_NOT_SET;
 }
 
 bool CDebuggerUI::WriteBP32(uint32_t address)
 {
-    return m_Breakpoints != NULL && m_Breakpoints->WriteBPExists32(address) != CBreakpoints::BP_NOT_SET;
+    return m_Breakpoints != nullptr && m_Breakpoints->WriteBPExists32(address) != CBreakpoints::BP_NOT_SET;
 }
 
 bool CDebuggerUI::WriteBP64(uint32_t address)
 {
-    return m_Breakpoints != NULL && m_Breakpoints->WriteBPExists64(address) != CBreakpoints::BP_NOT_SET;
+    return m_Breakpoints != nullptr && m_Breakpoints->WriteBPExists64(address) != CBreakpoints::BP_NOT_SET;
 }

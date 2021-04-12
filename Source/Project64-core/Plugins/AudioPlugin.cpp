@@ -11,18 +11,18 @@
 #endif
 
 CAudioPlugin::CAudioPlugin() :
-    AiLenChanged(NULL),
-    AiReadLength(NULL),
-    ProcessAList(NULL),
-    m_hAudioThread(NULL),
-    AiUpdate(NULL),
-    AiDacrateChanged(NULL)
+    AiLenChanged(nullptr),
+    AiReadLength(nullptr),
+    ProcessAList(nullptr),
+    m_hAudioThread(nullptr),
+    AiUpdate(nullptr),
+    AiDacrateChanged(nullptr)
 {
 }
 
 CAudioPlugin::~CAudioPlugin()
 {
-    Close(NULL);
+    Close(nullptr);
     UnloadPlugin();
 }
 
@@ -40,15 +40,15 @@ bool CAudioPlugin::LoadFunctions(void)
     LoadFunction(ProcessAList);
 
     // Make sure dll has all needed functions
-    if (AiDacrateChanged == NULL) { UnloadPlugin(); return false; }
-    if (AiLenChanged == NULL) { UnloadPlugin(); return false; }
-    if (AiReadLength == NULL) { UnloadPlugin(); return false; }
-    if (InitiateAudio == NULL) { UnloadPlugin(); return false; }
-    if (ProcessAList == NULL) { UnloadPlugin(); return false; }
+    if (AiDacrateChanged == nullptr) { UnloadPlugin(); return false; }
+    if (AiLenChanged == nullptr) { UnloadPlugin(); return false; }
+    if (AiReadLength == nullptr) { UnloadPlugin(); return false; }
+    if (InitiateAudio == nullptr) { UnloadPlugin(); return false; }
+    if (ProcessAList == nullptr) { UnloadPlugin(); return false; }
 
     if (m_PluginInfo.Version >= 0x0102)
     {
-        if (PluginOpened == NULL) { UnloadPlugin(); return false; }
+        if (PluginOpened == nullptr) { UnloadPlugin(); return false; }
     }
     return true;
 }
@@ -86,23 +86,23 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
     //Get Function from DLL
     int32_t(CALL *InitiateAudio)(AUDIO_INFO Audio_Info);
     LoadFunction(InitiateAudio);
-    if (InitiateAudio == NULL) { return false; }
+    if (InitiateAudio == nullptr) { return false; }
 
     AUDIO_INFO Info = { 0 };
 
 #ifdef _WIN32
-    Info.hwnd = Window ? Window->GetWindowHandle() : NULL;
-    Info.hinst = Window ? Window->GetModuleInstance() : NULL;
+    Info.hwnd = Window ? Window->GetWindowHandle() : nullptr;
+    Info.hinst = Window ? Window->GetModuleInstance() : nullptr;
 #else
-    Info.hwnd = NULL;
-    Info.hinst = NULL;
+    Info.hwnd = nullptr;
+    Info.hinst = nullptr;
 #endif
     Info.MemoryBswaped = true;
     Info.CheckInterrupts = DummyCheckInterrupts;
 
     // We are initializing the plugin before any rom is loaded so we do not have any correct
     // parameters here.. just needed to we can config the DLL.
-    if (System == NULL)
+    if (System == nullptr)
     {
         static uint8_t Buffer[100];
         static uint32_t Value = 0;
@@ -125,7 +125,7 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
         CMipsMemoryVM & MMU = System->m_MMU_VM;
         CRegisters & Reg = System->m_Reg;
 
-        if (g_Rom->IsLoadedRomDDIPL() && g_Disk != NULL)
+        if (g_Rom->IsLoadedRomDDIPL() && g_Disk != nullptr)
             Info.HEADER = g_Disk->GetDiskHeader();
         else
             Info.HEADER = g_Rom->GetRomAddress();
@@ -144,7 +144,7 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
     m_Initialized = InitiateAudio(Info) != 0;
 
 #ifdef _WIN32
-    if (System != NULL)
+    if (System != nullptr)
     {
         if (AiUpdate)
         {
@@ -154,7 +154,7 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
                 TerminateThread(m_hAudioThread, 0);
             }
             DWORD ThreadID;
-            m_hAudioThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AudioThread, (LPVOID)this, 0, &ThreadID);
+            m_hAudioThread = CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)AudioThread, (LPVOID)this, 0, &ThreadID);
         }
 
         if (System->m_Reg.AI_DACRATE_REG != 0)
@@ -173,14 +173,14 @@ void CAudioPlugin::UnloadPluginDetails(void)
     {
         WriteTrace(TraceAudioPlugin, TraceDebug, "Terminate Audio Thread");
         TerminateThread(m_hAudioThread, 0);
-        m_hAudioThread = NULL;
+        m_hAudioThread = nullptr;
     }
 #endif
-    AiDacrateChanged = NULL;
-    AiLenChanged = NULL;
-    AiReadLength = NULL;
-    AiUpdate = NULL;
-    ProcessAList = NULL;
+    AiDacrateChanged = nullptr;
+    AiLenChanged = nullptr;
+    AiReadLength = nullptr;
+    AiUpdate = nullptr;
+    ProcessAList = nullptr;
 }
 
 void CAudioPlugin::DacrateChanged(SYSTEM_TYPE Type)

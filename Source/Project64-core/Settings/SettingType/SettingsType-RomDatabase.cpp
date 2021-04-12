@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "SettingsType-RomDatabase.h"
 
-CIniFile * CSettingTypeRomDatabase::m_SettingsIniFile = NULL;
-CIniFile * CSettingTypeRomDatabase::m_VideoIniFile = NULL;
-CIniFile * CSettingTypeRomDatabase::m_AudioIniFile = NULL;
-std::string * CSettingTypeRomDatabase::m_SectionIdent = NULL;
+CIniFile * CSettingTypeRomDatabase::m_SettingsIniFile = nullptr;
+CIniFile * CSettingTypeRomDatabase::m_VideoIniFile = nullptr;
+CIniFile * CSettingTypeRomDatabase::m_AudioIniFile = nullptr;
+std::string * CSettingTypeRomDatabase::m_SectionIdent = nullptr;
 
 CSettingTypeRomDatabase::CSettingTypeRomDatabase(const char * Name, uint32_t DefaultValue, bool DeleteOnDefault) :
     m_KeyName(StripNameSection(Name)),
@@ -62,8 +62,8 @@ void CSettingTypeRomDatabase::Initialize(void)
     m_VideoIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_VideoRDB).c_str());
     m_AudioIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_AudioRDB).c_str());
 
-    g_Settings->RegisterChangeCB(Game_IniKey, NULL, GameChanged);
-    g_Settings->RegisterChangeCB(Cmd_BaseDirectory, NULL, BaseDirChanged);
+    g_Settings->RegisterChangeCB(Game_IniKey, nullptr, GameChanged);
+    g_Settings->RegisterChangeCB(Cmd_BaseDirectory, nullptr, BaseDirChanged);
 
     m_SectionIdent = new stdstr(g_Settings->LoadStringVal(Game_IniKey));
     WriteTrace(TraceAppInit, TraceDebug, "Done");
@@ -71,27 +71,27 @@ void CSettingTypeRomDatabase::Initialize(void)
 
 void CSettingTypeRomDatabase::CleanUp(void)
 {
-    g_Settings->UnregisterChangeCB(Cmd_BaseDirectory, NULL, BaseDirChanged);
-    g_Settings->UnregisterChangeCB(Game_IniKey, NULL, GameChanged);
+    g_Settings->UnregisterChangeCB(Cmd_BaseDirectory, nullptr, BaseDirChanged);
+    g_Settings->UnregisterChangeCB(Game_IniKey, nullptr, GameChanged);
     if (m_SettingsIniFile)
     {
         delete m_SettingsIniFile;
-        m_SettingsIniFile = NULL;
+        m_SettingsIniFile = nullptr;
     }
     if (m_VideoIniFile)
     {
         delete m_VideoIniFile;
-        m_VideoIniFile = NULL;
+        m_VideoIniFile = nullptr;
     }
     if (m_AudioIniFile)
     {
         delete m_AudioIniFile;
-        m_AudioIniFile = NULL;
+        m_AudioIniFile = nullptr;
     }
     if (m_SectionIdent)
     {
         delete m_SectionIdent;
-        m_SectionIdent = NULL;
+        m_SectionIdent = nullptr;
     }
 }
 
@@ -100,17 +100,17 @@ void CSettingTypeRomDatabase::BaseDirChanged(void * /*Data */)
     if (m_SettingsIniFile)
     {
         delete m_SettingsIniFile;
-        m_SettingsIniFile = NULL;
+        m_SettingsIniFile = nullptr;
     }
     if (m_VideoIniFile)
     {
         delete m_VideoIniFile;
-        m_VideoIniFile = NULL;
+        m_VideoIniFile = nullptr;
     }
     if (m_AudioIniFile)
     {
         delete m_AudioIniFile;
-        m_AudioIniFile = NULL;
+        m_AudioIniFile = nullptr;
     }
     m_SettingsIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
     m_VideoIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_VideoRDB).c_str());
@@ -332,15 +332,15 @@ void CSettingTypeRomDatabase::Delete(uint32_t /*Index*/)
     }
     if (m_VideoSetting)
     {
-        m_VideoIniFile->SaveString(Section(), m_KeyName.c_str(), NULL);
+        m_VideoIniFile->SaveString(Section(), m_KeyName.c_str(), nullptr);
     }
     else if (m_AudioSetting)
     {
-        m_AudioIniFile->SaveString(Section(), m_KeyName.c_str(), NULL);
+        m_AudioIniFile->SaveString(Section(), m_KeyName.c_str(), nullptr);
     }
     else
     {
-        m_SettingsIniFile->SaveString(Section(), m_KeyName.c_str(), NULL);
+        m_SettingsIniFile->SaveString(Section(), m_KeyName.c_str(), nullptr);
     }
 }
 

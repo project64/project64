@@ -23,7 +23,7 @@ DMALOGENTRY* CDMALog::GetEntryByIndex(uint32_t index)
     {
         return &m_Log[index];
     }
-    return NULL;
+    return nullptr;
 }
 
 DMALOGENTRY* CDMALog::GetEntryByRamAddress(uint32_t ramAddr)
@@ -32,7 +32,7 @@ DMALOGENTRY* CDMALog::GetEntryByRamAddress(uint32_t ramAddr)
 
     if (nEntries == 0)
     {
-        return NULL;
+        return nullptr;
     }
 
     for (uint32_t i = nEntries - 1; i-- > 0;)
@@ -45,16 +45,16 @@ DMALOGENTRY* CDMALog::GetEntryByRamAddress(uint32_t ramAddr)
             return &m_Log[i];
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 DMALOGENTRY* CDMALog::GetEntryByRamAddress(uint32_t ramAddr, uint32_t* lpRomAddr, uint32_t* lpOffset)
 {
     DMALOGENTRY* lpEntry = GetEntryByRamAddress(ramAddr);
 
-    if (lpEntry == NULL)
+    if (lpEntry == nullptr)
     {
-        return NULL;
+        return nullptr;
     }
 
     *lpOffset = ramAddr - lpEntry->ramAddr;
@@ -69,7 +69,7 @@ DMALOGENTRY* CDMALog::GetEntryByRomAddress(uint32_t romAddr)
 
     if (nEntries == 0)
     {
-        return NULL;
+        return nullptr;
     }
 
     for (uint32_t i = nEntries - 1; i-- > 0; )
@@ -82,16 +82,16 @@ DMALOGENTRY* CDMALog::GetEntryByRomAddress(uint32_t romAddr)
             return &m_Log[i];
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 DMALOGENTRY* CDMALog::GetEntryByRomAddress(uint32_t romAddr, uint32_t* lpRamAddr, uint32_t* lpOffset)
 {
     DMALOGENTRY* lpEntry = GetEntryByRomAddress(romAddr);
 
-    if (lpEntry == NULL)
+    if (lpEntry == nullptr)
     {
-        return NULL;
+        return nullptr;
     }
 
     *lpOffset = romAddr - lpEntry->romAddr;

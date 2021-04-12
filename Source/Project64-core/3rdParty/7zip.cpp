@@ -14,8 +14,8 @@ m_blockIndex(0xFFFFFFFF),
 m_outBuffer(0),
 m_outBufferSize(0),
 m_NotfyCallback(NotfyCallbackDefault),
-m_NotfyCallbackInfo(NULL),
-m_db(NULL),
+m_NotfyCallbackInfo(nullptr),
+m_db(nullptr),
 m_Opened(false)
 {
     memset(&m_FileName, 0, sizeof(m_FileName));
@@ -39,7 +39,7 @@ m_Opened(false)
         //PrintError("can not open input file");
         return;
     }
-    m_FileSize = GetFileSize(m_archiveStream.file.handle, NULL);
+    m_FileSize = GetFileSize(m_archiveStream.file.handle, nullptr);
 
     char drive[_MAX_DRIVE], dir[_MAX_DIR], ext[_MAX_EXT];
     _splitpath(FileName, drive, dir, m_FileName, ext);
@@ -59,7 +59,7 @@ m_Opened(false)
     else
     {
         //SzArEx_Open will delete the passed db if it fails
-        m_db = NULL;
+        m_db = nullptr;
     }
 }
 
@@ -68,10 +68,10 @@ C7zip::~C7zip(void)
     if (m_db)
     {
         delete m_db;
-        m_db = NULL;
+        m_db = nullptr;
     }
 #ifdef legacycode
-    SetNotificationCallback(NULL,NULL);
+    SetNotificationCallback(nullptr,nullptr);
     SzArDbExFree(&m_db, m_allocImp.Free);
 
     if (m_archiveStream.File)
@@ -94,7 +94,7 @@ void C7zip::SetNotificationCallback(LP7ZNOTIFICATION NotfyFnc, void * CBInfo)
 #ifdef legacycode
 void C7zip::StatusUpdate(_7Z_STATUS status, int Value1, int Value2, C7zip * _this )
 {
-    CFileItem * File = _this->m_CurrentFile >= 0 ? _this->FileItem(_this->m_CurrentFile) : NULL;
+    CFileItem * File = _this->m_CurrentFile >= 0 ? _this->FileItem(_this->m_CurrentFile) : nullptr;
 
     switch (status)
     {
@@ -114,7 +114,7 @@ void C7zip::StatusUpdate(_7Z_STATUS status, int Value1, int Value2, C7zip * _thi
 bool C7zip::GetFile(int index, Byte * Data, size_t DataLen)
 {
     m_CurrentFile = -1;
-    if (Data == NULL || DataLen == 0)
+    if (Data == nullptr || DataLen == 0)
     {
         return false;
     }
@@ -160,7 +160,7 @@ void * C7zip::AllocAllocImp(void * /*p*/, size_t size)
 
 void C7zip::AllocFreeImp(void * /*p*/, void *address)
 {
-    if (address != NULL)
+    if (address != nullptr)
     {
         free(address);
     }
@@ -170,7 +170,7 @@ SRes C7zip::SzFileReadImp(void *object, void *buffer, size_t *processedSize)
 {
     CFileInStream *p = (CFileInStream *)object;
     DWORD dwRead;
-    if (!ReadFile(p->file.handle, buffer, *processedSize, &dwRead, NULL))
+    if (!ReadFile(p->file.handle, buffer, *processedSize, &dwRead, nullptr))
     {
         return SZ_ERROR_FAIL;
     }
@@ -198,7 +198,7 @@ SRes C7zip::SzFileSeekImp(void *p, Int64 *pos, ESzSeek origin)
     default:
         return SZ_ERROR_FAIL;
     }
-    *pos = SetFilePointer(s->file.handle, (LONG)*pos, NULL, dwMoveMethod);
+    *pos = SetFilePointer(s->file.handle, (LONG)*pos, nullptr, dwMoveMethod);
     if (*pos == INVALID_SET_FILE_POINTER)
     {
         return SZ_ERROR_FAIL;
@@ -208,9 +208,9 @@ SRes C7zip::SzFileSeekImp(void *p, Int64 *pos, ESzSeek origin)
 
 const char * C7zip::FileName(char * FileName, int SizeOfFileName) const
 {
-    if (FileName == NULL)
+    if (FileName == nullptr)
     {
-        return NULL;
+        return nullptr;
     }
     int Len = strlen(m_FileName);
     if (Len > (SizeOfFileName - 1))
@@ -225,12 +225,12 @@ const char * C7zip::FileName(char * FileName, int SizeOfFileName) const
 std::wstring C7zip::FileNameIndex(int index)
 {
     std::wstring filename;
-    if (m_db == NULL || m_db->FileNameOffsets == 0)
+    if (m_db == nullptr || m_db->FileNameOffsets == 0)
     {
         /* no filename */
         return filename;
     }
-    int namelen = SzArEx_GetFileNameUtf16(m_db, index, NULL);
+    int namelen = SzArEx_GetFileNameUtf16(m_db, index, nullptr);
     if (namelen <= 0)
     {
         /* no filename */

@@ -5,7 +5,7 @@
 #include <Common/path.h>
 
 CFlashram::CFlashram(bool ReadOnly) :
-m_FlashRamPointer(NULL),
+m_FlashRamPointer(nullptr),
 m_FlashFlag(FLASHRAM_MODE_NOPES),
 m_FlashStatus(0),
 m_FlashRAM_Offset(0),

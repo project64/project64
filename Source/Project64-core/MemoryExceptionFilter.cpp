@@ -18,9 +18,9 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
     WriteTrace(TraceExceptionHandler, TraceVerbose, "MemAddress: %X", MemAddress);
     uint32_t * Reg;
 
-    if (g_MMU == NULL)
+    if (g_MMU == nullptr)
     {
-        WriteTrace(TraceExceptionHandler, TraceError, "g_MMU == NULL");
+        WriteTrace(TraceExceptionHandler, TraceError, "g_MMU == nullptr");
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return false;
     }
@@ -38,7 +38,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
     uint8_t * TypePos = (uint8_t *)*(context.Eip);
     WriteTrace(TraceExceptionHandler, TraceVerbose, "TypePos[0] = %02X TypePos[1] = %02X", TypePos[0], TypePos[2]);
 
-    Reg = NULL;
+    Reg = nullptr;
     if (*TypePos == 0xF3 && (*(TypePos + 1) == 0xA4 || *(TypePos + 1) == 0xA5))
     {
         uint32_t Start = (*context.Edi - (uint32_t)g_MMU->m_RDRAM);
@@ -169,7 +169,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
         return false;
     }
 
-    if (Reg == NULL)
+    if (Reg == nullptr)
     {
         if (HaveDebugger())
         {
@@ -764,7 +764,7 @@ bool CMipsMemoryVM::SetupSegvHandler(void)
     struct sigaction sig_act;
     sig_act.sa_flags = SA_SIGINFO | SA_RESTART;
     sig_act.sa_sigaction = segv_handler;
-    return sigaction(SIGSEGV, &sig_act, NULL) == 0;
+    return sigaction(SIGSEGV, &sig_act, nullptr) == 0;
 }
 
 void CMipsMemoryVM::segv_handler(int signal, siginfo_t *siginfo, void *sigcontext)
@@ -826,7 +826,7 @@ void CMipsMemoryVM::segv_handler(int signal, siginfo_t *siginfo, void *sigcontex
 int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPointer)
 {
 #if defined(_M_IX86) && defined(_WIN32)
-    if (dwExptCode != EXCEPTION_ACCESS_VIOLATION || g_MMU == NULL)
+    if (dwExptCode != EXCEPTION_ACCESS_VIOLATION || g_MMU == nullptr)
     {
         if (HaveDebugger())
         {

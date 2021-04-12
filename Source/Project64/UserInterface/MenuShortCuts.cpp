@@ -485,7 +485,7 @@ void CShortCuts::Load(bool InitialValues)
             do
             {
                 char Line[300];
-                if (fgets(Line, sizeof(Line), file) != NULL)
+                if (fgets(Line, sizeof(Line), file) != nullptr)
                 {
                     sscanf(Line, "%d,%d,%d,%d,%d,%d,%d,%d", &ID, &key, &bCtrl, &bAlt, &bShift, &AccessMode,
                         &bUserAdded, &bInactive);
@@ -506,7 +506,7 @@ void CShortCuts::Save(void)
 
     stdstr FileName = UISettingsLoadStringVal(SupportFile_ShortCuts);
     FILE *file = fopen(FileName.c_str(), "w");
-    if (file == NULL)
+    if (file == nullptr)
     {
         return;
     }

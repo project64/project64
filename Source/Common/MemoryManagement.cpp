@@ -56,7 +56,7 @@ void* AllocateAddressSpace(size_t size, void * base_address)
     void * ptr = mmap((void*)0, size, PROT_NONE, MAP_PRIVATE | MAP_ANON, -1, 0);
     if (ptr == MAP_FAILED)
     {
-        return NULL;
+        return nullptr;
     }
     msync(ptr, size, MS_SYNC | MS_INVALIDATE);
     return ptr;
@@ -80,7 +80,7 @@ void* CommitMemory(void* addr, size_t size, MEM_PROTECTION memProtection)
     int OsMemProtection;
     if (!TranslateFromMemProtect(memProtection, OsMemProtection))
     {
-        return NULL;
+        return nullptr;
     }
 #ifdef _WIN32
     return VirtualAlloc(addr, size, MEM_COMMIT, OsMemProtection);
@@ -118,11 +118,11 @@ bool ProtectMemory(void* addr, size_t size, MEM_PROTECTION memProtection, MEM_PR
 #ifdef _WIN32
     DWORD OldOsProtect;
     BOOL res = VirtualProtect(addr, size, OsMemProtection, &OldOsProtect);
-    if (OldProtect != NULL)
+    if (OldProtect != nullptr)
     {
         if (!TranslateToMemProtect(OldOsProtect, *OldProtect))
         {
-            return NULL;
+            return nullptr;
         }
     }
     return res != 0;

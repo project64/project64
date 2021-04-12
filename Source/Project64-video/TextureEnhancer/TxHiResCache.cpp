@@ -187,19 +187,19 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
 
             int width = 0, height = 0;
             uint16 format = 0;
-            uint8 *tex = NULL;
+            uint8 *tex = nullptr;
             int tmpwidth = 0, tmpheight = 0;
             uint16 tmpformat = 0;
-            uint8 *tmptex = NULL;
+            uint8 *tmptex = nullptr;
             int untiled_width = 0, untiled_height = 0;
             uint16 destformat = 0;
 
             /* Rice hi-res textures: begin
             */
             uint32 chksum = 0, fmt = 0, siz = 0, palchksum = 0;
-            char *pfname = NULL, fname[260];
+            char *pfname = nullptr, fname[260];
             std::string ident;
-            FILE *fp = NULL;
+            FILE *fp = nullptr;
 
             strcpy(fname, _ident.c_str());
             /* XXX case sensitivity fiasco!
@@ -326,7 +326,7 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                 /* _a.png */
                 strcpy(pfname, "_a.png");
                 TargetFile = CPath(dir_path, fname);
-                if ((fp = fopen(TargetFile, "rb")) != NULL) {
+                if ((fp = fopen(TargetFile, "rb")) != nullptr) {
                     tmptex = _txImage->readPNG(fp, &tmpwidth, &tmpheight, &tmpformat);
                     fclose(fp);
                 }
@@ -334,7 +334,7 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                     /* _a.bmp */
                     strcpy(pfname, "_a.bmp");
                     TargetFile = CPath(dir_path, fname);
-                    if ((fp = fopen(TargetFile, "rb")) != NULL) {
+                    if ((fp = fopen(TargetFile, "rb")) != nullptr) {
                         tmptex = _txImage->readBMP(fp, &tmpwidth, &tmpheight, &tmpformat);
                         fclose(fp);
                     }
@@ -342,7 +342,7 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                 /* _rgb.png */
                 strcpy(pfname, "_rgb.png");
                 TargetFile = CPath(dir_path, fname);
-                if ((fp = fopen(TargetFile, "rb")) != NULL) {
+                if ((fp = fopen(TargetFile, "rb")) != nullptr) {
                     tex = _txImage->readPNG(fp, &width, &height, &format);
                     fclose(fp);
                 }
@@ -350,7 +350,7 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                     /* _rgb.bmp */
                     strcpy(pfname, "_rgb.bmp");
                     TargetFile = CPath(dir_path, fname);
-                    if ((fp = fopen(TargetFile, "rb")) != NULL) {
+                    if ((fp = fopen(TargetFile, "rb")) != nullptr) {
                         tex = _txImage->readBMP(fp, &width, &height, &format);
                         fclose(fp);
                     }
@@ -375,8 +375,8 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                         }
                         if (tex) free(tex);
                         if (tmptex) free(tmptex);
-                        tex = NULL;
-                        tmptex = NULL;
+                        tex = nullptr;
+                        tmptex = nullptr;
                         continue;
                     }
                 }
@@ -410,7 +410,7 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
 #endif
                         }
                         free(tmptex);
-                        tmptex = NULL;
+                        tmptex = nullptr;
                     }
                     else {
                         /* clobber A comp. never a question of alpha. only RGB used. */
@@ -448,7 +448,7 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
 #endif
                     pfname == strstr(fname, "_ci.bmp")) {
                     CPath TargetFile(dir_path, fname);
-                    if ((fp = fopen(TargetFile, "rb")) != NULL) {
+                    if ((fp = fopen(TargetFile, "rb")) != nullptr) {
                         if (strstr(fname, ".png")) tex = _txImage->readPNG(fp, &width, &height, &format);
                         else if (strstr(fname, ".dds")) tex = _txImage->readDDS(fp, &width, &height, &format);
                         else                            tex = _txImage->readBMP(fp, &width, &height, &format);
@@ -462,7 +462,7 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                             aspectratio == 4.0 ||
                             aspectratio == 8.0)) {
                             free(tex);
-                            tex = NULL;
+                            tex = nullptr;
 #if !DEBUG
                             INFO(80, "-----\n");
                             INFO(80, "path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
@@ -474,7 +474,7 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                         if (width != _txReSample->nextPow2(width) ||
                             height != _txReSample->nextPow2(height)) {
                             free(tex);
-                            tex = NULL;
+                            tex = nullptr;
 #if !DEBUG
                             INFO(80, "-----\n");
                             INFO(80, "path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
@@ -506,7 +506,7 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                 format == GFX_TEXFMT_ARGB_CMP_DXT5) ||
                 (width * height) < 4) { /* TxQuantize requirement: width * height must be 4 or larger. */
                 free(tex);
-                tex = NULL;
+                tex = nullptr;
 #if !DEBUG
                 INFO(80, "-----\n");
                 INFO(80, "path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
@@ -710,7 +710,7 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                     if (ratio > 1) {
                         if (!_txReSample->minify(&tex, &width, &height, ratio)) {
                             free(tex);
-                            tex = NULL;
+                            tex = nullptr;
                             DBG_INFO(80, "Error: minification failed!\n");
                             continue;
                         }
@@ -807,7 +807,7 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                     }
                     if (!_txReSample->minify(&tex, &width, &height, ratio)) {
                         free(tex);
-                        tex = NULL;
+                        tex = nullptr;
                         DBG_INFO(80, "Error: minification failed!\n");
                         continue;
                     }
@@ -840,7 +840,7 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                     if (!_txReSample->nextPow2(&tex, &width, &height, 32, 0)) {
 #endif
                         free(tex);
-                        tex = NULL;
+                        tex = nullptr;
                         DBG_INFO(80, "Error: aspect ratio adjustment failed!\n");
                         continue;
                     }
@@ -924,7 +924,7 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                     if (!_txReSample->nextPow2(&tex, &width, &height, 32, 0)) {
 #endif
                         free(tex);
-                        tex = NULL;
+                        tex = nullptr;
                         DBG_INFO(80, "Error: aspect ratio adjustment failed!\n");
                         continue;
                     }
@@ -987,7 +987,7 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
 #endif
                 if (tex) {
                     free(tex);
-                    tex = NULL;
+                    tex = nullptr;
                     INFO(80, "Error: bad format or size! %d x %d gfmt:%x\n", width, height, format);
                 }
                 else {

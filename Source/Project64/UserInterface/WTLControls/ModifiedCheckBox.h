@@ -11,12 +11,12 @@ class CModifiedButton :
 
 public:
 	// Constructors
-	CModifiedButton(HWND hWnd = NULL) : 
+	CModifiedButton(HWND hWnd = nullptr) : 
 	    CButton(hWnd),
 		m_Changed(false),
 		m_Reset(false),
-		m_BoldFont(NULL),
-		m_OriginalFont(NULL)
+		m_BoldFont(nullptr),
+		m_OriginalFont(nullptr)
 	{ 		
 	}
 	
@@ -43,7 +43,7 @@ public:
 		if (m_Changed)
 		{
 			SetReset(false);
-			if (m_BoldFont == NULL)
+			if (m_BoldFont == nullptr)
 			{
 				m_OriginalFont = (HFONT)SendMessage(WM_GETFONT); 
 
@@ -54,12 +54,12 @@ public:
 				m_BoldFont = CreateFontIndirect ( &lfSystemVariableFont );
 			}
 			SendMessage(WM_SETFONT,(WPARAM)m_BoldFont);
-			InvalidateRect(NULL);
+			InvalidateRect(nullptr);
 		} else {
 			if (m_OriginalFont)
 			{
 				SendMessage(WM_SETFONT,(WPARAM)m_OriginalFont);
-				InvalidateRect(NULL);
+				InvalidateRect(nullptr);
 			}
 		}
 	}

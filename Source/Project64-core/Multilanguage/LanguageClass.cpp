@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <Common/path.h>
 
-CLanguage * g_Lang = NULL;
+CLanguage * g_Lang = nullptr;
 
 void CLanguage::LoadDefaultStrings(void)
 {
@@ -646,7 +646,7 @@ bool CLanguage::LoadCurrentStrings(void)
 
     //Process the file
     FILE *file = fopen(Filename.c_str(), "rb");
-    if (file == NULL)
+    if (file == nullptr)
     {
         return false;
     }
@@ -732,7 +732,7 @@ const std::string & CLanguage::GetString(LanguageStringID StringID)
 std::string CLanguage::GetLangString(const char * FileName, LanguageStringID ID)
 {
     FILE *file = fopen(FileName, "rb");
-    if (file == NULL)
+    if (file == nullptr)
     {
         return "";
     }

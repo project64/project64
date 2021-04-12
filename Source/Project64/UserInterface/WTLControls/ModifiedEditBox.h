@@ -12,7 +12,7 @@ class CModifiedEditBox :
 
 public:
 	// Constructors
-	CModifiedEditBox(bool bString = true, HWND hWnd = NULL);
+	CModifiedEditBox(bool bString = true, HWND hWnd = nullptr);
 	~CModifiedEditBox();
 	
 	void SetReset ( bool Reset );

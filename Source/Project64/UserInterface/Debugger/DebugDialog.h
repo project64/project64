@@ -14,7 +14,7 @@ protected:
 
     static DWORD CreateDebuggerWindow(CDebugDialog<T> * pThis)
     {
-        pThis->DoModal(NULL);
+        pThis->DoModal(nullptr);
         pThis->WindowCreated();
         return 0;
     }
@@ -44,11 +44,11 @@ protected:
         int nParams = sscanf(str.c_str(), "%d,%d,%d,%d", &left, &top, &width, &height);
         if (nParams == 4)
         {
-            pT->SetWindowPos(NULL, left, top, width, height, 0);
+            pT->SetWindowPos(nullptr, left, top, width, height, 0);
             pT->RedrawWindow();
         }
         if (nParams == 2) {
-            pT->SetWindowPos(NULL, left, top, width, height, 1);
+            pT->SetWindowPos(nullptr, left, top, width, height, 1);
             pT->RedrawWindow();
         }
     }
@@ -74,8 +74,8 @@ protected:
 public:
     CDebugDialog(CDebuggerUI * debugger) :
         m_Debugger(debugger),
-        m_CreatedEvent(CreateEvent(NULL, true, false, NULL)),
-        m_DialogThread(NULL)
+        m_CreatedEvent(CreateEvent(nullptr, true, false, nullptr)),
+        m_DialogThread(nullptr)
     {
     }
     virtual ~CDebugDialog(void)
@@ -85,7 +85,7 @@ public:
         if (m_DialogThread)
         {
             CloseHandle(m_DialogThread);
-            m_DialogThread = NULL;
+            m_DialogThread = nullptr;
         }
     }
 
@@ -104,17 +104,17 @@ public:
                 TerminateThread(m_DialogThread, 1);
             }
             CloseHandle(m_DialogThread);
-            m_DialogThread = NULL;
+            m_DialogThread = nullptr;
         }
     }
 
     void ShowWindow(void)
     {
-        if (m_hWnd == NULL)
+        if (m_hWnd == nullptr)
         {
             DWORD ThreadID;
             ResetEvent(m_CreatedEvent);
-            m_DialogThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)CreateDebuggerWindow, (LPVOID)this, 0, &ThreadID);
+            m_DialogThread = CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)CreateDebuggerWindow, (LPVOID)this, 0, &ThreadID);
             if (WaitForSingleObject(m_CreatedEvent, 20000) == WAIT_TIMEOUT)
             {
                 WriteTrace(TraceUserInterface, TraceError, "Failed to get window create notification");
@@ -122,7 +122,8 @@ public:
         }
         if (m_hWnd)
         {
-            if (::IsIconic((HWND)m_hWnd)) {
+            if (::IsIconic((HWND)m_hWnd)) 
+            {
                 SendMessage(m_hWnd, WM_SYSCOMMAND, SC_RESTORE, NULL);
             }
             SetForegroundWindow((HWND)m_hWnd);

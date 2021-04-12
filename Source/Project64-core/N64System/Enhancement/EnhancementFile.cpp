@@ -164,7 +164,7 @@ bool CEnhancmentFile::MoveToSection(const char * Section, bool ChangeCurrentSect
     }
 
     std::unique_ptr<char> Data;
-    char *Input = NULL;
+    char *Input = nullptr;
     int MaxDataSize = 0, DataSize = 0, ReadPos = 0, result;
 
     FILELOC_ITR iter = m_SectionsPos.find(std::string(Section));
@@ -385,7 +385,7 @@ void CEnhancmentFile::SaveCurrentSection(void)
 
         int MaxDataSize = 0, DataSize = 0, ReadPos = 0, result;
         std::unique_ptr<char> Data;
-        char *Input = NULL;
+        char *Input = nullptr;
 
         //Skip first line as it is the section name
         int StartPos = m_CurrentSectionFilePos;
@@ -460,7 +460,7 @@ int CEnhancmentFile::GetStringFromFile(char * & String, std::unique_ptr<char> & 
             //Increase buffer size
             int NewMaxDataSize = MaxDataSize + BufferIncrease;
             char * NewBuffer = new char[NewMaxDataSize];
-            if (NewBuffer == NULL)
+            if (NewBuffer == nullptr)
             {
                 return -1;
             }
@@ -492,10 +492,10 @@ const char * CEnhancmentFile::CleanLine(char * Line)
     char * Pos = Line;
 
     //Remove any comment from the line
-    while (Pos != NULL)
+    while (Pos != nullptr)
     {
         Pos = strchr(Pos, '/');
-        if (Pos != NULL)
+        if (Pos != nullptr)
         {
             if (Pos[1] == '/')
             {

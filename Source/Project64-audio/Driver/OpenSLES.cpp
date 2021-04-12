@@ -52,13 +52,13 @@ enum
 };
 
 /* Pointer to the primary audio buffer */
-uint8_t * g_primaryBuffer = NULL;
+uint8_t * g_primaryBuffer = nullptr;
 
 /* Size of the primary buffer */
 uint32_t g_primaryBufferBytes = 0;
 
 /* Pointer to secondary buffers */
-uint8_t ** g_secondaryBuffers = NULL;
+uint8_t ** g_secondaryBuffers = nullptr;
 
 /* Size of a single secondary buffer */
 uint32_t g_secondaryBufferBytes = 0;
@@ -86,18 +86,18 @@ bool g_critical_failure = false;
 threadLock g_lock;
 
 /* Engine interfaces */
-SLObjectItf g_engineObject = NULL;
-SLEngineItf g_engineEngine = NULL;
+SLObjectItf g_engineObject = nullptr;
+SLEngineItf g_engineEngine = nullptr;
 
 /* Output mix interfaces */
-SLObjectItf g_outputMixObject = NULL;
+SLObjectItf g_outputMixObject = nullptr;
 
 /* Player interfaces */
-SLObjectItf g_playerObject = NULL;
-SLPlayItf g_playerPlay = NULL;
+SLObjectItf g_playerObject = nullptr;
+SLPlayItf g_playerPlay = nullptr;
 
 /* Buffer queue interfaces */
-SLAndroidSimpleBufferQueueItf g_bufferQueue = NULL;
+SLAndroidSimpleBufferQueueItf g_bufferQueue = nullptr;
 #endif
 
 static bool CreatePrimaryBuffer(void)
@@ -109,9 +109,9 @@ static bool CreatePrimaryBuffer(void)
 
     g_primaryBuffer = new uint8_t[primaryBytes];
 
-    if (g_primaryBuffer == NULL)
+    if (g_primaryBuffer == nullptr)
     {
-        WriteTrace(TraceAudioInitShutdown, TraceError, "g_primaryBuffer == NULL");
+        WriteTrace(TraceAudioInitShutdown, TraceError, "g_primaryBuffer == nullptr");
         WriteTrace(TraceAudioInitShutdown, TraceDebug, "Done (res: false)");
         return false;
     }
@@ -129,34 +129,34 @@ static void CloseAudio(void)
     g_secondaryBufferIndex = 0;
 
     /* Delete Primary buffer */
-    if (g_primaryBuffer != NULL)
+    if (g_primaryBuffer != nullptr)
     {
         WriteTrace(TraceAudioInitShutdown, TraceDebug, "Delete g_primaryBuffer (%p)", g_primaryBuffer);
         g_primaryBufferBytes = 0;
         delete[] g_primaryBuffer;
-        g_primaryBuffer = NULL;
+        g_primaryBuffer = nullptr;
     }
 
     /* Delete Secondary buffers */
-    if (g_secondaryBuffers != NULL)
+    if (g_secondaryBuffers != nullptr)
     {
         for (uint32_t i = 0; i < SECONDARY_BUFFER_NBR; i++)
         {
-            if (g_secondaryBuffers[i] != NULL)
+            if (g_secondaryBuffers[i] != nullptr)
             {
                 WriteTrace(TraceAudioInitShutdown, TraceDebug, "Delete g_secondaryBuffers[%d] (%p)", i, g_secondaryBuffers[i]);
                 delete[] g_secondaryBuffers[i];
-                g_secondaryBuffers[i] = NULL;
+                g_secondaryBuffers[i] = nullptr;
             }
         }
         g_secondaryBufferBytes = 0;
         WriteTrace(TraceAudioInitShutdown, TraceDebug, "Delete g_secondaryBuffers (%p)", g_secondaryBuffers);
         delete[] g_secondaryBuffers;
-        g_secondaryBuffers = NULL;
+        g_secondaryBuffers = nullptr;
     }
 #ifdef ANDROID
     /* Destroy buffer queue audio player object, and invalidate all associated interfaces */
-    if (g_playerObject != NULL)
+    if (g_playerObject != nullptr)
     {
         SLuint32 state = SL_PLAYSTATE_PLAYING;
         (*g_playerPlay)->SetPlayState(g_playerPlay, SL_PLAYSTATE_STOPPED);
@@ -167,24 +167,24 @@ static void CloseAudio(void)
         }
 
         (*g_playerObject)->Destroy(g_playerObject);
-        g_playerObject = NULL;
-        g_playerPlay = NULL;
-        g_bufferQueue = NULL;
+        g_playerObject = nullptr;
+        g_playerPlay = nullptr;
+        g_bufferQueue = nullptr;
     }
 
     /* Destroy output mix object, and invalidate all associated interfaces */
-    if (g_outputMixObject != NULL)
+    if (g_outputMixObject != nullptr)
     {
         (*g_outputMixObject)->Destroy(g_outputMixObject);
-        g_outputMixObject = NULL;
+        g_outputMixObject = nullptr;
     }
 
     /* Destroy engine object, and invalidate all associated interfaces */
-    if (g_engineObject != NULL)
+    if (g_engineObject != nullptr)
     {
         (*g_engineObject)->Destroy(g_engineObject);
-        g_engineObject = NULL;
-        g_engineEngine = NULL;
+        g_engineObject = nullptr;
+        g_engineEngine = nullptr;
     }
 
     /* Destroy thread Locks */
@@ -207,9 +207,9 @@ static bool CreateSecondaryBuffers(void)
     /* Allocate number of secondary buffers */
     g_secondaryBuffers = new uint8_t *[SECONDARY_BUFFER_NBR];
 
-    if (g_secondaryBuffers == NULL)
+    if (g_secondaryBuffers == nullptr)
     {
-        WriteTrace(TraceAudioInitShutdown, TraceError, "g_secondaryBuffers == NULL");
+        WriteTrace(TraceAudioInitShutdown, TraceError, "g_secondaryBuffers == nullptr");
         WriteTrace(TraceAudioInitShutdown, TraceDebug, "Done (res: false)");
         return false;
     }
@@ -219,7 +219,7 @@ static bool CreateSecondaryBuffers(void)
     {
         g_secondaryBuffers[i] = new uint8_t[secondaryBytes];
 
-        if (g_secondaryBuffers[i] == NULL)
+        if (g_secondaryBuffers[i] == nullptr)
         {
             status = false;
             break;
@@ -243,10 +243,10 @@ static int resample(unsigned char *input, int /*input_avail*/, int oldsamplerate
     spx_uint32_t in_len, out_len;
     if (Resample == RESAMPLER_SPEEX)
     {
-        if (spx_state == NULL)
+        if (spx_state == nullptr)
         {
             spx_state = speex_resampler_init(2, oldsamplerate, newsamplerate, ResampleQuality, &error);
-            if (spx_state == NULL)
+            if (spx_state == nullptr)
             {
                 memset(output, 0, output_needed);
                 return 0;
@@ -284,10 +284,10 @@ static int resample(unsigned char *input, int /*input_avail*/, int oldsamplerate
         }
         memset(_src, 0, _src_len);
         memset(_dest, 0, _dest_len);
-        if (src_state == NULL)
+        if (src_state == nullptr)
         {
             src_state = src_new(ResampleQuality, 2, &error);
-            if (src_state == NULL)
+            if (src_state == nullptr)
             {
                 memset(output, 0, output_needed);
                 return 0;
@@ -365,7 +365,7 @@ void OpenSLESDriver::AI_SetFrequency(uint32_t freq, uint32_t BufferSize)
         return;
     }
 
-    if (g_GameFreq == freq && g_primaryBuffer != NULL)
+    if (g_GameFreq == freq && g_primaryBuffer != nullptr)
     {
         WriteTrace(TraceAudioInitShutdown, TraceInfo, "we are already using this frequency, so ignore it (freq: %d)", freq);
         WriteTrace(TraceAudioInitShutdown, TraceDebug, "Done");
@@ -433,7 +433,7 @@ void OpenSLESDriver::AI_SetFrequency(uint32_t freq, uint32_t BufferSize)
 
 #ifdef ANDROID
     /* Create thread Locks to ensure synchronization between callback and processing code */
-    if (pthread_mutex_init(&(g_lock.mutex), (pthread_mutexattr_t*)NULL) != 0)
+    if (pthread_mutex_init(&(g_lock.mutex), (pthread_mutexattr_t*)nullptr) != 0)
     {
         WriteTrace(TraceAudioInitShutdown, TraceError, "pthread_mutex_init failed");
         CloseAudio();
@@ -441,7 +441,7 @@ void OpenSLESDriver::AI_SetFrequency(uint32_t freq, uint32_t BufferSize)
         WriteTrace(TraceAudioInitShutdown, TraceDebug, "Done");
         return;
     }
-    if (pthread_cond_init(&(g_lock.cond), (pthread_condattr_t*)NULL) != 0)
+    if (pthread_cond_init(&(g_lock.cond), (pthread_condattr_t*)nullptr) != 0)
     {
         WriteTrace(TraceAudioInitShutdown, TraceError, "pthread_cond_init failed");
         CloseAudio();
@@ -454,7 +454,7 @@ void OpenSLESDriver::AI_SetFrequency(uint32_t freq, uint32_t BufferSize)
     pthread_mutex_unlock(&(g_lock.mutex));
 
     /* Engine object */
-    SLresult result = slCreateEngine(&g_engineObject, 0, NULL, 0, NULL, NULL);
+    SLresult result = slCreateEngine(&g_engineObject, 0, nullptr, 0, nullptr, nullptr);
     if (result != SL_RESULT_SUCCESS)
     {
         WriteTrace(TraceAudioInitShutdown, TraceError, "slCreateEngine failed (result: %d)", result);
@@ -481,7 +481,7 @@ void OpenSLESDriver::AI_SetFrequency(uint32_t freq, uint32_t BufferSize)
     if (result == SL_RESULT_SUCCESS)
     {
         /* Output mix object */
-        result = (*g_engineEngine)->CreateOutputMix(g_engineEngine, &g_outputMixObject, 0, NULL, NULL);
+        result = (*g_engineEngine)->CreateOutputMix(g_engineEngine, &g_outputMixObject, 0, nullptr, nullptr);
         if (result != SL_RESULT_SUCCESS)
         {
             WriteTrace(TraceAudioInitShutdown, TraceError, "slCreateEngine->CreateOutputMix failed (result: %d)", result);
@@ -508,7 +508,7 @@ void OpenSLESDriver::AI_SetFrequency(uint32_t freq, uint32_t BufferSize)
 
         /* Configure audio sink */
         SLDataLocator_OutputMix loc_outmix = { SL_DATALOCATOR_OUTPUTMIX, g_outputMixObject };
-        SLDataSink audioSnk = { &loc_outmix, NULL };
+        SLDataSink audioSnk = { &loc_outmix, nullptr };
 
         /* Create audio player */
         const SLInterfaceID ids1[] = { SL_IID_ANDROIDSIMPLEBUFFERQUEUE };

@@ -11,29 +11,29 @@
 ASM_PARSE_ERROR CAssembler::m_ParseError = ERR_NONE;
 uint32_t CAssembler::m_Address = 0;
 
-char* CAssembler::m_TokContext = NULL;
+char* CAssembler::m_TokContext = nullptr;
 
-const ASM_SYNTAX_FN CAssembler::syn_jump[] = { arg_jump, NULL };
-const ASM_SYNTAX_FN CAssembler::syn_loadstore[] = { arg_reg_t, arg_imm16, arg_reg_s, NULL };
-const ASM_SYNTAX_FN CAssembler::syn_arith[] = { arg_reg_d, arg_reg_s, arg_reg_t, NULL };
-const ASM_SYNTAX_FN CAssembler::syn_arith2[] = { arg_reg_s, arg_reg_t, NULL };
-const ASM_SYNTAX_FN CAssembler::syn_shiftv[] = { arg_reg_d, arg_reg_t, arg_reg_s, NULL };
-const ASM_SYNTAX_FN CAssembler::syn_arith_i[] = { arg_reg_t, arg_reg_s, arg_imm16, NULL };
-const ASM_SYNTAX_FN CAssembler::syn_load_i[] = { arg_reg_t, arg_imm16, NULL };
-const ASM_SYNTAX_FN CAssembler::syn_branch_z[] = { arg_reg_s, arg_bra_target, NULL };
-const ASM_SYNTAX_FN CAssembler::syn_branch[] = { arg_reg_s, arg_reg_t, arg_bra_target, NULL };
-const ASM_SYNTAX_FN CAssembler::syn_branch_unc[] = { arg_bra_target, NULL };
-const ASM_SYNTAX_FN CAssembler::syn_trap_i[] = { arg_reg_s, arg_imm16, NULL };
-const ASM_SYNTAX_FN CAssembler::syn_shift[] = { arg_reg_d, arg_reg_t, arg_shamt, NULL };
-const ASM_SYNTAX_FN CAssembler::syn_mf[] = { arg_reg_d, NULL };
-const ASM_SYNTAX_FN CAssembler::syn_jr[] = { arg_reg_s, NULL };
-const ASM_SYNTAX_FN CAssembler::syn_jalr[] = { arg_reg_d, arg_reg_s, NULL };
-const ASM_SYNTAX_FN CAssembler::syn_cop1_arith[] = { arg_reg_fd, arg_reg_fs, arg_reg_ft, NULL };
-const ASM_SYNTAX_FN CAssembler::syn_cop1[] = { arg_reg_fd, arg_reg_fs, NULL };
-const ASM_SYNTAX_FN CAssembler::syn_cop1_cmp[] = { arg_reg_fs, arg_reg_ft, NULL };
-const ASM_SYNTAX_FN CAssembler::syn_cop_mv[] = { arg_reg_t, arg_reg_d, NULL };
-const ASM_SYNTAX_FN CAssembler::syn_cache[] = { arg_cache_op, arg_imm16, arg_reg_s, NULL };
-const ASM_SYNTAX_FN CAssembler::syn_syscall[] = { arg_syscall_code, NULL };
+const ASM_SYNTAX_FN CAssembler::syn_jump[] = { arg_jump, nullptr };
+const ASM_SYNTAX_FN CAssembler::syn_loadstore[] = { arg_reg_t, arg_imm16, arg_reg_s, nullptr };
+const ASM_SYNTAX_FN CAssembler::syn_arith[] = { arg_reg_d, arg_reg_s, arg_reg_t, nullptr };
+const ASM_SYNTAX_FN CAssembler::syn_arith2[] = { arg_reg_s, arg_reg_t, nullptr };
+const ASM_SYNTAX_FN CAssembler::syn_shiftv[] = { arg_reg_d, arg_reg_t, arg_reg_s, nullptr };
+const ASM_SYNTAX_FN CAssembler::syn_arith_i[] = { arg_reg_t, arg_reg_s, arg_imm16, nullptr };
+const ASM_SYNTAX_FN CAssembler::syn_load_i[] = { arg_reg_t, arg_imm16, nullptr };
+const ASM_SYNTAX_FN CAssembler::syn_branch_z[] = { arg_reg_s, arg_bra_target, nullptr };
+const ASM_SYNTAX_FN CAssembler::syn_branch[] = { arg_reg_s, arg_reg_t, arg_bra_target, nullptr };
+const ASM_SYNTAX_FN CAssembler::syn_branch_unc[] = { arg_bra_target, nullptr };
+const ASM_SYNTAX_FN CAssembler::syn_trap_i[] = { arg_reg_s, arg_imm16, nullptr };
+const ASM_SYNTAX_FN CAssembler::syn_shift[] = { arg_reg_d, arg_reg_t, arg_shamt, nullptr };
+const ASM_SYNTAX_FN CAssembler::syn_mf[] = { arg_reg_d, nullptr };
+const ASM_SYNTAX_FN CAssembler::syn_jr[] = { arg_reg_s, nullptr };
+const ASM_SYNTAX_FN CAssembler::syn_jalr[] = { arg_reg_d, arg_reg_s, nullptr };
+const ASM_SYNTAX_FN CAssembler::syn_cop1_arith[] = { arg_reg_fd, arg_reg_fs, arg_reg_ft, nullptr };
+const ASM_SYNTAX_FN CAssembler::syn_cop1[] = { arg_reg_fd, arg_reg_fs, nullptr };
+const ASM_SYNTAX_FN CAssembler::syn_cop1_cmp[] = { arg_reg_fs, arg_reg_ft, nullptr };
+const ASM_SYNTAX_FN CAssembler::syn_cop_mv[] = { arg_reg_t, arg_reg_d, nullptr };
+const ASM_SYNTAX_FN CAssembler::syn_cache[] = { arg_cache_op, arg_imm16, arg_reg_s, nullptr };
+const ASM_SYNTAX_FN CAssembler::syn_syscall[] = { arg_syscall_code, nullptr };
 
 const ASM_INSTRUCTION CAssembler::m_Instructions[] =
 {
@@ -91,7 +91,7 @@ const ASM_INSTRUCTION CAssembler::m_Instructions[] =
     { "sd",     R4300i_SD,     base_op, syn_loadstore },
 
     { "sll",     R4300i_SPECIAL_SLL,     base_spec, syn_shift },
-    { "nop",     R4300i_SPECIAL_SLL,     base_spec, NULL },
+    { "nop",     R4300i_SPECIAL_SLL,     base_spec, nullptr },
     { "srl",     R4300i_SPECIAL_SRL,     base_spec, syn_shift },
     { "sra",     R4300i_SPECIAL_SRA,     base_spec, syn_shift },
     { "sllv",    R4300i_SPECIAL_SLLV,    base_spec, syn_shiftv },
@@ -102,7 +102,7 @@ const ASM_INSTRUCTION CAssembler::m_Instructions[] =
     { "jalr",    R4300i_SPECIAL_JALR,    base_spec_jalr_ra, syn_jr },
     { "syscall", R4300i_SPECIAL_SYSCALL, base_spec, syn_syscall },
     { "break",   R4300i_SPECIAL_BREAK,   base_spec, syn_syscall },
-    { "sync",    R4300i_SPECIAL_SYNC,    base_spec, NULL },
+    { "sync",    R4300i_SPECIAL_SYNC,    base_spec, nullptr },
     { "mfhi",    R4300i_SPECIAL_MFHI,    base_spec, syn_mf },
     { "mthi",    R4300i_SPECIAL_MTHI,    base_spec, syn_mf },
     { "mflo",    R4300i_SPECIAL_MFLO,    base_spec, syn_mf },
@@ -164,11 +164,11 @@ const ASM_INSTRUCTION CAssembler::m_Instructions[] =
     { "mfc0", R4300i_COP0_MF , base_cop0_mv, syn_cop_mv },
     { "mtc0", R4300i_COP0_MT , base_cop0_mv, syn_cop_mv },
 
-    { "tlbr",  R4300i_COP0_CO_TLBR,  base_cop0_co, NULL },
-    { "tlbwi", R4300i_COP0_CO_TLBWI, base_cop0_co, NULL },
-    { "tlbwr", R4300i_COP0_CO_TLBWR, base_cop0_co, NULL },
-    { "tlbp",  R4300i_COP0_CO_TLBP,  base_cop0_co, NULL },
-    { "eret",  R4300i_COP0_CO_ERET,  base_cop0_co, NULL },
+    { "tlbr",  R4300i_COP0_CO_TLBR,  base_cop0_co, nullptr },
+    { "tlbwi", R4300i_COP0_CO_TLBWI, base_cop0_co, nullptr },
+    { "tlbwr", R4300i_COP0_CO_TLBWR, base_cop0_co, nullptr },
+    { "tlbp",  R4300i_COP0_CO_TLBP,  base_cop0_co, nullptr },
+    { "eret",  R4300i_COP0_CO_ERET,  base_cop0_co, nullptr },
 
     { "mfc1",  R4300i_COP1_MF,      base_cop1_mv, syn_cop_mv },
     { "dmfc1", R4300i_COP1_DMF,     base_cop1_mv, syn_cop_mv },
@@ -260,7 +260,7 @@ const ASM_INSTRUCTION CAssembler::m_Instructions[] =
     { "cvt.d.w",   R4300i_COP1_FUNCT_CVT_D,   base_cop1_w, syn_cop1 },
     { "cvt.s.l",   R4300i_COP1_FUNCT_CVT_S,   base_cop1_l, syn_cop1 },
     { "cvt.d.l",   R4300i_COP1_FUNCT_CVT_D,   base_cop1_l, syn_cop1 },
-    { NULL }
+    { nullptr }
 };
 
 const ASM_REGISTER CAssembler::m_Registers[] =
@@ -290,7 +290,7 @@ const ASM_REGISTER CAssembler::m_Registers[] =
     { "watchhi", 19 },{ "xcontext", 20 },{ "ecc",     26 },{ "cacheerr", 27 },{ "taglo",   28 },{ "taghi",   29 },
     { "errepc",  30 },
 
-    { NULL }
+    { nullptr }
 };
 
 bool CAssembler::AssembleLine(const char* line, uint32_t* opcode, uint32_t address)
@@ -317,7 +317,7 @@ bool CAssembler::AssembleLine(const char* line, uint32_t* opcode, uint32_t addre
     {
         const ASM_INSTRUCTION* instruction = LookupInstruction(name, nFallback);
 
-        if (instruction == NULL)
+        if (instruction == nullptr)
         {
             m_ParseError = ERR_UNKNOWN_CMD;
             return false;
@@ -335,7 +335,7 @@ bool CAssembler::AssembleLine(const char* line, uint32_t* opcode, uint32_t addre
 
         *opcode = instruction->base(instruction->val);
 
-        if (instruction->syntax == NULL)
+        if (instruction->syntax == nullptr)
         {
             // No parameters
             return true;
@@ -360,7 +360,7 @@ bool CAssembler::AssembleLine(const char* line, uint32_t* opcode, uint32_t addre
 
 const ASM_INSTRUCTION* CAssembler::LookupInstruction(char* name, int nFallback)
 {
-    for (int i = 0; m_Instructions[i].name != NULL; i++)
+    for (int i = 0; m_Instructions[i].name != nullptr; i++)
     {
         if (strcmp(name, m_Instructions[i].name) == 0)
         {
@@ -372,19 +372,19 @@ const ASM_INSTRUCTION* CAssembler::LookupInstruction(char* name, int nFallback)
             return &m_Instructions[i];
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 const ASM_REGISTER* CAssembler::LookupRegister(char* name)
 {
-    for (int i = 0; m_Registers[i].name != NULL; i++)
+    for (int i = 0; m_Registers[i].name != nullptr; i++)
     {
         if (strcmp(name, m_Registers[i].name) == 0)
         {
             return &m_Registers[i];
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 void CAssembler::StrToLower(char* str)
@@ -401,9 +401,9 @@ void CAssembler::StrToLower(char* str)
 
 uint32_t CAssembler::pop_reg()
 {
-    char* r = strtok_s(NULL, " \t,()", &m_TokContext);
+    char* r = strtok_s(nullptr, " \t,()", &m_TokContext);
 
-    if (r == NULL)
+    if (r == nullptr)
     {
         m_ParseError = ERR_EXPECTED_REG;
         return 0;
@@ -411,7 +411,7 @@ uint32_t CAssembler::pop_reg()
 
     const ASM_REGISTER* reg = LookupRegister(r);
 
-    if (reg == NULL)
+    if (reg == nullptr)
     {
         m_ParseError = ERR_INVALID_REG;
         return 0;
@@ -422,9 +422,9 @@ uint32_t CAssembler::pop_reg()
 
 uint32_t CAssembler::pop_val()
 {
-    char* v = strtok_s(NULL, " \t,()", &m_TokContext);
+    char* v = strtok_s(nullptr, " \t,()", &m_TokContext);
 
-    if (v == NULL)
+    if (v == nullptr)
     {
         m_ParseError = ERR_EXPECTED_VAL;
         return 0;

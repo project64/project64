@@ -15,40 +15,40 @@ void EnterLogOptions(HWND hwndOwner)
 
     psp[0].dwSize = sizeof(PROPSHEETPAGE);
     psp[0].dwFlags = PSP_USETITLE;
-    psp[0].hInstance = GetModuleHandle(NULL);
+    psp[0].hInstance = GetModuleHandle(nullptr);
     psp[0].pszTemplate = MAKEINTRESOURCE(IDD_Logging_Registers);
     psp[0].pfnDlgProc = (DLGPROC)LogRegProc;
     psp[0].pszTitle = L"Registers";
     psp[0].lParam = (LPARAM)&logSettings;
-    psp[0].pfnCallback = NULL;
+    psp[0].pfnCallback = nullptr;
 
     psp[1].dwSize = sizeof(PROPSHEETPAGE);
     psp[1].dwFlags = PSP_USETITLE;
-    psp[1].hInstance = GetModuleHandle(NULL);
+    psp[1].hInstance = GetModuleHandle(nullptr);
     psp[1].pszTemplate = MAKEINTRESOURCE(IDD_Logging_PifRam);
     psp[1].pfnDlgProc = (DLGPROC)LogPifProc;
     psp[1].pszTitle = L"Pif Ram";
     psp[1].lParam = (LPARAM)&logSettings;
-    psp[1].pfnCallback = NULL;
+    psp[1].pfnCallback = nullptr;
 
     psp[2].dwSize = sizeof(PROPSHEETPAGE);
     psp[2].dwFlags = PSP_USETITLE;
-    psp[2].hInstance = GetModuleHandle(NULL);
+    psp[2].hInstance = GetModuleHandle(nullptr);
     psp[2].pszTemplate = MAKEINTRESOURCE(IDD_Logging_General);
     psp[2].pfnDlgProc = (DLGPROC)LogGeneralProc;
     psp[2].pszTitle = L"General";
     psp[2].lParam = (LPARAM)&logSettings;
-    psp[2].pfnCallback = NULL;
+    psp[2].pfnCallback = nullptr;
 
     psh.dwSize = sizeof(PROPSHEETHEADER);
     psh.dwFlags = PSH_PROPSHEETPAGE | PSH_NOAPPLYNOW;
     psh.hwndParent = hwndOwner;
-    psh.hInstance = GetModuleHandle(NULL);
+    psh.hInstance = GetModuleHandle(nullptr);
     psh.pszCaption = (LPTSTR)L"Log Options";
     psh.nPages = sizeof(psp) / sizeof(PROPSHEETPAGE);
     psh.nStartPage = 0;
     psh.ppsp = (LPCPROPSHEETPAGE)&psp;
-    psh.pfnCallback = NULL;
+    psh.pfnCallback = nullptr;
 
     PropertySheet(&psh);
     return;

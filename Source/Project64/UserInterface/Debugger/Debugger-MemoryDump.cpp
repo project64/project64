@@ -158,7 +158,7 @@ bool CDumpMemory::DumpMemory(LPCTSTR FileName, DumpFormat Format, DWORD StartPC,
             const char* command = R4300iOpcodeName(opcode.Hex, DumpPC);
 
             char* cmdName = strtok((char*)command, "\t");
-            char* cmdArgs = strtok(NULL, "\t");
+            char* cmdArgs = strtok(nullptr, "\t");
             cmdArgs = cmdArgs ? cmdArgs : "";
 
             LogFile.LogF("%X: %-15s%s\r\n", DumpPC, cmdName, cmdArgs);

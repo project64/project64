@@ -9,9 +9,9 @@ CGuiSettings::CGuiSettings()
     m_RefCount += 1;
     if (m_RefCount == 1)
     {
-        g_Settings->RegisterChangeCB(GameRunning_CPU_Running,NULL,RefreshSettings);
-        g_Settings->RegisterChangeCB((SettingID)Setting_AutoSleep,NULL,RefreshSettings);
-        RefreshSettings(NULL);
+        g_Settings->RegisterChangeCB(GameRunning_CPU_Running,nullptr,RefreshSettings);
+        g_Settings->RegisterChangeCB((SettingID)Setting_AutoSleep,nullptr,RefreshSettings);
+        RefreshSettings(nullptr);
     }
 }
 
@@ -20,8 +20,8 @@ CGuiSettings::~CGuiSettings()
     m_RefCount -= 1;
     if (m_RefCount == 0)
     {
-        g_Settings->UnregisterChangeCB(GameRunning_CPU_Running,NULL,RefreshSettings);
-        g_Settings->UnregisterChangeCB((SettingID)Setting_AutoSleep,NULL,RefreshSettings);
+        g_Settings->UnregisterChangeCB(GameRunning_CPU_Running,nullptr,RefreshSettings);
+        g_Settings->UnregisterChangeCB((SettingID)Setting_AutoSleep,nullptr,RefreshSettings);
     }
 }
 

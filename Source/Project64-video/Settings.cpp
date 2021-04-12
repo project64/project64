@@ -172,20 +172,20 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_fb_get_info_default, "fb_get_info", false);
     general_setting(Set_fb_render_default, "fb_render", false);
 
-    RegisterSetting(Set_Logging_MD5, Data_DWORD_General, "MD5", "Logging", g_ModuleLogLevel[TraceMD5], NULL);
-    RegisterSetting(Set_Logging_Thread, Data_DWORD_General, "Thread", "Logging", g_ModuleLogLevel[TraceThread], NULL);
-    RegisterSetting(Set_Logging_Path, Data_DWORD_General, "Path", "Logging", g_ModuleLogLevel[TracePath], NULL);
-    RegisterSetting(Set_Logging_Settings, Data_DWORD_General, "Settings", "Logging", g_ModuleLogLevel[TraceSettings], NULL);
-    RegisterSetting(Set_Logging_Unknown, Data_DWORD_General, "Unknown", "Logging", g_ModuleLogLevel[TraceUnknown], NULL);
-    RegisterSetting(Set_Logging_Glide64, Data_DWORD_General, "Glide64", "Logging", g_ModuleLogLevel[TraceGlide64], NULL);
-    RegisterSetting(Set_Logging_Interface, Data_DWORD_General, "Interface", "Logging", g_ModuleLogLevel[TraceInterface], NULL);
-    RegisterSetting(Set_Logging_Resolution, Data_DWORD_General, "Resolution", "Logging", g_ModuleLogLevel[TraceResolution], NULL);
-    RegisterSetting(Set_Logging_Glitch, Data_DWORD_General, "Glitch", "Logging", g_ModuleLogLevel[TraceGlitch], NULL);
-    RegisterSetting(Set_Logging_VideoRDP, Data_DWORD_General, "VideoRDP", "Logging", g_ModuleLogLevel[TraceRDP], NULL);
-    RegisterSetting(Set_Logging_TLUT, Data_DWORD_General, "TLUT", "Logging", g_ModuleLogLevel[TraceTLUT], NULL);
-    RegisterSetting(Set_Logging_PNG, Data_DWORD_General, "PNG", "Logging", g_ModuleLogLevel[TracePNG], NULL);
-    RegisterSetting(Set_Logging_OGLWrapper, Data_DWORD_General, "OGLWrapper", "Logging", g_ModuleLogLevel[TraceOGLWrapper], NULL);
-    RegisterSetting(Set_Logging_RDPCommands, Data_DWORD_General, "RDPCommands", "Logging", g_ModuleLogLevel[TraceRDPCommands], NULL);
+    RegisterSetting(Set_Logging_MD5, Data_DWORD_General, "MD5", "Logging", g_ModuleLogLevel[TraceMD5], nullptr);
+    RegisterSetting(Set_Logging_Thread, Data_DWORD_General, "Thread", "Logging", g_ModuleLogLevel[TraceThread], nullptr);
+    RegisterSetting(Set_Logging_Path, Data_DWORD_General, "Path", "Logging", g_ModuleLogLevel[TracePath], nullptr);
+    RegisterSetting(Set_Logging_Settings, Data_DWORD_General, "Settings", "Logging", g_ModuleLogLevel[TraceSettings], nullptr);
+    RegisterSetting(Set_Logging_Unknown, Data_DWORD_General, "Unknown", "Logging", g_ModuleLogLevel[TraceUnknown], nullptr);
+    RegisterSetting(Set_Logging_Glide64, Data_DWORD_General, "Glide64", "Logging", g_ModuleLogLevel[TraceGlide64], nullptr);
+    RegisterSetting(Set_Logging_Interface, Data_DWORD_General, "Interface", "Logging", g_ModuleLogLevel[TraceInterface], nullptr);
+    RegisterSetting(Set_Logging_Resolution, Data_DWORD_General, "Resolution", "Logging", g_ModuleLogLevel[TraceResolution], nullptr);
+    RegisterSetting(Set_Logging_Glitch, Data_DWORD_General, "Glitch", "Logging", g_ModuleLogLevel[TraceGlitch], nullptr);
+    RegisterSetting(Set_Logging_VideoRDP, Data_DWORD_General, "VideoRDP", "Logging", g_ModuleLogLevel[TraceRDP], nullptr);
+    RegisterSetting(Set_Logging_TLUT, Data_DWORD_General, "TLUT", "Logging", g_ModuleLogLevel[TraceTLUT], nullptr);
+    RegisterSetting(Set_Logging_PNG, Data_DWORD_General, "PNG", "Logging", g_ModuleLogLevel[TracePNG], nullptr);
+    RegisterSetting(Set_Logging_OGLWrapper, Data_DWORD_General, "OGLWrapper", "Logging", g_ModuleLogLevel[TraceOGLWrapper], nullptr);
+    RegisterSetting(Set_Logging_RDPCommands, Data_DWORD_General, "RDPCommands", "Logging", g_ModuleLogLevel[TraceRDPCommands], nullptr);
 
 #ifndef ANDROID
     general_setting(Set_FullScreenRes, "FullScreenRes", GetCurrentResIndex());
@@ -521,7 +521,7 @@ void CSettings::UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove)
 
 CSettings::ucode_t CSettings::DetectUCode(uint32_t uc_crc)
 {
-    RegisterSetting(Set_ucodeLookup, Data_DWORD_RDB_Setting, stdstr_f("%08lx", uc_crc).c_str(), "ucode", (unsigned int)-2, NULL);
+    RegisterSetting(Set_ucodeLookup, Data_DWORD_RDB_Setting, stdstr_f("%08lx", uc_crc).c_str(), "ucode", (unsigned int)-2, nullptr);
     CSettings::ucode_t uc = (CSettings::ucode_t)GetSetting(Set_ucodeLookup);
     if (uc == CSettings::uCode_NotFound || uc == CSettings::uCode_Unsupported)
     {
@@ -894,17 +894,17 @@ void CSettings::WriteSettings(void)
 
 void CSettings::general_setting(short setting_ID, const char * name, unsigned int value)
 {
-    RegisterSetting(setting_ID, Data_DWORD_General, name, NULL, value, NULL);
+    RegisterSetting(setting_ID, Data_DWORD_General, name, nullptr, value, nullptr);
 }
 
 void CSettings::game_setting(short setting_ID, const char * name, unsigned int value)
 {
-    RegisterSetting(setting_ID, Data_DWORD_Game, name, NULL, value, NULL);
+    RegisterSetting(setting_ID, Data_DWORD_Game, name, nullptr, value, nullptr);
 }
 
 void CSettings::game_setting_default(short setting_ID, const char * name, short default_setting)
 {
-    RegisterSetting2(setting_ID, Data_DWORD_Game, name, NULL, default_setting);
+    RegisterSetting2(setting_ID, Data_DWORD_Game, name, nullptr, default_setting);
 }
 
 void CSettings::SettingsChanged(void)

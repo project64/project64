@@ -18,12 +18,12 @@ public:
 		Reset(NO_ID);
 	}
 	MENU_ITEM ( int ID, LanguageStringID Title = EMPTY_STRING, const std::wstring & ShortCut = EMPTY_STDSTR,
-		void * SubMenu = NULL, const std::wstring & ManualString = EMPTY_STDSTR) 
+		void * SubMenu = nullptr, const std::wstring & ManualString = EMPTY_STDSTR) 
 	{
 		Reset(ID,Title,ShortCut,SubMenu,ManualString);
 	}
 	void Reset ( int ID, LanguageStringID Title = EMPTY_STRING, const std::wstring & ShortCut2 = EMPTY_STDSTR,
-		void * SubMenu = NULL, const std::wstring & ManualString = EMPTY_STDSTR) 
+		void * SubMenu = nullptr, const std::wstring & ManualString = EMPTY_STDSTR) 
 	{
 		this->m_ID           = ID;
 		this->m_Title        = Title;

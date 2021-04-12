@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-static CLog * g_CPULogFile = NULL;
+static CLog * g_CPULogFile = nullptr;
 
 void Recompiler_Log_Message(const char * strFormat, ...)
 {
@@ -15,7 +15,7 @@ void Recompiler_Log_Message(const char * strFormat, ...)
     va_start(args, strFormat);
     size_t nlen = _vscprintf(strFormat, args) + 1;
     char * buffer = (char *)alloca((nlen + 3) * sizeof(char));
-    if (buffer != NULL)
+    if (buffer != nullptr)
     {
         if (nlen > 0)
         {
@@ -35,7 +35,7 @@ void Recompiler_Log_Message(const char * strFormat, ...)
 void Start_Recompiler_Log (void)
 {
     CPath LogFileName(g_Settings->LoadStringVal(Directory_Log).c_str(), "CPUoutput.log");
-    if (g_CPULogFile != NULL)
+    if (g_CPULogFile != nullptr)
     {
         Stop_Recompiler_Log();
     }
@@ -49,23 +49,23 @@ void Start_Recompiler_Log (void)
         else
         {
             delete g_CPULogFile;
-            g_CPULogFile = NULL;
+            g_CPULogFile = nullptr;
         }
     }
 }
 
 void Stop_Recompiler_Log (void)
 {
-    if (g_CPULogFile != NULL)
+    if (g_CPULogFile != nullptr)
     {
         delete g_CPULogFile;
-        g_CPULogFile = NULL;
+        g_CPULogFile = nullptr;
     }
 }
 
 void Flush_Recompiler_Log(void)
 {
-    if (g_CPULogFile != NULL)
+    if (g_CPULogFile != nullptr)
     {
         g_CPULogFile->Flush();
     }

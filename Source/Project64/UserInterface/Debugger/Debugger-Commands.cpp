@@ -31,8 +31,8 @@ void CCommandList::Attach(HWND hWndNew)
     SetColumnWidth(COL_SYMBOL, 180);
 }
 
-CDebugCommandsView* CDebugCommandsView::_this = NULL;
-HHOOK CDebugCommandsView::hWinMessageHook = NULL;
+CDebugCommandsView* CDebugCommandsView::_this = nullptr;
+HHOOK CDebugCommandsView::hWinMessageHook = nullptr;
 
 CDebugCommandsView::CDebugCommandsView(CDebuggerUI * debugger, SyncEvent &StepEvent) :
     CDebugDialog<CDebugCommandsView>(debugger),
@@ -129,7 +129,7 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     _this = this;
 
     DWORD dwThreadID = ::GetCurrentThreadId();
-    hWinMessageHook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)HookProc, NULL, dwThreadID);
+    hWinMessageHook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)HookProc, nullptr, dwThreadID);
 
     LoadWindowPos();
     RedrawCommandsAndRegisters();
@@ -419,7 +419,7 @@ const char* CDebugCommandsView::GetDataAddressNotes(uint32_t vAddr)
     case 0xB0000014: return "Header: CRC2";
     }
 
-    return NULL;
+    return nullptr;
 }
 
 const char* CDebugCommandsView::GetCodeAddressNotes(uint32_t vAddr)
@@ -440,9 +440,9 @@ const char* CDebugCommandsView::GetCodeAddressNotes(uint32_t vAddr)
     case 0xBFC00380: return "Exception: General (boot)";
     }
 
-    if (g_MMU == NULL)
+    if (g_MMU == nullptr)
     {
-        return NULL;
+        return nullptr;
     }
 
     uint8_t* rom = g_Rom->GetRomAddress();
@@ -453,7 +453,7 @@ const char* CDebugCommandsView::GetCodeAddressNotes(uint32_t vAddr)
         return "Game entry point";
     }
 
-    return NULL;
+    return nullptr;
 }
 
 void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput)
@@ -540,7 +540,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
 
         char* command = (char*)R4300iOpcodeName(OpCode.Hex, opAddr);
         char* cmdName = strtok((char*)command, "\t");
-        char* cmdArgs = strtok(NULL, "\t");
+        char* cmdArgs = strtok(nullptr, "\t");
 
         CSymbol jalSymbol;
 
@@ -556,7 +556,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
         }
 
         // Detect reads and writes to mapped registers, cart header data, etc.
-        const char* annotation = NULL;
+        const char* annotation = nullptr;
         bool bLoadStoreAnnotation = false;
 
         CSymbol memSymbol;
@@ -596,7 +596,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
             }
         }
 
-        if (annotation == NULL)
+        if (annotation == nullptr)
         {
             annotation = GetCodeAddressNotes(opAddr);
         }
@@ -615,7 +615,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
             m_CommandList.AddItem(i, CCommandList::COL_SYMBOL, stdstr(pcSymbol.m_Name).ToUTF16().c_str());
             m_bvAnnotatedLines.push_back(false);
         }
-        else if (annotation != NULL)
+        else if (annotation != nullptr)
         {
             const char* annotationFormat = bLoadStoreAnnotation ? "// (%s)" : "// %s";
             m_CommandList.AddItem(i, CCommandList::COL_SYMBOL, stdstr_f(annotationFormat, annotation).ToUTF16().c_str());
@@ -681,7 +681,7 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
     uint32_t nSubItem = pLVCD->iSubItem;
 
     uint32_t address = m_StartAddress + (nItem * 4);
-    uint32_t pc = (g_Reg != NULL) ? g_Reg->m_PROGRAM_COUNTER : 0;
+    uint32_t pc = (g_Reg != nullptr) ? g_Reg->m_PROGRAM_COUNTER : 0;
 
     OPCODE pcOpcode;
     if (!m_Debugger->DebugLoad_VAddr(pc, pcOpcode.Hex))
@@ -940,7 +940,7 @@ void CDebugCommandsView::DrawBranchArrows(HDC listDC)
         // Draw outline
         CPen hPenOutline(CreatePen(PS_SOLID, 3, bgColor));
         SelectObject(listDC, hPenOutline);
-        MoveToEx(listDC, begX - 1, begY, NULL);
+        MoveToEx(listDC, begX - 1, begY, nullptr);
         LineTo(listDC, marginX, begY);
         LineTo(listDC, marginX, endY);
         if (bEndVisible)
@@ -951,7 +951,7 @@ void CDebugCommandsView::DrawBranchArrows(HDC listDC)
         // Draw fill line
         CPen hPen(CreatePen(PS_SOLID, 1, color));
         SelectObject(listDC, hPen);
-        MoveToEx(listDC, begX - 1, begY, NULL);
+        MoveToEx(listDC, begX - 1, begY, nullptr);
         LineTo(listDC, marginX, begY);
         LineTo(listDC, marginX, endY);
         if (bEndVisible)
@@ -1100,7 +1100,7 @@ LRESULT CDebugCommandsView::OnForwardButton(WORD /*wNotifyCode*/, WORD /*wID*/, 
 
 LRESULT CDebugCommandsView::OnViewPCButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
 {
-    if (g_Reg != NULL && isStepping())
+    if (g_Reg != nullptr && isStepping())
     {
         ShowAddress(g_Reg->m_PROGRAM_COUNTER, TRUE);
     }
@@ -1329,7 +1329,7 @@ LRESULT CDebugCommandsView::OnPCChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND
         m_bIgnorePCChange = false;
         return 0;
     }
-    if (g_Reg != NULL && isStepping())
+    if (g_Reg != nullptr && isStepping())
     {
         g_Reg->m_PROGRAM_COUNTER = m_PCEdit.GetValue();
     }
@@ -1379,7 +1379,7 @@ LRESULT CDebugCommandsView::OnCommandListRightClicked(NMHDR* pNMHDR)
         return 0;
     }
 
-    HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_OP_POPUP));
+    HMENU hMenu = LoadMenu(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDR_OP_POPUP));
     HMENU hPopupMenu = GetSubMenu(hMenu, 0);
     
     if (m_SelectedOpInfo.IsStaticJump())
@@ -1427,7 +1427,7 @@ LRESULT CDebugCommandsView::OnCommandListRightClicked(NMHDR* pNMHDR)
     POINT mouse;
     GetCursorPos(&mouse);
 
-    TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, mouse.x, mouse.y, 0, m_hWnd, NULL);
+    TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, mouse.x, mouse.y, 0, m_hWnd, nullptr);
 
     DestroyMenu(hMenu);
 
@@ -1647,12 +1647,12 @@ LRESULT CDebugCommandsView::OnRegisterTabChange(NMHDR* /*pNMHDR*/)
 
 void CDebugCommandsView::ToggleHistoryButtons()
 {
-    if (m_BackButton.m_hWnd != NULL)
+    if (m_BackButton.m_hWnd != nullptr)
     {
         m_BackButton.EnableWindow(m_History.size() != 0 && m_HistoryIndex > 0 ? TRUE : FALSE);
     }
 
-    if (m_ForwardButton.m_hWnd != NULL)
+    if (m_ForwardButton.m_hWnd != nullptr)
     {
         m_ForwardButton.EnableWindow(m_History.size() != 0 && m_HistoryIndex < (int)m_History.size() - 1 ? TRUE : FALSE);
     }
@@ -1704,7 +1704,7 @@ LRESULT CDebugCommandsView::OnOpEditChanged(WORD /*wNotifyCode*/, WORD /*wID*/, 
     wchar_t* text = new wchar_t[length + 1];
     m_OpEdit.GetWindowText(text, length + 1);
 
-    if (wcschr(text, L'\n') == NULL)
+    if (wcschr(text, L'\n') == nullptr)
     {
         delete[] text;
         return FALSE;
@@ -1723,7 +1723,7 @@ LRESULT CDebugCommandsView::OnOpEditChanged(WORD /*wNotifyCode*/, WORD /*wID*/, 
     wchar_t *tokctx;
     wchar_t *line = wcstok_s(text, L"\n", &tokctx);
 
-    while (line != NULL)
+    while (line != nullptr)
     {
         if (wcslen(line) != 0)
         {
@@ -1745,7 +1745,7 @@ LRESULT CDebugCommandsView::OnOpEditChanged(WORD /*wNotifyCode*/, WORD /*wID*/, 
             }
         }
 
-        line = wcstok_s(NULL, L"\n", &tokctx);
+        line = wcstok_s(nullptr, L"\n", &tokctx);
     }
 
     ShowAddress(m_StartAddress, TRUE);
@@ -1756,7 +1756,7 @@ LRESULT CDebugCommandsView::OnOpEditChanged(WORD /*wNotifyCode*/, WORD /*wID*/, 
 
 LRESULT CEditOp::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
-    if (m_CommandsWindow == NULL)
+    if (m_CommandsWindow == nullptr)
     {
         return FALSE;
     }

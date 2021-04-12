@@ -137,7 +137,7 @@ void SetModuleName(const char * Name)
 void RegisterSetting(short SettingID, SETTING_DATA_TYPE Type, const char * Name, const char * Category,
     unsigned int DefaultDW, const char * DefaultStr)
 {
-    if (g_PluginSettings.RegisterSetting == NULL)
+    if (g_PluginSettings.RegisterSetting == nullptr)
     {
         return;
     }
@@ -198,7 +198,7 @@ void RegisterSetting(short SettingID, SETTING_DATA_TYPE Type, const char * Name,
     case Data_String_Game:
     case Data_String_RDB:
     case Data_String_RDB_Setting:
-        if (DefaultStr != NULL && strlen(DefaultStr) > 0)
+        if (DefaultStr != nullptr && strlen(DefaultStr) > 0)
         {
             // Create default
             DefaultID = SettingID + g_PluginSettings.DefaultStartRange;
@@ -284,7 +284,7 @@ void FlushSettings(void)
 
 unsigned int GetSetting(short SettingID)
 {
-    if (g_PluginSettings.GetSetting == NULL)
+    if (g_PluginSettings.GetSetting == nullptr)
     {
         return 0;
     }
@@ -303,7 +303,7 @@ const char * GetSettingSz(short SettingID, char * Buffer, int BufferLen)
 
 const char * GetSystemSettingSz(short SettingID, char * Buffer, int BufferLen)
 {
-    if (g_PluginSettings.GetSettingSz == NULL)
+    if (g_PluginSettings.GetSettingSz == nullptr)
     {
         return "";
     }
@@ -348,7 +348,7 @@ void SettingsUnregisterChange(bool SystemSetting, int SettingID, void * Data, Se
 
 void CNotification::DisplayError(const char * Message)
 {
-    if (g_PluginNotification.BreakPoint != NULL)
+    if (g_PluginNotification.BreakPoint != nullptr)
     {
         g_PluginNotification.DisplayError(Message);
     }
@@ -356,7 +356,7 @@ void CNotification::DisplayError(const char * Message)
 
 void CNotification::FatalError(const char * Message)
 {
-    if (g_PluginNotification.BreakPoint != NULL)
+    if (g_PluginNotification.BreakPoint != nullptr)
     {
         g_PluginNotification.FatalError(Message);
     }
@@ -364,7 +364,7 @@ void CNotification::FatalError(const char * Message)
 
 void CNotification::DisplayMessage(int DisplayTime, const char * Message)
 {
-    if (g_PluginNotification.BreakPoint != NULL)
+    if (g_PluginNotification.BreakPoint != nullptr)
     {
         g_PluginNotification.DisplayMessage(DisplayTime, Message);
     }
@@ -372,7 +372,7 @@ void CNotification::DisplayMessage(int DisplayTime, const char * Message)
 
 void CNotification::DisplayMessage2(const char * Message)
 {
-    if (g_PluginNotification.BreakPoint != NULL)
+    if (g_PluginNotification.BreakPoint != nullptr)
     {
         g_PluginNotification.DisplayMessage2(Message);
     }
@@ -380,7 +380,7 @@ void CNotification::DisplayMessage2(const char * Message)
 
 void CNotification::BreakPoint(const char * FileName, int LineNumber)
 {
-    if (g_PluginNotification.BreakPoint != NULL)
+    if (g_PluginNotification.BreakPoint != nullptr)
     {
         g_PluginNotification.BreakPoint(FileName, LineNumber);
     }

@@ -21,7 +21,7 @@ CCPULog::CCPULog(size_t size) :
 
     if (m_Size == 0)
     {
-        m_Array = NULL;
+        m_Array = nullptr;
         return;
     }
     
@@ -30,16 +30,16 @@ CCPULog::CCPULog(size_t size) :
 
 CCPULog::~CCPULog(void)
 {
-    if (m_Array != NULL)
+    if (m_Array != nullptr)
     {
         delete[] m_Array;
-        m_Array = NULL;
+        m_Array = nullptr;
     }
 }
 
 void CCPULog::PushState()
 {
-    if (m_Array == NULL)
+    if (m_Array == nullptr)
     {
         return;
     }
@@ -83,23 +83,23 @@ size_t CCPULog::GetSize(void)
 
 CPUState* CCPULog::GetEntry(size_t index)
 {
-    if (m_Array == NULL)
+    if (m_Array == nullptr)
     {
-        return NULL;
+        return nullptr;
     }
 
     if (m_bMaxed)
     {
         if (index >= m_Size)
         {
-            return NULL;
+            return nullptr;
         }
         return &m_Array[(m_Index + index) % m_Size];
     }
 
     if (index >= m_Index)
     {
-        return NULL;
+        return nullptr;
     }
 
     return &m_Array[index];
@@ -125,10 +125,10 @@ void CCPULog::Reset()
     {
         m_Size = newSize;
 
-        if (m_Array != NULL)
+        if (m_Array != nullptr)
         {
             delete[] m_Array;
-            m_Array = NULL;
+            m_Array = nullptr;
         }
         
         if (m_Size != 0)
@@ -140,9 +140,9 @@ void CCPULog::Reset()
 
 CCPULog* CCPULog::Clone(void)
 {
-    if (m_Array == NULL)
+    if (m_Array == nullptr)
     {
-        return NULL;
+        return nullptr;
     }
 
     CCPULog *clone = new CCPULog(m_Size);
@@ -156,7 +156,7 @@ void CCPULog::DumpToFile(const char* path)
 {
     FILE* fp = fopen(path, "wb");
 
-    if (fp == NULL)
+    if (fp == nullptr)
     {
         return;
     }
@@ -171,9 +171,9 @@ void CCPULog::DumpToFile(const char* path)
 
         char* szCommand = (char*)R4300iOpcodeName(state->opcode.Hex, state->pc);
         char* szCmdName = strtok_s((char*)szCommand, "\t", &tokctx);
-        char* szCmdArgs = strtok_s(NULL, "\t", &tokctx);
+        char* szCmdArgs = strtok_s(nullptr, "\t", &tokctx);
 
-        if (szCmdArgs == NULL)
+        if (szCmdArgs == nullptr)
         {
             szCmdArgs = "";
         }

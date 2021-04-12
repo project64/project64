@@ -97,8 +97,8 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
 
 void CArmRecompilerOps::Compile_TrapCompare(TRAP_COMPARE CompareType)
 {
-    void *FunctAddress = NULL;
-    const char *FunctName = NULL;
+    void *FunctAddress = nullptr;
+    const char *FunctName = nullptr;
     switch (CompareType)
     {
     case CompareTypeTEQ:
@@ -153,7 +153,7 @@ void CArmRecompilerOps::Compile_TrapCompare(TRAP_COMPARE CompareType)
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    if (FunctName != NULL && FunctAddress != NULL)
+    if (FunctName != nullptr && FunctAddress != nullptr)
     {
         if (m_Opcode.rs != 0) { WriteBack_GPR(m_Opcode.rs, false); }
         if (m_Opcode.rt != 0) { WriteBack_GPR(m_Opcode.rt, false); }
@@ -234,7 +234,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
         }
         m_Section->m_Jump.JumpPC = m_CompilePC;
         m_Section->m_Jump.TargetPC = m_CompilePC + ((int16_t)m_Opcode.offset << 2) + 4;
-        if (m_Section->m_JumpSection != NULL)
+        if (m_Section->m_JumpSection != nullptr)
         {
             m_Section->m_Jump.BranchLabel.Format("Section_%d", m_Section->m_JumpSection->m_SectionID);
         }
@@ -242,12 +242,12 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
         {
             m_Section->m_Jump.BranchLabel.Format("Exit_%X_jump_%X", m_Section->m_EnterPC, m_Section->m_Jump.TargetPC);
         }
-        m_Section->m_Jump.LinkLocation = NULL;
-        m_Section->m_Jump.LinkLocation2 = NULL;
+        m_Section->m_Jump.LinkLocation = nullptr;
+        m_Section->m_Jump.LinkLocation2 = nullptr;
         m_Section->m_Jump.DoneDelaySlot = false;
         m_Section->m_Cont.JumpPC = m_CompilePC;
         m_Section->m_Cont.TargetPC = m_CompilePC + 8;
-        if (m_Section->m_ContinueSection != NULL)
+        if (m_Section->m_ContinueSection != nullptr)
         {
             m_Section->m_Cont.BranchLabel.Format("Section_%d", m_Section->m_ContinueSection->m_SectionID);
         }
@@ -255,8 +255,8 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
         {
             m_Section->m_Cont.BranchLabel.Format("Exit_%X_continue_%X", m_Section->m_EnterPC, m_Section->m_Cont.TargetPC);
         }
-        m_Section->m_Cont.LinkLocation = NULL;
-        m_Section->m_Cont.LinkLocation2 = NULL;
+        m_Section->m_Cont.LinkLocation = nullptr;
+        m_Section->m_Cont.LinkLocation2 = nullptr;
         m_Section->m_Cont.DoneDelaySlot = false;
         if (m_Section->m_Jump.TargetPC < m_Section->m_Cont.TargetPC)
         {
@@ -282,8 +282,8 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
         {
             if ((m_CompilePC & 0xFFC) != 0xFFC)
             {
-                m_Section->m_Cont.BranchLabel = m_Section->m_ContinueSection != NULL ? "Continue" : "ContinueExitBlock";
-                m_Section->m_Jump.BranchLabel = m_Section->m_JumpSection != NULL ? "Jump" : "JumpExitBlock";
+                m_Section->m_Cont.BranchLabel = m_Section->m_ContinueSection != nullptr ? "Continue" : "ContinueExitBlock";
+                m_Section->m_Jump.BranchLabel = m_Section->m_JumpSection != nullptr ? "Jump" : "JumpExitBlock";
             }
             else
             {
@@ -296,14 +296,14 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
             }
             if (!m_Section->m_Jump.FallThrough && !m_Section->m_Cont.FallThrough)
             {
-                if (m_Section->m_Jump.LinkLocation != NULL)
+                if (m_Section->m_Jump.LinkLocation != nullptr)
                 {
                     CPU_Message("");
                     CPU_Message("      %s:", m_Section->m_Jump.BranchLabel.c_str());
                     LinkJump(m_Section->m_Jump);
                     m_Section->m_Jump.FallThrough = true;
                 }
-                else if (m_Section->m_Cont.LinkLocation != NULL)
+                else if (m_Section->m_Cont.LinkLocation != nullptr)
                 {
                     CPU_Message("");
                     CPU_Message("      %s:", m_Section->m_Cont.BranchLabel.c_str());
@@ -313,10 +313,10 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
             }
             if ((m_CompilePC & 0xFFC) == 0xFFC)
             {
-                uint8_t * DelayLinkLocation = NULL;
+                uint8_t * DelayLinkLocation = nullptr;
                 if (m_Section->m_Jump.FallThrough)
                 {
-                    if (m_Section->m_Jump.LinkLocation != NULL || m_Section->m_Jump.LinkLocation2 != NULL)
+                    if (m_Section->m_Jump.LinkLocation != nullptr || m_Section->m_Jump.LinkLocation2 != nullptr)
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
@@ -324,16 +324,16 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
                 }
                 else if (m_Section->m_Cont.FallThrough)
                 {
-                    if (m_Section->m_Cont.LinkLocation != NULL || m_Section->m_Cont.LinkLocation2 != NULL)
+                    if (m_Section->m_Cont.LinkLocation != nullptr || m_Section->m_Cont.LinkLocation2 != nullptr)
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
                     MoveConstToVariable(m_Section->m_Cont.TargetPC, &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
                 }
 
-                if (m_Section->m_Jump.LinkLocation != NULL || m_Section->m_Jump.LinkLocation2 != NULL)
+                if (m_Section->m_Jump.LinkLocation != nullptr || m_Section->m_Jump.LinkLocation2 != nullptr)
                 {
-                    if (DelayLinkLocation != NULL) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+                    if (DelayLinkLocation != nullptr) { g_Notify->BreakPoint(__FILE__, __LINE__); }
                     DelayLinkLocation = *g_RecompPos;
                     BranchLabel8(ArmBranch_Always, "DoDelaySlot");
 
@@ -342,9 +342,9 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
                     LinkJump(m_Section->m_Jump);
                     MoveConstToVariable(m_Section->m_Jump.TargetPC, &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
                 }
-                if (m_Section->m_Cont.LinkLocation != NULL || m_Section->m_Cont.LinkLocation2 != NULL)
+                if (m_Section->m_Cont.LinkLocation != nullptr || m_Section->m_Cont.LinkLocation2 != nullptr)
                 {
-                    if (DelayLinkLocation != NULL) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+                    if (DelayLinkLocation != nullptr) { g_Notify->BreakPoint(__FILE__, __LINE__); }
                     DelayLinkLocation = *g_RecompPos;
                     BranchLabel8(ArmBranch_Always, "DoDelaySlot");
 
@@ -381,7 +381,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
                 FallInfo->RegSet = m_RegWorkingSet;
                 if (FallInfo == &m_Section->m_Jump)
                 {
-                    if (m_Section->m_JumpSection != NULL)
+                    if (m_Section->m_JumpSection != nullptr)
                     {
                         m_Section->m_Jump.BranchLabel.Format("Section_%d", m_Section->m_JumpSection->m_SectionID);
                     }
@@ -401,7 +401,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
                 }
                 else
                 {
-                    if (m_Section->m_ContinueSection != NULL)
+                    if (m_Section->m_ContinueSection != nullptr)
                     {
                         m_Section->m_Cont.BranchLabel.Format("Section_%d", m_Section->m_ContinueSection->m_SectionID);
                     }
@@ -417,7 +417,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
                     BranchLabel20(ArmBranch_Always, FallInfo->BranchLabel.c_str());
                     FallInfo->LinkLocation = (uint32_t *)(*g_RecompPos - 4);
 
-                    if (JumpInfo->LinkLocation != NULL)
+                    if (JumpInfo->LinkLocation != nullptr)
                     {
                         CPU_Message("      %s:", JumpInfo->BranchLabel.c_str());
                         LinkJump(*JumpInfo);
@@ -443,12 +443,12 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
                 m_Section->m_Jump.FallThrough = false;
                 m_Section->m_Cont.FallThrough = true;
                 m_Section->m_Cont.RegSet = m_RegWorkingSet;
-                if (m_Section->m_ContinueSection == NULL && m_Section->m_JumpSection != NULL)
+                if (m_Section->m_ContinueSection == nullptr && m_Section->m_JumpSection != nullptr)
                 {
                     m_Section->m_ContinueSection = m_Section->m_JumpSection;
-                    m_Section->m_JumpSection = NULL;
+                    m_Section->m_JumpSection = nullptr;
                 }
-                if (m_Section->m_ContinueSection != NULL)
+                if (m_Section->m_ContinueSection != nullptr)
                 {
                     m_Section->m_Cont.BranchLabel.Format("Section_%d", m_Section->m_ContinueSection->m_SectionID);
                 }
@@ -501,7 +501,7 @@ void CArmRecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
             }
         }
 
-        if (m_Section->m_JumpSection != NULL)
+        if (m_Section->m_JumpSection != nullptr)
         {
             m_Section->m_Jump.BranchLabel.Format("Section_%d", ((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
         }
@@ -510,7 +510,7 @@ void CArmRecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
             m_Section->m_Jump.BranchLabel = "ExitBlock";
         }
 
-        if (m_Section->m_ContinueSection != NULL)
+        if (m_Section->m_ContinueSection != nullptr)
         {
             m_Section->m_Cont.BranchLabel.Format("Section_%d", ((CCodeSection *)m_Section->m_ContinueSection)->m_SectionID);
         }
@@ -520,11 +520,11 @@ void CArmRecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
         }
 
         m_Section->m_Jump.FallThrough = true;
-        m_Section->m_Jump.LinkLocation = NULL;
-        m_Section->m_Jump.LinkLocation2 = NULL;
+        m_Section->m_Jump.LinkLocation = nullptr;
+        m_Section->m_Jump.LinkLocation2 = nullptr;
         m_Section->m_Cont.FallThrough = false;
-        m_Section->m_Cont.LinkLocation = NULL;
-        m_Section->m_Cont.LinkLocation2 = NULL;
+        m_Section->m_Cont.LinkLocation = nullptr;
+        m_Section->m_Cont.LinkLocation2 = nullptr;
 
         if (Link)
         {
@@ -544,13 +544,13 @@ void CArmRecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
         {
             if (m_Section->m_Cont.FallThrough)
             {
-                if (m_Section->m_Jump.LinkLocation != NULL)
+                if (m_Section->m_Jump.LinkLocation != nullptr)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
             }
 
-            if (m_Section->m_Jump.LinkLocation != NULL || m_Section->m_Jump.FallThrough)
+            if (m_Section->m_Jump.LinkLocation != nullptr || m_Section->m_Jump.FallThrough)
             {
                 LinkJump(m_Section->m_Jump);
 
@@ -583,7 +583,7 @@ void CArmRecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
         {
             if (m_Section->m_Cont.FallThrough)
             {
-                if (m_Section->m_Jump.LinkLocation != NULL)
+                if (m_Section->m_Jump.LinkLocation != nullptr)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -607,7 +607,7 @@ void CArmRecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
 
 void CArmRecompilerOps::BNE_Compare()
 {
-    uint8_t * Jump = NULL;
+    uint8_t * Jump = nullptr;
 
     if (IsKnown(m_Opcode.rs) && IsKnown(m_Opcode.rt))
     {
@@ -945,7 +945,7 @@ void CArmRecompilerOps::BNE_Compare()
 
 void CArmRecompilerOps::BEQ_Compare()
 {
-    uint8_t *Jump = NULL;
+    uint8_t *Jump = nullptr;
 
     if (IsKnown(m_Opcode.rs) && IsKnown(m_Opcode.rt))
     {
@@ -1311,7 +1311,7 @@ void CArmRecompilerOps::BGTZ_Compare()
     }
     else
     {
-        uint8_t *Jump = NULL;
+        uint8_t *Jump = nullptr;
 
         if (IsMapped(m_Opcode.rs))
         {
@@ -1446,7 +1446,7 @@ void CArmRecompilerOps::BLEZ_Compare()
         }
         else
         {
-            uint8_t *Jump = NULL;
+            uint8_t *Jump = nullptr;
 
             ArmReg TempRegRs = Arm_Any;
             if (IsMapped(m_Opcode.rs))
@@ -1516,7 +1516,7 @@ void CArmRecompilerOps::BLEZ_Compare()
     }
     else
     {
-        uint8_t *Jump = NULL;
+        uint8_t *Jump = nullptr;
 
         if (!g_System->b32BitCore())
         {
@@ -1843,7 +1843,7 @@ void CArmRecompilerOps::J()
 
         m_Section->m_Jump.TargetPC = (m_CompilePC & 0xF0000000) + (m_Opcode.target << 2);;
         m_Section->m_Jump.JumpPC = m_CompilePC;
-        if (m_Section->m_JumpSection != NULL)
+        if (m_Section->m_JumpSection != nullptr)
         {
             m_Section->m_Jump.BranchLabel.Format("Section_%d", ((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
         }
@@ -1852,8 +1852,8 @@ void CArmRecompilerOps::J()
             m_Section->m_Jump.BranchLabel = "ExitBlock";
         }
         m_Section->m_Jump.FallThrough = true;
-        m_Section->m_Jump.LinkLocation = NULL;
-        m_Section->m_Jump.LinkLocation2 = NULL;
+        m_Section->m_Jump.LinkLocation = nullptr;
+        m_Section->m_Jump.LinkLocation2 = nullptr;
         m_NextInstruction = DO_DELAY_SLOT;
     }
     else if (m_NextInstruction == DELAY_SLOT_DONE)
@@ -1889,7 +1889,7 @@ void CArmRecompilerOps::JAL()
         }
         m_Section->m_Jump.TargetPC = (m_CompilePC & 0xF0000000) + (m_Opcode.target << 2);
         m_Section->m_Jump.JumpPC = m_CompilePC;
-        if (m_Section->m_JumpSection != NULL)
+        if (m_Section->m_JumpSection != nullptr)
         {
             m_Section->m_Jump.BranchLabel.Format("Section_%d", ((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
         }
@@ -1898,8 +1898,8 @@ void CArmRecompilerOps::JAL()
             m_Section->m_Jump.BranchLabel = "ExitBlock";
         }
         m_Section->m_Jump.FallThrough = true;
-        m_Section->m_Jump.LinkLocation = NULL;
-        m_Section->m_Jump.LinkLocation2 = NULL;
+        m_Section->m_Jump.LinkLocation = nullptr;
+        m_Section->m_Jump.LinkLocation2 = nullptr;
         m_NextInstruction = DO_DELAY_SLOT;
     }
     else if (m_NextInstruction == DELAY_SLOT_DONE)
@@ -2894,11 +2894,11 @@ void CArmRecompilerOps::SPECIAL_JR()
         }
 
         m_Section->m_Jump.FallThrough = false;
-        m_Section->m_Jump.LinkLocation = NULL;
-        m_Section->m_Jump.LinkLocation2 = NULL;
+        m_Section->m_Jump.LinkLocation = nullptr;
+        m_Section->m_Jump.LinkLocation2 = nullptr;
         m_Section->m_Cont.FallThrough = false;
-        m_Section->m_Cont.LinkLocation = NULL;
-        m_Section->m_Cont.LinkLocation2 = NULL;
+        m_Section->m_Cont.LinkLocation = nullptr;
+        m_Section->m_Cont.LinkLocation2 = nullptr;
 
         if (DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0))
         {
@@ -3006,11 +3006,11 @@ void CArmRecompilerOps::SPECIAL_JALR()
         }
 
         m_Section->m_Jump.FallThrough = false;
-        m_Section->m_Jump.LinkLocation = NULL;
-        m_Section->m_Jump.LinkLocation2 = NULL;
+        m_Section->m_Jump.LinkLocation = nullptr;
+        m_Section->m_Jump.LinkLocation2 = nullptr;
         m_Section->m_Cont.FallThrough = false;
-        m_Section->m_Cont.LinkLocation = NULL;
-        m_Section->m_Cont.LinkLocation2 = NULL;
+        m_Section->m_Cont.LinkLocation = nullptr;
+        m_Section->m_Cont.LinkLocation2 = nullptr;
 
         m_NextInstruction = DO_DELAY_SLOT;
     }
@@ -5471,11 +5471,11 @@ void CArmRecompilerOps::SetRegWorkingSet(const CRegInfo & RegInfo)
 
 bool CArmRecompilerOps::InheritParentInfo()
 {
-    if (m_Section->m_CompiledLocation == NULL)
+    if (m_Section->m_CompiledLocation == nullptr)
     {
         m_Section->m_CompiledLocation = *g_RecompPos;
         m_Section->DisplaySectionInformation();
-        m_Section->m_CompiledLocation = NULL;
+        m_Section->m_CompiledLocation = nullptr;
     }
     else
     {
@@ -5491,7 +5491,7 @@ bool CArmRecompilerOps::InheritParentInfo()
     if (m_Section->m_ParentSection.size() == 1)
     {
         CCodeSection * Parent = *(m_Section->m_ParentSection.begin());
-        if (Parent->m_CompiledLocation == NULL)
+        if (Parent->m_CompiledLocation == nullptr)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -5511,7 +5511,7 @@ bool CArmRecompilerOps::InheritParentInfo()
         CCodeSection * Parent = *iter;
         BLOCK_PARENT BlockParent;
 
-        if (Parent->m_CompiledLocation == NULL) { continue; }
+        if (Parent->m_CompiledLocation == nullptr) { continue; }
         if (Parent->m_JumpSection != Parent->m_ContinueSection)
         {
             BlockParent.Parent = Parent;
@@ -5541,7 +5541,7 @@ bool CArmRecompilerOps::InheritParentInfo()
         CCodeSection * Parent = *iter;
         BLOCK_PARENT BlockParent;
 
-        if (Parent->m_CompiledLocation != NULL) { continue; }
+        if (Parent->m_CompiledLocation != nullptr) { continue; }
         if (Parent->m_JumpSection != Parent->m_ContinueSection)
         {
             BlockParent.Parent = Parent;
@@ -5624,7 +5624,7 @@ bool CArmRecompilerOps::InheritParentInfo()
 
         if (i == (size_t)FirstParent) { continue; }
         Parent = ParentList[i].Parent;
-        if (Parent->m_CompiledLocation == NULL)
+        if (Parent->m_CompiledLocation == nullptr)
         {
             continue;
         }
@@ -5837,20 +5837,20 @@ bool CArmRecompilerOps::InheritParentInfo()
         JumpInfo = ParentList[CurrentParent].JumpInfo;
         BranchLabel20(ArmBranch_Always, Label.c_str());
         JumpInfo->LinkLocation = (uint32_t *)(*g_RecompPos - 4);
-        JumpInfo->LinkLocation2 = NULL;
+        JumpInfo->LinkLocation2 = nullptr;
 
         CurrentParent = i;
         Parent = ParentList[CurrentParent].Parent;
         JumpInfo = ParentList[CurrentParent].JumpInfo;
         CPU_Message("   Section_%d (from %d):", m_Section->m_SectionID, Parent->m_SectionID);
-        if (JumpInfo->LinkLocation != NULL)
+        if (JumpInfo->LinkLocation != nullptr)
         {
             SetJump20(JumpInfo->LinkLocation, (uint32_t *)*g_RecompPos);
-            JumpInfo->LinkLocation = NULL;
-            if (JumpInfo->LinkLocation2 != NULL)
+            JumpInfo->LinkLocation = nullptr;
+            if (JumpInfo->LinkLocation2 != nullptr)
             {
                 SetJump20(JumpInfo->LinkLocation2, (uint32_t *)*g_RecompPos);
-                JumpInfo->LinkLocation2 = NULL;
+                JumpInfo->LinkLocation2 = nullptr;
             }
         }
 
@@ -5883,7 +5883,7 @@ bool CArmRecompilerOps::InheritParentInfo()
 
 void CArmRecompilerOps::LinkJump(CJumpInfo & JumpInfo, uint32_t SectionID, uint32_t FromSectionID)
 {
-    if (JumpInfo.LinkLocation != NULL)
+    if (JumpInfo.LinkLocation != nullptr)
     {
         if (SectionID != -1)
         {
@@ -5897,11 +5897,11 @@ void CArmRecompilerOps::LinkJump(CJumpInfo & JumpInfo, uint32_t SectionID, uint3
             }
         }
         SetJump20(JumpInfo.LinkLocation, (uint32_t *)*g_RecompPos);
-        JumpInfo.LinkLocation = NULL;
-        if (JumpInfo.LinkLocation2 != NULL)
+        JumpInfo.LinkLocation = nullptr;
+        if (JumpInfo.LinkLocation2 != nullptr)
         {
             SetJump20(JumpInfo.LinkLocation2, (uint32_t *)*g_RecompPos);
-            JumpInfo.LinkLocation2 = NULL;
+            JumpInfo.LinkLocation2 = nullptr;
         }
     }
 }
@@ -6315,7 +6315,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         switch (PAddr)
         {
         case 0x04400000:
-            if (g_Plugins->Gfx()->ViStatusChanged != NULL)
+            if (g_Plugins->Gfx()->ViStatusChanged != nullptr)
             {
                 ArmReg TempReg = Map_TempReg(Arm_Any, -1, false);
                 MoveVariableToArmReg(&g_Reg->VI_STATUS_REG, "VI_STATUS_REG", TempReg);
@@ -6340,7 +6340,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             break;
         case 0x04400004: MoveConstToVariable((Value & 0xFFFFFF), &g_Reg->VI_ORIGIN_REG, "VI_ORIGIN_REG"); break;
         case 0x04400008:
-            if (g_Plugins->Gfx()->ViWidthChanged != NULL)
+            if (g_Plugins->Gfx()->ViWidthChanged != nullptr)
             {
                 ArmReg TempReg = Map_TempReg(Arm_Any, -1, false);
                 MoveVariableToArmReg(&g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG", TempReg);
@@ -6743,7 +6743,7 @@ void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
     case 0x04400000:
         switch (PAddr) {
         case 0x04400000:
-            if (g_Plugins->Gfx()->ViStatusChanged != NULL)
+            if (g_Plugins->Gfx()->ViStatusChanged != nullptr)
             {
                 ArmReg TempReg = Map_TempReg(Arm_Any, -1, false);
                 MoveVariableToArmReg(&g_Reg->VI_STATUS_REG, "VI_STATUS_REG", TempReg);
@@ -6767,7 +6767,7 @@ void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
             AndConstToVariable(&g_Reg->VI_ORIGIN_REG, "VI_ORIGIN_REG", 0xFFFFFF);
             break;
         case 0x04400008:
-            if (g_Plugins->Gfx()->ViWidthChanged != NULL)
+            if (g_Plugins->Gfx()->ViWidthChanged != nullptr)
             {
                 ArmReg TempReg = Map_TempReg(Arm_Any, -1, false);
                 MoveVariableToArmReg(&g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG", TempReg);
@@ -7223,7 +7223,7 @@ void CArmRecompilerOps::LW_KnownAddress(ArmReg Reg, uint32_t VAddr)
                 }
                 else
                 {
-                    if (g_Plugins->Audio()->AiReadLength != NULL)
+                    if (g_Plugins->Audio()->AiReadLength != nullptr)
                     {
                         m_RegWorkingSet.BeforeCallDirect();
                         CallFunction((void *)g_Plugins->Audio()->AiReadLength, "AiReadLength");

@@ -41,7 +41,7 @@ public:
 			CW_USEDEFAULT, CW_USEDEFAULT,
 			CW_USEDEFAULT, CW_USEDEFAULT,
 			pT->m_hWnd, NULL,
-			NULL, NULL);
+            NULL, NULL);
 
 		const _ToolTipMap* map = pT->_GetToolTipMap();
 

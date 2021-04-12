@@ -31,7 +31,7 @@
   </ImportGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <ItemDefinitionGroup>
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>

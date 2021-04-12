@@ -265,7 +265,7 @@ void MD5::init()
     ::memset(digest, 0, sizeof(digest));
     ::memset(buffer, 0, sizeof(buffer));
 
-    m_hex_digest = NULL;
+    m_hex_digest = nullptr;
 }
 
 // Constants for MD5Transform routine.

@@ -66,7 +66,7 @@ public:
     }
 
 private:
-    uint8_t*  GetPhysicalPtr(uint32_t paddr, WORD* flags = NULL);
+    uint8_t*  GetPhysicalPtr(uint32_t paddr, WORD* flags = nullptr);
     bool      GetPhysicalByte(uint32_t paddr, uint8_t* value);
     bool      SetPhysicalByte(uint32_t paddr, uint8_t value);
 

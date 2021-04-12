@@ -40,17 +40,17 @@ const char * CRegName::FPR_Ctrl[32] = { "Revision", "Unknown", "Unknown", "Unkno
 "Unknown", "Unknown", "Unknown", "Unknown", "Unknown", "Unknown",
 "Unknown", "Unknown", "FCSR" };
 
-uint32_t      * CSystemRegisters::_PROGRAM_COUNTER = NULL;
-MIPS_DWORD    * CSystemRegisters::_GPR = NULL;
-MIPS_DWORD    * CSystemRegisters::_FPR = NULL;
-uint32_t      * CSystemRegisters::_CP0 = NULL;
-MIPS_DWORD    * CSystemRegisters::_RegHI = NULL;
-MIPS_DWORD    * CSystemRegisters::_RegLO = NULL;
+uint32_t      * CSystemRegisters::_PROGRAM_COUNTER = nullptr;
+MIPS_DWORD    * CSystemRegisters::_GPR = nullptr;
+MIPS_DWORD    * CSystemRegisters::_FPR = nullptr;
+uint32_t      * CSystemRegisters::_CP0 = nullptr;
+MIPS_DWORD    * CSystemRegisters::_RegHI = nullptr;
+MIPS_DWORD    * CSystemRegisters::_RegLO = nullptr;
 float        ** CSystemRegisters::_FPR_S;
 double       ** CSystemRegisters::_FPR_D;
-uint32_t      * CSystemRegisters::_FPCR = NULL;
-uint32_t      * CSystemRegisters::_LLBit = NULL;
-int32_t       * CSystemRegisters::_RoundingModel = NULL;
+uint32_t      * CSystemRegisters::_FPCR = nullptr;
+uint32_t      * CSystemRegisters::_LLBit = nullptr;
+int32_t       * CSystemRegisters::_RoundingModel = nullptr;
 
 CP0registers::CP0registers(uint32_t * _CP0) :
     INDEX_REGISTER(_CP0[0]),

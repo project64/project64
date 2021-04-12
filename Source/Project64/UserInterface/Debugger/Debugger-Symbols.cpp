@@ -21,7 +21,7 @@ const CSetValueDlg::ComboItem CDebugSymbols::ModalChangeTypeItems[] = {
     { "v2", SYM_VECTOR2 },
     { "v3", SYM_VECTOR3 },
     { "v4", SYM_VECTOR4 },
-    { NULL, 0 }
+    { nullptr, 0 }
 };
 
 CDebugSymbols::CDebugSymbols(CDebuggerUI * debugger) :
@@ -51,7 +51,7 @@ LRESULT CDebugSymbols::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
 
     Refresh();
 
-    SetTimer(TIMER_ID_AUTO_REFRESH, 100, NULL);
+    SetTimer(TIMER_ID_AUTO_REFRESH, 100, nullptr);
 
     LoadWindowPos();
     WindowCreated();
@@ -106,7 +106,7 @@ LRESULT CDebugSymbols::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*
 
 LRESULT    CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
 {
-    if (g_MMU == NULL)
+    if (g_MMU == nullptr)
     {
         return true;
     }
@@ -287,7 +287,7 @@ LRESULT    CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
 
 void CDebugSymbols::Refresh()
 {
-    if (m_SymbolsListView.m_hWnd == NULL)
+    if (m_SymbolsListView.m_hWnd == nullptr)
     {
         return;
     }
@@ -319,7 +319,7 @@ void CDebugSymbols::Refresh()
 
 void CDebugSymbols::RefreshValues()
 {
-    if (g_MMU == NULL)
+    if (g_MMU == nullptr)
     {
         return;
     }

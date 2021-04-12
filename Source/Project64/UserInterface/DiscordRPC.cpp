@@ -12,7 +12,7 @@ void CDiscord::Init()
 {
 	DiscordEventHandlers handlers = {};
 
-	Discord_Initialize(PJ64_DISCORD_APPID, &handlers, 1, NULL);
+	Discord_Initialize(PJ64_DISCORD_APPID, &handlers, 1, nullptr);
 }
 
 void CDiscord::Shutdown()
@@ -29,7 +29,7 @@ static stdstr GetTitle()
 		return g_Settings->LoadStringVal(Rdb_GoodName);
 	else {
 		Default = CPath(g_Settings->LoadStringVal(Game_File)).GetName().c_str();
-		if (strstr(const_cast<char*>(Default.c_str()), "?") != NULL) {
+		if (strstr(const_cast<char*>(Default.c_str()), "?") != nullptr) {
 			return Default.substr(Default.find("?") + 1);
 		}
 		return Default;

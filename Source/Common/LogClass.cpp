@@ -19,7 +19,7 @@ CLog::~CLog (void)
 
 bool CLog::Open( const char * FileName, LOG_OPEN_MODE mode /* = Log_New  */)
 {
-	if (FileName == NULL) 
+	if (FileName == nullptr) 
 	{
 		return false;
 	}
@@ -68,7 +68,7 @@ void CLog::LogArgs(const char * Message, va_list & args )
 		size_t nlen = _vscprintf(Message, args) + 1;
 		char * Msg = (char *)alloca(nlen * sizeof(char));
 		Msg[nlen - 1] = 0;
-		if (Msg != NULL)
+		if (Msg != nullptr)
 		{
 			vsprintf(Msg, Message, args);
 			Log(Msg);

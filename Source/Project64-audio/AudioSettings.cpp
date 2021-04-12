@@ -3,7 +3,7 @@
 #include "SettingsID.h"
 #include "AudioSettings.h"
 
-CSettings * g_settings = NULL;
+CSettings * g_settings = nullptr;
 
 CSettings::CSettings() :
 	m_Set_SyncViaAudioEnabled(0),
@@ -80,14 +80,14 @@ void CSettings::RegisterSettings(void)
     m_Set_log_dir = FindSystemSettingId("Dir:Log");
 
     SetModuleName("Audio");
-    RegisterSetting(Set_Volume, Data_DWORD_General, "Volume", "Settings", 100, NULL);
-    RegisterSetting(Set_Logging_MD5, Data_DWORD_General, "MD5", "Logging", g_ModuleLogLevel[TraceMD5], NULL);
-    RegisterSetting(Set_Logging_Thread, Data_DWORD_General, "Thread", "Logging", g_ModuleLogLevel[TraceThread], NULL);
-    RegisterSetting(Set_Logging_Path, Data_DWORD_General, "Path", "Logging", g_ModuleLogLevel[TracePath], NULL);
-    RegisterSetting(Set_Logging_InitShutdown, Data_DWORD_General, "InitShutdown", "Logging", g_ModuleLogLevel[TraceAudioInitShutdown], NULL);
-    RegisterSetting(Set_Logging_Interface, Data_DWORD_General, "Interface", "Logging", g_ModuleLogLevel[TraceAudioInterface], NULL);
-    RegisterSetting(Set_Logging_Driver, Data_DWORD_General, "Driver", "Logging", g_ModuleLogLevel[TraceAudioDriver], NULL);
-    RegisterSetting(Set_Buffer, Data_DWORD_Game, "Buffer", "", 4, NULL);
+    RegisterSetting(Set_Volume, Data_DWORD_General, "Volume", "Settings", 100, nullptr);
+    RegisterSetting(Set_Logging_MD5, Data_DWORD_General, "MD5", "Logging", g_ModuleLogLevel[TraceMD5], nullptr);
+    RegisterSetting(Set_Logging_Thread, Data_DWORD_General, "Thread", "Logging", g_ModuleLogLevel[TraceThread], nullptr);
+    RegisterSetting(Set_Logging_Path, Data_DWORD_General, "Path", "Logging", g_ModuleLogLevel[TracePath], nullptr);
+    RegisterSetting(Set_Logging_InitShutdown, Data_DWORD_General, "InitShutdown", "Logging", g_ModuleLogLevel[TraceAudioInitShutdown], nullptr);
+    RegisterSetting(Set_Logging_Interface, Data_DWORD_General, "Interface", "Logging", g_ModuleLogLevel[TraceAudioInterface], nullptr);
+    RegisterSetting(Set_Logging_Driver, Data_DWORD_General, "Driver", "Logging", g_ModuleLogLevel[TraceAudioDriver], nullptr);
+    RegisterSetting(Set_Buffer, Data_DWORD_Game, "Buffer", "", 4, nullptr);
     LogLevelChanged();
 }
 
@@ -150,7 +150,7 @@ void CSettings::ReadSettings(void)
 
 void SetupAudioSettings(void)
 {
-    if (g_settings == NULL)
+    if (g_settings == nullptr)
     {
         g_settings = new CSettings;
     }
@@ -161,6 +161,6 @@ void CleanupAudioSettings(void)
     if (g_settings)
     {
         delete g_settings;
-        g_settings = NULL;
+        g_settings = nullptr;
     }
 }

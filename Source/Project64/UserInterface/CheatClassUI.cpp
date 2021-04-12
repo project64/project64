@@ -25,7 +25,7 @@ void CCheatsUI::Display(HWND hParent, bool BlockExecution)
         m_bModal = true;
         DoModal(hParent);
     }
-    else if (m_hWnd != NULL)
+    else if (m_hWnd != nullptr)
     {
         SetFocus();
     }
@@ -90,7 +90,7 @@ LRESULT CCheatsUI::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPara
     int32_t DlgHeight = rcDlg.Height();
     int32_t X = (((rcParent.Width()) - DlgWidth) / 2) + rcParent.left;
     int32_t Y = (((rcParent.Height()) - DlgHeight) / 2) + rcParent.top;
-    SetWindowPos(NULL, X, Y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+    SetWindowPos(nullptr, X, Y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
     m_SelectCheat.RefreshItems();
     ShowWindow(SW_SHOW);
     return 0;
@@ -160,7 +160,7 @@ LRESULT CCheatsUI::OnStateChange(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWnd
 CCheatList::CCheatList(CEnhancementList & Cheats, CEditCheat & EditCheat) :
     m_Cheats(Cheats),
     m_EditCheat(EditCheat),
-    m_hSelectedItem(NULL),
+    m_hSelectedItem(nullptr),
     m_DeleteingEntries(false)
 {
 }
@@ -277,7 +277,7 @@ LRESULT CCheatList::OnTreeClicked(NMHDR* lpnmh)
         {
         case TV_STATE_CLEAR:
         case TV_STATE_INDETERMINATE:
-            if (m_hCheatTree.GetChildItem(ht.hItem) == NULL)
+            if (m_hCheatTree.GetChildItem(ht.hItem) == nullptr)
             {
                 TVITEM item = { 0 };
                 item.mask = TVIF_PARAM;
@@ -336,19 +336,19 @@ LRESULT CCheatList::OnTreeRClicked(NMHDR* lpnmh)
     m_hSelectedItem = ht.hItem;
 
     // Show menu
-    HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_CHEAT_MENU));
+    HMENU hMenu = LoadMenu(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDR_CHEAT_MENU));
     HMENU hPopupMenu = GetSubMenu(hMenu, 0);
     POINT Mouse;
 
     GetCursorPos(&Mouse);
 
-    MenuSetText(hPopupMenu, 0, wGS(CHEAT_ADDNEW).c_str(), NULL);
-    MenuSetText(hPopupMenu, 1, wGS(CHEAT_EDIT).c_str(), NULL);
-    MenuSetText(hPopupMenu, 3, wGS(CHEAT_DELETE).c_str(), NULL);
+    MenuSetText(hPopupMenu, 0, wGS(CHEAT_ADDNEW).c_str(), nullptr);
+    MenuSetText(hPopupMenu, 1, wGS(CHEAT_EDIT).c_str(), nullptr);
+    MenuSetText(hPopupMenu, 3, wGS(CHEAT_DELETE).c_str(), nullptr);
 
-    if (m_hSelectedItem != NULL && m_hCheatTree.GetChildItem(m_hSelectedItem) == NULL)
+    if (m_hSelectedItem != nullptr && m_hCheatTree.GetChildItem(m_hSelectedItem) == nullptr)
     {
-        TrackPopupMenu(hPopupMenu, 0, Mouse.x, Mouse.y, 0, m_hWnd, NULL);
+        TrackPopupMenu(hPopupMenu, 0, Mouse.x, Mouse.y, 0, m_hWnd, nullptr);
     }
     DestroyMenu(hMenu);
     return true;
@@ -375,7 +375,7 @@ LRESULT CCheatList::OnTreeSelChanged(NMHDR * /*lpnmh*/)
 {
     HTREEITEM hItem = m_hCheatTree.GetSelectedItem();
     GetDlgItem(IDC_NOTES).SetWindowText(L"");
-    if (m_hCheatTree.GetChildItem(hItem) == NULL)
+    if (m_hCheatTree.GetChildItem(hItem) == nullptr)
     {
         TVITEM item = { 0 };
         item.mask = TVIF_PARAM;
@@ -385,7 +385,7 @@ LRESULT CCheatList::OnTreeSelChanged(NMHDR * /*lpnmh*/)
         {
             CEnhancement * Enhancement = (CEnhancement *)item.lParam;
             GetDlgItem(IDC_NOTES).SetWindowText(stdstr(Enhancement->GetNote()).ToUTF16().c_str());
-            if (m_EditCheat.m_hWnd != NULL)
+            if (m_EditCheat.m_hWnd != nullptr)
             {
                 m_EditCheat.SendMessage(CEditCheat::WM_EDITCHEAT, item.lParam, 0);
             }
@@ -396,7 +396,7 @@ LRESULT CCheatList::OnTreeSelChanged(NMHDR * /*lpnmh*/)
 
 void CCheatList::RefreshItems()
 {
-    if (m_hWnd == NULL) { return; }
+    if (m_hWnd == nullptr) { return; }
 
     m_DeleteingEntries = true;
     m_hCheatTree.DeleteAllItems();
@@ -463,7 +463,7 @@ void CCheatList::AddCodeLayers(LPARAM Enhancement, const std::wstring &Name, HTR
 void CCheatList::ChangeChildrenStatus(HTREEITEM hParent, bool Checked)
 {
     HTREEITEM hItem = m_hCheatTree.GetChildItem(hParent);;
-    if (hItem == NULL)
+    if (hItem == nullptr)
     {
         if (hParent == TVI_ROOT) { return; }
 
@@ -490,7 +490,7 @@ void CCheatList::ChangeChildrenStatus(HTREEITEM hParent, bool Checked)
         return;
     }
     TV_CHECK_STATE state = TV_STATE_UNKNOWN;
-    while (hItem != NULL)
+    while (hItem != nullptr)
     {
         TV_CHECK_STATE ChildState = TV_GetCheckState(hItem);
         if ((ChildState != TV_STATE_CHECKED || !Checked) &&
@@ -511,14 +511,14 @@ void CCheatList::ChangeChildrenStatus(HTREEITEM hParent, bool Checked)
 
 void CCheatList::CheckParentStatus(HTREEITEM hParent)
 {
-    if (hParent == NULL)
+    if (hParent == nullptr)
     {
         return;
     }
     HTREEITEM hItem = m_hCheatTree.GetChildItem(hParent);
     TV_CHECK_STATE InitialState = TV_GetCheckState(hParent);
     TV_CHECK_STATE CurrentState = TV_GetCheckState(hItem);
-    while (hItem != NULL)
+    while (hItem != nullptr)
     {
         if (TV_GetCheckState(hItem) != CurrentState)
         {
@@ -586,7 +586,7 @@ bool CCheatList::TV_SetCheckState(HTREEITEM hItem, TV_CHECK_STATE state)
 
 void CCheatList::MenuSetText(HMENU hMenu, int MenuPos, const wchar_t * Title, const wchar_t * ShortCut)
 {
-    if (Title == NULL || wcslen(Title) == 0)
+    if (Title == nullptr || wcslen(Title) == 0)
     {
         return;
     }
@@ -602,7 +602,7 @@ void CCheatList::MenuSetText(HMENU hMenu, int MenuPos, const wchar_t * Title, co
 
     GetMenuItemInfo(hMenu, MenuPos, true, &MenuInfo);
     wcscpy(String, Title);
-    if (wcschr(String, '\t') != NULL) { *(wcschr(String, '\t')) = '\0'; }
+    if (wcschr(String, '\t') != nullptr) { *(wcschr(String, '\t')) = '\0'; }
     if (ShortCut) { _swprintf(String, L"%s\t%s", String, ShortCut); }
     SetMenuItemInfo(hMenu, MenuPos, true, &MenuInfo);
 }
@@ -640,7 +640,7 @@ LRESULT CEditCheat::OnEditCheat(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/,
     }
 
     m_EditEnhancement = (CEnhancement *)wParam;
-    if (m_EditEnhancement == NULL)
+    if (m_EditEnhancement == nullptr)
     {
         return 0;
     }

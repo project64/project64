@@ -82,7 +82,7 @@ void CAudio::LenChanged()
         m_Status = 0;
     }
 
-    if (g_Plugins->Audio()->AiLenChanged != NULL)
+    if (g_Plugins->Audio()->AiLenChanged != nullptr)
     {
         WriteTrace(TraceAudio, TraceDebug, "Calling plugin AiLenChanged");
         g_Plugins->Audio()->AiLenChanged();

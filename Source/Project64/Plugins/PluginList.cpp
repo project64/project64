@@ -25,7 +25,7 @@ const CPluginList::PLUGIN * CPluginList::GetPluginInfo(int indx) const
 {
     if (indx < 0 || indx >= (int)m_PluginList.size())
     {
-        return NULL;
+        return nullptr;
     }
     return &m_PluginList[indx];
 }
@@ -54,13 +54,13 @@ void CPluginList::AddPluginFromDir(CPath Dir)
     Dir.SetNameExtension("*.dll");
     if (Dir.FindFirst())
     {
-        HMODULE hLib = NULL;
+        HMODULE hLib = nullptr;
         do
         {
             if (hLib)
             {
                 FreeLibrary(hLib);
-                hLib = NULL;
+                hLib = nullptr;
             }
 
             //UINT LastErrorMode = SetErrorMode( SEM_FAILCRITICALERRORS );
@@ -68,7 +68,7 @@ void CPluginList::AddPluginFromDir(CPath Dir)
             hLib = LoadLibrary(stdstr((LPCSTR)Dir).ToUTF16().c_str());
             //SetErrorMode(LastErrorMode);
 
-            if (hLib == NULL)
+            if (hLib == nullptr)
             {
                 DWORD LoadError = GetLastError();
                 WriteTrace(TraceUserInterface, TraceDebug, "failed to load %s (error: %d)", (LPCSTR)Dir, LoadError);
@@ -77,7 +77,7 @@ void CPluginList::AddPluginFromDir(CPath Dir)
 
             void(CALL *GetDllInfo) (PLUGIN_INFO * PluginInfo);
             GetDllInfo = (void(CALL *)(PLUGIN_INFO *))GetProcAddress(hLib, "GetDllInfo");
-            if (GetDllInfo == NULL)
+            if (GetDllInfo == nullptr)
             {
                 continue;
             }
@@ -93,7 +93,7 @@ void CPluginList::AddPluginFromDir(CPath Dir)
             Plugin.FullPath = Dir;
             Plugin.FileName = stdstr((const char *)Dir).substr(strlen(m_PluginDir));
 
-            if (GetProcAddress(hLib, "DllAbout") != NULL)
+            if (GetProcAddress(hLib, "DllAbout") != nullptr)
             {
                 Plugin.AboutFunction = true;
             }
@@ -103,7 +103,7 @@ void CPluginList::AddPluginFromDir(CPath Dir)
         if (hLib)
         {
             FreeLibrary(hLib);
-            hLib = NULL;
+            hLib = nullptr;
         }
     }
 }

@@ -6,13 +6,13 @@
 SyncEvent::SyncEvent(bool bManualReset)
 {
 #ifdef _WIN32
-    m_Event = CreateEvent(NULL, bManualReset, FALSE, NULL);
+    m_Event = CreateEvent(nullptr, bManualReset, FALSE, nullptr);
 #else
     m_signalled = false;
     m_Event = new pthread_mutex_t;
     m_cond = new pthread_cond_t;
-    pthread_mutex_init((pthread_mutex_t*)m_Event, NULL);
-    pthread_cond_init((pthread_cond_t*)m_cond, NULL);
+    pthread_mutex_init((pthread_mutex_t*)m_Event, nullptr);
+    pthread_cond_init((pthread_cond_t*)m_cond, nullptr);
 #endif
 }
 

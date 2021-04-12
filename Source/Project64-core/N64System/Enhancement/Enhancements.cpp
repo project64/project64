@@ -322,22 +322,22 @@ void CEnhancements::LoadActive(CEnhancementList & List, CPlugins * Plugins)
             for (size_t i = 0, n = PluginList.size(); i < n; i++)
             {
                 std::string PluginName = stdstr(PluginList[i]).Trim();
-                if (Plugins->Gfx() != NULL && strstr(Plugins->Gfx()->PluginName(), PluginName.c_str()) != nullptr)
+                if (Plugins->Gfx() != nullptr && strstr(Plugins->Gfx()->PluginName(), PluginName.c_str()) != nullptr)
                 {
                     LoadEntry = true;
                     break;
                 }
-                if (Plugins->Audio() != NULL && strstr(Plugins->Audio()->PluginName(), PluginName.c_str()) != nullptr)
+                if (Plugins->Audio() != nullptr && strstr(Plugins->Audio()->PluginName(), PluginName.c_str()) != nullptr)
                 {
                     LoadEntry = true;
                     break;
                 }
-                if (Plugins->RSP() != NULL && strstr(Plugins->RSP()->PluginName(), PluginName.c_str()) != nullptr)
+                if (Plugins->RSP() != nullptr && strstr(Plugins->RSP()->PluginName(), PluginName.c_str()) != nullptr)
                 {
                     LoadEntry = true;
                     break;
                 }
-                if (Plugins->Control() != NULL && strstr(Plugins->Control()->PluginName(), PluginName.c_str()) != nullptr)
+                if (Plugins->Control() != nullptr && strstr(Plugins->Control()->PluginName(), PluginName.c_str()) != nullptr)
                 {
                     LoadEntry = true;
                     break;

@@ -4,7 +4,7 @@
 #include "OpInfo.h"
 
 bool CRegisterTabs::m_bColorsEnabled = false;
-CDebuggerUI* CRegisterTabs::m_Debugger = NULL;
+CDebuggerUI* CRegisterTabs::m_Debugger = nullptr;
 
 CRegisterTabs::CRegisterTabs() :
     m_attached(false)
@@ -74,19 +74,19 @@ void CRegisterTabs::Attach(HWND hWndNew, CDebuggerUI* debugger)
 HWND CRegisterTabs::Detach(void)
 {
     m_attached = false;
-    m_GPRTab = NULL;
-    m_FPRTab = NULL;
-    m_COP0Tab = NULL;
-    m_RDRAMTab = NULL;
-    m_SPTab = NULL;
-    m_DPCTab = NULL;
-    m_MITab = NULL;
-    m_VITab = NULL;
-    m_AITab = NULL;
-    m_PITab = NULL;
-    m_RITab = NULL;
-    m_SITab = NULL;
-    m_DDTab = NULL;
+    m_GPRTab = nullptr;
+    m_FPRTab = nullptr;
+    m_COP0Tab = nullptr;
+    m_RDRAMTab = nullptr;
+    m_SPTab = nullptr;
+    m_DPCTab = nullptr;
+    m_MITab = nullptr;
+    m_VITab = nullptr;
+    m_AITab = nullptr;
+    m_PITab = nullptr;
+    m_RITab = nullptr;
+    m_SITab = nullptr;
+    m_DDTab = nullptr;
     for (size_t i = 0; i < m_TabWindows.size(); i++)
     {
         m_TabWindows[i].DestroyWindow();
@@ -94,12 +94,12 @@ HWND CRegisterTabs::Detach(void)
     m_TabWindows.clear();
     m_CauseTip.Detach();
     CTabCtrl::Detach();
-    return NULL;
+    return nullptr;
 }
 
 void CRegisterTabs::RefreshEdits()
 {
-    if (g_Reg == NULL)
+    if (g_Reg == nullptr)
     {
         ZeroRegisterEdits64(m_GPREdits, TabData::GPR.FieldCount);
         ZeroRegisterEdit64(m_HIEdit);
@@ -265,7 +265,7 @@ void CRegisterTabs::RefreshEdits()
 
 void CRegisterTabs::RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam)
 {
-    if (g_Reg == NULL || !isStepping())
+    if (g_Reg == nullptr || !isStepping())
     {
         return;
     }
@@ -295,7 +295,7 @@ void CRegisterTabs::RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam)
         return;
     }
 
-    uint32_t value = wcstoul(text, NULL, 16);
+    uint32_t value = wcstoul(text, nullptr, 16);
     wsprintf(text, L"%08X", value);
     editCtrl.SetWindowText(text); // Reformat text
 
@@ -451,7 +451,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcDefault(HWND hDlg, UINT msg, WPARAM wPara
     if (msg == WM_COMMAND && HIWORD(wParam) == EN_KILLFOCUS)
     {
         bool * attached = (bool *)GetProp(hDlg, L"attached");
-        if (attached != NULL && *attached)
+        if (attached != nullptr && *attached)
         {
             RegisterChanged(hDlg, TabDefault, wParam);
         }
@@ -478,7 +478,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         COLORREF colorWrite = RGB(255, 200, 200);
         COLORREF colorBoth = RGB(220, 170, 255);
 
-        if (!m_bColorsEnabled || g_Reg == NULL || g_MMU == NULL)
+        if (!m_bColorsEnabled || g_Reg == nullptr || g_MMU == nullptr)
         {
             return FALSE;
         }
@@ -541,7 +541,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
     if (msg == WM_COMMAND && HIWORD(wParam) == EN_KILLFOCUS)
     {
         bool * attached = (bool *)GetProp(hDlg, L"attached");
-        if (attached != NULL && *attached)
+        if (attached != nullptr && *attached)
         {
             RegisterChanged(hDlg, TabGPR, wParam);
         }
@@ -552,7 +552,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
     // Right click labels
     if (msg == WM_CONTEXTMENU)
     {
-        if (m_Debugger == NULL)
+        if (m_Debugger == nullptr)
         {
             return FALSE;
         }
@@ -582,14 +582,14 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
             breakpoints->ToggleGPRWriteBP(nReg);
         }
 
-        ::InvalidateRect(hWnd, NULL, true);
+        ::InvalidateRect(hWnd, nullptr, true);
         return FALSE;
     }
 
     // Click labels
     if (msg == WM_COMMAND && HIWORD(wParam) == STN_CLICKED || HIWORD(wParam) == STN_DBLCLK)
     {
-        if (m_Debugger == NULL)
+        if (m_Debugger == nullptr)
         {
             return FALSE;
         }
@@ -619,14 +619,14 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
             breakpoints->ToggleGPRReadBP(nReg);
         }
 
-        ::InvalidateRect(hWnd, NULL, true);
+        ::InvalidateRect(hWnd, nullptr, true);
         return FALSE;
     }
 
     // Color labels
     if (msg == WM_CTLCOLORSTATIC)
     {
-        if (m_Debugger == NULL)
+        if (m_Debugger == nullptr)
         {
             return FALSE;
         }
@@ -701,7 +701,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcFPR(HWND hDlg, UINT msg, WPARAM wParam, L
     if (msg == WM_COMMAND && HIWORD(wParam) == EN_KILLFOCUS)
     {
         bool * attached = (bool *)GetProp(hDlg, L"attached");
-        if (attached != NULL && *attached)
+        if (attached != nullptr && *attached)
         {
             RegisterChanged(hDlg, TabFPR, wParam);
         }
@@ -724,7 +724,7 @@ CWindow CRegisterTabs::AddTab(char* caption, int dialogId, DLGPROC dlgProc)
     AddItem(stdstr(caption).ToUTF16().c_str());
 
     CWindow parentWin = GetParent();
-    CWindow tabWin = ::CreateDialogParam(NULL, MAKEINTRESOURCE(dialogId), parentWin, dlgProc, (LPARAM)&m_attached);
+    CWindow tabWin = ::CreateDialogParam(nullptr, MAKEINTRESOURCE(dialogId), parentWin, dlgProc, (LPARAM)&m_attached);
 
     CRect pageRect = GetPageRect();
 
@@ -952,12 +952,12 @@ uint64_t CEditReg64::ParseValue(const char* wordPair)
 {
     uint32_t a, b;
     uint64_t ret;
-    char * end = NULL;
+    char * end = nullptr;
     a = strtoul(wordPair, &end, 16);
     if (*end == ' ')
     {
         end++;
-        b = strtoul(end, NULL, 16);
+        b = strtoul(end, nullptr, 16);
         ret = (uint64_t)a << 32;
         ret |= b;
         return ret;
@@ -1008,7 +1008,7 @@ LRESULT CEditReg64::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandl
         }
     }
 
-    if (charCode == ' ' && wcschr(text, ' ') != NULL)
+    if (charCode == ' ' && wcschr(text, ' ') != nullptr)
     {
         goto canceled;
     }

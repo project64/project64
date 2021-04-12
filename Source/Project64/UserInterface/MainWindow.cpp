@@ -22,9 +22,9 @@ CMainGui::CMainGui(bool bMainWindow, const char * WindowTitle) :
     m_AttachingMenu(false),
     m_MakingVisible(false),
     m_ResetPlugins(false),
-    m_ResetInfo(NULL)
+    m_ResetInfo(nullptr)
 {
-    m_Menu = NULL;
+    m_Menu = nullptr;
 
     m_hMainWindow = 0;
     m_hStatusWnd = 0;
@@ -98,13 +98,13 @@ bool CMainGui::RegisterWinClass(void)
     wcl.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
     wcl.cbClsExtra = 0;
     wcl.cbWndExtra = 0;
-    wcl.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_PJ64_Icon));
-    wcl.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wcl.hInstance = GetModuleHandle(NULL);
+    wcl.hIcon = LoadIcon(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDI_PJ64_Icon));
+    wcl.hCursor = LoadCursor(nullptr, IDC_ARROW);
+    wcl.hInstance = GetModuleHandle(nullptr);
 
     wcl.lpfnWndProc = (WNDPROC)MainGui_Proc;
     wcl.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-    wcl.lpszMenuName = NULL;
+    wcl.lpszMenuName = nullptr;
     wcl.lpszClassName = VersionDisplay.c_str();
     if (RegisterClass(&wcl) == 0) return false;
     return true;
@@ -247,7 +247,7 @@ void CMainGui::GameCpuRunning(CMainGui * Gui)
     }
     else
     {
-        if (Gui->m_CheatsUI.m_hWnd != NULL)
+        if (Gui->m_CheatsUI.m_hWnd != nullptr)
         {
             Gui->m_CheatsUI.SendMessage(WM_COMMAND, MAKELONG(IDCANCEL, 0));
         }
@@ -310,7 +310,7 @@ void CMainGui::ChangeWinSize(long width, long height)
         SetRect(&rc1, 0, 0, width, height);
     }
 
-    AdjustWindowRectEx(&rc1, GetWindowLong(m_hMainWindow, GWL_STYLE), GetMenu(m_hMainWindow) != NULL, GetWindowLong(m_hMainWindow, GWL_EXSTYLE));
+    AdjustWindowRectEx(&rc1, GetWindowLong(m_hMainWindow, GWL_STYLE), GetMenu(m_hMainWindow) != nullptr, GetWindowLong(m_hMainWindow, GWL_EXSTYLE));
 
     MoveWindow(m_hMainWindow, wndpl.rcNormalPosition.left, wndpl.rcNormalPosition.top, rc1.right - rc1.left, rc1.bottom - rc1.top, TRUE);
 }
@@ -322,7 +322,7 @@ void * CMainGui::GetStatusBar(void) const
 
 void * CMainGui::GetModuleInstance(void) const
 {
-    return GetModuleHandle(NULL);
+    return GetModuleHandle(nullptr);
 }
 
 bool CMainGui::ResetPluginsInUiThread(CPlugins * plugins, CN64System * System)
@@ -330,7 +330,7 @@ bool CMainGui::ResetPluginsInUiThread(CPlugins * plugins, CN64System * System)
     RESET_PLUGIN info;
     info.system = System;
     info.plugins = plugins;
-    info.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+    info.hEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
     bool bRes = true;
     if (info.hEvent)
     {
@@ -389,8 +389,8 @@ void CMainGui::Create(const char * WindowTitle)
     stdstr_f VersionDisplay("Project64 %s", VER_FILE_VERSION_STR);
     m_hMainWindow = CreateWindowEx(WS_EX_ACCEPTFILES, VersionDisplay.ToUTF16().c_str(), stdstr(WindowTitle).ToUTF16().c_str(), WS_OVERLAPPED | WS_CLIPCHILDREN |
         WS_CLIPSIBLINGS | WS_SYSMENU | WS_MINIMIZEBOX, 5, 5, 640, 480,
-        NULL, NULL, GetModuleHandle(NULL), this);
-    m_Created = m_hMainWindow != NULL;
+        nullptr, nullptr, GetModuleHandle(nullptr), this);
+    m_Created = m_hMainWindow != nullptr;
 }
 
 void CMainGui::CreateStatusBar(void)
@@ -404,17 +404,17 @@ WPARAM CMainGui::ProcessAllMessages(void)
 {
     MSG msg;
 
-    while (GetMessage(&msg, NULL, 0, 0))
+    while (GetMessage(&msg, nullptr, 0, 0))
     {
         if (m_ResetPlugins)
         {
             m_ResetPlugins = false;
             m_ResetInfo->res = m_ResetInfo->plugins->Reset(m_ResetInfo->system);
             SetEvent(m_ResetInfo->hEvent);
-            m_ResetInfo = NULL;
+            m_ResetInfo = nullptr;
         }
-        if ((m_CheatsUI.m_hWnd != NULL && IsDialogMessage(m_CheatsUI.m_hWnd, &msg)) ||
-            (m_EnhancementUI.m_hWnd != NULL && IsDialogMessage(m_EnhancementUI.m_hWnd, &msg)))
+        if ((m_CheatsUI.m_hWnd != nullptr && IsDialogMessage(m_CheatsUI.m_hWnd, &msg)) ||
+            (m_EnhancementUI.m_hWnd != nullptr && IsDialogMessage(m_EnhancementUI.m_hWnd, &msg)))
         {
             continue;
         }
@@ -429,7 +429,7 @@ bool CMainGui::ProcessGuiMessages(void)
 {
     MSG msg;
 
-    while (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
+    while (PeekMessage(&msg, nullptr, 0, 0, PM_NOREMOVE))
     {
         if (m_ResetPlugins)
         {
@@ -439,7 +439,7 @@ bool CMainGui::ProcessGuiMessages(void)
         {
             return true;
         }
-        PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
+        PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE);
         if (m_Menu->ProcessAccelerator(m_hMainWindow, &msg)) { continue; }
         TranslateMessage(&msg);
         DispatchMessage(&msg);
@@ -508,14 +508,14 @@ float CMainGui::DPIScale(HWND hWnd)
 
 void CMainGui::SetPos(int X, int Y)
 {
-    SetWindowPos(m_hMainWindow, NULL, X, Y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+    SetWindowPos(m_hMainWindow, nullptr, X, Y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 }
 
 void CMainGui::SetWindowMenu(CBaseMenu * Menu)
 {
     m_AttachingMenu = true;
 
-    HMENU hMenu = NULL;
+    HMENU hMenu = nullptr;
     {
         CGuard Guard(m_CS);
         m_Menu = Menu;
@@ -686,7 +686,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                 _this->m_SaveMainWindowLeft = WinRect.left;
             }
             KillTimer(hWnd, Timer_SetWindowPos);
-            SetTimer(hWnd, Timer_SetWindowPos, 1000, NULL);
+            SetTimer(hWnd, Timer_SetWindowPos, 1000, nullptr);
         }
         if (CGuiSettings::bCPURunning() && g_BaseSystem)
         {
@@ -734,7 +734,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
     case WM_NOTIFY:
         {
             CMainGui * _this = (CMainGui *)GetProp(hWnd, L"Class");
-            if (_this == NULL || !_this->RomBrowserVisible() || !_this->RomListNotify(wParam, lParam))
+            if (_this == nullptr || !_this->RomBrowserVisible() || !_this->RomListNotify(wParam, lParam))
             {
                 return DefWindowProc(hWnd, uMsg, wParam, lParam);
             }
@@ -763,7 +763,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             //					Plugins->Gfx()->DrawScreen();
             //				}
             //			}
-            ValidateRect(hWnd, NULL);
+            ValidateRect(hWnd, nullptr);
         }
         break;
     case WM_KEYUP:
@@ -887,7 +887,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
     case WM_RESET_PLUGIN:
         {
             CMainGui * _this = (CMainGui *)GetProp(hWnd, L"Class");
-            if (_this->m_ResetInfo != NULL)
+            if (_this->m_ResetInfo != nullptr)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -912,7 +912,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
     case WM_COMMAND:
         {
             CMainGui * _this = (CMainGui *)GetProp(hWnd, L"Class");
-            if (_this == NULL) { break; }
+            if (_this == nullptr) { break; }
 
             switch (LOWORD(wParam)) {
             case ID_POPUPMENU_PLAYGAME: 
@@ -1029,7 +1029,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                     }
                     else if (LOWORD(wParam) > 5200 && LOWORD(wParam) <= 5300)
                     {
-                        if (g_Plugins->Gfx() && g_Plugins->Gfx()->OnRomBrowserMenuItem != NULL)
+                        if (g_Plugins->Gfx() && g_Plugins->Gfx()->OnRomBrowserMenuItem != nullptr)
                         {
                             CN64Rom Rom;
                             if (!Rom.LoadN64Image(_this->CurrentedSelectedRom(), true))
@@ -1087,7 +1087,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             {
                 Notify().WindowMode();
             }
-            _this->m_hMainWindow = NULL;
+            _this->m_hMainWindow = nullptr;
             WriteTrace(TraceUserInterface, TraceDebug, "WM_DESTROY - 1");
             if (_this->m_bMainWindow)
             {

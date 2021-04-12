@@ -18,7 +18,7 @@ CSupportWindow::~CSupportWindow(void)
 
 void CALLBACK CSupportWindow::TimerProc(HWND, UINT, UINT_PTR idEvent, DWORD)
 {
-    ::KillTimer(NULL, idEvent);
+    ::KillTimer(nullptr, idEvent);
     m_this->DoModal(m_this->m_hParent);
 }
 
@@ -82,34 +82,34 @@ LRESULT CSupportWindow::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
     hDC.SelectFont(hFont);
     if (hDC.DrawText(InfoText.c_str(),InfoText.length(),&rcWin,DT_LEFT | DT_CALCRECT | DT_WORDBREAK | DT_NOCLIP) > 0)
     {
-        hInfo.SetWindowPos(NULL,0,0,rcWin.right, rcWin.bottom,SWP_NOACTIVATE|SWP_NOMOVE|SWP_NOOWNERZORDER);
+        hInfo.SetWindowPos(nullptr,0,0,rcWin.right, rcWin.bottom,SWP_NOACTIVATE|SWP_NOMOVE|SWP_NOOWNERZORDER);
     }
     hInfo.SetWindowText(InfoText.c_str());
     hInfo.GetWindowRect(&rcWin);
-    ::MapWindowPoints(NULL, m_hWnd, (LPPOINT)&rcWin, 2);
+    ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&rcWin, 2);
     
     CWindow EnterCode = GetDlgItem(IDC_ENTER_CODE);
-    EnterCode.SetWindowPos(NULL,rcWin.left,rcWin.bottom + 4,0,0,SWP_NOACTIVATE|SWP_NOSIZE|SWP_NOOWNERZORDER);
+    EnterCode.SetWindowPos(nullptr,rcWin.left,rcWin.bottom + 4,0,0,SWP_NOACTIVATE|SWP_NOSIZE|SWP_NOOWNERZORDER);
     EnterCode.GetWindowRect(&rcWin);
-    ::MapWindowPoints(NULL, m_hWnd, (LPPOINT)&rcWin, 2);
+    ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&rcWin, 2);
 
     CWindow SupportBtn = GetDlgItem(ID_SUPPORT_PJ64);
     RECT SupportBtnWin = { 0 };
     SupportBtn.GetWindowRect(&SupportBtnWin);
-    ::MapWindowPoints(NULL, m_hWnd, (LPPOINT)&SupportBtnWin, 2);
-    SupportBtn.SetWindowPos(NULL, SupportBtnWin.left, rcWin.bottom + 40, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
+    ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&SupportBtnWin, 2);
+    SupportBtn.SetWindowPos(nullptr, SupportBtnWin.left, rcWin.bottom + 40, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
 
     CWindow CancelBtn = GetDlgItem(IDCANCEL);
     RECT CancelBtnWin = { 0 };
     CancelBtn.GetWindowRect(&CancelBtnWin);
-    ::MapWindowPoints(NULL, m_hWnd, (LPPOINT)&CancelBtnWin, 2);
-    CancelBtn.SetWindowPos(NULL, CancelBtnWin.left, rcWin.bottom + 40, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
+    ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&CancelBtnWin, 2);
+    CancelBtn.SetWindowPos(nullptr, CancelBtnWin.left, rcWin.bottom + 40, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
 
     GetWindowRect(&rcWin);
     SupportBtn.GetWindowRect(&SupportBtnWin);
-    ::MapWindowPoints(NULL, m_hWnd, (LPPOINT)&SupportBtnWin, 2);
+    ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&SupportBtnWin, 2);
     SetRect(&rcWin, 0, 0, rcWin.Width(), SupportBtnWin.bottom + 30);
-    AdjustWindowRectEx(&rcWin, GetStyle(), GetMenu() != NULL, GetExStyle());
+    AdjustWindowRectEx(&rcWin, GetStyle(), GetMenu() != nullptr, GetExStyle());
 
     int32_t Left = (GetSystemMetrics(SM_CXSCREEN) - rcWin.Width()) / 2;
     int32_t	Top = (GetSystemMetrics(SM_CYSCREEN) - rcWin.Height()) / 2;
@@ -125,8 +125,8 @@ LRESULT CSupportWindow::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
         SetWindowLong(GWL_STYLE, dwStyle);
 
         GetDlgItem(IDCANCEL).EnableWindow(false);
-        srand ((uint32_t)time(NULL));
-        SetTimer(0, 1000, NULL);
+        srand ((uint32_t)time(nullptr));
+        SetTimer(0, 1000, nullptr);
     }
     return TRUE;
 }
@@ -176,7 +176,7 @@ LRESULT CSupportWindow::OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCt
 LRESULT CSupportWindow::OnSupportProject64(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
     stdstr SupportURL = stdstr_f("https://www.pj64-emu.com/support-project64.html?ver=%s&machine=%s", VER_FILE_VERSION_STR, m_Support.MachineID());
-    ShellExecute(NULL, L"open", SupportURL.ToUTF16().c_str(), NULL, NULL, SW_SHOWMAXIMIZED);
+    ShellExecute(nullptr, L"open", SupportURL.ToUTF16().c_str(), nullptr, nullptr, SW_SHOWMAXIMIZED);
     return TRUE;
 }
 

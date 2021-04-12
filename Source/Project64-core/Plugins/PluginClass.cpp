@@ -5,14 +5,14 @@
 #include <Common/path.h>
 
 CPlugins::CPlugins(SettingID PluginDirSetting, bool SyncPlugins) :
-m_MainWindow(NULL),
-m_SyncWindow(NULL),
+m_MainWindow(nullptr),
+m_SyncWindow(nullptr),
 m_PluginDirSetting(PluginDirSetting),
 m_PluginDir(g_Settings->LoadStringVal(PluginDirSetting)),
-m_Gfx(NULL),
-m_Audio(NULL),
-m_RSP(NULL),
-m_Control(NULL),
+m_Gfx(nullptr),
+m_Audio(nullptr),
+m_RSP(nullptr),
+m_Control(nullptr),
 m_initilized(false),
 m_SyncPlugins(SyncPlugins)
 {
@@ -95,7 +95,7 @@ void CPlugins::PluginChanged(CPlugins * _this)
         }
         else
         {
-            _this->Reset(NULL);
+            _this->Reset(nullptr);
         }
     }
     WriteTrace(TracePlugins, TraceDebug, "Done");
@@ -104,7 +104,7 @@ void CPlugins::PluginChanged(CPlugins * _this)
 template <typename plugin_type>
 static void LoadPlugin(SettingID PluginSettingID, SettingID PluginVerSettingID, plugin_type * & plugin, const char * PluginDir, stdstr & FileName, TraceModuleProject64 TraceLevel, const char * type, bool IsCopy)
 {
-    if (plugin != NULL)
+    if (plugin != nullptr)
     {
         return;
     }
@@ -127,7 +127,7 @@ static void LoadPlugin(SettingID PluginSettingID, SettingID PluginVerSettingID, 
         {
             WriteTrace(TraceLevel, TraceError, "Failed to load %s", (const char *)PluginFileName);
             delete plugin;
-            plugin = NULL;
+            plugin = nullptr;
         }
         WriteTrace(TraceLevel, TraceDebug, "%s Loading Done", type);
     }
@@ -147,7 +147,7 @@ void CPlugins::CreatePlugins(void)
     LoadPlugin(Game_Plugin_Controller, Plugin_CONT_CurVer, m_Control, m_PluginDir.c_str(), m_ControlFile, TraceControllerPlugin, "Control", m_SyncPlugins);
 
     //Enable debugger
-    if (m_RSP != NULL && m_RSP->EnableDebugging)
+    if (m_RSP != nullptr && m_RSP->EnableDebugging)
     {
         WriteTrace(TraceRSPPlugin, TraceInfo, "EnableDebugging starting");
         m_RSP->EnableDebugging(HaveDebugger());
@@ -178,7 +178,7 @@ void CPlugins::GameReset(void)
 
 void CPlugins::DestroyGfxPlugin(void)
 {
-    if (m_Gfx == NULL)
+    if (m_Gfx == nullptr)
     {
         return;
     }
@@ -187,15 +187,15 @@ void CPlugins::DestroyGfxPlugin(void)
     WriteTrace(TraceGFXPlugin, TraceInfo, "deleting");
     delete m_Gfx;
     WriteTrace(TraceGFXPlugin, TraceInfo, "m_Gfx deleted");
-    m_Gfx = NULL;
-    //		g_Settings->UnknownSetting_GFX = NULL;
+    m_Gfx = nullptr;
+    //		g_Settings->UnknownSetting_GFX = nullptr;
     DestroyRspPlugin();
     WriteTrace(TraceGFXPlugin, TraceInfo, "Done");
 }
 
 void CPlugins::DestroyAudioPlugin(void)
 {
-    if (m_Audio == NULL)
+    if (m_Audio == nullptr)
     {
         return;
     }
@@ -204,16 +204,16 @@ void CPlugins::DestroyAudioPlugin(void)
     WriteTrace(TraceAudioPlugin, TraceDebug, "before delete");
     delete m_Audio;
     WriteTrace(TraceAudioPlugin, TraceDebug, "after delete");
-    m_Audio = NULL;
+    m_Audio = nullptr;
     WriteTrace(TraceAudioPlugin, TraceDebug, "before DestroyRspPlugin");
-    //		g_Settings->UnknownSetting_AUDIO = NULL;
+    //		g_Settings->UnknownSetting_AUDIO = nullptr;
     DestroyRspPlugin();
     WriteTrace(TraceAudioPlugin, TraceDebug, "after DestroyRspPlugin");
 }
 
 void CPlugins::DestroyRspPlugin(void)
 {
-    if (m_RSP == NULL)
+    if (m_RSP == nullptr)
     {
         return;
     }
@@ -221,14 +221,14 @@ void CPlugins::DestroyRspPlugin(void)
     m_RSP->Close(m_MainWindow);
     WriteTrace(TraceRSPPlugin, TraceDebug, "before delete");
     delete m_RSP;
-    m_RSP = NULL;
+    m_RSP = nullptr;
     WriteTrace(TraceRSPPlugin, TraceDebug, "after delete");
-    //		g_Settings->UnknownSetting_RSP = NULL;
+    //		g_Settings->UnknownSetting_RSP = nullptr;
 }
 
 void CPlugins::DestroyControlPlugin(void)
 {
-    if (m_Control == NULL)
+    if (m_Control == nullptr)
     {
         return;
     }
@@ -236,9 +236,9 @@ void CPlugins::DestroyControlPlugin(void)
     m_Control->Close(m_MainWindow);
     WriteTrace(TraceControllerPlugin, TraceDebug, "before delete");
     delete m_Control;
-    m_Control = NULL;
+    m_Control = nullptr;
     WriteTrace(TraceControllerPlugin, TraceDebug, "after delete");
-    //		g_Settings->UnknownSetting_CTRL = NULL;
+    //		g_Settings->UnknownSetting_CTRL = nullptr;
 }
 
 void CPlugins::SetRenderWindows(RenderWindow * MainWindow, RenderWindow * SyncWindow)
@@ -276,10 +276,10 @@ bool CPlugins::Initiate(CN64System * System)
 {
     WriteTrace(TracePlugins, TraceDebug, "Start");
     //Check to make sure we have the plugin available to be used
-    if (m_Gfx == NULL) { return false; }
-    if (m_Audio == NULL) { return false; }
-    if (m_RSP == NULL) { return false; }
-    if (m_Control == NULL) { return false; }
+    if (m_Gfx == nullptr) { return false; }
+    if (m_Audio == nullptr) { return false; }
+    if (m_RSP == nullptr) { return false; }
+    if (m_Control == nullptr) { return false; }
 
     WriteTrace(TraceGFXPlugin, TraceDebug, "Gfx Initiate Starting");
     if (!m_Gfx->Initiate(System, m_MainWindow))   { return false; }
@@ -372,10 +372,10 @@ void CPlugins::ConfigPlugin(void* hParent, PLUGIN_TYPE Type)
     switch (Type)
     {
     case PLUGIN_TYPE_RSP:
-        if (m_RSP == NULL || m_RSP->DllConfig == NULL) { break; }
+        if (m_RSP == nullptr || m_RSP->DllConfig == nullptr) { break; }
         if (!m_RSP->Initialized())
         {
-            if (!m_RSP->Initiate(this, NULL))
+            if (!m_RSP->Initiate(this, nullptr))
             {
                 break;
             }
@@ -383,10 +383,10 @@ void CPlugins::ConfigPlugin(void* hParent, PLUGIN_TYPE Type)
         m_RSP->DllConfig(hParent);
         break;
     case PLUGIN_TYPE_GFX:
-        if (m_Gfx == NULL || m_Gfx->DllConfig == NULL) { break; }
+        if (m_Gfx == nullptr || m_Gfx->DllConfig == nullptr) { break; }
         if (!m_Gfx->Initialized())
         {
-            if (!m_Gfx->Initiate(NULL, m_MainWindow))
+            if (!m_Gfx->Initiate(nullptr, m_MainWindow))
             {
                 break;
             }
@@ -394,10 +394,10 @@ void CPlugins::ConfigPlugin(void* hParent, PLUGIN_TYPE Type)
         m_Gfx->DllConfig(hParent);
         break;
     case PLUGIN_TYPE_AUDIO:
-        if (m_Audio == NULL || m_Audio->DllConfig == NULL) { break; }
+        if (m_Audio == nullptr || m_Audio->DllConfig == nullptr) { break; }
         if (!m_Audio->Initialized())
         {
-            if (!m_Audio->Initiate(NULL, m_MainWindow))
+            if (!m_Audio->Initiate(nullptr, m_MainWindow))
             {
                 break;
             }
@@ -409,10 +409,10 @@ void CPlugins::ConfigPlugin(void* hParent, PLUGIN_TYPE Type)
         }
         break;
     case PLUGIN_TYPE_CONTROLLER:
-        if (m_Control == NULL || m_Control->DllConfig == NULL) { break; }
+        if (m_Control == nullptr || m_Control->DllConfig == nullptr) { break; }
         if (!m_Control->Initialized())
         {
-            if (!m_Control->Initiate(NULL, m_MainWindow))
+            if (!m_Control->Initiate(nullptr, m_MainWindow))
             {
                 break;
             }

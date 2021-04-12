@@ -28,13 +28,13 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     m_EndEmulation(false),
     m_SaveUsing((SAVE_CHIP_TYPE)g_Settings->LoadDword(Game_SaveChip)),
     m_Plugins(Plugins),
-    m_SyncCPU(NULL),
-    m_SyncPlugins(NULL),
+    m_SyncCPU(nullptr),
+    m_SyncPlugins(nullptr),
     m_MMU_VM(SavesReadOnly),
     //m_Cheats(m_MMU_VM),
     m_TLB(this),
     m_Reg(this, this),
-    m_Recomp(NULL),
+    m_Recomp(nullptr),
     m_InReset(false),
     m_NextTimer(0),
     m_SystemTimer(m_Reg, m_NextTimer),
@@ -47,7 +47,7 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     m_TLBLoadAddress(0),
     m_TLBStoreAddress(0),
     m_SyncCount(0),
-    m_thread(NULL),
+    m_thread(nullptr),
     m_hPauseEvent(true),
     m_SyncSystem(SyncSystem),
     m_Random(randomizer_seed)
@@ -94,14 +94,14 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
         }
         if (CpuType == CPU_SyncCores)
         {
-            if (g_Plugins->SyncWindow() == NULL)
+            if (g_Plugins->SyncWindow() == nullptr)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
             g_Notify->DisplayMessage(5, "Copy Plugins");
             g_Plugins->CopyPlugins(g_Settings->LoadStringVal(Directory_PluginSync));
             m_SyncPlugins = new CPlugins(Directory_PluginSync, true);
-            m_SyncPlugins->SetRenderWindows(g_Plugins->SyncWindow(), NULL);
+            m_SyncPlugins->SetRenderWindows(g_Plugins->SyncWindow(), nullptr);
             m_SyncCPU = new CN64System(m_SyncPlugins, randomizer_seed, true, true);
         }
 
@@ -132,23 +132,23 @@ CN64System::~CN64System()
     {
         m_SyncCPU->CpuStopped();
         delete m_SyncCPU;
-        m_SyncCPU = NULL;
+        m_SyncCPU = nullptr;
     }
     if (m_Recomp)
     {
         delete m_Recomp;
-        m_Recomp = NULL;
+        m_Recomp = nullptr;
     }
     if (m_SyncPlugins)
     {
         delete m_SyncPlugins;
-        m_SyncPlugins = NULL;
+        m_SyncPlugins = nullptr;
     }
-    if (m_thread != NULL)
+    if (m_thread != nullptr)
     {
         WriteTrace(TraceN64System, TraceDebug, "Deleting thread object");
         delete m_thread;
-        m_thread = NULL;
+        m_thread = nullptr;
     }
 }
 
@@ -158,7 +158,7 @@ void CN64System::ExternalEvent(SystemEvent action)
 
     if (action == SysEvent_LoadMachineState &&
         !g_Settings->LoadBool(GameRunning_CPU_Running) &&
-        g_BaseSystem != NULL &&
+        g_BaseSystem != nullptr &&
         g_BaseSystem->LoadState())
     {
         WriteTrace(TraceN64System, TraceDebug, "ignore event, manualy loaded save");
@@ -167,7 +167,7 @@ void CN64System::ExternalEvent(SystemEvent action)
 
     if (action == SysEvent_SaveMachineState &&
         !g_Settings->LoadBool(GameRunning_CPU_Running) &&
-        g_BaseSystem != NULL &&
+        g_BaseSystem != nullptr &&
         g_BaseSystem->SaveState())
     {
         WriteTrace(TraceN64System, TraceDebug, "ignore event, manualy saved event");
@@ -315,7 +315,7 @@ bool CN64System::LoadFileImage(const char * FileLoc)
     g_Settings->SaveBool(GameRunning_LoadingInProgress, true);
 
     //Try to load the passed N64 rom
-    if (g_Rom == NULL)
+    if (g_Rom == nullptr)
     {
         WriteTrace(TraceN64System, TraceDebug, "Allocating global rom object");
         g_Rom = new CN64Rom();
@@ -331,7 +331,7 @@ bool CN64System::LoadFileImage(const char * FileLoc)
         if (g_Rom->IsLoadedRomDDIPL())
         {
             //64DD IPL
-            if (g_DDRom == NULL)
+            if (g_DDRom == nullptr)
             {
                 g_DDRom = new CN64Rom();
             }
@@ -346,7 +346,7 @@ bool CN64System::LoadFileImage(const char * FileLoc)
 
         g_System->RefreshGameSettings();
 
-        if (g_Disk == NULL || !g_Rom->IsLoadedRomDDIPL())
+        if (g_Disk == nullptr || !g_Rom->IsLoadedRomDDIPL())
         {
             g_Settings->SaveString(Game_File, FileLoc);
         }
@@ -358,7 +358,7 @@ bool CN64System::LoadFileImage(const char * FileLoc)
         WriteTrace(TraceN64System, TraceError, "LoadN64Image failed (\"%s\")", FileLoc);
         g_Notify->DisplayError(g_Rom->GetError());
         delete g_Rom;
-        g_Rom = NULL;
+        g_Rom = nullptr;
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
         WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
         return false;
@@ -381,7 +381,7 @@ bool CN64System::LoadFileImageIPL(const char * FileLoc)
     g_Settings->SaveBool(GameRunning_LoadingInProgress, true);
 
     //Try to load the passed N64 DDrom
-    if (g_DDRom == NULL)
+    if (g_DDRom == nullptr)
     {
         WriteTrace(TraceN64System, TraceDebug, "Allocating global DDrom object");
         g_DDRom = new CN64Rom();
@@ -400,7 +400,7 @@ bool CN64System::LoadFileImageIPL(const char * FileLoc)
             WriteTrace(TraceN64System, TraceError, "LoadN64ImageIPL failed (\"%s\")", FileLoc);
             g_Notify->DisplayError(g_DDRom->GetError());
             delete g_DDRom;
-            g_DDRom = NULL;
+            g_DDRom = nullptr;
             g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
             return false;
         }
@@ -422,7 +422,7 @@ bool CN64System::LoadFileImageIPL(const char * FileLoc)
         WriteTrace(TraceN64System, TraceError, "LoadN64ImageIPL failed (\"%s\")", FileLoc);
         g_Notify->DisplayError(g_DDRom->GetError());
         delete g_DDRom;
-        g_DDRom = NULL;
+        g_DDRom = nullptr;
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
         return false;
     }
@@ -443,7 +443,7 @@ bool CN64System::LoadDiskImage(const char * FileLoc, const bool Expansion)
     g_Settings->SaveBool(GameRunning_LoadingInProgress, true);
 
     //Try to load the passed N64 Disk
-    if (g_Disk == NULL)
+    if (g_Disk == nullptr)
     {
         WriteTrace(TraceN64System, TraceDebug, "Allocating global Disk object");
         g_Disk = new CN64Disk();
@@ -469,7 +469,7 @@ bool CN64System::LoadDiskImage(const char * FileLoc, const bool Expansion)
         WriteTrace(TraceN64System, TraceError, "LoadDiskImage failed (\"%s\")", FileLoc);
         g_Notify->DisplayError(g_Disk->GetError());
         delete g_Disk;
-        g_Disk = NULL;
+        g_Disk = nullptr;
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
         return false;
     }
@@ -479,17 +479,17 @@ bool CN64System::LoadDiskImage(const char * FileLoc, const bool Expansion)
 bool CN64System::RunFileImage(const char * FileLoc)
 {
     //Uninitialize g_Disk and g_DDRom to prevent exception when ending emulation of a regular ROM after playing 64DD content previously.
-    if (g_Disk != NULL)
+    if (g_Disk != nullptr)
     {
         g_Disk->UnallocateDiskImage();
         delete g_Disk;
-        g_Disk = NULL;
+        g_Disk = nullptr;
     }
-    if (g_DDRom != NULL)
+    if (g_DDRom != nullptr)
     {
         g_DDRom->UnallocateRomImage();
         delete g_DDRom;
-        g_DDRom = NULL;
+        g_DDRom = nullptr;
     }
     if (!LoadFileImage(FileLoc))
     {
@@ -553,7 +553,7 @@ bool CN64System::RunDiskComboImage(const char * FileLoc, const char * FileLocDis
 void CN64System::RunLoadedImage(void)
 {
     WriteTrace(TraceN64System, TraceDebug, "Start");
-    g_BaseSystem = new CN64System(g_Plugins, (uint32_t)time(NULL), false, false);
+    g_BaseSystem = new CN64System(g_Plugins, (uint32_t)time(nullptr), false, false);
     if (g_BaseSystem)
     {
         if (g_Settings->LoadBool(Setting_AutoStart) != 0)
@@ -577,7 +577,7 @@ void CN64System::CloseSystem()
     {
         g_BaseSystem->CloseCpu();
         delete g_BaseSystem;
-        g_BaseSystem = NULL;
+        g_BaseSystem = nullptr;
     }
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }
@@ -585,7 +585,7 @@ void CN64System::CloseSystem()
 bool CN64System::SelectAndLoadFileImageIPL(Country country, bool combo)
 {
     delete g_DDRom;
-    g_DDRom = NULL;
+    g_DDRom = nullptr;
 
     SettingID IPLROMPathSetting;
     LanguageStringID IPLROMError;
@@ -668,7 +668,7 @@ bool CN64System::EmulationStarting(CThread * thread)
             g_BaseSystem->StartEmulation2(false);
             WriteTrace(TraceN64System, TraceDebug, "Game Done");
             //PLACE TO ADD 64DD SAVING CODE
-            if (g_Disk != NULL)
+            if (g_Disk != nullptr)
             {
                 g_Disk->SaveDiskImage();
                 //g_Notify->DisplayError(g_Disk->GetError());
@@ -886,7 +886,7 @@ void CN64System::Reset(bool bInitReg, bool ClearMenory)
         m_Plugins->RomClosed();
         m_Plugins->RomOpened();
     }
-    if (m_SyncCPU && m_SyncCPU->m_MMU_VM.Rdram() != NULL)
+    if (m_SyncCPU && m_SyncCPU->m_MMU_VM.Rdram() != nullptr)
     {
         m_SyncCPU->Reset(bInitReg, ClearMenory);
     }
@@ -934,7 +934,7 @@ bool CN64System::SetActiveSystem(bool bActive)
         g_Plugins = m_Plugins;
         g_TLBLoadAddress = &m_TLBLoadAddress;
         g_TLBStoreAddress = &m_TLBStoreAddress;
-        g_RecompPos = m_Recomp ? m_Recomp->RecompPos() : NULL;
+        g_RecompPos = m_Recomp ? m_Recomp->RecompPos() : nullptr;
         R4300iOp::m_TestTimer = m_TestTimer;
         R4300iOp::m_NextInstruction = m_NextInstruction;
         R4300iOp::m_JumpToLocation = m_JumpToLocation;
@@ -944,21 +944,21 @@ bool CN64System::SetActiveSystem(bool bActive)
     {
         if (this == g_BaseSystem)
         {
-            g_System = NULL;
-            g_SyncSystem = NULL;
-            g_Recompiler = NULL;
-            g_MMU = NULL;
-            g_TLB = NULL;
-            g_Reg = NULL;
-            g_Audio = NULL;
-            g_SystemTimer = NULL;
-            g_TransVaddr = NULL;
-            g_SystemEvents = NULL;
-            g_NextTimer = NULL;
+            g_System = nullptr;
+            g_SyncSystem = nullptr;
+            g_Recompiler = nullptr;
+            g_MMU = nullptr;
+            g_TLB = nullptr;
+            g_Reg = nullptr;
+            g_Audio = nullptr;
+            g_SystemTimer = nullptr;
+            g_TransVaddr = nullptr;
+            g_SystemEvents = nullptr;
+            g_NextTimer = nullptr;
             g_Plugins = m_Plugins;
-            g_TLBLoadAddress = NULL;
-            g_TLBStoreAddress = NULL;
-            g_Random = NULL;
+            g_TLBLoadAddress = nullptr;
+            g_TLBStoreAddress = nullptr;
+            g_Random = nullptr;
         }
     }
 
@@ -1737,7 +1737,7 @@ bool CN64System::SaveState()
     {
         ZipFile.Delete();
         zipFile file = zipOpen(ZipFile, 0);
-        zipOpenNewFileInZip(file, SaveFile.GetNameExtension().c_str(), NULL, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
+        zipOpenNewFileInZip(file, SaveFile.GetNameExtension().c_str(), nullptr, nullptr, 0, nullptr, 0, nullptr, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
         zipWriteInFileInZip(file, &SaveID_0, sizeof(SaveID_0));
         zipWriteInFileInZip(file, &RdramSize, sizeof(uint32_t));
         if (g_Settings->LoadBool(Setting_EnableDisk) && g_Disk)
@@ -1774,7 +1774,7 @@ bool CN64System::SaveState()
         zipWriteInFileInZip(file, m_MMU_VM.Imem(), 0x1000);
         zipCloseFileInZip(file);
 
-        zipOpenNewFileInZip(file, ExtraInfo.GetNameExtension().c_str(), NULL, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
+        zipOpenNewFileInZip(file, ExtraInfo.GetNameExtension().c_str(), nullptr, nullptr, 0, nullptr, 0, nullptr, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
 
         //Extra Info v2
         zipWriteInFileInZip(file, &SaveID_2, sizeof(SaveID_2));
@@ -1789,7 +1789,7 @@ bool CN64System::SaveState()
 
         zipClose(file, "");
 #if defined(ANDROID)
-        utimes((const char *)ZipFile, NULL);
+        utimes((const char *)ZipFile, nullptr);
 #endif
     }
     else
@@ -1860,7 +1860,7 @@ bool CN64System::SaveState()
     }
     m_Reg.MI_INTR_REG = MiInterReg;
     g_Settings->SaveString(GameRunning_InstantSaveFile, "");
-    g_Settings->SaveDword(Game_LastSaveTime, (uint32_t)time(NULL));
+    g_Settings->SaveDword(Game_LastSaveTime, (uint32_t)time(nullptr));
     if (g_Settings->LoadDword(Setting_AutoZipInstantSave))
     {
         SaveFile = ZipFile;
@@ -1961,7 +1961,7 @@ bool CN64System::LoadState(const char * FileName)
         }
         unzFile file = unzOpen(SaveFile);
         int port = -1;
-        if (file != NULL)
+        if (file != nullptr)
         {
             port = unzGoToFirstFile(file);
         }
@@ -1970,7 +1970,7 @@ bool CN64System::LoadState(const char * FileName)
             unz_file_info info;
             char zname[132];
 
-            unzGetCurrentFileInfo(file, &info, zname, 128, NULL, 0, NULL, 0);
+            unzGetCurrentFileInfo(file, &info, zname, 128, nullptr, 0, nullptr, 0);
             if (unzLocateFile(file, zname, 1) != UNZ_OK)
             {
                 unzClose(file);
@@ -2383,7 +2383,7 @@ void CN64System::RefreshScreen()
     {
         WriteTrace(TraceGFXPlugin, TraceDebug, "UpdateScreen Starting");
         g_Plugins->Gfx()->UpdateScreen();
-		if (g_Debugger != NULL && HaveDebugger())
+		if (g_Debugger != nullptr && HaveDebugger())
 		{
 			g_Debugger->FrameDrawn();
 		}

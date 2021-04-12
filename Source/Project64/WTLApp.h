@@ -33,7 +33,7 @@ class CPj64Module :
 public:
     CPj64Module(void)
     {
-        Init(NULL, GetModuleHandle(NULL));
+        Init(nullptr, GetModuleHandle(nullptr));
     }
     virtual ~CPj64Module(void)
     {

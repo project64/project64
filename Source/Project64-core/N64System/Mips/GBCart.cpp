@@ -26,7 +26,7 @@ static void read_gb_cart_normal(struct gb_cart* gb_cart, uint16_t address, uint8
     else if ((address >= 0xA000) && (address <= 0xBFFF))
     {
         //Read from RAM
-        if (gb_cart->ram == NULL)
+        if (gb_cart->ram == nullptr)
         {
             //No RAM to write to
             return;
@@ -50,7 +50,7 @@ static void write_gb_cart_normal(struct gb_cart* gb_cart, uint16_t address, cons
     if ((address >= 0xA000) && (address <= 0xBFFF))
     {
         //Write to RAM
-        if (gb_cart->ram == NULL)
+        if (gb_cart->ram == nullptr)
         {
             //No RAM to write to
             return;
@@ -85,7 +85,7 @@ static void read_gb_cart_mbc1(struct gb_cart* gb_cart, uint16_t address, uint8_t
     }
     else if ((address >= 0xA000) && (address <= 0xBFFF)) //Read from RAM
     {
-        if (gb_cart->ram != NULL)
+        if (gb_cart->ram != nullptr)
         {
             offset = (address - 0xA000) + (gb_cart->ram_bank * 0x2000);
             if (offset < gb_cart->ram_size)
@@ -151,7 +151,7 @@ static void write_gb_cart_mbc1(struct gb_cart* gb_cart, uint16_t address, const 
     }
     else if ((address >= 0xA000) && (address <= 0xBFFF)) // Write to RAM
     {
-        if (gb_cart->ram != NULL)
+        if (gb_cart->ram != nullptr)
         {
             offset = (address - 0xA000) + (gb_cart->ram_bank * 0x2000);
             if (offset < gb_cart->ram_size)
@@ -180,7 +180,7 @@ static void read_gb_cart_mbc2(struct gb_cart* gb_cart, uint16_t address, uint8_t
     }
     else if ((address >= 0xA000) && (address <= 0xC000)) //Upper Bounds of memory map
     {
-        if (gb_cart->ram != NULL)
+        if (gb_cart->ram != nullptr)
         {
             offset = (address - 0xA000) + (gb_cart->ram_bank * 0x2000);
             if (offset < gb_cart->ram_size)
@@ -209,14 +209,14 @@ static void write_gb_cart_mbc2(struct gb_cart* gb_cart, uint16_t address, const 
     }
     else if ((address >= 0x4000) && (address <= 0x5FFF)) // RAM bank select
     {
-        if (gb_cart->ram != NULL)
+        if (gb_cart->ram != nullptr)
         {
             gb_cart->ram_bank = data[0] & 0x07;
         }
     }
     else if ((address >= 0xA000) && (address <= 0xBFFF)) // Write to RAM
     {
-        if (gb_cart->ram != NULL)
+        if (gb_cart->ram != nullptr)
         {
             offset = (address - 0xA000) + (gb_cart->ram_bank * 0x2000);
             if (offset < gb_cart->ram_size)
@@ -229,7 +229,7 @@ static void write_gb_cart_mbc2(struct gb_cart* gb_cart, uint16_t address, const 
 
 void memoryUpdateMBC3Clock(struct gb_cart* gb_cart)
 {
-    time_t now = time(NULL);
+    time_t now = time(nullptr);
     time_t diff = now - gb_cart->rtc_last_time;
     if (diff > 0) {
         // update the clock according to the last update time
@@ -284,7 +284,7 @@ static void read_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, uint8_t
     }
     else if ((address >= 0xA000) && (address <= 0xC000)) //Upper Bounds of memory map
     {
-        if (gb_cart->ram != NULL)
+        if (gb_cart->ram != nullptr)
         {
             if (gb_cart->ram_bank <= 0x03)
             {
@@ -333,7 +333,7 @@ static void write_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, const 
     }
     else if ((address >= 0x4000) && (address <= 0x5FFF)) // RAM/Clock bank select
     {
-        if (gb_cart->ram != NULL)
+        if (gb_cart->ram != nullptr)
         {
             bank = data[0];
             if (gb_cart->has_rtc && (bank >= 0x8 && bank <= 0xc))
@@ -363,7 +363,7 @@ static void write_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, const 
     }
     else if ((address >= 0xA000) && (address <= 0xBFFF)) // Write to RAM
     {
-        if (gb_cart->ram != NULL)
+        if (gb_cart->ram != nullptr)
         {
             if (gb_cart->ram_bank <= 0x03)
             {
@@ -410,7 +410,7 @@ static void read_gb_cart_mbc5(struct gb_cart * gb_cart, uint16_t address, uint8_
     }
     else if ((address >= 0xA000) && (address <= 0xC000)) //Upper bounds of memory map
     {
-        if (gb_cart->ram != NULL)
+        if (gb_cart->ram != nullptr)
         {
             offset = (address - 0xA000) + (gb_cart->ram_bank * 0x2000);
             if (offset < gb_cart->ram_size)
@@ -442,14 +442,14 @@ static void write_gb_cart_mbc5(struct gb_cart* gb_cart, uint16_t address, const 
     }
     else if ((address >= 0x4000) && (address <= 0x5FFF)) // RAM bank select
     {
-        if (gb_cart->ram != NULL)
+        if (gb_cart->ram != nullptr)
         {
             gb_cart->ram_bank = data[0] & 0x0f;
         }
     }
     else if ((address >= 0xA000) && (address <= 0xBFFF)) // Write to RAM
     {
-        if (gb_cart->ram != NULL)
+        if (gb_cart->ram != nullptr)
         {
             offset = (address - 0xA000) + (gb_cart->ram_bank * 0x2000);
             if (offset < gb_cart->ram_size)
@@ -489,7 +489,7 @@ static void read_gb_cart_pocket_cam(struct gb_cart * gb_cart, uint16_t address, 
     else if ((address >= 0xA000) && (address <= 0xC000)) //Upper bounds of memory map
     {
         //Check to see if where currently in register mode
-        if (gb_cart->ram != NULL)
+        if (gb_cart->ram != nullptr)
         {
             if (gb_cart->ram_bank & 0x10)
             {
@@ -526,7 +526,7 @@ static void write_gb_cart_pocket_cam(struct gb_cart* gb_cart, uint16_t address, 
     }
     else if ((address >= 0x4000) && (address <= 0x4FFF)) // Camera Register & RAM bank select
     {
-        if (gb_cart->ram != NULL)
+        if (gb_cart->ram != nullptr)
         {
             if (data[0] & 0x10)
             {
@@ -542,7 +542,7 @@ static void write_gb_cart_pocket_cam(struct gb_cart* gb_cart, uint16_t address, 
     }
     else if ((address >= 0xA000) && (address <= 0xBFFF)) // Write to RAM
     {
-        if (gb_cart->ram != NULL)
+        if (gb_cart->ram != nullptr)
         {
             if (gb_cart->ram_bank & 0x10)
             {
@@ -675,7 +675,7 @@ static const struct parsed_cart_type* parse_cart_type(uint8_t cart_type)
     case 0xFD: return &GB_CART_TYPES[26];
     case 0xFE: return &GB_CART_TYPES[27];
     case 0xFF: return &GB_CART_TYPES[28];
-    default:   return NULL;
+    default:   return nullptr;
     }
 }
 
@@ -709,7 +709,7 @@ bool GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
     /* get and parse cart type */
     uint8_t cart_type = rom.get()[0x147];
     type = parse_cart_type(cart_type);
-    if (type == NULL)
+    if (type == nullptr)
     {
         return false;
     }
@@ -730,7 +730,7 @@ bool GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
         if (ram_size != 0)
         {
             ram.reset(new uint8_t[ram_size]);
-            if (ram.get() == NULL)
+            if (ram.get() == nullptr)
             {
                 return false;
             }
@@ -802,10 +802,10 @@ void GBCart::save_gb_cart(struct gb_cart* gb_cart)
 
 void GBCart::release_gb_cart(struct gb_cart* gb_cart)
 {
-    if (gb_cart->rom != NULL)
+    if (gb_cart->rom != nullptr)
         delete gb_cart->rom;
 
-    if (gb_cart->ram != NULL)
+    if (gb_cart->ram != nullptr)
         delete gb_cart->ram;
 
     memset(gb_cart, 0, sizeof(*gb_cart));

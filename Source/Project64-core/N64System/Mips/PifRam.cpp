@@ -118,7 +118,7 @@ void CPifRam::PifRamRead()
     }
     if (g_Plugins->Control()->ReadController)
     {
-        g_Plugins->Control()->ReadController(-1, NULL);
+        g_Plugins->Control()->ReadController(-1, nullptr);
     }
 }
 
@@ -240,7 +240,7 @@ void CPifRam::PifRamWrite()
     m_PifRam[0x3F] = 0;
     if (g_Plugins->Control()->ControllerCommand)
     {
-        g_Plugins->Control()->ControllerCommand(-1, NULL);
+        g_Plugins->Control()->ControllerCommand(-1, nullptr);
     }
 }
 

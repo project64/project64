@@ -91,5 +91,5 @@ void CSettingTypeApplicationIndex::Save(uint32_t Index, const char * Value)
 void CSettingTypeApplicationIndex::Delete(uint32_t Index)
 {
     m_KeyNameIdex = stdstr_f("%s %d", m_KeyName.c_str(), Index);
-    CSettingTypeApplication::Save(0, (const char *)NULL);
+    CSettingTypeApplication::Save(0, (const char *)nullptr);
 }

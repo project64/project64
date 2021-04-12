@@ -9,7 +9,7 @@
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/N64RomClass.h>
 
-CFile * CLogging::m_hLogFile = NULL;
+CFile * CLogging::m_hLogFile = nullptr;
 
 void CLogging::Log_LW(uint32_t PC, uint32_t VAddr)
 {
@@ -578,7 +578,7 @@ void CLogging::LogMessage(const char * Message, ...)
     {
         return;
     }
-    if (m_hLogFile == NULL)
+    if (m_hLogFile == nullptr)
     {
         return;
     }
@@ -599,7 +599,7 @@ void CLogging::StartLog(void)
         StopLog();
         return;
     }
-    if (m_hLogFile != NULL)
+    if (m_hLogFile != nullptr)
     {
         return;
     }
@@ -613,6 +613,6 @@ void CLogging::StopLog(void)
     if (m_hLogFile)
     {
         delete m_hLogFile;
-        m_hLogFile = NULL;
+        m_hLogFile = nullptr;
     }
 }

@@ -78,7 +78,7 @@ public:
     void Save();
     void ParseErrorAlert(char* message, int lineNumber);
 
-    void AddSymbol(int type, uint32_t address, const char* name, const char* description = NULL);
+    void AddSymbol(int type, uint32_t address, const char* name, const char* description = nullptr);
     void Reset();
     int  GetCount();
     bool GetSymbolById(int id, CSymbol* symbol);
@@ -100,8 +100,8 @@ public:
         m_Id(0),
         m_Type(SYM_INVALID),
         m_Address(0),
-        m_Name(NULL),
-        m_Description(NULL)
+        m_Name(nullptr),
+        m_Description(nullptr)
     {
     }
 
@@ -109,15 +109,15 @@ public:
         m_Id(id),
         m_Type(type),
         m_Address(address),
-        m_Name(NULL),
-        m_Description(NULL)
+        m_Name(nullptr),
+        m_Description(nullptr)
     {
-        if (name != NULL)
+        if (name != nullptr)
         {
             m_Name = _strdup(name);
         }
 
-        if (description != NULL)
+        if (description != nullptr)
         {
             m_Description = _strdup(description);
         }
@@ -127,21 +127,21 @@ public:
         m_Id(symbol.m_Id),
         m_Type(symbol.m_Type),
         m_Address(symbol.m_Address),
-        m_Name(NULL),
-        m_Description(NULL)
+        m_Name(nullptr),
+        m_Description(nullptr)
     {
-        m_Name = symbol.m_Name ? _strdup(symbol.m_Name) : NULL;
-        m_Description = symbol.m_Description ? _strdup(symbol.m_Description) : NULL;
+        m_Name = symbol.m_Name ? _strdup(symbol.m_Name) : nullptr;
+        m_Description = symbol.m_Description ? _strdup(symbol.m_Description) : nullptr;
     }
 
     CSymbol& operator= (const CSymbol& symbol)
     {
-        if (m_Name != NULL)
+        if (m_Name != nullptr)
         {
             free(m_Name);
         }
 
-        if (m_Description != NULL)
+        if (m_Description != nullptr)
         {
             free(m_Description);
         }
@@ -149,19 +149,19 @@ public:
         m_Id = symbol.m_Id;
         m_Type = symbol.m_Type;
         m_Address = symbol.m_Address;
-        m_Name = symbol.m_Name ? _strdup(symbol.m_Name) : NULL;
-        m_Description = symbol.m_Description ? _strdup(symbol.m_Description) : NULL;
+        m_Name = symbol.m_Name ? _strdup(symbol.m_Name) : nullptr;
+        m_Description = symbol.m_Description ? _strdup(symbol.m_Description) : nullptr;
         return *this;
     }
 
     ~CSymbol()
     {
-        if (m_Name != NULL)
+        if (m_Name != nullptr)
         {
             free(m_Name);
         }
 
-        if (m_Description != NULL)
+        if (m_Description != nullptr)
         {
             free(m_Description);
         }

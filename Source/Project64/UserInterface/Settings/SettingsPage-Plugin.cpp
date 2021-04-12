@@ -48,7 +48,7 @@ void COptionPluginPage::AddPlugins(int ListId, SettingID Type, PLUGIN_TYPE Plugi
     for (int i = 0, n = m_PluginList.GetPluginCount(); i < n; i++)
     {
         const CPluginList::PLUGIN * Plugin = m_PluginList.GetPluginInfo(i);
-        if (Plugin == NULL)
+        if (Plugin == nullptr)
         {
             continue;
         }
@@ -66,7 +66,7 @@ void COptionPluginPage::AddPlugins(int ListId, SettingID Type, PLUGIN_TYPE Plugi
 
 void COptionPluginPage::ShowAboutButton(int id)
 {
-    CModifiedComboBox * ComboBox = NULL;
+    CModifiedComboBox * ComboBox = nullptr;
     for (ComboBoxList::iterator cb_iter = m_ComboBoxList.begin(); cb_iter != m_ComboBoxList.end(); cb_iter++)
     {
         if ((int)(cb_iter->second->GetMenu()) != id)
@@ -76,7 +76,7 @@ void COptionPluginPage::ShowAboutButton(int id)
         ComboBox = cb_iter->second;
         break;
     }
-    if (ComboBox == NULL)
+    if (ComboBox == nullptr)
     {
         return;
     }
@@ -87,13 +87,13 @@ void COptionPluginPage::ShowAboutButton(int id)
     }
 
     const CPluginList::PLUGIN ** PluginPtr = (const CPluginList::PLUGIN **)ComboBox->GetItemDataPtr(index);
-    if (PluginPtr == NULL)
+    if (PluginPtr == nullptr)
     {
         return;
     }
 
     const CPluginList::PLUGIN * Plugin = *PluginPtr;
-    if (Plugin == NULL)
+    if (Plugin == nullptr)
     {
         return;
     }
@@ -102,7 +102,7 @@ void COptionPluginPage::ShowAboutButton(int id)
     UINT LastErrorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
     HMODULE hLib = LoadLibrary(stdstr((const char *)(Plugin->FullPath)).ToUTF16().c_str());
     SetErrorMode(LastErrorMode);
-    if (hLib == NULL)
+    if (hLib == nullptr)
     {
         return;
     }
@@ -119,7 +119,7 @@ void COptionPluginPage::ShowAboutButton(int id)
 
 void COptionPluginPage::PluginItemChanged(int id, int AboutID, bool bSetChanged)
 {
-    CModifiedComboBox * ComboBox = NULL;
+    CModifiedComboBox * ComboBox = nullptr;
     for (ComboBoxList::iterator cb_iter = m_ComboBoxList.begin(); cb_iter != m_ComboBoxList.end(); cb_iter++)
     {
         if ((int)(cb_iter->second->GetMenu()) != id)
@@ -129,7 +129,7 @@ void COptionPluginPage::PluginItemChanged(int id, int AboutID, bool bSetChanged)
         ComboBox = cb_iter->second;
         break;
     }
-    if (ComboBox == NULL)
+    if (ComboBox == nullptr)
     {
         return;
     }
@@ -168,12 +168,12 @@ void COptionPluginPage::UpdatePageSettings(void)
         for (int i = 0, n = ComboBox->GetCount(); i < n; i++)
         {
             const CPluginList::PLUGIN ** PluginPtr = (const CPluginList::PLUGIN **)ComboBox->GetItemDataPtr(i);
-            if (PluginPtr == NULL)
+            if (PluginPtr == nullptr)
             {
                 continue;
             }
             const CPluginList::PLUGIN * Plugin = *PluginPtr;
-            if (Plugin == NULL)
+            if (Plugin == nullptr)
             {
                 continue;
             }
@@ -230,7 +230,7 @@ void COptionPluginPage::ApplyComboBoxes(void)
             }
 
             const CPluginList::PLUGIN ** PluginPtr = (const CPluginList::PLUGIN **)ComboBox->GetItemDataPtr(index);
-            if (PluginPtr == NULL)
+            if (PluginPtr == nullptr)
             {
                 return;
             }
@@ -259,7 +259,7 @@ bool COptionPluginPage::ResetComboBox(CModifiedComboBox & ComboBox, SettingID Ty
     for (int i = 0, n = ComboBox.GetCount(); i < n; i++)
     {
         const CPluginList::PLUGIN ** PluginPtr = (const CPluginList::PLUGIN **)ComboBox.GetItemDataPtr(i);
-        if (PluginPtr == NULL)
+        if (PluginPtr == nullptr)
         {
             continue;
         }

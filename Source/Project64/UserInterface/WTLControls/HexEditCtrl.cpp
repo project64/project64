@@ -16,14 +16,14 @@ CHexEditCtrl::CHexEditCtrl(void) :
     m_bHaveCaret(false),
     m_bShowHotAddress(false),
     m_HotAddress(0),
-    m_Font(NULL),
-    m_BackBMP(NULL),
-    m_BackDC(NULL),
+    m_Font(nullptr),
+    m_BackBMP(nullptr),
+    m_BackDC(nullptr),
     m_CharWidth(0),
     m_CharHeight(0),
     m_FocusedColumn(HX_COL_NONE),
-    m_hCursorIBeam(NULL),
-    m_hCursorDefault(NULL),
+    m_hCursorIBeam(nullptr),
+    m_hCursorDefault(nullptr),
     m_DragScrollDelta(0),
     m_AddressColumnRect({0}),
     m_HexDataColumnRect({0}),
@@ -32,8 +32,8 @@ CHexEditCtrl::CHexEditCtrl(void) :
     m_bLButtonDown(false),
     m_bMouseDragging(false),
     m_bLayoutChanged(false),
-    m_OldBytes(NULL),
-    m_NewBytes(NULL),
+    m_OldBytes(nullptr),
+    m_NewBytes(nullptr),
     m_NumBytesPerGroup(4),
     m_NumByteGroupsPerRow(0),
     m_NumVisibleRows(0),
@@ -43,7 +43,7 @@ CHexEditCtrl::CHexEditCtrl(void) :
     m_bHaveRealSel(false)
 {
     WNDCLASS wc;
-    if (!GetClassInfo(GetModuleHandle(NULL), _T("HexEditCtrl"), &wc))
+    if (!GetClassInfo(GetModuleHandle(nullptr), _T("HexEditCtrl"), &wc))
     {
         GetWndClassInfo().m_wc.lpfnWndProc = m_pfnSuperWindowProc;
         GetWndClassInfo().Register(&m_pfnSuperWindowProc);
@@ -75,7 +75,7 @@ bool CHexEditCtrl::HaveFont(HDC hdc, const char* name)
 
 BOOL CHexEditCtrl::Attach(HWND hWnd)
 {
-    if (m_hWnd != NULL)
+    if (m_hWnd != nullptr)
     {
         return FALSE;
     }
@@ -100,8 +100,8 @@ BOOL CHexEditCtrl::Attach(HWND hWnd)
     hOldBMP = (HBITMAP)SelectObject(m_BackDC, m_BackBMP);
     DeleteObject(hOldBMP);
 
-    m_hCursorIBeam = LoadCursor(NULL, IDC_IBEAM);
-    m_hCursorDefault = LoadCursor(NULL, IDC_ARROW);
+    m_hCursorIBeam = LoadCursor(nullptr, IDC_IBEAM);
+    m_hCursorDefault = LoadCursor(nullptr, IDC_ARROW);
 
     float dpiScale = ::GetDeviceCaps(hdc, LOGPIXELSX) / 96.0f;
 
@@ -140,8 +140,8 @@ BOOL CHexEditCtrl::Attach(HWND hWnd)
     FillRect(m_BackDC, clrRc, hbrush);
     DeleteObject(hbrush);
 
-    SetTimer(TIMER_ID_AUTO_REFRESH, 20, NULL);
-    SetTimer(TIMER_ID_DRAG_SCROLL, 50, NULL);
+    SetTimer(TIMER_ID_AUTO_REFRESH, 20, nullptr);
+    SetTimer(TIMER_ID_DRAG_SCROLL, 50, nullptr);
     
     ReleaseDC(hdc);
 
@@ -150,42 +150,42 @@ BOOL CHexEditCtrl::Attach(HWND hWnd)
 
 HWND CHexEditCtrl::Detach(void)
 {
-    if (m_hWnd == NULL)
+    if (m_hWnd == nullptr)
     {
-        return NULL;
+        return nullptr;
     }
 
     KillTimer(TIMER_ID_AUTO_REFRESH);
     KillTimer(TIMER_ID_DRAG_SCROLL);
 
-    if (m_BackBMP != NULL)
+    if (m_BackBMP != nullptr)
     {
         DeleteObject(m_BackBMP);
-        m_BackBMP = NULL;
+        m_BackBMP = nullptr;
     }
     
-    if (m_BackDC != NULL)
+    if (m_BackDC != nullptr)
     {
         DeleteObject(m_BackDC);
-        m_BackDC = NULL;
+        m_BackDC = nullptr;
     }
     
-    if (m_Font != NULL)
+    if (m_Font != nullptr)
     {
         DeleteObject(m_Font);
-        m_Font = NULL;
+        m_Font = nullptr;
     }
 
-    if (m_NewBytes != NULL)
+    if (m_NewBytes != nullptr)
     {
         free(m_NewBytes);
-        m_NewBytes = NULL;
+        m_NewBytes = nullptr;
     }
 
-    if (m_OldBytes != NULL)
+    if (m_OldBytes != nullptr)
     {
         free(m_OldBytes);
-        m_OldBytes = NULL;
+        m_OldBytes = nullptr;
     }
 
     return CWindowImpl<CHexEditCtrl>::UnsubclassWindow();
@@ -241,7 +241,7 @@ void CHexEditCtrl::Draw(void)
             memmove(&m_OldBytes[shiftDstIndex], &m_OldBytes[shiftSrcIndex], numBytesToShift * sizeof(HXBYTEINFO));
             memmove(&m_NewBytes[shiftDstIndex], &m_NewBytes[shiftSrcIndex], numBytesToShift * sizeof(HXBYTEINFO));
 
-            ScrollDC(m_BackDC, 0, -rowDelta * m_CharHeight, &rcScrollArea, &rcScrollArea, NULL, NULL);
+            ScrollDC(m_BackDC, 0, -rowDelta * m_CharHeight, &rcScrollArea, &rcScrollArea, nullptr, nullptr);
             InvalidateRect(&rcScrollArea, false);
         }
 
@@ -1020,7 +1020,7 @@ BOOL CHexEditCtrl::OnMouseWheel(UINT /*nFlags*/, short zDelta, CPoint /*pt*/)
 
 void CHexEditCtrl::OnSetFocus(CWindow /*wndOld*/)
 {
-    ::CreateCaret(m_hWnd, NULL, 2, m_CharHeight);
+    ::CreateCaret(m_hWnd, nullptr, 2, m_CharHeight);
     m_bHaveCaret = true;
     UpdateCaretUI(false);
 }

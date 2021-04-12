@@ -15,13 +15,13 @@ void WelcomeScreen::SelectGameDir(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
     stdstr InitialDir = g_Settings->LoadStringVal(RomList_GameDir);
     std::wstring wTitle = L"Select Game Directory";
     bi.hwndOwner = m_hWnd;
-    bi.pidlRoot = NULL;
+    bi.pidlRoot = nullptr;
     bi.pszDisplayName = Buffer;
     bi.lpszTitle = wTitle.c_str();
     bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS;
     bi.lpfn = (BFFCALLBACK)SelectDirCallBack;
     bi.lParam = (DWORD)InitialDir.c_str();
-    if ((pidl = SHBrowseForFolder(&bi)) != NULL)
+    if ((pidl = SHBrowseForFolder(&bi)) != nullptr)
     {
         if (SHGetPathFromIDList(pidl, Directory))
         {

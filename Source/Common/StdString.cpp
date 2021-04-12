@@ -71,7 +71,7 @@ void stdstr::ArgFormat(const char * strFormat, va_list & args)
     size_t nlen = _vscprintf(strFormat, args) + 1;
     char * buffer = (char *)alloca(nlen * sizeof(char));
     buffer[nlen - 1] = 0;
-    if (buffer != NULL)
+    if (buffer != nullptr)
     {
         vsprintf(buffer, strFormat, args);
         *this = buffer;
@@ -200,22 +200,22 @@ stdstr & stdstr::FromUTF16(const wchar_t * UTF16Source, bool * bSuccess)
 {
     bool bConverted = false;
 
-    if (UTF16Source == NULL)
+    if (UTF16Source == nullptr)
     {
         *this = "";
         bConverted = true;
     }
     else if (wcslen(UTF16Source) > 0)
     {
-        uint32_t nNeeded = WideCharToMultiByte(CODEPAGE_UTF8, 0, UTF16Source, -1, NULL, 0, NULL, NULL);
+        uint32_t nNeeded = WideCharToMultiByte(CODEPAGE_UTF8, 0, UTF16Source, -1, nullptr, 0, nullptr, nullptr);
         if (nNeeded > 0)
         {
             char * buf = (char *)alloca(nNeeded + 1);
-            if (buf != NULL)
+            if (buf != nullptr)
             {
                 memset(buf, 0, nNeeded + 1);
 
-                nNeeded = WideCharToMultiByte(CODEPAGE_UTF8, 0, UTF16Source, -1, buf, nNeeded, NULL, NULL);
+                nNeeded = WideCharToMultiByte(CODEPAGE_UTF8, 0, UTF16Source, -1, buf, nNeeded, nullptr, nullptr);
                 if (nNeeded)
                 {
                     *this = buf;
@@ -236,11 +236,11 @@ std::wstring stdstr::ToUTF16(unsigned int CodePage, bool * bSuccess) const
     bool bConverted = false;
     std::wstring res;
 
-    DWORD nNeeded = MultiByteToWideChar(CodePage, 0, this->c_str(), (int)this->length(), NULL, 0);
+    DWORD nNeeded = MultiByteToWideChar(CodePage, 0, this->c_str(), (int)this->length(), nullptr, 0);
     if (nNeeded > 0)
     {
         wchar_t * buf = (wchar_t *)alloca((nNeeded + 1) * sizeof(wchar_t));
-        if (buf != NULL)
+        if (buf != nullptr)
         {
             memset(buf, 0, (nNeeded + 1) * sizeof(wchar_t));
 

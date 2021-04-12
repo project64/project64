@@ -6,7 +6,7 @@ class CSettingTypeTempBool :
     public CSettingType
 {
 public:
-    CSettingTypeTempBool(bool initialValue, const char * name = NULL);
+    CSettingTypeTempBool(bool initialValue, const char * name = nullptr);
     ~CSettingTypeTempBool();
 
     bool IndexBasedSetting(void) const { return false; }

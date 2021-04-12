@@ -34,7 +34,7 @@ CDebugMemoryView::CDebugMemoryView(CDebuggerUI * debugger) :
     CDebugDialog<CDebugMemoryView>(debugger),
     CDialogResize<CDebugMemoryView>(),
     CToolTipDialog<CDebugMemoryView>(),
-    m_Breakpoints(NULL),
+    m_Breakpoints(nullptr),
     m_WriteTargetColorStride(0),
     m_ReadTargetColorStride(0),
     m_SymbolColorStride(0),
@@ -54,7 +54,7 @@ CDebugMemoryView::~CDebugMemoryView()
 
 void CDebugMemoryView::ShowAddress(uint32_t address, bool bVirtual)
 {
-    if (m_hWnd == NULL)
+    if (m_hWnd == nullptr)
     {
         return;
     }
@@ -268,7 +268,7 @@ void CDebugMemoryView::SetupJumpMenu(bool bVirtual)
     {
         jump_item_t* item = &JumpItems[i];
 
-        if (item->caption == NULL)
+        if (item->caption == nullptr)
         {
             break;
         }
@@ -283,7 +283,7 @@ int CDebugMemoryView::GetJumpItemIndex(uint32_t address, bool bVirtual)
 {
     for (int nItem = 0;; nItem++)
     {
-        if (JumpItems[nItem].caption == NULL)
+        if (JumpItems[nItem].caption == nullptr)
         {
             break;
         }
@@ -606,7 +606,7 @@ LRESULT CDebugMemoryView::OnHxCtrlKeyPressed(LPNMHDR lpNMHDR)
 
 LRESULT CDebugMemoryView::OnHxSetNibble(LPNMHDR lpNMHDR)
 {
-    if (g_MMU == NULL)
+    if (g_MMU == nullptr)
     {
         return FALSE;
     }
@@ -645,7 +645,7 @@ LRESULT CDebugMemoryView::OnHxSetByte(LPNMHDR lpNMHDR)
 {
     NMHXSETBYTE* nmsb = reinterpret_cast<NMHXSETBYTE*>(lpNMHDR);
 
-    if (g_MMU == NULL)
+    if (g_MMU == nullptr)
     {
         return FALSE;
     }
@@ -706,7 +706,7 @@ LRESULT CDebugMemoryView::OnHxSelectionChanged(LPNMHDR /*lpNMHDR*/)
 
     uint32_t romAddr, offset;
     DMALOGENTRY* entry = m_Debugger->DMALog()->GetEntryByRamAddress(startAddress, &romAddr, &offset);
-    m_StatusBar.SetText(MEMSB_DMAINFO, entry != NULL ? L"Have DMA" : L"");
+    m_StatusBar.SetText(MEMSB_DMAINFO, entry != nullptr ? L"Have DMA" : L"");
 
     return FALSE;
 }
@@ -773,7 +773,7 @@ LRESULT CDebugMemoryView::OnHxGetByteInfo(LPNMHDR lpNMHDR)
         newByte->bkColor = BKCOLOR_DEFAULT;
         newByte->color = COLOR_DEFAULT;
 
-        if (m_bVirtualMemory && (g_MMU == NULL || !g_MMU->TranslateVaddr(address, paddress)))
+        if (m_bVirtualMemory && (g_MMU == nullptr || !g_MMU->TranslateVaddr(address, paddress)))
         {
             newByte->bValid = false;
             continue;
@@ -843,7 +843,7 @@ LRESULT CDebugMemoryView::OnHxGetByteInfo(LPNMHDR lpNMHDR)
             newByte->bkColor = m_SymbolColorPhase ? BKCOLOR_SYMBOL0 : BKCOLOR_SYMBOL1;
         }
 
-        if (g_Rom != NULL && paddress >= 0x10000000 && paddress < 0x10000000 + g_Rom->GetRomSize())
+        if (g_Rom != nullptr && paddress >= 0x10000000 && paddress < 0x10000000 + g_Rom->GetRomSize())
         {
             newByte->color = COLOR_READONLY;
         }
@@ -889,7 +889,7 @@ LRESULT CDebugMemoryView::OnHxRightClick(LPNMHDR lpNMHDR)
 
     m_ContextMenuAddress = nmrc->address;
 
-    HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_MEM_BP_POPUP));
+    HMENU hMenu = LoadMenu(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDR_MEM_BP_POPUP));
     HMENU hPopupMenu = GetSubMenu(hMenu, 0);
 
     bool bHaveLock = m_Breakpoints->MemLockExists(m_ContextMenuAddress, 1);
@@ -912,7 +912,7 @@ LRESULT CDebugMemoryView::OnHxRightClick(LPNMHDR lpNMHDR)
 
     POINT mouse;
     GetCursorPos(&mouse);
-    TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, mouse.x, mouse.y, 0, m_hWnd, NULL);
+    TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, mouse.x, mouse.y, 0, m_hWnd, nullptr);
     DestroyMenu(hMenu);
     return FALSE;
 }
@@ -960,7 +960,7 @@ LRESULT CDebugMemoryView::OnHxPaste(LPNMHDR lpNMHDR)
 {
     NMHXPASTE *nmp = reinterpret_cast<NMHXPASTE*>(lpNMHDR);
 
-    if (g_MMU == NULL)
+    if (g_MMU == nullptr)
     {
         return FALSE;
     }
@@ -972,9 +972,9 @@ LRESULT CDebugMemoryView::OnHxPaste(LPNMHDR lpNMHDR)
 
     if (nmp->column == HX_COL_HEXDATA)
     {
-        char* data = NULL;
+        char* data = nullptr;
         // TODO: move this function to some utility class
-        int length = CMemoryScanner::ParseHexString(NULL, text);
+        int length = CMemoryScanner::ParseHexString(nullptr, text);
 
         if (length != 0)
         {
@@ -1187,7 +1187,7 @@ LRESULT CDebugMemoryView::OnStatusBarClick(LPNMHDR lpNMHDR)
         uint32_t romAddress, blockOffset;
         DMALOGENTRY* entry = m_Debugger->DMALog()->GetEntryByRamAddress(startAddress, &romAddress, &blockOffset);
 
-        if (entry == NULL)
+        if (entry == nullptr)
         {
             return FALSE;
         }

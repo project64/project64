@@ -197,7 +197,7 @@ extern "C" int WINAPI DllMain(HINSTANCE hinst, DWORD fdwReason, LPVOID /*lpReser
     else if (fdwReason == DLL_PROCESS_DETACH)
     {
         delete g_InputPlugin;
-        g_InputPlugin = NULL;
+        g_InputPlugin = nullptr;
     }
     return TRUE;
 }

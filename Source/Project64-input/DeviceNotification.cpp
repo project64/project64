@@ -4,7 +4,7 @@
 
 DeviceNotification::DeviceNotification()
 {
-    Create(NULL);
+    Create(nullptr);
 }
 
 DeviceNotification::~DeviceNotification()

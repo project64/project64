@@ -3042,7 +3042,7 @@ void R4300iOp::UnknownOpcode()
 
         strcat(Message, "\n\nDo you wish to enter the debugger ?");
 
-        response = MessageBox(NULL, Message, GS(MSG_MSGBOX_ERROR_TITLE), MB_YESNO | MB_ICONERROR);
+        response = MessageBox(nullptr, Message, GS(MSG_MSGBOX_ERROR_TITLE), MB_YESNO | MB_ICONERROR);
         if (response == IDYES)
         {
             Enter_R4300i_Commands_Window();

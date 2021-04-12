@@ -80,11 +80,11 @@ PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB;
 PFNGLBINDFRAMEBUFFEREXTPROC glBindFramebufferEXT;
 PFNGLFRAMEBUFFERTEXTURE2DEXTPROC glFramebufferTexture2DEXT;
 PFNGLGENFRAMEBUFFERSEXTPROC glGenFramebuffersEXT;
-PFNGLBINDRENDERBUFFEREXTPROC glBindRenderbufferEXT = NULL;
-PFNGLDELETERENDERBUFFERSEXTPROC glDeleteRenderbuffersEXT = NULL;
-PFNGLGENRENDERBUFFERSEXTPROC glGenRenderbuffersEXT = NULL;
-PFNGLRENDERBUFFERSTORAGEEXTPROC glRenderbufferStorageEXT = NULL;
-PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT = NULL;
+PFNGLBINDRENDERBUFFEREXTPROC glBindRenderbufferEXT = nullptr;
+PFNGLDELETERENDERBUFFERSEXTPROC glDeleteRenderbuffersEXT = nullptr;
+PFNGLGENRENDERBUFFERSEXTPROC glGenRenderbuffersEXT = nullptr;
+PFNGLRENDERBUFFERSTORAGEEXTPROC glRenderbufferStorageEXT = nullptr;
+PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT = nullptr;
 PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
 PFNGLDELETEFRAMEBUFFERSEXTPROC glDeleteFramebuffersEXT;
 
@@ -148,9 +148,9 @@ int lfb_color_fmt;
 float invtex[2];
 
 #ifdef _WIN32
-static HDC hDC = NULL;
-static HGLRC hGLRC = NULL;
-static HWND hToolBar = NULL;
+static HDC hDC = nullptr;
+static HGLRC hGLRC = nullptr;
+static HWND hToolBar = nullptr;
 #endif // _WIN32
 static unsigned long fullscreen;
 
@@ -239,7 +239,7 @@ void gfxColorMask(bool rgb, bool a)
 int isExtensionSupported(const char *extension)
 {
     return 0;
-    const GLubyte *extensions = NULL;
+    const GLubyte *extensions = nullptr;
     const GLubyte *start;
     GLubyte *where, *terminator;
 
@@ -270,7 +270,7 @@ int isExtensionSupported(const char *extension)
 #ifdef _WIN32
 int isWglExtensionSupported(const char *extension)
 {
-    const GLubyte *extensions = NULL;
+    const GLubyte *extensions = nullptr;
     const GLubyte *start;
     GLubyte *where, *terminator;
 
@@ -397,7 +397,7 @@ bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_loc
     glGenRenderbuffersEXT = (PFNGLGENRENDERBUFFERSEXTPROC)wglGetProcAddress("glGenRenderbuffersEXT");
     glRenderbufferStorageEXT = (PFNGLRENDERBUFFERSTORAGEEXTPROC)wglGetProcAddress("glRenderbufferStorageEXT");
     glFramebufferRenderbufferEXT = (PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC)wglGetProcAddress("glFramebufferRenderbufferEXT");
-    use_fbo = g_settings->wrpFBO() && (glFramebufferRenderbufferEXT != NULL);
+    use_fbo = g_settings->wrpFBO() && (glFramebufferRenderbufferEXT != nullptr);
 #else
     use_fbo = g_settings->wrpFBO();
 #endif // _WIN32
@@ -543,9 +543,9 @@ bool gfxSstWinClose()
 #ifdef _WIN32
     if (hGLRC)
     {
-        wglMakeCurrent(hDC, NULL);
+        wglMakeCurrent(hDC, nullptr);
         wglDeleteContext(hGLRC);
-        hGLRC = NULL;
+        hGLRC = nullptr;
     }
     ExitFullScreen();
 #endif
@@ -759,7 +759,7 @@ void gfxTextureBufferExt(gfxChipID_t tmu, uint32_t startAddress, gfxLOD_t lodmin
         add_tex(fbs[nb_fb].texid);
         glBindTexture(GL_TEXTURE_2D, fbs[nb_fb].texid);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, g_width, g_height, 0,
-            GL_RGB, GL_UNSIGNED_BYTE, NULL);
+            GL_RGB, GL_UNSIGNED_BYTE, nullptr);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
@@ -1002,7 +1002,7 @@ void updateTexture()
 void gfxRenderBuffer(gfxBuffer_t buffer)
 {
 #ifdef _WIN32
-    static HANDLE region = NULL;
+    static HANDLE region = nullptr;
     int realWidth = pBufferWidth, realHeight = pBufferHeight;
 #endif // _WIN32
     WriteTrace(TraceGlitch, TraceDebug, "buffer: %d", buffer);

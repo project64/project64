@@ -33,32 +33,32 @@ CLogSettings::CLogSettings()
 	m_RefCount += 1;
 	if (m_RefCount == 1)
 	{
-		g_Settings->RegisterChangeCB(Logging_GenerateLog, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogRDRamRegisters, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogSPRegisters, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogDPCRegisters, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogDPSRegisters, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogMIPSInterface, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogVideoInterface, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogAudioInterface, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogPerInterface, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogRDRAMInterface, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogSerialInterface, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogPRDMAOperations, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogPRDirectMemLoads, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogPRDMAMemLoads, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogPRDirectMemStores, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogPRDMAMemStores, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogControllerPak, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogCP0changes, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogCP0reads, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogTLB, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogExceptions, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_NoInterrupts, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogCache, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogRomHeader, NULL, RefreshSettings);
-		g_Settings->RegisterChangeCB(Logging_LogUnknown, NULL, RefreshSettings);
-		RefreshSettings(NULL);
+		g_Settings->RegisterChangeCB(Logging_GenerateLog, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogRDRamRegisters, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogSPRegisters, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogDPCRegisters, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogDPSRegisters, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogMIPSInterface, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogVideoInterface, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogAudioInterface, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogPerInterface, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogRDRAMInterface, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogSerialInterface, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogPRDMAOperations, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogPRDirectMemLoads, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogPRDMAMemLoads, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogPRDirectMemStores, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogPRDMAMemStores, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogControllerPak, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogCP0changes, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogCP0reads, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogTLB, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogExceptions, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_NoInterrupts, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogCache, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogRomHeader, nullptr, RefreshSettings);
+		g_Settings->RegisterChangeCB(Logging_LogUnknown, nullptr, RefreshSettings);
+		RefreshSettings(nullptr);
 	}
 }
 
@@ -67,31 +67,31 @@ CLogSettings::~CLogSettings()
 	m_RefCount -= 1;
 	if (m_RefCount == 0)
 	{
-		g_Settings->UnregisterChangeCB(Logging_GenerateLog, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogRDRamRegisters, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogSPRegisters, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogDPCRegisters, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogDPSRegisters, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogMIPSInterface, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogVideoInterface, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogAudioInterface, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogPerInterface, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogRDRAMInterface, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogSerialInterface, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogPRDMAOperations, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogPRDirectMemLoads, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogPRDMAMemLoads, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogPRDirectMemStores, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogPRDMAMemStores, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogControllerPak, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogCP0changes, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogCP0reads, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogTLB, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogExceptions, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_NoInterrupts, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogCache, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogRomHeader, NULL, RefreshSettings);
-		g_Settings->UnregisterChangeCB(Logging_LogUnknown, NULL, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_GenerateLog, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogRDRamRegisters, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogSPRegisters, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogDPCRegisters, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogDPSRegisters, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogMIPSInterface, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogVideoInterface, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogAudioInterface, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogPerInterface, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogRDRAMInterface, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogSerialInterface, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogPRDMAOperations, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogPRDirectMemLoads, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogPRDMAMemLoads, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogPRDirectMemStores, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogPRDMAMemStores, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogControllerPak, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogCP0changes, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogCP0reads, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogTLB, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogExceptions, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_NoInterrupts, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogCache, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogRomHeader, nullptr, RefreshSettings);
+		g_Settings->UnregisterChangeCB(Logging_LogUnknown, nullptr, RefreshSettings);
 	}
 }
 

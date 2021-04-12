@@ -19,9 +19,9 @@ CDirectInput::CDirectInput(HINSTANCE hinst) :
         typedef HRESULT(WINAPI *tylpGetDIHandle)(HINSTANCE, DWORD, REFIID, LPVOID*, LPUNKNOWN);
         tylpGetDIHandle lpGetDIHandle = (tylpGetDIHandle)GetProcAddress(m_hDirectInputDLL, "DirectInput8Create");
 
-        if (lpGetDIHandle != NULL)
+        if (lpGetDIHandle != nullptr)
         {
-            HRESULT hr = lpGetDIHandle(m_hinst, DIRECTINPUT_VERSION, IID_IDirectInput8, (LPVOID*)&m_pDIHandle, NULL);
+            HRESULT hr = lpGetDIHandle(m_hinst, DIRECTINPUT_VERSION, IID_IDirectInput8, (LPVOID*)&m_pDIHandle, nullptr);
             if (FAILED(hr))
             {
                 return;
@@ -41,7 +41,7 @@ CDirectInput::~CDirectInput()
         if (itr->second.didHandle != nullptr)
         {
             itr->second.didHandle->Release();
-            itr->second.didHandle = NULL;
+            itr->second.didHandle = nullptr;
         }
     }
 }
@@ -118,13 +118,13 @@ BOOL CDirectInput::EnumMakeDeviceList(LPCDIDEVICEINSTANCE lpddi)
     Device.dwDevType = lpddi->dwDevType;
     Device.ProductName = stdstr().FromUTF16(lpddi->tszProductName);
     Device.InstanceName = stdstr().FromUTF16(lpddi->tszInstanceName);
-    HRESULT hResult = m_pDIHandle->CreateDevice(lpddi->guidInstance, &Device.didHandle, NULL);
+    HRESULT hResult = m_pDIHandle->CreateDevice(lpddi->guidInstance, &Device.didHandle, nullptr);
     if (!SUCCEEDED(hResult))
     {
         return DIENUM_CONTINUE;
     }
 
-    LPCDIDATAFORMAT ppDiDataFormat = NULL;
+    LPCDIDATAFORMAT ppDiDataFormat = nullptr;
     if (DeviceType == DI8DEVTYPE_KEYBOARD)
     {
         ppDiDataFormat = &c_dfDIKeyboard;

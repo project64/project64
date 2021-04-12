@@ -429,7 +429,7 @@ TxMemBuf::TxMemBuf()
 {
     int i;
     for (i = 0; i < 2; i++) {
-        _tex[i] = NULL;
+        _tex[i] = nullptr;
         _size[i] = 0;
     }
 }
@@ -464,14 +464,14 @@ void TxMemBuf::shutdown()
     int i;
     for (i = 0; i < 2; i++) {
         if (_tex[i]) free(_tex[i]);
-        _tex[i] = NULL;
+        _tex[i] = nullptr;
         _size[i] = 0;
     }
 }
 
 uint8* TxMemBuf::get(unsigned int num)
 {
-    return ((num < 2) ? _tex[num] : NULL);
+    return ((num < 2) ? _tex[num] : nullptr);
 }
 
 uint32 TxMemBuf::size_of(unsigned int num)

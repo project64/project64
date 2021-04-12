@@ -232,7 +232,7 @@ void uc9_fmlight()
     uint32_t a = -1024 + (rdp.cmd1 & 0xFFF);
     WriteTrace(TraceRDP, TraceDebug, "uc9:fmlight matrix: %d, num: %d, dmem: %04lx", mid, rdp.num_lights, a);
 
-    M44 *m = NULL;
+    M44 *m = nullptr;
     switch (mid) {
     case 4:
         m = (M44*)rdp.model;
@@ -244,7 +244,7 @@ void uc9_fmlight()
         m = (M44*)rdp.combined;
         break;
     default:
-        m = NULL; /* allowing segfaults to debug in case of PJGlide64 bugs */
+        m = nullptr; /* allowing segfaults to debug in case of PJGlide64 bugs */
         WriteTrace(TraceRDP, TraceWarning, "Invalid FM light matrix ID %u.", mid);
         break;
     }
@@ -365,8 +365,8 @@ void uc9_mtxtrnsp()
 void uc9_mtxcat()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc9:mtxcat ");
-    M44 *s = NULL;
-    M44 *t = NULL;
+    M44 *s = nullptr;
+    M44 *t = nullptr;
     uint32_t S = rdp.cmd0 & 0xF;
     uint32_t T = (rdp.cmd1 >> 16) & 0xF;
     uint32_t D = rdp.cmd1 & 0xF;
@@ -385,7 +385,7 @@ void uc9_mtxcat()
         break;
     default:
         WriteTrace(TraceRDP, TraceWarning, "Invalid mutex S-coordinate:  %u", S);
-        s = NULL; /* intentional segfault to alert for bugs in PJGlide64 (cxd4) */
+        s = nullptr; /* intentional segfault to alert for bugs in PJGlide64 (cxd4) */
         break;
     }
     switch (T) {
@@ -403,7 +403,7 @@ void uc9_mtxcat()
         break;
     default:
         WriteTrace(TraceRDP, TraceWarning, "Invalid mutex T-coordinate:  %u", T);
-        t = NULL; /* intentional segfault to alert for bugs in PJGlide64 (cxd4) */
+        t = nullptr; /* intentional segfault to alert for bugs in PJGlide64 (cxd4) */
         break;
     }
     DECLAREALIGN16VAR(m[4][4]);

@@ -7,8 +7,8 @@ CJumpInfo::CJumpInfo()
 	TargetPC = (uint32_t)-1;
 	JumpPC = (uint32_t)-1;
 	BranchLabel = "";
-	LinkLocation = NULL;
-	LinkLocation2 = NULL;
+	LinkLocation = nullptr;
+	LinkLocation2 = nullptr;
 	FallThrough = false;
 	PermLoop = false;
 	DoneDelaySlot = false;
@@ -19,7 +19,7 @@ CJumpInfo::CJumpInfo()
 
 bool CCodeSection::IsAllParentLoops(CCodeSection * Parent, bool IgnoreIfCompiled, uint32_t Test)
 {
-	if (IgnoreIfCompiled && Parent->CompiledLocation != NULL) { return true; }
+	if (IgnoreIfCompiled && Parent->CompiledLocation != nullptr) { return true; }
 	if (!InLoop) { return false; }
 	if (!Parent->InLoop) { return false; }
 	if (Parent->ParentSection.empty()) { return false; }
@@ -59,7 +59,7 @@ void CCodeSection::UnlinkParent( CCodeSection * Parent, bool AllowDelete, bool C
 	//	}
 	if (ContinueSection && Parent->ContinueSection == this)
 	{
-		Parent->ContinueSection = NULL;
+		Parent->ContinueSection = nullptr;
 	}
 	//	if (Parent->ContinueSection != Parent->JumpSection)
 	//	{
@@ -70,7 +70,7 @@ void CCodeSection::UnlinkParent( CCodeSection * Parent, bool AllowDelete, bool C
 	//	}
 	if (!ContinueSection && Parent->JumpSection == this)
 	{
-		Parent->JumpSection = NULL;
+		Parent->JumpSection = nullptr;
 	}
 	if (AllowDelete)
 	{
@@ -106,7 +106,7 @@ CCodeSection::~CCodeSection()
 		{
 			g_Notify->BreakPoint(__FILE__, __LINE__);
 		}
-		ContinueSection = NULL;
+		ContinueSection = nullptr;
 	}
 	if (JumpSection)
 	{
@@ -115,7 +115,7 @@ CCodeSection::~CCodeSection()
 		{
 			g_Notify->BreakPoint(__FILE__, __LINE__);
 		}
-		JumpSection = NULL;
+		JumpSection = nullptr;
 	}
 }
 

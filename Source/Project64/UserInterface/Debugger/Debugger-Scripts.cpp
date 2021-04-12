@@ -5,8 +5,8 @@
 CDebugScripts::CDebugScripts(CDebuggerUI* debugger) :
     CDebugDialog<CDebugScripts>(debugger),
     CToolTipDialog<CDebugScripts>(),
-    m_hQuitScriptDirWatchEvent(NULL),
-    m_hScriptDirWatchThread(NULL)
+    m_hQuitScriptDirWatchEvent(nullptr),
+    m_hScriptDirWatchThread(nullptr)
 {
 }
 
@@ -52,8 +52,8 @@ LRESULT CDebugScripts::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     LoadWindowPos();
     WindowCreated();
 
-    m_hQuitScriptDirWatchEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-    m_hScriptDirWatchThread = CreateThread(NULL, 0, ScriptDirWatchProc, (void*)this, 0, NULL);
+    m_hQuitScriptDirWatchEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
+    m_hScriptDirWatchThread = CreateThread(nullptr, 0, ScriptDirWatchProc, (void*)this, 0, nullptr);
     return 0;
 }
 
@@ -148,7 +148,7 @@ void CDebugScripts::ConsoleCopy()
 
 void CDebugScripts::ConsolePrint(const char* text)
 {
-    if (m_hWnd != NULL)
+    if (m_hWnd != nullptr)
     {
         SendMessage(WM_CONSOLE_PRINT, (WPARAM)text);
     }
@@ -156,7 +156,7 @@ void CDebugScripts::ConsolePrint(const char* text)
 
 void CDebugScripts::ConsoleClear()
 {
-    if (m_hWnd != NULL)
+    if (m_hWnd != nullptr)
     {
         SendMessage(WM_CONSOLE_CLEAR);
     }
@@ -164,7 +164,7 @@ void CDebugScripts::ConsoleClear()
 
 void CDebugScripts::RefreshList()
 {
-    if (m_hWnd != NULL)
+    if (m_hWnd != nullptr)
     {
         PostMessage(WM_REFRESH_LIST);
     }
@@ -195,7 +195,7 @@ LRESULT CDebugScripts::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*
         ConsoleCopy();
         break;
     case IDC_SCRIPTDIR_BTN:
-        ShellExecute(NULL, L"open", L"Scripts", NULL, NULL, SW_SHOW);
+        ShellExecute(nullptr, L"open", L"Scripts", nullptr, nullptr, SW_SHOW);
         break;
     }
     return FALSE;
@@ -253,7 +253,7 @@ LRESULT CDebugScripts::OnScriptListRClicked(NMHDR* pNMHDR)
 
     INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName.c_str());
 
-    HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_SCRIPT_POPUP));
+    HMENU hMenu = LoadMenu(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDR_SCRIPT_POPUP));
     HMENU hPopupMenu = GetSubMenu(hMenu, 0);
 
     if (state == STATE_STARTED || state == STATE_RUNNING)
@@ -267,7 +267,7 @@ LRESULT CDebugScripts::OnScriptListRClicked(NMHDR* pNMHDR)
     
     POINT mouse;
     GetCursorPos(&mouse);
-    TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, mouse.x, mouse.y, 0, m_hWnd, NULL);
+    TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN, mouse.x, mouse.y, 0, m_hWnd, nullptr);
     DestroyMenu(hMenu);
 
     return 0;
@@ -464,7 +464,7 @@ void CDebugScripts::ToggleSelected()
 
 void CDebugScripts::EditSelected()
 {
-    ShellExecute(NULL, L"edit", stdstr(m_SelectedScriptName).ToUTF16().c_str(), NULL, L"Scripts", SW_SHOWNORMAL);
+    ShellExecute(nullptr, L"edit", stdstr(m_SelectedScriptName).ToUTF16().c_str(), nullptr, L"Scripts", SW_SHOWNORMAL);
 }
 
 // Console input
@@ -498,7 +498,7 @@ LRESULT CEditEval::OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BO
     }
     else if (wParam == VK_RETURN)
     {
-        if (m_ScriptWindow == NULL)
+        if (m_ScriptWindow == nullptr)
         {
             bHandled = FALSE;
             return 0;

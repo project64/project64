@@ -46,7 +46,7 @@ class CProject64VideoWtlModule :
 public:
     CProject64VideoWtlModule(HINSTANCE hinst)
     {
-        Init(NULL, hinst);
+        Init(nullptr, hinst);
     }
     virtual ~CProject64VideoWtlModule(void)
     {
@@ -54,7 +54,7 @@ public:
     }
 };
 
-CProject64VideoWtlModule * WtlModule = NULL;
+CProject64VideoWtlModule * WtlModule = nullptr;
 
 void ConfigInit(void * hinst)
 {
@@ -66,7 +66,7 @@ void ConfigCleanup(void)
     if (WtlModule)
     {
         delete WtlModule;
-        WtlModule = NULL;
+        WtlModule = nullptr;
     }
 }
 
@@ -88,7 +88,7 @@ protected:
     UINT m_uToolFlags;
     // Construction
     CToolTipDialog(UINT uTTSTyle = TTS_NOPREFIX | TTS_BALLOON, UINT uToolFlags = TTF_IDISHWND | TTF_SUBCLASS)
-        : m_TT(NULL), m_uTTStyle(uTTSTyle),
+        : m_TT(nullptr), m_uTTStyle(uTTSTyle),
         m_uToolFlags(uToolFlags | TTF_SUBCLASS)
     {}
 
@@ -96,7 +96,7 @@ protected:
     {
         T* pT = (T*)this;
         ATLASSERT(::IsWindow(*pT));
-        m_TT.Create(*pT, NULL, NULL, m_uTTStyle);
+        m_TT.Create(*pT, nullptr, nullptr, m_uTTStyle);
         CToolInfo ToolInfo(pT->m_uToolFlags, *pT, 0, 0, MAKEINTRESOURCE(pT->IDD));
         m_TT.AddTool(&ToolInfo);
         ::EnumChildWindows(*pT, SetTool, (LPARAM)pT);
@@ -203,7 +203,7 @@ class COptionsSheet : public CPropertySheetImpl < COptionsSheet >
 {
 public:
     // Construction
-    COptionsSheet(_U_STRINGorID /*title*/ = (LPCTSTR)NULL, UINT /*uStartPage*/ = 0, HWND /*hWndParent*/ = NULL);
+    COptionsSheet(_U_STRINGorID /*title*/ = (LPCTSTR)nullptr, UINT /*uStartPage*/ = 0, HWND /*hWndParent*/ = nullptr);
     ~COptionsSheet();
 
     void UpdateTextureSettings(void);
@@ -819,7 +819,7 @@ COptionsSheet::COptionsSheet(_U_STRINGorID /*title*/, UINT /*uStartPage*/, HWND 
     m_pgBasicPage(new CConfigBasicPage(this)),
     m_pgEmuSettings(new CConfigEmuSettings),
     m_pgDebugSettings(new CDebugSettings),
-    m_pgTextureEnhancement(NULL),
+    m_pgTextureEnhancement(nullptr),
     m_hTextureEnhancement(0)
 {
     AddPage(&m_pgBasicPage->m_psp);
@@ -846,19 +846,19 @@ void COptionsSheet::UpdateTextureSettings(void)
 {
     if (g_settings->texenh_options())
     {
-        if (m_hTextureEnhancement == NULL)
+        if (m_hTextureEnhancement == nullptr)
         {
             m_pgTextureEnhancement = new CConfigTextureEnhancement;
             m_hTextureEnhancement = m_pgTextureEnhancement->Create();
             AddPage(m_hTextureEnhancement);
         }
     }
-    else if (m_hTextureEnhancement != NULL)
+    else if (m_hTextureEnhancement != nullptr)
     {
         RemovePage(m_hTextureEnhancement);
-        m_hTextureEnhancement = NULL;
+        m_hTextureEnhancement = nullptr;
         delete m_pgTextureEnhancement;
-        m_pgTextureEnhancement = NULL;
+        m_pgTextureEnhancement = nullptr;
     }
 }
 #endif

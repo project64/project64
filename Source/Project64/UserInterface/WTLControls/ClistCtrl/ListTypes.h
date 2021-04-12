@@ -129,7 +129,7 @@ public:
 		{
 			int nNewAllocSize = ( m_nAllocSize == 0 ) ? 1 : ( m_nSize * 2 );
 			T* aT = (T*)realloc( m_aT, nNewAllocSize * sizeof( T ) );
-			if ( aT == NULL )
+			if ( aT == nullptr )
 				return FALSE;
 			m_nAllocSize = nNewAllocSize;
 			m_aT = aT;

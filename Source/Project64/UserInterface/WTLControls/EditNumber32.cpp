@@ -92,7 +92,7 @@ void CEditNumber32::FormatClipboard()
         return;
     }
     hglb = GetClipboardData(CF_UNICODETEXT);
-    if (hglb != NULL)
+    if (hglb != nullptr)
     {
         lptstr = (LPTSTR)GlobalLock(hglb);
         for (unsigned int i = 0; i < wcslen(lptstr); i++)
@@ -111,7 +111,7 @@ void CEditNumber32::FormatClipboard()
             }
         }
         hglb = GlobalAlloc(GMEM_MOVEABLE, (wcslen(lptstr) + 1) * sizeof(TCHAR));
-        if (hglb == NULL)
+        if (hglb == nullptr)
         {
             CloseClipboard();
             return;
@@ -148,7 +148,7 @@ LRESULT CEditNumber32::OnPaste(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
     }
 
     HGLOBAL hglb = GetClipboardData(CF_UNICODETEXT);
-    if (hglb != NULL)
+    if (hglb != nullptr)
     {
         LPTSTR  lptstr = (LPTSTR)GlobalLock(hglb);
         // Check invalid hex string

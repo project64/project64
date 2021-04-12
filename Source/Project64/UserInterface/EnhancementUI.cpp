@@ -104,7 +104,7 @@ private:
 };
 
 CEnhancementUI::CEnhancementUI(void) :
-    m_hSelectedItem(NULL),
+    m_hSelectedItem(nullptr),
     m_bModal(false)
 {
 }
@@ -120,7 +120,7 @@ void CEnhancementUI::Display(HWND hParent, bool BlockExecution)
         m_bModal = true;
         DoModal(hParent);
     }
-    else if (m_hWnd != NULL)
+    else if (m_hWnd != nullptr)
     {
         SetFocus();
     }
@@ -140,7 +140,7 @@ LRESULT	CEnhancementUI::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
     m_TreeList.SetWindowLong(GWL_STYLE, TVS_CHECKBOXES | TVS_SHOWSELALWAYS | Style);
 
     HIMAGELIST hImageList = ImageList_Create(16, 16, ILC_COLOR | ILC_MASK, 40, 40);
-    HBITMAP hBmp = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_TRI_STATE));
+    HBITMAP hBmp = LoadBitmap(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDB_TRI_STATE));
     ImageList_AddMasked(hImageList, hBmp, RGB(255, 0, 255));
     DeleteObject(hBmp);
     m_TreeList.SetImageList(hImageList, TVSIL_STATE);
@@ -155,7 +155,7 @@ LRESULT	CEnhancementUI::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
     int32_t DlgHeight = rcDlg.Height();
     int32_t X = (((rcParent.Width()) - DlgWidth) / 2) + rcParent.left;
     int32_t Y = (((rcParent.Height()) - DlgHeight) / 2) + rcParent.top;
-    SetWindowPos(NULL, X, Y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+    SetWindowPos(nullptr, X, Y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
     
     RefreshList();
     ShowWindow(SW_SHOW);
@@ -260,17 +260,17 @@ LRESULT CEnhancementUI::OnEnhancementListRClicked(NMHDR* pNMHDR)
 
     POINT Mouse;
     GetCursorPos(&Mouse);
-    HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_ENHANCEMENT_MENU));
+    HMENU hMenu = LoadMenu(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDR_ENHANCEMENT_MENU));
     HMENU hPopupMenu = GetSubMenu(hMenu, 0);
 
-    if (m_hSelectedItem == NULL)
+    if (m_hSelectedItem == nullptr)
     {
         RemoveMenu(hPopupMenu, 3, MF_BYPOSITION);
         RemoveMenu(hPopupMenu, 2, MF_BYPOSITION);
         RemoveMenu(hPopupMenu, 1, MF_BYPOSITION);
     }
 
-    TrackPopupMenu(hPopupMenu, 0, Mouse.x, Mouse.y, 0, m_hWnd, NULL);
+    TrackPopupMenu(hPopupMenu, 0, Mouse.x, Mouse.y, 0, m_hWnd, nullptr);
     DestroyMenu(hMenu);
     return TRUE;
 }
@@ -371,7 +371,7 @@ void CEnhancementUI::AddCodeLayers(LPARAM Enhancement, const std::wstring & Name
 void CEnhancementUI::ChangeChildrenStatus(HTREEITEM hParent, bool Checked)
 {
     HTREEITEM hItem = m_TreeList.GetChildItem(hParent);;
-    if (hItem == NULL)
+    if (hItem == nullptr)
     {
         if (hParent == TVI_ROOT) { return; }
 
@@ -398,7 +398,7 @@ void CEnhancementUI::ChangeChildrenStatus(HTREEITEM hParent, bool Checked)
         return;
     }
     TV_CHECK_STATE state = TV_STATE_UNKNOWN;
-    while (hItem != NULL)
+    while (hItem != nullptr)
     {
         TV_CHECK_STATE ChildState = TV_GetCheckState(hItem);
         if ((ChildState != TV_STATE_CHECKED || !Checked) &&
@@ -419,14 +419,14 @@ void CEnhancementUI::ChangeChildrenStatus(HTREEITEM hParent, bool Checked)
 
 void CEnhancementUI::CheckParentStatus(HTREEITEM hParent)
 {
-    if (hParent == NULL)
+    if (hParent == nullptr)
     {
         return;
     }
     HTREEITEM hItem = m_TreeList.GetChildItem(hParent);
     TV_CHECK_STATE InitialState = TV_GetCheckState(hParent);
     TV_CHECK_STATE CurrentState = TV_GetCheckState(hItem);
-    while (hItem != NULL)
+    while (hItem != nullptr)
     {
         if (TV_GetCheckState(hItem) != CurrentState)
         {

@@ -4261,7 +4261,7 @@ void CX86Ops::SetJump32(uint32_t * Loc, uint32_t * JumpLoc)
 
 void CX86Ops::SetJump8(uint8_t * Loc, uint8_t * JumpLoc)
 {
-    if (Loc == NULL || JumpLoc == NULL)
+    if (Loc == nullptr || JumpLoc == nullptr)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
@@ -4289,7 +4289,7 @@ void * CX86Ops::GetAddressOf(int value, ...)
 void CX86Ops::AddCode8(uint8_t value)
 {
 #ifdef _DEBUG
-    if (g_RecompPos == NULL)
+    if (g_RecompPos == nullptr)
     {
         g_Notify->BreakPoint(__FILE__,__LINE__);
     }
@@ -4301,7 +4301,7 @@ void CX86Ops::AddCode8(uint8_t value)
 void CX86Ops::AddCode16(uint16_t value)
 {
 #ifdef _DEBUG
-    if (g_RecompPos == NULL)
+    if (g_RecompPos == nullptr)
     {
         g_Notify->BreakPoint(__FILE__,__LINE__);
     }
@@ -4313,7 +4313,7 @@ void CX86Ops::AddCode16(uint16_t value)
 void CX86Ops::AddCode32(uint32_t value)
 {
 #ifdef _DEBUG
-    if (g_RecompPos == NULL)
+    if (g_RecompPos == nullptr)
     {
         g_Notify->BreakPoint(__FILE__,__LINE__);
     }

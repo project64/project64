@@ -94,7 +94,7 @@ std::string CProjectSupport::GenerateMachineID(void)
     GetVolumePathName(SysPath, VolumePath, sizeof(VolumePath) / sizeof(VolumePath[0]));
 
     DWORD SerialNumber = 0;
-    GetVolumeInformation(VolumePath, NULL, NULL, &SerialNumber, NULL, NULL, NULL, NULL);
+    GetVolumeInformation(VolumePath, nullptr, NULL, &SerialNumber, nullptr, nullptr, nullptr, NULL);
 
     wchar_t MachineGuid[200] = { 0 };
     HKEY hKey;
@@ -154,7 +154,7 @@ bool CProjectSupport::PerformRequest(const wchar_t * Url, const std::string & Po
         L"text/*",
         nullptr
     };
-    HINTERNET hRequest = HttpOpenRequest(hConnect, L"POST", Url, NULL, NULL, lpszAcceptTypes, INTERNET_FLAG_SECURE | INTERNET_FLAG_NO_AUTO_REDIRECT | INTERNET_FLAG_PRAGMA_NOCACHE | INTERNET_FLAG_NO_CACHE_WRITE, (LPARAM)0);
+    HINTERNET hRequest = HttpOpenRequest(hConnect, L"POST", Url, nullptr, nullptr, lpszAcceptTypes, INTERNET_FLAG_SECURE | INTERNET_FLAG_NO_AUTO_REDIRECT | INTERNET_FLAG_PRAGMA_NOCACHE | INTERNET_FLAG_NO_CACHE_WRITE, (LPARAM)0);
     if (hRequest == nullptr)
     {
         InternetCloseHandle(hRequest);
@@ -169,17 +169,17 @@ bool CProjectSupport::PerformRequest(const wchar_t * Url, const std::string & Po
     }
 
     DWORD StatusCodeSize = sizeof(StatusCode);
-    if (!HttpQueryInfo(hRequest, HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER, &StatusCode, &StatusCodeSize, NULL))
+    if (!HttpQueryInfo(hRequest, HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER, &StatusCode, &StatusCodeSize, nullptr))
     {
         InternetCloseHandle(hRequest);
         return false;
     }
 
     DWORD dwSize = 0;
-    if (!HttpQueryInfo(hRequest, HTTP_QUERY_RAW_HEADERS_CRLF, NULL, &dwSize, NULL) && GetLastError() == ERROR_INSUFFICIENT_BUFFER)
+    if (!HttpQueryInfo(hRequest, HTTP_QUERY_RAW_HEADERS_CRLF, nullptr, &dwSize, nullptr) && GetLastError() == ERROR_INSUFFICIENT_BUFFER)
     {
         std::vector<uint8_t> RawHeaderData(dwSize);
-        if (!HttpQueryInfo(hRequest, HTTP_QUERY_RAW_HEADERS_CRLF, RawHeaderData.data(), &dwSize, NULL))
+        if (!HttpQueryInfo(hRequest, HTTP_QUERY_RAW_HEADERS_CRLF, RawHeaderData.data(), &dwSize, nullptr))
         {
             InternetCloseHandle(hRequest);
             return false;
@@ -229,7 +229,7 @@ void CProjectSupport::SaveSupportInfo(void)
 
     HKEY hKeyResults = 0;
     DWORD Disposition = 0;
-    long lResult = RegCreateKeyEx(HKEY_CURRENT_USER, L"SOFTWARE\\Project64", 0, L"", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKeyResults, &Disposition);
+    long lResult = RegCreateKeyEx(HKEY_CURRENT_USER, L"SOFTWARE\\Project64", 0, L"", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, nullptr, &hKeyResults, &Disposition);
     if (lResult == ERROR_SUCCESS)
     {
         RegSetValueEx(hKeyResults, L"user", 0, REG_BINARY, (BYTE *)OutData.data(), OutData.size());
@@ -247,20 +247,20 @@ void CProjectSupport::LoadSupportInfo(void)
     if (lResult == ERROR_SUCCESS)
     {
         DWORD DataSize = 0;
-        if (RegQueryValueEx(hKeyResults, L"user", NULL, NULL, NULL, &DataSize) == ERROR_SUCCESS)
+        if (RegQueryValueEx(hKeyResults, L"user", nullptr, nullptr, nullptr, &DataSize) == ERROR_SUCCESS)
         {
             InData.resize(DataSize);
-            if (RegQueryValueEx(hKeyResults, L"user", NULL, NULL, InData.data(), &DataSize) != ERROR_SUCCESS)
+            if (RegQueryValueEx(hKeyResults, L"user", nullptr, nullptr, InData.data(), &DataSize) != ERROR_SUCCESS)
             {
                 InData.clear();
             }
         }
     }
 
-    if (hKeyResults != NULL)
+    if (hKeyResults != nullptr)
     {
         RegCloseKey(hKeyResults);
-        NULL;
+        nullptr;
     }
 
     std::vector<uint8_t> OutData;

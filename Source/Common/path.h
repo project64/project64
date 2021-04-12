@@ -44,9 +44,9 @@ public:
     CPath(const std::string& strPath, const char * NameExten);
     CPath(const std::string& strPath, const std::string& NameExten);
 
-    CPath(DIR_CURRENT_DIRECTORY sdt, const char * NameExten = NULL);
+    CPath(DIR_CURRENT_DIRECTORY sdt, const char * NameExten = nullptr);
 #ifdef _WIN32
-    CPath(DIR_MODULE_DIRECTORY sdt, const char * NameExten = NULL);
+    CPath(DIR_MODULE_DIRECTORY sdt, const char * NameExten = nullptr);
     CPath(DIR_MODULE_FILE sdt);
 #endif
     virtual ~CPath();
@@ -77,9 +77,9 @@ public:
     std::string GetLastDirectory(void) const;
     void GetFullyQualified(std::string& rFullyQualified) const;
 #ifdef _WIN32
-	void GetComponents(std::string* pDrive = NULL, std::string* pDirectory = NULL, std::string* pName = NULL, std::string* pExtension = NULL) const;
+	void GetComponents(std::string* pDrive = nullptr, std::string* pDirectory = nullptr, std::string* pName = nullptr, std::string* pExtension = nullptr) const;
 #else
-    void GetComponents(std::string* pDirectory = NULL, std::string* pName = NULL, std::string* pExtension = NULL) const;
+    void GetComponents(std::string* pDirectory = nullptr, std::string* pName = nullptr, std::string* pExtension = nullptr) const;
 #endif
     // Get other state
     bool IsEmpty() const { return m_strPath.empty(); }
@@ -97,7 +97,7 @@ public:
     void SetExtension(const char * lpszExtension);
     void SetExtension(int iExtension);
     void AppendDirectory(const char * lpszSubDirectory);
-    void UpDirectory(std::string* pLastDirectory = NULL);
+    void UpDirectory(std::string* pLastDirectory = nullptr);
 #ifdef _WIN32
 	void SetComponents(const char * lpszDrive, const char * lpszDirectory, const char * lpszName, const char * lpszExtension);
 #else

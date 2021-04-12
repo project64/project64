@@ -50,20 +50,20 @@ void CAboutDlg::SetWindowDetais(int nIDDlgItem, int nAboveIDDlgItem, const wchar
 
     CRect rcWin;
     Wnd.GetWindowRect(&rcWin);
-    ::MapWindowPoints(NULL, m_hWnd, (LPPOINT)&rcWin, 2);
+    ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&rcWin, 2);
     if (hDC.DrawText(Text, -1, &rcWin, DT_LEFT | DT_CALCRECT | DT_WORDBREAK | DT_NOCLIP) > 0)
     {
-        Wnd.SetWindowPos(NULL, 0, 0, rcWin.Width(), rcWin.Height(), SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOOWNERZORDER);
+        Wnd.SetWindowPos(nullptr, 0, 0, rcWin.Width(), rcWin.Height(), SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOOWNERZORDER);
     }
     
     CWindow AboveWnd = GetDlgItem(nAboveIDDlgItem);
     AboveWnd.GetWindowRect(&rcWin);
-    ::MapWindowPoints(NULL, m_hWnd, (LPPOINT)&rcWin, 2);
+    ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&rcWin, 2);
     LONG Top = rcWin.bottom + (LONG)(8 * DPIScale);
 
     Wnd.GetWindowRect(&rcWin);
-    ::MapWindowPoints(NULL, m_hWnd, (LPPOINT)&rcWin, 2);
-    Wnd.SetWindowPos(NULL, rcWin.left, Top, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
+    ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&rcWin, 2);
+    Wnd.SetWindowPos(nullptr, rcWin.left, Top, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
 }
 
 

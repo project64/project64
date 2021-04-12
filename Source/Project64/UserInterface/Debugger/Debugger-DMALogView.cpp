@@ -38,7 +38,7 @@ bool CDebugDMALogView::FilterEntry(int dmaLogIndex)
 
 void CDebugDMALogView::RefreshList()
 {
-    if (g_Rom == NULL)
+    if (g_Rom == nullptr)
     {
         return;
     }
@@ -233,7 +233,7 @@ LRESULT CDebugDMALogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 
 void CDebugDMALogView::RefreshDMALogWindow(bool bReset)
 {
-    if (m_hWnd == NULL || m_DMAList.m_hWnd == NULL)
+    if (m_hWnd == nullptr || m_DMAList.m_hWnd == nullptr)
     {
         if (bReset)
         {
@@ -305,12 +305,12 @@ LRESULT CDebugDMALogView::OnRamAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, H
     char szRomAddr[9];
 
     m_DMARamEdit.GetWindowText(szRamAddr, 9);
-    uint32_t ramAddr = wcstoul(szRamAddr, NULL, 16);
+    uint32_t ramAddr = wcstoul(szRamAddr, nullptr, 16);
     uint32_t romAddr, offset;
 
     DMALOGENTRY* lpEntry = m_DMALog->GetEntryByRamAddress(ramAddr, &romAddr, &offset);
 
-    if (lpEntry != NULL)
+    if (lpEntry != nullptr)
     {
         sprintf(szRomAddr, "%08X", romAddr);
         stdstr_f blockInfo("Block: %08X -> %08X [%X] +%X", romAddr, ramAddr, lpEntry->length, offset);
@@ -339,12 +339,12 @@ LRESULT CDebugDMALogView::OnRomAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, H
     wchar_t szRomAddr[9];
 
     m_DMARomEdit.GetWindowText(szRomAddr, 9);
-    uint32_t romAddr = wcstoul(szRomAddr, NULL, 16);
+    uint32_t romAddr = wcstoul(szRomAddr, nullptr, 16);
     uint32_t ramAddr, offset;
 
     DMALOGENTRY* lpEntry = m_DMALog->GetEntryByRomAddress(romAddr, &ramAddr, &offset);
 
-    if (lpEntry != NULL)
+    if (lpEntry != nullptr)
     {
         wsprintf(szRamAddr, L"%08X", ramAddr);
         stdstr blockInfo = stdstr_f("Block: %08X -> %08X [%X] +%X", romAddr, ramAddr, lpEntry->length, offset);

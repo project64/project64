@@ -5,12 +5,12 @@
 #include "Debugger-CPULogView.h"
 #include <Project64-core/N64System/Mips/OpCodeName.h>
 
-CDebugCPULogView* CDebugCPULogView::_this = NULL;
-HHOOK CDebugCPULogView::hWinMessageHook = NULL;
+CDebugCPULogView* CDebugCPULogView::_this = nullptr;
+HHOOK CDebugCPULogView::hWinMessageHook = nullptr;
 
 CDebugCPULogView::CDebugCPULogView(CDebuggerUI* debugger) :
     CDebugDialog<CDebugCPULogView>(debugger),
-    m_CPULogCopy(NULL),
+    m_CPULogCopy(nullptr),
     m_LogStartIndex(0),
     m_RowHeight(13)
 {
@@ -18,7 +18,7 @@ CDebugCPULogView::CDebugCPULogView(CDebuggerUI* debugger) :
 
 CDebugCPULogView::~CDebugCPULogView()
 {
-    if (m_CPULogCopy != NULL)
+    if (m_CPULogCopy != nullptr)
     {
         delete m_CPULogCopy;
     }
@@ -59,14 +59,14 @@ LRESULT CDebugCPULogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 
     m_ExportBtn.EnableWindow(false);
 
-    if (!bLoggingEnabled && m_CPULogCopy != NULL)
+    if (!bLoggingEnabled && m_CPULogCopy != nullptr)
     {
         m_ExportBtn.EnableWindow(true);
     }
 
     _this = this;
     DWORD dwThreadID = ::GetCurrentThreadId();
-    hWinMessageHook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)HookProc, NULL, dwThreadID);
+    hWinMessageHook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)HookProc, nullptr, dwThreadID);
 
     LoadWindowPos();
     WindowCreated();
@@ -84,10 +84,10 @@ LRESULT CDebugCPULogView::OnDestroy(void)
     m_Scrollbar.Detach();
     m_ExportBtn.Detach();
 
-    if (m_CPULogCopy != NULL)
+    if (m_CPULogCopy != nullptr)
     {
         delete m_CPULogCopy;
-        m_CPULogCopy = NULL;
+        m_CPULogCopy = nullptr;
     }
     return 0;
 }
@@ -154,7 +154,7 @@ LRESULT CDebugCPULogView::OnListDblClicked(NMHDR* pNMHDR)
 
     CPUState* state = m_CPULogCopy->GetEntry(m_LogStartIndex + nItem);
 
-    if (state == NULL)
+    if (state == nullptr)
     {
         return FALSE;
     }
@@ -266,7 +266,7 @@ void CDebugCPULogView::ToggleLoggingEnabled(void)
     else
     {
         RefreshList(true);
-        m_ExportBtn.EnableWindow(m_CPULogCopy != NULL);
+        m_ExportBtn.EnableWindow(m_CPULogCopy != nullptr);
     }
 }
 
@@ -274,7 +274,7 @@ void CDebugCPULogView::RefreshList(bool bUpdateBuffer)
 {
     if (bUpdateBuffer)
     {
-        if (m_CPULogCopy != NULL)
+        if (m_CPULogCopy != nullptr)
         {
             delete m_CPULogCopy;
         }
@@ -282,7 +282,7 @@ void CDebugCPULogView::RefreshList(bool bUpdateBuffer)
         m_CPULogCopy = m_Debugger->CPULog()->Clone();
     }
 
-    if (m_CPULogCopy == NULL)
+    if (m_CPULogCopy == nullptr)
     {
         return;
     }
@@ -320,7 +320,7 @@ void CDebugCPULogView::RefreshList(bool bUpdateBuffer)
     {
         CPUState* state = m_CPULogCopy->GetEntry(i);
 
-        if (state == NULL)
+        if (state == nullptr)
         {
             break;
         }
@@ -332,7 +332,7 @@ void CDebugCPULogView::RefreshList(bool bUpdateBuffer)
 
         char* szCommand = (char*)R4300iOpcodeName(state->opcode.Hex, state->pc);
         char* szCmdName = strtok_s((char*)szCommand, "\t", &tokctx);
-        char* szCmdArgs = strtok_s(NULL, "\t", &tokctx);
+        char* szCmdArgs = strtok_s(nullptr, "\t", &tokctx);
 
         m_CPUListView.AddItem(nItem, 0, stdstr(szPC).ToUTF16().c_str());
         m_CPUListView.AddItem(nItem, 1, stdstr(szCmdName).ToUTF16().c_str());
@@ -348,7 +348,7 @@ void CDebugCPULogView::ShowRegStates(size_t stateIndex)
 {
     CPUState* state = m_CPULogCopy->GetEntry(stateIndex);
 
-    if (state == NULL)
+    if (state == nullptr)
     {
         return;
     }
@@ -385,7 +385,7 @@ void CDebugCPULogView::ShowRegStates(size_t stateIndex)
 
 void CDebugCPULogView::Export(void)
 {
-    if (m_CPULogCopy == NULL)
+    if (m_CPULogCopy == nullptr)
     {
         return;
     }

@@ -13,8 +13,8 @@
 #endif
 
 CN64Rom::CN64Rom() :
-    m_ROMImage(NULL),
-    m_ROMImageBase(NULL),
+    m_ROMImage(nullptr),
+    m_ROMImageBase(nullptr),
     m_RomFileSize(0),
     m_ErrorMsg(EMPTY_STRING),
     m_Country(Country_Unknown),
@@ -31,7 +31,7 @@ bool CN64Rom::AllocateRomImage(uint32_t RomFileSize)
 {
     WriteTrace(TraceN64System, TraceDebug, "Allocating memory for rom");
     std::unique_ptr<uint8_t> ImageBase(new uint8_t[RomFileSize + 0x2000]);
-    if (ImageBase.get() == NULL)
+    if (ImageBase.get() == nullptr)
     {
         SetError(MSG_MEM_ALLOC_ERROR);
         WriteTrace(TraceN64System, TraceError, "Failed to allocate memory for rom (size: 0x%X)", RomFileSize);
@@ -129,7 +129,7 @@ bool CN64Rom::AllocateAndLoadN64Image(const char * FileLoc, bool LoadBootCodeOnl
 bool CN64Rom::AllocateAndLoadZipImage(const char * FileLoc, bool LoadBootCodeOnly)
 {
     unzFile file = unzOpen(FileLoc);
-    if (file == NULL)
+    if (file == nullptr)
     {
         return false;
     }
@@ -143,7 +143,7 @@ bool CN64Rom::AllocateAndLoadZipImage(const char * FileLoc, bool LoadBootCodeOnl
         unz_file_info info;
         char zname[260];
 
-        unzGetCurrentFileInfo(file, &info, zname, sizeof(zname), NULL, 0, NULL, 0);
+        unzGetCurrentFileInfo(file, &info, zname, sizeof(zname), nullptr, 0, nullptr, 0);
         if (unzLocateFile(file, zname, 1) != UNZ_OK)
         {
             SetError(MSG_FAIL_ZIP);
@@ -268,7 +268,7 @@ CICChip CN64Rom::GetCicChipID(uint8_t * RomData, uint64_t * CRC)
     {
         crc += *(uint32_t *)(RomData + count);
     }
-    if (CRC != NULL) { *CRC = crc; }
+    if (CRC != nullptr) { *CRC = crc; }
 
     switch (crc)
     {
@@ -291,7 +291,7 @@ void CN64Rom::CalculateCicChip()
 {
     uint64_t CRC = 0;
 
-    if (m_ROMImage == NULL)
+    if (m_ROMImage == nullptr)
     {
         m_CicChip = CIC_UNKNOWN;
         return;
@@ -503,13 +503,13 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
     bool Loaded7zFile = false;
 
 #ifdef _WIN32
-    if (strstr(FileLoc, "?") != NULL || _stricmp(ext.c_str(), "7z") == 0)
+    if (strstr(FileLoc, "?") != nullptr || _stricmp(ext.c_str(), "7z") == 0)
     {
         stdstr FullPath = FileLoc;
 
         //this should be a 7zip file
         char * SubFile = strstr(const_cast<char*>(FullPath.c_str()), "?");
-        if (SubFile != NULL)
+        if (SubFile != nullptr)
         {
             *SubFile = '\0';
             SubFile += 1;
@@ -532,7 +532,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
 
             stdstr ZipFileName;
             ZipFileName.FromUTF16(ZipFile.FileNameIndex(i).c_str());
-            if (SubFile != NULL)
+            if (SubFile != nullptr)
             {
                 if (_stricmp(ZipFileName.c_str(), SubFile) != 0)
                 {
@@ -699,13 +699,13 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
     stdstr ext = CPath(FileLoc).GetExtension();
     bool Loaded7zFile = false;
 #ifdef _WIN32
-    if (strstr(FileLoc, "?") != NULL || _stricmp(ext.c_str(), "7z") == 0)
+    if (strstr(FileLoc, "?") != nullptr || _stricmp(ext.c_str(), "7z") == 0)
     {
         stdstr FullPath = FileLoc;
 
         //this should be a 7zip file
         char * SubFile = strstr(const_cast<char*>(FullPath.c_str()), "?");
-        if (SubFile != NULL)
+        if (SubFile != nullptr)
         {
             *SubFile = '\0';
             SubFile += 1;
@@ -728,7 +728,7 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
 
             stdstr ZipFileName;
             ZipFileName.FromUTF16(ZipFile.FileNameIndex(i).c_str());
-            if (SubFile != NULL)
+            if (SubFile != nullptr)
             {
                 if (_stricmp(ZipFileName.c_str(), SubFile) != 0)
                 {
@@ -908,7 +908,7 @@ void CN64Rom::UnallocateRomImage()
     {
         ProtectMemory(m_ROMImage, m_RomFileSize, MEM_READWRITE);
         delete[] m_ROMImageBase;
-        m_ROMImageBase = NULL;
+        m_ROMImageBase = nullptr;
     }
-    m_ROMImage = NULL;
+    m_ROMImage = nullptr;
 }

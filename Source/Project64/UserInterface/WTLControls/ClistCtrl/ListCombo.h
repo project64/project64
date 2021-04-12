@@ -64,7 +64,7 @@ public:
 		
 		// Create combo control
 		CRect Area( ( ( dwStyle & CBS_DROPDOWNLIST ) == CBS_DROPDOWNLIST ) ? rcRect.left + 3 : rcRect.left + 1, rcRect.top, rcRect.right, rcRect.bottom + ( 6 * rcRect.Height() ) );
-		if ( CWindowImpl< CListCombo, CComboBox >::Create( hWndParent, Area, NULL, dwStyle ) == NULL )
+		if ( CWindowImpl< CListCombo, CComboBox >::Create( hWndParent, Area, nullptr, dwStyle ) == nullptr )
 			return FALSE;
 			
 		// Get system message font
@@ -72,13 +72,13 @@ public:
 		logFont.SetMessageBoxFont();
 		if ( !m_fntComboFont.IsNull() )
 			m_fntComboFont.DeleteObject();
-		if ( m_fntComboFont.CreateFontIndirect( &logFont ) == NULL )
+		if ( m_fntComboFont.CreateFontIndirect( &logFont ) == nullptr )
 			return FALSE;
 		SetFont( m_fntComboFont, FALSE );
 		
 		// Subclass edit control to capture keyboard input
 		HWND hEditControl = GetWindow( GW_CHILD );
-		if ( hEditControl != NULL )
+		if ( hEditControl != nullptr )
 			m_wndEditCtrl.SubclassWindow( hEditControl );
 				
 		for ( int nComboItem = 0; nComboItem < aComboList.GetSize(); nComboItem++ )
@@ -326,7 +326,7 @@ public:
 		if ( ( dwStyle & CBS_DROPDOWNLIST ) == CBS_DROPDOWNLIST && !rcClip.EqualRect( m_rcButton ) )
 		{
 			dcMemory.SetBkColor( m_rgbStaticBackground );
-			dcMemory.ExtTextOut( m_rcStatic.left, m_rcStatic.top, ETO_OPAQUE, m_rcStatic, _T( "" ), 0, NULL );
+			dcMemory.ExtTextOut( m_rcStatic.left, m_rcStatic.top, ETO_OPAQUE, m_rcStatic, _T( "" ), 0, nullptr );
 			
 			// Draw static text
 			int nIndex = GetCurSel();
@@ -399,7 +399,7 @@ public:
 			listNotify.m_nSubItem = m_nSubItem;
 			listNotify.m_nExitChar = m_nExitChar;
 			listNotify.m_lpszItemText = strValue.c_str();
-			listNotify.m_lpItemDate = NULL;
+			listNotify.m_lpItemDate = nullptr;
 
 			// Forward notification to parent
 			FORWARD_WM_NOTIFY( wndParent, listNotify.m_hdrNotify.idFrom, &listNotify.m_hdrNotify, ::SendMessage );

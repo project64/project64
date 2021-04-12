@@ -23,12 +23,12 @@ public:
 	// IUnknown members
 	STDMETHOD(QueryInterface)( REFIID refiid, void FAR* FAR* ppvObject )
 	{
-		*ppvObject = ( refiid == IID_IUnknown || refiid == IID_IEnumFORMATETC ) ? this : NULL;
+		*ppvObject = ( refiid == IID_IUnknown || refiid == IID_IEnumFORMATETC ) ? this : nullptr;
 		
-		if ( *ppvObject != NULL )
+		if ( *ppvObject != nullptr )
 			( (LPUNKNOWN)*ppvObject )->AddRef();
 		
-		return *ppvObject == NULL ? E_NOINTERFACE : S_OK;
+		return *ppvObject == nullptr ? E_NOINTERFACE : S_OK;
 	}
 	
 	STDMETHOD_(ULONG, AddRef)( void )
@@ -47,15 +47,15 @@ public:
 	// IEnumFORMATETC members
 	STDMETHOD(Next)( ULONG celt, LPFORMATETC lpFormatEtc, ULONG FAR *pceltFetched )
 	{
-		if ( pceltFetched != NULL )
+		if ( pceltFetched != nullptr )
 			*pceltFetched=0;
 
 		ULONG cReturn = celt;
 
-		if ( celt <= 0 || lpFormatEtc == NULL || m_nIndex >= (int)m_vFormatEtc.size() )
+		if ( celt <= 0 || lpFormatEtc == nullptr || m_nIndex >= (int)m_vFormatEtc.size() )
 			return S_FALSE;
 
-		if ( pceltFetched == NULL && celt != 1 ) // pceltFetched can be NULL only for 1 item request
+		if ( pceltFetched == nullptr && celt != 1 ) // pceltFetched can be nullptr only for 1 item request
 			return S_FALSE;
 
 		while ( m_nIndex < (int)m_vFormatEtc.size() && cReturn > 0 )
@@ -64,7 +64,7 @@ public:
 			cReturn--;
 		}
 		
-		if ( pceltFetched != NULL )
+		if ( pceltFetched != nullptr )
 			*pceltFetched = celt - cReturn;
 
 		return cReturn == 0 ? S_OK : S_FALSE;
@@ -86,7 +86,7 @@ public:
 	
 	STDMETHOD(Clone)( IEnumFORMATETC FAR * FAR* ppCloneEnumFormatEtc )
 	{
-		if ( ppCloneEnumFormatEtc == NULL )
+		if ( ppCloneEnumFormatEtc == nullptr )
 			return E_POINTER;
 
 		*ppCloneEnumFormatEtc = new CEnumFormatEtc( m_vFormatEtc );
@@ -112,12 +112,12 @@ public:
 	// IUnknown members
 	STDMETHOD(QueryInterface)( REFIID refiid, void FAR* FAR* ppvObject )
 	{
-		*ppvObject = ( refiid == IID_IUnknown || refiid == IID_IDropSource ) ? this : NULL;
+		*ppvObject = ( refiid == IID_IUnknown || refiid == IID_IDropSource ) ? this : nullptr;
 		
-		if ( *ppvObject != NULL )
+		if ( *ppvObject != nullptr )
 			( (LPUNKNOWN)*ppvObject )->AddRef();
 		
-		return *ppvObject == NULL ? E_NOINTERFACE : S_OK;
+		return *ppvObject == nullptr ? E_NOINTERFACE : S_OK;
 	}
 	
 	STDMETHOD_(ULONG, AddRef)( void )
@@ -179,12 +179,12 @@ public:
 	// IUnknown members
 	STDMETHOD(QueryInterface)( REFIID refiid, void FAR* FAR* ppvObject )
 	{
-		*ppvObject = ( refiid == IID_IUnknown || refiid == IID_IDataObject ) ? this : NULL;
+		*ppvObject = ( refiid == IID_IUnknown || refiid == IID_IDataObject ) ? this : nullptr;
 		
-		if ( *ppvObject != NULL )
+		if ( *ppvObject != nullptr )
 			( (LPUNKNOWN)*ppvObject )->AddRef();
 		
-		return *ppvObject == NULL ? E_NOINTERFACE : S_OK;
+		return *ppvObject == nullptr ? E_NOINTERFACE : S_OK;
 	}
 	
 	STDMETHOD_(ULONG, AddRef)( void )
@@ -203,7 +203,7 @@ public:
 	// IDataObject members
 	STDMETHOD(GetData)( FORMATETC __RPC_FAR *pformatetcIn, STGMEDIUM __RPC_FAR *pmedium )
 	{
-		if ( pformatetcIn == NULL || pmedium == NULL )
+		if ( pformatetcIn == nullptr || pmedium == nullptr )
 			return E_INVALIDARG;
 
 		ZeroMemory( pmedium, sizeof( STGMEDIUM ) );
@@ -232,7 +232,7 @@ public:
 	
 	STDMETHOD(QueryGetData)( FORMATETC __RPC_FAR *pformatetc )
 	{
-		if ( pformatetc == NULL )
+		if ( pformatetc == nullptr )
 			return E_INVALIDARG;
 
 		if ( !( pformatetc->dwAspect & DVASPECT_CONTENT ) )
@@ -258,12 +258,12 @@ public:
 	
 	STDMETHOD(GetCanonicalFormatEtc)( FORMATETC __RPC_FAR * /*pformatectIn*/, FORMATETC __RPC_FAR * pformatetcOut )
 	{
-		return pformatetcOut == NULL ? E_INVALIDARG : DATA_S_SAMEFORMATETC;
+		return pformatetcOut == nullptr ? E_INVALIDARG : DATA_S_SAMEFORMATETC;
 	}
     
     STDMETHOD(SetData)( FORMATETC __RPC_FAR *pformatetc, STGMEDIUM __RPC_FAR *pmedium, BOOL bRelease )
     {
-		if ( pformatetc == NULL || pmedium == NULL )
+		if ( pformatetc == nullptr || pmedium == nullptr )
 			return E_INVALIDARG;
 
 		m_vFormatEtc.push_back( *pformatetc );
@@ -280,7 +280,7 @@ public:
     
     STDMETHOD(EnumFormatEtc)( DWORD dwDirection, IEnumFORMATETC __RPC_FAR *__RPC_FAR *ppenumFormatEtc )
     {
-		if ( ppenumFormatEtc == NULL )
+		if ( ppenumFormatEtc == nullptr )
 			return E_POINTER;
 
 		switch ( dwDirection )
@@ -288,7 +288,7 @@ public:
 			case DATADIR_GET:	*ppenumFormatEtc = new CEnumFormatEtc( m_vFormatEtc );
 								( (CEnumFormatEtc*)*ppenumFormatEtc )->AddRef();
 								return S_OK;
-			default:			*ppenumFormatEtc = NULL;
+			default:			*ppenumFormatEtc = nullptr;
 								return E_NOTIMPL;
 		}
     }
@@ -314,13 +314,13 @@ public:
 		{
 			case TYMED_HGLOBAL:		pMedDest->hGlobal = (HGLOBAL)OleDuplicateData( MedSrc.hGlobal, FmtSrc.cfFormat, NULL );
 									break;
-			case TYMED_GDI:			pMedDest->hBitmap = (HBITMAP)OleDuplicateData( MedSrc.hBitmap, FmtSrc.cfFormat, NULL );
+			case TYMED_GDI:			pMedDest->hBitmap = (HBITMAP)OleDuplicateData( MedSrc.hBitmap, FmtSrc.cfFormat, NULL);
 									break;
-			case TYMED_MFPICT:		pMedDest->hMetaFilePict = (HMETAFILEPICT)OleDuplicateData( MedSrc.hMetaFilePict, FmtSrc.cfFormat, NULL );
+			case TYMED_MFPICT:		pMedDest->hMetaFilePict = (HMETAFILEPICT)OleDuplicateData( MedSrc.hMetaFilePict, FmtSrc.cfFormat, NULL);
 									break;
-			case TYMED_ENHMF:		pMedDest->hEnhMetaFile = (HENHMETAFILE)OleDuplicateData( MedSrc.hEnhMetaFile, FmtSrc.cfFormat, NULL );
+			case TYMED_ENHMF:		pMedDest->hEnhMetaFile = (HENHMETAFILE)OleDuplicateData( MedSrc.hEnhMetaFile, FmtSrc.cfFormat, NULL);
 									break;
-			case TYMED_FILE:		pMedDest->lpszFileName = (LPOLESTR)OleDuplicateData( MedSrc.lpszFileName, FmtSrc.cfFormat, NULL );
+			case TYMED_FILE:		pMedDest->lpszFileName = (LPOLESTR)OleDuplicateData( MedSrc.lpszFileName, FmtSrc.cfFormat, NULL);
 									break;
 			case TYMED_ISTREAM:		pMedDest->pstm = MedSrc.pstm;
 									MedSrc.pstm->AddRef();
@@ -331,9 +331,9 @@ public:
 		}
 		
 		pMedDest->tymed = MedSrc.tymed;
-		pMedDest->pUnkForRelease = NULL;
+		pMedDest->pUnkForRelease = nullptr;
 		
-		if ( MedSrc.pUnkForRelease != NULL )
+		if ( MedSrc.pUnkForRelease != nullptr )
 		{
 			pMedDest->pUnkForRelease = MedSrc.pUnkForRelease;
 			MedSrc.pUnkForRelease->AddRef();
@@ -354,20 +354,20 @@ public:
 		m_hTargetWnd = hTargetWnd;
 		m_nRefCount = 0;
 		m_bAllowDrop = FALSE;
-		m_pDropTargetHelper = NULL;
+		m_pDropTargetHelper = nullptr;
 		ZeroMemory( &m_FormatEtc, sizeof( FORMATETC ) );
 		ZeroMemory( &m_StgMedium, sizeof( STGMEDIUM ) );
 		
-		if ( FAILED( CoCreateInstance( CLSID_DragDropHelper, NULL, CLSCTX_INPROC_SERVER, IID_IDropTargetHelper, (LPVOID*)&m_pDropTargetHelper ) ) )
-			m_pDropTargetHelper = NULL;
+		if ( FAILED( CoCreateInstance( CLSID_DragDropHelper, nullptr, CLSCTX_INPROC_SERVER, IID_IDropTargetHelper, (LPVOID*)&m_pDropTargetHelper ) ) )
+			m_pDropTargetHelper = nullptr;
 	}
 	
 	virtual ~CDropTarget()
 	{
-		if ( m_pDropTargetHelper != NULL )
+		if ( m_pDropTargetHelper != nullptr )
 		{
 			m_pDropTargetHelper->Release();
-			m_pDropTargetHelper = NULL;
+			m_pDropTargetHelper = nullptr;
 		}
 	}
 
@@ -384,12 +384,12 @@ public:
 	// IUnknown members
 	STDMETHOD(QueryInterface)( REFIID refiid, void FAR* FAR* ppvObject )
 	{
-		*ppvObject = ( refiid == IID_IUnknown || refiid == IID_IDropTarget ) ? this : NULL;
+		*ppvObject = ( refiid == IID_IUnknown || refiid == IID_IDropTarget ) ? this : nullptr;
 		
-		if ( *ppvObject != NULL )
+		if ( *ppvObject != nullptr )
 			( (LPUNKNOWN)*ppvObject )->AddRef();
 		
-		return *ppvObject == NULL ? E_NOINTERFACE : S_OK;
+		return *ppvObject == nullptr ? E_NOINTERFACE : S_OK;
 	}
 	
 	STDMETHOD_(ULONG, AddRef)( void )
@@ -407,10 +407,10 @@ public:
 
 	STDMETHOD(DragEnter)( IDataObject __RPC_FAR *pDataObject, DWORD dwKeyState, POINTL pt, DWORD __RPC_FAR *pdwEffect )
 	{
-		if ( pDataObject == NULL )
+		if ( pDataObject == nullptr )
 			return E_INVALIDARG;
 
-		if ( m_pDropTargetHelper != NULL )
+		if ( m_pDropTargetHelper != nullptr )
 			m_pDropTargetHelper->DragEnter( m_hTargetWnd, pDataObject, (LPPOINT)&pt, *pdwEffect );
 		
 		ZeroMemory( &m_FormatEtc, sizeof( FORMATETC ) );
@@ -484,7 +484,7 @@ public:
 	
 	STDMETHOD(Drop)( IDataObject __RPC_FAR *pDataObject, DWORD dwKeyState, POINTL pt, DWORD __RPC_FAR *pdwEffect )
     {
-		if ( pDataObject == NULL )
+		if ( pDataObject == nullptr )
 			return E_INVALIDARG;	
 
 		if ( m_pDropTargetHelper )
@@ -589,7 +589,7 @@ class CDropTargetT : public CDropTarget
 public:
 	CDropTargetT( HWND hTargetWnd ) : CDropTarget( hTargetWnd )
 	{
-		m_pDelegate = NULL;
+		m_pDelegate = nullptr;
 	}
 
 protected:
@@ -604,22 +604,22 @@ public:
 	
 	virtual DWORD OnDragEnter( FORMATETC& FormatEtc, STGMEDIUM& StgMedium, DWORD dwKeyState, CPoint point )
 	{
-		return m_pDelegate == NULL ? DROPEFFECT_NONE : m_pDelegate->OnDragEnter( FormatEtc, StgMedium, dwKeyState, point );
+		return m_pDelegate == nullptr ? DROPEFFECT_NONE : m_pDelegate->OnDragEnter( FormatEtc, StgMedium, dwKeyState, point );
 	}
 	
 	virtual DWORD OnDragOver( FORMATETC& FormatEtc, STGMEDIUM& StgMedium, DWORD dwKeyState, CPoint point )
 	{
-		return m_pDelegate == NULL ? DROPEFFECT_NONE : m_pDelegate->OnDragOver( FormatEtc, StgMedium, dwKeyState, point );
+		return m_pDelegate == nullptr ? DROPEFFECT_NONE : m_pDelegate->OnDragOver( FormatEtc, StgMedium, dwKeyState, point );
 	}
 	
 	virtual BOOL OnDrop( FORMATETC& FormatEtc, STGMEDIUM& StgMedium, DWORD dwEffect, CPoint point )
 	{
-		return m_pDelegate == NULL ? FALSE : m_pDelegate->OnDrop( FormatEtc, StgMedium, dwEffect, point );
+		return m_pDelegate == nullptr ? FALSE : m_pDelegate->OnDrop( FormatEtc, StgMedium, dwEffect, point );
 	}
 	
 	virtual void OnDragLeave()
 	{
-		if ( m_pDelegate != NULL )
+		if ( m_pDelegate != nullptr )
 			m_pDelegate->OnDragLeave();
 	}
 };
@@ -645,7 +645,7 @@ public:
 	
 	virtual BOOL OnRenderData( FORMATETC& FormatEtc, STGMEDIUM *pStgMedium, BOOL bDropComplete )
 	{
-		return m_pDelegate == NULL ? FALSE : m_pDelegate->OnRenderData( FormatEtc, pStgMedium, bDropComplete );
+		return m_pDelegate == nullptr ? FALSE : m_pDelegate->OnRenderData( FormatEtc, pStgMedium, bDropComplete );
 	}
 };
 
@@ -655,17 +655,17 @@ class CDragDrop
 public:
 	CDragDrop()
 	{
-		m_pDropSource = NULL;
-		m_pDataObject = NULL;
-		m_pDropTarget = NULL;
-		m_hTargetWnd = NULL;
+		m_pDropSource = nullptr;
+		m_pDataObject = nullptr;
+		m_pDropTarget = nullptr;
+		m_hTargetWnd = nullptr;
 	}
 		
 	virtual ~CDragDrop()
 	{
-		if ( m_pDropSource != NULL )
+		if ( m_pDropSource != nullptr )
 			m_pDropSource->Release();
-		if ( m_pDataObject != NULL )
+		if ( m_pDataObject != nullptr )
 			m_pDataObject->Release();
 	}
 
@@ -688,7 +688,7 @@ public:
 		if ( FAILED( RegisterDragDrop( m_hTargetWnd, m_pDropTarget ) ) )
 		{
 			delete m_pDropTarget;
-			m_pDropTarget = NULL;
+			m_pDropTarget = nullptr;
 			return FALSE;
 		}
 		
@@ -709,13 +709,13 @@ public:
 	
 	BOOL Revoke()
 	{
-		m_pDropTarget = NULL;
+		m_pDropTarget = nullptr;
 		return ( RevokeDragDrop( m_hTargetWnd ) == S_OK );
 	}
 	
 	BOOL AddTargetFormat( CLIPFORMAT cfFormat )
 	{
-		if ( m_pDropTarget == NULL )
+		if ( m_pDropTarget == nullptr )
 			return FALSE;
 		m_pDropTarget->AddSupportedFormat( cfFormat );
 		return TRUE;
@@ -723,7 +723,7 @@ public:
 	
 	BOOL AddSourceFormat( CLIPFORMAT cfFormat )
 	{
-		if ( m_pDataObject == NULL )
+		if ( m_pDataObject == nullptr )
 			return FALSE;
 			
 		FORMATETC FormatEtc;
@@ -742,7 +742,7 @@ public:
 	
 	BOOL SetClipboard( FORMATETC& FormatEtc, STGMEDIUM& StgMedium )
 	{
-		if ( m_pDataObject == NULL )
+		if ( m_pDataObject == nullptr )
 			return DROPEFFECT_NONE;
 		
 		if ( FAILED( m_pDataObject->SetData( &FormatEtc, &StgMedium, TRUE ) ) )
@@ -756,20 +756,20 @@ public:
 		return ( OleFlushClipboard() == S_OK );
 	}
 	
-	DWORD DoDragDrop( SHDRAGIMAGE *pDragImage = NULL, DWORD dwValidEffects = DROPEFFECT_COPY | DROPEFFECT_MOVE | DROPEFFECT_LINK )
+	DWORD DoDragDrop( SHDRAGIMAGE *pDragImage = nullptr, DWORD dwValidEffects = DROPEFFECT_COPY | DROPEFFECT_MOVE | DROPEFFECT_LINK )
 	{
-		if ( m_pDataObject == NULL )
+		if ( m_pDataObject == nullptr )
 			return DROPEFFECT_NONE;
 			
-		IDragSourceHelper *pDragSourceHelper = NULL;
+		IDragSourceHelper *pDragSourceHelper = nullptr;
 		
 		// Instantiate drag source helper object
-		if ( pDragImage != NULL )
+		if ( pDragImage != nullptr )
 		{
-			if ( FAILED( CoCreateInstance( CLSID_DragDropHelper, NULL, CLSCTX_INPROC_SERVER, IID_IDragSourceHelper, (LPVOID*)&pDragSourceHelper ) ) )
-				pDragSourceHelper = NULL;
+			if ( FAILED( CoCreateInstance( CLSID_DragDropHelper, nullptr, CLSCTX_INPROC_SERVER, IID_IDragSourceHelper, (LPVOID*)&pDragSourceHelper ) ) )
+				pDragSourceHelper = nullptr;
 			
-			if ( pDragSourceHelper != NULL )
+			if ( pDragSourceHelper != nullptr )
 				pDragSourceHelper->InitializeFromBitmap( pDragImage, m_pDataObject );
 		}
 		
@@ -777,7 +777,7 @@ public:
 		dwEffects = ::DoDragDrop( m_pDataObject, m_pDropSource, dwValidEffects, &dwEffects ) == DRAGDROP_S_DROP ? DROPEFFECT_NONE : dwEffects;
 		
 		// Destroy drag source helper object
-		if ( pDragSourceHelper != NULL )
+		if ( pDragSourceHelper != nullptr )
 			pDragSourceHelper->Release();
 		
 		return dwEffects;

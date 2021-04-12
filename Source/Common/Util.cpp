@@ -12,9 +12,9 @@
 
 pjutil::DynLibHandle pjutil::DynLibOpen(const char *pccLibraryPath, bool ShowErrors)
 {
-    if (pccLibraryPath == NULL)
+    if (pccLibraryPath == nullptr)
     {
-        return NULL;
+        return nullptr;
     }
 #ifdef _WIN32
     UINT LastErrorMode = SetErrorMode(ShowErrors ? 0 : SEM_FAILCRITICALERRORS);
@@ -28,8 +28,8 @@ pjutil::DynLibHandle pjutil::DynLibOpen(const char *pccLibraryPath, bool ShowErr
 
 void * pjutil::DynLibGetProc(pjutil::DynLibHandle LibHandle, const char * ProcedureName)
 {
-    if (ProcedureName == NULL)
-        return NULL;
+    if (ProcedureName == nullptr)
+        return nullptr;
 
 #ifdef _WIN32
     return GetProcAddress((HMODULE)LibHandle, ProcedureName);
@@ -40,7 +40,7 @@ void * pjutil::DynLibGetProc(pjutil::DynLibHandle LibHandle, const char * Proced
 
 void pjutil::DynLibClose(pjutil::DynLibHandle LibHandle)
 {
-    if (LibHandle != NULL)
+    if (LibHandle != nullptr)
     {
 #ifdef _WIN32
         FreeLibrary((HMODULE)LibHandle);
@@ -99,14 +99,14 @@ bool pjutil::TerminatedExistingExe()
                     stdstr_f Caption("Terminate %s", ModuleName.c_str());
 
                     AskedUser = true;
-                    int res = MessageBox(NULL, Message.ToUTF16().c_str(), Caption.ToUTF16().c_str(), MB_YESNO | MB_ICONEXCLAMATION);
+                    int res = MessageBox(nullptr, Message.ToUTF16().c_str(), Caption.ToUTF16().c_str(), MB_YESNO | MB_ICONEXCLAMATION);
                     if (res != IDYES)
                     {
                         break;
                     }
                 }
                 HANDLE hHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, lppe.th32ProcessID);
-                if (hHandle != NULL)
+                if (hHandle != nullptr)
                 {
                     if (TerminateProcess(hHandle, 0))
                     {
@@ -117,7 +117,7 @@ bool pjutil::TerminatedExistingExe()
                     {
                         stdstr_f Message("Failed to terminate pid %d", lppe.th32ProcessID);
                         stdstr_f Caption("Terminate %s failed!", ModuleName.c_str());
-                        MessageBox(NULL, Message.ToUTF16().c_str(), Caption.ToUTF16().c_str(), MB_YESNO | MB_ICONEXCLAMATION);
+                        MessageBox(nullptr, Message.ToUTF16().c_str(), Caption.ToUTF16().c_str(), MB_YESNO | MB_ICONEXCLAMATION);
                     }
                     CloseHandle(hHandle);
                 }

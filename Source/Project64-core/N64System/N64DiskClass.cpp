@@ -8,10 +8,10 @@
 #include <memory>
 
 CN64Disk::CN64Disk() :
-    m_DiskImage(NULL),
-    m_DiskImageBase(NULL),
-    m_DiskHeader(NULL),
-    m_DiskHeaderBase(NULL),
+    m_DiskImage(nullptr),
+    m_DiskImageBase(nullptr),
+    m_DiskHeader(nullptr),
+    m_DiskHeaderBase(nullptr),
     m_ErrorMsg(EMPTY_STRING),
     m_DiskBufAddress(0),
     m_DiskSysAddress(0),
@@ -236,7 +236,7 @@ bool CN64Disk::AllocateDiskImage(uint32_t DiskFileSize)
 {
     WriteTrace(TraceN64System, TraceDebug, "Allocating memory for disk");
     std::unique_ptr<uint8_t> ImageBase(new uint8_t[DiskFileSize + 0x1000]);
-    if (ImageBase.get() == NULL)
+    if (ImageBase.get() == nullptr)
     {
         SetError(MSG_MEM_ALLOC_ERROR);
         WriteTrace(TraceN64System, TraceError, "Failed to allocate memory for disk (size: 0x%X)", DiskFileSize);
@@ -256,7 +256,7 @@ bool CN64Disk::AllocateDiskHeader()
 {
     WriteTrace(TraceN64System, TraceDebug, "Allocating memory for disk header forge");
     std::unique_ptr<uint8_t> HeaderBase(new uint8_t[0x40 + 0x1000]);
-    if (HeaderBase.get() == NULL)
+    if (HeaderBase.get() == nullptr)
     {
         SetError(MSG_MEM_ALLOC_ERROR);
         WriteTrace(TraceN64System, TraceError, "Failed to allocate memory for disk header forge (size: 0x40)");
@@ -556,17 +556,17 @@ void CN64Disk::UnallocateDiskImage()
     {
         ProtectMemory(m_DiskHeader, 0x40, MEM_READWRITE);
         delete[] m_DiskHeaderBase;
-        m_DiskHeaderBase = NULL;
+        m_DiskHeaderBase = nullptr;
     }
-    m_DiskHeader = NULL;
+    m_DiskHeader = nullptr;
 
     if (m_DiskImageBase)
     {
         ProtectMemory(m_DiskImage, m_DiskFileSize, MEM_READWRITE);
         delete[] m_DiskImageBase;
-        m_DiskImageBase = NULL;
+        m_DiskImageBase = nullptr;
     }
-    m_DiskImage = NULL;
+    m_DiskImage = nullptr;
 }
 
 uint32_t CN64Disk::CalculateCrc()

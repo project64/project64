@@ -2,7 +2,7 @@
 
 BOOL CPartialGroupBox::Attach(HWND hWnd)
 {
-	ATLASSUME(m_hWnd == NULL);
+	ATLASSUME(m_hWnd == nullptr);
 	ATLASSERT(::IsWindow(hWnd));
 
 	// Allocate the thunk structure here, where we can fail gracefully
@@ -14,7 +14,7 @@ BOOL CPartialGroupBox::Attach(HWND hWnd)
 	}
 	WNDPROC pProc = m_thunk.GetWNDPROC();
 	WNDPROC pfnWndProc = (WNDPROC)::SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)pProc);
-	if (pfnWndProc == NULL)
+	if (pfnWndProc == nullptr)
 		return FALSE;
 	m_pfnSuperWindowProc = pfnWndProc;
 	m_hWnd = hWnd;

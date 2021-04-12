@@ -17,7 +17,7 @@
 TxDbg::TxDbg()
 {
     const char * log_dir = g_settings->log_dir();
-    if (log_dir != NULL && log_dir[0] != '\0')
+    if (log_dir != nullptr && log_dir[0] != '\0')
     {
         _level = DBG_LEVEL;
 

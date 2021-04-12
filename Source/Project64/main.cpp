@@ -7,7 +7,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 {
     try
     {
-        CoInitialize(NULL);
+        CoInitialize(nullptr);
         AppInit(&Notify(), CPath(CPath::MODULE_DIRECTORY), __argc, __argv);
         if (!g_Lang->IsLanguageLoaded())
         {
@@ -89,14 +89,14 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         {
             g_BaseSystem->CloseCpu();
             delete g_BaseSystem;
-            g_BaseSystem = NULL;
+            g_BaseSystem = nullptr;
         }
         WriteTrace(TraceUserInterface, TraceDebug, "System closed");
     }
     catch (...)
     {
         WriteTrace(TraceUserInterface, TraceError, "Exception caught (File: \"%s\" Line: %d)", __FILE__, __LINE__);
-        MessageBox(NULL, stdstr_f("Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__).ToUTF16().c_str(), L"Exception", MB_OK);
+        MessageBox(nullptr, stdstr_f("Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__).ToUTF16().c_str(), L"Exception", MB_OK);
     }
     AppCleanup();
     CoUninitialize();

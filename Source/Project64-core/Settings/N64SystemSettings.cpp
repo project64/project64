@@ -14,13 +14,13 @@ CN64SystemSettings::CN64SystemSettings()
     m_RefCount += 1;
     if (m_RefCount == 1)
     {
-        g_Settings->RegisterChangeCB(UserInterface_BasicMode, NULL, RefreshSettings);
-        g_Settings->RegisterChangeCB(UserInterface_ShowCPUPer, NULL, RefreshSettings);
-        g_Settings->RegisterChangeCB(UserInterface_DisplayFrameRate, NULL, RefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_ShowDListAListCount, NULL, RefreshSettings);
-        g_Settings->RegisterChangeCB(GameRunning_LimitFPS, NULL, RefreshSettings);
+        g_Settings->RegisterChangeCB(UserInterface_BasicMode, nullptr, RefreshSettings);
+        g_Settings->RegisterChangeCB(UserInterface_ShowCPUPer, nullptr, RefreshSettings);
+        g_Settings->RegisterChangeCB(UserInterface_DisplayFrameRate, nullptr, RefreshSettings);
+        g_Settings->RegisterChangeCB(Debugger_ShowDListAListCount, nullptr, RefreshSettings);
+        g_Settings->RegisterChangeCB(GameRunning_LimitFPS, nullptr, RefreshSettings);
 
-        RefreshSettings(NULL);
+        RefreshSettings(nullptr);
     }
 }
 
@@ -29,11 +29,11 @@ CN64SystemSettings::~CN64SystemSettings()
     m_RefCount -= 1;
     if (m_RefCount == 0)
     {
-        g_Settings->UnregisterChangeCB(UserInterface_BasicMode, NULL, RefreshSettings);
-        g_Settings->UnregisterChangeCB(UserInterface_DisplayFrameRate, NULL, RefreshSettings);
-        g_Settings->UnregisterChangeCB(UserInterface_ShowCPUPer, NULL, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Debugger_ShowDListAListCount, NULL, RefreshSettings);
-        g_Settings->UnregisterChangeCB(GameRunning_LimitFPS, NULL, RefreshSettings);
+        g_Settings->UnregisterChangeCB(UserInterface_BasicMode, nullptr, RefreshSettings);
+        g_Settings->UnregisterChangeCB(UserInterface_DisplayFrameRate, nullptr, RefreshSettings);
+        g_Settings->UnregisterChangeCB(UserInterface_ShowCPUPer, nullptr, RefreshSettings);
+        g_Settings->UnregisterChangeCB(Debugger_ShowDListAListCount, nullptr, RefreshSettings);
+        g_Settings->UnregisterChangeCB(GameRunning_LimitFPS, nullptr, RefreshSettings);
     }
 }
 

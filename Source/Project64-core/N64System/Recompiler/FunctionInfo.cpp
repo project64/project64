@@ -8,7 +8,7 @@ CCompiledFunc::CCompiledFunc( const CCodeBlock & CodeBlock ) :
     m_Hash(CodeBlock.Hash()),
     m_Function((Func)CodeBlock.CompiledLocation()),
     m_FunctionEnd(CodeBlock.CompiledLocationEnd()),
-    m_Next(NULL)
+    m_Next(nullptr)
 {
     m_MemContents[0] = CodeBlock.MemContents(0);
     m_MemContents[1] = CodeBlock.MemContents(1);

@@ -14,10 +14,10 @@
 DirectSoundDriver::DirectSoundDriver() :
     m_AudioIsDone(true),
     m_LOCK_SIZE(0),
-    m_lpds(NULL),
-    m_lpdsb(NULL),
-    m_lpdsbuf(NULL),
-    m_handleAudioThread(NULL),
+    m_lpds(nullptr),
+    m_lpdsb(nullptr),
+    m_lpdsbuf(nullptr),
+    m_handleAudioThread(nullptr),
     m_dwAudioThreadId(0)
 {
 }
@@ -33,7 +33,7 @@ bool DirectSoundDriver::Initialize()
 
     CGuard guard(m_CS);
     LPDIRECTSOUND8  & lpds = (LPDIRECTSOUND8 &)m_lpds;
-    HRESULT hr = DirectSoundCreate8(NULL, &lpds, NULL);
+    HRESULT hr = DirectSoundCreate8(nullptr, &lpds, nullptr);
     if (FAILED(hr))
     {
         WriteTrace(TraceAudioDriver, TraceWarning, "Unable to DirectSoundCreate (hr: 0x%08X)", hr);
@@ -53,13 +53,13 @@ bool DirectSoundDriver::Initialize()
     if (lpdsbuf)
     {
         IDirectSoundBuffer_Release(lpdsbuf);
-        lpdsbuf = NULL;
+        lpdsbuf = nullptr;
     }
     DSBUFFERDESC dsPrimaryBuff = { 0 };
     dsPrimaryBuff.dwSize = sizeof(DSBUFFERDESC);
     dsPrimaryBuff.dwFlags = DSBCAPS_PRIMARYBUFFER | DSBCAPS_CTRLVOLUME;
     dsPrimaryBuff.dwBufferBytes = 0;
-    dsPrimaryBuff.lpwfxFormat = NULL;
+    dsPrimaryBuff.lpwfxFormat = nullptr;
 
     WAVEFORMATEX wfm = { 0 };
     wfm.wFormatTag = WAVE_FORMAT_PCM;
@@ -70,7 +70,7 @@ bool DirectSoundDriver::Initialize()
     wfm.nAvgBytesPerSec = wfm.nSamplesPerSec * wfm.nBlockAlign;
 
     LPDIRECTSOUNDBUFFER & lpdsb = (LPDIRECTSOUNDBUFFER &)m_lpdsb;
-    hr = lpds->CreateSoundBuffer(&dsPrimaryBuff, &lpdsb, NULL);
+    hr = lpds->CreateSoundBuffer(&dsPrimaryBuff, &lpdsb, nullptr);
     if (SUCCEEDED(hr))
     {
         lpdsb->SetFormat(&wfm);
@@ -82,7 +82,7 @@ bool DirectSoundDriver::Initialize()
 
 void DirectSoundDriver::StopAudio()
 {
-    if (m_handleAudioThread != NULL)
+    if (m_handleAudioThread != nullptr)
     {
         m_AudioIsDone = true;
         if (WaitForSingleObject((HANDLE)m_handleAudioThread, 5000) == WAIT_TIMEOUT)
@@ -92,20 +92,20 @@ void DirectSoundDriver::StopAudio()
             TerminateThread((HANDLE)m_handleAudioThread, 1);
         }
         CloseHandle((HANDLE)m_handleAudioThread);
-        m_handleAudioThread = NULL;
+        m_handleAudioThread = nullptr;
     }
 }
 
 void DirectSoundDriver::StartAudio()
 {
     WriteTrace(TraceAudioDriver, TraceDebug, "Start");
-    if (m_handleAudioThread == NULL)
+    if (m_handleAudioThread == nullptr)
     {
         m_AudioIsDone = false;
-        m_handleAudioThread = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)stAudioThreadProc, this, 0, (LPDWORD)&m_dwAudioThreadId);
+        m_handleAudioThread = CreateThread(nullptr, NULL, (LPTHREAD_START_ROUTINE)stAudioThreadProc, this, 0, (LPDWORD)&m_dwAudioThreadId);
 
         LPDIRECTSOUNDBUFFER & lpdsbuf = (LPDIRECTSOUNDBUFFER &)m_lpdsbuf;
-        if (lpdsbuf != NULL)
+        if (lpdsbuf != nullptr)
         {
             lpdsbuf->Play(0, 0, DSBPLAY_LOOPING);
         }
@@ -132,7 +132,7 @@ void DirectSoundDriver::SetVolume(uint32_t Volume)
     {
         dsVolume = DSBVOLUME_MIN;
     }
-    if (lpdsb != NULL)
+    if (lpdsb != nullptr)
     {
         lpdsb->SetVolume(dsVolume);
     }
@@ -159,16 +159,16 @@ void DirectSoundDriver::SetSegmentSize(uint32_t length, uint32_t SampleRate)
 
     LPDIRECTSOUND8 & lpds = (LPDIRECTSOUND8 &)m_lpds;
     LPDIRECTSOUNDBUFFER & lpdsbuf = (LPDIRECTSOUNDBUFFER &)m_lpdsbuf;
-    if (lpds != NULL)
+    if (lpds != nullptr)
     {
-        HRESULT hr = lpds->CreateSoundBuffer(&dsbdesc, &lpdsbuf, NULL);
+        HRESULT hr = lpds->CreateSoundBuffer(&dsbdesc, &lpdsbuf, nullptr);
         if (FAILED(hr))
         {
             WriteTrace(TraceAudioDriver, TraceWarning, "CreateSoundBuffer failed (hr: 0x%08X)", hr);
         }
     }
 
-    if (lpdsbuf != NULL)
+    if (lpdsbuf != nullptr)
     {
         lpdsbuf->Play(0, 0, DSBPLAY_LOOPING);
     }
@@ -177,7 +177,7 @@ void DirectSoundDriver::SetSegmentSize(uint32_t length, uint32_t SampleRate)
 void DirectSoundDriver::AudioThreadProc()
 {
     LPDIRECTSOUNDBUFFER & lpdsbuff = (LPDIRECTSOUNDBUFFER &)m_lpdsbuf;
-    while (lpdsbuff == NULL && !m_AudioIsDone)
+    while (lpdsbuff == nullptr && !m_AudioIsDone)
     {
         Sleep(10);
     }
@@ -196,17 +196,17 @@ void DirectSoundDriver::AudioThreadProc()
     }
 
     uint32_t next_pos = 0, write_pos = 0, last_pos = 0;
-    while (lpdsbuff != NULL && !m_AudioIsDone)
+    while (lpdsbuff != nullptr && !m_AudioIsDone)
     {
         WriteTrace(TraceAudioDriver, TraceVerbose, "last_pos: 0x%08X write_pos: 0x%08X next_pos: 0x%08X", last_pos, write_pos, next_pos);
         while (last_pos == write_pos)
         { // Cycle around until a new buffer position is available
-            if (lpdsbuff == NULL)
+            if (lpdsbuff == nullptr)
             {
                 break;
             }
             uint32_t play_pos = 0;
-            if (lpdsbuff == NULL || FAILED(lpdsbuff->GetCurrentPosition((unsigned long*)&play_pos, NULL)))
+            if (lpdsbuff == nullptr || FAILED(lpdsbuff->GetCurrentPosition((unsigned long*)&play_pos, nullptr)))
             {
                 WriteTrace(TraceAudioDriver, TraceDebug, "Error getting audio position...");
                 m_AudioIsDone = true;

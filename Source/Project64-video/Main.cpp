@@ -51,7 +51,7 @@ extern int g_viewport_offset;
 extern int g_width, g_height;
 
 #ifdef _WIN32
-HINSTANCE hinstDLL = NULL;
+HINSTANCE hinstDLL = nullptr;
 #endif
 
 uint32_t   region = 0;
@@ -60,7 +60,7 @@ unsigned int BMASK = 0x7FFFFF;
 // Reality display processor structure
 CRDP rdp;
 
-CSettings * g_settings = NULL;
+CSettings * g_settings = nullptr;
 
 VOODOO voodoo = { 0, 0, 0,
 0, 0, 0, 0,
@@ -362,14 +362,14 @@ void SetWindowDisplaySize(HWND hWnd)
         }
 
         g_windowedMenu = GetMenu(hWnd);
-        if (g_windowedMenu) SetMenu(hWnd, NULL);
+        if (g_windowedMenu) SetMenu(hWnd, nullptr);
 
-        HWND hStatusBar = FindWindowEx(hWnd, NULL, L"msctls_statusbar32", NULL); // 1964
+        HWND hStatusBar = FindWindowEx(hWnd, nullptr, L"msctls_statusbar32", nullptr); // 1964
         if (hStatusBar) ShowWindow(hStatusBar, SW_HIDE);
 
         SetWindowLong(hWnd, GWL_STYLE, 0);
         SetWindowLong(hWnd, GWL_EXSTYLE, WS_EX_APPWINDOW | WS_EX_TOPMOST);
-        SetWindowPos(hWnd, NULL, 0, 0, g_width, g_height, SWP_NOACTIVATE | SWP_NOZORDER | SWP_SHOWWINDOW);
+        SetWindowPos(hWnd, nullptr, 0, 0, g_width, g_height, SWP_NOACTIVATE | SWP_NOZORDER | SWP_SHOWWINDOW);
 
         g_viewport_offset = 0;
         g_fullscreen = true;
@@ -377,21 +377,21 @@ void SetWindowDisplaySize(HWND hWnd)
     else
     {
         RECT clientRect = { 0 }, toolbarRect = { 0 }, statusbarRect = { 0 }, windowedRect = { 0 };
-        HWND hToolBar = FindWindowEx(hWnd, NULL, REBARCLASSNAME, NULL);
-        HWND hStatusBar = FindWindowEx(hWnd, NULL, STATUSCLASSNAME, NULL);
-        if (hStatusBar == NULL)
+        HWND hToolBar = FindWindowEx(hWnd, nullptr, REBARCLASSNAME, nullptr);
+        HWND hStatusBar = FindWindowEx(hWnd, nullptr, STATUSCLASSNAME, nullptr);
+        if (hStatusBar == nullptr)
         {
-            hStatusBar = FindWindowEx(hWnd, NULL, L"msctls_statusbar32", NULL);
+            hStatusBar = FindWindowEx(hWnd, nullptr, L"msctls_statusbar32", nullptr);
         }
         if (hStatusBar != nullptr && !IsWindowVisible(hStatusBar))
         {
             hStatusBar = nullptr;
         }
-        if (hToolBar != NULL)
+        if (hToolBar != nullptr)
         {
             GetWindowRect(hToolBar, &toolbarRect);
         }
-        if (hStatusBar != NULL)
+        if (hStatusBar != nullptr)
         {
             GetWindowRect(hStatusBar, &statusbarRect);
         }
@@ -400,7 +400,7 @@ void SetWindowDisplaySize(HWND hWnd)
         GetClientRect(hWnd, &clientRect);
         g_windowedRect.right += (g_width - (clientRect.right - clientRect.left));
         g_windowedRect.bottom += (g_height + (toolbarRect.bottom - toolbarRect.top) + (statusbarRect.bottom - statusbarRect.top) - (clientRect.bottom - clientRect.top));
-        SetWindowPos(hWnd, NULL, 0, 0, g_windowedRect.right - g_windowedRect.left, g_windowedRect.bottom - g_windowedRect.top, SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE);
+        SetWindowPos(hWnd, nullptr, 0, 0, g_windowedRect.right - g_windowedRect.left, g_windowedRect.bottom - g_windowedRect.top, SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE);
 
         g_fullscreen = false;
     }
@@ -410,8 +410,8 @@ void ExitFullScreen(void)
 {
     if (g_fullscreen)
     {
-        ChangeDisplaySettings(NULL, 0);
-        SetWindowPos((HWND)gfx.hWnd, NULL, g_windowedRect.left, g_windowedRect.top, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+        ChangeDisplaySettings(nullptr, 0);
+        SetWindowPos((HWND)gfx.hWnd, nullptr, g_windowedRect.left, g_windowedRect.top, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
         SetWindowLong((HWND)gfx.hWnd, GWL_STYLE, g_windowedStyle);
         SetWindowLong((HWND)gfx.hWnd, GWL_EXSTYLE, g_windowedExStyle);
         if (g_windowedMenu) SetMenu((HWND)gfx.hWnd, g_windowedMenu);
@@ -577,14 +577,14 @@ void ReleaseGfx()
 }
 
 #ifdef _WIN32
-CriticalSection * g_ProcessDListCS = NULL;
+CriticalSection * g_ProcessDListCS = nullptr;
 
 extern "C" int WINAPI DllMain(HINSTANCE hinst, DWORD fdwReason, LPVOID /*lpReserved*/)
 {
     if (fdwReason == DLL_PROCESS_ATTACH)
     {
         hinstDLL = hinst;
-        if (g_ProcessDListCS == NULL)
+        if (g_ProcessDListCS == nullptr)
         {
             g_ProcessDListCS = new CriticalSection();
         }
@@ -658,7 +658,7 @@ void CALL CloseDLL(void)
     if (g_settings)
     {
         delete g_settings;
-        g_settings = NULL;
+        g_settings = nullptr;
     }
 
     ReleaseGfx();
@@ -786,7 +786,7 @@ void CALL MoveScreen(int xpos, int ypos)
 void CALL PluginLoaded(void)
 {
     SetupTrace();
-    if (g_settings == NULL)
+    if (g_settings == nullptr)
     {
         g_settings = new CSettings;
     }
@@ -1035,8 +1035,8 @@ void write_png_file(const char* file_name, int width, int height, uint8_t *buffe
     }
 
     /* initialize stuff */
-    png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-    if (png_ptr == NULL)
+    png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
+    if (png_ptr == nullptr)
     {
         WriteTrace(TracePNG, TraceError, "png_create_write_struct failed");
         fclose(fp);
@@ -1044,10 +1044,10 @@ void write_png_file(const char* file_name, int width, int height, uint8_t *buffe
     }
 
     png_infop info_ptr = png_create_info_struct(png_ptr);
-    if (info_ptr == NULL)
+    if (info_ptr == nullptr)
     {
         WriteTrace(TracePNG, TraceError, "png_create_info_struct failed");
-        png_destroy_read_struct(&png_ptr, NULL, NULL);
+        png_destroy_read_struct(&png_ptr, nullptr, nullptr);
         fclose(fp);
         return;
     }
@@ -1055,7 +1055,7 @@ void write_png_file(const char* file_name, int width, int height, uint8_t *buffe
     if (setjmp(png_jmpbuf(png_ptr)))
     {
         WriteTrace(TracePNG, TraceError, "Error during init_io");
-        png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+        png_destroy_read_struct(&png_ptr, &info_ptr, nullptr);
         fclose(fp);
         return;
     }
@@ -1066,7 +1066,7 @@ void write_png_file(const char* file_name, int width, int height, uint8_t *buffe
     if (setjmp(png_jmpbuf(png_ptr)))
     {
         WriteTrace(TracePNG, TraceError, "Error during writing header");
-        png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+        png_destroy_read_struct(&png_ptr, &info_ptr, nullptr);
         fclose(fp);
         return;
     }
@@ -1081,7 +1081,7 @@ void write_png_file(const char* file_name, int width, int height, uint8_t *buffe
     if (setjmp(png_jmpbuf(png_ptr)))
     {
         WriteTrace(TracePNG, TraceError, "Error during writing bytes");
-        png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+        png_destroy_read_struct(&png_ptr, &info_ptr, nullptr);
         fclose(fp);
         return;
     }
@@ -1112,11 +1112,11 @@ void write_png_file(const char* file_name, int width, int height, uint8_t *buffe
     if (setjmp(png_jmpbuf(png_ptr)))
     {
         WriteTrace(TracePNG, TraceError, "Error during end of write");
-        png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+        png_destroy_read_struct(&png_ptr, &info_ptr, nullptr);
         fclose(fp);
         return;
     }
-    png_write_end(png_ptr, NULL);
+    png_write_end(png_ptr, nullptr);
     fclose(fp);
 }
 

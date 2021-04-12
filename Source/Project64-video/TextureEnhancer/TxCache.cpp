@@ -60,8 +60,8 @@ TxCache::TxCache(int options, int cachesize, const char *path, const char *ident
         if (!_gzdest0 || !_gzdest1 || !_gzdestLen)
         {
             _options &= ~(GZ_TEXCACHE | GZ_HIRESTEXCACHE);
-            _gzdest0 = NULL;
-            _gzdest1 = NULL;
+            _gzdest0 = nullptr;
+            _gzdest1 = nullptr;
             _gzdestLen = 0;
         }
     }
@@ -267,7 +267,7 @@ bool TxCache::save(const char *path, const char *filename, int config)
                    destLen = _gzdestLen;
                    if (dest && destLen) {
                    if (uncompress(dest, &destLen, (*itMap).second->info.data, (*itMap).second->size) != Z_OK) {
-                   dest = NULL;
+                   dest = nullptr;
                    destLen = 0;
                    }
                    format &= ~GFX_TEXFMT_GZ;

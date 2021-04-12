@@ -26,7 +26,7 @@ CSettingsPage * CConfigSettingSection::GetPage(int PageNo)
 {
 	if (PageNo < 0 || PageNo >= (int)m_Pages.size())
 	{
-		return NULL;
+		return nullptr;
 	}
 	return m_Pages[PageNo];
 }

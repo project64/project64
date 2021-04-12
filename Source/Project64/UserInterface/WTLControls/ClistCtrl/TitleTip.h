@@ -6,7 +6,7 @@ class CTitleTip : public CWindowImpl< CTitleTip >
 public:
 	CTitleTip()
 	{
-		m_hWndParent = NULL;
+		m_hWndParent = nullptr;
 	}
 	
 	~CTitleTip()
@@ -41,8 +41,8 @@ public:
 		m_rgbBackgroundTop = RGB( 250, 250, 250 );
 		m_rgbBackgroundBottom = RGB( 235, 235, 235 );
 		
-		CRect Area(NULL);
-		if ( CWindowImpl< CTitleTip >::Create( hWndParent, Area, NULL, WS_POPUP, WS_EX_TOOLWINDOW | WS_EX_TOPMOST ) == NULL )
+		CRect Area(nullptr);
+		if ( CWindowImpl< CTitleTip >::Create( hWndParent, Area, nullptr, WS_POPUP, WS_EX_TOOLWINDOW | WS_EX_TOPMOST ) == nullptr )
 			return FALSE;
 		
 		// Create the tooltip
@@ -55,7 +55,7 @@ public:
 		logFont.SetMessageBoxFont();
 		if ( !m_fntTitleFont.IsNull() )
 			m_fntTitleFont.DeleteObject();
-		return ( m_fntTitleFont.CreateFontIndirect( &logFont ) != NULL );
+		return ( m_fntTitleFont.CreateFontIndirect( &logFont ) != nullptr );
 	}
 	
 	BOOL Show( CRect& rcRect, LPCTSTR lpszItemText, LPCTSTR lpszToolTip )
@@ -93,7 +93,7 @@ public:
 		}
 		
 		// Show title tip at new location
-		if ( !SetWindowPos( NULL, rcRect.left - 4, rcRect.top, rcTextExtent.Width() + 11, rcRect.Height(), SWP_NOZORDER | SWP_SHOWWINDOW | SWP_NOACTIVATE | SWP_NOCOPYBITS ) )
+		if ( !SetWindowPos( nullptr, rcRect.left - 4, rcRect.top, rcTextExtent.Width() + 11, rcRect.Height(), SWP_NOZORDER | SWP_SHOWWINDOW | SWP_NOACTIVATE | SWP_NOCOPYBITS ) )
 			return FALSE;
 		
 		SetCapture();
@@ -119,7 +119,7 @@ public:
 	{
 		if ( m_ttToolTip.IsWindow() )
 			m_ttToolTip.DestroyWindow();
-		m_ttToolTip.m_hWnd = NULL;
+		m_ttToolTip.m_hWnd = nullptr;
 	}
 	
 	LRESULT OnMouseRange( UINT nMessage, WPARAM wParam, LPARAM lParam )
@@ -198,7 +198,7 @@ public:
 		CRect rcTitleTip( rcClient );
 					
 		dcPaint.SetBkColor( m_rgbBackground );
-		dcPaint.ExtTextOut( rcTitleTip.left, rcTitleTip.top, ETO_OPAQUE, rcTitleTip, _T( "" ), 0, NULL );
+		dcPaint.ExtTextOut( rcTitleTip.left, rcTitleTip.top, ETO_OPAQUE, rcTitleTip, _T( "" ), 0, nullptr );
 		
 		CBrush bshTitleFrame;
 		bshTitleFrame.CreateSolidBrush( m_rgbTextColour );

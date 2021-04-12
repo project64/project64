@@ -114,7 +114,7 @@ private:
     void RemoveAsyncFile(HANDLE fd);
     HANDLE CreateSocket();
 
-    IOLISTENER* AddListener(HANDLE fd, IOEVENTTYPE evt, void* jsCallback, void* data = NULL, int dataLen = 0);
+    IOLISTENER* AddListener(HANDLE fd, IOEVENTTYPE evt, void* jsCallback, void* data = nullptr, int dataLen = 0);
     void RemoveListener(IOLISTENER* lpListener);
     void RemoveListenerByIndex(UINT index);
     void RemoveListenersByFd(HANDLE fd);
@@ -251,6 +251,6 @@ private:
         { "fsMkDir",        js_FSMkDir,        DUK_VARARGS },
         { "fsRmDir",        js_FSRmDir,        DUK_VARARGS },
         { "fsReadDir",      js_FSReadDir,      DUK_VARARGS },
-        { NULL, NULL, 0 }
+        { nullptr, nullptr, 0 }
     };
 };

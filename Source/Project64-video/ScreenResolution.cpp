@@ -11,7 +11,7 @@
 
 struct ResolutionInfo
 {
-    ResolutionInfo(const char * name = NULL, uint32_t width = 0, uint32_t height = 0, uint32_t frequency = 0, bool default_res = false) :
+    ResolutionInfo(const char * name = nullptr, uint32_t width = 0, uint32_t height = 0, uint32_t frequency = 0, bool default_res = false) :
         m_name(name ? name : ""),
         m_width(width),
         m_height(height),
@@ -219,17 +219,17 @@ FullScreenResolutions::~FullScreenResolutions()
     for (unsigned int i = 0; i < m_dwNumResolutions; i++)
     {
         delete[] m_aResolutionsStr[i];
-        m_aResolutionsStr[i] = NULL;
+        m_aResolutionsStr[i] = nullptr;
     }
     if (m_aResolutionsStr)
     {
         delete[] m_aResolutionsStr;
-        m_aResolutionsStr = NULL;
+        m_aResolutionsStr = nullptr;
     }
     if (m_aResolutions)
     {
         delete[] m_aResolutions;
-        m_aResolutions = NULL;
+        m_aResolutions = nullptr;
     }
 }
 
@@ -241,10 +241,10 @@ void FullScreenResolutions::init()
     int iModeNum = 0;
     memset(&enumMode, 0, sizeof(DEVMODE));
 
-    EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &currentMode);
+    EnumDisplaySettings(nullptr, ENUM_CURRENT_SETTINGS, &currentMode);
 
     ResolutionInfo prevInfo;
-    while (EnumDisplaySettings(NULL, iModeNum++, &enumMode) != 0)
+    while (EnumDisplaySettings(nullptr, iModeNum++, &enumMode) != 0)
     {
         ResolutionInfo curInfo("", enumMode.dmPelsWidth, enumMode.dmPelsHeight, enumMode.dmDisplayFrequency);
         if (enumMode.dmBitsPerPel == 32 && curInfo != prevInfo)
@@ -261,9 +261,9 @@ void FullScreenResolutions::init()
     char smode[256];
     memset(&enumMode, 0, sizeof(DEVMODE));
     prevInfo = ResolutionInfo();
-    while (EnumDisplaySettings(NULL, iModeNum++, &enumMode) != 0)
+    while (EnumDisplaySettings(nullptr, iModeNum++, &enumMode) != 0)
     {
-        ResolutionInfo curInfo(NULL, enumMode.dmPelsWidth, enumMode.dmPelsHeight, enumMode.dmDisplayFrequency);
+        ResolutionInfo curInfo(nullptr, enumMode.dmPelsWidth, enumMode.dmPelsHeight, enumMode.dmDisplayFrequency);
         if (enumMode.dmBitsPerPel == 32 && curInfo != prevInfo)
         {
             if (enumMode.dmPelsHeight == currentMode.dmPelsHeight && enumMode.dmPelsWidth == currentMode.dmPelsWidth)
@@ -286,13 +286,13 @@ bool FullScreenResolutions::changeDisplaySettings(uint32_t _resolution)
 #ifdef _WIN32
     uint32_t width, height, frequency;
     getResolution(_resolution, &width, &height, &frequency);
-    ResolutionInfo info(NULL, width, height, frequency);
+    ResolutionInfo info(nullptr, width, height, frequency);
     DEVMODE enumMode;
     int iModeNum = 0;
     memset(&enumMode, 0, sizeof(DEVMODE));
-    while (EnumDisplaySettings(NULL, iModeNum++, &enumMode) != 0)
+    while (EnumDisplaySettings(nullptr, iModeNum++, &enumMode) != 0)
     {
-        ResolutionInfo curInfo(NULL, enumMode.dmPelsWidth, enumMode.dmPelsHeight, enumMode.dmDisplayFrequency);
+        ResolutionInfo curInfo(nullptr, enumMode.dmPelsWidth, enumMode.dmPelsHeight, enumMode.dmDisplayFrequency);
         if (enumMode.dmBitsPerPel == 32 && curInfo == info) {
             bool bRes = ChangeDisplaySettings(&enumMode, CDS_FULLSCREEN) == DISP_CHANGE_SUCCESSFUL;
             WriteTrace(TraceGlitch, TraceDebug, "width=%d, height=%d, freq=%d %s\r\n", enumMode.dmPelsWidth, enumMode.dmPelsHeight, enumMode.dmDisplayFrequency, bRes ? "Success" : "Failed");

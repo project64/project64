@@ -1,12 +1,12 @@
 #include "stdafx.h"
 
-CModifiedEditBox::CModifiedEditBox(bool bString /* = true */, HWND hWnd /* = NULL */) :
+CModifiedEditBox::CModifiedEditBox(bool bString /* = true */, HWND hWnd /* = nullptr */) :
 CEdit(hWnd),
 m_Changed(false),
 m_Reset(false),
-m_BoldFont(NULL),
-m_OriginalFont(NULL),
-m_TextField(NULL),
+m_BoldFont(nullptr),
+m_OriginalFont(nullptr),
+m_TextField(nullptr),
 m_bString(bString)
 {
 }
@@ -34,7 +34,7 @@ void CModifiedEditBox::SetChanged(bool Changed)
     if (m_Changed)
     {
         SetReset(false);
-        if (m_BoldFont == NULL)
+        if (m_BoldFont == nullptr)
         {
             m_OriginalFont = (HFONT)SendMessage(WM_GETFONT);
 
@@ -45,11 +45,11 @@ void CModifiedEditBox::SetChanged(bool Changed)
             m_BoldFont = CreateFontIndirect(&lfSystemVariableFont);
         }
         SendMessage(WM_SETFONT, (WPARAM)m_BoldFont);
-        InvalidateRect(NULL);
+        InvalidateRect(nullptr);
         if (m_TextField)
         {
             ::SendMessage(m_TextField, WM_SETFONT, (WPARAM)m_BoldFont, 0);
-            ::InvalidateRect(m_TextField, NULL, true);
+            ::InvalidateRect(m_TextField, nullptr, true);
         }
     }
     else
@@ -57,11 +57,11 @@ void CModifiedEditBox::SetChanged(bool Changed)
         if (m_OriginalFont)
         {
             SendMessage(WM_SETFONT, (WPARAM)m_OriginalFont);
-            InvalidateRect(NULL);
+            InvalidateRect(nullptr);
             if (m_TextField)
             {
                 ::SendMessage(m_TextField, WM_SETFONT, (WPARAM)m_OriginalFont, 0);
-                ::InvalidateRect(m_TextField, NULL, true);
+                ::InvalidateRect(m_TextField, nullptr, true);
             }
         }
     }

@@ -4,14 +4,14 @@
 CSymbolTable::CSymbolTable(CDebuggerUI* debugger) :
     m_Debugger(debugger),
     m_NextSymbolId(0),
-    m_SymFileBuffer(NULL),
+    m_SymFileBuffer(nullptr),
     m_SymFileSize(0),
-    m_ParserToken(NULL),
+    m_ParserToken(nullptr),
     m_ParserTokenLength(0),
     m_ParserDelimeter(0),
-    m_SymFileParseBuffer(NULL),
+    m_SymFileParseBuffer(nullptr),
     m_bHaveFirstToken(false),
-    m_TokPos(NULL)
+    m_TokPos(nullptr)
 {
 }
 
@@ -37,13 +37,13 @@ symbol_type_info_t CSymbolTable::m_SymbolTypes[] = {
     { SYM_VECTOR2, "v2", 8 },
     { SYM_VECTOR3, "v3", 12 },
     { SYM_VECTOR4, "v4", 16 },
-    { SYM_INVALID, NULL,    0 }
+    { SYM_INVALID, nullptr,    0 }
 };
 
 symbol_type_id_t CSymbolTable::GetTypeId(char* typeName)
 {
     const char* name;
-    for (int i = 0; (name = m_SymbolTypes[i].name) != NULL; i++)
+    for (int i = 0; (name = m_SymbolTypes[i].name) != nullptr; i++)
     {
         if (strcmp(typeName, name) == 0)
         {
@@ -57,7 +57,7 @@ const char* CSymbolTable::GetTypeName(int typeId)
 {
     if (typeId >= NUM_SYM_TYPES)
     {
-        return NULL;
+        return nullptr;
     }
     return m_SymbolTypes[typeId].name;
 }
@@ -98,16 +98,16 @@ void CSymbolTable::ParserFetchToken(const char* delim)
 {
     if (!m_bHaveFirstToken)
     {
-        m_TokPos = NULL;
+        m_TokPos = nullptr;
         m_ParserToken = strtok_s(m_SymFileParseBuffer, delim, &m_TokPos);
         m_bHaveFirstToken = true;
     }
     else
     {
-        m_ParserToken = strtok_s(NULL, delim, &m_TokPos);
+        m_ParserToken = strtok_s(nullptr, delim, &m_TokPos);
     }
     
-    if (m_ParserToken != NULL)
+    if (m_ParserToken != nullptr)
     {
         m_ParserTokenLength = strlen(m_ParserToken);
         m_ParserDelimeter = m_SymFileBuffer[m_ParserToken - m_SymFileParseBuffer + m_ParserTokenLength];
@@ -128,7 +128,7 @@ void CSymbolTable::Load()
 
     if (g_Settings->LoadStringVal(Game_GameName).length() == 0)
     {
-        MessageBox(NULL, L"Game must be loaded", L"Symbols", MB_ICONWARNING | MB_OK);
+        MessageBox(nullptr, L"Game must be loaded", L"Symbols", MB_ICONWARNING | MB_OK);
         return;
     }
     
@@ -141,12 +141,12 @@ void CSymbolTable::Load()
         return;
     }
     
-    if (m_SymFileBuffer != NULL)
+    if (m_SymFileBuffer != nullptr)
     {
         delete[] m_SymFileBuffer;
     }
 
-    if (m_SymFileParseBuffer != NULL)
+    if (m_SymFileParseBuffer != nullptr)
     {
         delete[] m_SymFileParseBuffer;
     }
@@ -168,13 +168,13 @@ void CSymbolTable::Load()
     {
         uint32_t address = 0;
         int type = 0;
-        char* name = NULL;
-        char* description = NULL;
+        char* name = nullptr;
+        char* description = nullptr;
         
         // Address
         ParserFetchToken(",\n\0");
 
-        if (m_ParserToken == NULL || m_ParserTokenLength == 0)
+        if (m_ParserToken == nullptr || m_ParserTokenLength == 0)
         {
             // Empty line @EOF
             errorCode = ERR_SUCCESS;
@@ -236,10 +236,10 @@ void CSymbolTable::Load()
     }
     
     delete[] m_SymFileParseBuffer;
-    m_SymFileParseBuffer = NULL;
+    m_SymFileParseBuffer = nullptr;
 
     delete[] m_SymFileBuffer;
-    m_SymFileBuffer = NULL;
+    m_SymFileBuffer = nullptr;
 
     switch (errorCode)
     {
@@ -272,7 +272,7 @@ void CSymbolTable::Save()
         CSymbol& symbol = m_Symbols[i];
         stdstr strLine = stdstr_f("%08X,%s,%s", symbol.m_Address, symbol.TypeName(), symbol.m_Name);
         
-        if (symbol.m_Description != NULL)
+        if (symbol.m_Description != nullptr)
         {
             strLine += stdstr_f(",%s", symbol.m_Description);
         }
@@ -380,7 +380,7 @@ void CSymbolTable::GetValueString(char* dst, CSymbol* symbol)
 void CSymbolTable::ParseErrorAlert(char* message, int lineNumber)
 {
     stdstr messageFormatted = stdstr_f("%s\nLine %d", message, lineNumber);
-    MessageBox(NULL, messageFormatted.ToUTF16().c_str(), L"Parse error", MB_OK | MB_ICONWARNING);
+    MessageBox(nullptr, messageFormatted.ToUTF16().c_str(), L"Parse error", MB_OK | MB_ICONWARNING);
 }
 
 void CSymbolTable::Reset()
@@ -398,14 +398,14 @@ void CSymbolTable::AddSymbol(int type, uint32_t address, const char* name, const
 {
     CGuard guard(m_CS);
 
-    if (name == NULL || strlen(name) == 0)
+    if (name == nullptr || strlen(name) == 0)
     {
         return;
     }
 
-    if (description == NULL || strlen(description) == 0)
+    if (description == nullptr || strlen(description) == 0)
     {
-        description = NULL;
+        description = nullptr;
     }
 
     int id = m_NextSymbolId++;

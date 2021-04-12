@@ -95,7 +95,7 @@ extern "C" {
     typedef struct
     {
         void * hWnd;			/* Render window */
-        void * hStatusBar;    /* if render window does not have a status bar then this is NULL */
+        void * hStatusBar;    /* if render window does not have a status bar then this is nullptr */
 
         int32_t MemoryBswaped;    // If this is set to TRUE, then the memory has been pre
         //   bswap on a dword (32 bits) boundry

@@ -6,7 +6,7 @@ COptionsDirectoriesPage::COptionsDirectoriesPage(HWND hParent, const RECT & rcDi
 m_InUpdateSettings(false)
 {
     Create(hParent);
-    if (m_hWnd == NULL)
+    if (m_hWnd == nullptr)
     {
         return;
     }
@@ -70,13 +70,13 @@ void COptionsDirectoriesPage::SelectDirectory(LanguageStringID Title, CModifiedE
     stdstr InitialDir = EditBox.GetWindowText();
     std::wstring wTitle = wGS(Title);
     bi.hwndOwner = m_hWnd;
-    bi.pidlRoot = NULL;
+    bi.pidlRoot = nullptr;
     bi.pszDisplayName = Buffer;
     bi.lpszTitle = wTitle.c_str();
     bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS;
     bi.lpfn = (BFFCALLBACK)SelectDirCallBack;
     bi.lParam = (DWORD)InitialDir.c_str();
-    if ((pidl = SHBrowseForFolder(&bi)) != NULL)
+    if ((pidl = SHBrowseForFolder(&bi)) != nullptr)
     {
         if (SHGetPathFromIDList(pidl, Directory))
         {
@@ -194,7 +194,7 @@ void COptionsDirectoriesPage::UpdatePageSettings()
 
 void COptionsDirectoriesPage::UseSelectedClicked(UINT /*Code*/, int id, HWND /*ctl*/)
 {
-    CModifiedButton * Button = NULL;
+    CModifiedButton * Button = nullptr;
     switch (id)
     {
     case IDC_PLUGIN_DEFAULT: Button = &m_PluginDefault; break;
@@ -209,7 +209,7 @@ void COptionsDirectoriesPage::UseSelectedClicked(UINT /*Code*/, int id, HWND /*c
     case IDC_TEXTURE_OTHER: Button = &m_TextureDefault; break;
     }
 
-    if (Button == NULL)
+    if (Button == nullptr)
     {
         return;
     }

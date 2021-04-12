@@ -31,12 +31,12 @@ CRomList::CRomList() :
     m_RefreshThread((CThread::CTHREAD_START_ROUTINE)RefreshRomListStatic),
     m_StopRefresh(false),
     m_GameDir(g_Settings->LoadStringVal(RomList_GameDir).c_str()),
-    m_NotesIniFile(NULL),
-    m_ExtIniFile(NULL),
+    m_NotesIniFile(nullptr),
+    m_ExtIniFile(nullptr),
 #ifdef _WIN32
-    m_ZipIniFile(NULL),
+    m_ZipIniFile(nullptr),
 #endif
-    m_RomIniFile(NULL)
+    m_RomIniFile(nullptr)
 {
     WriteTrace(TraceRomList, TraceVerbose, "Start");
     if (g_Settings)
@@ -63,23 +63,23 @@ CRomList::~CRomList()
     if (m_NotesIniFile)
     {
         delete m_NotesIniFile;
-        m_NotesIniFile = NULL;
+        m_NotesIniFile = nullptr;
     }
     if (m_ExtIniFile)
     {
         delete m_ExtIniFile;
-        m_ExtIniFile = NULL;
+        m_ExtIniFile = nullptr;
     }
     if (m_RomIniFile)
     {
         delete m_RomIniFile;
-        m_RomIniFile = NULL;
+        m_RomIniFile = nullptr;
     }
 #ifdef _WIN32
     if (m_ZipIniFile)
     {
         delete m_ZipIniFile;
-        m_ZipIniFile = NULL;
+        m_ZipIniFile = nullptr;
     }
 #endif
     if (g_Settings)
@@ -277,7 +277,7 @@ void CRomList::FillRomList(strlist & FileList, const char * Directory)
                             const char backup_character = szHeader[2 * x + delimit_offset];
 
                             szHeader[2 * x + delimit_offset] = '\0';
-                            *(uint32_t *)&RomData[x] = strtoul(&szHeader[2 * x], NULL, 16);
+                            *(uint32_t *)&RomData[x] = strtoul(&szHeader[2 * x], nullptr, 16);
                             szHeader[2 * x + delimit_offset] = backup_character;
                         }
 
@@ -344,13 +344,13 @@ bool CRomList::LoadDataFromRomFile(const char * FileName, uint8_t * Data, int32_
         char zname[132];
         unzFile file;
         file = unzOpen(FileName);
-        if (file == NULL) { return false; }
+        if (file == nullptr) { return false; }
 
         port = unzGoToFirstFile(file);
         FoundRom = false;
         while (port == UNZ_OK && FoundRom == false)
         {
-            unzGetCurrentFileInfo(file, &info, zname, 128, NULL, 0, NULL, 0);
+            unzGetCurrentFileInfo(file, &info, zname, 128, nullptr, 0, nullptr, 0);
             if (unzLocateFile(file, zname, 1) != UNZ_OK)
             {
                 unzClose(file);
@@ -507,7 +507,7 @@ bool CRomList::FillRomInfo(ROM_INFO * pRomInfo)
 
     if (LoadDataFromRomFile(pRomInfo->szFullFileName, RomData, sizeof(RomData), &pRomInfo->RomSize, pRomInfo->FileFormat))
     {
-        if (strstr(pRomInfo->szFullFileName, "?") != NULL)
+        if (strstr(pRomInfo->szFullFileName, "?") != nullptr)
         {
             strcpy(pRomInfo->FileName, strstr(pRomInfo->szFullFileName, "?") + 1);
         }
@@ -613,7 +613,7 @@ void CRomList::FillRomExtensionInfo(ROM_INFO * pRomInfo)
     //Get the selected color
     String.Format("%s.Sel", pRomInfo->Status);
     String = m_RomIniFile->GetString("Rom Status", String.c_str(), "FFFFFFFF");
-    uint32_t selcol = strtoul(String.c_str(), NULL, 16);
+    uint32_t selcol = strtoul(String.c_str(), nullptr, 16);
     if (selcol & 0x80000000)
     {
         pRomInfo->SelColor = -1;

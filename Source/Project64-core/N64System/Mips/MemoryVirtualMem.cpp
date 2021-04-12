@@ -12,8 +12,8 @@
 #include <stdio.h>
 #include <Common/MemoryManagement.h>
 
-uint8_t * CMipsMemoryVM::m_Reserve1 = NULL;
-uint8_t * CMipsMemoryVM::m_Reserve2 = NULL;
+uint8_t * CMipsMemoryVM::m_Reserve1 = nullptr;
+uint8_t * CMipsMemoryVM::m_Reserve2 = nullptr;
 uint32_t CMipsMemoryVM::m_MemLookupAddress = 0;
 MIPS_DWORD CMipsMemoryVM::m_MemLookupValue;
 bool CMipsMemoryVM::m_MemLookupValid = true;
@@ -27,20 +27,20 @@ CMipsMemoryVM::CMipsMemoryVM(bool SavesReadOnly) :
     CSram(SavesReadOnly),
     CDMA(*this, *this),
     m_RomMapped(false),
-    m_Rom(NULL),
+    m_Rom(nullptr),
     m_RomSize(0),
     m_RomWrittenTo(false),
     m_RomWroteValue(0),
     m_HalfLine(0),
     m_HalfLineCheck(false),
     m_FieldSerration(0),
-    m_TLB_ReadMap(NULL),
-    m_TLB_WriteMap(NULL),
-    m_RDRAM(NULL),
-    m_DMEM(NULL),
-    m_IMEM(NULL),
+    m_TLB_ReadMap(nullptr),
+    m_TLB_WriteMap(nullptr),
+    m_RDRAM(nullptr),
+    m_DMEM(nullptr),
+    m_IMEM(nullptr),
     m_DDRomMapped(false),
-    m_DDRom(NULL),
+    m_DDRom(nullptr),
     m_DDRomSize(0)
 {
     g_Settings->RegisterChangeCB(Game_RDRamSize, this, (CSettings::SettingChangedFunc)RdramChanged);
@@ -109,37 +109,37 @@ void CMipsMemoryVM::FreeReservedMemory()
     if (m_Reserve1)
     {
         FreeAddressSpace(m_Reserve1, 0x20000000);
-        m_Reserve1 = NULL;
+        m_Reserve1 = nullptr;
     }
     if (m_Reserve2)
     {
         FreeAddressSpace(m_Reserve2, 0x20000000);
-        m_Reserve2 = NULL;
+        m_Reserve2 = nullptr;
     }
 }
 
 bool CMipsMemoryVM::Initialize(bool SyncSystem)
 {
-    if (m_RDRAM != NULL)
+    if (m_RDRAM != nullptr)
     {
         return true;
     }
 
-    if (!SyncSystem && m_RDRAM == NULL && m_Reserve1 != NULL)
+    if (!SyncSystem && m_RDRAM == nullptr && m_Reserve1 != nullptr)
     {
         m_RDRAM = m_Reserve1;
-        m_Reserve1 = NULL;
+        m_Reserve1 = nullptr;
     }
-    if (SyncSystem && m_RDRAM == NULL && m_Reserve2 != NULL)
+    if (SyncSystem && m_RDRAM == nullptr && m_Reserve2 != nullptr)
     {
         m_RDRAM = m_Reserve2;
-        m_Reserve2 = NULL;
+        m_Reserve2 = nullptr;
     }
-    if (m_RDRAM == NULL)
+    if (m_RDRAM == nullptr)
     {
         m_RDRAM = (uint8_t *)AllocateAddressSpace(0x20000000);
     }
-    if (m_RDRAM == NULL)
+    if (m_RDRAM == nullptr)
     {
         WriteTrace(TraceN64System, TraceError, "Failed to Reserve RDRAM (Size: 0x%X)", 0x20000000);
         FreeMemory();
@@ -147,14 +147,14 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
     }
 
     m_AllocatedRdramSize = g_Settings->LoadDword(Game_RDRamSize);
-    if (CommitMemory(m_RDRAM, m_AllocatedRdramSize, MEM_READWRITE) == NULL)
+    if (CommitMemory(m_RDRAM, m_AllocatedRdramSize, MEM_READWRITE) == nullptr)
     {
         WriteTrace(TraceN64System, TraceError, "Failed to Allocate RDRAM (Size: 0x%X)", m_AllocatedRdramSize);
         FreeMemory();
         return false;
     }
 
-    if (CommitMemory(m_RDRAM + 0x04000000, 0x2000, MEM_READWRITE) == NULL)
+    if (CommitMemory(m_RDRAM + 0x04000000, 0x2000, MEM_READWRITE) == nullptr)
     {
         WriteTrace(TraceN64System, TraceError, "Failed to Allocate DMEM/IMEM (Size: 0x%X)", 0x2000);
         FreeMemory();
@@ -169,7 +169,7 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
         m_RomMapped = true;
         m_Rom = m_RDRAM + 0x10000000;
         m_RomSize = g_Rom->GetRomSize();
-        if (CommitMemory(m_Rom, g_Rom->GetRomSize(), MEM_READWRITE) == NULL)
+        if (CommitMemory(m_Rom, g_Rom->GetRomSize(), MEM_READWRITE) == nullptr)
         {
             WriteTrace(TraceN64System, TraceError, "Failed to Allocate Rom (Size: 0x%X)", g_Rom->GetRomSize());
             FreeMemory();
@@ -187,14 +187,14 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
     }
 
     //64DD IPL
-    if (g_DDRom != NULL)
+    if (g_DDRom != nullptr)
     {
         if (g_Settings->LoadBool(Game_LoadRomToMemory))
         {
             m_DDRomMapped = true;
             m_DDRom = m_RDRAM + 0x06000000;
             m_DDRomSize = g_DDRom->GetRomSize();
-            if (CommitMemory(m_DDRom, g_DDRom->GetRomSize(), MEM_READWRITE) == NULL)
+            if (CommitMemory(m_DDRom, g_DDRom->GetRomSize(), MEM_READWRITE) == nullptr)
             {
                 WriteTrace(TraceN64System, TraceError, "Failed to Allocate Rom (Size: 0x%X)", g_DDRom->GetRomSize());
                 FreeMemory();
@@ -215,7 +215,7 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
     CPifRam::Reset();
 
     m_TLB_ReadMap = new size_t[0x100000];
-    if (m_TLB_ReadMap == NULL)
+    if (m_TLB_ReadMap == nullptr)
     {
         WriteTrace(TraceN64System, TraceError, "Failed to Allocate m_TLB_ReadMap (Size: 0x%X)", 0x100000 * sizeof(size_t));
         FreeMemory();
@@ -223,7 +223,7 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
     }
 
     m_TLB_WriteMap = new size_t[0x100000];
-    if (m_TLB_WriteMap == NULL)
+    if (m_TLB_WriteMap == nullptr)
     {
         WriteTrace(TraceN64System, TraceError, "Failed to Allocate m_TLB_WriteMap (Size: 0x%X)", 0xFFFFF * sizeof(size_t));
         FreeMemory();
@@ -239,11 +239,11 @@ void CMipsMemoryVM::FreeMemory()
     {
         if (DecommitMemory(m_RDRAM, 0x20000000))
         {
-            if (m_Reserve1 == NULL)
+            if (m_Reserve1 == nullptr)
             {
                 m_Reserve1 = m_RDRAM;
             }
-            else if (m_Reserve2 == NULL)
+            else if (m_Reserve2 == nullptr)
             {
                 m_Reserve2 = m_RDRAM;
             }
@@ -256,19 +256,19 @@ void CMipsMemoryVM::FreeMemory()
         {
             FreeAddressSpace(m_RDRAM, 0x20000000);
         }
-        m_RDRAM = NULL;
-        m_IMEM = NULL;
-        m_DMEM = NULL;
+        m_RDRAM = nullptr;
+        m_IMEM = nullptr;
+        m_DMEM = nullptr;
     }
     if (m_TLB_ReadMap)
     {
         delete[] m_TLB_ReadMap;
-        m_TLB_ReadMap = NULL;
+        m_TLB_ReadMap = nullptr;
     }
     if (m_TLB_WriteMap)
     {
         delete[] m_TLB_WriteMap;
-        m_TLB_WriteMap = NULL;
+        m_TLB_WriteMap = nullptr;
     }
     CPifRam::Reset();
 }
@@ -343,7 +343,7 @@ bool CMipsMemoryVM::LW_VAddr(uint32_t VAddr, uint32_t& Value)
     }
 
     uint8_t* BaseAddress = (uint8_t*)m_TLB_ReadMap[VAddr >> 12];
-    if (BaseAddress == NULL)
+    if (BaseAddress == nullptr)
     {
         return false;
     }
@@ -1026,7 +1026,7 @@ void CMipsMemoryVM::RdramChanged(CMipsMemoryVM * _this)
     else
     {
         void * result = CommitMemory(_this->m_RDRAM + old_size, new_size - old_size, MEM_READWRITE);
-        if (result == NULL)
+        if (result == nullptr)
         {
             WriteTrace(TraceN64System, TraceError, "failed to allocate extended memory");
             g_Notify->FatalError(GS(MSG_MEM_ALLOC_ERROR));
@@ -1340,7 +1340,7 @@ void CMipsMemoryVM::Load32AudioInterface(void)
         }
         else
         {
-            if (g_Plugins->Audio()->AiReadLength != NULL)
+            if (g_Plugins->Audio()->AiReadLength != nullptr)
             {
                 m_MemLookupValue.UW[0] = g_Plugins->Audio()->AiReadLength();
             }
@@ -1433,7 +1433,7 @@ void CMipsMemoryVM::Load32SerialInterface(void)
 void CMipsMemoryVM::Load32CartridgeDomain1Address1(void)
 {
     //64DD IPL ROM
-    if (g_DDRom != NULL && (m_MemLookupAddress & 0xFFFFFF) < g_MMU->m_DDRomSize)
+    if (g_DDRom != nullptr && (m_MemLookupAddress & 0xFFFFFF) < g_MMU->m_DDRomSize)
     {
         m_MemLookupValue.UW[0] = *(uint32_t *)&g_MMU->m_DDRom[(m_MemLookupAddress & 0xFFFFFF)];
     }
@@ -1949,7 +1949,7 @@ void CMipsMemoryVM::Write32VideoInterface(void)
         if (g_Reg->VI_STATUS_REG != m_MemLookupValue.UW[0])
         {
             g_Reg->VI_STATUS_REG = m_MemLookupValue.UW[0];
-            if (g_Plugins->Gfx()->ViStatusChanged != NULL)
+            if (g_Plugins->Gfx()->ViStatusChanged != nullptr)
             {
                 g_Plugins->Gfx()->ViStatusChanged();
             }
@@ -1963,7 +1963,7 @@ void CMipsMemoryVM::Write32VideoInterface(void)
         }
 #endif
         g_Reg->VI_ORIGIN_REG = (m_MemLookupValue.UW[0] & 0xFFFFFF);
-        //if (UpdateScreen != NULL )
+        //if (UpdateScreen != nullptr )
         //{
         //	UpdateScreen();
         //}
@@ -1972,7 +1972,7 @@ void CMipsMemoryVM::Write32VideoInterface(void)
         if (g_Reg->VI_WIDTH_REG != m_MemLookupValue.UW[0])
         {
             g_Reg->VI_WIDTH_REG = m_MemLookupValue.UW[0];
-            if (g_Plugins->Gfx()->ViWidthChanged != NULL)
+            if (g_Plugins->Gfx()->ViWidthChanged != nullptr)
             {
                 g_Plugins->Gfx()->ViWidthChanged();
             }
@@ -2013,7 +2013,7 @@ void CMipsMemoryVM::Write32AudioInterface(void)
         }
         else
         {
-            if (g_Plugins->Audio()->AiLenChanged != NULL)
+            if (g_Plugins->Audio()->AiLenChanged != nullptr)
             {
                 g_Plugins->Audio()->AiLenChanged();
             }

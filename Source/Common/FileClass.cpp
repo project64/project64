@@ -17,7 +17,7 @@ CFile::CFile() :
 #ifdef USE_WINDOWS_API
 m_hFile(INVALID_HANDLE_VALUE),
 #else
-m_hFile(NULL),
+m_hFile(nullptr),
 #endif
 m_bCloseOnDelete(false)
 {
@@ -37,7 +37,7 @@ CFile::CFile(const char * lpszFileName, uint32_t nOpenFlags) :
 #ifdef USE_WINDOWS_API
 m_hFile(INVALID_HANDLE_VALUE),
 #else
-m_hFile(NULL),
+m_hFile(nullptr),
 #endif
 m_bCloseOnDelete(true)
 {
@@ -49,7 +49,7 @@ CFile::~CFile()
 #ifdef USE_WINDOWS_API
     if (m_hFile != INVALID_HANDLE_VALUE && m_bCloseOnDelete)
 #else
-    if (m_hFile != NULL && m_bCloseOnDelete)
+    if (m_hFile != nullptr && m_bCloseOnDelete)
 #endif
     {
         Close();
@@ -63,7 +63,7 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
         return false;
     }
 
-    if (lpszFileName == NULL || strlen(lpszFileName) == 0)
+    if (lpszFileName == nullptr || strlen(lpszFileName) == 0)
     {
         return false;
     }
@@ -99,7 +99,7 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
     // Map modeNoInherit flag
     SECURITY_ATTRIBUTES sa;
     sa.nLength = sizeof(sa);
-    sa.lpSecurityDescriptor = NULL;
+    sa.lpSecurityDescriptor = nullptr;
     sa.bInheritHandle = (nOpenFlags & modeNoInherit) == 0;
 
     // Map creation flags
@@ -110,7 +110,7 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
     }
 
     // Attempt file creation
-    HANDLE hFile = ::CreateFileA(lpszFileName, dwAccess, dwShareMode, &sa, dwCreateFlag, FILE_ATTRIBUTE_NORMAL, NULL);
+    HANDLE hFile = ::CreateFileA(lpszFileName, dwAccess, dwShareMode, &sa, dwCreateFlag, FILE_ATTRIBUTE_NORMAL, nullptr);
     if (hFile == INVALID_HANDLE_VALUE)
     { //#define ERROR_PATH_NOT_FOUND             3L
         //ULONG err = GetLastError();
@@ -151,7 +151,7 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
         (nOpenFlags & CFileBase::modeReadWrite) == CFileBase::modeReadWrite)
     {
         m_hFile = fopen(lpszFileName, "rb+");
-        if (m_hFile != NULL)
+        if (m_hFile != nullptr)
         {
             SeekToBegin();
         }
@@ -159,7 +159,7 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
     else if ((nOpenFlags & CFileBase::modeRead) == CFileBase::modeRead)
     {
         m_hFile = fopen(lpszFileName, "rb");
-        if (m_hFile != NULL)
+        if (m_hFile != nullptr)
         {
             SeekToBegin();
         }
@@ -183,10 +183,10 @@ bool CFile::Close()
     }
     m_hFile = INVALID_HANDLE_VALUE;
 #else
-    if (m_hFile != NULL)
+    if (m_hFile != nullptr)
     {
         fclose((FILE *)m_hFile);
-        m_hFile = NULL;
+        m_hFile = nullptr;
     }
 #endif
     m_bCloseOnDelete = false;
@@ -208,7 +208,7 @@ bool CFile::IsOpen(void) const
 #ifdef USE_WINDOWS_API
     return m_hFile != INVALID_HANDLE_VALUE;
 #else
-    return m_hFile != NULL;
+    return m_hFile != nullptr;
 #endif
 }
 
@@ -237,7 +237,7 @@ bool CFile::Write(const void* lpBuf, uint32_t nCount)
 
 #ifdef USE_WINDOWS_API
     ULONG nWritten = 0;
-    if (!::WriteFile(m_hFile, lpBuf, nCount, &nWritten, NULL))
+    if (!::WriteFile(m_hFile, lpBuf, nCount, &nWritten, nullptr))
     {
         return false;
     }
@@ -265,7 +265,7 @@ uint32_t CFile::Read(void* lpBuf, uint32_t nCount)
 
 #ifdef USE_WINDOWS_API
     DWORD dwRead = 0;
-    if (!::ReadFile(m_hFile, lpBuf, nCount, &dwRead, NULL))
+    if (!::ReadFile(m_hFile, lpBuf, nCount, &dwRead, nullptr))
     {
         return 0;
     }
@@ -279,14 +279,14 @@ uint32_t CFile::Read(void* lpBuf, uint32_t nCount)
 int32_t CFile::Seek(int32_t lOff, SeekPosition nFrom)
 {
 #ifdef USE_WINDOWS_API
-    ULONG dwNew = ::SetFilePointer(m_hFile, lOff, NULL, (ULONG)nFrom);
+    ULONG dwNew = ::SetFilePointer(m_hFile, lOff, nullptr, (ULONG)nFrom);
     if (dwNew == (ULONG)-1)
     {
         return -1;
     }
     return dwNew;
 #else
-    if (m_hFile == NULL)
+    if (m_hFile == nullptr)
     {
         return -1;
     }
@@ -310,7 +310,7 @@ int32_t CFile::Seek(int32_t lOff, SeekPosition nFrom)
 uint32_t CFile::GetPosition() const
 {
 #ifdef USE_WINDOWS_API
-    return ::SetFilePointer(m_hFile, 0, NULL, FILE_CURRENT);
+    return ::SetFilePointer(m_hFile, 0, nullptr, FILE_CURRENT);
 #else
     return (uint32_t)ftell((FILE *)m_hFile);
 #endif

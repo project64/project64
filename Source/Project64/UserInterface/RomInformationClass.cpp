@@ -6,8 +6,8 @@ RomInformation::RomInformation(const char * RomFile) :
     m_DeleteRomInfo(true),
     m_DeleteDiskInfo(true),
     m_FileName(RomFile ? RomFile : ""),
-    m_pRomInfo(NULL),
-    m_pDiskInfo(NULL)
+    m_pRomInfo(nullptr),
+    m_pDiskInfo(nullptr)
 {
     if (m_FileName.length() == 0)  { return; }
     if ((CPath(m_FileName).GetExtension() != "ndd") && (CPath(m_FileName).GetExtension() != "d64"))
@@ -16,7 +16,7 @@ RomInformation::RomInformation(const char * RomFile) :
         if (!m_pRomInfo->LoadN64Image(m_FileName.c_str()))
         {
             delete m_pRomInfo;
-            m_pRomInfo = NULL;
+            m_pRomInfo = nullptr;
             return;
         }
     }
@@ -26,7 +26,7 @@ RomInformation::RomInformation(const char * RomFile) :
         if (!m_pDiskInfo->LoadDiskImage(m_FileName.c_str()))
         {
             delete m_pDiskInfo;
-            m_pDiskInfo = NULL;
+            m_pDiskInfo = nullptr;
             return;
         }
     }
@@ -37,7 +37,7 @@ RomInformation::RomInformation(CN64Rom * RomInfo) :
     m_DeleteDiskInfo(false),
     m_FileName(RomInfo ? RomInfo->GetFileName().c_str() : ""),
     m_pRomInfo(RomInfo),
-    m_pDiskInfo(NULL)
+    m_pDiskInfo(nullptr)
 {
 }
 
@@ -45,7 +45,7 @@ RomInformation::RomInformation(CN64Disk * DiskInfo) :
     m_DeleteRomInfo(false),
     m_DeleteDiskInfo(false),
     m_FileName(DiskInfo ? DiskInfo->GetFileName().c_str() : ""),
-    m_pRomInfo(NULL),
+    m_pRomInfo(nullptr),
     m_pDiskInfo(DiskInfo)
 {
 }
@@ -63,7 +63,7 @@ void RomInformation::DisplayInformation(HWND hParent) const
 {
     if (m_FileName.length() == 0) { return; }
 
-    DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_Rom_Information), hParent, (DLGPROC)RomInfoProc, (DWORD)this);
+    DialogBoxParam(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDD_Rom_Information), hParent, (DLGPROC)RomInfoProc, (DWORD)this);
 }
 
 DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
@@ -76,7 +76,7 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
         SetProp(hDlg, L"this", (RomInformation *)lParam);
         RomInformation * _this = (RomInformation *)lParam;
 
-        if (_this->m_pDiskInfo == NULL)
+        if (_this->m_pDiskInfo == nullptr)
         {
             SetWindowText(hDlg, wGS(INFO_TITLE).c_str());
 

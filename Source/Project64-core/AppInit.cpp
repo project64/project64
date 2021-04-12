@@ -19,7 +19,7 @@ void SetTraceModuleNames(void);
 static void IncreaseThreadPriority(void);
 #endif
 
-static CTraceFileLog * g_LogFile = NULL;
+static CTraceFileLog * g_LogFile = nullptr;
 
 void LogFlushChanged(CTraceFileLog * LogFile)
 {
@@ -104,30 +104,30 @@ void SetupTrace(void)
 {
     AddLogModule();
 
-    g_Settings->RegisterChangeCB(Debugger_TraceMD5, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TraceThread, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TracePath, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TraceSettings, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TraceUnknown, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TraceAppInit, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TraceAppCleanup, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TraceN64System, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TracePlugins, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TraceGFXPlugin, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TraceAudioPlugin, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TraceControllerPlugin, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TraceRSPPlugin, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TraceRSP, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TraceAudio, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TraceRegisterCache, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TraceRecompiler, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TraceTLB, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TraceProtectedMEM, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TraceUserInterface, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TraceRomList, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TraceExceptionHandler, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceMD5, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceThread, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TracePath, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceSettings, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceUnknown, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceAppInit, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceAppCleanup, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceN64System, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TracePlugins, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceGFXPlugin, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceAudioPlugin, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceControllerPlugin, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceRSPPlugin, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceRSP, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceAudio, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceRegisterCache, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceRecompiler, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceTLB, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceProtectedMEM, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceUserInterface, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceRomList, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceExceptionHandler, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->RegisterChangeCB(Debugger_AppLogFlush, g_LogFile, (CSettings::SettingChangedFunc)LogFlushChanged);
-    UpdateTraceLevel(NULL);
+    UpdateTraceLevel(nullptr);
 
     WriteTrace(TraceAppInit, TraceInfo, "Application Starting %s", VER_FILE_VERSION_STR);
 }
@@ -136,35 +136,35 @@ void CleanupTrace(void)
 {
     WriteTrace(TraceAppCleanup, TraceDebug, "Done");
 
-    g_Settings->UnregisterChangeCB(Debugger_TraceMD5, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TraceThread, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TracePath, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TraceSettings, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TraceUnknown, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TraceAppInit, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TraceAppCleanup, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TraceN64System, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TracePlugins, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TraceGFXPlugin, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TraceAudioPlugin, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TraceControllerPlugin, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TraceRSPPlugin, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TraceRSP, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TraceAudio, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TraceRegisterCache, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TraceRecompiler, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TraceTLB, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TraceProtectedMEM, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TraceUserInterface, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TraceRomList, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TraceExceptionHandler, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceMD5, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceThread, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TracePath, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceSettings, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceUnknown, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceAppInit, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceAppCleanup, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceN64System, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TracePlugins, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceGFXPlugin, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceAudioPlugin, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceControllerPlugin, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceRSPPlugin, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceRSP, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceAudio, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceRegisterCache, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceRecompiler, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceTLB, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceProtectedMEM, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceUserInterface, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceRomList, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceExceptionHandler, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_AppLogFlush, g_LogFile, (CSettings::SettingChangedFunc)LogFlushChanged);
 }
 
 void TraceDone(void)
 {
     CloseTrace();
-    if (g_LogFile) { delete g_LogFile; g_LogFile = NULL; }
+    if (g_LogFile) { delete g_LogFile; g_LogFile = nullptr; }
 }
 
 const char * AppName(void)
@@ -220,7 +220,7 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
         g_Notify = Notify;
         InitializeLog();
         WriteTrace(TraceAppInit, TraceDebug, "Starting (BaseDirectory: %s)", BaseDirectory ? BaseDirectory : "null");
-        if (Notify == NULL)
+        if (Notify == nullptr)
         {
             WriteTrace(TraceAppInit, TraceError, "No Notification class passed");
             return false;
@@ -283,13 +283,13 @@ void AppCleanup(void)
     WriteTrace(TraceAppCleanup, TraceDebug, "cleaning up global objects");
     CleanupTrace();
 
-    if (g_Enhancements) { delete g_Enhancements; g_Enhancements = NULL; }
-    if (g_Rom) { delete g_Rom; g_Rom = NULL; }
-    if (g_DDRom) { delete g_DDRom; g_DDRom = NULL; }
-    if (g_Disk) { delete g_Disk; g_Disk = NULL; }
-    if (g_Plugins) { delete g_Plugins; g_Plugins = NULL; }
-    if (g_Settings) { delete g_Settings; g_Settings = NULL; }
-    if (g_Lang) { delete g_Lang; g_Lang = NULL; }
+    if (g_Enhancements) { delete g_Enhancements; g_Enhancements = nullptr; }
+    if (g_Rom) { delete g_Rom; g_Rom = nullptr; }
+    if (g_DDRom) { delete g_DDRom; g_DDRom = nullptr; }
+    if (g_Disk) { delete g_Disk; g_Disk = nullptr; }
+    if (g_Plugins) { delete g_Plugins; g_Plugins = nullptr; }
+    if (g_Settings) { delete g_Settings; g_Settings = nullptr; }
+    if (g_Lang) { delete g_Lang; g_Lang = nullptr; }
 
     CMipsMemoryVM::FreeReservedMemory();
     TraceDone();

@@ -21,7 +21,7 @@ void Rumblepak::WriteTo(int32_t Control, uint32_t address, uint8_t * data)
 {
 	if ((address) == 0xC000)
 	{
-		if (g_Plugins->Control()->RumbleCommand != NULL)
+		if (g_Plugins->Control()->RumbleCommand != nullptr)
 		{
 			g_Plugins->Control()->RumbleCommand(Control, *(int *)data);
 		}

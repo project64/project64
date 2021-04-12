@@ -26,19 +26,19 @@ class AndroidLogger : public CTraceModule
     {
     }
 };
-static AndroidLogger * g_AndroidLogger = NULL;
+static AndroidLogger * g_AndroidLogger = nullptr;
 #endif
-static CTraceFileLog * g_LogFile = NULL;
+static CTraceFileLog * g_LogFile = nullptr;
 
 void SetupTrace(void)
 {
-    if (g_LogFile != NULL)
+    if (g_LogFile != nullptr)
     {
         return;
     }
 
 #ifdef ANDROID
-    if (g_AndroidLogger == NULL)
+    if (g_AndroidLogger == nullptr)
     {
         g_AndroidLogger = new AndroidLogger();
     }
@@ -56,8 +56,8 @@ void SetupTrace(void)
 
 void StartTrace(void)
 {
-    const char * log_dir = g_settings ? g_settings->log_dir() : NULL;
-    if (log_dir == NULL || log_dir[0] == '\0')
+    const char * log_dir = g_settings ? g_settings->log_dir() : nullptr;
+    if (log_dir == nullptr || log_dir[0] == '\0')
     {
         return;
     }
@@ -77,6 +77,6 @@ void StopTrace(void)
     {
         TraceRemoveModule(g_LogFile);
         delete g_LogFile;
-        g_LogFile = NULL;
+        g_LogFile = nullptr;
     }
 }

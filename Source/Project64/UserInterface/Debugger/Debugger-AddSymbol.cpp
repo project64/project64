@@ -16,7 +16,7 @@ LRESULT CAddSymbolDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     for (int i = 0;; i++)
     {
         const char* typeName = CSymbolTable::m_SymbolTypes[i].name;
-        if (typeName == NULL)
+        if (typeName == nullptr)
         {
             break;
         }

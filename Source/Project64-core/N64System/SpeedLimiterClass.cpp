@@ -62,7 +62,7 @@ bool CSpeedLimiter::Timer_Process(uint32_t * FrameRate)
     if (CurrentTimeValue - LastTime >= 1000000)
     {
         /* Output FPS */
-        if (FrameRate != NULL) { *FrameRate = m_Frames; }
+        if (FrameRate != nullptr) { *FrameRate = m_Frames; }
         m_Frames = 0;
         m_LastTime = CurrentTime;
         return true;

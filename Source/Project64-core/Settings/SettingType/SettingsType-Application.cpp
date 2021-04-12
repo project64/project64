@@ -2,7 +2,7 @@
 #include "SettingsType-Application.h"
 #include <Common/path.h>
 
-CIniFile * CSettingTypeApplication::m_SettingsIniFile = NULL;
+CIniFile * CSettingTypeApplication::m_SettingsIniFile = nullptr;
 
 CSettingTypeApplication::CSettingTypeApplication(const char * Section, const char * Name, uint32_t DefaultValue) :
     m_DefaultStr(""),
@@ -105,7 +105,7 @@ void CSettingTypeApplication::Flush()
 
 void CSettingTypeApplication::ResetAll()
 {
-    if (m_SettingsIniFile == NULL)
+    if (m_SettingsIniFile == nullptr)
     {
         return;
     }
@@ -123,7 +123,7 @@ void CSettingTypeApplication::CleanUp()
     {
         m_SettingsIniFile->SetAutoFlush(true);
         delete m_SettingsIniFile;
-        m_SettingsIniFile = NULL;
+        m_SettingsIniFile = nullptr;
     }
 }
 
@@ -229,7 +229,7 @@ void CSettingTypeApplication::Save(uint32_t Index, bool Value)
         ((m_DefaultSetting == Default_Constant && m_DefaultValue == (uint32_t)Value) ||
         (m_DefaultSetting != Default_Constant && (indexed ? g_Settings->LoadBoolIndex(m_DefaultSetting, Index) : g_Settings->LoadBool(m_DefaultSetting)) == Value)))
     {
-        m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), NULL);
+        m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), nullptr);
     }
     else
     {
@@ -243,7 +243,7 @@ void CSettingTypeApplication::Save(uint32_t /*Index*/, uint32_t Value)
         ((m_DefaultSetting == Default_Constant && m_DefaultValue == Value) ||
         (m_DefaultSetting != Default_Constant && g_Settings->LoadDword(m_DefaultSetting) == Value)))
     {
-        m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), NULL);
+        m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), nullptr);
     }
     else
     {
@@ -258,11 +258,11 @@ void CSettingTypeApplication::Save(uint32_t Index, const std::string & Value)
 
 void CSettingTypeApplication::Save(uint32_t /*Index*/, const char * Value)
 {
-    if (m_DefaultSetting != Default_None && Value != NULL &&
+    if (m_DefaultSetting != Default_None && Value != nullptr &&
         ((m_DefaultSetting == Default_Constant && strcmp(m_DefaultStr,Value) == 0) ||
         (m_DefaultSetting != Default_Constant && strcmp(g_Settings->LoadStringVal(m_DefaultSetting).c_str(),Value) == 0)))
     {
-        m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), NULL);
+        m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), nullptr);
     }
     else
     {
@@ -284,5 +284,5 @@ std::string CSettingTypeApplication::FixSectionName(const char * Section)
 
 void CSettingTypeApplication::Delete(uint32_t /*Index*/)
 {
-    m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), NULL);
+    m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), nullptr);
 }

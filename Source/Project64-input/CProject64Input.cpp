@@ -35,7 +35,7 @@ void CProject64Input::InitiateControllers(CONTROL_INFO * ControlInfo)
 {
     CGuard guard(m_CS);
     m_ControlInfo = *ControlInfo;
-    if (m_DirectInput.get() == NULL)
+    if (m_DirectInput.get() == nullptr)
     {
         m_DirectInput.reset(new CDirectInput(m_hinst));
     }
@@ -97,7 +97,7 @@ void CProject64Input::EndScanDevices(void)
 CDirectInput::ScanResult CProject64Input::ScanDevices(BUTTON & Button)
 {
     CDirectInput::ScanResult Result = CDirectInput::SCAN_FAILED;
-    if (m_DirectInput.get() != NULL)
+    if (m_DirectInput.get() != nullptr)
     {
         Result = m_DirectInput->ScanDevices(Button);
     }
@@ -106,7 +106,7 @@ CDirectInput::ScanResult CProject64Input::ScanDevices(BUTTON & Button)
 
 std::wstring CProject64Input::ButtonAssignment(BUTTON & Button)
 {
-    if (m_DirectInput.get() != NULL)
+    if (m_DirectInput.get() != nullptr)
     {
         return m_DirectInput->ButtonAssignment(Button);
     }
@@ -115,7 +115,7 @@ std::wstring CProject64Input::ButtonAssignment(BUTTON & Button)
 
 std::wstring CProject64Input::ControllerDevices(const N64CONTROLLER & Controller)
 {
-    if (m_DirectInput.get() != NULL)
+    if (m_DirectInput.get() != nullptr)
     {
         return m_DirectInput->ControllerDevices(Controller);
     }

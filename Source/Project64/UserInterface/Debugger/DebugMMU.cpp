@@ -8,12 +8,12 @@
 
 uint8_t* CDebugMMU::GetPhysicalPtr(uint32_t paddr, WORD* flags)
 {
-    if (g_MMU == NULL)
+    if (g_MMU == nullptr)
     {
-        return NULL;
+        return nullptr;
     }
 
-    uint8_t* ptr = NULL;
+    uint8_t* ptr = nullptr;
     int nbyte = paddr & 3;
     paddr = paddr & ~3;
     
@@ -33,7 +33,7 @@ uint8_t* CDebugMMU::GetPhysicalPtr(uint32_t paddr, WORD* flags)
     {
         uint32_t iplRomOffset = paddr - 0x06000000;
 
-        if (g_DDRom != NULL && iplRomOffset < g_DDRom->GetRomSize())
+        if (g_DDRom != nullptr && iplRomOffset < g_DDRom->GetRomSize())
         {
             ptr = (uint8_t*)(g_MMU->Rdram() + paddr);
         }
@@ -41,7 +41,7 @@ uint8_t* CDebugMMU::GetPhysicalPtr(uint32_t paddr, WORD* flags)
     else if (paddr >= 0x10000000 && paddr <= 0x1FBFFFFF) // Cartridge ROM
     {
         uint32_t cartRomOffset = paddr - 0x10000000;
-        if (g_Rom != NULL && cartRomOffset < g_Rom->GetRomSize())
+        if (g_Rom != nullptr && cartRomOffset < g_Rom->GetRomSize())
         {
             ptr = (uint8_t*)(g_Rom->GetRomAddress() + cartRomOffset);
             bCartRom = true;
@@ -140,12 +140,12 @@ uint8_t* CDebugMMU::GetPhysicalPtr(uint32_t paddr, WORD* flags)
         }
     }
 
-    if (ptr == NULL)
+    if (ptr == nullptr)
     {
-        return NULL;
+        return nullptr;
     }
 
-    if (flags != NULL)
+    if (flags != nullptr)
     {
         *flags = (bCartRom ? PJMEM_CARTROM : 0);
     }
@@ -162,9 +162,9 @@ uint8_t* CDebugMMU::GetPhysicalPtr(uint32_t paddr, WORD* flags)
 
 bool CDebugMMU::GetPhysicalByte(uint32_t paddr, uint8_t* value)
 {
-    uint8_t* ptr = GetPhysicalPtr(paddr, NULL);
+    uint8_t* ptr = GetPhysicalPtr(paddr, nullptr);
 
-    if (ptr != NULL)
+    if (ptr != nullptr)
     {
         *value = *ptr;
         return true;
@@ -206,7 +206,7 @@ bool CDebugMMU::GetPhysicalByte(uint32_t paddr, uint8_t* value)
         else
         {
             CAudioPlugin* audioPlg = g_Plugins->Audio();
-            audioLength = audioPlg->AiReadLength != NULL ? audioPlg->AiReadLength() : 0;
+            audioLength = audioPlg->AiReadLength != nullptr ? audioPlg->AiReadLength() : 0;
         }
 
         *value = (audioLength >> (24 - nByte * 8)) & 0xFF;
@@ -229,7 +229,7 @@ bool CDebugMMU::SetPhysicalByte(uint32_t paddr, uint8_t value)
     uint8_t* ptr = GetPhysicalPtr(paddr, &flags);
     bool bCartRom = flags & PJMEM_CARTROM;
 
-    if (ptr != NULL)
+    if (ptr != nullptr)
     {
         if (!bCartRom)
         {

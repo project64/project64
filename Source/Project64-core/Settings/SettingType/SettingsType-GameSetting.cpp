@@ -4,7 +4,7 @@
 
 bool CSettingTypeGame::m_RdbEditor = false;
 bool CSettingTypeGame::m_EraseDefaults = true;
-std::string * CSettingTypeGame::m_SectionIdent = NULL;
+std::string * CSettingTypeGame::m_SectionIdent = nullptr;
 
 CSettingTypeGame::CSettingTypeGame(const char * Name, bool DefaultValue) :
     CSettingTypeApplication("", Name, DefaultValue)
@@ -33,18 +33,18 @@ CSettingTypeGame::~CSettingTypeGame()
 void CSettingTypeGame::Initialize(void)
 {
     WriteTrace(TraceAppInit, TraceDebug, "Start");
-    UpdateSettings(NULL);
-    g_Settings->RegisterChangeCB(Game_IniKey, NULL, UpdateSettings);
+    UpdateSettings(nullptr);
+    g_Settings->RegisterChangeCB(Game_IniKey, nullptr, UpdateSettings);
     WriteTrace(TraceAppInit, TraceDebug, "Done");
 }
 
 void CSettingTypeGame::CleanUp(void)
 {
-    g_Settings->UnregisterChangeCB(Game_IniKey, NULL, UpdateSettings);
+    g_Settings->UnregisterChangeCB(Game_IniKey, nullptr, UpdateSettings);
     if (m_SectionIdent)
     {
         delete m_SectionIdent;
-        m_SectionIdent = NULL;
+        m_SectionIdent = nullptr;
     }
 }
 
@@ -59,7 +59,7 @@ void CSettingTypeGame::UpdateSettings(void * /*Data */)
     m_EraseDefaults = g_Settings->LoadBool(Setting_EraseGameDefaults);
     stdstr SectionIdent = g_Settings->LoadStringVal(Game_IniKey);
 
-    if (m_SectionIdent == NULL)
+    if (m_SectionIdent == nullptr)
     {
         m_SectionIdent = new stdstr;
     }

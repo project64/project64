@@ -94,7 +94,7 @@ void TexCacheInit()
 {
     for (int i = 0; i < 65536; i++)
     {
-        cachelut[i] = NULL;
+        cachelut[i] = nullptr;
     }
 }
 

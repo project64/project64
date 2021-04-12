@@ -2,7 +2,7 @@
 #include "wtl-BitmapPicture.h"
 
 CBitmapPicture::CBitmapPicture() :
-	m_hBitmap(NULL),
+	m_hBitmap(nullptr),
 	m_nResourceID(-1),
 	m_ResourceIcon(false)
 {
@@ -24,7 +24,7 @@ LRESULT CBitmapPicture::OnPaint(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPara
 		CIcon hIcon = (HICON)::LoadImage(ModuleHelper::GetResourceInstance(), m_nResourceID > 0 ? MAKEINTRESOURCE(m_nResourceID) : m_strResourceName.c_str(), IMAGE_ICON, m_IconWidth, m_IconHeight, LR_DEFAULTCOLOR | LR_DEFAULTSIZE);
 		if (!hIcon.IsNull())
 		{
-			dc.DrawIconEx(0, 0, hIcon, rect.Width(), rect.Height(), 0, NULL, DI_NORMAL);
+			dc.DrawIconEx(0, 0, hIcon, rect.Width(), rect.Height(), 0, nullptr, DI_NORMAL);
 		}
 	}
     else

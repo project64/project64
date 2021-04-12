@@ -3,7 +3,7 @@
 
 CDateTime::CDateTime()
 {
-    m_time = time(NULL);
+    m_time = time(nullptr);
 }
 
 std::string CDateTime::Format(const char * format)
@@ -15,6 +15,6 @@ std::string CDateTime::Format(const char * format)
 
 CDateTime & CDateTime::SetToNow(void)
 {
-    m_time = time(NULL);
+    m_time = time(nullptr);
     return *this;
 }

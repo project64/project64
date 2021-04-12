@@ -82,7 +82,7 @@ void CSram::DmaToSram(uint8_t * Source, int32_t StartOffset, uint32_t len)
     // Fix Dezaemon 3D saves
     StartOffset = ((StartOffset >> 3) & 0xFFFF8000) | (StartOffset & 0x7FFF);
 
-    if (((StartOffset & 3) == 0) && ((((uint32_t)Source) & 3) == 0) && NULL != NULL)
+    if (((StartOffset & 3) == 0) && ((((uint32_t)Source) & 3) == 0) && nullptr != nullptr)
     {
         m_File.Seek(StartOffset, CFile::begin);
         m_File.Write(Source, len);

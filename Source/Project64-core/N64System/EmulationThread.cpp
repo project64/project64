@@ -21,7 +21,7 @@ void CN64System::StartEmulationThread(CThread * thread)
         SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
     }
 
-    CoInitialize(NULL);
+    CoInitialize(nullptr);
 
     EmulationStarting(thread);
 
@@ -35,7 +35,7 @@ void CN64System::StartEmulationThread(CThread * thread)
 void CN64System::CloseCpu()
 {
     WriteTrace(TraceN64System, TraceDebug, "Start");
-    if (m_thread == NULL)
+    if (m_thread == nullptr)
     {
         return;
     }
@@ -56,10 +56,10 @@ void CN64System::CloseCpu()
     }
 
     CThread * hThread = m_thread;
-    m_thread = NULL;
+    m_thread = nullptr;
     for (int count = 0; count < 200; count++)
     {
-        if (hThread == NULL || !hThread->isRunning())
+        if (hThread == nullptr || !hThread->isRunning())
         {
             WriteTrace(TraceN64System, TraceDebug, "Thread no longer running");
             break;

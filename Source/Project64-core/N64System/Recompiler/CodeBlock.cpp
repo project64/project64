@@ -21,8 +21,8 @@ m_VAddrEnter(VAddrEnter),
 m_VAddrFirst(VAddrEnter),
 m_VAddrLast(VAddrEnter),
 m_CompiledLocation(CompiledLocation),
-m_EnterSection(NULL),
-m_RecompilerOps(NULL),
+m_EnterSection(nullptr),
+m_RecompilerOps(nullptr),
 m_Test(1)
 {
 #if defined(__arm__) || defined(_M_ARM)
@@ -37,26 +37,26 @@ m_Test(1)
 #elif defined(__arm__) || defined(_M_ARM)
     m_RecompilerOps = new CArmRecompilerOps;
 #endif
-    if (m_RecompilerOps == NULL)
+    if (m_RecompilerOps == nullptr)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
     CCodeSection * baseSection = new CCodeSection(this, VAddrEnter, 0, false);
-    if (baseSection == NULL)
+    if (baseSection == nullptr)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
     m_Sections.push_back(baseSection);
-    baseSection->AddParent(NULL);
+    baseSection->AddParent(nullptr);
     baseSection->m_CompiledLocation = (uint8_t *)-1;
     baseSection->m_Cont.JumpPC = VAddrEnter;
     baseSection->m_Cont.FallThrough = true;
     baseSection->m_Cont.RegSet = baseSection->m_RegEnter;
 
     m_EnterSection = new CCodeSection(this, VAddrEnter, 1, true);
-    if (m_EnterSection == NULL)
+    if (m_EnterSection == nullptr)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
@@ -89,18 +89,18 @@ CCodeBlock::~CCodeBlock()
     }
     m_Sections.clear();
 
-    if (m_RecompilerOps != NULL)
+    if (m_RecompilerOps != nullptr)
     {
 #if defined(__i386__) || defined(_M_IX86)
         delete (CX86RecompilerOps *)m_RecompilerOps;
 #endif
-        m_RecompilerOps = NULL;
+        m_RecompilerOps = nullptr;
     }
 }
 
 bool CCodeBlock::SetSection(CCodeSection * & Section, CCodeSection * CurrentSection, uint32_t TargetPC, bool LinkAllowed, uint32_t CurrentPC)
 {
-    if (Section != NULL)
+    if (Section != nullptr)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
@@ -117,7 +117,7 @@ bool CCodeBlock::SetSection(CCodeSection * & Section, CCodeSection * CurrentSect
 
     if (LinkAllowed)
     {
-        if (Section != NULL)
+        if (Section != nullptr)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -129,10 +129,10 @@ bool CCodeBlock::SetSection(CCodeSection * & Section, CCodeSection * CurrentSect
         }
     }
 
-    if (Section == NULL)
+    if (Section == nullptr)
     {
         Section = new CCodeSection(this, TargetPC, m_Sections.size(), LinkAllowed);
-        if (Section == NULL)
+        if (Section == nullptr)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
             return false;
@@ -145,7 +145,7 @@ bool CCodeBlock::SetSection(CCodeSection * & Section, CCodeSection * CurrentSect
         Section->AddParent(CurrentSection);
         if (TargetPC <= CurrentPC && TargetPC != m_VAddrEnter)
         {
-            CCodeSection * SplitSection = NULL;
+            CCodeSection * SplitSection = nullptr;
             for (SectionMap::const_iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
             {
                 if (itr->first >= TargetPC)
@@ -154,7 +154,7 @@ bool CCodeBlock::SetSection(CCodeSection * & Section, CCodeSection * CurrentSect
                 }
                 SplitSection = itr->second;
             }
-            if (SplitSection == NULL)
+            if (SplitSection == nullptr)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -182,7 +182,7 @@ bool CCodeBlock::SetSection(CCodeSection * & Section, CCodeSection * CurrentSect
                 BaseSection->AddParent(SplitSection);
 
                 SplitSection->m_EndPC = TargetPC - 4;
-                SplitSection->m_JumpSection = NULL;
+                SplitSection->m_JumpSection = nullptr;
                 SplitSection->m_ContinueSection = BaseSection;
                 SplitSection->SetContinueAddress(TargetPC - 4, TargetPC);
                 SplitSection->SetJumpAddress((uint32_t)-1, (uint32_t)-1, false);
@@ -204,12 +204,12 @@ bool CCodeBlock::CreateBlockLinkage(CCodeSection * EnterSection)
             SectionMap::const_iterator itr = m_SectionMap.find(TestPC);
             if (itr != m_SectionMap.end() && CurrentSection != itr->second)
             {
-                if (CurrentSection->m_ContinueSection != NULL &&
+                if (CurrentSection->m_ContinueSection != nullptr &&
                     CurrentSection->m_ContinueSection != itr->second)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
-                if (CurrentSection->m_ContinueSection == NULL)
+                if (CurrentSection->m_ContinueSection == nullptr)
                 {
                     SetSection(CurrentSection->m_ContinueSection, CurrentSection, TestPC, true, TestPC);
                     CurrentSection->SetContinueAddress(TestPC - 4, TestPC);
@@ -220,8 +220,8 @@ bool CCodeBlock::CreateBlockLinkage(CCodeSection * EnterSection)
                 CPU_Message("Section %d", CurrentSection->m_SectionID);
                 if (EnterSection != m_EnterSection)
                 {
-                    if (CurrentSection->m_JumpSection != NULL ||
-                        CurrentSection->m_ContinueSection != NULL ||
+                    if (CurrentSection->m_JumpSection != nullptr ||
+                        CurrentSection->m_ContinueSection != nullptr ||
                         CurrentSection->m_EndSection)
                     {
                         break;
@@ -335,11 +335,11 @@ bool CCodeBlock::CreateBlockLinkage(CCodeSection * EnterSection)
         TestPC += IncludeDelaySlot ? 8 : 4;
 
         //Find the next section
-        CCodeSection * NewSection = NULL;
+        CCodeSection * NewSection = nullptr;
         for (SectionMap::const_iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
         {
-            if (CurrentSection->m_JumpSection != NULL ||
-                CurrentSection->m_ContinueSection != NULL ||
+            if (CurrentSection->m_JumpSection != nullptr ||
+                CurrentSection->m_ContinueSection != nullptr ||
                 CurrentSection->m_EndSection)
             {
                 continue;
@@ -347,7 +347,7 @@ bool CCodeBlock::CreateBlockLinkage(CCodeSection * EnterSection)
             NewSection = itr->second;
             break;
         }
-        if (NewSection == NULL)
+        if (NewSection == nullptr)
         {
             break;
         }
@@ -356,8 +356,8 @@ bool CCodeBlock::CreateBlockLinkage(CCodeSection * EnterSection)
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         CurrentSection = NewSection;
-        if (CurrentSection->m_JumpSection != NULL ||
-            CurrentSection->m_ContinueSection != NULL ||
+        if (CurrentSection->m_JumpSection != nullptr ||
+            CurrentSection->m_ContinueSection != nullptr ||
             CurrentSection->m_EndSection)
         {
             break;
@@ -370,8 +370,8 @@ bool CCodeBlock::CreateBlockLinkage(CCodeSection * EnterSection)
     for (SectionMap::iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
     {
         CCodeSection * Section = itr->second;
-        if (Section->m_JumpSection != NULL ||
-            Section->m_ContinueSection != NULL ||
+        if (Section->m_JumpSection != nullptr ||
+            Section->m_ContinueSection != nullptr ||
             Section->m_EndSection)
         {
             continue;
@@ -754,11 +754,11 @@ bool CCodeBlock::Compile()
     m_RecompilerOps->EnterCodeBlock();
     if (g_System->bLinkBlocks())
     {
-        while (m_EnterSection !=NULL && m_EnterSection->GenerateNativeCode(NextTest()));
+        while (m_EnterSection !=nullptr && m_EnterSection->GenerateNativeCode(NextTest()));
     }
     else
     {
-        if (m_EnterSection == NULL || !m_EnterSection->GenerateNativeCode(NextTest()))
+        if (m_EnterSection == nullptr || !m_EnterSection->GenerateNativeCode(NextTest()))
         {
             return false;
         }

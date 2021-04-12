@@ -21,8 +21,8 @@ CGameStatusPage::CGameStatusPage(HWND hParent, const RECT & rcDispay)
     {
         for (CIniFile::strlist::iterator item = Keys.begin(); item != Keys.end(); item++)
         {
-            if (strstr(item->c_str(), ".Sel") != NULL) { continue; }
-            if (strstr(item->c_str(), ".Auto") != NULL) { continue; }
+            if (strstr(item->c_str(), ".Sel") != nullptr) { continue; }
+            if (strstr(item->c_str(), ".Auto") != nullptr) { continue; }
             ComboBox->AddItem(stdstr(*item).ToUTF16().c_str(), item->c_str());
         }
         ComboBox->SetTextField(GetDlgItem(IDC_STATUS_TEXT));

@@ -45,7 +45,7 @@ void CScanButton::DetectKey(void)
     time(&m_ScanStart);
     g_InputPlugin->StartScanDevices(m_DisplayCtrlId);
     m_DisplayCtrl.Invalidate();
-    m_ScanBtn.SetTimer(DETECT_KEY_TIMER, SACN_INTERVAL, NULL);
+    m_ScanBtn.SetTimer(DETECT_KEY_TIMER, SACN_INTERVAL, nullptr);
     MakeOverlay();
 }
 
@@ -118,10 +118,10 @@ void CScanButton::OnTimer(UINT_PTR nIDEvent)
             CWindow Dialog = m_ScanBtn.GetParent().GetParent();
             Dialog.SetWindowText(L"Configure Input");
 
-            if (m_Overlay.m_hWnd != NULL)
+            if (m_Overlay.m_hWnd != nullptr)
             {
                 m_Overlay.DestroyWindow();
-                m_Overlay = NULL;
+                m_Overlay = nullptr;
             }
  
             g_InputPlugin->EndScanDevices();
@@ -143,8 +143,8 @@ void CScanButton::MakeOverlay(void)
     CRect size;
     ControllerDlg.GetWindowRect(&size);
 #ifndef _DEBUG
-    m_Overlay = CreateWindowEx(WS_EX_TOPMOST | WS_EX_TRANSPARENT, L"BlockerClass", L"Blocker", WS_POPUP, size.left, size.top, size.Width(), size.Height(), ControllerDlg, nullptr, g_InputPlugin->hInst(), NULL);
-    if (m_Overlay == NULL)
+    m_Overlay = CreateWindowEx(WS_EX_TOPMOST | WS_EX_TRANSPARENT, L"BlockerClass", L"Blocker", WS_POPUP, size.left, size.top, size.Width(), size.Height(), ControllerDlg, nullptr, g_InputPlugin->hInst(), nullptr);
+    if (m_Overlay == nullptr)
     {
         return;
     }

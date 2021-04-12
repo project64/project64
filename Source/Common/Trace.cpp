@@ -12,7 +12,7 @@
 
 typedef std::map<uint32_t, stdstr> ModuleNameMap;
 
-uint32_t * g_ModuleLogLevel = NULL;
+uint32_t * g_ModuleLogLevel = nullptr;
 static bool g_TraceClosed = false;
 static ModuleNameMap g_ModuleNames;
 
@@ -53,7 +53,7 @@ void WriteTraceFull(uint32_t module, uint8_t severity, const char * file, int li
     size_t nlen = _vscprintf(format, args) + 1;
     char * Message = (char *)alloca(nlen * sizeof(char));
     Message[nlen - 1] = 0;
-    if (Message != NULL)
+    if (Message != nullptr)
     {
         vsprintf(Message, format, args);
         GetTraceObjet().TraceMessage(module, severity, file, line, function, Message);
@@ -74,7 +74,7 @@ void CloseTrace(void)
     if (g_ModuleLogLevel)
     {
         delete g_ModuleLogLevel;
-        g_ModuleLogLevel = NULL;
+        g_ModuleLogLevel = nullptr;
     }
 }
 
@@ -83,7 +83,7 @@ void TraceSetMaxModule(uint32_t MaxModule, uint8_t DefaultSeverity)
     if (g_ModuleLogLevel)
     {
         delete g_ModuleLogLevel;
-        g_ModuleLogLevel = NULL;
+        g_ModuleLogLevel = nullptr;
     }
     g_ModuleLogLevel = new uint32_t[MaxModule];
     for (uint32_t i = 0; i < MaxModule; i++)
@@ -119,7 +119,7 @@ CTraceModule * CTraceLog::RemoveTraceModule(CTraceModule * TraceModule)
             return TraceModule;
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 void CTraceLog::CloseTrace(void)
@@ -130,7 +130,7 @@ void CTraceLog::CloseTrace(void)
     if (g_ModuleLogLevel)
     {
         delete g_ModuleLogLevel;
-        g_ModuleLogLevel = NULL;
+        g_ModuleLogLevel = nullptr;
     }
 }
 
@@ -158,7 +158,7 @@ CTraceModule * TraceAddModule(CTraceModule * TraceModule)
 {
     if (g_TraceClosed)
     {
-        return NULL;
+        return nullptr;
     }
     GetTraceObjet().AddTraceModule(TraceModule);
     return TraceModule;
@@ -235,7 +235,7 @@ void CTraceFileLog::Write(uint32_t module, uint8_t severity, const char * /*file
     localtime_r(&ltime, &result);
 
     struct timeval curTime;
-    gettimeofday(&curTime, NULL);
+    gettimeofday(&curTime, nullptr);
     int milliseconds = curTime.tv_usec / 1000;
 
     stdstr_f timestamp("%04d/%02d/%02d %02d:%02d:%02d.%03d %05d,", result.tm_year+1900, result.tm_mon+1, result.tm_mday, result.tm_hour, result.tm_min, result.tm_sec, milliseconds, CThread::GetCurrentThreadId());

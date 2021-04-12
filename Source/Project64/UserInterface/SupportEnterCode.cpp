@@ -69,47 +69,47 @@ LRESULT CSupportEnterCode::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM
     hDC.SelectFont(hFont);
     if (hDC.DrawText(DescriptionText.c_str(), DescriptionText.length(), &rcWin, DT_LEFT | DT_CALCRECT | DT_WORDBREAK | DT_NOCLIP) > 0)
     {
-        hDescription.SetWindowPos(NULL, 0, 0, rcWin.right, rcWin.bottom, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOOWNERZORDER);
+        hDescription.SetWindowPos(nullptr, 0, 0, rcWin.right, rcWin.bottom, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOOWNERZORDER);
     }
     hDescription.GetWindowRect(&rcWin);
-    ::MapWindowPoints(NULL, m_hWnd, (LPPOINT)&rcWin, 2);
+    ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&rcWin, 2);
 
-    MachineId.SetWindowPos(NULL, rcWin.left, rcWin.bottom + 4, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
+    MachineId.SetWindowPos(nullptr, rcWin.left, rcWin.bottom + 4, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
     MachineId.GetWindowRect(&rcWin);
-    ::MapWindowPoints(NULL, m_hWnd, (LPPOINT)&rcWin, 2);
+    ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&rcWin, 2);
 
     CWindow Code = GetDlgItem(IDC_CODE);
-    Code.SetWindowPos(NULL, rcWin.left, rcWin.bottom + 4, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
+    Code.SetWindowPos(nullptr, rcWin.left, rcWin.bottom + 4, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
     Code.GetWindowRect(&rcWin);
-    ::MapWindowPoints(NULL, m_hWnd, (LPPOINT)&rcWin, 2);
+    ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&rcWin, 2);
 
     CWindow RequestDescption = GetDlgItem(IDC_REQUEST_DESCPTION);
     RequestDescption.ShowWindow(SWP_HIDEWINDOW);
-    RequestDescption.SetWindowPos(NULL, rcWin.left, rcWin.bottom + 10, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
+    RequestDescption.SetWindowPos(nullptr, rcWin.left, rcWin.bottom + 10, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
     RequestDescption.GetWindowRect(&rcWin);
-    ::MapWindowPoints(NULL, m_hWnd, (LPPOINT)&rcWin, 2);
+    ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&rcWin, 2);
 
     CWindow RequestLink = GetDlgItem(IDC_REQUEST_LINK);
     RequestLink.ShowWindow(SWP_HIDEWINDOW);
-    RequestLink.SetWindowPos(NULL, rcWin.left, rcWin.bottom + 4, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
+    RequestLink.SetWindowPos(nullptr, rcWin.left, rcWin.bottom + 4, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
     RequestLink.GetWindowRect(&rcWin);
-    ::MapWindowPoints(NULL, m_hWnd, (LPPOINT)&rcWin, 2);
+    ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&rcWin, 2);
 
     RECT CancelBtnWin = { 0 };
     CancelBtn.GetWindowRect(&CancelBtnWin);
-    ::MapWindowPoints(NULL, m_hWnd, (LPPOINT)&CancelBtnWin, 2);
-    CancelBtn.SetWindowPos(NULL, CancelBtnWin.left, rcWin.bottom + 40, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
+    ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&CancelBtnWin, 2);
+    CancelBtn.SetWindowPos(nullptr, CancelBtnWin.left, rcWin.bottom + 40, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
 
     RECT OkBtnWin = { 0 };
     OkBtn.GetWindowRect(&OkBtnWin);
-    ::MapWindowPoints(NULL, m_hWnd, (LPPOINT)&OkBtnWin, 2);
-    OkBtn.SetWindowPos(NULL, OkBtnWin.left, rcWin.bottom + 40, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
+    ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&OkBtnWin, 2);
+    OkBtn.SetWindowPos(nullptr, OkBtnWin.left, rcWin.bottom + 40, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
     OkBtn.GetWindowRect(&OkBtnWin);
-    ::MapWindowPoints(NULL, m_hWnd, (LPPOINT)&OkBtnWin, 2);
+    ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&OkBtnWin, 2);
 
     GetWindowRect(&rcWin);
     SetRect(&rcWin, 0, 0, rcWin.Width(), OkBtnWin.bottom + 30);
-    AdjustWindowRectEx(&rcWin, GetStyle(), GetMenu() != NULL, GetExStyle());
+    AdjustWindowRectEx(&rcWin, GetStyle(), GetMenu() != nullptr, GetExStyle());
     int32_t Left = (GetSystemMetrics(SM_CXSCREEN) - rcWin.Width()) / 2;
     int32_t	Top = (GetSystemMetrics(SM_CYSCREEN) - rcWin.Height()) / 2;
     MoveWindow(Left, Top, rcWin.Width(), rcWin.Height(), TRUE);

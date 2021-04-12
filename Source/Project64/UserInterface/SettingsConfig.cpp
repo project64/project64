@@ -5,10 +5,10 @@
 #include <Project64-core/Settings/SettingType/SettingsType-Application.h>
 
 CSettingConfig::CSettingConfig(bool bJustGameSetting /* = false */) :
-    m_CurrentPage(NULL),
-    m_GeneralOptionsPage(NULL),
-    m_AdvancedPage(NULL),
-    m_DefaultsPage(NULL),
+    m_CurrentPage(nullptr),
+    m_GeneralOptionsPage(nullptr),
+    m_AdvancedPage(nullptr),
+    m_DefaultsPage(nullptr),
     m_GameConfig(bJustGameSetting),
     m_bTVNSelChangedSupported(false)
 {
@@ -30,7 +30,7 @@ void CSettingConfig::Display(void * ParentWindow)
         g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_Settings);
     }
 
-    BOOL result = m_thunk.Init(NULL, NULL);
+    BOOL result = m_thunk.Init(nullptr, nullptr);
     if (result)
     {
         _AtlWinModule.AddCreateWndData(&m_thunk.cd, this);
@@ -88,7 +88,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 
     RECT rcSettingInfo;
     ::GetWindowRect(GetDlgItem(IDC_SETTING_INFO), &rcSettingInfo);
-    ::MapWindowPoints(NULL, m_hWnd, (LPPOINT)&rcSettingInfo, 2);
+    ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&rcSettingInfo, 2);
 
     CConfigSettingSection * SettingsSection;
 
@@ -180,7 +180,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
     {
         CConfigSettingSection * Section = *iter;
 
-        HTREEITEM hSectionItem = NULL;
+        HTREEITEM hSectionItem = nullptr;
 
         for (size_t i = 0; i < Section->GetPageCount(); i++)
         {
@@ -194,13 +194,13 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
                 hSectionItem = m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM, Section->GetPageTitle(), 0, 0, 0, 0, (ULONG)Page, TVI_ROOT, TVI_LAST);
                 continue;
             }
-            if (hSectionItem == NULL)
+            if (hSectionItem == nullptr)
             {
                 continue;
             }
             m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM, wGS(Page->PageTitle()).c_str(), 0, 0, 0, 0, (ULONG)Page, hSectionItem, TVI_LAST);
         }
-        if (bFirstItem && hSectionItem != NULL)
+        if (bFirstItem && hSectionItem != nullptr)
         {
             bFirstItem = false;
             m_PagesTreeList.Expand(hSectionItem);

@@ -5,10 +5,10 @@
 #include <Common/MemoryManagement.h>
 
 CRecompMemory::CRecompMemory() :
-m_RecompCode(NULL),
+m_RecompCode(nullptr),
 m_RecompSize(0)
 {
-    m_RecompPos = NULL;
+    m_RecompPos = nullptr;
 }
 
 CRecompMemory::~CRecompMemory()
@@ -16,9 +16,9 @@ CRecompMemory::~CRecompMemory()
     if (m_RecompCode)
     {
 		FreeAddressSpace(m_RecompCode,MaxCompileBufferSize + 4);
-        m_RecompCode = NULL;
+        m_RecompCode = nullptr;
     }
-    m_RecompPos = NULL;
+    m_RecompPos = nullptr;
 }
 
 bool CRecompMemory::AllocateMemory()
@@ -26,7 +26,7 @@ bool CRecompMemory::AllocateMemory()
     WriteTrace(TraceRecompiler, TraceDebug, "Start");
     uint8_t * RecompCodeBase = (uint8_t *)AllocateAddressSpace(MaxCompileBufferSize + 4);
     WriteTrace(TraceRecompiler, TraceDebug, "RecompCodeBase = %X", RecompCodeBase);
-    if (RecompCodeBase == NULL)
+    if (RecompCodeBase == nullptr)
     {
         WriteTrace(TraceRecompiler, TraceError, "failed to allocate RecompCodeBase");
         g_Notify->DisplayError(MSG_MEM_ALLOC_ERROR);
@@ -34,7 +34,7 @@ bool CRecompMemory::AllocateMemory()
     }
 
     m_RecompCode = (uint8_t *)CommitMemory(RecompCodeBase, InitialCompileBufferSize, MEM_EXECUTE_READWRITE);
-    if (m_RecompCode == NULL)
+    if (m_RecompCode == nullptr)
     {
         WriteTrace(TraceRecompiler, TraceError, "failed to commit initial buffer");
 		FreeAddressSpace(RecompCodeBase,MaxCompileBufferSize + 4);
@@ -61,7 +61,7 @@ void CRecompMemory::CheckRecompMem()
         return;
     }
     void * MemAddr = CommitMemory(m_RecompCode + m_RecompSize, IncreaseCompileBufferSize, MEM_EXECUTE_READWRITE);
-    if (MemAddr == NULL)
+    if (MemAddr == nullptr)
     {
         WriteTrace(TraceRecompiler, TraceError, "failed to increase buffer");
         g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);

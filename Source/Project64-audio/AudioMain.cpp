@@ -38,9 +38,9 @@ bool g_romopen = false;
 uint32_t g_Dacrate = 0, hack = 0;
 
 #ifdef _WIN32
-DirectSoundDriver * g_SoundDriver = NULL;
+DirectSoundDriver * g_SoundDriver = nullptr;
 #else
-OpenSLESDriver * g_SoundDriver = NULL;
+OpenSLESDriver * g_SoundDriver = nullptr;
 #endif
 
 void PluginInit(void)
@@ -60,7 +60,7 @@ EXPORT void CALL PluginLoaded(void)
 {
     PluginInit();
     WriteTrace(TraceAudioInterface, TraceDebug, "Called");
-    if (g_settings != NULL)
+    if (g_settings != nullptr)
     {
         g_settings->SetSyncViaAudioEnabled(true);
     }
@@ -138,7 +138,7 @@ EXPORT uint32_t CALL AiReadLength(void)
 {
     WriteTrace(TraceAudioInterface, TraceDebug, "Start");
     uint32_t len = 0;
-    if (g_SoundDriver != NULL)
+    if (g_SoundDriver != nullptr)
     {
         *g_AudioInfo.AI_LEN_REG = g_SoundDriver->AI_ReadLength();
         len = *g_AudioInfo.AI_LEN_REG;
@@ -164,11 +164,11 @@ EXPORT void CALL AiUpdate(int32_t Wait)
 EXPORT void CALL CloseDLL(void)
 {
     WriteTrace(TraceAudioInterface, TraceDebug, "Called");
-    if (g_SoundDriver != NULL)
+    if (g_SoundDriver != nullptr)
     {
         g_SoundDriver->AI_Shutdown();
         delete g_SoundDriver;
-        g_SoundDriver = NULL;
+        g_SoundDriver = nullptr;
     }
     CleanupAudioSettings();
     StopTrace();
@@ -211,7 +211,7 @@ EXPORT void CALL GetDllInfo(PLUGIN_INFO * PluginInfo)
 EXPORT int32_t CALL InitiateAudio(AUDIO_INFO Audio_Info)
 {
     WriteTrace(TraceAudioInterface, TraceDebug, "Start");
-    if (g_SoundDriver != NULL)
+    if (g_SoundDriver != nullptr)
     {
         g_SoundDriver->AI_Shutdown();
         delete g_SoundDriver;
@@ -279,7 +279,7 @@ extern "C" void UseUnregisteredSetting(int /*SettingID*/)
 void SetTimerResolution(void)
 {
     HMODULE hMod = GetModuleHandle(L"ntdll.dll");
-    if (hMod != NULL)
+    if (hMod != nullptr)
     {
         typedef LONG(NTAPI* tNtSetTimerResolution)(IN ULONG DesiredResolution, IN BOOLEAN SetResolution, OUT PULONG CurrentResolution);
         tNtSetTimerResolution NtSetTimerResolution = (tNtSetTimerResolution)GetProcAddress(hMod, "NtSetTimerResolution");

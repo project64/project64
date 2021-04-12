@@ -20,7 +20,7 @@ LRESULT CAddBreakpointDlg::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL&
     {
         wchar_t addrStr[9];
         m_AddressEdit.GetWindowText(addrStr, 9);
-        uint32_t address = wcstoul(addrStr, NULL, 16);
+        uint32_t address = wcstoul(addrStr, nullptr, 16);
 
         CBreakpoints* breakpoints = m_Debugger->Breakpoints();
 

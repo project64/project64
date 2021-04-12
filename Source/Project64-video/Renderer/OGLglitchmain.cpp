@@ -106,17 +106,17 @@ PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB;
 const char * APIENTRY dummy_wglGetExtensionsString(HDC)
 {
     g_Notify->DisplayError("wglGetExtensionsString");
-    return NULL;
+    return nullptr;
 }
 
 PFNGLBINDFRAMEBUFFEREXTPROC glBindFramebufferEXT;
 PFNGLFRAMEBUFFERTEXTURE2DEXTPROC glFramebufferTexture2DEXT;
 PFNGLGENFRAMEBUFFERSEXTPROC glGenFramebuffersEXT;
-PFNGLBINDRENDERBUFFEREXTPROC glBindRenderbufferEXT = NULL;
-PFNGLDELETERENDERBUFFERSEXTPROC glDeleteRenderbuffersEXT = NULL;
-PFNGLGENRENDERBUFFERSEXTPROC glGenRenderbuffersEXT = NULL;
-PFNGLRENDERBUFFERSTORAGEEXTPROC glRenderbufferStorageEXT = NULL;
-PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT = NULL;
+PFNGLBINDRENDERBUFFEREXTPROC glBindRenderbufferEXT = nullptr;
+PFNGLDELETERENDERBUFFERSEXTPROC glDeleteRenderbuffersEXT = nullptr;
+PFNGLGENRENDERBUFFERSEXTPROC glGenRenderbuffersEXT = nullptr;
+PFNGLRENDERBUFFERSTORAGEEXTPROC glRenderbufferStorageEXT = nullptr;
+PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT = nullptr;
 PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
 PFNGLDELETEFRAMEBUFFERSEXTPROC glDeleteFramebuffersEXT;
 void APIENTRY dummy_glGenRenderbuffers(GLsizei/*n*/, GLuint* /*renderbuffers*/)
@@ -184,7 +184,7 @@ void APIENTRY dummy_glSecondaryColor3f(GLfloat/*red*/, GLfloat/*green*/, GLfloat
 GLuint APIENTRY dummy_glCreateShader(GLenum/*type*/)
 { /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
     g_Notify->DisplayError("glCreateShader");
-    return ((GLuint)(NULL));
+    return ((GLuint)(nullptr));
 }
 void APIENTRY dummy_glShaderSource(GLuint, GLsizei, const GLchar **, GLint *)
 { /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
@@ -197,7 +197,7 @@ void APIENTRY dummy_glCompileShader(GLuint/*shader*/)
 GLuint APIENTRY dummy_glCreateProgram(void)
 { /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
     g_Notify->DisplayError("glCreateProgram");
-    return ((GLuint)(NULL));
+    return ((GLuint)(nullptr));
 }
 void APIENTRY dummy_glAttachObject(GLhandleARB, GLhandleARB)
 { /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
@@ -292,9 +292,9 @@ int lfb_color_fmt;
 float invtex[2];
 
 #ifdef _WIN32
-static HDC hDC = NULL;
-static HGLRC hGLRC = NULL;
-static HWND hToolBar = NULL;
+static HDC hDC = nullptr;
+static HGLRC hGLRC = nullptr;
+static HWND hToolBar = nullptr;
 #endif // _WIN32
 
 static int savedWidtho, savedHeighto;
@@ -371,7 +371,7 @@ void gfxColorMask(bool rgb, bool a)
 
 int isExtensionSupported(const char *extension)
 {
-    const GLubyte *extensions = NULL;
+    const GLubyte *extensions = nullptr;
     const GLubyte *start;
     GLubyte *where, *terminator;
 
@@ -402,7 +402,7 @@ int isExtensionSupported(const char *extension)
 #ifdef _WIN32
 int isWglExtensionSupported(const char *extension)
 {
-    const GLubyte *extensions = NULL;
+    const GLubyte *extensions = nullptr;
     const GLubyte *start;
     GLubyte *where, *terminator;
 
@@ -471,11 +471,11 @@ bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_loc
     screen_width = g_width;
     screen_height = g_height;
 
-    if ((HWND)gfx.hWnd != NULL)
+    if ((HWND)gfx.hWnd != nullptr)
     {
         hDC = GetDC((HWND)gfx.hWnd);
     }
-    if (hDC == NULL)
+    if (hDC == nullptr)
     {
         WriteTrace(TraceGlitch, TraceWarning, "GetDC on main window failed");
         return false;
@@ -506,7 +506,7 @@ bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_loc
 
     HGLRC CurrenthGLRC = wglGetCurrentContext();
 
-    if (CurrenthGLRC == NULL || CurrenthGLRC == hGLRC)
+    if (CurrenthGLRC == nullptr || CurrenthGLRC == hGLRC)
     {
         if (!wglMakeCurrent(hDC, hGLRC))
         {
@@ -535,9 +535,9 @@ bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_loc
     glActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)wglGetProcAddress("glActiveTextureARB");
     glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC)wglGetProcAddress("glMultiTexCoord2fARB");
 
-    if (glActiveTextureARB == NULL)
+    if (glActiveTextureARB == nullptr)
         glActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)dummy_glActiveTexture;
-    if (glMultiTexCoord2fARB == NULL)
+    if (glMultiTexCoord2fARB == nullptr)
         glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC)dummy_glMultiTexCoord2f;
 #endif // _WIN32
 
@@ -571,7 +571,7 @@ bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_loc
 
 #ifdef _WIN32
     glBlendFuncSeparateEXT = (PFNGLBLENDFUNCSEPARATEEXTPROC)wglGetProcAddress("glBlendFuncSeparateEXT");
-    if (glBlendFuncSeparateEXT == NULL)
+    if (glBlendFuncSeparateEXT == nullptr)
         glBlendFuncSeparateEXT = (PFNGLBLENDFUNCSEPARATEEXTPROC)dummy_glBlendFuncSeparate;
 #endif // _WIN32
 
@@ -582,13 +582,13 @@ bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_loc
 
 #ifdef _WIN32
     glFogCoordfEXT = (PFNGLFOGCOORDFPROC)wglGetProcAddress("glFogCoordfEXT");
-    if (glFogCoordfEXT == NULL)
+    if (glFogCoordfEXT == nullptr)
         glFogCoordfEXT = (PFNGLFOGCOORDFPROC)dummy_glFogCoordf;
 #endif // _WIN32
 
 #ifdef _WIN32
     wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)wglGetProcAddress("wglGetExtensionsStringARB");
-    if (wglGetExtensionsStringARB == NULL)
+    if (wglGetExtensionsStringARB == nullptr)
         wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)dummy_wglGetExtensionsString;
 #endif // _WIN32
 
@@ -599,15 +599,15 @@ bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_loc
     glCheckFramebufferStatusEXT = (PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC)wglGetProcAddress("glCheckFramebufferStatusEXT");
     glDeleteFramebuffersEXT = (PFNGLDELETEFRAMEBUFFERSEXTPROC)wglGetProcAddress("glDeleteFramebuffersEXT");
 
-    if (glBindFramebufferEXT == NULL)
+    if (glBindFramebufferEXT == nullptr)
         glBindFramebufferEXT = (PFNGLBINDFRAMEBUFFEREXTPROC)dummy_glBindFramebuffer;
-    if (glFramebufferTexture2DEXT == NULL)
+    if (glFramebufferTexture2DEXT == nullptr)
         glFramebufferTexture2DEXT = (PFNGLFRAMEBUFFERTEXTURE2DEXTPROC)dummy_glFramebufferTexture2D;
-    if (glGenFramebuffersEXT == NULL)
+    if (glGenFramebuffersEXT == nullptr)
         glGenFramebuffersEXT = (PFNGLGENFRAMEBUFFERSEXTPROC)dummy_glGenFramebuffers;
-    if (glCheckFramebufferStatusEXT == NULL)
+    if (glCheckFramebufferStatusEXT == nullptr)
         glCheckFramebufferStatusEXT = (PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC)dummy_glCheckFramebufferStatus;
-    if (glDeleteFramebuffersEXT == NULL)
+    if (glDeleteFramebuffersEXT == nullptr)
         glDeleteFramebuffersEXT = (PFNGLDELETEFRAMEBUFFERSEXTPROC)dummy_glDeleteFramebuffers;
 
     glBindRenderbufferEXT = (PFNGLBINDRENDERBUFFEREXTPROC)wglGetProcAddress("glBindRenderbufferEXT");
@@ -616,15 +616,15 @@ bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_loc
     glRenderbufferStorageEXT = (PFNGLRENDERBUFFERSTORAGEEXTPROC)wglGetProcAddress("glRenderbufferStorageEXT");
     glFramebufferRenderbufferEXT = (PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC)wglGetProcAddress("glFramebufferRenderbufferEXT");
 
-    if (glBindRenderbufferEXT == NULL)
+    if (glBindRenderbufferEXT == nullptr)
         glBindRenderbufferEXT = (PFNGLBINDRENDERBUFFEREXTPROC)dummy_glBindRenderbuffer;
-    if (glDeleteRenderbuffersEXT == NULL)
+    if (glDeleteRenderbuffersEXT == nullptr)
         glDeleteRenderbuffersEXT = (PFNGLDELETERENDERBUFFERSEXTPROC)dummy_glDeleteRenderbuffers;
-    if (glGenRenderbuffersEXT == NULL)
+    if (glGenRenderbuffersEXT == nullptr)
         glGenRenderbuffersEXT = (PFNGLGENRENDERBUFFERSEXTPROC)dummy_glGenRenderbuffers;
-    if (glRenderbufferStorageEXT == NULL)
+    if (glRenderbufferStorageEXT == nullptr)
         glRenderbufferStorageEXT = (PFNGLRENDERBUFFERSTORAGEEXTPROC)dummy_glRenderbufferStorage;
-    if (glFramebufferRenderbufferEXT == NULL)
+    if (glFramebufferRenderbufferEXT == nullptr)
         glFramebufferRenderbufferEXT = (PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC)dummy_glFramebufferRenderbuffer;
 #endif // _WIN32
 
@@ -666,40 +666,40 @@ bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_loc
 #ifdef _WIN32
     glCompressedTexImage2DARB = (PFNGLCOMPRESSEDTEXIMAGE2DPROC)wglGetProcAddress("glCompressedTexImage2DARB");
 
-    if (glCreateShaderObjectARB == NULL)
+    if (glCreateShaderObjectARB == nullptr)
         glCreateShaderObjectARB = (PFNGLCREATESHADEROBJECTARBPROC)dummy_glCreateShader;
-    if (glShaderSourceARB == NULL)
+    if (glShaderSourceARB == nullptr)
         glShaderSourceARB = (PFNGLSHADERSOURCEARBPROC)dummy_glShaderSource;
-    if (glCompileShaderARB == NULL)
+    if (glCompileShaderARB == nullptr)
         glCompileShaderARB = (PFNGLCOMPILESHADERARBPROC)dummy_glCompileShader;
-    if (glCreateProgramObjectARB == NULL)
+    if (glCreateProgramObjectARB == nullptr)
         glCreateProgramObjectARB = (PFNGLCREATEPROGRAMOBJECTARBPROC)dummy_glCreateProgram;
-    if (glAttachObjectARB == NULL)
+    if (glAttachObjectARB == nullptr)
         glAttachObjectARB = (PFNGLATTACHOBJECTARBPROC)dummy_glAttachObject;
-    if (glLinkProgramARB == NULL)
+    if (glLinkProgramARB == nullptr)
         glLinkProgramARB = (PFNGLLINKPROGRAMARBPROC)dummy_glLinkProgram;
-    if (glUseProgramObjectARB == NULL)
+    if (glUseProgramObjectARB == nullptr)
         glUseProgramObjectARB = (PFNGLUSEPROGRAMOBJECTARBPROC)dummy_glUseProgram;
-    if (glGetUniformLocationARB == NULL)
+    if (glGetUniformLocationARB == nullptr)
         glGetUniformLocationARB = (PFNGLGETUNIFORMLOCATIONARBPROC)dummy_glGetUniformLocation;
-    if (glUniform1iARB == NULL)
+    if (glUniform1iARB == nullptr)
         glUniform1iARB = (PFNGLUNIFORM1IARBPROC)dummy_glUniform1i;
-    if (glUniform4iARB == NULL)
+    if (glUniform4iARB == nullptr)
         glUniform4iARB = (PFNGLUNIFORM4IARBPROC)dummy_glUniform4i;
-    if (glUniform4fARB == NULL)
+    if (glUniform4fARB == nullptr)
         glUniform4fARB = (PFNGLUNIFORM4FARBPROC)dummy_glUniform4f;
-    if (glUniform1fARB == NULL)
+    if (glUniform1fARB == nullptr)
         glUniform1fARB = (PFNGLUNIFORM1FARBPROC)dummy_glUniform1f;
-    if (glDeleteObjectARB == NULL)
+    if (glDeleteObjectARB == nullptr)
         glDeleteObjectARB = (PFNGLDELETEOBJECTARBPROC)dummy_glDeleteObject;
-    if (glGetInfoLogARB == NULL)
+    if (glGetInfoLogARB == nullptr)
         glGetInfoLogARB = (PFNGLGETINFOLOGARBPROC)dummy_glGetInfoLog;
-    if (glGetObjectParameterivARB == NULL)
+    if (glGetObjectParameterivARB == nullptr)
         glGetObjectParameterivARB = (PFNGLGETOBJECTPARAMETERIVARBPROC)dummy_glGetObjectParameteriv;
 
-    if (glSecondaryColor3f == NULL)
+    if (glSecondaryColor3f == nullptr)
         glSecondaryColor3f = (PFNGLSECONDARYCOLOR3FPROC)dummy_glSecondaryColor3f;
-    if (glCompressedTexImage2DARB == NULL)
+    if (glCompressedTexImage2DARB == nullptr)
         glCompressedTexImage2DARB = (PFNGLCOMPRESSEDTEXIMAGE2DPROC)dummy_glCompressedTexImage2D;
 #endif
 
@@ -769,7 +769,7 @@ bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_loc
     // Hmm, perhaps the internal format need to be specified explicitly...
     {
         GLint ifmt;
-        glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_RGBA, 16, 16, 0, GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV, NULL);
+        glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_RGBA, 16, 16, 0, GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV, nullptr);
         glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &ifmt);
         if (ifmt != GL_RGB5_A1) {
             WriteTrace(TraceGlitch, TraceWarning, "ATI SUCKS %x\n", ifmt);
@@ -832,15 +832,15 @@ bool gfxSstWinClose()
 #ifdef _WIN32
     if (hGLRC)
     {
-        wglMakeCurrent(hDC, NULL);
+        wglMakeCurrent(hDC, nullptr);
         wglDeleteContext(hGLRC);
-        hGLRC = NULL;
+        hGLRC = nullptr;
     }
     ExitFullScreen();
 #else
     //SDL_QuitSubSystem(SDL_INIT_VIDEO);
     //sleep(2);
-    //m_pScreen = NULL;
+    //m_pScreen = nullptr;
 #endif
     return true;
 }
@@ -1055,7 +1055,7 @@ void gfxTextureBufferExt(gfxChipID_t tmu, uint32_t startAddress, gfxLOD_t lodmin
         add_tex(fbs[nb_fb].texid);
         glBindTexture(GL_TEXTURE_2D, fbs[nb_fb].texid);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, g_width, g_height, 0,
-            GL_RGB, GL_UNSIGNED_BYTE, NULL);
+            GL_RGB, GL_UNSIGNED_BYTE, nullptr);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
@@ -1274,7 +1274,7 @@ void updateTexture()
 void gfxRenderBuffer(gfxBuffer_t buffer)
 {
 #ifdef _WIN32
-    static HANDLE region = NULL;
+    static HANDLE region = nullptr;
     //int realWidth = pBufferWidth, realHeight = pBufferHeight;
 #endif // _WIN32
     WriteTrace(TraceGlitch, TraceDebug, "buffer: %d", buffer);
@@ -1744,12 +1744,12 @@ bool gfxLfbWriteRegion(gfxBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, g
 #ifdef _WIN32
 static void CorrectGamma(LPVOID apGammaRamp)
 {
-    HDC hdc = GetDC(NULL);
-    if (hdc != NULL)
+    HDC hdc = GetDC(nullptr);
+    if (hdc != nullptr)
     {
 		if (to_fullscreen)
 			SetDeviceGammaRamp(hdc, apGammaRamp);
-        ReleaseDC(NULL, hdc);
+        ReleaseDC(nullptr, hdc);
     }
 }
 #else
@@ -1782,12 +1782,12 @@ void gfxGetGammaTableExt(uint32_t /*nentries*/, uint32_t *red, uint32_t *green, 
     WriteTrace(TraceGlitch, TraceDebug, "-");
     uint16_t aGammaRamp[3][256];
 #ifdef _WIN32
-    HDC hdc = GetDC(NULL);
-    if (hdc == NULL)
+    HDC hdc = GetDC(nullptr);
+    if (hdc == nullptr)
         return;
     if (GetDeviceGammaRamp(hdc, aGammaRamp) == TRUE)
     {
-        ReleaseDC(NULL, hdc);
+        ReleaseDC(nullptr, hdc);
 #else
     fputs("ERROR:  Replacement for SDL_GetGammaRamp unimplemented.\n", stderr);
     /* if (SDL_GetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]) != -1) */
@@ -1864,7 +1864,7 @@ int grDisplayGLError(const char* message)
 #endif
 
 #ifdef _WIN32
-    MessageBoxA(NULL, message, GL_errors[error_index], MB_ICONERROR);
+    MessageBoxA(nullptr, message, GL_errors[error_index], MB_ICONERROR);
 #else
     fprintf(stderr, "%s\n%s\n\n", GL_errors[error_index], message);
 #endif

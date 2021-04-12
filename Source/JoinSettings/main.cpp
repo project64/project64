@@ -140,7 +140,7 @@ void RegionSection(CFile &TargetIniFile, Files &files, const char * Region, cons
         {
             const char * Section = SectionItr->c_str();
             const char * pos = strstr(Section, searchStr.c_str());
-            if (pos == NULL)
+            if (pos == nullptr)
             {
                 continue;
             }
@@ -341,14 +341,14 @@ bool ConvertCheatOptions(const char * OptionValue, std::string& Options)
         {
             NewOptions += NewOptions.empty() ? "$" : ",$";
             const char* End = strchr(ReadPos, ',');
-            std::string Item = End != NULL ? std::string(ReadPos, End - ReadPos) : ReadPos;
+            std::string Item = End != nullptr ? std::string(ReadPos, End - ReadPos) : ReadPos;
             ReadPos = strchr(ReadPos, '$');
-            if (ReadPos != NULL)
+            if (ReadPos != nullptr)
             {
                 ReadPos += 1;
             }
             const char* Name = strchr(Item.c_str(), ' ');
-            if (Name == NULL)
+            if (Name == nullptr)
             {
                 return false;
             }
@@ -404,7 +404,7 @@ bool ConvertCheatEntry(std::string& CheatEntry, std::string& CheatOptions)
     {
         uint32_t CodeCommand = strtoul(ReadPos, 0, 16);
         ReadPos = strchr(ReadPos, ' ');
-        if (ReadPos == NULL)
+        if (ReadPos == nullptr)
         {
             break;
         }
@@ -412,7 +412,7 @@ bool ConvertCheatEntry(std::string& CheatEntry, std::string& CheatOptions)
         std::string ValueStr = ReadPos;
         const char* ValuePos = ReadPos;
         ReadPos = strchr(ReadPos, ',');
-        if (ReadPos != NULL)
+        if (ReadPos != nullptr)
         {
             ValueStr.resize(ReadPos - ValuePos);
             ReadPos++;
@@ -422,7 +422,7 @@ bool ConvertCheatEntry(std::string& CheatEntry, std::string& CheatOptions)
         {
         case 0xE8000000:
             CodeCommand = (ConvertXP64Address(CodeCommand) & 0xFFFFFF) | 0x80000000;
-            if (strchr(ValueStr.c_str(), '?') != NULL)
+            if (strchr(ValueStr.c_str(), '?') != nullptr)
             {
                 if (strncmp(ValueStr.c_str(), "????", 4) == 0)
                 {
@@ -455,7 +455,7 @@ bool ConvertCheatEntry(std::string& CheatEntry, std::string& CheatOptions)
             break;
         case 0xE9000000:
             CodeCommand = (ConvertXP64Address(CodeCommand) & 0xFFFFFF) | 0x81000000;
-            if (strchr(ValueStr.c_str(), '?') != NULL)
+            if (strchr(ValueStr.c_str(), '?') != nullptr)
             {
                 if (strncmp(ValueStr.c_str(), "????", 4) == 0)
                 {
@@ -497,7 +497,7 @@ bool ConvertCheatEntry(std::string& CheatEntry, std::string& CheatOptions)
             break;
         case 0x10000000:
             Entries.push_back(stdstr_f("%08X %s", (CodeCommand & 0xFFFFFF) | 0x80000000, ValueStr.c_str()));
-            if (strchr(ValueStr.c_str(), '?') != NULL)
+            if (strchr(ValueStr.c_str(), '?') != nullptr)
             {
                 if (strncmp(ValueStr.c_str(), "????", 4) == 0)
                 {
@@ -532,7 +532,7 @@ bool ConvertCheatEntry(std::string& CheatEntry, std::string& CheatOptions)
             break;
         case 0x11000000:
             Entries.push_back(stdstr_f("%08X %s", (CodeCommand & 0xFFFFFF) | 0x81000000, ValueStr.c_str()));
-            if (strchr(ValueStr.c_str(), '?') != NULL)
+            if (strchr(ValueStr.c_str(), '?') != nullptr)
             {
                 if (strncmp(ValueStr.c_str(), "????", 4) == 0)
                 {
@@ -666,7 +666,7 @@ bool ParseCheatEntry(const stdstr & CheatEntry, const stdstr& CheatOptions, CEnh
     {
         uint32_t CodeCommand = strtoul(ReadPos, 0, 16);
         ReadPos = strchr(ReadPos, ' ');
-        if (ReadPos == NULL)
+        if (ReadPos == nullptr)
         {
             break;
         }
@@ -674,7 +674,7 @@ bool ParseCheatEntry(const stdstr & CheatEntry, const stdstr& CheatOptions, CEnh
         std::string ValueStr = ReadPos;
         const char * ValuePos = ReadPos;
         ReadPos = strchr(ReadPos, ',');
-        if (ReadPos != NULL)
+        if (ReadPos != nullptr)
         {
             ValueStr.resize(ReadPos - ValuePos);
             ReadPos++;
@@ -697,14 +697,14 @@ bool ParseCheatEntry(const stdstr & CheatEntry, const stdstr& CheatOptions, CEnh
             do
             {
                 const char* End = strchr(ReadPos, ',');
-                std::string Item = End != NULL ? std::string(ReadPos, End - ReadPos) : ReadPos;
+                std::string Item = End != nullptr ? std::string(ReadPos, End - ReadPos) : ReadPos;
                 ReadPos = strchr(ReadPos, '$');
-                if (ReadPos != NULL)
+                if (ReadPos != nullptr)
                 {
                     ReadPos += 1;
                 }
                 const char* Name = strchr(Item.c_str(), ' ');
-                if (Name == NULL)
+                if (Name == nullptr)
                 {
                     return false;
                 }

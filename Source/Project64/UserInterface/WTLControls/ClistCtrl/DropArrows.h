@@ -32,7 +32,7 @@ public:
 		m_nSpanLength = nSpanLength + 20;
 
 		CRect area( 0, 0, m_bVertical ? 12 : m_nSpanLength, m_bVertical ? m_nSpanLength : 12 );
-		if ( CWindowImpl< CDropArrows >::Create( hWndParent, area, NULL, WS_POPUP | WS_DISABLED, WS_EX_TOOLWINDOW ) == NULL )
+		if ( CWindowImpl< CDropArrows >::Create( hWndParent, area, nullptr, WS_POPUP | WS_DISABLED, WS_EX_TOOLWINDOW ) == nullptr )
 			return FALSE;
 		
 		POINT ptArrow[ 7 ];
@@ -73,7 +73,7 @@ public:
 	
 	BOOL Show( CPoint point )
 	{
-		return IsWindow() ? SetWindowPos( NULL, m_bVertical ? point.x - 7 : point.x - ( m_nSpanLength / 2 ), m_bVertical ? point.y - ( m_nSpanLength / 2 ) : point.y - 5, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_SHOWWINDOW | SWP_NOACTIVATE ) : FALSE;
+		return IsWindow() ? SetWindowPos( nullptr, m_bVertical ? point.x - 7 : point.x - ( m_nSpanLength / 2 ), m_bVertical ? point.y - ( m_nSpanLength / 2 ) : point.y - 5, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_SHOWWINDOW | SWP_NOACTIVATE ) : FALSE;
 	}
 	
 	BOOL Hide()

@@ -12,8 +12,8 @@
 
 SoundDriverBase::SoundDriverBase() :
     m_MaxBufferSize(MAX_SIZE),
-    m_AI_DMAPrimaryBuffer(NULL),
-    m_AI_DMASecondaryBuffer(NULL),
+    m_AI_DMAPrimaryBuffer(nullptr),
+    m_AI_DMASecondaryBuffer(nullptr),
     m_AI_DMAPrimaryBytes(0),
     m_AI_DMASecondaryBytes(0),
     m_CurrentReadLoc(0),
@@ -51,7 +51,7 @@ void SoundDriverBase::AI_LenChanged(uint8_t *start, uint32_t length)
     CGuard guard(m_CS);
     BufferAudio();
 
-    if (m_AI_DMASecondaryBuffer != NULL)
+    if (m_AI_DMASecondaryBuffer != nullptr)
     {
         WriteTrace(TraceAudioDriver, TraceDebug, "Discarding previous secondary buffer");
     }
@@ -60,7 +60,7 @@ void SoundDriverBase::AI_LenChanged(uint8_t *start, uint32_t length)
     if (m_AI_DMAPrimaryBytes == 0)
     {
         m_AI_DMAPrimaryBuffer = m_AI_DMASecondaryBuffer;
-        m_AI_DMASecondaryBuffer = NULL;
+        m_AI_DMASecondaryBuffer = nullptr;
         m_AI_DMAPrimaryBytes = m_AI_DMASecondaryBytes;
         m_AI_DMASecondaryBytes = 0;
     }
@@ -78,7 +78,7 @@ void SoundDriverBase::AI_Startup()
 {
     WriteTrace(TraceAudioDriver, TraceDebug, "Start");
     m_AI_DMAPrimaryBytes = m_AI_DMASecondaryBytes = 0;
-    m_AI_DMAPrimaryBuffer = m_AI_DMASecondaryBuffer = NULL;
+    m_AI_DMAPrimaryBuffer = m_AI_DMASecondaryBuffer = nullptr;
     m_MaxBufferSize = MAX_SIZE;
     m_CurrentReadLoc = m_CurrentWriteLoc = m_BufferRemaining = 0;
     if (Initialize())
@@ -107,7 +107,7 @@ uint32_t SoundDriverBase::AI_ReadLength()
 void SoundDriverBase::LoadAiBuffer(uint8_t *start, uint32_t length)
 {
     static uint8_t nullBuff[MAX_SIZE];
-    uint8_t *ptrStart = start != NULL ? start : nullBuff;
+    uint8_t *ptrStart = start != nullptr ? start : nullBuff;
     uint32_t writePtr = 0, bytesToMove = length;
 
     if (bytesToMove > m_MaxBufferSize)
@@ -166,7 +166,7 @@ void SoundDriverBase::BufferAudio()
         {
             WriteTrace(TraceAudioDriver, TraceVerbose, "Emptied Primary Buffer");
             m_AI_DMAPrimaryBytes = m_AI_DMASecondaryBytes; m_AI_DMAPrimaryBuffer = m_AI_DMASecondaryBuffer; // Switch
-            m_AI_DMASecondaryBytes = 0; m_AI_DMASecondaryBuffer = NULL;
+            m_AI_DMASecondaryBytes = 0; m_AI_DMASecondaryBuffer = nullptr;
             *g_AudioInfo.AI_STATUS_REG = AI_STATUS_DMA_BUSY;
             *g_AudioInfo.AI_STATUS_REG &= ~AI_STATUS_FIFO_FULL;
             *g_AudioInfo.MI_INTR_REG |= MI_INTR_AI;

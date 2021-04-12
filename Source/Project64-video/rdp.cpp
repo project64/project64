@@ -142,8 +142,8 @@ static int reset = 0;
 static CSettings::ucode_t g_old_ucode = CSettings::uCode_Unsupported;
 
 CRDP::CRDP() :
-    vtx1(NULL),
-    vtx2(NULL)
+    vtx1(nullptr),
+    vtx2(nullptr)
 {
     free();
 }
@@ -155,20 +155,20 @@ CRDP::~CRDP()
 
 bool CRDP::init()
 {
-    if (vtx1 != NULL)
+    if (vtx1 != nullptr)
     {
         return true;
     }
 
     vtx1 = new gfxVERTEX[256];
-    if (vtx1 == NULL)
+    if (vtx1 == nullptr)
     {
         free();
         return false;
     }
     memset(vtx1, 0, sizeof(gfxVERTEX) * 256);
     vtx2 = new gfxVERTEX[256];
-    if (vtx2 == NULL)
+    if (vtx2 == nullptr)
     {
         free();
         return false;
@@ -178,14 +178,14 @@ bool CRDP::init()
     for (int i = 0; i < MAX_TMU; i++)
     {
         cache[i] = new CACHE_LUT[MAX_CACHE];
-        if (cache[i] == NULL)
+        if (cache[i] == nullptr)
         {
             free();
             return false;
         }
     };
     m_vtx = new gfxVERTEX[MAX_VTX];
-    if (m_vtx == NULL)
+    if (m_vtx == nullptr)
     {
         free();
         return false;
@@ -198,7 +198,7 @@ bool CRDP::init()
     }
 
     frame_buffers = new COLOR_IMAGE[NUMTEXBUF + 2];
-    if (frame_buffers == NULL)
+    if (frame_buffers == nullptr)
     {
         free();
         return false;
@@ -211,37 +211,37 @@ void CRDP::free()
     if (vtx1)
     {
         delete vtx1;
-        vtx1 = NULL;
+        vtx1 = nullptr;
     }
     if (vtx2)
     {
         delete vtx2;
-        vtx2 = NULL;
+        vtx2 = nullptr;
     }
     clip = 0;
-    vtxbuf = NULL;
-    vtxbuf2 = NULL;
+    vtxbuf = nullptr;
+    vtxbuf2 = nullptr;
 
     for (int i = 0; i < MAX_TMU; i++)
     {
-        if (cache[i] != NULL)
+        if (cache[i] != nullptr)
         {
             delete cache[i];
-            cache[i] = NULL;
+            cache[i] = nullptr;
         }
         cur_cache[i] = 0;
         cur_cache_n[i] = 0;
     }
-    if (m_vtx != NULL)
+    if (m_vtx != nullptr)
     {
         delete[] m_vtx;
-        m_vtx = NULL;
+        m_vtx = nullptr;
     }
 
-    if (frame_buffers != NULL)
+    if (frame_buffers != nullptr)
     {
         delete[] frame_buffers;
-        frame_buffers = NULL;
+        frame_buffers = nullptr;
     }
 
     n_global = 0;
@@ -433,8 +433,8 @@ void CRDP::free()
     read_previous_ci = 0;
     read_whole_frame = 0;
     ci_status = ci_main;
-    cur_image = NULL;
-    tbuff_tex = NULL;
+    cur_image = nullptr;
+    tbuff_tex = nullptr;
     memset(aTBuffTex, 0, sizeof(aTBuffTex));
     cur_tex_buf = 0;
     acc_tex_buf = 0;
