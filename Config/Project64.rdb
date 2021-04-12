@@ -10113,6 +10113,10 @@ Good Name=Super Slide 64 (V1.0.1)
 Status=Compatible
 Counter Factor=1
 Linking=Off
+Fast SP=No
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
 Unaligned DMA=1
 
 [2C8F381A-181F60B7-C:45]
@@ -10954,6 +10958,92 @@ Unaligned DMA=1
 
 [1499D5AA-55E1870A-C:45]
 Good Name=Mario and the Mystic Purple Stars v1.3 Final
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[ED54E3F1-BD40CC5F-C:45]
+Good Name=Super Spooky 64 V1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[5EAEDC34-69ED342C-C:45]
+Good Name=SM64 Mega Microlevels (Final)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[219F8B4C-5E68ED5C-C:45]
+Good Name=SM64 Sapphire (N64 Compatible, 2020)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[17890560-F45C0B8E-C:45]
+Good Name=SM64 The Parallel Universes
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[60CA1245-E42915DC-C:45]
+Good Name=Mario 64 The Scepter of Soul 1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[F0DA820E-4117682D-C:45]
+Good Name=SM64 Usamune ROM v1.91u
+Status=Compatible
+CPU Type=Interpreter
+Counter Factor=1
+Unaligned DMA=1
+
+[90B7FA7E-660441FA-C:4A]
+Good Name=SM64 Usamune ROM v1.91j
+Status=Compatible
+CPU Type=Interpreter
+Counter Factor=1
+Unaligned DMA=1
+
+[20C28D23-12FDC895-C:45]
+Good Name=Super Mario The Crystal Stars V2
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[68ED612F-6FA31A8E-C:45]
+Good Name=New Soup 64
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[9E12F8D0-E71881F2-C:45]
+Good Name=Mario Slam! 64
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[FAD0FC87-AFC93349-C:45]
+Good Name=Super Oofio 64 Directors Cut
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[FAD3F1C7-2E6C4A40-C:45]
+Good Name=Super Oofio 64 Directors Cut (No Hyperspeed)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[D63A3C82-CB3EBA86-C:45]
+Good Name=SM64 Chaos Edition V3.0
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[091D192A-3BEA78AC-C:45]
+Good Name=Star Revenge 0 - Galaxy of Origins v1.0.3
 Status=Compatible
 Counter Factor=1
 Unaligned DMA=1
