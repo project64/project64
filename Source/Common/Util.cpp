@@ -1,5 +1,6 @@
-#include "stdafx.h"
 #include "Util.h"
+#include "StdString.h"
+#include "path.h"
 #ifdef _WIN32
 #include <windows.h>
 #include <Tlhelp32.h>

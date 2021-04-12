@@ -4,7 +4,6 @@
 #include <strings.h>
 #endif
 
-#include "stdafx.h"
 #include "FileClass.h"
 #include "CriticalSection.h"
 #include <string>

@@ -1,5 +1,5 @@
-#include "stdafx.h"
 #include "MemTest.h"
+#include <map>
 
 #if defined(MEM_LEAK_TEST) && defined(_WIN32)
 

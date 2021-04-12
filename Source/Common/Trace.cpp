@@ -1,5 +1,9 @@
-#include "stdafx.h"
-#include <Common/Thread.h>
+#include "Trace.h"
+#include "StdString.h"
+#include "CriticalSection.h"
+#include "Thread.h"
+#include <map>
+#include <vector>
 #ifdef _WIN32
 #include <Windows.h>
 #else
@@ -15,7 +19,7 @@ static ModuleNameMap g_ModuleNames;
 class CTraceLog
 {
     std::vector<CTraceModule *> m_Modules;
-    CriticalSection             m_CS;
+    CriticalSection m_CS;
 
 public:
     CTraceLog()

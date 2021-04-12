@@ -1,4 +1,5 @@
-#include "stdafx.h"
+#include "LogClass.h"
+#include "path.h"
 #include "Platform.h"
 #include <stdio.h>
 #include <stdarg.h>

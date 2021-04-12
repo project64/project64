@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "StdString.h"
 #include <malloc.h>
 #include <algorithm>
 #ifdef _WIN32

@@ -1,6 +1,8 @@
-// Path.cpp: Implementation of the CPath class
+#include "path.h"
+#include "Trace.h"
+#include "TraceModulesCommon.h"
+#include "StdString.h"
 
-#include "stdafx.h"
 #ifdef _WIN32
 #pragma warning(push)
 #pragma warning(disable : 4091) // warning C4091: 'typedef ': ignored on left of 'tagGPFIDL_FLAGS' when no variable is declared

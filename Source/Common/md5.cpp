@@ -38,8 +38,9 @@ These notices must be retained in any copies of any part of this
 documentation and/or software.
 
 */
-
-#include "stdafx.h"
+#include "md5.h"
+#include "Trace.h"
+#include "TraceModulesCommon.h"
 
 // MD5 simple initialization method
 MD5::MD5()

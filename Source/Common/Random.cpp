@@ -1,7 +1,6 @@
 // Implements the CRandom class
 // This class implements the Lehmer Random Number Generator
 
-#include "stdafx.h"
 #include "Random.h"
 #include <time.h>
 

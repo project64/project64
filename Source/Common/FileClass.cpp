@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "FileClass.h"
 #ifdef _WIN32
 #include <io.h>
 #define USE_WINDOWS_API

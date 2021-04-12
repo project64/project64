@@ -1,5 +1,6 @@
-#include "stdafx.h"
 #include "Thread.h"
+#include "Trace.h"
+#include "TraceModulesCommon.h"
 #ifdef _WIN32
 #include <Windows.h>
 #else

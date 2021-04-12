@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "HighResTimeStamp.h"
 #ifdef _WIN32
 #include <Windows.h>

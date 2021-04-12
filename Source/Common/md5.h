@@ -46,6 +46,7 @@ documentation and/or software.
 #include <string>
 #include <functional>
 #include "path.h"
+#include "StdString.h"
 
 struct MD5Digest
 {

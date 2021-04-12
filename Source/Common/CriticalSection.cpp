@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "CriticalSection.h"
 #ifdef _WIN32
 #include <Windows.h>
 #endif

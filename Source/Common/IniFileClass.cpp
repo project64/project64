@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "IniFileClass.h"
 #include <stdlib.h>
 #include <stdarg.h>
 
