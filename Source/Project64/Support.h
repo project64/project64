@@ -9,6 +9,5 @@
 #include <Common/LogClass.h>
 #include <Common/Trace.h>
 #include <Common/path.h>
-#include <Common/SmartPointer.h>
 #include <Common/IniFileClass.h>
 #include <Common/md5.h>

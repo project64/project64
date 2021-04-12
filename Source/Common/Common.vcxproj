@@ -66,7 +66,6 @@
     <ClInclude Include="path.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Random.h" />
-    <ClInclude Include="SmartPointer.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StdString.h" />
     <ClInclude Include="stdtypes.h" />

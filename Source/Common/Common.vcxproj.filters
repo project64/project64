@@ -91,9 +91,6 @@
     <ClInclude Include="path.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SmartPointer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="StdString.h">
       <Filter>Header Files</Filter>
     </ClInclude>

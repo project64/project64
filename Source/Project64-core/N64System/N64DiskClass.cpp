@@ -3,7 +3,6 @@
 #include "SystemGlobals.h"
 #include <Common/md5.h>
 #include <Common/Platform.h>
-#include <Common/SmartPointer.h>
 #include <Common/MemoryManagement.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
 #include <memory>
@@ -236,7 +235,7 @@ void CN64Disk::ClearDiskSettingID()
 bool CN64Disk::AllocateDiskImage(uint32_t DiskFileSize)
 {
     WriteTrace(TraceN64System, TraceDebug, "Allocating memory for disk");
-    AUTO_PTR<uint8_t> ImageBase(new uint8_t[DiskFileSize + 0x1000]);
+    std::unique_ptr<uint8_t> ImageBase(new uint8_t[DiskFileSize + 0x1000]);
     if (ImageBase.get() == NULL)
     {
         SetError(MSG_MEM_ALLOC_ERROR);
@@ -256,7 +255,7 @@ bool CN64Disk::AllocateDiskImage(uint32_t DiskFileSize)
 bool CN64Disk::AllocateDiskHeader()
 {
     WriteTrace(TraceN64System, TraceDebug, "Allocating memory for disk header forge");
-    AUTO_PTR<uint8_t> HeaderBase(new uint8_t[0x40 + 0x1000]);
+    std::unique_ptr<uint8_t> HeaderBase(new uint8_t[0x40 + 0x1000]);
     if (HeaderBase.get() == NULL)
     {
         SetError(MSG_MEM_ALLOC_ERROR);

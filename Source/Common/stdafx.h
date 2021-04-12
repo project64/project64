@@ -15,5 +15,4 @@
 #include "TraceModulesCommon.h"
 #include "Trace.h"
 #include "md5.h"
-#include "SmartPointer.h"
 #include "SyncEvent.h"

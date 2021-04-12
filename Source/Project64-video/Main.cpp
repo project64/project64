@@ -19,7 +19,6 @@
 #include <Common/path.h>
 #include <png/png.h>
 #include <memory>
-#include <Common/SmartPointer.h>
 #include <Settings/Settings.h>
 
 #include "Config.h"
@@ -1167,7 +1166,7 @@ void newSwapBuffers()
         info.size = sizeof(gfxLfbInfo_t);
         if (gfxLfbLock(GFX_LFB_READ_ONLY, GFX_BUFFER_BACKBUFFER, GFX_LFBWRITEMODE_565, GFX_ORIGIN_UPPER_LEFT, false, &info))
         {
-            AUTO_PTR<uint8_t> ssimg_buffer(new uint8_t[image_width * image_height * 3]);
+            std::unique_ptr<uint8_t> ssimg_buffer(new uint8_t[image_width * image_height * 3]);
             uint8_t * ssimg = ssimg_buffer.get();
             int sspos = 0;
             uint32_t offset_src = info.strideInBytes * offset_y;

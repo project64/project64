@@ -4,7 +4,6 @@
 // Copyright(C) 2015 Bobby Smiles
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 #include "stdafx.h"
-#include <Common/SmartPointer.h>
 #include "GBCart.h"
 
 #include <time.h>
@@ -683,9 +682,9 @@ static const struct parsed_cart_type* parse_cart_type(uint8_t cart_type)
 bool GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
 {
     const struct parsed_cart_type* type;
-    AUTO_PTR<uint8_t> rom;
+    std::unique_ptr<uint8_t> rom;
     size_t rom_size = 0;
-    AUTO_PTR<uint8_t> ram;
+    std::unique_ptr<uint8_t> ram;
     size_t ram_size = 0;
     CFile tempFile;
 
