@@ -36,8 +36,8 @@ public:
     inline const std::string & FileName(void) const { return m_FileName; }
 
 private:
-    CLog(const CLog&);             // Disable copy constructor
-    CLog& operator=(const CLog&);  // Disable assignment
+    CLog(const CLog&);
+    CLog& operator=(const CLog&);
     
     CFile m_hLogFile;
     bool m_FlushOnWrite;

@@ -34,9 +34,9 @@ public:
     uint32_t & FAKE_CAUSE_REGISTER;
 
 private:
-    CP0registers();									// Disable default constructor
-    CP0registers(const CP0registers&);				// Disable copy constructor
-    CP0registers& operator=(const CP0registers&);	// Disable assignment
+    CP0registers();
+    CP0registers(const CP0registers&);
+    CP0registers& operator=(const CP0registers&);
 };
 
 //CPO register flags
@@ -130,9 +130,9 @@ public:
     uint32_t & RDRAM_DEVICE_MANUF_REG;
 
 private:
-    Rdram_InterfaceReg();										// Disable default constructor
-    Rdram_InterfaceReg(const Rdram_InterfaceReg&);				// Disable copy constructor
-    Rdram_InterfaceReg& operator=(const Rdram_InterfaceReg&);	// Disable assignment
+    Rdram_InterfaceReg();
+    Rdram_InterfaceReg(const Rdram_InterfaceReg&);
+    Rdram_InterfaceReg& operator=(const Rdram_InterfaceReg&);
 };
 
 //Mips interface registers
@@ -150,9 +150,9 @@ public:
     uint32_t & MI_INTR_MASK_REG;
 
 private:
-    Mips_InterfaceReg();									// Disable default constructor
-    Mips_InterfaceReg(const Mips_InterfaceReg&);			// Disable copy constructor
-    Mips_InterfaceReg& operator=(const Mips_InterfaceReg&);	// Disable assignment
+    Mips_InterfaceReg();
+    Mips_InterfaceReg(const Mips_InterfaceReg&);
+    Mips_InterfaceReg& operator=(const Mips_InterfaceReg&);
 };
 
 //Mips interface flags
@@ -232,9 +232,9 @@ public:
     uint32_t & VI_Y_SCALE_REG;
 
 private:
-    Video_InterfaceReg();										// Disable default constructor
-    Video_InterfaceReg(const Video_InterfaceReg&);				// Disable copy constructor
-    Video_InterfaceReg& operator=(const Video_InterfaceReg&);	// Disable assignment
+    Video_InterfaceReg();
+    Video_InterfaceReg(const Video_InterfaceReg&);
+    Video_InterfaceReg& operator=(const Video_InterfaceReg&);
 };
 
 //Display Processor Control Registers
@@ -254,9 +254,9 @@ public:
     uint32_t & DPC_TMEM_REG;
 
 private:
-    DisplayControlReg();										// Disable default constructor
-    DisplayControlReg(const DisplayControlReg&);				// Disable copy constructor
-    DisplayControlReg& operator=(const DisplayControlReg&);	// Disable assignment
+    DisplayControlReg();
+    DisplayControlReg(const DisplayControlReg&);
+    DisplayControlReg& operator=(const DisplayControlReg&);
 };
 
 enum
@@ -302,9 +302,9 @@ public:
     uint32_t & AI_BITRATE_REG;
 
 private:
-    AudioInterfaceReg();										// Disable default constructor
-    AudioInterfaceReg(const AudioInterfaceReg&);				// Disable copy constructor
-    AudioInterfaceReg& operator=(const AudioInterfaceReg&);	// Disable assignment
+    AudioInterfaceReg();
+    AudioInterfaceReg(const AudioInterfaceReg&);
+    AudioInterfaceReg& operator=(const AudioInterfaceReg&);
 };
 
 enum
@@ -338,9 +338,9 @@ public:
     uint32_t & PI_BSD_DOM2_RLS_REG;
 
 private:
-    PeripheralInterfaceReg();											// Disable default constructor
-    PeripheralInterfaceReg(const PeripheralInterfaceReg&);				// Disable copy constructor
-    PeripheralInterfaceReg& operator=(const PeripheralInterfaceReg&);	// Disable assignment
+    PeripheralInterfaceReg();
+    PeripheralInterfaceReg(const PeripheralInterfaceReg&);
+    PeripheralInterfaceReg& operator=(const PeripheralInterfaceReg&);
 };
 
 class RDRAMInt_InterfaceReg
@@ -360,9 +360,9 @@ public:
     uint32_t & RI_WERROR_REG;
 
 private:
-    RDRAMInt_InterfaceReg();											// Disable default constructor
-    RDRAMInt_InterfaceReg(const RDRAMInt_InterfaceReg&);				// Disable copy constructor
-    RDRAMInt_InterfaceReg& operator=(const RDRAMInt_InterfaceReg&);	// Disable assignment
+    RDRAMInt_InterfaceReg();
+    RDRAMInt_InterfaceReg(const RDRAMInt_InterfaceReg&);
+    RDRAMInt_InterfaceReg& operator=(const RDRAMInt_InterfaceReg&);
 };
 
 //Signal Processor Interface;
@@ -384,9 +384,9 @@ public:
     uint32_t & SP_IBIST_REG;
 
 private:
-    SigProcessor_InterfaceReg();											// Disable default constructor
-    SigProcessor_InterfaceReg(const SigProcessor_InterfaceReg&);			// Disable copy constructor
-    SigProcessor_InterfaceReg& operator=(const SigProcessor_InterfaceReg&);	// Disable assignment
+    SigProcessor_InterfaceReg();
+    SigProcessor_InterfaceReg(const SigProcessor_InterfaceReg&);
+    SigProcessor_InterfaceReg& operator=(const SigProcessor_InterfaceReg&);
 };
 
 //Signal Processor interface flags
@@ -458,9 +458,9 @@ public:
     uint32_t & SI_STATUS_REG;
 
 private:
-    Serial_InterfaceReg();										// Disable default constructor
-    Serial_InterfaceReg(const Serial_InterfaceReg&);			// Disable copy constructor
-    Serial_InterfaceReg& operator=(const Serial_InterfaceReg&);	// Disable assignment
+    Serial_InterfaceReg();
+    Serial_InterfaceReg(const Serial_InterfaceReg&);
+    Serial_InterfaceReg& operator=(const Serial_InterfaceReg&);
 };
 
 //Serial Interface flags
@@ -503,9 +503,9 @@ public:
     uint32_t & ASIC_TEST_PIN_SEL;
 
 private:
-    Disk_InterfaceReg();										// Disable default constructor
-    Disk_InterfaceReg(const Disk_InterfaceReg&);			// Disable copy constructor
-    Disk_InterfaceReg& operator=(const Disk_InterfaceReg&);	// Disable assignment
+    Disk_InterfaceReg();
+    Disk_InterfaceReg(const Disk_InterfaceReg&);
+    Disk_InterfaceReg& operator=(const Disk_InterfaceReg&);
 };
 
 //Disk Interface Flags
@@ -632,9 +632,9 @@ public:
     void SetAsCurrentSystem();
 
 private:
-    CRegisters();                             // Disable default constructor
-    CRegisters(const CRegisters&);            // Disable copy constructor
-    CRegisters& operator=(const CRegisters&); // Disable assignment
+    CRegisters();
+    CRegisters(const CRegisters&);
+    CRegisters& operator=(const CRegisters&);
 
     bool            m_FirstInterupt;
     CN64System    * m_System;

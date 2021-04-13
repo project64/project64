@@ -15,8 +15,8 @@ public:
     void(CALL *ProcessAList)(void);
 
 private:
-    CAudioPlugin(const CAudioPlugin&);				// Disable copy constructor
-    CAudioPlugin& operator=(const CAudioPlugin&);	// Disable assignment
+    CAudioPlugin(const CAudioPlugin&);
+    CAudioPlugin& operator=(const CAudioPlugin&);
 
     virtual int32_t GetDefaultSettingStartRange() const { return FirstAudioDefaultSet; }
     virtual int32_t GetSettingStartRange() const { return FirstAudioSettings; }
@@ -27,9 +27,8 @@ private:
     bool LoadFunctions(void);
     void UnloadPluginDetails(void);
 
-    void(CALL *AiUpdate)        (int32_t Wait);
+    void(CALL *AiUpdate) (int32_t Wait);
     void(CALL *AiDacrateChanged)(SYSTEM_TYPE Type);
 
-    // Function used in a thread for using audio
     static void AudioThread(CAudioPlugin * _this);
 };

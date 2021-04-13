@@ -24,9 +24,9 @@ protected:
     uint8_t m_PifRam[0x40];
 
 private:
-    CPifRam();                          // Disable default constructor
-    CPifRam(const CPifRam&);            // Disable copy constructor
-    CPifRam& operator=(const CPifRam&); // Disable assignment
+    CPifRam();
+    CPifRam(const CPifRam&);
+    CPifRam& operator=(const CPifRam&);
 
     enum { CHALLENGE_LENGTH = 0x20 };
     void ProcessControllerCommand(int32_t Control, uint8_t * Command);

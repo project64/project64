@@ -28,7 +28,7 @@ public:
     virtual void Delete (uint32_t Index );
 
 private:
-    CSettingTypeRDBRDRamSize(void);                                         // Disable default constructor
-    CSettingTypeRDBRDRamSize(const CSettingTypeRDBRDRamSize&);              // Disable copy constructor
-    CSettingTypeRDBRDRamSize& operator=(const CSettingTypeRDBRDRamSize&);   // Disable assignment
+    CSettingTypeRDBRDRamSize(void);
+    CSettingTypeRDBRDRamSize(const CSettingTypeRDBRDRamSize&);
+    CSettingTypeRDBRDRamSize& operator=(const CSettingTypeRDBRDRamSize&);
 };

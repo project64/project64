@@ -15,8 +15,8 @@ public:
     void DisplayViCounter(int32_t FrameRateWhole, uint32_t FrameRateFraction);
 
 private:
-    CFramePerSecond(const CFramePerSecond&);            // Disable copy constructor
-    CFramePerSecond& operator=(const CFramePerSecond&); // Disable assignment
+    CFramePerSecond(const CFramePerSecond&);
+    CFramePerSecond& operator=(const CFramePerSecond&);
 
     static void FrameRateTypeChanged(CFramePerSecond * _this);
     static void ScreenHertzChanged(CFramePerSecond * _this);

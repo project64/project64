@@ -70,16 +70,16 @@ public:
     inline uint32_t Buttons(void) const { return m_Buttons.Value; }
     inline PluginType Plugin(void) const { return static_cast<PluginType>(m_PlugType); }
 private:
-    friend class CControl_Plugin; //controller plugin class has full access
+    friend class CControl_Plugin;
 
     int32_t & m_Present;
     int32_t & m_RawData;
     int32_t & m_PlugType;
     BUTTONS m_Buttons;
 
-    CCONTROL(void);                         // Disable default constructor
-    CCONTROL(const CCONTROL&);              // Disable copy constructor
-    CCONTROL& operator=(const CCONTROL&);   // Disable assignment
+    CCONTROL(void);
+    CCONTROL(const CCONTROL&);
+    CCONTROL& operator=(const CCONTROL&);
 };
 
 class CControl_Plugin : public CPlugin
@@ -92,19 +92,19 @@ public:
     void SetControl(CControl_Plugin const * const Plugin);
     void UpdateKeys(void);
 
-    void(CALL *WM_KeyDown)          (uint32_t wParam, uint32_t lParam);
-    void(CALL *WM_KeyUp)            (uint32_t wParam, uint32_t lParam);
-    void(CALL *RumbleCommand)       (int32_t Control, int32_t bRumble);
-    void(CALL *GetKeys)             (int32_t Control, BUTTONS * Keys);
-    void(CALL *ReadController)      (int32_t Control, uint8_t * Command);
-    void(CALL *ControllerCommand)   (int32_t Control, uint8_t * Command);
+    void(CALL *WM_KeyDown) (uint32_t wParam, uint32_t lParam);
+    void(CALL *WM_KeyUp) (uint32_t wParam, uint32_t lParam);
+    void(CALL *RumbleCommand) (int32_t Control, int32_t bRumble);
+    void(CALL *GetKeys) (int32_t Control, BUTTONS * Keys);
+    void(CALL *ReadController) (int32_t Control, uint8_t * Command);
+    void(CALL *ControllerCommand) (int32_t Control, uint8_t * Command);
 
     inline CCONTROL const * Controller(int32_t control) { return m_Controllers[control]; }
     inline CONTROL * PluginControllers(void) { return m_PluginControllers; }
 
 private:
-    CControl_Plugin(const CControl_Plugin&);			// Disable copy constructor
-    CControl_Plugin& operator=(const CControl_Plugin&);	// Disable assignment
+    CControl_Plugin(const CControl_Plugin&);
+    CControl_Plugin& operator=(const CControl_Plugin&);
 
     virtual int32_t GetDefaultSettingStartRange() const { return FirstCtrlDefaultSet; }
     virtual int32_t GetSettingStartRange() const { return FirstCtrlSettings; }
@@ -112,9 +112,8 @@ private:
     bool LoadFunctions(void);
     void UnloadPluginDetails(void);
 
-    bool   m_AllocatedControllers;
+    bool m_AllocatedControllers;
 
-    // What the different controls are set up as
     CONTROL m_PluginControllers[4];
     CCONTROL * m_Controllers[4];
 };

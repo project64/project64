@@ -90,8 +90,8 @@ protected:
     void FrameDrawn(void);
 
 private:
-    CDebuggerUI(const CDebuggerUI&);                // Disable copy constructor
-    CDebuggerUI& operator=(const CDebuggerUI&);        // Disable assignment
+    CDebuggerUI(const CDebuggerUI&);
+    CDebuggerUI& operator=(const CDebuggerUI&);
 
     CDumpMemory          * m_MemoryDump;
     CDebugMemoryView     * m_MemoryView;

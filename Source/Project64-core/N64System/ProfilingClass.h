@@ -20,8 +20,8 @@ public:
     void ResetTimers(void);
 
 private:
-    CProfiling(const CProfiling&);            // Disable copy constructor
-    CProfiling& operator=(const CProfiling&); // Disable assignment
+    CProfiling(const CProfiling&);
+    CProfiling& operator=(const CProfiling&);
 
     uint32_t m_CurrentDisplayCount;
     PROFILE_TIMERS m_CurrentTimerType;

@@ -63,9 +63,9 @@ protected:
     static CIniFile * m_AudioIniFile;
 
 private:
-    CSettingTypeRomDatabase();                                          // Disable default constructor
-    CSettingTypeRomDatabase(const CSettingTypeRomDatabase&);            // Disable copy constructor
-    CSettingTypeRomDatabase& operator=(const CSettingTypeRomDatabase&); // Disable assignment
+    CSettingTypeRomDatabase();
+    CSettingTypeRomDatabase(const CSettingTypeRomDatabase&);
+    CSettingTypeRomDatabase& operator=(const CSettingTypeRomDatabase&);
 
 	bool Load(uint32_t & Value) const;
 };

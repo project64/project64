@@ -33,9 +33,9 @@ public:
     void Delete (uint32_t Index );
 
 private:
-    CSettingTypeTempString(void);                                     // Disable default constructor
-    CSettingTypeTempString(const CSettingTypeTempString&);            // Disable copy constructor
-    CSettingTypeTempString& operator=(const CSettingTypeTempString&); // Disable assignment
+    CSettingTypeTempString(void);
+    CSettingTypeTempString(const CSettingTypeTempString&);
+    CSettingTypeTempString& operator=(const CSettingTypeTempString&);
 
     std::string m_value;
 };

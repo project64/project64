@@ -23,23 +23,19 @@ public:
     uint64_t* MemLocation(int32_t i) { return m_MemLocation[i]; }
 
 private:
-    CCompiledFunc(void);                              // Disable default constructor
-    CCompiledFunc(const CCompiledFunc&);              // Disable copy constructor
-    CCompiledFunc& operator=(const CCompiledFunc&);   // Disable assignment
+    CCompiledFunc(void);
+    CCompiledFunc(const CCompiledFunc&);
+    CCompiledFunc& operator=(const CCompiledFunc&);
 
-    //Information
-    uint32_t m_EnterPC; // The Entry PC
-    uint32_t m_MinPC;   // The Lowest PC in the function
-    uint32_t m_MaxPC;   // The Highest PC in the function
-    uint8_t * m_FunctionEnd; // Where the code bytes end
+    uint32_t m_EnterPC;
+    uint32_t m_MinPC;
+    uint32_t m_MaxPC;
+    uint8_t * m_FunctionEnd;
 
     MD5Digest m_Hash;
-    //From querying the recompiler get information about the function
-    Func  m_Function;
+    Func m_Function;
 
     CCompiledFunc* m_Next;
-
-    //Validation
     uint64_t m_MemContents[2], * m_MemLocation[2];
 };
 

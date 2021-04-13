@@ -34,8 +34,8 @@ public:
     void ChangeFullScreen(void) const;
 
 private:
-    CNotificationImp(const CNotificationImp&);				// Disable copy constructor
-    CNotificationImp& operator=(const CNotificationImp&);	// Disable assignment
+    CNotificationImp(const CNotificationImp&);
+    CNotificationImp& operator=(const CNotificationImp&);
 
     mutable time_t m_NextMsg;
 };

@@ -16,8 +16,8 @@ public:
     uint8_t** RecompPos() { return &m_RecompPos; }
 
 private:
-    CRecompMemory(const CRecompMemory&);				// Disable copy constructor
-    CRecompMemory& operator=(const CRecompMemory&);		// Disable assignment
+    CRecompMemory(const CRecompMemory&);
+    CRecompMemory& operator=(const CRecompMemory&);
 
     uint8_t * m_RecompCode;
     uint32_t  m_RecompSize;

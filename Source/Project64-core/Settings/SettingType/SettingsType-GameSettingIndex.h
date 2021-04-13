@@ -33,9 +33,9 @@ public:
     virtual void Delete (uint32_t Index );
 
 private:
-    CSettingTypeGameIndex(void);                                      // Disable default constructor
-    CSettingTypeGameIndex(const CSettingTypeGameIndex&);              // Disable copy constructor
-    CSettingTypeGameIndex& operator=(const CSettingTypeGameIndex&);   // Disable assignment
+    CSettingTypeGameIndex(void);
+    CSettingTypeGameIndex(const CSettingTypeGameIndex&);
+    CSettingTypeGameIndex& operator=(const CSettingTypeGameIndex&);
 
     std::string m_PreIndex, m_PostIndex;
 };

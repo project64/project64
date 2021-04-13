@@ -11,9 +11,9 @@ public:
     void EepromCommand(uint8_t * Command);
 
 private:
-    CEeprom(void);                        // Disable default constructor
-    CEeprom(const CEeprom&);              // Disable copy constructor
-    CEeprom& operator=(const CEeprom&);   // Disable assignment
+    CEeprom(void);
+    CEeprom(const CEeprom&);
+    CEeprom& operator=(const CEeprom&);
 
     void ProcessingError(uint8_t * Command);
     void LoadEeprom();

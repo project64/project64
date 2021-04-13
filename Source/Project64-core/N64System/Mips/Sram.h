@@ -10,9 +10,9 @@ public:
     void DmaToSram(uint8_t * Source, int32_t StartOffset, uint32_t len);
 
 private:
-    CSram(void);                        // Disable default constructor
-    CSram(const CSram&);              // Disable copy constructor
-    CSram& operator=(const CSram&);   // Disable assignment
+    CSram(void);
+    CSram(const CSram&);
+    CSram& operator=(const CSram&);
 
     bool LoadSram();
 

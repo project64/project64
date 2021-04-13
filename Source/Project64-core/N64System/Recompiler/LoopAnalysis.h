@@ -16,9 +16,9 @@ public:
     bool SetupRegisterForLoop();
 
 private:
-    LoopAnalysis();                               // Disable default constructor
-    LoopAnalysis(const LoopAnalysis&);            // Disable copy constructor
-    LoopAnalysis& operator=(const LoopAnalysis&); // Disable assignment
+    LoopAnalysis();
+    LoopAnalysis(const LoopAnalysis&);
+    LoopAnalysis& operator=(const LoopAnalysis&);
 
     bool SetupEnterSection(CCodeSection * Section, bool & bChanged, bool & bSkipedSection);
     bool CheckLoopRegisterUsage(CCodeSection * Section);

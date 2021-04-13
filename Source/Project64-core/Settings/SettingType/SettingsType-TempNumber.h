@@ -33,9 +33,9 @@ public:
     void Delete (uint32_t Index );
 
 private:
-    CSettingTypeTempNumber(void);                                     // Disable default constructor
-    CSettingTypeTempNumber(const CSettingTypeTempNumber&);            // Disable copy constructor
-    CSettingTypeTempNumber& operator=(const CSettingTypeTempNumber&); // Disable assignment
+    CSettingTypeTempNumber(void);
+    CSettingTypeTempNumber(const CSettingTypeTempNumber&);
+    CSettingTypeTempNumber& operator=(const CSettingTypeTempNumber&);
 
     uint32_t m_value;
     uint32_t m_initialValue;

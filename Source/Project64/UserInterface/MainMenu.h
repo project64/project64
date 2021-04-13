@@ -70,9 +70,9 @@ public:
     void      ResetAccelerators(void) { m_ResetAccelerators = true; }
 
 private:
-    CMainMenu();								// Disable default constructor
-    CMainMenu(const CMainMenu&);				// Disable copy constructor
-    CMainMenu& operator=(const CMainMenu&);		// Disable assignment
+    CMainMenu();
+    CMainMenu(const CMainMenu&);
+    CMainMenu& operator=(const CMainMenu&);
 
     void OnOpenRom(HWND hWnd);
     void OnOpenCombo(HWND hWnd);

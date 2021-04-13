@@ -30,9 +30,9 @@ public:
     void EmulationStopped(void);
 
 private:
-    JavaBridge(void);		                    // Disable default constructor
-    JavaBridge(const JavaBridge&);				// Disable copy constructor
-    JavaBridge& operator=(const JavaBridge&);	// Disable assignment
+    JavaBridge(void);
+    JavaBridge(const JavaBridge&);
+    JavaBridge& operator=(const JavaBridge&);
 
     JavaVM* m_vm;
     jclass m_GalleryActivityClass;

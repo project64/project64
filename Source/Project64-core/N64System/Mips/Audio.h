@@ -21,8 +21,8 @@ public:
     void  SetFrequency      ( uint32_t Dacrate, uint32_t System );
 
 private:
-    CAudio(const CAudio&);            // Disable copy constructor
-    CAudio& operator=(const CAudio&); // Disable assignment
+    CAudio(const CAudio&);
+    CAudio& operator=(const CAudio&);
 
     uint32_t  m_SecondBuff;
     uint32_t  m_Status;

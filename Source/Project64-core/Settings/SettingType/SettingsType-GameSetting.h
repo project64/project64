@@ -46,7 +46,7 @@ protected:
     virtual const char * SectionName(void) const;
 
 private:
-    CSettingTypeGame(void);                                 // Disable default constructor
-    CSettingTypeGame(const CSettingTypeGame&);              // Disable copy constructor
-    CSettingTypeGame& operator=(const CSettingTypeGame&);   // Disable assignment
+    CSettingTypeGame(void);
+    CSettingTypeGame(const CSettingTypeGame&);
+    CSettingTypeGame& operator=(const CSettingTypeGame&);
 };

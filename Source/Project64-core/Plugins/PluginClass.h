@@ -143,9 +143,9 @@ public:
     inline bool initilized(void) const { return m_initilized; }
 
 private:
-    CPlugins(void);							// Disable default constructor
-    CPlugins(const CPlugins&);				// Disable copy constructor
-    CPlugins& operator=(const CPlugins&);	// Disable assignment
+    CPlugins(void);
+    CPlugins(const CPlugins&);
+    CPlugins& operator=(const CPlugins&);
 
     void DestroyGfxPlugin(void);
     void DestroyAudioPlugin(void);

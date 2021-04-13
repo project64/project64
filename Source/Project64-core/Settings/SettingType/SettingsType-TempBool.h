@@ -35,9 +35,9 @@ public:
     void Delete(uint32_t Index);
 
 private:
-    CSettingTypeTempBool(void);                                   // Disable default constructor
-    CSettingTypeTempBool(const CSettingTypeTempBool&);            // Disable copy constructor
-    CSettingTypeTempBool& operator=(const CSettingTypeTempBool&); // Disable assignment
+    CSettingTypeTempBool(void);
+    CSettingTypeTempBool(const CSettingTypeTempBool&);
+    CSettingTypeTempBool& operator=(const CSettingTypeTempBool&);
 
     bool m_value;
     bool m_changed;

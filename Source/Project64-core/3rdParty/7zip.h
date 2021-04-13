@@ -35,25 +35,19 @@ public:
     void SetNotificationCallback(LP7ZNOTIFICATION NotfyFnc, void * CBInfo);
 
 private:
-    C7zip(void);					// Disable default constructor
-    C7zip(const C7zip&);			// Disable copy constructor
-    C7zip& operator=(const C7zip&);	// Disable assignment
+    C7zip(void);
+    C7zip(const C7zip&);
+    C7zip& operator=(const C7zip&);
 
-    /*typedef struct _CFileInStream
-    {
-    ISzInStream InStream;
-    FILE *File;
-    } CFileInStream;
-    */
-    CSzArEx          * m_db;
-    CFileInStream      m_archiveStream;
-    CLookToRead        m_archiveLookStream;
-    ISzAlloc           m_allocImp;
-    ISzAlloc           m_allocTempImp;
-    int                m_FileSize;
-    char               m_FileName[260];
-    int                m_CurrentFile;
-    bool               m_Opened;
+    CSzArEx * m_db;
+    CFileInStream m_archiveStream;
+    CLookToRead m_archiveLookStream;
+    ISzAlloc m_allocImp;
+    ISzAlloc m_allocTempImp;
+    int m_FileSize;
+    char m_FileName[260];
+    int m_CurrentFile;
+    bool m_Opened;
 
     //Used for extraction
     UInt32 m_blockIndex; // it can have any value before first call (if outBuffer = 0)
@@ -71,5 +65,5 @@ private:
     static void NotfyCallbackDefault(const char * /*Status*/, void * /*CBInfo*/) { }
 
     LP7ZNOTIFICATION m_NotfyCallback;
-    void *           m_NotfyCallbackInfo;
+    void * m_NotfyCallbackInfo;
 };

@@ -75,6 +75,6 @@ public:
     virtual bool SetEndOfFile();
 
 private:
-    CFile(const CFile&);				// Disable copy constructor
-    CFile& operator=(const CFile&);		// Disable assignment
+    CFile(const CFile&);
+    CFile& operator=(const CFile&);
 };

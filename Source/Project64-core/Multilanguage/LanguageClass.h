@@ -31,8 +31,8 @@ public:
     bool IsLanguageLoaded(void) const { return m_LanguageLoaded; }
 
 private:
-    CLanguage(const CLanguage&);				// Disable copy constructor
-    CLanguage& operator=(const CLanguage&);		// Disable assignment
+    CLanguage(const CLanguage&);
+    CLanguage& operator=(const CLanguage&);
 
     static void StaticResetStrings(CLanguage * _this)
     {

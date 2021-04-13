@@ -13,7 +13,7 @@ public:
 
     virtual ~CSettingTypeRomDatabaseSetting();
 
-    virtual SettingType GetSettingType    ( void ) const { return SettingType_RdbSetting; }
+    virtual SettingType GetSettingType ( void ) const { return SettingType_RdbSetting; }
 
 private:
     virtual const char * Section ( void ) const { return m_SectionIdent.c_str(); }
@@ -21,7 +21,7 @@ private:
     stdstr m_SectionIdent;
 
 private:
-    CSettingTypeRomDatabaseSetting(void);                                               // Disable default constructor
-    CSettingTypeRomDatabaseSetting(const CSettingTypeRomDatabaseSetting&);              // Disable copy constructor
-    CSettingTypeRomDatabaseSetting& operator=(const CSettingTypeRomDatabaseSetting&);   // Disable assignment
+    CSettingTypeRomDatabaseSetting(void);
+    CSettingTypeRomDatabaseSetting(const CSettingTypeRomDatabaseSetting&);
+    CSettingTypeRomDatabaseSetting& operator=(const CSettingTypeRomDatabaseSetting&);
 };

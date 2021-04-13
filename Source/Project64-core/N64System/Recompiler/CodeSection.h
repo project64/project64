@@ -52,9 +52,9 @@ public:
     CJumpInfo   m_Cont;
 
 private:
-    CCodeSection(void);                             // Disable default constructor
-    CCodeSection(const CCodeSection&);              // Disable copy constructor
-    CCodeSection& operator=(const CCodeSection&);   // Disable assignment
+    CCodeSection(void);
+    CCodeSection(const CCodeSection&);
+    CCodeSection& operator=(const CCodeSection&);
 
     void UnlinkParent(CCodeSection * Parent, bool ContinueSection);
     void InheritConstants();

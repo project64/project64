@@ -23,8 +23,8 @@ public:
     int GetBaseSpeed(void) const;
 
 private:
-    CSpeedLimiter(const CSpeedLimiter&);            // Disable copy constructor
-    CSpeedLimiter& operator=(const CSpeedLimiter&); // Disable assignment
+    CSpeedLimiter(const CSpeedLimiter&);
+    CSpeedLimiter& operator=(const CSpeedLimiter&);
 
     void FixSpeedRatio();
 

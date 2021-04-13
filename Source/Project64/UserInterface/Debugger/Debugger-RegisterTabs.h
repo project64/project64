@@ -50,8 +50,8 @@ public:
     void CopyAllRegisters();
 
 private:
-    CRegisterTabs(const CRegisterTabs&);              // Disable copy constructor
-    CRegisterTabs& operator=(const CRegisterTabs&);   // Disable assignment
+    CRegisterTabs(const CRegisterTabs&);
+    CRegisterTabs& operator=(const CRegisterTabs&);
 
     stdstr CopyTabRegisters(int id);
 

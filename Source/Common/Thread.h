@@ -21,9 +21,9 @@ public:
     static uint32_t GetCurrentThreadId(void);
 
 private:
-    CThread(void);                          // Disable default constructor
-    CThread(const CThread&);				// Disable copy constructor
-    CThread& operator=(const CThread&);		// Disable assignment
+    CThread(void);
+    CThread(const CThread&);
+    CThread& operator=(const CThread&);
 
     static void * ThreadWrapper (CThread * _this);
 

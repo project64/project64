@@ -28,7 +28,7 @@ public:
     virtual void Delete (uint32_t Index );
 
 private:
-    CSettingTypeRDBSaveChip(void);                                        // Disable default constructor
-    CSettingTypeRDBSaveChip(const CSettingTypeRDBSaveChip&);              // Disable copy constructor
-    CSettingTypeRDBSaveChip& operator=(const CSettingTypeRDBSaveChip&);   // Disable assignment
+    CSettingTypeRDBSaveChip(void);
+    CSettingTypeRDBSaveChip(const CSettingTypeRDBSaveChip&);
+    CSettingTypeRDBSaveChip& operator=(const CSettingTypeRDBSaveChip&);
 };

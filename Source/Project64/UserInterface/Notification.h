@@ -54,8 +54,8 @@ public:
     void SetGfxPlugin(CGfxPlugin * Plugin);
 
 private:
-    CNotificationImp(const CNotificationImp&);				// Disable copy constructor
-    CNotificationImp& operator=(const CNotificationImp&);		// Disable assignment
+    CNotificationImp(const CNotificationImp&);
+    CNotificationImp& operator=(const CNotificationImp&);
 
     CMainGui   * m_hWnd;
     CGfxPlugin * m_gfxPlugin;

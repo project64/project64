@@ -61,17 +61,17 @@ public:
     bool operator != (const CSystemTimer& rSystemTimer) const;
 
 private:
-    CSystemTimer(void);                           // Disable default constructor
-    CSystemTimer(const CSystemTimer&);            // Disable copy constructor
-    CSystemTimer& operator=(const CSystemTimer&); // Disable assignment
-
-    TIMER_DETAILS m_TimerDetatils[MaxTimer];
-    int32_t       m_LastUpdate; //Timer at last update
-    int32_t     & m_NextTimer;
-    TimerType     m_Current;
-    bool          m_inFixTimer;
-    CRegisters  & m_Reg;
+    CSystemTimer(void);
+    CSystemTimer(const CSystemTimer&);
+    CSystemTimer& operator=(const CSystemTimer&);
 
     void SetCompareTimer();
     void FixTimers();
+
+    TIMER_DETAILS m_TimerDetatils[MaxTimer];
+    int32_t m_LastUpdate;
+    int32_t & m_NextTimer;
+    TimerType m_Current;
+    bool m_inFixTimer;
+    CRegisters & m_Reg;
 };

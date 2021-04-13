@@ -35,9 +35,9 @@ public:
     virtual void Delete(uint32_t Index);
 
 private:
-    CSettingTypeSelectedDirectory(void);                                              // Disable default constructor
-    CSettingTypeSelectedDirectory(const CSettingTypeSelectedDirectory&);              // Disable copy constructor
-    CSettingTypeSelectedDirectory& operator=(const CSettingTypeSelectedDirectory&);   // Disable assignment
+    CSettingTypeSelectedDirectory(void);
+    CSettingTypeSelectedDirectory(const CSettingTypeSelectedDirectory&);
+    CSettingTypeSelectedDirectory& operator=(const CSettingTypeSelectedDirectory&);
 
     static void DirectoryChanged(CSettingTypeSelectedDirectory * _this);
 

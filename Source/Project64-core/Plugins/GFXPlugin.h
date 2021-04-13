@@ -70,8 +70,8 @@ public:
     void ProcessMenuItem(int32_t id);
 
 private:
-    CGfxPlugin(const CGfxPlugin&);				// Disable copy constructor
-    CGfxPlugin& operator=(const CGfxPlugin&);	// Disable assignment
+    CGfxPlugin(const CGfxPlugin&);
+    CGfxPlugin& operator=(const CGfxPlugin&);
 
     virtual int32_t GetDefaultSettingStartRange() const { return FirstGfxDefaultSet; }
     virtual int32_t GetSettingStartRange() const { return FirstGfxSettings; }

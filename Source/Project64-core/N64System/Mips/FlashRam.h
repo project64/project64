@@ -23,9 +23,9 @@ public:
     void     WriteToFlashCommand(uint32_t Value);
 
 private:
-    CFlashram(void);                        // Disable default constructor
-    CFlashram(const CFlashram&);            // Disable copy constructor
-    CFlashram& operator=(const CFlashram&); // Disable assignment
+    CFlashram(void);
+    CFlashram(const CFlashram&);
+    CFlashram& operator=(const CFlashram&);
 
     bool  LoadFlashram();
 

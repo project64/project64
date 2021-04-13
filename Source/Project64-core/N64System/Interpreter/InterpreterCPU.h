@@ -12,9 +12,9 @@ public:
     static void InPermLoop();
 	
 private:
-    CInterpreterCPU();                                  // Disable default constructor
-    CInterpreterCPU(const CInterpreterCPU&);            // Disable copy constructor
-    CInterpreterCPU& operator=(const CInterpreterCPU&); // Disable assignment
+    CInterpreterCPU();
+    CInterpreterCPU(const CInterpreterCPU&);
+    CInterpreterCPU& operator=(const CInterpreterCPU&);
 
     static R4300iOp::Func * m_R4300i_Opcode;
 };

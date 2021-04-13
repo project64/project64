@@ -142,9 +142,9 @@ private:
         ResultsListCtrl_Col_Previous
     };
     
-    CDebugMemorySearch(void);                                    // Disable default constructor
-    CDebugMemorySearch(const CDebugMemorySearch&);               // Disable copy constructor
-    CDebugMemorySearch& operator=(const CDebugMemorySearch&);    // Disable assignment
+    CDebugMemorySearch(void);
+    CDebugMemorySearch(const CDebugMemorySearch&);
+    CDebugMemorySearch& operator=(const CDebugMemorySearch&);
 
     static LRESULT CALLBACK HookProc(int nCode, WPARAM wParam, LPARAM lParam);
     static CDebugMemorySearch* _this;

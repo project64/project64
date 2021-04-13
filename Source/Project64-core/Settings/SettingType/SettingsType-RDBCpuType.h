@@ -28,7 +28,7 @@ public:
     virtual void Delete (uint32_t Index );
 
 private:
-    CSettingTypeRDBCpuType(void);                                       // Disable default constructor
-    CSettingTypeRDBCpuType(const CSettingTypeRDBCpuType&);              // Disable copy constructor
-    CSettingTypeRDBCpuType& operator=(const CSettingTypeRDBCpuType&);   // Disable assignment
+    CSettingTypeRDBCpuType(void);
+    CSettingTypeRDBCpuType(const CSettingTypeRDBCpuType&);
+    CSettingTypeRDBCpuType& operator=(const CSettingTypeRDBCpuType&);
 };

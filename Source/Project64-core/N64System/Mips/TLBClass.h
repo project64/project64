@@ -134,9 +134,9 @@ private:
     void SetupTLB_Entry(int32_t index, bool Random);
 
 private:
-    CTLB();							// Disable default constructor
-    CTLB(const CTLB&);				// Disable copy constructor
-    CTLB& operator=(const CTLB&);	// Disable assignment
+    CTLB();
+    CTLB(const CTLB&);
+    CTLB& operator=(const CTLB&);
 };
 
 #pragma warning(pop)

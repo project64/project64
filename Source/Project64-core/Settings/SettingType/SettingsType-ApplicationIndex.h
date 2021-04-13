@@ -32,7 +32,7 @@ public:
     virtual void Delete(uint32_t Index);
 
 private:
-    CSettingTypeApplicationIndex(void);                                             // Disable default constructor
-    CSettingTypeApplicationIndex(const CSettingTypeApplicationIndex&);              // Disable copy constructor
-    CSettingTypeApplicationIndex& operator=(const CSettingTypeApplicationIndex&);   // Disable assignment
+    CSettingTypeApplicationIndex(void);
+    CSettingTypeApplicationIndex(const CSettingTypeApplicationIndex&);
+    CSettingTypeApplicationIndex& operator=(const CSettingTypeApplicationIndex&);
 };

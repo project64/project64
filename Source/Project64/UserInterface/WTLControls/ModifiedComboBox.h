@@ -132,9 +132,9 @@ public:
 	}
 
 private:
-	CModifiedComboBoxT(void);									// Disable default constructor
-	CModifiedComboBoxT(const CModifiedComboBoxT&);				// Disable copy constructor
-	CModifiedComboBoxT& operator=(const CModifiedComboBoxT&);	// Disable assignment
+	CModifiedComboBoxT(void);
+	CModifiedComboBoxT(const CModifiedComboBoxT&);
+	CModifiedComboBoxT& operator=(const CModifiedComboBoxT&);
 
 	bool   m_Changed;
 	bool   m_Reset;

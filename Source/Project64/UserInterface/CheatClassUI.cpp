@@ -462,7 +462,7 @@ void CCheatList::AddCodeLayers(LPARAM Enhancement, const std::wstring &Name, HTR
 
 void CCheatList::ChangeChildrenStatus(HTREEITEM hParent, bool Checked)
 {
-    HTREEITEM hItem = m_hCheatTree.GetChildItem(hParent);;
+    HTREEITEM hItem = m_hCheatTree.GetChildItem(hParent);
     if (hItem == nullptr)
     {
         if (hParent == TVI_ROOT) { return; }

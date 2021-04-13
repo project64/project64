@@ -105,9 +105,9 @@ public:
     const char * LabelName(uint32_t Address) const;
 
 private:
-    CMipsMemoryVM();                                // Disable default constructor
-    CMipsMemoryVM(const CMipsMemoryVM&);            // Disable copy constructor
-    CMipsMemoryVM& operator=(const CMipsMemoryVM&); // Disable assignment
+    CMipsMemoryVM();
+    CMipsMemoryVM(const CMipsMemoryVM&);
+    CMipsMemoryVM& operator=(const CMipsMemoryVM&);
 
 #if defined(__i386__) || defined(_M_IX86)
     friend class CX86RecompilerOps;

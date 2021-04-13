@@ -10,8 +10,9 @@ public:
 	void leave(void);
 
 private:
-	CriticalSection(const CriticalSection&);				// Disable copy constructor
-	CriticalSection& operator=(const CriticalSection&);		// Disable assignment
+	CriticalSection(const CriticalSection&);
+	CriticalSection& operator=(const CriticalSection&);
+
 	void * m_cs;
 };
 

@@ -28,7 +28,7 @@ public:
     virtual void Delete (uint32_t Index );
 
 private:
-    CSettingTypeRDBOnOff(void);                                     // Disable default constructor
-    CSettingTypeRDBOnOff(const CSettingTypeRDBOnOff&);              // Disable copy constructor
-    CSettingTypeRDBOnOff& operator=(const CSettingTypeRDBOnOff&);   // Disable assignment
+    CSettingTypeRDBOnOff(void);
+    CSettingTypeRDBOnOff(const CSettingTypeRDBOnOff&);
+    CSettingTypeRDBOnOff& operator=(const CSettingTypeRDBOnOff&);
 };

@@ -32,9 +32,9 @@ public:
     uint32_t NextTest();
 
 private:
-    CCodeBlock();                             // Disable default constructor
-    CCodeBlock(const CCodeBlock&);            // Disable copy constructor
-    CCodeBlock& operator=(const CCodeBlock&); // Disable assignment
+    CCodeBlock();
+    CCodeBlock(const CCodeBlock&);
+    CCodeBlock& operator=(const CCodeBlock&);
 
     bool AnalyseBlock();
 

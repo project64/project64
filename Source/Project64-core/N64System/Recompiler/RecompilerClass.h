@@ -51,9 +51,9 @@ public:
     uint32_t& MemoryStackPos() { return m_MemoryStack; }
 
 private:
-    CRecompiler();                              // Disable default constructor
-    CRecompiler(const CRecompiler&);            // Disable copy constructor
-    CRecompiler& operator=(const CRecompiler&); // Disable assignment
+    CRecompiler();
+    CRecompiler(const CRecompiler&);
+    CRecompiler& operator=(const CRecompiler&);
 
     CCompiledFunc * CompileCode();
 

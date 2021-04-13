@@ -10,9 +10,9 @@ public:
     virtual ~CDumpMemory(void);
 
 private:
-    CDumpMemory(void);                          // Disable default constructor
-    CDumpMemory(const CDumpMemory&);            // Disable copy constructor
-    CDumpMemory& operator=(const CDumpMemory&); // Disable assignment
+    CDumpMemory(void);
+    CDumpMemory(const CDumpMemory&);
+    CDumpMemory& operator=(const CDumpMemory&);
 
     enum DumpFormat
     {

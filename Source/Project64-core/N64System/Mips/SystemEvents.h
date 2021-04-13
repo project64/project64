@@ -71,9 +71,9 @@ public:
     }
 
 private:
-    CSystemEvents();                                // Disable default constructor
-    CSystemEvents(const CSystemEvents&);            // Disable copy constructor
-    CSystemEvents& operator=(const CSystemEvents&); // Disable assignment
+    CSystemEvents();
+    CSystemEvents(const CSystemEvents&);
+    CSystemEvents& operator=(const CSystemEvents&);
 
     void ChangePluginFunc();
 

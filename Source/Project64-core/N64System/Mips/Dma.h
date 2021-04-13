@@ -18,8 +18,8 @@ protected:
     CDMA(CFlashram & FlashRam, CSram & Sram);
 
 private:
-    CDMA(const CDMA&);              // Disable copy constructor
-    CDMA& operator=(const CDMA&);   // Disable assignment
+    CDMA(const CDMA&);
+    CDMA& operator=(const CDMA&);
 
     CFlashram & m_FlashRam;
     CSram     & m_Sram;

@@ -49,8 +49,8 @@ public:
     void ProcessMenuItem(int32_t id);
 
 private:
-    CRSP_Plugin(const CRSP_Plugin&);			// Disable copy constructor
-    CRSP_Plugin& operator=(const CRSP_Plugin&);	// Disable assignment
+    CRSP_Plugin(const CRSP_Plugin&);
+    CRSP_Plugin& operator=(const CRSP_Plugin&);
 
     PLUGIN_TYPE type() { return PLUGIN_TYPE_RSP; }
     virtual int32_t GetDefaultSettingStartRange() const { return FirstRSPDefaultSet; }

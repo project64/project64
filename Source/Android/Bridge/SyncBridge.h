@@ -16,9 +16,9 @@ public:
     void SwapWindow();
 
 private:
-	SyncBridge(void);		                    // Disable default constructor
-	SyncBridge(const SyncBridge&);				// Disable copy constructor
-    SyncBridge& operator=(const SyncBridge&);	// Disable assignment
+	SyncBridge(void);
+	SyncBridge(const SyncBridge&);
+    SyncBridge& operator=(const SyncBridge&);
 
 	JavaBridge * m_JavaBridge;
 };
