@@ -2,10 +2,6 @@
 // Microsoft Visual C++ generated include file.
 // Used by Project64-audio.rc
 //
-#define VERSION_MINOR                   0
-#define VER_VER_DEBUG                   0
-#define VERSION_MAJOR                   1
-#define VERSION_REVISION                1
 #define IDD_CONFIG                      9
 #define IDD_LOG_SETTINGS                103
 #define IDD_GAME_SETTING                104
@@ -23,7 +19,6 @@
 #define IDC_TXT_TRACE_INTERFACE         1082
 #define IDC_TXT_TRACE_AUDIO_DRIVER      1083
 #define IDC_CMB_TRACE_THREAD            1090
-#define VERSION_BUILD                   9999
 
 // Next default values for new objects
 // 

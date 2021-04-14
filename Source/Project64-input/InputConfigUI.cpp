@@ -384,7 +384,7 @@ CInputConfigUI::CInputConfigUI() :
     m_pgController2(2),
     m_pgController3(3)
 {
-    m_psh.pszCaption = L"Configure Input";
+    m_psh.pszCaption = L"Configure input";
     AddPage(&m_pgController0.m_psp);
     AddPage(&m_pgController1.m_psp);
     AddPage(&m_pgController2.m_psp);

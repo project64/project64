@@ -90,7 +90,7 @@ void CScanButton::OnTimer(UINT_PTR nIDEvent)
             time_t Now = time(nullptr);
             if (10 - (Now - m_ScanStart) > 0)
             {
-                Dialog.SetWindowText(stdstr_f("Configure Input: Press Key ... (%d seconds)", 10 - (Now - m_ScanStart)).ToUTF16().c_str());
+                Dialog.SetWindowText(stdstr_f("Configure input: Press key... (%d seconds)", 10 - (Now - m_ScanStart)).ToUTF16().c_str());
             }
             else
             {
@@ -116,7 +116,7 @@ void CScanButton::OnTimer(UINT_PTR nIDEvent)
         {
             m_ScanBtn.KillTimer(DETECT_KEY_TIMER);
             CWindow Dialog = m_ScanBtn.GetParent().GetParent();
-            Dialog.SetWindowText(L"Configure Input");
+            Dialog.SetWindowText(L"Configure input");
 
             if (m_Overlay.m_hWnd != nullptr)
             {

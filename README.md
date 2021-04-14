@@ -57,7 +57,7 @@ We use semantic versioning for Project64. For the versions available, see the [t
 * **Smiff** - *Previous contributor* - Smiff
 * **Gent** - *Previous contributor* - Gent
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/project64/project64/contributors) who participated in this project.
 
 ## License
 

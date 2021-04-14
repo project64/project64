@@ -72,13 +72,13 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 {
     WriteTrace(TraceAppInit, TraceDebug, "Start");
 
-    //Command Settings
+    // Command settings
     AddHandler(Cmd_BaseDirectory, new CSettingTypeTempString(BaseDirectory));
     AddHandler(Cmd_ShowHelp, new CSettingTypeTempBool(false));
     AddHandler(Cmd_RomFile, new CSettingTypeTempString(""));
     AddHandler(Cmd_ComboDiskFile, new CSettingTypeTempString(""));
 
-    //Support Files
+    // Support files
     AddHandler(SupportFile_Settings, new CSettingTypeApplicationPath("Settings", "ConfigFile", SupportFile_SettingsDefault));
     AddHandler(SupportFile_SettingsDefault, new CSettingTypeRelativePath("Config", "Project64.cfg"));
     AddHandler(SupportFile_RomDatabase, new CSettingTypeApplicationPath("Settings", "RomDatabase", SupportFile_RomDatabaseDefault));
@@ -100,7 +100,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(SupportFile_ExtInfo, new CSettingTypeApplicationPath("Settings", "ExtInfo", SupportFile_ExtInfoDefault));
     AddHandler(SupportFile_ExtInfoDefault, new CSettingTypeRelativePath("Config", "Project64.rdx"));
 
-    //Settings location
+    // Settings location
     AddHandler(Setting_ApplicationName, new CSettingTypeTempString(""));
     AddHandler(Setting_UseFromRegistry, new CSettingTypeApplication("Settings", "Use Registry", (uint32_t)false));
     AddHandler(Setting_RdbEditor, new CSettingTypeApplication("Settings", "Rdb Editor", false));
@@ -245,7 +245,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 	AddHandler(Game_RPCKey, new CSettingTypeTempString(""));
     AddHandler(Game_DiskSeekTiming, new CSettingTypeGame("DiskSeekTiming", Rdb_DiskSeekTiming));
 
-    //User Interface
+    // User interface
     AddHandler(UserInterface_ShowCPUPer, new CSettingTypeApplication("Settings", "Display CPU Usage", (uint32_t)false));
     AddHandler(UserInterface_DisplayFrameRate, new CSettingTypeApplication("Settings", "Display Frame Rate", (uint32_t)false));
     AddHandler(UserInterface_FrameDisplayType, new CSettingTypeApplication("Settings", "Frame Rate Display Type", (uint32_t)FR_VIs));
@@ -347,7 +347,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Debugger_AppLogFlush, new CSettingTypeApplication("Logging", "Log Auto Flush", (uint32_t)false));
     AddHandler(Debugger_RecordRecompilerAsm, new CSettingTypeApplication("Debugger", "Record Recompiler Asm", false));
 
-    //Logging
+    // Logging
     AddHandler(Debugger_TraceMD5, new CSettingTypeApplication("Logging", "MD5", (uint32_t)g_ModuleLogLevel[TraceMD5]));
     AddHandler(Debugger_TraceThread, new CSettingTypeApplication("Logging", "Thread", (uint32_t)g_ModuleLogLevel[TraceThread]));
     AddHandler(Debugger_TracePath, new CSettingTypeApplication("Logging", "Path", (uint32_t)g_ModuleLogLevel[TracePath]));
@@ -371,7 +371,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Debugger_TraceRomList, new CSettingTypeApplication("Logging", "Rom List", (uint32_t)g_ModuleLogLevel[TraceRomList]));
     AddHandler(Debugger_TraceExceptionHandler, new CSettingTypeApplication("Logging", "Exception Handler", (uint32_t)g_ModuleLogLevel[TraceExceptionHandler]));
 
-    //Plugin
+    // Plugin
 #ifdef _WIN32
     AddHandler(Plugin_RSP_Current, new CSettingTypeApplication("Plugin", "RSP Dll", "RSP\\RSP 1.7.dll"));
 #ifdef _DEBUG
@@ -400,7 +400,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Plugin_UseHleAudio, new CSettingTypeApplication("RSP", "HLE Audio Plugin", false));
     AddHandler(Plugin_EnableAudio, new CSettingTypeApplication("Audio", "Enable Audio", true));
 
-    //Logging
+    // Logging
     AddHandler(Logging_GenerateLog, new CSettingTypeApplication("Logging", "Generate Log Files", false));
     AddHandler(Logging_LogRDRamRegisters, new CSettingTypeApplication("Logging", "Log RDRam Registers", false));
     AddHandler(Logging_LogSPRegisters, new CSettingTypeApplication("Logging", "Log SP Registers", false));
@@ -698,7 +698,7 @@ bool CSettings::LoadBool(SettingID Type, bool & Value)
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
     {
-        //if not found do nothing
+        // If not found do nothing
         UnknownSetting(Type);
         return 0;
     }
@@ -725,7 +725,7 @@ bool CSettings::LoadBoolIndex(SettingID Type, uint32_t index, bool & Value)
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
     {
-        //if not found do nothing
+        // If not found do nothing
         UnknownSetting(Type);
         return false;
     }
@@ -752,7 +752,7 @@ bool CSettings::LoadDword(SettingID Type, uint32_t & Value)
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
     {
-        //if not found do nothing
+        // If not found do nothing
         UnknownSetting(Type);
         return false;
     }
@@ -779,7 +779,7 @@ bool CSettings::LoadDwordIndex(SettingID Type, uint32_t index, uint32_t & Value)
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
     {
-        //if not found do nothing
+        // If not found do nothing
         UnknownSetting(Type);
         return 0;
     }
@@ -806,7 +806,7 @@ bool CSettings::LoadStringVal(SettingID Type, std::string & Value)
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
     {
-        //if not found do nothing
+        // If not found do nothing
         UnknownSetting(Type);
         return 0;
     }
@@ -826,7 +826,7 @@ bool CSettings::LoadStringVal(SettingID Type, char * Buffer, uint32_t BufferSize
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
     {
-        //if not found do nothing
+        // If not found do nothing
         UnknownSetting(Type);
         return 0;
     }
@@ -861,7 +861,7 @@ bool CSettings::LoadStringIndex(SettingID Type, uint32_t index, std::string & Va
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
     {
-        //if not found do nothing
+        // If not found do nothing
         UnknownSetting(Type);
         return 0;
     }
@@ -882,7 +882,7 @@ bool CSettings::LoadStringIndex(SettingID /*Type*/, uint32_t /*index*/, char * /
     return false;
 }
 
-//Load the default value for the setting
+// Load the default value for the setting
 bool CSettings::LoadDefaultBool(SettingID Type)
 {
     bool Value = false;
@@ -895,7 +895,7 @@ void CSettings::LoadDefaultBool(SettingID Type, bool & Value)
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
     {
-        //if not found do nothing
+        // If not found do nothing
         UnknownSetting(Type);
     }
     else
@@ -934,7 +934,7 @@ void CSettings::LoadDefaultDword(SettingID Type, uint32_t & Value)
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
     {
-        //if not found do nothing
+        // If not found do nothing
         UnknownSetting(Type);
     }
     else
@@ -973,7 +973,7 @@ void CSettings::LoadDefaultString(SettingID Type, std::string & Value)
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
     {
-        //if not found do nothing
+        // If not found do nothing
         UnknownSetting(Type);
     }
     else
@@ -1015,7 +1015,7 @@ void CSettings::SaveBool(SettingID Type, bool Value)
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
     {
-        //if not found do nothing
+        // If not found do nothing
         UnknownSetting(Type);
         return;
     }
@@ -1035,7 +1035,7 @@ void CSettings::SaveBoolIndex(SettingID Type, uint32_t index, bool Value)
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
     {
-        //if not found do nothing
+        // If not found do nothing
         UnknownSetting(Type);
         return;
     }
@@ -1055,7 +1055,7 @@ void CSettings::SaveDword(SettingID Type, uint32_t Value)
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
     {
-        //if not found do nothing
+        // If not found do nothing
         UnknownSetting(Type);
         return;
     }
@@ -1075,7 +1075,7 @@ void CSettings::SaveDwordIndex(SettingID Type, uint32_t index, uint32_t Value)
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
     {
-        //if not found do nothing
+        // If not found do nothing
         UnknownSetting(Type);
         return;
     }
@@ -1095,7 +1095,7 @@ void CSettings::SaveString(SettingID Type, const std::string & Value)
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
     {
-        //if not found do nothing
+        // If not found do nothing
         UnknownSetting(Type);
         return;
     }
@@ -1115,7 +1115,7 @@ void CSettings::SaveString(SettingID Type, const char * Buffer)
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
     {
-        //if not found do nothing
+        // If not found do nothing
         UnknownSetting(Type);
     }
     else if (FindInfo->second->IndexBasedSetting())
@@ -1134,7 +1134,7 @@ void CSettings::SaveStringIndex(SettingID Type, uint32_t index, const char * Buf
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
     {
-        //if not found do nothing
+        // If not found do nothing
         UnknownSetting(Type);
     }
     if (FindInfo->second->IndexBasedSetting())
@@ -1158,7 +1158,7 @@ void CSettings::DeleteSetting(SettingID Type)
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
     {
-        //if not found do nothing
+        // If not found do nothing
         UnknownSetting(Type);
     }
     if (FindInfo->second->IndexBasedSetting())
@@ -1177,7 +1177,7 @@ void CSettings::DeleteSettingIndex(SettingID Type, uint32_t index)
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
     {
-        //if not found do nothing
+        // If not found do nothing
         UnknownSetting(Type);
     }
     if (FindInfo->second->IndexBasedSetting())
@@ -1285,7 +1285,7 @@ void CSettings::UnregisterChangeCB(SettingID Type, void * Data, SettingChangedFu
 {
     bool bRemoved = false;
 
-    //Find out the information for handling the setting type from the list
+    // Find out the information for handling the setting type from the list
     SETTING_CALLBACK::iterator Callback = m_Callback.find(Type);
     if (Callback != m_Callback.end())
     {

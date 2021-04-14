@@ -271,7 +271,7 @@ void CLogging::Log_LW(uint32_t PC, uint32_t VAddr)
             return;
         }
         g_MMU->LW_VAddr(VAddr, Value);
-        LogMessage("%08X: read word from Pif Ram at 0x%X (%08X)", PC, VAddr - 0xBFC007C0, Value);
+        LogMessage("%08X: read word from PIF RAM at 0x%X (%08X)", PC, VAddr - 0xBFC007C0, Value);
         return;
     }
     if (VAddr >= 0xB0000040 && ((VAddr - 0xB0000000) < g_Rom->GetRomSize()))
@@ -288,12 +288,12 @@ void CLogging::Log_LW(uint32_t PC, uint32_t VAddr)
         g_MMU->LW_VAddr(VAddr, Value);
         switch (VAddr)
         {
-        case 0xB0000004: LogMessage("%08X: read from Rom Clock Rate (%08X)", PC, Value); break;
-        case 0xB0000008: LogMessage("%08X: read from Rom Boot address offset (%08X)", PC, Value); break;
-        case 0xB000000C: LogMessage("%08X: read from Rom Release offset (%08X)", PC, Value); break;
-        case 0xB0000010: LogMessage("%08X: read from Rom CRC1 (%08X)", PC, Value); break;
-        case 0xB0000014: LogMessage("%08X: read from Rom CRC2 (%08X)", PC, Value); break;
-        default: LogMessage("%08X: read from Rom header 0x%X (%08X)", PC, VAddr & 0xFF, Value);  break;
+        case 0xB0000004: LogMessage("%08X: read from ROM clock rate (%08X)", PC, Value); break;
+        case 0xB0000008: LogMessage("%08X: read from ROM boot address offset (%08X)", PC, Value); break;
+        case 0xB000000C: LogMessage("%08X: read from ROM release offset (%08X)", PC, Value); break;
+        case 0xB0000010: LogMessage("%08X: read from ROM CRC1 (%08X)", PC, Value); break;
+        case 0xB0000014: LogMessage("%08X: read from ROM CRC2 (%08X)", PC, Value); break;
+        default: LogMessage("%08X: read from ROM header 0x%X (%08X)", PC, VAddr & 0xFF, Value);  break;
         }
         return;
     }
@@ -524,7 +524,7 @@ void CLogging::Log_SW(uint32_t PC, uint32_t VAddr, uint32_t Value)
     {
         if (LogPRDMAOperations())
         {
-            LogMessage("%08X: A DMA transfer from the PIF ram has occured", PC);
+            LogMessage("%08X: A DMA transfer from the PIF RAM has occurred", PC);
         }
         if (!LogSerialInterface())
         {
@@ -536,7 +536,7 @@ void CLogging::Log_SW(uint32_t PC, uint32_t VAddr, uint32_t Value)
     {
         if (LogPRDMAOperations())
         {
-            LogMessage("%08X: A DMA transfer to the PIF ram has occured", PC);
+            LogMessage("%08X: A DMA transfer to the PIF RAM has occurred", PC);
         }
         if (!LogSerialInterface())
         {
@@ -559,7 +559,7 @@ void CLogging::Log_SW(uint32_t PC, uint32_t VAddr, uint32_t Value)
         {
             return;
         }
-        LogMessage("%08X: Writing 0x%08X to Pif Ram at 0x%X", PC, Value, VAddr - 0xBFC007C0);
+        LogMessage("%08X: Writing 0x%08X to PIF RAM at 0x%X", PC, Value, VAddr - 0xBFC007C0);
         return;
     }
     if (!LogUnknown())

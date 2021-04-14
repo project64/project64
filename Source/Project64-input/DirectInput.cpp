@@ -100,7 +100,7 @@ BOOL CDirectInput::EnumMakeDeviceList(LPCDIDEVICEINSTANCE lpddi)
     uint32_t DeviceType = GET_DIDEVICE_TYPE(lpddi->dwDevType);
     if (DeviceType == DI8DEVTYPE_DEVICE)
     {
-        // ignore generic devices
+        // Ignore generic devices
         return DIENUM_CONTINUE;
     }
 

@@ -27,7 +27,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
 
     if ((int32_t)(MemAddress) < 0 || MemAddress > 0x1FFFFFFF)
     {
-        WriteTrace(TraceExceptionHandler, TraceError, "Invalid memory adderess: %X", MemAddress);
+        WriteTrace(TraceExceptionHandler, TraceError, "Invalid memory address: %X", MemAddress);
         if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -445,7 +445,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
 {
     if ((int32_t)(MemAddress) < 0 || MemAddress > 0x1FFFFFFF)
     {
-        WriteTrace(TraceExceptionHandler, TraceError, "Invalid memory adderess: %X", MemAddress);
+        WriteTrace(TraceExceptionHandler, TraceError, "Invalid memory address: %X", MemAddress);
         DumpArmExceptionInfo(MemAddress, context);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return false;
@@ -488,7 +488,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
 
     if (OpCode32->imm2.opcode == 0xF84 && OpCode32->imm2.Opcode2 == 0)
     {
-        //42 f8 03 c0 str.w	ip, [r2, r3]
+        // 42 f8 03 c0 str.w	ip, [r2, r3]
         if (!g_MMU->SW_NonMemory(MemAddress, *ArmRegisters[OpCode32->imm2.rt]))
         {
             if (ShowUnhandledMemory())
@@ -502,7 +502,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
 
     if (OpCode32->imm12.opcode == 0xF8C)
     {
-        //c9 f8 00 b0 str.w	r11, [r9]
+        // c9 f8 00 b0 str.w	r11, [r9]
         if (!g_MMU->SW_NonMemory(MemAddress, *ArmRegisters[OpCode32->imm2.rt]))
         {
             if (ShowUnhandledMemory())
@@ -516,7 +516,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
 
     if (OpCode32->imm12.opcode == 0xF8D)
     {
-        //dc f8 70 70 ldr.w	r7, [ip, #112]
+        // dc f8 70 70 ldr.w	r7, [ip, #112]
         if (!g_MMU->LW_NonMemory(MemAddress, ArmRegisters[OpCode32->imm12.rt]))
         {
             if (ShowUnhandledMemory())
@@ -530,8 +530,8 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
 
     if (OpCode32->reg_cond_imm5.opcode == 3 && OpCode32->reg_cond_imm5.opcode1 == 0 && OpCode32->reg_cond_imm5.opcode2 == 0 && OpCode32->reg_cond_imm5.opcode3 == 0)
     {
-        //17847001 	strne	r7, [r4, r1]
-        //e789300c 	str	r3, [r9, ip]
+        // 17847001 	strne	r7, [r4, r1]
+        // e789300c 	str	r3, [r9, ip]
         if (!g_MMU->SW_NonMemory(MemAddress, *ArmRegisters[OpCode32->reg_cond_imm5.rt]))
         {
             if (ShowUnhandledMemory())
@@ -543,7 +543,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         return true;
     }
 
-    if (OpCode->Reg.opcode == 0x2A) //STRB
+    if (OpCode->Reg.opcode == 0x2A) // STRB
     {
         if (!g_MMU->SB_NonMemory(MemAddress, *ArmRegisters[OpCode->Reg.rt]))
         {
@@ -558,7 +558,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
 
     if (OpCode32->reg_cond_imm5.opcode == 3 && OpCode32->reg_cond_imm5.opcode1 == 1 && OpCode32->reg_cond_imm5.opcode2 == 0 && OpCode32->reg_cond_imm5.opcode3 == 0)
     {
-        //17c32001 	strbne	r2, [r3, r1]
+        // 17c32001 	strbne	r2, [r3, r1]
         if (!g_MMU->SB_NonMemory(MemAddress, *ArmRegisters[OpCode32->reg_cond_imm5.rt]))
         {
             if (ShowUnhandledMemory())
@@ -572,7 +572,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
 
     if (OpCode32->reg_cond_imm8.opcode == 0 && OpCode32->reg_cond_imm8.opcode1 == 1 && OpCode32->reg_cond_imm8.opcode2 == 0 && OpCode32->reg_cond_imm8.opcode3 == 0xB)
     {
-        //11c020b0 	strhne	r2, [r0]
+        // 11c020b0 	strhne	r2, [r0]
         if (!g_MMU->SH_NonMemory(MemAddress, *ArmRegisters[OpCode32->reg_cond_imm8.rt]))
         {
             if (ShowUnhandledMemory())
@@ -614,7 +614,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
 
     if (OpCode->Imm5.opcode == 0xC)
     {
-        //2e 60 str	r6, [r5, #0]
+        // 2e 60 str	r6, [r5, #0]
         if (!g_MMU->SW_NonMemory(MemAddress, *ArmRegisters[OpCode->Imm5.rt]))
         {
             if (ShowUnhandledMemory())
@@ -628,7 +628,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
 
     if (OpCode->Imm5.opcode == 0xD)
     {
-        //3F 68 ldr	r7, [r7, #0]
+        // 3F 68 ldr	r7, [r7, #0]
         if (!g_MMU->LW_NonMemory(MemAddress, ArmRegisters[OpCode->Imm5.rt]))
         {
             if (ShowUnhandledMemory())
@@ -642,7 +642,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
 
     if (OpCode->Imm5.opcode == 0xE)
     {
-        //b8 70 strb	r0, [r7, #2]
+        // b8 70 strb	r0, [r7, #2]
         if (!g_MMU->SB_NonMemory(MemAddress, *ArmRegisters[OpCode->Imm5.rt]))
         {
             if (ShowUnhandledMemory())
@@ -656,7 +656,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
 
     if (OpCode32->reg_cond.opcode == 0 && OpCode32->reg_cond.opcode1 == 0 && OpCode32->reg_cond.opcode2 == 0 && OpCode32->reg_cond.opcode3 == 0xB)
     {
-        //118320b1 	strhne	r2, [r3, r1]
+        // 118320b1 	strhne	r2, [r3, r1]
         if (!g_MMU->SH_NonMemory(MemAddress, *ArmRegisters[OpCode32->reg_cond.rt]))
         {
             if (ShowUnhandledMemory())
@@ -670,7 +670,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
 
     if (OpCode32->reg_cond_imm12.opcode == 2 && OpCode32->reg_cond_imm12.opcode1 == 0 && OpCode32->reg_cond_imm12.opcode2 == 0)
     {
-        //e48a1004 	str	r1, [sl], #4
+        // e48a1004 	str	r1, [sl], #4
         if (!g_MMU->SW_NonMemory(MemAddress, *ArmRegisters[OpCode32->reg_cond_imm12.rt]))
         {
             if (ShowUnhandledMemory())
@@ -684,7 +684,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
 
     if (OpCode32->uint16.opcode == ArmLDRH_W)
     {
-        //f833 c001 ldrh.w	ip, [r3, r1]
+        // f833 c001 ldrh.w	ip, [r3, r1]
         if (!g_MMU->LH_NonMemory(MemAddress, ArmRegisters[OpCode32->uint16.rt], false))
         {
             if (ShowUnhandledMemory())
@@ -698,7 +698,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
 
     if (OpCode32->uint32.opcode == ArmLDRH_Reg && OpCode32->uint32.opcode2 == 0xB)
     {
-        //e19a20b2 ldrh	r2, [sl, r2]
+        // e19a20b2 ldrh	r2, [sl, r2]
         if (!g_MMU->LH_NonMemory(MemAddress, ArmRegisters[OpCode32->uint32.rt], false))
         {
             if (ShowUnhandledMemory())
@@ -712,8 +712,8 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
 
     if (OpCode32->reg_cond.opcode == 0 && OpCode32->reg_cond.opcode1 == 0 && OpCode32->reg_cond.opcode2 == 1 && OpCode32->reg_cond.opcode3 == 0xB)
     {
-        //119330b1 	ldrhne	r3, [r3, r1]
-		//11d000b0  ldrhne  r0, [r0]
+        // 119330b1 	ldrhne	r3, [r3, r1]
+		// 11d000b0  ldrhne  r0, [r0]
         if (!g_MMU->LH_NonMemory(MemAddress, ArmRegisters[OpCode32->reg_cond.rt], false))
         {
             if (ShowUnhandledMemory())
@@ -727,7 +727,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
 
     if (OpCode32->reg_cond_imm5.opcode == 3 && OpCode32->reg_cond_imm5.opcode1 == 0 && OpCode32->reg_cond_imm5.opcode2 == 1 && OpCode32->reg_cond_imm5.opcode3 == 0)
     {
-        //1790a001 	ldrne	sl, [r0, r1]
+        // 1790a001 	ldrne	sl, [r0, r1]
         if (!g_MMU->LW_NonMemory(MemAddress, ArmRegisters[OpCode32->reg_cond_imm5.rt]))
         {
             if (ShowUnhandledMemory())
@@ -741,7 +741,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
 
     if (OpCode32->imm2.opcode == 0xF85 && OpCode32->imm2.Opcode2 == 0)
     {
-        //52 f8 21 30 ldr.w	r3, [r2, r1, lsl #2]
+        // 52 f8 21 30 ldr.w	r3, [r2, r1, lsl #2]
         if (!g_MMU->LW_NonMemory(MemAddress, ArmRegisters[OpCode32->imm2.rt]))
         {
             if (ShowUnhandledMemory())
@@ -771,7 +771,7 @@ void CMipsMemoryVM::segv_handler(int signal, siginfo_t *siginfo, void *sigcontex
 {
     ucontext_t *ucontext = (ucontext_t*)sigcontext;
 
-    WriteTrace(TraceExceptionHandler, TraceNotice, "Segmentation Fault!");
+    WriteTrace(TraceExceptionHandler, TraceNotice, "Segmentation fault!");
     WriteTrace(TraceExceptionHandler, TraceNotice, "info.si_signo = %d", signal);
     WriteTrace(TraceExceptionHandler, TraceNotice, "info.si_errno = %d", siginfo->si_errno);
     WriteTrace(TraceExceptionHandler, TraceNotice, "info.si_code  = %d", siginfo->si_code);
@@ -818,8 +818,8 @@ void CMipsMemoryVM::segv_handler(int signal, siginfo_t *siginfo, void *sigcontex
         return;
     }
 #endif
-    WriteTrace(TraceExceptionHandler, TraceError, "Failed quiting now");
-    exit(0); //can't return to main, it's where the segfault occured.
+    WriteTrace(TraceExceptionHandler, TraceError, "Failed! Quitting now...");
+    exit(0); // Can't return to main, this is where the segmentation fault occurred
 }
 
 #else
@@ -834,7 +834,7 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
         }
     }
 
-    //convert the pointer since we are not having win32 structures in headers
+    // Convert the pointer since we are not having win32 structures in headers
     LPEXCEPTION_POINTERS lpEP = (LPEXCEPTION_POINTERS)lpExceptionPointer;
     uint32_t MemAddress = (char *)lpEP->ExceptionRecord->ExceptionInformation[1] - (char *)g_MMU->Rdram();
 
