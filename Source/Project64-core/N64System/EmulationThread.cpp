@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include <Project64-core/N64System/N64Class.h>
+#include <Project64-core/N64System/N64System.h>
 #include <Project64-core/Notification.h>
 #include <Common/Util.h>
 

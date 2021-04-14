@@ -43,13 +43,13 @@
     <ClCompile Include="AppInit.cpp" />
     <ClCompile Include="Logging.cpp" />
     <ClCompile Include="MemoryExceptionFilter.cpp" />
-    <ClCompile Include="Multilanguage\LanguageClass.cpp" />
+    <ClCompile Include="Multilanguage\Language.cpp" />
     <ClCompile Include="N64System\EmulationThread.cpp" />
     <ClCompile Include="N64System\Enhancement\Enhancement.cpp" />
     <ClCompile Include="N64System\Enhancement\EnhancementFile.cpp" />
     <ClCompile Include="N64System\Enhancement\EnhancementList.cpp" />
     <ClCompile Include="N64System\Enhancement\Enhancements.cpp" />
-    <ClCompile Include="N64System\FramePerSecondClass.cpp" />
+    <ClCompile Include="N64System\FramePerSecond.cpp" />
     <ClCompile Include="N64System\Interpreter\InterpreterCPU.cpp" />
     <ClCompile Include="N64System\Interpreter\InterpreterOps.cpp" />
     <ClCompile Include="N64System\Interpreter\InterpreterOps32.cpp" />
@@ -63,26 +63,26 @@
     <ClCompile Include="N64System\Mips\Mempak.cpp" />
     <ClCompile Include="N64System\Mips\OpcodeName.cpp" />
     <ClCompile Include="N64System\Mips\PifRam.cpp" />
-    <ClCompile Include="N64System\Mips\RegisterClass.cpp" />
+    <ClCompile Include="N64System\Mips\Register.cpp" />
     <ClCompile Include="N64System\Mips\Rumblepak.cpp" />
     <ClCompile Include="N64System\Mips\Sram.cpp" />
     <ClCompile Include="N64System\Mips\SystemEvents.cpp" />
     <ClCompile Include="N64System\Mips\SystemTiming.cpp" />
-    <ClCompile Include="N64System\Mips\TLBclass.cpp" />
+    <ClCompile Include="N64System\Mips\TLB.cpp" />
     <ClCompile Include="N64System\Mips\Transferpak.cpp" />
-    <ClCompile Include="N64System\N64Class.cpp" />
-    <ClCompile Include="N64System\N64DiskClass.cpp" />
-    <ClCompile Include="N64System\N64RomClass.cpp" />
-    <ClCompile Include="N64System\ProfilingClass.cpp" />
+    <ClCompile Include="N64System\N64Disk.cpp" />
+    <ClCompile Include="N64System\N64Rom.cpp" />
+    <ClCompile Include="N64System\N64System.cpp" />
+    <ClCompile Include="N64System\Profiling.cpp" />
     <ClCompile Include="N64System\Recompiler\Arm\ArmOps.cpp" />
     <ClCompile Include="N64System\Recompiler\Arm\ArmRecompilerOps.cpp" />
     <ClCompile Include="N64System\Recompiler\Arm\ArmRegInfo.cpp" />
     <ClCompile Include="N64System\Recompiler\CodeBlock.cpp" />
     <ClCompile Include="N64System\Recompiler\CodeSection.cpp" />
     <ClCompile Include="N64System\Recompiler\FunctionInfo.cpp" />
-    <ClCompile Include="N64System\Recompiler\FunctionMapClass.cpp" />
+    <ClCompile Include="N64System\Recompiler\FunctionMap.cpp" />
     <ClCompile Include="N64System\Recompiler\LoopAnalysis.cpp" />
-    <ClCompile Include="N64System\Recompiler\RecompilerClass.cpp" />
+    <ClCompile Include="N64System\Recompiler\Recompiler.cpp" />
     <ClCompile Include="N64System\Recompiler\RecompilerCodeLog.cpp" />
     <ClCompile Include="N64System\Recompiler\RecompilerMemory.cpp" />
     <ClCompile Include="N64System\Recompiler\RegBase.cpp" />
@@ -90,13 +90,13 @@
     <ClCompile Include="N64System\Recompiler\x86\x86ops.cpp" />
     <ClCompile Include="N64System\Recompiler\x86\x86RecompilerOps.cpp" />
     <ClCompile Include="N64System\Recompiler\x86\x86RegInfo.cpp" />
-    <ClCompile Include="N64System\SpeedLimiterClass.cpp" />
+    <ClCompile Include="N64System\SpeedLimiter.cpp" />
     <ClCompile Include="N64System\SystemGlobals.cpp" />
     <ClCompile Include="Plugins\AudioPlugin.cpp" />
     <ClCompile Include="Plugins\ControllerPlugin.cpp" />
     <ClCompile Include="Plugins\GFXPlugin.cpp" />
+    <ClCompile Include="Plugins\Plugin.cpp" />
     <ClCompile Include="Plugins\PluginBase.cpp" />
-    <ClCompile Include="Plugins\PluginClass.cpp" />
     <ClCompile Include="Plugins\RSPPlugin.cpp" />
     <ClCompile Include="RomList\RomList.cpp" />
     <ClCompile Include="Settings.cpp" />
@@ -139,12 +139,12 @@
     <ClInclude Include="ExceptionHandler.h" />
     <ClInclude Include="Logging.h" />
     <ClInclude Include="Multilanguage.h" />
-    <ClInclude Include="Multilanguage\LanguageClass.h" />
+    <ClInclude Include="Multilanguage\Language.h" />
     <ClInclude Include="N64System\Enhancement\Enhancement.h" />
     <ClInclude Include="N64System\Enhancement\EnhancementFile.h" />
     <ClInclude Include="N64System\Enhancement\EnhancementList.h" />
     <ClInclude Include="N64System\Enhancement\Enhancements.h" />
-    <ClInclude Include="N64System\FramePerSecondClass.h" />
+    <ClInclude Include="N64System\FramePerSecond.h" />
     <ClInclude Include="N64System\Interpreter\InterpreterCPU.h" />
     <ClInclude Include="N64System\Interpreter\InterpreterOps32.h" />
     <ClInclude Include="N64System\Interpreter\InterpreterOps.h" />
@@ -159,19 +159,19 @@
     <ClInclude Include="N64System\Mips\OpCode.h" />
     <ClInclude Include="N64System\Mips\OpcodeName.h" />
     <ClInclude Include="N64System\Mips\PifRam.h" />
-    <ClInclude Include="N64System\Mips\RegisterClass.h" />
+    <ClInclude Include="N64System\Mips\Register.h" />
     <ClInclude Include="N64System\Mips\Rumblepak.h" />
     <ClInclude Include="N64System\Mips\Sram.h" />
     <ClInclude Include="N64System\Mips\SystemEvents.h" />
     <ClInclude Include="N64System\Mips\SystemTiming.h" />
-    <ClInclude Include="N64System\Mips\TLBClass.h" />
+    <ClInclude Include="N64System\Mips\TLB.h" />
     <ClInclude Include="N64System\Mips\Transferpak.h" />
     <ClInclude Include="N64System\Mips\TranslateVaddr.h" />
-    <ClInclude Include="N64System\N64Class.h" />
-    <ClInclude Include="N64System\N64DiskClass.h" />
-    <ClInclude Include="N64System\N64RomClass.h" />
+    <ClInclude Include="N64System\N64Disk.h" />
+    <ClInclude Include="N64System\N64Rom.h" />
+    <ClInclude Include="N64System\N64System.h" />
     <ClInclude Include="N64System\N64Types.h" />
-    <ClInclude Include="N64System\ProfilingClass.h" />
+    <ClInclude Include="N64System\Profiling.h" />
     <ClInclude Include="N64System\Recompiler\Arm\ArmOpCode.h" />
     <ClInclude Include="N64System\Recompiler\Arm\ArmOps.h" />
     <ClInclude Include="N64System\Recompiler\Arm\ArmRecompilerOps.h" />
@@ -180,7 +180,7 @@
     <ClInclude Include="N64System\Recompiler\CodeSection.h" />
     <ClInclude Include="N64System\Recompiler\ExitInfo.h" />
     <ClInclude Include="N64System\Recompiler\FunctionInfo.h" />
-    <ClInclude Include="N64System\Recompiler\FunctionMapClass.h" />
+    <ClInclude Include="N64System\Recompiler\FunctionMap.h" />
     <ClInclude Include="N64System\Recompiler\JumpInfo.h" />
     <ClInclude Include="N64System\Recompiler\LoopAnalysis.h" />
     <ClInclude Include="N64System\Recompiler\RecompilerClass.h" />
@@ -194,15 +194,15 @@
     <ClInclude Include="N64System\Recompiler\x86\x86ops.h" />
     <ClInclude Include="N64System\Recompiler\x86\x86RecompilerOps.h" />
     <ClInclude Include="N64System\Recompiler\x86\x86RegInfo.h" />
-    <ClInclude Include="N64System\SpeedLimiterClass.h" />
+    <ClInclude Include="N64System\SpeedLimiter.h" />
     <ClInclude Include="N64System\SystemGlobals.h" />
     <ClInclude Include="Notification.h" />
     <ClInclude Include="Plugin.h" />
     <ClInclude Include="Plugins\AudioPlugin.h" />
     <ClInclude Include="Plugins\ControllerPlugin.h" />
     <ClInclude Include="Plugins\GFXPlugin.h" />
+    <ClInclude Include="Plugins\Plugin.h" />
     <ClInclude Include="Plugins\PluginBase.h" />
-    <ClInclude Include="Plugins\PluginClass.h" />
     <ClInclude Include="Plugins\RSPPlugin.h" />
     <ClInclude Include="RomList\RomList.h" />
     <ClInclude Include="Settings.h" />
@@ -246,9 +246,5 @@
     <ProjectReference Include="..\UpdateVersion\UpdateVersion.vcxproj">
       <Project>{1968162c-0793-491d-91a1-81645a24d399}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
 </Project>

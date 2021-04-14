@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Common/IniFileClass.h>
+#include <Common/IniFile.h>
 #include <Project64-core/Settings/SettingType/SettingsType-Base.h>
 
 class CSettingTypeRomDatabase :

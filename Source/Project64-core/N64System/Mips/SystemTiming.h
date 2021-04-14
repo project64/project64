@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Common/LogClass.h>
+#include <Common/Log.h>
 #include <Project64-core/N64System/N64Types.h>
-#include <Project64-core/N64System/Mips/RegisterClass.h>
+#include <Project64-core/N64System/Mips/Register.h>
 #include <Project64-core/3rdParty/zip.h>
 
 class CSystemTimer
@@ -37,21 +37,20 @@ public:
         int64_t CyclesToTimer;
     };
 
-public:
     CSystemTimer(CRegisters &Reg, int32_t & NextTimer);
-    void      SetTimer(TimerType Type, uint32_t Cycles, bool bRelative);
+    void SetTimer(TimerType Type, uint32_t Cycles, bool bRelative);
     uint32_t  GetTimer(TimerType Type);
-    void      StopTimer(TimerType Type);
-    void      UpdateTimers();
-    void      TimerDone();
-    void      Reset();
-    void      UpdateCompareTimer();
-    bool      SaveAllowed();
+    void StopTimer(TimerType Type);
+    void UpdateTimers();
+    void TimerDone();
+    void Reset();
+    void UpdateCompareTimer();
+    bool SaveAllowed();
 
-    void      SaveData(zipFile & file) const;
-    void      SaveData(CFile & file) const;
-    void      LoadData(zipFile & file);
-    void      LoadData(CFile & file);
+    void SaveData(zipFile & file) const;
+    void SaveData(CFile & file) const;
+    void LoadData(zipFile & file);
+    void LoadData(CFile & file);
 
     void RecordDifference(CLog &LogFile, const CSystemTimer& rSystemTimer);
 

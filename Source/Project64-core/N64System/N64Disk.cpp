@@ -1,10 +1,10 @@
 #include "stdafx.h"
-#include "N64DiskClass.h"
+#include "N64Disk.h"
 #include "SystemGlobals.h"
 #include <Common/md5.h>
 #include <Common/Platform.h>
 #include <Common/MemoryManagement.h>
-#include <Project64-core/N64System/Mips/RegisterClass.h>
+#include <Project64-core/N64System/Mips/Register.h>
 #include <memory>
 
 CN64Disk::CN64Disk() :

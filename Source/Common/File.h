@@ -6,20 +6,25 @@ class CFileBase
 public:
     enum OpenFlags
     {
-        modeRead =          0x0000,
-        modeWrite =         0x0001,
-        modeReadWrite =     0x0002,
-        shareCompat =       0x0000,
-        shareExclusive =    0x0010,
-        shareDenyWrite =    0x0020,
-        shareDenyRead =     0x0030,
-        shareDenyNone =     0x0040,
-        modeNoInherit =     0x0080,
-        modeCreate =        0x1000,
-        modeNoTruncate =    0x2000,
+        modeRead = 0x0000,
+        modeWrite = 0x0001,
+        modeReadWrite = 0x0002,
+        shareCompat = 0x0000,
+        shareExclusive = 0x0010,
+        shareDenyWrite = 0x0020,
+        shareDenyRead = 0x0030,
+        shareDenyNone = 0x0040,
+        modeNoInherit = 0x0080,
+        modeCreate = 0x1000,
+        modeNoTruncate = 0x2000,
     };
 
-    enum SeekPosition { begin = 0x0, current = 0x1, end = 0x2 };
+    enum SeekPosition 
+	{ 
+		begin = 0x0, 
+		current = 0x1, 
+		end = 0x2 
+	};
 
     virtual bool Open(const char * lpszFileName, uint32_t nOpenFlags ) = 0;
 

@@ -4,8 +4,8 @@
 #include <Common/SyncEvent.h>
 #include <Common/Thread.h>
 #include <Project64-core/Settings/N64SystemSettings.h>
-#include <Project64-core/N64System/ProfilingClass.h>
-#include <Project64-core/N64System/Recompiler/RecompilerClass.h>
+#include <Project64-core/N64System/Profiling.h>
+#include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/N64System/Mips/Audio.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/SystemEvents.h>
@@ -15,9 +15,9 @@
 #include <Project64-core/Plugin.h>
 #include <Project64-core/Logging.h>
 
-#include "Mips/TLBClass.h"
-#include "FramePerSecondClass.h"
-#include "SpeedLimiterClass.h"
+#include "Mips/TLB.h"
+#include "FramePerSecond.h"
+#include "SpeedLimiter.h"
 
 typedef std::list<SystemEvent>   EVENT_LIST;
 

@@ -2,9 +2,9 @@
 #include <Common/Trace.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Settings.h>
-#include <Project64-core/N64System/N64Class.h>
+#include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
-#include "NotificationClass.h"
+#include "Notification.h"
 #include "JavaBridge.h"
 #if defined(ANDROID)
 #include <android/log.h>

@@ -1,5 +1,5 @@
 #pragma once
-#include "LogClass.h"
+#include "Log.h"
 
 enum TraceSeverity
 {

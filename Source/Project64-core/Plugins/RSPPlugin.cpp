@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
-#include <Project64-core/N64System/Mips/RegisterClass.h>
-#include <Project64-core/N64System/N64Class.h>
-#include <Project64-core/N64System/N64DiskClass.h>
-#include <Project64-core/N64System/N64RomClass.h>
+#include <Project64-core/N64System/Mips/Register.h>
+#include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/N64Disk.h>
+#include <Project64-core/N64System/N64Rom.h>
 #include "RSPPlugin.h"
 #include "GFXPlugin.h"
 #include <Project64-core/Plugins/AudioPlugin.h>

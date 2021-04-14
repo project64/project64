@@ -189,7 +189,7 @@
     <ClCompile Include="Plugins\PluginBase.cpp">
       <Filter>Source Files\Plugins</Filter>
     </ClCompile>
-    <ClCompile Include="Plugins\PluginClass.cpp">
+    <ClCompile Include="Plugins\Plugin.cpp">
       <Filter>Source Files\Plugins</Filter>
     </ClCompile>
     <ClCompile Include="Plugins\RSPPlugin.cpp">
@@ -198,19 +198,16 @@
     <ClCompile Include="N64System\EmulationThread.cpp">
       <Filter>Source Files\N64 System</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\FramePerSecondClass.cpp">
+    <ClCompile Include="N64System\FramePerSecond.cpp">
       <Filter>Source Files\N64 System</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\N64Class.cpp">
+    <ClCompile Include="N64System\N64System.cpp">
       <Filter>Source Files\N64 System</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\N64RomClass.cpp">
+    <ClCompile Include="N64System\Profiling.cpp">
       <Filter>Source Files\N64 System</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\ProfilingClass.cpp">
-      <Filter>Source Files\N64 System</Filter>
-    </ClCompile>
-    <ClCompile Include="N64System\SpeedLimiterClass.cpp">
+    <ClCompile Include="N64System\SpeedLimiter.cpp">
       <Filter>Source Files\N64 System</Filter>
     </ClCompile>
     <ClCompile Include="N64System\SystemGlobals.cpp">
@@ -225,13 +222,13 @@
     <ClCompile Include="N64System\Recompiler\FunctionInfo.cpp">
       <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\Recompiler\FunctionMapClass.cpp">
+    <ClCompile Include="N64System\Recompiler\FunctionMap.cpp">
       <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>
     <ClCompile Include="N64System\Recompiler\LoopAnalysis.cpp">
       <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\Recompiler\RecompilerClass.cpp">
+    <ClCompile Include="N64System\Recompiler\Recompiler.cpp">
       <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>
     <ClCompile Include="N64System\Recompiler\RecompilerMemory.cpp">
@@ -264,7 +261,7 @@
     <ClCompile Include="N64System\Mips\PifRam.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\Mips\RegisterClass.cpp">
+    <ClCompile Include="N64System\Mips\Register.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
     <ClCompile Include="N64System\Mips\Rumblepak.cpp">
@@ -279,7 +276,7 @@
     <ClCompile Include="N64System\Mips\SystemTiming.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\Mips\TLBclass.cpp">
+    <ClCompile Include="N64System\Mips\TLB.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
     <ClCompile Include="N64System\Interpreter\InterpreterCPU.cpp">
@@ -291,13 +288,13 @@
     <ClCompile Include="N64System\Interpreter\InterpreterOps32.cpp">
       <Filter>Source Files\N64 System\Interpreter</Filter>
     </ClCompile>
-    <ClCompile Include="Multilanguage\LanguageClass.cpp">
+    <ClCompile Include="Multilanguage\Language.cpp">
       <Filter>Source Files\Multilanguage</Filter>
     </ClCompile>
     <ClCompile Include="N64System\Mips\Disk.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\N64DiskClass.cpp">
+    <ClCompile Include="N64System\N64Disk.cpp">
       <Filter>Source Files\N64 System</Filter>
     </ClCompile>
     <ClCompile Include="N64System\Mips\GBCart.cpp">
@@ -359,7 +356,7 @@
     <ClInclude Include="AppInit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Multilanguage\LanguageClass.h">
+    <ClInclude Include="Multilanguage\Language.h">
       <Filter>Header Files\Multilanguage</Filter>
     </ClInclude>
     <ClInclude Include="Settings\SettingType\SettingsType-Application.h">
@@ -425,7 +422,7 @@
     <ClInclude Include="Notification.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\PluginClass.h">
+    <ClInclude Include="Plugins\Plugin.h">
       <Filter>Header Files\Plugins</Filter>
     </ClInclude>
     <ClInclude Include="Plugins\AudioPlugin.h">
@@ -485,19 +482,19 @@
     <ClInclude Include="Settings\LoggingSettings.h">
       <Filter>Header Files\Settings</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\FramePerSecondClass.h">
+    <ClInclude Include="N64System\FramePerSecond.h">
       <Filter>Header Files\N64 System</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\N64Class.h">
+    <ClInclude Include="N64System\N64System.h">
       <Filter>Header Files\N64 System</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\N64RomClass.h">
+    <ClInclude Include="N64System\N64Rom.h">
       <Filter>Header Files\N64 System</Filter>
     </ClInclude>
     <ClInclude Include="N64System\N64Types.h">
       <Filter>Header Files\N64 System</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\ProfilingClass.h">
+    <ClInclude Include="N64System\Profiling.h">
       <Filter>Header Files\N64 System</Filter>
     </ClInclude>
     <ClInclude Include="N64System\SystemGlobals.h">
@@ -515,7 +512,7 @@
     <ClInclude Include="N64System\Recompiler\FunctionInfo.h">
       <Filter>Header Files\N64 System\Recompiler</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\Recompiler\FunctionMapClass.h">
+    <ClInclude Include="N64System\Recompiler\FunctionMap.h">
       <Filter>Header Files\N64 System\Recompiler</Filter>
     </ClInclude>
     <ClInclude Include="N64System\Recompiler\JumpInfo.h">
@@ -566,7 +563,7 @@
     <ClInclude Include="N64System\Mips\PifRam.h">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\Mips\RegisterClass.h">
+    <ClInclude Include="N64System\Mips\Register.h">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
     <ClInclude Include="N64System\Mips\Rumblepak.h">
@@ -581,7 +578,7 @@
     <ClInclude Include="N64System\Mips\SystemTiming.h">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\Mips\TLBClass.h">
+    <ClInclude Include="N64System\Mips\TLB.h">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
     <ClInclude Include="N64System\Mips\TranslateVaddr.h">
@@ -596,8 +593,8 @@
     <ClInclude Include="N64System\Interpreter\InterpreterOps.h">
       <Filter>Header Files\N64 System\Interpreter</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\SpeedLimiterClass.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="N64System\SpeedLimiter.h">
+      <Filter>Header Files\N64 System</Filter>
     </ClInclude>
     <ClInclude Include="TraceModulesProject64.h">
       <Filter>Header Files</Filter>
@@ -608,7 +605,7 @@
     <ClInclude Include="N64System\Mips\Disk.h">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\N64DiskClass.h">
+    <ClInclude Include="N64System\N64Disk.h">
       <Filter>Header Files\N64 System</Filter>
     </ClInclude>
     <ClInclude Include="N64System\Mips\Transferpak.h">
@@ -671,9 +668,5 @@
     <ClInclude Include="N64System\Enhancement\EnhancementList.h">
       <Filter>Header Files\N64 System\Enhancement</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
 </Project>

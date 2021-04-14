@@ -1,4 +1,4 @@
-#include "FileClass.h"
+#include "File.h"
 #ifdef _WIN32
 #include <io.h>
 #define USE_WINDOWS_API

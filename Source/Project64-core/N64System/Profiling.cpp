@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include <stdio.h>
 
-#include <Project64-core/N64System/ProfilingClass.h>
-#include <Common/LogClass.h>
+#include <Project64-core/N64System/Profiling.h>
+#include <Common/Log.h>
 
 enum { MAX_FRAMES = 13 };
 

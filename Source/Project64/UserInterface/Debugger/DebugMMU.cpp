@@ -2,7 +2,7 @@
 
 #include "DebugMMU.h"
 #include <Common/MemoryManagement.h>
-#include <Project64-core/N64System/N64DiskClass.h>
+#include <Project64-core/N64System/N64Disk.h>
 
 #define PJMEM_CARTROM    1
 

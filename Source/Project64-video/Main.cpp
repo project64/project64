@@ -15,7 +15,7 @@
 #include "Gfx_1.3.h"
 #include "Version.h"
 #include <Common/CriticalSection.h>
-#include <Common/DateTimeClass.h>
+#include <Common/DateTime.h>
 #include <Common/path.h>
 #include <png/png.h>
 #include <memory>

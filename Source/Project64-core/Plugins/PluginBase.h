@@ -2,7 +2,7 @@
 
 #include <Project64-core/Settings/DebugSettings.h>
 #include <Project64-core/TraceModulesProject64.h>
-#include <Project64-core/Plugins/PluginClass.h>
+#include <Project64-core/Plugins/Plugin.h>
 #include <Common/Util.h>
 
 #if defined(_WIN32)

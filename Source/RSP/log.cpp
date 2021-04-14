@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <windows.h>
 #include <Common/StdString.h>
-#include <Common/FileClass.h>
-#include <Common/LogClass.h>
+#include <Common/File.h>
+#include <Common/Log.h>
 #include <Common/path.h>
 
 extern "C" {

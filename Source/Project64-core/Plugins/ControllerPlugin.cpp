@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/N64RomClass.h>
-#include <Project64-core/N64System/Mips/RegisterClass.h>
+#include <Project64-core/N64System/N64Rom.h>
+#include <Project64-core/N64System/Mips/Register.h>
 #include "ControllerPlugin.h"
 
 CControl_Plugin::CControl_Plugin(void) :

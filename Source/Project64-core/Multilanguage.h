@@ -630,4 +630,4 @@ enum LanguageStringID
     ANDROID_VIDEO_NATIVE_RES = 3200,
 };
 
-#include "Multilanguage/LanguageClass.h"
+#include "Multilanguage/Language.h"

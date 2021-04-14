@@ -4,7 +4,7 @@
 #include <strings.h>
 #endif
 
-#include "FileClass.h"
+#include "File.h"
 #include "CriticalSection.h"
 #include <string>
 #include <map>

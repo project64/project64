@@ -59,7 +59,7 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="UserInterface\CheatClassUI.cpp" />
+    <ClCompile Include="UserInterface\CheatUI.cpp" />
     <ClCompile Include="UserInterface\Debugger\Assembler.cpp" />
     <ClCompile Include="UserInterface\Debugger\Breakpoints.cpp" />
     <ClCompile Include="UserInterface\Debugger\Debugger-AddBreakpoint.cpp" />
@@ -89,12 +89,12 @@
     <ClCompile Include="UserInterface\MainWindow.cpp" />
     <ClCompile Include="UserInterface\LoggingUI.cpp" />
     <ClCompile Include="UserInterface\MainMenu.cpp" />
-    <ClCompile Include="UserInterface\MenuClass.cpp" />
+    <ClCompile Include="UserInterface\MenuItem.cpp" />
     <ClCompile Include="UserInterface\MenuShortCuts.cpp" />
     <ClCompile Include="UserInterface\Notification.cpp" />
     <ClCompile Include="UserInterface\ProjectSupport.cpp" />
-    <ClCompile Include="UserInterface\RomBrowserClass.cpp" />
-    <ClCompile Include="UserInterface\RomInformationClass.cpp" />
+    <ClCompile Include="UserInterface\RomBrowser.cpp" />
+    <ClCompile Include="UserInterface\RomInformation.cpp" />
     <ClCompile Include="UserInterface\SettingsConfig.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-AdvancedOptions.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-Defaults.cpp" />
@@ -131,7 +131,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Support.h" />
     <ClInclude Include="UserInterface.h" />
-    <ClInclude Include="UserInterface\CheatClassUI.h" />
+    <ClInclude Include="UserInterface\CheatUI.h" />
     <ClInclude Include="UserInterface\Debugger\Assembler.h" />
     <ClInclude Include="UserInterface\Debugger\Breakpoints.h" />
     <ClInclude Include="UserInterface\Debugger\DebugDialog.h" />
@@ -164,13 +164,13 @@
     <ClInclude Include="UserInterface\MainWindow.h" />
     <ClInclude Include="UserInterface\LoggingUI.h" />
     <ClInclude Include="UserInterface\MainMenu.h" />
-    <ClInclude Include="UserInterface\MenuClass.h" />
+    <ClInclude Include="UserInterface\MenuItem.h" />
     <ClInclude Include="UserInterface\MenuShortCuts.h" />
     <ClInclude Include="UserInterface\Notification.h" />
     <ClInclude Include="UserInterface\ProjectSupport.h" />
     <ClInclude Include="UserInterface\resource.h" />
     <ClInclude Include="UserInterface\RomBrowser.h" />
-    <ClInclude Include="UserInterface\RomInformationClass.h" />
+    <ClInclude Include="UserInterface\RomInformation.h" />
     <ClInclude Include="UserInterface\SettingsConfig.h" />
     <ClInclude Include="UserInterface\Settings\SettingsPage-AdvancedOptions.h" />
     <ClInclude Include="UserInterface\Settings\SettingsPage-Defaults.h" />

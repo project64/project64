@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/N64Class.h>
+#include <Project64-core/N64System/N64System.h>
 #include <Project64-core/Settings/GameSettings.h>
 
 bool CGameSettings::m_UseHleGfx = true;

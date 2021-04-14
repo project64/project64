@@ -2,9 +2,9 @@
 #include <Project64-core/N64System/Enhancement/Enhancements.h>
 #include <Project64-core/N64System/Enhancement/EnhancementFile.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
-#include <Project64-core/N64System/Recompiler/RecompilerClass.h>
+#include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/Plugins/PluginClass.h>
+#include <Project64-core/Plugins/Plugin.h>
 #include <Project64-core/Plugins/GFXPlugin.h>
 #include <Project64-core/Plugins/AudioPlugin.h>
 #include <Project64-core/Plugins/RSPPlugin.h>

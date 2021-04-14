@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <memory>
 #include <Common/path.h>
-#include <Common/FileClass.h>
+#include <Common/File.h>
 #include <Common/StdString.h>
 
 int main()

@@ -2,8 +2,8 @@
 
 #if defined(__i386__) || defined(_M_IX86)
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/N64Class.h>
-#include <Project64-core/N64System/Recompiler/RecompilerClass.h>
+#include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/Recompiler/x86/x86RegInfo.h>
 
@@ -16,7 +16,7 @@ uint32_t CX86RegInfo::m_fpuControl = 0;
 const char *Format_Name[] = { "Unknown", "dword", "qword", "float", "double" };
 
 CX86RegInfo::CX86RegInfo() :
-m_Stack_TopPos(0)
+    m_Stack_TopPos(0)
 {
     for (int32_t i = 0; i < 32; i++)
     {

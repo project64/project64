@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/Recompiler/RecompilerMemory.h>
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/Recompiler/RecompilerClass.h>
+#include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Common/MemoryManagement.h>
 
 CRecompMemory::CRecompMemory() :

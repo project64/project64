@@ -2,11 +2,11 @@
 #include "InterpreterCPU.h"
 
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/N64Class.h>
+#include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/OpcodeName.h>
 #include <Project64-core/N64System/Interpreter/InterpreterOps32.h>
-#include <Project64-core/Plugins/PluginClass.h>
+#include <Project64-core/Plugins/Plugin.h>
 #include <Project64-core/Plugins/GFXPlugin.h>
 #include <Project64-core/ExceptionHandler.h>
 #include <Project64-core/Debugger.h>

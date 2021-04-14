@@ -1,4 +1,4 @@
-#include "DateTimeClass.h"
+#include "DateTime.h"
 #include <time.h>
 
 CDateTime::CDateTime()

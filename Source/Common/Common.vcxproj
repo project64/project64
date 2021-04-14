@@ -38,11 +38,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CriticalSection.cpp" />
-    <ClCompile Include="DateTimeClass.cpp" />
-    <ClCompile Include="FileClass.cpp" />
+    <ClCompile Include="DateTime.cpp" />
+    <ClCompile Include="File.cpp" />
     <ClCompile Include="HighResTimeStamp.cpp" />
-    <ClCompile Include="IniFileClass.cpp" />
-    <ClCompile Include="LogClass.cpp" />
+    <ClCompile Include="IniFile.cpp" />
+    <ClCompile Include="Log.cpp" />
     <ClCompile Include="md5.cpp" />
     <ClCompile Include="MemoryManagement.cpp" />
     <ClCompile Include="MemTest.cpp" />
@@ -57,11 +57,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CriticalSection.h" />
-    <ClInclude Include="DateTimeClass.h" />
-    <ClInclude Include="FileClass.h" />
+    <ClInclude Include="DateTime.h" />
+    <ClInclude Include="File.h" />
     <ClInclude Include="HighResTimeStamp.h" />
-    <ClInclude Include="IniFileClass.h" />
-    <ClInclude Include="LogClass.h" />
+    <ClInclude Include="IniFile.h" />
+    <ClInclude Include="Log.h" />
     <ClInclude Include="md5.h" />
     <ClInclude Include="MemoryManagement.h" />
     <ClInclude Include="MemTest.h" />

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Project64-core/Settings/DebugSettings.h>
-#include <Project64-core/N64System/Mips/RegisterClass.h>
+#include <Project64-core/N64System/Mips/Register.h>
 #include <Project64-core/N64System/Mips/OpCode.h>
 
 class R4300iOp :

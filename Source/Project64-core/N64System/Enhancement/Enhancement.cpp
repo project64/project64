@@ -2,7 +2,7 @@
 #include <Project64-core/N64System/Enhancement/Enhancement.h>
 #include <Project64-core/Settings/SettingType/SettingsType-GameSetting.h>
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/N64Class.h>
+#include <Project64-core/N64System/N64System.h>
 
 const char * CEnhancement::CheatIdent = "Cheat";
 const char * CEnhancement::EnhancementIdent = "Enhancement";

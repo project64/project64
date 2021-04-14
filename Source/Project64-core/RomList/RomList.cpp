@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "RomList.h"
 #include <Project64-core/3rdParty/zip.h>
-#include <Project64-core/N64System/N64RomClass.h>
-#include <Project64-core/N64System/N64DiskClass.h>
+#include <Project64-core/N64System/N64Rom.h>
+#include <Project64-core/N64System/N64Disk.h>
 
 #ifdef _WIN32
 #include <Project64-core/3rdParty/7zip.h>

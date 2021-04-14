@@ -1,6 +1,6 @@
 #pragma once
 #include <Common/path.h>
-#include <Common/IniFileClass.h>
+#include <Common/IniFile.h>
 #include <Common/StdString.h>
 #include <Common/md5.h>
 #include <Common/Thread.h>

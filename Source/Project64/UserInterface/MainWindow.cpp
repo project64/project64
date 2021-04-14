@@ -1,11 +1,10 @@
 #include "stdafx.h"
-#include "RomInformationClass.h"
+#include "RomInformation.h"
 #include <Project64\UserInterface\About.h>
-
 #include <commctrl.h>
 #include <Project64-core/Settings/SettingType/SettingsType-Application.h>
 #include <Project64-core/N64System/Enhancement/Enhancements.h>
-#include <Project64-core/N64System/N64DiskClass.h>
+#include <Project64-core/N64System/N64Disk.h>
 #include "DiscordRPC.h"
 
 void EnterLogOptions(HWND hwndOwner);

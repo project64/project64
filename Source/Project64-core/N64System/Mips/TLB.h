@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Common/LogClass.h>
-#include <Project64-core/N64System/Mips/RegisterClass.h>
+#include <Common/Log.h>
+#include <Project64-core/N64System/Mips/Register.h>
 
 class CDebugTlb;
 

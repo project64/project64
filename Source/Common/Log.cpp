@@ -1,4 +1,4 @@
-#include "LogClass.h"
+#include "Log.h"
 #include "path.h"
 #include "Platform.h"
 #include <stdio.h>

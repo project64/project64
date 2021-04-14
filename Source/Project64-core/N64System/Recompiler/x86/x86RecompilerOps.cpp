@@ -8,14 +8,14 @@
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Interpreter/InterpreterOps.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
-#include <Project64-core/N64System/Recompiler/RecompilerClass.h>
+#include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/N64System/Recompiler/CodeSection.h>
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/Recompiler/SectionInfo.h>
 #include <Project64-core/N64System/Recompiler/LoopAnalysis.h>
 #include <Project64-core/N64System/Recompiler/x86/x86RecompilerOps.h>
-#include <Project64-core/N64System/N64Class.h>
-#include <Project64-core/N64System/N64RomClass.h>
+#include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/N64Rom.h>
 #include <Project64-core/ExceptionHandler.h>
 #include <Project64-core/Debugger.h>
 #include <stdio.h>

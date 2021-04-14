@@ -1,7 +1,7 @@
 #include "trace.h"
 #include <Settings/Settings.h>
 #include <Common/path.h>
-#include <Common/LogClass.h>
+#include <Common/Log.h>
 #include "AudioSettings.h"
 
 #ifdef ANDROID

@@ -6,8 +6,8 @@ extern "C" {
 }
 #pragma warning(disable:4786)
 #include <Common/StdString.h>
-#include <Common/FileClass.h>
-#include <Common/LogClass.h>
+#include <Common/File.h>
+#include <Common/Log.h>
 #include <map>
 #include <vector>
 

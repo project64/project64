@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "OpCode.h"
-#include <Project64-core/N64System/Mips/RegisterClass.h>
+#include <Project64-core/N64System/Mips/Register.h>
 
 #define FPR_Type(Reg)	(Reg) == R4300i_COP1_S ? "S" : (Reg) == R4300i_COP1_D ? "D" :\
 						(Reg) == R4300i_COP1_W ? "W" : "L"

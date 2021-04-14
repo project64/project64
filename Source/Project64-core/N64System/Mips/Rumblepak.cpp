@@ -2,7 +2,7 @@
 #include "Rumblepak.h"
 
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/Plugins/PluginClass.h>
+#include <Project64-core/Plugins/Plugin.h>
 #include <Project64-core/Plugins/ControllerPlugin.h>
 
 void Rumblepak::ReadFrom(uint32_t address, uint8_t * data)

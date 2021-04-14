@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "Breakpoints.h"
 
-#include <Project64-core/N64System/Mips/RegisterClass.h>
+#include <Project64-core/N64System/Mips/Register.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/OpcodeName.h>
-#include <Project64-core/N64System/N64Class.h>
+#include <Project64-core/N64System/N64System.h>
 
 CBreakpoints::CBreakpoints() :
     m_bHaveRegBP(false),

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/Mips/SystemEvents.h>
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/N64Class.h>
+#include <Project64-core/N64System/N64System.h>
 
 const char * SystemEventName(SystemEvent event)
 {

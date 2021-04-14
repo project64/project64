@@ -1,7 +1,7 @@
 #pragma once
 #if defined(__i386__) || defined(_M_IX86)
 
-#include <Project64-core/N64System/Mips/RegisterClass.h>
+#include <Project64-core/N64System/Mips/Register.h>
 #include <Project64-core/N64System/Mips/OpCode.h>
 #include <Project64-core/N64System/Recompiler/ExitInfo.h>
 #include <Project64-core/N64System/Recompiler/RegInfo.h>

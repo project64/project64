@@ -6,9 +6,9 @@
 
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/Plugins/PluginClass.h>
-#include <Project64-core/N64System/N64RomClass.h>
-#include <Project64-core/N64System/N64DiskClass.h>
+#include <Project64-core/Plugins/Plugin.h>
+#include <Project64-core/N64System/N64Rom.h>
+#include <Project64-core/N64System/N64Disk.h>
 #include <Project64-core/N64System/Enhancement/Enhancements.h>
 #include "Settings/SettingType/SettingsType-Application.h"
 

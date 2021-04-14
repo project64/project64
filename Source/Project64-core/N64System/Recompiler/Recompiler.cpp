@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include <Project64-core/N64System/Recompiler/RecompilerClass.h>
+#include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
-#include <Project64-core/N64System/N64Class.h>
+#include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/ExceptionHandler.h>
 

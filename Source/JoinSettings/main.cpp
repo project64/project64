@@ -1,5 +1,5 @@
 #include <Common/path.h>
-#include <Common/IniFileClass.h>
+#include <Common/IniFile.h>
 #include <Common/StdString.h>
 #include <Project64-core/N64System/Enhancement/EnhancementFile.h>
 #include <algorithm>

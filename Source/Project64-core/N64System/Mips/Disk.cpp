@@ -1,10 +1,10 @@
 // Based from MAME's N64DD driver code by Happy_
 #include "stdafx.h"
 #include "Disk.h"
-#include <Project64-core/N64System/N64Class.h>
-#include <Project64-core/N64System/N64DiskClass.h>
+#include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/N64Disk.h>
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/Mips/RegisterClass.h>
+#include <Project64-core/N64System/Mips/Register.h>
 #include <Project64-core/N64System/Mips/SystemTiming.h>
 
 #ifdef _WIN32

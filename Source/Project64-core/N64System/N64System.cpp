@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "N64Class.h"
+#include "N64SYstem.h"
 #include <Project64-core/3rdParty/zip.h>
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/SystemGlobals.h>
@@ -8,9 +8,9 @@
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/N64System/Mips/OpcodeName.h>
 #include <Project64-core/N64System/Mips/Disk.h>
-#include <Project64-core/N64System/N64DiskClass.h>
+#include <Project64-core/N64System/N64Disk.h>
 #include <Project64-core/N64System/Enhancement/Enhancements.h>
-#include <Project64-core/N64System/N64RomClass.h>
+#include <Project64-core/N64System/N64Rom.h>
 #include <Project64-core/ExceptionHandler.h>
 #include <Project64-core/Logging.h>
 #include <Project64-core/Debugger.h>

@@ -1,11 +1,11 @@
 #include "stdafx.h"
-#include "N64RomClass.h"
+#include "N64Rom.h"
 #include "SystemGlobals.h"
 #include <Project64-core/3rdParty/zip.h>
 #include <Common/md5.h>
 #include <Common/Platform.h>
 #include <Common/MemoryManagement.h>
-#include <Common/IniFileClass.h>
+#include <Common/IniFile.h>
 #include <memory>
 
 #ifdef _WIN32

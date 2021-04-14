@@ -1,7 +1,7 @@
 #pragma once
 #include <Project64-core/N64System/Enhancement/Enhancement.h>
 #include <Project64-core/N64System/Enhancement/EnhancementList.h>
-#include <Common/FileClass.h>
+#include <Common/File.h>
 #include <Common/CriticalSection.h>
 #include <set>
 #include <string>

@@ -1,7 +1,7 @@
 #pragma once
 #include <stdarg.h>
 #include <string>
-#include "FileClass.h"
+#include "File.h"
 
 class CLog
 {

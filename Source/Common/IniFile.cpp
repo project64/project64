@@ -1,4 +1,4 @@
-#include "IniFileClass.h"
+#include "IniFile.h"
 #include <stdlib.h>
 #include <stdarg.h>
 

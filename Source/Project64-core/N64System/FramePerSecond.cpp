@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "FramePerSecondClass.h"
+#include "FramePerSecond.h"
 #include <Project64-core/N64System/N64Types.h>
 
 CFramePerSecond::CFramePerSecond() :

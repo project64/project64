@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Project64-core/N64System/SpeedLimiterClass.h"
+#include "Project64-core/N64System/SpeedLimiter.h"
 
 #include <Common/Util.h>
 

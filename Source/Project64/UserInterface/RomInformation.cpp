@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "RomInformationClass.h"
-#include <Project64-core/N64System/N64DiskClass.h>
+#include "RomInformation.h"
+#include <Project64-core/N64System/N64Disk.h>
 
 RomInformation::RomInformation(const char * RomFile) :
     m_DeleteRomInfo(true),

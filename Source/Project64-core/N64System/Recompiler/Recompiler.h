@@ -1,10 +1,10 @@
 #pragma once
 
-#include <Project64-core/N64System/Mips/RegisterClass.h>
+#include <Project64-core/N64System/Mips/Register.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
-#include <Project64-core/N64System/Recompiler/FunctionMapClass.h>
+#include <Project64-core/N64System/Recompiler/FunctionMap.h>
 #include <Project64-core/N64System/Recompiler/RecompilerMemory.h>
-#include <Project64-core/N64System/ProfilingClass.h>
+#include <Project64-core/N64System/Profiling.h>
 #include <Project64-core/Settings/RecompilerSettings.h>
 #include <Project64-core/Settings/DebugSettings.h>
 

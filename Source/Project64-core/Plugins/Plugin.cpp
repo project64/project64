@@ -1,20 +1,20 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/N64Class.h>
-#include <Project64-core/Plugins/PluginClass.h>
+#include <Project64-core/N64System/N64System.h>
+#include <Project64-core/Plugins/Plugin.h>
 #include <Common/path.h>
 
 CPlugins::CPlugins(SettingID PluginDirSetting, bool SyncPlugins) :
-m_MainWindow(nullptr),
-m_SyncWindow(nullptr),
-m_PluginDirSetting(PluginDirSetting),
-m_PluginDir(g_Settings->LoadStringVal(PluginDirSetting)),
-m_Gfx(nullptr),
-m_Audio(nullptr),
-m_RSP(nullptr),
-m_Control(nullptr),
-m_initilized(false),
-m_SyncPlugins(SyncPlugins)
+    m_MainWindow(nullptr),
+    m_SyncWindow(nullptr),
+    m_PluginDirSetting(PluginDirSetting),
+    m_PluginDir(g_Settings->LoadStringVal(PluginDirSetting)),
+    m_Gfx(nullptr),
+    m_Audio(nullptr),
+    m_RSP(nullptr),
+    m_Control(nullptr),
+    m_initilized(false),
+    m_SyncPlugins(SyncPlugins)
 {
     CreatePlugins();
     g_Settings->RegisterChangeCB(Plugin_RSP_Current, this, (CSettings::SettingChangedFunc)PluginChanged);
