@@ -44,7 +44,7 @@ See the [BUILDING.md](https://github.com/project64/project64/blob/master/BUILDIN
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) before contributing.
+Please read [CONTRIBUTING.md](https://github.com/project64/project64/blob/master/.github/CONTRIBUTING.md) before contributing.
 
 ## Versioning
 
