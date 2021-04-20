@@ -12,7 +12,6 @@ public:
     LRESULT OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnLostFocus(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     uint64_t GetValue();
-    stdstr GetValueText();
     void SetValue(uint32_t h, uint32_t l);
     void SetValue(uint64_t value);
 

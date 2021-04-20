@@ -86,7 +86,7 @@ protected:
     {
         if (EditBox.IsChanged())
         {
-            stdstr Value = EditBox.GetWindowText();
+            stdstr Value = GetCWindowText(EditBox);
             if (EditBox.IsbString())
             {
                 g_Settings->SaveString(Type, Value);

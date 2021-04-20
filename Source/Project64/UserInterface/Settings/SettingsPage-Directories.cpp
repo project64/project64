@@ -67,7 +67,7 @@ void COptionsDirectoriesPage::SelectDirectory(LanguageStringID Title, CModifiedE
     LPITEMIDLIST pidl;
     BROWSEINFO bi;
 
-    stdstr InitialDir = EditBox.GetWindowText();
+    std::string InitialDir = GetCWindowText(EditBox);
     std::wstring wTitle = wGS(Title);
     bi.hwndOwner = m_hWnd;
     bi.pidlRoot = nullptr;
@@ -264,8 +264,7 @@ void COptionsDirectoriesPage::UpdateDirectory(CModifiedEditBox & EditBox, Settin
 {
     if (EditBox.IsChanged())
     {
-        stdstr dir = EditBox.GetWindowText();
-        g_Settings->SaveString(Type, dir.c_str());
+        g_Settings->SaveString(Type, GetCWindowText(EditBox).c_str());
     }
     if (EditBox.IsReset())
     {

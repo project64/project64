@@ -271,14 +271,12 @@ void CRegisterTabs::RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam)
     }
 
     WORD ctrlId = LOWORD(wParam);
-
     CWindow editCtrl = ::GetDlgItem(hDlg, ctrlId);
-    wchar_t text[20];
-    editCtrl.GetWindowText(text, 20);
+    std::string text = GetCWindowText(editCtrl);
 
     if (srcTabId == TabGPR)
     {
-        uint64_t value = CEditReg64::ParseValue(stdstr().FromUTF16(text).c_str());
+        uint64_t value = CEditReg64::ParseValue(text.c_str());
         if (ctrlId == IDC_HI_EDIT)
         {
             g_Reg->m_HI.UDW = value;
@@ -295,9 +293,8 @@ void CRegisterTabs::RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam)
         return;
     }
 
-    uint32_t value = wcstoul(text, nullptr, 16);
-    wsprintf(text, L"%08X", value);
-    editCtrl.SetWindowText(text); // Reformat text
+    uint32_t value = strtoul(text.c_str(), nullptr, 16);
+    editCtrl.SetWindowText(stdstr_f("%08X", value).ToUTF16().c_str());
 
     if (srcTabId == TabFPR)
     {
@@ -921,25 +918,22 @@ stdstr CRegisterTabs::CopyTabRegisters(int id)
             break;
     }
 
-    record->Iterate(&tab, [&str](const CWindow *label, const CWindow *edit)
+    record->Iterate(tab, [&str](const CWindow & label, const CWindow & edit)
     {
-        str += stdstr_f(
-            "\r\n%s %s",
-            ::GetCWindowText(*label).c_str(),
-            ::GetCWindowText(*edit).c_str());
+        str += stdstr_f( "\r\n%s %s", GetCWindowText(label).c_str(), GetCWindowText(edit).c_str());
     });
 
     switch (id)
     {
         case 0:
-            str += stdstr_f("\r\nHI %s", m_HIEdit.GetValueText().c_str());
-            str += stdstr_f("\r\nLO %s", m_LOEdit.GetValueText().c_str());
+            str += stdstr_f("\r\nHI %s", GetCWindowText(m_HIEdit).c_str());
+            str += stdstr_f("\r\nLO %s", GetCWindowText(m_LOEdit).c_str());
             break;
         case 1:
-            str += stdstr_f("\r\nFCSR %s", m_FCSREdit.GetValueText().c_str());
+            str += stdstr_f("\r\nFCSR %s", GetCWindowText(m_FCSREdit).c_str());
             break;
         case 4:
-            str += stdstr_f("\r\nSP (A4080000)\r\n00 SP_PC %s", m_SPPCEdit.GetValueText().c_str());
+            str += stdstr_f("\r\nSP (A4080000)\r\n00 SP_PC %s", GetCWindowText(m_SPPCEdit).c_str());
             break;
     }
 
@@ -972,9 +966,10 @@ BOOL CEditReg64::Attach(HWND hWndNew)
 
 LRESULT CEditReg64::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
+    bHandled = TRUE;
     if (!isStepping())
     {
-        goto canceled;
+        return 0;
     }
 
     char charCode = (char)wParam;
@@ -983,20 +978,19 @@ LRESULT CEditReg64::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandl
     {
         if (!isalnum(charCode))
         {
-            goto unhandled;
+            bHandled = FALSE;
         }
-        goto canceled;
+        return 0;
     }
 
     if (isalpha(charCode) && !isupper(charCode))
     {
         SendMessage(uMsg, toupper(wParam), lParam);
-        goto canceled;
+        return 0;
     }
 
-    wchar_t text[20];
-    GetWindowText(text, 20);
-    int textLen = wcslen(text);
+    std::string text = GetCWindowText(*this);
+    int textLen = text.size();
 
     if (textLen >= 17)
     {
@@ -1004,39 +998,26 @@ LRESULT CEditReg64::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandl
         GetSel(selStart, selEnd);
         if (selEnd - selStart == 0)
         {
-            goto canceled;
+            return 0;
         }
     }
 
-    if (charCode == ' ' && wcschr(text, ' ') != nullptr)
+    if (charCode == ' ' && strchr(text.c_str(), ' ') != nullptr)
     {
-        goto canceled;
+        return 0;
     }
-
-unhandled:
     bHandled = FALSE;
-    return 0;
-
-canceled:
-    bHandled = TRUE;
     return 0;
 }
 
 uint64_t CEditReg64::GetValue()
 {
-    wchar_t text[20];
-    GetWindowText(text, 20);
-    return ParseValue(stdstr().FromUTF16(text).c_str());
-}
-
-stdstr CEditReg64::GetValueText()
-{
-    return ::GetCWindowText(*this);
+    return ParseValue(GetCWindowText(*this).c_str());
 }
 
 LRESULT CEditReg64::OnLostFocus(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
 {
-    SetValue(GetValue()); // Clean up
+    SetValue(GetValue());
     bHandled = FALSE;
     return 0;
 }

@@ -44,8 +44,7 @@ void CDiskDrivePage::ApplySettings(bool UpdateScreen)
 {
     if (m_IplDirJp.IsChanged())
     {
-        stdstr file = m_IplDirJp.GetWindowText();
-        g_Settings->SaveString(File_DiskIPLPath, file.c_str());
+        g_Settings->SaveString(File_DiskIPLPath, GetCWindowText(m_IplDirJp).c_str());
     }
     if (m_IplDirJp.IsReset())
     {
@@ -54,8 +53,7 @@ void CDiskDrivePage::ApplySettings(bool UpdateScreen)
 
     if (m_IplDirUs.IsChanged())
     {
-        stdstr file = m_IplDirUs.GetWindowText();
-        g_Settings->SaveString(File_DiskIPLUSAPath, file.c_str());
+        g_Settings->SaveString(File_DiskIPLUSAPath, GetCWindowText(m_IplDirUs).c_str());
     }
     if (m_IplDirUs.IsReset())
     {
@@ -64,8 +62,7 @@ void CDiskDrivePage::ApplySettings(bool UpdateScreen)
 
     if (m_IplDirTl.IsChanged())
     {
-        stdstr file = m_IplDirTl.GetWindowText();
-        g_Settings->SaveString(File_DiskIPLTOOLPath, file.c_str());
+        g_Settings->SaveString(File_DiskIPLTOOLPath, GetCWindowText(m_IplDirTl).c_str());
     }
     if (m_IplDirTl.IsReset())
     {

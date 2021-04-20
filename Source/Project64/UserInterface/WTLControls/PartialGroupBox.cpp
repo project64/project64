@@ -54,11 +54,9 @@ void CPartialGroupBox::OnPaint(HDC /*hDC*/)
 	dc.SetMapMode(MM_TEXT);
 	dc.SelectBrush(GetSysColorBrush(COLOR_BTNFACE));
 
-	wchar_t grptext[500];
-	::GetWindowText(m_hWnd, grptext, sizeof(grptext) / sizeof(grptext[0]));
-
+    stdstr grptext = GetCWindowText(m_hWnd);
 	CRect fontsizerect(0, 0, 0, 0);
-	dc.DrawText(grptext, -1, fontsizerect, DT_SINGLELINE | DT_LEFT | DT_CALCRECT);
+	dc.DrawText(grptext.ToUTF16().c_str(), -1, fontsizerect, DT_SINGLELINE | DT_LEFT | DT_CALCRECT);
 
 	CRect framerect(controlrect);
 	framerect.top += (fontsizerect.Height()) / 2;
@@ -77,7 +75,7 @@ void CPartialGroupBox::OnPaint(HDC /*hDC*/)
 		Draw3dLine(dc, framerect, GetSysColor(COLOR_3DHILIGHT), GetSysColor(COLOR_3DSHADOW));
 	}
 
-	if (wcslen(grptext))
+	if (!grptext.empty())
 	{
 		CRect fontrect(controlrect);
 		fontrect.bottom = controlrect.top + fontsizerect.Height();
@@ -106,6 +104,6 @@ void CPartialGroupBox::OnPaint(HDC /*hDC*/)
 		dc.SetBkMode(OPAQUE);
 		dc.SetBkColor(GetSysColor(COLOR_BTNFACE));
 
-		dc.DrawText(grptext, -1, fontrect, DT_SINGLELINE | DT_LEFT);
+		dc.DrawText(grptext.ToUTF16().c_str(), -1, fontrect, DT_SINGLELINE | DT_LEFT);
 	}
 }

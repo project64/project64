@@ -474,10 +474,9 @@ LRESULT CEditEval::OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BO
     {
         if (m_HistoryIdx > 0)
         {
-            wchar_t* code = m_History[--m_HistoryIdx];
-            SetWindowText(code);
-            int selEnd = wcslen(code);
-            SetSel(selEnd, selEnd);
+            const std::string & Code = m_History[--m_HistoryIdx];
+            SetWindowText(stdstr(Code).ToUTF16().c_str());
+            SetSel((int)Code.length(), (int)Code.length());
         }
     }
     else if (wParam == VK_DOWN)
@@ -485,10 +484,9 @@ LRESULT CEditEval::OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BO
         int size = m_History.size();
         if (m_HistoryIdx < size - 1)
         {
-            wchar_t* code = m_History[++m_HistoryIdx];
-            SetWindowText(code);
-            int selEnd = wcslen(code);
-            SetSel(selEnd, selEnd);
+            const std::string & Code = m_History[++m_HistoryIdx];
+            SetWindowText(stdstr(Code).ToUTF16().c_str());
+            SetSel((int)Code.length(), (int)Code.length());
         }
         else if (m_HistoryIdx < size)
         {
@@ -504,11 +502,8 @@ LRESULT CEditEval::OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BO
             return 0;
         }
 
-        size_t codeLength = GetWindowTextLength() + 1;
-        wchar_t* code = (wchar_t*)malloc(codeLength * sizeof(wchar_t));
-        GetWindowText(code, codeLength);
-
-        m_ScriptWindow->EvaluateInSelectedInstance(stdstr().FromUTF16(code).c_str());
+        std::string Code = GetCWindowText(*this);
+        m_ScriptWindow->EvaluateInSelectedInstance(Code.c_str());
 
         SetWindowText(L"");
         int historySize = m_History.size();
@@ -516,9 +511,8 @@ LRESULT CEditEval::OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BO
         // Remove duplicate
         for (int i = 0; i < historySize; i++)
         {
-            if (wcscmp(code, m_History[i]) == 0)
+            if (strcmp(Code.c_str(), m_History[i].c_str()) == 0)
             {
-                free(m_History[i]);
                 m_History.erase(m_History.begin() + i);
                 historySize--;
                 break;
@@ -532,8 +526,8 @@ LRESULT CEditEval::OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BO
             historySize--;
         }
 
-        m_History.push_back(code);
-        m_HistoryIdx = ++historySize;
+        m_History.push_back(Code);
+        m_HistoryIdx = historySize++;
     }
     bHandled = FALSE;
     return 0;

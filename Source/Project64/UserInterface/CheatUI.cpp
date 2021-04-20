@@ -680,7 +680,7 @@ LRESULT CEditCheat::OnEditCheat(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/,
 
 LRESULT CEditCheat::OnAddCheat(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-    std::string NewCheatName = GetItemText(IDC_CODE_NAME);
+    std::string NewCheatName = GetCWindowText(GetDlgItem(IDC_CODE_NAME));
     for (CEnhancementList::const_iterator itr = m_Cheats.begin(); itr != m_Cheats.end(); itr++)
     {
         const CEnhancement & Enhancement = itr->second;
@@ -708,7 +708,7 @@ LRESULT CEditCheat::OnAddCheat(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
         m_EditEnhancement->SetName(NewCheatName.c_str());
         m_EditEnhancement->SetEntries(Enhancement.GetEntries());
         m_EditEnhancement->SetOptions(Enhancement.GetOptions());
-        m_EditEnhancement->SetNote(GetItemText(IDC_NOTES).c_str());
+        m_EditEnhancement->SetNote(GetCWindowText(GetDlgItem(IDC_NOTES)).c_str());
     }
     else
     {
@@ -759,8 +759,8 @@ LRESULT CEditCheat::OnCheatOptionsChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HW
 bool CEditCheat::ReadEnhancement(CEnhancement & Enhancement)
 {
     CEnhancement TestEnhancement(CEnhancement::CheatIdent);
-    TestEnhancement.SetName(GetItemText(IDC_CODE_NAME).c_str());
-    TestEnhancement.SetNote(GetItemText(IDC_NOTES).c_str());
+    TestEnhancement.SetName(GetCWindowText(GetDlgItem(IDC_CODE_NAME)).c_str());
+    TestEnhancement.SetNote(GetCWindowText(GetDlgItem(IDC_NOTES)).c_str());
 
     CEnhancement::CodeEntries Entries;
     CEdit CheatCodes(GetDlgItem(IDC_CHEAT_CODES));
@@ -851,10 +851,10 @@ void CEditCheat::DetailsChanged(void)
 
 void CEditCheat::RecordCurrentValues(void)
 {
-    m_EditName = GetItemText(IDC_CODE_NAME);
-    m_EditCode = GetItemText(IDC_CHEAT_CODES);
-    m_EditOptions = GetItemText(IDC_CHEAT_OPTIONS);
-    m_EditNotes = GetItemText(IDC_NOTES);
+    m_EditName = GetCWindowText(GetDlgItem(IDC_CODE_NAME));
+    m_EditCode = GetCWindowText(GetDlgItem(IDC_CHEAT_CODES));
+    m_EditOptions = GetCWindowText(GetDlgItem(IDC_CHEAT_OPTIONS));
+    m_EditNotes = GetCWindowText(GetDlgItem(IDC_NOTES));
 }
 
 bool CEditCheat::ValuesChanged(void)
@@ -862,10 +862,10 @@ bool CEditCheat::ValuesChanged(void)
     bool Changed = false;
     if (m_hWnd != nullptr)
     {
-        if (m_EditName != GetItemText(IDC_CODE_NAME) ||
-            m_EditCode != GetItemText(IDC_CHEAT_CODES) ||
-            m_EditOptions != GetItemText(IDC_CHEAT_OPTIONS) ||
-            m_EditNotes != GetItemText(IDC_NOTES))
+        if (m_EditName != GetCWindowText(GetDlgItem(IDC_CODE_NAME)) ||
+            m_EditCode != GetCWindowText(GetDlgItem(IDC_CHEAT_CODES)) ||
+            m_EditOptions != GetCWindowText(GetDlgItem(IDC_CHEAT_OPTIONS)) ||
+            m_EditNotes != GetCWindowText(GetDlgItem(IDC_NOTES)))
         {
             Changed = true;
         }
@@ -893,21 +893,6 @@ bool CEditCheat::ValuesChanged(void)
         }
     }
     return false;
-}
-
-std::string CEditCheat::GetItemText(int nIDDlgItem)
-{
-    CWindow Window = GetDlgItem(nIDDlgItem);
-    int length = Window.GetWindowTextLength();
-    if (length == 0)
-    {
-        return "";
-    }
-
-    std::wstring Result;
-    Result.resize(length + 1);
-    Window.GetWindowText((wchar_t *)Result.c_str(), Result.length());
-    return stdstr().FromUTF16(Result.c_str());
 }
 
 CEnhancementCodeEx::CEnhancementCodeEx(CEnhancement * Enhancement) :

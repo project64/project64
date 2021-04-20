@@ -67,12 +67,6 @@ void CModifiedEditBox::SetChanged(bool Changed)
     }
 }
 
-stdstr CModifiedEditBox::GetWindowText(void)
-{
-    ATLASSERT(::IsWindow(m_hWnd));
-    return ::GetCWindowText(*this);
-}
-
 void CModifiedEditBox::SetTextField(HWND hWnd)
 {
     if (m_TextField && m_OriginalFont)

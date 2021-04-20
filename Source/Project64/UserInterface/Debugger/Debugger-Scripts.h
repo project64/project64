@@ -3,6 +3,7 @@
 #include "ScriptSystem.h"
 #include <Project64/UserInterface/WTLControls/TooltipDialog.h>
 #include <string>
+#include <vector>
 
 class CScriptList : public CListViewCtrl
 {
@@ -14,9 +15,8 @@ public:
 class CEditEval : public CWindowImpl<CEditEval, CEdit>
 {
 private:
-    //static char* m_EvalString;
     static const int HISTORY_MAX_ENTRIES = 20;
-    vector<wchar_t*> m_History;
+    std::vector<std::string> m_History;
     int m_HistoryIdx;
     CDebugScripts* m_ScriptWindow;
 

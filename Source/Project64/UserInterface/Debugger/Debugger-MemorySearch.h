@@ -7,15 +7,6 @@ class CEditMixed :
     public CWindowImpl<CEditMixed, CEdit>,
     public CMixed
 {
-private:
-    ValueType m_Type;
-    DisplayFormat m_DisplayFormat;
-    wchar_t *m_String;
-    int   m_StringLength;
-    void  ReloadString(void);
-
-    //void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-
 public:
     CEditMixed(void);
     ~CEditMixed(void);
@@ -39,13 +30,26 @@ public:
     bool GetValueHexString(const wchar_t*& value, int& length);
 
     BEGIN_MSG_MAP_EX(CEditMixed)
-        //MSG_WM_CHAR(OnChar)
     END_MSG_MAP()
+
+private:
+    ValueType m_Type;
+    DisplayFormat m_DisplayFormat;
+    wchar_t *m_String;
+    int m_StringLength;
+    void ReloadString(void);
 };
 
 class CSetValueDlg : public CDialogImpl<CSetValueDlg>
 {
 public:
+    BEGIN_MSG_MAP_EX(CSetValueDlg)
+        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
+        COMMAND_HANDLER(IDOK, BN_CLICKED, OnOK)
+        COMMAND_HANDLER(IDCANCEL, BN_CLICKED, OnCancel)
+        MSG_WM_DESTROY(OnDestroy)
+    END_MSG_MAP()
+
     enum { IDD = IDD_Debugger_Search_SetValue };
 
     typedef struct
@@ -54,15 +58,20 @@ public:
         DWORD_PTR data;
     } ComboItem;
 
-    INT_PTR DoModal(const char* caption, const char* label, const char* initialText);
-    INT_PTR DoModal(const char* caption, const char* label, DWORD_PTR initialData, const ComboItem items[]);
-    wchar_t* GetEnteredString(void);
-    DWORD_PTR GetEnteredData(void);
-
     CSetValueDlg(void);
     virtual ~CSetValueDlg(void);
 
+    INT_PTR DoModal(const char* caption, const char* label, const char* initialText);
+    INT_PTR DoModal(const char* caption, const char* label, DWORD_PTR initialData, const ComboItem items[]);
+    const std::string & GetEnteredString(void);
+    DWORD_PTR GetEnteredData(void);
+
 private:
+    LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+    LRESULT OnDestroy(void);
+    LRESULT OnOK(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnCancel(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+
     enum Mode
     {
         Mode_TextBox,
@@ -75,8 +84,8 @@ private:
     const char* m_Label;
     const ComboItem* m_ComboItems;
 
-    const char* m_InitialText;
-    wchar_t *m_EnteredString;
+    const char * m_InitialText;
+    std::string m_EnteredString;
 
     DWORD_PTR m_InitialData;
     DWORD_PTR m_EnteredData;
@@ -84,18 +93,6 @@ private:
     CStatic m_Prompt;
     CEdit m_Value;
     CComboBox m_CmbValue;
-    
-    LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-    LRESULT OnDestroy(void);
-    LRESULT OnOK(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnCancel(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-
-    BEGIN_MSG_MAP_EX(CSetValueDlg)
-        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
-        COMMAND_HANDLER(IDOK, BN_CLICKED, OnOK)
-        COMMAND_HANDLER(IDCANCEL, BN_CLICKED, OnCancel)
-        MSG_WM_DESTROY(OnDestroy)
-    END_MSG_MAP()
 };
 
 class CDebugMemorySearch :

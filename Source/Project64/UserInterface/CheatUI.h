@@ -111,7 +111,6 @@ private:
     void DetailsChanged(void);
     void RecordCurrentValues(void);
     bool ValuesChanged(void);
-    std::string GetItemText(int nIDDlgItem);
 
     CEnhancementList & m_Cheats;
     CCheatList & m_CheatList;

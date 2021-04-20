@@ -237,14 +237,9 @@ LRESULT CRequestCode::OnEraseBackground(UINT /*uMsg*/, WPARAM wParam, LPARAM /*l
 
 LRESULT CRequestCode::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-    CWindow EmailWnd(GetDlgItem(IDC_EMAIL));
-    int EmailLen = EmailWnd.GetWindowTextLength();
-    std::wstring Email;
-    Email.resize(EmailLen + 1);
-    EmailWnd.GetWindowText((wchar_t *)Email.c_str(), Email.length());
     GetDlgItem(IDOK).EnableWindow(false);
     GetDlgItem(IDCANCEL).EnableWindow(false);
-    if (m_Support.RequestCode(stdstr().FromUTF16(Email.c_str()).c_str()))
+    if (m_Support.RequestCode(GetCWindowText(GetDlgItem(IDC_EMAIL)).c_str()))
     {
         MessageBox(wGS(MSG_SUPPORT_REQUESTCODE_SUCCESS).c_str(), wGS(MSG_SUPPORT_REQUESTCODE_TITLE).c_str(), MB_OK);
         EndDialog(wID);

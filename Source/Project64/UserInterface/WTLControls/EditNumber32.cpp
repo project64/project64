@@ -15,13 +15,11 @@ bool CEditNumber32::IsHexConvertableText(LPTSTR _text)
     int start, end;
     GetSel(start, end);
 
-    wchar_t WindowText[200];
-    GetWindowText(WindowText, sizeof(WindowText) / sizeof(WindowText[0]));
-
+    std::string WindowText = GetCWindowText(*this);
     bool bPaste = true;
-    size_t Len = wcslen(WindowText);
-    wchar_t head = Len > 0 ? WindowText[0] : 0;
-    wchar_t second = Len > 1 ? WindowText[1] : 0;
+    size_t Len = WindowText.size();
+    char head = Len > 0 ? WindowText[0] : 0;
+    char second = Len > 1 ? WindowText[1] : 0;
 
     if (second == 'X' || second == 'x')
     {
@@ -170,12 +168,9 @@ LRESULT CEditNumber32::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 {
     int start, end;
     GetSel(start, end);
-    wchar_t WindowText[200];
-    GetWindowText(WindowText, sizeof(WindowText) / sizeof(WindowText[0]));
-    size_t Len = wcslen(WindowText);
-
-    wchar_t head = Len > 0 ? WindowText[0] : 0;
-    wchar_t second = Len > 1 ? WindowText[1] : 0;
+    std::string WindowText = GetCWindowText(*this);
+    char Head = WindowText.length() > 0 ? WindowText[0] : 0;
+    char Second = WindowText.length() > 1 ? WindowText[1] : 0;
 
     if (uMsg == WM_CHAR)
     {
@@ -184,7 +179,7 @@ LRESULT CEditNumber32::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
         if (m_DisplayType == DisplayHex)
         {
             MaxLen = 8;
-            if (second == L'x' || second == L'X')
+            if (Second == L'x' || Second == L'X')
             {
                 MaxLen += 2;
             }
@@ -192,7 +187,7 @@ LRESULT CEditNumber32::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
         wchar_t c = (wchar_t)wParam;
         if (wParam < 32)
         {
-            if (wParam == 8 && (second == L'x' || second == L'X') && head == L'0' && end == 1)
+            if (wParam == 8 && (Second == 'x' || Second == 'X') && Head == '0' && end == 1)
             {
                 // Does not allow to delete '0' before x
                 bHandled = true;
@@ -203,7 +198,7 @@ LRESULT CEditNumber32::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
             return TRUE;
         }
 
-        if (second == L'x' || second == L'X')
+        if (Second == 'x' || Second == 'X')
         {
             // Does not allow to change head except select includes first and second
             if (start <= 1 && end <= 1)
@@ -212,9 +207,9 @@ LRESULT CEditNumber32::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
                 return TRUE;
             }
         }
-        if (start == 1 && (c == L'X' || c == L'x') && head == L'0')
+        if (start == 1 && (c == 'X' || c == 'x') && Head == '0')
         {
-            if (c == L'X')
+            if (c == 'X')
             {
                 SendMessage(uMsg, L'x', lParam);
                 bHandled = true;
@@ -226,7 +221,7 @@ LRESULT CEditNumber32::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
         }
         else if (c >= L'0' && c <= L'9' || c >= L'A' && c <= L'F')
         {
-            if (Len >= MaxLen && start == end)
+            if (WindowText.length() >= MaxLen && start == end)
             {
                 bHandled = true;
                 return true;
@@ -236,7 +231,7 @@ LRESULT CEditNumber32::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
         }
         else if (c >= L'a' && c <= L'f')
         {
-            if (Len >= MaxLen && start == end)
+            if (WindowText.length() >= MaxLen && start == end)
             {
                 bHandled = true;
                 return true;
@@ -272,16 +267,15 @@ void CEditNumber32::SetDisplayType(DisplayType Type)
 
 uint32_t CEditNumber32::GetValue(void)
 {
-    wchar_t text[200];
-    GetWindowText(text, sizeof(text) / sizeof(text[0]));
+    std::string Text = GetCWindowText(*this);
     if (m_DisplayType == DisplayDec)
     {
-        return _wtoi(text);
+        return atoi(Text.c_str());
     }
 
-    size_t Finish = wcslen(text);
-    wchar_t second = Finish > 1 ? text[1] : 0;
-    size_t Start = (second == L'x' || second == L'X') ? 2 : 0;
+    size_t Finish = Text.length();
+    wchar_t Second = Finish > 1 ? Text[1] : 0;
+    size_t Start = (Second == 'x' || Second == 'X') ? 2 : 0;
 
     if (Finish > 8 + Start) { Finish = 8 + Start; }
 
@@ -289,41 +283,36 @@ uint32_t CEditNumber32::GetValue(void)
     for (size_t i = Start; i < Finish; i++)
     {
         Value = (Value << 4);
-        switch (text[i])
+        switch (Text[i])
         {
-        case L'0': break;
-        case L'1': Value += 1; break;
-        case L'2': Value += 2; break;
-        case L'3': Value += 3; break;
-        case L'4': Value += 4; break;
-        case L'5': Value += 5; break;
-        case L'6': Value += 6; break;
-        case L'7': Value += 7; break;
-        case L'8': Value += 8; break;
-        case L'9': Value += 9; break;
-        case L'A': Value += 10; break;
-        case L'a': Value += 10; break;
-        case L'B': Value += 11; break;
-        case L'b': Value += 11; break;
-        case L'C': Value += 12; break;
-        case L'c': Value += 12; break;
-        case L'D': Value += 13; break;
-        case L'd': Value += 13; break;
-        case L'E': Value += 14; break;
-        case L'e': Value += 14; break;
-        case L'F': Value += 15; break;
-        case L'f': Value += 15; break;
+        case '0': break;
+        case '1': Value += 1; break;
+        case '2': Value += 2; break;
+        case '3': Value += 3; break;
+        case '4': Value += 4; break;
+        case '5': Value += 5; break;
+        case '6': Value += 6; break;
+        case '7': Value += 7; break;
+        case '8': Value += 8; break;
+        case '9': Value += 9; break;
+        case 'A': Value += 10; break;
+        case 'a': Value += 10; break;
+        case 'B': Value += 11; break;
+        case 'b': Value += 11; break;
+        case 'C': Value += 12; break;
+        case 'c': Value += 12; break;
+        case 'D': Value += 13; break;
+        case 'd': Value += 13; break;
+        case 'E': Value += 14; break;
+        case 'e': Value += 14; break;
+        case 'F': Value += 15; break;
+        case 'f': Value += 15; break;
         default:
             Value = (Value >> 4);
             i = Finish;
         }
     }
     return Value;
-}
-
-stdstr CEditNumber32::GetValueText(void)
-{
-    return ::GetCWindowText(*this);
 }
 
 void CEditNumber32::SetValue(uint32_t Value, DisplayMode Display)

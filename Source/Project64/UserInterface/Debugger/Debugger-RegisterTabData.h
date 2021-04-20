@@ -7,8 +7,8 @@ struct FieldPair
     const WORD EditId;
 };
 
-using FieldPairWithStopCallback = std::function<bool(const CWindow *label, const CWindow *edit)>;
-using FieldPairCallback = std::function<void(const CWindow *label, const CWindow *edit)>;
+using FieldPairWithStopCallback = std::function<bool(const CWindow & Label, const CWindow & Edit)>;
+using FieldPairCallback = std::function<void(const CWindow & Label, const CWindow & Edit)>;
 
 struct TabRecord
 {
@@ -47,28 +47,24 @@ struct TabRecord
         return -1;
     }
 
-    void Iterate(const CWindow *parent, FieldPairWithStopCallback callback) const
+    void Iterate(const CWindow & parent, FieldPairWithStopCallback callback) const
     {
         for (size_t i = 0, end = FieldCount; i < end; i++)
         {
             const FieldPair *pair = (Fields + i);
-            const CWindow label = parent->GetDescendantWindow(pair->LabelId);
-            const CWindow edit = parent->GetDescendantWindow(pair->EditId);
-            if (callback(&label, &edit))
+            if (callback(parent.GetDescendantWindow(pair->LabelId), parent.GetDescendantWindow(pair->EditId)))
             {
                 break;
             }
         }
     }
 
-    void Iterate(const CWindow *parent, FieldPairCallback callback) const
+    void Iterate(const CWindow & parent, FieldPairCallback callback) const
     {
         for (size_t i = 0, end = FieldCount; i < end; i++)
         {
             const FieldPair *pair = (Fields + i);
-            const CWindow label = parent->GetDescendantWindow(pair->LabelId);
-            const CWindow edit = parent->GetDescendantWindow(pair->EditId);
-            callback(&label, &edit);
+            callback(parent.GetDescendantWindow(pair->LabelId), parent.GetDescendantWindow(pair->EditId));
         }
     }
 };

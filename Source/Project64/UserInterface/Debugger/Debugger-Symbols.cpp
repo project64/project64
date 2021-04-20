@@ -175,9 +175,8 @@ LRESULT    CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
     case SymbolsListView_Col_Name:
         if (m_SetValueDlg.DoModal("Set name", "New name:", symbol.m_Name))
         {
-            wchar_t* szEnteredString = m_SetValueDlg.GetEnteredString();
             m_Debugger->SymbolTable()->RemoveSymbolById(id);
-            m_Debugger->SymbolTable()->AddSymbol(symbol.m_Type, symbol.m_Address, stdstr().FromUTF16(szEnteredString).c_str(), symbol.m_Description);
+            m_Debugger->SymbolTable()->AddSymbol(symbol.m_Type, symbol.m_Address, m_SetValueDlg.GetEnteredString().c_str(), symbol.m_Description);
         }
         break;
     case SymbolsListView_Col_Value:
@@ -187,7 +186,7 @@ LRESULT    CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
         m_Debugger->SymbolTable()->GetValueString(szValue, &symbol);
         if (m_SetValueDlg.DoModal("Change value", "New value:", szValue))
         {
-            stdstr EnteredString = stdstr().FromUTF16(m_SetValueDlg.GetEnteredString());
+            const std::string & EnteredString = m_SetValueDlg.GetEnteredString();
 
             switch (symbol.m_Type)
             {
@@ -272,9 +271,8 @@ LRESULT    CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
     case SymbolsListView_Col_Description:
         if (m_SetValueDlg.DoModal("Set description", "New description:", symbol.m_Description))
         {
-            stdstr szEnteredString = stdstr().FromUTF16(m_SetValueDlg.GetEnteredString());
             m_Debugger->SymbolTable()->RemoveSymbolById(id);
-            m_Debugger->SymbolTable()->AddSymbol(symbol.m_Type, symbol.m_Address, symbol.m_Name, szEnteredString.c_str());
+            m_Debugger->SymbolTable()->AddSymbol(symbol.m_Type, symbol.m_Address, symbol.m_Name, m_SetValueDlg.GetEnteredString().c_str());
         }
         break;
     } 

@@ -17,7 +17,6 @@ public:
 	
 	void SetReset ( bool Reset );
 	void SetChanged (bool Changed);
-	stdstr GetWindowText();
 	void SetTextField (HWND hWnd);
 
 	inline bool IsChanged ( void ) const 

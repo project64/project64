@@ -18,9 +18,8 @@ LRESULT CAddBreakpointDlg::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL&
     {
     case IDOK:
     {
-        wchar_t addrStr[9];
-        m_AddressEdit.GetWindowText(addrStr, 9);
-        uint32_t address = wcstoul(addrStr, nullptr, 16);
+        std::string addrStr = GetCWindowText(m_AddressEdit);
+        uint32_t address = stoul(addrStr.c_str(), nullptr, 16);
 
         CBreakpoints* breakpoints = m_Debugger->Breakpoints();
 
