@@ -5,50 +5,8 @@
 #include <windows.h>
 #include <Tlhelp32.h>
 #else
-#include <unistd.h>
-#include <dlfcn.h>
-#include <errno.h>
+#include <time.h>
 #endif
-
-pjutil::DynLibHandle pjutil::DynLibOpen(const char *pccLibraryPath, bool ShowErrors)
-{
-    if (pccLibraryPath == nullptr)
-    {
-        return nullptr;
-    }
-#ifdef _WIN32
-    UINT LastErrorMode = SetErrorMode(ShowErrors ? 0 : SEM_FAILCRITICALERRORS);
-    pjutil::DynLibHandle lib = (pjutil::DynLibHandle)LoadLibraryA(pccLibraryPath);
-    SetErrorMode(LastErrorMode);
-#else
-    pjutil::DynLibHandle lib = (pjutil::DynLibHandle)dlopen(pccLibraryPath, RTLD_NOW);
-#endif
-    return lib;
-}
-
-void * pjutil::DynLibGetProc(pjutil::DynLibHandle LibHandle, const char * ProcedureName)
-{
-    if (ProcedureName == nullptr)
-        return nullptr;
-
-#ifdef _WIN32
-    return GetProcAddress((HMODULE)LibHandle, ProcedureName);
-#else
-    return dlsym(LibHandle, ProcedureName);
-#endif
-}
-
-void pjutil::DynLibClose(pjutil::DynLibHandle LibHandle)
-{
-    if (LibHandle != nullptr)
-    {
-#ifdef _WIN32
-        FreeLibrary((HMODULE)LibHandle);
-#else
-        dlclose(LibHandle);
-#endif
-    }
-}
 
 void pjutil::Sleep(uint32_t timeout)
 {

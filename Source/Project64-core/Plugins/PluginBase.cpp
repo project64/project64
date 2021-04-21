@@ -38,7 +38,7 @@ bool CPlugin::Load(const char * FileName)
 
     // Try to load the plugin DLL
     //Try to load the DLL library
-    m_LibHandle = pjutil::DynLibOpen(FileName, HaveDebugger());
+    m_LibHandle = DynamicLibraryOpen(FileName, HaveDebugger());
     WriteTrace(PluginTraceType(), TraceDebug, "Loaded: %s LibHandle: %X", FileName, m_LibHandle);
 
     if (m_LibHandle == nullptr)
@@ -238,7 +238,7 @@ void CPlugin::UnloadPlugin()
     }
     if (m_LibHandle != nullptr)
     {
-        pjutil::DynLibClose(m_LibHandle);
+        DynamicLibraryClose(m_LibHandle);
         m_LibHandle = nullptr;
     }
 

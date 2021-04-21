@@ -3,7 +3,7 @@
 #include <Project64-core/Settings/DebugSettings.h>
 #include <Project64-core/TraceModulesProject64.h>
 #include <Project64-core/Plugins/Plugin.h>
-#include <Common/Util.h>
+#include <Common/DynamicLibrary.h>
 
 #if defined(_WIN32)
 #define CALL        __cdecl
@@ -53,14 +53,14 @@ protected:
     void(CALL *SetSettingNotificationInfo)(PLUGIN_SETTINGS_NOTIFICATION *);
     void(CALL *SetPluginNotification)(PLUGIN_NOTIFICATION *);
 
-    pjutil::DynLibHandle m_LibHandle;
+    DynLibHandle m_LibHandle;
     bool m_Initialized, m_RomOpen;
     PLUGIN_INFO m_PluginInfo;
 
     // Loads a function pointer from the currently loaded DLL
     void _LoadFunctionVoid(const char * szFunctionName, void ** functionPointer)
     {
-        *functionPointer = pjutil::DynLibGetProc(m_LibHandle, szFunctionName);
+        *functionPointer = DynamicLibraryGetProc(m_LibHandle, szFunctionName);
     }
 
     // Simple wrapper around _LoadFunction() to avoid having to specify the same two arguments

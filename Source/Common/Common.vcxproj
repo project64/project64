@@ -39,6 +39,7 @@
   <ItemGroup>
     <ClCompile Include="CriticalSection.cpp" />
     <ClCompile Include="DateTime.cpp" />
+    <ClCompile Include="DynamicLibrary.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="HighResTimeStamp.cpp" />
     <ClCompile Include="IniFile.cpp" />
@@ -58,6 +59,7 @@
   <ItemGroup>
     <ClInclude Include="CriticalSection.h" />
     <ClInclude Include="DateTime.h" />
+    <ClInclude Include="DynamicLibrary.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="HighResTimeStamp.h" />
     <ClInclude Include="IniFile.h" />

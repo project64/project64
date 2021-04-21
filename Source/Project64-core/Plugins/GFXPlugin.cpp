@@ -263,7 +263,7 @@ void CGfxPlugin::UnloadPluginDetails(void)
     WriteTrace(TraceGFXPlugin, TraceDebug, "start");
     if (m_LibHandle != nullptr)
     {
-        pjutil::DynLibClose(m_LibHandle);
+        DynamicLibraryClose(m_LibHandle);
         m_LibHandle = nullptr;
     }
     memset(&m_GFXDebug, 0, sizeof(m_GFXDebug));
