@@ -180,26 +180,24 @@ bool CDumpMemory::DumpMemory(LPCTSTR FileName, DumpFormat Format, DWORD StartPC,
         }
 
         uint32_t dumpLen = EndPC - StartPC;
-        uint8_t* dumpBuf = (uint8_t*)malloc(dumpLen);
+        std::unique_ptr<uint8_t> dumpBuf = std::make_unique<uint8_t>(dumpLen);
         uint32_t dumpIdx = 0;
 
         for (uint32_t pc = StartPC; pc < EndPC; pc++, dumpIdx++)
         {
-            bool bReadable = m_Debugger->DebugLoad_VAddr(pc, dumpBuf[dumpIdx]);
+            bool bReadable = m_Debugger->DebugLoad_VAddr(pc, dumpBuf.get()[dumpIdx]);
 
             if (!bReadable)
             {
                 g_Notify->DisplayError(stdstr_f("Address error\n%s", strFile.c_str()).c_str());
                 dumpFile.Close();
-                free(dumpBuf);
                 return false;
             }
         }
 
         dumpFile.SeekToBegin();
-        dumpFile.Write(dumpBuf, dumpLen);
+        dumpFile.Write(dumpBuf.get(), dumpLen);
         dumpFile.Close();
-        free(dumpBuf);
         return true;
     }
 

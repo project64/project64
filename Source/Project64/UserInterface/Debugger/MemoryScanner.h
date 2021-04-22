@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdafx.h>
+#include <string>
 
 enum ValueType
 {
@@ -137,7 +138,7 @@ public:
     AddressType m_AddressType;
     DisplayFormat m_DisplayFormat;
     bool m_bSelected;
-    char* m_Description;
+    std::string m_Description;
 
 public:
     int GetValueString(char* buffer, size_t size);

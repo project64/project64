@@ -972,21 +972,18 @@ LRESULT CDebugMemoryView::OnHxPaste(LPNMHDR lpNMHDR)
 
     if (nmp->column == HX_COL_HEXDATA)
     {
-        char* data = nullptr;
         // TODO: move this function to some utility class
         int length = CMemoryScanner::ParseHexString(nullptr, text);
 
         if (length != 0)
         {
-            data = (char*)malloc(length);
-            CMemoryScanner::ParseHexString(data, text);
+            std::unique_ptr<char> data = std::make_unique<char>(length);
+            CMemoryScanner::ParseHexString(data.get(), text);
 
             for (int i = 0; i < length; i++)
             {
-                SetByte(nmp->address + i, data[i]);
+                SetByte(nmp->address + i, data.get()[i]);
             }
-
-            free(data);
         }
 
         retDataLength = length;

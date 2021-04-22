@@ -1441,10 +1441,11 @@ LRESULT CDebugCommandsView::OnListBoxClicked(WORD /*wNotifyCode*/, WORD wID, HWN
         int index = m_BreakpointList.GetCaretIndex();
         uint32_t address = m_BreakpointList.GetItemData(index);
         int len = m_BreakpointList.GetTextLen(index);
-        wchar_t* rowText = (wchar_t*)malloc((len + 1) * sizeof(wchar_t));
-        rowText[len] = '\0';
-        m_BreakpointList.GetText(index, rowText);
-        if (*rowText == L'E')
+        std::wstring rowText;
+        rowText.resize(len);
+
+        m_BreakpointList.GetText(index, (wchar_t *)rowText.data());
+        if (rowText[0] == L'E')
         {
             ShowAddress(address, true);
         }
@@ -1452,7 +1453,6 @@ LRESULT CDebugCommandsView::OnListBoxClicked(WORD /*wNotifyCode*/, WORD wID, HWN
         {
             m_Debugger->Debug_ShowMemoryLocation(address, true);
         }
-        free(rowText);
     }
     return FALSE;
 }

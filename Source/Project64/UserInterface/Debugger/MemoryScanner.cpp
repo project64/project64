@@ -152,33 +152,17 @@ CScanResult::~CScanResult(void)
 
 void CScanResult::SetDescription(const char* str)
 {
-    if (m_Description != nullptr)
-    {
-        free(m_Description);
-    }
-
-    size_t len = strlen(str);
-    m_Description = (char*)malloc(len + 1);
-    strcpy(m_Description, str);
-    m_Description[len] = '\0';
+    m_Description = str;
 }
 
 void CScanResult::DeleteDescription(void)
 {
-    if (m_Description != nullptr)
-    {
-        free(m_Description);
-        m_Description = nullptr;
-    }
+    m_Description.clear();
 }
 
 const char* CScanResult::GetDescription(void)
 {
-    if (m_Description == nullptr)
-    {
-        return "";
-    }
-    return m_Description;
+    return m_Description.c_str();
 }
 
 int CScanResult::GetValueString(char *buffer, size_t size)
