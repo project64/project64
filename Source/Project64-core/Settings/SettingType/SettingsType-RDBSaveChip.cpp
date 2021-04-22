@@ -88,19 +88,16 @@ void CSettingTypeRDBSaveChip::Save (uint32_t /*Index*/, bool /*Value*/ )
 
 void CSettingTypeRDBSaveChip::Save (uint32_t /*Index*/, uint32_t Value )
 {
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wnarrowing"
-    switch (Value)
+    switch ((SAVE_CHIP_TYPE)Value)
     {
-    case SaveChip_Auto:       m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"First Save Type"); break;
-    case SaveChip_Eeprom_4K:  m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"4kbit Eeprom"); break;
+    case SaveChip_Auto: m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"First Save Type"); break;
+    case SaveChip_Eeprom_4K: m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"4kbit Eeprom"); break;
     case SaveChip_Eeprom_16K: m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"16kbit Eeprom"); break;
-    case SaveChip_Sram:       m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"Sram"); break;
-    case SaveChip_FlashRam:   m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"FlashRam"); break;
+    case SaveChip_Sram: m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"Sram"); break;
+    case SaveChip_FlashRam: m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"FlashRam"); break;
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-#pragma GCC diagnostic pop
 }
 
 void CSettingTypeRDBSaveChip::Save (uint32_t /*Index*/, const std::string & /*Value*/ )
