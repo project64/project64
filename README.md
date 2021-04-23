@@ -24,7 +24,7 @@ Follow the instructions in the setup window to complete the installation.
 Download nightly builds here: https://www.pj64-emu.com/nightly-builds
 
 AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/projects/status/sbtwyhaexslyhgx3?svg=true
-)](https://ci.appveyor.com/project/project64/project64/branch/master)
+)](https://ci.appveyor.com/project/project64/project64/branch/develop)
 
 <sub>Note: x64 builds are **NOT** recommended for regular use. They are incomplete and very experimental. Due to this, x64 builds are currently _slower_ than 32-bit builds.</sub>
 
@@ -40,11 +40,11 @@ Visual Studio Community
 
 Load .sln project file and compile
 
-See the [BUILDING.md](https://github.com/project64/project64/blob/master/BUILDING.md) file for details.
+See the [BUILDING.md](https://github.com/project64/project64/blob/develop/BUILDING.md) file for details.
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://github.com/project64/project64/blob/master/.github/CONTRIBUTING.md) before contributing.
+Please read [CONTRIBUTING.md](https://github.com/project64/project64/blob/develop/.github/CONTRIBUTING.md) before contributing.
 
 ## Versioning
 
@@ -61,4 +61,4 @@ See also the list of [contributors](https://github.com/project64/project64/contr
 
 ## License
 
-This project is licensed under the GPLv2 License - see the [LICENSE.md](https://github.com/project64/project64/blob/master/license.md) file for details
+This project is licensed under the GPLv2 License - see the [LICENSE.md](https://github.com/project64/project64/blob/develop/license.md) file for details
