@@ -5,11 +5,11 @@
 AppId={{BEB5FB69-4080-466F-96C4-F15DF271718B}
 AppName=Project64
 AppVersion={#AppVersion}
-DefaultDirName={pf32}\Project64 2.3
+DefaultDirName={pf32}\Project64 Dev 3.0
 VersionInfoVersion={#AppVersion}
 OutputDir={#BaseDir}\Bin\{#Configuration}
-OutputBaseFilename=Setup Project64 2.3
-VersionInfoDescription=Installation Setup of Project64 2.3
+OutputBaseFilename=Setup Project64 Dev 3.0
+VersionInfoDescription=Installation Setup of Project64 Dev 3.0
 Compression=lzma2/ultra64
 WizardImageFile=Installer-Sidebar.bmp
 WizardSmallImageFile=Pj64LogoSmallImage.bmp

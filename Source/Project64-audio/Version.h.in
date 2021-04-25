@@ -1,15 +1,20 @@
 #define STRINGIZE2(s) #s
 #define STRINGIZE(s) STRINGIZE2(s)
 
-#define VERSION_MAJOR               1
+#define VERSION_MAJOR               3
 #define VERSION_MINOR               0
-#define VERSION_REVISION            1
+#define VERSION_REVISION            0
 #define VERSION_BUILD               9999
-#define GIT_VERSION                 ""
+#define VERSION_PREFIX              "Dev-"
+
+#define GIT_REVISION                ""
+#define GIT_REVISION_SHORT          ""
+#define GIT_DIRTY                   ""
+#define GIT_VERSION                 "Unknown"
 
 #define VER_FILE_DESCRIPTION_STR    "Project64-audio"
 #define VER_FILE_VERSION            VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, VERSION_BUILD
-#define VER_FILE_VERSION_STR        STRINGIZE(VERSION_MAJOR)        \
+#define VER_FILE_VERSION_STR        VERSION_PREFIX STRINGIZE(VERSION_MAJOR)        \
                                     "." STRINGIZE(VERSION_MINOR)    \
                                     "." STRINGIZE(VERSION_REVISION) \
                                     "." STRINGIZE(VERSION_BUILD)    \

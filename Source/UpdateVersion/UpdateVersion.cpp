@@ -4,6 +4,111 @@
 #include <Common/File.h>
 #include <Common/StdString.h>
 
+bool GitCommand(CPath & SourceDirectory, const char * Command, std::string & Output)
+{
+    CPath CurrentDir(CPath::CURRENT_DIRECTORY);
+    if (CurrentDir != SourceDirectory)
+    {
+        SourceDirectory.ChangeDirectory();
+    }
+    Output.clear();
+    FILE * pipe = _popen(stdstr_f("git %s", Command).c_str(), "r");
+    if (pipe == nullptr)
+    {
+        if (CurrentDir != SourceDirectory)
+        {
+            CurrentDir.ChangeDirectory();
+        }
+        return false;
+    }
+
+    char buffer[128];
+
+    while (!feof(pipe))
+    {
+        // use buffer to read and add to result
+        if (fgets(buffer, 128, pipe) != NULL)
+        {
+            Output += buffer;
+        }
+    }
+    if (CurrentDir != SourceDirectory)
+    {
+        CurrentDir.ChangeDirectory();
+    }
+    if (feof(pipe))
+    {
+        _pclose(pipe);
+        return true;
+    }
+    return false;
+}
+
+uint32_t GitBuildVersion(CPath & SourceDirectory)
+{
+    enum
+    {
+        DefaultBuildVersion = 9999
+    };
+    std::string Result;
+    if (!GitCommand(SourceDirectory, "rev-list --count HEAD", Result))
+    {
+        return DefaultBuildVersion;
+    }
+    if (Result.empty())
+    {
+        return DefaultBuildVersion;
+    }
+    uint32_t BuildVersion = atoi(Result.c_str());
+    if (BuildVersion != 0)
+    {
+        return BuildVersion;
+    }
+    return 9999;
+}
+
+bool GitBuildDirty(CPath & SourceDirectory)
+{
+    std::string Result;
+    if (!GitCommand(SourceDirectory, "diff --stat", Result))
+    {
+        return false;
+    }
+    return !Result.empty();
+}
+
+std::string GitRevision(CPath & SourceDirectory)
+{
+    stdstr Result;
+    if (!GitCommand(SourceDirectory, "rev-parse HEAD", Result))
+    {
+        return "";
+    }
+    Result.Replace("\r", "");
+    strvector ResultVector = Result.Tokenize("\n");
+    if (ResultVector.size() > 0)
+    {
+        return ResultVector[0];
+    }
+    return "";
+}
+
+std::string GitRevisionShort(CPath & SourceDirectory)
+{
+    stdstr Result;
+    if (!GitCommand(SourceDirectory, "rev-parse --short HEAD", Result))
+    {
+        return "";
+    }
+    Result.Replace("\r", "");
+    strvector ResultVector = Result.Tokenize("\n");
+    if (ResultVector.size() > 0)
+    {
+        return ResultVector[0];
+    }
+    return "";
+}
+
 int main()
 {
     if (__argc < 4)
@@ -25,6 +130,12 @@ int main()
         }
     }
 
+    CPath SourceDirectory(SourceFile.GetDriveDirectory(), "");
+    uint32_t VersionBuild = GitBuildVersion(SourceDirectory);
+    bool BuildDirty = GitBuildDirty(SourceDirectory);
+    std::string Revision = GitRevision(SourceDirectory);
+    std::string RevisionShort = GitRevisionShort(SourceDirectory);
+
     CFile InFile(SourceFile, CFileBase::modeRead);
     if (!InFile.IsOpen())
     {
@@ -36,16 +147,6 @@ int main()
     InFile.Read(InputData.get(), FileLen);
     strvector VersionData = stdstr(std::string((char *)InputData.get(), FileLen)).Tokenize("\n");
 
-    strvector verinfo = stdstr(__argv[3]).Tokenize('-');
-    if (verinfo.size() < 3 || verinfo.size() > 4)
-    {
-        return 0;
-    }
-    if (verinfo.size() == 4)
-    {
-        verinfo[2] += "-" + verinfo[3];
-    }
-
     CFile OutFile(DestFile, CFileBase::modeWrite | CFileBase::modeCreate);
     if (!OutFile.IsOpen())
     {
@@ -56,13 +157,25 @@ int main()
     {
         stdstr &line = VersionData[i];
         line += "\n";
-        if (_strnicmp(line.c_str(), "#define VERSION_BUILD", 21) == 0)
+        if (_strnicmp(line.c_str(), "#define GIT_VERSION ", 20) == 0)
         {
-            line = "#define VERSION_BUILD               " + verinfo[1] + "\n";
+            line.Format("#define GIT_VERSION                 \"%s%s%s\"\n", RevisionShort.c_str(), BuildDirty ? "-" : "", BuildDirty ? "Dirty" : "");
         }
-        if (_strnicmp(line.c_str(), "#define GIT_VERSION", 18) == 0)
+        else if (_strnicmp(line.c_str(), "#define VERSION_BUILD", 21) == 0)
         {
-            line = "#define GIT_VERSION                 \"" + verinfo[2] + "\"\n";
+            line.Format("#define VERSION_BUILD               %d\n", VersionBuild);
+        }
+        else if (_strnicmp(line.c_str(), "#define GIT_REVISION ", 21) == 0)
+        {
+            line.Format("#define GIT_REVISION                \"%s\"\n", Revision.c_str());
+        }
+        else if (_strnicmp(line.c_str(), "#define GIT_REVISION_SHORT ", 26) == 0)
+        {
+            line.Format("#define GIT_REVISION_SHORT          \"%s\"\n", RevisionShort.c_str());
+        }
+        else if (_strnicmp(line.c_str(), "#define GIT_DIRTY ", 11) == 0)
+        {
+            line.Format("#define GIT_DIRTY                   \"%s\"\n", BuildDirty ? "Dirty" : "");
         }
         if (!OutFile.Write(line.c_str(), (uint32_t)line.length()))
         {
