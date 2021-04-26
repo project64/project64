@@ -45,8 +45,8 @@ COptionsShortCutsPage::COptionsShortCutsPage(HWND hParent, const RECT & rcDispay
 
 void COptionsShortCutsPage::CheckResetEnable(void)
 {
-    MSC_MAP & ShortCuts = m_ShortCuts.GetShortCuts();
-    for (MSC_MAP::iterator Item = ShortCuts.begin(); Item != ShortCuts.end(); Item++)
+    const MSC_MAP & ShortCuts = m_ShortCuts.GetShortCuts();
+    for (MSC_MAP::const_iterator Item = ShortCuts.begin(); Item != ShortCuts.end(); Item++)
     {
         const SHORTCUT_KEY_LIST & ShortCutList = Item->second.GetAccelItems();
         for (SHORTCUT_KEY_LIST::const_iterator ShortCut_item = ShortCutList.begin(); ShortCut_item != ShortCutList.end(); ShortCut_item++)
@@ -66,10 +66,10 @@ void COptionsShortCutsPage::OnCpuStateChanged(UINT /*Code*/, int /*id*/, HWND /*
 {
     RUNNING_STATE RunningState = (RUNNING_STATE)m_CpuState.GetItemData(m_CpuState.GetCurSel());
 
-    MSC_MAP & ShortCuts = m_ShortCuts.GetShortCuts();
+    const MSC_MAP & ShortCuts = m_ShortCuts.GetShortCuts();
     m_MenuItems.DeleteAllItems();
 
-    for (MSC_MAP::iterator Item = ShortCuts.begin(); Item != ShortCuts.end(); Item++)
+    for (MSC_MAP::const_iterator Item = ShortCuts.begin(); Item != ShortCuts.end(); Item++)
     {
         if (!Item->second.Avaliable(RunningState))
         {

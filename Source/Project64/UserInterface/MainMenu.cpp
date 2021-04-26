@@ -17,7 +17,6 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
 
     hMainWindow->SetWindowMenu(this);
 
-    m_ChangeUISettingList.push_back(Info_ShortCutsChanged);
     m_ChangeSettingList.push_back(GameRunning_LimitFPS);
     m_ChangeUISettingList.push_back(UserInterface_InFullScreen);
     m_ChangeUISettingList.push_back(UserInterface_AlwaysOnTop);
@@ -63,10 +62,13 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
     {
         g_Settings->RegisterChangeCB(*iter, this, (CSettings::SettingChangedFunc)SettingsChanged);
     }
+
+    g_Settings->RegisterChangeCB((SettingID)Info_ShortCutsChanged, this, (CSettings::SettingChangedFunc)stShortCutsChanged);
 }
 
 CMainMenu::~CMainMenu()
 {
+    g_Settings->UnregisterChangeCB((SettingID)Info_ShortCutsChanged, this, (CSettings::SettingChangedFunc)stShortCutsChanged);
     for (UISettingList::const_iterator iter = m_ChangeUISettingList.begin(); iter != m_ChangeUISettingList.end(); iter++)
     {
         g_Settings->UnregisterChangeCB((SettingID)*iter, this, (CSettings::SettingChangedFunc)SettingsChanged);
@@ -130,6 +132,13 @@ void CMainMenu::SetTraceModuleSetttings(SettingID Type)
 {
     uint32_t value = g_Settings->LoadDword(Type) == TraceVerbose ? g_Settings->LoadDefaultDword(Type) : TraceVerbose;
     g_Settings->SaveDword(Type, value);
+}
+
+void CMainMenu::ShortCutsChanged(void)
+{
+    m_ShortCuts.Load();
+    ResetMenu();
+    m_ResetAccelerators = true;
 }
 
 void CMainMenu::OnOpenRom(HWND hWnd)

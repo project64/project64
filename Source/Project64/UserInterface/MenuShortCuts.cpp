@@ -288,7 +288,7 @@ void CShortCutItem::RemoveItem(CMenuShortCutKey * ShortCut)
     }
 }
 
-bool CShortCutItem::Avaliable(CMenuShortCutKey::RUNNING_STATE RunningState)
+bool CShortCutItem::Avaliable(CMenuShortCutKey::RUNNING_STATE RunningState) const
 {
     switch (RunningState)
     {

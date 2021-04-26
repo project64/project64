@@ -64,10 +64,10 @@ public:
     CMainMenu(CMainGui * Window);
     ~CMainMenu();
 
-    int       ProcessAccelerator(HWND hWnd, void * lpMsg);
-    bool      ProcessMessage(HWND hWnd, DWORD wNotifyCode, DWORD wID);
-    void      ResetMenu(void);
-    void      ResetAccelerators(void) { m_ResetAccelerators = true; }
+    int ProcessAccelerator(HWND hWnd, void * lpMsg);
+    bool ProcessMessage(HWND hWnd, DWORD wNotifyCode, DWORD wID);
+    void ResetMenu(void);
+    void ResetAccelerators(void) { m_ResetAccelerators = true; }
 
 private:
     CMainMenu();
@@ -94,8 +94,10 @@ private:
     std::string ChooseROMFileToOpen(HWND hParent);
     std::string ChooseDiskFileToOpen(HWND hParent);
     void SetTraceModuleSetttings(SettingID Type);
+    void ShortCutsChanged(void);
 
     static void SettingsChanged(CMainMenu * _this);
+    static void stShortCutsChanged(CMainMenu * _this) { return _this->ShortCutsChanged(); }
 
     typedef std::list<SettingID> SettingList;
     typedef std::list<UISettingID> UISettingList;

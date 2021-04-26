@@ -80,7 +80,7 @@ public:
     void Reset(LanguageStringID Section, LanguageStringID Title, ACCESS_MODE Access);
     void AddShortCut(WORD key, bool bCtrl, bool bAlt, bool bShift, ACCESS_MODE AccessMode, bool bUserAdded = false, bool bInactive = false);
     void RemoveItem(CMenuShortCutKey * ShortCut);
-    bool Avaliable(RUNNING_STATE RunningState);
+    bool Avaliable(RUNNING_STATE RunningState) const;
 
     inline const SHORTCUT_KEY_LIST & GetAccelItems(void) const { return m_AccelList; }
     inline LanguageStringID Section(void) const { return m_Section; }
@@ -96,12 +96,6 @@ class CShortCuts
     typedef CMenuShortCutKey::ACCESS_MODE ACCESS_MODE;
     typedef CMenuShortCutKey::RUNNING_STATE RUNNING_STATE;
     typedef LanguageStringID LangStr;
-
-    MSC_MAP m_ShortCuts;
-    CriticalSection m_CS;
-
-    void AddShortCut(WORD ID, LangStr Section, LangStr LangID, CMenuShortCutKey::ACCESS_MODE AccessMode);
-
 public:
     CShortCuts(void);
     ~CShortCuts(void);
@@ -109,8 +103,14 @@ public:
     std::wstring ShortCutString(int MenuID, RUNNING_STATE RunningState);
     LangStr GetMenuItemName(WORD key, bool bCtrl, bool bAlt, bool bShift, RUNNING_STATE RunningState);
     HACCEL GetAcceleratorTable(void);
-    MSC_MAP & GetShortCuts(void) { return m_ShortCuts; }
+    const MSC_MAP & GetShortCuts(void) const { return m_ShortCuts; }
 
     void Load(bool InitialValues = false);
     void Save(void);
+
+private:
+    CriticalSection m_CS;
+    MSC_MAP m_ShortCuts;
+
+    void AddShortCut(WORD ID, LangStr Section, LangStr LangID, CMenuShortCutKey::ACCESS_MODE AccessMode);
 };
