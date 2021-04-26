@@ -5,7 +5,7 @@
 # 1 # "Bosanski" // ID JEZIKA
 # 2 # "Alen Alic" // Autor
 # 3 # "2.3" // Verzija
-# 4 # "February, 2021" // Datum
+# 4 # "April, 2021" // Datum
 
 // O DLL dijalogu
 # 5 # "Trenutni jezik"
@@ -131,7 +131,7 @@
 # 263 # "Učitavanje spremljenog stanja sustava"
 # 264 # "Odaberite sačuvanu datoteku stanja sistema za učitavanje"
 # 265 # "Omogući / onemogući GameShark cheats"
-# 266 # "Gumb GameShark koristi se sa određenim varalicama."
+# 266 # "GameShark koristi se sa određenim varalicama."
 # 267 # "Promjena emulacije iz prozora u režim preko cijelog ekrana."
 # 268 # "Neka prozori ostanu iznad svih ostalih prozora"
 # 269 # "Promjena postavki unutar grafičkog dodatka"
@@ -214,7 +214,7 @@
 # 424 # "Ulazni (regulator) dodatak:"
 # 425 # "Grafika HLE"
 # 426 # "Audio HLE"
-# 427 # "** Koristite sistemski dodatak **"
+# 427 # "** Koristite Sistemski Dodatak **"
 
 // Dijalog direktorija
 # 440 # "Imenik dodataka:"
@@ -264,8 +264,8 @@
 //Napredne opcije
 # 500 # "Većina ovih promjena neće stupiti na snagu dok se ne otvori novi ROM ili ne resetira trenutni ROM."
 # 501 # "Osnovne zadane postavke"
-# 502 # "Jezgra CPU jezgre:"
-# 503 # "Self mod metode"
+# 502 # "CPU jezgra stil:"
+# 503 # "Sebe mod metode"
 # 504 # "Zadana veličina memorije:"
 # 505 # "Napredno povezivanje blokova"
 # 506 # "Pokrenite emulaciju kada se otvori ROM"
