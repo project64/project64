@@ -196,7 +196,7 @@ static bool ParseCommand(int32_t argc, char **argv)
             }
             else
             {
-                WriteTrace(TraceAppInit, TraceError, "not enough parameters for '%d: %s'", i, argv[i]);
+                WriteTrace(TraceAppInit, TraceError, "Not enough parameters for '%d: %s'", i, argv[i]);
                 return false;
             }
         }
@@ -207,7 +207,7 @@ static bool ParseCommand(int32_t argc, char **argv)
         }
         else
         {
-            WriteTrace(TraceAppInit, TraceError, "unrecognized command-line parameter '%d: %s'", i, argv[i]);
+            WriteTrace(TraceAppInit, TraceError, "Unrecognized command-line parameter '%d: %s'", i, argv[i]);
         }
     }
     return false;
@@ -222,17 +222,17 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
         WriteTrace(TraceAppInit, TraceDebug, "Starting (BaseDirectory: %s)", BaseDirectory ? BaseDirectory : "null");
         if (Notify == nullptr)
         {
-            WriteTrace(TraceAppInit, TraceError, "No Notification class passed");
+            WriteTrace(TraceAppInit, TraceError, "No notification class passed");
             return false;
         }
-        WriteTrace(TraceAppInit, TraceDebug, "Settings up settings");
+        WriteTrace(TraceAppInit, TraceDebug, "Setting up settings");
         g_Settings = new CSettings;
         g_Settings->Initialize(BaseDirectory, AppName());
 
-        WriteTrace(TraceAppInit, TraceDebug, "Parse Commands");
+        WriteTrace(TraceAppInit, TraceDebug, "Parse commands");
         if (!ParseCommand(argc, argv))
         {
-            WriteTrace(TraceAppInit, TraceError, "Failed to Parse Commands, exiting now");
+            WriteTrace(TraceAppInit, TraceError, "Failed to parse commands, exiting now");
             return false;
         }
 
@@ -254,33 +254,33 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
 #else
         if (!CMipsMemoryVM::SetupSegvHandler())
         {
-            WriteTrace(TraceAppInit, TraceDebug, "Setup Segv Handler Failed");
+            WriteTrace(TraceAppInit, TraceDebug, "Setup SEGV handler failed");
             return false;
         }
 #endif
         g_Enhancements = new CEnhancements();
 
         //Create the plugin container
-        WriteTrace(TraceAppInit, TraceInfo, "Create Plugins");
+        WriteTrace(TraceAppInit, TraceInfo, "Create plugins");
         g_Plugins = new CPlugins(Directory_Plugin, false);
 
         g_Lang = new CLanguage();
         g_Lang->LoadCurrentStrings();
         g_Notify->AppInitDone();
-        WriteTrace(TraceAppInit, TraceDebug, "Initialized Successfully");
+        WriteTrace(TraceAppInit, TraceDebug, "Initialized successfully");
         return true;
     }
     catch (...)
     {
         g_Notify->DisplayError(stdstr_f("Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__).c_str());
-        WriteTrace(TraceAppInit, TraceError, "Exception caught, Init was not successfull");
+        WriteTrace(TraceAppInit, TraceError, "Exception caught, initialization was not successful");
         return false;
     }
 }
 
 void AppCleanup(void)
 {
-    WriteTrace(TraceAppCleanup, TraceDebug, "cleaning up global objects");
+    WriteTrace(TraceAppCleanup, TraceDebug, "Cleaning up global objects");
     CleanupTrace();
 
     if (g_Enhancements) { delete g_Enhancements; g_Enhancements = nullptr; }

@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "RomInformation.h"
+#include "RomInformationClass.h"
 #include "Debugger/Breakpoints.h"
 #include "Debugger/ScriptSystem.h"
 #include "DiscordRPC.h"
-#include <Project64-core/N64System/N64Disk.h>
+#include <Project64-core/N64System/N64DiskClass.h>
 #include <Project64\UserInterface\About.h>
 #include <windows.h>
 #include <commdlg.h>
@@ -17,6 +17,7 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
 
     hMainWindow->SetWindowMenu(this);
 
+    m_ChangeUISettingList.push_back(Info_ShortCutsChanged);
     m_ChangeSettingList.push_back(GameRunning_LimitFPS);
     m_ChangeUISettingList.push_back(UserInterface_InFullScreen);
     m_ChangeUISettingList.push_back(UserInterface_AlwaysOnTop);
@@ -62,13 +63,10 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
     {
         g_Settings->RegisterChangeCB(*iter, this, (CSettings::SettingChangedFunc)SettingsChanged);
     }
-
-    g_Settings->RegisterChangeCB((SettingID)Info_ShortCutsChanged, this, (CSettings::SettingChangedFunc)stShortCutsChanged);
 }
 
 CMainMenu::~CMainMenu()
 {
-    g_Settings->UnregisterChangeCB((SettingID)Info_ShortCutsChanged, this, (CSettings::SettingChangedFunc)stShortCutsChanged);
     for (UISettingList::const_iterator iter = m_ChangeUISettingList.begin(); iter != m_ChangeUISettingList.end(); iter++)
     {
         g_Settings->UnregisterChangeCB((SettingID)*iter, this, (CSettings::SettingChangedFunc)SettingsChanged);
@@ -98,7 +96,7 @@ int CMainMenu::ProcessAccelerator(HWND hWnd, void * lpMsg)
 std::string CMainMenu::ChooseFileToOpen(HWND hParent)
 {
     CPath FileName;
-    const char * Filter = "N64 ROMs & Disks (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin, *.ndd, *.d64)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal;*.ndd;*.d64\0All files (*.*)\0*.*\0";
+    const char * Filter = "N64 ROMs and disks (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin, *.ndd, *.d64)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal;*.ndd;*.d64\0All files (*.*)\0*.*\0";
     if (FileName.SelectFile(hParent, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
     {
         return FileName;
@@ -120,7 +118,7 @@ std::string CMainMenu::ChooseROMFileToOpen(HWND hParent)
 std::string CMainMenu::ChooseDiskFileToOpen(HWND hParent)
 {
     CPath FileName;
-    const char * Filter = "N64DD Disk Image (*.ndd, *.d64)\0*.ndd;*.d64\0All files (*.*)\0*.*\0";
+    const char * Filter = "N64DD disk images (*.ndd, *.d64)\0*.ndd;*.d64\0All files (*.*)\0*.*\0";
     if (FileName.SelectFile(hParent, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
     {
         return FileName;
@@ -132,13 +130,6 @@ void CMainMenu::SetTraceModuleSetttings(SettingID Type)
 {
     uint32_t value = g_Settings->LoadDword(Type) == TraceVerbose ? g_Settings->LoadDefaultDword(Type) : TraceVerbose;
     g_Settings->SaveDword(Type, value);
-}
-
-void CMainMenu::ShortCutsChanged(void)
-{
-    m_ShortCuts.Load();
-    ResetMenu();
-    m_ResetAccelerators = true;
 }
 
 void CMainMenu::OnOpenRom(HWND hWnd)
@@ -228,7 +219,7 @@ void CMainMenu::OnSaveAs(HWND hWnd)
 
     openfilename.lStructSize = sizeof(openfilename);
     openfilename.hwndOwner = (HWND)hWnd;
-    openfilename.lpstrFilter = "PJ64 Saves (*.zip, *.pj)\0*.pj?;*.pj;*.zip;";
+    openfilename.lpstrFilter = "Project64 saves (*.zip, *.pj)\0*.pj?;*.pj;*.zip;";
     openfilename.lpstrFile = SaveFile;
     openfilename.lpstrInitialDir = Directory;
     openfilename.nMaxFile = MAX_PATH;
@@ -240,17 +231,17 @@ void CMainMenu::OnSaveAs(HWND hWnd)
         _splitpath(SaveFile, drive, dir, fname, ext);
         if (_stricmp(ext, ".pj") == 0 || _stricmp(ext, ".zip") == 0)
         {
-            _makepath(SaveFile, drive, dir, fname, nullptr);
+            _makepath(SaveFile, drive, dir, fname, NULL);
             _splitpath(SaveFile, drive, dir, fname, ext);
             if (_stricmp(ext, ".pj") == 0)
             {
-                _makepath(SaveFile, drive, dir, fname, nullptr);
+                _makepath(SaveFile, drive, dir, fname, NULL);
             }
         }
         g_Settings->SaveString(GameRunning_InstantSaveFile, SaveFile);
 
         char SaveDir[MAX_PATH];
-        _makepath(SaveDir, drive, dir, nullptr, nullptr);
+        _makepath(SaveDir, drive, dir, NULL, NULL);
         UISettingsSaveString(Directory_LastSave, SaveDir);
         g_BaseSystem->ExternalEvent(SysEvent_SaveMachineState);
     }
@@ -265,7 +256,7 @@ void CMainMenu::OnLodState(HWND hWnd)
     UISettingsLoadStringVal(Directory_LastSave, Directory, sizeof(Directory));
 
     CPath SaveFile;
-    const char * Filter = "PJ64 Saves (*.zip, *.pj)\0*.pj?;*.pj;*.zip;";
+    const char * Filter = "Project64 saves (*.zip, *.pj)\0*.pj?;*.pj;*.zip;";
     if (SaveFile.SelectFile(hWnd, Directory, Filter, false))
     {
         g_Settings->SaveString(GameRunning_InstantSaveFile, (const char *)SaveFile);
@@ -410,7 +401,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         {
             WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN a");
             m_Gui->MakeWindowOnTop(false);
-            Notify().SetGfxPlugin(nullptr);
+            Notify().SetGfxPlugin(NULL);
             WriteTrace(TraceGFXPlugin, TraceDebug, "ChangeWindow: Starting");
             g_Plugins->Gfx()->ChangeWindow();
             WriteTrace(TraceGFXPlugin, TraceDebug, "ChangeWindow: Done");
@@ -437,7 +428,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
                 WriteTrace(TraceError, TraceDebug, "Exception when going to full screen");
                 char Message[600];
                 sprintf(Message, "Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__);
-                MessageBox(nullptr, stdstr(Message).ToUTF16().c_str(), L"Exception", MB_OK);
+                MessageBox(NULL, stdstr(Message).ToUTF16().c_str(), L"Exception", MB_OK);
             }
             WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN b 4");
             m_Gui->MakeWindowOnTop(false);
@@ -589,8 +580,8 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         g_Settings->SaveDword(Game_CurrentSaveState, (DWORD)((MenuID - ID_CURRENT_SAVE_1) + 1));
         break;
     case ID_HELP_SUPPORT_PROJECT64: OnSupportProject64(hWnd); break;
-    case ID_HELP_DISCORD: ShellExecute(nullptr, L"open", L"https://discord.gg/Cg3zquF", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
-    case ID_HELP_WEBSITE: ShellExecute(nullptr, L"open", L"http://www.pj64-emu.com", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
+    case ID_HELP_DISCORD: ShellExecute(NULL, L"open", L"https://discord.gg/Cg3zquF", NULL, NULL, SW_SHOWMAXIMIZED); break;
+    case ID_HELP_WEBSITE: ShellExecute(NULL, L"open", L"https://www.pj64-emu.com", NULL, NULL, SW_SHOWMAXIMIZED); break;
     case ID_HELP_ABOUT: CAboutDlg(m_Gui->Support()).DoModal(); break;
     default:
         if (MenuID >= ID_RECENT_ROM_START && MenuID < ID_RECENT_ROM_END)
@@ -643,8 +634,8 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 
 stdstr CMainMenu::GetFileLastMod(const CPath & FileName)
 {
-    HANDLE hFile = CreateFileA(FileName, GENERIC_READ, FILE_SHARE_READ, nullptr,
-        OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, nullptr);
+    HANDLE hFile = CreateFileA(FileName, GENERIC_READ, FILE_SHARE_READ, NULL,
+        OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
     if (hFile == INVALID_HANDLE_VALUE)
     {
         return "";
@@ -657,7 +648,7 @@ stdstr CMainMenu::GetFileLastMod(const CPath & FileName)
 
         // Convert the last-write time to local time
         FileTimeToSystemTime(&LastWriteTime, &stUTC);
-        SystemTimeToTzSpecificLocalTime(nullptr, &stUTC, &stLocal);
+        SystemTimeToTzSpecificLocalTime(NULL, &stUTC, &stLocal);
 
         LastMod.Format(" [%d/%02d/%02d %02d:%02d]", stLocal.wYear, stLocal.wMonth, stLocal.wDay, stLocal.wHour, stLocal.wMinute);
     }
@@ -767,7 +758,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     int Offset = 0;
     for (LanguageList::iterator Language = LangList.begin(); Language != LangList.end(); Language++)
     {
-        Item.Reset(ID_LANG_START + Offset++, EMPTY_STRING, EMPTY_STDSTR, nullptr, stdstr(Language->LanguageName).ToUTF16().c_str());
+        Item.Reset(ID_LANG_START + Offset++, EMPTY_STRING, EMPTY_STDSTR, NULL, stdstr(Language->LanguageName).ToUTF16().c_str());
         if (g_Lang->IsCurrentLang(*Language))
         {
             Item.SetItemTicked(true);
@@ -788,7 +779,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         }
         stdstr_f MenuString("&%d %s", (count + 1) % 10, LastRom.c_str());
 
-        RecentRomMenu.push_back(MENU_ITEM(ID_RECENT_ROM_START + count, EMPTY_STRING, EMPTY_STDSTR, nullptr, MenuString.ToUTF16(CP_ACP).c_str()));
+        RecentRomMenu.push_back(MENU_ITEM(ID_RECENT_ROM_START + count, EMPTY_STRING, EMPTY_STDSTR, NULL, MenuString.ToUTF16(CP_ACP).c_str()));
     }
 
     // Recent directory
@@ -805,7 +796,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
 
         stdstr_f MenuString("&%d %s", (count + 1) % 10, LastDir.c_str());
 
-        RecentDirMenu.push_back(MENU_ITEM(ID_RECENT_DIR_START + count, EMPTY_STRING, EMPTY_STDSTR, nullptr, MenuString.ToUTF16(CP_ACP).c_str()));
+        RecentDirMenu.push_back(MENU_ITEM(ID_RECENT_DIR_START + count, EMPTY_STRING, EMPTY_STDSTR, NULL, MenuString.ToUTF16(CP_ACP).c_str()));
     }
 
     // File menu
@@ -874,38 +865,38 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     // Current save
     MenuItemList CurrentSaveMenu;
     DWORD _CurrentSaveState = g_Settings->LoadDword(Game_CurrentSaveState);
-    Item.Reset(ID_CURRENT_SAVE_DEFAULT, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_DEFAULT, RunningState), nullptr, GetSaveSlotString(0));
+    Item.Reset(ID_CURRENT_SAVE_DEFAULT, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_DEFAULT, RunningState), NULL, GetSaveSlotString(0));
     if (_CurrentSaveState == 0) { Item.SetItemTicked(true); }
     CurrentSaveMenu.push_back(Item);
     CurrentSaveMenu.push_back(MENU_ITEM(SPLITER));
-    Item.Reset(ID_CURRENT_SAVE_1, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_1, RunningState), nullptr, GetSaveSlotString(1));
+    Item.Reset(ID_CURRENT_SAVE_1, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_1, RunningState), NULL, GetSaveSlotString(1));
     if (_CurrentSaveState == 1) { Item.SetItemTicked(true); }
     CurrentSaveMenu.push_back(Item);
-    Item.Reset(ID_CURRENT_SAVE_2, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_2, RunningState), nullptr, GetSaveSlotString(2));
+    Item.Reset(ID_CURRENT_SAVE_2, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_2, RunningState), NULL, GetSaveSlotString(2));
     if (_CurrentSaveState == 2) { Item.SetItemTicked(true); }
     CurrentSaveMenu.push_back(Item);
-    Item.Reset(ID_CURRENT_SAVE_3, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_3, RunningState), nullptr, GetSaveSlotString(3));
+    Item.Reset(ID_CURRENT_SAVE_3, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_3, RunningState), NULL, GetSaveSlotString(3));
     if (_CurrentSaveState == 3) { Item.SetItemTicked(true); }
     CurrentSaveMenu.push_back(Item);
-    Item.Reset(ID_CURRENT_SAVE_4, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_4, RunningState), nullptr, GetSaveSlotString(4));
+    Item.Reset(ID_CURRENT_SAVE_4, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_4, RunningState), NULL, GetSaveSlotString(4));
     if (_CurrentSaveState == 4) { Item.SetItemTicked(true); }
     CurrentSaveMenu.push_back(Item);
-    Item.Reset(ID_CURRENT_SAVE_5, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_5, RunningState), nullptr, GetSaveSlotString(5));
+    Item.Reset(ID_CURRENT_SAVE_5, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_5, RunningState), NULL, GetSaveSlotString(5));
     if (_CurrentSaveState == 5) { Item.SetItemTicked(true); }
     CurrentSaveMenu.push_back(Item);
-    Item.Reset(ID_CURRENT_SAVE_6, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_6, RunningState), nullptr, GetSaveSlotString(6));
+    Item.Reset(ID_CURRENT_SAVE_6, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_6, RunningState), NULL, GetSaveSlotString(6));
     if (_CurrentSaveState == 6) { Item.SetItemTicked(true); }
     CurrentSaveMenu.push_back(Item);
-    Item.Reset(ID_CURRENT_SAVE_7, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_7, RunningState), nullptr, GetSaveSlotString(7));
+    Item.Reset(ID_CURRENT_SAVE_7, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_7, RunningState), NULL, GetSaveSlotString(7));
     if (_CurrentSaveState == 7) { Item.SetItemTicked(true); }
     CurrentSaveMenu.push_back(Item);
-    Item.Reset(ID_CURRENT_SAVE_8, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_8, RunningState), nullptr, GetSaveSlotString(8));
+    Item.Reset(ID_CURRENT_SAVE_8, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_8, RunningState), NULL, GetSaveSlotString(8));
     if (_CurrentSaveState == 8) { Item.SetItemTicked(true); }
     CurrentSaveMenu.push_back(Item);
-    Item.Reset(ID_CURRENT_SAVE_9, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_9, RunningState), nullptr, GetSaveSlotString(9));
+    Item.Reset(ID_CURRENT_SAVE_9, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_9, RunningState), NULL, GetSaveSlotString(9));
     if (_CurrentSaveState == 9) { Item.SetItemTicked(true); }
     CurrentSaveMenu.push_back(Item);
-    Item.Reset(ID_CURRENT_SAVE_10, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_10, RunningState), nullptr, GetSaveSlotString(10));
+    Item.Reset(ID_CURRENT_SAVE_10, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_10, RunningState), NULL, GetSaveSlotString(10));
     if (_CurrentSaveState == 10) { Item.SetItemTicked(true); }
     CurrentSaveMenu.push_back(Item);
 
@@ -940,7 +931,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         SystemMenu.push_back(MENU_ITEM(SPLITER));
     }
     Item.Reset(ID_SYSTEM_SWAPDISK, MENU_SWAPDISK, m_ShortCuts.ShortCutString(ID_SYSTEM_SWAPDISK, RunningState));
-    if (g_Disk == nullptr) { Item.SetItemEnabled(false); }
+    if (g_Disk == NULL) { Item.SetItemEnabled(false); }
     SystemMenu.push_back(Item);
     SystemMenu.push_back(MENU_ITEM(SPLITER));
     SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_SAVE, MENU_SAVE, m_ShortCuts.ShortCutString(ID_SYSTEM_SAVE, RunningState)));
@@ -967,7 +958,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     MenuItemList OptionMenu;
     Item.Reset(ID_OPTIONS_FULLSCREEN, MENU_FULL_SCREEN, m_ShortCuts.ShortCutString(ID_OPTIONS_FULLSCREEN, RunningState));
     Item.SetItemEnabled(CPURunning);
-    if (g_Plugins && g_Plugins->Gfx() && g_Plugins->Gfx()->ChangeWindow == nullptr)
+    if (g_Plugins && g_Plugins->Gfx() && g_Plugins->Gfx()->ChangeWindow == NULL)
     {
         Item.SetItemEnabled(false);
     }
@@ -982,13 +973,13 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     OptionMenu.push_back(MENU_ITEM(SPLITER));
 
     Item.Reset(ID_OPTIONS_CONFIG_GFX, MENU_CONFG_GFX, m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_GFX, RunningState));
-    if (g_Plugins && g_Plugins->Gfx() == nullptr || g_Plugins->Gfx()->DllConfig == nullptr)
+    if (g_Plugins && g_Plugins->Gfx() == NULL || g_Plugins->Gfx()->DllConfig == NULL)
     {
         Item.SetItemEnabled(false);
     }
     OptionMenu.push_back(Item);
     Item.Reset(ID_OPTIONS_CONFIG_AUDIO, MENU_CONFG_AUDIO, m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_AUDIO, RunningState));
-    if (g_Plugins->Audio() == nullptr || g_Plugins->Audio()->DllConfig == nullptr)
+    if (g_Plugins->Audio() == NULL || g_Plugins->Audio()->DllConfig == NULL)
     {
         Item.SetItemEnabled(false);
     }
@@ -996,14 +987,14 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     if (!inBasicMode)
     {
         Item.Reset(ID_OPTIONS_CONFIG_RSP, MENU_CONFG_RSP, m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_RSP, RunningState));
-        if (g_Plugins->RSP() == nullptr || g_Plugins->RSP()->DllConfig == nullptr)
+        if (g_Plugins->RSP() == NULL || g_Plugins->RSP()->DllConfig == NULL)
         {
             Item.SetItemEnabled(false);
         }
         OptionMenu.push_back(Item);
     }
     Item.Reset(ID_OPTIONS_CONFIG_CONT, MENU_CONFG_CTRL, m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_CONT, RunningState));
-    if (g_Plugins && g_Plugins->Control() == nullptr || g_Plugins->Control()->DllConfig == nullptr)
+    if (g_Plugins && g_Plugins->Control() == NULL || g_Plugins->Control()->DllConfig == NULL)
     {
         Item.SetItemEnabled(false);
     }
@@ -1022,13 +1013,13 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     MenuItemList DebugProfileMenu;
     if (HaveDebugger())
     {
-        Item.Reset(ID_PROFILE_PROFILE, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Record Execution Times");
+        Item.Reset(ID_PROFILE_PROFILE, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Record execution times");
         if (g_Settings->LoadBool(Debugger_RecordExecutionTimes)) { Item.SetItemTicked(true); }
         DebugProfileMenu.push_back(Item);
-        Item.Reset(ID_PROFILE_RESETCOUNTER, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Reset Counters");
+        Item.Reset(ID_PROFILE_RESETCOUNTER, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Reset counters");
         if (!CPURunning) { Item.SetItemEnabled(false); }
         DebugProfileMenu.push_back(Item);
-        Item.Reset(ID_PROFILE_GENERATELOG, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Generate Log File");
+        Item.Reset(ID_PROFILE_GENERATELOG, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Generate log file");
         if (!CPURunning) { Item.SetItemEnabled(false); }
         DebugProfileMenu.push_back(Item);
     }
@@ -1043,156 +1034,156 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     MenuItemList DebugNotificationMenu;
     if (HaveDebugger())
     {
-        // Debug - Interrupt
-        Item.Reset(ID_DEBUGGER_INTERRUPT_SP, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"SP Interrupt");
+        // Debug - interrupt
+        Item.Reset(ID_DEBUGGER_INTERRUPT_SP, EMPTY_STRING, EMPTY_STDSTR, NULL, L"SP interrupt");
         Item.SetItemEnabled(CPURunning);
         DebugInterrupt.push_back(Item);
-        Item.Reset(ID_DEBUGGER_INTERRUPT_SI, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"SI Interrupt");
+        Item.Reset(ID_DEBUGGER_INTERRUPT_SI, EMPTY_STRING, EMPTY_STDSTR, NULL, L"SI interrupt");
         Item.SetItemEnabled(CPURunning);
         DebugInterrupt.push_back(Item);
-        Item.Reset(ID_DEBUGGER_INTERRUPT_AI, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"AI Interrupt");
+        Item.Reset(ID_DEBUGGER_INTERRUPT_AI, EMPTY_STRING, EMPTY_STDSTR, NULL, L"AI interrupt");
         Item.SetItemEnabled(CPURunning);
         DebugInterrupt.push_back(Item);
-        Item.Reset(ID_DEBUGGER_INTERRUPT_VI, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"VI Interrupt");
+        Item.Reset(ID_DEBUGGER_INTERRUPT_VI, EMPTY_STRING, EMPTY_STDSTR, NULL, L"VI interrupt");
         Item.SetItemEnabled(CPURunning);
         DebugInterrupt.push_back(Item);
-        Item.Reset(ID_DEBUGGER_INTERRUPT_PI, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"PI Interrupt");
+        Item.Reset(ID_DEBUGGER_INTERRUPT_PI, EMPTY_STRING, EMPTY_STDSTR, NULL, L"PI interrupt");
         Item.SetItemEnabled(CPURunning);
         DebugInterrupt.push_back(Item);
-        Item.Reset(ID_DEBUGGER_INTERRUPT_DP, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"DP Interrupt");
+        Item.Reset(ID_DEBUGGER_INTERRUPT_DP, EMPTY_STRING, EMPTY_STDSTR, NULL, L"DP interrupt");
         Item.SetItemEnabled(CPURunning);
         DebugInterrupt.push_back(Item);
 
         // Debug - R4300i
 
         // ID_DEBUGGER_LOGOPTIONS
-        Item.Reset(ID_DEBUGGER_BREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"&Commands...");
+        Item.Reset(ID_DEBUGGER_BREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"&Commands...");
         DebugR4300Menu.push_back(Item);
-        Item.Reset(ID_DEBUGGER_CPULOG, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Command Log...");
+        Item.Reset(ID_DEBUGGER_CPULOG, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Command log...");
         DebugR4300Menu.push_back(Item);
-        Item.Reset(ID_DEBUGGER_EXCBREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Exceptions...");
+        Item.Reset(ID_DEBUGGER_EXCBREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Exceptions...");
         DebugR4300Menu.push_back(Item);
-        Item.Reset(ID_DEBUGGER_STACKVIEW, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Stack...");
+        Item.Reset(ID_DEBUGGER_STACKVIEW, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Stack...");
         DebugR4300Menu.push_back(Item);
-        Item.Reset(ID_DEBUGGER_STACKTRACE, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Stack Trace...");
+        Item.Reset(ID_DEBUGGER_STACKTRACE, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Stack trace...");
         DebugR4300Menu.push_back(Item);
 
-        Item.Reset(ID_DEBUG_DISABLE_GAMEFIX, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Disable Game Fixes");
+        Item.Reset(ID_DEBUG_DISABLE_GAMEFIX, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Disable game fixes");
         if (g_Settings->LoadBool(Debugger_DisableGameFixes))
         {
             Item.SetItemTicked(true);
         }
         DebugR4300Menu.push_back(Item);
-        Item.Reset(SUB_MENU, EMPTY_STRING, EMPTY_STDSTR, &DebugInterrupt, L"&Generate Interrupt");
+        Item.Reset(SUB_MENU, EMPTY_STRING, EMPTY_STDSTR, &DebugInterrupt, L"&Generate interrupt");
         DebugR4300Menu.push_back(Item);
 
-        // Debug - Memory
-        Item.Reset(ID_DEBUGGER_MEMORY, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"View...");
+        // Debug - memory
+        Item.Reset(ID_DEBUGGER_MEMORY, EMPTY_STRING, EMPTY_STDSTR, NULL, L"View...");
         DebugMemoryMenu.push_back(Item);
-        Item.Reset(ID_DEBUGGER_SEARCHMEMORY, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Search...");
+        Item.Reset(ID_DEBUGGER_SEARCHMEMORY, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Search...");
         DebugMemoryMenu.push_back(Item);
-        Item.Reset(ID_DEBUGGER_SYMBOLS, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Symbols...");
+        Item.Reset(ID_DEBUGGER_SYMBOLS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Symbols...");
         DebugMemoryMenu.push_back(Item);
-        Item.Reset(ID_DEBUGGER_DUMPMEMORY, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Dump...");
+        Item.Reset(ID_DEBUGGER_DUMPMEMORY, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Dump...");
         DebugMemoryMenu.push_back(Item);
-        Item.Reset(ID_DEBUGGER_TLBENTRIES, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"TLB Entries...");
+        Item.Reset(ID_DEBUGGER_TLBENTRIES, EMPTY_STRING, EMPTY_STDSTR, NULL, L"TLB entries...");
         DebugMemoryMenu.push_back(Item);
-        Item.Reset(ID_DEBUGGER_DMALOG, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"DMA Log...");
+        Item.Reset(ID_DEBUGGER_DMALOG, EMPTY_STRING, EMPTY_STDSTR, NULL, L"DMA log...");
         DebugMemoryMenu.push_back(Item);
 
-        // Debug - App logging
-        Item.Reset(ID_DEBUGGER_TRACE_MD5, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"MD5");
+        // Debug - app logging
+        Item.Reset(ID_DEBUGGER_TRACE_MD5, EMPTY_STRING, EMPTY_STDSTR, NULL, L"MD5");
         Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceMD5) == TraceVerbose);
         DebugAppLoggingMenu.push_back(Item);
 
-        Item.Reset(ID_DEBUGGER_TRACE_SETTINGS, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Settings");
+        Item.Reset(ID_DEBUGGER_TRACE_SETTINGS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Settings");
         Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceSettings) == TraceVerbose);
         DebugAppLoggingMenu.push_back(Item);
 
-        Item.Reset(ID_DEBUGGER_TRACE_UNKNOWN, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Unknown");
+        Item.Reset(ID_DEBUGGER_TRACE_UNKNOWN, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Unknown");
         Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceUnknown) == TraceVerbose);
         DebugAppLoggingMenu.push_back(Item);
 
-        Item.Reset(ID_DEBUGGER_TRACE_APPINIT, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"App Init");
+        Item.Reset(ID_DEBUGGER_TRACE_APPINIT, EMPTY_STRING, EMPTY_STDSTR, NULL, L"App initialization");
         Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceAppInit) == TraceVerbose);
         DebugAppLoggingMenu.push_back(Item);
 
-        Item.Reset(ID_DEBUGGER_TRACE_APPCLEANUP, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"App Cleanup");
+        Item.Reset(ID_DEBUGGER_TRACE_APPCLEANUP, EMPTY_STRING, EMPTY_STDSTR, NULL, L"App cleanup");
         Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceAppCleanup) == TraceVerbose);
         DebugAppLoggingMenu.push_back(Item);
 
-        Item.Reset(ID_DEBUGGER_TRACE_N64SYSTEM, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"N64 System");
+        Item.Reset(ID_DEBUGGER_TRACE_N64SYSTEM, EMPTY_STRING, EMPTY_STDSTR, NULL, L"N64 system");
         Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceN64System) == TraceVerbose);
         DebugAppLoggingMenu.push_back(Item);
 
-        Item.Reset(ID_DEBUGGER_TRACE_PLUGINS, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Plugins");
+        Item.Reset(ID_DEBUGGER_TRACE_PLUGINS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Plugins");
         Item.SetItemTicked(g_Settings->LoadDword(Debugger_TracePlugins) == TraceVerbose);;
         DebugAppLoggingMenu.push_back(Item);
 
-        Item.Reset(ID_DEBUGGER_TRACE_GFXPLUGIN, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"GFX Plugin");
+        Item.Reset(ID_DEBUGGER_TRACE_GFXPLUGIN, EMPTY_STRING, EMPTY_STDSTR, NULL, L"GFX plugin");
         Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceGFXPlugin) == TraceVerbose);
         DebugAppLoggingMenu.push_back(Item);
 
-        Item.Reset(ID_DEBUGGER_TRACE_AUDIOPLUGIN, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Audio Plugin");
+        Item.Reset(ID_DEBUGGER_TRACE_AUDIOPLUGIN, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Audio plugin");
         Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceAudioPlugin) == TraceVerbose);
         DebugAppLoggingMenu.push_back(Item);
 
-        Item.Reset(ID_DEBUGGER_TRACE_CONTROLLERPLUGIN, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Controller Plugin");
+        Item.Reset(ID_DEBUGGER_TRACE_CONTROLLERPLUGIN, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Controller plugin");
         Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceControllerPlugin) == TraceVerbose);
         DebugAppLoggingMenu.push_back(Item);
 
-        Item.Reset(ID_DEBUGGER_TRACE_RSPPLUGIN, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"RSP Plugin");
+        Item.Reset(ID_DEBUGGER_TRACE_RSPPLUGIN, EMPTY_STRING, EMPTY_STDSTR, NULL, L"RSP plugin");
         Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceRSPPlugin) == TraceVerbose);;
         DebugAppLoggingMenu.push_back(Item);
 
-        Item.Reset(ID_DEBUGGER_TRACE_RSP, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"RSP");
+        Item.Reset(ID_DEBUGGER_TRACE_RSP, EMPTY_STRING, EMPTY_STDSTR, NULL, L"RSP");
         Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceRSP) == TraceVerbose);
         DebugAppLoggingMenu.push_back(Item);
 
-        Item.Reset(ID_DEBUGGER_TRACE_AUDIO, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Audio");
+        Item.Reset(ID_DEBUGGER_TRACE_AUDIO, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Audio");
         Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceAudio) == TraceVerbose);
         DebugAppLoggingMenu.push_back(Item);
 
-        Item.Reset(ID_DEBUGGER_TRACE_REGISTERCACHE, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Register Cache");
+        Item.Reset(ID_DEBUGGER_TRACE_REGISTERCACHE, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Register cache");
         Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceRegisterCache) == TraceVerbose);
         DebugAppLoggingMenu.push_back(Item);
 
-        Item.Reset(ID_DEBUGGER_TRACE_RECOMPILER, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Recompiler");
+        Item.Reset(ID_DEBUGGER_TRACE_RECOMPILER, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Recompiler");
         Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceRecompiler) == TraceVerbose);
         DebugAppLoggingMenu.push_back(Item);
 
-        Item.Reset(ID_DEBUGGER_TRACE_TLB, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"TLB");
+        Item.Reset(ID_DEBUGGER_TRACE_TLB, EMPTY_STRING, EMPTY_STDSTR, NULL, L"TLB");
         Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceTLB) == TraceVerbose);
         DebugAppLoggingMenu.push_back(Item);
 
-        Item.Reset(ID_DEBUGGER_TRACE_PROTECTEDMEM, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Protected MEM");
+        Item.Reset(ID_DEBUGGER_TRACE_PROTECTEDMEM, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Protected MEM");
         Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceProtectedMEM) == TraceVerbose);
         DebugAppLoggingMenu.push_back(Item);
 
-        Item.Reset(ID_DEBUGGER_TRACE_USERINTERFACE, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"User Interface");
+        Item.Reset(ID_DEBUGGER_TRACE_USERINTERFACE, EMPTY_STRING, EMPTY_STDSTR, NULL, L"User interface");
         Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceUserInterface) == TraceVerbose);
         DebugAppLoggingMenu.push_back(Item);
 
         DebugAppLoggingMenu.push_back(MENU_ITEM(SPLITER));
 
-        Item.Reset(ID_DEBUGGER_APPLOG_FLUSH, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Auto flush file");
+        Item.Reset(ID_DEBUGGER_APPLOG_FLUSH, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Auto flush file");
         if (g_Settings->LoadBool(Debugger_AppLogFlush)) { Item.SetItemTicked(true); }
         DebugAppLoggingMenu.push_back(Item);
 
         // Debug - logging
-        Item.Reset(ID_DEBUGGER_LOGOPTIONS, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Log Options...");
+        Item.Reset(ID_DEBUGGER_LOGOPTIONS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Log options...");
         DebugLoggingMenu.push_back(Item);
 
-        Item.Reset(ID_DEBUGGER_GENERATELOG, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Generate Log");
+        Item.Reset(ID_DEBUGGER_GENERATELOG, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Generate log");
         if (g_Settings->LoadBool(Logging_GenerateLog)) { Item.SetItemTicked(true); }
         DebugLoggingMenu.push_back(Item);
 
         // Debugger main menu
-        Item.Reset(ID_DEBUGGER_BREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Commands...");
+        Item.Reset(ID_DEBUGGER_BREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Commands...");
         DebugMenu.push_back(Item);
-        Item.Reset(ID_DEBUGGER_MEMORY, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"View Memory...");
+        Item.Reset(ID_DEBUGGER_MEMORY, EMPTY_STRING, EMPTY_STDSTR, NULL, L"View memory...");
         DebugMenu.push_back(Item);
-        Item.Reset(ID_DEBUGGER_SCRIPTS, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Scripts...");
+        Item.Reset(ID_DEBUGGER_SCRIPTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Scripts...");
         DebugMenu.push_back(Item);
 
         DebugMenu.push_back(MENU_ITEM(SPLITER));
@@ -1206,33 +1197,33 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         DebugMenu.push_back(Item);
 
         // Debug - RSP
-        if (g_Plugins && g_Plugins->RSP() != nullptr && IsMenu((HMENU)g_Plugins->RSP()->GetDebugMenu()))
+        if (g_Plugins && g_Plugins->RSP() != NULL && IsMenu((HMENU)g_Plugins->RSP()->GetDebugMenu()))
         {
             Item.Reset(ID_PLUGIN_MENU, EMPTY_STRING, EMPTY_STDSTR, g_Plugins->RSP()->GetDebugMenu(), L"&RSP");
             DebugMenu.push_back(Item);
         }
 
         // Debug - RDP
-        if (g_Plugins && g_Plugins->Gfx() != nullptr && IsMenu((HMENU)g_Plugins->Gfx()->GetDebugMenu()))
+        if (g_Plugins && g_Plugins->Gfx() != NULL && IsMenu((HMENU)g_Plugins->Gfx()->GetDebugMenu()))
         {
             Item.Reset(ID_PLUGIN_MENU, EMPTY_STRING, EMPTY_STDSTR, g_Plugins->Gfx()->GetDebugMenu(), L"&RDP");
             DebugMenu.push_back(Item);
         }
 
         // Notification menu
-        Item.Reset(ID_DEBUG_SHOW_UNHANDLED_MEM, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"On Unhandled Memory Actions");
+        Item.Reset(ID_DEBUG_SHOW_UNHANDLED_MEM, EMPTY_STRING, EMPTY_STDSTR, NULL, L"On unhandled memory actions");
         if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
         {
             Item.SetItemTicked(true);
         }
         DebugNotificationMenu.push_back(Item);
-        Item.Reset(ID_DEBUG_SHOW_PIF_ERRORS, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"On PIF Errors");
+        Item.Reset(ID_DEBUG_SHOW_PIF_ERRORS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"On PIF errors");
         if (g_Settings->LoadBool(Debugger_ShowPifErrors))
         {
             Item.SetItemTicked(true);
         }
         DebugNotificationMenu.push_back(Item);
-        Item.Reset(ID_DEBUG_SHOW_DIV_BY_ZERO, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"On Div By Zero");
+        Item.Reset(ID_DEBUG_SHOW_DIV_BY_ZERO, EMPTY_STRING, EMPTY_STDSTR, NULL, L"On division by zero errors");
         if (g_Settings->LoadBool(Debugger_ShowDivByZero))
         {
             Item.SetItemTicked(true);
@@ -1242,39 +1233,39 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         DebugMenu.push_back(MENU_ITEM(SPLITER));
         Item.Reset(SUB_MENU, EMPTY_STRING, EMPTY_STDSTR, &DebugProfileMenu, L"Profile");
         DebugMenu.push_back(Item);
-        Item.Reset(SUB_MENU, EMPTY_STRING, EMPTY_STDSTR, &DebugAppLoggingMenu, L"App Logging");
+        Item.Reset(SUB_MENU, EMPTY_STRING, EMPTY_STDSTR, &DebugAppLoggingMenu, L"App logging");
         DebugMenu.push_back(Item);
         Item.Reset(SUB_MENU, EMPTY_STRING, EMPTY_STDSTR, &DebugLoggingMenu, L"Logging");
         DebugMenu.push_back(Item);
         Item.Reset(SUB_MENU, EMPTY_STRING, EMPTY_STDSTR, &DebugNotificationMenu, L"Notification");
         DebugMenu.push_back(Item);
         DebugMenu.push_back(MENU_ITEM(SPLITER));
-        Item.Reset(ID_DEBUG_SHOW_TLB_MISSES, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Show TLB Misses");
+        Item.Reset(ID_DEBUG_SHOW_TLB_MISSES, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Show TLB misses");
         if (g_Settings->LoadBool(Debugger_ShowTLBMisses))
         {
             Item.SetItemTicked(true);
         }
         DebugMenu.push_back(Item);
-        Item.Reset(ID_DEBUG_SHOW_DLIST_COUNT, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Display Alist/Dlist Count");
+        Item.Reset(ID_DEBUG_SHOW_DLIST_COUNT, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Display Alist/Dlist count");
         if (g_Settings->LoadBool(Debugger_ShowDListAListCount))
         {
             Item.SetItemTicked(true);
         }
         DebugMenu.push_back(Item);
-        Item.Reset(ID_DEBUG_LANGUAGE, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Debug Language");
+        Item.Reset(ID_DEBUG_LANGUAGE, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Debug language");
         if (g_Settings->LoadBool(Debugger_DebugLanguage))
         {
             Item.SetItemTicked(true);
         }
         DebugMenu.push_back(Item);
-        Item.Reset(ID_DEBUG_SHOW_RECOMP_MEM_SIZE, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Display Recompiler Code Buffer Size");
+        Item.Reset(ID_DEBUG_SHOW_RECOMP_MEM_SIZE, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Display recompiler code buffer size");
         if (g_Settings->LoadBool(Debugger_ShowRecompMemSize))
         {
             Item.SetItemTicked(true);
         }
         DebugMenu.push_back(Item);
         DebugMenu.push_back(MENU_ITEM(SPLITER));
-        Item.Reset(ID_DEBUG_RECORD_RECOMPILER_ASM, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Record Recompiler ASM");
+        Item.Reset(ID_DEBUG_RECORD_RECOMPILER_ASM, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Record recompiler ASM");
         if (g_Settings->LoadBool(Debugger_RecordRecompilerAsm))
         {
             Item.SetItemTicked(true);
@@ -1342,10 +1333,10 @@ void CMainMenu::ResetMenu(void)
     if (!UISettingsLoadBool(UserInterface_InFullScreen))
     {
         // Create a new window with all the items
-        WriteTrace(TraceUserInterface, TraceDebug, "Create Menu");
+        WriteTrace(TraceUserInterface, TraceDebug, "Create menu");
         HMENU hMenu = CreateMenu();
         FillOutMenu(hMenu);
-        WriteTrace(TraceUserInterface, TraceDebug, "Create Menu Done");
+        WriteTrace(TraceUserInterface, TraceDebug, "Creating menu done");
 
         // Save old menu to destroy latter
         HMENU OldMenuHandle;
@@ -1354,21 +1345,21 @@ void CMainMenu::ResetMenu(void)
             OldMenuHandle = m_MenuHandle;
 
             // Save handle and re-attach to a window
-            WriteTrace(TraceUserInterface, TraceDebug, "Attach Menu");
+            WriteTrace(TraceUserInterface, TraceDebug, "Attach menu");
             m_MenuHandle = hMenu;
         }
         m_Gui->SetWindowMenu(this);
 
         WriteTrace(TraceUserInterface, TraceDebug, "Remove plugin menu");
-        if (g_Plugins->Gfx() != nullptr && IsMenu((HMENU)g_Plugins->Gfx()->GetDebugMenu()))
+        if (g_Plugins->Gfx() != NULL && IsMenu((HMENU)g_Plugins->Gfx()->GetDebugMenu()))
         {
             RemoveMenu((HMENU)OldMenuHandle, (DWORD)g_Plugins->Gfx()->GetDebugMenu(), MF_BYCOMMAND);
         }
-        if (g_Plugins->RSP() != nullptr && IsMenu((HMENU)g_Plugins->RSP()->GetDebugMenu()))
+        if (g_Plugins->RSP() != NULL && IsMenu((HMENU)g_Plugins->RSP()->GetDebugMenu()))
         {
             RemoveMenu((HMENU)OldMenuHandle, (DWORD)g_Plugins->RSP()->GetDebugMenu(), MF_BYCOMMAND);
         }
-        WriteTrace(TraceUserInterface, TraceDebug, "Destroy Old Menu");
+        WriteTrace(TraceUserInterface, TraceDebug, "Destroy old menu");
 
         // Destroy the old menu
         DestroyMenu((HMENU)OldMenuHandle);

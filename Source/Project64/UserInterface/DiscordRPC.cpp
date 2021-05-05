@@ -44,7 +44,7 @@ void CDiscord::Update(bool bHaveGame)
 	stdstr title = bHaveGame ? GetTitle() : "";
 	stdstr artwork = bHaveGame ? g_Settings->LoadStringVal(Rdb_RPCKey) : "";
 
-	//Load game into DiscordRPC
+	// Load game into DiscordRPC
 	DiscordRichPresence discordPresence = {}; // Activates DiscordRPC
 	if (artwork.empty())
 	{

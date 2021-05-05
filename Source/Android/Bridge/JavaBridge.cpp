@@ -40,7 +40,7 @@ void JavaBridge::GfxThreadDone()
     JNIEnv *env = Android_JNI_GetEnv();
     if (g_GLThread != NULL && env != NULL)
     {
-        WriteTrace(TraceUserInterface, TraceDebug, "calling java GLThread::ThreadExiting");
+        WriteTrace(TraceUserInterface, TraceDebug, "Calling java GLThread::ThreadExiting");
         jclass GLThreadClass = env->GetObjectClass(g_GLThread);
         jmethodID midThreadExiting = env->GetMethodID(GLThreadClass, "ThreadExiting", "()V");
         env->CallVoidMethod(g_GLThread, midThreadExiting);

@@ -6,7 +6,7 @@ enum BtnType
 {
     BTNTYPE_UNASSIGNED = 0,
 
-    // Joystick
+    // Joystick / controller
     BTNTYPE_JOYBUTTON = 1,
     BTNTYPE_JOYAXE = 2,
     BTNTYPE_JOYPOV = 3,

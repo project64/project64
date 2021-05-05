@@ -125,7 +125,7 @@ void CNotificationImp::BreakPoint(const char * FileName, int32_t LineNumber)
     }
     else
     {
-        FatalError("Fatal Error: Emulation stopped");
+        FatalError("Fatal error: emulation stopped");
     }
 }
 

@@ -457,7 +457,7 @@ void CDebuggerUI::TLBChanged()
     Debug_RefreshTLBWindow();
 }
 
-// Exception handling - break on exception vector if exception BP is set
+// Exception handling - break on exception vector if exception breakpoint is set
 void CDebuggerUI::HandleCPUException(void)
 {
     int exc = (g_Reg->CAUSE_REGISTER >> 2) & 0x1F;

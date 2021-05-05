@@ -63,17 +63,17 @@ void CDMA::PI_DMA_READ()
         return;
     }
 
-    //64DD Buffers Write
+    // 64DD buffers write
     if (g_Reg->PI_CART_ADDR_REG >= 0x05000000 && g_Reg->PI_CART_ADDR_REG <= 0x050003FF)
     {
-        //64DD C2 Sectors (don't care)
+        // 64DD C2 sectors (don't care)
         g_SystemTimer->SetTimer(g_SystemTimer->DDPiTimer, (PI_RD_LEN_REG * 63) / 25, false);
         return;
     }
 
     if (g_Reg->PI_CART_ADDR_REG >= 0x05000400 && g_Reg->PI_CART_ADDR_REG <= 0x050004FF)
     {
-        //64DD User Sector
+        // 64DD user sector
         uint32_t i;
         uint8_t * RDRAM = g_MMU->Rdram();
         uint8_t * DISK = g_Disk->GetDiskAddressBuffer();
@@ -87,14 +87,14 @@ void CDMA::PI_DMA_READ()
 
     if (g_Reg->PI_CART_ADDR_REG >= 0x05000580 && g_Reg->PI_CART_ADDR_REG <= 0x050005BF)
     {
-        //64DD MSEQ (don't care)
+        // 64DD MSEQ (don't care)
         g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
         g_Reg->MI_INTR_REG |= MI_INTR_PI;
         g_Reg->CheckInterrupts();
         return;
     }
 
-    //Write ROM Area (for 64DD Convert)
+    // Write ROM area (for 64DD conversion)
     if (g_Reg->PI_CART_ADDR_REG >= 0x10000000 && g_Reg->PI_CART_ADDR_REG <= 0x1FBFFFFF && g_Settings->LoadBool(Game_AllowROMWrites))
     {
         uint32_t i;
@@ -172,7 +172,7 @@ void CDMA::PI_DMA_READ()
     }
     if (g_System->m_SaveUsing == SaveChip_FlashRam)
     {
-        g_Notify->DisplayError(stdstr_f("**** FLashRam DMA Read address %08X *****", g_Reg->PI_CART_ADDR_REG).c_str());
+        g_Notify->DisplayError(stdstr_f("**** FlashRAM DMA read address %08X ****", g_Reg->PI_CART_ADDR_REG).c_str());
         g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
         g_Reg->MI_INTR_REG |= MI_INTR_PI;
         g_Reg->CheckInterrupts();
@@ -180,7 +180,7 @@ void CDMA::PI_DMA_READ()
     }
     if (HaveDebugger())
     {
-        g_Notify->DisplayError(stdstr_f("PI_DMA_READ where are you dmaing to ? : %08X", g_Reg->PI_CART_ADDR_REG).c_str());
+        g_Notify->DisplayError(stdstr_f("PI_DMA_READ where are you DMAing to? : %08X", g_Reg->PI_CART_ADDR_REG).c_str());
     }
     g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
     g_Reg->MI_INTR_REG |= MI_INTR_PI;
@@ -190,24 +190,24 @@ void CDMA::PI_DMA_READ()
 
 void CDMA::PI_DMA_WRITE()
 {
-    /* rounding PI_WR_LEN_REG up to the nearest even number fixes AI Shougi 3, Doraemon 3, etc. */
+    // Rounding PI_WR_LEN_REG up to the nearest even number fixes AI Shougi 3, Doraemon 3, etc.
     uint32_t PI_WR_LEN_REG = ((g_Reg->PI_WR_LEN_REG) & 0x00FFFFFEul) + 2;
     uint32_t PI_CART_ADDR_REG = !g_Settings->LoadBool(Game_UnalignedDMA) ? g_Reg->PI_CART_ADDR_REG & ~1 : g_Reg->PI_CART_ADDR_REG;
 
     g_Reg->PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
     if (g_Reg->PI_DRAM_ADDR_REG + PI_WR_LEN_REG > g_MMU->RdramSize())
     {
-        if (ShowUnhandledMemory()) { g_Notify->DisplayError(stdstr_f("PI_DMA_WRITE not in Memory: %08X", g_Reg->PI_DRAM_ADDR_REG + PI_WR_LEN_REG).c_str()); }
+        if (ShowUnhandledMemory()) { g_Notify->DisplayError(stdstr_f("PI_DMA_WRITE not in memory: %08X", g_Reg->PI_DRAM_ADDR_REG + PI_WR_LEN_REG).c_str()); }
         g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
         g_Reg->MI_INTR_REG |= MI_INTR_PI;
         g_Reg->CheckInterrupts();
         return;
     }
 
-    //64DD Buffers Read
+    // 64DD buffers read
     if (PI_CART_ADDR_REG >= 0x05000000 && PI_CART_ADDR_REG <= 0x050003FF)
     {
-        //64DD C2 Sectors (just read 0)
+        // 64DD C2 sectors (just read 0)
         uint32_t i;
         uint8_t * RDRAM = g_MMU->Rdram();
         for (i = 0; i < PI_WR_LEN_REG; i++)
@@ -215,14 +215,14 @@ void CDMA::PI_DMA_WRITE()
             *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = 0;
         }
 
-        //Timer is needed for Track Read
+        // Timer is needed for track read
         g_SystemTimer->SetTimer(g_SystemTimer->DDPiTimer, (PI_WR_LEN_REG * 63) / 25, false);
         return;
     }
 
     if (PI_CART_ADDR_REG >= 0x05000400 && PI_CART_ADDR_REG <= 0x050004FF)
     {
-        //64DD User Sector
+        // 64DD user sector
         uint32_t i;
         uint8_t * RDRAM = g_MMU->Rdram();
         uint8_t * DISK = g_Disk->GetDiskAddressBuffer();
@@ -231,21 +231,21 @@ void CDMA::PI_DMA_WRITE()
             *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = *(DISK + (i ^ 3));
         }
 
-        //Timer is needed for Track Read
+        // Timer is needed for track read
         g_SystemTimer->SetTimer(g_SystemTimer->DDPiTimer, (PI_WR_LEN_REG * 63) / 25, false);
         return;
     }
 
     if (PI_CART_ADDR_REG >= 0x05000580 && PI_CART_ADDR_REG <= 0x050005BF)
     {
-        //64DD MSEQ (don't care)
+        // 64DD MSEQ (don't care)
         g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
         g_Reg->MI_INTR_REG |= MI_INTR_PI;
         g_Reg->CheckInterrupts();
         return;
     }
 
-    //64DD IPL ROM
+    // 64DD IPL ROM
     if (PI_CART_ADDR_REG >= 0x06000000 && PI_CART_ADDR_REG <= 0x063FFFFF)
     {
         uint32_t i;
@@ -483,7 +483,7 @@ void CDMA::SP_DMA_READ()
     {
         if (HaveDebugger())
         {
-            g_Notify->DisplayError(stdstr_f("%s\nSP_DRAM_ADDR_REG not in RDRam space : % 08X", __FUNCTION__, g_Reg->SP_DRAM_ADDR_REG).c_str());
+            g_Notify->DisplayError(stdstr_f("%s\nSP_DRAM_ADDR_REG not in RDRAM space: % 08X", __FUNCTION__, g_Reg->SP_DRAM_ADDR_REG).c_str());
         }
         g_Reg->SP_DMA_BUSY_REG = 0;
         g_Reg->SP_STATUS_REG &= ~SP_STATUS_DMA_BUSY;
@@ -525,7 +525,7 @@ void CDMA::SP_DMA_WRITE()
     {
         if (HaveDebugger())
         {
-            g_Notify->DisplayError(stdstr_f("%s\nSP_DRAM_ADDR_REG not in RDRam space : %08X", __FUNCTION__, g_Reg->SP_DRAM_ADDR_REG).c_str());
+            g_Notify->DisplayError(stdstr_f("%s\nSP_DRAM_ADDR_REG not in RDRAM space: %08X", __FUNCTION__, g_Reg->SP_DRAM_ADDR_REG).c_str());
         }
         return;
     }
@@ -534,7 +534,7 @@ void CDMA::SP_DMA_WRITE()
     {
         if (HaveDebugger())
         {
-            g_Notify->DisplayError("SP DMA WRITE\ncould not fit copy in memory segement");
+            g_Notify->DisplayError("SP DMA WRITE\nCould not fit copy in memory segment");
         }
         return;
     }

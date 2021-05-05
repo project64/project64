@@ -44,7 +44,7 @@ bool CSettingTypeSelectedDirectory::Load(uint32_t /*Index*/, std::string & Value
     return g_Settings->LoadStringVal(DirSettingId, Value);
 }
 
-//return the default values
+// Return the default values
 void CSettingTypeSelectedDirectory::LoadDefault(uint32_t /*Index*/, bool & /*Value*/) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -60,7 +60,7 @@ void CSettingTypeSelectedDirectory::LoadDefault(uint32_t /*Index*/, std::string 
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-//Update the settings
+// Update the settings
 void CSettingTypeSelectedDirectory::Save(uint32_t /*Index*/, bool /*Value*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);

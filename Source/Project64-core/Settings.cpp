@@ -68,6 +68,7 @@ void CSettings::AddHandler(SettingID TypeID, CSettingType * Handler)
     }
 }
 
+// TODO: Fix these setting names, many need to be updated
 void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 {
     WriteTrace(TraceAppInit, TraceDebug, "Start");

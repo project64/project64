@@ -165,7 +165,7 @@ void CMempak::ReadFrom(int32_t Control, uint32_t address, uint8_t * data)
     else
     {
         memset(data, 0x00, 0x20);
-        /* Rumble pack area */
+        // Rumble pack area
     }
 }
 
@@ -192,6 +192,6 @@ void CMempak::WriteTo(int32_t Control, uint32_t address, uint8_t * data)
     }
     else
     {
-        /* Rumble pack area */
+        // Rumble pack area
     }
 }

@@ -6,7 +6,7 @@ class CRegBase
 public:
     CRegBase();
 
-    //enums
+    // Enums
     enum REG_STATE
     {
         STATE_UNKNOWN = 0x00,

@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2000-2015 Azimer
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
@@ -119,7 +119,7 @@ void SoundDriverBase::LoadAiBuffer(uint8_t *start, uint32_t length)
     bool DMAEnabled = (*g_AudioInfo.AI_CONTROL_REG & AI_CONTROL_DMA_ON) == AI_CONTROL_DMA_ON;
     if (!DMAEnabled)
     {
-        WriteTrace(TraceAudioDriver, TraceVerbose, "Return silence -- DMA is disabled");
+        WriteTrace(TraceAudioDriver, TraceVerbose, "Return silence - DMA is disabled");
         memset(ptrStart, 0, bytesToMove);
         return;
     }

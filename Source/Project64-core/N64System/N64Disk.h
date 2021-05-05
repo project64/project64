@@ -54,11 +54,11 @@ private:
     uint16_t LBAToPhys(uint32_t lba);
     uint16_t PhysToLBA(uint16_t head, uint16_t track, uint16_t block);
 
-    //constant values
+    // Constant values
     enum { ReadFromRomSection = 0x400000, MameFormatSize = 0x0435B0C0, SDKFormatSize = 0x03DEC800,
            DiskFormatMAME = 0x0, DiskFormatSDK = 0x1, DiskFormatD64 = 0x2 };
 
-    //class variables
+    // Class variables
     CFile m_DiskFile;
     uint8_t * m_DiskImage;
     uint8_t * m_DiskImageBase;
@@ -73,11 +73,11 @@ private:
     LanguageStringID m_ErrorMsg;
     Country m_Country;
     stdstr m_RomName, m_FileName, m_DiskIdent;
-    uint8_t m_DiskFormat; //0 = MAME, 1 = SDK, 2 = D64
+    uint8_t m_DiskFormat; // 0 = MAME, 1 = SDK, 2 = D64
     uint8_t m_DiskType;
     bool m_isShadowDisk;
 
-    //Disk Defines
+    // Disk defines
     #define MAX_LBA             0x10DB
     #define SIZE_LBA            MAX_LBA+1
     #define SYSTEM_LBAS         24
@@ -134,11 +134,11 @@ private:
         
     #define VZoneToPZone(x, y) VZONE_PZONE_TBL[y][x]
 
-    //Used for MAME format
+    // Used for MAME format
     const uint32_t MAMEStartOffset[16] =
         { 0x0, 0x5F15E0, 0xB79D00, 0x10801A0, 0x1523720, 0x1963D80, 0x1D414C0, 0x20BBCE0,
         0x23196E0, 0x28A1E00, 0x2DF5DC0, 0x3299340, 0x36D99A0, 0x3AB70E0, 0x3E31900, 0x4149200 };
 
-    //Used for SDK and D64 format
+    // Used for SDK and D64 format
     uint16_t LBAToPhysTable[SIZE_LBA];
 };

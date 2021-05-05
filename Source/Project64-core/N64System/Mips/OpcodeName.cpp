@@ -557,7 +557,7 @@ const char * R4300iOpcodeName(uint32_t OpCode, uint32_t PC)
         sprintf(CommandName, "ADDI\t%s, %s, 0x%04X", CRegName::GPR[command.rt], CRegName::GPR[command.rs], command.immediate);
         break;
     case R4300i_ADDIU:
-        // special case for stack
+        // Special case for stack
         if (command.rt == 29)
         {
             short imm = (short)command.immediate;

@@ -1,24 +1,23 @@
 /*
-    N-Rage`s Dinput8 Plugin
-    (C) 2002, 2006  Norbert Wladyka
+N-Rage`s Dinput8 Plugin
+(C) 2002, 2006  Norbert Wladyka
 
-    Author`s Email: norbert.wladyka@chello.at
-    Website: http://go.to/nrage
+Author`s Email: norbert.wladyka@chello.at
+Website: http://go.to/nrage
 
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 #ifndef _DIRECTINPUT_H_
@@ -61,19 +60,18 @@ HRESULT WriteAdaptoidPak( LPDIRECTINPUTDEVICE8 lpDirectInputDevice, DWORD addr, 
 #define THRESHOLD       50
 #define RANGERELATIVE   (MAXAXISVALUE - ZEROVALUE + 1)
 #define ABSTHRESHOLD    (RANGERELATIVE * THRESHOLD / 100)
-        // plus or minus this many 1/100 degrees counts as GetJoyPadPOV being pressed
+// Plus or minus this many 1/100 degrees counts as GetJoyPadPOV being pressed
 #define POVANGLETHRESH  5675
 
 #define MOUSEMOVE           5
-        // by default, scale the mouse input by this much
+// By default, scale the mouse input by this much
 #define MOUSESCALEVALUE     10
-        // percent to decay mouse buffer every frame.
-        // Tweak this from 0-100 to control how much the mouse drifts; values closer to 100 drift more,
-        // while values closer to 0 are very stiff (deadpan) and don't turn well
+// Percent to decay mouse buffer every frame
+// Tweak this from 0-100 to control how much the mouse drifts; values closer to 100 drift more,
+// while values closer to 0 are very stiff (deadpan) and don't turn well
 #define MOUSEBUFFERDECAY    80
 
 #define N64DIVIDER      258
-
 
 #define DID_KEYBOARD    0
 #define DID_MOUSE       1
@@ -99,22 +97,22 @@ HRESULT WriteAdaptoidPak( LPDIRECTINPUTDEVICE8 lpDirectInputDevice, DWORD addr, 
 #define RUMBLE_EFF2         RUMBLE_RAMP
 #define RUMBLE_EFF3         RUMBLE_DIRECT
 
-        // Reported Name of the Adaptoid
+// Reported name of the Adaptoid
 #define STRING_ADAPTOID         "Adaptoid"
 #define STRING_GUID_SYSKEYBOARD _T("Keyboard")
 #define STRING_GUID_SYSMOUSE    _T("SysMouse")
 
-    // Query API - pass in command #, returns 0xB0CAB0CA if supported
+// Query API - pass in command #, returns 0xB0CAB0CA if supported
 #define ADAPT_TEST          0x7834BB00
-    // Send command to rumble pack (DWORD 0=stop, 1=go)
+// Send command to rumble pack (DWORD 0=stop, 1=go)
 #define ADAPT_RUMBLE        0x7834BB08
-    // Initialize pak (returns pak status bit flags)
+// Initialize pak (returns pak status bit flags)
 #define ADAPT_INIT          0x7834BB0C
-    // Read from pak  (reads 32 bytes of data)
+// Read from pak (reads 32 bytes of data)
 #define ADAPT_READPAK       0x7834BB0D
-    // Write to pak   (writes 32 bytes of data)
+// Write to pak (writes 32 bytes of data)
 #define ADAPT_WRITEPAK      0x7834BB0E
-    // Send command directly to controller - synchronous
+// Send command directly to controller - synchronous
 #define ADAPT_DIRECTCOMMAND 0x7834BB28
 
 // The following inline functions are all overloads for existing functions
@@ -123,7 +121,7 @@ inline bool CreateEffectHandle( int iDevice, BYTE bRumbleTyp, long lStrength )
     return CreateEffectHandle( g_strEmuInfo.hMainWindow, g_apFFDevice[iDevice], g_apdiEffect[iDevice], bRumbleTyp, lStrength );
 }
 
-// this used to exist, but it was only used once and makes things more confusing. Removed. --rabid
+// This used to exist, but it was only used once and makes things more confusing. It has been removed. (comment by rabid)
 //inline void ReleaseEffect( int iEffect )
 //{
 //  ReleaseEffect( g_apdiEffect[iEffect] );

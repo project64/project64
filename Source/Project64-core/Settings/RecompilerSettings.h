@@ -18,7 +18,7 @@ private:
 
     void RefreshSettings(void);
 
-    //Settings that can be changed on the fly
+    // Settings that can be changed on the fly
     static bool m_bShowRecompMemSize;
 
     static int32_t m_RefCount;

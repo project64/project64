@@ -103,7 +103,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
     {
         if (g_Settings->LoadBool(Setting_RdbEditor))
         {
-            SetWindowText(stdstr_f("%s ** RDB edit mode **", ConfigRomTitle.c_str()).ToUTF16().c_str());
+            SetWindowText(stdstr_f("%s *** RDB edit mode ***", ConfigRomTitle.c_str()).ToUTF16().c_str());
         }
         else
         {
@@ -114,7 +114,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
     {
         if (g_Settings->LoadBool(Setting_RdbEditor))
         {
-            SetWindowText(stdstr_f("%s ** RDB edit mode **", GS(OPTIONS_TITLE)).ToUTF16().c_str());
+            SetWindowText(stdstr_f("%s *** RDB edit mode ***", GS(OPTIONS_TITLE)).ToUTF16().c_str());
         }
         else
         {
@@ -312,7 +312,7 @@ LRESULT CSettingConfig::OnPageListItemChanged(NMHDR* /*phdr*/)
         ::EnableWindow(GetDlgItem(IDC_RESET_PAGE), m_CurrentPage->EnableReset());
     }
 
-    return 0;   // retval ignored
+    return 0;   // Return value ignored
 }
 
 // Fallback to using HitTest if TVN_SELCHANGED isn't working
@@ -350,7 +350,7 @@ LRESULT CSettingConfig::OnPageListClicked(NMHDR*)
 		m_CurrentPage->ShowPage();
 		::EnableWindow(GetDlgItem(IDC_RESET_PAGE), m_CurrentPage->EnableReset());
 	}
-	return 0;   // retval ignored
+	return 0;   // Return value ignored
 }
 
 LRESULT	CSettingConfig::OnSettingPageChanged(UINT /*uMsg*/, WPARAM /*wPage*/, LPARAM /*lParam*/)

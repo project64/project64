@@ -13,7 +13,7 @@ __interface CTLB_CB
 };
 
 #pragma warning(push)
-#pragma warning(disable : 4201) // warning C4201: nonstandard extension used : nameless struct/union
+#pragma warning(disable : 4201) // warning C4201: non-standard extension used: nameless struct/union
 
 class CTLB :
     protected CSystemRegisters
@@ -88,12 +88,12 @@ public:
 
     void Reset(bool InvalidateTLB);
 
-    //Used by opcodes of the same name to manipulate the tlb (reads the registers)
+    // Used by opcodes of the same name to manipulate the TLB (reads the registers)
     void Probe();
     void ReadEntry();
     void WriteEntry(int32_t index, bool Random);
 
-    //See if a VAddr has an entry to translate to a PAddr
+    // See if a VAddr has an entry to translate to a PAddr
     bool AddressDefined(uint32_t VAddr);
 
     const TLB_ENTRY & TlbEntry(int32_t Entry) const
@@ -124,7 +124,7 @@ private:
         bool  Probed;
     };
 
-    friend class CDebugTlb; // enable debug window to read class
+    friend class CDebugTlb; // Enable debug window to read class
 
     CTLB_CB * const m_CB;
 

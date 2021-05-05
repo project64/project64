@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64.
 // Copyright(C) 2000-2015 Azimer
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
@@ -88,7 +88,7 @@ void DirectSoundDriver::StopAudio()
         m_AudioIsDone = true;
         if (WaitForSingleObject((HANDLE)m_handleAudioThread, 5000) == WAIT_TIMEOUT)
         {
-            WriteTrace(TraceAudioDriver, TraceError, "Time out on close");
+            WriteTrace(TraceAudioDriver, TraceError, "Timeout on close");
 
             TerminateThread((HANDLE)m_handleAudioThread, 1);
         }

@@ -10,20 +10,20 @@
 
 CDebugMemoryView::jump_item_t CDebugMemoryView::JumpItems[] = {
     { 0x80000000, 0x00000000, 0x0800000, "RDRAM" },
-    { 0xA3F00000, 0x03F00000, 0x0000028, "RDRAM Registers" },
+    { 0xA3F00000, 0x03F00000, 0x0000028, "RDRAM registers" },
     { 0xA4000000, 0x04000000, 0x0001000, "SP DMEM" },
     { 0xA4001000, 0x04001000, 0x0001000, "SP IMEM" },
-    { 0xA4040000, 0x04040000, 0x0000020, "SP Registers" },
-    { 0xA4080000, 0x04080000, 0x0000004, "SP PC Register" },
-    { 0xA4100000, 0x04100000, 0x0000020, "DP Control Registers" },
-    { 0xA4300000, 0x04300000, 0x0000010, "MI Registers" },
-    { 0xA4400000, 0x04400000, 0x0000038, "VI Registers" },
-    { 0xA4500000, 0x04500000, 0x0000018, "AI Registers" },
-    { 0xA4600000, 0x04600000, 0x0000034, "PI Registers" },
-    { 0xA4700000, 0x04700000, 0x0000020, "RI Registers" },
-    { 0xA4800000, 0x04800000, 0x0000010, "SI Registers" },
-    { 0xA5000500, 0x05000500, 0x000004C, "DD Registers" },
-    { 0xA8000000, 0x08000000, 0x1000000, "Cartridge Save Data" },
+    { 0xA4040000, 0x04040000, 0x0000020, "SP registers" },
+    { 0xA4080000, 0x04080000, 0x0000004, "SP PC register" },
+    { 0xA4100000, 0x04100000, 0x0000020, "DP control registers" },
+    { 0xA4300000, 0x04300000, 0x0000010, "MI registers" },
+    { 0xA4400000, 0x04400000, 0x0000038, "VI registers" },
+    { 0xA4500000, 0x04500000, 0x0000018, "AI registers" },
+    { 0xA4600000, 0x04600000, 0x0000034, "PI registers" },
+    { 0xA4700000, 0x04700000, 0x0000020, "RI registers" },
+    { 0xA4800000, 0x04800000, 0x0000010, "SI registers" },
+    { 0xA5000500, 0x05000500, 0x000004C, "DD registers" },
+    { 0xA8000000, 0x08000000, 0x1000000, "Cartridge save data" },
     { 0xB0000000, 0x10000000, 0xFC00000, "Cartridge ROM" },
     { 0xBFC00000, 0x1FC00000, 0x00007C0, "PIF ROM" },
     { 0xBFC007C0, 0x1FC007C0, 0x0000040, "PIF RAM" },
@@ -1189,7 +1189,7 @@ LRESULT CDebugMemoryView::OnStatusBarClick(LPNMHDR lpNMHDR)
             return FALSE;
         }
 
-        stdstr strDmaTitle = stdstr_f("DMA Information for 0x%08X", startAddress);
+        stdstr strDmaTitle = stdstr_f("DMA information for 0x%08X", startAddress);
         stdstr strDmaInfo = stdstr_f("Block:\nROM 0x%08X -> RAM 0x%08X ( 0x%X bytes )\n\nROM address of byte:\n0x%08X ( 0x%08X + 0x%08X )",
             entry->romAddr, entry->ramAddr, entry->length, romAddress, entry->romAddr, blockOffset);
         MessageBox(strDmaInfo.ToUTF16().c_str(), strDmaTitle.ToUTF16().c_str(), MB_OK);

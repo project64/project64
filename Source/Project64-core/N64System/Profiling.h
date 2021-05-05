@@ -10,11 +10,11 @@ public:
     void RecordTime(PROFILE_TIMERS timer, uint32_t time);
     uint64_t NonCPUTime(void);
 
-    //recording timing against current timer, returns the address of the timer stopped
+    // Recording timing against the current timer, returns the address of the timer stopped
     PROFILE_TIMERS StartTimer(PROFILE_TIMERS TimerType);
     PROFILE_TIMERS StopTimer();
 
-    //Display the CPU Usage
+    // Display the CPU usage
     void ShowCPU_Usage();
 
     void ResetTimers(void);

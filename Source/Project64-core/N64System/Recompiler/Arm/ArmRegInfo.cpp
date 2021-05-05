@@ -265,7 +265,7 @@ void CArmRegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsReg
     {
         if (Is64Bit(MipsReg))
         {
-            CPU_Message("    regcache: unallocate %s from high 32bit of %s", ArmRegName(GetMipsRegMapHi(MipsReg)), CRegName::GPR_Hi[MipsReg]);
+            CPU_Message("    regcache: unallocate %s from high 32-bit of %s", ArmRegName(GetMipsRegMapHi(MipsReg)), CRegName::GPR_Hi[MipsReg]);
             SetArmRegMapOrder(GetMipsRegMapHi(MipsReg), 0);
             SetArmRegMapped(GetMipsRegMapHi(MipsReg), NotMapped);
             SetArmRegProtected(GetMipsRegMapHi(MipsReg), false);
@@ -327,7 +327,7 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
 
     if (MipsReg == 0)
     {
-        if (HaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nWhy are you trying to map reg 0"); }
+        if (HaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nWhy are you trying to map register 0?"); }
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
@@ -466,7 +466,7 @@ void CArmRegInfo::UnMap_GPR(uint32_t MipsReg, bool WriteBackValue)
     {
         if (HaveDebugger())
         {
-            g_Notify->DisplayError(stdstr_f("%s\n\nWhy are you trying to unmap reg 0", __FUNCTION__).c_str());
+            g_Notify->DisplayError(stdstr_f("%s\n\nWhy are you trying to unmap register 0?", __FUNCTION__).c_str());
         }
         return;
     }
@@ -502,7 +502,7 @@ void CArmRegInfo::WriteBack_GPR(uint32_t MipsReg, bool Unmapping)
     {
         if (HaveDebugger())
         {
-            g_Notify->DisplayError(stdstr_f("%s\n\nWhy are you trying to unmap reg 0", __FUNCTION__).c_str());
+            g_Notify->DisplayError(stdstr_f("%s\n\nWhy are you trying to unmap register 0?", __FUNCTION__).c_str());
         }
         return;
     }
@@ -597,7 +597,7 @@ void CArmRegInfo::WriteBackRegisters()
             g_Notify->BreakPoint(__FILE__, __LINE__);
             break;
         default:
-            CPU_Message("%s: Unknown State: %d reg %d (%s)", __FUNCTION__, GetMipsRegState(count), count, CRegName::GPR[count]);
+            CPU_Message("%s: Unknown state: %d reg %d (%s)", __FUNCTION__, GetMipsRegState(count), count, CRegName::GPR[count]);
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }
@@ -701,7 +701,7 @@ bool CArmRegInfo::UnMap_ArmReg(ArmReg Reg)
     }
     else if (GetArmRegMapped(Reg) == Temp_Mapped)
     {
-        CPU_Message("    regcache: unallocate %s from temp storage", ArmRegName(Reg));
+        CPU_Message("    regcache: unallocate %s from temporary storage", ArmRegName(Reg));
         SetArmRegMapped(Reg, NotMapped);
         return true;
     }
@@ -901,11 +901,11 @@ CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadH
     }
     if (MipsReg < 0)
     {
-        CPU_Message("    regcache: allocate %s as temp storage", ArmRegName(Reg));
+        CPU_Message("    regcache: allocate %s as temporary storage", ArmRegName(Reg));
     }
     else
     {
-        CPU_Message("    regcache: allocate %s as temp storage (%s)", ArmRegName(Reg), LoadHiWord ? CRegName::GPR_Hi[MipsReg] : CRegName::GPR_Lo[MipsReg]);
+        CPU_Message("    regcache: allocate %s as temporary storage (%s)", ArmRegName(Reg), LoadHiWord ? CRegName::GPR_Hi[MipsReg] : CRegName::GPR_Lo[MipsReg]);
         if (GprReg == Arm_Unknown)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);

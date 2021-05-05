@@ -1,16 +1,16 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/N64Rom.h>
-#include <Project64-core/N64System/Mips/Register.h>
+#include <Project64-core/N64System/N64RomClass.h>
+#include <Project64-core/N64System/Mips/RegisterClass.h>
 #include "ControllerPlugin.h"
 
 CControl_Plugin::CControl_Plugin(void) :
-    WM_KeyDown(nullptr),
-    WM_KeyUp(nullptr),
-    RumbleCommand(nullptr),
-    GetKeys(nullptr),
-    ReadController(nullptr),
-    ControllerCommand(nullptr),
+    WM_KeyDown(NULL),
+    WM_KeyUp(NULL),
+    RumbleCommand(NULL),
+    GetKeys(NULL),
+    ReadController(NULL),
+    ControllerCommand(NULL),
     m_AllocatedControllers(false)
 {
     memset(&m_PluginControllers, 0, sizeof(m_PluginControllers));
@@ -19,7 +19,7 @@ CControl_Plugin::CControl_Plugin(void) :
 
 CControl_Plugin::~CControl_Plugin()
 {
-    Close(nullptr);
+    Close(NULL);
     UnloadPlugin();
 }
 
@@ -35,12 +35,12 @@ bool CControl_Plugin::LoadFunctions(void)
     LoadFunction(WM_KeyUp);
     LoadFunction(RumbleCommand);
 
-    //Make sure dll had all needed functions
-    if (InitiateControllers == nullptr) { UnloadPlugin(); return false; }
+    // Make sure DLL had all needed functions
+    if (InitiateControllers == NULL) { UnloadPlugin(); return false; }
 
     if (m_PluginInfo.Version >= 0x0102)
     {
-        if (PluginOpened == nullptr) { UnloadPlugin(); return false; }
+        if (PluginOpened == NULL) { UnloadPlugin(); return false; }
     }
 
     // Allocate our own controller
@@ -63,17 +63,17 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
         m_PluginControllers[i].Plugin = PLUGIN_NONE;
     }
 
-    // Test Plugin version
+    // Test plugin version
     if (m_PluginInfo.Version == 0x0100)
     {
-        //Get Function from DLL
+        // Get function from DLL
         void(CALL *InitiateControllers_1_0)(void * hMainWindow, CONTROL Controls[4]);
         _LoadFunction("InitiateControllers", InitiateControllers_1_0);
-        if (InitiateControllers_1_0 == nullptr) { return false; }
+        if (InitiateControllers_1_0 == NULL) { return false; }
 #ifdef _WIN32
         InitiateControllers_1_0(Window->GetWindowHandle(), m_PluginControllers);
 #else
-        InitiateControllers_1_0(nullptr, m_PluginControllers);
+        InitiateControllers_1_0(NULL, m_PluginControllers);
 #endif
         m_Initialized = true;
     }
@@ -81,32 +81,32 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
     {
         CONTROL_INFO ControlInfo;
         ControlInfo.Controls = m_PluginControllers;
-        ControlInfo.HEADER = (System == nullptr ? Buffer : g_Rom->GetRomAddress());
+        ControlInfo.HEADER = (System == NULL ? Buffer : g_Rom->GetRomAddress());
 #ifdef _WIN32
-        ControlInfo.hinst = Window ? Window->GetModuleInstance() : nullptr;
-        ControlInfo.hMainWindow = Window ? Window->GetWindowHandle() : nullptr;
+        ControlInfo.hinst = Window ? Window->GetModuleInstance() : NULL;
+        ControlInfo.hMainWindow = Window ? Window->GetWindowHandle() : NULL;
 #else
-        ControlInfo.hinst = nullptr;
-        ControlInfo.hMainWindow = nullptr;
+        ControlInfo.hinst = NULL;
+        ControlInfo.hMainWindow = NULL;
 #endif
         ControlInfo.MemoryBswaped = true;
 
         if (m_PluginInfo.Version == 0x0101)
         {
-            //Get Function from DLL
+            // Get function from DLL
             void(CALL *InitiateControllers_1_1)(CONTROL_INFO ControlInfo);
             _LoadFunction("InitiateControllers", InitiateControllers_1_1);
-            if (InitiateControllers_1_1 == nullptr) { return false; }
+            if (InitiateControllers_1_1 == NULL) { return false; }
 
             InitiateControllers_1_1(ControlInfo);
             m_Initialized = true;
         }
         else if (m_PluginInfo.Version >= 0x0102)
         {
-            //Get Function from DLL
+            // Get function from DLL
             void(CALL *InitiateControllers_1_2)(CONTROL_INFO * ControlInfo);
             _LoadFunction("InitiateControllers", InitiateControllers_1_2);
-            if (InitiateControllers_1_2 == nullptr) { return false; }
+            if (InitiateControllers_1_2 == NULL) { return false; }
 
             InitiateControllers_1_2(&ControlInfo);
             m_Initialized = true;
@@ -122,16 +122,16 @@ void CControl_Plugin::UnloadPluginDetails(void)
         for (int32_t count = 0; count < sizeof(m_Controllers) / sizeof(m_Controllers[0]); count++)
         {
             delete m_Controllers[count];
-            m_Controllers[count] = nullptr;
+            m_Controllers[count] = NULL;
         }
     }
 
     m_AllocatedControllers = false;
-    ControllerCommand = nullptr;
-    GetKeys = nullptr;
-    ReadController = nullptr;
-    WM_KeyDown = nullptr;
-    WM_KeyUp = nullptr;
+    ControllerCommand = NULL;
+    GetKeys = NULL;
+    ReadController = NULL;
+    WM_KeyDown = NULL;
+    WM_KeyUp = NULL;
 }
 
 void CControl_Plugin::UpdateKeys(void)
@@ -149,7 +149,7 @@ void CControl_Plugin::UpdateKeys(void)
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }
-    if (ReadController) { ReadController(-1, nullptr); }
+    if (ReadController) { ReadController(-1, NULL); }
 }
 
 void CControl_Plugin::SetControl(CControl_Plugin const * const Plugin)
@@ -159,7 +159,7 @@ void CControl_Plugin::SetControl(CControl_Plugin const * const Plugin)
         for (int32_t count = 0; count < sizeof(m_Controllers) / sizeof(m_Controllers[0]); count++)
         {
             delete m_Controllers[count];
-            m_Controllers[count] = nullptr;
+            m_Controllers[count] = NULL;
         }
     }
     m_AllocatedControllers = false;

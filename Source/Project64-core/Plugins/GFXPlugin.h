@@ -5,12 +5,12 @@ class CGfxPlugin : public CPlugin
 {
     typedef struct
     {
-        /* Menu */
-        /* Items should have an ID between 5101 and 5200 */
+        // Menu
+        // Items should have an ID between 5101 and 5200
         void * hGFXMenu;
         void(CALL *ProcessMenuItem)(int32_t ID);
 
-        /* Break Points */
+        // Breakpoints
         int32_t UseBPoints;
         char BPPanelName[20];
         void(CALL *Add_BPoint)      (void);
@@ -22,7 +22,7 @@ class CGfxPlugin : public CPlugin
         void(CALL *RemoveBpoint)    (void * hList, int32_t index);
         void(CALL *RemoveAllBpoint) (void);
 
-        /* GFX command Window */
+        // GFX command window
         void(CALL *Enter_GFX_Commands_Window)(void);
     } GFXDEBUG_INFO;
 
@@ -62,8 +62,8 @@ public:
     void(CALL *SurfaceChanged)  (int w, int h);
 #endif
 
-    //Rom Browser
-    void *(CALL * GetRomBrowserMenu)(void); /* Items should have an ID between 4101 and 4200 */
+    // ROM browser
+    void *(CALL * GetRomBrowserMenu)(void); // Items should have an ID between 4101 and 4200
     void(CALL * OnRomBrowserMenuItem)(int32_t MenuID, void * hParent, uint8_t * HEADER);
 
     void * GetDebugMenu(void) { return m_GFXDebug.hGFXMenu; }

@@ -119,7 +119,7 @@ bool CSettingTypeGame::Load(uint32_t Index, std::string & Value) const
     return CSettingTypeApplication::Load(Index, Value);
 }
 
-//return the default values
+// Return the default values
 void CSettingTypeGame::LoadDefault(uint32_t Index, bool & Value) const
 {
     if (m_RdbEditor && g_Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
@@ -177,7 +177,7 @@ void CSettingTypeGame::LoadDefault(uint32_t Index, std::string & Value) const
     }
 }
 
-//Update the settings
+// Update the settings
 void CSettingTypeGame::Save(uint32_t Index, bool Value)
 {
     if (m_EraseDefaults)

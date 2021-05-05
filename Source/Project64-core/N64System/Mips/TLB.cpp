@@ -85,8 +85,8 @@ void CTLB::Probe()
 
         if (TlbValueMasked == EntryHiMasked)
         {
-            if ((TlbEntryHiValue & 0x100) != 0 || //Global
-                ((TlbEntryHiValue & 0xFF) == (g_Reg->ENTRYHI_REGISTER & 0xFF))) //SameAsid
+            if ((TlbEntryHiValue & 0x100) != 0 || // Global
+                ((TlbEntryHiValue & 0xFF) == (g_Reg->ENTRYHI_REGISTER & 0xFF))) // SameAsid
             {
                 g_Reg->INDEX_REGISTER = Counter;
                 int FastIndx = Counter << 1;
@@ -115,7 +115,7 @@ void CTLB::WriteEntry(int index, bool Random)
 
     WriteTrace(TraceTLB, TraceDebug, "%02d %d %08X %08X %08X %08X ", index, Random, g_Reg->PAGE_MASK_REGISTER, g_Reg->ENTRYHI_REGISTER, g_Reg->ENTRYLO0_REGISTER, g_Reg->ENTRYLO1_REGISTER);
 
-    //Check to see if entry is unmapping it self
+    // Check to see if entry is unmapping itself
     if (m_tlb[index].EntryDefined)
     {
         FastIndx = index << 1;
@@ -135,7 +135,7 @@ void CTLB::WriteEntry(int index, bool Random)
         }
     }
 
-    //Reset old addresses
+    // Reset old addresses
     if (m_tlb[index].EntryDefined)
     {
         for (FastIndx = index << 1; FastIndx <= (index << 1) + 1; FastIndx++)
@@ -164,7 +164,7 @@ void CTLB::WriteEntry(int index, bool Random)
         }
     }
 
-    //fill in m_tlb entry
+    // Fill in m_tlb entry
     m_tlb[index].PageMask.Value = g_Reg->PAGE_MASK_REGISTER;
     m_tlb[index].EntryHi.Value = g_Reg->ENTRYHI_REGISTER;
     m_tlb[index].EntryLo0.Value = g_Reg->ENTRYLO0_REGISTER;
@@ -176,7 +176,7 @@ void CTLB::WriteEntry(int index, bool Random)
 
 void CTLB::SetupTLB_Entry(int index, bool Random)
 {
-    //Fix up Fast TLB entries
+    // Fix up fast TLB entries
     if (!m_tlb[index].EntryDefined)
     {
         return;
@@ -216,7 +216,7 @@ void CTLB::SetupTLB_Entry(int index, bool Random)
     m_FastTlb[FastIndx].Random = Random;
     m_FastTlb[FastIndx].Probed = false;
 
-    //Test both entries to see if they are valid
+    // Test both entries to see if they are valid
     for (FastIndx = index << 1; FastIndx <= (index << 1) + 1; FastIndx++)
     {
         if (!m_FastTlb[FastIndx].VALID)
@@ -238,7 +238,7 @@ void CTLB::SetupTLB_Entry(int index, bool Random)
             continue;
         }
 
-        //MAP the new m_tlb entry for reading and writing
+        // Map the new m_tlb entry for reading and writing
         m_FastTlb[FastIndx].ValidEntry = true;
         m_CB->TLB_Mapped(m_FastTlb[FastIndx].VSTART, m_FastTlb[FastIndx].Length, m_FastTlb[FastIndx].PHYSSTART, !m_FastTlb[FastIndx].DIRTY);
     }

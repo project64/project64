@@ -28,7 +28,7 @@ bool CSettingTypeTempString::Load (uint32_t /*Index*/, std::string & Value ) con
     return true;
 }
 
-//return the default values
+// Return the default values
 void CSettingTypeTempString::LoadDefault (uint32_t /*Index*/, bool & /*Value*/ ) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);

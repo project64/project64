@@ -38,7 +38,7 @@ DWORD BranchCompare = 0;
 
 #ifdef RSP_VectorMuls
 #	define CompileVmulf	// Verified 12/17/2000 - Jabo
-#	define CompileVmacf	// Rewritten and Verified 12/15/2000 - Jabo
+#	define CompileVmacf	// Rewritten and verified 12/15/2000 - Jabo
 #	define CompileVmudm	// Verified 12/17/2000 - Jabo
 #	define CompileVmudh	// Verified 12/17/2000 - Jabo
 #	define CompileVmudn	// Verified 12/17/2000 - Jabo
@@ -80,7 +80,7 @@ DWORD BranchCompare = 0;
 #	define CompileSqv		// Verified 12/17/2000 - Jabo
 #	define CompileSdv		// Verified 12/17/2000 - Jabo
 #	define CompileSsv		// Verified 12/17/2000 - Jabo
-#	define CompileLrv		// Rewritten & Verified 12/17/2000 - Jabo
+#	define CompileLrv		// Rewritten and verified 12/17/2000 - Jabo
 #	define CompileLqv		// Verified 12/17/2000 - Jabo
 #	define CompileLdv		// Verified 12/17/2000 - Jabo
 #	define CompileLsv		// Verified 12/17/2000 - Jabo
@@ -158,7 +158,7 @@ void CompileBranchExit(DWORD TargetPC, DWORD ContinuePC)
 	Ret();
 }
 
-// OpCode functions
+// Opcode functions
 
 void Compile_SPECIAL ( void ) {
 	RSP_Special[ RSPOpC.funct ]();
@@ -670,13 +670,13 @@ void Compile_LH ( void ) {
 				Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LH,"RSP_Opcode_LH");
 			} else {
 				char Address[32];
-				sprintf(Address, "Dmem + %Xh", Addr);
+				sprintf(Address, "DMEM + %Xh", Addr);
 				MoveSxVariableToX86regHalf(RSPInfo.DMEM + (Addr ^ 2), Address, x86_EAX);
 				MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 			}
 		} else {
 			char Address[32];
-			sprintf(Address, "Dmem + %Xh", Addr);
+			sprintf(Address, "DMEM + %Xh", Addr);
 			MoveSxVariableToX86regHalf(RSPInfo.DMEM + Addr, Address, x86_EAX);
 			MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 		}
@@ -732,16 +732,16 @@ void Compile_LW ( void ) {
 			Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LW,"RSP_Opcode_LW");
 		} else if ((Addr & 2) != 0) {
 			char Address[32];
-			sprintf(Address, "Dmem + %Xh", Addr - 2);
+			sprintf(Address, "DMEM + %Xh", Addr - 2);
 			MoveVariableToX86regHalf(RSPInfo.DMEM + Addr - 2, Address, x86_EAX);
-			sprintf(Address, "Dmem + %Xh", Addr);
+			sprintf(Address, "DMEM + %Xh", Addr);
 			MoveVariableToX86regHalf(RSPInfo.DMEM + Addr + 4, Address, x86_ECX);
 			
 			MoveX86regHalfToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UHW[1], GPR_Name(RSPOpC.rt));
 			MoveX86regHalfToVariable(x86_ECX, &RSP_GPR[RSPOpC.rt].UHW[0], GPR_Name(RSPOpC.rt));
 		} else {
 			char Address[32];
-			sprintf(Address, "Dmem + %Xh", Addr);
+			sprintf(Address, "DMEM + %Xh", Addr);
 			MoveVariableToX86reg(RSPInfo.DMEM + Addr, Address, x86_EAX);
 			MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 		}
@@ -753,7 +753,7 @@ void Compile_LW ( void ) {
 	
 	AndConstToX86Reg(x86_EBX, 0x0fff);
 	TestConstToX86Reg(3, x86_EBX);
-	JneLabel32("UnAligned", 0);
+	JneLabel32("Unaligned", 0);
 	Jump[0] = RecompPos - 4;
 
 	CompilerToggleBuffer();
@@ -806,7 +806,7 @@ void Compile_LBU ( void ) {
 		DWORD Addr = (MipsRegConst(RSPOpC.base) + Offset) ^ 3;
 		Addr &= 0xfff;
 
-		sprintf(Address, "Dmem + %Xh", Addr);
+		sprintf(Address, "DMEM + %Xh", Addr);
 		MoveZxVariableToX86regByte(RSPInfo.DMEM + Addr, Address, x86_EAX);
 		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 		return;
@@ -845,14 +845,14 @@ void Compile_LHU ( void ) {
 				Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LHU, "RSP_Opcode_LHU");
 			} else {
 				char Address[32];
-				sprintf(Address, "Dmem + %Xh", Addr);
+				sprintf(Address, "DMEM + %Xh", Addr);
 				MoveZxVariableToX86regHalf(RSPInfo.DMEM + (Addr ^ 2), Address, x86_ECX);
 				MoveX86regToVariable(x86_ECX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 			}
 			return;
 		} else {
 			char Address[32];
-			sprintf(Address, "Dmem + %Xh", Addr);
+			sprintf(Address, "DMEM + %Xh", Addr);
 			MoveZxVariableToX86regHalf(RSPInfo.DMEM + Addr, Address, x86_ECX);
 			MoveX86regToVariable(x86_ECX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 			return;
@@ -899,7 +899,7 @@ void Compile_SB ( void ) {
 		char Address[32];
 		DWORD Addr = (MipsRegConst(RSPOpC.base) + Offset) ^ 3;
 		Addr &= 0xfff;
-		sprintf(Address, "Dmem + %Xh", Addr);
+		sprintf(Address, "DMEM + %Xh", Addr);
 
 		if (IsRegConst(RSPOpC.rt) == TRUE) {
 			MoveConstByteToVariable(MipsRegConst(RSPOpC.rt), RSPInfo.DMEM + Addr, Address);
@@ -951,7 +951,7 @@ void Compile_SH ( void ) {
 			return;
 		} else {
 			char Address[32];
-			sprintf(Address, "Dmem + %Xh", Addr);
+			sprintf(Address, "DMEM + %Xh", Addr);
 			if (IsRegConst(RSPOpC.rt) == TRUE) {
 				MoveConstHalfToVariable(MipsRegConst(RSPOpC.rt), RSPInfo.DMEM + Addr, Address);
 			} else {
@@ -1015,13 +1015,13 @@ void Compile_SW ( void ) {
 			}
 			if (IsRegConst(RSPOpC.rt) == TRUE) {
 				DWORD Value = MipsRegConst(RSPOpC.rt);
-				sprintf(Address, "Dmem + %Xh", (Addr + 0) ^ 3);
+				sprintf(Address, "DMEM + %Xh", (Addr + 0) ^ 3);
 				MoveConstByteToVariable((Value >> 24) & 0xFF, RSPInfo.DMEM + ((Addr + 0) ^ 3), Address);
-				sprintf(Address, "Dmem + %Xh", (Addr + 1) ^ 3);
+				sprintf(Address, "DMEM + %Xh", (Addr + 1) ^ 3);
 				MoveConstByteToVariable((Value >> 16) & 0xFF, RSPInfo.DMEM + ((Addr + 1) ^ 3), Address);
-				sprintf(Address, "Dmem + %Xh", (Addr + 2) ^ 3);
+				sprintf(Address, "DMEM + %Xh", (Addr + 2) ^ 3);
 				MoveConstByteToVariable((Value >> 8) & 0xFF, RSPInfo.DMEM + ((Addr + 2) ^ 3), Address);
-				sprintf(Address, "Dmem + %Xh", (Addr + 3) ^ 3);
+				sprintf(Address, "DMEM + %Xh", (Addr + 3) ^ 3);
 				MoveConstByteToVariable((Value >> 0) & 0xFF, RSPInfo.DMEM + ((Addr + 3) ^ 3), Address);
 			} else {
 				CompilerWarning("Unaligned SW at constant address PC = %04X", CompilePC);
@@ -1029,7 +1029,7 @@ void Compile_SW ( void ) {
 			}
 			return;
 		} else {
-			sprintf(Address, "Dmem + %Xh", Addr);
+			sprintf(Address, "DMEM + %Xh", Addr);
 
 			if (IsRegConst(RSPOpC.rt) == TRUE) {
 				MoveConstToVariable(MipsRegConst(RSPOpC.rt), RSPInfo.DMEM + Addr, Address);
@@ -1061,8 +1061,8 @@ void Compile_SW ( void ) {
 	LeaSourceAndOffset(x86_EDX , x86_EBX, 3);
 	XorConstToX86Reg(x86_ECX, 3);
 	XorConstToX86Reg(x86_EDX, 3);
-	MoveVariableToX86regByte(&RSP_GPR[RSPOpC.rt].UB[1], GPR_Name(RSPOpC.rt),x86_EAX); //cx
-	MoveVariableToX86regByte(&RSP_GPR[RSPOpC.rt].UB[0], GPR_Name(RSPOpC.rt),x86_EBX); //dx
+	MoveVariableToX86regByte(&RSP_GPR[RSPOpC.rt].UB[1], GPR_Name(RSPOpC.rt),x86_EAX); // CX
+	MoveVariableToX86regByte(&RSP_GPR[RSPOpC.rt].UB[0], GPR_Name(RSPOpC.rt),x86_EBX); // DX
 	MoveX86regByteToN64Mem(x86_EAX, x86_ECX);
 	MoveX86regByteToN64Mem(x86_EBX, x86_EDX);
 	Pop(x86_EBX);
@@ -1072,8 +1072,8 @@ void Compile_SW ( void ) {
 	XorConstToX86Reg(x86_EAX, 3);
 	XorConstToX86Reg(x86_EBX, 3);
 	
-	MoveVariableToX86regByte(&RSP_GPR[RSPOpC.rt].UB[3], GPR_Name(RSPOpC.rt),x86_ECX); //ax
-	MoveVariableToX86regByte(&RSP_GPR[RSPOpC.rt].UB[2], GPR_Name(RSPOpC.rt),x86_EDX); //bx
+	MoveVariableToX86regByte(&RSP_GPR[RSPOpC.rt].UB[3], GPR_Name(RSPOpC.rt),x86_ECX); // AX
+	MoveVariableToX86regByte(&RSP_GPR[RSPOpC.rt].UB[2], GPR_Name(RSPOpC.rt),x86_EDX); // BX
 
 	MoveX86regByteToN64Mem(x86_ECX, x86_EAX);
 	MoveX86regByteToN64Mem(x86_EDX, x86_EBX);
@@ -1102,7 +1102,7 @@ void Compile_SC2 (void) {
 	RSP_Sc2 [ RSPOpC.rd ]();
 }
 
-// R4300i OpCodes: Special
+// R4300i Opcodes: Special
 
 void Compile_Special_SLL ( void ) {
 	#ifndef Compile_Special
@@ -1500,7 +1500,7 @@ void Compile_Special_SLTU ( void ) {
 	Cheat_r4300iOpcode(RSP_Special_SLTU,"RSP_Special_SLTU");
 }
 
-// R4300i OpCodes: RegImm
+// R4300i Opcodes: RegImm
 
 void Compile_RegImm_BLTZ(void)
 {
@@ -1787,7 +1787,7 @@ void Compile_Cop0_MF ( void ) {
 		break;
 
 	default:
-		DisplayError("have not implemented RSP MF CP0 reg %s (%d)",COP0_Name(RSPOpC.rd),RSPOpC.rd);
+		DisplayError("We have not implemented RSP MF CP0 reg %s (%d)",COP0_Name(RSPOpC.rd),RSPOpC.rd);
 	}
 #endif
 }
@@ -2056,7 +2056,7 @@ void RSP_Element2Mmx(int MmxReg) {
 		break;
 
 	default:
-		/*
+		/* // TODO: Explain this better
 		 * Noticed the exclusive-or of seven to take into account
 		 * the pseudo-swapping we have in the vector registers
 		 */
@@ -2099,7 +2099,7 @@ void RSP_MultiElement2Mmx(int MmxReg1, int MmxReg2) {
 	 * We must perform this swap correctly, this involves the 3-bit
 	 * exclusive or, 2-bits of which are done within a DWORD boundary, 
 	 * the last bit, is ignored because we are loading the source linearly,
-	 * so the exclusive or has transparently happened on that side
+	 * so the exclusive or has transparently happened on that side.
 	 */
 
 	switch (Rs) {
@@ -2172,6 +2172,7 @@ Boolean Compile_Vector_VMULF_MMX(void)
 		return FALSE;
 
 	// NOTE: Problem here is the lack of +/- 0x8000 rounding
+	// TODO: Possible fix?
 	sprintf(Reg, "RSP_Vect[%i].UHW[0]", RSPOpC.rd);
 	MmxMoveQwordVariableToReg(x86_MM0, &RSP_Vect[RSPOpC.rd].UHW[0], Reg);
 	sprintf(Reg, "RSP_Vect[%i].UHW[4]", RSPOpC.rd);
@@ -2421,11 +2422,11 @@ Boolean Compile_Vector_VMUDM_MMX(void)
 		MmxMoveRegToReg(x86_MM2, x86_MM0);
 		MmxMoveRegToReg(x86_MM3, x86_MM1);
 
-		/* high((u16)a * b) */
+		// high((u16)a * b)
 		MmxPmulhuwRegToReg(x86_MM0, x86_MM4);
 		MmxPmulhuwRegToReg(x86_MM1, x86_MM5);
 
-		/* low((a >> 15) * b) */
+		// low((a >> 15) * b)
 		MmxPsrawImmed(x86_MM2, 15);
 		MmxPsrawImmed(x86_MM3, 15);
 		MmxPmullwRegToReg(x86_MM2, x86_MM4);
@@ -2437,11 +2438,11 @@ Boolean Compile_Vector_VMUDM_MMX(void)
 		MmxMoveRegToReg(x86_MM2, x86_MM0);
 		MmxMoveRegToReg(x86_MM3, x86_MM1);
 
-		/* high((u16)a * b) */
+		// high((u16)a * b)
 		MmxPmulhuwRegToReg(x86_MM0, x86_MM4);
 		MmxPmulhuwRegToReg(x86_MM1, x86_MM4);
 
-		/* low((a >> 15) * b) */
+		// low((a >> 15) * b)
 		MmxPsrawImmed(x86_MM2, 15);
 		MmxPsrawImmed(x86_MM3, 15);
 		MmxPmullwRegToReg(x86_MM2, x86_MM4);
@@ -2453,11 +2454,11 @@ Boolean Compile_Vector_VMUDM_MMX(void)
 		MmxMoveRegToReg(x86_MM2, x86_MM0);
 		MmxMoveRegToReg(x86_MM3, x86_MM1);
 
-		/* high((u16)a * b) */
+		// high((u16)a * b)
 		MmxPmulhuwRegToReg(x86_MM0, x86_MM4);
 		MmxPmulhuwRegToReg(x86_MM1, x86_MM5);
 
-		/* low((a >> 15) * b) */
+		// low((a >> 15) * b)
 		MmxPsrawImmed(x86_MM2, 15);
 		MmxPsrawImmed(x86_MM3, 15);
 		MmxPmullwRegToReg(x86_MM2, x86_MM4);
@@ -3664,7 +3665,7 @@ void Compile_Vector_VABS ( void ) {
 			CompConstToX86reg(x86_EBX, 0x00008000);
 			CondMoveEqual(x86_EBX, x86_ECX);
 
-			/* sign clamp, dest = (eax >= 0) ? eax : ebx */
+			// sign clamp, dest = (eax >= 0) ? eax : ebx
 			CompConstToX86reg(x86_EAX, 0);
 			CondMoveLess(x86_EAX, x86_EBX);
 
@@ -3696,7 +3697,7 @@ void Compile_Vector_VABS ( void ) {
 			CompConstToX86reg(x86_EBX, 0x00008000);
 			CondMoveEqual(x86_EBX, x86_EDX);
 
-			/* sign clamp, dest = (eax >= 0) ? ecx : ebx */
+			// sign clamp, dest = (eax >= 0) ? ecx : ebx
 			CompConstToX86reg(x86_EAX, 0);
 			CondMoveGreaterEqual(x86_EDI, x86_ECX);
 			CondMoveLess(x86_EDI, x86_EBX);
@@ -5151,9 +5152,9 @@ void Compile_Opcode_LSV ( void ) {
 		DWORD Addr = (MipsRegConst(RSPOpC.base) + offset) & 0xfff;
 
 		if ((Addr & 1) != 0) {
-			sprintf(Reg, "Dmem + %Xh", (Addr + 0) ^ 3);
+			sprintf(Reg, "DMEM + %Xh", (Addr + 0) ^ 3);
 			MoveVariableToX86regByte(RSPInfo.DMEM + ((Addr + 0) ^ 3), Reg, x86_ECX);
-			sprintf(Reg, "Dmem + %Xh", (Addr + 1) ^ 3);
+			sprintf(Reg, "DMEM + %Xh", (Addr + 1) ^ 3);
 			MoveVariableToX86regByte(RSPInfo.DMEM + ((Addr + 1) ^ 3), Reg, x86_EDX);
 
 			sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 15 - (RSPOpC.del + 0));
@@ -5161,7 +5162,7 @@ void Compile_Opcode_LSV ( void ) {
 			sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 15 - (RSPOpC.del + 1));
 			MoveX86regByteToVariable(x86_EDX, &RSP_Vect[RSPOpC.rt].B[15 - (RSPOpC.del + 1)], Reg);
 		} else {
-			sprintf(Reg, "Dmem + %Xh", Addr ^ 2);
+			sprintf(Reg, "DMEM + %Xh", Addr ^ 2);
 			MoveVariableToX86regHalf(RSPInfo.DMEM + (Addr ^ 2), Reg, x86_EDX);
 			sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 15 - (RSPOpC.del + 1));
 			MoveX86regHalfToVariable(x86_EDX, &RSP_Vect[RSPOpC.rt].B[15 - (RSPOpC.del + 1)], Reg);
@@ -5219,7 +5220,7 @@ void Compile_Opcode_LLV ( void ) {
 			return;
 		}
 
-		sprintf(Reg, "Dmem + %Xh", Addr);
+		sprintf(Reg, "DMEM + %Xh", Addr);
 		MoveVariableToX86reg(RSPInfo.DMEM + Addr, Reg, x86_EAX);
 		sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 16 - RSPOpC.del - 4);
 		MoveX86regToVariable(x86_EAX, &RSP_Vect[RSPOpC.rt].B[16 - RSPOpC.del - 4], Reg);
@@ -5269,7 +5270,7 @@ void Compile_Opcode_LDV ( void ) {
 
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 
-	// TODO: Conker's hits this
+	// TODO: Conker's hits this (Is this needed?)
 	//if ((RSPOpC.del & 0x7) != 0) {
 	//	rsp_UnknownOpcode();
 	//	return;
@@ -5289,9 +5290,9 @@ void Compile_Opcode_LDV ( void ) {
 			return;
 		}
 
-		sprintf(Reg, "Dmem + %Xh", Addr);
+		sprintf(Reg, "DMEM + %Xh", Addr);
 		MoveVariableToX86reg(RSPInfo.DMEM + Addr + 0, Reg, x86_EAX);
-		sprintf(Reg, "Dmem + %Xh", Addr + 4);
+		sprintf(Reg, "DMEM + %Xh", Addr + 4);
 		MoveVariableToX86reg(RSPInfo.DMEM + Addr + 4, Reg, x86_ECX);
 
 		sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 16 - RSPOpC.del - 4);
@@ -5390,13 +5391,13 @@ void Compile_Opcode_LQV ( void ) {
 		// Aligned store
 		
 		if (IsSseEnabled == FALSE) {
-			sprintf(Reg, "Dmem+%Xh+0", Addr);
+			sprintf(Reg, "DMEM+%Xh+0", Addr);
 			MoveVariableToX86reg(RSPInfo.DMEM + Addr + 0, Reg, x86_EAX);
-			sprintf(Reg, "Dmem+%Xh+4", Addr);
+			sprintf(Reg, "DMEM+%Xh+4", Addr);
 			MoveVariableToX86reg(RSPInfo.DMEM + Addr + 4, Reg, x86_EBX);
-			sprintf(Reg, "Dmem+%Xh+8", Addr);
+			sprintf(Reg, "DMEM+%Xh+8", Addr);
 			MoveVariableToX86reg(RSPInfo.DMEM + Addr + 8, Reg, x86_ECX);
-			sprintf(Reg, "Dmem+%Xh+C", Addr);
+			sprintf(Reg, "DMEM+%Xh+C", Addr);
 			MoveVariableToX86reg(RSPInfo.DMEM + Addr + 12, Reg, x86_EDX);
 
 			sprintf(Reg, "RSP_Vect[%i].B[12]", RSPOpC.rt);
@@ -5408,7 +5409,7 @@ void Compile_Opcode_LQV ( void ) {
 			sprintf(Reg, "RSP_Vect[%i].B[0]", RSPOpC.rt);
 			MoveX86regToVariable(x86_EDX, &RSP_Vect[RSPOpC.rt].B[0], Reg);
 		} else {
-			sprintf(Reg, "Dmem+%Xh", Addr);
+			sprintf(Reg, "DMEM+%Xh", Addr);
 			SseMoveUnalignedVariableToReg(RSPInfo.DMEM + Addr, Reg, x86_XMM0);
 			SseShuffleReg(x86_XMM0, x86_MM0, 0x1b);
 			sprintf(Reg, "RSP_Vect[%i].B[0]", RSPOpC.rt);
@@ -5901,14 +5902,14 @@ void Compile_Opcode_SSV ( void ) {
 			sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 15 - (RSPOpC.del + 1));
 			MoveVariableToX86regByte(&RSP_Vect[RSPOpC.rt].B[15 - (RSPOpC.del + 1)], Reg, x86_EDX);
 
-			sprintf(Reg, "Dmem + %Xh", (Addr + 0) ^ 3);
+			sprintf(Reg, "DMEM + %Xh", (Addr + 0) ^ 3);
 			MoveX86regByteToVariable(x86_ECX, RSPInfo.DMEM + ((Addr + 0) ^ 3), Reg);
-			sprintf(Reg, "Dmem + %Xh", (Addr + 1) ^ 3);
+			sprintf(Reg, "DMEM + %Xh", (Addr + 1) ^ 3);
 			MoveX86regByteToVariable(x86_EDX, RSPInfo.DMEM + ((Addr + 1) ^ 3), Reg);
 		} else {
 			sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 15 - (RSPOpC.del + 1));
 			MoveVariableToX86regHalf(&RSP_Vect[RSPOpC.rt].B[15 - (RSPOpC.del + 1)], Reg, x86_ECX);
-			sprintf(Reg, "Dmem + %Xh", Addr ^ 2);
+			sprintf(Reg, "DMEM + %Xh", Addr ^ 2);
 			MoveX86regHalfToVariable(x86_ECX, RSPInfo.DMEM + (Addr ^ 2), Reg);
 		}
 		return;
@@ -5965,7 +5966,7 @@ void Compile_Opcode_SLV ( void ) {
 
 		sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 16 - RSPOpC.del - 4);
 		MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[16 - RSPOpC.del - 4], Reg, x86_EAX);
-		sprintf(Reg, "Dmem + %Xh", Addr);
+		sprintf(Reg, "DMEM + %Xh", Addr);
 		MoveX86regToVariable(x86_EAX, RSPInfo.DMEM + Addr, Reg);
 		return;
 	}
@@ -6032,9 +6033,9 @@ void Compile_Opcode_SDV ( void ) {
 		sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, (16 - RSPOpC.del - 8) & 0xF);
 		MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[(16 - RSPOpC.del - 8) & 0xF], Reg, x86_EBX);
 
-		sprintf(Reg, "Dmem + %Xh", Addr);
+		sprintf(Reg, "DMEM + %Xh", Addr);
 		MoveX86regToVariable(x86_EAX, RSPInfo.DMEM + Addr, Reg);
-		sprintf(Reg, "Dmem + %Xh", Addr + 4);
+		sprintf(Reg, "DMEM + %Xh", Addr + 4);
 		MoveX86regToVariable(x86_EBX, RSPInfo.DMEM + Addr + 4, Reg);
 		return;
 	}
@@ -6131,13 +6132,13 @@ void Compile_Opcode_SQV ( void ) {
 				MoveVariableToX86reg(&RSP_Vect[RSPOpC.rt].B[0], Reg, x86_EDX);
 			}
 
-			sprintf(Reg, "Dmem+%Xh+0", Addr);
+			sprintf(Reg, "DMEM+%Xh+0", Addr);
 			MoveX86regToVariable(x86_EAX, RSPInfo.DMEM + Addr + 0, Reg);
-			sprintf(Reg, "Dmem+%Xh+4", Addr);
+			sprintf(Reg, "DMEM+%Xh+4", Addr);
 			MoveX86regToVariable(x86_EBX, RSPInfo.DMEM + Addr + 4, Reg);
-			sprintf(Reg, "Dmem+%Xh+8", Addr);
+			sprintf(Reg, "DMEM+%Xh+8", Addr);
 			MoveX86regToVariable(x86_ECX, RSPInfo.DMEM + Addr + 8, Reg);
-			sprintf(Reg, "Dmem+%Xh+C", Addr);
+			sprintf(Reg, "DMEM+%Xh+C", Addr);
 			MoveX86regToVariable(x86_EDX, RSPInfo.DMEM + Addr + 12, Reg);
 		} else {
 			sprintf(Reg, "RSP_Vect[%i].B[0]", RSPOpC.rt);
@@ -6147,7 +6148,7 @@ void Compile_Opcode_SQV ( void ) {
 			} else {
 				SseShuffleReg(x86_XMM0, x86_MM0, 0x1b);
 			}
-			sprintf(Reg, "Dmem+%Xh", Addr);
+			sprintf(Reg, "DMEM+%Xh", Addr);
 			SseMoveUnalignedRegToVariable(x86_XMM0, RSPInfo.DMEM + Addr, Reg);
 		}
 		return;

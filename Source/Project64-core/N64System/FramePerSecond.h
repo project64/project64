@@ -32,7 +32,7 @@ private:
     int32_t m_ViFrameRateWhole;
     uint32_t m_ViFrameRateFraction;
 
-    //Dlist
+    // Dlist
     HighResTimeStamp m_LastDlistFrame;
     uint64_t m_FramesDlist[NoOfFrames];
     uint32_t m_CurrentDlistFrame;

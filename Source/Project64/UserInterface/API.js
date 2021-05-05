@@ -969,7 +969,7 @@ function Server(settings)
         if (_native.sockListen(_fd, port || 80)) {
             _listening = true;
         } else {
-            throw new Error("failed to listen");
+            throw new Error("Failed to listen");
         }
 
         if (_queued_accept) {

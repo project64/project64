@@ -622,7 +622,8 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
     return Jump_Opcode;
 }
 
-/************************* Opcode functions *************************/
+// Opcode functions
+
 void R4300iOp32::JAL()
 {
     m_NextInstruction = DELAY_SLOT;
@@ -1103,7 +1104,8 @@ void R4300iOp32::LL()
     }
 }
 
-/********************** R4300i OpCodes: Special **********************/
+// R4300i opcodes: Special
+
 void R4300iOp32::SPECIAL_SLL()
 {
     _GPR[m_Opcode.rd].W[0] = (_GPR[m_Opcode.rt].W[0] << m_Opcode.sa);
@@ -1210,12 +1212,13 @@ void R4300iOp32::SPECIAL_SLTU()
 void R4300iOp32::SPECIAL_TEQ()
 {
     if (_GPR[m_Opcode.rs].W[0] == _GPR[m_Opcode.rt].W[0] && CDebugSettings::HaveDebugger())
-    {
-        g_Notify->DisplayError("Should trap this ???");
+    {   // TODO: Find better wording for this
+        g_Notify->DisplayError("Should we trap this?");
     }
 }
 
-/********************** R4300i OpCodes: RegImm **********************/
+// R4300i opcodes: RegImm
+
 void R4300iOp32::REGIMM_BLTZ()
 {
     m_NextInstruction = DELAY_SLOT;
@@ -1352,12 +1355,13 @@ void R4300iOp32::REGIMM_BGEZAL()
     _GPR[31].W[0] = (int32_t)((*_PROGRAM_COUNTER) + 8);
 }
 
-/************************** COP0 functions **************************/
+// COP0 functions
+
 void R4300iOp32::COP0_MF()
 {
     if (LogCP0reads())
     {
-        LogMessage("%08X: R4300i Read from %s (0x%08X)", (*_PROGRAM_COUNTER), CRegName::Cop0[m_Opcode.rd], _CP0[m_Opcode.rd]);
+        LogMessage("%08X: R4300i read from %s (0x%08X)", (*_PROGRAM_COUNTER), CRegName::Cop0[m_Opcode.rd], _CP0[m_Opcode.rd]);
     }
 
     if (m_Opcode.rd == 9)
@@ -1372,7 +1376,7 @@ void R4300iOp32::COP0_MT()
     if (LogCP0changes())
     {
         LogMessage("%08X: Writing 0x%X to %s register (Originally: 0x%08X)", (*_PROGRAM_COUNTER), _GPR[m_Opcode.rt].UW[0], CRegName::Cop0[m_Opcode.rd], _CP0[m_Opcode.rd]);
-        if (m_Opcode.rd == 11) //Compare
+        if (m_Opcode.rd == 11) // Compare
         {
             LogMessage("%08X: Cause register changed from %08X to %08X", (*_PROGRAM_COUNTER), g_Reg->CAUSE_REGISTER, (g_Reg->CAUSE_REGISTER & ~CAUSE_IP7));
         }
@@ -1380,39 +1384,39 @@ void R4300iOp32::COP0_MT()
 
     switch (m_Opcode.rd)
     {
-    case 0: //Index
-    case 2: //EntryLo0
-    case 3: //EntryLo1
-    case 5: //PageMask
-    case 10: //Entry Hi
-    case 14: //EPC
-    case 16: //Config
-    case 18: //WatchLo
-    case 19: //WatchHi
-    case 28: //Tag lo
-    case 29: //Tag Hi
-    case 30: //ErrEPC
+    case 0: // Index
+    case 2: // EntryLo0
+    case 3: // EntryLo1
+    case 5: // PageMask
+    case 10: // Entry Hi
+    case 14: // EPC
+    case 16: // Config
+    case 18: // WatchLo
+    case 19: // WatchHi
+    case 28: // Tag Lo
+    case 29: // Tag Hi
+    case 30: // ErrEPC
         _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
         break;
-    case 6: //Wired
+    case 6: // Wired
         g_SystemTimer->UpdateTimers();
         _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
         break;
-    case 4: //Context
+    case 4: // Context
         _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0] & 0xFF800000;
         break;
-    case 9: //Count
+    case 9: // Count
         g_SystemTimer->UpdateTimers();
         _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
         g_SystemTimer->UpdateCompareTimer();
         break;
-    case 11: //Compare
+    case 11: // Compare
         g_SystemTimer->UpdateTimers();
         _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
         g_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP7;
         g_SystemTimer->UpdateCompareTimer();
         break;
-    case 12: //Status
+    case 12: // Status
         if ((_CP0[m_Opcode.rd] & STATUS_FR) != (_GPR[m_Opcode.rt].UW[0] & STATUS_FR))
         {
             _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
@@ -1424,11 +1428,11 @@ void R4300iOp32::COP0_MT()
         }
         if ((_CP0[m_Opcode.rd] & 0x18) != 0 && CDebugSettings::HaveDebugger())
         {
-            g_Notify->DisplayError("Left kernel mode ??");
+            g_Notify->DisplayError("Left kernel mode?");
         }
         g_Reg->CheckInterrupts();
         break;
-    case 13: //cause
+    case 13: // Cause
         _CP0[m_Opcode.rd] &= 0xFFFFCFF;
         if ((_GPR[m_Opcode.rt].UW[0] & 0x300) != 0 && CDebugSettings::HaveDebugger())
         {
@@ -1440,7 +1444,8 @@ void R4300iOp32::COP0_MT()
     }
 }
 
-/************************** COP1 functions **************************/
+// COP1 functions
+
 void R4300iOp32::COP1_MF()
 {
     TEST_COP1_USABLE_EXCEPTION
@@ -1452,7 +1457,7 @@ void R4300iOp32::COP1_CF()
     TEST_COP1_USABLE_EXCEPTION
         if (m_Opcode.fs != 31 && m_Opcode.fs != 0)
         {
-            if (CDebugSettings::HaveDebugger()) { g_Notify->DisplayError("CFC1 what register are you writing to ?"); }
+            if (CDebugSettings::HaveDebugger()) { g_Notify->DisplayError("CFC1; what register are you writing to?"); }
             return;
         }
     _GPR[m_Opcode.rt].W[0] = (int32_t)_FPCR[m_Opcode.fs];

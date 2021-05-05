@@ -401,14 +401,13 @@ void BuildRecompilerCPU ( void ) {
 	#endif
 }
 
-/******************************************************
-** ReOrderSubBlock
-**
-** Description:
-** This can be done, but will be interesting to put
-** between branches labels, and actual branches, whichever
-** occurs first in code
-********************************************************/
+/*
+ReOrderSubBlock
+Description:
+This can be done, but will be interesting to put
+between branches labels, and actual branches, whichever
+occurs first in code
+*/
 
 void ReOrderInstructions(DWORD StartPC, DWORD EndPC) {
 	DWORD InstructionCount = EndPC - StartPC;
@@ -509,13 +508,12 @@ void ReOrderSubBlock(RSP_BLOCK * Block) {
 	ReOrderInstructions(Block->CurrPC, end);
 }
 
-/******************************************************
-** DetectGPRConstants
-**
-** Description:
-**  this needs to be called on a sub-block basis, like
-**  after every time we hit a branch and delay slot
-********************************************************/
+/*
+DetectGPRConstants
+Description:
+This needs to be called on a sub-block basis, like
+after every time we hit a branch and delay slot
+*/
 
 void DetectGPRConstants(RSP_CODE * code) {
 	DWORD Count, Constant = 0;
@@ -543,15 +541,13 @@ void DetectGPRConstants(RSP_CODE * code) {
 	CPU_Message("");
 }
 
-/******************************************************
-** CompilerToggleBuffer and ClearX86Code
-**
-** Description:
-**  1> toggles the compiler buffer, useful for poorly
-**  taken branches like alignment
-**
-**  2> clears all the x86 code, jump tables etc.
-********************************************************/
+/*
+CompilerToggleBuffer and ClearX86Code
+Description:
+1: Toggles the compiler buffer, useful for poorly
+taken branches like alignment
+2: Clears all the x86 code, jump tables etc.
+*/
 
 void CompilerToggleBuffer(void) {
 	if (dwBuffer == MainBuffer) {
@@ -563,7 +559,7 @@ void CompilerToggleBuffer(void) {
 		}
 
 		RecompPos = pLastSecondary;
-		CPU_Message("   (Secondary Buffer Active 0x%08X)", pLastSecondary);
+		CPU_Message("   (Secondary buffer active 0x%08X)", pLastSecondary);
 	} else {
 		dwBuffer = MainBuffer;
 		pLastSecondary = RecompPos;
@@ -573,7 +569,7 @@ void CompilerToggleBuffer(void) {
 		}
 	
 		RecompPos = pLastPrimary;
-		CPU_Message("   (Primary Buffer Active 0x%08X)", pLastPrimary);
+		CPU_Message("   (Primary buffer active 0x%08X)", pLastPrimary);
 	}
 }
 
@@ -591,11 +587,11 @@ void ClearAllx86Code (void) {
 	pLastSecondary = NULL;
 }
 
-/******************************************************
-** Link Branches
-** Description:
-**  resolves all the collected branches, x86 style
-********************************************************/
+/*
+Link branches
+Description:
+Resolves all the collected branches, x86 style
+*/
 
 void LinkBranches(RSP_BLOCK * Block) {
 	DWORD OrigPrgCount = *PrgCount;
@@ -616,7 +612,7 @@ void LinkBranches(RSP_BLOCK * Block) {
 		if (!X86Code) {
 			*PrgCount = Target;
 			CPU_Message("");
-			CPU_Message("===== (Generate Code: %04X) =====", Target);
+			CPU_Message("===== (Generate code: %04X) =====", Target);
 			Save = *Block;
 
 			// Compile this block and link
@@ -624,7 +620,7 @@ void LinkBranches(RSP_BLOCK * Block) {
 			LinkBranches(Block);
 
 			*Block = Save;
-			CPU_Message("===== (End Generate Code: %04X) =====", Target);
+			CPU_Message("===== (End generate code: %04X) =====", Target);
 			CPU_Message("");
 			X86Code = *(JumpTable + (Target >> 2));
 		}
@@ -636,18 +632,17 @@ void LinkBranches(RSP_BLOCK * Block) {
 			JumpWord, Target, X86Code);
 	}
 	*PrgCount = OrigPrgCount;
-	CPU_Message("***** Done Linking Branches *****");
+	CPU_Message("***** Done linking branches *****");
 	CPU_Message("");
 }
 
-/******************************************************
-** BuildBranchLabels
-**
-** Description:
-**   Branch labels are used to start and stop re-ordering 
-**   sections as well as set the jump table to points 
-**   within a block that are safe
-********************************************************/
+/*
+BuildBranchLabels
+Description:
+Branch labels are used to start and stop re-ordering
+sections as well as set the jump table to points
+within a block that are safe.
+*/
 
 void BuildBranchLabels(void) {
 	OPCODE RspOp;
@@ -662,12 +657,12 @@ void BuildBranchLabels(void) {
 
 		if (TRUE == IsOpcodeBranch(i, RspOp)) {
 			if (RspCode.LabelCount >= (sizeof(RspCode.BranchLabels) / sizeof(RspCode.BranchLabels[0])) - 1) {
-				CompilerWarning("Out of space for Branch Labels");
+				CompilerWarning("Out of space for branch labels");
 				return;
 			}
 
 			if (RspCode.BranchCount >= (sizeof(RspCode.BranchLocations) / sizeof(RspCode.BranchLocations[0])) - 1) {
-				CompilerWarning("Out of space for Branch Locations");
+				CompilerWarning("Out of space for branch locations");
 				return;
 			}
 			RspCode.BranchLocations[RspCode.BranchCount++] = i;
@@ -749,11 +744,11 @@ void CompilerRSPBlock(void)
 		}
 	}
 
-	CPU_Message("====== block %d ======", BlockID++);
+	CPU_Message("====== Block %d ======", BlockID++);
 	CPU_Message("x86 code at: %X",RecompPos);
-	CPU_Message("Jump Table: %X",Table );
-	CPU_Message("Start of Block: %X",CurrentBlock.StartPC );
-	CPU_Message("====== recompiled code ======");
+	CPU_Message("Jump table: %X",Table );
+	CPU_Message("Start of block: %X",CurrentBlock.StartPC );
+	CPU_Message("====== Recompiled code ======");
 
 	if (Compiler.bReOrdering == TRUE) {
 		memcpy(IMEM_SAVE, RSPInfo.IMEM, 0x1000);
@@ -771,7 +766,7 @@ void CompilerRSPBlock(void)
 		if (NextInstruction == NORMAL && IsJumpLabel(CompilePC)) {
 			// Jumps come around twice
 			if (NULL == *(JumpTable + (CompilePC >> 2))) {
-				CPU_Message("***** Adding Jump Table Entry for PC: %04X at X86: %08X *****", CompilePC, RecompPos);
+				CPU_Message("***** Adding jump table entry for PC: %04X at X86: %08X *****", CompilePC, RecompPos);
 				CPU_Message("");
 				*(JumpTable + (CompilePC >> 2)) = RecompPos;
 
@@ -809,7 +804,7 @@ void CompilerRSPBlock(void)
 
 		if (RSPOpC.Hex == 0xFFFFFFFF) {
 			// I think this pops up an unknown OP dialog
-			/* NextInstruction = FINISH_BLOCK; */
+			// NextInstruction = FINISH_BLOCK;
 		} else {
 			RSP_Opcode[ RSPOpC.op ]();
 		}
@@ -837,7 +832,7 @@ void CompilerRSPBlock(void)
 				NextInstruction = FINISH_BLOCK;
 			} else if (NULL == *(JumpTable + (CompilePC >> 2))) {
 				// This is for the new block being compiled now
-				CPU_Message("**** Continuing static SubBlock (jump table entry added for PC: %04X at X86: %08X) *****", CompilePC, RecompPos);
+				CPU_Message("***** Continuing static SubBlock (jump table entry added for PC: %04X at X86: %08X) *****", CompilePC, RecompPos);
 				*(JumpTable + (CompilePC >> 2)) = RecompPos;
 
 				CurrentBlock.CurrPC = CompilePC;
@@ -850,12 +845,12 @@ void CompilerRSPBlock(void)
 
 		case FINISH_BLOCK: break;
 		default:
-			DisplayError("Rsp Main loop\n\nWTF NextInstruction = %d",NextInstruction);
+			DisplayError("RSP main loop\n\nWTF NextInstruction = %d",NextInstruction);
 			CompilePC += 4;
 			break;
 		}
 	} while (NextInstruction != FINISH_BLOCK && (CompilePC < 0x1000 || NextInstruction == DELAY_SLOT));
-	CPU_Message("==== End of recompiled code ====");
+	CPU_Message("===== End of recompiled code =====");
 
 	if (Compiler.bReOrdering == TRUE) {
 		memcpy(RSPInfo.IMEM, IMEM_SAVE, 0x1000);

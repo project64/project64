@@ -2,7 +2,7 @@
 #if defined(__arm__) || defined(_M_ARM)
 
 #pragma warning(push)
-#pragma warning(disable : 4201) // warning C4201: nonstandard extension used : nameless struct/union
+#pragma warning(disable : 4201) // warning C4201: non-standard extension used: nameless struct/union
 
 union ArmThumbOpcode
 {
@@ -94,7 +94,7 @@ union Arm32Opcode
     uint32_t Hex;
     uint8_t Ascii[4];
 
-    // uint16 + uint16 type instuction
+    // uint16 + uint16 type instruction
     struct
     {
         unsigned rn : 4;

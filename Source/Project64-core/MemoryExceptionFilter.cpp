@@ -188,7 +188,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
             {
                 if (ShowUnhandledMemory())
                 {
-                    g_Notify->DisplayError(stdstr_f("Failed to load byte\n\nMIPS Address: %08X\nX86 Address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
+                    g_Notify->DisplayError(stdstr_f("Failed to load byte\n\nMIPS address: %08X\nX86 address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
                 }
             }
             *context.Eip = (uint32_t)ReadPos;
@@ -198,7 +198,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
             {
                 if (ShowUnhandledMemory())
                 {
-                    g_Notify->DisplayError(stdstr_f("Failed to load half word\n\nMIPS Address: %08X\nX86 Address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
+                    g_Notify->DisplayError(stdstr_f("Failed to load half word\n\nMIPS address: %08X\nX86 address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
                 }
             }
             *context.Eip = (uint32_t)ReadPos;
@@ -208,7 +208,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
             {
                 if (ShowUnhandledMemory())
                 {
-                    g_Notify->DisplayError(stdstr_f("Failed to load byte\n\nMIPS Address: %08X\nX86 Address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
+                    g_Notify->DisplayError(stdstr_f("Failed to load byte\n\nMIPS address: %08X\nX86 address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
                 }
             }
             *context.Eip = (uint32_t)ReadPos;
@@ -218,7 +218,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
             {
                 if (ShowUnhandledMemory())
                 {
-                    g_Notify->DisplayError(stdstr_f("Failed to load half word\n\nMIPS Address: %08X\nX86 Address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
+                    g_Notify->DisplayError(stdstr_f("Failed to load half word\n\nMIPS address: %08X\nX86 address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
                 }
             }
             *context.Eip = (uint32_t)ReadPos;
@@ -239,7 +239,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
             {
                 if (ShowUnhandledMemory())
                 {
-                    g_Notify->DisplayError(stdstr_f("Failed to half word\n\nMIPS Address: %08X\nX86 Address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
+                    g_Notify->DisplayError(stdstr_f("Failed to half word\n\nMIPS address: %08X\nX86 address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
                 }
             }
             *context.Eip = (uint32_t)ReadPos;
@@ -249,7 +249,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
             {
                 if (ShowUnhandledMemory())
                 {
-                    g_Notify->DisplayError(stdstr_f("Failed to store half word\n\nMIPS Address: %08X\nX86 Address: %08X", MemAddress,
+                    g_Notify->DisplayError(stdstr_f("Failed to store half word\n\nMIPS address: %08X\nX86 address: %08X", MemAddress,
                         (uint8_t *)*context.Eip).c_str());
                 }
             }
@@ -268,7 +268,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
             {
                 if (ShowUnhandledMemory())
                 {
-                    g_Notify->DisplayError(stdstr_f("Failed to store half word\n\nMIPS Address: %08X\nX86 Address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
+                    g_Notify->DisplayError(stdstr_f("Failed to store half word\n\nMIPS address: %08X\nX86 address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
                 }
             }
             *context.Eip = (uint32_t)(ReadPos + 2);
@@ -286,7 +286,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to store byte\n\nMIPS Address: %08X\nX86 Address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to store byte\n\nMIPS address: %08X\nX86 address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
             }
         }
         *context.Eip = (uint32_t)ReadPos;
@@ -296,7 +296,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to load byte\n\nMIPS Address: %08X\nX86 Address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to load byte\n\nMIPS address: %08X\nX86 address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
             }
         }
         *context.Eip = (uint32_t)ReadPos;
@@ -306,7 +306,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to load word\n\nMIPS Address: %08X\nX86 Address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to load word\n\nMIPS address: %08X\nX86 address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
             }
         }
         *context.Eip = (uint32_t)ReadPos;
@@ -316,7 +316,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS Address: %08X\nX86 Address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS address: %08X\nX86 address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
             }
         }
         *context.Eip = (uint32_t)ReadPos;
@@ -334,7 +334,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to store byte\n\nMIPS Address: %08X\nX86 Address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to store byte\n\nMIPS address: %08X\nX86 address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
             }
         }
         *context.Eip = (uint32_t)(ReadPos + 1);
@@ -352,7 +352,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS Address: %08X\nX86 Address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS address: %08X\nX86 address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
             }
         }
         *context.Eip = (uint32_t)(ReadPos + 4);
@@ -371,7 +371,7 @@ void CMipsMemoryVM::DumpArmExceptionInfo(uint32_t MemAddress, mcontext_t & conte
 {
     ArmThumbOpcode * OpCode = (ArmThumbOpcode *)context.arm_pc;
     Arm32Opcode * OpCode32 = (Arm32Opcode *)context.arm_pc;
-    WriteTrace(TraceExceptionHandler, TraceError, "Program Counter 0x%lx", g_Reg->m_PROGRAM_COUNTER);
+    WriteTrace(TraceExceptionHandler, TraceError, "Program counter 0x%lx", g_Reg->m_PROGRAM_COUNTER);
     for (int i = 0, n = (sizeof(g_BaseSystem->m_LastSuccessSyncPC) / sizeof(g_BaseSystem->m_LastSuccessSyncPC[0])); i < n; i++)
     {
         WriteTrace(TraceExceptionHandler, TraceError, "m_LastSuccessSyncPC[%d] = 0x%lx", i, g_BaseSystem->m_LastSuccessSyncPC[i]);
@@ -467,7 +467,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to load word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to load word\n\nMIPS address: %08X\nPC address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 2;
@@ -479,7 +479,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS address: %08X\nPC address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 2;
@@ -493,7 +493,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS address: %08X\nPC address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 4;
@@ -507,7 +507,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS address: %08X\nPC address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 4;
@@ -521,7 +521,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to load word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to load word\n\nMIPS address: %08X\nPC address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 4;
@@ -536,7 +536,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS address: %08X\nPC address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 4;
@@ -549,7 +549,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to store byte\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to store byte\n\nMIPS address: %08X\nPC address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 2;
@@ -563,7 +563,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to store byte\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to store byte\n\nMIPS address: %08X\nPC address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 4;
@@ -577,7 +577,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to store half word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to store half word\n\nMIPS address: %08X\nPC address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 4;
@@ -591,7 +591,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to store half word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to store half word\n\nMIPS address: %08X\nPC address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 2;
@@ -605,7 +605,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to store half word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to store half word\n\nMIPS address: %08X\nPC address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 2;
@@ -619,7 +619,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS address: %08X\nPC address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 2;
@@ -633,7 +633,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to load word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to load word\n\nMIPS address: %08X\nPC address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 2;
@@ -647,7 +647,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to store byte\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to store byte\n\nMIPS address: %08X\nPC address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 2;
@@ -661,7 +661,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to store half word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to store half word\n\nMIPS address: %08X\nPC address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 4;
@@ -675,7 +675,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS address: %08X\nPC address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 4;
@@ -689,7 +689,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to load half word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to load half word\n\nMIPS address: %08X\nPC address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 4;
@@ -703,7 +703,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to load half word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to load half word\n\nMIPS address: %08X\nPC address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 4;
@@ -718,7 +718,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to load half word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to load half word\n\nMIPS address: %08X\nPC address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 4;
@@ -732,7 +732,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to load word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to load word\n\nMIPS address: %08X\nPC address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 4;
@@ -746,7 +746,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("Failed to load word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to load word\n\nMIPS address: %08X\nPC address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 4;

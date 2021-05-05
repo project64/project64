@@ -27,7 +27,7 @@ class CPlugins;
 class CRSP_Plugin;
 class CRecompiler;
 
-//#define TEST_SP_TRACKING  //track the SP to make sure all ops pick it up fine
+//#define TEST_SP_TRACKING  // Track the SP to make sure all ops pick it up fine
 
 class CN64System :
     public CLogging,
@@ -44,7 +44,7 @@ public:
     bool  m_EndEmulation;
     SAVE_CHIP_TYPE m_SaveUsing;
 
-    //Methods
+    // Methods
     static bool LoadFileImage(const char * FileLoc);
     static bool LoadFileImageIPL(const char * FileLoc);
     static bool LoadDiskImage(const char * FileLoc, const bool Expansion);
@@ -56,7 +56,7 @@ public:
     static void CloseSystem(void);
 
     void   CloseCpu();
-    void   ExternalEvent(SystemEvent action); //covers gui interacting and timers etc..
+    void   ExternalEvent(SystemEvent action); // Covers GUI interactions and timers etc.
     void   StartEmulation(bool NewThread);
     void   EndEmulation();
     void   AlterSpeed(const CSpeedLimiter::ESpeedChange SpeedChange) { m_Limiter.AlterSpeed(SpeedChange); }
@@ -79,29 +79,29 @@ public:
     uint32_t  GetButtons(int32_t Control) const { return m_Buttons[Control]; }
     CPlugins * GetPlugins() { return m_Plugins; }
 
-    //Variable used to track that the SP is being handled and stays the same as the real SP in sync core
+    // Variable used to track that the SP is being handled and stays the same as the real SP in sync core
 #ifdef TEST_SP_TRACKING
     uint32_t m_CurrentSP;
 #endif
-    //For Sync CPU
+    // For sync CPU
     void   UpdateSyncCPU(CN64System * const SecondCPU, uint32_t const Cycles);
     void   SyncCPU(CN64System * const SecondCPU);
     void   SyncCPUPC(CN64System * const SecondCPU);
     void   SyncSystem();
     void   SyncSystemPC();
 private:
-    //Make sure plugins can directly access this information
+    // Make sure plugins can directly access this information
     friend class CGfxPlugin;
     friend class CAudioPlugin;
     friend class CRSP_Plugin;
     friend class CControl_Plugin;
 
-    //Recompiler has access to manipulate and call functions
+    // Recompiler has access to manipulate and call functions
     friend class CSystemTimer;
     friend class CRecompiler;
     friend class CMipsMemoryVM;
 
-    //Used for loading and potentially executing the CPU in its own thread.
+    // Used for loading and potentially executing the CPU in its own thread
     static void StartEmulationThread(CThread * thread);
     static bool EmulationStarting(CThread * thread);
     static void StartEmulationThead();
@@ -114,28 +114,28 @@ private:
     void   InitRegisters(bool bPostPif, CMipsMemoryVM & MMU);
     void   DisplayRSPListCount();
 
-    //CPU Methods
+    // CPU methods
     void   ExecuteRecompiler();
     void   ExecuteInterpret();
     void   ExecuteSyncCPU();
 
-    //Mark information saying that the CPU has stopped
+    // Mark information saying that the CPU has stopped
     void   CpuStopped();
 
-    //Functions in CTLB_CB
+    // Functions in CTLB_CB
     void TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly);
     void TLB_Unmaped(uint32_t VAddr, uint32_t Len);
     void TLB_Changed();
 
-    CPlugins      * const m_Plugins;  //The plugin container
+    CPlugins      * const m_Plugins;  // The plugin container
     CPlugins      * m_SyncPlugins;
     CN64System    * m_SyncCPU;
-    CMipsMemoryVM   m_MMU_VM;   //Memory of the n64
+    CMipsMemoryVM   m_MMU_VM;   // Memory of the N64
     CTLB            m_TLB;
     CRegisters      m_Reg;
     CMempak         m_Mempak;
     CFramePerSecond m_FPS;
-    CProfiling      m_CPU_Usage; //used to track the cpu usage
+    CProfiling      m_CPU_Usage; // Used to track the CPU usage
     CRecompiler   * m_Recomp;
     CAudio          m_Audio;
     CSpeedLimiter   m_Limiter;
@@ -155,24 +155,24 @@ private:
     bool            m_SyncSystem;
     CRandom         m_Random;
 
-    //When Syncing cores this is the PC where it last Sync'ed correctly
+    // When syncing cores this is the PC where it last synced correctly
     uint32_t m_LastSuccessSyncPC[10];
     int32_t  m_CyclesToSkip;
 
-    //Handle to the cpu thread
+    // Handle to the CPU thread
     CThread * m_thread;
 
-    //Handle to pause mutex
+    // Handle to pause mutex
     SyncEvent m_hPauseEvent;
 
-    //No of Alist and Dlist sent to the RSP
+    // Number of Alist and Dlist sent to the RSP
     uint32_t m_AlistCount, m_DlistCount, m_UnknownCount;
 
-    //list of function that have been called .. used in profiling
+    // List of function that have been called (used in profiling)
     FUNC_CALLS m_FunctionCalls;
 
-    //list of Save State File IDs
-    const uint32_t SaveID_0 = 0x23D8A6C8;   //Main Save State Info (*.pj)
-    const uint32_t SaveID_1 = 0x56D2CD23;   //Extra Data v1 (System Timing) Info (*.dat)
-    const uint32_t SaveID_2 = 0x750A6BEB;   //Extra Data v2 (Timing + Disk Registers) (*.dat)
+    // List of save state file IDs
+    const uint32_t SaveID_0 = 0x23D8A6C8;   // Main save state info (*.pj)
+    const uint32_t SaveID_1 = 0x56D2CD23;   // Extra data v1 (system timing) info (*.dat)
+    const uint32_t SaveID_2 = 0x750A6BEB;   // Extra data v2 (timing + disk registers) (*.dat)
 };

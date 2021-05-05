@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Common/Log.h>
+#include <Common/LogClass.h>
 #include <Project64-core/N64System/N64Types.h>
-#include <Project64-core/N64System/Mips/Register.h>
+#include <Project64-core/N64System/Mips/RegisterClass.h>
 #include <Project64-core/3rdParty/zip.h>
 
 class CSystemTimer
@@ -37,20 +37,21 @@ public:
         int64_t CyclesToTimer;
     };
 
+public:
     CSystemTimer(CRegisters &Reg, int32_t & NextTimer);
-    void SetTimer(TimerType Type, uint32_t Cycles, bool bRelative);
+    void      SetTimer(TimerType Type, uint32_t Cycles, bool bRelative);
     uint32_t  GetTimer(TimerType Type);
-    void StopTimer(TimerType Type);
-    void UpdateTimers();
-    void TimerDone();
-    void Reset();
-    void UpdateCompareTimer();
-    bool SaveAllowed();
+    void      StopTimer(TimerType Type);
+    void      UpdateTimers();
+    void      TimerDone();
+    void      Reset();
+    void      UpdateCompareTimer();
+    bool      SaveAllowed();
 
-    void SaveData(zipFile & file) const;
-    void SaveData(CFile & file) const;
-    void LoadData(zipFile & file);
-    void LoadData(CFile & file);
+    void      SaveData(zipFile & file) const;
+    void      SaveData(CFile & file) const;
+    void      LoadData(zipFile & file);
+    void      LoadData(CFile & file);
 
     void RecordDifference(CLog &LogFile, const CSystemTimer& rSystemTimer);
 
@@ -60,17 +61,17 @@ public:
     bool operator != (const CSystemTimer& rSystemTimer) const;
 
 private:
-    CSystemTimer(void);
-    CSystemTimer(const CSystemTimer&);
-    CSystemTimer& operator=(const CSystemTimer&);
+    CSystemTimer(void);                           // Disable default constructor
+    CSystemTimer(const CSystemTimer&);            // Disable copy constructor
+    CSystemTimer& operator=(const CSystemTimer&); // Disable assignment
+
+    TIMER_DETAILS m_TimerDetatils[MaxTimer];
+    int32_t       m_LastUpdate; // Timer at last update
+    int32_t     & m_NextTimer;
+    TimerType     m_Current;
+    bool          m_inFixTimer;
+    CRegisters  & m_Reg;
 
     void SetCompareTimer();
     void FixTimers();
-
-    TIMER_DETAILS m_TimerDetatils[MaxTimer];
-    int32_t m_LastUpdate;
-    int32_t & m_NextTimer;
-    TimerType m_Current;
-    bool m_inFixTimer;
-    CRegisters & m_Reg;
 };

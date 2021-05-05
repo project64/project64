@@ -176,7 +176,7 @@ void CSymbolTable::Load()
 
         if (m_ParserToken == nullptr || m_ParserTokenLength == 0)
         {
-            // Empty line @EOF
+            // Empty line at the EOF
             errorCode = ERR_SUCCESS;
             break;
         }

@@ -18,7 +18,7 @@ CSystemTimer::CSystemTimer(CRegisters &Reg, int32_t & NextTimer) :
 
 void CSystemTimer::Reset()
 {
-    //initialise Structure
+    // Initialize structure
     for (int i = 0; i < MaxTimer; i++)
     {
         m_TimerDetatils[i].Active = false;
@@ -47,16 +47,16 @@ void CSystemTimer::SetTimer(TimerType Type, uint32_t Cycles, bool bRelative)
     {
         if (m_TimerDetatils[Type].Active)
         {
-            m_TimerDetatils[Type].CyclesToTimer += Cycles; //Add to the timer
+            m_TimerDetatils[Type].CyclesToTimer += Cycles; // Add to the timer
         }
         else
         {
-            m_TimerDetatils[Type].CyclesToTimer = (int64_t)Cycles - (int64_t)m_NextTimer;  //replace the new cycles
+            m_TimerDetatils[Type].CyclesToTimer = (int64_t)Cycles - (int64_t)m_NextTimer;  // Replace the new cycles
         }
     }
     else
     {
-        m_TimerDetatils[Type].CyclesToTimer = (int64_t)Cycles - (int64_t)m_NextTimer;  //replace the new cycles
+        m_TimerDetatils[Type].CyclesToTimer = (int64_t)Cycles - (int64_t)m_NextTimer;  // Replace the new cycles
     }
     FixTimers();
 }
@@ -109,7 +109,7 @@ void CSystemTimer::FixTimers()
         SetCompareTimer();
     }
 
-    //Update the cycles for the remaining number of cycles to timer
+    // Update the cycles for the remaining number of cycles to timer
     int count;
     for (count = 0; count < MaxTimer; count++)
     {
@@ -120,10 +120,10 @@ void CSystemTimer::FixTimers()
         m_TimerDetatils[count].CyclesToTimer += m_NextTimer;
     }
 
-    //Set Max timer
+    // Set max timer
     m_NextTimer = 0x7FFFFFFF;
 
-    //Find the smallest timer left to go
+    // Find the smallest timer left to go
     for (count = 0; count < MaxTimer; count++)
     {
         if (!m_TimerDetatils[count].Active)
@@ -138,7 +138,7 @@ void CSystemTimer::FixTimers()
         m_Current = (TimerType)count;
     }
 
-    //Move the timer back this value
+    // Move the timer back this value
     for (count = 0; count < MaxTimer; count++)
     {
         if (!m_TimerDetatils[count].Active)

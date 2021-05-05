@@ -29,7 +29,7 @@ uint8_t* CDebugMMU::GetPhysicalPtr(uint32_t paddr, WORD* flags)
     {
         // todo
     }
-    else if (paddr >= 0x06000000 && paddr <= 0x06FFFFFF) // Cartridge Domain 1 (Address 1) (64DD IPL ROM)
+    else if (paddr >= 0x06000000 && paddr <= 0x06FFFFFF) // Cartridge domain 1 (address 1) (64DD IPL ROM)
     {
         uint32_t iplRomOffset = paddr - 0x06000000;
 
@@ -172,7 +172,7 @@ bool CDebugMMU::GetPhysicalByte(uint32_t paddr, uint8_t* value)
 
     int nByte = paddr & 3;
 
-    if (paddr >= 0x08000000 && paddr <= 0x08FFFFFF) // Cartridge Domain 2 (Address 2)
+    if (paddr >= 0x08000000 && paddr <= 0x08FFFFFF) // Cartridge domain 2 (address 2)
     {
         uint32_t saveOffset = paddr & 0x000FFFFF;
 
@@ -186,7 +186,7 @@ bool CDebugMMU::GetPhysicalByte(uint32_t paddr, uint8_t* value)
             *value = data[nByte ^ 3];
             return true;
         }
-        else if (g_System->m_SaveUsing == SaveChip_FlashRam && saveOffset <= 3) // Flash RAM status
+        else if (g_System->m_SaveUsing == SaveChip_FlashRam && saveOffset <= 3) // FlashRAM status
         {
             CFlashram* flashRam = g_MMU->GetFlashram();
             uint32_t flashStatus = flashRam->ReadFromFlashStatus(0x08000000);
@@ -246,7 +246,7 @@ bool CDebugMMU::SetPhysicalByte(uint32_t paddr, uint8_t value)
 
     int nByte = paddr & 3;
 
-    if (paddr >= 0x08000000 && paddr <= 0x08FFFFFF) // Cartridge Domain 2 (Address 2)
+    if (paddr >= 0x08000000 && paddr <= 0x08FFFFFF) // Cartridge domain 2 (address 2)
     {
         uint32_t saveOffset = paddr & 0x000FFFFF;
 

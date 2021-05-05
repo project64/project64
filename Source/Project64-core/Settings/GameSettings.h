@@ -44,7 +44,7 @@ protected:
     static void SpeedChanged(int32_t SpeedLimit);
 
 private:
-    //Settings that can be changed on the fly
+    // Settings that can be changed on the fly
     static bool m_UseHleGfx;
     static bool m_bRomInMemory;
     static bool m_RegCaching;

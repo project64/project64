@@ -5,7 +5,7 @@
 
 #pragma warning(push)
 #pragma warning(disable : 4091) // warning C4091: 'typedef ': ignored on left of 'tagGPFIDL_FLAGS' when no variable is declared
-#pragma warning(disable : 4201) // warning C4201: nonstandard extension used: nameless struct/union
+#pragma warning(disable : 4201) // warning C4201: non-standard extension used: nameless struct/union
 #pragma warning(disable : 4302) // warning C4302: 'type cast': truncation from 'LPCTSTR' to 'WORD'
 #pragma warning(disable : 4458) // warning C4458: declaration of 'dwCommonButtons' hides class member
 #pragma warning(disable : 4838) // warning C4838: conversion from 'int' to 'UINT' requires a narrowing conversion

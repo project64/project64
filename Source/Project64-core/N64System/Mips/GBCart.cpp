@@ -1,9 +1,11 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2015 Bobby Smiles
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
+
 #include "stdafx.h"
+#include <Common/SmartPointer.h>
 #include "GBCart.h"
 
 #include <time.h>
@@ -15,27 +17,27 @@ static void read_gb_cart_normal(struct gb_cart* gb_cart, uint16_t address, uint8
 
     if ((address >= 0x0000) && (address <= 0x7FFF))
     {
-        //Read GB Cart
+        // Read Game Boy cart
         if (address >= gb_cart->rom_size)
         {
-            //If address is larger then our rome size, bail out
+            // If address is larger then our ROM size, bail out
             return;
         }
         memcpy(data, &gb_cart->rom[address], 0x20);
     }
     else if ((address >= 0xA000) && (address <= 0xBFFF))
     {
-        //Read from RAM
-        if (gb_cart->ram == nullptr)
+        // Read from RAM
+        if (gb_cart->ram == NULL)
         {
-            //No RAM to write to
+            // No RAM to write to
             return;
         }
 
         offset = address - 0xA000;
         if (offset >= gb_cart->ram_size)
         {
-            //Offset is larger then our ram size
+            // Offset is larger then our RAM size
             return;
         }
 
@@ -49,17 +51,17 @@ static void write_gb_cart_normal(struct gb_cart* gb_cart, uint16_t address, cons
     uint16_t offset;
     if ((address >= 0xA000) && (address <= 0xBFFF))
     {
-        //Write to RAM
-        if (gb_cart->ram == nullptr)
+        // Write to RAM
+        if (gb_cart->ram == NULL)
         {
-            //No RAM to write to
+            // No RAM to write to
             return;
         }
 
         offset = address - 0xa000;
         if (offset >= gb_cart->ram_size)
         {
-            //Offset is larger then our ram size
+            // Offset is larger then our RAM size
             return;
         }
 
@@ -71,11 +73,11 @@ static void read_gb_cart_mbc1(struct gb_cart* gb_cart, uint16_t address, uint8_t
 {
     size_t offset;
 
-    if ((address >= 0x0000) && (address <= 0x3FFF)) //No nbanked memory
+    if ((address >= 0x0000) && (address <= 0x3FFF)) // No unbanked memory
     {
         memcpy(data, &gb_cart->rom[address], 0x20);
     }
-    else if ((address >= 0x4000) && (address <= 0x7FFF)) //Read from ROM
+    else if ((address >= 0x4000) && (address <= 0x7FFF)) // Read from ROM
     {
         offset = (address - 0x4000) + (gb_cart->rom_bank * 0x4000);
         if (offset < gb_cart->rom_size)
@@ -83,9 +85,9 @@ static void read_gb_cart_mbc1(struct gb_cart* gb_cart, uint16_t address, uint8_t
             memcpy(data, &gb_cart->rom[offset], 0x20);
         }
     }
-    else if ((address >= 0xA000) && (address <= 0xBFFF)) //Read from RAM
+    else if ((address >= 0xA000) && (address <= 0xBFFF)) // Read from RAM
     {
-        if (gb_cart->ram != nullptr)
+        if (gb_cart->ram != NULL)
         {
             offset = (address - 0xA000) + (gb_cart->ram_bank * 0x2000);
             if (offset < gb_cart->ram_size)
@@ -102,15 +104,15 @@ static void write_gb_cart_mbc1(struct gb_cart* gb_cart, uint16_t address, const 
 
     if ((address >= 0x0000) && (address <= 0x1FFF)) // RAM enable
     {
-        //Enable/disable RAM
+        // Enable/disable RAM
         gb_cart->ram_enabled = (data[0] & 0x0F) == 0x0A;
     }
     else if ((address >= 0x2000) && (address <= 0x3FFF)) // ROM bank select
     {
-        gb_cart->rom_bank &= 0x60;	// keep MSB
+        gb_cart->rom_bank &= 0x60;	// Keep MSB
         gb_cart->rom_bank |= data[0] & 0x1F;
 
-        // emulate quirk: 0x00 -> 0x01, 0x20 -> 0x21, 0x40->0x41, 0x60 -> 0x61
+        // Emulate quirk: 0x00 -> 0x01, 0x20 -> 0x21, 0x40->0x41, 0x60 -> 0x61
         if ((gb_cart->rom_bank & 0x1F) == 0)
         {
             gb_cart->rom_bank |= 0x01;
@@ -125,33 +127,33 @@ static void write_gb_cart_mbc1(struct gb_cart* gb_cart, uint16_t address, const 
         else
         {
             gb_cart->rom_bank &= 0x1F;
-            gb_cart->rom_bank |= ((data[0] & 0x03) << 5); // set bits 5 and 6 of ROM bank
+            gb_cart->rom_bank |= ((data[0] & 0x03) << 5); // Set bits 5 and 6 of ROM bank
         }
     }
     else if ((address >= 0x6000) && (address <= 0x7FFF)) // MBC1 mode select
     {
-        // this is overly complicated, but it keeps us from having to do bitwise math later
-        // Basically we shuffle the 2 "magic bits" between rom_bank and ram_bank as necessary.
+        // This is overly complicated, but it keeps us from having to do bitwise math later
+        // Basically we shuffle the 2 "magic bits" between rom_bank and ram_bank as necessary
         if (gb_cart->ram_bank_mode != (data[0] & 0x01))
         {
-            // we should only alter the ROM and RAM bank numbers if we have changed modes
+            // We should only alter the ROM and RAM bank numbers if we have changed modes
             gb_cart->ram_bank_mode = data[0] & 0x01;
             if (gb_cart->ram_bank_mode)
             {
-                gb_cart->ram_bank = gb_cart->rom_bank >> 5;	// set the ram bank to the "magic bits"
-                gb_cart->rom_bank &= 0x1F; // zero out bits 5 and 6 to keep consistency
+                gb_cart->ram_bank = gb_cart->rom_bank >> 5;	// Set the RAM bank to the "magic bits"
+                gb_cart->rom_bank &= 0x1F; // Zero out bits 5 and 6 to keep consistency
             }
             else
             {
                 gb_cart->rom_bank &= 0x1F;
                 gb_cart->rom_bank |= (gb_cart->ram_bank << 5);
-                gb_cart->ram_bank = 0x00;	// we can only reach RAM page 0
+                gb_cart->ram_bank = 0x00;	// We can only reach RAM page 0
             }
         }
     }
     else if ((address >= 0xA000) && (address <= 0xBFFF)) // Write to RAM
     {
-        if (gb_cart->ram != nullptr)
+        if (gb_cart->ram != NULL)
         {
             offset = (address - 0xA000) + (gb_cart->ram_bank * 0x2000);
             if (offset < gb_cart->ram_size)
@@ -166,11 +168,11 @@ static void read_gb_cart_mbc2(struct gb_cart* gb_cart, uint16_t address, uint8_t
 {
     size_t offset;
 
-    if ((address < 0x4000)) //Rom Bank 0
+    if ((address < 0x4000)) // ROM bank 0
     {
         memcpy(data, &gb_cart->rom[address], 0x20);
     }
-    else if ((address >= 0x4000) && (address < 0x8000)) //Switchable Rom Bank
+    else if ((address >= 0x4000) && (address < 0x8000)) // Switchable ROM bank
     {
         offset = (address - 0x4000) + (gb_cart->rom_bank * 0x4000);
         if (offset < gb_cart->rom_size)
@@ -178,9 +180,9 @@ static void read_gb_cart_mbc2(struct gb_cart* gb_cart, uint16_t address, uint8_t
             memcpy(data, &gb_cart->rom[offset], 0x20);
         }
     }
-    else if ((address >= 0xA000) && (address <= 0xC000)) //Upper Bounds of memory map
+    else if ((address >= 0xA000) && (address <= 0xC000)) // Upper bounds of memory map
     {
-        if (gb_cart->ram != nullptr)
+        if (gb_cart->ram != NULL)
         {
             offset = (address - 0xA000) + (gb_cart->ram_bank * 0x2000);
             if (offset < gb_cart->ram_size)
@@ -209,14 +211,14 @@ static void write_gb_cart_mbc2(struct gb_cart* gb_cart, uint16_t address, const 
     }
     else if ((address >= 0x4000) && (address <= 0x5FFF)) // RAM bank select
     {
-        if (gb_cart->ram != nullptr)
+        if (gb_cart->ram != NULL)
         {
             gb_cart->ram_bank = data[0] & 0x07;
         }
     }
     else if ((address >= 0xA000) && (address <= 0xBFFF)) // Write to RAM
     {
-        if (gb_cart->ram != nullptr)
+        if (gb_cart->ram != NULL)
         {
             offset = (address - 0xA000) + (gb_cart->ram_bank * 0x2000);
             if (offset < gb_cart->ram_size)
@@ -229,10 +231,10 @@ static void write_gb_cart_mbc2(struct gb_cart* gb_cart, uint16_t address, const 
 
 void memoryUpdateMBC3Clock(struct gb_cart* gb_cart)
 {
-    time_t now = time(nullptr);
+    time_t now = time(NULL);
     time_t diff = now - gb_cart->rtc_last_time;
     if (diff > 0) {
-        // update the clock according to the last update time
+        // Update the clock according to the last update time
         gb_cart->rtc_data[0] += (int)(diff % 60);
         if (gb_cart->rtc_data[0] > 59) {
             gb_cart->rtc_data[0] -= 60;
@@ -270,11 +272,11 @@ static void read_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, uint8_t
 {
     size_t offset;
 
-    if ((address < 0x4000)) //Rom Bank 0
+    if ((address < 0x4000)) // ROM bank 0
     {
         memcpy(data, &gb_cart->rom[address], 0x20);
     }
-    else if ((address >= 0x4000) && (address < 0x8000)) //Switchable Rom Bank
+    else if ((address >= 0x4000) && (address < 0x8000)) // Switchable ROM bank
     {
         offset = (address - 0x4000) + (gb_cart->rom_bank * 0x4000);
         if (offset < gb_cart->rom_size)
@@ -282,9 +284,9 @@ static void read_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, uint8_t
             memcpy(data, &gb_cart->rom[offset], 0x20);
         }
     }
-    else if ((address >= 0xA000) && (address <= 0xC000)) //Upper Bounds of memory map
+    else if ((address >= 0xA000) && (address <= 0xC000)) // Upper bounds of memory map
     {
-        if (gb_cart->ram != nullptr)
+        if (gb_cart->ram != NULL)
         {
             if (gb_cart->ram_bank <= 0x03)
             {
@@ -323,7 +325,7 @@ static void write_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, const 
 
     if ((address >= 0x0000) && (address <= 0x1FFF)) // We shouldn't be able to read/write to RAM unless this is toggled on
     {
-        //Enable / Disable RAM -- NOT WORKING -- FIXME
+        // TODO: Enable / Disable RAM -- NOT WORKING --
         gb_cart->ram_enabled = (data[0] & 0x0F) == 0x0A;
     }
     else if ((address >= 0x2000) && (address <= 0x3FFF)) // ROM bank select
@@ -331,14 +333,14 @@ static void write_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, const 
         bank = data[0] & 0x7F;
         gb_cart->rom_bank = (bank == 0) ? 1 : bank;
     }
-    else if ((address >= 0x4000) && (address <= 0x5FFF)) // RAM/Clock bank select
+    else if ((address >= 0x4000) && (address <= 0x5FFF)) // RAM/clock bank select
     {
-        if (gb_cart->ram != nullptr)
+        if (gb_cart->ram != NULL)
         {
             bank = data[0];
             if (gb_cart->has_rtc && (bank >= 0x8 && bank <= 0xc))
             {
-                //Set the bank for the timer
+                // Set the bank for the timer
                 gb_cart->ram_bank = bank;
             }
             else
@@ -349,10 +351,10 @@ static void write_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, const 
     }
     else if ((address >= 0x6000) && (address <= 0x7FFF)) // Latch timer data
     {
-        //Implement RTC timer / latch
+        // Implement RTC timer / latch
         if (gb_cart->rtc_latch == 0 && data[0] == 1)
         {
-            //Update time
+            // Update time
             memoryUpdateMBC3Clock(gb_cart);
             for (int i = 0; i < 4; i++)
             {
@@ -363,7 +365,7 @@ static void write_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, const 
     }
     else if ((address >= 0xA000) && (address <= 0xBFFF)) // Write to RAM
     {
-        if (gb_cart->ram != nullptr)
+        if (gb_cart->ram != NULL)
         {
             if (gb_cart->ram_bank <= 0x03)
             {
@@ -375,7 +377,7 @@ static void write_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, const 
             }
             else if (gb_cart->has_rtc)
             {
-                /* RTC write */
+                // RTC write
                 gb_cart->rtc_data[gb_cart->ram_bank - 0x08] = data[0];
             }
         }
@@ -396,11 +398,11 @@ static void read_gb_cart_mbc5(struct gb_cart * gb_cart, uint16_t address, uint8_
 {
     size_t offset;
 
-    if ((address < 0x4000)) //Rom Bank 0
+    if ((address < 0x4000)) // ROM bank 0
     {
         memcpy(data, &gb_cart->rom[address], 0x20);
     }
-    else if ((address >= 0x4000) && (address < 0x8000)) //Switchable ROM BANK
+    else if ((address >= 0x4000) && (address < 0x8000)) // Switchable ROM bank
     {
         offset = (address - 0x4000) + (gb_cart->rom_bank * 0x4000);
         if (offset < gb_cart->rom_size)
@@ -408,9 +410,9 @@ static void read_gb_cart_mbc5(struct gb_cart * gb_cart, uint16_t address, uint8_
             memcpy(data, &gb_cart->rom[offset], 0x20);
         }
     }
-    else if ((address >= 0xA000) && (address <= 0xC000)) //Upper bounds of memory map
+    else if ((address >= 0xA000) && (address <= 0xC000)) // Upper bounds of memory map
     {
-        if (gb_cart->ram != nullptr)
+        if (gb_cart->ram != NULL)
         {
             offset = (address - 0xA000) + (gb_cart->ram_bank * 0x2000);
             if (offset < gb_cart->ram_size)
@@ -427,7 +429,7 @@ static void write_gb_cart_mbc5(struct gb_cart* gb_cart, uint16_t address, const 
 
     if ((address >= 0x0000) && (address <= 0x1FFF))  // We shouldn't be able to read/write to RAM unless this is toggled on
     {
-        //Enable / Disable RAM -- NOT WORKING -- CHECK ME
+        // TODO: Enable / Disable RAM -- NOT WORKING --
         gb_cart->ram_enabled = (data[0] & 0x0F) == 0x0A;
     }
     else if ((address >= 0x2000) && (address <= 0x2FFF)) // ROM bank select, low bits
@@ -442,14 +444,14 @@ static void write_gb_cart_mbc5(struct gb_cart* gb_cart, uint16_t address, const 
     }
     else if ((address >= 0x4000) && (address <= 0x5FFF)) // RAM bank select
     {
-        if (gb_cart->ram != nullptr)
+        if (gb_cart->ram != NULL)
         {
             gb_cart->ram_bank = data[0] & 0x0f;
         }
     }
     else if ((address >= 0xA000) && (address <= 0xBFFF)) // Write to RAM
     {
-        if (gb_cart->ram != nullptr)
+        if (gb_cart->ram != NULL)
         {
             offset = (address - 0xA000) + (gb_cart->ram_bank * 0x2000);
             if (offset < gb_cart->ram_size)
@@ -474,11 +476,11 @@ static void read_gb_cart_pocket_cam(struct gb_cart * gb_cart, uint16_t address, 
 {
     size_t offset;
 
-    if ((address < 0x4000)) //Rom Bank 0
+    if ((address < 0x4000)) // ROM bank 0
     {
         memcpy(data, &gb_cart->rom[address], 0x20);
     }
-    else if ((address >= 0x4000) && (address < 0x8000)) //Switchable ROM BANK
+    else if ((address >= 0x4000) && (address < 0x8000)) // Switchable ROM bank
     {
         offset = (address - 0x4000) + (gb_cart->rom_bank * 0x4000);
         if (offset < gb_cart->rom_size)
@@ -486,20 +488,20 @@ static void read_gb_cart_pocket_cam(struct gb_cart * gb_cart, uint16_t address, 
             memcpy(data, &gb_cart->rom[offset], 0x20);
         }
     }
-    else if ((address >= 0xA000) && (address <= 0xC000)) //Upper bounds of memory map
+    else if ((address >= 0xA000) && (address <= 0xC000)) // Upper bounds of memory map
     {
-        //Check to see if where currently in register mode
-        if (gb_cart->ram != nullptr)
+        // Check to see if where currently in register mode
+        if (gb_cart->ram != NULL)
         {
             if (gb_cart->ram_bank & 0x10)
             {
-                //Where in register mode, based off NRAGE we just fill the memory with Zeroes.
-                //Seems to be incorrect behaviour but need to find more doccumentation
+                // TODO: When in register mode, based off of N-Rage code we just fill the memory with zeroes
+                // Seems to be incorrect behavior, but need to find more documentation
                 memset(data, 0x00, 0x20);
             }
             else
             {
-                //Read RAM normally
+                // Read RAM normally
                 offset = (address - 0xA000) + (gb_cart->ram_bank * 0x2000);
                 if (offset < gb_cart->ram_size)
                 {
@@ -516,7 +518,7 @@ static void write_gb_cart_pocket_cam(struct gb_cart* gb_cart, uint16_t address, 
 
     if ((address >= 0x0000) && (address <= 0x1FFF))  // We shouldn't be able to read/write to RAM unless this is toggled on
     {
-        //Enable / Disable RAM
+        // Enable / Disable RAM
         gb_cart->ram_enabled = (data[0] & 0x0F) == 0x0A;
     }
     else if ((address >= 0x2000) && (address <= 0x2FFF)) // ROM bank select, low bits
@@ -524,33 +526,33 @@ static void write_gb_cart_pocket_cam(struct gb_cart* gb_cart, uint16_t address, 
         gb_cart->rom_bank &= 0xFF00;
         gb_cart->rom_bank |= data[0];
     }
-    else if ((address >= 0x4000) && (address <= 0x4FFF)) // Camera Register & RAM bank select
+    else if ((address >= 0x4000) && (address <= 0x4FFF)) // Camera register and RAM bank select
     {
-        if (gb_cart->ram != nullptr)
+        if (gb_cart->ram != NULL)
         {
             if (data[0] & 0x10)
             {
-                //REGISTER MODE
+                // Register mode
                 gb_cart->ram_bank = data[0];
             }
             else
             {
-                //RAM MODE
+                // RAM mode
                 gb_cart->ram_bank = data[0] & 0x0F;
             }
         }
     }
     else if ((address >= 0xA000) && (address <= 0xBFFF)) // Write to RAM
     {
-        if (gb_cart->ram != nullptr)
+        if (gb_cart->ram != NULL)
         {
             if (gb_cart->ram_bank & 0x10)
             {
-                //REGISTER MODE (DO NOTHING)
+                // Register mode (do nothing)
             }
             else
             {
-                //RAM MODE
+                // RAM mode
                 offset = (address - 0xA000) + (gb_cart->ram_bank * 0x2000);
                 if (offset < gb_cart->ram_size)
                 {
@@ -675,23 +677,23 @@ static const struct parsed_cart_type* parse_cart_type(uint8_t cart_type)
     case 0xFD: return &GB_CART_TYPES[26];
     case 0xFE: return &GB_CART_TYPES[27];
     case 0xFF: return &GB_CART_TYPES[28];
-    default:   return nullptr;
+    default:   return NULL;
     }
 }
 
 bool GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
 {
     const struct parsed_cart_type* type;
-    std::unique_ptr<uint8_t> rom;
+    AUTO_PTR<uint8_t> rom;
     size_t rom_size = 0;
-    std::unique_ptr<uint8_t> ram;
+    AUTO_PTR<uint8_t> ram;
     size_t ram_size = 0;
     CFile tempFile;
 
-    /* load GB cart ROM */
+    // Load Game Boy cart ROM
     if (!tempFile.Open(gb_file, CFileBase::modeRead))
     {
-        g_Notify->DisplayError("Failed to open Transferpak ROM");
+        g_Notify->DisplayError("Failed to open Transfer Pak ROM");
         return false;
     }
 
@@ -706,15 +708,15 @@ bool GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
         return false;
     }
 
-    /* get and parse cart type */
+    // Get and parse cart type
     uint8_t cart_type = rom.get()[0x147];
     type = parse_cart_type(cart_type);
-    if (type == nullptr)
+    if (type == NULL)
     {
         return false;
     }
 
-    /* load ram (if present) */
+    // Load RAM (if present)
     if (type->extra_devices & GED_RAM)
     {
         ram_size = 0;
@@ -730,21 +732,21 @@ bool GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
         if (ram_size != 0)
         {
             ram.reset(new uint8_t[ram_size]);
-            if (ram.get() == nullptr)
+            if (ram.get() == NULL)
             {
                 return false;
             }
 
             if (!tempFile.Open(g_Settings->LoadStringVal(Game_Transferpak_Sav).c_str(), CFileBase::modeRead))
             {
-                g_Notify->DisplayError("Failed to open Transferpak SAV File");
+                g_Notify->DisplayError("Failed to open Transfer Pak SAV file");
                 return false;
             }
 
             tempFile.Read(ram.get(), ram_size);
         }
 
-        //If we have RTC we need to load in the data, we assume the save will use the VBA-M format
+        // If we have RTC we need to load in the data, we assume the save will use the VBA-M format (TODO: look into other formats and mGBA?)
         if (type->extra_devices & GED_RTC)
         {
             tempFile.Read(&gb_cart->rtc_data[0], 4);
@@ -763,7 +765,7 @@ bool GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
         tempFile.Close();
     }
 
-    /* update gb_cart */
+    // Update gb_cart
     gb_cart->rom = rom.release();
     gb_cart->ram = ram.release();
     gb_cart->rom_size = rom_size;
@@ -802,10 +804,10 @@ void GBCart::save_gb_cart(struct gb_cart* gb_cart)
 
 void GBCart::release_gb_cart(struct gb_cart* gb_cart)
 {
-    if (gb_cart->rom != nullptr)
+    if (gb_cart->rom != NULL)
         delete gb_cart->rom;
 
-    if (gb_cart->ram != nullptr)
+    if (gb_cart->ram != NULL)
         delete gb_cart->ram;
 
     memset(gb_cart, 0, sizeof(*gb_cart));

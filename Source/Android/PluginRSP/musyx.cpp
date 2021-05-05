@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2013 Bobby Smiles
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
@@ -252,7 +252,7 @@ void musyx_v2_task(CHle * hle)
 
         if (ptr_10)
         {
-            // TODO:
+            // TODO: ?
             hle->WarnMessage("ptr_10=%08x mask_14=%02x ptr_24=%08x", ptr_10, mask_14, ptr_24);
         }
 
@@ -320,7 +320,7 @@ static void update_base_vol(CHle * hle, int32_t *base_vol,
     hle->VerboseMessage("base_vol voice_mask = %08x", voice_mask);
     hle->VerboseMessage("BEFORE: base_vol = %08x %08x %08x %08x", base_vol[0], base_vol[1], base_vol[2], base_vol[3]);
 
-    // optimization: skip voices contributions entirely if voice_mask is empty
+    // Optimization: skip voices contributions entirely if voice_mask is empty
     if (voice_mask != 0)
     {
         for (i = 0, mask = 1; i < MAX_VOICES; ++i, mask <<= 1, last_sample_ptr += 8)
@@ -337,7 +337,7 @@ static void update_base_vol(CHle * hle, int32_t *base_vol,
         }
     }
 
-    // optimization: skip contributions entirely if mask_15 is empty
+    // Optimization: skip contributions entirely if mask_15 is empty
     if (mask_15 != 0)
     {
         for(i = 0, mask = 1; i < 4; ++i, mask <<= 1, ptr_24 += 8)
@@ -846,7 +846,7 @@ static void interleave_stage_v1(CHle * hle, musyx_t *musyx, uint32_t output_ptr)
     int16_t *right;
     uint32_t *dst;
 
-    hle->VerboseMessage("interleave: %08x", output_ptr);
+    hle->VerboseMessage("Interleave: %08x", output_ptr);
 
     base_left  = clamp_s16(musyx->base_vol[0]);
     base_right = clamp_s16(musyx->base_vol[1]);

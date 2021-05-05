@@ -1,28 +1,28 @@
 /*
-    XInput Controller support for N-Rage`s Dinput8 Plugin
-    (C) 2002, 2006  Norbert Wladyka - N-Rage`s Dinput8 Plugin
-    (C) 2009  Daniel Rehren - XInput Controller support
+XInput Controller support for N-Rage`s Dinput8 Plugin
+(C) 2002, 2006  Norbert Wladyka - N-Rage`s Dinput8 Plugin
+(C) 2009  Daniel Rehren - XInput Controller support
 
-    N-Rage`s Dinput8 Plugin:
-    Author`s Email: norbert.wladyka@chello.at
-    Website: http://go.to/nrage
+N-Rage`s Dinput8 Plugin:
+Author`s Email: norbert.wladyka@chello.at
+Website: http://go.to/nrage
 
-    XInput Controller support:
-    Author's Email: rehren_007@hotmail.com
+XInput Controller support:
+Author's Email: rehren_007@hotmail.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 #ifndef _XINPUTCONTROLLER_H
@@ -30,10 +30,10 @@
 
 //#include <wmsstd.h> <-- only needed for SAFE_RELEASE(x)
 
-/* fixes undefined FILE, etc. type errors in MSVC 2010 build -- cxd4 */
+// Fixes undefined FILE, etc. type errors in MSVC 2010 build -- cxd4
 #include <stdio.h>
 
-#ifndef SAFE_RELEASE        // when Windows Media Device M? is not present
+#ifndef SAFE_RELEASE        // When Windows Media Device M? is not present
 #define SAFE_RELEASE(x) \
    if(x != NULL)        \
    {                    \
@@ -42,33 +42,33 @@
    }
 #endif
 
-//-----------------------------------------------------------------------------
+
 // Enum each PNP device using WMI and check each device ID to see if it contains
 // "IG_" (ex. "VID_045E&PID_028E&IG_00").  If it does, then it's an XInput device
 // Unfortunately this information can not be found by just using DirectInput
-//-----------------------------------------------------------------------------
+
 BOOL IsXInputDevice( const GUID* pGuidProductFromDirectInput );
 //END conde from ...
 
 /*
-    Xinput header for NRage Plugin, by tecnicors.
+XInput header for N-Rage Plugin, by tecnicors.
 
-    XInput Controller is going to take over the N64 control that matches its
-    number, ie. first XInput controller is first N64 player, etc.
+XInput Controller is going to take over the N64 control that matches its
+number, ie. first XInput controller is first N64 player, etc.
 */
 
 #include "commonIncludes.h"
 #include <xinput.h>
 
-//defines
+// Defines
 #define N64_ANALOG_MAX 127
 #define XC_ANALOG_MAX 32767
 #define BUTTON_ANALOG_VALUE 60
 
-//enums
+// Enums
 namespace N64_BUTTONS
 {
-    // Whith this we can asign buttons to the xinput struct
+    // With this we can assign buttons to the XInput struct
     enum _N64_BUTTONS { A = 0x0080, B = 0x0040, Z = 0x0020, R = 0x1000, L = 0x2000, XAxis = 0x4000,
                         Start = 0x0010, DUp = 0x0008, DDown = 0x0004, DLeft = 0x0002, YAxis = 0x8000,
                         DRight = 0x0001, CUp = 0x0800, CDown = 0x0400, CLeft = 0x0200, CRight = 0x0100,
@@ -103,13 +103,13 @@ typedef XCONTROLLER *LPXCONTROLLER;
 
 extern int iXinputControlId;
 
-//Initiates XInput library
+// Initiates XInput library
 bool InitXinput();
-//Free the Xinput library
+// Free the XInput library
 void FreeXinput();
-// Sets the keys pressed for Xinput controller gController, into keys.
+// Sets the keys pressed for XInput controller gController, into keys
 void GetXInputControllerKeys( const int indexController, LPDWORD Keys );
-// Sets the default keys for Xinput controller gController.
+// Sets the default keys for XInput controller gController
 void DefaultXInputControllerKeys( LPXCONTROLLER gController);
 // Vibrates the XInput Control
 void VibrateXInputController( DWORD nController, int LeftMotorVal = 65535, int RightMotorVal = 65535 );
@@ -125,11 +125,11 @@ static DWORD(WINAPI * fnXInputSetState) (DWORD dwUserIndex, XINPUT_VIBRATION* pV
 #define XC_LTBS 2
 #define XC_RTBS 3
 
-// Reads current XInput controller key config, and shows it in the dialog.
+// Reads current XInput controller key config, and shows it in the dialog
 bool ReadXInputControllerKeys( HWND hDlg, LPXCONTROLLER gController );
-// Stores dialog's button configuration into the XCONTROLLER struct.
+// Stores dialog's button configuration into the XCONTROLLER struct
 void StoreXInputControllerKeys( HWND hDlg, LPXCONTROLLER gController );
-// Fills N64 button comobox with its buttons.
+// Fills N64 button comobox with its buttons
 inline void FillN64ButtonComboBox( HWND hDlg, int ComboBox )
 {
     SendDlgItemMessage( hDlg, ComboBox, CB_ADDSTRING, 0, ( LPARAM )_T( "None" ));
@@ -160,7 +160,7 @@ inline void FillN64AnalogComboBox( HWND hDlg, int ComboBox )
     SendDlgItemMessage( hDlg, ComboBox, CB_SETCURSEL, 0, ( LPARAM )0);
 }
 
-// Save/Load Keys from own config file
+// Save/load keys from own config file
 
 void SaveXInputConfigToFile( FILE *file, LPXCONTROLLER gController );
 void LoadXInputConfigFromFile( FILE *file, LPXCONTROLLER gController );

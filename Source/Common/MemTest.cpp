@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "MemTest.h"
-#include <map>
 
 #if defined(MEM_LEAK_TEST) && defined(_WIN32)
 
@@ -46,8 +46,8 @@ CMemList *MemList(void)
 }
 
 CMemList::CMemList() :
-    m_MemList(nullptr),
-    m_hModule(nullptr),
+    m_MemList(NULL),
+    m_hModule(NULL),
     m_cs({0}),
     m_NextOrder(1)
 {
@@ -77,7 +77,7 @@ CMemList::~CMemList()
         DumpItems();
     }
     delete m_MemList;
-    m_MemList = nullptr;
+    m_MemList = NULL;
     DeleteCriticalSection(&m_cs);
 }
 
@@ -128,14 +128,14 @@ void CMemList::DumpItems(void)
     HANDLE hLogFile = INVALID_HANDLE_VALUE;
     do
     {
-        hLogFile = CreateFileA( LogFileName, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, nullptr );
+        hLogFile = CreateFileA( LogFileName, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL );
         if (hLogFile == INVALID_HANDLE_VALUE)
         {
             if (GetLastError() == ERROR_SHARING_VIOLATION)
             {
                 char Msg[3000];
-                sprintf(Msg, "%s\nCan not be opened for writing please close app using this file\n\nTry Again ?", LogFileName);
-                int Result = MessageBoxA(nullptr, Msg, "Memory Leak", MB_YESNO | MB_ICONQUESTION | MB_SETFOREGROUND | MB_SERVICE_NOTIFICATION);
+                sprintf(Msg, "%s\nCan not be opened for writing, please close app using this file\n\nTry Again ?", LogFileName);
+                int Result = MessageBoxA(NULL, Msg, "Memory Leak", MB_YESNO | MB_ICONQUESTION | MB_SETFOREGROUND | MB_SERVICE_NOTIFICATION);
                 if (Result == IDNO)
                 {
                     break;
@@ -146,33 +146,33 @@ void CMemList::DumpItems(void)
 
     if (hLogFile != INVALID_HANDLE_VALUE)
     {
-        SetFilePointer(hLogFile, 0, nullptr, FILE_BEGIN);
+        SetFilePointer(hLogFile, 0, NULL, FILE_BEGIN);
 
         DWORD dwWritten = 0;
         char  Msg[800];
         _snprintf(Msg, sizeof(Msg), "Order, Source File, Line Number, Mem Size\r\n");
-        WriteFile(hLogFile, Msg, (DWORD)strlen(Msg), &dwWritten, nullptr);
+        WriteFile(hLogFile, Msg, (DWORD)strlen(Msg), &dwWritten, NULL);
 
         for (MEMLIST_ITER item = m_MemList->begin(); item != m_MemList->end(); item++)
         {
             _snprintf(Msg, sizeof(Msg), "%d,%s, %d, %d\r\n", (*item).second.order, (*item).second.File, (*item).second.line, (*item).second.size);
-            WriteFile(hLogFile, Msg, (DWORD)strlen(Msg), &dwWritten, nullptr);
+            WriteFile(hLogFile, Msg, (DWORD)strlen(Msg), &dwWritten, NULL);
         }
         CloseHandle(hLogFile);
     }
     char Msg[3000];
-    sprintf(Msg, "%s%s\n\nMemory Leaks detected\n\nOpen the Log File ?", fname, ext);
-    int Result = MessageBoxA(nullptr, Msg, "Memory Leak", MB_YESNO | MB_ICONQUESTION | MB_SETFOREGROUND | MB_SERVICE_NOTIFICATION);
+    sprintf(Msg, "%s%s\n\nMemory Leaks detected\n\nOpen the Log File?", fname, ext);
+    int Result = MessageBoxA(NULL, Msg, "Memory Leak", MB_YESNO | MB_ICONQUESTION | MB_SETFOREGROUND | MB_SERVICE_NOTIFICATION);
     if (Result == IDYES)
     {
-        ShellExecuteA(nullptr, "open", LogFileName, nullptr, nullptr, SW_SHOW);
+        ShellExecuteA(NULL, "open", LogFileName, NULL, NULL, SW_SHOW);
     }
 }
 
 void* AllocateMemory(size_t size, const char* filename, unsigned int line)
 {
     void * res = malloc(size);
-    if (res == nullptr)
+    if (res == NULL)
     {
         return res;
     }

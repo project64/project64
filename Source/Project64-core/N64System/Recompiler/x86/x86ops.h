@@ -50,7 +50,7 @@ public:
     static const char * fpu_Name(x86FpuValues Reg);
 
 protected:
-    //Logging Functions
+    // Logging functions
     static void WriteX86Comment(const char * Comment);
     static void WriteX86Label(const char * Label);
 

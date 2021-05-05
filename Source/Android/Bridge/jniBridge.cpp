@@ -210,7 +210,7 @@ void AddRecentRom(const char * ImagePath)
 
     if (g_JavaBridge)
     {
-        WriteTrace(TraceUserInterface, TraceDebug, "calling RecentRomsUpdated");
+        WriteTrace(TraceUserInterface, TraceDebug, "Calling RecentRomsUpdated");
         g_JavaBridge->RecentRomsUpdated();
     }
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
@@ -220,7 +220,7 @@ void GameCpuRunning(void * /*NotUsed*/)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
     bool Running = g_Settings->LoadBool(GameRunning_CPU_Running);
-    WriteTrace(TraceUserInterface, TraceDebug, Running ? "Game Started" : "Game Stopped");
+    WriteTrace(TraceUserInterface, TraceDebug, Running ? "Game started" : "Game stopped");
     JNIEnv *env = Android_JNI_GetEnv();
     if (Running)
     {
@@ -232,7 +232,7 @@ void GameCpuRunning(void * /*NotUsed*/)
         g_System->RefreshGameSettings();
 
         int RunCount = UISettingsLoadDword(Game_RunCount);
-        WriteTrace(TraceUserInterface, TraceDebug, "Setting Run Count to %d", RunCount + 1);
+        WriteTrace(TraceUserInterface, TraceDebug, "Setting run count to %d", RunCount + 1);
         UISettingsSaveDword(Game_RunCount, RunCount + 1);
         if (env != NULL)
         {
@@ -265,12 +265,12 @@ void GameCpuRunning(void * /*NotUsed*/)
                 WriteTrace(TraceUserInterface, TraceError, "No Java bridge");
             }
 
-            // call in to java that emulation done
+            // Call in to java that emulation done
             WriteTrace(TraceUserInterface, TraceDebug, "Clean up global activity");
             env->DeleteGlobalRef(g_Activity);
             g_Activity = NULL;
 
-            WriteTrace(TraceUserInterface, TraceDebug, "Clean up global gl thread");
+            WriteTrace(TraceUserInterface, TraceDebug, "Clean up global GL thread");
             if (g_JavaBridge)
             {
                 g_JavaBridge->GfxThreadDone();
@@ -300,7 +300,7 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_appInit(JNIEnv* env, j
     Notify().DisplayMessage(10, " / ____/ /  / /_/ / / /  __/ /__/ /_/ /_/ /__  __/");
     Notify().DisplayMessage(10, "/_/   /_/   \\____/_/ /\\___/\\___/\\__/\\____/  /_/");
     Notify().DisplayMessage(10, "                /___/");
-    Notify().DisplayMessage(10, "http://www.pj64-emu.com/");
+    Notify().DisplayMessage(10, "https://www.pj64-emu.com/");
     Notify().DisplayMessage(10, stdstr_f("%s Version %s", VER_FILE_DESCRIPTION_STR, VER_FILE_VERSION_STR).c_str());
     Notify().DisplayMessage(10, "");
 

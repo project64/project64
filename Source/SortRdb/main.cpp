@@ -21,6 +21,7 @@ int main (int argc, char *argv[])
 	typedef std::map<std::string,std::vector<std::string>, insensitive_compare> strmap;
 	typedef std::set<std::string, insensitive_compare> strset;
 	
+	// TODO: Maybe instead of a pre-compiled list we could do some sort of automated sorting system? Not sure...
 	strset PDNames;
 	PDNames.insert("1964 Demo by Steb (PD)");
 	PDNames.insert("2 Blokes'n'Armchair");

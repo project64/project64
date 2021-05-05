@@ -6,7 +6,7 @@ class R4300iOp32 :
     public R4300iOp
 {
 public:
-    /************************* OpCode functions *************************/
+    // Opcode functions
     static void  JAL();
     static void  BEQ();
     static void  BNE();
@@ -34,7 +34,7 @@ public:
     static void  LWU();
     static void  LL();
 
-    /********************** R4300i OpCodes: Special **********************/
+    // R4300i opcodes: Special
     static void  SPECIAL_SLL();
     static void  SPECIAL_SRL();
     static void  SPECIAL_SRA();
@@ -53,7 +53,7 @@ public:
     static void  SPECIAL_SLTU();
     static void  SPECIAL_TEQ();
 
-    /********************** R4300i OpCodes: RegImm **********************/
+    // R4300i opcodes: RegImm
     static void  REGIMM_BLTZ();
     static void  REGIMM_BGEZ();
     static void  REGIMM_BLTZL();
@@ -61,11 +61,11 @@ public:
     static void  REGIMM_BLTZAL();
     static void  REGIMM_BGEZAL();
 
-    /************************** COP0 functions **************************/
+    // COP0 functions
     static void  COP0_MF();
     static void  COP0_MT();
 
-    /************************** COP1 functions **************************/
+    // COP1 functions
     static void  COP1_MF();
     static void  COP1_CF();
     static void  COP1_DMT();

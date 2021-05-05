@@ -11,6 +11,7 @@ void CLanguage::LoadDefaultStrings(void)
 
     DEF_STR(EMPTY_STRING, "");
 
+	// TODO: This needs a quick cleanup, a lot of UI fixes here
     // Meta information
 
     // About DLL
@@ -373,7 +374,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(DISKSAVE_SHADOW, "Full Disk Copy");
     DEF_STR(DISKSAVE_RAM, "Save Area Only");
 
-    // ROM Information
+    // ROM information
 
     // ROM info title
     DEF_STR(INFO_TITLE, "ROM Information");
@@ -434,7 +435,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(CHEAT_CHANGED_MSG, "Cheat has been changed.\n\nDo you want to update?");
     DEF_STR(CHEAT_CHANGED_TITLE, "Cheat updated");
 
-    // Cheat Pop-up menu
+    // Cheat pop-up menu
     DEF_STR(CHEAT_ADDNEW, "Add New Cheat...");
     DEF_STR(CHEAT_EDIT, "Edit");
     DEF_STR(CHEAT_DELETE, "Delete");

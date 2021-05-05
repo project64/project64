@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include <Project64-core/N64System/Recompiler/Recompiler.h>
+#include <Project64-core/N64System/Recompiler/RecompilerClass.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
-#include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/ExceptionHandler.h>
 
@@ -120,24 +120,24 @@ void CRecompiler::RecompilerMain_VirtualTable()
         if (table)
         {
             CCompiledFunc * info = table[TableEntry];
-            if (info != nullptr)
+            if (info != NULL)
             {
                 (info->Function())();
                 continue;
             }
         }
         CCompiledFunc * info = CompileCode();
-        if (info == nullptr || m_EndEmulation)
+        if (info == NULL || m_EndEmulation)
         {
             break;
         }
 
-        if (table == nullptr)
+        if (table == NULL)
         {
             table = new PCCompiledFunc[(0x1000 >> 2)];
-            if (table == nullptr)
+            if (table == NULL)
             {
-                WriteTrace(TraceRecompiler, TraceError, "failed to allocate PCCompiledFunc");
+                WriteTrace(TraceRecompiler, TraceError, "Failed to allocate PCCompiledFunc");
                 g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
             }
             memset(table, 0, sizeof(PCCompiledFunc)* (0x1000 >> 2));
@@ -164,8 +164,8 @@ void CRecompiler::RecompilerMain_VirtualTable_validate()
         if (NextInstruction == DELAY_SLOT)
         {
             CCompiledFunc * Info = m_FunctionsDelaySlot.FindFunction(PROGRAM_COUNTER);
-            //Find Block on hash table
-            if (Info == nullptr)
+            // Find block on hash table
+            if (Info == NULL)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef legacycode
@@ -181,10 +181,10 @@ void CRecompiler::RecompilerMain_VirtualTable_validate()
                     continue;
                 }
 #endif
-                //Find Block on hash table
+                // Find block on hash table
                 Info = CompileDelaySlot(PROGRAM_COUNTER);
 
-                if (Info == nullptr || EndEmulation())
+                if (Info == NULL || EndEmulation())
                 {
                     break;
                 }
@@ -195,7 +195,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate()
             {
                 ClearRecompCode_Virt((Info->VStartPC() - 0x1000) & ~0xFFF, 0x2000, Remove_ValidateFunc);
                 NextInstruction = DELAY_SLOT;
-                Info = nullptr;
+                Info = NULL;
                 continue;
             }
             _asm {
@@ -209,13 +209,13 @@ void CRecompiler::RecompilerMain_VirtualTable_validate()
         if (table)
         {
             CCompiledFunc * info = table[(PROGRAM_COUNTER & 0xFFF) >> 2];
-            if (info != nullptr)
+            if (info != NULL)
             {
                 if ((*info->MemLocation[0] != info->MemContents[0]) ||
                     (*info->MemLocation[1] != info->MemContents[1]))
                 {
                     ClearRecompCode_Virt((info->VStartPC() - 0x1000) & ~0xFFF, 0x3000, Remove_ValidateFunc);
-                    info = nullptr;
+                    info = NULL;
                     continue;
                 }
                 const uint8_t * Block = info->FunctionAddr();
@@ -242,7 +242,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate()
 #endif
         CCompiledFunc * info = CompileCode();
 
-        if (info == nullptr || EndEmulation())
+        if (info == NULL || EndEmulation())
         {
             break;
         }
@@ -264,12 +264,12 @@ void CRecompiler::RecompilerMain_VirtualTable_validate()
         {
             CCompiledFunc * Info = m_FunctionsDelaySlot.FindFunction(PROGRAM_COUNTER);
 
-            //Find Block on hash table
-            if (Info == nullptr)
+            // Find block on hash table
+            if (Info == NULL)
             {
                 Info = CompileDelaySlot(PROGRAM_COUNTER);
 
-                if (Info == nullptr || EndEmulation())
+                if (Info == NULL || EndEmulation())
                 {
                     break;
                 }
@@ -281,7 +281,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate()
                 {
                     ClearRecompCode_Virt((Info->StartPC() - 0x1000) & ~0xFFF, 0x2000, Remove_ValidateFunc);
                     NextInstruction = DELAY_SLOT;
-                    Info = nullptr;
+                    Info = NULL;
                     continue;
                 }
             }
@@ -296,12 +296,12 @@ void CRecompiler::RecompilerMain_VirtualTable_validate()
 
         CCompiledFunc * Info = m_Functions.FindFunction(PROGRAM_COUNTER);
 
-        //Find Block on hash table
-        if (Info == nullptr)
+        // Find block on hash table
+        if (Info == NULL)
         {
             Info = CompileCode();
 
-            if (Info == nullptr || EndEmulation())
+            if (Info == NULL || EndEmulation())
             {
                 break;
             }
@@ -312,7 +312,7 @@ void CRecompiler::RecompilerMain_VirtualTable_validate()
                 (*Info->MemLocation[1] != Info->MemContents[1]))
             {
                 ClearRecompCode_Virt((Info->StartPC() - 0x1000) & ~0xFFF, 0x3000, Remove_ValidateFunc);
-                Info = nullptr;
+                Info = NULL;
                 continue;
             }
         }
@@ -334,10 +334,10 @@ void CRecompiler::RecompilerMain_Lookup()
         if (PhysicalAddr < g_System->RdramSize())
         {
             CCompiledFunc * info = JumpTable()[PhysicalAddr >> 2];
-            if (info == nullptr)
+            if (info == NULL)
             {
                 info = CompileCode();
-                if (info == nullptr || m_EndEmulation)
+                if (info == NULL || m_EndEmulation)
                 {
                     break;
                 }
@@ -395,11 +395,11 @@ void CRecompiler::RecompilerMain_Lookup()
     CCompiledFunc * Info = m_FunctionsDelaySlot.FindFunction(PROGRAM_COUNTER);
 
     //Find Block on hash table
-    if (Info == nullptr)
+    if (Info == NULL)
     {
     Info = CompileDelaySlot(PROGRAM_COUNTER);
 
-    if (Info == nullptr || EndEmulation())
+    if (Info == NULL || EndEmulation())
     {
     break;
     }
@@ -411,7 +411,7 @@ void CRecompiler::RecompilerMain_Lookup()
     {
     ClearRecompCode_Virt((Info->VStartPC() - 0x1000) & ~0xFFF,0x2000,Remove_ValidateFunc);
     NextInstruction = DELAY_SLOT;
-    Info = nullptr;
+    Info = NULL;
     continue;
     }
     }
@@ -431,7 +431,7 @@ void CRecompiler::RecompilerMain_Lookup()
     {
     if (Addr > 0x20000000)
     {
-    WriteTraceF(TraceDebug,"Executing from non mapped space .1 PC: %X Addr: %X",PROGRAM_COUNTER, Addr);
+    WriteTraceF(TraceDebug,"Executing from non-mapped space .1 PC: %X Addr: %X",PROGRAM_COUNTER, Addr);
     g_Notify->DisplayError(GS(MSG_NONMAPPED_SPACE));
     break;
     }
@@ -443,7 +443,7 @@ void CRecompiler::RecompilerMain_Lookup()
     }
     continue;
     } else {
-    WriteTraceF(TraceDebug,"Executing from non mapped space .1 PC: %X Addr: %X",PROGRAM_COUNTER, Addr);
+    WriteTraceF(TraceDebug,"Executing from non-mapped space .1 PC: %X Addr: %X",PROGRAM_COUNTER, Addr);
     g_Notify->DisplayError(GS(MSG_NONMAPPED_SPACE));
     break;
     }
@@ -458,17 +458,17 @@ void CRecompiler::RecompilerMain_Lookup()
     }
     continue;
     } else {
-    WriteTraceF(TraceDebug,"Executing from non mapped space .2 PC: %X Addr: %X",PROGRAM_COUNTER, Addr);
+    WriteTraceF(TraceDebug,"Executing from non-mapped space .2 PC: %X Addr: %X",PROGRAM_COUNTER, Addr);
     g_Notify->DisplayError(GS(MSG_NONMAPPED_SPACE));
     return;
     }
     }
 
-    if (Info == nullptr)
+    if (Info == NULL)
     {
     Info = CompileCode();
 
-    if (Info == nullptr || EndEmulation())
+    if (Info == NULL || EndEmulation())
     {
     break;
     }
@@ -484,7 +484,7 @@ void CRecompiler::RecompilerMain_Lookup()
     (*Info->MemLocation[1] != Info->MemContents[1]))
     {
     ClearRecompCode_Virt((Info->VStartPC() - 0x1000) & ~0xFFF,0x3000,Remove_ValidateFunc);
-    Info = nullptr;
+    Info = NULL;
     continue;
     }
     }
@@ -538,10 +538,10 @@ void CRecompiler::RecompilerMain_Lookup_TLB()
         {
             CCompiledFunc * info = JumpTable()[PhysicalAddr >> 2];
 
-            if (info == nullptr)
+            if (info == NULL)
             {
                 info = CompileCode();
-                if (info == nullptr || m_EndEmulation)
+                if (info == NULL || m_EndEmulation)
                 {
                     break;
                 }
@@ -580,10 +580,10 @@ void CRecompiler::RecompilerMain_Lookup_validate()
         if (PhysicalAddr < g_System->RdramSize())
         {
             CCompiledFunc * info = JumpTable()[PhysicalAddr >> 2];
-            if (info == nullptr)
+            if (info == NULL)
             {
                 info = CompileCode();
-                if (info == nullptr || m_EndEmulation)
+                if (info == NULL || m_EndEmulation)
                 {
                     break;
                 }
@@ -599,7 +599,7 @@ void CRecompiler::RecompilerMain_Lookup_validate()
                     *(info->MemLocation(1)) != info->MemContents(1))
                 {
                     ClearRecompCode_Virt((info->EnterPC() - 0x1000) & ~0xFFF, 0x3000, Remove_ValidateFunc);
-                    info = nullptr;
+                    info = NULL;
                     continue;
                 }
             }
@@ -648,10 +648,10 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB()
         {
             CCompiledFunc * info = JumpTable()[PhysicalAddr >> 2];
 
-            if (info == nullptr)
+            if (info == NULL)
             {
                 info = CompileCode();
-                if (info == nullptr || m_EndEmulation)
+                if (info == NULL || m_EndEmulation)
                 {
                     break;
                 }
@@ -675,10 +675,10 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB()
                         ClearRecompCode_Phys(0, 0x2000, Remove_ValidateFunc);
                     }
                     info = JumpTable()[PhysicalAddr >> 2];
-                    if (info != nullptr)
+                    if (info != NULL)
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
-                        info = nullptr;
+                        info = NULL;
                     }
                     continue;
                 }
@@ -739,7 +739,7 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB()
 
 void CRecompiler::Reset()
 {
-    WriteTrace(TraceRecompiler, TraceDebug, "start");
+    WriteTrace(TraceRecompiler, TraceDebug, "Start");
     ResetRecompCode(true);
     ResetMemoryStackPos();
     WriteTrace(TraceRecompiler, TraceDebug, "Done");
@@ -747,14 +747,14 @@ void CRecompiler::Reset()
 
 void CRecompiler::ResetRecompCode(bool bAllocate)
 {
-    WriteTrace(TraceRecompiler, TraceDebug, "start");
+    WriteTrace(TraceRecompiler, TraceDebug, "Start");
     CRecompMemory::Reset();
     CFunctionMap::Reset(bAllocate);
 
     for (CCompiledFuncList::iterator iter = m_Functions.begin(); iter != m_Functions.end(); iter++)
     {
         CCompiledFunc * Func = iter->second;
-        while (Func != nullptr)
+        while (Func != NULL)
         {
             CCompiledFunc * CurrentFunc = Func;
             Func = Func->Next();
@@ -801,22 +801,22 @@ void CRecompiler::RecompilerMain_ChangeMemory()
             }
             __except (EXCEPTION_EXECUTE_HANDLER)
             {
-                g_Notify->DisplayError("Executing Delay Slot from non maped space\nPROGRAM_COUNTER = 0x%X", PROGRAM_COUNTER);
+                g_Notify->DisplayError("Executing delay slot from non-mapped space\nPROGRAM_COUNTER = 0x%X", PROGRAM_COUNTER);
                 ExitThread(0);
             }
             if ((Value >> 16) == 0x7C7C)
             {
                 uint32_t Index = (Value & 0xFFFF);
                 Block = (uint8_t *)OrigMem[Index].CompiledLocation;
-                if (OrigMem[Index].PAddr != Addr) { Block = nullptr; }
-                if (OrigMem[Index].VAddr != PROGRAM_COUNTER) { Block = nullptr; }
-                if (Index >= TargetIndex) { Block = nullptr; }
+                if (OrigMem[Index].PAddr != Addr) { Block = NULL; }
+                if (OrigMem[Index].VAddr != PROGRAM_COUNTER) { Block = NULL; }
+                if (Index >= TargetIndex) { Block = NULL; }
             }
             else
             {
-                Block = nullptr;
+                Block = NULL;
             }
-            if (Block == nullptr)
+            if (Block == NULL)
             {
                 uint32_t MemValue;
 
@@ -852,13 +852,13 @@ void CRecompiler::RecompilerMain_ChangeMemory()
             {
                 uint32_t Index = (Value & 0xFFFF);
                 Block = (uint8_t *)OrigMem[Index].CompiledLocation;
-                if (OrigMem[Index].PAddr != Addr) { Block = nullptr; }
-                if (OrigMem[Index].VAddr != PROGRAM_COUNTER) { Block = nullptr; }
-                if (Index >= TargetIndex) { Block = nullptr; }
+                if (OrigMem[Index].PAddr != Addr) { Block = NULL; }
+                if (OrigMem[Index].VAddr != PROGRAM_COUNTER) { Block = NULL; }
+                if (Index >= TargetIndex) { Block = NULL; }
             }
             else
             {
-                Block = nullptr;
+                Block = NULL;
             }
         }
         __except (EXCEPTION_EXECUTE_HANDLER)
@@ -867,7 +867,7 @@ void CRecompiler::RecompilerMain_ChangeMemory()
             ExitThread(0);
         }
 
-        if (Block == nullptr)
+        if (Block == NULL)
         {
             uint32_t MemValue;
 
@@ -943,14 +943,14 @@ CCompiledFunc * CRecompiler::CompileCode()
     if (!m_MMU.TranslateVaddr(PROGRAM_COUNTER, pAddr))
     {
         WriteTrace(TraceRecompiler, TraceError, "Failed to translate %X", PROGRAM_COUNTER);
-        return nullptr;
+        return NULL;
     }
 
     CCompiledFuncList::iterator iter = m_Functions.find(PROGRAM_COUNTER);
     if (iter != m_Functions.end())
     {
-        WriteTrace(TraceRecompiler, TraceInfo, "exisiting functions for address (Program Counter: %X pAddr: %X)", PROGRAM_COUNTER, pAddr);
-        for (CCompiledFunc * Func = iter->second; Func != nullptr; Func = Func->Next())
+        WriteTrace(TraceRecompiler, TraceInfo, "Existing functions for address (Program Counter: %X pAddr: %X)", PROGRAM_COUNTER, pAddr);
+        for (CCompiledFunc * Func = iter->second; Func != NULL; Func = Func->Next())
         {
             uint32_t PAddr;
             if (m_MMU.TranslateVaddr(Func->MinPC(), PAddr))
@@ -959,7 +959,7 @@ CCompiledFunc * CRecompiler::CompileCode()
                 MD5(m_MMU.Rdram() + PAddr, (Func->MaxPC() - Func->MinPC()) + 4).get_digest(Hash);
                 if (memcmp(Hash.digest, Func->Hash().digest, sizeof(Hash.digest)) == 0)
                 {
-                    WriteTrace(TraceRecompiler, TraceInfo, "Using extisting compiled code (Program Counter: %X pAddr: %X)", PROGRAM_COUNTER, pAddr);
+                    WriteTrace(TraceRecompiler, TraceInfo, "Using existing compiled code (Program Counter: %X pAddr: %X)", PROGRAM_COUNTER, pAddr);
                     return Func;
                 }
             }
@@ -974,7 +974,7 @@ CCompiledFunc * CRecompiler::CompileCode()
     CCodeBlock CodeBlock(PROGRAM_COUNTER, *g_RecompPos);
     if (!CodeBlock.Compile())
     {
-        return nullptr;
+        return NULL;
     }
 
     if (bShowRecompMemSize())
@@ -992,7 +992,7 @@ CCompiledFunc * CRecompiler::CompileCode()
 
     if (g_ModuleLogLevel[TraceRecompiler] >= TraceDebug)
     {
-        WriteTrace(TraceRecompiler, TraceDebug, "info->Function() = %X", Func->Function());
+        WriteTrace(TraceRecompiler, TraceDebug, "Info->Function() = %X", Func->Function());
         std::string dumpline;
         uint32_t start_address = (uint32_t)(Func->Function()) & ~1;
         for (uint8_t * ptr = (uint8_t *)start_address; ptr < CodeBlock.CompiledLocationEnd(); ptr++)
@@ -1045,7 +1045,7 @@ void CRecompiler::ClearRecompCode_Phys(uint32_t Address, int length, REMOVE_REAS
                 g_Notify->BreakPoint(__FILE__, __LINE__);
                 ClearLen = g_System->RdramSize() - Address;
             }
-            WriteTrace(TraceRecompiler, TraceInfo, "Reseting Jump Table, Addr: %X  len: %d", Address, ClearLen);
+            WriteTrace(TraceRecompiler, TraceInfo, "Resetting jump table, Addr: %X  len: %d", Address, ClearLen);
             memset((uint8_t *)JumpTable() + Address, 0, ClearLen);
             if (g_System->bSMM_Protect())
             {
@@ -1054,7 +1054,7 @@ void CRecompiler::ClearRecompCode_Phys(uint32_t Address, int length, REMOVE_REAS
         }
         else
         {
-            WriteTrace(TraceRecompiler, TraceInfo, "Ignoring reset of Jump Table, Addr: %X  len: %d", Address, ((length + 3) & ~3));
+            WriteTrace(TraceRecompiler, TraceInfo, "Ignoring reset of jump table, Addr: %X  len: %d", Address, ((length + 3) & ~3));
         }
     }
 }
@@ -1079,9 +1079,9 @@ void CRecompiler::ClearRecompCode_Virt(uint32_t Address, int length, REMOVE_REAS
             PCCompiledFunc_TABLE & table = FunctionTable()[AddressIndex];
             if (table)
             {
-                WriteTrace(TraceRecompiler, TraceError, "Delete Table (%X): Index = %d", table, AddressIndex);
+                WriteTrace(TraceRecompiler, TraceError, "Delete table (%X): Index = %d", table, AddressIndex);
                 delete table;
-                table = nullptr;
+                table = NULL;
                 m_MMU.UnProtectMemory(Address, Address + length);
             }
 

@@ -53,7 +53,7 @@ bool pjutil::TerminatedExistingExe()
                 }
                 if (!AskedUser)
                 {
-                    stdstr_f Message("%s currently running\n\nTerminate pid %d now?", ModuleName.c_str(), lppe.th32ProcessID);
+                    stdstr_f Message("%s currently running\n\nTerminate PID %d now?", ModuleName.c_str(), lppe.th32ProcessID);
                     stdstr_f Caption("Terminate %s", ModuleName.c_str());
 
                     AskedUser = true;
@@ -73,7 +73,7 @@ bool pjutil::TerminatedExistingExe()
                     }
                     else
                     {
-                        stdstr_f Message("Failed to terminate pid %d", lppe.th32ProcessID);
+                        stdstr_f Message("Failed to terminate PID %d", lppe.th32ProcessID);
                         stdstr_f Caption("Terminate %s failed!", ModuleName.c_str());
                         MessageBox(nullptr, Message.ToUTF16().c_str(), Caption.ToUTF16().c_str(), MB_YESNO | MB_ICONEXCLAMATION);
                     }

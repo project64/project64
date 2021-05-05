@@ -169,7 +169,7 @@ void CX86RegInfo::FixRoundModel(FPU_ROUND RoundMethod)
         case RoundDown:     OrConstToX86Reg(0x0400, reg); break;
         case RoundUp:       OrConstToX86Reg(0x0800, reg); break;
         default:
-            g_Notify->DisplayError("Unknown Rounding model");
+            g_Notify->DisplayError("Unknown rounding model");
         }
     }
     MoveX86regToVariable(reg, &m_fpuControl, "m_fpuControl");
@@ -203,7 +203,7 @@ void CX86RegInfo::ChangeFPURegFormat(int32_t Reg, FPU_STATE OldFormat, FPU_STATE
 
     if (HaveDebugger())
     {
-        g_Notify->DisplayError("ChangeFormat: Register not on stack!!");
+        g_Notify->DisplayError("ChangeFormat: Register not on stack!");
     }
 }
 
@@ -258,7 +258,7 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
 
     if (Reg == RegToLoad)
     {
-        //if different format then unmap original reg from stack
+        // If different format then unmap original register from stack
         for (i = 0; i < 8; i++)
         {
             if (m_x86fpu_MappedTo[i] != Reg)
@@ -274,7 +274,7 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
     }
     else
     {
-        //if different format then unmap original reg from stack
+        // If different format then unmap original register from stack
         for (i = 0; i < 8; i++)
         {
             if (m_x86fpu_MappedTo[i] != Reg)
@@ -550,16 +550,16 @@ CX86RegInfo::x86Reg CX86RegInfo::Map_MemoryStack(x86Reg Reg, bool bMapRegister, 
     x86Reg CurrentMap = Get_MemoryStack();
     if (!bMapRegister)
     {
-        //if not mapping then just return what the current mapping is
+        // If not mapping then just return what the current mapping is
         return CurrentMap;
     }
 
     if (CurrentMap != x86_Unknown && CurrentMap == Reg)
     {
-        //already mapped to correct reg
+        // Already mapped to correct register
         return CurrentMap;
     }
-    // map a register
+    // Map a register
     if (Reg == x86_Any)
     {
         if (CurrentMap != x86_Unknown)
@@ -581,11 +581,11 @@ CX86RegInfo::x86Reg CX86RegInfo::Map_MemoryStack(x86Reg Reg, bool bMapRegister, 
         return Reg;
     }
 
-    //move to a register/allocate register
+    // Move to a register/allocate register
     UnMap_X86reg(Reg);
     if (CurrentMap != x86_Unknown)
     {
-        CPU_Message("    regcache: change allocation of Memory Stack from %s to %s", x86_Name(CurrentMap), x86_Name(Reg));
+        CPU_Message("    regcache: change allocation of memory stack from %s to %s", x86_Name(CurrentMap), x86_Name(Reg));
         SetX86Mapped(Reg, CX86RegInfo::Stack_Mapped);
         SetX86Mapped(CurrentMap, CX86RegInfo::NotMapped);
         MoveX86RegToX86Reg(CurrentMap, Reg);
@@ -593,7 +593,7 @@ CX86RegInfo::x86Reg CX86RegInfo::Map_MemoryStack(x86Reg Reg, bool bMapRegister, 
     else
     {
         SetX86Mapped(Reg, CX86RegInfo::Stack_Mapped);
-        CPU_Message("    regcache: allocate %s as Memory Stack", x86_Name(Reg));
+        CPU_Message("    regcache: allocate %s as memory stack", x86_Name(Reg));
         if (LoadValue)
         {
             MoveVariableToX86reg(&g_Recompiler->MemoryStackPos(), "MemoryStack", Reg);
@@ -628,7 +628,7 @@ void CX86RegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsReg
     {
         if (Is64Bit(MipsReg))
         {
-            CPU_Message("    regcache: unallocate %s from high 32bit of %s", x86_Name(GetMipsRegMapHi(MipsReg)), CRegName::GPR_Hi[MipsReg]);
+            CPU_Message("    regcache: unallocate %s from high 32-bit of %s", x86_Name(GetMipsRegMapHi(MipsReg)), CRegName::GPR_Hi[MipsReg]);
             SetX86MapOrder(GetMipsRegMapHi(MipsReg), 0);
             SetX86Mapped(GetMipsRegMapHi(MipsReg), NotMapped);
             SetX86Protected(GetMipsRegMapHi(MipsReg), false);
@@ -681,7 +681,7 @@ void CX86RegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
 
     if (MipsReg == 0)
     {
-        if (HaveDebugger()) { g_Notify->DisplayError("Map_GPR_32bit\n\nWhy are you trying to map reg 0"); }
+        if (HaveDebugger()) { g_Notify->DisplayError("Map_GPR_32bit\n\nWhy are you trying to map register 0?"); }
         return;
     }
 
@@ -841,7 +841,7 @@ CX86Ops::x86Reg CX86RegInfo::Map_TempReg(CX86Ops::x86Reg Reg, int32_t MipsReg, b
             Reg = Free8BitX86Reg();
             if (Reg < 0)
             {
-                WriteTrace(TraceRegisterCache, TraceError, "Failed to find a free 8 bit register");
+                WriteTrace(TraceRegisterCache, TraceError, "Failed to find a free 8-bit register");
                 g_Notify->BreakPoint(__FILE__, __LINE__);
                 return x86_Unknown;
             }
@@ -1034,7 +1034,7 @@ void CX86RegInfo::UnMap_AllFPRs()
             UnMap_FPR(m_x86fpu_MappedTo[StackPos], true);
             continue;
         }
-        //see if any more registers mapped
+        // See if any more registers mapped
         int32_t StartPos = StackTopPos();
         for (int32_t i = 0; i < 8; i++)
         {
@@ -1139,7 +1139,7 @@ void CX86RegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
     {
         if (HaveDebugger())
         {
-            g_Notify->DisplayError(stdstr_f("%s\n\nWhy are you trying to unmap reg 0", __FUNCTION__).c_str());
+            g_Notify->DisplayError(stdstr_f("%s\n\nWhy are you trying to unmap register 0?", __FUNCTION__).c_str());
         }
         return;
     }
@@ -1287,7 +1287,7 @@ bool CX86RegInfo::UnMap_X86reg(CX86Ops::x86Reg Reg)
     }
     else if (GetX86Mapped(Reg) == CX86RegInfo::Stack_Mapped)
     {
-        CPU_Message("    regcache: unallocate %s from Memory Stack", x86_Name(Reg));
+        CPU_Message("    regcache: unallocate %s from memory stack", x86_Name(Reg));
         MoveX86regToVariable(Reg, &(g_Recompiler->MemoryStackPos()), "MemoryStack");
         SetX86Mapped(Reg, NotMapped);
         return true;
@@ -1307,8 +1307,6 @@ void CX86RegInfo::WriteBackRegisters()
     int32_t X86RegCount = sizeof(x86_Registers) / sizeof(x86_Registers[0]);
     for (int32_t i = 0; i < X86RegCount; i++) { SetX86Protected(x86_Registers[i], false); }
     for (int32_t i = 0; i < X86RegCount; i++) { UnMap_X86reg(x86_Registers[i]); }
-
-    /*************************************/
 
     for (count = 1; count < 32; count++)
     {

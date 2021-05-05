@@ -50,8 +50,8 @@ int CALLBACK COptionsDirectoriesPage::SelectDirCallBack(HWND hwnd, DWORD uMsg, D
     switch (uMsg)
     {
     case BFFM_INITIALIZED:
-        // WParam is TRUE since you are passing a path
-        // It would be FALSE if you were passing a PIDL
+        // WParam is true since you are passing a path
+        // It would be false if you were passing a PIDL
         if (lpData)
         {
             SendMessage(hwnd, BFFM_SETSELECTION, TRUE, lpData);

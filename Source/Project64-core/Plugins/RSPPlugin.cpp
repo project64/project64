@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
-#include <Project64-core/N64System/Mips/Register.h>
-#include <Project64-core/N64System/N64System.h>
-#include <Project64-core/N64System/N64Disk.h>
-#include <Project64-core/N64System/N64Rom.h>
+#include <Project64-core/N64System/Mips/RegisterClass.h>
+#include <Project64-core/N64System/N64Class.h>
+#include <Project64-core/N64System/N64DiskClass.h>
+#include <Project64-core/N64System/N64RomClass.h>
 #include "RSPPlugin.h"
 #include "GFXPlugin.h"
 #include <Project64-core/Plugins/AudioPlugin.h>
@@ -12,18 +12,18 @@
 void DummyFunc1(int a) { a += 1; }
 
 CRSP_Plugin::CRSP_Plugin(void) :
-    DoRspCycles(nullptr),
-    EnableDebugging(nullptr),
+    DoRspCycles(NULL),
+    EnableDebugging(NULL),
     m_CycleCount(0),
-    GetDebugInfo(nullptr),
-    InitiateDebugger(nullptr)
+    GetDebugInfo(NULL),
+    InitiateDebugger(NULL)
 {
     memset(&m_RSPDebug, 0, sizeof(m_RSPDebug));
 }
 
 CRSP_Plugin::~CRSP_Plugin()
 {
-    Close(nullptr);
+    Close(NULL);
     UnloadPlugin();
 }
 
@@ -36,21 +36,21 @@ bool CRSP_Plugin::LoadFunctions(void)
     _LoadFunction("GetRspDebugInfo", GetDebugInfo);
     _LoadFunction("InitiateRSPDebugger", InitiateDebugger);
     LoadFunction(EnableDebugging);
-    if (EnableDebugging == nullptr) { EnableDebugging = DummyFunc1; }
+    if (EnableDebugging == NULL) { EnableDebugging = DummyFunc1; }
 
-    //Make sure dll had all needed functions
-    if (DoRspCycles == nullptr) { UnloadPlugin(); return false; }
-    if (InitiateRSP == nullptr) { UnloadPlugin(); return false; }
-    if (RomClosed == nullptr) { UnloadPlugin(); return false; }
-    if (CloseDLL == nullptr) { UnloadPlugin(); return false; }
+    // Make sure DLL had all needed functions
+    if (DoRspCycles == NULL) { UnloadPlugin(); return false; }
+    if (InitiateRSP == NULL) { UnloadPlugin(); return false; }
+    if (RomClosed == NULL) { UnloadPlugin(); return false; }
+    if (CloseDLL == NULL) { UnloadPlugin(); return false; }
 
     if (m_PluginInfo.Version >= 0x0102)
     {
-        if (PluginOpened == nullptr) { UnloadPlugin(); return false; }
+        if (PluginOpened == NULL) { UnloadPlugin(); return false; }
     }
 
-    // Get debug info if able
-    if (GetDebugInfo != nullptr)
+    // Get debug info if possible
+    if (GetDebugInfo != NULL)
     {
         GetDebugInfo(&m_RSPDebug);
     }
@@ -62,7 +62,7 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
     WriteTrace(TraceRSPPlugin, TraceDebug, "Starting");
     if (m_PluginInfo.Version == 1 || m_PluginInfo.Version == 0x100)
     {
-        WriteTrace(TraceRSPPlugin, TraceDebug, "Invalid Version: %X", m_PluginInfo.Version);
+        WriteTrace(TraceRSPPlugin, TraceDebug, "Invalid version: %X", m_PluginInfo.Version);
         WriteTrace(TraceRSPPlugin, TraceDebug, "Done (res: false)");
         return false;
     }
@@ -72,10 +72,9 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
         typedef struct
         {
             void * hInst;
-            int MemoryBswaped;    /* If this is set to TRUE, then the memory has been pre
-                                  bswap on a dword (32 bits) boundry */
-            uint8_t * HEADER;	// This is the rom header (first 40h bytes of the rom
-            // This will be in the same memory format as the rest of the memory.
+            int MemoryBswaped;    // If this is set to TRUE, then the memory has been pre-bswap'd on a DWORD (32-bit) boundary
+            uint8_t * HEADER;	// This is the ROM header (first 40h bytes of the ROM)
+            // This will be in the same memory format as the rest of the memory
             uint8_t * RDRAM;
             uint8_t * DMEM;
             uint8_t * IMEM;
@@ -111,26 +110,26 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
         RSP_INFO_1_3 Info = { 0 };
 
 #ifdef _WIN32
-        Info.hInst = (Plugins != nullptr && Plugins->MainWindow() != nullptr) ? Plugins->MainWindow()->GetModuleInstance() : nullptr;
+        Info.hInst = (Plugins != NULL && Plugins->MainWindow() != NULL) ? Plugins->MainWindow()->GetModuleInstance() : NULL;
 #else
-        Info.hInst = nullptr;
+        Info.hInst = NULL;
 #endif
         Info.CheckInterrupts = DummyCheckInterrupts;
-        Info.MemoryBswaped = (System == nullptr); // only true when the system's not yet loaded
+        Info.MemoryBswaped = (System == NULL); // Only true when the system's not yet loaded
     
-        //Get Function from DLL
+        // Get function from DLL
         void(CALL *InitiateRSP) (RSP_INFO_1_3 RSP_Info, uint32_t * Cycles);
         LoadFunction(InitiateRSP);
-        if (InitiateRSP == nullptr)
+        if (InitiateRSP == NULL)
         {
             WriteTrace(TraceRSPPlugin, TraceDebug, "Failed to find InitiateRSP");
             WriteTrace(TraceRSPPlugin, TraceDebug, "Done (res: false)");
             return false;
         }
 
-        // We are initializing the plugin before any rom is loaded so we do not have any correct
-        // parameters here.. just needed to we can config the DLL.
-        if (System == nullptr)
+        // We are initializing the plugin before any ROM is loaded so we do not have any correct
+        // parameters here, just needed to we can config the DLL
+        if (System == NULL)
         {
             static uint8_t Buffer[100];
             static uint32_t Value = 0;
@@ -177,7 +176,7 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
             CMipsMemoryVM & MMU = System->m_MMU_VM;
             CRegisters & Reg = System->m_Reg;
 
-            if (g_Rom->IsLoadedRomDDIPL() && g_Disk != nullptr)
+            if (g_Rom->IsLoadedRomDDIPL() && g_Disk != NULL)
                 Info.HEADER = g_Disk->GetDiskHeader();
             else
                 Info.HEADER = g_Rom->GetRomAddress();
@@ -214,8 +213,7 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
         typedef struct
         {
             void * hInst;
-            int MemoryBswaped;    /* If this is set to TRUE, then the memory has been pre
-                                  bswap on a dword (32 bits) boundry */
+            int MemoryBswaped;    // If this is set to TRUE, then the memory has been pre-bswap'd on a DWORD (32-bit) boundary
             uint8_t * RDRAM;
             uint8_t * DMEM;
             uint8_t * IMEM;
@@ -251,26 +249,26 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
         RSP_INFO_1_1 Info = { 0 };
 
 #ifdef _WIN32
-        Info.hInst = (Plugins != nullptr && Plugins->MainWindow() != nullptr) ? Plugins->MainWindow()->GetModuleInstance() : nullptr;
+        Info.hInst = (Plugins != NULL && Plugins->MainWindow() != NULL) ? Plugins->MainWindow()->GetModuleInstance() : NULL;
 #else
-        Info.hInst = nullptr;
+        Info.hInst = NULL;
 #endif
         Info.CheckInterrupts = DummyCheckInterrupts;
-        Info.MemoryBswaped = (System == nullptr); // only true when the system's not yet loaded
+        Info.MemoryBswaped = (System == NULL); // Only true when the system's not yet loaded
     
-        //Get Function from DLL
+        // Get function from DLL
         void(CALL *InitiateRSP) (RSP_INFO_1_1 RSP_Info, uint32_t * Cycles);
         LoadFunction(InitiateRSP);
-        if (InitiateRSP == nullptr)
+        if (InitiateRSP == NULL)
         {
             WriteTrace(TraceRSPPlugin, TraceDebug, "Failed to find InitiateRSP");
             WriteTrace(TraceRSPPlugin, TraceDebug, "Done (res: false)");
             return false;
         }
 
-        // We are initializing the plugin before any rom is loaded so we do not have any correct
-        // parameters here.. just needed to we can config the DLL.
-        if (System == nullptr)
+        // We are initializing the plugin before any ROM is loaded so we do not have any correct
+        // parameters here, just needed to we can config the DLL
+        if (System == NULL)
         {
             static uint8_t Buffer[100];
             static uint32_t Value = 0;
@@ -354,10 +352,10 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
 void CRSP_Plugin::UnloadPluginDetails(void)
 {
     memset(&m_RSPDebug, 0, sizeof(m_RSPDebug));
-    DoRspCycles = nullptr;
-    EnableDebugging = nullptr;
-    GetDebugInfo = nullptr;
-    InitiateDebugger = nullptr;
+    DoRspCycles = NULL;
+    EnableDebugging = NULL;
+    GetDebugInfo = NULL;
+    InitiateDebugger = NULL;
 }
 
 void CRSP_Plugin::ProcessMenuItem(int id)

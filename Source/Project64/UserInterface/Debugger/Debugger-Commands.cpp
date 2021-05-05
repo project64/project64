@@ -659,7 +659,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
     m_CommandList.SetRedraw(TRUE);
 }
 
-// Highlight command list items & draw branch arrows
+// Highlight command list items and draw branch arrows
 LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
 {
     NMLVCUSTOMDRAW* pLVCD = reinterpret_cast<NMLVCUSTOMDRAW*>(pNMHDR);
@@ -703,7 +703,7 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
             // Breakpoint
             pLVCD->clrTextBk = RGB(0x44, 0x00, 0x00);
             pLVCD->clrText = (address == pc && isDebugging()) ?
-                RGB(0xFF, 0xFF, 0x00) : // Breakpoint & current PC
+                RGB(0xFF, 0xFF, 0x00) : // Breakpoint and current PC
                 RGB(0xFF, 0xCC, 0xCC);
         }
         else if (bpState == CBreakpoints::BP_SET_TEMP)
@@ -711,7 +711,7 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
             // Breakpoint
             pLVCD->clrTextBk = RGB(0x66, 0x44, 0x00);
             pLVCD->clrText = (address == pc && isDebugging()) ?
-                RGB(0xFF, 0xFF, 0x00) : // Breakpoint & current PC
+                RGB(0xFF, 0xFF, 0x00) : // Breakpoint and current PC
                 RGB(0xFF, 0xEE, 0xCC);
         }
         else if (address == pc && isStepping())
@@ -796,7 +796,7 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
     }
 
     // Color register usage
-    // TODO: localize to temp register context (don't look before/after jumps and frame shifts)
+    // TODO: localize to temporary register context (don't look before/after jumps and frame shifts)
     COLORREF clrUsedRegister = RGB(0xF5, 0xF0, 0xFF); // Light purple
     COLORREF clrAffectedRegister = RGB(0xFF, 0xF0, 0xFF); // Light pink
 
@@ -1062,7 +1062,7 @@ void CDebugCommandsView::CPUStepOver()
 
     if (opInfo.IsJAL())
     {
-        // Put temp BP on return address and resume
+        // Put temp breakpoints on return address and resume
         m_Breakpoints->AddExecution(g_Reg->m_PROGRAM_COUNTER + 8, true);
         CPUResume();
     }
@@ -1115,7 +1115,7 @@ LRESULT CDebugCommandsView::OnSymbolsButton(WORD /*wNotifyCode*/, WORD /*wID*/, 
 
 LRESULT CDebugCommandsView::OnPopupmenuRunTo(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
 {
-    // Add temp BP and resume
+    // Add temp breakpoints and resume
     m_Breakpoints->AddExecution(m_SelectedAddress, true);
     return FALSE;
 }

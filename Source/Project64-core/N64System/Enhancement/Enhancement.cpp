@@ -145,7 +145,7 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
     m_Name = &(Lines[0][CurrentLine]);
     m_NameAndExtension = m_Name;
 
-    //key=value
+    // Key=value
     while (CurrentLine < Lines.size())
     {
         const char * Pos = strchr(Lines[CurrentLine].c_str(), '=');
@@ -189,7 +189,7 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
         }
     }
 
-    //Gameshark Code
+    // Gameshark code
     while (CurrentLine < Lines.size())
     {
         char TempFormat[128] = { 0 };
@@ -231,7 +231,7 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
         m_Entries.push_back(GSEntry);
     }
 
-    //Options
+    // Options
     uint32_t OptionSize = 0;
     while (CurrentLine < Lines.size())
     {

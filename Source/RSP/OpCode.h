@@ -48,7 +48,7 @@ typedef union tagOPCODE {
 
 #pragma warning(pop)
 
-//RSP opcodes
+// RSP opcodes
 
 #define	RSP_SPECIAL				 0
 #define	RSP_REGIMM				 1

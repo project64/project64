@@ -13,17 +13,17 @@ public:
     SettingType GetSettingType ( void ) const { return SettingType_StringVariable; }
     bool IsSettingSet(void) const { return false; }
 
-    //return the values
+    // Return the values
     bool Load (uint32_t Index, bool & Value ) const;
     bool Load (uint32_t Index, uint32_t & Value ) const;
     bool Load (uint32_t Index, std::string & Value ) const;
 
-    //return the default values
+    // Return the default values
     void LoadDefault (uint32_t Index, bool & Value ) const;
     void LoadDefault (uint32_t Index, uint32_t & Value ) const;
     void LoadDefault (uint32_t Index, std::string & Value ) const;
 
-    //Update the settings
+    // Update the settings
     void Save (uint32_t Index, bool Value );
     void Save (uint32_t Index, uint32_t Value );
     void Save (uint32_t Index, const std::string & Value );

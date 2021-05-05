@@ -2,7 +2,7 @@
 #include <Project64-core/Plugins/PluginBase.h>
 
 #pragma warning(push)
-#pragma warning(disable : 4201) // warning C4201: nonstandard extension used : nameless struct/union
+#pragma warning(disable : 4201) // warning C4201: non-standard extension used: nameless struct/union
 
 typedef union
 {
@@ -46,9 +46,9 @@ typedef struct
     void * hMainWindow;
     void * hinst;
 
-    int32_t MemoryBswaped;  // memory in client- or server-native endian
-    uint8_t * HEADER;   // the ROM header (first 40h bytes of the ROM)
-    CONTROL * Controls; // pointer to array of 4 controllers, i.e.:  CONTROL Controls[4];
+    int32_t MemoryBswaped;  // Memory in client or server-native endian
+    uint8_t * HEADER;   // The ROM header (first 40h bytes of the ROM)
+    CONTROL * Controls; // Pointer to array of 4 controllers, i.e.:  CONTROL Controls[4];
 } CONTROL_INFO;
 
 enum PluginType
@@ -56,8 +56,8 @@ enum PluginType
     PLUGIN_NONE = 1,
     PLUGIN_MEMPAK = 2,
     PLUGIN_RUMBLE_PAK = 3,
-    PLUGIN_TANSFER_PAK = 4, // not implemeted for non raw data
-    PLUGIN_RAW = 5, // the controller plugin is passed in raw data
+    PLUGIN_TANSFER_PAK = 4, // Not implemented for non-raw data
+    PLUGIN_RAW = 5, // The controller plugin is passed in raw data
 };
 
 class CControl_Plugin;
@@ -70,16 +70,16 @@ public:
     inline uint32_t Buttons(void) const { return m_Buttons.Value; }
     inline PluginType Plugin(void) const { return static_cast<PluginType>(m_PlugType); }
 private:
-    friend class CControl_Plugin;
+    friend class CControl_Plugin; // Controller plugin class has full access
 
     int32_t & m_Present;
     int32_t & m_RawData;
     int32_t & m_PlugType;
     BUTTONS m_Buttons;
 
-    CCONTROL(void);
-    CCONTROL(const CCONTROL&);
-    CCONTROL& operator=(const CCONTROL&);
+    CCONTROL(void);                         // Disable default constructor
+    CCONTROL(const CCONTROL&);              // Disable copy constructor
+    CCONTROL& operator=(const CCONTROL&);   // Disable assignment
 };
 
 class CControl_Plugin : public CPlugin
@@ -92,19 +92,19 @@ public:
     void SetControl(CControl_Plugin const * const Plugin);
     void UpdateKeys(void);
 
-    void(CALL *WM_KeyDown) (uint32_t wParam, uint32_t lParam);
-    void(CALL *WM_KeyUp) (uint32_t wParam, uint32_t lParam);
-    void(CALL *RumbleCommand) (int32_t Control, int32_t bRumble);
-    void(CALL *GetKeys) (int32_t Control, BUTTONS * Keys);
-    void(CALL *ReadController) (int32_t Control, uint8_t * Command);
-    void(CALL *ControllerCommand) (int32_t Control, uint8_t * Command);
+    void(CALL *WM_KeyDown)          (uint32_t wParam, uint32_t lParam);
+    void(CALL *WM_KeyUp)            (uint32_t wParam, uint32_t lParam);
+    void(CALL *RumbleCommand)       (int32_t Control, int32_t bRumble);
+    void(CALL *GetKeys)             (int32_t Control, BUTTONS * Keys);
+    void(CALL *ReadController)      (int32_t Control, uint8_t * Command);
+    void(CALL *ControllerCommand)   (int32_t Control, uint8_t * Command);
 
     inline CCONTROL const * Controller(int32_t control) { return m_Controllers[control]; }
     inline CONTROL * PluginControllers(void) { return m_PluginControllers; }
 
 private:
-    CControl_Plugin(const CControl_Plugin&);
-    CControl_Plugin& operator=(const CControl_Plugin&);
+    CControl_Plugin(const CControl_Plugin&);			// Disable copy constructor
+    CControl_Plugin& operator=(const CControl_Plugin&);	// Disable assignment
 
     virtual int32_t GetDefaultSettingStartRange() const { return FirstCtrlDefaultSet; }
     virtual int32_t GetSettingStartRange() const { return FirstCtrlSettings; }
@@ -112,8 +112,9 @@ private:
     bool LoadFunctions(void);
     void UnloadPluginDetails(void);
 
-    bool m_AllocatedControllers;
+    bool   m_AllocatedControllers;
 
+    // What the different controls are set up as
     CONTROL m_PluginControllers[4];
     CCONTROL * m_Controllers[4];
 };

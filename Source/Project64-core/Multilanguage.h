@@ -4,7 +4,7 @@ enum LanguageStringID
 {
     EMPTY_STRING = 0,
 
-    // Meta Information
+    // Meta information
 
     // About DLL
     LANGUAGE_NAME = 1,
@@ -110,7 +110,7 @@ enum LanguageStringID
     MENU_SLOT_10 = 200,
     MENU_SLOT_SAVE = 201,
 
-    // Pop up menu
+    // Pop-up menu
     POPUP_PLAY = 210,
     POPUP_INFO = 211,
     POPUP_SETTINGS = 212,
@@ -171,7 +171,6 @@ enum LanguageStringID
     MENUDES_GAME_SETTINGS = 285,
     MENUDES_GAME_CHEATS = 286,
 
-
     // ROM browser
 
     // ROM browser fields
@@ -196,7 +195,6 @@ enum LanguageStringID
     RB_FORCE_FEEDBACK = 318,
     RB_FILE_FORMAT = 319,
     RB_NAME = 321,
-
 
     // Select ROM
     SELECT_ROM_DIR = 320,

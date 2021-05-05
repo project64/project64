@@ -9,7 +9,7 @@ public:
     CSettingTypeApplicationPath(const char * Section, const char * Name, SettingID DefaultSetting );
     bool IsSettingSet(void) const;
 
-    //return the values
+    // Return the values
     virtual bool Load   ( int32_t Index, stdstr & Value ) const;
 
 private:

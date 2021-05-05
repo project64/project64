@@ -251,11 +251,11 @@ void RSP_Sections_VMUDM ( OPCODE RspOp, DWORD AccumStyle ) {
 			MmxMoveRegToReg(x86_MM2, x86_MM0);
 			MmxMoveRegToReg(x86_MM3, x86_MM1);
 
-			/* high((u16)a * b) */
+			// high((u16)a * b)
 			MmxPmulhuwRegToReg(x86_MM0, x86_MM4);
 			MmxPmulhuwRegToReg(x86_MM1, x86_MM5);
 
-			/* low((a >> 15) * b) */
+			// low((a >> 15) * b)
 			MmxPsrawImmed(x86_MM2, 15);
 			MmxPsrawImmed(x86_MM3, 15);
 			MmxPmullwRegToReg(x86_MM2, x86_MM4);
@@ -267,11 +267,11 @@ void RSP_Sections_VMUDM ( OPCODE RspOp, DWORD AccumStyle ) {
 			MmxMoveRegToReg(x86_MM2, x86_MM0);
 			MmxMoveRegToReg(x86_MM3, x86_MM1);
 
-			/* high((u16)a * b) */
+			// high((u16)a * b)
 			MmxPmulhuwRegToReg(x86_MM0, x86_MM4);
 			MmxPmulhuwRegToReg(x86_MM1, x86_MM4);
 
-			/* low((a >> 15) * b) */
+			// low((a >> 15) * b)
 			MmxPsrawImmed(x86_MM2, 15);
 			MmxPsrawImmed(x86_MM3, 15);
 			MmxPmullwRegToReg(x86_MM2, x86_MM4);
@@ -283,11 +283,11 @@ void RSP_Sections_VMUDM ( OPCODE RspOp, DWORD AccumStyle ) {
 			MmxMoveRegToReg(x86_MM2, x86_MM0);
 			MmxMoveRegToReg(x86_MM3, x86_MM1);
 
-			/* high((u16)a * b) */
+			// high((u16)a * b)
 			MmxPmulhuwRegToReg(x86_MM0, x86_MM4);
 			MmxPmulhuwRegToReg(x86_MM1, x86_MM5);
 
-			/* low((a >> 15) * b) */
+			// low((a >> 15) * b)
 			MmxPsrawImmed(x86_MM2, 15);
 			MmxPsrawImmed(x86_MM3, 15);
 			MmxPmullwRegToReg(x86_MM2, x86_MM4);
@@ -349,11 +349,11 @@ void RSP_Sections_VMADM ( OPCODE RspOp, DWORD AccumStyle ) {
 			MmxMoveRegToReg(x86_MM2 + 2, x86_MM0 + 2);
 			MmxMoveRegToReg(x86_MM3 + 2, x86_MM1 + 2);
 
-			/* high((u16)a * b) */
+			// high((u16)a * b)
 			MmxPmulhuwRegToReg(x86_MM0 + 2, x86_MM4 + 2);
 			MmxPmulhuwRegToReg(x86_MM1 + 2, x86_MM5 + 2);
 
-			/* low((a >> 15) * b) */
+			// low((a >> 15) * b)
 			MmxPsrawImmed(x86_MM2 + 2, 15);
 			MmxPsrawImmed(x86_MM3 + 2, 15);
 			MmxPmullwRegToReg(x86_MM2 + 2, x86_MM4 + 2);
@@ -365,11 +365,11 @@ void RSP_Sections_VMADM ( OPCODE RspOp, DWORD AccumStyle ) {
 			MmxMoveRegToReg(x86_MM2 + 2, x86_MM0 + 2);
 			MmxMoveRegToReg(x86_MM3 + 2, x86_MM1 + 2);
 
-			/* high((u16)a * b) */
+			// high((u16)a * b)
 			MmxPmulhuwRegToReg(x86_MM0 + 2, x86_MM4 + 2);
 			MmxPmulhuwRegToReg(x86_MM1 + 2, x86_MM4 + 2);
 
-			/* low((a >> 15) * b) */
+			// low((a >> 15) * b)
 			MmxPsrawImmed(x86_MM2 + 2, 15);
 			MmxPsrawImmed(x86_MM3 + 2, 15);
 			MmxPmullwRegToReg(x86_MM2 + 2, x86_MM4 + 2);
@@ -381,11 +381,11 @@ void RSP_Sections_VMADM ( OPCODE RspOp, DWORD AccumStyle ) {
 			MmxMoveRegToReg(x86_MM2 + 2, x86_MM0 + 2);
 			MmxMoveRegToReg(x86_MM3 + 2, x86_MM1 + 2);
 
-			/* high((u16)a * b) */
+			// high((u16)a * b)
 			MmxPmulhuwRegToReg(x86_MM0 + 2, x86_MM4 + 2);
 			MmxPmulhuwRegToReg(x86_MM1 + 2, x86_MM5 + 2);
 
-			/* low((a >> 15) * b) */
+			// low((a >> 15) * b)
 			MmxPsrawImmed(x86_MM2 + 2, 15);
 			MmxPsrawImmed(x86_MM3 + 2, 15);
 			MmxPmullwRegToReg(x86_MM2 + 2, x86_MM4 + 2);
@@ -469,11 +469,11 @@ void RSP_Sections_VMUDN ( OPCODE RspOp, DWORD AccumStyle ) {
 		MmxMoveRegToReg(x86_MM2, x86_MM0);
 		MmxMoveRegToReg(x86_MM3, x86_MM1);
 
-		/* high((u16)a * b) */
+		// high((u16)a * b)
 		MmxPmulhuwRegToReg(x86_MM0, x86_MM4);
 		MmxPmulhuwRegToReg(x86_MM1, x86_MM5);
 
-		/* low((a >> 15) * b) */
+		// low((a >> 15) * b)
 		MmxPsrawImmed(x86_MM2, 15);
 		MmxPsrawImmed(x86_MM3, 15);
 		MmxPmullwRegToReg(x86_MM2, x86_MM4);
@@ -550,11 +550,11 @@ void RSP_Sections_VMADN ( OPCODE RspOp, DWORD AccumStyle ) {
 		MmxMoveRegToReg(x86_MM2 + 2, x86_MM0 + 2);
 		MmxMoveRegToReg(x86_MM3 + 2, x86_MM1 + 2);
 
-		/* high((u16)a * b) */
+		// high((u16)a * b)
 		MmxPmulhuwRegToReg(x86_MM0 + 2, x86_MM4 + 2);
 		MmxPmulhuwRegToReg(x86_MM1 + 2, x86_MM5 + 2);
 
-		/* low((a >> 15) * b) */
+		// low((a >> 15) * b)
 		MmxPsrawImmed(x86_MM2 + 2, 15);
 		MmxPsrawImmed(x86_MM3 + 2, 15);
 		MmxPmullwRegToReg(x86_MM2 + 2, x86_MM4 + 2);
@@ -743,7 +743,7 @@ void Compile_Section_000(void) {
 
 	RSP_LW_IMEM(CompilePC + 0x00, &vmudn.Hex);
 
-	CPU_Message("Compiling: %X to ..., RSP Optimization $000", CompilePC);
+	CPU_Message("Compiling: %X to ..., RSP optimization $000", CompilePC);
 	CPU_Message("  %X %s",CompilePC+0x00,RSPOpcodeName(vmudn.Hex,CompilePC + 0x00));
 	if (LogRDP){
 		char str[40];
@@ -846,7 +846,7 @@ void Compile_Section_001(void) {
 
 	RSP_LW_IMEM(CompilePC + 0x00, &vmulf.Hex);
 
-	CPU_Message("Compiling: %X to ..., RSP Optimization $001", CompilePC);
+	CPU_Message("Compiling: %X to ..., RSP optimization $001", CompilePC);
 	CPU_Message("  %X %s",CompilePC+0x00,RSPOpcodeName(vmulf.Hex,CompilePC + 0x00));
 	
 	for (i = 0; i < Section_001_VMACF; i++) {
@@ -945,7 +945,7 @@ void Compile_Section_002 ( void ) {
 
 	OPCODE vmudh, vsaw;
 
-	CPU_Message("Compiling: %X to ..., RSP Optimization $002", CompilePC);
+	CPU_Message("Compiling: %X to ..., RSP optimization $002", CompilePC);
 	for (Count = 0; Count < 0xC; Count++) {
 		RSP_LW_IMEM(CompilePC + (Count * 0x04), &op[Count].Hex);
 		CPU_Message("  %X %s",CompilePC+(Count*0x04),RSPOpcodeName(op[Count].Hex,CompilePC + (Count*0x04)));
@@ -1047,7 +1047,7 @@ static void resampler_hle() {
 }
 
 void Compile_Section_003 ( void ) {
-	CPU_Message("Compiling: %X to ..., RSP Optimization $003", CompilePC);
+	CPU_Message("Compiling: %X to ..., RSP optimization $003", CompilePC);
 	Call_Direct(resampler_hle, "Resampler_HLE");
 	CompilePC += 4 * sizeof(OPCODE);
 }

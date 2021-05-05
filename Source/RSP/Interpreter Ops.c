@@ -314,6 +314,7 @@ void RSP_Cop0_MF (void) {
 	case 11: RSP_GPR[RSPOpC.rt].W = *RSPInfo.DPC_STATUS_REG; break;
 	case 12: RSP_GPR[RSPOpC.rt].W = *RSPInfo.DPC_CLOCK_REG; break;
 	default:
+		// TODO: Implement this!
 		DisplayError("We have not implemented RSP MF CP0 reg %s (%d)",COP0_Name(RSPOpC.rd),RSPOpC.rd);
 	}
 }
@@ -397,6 +398,7 @@ void RSP_Cop0_MT (void) {
 		if ( ( RSP_GPR[RSPOpC.rt].W & DPC_CLR_CLOCK_CTR ) != 0) { /* DisplayError("RSP: DPC_STATUS_REG: DPC_CLR_CLOCK_CTR"); */ }
 		break;
 	default:
+		// TODO: Implement this!
 		DisplayError("We have not implemented RSP MT CP0 reg %s (%d)",COP0_Name(RSPOpC.rd),RSPOpC.rd);
 	}
 }
@@ -1676,7 +1678,7 @@ void RSP_Opcode_SWV ( void ) {
 	RSP_SWV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
-/************************** Other functions **************************/
+// Other functions
 
 void rsp_UnknownOpcode (void) {
 	char Message[200];

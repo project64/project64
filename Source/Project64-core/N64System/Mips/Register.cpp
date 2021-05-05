@@ -261,7 +261,7 @@ void CRegisters::Reset()
 
     m_LLBit = 0;
 
-    //Reset System Registers
+    // Reset system registers
     memset(m_RDRAM_Interface, 0, sizeof(m_RDRAM_Interface));
     memset(m_RDRAM_Registers, 0, sizeof(m_RDRAM_Registers));
     memset(m_Mips_Interface, 0, sizeof(m_Mips_Interface));
@@ -350,11 +350,11 @@ void CRegisters::DoAddressError(bool DelaySlot, uint32_t BadVaddr, bool FromRead
         g_Notify->DisplayError(stdstr_f("AddressError %s Vaddr: %X", FromRead ? "reading" : "writing", BadVaddr).c_str());
         if ((STATUS_REGISTER & STATUS_EXL) != 0)
         {
-            g_Notify->DisplayError("EXL set in AddressError Exception");
+            g_Notify->DisplayError("EXL set in AddressError exception");
         }
         if ((STATUS_REGISTER & STATUS_ERL) != 0)
         {
-            g_Notify->DisplayError("ERL set in AddressError Exception");
+            g_Notify->DisplayError("ERL set in AddressError exception");
         }
     }
 
@@ -406,11 +406,11 @@ void CRegisters::DoBreakException(bool DelaySlot)
     {
         if ((STATUS_REGISTER & STATUS_EXL) != 0)
         {
-            g_Notify->DisplayError("EXL set in Break Exception");
+            g_Notify->DisplayError("EXL set in break exception");
         }
         if ((STATUS_REGISTER & STATUS_ERL) != 0)
         {
-            g_Notify->DisplayError("ERL set in Break Exception");
+            g_Notify->DisplayError("ERL set in break exception");
         }
     }
 
@@ -450,11 +450,11 @@ void CRegisters::DoCopUnusableException(bool DelaySlot, int32_t Coprocessor)
     {
         if ((STATUS_REGISTER & STATUS_EXL) != 0)
         {
-            g_Notify->DisplayError("EXL set in Break Exception");
+            g_Notify->DisplayError("EXL set in break exception");
         }
         if ((STATUS_REGISTER & STATUS_ERL) != 0)
         {
-            g_Notify->DisplayError("ERL set in Break Exception");
+            g_Notify->DisplayError("ERL set in break exception");
         }
     }
 
@@ -495,7 +495,7 @@ bool CRegisters::DoIntrException(bool DelaySlot)
 
     if (GenerateLog() && LogExceptions() && !LogNoInterrupts())
     {
-        LogMessage("%08X: Interrupt Generated", m_PROGRAM_COUNTER);
+        LogMessage("%08X: Interrupt generated", m_PROGRAM_COUNTER);
     }
 
     CAUSE_REGISTER = FAKE_CAUSE_REGISTER;
@@ -548,7 +548,7 @@ void CRegisters::DoTLBReadMiss(bool DelaySlot, uint32_t BadVaddr)
     {
         if (HaveDebugger())
         {
-            g_Notify->DisplayError(stdstr_f("TLBMiss - EXL Set\nBadVaddr = %X\nAddress Defined: %s", BadVaddr, g_TLB->AddressDefined(BadVaddr) ? "true" : "false").c_str());
+            g_Notify->DisplayError(stdstr_f("TLBMiss - EXL set\nBadVaddr = %X\nAddress defined: %s", BadVaddr, g_TLB->AddressDefined(BadVaddr) ? "true" : "false").c_str());
         }
         m_PROGRAM_COUNTER = 0x80000180;
     }
@@ -586,7 +586,7 @@ void CRegisters::DoTLBWriteMiss(bool DelaySlot, uint32_t BadVaddr)
     {
         if (HaveDebugger())
         {
-            g_Notify->DisplayError(stdstr_f("TLBMiss - EXL Set\nBadVaddr = %X\nAddress Defined: %s", BadVaddr, g_TLB->AddressDefined(BadVaddr) ? "true" : "false").c_str());
+            g_Notify->DisplayError(stdstr_f("TLBMiss - EXL set\nBadVaddr = %X\nAddress defined: %s", BadVaddr, g_TLB->AddressDefined(BadVaddr) ? "true" : "false").c_str());
         }
         m_PROGRAM_COUNTER = 0x80000180;
     }
@@ -598,11 +598,11 @@ void CRegisters::DoSysCallException(bool DelaySlot)
     {
         if ((STATUS_REGISTER & STATUS_EXL) != 0)
         {
-            g_Notify->DisplayError("EXL set in SysCall Exception");
+            g_Notify->DisplayError("EXL set in syscall exception");
         }
         if ((STATUS_REGISTER & STATUS_ERL) != 0)
         {
-            g_Notify->DisplayError("ERL set in SysCall Exception");
+            g_Notify->DisplayError("ERL set in syscall exception");
         }
     }
 

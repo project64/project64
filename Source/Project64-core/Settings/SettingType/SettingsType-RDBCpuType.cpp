@@ -37,7 +37,7 @@ bool CSettingTypeRDBCpuType::Load (uint32_t Index, uint32_t & Value ) const
     if (_stricmp(String,"Interpreter") == 0)      { Value = CPU_Interpreter; }
     else if (_stricmp(String,"Recompiler") == 0)  { Value = CPU_Recompiler; }
     else if (_stricmp(String,"SyncCores") == 0)   { Value = CPU_SyncCores; }
-    else if (_stricmp(String,"default") == 0)
+    else if (_stricmp(String,"Default") == 0)
     {
         LoadDefault(Index,Value);
         return false;
@@ -53,7 +53,7 @@ bool CSettingTypeRDBCpuType::Load (uint32_t /*Index*/, std::string & /*Value*/ )
     return false;
 }
 
-//return the default values
+// Return the default values
 void CSettingTypeRDBCpuType::LoadDefault (uint32_t /*Index*/, bool & /*Value*/ ) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -77,7 +77,7 @@ void CSettingTypeRDBCpuType::LoadDefault (uint32_t /*Index*/, std::string & /*Va
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-//Update the settings
+// Update the settings
 void CSettingTypeRDBCpuType::Save (uint32_t /*Index*/, bool /*Value*/ )
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);

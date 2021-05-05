@@ -10,7 +10,7 @@ class CArmRegInfo :
     private CSystemRegisters
 {
 public:
-    //enums
+    // Enums
     enum REG_MAPPED
     {
         NotMapped = 0,

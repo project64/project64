@@ -11,12 +11,11 @@
 
 //#define COMPARE_INSTRUCTIONS_VERBOSE
 
-/************************************************************
-** IsOpcodeNop
-**
-** Output: Boolean whether opcode at PC is a NOP
-** Input: PC
-*************************************************************/
+/*
+IsOpcodeNop
+Output: Boolean whether opcode at PC is a NOP
+Input: PC
+*/
 
 Boolean IsOpcodeNop(DWORD PC)
 {
@@ -30,12 +29,11 @@ Boolean IsOpcodeNop(DWORD PC)
 	return FALSE;
 }
 
-/************************************************************
-** IsNextInstructionMmx
-**
-** Output: determines EMMS status
-** Input: PC
-*************************************************************/
+/*
+IsNextInstructionMmx
+Output: Determines EMMS status
+Input: PC
+*/
 
 Boolean IsNextInstructionMmx(DWORD PC)
 {
@@ -98,15 +96,13 @@ Boolean IsNextInstructionMmx(DWORD PC)
 		return FALSE;
 }
 
-/************************************************************
-** WriteToAccum2
-**
-** Output:
-**	TRUE: Accumulation series
-**	FALSE: Accumulator is reset after this op
-**
-** Input: PC, location in accumulator
-*************************************************************/
+/*
+WriteToAccum2
+Output:
+True: Accumulation series
+False: Accumulator is reset after this op
+Input: PC, location in accumulator
+*/
 
 #define HIT_BRANCH	0x2
 
@@ -180,7 +176,7 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
 			if (Compiler.bAudioUcode && (((int)(RspOp.target << 2) & 0xFFC) < PC)) {
 				return FALSE;
 			}
-			// Rarely occurs let them have their way
+			// Rarely occurs, so we let them have their way
 			else {
 				Instruction_State = DO_DELAY_SLOT;
 				break;
@@ -378,7 +374,7 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
 		if (BranchImmed < 0) {
 			if (BranchTaken != FALSE) {
 
-				// took this back branch and found a place
+				// Took this back branch and found a place
 				// that needs this vector as a source
 
 				return TRUE;
@@ -414,14 +410,13 @@ Boolean WriteToAccum(int Location, int PC)
 		return value;
 }
 
-/************************************************************
-** WriteToVectorDest
-**
-** Output:
-**	TRUE: Destination is used as a source later
-**	FALSE: Destination is over-written later
-** Input: PC, Register
-*************************************************************/
+/*
+WriteToVectorDest
+Output:
+True: Destination is used as a source later
+False: Destination is overwritten later
+Input: PC, Register
+*/
 
 Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
 {
@@ -495,7 +490,7 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
 			if (Compiler.bAudioUcode && (int)(RspOp.target << 2) < PC) {
 				return FALSE;
 			}
-			// Rarely occurs let them have their way
+			// Rarely occurs, so we let them have their way
 			return TRUE;
 
 		case RSP_JAL:
@@ -751,16 +746,15 @@ Boolean WriteToVectorDest(DWORD DestReg, int PC)
 		return value;
 }
 
-/************************************************************
-** UseRspFlags
-**
-** Output:
-**	TRUE: Flags are determined not in use
-**	FALSE: Either unable to determine or are in use
-** Input: PC
-*************************************************************/
+/*
+UseRspFlags
+Output:
+True: Flags are determined not in use
+False: Either unable to determine or are in use
+Input: PC
+*/
 
-// TODO: consider delay slots and such in a branch?
+// TODO: Consider delay slots and such in a branch?
 Boolean UseRspFlags(int PC)
 {
 	OPCODE RspOp;
@@ -977,14 +971,13 @@ Boolean UseRspFlags(int PC)
 	return TRUE;
 }
 
-/************************************************************
-** IsRegisterConstant
-**
-** Output:
-**	TRUE: Register is constant throughout
-**	FALSE: Register is not constant at all
-** Input: PC, Pointer to constant to fill
-*************************************************************/
+/*
+IsRegisterConstant
+Output:
+True: Register is constant throughout
+False: Register is not constant at all
+Input: PC, Pointer to constant to fill
+*/
 
 Boolean IsRegisterConstant(DWORD Reg, DWORD * Constant)
 {
@@ -1153,14 +1146,13 @@ Boolean IsRegisterConstant(DWORD Reg, DWORD * Constant)
 	}
 }
 
-/************************************************************
-** IsOpcodeBranch
-**
-** Output:
-**	TRUE: opcode is a branch
-**	FALSE: opcode is not a branch
-** Input: PC
-*************************************************************/
+/*
+IsOpcodeBranch
+Output:
+True: Opcode is a branch
+False: Opcode is not a branch
+Input: PC
+*/
 
 Boolean IsOpcodeBranch(DWORD PC, OPCODE RspOp)
 {
@@ -1252,17 +1244,14 @@ Boolean IsOpcodeBranch(DWORD PC, OPCODE RspOp)
 	return FALSE;
 }
 
-/************************************************************
-** GetInstructionInfo
-**
-** Output: None in regard to return value
-**
-** Input:
-**	pointer to info structure, fills this
-**  with valid opcode data
-*************************************************************/
+/*
+GetInstructionInfo
+Output: None in regard to return value
+Input: Pointer to info structure, fills this
+with valid opcode data
+*/
 
-// 3 possible values, GPR, VEC, VEC & GPR, NOOP is zero
+// 3 possible values, GPR, VEC, VEC and GPR, NOOP is zero
 #define GPR_Instruction		0x0001 /* GPR Instruction flag */
 #define VEC_Instruction		0x0002 /* Vec Instruction flag */
 #define COPO_MF_Instruction 0x0080 /* MF Cop 0 Instruction */
@@ -1631,15 +1620,13 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 	}
 }
 
-/************************************************************
-** DelaySlotAffectBranch
-**
-** Output:
-**	TRUE: Delay slot does affect the branch
-**	FALSE: Registers do not affect each other
-**
-** Input: PC
-*************************************************************/
+/*
+DelaySlotAffectBranch
+Output:
+True: Delay slot does affect the branch
+False: Registers do not affect each other
+Input: PC
+*/
 
 Boolean DelaySlotAffectBranch(DWORD PC)
 {
@@ -1673,17 +1660,14 @@ Boolean DelaySlotAffectBranch(DWORD PC)
 	return FALSE;
 }
 
-/************************************************************
-** CompareInstructions
-**
-** Output:
-**	TRUE: The opcodes are fine, no dependency
-**	FALSE: Watch it, these ops cant be touched
-**
-** Input:
-**	Top, not the current operation, the one above
-**	Bottom: the current opcode for re-ordering bubble style
-*************************************************************/
+/*
+CompareInstructions
+Output:
+TRUE: The opcodes are fine, no dependency
+FALSE: Watch it, these ops cant be touched
+Input: Top, not the current operation, the one above
+Bottom: The current opcode for re-ordering bubble style
+*/
 
 Boolean CompareInstructions(DWORD PC, OPCODE * Top, OPCODE * Bottom)
 {
@@ -1734,10 +1718,9 @@ Boolean CompareInstructions(DWORD PC, OPCODE * Top, OPCODE * Bottom)
 	case 0x0A: // Vector then Vector - 10,10
 
 		/*
-		** Check for vector store then vector multiply (VMULF)
-		**
-		** This basically gives preferences to putting stores
-		** as close to the finish of an operation as possible
+		Check for vector store then vector multiply (VMULF)
+		This basically gives preferences to putting stores
+		as close to the finish of an operation as possible
 		*/
 		
 		if ((info0.flags & Store_Operation) != 0 && (info1.flags & Accum_Operation) != 0
@@ -1755,7 +1738,7 @@ Boolean CompareInstructions(DWORD PC, OPCODE * Top, OPCODE * Bottom)
 
 			return FALSE;
 		} else if ((info1.flags & MemOperation_Mask) != 0) {
-			// Remember stored REG & loaded REG are the same
+			// Remember stored REG and loaded REG are the same
 			if (info0.DestReg == info1.DestReg) { return FALSE; }
 
 			if (info1.flags & Load_Operation) {
@@ -1768,7 +1751,7 @@ Boolean CompareInstructions(DWORD PC, OPCODE * Top, OPCODE * Bottom)
 
 			return TRUE;
 		} else if ((info0.flags & MemOperation_Mask) != 0) {
-			// Remember stored REG & loaded REG are the same
+			// Remember stored REG and loaded REG are the same
 			if (info0.DestReg == info1.DestReg) { return FALSE; }
 
 			if (info0.flags & Load_Operation) {
@@ -1783,27 +1766,27 @@ Boolean CompareInstructions(DWORD PC, OPCODE * Top, OPCODE * Bottom)
 		} else if ((info0.flags & VEC_Accumulate) != 0) {
 			
 			/*
-			** Example:
-			** VMACF
-			** VMUDH or VMADH or VADD
+			Example:
+			VMACF
+			VMUDH or VMADH or VADD
 			*/
 
 			return FALSE;
 		} else if ((info1.flags & VEC_Accumulate) != 0) {
 			
 			/*
-			** Example:
-			** VMULF
-			** VMADH
+			Example:
+			VMULF
+			VMADH
 			*/
 			
 			return FALSE;
 		} else {
 			
 			/*
-			** Example:
-			** VMULF or VADDC
-			** VADD or VMUDH
+			Example:
+			VMULF or VADDC
+			VADD or VMUDH
 			*/
 
 			return FALSE;
@@ -1827,35 +1810,35 @@ Boolean CompareInstructions(DWORD PC, OPCODE * Top, OPCODE * Bottom)
 
 	case 0x0B: // Vector then COP2 - 10, 11
 		if (info1.flags & Load_Operation) {
-			// Move To COP2 (destination) from GPR (source)
+			// Move to COP2 (destination) from GPR (source)
 			if (info1.DestReg == info0.DestReg) { return FALSE; }
 			if (info1.DestReg == info0.SourceReg0) { return FALSE; }
 			if (info1.DestReg == info0.SourceReg1) { return FALSE; }
 		} else if (info1.flags & Store_Operation) {
-			// Move From COP2 (source) to GPR (destination)
+			// Move from COP2 (source) to GPR (destination)
 			if (info1.SourceReg0 == info0.DestReg) { return FALSE; }
 			if (info1.SourceReg0 == info0.SourceReg0) { return FALSE; }
 			if (info1.SourceReg0 == info0.SourceReg1) { return FALSE; }
 		} else {
-			CompilerWarning("Reorder: Unhandled Vector than COP2");
+			CompilerWarning("Reorder: unhandled vector than COP2");
 		}
 		// We want vectors on top
 		return FALSE;
 
 	case 0x0E: // COP2 then Vector - 11, 10
 		if (info0.flags & Load_Operation) {
-			// Move To COP2 (destination) from GPR (source)
+			// Move to COP2 (destination) from GPR (source)
 			if (info0.DestReg == info1.DestReg) { return FALSE; }
 			if (info0.DestReg == info1.SourceReg0) { return FALSE; }
 			if (info0.DestReg == info1.SourceReg1) { return FALSE; }
 		} else if (info0.flags & Store_Operation) {
-			// Move From COP2 (source) to GPR (destination)
+			// Move from COP2 (source) to GPR (destination)
 			if (info0.SourceReg0 == info1.DestReg) { return FALSE; }
 			if (info0.SourceReg0 == info1.SourceReg0) { return FALSE; }
 			if (info0.SourceReg0 == info1.SourceReg1) { return FALSE; }
 			if (info0.DestReg == info1.SourceReg0) { return FALSE; }
 		} else {
-			CompilerWarning("Reorder: Unhandled COP2 than Vector");
+			CompilerWarning("Reorder: unhandled COP2 than vector");
 		}
 		// We want this at the top
 		return TRUE;

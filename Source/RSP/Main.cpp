@@ -76,7 +76,7 @@ const char * AppName ( void )
 }
 const char * AboutMsg ( void ) 
 {
-	static stdstr_f Msg("RSP emulation plugin\nMade for Project64 (c)\nVersion %s\n\nby Jabo & Zilmar", VER_FILE_VERSION_STR);
+	static stdstr_f Msg("RSP emulation plugin\nMade for Project64 (c)\nVersion %s\n\nby Jabo and Zilmar", VER_FILE_VERSION_STR);
 	return Msg.c_str();
 }
 
@@ -140,26 +140,26 @@ void DisplayError(char* Message, ...)
 #endif
 }
 
-/******************************************************************
-  Function: CloseDLL
-  Purpose:  This function is called when the emulator is closing
-            down allowing the DLL to de-initialize.
-  input:    none
-  output:   none
-*******************************************************************/
+/*
+Function: CloseDLL
+Purpose: This function is called when the emulator is closing
+down allowing the DLL to de-initialize.
+Input: None
+Output: None
+*/
 
 EXPORT void CloseDLL(void)
 {
 	FreeMemory();
 }
 
-/******************************************************************
-  Function: DllAbout
-  Purpose:  This function is optional function that is provided
-            to give further information about the DLL.
-  input:    a handle to the window that calls this function
-  output:   none
-*******************************************************************/
+/*
+Function: DllAbout
+Purpose: This function is optional function that is provided
+to give further information about the DLL.
+Input: A handle to the window that calls this function
+Output: None
+*/
 
 EXPORT void DllAbout(void * hParent)
 {
@@ -198,37 +198,37 @@ void FixMenuState(void)
 }
 #endif
 
-/******************************************************************
-  Function: GetDllInfo
-  Purpose:  This function allows the emulator to gather information
-            about the DLL by filling in the PluginInfo structure.
-  input:    a pointer to a PLUGIN_INFO structure that needs to be
-            filled by the function. (see def above)
-  output:   none
-*******************************************************************/
+/*
+Function: GetDllInfo
+Purpose: This function allows the emulator to gather information
+about the DLL by filling in the PluginInfo structure.
+Input: A pointer to a PLUGIN_INFO structure that needs to be
+filled by the function. (see def above)
+Output: None
+*/
 
 EXPORT void GetDllInfo(PLUGIN_INFO * PluginInfo)
 {
 	PluginInfo->Version = 0x0103;
 	PluginInfo->Type = PLUGIN_TYPE_RSP;
 #ifdef _DEBUG
-	sprintf(PluginInfo->Name, "RSP Debug Plugin %s", VER_FILE_VERSION_STR);
+	sprintf(PluginInfo->Name, "RSP debug plugin %s", VER_FILE_VERSION_STR);
 #else
-	sprintf(PluginInfo->Name, "RSP Plugin %s", VER_FILE_VERSION_STR);
+	sprintf(PluginInfo->Name, "RSP plugin %s", VER_FILE_VERSION_STR);
 #endif
 	PluginInfo->NormalMemory = FALSE;
 	PluginInfo->MemoryBswaped = TRUE;
 }
 
-/******************************************************************
-  Function: GetRspDebugInfo
-  Purpose:  This function allows the emulator to gather information
-            about the debug capabilities of the DLL by filling in
-			the DebugInfo structure.
-  input:    a pointer to a RSPDEBUG_INFO structure that needs to be
-            filled by the function. (see def above)
-  output:   none
-*******************************************************************/ 
+/*
+Function: GetRspDebugInfo
+Purpose: This function allows the emulator to gather information
+about the debug capabilities of the DLL by filling in
+the DebugInfo structure.
+Input: A pointer to a RSPDEBUG_INFO structure that needs to be
+filled by the function. (see def above)
+Output: None
+*/
 
 EXPORT void GetRspDebugInfo(RSPDEBUG_INFO * DebugInfo)
 {
@@ -256,17 +256,16 @@ EXPORT void GetRspDebugInfo(RSPDEBUG_INFO * DebugInfo)
 	DebugInfo->Enter_RSP_Commands_Window = Enter_RSP_Commands_Window;
 }
 
-/******************************************************************
-  Function: InitiateRSP
-  Purpose:  This function is called when the DLL is started to give
-            information from the emulator that the n64 RSP 
-			interface needs
-  input:    Rsp_Info is passed to this function which is defined
-            above.
-			CycleCount is the number of cycles between switching
-			control between the RSP and r4300i core.
-  output:   none
-*******************************************************************/ 
+/*
+Function: InitiateRSP
+Purpose: This function is called when the DLL is started to give
+information from the emulator that the N64 RSP interface needs.
+Input: Rsp_Info is passed to this function which is defined
+above.
+CycleCount is the number of cycles between switching
+control between the RSP and r4300i core.
+Output: None
+*/
 
 RSP_COMPILER Compiler;
 
@@ -348,16 +347,16 @@ EXPORT void InitiateRSP(RSP_INFO Rsp_Info, uint32_t * CycleCount)
 	#endif
 }
 
-/******************************************************************
-  Function: InitiateRSPDebugger
-  Purpose:  This function is called when the DLL is started to give
-            information from the emulator that the N64 RSP 
-			interface needs to integrate the debugger with the
-			rest of the emulator.
-  input:    DebugInfo is passed to this function which is defined
-            above.
-  output:   none
-*******************************************************************/
+/*
+Function: InitiateRSPDebugger
+Purpose: This function is called when the DLL is started to give
+information from the emulator that the N64 RSP
+interface needs to integrate the debugger with the
+rest of the emulator.
+Input: DebugInfo is passed to this function which is defined
+above.
+Output: None
+*/
 
 EXPORT void InitiateRSPDebugger(DEBUG_INFO Debug_Info)
 {
@@ -527,12 +526,12 @@ void ProcessMenuItem(int ID)
 }
 #endif
 
-/******************************************************************
-  Function: RomOpen
-  Purpose:  This function is called when a ROM is opened.
-  input:    none
-  output:   none
-*******************************************************************/
+/*
+Function: RomOpen
+Purpose: This function is called when a ROM is opened.
+Input: None
+Output: None
+*/
 
 EXPORT void RomOpen(void)
 {
@@ -546,12 +545,12 @@ EXPORT void RomOpen(void)
 	SemaphoreExit = GetSetting(Set_SemaphoreExit);
 }
 
-/******************************************************************
-  Function: RomClosed
-  Purpose:  This function is called when a ROM is closed.
-  input:    none
-  output:   none
-*******************************************************************/
+/*
+Function: RomClosed
+Purpose: This function is called when a ROM is closed.
+Input: None
+Output: None
+*/
 
 EXPORT void RomClosed(void)
 {

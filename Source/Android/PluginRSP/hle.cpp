@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2012 Bobby Smiles
 // Copyright(C) 2009 Richard Goedeken
@@ -268,7 +268,7 @@ void CHle::normal_task_dispatching(void)
         // Nothing to emulate
         return;
 
-        // GFX: Twintris [misleading task->type == 0]
+        // GFX: Twintris [misleading task->type == 0] (TODO: check this at a later date)
     case 0x212ee:
         if (m_ForwardGFX)
         {
@@ -294,7 +294,7 @@ void CHle::normal_task_dispatching(void)
         return;
     }
 
-    WarnMessage("unknown OSTask: sum: %x PC:%x", sum, *m_sp_pc);
+    WarnMessage("Unknown OSTask: sum: %x PC:%x", sum, *m_sp_pc);
 #ifdef ENABLE_TASK_DUMP
     dump_unknown_task(this, sum);
 #endif
@@ -311,7 +311,7 @@ void CHle::non_task_dispatching(void)
         return;
     }
 
-    WarnMessage("unknown RSP code: sum: %x PC:%x", sum, *m_sp_pc);
+    WarnMessage("Unknown RSP code: sum: %x PC:%x", sum, *m_sp_pc);
 #ifdef ENABLE_TASK_DUMP
     dump_unknown_non_task(hle, sum);
 #endif
@@ -324,7 +324,7 @@ void CHle::non_task_dispatching(void)
 void CHle::VerboseMessage(const char *message, ...)
 {
 #if defined(_WIN32) && defined(_DEBUG)
-    // These can get annoying.
+    // These can get annoying
 #if 0
     MessageBox(NULL, message, "HLE verbose message", MB_OK);
 #endif

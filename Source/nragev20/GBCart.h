@@ -29,15 +29,15 @@ typedef struct _GBCART
     bool bHasTimer;
     bool bHasRumble;
     bool bRamEnableState;
-    bool bMBC1RAMbanking;   // if false, use 2 magic bits for Most Significant Bits of ROM banking (default); if true, use the 2 magic bits for RAM banking
+    bool bMBC1RAMbanking;   // If false, use 2 magic bits for most significant bits of ROM banking (default); if true, use the 2 magic bits for RAM banking
     unsigned int iNumRomBanks;
     unsigned int iNumRamBanks;
     BYTE TimerData[5];
     BYTE LatchedTimerData[5];
     time_t timerLastUpdate;
     bool TimerDataLatched;
-    HANDLE hRomFile;        // a file mapping handle
-    HANDLE hRamFile;        // a file mapping handle, must be NULL if malloc'd ram is being used instead of a valid memory mapped file
+    HANDLE hRomFile;        // A file mapping handle
+    HANDLE hRamFile;        // A file mapping handle, must be NULL if malloc'd RAM is being used instead of a valid memory mapped file
     const unsigned char * RomData;      // max [0x200 * 0x4000];
     LPBYTE RamData;         // max [0x10 * 0x2000];
     bool (*ptrfnReadCart)(_GBCART * Cart, WORD dwAddress, BYTE *Data);  // ReadCart handler
@@ -62,7 +62,7 @@ iCartType values:
 7 = TAMA 5
 8 = HuC 3
 9 = HuC 1
-Note, that 7 and up are not implemented yet.
+TODO: Note, that 7 and up are not implemented yet.
 */
 
 #define GB_NORM     0x00

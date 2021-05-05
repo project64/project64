@@ -2,12 +2,16 @@
 #include <stdint.h>
 
 /*
- * The limits of COP1 extend to native SSE2 register capabilities, but for
- * now this is only being included to dodge the MSVC inline asm for x86.
- *
- * As better cross-platform methods of handling FP precision are implemented
- * for non-Intel-architecture builds, this #include may become obsolete.
- */
+
+TODO: Verify this is still needed?
+
+The limits of COP1 extend to native SSE2 register capabilities, but for
+now this is only being included to dodge the MSVC inline assembler for x86.
+
+As better cross-platform methods of handling floating point precision are implemented
+for non-Intel-architecture builds, this #include may become obsolete.
+*/
+
 #if defined(__i386) || defined(__x86_64__) || defined(_M_X64)
 #include <emmintrin.h>
 #endif

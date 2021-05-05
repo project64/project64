@@ -16,9 +16,8 @@ CArmOps::ArmReg CArmOps::m_LastStoreReg;
 uint16_t CArmOps::m_PopRegisters = 0;
 uint16_t CArmOps::m_PushRegisters = 0;
 
-/**************************************************************************
-* Logging Functions                                                       *
-**************************************************************************/
+// Logging functions
+
 void CArmOps::WriteArmComment(const char * Comment)
 {
     CPU_Message("");
@@ -126,7 +125,7 @@ void CArmOps::AddConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const)
 
     if (DestReg == SourceReg && Const == 0)
     {
-        //ignore
+        // Ignore
     }
     else if ((Const & 0xFFFFFFF8) == 0 && DestReg <= 7 && SourceReg <= 7)
     {
@@ -836,7 +835,7 @@ void CArmOps::PushArmReg(uint16_t Registers)
     {
         if (Registers == m_PopRegisters)
         {
-            CPU_Message("%s: Ignoring Push/Pop", __FUNCTION__);
+            CPU_Message("%s: Ignoring push/pop", __FUNCTION__);
             m_PopRegisters = 0;
             PreOpCheck(Arm_Unknown, false, __FILE__, __LINE__);
             return;
@@ -1373,7 +1372,7 @@ void CArmOps::XorConstToArmReg(ArmReg DestReg, uint32_t value)
 
     if (value == 0)
     {
-        //ignore
+        // Ignore
     }
     else if (CanThumbCompressConst(value))
     {

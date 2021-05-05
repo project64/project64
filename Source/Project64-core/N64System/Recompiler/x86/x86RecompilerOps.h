@@ -23,10 +23,10 @@ class CX86RecompilerOps :
     protected CRecompilerSettings
 {
 public:
-    /*************************** Trap functions  *************************/
+    // Trap functions
     void Compile_TrapCompare(TRAP_COMPARE CompareType);
 
-    /************************** Branch functions  ************************/
+    // Branch functions
     void Compile_BranchCompare(BRANCH_COMPARE CompareType);
     void Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE BranchType, bool Link);
     void Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Link);
@@ -39,7 +39,7 @@ public:
     void COP1_BCF_Compare();
     void COP1_BCT_Compare();
 
-    /*************************  OpCode functions *************************/
+    //  Opcode functions
     void J();
     void JAL();
     void ADDI();
@@ -78,7 +78,7 @@ public:
     void SDC1();
     void SD();
 
-    /********************** R4300i OpCodes: Special **********************/
+    // R4300i opcodes: Special
     void SPECIAL_SLL();
     void SPECIAL_SRL();
     void SPECIAL_SRA();
@@ -124,18 +124,18 @@ public:
     void SPECIAL_DSRL32();
     void SPECIAL_DSRA32();
 
-    /************************** COP0 functions **************************/
+    // COP0 functions
     void COP0_MF();
     void COP0_MT();
 
-    /************************** COP0 CO functions ***********************/
+    // COP0 CO functions
     void COP0_CO_TLBR();
     void COP0_CO_TLBWI();
     void COP0_CO_TLBWR();
     void COP0_CO_TLBP();
     void COP0_CO_ERET();
 
-    /************************** COP1 functions **************************/
+    // COP1 functions
     void COP1_MF();
     void COP1_DMF();
     void COP1_CF();
@@ -143,7 +143,7 @@ public:
     void COP1_DMT();
     void COP1_CT();
 
-    /************************** COP1: S functions ************************/
+    // COP1: S functions
     void COP1_S_ADD();
     void COP1_S_SUB();
     void COP1_S_MUL();
@@ -165,7 +165,7 @@ public:
     void COP1_S_CVT_L();
     void COP1_S_CMP();
 
-    /************************** COP1: D functions ************************/
+    // COP1: D functions
     void COP1_D_ADD();
     void COP1_D_SUB();
     void COP1_D_MUL();
@@ -187,15 +187,15 @@ public:
     void COP1_D_CVT_L();
     void COP1_D_CMP();
 
-    /************************** COP1: W functions ************************/
+    // COP1: W functions
     void COP1_W_CVT_S();
     void COP1_W_CVT_D();
 
-    /************************** COP1: L functions ************************/
+    // COP1: L functions
     void COP1_L_CVT_S();
     void COP1_L_CVT_D();
 
-    /************************** Other functions **************************/
+    // Other functions
     void UnknownOpcode();
 
     void ClearCachedInstructionInfo();
@@ -239,7 +239,7 @@ public:
     static void ChangeDefaultRoundingModel();
     void OverflowDelaySlot(bool TestTimer);
 
-    /********* Helper Functions *********/
+    // Helper functions
     typedef CRegInfo::REG_STATE REG_STATE;
 
     static REG_STATE         GetMipsRegState(int32_t Reg) { return m_RegWorkingSet.GetMipsRegState(Reg); }

@@ -26,8 +26,8 @@
 #define pop_new
 #endif
 
-// template class helpers with functions for comparing elements
-// override if using complex types without operator==
+// Template class helpers with functions for comparing elements
+// Override if using complex types without operator==
 
 template <class T>
 class CListCtrlArrayEqualHelper
@@ -43,8 +43,8 @@ template <class T, class TEqual = CListCtrlArrayEqualHelper< T > >
 class CListCtrlArray
 {
 public:
-	// Construction/destruction
-	CListCtrlArray() : m_aT(nullptr), m_nSize(0), m_nAllocSize(0)
+	// Construction / destruction
+	CListCtrlArray() : m_aT(NULL), m_nSize(0), m_nAllocSize(0)
 	{ }
 
 	~CListCtrlArray()
@@ -52,10 +52,10 @@ public:
 		RemoveAll();
 	}
 
-	CListCtrlArray(const CListCtrlArray< T, TEqual >& src) : m_aT(nullptr), m_nSize(0), m_nAllocSize(0)
+	CListCtrlArray(const CListCtrlArray< T, TEqual >& src) : m_aT(NULL), m_nSize(0), m_nAllocSize(0)
 	{
 		m_aT = (T*)malloc(src.GetSize() * sizeof(T));
-		if (m_aT != nullptr)
+		if (m_aT != NULL)
 		{
 			m_nAllocSize = src.GetSize();
 			for (int i=0; i<src.GetSize(); i++)
@@ -68,7 +68,7 @@ public:
 		{
 			RemoveAll();
 			m_aT = (T*)malloc(src.GetSize() * sizeof(T));
-			if (m_aT != nullptr)
+			if (m_aT != NULL)
 				m_nAllocSize = src.GetSize();
 		}
 		else
@@ -93,7 +93,7 @@ public:
 			T* aT;
 			int nNewAllocSize = (m_nAllocSize == 0) ? 1 : (m_nSize * 2);
 			aT = (T*)realloc(m_aT, nNewAllocSize * sizeof(T));
-			if(aT == nullptr)
+			if(aT == NULL)
 				return FALSE;
 			m_nAllocSize = nNewAllocSize;
 			m_aT = aT;
@@ -109,7 +109,7 @@ public:
 			T* aT;
 			int nNewAllocSize = (m_nAllocSize == 0) ? 1 : (m_nSize * 2);
 			aT = (T*)realloc(m_aT, nNewAllocSize * sizeof(T));
-			if(aT == nullptr)
+			if(aT == NULL)
 				return FALSE;
 			m_nAllocSize = nNewAllocSize;
 			m_aT = aT;
@@ -143,12 +143,12 @@ public:
 	}
 	void RemoveAll()
 	{
-		if(m_aT != nullptr)
+		if(m_aT != NULL)
 		{
 			for(int i = 0; i < m_nSize; i++)
 				m_aT[i].~T();
 			free(m_aT);
-			m_aT = nullptr;
+			m_aT = NULL;
 		}
 		m_nSize = 0;
 		m_nAllocSize = 0;
@@ -158,7 +158,7 @@ public:
 		ATLASSERT(nIndex >= 0 && nIndex < m_nSize);
 		if(nIndex < 0 || nIndex >= m_nSize)
 		{
-			RaiseException(EXCEPTION_ARRAY_BOUNDS_EXCEEDED, EXCEPTION_NONCONTINUABLE, 0, nullptr);					
+			RaiseException(EXCEPTION_ARRAY_BOUNDS_EXCEEDED, EXCEPTION_NONCONTINUABLE, 0, NULL);					
 		}
 		return m_aT[nIndex];
 	}
@@ -167,7 +167,7 @@ public:
 		ATLASSERT(nIndex >= 0 && nIndex < m_nSize);
 		if(nIndex < 0 || nIndex >= m_nSize)
 		{
-			RaiseException(EXCEPTION_ARRAY_BOUNDS_EXCEEDED, EXCEPTION_NONCONTINUABLE, 0, nullptr);					
+			RaiseException(EXCEPTION_ARRAY_BOUNDS_EXCEEDED, EXCEPTION_NONCONTINUABLE, 0, NULL);					
 		}
 		return m_aT[nIndex];
 	}

@@ -8,30 +8,28 @@
 
 typedef struct
 {
-    uint16_t Version;        /* Should be set to 1 */
-    uint16_t Type;           /* Set to PLUGIN_TYPE_GFX */
-    char Name[100];      /* Name of the DLL */
+    uint16_t Version;        // Should be set to 1
+    uint16_t Type;           // Set to PLUGIN_TYPE_GFX
+    char Name[100];      // Name of the DLL
 
-    /* If DLL supports memory these memory options then set them to TRUE or FALSE
-    if it does not support it */
-    int32_t NormalMemory;   /* a normal BYTE array */
-    int32_t MemoryBswaped;  /* a normal BYTE array where the memory has been pre
-                            bswap on a dword (32 bits) boundry */
+    // If DLL supports these memory options then set them to TRUE or FALSE if it does not support it
+    int32_t NormalMemory;   // A normal BYTE array
+    int32_t MemoryBswaped;  // A normal BYTE array where the memory has been pre-bswap'd on a DWORD (32-bit) boundary
 } PLUGIN_INFO;
 
 #endif
 
-// enum's
+// Enums
 enum SETTING_DATA_TYPE
 {
     Data_DWORD_General = 0, // A uint32_t setting used anywhere
     Data_String_General = 1, // A string setting used anywhere
     Data_DWORD_Game = 2, // A uint32_t associated with the current game
     Data_String_Game = 3, // A string associated with the current game
-    Data_DWORD_RDB = 4, // A uint32_t associated with the current game in the rom database
-    Data_String_RDB = 5, // A string associated with the current game in the rom database
-    Data_DWORD_RDB_Setting = 6, // A uint32_t read from the rom database, with config file
-    Data_String_RDB_Setting = 7, // A string read from the rom database, with config file
+    Data_DWORD_RDB = 4, // A uint32_t associated with the current game in the ROM database
+    Data_String_RDB = 5, // A string associated with the current game in the ROM database
+    Data_DWORD_RDB_Setting = 6, // A uint32_t read from the ROM database, with config file
+    Data_String_RDB_Setting = 7, // A string read from the ROM database, with config file
 };
 
 typedef struct
@@ -117,7 +115,7 @@ class CPlugins :
     private CDebugSettings
 {
 public:
-    //Functions
+    // Functions
     CPlugins(SettingID PluginDirSetting, bool SyncPlugins);
     ~CPlugins();
 
@@ -160,7 +158,7 @@ private:
     SettingID m_PluginDirSetting;
     stdstr m_PluginDir;
 
-    //Plugins
+    // Plugins
     CGfxPlugin      * m_Gfx;
     CAudioPlugin    * m_Audio;
     CRSP_Plugin     * m_RSP;
@@ -174,6 +172,6 @@ private:
     bool m_SyncPlugins;
 };
 
-//Dummy Functions
+// Dummy Functions
 void DummyCheckInterrupts(void);
 void DummyFunction(void);

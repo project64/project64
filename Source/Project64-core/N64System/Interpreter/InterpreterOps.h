@@ -12,7 +12,7 @@ class R4300iOp :
 public:
     typedef void(*Func)();
 
-    /************************* OpCode functions *************************/
+    // Opcode functions
     static void  J();
     static void  JAL();
     static void  BNE();
@@ -59,7 +59,7 @@ public:
     static void  SDC1();
     static void  SD();
 
-    /********************** R4300i OpCodes: Special **********************/
+    // R4300i opcodes: Special
     static void  SPECIAL_SLL();
     static void  SPECIAL_SRL();
     static void  SPECIAL_SRA();
@@ -113,7 +113,7 @@ public:
     static void  SPECIAL_DSRL32();
     static void  SPECIAL_DSRA32();
 
-    /********************** R4300i OpCodes: RegImm **********************/
+    // R4300i opcodes: RegImm
     static void  REGIMM_BLTZ();
     static void  REGIMM_BGEZ();
     static void  REGIMM_BLTZL();
@@ -127,18 +127,18 @@ public:
     static void  REGIMM_TLTIU();
     static void  REGIMM_TNEI();
 
-    /************************** COP0 functions **************************/
+    // COP0 functions
     static void  COP0_MF();
     static void  COP0_MT();
 
-    /************************** COP0 CO functions ***********************/
+    // COP0 CO functions
     static void  COP0_CO_TLBR();
     static void  COP0_CO_TLBWI();
     static void  COP0_CO_TLBWR();
     static void  COP0_CO_TLBP();
     static void  COP0_CO_ERET();
 
-    /************************** COP1 functions **************************/
+    // COP1 functions
     static void  COP1_MF();
     static void  COP1_DMF();
     static void  COP1_CF();
@@ -146,13 +146,13 @@ public:
     static void  COP1_DMT();
     static void  COP1_CT();
 
-    /************************* COP1: BC1 functions ***********************/
+    // COP1: BC1 functions
     static void  COP1_BCF();
     static void  COP1_BCT();
     static void  COP1_BCFL();
     static void  COP1_BCTL();
 
-    /************************** COP1: S functions ************************/
+    // COP1: S functions
     static void  COP1_S_ADD();
     static void  COP1_S_SUB();
     static void  COP1_S_MUL();
@@ -174,7 +174,7 @@ public:
     static void  COP1_S_CVT_L();
     static void  COP1_S_CMP();
 
-    /************************** COP1: D functions ************************/
+    // COP1: D functions
     static void  COP1_D_ADD();
     static void  COP1_D_SUB();
     static void  COP1_D_MUL();
@@ -196,15 +196,15 @@ public:
     static void  COP1_D_CVT_L();
     static void  COP1_D_CMP();
 
-    /************************** COP1: W functions ************************/
+    // COP1: W functions
     static void  COP1_W_CVT_S();
     static void  COP1_W_CVT_D();
 
-    /************************** COP1: L functions ************************/
+    // COP1: L functions
     static void  COP1_L_CVT_S();
     static void  COP1_L_CVT_D();
 
-    /************************** Other functions **************************/
+    // Other functions
     static void  UnknownOpcode();
 
     static Func* BuildInterpreter();

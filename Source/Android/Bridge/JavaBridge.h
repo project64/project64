@@ -16,7 +16,7 @@ public:
     void GfxThreadDone();
     void SwapWindow();
 
-    // ROM List
+    // ROM list
     void RomListReset(void);
     void RomListAddItem(const char * FullFileName, const char * FileName, const char * GoodName, uint32_t TextColor);
     void RomListLoaded(void);
