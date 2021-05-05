@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2003-2009 Sergey 'Gonetz' Lipski
 // Copyright(C) 2002 Dave2001
@@ -71,11 +71,11 @@ enum gfxTextureFormat_t
     GFX_TEXFMT_8BIT = 0x0,
     GFX_TEXFMT_RGB_332 = GFX_TEXFMT_8BIT,
     GFX_TEXFMT_YIQ_422 = 0x1,
-    GFX_TEXFMT_ALPHA_8 = 0x2, /* (0..0xFF) alpha     */
-    GFX_TEXFMT_INTENSITY_8 = 0x3, /* (0..0xFF) intensity */
+    GFX_TEXFMT_ALPHA_8 = 0x2, // (0..0xFF) alpha
+    GFX_TEXFMT_INTENSITY_8 = 0x3, // (0..0xFF) intensity
     GFX_TEXFMT_ALPHA_INTENSITY_44 = 0x4,
-    GFX_TEXFMT_P_8 = 0x5, /* 8-bit palette */
-    GFX_TEXFMT_RSVD0 = 0x6, /* GFX_TEXFMT_P_8_RGBA */
+    GFX_TEXFMT_P_8 = 0x5, // 8-bit palette
+    GFX_TEXFMT_RSVD0 = 0x6, // GFX_TEXFMT_P_8_RGBA
     GFX_TEXFMT_P_8_6666 = GFX_TEXFMT_RSVD0,
     GFX_TEXFMT_P_8_6666_EXT = GFX_TEXFMT_RSVD0,
     GFX_TEXFMT_RSVD1 = 0x7,
@@ -86,7 +86,7 @@ enum gfxTextureFormat_t
     GFX_TEXFMT_ARGB_1555 = 0xb,
     GFX_TEXFMT_ARGB_4444 = 0xc,
     GFX_TEXFMT_ALPHA_INTENSITY_88 = 0xd,
-    GFX_TEXFMT_AP_88 = 0xe, /* 8-bit alpha 8-bit palette */
+    GFX_TEXFMT_AP_88 = 0xe, // 8-bit alpha, 8-bit palette
     GFX_TEXFMT_RSVD2 = 0xf,
     GFX_TEXFMT_RSVD4 = GFX_TEXFMT_RSVD2,
     GFX_TEXFMT_ARGB_CMP_FXT1 = 0x11,
@@ -105,13 +105,13 @@ enum gfxTextureFormat_t
 
 enum gfxAspectRatio_t
 {
-    GFX_ASPECT_LOG2_8x1 = 3,       /* 8W x 1H */
-    GFX_ASPECT_LOG2_4x1 = 2,       /* 4W x 1H */
-    GFX_ASPECT_LOG2_2x1 = 1,       /* 2W x 1H */
-    GFX_ASPECT_LOG2_1x1 = 0,       /* 1W x 1H */
-    GFX_ASPECT_LOG2_1x2 = -1,       /* 1W x 2H */
-    GFX_ASPECT_LOG2_1x4 = -2,       /* 1W x 4H */
-    GFX_ASPECT_LOG2_1x8 = -3,       /* 1W x 8H */
+    GFX_ASPECT_LOG2_8x1 = 3,       // 8W x 1H
+    GFX_ASPECT_LOG2_4x1 = 2,       // 4W x 1H
+    GFX_ASPECT_LOG2_2x1 = 1,       // 2W x 1H
+    GFX_ASPECT_LOG2_1x1 = 0,       // 1W x 1H
+    GFX_ASPECT_LOG2_1x2 = -1,       // 1W x 2H
+    GFX_ASPECT_LOG2_1x4 = -2,       // 1W x 4H
+    GFX_ASPECT_LOG2_1x8 = -3,       // 1W x 8H
 };
 
 enum gfxCombineFunction_t
@@ -263,22 +263,22 @@ enum gfxDepthBufferMode_t
 
 enum gfxLfbWriteMode_t
 {
-    GFX_LFBWRITEMODE_565 = 0x0, /* RGB:RGB */
-    GFX_LFBWRITEMODE_555 = 0x1, /* RGB:RGB */
-    GFX_LFBWRITEMODE_1555 = 0x2, /* ARGB:ARGB */
+    GFX_LFBWRITEMODE_565 = 0x0, // RGB:RGB
+    GFX_LFBWRITEMODE_555 = 0x1, // RGB:RGB
+    GFX_LFBWRITEMODE_1555 = 0x2, // ARGB:ARGB
     GFX_LFBWRITEMODE_RESERVED1 = 0x3,
-    GFX_LFBWRITEMODE_888 = 0x4, /* RGB */
-    GFX_LFBWRITEMODE_8888 = 0x5, /* ARGB */
+    GFX_LFBWRITEMODE_888 = 0x4, // RGB
+    GFX_LFBWRITEMODE_8888 = 0x5, // ARGB
     GFX_LFBWRITEMODE_RESERVED2 = 0x6,
     GFX_LFBWRITEMODE_RESERVED3 = 0x7,
     GFX_LFBWRITEMODE_RESERVED4 = 0x8,
     GFX_LFBWRITEMODE_RESERVED5 = 0x9,
     GFX_LFBWRITEMODE_RESERVED6 = 0xa,
     GFX_LFBWRITEMODE_RESERVED7 = 0xb,
-    GFX_LFBWRITEMODE_565_DEPTH = 0xc, /* RGB:DEPTH */
-    GFX_LFBWRITEMODE_555_DEPTH = 0xd, /* RGB:DEPTH */
-    GFX_LFBWRITEMODE_1555_DEPTH = 0xe, /* ARGB:DEPTH */
-    GFX_LFBWRITEMODE_ZA16 = 0xf, /* DEPTH:DEPTH */
+    GFX_LFBWRITEMODE_565_DEPTH = 0xc, // RGB:DEPTH
+    GFX_LFBWRITEMODE_555_DEPTH = 0xd, // RGB:DEPTH
+    GFX_LFBWRITEMODE_1555_DEPTH = 0xe, // ARGB:DEPTH
+    GFX_LFBWRITEMODE_ZA16 = 0xf, // DEPTH:DEPTH
     GFX_LFBWRITEMODE_ANY = 0xFF,
 };
 
@@ -377,25 +377,25 @@ typedef struct
     uint16_t  flags;
 
     uint8_t  b;  // These values are arranged like this so that *(uint32_t*)(gfxVERTEX+?) is
-    uint8_t  g;  // ARGB format that glide can use.
+    uint8_t  g;  // ARGB format that Glide can use
     uint8_t  r;
     uint8_t  a;
 
-    float f; //fog
+    float f; // Fog
 
-    float vec[3]; // normal vector
+    float vec[3]; // Normal vector
 
     float sx, sy, sz;
     float x_w, y_w, z_w, u0_w, v0_w, u1_w, v1_w, oow;
     uint8_t  not_zclipped;
     uint8_t  screen_translated;
     uint8_t  uv_scaled;
-    uint32_t uv_calculated;  // like crc
+    uint32_t uv_calculated;  // Like CRC
     uint32_t shade_mod;
     uint32_t color_backup;
 
     float ou, ov;
 
-    int   number;   // way to identify it
-    int   scr_off, z_off; // off the screen?
+    int   number;   // Way to identify it
+    int   scr_off, z_off; // Off the screen?
 } gfxVERTEX;

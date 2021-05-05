@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2007 Hiroshi Morii
 // Copyright(C) 2003 Rice1964
@@ -125,9 +125,9 @@ static uint32 RGB888toYUV(uint32 val)
 #define Ymask 0x00FF0000
 #define Umask 0x0000FF00
 #define Vmask 0x000000FF
-#define trY 0x00300000 // ?
-#define trU 0x00000700 // ??
-#define trV 0x00000006 // ???
+#define trY 0x00300000 // TODO: ?
+#define trU 0x00000700 // TODO: ??
+#define trV 0x00000006 // TODO: ???
 
 #define HQ4X_INTERP1(n, b) \
 static void hq4x_Interp1_##n (uint8 * pc, uint##b p1, uint##b p2) \
@@ -863,8 +863,8 @@ void hq4x_init(void)
                 g = (j << 4) | j;
                 b = (k << 4) | k;
 
-                /* Microsoft's RGB888->YUV conversion */
-                /*Y = (((  66 * r + 129 * g +  25 * b + 128) >> 8) + 16) & 0xFF;
+                /* Microsoft's RGB888->YUV conversion
+                Y = (((  66 * r + 129 * g +  25 * b + 128) >> 8) + 16) & 0xFF;
                 u = ((( -38 * r -  74 * g + 112 * b + 128) >> 8) + 128) & 0xFF;
                 v = ((( 112 * r -  94 * g -  18 * b + 128) >> 8) + 128) & 0xFF;*/
 

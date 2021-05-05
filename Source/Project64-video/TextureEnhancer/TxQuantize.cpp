@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2007 Hiroshi Morii
 // Copyright(C) 2003 Rice1964
@@ -9,7 +9,7 @@
 #pragma warning(disable: 4786)
 #endif
 
-/* NOTE: The codes are not optimized. They can be made faster. */
+// TODO: NOTE: The code is not optimized. It can be made faster.
 
 #include "TxQuantize.h"
 #include <Project64-video/Renderer/types.h>
@@ -18,10 +18,10 @@ TxQuantize::TxQuantize()
 {
     _txUtil = new TxUtil();
 
-    /* get number of CPU cores. */
+    // Get number of CPU cores
     _numcore = _txUtil->getNumberofProcessors();
 
-    /* get dxtn extensions */
+    // Get dxtn extensions
     _tx_compress_fxt1 = TxLoadLib::getInstance()->getfxtCompressTexFuncExt();
     _tx_compress_dxtn = TxLoadLib::getInstance()->getdxtCompressTexFuncExt();
 }
@@ -939,7 +939,7 @@ TxQuantize::ARGB8888_A8(uint32* src, uint32* dest, int width, int height)
         add esi, 4;
 
 #if 0
-        mov edx, eax;         // we'll use A comp for every pixel
+        mov edx, eax;         // We'll use A comp for every pixel
         and edx, 0xFF000000;  // aaaaaaaa 00000000 00000000 00000000
         shr edx, 24;          // 00000000 00000000 00000000 aaaaaaaa
 
@@ -965,7 +965,7 @@ TxQuantize::ARGB8888_A8(uint32* src, uint32* dest, int width, int height)
 #endif
 
 #if 1
-        mov edx, eax;         // we'll use G comp for every pixel
+        mov edx, eax;         // We'll use G comp for every pixel
         and edx, 0x0000FF00;  // 00000000 00000000 aaaaaaaa 00000000
         shr edx, 8;           // 00000000 00000000 00000000 aaaaaaaa
 
@@ -1058,7 +1058,7 @@ TxQuantize::ARGB8888_AI44(uint32* src, uint32* dest, int width, int height)
         mov eax, dword ptr[esi];
         add esi, 4;
 
-        mov edx, eax;         // use A and G comps MSB
+        mov edx, eax;         // Use A and G comps MSB
         and edx, 0xF0000000;  // aaaa0000 00000000 00000000 00000000
         mov ebx, eax;
         shr edx, 24;          // 00000000 00000000 00000000 aaaa0000
@@ -1171,18 +1171,18 @@ TxQuantize::ARGB8888_AI88(uint32* src, uint32* dest, int width, int height)
 #endif
 }
 
-/* R.W. Floyd and L. Steinberg, An adaptive algorithm
- * for spatial grey scale, Proceedings of the Society
- * of Information Display 17, pp75-77, 1976
- */
+// R.W. Floyd and L. Steinberg, An adaptive algorithm
+// for spatial grey scale, Proceedings of the Society
+// of Information Display 17, pp75-77, 1976
+
 void
 TxQuantize::ARGB8888_RGB565_ErrD(uint32* src, uint32* dst, int width, int height)
 {
-    /* Floyd-Steinberg error-diffusion halftoning */
+    // Floyd-Steinberg error-diffusion halftoning
 
     int i, x, y;
-    int qr = 0, qg = 0, qb = 0; /* quantized incoming values */
-    int ir, ig, ib; /* incoming values */
+    int qr = 0, qg = 0, qb = 0; // Quantized incoming values
+    int ir, ig, ib; // Incoming values
     int t;
     int *errR = new int[width];
     int *errG = new int[width];
@@ -1194,25 +1194,25 @@ TxQuantize::ARGB8888_RGB565_ErrD(uint32* src, uint32* dst, int width, int height
 
     for (y = 0; y < height; y++) {
         for (x = 0; x < width; x++) {
-            /* incoming pixel values */
+            // Incoming pixel values
             ir = ((*src >> 16) & 0xFF) * 10000;
             ig = ((*src >> 8) & 0xFF) * 10000;
             ib = ((*src) & 0xFF) * 10000;
 
             if (x == 0) qr = qg = qb = 0;
 
-            /* quantize pixel values.
-             * qr * 0.4375 is the error from the pixel to the left,
-             * errR is the error from the pixel to the top, top left, and top right */
-             /* qr * 0.4375 is the error distribution to the EAST in
-              * the previous loop */
+            // Quantize pixel values
+            // qr * 0.4375 is the error from the pixel to the left,
+            // errR is the error from the pixel to the top, top left, and top right
+            // qr * 0.4375 is the error distribution to the East in
+            // the previous loop
             ir += errR[x] + qr * 4375 / 10000;
             ig += errG[x] + qg * 4375 / 10000;
             ib += errB[x] + qb * 4375 / 10000;
 
-            /* error distribution to the SOUTH-EAST in the previous loop
-             * can't calculate in the previous loop because it steps on
-             * the above quantization */
+            // Error distribution to the Southeast in the previous loop
+            // can't calculate in the previous loop because it steps on
+            // the above quantization
             errR[x] = qr * 625 / 10000;
             errG[x] = qg * 625 / 10000;
             errB[x] = qb * 625 / 10000;
@@ -1221,20 +1221,20 @@ TxQuantize::ARGB8888_RGB565_ErrD(uint32* src, uint32* dst, int width, int height
             qg = ig;
             qb = ib;
 
-            /* clamp */
+            // Clamp
             if (qr < 0) qr = 0; else if (qr > 2550000) qr = 2550000;
             if (qg < 0) qg = 0; else if (qg > 2550000) qg = 2550000;
             if (qb < 0) qb = 0; else if (qb > 2550000) qb = 2550000;
 
-            /* convert to RGB565 */
+            // Convert to RGB565
             qr = qr * 0x1F / 2550000;
             qg = qg * 0x3F / 2550000;
             qb = qb * 0x1F / 2550000;
 
-            /* this is the dithered pixel */
+            // This is the dithered pixel
             t = (qr << 11) | (qg << 5) | qb;
 
-            /* compute the errors */
+            // Compute the errors
             qr = ((qr << 3) | (qr >> 2)) * 10000;
             qg = ((qg << 2) | (qg >> 4)) * 10000;
             qb = ((qb << 3) | (qb >> 2)) * 10000;
@@ -1242,24 +1242,22 @@ TxQuantize::ARGB8888_RGB565_ErrD(uint32* src, uint32* dst, int width, int height
             qg = ig - qg;
             qb = ib - qb;
 
-            /* compute the error distributions */
-            /* Floyd-Steinberg filter
-             * 7/16 (=0.4375) to the EAST
-             * 5/16 (=0.3125) to the SOUTH
-             * 1/16 (=0.0625) to the SOUTH-EAST
-             * 3/16 (=0.1875) to the SOUTH-WEST
-             *
-             *         x    7/16
-             *  3/16  5/16  1/16
-             */
-             /* SOUTH-WEST */
+            // Compute the error distributions
+            // Floyd-Steinberg filter
+            // 7/16 (=0.4375) to the East
+            // 5/16 (=0.3125) to the South
+            // 1/16 (=0.0625) to the Southeast
+            // 3/16 (=0.1875) to the Southwest
+            //        x    7/16
+            // 3/16  5/16  1/16
+            // Southwest
             if (x > 1) {
                 errR[x - 1] += qr * 1875 / 10000;
                 errG[x - 1] += qg * 1875 / 10000;
                 errB[x - 1] += qb * 1875 / 10000;
             }
 
-            /* SOUTH */
+            // South
             errR[x] += qr * 3125 / 10000;
             errG[x] += qg * 3125 / 10000;
             errB[x] += qb * 3125 / 10000;
@@ -1279,11 +1277,11 @@ TxQuantize::ARGB8888_RGB565_ErrD(uint32* src, uint32* dst, int width, int height
 void
 TxQuantize::ARGB8888_ARGB1555_ErrD(uint32* src, uint32* dst, int width, int height)
 {
-    /* Floyd-Steinberg error-diffusion halftoning */
+    // Floyd-Steinberg error-diffusion halftoning
 
     int i, x, y;
-    int qr, qg, qb; /* quantized incoming values */
-    int ir, ig, ib; /* incoming values */
+    int qr, qg, qb; // Quantized incoming values
+    int ir, ig, ib; // Incoming values
     int t;
     int *errR = new int[width];
     int *errG = new int[width];
@@ -1295,25 +1293,25 @@ TxQuantize::ARGB8888_ARGB1555_ErrD(uint32* src, uint32* dst, int width, int heig
 
     for (y = 0; y < height; y++) {
         for (x = 0; x < width; x++) {
-            /* incoming pixel values */
+            // Incoming pixel values
             ir = ((*src >> 16) & 0xFF) * 10000;
             ig = ((*src >> 8) & 0xFF) * 10000;
             ib = ((*src) & 0xFF) * 10000;
 
             if (x == 0) qr = qg = qb = 0;
 
-            /* quantize pixel values.
-             * qr * 0.4375 is the error from the pixel to the left,
-             * errR is the error from the pixel to the top, top left, and top right */
-             /* qr * 0.4375 is the error distribution to the EAST in
-              * the previous loop */
+            // Quantize pixel values
+            // qr * 0.4375 is the error from the pixel to the left,
+            // errR is the error from the pixel to the top, top left, and top right
+            // qr * 0.4375 is the error distribution to the East in
+            // the previous loop
             ir += errR[x] + qr * 4375 / 10000;
             ig += errG[x] + qg * 4375 / 10000;
             ib += errB[x] + qb * 4375 / 10000;
 
-            /* error distribution to the SOUTH-EAST of the previous loop.
-             * cannot calculate in the previous loop because it steps on
-             * the above quantization */
+            // Error distribution to the Southeast of the previous loop.
+            // Cannot calculate in the previous loop because it steps on
+            // the above quantization.
             errR[x] = qr * 625 / 10000;
             errG[x] = qg * 625 / 10000;
             errB[x] = qb * 625 / 10000;
@@ -1322,21 +1320,21 @@ TxQuantize::ARGB8888_ARGB1555_ErrD(uint32* src, uint32* dst, int width, int heig
             qg = ig;
             qb = ib;
 
-            /* clamp */
+            // Clamp
             if (qr < 0) qr = 0; else if (qr > 2550000) qr = 2550000;
             if (qg < 0) qg = 0; else if (qg > 2550000) qg = 2550000;
             if (qb < 0) qb = 0; else if (qb > 2550000) qb = 2550000;
 
-            /* convert to RGB555 */
+            // Convert to RGB555
             qr = qr * 0x1F / 2550000;
             qg = qg * 0x1F / 2550000;
             qb = qb * 0x1F / 2550000;
 
-            /* this is the dithered pixel */
+            // This is the dithered pixel
             t = (qr << 10) | (qg << 5) | qb;
             t |= ((*src >> 24) ? 0x8000 : 0);
 
-            /* compute the errors */
+            // Compute the errors
             qr = ((qr << 3) | (qr >> 2)) * 10000;
             qg = ((qg << 3) | (qg >> 2)) * 10000;
             qb = ((qb << 3) | (qb >> 2)) * 10000;
@@ -1344,24 +1342,22 @@ TxQuantize::ARGB8888_ARGB1555_ErrD(uint32* src, uint32* dst, int width, int heig
             qg = ig - qg;
             qb = ib - qb;
 
-            /* compute the error distributions */
-            /* Floyd-Steinberg filter
-             * 7/16 (=0.4375) to the EAST
-             * 5/16 (=0.3125) to the SOUTH
-             * 1/16 (=0.0625) to the SOUTH-EAST
-             * 3/16 (=0.1875) to the SOUTH-WEST
-             *
-             *         x    7/16
-             *  3/16  5/16  1/16
-             */
-             /* SOUTH-WEST */
+            // Compute the error distributions
+            // Floyd-Steinberg filter
+            // 7/16 (=0.4375) to the East
+            // 5/16 (=0.3125) to the South
+            // 1/16 (=0.0625) to the Southeast
+            // 3/16 (=0.1875) to the Southwest
+            //        x    7/16
+            // 3/16  5/16  1/16
+            // Southwest
             if (x > 1) {
                 errR[x - 1] += qr * 1875 / 10000;
                 errG[x - 1] += qg * 1875 / 10000;
                 errB[x - 1] += qb * 1875 / 10000;
             }
 
-            /* SOUTH */
+            // South
             errR[x] += qr * 3125 / 10000;
             errG[x] += qg * 3125 / 10000;
             errB[x] += qb * 3125 / 10000;
@@ -1381,17 +1377,16 @@ TxQuantize::ARGB8888_ARGB1555_ErrD(uint32* src, uint32* dst, int width, int heig
 void
 TxQuantize::ARGB8888_ARGB4444_ErrD(uint32* src, uint32* dst, int width, int height)
 {
-    /* Floyd-Steinberg error-diffusion halftoning */
+    // Floyd-Steinberg error-diffusion halftoning
+    // NOTE: Alpha dithering looks better for alpha gradients, but are prone
+    // to producing noisy speckles for constant or step-level alpha. Output
+    // results should always be checked.
 
-    /* NOTE: alpha dithering looks better for alpha gradients, but are prone
-     * to producing noisy speckles for constant or step level alpha. Output
-     * results should always be checked.
-     */
     bool ditherAlpha = 0;
 
     int i, x, y;
-    int qr = 0, qg = 0, qb = 0, qa = 0; /* quantized incoming values */
-    int ir, ig, ib, ia; /* incoming values */
+    int qr = 0, qg = 0, qb = 0, qa = 0; // Quantized incoming values
+    int ir, ig, ib, ia; // Incoming values
     int t;
     int *errR = new int[width];
     int *errG = new int[width];
@@ -1404,7 +1399,7 @@ TxQuantize::ARGB8888_ARGB4444_ErrD(uint32* src, uint32* dst, int width, int heig
 
     for (y = 0; y < height; y++) {
         for (x = 0; x < width; x++) {
-            /* incoming pixel values */
+            // Incoming pixel values
             ir = ((*src >> 16) & 0xFF) * 10000;
             ig = ((*src >> 8) & 0xFF) * 10000;
             ib = ((*src) & 0xFF) * 10000;
@@ -1412,19 +1407,19 @@ TxQuantize::ARGB8888_ARGB4444_ErrD(uint32* src, uint32* dst, int width, int heig
 
             if (x == 0) qr = qg = qb = qa = 0;
 
-            /* quantize pixel values.
-             * qr * 0.4375 is the error from the pixel to the left,
-             * errR is the error from the pixel to the top, top left, and top right */
-             /* qr * 0.4375 is the error distribution to the EAST in
-              * the previous loop */
+            // Quantize pixel values
+            // qr * 0.4375 is the error from the pixel to the left,
+            // errR is the error from the pixel to the top, top left, and top right
+            // qr * 0.4375 is the error distribution to the East in
+            // the previous loop
             ir += errR[x] + qr * 4375 / 10000;
             ig += errG[x] + qg * 4375 / 10000;
             ib += errB[x] + qb * 4375 / 10000;
             ia += errA[x] + qa * 4375 / 10000;
 
-            /* error distribution to the SOUTH-EAST of the previous loop.
-             * cannot calculate in the previous loop because it steps on
-             * the above quantization */
+            // Error distribution to the Southeast of the previous loop.
+            // Cannot calculate in the previous loop because it steps on
+            // the above quantization.
             errR[x] = qr * 625 / 10000;
             errG[x] = qg * 625 / 10000;
             errB[x] = qb * 625 / 10000;
@@ -1435,19 +1430,19 @@ TxQuantize::ARGB8888_ARGB4444_ErrD(uint32* src, uint32* dst, int width, int heig
             qb = ib;
             qa = ia;
 
-            /* clamp */
+            // Clamp
             if (qr < 0) qr = 0; else if (qr > 2550000) qr = 2550000;
             if (qg < 0) qg = 0; else if (qg > 2550000) qg = 2550000;
             if (qb < 0) qb = 0; else if (qb > 2550000) qb = 2550000;
             if (qa < 0) qa = 0; else if (qa > 2550000) qa = 2550000;
 
-            /* convert to RGB444 */
+            // Convert to RGB444
             qr = qr * 0xF / 2550000;
             qg = qg * 0xF / 2550000;
             qb = qb * 0xF / 2550000;
             qa = qa * 0xF / 2550000;
 
-            /* this is the value to be returned */
+            // This is the value to be returned
             if (ditherAlpha) {
                 t = (qa << 12) | (qr << 8) | (qg << 4) | qb;
             }
@@ -1456,7 +1451,7 @@ TxQuantize::ARGB8888_ARGB4444_ErrD(uint32* src, uint32* dst, int width, int heig
                 t |= (*src >> 16) & 0xF000;
             }
 
-            /* compute the errors */
+            // Compute the errors
             qr = ((qr << 4) | qr) * 10000;
             qg = ((qg << 4) | qg) * 10000;
             qb = ((qb << 4) | qb) * 10000;
@@ -1466,17 +1461,15 @@ TxQuantize::ARGB8888_ARGB4444_ErrD(uint32* src, uint32* dst, int width, int heig
             qb = ib - qb;
             qa = ia - qa;
 
-            /* compute the error distributions */
-            /* Floyd-Steinberg filter
-             * 7/16 (=0.4375) to the EAST
-             * 5/16 (=0.3125) to the SOUTH
-             * 1/16 (=0.0625) to the SOUTH-EAST
-             * 3/16 (=0.1875) to the SOUTH-WEST
-             *
-             *         x    7/16
-             *  3/16  5/16  1/16
-             */
-             /* SOUTH-WEST */
+            // Compute the error distributions
+            // Floyd-Steinberg filter
+            // 7/16 (=0.4375) to the East
+            // 5/16 (=0.3125) to the South
+            // 1/16 (=0.0625) to the Southeast
+            // 3/16 (=0.1875) to the Southwest
+            //        x    7/16
+            // 3/16  5/16  1/16
+            // Southwest
             if (x > 1) {
                 errR[x - 1] += qr * 1875 / 10000;
                 errG[x - 1] += qg * 1875 / 10000;
@@ -1484,7 +1477,7 @@ TxQuantize::ARGB8888_ARGB4444_ErrD(uint32* src, uint32* dst, int width, int heig
                 errA[x - 1] += qa * 1875 / 10000;
             }
 
-            /* SOUTH */
+            // South
             errR[x] += qr * 3125 / 10000;
             errG[x] += qg * 3125 / 10000;
             errB[x] += qb * 3125 / 10000;
@@ -1506,17 +1499,16 @@ TxQuantize::ARGB8888_ARGB4444_ErrD(uint32* src, uint32* dst, int width, int heig
 void
 TxQuantize::ARGB8888_AI44_ErrD(uint32* src, uint32* dst, int width, int height)
 {
-    /* Floyd-Steinberg error-diffusion halftoning */
+    // Floyd-Steinberg error-diffusion halftoning
+    // NOTE: Alpha dithering looks better for alpha gradients, but are prone
+    // to producing noisy speckles for constant or step-level alpha. Output
+    // results should always be checked.
 
-    /* NOTE: alpha dithering looks better for alpha gradients, but are prone
-     * to producing noisy speckles for constant or step level alpha. Output
-     * results should always be checked.
-     */
     bool ditherAlpha = 0;
 
     int i, x, y;
-    int qi, qa; /* quantized incoming values */
-    int ii, ia; /* incoming values */
+    int qi, qa; // Quantized incoming values
+    int ii, ia; // Incoming values
     int t;
     int *errI = new int[width];
     int *errA = new int[width];
@@ -1527,7 +1519,7 @@ TxQuantize::ARGB8888_AI44_ErrD(uint32* src, uint32* dst, int width, int height)
 
     for (y = 0; y < height; y++) {
         for (x = 0; x < width; x++) {
-            /* 3dfx style Intensity = R * 0.299 + G * 0.587 + B * 0.114 */
+            // 3DFX style Intensity = R * 0.299 + G * 0.587 + B * 0.114
             ii = ((*src >> 16) & 0xFF) * 2990 +
                 ((*src >> 8) & 0xFF) * 5870 +
                 ((*src) & 0xFF) * 1140;
@@ -1535,32 +1527,32 @@ TxQuantize::ARGB8888_AI44_ErrD(uint32* src, uint32* dst, int width, int height)
 
             if (x == 0) qi = qa = 0;
 
-            /* quantize pixel values.
-             * qi * 0.4375 is the error from the pixel to the left,
-             * errI is the error from the pixel to the top, top left, and top right */
-             /* qi * 0.4375 is the error distrtibution to the EAST in
-              * the previous loop */
+            // Quantize pixel values
+            // qi * 0.4375 is the error from the pixel to the left,
+            // errI is the error from the pixel to the top, top left, and top right
+            // qi * 0.4375 is the error distribution to the East in
+            // the previous loop
             ii += errI[x] + qi * 4375 / 10000;
             ia += errA[x] + qa * 4375 / 10000;
 
-            /* error distribution to the SOUTH-EAST in the previous loop.
-             * cannot calculate in the previous loop because it steps on
-             * the above quantization */
+            // Error distribution to the Southeast in the previous loop.
+            // Cannot calculate in the previous loop because it steps on
+            // the above quantization.
             errI[x] = qi * 625 / 10000;
             errA[x] = qa * 625 / 10000;
 
             qi = ii;
             qa = ia;
 
-            /* clamp */
+            // Clamp
             if (qi < 0) qi = 0; else if (qi > 2550000) qi = 2550000;
             if (qa < 0) qa = 0; else if (qa > 2550000) qa = 2550000;
 
-            /* convert to I4 */
+            // Convert to I4
             qi = qi * 0xF / 2550000;
             qa = qa * 0xF / 2550000;
 
-            /* this is the value to be returned */
+            // This is the value to be returned
             if (ditherAlpha) {
                 t = (qa << 4) | qi;
             }
@@ -1569,29 +1561,27 @@ TxQuantize::ARGB8888_AI44_ErrD(uint32* src, uint32* dst, int width, int height)
                 t |= ((*src >> 24) & 0xF0);
             }
 
-            /* compute the errors */
+            // Compute the errors
             qi = ((qi << 4) | qi) * 10000;
             qa = ((qa << 4) | qa) * 10000;
             qi = ii - qi;
             qa = ia - qa;
 
-            /* compute the error distributions */
-            /* Floyd-Steinberg filter
-             * 7/16 (=0.4375) to the EAST
-             * 5/16 (=0.3125) to the SOUTH
-             * 1/16 (=0.0625) to the SOUTH-EAST
-             * 3/16 (=0.1875) to the SOUTH-WEST
-             *
-             *         x    7/16
-             *  3/16  5/16  1/16
-             */
-             /* SOUTH-WEST */
+            // Compute the error distributions
+            // Floyd-Steinberg filter
+            // 7/16 (=0.4375) to the East
+            // 5/16 (=0.3125) to the South
+            // 1/16 (=0.0625) to the Southeast
+            // 3/16 (=0.1875) to the Southwest
+            //        x    7/16
+            // 3/16  5/16  1/16
+            // Southwest
             if (x > 1) {
                 errI[x - 1] += qi * 1875 / 10000;
                 errA[x - 1] += qa * 1875 / 10000;
             }
 
-            /* SOUTH */
+            // South
             errI[x] += qi * 3125 / 10000;
             errA[x] += qa * 3125 / 10000;
 
@@ -1614,31 +1604,36 @@ TxQuantize::ARGB8888_AI88_Slow(uint32* src, uint32* dst, int width, int height)
     for (y = 0; y < height; y++) {
         for (x = 0; x < width; x++) {
 #if 1
-            /* libpng style grayscale conversion.
-             * Reduce RGB files to grayscale with or without alpha
-             * using the equation given in Poynton's ColorFAQ at
-             * <http://www.inforamp.net/~poynton/>
-             * Copyright (c) 1998-01-04 Charles Poynton poynton at inforamp.net
-             *
-             *     Y = 0.212671 * R + 0.715160 * G + 0.072169 * B
-             *
-             *  We approximate this with
-             *
-             *     Y = 0.21268 * R    + 0.7151 * G    + 0.07217 * B
-             *
-             *  which can be expressed with integers as
-             *
-             *     Y = (6969 * R + 23434 * G + 2365 * B)/32768
-             *
-             *  The calculation is to be done in a linear colorspace.
-             */
+			// TODO: I managed to dig up this information, but the PDF is lost to time I believe. Unfortunate, this document is an interesting read.
+			// The text version is now included in the Project64 repository.
+			// Both the URl and the email are dead links now, but I'm keeping these for reference in the future.
+            /*
+			libpng style grayscale conversion
+            Reduce RGB files to grayscale with or without alpha
+            using the equation given in Poynton's ColorFAQ at
+            <http://www.inforamp.net/~poynton/>
+            Copyright (c) 1998-01-04 Charles Poynton poynton@inforamp.net
+            
+                Y = 0.212671 * R + 0.715160 * G + 0.072169 * B
+            
+            We approximate this with
+            
+                Y = 0.21268 * R    + 0.7151 * G    + 0.07217 * B
+            
+            Which can be expressed with integers as
+            
+                Y = (6969 * R + 23434 * G + 2365 * B)/32768
+            
+             The calculation is to be done in a linear color space.
+            */
+			
             *dest = (((int)((((*src >> 16) & 0xFF) * 6969 +
                 ((*src >> 8) & 0xFF) * 23434 +
                 ((*src) & 0xFF) * 2365) / 32768) & 0xFF) |
                 (uint16)((*src >> 16) & 0xFF00));
 #else
-            /* 3dfx style Intensity = R * 0.299 + G * 0.587 + B * 0.114
-             * this is same as the standard NTSC gray scale conversion. */
+            // 3DFX style Intensity = R * 0.299 + G * 0.587 + B * 0.114
+            // This is same as the standard NTSC grayscale conversion.
             *dest = (((int)((((*src >> 16) & 0xFF) * 299 +
                 ((*src >> 8) & 0xFF) * 587 +
                 ((*src) & 0xFF) * 114) / 1000) & 0xFF) |
@@ -1658,13 +1653,13 @@ TxQuantize::ARGB8888_I8_Slow(uint32* src, uint32* dst, int width, int height)
     for (y = 0; y < height; y++) {
         for (x = 0; x < width; x++) {
 #if 1
-            /* libpng style Intensity = (6969 * R + 23434 * G + 2365 * B)/32768 */
+            // libpng style Intensity = (6969 * R + 23434 * G + 2365 * B)/32768
             * dest = (int)((((*src >> 16) & 0xFF) * 6969 +
                 ((*src >> 8) & 0xFF) * 23434 +
                 ((*src) & 0xFF) * 2365) / 32768) & 0xFF;
 #else
-            /* 3dfx style Intensity = R * 0.299 + G * 0.587 + B * 0.114
-             * this is same as the standard NTSC gray scale conversion. */
+            // 3DFX style Intensity = R * 0.299 + G * 0.587 + B * 0.114
+            // This is same as the standard NTSC grayscale conversion.
             *dest = (int)((((*src >> 16) & 0xFF) * 299 +
                 ((*src >> 8) & 0xFF) * 587 +
                 ((*src) & 0xFF) * 114) / 1000) & 0xFF;
@@ -1678,7 +1673,7 @@ TxQuantize::ARGB8888_I8_Slow(uint32* src, uint32* dst, int width, int height)
 void
 TxQuantize::P8_16BPP(uint32* src, uint32* dest, int width, int height, uint32* palette)
 {
-    /* passed in palette is RGBA5551 format */
+    // Passed in palette is RGBA5551 format
 #if 1
     int i;
     int size = width * height;
@@ -1688,7 +1683,7 @@ TxQuantize::P8_16BPP(uint32* src, uint32* dest, int width, int height, uint32* p
     }
 #else
 
-  /* not finished yet... */
+  // Not finished yet... TODO: Finish?
 
     int siz = (width * height) >> 2;
 
@@ -1806,20 +1801,19 @@ TxQuantize::FXT1(uint8 *src, uint8 *dest,
     int *destwidth, int *destheight, uint16 *destformat)
 {
     /*
-     * NOTE: src must be in ARGB8888 format, srcformat describes
-     * the closest 16bbp representation of src.
-     *
-     * NOTE: I have modified the dxtn library to use ARGB format
-     * which originaly was ABGR format.
-     */
+    NOTE: Source must be in ARGB8888 format, srcformat describes
+    the closest 16bbp representation of source.
+    
+    NOTE: I have modified the dxtn library to use ARGB format
+    which originally was ABGR format.
+    */
 
     bool bRet = 0;
 
     if (_tx_compress_fxt1 &&
         srcwidth >= 8 && srcheight >= 4) {
-        /* compress to fxt1
-         * width and height must be larger than 8 and 4 respectively
-         */
+        // Compress to fxt1
+        // Width and height must be larger than 8 and 4 respectively
         int dstRowStride = ((srcwidth + 7) & ~7) << 1;
         int srcRowStride = (srcwidth << 2);
 
@@ -1829,15 +1823,15 @@ TxQuantize::FXT1(uint8 *src, uint8 *dest,
             blkrow = (srcheight >> 2) / numcore;
             numcore--;
         }
-        (*_tx_compress_fxt1)(srcwidth,      /* width */
-            srcheight,     /* height */
-            4,             /* comps: ARGB8888=4, RGB888=3 */
-            src,           /* source */
-            srcRowStride,  /* width*comps */
-            dest,          /* destination */
-            dstRowStride); /* 16 bytes per 8x4 texel */
+        (*_tx_compress_fxt1)(srcwidth,      // Width
+            srcheight,     // Height
+            4,             // Comps: ARGB8888=4, RGB888=3
+            src,           // Source
+            srcRowStride,  // Width * comps
+            dest,          // Destination
+            dstRowStride); // 16 bytes per 8x4 texel
 
-/* dxtn adjusts width and height to M8 and M4 respectively by replication */
+// dxtn adjusts width and height to M8 and M4 respectively by replication
         *destwidth = (srcwidth + 7) & ~7;
         *destheight = (srcheight + 3) & ~3;
         *destformat = GFX_TEXFMT_ARGB_CMP_FXT1;
@@ -1854,25 +1848,24 @@ TxQuantize::DXTn(uint8 *src, uint8 *dest,
     int *destwidth, int *destheight, uint16 *destformat)
 {
     /*
-     * NOTE: src must be in ARGB8888 format, srcformat describes
-     * the closest 16bbp representation of src.
-     *
-     * NOTE: I have modified the dxtn library to use ARGB format
-     * which originaly was ABGR format.
-     */
+    NOTE: Source must be in ARGB8888 format, srcformat describes
+    the closest 16bbp representation of source.
+    
+    NOTE: I have modified the dxtn library to use ARGB format
+    which originally was ABGR format.
+    */
 
     bool bRet = 0;
 
     if (_tx_compress_dxtn &&
         srcwidth >= 4 && srcheight >= 4) {
-        /* compress to dxtn
-         * width and height must be larger than 4
-         */
+        // Compress to dxtn
+        // Width and height must be larger than 4
 
-         /* skip formats that DXTn won't help in size. */
+        // Skip formats that DXTn won't help in size.
         if (srcformat == GFX_TEXFMT_ALPHA_8 ||
             srcformat == GFX_TEXFMT_ALPHA_INTENSITY_44) {
-            ; /* shutup compiler */
+            ; // Shut the compiler up
         }
         else {
             int dstRowStride = ((srcwidth + 3) & ~3) << 2;
@@ -1881,10 +1874,10 @@ TxQuantize::DXTn(uint8 *src, uint8 *dest,
             *destformat = GFX_TEXFMT_ARGB_CMP_DXT5;
 
 #if !GLIDE64_DXTN
-            /* okay... we are going to disable DXT1 with 1bit alpha
-             * for Glide64. some textures have all 0 alpha values.
-             * see "N64 Kobe Bryant in NBA Courtside"
-             */
+            /// Okay...we are going to disable DXT1 with 1-bit alpha
+            // for Glide64. Some textures have all 0 alpha values.
+            // See "N64 Kobe Bryant in NBA Courtside"l.
+
             if (srcformat == GFX_TEXFMT_ARGB_1555) {
                 dstRowStride >>= 1;
                 compression = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
@@ -1905,16 +1898,16 @@ TxQuantize::DXTn(uint8 *src, uint8 *dest,
                 blkrow = (srcheight >> 2) / numcore;
                 numcore--;
             }
-            (*_tx_compress_dxtn)(4,             /* comps: ARGB8888=4, RGB888=3 */
-                srcwidth,      /* width */
-                srcheight,     /* height */
-                src,           /* source */
-                compression,   /* format */
-                dest,          /* destination */
-                dstRowStride); /* DXT1 = 8 bytes per 4x4 texel
-                                * others = 16 bytes per 4x4 texel */
+            (*_tx_compress_dxtn)(4,             // Comps: ARGB8888=4, RGB888=3
+                srcwidth,      // Width
+                srcheight,     // Height
+                src,           // Source
+                compression,   // Format
+                dest,          // Destination
+                dstRowStride); // DXT1 = 8 bytes per 4x4 texel
+                               // Others = 16 bytes per 4x4 texel
 
-                                /* dxtn adjusts width and height to M4 by replication */
+                                // dxtn adjusts width and height to M4 by replication
             *destwidth = (srcwidth + 3) & ~3;
             *destheight = (srcheight + 3) & ~3;
 
@@ -1945,14 +1938,14 @@ TxQuantize::compress(uint8 *src, uint8 *dest,
             destwidth, destheight, destformat);
         break;
     case NCC_COMPRESSION:
-        /* TODO: narrow channel compression */
+        // TODO: Narrow channel compression
         ;
     }
 
     return bRet;
 }
 
-#if 0 /* unused */
+#if 0 // Unused
 void
 TxQuantize::I8_ARGB8888(uint32* src, uint32* dest, int width, int height)
 {

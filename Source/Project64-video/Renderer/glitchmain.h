@@ -1,9 +1,10 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2003-2009 Sergey 'Gonetz' Lipski
 // Copyright(C) 2002 Dave2001
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
+
 #pragma once
 
 #ifndef _WIN32
@@ -22,22 +23,22 @@ extern int dumping;
 #define zscale 1.0f
 
 // VP added this utility function
-// returns the bytes per pixel of a given GR texture format
+// Returns the bytes per pixel of a given GR texture format
 int grTexFormatSize(int fmt);
 
-/* 2015.03.07 cxd4 -- regulated GL state machine debugging using glGetError */
+// 03/07/2015 Comment by cxd4 -- regulated GL state machine debugging using glGetError
 extern int grDisplayGLError(const char* message);
 
 extern int packed_pixels_support;
 extern int ati_sucks;
 extern float largest_supported_anisotropy;
 
-extern int default_texture; // the infamous "32*1024*1024" is now configurable
+extern int default_texture; // The infamous "32*1024*1024" is now configurable
 extern int depth_texture;
 void set_depth_shader();
 void set_bw_shader();
 extern float invtex[2];
-extern int buffer_cleared; // mark that the buffer has been cleared, used to check if we need to reload the texture buffer content
+extern int buffer_cleared; // Mark that the buffer has been cleared, used to check if we need to reload the texture buffer content
 
 #ifdef _WIN32
 #include <windows.h>
@@ -123,7 +124,7 @@ void check_link(GLuint program);
 void vbo_enable();
 void vbo_disable();
 
-//Vertex Attribute Locations
+// Vertex attribute locations
 #define POSITION_ATTR 0
 #define COLOUR_ATTR 1
 #define TEXCOORD_0_ATTR 2

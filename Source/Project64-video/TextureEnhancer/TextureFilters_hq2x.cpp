@@ -1,21 +1,18 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2007 Hiroshi Morii
 // Copyright(C) 2007 Mudlord
 // Copyright(C) 2003 Rice1964
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
+
 #include "TextureFilters.h"
 
-/************************************************************************/
-/* hq2x filters                                                         */
-/************************************************************************/
+// HQ2X filters
 
-/***************************************************************************/
-/* Basic types */
+// Basic types
 
-/***************************************************************************/
-/* interpolation */
+// Interpolation
 
 //static unsigned interp_bits_per_pixel;
 
@@ -185,8 +182,7 @@ static uint32 hq2x_interp_32_97(uint32 p1, uint32 p2)
         | INTERP_32_MASK_SHIFTBACK_2_4((INTERP_32_MASK_SHIFT_2_4(p1) * 9 + INTERP_32_MASK_SHIFT_2_4(p2) * 7) / 16);
 }
 
-/***************************************************************************/
-/* diff */
+// Difference
 
 #define INTERP_Y_LIMIT (0x30*4)
 #define INTERP_U_LIMIT (0x07*4)
@@ -405,8 +401,8 @@ static void hq2xS_16_def(uint16* dst0, uint16* dst1, const uint16* src0, const u
 
         mask = 0;
 
-        // hq2xS dynamic edge detection:
-        // simply comparing the center color against its surroundings will give bad results in many cases,
+        // HQ2XS dynamic edge detection:
+        // Simply comparing the center color against its surroundings will give bad results in many cases,
         // so, instead, compare the center color relative to the max difference in brightness of this 3x3 block
         int brightArray[9];
         int maxBright = 0, minBright = 999999;
@@ -658,8 +654,8 @@ static void hq2xS_32_def(uint32* dst0, uint32* dst1, const uint32* src0, const u
         }
 
         mask = 0;
-        // hq2xS dynamic edge detection:
-        // simply comparing the center color against its surroundings will give bad results in many cases,
+        // HQ2XS dynamic edge detection:
+        // Simply comparing the center color against its surroundings will give bad results in many cases,
         // so, instead, compare the center color relative to the max difference in brightness of this 3x3 block
         int brightArray[9];
         int maxBright = 0, minBright = 999999;
@@ -753,12 +749,9 @@ static void hq2xS_32_def(uint32* dst0, uint32* dst1, const uint32* src0, const u
     }
 }
 
-/***************************************************************************/
-/* LQ2x C implementation */
+// LQ2X C implementation
 
-/*
-* This effect is derived from the hq2x effect made by Maxim Stepin
-*/
+// This effect is derived from the HQ2X effect made by Maxim Stepin
 
 #if !_16BPP_HACK
 static void lq2x_16_def(uint16* dst0, uint16* dst1, const uint16* src0, const uint16* src1, const uint16* src2, unsigned count)
@@ -908,8 +901,8 @@ static void lq2xS_16_def(uint16* dst0, uint16* dst1, const uint16* src0, const u
             c[8] = c[7];
         }
 
-        // hq2xS dynamic edge detection:
-        // simply comparing the center color against its surroundings will give bad results in many cases,
+        // HQ2XS dynamic edge detection:
+        // Simply comparing the center color against its surroundings will give bad results in many cases,
         // so, instead, compare the center color relative to the max difference in brightness of this 3x3 block
         int brightArray[9];
         int maxBright = 0, minBright = 999999;
@@ -1152,8 +1145,8 @@ static void lq2xS_32_def(uint32* dst0, uint32* dst1, const uint32* src0, const u
             c[8] = c[7];
         }
 
-        // hq2xS dynamic edge detection:
-        // simply comparing the center color against its surroundings will give bad results in many cases,
+        // HQ2XS dynamic edge detection:
+        // Simply comparing the center color against its surroundings will give bad results in many cases,
         // so, instead, compare the center color relative to the max difference in brightness of this 3x3 block
         int brightArray[9];
         int maxBright = 0, minBright = 999999;
@@ -1494,14 +1487,8 @@ void lq2xS_32(uint8 *srcPtr, uint32 srcPitch, uint8 *dstPtr, uint32 dstPitch, in
     lq2xS_32_def(dst0, dst1, src0, src1, src1, width);
 }
 
-/************************************************************************/
-/* hq3x filters                                                         */
-/************************************************************************/
+// hq3x filters
 
-/************************************************************************/
-/* scale2x filters                                                      */
-/************************************************************************/
+// scale2x filters
 
-/************************************************************************/
-/* scale3x filters                                                      */
-/************************************************************************/
+// scale3x filters

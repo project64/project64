@@ -1,9 +1,10 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2007 Hiroshi Morii
 // Copyright(C) 2003 Rice1964
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
+
 #ifdef _WIN32
 #pragma warning(disable: 4786)
 #endif
@@ -17,16 +18,16 @@
 
 void TxFilter::clear()
 {
-    /* clear hires texture cache */
+    // Clear high resolution texture cache
     delete _txHiResCache;
 
-    /* clear texture cache */
+    // Clear texture cache
     delete _txTexCache;
 
-    /* free memory */
+    // Free memory
     TxMemBuf::getInstance()->shutdown();
 
-    /* clear other stuff */
+    // Clear other stuff
     delete _txImage;
     delete _txQuantize;
     delete _txUtil;
@@ -41,42 +42,42 @@ TxFilter::TxFilter(int maxwidth, int maxheight, int maxbpp, int options,
     int cachesize, const char *path, const char *ident,
     dispInfoFuncExt callback) :
     _numcore(0),
-    _tex1(nullptr),
-    _tex2(nullptr),
+    _tex1(NULL),
+    _tex2(NULL),
     _maxwidth(0),
     _maxheight(0),
     _maxbpp(0),
     _options(0),
     _cacheSize(0),
-    _txQuantize(nullptr),
-    _txTexCache(nullptr),
-    _txHiResCache(nullptr),
-    _txUtil(nullptr),
-    _txImage(nullptr),
+    _txQuantize(NULL),
+    _txTexCache(NULL),
+    _txHiResCache(NULL),
+    _txUtil(NULL),
+    _txImage(NULL),
     _initialized(false)
 {
-    /* HACKALERT: the emulator misbehaves and sometimes forgets to shutdown */
+    // TODO: HACKALERT: The emulator misbehaves and sometimes forgets to shutdown
     if ((ident && strcmp(ident, "DEFAULT") != 0 && _ident.compare(ident) == 0) &&
         _maxwidth == maxwidth  &&
         _maxheight == maxheight &&
         _maxbpp == maxbpp    &&
         _options == options   &&
         _cacheSize == cachesize) return;
-    clear(); /* gcc does not allow the destructor to be called */
+    clear(); // GCC does not allow the destructor to be called
 
-    /* shamelessness :P this first call to the debug output message creates
-     * a file in the executable directory. */
+    // This first call to the debug output message creates
+    // a file in the executable directory
     INFO(0, "------------------------------------------------------------------\n");
 #ifdef GHQCHK
-    INFO(0, " GlideHQ Hires Texture Checker 1.02.00.%d\n", 0);
+    INFO(0, " GlideHQ High Resolution Texture Checker 1.02.00.%d\n", 0);
 #else
     INFO(0, " GlideHQ version 1.02.00.%d\n", 0);
 #endif
-    INFO(0, " Copyright (C) 2010  Hiroshi Morii   All Rights Reserved\n");
-    INFO(0, "    email   : koolsmoky(at)users.sourceforge.net\n");
-    INFO(0, "    website : http://www.3dfxzone.it/koolsmoky\n");
+    INFO(0, " Copyright (C) 2010 Hiroshi Morii All Rights Reserved\n");
+    INFO(0, "    Email: koolsmoky(at)users.sourceforge.net\n");
+    INFO(0, "    Website: http://www.3dfxzone.it/koolsmoky\n");
     INFO(0, "\n");
-    INFO(0, " Glide64 official website : http://glide64.emuxhaven.net\n");
+    INFO(0, " Glide64 official website: http://glide64.emuxhaven.net\n");
     INFO(0, "------------------------------------------------------------------\n");
 
     _options = options;
@@ -85,32 +86,32 @@ TxFilter::TxFilter(int maxwidth, int maxheight, int maxbpp, int options,
     _txQuantize = new TxQuantize();
     _txUtil = new TxUtil();
 
-    /* get number of CPU cores. */
+    // Get number of CPU cores
     _numcore = _txUtil->getNumberofProcessors();
 
     _initialized = 0;
 
-    _tex1 = nullptr;
-    _tex2 = nullptr;
+    _tex1 = NULL;
+    _tex2 = NULL;
 
-    /* XXX: anything larger than 1024 * 1024 is overkill */
+    // Anything larger than 1024 * 1024 is overkill
     _maxwidth = maxwidth > 1024 ? 1024 : maxwidth;
     _maxheight = maxheight > 1024 ? 1024 : maxheight;
     _maxbpp = maxbpp;
 
     _cacheSize = cachesize;
 
-    /* TODO: validate options and do overrides here*/
+    // TODO: Validate options and do overrides here
 
-    /* save path name */
+    // Save path name
     if (path)
         _path.assign(path);
 
-    /* save ROM name */
+    // Save ROM name
     if (ident && strcmp(ident, "DEFAULT") != 0)
         _ident.assign(ident);
 
-    /* check for dxtn extensions */
+    // Check for dxtn extensions
     if (!TxLoadLib::getInstance()->getdxtCompressTexFuncExt())
         _options &= ~S3TC_COMPRESSION;
 
@@ -135,14 +136,14 @@ TxFilter::TxFilter(int maxwidth, int maxheight, int maxbpp, int options,
     }
 
 #if !_16BPP_HACK
-    /* initialize hq4x filter */
+    // Initialize HQ4X filter
     hq4x_init();
 #endif
 
-    /* initialize texture cache in bytes. 128Mb will do nicely in most cases */
+    // Initialize texture cache in bytes. 128MB will do nicely in most cases.
     _txTexCache = new TxTexCache(_options, _cacheSize, _path.c_str(), _ident.c_str(), callback);
 
-    /* hires texture */
+    // High resolution texture
 #if HIRES_TEXTURE
     _txHiResCache = new TxHiResCache(_maxwidth, _maxheight, _maxbpp, _options, _path.c_str(), _ident.c_str(), callback);
 
@@ -164,42 +165,42 @@ TxFilter::filter(uint8 *src, int srcwidth, int srcheight, uint16 srcformat, uint
     uint8 *tmptex = _tex1;
     uint16 destformat = srcformat;
 
-    /* We need to be initialized first! */
+    // We need to be initialized first!
     if (!_initialized) return 0;
 
-    /* find cached textures */
+    // Find cached textures
     if (_cacheSize) {
-        /* calculate checksum of source texture */
+        // Calculate checksum of source texture
         if (!g64crc)
             g64crc = (uint64_t)(_txUtil->checksumTx(texture, srcwidth, srcheight, srcformat));
 
-        DBG_INFO(80, "filter: crc:%08X %08X %d x %d gfmt:%x\n",
+        DBG_INFO(80, "Filter: CRC:%08X %08X %d x %d gfmt:%x\n",
             (uint32)(g64crc >> 32), (uint32)(g64crc & 0xffffffff), srcwidth, srcheight, srcformat);
 
-#if 0 /* use hirestex to retrieve cached textures. */
-        /* check if we have it in cache */
-        if (!(g64crc & 0xffffffff00000000) && /* we reach here only when there is no hires texture for this crc */
+#if 0 // Use hirestex to retrieve cached textures
+        // Check if we have it in cache
+        if (!(g64crc & 0xffffffff00000000) && // We reach here only when there is no high resolution texture for this CRC
             _txTexCache->get(g64crc, info)) {
-            DBG_INFO(80, "cache hit: %d x %d gfmt:%x\n", info->width, info->height, info->format);
-            return 1; /* yep, we've got it */
+            DBG_INFO(80, "Cache hit: %d x %d gfmt:%x\n", info->width, info->height, info->format);
+            return 1; // Yep, we've got it
         }
 #endif
     }
 
-    /* Leave small textures alone because filtering makes little difference.
-     * Moreover, some filters require at least 4 * 4 to work.
-     * Bypass _options to do ARGB8888->16bpp if _maxbpp=16 or forced color reduction.
-     */
+    // Leave small textures alone because filtering makes little difference.
+    // Moreover, some filters require at least 4 * 4 to work.
+    // Bypass _options to do ARGB8888->16bpp if _maxbpp=16 or forced color reduction.
+
     if ((srcwidth >= 4 && srcheight >= 4) &&
         ((_options & (FILTER_MASK | ENHANCEMENT_MASK | COMPRESSION_MASK)) ||
         (srcformat == GFX_TEXFMT_ARGB_8888 && (_maxbpp < 32 || _options & FORCE16BPP_TEX)))) {
 #if !_16BPP_HACK
-        /* convert textures to a format that the compressor accepts (ARGB8888) */
+        // Convert textures to a format that the compressor accepts (ARGB8888)
         if (_options & COMPRESSION_MASK) {
 #endif
             if (srcformat != GFX_TEXFMT_ARGB_8888) {
                 if (!_txQuantize->quantize(texture, tmptex, srcwidth, srcheight, srcformat, GFX_TEXFMT_ARGB_8888)) {
-                    DBG_INFO(80, "Error: unsupported format! gfmt:%x\n", srcformat);
+                    DBG_INFO(80, "Error: Unsupported format! gfmt:%x\n", srcformat);
                     return 0;
                 }
                 texture = tmptex;
@@ -212,9 +213,7 @@ TxFilter::filter(uint8 *src, int srcwidth, int srcheight, uint16 srcformat, uint
         switch (destformat) {
         case GFX_TEXFMT_ARGB_8888:
 
-            /*
-             * prepare texture enhancements (x2, x4 scalers)
-             */
+            // Prepare texture enhancements (x2, x4 scalers)
             int scale_shift = 0, num_filters = 0;
             uint32 filter = 0;
 
@@ -238,17 +237,13 @@ TxFilter::filter(uint8 *src, int srcwidth, int srcheight, uint16 srcformat, uint
                 }
             }
 
-            /*
-             * prepare texture filters
-             */
+            // Prepare texture filters
             if (_options & (SMOOTH_FILTER_MASK | SHARP_FILTER_MASK)) {
                 filter |= (_options & (SMOOTH_FILTER_MASK | SHARP_FILTER_MASK));
                 num_filters++;
             }
 
-            /*
-             * execute texture enhancements and filters
-             */
+            // Execute texture enhancements and filters
             while (num_filters > 0) {
                 tmptex = (texture == _tex1) ? _tex2 : _tex1;
 
@@ -275,26 +270,26 @@ TxFilter::filter(uint8 *src, int srcwidth, int srcheight, uint16 srcformat, uint
             }
 
             /*
-             * texture compression
-             */
-             /* ignored if we only have texture compression option on.
-              * only done when texture enhancer is used. see constructor. */
-            if ((_options & COMPRESSION_MASK) &&
+            Texture compression:
+            Ignored if we only have texture compression option on.
+            Only done when texture enhancer is used. See constructor.
+			*/
+            if ((_options & COMPRESSION_MASK) && // TODO: Update this?
                 (srcwidth >= 64 && srcheight >= 64) /* Texture compression is not suitable for low pixel coarse detail
                                                      * textures. The assumption here is that textures larger than 64x64
                                                      * have enough detail to produce decent quality when compressed. The
                                                      * down side is that narrow stripped textures that the N64 often use
                                                      * for large background textures are also ignored. It would be more
-                                                     * reasonable if decisions are made based on fourier-transform
+                                                     * reasonable if decisions are made based on Fourier-transform
                                                      * spectrum or RMS error.
                                                      */
                 ) {
                 int compressionType = _options & COMPRESSION_MASK;
                 int tmpwidth, tmpheight;
-                uint16 tmpformat;
-                /* XXX: textures that use 8bit alpha channel look bad with the current
-                 * fxt1 library, so we substitute it with dxtn for now. afaik all gfx
-                 * cards that support fxt1 also support dxtn. (3dfx and Intel) */
+                uint16 tmpformat; // TODO: Confirm if true, and check AMD?
+                // Textures that use 8-bit alpha channel look bad with the current
+                // fxt1 library, so we substitute it with dxtn for now. AFAIK all graphics
+                // cards that support fxt1 also support dxtn. (3DFX and Intel)
                 if ((destformat == GFX_TEXFMT_ALPHA_INTENSITY_88) ||
                     (destformat == GFX_TEXFMT_ARGB_8888) ||
                     (destformat == GFX_TEXFMT_ALPHA_8)) {
@@ -312,15 +307,13 @@ TxFilter::filter(uint8 *src, int srcwidth, int srcheight, uint16 srcformat, uint
                 }
             }
 
-            /*
-             * texture (re)conversions
-             */
+            // Texture re-conversions
             if (destformat == GFX_TEXFMT_ARGB_8888) {
                 if (srcformat == GFX_TEXFMT_ARGB_8888 && (_maxbpp < 32 || _options & FORCE16BPP_TEX)) srcformat = GFX_TEXFMT_ARGB_4444;
                 if (srcformat != GFX_TEXFMT_ARGB_8888) {
                     tmptex = (texture == _tex1) ? _tex2 : _tex1;
                     if (!_txQuantize->quantize(texture, tmptex, srcwidth, srcheight, GFX_TEXFMT_ARGB_8888, srcformat)) {
-                        DBG_INFO(80, "Error: unsupported format! gfmt:%x\n", srcformat);
+                        DBG_INFO(80, "Error: Unsupported format! gfmt:%x\n", srcformat);
                         return 0;
                     }
                     texture = tmptex;
@@ -409,7 +402,7 @@ TxFilter::filter(uint8 *src, int srcwidth, int srcheight, uint16 srcformat, uint
         }
     }
 
-    /* fill in the texture info. */
+    // Fill in the texture info
     info->data = texture;
     info->width = srcwidth;
     info->height = srcheight;
@@ -419,10 +412,10 @@ TxFilter::filter(uint8 *src, int srcwidth, int srcheight, uint16 srcformat, uint
     info->aspectRatioLog2 = _txUtil->grAspectRatioLog2(srcwidth, srcheight);
     info->is_hires_tex = 0;
 
-    /* cache the texture. */
+    // Cache the texture
     if (_cacheSize) _txTexCache->add(g64crc, info);
 
-    DBG_INFO(80, "filtered texture: %d x %d gfmt:%x\n", info->width, info->height, info->format);
+    DBG_INFO(80, "Filtered texture: %d x %d gfmt:%x\n", info->width, info->height, info->format);
 
     return 1;
 }
@@ -430,79 +423,78 @@ TxFilter::filter(uint8 *src, int srcwidth, int srcheight, uint16 srcformat, uint
 bool
 TxFilter::hirestex(uint64_t g64crc, uint64_t r_crc64, uint16 *palette, GHQTexInfo *info)
 {
-    /* NOTE: Rice CRC32 sometimes return the same value for different textures.
-     * As a workaround, Glide64 CRC32 is used for the key for NON-hires
-     * texture cache.
-     *
-     * r_crc64 = hi:palette low:texture
-     *           (separate crc. doesn't necessary have to be rice crc)
-     * g64crc  = texture + palette glide64 crc32
-     *           (can be any other crc if robust)
-     */
+	// TODO: Improve upon this?
+    // NOTE: Rice CRC32 sometimes return the same value for different textures.
+    // As a workaround, Glide64 CRC32 is used for the key for textures not using
+	// the high resolution texture cache.
+    // r_crc64 = hi:palette low:texture
+    //           (separate CRC, doesn't necessary have to be Rice CRC)
+    // g64crc  = texture + palette Glide64 CRC32
+    //           (can be any other CRC if robust)
 
     DBG_INFO(80, "hirestex: r_crc64:%08X %08X, g64crc:%08X %08X\n",
         (uint32)(r_crc64 >> 32), (uint32)(r_crc64 & 0xffffffff),
         (uint32)(g64crc >> 32), (uint32)(g64crc & 0xffffffff));
 
 #if HIRES_TEXTURE
-    /* check if we have it in hires memory cache. */
+    // Check if we have it in high resolution memory cache
     if ((_options & HIRESTEXTURES_MASK) && r_crc64) {
         if (_txHiResCache->get(r_crc64, info)) {
             DBG_INFO(80, "hires hit: %d x %d gfmt:%x\n", info->width, info->height, info->format);
 
-            /* TODO: Enable emulation for special N64 combiner modes. There are few ways
+            /* TODO: Enable emulation for special N64 combiner modes. There are a few ways
              * to get this done. Also applies for CI textures below.
              *
-             * Solution 1. Load the hiresolution textures in ARGB8888 (or A8, IA88) format
+             * Solution 1. Load the high resolution textures in ARGB8888 (or A8, IA88) format
              * to cache. When a cache is hit, then we take the modes passed in from Glide64
              * (also TODO) and apply the modification. Then we do color reduction or format
-             * conversion or compression if desired and stuff it into the non-hires texture
-             * cache.
+             * conversion or compression if desired and stuff it into the lower resolution 
+			 * texture cache.
              *
              * Solution 2. When a cache is hit and if the combiner modes are present,
              * convert the texture to ARGB4444 and pass it back to Glide64 to process.
              * If a texture is compressed, it needs to be decompressed first. Then add
-             * the processed texture to the non-hires texture cache.
+             * the processed texture to the lower resolution texture cache.
              *
              * Solution 3. Hybrid of the above 2. Load the textures in ARGB8888 (A8, IA88)
              * format. Convert the texture to ARGB4444 and pass it back to Glide64 when
              * the combiner modes are present. Get the processed texture back from Glide64
-             * and compress if desired and add it to the non-hires texture cache.
+             * and compress if desired and add it to the lower resolution texture cache.
              *
              * Solution 4. Take the easy way out and forget about this whole thing.
              */
 
-            return 1; /* yep, got it */
+            return 1; // Yes, we've got it
         }
         if (_txHiResCache->get((r_crc64 & 0xffffffff), info)) {
             DBG_INFO(80, "hires hit: %d x %d gfmt:%x\n", info->width, info->height, info->format);
 
-            /* for true CI textures, we use the passed in palette to convert to
+            /* For true CI textures, we use the passed in palette to convert to
              * ARGB1555 and add it to memory cache.
              *
-             * NOTE: we do this AFTER all other texture cache searches because
+             * NOTE: We do this after all other texture cache searches because
              * only a few texture packs actually use true CI textures.
              *
-             * NOTE: the pre-converted palette from Glide64 is in RGBA5551 format.
+             * NOTE: The pre-converted palette from Glide64 is in RGBA5551 format.
              * A comp comes before RGB comp.
              */
             if (palette && info->format == GFX_TEXFMT_P_8) {
-                DBG_INFO(80, "found GFX_TEXFMT_P_8 format. Need conversion!!\n");
+                DBG_INFO(80, "Found GFX_TEXFMT_P_8 format. Need conversion!!\n");
 
                 int width = info->width;
                 int height = info->height;
                 uint16 format = info->format;
-                /* XXX: avoid collision with zlib compression buffer in TxHiResTexture::get */
+                // Avoid collision with zlib compression buffer in TxHiResTexture::get
                 uint8 *texture = info->data;
                 uint8 *tmptex = (texture == _tex1) ? _tex2 : _tex1;
 
-                /* use palette and convert to 16bit format */
+                // Use palette and convert to 16-bit format
                 _txQuantize->P8_16BPP((uint32*)texture, (uint32*)tmptex, info->width, info->height, (uint32*)palette);
                 texture = tmptex;
                 format = GFX_TEXFMT_ARGB_1555;
 
 #if 1
-                /* XXX: compressed if memory cache compression is ON */
+                // Compressed if memory cache compression is ON
                 if (_options & COMPRESSION_MASK) {
                     tmptex = (texture == _tex1) ? _tex2 : _tex1;
                     if (_txQuantize->quantize(texture, tmptex, info->width, info->height, format, GFX_TEXFMT_ARGB_8888)) {
@@ -529,7 +521,7 @@ TxFilter::hirestex(uint64_t g64crc, uint64_t r_crc64, uint16 *palette, GHQTexInf
                 }
 #endif
 
-                /* fill in the required info to return */
+                // Fill in the required info to return
                 info->data = texture;
                 info->width = width;
                 info->height = height;
@@ -539,7 +531,7 @@ TxFilter::hirestex(uint64_t g64crc, uint64_t r_crc64, uint16 *palette, GHQTexInf
                 info->aspectRatioLog2 = _txUtil->grAspectRatioLog2(width, height);
                 info->is_hires_tex = 1;
 
-                /* XXX: add to hires texture cache!!! */
+                // Add to high resolution texture cache
                 _txHiResCache->add(r_crc64, info);
 
                 DBG_INFO(80, "GFX_TEXFMT_P_8 loaded as gfmt:%x!\n", format);
@@ -550,17 +542,17 @@ TxFilter::hirestex(uint64_t g64crc, uint64_t r_crc64, uint16 *palette, GHQTexInf
     }
 #endif
 
-    /* check if we have it in memory cache */
+    // Check if we have it in memory cache
     if (_cacheSize && g64crc)
     {
         if (_txTexCache->get(g64crc, info))
         {
-            DBG_INFO(80, "cache hit: %d x %d gfmt:%x\n", info->width, info->height, info->format);
-            return 1; /* yep, we've got it */
+            DBG_INFO(80, "Cache hit: %d x %d gfmt:%x\n", info->width, info->height, info->format);
+            return 1; // Yes, we've got it
         }
     }
 
-    DBG_INFO(80, "no cache hits.\n");
+    DBG_INFO(80, "No cache hits.\n");
 
     return 0;
 }
@@ -599,11 +591,11 @@ TxFilter::dmptx(uint8 *src, int width, int height, int rowStridePixel, uint16 gf
 
     if (!_path.empty() && !_ident.empty())
     {
-        /* dump it to disk */
-        FILE *fp = nullptr;
+        // Dump it to disk
+        FILE *fp = NULL;
         CPath tmpbuf(_path.c_str(), "");
 
-        /* create directories */
+        // Create directories
         tmpbuf.AppendDirectory("texture_dump");
 
         if (!tmpbuf.DirectoryExists() && !tmpbuf.DirectoryCreate())
@@ -631,7 +623,7 @@ TxFilter::dmptx(uint8 *src, int width, int height, int rowStridePixel, uint16 gf
         {
             tmpbuf.SetNameExtension(stdstr_f("%ls#%08X#%01X#%01X_all.png", _ident.c_str(), (uint32)(r_crc64 & 0xffffffff), (n64fmt >> 8), (n64fmt & 0xf)).c_str());
         }
-        if ((fp = fopen(tmpbuf, "wb")) != nullptr)
+        if ((fp = fopen(tmpbuf, "wb")) != NULL)
         {
             _txImage->writePNG(src, fp, width, height, (rowStridePixel << 2), 0x0003, 0);
             fclose(fp);
@@ -644,7 +636,7 @@ TxFilter::dmptx(uint8 *src, int width, int height, int rowStridePixel, uint16 gf
 
 bool TxFilter::reloadhirestex()
 {
-    DBG_INFO(80, "Reload hires textures from texture pack.\n");
+    DBG_INFO(80, "Reload high resolution textures from texture pack.\n");
 
     if (_txHiResCache->load(0)) {
         if (_txHiResCache->empty()) _options &= ~HIRESTEXTURES_MASK;

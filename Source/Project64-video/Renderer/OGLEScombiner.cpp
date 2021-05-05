@@ -1,9 +1,10 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2003-2009 Sergey 'Gonetz' Lipski
 // Copyright(C) 2002 Dave2001
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
+
 #include <Project64-video/Renderer/Renderer.h>
 
 #ifdef _WIN32
@@ -44,7 +45,7 @@ float fogColor[4];
 int need_lambda[2];
 float lambda_color[2][4];
 
-// shaders variables
+// Shaders variables
 int need_to_compile;
 
 static GLuint g_program_object_default = 0;
@@ -91,7 +92,7 @@ SHADER_VARYING
 "{                                 \n"
 ;
 
-// using gl_FragCoord is terribly slow on ATI and varying variables don't work for some unknown
+// TODO: Using gl_FragCoord is terribly slow on ATI and varying variables don't work for some unknown
 // reason, so we use the unused components of the texture2 coordinates
 static const char* g_fragment_shader_dither =
 "  float dithx = (vTexCoord[2].b + 1.0)*0.5*1000.0; \n"
@@ -150,16 +151,16 @@ SHADER_HEADER
 "attribute highp vec4 aMultiTexCoord0;                          \n"
 "attribute highp vec4 aMultiTexCoord1;                          \n"
 "attribute float aFog;                                          \n"
-"uniform vec3 vertexOffset;                                     \n" //Moved some calculations from grDrawXXX to shader
+"uniform vec3 vertexOffset;                                     \n" // Moved some calculations from grDrawXXX to shaders
 "uniform vec4 textureSizes;                                     \n"
-"uniform vec3 fogModeEndScale;                                  \n" //0 = Mode, 1 = gl_Fog.end, 2 = gl_Fog.scale
+"uniform vec3 fogModeEndScale;                                  \n" // 0 = Mode, 1 = gl_Fog.end, 2 = gl_Fog.scale
 "uniform mat4 rotation_matrix;                                  \n"
 SHADER_VARYING
 "                                                               \n"
 "void main()                                                    \n"
 "{                                                              \n"
 "  float q = aPosition.w;                                                   \n"
-"  float invertY = vertexOffset.z;                                          \n" //Usually 1.0 but -1.0 when rendering to a texture (see inverted_culling gfxRenderBuffer)
+"  float invertY = vertexOffset.z;                                          \n" // Usually 1.0 but -1.0 when rendering to a texture (see inverted_culling gfxRenderBuffer)
 "  gl_Position.x = (aPosition.x - vertexOffset.x) / vertexOffset.x;         \n"
 "  gl_Position.y = invertY *-(aPosition.y - vertexOffset.y) / vertexOffset.y;\n"
 "  gl_Position.z = aPosition.z / Z_MAX;                                     \n"
@@ -232,12 +233,12 @@ void set_rotation_matrix(GLuint loc, CSettings::ScreenRotate_t rotate)
 {
     GLfloat mat[16];
 
-    /* first setup everything which is the same everytime */
-    /* (X, X, 0, 0)
-     * (X, X, 0, 0)
-     * (0, 0, 1, 0)
-     * (0, 0, 0, 1)
-     */
+    // First setup everything which is the same every time
+    /*(X, X, 0, 0)
+    (X, X, 0, 0)
+    (0, 0, 1, 0)
+    (0, 0, 0, 1)
+    */
 
     mat[0] = 1;
     mat[1] = 0;
@@ -259,7 +260,7 @@ void set_rotation_matrix(GLuint loc, CSettings::ScreenRotate_t rotate)
     mat[14] = 0;
     mat[15] = 1;
 
-    /* now set the actual rotation */
+    // Now set the actual rotation
     if (rotate == CSettings::Rotate_90)
     {
         mat[0] = 0;
@@ -290,7 +291,7 @@ void init_combiner()
 
     glActiveTexture(GL_TEXTURE0);
 
-    // creating a fake texture
+    // Creating a fake texture
     glBindTexture(GL_TEXTURE_2D, default_texture);
     glTexImage2D(GL_TEXTURE_2D, 0, 3, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -302,7 +303,7 @@ void init_combiner()
     int texture0_location;
     int texture1_location;
 
-    // default shader
+    // Default shader
     std::string fragment_shader = g_fragment_shader_header;
     fragment_shader += g_fragment_shader_default;
     fragment_shader += g_fragment_shader_end;
@@ -310,7 +311,7 @@ void init_combiner()
     GLuint fragment_shader_object = CompileShader(GL_FRAGMENT_SHADER, fragment_shader);
     GLuint vertex_shader_object = CompileShader(GL_VERTEX_SHADER, g_vertex_shader);
 
-    // default program
+    // Default program
     g_program_object_default = glCreateProgram();
     glAttachShader(g_program_object_default, fragment_shader_object);
     glAttachShader(g_program_object_default, vertex_shader_object);
@@ -367,7 +368,7 @@ void compile_chroma_shader()
         strcat(fragment_shader_chroma, "float alpha = constant_color.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknown compile_choma_shader_alpha : %x", chroma_other_alpha);
+        WriteTrace(TraceGlitch, TraceWarning, "Unknown compile_choma_shader_alpha: %x", chroma_other_alpha);
     }
 
     switch (chroma_other_color)
@@ -382,7 +383,7 @@ void compile_chroma_shader()
         strcat(fragment_shader_chroma, "vec4 color = vec4(vec3(constant_color),alpha); \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknown compile_choma_shader_alpha : %x", chroma_other_color);
+        WriteTrace(TraceGlitch, TraceWarning, "Unknown compile_choma_shader_alpha: %x", chroma_other_color);
     }
 
     strcat(fragment_shader_chroma, "if (color.rgb == chroma_color.rgb) discard; \n");
@@ -671,7 +672,7 @@ void set_lambda()
 
 void gfxConstantColorValue(gfxColor_t value)
 {
-    WriteTrace(TraceGlitch, TraceDebug, "value: %d", value);
+    WriteTrace(TraceGlitch, TraceDebug, "Value: %d", value);
     switch (lfb_color_fmt)
     {
     case GFX_COLORFORMAT_ARGB:
@@ -687,7 +688,7 @@ void gfxConstantColorValue(gfxColor_t value)
         g_texture_env_color[3] = (value & 0xFF) / 255.0f;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxConstantColorValue: unknown color format : %x", lfb_color_fmt);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxConstantColorValue: Unknown color format: %x", lfb_color_fmt);
     }
 
     vbo_draw();
@@ -710,7 +711,7 @@ void writeGLSLColorOther(int other)
         strcat(fragment_shader_color_combiner, "vec4 color_other = constant_color; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknown writeGLSLColorOther : %x", other);
+        WriteTrace(TraceGlitch, TraceWarning, "Unknown writeGLSLColorOther: %x", other);
     }
 }
 
@@ -725,7 +726,7 @@ void writeGLSLColorLocal(int local)
         strcat(fragment_shader_color_combiner, "vec4 color_local = constant_color; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknown writeGLSLColorLocal : %x", local);
+        WriteTrace(TraceGlitch, TraceWarning, "Unknown writeGLSLColorLocal: %x", local);
     }
 }
 
@@ -773,13 +774,13 @@ void writeGLSLColorFactor(int factor, int local, int need_local, int other, int 
         strcat(fragment_shader_color_combiner, "vec4 color_factor = vec4(1.0) - vec4(ctexture1.a); \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknown writeGLSLColorFactor : %x", factor);
+        WriteTrace(TraceGlitch, TraceWarning, "Unknown writeGLSLColorFactor: %x", factor);
     }
 }
 
 void gfxColorCombine(gfxCombineFunction_t function, gfxCombineFactor_t factor, gfxCombineLocal_t local, gfxCombineOther_t other, bool invert)
 {
-    WriteTrace(TraceGlitch, TraceDebug, "function: %d factor: %d local: %d other: %d invert: %d", function, factor, local, other, invert);
+    WriteTrace(TraceGlitch, TraceDebug, "Function: %d factor: %d local: %d other: %d invert: %d", function, factor, local, other, invert);
     static int last_function = 0;
     static int last_factor = 0;
     static int last_local = 0;
@@ -795,7 +796,7 @@ void gfxColorCombine(gfxCombineFunction_t function, gfxCombineFactor_t factor, g
     last_local = local;
     last_other = other;
 
-    if (invert) WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombine : inverted result");
+    if (invert) WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombine: Inverted result");
 
     color_combiner_key = function | (factor << 4) | (local << 8) | (other << 10);
     chroma_other_color = other;
@@ -861,7 +862,7 @@ void gfxColorCombine(gfxCombineFunction_t function, gfxCombineFactor_t factor, g
         break;
     default:
         strcpy(fragment_shader_color_combiner, g_fragment_shader_default);
-        WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombine : unknown function : %x", function);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombine: Unknown function: %x", function);
     }
     //compile_shader();
     need_to_compile = 1;
@@ -882,7 +883,7 @@ case GFX_COMBINE_OTHER_CONSTANT:
 return GL_CONSTANT_ARB;
 break;
 default:
-WriteTrace(TraceGlitch, TraceWarning, "unknwown other alpha source : %x", other);
+WriteTrace(TraceGlitch, TraceWarning, "Unknown other alpha source: %x", other);
 }
 return 0;
 }
@@ -898,7 +899,7 @@ case GFX_COMBINE_LOCAL_CONSTANT:
 return GL_CONSTANT_ARB;
 break;
 default:
-WriteTrace(TraceGlitch, TraceWarning, "unknwown local alpha source : %x", local);
+WriteTrace(TraceGlitch, TraceWarning, "Unknown local alpha source: %x", local);
 }
 return 0;
 }
@@ -918,7 +919,7 @@ void writeGLSLAlphaOther(int other)
         strcat(fragment_shader_alpha_combiner, "float alpha_other = constant_color.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknown writeGLSLAlphaOther : %x", other);
+        WriteTrace(TraceGlitch, TraceWarning, "Unknown writeGLSLAlphaOther: %x", other);
     }
 }
 
@@ -933,7 +934,7 @@ void writeGLSLAlphaLocal(int local)
         strcat(fragment_shader_alpha_combiner, "float alpha_local = constant_color.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknown writeGLSLAlphaLocal : %x", local);
+        WriteTrace(TraceGlitch, TraceWarning, "Unknown writeGLSLAlphaLocal: %x", local);
     }
 }
 
@@ -978,13 +979,13 @@ void writeGLSLAlphaFactor(int factor, int local, int need_local, int other, int 
         strcat(fragment_shader_alpha_combiner, "float alpha_factor = 1.0 - ctexture1.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknown writeGLSLAlphaFactor : %x", factor);
+        WriteTrace(TraceGlitch, TraceWarning, "Unknown writeGLSLAlphaFactor: %x", factor);
     }
 }
 
 void gfxAlphaCombine(gfxCombineFunction_t function, gfxCombineFactor_t factor, gfxCombineLocal_t local, gfxCombineOther_t other, bool invert)
 {
-    WriteTrace(TraceGlitch, TraceDebug, "function: %d factor: %d local: %d other: %d invert: %d", function, factor, local, other, invert);
+    WriteTrace(TraceGlitch, TraceDebug, "Function: %d factor: %d local: %d other: %d invert: %d", function, factor, local, other, invert);
     static int last_function = 0;
     static int last_factor = 0;
     static int last_local = 0;
@@ -1000,7 +1001,7 @@ void gfxAlphaCombine(gfxCombineFunction_t function, gfxCombineFactor_t factor, g
     last_local = local;
     last_other = other;
 
-    if (invert) WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombine : inverted result");
+    if (invert) WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombine: Inverted result");
 
     alpha_combiner_key = function | (factor << 4) | (local << 8) | (other << 10);
     chroma_other_alpha = other;
@@ -1066,7 +1067,7 @@ void gfxAlphaCombine(gfxCombineFunction_t function, gfxCombineFactor_t factor, g
         strcat(fragment_shader_alpha_combiner, "gl_FragColor.a = alpha_factor * (-alpha_local) + alpha_local; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombine : unknown function : %x", function);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombine: Unknown function: %x", function);
     }
 
     //compile_shader();
@@ -1138,7 +1139,7 @@ void writeGLSLTextureColorFactor(int num_tex, int factor)
             strcat(fragment_shader_texture1, "vec4 texture1_color_factor = vec4(1.0) - vec4(lambda); \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknown writeGLSLTextureColorFactor : %x", factor);
+        WriteTrace(TraceGlitch, TraceWarning, "Unknown writeGLSLTextureColorFactor: %x", factor);
     }
 }
 
@@ -1207,7 +1208,7 @@ void writeGLSLTextureAlphaFactor(int num_tex, int factor)
             strcat(fragment_shader_texture1, "float texture1_alpha_factor = 1.0 - lambda; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknown writeGLSLTextureAlphaFactor : %x", factor);
+        WriteTrace(TraceGlitch, TraceWarning, "Unknown writeGLSLTextureAlphaFactor: %x", factor);
     }
 }
 
@@ -1352,7 +1353,7 @@ void gfxTexCombine(gfxChipID_t tmu, gfxCombineFunction_t rgb_function, gfxCombin
             strcat(fragment_shader_texture0, "vec4 ctexture0 = readtex0; \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctexture1 = readtex1; \n");
-        WriteTrace(TraceGlitch, TraceWarning, "grTextCombine : unknown rgb function : %x", rgb_function);
+        WriteTrace(TraceGlitch, TraceWarning, "grTextCombine: Unknown RGB function: %x", rgb_function);
     }
 
     if (rgb_invert)
@@ -1444,7 +1445,7 @@ void gfxTexCombine(gfxChipID_t tmu, gfxCombineFunction_t rgb_function, gfxCombin
             strcat(fragment_shader_texture0, "ctexture0.a = readtex0.a; \n");
         else
             strcat(fragment_shader_texture1, "ctexture1.a = ctexture0.a; \n");
-        WriteTrace(TraceGlitch, TraceWarning, "grTextCombine : unknown alpha function : %x", alpha_function);
+        WriteTrace(TraceGlitch, TraceWarning, "grTextCombine: Unknown alpha function: %x", alpha_function);
     }
 
     if (alpha_invert)
@@ -1477,7 +1478,7 @@ void gfxAlphaBlendFunction(gfxAlphaBlendFnc_t rgb_sf, gfxAlphaBlendFnc_t rgb_df,
         sfactorRGB = GL_ONE_MINUS_SRC_ALPHA;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaBlendFunction : rgb_sf = %x", rgb_sf);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaBlendFunction: rgb_sf = %x", rgb_sf);
     }
 
     switch (rgb_df)
@@ -1495,7 +1496,7 @@ void gfxAlphaBlendFunction(gfxAlphaBlendFnc_t rgb_sf, gfxAlphaBlendFnc_t rgb_df,
         dfactorRGB = GL_ONE_MINUS_SRC_ALPHA;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaBlendFunction : rgb_df = %x", rgb_df);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaBlendFunction: rgb_df = %x", rgb_df);
     }
 
     switch (alpha_sf)
@@ -1507,7 +1508,7 @@ void gfxAlphaBlendFunction(gfxAlphaBlendFnc_t rgb_sf, gfxAlphaBlendFnc_t rgb_df,
         sfactorAlpha = GL_ONE;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaBlendFunction : alpha_sf = %x", alpha_sf);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaBlendFunction: alpha_sf = %x", alpha_sf);
     }
 
     switch (alpha_df)
@@ -1519,7 +1520,7 @@ void gfxAlphaBlendFunction(gfxAlphaBlendFnc_t rgb_sf, gfxAlphaBlendFnc_t rgb_df,
         dfactorAlpha = GL_ONE;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaBlendFunction : alpha_df = %x", alpha_df);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaBlendFunction: alpha_df = %x", alpha_df);
     }
     glEnable(GL_BLEND);
     glBlendFuncSeparate(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha);
@@ -1527,14 +1528,14 @@ void gfxAlphaBlendFunction(gfxAlphaBlendFnc_t rgb_sf, gfxAlphaBlendFnc_t rgb_df,
 
 void gfxAlphaTestReferenceValue(gfxAlpha_t value)
 {
-    WriteTrace(TraceGlitch, TraceDebug, "value: %d", value);
+    WriteTrace(TraceGlitch, TraceDebug, "Value: %d", value);
     g_alpha_ref = value;
     gfxAlphaTestFunction(g_alpha_func);
 }
 
 void gfxAlphaTestFunction(gfxCmpFnc_t function)
 {
-    WriteTrace(TraceGlitch, TraceDebug, "function: %d", function);
+    WriteTrace(TraceGlitch, TraceDebug, "Function: %d", function);
     g_alpha_func = function;
     switch (function)
     {
@@ -1551,17 +1552,17 @@ void gfxAlphaTestFunction(gfxCmpFnc_t function)
         return;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaTestFunction : unknown function : %x", function);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaTestFunction: Unknown function: %x", function);
     }
     //glEnable(GL_ALPHA_TEST);
     g_alpha_test = true;
 }
 
-// fog
+// Fog
 
 void gfxFogMode(gfxFogMode_t mode)
 {
-    WriteTrace(TraceGlitch, TraceDebug, "mode: %d", mode);
+    WriteTrace(TraceGlitch, TraceDebug, "Mode: %d", mode);
     switch (mode)
     {
     case GFX_FOG_DISABLE:
@@ -1579,7 +1580,7 @@ void gfxFogMode(gfxFogMode_t mode)
         g_fog_enabled = 2;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxFogMode : unknown mode : %x", mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxFogMode: Unknown mode: %x", mode);
     }
     need_to_compile = 1;
 }
@@ -1610,14 +1611,14 @@ void gfxFogColorValue(gfxColor_t fogcolor)
         fogColor[3] = (fogcolor & 0xFF) / 255.0f;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxFogColorValue: unknown color format : %x", lfb_color_fmt);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxFogColorValue: Unknown color format: %x", lfb_color_fmt);
     }
 }
 
-// chroma
+// Chroma
 void gfxChromakeyMode(gfxChromakeyMode_t mode)
 {
-    WriteTrace(TraceGlitch, TraceDebug, "mode: %d", mode);
+    WriteTrace(TraceGlitch, TraceDebug, "Mode: %d", mode);
     switch (mode)
     {
     case GFX_CHROMAKEY_DISABLE:
@@ -1627,14 +1628,14 @@ void gfxChromakeyMode(gfxChromakeyMode_t mode)
         g_chroma_enabled = true;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxChromakeyMode : unknown mode : %x", mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxChromakeyMode: Unknown mode: %x", mode);
     }
     need_to_compile = 1;
 }
 
 void gfxChromakeyValue(gfxColor_t value)
 {
-    WriteTrace(TraceGlitch, TraceDebug, "value: %d", value);
+    WriteTrace(TraceGlitch, TraceDebug, "Value: %d", value);
     int chroma_color_location;
 
     switch (lfb_color_fmt)
@@ -1652,7 +1653,7 @@ void gfxChromakeyValue(gfxColor_t value)
         g_chroma_color[3] = 1.0;//(value & 0xFF) / 255.0f;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxChromakeyValue: unknown color format : %x", lfb_color_fmt);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxChromakeyValue: Unknown color format: %x", lfb_color_fmt);
     }
     vbo_draw();
     chroma_color_location = glGetUniformLocation(g_program_object_default, "chroma_color");
@@ -1697,7 +1698,7 @@ void setPattern()
 
 void gfxStippleMode(gfxStippleMode_t mode)
 {
-    WriteTrace(TraceGlitch, TraceDebug, "mode: %d", mode);
+    WriteTrace(TraceGlitch, TraceDebug, "Mode: %d", mode);
     switch (mode)
     {
     case GFX_STIPPLE_DISABLE:
@@ -1723,8 +1724,8 @@ void gfxStippleMode(gfxStippleMode_t mode)
 void gfxColorCombineExt(gfxCCUColor_t a, gfxCombineMode_t a_mode, gfxCCUColor_t b, gfxCombineMode_t b_mode, gfxCCUColor_t c, bool c_invert, gfxCCUColor_t d, bool d_invert, uint32_t shift, bool invert)
 {
     WriteTrace(TraceGlitch, TraceDebug, "a: %d a_mode: %d b: %d b_mode: %d c: %d c_invert: %d d: %d d_invert: %d shift: %d invert: %d", a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
-    if (invert) WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombineExt : inverted result");
-    if (shift) WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombineExt : shift = %d", shift);
+    if (invert) WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombineExt: Inverted result");
+    if (shift) WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombineExt: Shift = %d", shift);
 
     color_combiner_key = 0x80000000 | (a & 0x1F) | ((a_mode & 3) << 5) |
         ((b & 0x1F) << 7) | ((b_mode & 3) << 12) |
@@ -1757,7 +1758,7 @@ void gfxColorCombineExt(gfxCCUColor_t a, gfxCombineMode_t a_mode, gfxCCUColor_t 
         strcat(fragment_shader_color_combiner, "vec4 cs_a = ctexture1; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombineExt : a = %x", a);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombineExt: a = %x", a);
         strcat(fragment_shader_color_combiner, "vec4 cs_a = vec4(0.0); \n");
     }
 
@@ -1776,7 +1777,7 @@ void gfxColorCombineExt(gfxCCUColor_t a, gfxCombineMode_t a_mode, gfxCCUColor_t 
         strcat(fragment_shader_color_combiner, "vec4 c_a = -cs_a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombineExt : a_mode = %x", a_mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombineExt: a_mode = %x", a_mode);
         strcat(fragment_shader_color_combiner, "vec4 c_a = vec4(0.0); \n");
     }
 
@@ -1804,7 +1805,7 @@ void gfxColorCombineExt(gfxCCUColor_t a, gfxCombineMode_t a_mode, gfxCCUColor_t 
         strcat(fragment_shader_color_combiner, "vec4 cs_b = ctexture1; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombineExt : b = %x", b);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombineExt: b = %x", b);
         strcat(fragment_shader_color_combiner, "vec4 cs_b = vec4(0.0); \n");
     }
 
@@ -1823,7 +1824,7 @@ void gfxColorCombineExt(gfxCCUColor_t a, gfxCombineMode_t a_mode, gfxCCUColor_t 
         strcat(fragment_shader_color_combiner, "vec4 c_b = -cs_b; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombineExt : b_mode = %x", b_mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombineExt: b_mode = %x", b_mode);
         strcat(fragment_shader_color_combiner, "vec4 c_b = vec4(0.0); \n");
     }
 
@@ -1860,7 +1861,7 @@ void gfxColorCombineExt(gfxCCUColor_t a, gfxCombineMode_t a_mode, gfxCCUColor_t 
         strcat(fragment_shader_color_combiner, "vec4 c_c = ctexture1; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombineExt : c = %x", c);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombineExt: c = %x", c);
         strcat(fragment_shader_color_combiner, "vec4 c_c = vec4(0.0); \n");
     }
 
@@ -1885,7 +1886,7 @@ void gfxColorCombineExt(gfxCCUColor_t a, gfxCombineMode_t a_mode, gfxCCUColor_t 
         strcat(fragment_shader_color_combiner, "vec4 c_d = vFrontColor; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombineExt : d = %x", d);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombineExt: d = %x", d);
         strcat(fragment_shader_color_combiner, "vec4 c_d = vec4(0.0); \n");
     }
 
@@ -1900,8 +1901,8 @@ void gfxColorCombineExt(gfxCCUColor_t a, gfxCombineMode_t a_mode, gfxCCUColor_t 
 void gfxAlphaCombineExt(gfxACUColor_t a, gfxCombineMode_t a_mode, gfxACUColor_t b, gfxCombineMode_t b_mode, gfxACUColor_t c, bool c_invert, gfxACUColor_t d, bool d_invert, uint32_t shift, bool invert)
 {
     WriteTrace(TraceGlitch, TraceDebug, "a: %d a_mode: %d b: %d b_mode: %d c: %d c_invert: %d d: %d d_invert: %d shift: %d invert: %d", a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
-    if (invert) WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt : inverted result");
-    if (shift) WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt : shift = %d", shift);
+    if (invert) WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt: Inverted result");
+    if (shift) WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt: Shift = %d", shift);
 
     alpha_combiner_key = 0x80000000 | (a & 0x1F) | ((a_mode & 3) << 5) |
         ((b & 0x1F) << 7) | ((b_mode & 3) << 12) |
@@ -1925,7 +1926,7 @@ void gfxAlphaCombineExt(gfxACUColor_t a, gfxCombineMode_t a_mode, gfxACUColor_t 
         strcat(fragment_shader_alpha_combiner, "float as_a = vFrontColor.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt : a = %x", a);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt: a = %x", a);
         strcat(fragment_shader_alpha_combiner, "float as_a = 0.0; \n");
     }
 
@@ -1944,7 +1945,7 @@ void gfxAlphaCombineExt(gfxACUColor_t a, gfxCombineMode_t a_mode, gfxACUColor_t 
         strcat(fragment_shader_alpha_combiner, "float a_a = -as_a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt : a_mode = %x", a_mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt: a_mode = %x", a_mode);
         strcat(fragment_shader_alpha_combiner, "float a_a = 0.0; \n");
     }
 
@@ -1963,7 +1964,7 @@ void gfxAlphaCombineExt(gfxACUColor_t a, gfxCombineMode_t a_mode, gfxACUColor_t 
         strcat(fragment_shader_alpha_combiner, "float as_b = vFrontColor.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt : b = %x", b);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt: b = %x", b);
         strcat(fragment_shader_alpha_combiner, "float as_b = 0.0; \n");
     }
 
@@ -1982,7 +1983,7 @@ void gfxAlphaCombineExt(gfxACUColor_t a, gfxCombineMode_t a_mode, gfxACUColor_t 
         strcat(fragment_shader_alpha_combiner, "float a_b = -as_b; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt : b_mode = %x", b_mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt: b_mode = %x", b_mode);
         strcat(fragment_shader_alpha_combiner, "float a_b = 0.0; \n");
     }
 
@@ -2010,7 +2011,7 @@ void gfxAlphaCombineExt(gfxACUColor_t a, gfxCombineMode_t a_mode, gfxACUColor_t 
         strcat(fragment_shader_alpha_combiner, "float a_c = vFrontColor.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt : c = %x", c);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt: c = %x", c);
         strcat(fragment_shader_alpha_combiner, "float a_c = 0.0; \n");
     }
 
@@ -2032,7 +2033,7 @@ void gfxAlphaCombineExt(gfxACUColor_t a, gfxCombineMode_t a_mode, gfxACUColor_t 
         strcat(fragment_shader_alpha_combiner, "float a_d = as_b; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt : d = %x", d);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt: d = %x", d);
         strcat(fragment_shader_alpha_combiner, "float a_d = 0.0; \n");
     }
 
@@ -2049,8 +2050,8 @@ void gfxTexColorCombineExt(gfxChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a
     int num_tex;
     WriteTrace(TraceGlitch, TraceDebug, "tmu: %d a: %d a_mode: %d b: %d b_mode: %d c: %d c_invert: %d d: %d d_invert: %d shift: %d invert: %d", tmu, a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
 
-    if (invert) WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt : inverted result");
-    if (shift) WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt : shift = %d", shift);
+    if (invert) WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt: Inverted result");
+    if (shift) WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt: Shift = %d", shift);
 
     if (tmu == GFX_TMU0) num_tex = 1;
     else num_tex = 0;
@@ -2131,7 +2132,7 @@ void gfxTexColorCombineExt(gfxChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a
             strcat(fragment_shader_texture1, "vec4 ctex1s_a = vec4(ccolor1.a); \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt : a = %x", a);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt: a = %x", a);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_a = vec4(0.0); \n");
         else
@@ -2165,7 +2166,7 @@ void gfxTexColorCombineExt(gfxChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a
             strcat(fragment_shader_texture1, "vec4 ctex1_a = -ctex1s_a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt : a_mode = %x", a_mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt: a_mode = %x", a_mode);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_a = vec4(0.0); \n");
         else
@@ -2229,7 +2230,7 @@ void gfxTexColorCombineExt(gfxChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a
             strcat(fragment_shader_texture1, "vec4 ctex1s_b = ccolor1; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt : b = %x", b);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt: b = %x", b);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_b = vec4(0.0); \n");
         else
@@ -2263,7 +2264,7 @@ void gfxTexColorCombineExt(gfxChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a
             strcat(fragment_shader_texture1, "vec4 ctex1_b = -ctex1s_b; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt : b_mode = %x", b_mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt: b_mode = %x", b_mode);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_b = vec4(0.0); \n");
         else
@@ -2339,7 +2340,7 @@ void gfxTexColorCombineExt(gfxChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a
             strcat(fragment_shader_texture1, "vec4 ctex1_c = ccolor1; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt : c = %x", c);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt: c = %x", c);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_c = vec4(0.0); \n");
         else
@@ -2381,7 +2382,7 @@ void gfxTexColorCombineExt(gfxChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a
             strcat(fragment_shader_texture1, "vec4 ctex1_d = vec4(readtex1.a); \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt : d = %x", d);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt: d = %x", d);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_d = vec4(0.0); \n");
         else
@@ -2408,8 +2409,8 @@ void gfxTexAlphaCombineExt(gfxChipID_t tmu, gfxTACUColor_t a, gfxCombineMode_t a
     int num_tex;
     WriteTrace(TraceGlitch, TraceDebug, "tmu: %d a: %d a_mode: %d b: %d b_mode: %d c: %d c_invert: %d d: %d d_invert: %d shift, invert: %d", tmu, a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
 
-    if (invert) WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt : inverted result");
-    if (shift) WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt : shift = %d", shift);
+    if (invert) WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt: Inverted result");
+    if (shift) WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt: Shift = %d", shift);
 
     if (tmu == GFX_TMU0) num_tex = 1;
     else num_tex = 0;
@@ -2456,7 +2457,7 @@ void gfxTexAlphaCombineExt(gfxChipID_t tmu, gfxTACUColor_t a, gfxCombineMode_t a
             strcat(fragment_shader_texture1, "ctex1s_a.a = ccolor1.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt : a = %x", a);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt: a = %x", a);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0s_a.a = 0.0; \n");
         else
@@ -2490,7 +2491,7 @@ void gfxTexAlphaCombineExt(gfxChipID_t tmu, gfxTACUColor_t a, gfxCombineMode_t a
             strcat(fragment_shader_texture1, "ctex1_a.a = -ctex1s_a.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt : a_mode = %x", a_mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt: a_mode = %x", a_mode);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_a.a = 0.0; \n");
         else
@@ -2524,7 +2525,7 @@ void gfxTexAlphaCombineExt(gfxChipID_t tmu, gfxTACUColor_t a, gfxCombineMode_t a
             strcat(fragment_shader_texture1, "ctex1s_b.a = ccolor1.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt : b = %x", b);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt: b = %x", b);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0s_b.a = 0.0; \n");
         else
@@ -2558,7 +2559,7 @@ void gfxTexAlphaCombineExt(gfxChipID_t tmu, gfxTACUColor_t a, gfxCombineMode_t a
             strcat(fragment_shader_texture1, "ctex1_b.a = -ctex1s_b.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt : b_mode = %x", b_mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt: b_mode = %x", b_mode);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_b.a = 0.0; \n");
         else
@@ -2610,7 +2611,7 @@ void gfxTexAlphaCombineExt(gfxChipID_t tmu, gfxTACUColor_t a, gfxCombineMode_t a
             strcat(fragment_shader_texture1, "ctex1_c.a = ccolor1.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt : c = %x", c);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt: c = %x", c);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_c.a = 0.0; \n");
         else
@@ -2658,7 +2659,7 @@ void gfxTexAlphaCombineExt(gfxChipID_t tmu, gfxTACUColor_t a, gfxCombineMode_t a
             strcat(fragment_shader_texture1, "ctex1_d.a = readtex1.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt : d = %x", d);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt: d = %x", d);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_d.a = 0.0; \n");
         else
@@ -2724,7 +2725,7 @@ void gfxConstantColorValueExt(gfxChipID_t tmu, gfxColor_t value)
         }
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxConstantColorValue: unknown color format : %x", lfb_color_fmt);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxConstantColorValue: Unknown color format: %x", lfb_color_fmt);
     }
 
     vbo_draw();

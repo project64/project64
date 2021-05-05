@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2007 Hiroshi Morii
 // Copyright(C) 2003 Rice1964
@@ -8,8 +8,8 @@
 #ifndef __TXQUANTIZE_H__
 #define __TXQUANTIZE_H__
 
-/* Glide64 DXTn workaround
- * (0:disable, 1:enable) */
+// Glide64 DXTn workaround
+// (0:disable, 1:enable)
 #define GLIDE64_DXTN 1
 
 #include "TxInternal.h"
@@ -24,7 +24,7 @@ private:
     fxtCompressTexFuncExt _tx_compress_fxt1;
     dxtCompressTexFuncExt _tx_compress_dxtn;
 
-    /* fast optimized... well, sort of. */
+    // Fast optimized...well, sort of
     void ARGB1555_ARGB8888(uint32* src, uint32* dst, int width, int height);
     void ARGB4444_ARGB8888(uint32* src, uint32* dst, int width, int height);
     void RGB565_ARGB8888(uint32* src, uint32* dst, int width, int height);
@@ -39,7 +39,7 @@ private:
     void ARGB8888_AI44(uint32* src, uint32* dst, int width, int height);
     void ARGB8888_AI88(uint32* src, uint32* dst, int width, int height);
 
-    /* quality */
+    // Quality
     void ARGB8888_RGB565_ErrD(uint32* src, uint32* dst, int width, int height);
     void ARGB8888_ARGB1555_ErrD(uint32* src, uint32* dst, int width, int height);
     void ARGB8888_ARGB4444_ErrD(uint32* src, uint32* dst, int width, int height);
@@ -47,7 +47,7 @@ private:
     void ARGB8888_AI88_Slow(uint32* src, uint32* dst, int width, int height);
     void ARGB8888_I8_Slow(uint32* src, uint32* dst, int width, int height);
 
-    /* compressors */
+    // Compressors
     bool FXT1(uint8 *src, uint8 *dest,
         int srcwidth, int srcheight, uint16 srcformat,
         int *destwidth, int *destheight, uint16 *destformat);
@@ -59,7 +59,7 @@ public:
     TxQuantize();
     ~TxQuantize();
 
-    /* others */
+    // Others
     void P8_16BPP(uint32* src, uint32* dst, int width, int height, uint32* palette);
 
     bool quantize(uint8* src, uint8* dest, int width, int height, uint16 srcformat, uint16 destformat, bool fastQuantizer = 1);

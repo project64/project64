@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2007 Hiroshi Morii
 // Copyright(C) 2003 Rice1964
@@ -8,7 +8,7 @@
 #ifndef __TXUTIL_H__
 #define __TXUTIL_H__
 
-/* maximum number of CPU cores allowed */
+// Maximum number of CPU cores allowed
 #define MAX_NUMCORE 8
 
 #include "TxInternal.h"
@@ -97,4 +97,4 @@ public:
     uint32 size_of(unsigned int num);
 };
 
-#endif /* __TXUTIL_H__ */
+#endif // __TXUTIL_H__
