@@ -12,3 +12,8 @@ $Subscreen Delay Fix
 PluginList=Glide64 For PJ64,Jabo's Direct3D8
 OnByDefault=1
 801DB78B 0002
+
+$Widescreen
+81091DFC 3C07
+81091DFE 3FE3
+8102499C 2402
