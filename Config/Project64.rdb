@@ -11048,3 +11048,44 @@ Status=Compatible
 Counter Factor=1
 Unaligned DMA=1
 
+[140E8581-C786EAA0-C:45]
+Good Name=Mario Can't Remember v1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[E58E2E59-724EDE64-C:45]
+Good Name=SM64 with Wavedash and Smash Bros. Melee Physics
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[22647AEB-47678FB7-C:45]
+Good Name=Super Luigi 64 - Definitive Edition
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[22647FEB-452216FA-C:45]
+Good Name=Super Luigi 64 - Definitive Edition
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[2264006B-5A61C25E-C:45]
+Good Name=Super Luigi 64 - Definitive Edition
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[9D2B9C7F-6D90A8EF-C:45]
+Good Name=Smash Remix 0.9.7
+Internal Name=SmashRemix
+Status=Compatible
+Counter Factor=1
+Culling=1
+SMM-Cache=0
+SMM-FUNC=0
+SMM-TLB=0
+RDRAM Size=8
+ViRefresh=2200
