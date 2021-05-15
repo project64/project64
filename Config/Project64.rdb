@@ -4114,6 +4114,11 @@ Status=Compatible
 32bit=Yes
 Counter Factor=1
 Culling=1
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
 
 //================  N  ================
 [6D452016-713C09EE-C:50]
