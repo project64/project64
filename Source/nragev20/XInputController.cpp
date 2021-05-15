@@ -163,11 +163,12 @@ void AxisDeadzone( SHORT &AxisValue, long  lDeadZoneValue, float fDeadZoneRelati
 
 void GetXInputControllerKeys( const int indexController, LPDWORD Keys )
 {
-    if (fnXInputGetState == NULL)
+	
+	if (fnXInputGetState == NULL)
     {
         return;
     }
-
+	
     using namespace N64_BUTTONS;
 
     LPCONTROLLER pcController = &g_pcControllers[indexController];
@@ -178,22 +179,25 @@ void GetXInputControllerKeys( const int indexController, LPDWORD Keys )
     if ( !gController->bConfigured )
         return;
 
-	ULONGLONG time = GetTickCount() / 1000;
-	if (g_pcControllers[indexController].XcheckTime != NULL && (time - g_pcControllers[indexController].XcheckTime) < 3)
-		return;
-
     DWORD result;
     XINPUT_STATE state;
 
+    ULONGLONG time = GetTickCount() / 1000;
+    if (g_pcControllers[indexController].XcheckTime != NULL && (time - g_pcControllers[indexController].XcheckTime) < 3)
+        return;
+
     result = fnXInputGetState(gController->nControl, &state);
 
-	if (result == ERROR_DEVICE_NOT_CONNECTED) {
-		g_pcControllers[indexController].XcheckTime = time;
-	}
-	else {
-		g_pcControllers[indexController].XcheckTime = NULL;
-	}
+    if (result == ERROR_DEVICE_NOT_CONNECTED) {
+        g_pcControllers[indexController].XcheckTime = time;
+    }
+    else {
+        g_pcControllers[indexController].XcheckTime = NULL;
+    }
 
+    if( result != ERROR_SUCCESS )
+        return;
+    
     DWORD wButtons = state.Gamepad.wButtons;
 
     if( pcController->bPadDeadZone > 0 )
