@@ -18,7 +18,7 @@ uint16_t gb_cart_address(unsigned int bank, uint16_t address)
 void Transferpak::Init()
 {
     // Quick check to ensure we don't have a ROM already
-    if (tpak.gb_cart.rom == NULL)
+    if (tpak.gb_cart.rom == nullptr)
     {
         memset(&tpak, 0, sizeof(tpak));
         tpak.access_mode = (!GBCart::init_gb_cart(&tpak.gb_cart, g_Settings->LoadStringVal(Game_Transferpak_ROM).c_str())) ? CART_NOT_INSERTED : CART_ACCESS_MODE_0;
@@ -28,7 +28,7 @@ void Transferpak::Init()
 
 void Transferpak::Release()
 {
-    if (tpak.gb_cart.rom != NULL)
+    if (tpak.gb_cart.rom != nullptr)
     {
         GBCart::release_gb_cart(&tpak.gb_cart);
     }
@@ -39,7 +39,7 @@ void Transferpak::ReadFrom(uint16_t address, uint8_t * data)
 	if ((address >= 0x8000) && (address <= 0x8FFF))
 	{
         // Ensure we actually have a ROM loaded in first
-        if (tpak.gb_cart.rom == NULL)
+        if (tpak.gb_cart.rom == nullptr)
         {
             Init();
         }
@@ -80,7 +80,7 @@ void Transferpak::WriteTo(uint16_t address, uint8_t * data)
     if ((address >= 0x8000) && (address <= 0x8FFF))
     {
         // Ensure we actually have a ROM loaded in first
-        if (tpak.gb_cart.rom == NULL)
+        if (tpak.gb_cart.rom == nullptr)
         {
             Init();
         }
