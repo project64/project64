@@ -77,9 +77,9 @@ private:
     int32_t & m_PlugType;
     BUTTONS m_Buttons;
 
-    CCONTROL(void);                         // Disable default constructor
-    CCONTROL(const CCONTROL&);              // Disable copy constructor
-    CCONTROL& operator=(const CCONTROL&);   // Disable assignment
+    CCONTROL(void);
+    CCONTROL(const CCONTROL&);
+    CCONTROL& operator=(const CCONTROL&);
 };
 
 class CControl_Plugin : public CPlugin
@@ -103,8 +103,8 @@ public:
     inline CONTROL * PluginControllers(void) { return m_PluginControllers; }
 
 private:
-    CControl_Plugin(const CControl_Plugin&);			// Disable copy constructor
-    CControl_Plugin& operator=(const CControl_Plugin&);	// Disable assignment
+    CControl_Plugin(const CControl_Plugin&);
+    CControl_Plugin& operator=(const CControl_Plugin&);
 
     virtual int32_t GetDefaultSettingStartRange() const { return FirstCtrlDefaultSet; }
     virtual int32_t GetSettingStartRange() const { return FirstCtrlSettings; }

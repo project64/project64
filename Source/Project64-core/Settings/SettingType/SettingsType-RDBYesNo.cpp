@@ -110,5 +110,5 @@ void CSettingTypeRDBYesNo::Save(uint32_t /*Index*/, const char * /*Value*/)
 
 void CSettingTypeRDBYesNo::Delete(uint32_t /*Index*/)
 {
-    m_SettingsIniFile->SaveString(m_SectionIdent->c_str(), m_KeyName.c_str(), NULL);
+    m_SettingsIniFile->SaveString(m_SectionIdent->c_str(), m_KeyName.c_str(), nullptr);
 }

@@ -14,28 +14,28 @@ public:
     bool IsSettingSet(void) const { return false; }
 
     // Return the values
-    bool Load (uint32_t /*Index*/, bool & /*Value*/ ) const { return false; };
-    bool Load (uint32_t /*Index*/, uint32_t & /*Value*/ ) const { return false; };
-    bool Load (uint32_t Index, std::string & Value ) const;
+    bool Load (uint32_t /*Index*/, bool & /*Value*/) const { return false; };
+    bool Load (uint32_t /*Index*/, uint32_t & /*Value*/) const { return false; };
+    bool Load (uint32_t Index, std::string & Value) const;
 
     // Return the default values
-    void LoadDefault (uint32_t Index, bool & Value ) const;
-    void LoadDefault (uint32_t Index, uint32_t & Value ) const;
-    void LoadDefault (uint32_t Index, std::string & Value ) const;
+    void LoadDefault (uint32_t Index, bool & Value) const;
+    void LoadDefault (uint32_t Index, uint32_t & Value) const;
+    void LoadDefault (uint32_t Index, std::string & Value) const;
 
     // Update the settings
-    void Save (uint32_t Index, bool Value );
-    void Save (uint32_t Index, uint32_t Value );
-    void Save (uint32_t Index, const std::string & Value );
-    void Save (uint32_t Index, const char * Value );
+    void Save (uint32_t Index, bool Value);
+    void Save (uint32_t Index, uint32_t Value);
+    void Save (uint32_t Index, const std::string & Value);
+    void Save (uint32_t Index, const char * Value);
 
     // Delete the setting
     void Delete (uint32_t Index );
 
 private:
-    CSettingTypeRelativePath(void);                                         // Disable default constructor
-    CSettingTypeRelativePath(const CSettingTypeRelativePath&);              // Disable copy constructor
-    CSettingTypeRelativePath& operator=(const CSettingTypeRelativePath&);   // Disable assignment
+    CSettingTypeRelativePath(void);
+    CSettingTypeRelativePath(const CSettingTypeRelativePath&);
+    CSettingTypeRelativePath& operator=(const CSettingTypeRelativePath&);
 
     static void RefreshSettings(void * _this);
     void BuildPath ( void );

@@ -3,16 +3,16 @@
 #include <Common/path.h>
 
 CPlugin::CPlugin() :
-DllAbout(NULL),
-DllConfig(NULL),
-CloseDLL(NULL),
-RomOpen(NULL),
-RomClosed(NULL),
-PluginOpened(NULL),
-SetSettingInfo(NULL),
-SetSettingInfo2(NULL),
-SetSettingInfo3(NULL),
-m_LibHandle(NULL),
+DllAbout(nullptr),
+DllConfig(nullptr),
+CloseDLL(nullptr),
+RomOpen(nullptr),
+RomClosed(nullptr),
+PluginOpened(nullptr),
+SetSettingInfo(nullptr),
+SetSettingInfo2(nullptr),
+SetSettingInfo3(nullptr),
+m_LibHandle(nullptr),
 m_Initialized(false),
 m_RomOpen(false)
 {
@@ -31,7 +31,7 @@ bool CPlugin::Load(const char * FileName)
     WriteTrace(PluginTraceType(), TraceDebug, "Loading: %s", FileName);
 
     // Already loaded, so unload first
-    if (m_LibHandle != NULL)
+    if (m_LibHandle != nullptr)
     {
         UnloadPlugin();
     }
@@ -41,7 +41,7 @@ bool CPlugin::Load(const char * FileName)
     m_LibHandle = pjutil::DynLibOpen(FileName, HaveDebugger());
     WriteTrace(PluginTraceType(), TraceDebug, "Loaded: %s LibHandle: %X", FileName, m_LibHandle);
 
-    if (m_LibHandle == NULL)
+    if (m_LibHandle == nullptr)
     {
         return false;
     }
@@ -49,7 +49,7 @@ bool CPlugin::Load(const char * FileName)
     // Get DLL information
     void(CALL *GetDllInfo) (PLUGIN_INFO * PluginInfo);
     LoadFunction(GetDllInfo);
-    if (GetDllInfo == NULL) { return false; }
+    if (GetDllInfo == nullptr) { return false; }
 
     GetDllInfo(&m_PluginInfo);
     if (!ValidPluginVersion(m_PluginInfo)) { return false; }
@@ -120,12 +120,12 @@ bool CPlugin::Load(const char * FileName)
         info.GetSettingSz = (const char * (*)(void *, int, char *, int))&CSettings::GetSettingSz;
         info.SetSetting = (void(*)(void *, int, uint32_t))&CSettings::SetSetting;
         info.SetSettingSz = (void(*)(void *, int, const char *))&CSettings::SetSettingSz;
-        info.UseUnregisteredSetting = NULL;
+        info.UseUnregisteredSetting = nullptr;
 
         SetSettingInfo(&info);
     }
 
-    if (RomClosed == NULL)
+    if (RomClosed == nullptr)
     {
         return false;
     }
@@ -158,7 +158,7 @@ void CPlugin::RomOpened(RenderWindow * Render)
     if (m_PluginInfo.Type == PLUGIN_TYPE_GFX)
     {
         WriteTrace(PluginTraceType(), TraceDebug, "Render = %p", Render);
-        if (Render != NULL)
+        if (Render != nullptr)
         {
             WriteTrace(PluginTraceType(), TraceDebug, "Calling GfxThreadInit");
             Render->GfxThreadInit();
@@ -169,7 +169,7 @@ void CPlugin::RomOpened(RenderWindow * Render)
     Render = Render; // Used just for the Android port
 #endif
 
-    if (RomOpen != NULL)
+    if (RomOpen != nullptr)
     {
         WriteTrace(PluginTraceType(), TraceDebug, "Before ROM open");
         RomOpen();
@@ -190,7 +190,7 @@ void CPlugin::RomClose(RenderWindow * Render)
     if (m_PluginInfo.Type == PLUGIN_TYPE_GFX)
     {
         WriteTrace(PluginTraceType(), TraceDebug, "Render = %p", Render);
-        if (Render != NULL)
+        if (Render != nullptr)
         {
             WriteTrace(PluginTraceType(), TraceDebug, "Calling GfxThreadDone");
             Render->GfxThreadDone();
@@ -221,7 +221,7 @@ void CPlugin::Close(RenderWindow * Render)
     WriteTrace(PluginTraceType(), TraceDebug, "(%s): Start", PluginType());
     RomClose(Render);
     m_Initialized = false;
-	if (CloseDLL != NULL)
+	if (CloseDLL != nullptr)
 	{
 		CloseDLL();
 	}
@@ -232,25 +232,25 @@ void CPlugin::UnloadPlugin()
 {
     WriteTrace(PluginTraceType(), TraceDebug, "(%s): Start", PluginType());
     memset(&m_PluginInfo, 0, sizeof(m_PluginInfo));
-    if (m_LibHandle != NULL)
+    if (m_LibHandle != nullptr)
     {
         UnloadPluginDetails();
     }
-    if (m_LibHandle != NULL)
+    if (m_LibHandle != nullptr)
     {
         pjutil::DynLibClose(m_LibHandle);
-        m_LibHandle = NULL;
+        m_LibHandle = nullptr;
     }
 
-    DllAbout = NULL;
-    CloseDLL = NULL;
-    RomOpen = NULL;
-    RomClosed = NULL;
-    PluginOpened = NULL;
-    DllConfig = NULL;
-    SetSettingInfo = NULL;
-    SetSettingInfo2 = NULL;
-    SetSettingInfo3 = NULL;
+    DllAbout = nullptr;
+    CloseDLL = nullptr;
+    RomOpen = nullptr;
+    RomClosed = nullptr;
+    PluginOpened = nullptr;
+    DllConfig = nullptr;
+    SetSettingInfo = nullptr;
+    SetSettingInfo2 = nullptr;
+    SetSettingInfo3 = nullptr;
     WriteTrace(PluginTraceType(), TraceDebug, "(%s): Done", PluginType());
 }
 
