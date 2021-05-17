@@ -23,9 +23,9 @@ public:
     uint64_t* MemLocation(int32_t i) { return m_MemLocation[i]; }
 
 private:
-    CCompiledFunc(void);                              // Disable default constructor
-    CCompiledFunc(const CCompiledFunc&);              // Disable copy constructor
-    CCompiledFunc& operator=(const CCompiledFunc&);   // Disable assignment
+    CCompiledFunc(void);
+    CCompiledFunc(const CCompiledFunc&);
+    CCompiledFunc& operator=(const CCompiledFunc&);
 
     // Information
     uint32_t m_EnterPC; // The entry PC
@@ -34,7 +34,7 @@ private:
     uint8_t * m_FunctionEnd; // Where the code bytes end
 
     MD5Digest m_Hash;
-    // From querying the recompiler get information about the function
+    // From querying the recompiler, get information about the function
     Func  m_Function;
 
     CCompiledFunc* m_Next;
