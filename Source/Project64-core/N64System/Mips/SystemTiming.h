@@ -61,9 +61,9 @@ public:
     bool operator != (const CSystemTimer& rSystemTimer) const;
 
 private:
-    CSystemTimer(void);                           // Disable default constructor
-    CSystemTimer(const CSystemTimer&);            // Disable copy constructor
-    CSystemTimer& operator=(const CSystemTimer&); // Disable assignment
+    CSystemTimer(void);
+    CSystemTimer(const CSystemTimer&);
+    CSystemTimer& operator=(const CSystemTimer&);
 
     TIMER_DETAILS m_TimerDetatils[MaxTimer];
     int32_t       m_LastUpdate; // Timer at last update
