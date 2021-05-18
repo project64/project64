@@ -1,13 +1,13 @@
-﻿// ============ RDB for PJ64 v2.4. GoodN64 v327 =====================================
-// PJ64 v2.4 Official RDB
+﻿// ============ RDB for PJ64 v3.0. GoodN64 v327 =====================================
+// PJ64 v3.0 Official RDB
 // Not for use with previous versions of PJ64
 //---- START OF RDB FILE HEADER ---------------------------------------------------------
 
 [Meta]
 Author=Project64 Team
-Date=2020/06/21
+Date=2021/05/12
 Homepage=www.pj64-emu.com
-Version=2.4.0
+Version=3.0.0
 
 [Microcode Identifiers]
 //38221D7F=0 //SD Hiryuu no Ken Densetsu (J), near start (Smiff)
@@ -4114,6 +4114,11 @@ Status=Compatible
 32bit=Yes
 Counter Factor=1
 Culling=1
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
 
 //================  N  ================
 [6D452016-713C09EE-C:50]
@@ -4764,7 +4769,13 @@ Internal Name=Pilot Wings64
 Status=Compatible
 32bit=Yes
 Counter Factor=3
+Linking=Off
 RDRAM Size=4
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
+Use TLB=No
 
 [09CC4801-E42EE491-C:4A]
 Good Name=Pilotwings 64 (J)
@@ -4772,7 +4783,13 @@ Internal Name=Pilot Wings64
 Status=Compatible
 32bit=Yes
 Counter Factor=3
+Linking=Off
 RDRAM Size=4
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
+Use TLB=No
 
 [C851961C-78FCAAFA-C:45]
 Good Name=Pilotwings 64 (U)
@@ -4781,7 +4798,13 @@ Status=Compatible
 32bit=Yes
 Counter Factor=3
 Culling=1
+Linking=Off
 RDRAM Size=4
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-TLB=0
+Use TLB=No
 
 [4A1CD153-D830AEF8-C:50]
 Good Name=Pokemon Puzzle League (E)
@@ -5871,7 +5894,14 @@ Status=Compatible
 32bit=Yes
 
 [BFE23884-EF48EAAF-C:45]
-Good Name=Space Station Silicon Valley (U)
+Good Name=Space Station Silicon Valley (U) (V1.0)
+Internal Name=Silicon Valley
+Status=Compatible
+32bit=Yes
+Culling=1
+
+[FC70E272-08FFE7AA-C:45]
+Good Name=Space Station Silicon Valley (U) (V1.1)
 Internal Name=Silicon Valley
 Status=Compatible
 32bit=Yes
