@@ -14,14 +14,14 @@
 
 #ifndef _WIN32
 #include <signal.h>
-/* siginfo_t */
+// siginfo_t
 #endif
 
 /*
-* To do:  Have address translation functions here?
+* TODO:  Have address translation functions here?
 * `return` either the translated address or the mask to XOR by?
 *
-* This will help us gradually be able to port Project64 for big-endian CPUs.
+* This will help us gradually be able to port Project64 to big-endian CPUs.
 * Currently it is written to assume 32-bit little-endian, like so:
 *
 * 0xAABBCCDD EEFFGGHH --> 0xDDCCBBAA HHGGFFEE
@@ -88,11 +88,11 @@ public:
     static void segv_handler(int signal, siginfo_t *siginfo, void *sigcontext);
 #endif
 
-    //Protect the Memory from being written to
+    // Protect the memory from being written to
     void  ProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr);
     void  UnProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr);
 
-    //Functions for TLB notification
+    // Functions for TLB notification
     void TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly);
     void TLB_Unmaped(uint32_t Vaddr, uint32_t Len);
 
@@ -179,35 +179,35 @@ private:
     static bool FilterArmException(uint32_t MemAddress, mcontext_t & context);
 #endif
 
-    //Memory Locations
+    // Memory locations
     static uint8_t   * m_Reserve1, *m_Reserve2;
     uint8_t          * m_RDRAM, *m_DMEM, *m_IMEM;
     uint32_t         m_AllocatedRdramSize;
 
-    //Rom Information
+    // ROM information
     bool          m_RomMapped;
     uint8_t *     m_Rom;
     uint32_t      m_RomSize;
     bool          m_RomWrittenTo;
     uint32_t      m_RomWroteValue;
 
-    //DDRom Information
+    // DDRom information
     bool          m_DDRomMapped;
     uint8_t *     m_DDRom;
     uint32_t      m_DDRomSize;
 
-    //Current Half line
+    //Current half line
     void UpdateHalfLine();
     uint32_t         m_HalfLine;
     uint32_t         m_HalfLineCheck;
     uint32_t         m_FieldSerration;
 
-    //Initializing and resetting information about the memory system
+    // Initializing and resetting information about the memory system
     void FreeMemory();
 
     mutable char m_strLabelName[100];
 
-    //BIG look up table to quickly translate the tlb to real mem address
+    // Big look up table to quickly translate the TLB to real memory addresses
     size_t * m_TLB_ReadMap;
     size_t * m_TLB_WriteMap;
 

@@ -1,13 +1,6 @@
 /*
-**
-**
-**
-** This file's purpose is to emulate the inner workings of a
-** GameBoy Game Pak cartrige.
-**
-** All code is by Mark McGough. MadManMarkAu@hotmail.com
-**
-**
+This file's purpose is to emulate the inner workings of a
+Game Boy game pak cartridge. All code is by Mark McGough.
 */
 
 #include <windows.h>
@@ -33,16 +26,16 @@ bool ReadCartCamera(LPGBCART Cart, WORD dwAddress, BYTE *Data);
 bool WriteCartCamera(LPGBCART Cart, WORD dwAddress, BYTE *Data);
 
 // Tries to read RTC data from separate file (not integrated into SAV)
-//      success sets the useTDF flag
-//      failure inits the RTC at zero and maybe throws a warning
+// Success sets the useTDF flag
+// Failure initializes the RTC at zero and maybe throws a warning
 void ReadTDF(LPGBCART Cart)
 {
 }
 
 void WriteTDF(LPGBCART Cart)
 {
-    // check useTDF flag
-    // write data from RTC to TDF file
+    // Check useTDF flag
+    // Write data from RTC to TDF file
 }
 
 void UpdateRTC(LPGBCART Cart)
@@ -80,25 +73,25 @@ void UpdateRTC(LPGBCART Cart)
 
 }
 
-// returns true if the ROM was loaded OK
+// Returns true if the ROM was loaded correctly
 bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR TdfFileName)
 {
     HANDLE hTemp;
     DWORD dwFilesize;
     DWORD NumQuarterBlocks = 0;
 
-    UnloadCart(Cart);   // first, make sure any previous carts have been unloaded
+    UnloadCart(Cart);   // First, make sure any previous carts have been unloaded
 
     Cart->iCurrentRamBankNo = 0;
     Cart->iCurrentRomBankNo = 1;
     Cart->bRamEnableState = 0;
     Cart->bMBC1RAMbanking = 0;
 
-    // Attempt to load the ROM file.
+    // Attempt to load the ROM file
     hTemp = CreateFile(RomFileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
     if (hTemp != INVALID_HANDLE_VALUE && (Cart->hRomFile = CreateFileMapping(hTemp, NULL, PAGE_READONLY, 0, 0, NULL) ) )
     {
-        // if the first case fails, the file doesn't exist. The second case can fail if the file size is zero.
+        // If the first case fails, the file doesn't exist. The second case can fail if the file size is zero.
         dwFilesize = GetFileSize(hTemp, NULL);
         CloseHandle(hTemp);
         Cart->RomData = (const unsigned char *)MapViewOfFile( Cart->hRomFile, FILE_MAP_READ, 0, 0, 0 );
@@ -107,26 +100,26 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
     {
         DebugWriteA("Couldn't load the ROM file, GetLastError returned %08x\n", GetLastError());
         if (hTemp != INVALID_HANDLE_VALUE)
-            CloseHandle(hTemp); // if file size was zero, make sure we don't leak the handle
+            CloseHandle(hTemp); // If file size was zero, make sure we don't leak the handle
 
         ErrorMessage(IDS_ERR_GBROM, 0, false);
         return false;
     }
 
-    if (dwFilesize < 0x8000) // a Rom file has to be at least 32kb
+    if (dwFilesize < 0x8000) // A ROM file has to be at least 32KB
     {
-        DebugWriteA("ROM file wasn't big enough to be a GB ROM!\n");
+        DebugWriteA("ROM file wasn't big enough to be a Game Boy ROM!\n");
         ErrorMessage(IDS_ERR_GBROM, 0, false);
 
         UnloadCart(Cart);
         return false;
     }
 
-    DebugWriteA(" Cartridge Type #:");
+    DebugWriteA(" cartridge type #:");
     DebugWriteByteA(Cart->RomData[0x147]);
     DebugWriteA("\n");
     switch (Cart->RomData[0x147])
-    { // if we hadn't checked the file size before, this might have caused an access violation
+    { // If we hadn't checked the file size before, this might have caused an access violation
     case 0x00:
         Cart->iCartType = GB_NORM;
         Cart->bHasRam = false;
@@ -291,12 +284,12 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
         break;
     default:
         WarningMessage( IDS_ERR_GBROM, MB_OK | MB_ICONWARNING);
-        DebugWriteA("TPak: unsupported paktype\n");
+        DebugWriteA("TPak: unsupported pak type\n");
         UnloadCart(Cart);
         return false;
     }
 
-    // assign read/write handlers
+    // Assign read/write handlers
     switch (Cart->iCartType)
     {
     case GB_NORM: // Raw cartridge
@@ -326,7 +319,7 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
     default: // Don't pretend we know how to handle carts we don't support
         Cart->ptrfnReadCart = NULL;
         Cart->ptrfnWriteCart = NULL;
-        DebugWriteA("Unsupported paktype: can't read/write cart type %02X\n", Cart->iCartType);
+        DebugWriteA("Unsupported pak type: can't read/write cart type %02X\n", Cart->iCartType);
         UnloadCart(Cart);
         return false;
     }
@@ -397,10 +390,10 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
         break;
     }
 
-    DebugWriteA("GB cart has %d ROM banks, %d RAM quarter banks\n", Cart->iNumRomBanks, NumQuarterBlocks);
+    DebugWriteA("Game Boy cart has %d ROM banks, %d RAM quarter banks\n", Cart->iNumRomBanks, NumQuarterBlocks);
     if (Cart->bHasTimer)
     {
-        DebugWriteA("GB cart timer present\n");
+        DebugWriteA("Game Boy cart timer present\n");
     }
 
     // Attempt to load the SRAM file, but only if RAM is supposed to be present.
@@ -411,7 +404,7 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
         {
             hTemp = CreateFile( RamFileName, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_ALWAYS, 0, NULL );
             if( hTemp == INVALID_HANDLE_VALUE )
-            {// test if Read-only access is possible
+            {// Test if read-only access is possible
                 hTemp = CreateFile( RamFileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_ALWAYS, 0, NULL );
                 if (Cart->bHasTimer && Cart->bHasBattery)
                 {
@@ -441,7 +434,7 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
                 }
             }
             else
-            { // file is OK, use a mapping
+            { // File is OK, use a mapping
                 if (Cart->bHasTimer && Cart->bHasBattery)
                     Cart->hRamFile = CreateFileMapping( hTemp, NULL, PAGE_READWRITE, 0, NumQuarterBlocks * 0x0800 + sizeof(gbCartRTC), NULL);
                 else
@@ -452,7 +445,7 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
                     Cart->RamData = (LPBYTE)MapViewOfFile( Cart->hRamFile, FILE_MAP_ALL_ACCESS, 0, 0, 0 );
                 }
                 else
-                { // could happen, if the file isn't big enough AND can't be grown to fit
+                { // Could happen, if the file isn't big enough and can't be grown to fit
                     DWORD dwBytesRead;
                     if (Cart->bHasTimer && Cart->bHasBattery)
                     {
@@ -482,7 +475,7 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
                 dwFilesize = GetFileSize(hTemp, 0);
                 if (dwFilesize >= (NumQuarterBlocks * 0x0800 + sizeof(gbCartRTC) ) )
                 {
-                    // Looks like there is extra data in the SAV file than just RAM data... assume it is RTC data.
+                    // Looks like there is extra data in the SAV file than just RAM data...assume it is RTC data
                     gbCartRTC RTCTimer;
                     CopyMemory( &RTCTimer, &Cart->RamData[NumQuarterBlocks * 0x0800], sizeof(RTCTimer) );
                     Cart->TimerData[0] = RTCTimer.mapperSeconds;
@@ -500,7 +493,7 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
                 }
                 else
                 {
-                    ReadTDF(Cart);  // try to open TDF format, clear/init Cart->TimerData if that fails
+                    ReadTDF(Cart);  // Try to open TDF format, clear/initialize Cart->TimerData if that fails
                 }
             }
 
@@ -508,7 +501,7 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
         }
         else
         {
-            // no battery; just allocate some RAM
+            // No battery; just allocate some RAM
             Cart->RamData = (LPBYTE)P_malloc(Cart->iNumRamBanks * 0x2000);
         }
     }
@@ -521,17 +514,17 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
 // Done
 bool ReadCartNorm(LPGBCART Cart, WORD dwAddress, BYTE *Data) // For all non-MBC carts; fixed 0x8000 ROM; fixed, optional 0x2000 RAM
 {
-    switch (dwAddress >> 13) // hack: examine highest 3 bits
+    switch (dwAddress >> 13) // Hack: examine highest 3 bits
     {
     case 0:
     case 1:
     case 2:
     case 3: //  if ((dwAddress >= 0) && (dwAddress <= 0x7FFF))
         CopyMemory(Data, &Cart->RomData[dwAddress], 32);
-        DebugWriteA("Nonbanked ROM read - RAW\n");
+        DebugWriteA("Non-banked ROM read - raw\n");
         break;
     case 5:
-        if (Cart->bHasRam)  // no MBC, so no enable state to check
+        if (Cart->bHasRam)  // No MBC, so no enable state to check
         {
             if (Cart->RomData[0x149] == 1 && (dwAddress - 0xA000) / 0x0800 ) // Only 1/4 of the RAM space is used, and we're out of bounds
             {
@@ -551,7 +544,7 @@ bool ReadCartNorm(LPGBCART Cart, WORD dwAddress, BYTE *Data) // For all non-MBC 
         }
         break;
     default:
-        DebugWriteA("Bad read from RAW cart, address %04X\n", dwAddress);
+        DebugWriteA("Bad read from raw cart, address %04X\n", dwAddress);
     }
 
     return true;
@@ -567,7 +560,7 @@ bool WriteCartNorm(LPGBCART Cart, WORD dwAddress, BYTE *Data)
     }
 
     if (Cart->RomData[0x149] == 1)
-    { // Whoops... Only 1/4 of the RAM space is used.
+    { // Whoops...Only 1/4 of the RAM space is used.
         if ((dwAddress >= 0xA000) && (dwAddress <= 0xA7FF))
         { // Write to RAM
             DebugWriteA("RAM write: Unbanked\n");
@@ -595,7 +588,7 @@ bool ReadCartMBC1(LPGBCART Cart, WORD dwAddress, BYTE *Data)
     if ((dwAddress >= 0) && (dwAddress <= 0x3FFF))
     {
         CopyMemory(Data, &Cart->RomData[dwAddress], 32);
-        DebugWriteA("Nonbanked ROM read - MBC1\n");
+        DebugWriteA("Non-banked ROM read - MBC1\n");
     }
     else if ((dwAddress >= 0x4000) && (dwAddress <= 0x7FFF))
     {
@@ -650,10 +643,10 @@ bool WriteCartMBC1(LPGBCART Cart, WORD dwAddress, BYTE *Data)
     }
     else if ((dwAddress >= 0x2000) && (dwAddress <= 0x3FFF)) // ROM bank select
     {
-        Cart->iCurrentRomBankNo &= 0x60;    // keep MSB
+        Cart->iCurrentRomBankNo &= 0x60;    // Keep MSB
         Cart->iCurrentRomBankNo |= Data[0] & 0x1F;
 
-        // emulate quirk: 0x00 -> 0x01, 0x20 -> 0x21, 0x40->0x41, 0x60 -> 0x61
+        // Emulate quirk: 0x00 -> 0x01, 0x20 -> 0x21, 0x40->0x41, 0x60 -> 0x61
         if ((Cart->iCurrentRomBankNo & 0x1F) == 0)
         {
             Cart->iCurrentRomBankNo |= 0x01;
@@ -670,28 +663,28 @@ bool WriteCartMBC1(LPGBCART Cart, WORD dwAddress, BYTE *Data)
         else
         {
             Cart->iCurrentRomBankNo &= 0x1F;
-            Cart->iCurrentRomBankNo |= ((Data[0] & 0x03) << 5); // set bits 5 and 6 of ROM bank
+            Cart->iCurrentRomBankNo |= ((Data[0] & 0x03) << 5); // Set bits 5 and 6 of ROM bank
             DebugWriteA("Set ROM Bank MSB, ROM bank now: %02X\n", Cart->iCurrentRomBankNo);
         }
     }
     else if ((dwAddress >= 0x6000) && (dwAddress <= 0x7FFF)) // MBC1 mode select
     {
-        // this is overly complicated, but it keeps us from having to do bitwise math later
+        // This is overly complicated, but it keeps us from having to do bitwise math later.
         // Basically we shuffle the 2 "magic bits" between iCurrentRomBankNo and iCurrentRamBankNo as necessary.
         if (Cart->bMBC1RAMbanking != (Data[0] & 0x01))
         {
-            // we should only alter the ROM and RAM bank numbers if we have changed modes
+            // We should only alter the ROM and RAM bank numbers if we have changed modes
             Cart->bMBC1RAMbanking = Data[0] & 0x01;
             if (Cart->bMBC1RAMbanking)
             {
-                Cart->iCurrentRamBankNo = Cart->iCurrentRomBankNo >> 5; // set the ram bank to the "magic bits"
-                Cart->iCurrentRomBankNo &= 0x1F; // zero out bits 5 and 6 to keep consistency
+                Cart->iCurrentRamBankNo = Cart->iCurrentRomBankNo >> 5; // Set the ram bank to the "magic bits"
+                Cart->iCurrentRomBankNo &= 0x1F; // Zero out bits 5 and 6 to keep consistency
             }
             else
             {
                 Cart->iCurrentRomBankNo &= 0x1F;
                 Cart->iCurrentRomBankNo |= (Cart->iCurrentRamBankNo << 5);
-                Cart->iCurrentRamBankNo = 0x00; // we can only reach RAM page 0
+                Cart->iCurrentRamBankNo = 0x00; // We can only reach RAM page 0
             }
             DebugWriteA("Set MBC1 mode: %s\n", Cart->bMBC1RAMbanking ? "ROMbanking" : "RAMbanking");
         }
@@ -726,7 +719,7 @@ bool ReadCartMBC2(LPGBCART Cart, WORD dwAddress, BYTE *Data)
     if ((dwAddress <= 0x3FFF))
     {
         CopyMemory(Data, &Cart->RomData[dwAddress], 32);
-        DebugWriteA("Nonbanked ROM read - MBC2\n");
+        DebugWriteA("Non-banked ROM read - MBC2\n");
     }
     else if ((dwAddress >= 0x4000) && (dwAddress <= 0x7FFF))
     {
@@ -809,9 +802,9 @@ bool ReadCartMBC3(LPGBCART Cart, WORD dwAddress, BYTE *Data)
     if ((dwAddress < 0x4000)) //Rom Bank 0
     {
         CopyMemory(Data, &Cart->RomData[dwAddress], 32);
-        DebugWriteA("Nonbanked ROM read - MBC3\n");
+        DebugWriteA("Non-banked ROM read - MBC3\n");
     }
-    else if ((dwAddress >= 0x4000) && (dwAddress < 0x8000)) //Switchable Rom Bank
+    else if ((dwAddress >= 0x4000) && (dwAddress < 0x8000)) // Switchable ROM bank
     {
         if (Cart->iCurrentRomBankNo >= Cart->iNumRomBanks)
         {
@@ -824,11 +817,11 @@ bool ReadCartMBC3(LPGBCART Cart, WORD dwAddress, BYTE *Data)
             DebugWriteA("Banked ROM read: Bank %02X\n", Cart->iCurrentRomBankNo);
         }
     }
-    else if ((dwAddress >= 0xA000) && (dwAddress <= 0xC000)) //Upper Bounds of memory map
+    else if ((dwAddress >= 0xA000) && (dwAddress <= 0xC000)) // Upper Bounds of memory map
     {
         if (Cart->bHasTimer && (Cart->iCurrentRamBankNo >= 0x08 && Cart->iCurrentRamBankNo <= 0x0c))
         {
-            // w00t! the Timer was just read!!
+            // The timer was just read!
             if (Cart->TimerDataLatched)
             {
                 for (int i = 0; i < 32; i++)
@@ -890,9 +883,9 @@ bool WriteCartMBC3(LPGBCART Cart, WORD dwAddress, BYTE *Data)
         if (Cart->iCurrentRomBankNo == 0) {
             Cart->iCurrentRomBankNo = 1;
         }
-        DebugWriteA("Set Rom Bank: %02X\n", Cart->iCurrentRomBankNo);
+        DebugWriteA("Set ROM Bank: %02X\n", Cart->iCurrentRomBankNo);
     }
-    else if ((dwAddress >= 0x4000) && (dwAddress <= 0x5FFF)) // RAM/Clock bank select
+    else if ((dwAddress >= 0x4000) && (dwAddress <= 0x5FFF)) // RAM/clock bank select
     {
         if (Cart->bHasRam)
         {
@@ -915,12 +908,12 @@ bool WriteCartMBC3(LPGBCART Cart, WORD dwAddress, BYTE *Data)
             for (i = 0; i < 4; i++)
                 Cart->LatchedTimerData[i] = Cart->TimerData[i];
             Cart->TimerDataLatched = true;
-            DebugWriteA("Timer Data Latch: Enable\n");
+            DebugWriteA("Timer data latch: Enable\n");
         }
         else
         {
             Cart->TimerDataLatched = false;
-            DebugWriteA("Timer Data Latch: Disable\n");
+            DebugWriteA("Timer data latch: Disable\n");
         }
     }
     else if ((dwAddress >= 0xA000) && (dwAddress <= 0xBFFF)) // Write to RAM
@@ -954,9 +947,9 @@ bool ReadCartMBC5(LPGBCART Cart, WORD dwAddress, BYTE *Data)
     if ((dwAddress < 0x4000)) //Rom Bank 0
     {
         CopyMemory(Data, &Cart->RomData[dwAddress], 32);
-        DebugWriteA("Nonbanked ROM read - MBC5\n");
+        DebugWriteA("Non-banked ROM read - MBC5\n");
     }
-    else if ((dwAddress >= 0x4000) && (dwAddress < 0x8000)) //Switchable ROM BANK
+    else if ((dwAddress >= 0x4000) && (dwAddress < 0x8000)) // Switchable ROM bank
     {
         if (Cart->iCurrentRomBankNo >= Cart->iNumRomBanks)
         {
@@ -972,7 +965,7 @@ bool ReadCartMBC5(LPGBCART Cart, WORD dwAddress, BYTE *Data)
             DebugWriteA("\n");
         }
     }
-    else if ((dwAddress >= 0xA000) && (dwAddress <= 0xC000)) //Upper bounds of memory map
+    else if ((dwAddress >= 0xA000) && (dwAddress <= 0xC000)) // Upper bounds of memory map
     {
         if (Cart->bHasRam)
         {
@@ -1059,12 +1052,12 @@ bool WriteCartMBC5(LPGBCART Cart, WORD dwAddress, BYTE *Data)
 // Done
 bool ReadCartCamera(LPGBCART Cart, WORD dwAddress, BYTE *Data)
 {
-    if ((dwAddress < 0x4000)) //Rom Bank 0
+    if ((dwAddress < 0x4000)) // ROM bank 0
     {
         CopyMemory(Data, &Cart->RomData[dwAddress], 32);
-        DebugWriteA("Nonbanked ROM read - CAMERA\n");
+        DebugWriteA("Non-banked ROM read - CAMERA\n");
     }
-    else if ((dwAddress >= 0x4000) && (dwAddress < 0x8000)) //Switchable ROM BANK
+    else if ((dwAddress >= 0x4000) && (dwAddress < 0x8000)) // Switchable ROM bank
     {
         if (Cart->iCurrentRomBankNo >= Cart->iNumRomBanks)
         {
@@ -1080,17 +1073,17 @@ bool ReadCartCamera(LPGBCART Cart, WORD dwAddress, BYTE *Data)
             DebugWriteA("\n");
         }
     }
-    else if ((dwAddress >= 0xA000) && (dwAddress <= 0xC000)) //Upper bounds of memory map
+    else if ((dwAddress >= 0xA000) && (dwAddress <= 0xC000)) // Upper bounds of memory map
     {
         if (Cart->iCurrentRamBankNo & 0x10)
         {
-            //REGISTER MODE
+            // Register mode
             ZeroMemory(Data, 32);
             DebugWriteA("REGISTER read (Camera): All Zero\n", Cart->iCurrentRamBankNo);
         }
         else
         {
-            //RAM MODE
+            // RAM mode
             if (Cart->bHasRam)
             {
                 if (Cart->iCurrentRamBankNo >= Cart->iNumRamBanks)
@@ -1113,13 +1106,13 @@ bool ReadCartCamera(LPGBCART Cart, WORD dwAddress, BYTE *Data)
     }
     else
     {
-        DebugWriteA("Bad read from GBCamera cart, address %04X\n", dwAddress);
+        DebugWriteA("Bad read from Game Boy Camera cart, address %04X\n", dwAddress);
     }
 
     return true;
 }
 
-//Done
+// Done
 bool WriteCartCamera(LPGBCART Cart, WORD dwAddress, BYTE *Data)
 {
     if ((dwAddress >= 0x0000) && (dwAddress <= 0x1FFF)) // We shouldn't be able to read/write to RAM unless this is toggled on
@@ -1134,17 +1127,17 @@ bool WriteCartCamera(LPGBCART Cart, WORD dwAddress, BYTE *Data)
         // Cart->iCurrentRomBankNo = ((int) Data[0]) | (Cart->iCurrentRomBankNo & 0x100);
         DebugWriteA("Set ROM Bank: %02X\n", Cart->iCurrentRomBankNo);
     }
-    else if ((dwAddress >= 0x4000) && (dwAddress <= 0x4FFF)) // Camera Register & RAM bank select
+    else if ((dwAddress >= 0x4000) && (dwAddress <= 0x4FFF)) // Camera register and RAM bank select
     {
         if (Data[0] & 0x10)
         {
-            //REGISTER MODE
+            // Register mode
             Cart->iCurrentRamBankNo = Data[0];
             DebugWriteA("Set Register Bank (Camera): %02X\n", Cart->iCurrentRamBankNo);
         }
         else
         {
-            //RAM MODE
+            // RAM mode
             if (Cart->bHasRam)
             {
                 Cart->iCurrentRamBankNo = Data[0] & 0x0F;
@@ -1156,12 +1149,12 @@ bool WriteCartCamera(LPGBCART Cart, WORD dwAddress, BYTE *Data)
     {
         if (Cart->iCurrentRamBankNo & 0x10)
         {
-            //REGISTER MODE (DO NOTHING)
+            // Register mode (do nothing)
             DebugWriteA("REGISTER write (Camera): Do nothing\n");
         }
         else
         {
-            //RAM MODE
+            // RAM mode
             if (Cart->bHasRam)
             {
                 if (Cart->iCurrentRamBankNo >= Cart->iNumRamBanks)
@@ -1180,7 +1173,7 @@ bool WriteCartCamera(LPGBCART Cart, WORD dwAddress, BYTE *Data)
     }
     else
     {
-        DebugWriteA("Bad write to GBCamera cart, address %04X\n", dwAddress);
+        DebugWriteA("Bad write to Game Boy Camera cart, address %04X\n", dwAddress);
     }
 
     return true;
@@ -1211,9 +1204,9 @@ bool SaveCart(LPGBCART Cart, LPTSTR SaveFile, LPTSTR TimeFile)
         FlushViewOfFile( Cart->RamData, NumQuarterBlocks * 0x0800 );
         if (Cart->bHasTimer)
         {
-            // Save RTC in VisualBoy Advance format
-            // TODO: Check if VBA saves are compatible with other emus.
-            // TODO: Only write RTC data if VBA RTC data was originaly present
+            // Save RTC in Visual Boy Advance format
+            // TODO: Check if VBA saves are compatible with other emus
+            // TODO: Only write RTC data if VBA RTC data was originally present
             RTCTimer.mapperSeconds = Cart->TimerData[0];
             RTCTimer.mapperMinutes = Cart->TimerData[1];
             RTCTimer.mapperHours = Cart->TimerData[2];

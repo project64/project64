@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2007 Hiroshi Morii
 // Copyright(C) 2004 Daniel Borca
@@ -12,15 +12,14 @@
 #include "internal.h"
 #include "fxt1.h"
 
-/***************************************************************************\
- * FXT1 encoder
- *
- * The encoder was built by reversing the decoder,
- * and is vaguely based on Texus2 by 3dfx. Note that this code
- * is merely a proof of concept, since it is highly UNoptimized;
- * moreover, it is sub-optimal due to initial conditions passed
- * to Lloyd's algorithm (the interpolation modes are even worse).
-\***************************************************************************/
+/*
+FXT1 encoder
+The encoder was built by reversing the decoder,
+and is vaguely based on Texus2 by 3DFX. Note that this code
+is merely a proof of concept, since it is highly unoptimized;
+Moreover, it is sub-optimal due to initial conditions passed
+to Lloyd's algorithm (the interpolation modes are even worse).
+*/
 
 #define MAX_COMP 4 /* ever needed maximum number of components in texel */
 #define MAX_VECT 4 /* ever needed maximum number of base vectors to find */
@@ -37,7 +36,7 @@ fxt1_bestcol(float vec[][MAX_COMP], int nv,
     byte input[MAX_COMP], int nc)
 {
     int i, j, best = -1;
-    float err = 1e9; /* big enough */
+    float err = 1e9; // Big enough
 
     for (j = 0; j < nv; j++) {
         float e = 0.0F;
@@ -58,7 +57,7 @@ fxt1_worst(float vec[MAX_COMP],
     byte input[N_TEXELS][MAX_COMP], int nc, int n)
 {
     int i, k, worst = -1;
-    float err = -1.0F; /* small enough */
+    float err = -1.0F; // Small enough
 
     for (k = 0; k < n; k++) {
         float e = 0.0F;
@@ -80,7 +79,7 @@ fxt1_variance(double variance[MAX_COMP],
 {
     int i, k, best = 0;
     dword sx, sx2;
-    double var, maxvar = -1; /* small enough */
+    double var, maxvar = -1; // Small enough
     double teenth = 1.0 / n;
 
     for (i = 0; i < nc; i++) {
@@ -108,8 +107,7 @@ fxt1_choose(float vec[][MAX_COMP], int nv,
     byte input[N_TEXELS][MAX_COMP], int nc, int n)
 {
 #if 0
-    /* Choose colors from a grid.
-     */
+    // Choose colors from a grid
     int i, j;
 
     for (j = 0; j < nv; j++) {
@@ -119,19 +117,20 @@ fxt1_choose(float vec[][MAX_COMP], int nv,
         }
     }
 #else
-    /* Our solution here is to find the darkest and brightest colors in
-     * the 8x4 tile and use those as the two representative colors.
-     * There are probably better algorithms to use (histogram-based).
-     */
+	/*
+	Our solution here is to find the darkest and brightest colors in
+    the 8x4 tile and use those as the two representative colors.
+    There are probably better algorithms to use (histogram-based).
+    */
     int i, j, k;
 #ifndef YUV
-    int minSum = 2000; /* big enough */
+    int minSum = 2000; // Big enough
 #else
     int minSum = 2000000;
 #endif
-    int maxSum = -1; /* small enough */
-    int minCol = 0; /* phoudoin: silent compiler! */
-    int maxCol = 0; /* phoudoin: silent compiler! */
+    int maxSum = -1; // Small enough
+    int minCol = 0; // phoudoin: Silent compiler!
+    int maxCol = 0; // phoudoin: Silent compiler!
 
     struct {
         int flag;
@@ -163,7 +162,7 @@ fxt1_choose(float vec[][MAX_COMP], int nv,
         }
         for (l = 0; l < n; l++) {
             if (!hist[l].flag) {
-                /* alloc new slot */
+                // Allocate new slot
                 hist[l].flag = !0;
                 hist[l].key = key;
                 hist[l].freq = 1;
@@ -214,35 +213,36 @@ static int
 fxt1_lloyd(float vec[][MAX_COMP], int nv,
     byte input[N_TEXELS][MAX_COMP], int nc, int n)
 {
-    /* Use the generalized lloyd's algorithm for VQ:
-     *     find 4 color vectors.
-     *
-     *     for each sample color
-     *         sort to nearest vector.
-     *
-     *     replace each vector with the centroid of it's matching colors.
-     *
-     *     repeat until RMS doesn't improve.
-     *
-     *     if a color vector has no samples, or becomes the same as another
-     *     vector, replace it with the color which is farthest from a sample.
-     *
-     * vec[][MAX_COMP]           initial vectors and resulting colors
-     * nv                        number of resulting colors required
-     * input[N_TEXELS][MAX_COMP] input texels
-     * nc                        number of components in input / vec
-     * n                         number of input samples
-     */
+    /*
+	Use the generalized Lloyd's algorithm for VQ:
+    find 4 color vectors.
+    
+    For each sample color,
+    sort to nearest vector.
+    
+    Replace each vector with the centroid of it's matching colors.
+    
+    Repeat until RMS doesn't improve.
+    
+    If a color vector has no samples, or becomes the same as another
+    vector, replace it with the color which is farthest from a sample.
+    
+    vec[][MAX_COMP]           Initial vectors and resulting colors
+    nv                        Number of resulting colors required
+    input[N_TEXELS][MAX_COMP] Input texels
+    nc                        Number of components in input / vec
+    n                         Number of input samples
+    */
 
-    int sum[MAX_VECT][MAX_COMP]; /* used to accumulate closest texels */
-    int cnt[MAX_VECT]; /* how many times a certain vector was chosen */
+    int sum[MAX_VECT][MAX_COMP]; // Used to accumulate closest texels
+    int cnt[MAX_VECT]; // How many times a certain vector was chosen
     float error, lasterror = 1e9;
 
     int i, j, k, rep;
 
-    /* the quantizer */
+    // The quantizer
     for (rep = 0; rep < LL_N_REP; rep++) {
-        /* reset sums & counters */
+        // Reset sums and counters
         for (j = 0; j < nv; j++) {
             for (i = 0; i < nc; i++) {
                 sum[j][i] = 0;
@@ -251,12 +251,12 @@ fxt1_lloyd(float vec[][MAX_COMP], int nv,
         }
         error = 0;
 
-        /* scan whole block */
+        // Scan whole block
         for (k = 0; k < n; k++) {
 #if 1
             int best = -1;
-            float err = 1e9; /* big enough */
-            /* determine best vector */
+            float err = 1e9; // Big enough
+            // Determine best vector
             for (j = 0; j < nv; j++) {
                 float e = (vec[j][0] - input[k][0]) * (vec[j][0] - input[k][0]) +
                     (vec[j][1] - input[k][1]) * (vec[j][1] - input[k][1]) +
@@ -272,24 +272,24 @@ fxt1_lloyd(float vec[][MAX_COMP], int nv,
 #else
             int best = fxt1_bestcol(vec, nv, input[k], nc, &err);
 #endif
-            /* add in closest color */
+            // Add in closest color
             for (i = 0; i < nc; i++) {
                 sum[best][i] += input[k][i];
             }
-            /* mark this vector as used */
+            // Mark this vector as used
             cnt[best]++;
-            /* accumulate error */
+            // Accumulate error
             error += err;
         }
 
-        /* check RMS */
+        // Check RMS
         if ((error < LL_RMS_E) ||
             ((error < lasterror) && ((lasterror - error) < LL_RMS_D))) {
-            return !0; /* good match */
+            return !0; // Good match
         }
         lasterror = error;
 
-        /* move each vector to the barycenter of its closest colors */
+        // Move each vector to the barycenter of its closest colors
         for (j = 0; j < nv; j++) {
             if (cnt[j]) {
                 float div = 1.0F / cnt[j];
@@ -298,7 +298,7 @@ fxt1_lloyd(float vec[][MAX_COMP], int nv,
                 }
             }
             else {
-                /* this vec has no samples or is identical with a previous vec */
+                // This vector has no samples or is identical with a previous vector
                 int worst = fxt1_worst(vec[j], input, nc, n);
                 for (i = 0; i < nc; i++) {
                     vec[j][i] = input[worst][i];
@@ -307,28 +307,28 @@ fxt1_lloyd(float vec[][MAX_COMP], int nv,
         }
     }
 
-    return 0; /* could not converge fast enough */
+    return 0; // Could not converge fast enough
 }
 
 static void
 fxt1_quantize_CHROMA(dword *cc,
     byte input[N_TEXELS][MAX_COMP])
 {
-    const int n_vect = 4; /* 4 base vectors to find */
-    const int n_comp = 3; /* 3 components: R, G, B */
+    const int n_vect = 4; // 4 base vectors to find
+    const int n_comp = 3; // 3 components: R, G, B
     float vec[MAX_VECT][MAX_COMP];
     int i, j, k;
-    qword hi; /* high quadword */
-    dword lohi, lolo; /* low quadword: hi dword, lo dword */
+    qword hi; // High quadword
+    dword lohi, lolo; // Low quadword: hi DWORD, lo DWORD
 
     if (fxt1_choose(vec, n_vect, input, n_comp, N_TEXELS) != 0) {
         fxt1_lloyd(vec, n_vect, input, n_comp, N_TEXELS);
     }
 
-    Q_MOV32(hi, 4); /* cc-chroma = "010" + unused bit */
+    Q_MOV32(hi, 4); // cc-chroma = "010" + unused bit
     for (j = n_vect - 1; j >= 0; j--) {
         for (i = 0; i < n_comp; i++) {
-            /* add in colors */
+            // Add in colors
             Q_SHL(hi, 5);
             Q_OR32(hi, (dword)(vec[j][i] / 8.0F));
         }
@@ -336,12 +336,12 @@ fxt1_quantize_CHROMA(dword *cc,
     ((qword *)cc)[1] = hi;
 
     lohi = lolo = 0;
-    /* right microtile */
+    // Right microtile
     for (k = N_TEXELS - 1; k >= N_TEXELS / 2; k--) {
         lohi <<= 2;
         lohi |= fxt1_bestcol(vec, n_vect, input[k], n_comp);
     }
-    /* left microtile */
+    // Left microtile
     for (; k >= 0; k--) {
         lolo <<= 2;
         lolo |= fxt1_bestcol(vec, n_vect, input[k], n_comp);
@@ -355,32 +355,32 @@ fxt1_quantize_ALPHA0(dword *cc,
     byte input[N_TEXELS][MAX_COMP],
     byte reord[N_TEXELS][MAX_COMP], int n)
 {
-    const int n_vect = 3; /* 3 base vectors to find */
-    const int n_comp = 4; /* 4 components: R, G, B, A */
+    const int n_vect = 3; // 3 base vectors to find
+    const int n_comp = 4; // 4 components: R, G, B, A
     float vec[MAX_VECT][MAX_COMP];
     int i, j, k;
-    qword hi; /* high quadword */
-    dword lohi, lolo; /* low quadword: hi dword, lo dword */
+    qword hi; // High quadword
+    dword lohi, lolo; // Low quadword: hi DWORD, lo DWORD
 
-    /* the last vector indicates zero */
+    // The last vector indicates zero
     for (i = 0; i < n_comp; i++) {
         vec[n_vect][i] = 0;
     }
 
-    /* the first n texels in reord are guaranteed to be non-zero */
+    // The first N texels in reord are guaranteed to be non-zero
     if (fxt1_choose(vec, n_vect, reord, n_comp, n) != 0) {
         fxt1_lloyd(vec, n_vect, reord, n_comp, n);
     }
 
-    Q_MOV32(hi, 6); /* alpha = "011" + lerp = 0 */
+    Q_MOV32(hi, 6); // Alpha = "011" + lerp = 0
     for (j = n_vect - 1; j >= 0; j--) {
-        /* add in alphas */
+        // Add in alphas
         Q_SHL(hi, 5);
         Q_OR32(hi, (dword)(vec[j][ACOMP] / 8.0F));
     }
     for (j = n_vect - 1; j >= 0; j--) {
         for (i = 0; i < n_comp - 1; i++) {
-            /* add in colors */
+            // Add in colors
             Q_SHL(hi, 5);
             Q_OR32(hi, (dword)(vec[j][i] / 8.0F));
         }
@@ -388,12 +388,12 @@ fxt1_quantize_ALPHA0(dword *cc,
     ((qword *)cc)[1] = hi;
 
     lohi = lolo = 0;
-    /* right microtile */
+    // Right microtile
     for (k = N_TEXELS - 1; k >= N_TEXELS / 2; k--) {
         lohi <<= 2;
         lohi |= fxt1_bestcol(vec, n_vect + 1, input[k], n_comp);
     }
-    /* left microtile */
+    // Left microtile
     for (; k >= 0; k--) {
         lolo <<= 2;
         lolo |= fxt1_bestcol(vec, n_vect + 1, input[k], n_comp);
@@ -406,13 +406,13 @@ static void
 fxt1_quantize_ALPHA1(dword *cc,
     byte input[N_TEXELS][MAX_COMP])
 {
-    const int n_vect = 3; /* highest vector number in each microtile */
-    const int n_comp = 4; /* 4 components: R, G, B, A */
-    float vec[1 + 1 + 1][MAX_COMP]; /* 1.5 extrema for each sub-block */
-    float b, iv[MAX_COMP]; /* interpolation vector */
+    const int n_vect = 3; // Highest vector number in each microtile
+    const int n_comp = 4; // 4 components: R, G, B, A
+    float vec[1 + 1 + 1][MAX_COMP]; // 1.5 extrema for each sub-block
+    float b, iv[MAX_COMP]; // Interpolation vector
     int i, j, k;
-    qword hi; /* high quadword */
-    dword lohi, lolo; /* low quadword: hi dword, lo dword */
+    qword hi; // High quadword
+    dword lohi, lolo; // Low quadword: hi DWORD, lo DWORD
 
     int minSum;
     int maxSum;
@@ -420,16 +420,18 @@ fxt1_quantize_ALPHA1(dword *cc,
     int minColR = 0, maxColR = 0;
     int sumL = 0, sumR = 0;
 
-    /* Our solution here is to find the darkest and brightest colors in
-     * the 4x4 tile and use those as the two representative colors.
-     * There are probably better algorithms to use (histogram-based).
-     */
+    /*
+	TODO: Our solution here is to find the darkest and brightest colors in
+    the 4x4 tile and use those as the two representative colors.
+    There are probably better algorithms to use (histogram-based).
+    */
+	
 #ifndef YUV
-    minSum = 2000; /* big enough */
+    minSum = 2000; // Big enough
 #else
     minSum = 2000000;
 #endif
-    maxSum = -1; /* small enough */
+    maxSum = -1; // Small enough
     for (k = 0; k < N_TEXELS / 2; k++) {
         int sum = 0;
 #ifndef YUV
@@ -450,11 +452,11 @@ fxt1_quantize_ALPHA1(dword *cc,
         sumL += sum;
     }
 #ifndef YUV
-    minSum = 2000; /* big enough */
+    minSum = 2000; // Big enough
 #else
     minSum = 2000000;
 #endif
-    maxSum = -1; /* small enough */
+    maxSum = -1; // Small enough
     for (; k < N_TEXELS; k++) {
         int sum = 0;
 #ifndef YUV
@@ -475,12 +477,12 @@ fxt1_quantize_ALPHA1(dword *cc,
         sumR += sum;
     }
 
-    /* choose the common vector (yuck!) */
+    // Choose the common vector
     {
         int j1, j2;
         int v1 = 0, v2 = 0;
-        float err = 1e9; /* big enough */
-        float tv[2 * 2][MAX_COMP]; /* 2 extrema for each sub-block */
+        float err = 1e9; // Big enough
+        float tv[2 * 2][MAX_COMP]; // 2 extrema for each sub-block
         for (i = 0; i < n_comp; i++) {
             tv[0][i] = input[minColL][i];
             tv[1][i] = input[maxColL][i];
@@ -507,19 +509,19 @@ fxt1_quantize_ALPHA1(dword *cc,
         }
     }
 
-    /* left microtile */
+    // Left microtile
     cc[0] = 0;
     if (minColL != maxColL) {
-        /* compute interpolation vector */
+        // Compute interpolation vector
         MAKEIVEC(n_vect, n_comp, iv, b, vec[0], vec[1]);
 
-        /* add in texels */
+        // Add in texels
         lolo = 0;
         for (k = N_TEXELS / 2 - 1; k >= 0; k--) {
             int texel;
-            /* interpolate color */
+            // Interpolate color
             CALCCDOT(texel, n_vect, n_comp, iv, b, input[k]);
-            /* add in texel */
+            // Add in texel
             lolo <<= 2;
             lolo |= texel;
         }
@@ -527,19 +529,19 @@ fxt1_quantize_ALPHA1(dword *cc,
         cc[0] = lolo;
     }
 
-    /* right microtile */
+    // Right microtile
     cc[1] = 0;
     if (minColR != maxColR) {
-        /* compute interpolation vector */
+        // Compute interpolation vector
         MAKEIVEC(n_vect, n_comp, iv, b, vec[2], vec[1]);
 
-        /* add in texels */
+        // Add in texels
         lohi = 0;
         for (k = N_TEXELS - 1; k >= N_TEXELS / 2; k--) {
             int texel;
-            /* interpolate color */
+            // Interpolate color
             CALCCDOT(texel, n_vect, n_comp, iv, b, input[k]);
-            /* add in texel */
+            // Add in texel
             lohi <<= 2;
             lohi |= texel;
         }
@@ -547,15 +549,15 @@ fxt1_quantize_ALPHA1(dword *cc,
         cc[1] = lohi;
     }
 
-    Q_MOV32(hi, 7); /* alpha = "011" + lerp = 1 */
+    Q_MOV32(hi, 7); // Alpha = "011" + lerp = 1
     for (j = n_vect - 1; j >= 0; j--) {
-        /* add in alphas */
+        // Add in alphas
         Q_SHL(hi, 5);
         Q_OR32(hi, (dword)(vec[j][ACOMP] / 8.0F));
     }
     for (j = n_vect - 1; j >= 0; j--) {
         for (i = 0; i < n_comp - 1; i++) {
-            /* add in colors */
+            // Add in colors
             Q_SHL(hi, 5);
             Q_OR32(hi, (dword)(vec[j][i] / 8.0F));
         }
@@ -568,26 +570,28 @@ fxt1_quantize_HI(dword *cc,
     byte input[N_TEXELS][MAX_COMP],
     byte reord[N_TEXELS][MAX_COMP], int n)
 {
-    const int n_vect = 6; /* highest vector number */
-    const int n_comp = 3; /* 3 components: R, G, B */
-    float b = 0.0F;       /* phoudoin: silent compiler! */
-    float iv[MAX_COMP];   /* interpolation vector */
+    const int n_vect = 6; // Highest vector number
+    const int n_comp = 3; // 3 components: R, G, B
+    float b = 0.0F;       // phoudoin: Silent compiler!
+    float iv[MAX_COMP];   // Interpolation vector
     int i, k;
-    dword hihi; /* high quadword: hi dword */
+    dword hihi; // High quadword: hi DWORD
 
 #ifndef YUV
-    int minSum = 2000; /* big enough */
+    int minSum = 2000; // Big enough
 #else
     int minSum = 2000000;
 #endif
-    int maxSum = -1; /* small enough */
-    int minCol = 0; /* phoudoin: silent compiler! */
-    int maxCol = 0; /* phoudoin: silent compiler! */
+    int maxSum = -1; // Small enough
+    int minCol = 0; // phoudoin: Silent compiler!
+    int maxCol = 0; // phoudoin: Silent compiler!
 
-    /* Our solution here is to find the darkest and brightest colors in
-     * the 8x4 tile and use those as the two representative colors.
-     * There are probably better algorithms to use (histogram-based).
-     */
+    /*
+	Our solution here is to find the darkest and brightest colors in
+    the 8x4 tile and use those as the two representative colors.
+    There are probably better algorithms to use (histogram-based).
+    */
+	
     for (k = 0; k < n; k++) {
         int sum = 0;
 #ifndef YUV
@@ -607,41 +611,41 @@ fxt1_quantize_HI(dword *cc,
         }
     }
 
-    hihi = 0; /* cc-hi = "00" */
+    hihi = 0; // cc-hi = "00"
     for (i = 0; i < n_comp; i++) {
-        /* add in colors */
+        // Add in colors
         hihi <<= 5;
         hihi |= reord[maxCol][i] >> 3;
     }
     for (i = 0; i < n_comp; i++) {
-        /* add in colors */
+        // Add in colors
         hihi <<= 5;
         hihi |= reord[minCol][i] >> 3;
     }
     cc[3] = hihi;
     cc[0] = cc[1] = cc[2] = 0;
 
-    /* compute interpolation vector */
+    // Compute interpolation vector
     if (minCol != maxCol) {
         MAKEIVEC(n_vect, n_comp, iv, b, reord[minCol], reord[maxCol]);
     }
 
-    /* add in texels */
+    // Add in texels
     for (k = N_TEXELS - 1; k >= 0; k--) {
         int t = k * 3;
         dword *kk = (dword *)((byte *)cc + t / 8);
-        int texel = n_vect + 1; /* transparent black */
+        int texel = n_vect + 1; // Transparent black
 
         if (!ISTBLACK(input[k])) {
             if (minCol != maxCol) {
-                /* interpolate color */
+                // Interpolate color
                 CALCCDOT(texel, n_vect, n_comp, iv, b, input[k]);
-                /* add in texel */
+                // Add in texel
                 kk[0] |= texel << (t & 7);
             }
         }
         else {
-            /* add in texel */
+            // Add in texel
             kk[0] |= texel << (t & 7);
         }
     }
@@ -651,29 +655,31 @@ static void
 fxt1_quantize_MIXED1(dword *cc,
     byte input[N_TEXELS][MAX_COMP])
 {
-    const int n_vect = 2; /* highest vector number in each microtile */
-    const int n_comp = 3; /* 3 components: R, G, B */
-    byte vec[2 * 2][MAX_COMP]; /* 2 extrema for each sub-block */
-    float b, iv[MAX_COMP]; /* interpolation vector */
+    const int n_vect = 2; // Highest vector number in each microtile
+    const int n_comp = 3; // 3 components: R, G, B
+    byte vec[2 * 2][MAX_COMP]; // 2 extrema for each sub-block
+    float b, iv[MAX_COMP]; // Interpolation vector
     int i, j, k;
-    qword hi; /* high quadword */
-    dword lohi, lolo; /* low quadword: hi dword, lo dword */
+    qword hi; // High quadword
+    dword lohi, lolo; // Low quadword: hi DWORD, lo DWORD
 
     int minSum;
     int maxSum;
     int minColL = 0, maxColL = -1;
     int minColR = 0, maxColR = -1;
 
-    /* Our solution here is to find the darkest and brightest colors in
-     * the 4x4 tile and use those as the two representative colors.
-     * There are probably better algorithms to use (histogram-based).
-     */
+    /*
+	Our solution here is to find the darkest and brightest colors in
+    the 4x4 tile and use those as the two representative colors.
+    There are probably better algorithms to use (histogram-based).
+    */
+	
 #ifndef YUV
-    minSum = 2000; /* big enough */
+    minSum = 2000; // Big enough
 #else
     minSum = 2000000;
 #endif
-    maxSum = -1; /* small enough */
+    maxSum = -1; // Small enough
     for (k = 0; k < N_TEXELS / 2; k++) {
         if (!ISTBLACK(input[k])) {
             int sum = 0;
@@ -695,11 +701,11 @@ fxt1_quantize_MIXED1(dword *cc,
         }
     }
 #ifndef YUV
-    minSum = 2000; /* big enough */
+    minSum = 2000; // Big enough
 #else
     minSum = 2000000;
 #endif
-    maxSum = -1; /* small enough */
+    maxSum = -1; // Small enough
     for (; k < N_TEXELS; k++) {
         if (!ISTBLACK(input[k])) {
             int sum = 0;
@@ -721,9 +727,9 @@ fxt1_quantize_MIXED1(dword *cc,
         }
     }
 
-    /* left microtile */
+    // Left microtile
     if (maxColL == -1) {
-        /* all transparent black */
+        // All transparent black
         cc[0] = 0xFFFFFFFFUL;
         for (i = 0; i < n_comp; i++) {
             vec[0][i] = 0;
@@ -737,18 +743,18 @@ fxt1_quantize_MIXED1(dword *cc,
             vec[1][i] = input[maxColL][i];
         }
         if (minColL != maxColL) {
-            /* compute interpolation vector */
+            // Compute interpolation vector
             MAKEIVEC(n_vect, n_comp, iv, b, vec[0], vec[1]);
 
-            /* add in texels */
+            // Add in texels
             lolo = 0;
             for (k = N_TEXELS / 2 - 1; k >= 0; k--) {
-                int texel = n_vect + 1;	/* transparent black */
+                int texel = n_vect + 1;	// Transparent black
                 if (!ISTBLACK(input[k])) {
-                    /* interpolate color */
+                    // Interpolate color
                     CALCCDOT(texel, n_vect, n_comp, iv, b, input[k]);
                 }
-                /* add in texel */
+                // Add in texel
                 lolo <<= 2;
                 lolo |= texel;
             }
@@ -756,9 +762,9 @@ fxt1_quantize_MIXED1(dword *cc,
         }
     }
 
-    /* right microtile */
+    // Right microtile
     if (maxColR == -1) {
-        /* all transparent black */
+        // All transparent black
         cc[1] = 0xFFFFFFFFUL;
         for (i = 0; i < n_comp; i++) {
             vec[2][i] = 0;
@@ -772,18 +778,18 @@ fxt1_quantize_MIXED1(dword *cc,
             vec[3][i] = input[maxColR][i];
         }
         if (minColR != maxColR) {
-            /* compute interpolation vector */
+            // Compute interpolation vector
             MAKEIVEC(n_vect, n_comp, iv, b, vec[2], vec[3]);
 
-            /* add in texels */
+            // Add in texels
             lohi = 0;
             for (k = N_TEXELS - 1; k >= N_TEXELS / 2; k--) {
-                int texel = n_vect + 1;	/* transparent black */
+                int texel = n_vect + 1;	// Transparent black
                 if (!ISTBLACK(input[k])) {
-                    /* interpolate color */
+                    // Interpolate color
                     CALCCDOT(texel, n_vect, n_comp, iv, b, input[k]);
                 }
-                /* add in texel */
+                // Add in texel
                 lohi <<= 2;
                 lohi |= texel;
             }
@@ -791,10 +797,10 @@ fxt1_quantize_MIXED1(dword *cc,
         }
     }
 
-    Q_MOV32(hi, 9 | (vec[3][GCOMP] & 4) | ((vec[1][GCOMP] >> 1) & 2)); /* chroma = "1" */
+    Q_MOV32(hi, 9 | (vec[3][GCOMP] & 4) | ((vec[1][GCOMP] >> 1) & 2)); // Chroma = "1"
     for (j = 2 * 2 - 1; j >= 0; j--) {
         for (i = 0; i < n_comp; i++) {
-            /* add in colors */
+            // Add in colors
             Q_SHL(hi, 5);
             Q_OR32(hi, vec[j][i] >> 3);
         }
@@ -806,13 +812,13 @@ static void
 fxt1_quantize_MIXED0(dword *cc,
     byte input[N_TEXELS][MAX_COMP])
 {
-    const int n_vect = 3; /* highest vector number in each microtile */
-    const int n_comp = 3; /* 3 components: R, G, B */
-    byte vec[2 * 2][MAX_COMP]; /* 2 extrema for each sub-block */
-    float b, iv[MAX_COMP]; /* interpolation vector */
+    const int n_vect = 3; // Highest vector number in each microtile
+    const int n_comp = 3; // 3 components: R, G, B
+    byte vec[2 * 2][MAX_COMP]; // 2 extrema for each sub-block
+    float b, iv[MAX_COMP]; // Interpolation vector
     int i, j, k;
-    qword hi; /* high quadword */
-    dword lohi, lolo; /* low quadword: hi dword, lo dword */
+    qword hi; // High quadword
+    dword lohi, lolo; // Low quadword: hi DWORD, lo DWORD
 
     int minColL = 0, maxColL = 0;
     int minColR = 0, maxColR = 0;
@@ -820,16 +826,18 @@ fxt1_quantize_MIXED0(dword *cc,
     int minSum;
     int maxSum;
 
-    /* Our solution here is to find the darkest and brightest colors in
-     * the 4x4 tile and use those as the two representative colors.
-     * There are probably better algorithms to use (histogram-based).
-     */
+    /*
+	Our solution here is to find the darkest and brightest colors in
+    the 4x4 tile and use those as the two representative colors.
+    There are probably better algorithms to use (histogram-based).
+    */
+	
 #ifndef YUV
-    minSum = 2000; /* big enough */
+    minSum = 2000; // Big enough
 #else
     minSum = 2000000;
 #endif
-    maxSum = -1; /* small enough */
+    maxSum = -1; // Small enough
     for (k = 0; k < N_TEXELS / 2; k++) {
         int sum = 0;
 #ifndef YUV
@@ -848,8 +856,8 @@ fxt1_quantize_MIXED0(dword *cc,
             maxColL = k;
         }
     }
-    minSum = 2000; /* big enough */
-    maxSum = -1; /* small enough */
+    minSum = 2000; // Big enough
+    maxSum = -1; // Small enough
     for (; k < N_TEXELS; k++) {
         int sum = 0;
 #ifndef YUV
@@ -874,11 +882,13 @@ fxt1_quantize_MIXED0(dword *cc,
     int maxVarL = fxt1_variance(NULL, input, n_comp, N_TEXELS / 2);
     int maxVarR = fxt1_variance(NULL, &input[N_TEXELS / 2], n_comp, N_TEXELS / 2);
 
-    /* Scan the channel with max variance for lo & hi
-     * and use those as the two representative colors.
-     */
-    minVal = 2000; /* big enough */
-    maxVal = -1; /* small enough */
+    /*
+	Scan the channel with max variance for lo and hi
+    and use those as the two representative colors.
+    */
+	
+    minVal = 2000; // Big enough
+    maxVal = -1; // Small enough
     for (k = 0; k < N_TEXELS / 2; k++) {
         int t = input[k][maxVarL];
         if (minVal > t) {
@@ -890,8 +900,8 @@ fxt1_quantize_MIXED0(dword *cc,
             maxColL = k;
         }
     }
-    minVal = 2000; /* big enough */
-    maxVal = -1; /* small enough */
+    minVal = 2000; // Big enough
+    maxVal = -1; // Small enough
     for (; k < N_TEXELS; k++) {
         int t = input[k][maxVarR];
         if (minVal > t) {
@@ -905,28 +915,28 @@ fxt1_quantize_MIXED0(dword *cc,
     }
 #endif
 
-    /* left microtile */
+    // Left microtile
     cc[0] = 0;
     for (i = 0; i < n_comp; i++) {
         vec[0][i] = input[minColL][i];
         vec[1][i] = input[maxColL][i];
     }
     if (minColL != maxColL) {
-        /* compute interpolation vector */
+        // Compute interpolation vector
         MAKEIVEC(n_vect, n_comp, iv, b, vec[0], vec[1]);
 
-        /* add in texels */
+        // Add in texels
         lolo = 0;
         for (k = N_TEXELS / 2 - 1; k >= 0; k--) {
             int texel;
-            /* interpolate color */
+            // Interpolate color
             CALCCDOT(texel, n_vect, n_comp, iv, b, input[k]);
-            /* add in texel */
+            // Add in texel
             lolo <<= 2;
             lolo |= texel;
         }
 
-        /* funky encoding for LSB of green */
+        // Funky encoding for LSB of green
         if ((int)((lolo >> 1) & 1) != (((vec[1][GCOMP] ^ vec[0][GCOMP]) >> 2) & 1)) {
             for (i = 0; i < n_comp; i++) {
                 vec[1][i] = input[minColL][i];
@@ -938,28 +948,28 @@ fxt1_quantize_MIXED0(dword *cc,
         cc[0] = lolo;
     }
 
-    /* right microtile */
+    // Right microtile
     cc[1] = 0;
     for (i = 0; i < n_comp; i++) {
         vec[2][i] = input[minColR][i];
         vec[3][i] = input[maxColR][i];
     }
     if (minColR != maxColR) {
-        /* compute interpolation vector */
+        // Compute interpolation vector
         MAKEIVEC(n_vect, n_comp, iv, b, vec[2], vec[3]);
 
-        /* add in texels */
+        // Add in texels
         lohi = 0;
         for (k = N_TEXELS - 1; k >= N_TEXELS / 2; k--) {
             int texel;
-            /* interpolate color */
+            // Interpolate color
             CALCCDOT(texel, n_vect, n_comp, iv, b, input[k]);
-            /* add in texel */
+            // Add in texel
             lohi <<= 2;
             lohi |= texel;
         }
 
-        /* funky encoding for LSB of green */
+        // Funky encoding for LSB of green
         if ((int)((lohi >> 1) & 1) != (((vec[3][GCOMP] ^ vec[2][GCOMP]) >> 2) & 1)) {
             for (i = 0; i < n_comp; i++) {
                 vec[3][i] = input[minColR][i];
@@ -971,10 +981,10 @@ fxt1_quantize_MIXED0(dword *cc,
         cc[1] = lohi;
     }
 
-    Q_MOV32(hi, 8 | (vec[3][GCOMP] & 4) | ((vec[1][GCOMP] >> 1) & 2)); /* chroma = "1" */
+    Q_MOV32(hi, 8 | (vec[3][GCOMP] & 4) | ((vec[1][GCOMP] >> 1) & 2)); // Chroma = "1"
     for (j = 2 * 2 - 1; j >= 0; j--) {
         for (i = 0; i < n_comp; i++) {
-            /* add in colors */
+            // Add in colors
             Q_SHL(hi, 5);
             Q_OR32(hi, vec[j][i] >> 3);
         }
@@ -995,11 +1005,11 @@ fxt1_quantize(dword *cc, const byte *lines[], int comps)
     int k, l;
 
     if (comps == 3) {
-        /* make the whole block opaque */
+        // Make the whole block opaque
         memset(input, -1, sizeof(input));
     }
 
-    /* 8 texels each line */
+    // 8 texels each line
 #ifndef ARGB
     for (l = 0; l < 4; l++) {
         for (k = 0; k < 4; k++) {
@@ -1014,7 +1024,7 @@ fxt1_quantize(dword *cc, const byte *lines[], int comps)
         }
     }
 #else
-    /* H.Morii - support for ARGB inputs */
+    // H.Morii - support for ARGB inputs
     for (l = 0; l < 4; l++) {
         for (k = 0; k < 4; k++) {
             input[k + l * 4][2] = *lines[l]++;
@@ -1031,28 +1041,29 @@ fxt1_quantize(dword *cc, const byte *lines[], int comps)
     }
 #endif
 
-    /* block layout:
-     * 00, 01, 02, 03, 08, 09, 0a, 0b
-     * 10, 11, 12, 13, 18, 19, 1a, 1b
-     * 04, 05, 06, 07, 0c, 0d, 0e, 0f
-     * 14, 15, 16, 17, 1c, 1d, 1e, 1f
-     */
+    /* Block layout:
+    00, 01, 02, 03, 08, 09, 0a, 0b
+    10, 11, 12, 13, 18, 19, 1a, 1b
+    04, 05, 06, 07, 0c, 0d, 0e, 0f
+    14, 15, 16, 17, 1c, 1d, 1e, 1f
+    */
 
-     /* [dBorca]
-      * stupidity flows forth from this
-      */
+    /* [dBorca]
+    Stupidity flows forth from this
+    */
+	
     l = N_TEXELS;
     trualpha = 0;
     if (comps == 4) {
-        /* skip all transparent black texels */
+        // Skip all transparent black texels
         l = 0;
         for (k = 0; k < N_TEXELS; k++) {
-            /* test all components against 0 */
+            // Test all components against 0
             if (!ISTBLACK(input[k])) {
-                /* texel is not transparent black */
+                // Texel is not transparent black
                 COPY_4UBV(reord[l], input[k]);
                 if (reord[l][ACOMP] < (255 - ALPHA_TS)) {
-                    /* non-opaque texel */
+                    // Non-opaque texel
                     trualpha = !0;
                 }
                 l++;
@@ -1107,7 +1118,7 @@ fxt1_encode(int width, int height, int comps,
     dword *encoded = (dword *)dest;
     void *newSource = NULL;
 
-    /* Replicate image if width is not M8 or height is not M4 */
+    // Replicate image if width is not M8 or height is not M4
     if ((width & 7) | (height & 3)) {
         int newWidth = (width + 7) & ~7;
         int newHeight = (height + 3) & ~3;
@@ -1133,7 +1144,7 @@ fxt1_encode(int width, int height, int comps,
             lines[3] = lines[2] + srcRowStride;
             offs += 8 * comps;
             fxt1_quantize(encoded, lines, comps);
-            /* 128 bits per 8x4 block */
+            // 128 bits per 8x4 block
             encoded += 4;
         }
         encoded += destRowStride;
@@ -1146,14 +1157,13 @@ fxt1_encode(int width, int height, int comps,
     return 0;
 }
 
-/***************************************************************************\
- * FXT1 decoder
- *
- * The decoder is based on GL_3DFX_texture_compression_FXT1
- * specification and serves as a concept for the encoder.
-\***************************************************************************/
+/*
+FXT1 decoder
+The decoder is based on GL_3DFX_texture_compression_FXT1
+specification and serves as a concept for the encoder.
+*/
 
-/* lookup table for scaling 5 bit colors up to 8 bits */
+// Lookup table for scaling 5-bit color up to 8-bit color
 static const byte _rgb_scale_5[] = {
     0,   8,   16,  25,  33,  41,  49,  58,
     66,  74,  82,  90,  99,  107, 115, 123,
@@ -1161,7 +1171,7 @@ static const byte _rgb_scale_5[] = {
     197, 206, 214, 222, 230, 239, 247, 255
 };
 
-/* lookup table for scaling 6 bit colors up to 8 bits */
+// Lookup table for scaling 6-bit color up to 8-bit color
 static const byte _rgb_scale_6[] = {
     0,   4,   8,   12,  16,  20,  24,  28,
     32,  36,  40,  45,  49,  53,  57,  61,
@@ -1245,11 +1255,11 @@ fxt1_decode_1MIXED(const byte *code, int t, byte *rgba)
     if (t & 16) {
         t &= 15;
         t = (cc[1] >> (t * 2)) & 3;
-        /* col 2 */
+        // Col 2
         col[0][BCOMP] = (*(const dword *)(code + 11)) >> 6;
         col[0][GCOMP] = CC_SEL(cc, 99);
         col[0][RCOMP] = CC_SEL(cc, 104);
-        /* col 3 */
+        // Col 3
         col[1][BCOMP] = CC_SEL(cc, 109);
         col[1][GCOMP] = CC_SEL(cc, 114);
         col[1][RCOMP] = CC_SEL(cc, 119);
@@ -1258,11 +1268,11 @@ fxt1_decode_1MIXED(const byte *code, int t, byte *rgba)
     }
     else {
         t = (cc[0] >> (t * 2)) & 3;
-        /* col 0 */
+        // Col 0
         col[0][BCOMP] = CC_SEL(cc, 64);
         col[0][GCOMP] = CC_SEL(cc, 69);
         col[0][RCOMP] = CC_SEL(cc, 74);
-        /* col 1 */
+        // Col 1
         col[1][BCOMP] = CC_SEL(cc, 79);
         col[1][GCOMP] = CC_SEL(cc, 84);
         col[1][RCOMP] = CC_SEL(cc, 89);
@@ -1271,7 +1281,7 @@ fxt1_decode_1MIXED(const byte *code, int t, byte *rgba)
     }
 
     if (CC_SEL(cc, 124) & 1) {
-        /* alpha[0] == 1 */
+        // alpha[0] == 1
 
         if (t == 3) {
             ZERO_4UBV(rgba);
@@ -1296,7 +1306,7 @@ fxt1_decode_1MIXED(const byte *code, int t, byte *rgba)
         }
     }
     else {
-        /* alpha[0] == 0 */
+        // alpha[0] == 0
 
         if (t == 0) {
             rgba[BCOMP] = UP5(col[0][BCOMP]);
@@ -1325,13 +1335,13 @@ fxt1_decode_1ALPHA(const byte *code, int t, byte *rgba)
 
     cc = (const dword *)code;
     if (CC_SEL(cc, 124) & 1) {
-        /* lerp == 1 */
+        // lerp == 1
         int col0[4];
 
         if (t & 16) {
             t &= 15;
             t = (cc[1] >> (t * 2)) & 3;
-            /* col 2 */
+            // Col 2
             col0[BCOMP] = (*(const dword *)(code + 11)) >> 6;
             col0[GCOMP] = CC_SEL(cc, 99);
             col0[RCOMP] = CC_SEL(cc, 104);
@@ -1339,7 +1349,7 @@ fxt1_decode_1ALPHA(const byte *code, int t, byte *rgba)
         }
         else {
             t = (cc[0] >> (t * 2)) & 3;
-            /* col 0 */
+            // Col 0
             col0[BCOMP] = CC_SEL(cc, 64);
             col0[GCOMP] = CC_SEL(cc, 69);
             col0[RCOMP] = CC_SEL(cc, 74);
@@ -1366,7 +1376,7 @@ fxt1_decode_1ALPHA(const byte *code, int t, byte *rgba)
         }
     }
     else {
-        /* lerp == 0 */
+        // lerp == 0
 
         if (t & 16) {
             cc++;
@@ -1396,14 +1406,14 @@ fxt1_decode_1(const void *texture, int stride,
     int i, int j, byte *rgba)
 {
     static void(*decode_1[]) (const byte *, int, byte *) = {
-    fxt1_decode_1HI,	/* cc-high   = "00?" */
-    fxt1_decode_1HI,	/* cc-high   = "00?" */
-    fxt1_decode_1CHROMA,	/* cc-chroma = "010" */
-    fxt1_decode_1ALPHA,	/* alpha     = "011" */
-    fxt1_decode_1MIXED,	/* mixed     = "1??" */
-    fxt1_decode_1MIXED,	/* mixed     = "1??" */
-    fxt1_decode_1MIXED,	/* mixed     = "1??" */
-    fxt1_decode_1MIXED	/* mixed     = "1??" */
+    fxt1_decode_1HI,	// cc-high   = "00?"
+    fxt1_decode_1HI,	// cc-high   = "00?"
+    fxt1_decode_1CHROMA,	// cc-chroma = "010"
+    fxt1_decode_1ALPHA,	// alpha     = "011"
+    fxt1_decode_1MIXED,	// mixed     = "1??"
+    fxt1_decode_1MIXED,	// mixed     = "1??"
+    fxt1_decode_1MIXED,	// mixed     = "1??"
+    fxt1_decode_1MIXED	// mixed     = "1??"
     };
 
     const byte *code = (const byte *)texture +

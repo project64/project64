@@ -395,7 +395,7 @@ void CRomBrowser::ResetRomBrowserColomuns(void)
         ListView_DeleteColumn(m_hRomList, 0);
     }
 
-    // Add Columns
+    // Add columns
     lvColumn.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
     lvColumn.fmt = LVCFMT_LEFT;
     lvColumn.pszText = szString;

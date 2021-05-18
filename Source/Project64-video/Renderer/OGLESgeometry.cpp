@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2003-2009 Sergey 'Gonetz' Lipski
 // Copyright(C) 2002 Dave2001
@@ -15,13 +15,13 @@
 #include <Project64-video/trace.h>
 
 #define Z_MAX (65536.0f)
-#define VERTEX_SIZE sizeof(gfxVERTEX) //Size of vertex struct
+#define VERTEX_SIZE sizeof(gfxVERTEX) // Size of vertex struct
 
 int w_buffer_mode;
 int inverted_culling;
 gfxCullMode_t culling_mode;
 
-#define VERTEX_BUFFER_SIZE 1500 //Max amount of vertices to buffer, this seems large enough.
+#define VERTEX_BUFFER_SIZE 1500 // Max amount of vertices to buffer, this seems large enough
 static gfxVERTEX vertex_buffer[VERTEX_BUFFER_SIZE];
 static int vertex_buffer_count = 0;
 static GLenum vertex_draw_mode;
@@ -31,14 +31,14 @@ void vbo_draw()
 {
     if (vertex_buffer_count)
     {
-        WriteTrace(TraceGlide64, TraceDebug, "vertex_draw_mode: %d vertex_buffer_count: %d", vertex_draw_mode, vertex_buffer_count);
+        WriteTrace(TraceGlide64, TraceDebug, "Vertex_draw_mode: %d vertex_buffer_count: %d", vertex_draw_mode, vertex_buffer_count);
         glDrawArrays(vertex_draw_mode, 0, vertex_buffer_count);
         vertex_buffer_count = 0;
-        WriteTrace(TraceGlide64, TraceDebug, "done (glGetError() = %X)", glGetError());
+        WriteTrace(TraceGlide64, TraceDebug, "Done (glGetError() = %X)", glGetError());
     }
 }
 
-//Buffer vertices instead of glDrawArrays(...)
+// Buffer vertices instead of glDrawArrays(...)
 void vbo_buffer(GLenum mode, GLint first, GLsizei count, void* pointers)
 {
     if ((count != 3 && mode != GL_TRIANGLES) || vertex_buffer_count + count > VERTEX_BUFFER_SIZE)
@@ -56,7 +56,7 @@ void vbo_buffer(GLenum mode, GLint first, GLsizei count, void* pointers)
     else
     {
         vertex_draw_mode = mode;
-        vbo_draw(); //Triangle fans and strips can't be joined as easily, just draw them straight away.
+        vbo_draw(); // Triangle fans and strips can't be joined as easily, just draw them straight away
     }
 }
 
@@ -148,7 +148,7 @@ void gfxCullMode(gfxCullMode_t mode)
         glEnable(GL_CULL_FACE);
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknown cull mode : %x", mode);
+        WriteTrace(TraceGlitch, TraceWarning, "Unknown cull mode : %x", mode);
     }
 }
 
@@ -174,7 +174,7 @@ void gfxDepthBufferMode(gfxDepthBufferMode_t mode)
         w_buffer_mode = 0;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknown depth buffer mode : %x", mode);
+        WriteTrace(TraceGlitch, TraceWarning, "Unknown depth buffer mode : %x", mode);
     }
 }
 
@@ -221,7 +221,7 @@ void gfxDepthBufferFunction(gfxCmpFnc_t function)
         break;
 
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknown depth buffer function : %x", function);
+        WriteTrace(TraceGlitch, TraceWarning, "Unknown depth buffer function : %x", function);
     }
 }
 
@@ -254,10 +254,10 @@ void gfxDepthBiasLevel(int32_t level)
     }
 }
 
-// draw
+// Draw
 void gfxDrawTriangle(const gfxVERTEX *a, const gfxVERTEX *b, const gfxVERTEX *c)
 {
-    WriteTrace(TraceGlitch, TraceDebug, "start");
+    WriteTrace(TraceGlitch, TraceDebug, "Start");
     vbo_enable();
     if (nvidia_viewport_hack && !render_to_texture)
     {
@@ -303,7 +303,7 @@ void gfxDrawVertexArray(gfxDrawMode_t mode, uint32_t Count, void *pointers2)
 
     if (mode != GFX_TRIANGLE_FAN)
     {
-        WriteTrace(TraceGlitch, TraceWarning, "gfxDrawVertexArray : unknown mode : %x", mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxDrawVertexArray: Unknown mode : %x", mode);
     }
 
     vbo_enable();
@@ -340,6 +340,6 @@ void gfxDrawVertexArrayContiguous(gfxDrawMode_t mode, uint32_t Count, void *poin
         vbo_buffer(GL_TRIANGLE_FAN, 0, Count, pointers);
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxDrawVertexArrayContiguous : unknown mode : %x", mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxDrawVertexArrayContiguous: Unknown mode : %x", mode);
     }
 }

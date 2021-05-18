@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2007 Hiroshi Morii
 // Copyright(C) 2004 Daniel Borca
@@ -8,11 +8,10 @@
 #ifndef TYPES_H_included
 #define TYPES_H_included
 
-/*****************************************************************************\
- * 32bit types
-\*****************************************************************************/
-typedef unsigned char byte;	/*  8-bit */
-typedef unsigned short word;	/* 16-bit */
-typedef unsigned int dword;	/* 32-bit */
+// 32-bit types
+
+typedef unsigned char byte;	// 8-bit
+typedef unsigned short word; // 16-bit
+typedef unsigned int dword;	// 32-bit
 
 #endif

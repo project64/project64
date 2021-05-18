@@ -94,7 +94,7 @@ union Arm32Opcode
     uint32_t Hex;
     uint8_t Ascii[4];
 
-    // uint16 + uint16 type instuction
+    // uint16 + uint16 type instruction
     struct
     {
         unsigned rn : 4;

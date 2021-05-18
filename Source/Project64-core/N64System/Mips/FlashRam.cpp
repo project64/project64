@@ -40,7 +40,7 @@ void CFlashram::DmaFromFlashram(uint8_t * dest, int32_t StartOffset, int32_t len
         {
             if (HaveDebugger())
             {
-                g_Notify->DisplayError(stdstr_f("%s: Unaligned flash ram read ???", __FUNCTION__).c_str());
+                g_Notify->DisplayError(stdstr_f("%s: Unaligned flash RAM read?", __FUNCTION__).c_str());
             }
             return;
         }
@@ -178,7 +178,7 @@ void CFlashram::WriteToFlashCommand(uint32_t FlashRAM_Command)
             }
             break;
         default:
-            g_Notify->DisplayError(stdstr_f("Writing %X to flash ram command register\nm_FlashFlag: %d", FlashRAM_Command, m_FlashFlag).c_str());
+            g_Notify->DisplayError(stdstr_f("Writing %X to flash RAM command register\nm_FlashFlag: %d", FlashRAM_Command, m_FlashFlag).c_str());
         }
         m_FlashFlag = FLASHRAM_MODE_NOPES;
         break;
@@ -199,7 +199,7 @@ void CFlashram::WriteToFlashCommand(uint32_t FlashRAM_Command)
         m_FlashStatus = 0x1111800800C2001E;
         break;
     case 0xB4000000:
-        m_FlashFlag = FLASHRAM_MODE_WRITE; //????
+        m_FlashFlag = FLASHRAM_MODE_WRITE;
         break;
     case 0xA5000000:
         m_FlashRAM_Offset = (FlashRAM_Command & 0xFFFF) * sizeof(EmptyBlock);
@@ -208,7 +208,7 @@ void CFlashram::WriteToFlashCommand(uint32_t FlashRAM_Command)
     default:
         if (HaveDebugger())
         {
-            g_Notify->DisplayError(stdstr_f("Writing %X to flash ram command register", FlashRAM_Command).c_str());
+            g_Notify->DisplayError(stdstr_f("Writing %X to flash RAM command register", FlashRAM_Command).c_str());
         }
     }
 }

@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2007 Hiroshi Morii
 // Copyright(C) 2004 Daniel Borca
@@ -29,19 +29,19 @@ dxt5_rgba_encode(int width, int height, int comps,
     void *dest, int destRowStride);
 
 TAPI void TAPIENTRY
-dxt1_rgb_decode_1(const void *texture, int stride /* in pixels */,
+dxt1_rgb_decode_1(const void *texture, int stride, // In pixels
     int i, int j, byte *rgba);
 
 TAPI void TAPIENTRY
-dxt1_rgba_decode_1(const void *texture, int stride /* in pixels */,
+dxt1_rgba_decode_1(const void *texture, int stride, // In pixels
     int i, int j, byte *rgba);
 
 TAPI void TAPIENTRY
-dxt3_rgba_decode_1(const void *texture, int stride /* in pixels */,
+dxt3_rgba_decode_1(const void *texture, int stride, // In pixels
     int i, int j, byte *rgba);
 
 TAPI void TAPIENTRY
-dxt5_rgba_decode_1(const void *texture, int stride /* in pixels */,
+dxt5_rgba_decode_1(const void *texture, int stride, // In pixels
     int i, int j, byte *rgba);
 
 #endif

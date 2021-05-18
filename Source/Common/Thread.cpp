@@ -141,7 +141,7 @@ uint32_t CThread::GetCurrentThreadId(void)
 #ifdef _WIN32
     return ::GetCurrentThreadId();
 #elif defined(SYS_gettid) || defined(__NR_gettid)
-    return syscall(__NR_gettid); /* GLIBC has no implementation of gettid(). */
+    return syscall(__NR_gettid); // GLIBC has no implementation of gettid()
 #else
     return gettid();
 #endif

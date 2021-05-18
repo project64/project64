@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2007 Hiroshi Morii
 // Copyright(C) 2003 Rice1964
@@ -8,15 +8,18 @@
 #ifndef __TEXTUREFILTERS_H__
 #define __TEXTUREFILTERS_H__
 
-/* 16bpp filters are somewhat buggy and output image is not clean.
- * Since there's not much time, we'll just convert them to ARGB8888
- * and use 32bpp filters until fixed.
- * (1:enable hack, 0:disable hack) */
+/*
+16bpp filters are somewhat buggy and output image is not clean.
+Since there's not much time, we'll just convert them to ARGB8888
+and use 32bpp filters until fixed.
+(1:enable hack, 0:disable hack)
+*/
+
 #define _16BPP_HACK 1
 
 #include "TxInternal.h"
 
- /* enhancers */
+// Enhancers
 void hq4x_8888(unsigned char * pIn, unsigned char * pOut, int Xres, int Yres, int SrcPPL, int BpL);
 
 void hq2x_32(uint8 *srcPtr, uint32 srcPitch, uint8 *dstPtr, uint32 dstPitch, int width, int height);
@@ -29,12 +32,12 @@ void Super2xSaI_8888(uint32 *srcPtr, uint32 *destPtr, uint32 width, uint32 heigh
 
 void Texture2x_32(uint8 *srcPtr, uint32 srcPitch, uint8 *dstPtr, uint32 dstPitch, int width, int height);
 
-/* filters */
+// Filters
 void SharpFilter_8888(uint32 *src, uint32 srcwidth, uint32 srcheight, uint32 *dest, uint32 filter);
 
 void SmoothFilter_8888(uint32 *src, uint32 srcwidth, uint32 srcheight, uint32 *dest, uint32 filter);
 
-/* helper */
+// Helper
 void filter_8888(uint32 *src, uint32 srcwidth, uint32 srcheight, uint32 *dest, uint32 filter);
 
 #if !_16BPP_HACK

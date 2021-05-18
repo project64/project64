@@ -1,9 +1,10 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2003-2009 Sergey 'Gonetz' Lipski
 // Copyright(C) 2002 Dave2001
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
+
 #include <GLES2/gl2.h>
 #include "glitchmain.h"
 
@@ -113,7 +114,7 @@ void GLCache::glActiveTexture(GLenum texture)
 {
     if (texture != m_cached_texture)
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "texture: %d", texture);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Texture: %d", texture);
         vbo_draw();
         ::glActiveTexture(texture);
         m_cached_texture = texture;
@@ -126,7 +127,7 @@ void GLCache::glActiveTexture(GLenum texture)
 
 void GLCache::glBindTexture(GLenum target, GLuint texture)
 {
-    WriteTrace(TraceOGLWrapper, TraceDebug, "target: %d texture: %d", target, texture);
+    WriteTrace(TraceOGLWrapper, TraceDebug, "Target: %d texture: %d", target, texture);
     vbo_draw();
     ::glBindTexture(target, texture);
 }
@@ -135,7 +136,7 @@ void GLCache::glBlendEquation(GLenum mode)
 {
     if (mode != m_cached_mode)
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "mode: %d", mode);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Mode: %d", mode);
         vbo_draw();
         ::glBlendEquation(mode);
         m_cached_mode = mode;
@@ -200,7 +201,7 @@ void GLCache::glClearDepthf(GLclampf depth)
 {
     if (depth != m_cached_depth)
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "depth: %d", depth);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Depth: %d", depth);
         vbo_draw();
         ::glClearDepthf(depth);
         m_cached_depth = depth;
@@ -215,7 +216,7 @@ void GLCache::glCullFace(GLenum mode)
 {
     if (mode != m_cached_CullFace_mode)
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "mode: %d", mode);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Mode: %d", mode);
         vbo_draw();
         ::glCullFace(mode);
         m_cached_CullFace_mode = mode;
@@ -230,7 +231,7 @@ void GLCache::glDepthFunc(GLenum func)
 {
     if (func != m_cached_func)
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "func: %d", func);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Function: %d", func);
         vbo_draw();
         ::glDepthFunc(func);
         m_cached_func = func;
@@ -245,7 +246,7 @@ void GLCache::glDepthMask(GLboolean flag)
 {
     if (flag != m_cached_DepthMask_flag)
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "flag: %d", (int)flag);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Flag: %d", (int)flag);
         vbo_draw();
         ::glDepthMask(flag);
         m_cached_DepthMask_flag = flag;
@@ -336,7 +337,7 @@ void GLCache::glFrontFace(GLenum mode)
 {
     if (mode != m_cached_FrontFace_mode)
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "mode: %d", mode);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Mode: %d", mode);
         vbo_draw();
         ::glFrontFace(mode);
         m_cached_FrontFace_mode = mode;
@@ -352,7 +353,7 @@ void GLCache::glPolygonOffset(GLfloat factor, GLfloat units)
     if (factor != m_cached_factor || units != m_cached_units)
     {
         vbo_draw();
-        WriteTrace(TraceOGLWrapper, TraceDebug, "factor: %f units: %f", factor, units);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Factor: %f units: %f", factor, units);
         ::glPolygonOffset(factor, units);
         m_cached_factor = factor;
         m_cached_units = units;
@@ -403,7 +404,7 @@ void GLCache::glUseProgram(GLuint program)
 {
     if (program != m_cached_program)
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "program: %d", program);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Program: %d", program);
         vbo_draw();
         ::glUseProgram(program);
         m_cached_program = program;
@@ -428,6 +429,6 @@ void GLCache::glViewport(GLint x, GLint y, GLsizei width, GLsizei height)
     }
     else
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "ignored x: %d, y: %d, width: %d, height: %d", x, y, width, height);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored x: %d, y: %d, width: %d, height: %d", x, y, width, height);
     }
 }

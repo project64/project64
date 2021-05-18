@@ -72,10 +72,10 @@ private:
 
     std::string m_CurrentSection;
     bool m_CurrentSectionDirty;
-    int m_CurrentSectionFilePos; // Where in the file is the current section
+    int m_CurrentSectionFilePos;
     KeyValueList m_CurrentSectionData;
 
-    long m_lastSectionSearch; // When scanning for a section, what was the last scanned POS
+    long m_lastSectionSearch;
 
     bool m_ReadOnly;
     bool m_InstantFlush;

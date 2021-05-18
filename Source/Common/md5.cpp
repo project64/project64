@@ -9,15 +9,15 @@ implied warranty of any kind.
 
 The translator/ modifier does not claim (1) that MD5 will do what you think
 it does; (2) that this translation/ modification is accurate; or (3) that
-this software is "merchantable."  (Language for this disclaimer partially
-copied from the disclaimer below).
+this software is "merchantable."  (language for this disclaimer partially
+copied from the disclaimer below)
 
 based on:
 
 MD5.H - header file for MD5C.C
 MDDRIVER.C - test driver for MD2, MD4 and MD5
 
-Copyright (C) 1991-2, RSA Data Security, Inc. Created 1991. All rights reserved.
+Copyright (C) 1991-1992, RSA Data Security, Inc. Created 1991. All rights reserved.
 
 License to copy and use this software is granted provided that it
 is identified as the "RSA Data Security, Inc. MD5 Message-Digest
@@ -59,7 +59,7 @@ MD5::~MD5()
 void MD5::update(const uint1 *input, uint4 input_length)
 {
     uint4 input_index, buffer_index;
-    uint4 buffer_space;                // How much space is left in the buffer
+    uint4 buffer_space;
 
     if (finalized) // So we can't update!
     {
@@ -78,7 +78,7 @@ void MD5::update(const uint1 *input, uint4 input_length)
 
     count[1] += ((uint4)input_length >> 29);
 
-    buffer_space = 64 - buffer_index;  // How much space is left in the buffer
+    buffer_space = 64 - buffer_index;
 
     // Transform as many times as possible
     if (input_length >= buffer_space) // i.e. we have enough to fill the buffer
@@ -93,11 +93,11 @@ void MD5::update(const uint1 *input, uint4 input_length)
             transform((unsigned char *)(input + input_index));
         }
 
-        buffer_index = 0; // So we can buffer remaining
+        buffer_index = 0;
     }
     else
     {
-        input_index = 0; // So we can buffer the whole input
+        input_index = 0;
     }
 
     // Here we do the buffering:
@@ -246,7 +246,7 @@ const char *MD5::hex_digest()
     return m_hex_digest.c_str();
 }
 
-// PRIVATE METHODS:
+// Private methods:
 
 void MD5::init()
 {

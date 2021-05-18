@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64.
 // Copyright(C) 2015 Gilles Siberlin
 // Copyright(C) 2007 - 2009 Richard Goedeken
@@ -45,7 +45,7 @@ enum { SECONDARY_BUFFER_NBR = 2 };
 // This sets default frequency what is used if ROM doesn't want to change it.
 // Probably only game that needs this is Zelda: Ocarina Of Time Master Quest
 // TODO: We should try to find out why Demos' frequencies are always wrong
-// They tend to rely on a default frequency, but apparently never the same one ;)
+// They tend to rely on a default frequency, but apparently never the same one
 
 enum { DEFAULT_FREQUENCY = 33600 };
 
@@ -87,7 +87,7 @@ int g_OutputFreq = 44100;
 bool g_critical_failure = false;
 
 #ifdef ANDROID
-// Thread Lock
+// Thread lock
 threadLock g_lock;
 
 // Engine interfaces
@@ -192,7 +192,7 @@ static void CloseAudio(void)
         g_engineEngine = nullptr;
     }
 
-    // Destroy thread Locks
+    // Destroy thread locks
     pthread_cond_signal(&(g_lock.cond));
     pthread_mutex_unlock(&(g_lock.mutex));
     pthread_cond_destroy(&(g_lock.cond));
@@ -379,7 +379,7 @@ void OpenSLESDriver::AI_SetFrequency(uint32_t freq, uint32_t BufferSize)
 
     if (g_critical_failure)
     {
-        WriteTrace(TraceAudioInitShutdown, TraceInfo, "Critical failure in setting up plugin, ignoring init...");
+        WriteTrace(TraceAudioInitShutdown, TraceInfo, "Critical failure in setting up plugin, ignoring initialization...");
         WriteTrace(TraceAudioInitShutdown, TraceDebug, "Done");
         return;
     }
@@ -437,7 +437,7 @@ void OpenSLESDriver::AI_SetFrequency(uint32_t freq, uint32_t BufferSize)
     }
 
 #ifdef ANDROID
-    // Create thread Locks to ensure synchronization between callback and processing code
+    // Create thread locks to ensure synchronization between callback and processing code
     if (pthread_mutex_init(&(g_lock.mutex), (pthread_mutexattr_t*)nullptr) != 0)
     {
         WriteTrace(TraceAudioInitShutdown, TraceError, "pthread_mutex_init failed");

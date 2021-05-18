@@ -225,7 +225,7 @@ void CNotificationImp::ShowRomBrowser(void)
     if (m_hWnd == nullptr) { return; }
     if (UISettingsLoadBool(RomBrowser_Enabled))
     {
-        //Display the ROM browser
+        // Display the ROM browser
         m_hWnd->ShowRomList();
         m_hWnd->HighLightLastRom();
     }

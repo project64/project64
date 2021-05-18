@@ -44,7 +44,7 @@ bool CSettingTypeApplicationIndex::Load(uint32_t Index, std::string & Value) con
     return CSettingTypeApplication::Load(0, Value);
 }
 
-//return the default values
+// Return the default values
 void CSettingTypeApplicationIndex::LoadDefault(uint32_t Index, bool & Value) const
 {
     m_KeyNameIdex = stdstr_f("%s %d", m_KeyName.c_str(), Index);
@@ -63,7 +63,7 @@ void CSettingTypeApplicationIndex::LoadDefault(uint32_t Index, std::string & Val
     CSettingTypeApplication::LoadDefault(0, Value);
 }
 
-//Update the settings
+// Update the settings
 void CSettingTypeApplicationIndex::Save(uint32_t Index, bool Value)
 {
     m_KeyNameIdex = stdstr_f("%s %d", m_KeyName.c_str(), Index);

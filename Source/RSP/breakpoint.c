@@ -24,7 +24,7 @@ int AddRSP_BPoint( DWORD Location, int Confirm )
 
 	if (NoOfBpoints == MaxBPoints)
 	{
-		DisplayError("Max amount of break points set");
+		DisplayError("Max amount of breakpoints set");
 		return FALSE;
 	}
 
@@ -32,7 +32,7 @@ int AddRSP_BPoint( DWORD Location, int Confirm )
 	{
 		if (BPoint[count].Location == Location)
 		{
-			DisplayError("You already have this break point");
+			DisplayError("You already have this breakpoint");
 			return FALSE;
 		}
 	}
@@ -42,7 +42,7 @@ int AddRSP_BPoint( DWORD Location, int Confirm )
 		char Message[150];
 		int Response;
 
-		sprintf(Message,"Break when:\n\nRSP's Program Counter = 0x%03X\n\nIs this correct?",
+		sprintf(Message,"Break when:\n\nRSP's program counter = 0x%03X\n\nIs this correct?",
 			Location);
 		Response = MessageBox(BPoint_Win_hDlg, Message, "Breakpoint", MB_YESNO | MB_ICONINFORMATION);
 		if (Response == IDNO)

@@ -8,7 +8,6 @@ public:
 
     typedef void (*Func)();
 
-    //Get Private Information
     const uint32_t EnterPC   () const { return m_EnterPC; }
     const uint32_t MinPC     () const { return m_MinPC; }
     const uint32_t MaxPC     () const { return m_MaxPC; }

@@ -35,7 +35,7 @@ bool CSettingTypeRDBRDRamSize::Load (uint32_t Index, uint32_t & Value ) const
         LoadDefault(Index,ulValue);
     }
     Value = 0x400000;
-    if (ulValue == 8 || ulValue == 0x800000 || !existsInRdb) //default to 8MB if ROM is not in the RDB
+    if (ulValue == 8 || ulValue == 0x800000 || !existsInRdb) // Default to 8MB if ROM is not in the RDB
     {
         Value = 0x800000;
     }
@@ -48,7 +48,7 @@ bool CSettingTypeRDBRDRamSize::Load (uint32_t /*Index*/, std::string & /*Value*/
     return false;
 }
 
-//return the default values
+// Return the default values
 void CSettingTypeRDBRDRamSize::LoadDefault (uint32_t /*Index*/, bool & /*Value*/   ) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -64,7 +64,7 @@ void CSettingTypeRDBRDRamSize::LoadDefault (uint32_t /*Index*/, std::string & /*
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-//Update the settings
+// Update the settings
 void CSettingTypeRDBRDRamSize::Save (uint32_t /*Index*/, bool /*Value*/ )
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);

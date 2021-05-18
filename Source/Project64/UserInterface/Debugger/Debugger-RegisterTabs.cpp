@@ -232,7 +232,7 @@ void CRegisterTabs::RefreshEdits()
     m_RIEdits[1].SetValue(g_Reg->RI_CONFIG_REG, DisplayMode::ZeroExtend);
     m_RIEdits[2].SetValue(g_Reg->RI_CURRENT_LOAD_REG, DisplayMode::ZeroExtend);
     m_RIEdits[3].SetValue(g_Reg->RI_SELECT_REG, DisplayMode::ZeroExtend);
-    m_RIEdits[4].SetValue(g_Reg->RI_REFRESH_REG, DisplayMode::ZeroExtend); // or ri count
+    m_RIEdits[4].SetValue(g_Reg->RI_REFRESH_REG, DisplayMode::ZeroExtend); // or RI count
     m_RIEdits[5].SetValue(g_Reg->RI_LATENCY_REG, DisplayMode::ZeroExtend);
     m_RIEdits[6].SetValue(g_Reg->RI_RERROR_REG, DisplayMode::ZeroExtend);
     m_RIEdits[7].SetValue(g_Reg->RI_WERROR_REG, DisplayMode::ZeroExtend);

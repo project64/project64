@@ -5,6 +5,6 @@
 void ShowAboutWindow (void * hParent)
 {
 #ifdef _WIN32
-    MessageBox((HWND)hParent,L"Android Input Plugin",L"Dll About",MB_OK);
+    MessageBox((HWND)hParent,L"Android input plugin",L"Dll About",MB_OK);
 #endif
 }

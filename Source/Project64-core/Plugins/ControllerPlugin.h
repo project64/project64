@@ -46,9 +46,9 @@ typedef struct
     void * hMainWindow;
     void * hinst;
 
-    int32_t MemoryBswaped;  // memory in client- or server-native endian
-    uint8_t * HEADER;   // the ROM header (first 40h bytes of the ROM)
-    CONTROL * Controls; // pointer to array of 4 controllers, i.e.:  CONTROL Controls[4];
+    int32_t MemoryBswaped;  // Memory in client or server-native endian
+    uint8_t * HEADER;   // The ROM header (first 40h bytes of the ROM)
+    CONTROL * Controls; // Pointer to array of 4 controllers, i.e.:  CONTROL Controls[4];
 } CONTROL_INFO;
 
 enum PluginType
@@ -56,8 +56,8 @@ enum PluginType
     PLUGIN_NONE = 1,
     PLUGIN_MEMPAK = 2,
     PLUGIN_RUMBLE_PAK = 3,
-    PLUGIN_TANSFER_PAK = 4, // not implemeted for non raw data
-    PLUGIN_RAW = 5, // the controller plugin is passed in raw data
+    PLUGIN_TANSFER_PAK = 4, // Not implemented for non-raw data
+    PLUGIN_RAW = 5, // The controller plugin is passed in raw data
 };
 
 class CControl_Plugin;

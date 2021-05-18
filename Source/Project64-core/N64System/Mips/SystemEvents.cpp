@@ -50,7 +50,7 @@ const char * SystemEventName(SystemEvent event)
     case SysEvent_ResetRecompilerCode: return "SysEvent_ResetRecompilerCode";
     }
     static char unknown[100];
-    sprintf(unknown, "unknown(%d)", event);
+    sprintf(unknown, "Unknown(%d)", event);
     return unknown;
 }
 

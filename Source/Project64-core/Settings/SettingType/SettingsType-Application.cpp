@@ -59,7 +59,7 @@ void CSettingTypeApplication::Initialize(void)
     CPath BaseDir(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str(), "");
     if (!BaseDir.DirectoryExists())
     {
-        WriteTrace(TraceAppInit, TraceDebug, "BaseDir does not exist.  Doing nothing.");
+        WriteTrace(TraceAppInit, TraceDebug, "BaseDir does not exist.  Doing nothing...");
         WriteTrace(TraceAppInit, TraceDebug, "Done");
         return;
     }
@@ -184,7 +184,7 @@ bool CSettingTypeApplication::Load(uint32_t Index, std::string & Value) const
     return bRes;
 }
 
-//return the default values
+// Return the default values
 void CSettingTypeApplication::LoadDefault(uint32_t Index, bool & Value) const
 {
     if (m_DefaultSetting != Default_None)
@@ -220,7 +220,7 @@ void CSettingTypeApplication::LoadDefault(uint32_t /*Index*/, std::string & Valu
     }
 }
 
-//Update the settings
+// Update the settings
 void CSettingTypeApplication::Save(uint32_t Index, bool Value)
 {
     bool indexed = g_Settings->IndexBasedSetting(m_DefaultSetting);

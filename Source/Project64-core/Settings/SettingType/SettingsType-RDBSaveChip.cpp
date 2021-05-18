@@ -34,11 +34,11 @@ bool CSettingTypeRDBSaveChip::Load (uint32_t Index, uint32_t & Value ) const
     }
     const char * String = strValue.c_str();
 
-    if (_stricmp(String,"First Save Type") == 0)    { Value = (uint32_t)SaveChip_Auto; }
-    else if (_stricmp(String,"4kbit Eeprom") == 0)  { Value = SaveChip_Eeprom_4K; }
-    else if (_stricmp(String,"16kbit Eeprom") == 0) { Value = SaveChip_Eeprom_16K; }
-    else if (_stricmp(String,"Sram") == 0)          { Value = SaveChip_Sram; }
-    else if (_stricmp(String,"FlashRam") == 0)      { Value = SaveChip_FlashRam; }
+    if (_stricmp(String,"First save type") == 0)    { Value = (uint32_t)SaveChip_Auto; }
+    else if (_stricmp(String,"4kbit EEPROM") == 0)  { Value = SaveChip_Eeprom_4K; }
+    else if (_stricmp(String,"16kbit EEPROM") == 0) { Value = SaveChip_Eeprom_16K; }
+    else if (_stricmp(String,"SRAM") == 0)          { Value = SaveChip_Sram; }
+    else if (_stricmp(String,"FlashRAM") == 0)      { Value = SaveChip_FlashRam; }
     else if (_stricmp(String,"default") == 0)
     {
         LoadDefault(Index,Value);
@@ -56,7 +56,7 @@ bool CSettingTypeRDBSaveChip::Load (uint32_t /*Index*/, std::string & /*Value*/ 
     return false;
 }
 
-//return the default values
+// Return the default values
 void CSettingTypeRDBSaveChip::LoadDefault (uint32_t /*Index*/, bool & /*Value*/ ) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -80,7 +80,7 @@ void CSettingTypeRDBSaveChip::LoadDefault (uint32_t /*Index*/, std::string & /*V
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-//Update the settings
+// Update the settings
 void CSettingTypeRDBSaveChip::Save (uint32_t /*Index*/, bool /*Value*/ )
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -90,11 +90,11 @@ void CSettingTypeRDBSaveChip::Save (uint32_t /*Index*/, uint32_t Value )
 {
     switch ((SAVE_CHIP_TYPE)Value)
     {
-    case SaveChip_Auto: m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"First Save Type"); break;
-    case SaveChip_Eeprom_4K: m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"4kbit Eeprom"); break;
-    case SaveChip_Eeprom_16K: m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"16kbit Eeprom"); break;
-    case SaveChip_Sram: m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"Sram"); break;
-    case SaveChip_FlashRam: m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"FlashRam"); break;
+    case SaveChip_Auto: m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"First save type"); break;
+    case SaveChip_Eeprom_4K: m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"4kbit EEPROM"); break;
+    case SaveChip_Eeprom_16K: m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"16kbit EEPROM"); break;
+    case SaveChip_Sram: m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"SRAM"); break;
+    case SaveChip_FlashRam: m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),"FlashRAM"); break;
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }

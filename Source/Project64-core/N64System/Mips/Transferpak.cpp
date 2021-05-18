@@ -1,9 +1,9 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2015 Bobby Smiles
-
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
+
 #include "stdafx.h"
 #include "GBCart.h"
 #include "Transferpak.h"
@@ -17,7 +17,7 @@ uint16_t gb_cart_address(unsigned int bank, uint16_t address)
 
 void Transferpak::Init()
 {
-    //Quick check to ensure we dont have a ROM already
+    // Quick check to ensure we don't have a ROM already
     if (tpak.gb_cart.rom == nullptr)
     {
         memset(&tpak, 0, sizeof(tpak));
@@ -38,20 +38,20 @@ void Transferpak::ReadFrom(uint16_t address, uint8_t * data)
 {
 	if ((address >= 0x8000) && (address <= 0x8FFF))
 	{
-        //Ensure we actually have a ROM loaded in first.
+        // Ensure we actually have a ROM loaded in first
         if (tpak.gb_cart.rom == nullptr)
         {
             Init();
         }
 
-		//Get whether the GB cart is enabled or disabled
+		// Get whether the Game Boy cart is enabled or disabled
 		uint8_t value = (tpak.enabled) ? 0x84 : 0x00;
 
 		memset(data, value, 0x20);
 	}
 	else if ((address >= 0xB000) && (address <= 0xBFFF))
 	{
-		// Get the GB Cart access mode
+		// Get the Game Boy cart access mode
 		if (tpak.enabled)
 		{
 			memset(data, tpak.access_mode, 0x20);
@@ -65,7 +65,7 @@ void Transferpak::ReadFrom(uint16_t address, uint8_t * data)
 	}
 	else if (address >= 0xC000)
 	{
-		// Read the GB Cart
+		// Read the Game Boy cart
 		if (tpak.enabled)
 		{
             GBCart::read_gb_cart(&tpak.gb_cart, gb_cart_address(tpak.bank, address), data);
@@ -79,13 +79,13 @@ void Transferpak::WriteTo(uint16_t address, uint8_t * data)
 
     if ((address >= 0x8000) && (address <= 0x8FFF))
     {
-        //Ensure we actually have a ROM loaded in first.
+        // Ensure we actually have a ROM loaded in first
         if (tpak.gb_cart.rom == nullptr)
         {
             Init();
         }
 
-        //Set whether the gb cart is enabled or disabled.
+        // Set whether the Game Boy cart is enabled or disabled
         switch (*data)
         {
         case 0xFE:
@@ -95,13 +95,13 @@ void Transferpak::WriteTo(uint16_t address, uint8_t * data)
             tpak.enabled = true;
             break;
         default:
-            //Do nothing
+            // Do nothing
             break;
         }
     }
      else if ((address >= 0xA000) && (address <= 0xAFFF))
     {
-        //Set the bank for the GB Cart
+        // Set the bank for the Game Boy cart
         if (tpak.enabled)
         {
             tpak.bank = *data;
@@ -109,7 +109,7 @@ void Transferpak::WriteTo(uint16_t address, uint8_t * data)
     }
     else if ((address >= 0xB000) && (address <= 0xBFFF))
     {
-        // Get the GB Cart access mode
+        // Get the Game Boy cart access mode
         if (tpak.enabled)
         {
             tpak.access_mode_changed = 0x04;
@@ -118,13 +118,13 @@ void Transferpak::WriteTo(uint16_t address, uint8_t * data)
 
             if ((*data & 0xFE) != 0)
             {
-                //Unkown tpak write
+                // Unknown Transfer Pak write
             }
         }
     }
     else if (address >= 0xC000)
     {
-        // Write to the GB Cart
+        // Write to the Game Boy cart
         if (tpak.enabled)
         {
             GBCart::write_gb_cart(&tpak.gb_cart, gb_cart_address(tpak.bank, address), data);

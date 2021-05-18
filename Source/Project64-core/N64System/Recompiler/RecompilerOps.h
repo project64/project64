@@ -41,14 +41,14 @@ public:
         CompareTypeTLTIU,
     };
 
-    /*************************** Trap functions  *************************/
+    // Trap functions
     virtual void Compile_TrapCompare(TRAP_COMPARE CompareType) = 0;
 
-    /************************** Branch functions  ************************/
+    // Branch functions
     virtual void Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE BranchType, bool Link) = 0;
     virtual void Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Link) = 0;
 
-    /*************************  OpCode functions *************************/
+    //  Opcode functions
     virtual void J() = 0;
     virtual void JAL() = 0;
     virtual void ADDI() = 0;
@@ -87,7 +87,7 @@ public:
     virtual void SDC1() = 0;
     virtual void SD() = 0;
 
-    /********************** R4300i OpCodes: Special **********************/
+    // R4300i opcodes: Special
     virtual void SPECIAL_SLL() = 0;
     virtual void SPECIAL_SRL() = 0;
     virtual void SPECIAL_SRA() = 0;
@@ -133,18 +133,18 @@ public:
     virtual void SPECIAL_DSRL32() = 0;
     virtual void SPECIAL_DSRA32() = 0;
 
-    /************************** COP0 functions **************************/
+    // COP0 functions
     virtual void COP0_MF() = 0;
     virtual void COP0_MT() = 0;
 
-    /************************** COP0 CO functions ***********************/
+    // COP0 CO functions
     virtual void COP0_CO_TLBR() = 0;
     virtual void COP0_CO_TLBWI() = 0;
     virtual void COP0_CO_TLBWR() = 0;
     virtual void COP0_CO_TLBP() = 0;
     virtual void COP0_CO_ERET() = 0;
 
-    /************************** COP1 functions **************************/
+    // COP1 functions
     virtual void COP1_MF() = 0;
     virtual void COP1_DMF() = 0;
     virtual void COP1_CF() = 0;
@@ -152,7 +152,7 @@ public:
     virtual void COP1_DMT() = 0;
     virtual void COP1_CT() = 0;
 
-    /************************** COP1: S functions ************************/
+    // COP1: S functions
     virtual void COP1_S_ADD() = 0;
     virtual void COP1_S_SUB() = 0;
     virtual void COP1_S_MUL() = 0;
@@ -174,7 +174,7 @@ public:
     virtual void COP1_S_CVT_L() = 0;
     virtual void COP1_S_CMP() = 0;
 
-    /************************** COP1: D functions ************************/
+    // COP1: D functions
     virtual void COP1_D_ADD() = 0;
     virtual void COP1_D_SUB() = 0;
     virtual void COP1_D_MUL() = 0;
@@ -196,15 +196,15 @@ public:
     virtual void COP1_D_CVT_L() = 0;
     virtual void COP1_D_CMP() = 0;
 
-    /************************** COP1: W functions ************************/
+    // COP1: W functions
     virtual void COP1_W_CVT_S() = 0;
     virtual void COP1_W_CVT_D() = 0;
 
-    /************************** COP1: L functions ************************/
+    // COP1: L functions
     virtual void COP1_L_CVT_S() = 0;
     virtual void COP1_L_CVT_D() = 0;
 
-    /************************** Other functions **************************/
+    // Other functions
     virtual void UnknownOpcode() = 0;
 
     virtual void EnterCodeBlock() = 0;

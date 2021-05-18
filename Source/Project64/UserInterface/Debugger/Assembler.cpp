@@ -432,7 +432,7 @@ uint32_t CAssembler::pop_val()
 
     //if (isalpha(*v))
     //{
-    //    // todo lookup label value
+    //    // TODO: lookup label value
     //    return 0;
     //}
 

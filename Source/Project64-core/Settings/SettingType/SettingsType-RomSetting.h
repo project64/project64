@@ -12,12 +12,12 @@ public:
 
     virtual SettingLocation GetSettingsLocation ( void ) const { return SettingLocation_RomDatabase; }
 
-    //return the values
+    // Return the values
     virtual bool Load (int32_t Index, bool & Value) const;
     virtual bool Load (int32_t Index, uint32_t & Value) const;
     virtual bool Load (int32_t Index, stdstr & Value) const;
 
-    //Update the settings
+    // Update the settings
     virtual void Save (int32_t Index, bool Value);
     virtual void Save (int32_t Index, uint32_t Value);
     virtual void Save (int32_t Index, const stdstr & Value);

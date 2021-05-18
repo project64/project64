@@ -206,7 +206,7 @@ void CMainGui::GameLoaded(CMainGui * Gui)
     stdstr FileLoc = g_Settings->LoadStringVal(Game_File);
     if (FileLoc.length() > 0)
     {
-        WriteTrace(TraceUserInterface, TraceDebug, "Add Recent ROM");
+        WriteTrace(TraceUserInterface, TraceDebug, "Add recent ROM");
         Gui->AddRecentRom(FileLoc.c_str());
         Gui->SetWindowCaption(stdstr(g_Settings->LoadStringVal(Rdb_GoodName)).ToUTF16().c_str());
 		

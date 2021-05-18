@@ -53,7 +53,7 @@ bool CSettingTypeGameIndex::Load (uint32_t Index, std::string & Value ) const
     return CSettingTypeGame::Load(0,Value);
 }
 
-//return the default values
+// Return the default values
 void CSettingTypeGameIndex::LoadDefault (uint32_t Index, bool & Value ) const
 {
     m_KeyNameIdex = stdstr_f("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
@@ -70,7 +70,7 @@ void CSettingTypeGameIndex::LoadDefault (uint32_t /*Index*/, std::string & /*Val
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-//Update the settings
+// Update the settings
 void CSettingTypeGameIndex::Save (uint32_t Index, bool Value )
 {
     m_KeyNameIdex = stdstr_f("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());

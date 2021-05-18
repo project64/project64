@@ -192,7 +192,7 @@ bool CSettingTypeRomDatabase::Load(uint32_t Index, std::string & Value) const
     return bRes;
 }
 
-//return the default values
+// Return the default values
 void CSettingTypeRomDatabase::LoadDefault(uint32_t /*Index*/, bool & Value) const
 {
     if (m_DefaultSetting != Default_None)
@@ -229,7 +229,7 @@ void CSettingTypeRomDatabase::LoadDefault(uint32_t /*Index*/, std::string & Valu
     }
 }
 
-//Update the settings
+// Update the settings
 void CSettingTypeRomDatabase::Save(uint32_t /*Index*/, bool Value)
 {
     if (!g_Settings->LoadBool(Setting_RdbEditor))

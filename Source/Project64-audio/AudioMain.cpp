@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64.
 // Copyright(C) 2015 Gilles Siberlin
 // Copyright(C) 2007-2009 Richard Goedeken

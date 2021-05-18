@@ -145,7 +145,7 @@ public:
 				float CpuUsage = (float)(((double)ItemList[count]->second / (double)TotalTime) * 100);
 
 				if (CpuUsage <= 0.2) { continue; }
-				sprintf(Buffer, "Func 0x%08X", ItemList[count]->first);
+				sprintf(Buffer, "Function 0x%08X", ItemList[count]->first);
 				for (int NameID = 0; NameID < (sizeof(TimerNames) / sizeof(TIMER_NAME)); NameID++)
 				{
 					if (ItemList[count]->first == (DWORD)TimerNames[NameID].Timer)

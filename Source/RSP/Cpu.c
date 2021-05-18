@@ -151,17 +151,16 @@ void Build_RSP ( void )
 	PrgCount = RSPInfo.SP_PC_REG;
 }
 
-/******************************************************************
-  Function: DoRspCycles
-  Purpose:  This function is to allow the RSP to run in parallel with
-            the r4300i switching control back to the r4300i once the
-			function ends.
-  input:    The number of cycles that is meant to be executed
-  output:   The number of cycles that was executed. This value can
-            be greater than the number of cycles that the RSP 
-			should have performed.
-			(this value is ignored if the RSP has been stopped)
-*******************************************************************/ 
+/*
+Function: DoRspCycles
+Purpose: This function is to allow the RSP to run in parallel with
+the r4300i switching control back to the r4300i once the
+function ends.
+Input: The number of cycles that is meant to be executed.
+Output: The number of cycles that was executed. This value can
+be greater than the number of cycles that the RSP should have performed.
+(this value is ignored if the RSP has been stopped)
+*/
 
 DWORD RunInterpreterCPU(DWORD Cycles);
 DWORD RunRecompilerCPU (DWORD Cycles);

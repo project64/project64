@@ -26,7 +26,7 @@ private:
     void SetJumpRegSet(CCodeSection * Section, const CRegInfo &Reg);
     void SetContinueRegSet(CCodeSection * Section, const CRegInfo &Reg);
 
-    /********************** R4300i OpCodes: Special **********************/
+    // R4300i opcodes: Special
     void SPECIAL_SLL();
     void SPECIAL_SRL();
     void SPECIAL_SRA();

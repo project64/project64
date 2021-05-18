@@ -1,24 +1,23 @@
 /*
-    N-Rage`s Dinput8 Plugin
-    (C) 2002, 2006  Norbert Wladyka
+N-Rage`s Dinput8 Plugin
+(C) 2002, 2006  Norbert Wladyka
 
-    Author`s Email: norbert.wladyka@chello.at
-    Website: http://go.to/nrage
+Author`s Email: norbert.wladyka@chello.at
+Website: http://go.to/nrage
 
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 #ifndef _PAKIO_H_
@@ -49,75 +48,75 @@ void HextoTextA( const unsigned char * Data, LPSTR szText, const int nBytes );
 #endif
 
 
-//************Raw Data***********//
-   //byte 1 = number of bytes to send
-   //byte 2 = number of bytes to recieve
-   //byte 3 = Command Type
+// Raw data
+// Byte 1 = Number of bytes to send
+// Byte 2 = Number of bytes to receive
+// Byte 3 = Command type
 
-    // get status
+// Get status
 #define RD_GETSTATUS        0x00
-    // read button values
+// Read button values
 #define RD_READKEYS         0x01
-    // read from controllerpak
+// Read from controller pak
 #define RD_READPAK          0x02
-    // write to controllerpack
+// Write to controller pak
 #define RD_WRITEPAK         0x03
-    // reset controller
+// Reset controller
 #define RD_RESETCONTROLLER  0xff
-    // read eeprom
+// Read EEPROM
 #define RD_READEEPROM       0x04
-    // write eeprom
+// Write EEPROM
 #define RD_WRITEEPROM       0x05
 
-    // Codes for retrieving status
-    // 0x010300 - A1B2C3FF
+// Codes for retrieving status
+// 0x010300 - A1B2C3FF
 
-    //A1
-    // Default GamePad
+// A1
+// Default controller
 #define RD_ABSOLUTE         0x01
 #define RD_RELATIVE         0x02
-    // Default GamePad
+// Default controller
 #define RD_GAMEPAD          0x04
 
-    //B2
+// B2
 #define RD_EEPROM           0x80
 #define RD_NOEEPROM         0x00
 
-    //C3
-    // No Plugin in Controller
+// C3
+// No plugin in controller
 #define RD_NOPLUGIN         0x00
-    // Plugin in Controller (Mempack, RumblePack etc)
+// Plugin in controller (memory pak, rumble pak, etc.)
 #define RD_PLUGIN           0x01
-    // Pak interface was uninitialized before the call
+// Pak interface was uninitialized before the call
 #define RD_NOTINITIALIZED   0x02
-    // Address of last Pak I/O was invalid
+// Address of last pak I/O was invalid
 #define RD_ADDRCRCERR       0x04
-    // eeprom busy
+// EEPROM busy
 #define RD_EEPROMBUSY       0x80
 
-// The Error values are as follows:
+// The error values are as follows:
 // 0x01ER00 - ........
 
-    //ER
-    // no error, operation successful.
+// ER
+// No error, operation successful
 #define RD_OK               0x00
-    // error, device not present for specified command.
+// Error, device not present for specified command
 #define RD_ERROR            0x80
-    // error, unable to send/recieve the number bytes for command type.
+// Error, unable to send/receive the number of bytes for command type
 #define RD_WRONGSIZE        0x40
 
-    // the address where rumble-commands are sent to
-    // this is really 0xC01B but our addressing code truncates the last several bits.
+// The address where rumble-commands are sent to
+// This is really 0xC01B but our addressing code truncates the last several bits
 #define PAK_IO_RUMBLE       0xC000
 
-    // 32 KB mempak
+// 32KB memory pak
 #define PAK_MEM_SIZE        32*1024
 #define PAK_MEM_DEXOFFSET   0x1040
 
-// Pak Specific Data //
-// First BYTE always determines current Paktype
-// this can be different to the paktype in the Controller-structure.
-// that makes sure to corectly handle/close the pak.
+// Pak-specific data
+// First byte always determines current pak type
+// This can be different to the pak type in the controller structure
+// That makes sure to correctly handle/close the pak
 
 //PAK_NONE
 //pPakData = NULL;
@@ -125,22 +124,22 @@ void HextoTextA( const unsigned char * Data, LPSTR szText, const int nBytes );
 //PAK_MEM
 typedef struct _MEMPAK
 {
-    BYTE bPakType;              // set to PAK_MEM
-    HANDLE hMemPakHandle;       // a file mapping handle
-    bool fDexSave;              // true if .n64 file, false if .mpk file
-    bool fReadonly;             // set if we can't open mempak file in "write" mode
+    BYTE bPakType;              // Set to PAK_MEM
+    HANDLE hMemPakHandle;       // A file mapping handle
+    bool fDexSave;              // True if .n64 file, false if .mpk file
+    bool fReadonly;             // Set if we can't open memory pak file in "write" mode
     LPBYTE aMemPakData;         //[PAK_MEM_SIZE];
-    BYTE aMemPakTemp[0x100];    // some extra on the top for "test" (temporary) data
+    BYTE aMemPakTemp[0x100];    // Some extra on the top for "test" (temporary) data
 } MEMPAK, *LPMEMPAK;
 
 //PAK_RUMBLE
 typedef struct _RUMBLEPAK
 {
     BYTE bPakType;
-//  BYTE bRumbleTyp;            // obsolete: use g_pcControllers[i].xyz instead --rabid
+//  BYTE bRumbleTyp;            // Obsolete: use g_pcControllers[i].xyz instead (comment by rabid)
 //  BYTE bRumbleStrength;
 //  bool fVisualRumble;
-    bool fLastData;             // true if the last data sent to block 0x8000 was nonzero
+    bool fLastData;             // True if the last data sent to block 0x8000 was non-zero
 } RUMBLEPAK, *LPRUMBLEPAK;
 
 #include "GBCart.h"
@@ -157,7 +156,7 @@ typedef struct _TRANSFERPAK
 } TRANSFERPAK, *LPTRANSFERPAK;
 
 //PAK_VOICE
-typedef struct _VOICEPAK //not supported
+typedef struct _VOICEPAK // Not supported
 {
     BYTE bPakType;
 } VOICEPAK, *LPVOICEPAK;

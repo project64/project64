@@ -164,7 +164,7 @@ bool CEnhancmentFile::MoveToSection(const char * Section, bool ChangeCurrentSect
     }
 
     std::unique_ptr<char> Data;
-    char *Input = nullptr;
+    char * Input = nullptr;
     int MaxDataSize = 0, DataSize = 0, ReadPos = 0, result;
 
     FILELOC_ITR iter = m_SectionsPos.find(std::string(Section));
@@ -183,7 +183,7 @@ bool CEnhancmentFile::MoveToSection(const char * Section, bool ChangeCurrentSect
     {
         m_File.Seek(m_lastSectionSearch, CFileBase::begin);
 
-        //long Fpos;
+        // Long Fpos;
         uint8_t pUTF8[3];
         pUTF8[0] = 0xef;
         pUTF8[1] = 0xbb;
@@ -195,7 +195,7 @@ bool CEnhancmentFile::MoveToSection(const char * Section, bool ChangeCurrentSect
             if (result <= 1) { continue; }
             if (strlen(CleanLine(Input)) <= 1) { continue; }
 
-            //We Only care about sections
+            // We only care about sections
             char * CurrentSection = Input;
 
             if (m_lastSectionSearch == 0 && !memcmp(CurrentSection, pUTF8, 3))
@@ -206,7 +206,7 @@ bool CEnhancmentFile::MoveToSection(const char * Section, bool ChangeCurrentSect
             if (CurrentSection[0] != '[') { continue; }
             int lineEndPos = (int)strlen(CurrentSection) - 1;
             if (CurrentSection[lineEndPos] != ']') { continue; }
-            //take off the ']' from the end of the string
+            // Take off the ']' from the end of the string
             CurrentSection[lineEndPos] = 0;
             CurrentSection += 1;
             m_lastSectionSearch = (m_File.GetPosition() - DataSize) + ReadPos;
@@ -385,9 +385,9 @@ void CEnhancmentFile::SaveCurrentSection(void)
 
         int MaxDataSize = 0, DataSize = 0, ReadPos = 0, result;
         std::unique_ptr<char> Data;
-        char *Input = nullptr;
+        char * Input = nullptr;
 
-        //Skip first line as it is the section name
+        // Skip first line as it is the section name
         int StartPos = m_CurrentSectionFilePos;
         int EndPos = StartPos;
         do
@@ -457,7 +457,7 @@ int CEnhancmentFile::GetStringFromFile(char * & String, std::unique_ptr<char> & 
         }
         else
         {
-            //Increase buffer size
+            // Increase buffer size
             int NewMaxDataSize = MaxDataSize + BufferIncrease;
             char * NewBuffer = new char[NewMaxDataSize];
             if (NewBuffer == nullptr)
@@ -491,7 +491,7 @@ const char * CEnhancmentFile::CleanLine(char * Line)
 {
     char * Pos = Line;
 
-    //Remove any comment from the line
+    // Remove any comment from the line
     while (Pos != nullptr)
     {
         Pos = strchr(Pos, '/');
@@ -524,7 +524,7 @@ const char * CEnhancmentFile::CleanLine(char * Line)
         }
     }
 
-    //strip any spaces or line feeds from the end of the line
+    // Strip any spaces or line feeds from the end of the line
     for (int32_t i = (int32_t)strlen(&Line[0]) - 1; i >= 0; i--)
     {
         if (Line[i] != ' ' && Line[i] != '\r') 
@@ -620,4 +620,3 @@ void CEnhancmentFile::ClearSectionPosList(long FilePos)
         m_lastSectionSearch = FilePos;
     }
 }
-

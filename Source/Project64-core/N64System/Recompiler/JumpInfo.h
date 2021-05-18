@@ -14,7 +14,7 @@ struct CJumpInfo
     uint32_t *	LinkLocation2;
     bool		FallThrough;
     bool		PermLoop;
-    bool		DoneDelaySlot;  //maybe deletable
+    bool		DoneDelaySlot;
     CRegInfo	RegSet;
     EXIT_REASON ExitReason;
 };

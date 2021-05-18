@@ -3,11 +3,7 @@
 
 #include <Common/Util.h>
 
-// ---------------------------------------------------
-
 const uint32_t CSpeedLimiter::m_DefaultSpeed = 60;
-
-// ---------------------------------------------------
 
 CSpeedLimiter::CSpeedLimiter() :
 m_Frames(0),
@@ -39,7 +35,7 @@ bool CSpeedLimiter::Timer_Process(uint32_t * FrameRate)
     HighResTimeStamp CurrentTime;
     CurrentTime.SetToNow();
 
-    /* Calculate time that should of elapsed for this frame */
+    // Calculate time that should have elapsed for this frame
     uint64_t LastTime = m_LastTime.GetMicroSeconds(), CurrentTimeValue = CurrentTime.GetMicroSeconds();
     if (LastTime == 0)
     {
@@ -55,13 +51,13 @@ bool CSpeedLimiter::Timer_Process(uint32_t * FrameRate)
         {
             pjutil::Sleep((time / 1000) + 1);
         }
-        /* Refresh current time */
+        // Refresh current time
         CurrentTime.SetToNow();
         CurrentTimeValue = CurrentTime.GetMicroSeconds();
     }
     if (CurrentTimeValue - LastTime >= 1000000)
     {
-        /* Output FPS */
+        // Output FPS
         if (FrameRate != nullptr) { *FrameRate = m_Frames; }
         m_Frames = 0;
         m_LastTime = CurrentTime;

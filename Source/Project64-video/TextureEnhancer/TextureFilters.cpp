@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2007 Hiroshi Morii
 // Copyright(C) 2003 Rice1964
@@ -8,9 +8,7 @@
 #include <string.h>
 #include "TextureFilters.h"
 
-/************************************************************************/
-/* 2X filters                                                           */
-/************************************************************************/
+/* 2X filters */
 
 #define DWORD_MAKE(r, g, b, a)   ((uint32) (((a) << 24) | ((r) << 16) | ((g) << 8) | (b)))
 #define WORD_MAKE(r, g, b, a)   ((uint16) (((a) << 12) | ((r) << 8) | ((g) << 4) | (b)))
@@ -226,13 +224,14 @@ void Texture2x_16(uint8 *srcPtr, uint32 srcPitch, uint8 *dstPtr, uint32 dstPitch
 #endif /* !_16BPP_HACK */
 
 /*
- * Sharp filters
- * Hiroshi Morii <koolsmoky@users.sourceforge.net>
- */
+Sharp filters
+Hiroshi Morii
+*/
+
 void SharpFilter_8888(uint32 *src, uint32 srcwidth, uint32 srcheight, uint32 *dest, uint32 filter)
 {
-    // NOTE: for now we get away with copying the boundaries
-    //       filter the boundaries if we face problems
+    // NOTE: For now we get away with copying the boundaries
+    // filter the boundaries if we face problems
 
     uint32 mul1, mul2, mul3, shift4;
 
@@ -258,20 +257,20 @@ void SharpFilter_8888(uint32 *src, uint32 srcwidth, uint32 srcheight, uint32 *de
         break;
     }
 
-    // setup rows
+    // Setup rows
     _src1 = src;
     _src2 = _src1 + srcwidth;
     _src3 = _src2 + srcwidth;
     _dest = dest;
 
-    // copy the first row
+    // Copy the first row
     memcpy(_dest, _src1, (srcwidth << 2));
     _dest += srcwidth;
-    // filter 2nd row to 1 row before the last
+    // Filter 2nd row to 1 row before the last
     for (y = 1; y < srcheight - 1; y++) {
-        // copy the first pixel
+        // Copy the first pixel
         _dest[0] = *_src2;
-        // filter 2nd pixel to 1 pixel before last
+        // Filter 2nd pixel to 1 pixel before last
         for (x = 1; x < srcwidth - 1; x++) {
             for (z = 0; z < 4; z++) {
                 t1 = *((uint8*)(_src1 + x - 1) + z);
@@ -294,23 +293,23 @@ void SharpFilter_8888(uint32 *src, uint32 srcwidth, uint32 srcheight, uint32 *de
             }
             _dest[x] = val[0] | (val[1] << 8) | (val[2] << 16) | (val[3] << 24);
         }
-        // copy the ending pixel
+        // Copy the ending pixel
         _dest[srcwidth - 1] = *(_src3 - 1);
-        // next row
+        // Next row
         _src1 += srcwidth;
         _src2 += srcwidth;
         _src3 += srcwidth;
         _dest += srcwidth;
     }
-    // copy the last row
+    // Copy the last row
     memcpy(_dest, _src2, (srcwidth << 2));
 }
 
 #if !_16BPP_HACK
 void SharpFilter_4444(uint16 *src, uint32 srcwidth, uint32 srcheight, uint16 *dest, uint32 filter)
 {
-    // NOTE: for now we get away with copying the boundaries
-    //       filter the boundaries if we face problems
+    // NOTE: For now we get away with copying the boundaries
+    // filter the boundaries if we face problems
 
     uint16 mul1, mul2, mul3, shift4;
 
@@ -335,25 +334,25 @@ void SharpFilter_4444(uint16 *src, uint32 srcwidth, uint32 srcheight, uint16 *de
         break;
     }
 
-    // setup rows
+    // Setup rows
     _src1 = src;
     _src2 = _src1 + srcwidth;
     _src3 = _src2 + srcwidth;
     _dest = dest;
 
-    // copy the first row
+    // Copy the first row
     memcpy(_dest, _src1, (srcwidth << 1));
     _dest += srcwidth;
-    // filter 2nd row to 1 row before the last
+    // Filter 2nd row to 1 row before the last
     for (y = 1; y < srcheight - 1; y++) {
-        // copy the first pixel
+        // Copy the first pixel
         _dest[0] = *_src2;
-        // filter 2nd pixel to 1 pixel before last
+        // Filter 2nd pixel to 1 pixel before last
         for (x = 1; x < srcwidth - 1; x++) {
             for (z = 0; z < 4; z++) {
-                /* Hiroshi Morii <koolsmoky@users.sourceforge.net>
-                 * Read the entire 16bit pixel and then extract the A,R,G,B components.
-                 */
+                // Hiroshi Morii
+                // Read the entire 16-bit pixel and then extract the A,R,G,B components.
+
                 uint32 shift = z << 2;
                 t1 = ((*((uint16*)(_src1 + x - 1))) >> shift) & 0xF;
                 t2 = ((*((uint16*)(_src1 + x))) >> shift) & 0xF;
@@ -375,27 +374,26 @@ void SharpFilter_4444(uint16 *src, uint32 srcwidth, uint32 srcheight, uint16 *de
             }
             _dest[x] = val[0] | (val[1] << 4) | (val[2] << 8) | (val[3] << 12);
         }
-        // copy the ending pixel
+        // Copy the ending pixel
         _dest[srcwidth - 1] = *(_src3 - 1);
-        // next row
+        // Next row
         _src1 += srcwidth;
         _src2 += srcwidth;
         _src3 += srcwidth;
         _dest += srcwidth;
     }
-    // copy the last row
+    // Copy the last row
     memcpy(_dest, _src2, (srcwidth << 1));
 }
 #endif /* !_16BPP_HACK */
 
-/*
- * Smooth filters
- * Hiroshi Morii <koolsmoky@users.sourceforge.net>
- */
+// Smooth filters
+// Hiroshi Morii
+
 void SmoothFilter_8888(uint32 *src, uint32 srcwidth, uint32 srcheight, uint32 *dest, uint32 filter)
 {
-    // NOTE: for now we get away with copying the boundaries
-    //       filter the boundaries if we face problems
+    // NOTE: For now we get away with copying the boundaries
+    // filter the boundaries if we face problems
 
     uint32 mul1, mul2, mul3, shift4;
 
@@ -435,19 +433,19 @@ void SmoothFilter_8888(uint32 *src, uint32 srcwidth, uint32 srcheight, uint32 *d
     switch (filter) {
     case SMOOTH_FILTER_3:
     case SMOOTH_FILTER_4:
-        // setup rows
+        // Setup rows
         _src1 = src;
         _src2 = _src1 + srcwidth;
         _src3 = _src2 + srcwidth;
         _dest = dest;
-        // copy the first row
+        // Copy the first row
         memcpy(_dest, _src1, (srcwidth << 2));
         _dest += srcwidth;
-        // filter 2nd row to 1 row before the last
+        // Filter 2nd row to 1 row before the last
         for (y = 1; y < srcheight - 1; y++) {
-            // copy the first pixel
+            // Copy the first pixel
             _dest[0] = _src2[0];
-            // filter 2nd pixel to 1 pixel before last
+            // Filter 2nd pixel to 1 pixel before last
             for (x = 1; x < srcwidth - 1; x++) {
                 for (z = 0; z < 4; z++) {
                     t1 = *((uint8*)(_src1 + x - 1) + z);
@@ -459,44 +457,44 @@ void SmoothFilter_8888(uint32 *src, uint32 srcwidth, uint32 srcheight, uint32 *d
                     t7 = *((uint8*)(_src3 + x - 1) + z);
                     t8 = *((uint8*)(_src3 + x) + z);
                     t9 = *((uint8*)(_src3 + x + 1) + z);
-                    /* the component value must not overflow 0xFF */
+                    // The component value must not overflow 0xFF
                     val[z] = ((t1 + t3 + t7 + t9)*mul1 + ((t2 + t4 + t6 + t8)*mul2) + (t5*mul3)) >> shift4;
                     if (val[z] > 0xFF) val[z] = 0xFF;
                 }
                 _dest[x] = val[0] | (val[1] << 8) | (val[2] << 16) | (val[3] << 24);
             }
-            // copy the ending pixel
+            // Copy the ending pixel
             _dest[srcwidth - 1] = *(_src3 - 1);
-            // next row
+            // Next row
             _src1 += srcwidth;
             _src2 += srcwidth;
             _src3 += srcwidth;
             _dest += srcwidth;
         }
-        // copy the last row
+        // Copy the last row
         memcpy(_dest, _src2, (srcwidth << 2));
         break;
     case SMOOTH_FILTER_1:
     case SMOOTH_FILTER_2:
     default:
-        // setup rows
+        // Setup rows
         _src1 = src;
         _src2 = _src1 + srcwidth;
         _src3 = _src2 + srcwidth;
         _dest = dest;
-        // copy the first row
+        // Copy the first row
         memcpy(_dest, _src1, (srcwidth << 2));
         _dest += srcwidth;
-        // filter 2nd row to 1 row before the last
+        // Filter 2nd row to 1 row before the last
         for (y = 1; y < srcheight - 1; y++) {
-            // filter 1st pixel to the last
+            // Filter 1st pixel to the last
             if (y & 1) {
                 for (x = 0; x < srcwidth; x++) {
                     for (z = 0; z < 4; z++) {
                         t2 = *((uint8*)(_src1 + x) + z);
                         t5 = *((uint8*)(_src2 + x) + z);
                         t8 = *((uint8*)(_src3 + x) + z);
-                        /* the component value must not overflow 0xFF */
+                        // The component value must not overflow 0xFF
                         val[z] = ((t2 + t8)*mul2 + (t5*mul3)) >> shift4;
                         if (val[z] > 0xFF) val[z] = 0xFF;
                     }
@@ -506,13 +504,13 @@ void SmoothFilter_8888(uint32 *src, uint32 srcwidth, uint32 srcheight, uint32 *d
             else {
                 memcpy(_dest, _src2, (srcwidth << 2));
             }
-            // next row
+            // Next row
             _src1 += srcwidth;
             _src2 += srcwidth;
             _src3 += srcwidth;
             _dest += srcwidth;
         }
-        // copy the last row
+        // Copy the last row
         memcpy(_dest, _src2, (srcwidth << 2));
         break;
     }
@@ -521,8 +519,8 @@ void SmoothFilter_8888(uint32 *src, uint32 srcwidth, uint32 srcheight, uint32 *d
 #if !_16BPP_HACK
 void SmoothFilter_4444(uint16 *src, uint32 srcwidth, uint32 srcheight, uint16 *dest, uint32 filter)
 {
-    // NOTE: for now we get away with copying the boundaries
-    //       filter the boundaries if we face problems
+    // NOTE: For now we get away with copying the boundaries
+    // filter the boundaries if we face problems
 
     uint16 mul1, mul2, mul3, shift4;
 
@@ -562,22 +560,22 @@ void SmoothFilter_4444(uint16 *src, uint32 srcwidth, uint32 srcheight, uint16 *d
     switch (filter) {
     case SMOOTH_FILTER_3:
     case SMOOTH_FILTER_4:
-        // setup rows
+        // Setup rows
         _src1 = src;
         _src2 = _src1 + srcwidth;
         _src3 = _src2 + srcwidth;
         _dest = dest;
-        // copy the first row
+        // Copy the first row
         memcpy(_dest, _src1, (srcwidth << 1));
         _dest += srcwidth;
-        // filter 2nd row to 1 row before the last
+        // Filter 2nd row to 1 row before the last
         for (y = 1; y < srcheight - 1; y++) {
-            // copy the first pixel
+            // Copy the first pixel
             _dest[0] = *_src2;
-            // filter 2nd pixel to 1 pixel before last
+            // Filter 2nd pixel to 1 pixel before last
             for (x = 1; x < srcwidth - 1; x++) {
                 for (z = 0; z < 4; z++) {
-                    /* Read the entire 16bit pixel and then extract the A,R,G,B components. */
+                    // Read the entire 16-bit pixel and then extract the A,R,G,B components.
                     uint32 shift = z << 2;
                     t1 = ((*(uint16*)(_src1 + x - 1)) >> shift) & 0xF;
                     t2 = ((*(uint16*)(_src1 + x)) >> shift) & 0xF;
@@ -588,45 +586,45 @@ void SmoothFilter_4444(uint16 *src, uint32 srcwidth, uint32 srcheight, uint16 *d
                     t7 = ((*(uint16*)(_src3 + x - 1)) >> shift) & 0xF;
                     t8 = ((*(uint16*)(_src3 + x)) >> shift) & 0xF;
                     t9 = ((*(uint16*)(_src3 + x + 1)) >> shift) & 0xF;
-                    /* the component value must not overflow 0xF */
+                    // The component value must not overflow 0xF
                     val[z] = ((t1 + t3 + t7 + t9)*mul1 + ((t2 + t4 + t6 + t8)*mul2) + (t5*mul3)) >> shift4;
                     if (val[z] > 0xF) val[z] = 0xF;
                 }
                 _dest[x] = val[0] | (val[1] << 4) | (val[2] << 8) | (val[3] << 12);
             }
-            // copy the ending pixel
+            // Copy the ending pixel
             _dest[srcwidth - 1] = *(_src3 - 1);
-            // next row
+            // Next row
             _src1 += srcwidth;
             _src2 += srcwidth;
             _src3 += srcwidth;
             _dest += srcwidth;
         }
-        // copy the last row
+        // Copy the last row
         memcpy(_dest, _src2, (srcwidth << 1));
         break;
     case SMOOTH_FILTER_1:
     case SMOOTH_FILTER_2:
     default:
-        // setup rows
+        // Setup rows
         _src1 = src;
         _src2 = _src1 + srcwidth;
         _src3 = _src2 + srcwidth;
         _dest = dest;
-        // copy the first row
+        // Copy the first row
         memcpy(_dest, _src1, (srcwidth << 1));
         _dest += srcwidth;
-        // filter 2nd row to 1 row before the last
+        // Filter 2nd row to 1 row before the last
         for (y = 1; y < srcheight - 1; y++) {
             if (y & 1) {
                 for (x = 0; x < srcwidth; x++) {
                     for (z = 0; z < 4; z++) {
-                        /* Read the entire 16bit pixel and then extract the A,R,G,B components. */
+                        // Read the entire 16-bit pixel and then extract the A,R,G,B components.
                         uint32 shift = z << 2;
                         t2 = ((*(uint16*)(_src1 + x)) >> shift) & 0xF;
                         t5 = ((*(uint16*)(_src2 + x)) >> shift) & 0xF;
                         t8 = ((*(uint16*)(_src3 + x)) >> shift) & 0xF;
-                        /* the component value must not overflow 0xF */
+                        // The component value must not overflow 0xF
                         val[z] = ((t2 + t8)*mul2 + (t5*mul3)) >> shift4;
                         if (val[z] > 0xF) val[z] = 0xF;
                     }
@@ -636,13 +634,13 @@ void SmoothFilter_4444(uint16 *src, uint32 srcwidth, uint32 srcheight, uint16 *d
             else {
                 memcpy(_dest, _src2, (srcwidth << 1));
             }
-            // next row
+            // Next row
             _src1 += srcwidth;
             _src2 += srcwidth;
             _src3 += srcwidth;
             _dest += srcwidth;
         }
-        // copy the last row
+        // Copy the last row
         memcpy(_dest, _src2, (srcwidth << 1));
         break;
     }

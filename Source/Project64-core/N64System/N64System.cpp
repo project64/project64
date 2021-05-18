@@ -67,12 +67,12 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
 
     if (!m_MMU_VM.Initialize(SyncSystem))
     {
-        WriteTrace(TraceN64System, TraceWarning, "MMU failed to Initialize");
+        WriteTrace(TraceN64System, TraceWarning, "MMU failed to initialize");
         WriteTrace(TraceN64System, TraceDebug, "Done");
         return;
     }
 
-    WriteTrace(TraceN64System, TraceDebug, "Reseting Plugins");
+    WriteTrace(TraceN64System, TraceDebug, "Resetting plugins");
     g_Notify->DisplayMessage(5, MSG_PLUGIN_INIT);
     m_Plugins->CreatePlugins();
     bool bRes = m_Plugins->Initiate(this);
@@ -98,7 +98,7 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
-            g_Notify->DisplayMessage(5, "Copy Plugins");
+            g_Notify->DisplayMessage(5, "Copy plugins");
             g_Plugins->CopyPlugins(g_Settings->LoadStringVal(Directory_PluginSync));
             m_SyncPlugins = new CPlugins(Directory_PluginSync, true);
             m_SyncPlugins->SetRenderWindows(g_Plugins->SyncWindow(), nullptr);
@@ -154,14 +154,14 @@ CN64System::~CN64System()
 
 void CN64System::ExternalEvent(SystemEvent action)
 {
-    WriteTrace(TraceN64System, TraceDebug, "action: %s", SystemEventName(action));
+    WriteTrace(TraceN64System, TraceDebug, "Action: %s", SystemEventName(action));
 
     if (action == SysEvent_LoadMachineState &&
         !g_Settings->LoadBool(GameRunning_CPU_Running) &&
         g_BaseSystem != nullptr &&
         g_BaseSystem->LoadState())
     {
-        WriteTrace(TraceN64System, TraceDebug, "ignore event, manualy loaded save");
+        WriteTrace(TraceN64System, TraceDebug, "Ignore event, manually loaded save");
         return;
     }
 
@@ -170,7 +170,7 @@ void CN64System::ExternalEvent(SystemEvent action)
         g_BaseSystem != nullptr &&
         g_BaseSystem->SaveState())
     {
-        WriteTrace(TraceN64System, TraceDebug, "ignore event, manualy saved event");
+        WriteTrace(TraceN64System, TraceDebug, "Ignore event, manually saved event");
         return;
     }
 
@@ -228,7 +228,7 @@ void CN64System::ExternalEvent(SystemEvent action)
         }
         break;
     case SysEvent_ResumeCPU_FromMenu:
-        // always resume if from menu
+        // Always resume if from menu
         m_hPauseEvent.Trigger();
         break;
     case SysEvent_ResumeCPU_AppGainedFocus:
@@ -305,24 +305,24 @@ bool CN64System::LoadFileImage(const char * FileLoc)
     g_Settings->SaveDword(Game_CurrentSaveState, g_Settings->LoadDefaultDword(Game_CurrentSaveState));
     if (g_Settings->LoadBool(GameRunning_LoadingInProgress))
     {
-        WriteTrace(TraceN64System, TraceError, "game loading is in progress, can not load new file");
+        WriteTrace(TraceN64System, TraceError, "Game loading is in progress, cannot load new file");
         return false;
     }
 
-    //Mark the rom as loading
-    WriteTrace(TraceN64System, TraceDebug, "Mark Rom as loading");
+    // Mark the ROM as loading
+    WriteTrace(TraceN64System, TraceDebug, "Mark ROM as loading");
     g_Settings->SaveString(Game_File, "");
     g_Settings->SaveBool(GameRunning_LoadingInProgress, true);
 
-    //Try to load the passed N64 rom
+    // Try to load the passed N64 ROM
     if (g_Rom == nullptr)
     {
-        WriteTrace(TraceN64System, TraceDebug, "Allocating global rom object");
+        WriteTrace(TraceN64System, TraceDebug, "Allocating global ROM object");
         g_Rom = new CN64Rom();
     }
     else
     {
-        WriteTrace(TraceN64System, TraceDebug, "Use existing global rom object");
+        WriteTrace(TraceN64System, TraceDebug, "Use existing global ROM object");
     }
 
     WriteTrace(TraceN64System, TraceDebug, "Loading \"%s\"", FileLoc);
@@ -330,7 +330,7 @@ bool CN64System::LoadFileImage(const char * FileLoc)
     {
         if (g_Rom->IsLoadedRomDDIPL())
         {
-            //64DD IPL
+            // 64DD IPL
             if (g_DDRom == nullptr)
             {
                 g_DDRom = new CN64Rom();
@@ -351,7 +351,7 @@ bool CN64System::LoadFileImage(const char * FileLoc)
             g_Settings->SaveString(Game_File, FileLoc);
         }
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
-        WriteTrace(TraceN64System, TraceDebug, "Finished Loading (GoodName: %s)", g_Settings->LoadStringVal(Rdb_GoodName).c_str());
+        WriteTrace(TraceN64System, TraceDebug, "Finished loading (GoodName: %s)", g_Settings->LoadStringVal(Rdb_GoodName).c_str());
     }
     else
     {
@@ -375,20 +375,20 @@ bool CN64System::LoadFileImageIPL(const char * FileLoc)
         return false;
     }
 
-    //Mark the rom as loading
-    WriteTrace(TraceN64System, TraceDebug, "Mark DDRom as loading");
+    // Mark the N64DD IPL as loading
+    WriteTrace(TraceN64System, TraceDebug, "Mark N64DD IPL as loading");
     //g_Settings->SaveString(Game_File, "");
     g_Settings->SaveBool(GameRunning_LoadingInProgress, true);
 
-    //Try to load the passed N64 DDrom
+    // Try to load the passed N64DD IPL
     if (g_DDRom == nullptr)
     {
-        WriteTrace(TraceN64System, TraceDebug, "Allocating global DDrom object");
+        WriteTrace(TraceN64System, TraceDebug, "Allocating global N64DD IPL object");
         g_DDRom = new CN64Rom();
     }
     else
     {
-        WriteTrace(TraceN64System, TraceDebug, "Use existing global DDrom object");
+        WriteTrace(TraceN64System, TraceDebug, "Use existing global N64DD IPL object");
     }
 
     WriteTrace(TraceN64System, TraceDebug, "Loading \"%s\"", FileLoc);
@@ -396,7 +396,7 @@ bool CN64System::LoadFileImageIPL(const char * FileLoc)
     {
         if (!g_DDRom->IsLoadedRomDDIPL())
         {
-            //If not 64DD IPL then it's wrong
+            // If not 64DD IPL then it's wrong
             WriteTrace(TraceN64System, TraceError, "LoadN64ImageIPL failed (\"%s\")", FileLoc);
             g_Notify->DisplayError(g_DDRom->GetError());
             delete g_DDRom;
@@ -437,20 +437,20 @@ bool CN64System::LoadDiskImage(const char * FileLoc, const bool Expansion)
         return false;
     }
 
-    //Mark the rom as loading
-    WriteTrace(TraceN64System, TraceDebug, "Mark Disk as loading");
+    // Mark the disk as loading
+    WriteTrace(TraceN64System, TraceDebug, "Mark disk as loading");
     //g_Settings->SaveString(Game_File, "");
     g_Settings->SaveBool(GameRunning_LoadingInProgress, true);
 
-    //Try to load the passed N64 Disk
+    // Try to load the passed N64 disk
     if (g_Disk == nullptr)
     {
-        WriteTrace(TraceN64System, TraceDebug, "Allocating global Disk object");
+        WriteTrace(TraceN64System, TraceDebug, "Allocating global disk object");
         g_Disk = new CN64Disk();
     }
     else
     {
-        WriteTrace(TraceN64System, TraceDebug, "Use existing global Disk object");
+        WriteTrace(TraceN64System, TraceDebug, "Use existing global disk object");
     }
 
     WriteTrace(TraceN64System, TraceDebug, "Loading \"%s\"", FileLoc);
@@ -478,7 +478,7 @@ bool CN64System::LoadDiskImage(const char * FileLoc, const bool Expansion)
 
 bool CN64System::RunFileImage(const char * FileLoc)
 {
-    //Uninitialize g_Disk and g_DDRom to prevent exception when ending emulation of a regular ROM after playing 64DD content previously.
+    // Uninitialize g_Disk and g_DDRom to prevent exception when ending emulation of a regular ROM after playing 64DD content previously
     if (g_Disk != nullptr)
     {
         g_Disk->UnallocateDiskImage();
@@ -517,7 +517,7 @@ bool CN64System::RunDiskImage(const char * FileLoc)
         return false;
     }
 
-    //Select IPL ROM depending on Disk Country Code
+    // Select IPL ROM depending on disk country code
     if (!SelectAndLoadFileImageIPL(g_Disk->GetCountry(), false))
     {
         return false;
@@ -539,7 +539,7 @@ bool CN64System::RunDiskComboImage(const char * FileLoc, const char * FileLocDis
         return false;
     }
 
-    //Select IPL ROM depending on Disk Country Code
+    // Select IPL ROM depending on disk country code
     if (!SelectAndLoadFileImageIPL(g_Disk->GetCountry(), true))
     {
         return false;
@@ -558,7 +558,7 @@ void CN64System::RunLoadedImage(void)
     {
         if (g_Settings->LoadBool(Setting_AutoStart) != 0)
         {
-            WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
+            WriteTrace(TraceN64System, TraceDebug, "Automatically starting ROM");
             g_BaseSystem->StartEmulation(true);
         }
     }
@@ -605,7 +605,7 @@ bool CN64System::SelectAndLoadFileImageIPL(Country country, bool combo)
             IPLROMError = MSG_TOOL_IPL_REQUIRED;
             if (combo && !CPath(g_Settings->LoadStringVal(File_DiskIPLTOOLPath).c_str()).Exists())
             {
-                //Development IPL is not needed for combo ROM + Disk loading
+                // Development IPL is not needed for combo ROM + disk loading
                 if (CPath(g_Settings->LoadStringVal(File_DiskIPLPath).c_str()).Exists())
                     IPLROMPathSetting = File_DiskIPLPath;
                 else if (CPath(g_Settings->LoadStringVal(File_DiskIPLUSAPath).c_str()).Exists())
@@ -660,14 +660,14 @@ bool CN64System::EmulationStarting(CThread * thread)
     if (g_BaseSystem->SetActiveSystem(true))
     {
         g_BaseSystem->m_thread = thread;
-        WriteTrace(TraceN64System, TraceDebug, "Setting up N64 system done");
+        WriteTrace(TraceN64System, TraceDebug, "Setting up N64 system is done");
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
         try
         {
             WriteTrace(TraceN64System, TraceDebug, "Game starting");
             g_BaseSystem->StartEmulation2(false);
-            WriteTrace(TraceN64System, TraceDebug, "Game Done");
-            //PLACE TO ADD 64DD SAVING CODE
+            WriteTrace(TraceN64System, TraceDebug, "Game done");
+            // TODO: Add 64DD saving code?
             if (g_Disk != nullptr)
             {
                 g_Disk->SaveDiskImage();
@@ -715,7 +715,7 @@ void CN64System::StartEmulation2(bool NewThread)
         WriteTrace(TraceN64System, TraceDebug, "Setting system as active");
         if (!m_Plugins->Reset(this) || !m_Plugins->initilized())
         {
-            WriteTrace(TraceN64System, TraceWarning, "can not run, plugins not initlized");
+            WriteTrace(TraceN64System, TraceWarning, "Can't run, plugins not initialized");
             g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
             g_Notify->DisplayError(MSG_PLUGIN_NOT_INIT);
         }
@@ -732,9 +732,9 @@ void CN64System::StartEmulation2(bool NewThread)
     }
     else
     {
-        //mark the emulation as starting and fix up menus
+        // Mark the emulation as starting and fix up menus
         g_Notify->DisplayMessage(2, MSG_EMULATION_STARTED);
-        WriteTrace(TraceN64System, TraceDebug, "Start Executing CPU");
+        WriteTrace(TraceN64System, TraceDebug, "Start executing CPU");
         ExecuteCPU();
     }
     WriteTrace(TraceN64System, TraceDebug, "Done");
@@ -969,7 +969,7 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
 {
     m_Reg.Reset();
 
-    //COP0 Registers
+    // COP0 registers
     m_Reg.RANDOM_REGISTER = 0x1F;
     m_Reg.COUNT_REGISTER = 0x5000;
     m_Reg.MI_VERSION_REG = 0x02020102;
@@ -982,9 +982,9 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
     m_Reg.CONFIG_REGISTER = 0x0006E463;
     m_Reg.STATUS_REGISTER = 0x34000000;
 
-    //64DD Registers
+    // N64DD registers
 
-    //Start 64DD in Reset State and Motor Not Spinning
+    // Start N64DD in reset state and motor not spinning
     m_Reg.ASIC_STATUS = DD_STATUS_RST_STATE | DD_STATUS_MTR_N_SPIN;
     m_Reg.ASIC_ID_REG = 0x00030000;
     if (g_DDRom && (g_DDRom->CicChipID() == CIC_NUS_DDTL || (g_Disk && g_Disk->GetCountry() == Country_Unknown)))
@@ -1074,7 +1074,7 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
             case CIC_NUS_DDUS:
             case CIC_NUS_DDTL:
             default:
-                //no specific values
+                // No specific values
                 break;
             }
             m_Reg.m_GPR[20].DW = 0x0000000000000001;
@@ -1088,12 +1088,12 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
         case CIC_NUS_6101:
             m_Reg.m_GPR[22].DW = 0x000000000000003F;
             break;
-        case CIC_NUS_8303:        //64DD IPL CIC
-        case CIC_NUS_DDTL:        //64DD IPL TOOL CIC
-        case CIC_NUS_5167:        //64DD CONVERSION CIC
+        case CIC_NUS_8303:        // 64DD IPL CIC
+        case CIC_NUS_DDTL:        // 64DD IPL tool CIC
+        case CIC_NUS_5167:        // 64DD conversion CIC
             m_Reg.m_GPR[22].DW = 0x00000000000000DD;
             break;
-        case CIC_NUS_DDUS:        //64DD US IPL CIC
+        case CIC_NUS_DDUS:        // 64DD US IPL CIC
             m_Reg.m_GPR[22].DW = 0x00000000000000DE;
             break;
         case CIC_UNKNOWN:
@@ -1153,7 +1153,7 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
     else
     {
         m_Reg.m_PROGRAM_COUNTER = 0xBFC00000;
-        /*        PIF_Ram[36] = 0x00; PIF_Ram[39] = 0x3F; //common pif ram start values
+        /*        PIF_Ram[36] = 0x00; PIF_Ram[39] = 0x3F; // Common PIF RAM start values
 
         switch (g_Rom->CicChipID()) {
         case CIC_NUS_6101: PIF_Ram[37] = 0x06; PIF_Ram[38] = 0x3F; break;
@@ -1170,7 +1170,7 @@ void CN64System::ExecuteCPU()
 {
     WriteTrace(TraceN64System, TraceDebug, "Start");
 
-    //reset code
+    // Reset code
     g_Settings->SaveBool(GameRunning_CPU_Paused, false);
     g_Settings->SaveBool(GameRunning_CPU_Running, true);
     g_Notify->DisplayMessage(2, MSG_EMULATION_STARTED);
@@ -1205,7 +1205,7 @@ void CN64System::ExecuteCPU()
     }
     WriteTrace(TraceN64System, TraceDebug, "CPU finished executing");
     CpuStopped();
-    WriteTrace(TraceN64System, TraceDebug, "Notifing plugins rom is done");
+    WriteTrace(TraceN64System, TraceDebug, "Notifying plugins ROM is done");
     m_Plugins->RomClosed();
     if (m_SyncCPU)
     {
@@ -1249,11 +1249,11 @@ void CN64System::UpdateSyncCPU(CN64System * const SecondCPU, uint32_t const Cycl
 {
     int CyclesToExecute = Cycles - m_CyclesToSkip;
 
-    //Update the number of cycles to skip
+    // Update the number of cycles to skip
     m_CyclesToSkip -= Cycles;
     if (m_CyclesToSkip < 0) { m_CyclesToSkip = 0; }
 
-    //Run the other CPU For the same amount of cycles
+    // Run the other CPU For the same amount of cycles
     if (CyclesToExecute < 0) { return; }
 
     SecondCPU->SetActiveSystem(true);
@@ -1438,7 +1438,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
         CLog Error;
         Error.Open(ErrorFile);
         Error.Log("Errors:\r\n");
-        Error.Log("Register,        Recompiler,         Interpter\r\n");
+        Error.Log("Register,        Recompiler,         Interpreter\r\n");
 #ifdef TEST_SP_TRACKING
         if (m_CurrentSP != GPR[29].UW[0])
         {
@@ -1552,7 +1552,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
         {
             if (Rdram[z] != Rdram2[z])
             {
-                Error.LogF("Rdram[%X]: %X %X\r\n", z << 2, Rdram[z], Rdram2[z]);
+                Error.LogF("RDRAM[%X]: %X %X\r\n", z << 2, Rdram[z], Rdram2[z]);
             }
         }
 
@@ -1561,7 +1561,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
         {
             if (Imem[z] != Imem2[z])
             {
-                Error.LogF("Imem[%X]: %X %X\r\n", z << 2, Imem[z], Imem2[z]);
+                Error.LogF("IMEM[%X]: %X %X\r\n", z << 2, Imem[z], Imem2[z]);
             }
         }
         uint32_t * Dmem = (uint32_t *)m_MMU_VM.Dmem(), *Dmem2 = (uint32_t *)SecondCPU->m_MMU_VM.Dmem();
@@ -1569,15 +1569,15 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
         {
             if (Dmem[z] != Dmem2[z])
             {
-                Error.LogF("Dmem[%X]: %X %X\r\n", z << 2, Dmem[z], Dmem2[z]);
+                Error.LogF("DMEM[%X]: %X %X\r\n", z << 2, Dmem[z], Dmem2[z]);
             }
         }
         Error.Log("\r\n");
         Error.Log("Information:\r\n");
         Error.Log("\r\n");
         Error.LogF("PROGRAM_COUNTER,0x%X\r\n", m_Reg.m_PROGRAM_COUNTER);
-        Error.LogF("Current Timer,0x%X\r\n", m_NextTimer);
-        Error.LogF("Timer Type,0x%X\r\n", m_SystemTimer.CurrentType());
+        Error.LogF("Current timer,0x%X\r\n", m_NextTimer);
+        Error.LogF("Timer type,0x%X\r\n", m_SystemTimer.CurrentType());
         Error.Log("\r\n");
         for (int i = 0; i < (sizeof(m_LastSuccessSyncPC) / sizeof(m_LastSuccessSyncPC[0])); i++)
         {
@@ -1610,7 +1610,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
                 count < 10 ? 7 : 6, " ", *(m_Reg.m_FPR_D[count]), *(SecondCPU->m_Reg.m_FPR_D[count]));
         }
         Error.Log("\r\n");
-        Error.LogF("Rounding Model,   0x%08X, 0x%08X\r\n", m_Reg.m_RoundingModel, SecondCPU->m_Reg.m_RoundingModel);
+        Error.LogF("Rounding model,   0x%08X, 0x%08X\r\n", m_Reg.m_RoundingModel, SecondCPU->m_Reg.m_RoundingModel);
         Error.Log("\r\n");
         for (count = 0; count < 32; count++)
         {
@@ -1661,7 +1661,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
             }
         }
         Error.Log("\r\n");
-        Error.Log("Code at Last Sync PC:\r\n");
+        Error.Log("Code at last sync PC:\r\n");
         for (count = 0; count < 50; count++)
         {
             uint32_t OpcodeValue, Addr = m_LastSuccessSyncPC[0] + (count << 2);
@@ -1672,7 +1672,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
         }
     }
 
-    g_Notify->DisplayError("Sync Error");
+    g_Notify->DisplayError("Sync error");
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
@@ -1683,7 +1683,7 @@ bool CN64System::SaveState()
     //    if (!m_SystemTimer.SaveAllowed()) { return false; }
     if ((m_Reg.STATUS_REGISTER & STATUS_EXL) != 0)
     {
-        WriteTrace(TraceN64System, TraceDebug, "Done - STATUS_EXL set, can not save");
+        WriteTrace(TraceN64System, TraceDebug, "Done - STATUS_EXL set, can't save");
         return false;
     }
 
@@ -1715,13 +1715,13 @@ bool CN64System::SaveState()
     CPath ZipFile(SaveFile);
     ZipFile.SetNameExtension(stdstr_f("%s.zip", ZipFile.GetNameExtension().c_str()).c_str());
 
-    //Make sure the target dir exists
+    // Make sure the target directory exists
     if (!SaveFile.DirectoryExists())
     {
         SaveFile.DirectoryCreate();
     }
 
-    //Open the file
+    // Open the file
     if (g_Settings->LoadDword(Game_FuncLookupMode) == FuncFind_ChangeMemory)
     {
         if (m_Recomp)
@@ -1742,7 +1742,7 @@ bool CN64System::SaveState()
         zipWriteInFileInZip(file, &RdramSize, sizeof(uint32_t));
         if (g_Settings->LoadBool(Setting_EnableDisk) && g_Disk)
         {
-            //Keep Base ROM Information (64DD IPL / Compatible Game ROM)
+            // Keep base ROM information (64DD IPL / compatible game ROM)
             zipWriteInFileInZip(file, &g_Rom->GetRomAddress()[0x10], 0x20);
             zipWriteInFileInZip(file, g_Disk->GetDiskAddressID(), 0x20);
         }
@@ -1776,13 +1776,13 @@ bool CN64System::SaveState()
 
         zipOpenNewFileInZip(file, ExtraInfo.GetNameExtension().c_str(), nullptr, nullptr, 0, nullptr, 0, nullptr, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
 
-        //Extra Info v2
+        // Extra info v2
         zipWriteInFileInZip(file, &SaveID_2, sizeof(SaveID_2));
 
-        //Disk Interface Info
+        // Disk interface info
         zipWriteInFileInZip(file, m_Reg.m_DiskInterface, sizeof(uint32_t) * 22);
 
-        //System Timers Info
+        // System timers info
         m_SystemTimer.SaveData(file);
 
         zipCloseFileInZip(file);
@@ -1806,13 +1806,13 @@ bool CN64System::SaveState()
             return true;
         }
 
-        //Write info to file
+        // Write info to file
         hSaveFile.SeekToBegin();
         hSaveFile.Write(&SaveID_0, sizeof(uint32_t));
         hSaveFile.Write(&RdramSize, sizeof(uint32_t));
         if (g_Settings->LoadBool(Setting_EnableDisk) && g_Disk)
         {
-            //Keep Base ROM Information (64DD IPL / Compatible Game ROM)
+            // Keep base ROM information (64DD IPL / compatible game ROM)
             hSaveFile.Write(&g_Rom->GetRomAddress()[0x10], 0x20);
             hSaveFile.Write(g_Disk->GetDiskAddressID(), 0x20);
         }
@@ -1847,13 +1847,13 @@ bool CN64System::SaveState()
         CFile hExtraInfo(ExtraInfo, CFileBase::modeWrite | CFileBase::modeCreate);
         if (hExtraInfo.IsOpen())
         {
-            //Extra Info v2
+            // Extra info v2
             hExtraInfo.Write(&SaveID_2, sizeof(uint32_t));
 
-            //Disk Interface Info
+            // Disk interface info
             hExtraInfo.Write(m_Reg.m_DiskInterface, sizeof(uint32_t) * 22);
 
-            //System Timers Info
+            // System timers info
             m_SystemTimer.SaveData(hExtraInfo);
             hExtraInfo.Close();
         }
@@ -1915,7 +1915,7 @@ bool CN64System::LoadState()
     }
     CPath NewFileName = FileName;
 
-    //Use old file Name
+    // Use old file Name
     if (g_Settings->LoadDword(Game_CurrentSaveState) != 0)
     {
         FileName.SetNameExtension(stdstr_f("%s.pj%d", g_Settings->LoadStringVal(Game_GameName).c_str(), g_Settings->LoadDword(Game_CurrentSaveState)).c_str());
@@ -1954,7 +1954,7 @@ bool CN64System::LoadState(const char * FileName)
 
     if (g_Settings->LoadDword(Setting_AutoZipInstantSave) || _stricmp(SaveFile.GetExtension().c_str(), ".zip") == 0)
     {
-        //If ziping save add .zip on the end
+        // If zipping save add .zip on the end
         if (!SaveFile.Exists() && _stricmp(SaveFile.GetExtension().c_str(), ".zip") != 0)
         {
             SaveFile.SetNameExtension(stdstr_f("%s.zip", SaveFile.GetNameExtension().c_str()).c_str());
@@ -1987,13 +1987,13 @@ bool CN64System::LoadState(const char * FileName)
             if (!LoadedZipFile && Value == SaveID_0 && port == UNZ_OK)
             {
                 unzReadCurrentFile(file, &SaveRDRAMSize, sizeof(SaveRDRAMSize));
-                //Check header
+                // Check header
 
                 uint8_t LoadHeader[64];
                 unzReadCurrentFile(file, LoadHeader, 0x40);
                 if (g_Settings->LoadBool(Setting_EnableDisk) && g_Disk)
                 {
-                    //Base ROM Information (64DD IPL / Compatible Game ROM) & Disk Info Check
+                    // Base ROM information (64DD IPL / compatible game ROM) and disk info check
                     if ((memcmp(LoadHeader, &g_Rom->GetRomAddress()[0x10], 0x20) != 0 ||
                         memcmp(&LoadHeader[0x20], g_Disk->GetDiskAddressID(), 0x20) != 0) &&
                         !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
@@ -2043,21 +2043,21 @@ bool CN64System::LoadState(const char * FileName)
             }
             if (LoadedZipFile && Value == SaveID_1 && port == UNZ_OK)
             {
-                //Extra Info v1
-                //System Timers Info
+                // Extra info v1
+                // System timers info
                 m_SystemTimer.LoadData(file);
             }
             if (LoadedZipFile && Value == SaveID_2 && port == UNZ_OK)
             {
-                //Extra Info v2 (Project64 2.4)
-                //Disk Interface Info
+                // Extra info v2 (Project64 2.4)
+                // Disk interface info
                 unzReadCurrentFile(file, m_Reg.m_DiskInterface, sizeof(uint32_t) * 22);
 
-                //Recover Disk Seek Address (if the save state is done while loading/saving data)
+                // Recover disk seek address (if the save state is done while loading/saving data)
                 if (g_Disk)
                     DiskBMReadWrite(false);
 
-                //System Timers Info
+                // System timers info
                 m_SystemTimer.LoadData(file);
             }
             unzCloseCurrentFile(file);
@@ -2083,12 +2083,12 @@ bool CN64System::LoadState(const char * FileName)
 
         hSaveFile.Read(&SaveRDRAMSize, sizeof(SaveRDRAMSize));
 
-        //Check header
+        // Check header
         uint8_t LoadHeader[64];
         hSaveFile.Read(LoadHeader, 0x40);
         if (g_Settings->LoadBool(Setting_EnableDisk) && g_Disk)
         {
-            //Base ROM Information (64DD IPL / Compatible Game ROM) & Disk Info Check
+            // Base ROM information (64DD IPL / compatible game ROM) and disk info check
             if ((memcmp(LoadHeader, &g_Rom->GetRomAddress()[0x10], 0x20) != 0 ||
                 memcmp(&LoadHeader[0x20], g_Disk->GetDiskAddressID(), 0x20) != 0) &&
                 !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
@@ -2138,29 +2138,29 @@ bool CN64System::LoadState(const char * FileName)
         CFile hExtraInfo(ExtraInfo, CFileBase::modeRead);
         if (hExtraInfo.IsOpen())
         {
-            //Extra Info version check
+            // Extra info version check
             hExtraInfo.Read(&Value, sizeof(Value));
             if (Value != SaveID_1 && Value != SaveID_2)
                 hExtraInfo.SeekToBegin();
 
-            //Disk Interface Info
+            // Disk interface info
             if (Value == SaveID_2)
             {
                 hExtraInfo.Read(m_Reg.m_DiskInterface, sizeof(uint32_t) * 22);
 
-                //Recover Disk Seek Address (if the save state is done while loading/saving data)
+                // Recover disk seek address (if the save state is done while loading/saving data)
                 if (g_Disk)
                     DiskBMReadWrite(false);
             }
 
-            //System Timers Info
+            // System timers info
             m_SystemTimer.LoadData(hExtraInfo);
 
             hExtraInfo.Close();
         }
     }
 
-    //Fix losing audio in certain games with certain plugins
+    // Fix losing audio in certain games with certain plugins
     AudioResetOnLoad = g_Settings->LoadBool(Game_AudioResetOnLoad);
     if (AudioResetOnLoad)
     {
@@ -2185,12 +2185,12 @@ bool CN64System::LoadState(const char * FileName)
     }
     g_Plugins->Audio()->DacrateChanged(SystemType());
 
-    //Fix Random Register
+    // Fix random register
     while ((int)m_Reg.RANDOM_REGISTER < (int)m_Reg.WIRED_REGISTER)
     {
         m_Reg.RANDOM_REGISTER += 32 - m_Reg.WIRED_REGISTER;
     }
-    //Fix up timer
+    // Fix up timer
     m_SystemTimer.SetTimer(CSystemTimer::CompareTimer, m_Reg.COMPARE_REGISTER - m_Reg.COUNT_REGISTER, false);
     m_SystemTimer.SetTimer(CSystemTimer::ViTimer, NextVITimer, false);
     m_Reg.FixFpuLocations();
@@ -2288,14 +2288,14 @@ void CN64System::RunRSP()
 
             __except_try()
             {
-                WriteTrace(TraceRSP, TraceDebug, "do cycles - starting");
+                WriteTrace(TraceRSP, TraceDebug, "Do cycles - starting");
                 g_Plugins->RSP()->DoRspCycles(100);
-                WriteTrace(TraceRSP, TraceDebug, "do cycles - Done");
+                WriteTrace(TraceRSP, TraceDebug, "Do cycles - done");
             }
             __except_catch()
             {
-                WriteTrace(TraceRSP, TraceError, "exception generated");
-                g_Notify->FatalError("CN64System::RunRSP()\nUnknown memory action\n\nEmulation stop");
+                WriteTrace(TraceRSP, TraceError, "Exception generated");
+                g_Notify->FatalError("CN64System::RunRSP()\nUnknown memory action\n\nEmulation stopping");
             }
 
             if (Task == 1 && bDelayDP() && ((m_Reg.m_GfxIntrReg & MI_INTR_DP) != 0))
@@ -2328,7 +2328,7 @@ void CN64System::RunRSP()
             {
                 m_RspBroke = true;
             }
-            WriteTrace(TraceRSP, TraceDebug, "check interrupts");
+            WriteTrace(TraceRSP, TraceDebug, "Check interrupts");
             g_Reg->CheckInterrupts();
         }
     }
@@ -2347,7 +2347,7 @@ void CN64System::RefreshScreen()
 
     if (bShowCPUPer()) { CPU_UsageAddr = m_CPU_Usage.StartTimer(Timer_RefreshScreen); }
 
-    //Calculate how many cycles to next refresh
+    // Calculate how many cycles to next refresh
     if (m_Reg.VI_V_SYNC_REG == 0)
     {
         VI_INTR_TIME = 500000;
@@ -2381,13 +2381,13 @@ void CN64System::RefreshScreen()
 
     __except_try()
     {
-        WriteTrace(TraceGFXPlugin, TraceDebug, "UpdateScreen Starting");
+        WriteTrace(TraceGFXPlugin, TraceDebug, "UpdateScreen starting");
         g_Plugins->Gfx()->UpdateScreen();
 		if (g_Debugger != nullptr && HaveDebugger())
 		{
 			g_Debugger->FrameDrawn();
 		}
-        WriteTrace(TraceGFXPlugin, TraceDebug, "UpdateScreen Done");
+        WriteTrace(TraceGFXPlugin, TraceDebug, "UpdateScreen done");
     }
     __except_catch()
     {

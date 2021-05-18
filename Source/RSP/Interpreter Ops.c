@@ -1676,7 +1676,7 @@ void RSP_Opcode_SWV ( void ) {
 	RSP_SWV_DMEM( Address, RSPOpC.rt, RSPOpC.del);
 }
 
-/************************** Other functions **************************/
+// Other functions
 
 void rsp_UnknownOpcode (void) {
 	char Message[200];

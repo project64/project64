@@ -411,7 +411,7 @@ void CEnhancements::ApplyGameSharkCodes(CMipsMemoryVM & MMU, CODES & CodeEntry, 
 
     switch (Code.Command() & 0xFF000000)
     {
-    case 0x50000000: // Gameshark / AR
+    case 0x50000000: // Gameshark / Action Replay
         if ((CurrentEntry + 1) >= (int)CodeEntry.size())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -532,7 +532,7 @@ void CEnhancements::ApplyGameSharkCodes(CMipsMemoryVM & MMU, CODES & CodeEntry, 
     case 0x89000000:
     case 0xA8000000:
     case 0xA9000000:
-        //Ignore - GS Button
+        // Ignore - Gameshark (GS) button
         break;
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -681,7 +681,7 @@ void CEnhancements::ScanFileThread(void)
     {
         do
         {
-            CEnhancmentFile EnhancmentFile(File, "Enhancment");
+            CEnhancmentFile EnhancmentFile(File, CEnhancement::EnhancementIdent);
             CEnhancmentFile::SectionList Sections;
             EnhancmentFile.GetSections(Sections);
             for (CEnhancmentFile::SectionList::const_iterator itr = Sections.begin(); itr != Sections.end(); itr++)
@@ -699,7 +699,7 @@ void CEnhancements::ScanFileThread(void)
     {
         do
         {
-            CEnhancmentFile EnhancmentFile(File, "Enhancment");
+            CEnhancmentFile EnhancmentFile(File, CEnhancement::EnhancementIdent);
             CEnhancmentFile::SectionList Sections;
             EnhancmentFile.GetSections(Sections);
             for (CEnhancmentFile::SectionList::const_iterator itr = Sections.begin(); itr != Sections.end(); itr++)

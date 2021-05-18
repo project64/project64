@@ -40,7 +40,7 @@ public:
     void Reset();
     void ResetRecompCode(bool bAllocate);
 
-    //Self modifying code methods
+    // Self-modifying code methods
     void ClearRecompCode_Virt(uint32_t VirtualAddress, int32_t length, REMOVE_REASON Reason);
     void ClearRecompCode_Phys(uint32_t PhysicalAddress, int32_t length, REMOVE_REASON Reason);
 
@@ -81,6 +81,6 @@ private:
     uint32_t           m_MemoryStack;
     FUNCTION_PROFILE m_BlockProfile;
 
-    //Quick access to registers
+    // Quick access to registers
     uint32_t            & PROGRAM_COUNTER;
 };

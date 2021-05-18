@@ -17,17 +17,17 @@ public:
     virtual SettingType GetSettingType(void) const { return SettingType_CfgFile; }
     virtual bool IsSettingSet(void) const;
 
-    //return the values
+    // Return the values
     virtual bool Load(uint32_t Index, bool & Value) const;
     virtual bool Load(uint32_t Index, uint32_t & Value) const;
     virtual bool Load(uint32_t Index, std::string & Value) const;
 
-    //return the default values
+    // Return the default values
     virtual void LoadDefault(uint32_t Index, bool & Value) const;
     virtual void LoadDefault(uint32_t Index, uint32_t & Value) const;
     virtual void LoadDefault(uint32_t Index, std::string & Value) const;
 
-    //Update the settings
+    // Update the settings
     virtual void Save(uint32_t Index, bool Value);
     virtual void Save(uint32_t Index, uint32_t Value);
     virtual void Save(uint32_t Index, const std::string & Value);
@@ -36,7 +36,7 @@ public:
     // Delete the setting
     virtual void Delete(uint32_t Index);
 
-    // Initialize this class to use ini or registry
+    // Initialize this class to use the INI file or registry
     static void Initialize(void);
     static void CleanUp(void);
     static void Flush(void);

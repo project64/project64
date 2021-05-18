@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2014 Bobby Smiles
 // Copyright(C) 2009 Richard Goedeken
@@ -284,12 +284,12 @@ static void FILTER(CHle * hle, uint32_t w1, uint32_t w2)
 
     if (flags > 1) {
         hle->alist_nead().filter_count          = w1;
-        hle->alist_nead().filter_lut_address[0] = address; // t6
+        hle->alist_nead().filter_lut_address[0] = address; // T6
     }
     else {
         uint16_t dmem = w1;
 
-        hle->alist_nead().filter_lut_address[1] = address + 0x10; // t5
+        hle->alist_nead().filter_lut_address[1] = address + 0x10; // T5
         alist_filter(hle, dmem, hle->alist_nead().filter_count, address, hle->alist_nead().filter_lut_address);
     }
 }

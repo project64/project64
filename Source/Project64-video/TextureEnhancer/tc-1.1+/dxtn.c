@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2007 Hiroshi Morii
 // Copyright(C) 2004 Daniel Borca
@@ -16,17 +16,16 @@
 #include "internal.h"
 #include "dxtn.h"
 
-/***************************************************************************\
- * DXTn encoder
- *
- * The encoder was built by reversing the decoder,
- * and is vaguely based on FXT1 codec. Note that this code
- * is merely a proof of concept, since it is highly UNoptimized!
-\***************************************************************************/
+/*
+DXTn encoder
+The encoder was built by reversing the decoder,
+and is vaguely based on FXT1 codec. Note that this code
+is merely a proof of concept, since it is highly unoptimized!
+*/
 
-#define MAX_COMP 4 /* ever needed maximum number of components in texel */
-#define MAX_VECT 4 /* ever needed maximum number of base vectors to find */
-#define N_TEXELS 16 /* number of texels in a block (always 16) */
+#define MAX_COMP 4 // Ever needed maximum number of components in texel
+#define MAX_VECT 4 // Ever needed maximum number of base vectors to find
+#define N_TEXELS 16 // Number of texels in a block (always 16)
 #define COLOR565(v) (word)((((v)[RCOMP] & 0xf8) << 8) | (((v)[GCOMP] & 0xfc) << 3) | ((v)[BCOMP] >> 3))
 
 static const int dxtn_color_tlat[2][4] = {
@@ -42,30 +41,30 @@ static const int dxtn_alpha_tlat[2][8] = {
 static void
 dxt1_rgb_quantize(dword *cc, const byte *lines[], int comps)
 {
-    float b, iv[MAX_COMP];   /* interpolation vector */
+    float b, iv[MAX_COMP];   // Interpolation vector
 
-    dword hi; /* high doubleword */
+    dword hi; // High doubleword
     int color0, color1;
     int n_vect;
     const int n_comp = 3;
     int black = 0;
 
 #ifndef YUV
-    int minSum = 2000; /* big enough */
+    int minSum = 2000; // Big enough
 #else
     int minSum = 2000000;
 #endif
-    int maxSum = -1; /* small enough */
-    int minCol = 0; /* phoudoin: silent compiler! */
-    int maxCol = 0; /* phoudoin: silent compiler! */
+    int maxSum = -1; // Small enough
+    int minCol = 0; // phoudoin: Silent compiler!
+    int maxCol = 0; // phoudoin: Silent compiler!
 
     byte input[N_TEXELS][MAX_COMP];
     int i, k, l;
 
-    /* make the whole block opaque */
-    /* we will NEVER reference ACOMP of any pixel */
+    // Make the whole block opaque
+    // We will NEVER reference ACOMP of any pixel
 
-    /* 4 texels each line */
+    // 4 texels each line
 #ifndef ARGB
     for (l = 0; l < 4; l++) {
         for (k = 0; k < 4; k++) {
@@ -75,7 +74,7 @@ dxt1_rgb_quantize(dword *cc, const byte *lines[], int comps)
         }
     }
 #else
-    /* H.Morii - support for ARGB inputs */
+    // H.Morii - Support for ARGB inputs
     for (l = 0; l < 4; l++) {
         for (k = 0; k < 4; k++) {
             input[k + l * 4][2] = *lines[l]++;
@@ -86,10 +85,12 @@ dxt1_rgb_quantize(dword *cc, const byte *lines[], int comps)
     }
 #endif
 
-    /* Our solution here is to find the darkest and brightest colors in
-     * the 4x4 tile and use those as the two representative colors.
-     * There are probably better algorithms to use (histogram-based).
-     */
+    /*
+	Our solution here is to find the darkest and brightest colors in
+    the 4x4 tile and use those as the two representative colors.
+    There are probably better algorithms to use (histogram-based).
+    */
+	
     for (k = 0; k < N_TEXELS; k++) {
         int sum = 0;
 #ifndef YUV
@@ -98,10 +99,11 @@ dxt1_rgb_quantize(dword *cc, const byte *lines[], int comps)
         }
 #else
         /* RGB to YUV conversion according to CCIR 601 specs
-         * Y = 0.299R+0.587G+0.114B
-         * U = 0.713(R - Y) = 0.500R-0.419G-0.081B
-         * V = 0.564(B - Y) = -0.169R-0.331G+0.500B
-         */
+        Y = 0.299R+0.587G+0.114B
+        U = 0.713(R - Y) = 0.500R-0.419G-0.081B
+        V = 0.564(B - Y) = -0.169R-0.331G+0.500B
+        */
+		
         sum = 299 * input[k][RCOMP] + 587 * input[k][GCOMP] + 114 * input[k][BCOMP];
 #endif
         if (minSum > sum) {
@@ -121,13 +123,13 @@ dxt1_rgb_quantize(dword *cc, const byte *lines[], int comps)
     color1 = COLOR565(input[maxCol]);
 
     if (color0 == color1) {
-        /* we'll use 3-vector */
+        // We'll use 3-vector
         cc[0] = color0 | (color1 << 16);
         hi = black ? -1 : 0;
     }
     else {
         if (black && ((color0 == 0) || (color1 == 0))) {
-            /* we still can use 4-vector */
+            // We still can use 4-vector
             black = 0;
         }
 
@@ -144,7 +146,7 @@ dxt1_rgb_quantize(dword *cc, const byte *lines[], int comps)
 
         MAKEIVEC(n_vect, n_comp, iv, b, input[minCol], input[maxCol]);
 
-        /* add in texels */
+        // Add in texels
         cc[0] = color0 | (color1 << 16);
         hi = 0;
         for (k = N_TEXELS - 1; k >= 0; k--) {
@@ -156,11 +158,11 @@ dxt1_rgb_quantize(dword *cc, const byte *lines[], int comps)
                 }
             }
             if (!black || sum) {
-                /* interpolate color */
+                // Interpolate color
                 CALCCDOT(texel, n_vect, n_comp, iv, b, input[k]);
                 texel = dxtn_color_tlat[black][texel];
             }
-            /* add in texel */
+            // Add in texel
             hi <<= 2;
             hi |= texel;
         }
@@ -171,32 +173,32 @@ dxt1_rgb_quantize(dword *cc, const byte *lines[], int comps)
 static void
 dxt1_rgba_quantize(dword *cc, const byte *lines[], int comps)
 {
-    float b, iv[MAX_COMP];	/* interpolation vector */
+    float b, iv[MAX_COMP];	// Interpolation vector
 
-    dword hi;		/* high doubleword */
+    dword hi;		// High doubleword
     int color0, color1;
     int n_vect;
     const int n_comp = 3;
     int transparent = 0;
 
 #ifndef YUV
-    int minSum = 2000;          /* big enough */
+    int minSum = 2000;          // Big enough
 #else
     int minSum = 2000000;
 #endif
-    int maxSum = -1;		/* small enough */
-    int minCol = 0;		/* phoudoin: silent compiler! */
-    int maxCol = 0;		/* phoudoin: silent compiler! */
+    int maxSum = -1;		// Small enough
+    int minCol = 0;		// phoudoin: Silent compiler!
+    int maxCol = 0;		// phoudoin: Silent compiler!
 
     byte input[N_TEXELS][MAX_COMP];
     int i, k, l;
 
     if (comps == 3) {
-        /* make the whole block opaque */
+        // Make the whole block opaque
         memset(input, -1, sizeof(input));
     }
 
-    /* 4 texels each line */
+    // 4 texels each line
 #ifndef ARGB
     for (l = 0; l < 4; l++) {
         for (k = 0; k < 4; k++) {
@@ -206,7 +208,7 @@ dxt1_rgba_quantize(dword *cc, const byte *lines[], int comps)
         }
     }
 #else
-    /* H.Morii - support for ARGB inputs */
+    // H.Morii - Support for ARGB inputs
     for (l = 0; l < 4; l++) {
         for (k = 0; k < 4; k++) {
             input[k + l * 4][2] = *lines[l]++;
@@ -217,10 +219,12 @@ dxt1_rgba_quantize(dword *cc, const byte *lines[], int comps)
     }
 #endif
 
-    /* Our solution here is to find the darkest and brightest colors in
-     * the 4x4 tile and use those as the two representative colors.
-     * There are probably better algorithms to use (histogram-based).
-     */
+    /*
+	Our solution here is to find the darkest and brightest colors in
+    the 4x4 tile and use those as the two representative colors.
+    There are probably better algorithms to use (histogram-based).
+    */
+	
     for (k = 0; k < N_TEXELS; k++) {
         int sum = 0;
 #ifndef YUV
@@ -247,7 +251,7 @@ dxt1_rgba_quantize(dword *cc, const byte *lines[], int comps)
     color1 = COLOR565(input[maxCol]);
 
     if (color0 == color1) {
-        /* we'll use 3-vector */
+        // We'll use 3-vector
         cc[0] = color0 | (color1 << 16);
         hi = transparent ? -1 : 0;
     }
@@ -265,17 +269,17 @@ dxt1_rgba_quantize(dword *cc, const byte *lines[], int comps)
 
         MAKEIVEC(n_vect, n_comp, iv, b, input[minCol], input[maxCol]);
 
-        /* add in texels */
+        // Add in texels
         cc[0] = color0 | (color1 << 16);
         hi = 0;
         for (k = N_TEXELS - 1; k >= 0; k--) {
             int texel = 3;
             if (input[k][ACOMP] >= 128) {
-                /* interpolate color */
+                // Interpolate color
                 CALCCDOT(texel, n_vect, n_comp, iv, b, input[k]);
                 texel = dxtn_color_tlat[transparent][texel];
             }
-            /* add in texel */
+            // Add in texel
             hi <<= 2;
             hi |= texel;
         }
@@ -286,32 +290,32 @@ dxt1_rgba_quantize(dword *cc, const byte *lines[], int comps)
 static void
 dxt3_rgba_quantize(dword *cc, const byte *lines[], int comps)
 {
-    float b, iv[MAX_COMP];	/* interpolation vector */
+    float b, iv[MAX_COMP];	// Interpolation vector
 
-    dword lolo, lohi;	/* low quadword: lo dword, hi dword */
-    dword hihi;		/* high quadword: high dword */
+    dword lolo, lohi;	// Low quadword: lo DWORD, hi DWORD
+    dword hihi;		// High quadword: high DWORD
     int color0, color1;
     const int n_vect = 3;
     const int n_comp = 3;
 
 #ifndef YUV
-    int minSum = 2000;          /* big enough */
+    int minSum = 2000;          // Big enough
 #else
     int minSum = 2000000;
 #endif
-    int maxSum = -1;		/* small enough */
-    int minCol = 0;		/* phoudoin: silent compiler! */
-    int maxCol = 0;		/* phoudoin: silent compiler! */
+    int maxSum = -1;		// Small enough
+    int minCol = 0;		// phoudoin: Silent compiler!
+    int maxCol = 0;		// phoudoin: Silent compiler!
 
     byte input[N_TEXELS][MAX_COMP];
     int i, k, l;
 
     if (comps == 3) {
-        /* make the whole block opaque */
+        // Make the whole block opaque
         memset(input, -1, sizeof(input));
     }
 
-    /* 4 texels each line */
+    // 4 texels each line
 #ifndef ARGB
     for (l = 0; l < 4; l++) {
         for (k = 0; k < 4; k++) {
@@ -321,7 +325,7 @@ dxt3_rgba_quantize(dword *cc, const byte *lines[], int comps)
         }
     }
 #else
-    /* H.Morii - support for ARGB inputs */
+    // H.Morii - Support for ARGB inputs
     for (l = 0; l < 4; l++) {
         for (k = 0; k < 4; k++) {
             input[k + l * 4][2] = *lines[l]++;
@@ -332,10 +336,12 @@ dxt3_rgba_quantize(dword *cc, const byte *lines[], int comps)
     }
 #endif
 
-    /* Our solution here is to find the darkest and brightest colors in
-     * the 4x4 tile and use those as the two representative colors.
-     * There are probably better algorithms to use (histogram-based).
-     */
+    /* TODO:
+	Our solution here is to find the darkest and brightest colors in
+    the 4x4 tile and use those as the two representative colors.
+    There are probably better algorithms to use (histogram-based).
+    */
+	
     for (k = 0; k < N_TEXELS; k++) {
         int sum = 0;
 #ifndef YUV
@@ -355,16 +361,16 @@ dxt3_rgba_quantize(dword *cc, const byte *lines[], int comps)
         }
     }
 
-    /* add in alphas */
+    // Add in alphas
     lolo = lohi = 0;
     for (k = N_TEXELS - 1; k >= N_TEXELS / 2; k--) {
-        /* add in alpha */
+        // Add in alpha
         lohi <<= 4;
         lohi |= input[k][ACOMP] >> 4;
     }
     cc[1] = lohi;
     for (; k >= 0; k--) {
-        /* add in alpha */
+        // Add in alpha
         lolo <<= 4;
         lolo |= input[k][ACOMP] >> 4;
     }
@@ -399,13 +405,13 @@ dxt3_rgba_quantize(dword *cc, const byte *lines[], int comps)
     if (color0 != color1) {
         MAKEIVEC(n_vect, n_comp, iv, b, input[minCol], input[maxCol]);
 
-        /* add in texels */
+        // Add in texels
         for (k = N_TEXELS - 1; k >= 0; k--) {
             int texel;
-            /* interpolate color */
+            // Interpolate color
             CALCCDOT(texel, n_vect, n_comp, iv, b, input[k]);
             texel = dxtn_color_tlat[0][texel];
-            /* add in texel */
+            // Add in texel
             hihi <<= 2;
             hihi |= texel;
         }
@@ -416,24 +422,24 @@ dxt3_rgba_quantize(dword *cc, const byte *lines[], int comps)
 static void
 dxt5_rgba_quantize(dword *cc, const byte *lines[], int comps)
 {
-    float b, iv[MAX_COMP];	/* interpolation vector */
+    float b, iv[MAX_COMP];	// Interpolation vector
 
-    qword lo;			/* low quadword */
-    dword hihi;		/* high quadword: high dword */
+    qword lo;			// Low quadword
+    dword hihi;		// High quadword: high DWORD
     int color0, color1;
     const int n_vect = 3;
     const int n_comp = 3;
 
 #ifndef YUV
-    int minSum = 2000;          /* big enough */
+    int minSum = 2000;          // Big enough
 #else
     int minSum = 2000000;
 #endif
-    int maxSum = -1;		/* small enough */
-    int minCol = 0;		/* phoudoin: silent compiler! */
-    int maxCol = 0;		/* phoudoin: silent compiler! */
-    int alpha0 = 2000;		/* big enough */
-    int alpha1 = -1;		/* small enough */
+    int maxSum = -1;		// Small enough
+    int minCol = 0;		// phoudoin: Silent compiler!
+    int maxCol = 0;		// phoudoin: Silent compiler!
+    int alpha0 = 2000;		// Big enough
+    int alpha1 = -1;		// Small enough
     int anyZero = 0, anyOne = 0;
     int a_vect;
 
@@ -441,11 +447,11 @@ dxt5_rgba_quantize(dword *cc, const byte *lines[], int comps)
     int i, k, l;
 
     if (comps == 3) {
-        /* make the whole block opaque */
+        // Make the whole block opaque
         memset(input, -1, sizeof(input));
     }
 
-    /* 4 texels each line */
+    // 4 texels each line
 #ifndef ARGB
     for (l = 0; l < 4; l++) {
         for (k = 0; k < 4; k++) {
@@ -455,7 +461,7 @@ dxt5_rgba_quantize(dword *cc, const byte *lines[], int comps)
         }
     }
 #else
-    /* H.Morii - support for ARGB inputs */
+    // H.Morii - Support for ARGB inputs
     for (l = 0; l < 4; l++) {
         for (k = 0; k < 4; k++) {
             input[k + l * 4][2] = *lines[l]++;
@@ -466,10 +472,12 @@ dxt5_rgba_quantize(dword *cc, const byte *lines[], int comps)
     }
 #endif
 
-    /* Our solution here is to find the darkest and brightest colors in
-     * the 4x4 tile and use those as the two representative colors.
-     * There are probably better algorithms to use (histogram-based).
-     */
+    /*
+	Our solution here is to find the darkest and brightest colors in
+    the 4x4 tile and use those as the two representative colors.
+    There are probably better algorithms to use (histogram-based).
+    */
+	
     for (k = 0; k < N_TEXELS; k++) {
         int sum = 0;
 #ifndef YUV
@@ -501,19 +509,19 @@ dxt5_rgba_quantize(dword *cc, const byte *lines[], int comps)
         }
     }
 
-    /* add in alphas */
+    // Add in alphas
     if (alpha0 == alpha1) {
-        /* we'll use 6-vector */
+        // We'll use 6-vector
         cc[0] = alpha0 | (alpha1 << 8);
         cc[1] = 0;
     }
     else {
         if (anyZero && ((alpha0 == 0) || (alpha1 == 0))) {
-            /* we still might use 8-vector */
+            // We still might use 8-vector
             anyZero = 0;
         }
         if (anyOne && ((alpha0 == 255) || (alpha1 == 255))) {
-            /* we still might use 8-vector */
+            // We still might use 8-vector
             anyOne = 0;
         }
         if ((anyZero | anyOne) ^ (alpha0 <= alpha1)) {
@@ -524,11 +532,11 @@ dxt5_rgba_quantize(dword *cc, const byte *lines[], int comps)
         }
         a_vect = (alpha0 <= alpha1) ? 5 : 7;
 
-        /* compute interpolation vector */
+        // Compute interpolation vector
         iv[ACOMP] = (float)a_vect / (alpha1 - alpha0);
         b = -iv[ACOMP] * alpha0 + 0.5F;
 
-        /* add in alphas */
+        // Add in alphas
         Q_MOV32(lo, 0);
         for (k = N_TEXELS - 1; k >= 0; k--) {
             int texel = -1;
@@ -540,7 +548,7 @@ dxt5_rgba_quantize(dword *cc, const byte *lines[], int comps)
                     texel = 7;
                 }
             }
-            /* interpolate alpha */
+            // Interpolate alpha
             if (texel == -1) {
                 float dot = input[k][ACOMP] * iv[ACOMP];
                 texel = (int)(dot + b);
@@ -554,7 +562,7 @@ dxt5_rgba_quantize(dword *cc, const byte *lines[], int comps)
 #endif
                 texel = dxtn_alpha_tlat[anyZero | anyOne][texel];
             }
-            /* add in texel */
+            // Add in texel
             Q_SHL(lo, 3);
             Q_OR32(lo, texel);
         }
@@ -584,13 +592,13 @@ dxt5_rgba_quantize(dword *cc, const byte *lines[], int comps)
     if (color0 != color1) {
         MAKEIVEC(n_vect, n_comp, iv, b, input[minCol], input[maxCol]);
 
-        /* add in texels */
+        // Add in texels
         for (k = N_TEXELS - 1; k >= 0; k--) {
             int texel;
-            /* interpolate color */
+            // Interpolate color
             CALCCDOT(texel, n_vect, n_comp, iv, b, input[k]);
             texel = dxtn_color_tlat[0][texel];
-            /* add in texel */
+            // Add in texel
             hihi <<= 2;
             hihi |= texel;
         }
@@ -653,20 +661,19 @@ ENCODER(dxt1_rgba, 2)
 ENCODER(dxt3_rgba, 4)
 ENCODER(dxt5_rgba, 4)
 
-/***************************************************************************\
- * DXTn decoder
- *
- * The decoder is based on GL_EXT_texture_compression_s3tc
- * specification and serves as a concept for the encoder.
-\***************************************************************************/
+/*
+DXTn decoder
+The decoder is based on GL_EXT_texture_compression_s3tc
+specification and serves as a concept for the encoder.
+*/
 
-/* lookup table for scaling 4 bit colors up to 8 bits */
+// Lookup table for scaling 4-bit colors up to 8-bit
 static const byte _rgb_scale_4[] = {
     0,   17,  34,  51,  68,  85,  102, 119,
     136, 153, 170, 187, 204, 221, 238, 255
 };
 
-/* lookup table for scaling 5 bit colors up to 8 bits */
+// Lookup table for scaling 5-bit colors up to 8-bit
 static const byte _rgb_scale_5[] = {
     0,   8,   16,  25,  33,  41,  49,  58,
     66,  74,  82,  90,  99,  107, 115, 123,
@@ -674,7 +681,7 @@ static const byte _rgb_scale_5[] = {
     197, 206, 214, 222, 230, 239, 247, 255
 };
 
-/* lookup table for scaling 6 bit colors up to 8 bits */
+// Lookup table for scaling 6-bit colors up to 8-bit
 static const byte _rgb_scale_6[] = {
     0,   4,   8,   12,  16,  20,  24,  28,
     32,  36,  40,  45,  49,  53,  57,  61,
@@ -742,7 +749,7 @@ void TAPIENTRY
 dxt1_rgba_decode_1(const void *texture, int stride,
     int i, int j, byte *rgba)
 {
-    /* Same as rgb_dxt1 above, except alpha=0 if col0<=col1 and code=3. */
+    // Same as rgb_dxt1 above, except alpha=0 if col0<=col1 and code=3.
     const byte *src = (const byte *)texture
         + ((j / 4) * ((stride + 3) / 4) + i / 4) * 8;
     const int code = (src[4 + (j & 3)] >> ((i & 3) * 2)) & 0x3;
@@ -807,7 +814,7 @@ dxt3_rgba_decode_1(const void *texture, int stride,
         rgba[BCOMP] = UP5(CC_SEL(cc, 16));
     }
     else if (code == 2) {
-        /* (col0 * (4 - code) + col1 * (code - 1)) / 3 */
+        // (col0 * (4 - code) + col1 * (code - 1)) / 3
         rgba[RCOMP] = (UP5(CC_SEL(cc, 11)) * 2 + UP5(CC_SEL(cc, 27))) / 3;
         rgba[GCOMP] = (UP6(CC_SEL(cc, 5)) * 2 + UP6(CC_SEL(cc, 21))) / 3;
         rgba[BCOMP] = (UP5(CC_SEL(cc, 0)) * 2 + UP5(CC_SEL(cc, 16))) / 3;
@@ -845,7 +852,7 @@ dxt5_rgba_decode_1(const void *texture, int stride,
         rgba[BCOMP] = UP5(CC_SEL(cc, 16));
     }
     else if (code == 2) {
-        /* (col0 * (4 - code) + col1 * (code - 1)) / 3 */
+        // (col0 * (4 - code) + col1 * (code - 1)) / 3
         rgba[RCOMP] = (UP5(CC_SEL(cc, 11)) * 2 + UP5(CC_SEL(cc, 27))) / 3;
         rgba[GCOMP] = (UP6(CC_SEL(cc, 5)) * 2 + UP6(CC_SEL(cc, 21))) / 3;
         rgba[BCOMP] = (UP5(CC_SEL(cc, 0)) * 2 + UP5(CC_SEL(cc, 16))) / 3;

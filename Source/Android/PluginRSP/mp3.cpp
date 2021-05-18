@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2014 Bobby Smiles
 // Copyright(C) 2009 Richard Goedeken
@@ -197,8 +197,8 @@ void mp3_task(CHle * hle, unsigned int index, uint32_t address)
     uint32_t t4;// = (w1 & 0x1E);
 
     // Initialization code
-    uint32_t readPtr; // s5
-    uint32_t writePtr; // s6
+    uint32_t readPtr; // S5
+    uint32_t writePtr; // S6
     uint32_t tmp;
     int cnt, cnt2;
 
@@ -210,16 +210,16 @@ void mp3_task(CHle * hle, unsigned int index, uint32_t address)
     writePtr = readPtr = address;
     // TODO: Just do that for efficiency...may remove and use directly later anyway
     memcpy(hle->mp3_buffer() + 0xCE8, hle->dram() + readPtr, 8);
-    // This must be a header byte or whatnot
+    // This must be a header byte or what not
     readPtr += 8;
 
     for (cnt = 0; cnt < 0x480; cnt += 0x180)
     {
         // DMA: 0xCF0 <- RDRAM[s5] : 0x180
         memcpy(hle->mp3_buffer() + 0xCF0, hle->dram() + readPtr, 0x180);
-        inPtr  = 0xCF0; // s7
-        outPtr = 0xE70; // s3
-        // --------------- Inner Loop Start --------------------
+        inPtr  = 0xCF0; // S7
+        outPtr = 0xE70; // S3
+        // Inner loop start
         for (cnt2 = 0; cnt2 < 0x180; cnt2 += 0x40)
         {
             t6 &= 0xFFE0;
@@ -234,7 +234,7 @@ void mp3_task(CHle * hle, unsigned int index, uint32_t address)
             inPtr += 0x40;
             outPtr += 0x40;
         }
-        // --------------- Inner Loop End --------------------
+        // Inner loop end
         memcpy(hle->dram() + writePtr, hle->mp3_buffer() + 0xe70, 0x180);
         writePtr += 0x180;
         readPtr  += 0x180;
@@ -326,7 +326,7 @@ static void InnerLoop(CHle * hle, uint32_t outPtr, uint32_t inPtr, uint32_t t6, 
 
     MP3AB0(v);
 
-    // Part 5 - 1-Wide Butterflies - 100% accurate but need SSVs!
+    // Part 5 - 1-wide butterflies - 100% accurate but need SSVs!
 
     t0 = t6 + 0x100;
     t1 = t6 + 0x200;
@@ -485,7 +485,7 @@ static void InnerLoop(CHle * hle, uint32_t outPtr, uint32_t inPtr, uint32_t t6, 
 
     MP3AB0(v);
 
-    // Part 7: - 100% accurate + SSV - Unoptimized
+    // Part 7: - 100% accurate + SSV - unoptimized (TODO: optimize?)
 
     v[0] = (v[17] + v[16]) >> 1;
     v[1] = ((v[17] * (int)((short)0xA57E * 2)) + (v[16] * 0xB504)) >> 0x10;
@@ -582,7 +582,7 @@ static void InnerLoop(CHle * hle, uint32_t outPtr, uint32_t inPtr, uint32_t t6, 
         v18 = v6 + v8;
         // Clamp(v0);
         // Clamp(v18);
-        // clamp???
+        // Clamp?
         *(int16_t *)(hle->mp3_buffer() + (outPtr ^ S16)) = v0;
         *(int16_t *)(hle->mp3_buffer() + ((outPtr + 2)^S16)) = v18;
         outPtr += 4;
@@ -643,7 +643,7 @@ static void InnerLoop(CHle * hle, uint32_t outPtr, uint32_t inPtr, uint32_t t6, 
         v18 = v6 + v8;
         // Clamp(v0);
         // Clamp(v18);
-        // clamp???
+        // Clamp?
         *(int16_t *)(hle->mp3_buffer() + ((outPtr + 2)^S16)) = v0;
         *(int16_t *)(hle->mp3_buffer() + ((outPtr + 4)^S16)) = v18;
         outPtr += 4;

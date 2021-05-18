@@ -187,7 +187,7 @@ void CCodeSection::GenerateSectionLinkage()
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef legacycode
-        //Handle Fall througth
+        // Handle fall-through
         uint8_t * Jump = nullptr;
         for (i = 0; i < 2; i ++)
         {
@@ -243,7 +243,7 @@ void CCodeSection::GenerateSectionLinkage()
         //	MoveConstToVariable(DELAY_SLOT,&m_NextInstruction,"m_NextInstruction");
         PushImm32(stdstr_f("0x%08X",m_RecompilerOps->GetCurrentPC() + 4).c_str(),m_RecompilerOps->GetCurrentPC() + 4);
 
-        // check if there is an existing section
+        // Check if there is an existing section
 
         MoveConstToX86reg((uint32_t)g_Recompiler,x86_ECX);
         Call_Direct(AddressOf(&CRecompiler::CompileDelaySlot), "CRecompiler::CompileDelaySlot");
@@ -253,7 +253,7 @@ void CCodeSection::GenerateSectionLinkage()
 #endif
     }
 
-    // Handle Perm Loop
+    // Handle permanent loop
     if (m_RecompilerOps->GetCurrentPC() == m_Jump.TargetPC && (m_Cont.FallThrough == false))
     {
         if (!DelaySlotEffectsJump(m_RecompilerOps->GetCurrentPC()))
@@ -826,7 +826,7 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             break;
         case JUMP:
         case END_BLOCK:
-            // Do nothing, block will end
+            // Do nothing, the block will end
             break;
         default:
             CPU_Message("m_RecompilerOps->GetNextStepType() = %d", m_RecompilerOps->GetNextStepType());
@@ -874,7 +874,7 @@ void CCodeSection::AddParent(CCodeSection * Parent)
         return;
     }
 
-    // check to see if we already have the parent in the list
+    // Check to see if we already have the parent in the list
     for (SECTION_LIST::iterator iter = m_ParentSection.begin(); iter != m_ParentSection.end(); iter++)
     {
         if (*iter == Parent)
@@ -896,7 +896,7 @@ void CCodeSection::AddParent(CCodeSection * Parent)
         }
         else
         {
-            g_Notify->DisplayError("How are these sections joined?????");
+            g_Notify->DisplayError("How are these sections joined?");
         }
     }
     else
@@ -1192,26 +1192,27 @@ void CCodeSection::DisplaySectionInformation()
 
     if (g_System->bLinkBlocks())
     {
-        CPU_Message("Jump Address: 0x%08X", m_Jump.JumpPC);
-        CPU_Message("Jump Target Address: 0x%08X", m_Jump.TargetPC);
+        CPU_Message("Jump address: 0x%08X", m_Jump.JumpPC);
+        CPU_Message("Jump target address: 0x%08X", m_Jump.TargetPC);
         if (m_JumpSection != nullptr)
         {
-            CPU_Message("Jump Section: %d", m_JumpSection->m_SectionID);
+            CPU_Message("Jump section: %d", m_JumpSection->m_SectionID);
         }
         else
         {
-            CPU_Message("Jump Section: None");
+            CPU_Message("Jump section: None");
         }
-        CPU_Message("Continue Address: 0x%08X", m_Cont.JumpPC);
-        CPU_Message("Continue Target Address: 0x%08X", m_Cont.TargetPC);
-        if (m_ContinueSection != nullptr) {
-            CPU_Message("Continue Section: %d", m_ContinueSection->m_SectionID);
+        CPU_Message("Continue address: 0x%08X", m_Cont.JumpPC);
+        CPU_Message("Continue target address: 0x%08X", m_Cont.TargetPC);
+        if (m_ContinueSection != nullptr)
+        {
+            CPU_Message("Continue section: %d", m_ContinueSection->m_SectionID);
         }
         else
         {
-            CPU_Message("Continue Section: None");
+            CPU_Message("Continue section: None");
         }
-        CPU_Message("In Loop: %s", m_InLoop ? "Yes" : "No");
+        CPU_Message("In loop: %s", m_InLoop ? "Yes" : "No");
     }
     CPU_Message("=======================");
 }

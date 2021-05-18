@@ -7,17 +7,17 @@ enum
 
 enum SettingID
 {
-    //Default values
+    // Default values
     Default_None,
     Default_Constant,
 
-    //Command Settings
+    // Command settings
     Cmd_BaseDirectory,
     Cmd_RomFile,
     Cmd_ComboDiskFile,
     Cmd_ShowHelp,
 
-    //Support Files
+    // Support files
     SupportFile_Settings,
     SupportFile_SettingsDefault,
     SupportFile_RomDatabase,
@@ -39,7 +39,7 @@ enum SettingID
     SupportFile_ExtInfo,
     SupportFile_ExtInfoDefault,
 
-    //Settings
+    // Settings
     Setting_ApplicationName,
     Setting_UseFromRegistry,
     Setting_RdbEditor,
@@ -61,7 +61,7 @@ enum SettingID
 	Setting_Enhancement,
     Setting_DiskSaveType,
 
-    //Default Settings
+    // Default settings
     Default_RDRamSize,
 	Default_UseHleGfx,
 	Default_UseTlb,
@@ -76,7 +76,7 @@ enum SettingID
 	Default_SMM_Protect_Memory,
     Default_DiskSeekTiming,
 
-    //RDB Settings
+    // RDB settings
     Rdb_GoodName,
     Rdb_SaveChip,
     Rdb_CpuType,
@@ -116,7 +116,7 @@ enum SettingID
 	Rdb_RPCKey,
     Rdb_DiskSeekTiming,
 
-    //Individual Game Settings
+    // Individual game settings
     Game_IniKey,
     Game_File,
     Game_UniqueSaveDir,
@@ -175,7 +175,7 @@ enum SettingID
 	Game_RPCKey,
     Game_DiskSeekTiming,
 
-    // General Game running info
+    // General game running info
     GameRunning_LoadingInProgress,
     GameRunning_CPU_Running,
     GameRunning_CPU_Paused,
@@ -185,13 +185,13 @@ enum SettingID
     GameRunning_ScreenHertz,
     GameRunning_InReset,
 
-    //User Interface
+    // User interface
     UserInterface_BasicMode,
     UserInterface_ShowCPUPer,
     UserInterface_DisplayFrameRate,
     UserInterface_FrameDisplayType,
 
-    //Directory Info
+    // Directory info
     Directory_Plugin,
     Directory_PluginInitial,
     Directory_PluginSelected,
@@ -221,7 +221,7 @@ enum SettingID
     Directory_LogSelected,
     Directory_LogUseSelected,
 
-    //Rom List
+    // ROM list
     RomList_RomListCache,
     RomList_RomListCacheDefault,
     RomList_GameDir,
@@ -233,12 +233,12 @@ enum SettingID
     RomList_7zipCache,
     RomList_7zipCacheDefault,
 
-    //File Info
+    // File info
     File_DiskIPLPath,
     File_DiskIPLUSAPath,
     File_DiskIPLTOOLPath,
 
-    //Debugger
+    // Debugger
     Debugger_Enabled,
     Debugger_ShowTLBMisses,
     Debugger_ShowUnhandledMemory,
@@ -265,7 +265,7 @@ enum SettingID
     Debugger_IntrBreakpoints,
     Debugger_RcpIntrBreakpoints,
 
-    //Trace
+    // Trace
     Debugger_TraceMD5,
     Debugger_TraceThread,
     Debugger_TracePath,
@@ -289,7 +289,7 @@ enum SettingID
     Debugger_TraceRomList,
     Debugger_TraceExceptionHandler,
 
-    //Plugins
+    // Plugins
     Plugin_RSP_Current,
     Plugin_RSP_CurVer,
     Plugin_GFX_Default,

@@ -35,7 +35,7 @@ bool CControl_Plugin::LoadFunctions(void)
     LoadFunction(WM_KeyUp);
     LoadFunction(RumbleCommand);
 
-    //Make sure dll had all needed functions
+    // Make sure DLL had all needed functions
     if (InitiateControllers == nullptr) { UnloadPlugin(); return false; }
 
     if (m_PluginInfo.Version >= 0x0102)
@@ -63,10 +63,10 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
         m_PluginControllers[i].Plugin = PLUGIN_NONE;
     }
 
-    // Test Plugin version
+    // Test plugin version
     if (m_PluginInfo.Version == 0x0100)
     {
-        //Get Function from DLL
+        // Get function from DLL
         void(CALL *InitiateControllers_1_0)(void * hMainWindow, CONTROL Controls[4]);
         _LoadFunction("InitiateControllers", InitiateControllers_1_0);
         if (InitiateControllers_1_0 == nullptr) { return false; }
@@ -93,7 +93,7 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
 
         if (m_PluginInfo.Version == 0x0101)
         {
-            //Get Function from DLL
+            // Get function from DLL
             void(CALL *InitiateControllers_1_1)(CONTROL_INFO ControlInfo);
             _LoadFunction("InitiateControllers", InitiateControllers_1_1);
             if (InitiateControllers_1_1 == nullptr) { return false; }
@@ -103,7 +103,7 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
         }
         else if (m_PluginInfo.Version >= 0x0102)
         {
-            //Get Function from DLL
+            // Get function from DLL
             void(CALL *InitiateControllers_1_2)(CONTROL_INFO * ControlInfo);
             _LoadFunction("InitiateControllers", InitiateControllers_1_2);
             if (InitiateControllers_1_2 == nullptr) { return false; }

@@ -38,6 +38,3 @@ public:
 	static void read_gb_cart(struct gb_cart* gb_cart, uint16_t address, uint8_t* data);
 	static void write_gb_cart(struct gb_cart* gb_cart, uint16_t address, const uint8_t* data);
 };
-
-
-

@@ -30,7 +30,7 @@ bool CSettingTypeTempBool::Load(uint32_t /*Index*/, std::string & /*Value*/) con
     return false;
 }
 
-//return the default values
+// Return the default values
 void CSettingTypeTempBool::LoadDefault(uint32_t /*Index*/, bool & /*Value*/) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);

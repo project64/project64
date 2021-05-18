@@ -27,7 +27,7 @@ public:
     bool IsPal();
     void UnallocateRomImage();
 
-    //Get a message id for the reason that you failed to load the rom
+    // Get a message ID for the reason that you failed to load the ROM
     LanguageStringID GetError() const { return m_ErrorMsg; }
     static CICChip GetCicChipID(uint8_t * RomData, uint64_t * CRC = nullptr);
     static void CleanRomName(char * RomName, bool byteswap = true);
@@ -43,10 +43,10 @@ private:
 
     static void NotificationCB(const char * Status, CN64Rom * _this);
 
-    //constant values
+    // Constant values
     enum { ReadFromRomSection = 0x400000 };
 
-    //class variables
+    // Class variables
     CFile m_RomFile;
     uint8_t * m_ROMImage;
     uint8_t * m_ROMImageBase;

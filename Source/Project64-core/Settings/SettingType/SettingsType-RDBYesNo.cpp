@@ -35,14 +35,14 @@ bool CSettingTypeRDBYesNo::Load(uint32_t Index, bool & Value) const
     {
         Value = false;
     }
-    else if (_stricmp(String, "default") == 0)
+    else if (_stricmp(String, "Default") == 0)
     {
         LoadDefault(Index, Value);
         return false;
     }
     else
     {
-        WriteTrace(TraceSettings, TraceError, "Invalid Yes/No setting value (Section: %s Key: %s Value: %s)", m_SectionIdent->c_str(), String, m_KeyName.c_str(), strValue.c_str());
+        WriteTrace(TraceSettings, TraceError, "Invalid yes/no setting value (Section: %s Key: %s Value: %s)", m_SectionIdent->c_str(), String, m_KeyName.c_str(), strValue.c_str());
         LoadDefault(Index, Value);
         return false;
     }
@@ -62,7 +62,7 @@ bool CSettingTypeRDBYesNo::Load(uint32_t /*Index*/, std::string & /*Value*/) con
     return false;
 }
 
-//return the default values
+// Return the default values
 void CSettingTypeRDBYesNo::LoadDefault(uint32_t /*Index*/, bool & Value) const
 {
     if (m_DefaultSetting != Default_None)
@@ -87,7 +87,7 @@ void CSettingTypeRDBYesNo::LoadDefault(uint32_t /*Index*/, std::string & /*Value
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-//Update the settings
+// Update the settings
 void CSettingTypeRDBYesNo::Save(uint32_t /*Index*/, bool Value)
 {
     m_SettingsIniFile->SaveString(m_SectionIdent->c_str(), m_KeyName.c_str(), Value ? "Yes" : "No");

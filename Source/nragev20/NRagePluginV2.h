@@ -1,24 +1,24 @@
 /*
-    N-Rage`s Dinput8 Plugin
-    (C) 2002, 2006  Norbert Wladyka
+N-Rage`s Dinput8 Plugin
+(C) 2002, 2006  Norbert Wladyka
 
-    Author`s Email: norbert.wladyka@chello.at
-    Website: http://go.to/nrage
+Author`s Email: norbert.wladyka@chello.at
+Website: http://go.to/nrage
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-    */
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
 
 #ifndef _NRAGEPLUGIN_
 #define _NRAGEPLUGIN_
@@ -27,14 +27,13 @@
 
 #include "XInputController.h"
 
-/////////////////////////////////////////////////////////////////////////////////
-//General Plugin
+// General plugin
 
 #define TIMER_MESSAGEWINDOW 123
 
-// maximum number of devices other than SysMouse
+// Maximum number of devices other than SysMouse
 #define MAX_DEVICES     32
-// maximum number of modifiers
+// Maximum number of modifiers
 #define MAX_MODIFIERS   256
 
 #define DEFAULT_STICKRANGE      66
@@ -52,7 +51,7 @@
 #define PAK_VOICE       4
 #define PAK_ADAPTOID    7
 
-// just used to display text in GUI
+// Just used to display text in GUI
 #define PAK_NONRAW      16
 
 typedef struct _EMULATOR_INFO
@@ -61,21 +60,20 @@ typedef struct _EMULATOR_INFO
     HWND hMainWindow;
     HINSTANCE hinst;
     LANGID Language;
-    bool fDisplayShortPop;  // do we display shortcut message popups?
+    bool fDisplayShortPop;  // Do we display shortcut message popups?
 
 /*
- * 2015.11.09 cxd4
- * Added to keep the real address of the CONTROL array stored.
- *
- * This became necessary due to conflicts between specs #1.0, #1.1 and #1.2.
- */
+11/09/2015 Comment by cxd4
+Added to keep the real address of the CONTROL array stored.
+This became necessary due to conflicts between specs #1.0, #1.1 and #1.2.
+*/
+
     CONTROL * controllers;
 
-    //  BOOL MemoryBswaped;     // If this is set to TRUE, then the memory has been pre
-    //   bswap on a dword (32 bits) boundry, only effects header.
+    //  BOOL MemoryBswaped;     // If this is set to TRUE, then the memory has been pre-bswap'd on a DWORD (32-bit) boundary, only effects header.
     //  eg. the first 8 bytes are stored like this:
-    //        4 3 2 1   8 7 6 5
-    //  BYTE * HEADER;          // This is the rom header (first 40h bytes of the rom)
+    //  4 3 2 1   8 7 6 5
+    //  BYTE * HEADER; // This is the ROM header (first 40h bytes of the ROM)
 } EMULATOR_INFO, *LPEMULATOR_INFO;
 
 typedef struct _DEVICE
@@ -84,13 +82,13 @@ typedef struct _DEVICE
     TCHAR szProductName[MAX_PATH];
     BYTE bProductCounter;
     GUID guidInstance;
-    DWORD dwDevType;                // can be DI8DEVTYPE_KEYBOARD, DI8DEVTYPE_MOUSE, etc
+    DWORD dwDevType;                // Can be DI8DEVTYPE_KEYBOARD, DI8DEVTYPE_MOUSE, etc.
     BYTE bEffType;                  // What rumble effects does this device support?
-    union INPUTSTATE                // the last polled data from this device
+    union INPUTSTATE                // The last polled data from this device
     {
         DIJOYSTATE joyState;
         DIMOUSESTATE2 mouseState;
-        BYTE rgbButtons[256];       // keyboard state
+        BYTE rgbButtons[256];       // Keyboard state
     } stateAs;
 } DEVICE, *LPDEVICE;
 
@@ -98,19 +96,19 @@ typedef struct _BUTTON
 {
     bool fPrevPressed;      // Was this button pressed last time we checked? (not to be saved in config)
     BYTE bOffset;           // Offset in the DirectInput data structure
-    BYTE bAxisID;           // Tells which range of the Axe/POV is important (see AI_AXE_P, AI_POV_UP, etc)
-    BYTE bBtnType;              // Type of device/button: Keyboard key, Joystick axis, Joystick button, Mouse axis, etc
-    LPDEVICE parentDevice;  // pointer to the DEVICE this assignment came from
+    BYTE bAxisID;           // Tells which range of the Axe/POV is important (see AI_AXE_P, AI_POV_UP, etc.)
+    BYTE bBtnType;              // Type of device/button: keyboard key, joystick axis, joystick button, mouse axis, etc.
+    LPDEVICE parentDevice;  // Pointer to the DEVICE this assignment came from
 } BUTTON, *LPBUTTON;
 
-// Modifiers are a feature built into NRage.  Emulator turbo buttons, macros, stuff like that.
+// Modifiers are a feature built into N-Rage.  Emulator turbo buttons, macros, stuff like that.
 typedef struct _MODIFIER
 {
-    BUTTON btnButton;   // button to associate with
+    BUTTON btnButton;   // Button to associate with
     BYTE bModType;          // Type of modifier (None, Movement, Macro, Config)
-    BOOL fToggle;       // false if you have to hold the button down to activate, true if the modifier toggles on button press
-    BOOL fStatus;       // if true, control defaults to ACTIVE, and deactivates on button press
-    DWORD32 dwSpecific; // will be cast to MODSPEC_MOVE, MODSPEC_MACRO, or MODSPEC_CONFIG
+    BOOL fToggle;       // False if you have to hold the button down to activate, true if the modifier toggles on button press
+    BOOL fStatus;       // If true, control defaults to ACTIVE, and deactivates on button press
+    DWORD32 dwSpecific; // Will be cast to MODSPEC_MOVE, MODSPEC_MACRO, or MODSPEC_CONFIG
 } MODIFIER, *LPMODIFIER;
 
 // bModType (modifiers)
@@ -119,58 +117,57 @@ typedef struct _MODIFIER
 #define MDT_MACRO       2
 #define MDT_CONFIG      3
 
-// buffered
+// Buffered
 #define MM_BUFF     0
-// absolute
+// Absolute
 #define MM_ABS      1
-// deadpan
+// Deadpan
 #define MM_DEAD     2
 
-// Number of analog axes.  Standard N64 controller has just 2: X and Y joystick.
+// Number of analog axes. Standard N64 controller has just 2: X and Y joystick.
 #define PF_AXESETS              2
 
-typedef struct _CONTROLLER      // AN N64 CONTROLLER
+typedef struct _CONTROLLER      // An N64 controller
 {
-    unsigned fPlugged;          // is the controller "plugged" (i.e. does the emulator see a controller on this port?)
-    unsigned fXInput;           // is the controller an xInput device?
-    unsigned fN64Mouse;         // is the controller a N64 Mouse (Relative)?
-    unsigned fRawData;          // are we using RAW mode for this controller?
-    unsigned fIsAdaptoid;       // is it an adaptoid?
+    unsigned fPlugged;          // Is the controller "plugged" / connected? (i.e. does the emulator see a controller on this port?)
+    unsigned fXInput;           // Is the controller an XInput device?
+    unsigned fN64Mouse;         // Is the controller an N64 mouse (relative)?
+    unsigned fRawData;          // Are we using raw mode for this controller?
+    unsigned fIsAdaptoid;       // Is it an Adaptoid?
 
-    unsigned fKeyboard;         // does it use a keyboard?
-    unsigned fMouse;            // does it use a mouse?
-    unsigned fGamePad;          // does it use a gamepad/joystick?
+    unsigned fKeyboard;         // Does it use a keyboard?
+    unsigned fMouse;            // Does it use a mouse?
+    unsigned fGamePad;          // Does it use a gamepad/joystick?
 
-    unsigned fRealN64Range;     // does it have the "Real N64 Range" flag set?
-    unsigned bAxisSet;          // which set of axes are we using? (Control 1, Control 2)
-    unsigned bMouseMoveX;       // does it use buffered/absolute mouse for X?  MM_BUFF, MM_ABS, MM_DEAD
-    unsigned bMouseMoveY;       // does it use buffered/absolute mouse for Y?
-    unsigned fKeyAbsoluteX;     // does it use absolute key for X?
-    unsigned fKeyAbsoluteY;     // does it use absolute key for Y?
+    unsigned fRealN64Range;     // Does it have the "real N64 range" flag set?
+    unsigned bAxisSet;          // Which set of axes are we using? (Control 1, Control 2)
+    unsigned bMouseMoveX;       // Does it use buffered/absolute mouse for X?  MM_BUFF, MM_ABS, MM_DEAD
+    unsigned bMouseMoveY;       // Does it use buffered/absolute mouse for Y?
+    unsigned fKeyAbsoluteX;     // Does it use absolute key for X?
+    unsigned fKeyAbsoluteY;     // Does it use absolute key for Y?
 
-    unsigned fPakInitialized;   // Has our pak been initialized?  Used to make sure we don't try to write to a mempak that doesn't point to anything.
-    unsigned fPakCRCError;      // The ROM sends CRC data when it tries to write to a mempak.  Is the CRC incorrect?  Usually indicates a bad ROM.
-    unsigned PakType;           // what type of controller pak? mempak? rumble? transfer? etc
-    unsigned fVisualRumble;     // is visual rumble enabled for this controller?
+    unsigned fPakInitialized;   // Has our pak been initialized?  Used to make sure we don't try to write to a memory pak that doesn't point to anything.
+    unsigned fPakCRCError;      // The ROM sends CRC data when it tries to write to a memory pak.  Is the CRC incorrect?  Usually indicates a bad ROM.
+    unsigned PakType;           // What type of controller pak? Memory pak? Rumble pak? Transfer pak? etc.
+    unsigned fVisualRumble;     // Is visual rumble enabled for this controller?
 
-    unsigned bBackgroundInput;  // allow input while main window isn't focused?
+    unsigned bBackgroundInput;  // Allow input while main window isn't focused?
 
-	unsigned XcheckTime;		// checks for newly connected gamepads timer
+	unsigned XcheckTime;		// Checks for newly connected gamepads timer
 
-    BYTE bRumbleTyp;                // what type of rumble effect? none, constant, ramp, or direct?
+    BYTE bRumbleTyp;                // What type of rumble effect? None, constant, ramp, or direct?
 
     GUID guidFFDevice;              // GUID of the device that rumble gets sent to
 
-    BYTE bStickRange;               // our "range modifier".
+    BYTE bStickRange;               // Our "range modifier"
 
-    long wAxeBuffer[4];             // makes pseudo-relative Movement possible through keyboard or buttons
-    // also acts as a mouse buffer
+    long wAxeBuffer[4];             // Makes pseudo-relative movement possible through keyboard or buttons and also acts as a mouse buffer
 
-    WORD wMouseSensitivityX;        // set per N64 controller, that's OK
+    WORD wMouseSensitivityX;        // Set per N64 controller, that's OK
     WORD wMouseSensitivityY;
-    BYTE bPadDeadZone;              // our manual dead zone, set per N64 controller
-    BYTE bRumbleStrength;           // set per N64 controller
-    unsigned short nModifiers;      // number of modifiers
+    BYTE bPadDeadZone;              // Our manual dead zone, set per N64 controller
+    BYTE bRumbleStrength;           // Set per N64 controller
+    unsigned short nModifiers;      // Number of modifiers
 
     bool bRapidFireEnabled;
     BYTE bRapidFireRate;
@@ -180,17 +177,17 @@ typedef struct _CONTROLLER      // AN N64 CONTROLLER
     TCHAR szTransferRom[MAX_PATH + 1];  // GameBoyRom-Filename
     TCHAR szTransferSave[MAX_PATH + 1]; // GameBoyEEPRom-Filename
 
-    BUTTON aButton[14 + PF_AXESETS * 4];    // Ten buttons, 4 d-pad directions times two (for Config 1 and Config 2)
+    BUTTON aButton[14 + PF_AXESETS * 4];    // Ten buttons, 4 D-pad directions times two (for Config 1 and Config 2)
 
-    MODIFIER *pModifiers;               // Array of Modifiers
+    MODIFIER *pModifiers;               // Array of modifiers
 
-    void *pPakData;                     // Pointer to Pak Data (specific): see PakIO.h
+    void *pPakData;                     // Pointer to pak Data (specific): see PakIO.h
     // pPakData->bPakType will always be a BYTE indicating what the current pak type is
 
-    XCONTROLLER xiController;           // To handle an XInput enabled controller   --tecnicors
+    XCONTROLLER xiController;           // To handle an XInput-enabled controller (comment by tecnicors)
 } CONTROLLER, *LPCONTROLLER;
 
-// This is the Index of WORD PROFILE.Button[X]
+// This is the index of WORD PROFILE.Button[X]
 // Buttons:
 #define PF_DPADR    0
 #define PF_DPADL    1
@@ -207,27 +204,26 @@ typedef struct _CONTROLLER      // AN N64 CONTROLLER
 #define PF_TRIGGERR 12
 #define PF_TRIGGERL 13
 
-// Analog Stick
-// cause you can assign Buttons to it, I need 4 of 'em
+// Analog stick
+// Because you can assign buttons to it, we need 4 of them
 #define PF_APADR    14
 #define PF_APADL    15
 #define PF_APADD    16
 #define PF_APADU    17
 
-// second Set
+// Second set
 // #define PF_APADR 18
 // #define PF_APADL 19
 // #define PF_APADD 20
 // #define PF_APADU 21
 
-// Data Format of DWORD Controller.Button:
-//
+// Data format of DWORD Controller.Button:
 
-// BYTE bBtnType : Determines the Device and general Type of Control
-// BYTE bAxisID : AxeIndentifier, Tells which range of the Axe/POV is important
-// BYTE bOffset : Offset in the DirectInput data structure
+// BYTE bBtnType: Determines the device and general type of control
+// BYTE bAxisID: AxeIndentifier, which tells which range of the axes/POV is important
+// BYTE bOffset: Offset in the DirectInput data structure
 
-// BYTE bBtnType : Determines the Device and general Type of Control
+// BYTE bBtnType: Determines the device and general type of control
 #define DT_UNASSIGNED       0
 // Joystick
 #define DT_JOYBUTTON        1
@@ -242,11 +238,11 @@ typedef struct _CONTROLLER      // AN N64 CONTROLLER
 #define DT_MOUSEBUTTON      6
 #define DT_MOUSEAXE         7
 
-// BYTE bAxisID : AxeIndentifier, Tells which range of the Axe/POV is important
+// BYTE bAxisID: AxeIndentifier, which tells which range of the axes/POV is important
 
-// Positive Range of an Axe
+// Positive range of a the axes
 #define AI_AXE_P        0
-// Negative Range
+// Negative range
 #define AI_AXE_N        1
 
 // Applies to POVs obviously
@@ -255,7 +251,7 @@ typedef struct _CONTROLLER      // AN N64 CONTROLLER
 #define AI_POV_DOWN     2
 #define AI_POV_LEFT     3
 
-// BYTE bOffset : Offset in the DirectInput data structure
+// BYTE bOffset: Offset in the DirectInput data structure
 
 typedef union _MODSPEC_MOVE
 {
@@ -335,8 +331,8 @@ typedef union _MODSPEC_CONFIG
 #define SC_SWMEMRUMB    6
 #define SC_SWMEMADAPT   7
 
-// total arraysize of aButtons in SHORTCUTSPL;
-// make sure you update this if you change the list above
+// Total array size of aButtons in SHORTCUTSPL;
+// Make sure you update this if you change the list above
 #define SC_TOTAL        8
 
 typedef struct _SHORTCUTSPL
@@ -361,7 +357,7 @@ typedef struct _SHORTCUTS
 typedef struct _MSHORTCUT {
     int iControl;
     int iShortcut;
-} MSHORTCUT, *LPMSHORTCUT;  // shortcut message
+} MSHORTCUT, *LPMSHORTCUT;  // Shortcut message
 
 #define CHECK_WHITESPACES( str ) ( str == '\r' || str == '\n' || str == '\t' )
 

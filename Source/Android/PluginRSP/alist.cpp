@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2014 Bobby Smiles
 // Copyright(C) 2009 Richard Goedeken
@@ -286,7 +286,7 @@ void alist_envmix_exp( CHle * hle, bool init, bool aux, uint16_t dmem_dl, uint16
         ramps[1].value = *(int32_t *)(save_buffer + 18); // 14-15
     }
 
-    // init which ensure ramp.step != 0 iff ramp.value == ramp.target
+    // Initialize which ensure ramp.step != 0 iff ramp.value == ramp.target
     ramps[0].step = ramps[0].target - ramps[0].value;
     ramps[1].step = ramps[1].target - ramps[1].value;
 

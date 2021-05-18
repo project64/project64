@@ -352,7 +352,7 @@ void CX86RecompilerOps::CompileWriteTLBMiss(x86Reg AddressReg, x86Reg LookUpReg)
 
 bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
 
-/*************************** Trap functions  *************************/
+// Trap functions
 void CX86RecompilerOps::Compile_TrapCompare(TRAP_COMPARE CompareType)
 {
     void *FunctAddress = nullptr;
@@ -430,7 +430,7 @@ void CX86RecompilerOps::Compile_TrapCompare(TRAP_COMPARE CompareType)
     }
 }
 
-/************************** Branch functions  ************************/
+// Branch functions
 void CX86RecompilerOps::Compile_BranchCompare(BRANCH_COMPARE CompareType)
 {
     switch (CompareType)
@@ -900,7 +900,7 @@ void CX86RecompilerOps::BNE_Compare()
 
                 if (m_Section->m_Jump.FallThrough)
                 {
-                    JneLabel8("continue", 0);
+                    JneLabel8("Continue", 0);
                     Jump = *g_RecompPos - 1;
                 }
                 else
@@ -977,7 +977,7 @@ void CX86RecompilerOps::BNE_Compare()
                 }
                 if (m_Section->m_Jump.FallThrough)
                 {
-                    JneLabel8("continue", 0);
+                    JneLabel8("Continue", 0);
                     Jump = *g_RecompPos - 1;
                 }
                 else
@@ -1070,7 +1070,7 @@ void CX86RecompilerOps::BNE_Compare()
             }
             if (m_Section->m_Jump.FallThrough)
             {
-                JneLabel8("continue", 0);
+                JneLabel8("Continue", 0);
                 Jump = *g_RecompPos - 1;
             }
             else
@@ -1137,7 +1137,7 @@ void CX86RecompilerOps::BNE_Compare()
             CompX86regToVariable(Reg, &_GPR[m_Opcode.rs].W[1], CRegName::GPR_Hi[m_Opcode.rs]);
             if (m_Section->m_Jump.FallThrough)
             {
-                JneLabel8("continue", 0);
+                JneLabel8("Continue", 0);
                 Jump = *g_RecompPos - 1;
             }
             else
@@ -1225,7 +1225,7 @@ void CX86RecompilerOps::BEQ_Compare()
                     );
                 if (m_Section->m_Cont.FallThrough)
                 {
-                    JneLabel8("continue", 0);
+                    JneLabel8("Continue", 0);
                     Jump = *g_RecompPos - 1;
                 }
                 else
@@ -1301,7 +1301,7 @@ void CX86RecompilerOps::BEQ_Compare()
                     CompConstToX86reg(GetMipsRegMapHi(MappedReg), GetMipsRegHi(ConstReg));
                 }
                 if (m_Section->m_Cont.FallThrough) {
-                    JneLabel8("continue", 0);
+                    JneLabel8("Continue", 0);
                     Jump = *g_RecompPos - 1;
                 }
                 else
@@ -1394,7 +1394,7 @@ void CX86RecompilerOps::BEQ_Compare()
             }
             if (m_Section->m_Cont.FallThrough)
             {
-                JneLabel8("continue", 0);
+                JneLabel8("Continue", 0);
                 Jump = *g_RecompPos - 1;
             }
             else
@@ -1451,7 +1451,7 @@ void CX86RecompilerOps::BEQ_Compare()
             CompX86regToVariable(Reg, &_GPR[m_Opcode.rt].W[1], CRegName::GPR_Hi[m_Opcode.rt]);
             if (m_Section->m_Cont.FallThrough)
             {
-                JneLabel8("continue", 0);
+                JneLabel8("Continue", 0);
                 Jump = *g_RecompPos - 1;
             }
             else
@@ -1590,12 +1590,12 @@ void CX86RecompilerOps::BGTZ_Compare()
         {
             JlLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
             m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
-            JgLabel8("continue", 0);
+            JgLabel8("Continue", 0);
             Jump = *g_RecompPos - 1;
         }
         else if (m_Section->m_Cont.FallThrough)
         {
-            JlLabel8("continue", 0);
+            JlLabel8("Continue", 0);
             Jump = *g_RecompPos - 1;
             JgLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
             m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
@@ -2127,7 +2127,7 @@ void CX86RecompilerOps::COP1_BCT_Compare()
     }
 }
 
-/*************************  OpCode functions *************************/
+//  Opcode functions
 void CX86RecompilerOps::J()
 {
     if (m_NextInstruction == NORMAL)
@@ -3325,7 +3325,7 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
                 }
             }
             break;
-        case 0x04500000: /* AI registers */
+        case 0x04500000: // AI registers
             switch (PAddr)
             {
             case 0x04500004:
@@ -3442,7 +3442,7 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
             }
             break;
         case 0x05000000:
-            //64DD Registers
+            // 64DD registers
             if (g_Settings->LoadBool(Setting_EnableDisk))
             {
                 switch (PAddr)
@@ -3491,13 +3491,13 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
         default:
             if ((PAddr & 0xF0000000) == 0x10000000 && (PAddr - 0x10000000) < g_Rom->GetRomSize())
             {
-                // read from rom
+                // Read from ROM
                 sprintf(VarName, "RDRAM + %X", PAddr);
                 MoveVariableToX86reg(PAddr + g_MMU->Rdram(), VarName, Reg);
             }
             else if (g_DDRom != nullptr && ((PAddr & 0xFF000000) == 0x06000000 && (PAddr - 0x06000000) < g_DDRom->GetRomSize()))
             {
-                // read from ddrom
+                // Read from DDROM (TODO: Is DDROM a disk image or the IPL?)
                 sprintf(VarName, "RDRAM + %X", PAddr);
                 MoveVariableToX86reg(PAddr + g_MMU->Rdram(), VarName, Reg);
             }
@@ -4949,7 +4949,7 @@ void CX86RecompilerOps::SD()
     }
 }
 
-/********************** R4300i OpCodes: Special **********************/
+// R4300i opcodes: Special
 void CX86RecompilerOps::SPECIAL_SLL()
 {
     if (m_Opcode.rd == 0)
@@ -5432,10 +5432,10 @@ void CX86RecompilerOps::SPECIAL_DSLLV()
     Jump[0] = *g_RecompPos - 1;
     ShiftLeftDouble(GetMipsRegMapHi(m_Opcode.rd), GetMipsRegMapLo(m_Opcode.rd));
     ShiftLeftSign(GetMipsRegMapLo(m_Opcode.rd));
-    JmpLabel8("continue", 0);
+    JmpLabel8("Continue", 0);
     Jump[1] = *g_RecompPos - 1;
 
-    //MORE32:
+    // MORE32:
     CPU_Message("");
     CPU_Message("      MORE32:");
     SetJump8(Jump[0], *g_RecompPos);
@@ -5444,7 +5444,7 @@ void CX86RecompilerOps::SPECIAL_DSLLV()
     AndConstToX86Reg(x86_ECX, 0x1F);
     ShiftLeftSign(GetMipsRegMapHi(m_Opcode.rd));
 
-    //continue:
+    // Continue:
     CPU_Message("");
     CPU_Message("      continue:");
     SetJump8(Jump[1], *g_RecompPos);
@@ -5517,10 +5517,10 @@ void CX86RecompilerOps::SPECIAL_DSRLV()
         Jump[0] = *g_RecompPos - 1;
         ShiftRightDouble(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapHi(m_Opcode.rd));
         ShiftRightUnsign(GetMipsRegMapHi(m_Opcode.rd));
-        JmpLabel8("continue", 0);
+        JmpLabel8("Continue", 0);
         Jump[1] = *g_RecompPos - 1;
 
-        //MORE32:
+        // MORE32:
         CPU_Message("");
         CPU_Message("      MORE32:");
         SetJump8(Jump[0], *g_RecompPos);
@@ -5529,7 +5529,7 @@ void CX86RecompilerOps::SPECIAL_DSRLV()
         AndConstToX86Reg(x86_ECX, 0x1F);
         ShiftRightUnsign(GetMipsRegMapLo(m_Opcode.rd));
 
-        //continue:
+        // Continue:
         CPU_Message("");
         CPU_Message("      continue:");
         SetJump8(Jump[1], *g_RecompPos);
@@ -5559,10 +5559,10 @@ void CX86RecompilerOps::SPECIAL_DSRAV()
     Jump[0] = *g_RecompPos - 1;
     ShiftRightDouble(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapHi(m_Opcode.rd));
     ShiftRightSign(GetMipsRegMapHi(m_Opcode.rd));
-    JmpLabel8("continue", 0);
+    JmpLabel8("Continue", 0);
     Jump[1] = *g_RecompPos - 1;
 
-    //MORE32:
+    // MORE32:
     CPU_Message("");
     CPU_Message("      MORE32:");
     SetJump8(Jump[0], *g_RecompPos);
@@ -5571,7 +5571,7 @@ void CX86RecompilerOps::SPECIAL_DSRAV()
     AndConstToX86Reg(x86_ECX, 0x1F);
     ShiftRightSign(GetMipsRegMapLo(m_Opcode.rd));
 
-    //continue:
+    // Continue:
     CPU_Message("");
     CPU_Message("      continue:");
     SetJump8(Jump[1], *g_RecompPos);
@@ -5588,7 +5588,7 @@ void CX86RecompilerOps::SPECIAL_MULT()
 
     MoveX86regToVariable(x86_EAX, &_RegLO->UW[0], "_RegLO->UW[0]");
     MoveX86regToVariable(x86_EDX, &_RegHI->UW[0], "_RegHI->UW[0]");
-    ShiftRightSignImmed(x86_EAX, 31);    /* paired */
+    ShiftRightSignImmed(x86_EAX, 31);    // Paired
     ShiftRightSignImmed(x86_EDX, 31);
     MoveX86regToVariable(x86_EAX, &_RegLO->UW[1], "_RegLO->UW[1]");
     MoveX86regToVariable(x86_EDX, &_RegHI->UW[1], "_RegHI->UW[1]");
@@ -5605,7 +5605,7 @@ void CX86RecompilerOps::SPECIAL_MULTU()
 
     MoveX86regToVariable(x86_EAX, &_RegLO->UW[0], "_RegLO->UW[0]");
     MoveX86regToVariable(x86_EDX, &_RegHI->UW[0], "_RegHI->UW[0]");
-    ShiftRightSignImmed(x86_EAX, 31);    /* paired */
+    ShiftRightSignImmed(x86_EAX, 31);    // Paired
     ShiftRightSignImmed(x86_EDX, 31);
     MoveX86regToVariable(x86_EAX, &_RegLO->UW[1], "_RegLO->UW[1]");
     MoveX86regToVariable(x86_EDX, &_RegHI->UW[1], "_RegHI->UW[1]");
@@ -5642,7 +5642,7 @@ void CX86RecompilerOps::SPECIAL_DIV()
     m_RegWorkingSet.SetX86Protected(x86_EDX, true);
     Map_TempReg(x86_EAX, m_Opcode.rs, false);
 
-    /* edx is the signed portion to eax */
+    // EDX is the signed portion to EAX
     m_RegWorkingSet.SetX86Protected(x86_EDX, false);
     Map_TempReg(x86_EDX, -1, false);
 
@@ -5660,7 +5660,7 @@ void CX86RecompilerOps::SPECIAL_DIV()
 
     MoveX86regToVariable(x86_EAX, &_RegLO->UW[0], "_RegLO->UW[0]");
     MoveX86regToVariable(x86_EDX, &_RegHI->UW[0], "_RegHI->UW[0]");
-    ShiftRightSignImmed(x86_EAX, 31);    /* paired */
+    ShiftRightSignImmed(x86_EAX, 31);    // Paired
     ShiftRightSignImmed(x86_EDX, 31);
     MoveX86regToVariable(x86_EAX, &_RegLO->UW[1], "_RegLO->UW[1]");
     MoveX86regToVariable(x86_EDX, &_RegHI->UW[1], "_RegHI->UW[1]");
@@ -5724,9 +5724,9 @@ void CX86RecompilerOps::SPECIAL_DIVU()
     MoveX86regToVariable(x86_EAX, &_RegLO->UW[0], "_RegLO->UW[0]");
     MoveX86regToVariable(x86_EDX, &_RegHI->UW[0], "_RegHI->UW[0]");
 
-    /* wouldnt these be zero (???) */
+    // Wouldn't these be zero?
 
-    ShiftRightSignImmed(x86_EAX, 31);    /* paired */
+    ShiftRightSignImmed(x86_EAX, 31);    // Paired
     ShiftRightSignImmed(x86_EDX, 31);
     MoveX86regToVariable(x86_EAX, &_RegLO->UW[1], "_RegLO->UW[1]");
     MoveX86regToVariable(x86_EDX, &_RegHI->UW[1], "_RegHI->UW[1]");
@@ -5793,7 +5793,7 @@ void CX86RecompilerOps::SPECIAL_DMULTU()
     Map_TempReg(x86_ECX, -1, false);
 
     MulX86reg(x86_EDX);
-    MoveX86RegToX86Reg(x86_EAX, x86_EBX); /* EDX:EAX -> ECX:EBX */
+    MoveX86RegToX86Reg(x86_EAX, x86_EBX); // EDX:EAX -> ECX:EBX
     MoveX86RegToX86Reg(x86_EDX, x86_ECX);
 
     /* Tmp[1].UDW = (uint64)_GPR[m_Opcode.rs].UW[0] * (uint64)_GPR[m_Opcode.rt].UW[1]; */
@@ -5803,7 +5803,7 @@ void CX86RecompilerOps::SPECIAL_DMULTU()
     MulX86reg(x86_EDX);
     Map_TempReg(x86_ESI, -1, false);
     Map_TempReg(x86_EDI, -1, false);
-    MoveX86RegToX86Reg(x86_EAX, x86_ESI); /* EDX:EAX -> EDI:ESI */
+    MoveX86RegToX86Reg(x86_EAX, x86_ESI); // EDX:EAX -> EDI:ESI
     MoveX86RegToX86Reg(x86_EDX, x86_EDI);
 
     /* Tmp[2].UDW = (uint64)_RegLO->UW[1] + (uint64)Tmp[0].UW[0] + (uint64)Tmp[1].UW[0]; */
@@ -5812,7 +5812,7 @@ void CX86RecompilerOps::SPECIAL_DMULTU()
     AddX86RegToX86Reg(x86_EAX, x86_EBX);
     AddConstToX86Reg(x86_EDX, 0);
     AddX86RegToX86Reg(x86_EAX, x86_ESI);
-    AddConstToX86Reg(x86_EDX, 0);            /* EDX:EAX */
+    AddConstToX86Reg(x86_EDX, 0);            // EDX:EAX
 
     /* _RegLO->UDW += ((uint64)Tmp[0].UW[0] + (uint64)Tmp[1].UW[0]) << 32; */
     /* [low+4] += ebx + esi */
@@ -7837,12 +7837,12 @@ void CX86RecompilerOps::SPECIAL_DSRA32()
     }
 }
 
-/************************** COP0 functions **************************/
+// COP0 functions
 void CX86RecompilerOps::COP0_MF()
 {
     switch (m_Opcode.rd)
     {
-    case 9: //Count
+    case 9: // Count
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         UpdateCounters(m_RegWorkingSet, false, true);
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
@@ -7867,19 +7867,19 @@ void CX86RecompilerOps::COP0_MT()
 
     switch (m_Opcode.rd)
     {
-    case 0: //Index
-    case 2: //EntryLo0
-    case 3: //EntryLo1
-    case 4: //Context
-    case 5: //PageMask
-    case 10: //Entry Hi
-    case 14: //EPC
-    case 16: //Config
-    case 18: //WatchLo
-    case 19: //WatchHi
-    case 28: //Tag lo
-    case 29: //Tag Hi
-    case 30: //ErrEPC
+    case 0: // Index
+    case 2: // EntryLo0
+    case 3: // EntryLo1
+    case 4: // Context
+    case 5: // PageMask
+    case 10: // Entry Hi
+    case 14: // EPC
+    case 16: // Config
+    case 18: // WatchLo
+    case 19: // WatchHi
+    case 28: // Tag Lo
+    case 29: // Tag Hi
+    case 30: // ErrEPC
         if (IsConst(m_Opcode.rt))
         {
             MoveConstToVariable(GetMipsRegLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
@@ -7892,12 +7892,12 @@ void CX86RecompilerOps::COP0_MT()
         {
             MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rt, false), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
         }
-        if (m_Opcode.rd == 4) //Context
+        if (m_Opcode.rd == 4) // Context
         {
             AndConstToVariable(0xFF800000, &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
         }
         break;
-    case 11: //Compare
+    case 11: // Compare
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         UpdateCounters(m_RegWorkingSet, false, true);
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
@@ -7935,7 +7935,7 @@ void CX86RecompilerOps::COP0_MT()
 #endif
         m_RegWorkingSet.AfterCallDirect();
         break;
-    case 9: //Count
+    case 9: // Count
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         UpdateCounters(m_RegWorkingSet, false, true);
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
@@ -7966,7 +7966,7 @@ void CX86RecompilerOps::COP0_MT()
         Call_Direct(AddressOf(&CSystemTimer::UpdateCompareTimer), "CSystemTimer::UpdateCompareTimer");
         m_RegWorkingSet.AfterCallDirect();
         break;
-    case 12: //Status
+    case 12: // Status
     {
                  x86Reg OldStatusReg = Map_TempReg(x86_Any, -1, false);
                  MoveVariableToX86reg(&_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd], OldStatusReg);
@@ -8009,7 +8009,7 @@ void CX86RecompilerOps::COP0_MT()
                  m_RegWorkingSet.AfterCallDirect();
     }
         break;
-    case 6: //Wired
+    case 6: // Wired
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         UpdateCounters(m_RegWorkingSet, false, true);
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
@@ -8037,7 +8037,7 @@ void CX86RecompilerOps::COP0_MT()
             MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rt, false), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
         }
         break;
-    case 13: //cause
+    case 13: // Cause
         AndConstToVariable(0xFFFFCFF, &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
         if (IsConst(m_Opcode.rt))
         {
@@ -8067,7 +8067,7 @@ void CX86RecompilerOps::COP0_MT()
     }
 }
 
-/************************** COP0 CO functions ***********************/
+// COP0 CO functions
 void CX86RecompilerOps::COP0_CO_TLBR(void)
 {
     if (!g_System->bUseTlb()) { return; }
@@ -8175,7 +8175,7 @@ void CX86RecompilerOps::COP0_CO_ERET(void)
     m_NextInstruction = END_BLOCK;
 }
 
-/************************** FPU Options **************************/
+// FPU options
 void CX86RecompilerOps::ChangeDefaultRoundingModel()
 {
     switch ((_FPCR[31] & 3))
@@ -8187,7 +8187,7 @@ void CX86RecompilerOps::ChangeDefaultRoundingModel()
     }
 }
 
-/************************** COP1 functions **************************/
+// COP1 functions
 void CX86RecompilerOps::COP1_MF()
 {
     CompileCop1Test();
@@ -8346,7 +8346,7 @@ void CX86RecompilerOps::COP1_CT()
     m_RegWorkingSet.SetRoundingModel(CRegInfo::RoundUnknown);
 }
 
-/************************** COP1: S functions ************************/
+// COP1: S functions
 void CX86RecompilerOps::COP1_S_ADD()
 {
     uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
@@ -8693,7 +8693,7 @@ void CX86RecompilerOps::COP1_S_CMP()
     OrX86RegToVariable(&_FPCR[31], "_FPCR[31]", Reg);
 }
 
-/************************** COP1: D functions ************************/
+// COP1: D functions
 void CX86RecompilerOps::COP1_D_ADD()
 {
     uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
@@ -9066,7 +9066,7 @@ void CX86RecompilerOps::COP1_D_CMP()
     OrX86RegToVariable(&_FPCR[31], "_FPCR[31]", Reg);
 }
 
-/************************** COP1: W functions ************************/
+// COP1: W functions
 void CX86RecompilerOps::COP1_W_CVT_S()
 {
     CompileCop1Test();
@@ -9087,7 +9087,7 @@ void CX86RecompilerOps::COP1_W_CVT_D()
     ChangeFPURegFormat(m_Opcode.fd, CRegInfo::FPU_Dword, CRegInfo::FPU_Double, CRegInfo::RoundDefault);
 }
 
-/************************** COP1: L functions ************************/
+// COP1: L functions
 void CX86RecompilerOps::COP1_L_CVT_S()
 {
     CompileCop1Test();
@@ -9108,10 +9108,10 @@ void CX86RecompilerOps::COP1_L_CVT_D()
     ChangeFPURegFormat(m_Opcode.fd, CRegInfo::FPU_Qword, CRegInfo::FPU_Double, CRegInfo::RoundDefault);
 }
 
-/************************** Other functions **************************/
+// Other functions
 void CX86RecompilerOps::UnknownOpcode()
 {
-    CPU_Message("  %X Unhandled Opcode: %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
+    CPU_Message("  %X Unhandled opcode: %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
 
     m_RegWorkingSet.WriteBackRegisters();
     UpdateCounters(m_RegWorkingSet, false, true);
@@ -9341,14 +9341,14 @@ void CX86RecompilerOps::SyncRegState(const CRegInfo & SyncTo)
         else if (MemStackReg == x86_Unknown)
         {
             UnMap_X86reg(TargetStackReg);
-            CPU_Message("    regcache: allocate %s as Memory Stack", x86_Name(TargetStackReg));
+            CPU_Message("    regcache: allocate %s as memory stack", x86_Name(TargetStackReg));
             m_RegWorkingSet.SetX86Mapped(TargetStackReg, CRegInfo::Stack_Mapped);
             MoveVariableToX86reg(&g_Recompiler->MemoryStackPos(), "MemoryStack", TargetStackReg);
         }
         else
         {
             UnMap_X86reg(TargetStackReg);
-            CPU_Message("    regcache: change allocation of Memory Stack from %s to %s", x86_Name(MemStackReg), x86_Name(TargetStackReg));
+            CPU_Message("    regcache: change allocation of memory stack from %s to %s", x86_Name(MemStackReg), x86_Name(TargetStackReg));
             m_RegWorkingSet.SetX86Mapped(TargetStackReg, CRegInfo::Stack_Mapped);
             m_RegWorkingSet.SetX86Mapped(MemStackReg, CRegInfo::NotMapped);
             MoveX86RegToX86Reg(MemStackReg, TargetStackReg);
@@ -9386,12 +9386,12 @@ void CX86RecompilerOps::SyncRegState(const CRegInfo & SyncTo)
             case CRegInfo::STATE_CONST_32_SIGN:
                 if (GetMipsRegLo(i) != SyncTo.GetMipsRegLo(i))
                 {
-                    CPU_Message("Value of const is different Reg %d (%s) Value: 0x%08X to 0x%08X", i, CRegName::GPR[i], GetMipsRegLo(i), SyncTo.GetMipsRegLo(i));
+                    CPU_Message("Value of constant is different register %d (%s) Value: 0x%08X to 0x%08X", i, CRegName::GPR[i], GetMipsRegLo(i), SyncTo.GetMipsRegLo(i));
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 continue;
             default:
-                CPU_Message("Unhandled Reg state %d\nin SyncRegState", GetMipsRegState(i));
+                CPU_Message("Unhandled register state %d\nin SyncRegState", GetMipsRegState(i));
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
         }
@@ -9516,7 +9516,7 @@ void CX86RecompilerOps::SyncRegState(const CRegInfo & SyncTo)
                                                case CRegInfo::STATE_CONST_32_SIGN:
                                                    if (!g_System->b32BitCore() && GetMipsRegLo_S(i) < 0)
                                                    {
-                                                       CPU_Message("Sign Problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
+                                                       CPU_Message("Sign problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
                                                        CPU_Message("%s: %X", CRegName::GPR[i], GetMipsRegLo_S(i));
                                                        g_Notify->BreakPoint(__FILE__, __LINE__);
                                                    }
@@ -9584,7 +9584,7 @@ bool CX86RecompilerOps::InheritParentInfo()
         return true;
     }
 
-    //Multiple Parents
+    // Multiple parents
     BLOCK_PARENT_LIST ParentList;
     CCodeSection::SECTION_LIST::iterator iter;
     for (iter = m_Section->m_ParentSection.begin(); iter != m_Section->m_ParentSection.end(); iter++)
@@ -9657,7 +9657,7 @@ bool CX86RecompilerOps::InheritParentInfo()
         FirstParent = 0;
     }
 
-    //Link First Parent to start
+    // Link first parent to start
     CCodeSection * Parent = ParentList[FirstParent].Parent;
     CJumpInfo * JumpInfo = ParentList[FirstParent].JumpInfo;
 
@@ -9691,10 +9691,10 @@ bool CX86RecompilerOps::InheritParentInfo()
     }
     JumpInfo->FallThrough = false;
 
-    //Fix up initial state
+    // Fix up initial state
     UnMap_AllFPRs();
 
-    //determine loop reg usage
+    // Determine loop registry usage
     if (m_Section->m_InLoop && ParentList.size() > 1)
     {
         if (!SetupRegisterForLoop(m_Section->m_BlockInfo, m_Section->m_RegEnter)) { return false; }
@@ -9716,7 +9716,7 @@ bool CX86RecompilerOps::InheritParentInfo()
 
         if (m_RegWorkingSet.GetRoundingModel() != RegSet->GetRoundingModel()) { m_RegWorkingSet.SetRoundingModel(CRegInfo::RoundUnknown); }
 
-        //Find Parent MapRegState
+        // Find parent MapRegState
         MemoryStackPos = x86_Unknown;
         for (i2 = 0; i2 < sizeof(x86_Registers) / sizeof(x86_Registers[0]); i2++)
         {
@@ -9728,7 +9728,7 @@ bool CX86RecompilerOps::InheritParentInfo()
         }
         if (MemoryStackPos == x86_Unknown)
         {
-            // if the memory stack position is not mapped then unmap it
+            // If the memory stack position is not mapped then unmap it
             x86Reg MemStackReg = Get_MemoryStack();
             if (MemStackReg != x86_Unknown)
             {
@@ -9770,7 +9770,7 @@ bool CX86RecompilerOps::InheritParentInfo()
                     }
                     break;
                 default:
-                    CPU_Message("Unknown CPU State(%d) in InheritParentInfo", GetMipsRegState(i2));
+                    CPU_Message("Unknown CPU state(%d) in InheritParentInfo", GetMipsRegState(i2));
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
             }
@@ -9813,7 +9813,7 @@ bool CX86RecompilerOps::InheritParentInfo()
                         }
                         break;
                     default:
-                        CPU_Message("Unknown CPU State(%d) in InheritParentInfo", RegSet->GetMipsRegState(i2));
+                        CPU_Message("Unknown CPU state(%d) in InheritParentInfo", RegSet->GetMipsRegState(i2));
                         g_Notify->BreakPoint(__FILE__, __LINE__);
                         break;
                     }
@@ -9837,7 +9837,7 @@ bool CX86RecompilerOps::InheritParentInfo()
     }
     m_Section->m_RegEnter = m_RegWorkingSet;
 
-    //Sync registers for different blocks
+    // Sync registers for different blocks
     stdstr_f Label("Section_%d", m_Section->m_SectionID);
     int CurrentParent = FirstParent;
     bool NeedSync = false;
@@ -9906,7 +9906,7 @@ bool CX86RecompilerOps::InheritParentInfo()
                 }
                 break;
             default:
-                WriteTrace(TraceRecompiler, TraceError, "Unhandled Reg state %d\nin InheritParentInfo", GetMipsRegState(i2));
+                WriteTrace(TraceRecompiler, TraceError, "Unhandled register state %d\nin InheritParentInfo", GetMipsRegState(i2));
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
         }
@@ -9943,7 +9943,7 @@ bool CX86RecompilerOps::InheritParentInfo()
         {
             UpdateCounters(m_RegWorkingSet, false, true);
         }
-        SyncRegState(m_Section->m_RegEnter);         //Sync
+        SyncRegState(m_Section->m_RegEnter);         // Sync
         m_Section->m_RegEnter = m_RegWorkingSet;
     }
 
@@ -10046,7 +10046,7 @@ void CX86RecompilerOps::UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles)
         return;
     }
 
-    WriteX86Comment("Updating Sync CPU");
+    WriteX86Comment("Updating sync CPU");
     RegSet.BeforeCallDirect();
     PushImm32(stdstr_f("%d", Cycles).c_str(), Cycles);
     PushImm32("g_SyncSystem", (uint32_t)g_SyncSystem);
@@ -10066,8 +10066,8 @@ void CX86RecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool 
     if (RegSet.GetBlockCycleCount() != 0)
     {
         UpdateSyncCPU(RegSet, RegSet.GetBlockCycleCount());
-        WriteX86Comment("Update Counter");
-        SubConstFromVariable(RegSet.GetBlockCycleCount(), g_NextTimer, "g_NextTimer"); // updates compare flag
+        WriteX86Comment("Update counter");
+        SubConstFromVariable(RegSet.GetBlockCycleCount(), g_NextTimer, "g_NextTimer"); // Updates compare flag
         if (ClearValues)
         {
             RegSet.SetBlockCycleCount(0);
@@ -10487,7 +10487,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         ExitCodeBlock();
         break;
     default:
-        WriteTrace(TraceRecompiler, TraceError, "how did you want to exit on reason (%d) ???", reason);
+        WriteTrace(TraceRecompiler, TraceError, "How did you want to exit on reason (%d) ???", reason);
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 }
@@ -10591,7 +10591,7 @@ void CX86RecompilerOps::SB_Const(uint8_t Value, uint32_t VAddr)
     default:
         if (ShowUnhandledMemory())
         {
-            g_Notify->DisplayError(stdstr_f("%s\ntrying to store %02X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+            g_Notify->DisplayError(stdstr_f("%s\nTrying to store %02X in %08X?", __FUNCTION__, Value, VAddr).c_str());
         }
     }
 }
@@ -10642,7 +10642,7 @@ void CX86RecompilerOps::SB_Register(x86Reg Reg, uint32_t VAddr)
     default:
         if (ShowUnhandledMemory())
         {
-            g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+            g_Notify->DisplayError(stdstr_f("%s\nTrying to store in %08X?", __FUNCTION__, VAddr).c_str());
         }
     }
 }
@@ -10691,7 +10691,7 @@ void CX86RecompilerOps::SH_Const(uint16_t Value, uint32_t VAddr)
     default:
         if (ShowUnhandledMemory())
         {
-            g_Notify->DisplayError(stdstr_f("%s\ntrying to store %04X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+            g_Notify->DisplayError(stdstr_f("%s\nTrying to store %04X in %08X?", __FUNCTION__, Value, VAddr).c_str());
         }
     }
 }
@@ -10742,7 +10742,7 @@ void CX86RecompilerOps::SH_Register(x86Reg Reg, uint32_t VAddr)
     default:
         if (ShowUnhandledMemory())
         {
-            g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, PAddr).c_str());
+            g_Notify->DisplayError(stdstr_f("%s\nTrying to store in %08X?", __FUNCTION__, PAddr).c_str());
         }
     }
 }
@@ -10811,7 +10811,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         default:
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+                g_Notify->DisplayError(stdstr_f("%s\nTrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
             }
         }
         break;
@@ -10864,7 +10864,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         default:
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+                g_Notify->DisplayError(stdstr_f("%s\nTrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
             }
         }
         break;
@@ -10888,7 +10888,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         default:
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+                g_Notify->DisplayError(stdstr_f("%s\nTrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
             }
         }
         break;
@@ -11006,7 +11006,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         default:
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+                g_Notify->DisplayError(stdstr_f("%s\nTrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
             }
         }
         break;
@@ -11070,11 +11070,11 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         default:
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+                g_Notify->DisplayError(stdstr_f("%s\nTrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
             }
         }
         break;
-    case 0x04500000: /* AI registers */
+    case 0x04500000: // AI registers
         switch (PAddr)
         {
         case 0x04500000: MoveConstToVariable(Value, &g_Reg->AI_DRAM_ADDR_REG, "AI_DRAM_ADDR_REG"); break;
@@ -11095,7 +11095,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             break;
         case 0x04500008: MoveConstToVariable((Value & 1), &g_Reg->AI_CONTROL_REG, "AI_CONTROL_REG"); break;
         case 0x0450000C:
-            /* Clear Interrupt */;
+            // Clear interrupt
             AndConstToVariable((uint32_t)~MI_INTR_AI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
             AndConstToVariable((uint32_t)~MI_INTR_AI, &g_Reg->m_AudioIntrReg, "m_AudioIntrReg");
             m_RegWorkingSet.BeforeCallDirect();
@@ -11119,7 +11119,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             MoveConstToVariable(Value, PAddr + g_MMU->Rdram(), VarName);
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+                g_Notify->DisplayError(stdstr_f("%s\nTrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
             }
         }
         break;
@@ -11184,7 +11184,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         default:
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+                g_Notify->DisplayError(stdstr_f("%s\nTrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
             }
         }
         break;
@@ -11198,7 +11198,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         default:
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+                g_Notify->DisplayError(stdstr_f("%s\nTrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
             }
         }
         break;
@@ -11255,12 +11255,12 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         default:
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+                g_Notify->DisplayError(stdstr_f("%s\nTrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
             }
         }
         break;
     case 0x05000000:
-        //64DD Registers
+        // 64DD registers
         if (g_Settings->LoadBool(Setting_EnableDisk))
         {
             switch (PAddr)
@@ -11273,7 +11273,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             default:
                 if (ShowUnhandledMemory())
                 {
-                    g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+                    g_Notify->DisplayError(stdstr_f("%s\nTrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
                 }
             }
             break;
@@ -11301,7 +11301,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
     default:
         if (ShowUnhandledMemory())
         {
-            g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+            g_Notify->DisplayError(stdstr_f("%s\nTrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
         }
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         UpdateCounters(m_RegWorkingSet, false, true);
@@ -11418,10 +11418,10 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             }
             else
             {
-                CPU_Message("    Should be moving %s in to %08X ?!?", x86_Name(Reg), VAddr);
+                CPU_Message("    should be moving %s in to %08X ?", x86_Name(Reg), VAddr);
                 if (ShowUnhandledMemory())
                 {
-                    g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+                    g_Notify->DisplayError(stdstr_f("%s\nTrying to store in %08X?", __FUNCTION__, VAddr).c_str());
                 }
             }
         }
@@ -11463,10 +11463,10 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             m_RegWorkingSet.AfterCallDirect();
             break;
         default:
-            CPU_Message("    Should be moving %s in to %08X ?!?", x86_Name(Reg), VAddr);
+            CPU_Message("    should be moving %s in to %08X ?", x86_Name(Reg), VAddr);
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+                g_Notify->DisplayError(stdstr_f("%s\nTrying to store in %08X?", __FUNCTION__, VAddr).c_str());
             }
         }
         break;
@@ -11532,14 +11532,14 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         case 0x04400030: MoveX86regToVariable(Reg, &g_Reg->VI_X_SCALE_REG, "VI_X_SCALE_REG"); break;
         case 0x04400034: MoveX86regToVariable(Reg, &g_Reg->VI_Y_SCALE_REG, "VI_Y_SCALE_REG"); break;
         default:
-            CPU_Message("    Should be moving %s in to %08X ?!?", x86_Name(Reg), VAddr);
+            CPU_Message("    should be moving %s in to %08X ?", x86_Name(Reg), VAddr);
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+                g_Notify->DisplayError(stdstr_f("%s\nTrying to store in %08X?", __FUNCTION__, VAddr).c_str());
             }
         }
         break;
-    case 0x04500000: /* AI registers */
+    case 0x04500000: // AI registers
         switch (PAddr) {
         case 0x04500000: MoveX86regToVariable(Reg, &g_Reg->AI_DRAM_ADDR_REG, "AI_DRAM_ADDR_REG"); break;
         case 0x04500004:
@@ -11569,7 +11569,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             MoveX86regToVariable(Reg, &g_Reg->AI_CONTROL_REG, "AI_CONTROL_REG");
             AndConstToVariable(1, &g_Reg->AI_CONTROL_REG, "AI_CONTROL_REG");
         case 0x0450000C:
-            /* Clear Interrupt */;
+            // Clear interrupt
             AndConstToVariable((uint32_t)~MI_INTR_AI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
             AndConstToVariable((uint32_t)~MI_INTR_AI, &g_Reg->m_AudioIntrReg, "m_AudioIntrReg");
             m_RegWorkingSet.BeforeCallDirect();
@@ -11593,7 +11593,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             MoveX86regToVariable(Reg, PAddr + g_MMU->Rdram(), VarName);
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+                g_Notify->DisplayError(stdstr_f("%s\nTrying to store in %08X?", __FUNCTION__, VAddr).c_str());
             }
         }
         break;
@@ -11642,7 +11642,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         case 0x04600010:
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+                g_Notify->DisplayError(stdstr_f("%s\nTrying to store in %08X?", __FUNCTION__, VAddr).c_str());
             }
             AndConstToVariable((uint32_t)~MI_INTR_PI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
             m_RegWorkingSet.BeforeCallDirect();
@@ -11689,10 +11689,10 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             AndConstToVariable(0xFF, &g_Reg->PI_BSD_DOM2_RLS_REG, "PI_BSD_DOM2_RLS_REG");
             break;
         default:
-            CPU_Message("    Should be moving %s in to %08X ?!?", x86_Name(Reg), VAddr);
+            CPU_Message("    should be moving %s in to %08X ?", x86_Name(Reg), VAddr);
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+                g_Notify->DisplayError(stdstr_f("%s\nTrying to store in %08X?", __FUNCTION__, VAddr).c_str());
             }
         }
         break;
@@ -11706,7 +11706,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         default:
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+                g_Notify->DisplayError(stdstr_f("%s\nTrying to store in %08X?", __FUNCTION__, VAddr).c_str());
             }
         }
         break;
@@ -11757,12 +11757,12 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         default:
             if (ShowUnhandledMemory())
             {
-                g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+                g_Notify->DisplayError(stdstr_f("%s\nTrying to store in %08X?", __FUNCTION__, VAddr).c_str());
             }
         }
         break;
     case 0x05000000:
-        //64DD Registers
+        // 64DD registers
         if (g_Settings->LoadBool(Setting_EnableDisk))
         {
             switch (PAddr)
@@ -11770,7 +11770,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             case 0x05000500: MoveX86regToVariable(Reg, &g_Reg->ASIC_DATA, "ASIC_DATA"); break;
             case 0x05000508:
             {
-                //ASIC_CMD
+                // ASIC_CMD
                 MoveX86regToVariable(Reg, &g_Reg->ASIC_CMD, "ASIC_CMD");
                 m_RegWorkingSet.BeforeCallDirect();
                 Call_Direct(AddressOf(&DiskCommand), "DiskCommand");
@@ -11779,7 +11779,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             }
             case 0x05000510:
             {
-                //ASIC_BM_CTL
+                // ASIC_BM_CTL
                 MoveX86regToVariable(Reg, &g_Reg->ASIC_BM_CTL, "ASIC_BM_CTL");
                 m_RegWorkingSet.BeforeCallDirect();
                 Call_Direct(AddressOf(&DiskBMControl), "DiskBMControl");
@@ -11804,10 +11804,10 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         MoveX86regToVariable(Reg, PAddr + g_MMU->Rdram(), VarName);
         break;
     default:
-        CPU_Message("    Should be moving %s in to %08X ?!?", x86_Name(Reg), VAddr);
+        CPU_Message("    should be moving %s in to %08X ?", x86_Name(Reg), VAddr);
         if (ShowUnhandledMemory())
         {
-            g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+            g_Notify->DisplayError(stdstr_f("%s\nTrying to store in %08X?", __FUNCTION__, VAddr).c_str());
         }
     }
 }

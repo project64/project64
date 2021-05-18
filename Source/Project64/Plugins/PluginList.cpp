@@ -64,14 +64,14 @@ void CPluginList::AddPluginFromDir(CPath Dir)
             }
 
             //UINT LastErrorMode = SetErrorMode( SEM_FAILCRITICALERRORS );
-            WriteTrace(TraceUserInterface, TraceDebug, "loading %s", (LPCSTR)Dir);
+            WriteTrace(TraceUserInterface, TraceDebug, "Loading %s", (LPCSTR)Dir);
             hLib = LoadLibrary(stdstr((LPCSTR)Dir).ToUTF16().c_str());
             //SetErrorMode(LastErrorMode);
 
             if (hLib == nullptr)
             {
                 DWORD LoadError = GetLastError();
-                WriteTrace(TraceUserInterface, TraceDebug, "failed to load %s (error: %d)", (LPCSTR)Dir, LoadError);
+                WriteTrace(TraceUserInterface, TraceDebug, "Failed to load %s (error: %d)", (LPCSTR)Dir, LoadError);
                 continue;
             }
 

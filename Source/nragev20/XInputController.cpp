@@ -1,25 +1,25 @@
 /*
-    XInput Controller support for N-Rage`s Dinput8 Plugin by tecnicors
-    (C) 2009  Daniel Rehren - XInput Controller support
+XInput Controller support for N-Rage`s Dinput8 Plugin by tecnicors
+(C) 2009  Daniel Rehren - XInput Controller support
 
-    Author's Email: rehren_007@hotmail.com
+Author's Email: rehren_007@hotmail.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-//code from http://msdn.microsoft.com/en-us/library/ee417014(VS.85).aspx
+// Code from http://msdn.microsoft.com/en-us/library/ee417014(VS.85).aspx
 #include <stdio.h>
 #include <wchar.h>
 
@@ -31,7 +31,7 @@
 #include "FileAccess.h"
 #include "resource.h"
 
-//We need to keep track of XInput control id's
+// We need to keep track of XInput control ID's
 int iXinputControlId = 0;
 
 BOOL IsXInputDevice( const GUID* pGuidProductFromDirectInput )
@@ -72,7 +72,7 @@ BOOL IsXInputDevice( const GUID* pGuidProductFromDirectInput )
     if( FAILED(hr) || pIWbemServices == NULL )
         goto LCleanup;
 
-    // Switch security level to IMPERSONATE.
+    // Switch security level to IMPERSONATE
     CoSetProxyBlanket( pIWbemServices, RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, NULL,
                        RPC_C_AUTHN_LEVEL_CALL, RPC_C_IMP_LEVEL_IMPERSONATE, NULL, EOAC_NONE );
 
@@ -324,13 +324,13 @@ void VibrateXInputController( DWORD nController, int LeftMotorVal, int RightMoto
 
 bool InitXinput()
 {
-    //Lets dynamically load in the XInput library
+    // Lets dynamically load in the XInput library
     if (g_hXInputDLL == NULL)
         g_hXInputDLL = LoadLibrary(L"Xinput1_4.dll");
 
     if (g_hXInputDLL == NULL)
     {
-        //Ok since 1.4 is present, try 9.1.0 as its present on Vista and newer
+        // OK, since 1.4 is present, try 9.1.0 as its present on Vista and newer
         g_hXInputDLL = LoadLibrary(L"Xinput9_1_0.dll");
     }
     if (g_hXInputDLL == NULL)
@@ -338,7 +338,7 @@ bool InitXinput()
         return false;
     }
 
-    //Prepare the functions where going to use, nice and simple for XInput
+    // Prepare the functions we're going to use, nice and simple for XInput
     fnXInputSetState = (DWORD(WINAPI *) (DWORD, XINPUT_VIBRATION*))GetProcAddress(g_hXInputDLL, "XInputSetState");
     fnXInputGetState = (DWORD(WINAPI *) (DWORD, XINPUT_STATE*))GetProcAddress(g_hXInputDLL, "XInputGetState");
     return true;
@@ -346,7 +346,7 @@ bool InitXinput()
 
 void FreeXinput()
 {
-    //Unload the Library
+    // Unload the Library
     if (g_hXInputDLL != NULL)
     {
         FreeLibrary(g_hXInputDLL);
@@ -522,11 +522,11 @@ int GetComboBoxXInputKey( int ComboBox )
     case IDC_XC_START:  return XINPUT_GAMEPAD_START;
     case IDC_XC_LB:     return XINPUT_GAMEPAD_LEFT_SHOULDER;
     case IDC_XC_RB:     return XINPUT_GAMEPAD_RIGHT_SHOULDER;
-    case IDC_XC_LT:     return -1;  // triggers don't use these macros
+    case IDC_XC_LT:     return -1;  // Triggers don't use these macros
     case IDC_XC_RT:     return -1;
     case IDC_XC_LTSB:   return XINPUT_GAMEPAD_LEFT_THUMB;
     case IDC_XC_RTSB:   return XINPUT_GAMEPAD_RIGHT_THUMB;
-    case IDC_XC_DPAD:   return -2;  // to handle analogs and dpad
+    case IDC_XC_DPAD:   return -2;  // To handle analogs and D-pad
     case IDC_XC_LTS:    return -2;
     case IDC_XC_RTS:    return -2;
     default: return 0;
@@ -534,7 +534,8 @@ int GetComboBoxXInputKey( int ComboBox )
 }
 
 int GetN64ButtonCode( TCHAR *btnName )  //esta wea esta muy fea, hay que buscar una mejor manera definitivamente..
-{
+{										// ^ This translated means "This wea is very ugly, we must definitely find a better way"
+										// I'm assuming there must be some perceived "better way to handle this, so maybe TODO: ?"
     using namespace N64_BUTTONS;
 
     int value = 0;
@@ -602,7 +603,7 @@ void StoreAnalogConfig( LPXCONTROLLER gController, int ComboBox, int index )
 
     switch( index )
     {
-    case 1: // DPAD
+    case 1: // D-pad
         switch( ComboBox )
         {
         case IDC_XC_DPAD:
@@ -621,7 +622,7 @@ void StoreAnalogConfig( LPXCONTROLLER gController, int ComboBox, int index )
             break;
         }
         break;
-    case 2: // C Buttons
+    case 2: // C buttons
         switch( ComboBox )
         {
         case IDC_XC_DPAD:
@@ -745,7 +746,7 @@ void LoadXInputConfigFromFile( FILE *file, LPXCONTROLLER gController )
 
     while( fgets( buffer, 4096, file ))
     {
-        if( strlen( buffer ) == 1 ) // means end of controller config
+        if( strlen( buffer ) == 1 ) // Means end of controller config
             break;
         c++;
         switch( buffer[0] )

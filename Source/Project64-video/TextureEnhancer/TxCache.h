@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2007 Hiroshi Morii
 // Copyright(C) 2003 Rice1964
@@ -37,16 +37,16 @@ protected:
     std::map<uint64_t, TXCACHE*> _cache;
     bool save(const char *path, const char *filename, const int config);
     bool load(const char *path, const char *filename, const int config);
-    bool del(uint64_t checksum); /* checksum hi:palette low:texture */
-    bool is_cached(uint64_t checksum); /* checksum hi:palette low:texture */
+    bool del(uint64_t checksum); // Checksum hi:palette low:texture
+    bool is_cached(uint64_t checksum); // Checksum hi:palette low:texture
     void clear();
 public:
     ~TxCache();
     TxCache(int options, int cachesize, const char *path, const char *ident,
         dispInfoFuncExt callback);
-    bool add(uint64_t checksum, /* checksum hi:palette low:texture */
+    bool add(uint64_t checksum, // Checksum hi:palette low:texture
         GHQTexInfo *info, int dataSize = 0);
-    bool get(uint64_t checksum, /* checksum hi:palette low:texture */
+    bool get(uint64_t checksum, // Checksum hi:palette low:texture
         GHQTexInfo *info);
 };
 

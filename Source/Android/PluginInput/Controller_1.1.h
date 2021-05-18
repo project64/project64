@@ -89,8 +89,8 @@ typedef struct
 Function: CloseDLL
 Purpose:  This function is called when the emulator is closing
 down allowing the DLL to de-initialize.
-input:    none
-output:   none
+Input:    None
+Output:   None
 */
 
 EXPORT void CALL CloseDLL(void);
@@ -99,15 +99,15 @@ EXPORT void CALL CloseDLL(void);
 Function: ControllerCommand
 Purpose:  To process the raw data that has just been sent to a
 specific controller.
-input:    - Controller Number (0 to 3) and -1 signaling end of
+Input:    Controller Number (0 to 3) and -1 signaling end of
 processing the PIF RAM.
 - Pointer of data to be processed.
-output:   none
+Output:   None
 
-note:     This function is only needed if the DLL is allowing raw
+Note:     This function is only needed if the DLL is allowing raw
 data, or the plugin is set to raw
 
-the data that is being processed looks like this:
+The data that is being processed looks like this:
 initialize controller: 01 03 00 FF FF FF
 read controller:      01 04 01 FF FF FF FF
 */
@@ -118,8 +118,8 @@ EXPORT void CALL ControllerCommand(int Control, uint8_t * Command);
 Function: DllAbout
 Purpose:  This function is optional function that is provided
 to give further information about the DLL.
-input:    a handle to the window that calls this function
-output:   none
+Input:    A handle to the window that calls this function
+Output:   None
 */
 
 EXPORT void CALL DllAbout(void * hParent);
@@ -128,8 +128,8 @@ EXPORT void CALL DllAbout(void * hParent);
 Function: DllConfig
 Purpose:  This function is optional function that is provided
 to allow the user to configure the DLL
-input:    a handle to the window that calls this function
-output:   none
+Input:    A handle to the window that calls this function
+Output:   None
 */
 
 EXPORT void CALL DllConfig(void * hParent);
@@ -138,8 +138,8 @@ EXPORT void CALL DllConfig(void * hParent);
 Function: DllTest
 Purpose:  This function is optional function that is provided
 to allow the user to test the DLL
-input:    a handle to the window that calls this function
-output:   none
+Input:    A handle to the window that calls this function
+Output:   None
 */
 
 EXPORT void CALL DllTest(void * hParent);
@@ -148,9 +148,9 @@ EXPORT void CALL DllTest(void * hParent);
 Function: GetDllInfo
 Purpose:  This function allows the emulator to gather information
 about the DLL by filling in the PluginInfo structure.
-input:    a pointer to a PLUGIN_INFO structure that needs to be
-filled by the function. (see def above)
-output:   none
+Input:    A pointer to a PLUGIN_INFO structure that needs to be
+filled by the function (see def above)
+Output:   None
 */
 
 EXPORT void CALL GetDllInfo(PLUGIN_INFO * PluginInfo);
@@ -158,10 +158,10 @@ EXPORT void CALL GetDllInfo(PLUGIN_INFO * PluginInfo);
 /*
 Function: GetKeys
 Purpose:  To get the current state of the controllers buttons.
-input:    - Controller Number (0 to 3)
+Input:    Controller Number (0 to 3)
 - A pointer to a BUTTONS structure to be filled with
 the controller state.
-output:   none
+Output:   None
 */
 
 EXPORT void CALL GetKeys(int32_t Control, BUTTONS * Keys);
@@ -170,10 +170,10 @@ EXPORT void CALL GetKeys(int32_t Control, BUTTONS * Keys);
 Function: InitiateControllers
 Purpose:  This function initializes how each of the controllers
 should be handled.
-input:    - The handle to the main window.
+Input:    - The handle to the main window.
 - A controller structure that needs to be filled for
 the emulator to know how to handle each controller.
-output:   none
+Output:   None
 */
 
 EXPORT void CALL InitiateControllers(CONTROL_INFO ControlInfo);
@@ -182,11 +182,11 @@ EXPORT void CALL InitiateControllers(CONTROL_INFO ControlInfo);
 Function: ReadController
 Purpose:  To process the raw data in the PIF RAM that is about to
 be read.
-input:    - Controller Number (0 to 3) and -1 signaling end of
+Input:    Controller Number (0 to 3) and -1 signaling end of
 processing the PIF RAM.
 - Pointer of data to be processed.
-output:   none
-note:     This function is only needed if the DLL is allowing raw
+Output:   None
+Note:     This function is only needed if the DLL is allowing raw
 data.
 */
 
@@ -195,18 +195,18 @@ EXPORT void CALL ReadController(int Control, uint8_t * Command);
 /*
 Function: RomClosed
 Purpose:  This function is called when a ROM is closed.
-input:    none
-output:   none
+Input:    None
+Output:   None
 */
 
 EXPORT void CALL RomClosed(void);
 
 /*
 Function: RomOpen
-Purpose:  This function is called when a ROM is open. (from the
+Purpose:  This function is called when a ROM is open (from the
 emulation thread)
-input:    none
-output:   none
+Input:    None
+Output:   None
 */
 
 EXPORT void CALL RomOpen(void);
@@ -215,8 +215,8 @@ EXPORT void CALL RomOpen(void);
 Function: WM_KeyDown
 Purpose:  To pass the WM_KeyDown message from the emulator to the
 plugin.
-input:    wParam and lParam of the WM_KEYDOWN message.
-output:   none
+Input:    wParam and lParam of the WM_KEYDOWN message.
+Output:   None
 */
 
 EXPORT void CALL WM_KeyDown(uint32_t wParam, uint32_t lParam);
@@ -225,8 +225,8 @@ EXPORT void CALL WM_KeyDown(uint32_t wParam, uint32_t lParam);
 Function: WM_KeyUp
 Purpose:  To pass the WM_KEYUP message from the emulator to the
 plugin.
-input:    wParam and lParam of the WM_KEYDOWN message.
-output:   none
+Input:    wParam and lParam of the WM_KEYDOWN message.
+Output:   None
 */
 
 EXPORT void CALL WM_KeyUp(uint32_t wParam, uint32_t lParam);

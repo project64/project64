@@ -20,7 +20,7 @@ bool CSettingTypeRelativePath::Load(uint32_t /*Index*/, std::string & value) con
     return true;
 }
 
-//return the default values
+// Return the default values
 void CSettingTypeRelativePath::LoadDefault(uint32_t /*Index*/, bool & /*Value*/) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);

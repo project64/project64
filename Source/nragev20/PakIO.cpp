@@ -1,24 +1,23 @@
 /*
-    N-Rage`s Dinput8 Plugin
-    (C) 2002, 2006  Norbert Wladyka
+N-Rage`s Dinput8 Plugin
+(C) 2002, 2006  Norbert Wladyka
 
-    Author`s Email: norbert.wladyka@chello.at
-    Website: http://go.to/nrage
+Author`s Email: norbert.wladyka@chello.at
+Website: http://go.to/nrage
 
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 #include <algorithm>
@@ -39,13 +38,13 @@
 using std::min;
 using std::max;
 
-// ProtoTypes
+// Prototypes
 BYTE AddressCRC( const unsigned char * Address );
 BYTE DataCRC( const unsigned char * Data, const int iLength );
 VOID CALLBACK WritebackProc( HWND hWnd, UINT msg, UINT_PTR idEvent, DWORD dwTime );
 
 bool InitControllerPak( const int iControl )
-// Prepares the Pak
+// Prepares the pak
 {
     if( !g_pcControllers[iControl].fPlugged )
         return false;
@@ -67,7 +66,7 @@ bool InitControllerPak( const int iControl )
             mPak->fDexSave = false;
             mPak->hMemPakHandle = NULL;
 
-            DWORD dwFilesize = PAK_MEM_SIZE;    // expected file size
+            DWORD dwFilesize = PAK_MEM_SIZE;    // Expected file size
             TCHAR szBuffer[MAX_PATH+1],
                   szFullPath[MAX_PATH+1],
                   *pcFile;
@@ -78,10 +77,10 @@ bool InitControllerPak( const int iControl )
             bool isNewfile = !CheckFileExists( szBuffer );
 
             if( pcFile == NULL )
-            { // no Filename specified
+            { // No filename specified
                 WarningMessage( IDS_ERR_MEM_NOSPEC, MB_OK | MB_ICONWARNING );
                 g_pcControllers[iControl].PakType = PAK_NONE;
-                break; // memory is freed at the end of this function
+                break; // Memory is freed at the end of this function
             }
 
             TCHAR *pcPoint = _tcsrchr( pcFile, '.' );
@@ -97,7 +96,7 @@ bool InitControllerPak( const int iControl )
 
             HANDLE hFileHandle = CreateFile( szFullPath, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_ALWAYS, 0, NULL );
             if( hFileHandle == INVALID_HANDLE_VALUE )
-            {// test if Read-only access is possible
+            {// Test if read-only access is possible
                 hFileHandle = CreateFile( szFullPath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_ALWAYS, 0, NULL );
                 if( hFileHandle != INVALID_HANDLE_VALUE )
                 {
@@ -108,7 +107,7 @@ bool InitControllerPak( const int iControl )
                     wsprintf( szBuffer, tszText, pcFile );
                     MessageBox( g_strEmuInfo.hMainWindow, szBuffer, tszTitle, MB_OK | MB_ICONWARNING );
                     mPak->fReadonly = true;
-                    DebugWriteA("Ramfile opened in READ ONLY mode.\n");
+                    DebugWriteA("RAM file opened in read only mode.\n");
                 }
                 else
                 {
@@ -118,9 +117,9 @@ bool InitControllerPak( const int iControl )
                     LoadString( g_hResourceDLL, IDS_DLG_WARN_TITLE, tszTitle, DEFAULT_BUFFER );
                     wsprintf( szBuffer, tszText, pcFile );
                     MessageBox( g_strEmuInfo.hMainWindow, szBuffer, tszTitle, MB_OK | MB_ICONWARNING );
-                    g_pcControllers[iControl].PakType = PAK_NONE;   // set so that CloseControllerPak doesn't try to close a file that isn't open
-                    DebugWrite(_T("Unable to read or create MemPak file %s.\n"), pcFile);
-                    break; // memory is freed at the end of this function
+                    g_pcControllers[iControl].PakType = PAK_NONE;   // Set so that CloseControllerPak doesn't try to close a file that isn't open
+                    DebugWrite(_T("Unable to read or create memory pak file %s.\n"), pcFile);
+                    break; // Memory is freed at the end of this function
                 }
             }
 
@@ -161,23 +160,23 @@ bool InitControllerPak( const int iControl )
             }
             else
             {
-                // use mapped file
+                // Use mapped file
                 mPak->hMemPakHandle = CreateFileMapping( hFileHandle, NULL, mPak->fReadonly ? PAGE_READONLY : PAGE_READWRITE, 0, dwFilesize, NULL);
-                // test for invalid handle
+                // Test for invalid handle
                 if (mPak->hMemPakHandle == NULL)
                 {
-                    // note: please don't move the CloseHandle call before GetLastError
-                    DebugWriteA("Couldn't CreateFileMapping for MemPak file : %08x\n", GetLastError());
+                    // Note: please don't move the CloseHandle call before GetLastError
+                    DebugWriteA("Couldn't CreateFileMapping for memory pak file : %08x\n", GetLastError());
                     CloseHandle(hFileHandle);
-                    break; // memory is freed at the end of the function
+                    break; // Memory is freed at the end of the function
                 }
-                CloseHandle(hFileHandle); // we can close the file handle now with no problems
+                CloseHandle(hFileHandle); // We can close the file handle now with no problems
 
                 mPak->aMemPakData = (LPBYTE)MapViewOfFile( mPak->hMemPakHandle, FILE_MAP_ALL_ACCESS, 0, 0,  mPak->fDexSave ? PAK_MEM_SIZE + PAK_MEM_DEXOFFSET : PAK_MEM_SIZE );
 
-                // this is a bit tricky:
-                // if it's a dexsave, move the pakdata pointer forward so it points to where the actual mempak data starts
-                // we need to make sure to move it back when we UnmapViewOfFile
+                // This is a bit tricky:
+                // If it's a dexsave, move the pak data pointer forward so it points to where the actual memory pak data starts
+                // We need to make sure to move it back when we UnmapViewOfFile
                 if (mPak->aMemPakData == NULL)
                     ErrorMessage(IDS_ERR_MAPVIEW, GetLastError(), false);
 
@@ -192,7 +191,7 @@ bool InitControllerPak( const int iControl )
                     if (mPak->fDexSave )
                     {
                         PVOID pHeader = MapViewOfFile( mPak->hMemPakHandle, FILE_MAP_ALL_ACCESS, 0, 0, PAK_MEM_DEXOFFSET );
-                        const char szHeader[] = "123-456-STD";  // "OMG-WTF-BBQ"? --rabid
+                        const char szHeader[] = "123-456-STD";  // "OMG-WTF-BBQ"? (comment by rabid)
                         ZeroMemory( pHeader, PAK_MEM_DEXOFFSET );
                         CopyMemory( pHeader, szHeader, sizeof(szHeader) );
                         FlushViewOfFile( pHeader, PAK_MEM_DEXOFFSET );
@@ -211,11 +210,11 @@ bool InitControllerPak( const int iControl )
             RUMBLEPAK *rPak = (RUMBLEPAK*)g_pcControllers[iControl].pPakData;
             rPak->bPakType = PAK_RUMBLE;
 
-            rPak->fLastData = true;     // statistically, if uninitted it would return true --rabid
+            rPak->fLastData = true;     // Statistically, if uninitialized it would return true (comment by rabid)
 //          rPak->bRumbleTyp = g_pcControllers[iControl].bRumbleTyp;
 //          rPak->bRumbleStrength = g_pcControllers[iControl].bRumbleStrength;
 //          rPak->fVisualRumble = g_pcControllers[iControl].fVisualRumble;
-            if( !g_pcControllers[iControl].fXInput )    //used to make sure only xinput cotroller rumbles --tecnicors
+            if( !g_pcControllers[iControl].fXInput )    // Used to make sure only XInput controller rumbles (comment by tecnicors)
                 CreateEffectHandle( iControl, g_pcControllers[iControl].bRumbleTyp, g_pcControllers[iControl].bRumbleStrength );
             bReturn = true;
         }
@@ -232,10 +231,10 @@ bool InitControllerPak( const int iControl )
             tPak->gbCart.RamData = NULL;
 
             /*
-             * Once the Interface is implemented g_pcControllers[iControl].szTransferRom will hold filename of the GB-Rom
-             * and g_pcControllers[iControl].szTransferSave holds Filename of the SRAM Save
+             * Once the Interface is implemented g_pcControllers[iControl].szTransferRom will hold filename of the Game Boy ROM
+             * and g_pcControllers[iControl].szTransferSave holds Filename of the SRAM save
              *
-             * Here, both files should be opened and the handles stored in tPak ( modify the struct for Your own purposes, only bPakType must stay at first )
+             * Here, both files should be opened and the handles stored in tPak (modify the struct for your own purposes, only bPakType must stay at first)
              */
 
             //CreateFile( g_pcControllers[iControl].szTransferSave, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_ALWAYS, 0, NULL );
@@ -248,11 +247,11 @@ bool InitControllerPak( const int iControl )
 
             if (tPak->bPakInserted)
             {
-                DebugWriteA( "*** Init Transfer Pak - Success***\n" );
+                DebugWriteA( "*** Initialize transfer pak - success***\n" );
             }
             else
             {
-                DebugWriteA( "*** Init Transfer Pak - FAILURE***\n" );
+                DebugWriteA( "*** Initialize transfer pak - failure***\n" );
             }
 
             bReturn = true;
@@ -279,7 +278,7 @@ bool InitControllerPak( const int iControl )
             aPak->bIdentifier = 0x80;
 #ifdef ADAPTOIDPAK_RUMBLEFIX
             aPak->fRumblePak = true;
-#pragma message( "Driver-fix for Rumble with Adaptoid enabled" )
+#pragma message( "Driver fix for rumble with Adaptoid enabled" )
 #else
             aPak->fRumblePak = false;
 #endif
@@ -290,7 +289,7 @@ bool InitControllerPak( const int iControl )
         break;*/
     }
 
-    // if there were any unrecoverable errors and we have allocated pPakData, free it and set paktype to NONE
+    // If there were any unrecoverable errors and we have allocated pPakData, free it and set pak type to NONE
     if( !bReturn && g_pcControllers[iControl].pPakData )
         CloseControllerPak( iControl );
 
@@ -342,7 +341,7 @@ BYTE ReadControllerPak( const int iControl, LPBYTE Command )
             else
                 ZeroMemory( Data, 32 );
 
-            if( g_pcControllers[iControl].fXInput ) // xinput controller rumble --tecnicors
+            if( g_pcControllers[iControl].fXInput ) // XInput controller rumble (comment by tecnicors)
                 VibrateXInputController( g_pcControllers[iControl].xiController.nControl, 0, 0);
             else if (g_apFFDevice[iControl])
                 g_apFFDevice[iControl]->Acquire();
@@ -357,15 +356,15 @@ BYTE ReadControllerPak( const int iControl, LPBYTE Command )
     case PAK_TRANSFER:
         {
             LPTRANSFERPAK tPak = (LPTRANSFERPAK)g_pcControllers[iControl].pPakData; // TODO: null pointer check on tPak
-            // set bReturn = RD_OK when implementing Transferpak
+            // Set bReturn = RD_OK when implementing transfer pak
             bReturn = RD_OK;
-            DebugWriteA( "TPak Read:\n" );
+            DebugWriteA( "Transfer pak Read:\n" );
             DebugWriteA( "  Address: %04X\n", dwAddress );
 
             switch (dwAddress >> 12)
             {
             case 0x8: //    if ((dwAddress >= 0x8000) && (dwAddress <= 0x8FFF))
-                DebugWriteA( "Query Enable State: %u\n", tPak->iEnableState );
+                DebugWriteA( "Query enable state: %u\n", tPak->iEnableState );
                 if (tPak->iEnableState == false)
                     ZeroMemory(Data, 32);
                 else
@@ -374,25 +373,25 @@ BYTE ReadControllerPak( const int iControl, LPBYTE Command )
             case 0xB: //    if ((dwAddress >= 0xB000) && (dwAddress <= 0xBFFF))
                 if (tPak->iEnableState == true)
                 {
-                    DebugWriteA( "Query Cart. State:" );
+                    DebugWriteA( "Query cart. State:" );
                     if (tPak->bPakInserted)
                     {
                         if (tPak->iCurrentAccessMode == 1)
                         {
                             FillMemory(Data, 32, 0x89);
-                            DebugWriteA( " Inserted, Access Mode 1\n" );
+                            DebugWriteA( " Inserted, access mode 1\n" );
                         }
                         else
                         {
                             FillMemory(Data, 32, 0x80);
-                            DebugWriteA( " Inserted, Access Mode 0\n" );
+                            DebugWriteA( " Inserted, access mode 0\n" );
                         }
                         Data[0] = Data[0] | tPak->iAccessModeChanged;
                     }
                     else
                     {
-                        FillMemory(Data, 32, 0x40); // Cart not inserted.
-                        DebugWriteA( " Not Inserted\n" );
+                        FillMemory(Data, 32, 0x40); // Cart not inserted
+                        DebugWriteA( " not inserted\n" );
                     }
                     tPak->iAccessModeChanged = 0;
                 }
@@ -403,19 +402,19 @@ BYTE ReadControllerPak( const int iControl, LPBYTE Command )
             case 0xF: //    if ((dwAddress >= 0xC000))
                 if (tPak->iEnableState == true)
                 {
-                    DebugWriteA( "Cart Read: Bank:%i\n", tPak->iCurrentBankNo );
+                    DebugWriteA( "Cart read: Bank:%i\n", tPak->iCurrentBankNo );
                     DebugWriteA( "    Address:%04X\n", ((dwAddress & 0xFFE0) - 0xC000) + ((tPak->iCurrentBankNo & 3) * 0x4000) );
 
                     tPak->gbCart.ptrfnReadCart(&tPak->gbCart, ((dwAddress & 0xFFE0) - 0xC000) + ((tPak->iCurrentBankNo & 3) * 0x4000), Data);
                 }
                 break;
             default:
-                DebugWriteA("WARNING: Unusual Pak Read\n" );
+                DebugWriteA("Warning: unusual pak read\n" );
                 DebugWriteA("  Address: %04X\n", dwAddress);
             } // end switch (dwAddress >> 12)
 
 #ifdef ENABLE_RAWPAK_DEBUG
-            DebugWriteA( "TPak Data: " );
+            DebugWriteA( "Transfer pak data: " );
 
             for (int i = 0; i < 32; i ++)
             {
@@ -450,7 +449,7 @@ BYTE ReadControllerPak( const int iControl, LPBYTE Command )
                     || (( dwAddress < 0x8000 ) && ( Data[0] != 0x00 )))
                 {
                     ((ADAPTOIDPAK*)g_pcControllers[iControl].pPakData)->fRumblePak = false;
-                    DebugWriteA( "\nAssuming the inserted Pak AINT a RumblePak\nDisabling Rumblefix\n" );
+                    DebugWriteA( "\nAssuming the inserted pak isn't a rumble pak\nDisabling rumble fix\n" );
                 }
             }
         }
@@ -463,7 +462,7 @@ BYTE ReadControllerPak( const int iControl, LPBYTE Command )
     return bReturn;
 }
 
-// Called when the N64 tries to write to the controller pak, e.g. a mempak
+// Called when the N64 tries to write to the controller pak, like a memory pak
 BYTE WriteControllerPak( const int iControl, LPBYTE Command )
 {
     BYTE bReturn = RD_ERROR;
@@ -488,15 +487,15 @@ BYTE WriteControllerPak( const int iControl, LPBYTE Command )
     {
     case PAK_MEM:
         {
-            // Switched to memory-mapped file
-            // That way, if the computer dies due to power loss or something mid-play, the savegame is still there.
+            // Switched to memory mapped file
+            // That way, if the computer dies due to power loss or something during gameplay, the save game is still there
             MEMPAK *mPak = (MEMPAK*)g_pcControllers[iControl].pPakData;
 
             if( dwAddress < 0x8000 )
             {
                 CopyMemory( &mPak->aMemPakData[dwAddress], Data, 32 );
                 if (!mPak->fReadonly )
-                    SetTimer( g_strEmuInfo.hMainWindow, PAK_MEM, 2000, (TIMERPROC) WritebackProc ); // if we go 2 seconds without a write, call the Writeback proc (which will flush the cache)
+                    SetTimer( g_strEmuInfo.hMainWindow, PAK_MEM, 2000, (TIMERPROC) WritebackProc ); // If we go 2 seconds without a write, call the Writeback proc (which will flush the cache)
             }
             else
                 CopyMemory( &mPak->aMemPakTemp[(dwAddress%0x100)], Data, 32 );
@@ -507,7 +506,7 @@ BYTE WriteControllerPak( const int iControl, LPBYTE Command )
     case PAK_RUMBLE:
         if( dwAddress == PAK_IO_RUMBLE )
         {
-            if( g_pcControllers[iControl].fXInput ) // xinput controller rumble --tecnicors
+            if( g_pcControllers[iControl].fXInput ) // XInput controller rumble (comment by tecnicors)
             {
                 if( *Data )
                     VibrateXInputController( g_pcControllers[iControl].xiController.nControl );
@@ -519,12 +518,12 @@ BYTE WriteControllerPak( const int iControl, LPBYTE Command )
             if( g_pcControllers[iControl].fVisualRumble )
                 FlashWindow( g_strEmuInfo.hMainWindow, ( *Data != 0 ) ? TRUE : FALSE );
             if( g_pcControllers[iControl].bRumbleTyp == RUMBLE_DIRECT )
-            {  // Adaptoid Direct Rumble
+            {  // Adaptoid direct rumble
                 if( g_pcControllers[iControl].fIsAdaptoid )
                     DirectRumbleCommand( iControl, *Data );
             }
             else
-            {  // FF-FeedBack Rumble
+            {  // Force feedback rumble
                 if( g_apdiEffect[iControl] )
                 {
                     g_apFFDevice[iControl]->Acquire();
@@ -533,7 +532,7 @@ BYTE WriteControllerPak( const int iControl, LPBYTE Command )
                         // g_apdiEffect[iControl]->Start( 1, DIES_SOLO );
                         HRESULT hr;
                         hr = g_apdiEffect[iControl]->Start( 1, DIES_NODOWNLOAD );
-                        if( hr != DI_OK )// just download if needed( seems to work smoother)
+                        if( hr != DI_OK )// Just download if needed (seems to work smoother)
                         {
                             hr = g_apdiEffect[iControl]->Start( 1, 0 );
                             if (hr != DI_OK)
@@ -559,15 +558,15 @@ BYTE WriteControllerPak( const int iControl, LPBYTE Command )
             rPak->fLastData = (*Data) ? true : false;
         }
 
-end_rumble:     // added so after xinput controller rumbles, gets here --tecnicors
+end_rumble:     // Added so after XInput controller rumbles, gets here (comment by tecnicors)
         Data[32] = DataCRC( Data, 32 );
         bReturn = RD_OK;
         break;
     case PAK_TRANSFER:
         {
             LPTRANSFERPAK tPak = (LPTRANSFERPAK)g_pcControllers[iControl].pPakData;
-            // set bReturn = RD_OK when implementing Transferpak
-            DebugWriteA( "TPak Write:\n" );
+            // Set bReturn = RD_OK when implementing transfer pak
+            DebugWriteA( "Transfer pak write:\n" );
             DebugWriteA( "  Address: %04X\n", dwAddress );
 
 #ifdef ENABLE_RAWPAK_DEBUG
@@ -594,17 +593,17 @@ end_rumble:     // added so after xinput controller rumbles, gets here --tecnico
             case 0x8: //    if ((dwAddress >= 0x8000) && (dwAddress <= 0x8FFF))
                 if (Data[0] == 0xFE)
                 {
-                    DebugWriteA("Cart Disable\n" );
+                    DebugWriteA("Cart disable\n" );
                     tPak->iEnableState = false;
                 }
                 else if (Data[0] == 0x84)
                 {
-                    DebugWriteA("Cart Enable\n" );
+                    DebugWriteA("Cart enable\n" );
                     tPak->iEnableState = true;
                 }
                 else
                 {
-                    DebugWriteA("WARNING: Unusual Cart Enable/Disable\n" );
+                    DebugWriteA("Warning: Unusual cart enable/disable\n" );
                     DebugWriteA("  Address: " );
                     DebugWriteWordA(dwAddress);
                     DebugWriteA("\n" );
@@ -617,7 +616,7 @@ end_rumble:     // added so after xinput controller rumbles, gets here --tecnico
                 if (tPak->iEnableState == true)
                 {
                     tPak->iCurrentBankNo = Data[0];
-                    DebugWriteA("Set TPak Bank No:%02X\n", Data[0] );
+                    DebugWriteA("Set transfer pak bank No:%02X\n", Data[0] );
                 }
                 break;
             case 0xB: //    if ((dwAddress >= 0xB000) && (dwAddress <= 0xBFFF))
@@ -625,10 +624,10 @@ end_rumble:     // added so after xinput controller rumbles, gets here --tecnico
                 {
                     tPak->iCurrentAccessMode = Data[0] & 1;
                     tPak->iAccessModeChanged = 4;
-                    DebugWriteA("Set TPak Access Mode: %04X\n", tPak->iCurrentAccessMode);
+                    DebugWriteA("Set tranfer pak access mode: %04X\n", tPak->iCurrentAccessMode);
                     if ((Data[0] != 1) && (Data[0] != 0))
                     {
-                        DebugWriteA("WARNING: Unusual Access Mode Change\n" );
+                        DebugWriteA("Warning: Unusual access mode change\n" );
                         DebugWriteA("  Address: " );
                         DebugWriteWordA(dwAddress);
                         DebugWriteA("\n" );
@@ -647,7 +646,7 @@ end_rumble:     // added so after xinput controller rumbles, gets here --tecnico
                     SetTimer( g_strEmuInfo.hMainWindow, PAK_TRANSFER, 2000, (TIMERPROC) WritebackProc ); // if we go 2 seconds without a write, call the Writeback proc (which will flush the cache)
                 break;
             default:
-                DebugWriteA("WARNING: Unusual Pak Write\n" );
+                DebugWriteA("Warning: Unusual pak write\n" );
                 DebugWriteA("  Address: %04X\n", dwAddress);
             } // end switch (dwAddress >> 12)
 
@@ -697,7 +696,7 @@ void SaveControllerPak( const int iControl )
             MEMPAK *mPak = (MEMPAK*)g_pcControllers[iControl].pPakData;
 
             if( !mPak->fReadonly )
-                FlushViewOfFile( mPak->aMemPakData, PAK_MEM_SIZE ); // we've already written the stuff, just flush the cache
+                FlushViewOfFile( mPak->aMemPakData, PAK_MEM_SIZE ); // We've already written the stuff, just flush the cache
         }
         break;
     case PAK_RUMBLE:
@@ -705,12 +704,12 @@ void SaveControllerPak( const int iControl )
     case PAK_TRANSFER:
         {
             LPTRANSFERPAK tPak = (LPTRANSFERPAK)g_pcControllers[iControl].pPakData;
-            // here the changes( if any ) in the SRAM should be saved
+            // Here the changes(if any) in the SRAM should be saved
 
             if (tPak->gbCart.hRamFile != NULL)
             {
                 SaveCart(&tPak->gbCart, g_pcControllers[iControl].szTransferSave, _T(""));
-                DebugWriteA( "*** Save Transfer Pak ***\n" );
+                DebugWriteA( "*** Save transfer pak ***\n" );
             }
         }
         break;
@@ -723,7 +722,7 @@ void SaveControllerPak( const int iControl )
     }
 }
 
-// if there is pPakData for the controller, does any closing of handles before freeing the pPakData struct and setting it to NULL
+// If there is pPakData for the controller, does any closing of handles before freeing the pPakData struct and setting it to NULL
 // also sets fPakInitialized to false
 void CloseControllerPak( const int iControl )
 {
@@ -746,7 +745,7 @@ void CloseControllerPak( const int iControl )
             else
             {
                 FlushViewOfFile( mPak->aMemPakData, PAK_MEM_SIZE );
-                // if it's a dexsave, our original mapped view is not aMemPakData
+                // If it's a dexsave, our original mapped view is not aMemPakData
                 UnmapViewOfFile( mPak->fDexSave ? mPak->aMemPakData - PAK_MEM_DEXOFFSET : mPak->aMemPakData );
                 if ( mPak->hMemPakHandle != NULL )
                     CloseHandle( mPak->hMemPakHandle );
@@ -761,8 +760,8 @@ void CloseControllerPak( const int iControl )
         {
             LPTRANSFERPAK tPak = (LPTRANSFERPAK)g_pcControllers[iControl].pPakData;
             UnloadCart(&tPak->gbCart);
-            DebugWriteA( "*** Close Transfer Pak ***\n" );
-            // close files and free any additionally ressources
+            DebugWriteA( "*** Close transfer pak ***\n" );
+            // Close files and free any additional resources
         }
         break;
     case PAK_VOICE:
@@ -777,7 +776,7 @@ void CloseControllerPak( const int iControl )
     return;
 }
 
-// returns the number of remaining blocks in a mempak
+// Returns the number of remaining blocks in a memory pak
 // aNoteSizes should be an array of 16 bytes, which will be overwritten with the size in blocks of each note
 inline WORD CountBlocks( const unsigned char * bMemPakBinary, LPBYTE aNoteSizes )
 {
@@ -811,7 +810,8 @@ void FormatMemPak( LPBYTE aMemPak )
     FillMemory(aMemPak, 0x100, 0xFF);
     aMemPak[0] = 0x81;
 
-    // generate a valid code( i hope i can calculate it one day)
+	// TODO: Check this code since it seems the author isn't convinced it's complete
+    // Generate a valid code
     BYTE aValidCodes[] = {  0x12, 0xC5, 0x8F, 0x6F, 0xA4, 0x28, 0x5B, 0xCA };
     BYTE aCode[8];
 
@@ -819,8 +819,6 @@ void FormatMemPak( LPBYTE aMemPak )
     iRand %= sizeof(aValidCodes) / 8;
     for (n = 0; n < 8; n++)
         aCode[n] = aValidCodes[n + iRand];
-
-    //----------
 
     aMemPak[0x20+0] = aMemPak[0x60+0] = aMemPak[0x80+0] = aMemPak[0xC0+0] = 0xFF;
     aMemPak[0x20+1] = aMemPak[0x60+1] = aMemPak[0x80+1] = aMemPak[0xC0+1] = 0xFF;
@@ -832,7 +830,7 @@ void FormatMemPak( LPBYTE aMemPak )
     aMemPak[0x20+6] = aMemPak[0x60+6] = aMemPak[0x80+6] = aMemPak[0xC0+6] = aCode[2];
     aMemPak[0x20+7] = aMemPak[0x60+7] = aMemPak[0x80+7] = aMemPak[0xC0+7] = aCode[3];
 
-    //aMemPak[0x30+9] = aMemPak[0x70+9] = aMemPak[0x90+9] = aMemPak[0xD0+9] = 0x01; // not sure
+    //aMemPak[0x30+9] = aMemPak[0x70+9] = aMemPak[0x90+9] = aMemPak[0xD0+9] = 0x01; // Not sure
     aMemPak[0x30+10] = aMemPak[0x70+10] = aMemPak[0x90+10] = aMemPak[0xD0+10] = 0x01;
 
     aMemPak[0x30+12] = aMemPak[0x70+12] = aMemPak[0x90+12] = aMemPak[0xD0+12] = aCode[4];
@@ -850,16 +848,17 @@ void FormatMemPak( LPBYTE aMemPak )
     FillMemory( &aMemPak[0x500], 0x7B00, 0xFF );
 }
 
-// Translates a mempak header into a real Unicode string, for display in the Mempaks window
-// bNote is now where you want to START translating, Text is where the output gets sent, iChars is the number of TCHARs you want translated
-// return value is the number of characters actually translated
-// Text automatically gets a terminating null, so make sure there's enough space.
+// TODO: Possibly update this since it seems it could be hacky or incomplete
+// Translates a memory pak header into a real Unicode string, for display in the memory paks window
+// bNote is now where you want to start translating, text is where the output gets sent, iChars is the number of TCHARs you want translated
+// Return value is the number of characters actually translated
+// Text automatically gets a terminating null, so make sure there's enough space
 int TranslateNotesW( const unsigned char * bNote, LPWSTR Text, const int iChars )
 {
     WCHAR aSpecial[] =  {   0x0021, 0x0022, 0x0023, 0x0060, 0x002A, 0x002B, 0x002C, 0x002D, 0x002E, 0x002F, 0x003A, 0x003D, 0x003F, 0x0040, 0x2122, 0x00A9, 0x00AE };
                     //  {   '!' ,   '\"',   '#' ,   '`' ,   '*' ,   '+' ,   ',' ,   '-' ,   '.' ,   '/' ,   ':' ,   '=' ,   '?' ,   '>' ,   'tm',   '(c)',  '(r)' };
-    const WCHAR aJmap[] =   {   // map of Japanese characters N64 to UTF-16, starting at 0x45
-                                0x00A1, 0x30A3, 0x30A5, 0x30A7, 0x30A9, 0x30E3, 0x30E5, 0x30E7, 0x30C3, 0x30F2, // small a-i-u-e-o, next are probably small ya-yu-yo, small tsu, wo
+    const WCHAR aJmap[] =   {   // Map of Japanese characters N64 to UTF-16, starting at 0x45
+                                0x00A1, 0x30A3, 0x30A5, 0x30A7, 0x30A9, 0x30E3, 0x30E5, 0x30E7, 0x30C3, 0x30F2, // Small a-i-u-e-o, next are probably small ya-yu-yo, small tsu, wo
                                 0x30F3,     // 0x4F -> 'n'
                                 0x30A2, 0x30A4, 0x30A6, 0x30A8, 0x30AA, 0x30AB, 0x30AD, 0x30AF, 0x30B1, 0x30B3, 0x30B5, 0x30B7, 0x30B9, 0x30BB, 0x30BD, // nil-K-S
                                 0x30BF, 0x30C1, 0x30C4, 0x30C6, 0x30C8, 0x30CA, 0x30CB, 0x30CC, 0x30CD, 0x30CE, 0x30CF, 0x30D2, 0x30D5, 0x30D8, 0x30DB, // T-N-H
@@ -873,21 +872,21 @@ int TranslateNotesW( const unsigned char * bNote, LPWSTR Text, const int iChars 
     while (iChars - iReturn > 0 && *bNote)
     {
         BYTE b = *bNote;
-        if( b <= 0x0F ) // translate Icons as Spaces
+        if( b <= 0x0F ) // Translate icons as spaces
             *Text = 0x0020;
         else if( b <= 0x19 ) // Numbers
             *Text = 0x0020 + b;
         else if( b <= 0x33 ) // English characters
             *Text = 0x0047 + b;
-        else if( b <= 0x44 ) // special symbols
+        else if( b <= 0x44 ) // Special symbols
             *Text = aSpecial[b - 0x34];
         else if( b <= 0x94 ) // Japanese (halfwidth katakana, mapped similarly to JIS X 0201 but not enough that we can use a simple codepage)
         {
-            aSpecial[7] = 0x30fc; // change regular dash to Japanese "long sound dash"
+            aSpecial[7] = 0x30fc; // Change regular dash to Japanese "long sound dash"
             *Text = aJmap[b - 0x45];
         }
-        else // unknown
-            *Text = 0x00A4; // unknown characters become "currency sign" (looks like a letter o superimposed on an x)
+        else // Unknown
+            *Text = 0x00A4; // Unknown characters become "currency sign" (looks like a letter o superimposed on an x)
         Text++;
         iReturn++;
         bNote++;
@@ -899,10 +898,10 @@ int TranslateNotesW( const unsigned char * bNote, LPWSTR Text, const int iChars 
 }
 
 // TODO: rename this function!  It serves a completely different function from TranslateNotesW
-// Translates a mempak header into an ASCII string for output to .a64 file
-// bNote is now where you want to START translating, Text is where the output gets sent, iChars is the number of chars you want translated
-// return value is the number of characters actually translated
-// Text automatically gets a terminating null, so make sure there's enough space.
+// Translates a memory pak header into an ASCII string for output to .a64 file
+// bNote is now where you want to start translating, text is where the output gets sent, iChars is the number of chars you want translated
+// Return value is the number of characters actually translated
+// Text automatically gets a terminating null, so make sure there's enough space
 int TranslateNotesA( const unsigned char * bNote, LPSTR Text, const int iChars )
 {
     const UCHAR aSpecial[] ={ 0x21, 0x22, 0x23, 0x60, 0x2A, 0x2B, 0x2C, 0x2D, 0x2E, 0x2F, 0x3A, 0x3D, 0x3F, 0x40, 0x99, 0xA9, 0xAE };
@@ -912,18 +911,18 @@ int TranslateNotesA( const unsigned char * bNote, LPSTR Text, const int iChars )
     while (iChars - iReturn > 0 && *bNote)
     {
         BYTE b = *bNote;
-        if( b <= 0x0F ) // translate Icons as Spaces
+        if( b <= 0x0F ) // Translate icons as spaces
             *Text = 0x20;
         else if( b <= 0x19 ) // Numbers
             *Text = 0x20 + b;
         else if( b <= 0x33 ) // English characters
             *Text = 0x47 + b;
-        else if( b <= 0x44 ) // special symbols
+        else if( b <= 0x44 ) // Special symbols
             *Text = aSpecial[b - 0x34];
         else if( b <= 0x94 ) // Japan
             *Text = 0xC0 + ( b % 40 );
-        else // unknown
-            *Text = (UCHAR)0xA4; // HACK: this will screw up any save with unknown characters
+        else // Unknown
+            *Text = (UCHAR)0xA4; // Hack: this will screw up any save with unknown characters
 
         Text++;
         iReturn++;
@@ -1111,7 +1110,7 @@ void HextoTextA( const unsigned char * Data, LPSTR szText, const int nBytes )
     *szText = '\0';
 }
 
-// used when reading in a Note file, to convert text to binary (unserialize)
+// Used when reading in a note file, to convert text to binary (unserialize)
 void TexttoHexA( LPCSTR szText, LPBYTE Data, const int nBytes )
 {
     bool fLowByte = false;
@@ -1174,7 +1173,7 @@ bool SaveNoteFileA( const unsigned char * aMemPak, const int iNote, LPCTSTR pszF
 
 
         DWORD dwBytesWritten = 0;
-        lstrcpyA( szLine, "a64-notes\r\ndescription of game save goes here...\r\na64-data\r\n" );
+        lstrcpyA( szLine, "a64-notes\r\nDescription of game save goes here...\r\na64-data\r\n" );
         WriteFile( hFile, szLine, lstrlenA(szLine), &dwBytesWritten, NULL );
 
         CopyMemory( szLine, aNote, 4 );
@@ -1207,9 +1206,9 @@ bool SaveNoteFileA( const unsigned char * aMemPak, const int iNote, LPCTSTR pszF
             WriteFile( hFile, szLine, lstrlenA(szLine), &dwBytesWritten, NULL );
             WriteFile( hFile, "\r\n", 2, &dwBytesWritten, NULL );
         }
-        WriteFile( hFile, "a64-crc\r\n", 9, &dwBytesWritten, NULL );
+        WriteFile( hFile, "a64-CRC\r\n", 9, &dwBytesWritten, NULL );
 
-        // TODO: insert crc here
+        // TODO: insert CRC here
         lstrcpynA( szLine, "00000000\r\n", 70 );
         WriteFile( hFile, szLine, lstrlenA(szLine), &dwBytesWritten, NULL );
         //
@@ -1226,8 +1225,8 @@ bool SaveNoteFileA( const unsigned char * aMemPak, const int iNote, LPCTSTR pszF
     return bReturn;
 }
 
-// read a Note from a file pszFileName (.a64 format), and insert it into the given MemPak
-// returns true on success, false otherwise
+// Read a note from a file pszFileName (.a64 format), and insert it into the given memory pak
+// Returns true on success, false otherwise
 bool InsertNoteFile( LPBYTE aMemPak, LPCTSTR pszFileName )
 {
 //  bool bReturn = false;
@@ -1248,12 +1247,12 @@ bool InsertNoteFile( LPBYTE aMemPak, LPCTSTR pszFileName )
             }
         }
 
-        // assumes the file keeps going...
-        // discard the next line
-        fgets(szLine, sizeof(szLine) - 1, nFile); // not really necessary to check for EOF, as it will fail gracefully when dwNoteSize is zero.
+        // Assumes the file keeps going
+        // Discard the next line
+        fgets(szLine, sizeof(szLine) - 1, nFile); // Not really necessary to check for EOF, as it will fail gracefully when dwNoteSize is zero
 
         DWORD dwNoteSize = 0;
-        while( fgets(szLine, sizeof(szLine) - 1, nFile) && strncmp( "a64-crc", szLine, 7 ))
+        while( fgets(szLine, sizeof(szLine) - 1, nFile) && strncmp( "a64-CRC", szLine, 7 ))
         {
             dwNoteSize++;
         }
@@ -1298,16 +1297,16 @@ bool InsertNoteFile( LPBYTE aMemPak, LPCTSTR pszFileName )
             }
         }
 
-        // HEADER START
+        // Header start
 
         // .a64 header should look something like this:
         // NBCE 01 0203 0 {} {BLASTCORPS GAME}
-        // first 4 chars are the first 4 bytes
-        // next 2 chars are the next 2 bytes
-        // next 4 chars are bytes 8 and 9, in hex (huh?)
-        // next character is byte 10, in hex (but only one character this time)
-        // now we've got two sets of braces... the first one contains byte 12 in encoded form (use ReverseNotesA)
-        // the second one should contain bytes 16 through 31 (ReverseNotesA)
+        // First 4 chars are the first 4 bytes
+        // Next 2 chars are the next 2 bytes
+        // Next 4 chars are bytes 8 and 9, in hex
+        // Next character is byte 10, in hex (but only one character this time)
+        // Now we've got two sets of braces...the first one contains byte 12 in encoded form (use ReverseNotesA)
+        // The second one should contain bytes 16 through 31 (ReverseNotesA)
 
         BYTE *pBlock;
         fsetpos(nFile, &pDataStart);
@@ -1318,7 +1317,7 @@ bool InsertNoteFile( LPBYTE aMemPak, LPCTSTR pszFileName )
             return false;
         }
 
-        szLine[strlen(szLine) - 1] = '\0'; // remove newline
+        szLine[strlen(szLine) - 1] = '\0'; // Remove newline
 
         pBlock = &aMemPak[0x300 + ifreeNote*32];
         CopyMemory( pBlock, szLine, 4 );
@@ -1355,7 +1354,7 @@ bool InsertNoteFile( LPBYTE aMemPak, LPCTSTR pszFileName )
             i++;
         szLine[i] = '\0';
 
-        // HEADER END
+        // Header end
 
         BYTE bDataBlock = 5;
         pBlock = &pBlock[7];
@@ -1377,7 +1376,7 @@ bool InsertNoteFile( LPBYTE aMemPak, LPCTSTR pszFileName )
                     return false;
                 }
 
-                szLine[strlen(szLine) - 1] = '\0'; // remove newline
+                szLine[strlen(szLine) - 1] = '\0'; // Remove newline
                 TexttoHexA( szLine, &pDataBlock[i], 32 );
             }
             bDataBlock++;
@@ -1402,7 +1401,7 @@ bool InsertNoteFile( LPBYTE aMemPak, LPCTSTR pszFileName )
     return false;
 }
 
-// Remove a mempak "Note"
+// Remove a memory pak "note"
 // See "MemPak-Format.doc" for more info
 bool RemoveNote( LPBYTE aMemPak, const int iNote )
 {
@@ -1474,12 +1473,12 @@ BYTE DataCRC( const unsigned char * Data, const int iLength )
 
 VOID CALLBACK WritebackProc( HWND hWnd, UINT msg, UINT_PTR idEvent, DWORD dwTime )
 {
-    KillTimer(hWnd, idEvent); // timer suicide
+    KillTimer(hWnd, idEvent); // Timer killed
 
     switch (idEvent)
     {
     case PAK_MEM:
-        DebugWriteA("Mempak: WritebackProc flushed file writes\n");
+        DebugWriteA("Memory pak: WritebackProc flushed file writes\n");
         for( int i = 0; i < 4; i++ )
         {
             MEMPAK *mPak = (MEMPAK*)g_pcControllers[i].pPakData;
@@ -1489,7 +1488,7 @@ VOID CALLBACK WritebackProc( HWND hWnd, UINT msg, UINT_PTR idEvent, DWORD dwTime
         }
         return;
     case PAK_TRANSFER:
-        DebugWriteA("TPak: WritebackProc flushed file writes\n");
+        DebugWriteA("Transfer pak: WritebackProc flushed file writes\n");
         for( int i = 0; i < 4; i++ )
         {
             LPTRANSFERPAK tPak = (LPTRANSFERPAK)g_pcControllers[i].pPakData;

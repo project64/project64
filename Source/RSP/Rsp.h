@@ -74,7 +74,7 @@ typedef struct {
 
 typedef struct {
     long left, top, right, bottom;
-} rectangle; // <windows.h> equivalent:  RECT
+} rectangle; // <windows.h> equivalent: RECT
 typedef struct {
     void * hdc;
     Boolean fErase;
@@ -82,7 +82,7 @@ typedef struct {
     Boolean fRestore;
     Boolean fIncUpdate;
     uint8_t rgbReserved[32];
-} window_paint; // <windows.h> equivalent:  PAINTSTRUCT
+} window_paint; // <windows.h> equivalent: PAINTSTRUCT
 
 typedef struct {
 	// Menu

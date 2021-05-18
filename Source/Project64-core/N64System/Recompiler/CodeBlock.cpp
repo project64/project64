@@ -26,7 +26,7 @@ m_RecompilerOps(nullptr),
 m_Test(1)
 {
 #if defined(__arm__) || defined(_M_ARM)
-    // make sure function starts at odd address so that the system knows it is thumb mode
+    // Make sure function starts at an odd address so that the system knows it is in thumb mode
     if (((uint32_t)m_CompiledLocation % 2) == 0)
     {
         m_CompiledLocation+=1;
@@ -264,7 +264,7 @@ bool CCodeBlock::CreateBlockLinkage(CCodeSection * EnterSection)
         {
             CPU_Message("%s: End Block", __FUNCTION__);
             CurrentSection->m_EndSection = true;
-            // find other sections that need compiling
+            // Find other sections that need compiling
             break;
         }
 
@@ -334,7 +334,7 @@ bool CCodeBlock::CreateBlockLinkage(CCodeSection * EnterSection)
 
         TestPC += IncludeDelaySlot ? 8 : 4;
 
-        //Find the next section
+        // Find the next section
         CCodeSection * NewSection = nullptr;
         for (SectionMap::const_iterator itr = m_SectionMap.begin(); itr != m_SectionMap.end(); itr++)
         {
@@ -745,11 +745,11 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
 
 bool CCodeBlock::Compile()
 {
-    CPU_Message("====== Code Block ======");
+    CPU_Message("====== Code block ======");
     CPU_Message("Native entry point: %X", CompiledLocation());
-    CPU_Message("Start of Block: %X", VAddrEnter());
-    CPU_Message("No of Sections: %d", NoOfSections());
-    CPU_Message("====== recompiled code ======");
+    CPU_Message("Start of block: %X", VAddrEnter());
+    CPU_Message("Number of sections: %d", NoOfSections());
+    CPU_Message("====== Recompiled code ======");
 
     m_RecompilerOps->EnterCodeBlock();
     if (g_System->bLinkBlocks())

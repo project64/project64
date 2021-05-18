@@ -368,7 +368,7 @@ void CScriptInstance::RemoveListenerByIndex(UINT index)
     m_Listeners.erase(m_Listeners.begin() + index);
 }
 
-// Free listener & it's buffer, remove from list
+// Free listener and its buffer, remove from list
 void CScriptInstance::RemoveListener(IOLISTENER* lpListener)
 {
     for (UINT i = 0; i < m_Listeners.size(); i++)
@@ -581,7 +581,7 @@ void CScriptInstance::QueueAPC(PAPCFUNC userProc, ULONG_PTR param)
 {
     if (m_hThread != nullptr)
     {
-        MessageBox(nullptr, L"apc queued", L"", MB_OK);
+        MessageBox(nullptr, L"APC queued", L"", MB_OK);
         QueueUserAPC(userProc, m_hThread, param);
     }
 }

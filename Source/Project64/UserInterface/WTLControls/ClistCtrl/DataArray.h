@@ -26,8 +26,8 @@
 #define pop_new
 #endif
 
-// template class helpers with functions for comparing elements
-// override if using complex types without operator==
+// Template class helpers with functions for comparing elements
+// Override if using complex types without operator==
 
 template <class T>
 class CListCtrlArrayEqualHelper
@@ -43,7 +43,7 @@ template <class T, class TEqual = CListCtrlArrayEqualHelper< T > >
 class CListCtrlArray
 {
 public:
-	// Construction/destruction
+	// Construction / destruction
 	CListCtrlArray() : m_aT(nullptr), m_nSize(0), m_nAllocSize(0)
 	{ }
 

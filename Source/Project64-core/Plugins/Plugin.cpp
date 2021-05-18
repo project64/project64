@@ -71,7 +71,7 @@ void CPlugins::PluginChanged(CPlugins * _this)
     WriteTrace(TracePlugins, TraceVerbose, "m_PluginDir: \"%s\" m_PluginDirSetting: \"%s\" changed: %s", _this->m_PluginDir.c_str(), g_Settings->LoadStringVal(_this->m_PluginDirSetting).c_str(), bDirChange ? "true" : "false");
     if (bDirChange)
     {
-        WriteTrace(TracePlugins, TraceDebug, "plugin directory changed");
+        WriteTrace(TracePlugins, TraceDebug, "Plugin directory changed");
         bGfxChange = true;
         bAudioChange = true;
         bRspChange = true;
@@ -81,13 +81,13 @@ void CPlugins::PluginChanged(CPlugins * _this)
 
     if (bGfxChange || bAudioChange || bRspChange || bContChange)
     {
-        if (bGfxChange) { WriteTrace(TracePlugins, TraceDebug, "Gfx plugin changed"); }
+        if (bGfxChange) { WriteTrace(TracePlugins, TraceDebug, "GFX plugin changed"); }
         if (bAudioChange) { WriteTrace(TracePlugins, TraceDebug, "Audio plugin changed"); }
         if (bRspChange) { WriteTrace(TracePlugins, TraceDebug, "RSP plugin changed"); }
         if (bContChange) { WriteTrace(TracePlugins, TraceDebug, "Controller plugin changed"); }
         if (g_Settings->LoadBool(GameRunning_CPU_Running))
         {
-            //Ensure that base system actually exists before we go triggering the event
+            // Ensure that base system actually exists before we go triggering the event
             if (g_BaseSystem)
             {
                 g_BaseSystem->ExternalEvent(SysEvent_ChangePlugins);
@@ -129,7 +129,7 @@ static void LoadPlugin(SettingID PluginSettingID, SettingID PluginVerSettingID, 
             delete plugin;
             plugin = nullptr;
         }
-        WriteTrace(TraceLevel, TraceDebug, "%s Loading Done", type);
+        WriteTrace(TraceLevel, TraceDebug, "%s Loading done", type);
     }
     else
     {
@@ -146,7 +146,7 @@ void CPlugins::CreatePlugins(void)
     LoadPlugin(Game_Plugin_RSP, Plugin_RSP_CurVer, m_RSP, m_PluginDir.c_str(), m_RSPFile, TraceRSPPlugin, "RSP", m_SyncPlugins);
     LoadPlugin(Game_Plugin_Controller, Plugin_CONT_CurVer, m_Control, m_PluginDir.c_str(), m_ControlFile, TraceControllerPlugin, "Control", m_SyncPlugins);
 
-    //Enable debugger
+    // Enable debugger
     if (m_RSP != nullptr && m_RSP->EnableDebugging)
     {
         WriteTrace(TraceRSPPlugin, TraceInfo, "EnableDebugging starting");
@@ -182,9 +182,9 @@ void CPlugins::DestroyGfxPlugin(void)
     {
         return;
     }
-    WriteTrace(TraceGFXPlugin, TraceDebug, "before close");
+    WriteTrace(TraceGFXPlugin, TraceDebug, "Before close");
     m_Gfx->Close(m_MainWindow);
-    WriteTrace(TraceGFXPlugin, TraceInfo, "deleting");
+    WriteTrace(TraceGFXPlugin, TraceInfo, "Deleting");
     delete m_Gfx;
     WriteTrace(TraceGFXPlugin, TraceInfo, "m_Gfx deleted");
     m_Gfx = nullptr;
@@ -199,16 +199,16 @@ void CPlugins::DestroyAudioPlugin(void)
     {
         return;
     }
-    WriteTrace(TraceAudioPlugin, TraceDebug, "before close");
+    WriteTrace(TraceAudioPlugin, TraceDebug, "Before close");
     m_Audio->Close(m_MainWindow);
-    WriteTrace(TraceAudioPlugin, TraceDebug, "before delete");
+    WriteTrace(TraceAudioPlugin, TraceDebug, "Before delete");
     delete m_Audio;
-    WriteTrace(TraceAudioPlugin, TraceDebug, "after delete");
+    WriteTrace(TraceAudioPlugin, TraceDebug, "After delete");
     m_Audio = nullptr;
-    WriteTrace(TraceAudioPlugin, TraceDebug, "before DestroyRspPlugin");
+    WriteTrace(TraceAudioPlugin, TraceDebug, "Before DestroyRspPlugin");
     //		g_Settings->UnknownSetting_AUDIO = nullptr;
     DestroyRspPlugin();
-    WriteTrace(TraceAudioPlugin, TraceDebug, "after DestroyRspPlugin");
+    WriteTrace(TraceAudioPlugin, TraceDebug, "After DestroyRspPlugin");
 }
 
 void CPlugins::DestroyRspPlugin(void)
@@ -217,12 +217,12 @@ void CPlugins::DestroyRspPlugin(void)
     {
         return;
     }
-    WriteTrace(TraceRSPPlugin, TraceDebug, "before close");
+    WriteTrace(TraceRSPPlugin, TraceDebug, "Before close");
     m_RSP->Close(m_MainWindow);
-    WriteTrace(TraceRSPPlugin, TraceDebug, "before delete");
+    WriteTrace(TraceRSPPlugin, TraceDebug, "Before delete");
     delete m_RSP;
     m_RSP = nullptr;
-    WriteTrace(TraceRSPPlugin, TraceDebug, "after delete");
+    WriteTrace(TraceRSPPlugin, TraceDebug, "After delete");
     //		g_Settings->UnknownSetting_RSP = nullptr;
 }
 
@@ -232,12 +232,12 @@ void CPlugins::DestroyControlPlugin(void)
     {
         return;
     }
-    WriteTrace(TraceControllerPlugin, TraceDebug, "before close");
+    WriteTrace(TraceControllerPlugin, TraceDebug, "Before close");
     m_Control->Close(m_MainWindow);
-    WriteTrace(TraceControllerPlugin, TraceDebug, "before delete");
+    WriteTrace(TraceControllerPlugin, TraceDebug, "Before delete");
     delete m_Control;
     m_Control = nullptr;
-    WriteTrace(TraceControllerPlugin, TraceDebug, "after delete");
+    WriteTrace(TraceControllerPlugin, TraceDebug, "After delete");
     //		g_Settings->UnknownSetting_CTRL = nullptr;
 }
 
@@ -275,24 +275,24 @@ void CPlugins::RomClosed(void)
 bool CPlugins::Initiate(CN64System * System)
 {
     WriteTrace(TracePlugins, TraceDebug, "Start");
-    //Check to make sure we have the plugin available to be used
+    // Check to make sure we have the plugin available to be used
     if (m_Gfx == nullptr) { return false; }
     if (m_Audio == nullptr) { return false; }
     if (m_RSP == nullptr) { return false; }
     if (m_Control == nullptr) { return false; }
 
-    WriteTrace(TraceGFXPlugin, TraceDebug, "Gfx Initiate Starting");
+    WriteTrace(TraceGFXPlugin, TraceDebug, "GFX initiate starting");
     if (!m_Gfx->Initiate(System, m_MainWindow))   { return false; }
-    WriteTrace(TraceGFXPlugin, TraceDebug, "Gfx Initiate Done");
-    WriteTrace(TraceAudioPlugin, TraceDebug, "Audio Initiate Starting");
+    WriteTrace(TraceGFXPlugin, TraceDebug, "GFX initiate done");
+    WriteTrace(TraceAudioPlugin, TraceDebug, "Audio initiate starting");
     if (!m_Audio->Initiate(System, m_MainWindow)) { return false; }
-    WriteTrace(TraceAudioPlugin, TraceDebug, "Audio Initiate Done");
-    WriteTrace(TraceControllerPlugin, TraceDebug, "Control Initiate Starting");
+    WriteTrace(TraceAudioPlugin, TraceDebug, "Audio initiate done");
+    WriteTrace(TraceControllerPlugin, TraceDebug, "Control initiate starting");
     if (!m_Control->Initiate(System, m_MainWindow)) { return false; }
-    WriteTrace(TraceControllerPlugin, TraceDebug, "Control Initiate Done");
-    WriteTrace(TraceRSPPlugin, TraceDebug, "RSP Initiate Starting");
+    WriteTrace(TraceControllerPlugin, TraceDebug, "Control initiate done");
+    WriteTrace(TraceRSPPlugin, TraceDebug, "RSP initiate starting");
     if (!m_RSP->Initiate(this, System))   { return false; }
-    WriteTrace(TraceRSPPlugin, TraceDebug, "RSP Initiate Done");
+    WriteTrace(TraceRSPPlugin, TraceDebug, "RSP initiate done");
     WriteTrace(TracePlugins, TraceDebug, "Done");
     m_initilized = true;
     return true;
@@ -316,7 +316,7 @@ bool CPlugins::Reset(CN64System * System)
     bool bRspChange = _stricmp(m_RSPFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_RSP).c_str()) != 0;
     bool bContChange = _stricmp(m_ControlFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Controller).c_str()) != 0;
 
-    //if GFX and Audio has changed we also need to force reset of RSP
+    // If GFX and audio has changed we also need to force reset of RSP
     if (bGfxChange || bAudioChange)
     {
         bRspChange = true;
@@ -331,27 +331,27 @@ bool CPlugins::Reset(CN64System * System)
 
     if (m_Gfx && bGfxChange)
     {
-        WriteTrace(TraceGFXPlugin, TraceDebug, "Gfx Initiate Starting");
+        WriteTrace(TraceGFXPlugin, TraceDebug, "GFX initiate starting");
         if (!m_Gfx->Initiate(System, m_MainWindow)) { return false; }
-        WriteTrace(TraceGFXPlugin, TraceDebug, "Gfx Initiate Done");
+        WriteTrace(TraceGFXPlugin, TraceDebug, "GFX initiate done");
     }
     if (m_Audio && bAudioChange)
     {
-        WriteTrace(TraceAudioPlugin, TraceDebug, "Audio Initiate Starting");
+        WriteTrace(TraceAudioPlugin, TraceDebug, "Audio initiate starting");
         if (!m_Audio->Initiate(System, m_MainWindow)) { return false; }
-        WriteTrace(TraceAudioPlugin, TraceDebug, "Audio Initiate Done");
+        WriteTrace(TraceAudioPlugin, TraceDebug, "Audio initiate done");
     }
     if (m_Control && bContChange)
     {
-        WriteTrace(TraceControllerPlugin, TraceDebug, "Control Initiate Starting");
+        WriteTrace(TraceControllerPlugin, TraceDebug, "Control initiate starting");
         if (!m_Control->Initiate(System, m_MainWindow)) { return false; }
-        WriteTrace(TraceControllerPlugin, TraceDebug, "Control Initiate Done");
+        WriteTrace(TraceControllerPlugin, TraceDebug, "Control initiate done");
     }
     if (m_RSP && bRspChange)
     {
-        WriteTrace(TraceRSPPlugin, TraceDebug, "RSP Initiate Starting");
+        WriteTrace(TraceRSPPlugin, TraceDebug, "RSP initiate starting");
         if (!m_RSP->Initiate(this, System)) { return false; }
-        WriteTrace(TraceRSPPlugin, TraceDebug, "RSP Initiate Done");
+        WriteTrace(TraceRSPPlugin, TraceDebug, "RSP initiate done");
     }
 
 	if (System)
@@ -440,7 +440,7 @@ void DummyFunction(void)
 
 bool CPlugins::CopyPlugins(const stdstr & DstDir) const
 {
-    //Copy GFX Plugin
+    // Copy GFX plugin
     CPath srcGfxPlugin(m_PluginDir.c_str(), g_Settings->LoadStringVal(Game_Plugin_Gfx).c_str());
     CPath dstGfxPlugin(DstDir.c_str(), g_Settings->LoadStringVal(Game_Plugin_Gfx).c_str());
     dstGfxPlugin.SetName(stdstr_f("%s-copy", dstGfxPlugin.GetName().c_str()).c_str());
@@ -451,11 +451,11 @@ bool CPlugins::CopyPlugins(const stdstr & DstDir) const
     }
     if (!srcGfxPlugin.CopyTo(dstGfxPlugin))
     {
-        WriteTrace(TracePlugins, TraceError, "failed to copy %s to %s", (const char *)srcGfxPlugin, (const char *)dstGfxPlugin);
+        WriteTrace(TracePlugins, TraceError, "Failed to copy %s to %s", (const char *)srcGfxPlugin, (const char *)dstGfxPlugin);
         return false;
     }
 
-    //Copy m_Audio Plugin
+    // Copy m_Audio plugin
     CPath srcAudioPlugin(m_PluginDir.c_str(), g_Settings->LoadStringVal(Game_Plugin_Audio).c_str());
     CPath dstAudioPlugin(DstDir.c_str(), g_Settings->LoadStringVal(Game_Plugin_Audio).c_str());
     dstAudioPlugin.SetName(stdstr_f("%s-copy", dstAudioPlugin.GetName().c_str()).c_str());
@@ -467,7 +467,7 @@ bool CPlugins::CopyPlugins(const stdstr & DstDir) const
     {
         return false;
     }
-    //Copy RSP Plugin
+    // Copy RSP plugin
     CPath srcRSPPlugin(m_PluginDir.c_str(), g_Settings->LoadStringVal(Game_Plugin_RSP).c_str());
     CPath dstRSPPlugin(DstDir.c_str(), g_Settings->LoadStringVal(Game_Plugin_RSP).c_str());
     dstRSPPlugin.SetName(stdstr_f("%s-copy", dstRSPPlugin.GetName().c_str()).c_str());
@@ -480,7 +480,7 @@ bool CPlugins::CopyPlugins(const stdstr & DstDir) const
         return false;
     }
 
-    //Copy Controller Plugin
+    // Copy Controller plugin
     CPath srcContPlugin(m_PluginDir.c_str(), g_Settings->LoadStringVal(Game_Plugin_Controller).c_str());
     CPath dstContPlugin(DstDir.c_str(), g_Settings->LoadStringVal(Game_Plugin_Controller).c_str());
     dstContPlugin.SetName(stdstr_f("%s-copy", dstContPlugin.GetName().c_str()).c_str());

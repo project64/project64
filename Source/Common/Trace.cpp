@@ -207,7 +207,7 @@ CTraceFileLog::CTraceFileLog(const char * FileName, bool FlushFile, CLog::LOG_OP
     m_hLogFile.SetTruncateFile(true);
 
     if (dwMaxFileSize < 3 || dwMaxFileSize > 2047)
-    { /* Clamp file size to 5 MB if it exceeds 2047 or falls short of 3. */
+    { // Clamp file size to 5MB if it exceeds 2047 or falls short of 3
         dwMaxFileSize = 5;
     }
     m_hLogFile.SetMaxFileSize((uint32_t)(dwMaxFileSize * MB));

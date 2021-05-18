@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2007 Hiroshi Morii
 // Copyright(C) 2003 Rice1964
@@ -863,7 +863,7 @@ void hq4x_init(void)
                 g = (j << 4) | j;
                 b = (k << 4) | k;
 
-                /* Microsoft's RGB888->YUV conversion */
+                // Microsoft's RGB888->YUV conversion
                 /*Y = (((  66 * r + 129 * g +  25 * b + 128) >> 8) + 16) & 0xFF;
                 u = ((( -38 * r -  74 * g + 112 * b + 128) >> 8) + 128) & 0xFF;
                 v = ((( 112 * r -  94 * g -  18 * b + 128) >> 8) + 128) & 0xFF;*/

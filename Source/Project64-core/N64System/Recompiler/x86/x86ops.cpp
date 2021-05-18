@@ -23,9 +23,7 @@ CX86Ops::x86Reg CX86Ops::x86_Registers[8] =
     x86_ESP
 };
 
-/**************************************************************************
-* Logging Functions                                                       *
-**************************************************************************/
+// Logging functions
 void CX86Ops::WriteX86Comment(const char * Comment)
 {
     CPU_Message("");
@@ -551,12 +549,12 @@ void CX86Ops::JmpIndirectReg(x86Reg reg)
     case x86_ESP:
         AddCode8(0xff);
         AddCode16(0x2434);
-        /*	g_Notify->BreakPoint(__FILEW__,__LINE__);  */
+        //	g_Notify->BreakPoint(__FILEW__,__LINE__);
         break;
     case x86_EBP:
         AddCode8(0xff);
         AddCode16(0x0065);
-        /*	g_Notify->BreakPoint(__FILEW__,__LINE__);  */
+        //	g_Notify->BreakPoint(__FILEW__,__LINE__);
         break;
     }
 }
@@ -1087,9 +1085,9 @@ void CX86Ops::MoveN64MemToX86regByte(x86Reg reg, x86Reg AddrReg)
     case x86_EBX: x86Command += 0x9800; break;
     case x86_ECX: x86Command += 0x8800; break;
     case x86_EDX: x86Command += 0x9000; break;
-        /*	case x86_ESI: x86Command += 0xB000; break; */
-        /*	case x86_EDI: x86Command += 0xB800; break; */
-        /*	case x86_ESP: case x86_EBP: */
+        //	case x86_ESI: x86Command += 0xB000; break;
+        //	case x86_EDI: x86Command += 0xB800; break;
+        //	case x86_ESP: case x86_EBP:
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
         break;
@@ -1388,7 +1386,7 @@ void CX86Ops::MoveVariableDispToX86Reg(void *Variable, const char * VariableName
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    /* put in shifter 2(01), 4(10), 8(11) */
+    // Put in shifter 2(01), 4(10), 8(11)
     switch (Multiplier)
     {
     case 1: x = 0; break;
@@ -1399,7 +1397,7 @@ void CX86Ops::MoveVariableDispToX86Reg(void *Variable, const char * VariableName
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    /* format xx|000000 */
+    // Format xx|000000
     switch (AddrReg)
     {
     case x86_EAX: AddCode8((uint8_t)(0x05 | x)); break;

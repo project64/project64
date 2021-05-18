@@ -44,7 +44,7 @@ void CN64System::CloseCpu()
     m_EndEmulation = true;
     if (g_Settings->LoadBool(GameRunning_CPU_Paused))
     {
-        WriteTrace(TraceN64System, TraceDebug, "Resume cpu");
+        WriteTrace(TraceN64System, TraceDebug, "Resume CPU");
         m_hPauseEvent.Trigger();
     }
 

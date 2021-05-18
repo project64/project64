@@ -32,7 +32,7 @@ void CEeprom::EepromCommand(uint8_t * Command)
 
     switch (Command[2])
     {
-    case 0: // check
+    case 0: // Check
         if (g_System->m_SaveUsing != SaveChip_Eeprom_4K &&  g_System->m_SaveUsing != SaveChip_Eeprom_16K)
         {
             Command[1] |= 0x80;
@@ -61,7 +61,7 @@ void CEeprom::EepromCommand(uint8_t * Command)
             Command[5] = 0x00;
         }
         break;
-    case 4: // Read from Eeprom
+    case 4: // Read from EEPROM
         if (Command[0] != 2 && HaveDebugger())
         {
             ProcessingError(Command);
@@ -72,7 +72,7 @@ void CEeprom::EepromCommand(uint8_t * Command)
         }
         ReadFrom(&Command[4], Command[3]);
         break;
-    case 5: //Write to Eeprom
+    case 5: // Write to EEPROM
         if (Command[0] != 10 && HaveDebugger())
         {
             ProcessingError(Command);
@@ -83,25 +83,25 @@ void CEeprom::EepromCommand(uint8_t * Command)
         }
         WriteTo(&Command[4], Command[3]);
         break;
-    case 6: //RTC Status query
+    case 6: // RTC status query
         Command[3] = 0x00;
         Command[4] = 0x10;
         Command[5] = 0x00;
         break;
-    case 7: //Read RTC block
+    case 7: // Read RTC block
         switch (Command[3])
         {
-        case 0: //Block number
+        case 0: // Block number
             Command[4] = 0x00;
             Command[5] = 0x02;
             Command[12] = 0x00;
             break;
         case 1:
-            //read block, Command[2], Unimplemented
+            // Read block, Command[2], unimplemented
             break;
-        case 2: //Set RTC Time
+        case 2: // Set RTC time
             time(&curtime_time);
-            memcpy(&curtime, localtime(&curtime_time), sizeof(curtime)); // fd's fix
+            memcpy(&curtime, localtime(&curtime_time), sizeof(curtime));
             Command[4] = byte2bcd(curtime.tm_sec);
             Command[5] = byte2bcd(curtime.tm_min);
             Command[6] = 0x80 + byte2bcd(curtime.tm_hour);
@@ -110,12 +110,12 @@ void CEeprom::EepromCommand(uint8_t * Command)
             Command[9] = byte2bcd(curtime.tm_mon + 1);
             Command[10] = byte2bcd(curtime.tm_year);
             Command[11] = byte2bcd(curtime.tm_year / 100);
-            Command[12] = 0x00;	// status
+            Command[12] = 0x00;	// Status
             break;
         }
         break;
     case 8:
-        //Write RTC, unimplemented
+        // Write RTC, unimplemented
         if (bShowPifRamErrors())
         {
             g_Notify->DisplayError("Write RTC, unimplemented");
@@ -199,6 +199,6 @@ void CEeprom::ProcessingError(uint8_t * /*Command*/)
 {
     if (bShowPifRamErrors())
     {
-        g_Notify->DisplayError("What am I meant to do with this Eeprom Command");
+        g_Notify->DisplayError("What am I meant to do with this EEPROM command?");
     }
 }

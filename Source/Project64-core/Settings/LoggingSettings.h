@@ -8,7 +8,7 @@ public:
 
     inline static bool  GenerateLog      ( void ) { return m_GenerateLog; }
 
-    /* Registers Log */
+    // Registers log
     inline static bool  LogRDRamRegisters   ( void ) { return m_LogRDRamRegisters; }
     inline static bool  LogSPRegisters      ( void ) { return m_LogSPRegisters; }
     inline static bool  LogDPCRegisters     ( void ) { return m_LogDPCRegisters; }
@@ -20,7 +20,7 @@ public:
     inline static bool  LogRDRAMInterface   ( void ) { return m_LogRDRAMInterface; }
     inline static bool  LogSerialInterface  ( void ) { return m_LogSerialInterface; }
 
-    /* Pif Ram Log */
+    // PIF RAM log
     inline static bool  LogPRDMAOperations   ( void ) { return m_LogPRDMAOperations; }
     inline static bool  LogPRDirectMemLoads  ( void ) { return m_LogPRDirectMemLoads; }
     inline static bool  LogPRDMAMemLoads     ( void ) { return m_LogPRDMAMemLoads; }
@@ -28,7 +28,7 @@ public:
     inline static bool  LogPRDMAMemStores    ( void ) { return m_LogPRDMAMemStores; }
     inline static bool  LogControllerPak     ( void ) { return m_LogControllerPak; }
 
-    /* Special Log */
+    // Special log
     inline static bool  LogCP0changes        ( void ) { return m_LogCP0changes; }
     inline static bool  LogCP0reads          ( void ) { return m_LogCP0reads; }
     inline static bool  LogTLB               ( void ) { return m_LogTLB; }
@@ -43,7 +43,7 @@ private:
 
     static bool m_GenerateLog;
 
-    /* Registers Log */
+    // Registers log
     static bool m_LogRDRamRegisters;
     static bool m_LogSPRegisters;
     static bool m_LogDPCRegisters;
@@ -55,7 +55,7 @@ private:
     static bool m_LogRDRAMInterface;
     static bool m_LogSerialInterface;
 
-    /* Pif Ram Log */
+    // PIF RAM log
     static bool m_LogPRDMAOperations;
     static bool m_LogPRDirectMemLoads;
     static bool m_LogPRDMAMemLoads;
@@ -63,7 +63,7 @@ private:
     static bool m_LogPRDMAMemStores;
     static bool m_LogControllerPak;
 
-    /* Special Log */
+    // Special log
     static bool m_LogCP0changes;
     static bool m_LogCP0reads;
     static bool m_LogTLB;

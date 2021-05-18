@@ -1,4 +1,4 @@
-// OpCode functions
+// Opcode functions
 
 void Compile_SPECIAL       ( void );
 void Compile_REGIMM        ( void );
@@ -29,7 +29,7 @@ void Compile_SW            ( void );
 void Compile_LC2           ( void );
 void Compile_SC2           ( void );
 
-// R4300i OpCodes: Special
+// R4300i Opcodes: Special
 
 void Compile_Special_SLL   ( void );
 void Compile_Special_SRL   ( void );
@@ -51,7 +51,7 @@ void Compile_Special_NOR   ( void );
 void Compile_Special_SLT   ( void );
 void Compile_Special_SLTU  ( void );
 
-// R4300i OpCodes: RegImm
+// R4300i Opcodes: RegImm
 
 void Compile_RegImm_BLTZ   ( void );
 void Compile_RegImm_BGEZ   ( void );

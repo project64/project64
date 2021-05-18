@@ -233,7 +233,7 @@ CPath& CPath::operator =(const std::string& strPath)
 /*
 Post: Converts path to string
 Task: Convert path to string
-Warning: because this pointer to string point in the data
+Warning: Because this pointer to string point in the data
 of this class, it is possible to cast the result of this
 function in any non-constant pointer and alter the data.
 Very dangerous!
@@ -281,7 +281,7 @@ Task: Return the individual components of this path.
 For any given argument, you can pass nullptr if you are not
 interested in that component.
 Do not rely on pNames being <= 8 characters, extensions
-being <= 3 characters, or drives being 1 character
+being <= 3 characters, or drives being 1 character.
 */
 
 #ifdef _WIN32
@@ -922,7 +922,7 @@ Task: To determine if the directory exists, we need to
 create a test path with a wildcard (*.*) extension
 and see if FindFirstFile returns anything.  We don't
 use CPath::FindFirst() because that routine parses out
-'.' and '..', which fails for empty directories
+'.' and '..', which fails for empty directories.
 */
 
 bool CPath::DirectoryExists() const
@@ -1041,10 +1041,10 @@ bool CPath::Delete(bool bEvenIfReadOnly) const
 
 /*
 Post: Return TRUE on success, false if there is such a target file
-and we weren't granted permission to overwrite file or if we get an error
+and we weren't granted permission to overwrite file or if we get an error.
 Task: Copy file
 Since ::CopyFile will not overwrite read-only files
-we will make sure the target file is writable first
+we will make sure the target file is writable first.
 */
 
 bool CPath::CopyTo(const char * lpcszTargetFile, bool bOverwrite)
@@ -1053,7 +1053,7 @@ bool CPath::CopyTo(const char * lpcszTargetFile, bool bOverwrite)
     {
         return false;
     }
-    WriteTrace(TracePath, TraceDebug, "copy \"%s\" to \"%s\"",m_strPath.c_str(),lpcszTargetFile);
+    WriteTrace(TracePath, TraceDebug, "Copy \"%s\" to \"%s\"",m_strPath.c_str(),lpcszTargetFile);
 #ifdef _WIN32
     // Check if the target file exists
     CPath TargetFile(lpcszTargetFile);
@@ -1164,7 +1164,7 @@ bool CPath::CopyTo(const char * lpcszTargetFile, bool bOverwrite)
 }
 
 // Post: Return TRUE on success, false if there is such a target file
-// and we weren't granted permission to overwrite file or get an error
+// and we weren't granted permission to overwrite file or get an error.
 // Task: Move file
 
 bool CPath::MoveTo(const char * lpcszTargetFile, bool bOverwrite)
@@ -1228,7 +1228,7 @@ These attributes do not follow a simple additive logic.
 Note that FIND_ATTRIBUTE_FILES is 0x00, so it effectively cannot be
 removed from the attribute set. You will therefore always
 get normal files, and may also get Archive, Hidden, etc.
-if you specify those attributes
+if you specify those attributes.
 See also: FindFirstFile, FindNextFile
 */
 
@@ -1287,8 +1287,8 @@ bool CPath::FindFirst(uint32_t dwAttributes /*= FIND_ATTRIBUTE_FILES*/)
     return false;
 }
 
-// Post    : Return TRUE if a new match found
-// Task    : Find the next file that meets the conditions specified in the last FindFirst call
+// Post: Return TRUE if a new match found
+// Task: Find the next file that meets the conditions specified in the last FindFirst call
 
 bool CPath::FindNext()
 {
@@ -1347,12 +1347,12 @@ bool CPath::FindNext()
             strcmp(pEntry->d_name,"..") == 0 ||
             !wildcmp(m_FindWildcard.c_str(),pEntry->d_name))
         {
-            WriteTrace(TracePath, TraceVerbose, "continue, d_name = %s",pEntry->d_name);
+            WriteTrace(TracePath, TraceVerbose, "Continue, d_name = %s",pEntry->d_name);
             continue;
         }
         if ((FIND_ATTRIBUTE_SUBDIR & dwFileAttributes) == FIND_ATTRIBUTE_SUBDIR)
         {
-            WriteTrace(TracePath, TraceVerbose, "is dir");
+            WriteTrace(TracePath, TraceVerbose, "is a directory");
             if (IsDirectory())
             {
                 // Found a directory
@@ -1366,7 +1366,7 @@ bool CPath::FindNext()
         }
         else
         {
-            WriteTrace(TracePath, TraceVerbose, "is file");
+            WriteTrace(TracePath, TraceVerbose, "is a file");
             // Found a file
             if (IsDirectory())
             {

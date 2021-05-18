@@ -739,7 +739,8 @@ void TestInterpreterJump(uint32_t PC, uint32_t TargetPC, int32_t Reg1, int32_t R
     R4300iOp::m_TestTimer = true;
 }
 
-/************************* Opcode functions *************************/
+// Opcode functions
+
 void R4300iOp::J()
 {
     m_NextInstruction = DELAY_SLOT;
@@ -1686,7 +1687,9 @@ void R4300iOp::SD()
         TLB_WRITE_EXCEPTION(Address);
     }
 }
-/********************** R4300i OpCodes: Special **********************/
+
+// R4300i opcodes: Special
+
 void R4300iOp::SPECIAL_SLL()
 {
     _GPR[m_Opcode.rd].DW = (_GPR[m_Opcode.rt].W[0] << m_Opcode.sa);
@@ -1810,7 +1813,7 @@ void R4300iOp::SPECIAL_DIV()
     {
         if (bShowDivByZero())
         {
-            g_Notify->DisplayError("DIV by 0 ???");
+            g_Notify->DisplayError("DIV by 0");
         }
         _RegLO->DW = 0;
         _RegHI->DW = 0;
@@ -1828,7 +1831,7 @@ void R4300iOp::SPECIAL_DIVU()
     {
         if (bShowDivByZero())
         {
-            g_Notify->DisplayError("DIVU by 0 ???");
+            g_Notify->DisplayError("DIVU by 0");
         }
         _RegLO->DW = 0;
         _RegHI->DW = 0;
@@ -1874,7 +1877,7 @@ void R4300iOp::SPECIAL_DDIV()
     {
         if (HaveDebugger())
         {
-            g_Notify->DisplayError("DDIV by 0 ???");
+            g_Notify->DisplayError("DDIV by 0");
         }
     }
 }
@@ -1890,7 +1893,7 @@ void R4300iOp::SPECIAL_DDIVU()
     {
         if (HaveDebugger())
         {
-            g_Notify->DisplayError("DDIVU by 0 ???");
+            g_Notify->DisplayError("DDIVU by 0");
         }
     }
 }
@@ -2063,7 +2066,8 @@ void R4300iOp::SPECIAL_DSRA32()
     _GPR[m_Opcode.rd].DW = (_GPR[m_Opcode.rt].DW >> (m_Opcode.sa + 32));
 }
 
-/********************** R4300i OpCodes: RegImm **********************/
+// R4300i opcodes: RegImm
+
 void R4300iOp::REGIMM_BLTZ()
 {
     m_NextInstruction = DELAY_SLOT;
@@ -2256,12 +2260,13 @@ void R4300iOp::REGIMM_TNEI()
     }
 }
 
-/************************** COP0 functions **************************/
+// COP0 functions
+
 void R4300iOp::COP0_MF()
 {
     if (LogCP0reads())
     {
-        LogMessage("%08X: R4300i Read from %s (0x%08X)", (*_PROGRAM_COUNTER), CRegName::Cop0[m_Opcode.rd], _CP0[m_Opcode.rd]);
+        LogMessage("%08X: R4300i read from %s (0x%08X)", (*_PROGRAM_COUNTER), CRegName::Cop0[m_Opcode.rd], _CP0[m_Opcode.rd]);
     }
 
     if (m_Opcode.rd == 9)
@@ -2275,8 +2280,8 @@ void R4300iOp::COP0_MT()
 {
     if (LogCP0changes())
     {
-        LogMessage("%08X: Writing 0x%X to %s register (Originally: 0x%08X)", (*_PROGRAM_COUNTER), _GPR[m_Opcode.rt].UW[0], CRegName::Cop0[m_Opcode.rd], _CP0[m_Opcode.rd]);
-        if (m_Opcode.rd == 11)  //Compare
+        LogMessage("%08X: Writing 0x%X to %s register (originally: 0x%08X)", (*_PROGRAM_COUNTER), _GPR[m_Opcode.rt].UW[0], CRegName::Cop0[m_Opcode.rd], _CP0[m_Opcode.rd]);
+        if (m_Opcode.rd == 11)  // Compare
         {
             LogMessage("%08X: Cause register changed from %08X to %08X", (*_PROGRAM_COUNTER), g_Reg->CAUSE_REGISTER, (g_Reg->CAUSE_REGISTER & ~CAUSE_IP7));
         }
@@ -2284,39 +2289,39 @@ void R4300iOp::COP0_MT()
 
     switch (m_Opcode.rd)
     {
-    case 0: //Index
-    case 2: //EntryLo0
-    case 3: //EntryLo1
-    case 5: //PageMask
-    case 10: //Entry Hi
-    case 14: //EPC
-    case 16: //Config
-    case 18: //WatchLo
-    case 19: //WatchHi
-    case 28: //Tag lo
-    case 29: //Tag Hi
-    case 30: //ErrEPC
+    case 0: // Index
+    case 2: // EntryLo0
+    case 3: // EntryLo1
+    case 5: // PageMask
+    case 10: // Entry Hi
+    case 14: // EPC
+    case 16: // Config
+    case 18: // WatchLo
+    case 19: // WatchHi
+    case 28: // Tag lo
+    case 29: // Tag Hi
+    case 30: // ErrEPC
         _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
         break;
-    case 6: //Wired
+    case 6: // Wired
         g_SystemTimer->UpdateTimers();
         _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
         break;
-    case 4: //Context
+    case 4: // Context
         _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0] & 0xFF800000;
         break;
-    case 9: //Count
+    case 9: // Count
         g_SystemTimer->UpdateTimers();
         _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
         g_SystemTimer->UpdateCompareTimer();
         break;
-    case 11: //Compare
+    case 11: // Compare
         g_SystemTimer->UpdateTimers();
         _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
         g_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP7;
         g_SystemTimer->UpdateCompareTimer();
         break;
-    case 12: //Status
+    case 12: // Status
         if ((_CP0[m_Opcode.rd] & STATUS_FR) != (_GPR[m_Opcode.rt].UW[0] & STATUS_FR))
         {
             _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
@@ -2332,7 +2337,7 @@ void R4300iOp::COP0_MT()
         }
         g_Reg->CheckInterrupts();
         break;
-    case 13: //cause
+    case 13: // Cause
         _CP0[m_Opcode.rd] &= 0xFFFFCFF;
         if ((_GPR[m_Opcode.rt].UW[0] & 0x300) != 0 && HaveDebugger())
         {
@@ -2344,7 +2349,8 @@ void R4300iOp::COP0_MT()
     }
 }
 
-/************************** COP0 CO functions ***********************/
+// COP0 CO functions
+
 void R4300iOp::COP0_CO_TLBR()
 {
     if (!g_System->bUseTlb())
@@ -2399,7 +2405,8 @@ void R4300iOp::COP0_CO_ERET()
     m_TestTimer = true;
 }
 
-/************************** COP1 functions **************************/
+// COP1 functions
+
 void R4300iOp::COP1_MF()
 {
     TEST_COP1_USABLE_EXCEPTION();
@@ -2419,7 +2426,7 @@ void R4300iOp::COP1_CF()
     {
         if (HaveDebugger())
         {
-            g_Notify->DisplayError("CFC1 what register are you writing to ?");
+            g_Notify->DisplayError("CFC1: what register are you writing to?");
         }
         return;
     }
@@ -2455,11 +2462,12 @@ void R4300iOp::COP1_CT()
     }
     if (HaveDebugger())
     {
-        g_Notify->DisplayError("CTC1 what register are you writing to ?");
+        g_Notify->DisplayError("CTC1: what register are you writing to?");
     }
 }
 
-/************************* COP1: BC1 functions ***********************/
+// COP1: BC1 functions
+
 void R4300iOp::COP1_BCF()
 {
     TEST_COP1_USABLE_EXCEPTION();
@@ -2517,18 +2525,20 @@ void R4300iOp::COP1_BCTL()
         m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
     }
 }
-/************************** COP1: S functions ************************/
+
+// COP1: S functions
+
 __inline void Float_RoundToInteger32(int32_t * Dest, const float * Source, int RoundType)
 {
 #pragma warning(push)
-#pragma warning(disable:4244) //warning C4244: disabe conversion from 'float' to 'int32_t', possible loss of data
+#pragma warning(disable:4244) // warning C4244: disable conversion from 'float' to 'int32_t', possible loss of data
 
     if (RoundType == FE_TONEAREST)
     {
         float reminder = *Source - floorf(*Source);
         if (reminder == 0.5)
         {
-            //make any decimal point in even to go to odd and any decimal point in odd stay as odd
+            // Make any decimal point that is even odd, and any decimal point that is odd stay odd
             if (*Source < 0)
             {
                 *Dest = (int)truncf(*Source) % 2 != 0 ? floorf(*Source) : ceilf(*Source);
@@ -2553,14 +2563,14 @@ __inline void Float_RoundToInteger32(int32_t * Dest, const float * Source, int R
 __inline void Float_RoundToInteger64(int64_t * Dest, const float * Source, int RoundType)
 {
 #pragma warning(push)
-#pragma warning(disable:4244) //warning C4244: disabe conversion from 'float' to 'int64_t', possible loss of data
+#pragma warning(disable:4244) // warning C4244: disable conversion from 'float' to 'int64_t', possible loss of data
 
     if (RoundType == FE_TONEAREST)
     {
         float reminder = *Source - floorf(*Source);
         if (reminder == 0.5)
         {
-            //make any decimal point in even to go to odd and any decimal point in odd stay as odd
+            // Make any decimal point that is even odd, and any decimal point that is odd stay odd
             if (*Source < 0)
             {
                 *Dest = (int)truncf(*Source) % 2 != 0 ? floorf(*Source) : ceilf(*Source);
@@ -2753,18 +2763,19 @@ void R4300iOp::COP1_S_CMP()
     }
 }
 
-/************************** COP1: D functions ************************/
+// COP1: D functions
+
 __inline void Double_RoundToInteger32(int32_t * Dest, const double * Source, int RoundType)
 {
 #pragma warning(push)
-#pragma warning(disable:4244) //warning C4244: disabe conversion from 'double' to 'uint32_t', possible loss of data
+#pragma warning(disable:4244) // warning C4244: disable conversion from 'double' to 'uint32_t', possible loss of data
 
     if (RoundType == FE_TONEAREST)
     {
         double reminder = *Source - floor(*Source);
         if (reminder == 0.5)
         {
-            //make any decimal point in even to go to odd and any decimal point in odd stay as odd
+            // Make any decimal point that is even odd, and any decimal point that is odd stay odd
             if (*Source < 0)
             {
                 *Dest = (int)truncf(*Source) % 2 != 0 ? floor(*Source) : ceil(*Source);
@@ -2793,14 +2804,14 @@ __inline void Double_RoundToInteger32(int32_t * Dest, const double * Source, int
 __inline void Double_RoundToInteger64(int64_t * Dest, const double * Source, int RoundType)
 {
 #pragma warning(push)
-#pragma warning(disable:4244) //warning C4244: disabe conversion from 'double' to 'uint64_t', possible loss of data
+#pragma warning(disable:4244) // warning C4244: disable conversion from 'double' to 'uint64_t', possible loss of data
 
     if (RoundType == FE_TONEAREST)
     {
         double reminder = *Source - floor(*Source);
         if (reminder == 0.5)
         {
-            //make any decimal point in even to go to odd and any decimal point in odd stay as odd
+            // Make any decimal point that is even odd, and any decimal point that is odd stay odd
             if (*Source < 0)
             {
                 *Dest = (int)truncf(*Source) % 2 != 0 ? floor(*Source) : ceil(*Source);
@@ -2997,7 +3008,8 @@ void R4300iOp::COP1_D_CMP()
     }
 }
 
-/************************** COP1: W functions ************************/
+// COP1: W functions
+
 void R4300iOp::COP1_W_CVT_S()
 {
     TEST_COP1_USABLE_EXCEPTION();
@@ -3012,7 +3024,8 @@ void R4300iOp::COP1_W_CVT_D()
     *(double *)_FPR_D[m_Opcode.fd] = (double)*(int32_t *)_FPR_S[m_Opcode.fs];
 }
 
-/************************** COP1: L functions ************************/
+// COP1: L functions
+
 void R4300iOp::COP1_L_CVT_S()
 {
     TEST_COP1_USABLE_EXCEPTION();
@@ -3027,10 +3040,11 @@ void R4300iOp::COP1_L_CVT_D()
     *(double *)_FPR_D[m_Opcode.fd] = (double)*(int64_t *)_FPR_D[m_Opcode.fs];
 }
 
-/************************** Other functions **************************/
+// Other functions
+
 void R4300iOp::UnknownOpcode()
 {
-    g_Notify->DisplayError(stdstr_f("%s: %08X\n%s\n\nStopping Emulation !", GS(MSG_UNHANDLED_OP), (*_PROGRAM_COUNTER),
+    g_Notify->DisplayError(stdstr_f("%s: %08X\n%s\n\nStopping emulation", GS(MSG_UNHANDLED_OP), (*_PROGRAM_COUNTER),
         R4300iOpcodeName(m_Opcode.Hex, (*_PROGRAM_COUNTER))).c_str());
     g_System->m_EndEmulation = true;
 
@@ -3040,7 +3054,7 @@ void R4300iOp::UnknownOpcode()
     {
         int32_t response;
 
-        strcat(Message, "\n\nDo you wish to enter the debugger ?");
+        strcat(Message, "\n\nDo you wish to enter the debugger?");
 
         response = MessageBox(nullptr, Message, GS(MSG_MSGBOX_ERROR_TITLE), MB_YESNO | MB_ICONERROR);
         if (response == IDYES)

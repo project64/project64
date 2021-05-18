@@ -1,5 +1,5 @@
 // CListCtrl - A WTL list control with Windows Vista style item selection
-// Revision:      1.5
+// Revision: 1.5
 // Last modified: 2nd November 2016
 
 #pragma once
@@ -41,7 +41,7 @@ public:
 	CListImpl()
 	{
 		m_bSortEnabled = TRUE; // Added by Rowan 05/12/2006
-		m_bRightClickSelect = FALSE; // shygoo 2016 Nov 2
+		m_bRightClickSelect = FALSE; // Shygoo 11/02/2016
 		m_bShowHeader = TRUE;
 		m_bSortAscending = TRUE;
 		m_bButtonDown = FALSE;
@@ -105,7 +105,7 @@ public:
 
 protected:
 	BOOL m_bSortEnabled; // Added by Rowan 05/12/2006 to disable sorting
-	BOOL m_bRightClickSelect; // shygoo 2016 Nov 2
+	BOOL m_bRightClickSelect; // Shygoo 11/02/2016
 	BOOL m_bShowHeader;
 	BOOL m_bShowSort;
 	BOOL m_bSortAscending;
@@ -307,7 +307,7 @@ public:
 		
 		dcClient.SelectFont( hOldFont );
 		
-		// Has system font changed
+		// Has system font changed?
 		if ( m_nItemHeight != sizeExtent.cy + ITEM_HEIGHT_MARGIN )
 		{
 			m_nItemHeight = sizeExtent.cy + ITEM_HEIGHT_MARGIN;
@@ -335,7 +335,7 @@ public:
 		m_bSortEnabled = bSortEnabled;
 	}
 	
-	// shygoo 2016 Nov 2
+	// Shygoo 11/02/2016
 	void SetRightClickSelect( BOOL bRightClickSelect = TRUE)
 	{
 		m_bRightClickSelect = bRightClickSelect;
@@ -629,7 +629,7 @@ public:
 		if ( strItemText.empty() )
 			return FALSE;
 		
-		// Get date-time from item text: yyyymmddhhmmss
+		// Get date and time from item text: yyyymmddhhmmss
 		stItemDate.wYear = (WORD)_ttoi( strItemText.substr(0, 4 ).c_str() );
 		stItemDate.wMonth = (WORD)_ttoi( strItemText.substr( 4, 2 ).c_str() );
 		stItemDate.wDay = (WORD)_ttoi( strItemText.substr( 6, 2 ).c_str() );
@@ -699,7 +699,7 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		
-		// Set date-time in format (yyyymmddhhmmss)
+		// Set date and time in format (yyyymmddhhmmss)
 		stdstr strFormatDate;
 		strFormatDate.Format( _T( "%04d%02d%02d%02d%02d%02d" ), stItemDate.wYear, stItemDate.wMonth, stItemDate.wDay, stItemDate.wHour, stItemDate.wMinute, stItemDate.wSecond );
 		
@@ -1105,7 +1105,7 @@ public:
 	
 	BOOL HitTestHeader( CPoint point, int& nColumn, UINT& nFlags )
 	{
-		// Reset hittest flags
+		// Reset hit test flags
 		nFlags = HITTEST_FLAG_NONE;
 		
 		if ( !m_bShowHeader )
@@ -1122,7 +1122,7 @@ public:
 		int nDividerPos = 0;
 		int nColumnCount = GetColumnCount();
 	
-		// Get hit-test subitem
+		// Get hit test subitem
 		for ( nColumn = 0; nColumn < nColumnCount; nColumn++ )
 		{
 			int nColumnWidth = GetColumnWidth( nColumn );
@@ -1181,7 +1181,7 @@ public:
 		int nTotalWidth = 0;
 		int nColumnCount = GetColumnCount();
 	
-		// Get hit-test subitem
+		// Get hit test subitem
 		for ( nSubItem = 0; nSubItem < nColumnCount; nSubItem++ )
 		{
 			int nColumnWidth = GetColumnWidth( nSubItem );
@@ -1620,7 +1620,7 @@ public:
 			}
 		}
 		
-		// Was scrolling performed?
+		// Was the scrolling performed?
 		return bAutoScroll;
 	}
 	
@@ -3735,7 +3735,6 @@ public:
 			return FALSE;
 		m_aItems[ nItem ].m_aSubItems[ nSubItem ].m_strText = lpszText;
 		
-		// Added by Rowan - 11/12/2006 to fix an updating bug - can add this to the parameter list if needed
 		if (bInvalidateItem)
 			InvalidateItem(nItem, nSubItem);
 		

@@ -9,15 +9,15 @@ implied warranty of any kind.
 
 The translator/ modifier does not claim (1) that MD5 will do what you think
 it does; (2) that this translation/ modification is accurate; or (3) that
-this software is "merchantable."  (Language for this disclaimer partially
-copied from the disclaimer below).
+this software is "merchantable."  (language for this disclaimer partially
+copied from the disclaimer below)
 
 based on:
 
 MD5.H - header file for MD5C.C
 MDDRIVER.C - test driver for MD2, MD4 and MD5
 
-Copyright (C) 1991-2, RSA Data Security, Inc. Created 1991. All rights reserved.
+Copyright (C) 1991-1992, RSA Data Security, Inc. Created 1991. All rights reserved.
 
 License to copy and use this software is granted provided that it
 is identified as the "RSA Data Security, Inc. MD5 Message-Digest

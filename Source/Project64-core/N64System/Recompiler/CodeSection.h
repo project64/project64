@@ -27,7 +27,7 @@ public:
     void AddParent(CCodeSection * Parent);
     void SwitchParent(CCodeSection * OldParent, CCodeSection * NewParent);
 
-    /* Block Connection info */
+    // Block connection info
     SECTION_LIST       m_ParentSection;
     CCodeBlock * const m_BlockInfo;
     const uint32_t     m_SectionID;
@@ -35,8 +35,8 @@ public:
     uint32_t	       m_EndPC;
     CCodeSection     * m_ContinueSection;
     CCodeSection     * m_JumpSection;
-    bool               m_EndSection;   // if this section does not link
-    bool               m_LinkAllowed;  // are other sections allowed to find block to link to it
+    bool               m_EndSection;   // If this section does not link, are other sections allowed to find block to link to it?
+    bool               m_LinkAllowed;
     uint32_t           m_Test;
     uint32_t           m_Test2;
     uint8_t          * m_CompiledLocation;
@@ -44,10 +44,10 @@ public:
     bool               m_DelaySlot;
     CRecompilerOps * & m_RecompilerOps;
 
-    /* Register Info */
+    // Register info
     CRegInfo    m_RegEnter;
 
-    /* Jump Info */
+    // Jump info
     CJumpInfo   m_Jump;
     CJumpInfo   m_Cont;
 

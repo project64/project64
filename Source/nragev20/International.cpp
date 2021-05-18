@@ -1,27 +1,26 @@
 /*
-    N-Rage`s Dinput8 Plugin
-    (C) 2002, 2006  Norbert Wladyka
+N-Rage`s Dinput8 Plugin
+(C) 2002, 2006  Norbert Wladyka
 
-    Author`s Email: norbert.wladyka@chello.at
-    Website: http://go.to/nrage
+Author`s Email: norbert.wladyka@chello.at
+Website: http://go.to/nrage
 
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// Internationalization routines go in this file.
+// Internationalization routines go in this file
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,7 +36,7 @@ BOOL IsHongKongVersion();
 BOOL CALLBACK EnumLangProc(HANDLE hModule, LPCTSTR lpszType, LPCTSTR lpszName, WORD wIDLanguage, LONG_PTR lParam);
 
 // The following routines are ripped straight from the SatDLL sample project on the Visual Studio .NET CDs.
-// Props to the MS coders for making this solid piece of work. --rabid
+// Props to the MS coders for making this solid piece of work (comment by rabid)
 // "If it ain't broke, don't fix it."
 
 // Loads the satellite DLL specified for the language DesiredLanguage
@@ -52,7 +51,7 @@ HMODULE     LoadLanguageDLL(LANGID DesiredLanguage)
     if( hDLL )
         return hDLL;
     else
-    {   // try the primary language ID
+    {   // Try the primary language ID
         DesiredLanguage = PRIMARYLANGID(DesiredLanguage);
         _stprintf(SatellitePath, _T("NRage-Language-%u.dll"), DesiredLanguage);
         hDLL = LoadLibraryEx(SatellitePath, 0, 0);
@@ -79,11 +78,11 @@ BOOL CALLBACK EnumLangProc(HANDLE hModule, LPCTSTR lpszType, LPCTSTR lpszName,
     LangInfo->Count++;
     LangInfo->LangID  = wIDLanguage;
 
-    return (TRUE);        // continue enumeration
+    return (TRUE);        // Continue enumeration
 }
 
 // Detects the language of ntdll.dll with some specific processing for
-// the Hongkong SAR version
+// the Hong Kong SAR version
 LANGID GetNTDLLNativeLangID()
 {
     LANGINFO LangInfo;
@@ -92,7 +91,7 @@ LANGID GetNTDLLNativeLangID()
 
     ZeroMemory(&LangInfo,sizeof(LangInfo));
 
-    // Get the HModule for ntdll.
+    // Get the HModule for ntdll
     HMODULE hMod = GetModuleHandle(_T("ntdll.dll"));
     if (hMod==NULL)
     {
@@ -108,7 +107,7 @@ LANGID GetNTDLLNativeLangID()
     return (LangInfo.LangID);
 }
 
-// Checks if NT4 system is Hongkong SAR version
+// Checks if NT4 system is Hong Kong SAR version
 BOOL IsHongKongVersion()
 {
     HMODULE hMod;
@@ -147,24 +146,24 @@ LANGID DetectLanguage()
 
     switch( VersionInfo.dwPlatformId )
     {
-        // On Windows NT, Windows 2000 or higher
+        // On Windows NT, Windows 2000, or higher
         case VER_PLATFORM_WIN32_NT:
             if( VersionInfo.dwMajorVersion >= 5)   // Windows 2000 or higher
             {
-                // we need to dynamically link the GetUserDefaultUILanguage func
+                // We need to dynamically link the GetUserDefaultUILanguage function
                 HMODULE hmKernDLL = LoadLibrary(_T("kernel32.dll"));
                 if (hmKernDLL)
                 {
                     LANGID (*fpGetLang)() = NULL;
                     fpGetLang = (LANGID(*)(void))GetProcAddress(hmKernDLL, "GetUserDefaultUILanguage");
                     uiLangID = fpGetLang();
-                } // and if we couldn't load kernel32.dll, just fall back to default language
+                } // And if we couldn't load kernel32.dll, just fall back to default language
             }
             else
-            {   // for NT4 check the language of ntdll.dll
+            {   // For NT4 check the language of ntdll.dll
                 uiLangID = GetNTDLLNativeLangID();
                 if (uiLangID == 1033)
-                {       // special processing for Honkong SAR version of NT4
+                {       // Special processing for Hong Kong SAR version of NT4
                     if (IsHongKongVersion())
                     {
                         uiLangID = 3076;
@@ -172,7 +171,7 @@ LANGID DetectLanguage()
                 }
             }
             break;
-        // On Windows 95, Windows 98 or Windows ME
+        // On Windows 95, Windows 98, or Windows ME
         case VER_PLATFORM_WIN32_WINDOWS:
             // Open the registry key for the UI language
             if( RegOpenKeyEx(HKEY_CURRENT_USER,_T("Default\\Control Panel\\Desktop\\ResourceLocale"), 0,
@@ -197,6 +196,6 @@ LANGID DetectLanguage()
     {
         uiLangID = GetUserDefaultLangID();
     }
-    // Return the found language ID.
+    // Return the found language ID
     return (uiLangID);
 }

@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2007 Hiroshi Morii
 // Copyright(C) 2003 Rice1964
@@ -16,9 +16,7 @@
 #include <windows.h>
 #endif
 
-/*
- * External libraries
- ******************************************************************************/
+// External libraries
 TxLoadLib::TxLoadLib()
 {
     _tx_compress_dxtn = tx_compress_dxtn;
@@ -39,19 +37,16 @@ dxtCompressTexFuncExt TxLoadLib::getdxtCompressTexFuncExt()
     return _tx_compress_dxtn;
 }
 
-/*
- * Utilities
- ******************************************************************************/
+// Utilities
 uint32 TxUtil::checksumTx(uint8 *src, int width, int height, uint16 format)
 {
     int dataSize = sizeofTx(width, height, format);
 
-    /* for now we use adler32 if something else is better
-     * we can simply swtich later
-     */
-     /* return (dataSize ? Adler32(src, dataSize, 1) : 0); */
+    // For now we use adler32 if something else is better
+    // we can simply switch later
+    // return (dataSize ? Adler32(src, dataSize, 1) : 0);
 
-     /* zlib crc32 */
+    // zlib crc32
     return (dataSize ? crc32(crc32(0L, Z_NULL, 0), src, dataSize) : 0);
 }
 
@@ -59,7 +54,7 @@ int TxUtil::sizeofTx(int width, int height, uint16 format)
 {
     int dataSize = 0;
 
-    /* a lookup table for the shifts would be better */
+    // TODO: A lookup table for the shifts would be better
     switch (format) {
     case GFX_TEXFMT_ARGB_CMP_FXT1:
         dataSize = (((width + 0x7) & ~0x7) * ((height + 0x3) & ~0x3)) >> 1;
@@ -87,8 +82,8 @@ int TxUtil::sizeofTx(int width, int height, uint16 format)
         dataSize = (width * height) << 2;
         break;
     default:
-        /* unsupported format */
-        DBG_INFO(80, "Error: cannot get size. unsupported gfmt:%x\n", format);
+        // Unsupported format
+        DBG_INFO(80, "Error: Cannot get size. Unsupported gfmt:%x\n", format);
         ;
     }
 
@@ -97,9 +92,9 @@ int TxUtil::sizeofTx(int width, int height, uint16 format)
 
 uint32 TxUtil::checksum(uint8 *src, int width, int height, int size, int rowStride)
 {
-    /* Rice CRC32 for now. We can switch this to Jabo MD5 or
-     * any other custom checksum.
-     * TODO: use *_HIRESTEXTURE option. */
+    // Rice CRC32 for now. We can switch this to MD5 or
+    // any other custom checksum.
+    // TODO: use *_HIRESTEXTURE option.
 
     if (!src) return 0;
 
@@ -108,10 +103,10 @@ uint32 TxUtil::checksum(uint8 *src, int width, int height, int size, int rowStri
 
 uint64_t TxUtil::checksum64(uint8 *src, int width, int height, int size, int rowStride, uint8 *palette)
 {
-    /* Rice CRC32 for now. We can switch this to Jabo MD5 or
-     * any other custom checksum.
-     * TODO: use *_HIRESTEXTURE option. */
-     /* Returned value is 64bits: hi=palette crc32 low=texture crc32 */
+    // Rice CRC32 for now. We can switch this to MD5 or
+    // any other custom checksum.
+    // TODO: use *_HIRESTEXTURE option.
+    // Returned value is 64bits: hi=palette crc32 low=texture crc32
 
     if (!src) return 0;
 
@@ -148,43 +143,43 @@ uint64_t TxUtil::checksum64(uint8 *src, int width, int height, int size, int row
 }
 
 /*
-** Computes Adler32 checksum for a stream of data.
-**
-** From the specification found in RFC 1950: (ZLIB Compressed Data Format
-** Specification version 3.3)
-**
-** ADLER32 (Adler-32 checksum) This contains a checksum value of the
-** uncompressed data (excluding any dictionary data) computed according to
-** Adler-32 algorithm. This algorithm is a 32-bit extension and improvement
-** of the Fletcher algorithm, used in the ITU-T X.224 / ISO 8073 standard.
-**
-** Adler-32 is composed of two sums accumulated per byte: s1 is the sum of
-** all bytes, s2 is the sum of all s1 values. Both sums are done modulo
-** 65521. s1 is initialized to 1, s2 to zero. The Adler-32 checksum is stored
-** as s2*65536 + s1 in most-significant-byte first (network) order.
-**
-** 8.2. The Adler-32 algorithm
-**
-** The Adler-32 algorithm is much faster than the CRC32 algorithm yet still
-** provides an extremely low probability of undetected errors.
-**
-** The modulo on unsigned long accumulators can be delayed for 5552 bytes,
-** so the modulo operation time is negligible. If the bytes are a, b, c,
-** the second sum is 3a + 2b + c + 3, and so is position and order sensitive,
-** unlike the first sum, which is just a checksum. That 65521 is prime is
-** important to avoid a possible large class of two-byte errors that leave
-** the check unchanged. (The Fletcher checksum uses 255, which is not prime
-** and which also makes the Fletcher check insensitive to single byte
-** changes 0 <-> 255.)
-**
-** The sum s1 is initialized to 1 instead of zero to make the length of
-** the sequence part of s2, so that the length does not have to be checked
-** separately. (Any sequence of zeroes has a Fletcher checksum of zero.)
+Computes Adler32 checksum for a stream of data.
+
+From the specification found in RFC 1950: (ZLIB Compressed Data Format
+Specification version 3.3)
+
+ADLER32 (Adler-32 checksum) This contains a checksum value of the
+uncompressed data (excluding any dictionary data) computed according to
+Adler-32 algorithm. This algorithm is a 32-bit extension and improvement
+of the Fletcher algorithm, used in the ITU-T X.224 / ISO 8073 standard.
+
+Adler-32 is composed of two sums accumulated per byte: s1 is the sum of
+all bytes, s2 is the sum of all s1 values. Both sums are done modulo
+65521. s1 is initialized to 1, s2 to zero. The Adler-32 checksum is stored
+as s2*65536 + s1 in most-significant-byte first (network) order.
+
+8.2. The Adler-32 algorithm
+
+The Adler-32 algorithm is much faster than the CRC32 algorithm yet still
+provides an extremely low probability of undetected errors.
+
+The modulo on unsigned long accumulators can be delayed for 5552 bytes,
+so the modulo operation time is negligible. If the bytes are a, b, c,
+the second sum is 3a + 2b + c + 3, and so is position and order sensitive,
+unlike the first sum, which is just a checksum. That 65521 is prime is
+important to avoid a possible large class of two-byte errors that leave
+the check unchanged. (The Fletcher checksum uses 255, which is not prime
+and which also makes the Fletcher check insensitive to single byte
+changes 0 <-> 255.)
+
+The sum s1 is initialized to 1 instead of zero to make the length of
+the sequence part of s2, so that the length does not have to be checked
+separately. (Any sequence of zeroes has a Fletcher checksum of zero.)
 */
 
 uint32 TxUtil::Adler32(const uint8* data, int Len, uint32 dwAdler32)
 {
-    /* zlib adler32 */
+    // zlib adler32
     return adler32(dwAdler32, data, Len);
 }
 
@@ -203,7 +198,7 @@ uint32 TxUtil::Adler32(const uint8* src, int width, int height, int size, int ro
     return ret;
 }
 
-// rotate left
+// Rotate left
 template<class T> static T __ROL__(T value, unsigned int count)
 {
     const unsigned int nbits = sizeof(T) * 8;
@@ -215,20 +210,19 @@ template<class T> static T __ROL__(T value, unsigned int count)
     return value;
 }
 
-/* Rice CRC32 for hires texture packs */
-/* NOTE: The following is used in Glide64 to calculate the CRC32
- * for Rice hires texture packs.
- *
- * BYTE* addr = (BYTE*)(gfx.RDRAM +
- *                     rdp.addr[rdp.tiles(tile).t_mem] +
- *                     (rdp.tiles(tile).ul_t * bpl) +
- *                     (((rdp.tiles(tile).ul_s<<rdp.tiles(tile).size)+1)>>1));
- * RiceCRC32(addr,
- *          rdp.tiles(tile).width,
- *          rdp.tiles(tile).height,
- *          (unsigned short)(rdp.tiles(tile).format << 8 | rdp.tiles(tile).size),
- *          bpl);
- */
+// Rice CRC32 for high resolution texture packs
+// NOTE: The following is used in Glide64 to calculate the CRC32
+// for Rice high resolution texture packs.
+// BYTE* addr = (BYTE*)(gfx.RDRAM +
+//                     rdp.addr[rdp.tiles(tile).t_mem] +
+//                     (rdp.tiles(tile).ul_t * bpl) +
+//                     (((rdp.tiles(tile).ul_s<<rdp.tiles(tile).size)+1)>>1));
+// RiceCRC32(addr,
+//          rdp.tiles(tile).width,
+//          rdp.tiles(tile).height,
+//          (unsigned short)(rdp.tiles(tile).format << 8 | rdp.tiles(tile).size),
+//          bpl);
+
 uint32 TxUtil::RiceCRC32(const uint8* src, int width, int height, int size, int rowStride)
 {
     const uint8_t *row;
@@ -422,9 +416,7 @@ int TxUtil::getNumberofProcessors()
     return numcore;
 }
 
-/*
- * Memory buffers for texture manipulations
- ******************************************************************************/
+// Memory buffers for texture manipulations
 TxMemBuf::TxMemBuf()
 {
     int i;

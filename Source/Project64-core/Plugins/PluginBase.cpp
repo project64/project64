@@ -30,14 +30,13 @@ bool CPlugin::Load(const char * FileName)
 {
     WriteTrace(PluginTraceType(), TraceDebug, "Loading: %s", FileName);
 
-    // Already loaded, so unload first.
+    // Already loaded, so unload first
     if (m_LibHandle != nullptr)
     {
         UnloadPlugin();
     }
 
-    // Try to load the plugin DLL
-    //Try to load the DLL library
+    // Try to load the DLL library
     m_LibHandle = DynamicLibraryOpen(FileName, HaveDebugger());
     WriteTrace(PluginTraceType(), TraceDebug, "Loaded: %s LibHandle: %X", FileName, m_LibHandle);
 
@@ -139,9 +138,9 @@ bool CPlugin::Load(const char * FileName)
 
     if (PluginOpened)
     {
-        WriteTrace(PluginTraceType(), TraceDebug, "Before Plugin Opened");
+        WriteTrace(PluginTraceType(), TraceDebug, "Before plugin opened");
         PluginOpened();
-        WriteTrace(PluginTraceType(), TraceDebug, "After Plugin Opened");
+        WriteTrace(PluginTraceType(), TraceDebug, "After plugin opened");
     }
     WriteTrace(PluginTraceType(), TraceDebug, "Loaded");
     return true;
@@ -166,14 +165,14 @@ void CPlugin::RomOpened(RenderWindow * Render)
         }
     }
 #else
-    Render = Render; // used just for andoid
+    Render = Render; // Used just for the Android port
 #endif
 
     if (RomOpen != nullptr)
     {
-        WriteTrace(PluginTraceType(), TraceDebug, "Before Rom Open");
+        WriteTrace(PluginTraceType(), TraceDebug, "Before ROM open");
         RomOpen();
-        WriteTrace(PluginTraceType(), TraceDebug, "After Rom Open");
+        WriteTrace(PluginTraceType(), TraceDebug, "After ROM open");
     }
 
     m_RomOpen = true;
@@ -190,7 +189,7 @@ void CPlugin::RomClose(RenderWindow * Render)
     if (m_PluginInfo.Type == PLUGIN_TYPE_GFX)
     {
         WriteTrace(PluginTraceType(), TraceDebug, "Render = %p", Render);
-        if (Render != nullptr)
+        if (Render != NULL)
         {
             WriteTrace(PluginTraceType(), TraceDebug, "Calling GfxThreadDone");
             Render->GfxThreadDone();
@@ -198,13 +197,13 @@ void CPlugin::RomClose(RenderWindow * Render)
         }
     }
 #else
-    Render = Render; // used just for andoid
+    Render = Render; // Used just for the Android port
 #endif
 
-    WriteTrace(PluginTraceType(), TraceDebug, "Before Rom Close");
+    WriteTrace(PluginTraceType(), TraceDebug, "Before ROM close");
     RomClosed();
     m_RomOpen = false;
-    WriteTrace(PluginTraceType(), TraceDebug, "After Rom Close");
+    WriteTrace(PluginTraceType(), TraceDebug, "After ROM close");
 }
 
 void CPlugin::GameReset(RenderWindow * Render)

@@ -51,7 +51,7 @@ bool CSettingTypeRDBOnOff::Load (uint32_t /*Index*/, std::string & /*Value*/ ) c
     return false;
 }
 
-//return the default values
+// Return the default values
 void CSettingTypeRDBOnOff::LoadDefault (uint32_t /*Index*/, bool & Value ) const
 {
     if (m_DefaultSetting != Default_None)
@@ -75,7 +75,7 @@ void CSettingTypeRDBOnOff::LoadDefault (uint32_t /*Index*/, std::string & /*Valu
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-//Update the settings
+// Update the settings
 void CSettingTypeRDBOnOff::Save (uint32_t /*Index*/, bool Value )
 {
     m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),Value? "On" : "Off");

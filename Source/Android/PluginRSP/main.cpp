@@ -19,8 +19,8 @@ BOOL WINAPI DllMain(void * hinst, DWORD /*fdwReason*/, LPVOID /*lpvReserved*/)
 Function: CloseDLL
 Purpose:  This function is called when the emulator is closing
 down allowing the DLL to de-initialize.
-input:    none
-output:   none
+Input:    None
+Output:   None
 */
 
 void CloseDLL(void)
@@ -36,8 +36,8 @@ void CloseDLL(void)
 Function: DllAbout
 Purpose:  This function is optional function that is provided
 to give further information about the DLL.
-input:    a handle to the window that calls this function
-output:   none
+Input:    A handle to the window that calls this function
+Output:   None
 */
 
 void DllAbout(void * hParent)
@@ -52,8 +52,8 @@ Function: DoRspCycles
 Purpose:  This function is to allow the RSP to run in parallel with
 the r4300 switching control back to the r4300 once the
 function ends.
-input:    The number of cycles that is meant to be executed
-output:   The number of cycles that was executed. This value can
+Input:    The number of cycles that is meant to be executed
+Output:   The number of cycles that was executed. This value can
 be greater than the number of cycles that the RSP
 should have performed.
 (this value is ignored if the RSP is stopped)
@@ -72,9 +72,9 @@ uint32_t DoRspCycles(uint32_t Cycles)
 Function: GetDllInfo
 Purpose:  This function allows the emulator to gather information
 about the DLL by filling in the PluginInfo structure.
-input:    a pointer to a PLUGIN_INFO structure that needs to be
+Input:    A pointer to a PLUGIN_INFO structure that needs to be
 filled by the function. (see def above)
-output:   none
+Output:   None
 */
 
 void GetDllInfo(PLUGIN_INFO * PluginInfo)
@@ -95,11 +95,11 @@ Function: InitiateRSP
 Purpose:  This function is called when the DLL is started to give
 information from the emulator that the N64 RSP
 interface needs
-input:    Rsp_Info is passed to this function which is defined
+Input:    Rsp_Info is passed to this function which is defined
 above.
 CycleCount is the number of cycles between switching
 control between the RSP and r4300i core.
-output:   none
+Output:   None
 */
 
 void InitiateRSP(RSP_INFO Rsp_Info, uint32_t * /*CycleCount*/)
@@ -114,9 +114,9 @@ void InitiateRSP(RSP_INFO Rsp_Info, uint32_t * /*CycleCount*/)
 
 /*
 Function: RomOpen
-Purpose:  This function is called when a ROM is opened.
-input:    none
-output:   none
+Purpose:  This function is called when a ROM is opened
+Input:    None
+Output:   None
 */
 
 void RomOpen(void)
@@ -125,9 +125,9 @@ void RomOpen(void)
 
 /*
 Function: RomClosed
-Purpose:  This function is called when a ROM is closed.
-input:    none
-output:   none
+Purpose:  This function is called when a ROM is closed
+Input:    None
+Output:   None
 */
 
 void RomClosed(void)

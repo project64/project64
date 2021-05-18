@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2007 Hiroshi Morii
 // Copyright(C) 2003 Rice1964
@@ -51,10 +51,10 @@ public:
         int srcwidth,
         int srcheight,
         uint16 srcformat,
-        uint64_t g64crc, /* glide64 crc, 64bit for future use */
+        uint64_t g64crc, // Glide64 CRC, 64-bit for future use
         GHQTexInfo *info);
-    bool hirestex(uint64_t g64crc, /* glide64 crc, 64bit for future use */
-        uint64_t r_crc64,   /* checksum hi:palette low:texture */
+    bool hirestex(uint64_t g64crc, // Glide64 CRC, 64-bit for future use
+        uint64_t r_crc64,   // Checksum hi:palette low:texture
         uint16 *palette,
         GHQTexInfo *info);
     uint64_t checksum64(uint8 *src, int width, int height, int size, int rowStride, uint8 *palette);

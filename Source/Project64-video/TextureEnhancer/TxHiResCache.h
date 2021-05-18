@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2007 Hiroshi Morii
 // Copyright(C) 2003 Rice1964
@@ -8,10 +8,10 @@
 #ifndef __TXHIRESCACHE_H__
 #define __TXHIRESCACHE_H__
 
-/* support hires textures
- *   0: disable
- *   1: enable
- */
+// Support high resolution textures
+// 0: disable
+// 1: enable
+
 #define HIRES_TEXTURE 1
 
 #include "TxCache.h"

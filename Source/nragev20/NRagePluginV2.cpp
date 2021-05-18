@@ -1,24 +1,23 @@
 /*
-    N-Rage`s Dinput8 Plugin
-    (C) 2002, 2006  Norbert Wladyka
+N-Rage`s Dinput8 Plugin
+(C) 2002, 2006  Norbert Wladyka
 
-    Author`s Email: norbert.wladyka@chello.at
-    Website: http://go.to/nrage
+Author`s Email: norbert.wladyka@chello.at
+Website: http://go.to/nrage
 
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 #include <windows.h>
@@ -36,7 +35,7 @@
 #include "International.h"
 #include "Version.h"
 
-// ProtoTypes //
+// Prototypes
 bool prepareHeap();
 void FillControls(CONTROL * Controls);
 void InitiatePaks( bool bInitialize );
@@ -44,32 +43,32 @@ void DoShortcut( int iPlayer, int iShortcut );
 DWORD WINAPI MsgThreadFunction( LPVOID lpParam );
 DWORD WINAPI DelayedShortcut(LPVOID lpParam);
 
-// Global Variables //
+// Global Variables
 HMODULE g_hDirectInputDLL = NULL;   // Handle to DirectInput8 library
-HMODULE g_hXInputDLL = NULL;        // Handle to XInput Library
+HMODULE g_hXInputDLL = NULL;        // Handle to XInput library
 HMODULE g_hResourceDLL = NULL;      // Handle to resource library; used by LoadString for internationalization
 HANDLE g_hHeap = NULL;              // Handle to our heap
-int g_nDevices = 0;                 // number of devices in g_devList
-DEVICE g_devList[MAX_DEVICES];      // list of attached input devices, except SysMouse
-                                    // note: we never purge the list of devices during normal operation
-DEVICE g_sysMouse;                  // we need to treat the sysmouse differently, as we may use "locking"; changed from g_apInputDevice[1] --rabid
+int g_nDevices = 0;                 // Number of devices in g_devList
+DEVICE g_devList[MAX_DEVICES];      // List of attached input devices, except SysMouse
+                                    // Note: we never purge the list of devices during normal operation
+DEVICE g_sysMouse;                  // We need to treat the sysmouse differently, as we may use "locking"; changed from g_apInputDevice[1] (comment by rabid)
 
-EMULATOR_INFO g_strEmuInfo;         // emulator info?  Stores stuff like our hWnd handle and whether the plugin is initialized yet
-TCHAR g_aszDefFolders[3][MAX_PATH]; // default folders: DIRECTORY_MEMPAK, DIRECTORY_GBROMS, DIRECTORY_GBSAVES
-TCHAR g_aszLastBrowse[6][MAX_PATH]; // last browsed folders: BF_MEMPAK, BF_GBROM, BF_GBSAVE, BF_PROFILE, BF_NOTE, BF_SHORTCUTS
+EMULATOR_INFO g_strEmuInfo;         // Emulator info?  Stores stuff like our hWnd handle and whether the plugin is initialized yet
+TCHAR g_aszDefFolders[3][MAX_PATH]; // Default folders: DIRECTORY_MEMPAK, DIRECTORY_GBROMS, DIRECTORY_GBSAVES
+TCHAR g_aszLastBrowse[6][MAX_PATH]; // Last browsed folders: BF_MEMPAK, BF_GBROM, BF_GBSAVE, BF_PROFILE, BF_NOTE, BF_SHORTCUTS
 
-CRITICAL_SECTION g_critical;        // our critical section semaphore
+CRITICAL_SECTION g_critical;        // Our critical section semaphore
 int g_iFirstController = -1;        // The first controller which is plugged in
                                     // Normally controllers are scanned all at once in sequence, 1-4.  We only want to scan devices once per pass;
-                                    // this is so we get consistent sample rates on our mouse.
+                                    // This is so we get consistent sample rates on our mouse
 
 bool g_bRunning = false;            // Is the emulator running (i.e. have we opened a ROM)?
 bool g_bConfiguring = false;        // Are we currently in a config menu?
-bool g_bExclusiveMouse = true;      // Do we have an exclusive mouse lock? defaults to true unless we have no bound mouse buttons/axes
+bool g_bExclusiveMouse = true;      // Do we have an exclusive mouse lock? This defaults to true unless we have no bound mouse buttons/axes.
 CONTROLLER g_pcControllers[4];      // Our four N64 controllers, connected or otherwise
 SHORTCUTS g_scShortcuts;
-LPDIRECTINPUTDEVICE8 g_apFFDevice[4] = { NULL, NULL, NULL, NULL };                  // added by rabid
-LPDIRECTINPUTEFFECT  g_apdiEffect[4] = { NULL, NULL, NULL, NULL };                  // array of handles for FF-Effects, one for each controller
+LPDIRECTINPUTDEVICE8 g_apFFDevice[4] = { NULL, NULL, NULL, NULL };                  // Added by rabid
+LPDIRECTINPUTEFFECT  g_apdiEffect[4] = { NULL, NULL, NULL, NULL };                  // Array of handles for FF-Effects, one for each controller
 TCHAR g_pszThreadMessage[DEFAULT_BUFFER] = _T("");
 
 BOOL APIENTRY DllMain( HINSTANCE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved )
@@ -80,28 +79,28 @@ BOOL APIENTRY DllMain( HINSTANCE hModule, DWORD  ul_reason_for_call, LPVOID lpRe
         DisableThreadLibraryCalls( hModule );
         if( !prepareHeap())
             return FALSE;
-        DebugWriteA("*** DLL Attach (" VER_FILE_VERSION_STR "-Debugbuild | built on " __DATE__ " at " __TIME__")\n");
+        DebugWriteA("DLL attach (" VER_FILE_VERSION_STR "-Debugbuild | built on " __DATE__ " at " __TIME__")\n");
         ZeroMemory( &g_strEmuInfo, sizeof(g_strEmuInfo) );
         ZeroMemory( g_devList, sizeof(g_devList) );
         ZeroMemory( &g_sysMouse, sizeof(g_sysMouse) );
         ZeroMemory( g_aszDefFolders, sizeof(g_aszDefFolders) );
         ZeroMemory( g_aszLastBrowse, sizeof(g_aszLastBrowse) );
         g_strEmuInfo.hinst = hModule;
-        g_strEmuInfo.fDisplayShortPop = true;   // display pak switching message windows by default
+        g_strEmuInfo.fDisplayShortPop = true;   // Display pak switching message windows by default
 #ifdef _UNICODE
         {
             g_strEmuInfo.Language = GetLanguageFromINI();
             if ( g_strEmuInfo.Language == 0 )
             {
                 g_strEmuInfo.Language = DetectLanguage();
-                DebugWriteA("Autoselect language: %d\n", g_strEmuInfo.Language);
+                DebugWriteA("Auto select language: %d\n", g_strEmuInfo.Language);
             }
-            g_hResourceDLL = LoadLanguageDLL(g_strEmuInfo.Language); // HACK: it's theoretically not safe to call LoadLibraryEx from DllMain... --rabid
+            g_hResourceDLL = LoadLanguageDLL(g_strEmuInfo.Language); // HACK: it's theoretically not safe to call LoadLibraryEx from DllMain... (comment by rabid)
             if( g_hResourceDLL == NULL )
             {
                 g_strEmuInfo.Language = 0;
                 g_hResourceDLL = hModule;
-                DebugWriteA("couldn't load language DLL, falling back to defaults\n");
+                DebugWriteA("Couldn't load language DLL, falling back to defaults\n");
             }
         }
 #else
@@ -123,13 +122,13 @@ BOOL APIENTRY DllMain( HINSTANCE hModule, DWORD  ul_reason_for_call, LPVOID lpRe
         if (g_hResourceDLL != g_strEmuInfo.hinst)
             FreeLibrary(g_hResourceDLL); // HACK: it's not safe to call FreeLibrary from DllMain... but screw it
 
-        DebugWriteA("*** DLL Detach\n");
+        DebugWriteA("DLL detach\n");
 
         CloseDebugFile(); // Moved here from CloseDll
         DeleteCriticalSection( &g_critical );
 
-        // Moved here from CloseDll... Heap is created from DllMain,
-        // and now it's destroyed by DllMain... just safer code --rabid
+        // Moved here from CloseDll, then heap is created from DllMain,
+        // and now it's destroyed by DllMain...just safer code (comment by rabid)
         if( g_hHeap != NULL )
         {
             HeapDestroy( g_hHeap );
@@ -141,33 +140,35 @@ BOOL APIENTRY DllMain( HINSTANCE hModule, DWORD  ul_reason_for_call, LPVOID lpRe
 }
 
 
-/******************************************************************
-  Function: GetDllInfo
-  Purpose:  This function allows the emulator to gather information
-            about the dll by filling in the PluginInfo structure.
-  input:    a pointer to a PLUGIN_INFO stucture that needs to be
-            filled by the function. (see def above)
-  output:   none
-*******************************************************************/
+/*
+Function: GetDllInfo
+Purpose:  This function allows the emulator to gather information
+about the DLL by filling in the PluginInfo structure.
+Input: a pointer to a PLUGIN_INFO structure that needs to be
+filled by the function. (see def above)
+Output: None
+*/
+
 EXPORT void CALL GetDllInfo ( PLUGIN_INFO* PluginInfo )
 {
     DebugWriteA("CALLED: GetDllInfo\n");
 #ifdef _DEBUG
-    sprintf(PluginInfo->Name,"N-Rage For PJ64 (Debug): %s",VER_FILE_VERSION_STR);
+    sprintf(PluginInfo->Name,"N-Rage For Project64 (debug): %s",VER_FILE_VERSION_STR);
 #else
-    sprintf(PluginInfo->Name,"N-Rage For PJ64: %s",VER_FILE_VERSION_STR);
+    sprintf(PluginInfo->Name,"N-Rage For Project64: %s",VER_FILE_VERSION_STR);
 #endif
     PluginInfo->Type = PLUGIN_TYPE_CONTROLLER;
     PluginInfo->Version = SPECS_VERSION;
 }
 
-/******************************************************************
-  Function: DllAbout
-  Purpose:  This function is optional function that is provided
-            to give further information about the DLL.
-  input:    a handle to the window that calls this function
-  output:   none
-*******************************************************************/
+/*
+Function: DllAbout
+Purpose:  This function is optional function that is provided
+to give further information about the DLL.
+Input:    A handle to the window that calls this function
+Output:   None
+*/
+
 EXPORT void CALL DllAbout ( HWND hParent )
 {
     DebugWriteA("CALLED: DllAbout\n");
@@ -181,7 +182,7 @@ EXPORT void CALL DllAbout ( HWND hParent )
         _T("Done by N-Rage\n") \
         _T("\n") \
         _T(" - - - - -\n") \
-        _T("Transferpak emulation done by MadManMarkAu\n") \
+        _T("Transfer pak emulation done by MadManMarkAu\n") \
         _T("Cleanup, tweaks, and language support by RabidDeity\n");
 
     LoadString( g_hResourceDLL, IDS_DLG_ABOUT, tszTranslator, DEFAULT_BUFFER );
@@ -192,13 +193,14 @@ EXPORT void CALL DllAbout ( HWND hParent )
     return;
 }
 
-/******************************************************************
-  Function: DllConfig
-  Purpose:  This function is optional function that is provided
-            to allow the user to configure the dll
-  input:    a handle to the window that calls this function
-  output:   none
-*******************************************************************/
+/*
+Function: DllConfig
+Purpose:  This function is optional function that is provided
+to allow the user to configure the DLL
+Input: A handle to the window that calls this function
+Output: None
+*/
+
 EXPORT void CALL DllConfig ( HWND hParent )
 {
     DebugWriteA("CALLED: DllConfig\n");
@@ -222,8 +224,8 @@ EXPORT void CALL DllConfig ( HWND hParent )
     {
         if (!InitXinput())
         {
-            //TODO Disable ability to set XInput
-            //TODO Make XInput and DirectInput settings same page
+            // TODO: Disable ability to set XInput
+            // TODO: Make XInput and DirectInput settings same page
         }
     }
 
@@ -234,12 +236,12 @@ EXPORT void CALL DllConfig ( HWND hParent )
         {
             INITCOMMONCONTROLSEX ccCtrls =  {   sizeof(INITCOMMONCONTROLSEX),
                                             ICC_BAR_CLASSES | ICC_TAB_CLASSES | ICC_LISTVIEW_CLASSES };
-            InitCommonControlsEx( &ccCtrls ); // needed for TrackBars & Tabs
+            InitCommonControlsEx( &ccCtrls ); // Needed for TrackBars and Tabs
         }
 
         EnterCriticalSection( &g_critical );
         if( g_sysMouse.didHandle )
-        { // unlock mouse while configuring
+        { // Unlock mouse while configuring
             g_sysMouse.didHandle->SetCooperativeLevel( g_strEmuInfo.hMainWindow, DIB_DEVICE );
             g_sysMouse.didHandle->Acquire();
         }
@@ -247,24 +249,24 @@ EXPORT void CALL DllConfig ( HWND hParent )
 
         int iOK = DialogBox(g_hResourceDLL, MAKEINTRESOURCE(IDD_MAINCFGDIALOG), hParent, (DLGPROC)MainDlgProc);
 
-        // If we go into the dialog box, and the user navigates to the Rumble window, our FF device can get unacquired.
-        // So let's reinit them now if we're running, just to be safe --rabid
+        // If we go into the dialog box, and the user navigates to the rumble window, our FF device can get unacquired.
+        // So let's reinitialize them now if we're running, just to be safe (comment by rabid)
         if( g_bRunning )
         {
             EnterCriticalSection( &g_critical );
             // PrepareInputDevices resets g_bExclusiveMouse to false if no mouse keys are bound, and the only way to
             // re-enable exclusive mouse is with a shortcut.
-            // This is undesirable behavior, but it beats the alternative (and we REALLY need to re-init FF devices here)
+            // This is undesirable behavior, but it beats the alternative (and we REALLY need to re-initialize FF devices here)
             PrepareInputDevices();
             if (iOK)
             {
-                InitiatePaks( false );  // only re-init the mempaks and such if the user clicked Save or Use
+                InitiatePaks( false );  // only re-initialize the memory paks and such if the user clicked save or use
             }
 
             if( g_sysMouse.didHandle )
             {
                 if ( g_bExclusiveMouse )
-                { // if we have exclusive mouse, we need to relock mouse after closing the config
+                { // If we have exclusive mouse, we need to relock mouse after closing the config
                     g_sysMouse.didHandle->SetCooperativeLevel( g_strEmuInfo.hMainWindow, DIB_MOUSE );
                     g_sysMouse.didHandle->Acquire();
                     if (g_strEmuInfo.fDisplayShortPop)
@@ -289,13 +291,14 @@ EXPORT void CALL DllConfig ( HWND hParent )
     return;
 }
 
-/******************************************************************
-  Function: DllTest
-  Purpose:  This function is optional function that is provided
-            to allow the user to test the dll
-  input:    a handle to the window that calls this function
-  output:   none
-*******************************************************************/
+/*
+Function: DllTest
+Purpose:  This function is optional function that is provided
+to allow the user to test the DLL
+Input: A handle to the window that calls this function
+Output: None
+*/
+
 EXPORT void CALL DllTest ( HWND hParent )
 {
     DebugWriteA("CALLED: DllTest\n");
@@ -303,16 +306,17 @@ EXPORT void CALL DllTest ( HWND hParent )
 }
 
 // It's easier to maintain one version of this, as not much really changes
-// between versions.  --rabid
+// between versions (comment by rabid)
 
-/******************************************************************
-  Function: InitiateControllers
-  Purpose:  This function initialises how each of the controllers
-            should be handled.
-  input:    - A controller structure that needs to be filled for
-              the emulator to know how to handle each controller.
-  output:   none
-*******************************************************************/
+/*
+Function: InitiateControllers
+Purpose:  This function initializes how each of the controllers
+should be handled.
+Input: A controller structure that needs to be filled for
+the emulator to know how to handle each controller.
+Output: None
+*/
+
 EXPORT void CALL InitiateControllers(
 #if (SPECS_VERSION < 0x0101)
     void * hMainWindow, CONTROL Controls[4]
@@ -345,9 +349,9 @@ EXPORT void CALL InitiateControllers(
 #endif
     // UNDONE: Instead of just storing the header, figure out what ROM we're running and save that information somewhere
 
-    // The emulator expects us to tell what controllers are plugged in and what their paks are at this point.
+    // The emulator expects us to tell what controllers are plugged in and what their paks are at this point
 
-    if( !g_pDIHandle ) // if we don't have a directinput handle, we need to make one, attach it to the main window (so it will die if our emulator dies), and enumerate devices
+    if( !g_pDIHandle ) // If we don't have a DirectInput handle, we need to make one, attach it to the main window (so it will die if our emulator dies), and enumerate devices
     {
         if( InitDirectInput( g_strEmuInfo.hMainWindow ))
         {
@@ -365,26 +369,26 @@ EXPORT void CALL InitiateControllers(
     {
         if (!InitXinput())
         {
-            //TODO Disable ability to set XInput
-            //TODO Make XInput and DirectInput settings same page
+            // TODO: Disable ability to set XInput
+            // TODO: Make XInput and DirectInput settings same page
         }
     }
 
-    //To handle XInput controllers better, we need to set id to 0
+    // To handle XInput controllers better, we need to set ID to 0
     iXinputControlId = 0;
 
     int iDevice;
 
     EnterCriticalSection( &g_critical );
 
-    // ZeroMemory( g_apFFDevice, sizeof(g_apFFDevice) ); // NO, we'll reinit the existing reference if it's already loaded
-    // ZeroMemory( g_apdiEffect, sizeof(g_apdiEffect) ); // NO, we'll release it with CloseControllerPak
+    // ZeroMemory( g_apFFDevice, sizeof(g_apFFDevice) ); // No, we'll reinitialize the existing reference if it's already loaded
+    // ZeroMemory( g_apdiEffect, sizeof(g_apdiEffect) ); // No, we'll release it with CloseControllerPak
 
     for( int i = 3; i >= 0; i-- )
     {
         SaveControllerPak( i );
         CloseControllerPak( i );
-        // freePakData( &g_pcControllers[i] ); // already called by CloseControllerPak
+        // freePakData( &g_pcControllers[i] ); // Already called by CloseControllerPak
         freeModifiers( &g_pcControllers[i] );
         SetControllerDefaults( &g_pcControllers[i] );
     }
@@ -399,7 +403,7 @@ EXPORT void CALL InitiateControllers(
         LoadShortcutsFromResource(false);
     }
 
-    // Init: Find force-feedback devices and init
+    // Init: Find force feedback devices and initialize
     for( int i = 0; i < 4; i++ )
     {
         DebugWriteA("Controller %d: ", i+1);
@@ -412,28 +416,28 @@ EXPORT void CALL InitiateControllers(
                 //continue;
             }
 
-            // Search for right Controller
+            // Search for right controller
             iDevice = FindDeviceinList( g_pcControllers[i].guidFFDevice );
             if( iDevice != -1 && g_devList[iDevice].bEffType )
             {
-                DebugWriteA("rumble device set, ");
+                DebugWriteA("Rumble device set, ");
             }
-            else // we couldn't find the device specified in the INI file, or it was already null
+            else // We couldn't find the device specified in the INI file, or it was already null
             {
                 g_pcControllers[i].guidFFDevice = GUID_NULL;
-                DebugWriteA("no rumble device/effect type set, ");
+                DebugWriteA("No rumble device/effect type set, ");
             }
 
             if( g_pcControllers[i].nModifiers > 0)
                 SetModifier( &g_pcControllers[i] );
             g_iFirstController = i;
-            DebugWriteA("plugged in, with paktype %d, ", g_pcControllers[i].PakType);
+            DebugWriteA("Plugged in, with pak type %d, ", g_pcControllers[i].PakType);
             DebugWriteA("RawMode is %d\n", g_pcControllers[i].fRawData);
         }
         else
         {
-            DebugWriteA("unplugged\n");
-            freePakData( &g_pcControllers[i] ); // we don't need to do this again, but there's not much overhead so I'll leave it --rabid
+            DebugWriteA("Unplugged\n");
+            freePakData( &g_pcControllers[i] ); // We don't need to do this again, but there's not much overhead so I'll leave it (comment by rabid)
             freeModifiers( &g_pcControllers[i] );
         }
     }
@@ -457,18 +461,19 @@ EXPORT void CALL InitiateControllers(
     return;
 } // end InitiateControllers
 
-/******************************************************************
-  Function: RomOpen
-  Purpose:  This function is called when a rom is open. (from the
-            emulation thread)
-  input:    none
-  output:   none
-*******************************************************************/
+/*
+Function: RomOpen
+Purpose:  This function is called when a ROM is open (from the
+emulation thread)
+Input: None
+Output: None
+*/
+
 EXPORT void CALL RomOpen (void)
 {
     DebugWriteA("CALLED: RomOpen\n");
 
-    //XInputEnable( TRUE ); // enables xinput --tecnicors
+    //XInputEnable( TRUE ); // Enables XInput (comment by tecnicors)
 
     if( !g_strEmuInfo.fInitialisedPlugin )
     {
@@ -477,25 +482,26 @@ EXPORT void CALL RomOpen (void)
     }
 
     EnterCriticalSection( &g_critical );
-    // re-init our paks and shortcuts
+    // Re-initialize our paks and shortcuts
     InitiatePaks( true );
-    // LoadShortcuts( &g_scShortcuts ); WHY are we loading shortcuts again?? Should already be loaded!
+    // LoadShortcuts( &g_scShortcuts ); Why are we loading shortcuts again? They should already be loaded!
     LeaveCriticalSection( &g_critical );
     g_bRunning = true;
     return;
 }
 
-/******************************************************************
-  Function: RomClosed
-  Purpose:  This function is called when a rom is closed.
-  input:    none
-  output:   none
-*******************************************************************/
+/*
+Function: RomClosed
+Purpose: This function is called when a ROM is closed
+Input: None
+Output: None
+*/
+
 EXPORT void CALL RomClosed(void)
 {
     int i;
 
-    //XInputEnable( FALSE );    // disables xinput --tecnicors
+    //XInputEnable( FALSE );    // Disables XInput (comment by tecnicors)
 
     DebugWriteA("CALLED: RomClosed\n");
     EnterCriticalSection( &g_critical );
@@ -503,7 +509,7 @@ EXPORT void CALL RomClosed(void)
     if (g_sysMouse.didHandle)
     {
         g_sysMouse.didHandle->Unacquire();
-        g_sysMouse.didHandle->SetCooperativeLevel(g_strEmuInfo.hMainWindow, DIB_KEYBOARD); // unlock the mouse, just in case
+        g_sysMouse.didHandle->SetCooperativeLevel(g_strEmuInfo.hMainWindow, DIB_KEYBOARD); // Unlock the mouse, just in case
     }
 
     for( i = 0; i < ARRAYSIZE(g_pcControllers); ++i )
@@ -513,8 +519,8 @@ EXPORT void CALL RomClosed(void)
             SaveControllerPak( i );
             CloseControllerPak( i );
         }
-        // freePakData( &g_pcControllers[i] ); already done by CloseControllerPak --rabid
-        // DON'T free the modifiers!
+        // freePakData( &g_pcControllers[i] ); // Already done by CloseControllerPak (comment by rabid)
+        // Don't free the modifiers!
 //      ZeroMemory( &g_pcControllers[i], sizeof(CONTROLLER) );
     }
 
@@ -528,14 +534,15 @@ EXPORT void CALL RomClosed(void)
     return;
 }
 
-/******************************************************************
-  Function: GetKeys
-  Purpose:  To get the current state of the controllers buttons.
-  input:    - Controller Number (0 to 3)
-            - A pointer to a BUTTONS structure to be filled with
-            the controller state.
-  output:   none
-*******************************************************************/
+/*
+Function: GetKeys
+Purpose:  To get the current state of the controllers buttons.
+Input: Controller Number (0 to 3)
+A pointer to a BUTTONS structure to be filled with
+the controller state.
+Output: None
+*/
+
 EXPORT void CALL GetKeys(int Control, BUTTONS * Keys )
 {
 #ifdef ENABLE_RAWPAK_DEBUG
@@ -554,7 +561,7 @@ EXPORT void CALL GetKeys(int Control, BUTTONS * Keys )
                 GetDeviceDatas();
                 CheckShortcuts();
             }
-            if( g_pcControllers[Control].fXInput )  // reads the xinput controller keys, if connected --tecnicors
+            if( g_pcControllers[Control].fXInput )  // Reads the XInput controller keys, if connected (comment by tecnicors)
                 GetXInputControllerKeys( Control, &Keys->Value );
             else
                 GetNControllerInput( Control, &Keys->Value );
@@ -564,22 +571,22 @@ EXPORT void CALL GetKeys(int Control, BUTTONS * Keys )
     return;
 }
 
-/******************************************************************
-  Function: ControllerCommand
-  Purpose:  To process the raw data that has just been sent to a
-            specific controller.
-  input:    - Controller Number (0 to 3) and -1 signalling end of
-              processing the pif ram.
-            - Pointer of data to be processed.
-  output:   none
+/*
+Function: ControllerCommand
+Purpose:  To process the raw data that has just been sent to a
+specific controller.
+Input: Controller Number (0 to 3) and -1 signaling end of
+processing the PIF RAM.
+- Pointer of data to be processed.
+Output: None
 
-  note:     This function is only needed if the DLL is allowing raw
-            data.
+Note: This function is only needed if the DLL is allowing raw
+data.
+The data that is being processed looks like this:
+Initialize controller: 01 03 00 FF FF FF
+Read controller: 01 04 01 FF FF FF FF
+*/
 
-            the data that is being processed looks like this:
-            initilize controller: 01 03 00 FF FF FF
-            read controller:      01 04 01 FF FF FF FF
-*******************************************************************/
 EXPORT void CALL ControllerCommand( int Control, BYTE * Command)
 {
     // We don't need to use this because it will be echoed immediately afterwards
@@ -587,17 +594,18 @@ EXPORT void CALL ControllerCommand( int Control, BYTE * Command)
     return;
 }
 
-/******************************************************************
-  Function: ReadController
-  Purpose:  To process the raw data in the pif ram that is about to
-            be read.
-  input:    - Controller Number (0 to 3) and -1 signalling end of
-              processing the pif ram.
-            - Pointer of data to be processed.
-  output:   none
-  note:     This function is only needed if the DLL is allowing raw
-            data.
-*******************************************************************/
+/*
+Function: ReadController
+Purpose:  To process the raw data in the PIF RAM that is about to
+be read.
+Input: - Controller Number (0 to 3) and -1 signaling end of
+processing the PIF RAM.
+- Pointer of data to be processed.
+Output: None
+Note: This function is only needed if the DLL is allowing raw
+data.
+*/
+
 EXPORT void CALL ReadController( int Control, BYTE * Command )
 {
 #ifdef ENABLE_RAWPAK_DEBUG
@@ -621,8 +629,8 @@ EXPORT void CALL ReadController( int Control, BYTE * Command )
     case RD_RESETCONTROLLER:
         WriteDatasA( "ResetController-PreProcessing", Control, Command, 0);
     case RD_GETSTATUS:
-        // expected: controller gets 1 byte (command), controller sends back 3 bytes
-        // should be:   Command[0] == 0x01
+        // Expected: controller gets 1 byte (command), controller sends back 3 bytes
+        // Should be:   Command[0] == 0x01
         //              Command[1] == 0x03
 #ifdef ENABLE_RAWPAK_DEBUG
         WriteDatasA( "GetStatus-PreProcessing", Control, Command, 0);
@@ -630,7 +638,7 @@ EXPORT void CALL ReadController( int Control, BYTE * Command )
         Command[3] = RD_GAMEPAD | RD_ABSOLUTE;
         Command[4] = RD_NOEEPROM;
 
-        if (g_pcControllers[Control].fN64Mouse)     // Is Controller a mouse?
+        if (g_pcControllers[Control].fN64Mouse)     // Is controller a mouse?
             Command[3] = RD_RELATIVE;
 
         if( g_pcControllers[Control].fPakInitialized && g_pcControllers[Control].pPakData )
@@ -683,10 +691,9 @@ EXPORT void CALL ReadController( int Control, BYTE * Command )
         break;
 
     case RD_READKEYS:
-        // expected: controller gets 1 byte (command), controller sends back 4 bytes
-        // should be:   Command[0] == 0x01
+        // Expected: controller gets 1 byte (command), controller sends back 4 bytes
+        // Should be:   Command[0] == 0x01
         //              Command[1] == 0x04
-
         if( g_bConfiguring || (!g_pcControllers[Control].bBackgroundInput && GetForegroundWindow() != g_strEmuInfo.hMainWindow) )
             Command[3] = Command[4] = Command[5] = Command[6] = 0;
         else
@@ -696,7 +703,7 @@ EXPORT void CALL ReadController( int Control, BYTE * Command )
                 GetDeviceDatas();
                 CheckShortcuts();
             }
-            if( g_pcControllers[Control].fXInput )  // reads xinput controller kesy, if connected --tecnicors
+            if( g_pcControllers[Control].fXInput )  // Reads XInput controller keys, if connected (comment by tecnicors)
                 GetXInputControllerKeys( Control, (LPDWORD)&Command[3] );
             else
                 GetNControllerInput( Control, (DWORD*)&Command[3] );
@@ -711,7 +718,7 @@ EXPORT void CALL ReadController( int Control, BYTE * Command )
             ReadControllerPak( Control, &Command[3] );
         else
         {
-            DebugWriteA("Tried to read, but pak wasn't initialized!!\n");
+            DebugWriteA("Tried to read, but pak wasn't initialized!\n");
             // InitControllerPak( Control );
             Command[1] |= RD_ERROR;
             //ZeroMemory( &Command[5], 32 );
@@ -730,7 +737,7 @@ EXPORT void CALL ReadController( int Control, BYTE * Command )
             WriteControllerPak( Control, &Command[3] );
         else
         {
-            DebugWriteA("Tried to write, but pak wasn't initialized! (paktype was %u)\n", g_pcControllers[Control].PakType);
+            DebugWriteA("Tried to write, but pak wasn't initialized! (pak type was %u)\n", g_pcControllers[Control].PakType);
             // InitControllerPak( Control );
             Command[1] |= RD_ERROR;
         }
@@ -740,19 +747,19 @@ EXPORT void CALL ReadController( int Control, BYTE * Command )
 #endif
         break;
     case RD_READEEPROM:
-        // Should be handled by the Emulator
+        // Should be handled by the emulator
         WriteDatasA( "ReadEeprom-PreProcessing", Control, Command, 0);
         WriteDatasA( "ReadEeprom-PostProcessing", Control, Command, 0);
         DebugWriteA( NULL );
         break;
     case RD_WRITEEPROM:
-        // Should be handled by the Emulator
+        // Should be handled by the emulator
         WriteDatasA( "WriteEeprom-PreProcessing", Control, Command, 0);
         WriteDatasA( "WriteEeprom-PostProcessing", Control, Command, 0);
         DebugWriteA( NULL );
         break;
     default:
-        // only accessible if the Emulator has bugs.. or maybe the Rom is flawed
+        // Only accessible if the emulator has bugs, or maybe the ROM is flawed in some way
         WriteDatasA( "ReadController: Bad read", Control, Command, 0);
         DebugWriteA( NULL );
         Command[1] = Command[1] | RD_ERROR;
@@ -762,39 +769,42 @@ EXPORT void CALL ReadController( int Control, BYTE * Command )
     return;
 }
 
-/******************************************************************
-  Function: WM_KeyDown
-  Purpose:  To pass the WM_KeyDown message from the emulator to the
-            plugin.
-  input:    wParam and lParam of the WM_KEYDOWN message.
-  output:   none
-*******************************************************************/
+/*
+Function: WM_KeyDown
+Purpose:  To pass the WM_KeyDown message from the emulator to the
+plugin.
+Input:    wParam and lParam of the WM_KEYDOWN message.
+Output:   None
+*/
+
 EXPORT void CALL WM_KeyDown( WPARAM wParam, LPARAM lParam )
 {
     return;
 }
 
-/******************************************************************
-  Function: WM_KeyUp
-  Purpose:  To pass the WM_KEYUP message from the emulator to the
-            plugin.
-  input:    wParam and lParam of the WM_KEYDOWN message.
-  output:   none
-*******************************************************************/
+/*
+Function: WM_KeyUp
+Purpose:  To pass the WM_KEYUP message from the emulator to the
+plugin.
+Input:    wParam and lParam of the WM_KEYDOWN message.
+Output:   None
+*/
+
 EXPORT void CALL WM_KeyUp( WPARAM wParam, LPARAM lParam )
 {
     return;
 }
 
-/******************************************************************
-  Function: CloseDLL
-  Purpose:  This function is called when the emulator is closing
-            down allowing the dll to de-initialise.
-  input:    none
-  output:   none
-*******************************************************************/
+/*
+Function: CloseDLL
+Purpose:  This function is called when the emulator is closing
+down allowing the DLL to de-initialize.
+Input:    None
+Output:   None
+*/
+
 EXPORT void CALL CloseDLL (void)
-{                                       // HACK: THIS IS BROKEN IN PJ64 1.6 (it calls CloseDLL too often)
+{                                       // Hack: This is broken in Project64 1.6 (it calls CloseDLL too often)
     DebugWriteA("CALLED: CloseDLL\n");
     if( g_bRunning )
         RomClosed();
@@ -804,14 +814,14 @@ EXPORT void CALL CloseDLL (void)
         freeModifiers( &g_pcControllers[i] );
     }
 
-    // ZeroMemory( g_pcControllers, sizeof(g_pcControllers) ); // why zero the memory if we're just going to close down?
+    // ZeroMemory( g_pcControllers, sizeof(g_pcControllers) ); // Why zero the memory if we're just going to close down?
 
     FreeDirectInput();
     FreeXinput();
     return;
 }
 
-// Prepare a global heap.  Use P_malloc and P_free as wrappers to grab/release memory.
+// Prepare a global heap. Use P_malloc and P_free as wrappers to grab/release memory.
 bool prepareHeap()
 {
     if( g_hHeap == NULL )
@@ -819,7 +829,7 @@ bool prepareHeap()
     return (g_hHeap != NULL);
 }
 
-// Frees pakdata memory (called more often than you'd think).
+// Frees pak data memory (called more often than you'd think)
 void freePakData( CONTROLLER *pcController )
 {
     if( pcController && pcController->pPakData )
@@ -880,10 +890,11 @@ int FindDeviceinList( REFGUID rGUID )
     return -1;
 }
 
-// Let's initialize all plugged in controllers' paks.
-// Input: false means run InitControlPak on each plugged controller.  Input true means just clear each pak's CRC error status?
+// Let's initialize all connected controller paks.
+// Input: false means run InitControlPak on each plugged controller.  Input true means just clear each paks CRC error status?
 // When we call this from RomOpen, it's true, otherwise (in DllConfig) it's false.
 // Rather counterintuitive.
+
 void InitiatePaks( bool bInitialize )
 {
     for( int i = 0; i < 4; i++ )
@@ -898,7 +909,7 @@ void InitiatePaks( bool bInitialize )
                     g_pcControllers[i].fPakInitialized = InitControllerPak( i );
             }
             else
-            {   // we only support "RAW mode" paks so this won't do much
+            {   // We only support "raw mode" paks so this won't do much
                 ;//if( g_pcControllers[i].PakType == PAK_RUMBLE )
                 //  CreateEffectHandle( i, g_pcControllers[i].bRumbleTyp, g_pcControllers[i].bRumbleStrength );
             }
@@ -907,9 +918,9 @@ void InitiatePaks( bool bInitialize )
 }
 
 // This used to be "NotifyEmulator" which was supposed to tell the emulator if we changed the way it sees controllers.
-//      Unfortunately the spec doesn't work that way.  Fixed the func and changed the func name to something that makes more sense.
+// Unfortunately the spec doesn't work that way.  Fixed the function and changed the function name to something that makes more sense.
 // FillControls takes a Controls array from InitiateControllers and fills it with what we know about whether
-//      a controller is plugged in, accepting raw data, and what type of pak is plugged in.
+// a controller is plugged in, accepting raw data, and what type of pak is plugged in.
 void FillControls(CONTROL * Controls)
 {
     for( int i = 4-1; i >= 0; i-- )
@@ -952,18 +963,18 @@ void FillControls(CONTROL * Controls)
     }
 }
 
-// called after a poll to execute any shortcuts
+// Called after a poll to execute any shortcuts
 void CheckShortcuts()
 {
     static bool bWasPressed[ sizeof(SHORTCUTSPL)/sizeof(BUTTON) ][4];
-    static bool bMLWasPressed;  // mouselock
+    static bool bMLWasPressed;  // Mouselock
     bool bMatching = false;
 
     if ( g_bConfiguring || !g_bRunning )
-        return; // we don't process shortcuts if we're in a config menu or are not running emulation
+        return; // We don't process shortcuts if we're in a config menu or are not running emulation
 
-    // just process if key wasnt pressed before
-    for ( int i = 0; i < 4; i++ ) // controllers
+    // just process if key wasn't pressed before
+    for ( int i = 0; i < 4; i++ ) // Controllers
     {
         for( int j = 0; j < SC_TOTAL; j++ )
         {
@@ -979,7 +990,7 @@ void CheckShortcuts()
     bMatching = IsBtnPressed( g_scShortcuts.bMouseLock );
 
     if( bMatching && !bMLWasPressed )
-        DoShortcut(-1, -1); // controller -1 means do mouselock shortcut
+        DoShortcut(-1, -1); // Controller -1 means do mouselock shortcut
 
     bMLWasPressed = bMatching;
 }
@@ -1150,9 +1161,9 @@ void DoShortcut( int iControl, int iShortcut )
         } // switch (iShortcut)
     } // else if
 
-    // let the game code re-init the pak.
+    // Let the game code re-initialize the pak
 
-    if (bEjectFirst)    // we need to eject the current pack first; then set a DoShortcut to try again in 1 second
+    if (bEjectFirst)    // We need to eject the current pack first; then set a DoShortcut to try again in 1 second
     {
         EnterCriticalSection( &g_critical );
         g_pcControllers[iControl].PakType = PAK_NONE;
@@ -1166,7 +1177,7 @@ void DoShortcut( int iControl, int iShortcut )
         lpmNextShortcut->iControl = iControl;
         lpmNextShortcut->iShortcut = iShortcut;
         CreateThread(NULL, 0, DelayedShortcut, lpmNextShortcut, 0, NULL);
-        iControl = -2;  // this is just a hack to get around the check that appends "Changing Pak X to ..."
+        iControl = -2;  // This is just a hack to get around the check that appends "Changing pak X to..."
     }
 
     if( g_strEmuInfo.fDisplayShortPop && _tcslen(pszMessage) > 0 )
@@ -1187,11 +1198,12 @@ void DoShortcut( int iControl, int iShortcut )
 
 // Use string table refs to generate and throw an error message with title IDS_ERR_TITLE (see string table in resources)
 // Also if compiled with DEBUG, will log the message with DebugWrite
-// uID          the string table ref to display
-// dwError      if nonzero, will display a Windows error message using FormatMessage (for use when an API function fails)
-// fUserChoose  if true, display buttons Retry and Cancel.  if false, display single button OK.
-//      for fUserChoose==true; ErrorMessage returns true if user selects Retry, and false if user selects Cancel.
-//      for fUserChoose==false; ErrorMessage always returns false.
+// uID - The string table ref to display
+// dwError - If nonzero, will display a Windows error message using FormatMessage (for use when an API function fails)
+// fUserChoose - If true, display buttons Retry and Cancel.  If false, display single button OK.
+// for fUserChoose==true; ErrorMessage returns true if user selects Retry, and false if user selects Cancel.
+// for fUserChoose==false; ErrorMessage always returns false.
+
 bool ErrorMessage( UINT uID, DWORD dwError, bool fUserChoose )
 {
     TCHAR pszFirstLine[DEFAULT_BUFFER];
@@ -1239,16 +1251,18 @@ int WarningMessage( UINT uTextID, UINT uType )
 }
 
 
-/* H.Morii <koolsmoky(at)users.sourceforge.net>
-   MsgThreadFunction is used because the SetTimer function relies
-   on the WM_TIMER message which is low priority and will not be
-   executed if other windows messages are frequently dispatched. */
+/*
+H.Morii
+MsgThreadFunction is used because the SetTimer function relies
+on the WM_TIMER message which is low priority and will not be
+executed if other windows messages are frequently dispatched.
+*/
 
 DWORD WINAPI MsgThreadFunction( LPVOID lpParam )
 {
     HWND hMessage = CreateWindowEx( WS_EX_NOPARENTNOTIFY | WS_EX_STATICEDGE | WS_EX_TOPMOST, _T("STATIC"), NULL, WS_CHILD | WS_VISIBLE, 10, 10, 200, 40, g_strEmuInfo.hMainWindow, NULL, g_strEmuInfo.hinst, NULL );
 
-    /* prepare the screen to bitblt */
+    // Prepare the screen to bitblt
     RECT rt;
     GetClientRect(hMessage, &rt);
     HDC hdc = GetDC(hMessage);
@@ -1256,24 +1270,23 @@ DWORD WINAPI MsgThreadFunction( LPVOID lpParam )
     HBITMAP hbitmap = CreateCompatibleBitmap(hdc, rt.right - rt.left, rt.bottom - rt.top);
     SelectObject(memdc, hbitmap);
 
-    /* draw some nice stuff.
-        choose fonts, paint the back ground, etc here. */
+    // Draw some things here, like choosing fonts, painting the background, etc. here
     FillRect(memdc, &rt, (HBRUSH)(COLOR_WINDOW+1));
     DrawText(memdc, (LPCTSTR)lpParam, -1, &rt, DT_WORDBREAK);
 
-    /* bitblt to kingdom come */
+    // bitblt to kingdom come
     for (int i = 0; i < 60; i++)
     {
         Sleep(16);  // 1/60 second
         BitBlt(hdc, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, memdc, 0, 0, SRCCOPY);
     }
 
-    /* cleanup */
+    // Cleanup
     DeleteObject(hbitmap);
     DeleteDC(memdc);
     ReleaseDC(hMessage, hdc);
 
-    /* Can only destroy windows created from the owner thread */
+    // Can only destroy windows created from the owner thread
     DestroyWindow(hMessage);
 
     return 0;
@@ -1284,9 +1297,9 @@ DWORD WINAPI MsgThreadFunction( LPVOID lpParam )
 DWORD WINAPI DelayedShortcut(LPVOID lpParam)
 {
     LPMSHORTCUT sc = (LPMSHORTCUT)lpParam;
-    if (sc && sc->iShortcut != SC_SWMEMRUMB && sc->iShortcut != SC_SWMEMADAPT) // don't allow recursion into self, it would cause a deadlock
+    if (sc && sc->iShortcut != SC_SWMEMRUMB && sc->iShortcut != SC_SWMEMADAPT) // Don't allow recursion into self, it would cause a deadlock
     {
-        Sleep(1000);    // sleep a little bit before calling DoShortcut again
+        Sleep(1000);    // Sleep a little bit before calling DoShortcut again
         DoShortcut(sc->iControl, sc->iShortcut);
     }
     P_free(lpParam);

@@ -11,7 +11,7 @@ extern "C"
 
 typedef unsigned int     GLenum;
 #else
-#include <GL/gl.h>              /* Header File For The OpenGL Library */
+#include <GL/gl.h>              // Header file for the OpenGL library
 #endif
 
 #ifndef APIENTRY
@@ -20,8 +20,6 @@ typedef unsigned int     GLenum;
 #ifndef APIENTRYP
 #define APIENTRYP APIENTRY *
 #endif
-
-    /*************************************************************/
 
 #define GL_UNSIGNED_SHORT_5_6_5           0x8363
 #define GL_UNSIGNED_SHORT_4_4_4_4_REV     0x8365
@@ -67,11 +65,9 @@ typedef unsigned int     GLenum;
 #define GL_RENDERBUFFER_EXT               0x8D41
 #endif
 
-    /*************************************************************/
-
 #include <stddef.h>
 #ifndef GL_VERSION_2_0
-    /* GL type for program/shader text */
+    // OpenGL type for program/shader text
     typedef char GLchar;
 #endif
 
@@ -124,7 +120,7 @@ typedef unsigned int     GLenum;
 #endif
 
 #ifndef GL_ARB_shader_objects
-    /* GL types for program/shader text and shader object handles */
+    // OpenGL types for program/shader text and shader object handles
     typedef char GLcharARB;
 #if defined(__APPLE__)
     typedef void *GLhandleARB;

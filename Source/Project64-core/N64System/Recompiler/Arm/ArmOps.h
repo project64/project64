@@ -115,13 +115,13 @@ public:
 
     enum ArmCompareType
     {
-        ArmBranch_Equal = 0,               //Code = 0000
-        ArmBranch_Notequal = 1,            //Code = 0001
-        ArmBranch_GreaterThanOrEqual = 10, //Code = 1010
-        ArmBranch_LessThan = 11,           //Code = 1011
-        ArmBranch_GreaterThan = 12,        //Code = 1100
-        ArmBranch_LessThanOrEqual = 13,    //Code = 1101
-        ArmBranch_Always = 14,             //Code = 1110
+        ArmBranch_Equal = 0,               // Code = 0000
+        ArmBranch_Notequal = 1,            // Code = 0001
+        ArmBranch_GreaterThanOrEqual = 10, // Code = 1010
+        ArmBranch_LessThan = 11,           // Code = 1011
+        ArmBranch_GreaterThan = 12,        // Code = 1100
+        ArmBranch_LessThanOrEqual = 13,    // Code = 1101
+        ArmBranch_Always = 14,             // Code = 1110
     };
 
     enum ArmItMask
@@ -144,7 +144,7 @@ public:
     };
 
 protected:
-    //Logging Functions
+    // Logging functions
     static void WriteArmComment(const char * Comment);
     static void WriteArmLabel(const char * Label);
 

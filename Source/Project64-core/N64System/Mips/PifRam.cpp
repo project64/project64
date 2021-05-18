@@ -84,7 +84,7 @@ void CPifRam::PifRamRead()
         case 0xFD: CurPos = 0x40; break;
         case 0xFE: CurPos = 0x40; break;
         case 0xFF: break;
-        case 0xB4: case 0x56: case 0xB8: break; /* ??? */
+        case 0xB4: case 0x56: case 0xB8: break;
         default:
             if ((m_PifRam[CurPos] & 0xC0) == 0)
             {
@@ -109,7 +109,7 @@ void CPifRam::PifRamRead()
             {
                 if (CurPos != 0x27 && bShowPifRamErrors())
                 {
-                    g_Notify->DisplayError(stdstr_f("Unknown Command in PifRamRead(%X)", m_PifRam[CurPos]).c_str());
+                    g_Notify->DisplayError(stdstr_f("Unknown command in PifRamRead(%X)", m_PifRam[CurPos]).c_str());
                 }
                 CurPos = 0x40;
             }
@@ -132,7 +132,7 @@ void CPifRam::PifRamWrite()
         switch (m_PifRam[0x3F])
         {
         case 0x02:
-            // format the 'challenge' message into 30 nibbles for X-Scale's CIC code
+            // Format the 'challenge' message into 30 nibbles for X-Scale's CIC code
             {
                 char Challenge[30], Response[30];
                 for (int32_t i = 0; i < 15; i++)
@@ -174,7 +174,7 @@ void CPifRam::PifRamWrite()
         default:
             if (bShowPifRamErrors())
             {
-                g_Notify->DisplayError(stdstr_f("Unkown PifRam control: %d", m_PifRam[0x3F]).c_str());
+                g_Notify->DisplayError(stdstr_f("Unknown PifRam control: %d", m_PifRam[0x3F]).c_str());
             }
         }
         return;
@@ -194,7 +194,7 @@ void CPifRam::PifRamWrite()
         case 0xFD: CurPos = 0x40; break;
         case 0xFE: CurPos = 0x40; break;
         case 0xFF: break;
-        case 0xB4: case 0x56: case 0xB8: break; /* ??? */
+        case 0xB4: case 0x56: case 0xB8: break; // ???
         default:
             if ((m_PifRam[CurPos] & 0xC0) == 0)
             {
@@ -254,7 +254,7 @@ void CPifRam::SI_DMA_READ()
     {
         if (bShowPifRamErrors())
         {
-            g_Notify->DisplayError(stdstr_f("%s\nSI_DRAM_ADDR_REG not in RDRam space", __FUNCTION__).c_str());
+            g_Notify->DisplayError(stdstr_f("%s\nSI_DRAM_ADDR_REG not in RDRAM space", __FUNCTION__).c_str());
         }
         return;
     }
@@ -354,7 +354,7 @@ void CPifRam::SI_DMA_WRITE()
     {
         if (bShowPifRamErrors())
         {
-            g_Notify->DisplayError("SI DMA\nSI_DRAM_ADDR_REG not in RDRam space");
+            g_Notify->DisplayError("SI DMA\nSI_DRAM_ADDR_REG not in RDRAM space");
         }
         return;
     }
@@ -388,7 +388,7 @@ void CPifRam::SI_DMA_WRITE()
         int32_t count;
         char HexData[100], AsciiData[100], Addon[20];
         LogMessage("");
-        LogMessage("\tData DMAed to the Pif Ram:");
+        LogMessage("\tData DMAed to the PIF RAM:");
         LogMessage("\t--------------------------");
         for (count = 0; count < 16; count++)
         {
@@ -440,8 +440,8 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
 
     switch (Command[2])
     {
-    case 0x00: // check
-    case 0xFF: // reset & check ?
+    case 0x00: // Check
+    case 0xFF: // Reset and check?
         if ((Command[1] & 0x80) != 0)
         {
             break;
@@ -450,7 +450,7 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
         {
             if (Command[0] != 1 || Command[1] != 3)
             {
-                g_Notify->DisplayError("What am I meant to do with this Controller Command");
+                g_Notify->DisplayError("What am I meant to do with this controller command?");
             }
         }
         if (Controllers[Control].Present != 0)
@@ -472,12 +472,12 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
             Command[1] |= 0x80;
         }
         break;
-    case 0x01: // read controller
+    case 0x01: // Read controller
         if (bShowPifRamErrors())
         {
             if (Command[0] != 1 || Command[1] != 4)
             {
-                g_Notify->DisplayError("What am I meant to do with this Controller Command");
+                g_Notify->DisplayError("What am I meant to do with this controller command?");
             }
         }
         if (Controllers[Control].Present == false)
@@ -485,16 +485,16 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
             Command[1] |= 0x80;
         }
         break;
-    case 0x02: //read from controller pack
+    case 0x02: // Read from controller pak
         if (LogControllerPak())
         {
-            LogControllerPakData("Read: Before Gettting Results");
+            LogControllerPakData("Read: before getting results");
         }
         if (bShowPifRamErrors())
         {
             if (Command[0] != 3 || Command[1] != 33)
             {
-                g_Notify->DisplayError("What am I meant to do with this Controller Command");
+                g_Notify->DisplayError("What am I meant to do with this controller command?");
             }
         }
         if (Controllers[Control].Present != 0)
@@ -523,19 +523,19 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
         }
         if (LogControllerPak())
         {
-            LogControllerPakData("Read: After Gettting Results");
+            LogControllerPakData("Read: after getting results");
         }
         break;
-    case 0x03: //write controller pak
+    case 0x03: // Write controller pak
         if (LogControllerPak())
         {
-            LogControllerPakData("Write: Before Processing");
+            LogControllerPakData("Write: before processing");
         }
         if (bShowPifRamErrors())
         {
             if (Command[0] != 35 || Command[1] != 1)
             {
-                g_Notify->DisplayError("What am I meant to do with this Controller Command");
+                g_Notify->DisplayError("What am I meant to do with this controller command?");
             }
         }
         if (Controllers[Control].Present != 0)
@@ -562,7 +562,7 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
         }
         if (LogControllerPak())
         {
-            LogControllerPakData("Write: After Processing");
+            LogControllerPakData("Write: after processing");
         }
         break;
     default:
@@ -579,19 +579,19 @@ void CPifRam::ReadControllerCommand(int32_t Control, uint8_t * Command)
 
     switch (Command[2])
     {
-    case 0x01: // read controller
+    case 0x01: // Read controller
         if (Controllers[Control].Present != 0)
         {
             if (bShowPifRamErrors())
             {
-                if (Command[0] != 1 || Command[1] != 4) { g_Notify->DisplayError("What am I meant to do with this Controller Command"); }
+                if (Command[0] != 1 || Command[1] != 4) { g_Notify->DisplayError("What am I meant to do with this controller command?"); }
             }
 
             const uint32_t buttons = g_BaseSystem->GetButtons(Control);
             memcpy(&Command[3], &buttons, sizeof(uint32_t));
         }
         break;
-    case 0x02: //read from controller pack
+    case 0x02: // Read from controller pak
         if (Controllers[Control].Present != 0)
         {
             switch (Controllers[Control].Plugin)
@@ -600,7 +600,7 @@ void CPifRam::ReadControllerCommand(int32_t Control, uint8_t * Command)
             }
         }
         break;
-    case 0x03: //write controller pak
+    case 0x03: // Write controller pak
         if (Controllers[Control].Present != 0)
         {
             switch (Controllers[Control].Plugin)

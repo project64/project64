@@ -17,7 +17,7 @@ void CAudio::Reset()
     m_SecondBuff = 0;
     m_Status = 0;
     m_BytesPerSecond = 0;
-    m_CountsPerByte = g_System->AiCountPerBytes(); // should be calculated ... see below, instead allow from user settings
+    m_CountsPerByte = g_System->AiCountPerBytes(); // Should be calculated, see below, instead allow from user settings
     if (m_CountsPerByte == 0) m_CountsPerByte = 500; // If the user has no defined value, grant a default and we will calculate
     m_FramesPerSecond = 60;
 }
@@ -47,7 +47,7 @@ void CAudio::LenChanged()
     {
         if (g_Reg->AI_LEN_REG >= 0x40000)
         {
-            WriteTrace(TraceAudio, TraceDebug, "*** Ignoring Write, To Large (%X)", g_Reg->AI_LEN_REG);
+            WriteTrace(TraceAudio, TraceDebug, "Ignoring write, to large (%X)", g_Reg->AI_LEN_REG);
         }
         else
         {
@@ -57,12 +57,12 @@ void CAudio::LenChanged()
             {
                 if (AudioLeft == 0)
                 {
-                    WriteTrace(TraceAudio, TraceDebug, "Set Timer  AI_LEN_REG: %d m_CountsPerByte: %d", g_Reg->AI_LEN_REG, m_CountsPerByte);
+                    WriteTrace(TraceAudio, TraceDebug, "Set timer  AI_LEN_REG: %d m_CountsPerByte: %d", g_Reg->AI_LEN_REG, m_CountsPerByte);
                     g_SystemTimer->SetTimer(CSystemTimer::AiTimerInterrupt, g_Reg->AI_LEN_REG * m_CountsPerByte, false);
                 }
                 else
                 {
-                    WriteTrace(TraceAudio, TraceDebug, "Increasing Second Buffer (m_SecondBuff %d Increase: %d)", m_SecondBuff, g_Reg->AI_LEN_REG);
+                    WriteTrace(TraceAudio, TraceDebug, "Increasing second buffer (m_SecondBuff %d Increase: %d)", m_SecondBuff, g_Reg->AI_LEN_REG);
                     m_SecondBuff += g_Reg->AI_LEN_REG;
                     m_Status |= ai_full;
                 }
@@ -75,7 +75,7 @@ void CAudio::LenChanged()
     }
     else
     {
-        WriteTrace(TraceAudio, TraceDebug, "*** Reset Timer to 0");
+        WriteTrace(TraceAudio, TraceDebug, "Reset timer to 0");
         g_SystemTimer->StopTimer(CSystemTimer::AiTimerBusy);
         g_SystemTimer->StopTimer(CSystemTimer::AiTimerInterrupt);
         m_SecondBuff = 0;
@@ -86,7 +86,7 @@ void CAudio::LenChanged()
     {
         WriteTrace(TraceAudio, TraceDebug, "Calling plugin AiLenChanged");
         g_Plugins->Audio()->AiLenChanged();
-        WriteTrace(TraceAudio, TraceDebug, "plugin AiLenChanged Done");
+        WriteTrace(TraceAudio, TraceDebug, "Plugin AiLenChanged Done");
     }
     WriteTrace(TraceAudio, TraceDebug, "Done");
 }

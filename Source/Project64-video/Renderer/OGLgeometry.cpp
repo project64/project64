@@ -1,9 +1,10 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2003-2009 Sergey 'Gonetz' Lipski
 // Copyright(C) 2002 Dave2001
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
+
 #include <Project64-video/Renderer/Renderer.h>
 #include <Project64-video/rdp.h>
 #include <Project64-video/Settings.h>
@@ -88,7 +89,7 @@ void gfxCullMode(gfxCullMode_t mode)
         glEnable(GL_CULL_FACE);
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknown cull mode : %x", mode);
+        WriteTrace(TraceGlitch, TraceWarning, "Unknown cull mode : %x", mode);
     }
     grDisplayGLError("gfxCullMode");
 }
@@ -114,14 +115,14 @@ void gfxDepthBufferMode(gfxDepthBufferMode_t mode)
         w_buffer_mode = 0;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknown depth buffer mode : %x", mode);
+        WriteTrace(TraceGlitch, TraceWarning, "Unknown depth buffer mode : %x", mode);
     }
     grDisplayGLError("gfxDepthBufferMode");
 }
 
 void gfxDepthBufferFunction(gfxCmpFnc_t function)
 {
-    WriteTrace(TraceGlitch, TraceDebug, "function: %d", function);
+    WriteTrace(TraceGlitch, TraceDebug, "Function: %d", function);
     switch (function)
     {
     case GFX_CMP_GEQUAL:
@@ -162,7 +163,7 @@ void gfxDepthBufferFunction(gfxCmpFnc_t function)
         break;
 
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknown depth buffer function : %x", function);
+        WriteTrace(TraceGlitch, TraceWarning, "Unknown depth buffer function : %x", function);
     }
     grDisplayGLError("gfxDepthBufferFunction");
 }
@@ -184,7 +185,7 @@ void FindBestDepthBias()
     if (biasFactor)
         return;
 
-    biasFactor = 64.0f; // default value
+    biasFactor = 64.0f; // Default value
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_ALWAYS);
@@ -253,7 +254,7 @@ void gfxDepthBiasLevel(int32_t level)
     grDisplayGLError("gfxDepthBiasLevel");
 }
 
-// draw
+// Draw
 void gfxDrawTriangle(const gfxVERTEX *a, const gfxVERTEX *b, const gfxVERTEX *c)
 {
     float *a_x = (float*)a + xy_off / sizeof(float);
@@ -290,7 +291,7 @@ void gfxDrawTriangle(const gfxVERTEX *a, const gfxVERTEX *b, const gfxVERTEX *c)
     float *c_fog = (float*)c + fog_ext_off / sizeof(float);
     WriteTrace(TraceGlitch, TraceDebug, "-");
 
-    // ugly ? i know but nvidia drivers are losing the viewport otherwise
+    // This is ugly, but Nvidia drivers are losing the viewport otherwise.
 
     if (nvidia_viewport_hack && !render_to_texture)
     {
@@ -456,7 +457,7 @@ void gfxDrawVertexArray(gfxDrawMode_t mode, uint32_t Count, void *pointers2)
     float *x, *y, *q, *s0, *t0, *s1, *t1, *z, *fog;
     unsigned char *pargb;
     void **pointers = (void**)pointers2;
-    WriteTrace(TraceGlitch, TraceDebug, "mode: %d Count: %d", mode, Count);
+    WriteTrace(TraceGlitch, TraceDebug, "Mode: %d Count: %d", mode, Count);
 
     if (nvidia_viewport_hack && !render_to_texture)
     {
@@ -474,7 +475,7 @@ void gfxDrawVertexArray(gfxDrawMode_t mode, uint32_t Count, void *pointers2)
         glBegin(GL_TRIANGLE_FAN);
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxDrawVertexArray : unknown mode : %x", mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxDrawVertexArray: Unknown mode : %x", mode);
     }
 
     for (i = 0; i < Count; i++)
@@ -520,7 +521,7 @@ void gfxDrawVertexArrayContiguous(gfxDrawMode_t mode, uint32_t Count, void *poin
     unsigned int i;
     float *x, *y, *q, *s0, *t0, *s1, *t1, *z, *fog;
     unsigned char *pargb;
-    WriteTrace(TraceGlitch, TraceDebug, "mode: %d Count: %d stride: %d", mode, Count, stride);
+    WriteTrace(TraceGlitch, TraceDebug, "Mode: %d Count: %d stride: %d", mode, Count, stride);
 
     if (nvidia_viewport_hack && !render_to_texture)
     {
@@ -541,7 +542,7 @@ void gfxDrawVertexArrayContiguous(gfxDrawMode_t mode, uint32_t Count, void *poin
         glBegin(GL_TRIANGLE_FAN);
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "gfxDrawVertexArrayContiguous : unknown mode : %x", mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxDrawVertexArrayContiguous: Unknown mode : %x", mode);
     }
 
     for (i = 0; i < Count; i++)

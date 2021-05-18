@@ -23,7 +23,7 @@ struct CExitInfo
     CRegInfo    ExitRegSet;
     EXIT_REASON reason;
     STEP_TYPE   NextInstruction;
-    uint32_t *  JumpLoc; //32bit jump
+    uint32_t *  JumpLoc; // 32-bit jump
 };
 
 typedef std::list<CExitInfo> EXIT_LIST;

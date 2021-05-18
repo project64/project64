@@ -54,14 +54,14 @@ bool CGfxPlugin::LoadFunctions(void)
     LoadFunction(SurfaceChanged);
 #endif
 
-    // version 0x104 functions
+    // Version 0x104 functions
     _LoadFunction("DrawFullScreenStatus", DrawStatus);
 
-    // Rom Browser
+    // ROM browser
     LoadFunction(GetRomBrowserMenu);
     LoadFunction(OnRomBrowserMenuItem);
 
-    //Make sure dll had all needed functions
+    // Make sure DLL had all needed functions
     if (ChangeWindow == nullptr)    { UnloadPlugin(); return false; }
     if (DrawScreen == nullptr)      { DrawScreen = DummyDrawScreen; }
     if (InitiateGFX == nullptr)     { UnloadPlugin(); return false; }
@@ -105,24 +105,23 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
         Close(Window);
         if (PluginOpened)
         {
-            WriteTrace(PluginTraceType(), TraceDebug, "Before Plugin Opened");
+            WriteTrace(PluginTraceType(), TraceDebug, "Before plugin opened");
             PluginOpened();
-            WriteTrace(PluginTraceType(), TraceDebug, "After Plugin Opened");
+            WriteTrace(PluginTraceType(), TraceDebug, "After plugin opened");
         }
     }
 
     typedef struct
     {
-        void * hWnd;			/* Render window */
-        void * hStatusBar;    /* if render window does not have a status bar then this is nullptr */
+        void * hWnd;			// Render window
+        void * hStatusBar;    // If render window does not have a status bar then this is NULL
 
-        int32_t MemoryBswaped;    // If this is set to TRUE, then the memory has been pre
-        //   bswap on a dword (32 bits) boundry
+        int32_t MemoryBswaped;    // If this is set to TRUE, then the memory has been pre-bswap'd on a DWORD (32-bit) boundary
         //	eg. the first 8 bytes are stored like this:
-        //        4 3 2 1   8 7 6 5
+        //  4 3 2 1   8 7 6 5
 
-        uint8_t * HEADER;	// This is the rom header (first 40h bytes of the rom
-        // This will be in the same memory format as the rest of the memory.
+        uint8_t * HEADER;	// This is the ROM header (first 40h bytes of the ROM)
+        // This will be in the same memory format as the rest of the memory
         uint8_t * RDRAM;
         uint8_t * DMEM;
         uint8_t * IMEM;
@@ -159,7 +158,7 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
 #endif
     } GFX_INFO;
 
-    //Get Function from DLL
+    // Get function from DLL
     int32_t(CALL *InitiateGFX)(GFX_INFO Gfx_Info);
     _LoadFunction("InitiateGFX", InitiateGFX);
     if (InitiateGFX == nullptr)
@@ -185,8 +184,8 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
 #endif
     Info.CheckInterrupts = DummyCheckInterrupts;
 
-    // We are initializing the plugin before any rom is loaded so we do not have any correct
-    // parameters here.. it's just needed so we can config the DLL.
+    // We are initializing the plugin before any ROM is loaded so we do not have any correct
+    // parameters here, it's just needed so we can config the DLL
     WriteTrace(TraceGFXPlugin, TraceDebug, "System = %X", System);
     if (System == nullptr)
     {
@@ -260,7 +259,7 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
 
 void CGfxPlugin::UnloadPluginDetails(void)
 {
-    WriteTrace(TraceGFXPlugin, TraceDebug, "start");
+    WriteTrace(TraceGFXPlugin, TraceDebug, "Start");
     if (m_LibHandle != nullptr)
     {
         DynamicLibraryClose(m_LibHandle);

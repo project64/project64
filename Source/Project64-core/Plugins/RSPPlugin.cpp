@@ -38,7 +38,7 @@ bool CRSP_Plugin::LoadFunctions(void)
     LoadFunction(EnableDebugging);
     if (EnableDebugging == nullptr) { EnableDebugging = DummyFunc1; }
 
-    //Make sure dll had all needed functions
+    // Make sure DLL had all needed functions
     if (DoRspCycles == nullptr) { UnloadPlugin(); return false; }
     if (InitiateRSP == nullptr) { UnloadPlugin(); return false; }
     if (RomClosed == nullptr) { UnloadPlugin(); return false; }
@@ -49,7 +49,7 @@ bool CRSP_Plugin::LoadFunctions(void)
         if (PluginOpened == nullptr) { UnloadPlugin(); return false; }
     }
 
-    // Get debug info if able
+    // Get debug info if possible
     if (GetDebugInfo != nullptr)
     {
         GetDebugInfo(&m_RSPDebug);
@@ -62,7 +62,7 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
     WriteTrace(TraceRSPPlugin, TraceDebug, "Starting");
     if (m_PluginInfo.Version == 1 || m_PluginInfo.Version == 0x100)
     {
-        WriteTrace(TraceRSPPlugin, TraceDebug, "Invalid Version: %X", m_PluginInfo.Version);
+        WriteTrace(TraceRSPPlugin, TraceDebug, "Invalid version: %X", m_PluginInfo.Version);
         WriteTrace(TraceRSPPlugin, TraceDebug, "Done (res: false)");
         return false;
     }
@@ -72,10 +72,9 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
         typedef struct
         {
             void * hInst;
-            int MemoryBswaped;    /* If this is set to TRUE, then the memory has been pre
-                                  bswap on a dword (32 bits) boundry */
-            uint8_t * HEADER;	// This is the rom header (first 40h bytes of the rom
-            // This will be in the same memory format as the rest of the memory.
+            int MemoryBswaped;    // If this is set to TRUE, then the memory has been pre-bswap'd on a DWORD (32-bit) boundary
+            uint8_t * HEADER;	// This is the ROM header (first 40h bytes of the ROM)
+            // This will be in the same memory format as the rest of the memory
             uint8_t * RDRAM;
             uint8_t * DMEM;
             uint8_t * IMEM;
@@ -116,9 +115,9 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
         Info.hInst = nullptr;
 #endif
         Info.CheckInterrupts = DummyCheckInterrupts;
-        Info.MemoryBswaped = (System == nullptr); // only true when the system's not yet loaded
+        Info.MemoryBswaped = (System == nullptr); // Only true when the system's not yet loaded
     
-        //Get Function from DLL
+        // Get function from DLL
         void(CALL *InitiateRSP) (RSP_INFO_1_3 RSP_Info, uint32_t * Cycles);
         LoadFunction(InitiateRSP);
         if (InitiateRSP == nullptr)
@@ -128,8 +127,8 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
             return false;
         }
 
-        // We are initializing the plugin before any rom is loaded so we do not have any correct
-        // parameters here.. just needed to we can config the DLL.
+        // We are initializing the plugin before any ROM is loaded so we do not have any correct
+        // parameters here, just needed to we can config the DLL
         if (System == nullptr)
         {
             static uint8_t Buffer[100];
@@ -214,8 +213,7 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
         typedef struct
         {
             void * hInst;
-            int MemoryBswaped;    /* If this is set to TRUE, then the memory has been pre
-                                  bswap on a dword (32 bits) boundry */
+            int MemoryBswaped;    // If this is set to TRUE, then the memory has been pre-bswap'd on a DWORD (32-bit) boundary
             uint8_t * RDRAM;
             uint8_t * DMEM;
             uint8_t * IMEM;
@@ -256,9 +254,9 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
         Info.hInst = nullptr;
 #endif
         Info.CheckInterrupts = DummyCheckInterrupts;
-        Info.MemoryBswaped = (System == nullptr); // only true when the system's not yet loaded
+        Info.MemoryBswaped = (System == nullptr); // Only true when the system's not yet loaded
     
-        //Get Function from DLL
+        // Get function from DLL
         void(CALL *InitiateRSP) (RSP_INFO_1_1 RSP_Info, uint32_t * Cycles);
         LoadFunction(InitiateRSP);
         if (InitiateRSP == nullptr)
@@ -268,8 +266,8 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
             return false;
         }
 
-        // We are initializing the plugin before any rom is loaded so we do not have any correct
-        // parameters here.. just needed to we can config the DLL.
+        // We are initializing the plugin before any ROM is loaded so we do not have any correct
+        // parameters here, just needed to we can config the DLL
         if (System == nullptr)
         {
             static uint8_t Buffer[100];

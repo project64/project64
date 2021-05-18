@@ -1,9 +1,10 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2007 Hiroshi Morii
 // Copyright(C) 2003 Rice1964
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
+
 #pragma once
 #include <stdint.h>
 
@@ -54,7 +55,7 @@
 #define UNDEFINED_0         0x08000000
 #define FORCE16BPP_HIRESTEX 0x10000000
 #define FORCE16BPP_TEX      0x20000000
-#define LET_TEXARTISTS_FLY  0x40000000 /* a little freedom for texture artists */
+#define LET_TEXARTISTS_FLY  0x40000000 // A little freedom for texture artists
 #define DUMP_TEX            0x80000000
 
 struct GHQTexInfo {
@@ -74,8 +75,8 @@ struct GHQTexInfo {
     unsigned char is_hires_tex;
 };
 
-/* Callback to display hires texture info.
- * Gonetz <gonetz(at)ngs.ru>
+/* Callback to display high resolution texture info.
+ * Gonetz
  *
  * void DispInfo(const char *format, ...)
  * {
@@ -94,48 +95,48 @@ struct GHQTexInfo {
 typedef void(*dispInfoFuncExt)(const char *format, ...);
 
 #ifndef TXFILTER_DLL
-bool ext_ghq_init(int maxwidth, /* maximum texture width supported by hardware */
-    int maxheight,/* maximum texture height supported by hardware */
-    int maxbpp,   /* maximum texture bpp supported by hardware */
-    int options,  /* options */
-    int cachesize,/* cache textures to system memory */
-    const char *path,   /* plugin directory. must be smaller than MAX_PATH */
-    const char *ident,  /* name of ROM. must be no longer than 64 in character. */
-    dispInfoFuncExt callback /* callback function to display info */
+bool ext_ghq_init(int maxwidth, // Maximum texture width supported by hardware
+    int maxheight, // Maximum texture height supported by hardware
+    int maxbpp,   // Maximum texture bpp supported by hardware
+    int options,  // Options
+    int cachesize, // Cache textures to system memory
+    const char *path,   // Plugin directory, must be smaller than MAX_PATH
+    const char *ident,  // Name of ROM, must be no longer than 64 characters
+    dispInfoFuncExt callback // Callback function to display info
 );
 
 void ext_ghq_shutdown(void);
 
-bool ext_ghq_txfilter(unsigned char *src,        /* input texture */
-    int srcwidth,              /* width of input texture */
-    int srcheight,             /* height of input texture */
-    unsigned short srcformat,  /* format of input texture */
-    uint64_t g64crc,             /* glide64 crc */
-    GHQTexInfo *info           /* output */
+bool ext_ghq_txfilter(unsigned char *src,        // Input texture
+    int srcwidth,              // Width of input texture
+    int srcheight,             // Height of input texture
+    unsigned short srcformat,  // Format of input texture
+    uint64_t g64crc,             // Glide64 CRC
+    GHQTexInfo *info           // Output
 );
 
-bool ext_ghq_hirestex(uint64_t g64crc,             /* glide64 crc */
-    uint64_t r_crc64,            /* checksum hi:palette low:texture */
-    unsigned short *palette,   /* palette for CI textures */
-    GHQTexInfo *info           /* output */
+bool ext_ghq_hirestex(uint64_t g64crc,             // Glide64 CRC
+    uint64_t r_crc64,            // Checksum hi:palette low:texture
+    unsigned short *palette,   // Palette for CI textures
+    GHQTexInfo *info           // Output
 );
 
-uint64_t ext_ghq_checksum(unsigned char *src, /* input texture */
-    int width,          /* width of texture */
-    int height,         /* height of texture */
-    int size,           /* type of texture pixel */
-    int rowStride,      /* row stride in bytes */
-    unsigned char *palette /* palette */
+uint64_t ext_ghq_checksum(unsigned char *src, // Input texture
+    int width,          // Width of texture
+    int height,         // Height of texture
+    int size,           // Type of texture pixel
+    int rowStride,      // Row stride in bytes
+    unsigned char *palette // Palette
 );
 
-bool ext_ghq_dmptx(unsigned char *src,   /* input texture (must be in 3Dfx Glide format) */
-    int width,            /* width of texture */
-    int height,           /* height of texture */
-    int rowStridePixel,   /* row stride of input texture in pixels */
-    unsigned short gfmt,  /* glide format of input texture */
-    unsigned short n64fmt,/* N64 format hi:format low:size */
-    uint64_t r_crc64        /* checksum hi:palette low:texture */
+bool ext_ghq_dmptx(unsigned char *src,   // Input texture (must be in 3DFX Glide format)
+    int width,            // Width of texture
+    int height,           // Height of texture
+    int rowStridePixel,   // Row stride of input texture in pixels
+    unsigned short gfmt,  // Glide format of input texture
+    unsigned short n64fmt,// N64 format hi:format low:size
+    uint64_t r_crc64        // Checksum hi:palette low:texture
 );
 
 bool ext_ghq_reloadhirestex();
-#endif /* TXFILTER_DLL */
+#endif // TXFILTER_DLL

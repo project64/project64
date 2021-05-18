@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2007 Hiroshi Morii
 // Copyright(C) 2004 Daniel Borca
@@ -8,23 +8,18 @@
 #ifndef INTERNAL_H_included
 #define INTERNAL_H_included
 
-/*****************************************************************************\
-* Texture compression stuff
-\*****************************************************************************/
+// Texture compression stuff
+
 #define RADEON
 #define YUV
 #define ARGB
 
-/*****************************************************************************\
- * DLL stuff
-\*****************************************************************************/
+// DLL stuff
 
 #define TAPI
 #define TAPIENTRY
 
-/*****************************************************************************\
- * 64bit types on 32bit machine
-\*****************************************************************************/
+// 64-bit types on 32-bit machine
 
 #if (defined(__GNUC__) && !defined(__cplusplus)) || defined(WIN32)
 
@@ -55,25 +50,21 @@ typedef struct {
 
 #endif /* !__GNUC__ */
 
-/*****************************************************************************\
- * Config
-\*****************************************************************************/
+// Config
 
 #define RCOMP 0
 #define GCOMP 1
 #define BCOMP 2
 #define ACOMP 3
 
-/*****************************************************************************\
- * Metric
-\*****************************************************************************/
+// Metric
 
-#define F(i) (float)1 /* can be used to obtain an oblong metric: 0.30 / 0.59 / 0.11 */
-#define SAFECDOT 1 /* for paranoids */
+#define F(i) (float)1 // Can be used to obtain an oblong metric: 0.30 / 0.59 / 0.11
+#define SAFECDOT 1 // For paranoids
 
+// compute interpolation vector
 #define MAKEIVEC(NV, NC, IV, B, V0, V1)	\
     do {				\
-	/* compute interpolation vector */\
 	float d2 = 0.0F;		\
 	float rd2;			\
 					\
@@ -107,9 +98,7 @@ typedef struct {
 	}				\
     } while (0)
 
-/*****************************************************************************\
- * Utility functions
-\*****************************************************************************/
+// Utility functions
 
 void
 _mesa_upscale_teximage2d(unsigned int inWidth, unsigned int inHeight,

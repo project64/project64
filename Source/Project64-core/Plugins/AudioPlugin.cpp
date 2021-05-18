@@ -39,7 +39,7 @@ bool CAudioPlugin::LoadFunctions(void)
     LoadFunction(AiUpdate);
     LoadFunction(ProcessAList);
 
-    // Make sure dll has all needed functions
+    // Make sure DLL has all needed functions
     if (AiDacrateChanged == nullptr) { UnloadPlugin(); return false; }
     if (AiLenChanged == nullptr) { UnloadPlugin(); return false; }
     if (AiReadLength == nullptr) { UnloadPlugin(); return false; }
@@ -60,13 +60,11 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
         void * hwnd;
         void * hinst;
 
-        int32_t MemoryBswaped;    // If this is set to TRUE, then the memory has been pre
-
-        //   bswap on a dword (32 bits) boundry
+        int32_t MemoryBswaped;    // If this is set to TRUE, then the memory has been pre-bswap'd on a DWORD (32-bit) boundary
         //	eg. the first 8 bytes are stored like this:
-        //        4 3 2 1   8 7 6 5
-        uint8_t * HEADER;	// This is the rom header (first 40h bytes of the rom
-        // This will be in the same memory format as the rest of the memory.
+        //  4 3 2 1   8 7 6 5
+        uint8_t * HEADER;	// This is the ROM header (first 40h bytes of the ROM)
+        // This will be in the same memory format as the rest of the memory
         uint8_t * RDRAM;
         uint8_t * DMEM;
         uint8_t * IMEM;
@@ -83,7 +81,7 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
         void(CALL *CheckInterrupts)(void);
     };
 
-    //Get Function from DLL
+    // Get function from DLL
     int32_t(CALL *InitiateAudio)(AUDIO_INFO Audio_Info);
     LoadFunction(InitiateAudio);
     if (InitiateAudio == nullptr) { return false; }
@@ -100,8 +98,8 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
     Info.MemoryBswaped = true;
     Info.CheckInterrupts = DummyCheckInterrupts;
 
-    // We are initializing the plugin before any rom is loaded so we do not have any correct
-    // parameters here.. just needed to we can config the DLL.
+    // We are initializing the plugin before any ROM is loaded so we do not have any correct
+    // parameters here, just needed to we can config the DLL
     if (System == nullptr)
     {
         static uint8_t Buffer[100];
@@ -171,7 +169,7 @@ void CAudioPlugin::UnloadPluginDetails(void)
 #ifdef _WIN32
     if (m_hAudioThread)
     {
-        WriteTrace(TraceAudioPlugin, TraceDebug, "Terminate Audio Thread");
+        WriteTrace(TraceAudioPlugin, TraceDebug, "Terminate audio thread");
         TerminateThread(m_hAudioThread, 0);
         m_hAudioThread = nullptr;
     }

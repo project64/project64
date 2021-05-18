@@ -1,4 +1,4 @@
-// Based from MAME's N64DD driver code by Happy_
+// Based on MAME's N64DD driver code by Happy_
 #pragma once
 #include <stdint.h>
 

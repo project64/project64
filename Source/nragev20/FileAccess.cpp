@@ -1,24 +1,23 @@
- /*
-    N-Rage`s Dinput8 Plugin
-    (C) 2002, 2006  Norbert Wladyka
+/*
+N-Rage`s Dinput8 Plugin
+(C) 2002, 2006  Norbert Wladyka
 
-    Author`s Email: norbert.wladyka@chello.at
-    Website: http://go.to/nrage
+Author`s Email: norbert.wladyka@chello.at
+Website: http://go.to/nrage
 
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 #include <string>
@@ -56,7 +55,7 @@ void DumpControllerSettings(FILE * fFile, int i, bool bIsINI);
 void FormatControlsBlock(string * strMouse, string strDevs[], string * strNull, int i);
 void FormatModifiersBlock(string * strMouse, string strDevs[], string * strNull, int i);
 
-// return true if the file exists... let's just use CreateFile with OPEN_EXISTING
+// Return true if the file exists, let's just use CreateFile with OPEN_EXISTING
 bool CheckFileExists( LPCTSTR FileName )
 {
     HANDLE hFile = CreateFile(FileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -77,7 +76,7 @@ bool CheckFileExists( LPCTSTR FileName )
 //      PL_CATEGORY and removes the brackets if the line looks like a keymapping
 //      PL_VERSIONSTRING and returns the version number if it's a version line
 //      for other cases, another PL return value and truncates before the equal sign; so strings like "Button=blah" -> "blah"
-// TODO: Perhaps buffer overflow and crash potential here... needs auditing
+// TODO: Perhaps buffer overflow and crash potential here...needs auditing
 DWORD ParseLine( LPSTR pszLine )
 {
     DWORD dwReturn = PL_NOHIT;
@@ -85,7 +84,7 @@ DWORD ParseLine( LPSTR pszLine )
 
     switch (pszLine[0])
     {
-    case '\0':  // shortcut out on null string
+    case '\0':  // Shortcut out on null string
     case '#':   // # indicates comment line
         return PL_NOHIT;
     case '[':
@@ -96,14 +95,14 @@ DWORD ParseLine( LPSTR pszLine )
         }
         if( *pChar == ']' )
         {
-            MoveMemory( pszLine, pszLine+1, (pChar-pszLine) - 1 * sizeof(pszLine[0]) ); // TODO: please double check this --rabid
-            *(pChar - 1) = '\0';    // since we moved everything back one character, we need to change this ref as well
+            MoveMemory( pszLine, pszLine+1, (pChar-pszLine) - 1 * sizeof(pszLine[0]) ); // TODO: Please double check this (comment by rabid)
+            *(pChar - 1) = '\0';    // Since we moved everything back one character, we need to change this ref as well
             return PL_CATEGORY;
         }
         else
-            return PL_NOHIT; // an open bracket with no closing returns nohit
+            return PL_NOHIT; // An open bracket with no closing returns no hit
     case '@':
-        switch( djbHash(pszLine))   // the hash check is case sensitive, and includes the @ symbol
+        switch( djbHash(pszLine))   // The hash check is case sensitive, and includes the @ symbol
         {
         case CHK_PROFILEVERSION20:
             lstrcpyA( pszLine, "2.0" );
@@ -118,20 +117,20 @@ DWORD ParseLine( LPSTR pszLine )
             DebugWriteA("Unknown version string found with hash %u: %s\n", djbHash(pszLine), pszLine);
             return PL_NOHIT;
         } // end switch (dbjHash(pszLine))
-    // default: keep running
+    // Default: keep running
     }
 
     pChar = strchr(pszLine, '=');
 
-    if( !pChar ) // no = sign
+    if( !pChar ) // No = sign
     {
         return PL_NOHIT;
     }
-    else // there is an '=' sign
+    else // There is an '=' sign
     {
         // We hash the string.  If the hash matches the hash of one of our targets, we compare strings to verify.
-        // If we don't use hashes, we have to compare vs a LOT of strings.
-        *pChar = '\0'; // truncate at the '=' for now
+        // If we don't use hashes, we have to compare vs many strings.
+        *pChar = '\0'; // Truncate at the '=' for now
         for (char *pIter = pszLine; *pIter; pIter++)
             *pIter = toupper(*pIter);
         dwReturn = djbHash(pszLine);
@@ -144,8 +143,8 @@ DWORD ParseLine( LPSTR pszLine )
     return dwReturn;
 }
 
-// Called immediately after ParseLine to assign values based on whatever the keyname was
-// notes: pszFFDevice may be overwritten with whatever is in pszLine; please make sure pszLine is not too big!
+// Called immediately after ParseLine to assign values based on whatever the key name was
+// Notes: pszFFDevice may be overwritten with whatever is in pszLine; please make sure pszLine is not too big!
 bool ProcessKey( DWORD dwKey, DWORD dwSection, LPCSTR pszLine, LPTSTR pszFFDevice, LPBYTE bFFDeviceNr, bool bIsInterface )
 {
     static TCHAR pszDeviceName[MAX_PATH];
@@ -153,9 +152,9 @@ bool ProcessKey( DWORD dwKey, DWORD dwSection, LPCSTR pszLine, LPTSTR pszFFDevic
     static GUID gGUID;
 
     bool bReturn = true;
-    LPCONTROLLER pController = NULL;    // used when we're assigning things in the [Controller X] category
+    LPCONTROLLER pController = NULL;    // Used when we're assigning things in the [Controller X] category
     LPSHORTCUTS pShortcuts = NULL;
-    unsigned int iLength = lstrlenA( pszLine ) / 2; // 2 HEX characters correspond to one BYTE; thus iLength represents the length of pszLine after conversion to BYTEs
+    unsigned int iLength = lstrlenA( pszLine ) / 2; // 2 hex characters correspond to one byte; thus iLength represents the length of pszLine after converting to bytes
 
     switch (dwSection)
     {
@@ -334,7 +333,7 @@ bool ProcessKey( DWORD dwKey, DWORD dwSection, LPCSTR pszLine, LPTSTR pszFFDevic
             bReturn = StringtoGUIDA(&pController->guidFFDevice, pszLine);
             if (bIsInterface && bReturn)
             {
-                // For some reason, we use ONLY device names and numbers inside the interface for FF device selection.  So if we don't set those,
+                // For some reason, we use only device names and numbers inside the interface for force feedback device selection.  So if we don't set those,
                 // FFDevice won't load properly.
                 int nDevice = FindDeviceinList(pController->guidFFDevice);
                 if (nDevice != -1 && pszFFDevice && bFFDeviceNr)
@@ -355,7 +354,7 @@ bool ProcessKey( DWORD dwKey, DWORD dwSection, LPCSTR pszLine, LPTSTR pszFFDevic
     case CHK_FFDEVICENAME:
         if( pController && pszFFDevice )
         {
-            CHAR_TO_TCHAR( pszFFDevice, pszLine, MAX_PATH ); // HACK: pszLine is read from a file; could overflow easily. guessed size of pszFFDevice buffer.
+            CHAR_TO_TCHAR( pszFFDevice, pszLine, MAX_PATH ); // Hack: pszLine is read from a file; could overflow easily. We guessed size of pszFFDevice buffer.
             return true;
         }
         break;
@@ -387,12 +386,12 @@ bool ProcessKey( DWORD dwKey, DWORD dwSection, LPCSTR pszLine, LPTSTR pszFFDevic
         break;
 
     case CHK_DINPUTNAME:
-        gGUID = GUID_NULL;  // invalidate current GUID
+        gGUID = GUID_NULL;  // Invalidate current GUID
         CHAR_TO_TCHAR( pszDeviceName, pszLine, MAX_PATH );
         break;
 
     case CHK_DINPUTNR:
-        gGUID = GUID_NULL;  // invalidate current GUID
+        gGUID = GUID_NULL;  // Invalidate current GUID
         if( iLength >= sizeof(BYTE) )
         {
             TexttoHexA( pszLine, &bDeviceNr, sizeof(BYTE) );
@@ -403,7 +402,7 @@ bool ProcessKey( DWORD dwKey, DWORD dwSection, LPCSTR pszLine, LPTSTR pszFFDevic
             return true;
         else
         {
-            gGUID = GUID_NULL;  // invalidate current GUID
+            gGUID = GUID_NULL;  // Invalidate current GUID
             return false;
         }
         break;
@@ -421,31 +420,31 @@ bool ProcessKey( DWORD dwKey, DWORD dwSection, LPCSTR pszLine, LPTSTR pszFFDevic
             if (sscanf(pszLine, "%d %d %x %u %u", &controlnum, &buttonID, &tOffset, &tAxisID, &tBtnType) != 5)
                 return false;
 
-            // done to overcome issues with sscanf and "small" data blocks
+            // Done to overcome issues with sscanf and "small" data blocks
             btnWorking.bOffset = tOffset;
             btnWorking.bAxisID = tAxisID;
             btnWorking.bBtnType = tBtnType;
 
             if (pController)
             {
-                // special case: if we're in one of the categories CHK_CONTROLLER_n, assume we're processing a Profile file.
-                // Ignore the read controlnum and use our input controller number.
-                controlnum = (int)(dwSection - CHK_CONTROLLER_1);   // HACK: assume our hash reproduces these linearly
+                // Special case: if we're in one of the categories CHK_CONTROLLER_n, assume we're processing a profile file.
+                // Ignore the read control number and use our input controller number.
+                controlnum = (int)(dwSection - CHK_CONTROLLER_1);   // Hack: Assume our hash reproduces these linearly
             }
 
-            // Now we need to assign parentdevice. If we have a valid gGUID, we'll use that...
+            // Now we need to assign a parent device. If we have a valid gGUID, we'll use that
             int found = FindDeviceinList(gGUID);
             if (found != -1)
                 btnWorking.parentDevice = &g_devList[found];
             else
             {
-                // ... otherwise, we do the following in order:
-                //   1. If bBtnType is of type DT_MOUSEBUTTON or DT_MOUSEAXE, set gGUID to that of g_sysMouse (ignoring the given name and number)
+                // Otherwise, we do the following in order:
+                // 1. If bBtnType is of type DT_MOUSEBUTTON or DT_MOUSEAXE, set gGUID to that of g_sysMouse (ignoring the given name and number)
                 if ( btnWorking.bBtnType == DT_MOUSEBUTTON || btnWorking.bBtnType == DT_MOUSEAXE )
                 {
                     btnWorking.parentDevice = &g_sysMouse;
                 }
-                //   2. If bBtnType is of type DT_KEYBUTTON, set gGUID to that of SysKeyboard
+                // 2. If bBtnType is of type DT_KEYBUTTON, set gGUID to that of SysKeyboard
                 else if ( btnWorking.bBtnType == DT_KEYBUTTON )
                 {
                     gGUID = GUID_SysKeyboard;
@@ -455,7 +454,7 @@ bool ProcessKey( DWORD dwKey, DWORD dwSection, LPCSTR pszLine, LPTSTR pszFFDevic
                     else
                         btnWorking.parentDevice = NULL;
                 }
-                //   3. otherwise, look up the name and number using FindDeviceinList, and set gGUID to that
+                // 3. Otherwise, look up the name and number using FindDeviceinList, and set gGUID to that
                 else
                 {
                     found = FindDeviceinList(pszDeviceName, bDeviceNr, true);
@@ -476,10 +475,10 @@ bool ProcessKey( DWORD dwKey, DWORD dwSection, LPCSTR pszLine, LPTSTR pszFFDevic
 
             if (pShortcuts)
             {
-                // bounds check on controlnum and buttonID
+                // Bounds check on control number and buttonID
                 if ( (controlnum == -1 && buttonID != 0) && ((controlnum < 0) || (controlnum > 3) || (buttonID < 0) || (buttonID >= SC_TOTAL)) )
                 {
-                    gGUID = GUID_NULL;  // since we may have cached an invalid GUID, invalidate it
+                    gGUID = GUID_NULL;  // Since we may have cached an invalid GUID, invalidate it
                     return false;
                 }
 
@@ -495,12 +494,12 @@ bool ProcessKey( DWORD dwKey, DWORD dwSection, LPCSTR pszLine, LPTSTR pszFFDevic
                     else
                         g_scShortcuts.Player[controlnum].aButtons[buttonID] = btnWorking;
             }
-            else // it's a controller button
+            else // It's a controller button
             {
-                // bounds check on controlnum and buttonID
+                // Bounds check on control number and buttonID
                 if ( (controlnum < 0) || (controlnum > 3) || (buttonID < 0) || (buttonID >= ARRAYSIZE(g_pcControllers[0].aButton)) )
                 {
-                    gGUID = GUID_NULL;  // since we may have cached an invalid GUID, invalidate it
+                    gGUID = GUID_NULL;  // Since we may have cached an invalid GUID, invalidate it
                     return false;
                 }
 
@@ -528,28 +527,28 @@ bool ProcessKey( DWORD dwKey, DWORD dwSection, LPCSTR pszLine, LPTSTR pszFFDevic
                     &tBtnType, &tModType, &tToggle, &tStatus, &tSpecific) != 8)
                 return false;
 
-            // done to overcome issues with sscanf and "small" data blocks
+            // Done to overcome issues with sscanf and "small" data blocks
             modWorking.btnButton.bOffset = tOffset;
             modWorking.btnButton.bAxisID = tAxisID;
             modWorking.btnButton.bBtnType = tBtnType;
             modWorking.bModType = tModType;
             modWorking.fToggle = tToggle;
             modWorking.fStatus = tStatus;
-            modWorking.dwSpecific = tSpecific; // looks stupid, but unsigned int might not always be DWORD32
+            modWorking.dwSpecific = tSpecific; // Looks stupid, but unsigned int might not always be DWORD32
 
-            // Now we need to assign parentdevice. If we have a valid gGUID, we'll use that...
+            // Now we need to assign a parent device. If we have a valid gGUID, we'll use that
             int found = FindDeviceinList(gGUID);
             if (found != -1)
                 modWorking.btnButton.parentDevice = &g_devList[found];
             else
             {
-                // ... otherwise, we do the following in order:
-                //   1. If bBtnType is of type DT_MOUSEBUTTON or DT_MOUSEAXE, set gGUID to that of g_sysMouse (ignoring the given name and number)
+                // Otherwise, we do the following in order:
+                // 1. If bBtnType is of type DT_MOUSEBUTTON or DT_MOUSEAXE, set gGUID to that of g_sysMouse (ignoring the given name and number)
                 if ( modWorking.btnButton.bBtnType == DT_MOUSEBUTTON || modWorking.btnButton.bBtnType == DT_MOUSEAXE )
                 {
                     modWorking.btnButton.parentDevice = &g_sysMouse;
                 }
-                //   2. If bBtnType is of type DT_KEYBUTTON, set gGUID to that of SysKeyboard
+                // 2. If bBtnType is of type DT_KEYBUTTON, set gGUID to that of SysKeyboard
                 else if ( modWorking.btnButton.bBtnType == DT_KEYBUTTON )
                 {
                     gGUID = GUID_SysKeyboard;
@@ -559,7 +558,7 @@ bool ProcessKey( DWORD dwKey, DWORD dwSection, LPCSTR pszLine, LPTSTR pszFFDevic
                     else
                         modWorking.btnButton.parentDevice = NULL;
                 }
-                //   3. otherwise, look up the name and number using FindDeviceinList, and set gGUID to that
+                // 3. Otherwise, look up the name and number using FindDeviceinList, and set gGUID to that
                 else
                 {
                     found = FindDeviceinList(pszDeviceName, bDeviceNr, true);
@@ -578,10 +577,10 @@ bool ProcessKey( DWORD dwKey, DWORD dwSection, LPCSTR pszLine, LPTSTR pszFFDevic
                 }
             }
 
-            // bounds check on controlnum and buttonID
+            // Bounds check on control number and buttonID
             if ( (controlnum < 0) || (controlnum > 3) )
             {
-                gGUID = GUID_NULL;  // since we may have cached an invalid GUID, invalidate it
+                gGUID = GUID_NULL;  // Since we may have cached an invalid GUID, invalidate it
                 return false;
             }
 
@@ -620,9 +619,8 @@ bool ProcessKey( DWORD dwKey, DWORD dwSection, LPCSTR pszLine, LPTSTR pszFFDevic
     return bReturn;
 }
 
-/******************
-Load the default profile from the raw "resource" data (i.e. the builtin defaults contained in the dll)
-******************/
+// Load the default profile from the raw "resource" data (i.e. the built-in defaults contained in the DLL)
+
 bool LoadProfileFromResource( LPCTSTR pszResource, int iController, bool bIsInterface )
 {
     const DWORD dwControllerSect[] = { CHK_CONTROLLER_1 , CHK_CONTROLLER_2, CHK_CONTROLLER_3, CHK_CONTROLLER_4 };
@@ -647,14 +645,13 @@ bool LoadProfileFromResource( LPCTSTR pszResource, int iController, bool bIsInte
 
         szLine[i] = '\0';
         dwCommand = ParseLine( szLine );
-        ProcessKey( dwCommand, dwControllerSect[iController], szLine, 0, 0, bIsInterface ); // resource will not contain a FF device
+        ProcessKey( dwCommand, dwControllerSect[iController], szLine, 0, 0, bIsInterface ); // Resource will not contain a force feedback device
     }
     return true;
 }
 
-/******************
-See overloaded function above
-******************/
+// See overloaded function above
+
 bool LoadProfileFromResource( int indexController, bool bIsInterface )
 {
     const int resIds[] = { IDR_PROFILE_DEFAULT1, IDR_PROFILE_DEFAULT2, IDR_PROFILE_DEFAULT3, IDR_PROFILE_DEFAULT4 };
@@ -665,7 +662,7 @@ bool LoadProfileFromResource( int indexController, bool bIsInterface )
 }
 
 // Load a controller profile from a saved configuration file
-// need to incorporate type (keyb/mouse/joy), GUID for joy, and bOffset
+// Need to incorporate type (keyboard/mouse/controller), GUID for controller, and bOffset
 bool LoadProfileFile( const TCHAR *pszFileName, int iController, TCHAR *pszFFDevice, BYTE *bFFDeviceNr )
 {
     const DWORD dwControllerSect[] = { CHK_CONTROLLER_1 , CHK_CONTROLLER_2, CHK_CONTROLLER_3, CHK_CONTROLLER_4 };
@@ -676,14 +673,14 @@ bool LoadProfileFile( const TCHAR *pszFileName, int iController, TCHAR *pszFFDev
     if ( (proFile = _tfopen(pszFileName, _T("rS")) ) == NULL)
         return false;
 
-    // Test if right Version
+    // Test if right version
     while( !iVersion && ( fgets(szLine, sizeof(szLine) - 1, proFile) ) )
     {
-        szLine[strlen(szLine) - 1] = '\0'; // remove newline
+        szLine[strlen(szLine) - 1] = '\0'; // Remove newline
         if( ParseLine( szLine ) == PL_VERSIONSTRING )
             iVersion = (int)(atof( szLine ) * 100);
     }
-    if( iVersion != 220 ) // HACK: this should probably not be a hardcoded value
+    if( iVersion != 220 ) // TODO: Hack: this should probably not be a hardcoded value
     {
         fclose(proFile);
         return false;
@@ -697,7 +694,7 @@ bool LoadProfileFile( const TCHAR *pszFileName, int iController, TCHAR *pszFFDev
     DWORD dwCommand = PL_NOHIT;
     while( fgets(szLine, sizeof(szLine) - 1, proFile) )
     {
-        szLine[strlen(szLine) - 1] = '\0'; // remove newline
+        szLine[strlen(szLine) - 1] = '\0'; // Remove newline
         dwCommand = ParseLine( szLine );
         ProcessKey( dwCommand, dwControllerSect[iController], szLine, pszFFDevice, bFFDeviceNr, true );
     }
@@ -708,7 +705,7 @@ bool LoadProfileFile( const TCHAR *pszFileName, int iController, TCHAR *pszFFDev
 }
 
 // Load a controller profile from a saved configuration file
-// need to incorporate type (keyb/mouse/joy), GUID for joy, and bOffset
+// Need to incorporate type (keyboard/mouse/controller), GUID for controller, and bOffset
 bool LoadShortcutsFile( const TCHAR *pszFileName )
 {
     FILE *fShortsFile = NULL;
@@ -718,14 +715,14 @@ bool LoadShortcutsFile( const TCHAR *pszFileName )
     if ( (fShortsFile = _tfopen(pszFileName, _T("rS")) ) == NULL)
         return false;
 
-    // Test if right Version
+    // Test if right version
     while( !iVersion && ( fgets(szLine, sizeof(szLine) - 1, fShortsFile) ) )
     {
-        szLine[strlen(szLine) - 1] = '\0'; // remove newline
+        szLine[strlen(szLine) - 1] = '\0'; // Remove newline
         if( ParseLine( szLine ) == PL_VERSIONSTRING )
             iVersion = (int)(atof( szLine ) * 100);
     }
-    if( iVersion != 220 ) // HACK: this should probably not be a hardcoded value
+    if( iVersion != 220 ) // Hack: this should probably not be a hardcoded value
     {
         fclose(fShortsFile);
         return false;
@@ -737,7 +734,7 @@ bool LoadShortcutsFile( const TCHAR *pszFileName )
     DWORD dwCommand = PL_NOHIT;
     while( fgets(szLine, sizeof(szLine) - 1, fShortsFile) )
     {
-        szLine[strlen(szLine) - 1] = '\0'; // remove newline
+        szLine[strlen(szLine) - 1] = '\0'; // Remove newline
         dwCommand = ParseLine( szLine );
         ProcessKey( dwCommand, CHK_SHORTCUTS, szLine, 0, 0, true );
     }
@@ -747,8 +744,8 @@ bool LoadShortcutsFile( const TCHAR *pszFileName )
     return true;
 }
 
-// Serializes the profile for the CURRENT controller for saving to a file
-// called in one place, from within Interface.cpp, ControllerTabProc (when you click "Save Profile")
+// Serializes the profile for the current controller for saving to a file
+// Called in one place, from within Interface.cpp, ControllerTabProc (when you click "Save Profile")
 void FormatProfileBlock( FILE * fFile, const int i )
 {
     DumpControllerSettings(fFile, i, false);
@@ -771,7 +768,7 @@ void FormatProfileBlock( FILE * fFile, const int i )
     DumpStreams(fFile, strMouse, strDevs, strNull, false);
 }
 
-// same as FormatProfileBlock, but saves shortcuts instead
+// Same as FormatProfileBlock, but saves shortcuts instead
 void FormatShortcutsBlock(FILE * fFile, bool bIsINI)
 {
     // I'm going to use STL strings here because I don't want to screw with buffer management
@@ -783,12 +780,12 @@ void FormatShortcutsBlock(FILE * fFile, bool bIsINI)
     {
         for ( int j = 0; j < SC_TOTAL; j++ ) // aButtons for
         {
-            if (g_ivConfig->Shortcuts.Player[i].aButtons[j].parentDevice) // possibly unbound
+            if (g_ivConfig->Shortcuts.Player[i].aButtons[j].parentDevice) // Possibly unbound
             {
                 if ( IsEqualGUID(g_sysMouse.guidInstance, g_ivConfig->Shortcuts.Player[i].aButtons[j].parentDevice->guidInstance) )
                 {
                     char szBuf[DEFAULT_BUFFER];
-                    // add to the mouse stream
+                    // Add to the mouse stream
                     sprintf(szBuf, STRING_INI_BUTTON "=%d %d %02X %d %d\n", i, j, g_ivConfig->Shortcuts.Player[i].aButtons[j].bOffset, g_ivConfig->Shortcuts.Player[i].aButtons[j].bAxisID, g_ivConfig->Shortcuts.Player[i].aButtons[j].bBtnType);
                     strMouse.append(szBuf);
                 }
@@ -797,22 +794,22 @@ void FormatShortcutsBlock(FILE * fFile, bool bIsINI)
                         if ( IsEqualGUID(g_devList[match].guidInstance, g_ivConfig->Shortcuts.Player[i].aButtons[j].parentDevice->guidInstance) )
                         {
                             char szBuf[DEFAULT_BUFFER];
-                            // add to the appropriate device stream
+                            // Add to the appropriate device stream
                             sprintf(szBuf, STRING_INI_BUTTON "=%d %d %02X %d %d\n", i, j, g_ivConfig->Shortcuts.Player[i].aButtons[j].bOffset, g_ivConfig->Shortcuts.Player[i].aButtons[j].bAxisID, g_ivConfig->Shortcuts.Player[i].aButtons[j].bBtnType);
                             strDevs[match].append(szBuf);
                             break;
                         }
             }
         } // end buttons for
-    } // end Player for
+    } // end player for
 
-    // gotta do it again for that one pesky mouselock button
-    if (g_ivConfig->Shortcuts.bMouseLock.parentDevice) // possibly unbound
+    // We have to do it again for that one pesky mouse lock button
+    if (g_ivConfig->Shortcuts.bMouseLock.parentDevice) // Possibly unbound
     {
         if ( IsEqualGUID(g_sysMouse.guidInstance, g_ivConfig->Shortcuts.bMouseLock.parentDevice->guidInstance) )
         {
             char szBuf[DEFAULT_BUFFER];
-            // add to the mouse stream
+            // Add to the mouse stream
             sprintf(szBuf, STRING_INI_BUTTON "=%d %d %02X %d %d\n", -1, 0, g_ivConfig->Shortcuts.bMouseLock.bOffset, g_ivConfig->Shortcuts.bMouseLock.bAxisID, g_ivConfig->Shortcuts.bMouseLock.bBtnType);
             strMouse.append(szBuf);
         }
@@ -821,7 +818,7 @@ void FormatShortcutsBlock(FILE * fFile, bool bIsINI)
                 if ( IsEqualGUID(g_devList[match].guidInstance, g_ivConfig->Shortcuts.bMouseLock.parentDevice->guidInstance) )
                 {
                     char szBuf[DEFAULT_BUFFER];
-                    // add to the appropriate device stream
+                    // Add to the appropriate device stream
                     sprintf(szBuf, STRING_INI_BUTTON "=%d %d %02X %d %d\n", -1, 0, g_ivConfig->Shortcuts.bMouseLock.bOffset, g_ivConfig->Shortcuts.bMouseLock.bAxisID, g_ivConfig->Shortcuts.bMouseLock.bBtnType);
                     strDevs[match].append(szBuf);
                     break;
@@ -831,7 +828,7 @@ void FormatShortcutsBlock(FILE * fFile, bool bIsINI)
     DumpStreams(fFile, strMouse, strDevs, strNull, bIsINI);
 }
 
-// load shortcuts from "resources", i.e. builtin defaults
+// Load shortcuts from "resources", i.e. built-in defaults
 bool LoadShortcutsFromResource(bool bIsInterface)
 {
     if (bIsInterface)
@@ -863,9 +860,9 @@ bool LoadShortcutsFromResource(bool bIsInterface)
 
 }
 
-// returns the user-chosen default directory (path) for each of the following:
-//      application dir, mempak dir, gameboy rom dir, gameboyrom save dir
-//      Tries to query user settings; if blank or invalid, returns their defaults
+// Returns the user-chosen default directory (path) for each of the following:
+// Application directory, memory pak directory, Game Boy ROM directory, Game Boy ROM save directory
+// Tries to query user settings; if blank or invalid, returns their defaults
 // Massages the output directory a bit
 bool GetDirectory( LPTSTR pszDirectory, WORD wDirID )
 {
@@ -900,12 +897,12 @@ bool GetDirectory( LPTSTR pszDirectory, WORD wDirID )
         break;
 
     default:
-        // we don't know what the hell you're talking about, set pszFileName to current .exe directory
+        // We don't know what you're talking about, set pszFileName to current .exe directory
         // and return false
         bReturn = false;
     }
 
-    if( pszDirectory[1] == ':' || ( pszDirectory[1] == '\\' && pszDirectory[0] == '\\' )) // Absolute Path( x: or \\ )
+    if( pszDirectory[1] == ':' || ( pszDirectory[1] == '\\' && pszDirectory[0] == '\\' )) // Absolute path( x: or \\ )
         lstrcpyn( szBuffer, pszDirectory, MAX_PATH );
     else
     {
@@ -935,8 +932,8 @@ bool GetDirectory( LPTSTR pszDirectory, WORD wDirID )
 }
 
 // Attempts to store the "absolute" filename for a file;
-//  if szFileName is an absolute filename (starting with a letter and colon or two backslashes) it is simply copied
-//  otherwise, it is concatenated with the known directory, such as mempak directory (type given by wDirID)
+// if szFileName is an absolute filename (starting with a letter and colon or two backslashes) it is simply copied
+// Otherwise, it is concatenated with the known directory, such as memory pak directory (type given by wDirID)
 void GetAbsoluteFileName( TCHAR *szAbsolute, const TCHAR *szFileName, const WORD wDirID )
 {
     if( szFileName[1] == ':' || (szFileName[1] == '\\' && szFileName[0] == '\\'))
@@ -944,11 +941,11 @@ void GetAbsoluteFileName( TCHAR *szAbsolute, const TCHAR *szFileName, const WORD
     else
     {
         GetDirectory( szAbsolute, wDirID );
-        lstrcat( szAbsolute, szFileName); // HACK: possible buffer overflow
+        lstrcat( szAbsolute, szFileName); // Hack: possible buffer overflow
     }
 }
 
-// Populates the list of mempak/transfer pak files from the config'd directory
+// Populates the list of memory pak/transfer pak files from the configured directory
 BOOL SendFilestoList( HWND hDlgItem, WORD wType )
 {
     HANDLE hFindFile;
@@ -1070,7 +1067,7 @@ bool GetInitialBrowseDir( TCHAR *pszFileName, DWORD dwType )
             lstrcpyn(pszFileName, g_aszLastBrowse[dwType], MAX_PATH);
         return true;
 
-    default:    // we don't know what the hell you're talking about
+    default:    // We don't know what you're talking about
         return GetDirectory( pszFileName, DIRECTORY_INVALID );
     }
 }
@@ -1200,7 +1197,7 @@ bool BrowseFile( HWND hDlg, TCHAR *pszFileName, DWORD dwType, bool fSave )
     oFile.lpstrFile         = szFileName;
     oFile.nMaxFile          = MAX_PATH;
     oFile.lpstrFileTitle    = NULL;
-    oFile.nMaxFileTitle     = MAX_PATH; // ignored
+    oFile.nMaxFileTitle     = MAX_PATH; // Ignored
     oFile.lpstrInitialDir   = szInitialDir;
     oFile.lpstrTitle        = pszTitle;
     oFile.Flags             = dwFlags;
@@ -1252,8 +1249,8 @@ bool ReadMemPakFile( TCHAR *pszMemPakFile, BYTE *aMemPak, bool fCreate )
     return false;
 }
 
-// Used by Interface to create or modify mempak files (not mapped).
-// pszMemPakFile is a filename, aMemPak is the data, fCreate tells whether to create a new file
+// Used by interface to create or modify memory pak files (not mapped).
+// pszMemPakFile is a filename, aMemPak is the data, fCreate tells whether or not to create a new file
 bool WriteMemPakFile( TCHAR *pszMemPakFile, BYTE *aMemPak, bool fCreate )
 {
     DWORD dwCreationDisposition = fCreate ? OPEN_ALWAYS : OPEN_EXISTING;
@@ -1289,8 +1286,8 @@ bool WriteMemPakFile( TCHAR *pszMemPakFile, BYTE *aMemPak, bool fCreate )
     return false;
 }
 
-// This func stores the current config data to INI.  It stores the Interface's idea of configuration
-// As such, it should only be called from the config window (Interface). Otherwise, it will fail.
+// This function stores the current config data to the INI file.  It stores the interface's idea of configuration
+// As such, it should only be called from the config window (interface). Otherwise, it will fail.
 // Returns true if saved OK, false if there was a problem.
 bool StoreConfigToINI()
 {
@@ -1301,7 +1298,7 @@ bool StoreConfigToINI()
     TCHAR szFilename[MAX_PATH];
     GetDirectory(szFilename, DIRECTORY_CONFIG);
     _tcscat(szFilename, _T("NRage.ini"));
-    FILE *fFile = _tfopen(szFilename, _T("wS"));    // write, optimize for sequential
+    FILE *fFile = _tfopen(szFilename, _T("wS"));    // TODO: Write, optimize for sequential
 
     if (!fFile)
     {
@@ -1309,7 +1306,7 @@ bool StoreConfigToINI()
         return false;
     }
 
-    // first write out any standard header stuff here
+    // First write out any standard header stuff here
     fputs(STRING_INI_HEADER, fFile);
 
     // General
@@ -1353,10 +1350,10 @@ bool StoreConfigToINI()
     fputs("\n[" STRING_INI_CONTROLS "]\n", fFile);
     fputs("# Button format: controlnum buttonID bOffset bAxisID bBtnType\n", fFile);
 
-    for ( int i = 0; i < 4; i++ ) // controllers for
+    for ( int i = 0; i < 4; i++ ) // Controllers for
     {
         FormatControlsBlock(&strMouse, strDevs, &strNull, i);
-    } // end controllers for
+    } // End controllers for
 
     DumpStreams(fFile, strMouse, strDevs, strNull, true);
 
@@ -1376,10 +1373,10 @@ bool StoreConfigToINI()
     fputs("\n[" STRING_INI_MODIFIERS "]\n", fFile);
     fputs("# Modifiers format: controlnum bOffset bAxisID bBtnType bModType fToggle fStatus dwSpecific\n", fFile);
 
-    for ( int i = 0; i < 4; i++ ) // controllers for
+    for ( int i = 0; i < 4; i++ ) // Controllers for
     {
         FormatModifiersBlock(&strMouse, strDevs, &strNull, i);
-    } // end controllers for
+    } // End controllers for
 
     DumpStreams(fFile, strMouse, strDevs, strNull, true);
 
@@ -1388,19 +1385,19 @@ bool StoreConfigToINI()
     return true;
 }
 
-// This func loads the config data from INI into working emulator space.  Does not copy into Interface;
-// you need to call GetCurrentConfiguration() if you want to do that.
+// This function loads the config data from INI into working emulator space.  Does not copy into interface;
+// You need to call GetCurrentConfiguration() if you want to do that.
 // Returns true if loaded OK, false if there was a problem.
 bool LoadConfigFromINI()
 {
     FILE *fFile = NULL;
-    DWORD dwSection = 0;    // this will eval to the bracketed "[Section]" we are currently in.
+    DWORD dwSection = 0;    // This will evaluate to the bracketed "[Section]" we are currently in.
     char szLine[4096];
 
     TCHAR szFilename[MAX_PATH];
     GetDirectory(szFilename, DIRECTORY_CONFIG);
     _tcscat(szFilename, _T("NRage.ini"));
-    fFile = _tfopen(szFilename, _T("rS"));  // read, optimize for sequential
+    fFile = _tfopen(szFilename, _T("rS"));  // Read, optimize for sequential
 
     if (!fFile)
     {
@@ -1415,12 +1412,12 @@ bool LoadConfigFromINI()
     DWORD dwCommand = PL_NOHIT;
     while(( fgets(szLine, sizeof(szLine) - 1, fFile) ) )
     {
-        szLine[strlen(szLine) - 1] = '\0'; // remove newline
+        szLine[strlen(szLine) - 1] = '\0'; // Remove newline
         dwCommand = ParseLine( szLine );
         if (dwCommand == PL_NOHIT)
             continue;
         else if (dwCommand == PL_CATEGORY)
-            // section changed to szLine
+            // Section changed to szLine
             dwSection = djbHash(szLine);
         else
             ProcessKey( dwCommand, dwSection, szLine, 0, 0, false );
@@ -1431,7 +1428,7 @@ bool LoadConfigFromINI()
     return true;
 }
 
-// basically a stripped down version of GetConfigFromINI, called at the very beginning to get our language
+// Basically a stripped down version of GetConfigFromINI, called at the very beginning to get our language
 LANGID GetLanguageFromINI()
 {
     FILE *fFile = NULL;
@@ -1440,7 +1437,7 @@ LANGID GetLanguageFromINI()
     TCHAR szFilename[MAX_PATH];
     GetDirectory(szFilename, DIRECTORY_CONFIG);
     _tcscat(szFilename, _T("NRage.ini"));
-    fFile = _tfopen(szFilename, _T("rS"));  // read, optimize for sequential
+    fFile = _tfopen(szFilename, _T("rS"));  // Read, optimize for sequential
 
     if (!fFile)
     {
@@ -1452,7 +1449,7 @@ LANGID GetLanguageFromINI()
     DWORD dwCommand = PL_NOHIT;
     while(( fgets(szLine, sizeof(szLine) - 1, fFile) ) )
     {
-        szLine[strlen(szLine) - 1] = '\0'; // remove newline
+        szLine[strlen(szLine) - 1] = '\0'; // Remove newline
         dwCommand = ParseLine( szLine );
         if (dwCommand == CHK_LANGUAGE)
         {
@@ -1470,7 +1467,7 @@ LANGID GetLanguageFromINI()
     return 0;
 }
 
-// both the following functions assume the buffer is big enough
+// Both the following functions assume the buffer is big enough
 inline void GUIDtoStringA( char * szGUIDbuf, const GUID guid )
 {
     _snprintf( szGUIDbuf, GUID_STRINGLENGTH + 1, "{%08.8lX-%04.4hX-%04.4hX-%02.2X%02.2X-%02.2X%02.2X%02.2X%02.2X%02.2X%02.2X}", guid.Data1, guid.Data2, guid.Data3, guid.Data4[0], guid.Data4[1], guid.Data4[2], guid.Data4[3], guid.Data4[4], guid.Data4[5], guid.Data4[6], guid.Data4[7]);
@@ -1489,7 +1486,7 @@ inline bool StringtoGUIDA( LPGUID guid, const char * szGUIDbuf )
         return false;
 }
 
-// Takes in a file to dump to, and an int i telling which controller's settings to dump. Does not dump buttons or modifiers.
+// Takes in a file to dump to, and an 'int i' telling which controller's settings to dump. Does not dump buttons or modifiers.
 void DumpControllerSettings(FILE * fFile, int i, bool bIsINI)
 {
     char szANSIBuf[DEFAULT_BUFFER];
@@ -1548,10 +1545,10 @@ void DumpControllerSettings(FILE * fFile, int i, bool bIsINI)
     fprintf(fFile, STRING_INI_GBROMSAVE "=%s\n", szANSIBuf);
 }
 
-// private func, called by StoreConfigToINI to dump cached Button strings to file
+// Private function, called by StoreConfigToINI to dump cached button strings to file
 void DumpStreams(FILE * fFile, string strMouse, string strDevs[], string strNull, bool bIsINI)
 {
-    // dump all streams to file, with appropriate DInput lines and name comment
+    // Dump all streams to file, with appropriate DInput lines and name comment
     char szANSIBuf[DEFAULT_BUFFER];
     if (!(strMouse.empty()))
     {
@@ -1581,7 +1578,7 @@ void DumpStreams(FILE * fFile, string strMouse, string strDevs[], string strNull
         }
         else
         {
-            fprintf(fFile, STRING_INI_DINPUTNAME "=\n");    // leave blank
+            fprintf(fFile, STRING_INI_DINPUTNAME "=\n");    // Leave blank
             fprintf(fFile, STRING_INI_DINPUTNR "=\n");
         }
         fputs(strNull.c_str(), fFile);
@@ -1613,14 +1610,14 @@ void DumpStreams(FILE * fFile, string strMouse, string strDevs[], string strNull
 
 void FormatControlsBlock(string * strMouse, string strDevs[], string * strNull, int i)
 {
-    for ( int j = 0; j < ARRAYSIZE(g_ivConfig->Controllers[i].aButton); j++ ) // buttons for
+    for ( int j = 0; j < ARRAYSIZE(g_ivConfig->Controllers[i].aButton); j++ ) // Buttons for
     {
-        if (g_ivConfig->Controllers[i].aButton[j].parentDevice) // possibly unbound
+        if (g_ivConfig->Controllers[i].aButton[j].parentDevice) // Possibly unbound
         {
             if ( IsEqualGUID(g_sysMouse.guidInstance, g_ivConfig->Controllers[i].aButton[j].parentDevice->guidInstance) )
             {
                 char szBuf[DEFAULT_BUFFER];
-                // add to the mouse stream
+                // Add to the mouse stream
                 sprintf(szBuf, STRING_INI_BUTTON "=%d %d %02X %d %d\n", i, j, g_ivConfig->Controllers[i].aButton[j].bOffset, g_ivConfig->Controllers[i].aButton[j].bAxisID, g_ivConfig->Controllers[i].aButton[j].bBtnType);
                 strMouse->append(szBuf);
             }
@@ -1631,7 +1628,7 @@ void FormatControlsBlock(string * strMouse, string strDevs[], string * strNull, 
                     if ( IsEqualGUID(g_devList[match].guidInstance, g_ivConfig->Controllers[i].aButton[j].parentDevice->guidInstance) )
                     {
                         char szBuf[DEFAULT_BUFFER];
-                        // add to the appropriate device stream
+                        // Add to the appropriate device stream
                         sprintf(szBuf, STRING_INI_BUTTON "=%d %d %02X %d %d\n", i, j, g_ivConfig->Controllers[i].aButton[j].bOffset, g_ivConfig->Controllers[i].aButton[j].bAxisID, g_ivConfig->Controllers[i].aButton[j].bBtnType);
                         strDevs[match].append(szBuf);
                         break;
@@ -1644,19 +1641,19 @@ void FormatControlsBlock(string * strMouse, string strDevs[], string * strNull, 
             int k = g_ivConfig->Controllers[i].aButton[j].bBtnType;
             DebugWriteA("Controller %d button %d is of bBtnType %d but has no parentDevice!\n", i, j, k);
         }
-    } // end buttons for
+    } // End buttons for
 }
 
 void FormatModifiersBlock(string * strMouse, string strDevs[], string * strNull, int i)
 {
     for ( int j = 0; j < g_ivConfig->Controllers[i].nModifiers; j++ )
     {
-        if (g_ivConfig->Controllers[i].pModifiers[j].btnButton.parentDevice) // is it assigned to a key?
+        if (g_ivConfig->Controllers[i].pModifiers[j].btnButton.parentDevice) // Is it assigned to a key?
         {
             if ( IsEqualGUID(g_sysMouse.guidInstance, g_ivConfig->Controllers[i].pModifiers[j].btnButton.parentDevice->guidInstance) )
             {
                 char szBuf[DEFAULT_BUFFER];
-                // add to the mouse stream
+                // Add to the mouse stream
                 sprintf(szBuf, STRING_INI_MODIFIER "=%d %02X %d %d %d %d %d %08X\n", i, g_ivConfig->Controllers[i].pModifiers[j].btnButton.bOffset,
                     g_ivConfig->Controllers[i].pModifiers[j].btnButton.bAxisID, g_ivConfig->Controllers[i].pModifiers[j].btnButton.bBtnType,
                     g_ivConfig->Controllers[i].pModifiers[j].bModType, g_ivConfig->Controllers[i].pModifiers[j].fToggle,
@@ -1668,7 +1665,7 @@ void FormatModifiersBlock(string * strMouse, string strDevs[], string * strNull,
                     if ( IsEqualGUID(g_devList[match].guidInstance, g_ivConfig->Controllers[i].pModifiers[j].btnButton.parentDevice->guidInstance) )
                     {
                         char szBuf[DEFAULT_BUFFER];
-                        // add to the mouse stream
+                        // Add to the mouse stream
                         sprintf(szBuf, STRING_INI_MODIFIER "=%d %02X %d %d %d %d %d %08X\n", i, g_ivConfig->Controllers[i].pModifiers[j].btnButton.bOffset,
                             g_ivConfig->Controllers[i].pModifiers[j].btnButton.bAxisID, g_ivConfig->Controllers[i].pModifiers[j].btnButton.bBtnType,
                             g_ivConfig->Controllers[i].pModifiers[j].bModType, g_ivConfig->Controllers[i].pModifiers[j].fToggle,
@@ -1677,10 +1674,10 @@ void FormatModifiersBlock(string * strMouse, string strDevs[], string * strNull,
                         break;
                     }
         }
-        else // save modifiers without a keybind
+        else // Save modifiers without a keybind
         {
             char szBuf[DEFAULT_BUFFER];
-            // add to the mouse stream
+            // Add to the mouse stream
             sprintf(szBuf, STRING_INI_MODIFIER "=%d %02X %d %d %d %d %d %08X\n", i, g_ivConfig->Controllers[i].pModifiers[j].btnButton.bOffset,
                 g_ivConfig->Controllers[i].pModifiers[j].btnButton.bAxisID, g_ivConfig->Controllers[i].pModifiers[j].btnButton.bBtnType,
                 g_ivConfig->Controllers[i].pModifiers[j].bModType, g_ivConfig->Controllers[i].pModifiers[j].fToggle,
@@ -1696,7 +1693,7 @@ unsigned long djbHash(const char *str)
     int c;
 
     while ((c = *str++))
-        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+        hash = ((hash << 5) + hash) + c; // hash * 33 + c
 
     return hash;
 }

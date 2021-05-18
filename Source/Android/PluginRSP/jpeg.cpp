@@ -1,5 +1,5 @@
 // Project64 - A Nintendo 64 emulator
-// http://www.pj64-emu.com/
+// https://www.pj64-emu.com/
 // Copyright(C) 2001-2021 Project64
 // Copyright(C) 2012 Bobby Smiles
 // Copyright(C) 2009 Richard Goedeken
@@ -373,7 +373,7 @@ static void decode_macroblock_ob(int16_t *macroblock, int32_t *y_dc, int32_t *u_
     for (sb = 0; sb < 6; ++sb) {
         int16_t tmp_sb[SUBBLOCK_SIZE];
 
-        // Update DC
+        // Update decode
         int32_t dc = (int32_t)macroblock[0];
         switch (sb) {
         case 0:

@@ -141,7 +141,7 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
     }
     if (m_RDRAM == nullptr)
     {
-        WriteTrace(TraceN64System, TraceError, "Failed to Reserve RDRAM (Size: 0x%X)", 0x20000000);
+        WriteTrace(TraceN64System, TraceError, "Failed to reserve RDRAM (Size: 0x%X)", 0x20000000);
         FreeMemory();
         return false;
     }
@@ -149,14 +149,14 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
     m_AllocatedRdramSize = g_Settings->LoadDword(Game_RDRamSize);
     if (CommitMemory(m_RDRAM, m_AllocatedRdramSize, MEM_READWRITE) == nullptr)
     {
-        WriteTrace(TraceN64System, TraceError, "Failed to Allocate RDRAM (Size: 0x%X)", m_AllocatedRdramSize);
+        WriteTrace(TraceN64System, TraceError, "Failed to allocate RDRAM (Size: 0x%X)", m_AllocatedRdramSize);
         FreeMemory();
         return false;
     }
 
     if (CommitMemory(m_RDRAM + 0x04000000, 0x2000, MEM_READWRITE) == nullptr)
     {
-        WriteTrace(TraceN64System, TraceError, "Failed to Allocate DMEM/IMEM (Size: 0x%X)", 0x2000);
+        WriteTrace(TraceN64System, TraceError, "Failed to allocate DMEM/IMEM (Size: 0x%X)", 0x2000);
         FreeMemory();
         return false;
     }
@@ -171,7 +171,7 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
         m_RomSize = g_Rom->GetRomSize();
         if (CommitMemory(m_Rom, g_Rom->GetRomSize(), MEM_READWRITE) == nullptr)
         {
-            WriteTrace(TraceN64System, TraceError, "Failed to Allocate Rom (Size: 0x%X)", g_Rom->GetRomSize());
+            WriteTrace(TraceN64System, TraceError, "Failed to allocate ROM (Size: 0x%X)", g_Rom->GetRomSize());
             FreeMemory();
             return false;
         }
@@ -186,7 +186,7 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
         m_RomSize = g_Rom->GetRomSize();
     }
 
-    //64DD IPL
+    // 64DD IPL
     if (g_DDRom != nullptr)
     {
         if (g_Settings->LoadBool(Game_LoadRomToMemory))
@@ -196,7 +196,7 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
             m_DDRomSize = g_DDRom->GetRomSize();
             if (CommitMemory(m_DDRom, g_DDRom->GetRomSize(), MEM_READWRITE) == nullptr)
             {
-                WriteTrace(TraceN64System, TraceError, "Failed to Allocate Rom (Size: 0x%X)", g_DDRom->GetRomSize());
+                WriteTrace(TraceN64System, TraceError, "Failed to allocate ROM (Size: 0x%X)", g_DDRom->GetRomSize());
                 FreeMemory();
                 return false;
             }
@@ -217,7 +217,7 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
     m_TLB_ReadMap = new size_t[0x100000];
     if (m_TLB_ReadMap == nullptr)
     {
-        WriteTrace(TraceN64System, TraceError, "Failed to Allocate m_TLB_ReadMap (Size: 0x%X)", 0x100000 * sizeof(size_t));
+        WriteTrace(TraceN64System, TraceError, "Failed to allocate m_TLB_ReadMap (Size: 0x%X)", 0x100000 * sizeof(size_t));
         FreeMemory();
         return false;
     }
@@ -225,7 +225,7 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
     m_TLB_WriteMap = new size_t[0x100000];
     if (m_TLB_WriteMap == nullptr)
     {
-        WriteTrace(TraceN64System, TraceError, "Failed to Allocate m_TLB_WriteMap (Size: 0x%X)", 0xFFFFF * sizeof(size_t));
+        WriteTrace(TraceN64System, TraceError, "Failed to allocate m_TLB_WriteMap (Size: 0x%X)", 0xFFFFF * sizeof(size_t));
         FreeMemory();
         return false;
     }
@@ -583,7 +583,7 @@ bool CMipsMemoryVM::VAddrToRealAddr(uint32_t VAddr, void * &RealAddress) const
 
 bool CMipsMemoryVM::TranslateVaddr(uint32_t VAddr, uint32_t &PAddr) const
 {
-    //Change the Virtual address to a Physical Address
+    // Change the virtual address to a physical address
     if (m_TLB_ReadMap[VAddr >> 12] == 0)
     {
         return false;
@@ -807,7 +807,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
                 VirtualProtect(ROM, RomFileSize, PAGE_NOACCESS, &OldProtect);
             }
 #endif
-            //LogMessage("%X: Wrote To Rom %08X from %08X",PROGRAM_COUNTER,Value,PAddr);
+            //LogMessage("%X: Wrote To ROM %08X from %08X",PROGRAM_COUNTER,Value,PAddr);
         }
         else
         {
@@ -916,7 +916,7 @@ void CMipsMemoryVM::ProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr)
         return;
     }
 
-    //Get Physical Addresses passed
+    // Get physical addresses passed
     uint32_t StartPAddr, EndPAddr;
     if (!TranslateVaddr(StartVaddr, StartPAddr))
     {
@@ -927,14 +927,14 @@ void CMipsMemoryVM::ProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr)
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    //Get Length of memory being protected
+    // Get length of memory being protected
     int32_t Length = ((EndPAddr + 3) - StartPAddr) & ~3;
     if (Length < 0)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    //Protect that memory address space
+    // Protect that memory address space
     uint8_t * MemLoc = Rdram() + StartPAddr;
     WriteTrace(TraceProtectedMem, TraceDebug, "Paddr: %08X Length: %X", StartPAddr, Length);
 
@@ -946,7 +946,7 @@ void CMipsMemoryVM::UnProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr)
     WriteTrace(TraceProtectedMem, TraceDebug, "StartVaddr: %08X EndVaddr: %08X", StartVaddr, EndVaddr);
     if (!ValidVaddr(StartVaddr) || !ValidVaddr(EndVaddr)) { return; }
 
-    //Get Physical Addresses passed
+    // Get physical addresses passed
     uint32_t StartPAddr, EndPAddr;
     if (!TranslateVaddr(StartVaddr, StartPAddr))
     {
@@ -957,7 +957,7 @@ void CMipsMemoryVM::UnProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr)
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    //Get Length of memory being protected
+    // Get length of memory being protected
     int32_t Length = ((EndPAddr + 3) - StartPAddr) & ~3;
     if (Length < 0)
     {
@@ -1028,15 +1028,15 @@ void CMipsMemoryVM::RdramChanged(CMipsMemoryVM * _this)
         void * result = CommitMemory(_this->m_RDRAM + old_size, new_size - old_size, MEM_READWRITE);
         if (result == nullptr)
         {
-            WriteTrace(TraceN64System, TraceError, "failed to allocate extended memory");
+            WriteTrace(TraceN64System, TraceError, "Failed to allocate extended memory");
             g_Notify->FatalError(GS(MSG_MEM_ALLOC_ERROR));
         }
     }
 
     if (new_size > 0xFFFFFFFFul)
-    { // should be unreachable because:  size_t new_size = g_Settings->(uint32_t)
+    { // Should be unreachable because:  size_t new_size = g_Settings->(uint32_t)
         g_Notify->BreakPoint(__FILE__, __LINE__);
-    } // ...However, FFFFFFFF also is a limit to RCP addressing, so we care.
+    } // However, FFFFFFFF also is a limit to RCP addressing, so we care
     _this->m_AllocatedRdramSize = (uint32_t)new_size;
 }
 
@@ -1432,7 +1432,7 @@ void CMipsMemoryVM::Load32SerialInterface(void)
 
 void CMipsMemoryVM::Load32CartridgeDomain1Address1(void)
 {
-    //64DD IPL ROM
+    // 64DD IPL ROM
     if (g_DDRom != nullptr && (m_MemLookupAddress & 0xFFFFFF) < g_MMU->m_DDRomSize)
     {
         m_MemLookupValue.UW[0] = *(uint32_t *)&g_MMU->m_DDRom[(m_MemLookupAddress & 0xFFFFFF)];
@@ -1452,7 +1452,7 @@ void CMipsMemoryVM::Load32CartridgeDomain1Address3(void)
 
 void CMipsMemoryVM::Load32CartridgeDomain2Address1(void)
 {
-    //64DD REGISTERS
+    // 64DD registers
     if (g_Settings->LoadBool(Setting_EnableDisk))
     {
         switch (m_MemLookupAddress & 0x1FFFFFFF)
@@ -1509,7 +1509,7 @@ void CMipsMemoryVM::Load32CartridgeDomain2Address2(void)
     }
     if (g_System->m_SaveUsing == SaveChip_Sram)
     {
-        //Load Sram
+        // Load SRAM
         uint8_t tmp[4] = "";
         g_MMU->DmaFromSram(tmp, offset, 4);
         m_MemLookupValue.UW[0] = tmp[3] << 24 | tmp[2] << 16 | tmp[1] << 8 | tmp[0];
@@ -1561,7 +1561,7 @@ void CMipsMemoryVM::Load32Rom(void)
     if (g_MMU->m_RomWrittenTo)
     {
         m_MemLookupValue.UW[0] = g_MMU->m_RomWroteValue;
-        //LogMessage("%X: Read crap from Rom %08X from %08X",PROGRAM_COUNTER,*Value,PAddr);
+        //LogMessage("%X: Read crap from ROM %08X from %08X",PROGRAM_COUNTER,*Value,PAddr);
         g_MMU->m_RomWrittenTo = false;
 #ifdef ROM_IN_MAPSPACE
         {
@@ -2021,7 +2021,7 @@ void CMipsMemoryVM::Write32AudioInterface(void)
         break;
     case 0x04500008: g_Reg->AI_CONTROL_REG = (m_MemLookupValue.UW[0] & 1); break;
     case 0x0450000C:
-        /* Clear Interrupt */;
+        // Clear interrupt
         g_Reg->MI_INTR_REG &= ~MI_INTR_AI;
         g_Reg->m_AudioIntrReg &= ~MI_INTR_AI;
         g_Reg->CheckInterrupts();
@@ -2138,7 +2138,7 @@ void CMipsMemoryVM::Write32SerialInterface(void)
 
 void CMipsMemoryVM::Write32CartridgeDomain2Address1(void)
 {
-    //64DD Registers
+    // 64DD registers
     if (g_Settings->LoadBool(Setting_EnableDisk))
     {
         switch (m_MemLookupAddress & 0xFFFFFFF)
@@ -2174,7 +2174,7 @@ void CMipsMemoryVM::Write32CartridgeDomain2Address2(void)
     uint32_t offset = (m_MemLookupAddress & 0x1FFFFFFF) - 0x08000000;
     if (g_System->m_SaveUsing == SaveChip_Sram && offset < 0x8000)
     {
-        //Store Sram
+        // Store SRAM
         uint8_t tmp[4] = "";
         tmp[0] = 0xFF & (m_MemLookupValue.UW[0]);
         tmp[1] = 0xFF & (m_MemLookupValue.UW[0] >> 8);

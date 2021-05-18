@@ -3,7 +3,7 @@
 #include <Common/path.h>
 #include <Common/Platform.h>
 
-/* vsprintf() */
+// vsprintf()
 #include <stdio.h>
 #include <stdarg.h>
 
