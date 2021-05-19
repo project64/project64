@@ -3,7 +3,7 @@ Project64 - Building from source
 
 This document describes how to set up a local build environment for Project64 on Windows.
 It is meant for helping contributors set up building Project64 on their machines so that they can write code to fix bugs and add new features.
-If you just want to run Project64 or its development builds, use the [Readme](https://github.com/project64/project64user-content-project64---nintendo-64-emulator) instead.
+If you just want to run Project64 or its development builds, use the [Readme](https://github.com/project64/project64/blob/develop/README.md) instead.
 
 ## Required software
 
