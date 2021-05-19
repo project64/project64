@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define VERSION_MINOR               0
 #define VERSION_REVISION            0
 #define VERSION_BUILD               9999
-#define VERSION_PREFIX              ""
+#define VERSION_PREFIX              "Dev-"
 
 #define GIT_REVISION                ""
 #define GIT_REVISION_SHORT          ""
