@@ -141,8 +141,7 @@ CScanResult::CScanResult(AddressType addressType, DisplayFormat displayFormat) :
     m_AddressType(addressType),
     m_Address(0),
     m_DisplayFormat(displayFormat),
-    m_bSelected(false),
-    m_Description(nullptr)
+    m_bSelected(false)
 {
 }
 
