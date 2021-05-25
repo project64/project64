@@ -7,3 +7,14 @@ WIP=1
 Note=Intro with N logo is at 60fps now! Why is it a pointer address?!?
 D029571F 0002
 8029571F 0001
+
+$Skip Intro Logo
+Author=theboy181
+Note=this bypasses the unskippable N64 Logo.
+D029571F 0000
+8029571A 0001
+
+$Sky Fix for GLideN64
+Author=theboy181
+Note=Works in game, but there are still issues in the demos.
+81019AEA 4119

@@ -5,3 +5,31 @@ $No Frame Skip MP
 Author=retroben
 Note=Makes it run at 30fps instead of 15fps.
 8009AFD7 0000
+
+$30 FPS in Multiplayer modes
+Author=theboy181
+Note=This is used to set the frameskip of the game
+8009AFD7 0000
+
+$Widescreen Hack
+Author=theboy181
+WIP=1
+81075CC0 0800
+81075CC2 010E
+81000438 4487
+8100043A B000
+8100043C 3C07
+8100043E 3FAA
+81000440 4487
+81000442 0000
+81000444 0000
+81000446 0000
+81000448 0801
+8100044A D732
+8100044C 4616
+8100044E 0582
+
+$Increased Draw Distance
+Author=theboy181
+Note=Needs testing, but looked ok
+8106E452 45FF

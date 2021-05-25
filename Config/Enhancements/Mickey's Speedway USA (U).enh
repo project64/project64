@@ -1,0 +1,86 @@
+[FA8C4571-BBE7F9C0-C:45]
+Name=Mickey's Speedway USA (U)
+
+$Mickey/Mini Ear Fix:
+Author=theboy181
+WIP=1
+SMM-Protect=0
+Note=Multi player has issues with mouse ears. This fixes that.
+8005B16A 0060
+
+$Force HiRes Models:
+Author=theboy181
+WIP=1
+SMM-Protect=0
+Note=This hack forces the character's models LOD to stay at max, instead of lowering when a character is further away from the camera. PJ64 need protect memory off, for cheats to work.
+8108B300 27BD
+8108B302 FFD8
+8108B304 AFBF
+8108B306 0024
+8108B308 3C10
+8108B30A 8008
+8108B30C 820A
+8108B30E A0F4
+8108B310 1140
+8108B312 000C
+8108B314 3C01
+8108B316 801A
+8108B318 2421
+8108B31A 0740
+8108B31E 1021
+8108B320 8C25
+8108B322 0000
+8108B324 10A0
+8108B326 0007
+8108B328 3C03
+8108B32A 4748
+8108B32C 8CA5
+8108B32E 0040
+8108B330 ACA3
+8108B332 00D4
+8108B334 2442
+8108B336 0001
+8108B338 2845
+8108B33A 0006
+8108B33C 14A0
+8108B33E FFF8
+8108B340 2421
+8108B342 0004
+8108B344 0C01
+8108B346 C70C
+8108B34C 8FBF
+8108B34E 0024
+8108B350 03E0
+8108B352 0008
+8108B354 27BD
+8108B356 0028
+81071174 0C02
+81071176 2CC0
+
+$60 FPS (simplified)
+Author=theboy181
+WIP=1
+SMM-Protect=0
+Note=No known issues with this cheat, however PJ64 seems to struggle with this game and protect memory. Less chance of a crash on Interpreter CPU
+8003137F 0004
+800D2F9C 0001
+
+$60 FPS (force no frameskip)
+Author=theboy181
+WIP=1
+SMM-Protect=0
+Note=Smoother hack
+8003137F 0004
+80033E0B 0000
+8007A24B 0001
+800D2F9C 0001
+
+$LOD Hack (theboy181)
+Author=theboy181
+WIP=1
+SMM-Protect=0
+Note=Removes the use of 2D textures on the racers, fixes the wheel scaling in 1p mode.
+81009F94 0000
+81009F96 0000
+81009F38 1000
+81009F3A 000C

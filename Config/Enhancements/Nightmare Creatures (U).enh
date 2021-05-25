@@ -6,3 +6,9 @@ Author=retroben
 Counter Factor=1
 Note=Makes it stay at 60fps more,set CounterFactor/CountPerOp to 1.
 810C24B2 041A
+
+$Widescreen Hack
+Author=theboy181
+WIP=1
+Note=Need Culling Fix
+81074D16 3FE3

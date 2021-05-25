@@ -1,0 +1,10 @@
+[74554B3B-F4AEBCB5-C:4A]
+Name=Pachinko 365 Nichi (J)
+
+$Fix Scissoring
+Author=theboy181
+Note=This may be helpful for other games
+8009F0E7 0000
+8009F0EE 0002
+8009F0EB 0000
+8009F0F2 0002

@@ -1,0 +1,32 @@
+[30C7AC50-7704072D-C:45]
+Name=Conker's Bad Fur Day (U)
+
+$Widescreen Hack
+81096900 3CAE
+81098DB0 3C2E
+
+$Basic Sixty Frames
+Author=retroben
+WIP=1
+Note=Needs testing
+D002AC58 0080
+80005003 0001:0003
+
+$Alt Sixty Frames
+WIP=1
+Note=Needs testing
+80004FB7 0001
+8002ABA2 000D
+8002BE42 0006
+8003B238 0000
+
+$Skip Any Cutscene
+Author=retroben
+Note=Ported from ConkerGurus PAL version code
+800C3C9C 0000:0001
+
+$HD Conker
+Author=retroben
+Note=Forced best model loading and useful for other codes
+8109CDD0 0000
+8109CDD2 0000

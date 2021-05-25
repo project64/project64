@@ -1,0 +1,10 @@
+[3261D479-ED0DBC25-C:45]
+Name=Fox Sports College Hoops '99 (U)
+
+$Framerate Fix (30/20fps)
+Author=theboy181
+Note=Demo runs at 30fps, and in game runs at 20fps
+D008E06C 0063
+8008E1CF 0002
+D008E06C 0062
+8008E1CF 0003

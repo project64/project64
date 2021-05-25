@@ -4,3 +4,16 @@ Name=Automobili Lamborghini (U)
 $Framerate speed fix
 On By Default=1
 800013F7 0003
+
+$Car LOD Hack
+Author=theboy181
+Note=Couldn't see any issues.
+8100C1A4 0000
+8100C1A6 0000
+8100C1D4 0000
+8100C1D6 0000
+8100C1F0 240F
+8100C1F2 0000
+8100C2B2 0000
+8100C2C0 240E
+8100C2C2 0001

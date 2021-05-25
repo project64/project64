@@ -1,0 +1,10 @@
+[033F4C13-319EE7A7-C:45]
+Name=007 - The World is Not Enough (U)
+
+$120 DL's Hack
+Author=theboy181
+WIP=1
+Note=No clue why this works, and only displays 30 fps in game. The game normally runs at 30 DL's
+8000805B 0001
+8000807B 0002
+8000AE53 0002

@@ -628,3 +628,14 @@ WIP=1
 81400336 FF81
 81400338 240A
 8140033A 0002
+
+$No Culling (16x9)
+Author=theboy181
+Note=Used to fix the culling when GLideN64 Wide Screen Hack is enabled
+810EF960 C4A2
+
+$Force HQ LOD model for Banjo, and Dragon Banjo
+Author=theboy181
+Note=Thanks @Terntaviks
+81117DEA 062A
+81117DEE 0838

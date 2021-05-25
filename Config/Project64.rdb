@@ -5,7 +5,7 @@
 
 [Meta]
 Author=Project64 Team
-Date=2021/05/24
+Date=2021/05/26
 Homepage=www.pj64-emu.com
 Version=3.0.0
 
@@ -1329,7 +1329,7 @@ SMM-TLB=0
 ViRefresh=2200
 
 [8BC3A47A-74221294-C:45]
-Good Name=Conker's Bad Fur Day (U) (Debug Version)
+Good Name=Conker's Bad Fur Day (U) (Debug)
 Internal Name=CONKER BFD DEBUG
 Status=Compatible
 Clear Frame=2
@@ -1345,7 +1345,7 @@ SMM-TLB=0
 ViRefresh=2200
 
 [A08D0F77-6F82E38C-C:45]
-Good Name=Conker's Bad Fur Day (U) (ECTS Demo)
+Good Name=Conker's Bad Fur Day (U) (ECTS Demo) (Fixed)
 Internal Name=CBFD ECTS
 Status=Compatible
 Clear Frame=2
@@ -1602,7 +1602,7 @@ Status=Compatible
 RDRAM Size=4
 
 [906C3F77-CE495EA1-C:45]
-Good Name=Dinosaur Planet (U) (Beta)
+Good Name=Dinosaur Planet (U) (Beta) (Unreleased)
 Internal Name=DINO PLANET
 Status=Compatible
 
@@ -3295,7 +3295,9 @@ RDRAM Size=4
 [FCE0D799-65316C54-C:45]
 Good Name=Knife Edge - Nose Gunner (U)
 Internal Name=KNIFE EDGE
-Status=Issues (core)
+Status=Compatible
+Counter Factor=1
+
 32bit=Yes
 Culling=1
 RDRAM Size=4
@@ -3681,6 +3683,7 @@ RDRAM Size=4
 Good Name=Mario Kart 64 (U)
 Internal Name=MARIOKART64
 Status=Compatible
+Counter Factor=1
 32bit=Yes
 Culling=1
 Primary Frame Buffer=1
@@ -6400,7 +6403,7 @@ Clear Frame=2
 RDRAM Size=4
 
 [9FC385E5-3ECC05C7-C:50]
-Good Name=The Legend of Zelda - Majora's Mask (E) (M4) (Debug Version)
+Good Name=The Legend of Zelda - Majora's Mask (E) (M4) (Debug)
 Internal Name=ZELDA MAJORA'S MASK
 Status=Compatible
 32bit=Yes
@@ -6600,7 +6603,7 @@ SMM-PI DMA=0
 SMM-TLB=0
 
 [917D18F6-69BC5453-C:45]
-Good Name=The Legend of Zelda - Ocarina of Time - Master Quest (U) (Debug Version)
+Good Name=The Legend of Zelda - Ocarina of Time - Master Quest (U) (Debug)
 Internal Name=THE LEGEND OF ZELDA
 Status=Compatible
 32bit=Yes
@@ -6893,7 +6896,7 @@ Counter Factor=1
 RDRAM Size=4
 
 [782A9075-E552631D-C:44]
-Good Name=Toy Story 2 (G)
+Good Name=Toy Story 2 (G) (V1.0)
 Internal Name=Toy Story 2
 Status=Compatible
 32bit=Yes
@@ -6909,7 +6912,7 @@ Counter Factor=1
 RDRAM Size=4
 
 [A150743E-CF2522CD-C:45]
-Good Name=Toy Story 2 (U)
+Good Name=Toy Story 2 (U) (V1.0)
 Internal Name=Toy Story 2
 Status=Compatible
 32bit=Yes
@@ -6989,6 +6992,13 @@ Status=Compatible
 32bit=Yes
 AudioResetOnLoad=Yes
 Counter Factor=1
+RDRAM Size=4
+
+[24699912-082B3068-C:45]
+Good Name=Turok - Dinosaur Hunter (U) (E3 Alpha) (Fixed)
+Internal Name=TUROKDH_E3_1996ALPHA
+Status=Unsupported
+Core Notes=Hangs on a black screen. Game is playable on real hardware.
 RDRAM Size=4
 
 [2F70F10D-5C4187FF-C:45]
@@ -7906,7 +7916,6 @@ Fixed Audio=0
 [7BD92DC6-8426D239-C:4A]
 Good Name=Sim City 64 (J)
 Status=Issues (plugin)
-Fixed Audio=1
 Linking=Off
 
 [905063EB-6FAF9C14-C:4A]
@@ -9394,7 +9403,7 @@ RDRAM Size=4
 [D55891EB-2BEFD9C8-C:0]
 Good Name=MGC 2011 Demo (PD)
 Internal Name=shut up and code
-Status=Unsupported
+Status=Issues (core)
 32bit=Yes
 CPU Type=Interpreter
 
