@@ -47,7 +47,7 @@ void CRomBrowser::GetFieldInfo(ROMBROWSER_FIELDS_LIST & Fields, bool UseDefault 
     AddField(Fields, "Notes (default plugins)", -1, RB_PluginNotes, 188, RB_NOTES_PLUGIN, UseDefault);
     AddField(Fields, "Notes (User)", -1, RB_UserNotes, 100, RB_NOTES_USER, UseDefault);
     AddField(Fields, "Cartridge ID", -1, RB_CartridgeID, 100, RB_CART_ID, UseDefault);
-    AddField(Fields, "Media", -1, RB_Media, 100, RB_MANUFACTUER, UseDefault);
+    AddField(Fields, "Media", -1, RB_Media, 100, RB_MEDIA, UseDefault);
     AddField(Fields, "Country", -1, RB_Country, 100, RB_COUNTRY, UseDefault);
     AddField(Fields, "Developer", -1, RB_Developer, 100, RB_DEVELOPER, UseDefault);
     AddField(Fields, "CRC1", -1, RB_Crc1, 100, RB_CRC1, UseDefault);

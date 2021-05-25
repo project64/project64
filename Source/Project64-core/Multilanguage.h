@@ -132,7 +132,7 @@ enum LanguageStringID
     SAVE_SLOT_9 = 229,
     SAVE_SLOT_10 = 230,
 
-    // Menu descriptions (TODO: Unused? Implement or remove)
+    // Menu descriptions
     MENUDES_OPEN = 250,
     MENUDES_ROM_INFO = 251,
     MENUDES_START = 252,
@@ -170,6 +170,7 @@ enum LanguageStringID
     MENUDES_GAME_INFO = 284,
     MENUDES_GAME_SETTINGS = 285,
     MENUDES_GAME_CHEATS = 286,
+    MENUDES_COMBO = 287,
 
     // ROM browser
 
@@ -183,7 +184,7 @@ enum LanguageStringID
     RB_NOTES_PLUGIN = 306,
     RB_NOTES_USER = 307,
     RB_CART_ID = 308,
-    RB_MANUFACTUER = 309,
+    RB_MEDIA = 309,
     RB_COUNTRY = 310,
     RB_DEVELOPER = 311,
     RB_CRC1 = 312,

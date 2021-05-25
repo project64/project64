@@ -64,10 +64,11 @@ public:
     CMainMenu(CMainGui * Window);
     ~CMainMenu();
 
-    int ProcessAccelerator(HWND hWnd, void * lpMsg);
-    bool ProcessMessage(HWND hWnd, DWORD wNotifyCode, DWORD wID);
-    void ResetMenu(void);
-    void ResetAccelerators(void) { m_ResetAccelerators = true; }
+    int       ProcessAccelerator(HWND hWnd, void * lpMsg);
+    bool      ProcessMessage(HWND hWnd, DWORD wNotifyCode, DWORD wID);
+    bool      OnMenuSelect(HWND hWnd, DWORD wNotifyCode, DWORD MenuID);
+    void      ResetMenu(void);
+    void      ResetAccelerators(void) { m_ResetAccelerators = true; }
 
 private:
     CMainMenu();

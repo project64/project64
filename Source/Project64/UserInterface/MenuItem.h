@@ -70,6 +70,7 @@ public:
 
     virtual int  ProcessAccelerator(HWND hWnd, void * lpMsg ) = 0; // Pure virtual draw() function
     virtual bool ProcessMessage(HWND hWnd, DWORD wNotifyCode, DWORD wID) = 0; // Pure virtual draw() function
+	virtual bool OnMenuSelect(HWND hWnd, DWORD wNotifyCode, DWORD wID) = 0; // Pure virtual draw() function
     virtual void ResetMenu(void) = 0; // Pure virtual draw() function
 	HMENU GetHandle (void) { return m_MenuHandle; }
 };

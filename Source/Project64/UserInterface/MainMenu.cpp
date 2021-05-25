@@ -482,7 +482,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         if (g_Settings->LoadBool(UserInterface_ShowCPUPer))
         {
             g_Settings->SaveBool(UserInterface_ShowCPUPer, false);
-            g_Notify->DisplayMessage(0, "");
+            g_Notify->DisplayMessage(0, EMPTY_STRING);
         }
         else
         {
@@ -507,7 +507,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         break;
     case ID_DEBUG_SHOW_DLIST_COUNT:
         g_Settings->SaveBool(Debugger_ShowDListAListCount, !g_Settings->LoadBool(Debugger_ShowDListAListCount));
-        g_Notify->DisplayMessage(0, "");
+        g_Notify->DisplayMessage(0, EMPTY_STRING);
         break;
     case ID_DEBUG_LANGUAGE:
         g_Settings->SaveBool(Debugger_DebugLanguage, !g_Settings->LoadBool(Debugger_DebugLanguage));
@@ -516,7 +516,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         break;
     case ID_DEBUG_SHOW_RECOMP_MEM_SIZE:
         g_Settings->SaveBool(Debugger_ShowRecompMemSize, !g_Settings->LoadBool(Debugger_ShowRecompMemSize));
-        g_Notify->DisplayMessage(0, "");
+        g_Notify->DisplayMessage(0, EMPTY_STRING);
         break;
     case ID_DEBUG_SHOW_DIV_BY_ZERO:
         g_Settings->SaveBool(Debugger_ShowDivByZero, !g_Settings->LoadBool(Debugger_ShowDivByZero));
@@ -664,6 +664,17 @@ stdstr CMainMenu::GetFileLastMod(const CPath & FileName)
     CloseHandle(hFile);
 
     return LastMod;
+}
+
+bool CMainMenu::OnMenuSelect(HWND /*hWnd*/, DWORD /*FromAccelerator*/, DWORD MenuID)
+{
+    switch (MenuID)
+    {
+    case ID_FILE_OPEN_ROM: g_Notify->DisplayMessage(0, MENUDES_OPEN); break;
+    case ID_FILE_OPEN_COMBO: g_Notify->DisplayMessage(0, MENUDES_COMBO); break;
+    default: g_Notify->DisplayMessage(0, EMPTY_STRING); break;
+    }
+    return true;
 }
 
 std::wstring CMainMenu::GetSaveSlotString(int Slot)
@@ -995,12 +1006,11 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     OptionMenu.push_back(Item);
     if (!inBasicMode)
     {
-        Item.Reset(ID_OPTIONS_CONFIG_RSP, MENU_CONFG_RSP, m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_RSP, RunningState));
-        if (g_Plugins->RSP() == nullptr || g_Plugins->RSP()->DllConfig == nullptr)
+        if (g_Plugins->RSP() != nullptr && g_Plugins->RSP()->DllConfig != nullptr)
         {
-            Item.SetItemEnabled(false);
+            Item.Reset(ID_OPTIONS_CONFIG_RSP, MENU_CONFG_RSP, m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_RSP, RunningState));
+            OptionMenu.push_back(Item);
         }
-        OptionMenu.push_back(Item);
     }
     Item.Reset(ID_OPTIONS_CONFIG_CONT, MENU_CONFG_CTRL, m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_CONT, RunningState));
     if (g_Plugins && g_Plugins->Control() == nullptr || g_Plugins->Control()->DllConfig == nullptr)
