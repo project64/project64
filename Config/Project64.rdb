@@ -3702,7 +3702,6 @@ Status=Compatible
 32bit=Yes
 Counter Factor=1
 RDRAM Size=4
-RPC Key=mp1-u
 
 [82380387-DFC744D9-C:50]
 Good Name=Mario Party 2 (E) (M5)
@@ -3727,7 +3726,6 @@ Status=Compatible
 32bit=Yes
 Counter Factor=1
 RDRAM Size=4
-RPC Key=mp2-u
 
 [C5674160-0F5F453C-C:50]
 Good Name=Mario Party 3 (E) (M4)
@@ -3754,7 +3752,6 @@ Status=Compatible
 32bit=Yes
 Counter Factor=1
 RDRAM Size=4
-RPC Key=mp3-u
 Save Type=16kbit Eeprom
 
 [3BA7CDDC-464E52A0-C:4A]
