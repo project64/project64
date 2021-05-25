@@ -185,7 +185,9 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
         }
         else
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            // TODO: Add support for "Counter Factor" "VI Refresh", "RDRAM Size",
+            // "SMM-Protect", "Fixed Audio" and "Sync Audio" tags
+            // g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }
 
