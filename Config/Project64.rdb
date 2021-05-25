@@ -276,7 +276,7 @@ Good Name=A Bug's Life (U)
 Internal Name=A Bug's Life
 Status=Compatible
 Counter Factor=1
-RDRAM Size=4
+RDRAM Size=8
 ViRefresh=2200
 
 [62F6BE95-F102D6D6-C:50]
