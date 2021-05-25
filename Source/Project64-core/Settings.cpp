@@ -92,9 +92,9 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(SupportFile_UserCheatDir, new CSettingTypeApplicationPath("Settings", "UserCheatDir", SupportFile_UserCheatDirDefault));
     AddHandler(SupportFile_UserCheatDirDefault, new CSettingTypeRelativePath("Config\\Cheats-User", ""));
     AddHandler(SupportFile_EnhancementDir, new CSettingTypeApplicationPath("Settings", "EnhancementDir", SupportFile_EnhancementDirDefault));
-    AddHandler(SupportFile_EnhancementDirDefault, new CSettingTypeRelativePath("Config\\Enhancement", ""));
+    AddHandler(SupportFile_EnhancementDirDefault, new CSettingTypeRelativePath("Config\\Enhancements", ""));
     AddHandler(SupportFile_UserEnhancementDir, new CSettingTypeApplicationPath("Settings", "UserEnhancementDir", SupportFile_UserEnhancementDirDefault));
-    AddHandler(SupportFile_UserEnhancementDirDefault, new CSettingTypeRelativePath("Config\\Enhancement-User", ""));
+    AddHandler(SupportFile_UserEnhancementDirDefault, new CSettingTypeRelativePath("Config\\Enhancements-User", ""));
 	AddHandler(SupportFile_Notes, new CSettingTypeApplicationPath("Settings", "Notes", SupportFile_NotesDefault));
     AddHandler(SupportFile_NotesDefault, new CSettingTypeRelativePath("Config", "Project64.rdn"));
     AddHandler(SupportFile_ExtInfo, new CSettingTypeApplicationPath("Settings", "ExtInfo", SupportFile_ExtInfoDefault));
