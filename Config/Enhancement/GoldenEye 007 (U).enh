@@ -1,7 +1,7 @@
 [DCBC50D1-09FD1AA3-C:45]
 Name=GoldenEye 007 (U)
 
-$Over Clock
-OnByDefault=1
-OverClock=8
-
+$60 FPS
+On By Default=1
+Overclock=8
+Note=High system requirements, disable if performance isn't good

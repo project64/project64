@@ -2,14 +2,19 @@
 Name=Diddy Kong Racing (U) (M2) (V1.1)
 
 $Alt Sixty Frames
+Author=retroben
 Note=A friend informed me this didn't freeze
 80079E7A 0003
 
 $Sixty Frames
+Author=retroben
+WIP=1
 Note=May freeze at some points,physics can get wonky with slopes on both codes.
 80079E7B 0003
 
 $Widescreen
+Author=gamemasterplc
+WIP=1
 81066246 3FE3
 81066396 3FE3
 810663FE 3FE3

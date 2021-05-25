@@ -2,10 +2,11 @@
 Name=Snowboard Kids (U)
 
 $No Frameskip
+Author=retroben
 Note=Multiplayer is now smoother at 30fps.
 800DEED4 0000
 
 $No Frameskip (ASM)
+Author=retroben
 80099324 0024
 81099326 0000
-

@@ -2,5 +2,5 @@
 Name=Super Speed Race 64 (J)
 
 $Framerate speed fix
-OnByDefault=1
+On By Default=1
 8000148F 0003

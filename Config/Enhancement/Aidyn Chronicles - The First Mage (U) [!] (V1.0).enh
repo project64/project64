@@ -2,9 +2,10 @@
 Name=Aidyn Chronicles - The First Mage (U) [!] (V1.0)
 
 $Lagfix High Rez
+Author=retroben
 800D7F16 000D
 
 $Lagfix Lo Res
+Author=retroben
 Note=Game natively runs 60fps already,just needed that extra push.
 800E5392 000D
-

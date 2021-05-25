@@ -1,7 +1,9 @@
 [F568D51E-7E49BA1E-C:45]
-Good Name=Bomberman 64 (U)
+Name=Bomberman 64 (U)
 
 $Widescreen
+Author=gamemasterplc
+WIP=1
 Note=Narrows Sprites
 812B0288 C255
 812B0290 43BA

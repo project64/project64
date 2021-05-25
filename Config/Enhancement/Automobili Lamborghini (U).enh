@@ -2,5 +2,5 @@
 Name=Automobili Lamborghini (U)
 
 $Framerate speed fix
-OnByDefault=1
+On By Default=1
 800013F7 0003

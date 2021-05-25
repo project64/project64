@@ -2,6 +2,7 @@
 Name=Gex 64 - Enter the Gecko (U)
 
 $Sixty Frames
+Author=retroben
+WIP=1
 Note=Change ASM value,too fast.
 8003B8FB 0001
-
