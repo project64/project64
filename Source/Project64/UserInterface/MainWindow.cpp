@@ -1036,7 +1036,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                                 break;
                             }
                             Rom.SaveRomSettingID(true);
-                            g_Notify->DisplayMessage(0, "");
+                            g_Notify->DisplayMessage(0, EMPTY_STRING);
                             BYTE * RomHeader = Rom.GetRomAddress();
                             WriteTrace(TraceGFXPlugin, TraceDebug, "OnRomBrowserMenuItem - Starting");
                             g_Plugins->Gfx()->OnRomBrowserMenuItem(LOWORD(wParam), hWnd, RomHeader);
