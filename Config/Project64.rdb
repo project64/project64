@@ -5,7 +5,7 @@
 
 [Meta]
 Author=Project64 Team
-Date=2021/05/12
+Date=2021/05/24
 Homepage=www.pj64-emu.com
 Version=3.0.0
 
@@ -1283,7 +1283,7 @@ Clear Frame=2
 RDRAM Size=4
 
 [2B6FA7C0-09A71225-C:45]
-Good Name=Clay Fighter 63 1-3 (U) (beta)
+Good Name=Clay Fighter 63 1-3 (U) (Beta)
 Internal Name=CLAYFIGHTER 63
 Status=Compatible
 32bit=Yes
@@ -1602,8 +1602,8 @@ Status=Compatible
 RDRAM Size=4
 
 [906C3F77-CE495EA1-C:45]
-Good Name=DINO PLANET
-Internal Name=Dinosaur Planet
+Good Name=Dinosaur Planet (U) (Beta)
+Internal Name=DINO PLANET
 Status=Compatible
 
 [C16C421B-A21580F7-C:45]
@@ -2019,7 +2019,7 @@ Clear Frame=2
 RDRAM Size=4
 
 [CC3CC8B3-0EC405A4-C:50]
-Good Name=F-1 World Grand Prix (E) (beta)
+Good Name=F-1 World Grand Prix (E) (Beta)
 Internal Name=F1 WORLD GRAND PRIX
 Status=Compatible
 32bit=Yes
@@ -8891,7 +8891,7 @@ Status=Compatible
 RDRAM Size=4
 
 [75A0B893-4CA321B5-C:0]
-Good Name=Robotech - Crystal Dreams (U) (beta)
+Good Name=Robotech - Crystal Dreams (U) (Beta)
 Internal Name=Robotech - Crystal Dreams (PD)
 Status=Compatible
 32bit=Yes
@@ -9637,7 +9637,6 @@ Unaligned DMA=1
 [0AE17AAE-F247736B-C:45]
 Good Name=SM64 Last Impact V1.1
 Status=Compatible
-32bit=No
 Counter Factor=1
 Unaligned DMA=1
 
@@ -9800,7 +9799,6 @@ Unaligned DMA=1
 [DC493C8D-E033E6F2-C:45]
 Good Name=SM64 Last Impact V1.2
 Status=Compatible
-32bit=No
 Counter Factor=1
 Unaligned DMA=1
 
@@ -9901,7 +9899,6 @@ Unaligned DMA=1
 Good Name=Ztar Attack 2 - A Blast to the Past v1.0b
 Status=Compatible
 Counter Factor=1
-32bit=No
 Unaligned DMA=1
 
 [D50347DB-B743E736-C:45]
@@ -9924,7 +9921,6 @@ Unaligned DMA=1
 Good Name=The Super Mario Bros. Super Show 64
 Status=Compatible
 Counter Factor=1
-32bit=No
 Fast SP=No
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -9936,7 +9932,6 @@ Unaligned DMA=1
 Good Name=The Super Mario Bros. Super Show 64 (Widescreen)
 Status=Compatible
 Counter Factor=1
-32bit=No
 Fast SP=No
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -9954,7 +9949,6 @@ Unaligned DMA=1
 Good Name=Yoshi's Adventure 64 1.2b
 Status=Compatible
 Counter Factor=1
-32bit=No
 Unaligned DMA=1
 
 [50534DB6-34165C1E-C:45]
@@ -9979,7 +9973,6 @@ Unaligned DMA=1
 Good Name=The Super Mario Bros. Super Show 64 v1.1
 Status=Compatible
 Counter Factor=1
-32bit=No
 Fast SP=No
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -9991,7 +9984,6 @@ Unaligned DMA=1
 Good Name=The Super Mario Bros. Super Show 64 v1.1 (Widescreen)
 Status=Compatible
 Counter Factor=1
-32bit=No
 Fast SP=No
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -10015,7 +10007,6 @@ Unaligned DMA=1
 Good Name=The Super Mario Bros. Super Show 64 v1.2
 Status=Compatible
 Counter Factor=1
-32bit=No
 Fast SP=No
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -10027,7 +10018,6 @@ Unaligned DMA=1
 Good Name=The Super Mario Bros. Super Show 64 v1.2 (Widescreen)
 Status=Compatible
 Counter Factor=1
-32bit=No
 Fast SP=No
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -10350,7 +10340,6 @@ Unaligned DMA=1
 Good Name=Super Mario The Lost Dreams V1.0
 Status=Compatible
 Counter Factor=1
-32bit=No
 Fast SP=No
 Linking=Off
 SMM-FUNC=0
@@ -10374,7 +10363,6 @@ Unaligned DMA=1
 Good Name=Super Mario The Lost Dreams V1.1
 Status=Compatible
 Counter Factor=1
-32bit=No
 Fast SP=No
 Linking=Off
 SMM-FUNC=0
@@ -10564,7 +10552,6 @@ Unaligned DMA=1
 Good Name=Paper Mario - Master Quest
 Status=Compatible
 Counter Factor=1
-32bit=No
 Reg Cache=No
 Unaligned DMA=1
 
@@ -10661,7 +10648,6 @@ Unaligned DMA=1
 [65C17CD6-70C0AF14-C:45]
 Good Name=The Legend of Zelda - Ocarina of Time Redux 2.0 (U)
 Status=Compatible
-32bit=No
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -10708,7 +10694,6 @@ Unaligned DMA=1
 [642AF8F6-1CDB82A7-C:45]
 Good Name=The Legend of Zelda - Ocarina of Time Redux 2.1 (U)
 Status=Compatible
-32bit=No
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -10833,7 +10818,6 @@ Unaligned DMA=1
 [F099270C-B3639549-C:45]
 Good Name=The Legend of Zelda - Master Of Time
 Status=Compatible
-32bit=No
 Counter Factor=1
 SMM-Protect=1
 Unaligned DMA=1
@@ -10865,7 +10849,6 @@ Unaligned DMA=1
 [CF2E9419-6F97E25D-C:45]
 Good Name=Dark Hyrule Fantasy - Villa Muerti Demo Patch
 Status=Compatible
-32bit=No
 Counter Factor=1
 SMM-Protect=1
 Unaligned DMA=1
@@ -11117,5 +11100,4 @@ Culling=1
 SMM-Cache=0
 SMM-FUNC=0
 SMM-TLB=0
-RDRAM Size=8
 ViRefresh=2200
