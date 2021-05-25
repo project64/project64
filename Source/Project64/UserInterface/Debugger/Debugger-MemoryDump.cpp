@@ -180,7 +180,7 @@ bool CDumpMemory::DumpMemory(LPCTSTR FileName, DumpFormat Format, DWORD StartPC,
         }
 
         uint32_t dumpLen = EndPC - StartPC;
-        std::unique_ptr<uint8_t> dumpBuf = std::make_unique<uint8_t>(dumpLen);
+        std::unique_ptr<uint8_t[]> dumpBuf = std::make_unique<uint8_t[]>(dumpLen);
         uint32_t dumpIdx = 0;
 
         for (uint32_t pc = StartPC; pc < EndPC; pc++, dumpIdx++)
