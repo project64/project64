@@ -183,7 +183,7 @@ enum LanguageStringID
     RB_NOTES_PLUGIN = 306,
     RB_NOTES_USER = 307,
     RB_CART_ID = 308,
-    RB_MANUFACTUER = 309,
+    RB_MEDIA = 309,
     RB_COUNTRY = 310,
     RB_DEVELOPER = 311,
     RB_CRC1 = 312,
