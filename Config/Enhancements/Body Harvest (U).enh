@@ -10,3 +10,12 @@ Note=Too fast but looks nice I guess.
 8001B49F 0004
 8001B4A7 0004
 8001B4AF 0004
+
+$Widescreen Hack
+Author=gamemasterplc
+Note=Basic widescreen hack
+81072AF6 3FE3
+810B9228 03E0
+810B922A 0008
+810B922C 2402
+810B922E 0001

@@ -1745,6 +1745,12 @@ Status=Compatible
 RDRAM Size=4
 Save Type=16kbit Eeprom
 
+[EB85EBC9-596682AF-C:0]
+Good Name=Doubutsu Banchou (J) (Unreleased)
+Internal Name=DOUBUTSU BANCHOU
+Status=Compatible
+RDRAM Size=4
+
 [BD8E206D-98C35E1C-C:4A]
 Good Name=Doubutsu no Mori (J)
 Internal Name=DOUBUTSUNOMORI
@@ -2263,6 +2269,16 @@ Internal Name=Fox Sports Hoops 99
 Status=Compatible
 32bit=Yes
 Culling=1
+RDRAM Size=4
+
+[4471C13E-CE7F44A9-C:0]
+Good Name=Freak Boy (U) (Alpha) (Unreleased)
+Internal Name=
+Status=Issues (core)
+Core Note=Breakpoint error when firing missile with Recompiler
+CPU Type=Interpreter
+Linking=0
+SMM-Protect=1
 RDRAM Size=4
 
 [F774EAEE-F0D8B13E-C:4A]
