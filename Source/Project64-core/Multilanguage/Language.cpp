@@ -26,7 +26,6 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(NUMBER_8, "8");
     DEF_STR(NUMBER_9, "9");
 
-
     /*** Menu ***/
 
     // File menu
@@ -65,10 +64,10 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MENU_OPTIONS, "&Options");
     DEF_STR(MENU_FULL_SCREEN, "&Fullscreen");
     DEF_STR(MENU_ON_TOP, "&Always on &top");
-    DEF_STR(MENU_CONFG_GFX, "Graphic Settings");
-    DEF_STR(MENU_CONFG_AUDIO, "Audio Settings");
-    DEF_STR(MENU_CONFG_CTRL, "Input Settings");
-    DEF_STR(MENU_CONFG_RSP, "RSP Settings");
+    DEF_STR(MENU_CONFG_GFX, "&Graphic Settings");
+    DEF_STR(MENU_CONFG_AUDIO, "&Audio Settings");
+    DEF_STR(MENU_CONFG_CTRL, "&Input Settings");
+    DEF_STR(MENU_CONFG_RSP, "&RSP Settings");
     DEF_STR(MENU_SHOW_CPU, "Show CPU &Stats");
     DEF_STR(MENU_SETTINGS, "Configura&tion");
 
@@ -105,8 +104,8 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(POPUP_SETTINGS, "Edit Game Settings");
     DEF_STR(POPUP_CHEATS, "Edit Cheats");
     DEF_STR(POPUP_GFX_PLUGIN, "Graphics Plugin");
-	DEF_STR(POPUP_PLAYDISK, "Play Game with Disk");
-	DEF_STR(POPUP_ENHANCEMENTS, "Pick Enhancements");	
+    DEF_STR(POPUP_PLAYDISK, "Play Game with Disk");
+    DEF_STR(POPUP_ENHANCEMENTS, "Pick Enhancements");	
 
     // Alternate name to save slot
     DEF_STR(SAVE_SLOT_DEFAULT, "Save Slot - Default");
@@ -120,9 +119,6 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(SAVE_SLOT_8, "Save Slot - 8");
     DEF_STR(SAVE_SLOT_9, "Save Slot - 9");
     DEF_STR(SAVE_SLOT_10, "Save Slot - 10");
-
-    // ROM browser
-
 
     /*** ROM browser ***/
 
@@ -154,7 +150,6 @@ void CLanguage::LoadDefaultStrings(void)
 
     // Messages (TODO: GoodN64 is no longer maintained and perhaps should be replaced with references to something else?)
     DEF_STR(RB_NOT_GOOD_FILE, "Bad ROM? Use GoodN64 & check that the RDB is up-to-date.");
-
 
     /*** Options ***/
 
@@ -206,18 +201,18 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(OPTION_AUTO_FULLSCREEN, "Enter full-screen mode when loading a ROM");
     DEF_STR(OPTION_BASIC_MODE, "Hide advanced settings");
     DEF_STR(OPTION_REMEMBER_CHEAT, "Remember selected cheats");
-    DEF_STR(OPTION_DISABLE_SS, "Disable screen saver when running a ROM");
+    DEF_STR(OPTION_DISABLE_SS, "Disable screensaver when running a ROM");
     DEF_STR(OPTION_DISPLAY_FR, "Display speed");
     DEF_STR(OPTION_CHECK_RUNNING, "Check if Project64 is already running");
-    DEF_STR(OPTION_UNIQUE_SAVE_DIR, "Unique Game Save Directory");
+    DEF_STR(OPTION_UNIQUE_SAVE_DIR, "Store game saves in separate folders");
     DEF_STR(OPTION_CHANGE_FR, "Speed display:");
-    DEF_STR(OPTION_IPL_ROM_PATH, "Japanese Retail 64DD IPL ROM Path:");
-    DEF_STR(OPTION_IPL_ROM_USA_PATH, "American Retail 64DD IPL ROM Path:");
-    DEF_STR(OPTION_IPL_ROM_TOOL_PATH, "Development 64DD IPL ROM Path:");
-    DEF_STR(OPTION_DISKSAVETYPE, "Disk Save Type:");
-    DEF_STR(OPTION_ENABLE_ENHANCEMENTS, "Enable Enhancements");
-    DEF_STR(OPTION_SHOW_STATUS_BAR, "Show Status Bar");
-    DEF_STR(OPTION_EXIT_FULLSCREEN_ON_LOSE_FOCUS, "Exit full screen on lose focus");
+    DEF_STR(OPTION_IPL_ROM_PATH, "Japanese retail 64DD IPL ROM path:");
+    DEF_STR(OPTION_IPL_ROM_USA_PATH, "American retail 64DD IPL ROM path:");
+    DEF_STR(OPTION_IPL_ROM_TOOL_PATH, "Development 64DD IPL ROM path:");
+    DEF_STR(OPTION_DISKSAVETYPE, "Disk save type:");
+    DEF_STR(OPTION_ENABLE_ENHANCEMENTS, "Enable enhancements");
+    DEF_STR(OPTION_SHOW_STATUS_BAR, "Show status bar");
+    DEF_STR(OPTION_EXIT_FULLSCREEN_ON_LOSE_FOCUS, "Exit fullscreen on lose focus");
 
     // ROM browser tab
     DEF_STR(RB_MAX_ROMS, "Max # of ROMs remembered (0-10):");
@@ -268,7 +263,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ROM_AUDIO_SIGNAL, "RSP audio signal");
     DEF_STR(ROM_FIXED_AUDIO, "Fixed audio timing");
     DEF_STR(ROM_FUNC_FIND, "Function lookup method:");
-    DEF_STR(ROM_CUSTOM_SMM, "Custom self mod Method");
+    DEF_STR(ROM_CUSTOM_SMM, "Custom self-mod Method");
     DEF_STR(ROM_SYNC_AUDIO, "Sync using audio");
     DEF_STR(ROM_COUNTPERBYTE, "AI count per byte:");
     DEF_STR(ROM_32BIT, "32-bit engine:");
@@ -277,7 +272,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ROM_UNALIGNED_DMA, "Unaligned DMA");
     DEF_STR(ROM_RANDOMIZE_SIPI_INTERRUPTS, "Randomize SI/PI interrupts");
     DEF_STR(ROM_MEM_SIZE_NOTE, "Note: 8 MB is forced for Unknown ROMs.");
-    DEF_STR(ROM_DISK_SEEK_TIMING, "Disk Seek Timing:");
+    DEF_STR(ROM_DISK_SEEK_TIMING, "Disk seek timing:");
     DEF_STR(ROM_DISK_SEEK_TIMING_TURBO, "Turbo");
     DEF_STR(ROM_DISK_SEEK_TIMING_SLOW, "Slow");
 
@@ -355,7 +350,6 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(DISKSAVE_SHADOW, "Full Disk Copy");
     DEF_STR(DISKSAVE_RAM, "Save Area Only");
 
-
     /*** ROM information ***/
 
     // ROM info title
@@ -373,7 +367,6 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(INFO_CRC2_TEXT, "CRC2:");
     DEF_STR(INFO_CIC_CHIP_TEXT, "CIC chip:");
     DEF_STR(INFO_MD5_TEXT, "MD5:");
-
 
     /*** Cheats ***/
 
@@ -408,7 +401,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(CHEAT_NOTES, "&Notes:");
     DEF_STR(CHEAT_ADDCHEAT_ADD, "Add Cheat");
     DEF_STR(CHEAT_ADDCHEAT_NEW, "New Cheat");
-    DEF_STR(CHEAT_ADDCHEAT_CODEDES, "<address> <value>");
+    DEF_STR(CHEAT_ADDCHEAT_CODEDES, "<address> <value>:<old>");
     DEF_STR(CHEAT_ADDCHEAT_OPT, "Options:");
     DEF_STR(CHEAT_ADDCHEAT_OPTDES, "<value> <label>");
 
@@ -448,11 +441,9 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MSG_SUPPORT_REQUESTCODE_SUCCESS, "Code has been sent to your email");
     DEF_STR(MSG_SUPPORT_REQUESTCODE_FAIL, "Failed to send code, please make sure it is the email you used when you supported Project64");
 
-
     /*** Enhancements ***/
 
     DEF_STR(ENHANCEMENT_TITLE, "Enhancements");
-
 
     /*** Messages ***/
 
@@ -522,7 +513,6 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MSG_CHEAT_INVALID_MSG, "Failed to update cheat, it is invalid");
     DEF_STR(MSG_CHEAT_INVALID_TITLE, "Invalid Cheat");
 
-
     /*** Android ***/
 
     DEF_STR(ANDROID_SETTINGS, "Settings");
@@ -546,9 +536,9 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ANDROID_ABOUT_REVISION, "Revision");
     DEF_STR(ANDROID_ABOUT_TEXT, "Project64 for Android\u2122 is a port of the Windows version of Project64.The Android\u2122 version can play most N64 games.");
     DEF_STR(ANDROID_ABOUT_PJ64_AUTHORS, "Project64 Authors.");
-	DEF_STR(ANDROID_DISCORD, "Discord");
-	DEF_STR(ANDROID_SUPPORT_PJ64, "Support Project64");
-	DEF_STR(ANDROID_REVIEW_PJ64, "Review Project64");
+    DEF_STR(ANDROID_DISCORD, "Discord");
+    DEF_STR(ANDROID_SUPPORT_PJ64, "Support Project64");
+    DEF_STR(ANDROID_REVIEW_PJ64, "Review Project64");
 
     // In-game menu
     DEF_STR(ANDROID_MENU_SETTINGS, "Settings");
