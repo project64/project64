@@ -230,6 +230,7 @@
 #473#  "Enable enhancements"
 #474#  "Show status bar"
 #475#  "Exit fullscreen on lose focus"
+#476#  "Enable Discord Rich Presence"
 
 // ROM browser tab
 #480#  "Max # of ROMs remembered (0-10):"
@@ -262,6 +263,7 @@
 #512#  "Start changed"
 #513#  "Protect memory"
 #514#  "TLB unmapping"
+#515#  "Always use interpreter core"
 
 // ROM options
 #520#  "CPU core style:"

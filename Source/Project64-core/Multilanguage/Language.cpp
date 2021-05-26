@@ -213,6 +213,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(OPTION_ENABLE_ENHANCEMENTS, "Enable enhancements");
     DEF_STR(OPTION_SHOW_STATUS_BAR, "Show status bar");
     DEF_STR(OPTION_EXIT_FULLSCREEN_ON_LOSE_FOCUS, "Exit fullscreen on lose focus");
+    DEF_STR(OPTION_DISCORD_RPC, "Enable Discord Rich Presence");
 
     // ROM browser tab
     DEF_STR(RB_MAX_ROMS, "Max # of ROMs remembered (0-10):");
@@ -246,6 +247,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ADVANCE_SMM_VALIDATE, "Start changed");
     DEF_STR(ADVANCE_SMM_PROTECT, "Protect memory");
     DEF_STR(ADVANCE_SMM_TLB, "TLB unmapping");
+    DEF_STR(ADVANCE_ALWAYS_INTERPRETER, "Always use interpreter core");
 
     // ROM options
     DEF_STR(ROM_CPU_STYLE, "CPU core style:");

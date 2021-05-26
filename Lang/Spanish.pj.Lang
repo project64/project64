@@ -248,6 +248,7 @@
 #473#  "Habilitar mejoras"
 #474#  "Mostrar barra de estado"
 #475#  "Salir de pantalla completa al perder foco"
+#476#  "Habilitar Discord Rich Presence"
 
 //ROM Browser Tab
 #480#  "Máx # de ROMs recordadas (0-10):"
@@ -280,6 +281,7 @@
 #512#  "Inicio cambiado"
 #513#  "Proteger memoria"
 #514#  "TLB no mapeado"
+#515#  "Siempre usar núcleo interpretador"
 
 //ROM Options
 #520#  "Estilo de núcleo de la CPU:"
