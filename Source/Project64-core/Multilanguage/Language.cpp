@@ -271,7 +271,6 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ROM_OVER_CLOCK_MODIFIER, "Overclock modifier:");
     DEF_STR(ROM_UNALIGNED_DMA, "Unaligned DMA");
     DEF_STR(ROM_RANDOMIZE_SIPI_INTERRUPTS, "Randomize SI/PI interrupts");
-    DEF_STR(ROM_MEM_SIZE_NOTE, "Note: 8 MB is forced for Unknown ROMs.");
     DEF_STR(ROM_DISK_SEEK_TIMING, "Disk seek timing:");
     DEF_STR(ROM_DISK_SEEK_TIMING_TURBO, "Turbo");
     DEF_STR(ROM_DISK_SEEK_TIMING_SLOW, "Slow");
