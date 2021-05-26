@@ -1,0 +1,16 @@
+[8ECC02F0-7F8BDE81-C:45]
+Name=Top Gear Hyper Bike (U)
+
+$60 FPS
+Author=theboy181
+WIP=1
+Note=Needs full testings, and a decent GFX plugin. Menus seem to run too fast.
+800020EF 0000
+8100114C 2402
+8100114E 0001
+
+$Widescreen Hack
+Author=theboy181
+81007EF6 3FE3
+81001E36 3FE3
+810118B6 3FE3

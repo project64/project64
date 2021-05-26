@@ -1,0 +1,15 @@
+[9F1ECAF0-EEC48A0E-C:4A]
+Name=Rakuga Kids (J)
+
+$Culling Fix
+Author=theboy181
+WIP=1
+Note=Needed for widescreen hack
+81008A92 4200
+
+$Widescreen Hack
+Author=theboy181
+WIP=1
+Note=Missing some aspects for this one, but overall plays well.
+8101B80E 3FE9
+81008A92 4100

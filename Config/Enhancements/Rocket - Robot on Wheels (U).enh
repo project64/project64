@@ -1,0 +1,17 @@
+[0C5EE085-A167DD3E-C:45]
+Name=Rocket - Robot on Wheels (U)
+
+$Widescreen Hack
+Author=theboy181
+Note=Game adjusts culling with this code too. Game was made for WS hacks
+8101AD6C 3FE3
+8101AD6E 8E39
+
+$60 FPS
+Author=theboy181
+WIP=1
+Note=Needs testing
+810011D8 0000
+810011DA 0000
+800B1D27 0001
+80017DE3 0001

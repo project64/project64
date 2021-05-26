@@ -2,7 +2,15 @@
 Name=Armorines - Project S.W.A.R.M. (U)
 
 $Sixty Hack
+Author=retroben
 800F8697 0001
 800F87CF 0001
 800F8907 0001
 
+$60 FPS
+Author=theboy181
+Note=Demo runs at 20fps (not a big deal)
+8008D2AF 0001
+8008D333 0001
+8008D403 0001
+8008D583 0001

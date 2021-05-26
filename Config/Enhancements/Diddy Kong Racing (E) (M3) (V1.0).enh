@@ -2,10 +2,13 @@
 Name=Diddy Kong Racing (E) (M3) (V1.0)
 
 $Fifty Frames
+Author=retroben
+WIP=1
 Note=Identical location to the NTSC address
 80079A2B 0003
 
 $Widescreen
+Author=gamemasterplc
 81066006 3FE3
 81066156 3FE3
 810661BE 3FE3

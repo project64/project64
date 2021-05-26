@@ -2,8 +2,9 @@
 Name=Forsaken 64 (U)
 
 $Lagfix
+Author=retroben
 80028E22 000D
 
 $Sixty Frames
+Author=retroben
 800233C3 0001
-

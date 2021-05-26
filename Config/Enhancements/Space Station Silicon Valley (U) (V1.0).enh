@@ -1,0 +1,9 @@
+[BFE23884-EF48EAAF-C:45]
+Name=Space Station Silicon Valley (U) (V1.0)
+
+$8MB Expansion Memory Fix (Bug Fix)
+Author=theboy181
+On By Default=1
+Note=Fixes a crash that would occur when using Expansion Memory.
+D1316A3A F264
+81316A20 1000

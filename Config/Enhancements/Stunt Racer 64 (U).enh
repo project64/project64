@@ -1,0 +1,11 @@
+[9510D8D7-35100DD2-C:45]
+Name=Stunt Racer 64 (U)
+
+$Car LOD Hack
+Author=theboy181
+WIP=1
+Note=Works in replay demo, and Vs. mode. More testing needed.
+81033D64 0000
+81033D66 0000
+81033D40 0000
+81033D42 0000

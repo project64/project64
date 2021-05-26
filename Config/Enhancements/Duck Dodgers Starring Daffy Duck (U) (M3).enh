@@ -1,0 +1,10 @@
+[FBB9F1FA-6BF88689-C:45]
+Name=Duck Dodgers Starring Daffy Duck (U) (M3)
+
+$30 FPS
+Author=theboy181
+On By Default=1
+Note=This hack helps fix the timing of the game making it playable in the emulator
+810093DE 0002
+810093EC 0000
+810093EE 0000

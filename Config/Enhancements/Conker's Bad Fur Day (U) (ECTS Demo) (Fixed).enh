@@ -1,0 +1,18 @@
+[A08D0F77-6F82E38C-C:45]
+Name=Conker's Bad Fur Day (U) (ECTS Demo) (Fixed)
+
+$Widescreen Hack
+8107E490 3CAE
+81080360 3C31
+81080362 A235
+
+$Disable Reset Timer
+Author=SubDrag
+On By Default=1
+8107716A 0000
+
+$Disable all instances of Game Overs
+Author=SubDrag
+On By Default=1
+D00D0D18 0004
+800D0D18 0000

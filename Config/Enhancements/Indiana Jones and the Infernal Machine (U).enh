@@ -1,0 +1,11 @@
+[AF9DCC15-1A723D88-C:45]
+Name=Indiana Jones and the Infernal Machine (U)
+
+$60 FPS
+Author=theboy181
+WIP=1
+Overclock=2
+Note=Needs more testing now that HLE is possible
+81058F76 0001
+80058F71 0001
+80058F6F 0001

@@ -1,7 +1,9 @@
 [F568D51E-7E49BA1E-C:45]
-Good Name=Bomberman 64 (U)
+Name=Bomberman 64 (U)
 
 $Widescreen
+Author=gamemasterplc
+WIP=1
 Note=Narrows Sprites
 812B0288 C255
 812B0290 43BA
@@ -73,3 +75,8 @@ D10469A4 356C
 812A4686 A3D5
 812A4688 4406
 812A468A 2000
+
+$Draw Distance Hack
+Author=theboy181
+Note=Fixes the POPUP for some objects .
+80233043 000C
