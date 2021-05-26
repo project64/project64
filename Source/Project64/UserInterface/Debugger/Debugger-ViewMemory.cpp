@@ -977,7 +977,7 @@ LRESULT CDebugMemoryView::OnHxPaste(LPNMHDR lpNMHDR)
 
         if (length != 0)
         {
-            std::unique_ptr<char> data = std::make_unique<char>(length);
+            std::unique_ptr<char[]> data = std::make_unique<char[]>(length);
             CMemoryScanner::ParseHexString(data.get(), text);
 
             for (int i = 0; i < length; i++)
