@@ -484,11 +484,11 @@ BEGIN
     LTEXT           "Game Directory:",IDC_GAME_DIR_STATIC,12,92,86,12
     EDITTEXT        IDC_GAME_DIR,82,91,130,12,ES_AUTOHSCROLL
     PUSHBUTTON      "...",IDC_SELECT_GAME_DIR,215,91,14,12
-    CONTROL         "GlideN64\n_________\nFor modern PCs",IDC_RADIO_GLIDEN64,
-                    "Button",BS_AUTORADIOBUTTON | BS_MULTILINE,76,107,80,35
-    CONTROL         "Project64 video\n_____________\nFor older PCs",IDC_RADIO_PJ64_VIDEO,
-                    "Button",BS_AUTORADIOBUTTON | BS_MULTILINE,157,107,73,35
-    LTEXT           "Video Plugin:",IDC_VIDEO_PLUGIN_STATIC,12,108,61,14
+    CONTROL         "--- GLideN64 ---\nFor modern PCs",IDC_RADIO_GLIDEN64,
+                    "Button",BS_AUTORADIOBUTTON | BS_CENTER | BS_MULTILINE,72,106,64,35
+    CONTROL         "-- Project64 Video --\nFor older PCs",IDC_RADIO_PJ64_VIDEO,
+                    "Button",BS_AUTORADIOBUTTON | BS_CENTER | BS_MULTILINE,148,107,77,35
+    LTEXT           "Video Plugin:",IDC_VIDEO_PLUGIN_STATIC,12,108,58,14
 END
 
 IDD_Debugger_Memory DIALOGEX 0, 0, 321, 199
