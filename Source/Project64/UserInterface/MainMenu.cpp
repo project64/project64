@@ -763,7 +763,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     bool RomLoading = g_Settings->LoadBool(GameRunning_LoadingInProgress);
     bool RomLoaded = g_Settings->LoadStringVal(Game_GameName).length() > 0;
     bool RomList = UISettingsLoadBool(RomBrowser_Enabled) && !CPURunning;
-    bool Enhancement = !inBasicMode && g_Settings->LoadBool(Setting_Enhancement);
+    bool Enhancement = g_Settings->LoadBool(Setting_Enhancement);
 
     CMenuShortCutKey::RUNNING_STATE RunningState = CMenuShortCutKey::RUNNING_STATE_NOT_RUNNING;
     if (g_Settings->LoadBool(GameRunning_CPU_Running))
