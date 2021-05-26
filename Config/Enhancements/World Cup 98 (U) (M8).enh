@@ -1,0 +1,14 @@
+[BD636D6A-5D1F54BA-C:45]
+Name=World Cup 98 (U) (M8)
+
+$Player Model LOD hack
+Author=theboy181
+WIP=1
+Note=Needs Testing
+800F48F3 0000
+
+$Replay Camera 60 FPS
+Author=theboy181
+Note=All replay modes play back at 60fps
+8109968C 0000
+8109968E 0000

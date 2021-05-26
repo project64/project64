@@ -2,7 +2,7 @@
 Name=Mario Kart 64 (J) (V1.0)
 
 $Multiplayer timing fix
-OnByDefault=1
+On By Default=1
 81001A1C 2409
 81001A1E 0002
 81001C74 240A

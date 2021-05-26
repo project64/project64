@@ -1,7 +1,8 @@
 [72F70398-6556A98B-C:45]
-Good Name=Star Wars Episode I - Racer (U)
+Name=Star Wars Episode I - Racer (U)
 
 $Widescreen
+Author=gamemasterplc
 Note=Narrow Sprites Widths
 81085FC4 2405
 81085FC6 01A2
@@ -48,3 +49,15 @@ Note=Narrow Sprites Widths
 81057EEC 2405
 81057EEE FFCB
 81057EFE 43D5
+
+$Improved Draw Distance
+Author=theboy181
+Note=Adjusts the fog, and draw distance
+810867B0 3C01
+810867B2 4100
+810867C0 4481
+810867C2 4000
+810867C4 3C01
+810867C6 4F80
+810867CC 4481
+810867CE 1000

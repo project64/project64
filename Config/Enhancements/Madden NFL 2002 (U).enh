@@ -1,0 +1,19 @@
+[D7134F8D-C11A00B5-C:45]
+Name=Madden NFL 2002 (U)
+
+$60 FPS
+Author=theboy181
+WIP=1
+Overclock=3
+Note=This hack is for the instant replay feature.
+80066935 0001
+
+$LOD Hack
+Author=theboy181
+Note=Players LOD is set to max
+810A8DB4 0000
+810A8DB6 0000
+
+$Widescreen Hack
+Author=theboy181
+810050C0 4355

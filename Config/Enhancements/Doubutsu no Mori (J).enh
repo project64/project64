@@ -2,5 +2,14 @@
 Name=Doubutsu no Mori (J)
 
 $Widescreen
+Author=gamemasterplc
 810CB180 3C07
 810CB182 3FE3
+
+$Sub Screen Fix
+Author=theboy181
+Plugin List=Project64 video,Jabo's Direct3D8
+On By Default=1
+Note=fixes delay when coverage is not emulated correctly.
+810D13F8 0000
+810D13FA 0000
