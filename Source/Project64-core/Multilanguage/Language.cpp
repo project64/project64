@@ -65,10 +65,10 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MENU_OPTIONS, "&Options");
     DEF_STR(MENU_FULL_SCREEN, "&Fullscreen");
     DEF_STR(MENU_ON_TOP, "&Always on &top");
-    DEF_STR(MENU_CONFG_GFX, "Graphic Settings");
-    DEF_STR(MENU_CONFG_AUDIO, "Audio Settings");
-    DEF_STR(MENU_CONFG_CTRL, "Input Settings");
-    DEF_STR(MENU_CONFG_RSP, "RSP Settings");
+    DEF_STR(MENU_CONFG_GFX, "&Graphic Settings");
+    DEF_STR(MENU_CONFG_AUDIO, "&Audio Settings");
+    DEF_STR(MENU_CONFG_CTRL, "&Input Settings");
+    DEF_STR(MENU_CONFG_RSP, "&RSP Settings");
     DEF_STR(MENU_SHOW_CPU, "Show CPU &Stats");
     DEF_STR(MENU_SETTINGS, "Configura&tion");
 
@@ -206,18 +206,18 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(OPTION_AUTO_FULLSCREEN, "Enter full-screen mode when loading a ROM");
     DEF_STR(OPTION_BASIC_MODE, "Hide advanced settings");
     DEF_STR(OPTION_REMEMBER_CHEAT, "Remember selected cheats");
-    DEF_STR(OPTION_DISABLE_SS, "Disable screen saver when running a ROM");
+    DEF_STR(OPTION_DISABLE_SS, "Disable screensaver when running a ROM");
     DEF_STR(OPTION_DISPLAY_FR, "Display speed");
     DEF_STR(OPTION_CHECK_RUNNING, "Check if Project64 is already running");
-    DEF_STR(OPTION_UNIQUE_SAVE_DIR, "Unique Game Save Directory");
+    DEF_STR(OPTION_UNIQUE_SAVE_DIR, "Store game saves in separate folders");
     DEF_STR(OPTION_CHANGE_FR, "Speed display:");
-    DEF_STR(OPTION_IPL_ROM_PATH, "Japanese Retail 64DD IPL ROM Path:");
-    DEF_STR(OPTION_IPL_ROM_USA_PATH, "American Retail 64DD IPL ROM Path:");
-    DEF_STR(OPTION_IPL_ROM_TOOL_PATH, "Development 64DD IPL ROM Path:");
-    DEF_STR(OPTION_DISKSAVETYPE, "Disk Save Type:");
-    DEF_STR(OPTION_ENABLE_ENHANCEMENTS, "Enable Enhancements");
-    DEF_STR(OPTION_SHOW_STATUS_BAR, "Show Status Bar");
-    DEF_STR(OPTION_EXIT_FULLSCREEN_ON_LOSE_FOCUS, "Exit full screen on lose focus");
+    DEF_STR(OPTION_IPL_ROM_PATH, "Japanese retail 64DD IPL ROM path:");
+    DEF_STR(OPTION_IPL_ROM_USA_PATH, "American retail 64DD IPL ROM path:");
+    DEF_STR(OPTION_IPL_ROM_TOOL_PATH, "Development 64DD IPL ROM path:");
+    DEF_STR(OPTION_DISKSAVETYPE, "Disk save type:");
+    DEF_STR(OPTION_ENABLE_ENHANCEMENTS, "Enable enhancements");
+    DEF_STR(OPTION_SHOW_STATUS_BAR, "Show status bar");
+    DEF_STR(OPTION_EXIT_FULLSCREEN_ON_LOSE_FOCUS, "Exit fullscreen on lose focus");
 
     // ROM browser tab
     DEF_STR(RB_MAX_ROMS, "Max # of ROMs remembered (0-10):");
@@ -268,7 +268,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ROM_AUDIO_SIGNAL, "RSP audio signal");
     DEF_STR(ROM_FIXED_AUDIO, "Fixed audio timing");
     DEF_STR(ROM_FUNC_FIND, "Function lookup method:");
-    DEF_STR(ROM_CUSTOM_SMM, "Custom self mod Method");
+    DEF_STR(ROM_CUSTOM_SMM, "Custom self-mod Method");
     DEF_STR(ROM_SYNC_AUDIO, "Sync using audio");
     DEF_STR(ROM_COUNTPERBYTE, "AI count per byte:");
     DEF_STR(ROM_32BIT, "32-bit engine:");
@@ -277,7 +277,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ROM_UNALIGNED_DMA, "Unaligned DMA");
     DEF_STR(ROM_RANDOMIZE_SIPI_INTERRUPTS, "Randomize SI/PI interrupts");
     DEF_STR(ROM_MEM_SIZE_NOTE, "Note: 8 MB is forced for Unknown ROMs.");
-    DEF_STR(ROM_DISK_SEEK_TIMING, "Disk Seek Timing:");
+    DEF_STR(ROM_DISK_SEEK_TIMING, "Disk seek timing:");
     DEF_STR(ROM_DISK_SEEK_TIMING_TURBO, "Turbo");
     DEF_STR(ROM_DISK_SEEK_TIMING_SLOW, "Slow");
 
