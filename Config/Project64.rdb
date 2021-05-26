@@ -1327,6 +1327,7 @@ SMM-FUNC=0
 SMM-PI DMA=0
 SMM-TLB=0
 ViRefresh=2200
+Randomize SI/PI Interrupts=0
 
 [8BC3A47A-74221294-C:45]
 Good Name=Conker's Bad Fur Day (U) (Debug)
@@ -1343,6 +1344,7 @@ SMM-FUNC=0
 SMM-PI DMA=0
 SMM-TLB=0
 ViRefresh=2200
+Randomize SI/PI Interrupts=0
 
 [A08D0F77-6F82E38C-C:45]
 Good Name=Conker's Bad Fur Day (U) (ECTS Demo) (Fixed)
@@ -1358,6 +1360,7 @@ SMM-FUNC=0
 SMM-PI DMA=0
 SMM-TLB=0
 ViRefresh=2200
+Randomize SI/PI Interrupts=0
 
 [30C7AC50-7704072D-C:45]
 Good Name=Conker's Bad Fur Day (U)
@@ -1374,6 +1377,7 @@ SMM-FUNC=0
 SMM-PI DMA=0
 SMM-TLB=0
 ViRefresh=2200
+Randomize SI/PI Interrupts=0
 
 [46A3F7AF-0F7591D0-C:45]
 Good Name=Cruis'n Exotica (U)

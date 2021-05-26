@@ -100,8 +100,3 @@ Note=Improved input timing. Emulator only hack
 81248172 0001
 812481A4 0000
 812481A6 0000
-
-$Overclock
-Overclock=3
-On By Default=1
-Note=Improves performance in some parts of the game

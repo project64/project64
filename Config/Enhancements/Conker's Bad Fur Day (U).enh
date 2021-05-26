@@ -5,20 +5,61 @@ $Widescreen Hack
 81096900 3CAE
 81098DB0 3C2E
 
-$Basic Sixty Frames
-Author=retroben
-WIP=1
-Note=Needs testing
-D002AC58 0080
-80005003 0001:0003
-
 $Alt Sixty Frames
 WIP=1
-Note=Needs testing
+Overclock=4
+Note=Looks great, but there are music and SFX layering issues. Hard to fix.
 80004FB7 0001
 8002ABA2 000D
 8002BE42 0006
 8003B238 0000
+
+$Basic Sixty Frames
+Author=retroben
+WIP=1
+Overclock=4
+Note=Need to save & load a savestate in order to work. There are still music and SFX layering issues. Hard to fix.
+D002AC58 0080
+80005003 0001:0003
+
+$WIP Sixty Frames
+Author=retroben
+WIP=1
+Overclock=4
+Note=Fixes bar door shutting sound. But it doesn't fix the music layering issues. A useful thing is that if anyone else wants to try to get the other fixes,the code itself is an example-piece where it loads essentially a pointer to allocated copies of asm that gets placed into static TLB spots and writes into that asm as it becomes available. The pointers have 00345678 instead of 80345678 so I have to add the 80 to them with a handful of commands in order to write custom code into them properly. The hard part with that is that any given section of the asm will not always be available when viewing the TLB memory and it can be difficult to identify which TLB spot is for any given functions.
+80004AFF 0001
+80004FA3 0001
+81004FB4 0000
+81006044 0810
+81006046 0000
+81006048 0000
+8100604A 0000
+81400000 3C0A
+81400002 8004
+81400004 8D4A
+81400006 4430
+81400008 1140
+8140000A 0006
+8140000C 0000
+8140000E 0000
+81400010 3C08
+81400012 8000
+81400014 0148
+81400016 4020
+81400018 3C0A
+8140001A 240B
+8140001C 254A
+8140001E 0002
+81400020 AD0A
+81400022 0878
+81400024 400A
+81400026 5000
+81400028 2408
+8140002A 0000
+8140002C 0800
+8140002E 1813
+81400030 0000
+81400032 0000
 
 $Skip Any Cutscene
 Author=retroben

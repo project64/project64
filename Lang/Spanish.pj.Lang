@@ -75,10 +75,10 @@
 
 //Help Menu
 #180#  "Ayuda"
-#181#  "Acerca de los Archivos de Conf&iguración"
 #182#  "&Acerca de Project64"
-#183#  "&Foro de Soporte"
-#184#  "&Pagina Principal"
+#184#  "&Página Web"
+#185#  "&Apoyar a Project64"
+#186#  "&Discord"
 
 //Current Save Slot menu
 #190#  "Predeterminada"

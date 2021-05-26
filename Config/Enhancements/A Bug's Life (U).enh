@@ -1,14 +1,14 @@
 [82DC04FD-CF2D82F4-C:45]
 Name=A Bug's Life (U)
 
-$60 FPS boost
-Author=gamemasterplc
+$60 FPS Boost
 On By Default=1
 Overclock=20
 
-$Lock 60 FPS
+$60 FPS Lock
 Author=theboy181, jangofettdrives/Diag
-Note=Demo runs at 20FPS. Menus and result screen are double paced
+On By Default=1
+Note=Demo runs at 20FPS. Menus and result screen are double paced (no big deal)
 D008ED7F 0002
 8008ED7F 0001
 
