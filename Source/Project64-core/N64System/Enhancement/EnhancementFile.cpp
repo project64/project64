@@ -323,15 +323,15 @@ void CEnhancmentFile::SaveCurrentSection(void)
                 }
                 PluginList += List[i].c_str();
             }
-            Section += stdstr_f("PluginList=%s%s", PluginList.c_str() , m_LineFeed);
+            Section += stdstr_f("Plugin List=%s%s", PluginList.c_str() , m_LineFeed);
         }
         if (Enhancement.GetOnByDefault())
         {
-            Section += stdstr_f("OnByDefault=1%s", m_LineFeed);
+            Section += stdstr_f("On By Default=1%s", m_LineFeed);
         }
         if (Enhancement.OverClock())
         {
-            Section += stdstr_f("OverClock=%d%s", Enhancement.OverClockModifier(), m_LineFeed);
+            Section += stdstr_f("Overclock=%d%s", Enhancement.OverClockModifier(), m_LineFeed);
         }
         if (!Enhancement.GetNote().empty())
         {
