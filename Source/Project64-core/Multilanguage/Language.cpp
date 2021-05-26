@@ -32,10 +32,10 @@ void CLanguage::LoadDefaultStrings(void)
     // File menu
     DEF_STR(MENU_FILE, "&File");
     DEF_STR(MENU_OPEN, "&Open ROM");
-    DEF_STR(MENU_ROM_INFO, "ROM &Info…");
+    DEF_STR(MENU_ROM_INFO, "ROM &Info...");
     DEF_STR(MENU_START, "Start Emulation");
     DEF_STR(MENU_END, "&End Emulation");
-    DEF_STR(MENU_CHOOSE_ROM, "Choose ROM Directory…");
+    DEF_STR(MENU_CHOOSE_ROM, "Choose ROM Directory...");
     DEF_STR(MENU_REFRESH, "Refresh ROM List");
     DEF_STR(MENU_RECENT_ROM, "Recent ROM");
     DEF_STR(MENU_RECENT_DIR, "Recent ROM Directories");
@@ -49,17 +49,17 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MENU_BITMAP, "Capture screenshot");
     DEF_STR(MENU_LIMIT_FPS, "Limit FPS");
     DEF_STR(MENU_SAVE, "&Save State");
-    DEF_STR(MENU_SAVE_AS, "Save As…");
+    DEF_STR(MENU_SAVE_AS, "Save As...");
     DEF_STR(MENU_RESTORE, "&Load State");
-    DEF_STR(MENU_LOAD, "Load…");
+    DEF_STR(MENU_LOAD, "Load...");
     DEF_STR(MENU_CURRENT_SAVE, "Current Saves&tate");
-    DEF_STR(MENU_CHEAT, "&Cheats…");
+    DEF_STR(MENU_CHEAT, "&Cheats...");
     DEF_STR(MENU_GS_BUTTON, "GS Button");
     DEF_STR(MENU_RESUME, "R&esume");
     DEF_STR(MENU_RESET_SOFT, "&Soft Reset");
     DEF_STR(MENU_RESET_HARD, "&Hard Reset");
     DEF_STR(MENU_SWAPDISK, "Swap &Disk");
-    DEF_STR(MENU_ENHANCEMENT, "&Enhancements…");
+    DEF_STR(MENU_ENHANCEMENT, "&Enhancements...");
 
     // Options menu
     DEF_STR(MENU_OPTIONS, "&Options");
@@ -457,7 +457,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(CHEAT_CHANGED_TITLE, "Cheat updated");
 
     // Cheat pop-up menu
-    DEF_STR(CHEAT_ADDNEW, "Add New Cheat…");
+    DEF_STR(CHEAT_ADDNEW, "Add New Cheat...");
     DEF_STR(CHEAT_EDIT, "Edit");
     DEF_STR(CHEAT_DELETE, "Delete");
 
@@ -575,7 +575,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ANDROID_PARENTFOLDER, "Parent folder");
     DEF_STR(ANDROID_DIRECTORIES, "Directories");
     DEF_STR(ANDROID_INTERNAL_MEMORY, "Internal memory");
-    DEF_STR(ANDROID_TITLE, "Scanning…");
+    DEF_STR(ANDROID_TITLE, "Scanning...");
     DEF_STR(ANDROID_OK, "OK");
     DEF_STR(ANDROID_CANCEL, "Cancel");
     DEF_STR(ANDROID_ABOUT_INFO, "Information");
@@ -596,7 +596,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ANDROID_MENU_PAUSE, "Pause");
     DEF_STR(ANDROID_MENU_RESUME, "Resume");
     DEF_STR(ANDROID_MENU_GAMESPEED, "Game Speed");
-    DEF_STR(ANDROID_MENU_CURRENTSAVESTATE, "Current Save State…");
+    DEF_STR(ANDROID_MENU_CURRENTSAVESTATE, "Current Save State...");
     DEF_STR(ANDROID_MENU_CURRENTSAVEAUTO, "Auto");
     DEF_STR(ANDROID_MENU_CURRENTSAVESLOT, "Slot");
     DEF_STR(ANDROID_MENU_CONSOLERESET, "Reset");
