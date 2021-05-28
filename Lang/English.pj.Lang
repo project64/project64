@@ -445,7 +445,7 @@
 #1206#  "Failed to validate the code\n\nMake sure the code in email matches based on your machine"
 #1207#  "Thank you"
 #1208#  "Please enter your support code"
-#1209#  "Please enter the code you recieved in the email.\n\nThis email will be sent to the email address used to support Project64.\n\nPlease note that the code is will only work for a unique machine. This computer ID is:"
+#1209#  "Please enter the code you received in the email.\n\nThe email will be sent to the email address used to support Project64.\n\nPlease note that the code will only work for a unique machine. This computer's ID is:"
 #1210#  "OK"
 #1211#  "Cancel"
 #1212#  "Request Code"
