@@ -482,7 +482,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         if (g_Settings->LoadBool(UserInterface_ShowCPUPer))
         {
             g_Settings->SaveBool(UserInterface_ShowCPUPer, false);
-            g_Notify->DisplayMessage(0, "");
+            g_Notify->DisplayMessage(0, EMPTY_STRING);
         }
         else
         {
@@ -507,7 +507,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         break;
     case ID_DEBUG_SHOW_DLIST_COUNT:
         g_Settings->SaveBool(Debugger_ShowDListAListCount, !g_Settings->LoadBool(Debugger_ShowDListAListCount));
-        g_Notify->DisplayMessage(0, "");
+        g_Notify->DisplayMessage(0, EMPTY_STRING);
         break;
     case ID_DEBUG_LANGUAGE:
         g_Settings->SaveBool(Debugger_DebugLanguage, !g_Settings->LoadBool(Debugger_DebugLanguage));
@@ -516,7 +516,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         break;
     case ID_DEBUG_SHOW_RECOMP_MEM_SIZE:
         g_Settings->SaveBool(Debugger_ShowRecompMemSize, !g_Settings->LoadBool(Debugger_ShowRecompMemSize));
-        g_Notify->DisplayMessage(0, "");
+        g_Notify->DisplayMessage(0, EMPTY_STRING);
         break;
     case ID_DEBUG_SHOW_DIV_BY_ZERO:
         g_Settings->SaveBool(Debugger_ShowDivByZero, !g_Settings->LoadBool(Debugger_ShowDivByZero));
@@ -752,7 +752,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     bool RomLoading = g_Settings->LoadBool(GameRunning_LoadingInProgress);
     bool RomLoaded = g_Settings->LoadStringVal(Game_GameName).length() > 0;
     bool RomList = UISettingsLoadBool(RomBrowser_Enabled) && !CPURunning;
-    bool Enhancement = !inBasicMode && g_Settings->LoadBool(Setting_Enhancement);
+    bool Enhancement = g_Settings->LoadBool(Setting_Enhancement);
 
     CMenuShortCutKey::RUNNING_STATE RunningState = CMenuShortCutKey::RUNNING_STATE_NOT_RUNNING;
     if (g_Settings->LoadBool(GameRunning_CPU_Running))

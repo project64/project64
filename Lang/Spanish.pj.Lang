@@ -5,7 +5,7 @@
 #1  #  "Español"		// LANGUAGE ID
 #2  #  "MELERIX"		// Author
 #3  #  "2.3.2"			// Version
-#4  #  "16/05/2018"		// Date
+#4  #  "25/06/2021"		// Date
 
 //About DLL Dialog
 #5  #  "Lenguaje Actual"
@@ -34,6 +34,8 @@
 #107#  "ROM Reciente"
 #108#  "Directorios de ROMs Recientes"
 #109#  "&Salir"
+#110#  "Abrir &Combo"
+
 
 //System Menu
 #120#  "&Sistema"
@@ -52,16 +54,17 @@
 #133#  "&Reinicio Simple"
 #134#  "&Reinicio Completo"
 #135#  "Intercambiar &Disco"
+#136#  "&Mejoras..."
 
 //Options Menu
 #140#  "&Opciones"
 #141#  "&Pantalla Completa"
 #142#  "&Siempre por Encima"
-#143#  "Configurar Complemento de Gráficos..."
-#144#  "Configurar Complemento de Audio..."
-#145#  "Configurar Complemento de Control..."
-#146#  "Configurar Complemento de RSP..."
-#147#  "Mostrar Uso de la CPU"
+#143#  "Configuración de &Gráficos"
+#144#  "Configuración de &Audio"
+#145#  "Configuración de &Controles"
+#146#  "Configuración de &RSP"
+#147#  "Mostrar &Uso de CPU"
 #148#  "&Ajustes..."
 
 //Debugger Menu
@@ -72,10 +75,10 @@
 
 //Help Menu
 #180#  "Ayuda"
-#181#  "Acerca de los Archivos de Conf&iguración"
 #182#  "&Acerca de Project64"
-#183# "&Foro de Soporte"
-#184# "&Pagina Principal"
+#184#  "&Página Web"
+#185#  "&Apoyar a Project64"
+#186#  "&Discord"
 
 //Current Save Slot menu
 #190#  "Predeterminada"
@@ -97,7 +100,8 @@
 #212#  "Editar Ajustes del Juego"
 #213#  "Editar Trucos"
 #214#  "Complemento Gráfico"
-#215#  "Jugar Juego con Disco"
+#215#  "Jugar con Disco"
+#216#  "Elegir Mejoras..."
 
 //Alternate Name to save Slot
 #220#  "Ranura de Guardado - Predeterminada"
@@ -236,8 +240,15 @@
 #465#  "Mostrar velocidad"
 #466#  "Velocidad de la pantalla:"
 #467#  "Comprobar si Project64 ya está en ejecución"
-#468#  "Directorio Único de Guardados de Juego"
-#469#  "Ruta de ROM 64DD IPL:"
+#468#  "Almacenar partidas de guardado en carpetas separadas"
+#469#  "Ruta de ROM 64DD IPL (Japón):"
+#470#  "Ruta de ROM 64DD IPL (América):"
+#471#  "Ruta de ROM 64DD IPL (Desarrollador):"
+#472#  "Tipo de guardado de disco:"
+#473#  "Habilitar mejoras"
+#474#  "Mostrar barra de estado"
+#475#  "Salir de pantalla completa al perder foco"
+#476#  "Habilitar Discord Rich Presence"
 
 //ROM Browser Tab
 #480#  "Máx # de ROMs recordadas (0-10):"
@@ -258,7 +269,7 @@
 #500#  "La mayoría de estos cambios no tendrán efecto hasta que una nueva ROM sea abierta o la ROM actual sea reiniciada."
 #501#  "Predeterminados del Núcleo"
 #502#  "Estilo de núcleo de la CPU:"
-#503#  "Métodos self mod:"
+#503#  "Métodos <self-mod>:"
 #504#  "Tamaño de memoria predeterminado:"
 #505#  "Vinculación avanzada de bloques"
 #506#  "Iniciar emulación cuando la ROM sea abierta"
@@ -270,6 +281,7 @@
 #512#  "Inicio cambiado"
 #513#  "Proteger memoria"
 #514#  "TLB no mapeado"
+#515#  "Siempre usar núcleo interpretador"
 
 //ROM Options
 #520#  "Estilo de núcleo de la CPU:"
@@ -418,7 +430,7 @@
 #1021#  "&Notas:"
 #1022#  "Agregar Truco"
 #1023#  "Nuevo Truco"
-#1024#  "<dirección> <valor>"
+#1024#  "<dirección> <valor>:<ant.>"
 #1025#  "Opciones:"
 #1026#  "<valor> <etiqueta>"
 
@@ -445,17 +457,25 @@
 * Support Window                                                                 *
 *********************************************************************************/
 #1200#  "Apoya a Project64"
-#1201#  "Project64 es un paquete de software diseñado para emular un sistema de videojuegos Nintendo64 en un PC basado en Microsoft Windows. Esto te permite jugar con software real de N64 de la misma manera como lo sería en el sistema de hardware original.\n\nSi te gusta Project64 y has conseguido algún valor fuera de este, entonces por favor apoya a project64 como muestra de agradecimiento, o tu deseo de ver que esto sea continuamente mejorado.\n\nSi has apoyado a project64:"
+#1201#  "Project64 es un emulador de la Nintendo 64 gratuito y de código abierto.\n\nTe permite jugar con software real de N64 de la misma manera como lo sería en la consola original.\n\nDisculpa la inconveniencia de este mensaje, pero te pido esperar tan solo unos segunditos para disfrutar del resultado de cientos de horas de esfuerzo.\n\nSi puedes y quieres apoyar a Project64 o has obtenido algún valor de éste, entonces por favor apoya a Project64 ya sea como muestra de agradecimiento, o tu deseo de quitar este mensaje.\n\nSi has apoyado a Project64:"
 #1202#  "Introduce el código de notificación"
 #1203#  "Apoya a Project64"
 #1204#  "Continuar"
 #1205#  "Por favor introduce el código de apoyo"
-#1206#  "Código de apoyo incorrecto"
+#1206#  "Error al validar el código.\n\nAsegúrate que el código en el correo coincida con el correspondiente a tu computadora."
 #1207#  "Gracias"
 #1208#  "Introduce el código"
-#1209#  "Por favor introduce el código del email"
+#1209#  "Por favor introduce el código que recibiste en tu correo.\n\nEl correo será enviado a la cuenta que se usó para apoyar a Project64.\n\nComprenda que el código solo funcionará para una única computadora. El ID de esta computadora es:"
 #1210#  "Aceptar"
 #1211#  "Cancelar"
+#1213#  "El código fue enviado a tu correo"
+#1214#  "Fallo al enviar código, por favor asegúrate que este sea el correo con el que apoyaste a Project64"
+
+
+/*** Enhancements ***/
+
+#1300#  "Mejoras"
+
 
 /*********************************************************************************
 * Messages                                                                       *
