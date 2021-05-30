@@ -20,6 +20,7 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
     m_ChangeSettingList.push_back(GameRunning_LimitFPS);
     m_ChangeUISettingList.push_back(UserInterface_InFullScreen);
     m_ChangeUISettingList.push_back(UserInterface_AlwaysOnTop);
+    m_ChangeUISettingList.push_back(UserInterface_ShowingNagWindow);
     m_ChangeSettingList.push_back(UserInterface_ShowCPUPer);
     m_ChangeSettingList.push_back(Logging_GenerateLog);
     m_ChangeSettingList.push_back(Debugger_RecordExecutionTimes);
@@ -1317,6 +1318,13 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     if (RomLoading) { Item.SetItemEnabled(false); }
     MainTitleMenu.push_back(Item);
 
+    if (UISettingsLoadBool(UserInterface_ShowingNagWindow))
+    {
+        for (MenuItemList::iterator MenuItem = MainTitleMenu.begin(); MenuItem != MainTitleMenu.end(); MenuItem++)
+        {
+            MenuItem->SetItemEnabled(false);
+        }
+    }
     AddMenu(hMenu, MainTitleMenu);
 }
 

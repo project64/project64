@@ -39,10 +39,12 @@ void CSupportWindow::Show(HWND hParent, bool Delay)
         }
         m_hParent = hParent;
         m_this = this;
+        UISettingsSaveBool(UserInterface_ShowingNagWindow, true);
         ::SetTimer(nullptr, 0, 2500, TimerProc);
     }
     else
     {
+        UISettingsSaveBool(UserInterface_ShowingNagWindow, true);
         DoModal(hParent);
     }
 }
@@ -169,6 +171,7 @@ LRESULT CSupportWindow::OnTimer(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/,
 
 LRESULT CSupportWindow::OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
+    UISettingsSaveBool(UserInterface_ShowingNagWindow, false);
     EndDialog(wID);
     return TRUE;
 }
@@ -186,6 +189,7 @@ LRESULT CSupportWindow::OnEnterCode(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndC
     EnterCodeWindow.DoModal(m_hWnd);
     if (m_Support.Validated())
     {
+        UISettingsSaveBool(UserInterface_ShowingNagWindow, false);
         EndDialog(wID);
     }
     return TRUE;
