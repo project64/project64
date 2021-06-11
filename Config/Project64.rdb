@@ -10984,7 +10984,7 @@ Counter Factor=1
 Unaligned DMA=1
 
 [1499D5AA-55E1870A-C:45]
-Good Name=Mario and the Mystic Purple Stars v1.3 Final
+Good Name=Mario and the Mystic Purple Stars v1.3
 Status=Compatible
 Counter Factor=1
 Unaligned DMA=1
@@ -11116,3 +11116,81 @@ SMM-FUNC=0
 SMM-TLB=0
 RDRAM Size=8
 ViRefresh=2200
+
+[071D186A-C5633E67-C:45]
+Good Name=Star Revenge 0 - Galaxy of Origins v1.0.4
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[D051C26A-219D418D-C:45]
+Good Name=Void of Insanity v1.1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[4FB3C02A-53DE8E14-C:45]
+Good Name=Evo Q v1.11
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[3E62184E-D4A36C84-C:45]
+Good Name=Evo Q v1.12
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[804EC714-1C1D7F5E-C:45]
+Good Name=Super Mario New Comet
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[B262120F-569F40D6-C:45]
+Good Name=SM64 Into Bowser's Castle (v1.3)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[DD494D34-EAA52089-C:45]
+Good Name=Mario's Vacation Course (v1.2)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[53D21E64-126324D9-C:45]
+Good Name=Mario and the Mystic Purple Stars 1.4
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[C2567895-DE066558-C:45]
+Good Name=Star Revenge 3.5 - Vacation of Cursed Dreams v1.3.2
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[C380A1E6-75432881-C:45]
+Good Name=Star Revenge 4.5 - The Kedama Takeover Rewritten v1.3
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[3A852701-C2A93EC7-C:45]
+Good Name=Star Revenge 8 - Scepter of Hope v1.3.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[BF194212-73269C40-C:45]
+Good Name=Little Comets
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[94A4FFD7-9AB51F0E-C:45]
+Good Name=Weird Snake Dimension
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
