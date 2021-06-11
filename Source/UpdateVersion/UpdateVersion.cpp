@@ -111,7 +111,7 @@ std::string GitRevisionShort(CPath & SourceDirectory)
 
 int main()
 {
-    if (__argc < 4)
+    if (__argc < 3)
     {
         return 0;
     }
