@@ -183,7 +183,6 @@
     <ClInclude Include="N64System\Recompiler\FunctionMap.h" />
     <ClInclude Include="N64System\Recompiler\JumpInfo.h" />
     <ClInclude Include="N64System\Recompiler\LoopAnalysis.h" />
-    <ClInclude Include="N64System\Recompiler\RecompilerClass.h" />
     <ClInclude Include="N64System\Recompiler\RecompilerCodeLog.h" />
     <ClInclude Include="N64System\Recompiler\RecompilerMemory.h" />
     <ClInclude Include="N64System\Recompiler\RecompilerOps.h" />

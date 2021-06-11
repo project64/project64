@@ -91,9 +91,6 @@
     <ClInclude Include="StdString.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stdtypes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SyncEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
