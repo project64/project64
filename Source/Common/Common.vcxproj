@@ -71,7 +71,6 @@
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="StdString.h" />
-    <ClInclude Include="stdtypes.h" />
     <ClInclude Include="SyncEvent.h" />
     <ClInclude Include="Thread.h" />
     <ClInclude Include="Trace.h" />

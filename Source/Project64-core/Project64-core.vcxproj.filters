@@ -524,9 +524,6 @@
     <ClInclude Include="N64System\Recompiler\LoopAnalysis.h">
       <Filter>Header Files\N64 System\Recompiler</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\Recompiler\RecompilerClass.h">
-      <Filter>Header Files\N64 System\Recompiler</Filter>
-    </ClInclude>
     <ClInclude Include="N64System\Recompiler\RecompilerMemory.h">
       <Filter>Header Files\N64 System\Recompiler</Filter>
     </ClInclude>
