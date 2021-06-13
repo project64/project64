@@ -41,10 +41,10 @@ sub CopyArtificat()
 	
     Dim objHTTP
     Set objHTTP = CreateObject("MSXML2.XMLHTTP")
-    objHTTP.open "GET", BuildUrl & "/lastSuccessfulBuild/api/xml", False
+    objHTTP.open "GET", BuildUrl & "/181/api/xml", False
     objHTTP.send
     if (objHTTP.status <> 200) then
-        WScript.StdOut.WriteLine "failed to get job api (" & BuildUrl & "/lastSuccessfulBuild/api/xml)"
+        WScript.StdOut.WriteLine "failed to get job api (" & BuildUrl & "/181/api/xml)"
         WScript.Quit 1
     end if
 
