@@ -55,9 +55,6 @@ enum UISettingID
     File_RecentGameFileCount,
     File_RecentGameFileIndex,
 
-    // Support window
-    SupportWindows_RunCount,
-
     // Debugger UI window positions and sizes
     DebuggerUI_CommandsPos,
     DebuggerUI_MemoryPos,
