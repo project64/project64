@@ -41,7 +41,7 @@ void RegisterUISettings (void)
     AddUISetting(UserInterface_AlwaysOnTop, new CSettingTypeApplication("Settings", "Always on top", (uint32_t)false));
     AddUISetting(UserInterface_ShowStatusBar, new CSettingTypeApplication("Settings", "Show Status Bar", true));
     AddUISetting(UserInterface_ExitFullscreenOnLoseFocus, new CSettingTypeApplication("Settings", "Exit Full Screen On Lose Focus", false));
-    AddUISetting(UserInterface_ShowingNagWindow, new CSettingTypeApplication("Settings", "Showing Nag Window", false));
+    AddUISetting(UserInterface_ShowingNagWindow, new CSettingTypeTempBool(false));
 
     AddUISetting(RomBrowser_Enabled, new CSettingTypeApplication("Rom Browser", "Rom Browser", true));
     AddUISetting(RomBrowser_ColoumnsChanged, new CSettingTypeTempBool(false));
@@ -61,8 +61,6 @@ void RegisterUISettings (void)
     AddUISetting(Directory_LastSave, new CSettingTypeApplication("Directory", "Last Save Directory", Directory_InstantSave));
     AddUISetting(File_RecentGameFileCount, new CSettingTypeApplication("Settings", "Remembered Rom Files", (uint32_t)10));
     AddUISetting(File_RecentGameFileIndex, new CSettingTypeApplicationIndex("Recent File", "Recent Rom", Default_None));
-
-    AddUISetting(SupportWindows_RunCount, new CSettingTypeApplication("Support Project64", "Run Count", (uint32_t)0));
 
     // Debugger UI
     AddUISetting(DebuggerUI_CommandsPos, new CSettingTypeApplication("Debugger UI", "Commands Pos", Default_None));
