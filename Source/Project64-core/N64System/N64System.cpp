@@ -2232,6 +2232,19 @@ bool CN64System::LoadState(const char * FileName)
     return true;
 }
 
+uint32_t CN64System::GetButtons(int32_t Control) const
+{ 
+    CControl_Plugin::fnGetKeys GetKeys = g_Plugins->Control()->GetKeys;
+    if (!UpdateControllerOnRefresh() && GetKeys != nullptr)
+    {
+        BUTTONS Keys;
+        memset(&Keys, 0, sizeof(Keys));
+        GetKeys(Control, &Keys);
+        return Keys.Value;
+    }
+    return m_Buttons[Control]; 
+}
+
 void CN64System::DisplayRSPListCount()
 {
     g_Notify->DisplayMessage(0, stdstr_f("Dlist: %d   Alist: %d   Unknown: %d", m_DlistCount, m_AlistCount, m_UnknownCount).c_str());
@@ -2365,7 +2378,7 @@ void CN64System::RefreshScreen()
     {
         g_Audio->SetViIntr(VI_INTR_TIME);
     }
-    if (g_Plugins->Control()->GetKeys)
+    if (UpdateControllerOnRefresh() && g_Plugins->Control()->GetKeys != nullptr)
     {
         BUTTONS Keys;
         memset(&Keys, 0, sizeof(Keys));

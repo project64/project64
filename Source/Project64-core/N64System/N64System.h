@@ -68,15 +68,15 @@ public:
     void   PluginReset();
     void   ApplyGSButton(void);
 
-    void   Pause();
-    void   RunRSP();
-    bool   SaveState();
-    bool   LoadState(const char * FileName);
-    bool   LoadState();
+    void Pause();
+    void RunRSP();
+    bool SaveState();
+    bool LoadState(const char * FileName);
+    bool LoadState();
+    uint32_t GetButtons(int32_t Control) const;
 
     bool   DmaUsed() const { return m_DMAUsed; }
     void   SetDmaUsed(bool DMAUsed) { m_DMAUsed = DMAUsed; }
-    uint32_t  GetButtons(int32_t Control) const { return m_Buttons[Control]; }
     CPlugins * GetPlugins() { return m_Plugins; }
 
     // Variable used to track that the SP is being handled and stays the same as the real SP in sync core

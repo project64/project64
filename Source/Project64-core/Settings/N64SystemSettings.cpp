@@ -8,6 +8,7 @@ bool CN64SystemSettings::m_bBasicMode;
 bool CN64SystemSettings::m_bLimitFPS;
 bool CN64SystemSettings::m_bShowDListAListCount;
 bool CN64SystemSettings::m_bDisplayFrameRate;
+bool CN64SystemSettings::m_UpdateControllerOnRefresh;
 
 CN64SystemSettings::CN64SystemSettings()
 {
@@ -44,4 +45,5 @@ void CN64SystemSettings::RefreshSettings(void *)
     m_bShowCPUPer = g_Settings->LoadBool(UserInterface_ShowCPUPer);
     m_bShowDListAListCount = g_Settings->LoadBool(Debugger_ShowDListAListCount);
     m_bLimitFPS = g_Settings->LoadBool(GameRunning_LimitFPS);
+    m_UpdateControllerOnRefresh = g_Settings->LoadBool(Setting_UpdateControllerOnRefresh);
 }

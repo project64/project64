@@ -85,6 +85,8 @@ private:
 class CControl_Plugin : public CPlugin
 {
 public:
+    typedef void(CALL * fnGetKeys) (int32_t Control, BUTTONS * Keys);
+
     CControl_Plugin(void);
     ~CControl_Plugin();
 
@@ -95,7 +97,7 @@ public:
     void(CALL *WM_KeyDown) (uint32_t wParam, uint32_t lParam);
     void(CALL *WM_KeyUp) (uint32_t wParam, uint32_t lParam);
     void(CALL *RumbleCommand) (int32_t Control, int32_t bRumble);
-    void(CALL *GetKeys) (int32_t Control, BUTTONS * Keys);
+    fnGetKeys GetKeys;
     void(CALL *ReadController) (int32_t Control, uint8_t * Command);
     void(CALL *ControllerCommand) (int32_t Control, uint8_t * Command);
 

@@ -11,6 +11,7 @@ protected:
     inline static bool bShowCPUPer(void) { return m_bShowCPUPer; }
     inline static bool bShowDListAListCount(void) { return m_bShowDListAListCount; }
     inline static bool bLimitFPS(void) { return m_bLimitFPS; }
+    inline static bool UpdateControllerOnRefresh(void) { return m_UpdateControllerOnRefresh; }
 
 private:
     static void RefreshSettings(void *);
@@ -20,6 +21,7 @@ private:
     static bool m_bLimitFPS;
     static bool m_bShowDListAListCount;
     static bool m_bDisplayFrameRate;
+    static bool m_UpdateControllerOnRefresh;
 
-    static int32_t     m_RefCount;
+    static int32_t m_RefCount;
 };
