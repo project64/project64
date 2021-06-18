@@ -32,6 +32,7 @@ enum UISettingID
     UserInterface_AlwaysOnTop,
     UserInterface_ShowStatusBar,
     UserInterface_ExitFullscreenOnLoseFocus,
+    UserInterface_ShowingNagWindow,
 
     RomBrowser_Enabled,
     RomBrowser_ColoumnsChanged,
@@ -53,9 +54,6 @@ enum UISettingID
     // Recent game
     File_RecentGameFileCount,
     File_RecentGameFileIndex,
-
-    // Support window
-    SupportWindows_RunCount,
 
     // Debugger UI window positions and sizes
     DebuggerUI_CommandsPos,

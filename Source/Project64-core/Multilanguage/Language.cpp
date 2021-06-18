@@ -12,28 +12,9 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(EMPTY_STRING, "");
 
     // Meta information
-
-    // About DLL
     DEF_STR(LANGUAGE_NAME, "");
-    DEF_STR(LANGUAGE_AUTHOR, "");
-    DEF_STR(LANGUAGE_VERSION, "");
-    DEF_STR(LANGUAGE_DATE, "");
-
-    // About DLL dialog
-    DEF_STR(INI_CURRENT_LANG, "Current Language");
-    DEF_STR(INI_AUTHOR, "Author");
-    DEF_STR(INI_VERSION, "Version");
-    DEF_STR(INI_DATE, "Date");
-    DEF_STR(INI_HOMEPAGE, "Visit Home Page");
-    DEF_STR(INI_CURRENT_RDB, "ROM Database (.RDB)");
-    DEF_STR(INI_CURRENT_CHT, "Cheat Code File (.CHT)");
-    DEF_STR(INI_CURRENT_RDX, "Extended ROM Info (.RDX)");
-
-    // About INI title
-    DEF_STR(INI_TITLE, "About Config Files");
 
     // Numbers
-
     DEF_STR(NUMBER_0, "0");
     DEF_STR(NUMBER_1, "1");
     DEF_STR(NUMBER_2, "2");
@@ -45,12 +26,12 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(NUMBER_8, "8");
     DEF_STR(NUMBER_9, "9");
 
-    // Menu
+    /*** Menu ***/
 
     // File menu
     DEF_STR(MENU_FILE, "&File");
     DEF_STR(MENU_OPEN, "&Open ROM");
-    DEF_STR(MENU_ROM_INFO, "ROM &Info....");
+    DEF_STR(MENU_ROM_INFO, "ROM &Info...");
     DEF_STR(MENU_START, "Start Emulation");
     DEF_STR(MENU_END, "&End Emulation");
     DEF_STR(MENU_CHOOSE_ROM, "Choose ROM Directory...");
@@ -64,31 +45,31 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MENU_SYSTEM, "&System");
     DEF_STR(MENU_RESET, "&Reset");
     DEF_STR(MENU_PAUSE, "&Pause");
-    DEF_STR(MENU_BITMAP, "Generate Bitmap");
+    DEF_STR(MENU_BITMAP, "Capture screenshot");
     DEF_STR(MENU_LIMIT_FPS, "Limit FPS");
     DEF_STR(MENU_SAVE, "&Save State");
     DEF_STR(MENU_SAVE_AS, "Save As...");
     DEF_STR(MENU_RESTORE, "&Load State");
     DEF_STR(MENU_LOAD, "Load...");
-    DEF_STR(MENU_CURRENT_SAVE, "Current Save S&tate");
-    DEF_STR(MENU_CHEAT, "Cheats...");
+    DEF_STR(MENU_CURRENT_SAVE, "Current Saves&tate");
+    DEF_STR(MENU_CHEAT, "&Cheats...");
     DEF_STR(MENU_GS_BUTTON, "GS Button");
     DEF_STR(MENU_RESUME, "R&esume");
     DEF_STR(MENU_RESET_SOFT, "&Soft Reset");
     DEF_STR(MENU_RESET_HARD, "&Hard Reset");
     DEF_STR(MENU_SWAPDISK, "Swap &Disk");
-    DEF_STR(MENU_ENHANCEMENT, "Enhancement...");
+    DEF_STR(MENU_ENHANCEMENT, "&Enhancements...");
 
     // Options menu
     DEF_STR(MENU_OPTIONS, "&Options");
-    DEF_STR(MENU_FULL_SCREEN, "&Full Screen");
-    DEF_STR(MENU_ON_TOP, "&Always on &Top");
-    DEF_STR(MENU_CONFG_GFX, "Configure Graphics Plugin...");
-    DEF_STR(MENU_CONFG_AUDIO, "Configure Audio Plugin...");
-    DEF_STR(MENU_CONFG_CTRL, "Configure Controller Plugin...");
-    DEF_STR(MENU_CONFG_RSP, "Configure RSP Plugin...");
-    DEF_STR(MENU_SHOW_CPU, "Show CPU Usage");
-    DEF_STR(MENU_SETTINGS, "&Settings...");
+    DEF_STR(MENU_FULL_SCREEN, "&Fullscreen");
+    DEF_STR(MENU_ON_TOP, "&Always on &top");
+    DEF_STR(MENU_CONFG_GFX, "&Graphic Settings");
+    DEF_STR(MENU_CONFG_AUDIO, "&Audio Settings");
+    DEF_STR(MENU_CONFG_CTRL, "&Input Settings");
+    DEF_STR(MENU_CONFG_RSP, "&RSP Settings");
+    DEF_STR(MENU_SHOW_CPU, "Show CPU &Stats");
+    DEF_STR(MENU_SETTINGS, "Configura&tion");
 
     // Debugger menu
     DEF_STR(MENU_DEBUGGER, "&Debugger");
@@ -123,8 +104,8 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(POPUP_SETTINGS, "Edit Game Settings");
     DEF_STR(POPUP_CHEATS, "Edit Cheats");
     DEF_STR(POPUP_GFX_PLUGIN, "Graphics Plugin");
-	DEF_STR(POPUP_PLAYDISK, "Play Game with Disk");
-	DEF_STR(POPUP_ENHANCEMENTS, "Choose Enhancement");	
+    DEF_STR(POPUP_PLAYDISK, "Play Game with Disk");
+    DEF_STR(POPUP_ENHANCEMENTS, "Pick Enhancements");	
 
     // Alternate name to save slot
     DEF_STR(SAVE_SLOT_DEFAULT, "Save Slot - Default");
@@ -139,20 +120,19 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(SAVE_SLOT_9, "Save Slot - 9");
     DEF_STR(SAVE_SLOT_10, "Save Slot - 10");
 
-    // ROM browser
+    /*** ROM browser ***/
 
     // ROM browser fields
     DEF_STR(RB_FILENAME, "File Name");
     DEF_STR(RB_INTERNALNAME, "Internal Name");
     DEF_STR(RB_GOODNAME, "Good Name");
-    DEF_STR(RB_NAME, "Name");
     DEF_STR(RB_STATUS, "Status");
     DEF_STR(RB_ROMSIZE, "ROM Size");
     DEF_STR(RB_NOTES_CORE, "Notes (core)");
     DEF_STR(RB_NOTES_PLUGIN, "Notes (default plugins)");
     DEF_STR(RB_NOTES_USER, "Notes (user)");
     DEF_STR(RB_CART_ID, "Cartridge ID");
-    DEF_STR(RB_MANUFACTUER, "Media");
+    DEF_STR(RB_MEDIA, "Media Type");
     DEF_STR(RB_COUNTRY, "Country");
     DEF_STR(RB_DEVELOPER, "Developer");
     DEF_STR(RB_CRC1, "CRC1");
@@ -163,6 +143,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(RB_PLAYERS, "Players");
     DEF_STR(RB_FORCE_FEEDBACK, "Force Feedback");
     DEF_STR(RB_FILE_FORMAT, "File Format");
+    DEF_STR(RB_NAME, "Name");
 
     // Select ROM
     DEF_STR(SELECT_ROM_DIR, "Select current ROM directory");
@@ -170,21 +151,20 @@ void CLanguage::LoadDefaultStrings(void)
     // Messages (TODO: GoodN64 is no longer maintained and perhaps should be replaced with references to something else?)
     DEF_STR(RB_NOT_GOOD_FILE, "Bad ROM? Use GoodN64 & check that the RDB is up-to-date.");
 
-    // Options
+    /*** Options ***/
 
     // Options title
-    DEF_STR(OPTIONS_TITLE, "Settings");
+    DEF_STR(OPTIONS_TITLE, "Configura&tion");
 
     // Tabs
     DEF_STR(TAB_PLUGIN, "Plugins");
     DEF_STR(TAB_DIRECTORY, "Directories");
-    DEF_STR(TAB_OPTIONS, "Options");
-    DEF_STR(TAB_ROMSELECTION, "ROM Selection");
+    DEF_STR(TAB_OPTIONS, "General settings");
+    DEF_STR(TAB_ROMSELECTION, "ROM browser");
     DEF_STR(TAB_ADVANCED, "Advanced");
-    DEF_STR(TAB_ROMSETTINGS, "General Settings");
-    DEF_STR(TAB_SHELLINTERGATION, "Shell Integration");
+    DEF_STR(TAB_ROMSETTINGS, "ROM settings");
     DEF_STR(TAB_ROMNOTES, "Notes");
-    DEF_STR(TAB_SHORTCUTS, "Keyboard Shortcuts");
+    DEF_STR(TAB_SHORTCUTS, "Hotkeys");
     DEF_STR(TAB_ROMSTATUS, "Status");
     DEF_STR(TAB_RECOMPILER, "Recompiler");
     DEF_STR(TAB_DEFAULTS, "Defaults");
@@ -221,18 +201,19 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(OPTION_AUTO_FULLSCREEN, "Enter full-screen mode when loading a ROM");
     DEF_STR(OPTION_BASIC_MODE, "Hide advanced settings");
     DEF_STR(OPTION_REMEMBER_CHEAT, "Remember selected cheats");
-    DEF_STR(OPTION_DISABLE_SS, "Disable screen saver when running a ROM");
+    DEF_STR(OPTION_DISABLE_SS, "Disable screensaver when running a ROM");
     DEF_STR(OPTION_DISPLAY_FR, "Display speed");
     DEF_STR(OPTION_CHECK_RUNNING, "Check if Project64 is already running");
-    DEF_STR(OPTION_UNIQUE_SAVE_DIR, "Unique Game Save Directory");
+    DEF_STR(OPTION_UNIQUE_SAVE_DIR, "Store game saves in separate folders");
     DEF_STR(OPTION_CHANGE_FR, "Speed display:");
-    DEF_STR(OPTION_IPL_ROM_PATH, "Japanese Retail 64DD IPL ROM Path:");
-    DEF_STR(OPTION_IPL_ROM_USA_PATH, "American Retail 64DD IPL ROM Path:");
-    DEF_STR(OPTION_IPL_ROM_TOOL_PATH, "Development 64DD IPL ROM Path:");
-    DEF_STR(OPTION_DISKSAVETYPE, "Disk Save Type:");
-    DEF_STR(OPTION_ENABLE_ENHANCEMENTS, "Enable Enhancements");
-    DEF_STR(OPTION_SHOW_STATUS_BAR, "Show Status Bar");
-    DEF_STR(OPTION_EXIT_FULLSCREEN_ON_LOSE_FOCUS, "Exit full screen on lose focus");
+    DEF_STR(OPTION_IPL_ROM_PATH, "Japanese retail 64DD IPL ROM path:");
+    DEF_STR(OPTION_IPL_ROM_USA_PATH, "American retail 64DD IPL ROM path:");
+    DEF_STR(OPTION_IPL_ROM_TOOL_PATH, "Development 64DD IPL ROM path:");
+    DEF_STR(OPTION_DISKSAVETYPE, "Disk save type:");
+    DEF_STR(OPTION_ENABLE_ENHANCEMENTS, "Enable enhancements");
+    DEF_STR(OPTION_SHOW_STATUS_BAR, "Show status bar");
+    DEF_STR(OPTION_EXIT_FULLSCREEN_ON_LOSE_FOCUS, "Exit fullscreen on lose focus");
+    DEF_STR(OPTION_DISCORD_RPC, "Enable Discord Rich Presence");
 
     // ROM browser tab
     DEF_STR(RB_MAX_ROMS, "Max # of ROMs remembered (0-10):");
@@ -266,6 +247,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ADVANCE_SMM_VALIDATE, "Start changed");
     DEF_STR(ADVANCE_SMM_PROTECT, "Protect memory");
     DEF_STR(ADVANCE_SMM_TLB, "TLB unmapping");
+    DEF_STR(ADVANCE_ALWAYS_INTERPRETER, "Always use interpreter core");
 
     // ROM options
     DEF_STR(ROM_CPU_STYLE, "CPU core style:");
@@ -283,7 +265,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ROM_AUDIO_SIGNAL, "RSP audio signal");
     DEF_STR(ROM_FIXED_AUDIO, "Fixed audio timing");
     DEF_STR(ROM_FUNC_FIND, "Function lookup method:");
-    DEF_STR(ROM_CUSTOM_SMM, "Custom self mod Method");
+    DEF_STR(ROM_CUSTOM_SMM, "Custom self-mod Method");
     DEF_STR(ROM_SYNC_AUDIO, "Sync using audio");
     DEF_STR(ROM_COUNTPERBYTE, "AI count per byte:");
     DEF_STR(ROM_32BIT, "32-bit engine:");
@@ -291,8 +273,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ROM_OVER_CLOCK_MODIFIER, "Overclock modifier:");
     DEF_STR(ROM_UNALIGNED_DMA, "Unaligned DMA");
     DEF_STR(ROM_RANDOMIZE_SIPI_INTERRUPTS, "Randomize SI/PI interrupts");
-    DEF_STR(ROM_MEM_SIZE_NOTE, "Note: 8 MB is forced for Unknown ROMs.");
-    DEF_STR(ROM_DISK_SEEK_TIMING, "Disk Seek Timing:");
+    DEF_STR(ROM_DISK_SEEK_TIMING, "Disk seek timing:");
     DEF_STR(ROM_DISK_SEEK_TIMING_TURBO, "Turbo");
     DEF_STR(ROM_DISK_SEEK_TIMING_SLOW, "Slow");
 
@@ -330,9 +311,6 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(SAVE_SRAM, "SRAM");
     DEF_STR(SAVE_FLASHRAM, "Flash RAM");
 
-    // Shell integration tab
-    DEF_STR(SHELL_TEXT, "File extension association:");
-
     // ROM notes
     DEF_STR(NOTE_STATUS, "ROM status:");
     DEF_STR(NOTE_CORE, "Core note:");
@@ -353,7 +331,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ACCEL_CPUSTATE_4, "Game playing (full-screen)");
     DEF_STR(ACCEL_DETECTKEY, "Detect Key");
 
-    // Frame rate option
+    // Framerate option
     DEF_STR(STR_FR_VIS, "Vertical interrupts per second");
     DEF_STR(STR_FR_DLS, "Display lists per second");
     DEF_STR(STR_FR_PERCENT, "Percentage of full speed");
@@ -373,7 +351,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(DISKSAVE_SHADOW, "Full Disk Copy");
     DEF_STR(DISKSAVE_RAM, "Save Area Only");
 
-    // ROM information
+    /*** ROM information ***/
 
     // ROM info title
     DEF_STR(INFO_TITLE, "ROM Information");
@@ -391,7 +369,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(INFO_CIC_CHIP_TEXT, "CIC chip:");
     DEF_STR(INFO_MD5_TEXT, "MD5:");
 
-    // Cheats
+    /*** Cheats ***/
 
     // Cheat list
     DEF_STR(CHEAT_TITLE, "Cheats");
@@ -424,7 +402,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(CHEAT_NOTES, "&Notes:");
     DEF_STR(CHEAT_ADDCHEAT_ADD, "Add Cheat");
     DEF_STR(CHEAT_ADDCHEAT_NEW, "New Cheat");
-    DEF_STR(CHEAT_ADDCHEAT_CODEDES, "<address> <value>");
+    DEF_STR(CHEAT_ADDCHEAT_CODEDES, "<address> <value>:<old>");
     DEF_STR(CHEAT_ADDCHEAT_OPT, "Options:");
     DEF_STR(CHEAT_ADDCHEAT_OPTDES, "<value> <label>");
 
@@ -464,11 +442,11 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MSG_SUPPORT_REQUESTCODE_SUCCESS, "Code has been sent to your email");
     DEF_STR(MSG_SUPPORT_REQUESTCODE_FAIL, "Failed to send code, please make sure it is the email you used when you supported Project64");
 
-    // Enhancements
+    /*** Enhancements ***/
 
     DEF_STR(ENHANCEMENT_TITLE, "Enhancements");
 
-    // Messages
+    /*** Messages ***/
 
     DEF_STR(MSG_CPU_PAUSED, "*** CPU PAUSED ***");
     DEF_STR(MSG_CPU_RESUMED, "CPU resumed");
@@ -536,7 +514,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MSG_CHEAT_INVALID_MSG, "Failed to update cheat, it is invalid");
     DEF_STR(MSG_CHEAT_INVALID_TITLE, "Invalid Cheat");
 
-    // Android
+    /*** Android ***/
 
     DEF_STR(ANDROID_SETTINGS, "Settings");
     DEF_STR(ANDROID_FORUM, "Help/Forum");
@@ -559,9 +537,9 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ANDROID_ABOUT_REVISION, "Revision");
     DEF_STR(ANDROID_ABOUT_TEXT, "Project64 for Android\u2122 is a port of the Windows version of Project64.The Android\u2122 version can play most N64 games.");
     DEF_STR(ANDROID_ABOUT_PJ64_AUTHORS, "Project64 Authors.");
-	DEF_STR(ANDROID_DISCORD, "Discord");
-	DEF_STR(ANDROID_SUPPORT_PJ64, "Support Project64");
-	DEF_STR(ANDROID_REVIEW_PJ64, "Review Project64");
+    DEF_STR(ANDROID_DISCORD, "Discord");
+    DEF_STR(ANDROID_SUPPORT_PJ64, "Support Project64");
+    DEF_STR(ANDROID_REVIEW_PJ64, "Review Project64");
 
     // In-game menu
     DEF_STR(ANDROID_MENU_SETTINGS, "Settings");

@@ -5,7 +5,7 @@
 
 [Meta]
 Author=Project64 Team
-Date=2021/05/12
+Date=2021/05/30
 Homepage=www.pj64-emu.com
 Version=3.0.0
 
@@ -276,7 +276,7 @@ Good Name=A Bug's Life (U)
 Internal Name=A Bug's Life
 Status=Compatible
 Counter Factor=1
-RDRAM Size=4
+RDRAM Size=8
 ViRefresh=2200
 
 [62F6BE95-F102D6D6-C:50]
@@ -1283,7 +1283,7 @@ Clear Frame=2
 RDRAM Size=4
 
 [2B6FA7C0-09A71225-C:45]
-Good Name=Clay Fighter 63 1-3 (U) (beta)
+Good Name=Clay Fighter 63 1-3 (U) (Beta)
 Internal Name=CLAYFIGHTER 63
 Status=Compatible
 32bit=Yes
@@ -1327,9 +1327,10 @@ SMM-FUNC=0
 SMM-PI DMA=0
 SMM-TLB=0
 ViRefresh=2200
+Randomize SI/PI Interrupts=0
 
 [8BC3A47A-74221294-C:45]
-Good Name=Conker's Bad Fur Day (U) (Debug Version)
+Good Name=Conker's Bad Fur Day (U) (Debug)
 Internal Name=CONKER BFD DEBUG
 Status=Compatible
 Clear Frame=2
@@ -1343,9 +1344,10 @@ SMM-FUNC=0
 SMM-PI DMA=0
 SMM-TLB=0
 ViRefresh=2200
+Randomize SI/PI Interrupts=0
 
 [A08D0F77-6F82E38C-C:45]
-Good Name=Conker's Bad Fur Day (U) (ECTS Demo)
+Good Name=Conker's Bad Fur Day (U) (ECTS Demo) (Fixed)
 Internal Name=CBFD ECTS
 Status=Compatible
 Clear Frame=2
@@ -1358,6 +1360,7 @@ SMM-FUNC=0
 SMM-PI DMA=0
 SMM-TLB=0
 ViRefresh=2200
+Randomize SI/PI Interrupts=0
 
 [30C7AC50-7704072D-C:45]
 Good Name=Conker's Bad Fur Day (U)
@@ -1374,6 +1377,7 @@ SMM-FUNC=0
 SMM-PI DMA=0
 SMM-TLB=0
 ViRefresh=2200
+Randomize SI/PI Interrupts=0
 
 [46A3F7AF-0F7591D0-C:45]
 Good Name=Cruis'n Exotica (U)
@@ -1602,8 +1606,8 @@ Status=Compatible
 RDRAM Size=4
 
 [906C3F77-CE495EA1-C:45]
-Good Name=DINO PLANET
-Internal Name=Dinosaur Planet
+Good Name=Dinosaur Planet (U) (Beta) (Unreleased)
+Internal Name=DINO PLANET
 Status=Compatible
 
 [C16C421B-A21580F7-C:45]
@@ -1744,6 +1748,12 @@ Status=Compatible
 32bit=Yes
 RDRAM Size=4
 Save Type=16kbit Eeprom
+
+[EB85EBC9-596682AF-C:0]
+Good Name=Doubutsu Banchou (J) (Unreleased)
+Internal Name=DOUBUTSU BANCHOU
+Status=Compatible
+RDRAM Size=4
 
 [BD8E206D-98C35E1C-C:4A]
 Good Name=Doubutsu no Mori (J)
@@ -2019,7 +2029,7 @@ Clear Frame=2
 RDRAM Size=4
 
 [CC3CC8B3-0EC405A4-C:50]
-Good Name=F-1 World Grand Prix (E) (beta)
+Good Name=F-1 World Grand Prix (E) (Beta)
 Internal Name=F1 WORLD GRAND PRIX
 Status=Compatible
 32bit=Yes
@@ -2263,6 +2273,16 @@ Internal Name=Fox Sports Hoops 99
 Status=Compatible
 32bit=Yes
 Culling=1
+RDRAM Size=4
+
+[4471C13E-CE7F44A9-C:0]
+Good Name=Freak Boy (U) (Alpha) (Unreleased)
+Internal Name=
+Status=Issues (core)
+Core Note=Breakpoint error when firing missile with Recompiler
+CPU Type=Interpreter
+Linking=0
+SMM-Protect=1
 RDRAM Size=4
 
 [F774EAEE-F0D8B13E-C:4A]
@@ -3279,7 +3299,9 @@ RDRAM Size=4
 [FCE0D799-65316C54-C:45]
 Good Name=Knife Edge - Nose Gunner (U)
 Internal Name=KNIFE EDGE
-Status=Issues (core)
+Status=Compatible
+Counter Factor=1
+
 32bit=Yes
 Culling=1
 RDRAM Size=4
@@ -3665,6 +3687,7 @@ RDRAM Size=4
 Good Name=Mario Kart 64 (U)
 Internal Name=MARIOKART64
 Status=Compatible
+Counter Factor=1
 32bit=Yes
 Culling=1
 Primary Frame Buffer=1
@@ -4036,6 +4059,7 @@ Good Name=Mortal Kombat Trilogy (E)
 Internal Name=MortalKombatTrilogy
 Status=Compatible
 32bit=Yes
+Counter Factor=1
 RDRAM Size=4
 
 [D9F75C12-A8859B59-C:45]
@@ -4043,6 +4067,7 @@ Good Name=Mortal Kombat Trilogy (U) (V1.0)
 Internal Name=MortalKombatTrilogy
 Status=Compatible
 32bit=Yes
+Counter Factor=1
 RDRAM Size=4
 
 [19F55D46-73A27B34-C:45]
@@ -4050,6 +4075,7 @@ Good Name=Mortal Kombat Trilogy (U) (V1.1)
 Internal Name=MortalKombatTrilogy
 Status=Compatible
 32bit=Yes
+Counter Factor=1
 RDRAM Size=4
 
 [83F33AA9-A901D40D-C:45]
@@ -4057,6 +4083,7 @@ Good Name=Mortal Kombat Trilogy (U) (V1.2)
 Internal Name=MortalKombatTrilogy
 Status=Compatible
 32bit=Yes
+Counter Factor=1
 RDRAM Size=4
 
 [B8F0BD03-4479189E-C:50]
@@ -6381,7 +6408,7 @@ Clear Frame=2
 RDRAM Size=4
 
 [9FC385E5-3ECC05C7-C:50]
-Good Name=The Legend of Zelda - Majora's Mask (E) (M4) (Debug Version)
+Good Name=The Legend of Zelda - Majora's Mask (E) (M4) (Debug)
 Internal Name=ZELDA MAJORA'S MASK
 Status=Compatible
 32bit=Yes
@@ -6581,7 +6608,7 @@ SMM-PI DMA=0
 SMM-TLB=0
 
 [917D18F6-69BC5453-C:45]
-Good Name=The Legend of Zelda - Ocarina of Time - Master Quest (U) (Debug Version)
+Good Name=The Legend of Zelda - Ocarina of Time - Master Quest (U) (Debug)
 Internal Name=THE LEGEND OF ZELDA
 Status=Compatible
 32bit=Yes
@@ -6874,7 +6901,7 @@ Counter Factor=1
 RDRAM Size=4
 
 [782A9075-E552631D-C:44]
-Good Name=Toy Story 2 (G)
+Good Name=Toy Story 2 (G) (V1.0)
 Internal Name=Toy Story 2
 Status=Compatible
 32bit=Yes
@@ -6890,7 +6917,7 @@ Counter Factor=1
 RDRAM Size=4
 
 [A150743E-CF2522CD-C:45]
-Good Name=Toy Story 2 (U)
+Good Name=Toy Story 2 (U) (V1.0)
 Internal Name=Toy Story 2
 Status=Compatible
 32bit=Yes
@@ -6970,6 +6997,13 @@ Status=Compatible
 32bit=Yes
 AudioResetOnLoad=Yes
 Counter Factor=1
+RDRAM Size=4
+
+[24699912-082B3068-C:45]
+Good Name=Turok - Dinosaur Hunter (U) (E3 Alpha) (Fixed)
+Internal Name=TUROKDH_E3_1996ALPHA
+Status=Unsupported
+Core Notes=Hangs on a black screen. Game is playable on real hardware.
 RDRAM Size=4
 
 [2F70F10D-5C4187FF-C:45]
@@ -7887,7 +7921,6 @@ Fixed Audio=0
 [7BD92DC6-8426D239-C:4A]
 Good Name=Sim City 64 (J)
 Status=Issues (plugin)
-Fixed Audio=1
 Linking=Off
 
 [905063EB-6FAF9C14-C:4A]
@@ -8888,7 +8921,7 @@ Status=Compatible
 RDRAM Size=4
 
 [75A0B893-4CA321B5-C:0]
-Good Name=Robotech - Crystal Dreams (U) (beta)
+Good Name=Robotech - Crystal Dreams (U) (Beta)
 Internal Name=Robotech - Crystal Dreams (PD)
 Status=Compatible
 32bit=Yes
@@ -9375,7 +9408,7 @@ RDRAM Size=4
 [D55891EB-2BEFD9C8-C:0]
 Good Name=MGC 2011 Demo (PD)
 Internal Name=shut up and code
-Status=Unsupported
+Status=Issues (core)
 32bit=Yes
 CPU Type=Interpreter
 
@@ -9634,7 +9667,6 @@ Unaligned DMA=1
 [0AE17AAE-F247736B-C:45]
 Good Name=SM64 Last Impact V1.1
 Status=Compatible
-32bit=No
 Counter Factor=1
 Unaligned DMA=1
 
@@ -9797,7 +9829,6 @@ Unaligned DMA=1
 [DC493C8D-E033E6F2-C:45]
 Good Name=SM64 Last Impact V1.2
 Status=Compatible
-32bit=No
 Counter Factor=1
 Unaligned DMA=1
 
@@ -9898,7 +9929,6 @@ Unaligned DMA=1
 Good Name=Ztar Attack 2 - A Blast to the Past v1.0b
 Status=Compatible
 Counter Factor=1
-32bit=No
 Unaligned DMA=1
 
 [D50347DB-B743E736-C:45]
@@ -9921,7 +9951,6 @@ Unaligned DMA=1
 Good Name=The Super Mario Bros. Super Show 64
 Status=Compatible
 Counter Factor=1
-32bit=No
 Fast SP=No
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -9933,7 +9962,6 @@ Unaligned DMA=1
 Good Name=The Super Mario Bros. Super Show 64 (Widescreen)
 Status=Compatible
 Counter Factor=1
-32bit=No
 Fast SP=No
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -9951,7 +9979,6 @@ Unaligned DMA=1
 Good Name=Yoshi's Adventure 64 1.2b
 Status=Compatible
 Counter Factor=1
-32bit=No
 Unaligned DMA=1
 
 [50534DB6-34165C1E-C:45]
@@ -9976,7 +10003,6 @@ Unaligned DMA=1
 Good Name=The Super Mario Bros. Super Show 64 v1.1
 Status=Compatible
 Counter Factor=1
-32bit=No
 Fast SP=No
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -9988,7 +10014,6 @@ Unaligned DMA=1
 Good Name=The Super Mario Bros. Super Show 64 v1.1 (Widescreen)
 Status=Compatible
 Counter Factor=1
-32bit=No
 Fast SP=No
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -10012,7 +10037,6 @@ Unaligned DMA=1
 Good Name=The Super Mario Bros. Super Show 64 v1.2
 Status=Compatible
 Counter Factor=1
-32bit=No
 Fast SP=No
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -10024,7 +10048,6 @@ Unaligned DMA=1
 Good Name=The Super Mario Bros. Super Show 64 v1.2 (Widescreen)
 Status=Compatible
 Counter Factor=1
-32bit=No
 Fast SP=No
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -10347,7 +10370,6 @@ Unaligned DMA=1
 Good Name=Super Mario The Lost Dreams V1.0
 Status=Compatible
 Counter Factor=1
-32bit=No
 Fast SP=No
 Linking=Off
 SMM-FUNC=0
@@ -10371,7 +10393,6 @@ Unaligned DMA=1
 Good Name=Super Mario The Lost Dreams V1.1
 Status=Compatible
 Counter Factor=1
-32bit=No
 Fast SP=No
 Linking=Off
 SMM-FUNC=0
@@ -10561,7 +10582,6 @@ Unaligned DMA=1
 Good Name=Paper Mario - Master Quest
 Status=Compatible
 Counter Factor=1
-32bit=No
 Reg Cache=No
 Unaligned DMA=1
 
@@ -10658,7 +10678,6 @@ Unaligned DMA=1
 [65C17CD6-70C0AF14-C:45]
 Good Name=The Legend of Zelda - Ocarina of Time Redux 2.0 (U)
 Status=Compatible
-32bit=No
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -10705,7 +10724,6 @@ Unaligned DMA=1
 [642AF8F6-1CDB82A7-C:45]
 Good Name=The Legend of Zelda - Ocarina of Time Redux 2.1 (U)
 Status=Compatible
-32bit=No
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -10830,7 +10848,6 @@ Unaligned DMA=1
 [F099270C-B3639549-C:45]
 Good Name=The Legend of Zelda - Master Of Time
 Status=Compatible
-32bit=No
 Counter Factor=1
 SMM-Protect=1
 Unaligned DMA=1
@@ -10862,7 +10879,6 @@ Unaligned DMA=1
 [CF2E9419-6F97E25D-C:45]
 Good Name=Dark Hyrule Fantasy - Villa Muerti Demo Patch
 Status=Compatible
-32bit=No
 Counter Factor=1
 SMM-Protect=1
 Unaligned DMA=1
@@ -10933,12 +10949,6 @@ Status=Compatible
 Counter Factor=1
 Unaligned DMA=1
 
-[635A42C5-BDC58EDC-C:45]
-Good Name=Super Mario 74 Extreme Edition (English)
-Status=Compatible
-Counter Factor=1
-Unaligned DMA=1
-
 [AECC567C-F5CD7F4F-C:45]
 Good Name=The Phantom's Christmas Call (English)
 Status=Compatible
@@ -10984,7 +10994,7 @@ Counter Factor=1
 Unaligned DMA=1
 
 [1499D5AA-55E1870A-C:45]
-Good Name=Mario and the Mystic Purple Stars v1.3 Final
+Good Name=Mario and the Mystic Purple Stars v1.3
 Status=Compatible
 Counter Factor=1
 Unaligned DMA=1
@@ -11114,5 +11124,82 @@ Culling=1
 SMM-Cache=0
 SMM-FUNC=0
 SMM-TLB=0
-RDRAM Size=8
 ViRefresh=2200
+
+[071D186A-C5633E67-C:45]
+Good Name=Star Revenge 0 - Galaxy of Origins v1.0.4
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[D051C26A-219D418D-C:45]
+Good Name=Void of Insanity v1.1.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[4FB3C02A-53DE8E14-C:45]
+Good Name=Evo Q v1.11
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[3E62184E-D4A36C84-C:45]
+Good Name=Evo Q v1.12
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[804EC714-1C1D7F5E-C:45]
+Good Name=Super Mario New Comet
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[B262120F-569F40D6-C:45]
+Good Name=SM64 Into Bowser's Castle (v1.3)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[DD494D34-EAA52089-C:45]
+Good Name=Mario's Vacation Course (v1.2)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[53D21E64-126324D9-C:45]
+Good Name=Mario and the Mystic Purple Stars 1.4
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[C2567895-DE066558-C:45]
+Good Name=Star Revenge 3.5 - Vacation of Cursed Dreams v1.3.2
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[C380A1E6-75432881-C:45]
+Good Name=Star Revenge 4.5 - The Kedama Takeover Rewritten v1.3
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[3A852701-C2A93EC7-C:45]
+Good Name=Star Revenge 8 - Scepter of Hope v1.3.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[BF194212-73269C40-C:45]
+Good Name=Little Comets
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[94A4FFD7-9AB51F0E-C:45]
+Good Name=Weird Snake Dimension
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1

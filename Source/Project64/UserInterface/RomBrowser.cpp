@@ -40,14 +40,14 @@ void CRomBrowser::GetFieldInfo(ROMBROWSER_FIELDS_LIST & Fields, bool UseDefault 
     AddField(Fields, "File Name", -1, RB_FileName, 218, RB_FILENAME, UseDefault);
     AddField(Fields, "Internal Name", -1, RB_InternalName, 200, RB_INTERNALNAME, UseDefault);
     AddField(Fields, "Good Name", -1, RB_GoodName, 218, RB_GOODNAME, UseDefault);
-    AddField(Fields, "Name", 0, RB_Name, 218, RB_NAME, UseDefault);
-    AddField(Fields, "Status", 1, RB_Status, 92, RB_STATUS, UseDefault);
+    AddField(Fields, "Name", 0, RB_Name, 417, RB_NAME, UseDefault);
+    AddField(Fields, "Status", 1, RB_Status, 206, RB_STATUS, UseDefault);
     AddField(Fields, "Rom Size", -1, RB_RomSize, 100, RB_ROMSIZE, UseDefault);
     AddField(Fields, "Notes (Core)", -1, RB_CoreNotes, 120, RB_NOTES_CORE, UseDefault);
     AddField(Fields, "Notes (default plugins)", -1, RB_PluginNotes, 188, RB_NOTES_PLUGIN, UseDefault);
     AddField(Fields, "Notes (User)", -1, RB_UserNotes, 100, RB_NOTES_USER, UseDefault);
     AddField(Fields, "Cartridge ID", -1, RB_CartridgeID, 100, RB_CART_ID, UseDefault);
-    AddField(Fields, "Media", -1, RB_Media, 100, RB_MANUFACTUER, UseDefault);
+    AddField(Fields, "Media", -1, RB_Media, 100, RB_MEDIA, UseDefault);
     AddField(Fields, "Country", -1, RB_Country, 100, RB_COUNTRY, UseDefault);
     AddField(Fields, "Developer", -1, RB_Developer, 100, RB_DEVELOPER, UseDefault);
     AddField(Fields, "CRC1", -1, RB_Crc1, 100, RB_CRC1, UseDefault);
@@ -794,8 +794,16 @@ void CRomBrowser::RomList_OpenRom(uint32_t /*pnmh*/)
     }
     pRomInfo = &m_RomInfo[lvItem.lParam];
 
-    if (!pRomInfo) { return; }
+    if (!pRomInfo)
+    {
+        return; 
+    }
     m_StopRefresh = true;
+
+    if (UISettingsLoadBool(UserInterface_ShowingNagWindow))
+    {
+        return;
+    }
 
     if ((CPath(pRomInfo->szFullFileName).GetExtension() != "ndd") && (CPath(pRomInfo->szFullFileName).GetExtension() != "d64"))
         CN64System::RunFileImage(pRomInfo->szFullFileName);
