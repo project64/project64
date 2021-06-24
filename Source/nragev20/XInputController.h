@@ -61,7 +61,7 @@ number, ie. first XInput controller is first N64 player, etc.
 #include <xinput.h>
 
 // Defines
-#define N64_ANALOG_MAX 127
+#define N64_ANALOG_MAX 88
 #define XC_ANALOG_MAX 32767
 #define BUTTON_ANALOG_VALUE 60
 
