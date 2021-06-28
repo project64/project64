@@ -771,7 +771,7 @@ bool CCodeBlock::Compile()
     MD5(g_MMU->Rdram() + PAddr, (VAddrLast() - VAddrFirst()) + 4).get_digest(m_Hash);
 
 #if defined(ANDROID) && (defined(__arm__) || defined(_M_ARM))
-    __clear_cache_android((uint8_t *)((uint32_t)m_CompiledLocation & ~1), m_CompiledLocationEnd);
+	__clear_cache((uint8_t *)((uint32_t)m_CompiledLocation & ~1), m_CompiledLocationEnd);
 #endif
     return true;
 }

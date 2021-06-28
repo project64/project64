@@ -4,6 +4,7 @@
 #include <strings.h>
 #endif
 
+#include "Platform.h"
 #include "File.h"
 #include "CriticalSection.h"
 #include <string>

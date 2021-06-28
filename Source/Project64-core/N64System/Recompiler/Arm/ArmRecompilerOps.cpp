@@ -11,7 +11,8 @@
 #include <Project64-core/N64System/Recompiler/SectionInfo.h>
 #include <Project64-core/N64System/Recompiler/LoopAnalysis.h>
 #include <Project64-core/N64System/Recompiler/Arm/ArmRecompilerOps.h>
-#include <Project64-core/N64System/N64Class.h>
+#include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/N64Rom.h>
 #include <Project64-core/ExceptionHandler.h>
 
 uint32_t CArmRecompilerOps::m_TempValue = 0;

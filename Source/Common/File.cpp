@@ -1,4 +1,7 @@
 #include "File.h"
+#include "path.h"
+#include <stdio.h>
+#include <string.h>
 #ifdef _WIN32
 #include <io.h>
 #define USE_WINDOWS_API

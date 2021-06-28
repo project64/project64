@@ -1,4 +1,5 @@
 #pragma once
+#include <stddef.h>
 
 enum MEM_PROTECTION
 {

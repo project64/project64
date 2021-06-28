@@ -29,7 +29,7 @@ CEnhancements::GAMESHARK_CODE::GAMESHARK_CODE(uint32_t Command, uint16_t Value, 
 }
 
 CEnhancements::CEnhancements() :
-    m_ScanFileThread(stScanFileThread),
+    m_ScanFileThread((CThread::CTHREAD_START_ROUTINE)stScanFileThread),
     m_Scan(true),
     m_Scanned(false),
     m_UpdateCheats(false),
@@ -112,7 +112,7 @@ void CEnhancements::UpdateCheats(const CEnhancementList & Cheats)
         {
             m_CheatFiles.erase(CheatFileItr);
         }
-        m_CheatFile = std::make_unique<CEnhancmentFile>(OutFile, CEnhancement::CheatIdent);
+        m_CheatFile.reset(new CEnhancmentFile(OutFile, CEnhancement::CheatIdent));
         m_CheatFiles.insert(SectionFiles::value_type(SectionIdent, OutFile));
     }
 
@@ -158,7 +158,7 @@ void CEnhancements::UpdateEnhancements(const CEnhancementList & Enhancements)
         {
             m_EnhancementFiles.erase(EnhancementFileItr);
         }
-        m_EnhancementFile = std::make_unique<CEnhancmentFile>(OutFile, CEnhancement::EnhancementIdent);
+        m_EnhancementFile.reset(new CEnhancmentFile(OutFile, CEnhancement::EnhancementIdent));
         m_EnhancementFiles.insert(SectionFiles::value_type(SectionIdent, OutFile));
     }
 
@@ -246,7 +246,7 @@ void CEnhancements::LoadEnhancements(const char * Ident, SectionFiles & Files, s
         {
             if (File.get() == nullptr || strcmp(File->FileName(), CheatFile) != 0)
             {
-                File = std::make_unique<CEnhancmentFile>(CheatFile, Ident);
+                File.reset(new CEnhancmentFile(CheatFile, Ident));
             }
             EnhancementList.clear();
             File->GetEnhancementList(SectionIdent.c_str(), EnhancementList);

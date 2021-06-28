@@ -1,6 +1,8 @@
 #include "CriticalSection.h"
 #ifdef _WIN32
 #include <Windows.h>
+#else
+#include <pthread.h>
 #endif
 
 CriticalSection::CriticalSection()

@@ -14,6 +14,7 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Plugin.h>
 #include <Common/Trace.h>
+#include <Common/Thread.h>
 #include "jniBridge.h"
 #include "jniBridgeSettings.h"
 #include "JavaBridge.h"
@@ -28,9 +29,6 @@
 #define EXPORT      extern "C" __attribute__((visibility("default")))
 #define CALL
 #endif
-
-CJniBridegSettings * JniBridegSettings = NULL;
-CJavaRomList * g_JavaRomList = NULL;
 
 #ifdef ANDROID
 #include <android/log.h>
@@ -54,6 +52,9 @@ class AndroidLogger : public CTraceModule
     {
     }
 };
+
+CJniBridegSettings * JniBridegSettings = NULL;
+CJavaRomList * g_JavaRomList = NULL;
 AndroidLogger * g_Logger = NULL;
 static pthread_key_t g_ThreadKey;
 static JavaVM* g_JavaVM = NULL;
@@ -64,75 +65,6 @@ jobject g_GLThread = NULL;
 
 static void Android_JNI_ThreadDestroyed(void*);
 static void Android_JNI_SetupThread(void);
-
-static void watch_uninstall(const char *baseDir)
-{
-    CPath lockfile(baseDir, "uninstall.lock");
-    __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "LockFile = %s", (const char *)lockfile);
-
-    int fd = open(lockfile, O_CREAT);
-    __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "fd = %d", (unsigned int)fd);
-    if (flock(fd, LOCK_EX | LOCK_NB) == 0)
-    {
-        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "I have the lock");
-    }
-    else
-    {
-        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "I don't have the lock");
-        exit(1);
-    }
-
-    CPath TestDir("/data/data/emu.project64", "");
-    for (;;)
-    {
-        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "start");
-        int fileDescriptor = inotify_init();
-        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "fileDescriptor = %d", fileDescriptor);
-        if (fileDescriptor < 0)
-        {
-            __android_log_print(ANDROID_LOG_ERROR, "watch_uninstall", "inotify_init failed !!!");
-            exit(1);
-        }
-
-        int watchDescriptor;
-        watchDescriptor = inotify_add_watch(fileDescriptor, TestDir, IN_DELETE);
-        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "watchDescriptor = %d", watchDescriptor);
-        if (watchDescriptor < 0)
-        {
-            __android_log_print(ANDROID_LOG_ERROR, "watch_uninstall", "inotify_add_watch failed !!!");
-            exit(1);
-        }
-
-        enum
-        {
-            EVENT_SIZE = sizeof(struct inotify_event),
-            EVENT_BUF_LEN = (1024 * (EVENT_SIZE + 16))
-        };
-        struct inotify_event event;
-        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "read event");
-        char buffer[EVENT_BUF_LEN];
-        size_t readBytes = read(fileDescriptor, &buffer, EVENT_BUF_LEN);
-        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "readBytes = %d", readBytes);
-        inotify_rm_watch(fileDescriptor, IN_DELETE);
-        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "closing the INOTIFY instance");
-        close(fileDescriptor);
-        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "Waiting to test if directory removed");
-        pjutil::Sleep(2000);
-        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "Sleep Done");
-
-        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "TestDir.DirectoryExists() = %s", TestDir.DirectoryExists() ? "yes" : "no");
-        if (!TestDir.DirectoryExists())
-        {
-            __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "exit loop");
-            break;
-        }
-        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "continue loop");
-    }
-
-    __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "Launching web browser");
-    execlp("am", "am", "start", "--user", "0", "-a", "android.intent.action.VIEW", "-d", "http://www.pj64-emu.com/android-uninstalled.html", (char *)NULL);
-    exit(1);
-}
 
 EXPORT jint CALL JNI_OnLoad(JavaVM* vm, void* reserved)
 {
@@ -288,21 +220,21 @@ void GameCpuRunning(void * /*NotUsed*/)
 
 EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_appInit(JNIEnv* env, jclass cls, jstring BaseDir)
 {
+    __android_log_print(ANDROID_LOG_INFO, "Project64", "    ____               _           __  _____ __ __");
+    __android_log_print(ANDROID_LOG_INFO, "Project64", "   / __ \\_________    (_)__  _____/ /_/ ___// // /");
+    __android_log_print(ANDROID_LOG_INFO, "Project64", "  / /_/ / ___/ __ \\  / / _ \\/ ___/ __/ __ \\/ // /_");
+    __android_log_print(ANDROID_LOG_INFO, "Project64", " / ____/ /  / /_/ / / /  __/ /__/ /_/ /_/ /__  __/");
+    __android_log_print(ANDROID_LOG_INFO, "Project64", "/_/   /_/   \\____/_/ /\\___/\\___/\\__/\\____/  /_/");
+    __android_log_print(ANDROID_LOG_INFO, "Project64", "                /___/");
+    __android_log_print(ANDROID_LOG_INFO, "Project64", "https://www.pj64-emu.com/");
+    __android_log_print(ANDROID_LOG_INFO, "Project64", "%s", stdstr_f("%s Version %s", VER_FILE_DESCRIPTION_STR, VER_FILE_VERSION_STR).c_str());
+    __android_log_print(ANDROID_LOG_INFO, "Project64", "");
+
     if (g_Logger == NULL)
     {
         g_Logger = new AndroidLogger();
     }
     TraceAddModule(g_Logger);
-
-    Notify().DisplayMessage(10, "    ____               _           __  _____ __ __");
-    Notify().DisplayMessage(10, "   / __ \\_________    (_)__  _____/ /_/ ___// // /");
-    Notify().DisplayMessage(10, "  / /_/ / ___/ __ \\  / / _ \\/ ___/ __/ __ \\/ // /_");
-    Notify().DisplayMessage(10, " / ____/ /  / /_/ / / /  __/ /__/ /_/ /_/ /__  __/");
-    Notify().DisplayMessage(10, "/_/   /_/   \\____/_/ /\\___/\\___/\\__/\\____/  /_/");
-    Notify().DisplayMessage(10, "                /___/");
-    Notify().DisplayMessage(10, "https://www.pj64-emu.com/");
-    Notify().DisplayMessage(10, stdstr_f("%s Version %s", VER_FILE_DESCRIPTION_STR, VER_FILE_VERSION_STR).c_str());
-    Notify().DisplayMessage(10, "");
 
     if (g_JavaVM == NULL)
     {
@@ -311,15 +243,7 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_appInit(JNIEnv* env, j
     }
 
     const char *baseDir = env->GetStringUTFChars(BaseDir, 0);
-    pid_t pid = fork();
-    __android_log_print(ANDROID_LOG_INFO, "jniBridge", "pid = %d", pid);
-    if (pid == 0)
-    {
-        watch_uninstall(baseDir);
-        exit(1);
-    }
     bool res = AppInit(&Notify(), baseDir, 0, NULL);
-
     env->ReleaseStringUTFChars(BaseDir, baseDir);
     if (res)
     {

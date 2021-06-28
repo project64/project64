@@ -1,5 +1,7 @@
 #include "Platform.h"
 #include <stdint.h>
+#include <stdio.h>
+#include <stdarg.h>
 
 #ifndef _WIN32
 int _vscprintf(const char * format, va_list pargs)

@@ -990,6 +990,9 @@ CCompiledFunc * CRecompiler::CompileCode()
         ret.first->second->SetNext(Func);
     }
 
+#if defined(__aarch64__) || defined(__amd64__)
+    g_Notify->BreakPoint(__FILE__,__LINE__);
+#else
     if (g_ModuleLogLevel[TraceRecompiler] >= TraceDebug)
     {
         WriteTrace(TraceRecompiler, TraceDebug, "Info->Function() = %X", Func->Function());
@@ -1014,6 +1017,7 @@ CCompiledFunc * CRecompiler::CompileCode()
             WriteTrace(TraceRecompiler, TraceDebug, "%s", dumpline.c_str());
         }
     }
+#endif
     WriteTrace(TraceRecompiler, TraceVerbose, "Done");
     return Func;
 }
@@ -1107,6 +1111,9 @@ void CRecompiler::ClearRecompCode_Virt(uint32_t Address, int length, REMOVE_REAS
 
 void CRecompiler::ResetMemoryStackPos()
 {
+#if defined(__aarch64__) || defined(__amd64__)
+    g_Notify->BreakPoint(__FILE__,__LINE__);
+#else
     if (m_Registers.m_GPR[29].UW[0] == 0)
     {
         m_MemoryStack = 0;
@@ -1123,10 +1130,14 @@ void CRecompiler::ResetMemoryStackPos()
         WriteTrace(TraceRecompiler, TraceError, "Failed to translate SP address (%s)", m_Registers.m_GPR[29].UW[0]);
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
+#endif
 }
 
 void CRecompiler::DumpFunctionTimes()
 {
+#if defined(__aarch64__) || defined(__amd64__)
+	g_Notify->BreakPoint(__FILE__,__LINE__);
+#else
     CPath LogFileName(g_Settings->LoadStringVal(Directory_Log).c_str(), "FunctionTimes.csv");
 
     CLog Log;
@@ -1136,6 +1147,7 @@ void CRecompiler::DumpFunctionTimes()
     {
         Log.LogF("%X,0x%X,%d\r\n", (uint32_t)itr->first, itr->second.Address, (uint32_t)itr->second.TimeTaken);
     }
+#endif
 }
 
 void CRecompiler::ResetFunctionTimes()

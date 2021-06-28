@@ -2,6 +2,7 @@
 #include "StdString.h"
 #include "CriticalSection.h"
 #include "Thread.h"
+#include "Platform.h"
 #include <map>
 #include <vector>
 #ifdef _WIN32

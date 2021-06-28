@@ -6,7 +6,7 @@
 #ifndef PLUGIN_INFO_STRUCT
 #define PLUGIN_INFO_STRUCT
 
-typedef struct
+typedef struct _PLUGIN_INFO
 {
     uint16_t Version;        // Should be set to 1
     uint16_t Type;           // Set to PLUGIN_TYPE_GFX

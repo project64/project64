@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "N64SYstem.h"
+#include "N64System.h"
 #include <Project64-core/3rdParty/zip.h>
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/SystemGlobals.h>
@@ -1375,10 +1375,14 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
 
     if (bFastSP() && m_Recomp)
     {
+#if defined(__aarch64__) || defined(__amd64__)
+        g_Notify->BreakPoint(__FILE__,__LINE__);
+#else
         if (m_Recomp->MemoryStackPos() != (uint32_t)(m_MMU_VM.Rdram() + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)))
         {
             ErrorFound = true;
         }
+#endif
     }
 
     if (m_SystemTimer != SecondCPU->m_SystemTimer) { ErrorFound = true; }
@@ -1541,10 +1545,14 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
         }
         if (bFastSP() && m_Recomp)
         {
+#if defined(__aarch64__) || defined(__amd64__)
+            g_Notify->BreakPoint(__FILE__,__LINE__);
+#else
             if (m_Recomp->MemoryStackPos() != (uint32_t)(m_MMU_VM.Rdram() + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)))
             {
                 Error.LogF("MemoryStack = %X  should be: %X\r\n", m_Recomp->MemoryStackPos(), (uint32_t)(m_MMU_VM.Rdram() + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)));
             }
+#endif
         }
 
         uint32_t * Rdram = (uint32_t *)m_MMU_VM.Rdram(), *Rdram2 = (uint32_t *)SecondCPU->m_MMU_VM.Rdram();
