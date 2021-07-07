@@ -754,7 +754,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
 
             if (result.isFailure())
             {
-                Log.e("GalleryActivity", "**** Purcahse Error: " + result);
+                Log.e("GalleryActivity", "**** Purchase Error: " + result);
                 alert("Save Support Upgrade failed\n\n" + result.getMessage());
                 setWaitScreen(false);
                 return;
@@ -784,7 +784,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         }
     };
 
-    public void PurcahseProject64Support(Activity activity, String sku)
+    public void PurchaseProject64Support(Activity activity, String sku)
     {
         setWaitScreen(true);
         //Purchase save support
@@ -873,10 +873,10 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                     {
                         switch (which)
                         {
-                        case 0: PurcahseProject64Support(activity,SKU_PJ64SUPPORTOR_10); break;
-                        case 1: PurcahseProject64Support(activity,SKU_PJ64SUPPORTOR_8); break;
-                        case 2: PurcahseProject64Support(activity,SKU_PJ64SUPPORTOR_5); break;
-                        case 3: PurcahseProject64Support(activity,SKU_PJ64SUPPORTOR_2); break;
+                        case 0: PurchaseProject64Support(activity,SKU_PJ64SUPPORTOR_10); break;
+                        case 1: PurchaseProject64Support(activity,SKU_PJ64SUPPORTOR_8); break;
+                        case 2: PurchaseProject64Support(activity,SKU_PJ64SUPPORTOR_5); break;
+                        case 3: PurchaseProject64Support(activity,SKU_PJ64SUPPORTOR_2); break;
                         }
                     }
                 });
