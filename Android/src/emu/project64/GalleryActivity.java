@@ -315,33 +315,28 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                 if (ItemPurchase != null)
                 {
                     mPj64Supporter = true;
+                    return;
                 }
-            }
-            if (!mPj64Supporter)
-            {
                 ItemPurchase = inventory.getPurchase(SKU_PJ64SUPPORTOR_5);
                 Log.d("GalleryActivity", "Purchased SKU_PJ64SUPPORTOR_5 " + (ItemPurchase != null ? "Yes" : "No"));
                 if (ItemPurchase != null)
                 {
                     mPj64Supporter = true;
+                    return;
                 }
-            }
-            if (!mPj64Supporter)
-            {
                 ItemPurchase = inventory.getPurchase(SKU_PJ64SUPPORTOR_8);
                 Log.d("GalleryActivity", "Purchased SKU_PJ64SUPPORTOR_8 " + (ItemPurchase != null ? "Yes" : "No"));
                 if (ItemPurchase != null)
                 {
                     mPj64Supporter = true;
+                    return;
                 }
-            }
-            if (!mPj64Supporter)
-            {
                 ItemPurchase = inventory.getPurchase(SKU_PJ64SUPPORTOR_10);
                 Log.d("GalleryActivity", "Purchased SKU_PJ64SUPPORTOR_10 " + (ItemPurchase != null ? "Yes" : "No"));
                 if (ItemPurchase != null)
                 {
                     mPj64Supporter = true;
+                    return;
                 }
             }
         }
