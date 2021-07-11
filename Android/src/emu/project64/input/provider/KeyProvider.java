@@ -1,14 +1,3 @@
-/****************************************************************************
-*                                                                           *
-* Project64 - A Nintendo 64 emulator.                                       *
-* http://www.pj64-emu.com/                                                  *
-* Copyright (C) 2016 Project64. All rights reserved.                        *
-* Copyright (C) 2013 Paul Lamb, littleguy77
-*                                                                           *
-* License:                                                                  *
-* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
-*                                                                           *
-****************************************************************************/
 package emu.project64.input.provider;
 
 import java.util.List;
