@@ -10573,7 +10573,7 @@ SMM-Protect=1
 Unaligned DMA=1
 
 [69DB6088-5DF4A2E3-C:45]
-Good Name=SM64 Shining Stars Repainted
+Good Name=SM64 Shining Stars Repainted v1.1
 Status=Compatible
 Counter Factor=1
 Unaligned DMA=1
@@ -11200,6 +11200,54 @@ Unaligned DMA=1
 
 [94A4FFD7-9AB51F0E-C:45]
 Good Name=Weird Snake Dimension
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[E91D5E52-BED60ABE-C:45]
+Good Name=SM64 Shining Stars Repainted v1.0
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[79BC362E-C7C8B112-C:45]
+Good Name=Super Mario Star Road (Deluxe Edition)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[92190269-EE7D2A13-C:45]
+Good Name=Mario's Vacation Course (v1.3)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[E8089F5A-DECB0D19-C:45]
+Good Name=Star Revenge 2 Act 1 - To the Moon v1.2
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[3A82F2E2-AA26DB24-C:45]
+Good Name=SM64 The Nostalgia Trip (Full Version)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[88D499CB-6FE8B8B2-C:45]
+Good Name=Mario's Vacation Course (v1.4.1)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[B3278DD7-17687298-C:45]
+Good Name=Mario's Vacation Course (v1.4.2)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[19C35F38-DEF57075-C:45]
+Good Name=Super Mario 74 - Ten Years After (v2.74.2 Deluxe Hotfix 1)
 Status=Compatible
 Counter Factor=1
 Unaligned DMA=1
