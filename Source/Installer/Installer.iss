@@ -5,11 +5,11 @@
 AppId={{BEB5FB69-4080-466F-96C4-F15DF271718B}
 AppName=Project64
 AppVersion={#AppVersion}
-DefaultDirName={pf32}\Project64 Dev 3.0
+DefaultDirName={pf32}\Project64 3.0
 VersionInfoVersion={#AppVersion}
 OutputDir={#BaseDir}\Bin\{#Configuration}
-OutputBaseFilename=Setup Project64 Dev 3.0
-VersionInfoDescription=Installation Setup of Project64 Dev 3.0
+OutputBaseFilename=Setup Project64 3.0
+VersionInfoDescription=Installation Setup of Project64 3.0
 Compression=lzma2/ultra64
 WizardImageFile=Installer-Sidebar.bmp
 WizardSmallImageFile=Pj64LogoSmallImage.bmp
@@ -39,8 +39,6 @@ Source: "{#BaseDir}\Plugin\GFX\GLideN64\*"; DestDir: "{app}\Plugin\GFX\GLideN64"
 Source: "{#BaseDir}\Plugin\Input\PJ64_NRage.dll"; DestDir: "{app}\Plugin\Input"
 Source: "{#BaseDir}\Plugin\Input\Project64-Input.dll"; DestDir: "{app}\Plugin\Input"
 Source: "{#BaseDir}\Plugin\RSP\RSP 1.7.dll"; DestDir: "{app}\Plugin\RSP"
-Source: "{#BaseDir}\Scripts\example.js"; DestDir: "{app}\Scripts"
-Source: "{#BaseDir}\apidoc.htm"; DestDir: "{app}"
 
 [Dirs]
 Name: "{app}\Config"; Permissions: everyone-full
