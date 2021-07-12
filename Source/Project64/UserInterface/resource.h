@@ -299,6 +299,8 @@
 #define IDC_RANGE                       1125
 #define IDC_ADD                         1126
 #define IDC_CODE_NAME                   1130
+#define IDC_AUTHOR                      1131
+#define IDC_CODE_AUTHOR                 1132
 #define IDC_USE_ROMBROWSER              1133
 #define IDC_USING                       1134
 #define IDC_AVALIABLE                   1135

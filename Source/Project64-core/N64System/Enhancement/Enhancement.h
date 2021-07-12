@@ -26,6 +26,7 @@ public:
     CEnhancement(const char * Ident);
     CEnhancement(const char * Ident, const char * Entry);
     void SetName(const char * Name);
+    void SetAuthor(const char * Author);
     void SetNote(const char * Note);
     void SetEntries(const CodeEntries & Entries);
     void SetOptions(const CodeOptions & Options);
@@ -37,6 +38,7 @@ public:
 
     inline const std::string & GetName(void) const { return m_Name; }
     inline const std::string & GetNameAndExtension(void) const { return m_NameAndExtension; }
+    inline const std::string & GetAuthor(void) const { return m_Author; }
     inline const std::string & GetNote(void) const { return m_Note; }
     inline const CodeEntries & GetEntries(void) const { return m_Entries; }
     inline const CodeOptions & GetOptions(void) const { return m_Options; }
@@ -58,6 +60,7 @@ private:
     std::string m_Ident;
     std::string m_Name;
     std::string m_NameAndExtension;
+    std::string m_Author;
     std::string m_Note;
     PluginList m_PluginList;
     CodeEntries m_Entries;

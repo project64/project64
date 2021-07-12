@@ -337,6 +337,10 @@ void CEnhancmentFile::SaveCurrentSection(void)
         {
             Section += stdstr_f("Note=%s%s", Enhancement.GetNote().c_str(), m_LineFeed);
         }
+        if (!Enhancement.GetAuthor().empty())
+        {
+            Section += stdstr_f("Author=%s%s", Enhancement.GetAuthor().c_str(), m_LineFeed);
+        }
         const CEnhancement::CodeEntries & Entries = Enhancement.GetEntries();
         for (size_t i = 0, n = Entries.size(); i < n; i++)
         {

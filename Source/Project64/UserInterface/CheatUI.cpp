@@ -645,6 +645,7 @@ LRESULT CEditCheat::OnEditCheat(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/,
         return 0;
     }
     GetDlgItem(IDC_CODE_NAME).SetWindowText(stdstr(m_EditEnhancement->GetName()).ToUTF16().c_str());
+    GetDlgItem(IDC_CODE_AUTHOR).SetWindowText(stdstr(m_EditEnhancement->GetAuthor()).ToUTF16().c_str());
     stdstr Buffer;
     const CEnhancement::CodeEntries & Entries = m_EditEnhancement->GetEntries();
     for (size_t i = 0, n = Entries.size(); i < n; i++)
@@ -706,6 +707,7 @@ LRESULT CEditCheat::OnAddCheat(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
     if (m_EditEnhancement != nullptr)
     {
         m_EditEnhancement->SetName(NewCheatName.c_str());
+        m_EditEnhancement->SetAuthor(GetCWindowText(GetDlgItem(IDC_CODE_AUTHOR)).c_str());
         m_EditEnhancement->SetEntries(Enhancement.GetEntries());
         m_EditEnhancement->SetOptions(Enhancement.GetOptions());
         m_EditEnhancement->SetNote(GetCWindowText(GetDlgItem(IDC_NOTES)).c_str());
