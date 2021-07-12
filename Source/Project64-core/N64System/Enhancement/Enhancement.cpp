@@ -163,7 +163,7 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
         }
         Key.resize(Seperator);
 
-        if (stricmp(Key.c_str(), "PluginList") == 0)
+        if (stricmp(Key.c_str(), "PluginList") == 0 || stricmp(Key.c_str(), "Plugin List") == 0)
         {
             strvector Plugins = stdstr(&Pos[1]).Tokenize(",");
             for (size_t i = 0, n = Plugins.size(); i < n; i++)
@@ -175,11 +175,11 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
         {
             m_Note = &Pos[1];
         }
-        else if (stricmp(Key.c_str(), "OnByDefault") == 0)
+        else if (stricmp(Key.c_str(), "OnByDefault") == 0 || stricmp(Key.c_str(), "On By Default") == 0)
         {
             m_OnByDefault = Pos[1] == '1';
         }
-        else if (stricmp(Key.c_str(), "OverClock") == 0)
+        else if (stricmp(Key.c_str(), "Overclock") == 0)
         {
             SetOverClock(true, atoi(&Pos[1]));
         }
