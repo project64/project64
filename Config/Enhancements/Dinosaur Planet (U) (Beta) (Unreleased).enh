@@ -39,6 +39,12 @@ $Force Best Player Model
 817F0020 0019
 817F0022 10C0
 
+$Sound Crash Bypass
+Author=theboy181
+On By Default=1
+81066470 1160
+81066472 0065
+
 $Ultra Widescreen (21:9)
 810BCE30 4017
 810BCE32 AE14

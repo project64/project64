@@ -1,0 +1,8 @@
+[D55891EB-2BEFD9C8-C:0]
+Name=MGC 2011 Demo (PD)
+
+$Emulator Fix
+Author=theboy181
+On By Default=1
+Note=This will bypass the emulator check
+8101F8D2 0000

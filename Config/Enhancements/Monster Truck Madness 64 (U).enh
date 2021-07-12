@@ -1,0 +1,14 @@
+[B19AD999-7E585118-C:45]
+Name=Monster Truck Madness 64 (U)
+
+$Widescreen Hack
+Author=theboy181
+Note=fixes aspect in game, and culling for objects
+810173D0 3FAA
+810173D2 AAAB
+810C8650 0000
+810C8652 0000
+810C8658 0000
+810C865A 0000
+810C866C 0000
+810C866E 0000

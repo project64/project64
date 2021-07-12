@@ -1,0 +1,8 @@
+[EC58EABF-AD7C7169-C:45]
+Name=Donkey Kong 64 (U)
+
+$Force no frameskip/Timing fix (Workaround for emulator)
+Author=theboy181
+WIP=1
+Note=DK will make the vine jump in the demo, at the cost of some frames.
+8100EFD2 00D0

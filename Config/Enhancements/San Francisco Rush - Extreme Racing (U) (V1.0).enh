@@ -1,0 +1,31 @@
+[2A6B1820-6ABCF466-C:45]
+Name=San Francisco Rush - Extreme Racing (U) (V1.0)
+
+$Widescreen Hack
+Author=theboy181
+Note=Thanks @gamemasterplc
+810060A4 0800
+810060A6 010E
+81000438 3C1B
+8100043A 3FAB
+8100043C 449B
+8100043E 6000
+81000440 0000
+81000442 0000
+81000444 460C
+81000446 7382
+81000448 0800
+8100044A 182B
+8100044C 4486
+8100044E 6000
+
+$Disable Filtering
+Author=theboy181
+Note=Might be helpful when debugging texture packs.
+810BD1A2 0000
+
+$Car LOD Improvement
+Author=theboy181
+WIP=1
+Note=This hack appears to only effect the geometry, a texture LOD hack still needed.
+8106311E 0006

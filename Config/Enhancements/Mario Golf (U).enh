@@ -2,6 +2,41 @@
 Name=Mario Golf (U)
 
 $Widescreen
+Author=gamemasterplc
 8102F29A 3FE3
 D12020F6 3FAA
 812020F6 3FE3
+
+$Widescreen Hack
+Author=theboy181
+Note=In Game Only
+8102F29A 3FE3
+
+$Terrain LOD Hack
+Author=theboy181
+On By Default=1
+Note=Fixes Draw Distance, and improves the terrain Level of Detail. Best observed in the map previews.
+810633C2 0004
+
+$Ball LOD Hack
+Author=theboy181
+On By Default=1
+Note=Need to disable "Render 2D elements in N64 resolution" if using GLideN64. This greatly improves the look of the ball while in flight.
+D11FF108 58E0
+811FF10A 0008
+D11FF108 58E0
+811FF12C 0000
+D11FF108 58E0
+811FF12E 0000
+D11FF108 58E0
+811FF138 0000
+D11FF108 58E0
+811FF13A 0000
+
+$Disable Frame Buffer
+Author=theboy181
+Note=this disables the FB for the course. Other FBE still function.
+D120488E 1231
+81204882 0004
+D120488E 1231
+8120A366 0004

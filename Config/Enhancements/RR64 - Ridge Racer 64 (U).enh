@@ -1,0 +1,10 @@
+[2500267E-2A7EC3CE-C:45]
+Name=RR64 - Ridge Racer 64 (U)
+
+$Racers always MAX Level of Detail
+Author=theboy181
+Note=Works in all modes
+D10D6916 0008
+810D6914 0000
+D10D6916 0008
+810D6916 0000

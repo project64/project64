@@ -2,10 +2,41 @@
 Name=Snowboard Kids (U)
 
 $No Frameskip
+Author=retroben
 Note=Multiplayer is now smoother at 30fps.
 800DEED4 0000
 
 $No Frameskip (ASM)
+Author=retroben
 80099324 0024
 81099326 0000
 
+$30 FPS in Multiplayer modes
+Author=theboy181
+Note=This is used to set the frameskip of the game
+800DEED4 0000
+
+$Widescreen Hack
+Author=theboy181
+WIP=1
+Note=An ASM hook attempt on GuPerspective for widescreen. 2D allignment issues in the credits during the game end sequence.
+810A3B34 0800
+810A3B36 010E
+81000438 3C07
+8100043A 3FAA
+8100043C 34E7
+8100043E AAAB
+81000440 4487
+81000442 0000
+81000444 4486
+81000446 6000
+81000448 0802
+8100044A 8ECF
+8100044C 4600
+8100044E 7382
+
+$Increased Draw Distance
+Author=theboy181
+On By Default=1
+Note=Improves Draw Distance by 4X
+810707EE 462F

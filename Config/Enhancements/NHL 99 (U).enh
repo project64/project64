@@ -2,7 +2,7 @@
 Name=NHL 99 (U)
 
 $Sixty Frames
+Author=retroben
+WIP=1
 Note=Another ASM hack,too fast possibly?
-01=Default
-80019127 0002
-
+80019127 0002:0001

@@ -1,0 +1,19 @@
+[B3402554-7340C004-C:45]
+Name=Cruis'n USA (U) (V1.2)
+
+$Car Max Level of Detail
+Author=theboy181
+81118370 0000
+81118372 0000
+
+$Remapped Controls
+Author=theboy181
+Note=There is a remap menu in options you access by pressing B when in track select but this code is for anyone too lazy to change that, side-effects are that you can't remap them with this code enabled
+8114E362 8020
+8114E366 8020
+8114E372 4000
+8114E376 4000
+8114E39A 0010
+8114E39E 0010
+8114E3A2 0002
+8114E3A6 0002

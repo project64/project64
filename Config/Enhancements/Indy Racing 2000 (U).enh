@@ -1,0 +1,11 @@
+[E436467A-82DE8F9B-C:45]
+Name=Indy Racing 2000 (U)
+
+$Sixty Pace
+Author=theboy181
+On By Default=1
+Note=This game runs too fast on emulators, this code locks the pacing at 60fps
+81002134 0000
+81002136 0000
+810331B8 3C88
+810331BA 8889

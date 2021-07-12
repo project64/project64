@@ -1,0 +1,16 @@
+[99150E18-1266E6A5-C:45]
+Name=Tony Hawk's Pro Skater 2 (U)
+
+$Widescreen Hack
+Author=theboy181
+WIP=1
+Note=Menus missing aspect fix, aspect ratio is not correct
+81017DD0 3F10
+8107039A 11C6
+
+$60 FPS
+Author=theboy181
+WIP=1
+Note=Demos run too fast.
+810B6E30 2411
+810B6E32 0001

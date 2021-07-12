@@ -1,0 +1,18 @@
+[DFE61153-D76118E6-C:45]
+Name=Cruis'n World (U)
+
+$Widescreen Hack
+Author=theboy181
+WIP=1
+Note=This doesnt work on emulator (bug?), only console. The addresses will get overwriten for a function. second half of this cheat is a workaround.
+81351810 3FE3
+81351812 8E39
+8136094C 3FE3
+8136094E 8E39
+
+$Car Max Level of Detail
+Author=theboy181
+WIP=1
+Note=Nitro effects are missing from 2P modes
+81309034 0000
+81309036 0000

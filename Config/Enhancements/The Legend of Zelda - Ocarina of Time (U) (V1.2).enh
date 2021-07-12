@@ -1,12 +1,57 @@
 [693BA2AE-B7F14E9F-C:45]
 Name=The Legend of Zelda - Ocarina of Time (U) (V1.2)
 
-$Subscreen Delay Fix
-PluginList=Glide64 For PJ64,Jabo's Direct3D8
-OnByDefault=1
+$Old Subscreen Delay Fix
+Plugin List=Project64 video,Jabo's Direct3D8
 801DAE8B 0002
 
 $Widescreen
+Author=gamemasterplc
 81025188 2402
 81092718 3C07
 8109271A 3FE3
+
+$Extended Draw Distance
+Author=retroben
+WIP=1
+Note=This Extended Draw Distance GS Code work on Enemies, NPC's, big boulders, small rocks, gravestones, standalone grass, signs, scarecrows and other objects. Sadly the code don't work on Link HD model, trees, bushes, butterflies, grouped grass and other objects. The good thing is that it does not break nothing. -retroben. NPC's don't appear to work in the village as stated by retroben -theboy181
+81025050 0001
+
+$Subscreen Fix (Pause)
+Author=theboy181
+On By Default=1
+Note=This hack bypasses the coverage check
+810A0560 0000
+810A0562 0000
+
+$Hide HUD
+Author=Darkludx
+Note=Hold D-Pad Up To Unhide The HUD GameShark Code
+D011DE00 0008
+801D9497 00FF
+D211DE00 0008
+801D9497 0000
+D011DE00 0008
+801D9499 00FF
+D211DE00 0008
+801D9499 0000
+D011DE00 0008
+801D949B 00FF
+D211DE00 0008
+801D949B 0000
+D011DE00 0008
+801D949D 00FF
+D211DE00 0008
+801D949D 0000
+D011DE00 0008
+801D949F 00FF
+D211DE00 0008
+801D949F 0000
+D011DE00 0008
+801D94A1 00FF
+D211DE00 0008
+801D94A1 0000
+D011DE00 0008
+801D94A3 00FF
+D211DE00 0008
+801D94A3 0000

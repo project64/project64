@@ -1,0 +1,19 @@
+[7DE11F53-74872F9D-C:45]
+Name=Wave Race 64 (U) (V1.0)
+
+$Vs Mode Player LOD Hack
+Author=theboy181
+Note=Max Detail for player models in Vs. Mode.
+81068C1A 0000
+81068C6E 0000
+81068C46 0000
+81068BEA 0000
+81068A46 0148
+81068E12 0148
+81068E42 0148
+81068E6E 0148
+
+$1P Mode Player LOD Hack
+Author=theboy181
+Note=Max Detail for player 1P mode is not in memory. This hack enables the highest LOD in memory. LOD 2 is max for 1P mode. Needs ASM hack
+8106918E 0000

@@ -1,0 +1,14 @@
+[DD10BC7E-F900B351-C:50]
+Name=Vigilante 8 - 2nd Offence (E)
+
+$Perf Boost (30 FPS)
+Author=theboy181
+Note=Improved Performance, makes LLE playable.
+8112A37C 0000
+8112A37E 0000
+
+$Car LOD Hack
+Author=theboy181
+Note=All modes cars, will have highest level of detail
+8114322C 1000
+8114322E 0008

@@ -1,0 +1,13 @@
+[FCE0D799-65316C54-C:45]
+Name=Knife Edge - Nose Gunner (U)
+
+$FPS Fix (30fps hack)
+Author=theboy181
+On By Default=1
+Counter Factor=1
+Fixed Audio=1
+Note=Makes the game run at its proper FPS
+D012AABB 0000
+800E0BDF 0003
+D012AABB 0001
+800E0BDF 0000

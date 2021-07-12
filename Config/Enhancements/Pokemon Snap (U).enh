@@ -2,20 +2,21 @@
 Name=Pokemon Snap (U)
 
 $Make Picture selectable
-PluginList=Glide64 For PJ64,Jabo's Direct3D8
-OnByDefault=1
+Plugin List=Project64 video,Jabo's Direct3D8
+On By Default=1
 D11E3184 2881
 811E3184 2001
 D11E3186 0098
 811E3186 0001
 
 $Pass 1st Level and Controller Fix
-PluginList=Glide64 For PJ64,Jabo's Direct3D8
-OnByDefault=1
+Plugin List=Project64 video,Jabo's Direct3D8
+On By Default=1
 D1382D1C 802C
 80382D0F 0000
 
 $Widescreen
+Author=gamemasterplc
 8101C7A0 0801
 8101C7A2 0F84
 81043E10 3C1B
@@ -29,3 +30,7 @@ $Widescreen
 D10A80A6 A113
 810B0518 4300
 
+$60 FPS
+Author=theboy181
+Note=No known issues with this 60 FPS
+8004979B 0001

@@ -2,8 +2,8 @@
 Name=Pilotwings 64 (J)
 
 $Land Shadow Fix
-PluginList=Glide64 For PJ64,Jabo's Direct3D8
-OnByDefault=1
+Plugin List=Project64 video,Jabo's Direct3D8
+On By Default=1
 D02639B1 0012
 802639B1 00FF
 D0264231 0012
