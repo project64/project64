@@ -183,6 +183,38 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
         {
             SetOverClock(true, atoi(&Pos[1]));
         }
+        else if (stricmp(Key.c_str(), "Author") == 0)
+        {
+            // TODO
+        }
+        else if (stricmp(Key.c_str(), "WIP") == 0)
+        {
+            // TODO
+        }
+        else if (stricmp(Key.c_str(), "Counter Factor") == 0)
+        {
+            // TODO
+        }
+        else if (stricmp(Key.c_str(), "VI Refresh") == 0)
+        {
+            // TODO
+        }
+        else if (stricmp(Key.c_str(), "RDRAM Size") == 0)
+        {
+            // TODO
+        }
+        else if (stricmp(Key.c_str(), "SMM-Protect") == 0)
+        {
+            // TODO
+        }
+        else if (stricmp(Key.c_str(), "Fixed Audio") == 0)
+        {
+            // TODO
+        }
+        else if (stricmp(Key.c_str(), "Sync Audio") == 0)
+        {
+            // TODO
+        }
         else
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
