@@ -171,6 +171,10 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
                 m_PluginList.push_back(Plugins[i]);
             }
         }
+        else if (stricmp(Key.c_str(), "Author") == 0)
+        {
+            m_Author = &Pos[1];
+        }
         else if (stricmp(Key.c_str(), "Note") == 0)
         {
             m_Note = &Pos[1];
@@ -280,6 +284,11 @@ void CEnhancement::SetName(const char * Name)
     if (m_Active != m_OnByDefault) { CSettingEnhancementActive(m_Name.c_str(), m_Ident.c_str(), m_OnByDefault).SetActive(m_OnByDefault); }
     if (OptionSelected()) { CSettingEnhancementSelectedOption(m_Name.c_str(), m_Ident.c_str()).SetOption(SelectedOption()); }
     CheckValid();
+}
+
+void CEnhancement::SetAuthor(const char * Author)
+{
+    m_Author = Author != nullptr ? Author : "";
 }
 
 void CEnhancement::SetNote(const char * Note)

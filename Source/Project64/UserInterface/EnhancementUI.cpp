@@ -502,6 +502,7 @@ LRESULT	CEditEnhancement::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
     m_Entries = m_EditEnhancement != nullptr ? m_EditEnhancement->GetEntries() : CEnhancement::CodeEntries();
     m_PluginList = m_EditEnhancement != nullptr ? m_EditEnhancement->GetPluginList() : CEnhancement::PluginList();
     GetDlgItem(IDC_CODE_NAME).SetWindowText(m_EditEnhancement != nullptr ? stdstr(m_EditEnhancement->GetName()).ToUTF16().c_str() : L"");
+    GetDlgItem(IDC_CODE_AUTHOR).SetWindowText(m_EditEnhancement != nullptr ? stdstr(m_EditEnhancement->GetAuthor()).ToUTF16().c_str() : L"");
     GetDlgItem(IDC_NOTES).SetWindowText(m_EditEnhancement != nullptr ? stdstr(m_EditEnhancement->GetNote()).ToUTF16().c_str() : L"");
     CButton(GetDlgItem(IDC_AUTOON)).SetCheck(m_EditEnhancement != nullptr ? (m_EditEnhancement->GetOnByDefault() ? BST_CHECKED : BST_UNCHECKED) : BST_UNCHECKED);
     CButton(GetDlgItem(IDC_GAMESHARK)).SetCheck(m_Entries.size() > 0 ? BST_CHECKED : BST_UNCHECKED);
@@ -543,6 +544,7 @@ LRESULT CEditEnhancement::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl
     CEnhancement TempEnhancement(CEnhancement::EnhancementIdent);
     CEnhancement & Enhancement = m_EditEnhancement != nullptr ? *m_EditEnhancement : TempEnhancement;
     Enhancement.SetName(GetCWindowText(GetDlgItem(IDC_CODE_NAME)).c_str());
+    Enhancement.SetAuthor(GetCWindowText(GetDlgItem(IDC_CODE_AUTHOR)).c_str());
     Enhancement.SetOnByDefault(CButton(GetDlgItem(IDC_AUTOON)).GetCheck() == BST_CHECKED);
     Enhancement.SetOverClock(CButton(GetDlgItem(IDC_OVERCLOCK)).GetCheck() == BST_CHECKED, atoi(GetCWindowText(GetDlgItem(IDC_OVER_CLOCK_MODIFIER)).c_str()));
     Enhancement.SetEntries(m_Entries);
