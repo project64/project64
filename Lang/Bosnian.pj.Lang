@@ -261,7 +261,7 @@
 # 491 # "Dolje"
 # 492 # "Automatski osvježi pretraživač"
 
-//Napredne opcije
+// Napredne opcije
 # 500 # "Većina ovih promjena neće stupiti na snagu dok se ne otvori novi ROM ili ne resetira trenutni ROM."
 # 501 # "Osnovne zadane postavke"
 # 502 # "CPU jezgra stil:"
@@ -306,7 +306,7 @@
 # 541 # "Repipiler"
 # 542 # "Sinkroniziranje jezgara"
 
-// Self Mod metode
+// Sebican Mod metode
 # 560 # "Nema"
 # 561 # "Predmemorija"
 # 562 # "Zaštiti memoriju"
@@ -399,7 +399,7 @@
 / *************************************************** ********************************
 * Trikovi *
 **************************************************** ******************************* /
-// Cheat List
+// Cheat Lista
 # 1000 # "Trikovi"
 # 1001 # "Trikovi:"
 # 1002 # "Napomene:"
@@ -445,7 +445,7 @@
 # 1041 # "Uredi"
 # 1042 # "Obriši"
 
-// uređivač prečaca
+// Uređivač prečaca
 # 1100 # "Poništi prečice"
 # 1101 # "Jeste li sigurni da želite resetirati prečice? \ N \ nOva akcija se ne može poništiti."
 # 1102 # "Meni datoteke"
