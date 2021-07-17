@@ -416,7 +416,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             g_Plugins->Gfx()->ChangeWindow();
             WriteTrace(TraceGFXPlugin, TraceDebug, "ChangeWindow: Done");
             ShowCursor(true);
-            m_Gui->ShowStatusBar(true);
+            m_Gui->ShowStatusBar(g_Settings->LoadBool((SettingID)UserInterface_ShowStatusBar));
             m_Gui->MakeWindowOnTop(UISettingsLoadBool(UserInterface_AlwaysOnTop));
             UISettingsSaveBool(UserInterface_InFullScreen, (DWORD)false);
         }
