@@ -153,7 +153,48 @@ int main()
         return 0;
     }
 
-    for (size_t i = 0, n = VersionData.size() - 1; i < n; i++)
+    uint32_t VersionMajor = 0, VersionMinor = 0, VersionRevison = 0;
+    std::string VersionPrefix;
+    for (size_t i = 0, n = VersionData.size(); i < n; i++)
+    {
+        stdstr line = VersionData[i];
+        line.Trim();
+
+        if (_strnicmp(line.c_str(), "VersionMajor = ", 13) == 0)
+        {
+            VersionMajor = atoi(&(line.c_str()[14]));
+        }
+        else if (_strnicmp(line.c_str(), "VersionMinor = ", 13) == 0)
+        {
+            VersionMinor = atoi(&(line.c_str()[14]));
+        }
+        else if (_strnicmp(line.c_str(), "VersionRevison = ", 17) == 0)
+        {
+            VersionRevison = atoi(&(line.c_str()[17]));
+        }
+        else if (_strnicmp(line.c_str(), "VersionPrefix = ", 15) == 0)
+        {
+            size_t StartPrefix = line.find("\"", 15);
+            size_t EndPrefix = std::string::npos;
+            if (StartPrefix != std::string::npos)
+            {
+                EndPrefix = line.find("\"", StartPrefix + 1);
+            }
+            if (EndPrefix != std::string::npos)
+            {
+                VersionPrefix = line.substr(StartPrefix + 1, EndPrefix - (StartPrefix + 1));
+            }
+        }
+        else
+        {
+            continue;
+        }
+        VersionData.erase(VersionData.begin() + i);
+        i -= 1;
+        n -= 1;
+    }
+    
+    for (size_t i = 0, n = VersionData.size(); i < n; i++)
     {
         stdstr &line = VersionData[i];
         line += "\n";
@@ -176,6 +217,19 @@ int main()
         else if (_strnicmp(line.c_str(), "#define GIT_DIRTY ", 11) == 0)
         {
             line.Format("#define GIT_DIRTY                   \"%s\"\n", BuildDirty ? "Dirty" : "");
+        }
+        else if (_strnicmp(line.c_str(), "        versionCode = ", 22) == 0)
+        {
+            line.Format("        versionCode = %d\n", VersionBuild);
+        }
+        else if (_strnicmp(line.c_str(), "        versionName = ", 22) == 0)
+        {
+            line.Format("        versionName = \"%d.%d.%d.%d", VersionMajor, VersionMinor, VersionRevison, VersionBuild);
+            if (VersionPrefix.length() > 0)
+            {
+                line += stdstr_f(" (%s)", VersionPrefix.c_str());
+            }
+            line += "\"\n";
         }
         if (!OutFile.Write(line.c_str(), (uint32_t)line.length()))
         {

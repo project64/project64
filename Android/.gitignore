@@ -1,6 +1,8 @@
-# Generated and temporary files
 assets/project64_data/Config
 assets/project64_data/Lang
+config/version.gradle
+
+# Generated and temporary files
 bin/
 gen/
 obj/

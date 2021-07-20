@@ -1,0 +1,15 @@
+android {
+    buildToolsVersion '30.0.3'
+    compileSdkVersion 30
+    ndkVersion "22.1.7171670"
+    defaultConfig {
+        minSdkVersion 17
+        targetSdkVersion 30
+        VersionMajor = 4
+        VersionMinor = 0
+        VersionRevison = 0
+        VersionPrefix = "Dev"
+        versionCode = 1
+        versionName = "4.0.0 (Unknown)"
+    }
+}
