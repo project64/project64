@@ -1,29 +1,12 @@
-﻿/*********************************************************************************
-* Meta Information                                                               *
-*********************************************************************************/
-//About DLL
+﻿// Meta information
 #1  #  "Español"		// LANGUAGE ID
 #2  #  "MELERIX"		// Author
-#3  #  "2.3.2"			// Version
-#4  #  "25/06/2021"		// Date
+#3  #  "3.0.1"			// Version
+#4  #  "22/07/2021"		// Date
 
-//About DLL Dialog
-#5  #  "Lenguaje Actual"
-#6  #  "Autor"
-#7  #  "Versión"
-#8  #  "Fecha"
-#9  #  "Visitar la Página Principal"
-#10 #  "Base de datos de ROMs (.RDB)"
-#11 #  "Archivo de Códigos de Trucos (.CHT)"
-#12 #  "Información Extendida de la ROM (.RDX)"
+/*** Menu ***/
 
-//About INI title
-#20 #  "Acerca de los Archivos de Configuración"
-
-/*********************************************************************************
-* Menu                                                                           *
-*********************************************************************************/
-//File Menu
+// File menu
 #100#  "&Archivo"
 #101#  "&Abrir ROM"
 #102#  "&Info de la ROM...."
@@ -36,12 +19,11 @@
 #109#  "&Salir"
 #110#  "Abrir &Combo"
 
-
-//System Menu
+// System menu
 #120#  "&Sistema"
 #121#  "&Reiniciar"
 #122#  "&Pausar"
-#123#  "Generar Bitmap"
+#123#  "Capturar captura de pantalla"
 #124#  "Limitar FPS"
 #125#  "&Guardar Estado"
 #126#  "Guardar Como..."
@@ -56,31 +38,31 @@
 #135#  "Intercambiar &Disco"
 #136#  "&Mejoras..."
 
-//Options Menu
+// Options menu
 #140#  "&Opciones"
-#141#  "&Pantalla Completa"
-#142#  "&Siempre por Encima"
-#143#  "Configuración de &Gráficos"
-#144#  "Configuración de &Audio"
-#145#  "Configuración de &Controles"
-#146#  "Configuración de &RSP"
-#147#  "Mostrar &Uso de CPU"
+#141#  "&Pantalla completa"
+#142#  "&Siempre por encima"
+#143#  "Ajustes de &Gráficos"
+#144#  "Ajustes de &Audio"
+#145#  "Ajustes de &Entrada"
+#146#  "Ajustes de &RSP"
+#147#  "Mostrar &Estado de CPU"
 #148#  "&Ajustes..."
 
-//Debugger Menu
+// Debugger menu
 #160#  "&Depurador"
 
-//Language Menu
+// Language menu
 #175#  "&Lenguaje"
 
-//Help Menu
+// Help menu
 #180#  "Ayuda"
 #182#  "&Acerca de Project64"
-#184#  "&Página Web"
+#184#  "&Sitio Web"
 #185#  "&Apoyar a Project64"
 #186#  "&Discord"
 
-//Current Save Slot menu
+// Current save slot menu
 #190#  "Predeterminada"
 #191#  "Ranura 1"
 #192#  "Ranura 2"
@@ -92,18 +74,18 @@
 #198#  "Ranura 8"
 #199#  "Ranura 9"
 #200#  "Ranura 10"
-#201#  "Ranura de Guardado (%ws) seleccionada"
+#201#  "Ranura de guardado (%ws) seleccionada"
 
-//Pop up Menu
+// Pop-up menu
 #210#  "Jugar Juego"
 #211#  "Información de la ROM"
 #212#  "Editar Ajustes del Juego"
 #213#  "Editar Trucos"
 #214#  "Complemento Gráfico"
-#215#  "Jugar con Disco"
+#215#  "Jugar Juego con Disco"
 #216#  "Elegir Mejoras..."
 
-//Alternate Name to save Slot
+// Alternate name to save slot
 #220#  "Ranura de Guardado - Predeterminada"
 #221#  "Ranura de Guardado - 1"
 #222#  "Ranura de Guardado - 2"
@@ -116,7 +98,7 @@
 #229#  "Ranura de Guardado - 9"
 #230#  "Ranura de Guardado - 10"
 
-// Menu Descriptions
+// Menu descriptions
 #250#  "Abrir una imagen de ROM de N64"
 #251#  "Mostrar información acerca de la imagen cargada"
 #252#  "Iniciar emulación de la imagen de ROM cargada"
@@ -125,7 +107,7 @@
 #255#  "Actualizar la lista actual de ROMs en el navegador de ROMs"
 #256#  "Salir de esta aplicación"
 #257#  "Reiniciar la imagen de ROM actual (recarga cualquier cambio de ajustes)"
-#258#  "Pausar/reanudar emulación de la ROM en ejecución actual"
+#258#  "Pausar/reanudar emulación de la ROM actual en ejecución"
 #259#  "Generar una imagen bitmap de la pantalla actual"
 #260#  "Limitar FPS a la velocidad correcta del N64"
 #261#  "Guardar el estado de sistema actual"
@@ -155,10 +137,9 @@
 #285#  "Editar ajustes para el juego seleccionado"
 #286#  "Editar trucos para el juego seleccionado"
 
-/*********************************************************************************
-* ROM Browser                                                                    *
-*********************************************************************************/
-//ROM Browser Fields
+/*** ROM browser ***/
+
+// ROM browser fields
 #300#  "Nombre del Archivo"
 #301#  "Nombre Interno"
 #302#  "Nombre Correcto"
@@ -181,32 +162,33 @@
 #319#  "Formato del Archivo"
 #321#  "Nombre"
 
-//Select ROM
+// Select ROM
 #320#  "Seleccionar directorio de ROMs actual"
 
-//Messages
+// Messages
 #340#  "¿ROM Dañada? Usa GoodN64 y comprueba que la RDB esté actualizada."
 
-/*********************************************************************************
-* Options                                                                        *
-*********************************************************************************/
-//Options Title
-#400#  "Ajustes"
+/*** Options ***/
 
-//Tabs
+// Options title
+#400#  "Configuración"
+
+// Tabs
 #401#  "Complementos"
 #402#  "Directorios"
-#403#  "Opciones"
-#404#  "Selección de ROM"
+#403#  "Ajustes generales"
+#404#  "Navegador de ROM"
 #405#  "Avanzado"
-#406#  "Ajustes Generales"
-#407#  "Integración de Shell"
+#406#  "Ajustes de ROM"
 #408#  "Notas"
 #409#  "Atajos de Teclado"
 #410#  "Estado"
 #411#  "Recompilador"
+#412#  "Predeterminados"
+#413#  "64DD"
+#414#  "64DD"
 
-//Plugin Dialog
+// Plugin dialog
 #420#  "Acerca de"
 #421#  " Complemento de RSP (Reality Signal Processor): "
 #422#  " Complemento de Vídeo (gráficos): "
@@ -216,8 +198,8 @@
 #426#  "Audio HLE"
 #427#  "** Usar Complemento del Sistema **"
 
-//Directory Dialog
-#440#  " Directorio de Complementos: "
+// Directory dialog
+#440#  " Directorio de complementos: "
 #441#  " Directorio de ROMs: "
 #442#  " Directorio de guardados nativos de N64: "
 #443#  " Directorio de estados guardados: "
@@ -231,7 +213,7 @@
 #451#  " Directorio de paquete de texturas: "
 #452#  "Seleccionar directorio de paquete de texturas"
 
-//Options Dialog
+// Options (general) tab
 #460#  "Pausar emulación cuando la ventana no esté activa"
 #461#  "Entrar en modo de pantalla completa al cargar una ROM"
 #462#  "Ocultar ajustes avanzados"
@@ -241,16 +223,16 @@
 #466#  "Velocidad de la pantalla:"
 #467#  "Comprobar si Project64 ya está en ejecución"
 #468#  "Almacenar partidas de guardado en carpetas separadas"
-#469#  "Ruta de ROM 64DD IPL (Japón):"
-#470#  "Ruta de ROM 64DD IPL (América):"
-#471#  "Ruta de ROM 64DD IPL (Desarrollador):"
+#469#  "Ruta de ROM IPL 64DD venta Japonesa:"
+#470#  "Ruta de ROM IPL 64DD venta Americana:"
+#471#  "Ruta de ROM IPL 64DD de Desarrollo):"
 #472#  "Tipo de guardado de disco:"
 #473#  "Habilitar mejoras"
 #474#  "Mostrar barra de estado"
 #475#  "Salir de pantalla completa al perder foco"
-#476#  "Habilitar Discord Rich Presence"
+#476#  "Habilitar Presencia Rica de Discord"
 
-//ROM Browser Tab
+// ROM browser tab
 #480#  "Máx # de ROMs recordadas (0-10):"
 #481#  "ROMs"
 #482#  "Máx # de directorios de ROMs recordados (0-10):"
@@ -265,11 +247,11 @@
 #491#  "Abajo"
 #492#  "Actualizar navegador automáticamente"
 
-//Advanced Options
+// Advanced options
 #500#  "La mayoría de estos cambios no tendrán efecto hasta que una nueva ROM sea abierta o la ROM actual sea reiniciada."
 #501#  "Predeterminados del Núcleo"
 #502#  "Estilo de núcleo de la CPU:"
-#503#  "Métodos <self-mod>:"
+#503#  "Métodos Self mod:"
 #504#  "Tamaño de memoria predeterminado:"
 #505#  "Vinculación avanzada de bloques"
 #506#  "Iniciar emulación cuando la ROM sea abierta"
@@ -283,7 +265,7 @@
 #514#  "TLB no mapeado"
 #515#  "Siempre usar núcleo interpretador"
 
-//ROM Options
+// ROM options
 #520#  "Estilo de núcleo de la CPU:"
 #521#  "Frecuencia de actualización de VI:"
 #522#  "Tamaño de memoria:"
@@ -305,12 +287,12 @@
 #538#  "Motor de 32 bits"
 #539#  "Demorar interrupción DP"
 
-//Core Styles
+// Core styles
 #540#  "Interpretador"
 #541#  "Recompilador"
 #542#  "Sincronizar núcleos"
 
-//Self Mod Methods
+// Self-mod methods
 #560#  "Ninguno"
 #561#  "Caché"
 #562#  "Proteger memoria"
@@ -319,35 +301,32 @@
 #565#  "Comprobar avance de memoria"
 #566#  "Limpiar código en caché"
 
-//Function Lookup method
+// Function lookup method
 #570#  "Tabla física de búsqueda"
 #571#  "Tabla virtual de búsqueda"
 #572#  "Cambiar memoria"
 
-//RDRAM Size
+// RDRAM size
 #580#  "4 MB"
 #581#  "8 MB"
 
-//Advanced Block Linking
+// Advanced block linking
 #600#  "Encendido"
 #601#  "Apagado"
 
-//Save Type
+// Save type
 #620#  "Usar primer tipo de guardado usado"
 #621#  "4-kbit EEPROM"
 #622#  "16-kbit EEPROM"
 #623#  "SRAM"
 #624#  "Flash RAM"
 
-//Shell Integration Tab
-#640#  "Asociación de extensión de archivo:"
-
-//ROM Notes
+// ROM notes
 #660#  "Estado de la ROM:"
 #661#  "Nota del núcleo:"
 #662#  "Nota del complemento:"
 
-// Accelerator Selector
+// Accelerator selector
 #680#  "Estado de la CPU:"
 #681#  "Elemento del menú"
 #682#  "Teclas actuales:"
@@ -362,7 +341,7 @@
 #691#  "Jugando Juego (pantalla completa)"
 #692#  "Detectar Tecla"
 
-// Frame Rate Option
+// Framerate option
 #700#  "Interrupciones verticales por segundo"
 #701#  "Mostrar listas por segundo"
 #702#  "Porcentaje de velocidad completa"
@@ -371,42 +350,44 @@
 #710#  "Incrementar Velocidad del Juego"
 #711#  "Disminuir Velocidad del Juego"
 
-//Bottom page buttons
+// Bottom page buttons
 #720#  "Reiniciar Página"
 #721#  "Reiniciar Todo"
 #722#  "Aplicar"
 #723#  "Cerrar"
 
-/*********************************************************************************
-* ROM Information                                                                *
-*********************************************************************************/
-//ROM Info Title
+// Disk save type
+#730#  "Copia de Disco Completa"
+#731#  "Guardar Área Solamente"
+
+/*** ROM information ***/
+
+// ROM info title
 #800#  "Información de la ROM"
 
-//ROM Info Text
+// ROM Info Text
 #801#  "Nombre de la ROM:"
 #802#  "Nombre del archivo:"
-#803#  "Ubicación:"
+#803#  "Locación:"
 #804#  "Tamaño de la ROM:"
 #805#  "ID del Cartucho:"
-#806#  "Tipo de medio:"
+#806#  "Tipo de Medio:"
 #807#  "País:"
 #808#  "CRC1:"
 #809#  "CRC2:"
 #810#  "Chip CIC:"
 #811#  "MD5:"
 
-/*********************************************************************************
-* Cheats                                                                         *
-*********************************************************************************/
-//Cheat List
+/*** Cheats ***/
+
+// Cheat list
 #1000#  "Trucos"
 #1001#  "Trucos:"
 #1002#  " Notas: "
 #1003#  "Marcar Todo"
 #1004#  "Desmarcar Todo"
 
-//Add Cheat
+// Add cheat
 #1005#  "Agregar Truco"
 #1006#  "Nombre:"
 #1007#  "Código:"
@@ -415,14 +396,14 @@
 #1010#  " Notas del Truco: "
 #1011#  "Añadir a la BD"
 
-//Code extension
+// Code extension
 #1012#  "Extensiones de Código"
 #1013#  "Por favor elige un valor a ser usado para:"
-#1014#  "Aceptar"
+#1014#  "ACEPTAR"
 #1015#  "Cancelar"
 
-//Digital Value
-#1016#  "Cantidad de Dígitos"
+// Digital value
+#1016#  "Dígito de Cantidad"
 #1017#  "Por favor elije un valor para:"
 #1018#  "&Valor"
 #1019#  "de"
@@ -430,22 +411,22 @@
 #1021#  "&Notas:"
 #1022#  "Agregar Truco"
 #1023#  "Nuevo Truco"
-#1024#  "<dirección> <valor>:<ant.>"
+#1024#  "<dirección> <valor>:<antiguo>"
 #1025#  "Opciones:"
 #1026#  "<valor> <etiqueta>"
 
-//Edit Cheat
+// Edit cheat
 #1027#  "Editar Truco"
 #1028#  "Actualizar Truco"
 #1029#  "El Truco ha sido cambiado.\n\n¿Quieres actualizar?"
 #1030#  "Truco actualizado"
 
-//Cheat Popup Menu
+// Cheat pop-up menu
 #1040# "Añadir Nuevo Truco..."
 #1041# "Editar"
 #1042# "Borrar"
 
-// short-cut editor
+// Shortcut editor
 #1100#  "Reiniciar accesos directos"
 #1101#  "¿Estás seguro de que quieres reiniciar los accesos directos?\n\nEsta acción no se puede deshacer."
 #1102#  "Menú de Archivo"
@@ -453,33 +434,30 @@
 #1104#  "Opciones"
 #1105#  "Ranuras de Guardado"
 
-/*********************************************************************************
-* Support Window                                                                 *
-*********************************************************************************/
+/*** Support window ***/
+
 #1200#  "Apoya a Project64"
-#1201#  "Project64 es un emulador de la Nintendo 64 gratuito y de código abierto.\n\nTe permite jugar con software real de N64 de la misma manera como lo sería en la consola original.\n\nDisculpa la inconveniencia de este mensaje, pero te pido esperar tan solo unos segunditos para disfrutar del resultado de cientos de horas de esfuerzo.\n\nSi puedes y quieres apoyar a Project64 o has obtenido algún valor de éste, entonces por favor apoya a Project64 ya sea como muestra de agradecimiento, o tu deseo de quitar este mensaje.\n\nSi has apoyado a Project64:"
-#1202#  "Introduce el código de notificación"
+#1201#  "Project64 es un emulador de la Nintendo 64 gratuito y de código abierto.\n\nEste te permite reproducir software real de N64 de la misma manera como lo sería en la consola original.\n\nLamento los inconvenientes de este mensaje, pero te pido que esperes unos segundos para disfrutar del resultado de cientos de horas de esfuerzo.\n\nSi puedes y quieres apoyar a Project64 o has obtenido algún valor de éste, entonces por favor apoya a Project64 ya sea como muestra de agradecimiento, o tu deseo de quitar este mensaje.\n\nSi has apoyado a Project64:"
+#1202#  "Introduce/Solicita el Código de Notificación"
 #1203#  "Apoya a Project64"
 #1204#  "Continuar"
 #1205#  "Por favor introduce el código de apoyo"
-#1206#  "Error al validar el código.\n\nAsegúrate que el código en el correo coincida con el correspondiente a tu computadora."
+#1206#  "Error al validar el código.\n\nAsegúrate que el código en el correo coincida con el correspondiente a tu maquina."
 #1207#  "Gracias"
-#1208#  "Introduce el código"
-#1209#  "Por favor introduce el código que recibiste en tu correo.\n\nEl correo será enviado a la cuenta que se usó para apoyar a Project64.\n\nComprenda que el código solo funcionará para una única computadora. El ID de esta computadora es:"
-#1210#  "Aceptar"
+#1208#  "Por favor introduce tu código de apoyo"
+#1209#  "Por favor introduce el código que recibiste en tu correo.\n\nEl correo será enviado a la cuenta usada para apoyar a Project64.\n\nPor favor ten en cuenta que el código solo funcionará para una única maquina. El ID de esta computadora es:"
+#1210#  "ACEPTAR"
 #1211#  "Cancelar"
+#1212#  "Solicitar Código"
 #1213#  "El código fue enviado a tu correo"
 #1214#  "Fallo al enviar código, por favor asegúrate que este sea el correo con el que apoyaste a Project64"
-
 
 /*** Enhancements ***/
 
 #1300#  "Mejoras"
 
+/*** Messages ***/
 
-/*********************************************************************************
-* Messages                                                                       *
-*********************************************************************************/
 #2000#  "*** CPU PAUSADO ***"
 #2001#  "CPU Reanudado"
 #2002#  "En un bucle permanente del que no se puede salir.\nLa Emulación ahora se detendrá.\n\nVerifica la ROM y sus ajustes."
@@ -502,7 +480,7 @@
 #2019#  "Chip CIC desconocido"
 #2020#  "Formato de archivo desconocido"
 #2021#  "Acción de memoria desconocida\n\nEmulación detenida"
-#2022#  "OpCode R4300i no manejado en"
+#2022#  "Opcode R4300i no manejado en"
 #2023#  "Ejecutando desde un espacio no mapeado.\n\nVerifica la ROM y sus ajustes."
 #2024#  "Este estado guardado no parece coincidir con la ROM en ejecución.\n\nLos estados deben ser guardados y cargados entre ROMs 100% idénticas.\nEn particular, la REGIÓN y VERSIÓN necesitan ser la misma.\nCargar este estado podría causar que el juego y/o el emulador se bloqueen.\n\n¿Estás seguro de que quieres continuar cargando?"
 #2025#  "Error"
@@ -538,11 +516,15 @@
 #2055#  "¡¡¡Los Gráficos LLE no son para uso general!!!\nEs aconsejable que sólo uses esto para pruebas, y no para jugar juegos.\n\n¿Cambiar a Gráficos LLE?"
 #2056#  "Audio de Emulación de Alto Nivel"
 #2057#  "¡¡¡El Audio HLE requiere un complemento de terceros!!!\nSi no usas un complemento de audio terceros que soporte HLE, no oirás ningún sonido.\n\n¿Cambiar a Audio HLE?"
+#2058#  "El archivo cargado no parece ser una ROM IPL 64DD valida.\n\nVerifica tus ROMs con GoodN64."
+#2059#  "ROM IPL Nintendo 64DD Venta Japonesa no encontrada.\nEsta se requiere para reproducir imágenes de disco de 64DD de región japonesa.\n\nPor favor selecciona la ROM requerida en los Ajustes."
+#2061#  "ROM IPL Nintendo 64DD Venta Americana no encontrada.\nEsta se requiere para reproducir imágenes de disco de 64DD de región americana.\n\nPor favor selecciona la ROM requerida en los Ajustes."
+#2062#  "ROM IPL Nintendo 64DD de Desarrollo no encontrada.\nEsta se requiere para reproducir imágenes de disco de 64DD de desarrollo.\n\nPor favor selecciona la ROM requerida en los Ajustes."
+#2063#  "Fallo al actualizar truco, este es invalido"
+#2064#  "Truco Invalido"
 
+/*** Android ***/
 
-/*********************************************************************************
-* Android                                                                        *
-*********************************************************************************/
 #3000#  "Ajustes"
 #3001#  "Ayuda/Foro"
 #3002#  "Reportar Problema"
@@ -556,7 +538,7 @@
 #3010#  "Directorios"
 #3011#  "Memoria interna"
 #3012#  "Escaneando..."
-#3013#  "Aceptar"
+#3013#  "ACEPTAR"
 #3014#  "Cancelar"
 #3015#  "Información"
 #3016#  "Project64 para Android"
@@ -564,8 +546,9 @@
 #3018#  "Revisión"
 #3019#  "Project64 para Android\u2122 está portado de la versión de windows de project64.La versión de Android\u2122 puede jugar la mayoría de los juegos de N64."
 #3020#  "Autores de Project64."
+#3021#  "Discord"
 
-//In game menu
+// In-game menu
 #3100#  "Ajustes"
 #3101#  "Guardar Estado"
 #3102#  "Cargar Estado"
@@ -580,3 +563,6 @@
 #3111#  "Opciones de Depuración"
 #3112#  "Reiniciar Tiempos de Función"
 #3113#  "Volcar Tiempos de Función"
+
+// Video plugin
+#3200#  "Nativo"
