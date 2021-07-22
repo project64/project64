@@ -46,7 +46,7 @@
 #144#  "Ajustes de &Audio"
 #145#  "Ajustes de &Entrada"
 #146#  "Ajustes de &RSP"
-#147#  "Mostrar &Estado de CPU"
+#147#  "Mostrar &Estadísticas de CPU"
 #148#  "&Ajustes..."
 
 // Debugger menu
@@ -437,7 +437,7 @@
 /*** Support window ***/
 
 #1200#  "Apoya a Project64"
-#1201#  "Project64 es un emulador de la Nintendo 64 gratuito y de código abierto.\n\nEste te permite reproducir software real de N64 de la misma manera como lo sería en la consola original.\n\nLamento los inconvenientes de este mensaje, pero te pido que esperes unos segundos para disfrutar del resultado de cientos de horas de esfuerzo.\n\nSi puedes y quieres apoyar a Project64 o has obtenido algún valor de éste, entonces por favor apoya a Project64 ya sea como muestra de agradecimiento, o tu deseo de quitar este mensaje.\n\nSi has apoyado a Project64:"
+#1201#  "Project64 es un emulador de la Nintendo 64 gratuito y de código abierto.\n\nEste te permite reproducir software real de N64 de la misma manera como lo sería en la consola original.\n\nLamento el inconveniente de este mensaje, pero te pido que esperes unos segundos para disfrutar del resultado de cientos de horas de esfuerzo.\n\nSi puedes y quieres apoyar a Project64 o has obtenido algún valor de éste, entonces por favor apoya a Project64 ya sea como muestra de agradecimiento, o tu deseo de quitar este mensaje.\n\nSi has apoyado a Project64:"
 #1202#  "Introduce/Solicita el Código de Notificación"
 #1203#  "Apoya a Project64"
 #1204#  "Continuar"
