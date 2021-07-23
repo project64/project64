@@ -52,13 +52,13 @@
 # 131 # "GS dugme"
 # 132 # "Resume"
 # 133 # "Meko resetiranje"
-# 134 # "Hard Reset"
+# 134 # "Tvrd Reset"
 # 135 # "Zamjena i disk"
 
 // Izbornik mogućnosti
 # 140 # "Opcije"
 # 141 # "i preko cijelog ekrana"
-# 142 # "I uvijek na vrhu"
+# 142 # "i uvijek na vrhu"
 # 143 # "Konfiguriranje grafičkog dodatka..."
 # 144 # "Konfiguriranje audio dodatka..."
 # 145 # "Konfiguriranje dodatka kontrolera.."
@@ -384,7 +384,7 @@
 # 800 # "Informacije o ROM-u"
 
 // Tekst s informacijama o ROM-u
-# 801 # "Naziv ROM:"
+# 801 # "Naziv ROM-a:"
 # 802 # "Naziv datoteke:"
 # 803 # "Lokacija:"
 # 804 # "Veličina ROM-a:"
