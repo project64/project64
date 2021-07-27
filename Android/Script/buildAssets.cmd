@@ -29,8 +29,8 @@ IF NOT EXIST "%base_dir%/Android/app/src/main/assets/project64_data/Config/Cheat
 xcopy "%base_dir%/Config/Cheats" "%base_dir%/Android/app/src/main/assets/project64_data/Config/Cheats/" /D /I /F /Y /E
 IF %ERRORLEVEL% NEQ 0 (exit /B 1)
 
-IF NOT EXIST "%base_dir%/Android/app/src/main/assets/project64_data/Config/Enhancement/" mkdir "%base_dir%/Android/app/src/main/assets/project64_data/Config/Enhancement/"
-xcopy "%base_dir%/Config/Enhancement" "%base_dir%/Android/app/src/main/assets/project64_data/Config/Enhancement/" /D /I /F /Y /E
+IF NOT EXIST "%base_dir%/Android/app/src/main/assets/project64_data/Config/Enhancements/" mkdir "%base_dir%/Android/app/src/main/assets/project64_data/Config/Enhancements/"
+xcopy "%base_dir%/Config/Enhancements" "%base_dir%/Android/app/src/main/assets/project64_data/Config/Enhancements/" /D /I /F /Y /E
 IF %ERRORLEVEL% NEQ 0 (exit /B 1)
 
 goto :end
