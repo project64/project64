@@ -5,3 +5,4 @@
 *.vcxproj.filters
 *.dsp
 *.plg
+*.h.in

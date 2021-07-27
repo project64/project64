@@ -8,3 +8,4 @@
 *.plg
 *.txt
 *.rc
+*.h.in
