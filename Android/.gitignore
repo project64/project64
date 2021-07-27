@@ -2,18 +2,14 @@ assets/project64_data/Config
 assets/project64_data/Lang
 config/version.gradle
 
-# Generated and temporary files
-bin/
-gen/
-obj/
-*.d
-*.o
-*.so
-Version.h.in
-
-# Eclipse project files
-.settings/
-.classpath
-.cproject
-.project
-
+app/src/main/assets/project64_data/Config
+app/src/main/assets/project64_data/Lang
+*.iml
+.gradle
+local.properties
+.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
