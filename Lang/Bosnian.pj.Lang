@@ -52,13 +52,13 @@
 # 131 # "GS dugme"
 # 132 # "Resume"
 # 133 # "Meko resetiranje"
-# 134 # "Hard Reset"
+# 134 # "Tvrd Reset"
 # 135 # "Zamjena i disk"
 
 // Izbornik mogućnosti
 # 140 # "Opcije"
 # 141 # "i preko cijelog ekrana"
-# 142 # "I uvijek na vrhu"
+# 142 # "i uvijek na vrhu"
 # 143 # "Konfiguriranje grafičkog dodatka..."
 # 144 # "Konfiguriranje audio dodatka..."
 # 145 # "Konfiguriranje dodatka kontrolera.."
@@ -261,7 +261,7 @@
 # 491 # "Dolje"
 # 492 # "Automatski osvježi pretraživač"
 
-//Napredne opcije
+// Napredne opcije
 # 500 # "Većina ovih promjena neće stupiti na snagu dok se ne otvori novi ROM ili ne resetira trenutni ROM."
 # 501 # "Osnovne zadane postavke"
 # 502 # "CPU jezgra stil:"
@@ -306,7 +306,7 @@
 # 541 # "Repipiler"
 # 542 # "Sinkroniziranje jezgara"
 
-// Self Mod metode
+// Sebican Mod metode
 # 560 # "Nema"
 # 561 # "Predmemorija"
 # 562 # "Zaštiti memoriju"
@@ -384,7 +384,7 @@
 # 800 # "Informacije o ROM-u"
 
 // Tekst s informacijama o ROM-u
-# 801 # "Naziv ROM:"
+# 801 # "Naziv ROM-a:"
 # 802 # "Naziv datoteke:"
 # 803 # "Lokacija:"
 # 804 # "Veličina ROM-a:"
@@ -399,7 +399,7 @@
 / *************************************************** ********************************
 * Trikovi *
 **************************************************** ******************************* /
-// Cheat List
+// Cheat Lista
 # 1000 # "Trikovi"
 # 1001 # "Trikovi:"
 # 1002 # "Napomene:"
@@ -445,7 +445,7 @@
 # 1041 # "Uredi"
 # 1042 # "Obriši"
 
-// uređivač prečaca
+// Uređivač prečaca
 # 1100 # "Poništi prečice"
 # 1101 # "Jeste li sigurni da želite resetirati prečice? \ N \ nOva akcija se ne može poništiti."
 # 1102 # "Meni datoteke"
