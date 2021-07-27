@@ -1,10 +1,8 @@
 package emu.project64;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
-
-import com.google.android.gms.analytics.HitBuilders;
-
 import emu.project64.R;
 import emu.project64.jni.NativeExports;
 import emu.project64.jni.SettingsID;
@@ -13,9 +11,7 @@ import emu.project64.task.ExtractAssetsTask;
 import emu.project64.task.ExtractAssetsTask.ExtractAssetsListener;
 import emu.project64.task.ExtractAssetsTask.Failure;
 import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -23,66 +19,51 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
-import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.widget.TextView;
 
-/**
- * The main activity that presents the splash screen, extracts the assets if necessary, and launches
- * the main menu activity.
- */
-public class SplashActivity extends Activity implements ExtractAssetsListener, OnRequestPermissionsResultCallback
+public class SplashActivity extends AppCompatActivity implements ExtractAssetsListener, OnRequestPermissionsResultCallback
 {
     static final int PERMISSION_REQUEST = 177;
     static final int NUM_PERMISSIONS = 2;
-
-    /**
-     * Asset version number, used to determine stale assets. Increment this number every time the
-     * assets are updated on disk.
-     */
-    private static final int ASSET_VERSION = 3;
-
-    /** The total number of assets to be extracted (for computing progress %). */
-    private static final int TOTAL_ASSETS = 89;
-
-    /** The minimum duration that the splash screen is shown, in milliseconds. */
+    private int TOTAL_ASSETS = 100;
     private static final int SPLASH_DELAY = 2000;
 
-    /**
-     * The subdirectory within the assets directory to extract. A subdirectory is necessary to avoid
-     * extracting all the default system assets in addition to ours.
-     */
     private static final String SOURCE_DIR = "project64_data";
 
     private static boolean mInit = false;
     private static boolean mAppInit = false;
 
-    /** The text view that displays extraction progress info. */
-    private static TextView mTextView;
-
-    /** The running count of assets extracted. */
+    private TextView mTextView;
     private int mAssetsExtracted;
 
     @Override
     public void onCreate( Bundle savedInstanceState )
     {
         super.onCreate( savedInstanceState );
-        Window window = getWindow();
 
-        // Don't let the activity sleep in the middle of extraction
-        window.setFlags( LayoutParams.FLAG_KEEP_SCREEN_ON, LayoutParams.FLAG_KEEP_SCREEN_ON );
+        getWindow().setFlags( LayoutParams.FLAG_KEEP_SCREEN_ON, LayoutParams.FLAG_KEEP_SCREEN_ON );
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-        // Lay out the content
-        setContentView( R.layout.splash_activity );
+        try
+        {
+            setContentView( R.layout.splash_activity );
+        }
+        catch (android.view.InflateException e)
+        {
+            Log.e("SplashActivity", "Resource NOT found");
+            return;
+        }
         ((TextView) findViewById( R.id.versionText )).setText(NativeExports.appVersion());
         mTextView = (TextView) findViewById( R.id.mainText );
-
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
             ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) ||
@@ -142,14 +123,7 @@ public class SplashActivity extends Activity implements ExtractAssetsListener, O
             InitProject64();
         }
 
-        ((Project64Application) getApplication()).getDefaultTracker().send(new HitBuilders.EventBuilder()
-            .setCategory("start")
-            .setLabel(NativeExports.appVersion())
-            .build());
-
-        // Extract the assets in a separate thread and launch the menu activity
-        // Handler.postDelayed ensures this runs only after activity has resumed
-        Log.e( "Splash", "extractAssetsTaskLauncher - startup");
+        Log.i( "Splash", "extractAssetsTaskLauncher - startup");
         final Handler handler = new Handler();
         if (!mAppInit || NativeExports.UISettingsLoadDword(UISettingID.Asserts_Version.getValue()) != ASSET_VERSION)
         {
@@ -266,20 +240,44 @@ public class SplashActivity extends Activity implements ExtractAssetsListener, O
         mAppInit = true;
     }
 
-    /** Runnable that launches the non-UI thread from the UI thread after the activity has resumed. */
     private final Runnable startGalleryLauncher = new Runnable()
     {
         @Override
         public void run()
         {
-            // Assets already extracted, just launch gallery activity
             Intent intent = new Intent( SplashActivity.this, GalleryActivity.class );
             SplashActivity.this.startActivity( intent );
-
-            // We never want to come back to this activity, so finish it
             finish();
         }
     };
+
+    private boolean CountTotalAssetFiles(String path)
+    {
+        String [] list;
+        try
+        {
+            list = getAssets().list(path);
+            if (list.length > 0)
+            {
+                for (String file : list)
+                {
+                    if (!CountTotalAssetFiles(path + "/" + file))
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        TOTAL_ASSETS += 1;
+                    }
+                }
+            }
+        }
+        catch (IOException e)
+        {
+            return false;
+        }
+        return true;
+    }
 
     private final Runnable extractAssetsTaskLauncher = new Runnable()
     {
@@ -287,7 +285,8 @@ public class SplashActivity extends Activity implements ExtractAssetsListener, O
         public void run()
         {
             Log.e( "Splash", "extractAssetsTaskLauncher - start");
-            // Extract and merge the assets if they are out of date
+            TOTAL_ASSETS = 0;
+            CountTotalAssetFiles(SOURCE_DIR);
             mAssetsExtracted = 0;
             new ExtractAssetsTask( getAssets(), SOURCE_DIR, AndroidDevice.PACKAGE_DIRECTORY, SplashActivity.this ).execute();
         }
@@ -311,8 +310,6 @@ public class SplashActivity extends Activity implements ExtractAssetsListener, O
             {
                 InitProject64();
             }
-
-            // Extraction succeeded, record new asset version and merge cheats
             mTextView.setText( R.string.assetExtractor_finished );
             NativeExports.UISettingsSaveDword(UISettingID.Asserts_Version.getValue(), ASSET_VERSION);
 
