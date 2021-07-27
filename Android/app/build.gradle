@@ -1,0 +1,48 @@
+plugins {
+    id 'com.android.application'
+}
+
+apply from: '../config/version.gradle'
+
+android {
+
+    defaultConfig {
+        applicationId = "emu.Project64"
+
+        externalNativeBuild {
+            cmake {
+                cppFlags '-std=c++11'
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation "androidx.drawerlayout:drawerlayout:1.0.0"
+    implementation 'androidx.preference:preference:1.1.1'
+    testImplementation 'junit:junit:4.12'
+    implementation project(':jni:3rdParty:png')
+    implementation project(':jni:3rdParty:zlib')
+    implementation project(':jni:Common')
+    implementation project(':jni:Settings')
+    implementation project(':jni:Project64-core')
+    implementation project(':jni:Project64-bridge')
+    implementation project(':jni:Project64-video')
+    implementation project(':jni:Project64-audio')
+    implementation project(':jni:Plugin-input')
+    implementation project(':jni:Plugin-RspHle')
+}

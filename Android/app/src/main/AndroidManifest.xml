@@ -55,11 +55,6 @@
             </intent-filter>
         </activity>
 
-        <!--
-        For the GameActivities, do not restart the activity when the phone's slider
-        opens or closes, or when the orientation (and thereby screen size) changes.
-        This behavior is specified in android:configChanges below.
-        -->
         <activity
             android:name="emu.project64.game.GameActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -78,12 +73,12 @@
         <activity
             android:name="emu.project64.AboutActivity"
             android:theme="@style/Theme.Project64.About" />
-         <activity
+        <activity
             android:name="emu.project64.settings.SettingsActivity"
-            android:theme="@style/Theme.Project64.Apearance" />
+            android:theme="@style/Theme.Project64.Settings"/>
          <activity
             android:name="emu.project64.settings.GameSettingsActivity"
-            android:theme="@style/Theme.Project64.Apearance" />
+            android:theme="@style/Theme.Project64.Settings" />
 
      </application>
 </manifest>

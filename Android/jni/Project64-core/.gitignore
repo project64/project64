@@ -1,8 +1,8 @@
+/.cxx
+/build
 *.cpp
 *.h
 *.vcproj
 *.vcxproj
 *.vcxproj.filters
-*.dsp
-*.plg
-*.h.in
+*.in
