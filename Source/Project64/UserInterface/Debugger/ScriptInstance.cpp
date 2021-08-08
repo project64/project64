@@ -142,7 +142,8 @@ void CScriptInstance::StartScriptProc()
 
     if (m_TempPath)
     {
-        stdstr fullPath = stdstr_f("Scripts/%s", m_TempPath);
+        stdstr scriptsDir = (std::string)CPath(CPath::MODULE_DIRECTORY) + "Scripts\\";
+        stdstr fullPath = scriptsDir + m_TempPath;
         duk_int_t scriptresult = duk_peval_file(ctx, fullPath.c_str());
         m_TempPath = nullptr;
 
