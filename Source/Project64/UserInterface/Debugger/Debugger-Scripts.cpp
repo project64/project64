@@ -49,11 +49,20 @@ LRESULT CDebugScripts::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
 
     RefreshList();
 
-    LoadWindowPos();
-    WindowCreated();
+    m_InstallDir = (std::string)CPath(CPath::MODULE_DIRECTORY);
+    m_ScriptsDir = m_InstallDir + "Scripts\\";
+
+    if (!PathFileExistsA(m_ScriptsDir.c_str()))
+    {
+        CreateDirectoryA(m_ScriptsDir.c_str(), nullptr);
+    }
 
     m_hQuitScriptDirWatchEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
     m_hScriptDirWatchThread = CreateThread(nullptr, 0, ScriptDirWatchProc, (void*)this, 0, nullptr);
+
+    LoadWindowPos();
+    WindowCreated();
+
     return 0;
 }
 
@@ -88,7 +97,7 @@ DWORD WINAPI CDebugScripts::ScriptDirWatchProc(void* ctx)
 
     HANDLE hEvents[2];
 
-    hEvents[0] = FindFirstChangeNotification(L"Scripts", FALSE, FILE_NOTIFY_CHANGE_FILE_NAME);
+    hEvents[0] = FindFirstChangeNotification(_this->m_ScriptsDir.ToUTF16().c_str(), FALSE, FILE_NOTIFY_CHANGE_FILE_NAME);
 
     if (hEvents[0] == INVALID_HANDLE_VALUE)
     {
@@ -195,7 +204,7 @@ LRESULT CDebugScripts::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*
         ConsoleCopy();
         break;
     case IDC_SCRIPTDIR_BTN:
-        ShellExecute(nullptr, L"open", L"Scripts", nullptr, nullptr, SW_SHOW);
+        ShellExecuteA(nullptr, "open", m_ScriptsDir.c_str(), nullptr, m_InstallDir.c_str(), SW_SHOW);
         break;
     }
     return FALSE;
@@ -221,9 +230,8 @@ void CDebugScripts::RefreshStatus()
 {
     INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName.c_str());
 
-    stdstr statusText;
-    CPath(stdstr_f("Scripts\\%s", m_SelectedScriptName.c_str())).GetFullyQualified(statusText);
-    
+    stdstr statusText = m_ScriptsDir + m_SelectedScriptName;
+
     if (state == STATE_RUNNING)
     {
         statusText += " (Running)";
@@ -366,7 +374,7 @@ LRESULT CDebugScripts::OnRefreshList(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 {
     int nIndex = m_ScriptList.GetSelectedIndex();
 
-    CPath SearchPath("Scripts", "*");
+    CPath SearchPath(m_ScriptsDir, "*");
 
     if (!SearchPath.FindFirst(CPath::FIND_ATTRIBUTE_ALLFILES))
     {
@@ -464,7 +472,7 @@ void CDebugScripts::ToggleSelected()
 
 void CDebugScripts::EditSelected()
 {
-    ShellExecute(nullptr, L"edit", stdstr(m_SelectedScriptName).ToUTF16().c_str(), nullptr, L"Scripts", SW_SHOWNORMAL);
+    ShellExecuteA(nullptr, "edit", m_SelectedScriptName.c_str(), nullptr, m_ScriptsDir.c_str(), SW_SHOWNORMAL);
 }
 
 // Console input

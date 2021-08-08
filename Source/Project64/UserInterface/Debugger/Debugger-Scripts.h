@@ -84,7 +84,9 @@ private:
     CEditConsole m_ConsoleEdit;
     CScriptList m_ScriptList;
     CStatusBarCtrl m_StatusBar;
-    std::string m_SelectedScriptName;
+    stdstr m_SelectedScriptName;
+    stdstr m_InstallDir;
+    stdstr m_ScriptsDir;
 
     HANDLE m_hQuitScriptDirWatchEvent;
     HANDLE m_hScriptDirWatchThread;
