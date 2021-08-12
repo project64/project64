@@ -890,7 +890,7 @@ void CN64System::Reset(bool bInitReg, bool ClearMenory)
     {
         m_SyncCPU->Reset(bInitReg, ClearMenory);
     }
-    g_Settings->SaveBool(GameRunning_InReset, true);
+    g_Settings->SaveBool(GameRunning_InReset, false);
 
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }
