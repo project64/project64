@@ -49,7 +49,8 @@ private:
     CDebuggerUI* m_Debugger;
     CriticalSection m_CS;
     std::vector<CSymbol> m_Symbols;
-    
+    std::map<uint32_t, size_t> m_AddressMap; // address -> symbol index
+
     int    m_NextSymbolId;
 
     CFile  m_SymFileHandle;
@@ -63,6 +64,8 @@ private:
     bool   m_bHaveFirstToken;
 
     void ParserFetchToken(const char* delim);
+
+    void UpdateAddressMap();
 
 public:
     static symbol_type_info_t m_SymbolTypes[];
@@ -78,13 +81,12 @@ public:
     void Save();
     void ParseErrorAlert(char* message, int lineNumber);
 
-    void AddSymbol(int type, uint32_t address, const char* name, const char* description = nullptr);
+    void AddSymbol(int type, uint32_t address, const char* name, const char* description = nullptr, bool bSortAfter = true);
     void Reset();
     int  GetCount();
     bool GetSymbolById(int id, CSymbol* symbol);
     bool GetSymbolByIndex(size_t index, CSymbol* symbol);
     bool GetSymbolByAddress(uint32_t address, CSymbol* symbol);
-    bool GetSymbolByOverlappedAddress(uint32_t address, CSymbol* symbol);
     bool RemoveSymbolById(int id);
 };
 
