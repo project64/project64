@@ -923,7 +923,7 @@ LRESULT CDebugMemoryView::OnHxHotAddrChanged(LPNMHDR /*lpNMHDR*/)
     stdstr strAddrInfo = "";
 
     CSymbol symbol;
-    if (m_Debugger->SymbolTable()->GetSymbolByOverlappedAddress(m_HotAddress, &symbol))
+    if (m_Debugger->SymbolTable()->GetSymbolByAddress(m_HotAddress, &symbol))
     {
         strAddrInfo += stdstr_f("%08X %s %s", symbol.m_Address, symbol.TypeName(), symbol.m_Name);
     }

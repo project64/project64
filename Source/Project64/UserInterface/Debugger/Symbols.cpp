@@ -123,6 +123,8 @@ void CSymbolTable::Load()
 {
     CGuard guard(m_CS);
 
+    m_AddressMap.clear();
+
     m_NextSymbolId = 0;
     m_Symbols.clear();
 
@@ -224,7 +226,7 @@ void CSymbolTable::Load()
         }
         
         // Add symbol object to the vector
-        AddSymbol(type, address, name, description);
+        AddSymbol(type, address, name, description, false);
 
         if (m_ParserDelimeter == '\0')
         {
@@ -234,6 +236,9 @@ void CSymbolTable::Load()
 
         lineNumber++;
     }
+
+    sort(m_Symbols.begin(), m_Symbols.end(), CmpSymbolAddresses);
+    UpdateAddressMap();
     
     delete[] m_SymFileParseBuffer;
     m_SymFileParseBuffer = nullptr;
@@ -380,7 +385,7 @@ void CSymbolTable::GetValueString(char* dst, CSymbol* symbol)
 void CSymbolTable::ParseErrorAlert(char* message, int lineNumber)
 {
     stdstr messageFormatted = stdstr_f("%s\nLine %d", message, lineNumber);
-    MessageBox(nullptr, messageFormatted.ToUTF16().c_str(), L"Parse error", MB_OK | MB_ICONWARNING);
+    MessageBox(nullptr, messageFormatted.ToUTF16().c_str(), L"Symbol parse error", MB_OK | MB_ICONWARNING);
 }
 
 void CSymbolTable::Reset()
@@ -394,7 +399,7 @@ bool CSymbolTable::CmpSymbolAddresses(CSymbol& a, CSymbol& b)
     return (a.m_Address < b.m_Address);
 }
 
-void CSymbolTable::AddSymbol(int type, uint32_t address, const char* name, const char* description)
+void CSymbolTable::AddSymbol(int type, uint32_t address, const char* name, const char* description, bool bSortAfter)
 {
     CGuard guard(m_CS);
 
@@ -411,9 +416,23 @@ void CSymbolTable::AddSymbol(int type, uint32_t address, const char* name, const
     int id = m_NextSymbolId++;
 
     CSymbol symbol = CSymbol(id, type, address, name, description);
+    m_AddressMap[address] = m_Symbols.size();
     m_Symbols.push_back(symbol);
 
-    sort(m_Symbols.begin(), m_Symbols.end(), CmpSymbolAddresses);
+    if (bSortAfter)
+    {
+        sort(m_Symbols.begin(), m_Symbols.end(), CmpSymbolAddresses);
+        UpdateAddressMap();
+    }
+}
+
+void CSymbolTable::UpdateAddressMap()
+{
+    m_AddressMap.clear();
+    for (size_t i = 0; i < m_Symbols.size(); i++)
+    {
+        m_AddressMap[m_Symbols[i].m_Address] = i;
+    }
 }
 
 int CSymbolTable::GetCount()
@@ -436,30 +455,15 @@ bool CSymbolTable::GetSymbolByIndex(size_t index, CSymbol* symbol)
 bool CSymbolTable::GetSymbolByAddress(uint32_t address, CSymbol* symbol)
 {
     CGuard guard(m_CS);
-    for (size_t i = 0; i < m_Symbols.size(); i++)
-    {
-        if (m_Symbols[i].m_Address == address)
-        {
-            *symbol = m_Symbols[i];
-            return true;
-        }
-    }
-    return false;
-}
 
-bool CSymbolTable::GetSymbolByOverlappedAddress(uint32_t address, CSymbol* symbol)
-{
-    CGuard guard(m_CS);
-    for (size_t i = 0; i < m_Symbols.size(); i++)
+    if (m_AddressMap.count(address) == 0)
     {
-        if (address >= m_Symbols[i].m_Address &&
-            address < m_Symbols[i].m_Address + m_Symbols[i].TypeSize())
-        {
-            *symbol = m_Symbols[i];
-            return true;
-        }
+        return false;
     }
-    return false;
+
+    size_t index = m_AddressMap[address];
+    *symbol = m_Symbols[index];
+    return true;
 }
 
 bool CSymbolTable::GetSymbolById(int id, CSymbol* symbol)
@@ -484,8 +488,10 @@ bool CSymbolTable::RemoveSymbolById(int id)
         if (m_Symbols[i].m_Id == id)
         {
             m_Symbols.erase(m_Symbols.begin() + i);
+            UpdateAddressMap();
             return true;
         }
     }
+
     return false;
 }
