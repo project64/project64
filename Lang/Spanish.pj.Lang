@@ -2,7 +2,7 @@
 #1  #  "Español"		// LANGUAGE ID
 #2  #  "MELERIX"		// Author
 #3  #  "3.0.1"			// Version
-#4  #  "22/07/2021"		// Date
+#4  #  "01/09/2021"		// Date
 
 /*** Menu ***/
 
@@ -192,7 +192,7 @@
 #420#  "Acerca de"
 #421#  " Complemento de RSP (Reality Signal Processor): "
 #422#  " Complemento de Vídeo (gráficos): "
-#423#  " Complemento de Audio (sonido) : "
+#423#  " Complemento de Audio (sonido): "
 #424#  " Complemento de Entrada (control): "
 #425#  "Gráficos HLE"
 #426#  "Audio HLE"
@@ -225,7 +225,7 @@
 #468#  "Almacenar guardados de juego en carpetas separadas"
 #469#  "Ruta de ROM IPL 64DD venta Japonesa:"
 #470#  "Ruta de ROM IPL 64DD venta Americana:"
-#471#  "Ruta de ROM IPL 64DD de Desarrollo):"
+#471#  "Ruta de ROM IPL 64DD de Desarrollo:"
 #472#  "Tipo de guardado de disco:"
 #473#  "Habilitar mejoras"
 #474#  "Mostrar barra de estado"
