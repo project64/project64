@@ -1,129 +1,103 @@
+#include <windows.h>
+#include <fstream>
+#include <map>
+
+#include "ScriptTypes.h"
+#include "debugger.h"
+
 #pragma once
 
-#include <stdafx.h>
-#include <3rdParty/duktape/duktape.h>
-
-#include "ScriptInstance.h"
-
-class CScriptHook;
+#define SCRIPTSYS_SCRIPTS_DIR "Scripts\\"
+#define SCRIPTSYS_MODULES_DIR "Scripts\\modules\\"
 
 class CScriptSystem
 {
+    typedef std::map<JSInstanceName, CScriptInstance*> JSInstanceMap;
+    typedef std::map<JSAppCallbackID, JSAppCallback> JSAppCallbackMap;
+    typedef std::map<JSAppHookID, JSAppCallbackMap> JSAppHookMap;
+    typedef std::map<JSInstanceName, JSInstanceStatus> JSInstanceStatusMap;
+    typedef std::vector<JSSysCommand> JSSysCommandQueue;
+
+    HANDLE              m_hThread;
+
+    CriticalSection     m_CmdQueueCS;
+    JSSysCommandQueue   m_CmdQueue;
+    HANDLE              m_hCmdEvent;
+
+    CriticalSection     m_InstancesCS;
+    JSInstanceMap       m_Instances;
+    JSAppHookMap        m_AppCallbackHooks;
+    JSAppCallbackID     m_NextAppCallbackId;
+    size_t              m_AppCallbackCount;
+
+    CriticalSection     m_UIStateCS;
+    JSInstanceStatusMap m_UIInstanceStatus;
+    stdstr              m_UILog;
+
+    CDebuggerUI*        m_Debugger;
+
+    std::set<std::string> m_AutorunList;
+
+    stdstr m_InstallDirFullPath;
+    stdstr m_ScriptsDirFullPath;
+    stdstr m_ModulesDirFullPath;
+
 public:
     CScriptSystem(CDebuggerUI* debugger);
     ~CScriptSystem();
-    // Run a script in its own context/thread
-    void RunScript(const char * path);
 
-    // Kill a script context/thread by its path
-    void StopScript(const char * path);
+    CDebuggerUI* Debugger();
 
-    const char* APIScript();
+    void StartScript(const char* instanceName, const char* path);
+    void StopScript(const char* instanceName);
+    void Input(const char* instanceName, const char* code);
 
+    stdstr InstallDirPath();
+    stdstr ScriptsDirPath();
+    stdstr ModulesDirPath();
+    
+    JSInstanceStatus GetStatus(const char* instanceName);
+    void NotifyStatus(const char* instanceName, JSInstanceStatus status);
+    void ConsoleLog(const char* format, ...);
+    void ConsolePrint(const char* format, ...);
+    void ConsoleClear();
+    stdstr GetConsoleBuffer();
+
+    void PostCMethodCall(const char* instanceName, void* dukThisHeapPtr, duk_c_function func,
+        JSDukArgSetupFunc argSetupFunc = nullptr,
+        void* argSetupParam = nullptr,
+        size_t argSetupParamSize = 0);
+
+    bool HaveAppCallbacks(JSAppHookID hookId);
+    void InvokeAppCallbacks(JSAppHookID hookId, void* env = nullptr);
+    void DoMouseEvent(JSAppHookID hookId, int x, int y, DWORD uMsg = (DWORD)-1);
+    JSAppCallbackID RawAddAppCallback(JSAppHookID hookId, JSAppCallback& callback);
+    bool RawRemoveAppCallback(JSAppHookID hookId, JSAppCallbackID callbackId);
+
+    void ExecAutorunList();
+    std::set<std::string>& AutorunList();
+    void LoadAutorunList();
+    void SaveAutorunList();
+    
 private:
-    typedef struct {
-        const char* hookId;
-        CScriptHook* cbList;
-    } HOOKENTRY;
+    void InitDirectories();
 
-    typedef struct {
-        char* path;
-        CScriptInstance* scriptInstance;
-    } INSTANCE_ENTRY;
+    void PostCommand(JSSysCommandID id, stdstr paramA = "", stdstr paramB = "", void* paramC = nullptr);
 
-    CDebuggerUI* m_Debugger;
-    int m_NumCallbacks;
-    char* m_APIScript;
+    static DWORD WINAPI ThreadProc(void* _this);
+    void ThreadProc();
 
-    vector<HOOKENTRY> m_Hooks;
-    vector<INSTANCE_ENTRY> m_RunningInstances;
+    bool ProcessCommand(JSSysCommand& cmd);
+    bool ProcessCommandQueue(std::vector<JSSysCommand>& queue);
+    void PullCommands(JSSysCommandID id, std::vector<JSSysCommand>& out);
 
-    vector<std::string> m_LogData;
+    void OnStartScript(const char* name, const char* path);
+    void OnStopScript(const char* name);
+    void OnInput(const char* name, const char* code);
+    void OnCMethodCall(const char* name, JSSysCMethodCall* methodCall);
+    void OnSweep(bool bIfDone);
 
-    CScriptHook* m_HookCPUExec;
-    CScriptHook* m_HookCPURead;
-    CScriptHook* m_HookCPUWrite;
-    CScriptHook* m_HookCPUExecOpcode;
-    CScriptHook* m_HookCPUGPRValue;
-    CScriptHook* m_HookFrameDrawn;
+    bool RawRemoveInstance(const char* key);
 
-    CriticalSection m_CS;
-
-    void RegisterHook(const char* hookId, CScriptHook* cbList); // Associate string ID with callback list
-    void UnregisterHooks();
-
-    HDC m_ScreenDC;
-
-    int m_NextCallbackId;
-
-public:
-    // Returns true if any of the script hooks have callbacks for scriptInstance
-
-    void SetScreenDC(HDC hdc)
-    {
-        m_ScreenDC = hdc;
-    }
-
-    HDC GetScreenDC()
-    {
-        return m_ScreenDC;
-    }
-
-    inline void LogText(const char* text)
-    {
-        m_LogData.push_back(text);
-        m_Debugger->Debug_RefreshScriptsWindow();
-    }
-
-    bool HasCallbacksForInstance(CScriptInstance* scriptInstance);
-
-    // Remove all hooked callbacks for an instance
-    void ClearCallbacksForInstance(CScriptInstance* scriptInstance);
-
-    void RemoveCallbackById(int callbackId);
-
-    CScriptHook* GetHook(const char* hookId);
-
-    int GetNextCallbackId();
-    void CallbackAdded();
-    void CallbackRemoved();
-
-    inline int HaveCallbacks()
-    {
-        return m_NumCallbacks != 0;
-    }
-
-    void DeleteStoppedInstances();
-    INSTANCE_STATE GetInstanceState(const char* scriptName);
-    CScriptInstance* GetInstance(const char* scriptName);
-
-    CScriptHook* HookCPUExec()
-    {
-        return m_HookCPUExec;
-    }
-
-    CScriptHook* HookCPURead()
-    {
-        return m_HookCPURead;
-    }
-
-    CScriptHook* HookCPUWrite()
-    {
-        return m_HookCPUWrite;
-    }
-
-    CScriptHook* HookCPUExecOpcode()
-    {
-        return m_HookCPUExecOpcode;
-    }
-
-    CScriptHook* HookCPUGPRValue()
-    {
-        return m_HookCPUGPRValue;
-    }
-
-    CScriptHook* HookFrameDrawn()
-    {
-        return m_HookFrameDrawn;
-    }
+    static stdstr FixStringReturns(const char* str);
 };

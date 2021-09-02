@@ -73,6 +73,7 @@
     <ClCompile Include="UserInterface\Debugger\Debugger-MemoryDump.cpp" />
     <ClCompile Include="UserInterface\Debugger\Debugger-MemorySearch.cpp" />
     <ClCompile Include="UserInterface\Debugger\Debugger-RegisterTabs.cpp" />
+    <ClCompile Include="UserInterface\Debugger\Debugger-ScriptsAutorun.cpp" />
     <ClCompile Include="UserInterface\Debugger\Debugger-Scripts.cpp" />
     <ClCompile Include="UserInterface\Debugger\Debugger-StackTrace.cpp" />
     <ClCompile Include="UserInterface\Debugger\Debugger-StackView.cpp" />
@@ -81,11 +82,34 @@
     <ClCompile Include="UserInterface\Debugger\Debugger-ViewMemory.cpp" />
     <ClCompile Include="UserInterface\Debugger\Debugger.cpp" />
     <ClCompile Include="UserInterface\Debugger\DebugMMU.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\JSIntervalWorker.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\JSServerWorker.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\JSSocketWorker.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\N64Image.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\N64Image_PNG.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_interval.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_N64Image.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_Socket.cpp" />
     <ClCompile Include="UserInterface\Debugger\DMALog.cpp" />
     <ClCompile Include="UserInterface\Debugger\MemoryScanner.cpp" />
-    <ClCompile Include="UserInterface\Debugger\ScriptHook.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_AddressRange.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_alert.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_asm.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_console.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_debug.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_events.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_exec.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_fs.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_mem.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_Number_hex.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_cpu.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_pj64.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_script.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_Server.cpp" />
     <ClCompile Include="UserInterface\Debugger\ScriptInstance.cpp" />
     <ClCompile Include="UserInterface\Debugger\ScriptSystem.cpp" />
+    <ClCompile Include="UserInterface\Debugger\ScriptWorker.cpp" />
     <ClCompile Include="UserInterface\Debugger\Symbols.cpp" />
     <ClCompile Include="UserInterface\DiscordRPC.cpp" />
     <ClCompile Include="UserInterface\EnhancementUI.cpp" />
@@ -146,6 +170,7 @@
     <ClInclude Include="UserInterface\Debugger\Debugger-MemoryDump.h" />
     <ClInclude Include="UserInterface\Debugger\Debugger-MemorySearch.h" />
     <ClInclude Include="UserInterface\Debugger\Debugger-RegisterTabs.h" />
+    <ClInclude Include="UserInterface\Debugger\Debugger-ScriptsAutorun.h" />
     <ClInclude Include="UserInterface\Debugger\Debugger-Scripts.h" />
     <ClInclude Include="UserInterface\Debugger\Debugger-StackTrace.h" />
     <ClInclude Include="UserInterface\Debugger\Debugger-StackView.h" />
@@ -156,12 +181,18 @@
     <ClInclude Include="UserInterface\Debugger\debugger.h" />
     <ClInclude Include="UserInterface\Debugger\DebuggerUI.h" />
     <ClInclude Include="UserInterface\Debugger\DebugMMU.h" />
+    <ClInclude Include="UserInterface\Debugger\ScriptAPI\JSIntervalWorker.h" />
+    <ClInclude Include="UserInterface\Debugger\ScriptAPI\JSServerWorker.h" />
+    <ClInclude Include="UserInterface\Debugger\ScriptAPI\JSSocketWorker.h" />
+    <ClInclude Include="UserInterface\Debugger\ScriptAPI\N64Image.h" />
     <ClInclude Include="UserInterface\Debugger\DMALog.h" />
     <ClInclude Include="UserInterface\Debugger\MemoryScanner.h" />
     <ClInclude Include="UserInterface\Debugger\OpInfo.h" />
-    <ClInclude Include="UserInterface\Debugger\ScriptHook.h" />
+    <ClInclude Include="UserInterface\Debugger\ScriptAPI\ScriptAPI.h" />
     <ClInclude Include="UserInterface\Debugger\ScriptInstance.h" />
     <ClInclude Include="UserInterface\Debugger\ScriptSystem.h" />
+    <ClInclude Include="UserInterface\Debugger\ScriptTypes.h" />
+    <ClInclude Include="UserInterface\Debugger\ScriptWorker.h" />
     <ClInclude Include="UserInterface\Debugger\Symbols.h" />
     <ClInclude Include="UserInterface\EnhancementUI.h" />
     <ClInclude Include="UserInterface\MainWindow.h" />
@@ -193,6 +224,7 @@
     <ClInclude Include="UserInterface\SupportWindow.h" />
     <ClInclude Include="UserInterface\WelcomeScreen.h" />
     <ClInclude Include="UserInterface\WTLControls\DisplayMode.h" />
+    <ClInclude Include="UserInterface\WTLControls\EditConInput.h" />
     <ClInclude Include="UserInterface\WTLControls\EditNumber32.h" />
     <ClInclude Include="UserInterface\WTLControls\GetCWindowText.h" />
     <ClInclude Include="UserInterface\WTLControls\HexEditCtrl.h" />
@@ -214,6 +246,9 @@
     </ProjectReference>
     <ProjectReference Include="..\3rdParty\duktape\duktape.vcxproj">
       <Project>{e8d9a652-a354-4374-b6c5-a51ee62749fd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rdParty\png\png.vcxproj">
+      <Project>{17836496-31b0-46f2-b1b1-366d7df6f04c}</Project>
     </ProjectReference>
     <ProjectReference Include="..\3rdParty\zlib\zlib.vcxproj">
       <Project>{731bd205-2826-4631-b7af-117658e88dbc}</Project>
@@ -245,7 +280,6 @@
   <ItemGroup>
     <None Include="res\divider.cur" />
     <None Include="res\hand.cur" />
-    <None Include="UserInterface\API.js" />
     <None Include="UserInterface\icons\bin00001.bin" />
     <None Include="UserInterface\Icons\divider.cur" />
     <None Include="UserInterface\Icons\hand.cur" />

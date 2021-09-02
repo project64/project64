@@ -1,202 +1,552 @@
 #include <stdafx.h>
+#include <sys/stat.h>
+#include <sstream>
+#include "ScriptTypes.h"
 #include "ScriptSystem.h"
-#include "Debugger-Scripts.h"
-
 #include "ScriptInstance.h"
-#include "ScriptHook.h"
+#include "ScriptAPI/ScriptAPI.h"
+#include "Debugger.h"
+#include "Project64\UserInterface\DiscordRPC.h"
 
-CScriptSystem::CScriptSystem(CDebuggerUI* debugger)
+CScriptSystem::CScriptSystem(CDebuggerUI *debugger) :
+    m_Debugger(debugger),
+    m_NextAppCallbackId(0),
+    m_AppCallbackCount(0)
 {
-    WSADATA wsaData;
-    WSAStartup(MAKEWORD(2, 2), &wsaData);
+    InitDirectories();
 
-    m_NextCallbackId = 0;
-    m_NumCallbacks = 0;
-
-    m_Debugger = debugger;
-
-    m_HookCPUExec = new CScriptHook(this);
-    m_HookCPUExecOpcode = new CScriptHook(this);
-    m_HookCPURead = new CScriptHook(this);
-    m_HookCPUWrite = new CScriptHook(this);
-    m_HookCPUGPRValue = new CScriptHook(this);
-    m_HookFrameDrawn = new CScriptHook(this);
-
-    RegisterHook("exec", m_HookCPUExec);
-    RegisterHook("read", m_HookCPURead);
-    RegisterHook("write", m_HookCPUWrite);
-    RegisterHook("opcode", m_HookCPUExecOpcode);
-    RegisterHook("gprvalue", m_HookCPUGPRValue);
-    RegisterHook("draw", m_HookFrameDrawn);
-
-    HMODULE hInst = GetModuleHandle(nullptr);
-    HRSRC hRes = FindResource(hInst, MAKEINTRESOURCE(IDR_JSAPI_TEXT), L"TEXT");
-
-    HGLOBAL hGlob = LoadResource(hInst, hRes);
-    DWORD resSize = SizeofResource(hInst, hRes);
-    m_APIScript = (char*)malloc(resSize + 1);
-
-    void* resData = LockResource(hGlob);
-    memcpy(m_APIScript, resData, resSize);
-    m_APIScript[resSize] = '\0';
-    FreeResource(hGlob);
+    m_hCmdEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+    m_hThread = CreateThread(nullptr, 0, ThreadProc, this, 0, nullptr);
 }
 
 CScriptSystem::~CScriptSystem()
 {
-    for (size_t i = 0; i < m_Hooks.size(); i++)
+    PostCommand(JS_CMD_SHUTDOWN);
+    WaitForSingleObject(m_hThread, INFINITE);
+    CloseHandle(m_hThread);
+    CloseHandle(m_hCmdEvent);
+}
+
+JSInstanceStatus CScriptSystem::GetStatus(const char* name)
+{
+    CGuard guard(m_UIStateCS);
+    if (m_UIInstanceStatus.count(name) == 0)
     {
-        delete m_Hooks[i].cbList;
+        return JS_STATUS_STOPPED;
+    }
+    else
+    {
+        return m_UIInstanceStatus[name];
+    }
+}
+
+void CScriptSystem::NotifyStatus(const char* name, JSInstanceStatus status)
+{
+    CGuard guard(m_UIStateCS);
+    if (status == JS_STATUS_STOPPED)
+    {
+        m_UIInstanceStatus.erase(name);
+    }
+    else
+    {
+        m_UIInstanceStatus[name] = status;
+    }
+    m_Debugger->Debug_RefreshScriptsWindow();
+}
+
+void CScriptSystem::ConsoleLog(const char* format, ...)
+{
+    CGuard guard(m_UIStateCS);
+
+    va_list args;
+    va_start(args, format);
+
+    int size = vsnprintf(nullptr, 0, format, args) + 1;
+    char* str = new char[size];
+    vsnprintf(str, size, format, args);
+
+    stdstr formattedMsg = FixStringReturns(str) + "\r\n";
+    
+    m_Debugger->Debug_LogScriptsWindow(formattedMsg.c_str());
+    m_UILog += formattedMsg;
+
+    delete[] str;
+    va_end(args);
+}
+
+void CScriptSystem::ConsolePrint(const char* format, ...)
+{
+    CGuard guard(m_UIStateCS);
+
+    va_list args;
+    va_start(args, format);
+
+    int size = vsnprintf(nullptr, 0, format, args) + 1;
+    char* str = new char[size];
+    vsnprintf(str, size, format, args);
+    
+    stdstr formattedMsg = FixStringReturns(str);
+    
+    m_Debugger->Debug_LogScriptsWindow(formattedMsg.c_str());
+    m_UILog += formattedMsg;
+
+    delete[] str;
+    va_end(args);
+}
+
+void CScriptSystem::ConsoleClear()
+{
+    CGuard guard(m_UIStateCS);
+    m_UILog.clear();
+    m_Debugger->Debug_ClearScriptsWindow();
+}
+
+stdstr CScriptSystem::GetConsoleBuffer()
+{
+    CGuard guard(m_UIStateCS);
+    return stdstr(m_UILog);
+}
+
+stdstr CScriptSystem::InstallDirPath()
+{
+    return m_InstallDirFullPath;
+}
+
+stdstr CScriptSystem::ScriptsDirPath()
+{
+    return m_ScriptsDirFullPath;
+}
+
+stdstr CScriptSystem::ModulesDirPath()
+{
+    return m_ModulesDirFullPath;
+}
+
+void CScriptSystem::InitDirectories()
+{
+    m_InstallDirFullPath = (std::string)CPath(CPath::MODULE_DIRECTORY);
+    m_ScriptsDirFullPath = m_InstallDirFullPath + SCRIPTSYS_SCRIPTS_DIR;
+    m_ModulesDirFullPath = m_InstallDirFullPath + SCRIPTSYS_MODULES_DIR;
+
+    if (!PathFileExistsA(m_ScriptsDirFullPath.c_str()))
+    {
+        CreateDirectoryA(m_ScriptsDirFullPath.c_str(), nullptr);
     }
 
-    UnregisterHooks();
-    free(m_APIScript);
+    if (!PathFileExistsA(m_ModulesDirFullPath.c_str()))
+    {
+        CreateDirectoryA(m_ModulesDirFullPath.c_str(), nullptr);
+    }
 }
 
-const char* CScriptSystem::APIScript()
+void CScriptSystem::StartScript(const char *name, const char *path)
 {
-    return m_APIScript;
+    PostCommand(JS_CMD_START_SCRIPT, name, path);
 }
 
-void CScriptSystem::RunScript(const char * path)
+void CScriptSystem::StopScript(const char *name)
 {
-    CGuard guard(m_CS);
-    CScriptInstance* scriptInstance = new CScriptInstance(m_Debugger);
-    char* pathSaved = (char*)malloc(strlen(path)+1); // Freed via DeleteStoppedInstances
-    strcpy(pathSaved, path);
-
-    m_RunningInstances.push_back({ pathSaved, scriptInstance });
-    scriptInstance->Start(pathSaved);
+    PostCommand(JS_CMD_STOP_SCRIPT, name);
 }
 
-void CScriptSystem::StopScript(const char* path)
+void CScriptSystem::Input(const char *name, const char *code)
 {
-    CScriptInstance* scriptInstance = GetInstance(path);
+    PostCommand(JS_CMD_INPUT, name, code);
+}
 
-    if (scriptInstance == nullptr)
+bool CScriptSystem::HaveAppCallbacks(JSAppHookID hookId)
+{
+    CGuard guard(m_InstancesCS);
+
+    return (m_AppCallbackHooks.count(hookId) > 0 &&
+            m_AppCallbackHooks[hookId].size() > 0);
+}
+
+void CScriptSystem::InvokeAppCallbacks(JSAppHookID hookId, void* env)
+{
+    CGuard guard(m_InstancesCS);
+
+    if (m_AppCallbackHooks.count(hookId) == 0 ||
+        m_AppCallbackHooks[hookId].size() == 0)
     {
         return;
     }
 
-    scriptInstance->ForceStop();
-    DeleteStoppedInstances();
+    bool bNeedSweep = false;
+    
+    // note: have to copy the map so iterator doesn't break if a callback makes changes
+    // todo: use reference, queue callback additions/removals?
+    // JSAppCallbackMap& callbacks = m_AppCallbackHooks[hookId];
+
+    JSAppCallbackMap callbacks = m_AppCallbackHooks[hookId];
+
+    JSAppCallbackMap::iterator it;
+    for (it = callbacks.begin(); it != callbacks.end(); it++)
+    {
+        JSAppCallback& callback = it->second;
+
+        if (callback.m_Instance->IsStopping())
+        {
+            continue;
+        }
+
+        callback.m_Instance->RawInvokeAppCallback(callback, env);
+
+        if (callback.m_Instance->GetRefCount() == 0)
+        {
+            bNeedSweep = true;
+        }
+    }
+
+    if (bNeedSweep)
+    {
+        PostCommand(JS_CMD_SWEEP);
+    }
 }
 
-void CScriptSystem::DeleteStoppedInstances()
+void CScriptSystem::DoMouseEvent(JSAppHookID hookId, int x, int y, DWORD uMsg)
 {
-    CGuard guard(m_CS);
+    int button = -1;
 
-    int lastIndex = m_RunningInstances.size() - 1;
-    for (int i = lastIndex; i >= 0; i--)
+    switch (uMsg)
     {
-        if (m_RunningInstances[i].scriptInstance->GetState() == STATE_STOPPED)
+    case WM_LBUTTONDOWN:
+    case WM_LBUTTONUP:
+        button = 0;
+        break;
+    case WM_MBUTTONDOWN:
+    case WM_MBUTTONUP:
+        button = 1;
+        break;
+    case WM_RBUTTONDOWN:
+    case WM_RBUTTONUP:
+        button = 2;
+        break;
+    }
+
+    JSHookMouseEnv env = { x, y, button };
+    InvokeAppCallbacks(hookId, (void*)&env);
+}
+
+void CScriptSystem::PostCMethodCall(const char* name, void *dukThisHeapPtr, duk_c_function func,
+    JSDukArgSetupFunc argSetupFunc, void *argSetupParam, size_t argSetupParamSize)
+{
+    CGuard guard(m_CmdQueueCS);
+    // Will be deleted by command handler
+    JSSysCMethodCall* methodCall = new JSSysCMethodCall(dukThisHeapPtr, func, argSetupFunc, argSetupParam, argSetupParamSize);
+    PostCommand(JS_CMD_C_METHOD_CALL, name, "", (void*)methodCall);
+}
+
+void CScriptSystem::PostCommand(JSSysCommandID id, stdstr paramA, stdstr paramB, void* paramC)
+{
+    CGuard guard(m_CmdQueueCS);
+    JSSysCommand cmd = { id, paramA, paramB, paramC };
+    m_CmdQueue.push_back(cmd);
+    SetEvent(m_hCmdEvent);
+}
+
+DWORD CScriptSystem::ThreadProc(void *_this)
+{
+    ((CScriptSystem *)_this)->ThreadProc();
+    return 0;
+}
+
+void CScriptSystem::ThreadProc()
+{
+    std::vector<JSSysCommand> queue;
+
+    while(true)
+    {
+        WaitForSingleObject(m_hCmdEvent, INFINITE);
+
         {
-            free(m_RunningInstances[i].path);
-            CScriptInstance* instance = m_RunningInstances[i].scriptInstance;
-            delete instance;
-            m_RunningInstances.erase(m_RunningInstances.begin() + i);
+            CGuard guard(m_CmdQueueCS);
+            queue = m_CmdQueue;
+            m_CmdQueue.clear();
+        }
+
+        if (!ProcessCommandQueue(queue))
+        {
+            break;
         }
     }
 }
 
-INSTANCE_STATE CScriptSystem::GetInstanceState(const char* path)
+void CScriptSystem::OnStartScript(const char *name, const char *path)
 {
-    CGuard guard(m_CS);
-
-    for (size_t i = 0; i < m_RunningInstances.size(); i++)
+    if (m_Instances.count(name) != 0)
     {
-        if (strcmp(m_RunningInstances[i].path, path) == 0)
+        ConsoleLog("[SCRIPTSYS]: error: START_SCRIPT aborted; '%s' is already instanced", name);
+    }
+
+    CScriptInstance *inst = new CScriptInstance(this, name);
+    
+    NotifyStatus(name, JS_STATUS_STARTING);
+
+    if(inst->Run(path) && inst->GetRefCount() > 0)
+    {
+        m_Instances[name] = inst;
+        NotifyStatus(name, JS_STATUS_STARTED);
+    }
+    else
+    {
+        NotifyStatus(name, JS_STATUS_STOPPED);
+        delete inst;
+    }
+}
+
+void CScriptSystem::OnStopScript(const char *name)
+{
+    if (m_Instances.count(name) == 0)
+    {
+        ConsoleLog("[SCRIPTSYS]: error: STOP_SCRIPT aborted; instance '%s' does not exist", name);
+        return;
+    }
+
+    RawRemoveInstance(name);
+    NotifyStatus(name, JS_STATUS_STOPPED);
+}
+
+void CScriptSystem::OnInput(const char *name, const char *code)
+{
+    if(m_Instances.count(name) == 0)
+    {
+        ConsoleLog("[SCRIPTSYS]: error: INPUT aborted; instance '%s' does not exist", name);
+        return;
+    }
+
+    CScriptInstance* inst = m_Instances[name];
+
+    inst->RawConsoleInput(code);
+
+    if(!inst->IsStopping() && inst->GetRefCount() == 0)
+    {
+        NotifyStatus(name, JS_STATUS_STOPPED);
+        RawRemoveInstance(name);
+    }
+}
+
+void CScriptSystem::OnCMethodCall(const char *name, JSSysCMethodCall* methodCall)
+{
+    if (m_Instances.count(name) == 0)
+    {
+        ConsoleLog("[SCRIPTSYS]: error: method call aborted; instance '%s' doesn't exist", name);
+    }
+
+    if (m_Instances.count(name) == 0)
+    {
+        return;
+    }
+
+    CScriptInstance* inst = m_Instances[name];
+
+    inst->RawCMethodCall(methodCall->m_DukThisHeapPtr, methodCall->m_Func, methodCall->m_ArgSetupFunc, methodCall->m_ArgSetupParam);
+
+    if (!inst->IsStopping() && inst->GetRefCount() == 0)
+    {
+        NotifyStatus(name, JS_STATUS_STOPPED);
+        RawRemoveInstance(name);
+    }
+}
+
+void CScriptSystem::OnSweep(bool bIfDone)
+{
+    JSInstanceMap::iterator it = m_Instances.begin();
+    while(it != m_Instances.end())
+    {
+        CScriptInstance*& inst = it->second;
+        if(!bIfDone || inst->GetRefCount() == 0)
         {
-            INSTANCE_STATE ret = m_RunningInstances[i].scriptInstance->GetState();
-            return ret;
+            NotifyStatus(inst->Name().c_str(), JS_STATUS_STOPPED);
+            delete inst;
+            m_Instances.erase(it++);
+        }
+        else
+        {
+            it++;
+        }
+    }
+}
+
+bool CScriptSystem::RawRemoveInstance(const char *name)
+{
+    if(m_Instances.count(name) == 0)
+    {
+        return false;
+    }
+
+    CScriptInstance*& inst = m_Instances[name];
+
+    if (inst->IsStopping())
+    {
+        return false;
+    }
+
+    inst->SetStopping(true);
+    inst->StopRegisteredWorkers();
+    
+    std::vector<JSSysCommand> pendingCalls;
+    PullCommands(JS_CMD_C_METHOD_CALL, pendingCalls);
+    ProcessCommandQueue(pendingCalls);
+
+    delete inst;
+    m_Instances.erase(name);
+    return true;
+}
+
+JSAppCallbackID CScriptSystem::RawAddAppCallback(JSAppHookID hookId, JSAppCallback& callback)
+{
+    if(hookId >= JS_NUM_APP_HOOKS)
+    {
+        return JS_INVALID_CALLBACK;
+    }
+
+    callback.m_CallbackId = m_NextAppCallbackId;
+    m_AppCallbackHooks[hookId][m_NextAppCallbackId] = callback;
+    m_AppCallbackCount++;
+    return m_NextAppCallbackId++;
+}
+
+bool CScriptSystem::RawRemoveAppCallback(JSAppHookID hookId, JSAppCallbackID callbackId)
+{
+    if(m_AppCallbackHooks[hookId].count(callbackId) == 0)
+    {
+        return false;
+    }
+
+    m_AppCallbackHooks[hookId].erase(callbackId);
+    m_AppCallbackCount--;
+    return true;
+}
+
+void CScriptSystem::ExecAutorunList()
+{
+    LoadAutorunList();
+
+    std::istringstream joinedNames(g_Settings->LoadStringVal(Debugger_AutorunScripts));
+    std::string scriptName;
+    while (std::getline(joinedNames, scriptName, '|'))
+    {
+        std::string scriptPath = m_ScriptsDirFullPath + scriptName;
+        ConsoleLog("[SCRIPTSYS]: autorun '%s'", scriptName.c_str());
+        StartScript(scriptName.c_str(), scriptPath.c_str());
+    }
+}
+
+std::set<std::string>& CScriptSystem::AutorunList()
+{
+    return m_AutorunList;
+}
+
+void CScriptSystem::LoadAutorunList()
+{
+    m_AutorunList.clear();
+
+    std::istringstream joinedNames(g_Settings->LoadStringVal(Debugger_AutorunScripts));
+    std::string scriptName;
+
+    while (std::getline(joinedNames, scriptName, '|'))
+    {
+        m_AutorunList.insert(scriptName);
+    }
+}
+
+void CScriptSystem::SaveAutorunList()
+{
+    std::string joinedNames = "";
+
+    std::set<std::string>::iterator it;
+    for (it = m_AutorunList.begin(); it != m_AutorunList.end(); it++)
+    {
+        if (it != m_AutorunList.begin())
+        {
+            joinedNames += "|";
+        }
+        joinedNames += *it;
+    }
+
+    g_Settings->SaveString(Debugger_AutorunScripts, joinedNames.c_str());
+}
+
+CDebuggerUI* CScriptSystem::Debugger()
+{
+    return m_Debugger;
+}
+
+stdstr CScriptSystem::FixStringReturns(const char* str)
+{
+    stdstr fstr = str;
+    size_t pos = 0;
+    while ((pos = fstr.find("\n", pos)) != stdstr::npos)
+    {
+        fstr.replace(pos, 1, "\r\n");
+        pos += 2;
+    }
+    return fstr;
+}
+
+bool CScriptSystem::ProcessCommandQueue(std::vector<JSSysCommand>& queue)
+{
+    std::vector<JSSysCommand>::iterator it;
+    for (it = queue.begin(); it != queue.end(); it++)
+    {
+        if (!ProcessCommand(*it))
+        {
+            return false;
         }
     }
 
-    return STATE_INVALID;
+    return true;
 }
 
-CScriptInstance* CScriptSystem::GetInstance(const char* path)
+bool CScriptSystem::ProcessCommand(JSSysCommand& cmd)
 {
-    CGuard guard(m_CS);
+    CGuard guard(m_InstancesCS);
 
-    for (size_t i = 0; i < m_RunningInstances.size(); i++)
+    switch (cmd.id)
     {
-        if (strcmp(m_RunningInstances[i].path, path) == 0)
+    case JS_CMD_START_SCRIPT:
+        OnStartScript(cmd.paramA.c_str(), cmd.paramB.c_str());
+        break;
+    case JS_CMD_STOP_SCRIPT:
+        OnStopScript(cmd.paramA.c_str());
+        break;
+    case JS_CMD_INPUT:
+        OnInput(cmd.paramA.c_str(), cmd.paramB.c_str());
+        break;
+    case JS_CMD_C_METHOD_CALL:
         {
-            CScriptInstance *ret = m_RunningInstances[i].scriptInstance;
-            return ret;
+            JSSysCMethodCall* methodCall = (JSSysCMethodCall*)cmd.paramC;
+            OnCMethodCall(cmd.paramA.c_str(), methodCall);
+            delete methodCall;
         }
+        break;
+    case JS_CMD_SWEEP:
+        OnSweep(true);
+        break;
+    case JS_CMD_SHUTDOWN:
+        OnSweep(false);
+        return false;
     }
 
-    return nullptr;
+    return true;
 }
 
-bool CScriptSystem::HasCallbacksForInstance(CScriptInstance* scriptInstance)
+void CScriptSystem::PullCommands(JSSysCommandID id, std::vector<JSSysCommand>& out)
 {
-    for (size_t i = 0; i < m_Hooks.size(); i++)
+    CGuard guard(m_CmdQueueCS);
+
+    std::vector<JSSysCommand>::iterator it;
+    for (it = m_CmdQueue.begin(); it != m_CmdQueue.end();)
     {
-        if (m_Hooks[i].cbList->HasContext(scriptInstance))
+        if ((*it).id == id)
         {
-            return true;
+            out.push_back(*it);
+            it = m_CmdQueue.erase(it);
         }
-    }
-    return false;
-}
-
-void CScriptSystem::ClearCallbacksForInstance(CScriptInstance* scriptInstance)
-{
-    for (size_t i = 0; i < m_Hooks.size(); i++)
-    {
-        m_Hooks[i].cbList->RemoveByInstance(scriptInstance);
-    }
-}
-
-void CScriptSystem::RemoveCallbackById(int callbackId)
-{
-    for (size_t i = 0; i < m_Hooks.size(); i++)
-    {
-        m_Hooks[i].cbList->RemoveById(callbackId);
-    }
-}
-
-void CScriptSystem::RegisterHook(const char* hookId, CScriptHook* cbList)
-{
-    HOOKENTRY hook = { hookId, cbList };
-    m_Hooks.push_back(hook);
-}
-
-void CScriptSystem::UnregisterHooks()
-{
-    m_Hooks.clear();
-}
-
-CScriptHook* CScriptSystem::GetHook(const char* hookId)
-{
-    size_t size = m_Hooks.size();
-    for (size_t i = 0; i < size; i++)
-    {
-        if (strcmp(m_Hooks[i].hookId, hookId) == 0)
+        else
         {
-            return m_Hooks[i].cbList;
+            it++;
         }
-    }
-    return nullptr;
-}
-
-int CScriptSystem::GetNextCallbackId()
-{
-    return m_NextCallbackId++;
-}
-
-void CScriptSystem::CallbackAdded()
-{
-    m_NumCallbacks++;
-}
-
-void CScriptSystem::CallbackRemoved()
-{
-    if (m_NumCallbacks > 0)
-    {
-        m_NumCallbacks--;
     }
 }

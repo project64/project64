@@ -30,4 +30,10 @@ __interface CDebugger
     virtual void CPUStepStarted(void) = 0;
     virtual void CPUStep(void) = 0;
     virtual void CPUStepEnded(void) = 0;
+    virtual void PIFReadStarted(void) = 0;
+    virtual void RSPReceivedTask(void) = 0;
+    virtual void PIDMAReadStarted(void) = 0;
+    virtual void PIDMAWriteStarted(void) = 0;
+    virtual void EmulationStarted(void) = 0;
+    virtual void EmulationStopped(void) = 0;
 };

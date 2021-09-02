@@ -5,6 +5,7 @@
 #include <Project64-core/Settings/SettingType/SettingsType-Application.h>
 #include <Project64-core/N64System/Enhancement/Enhancements.h>
 #include <Project64-core/N64System/N64Disk.h>
+#include <Project64/UserInterface/Debugger/DebuggerUI.h>
 #include "DiscordRPC.h"
 
 void EnterLogOptions(HWND hwndOwner);
@@ -906,6 +907,87 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             _this->MakeWindowOnTop(false);
             _this->SetStatusText(0, L"");
             _this->SetStatusText(1, L"");
+        }
+        break;
+    case WM_JSAPI_ACTION:
+        {
+            switch (wParam)
+            {
+            case JSAPI_ACT_OPEN_ROM:
+                {
+                    char* romPath = (char*)lParam;
+                    stdstr ext = CPath(romPath).GetExtension();
+                    if ((_stricmp(ext.c_str(), "ndd") != 0) &&
+                        (_stricmp(ext.c_str(), "d64") != 0))
+                    {
+                        g_BaseSystem->RunFileImage(romPath);
+                    }
+                    else
+                    {
+                        g_BaseSystem->RunDiskImage(romPath);
+                    }
+                    delete[] romPath;
+                }
+                break;
+            case JSAPI_ACT_CLOSE_ROM:
+                if (g_BaseSystem)
+                {
+                    g_BaseSystem->ExternalEvent(SysEvent_CloseCPU);
+                }
+
+                if (UISettingsLoadBool(Setting_EnableDiscordRPC))
+                {
+                    CDiscord::Update(false);
+                }
+                break;
+            case JSAPI_ACT_RESET:
+                if (g_BaseSystem)
+                {
+                    g_BaseSystem->ExternalEvent((bool)lParam ? SysEvent_ResetCPU_Soft : SysEvent_ResetCPU_Hard);
+                }
+               break;
+            case JSAPI_ACT_PAUSE:
+                g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_FromMenu);
+                break;
+            case JSAPI_ACT_RESUME:
+                g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_FromMenu);
+                break;
+            }
+        }
+        break;
+    case WM_LBUTTONDOWN:
+    case WM_MBUTTONDOWN:
+    case WM_RBUTTONDOWN:
+        if (g_Settings->LoadBool(Debugger_Enabled)) {
+            SetCapture(hWnd);
+            CDebuggerUI* debugger = (CDebuggerUI*)g_Debugger;
+            debugger->ScriptSystem()->DoMouseEvent(JS_HOOK_MOUSEDOWN,
+                GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), uMsg);
+        }
+        break;
+    case WM_LBUTTONUP:
+    case WM_MBUTTONUP:
+    case WM_RBUTTONUP:
+        if (g_Settings->LoadBool(Debugger_Enabled)) {
+            ReleaseCapture();
+            CDebuggerUI* debugger = (CDebuggerUI*)g_Debugger;
+            debugger->ScriptSystem()->DoMouseEvent(JS_HOOK_MOUSEUP,
+                GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), uMsg);
+        }
+        break;
+    case WM_MOUSEMOVE:
+        if (g_Settings->LoadBool(Debugger_Enabled)) {
+            static int lastX = 0;
+            static int lastY = 0;
+            int x = GET_X_LPARAM(lParam);
+            int y = GET_Y_LPARAM(lParam);
+            if (lastX != x || lastY != y)
+            {
+                CDebuggerUI* debugger = (CDebuggerUI*)g_Debugger;
+                debugger->ScriptSystem()->DoMouseEvent(JS_HOOK_MOUSEMOVE, x, y, (DWORD)-1);
+                lastX = x;
+                lastY = y;
+            }
         }
         break;
     case WM_COMMAND:

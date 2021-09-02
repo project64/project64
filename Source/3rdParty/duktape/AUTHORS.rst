@@ -29,6 +29,45 @@ and agreed to irrevocably license their contributions under the Duktape
 * René Hollander <rene@rene8888.at>
 * Julien Hamaide (https://github.com/crazyjul)
 * Sebastian Götte (https://github.com/jaseg)
+* Tomasz Magulski (https://github.com/magul)
+* \D. Bohdan (https://github.com/dbohdan)
+* Ondřej Jirman (https://github.com/megous)
+* Saúl Ibarra Corretgé <saghul@gmail.com>
+* Jeremy HU <huxingyi@msn.com>
+* Ole André Vadla Ravnås (https://github.com/oleavr)
+* Harold Brenes (https://github.com/harold-b)
+* Oliver Crow (https://github.com/ocrow)
+* Jakub Chłapiński (https://github.com/jchlapinski)
+* Brett Vickers (https://github.com/beevik)
+* Dominik Okwieka (https://github.com/okitec)
+* Remko Tronçon (https://el-tramo.be)
+* Romero Malaquias (rbsm@ic.ufal.br)
+* Michael Drake <michael.drake@codethink.co.uk>
+* Steven Don (https://github.com/shdon)
+* Simon Stone (https://github.com/sstone1)
+* \J. McC. (https://github.com/jmhmccr)
+* Jakub Nowakowski (https://github.com/jimvonmoon)
+* Tommy Nguyen (https://github.com/tn0502)
+* Fabrice Fontaine (https://github.com/ffontaine)
+* Christopher Hiller (https://github.com/boneskull)
+* Gonzalo Diethelm (https://github.com/gonzus)
+* Michal Kasperek (https://github.com/michalkas)
+* Andrew Janke (https://github.com/apjanke)
+* Steve Fan (https://github.com/stevefan1999)
+* Edward Betts (https://github.com/edwardbetts)
+* Ozhan Duz (https://github.com/webfolderio)
+* Akos Kiss (https://github.com/akosthekiss)
+* TheBrokenRail (https://github.com/TheBrokenRail)
+* Jesse Doyle (https://github.com/jessedoyle)
+* Gero Kuehn (https://github.com/dc6jgk)
+* James Swift (https://github.com/phraemer)
+* Luis de Bethencourt (https://github.com/luisbg)
+* Ian Whyman (https://github.com/v00d00)
+* Rick Sayre (https://github.com/whorfin)
+* Craig Leres (https://github.com/leres)
+* Maurici Abad (https://github.com/mauriciabad)
+* Nancy Li (https://github.com/NancyLi1013)
+* William Parks (https://github.com/WilliamParks)
 
 Other contributions
 ===================
@@ -66,7 +105,11 @@ bugs, provided ideas, etc; roughly in order of appearance):
 * Michael Drake (https://github.com/tlsa)
 * https://github.com/chris-y
 * Laurent Zubiaur (https://github.com/lzubiaur)
-* Ole André Vadla Ravnås (https://github.com/oleavr)
+* Neil Kolban (https://github.com/nkolban)
+* Wilhelm Wanecek (https://github.com/wanecek)
+* Andrew Janke (https://github.com/apjanke)
+* Unamer (https://github.com/unamer)
+* Karl Dahlke (eklhad@gmail.com)
 
 If you are accidentally missing from this list, send me an e-mail
 (``sami.vaarala@iki.fi``) and I'll fix the omission.

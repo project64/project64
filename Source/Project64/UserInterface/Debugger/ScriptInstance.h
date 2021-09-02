@@ -1,256 +1,62 @@
+#include "ScriptTypes.h"
+#include "ScriptSystem.h"
+#include "ScriptWorker.h"
+
 #pragma once
-
-#include "stdafx.h"
-#include <3rdParty/duktape/duktape.h>
-
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <mswsock.h>
-
-#pragma comment(lib, "Ws2_32.lib")
-#pragma comment(lib, "Mswsock.lib")
-
-class CScriptSystem;
-
-typedef enum {
-    STATE_STARTED, // Initial evaluation and execution
-    STATE_RUNNING, // Event loop running with pending events
-    STATE_STOPPED,  // No pending events
-    STATE_INVALID
-} INSTANCE_STATE;
 
 class CScriptInstance
 {
-    typedef enum {
-        EVENT_READ,
-        EVENT_WRITE,
-        EVENT_ACCEPT,
-        EVENT_CONNECT
-    } IOEVENTTYPE;
+private:
+    JSInstanceName  m_InstanceName;
+    CScriptSystem*  m_System;
+    duk_context*    m_Ctx;
+    size_t          m_RefCount;
+    uint64_t        m_ExecTimeout;
+    uint64_t        m_ExecStartTime;
+    std::ifstream   m_SourceFile;
+    char*           m_SourceCode;
+    JSAppCallbackID m_CurExecCallbackId;
+    std::vector<CScriptWorker*> m_Workers;
+    bool            m_bStopping;
 
-    typedef struct {
-        OVERLAPPED  ovl;
-        IOEVENTTYPE eventType;
-        HANDLE      fd;
-        HANDLE      childFd; // Accepted socket
-        bool        bSocket;
-        UINT        id;
-        void*       data;
-        DWORD       dataLen; // Changed to bytes transferred after event is fired
-        void*       callback;
-    } IOLISTENER;
-
-    // Wrapper for file/socket descriptor and completion port
-    typedef struct {
-        HANDLE fd;
-        HANDLE iocp;
-        bool bSocket;
-    } IOFD;
-
-    typedef enum {
-        EVENT_STATUS_OK,
-        EVENT_STATUS_INTERRUPTED,
-        EVENT_STATUS_ERROR
-    } EVENT_STATUS;
-
-    // For synchronous file operations
-    typedef struct
-    {
-        FILE* fp;
-        int fd;
-    } FILE_FD;
-
-    typedef BOOL(__stdcall *Dynamic_CancelIoEx)(HANDLE, LPOVERLAPPED);
 public:
-
-    CScriptInstance(CDebuggerUI* debugger);
+    CScriptInstance(CScriptSystem* sys, const char* name);
     ~CScriptInstance();
 
-    void Start(char* path);
-    void ForceStop();
-    void Invoke(void* heapptr, uint32_t param = 0);
-    void Invoke2(void* heapptr, uint32_t param = 0, uint32_t param2 = 0);
-    INSTANCE_STATE GetState();
+    JSInstanceName& Name();
+    CScriptSystem*  System();
+    CDebuggerUI*    Debugger();
+    JSAppCallbackID CallbackId();
 
-    friend class PendingEval;
-    const char* Eval(const char* jsCode);
+    bool   Run(const char* path);
+    void   SetExecTimeout(uint64_t timeout);
+    bool   IsTimedOut();
+
+    size_t GetRefCount();
+    void   IncRefCount();
+    void   DecRefCount();
+    void   SetStopping(bool bStopping);
+    bool   IsStopping();
+
+    bool RegisterWorker(CScriptWorker* worker);
+    void UnregisterWorker(CScriptWorker* worker);
+    void StopRegisteredWorkers();
+
+    void   RawInvokeAppCallback(JSAppCallback& cb, void *_hookEnv);
+
+    void   RawConsoleInput(const char* code);
+
+    void   RawCall(void* dukFuncHeapPtr, JSDukArgSetupFunc argSetupFunc, void* param = nullptr);
+
+    void   RawCMethodCall(void* dukThisHeapPtr, duk_c_function func,
+                          JSDukArgSetupFunc argSetupFunc = nullptr,
+                          void* argSetupParam = nullptr);
+
+    void   PostCMethodCall(void* dukThisHeapPtr, duk_c_function func,
+                           JSDukArgSetupFunc argSetupFunc = nullptr,
+                           void* argSetupParam = nullptr, size_t argSetupParamSize = 0);
 
 private:
-    duk_context*        m_Ctx;
-    duk_context*        DukContext();
-    char*               m_TempPath;
-
-    HANDLE              m_hThread;
-    HANDLE              m_hIOCompletionPort;
-    CriticalSection     m_CS;
-
-    vector<IOFD>        m_AsyncFiles;
-    vector<IOLISTENER*> m_Listeners;
-    UINT                m_NextListenerId;
-
-    vector<FILE_FD>     m_Files;
-
-    CDebuggerUI*        m_Debugger;
-
-    CScriptSystem*      m_ScriptSystem;
-
-    INSTANCE_STATE      m_State;
-
-    static DWORD CALLBACK StartThread(CScriptInstance* _this);
-    void StartScriptProc();
-    void StartEventLoop();
-    bool HaveEvents();
-    EVENT_STATUS WaitForEvent(IOLISTENER** lpListener);
-
-    void SetState(INSTANCE_STATE state);
-    void StateChanged();
-    void CleanUp();
-
-    void QueueAPC(PAPCFUNC userProc, ULONG_PTR param = 0);
-
-    void AddAsyncFile(HANDLE fd, bool bSocket = false);
-    void CloseAsyncFile(HANDLE fd);
-    void CloseAllAsyncFiles();
-    void RemoveAsyncFile(HANDLE fd);
-    HANDLE CreateSocket();
-
-    IOLISTENER* AddListener(HANDLE fd, IOEVENTTYPE evt, void* jsCallback, void* data = nullptr, int dataLen = 0);
-    void RemoveListener(IOLISTENER* lpListener);
-    void RemoveListenerByIndex(UINT index);
-    void RemoveListenersByFd(HANDLE fd);
-    void InvokeListenerCallback(IOLISTENER* lpListener);
-
-    //static void CALLBACK EvalAsyncCallback(ULONG_PTR evalWait);
-
-    bool AddFile(const char* path, const char* mode, int* fd); // Return FD
-    void CloseFile(int fd);
-    FILE* GetFilePointer(int fd);
-    void CloseAllFiles();
-
-    const char* EvalFile(const char* jsPath);
-
-	// TODO: fix/remove?
-    // Handle dynamically loading CancelIoEx for Windows XP compatibility
-    HMODULE m_hKernel;
-    Dynamic_CancelIoEx m_CancelIoEx;
-
-    // Lookup list of CScriptInstance instances for static js_* functions
-    static vector<CScriptInstance*> Cache;
-    static void CacheInstance(CScriptInstance* _this);
-    static void UncacheInstance(CScriptInstance* _this);
-    static CScriptInstance* FetchInstance(duk_context* ctx);
-
-    // Bound functions (_native object)
-    static duk_ret_t js_ioSockCreate(duk_context*);
-    static duk_ret_t js_ioSockListen(duk_context*);
-    static duk_ret_t js_ioSockAccept(duk_context*); // async
-    static duk_ret_t js_ioSockConnect(duk_context*); // async
-    static duk_ret_t js_ioRead(duk_context*); // async
-    static duk_ret_t js_ioWrite(duk_context*); // async
-    static duk_ret_t js_ioClose(duk_context*); // (FD) ; file or socket
-    static duk_ret_t js_MsgBox(duk_context*); // (message, caption)
-    static duk_ret_t js_AddCallback(duk_context*); // (hookId, callback, tag) ; external events
-    static duk_ret_t js_RemoveCallback(duk_context*); // (callbackId)
-    static duk_ret_t js_GetPCVal(duk_context*); // ()
-    static duk_ret_t js_SetPCVal(duk_context*); // (value)
-    static duk_ret_t js_GetHIVal(duk_context*); // (bUpper)
-    static duk_ret_t js_SetHIVal(duk_context*); // (bUpper, value)
-    static duk_ret_t js_GetLOVal(duk_context*); // (bUpper)
-    static duk_ret_t js_SetLOVal(duk_context*); // (bUpper, value)
-    static duk_ret_t js_GetGPRVal(duk_context*); // (regNum, bUpper)
-    static duk_ret_t js_SetGPRVal(duk_context*); // (regNum, bUpper, value)
-    static duk_ret_t js_GetFPRVal(duk_context*); // (regNum, bDouble)
-    static duk_ret_t js_SetFPRVal(duk_context*); // (regNum, bDouble, value)
-    static duk_ret_t js_GetCauseVal(duk_context*); // ()
-    static duk_ret_t js_SetCauseVal(duk_context*); // (value)
-    static duk_ret_t js_GetROMInt(duk_context*); // (address, bitwidth, signed)
-    static duk_ret_t js_GetROMFloat(duk_context*); // (address, bDouble)
-    static duk_ret_t js_GetROMBlock(duk_context*); // (address, nBytes) ; returns Buffer
-    static duk_ret_t js_GetROMString(duk_context*); // (address[, maxLen]) ; fetch zero terminated string from memory
-
-    static duk_ret_t js_GetRDRAMInt(duk_context*); // (address, bitwidth, signed)
-    static duk_ret_t js_SetRDRAMInt(duk_context*); // (address, bitwidth, signed, newValue)
-    static duk_ret_t js_GetRDRAMFloat(duk_context*); // (address, bDouble)
-    static duk_ret_t js_SetRDRAMFloat(duk_context*); // (address, bDouble, newValue)
-    static duk_ret_t js_GetRDRAMBlock(duk_context*); // (address, nBytes) ; returns Buffer
-    static duk_ret_t js_GetRDRAMString(duk_context*); // (address[, maxLen]) ; fetch zero terminated string from memory
-    static duk_ret_t js_ConsolePrint(duk_context*);
-    static duk_ret_t js_ConsoleClear(duk_context*);
-
-    static duk_ret_t js_BreakHere(duk_context*);
-    static duk_ret_t js_Pause(duk_context*); // () ; Pauses emulation
-    static duk_ret_t js_ShowCommands(duk_context*); // ([address]) ; Shows commands window
-
-    static duk_ret_t js_ScreenPrint(duk_context*); // (x, y, text)
-
-    static duk_ret_t js_FSOpen(duk_context*); // (path, flags) ; returns fd
-    static duk_ret_t js_FSClose(duk_context*); // (fd)
-    static duk_ret_t js_FSWrite(duk_context*); // (fd, buffer[, offset[, length[, position]]])
-    static duk_ret_t js_FSRead(duk_context*); // (fd, buffer, offset, length, position)
-    static duk_ret_t js_FSFStat(duk_context*); // (fd)
-    static duk_ret_t js_FSStat(duk_context*); // (path)
-    static duk_ret_t js_FSMkDir(duk_context*); // (path)
-    static duk_ret_t js_FSRmDir(duk_context*); // (path)
-    static duk_ret_t js_FSUnlink(duk_context*); // (path)
-    static duk_ret_t js_FSReadDir(duk_context*); // (path)
-
-    static constexpr duk_function_list_entry NativeFunctions[] =
-    {
-        { "addCallback",    js_AddCallback,    DUK_VARARGS },
-        { "removeCallback", js_RemoveCallback, DUK_VARARGS },
-
-        { "setPCVal",       js_SetPCVal,       DUK_VARARGS },
-        { "getPCVal",       js_GetPCVal,       DUK_VARARGS },
-        { "setHIVal",       js_SetHIVal,       DUK_VARARGS },
-        { "getHIVal",       js_GetHIVal,       DUK_VARARGS },
-        { "setLOVal",       js_SetLOVal,       DUK_VARARGS },
-        { "getLOVal",       js_GetLOVal,       DUK_VARARGS },
-        { "setGPRVal",      js_SetGPRVal,      DUK_VARARGS },
-        { "getGPRVal",      js_GetGPRVal,      DUK_VARARGS },
-        { "setFPRVal",      js_SetFPRVal,      DUK_VARARGS },
-        { "getFPRVal",      js_GetFPRVal,      DUK_VARARGS },
-        { "setCauseVal",    js_SetCauseVal,    DUK_VARARGS },
-        { "getCauseVal",    js_GetCauseVal,    DUK_VARARGS },
-
-        { "getROMInt",      js_GetROMInt,      DUK_VARARGS },
-        { "getROMFloat",    js_GetROMFloat,    DUK_VARARGS },
-        { "getROMString",   js_GetROMString,   DUK_VARARGS },
-        { "getROMBlock",    js_GetROMBlock,    DUK_VARARGS },
-
-        { "getRDRAMInt",    js_GetRDRAMInt,    DUK_VARARGS },
-        { "setRDRAMInt",    js_SetRDRAMInt,    DUK_VARARGS },
-        { "getRDRAMFloat",  js_GetRDRAMFloat,  DUK_VARARGS },
-        { "setRDRAMFloat",  js_SetRDRAMFloat,  DUK_VARARGS },
-        { "getRDRAMBlock",  js_GetRDRAMBlock,  DUK_VARARGS },
-        { "getRDRAMString", js_GetRDRAMString, DUK_VARARGS },
-
-        { "sockCreate",     js_ioSockCreate,   DUK_VARARGS },
-        { "sockListen",     js_ioSockListen,   DUK_VARARGS },
-        { "sockAccept",     js_ioSockAccept,   DUK_VARARGS },
-        { "sockConnect",    js_ioSockConnect,  DUK_VARARGS },
-        { "close",          js_ioClose,        DUK_VARARGS },
-        { "write",          js_ioWrite,        DUK_VARARGS },
-        { "read",           js_ioRead,         DUK_VARARGS },
-        { "msgBox",         js_MsgBox,         DUK_VARARGS },
-        { "consolePrint",   js_ConsolePrint,   DUK_VARARGS },
-        { "consoleClear",   js_ConsoleClear,   DUK_VARARGS },
-        { "pause",          js_Pause,          DUK_VARARGS },
-        { "showCommands",   js_ShowCommands,   DUK_VARARGS },
-
-        { "breakHere",      js_BreakHere,      DUK_VARARGS },
-
-        { "screenPrint",    js_ScreenPrint,    DUK_VARARGS },
-
-        { "fsOpen",         js_FSOpen,         DUK_VARARGS },
-        { "fsClose",        js_FSClose,        DUK_VARARGS },
-        { "fsWrite",        js_FSWrite,        DUK_VARARGS },
-        { "fsRead",         js_FSRead,         DUK_VARARGS },
-        { "fsFStat",        js_FSFStat,        DUK_VARARGS },
-        { "fsStat",         js_FSStat,         DUK_VARARGS },
-        { "fsUnlink",       js_FSUnlink,       DUK_VARARGS },
-        { "fsMkDir",        js_FSMkDir,        DUK_VARARGS },
-        { "fsRmDir",        js_FSRmDir,        DUK_VARARGS },
-        { "fsReadDir",      js_FSReadDir,      DUK_VARARGS },
-        { nullptr, nullptr, 0 }
-    };
+    static uint64_t Timestamp();
+    void Cleanup();
 };

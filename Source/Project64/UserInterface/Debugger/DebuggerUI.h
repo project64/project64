@@ -9,6 +9,7 @@
 #include "Debugger-TLB.h"
 #include "Debugger-Commands.h"
 #include "Debugger-Scripts.h"
+#include "Debugger-ScriptsAutorun.h"
 #include "Debugger-Symbols.h"
 #include "Debugger-AddBreakpoint.h"
 #include "Debugger-AddSymbol.h"

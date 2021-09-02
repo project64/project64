@@ -331,6 +331,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Debugger_ShowDListAListCount, new CSettingTypeApplication("Debugger", "Show Dlist Alist Count", false));
     AddHandler(Debugger_ShowRecompMemSize, new CSettingTypeApplication("Debugger", "Show Recompiler Memory size", false));
     AddHandler(Debugger_RecordExecutionTimes, new CSettingTypeApplication("Debugger", "Record Execution Times", false));
+    AddHandler(Debugger_SilentBreak, new CSettingTypeTempBool(false));
     AddHandler(Debugger_SteppingOps, new CSettingTypeTempBool(false));
     AddHandler(Debugger_SkipOp, new CSettingTypeTempBool(false));
     AddHandler(Debugger_HaveExecutionBP, new CSettingTypeTempBool(false));
@@ -347,6 +348,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Debugger_ShowDivByZero, new CSettingTypeApplication("Debugger", "Show Div by zero", false));
     AddHandler(Debugger_AppLogFlush, new CSettingTypeApplication("Logging", "Log Auto Flush", (uint32_t)false));
     AddHandler(Debugger_RecordRecompilerAsm, new CSettingTypeApplication("Debugger", "Record Recompiler Asm", false));
+    AddHandler(Debugger_AutorunScripts, new CSettingTypeApplication("Debugger", "Autorun Scripts", ""));
 
     // Logging
     AddHandler(Debugger_TraceMD5, new CSettingTypeApplication("Logging", "MD5", (uint32_t)g_ModuleLogLevel[TraceMD5]));
