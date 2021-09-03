@@ -11,6 +11,7 @@
 #include <Project64-core/N64System/Mips/Rumblepak.h>
 #include <Project64-core/N64System/Mips/Mempak.h>
 #include <Project64-core/Logging.h>
+#include <Project64-core/Debugger.h>
 
 CPifRam::CPifRam(bool SavesReadOnly) :
     CEeprom(SavesReadOnly)
@@ -260,6 +261,12 @@ void CPifRam::SI_DMA_READ()
     }
 
     PifRamRead();
+
+    if (CDebugSettings::HaveDebugger())
+    {
+        g_Debugger->PIFReadStarted();
+    }
+
     SI_DRAM_ADDR_REG &= 0xFFFFFFF8;
     if ((int32_t)SI_DRAM_ADDR_REG < 0)
     {

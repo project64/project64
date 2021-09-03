@@ -505,7 +505,6 @@ bool CN64System::RunFileImage(const char * FileLoc)
         else if (g_Rom->CicChipID() == CIC_NUS_DDTL)
             g_Settings->SaveString(File_DiskIPLTOOLPath, FileLoc);
     }
-
     RunLoadedImage();
     return true;
 }
@@ -1182,6 +1181,11 @@ void CN64System::ExecuteCPU()
     {
         m_SyncCPU->m_Plugins->RomOpened();
     }
+
+    if (g_Debugger != nullptr && HaveDebugger())
+    {
+        g_Debugger->EmulationStarted();
+    }
 #ifdef _WIN32
     _controlfp(_PC_53, _MCW_PC);
 #endif
@@ -1211,6 +1215,12 @@ void CN64System::ExecuteCPU()
     {
         m_SyncCPU->m_Plugins->RomClosed();
     }
+
+    if (g_Debugger != nullptr && HaveDebugger())
+    {
+        g_Debugger->EmulationStopped();
+    }
+
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
@@ -2278,6 +2288,11 @@ void CN64System::RunRSP()
                 {
                     WriteTrace(TraceRSP, TraceDebug, "Dlist that is frozen");
                     return;
+                }
+
+                if (g_Debugger != NULL && HaveDebugger())
+                {
+                    g_Debugger->RSPReceivedTask();
                 }
 
                 switch (Task)

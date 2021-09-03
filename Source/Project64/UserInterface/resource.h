@@ -81,6 +81,7 @@
 #define IDD_Support_RequestCode         216
 #define IDD_Settings_GameDiskDrive      217
 #define IDD_Enhancement_Plugins         218
+#define IDD_Debugger_ScriptsAutorun     225
 #define IDC_MENU_ITEM_TEXT              1000
 #define IDC_CLOSE_BUTTON                1001
 #define IDC_LIST2                       1003
@@ -871,6 +872,9 @@
 #define IDC_RADIO_GLIDEN64              1728
 #define IDC_RADIO_JABO                  1729
 #define IDC_RADIO_PJ64_VIDEO            1729
+#define IDC_REMOVE_BTN                  1734
+#define IDC_ADD_BTN                     1735
+#define IDC_AUTORUN_LIST                1737
 #define ID_POPUPMENU_PLAYGAMEWITHDISK   40008
 #define ID_POPUPMENU_ADDSYMBOL          40013
 #define ID_POPUPMENU_VIEWDISASM         40017
@@ -926,6 +930,7 @@
 #define ID_POPUPMENU_COPYGAMESHARKCODE  40118
 #define ID_POPUPMENU_COPYDATAWITHROWADDRESSES 40119
 #define ID_POPUPMENU_COPYDATAWITHGROUPADDRESSES 40120
+#define ID_POPUP_AUTORUN                40121
 #define ID_POPUPMENU_ROMDIRECTORY       40137
 #define ID_POPUPMENU_REFRESHROMLIST     40138
 #define ID_POPUPMENU_PLAYGAME           40152
@@ -942,9 +947,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        225
-#define _APS_NEXT_COMMAND_VALUE         40121
-#define _APS_NEXT_CONTROL_VALUE         1730
+#define _APS_NEXT_RESOURCE_VALUE        227
+#define _APS_NEXT_COMMAND_VALUE         40122
+#define _APS_NEXT_CONTROL_VALUE         1738
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

@@ -37,13 +37,17 @@
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
+      <ExceptionHandling Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Async</ExceptionHandling>
+      <ExceptionHandling Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Async</ExceptionHandling>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="duktape.h" />
+    <ClInclude Include="duk_module_duktape.h" />
     <ClInclude Include="duk_config.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="duktape.c" />
+    <ClCompile Include="duktape.cpp" />
+    <ClCompile Include="duk_module_duktape.cpp" />
   </ItemGroup>
 </Project>

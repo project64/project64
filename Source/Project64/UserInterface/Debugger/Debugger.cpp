@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "DebuggerUI.h"
-#include "ScriptHook.h"
 
 #include "CPULog.h"
 #include "DMALog.h"
 #include "Symbols.h"
+#include <sstream>
 
 CPj64Module _Module;
 
@@ -41,6 +41,8 @@ CDebuggerUI::CDebuggerUI() :
     g_Settings->RegisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)SteppingOpsChanged);
     g_Settings->RegisterChangeCB(GameRunning_CPU_Running, this, (CSettings::SettingChangedFunc)GameCpuRunningChanged);
     g_Settings->RegisterChangeCB(Game_GameName, this, (CSettings::SettingChangedFunc)GameNameChanged);
+    g_Settings->RegisterChangeCB(GameRunning_CPU_Paused, this, (CSettings::SettingChangedFunc)GamePausedChanged);
+    g_Settings->RegisterChangeCB(Debugger_WaitingForStep, this, (CSettings::SettingChangedFunc)WaitingForStepChanged);
 }
 
 CDebuggerUI::~CDebuggerUI(void)
@@ -49,6 +51,8 @@ CDebuggerUI::~CDebuggerUI(void)
     g_Settings->UnregisterChangeCB(GameRunning_InReset, this, (CSettings::SettingChangedFunc)GameReset);
     g_Settings->RegisterChangeCB(GameRunning_CPU_Running, this, (CSettings::SettingChangedFunc)GameCpuRunningChanged);
     g_Settings->UnregisterChangeCB(Game_GameName, this, (CSettings::SettingChangedFunc)GameNameChanged);
+    g_Settings->UnregisterChangeCB(GameRunning_CPU_Paused, this, (CSettings::SettingChangedFunc)GamePausedChanged);
+    g_Settings->UnregisterChangeCB(Debugger_WaitingForStep, this, (CSettings::SettingChangedFunc)WaitingForStepChanged);
     Debug_Reset();
     delete m_MemoryView;
     delete m_CommandsView;
@@ -70,7 +74,11 @@ void CDebuggerUI::SteppingOpsChanged(CDebuggerUI * _this)
 {
     if (g_Settings->LoadBool(Debugger_SteppingOps))
     {
-        _this->OpenCommandWindow();
+        if (!g_Settings->LoadBool(Debugger_SilentBreak))
+        {
+            _this->OpenCommandWindow();
+        }
+        g_Settings->SaveBool(Debugger_SilentBreak, false);
     }
 }
 
@@ -91,14 +99,48 @@ void CDebuggerUI::GameNameChanged(CDebuggerUI * _this)
     {
         _this->m_MemorySearch->GameReset();
     }
+
+    JSHookEmuStateChangeEnv env;
+    env.state = JS_EMU_LOADED_ROM;
+    _this->m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_EMUSTATECHANGE, &env);
+}
+
+void CDebuggerUI::GamePausedChanged(CDebuggerUI * _this)
+{
+    JSHookEmuStateChangeEnv env;
+    env.state = g_Settings->LoadBool(GameRunning_CPU_Paused) ? JS_EMU_PAUSED : JS_EMU_RESUMED;
+    _this->m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_EMUSTATECHANGE, &env);
+}
+
+void CDebuggerUI::WaitingForStepChanged(CDebuggerUI* _this)
+{
+    if (g_Settings->LoadBool(Debugger_WaitingForStep))
+    {
+        JSHookEmuStateChangeEnv env;
+        env.state = JS_EMU_DEBUG_PAUSED;
+        _this->ScriptSystem()->InvokeAppCallbacks(JS_HOOK_EMUSTATECHANGE, &env);
+    }
+    else
+    {
+        JSHookEmuStateChangeEnv env;
+        env.state = JS_EMU_DEBUG_RESUMED;
+        _this->ScriptSystem()->InvokeAppCallbacks(JS_HOOK_EMUSTATECHANGE, &env);
+    }
 }
 
 void CDebuggerUI::GameReset(CDebuggerUI * _this)
 {
     if (!g_Settings->LoadBool(GameRunning_InReset))
     {
+        JSHookEmuStateChangeEnv env;
+        env.state = JS_EMU_RESET;
+        _this->m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_EMUSTATECHANGE, &env);
         return;
     }
+
+    JSHookEmuStateChangeEnv env;
+    env.state = JS_EMU_RESETTING;
+    _this->m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_EMUSTATECHANGE, &env);
 
     if (_this->m_CommandsView)
     {
@@ -450,6 +492,11 @@ CSymbolTable* CDebuggerUI::SymbolTable()
     return m_SymbolTable;
 }
 
+SyncEvent& CDebuggerUI::StepEvent()
+{
+    return m_StepEvent;
+}
+
 // CDebugger implementation
 
 void CDebuggerUI::TLBChanged()
@@ -552,34 +599,11 @@ void CDebuggerUI::CPUStepStarted()
         }
     }
 
-    if (m_ScriptSystem->HaveCallbacks())
-    {
-        m_ScriptSystem->HookCPUExec()->InvokeByAddressInRange(pc);
-        if (SkipOp()) { return; }
-
-        m_ScriptSystem->HookCPUExecOpcode()->InvokeByAddressInRange_MaskedOpcode(pc, R4300iOp::m_Opcode.Hex);
-        if (SkipOp()) { return; }
-
-        m_ScriptSystem->HookCPUGPRValue()->InvokeByAddressInRange_GPRValue(pc);
-        if (SkipOp()) { return; }
-
-        if (bStoreOp)
-        {
-            m_ScriptSystem->HookCPUWrite()->InvokeByAddressInRange(storeAddress);
-            if (SkipOp()) { return; }
-        }
-
-        if (opInfo.IsLoadCommand())
-        {
-            m_ScriptSystem->HookCPURead()->InvokeByAddressInRange(opInfo.GetLoadStoreAddress());
-            if (SkipOp()) { return; }
-        }
-    }
-
-    if (bStoreOp && storeAddress == 0xA460000C) // PI_WR_LEN_REG
-    {
-        HandleCartToRamDMA();
-    }
+    JSHookCpuStepEnv hookEnv = { 0 };
+    hookEnv.pc = pc;
+    hookEnv.opInfo = opInfo;
+    
+    m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_CPUSTEP, (void*)&hookEnv);
 
     if (CDebugSettings::ExceptionBreakpoints() != 0)
     {
@@ -665,41 +689,78 @@ void CDebuggerUI::CPUStepEnded()
 
 void CDebuggerUI::FrameDrawn()
 {
-    static HWND hMainWnd = nullptr;
+    //RenderWindow* mainWindow = g_Plugins->MainWindow();
+    //HWND hMainWnd = (HWND)mainWindow->GetWindowHandle();
+    // todo: m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_GFXUPDATE, ...);
+}
 
-    static HFONT monoFont = CreateFont(-11, 0, 0, 0,
-        FW_DONTCARE, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
-        OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS,
-        PROOF_QUALITY, FF_DONTCARE, L"Consolas"
-    );
+void CDebuggerUI::PIFReadStarted(void)
+{
+    m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_PIFREAD);
+}
 
-    if (hMainWnd == nullptr)
-    {
-        RenderWindow* mainWindow = g_Plugins->MainWindow();
+void CDebuggerUI::RSPReceivedTask(void)
+{
+    JSHookSpTaskEnv env;
 
-        if (mainWindow == nullptr)
-        {
-            return;
-        }
+    DebugLoad_VAddr(0xA4000FC0, env.taskType);
+    DebugLoad_VAddr(0xA4000FC4, env.taskFlags);
+    DebugLoad_VAddr(0xA4000FC8, env.ucodeBootAddress);
+    DebugLoad_VAddr(0xA4000FCC, env.ucodeBootSize);
+    DebugLoad_VAddr(0xA4000FD0, env.ucodeAddress);
+    DebugLoad_VAddr(0xA4000FD4, env.ucodeSize);
+    DebugLoad_VAddr(0xA4000FD8, env.ucodeDataAddress);
+    DebugLoad_VAddr(0xA4000FDC, env.ucodeDataSize);
+    DebugLoad_VAddr(0xA4000FE0, env.dramStackAddress);
+    DebugLoad_VAddr(0xA4000FE4, env.dramStackSize);
+    DebugLoad_VAddr(0xA4000FE8, env.outputBuffAddress);
+    DebugLoad_VAddr(0xA4000FEC, env.outputBuffSize);
+    DebugLoad_VAddr(0xA4000FF0, env.dataAddress);
+    DebugLoad_VAddr(0xA4000FF4, env.dataSize);
+    DebugLoad_VAddr(0xA4000FF8, env.yieldDataAddress);
+    DebugLoad_VAddr(0xA4000FFC, env.yieldDataSize);
 
-        hMainWnd = (HWND)mainWindow->GetWindowHandle();
-    }
+    m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_RSPTASK, &env);
+}
 
-    HDC hdc = GetDC(hMainWnd);
+void CDebuggerUI::PIDMAReadStarted(void)
+{
+    JSHookPiDmaEnv env;
 
-    CRect rt;
+    env.direction = 1;
+    DebugLoad_VAddr(0xA4600000, env.dramAddress);
+    DebugLoad_VAddr(0xA4600004, env.cartAddress);
+    DebugLoad_VAddr(0xA4600008, env.length);
 
-    GetClientRect(hMainWnd, &rt);
-    SetBkColor(hdc, RGB(0, 0, 0));
+    m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_PIDMA, &env);
+}
 
-    SelectObject(hdc, monoFont);
-    SetTextColor(hdc, RGB(255, 255, 255));
-    SetBkColor(hdc, RGB(0, 0, 0));
+void CDebuggerUI::PIDMAWriteStarted(void)
+{
+    JSHookPiDmaEnv env;
 
-    m_ScriptSystem->SetScreenDC(hdc);
-    m_ScriptSystem->HookFrameDrawn()->InvokeAll();
+    env.direction = 0;
+    DebugLoad_VAddr(0xA4600000, env.dramAddress);
+    DebugLoad_VAddr(0xA4600004, env.cartAddress);
+    DebugLoad_VAddr(0xA460000C, env.length);
 
-    ReleaseDC(hMainWnd, hdc);
+    m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_PIDMA, &env);
+
+    HandleCartToRamDMA();
+}
+
+void CDebuggerUI::EmulationStarted(void)
+{
+    JSHookEmuStateChangeEnv env;
+    env.state = JS_EMU_STARTED;
+    m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_EMUSTATECHANGE, &env);
+}
+
+void CDebuggerUI::EmulationStopped(void)
+{
+    JSHookEmuStateChangeEnv env;
+    env.state = JS_EMU_STOPPED;
+    m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_EMUSTATECHANGE, &env);
 }
 
 void CDebuggerUI::WaitForStep(void)
@@ -707,6 +768,16 @@ void CDebuggerUI::WaitForStep(void)
     g_Settings->SaveBool(Debugger_WaitingForStep, true);
     m_StepEvent.IsTriggered(SyncEvent::INFINITE_TIMEOUT);
     g_Settings->SaveBool(Debugger_WaitingForStep, false);
+}
+
+void CDebuggerUI::StartAutorunScripts(void)
+{
+    if (m_ScriptSystem == nullptr)
+    {
+        return;
+    }
+
+    m_ScriptSystem->ExecAutorunList();
 }
 
 bool CDebuggerUI::ExecutionBP(uint32_t address)

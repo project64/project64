@@ -46,6 +46,12 @@
     <Filter Include="Header Files\User Interface Headers\Debugger Headers">
       <UniqueIdentifier>{c4249d55-df70-4453-b017-b548514ad094}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\User Interface Source\Debugger Source\ScriptAPI">
+      <UniqueIdentifier>{b31e3a28-aae6-4b12-9b59-c95551bc38bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\User Interface Headers\Debugger Headers\ScriptAPI">
+      <UniqueIdentifier>{f95fae8a-638b-4a4f-9df2-4a702f2bcb0b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -171,9 +177,6 @@
     <ClCompile Include="UserInterface\Debugger\DMALog.cpp">
       <Filter>Source Files\User Interface Source\Debugger Source</Filter>
     </ClCompile>
-    <ClCompile Include="UserInterface\Debugger\ScriptHook.cpp">
-      <Filter>Source Files\User Interface Source\Debugger Source</Filter>
-    </ClCompile>
     <ClCompile Include="UserInterface\Debugger\ScriptInstance.cpp">
       <Filter>Source Files\User Interface Source\Debugger Source</Filter>
     </ClCompile>
@@ -254,6 +257,81 @@
     </ClCompile>
     <ClCompile Include="UserInterface\RomBrowser.cpp">
       <Filter>Source Files\User Interface Source</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\N64Image.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\N64Image_PNG.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_AddressRange.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_alert.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_asm.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_console.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_cpu.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_debug.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_events.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_exec.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_fs.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_interval.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_mem.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_N64Image.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_Number_hex.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_pj64.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_script.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_Server.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\ScriptAPI_Socket.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\JSIntervalWorker.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\JSServerWorker.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptAPI\JSSocketWorker.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source\ScriptAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\Debugger-ScriptsAutorun.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\ScriptWorker.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -416,9 +494,6 @@
     <ClInclude Include="UserInterface\Debugger\OpInfo.h">
       <Filter>Header Files\User Interface Headers\Debugger Headers</Filter>
     </ClInclude>
-    <ClInclude Include="UserInterface\Debugger\ScriptHook.h">
-      <Filter>Header Files\User Interface Headers\Debugger Headers</Filter>
-    </ClInclude>
     <ClInclude Include="UserInterface\Debugger\ScriptInstance.h">
       <Filter>Header Files\User Interface Headers\Debugger Headers</Filter>
     </ClInclude>
@@ -494,6 +569,33 @@
     <ClInclude Include="UserInterface\CheatUI.h">
       <Filter>Header Files\User Interface Headers</Filter>
     </ClInclude>
+    <ClInclude Include="UserInterface\WTLControls\EditConInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\Debugger\Debugger-ScriptsAutorun.h">
+      <Filter>Header Files\User Interface Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\Debugger\ScriptTypes.h">
+      <Filter>Header Files\User Interface Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\Debugger\ScriptWorker.h">
+      <Filter>Header Files\User Interface Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\Debugger\ScriptAPI\ScriptAPI.h">
+      <Filter>Header Files\User Interface Headers\Debugger Headers\ScriptAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\Debugger\ScriptAPI\JSIntervalWorker.h">
+      <Filter>Header Files\User Interface Headers\Debugger Headers\ScriptAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\Debugger\ScriptAPI\JSServerWorker.h">
+      <Filter>Header Files\User Interface Headers\Debugger Headers\ScriptAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\Debugger\ScriptAPI\JSSocketWorker.h">
+      <Filter>Header Files\User Interface Headers\Debugger Headers\ScriptAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\Debugger\ScriptAPI\N64Image.h">
+      <Filter>Header Files\User Interface Headers\Debugger Headers\ScriptAPI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\divider.cur">
@@ -514,7 +616,6 @@
     <None Include="UserInterface\icons\javascri.bin">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="UserInterface\API.js" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\ListItems.bmp">

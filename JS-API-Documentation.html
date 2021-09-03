@@ -1,0 +1,2071 @@
+<!DOCTYPE html>
+<!-- Generated Sep 02 2021 -->
+<!-- YAML source: https://github.com/shygoo/pj64d-docs -->
+<head>
+<title>Project64 JavaScript API 2021.09.02</title>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+<style>
+:root {
+    --clr-bg0: #EEE;
+    --clr-bg1: #FFF;
+    --clr-bg2: #DDD;
+    --clr-bg3: #CCC;
+    --clr-bg4: #BBB;
+    --clr-text: #222;
+    --clr-hr: #ECC;
+    --clr-link: #090;
+    --clr-link-hover: #070;
+    --clr-link-unstable: #990;
+    --clr-link-unstable-hover: #770;
+    --clr-highlight: #DFD;
+    --clr-tag-blue: #8AD;
+    --clr-tag-red: #D77;
+    --clr-js-keyword: #22F;
+    --clr-js-string: #880;
+    --clr-js-number: #722;
+    --clr-js-comment: #272;
+    --clr-js-word: #222;
+    --clr-js-etc: #666;
+}
+
+[data-theme="dark"] {
+    --clr-bg0: #222;
+    --clr-bg1: #2A2A2A;
+    --clr-bg2: #444;
+    --clr-bg3: #555;
+    --clr-bg4: #666;
+    --clr-text: #FFF;
+    --clr-hr: #744;
+    --clr-link: #8D8;
+    --clr-link-hover: #7C7;
+    --clr-link-unstable: #DD8;
+    --clr-link-unstable-hover: #CC7;
+    --clr-highlight: #252;
+    --clr-tag-blue: #247;
+    --clr-tag-red: #722;
+    --clr-js-keyword: #67F;
+    --clr-js-string: #FFA;
+    --clr-js-number: #FAA;
+    --clr-js-comment: #7A7;
+    --clr-js-word: #FFF;
+    --clr-js-etc: #AAA;
+}
+
+*::-webkit-scrollbar {
+    background: #FFF;
+    background: var(--clr-bg1);
+    border: 1px solid #FFF;
+    border-color: var(--clr-bg1);
+    width: 1.2em;
+    padding: 2px;
+    margin: 2px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: #DDD;
+    background: var(--clr-bg2);
+    border: 2px solid #FFF;
+    border-color: var(--clr-bg1);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: #CCC;
+    background: var(--clr-bg3);
+}
+
+*::-webkit-scrollbar-thumb:active {
+    background: #BBB;
+    background: var(--clr-bg4);
+}
+
+body {
+    margin: 0px;
+    background: #EEE;
+    background: var(--clr-bg0);
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    color: #222;
+    color: var(--clr-text);
+}
+
+a {
+    color: #090;
+    color: var(--clr-link);
+    text-decoration: none;
+}
+
+a:hover {
+    color: #070;
+    color: var(--clr-link-hover);
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0px;
+    font-size: inherit;
+}
+
+thead {
+    font-weight: bold;
+    background: #EEE;
+    background: var(--clr-bg0);
+}
+
+td {
+    border: 1px solid #CCC;
+    border-color: var(--clr-bg3);
+    padding: 2px 6px;
+}
+
+ul {
+    color: #222;
+    color: var(--clr-text);
+    padding-inline-start: 20px;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #ECC;
+    border-color: var(--clr-hr);
+}
+
+div.pagetitle {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+div.module {
+    border-top: 1px solid #ECC;
+    border-color: var(--clr-hr);
+    padding: 20px;
+    margin-bottom: 10px;
+    background: #FFF;
+    background: var(--clr-bg1);
+}
+
+div.modtitle {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+div.prop {
+    border-top: 1px solid #DDD;
+    border-color: var(--clr-bg2);
+    padding-top: 20px;
+    margin-top: 20px;
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+span.title:target {
+    background: #DFD;
+    background: var(--clr-highlight);
+}
+
+span.title2 {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+div.tsproto {
+    font-size: 0.8em;
+    font-family: monospace;
+}
+
+div.desc {
+    margin-top: 10px;
+    padding: 5px;
+}
+
+span.snip {
+    display: inline-block;
+    background: #EEE;
+    background: var(--clr-bg0);
+    font-family: monospace;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+div.tag {
+    float:right;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: normal;
+}
+
+div.tag.blue {
+    background: #8AD;
+    background: var(--clr-tag-blue);
+}
+
+div.tag.red {
+    background: #D77;
+    background: var(--clr-tag-red);
+}
+
+div.sidebar {
+    width: 440px;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    overflow-y: auto;
+    background: #FFF;
+    background: var(--clr-bg1);
+}
+
+div.sidebar-content {
+    font-size: 13px;
+    padding: 10px;
+}
+
+div.content {
+    margin-left: 440px;
+    padding: 10px;
+}
+
+pre.ex {
+    margin-top: 10px;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 0.9em;
+    background: #EEE;
+    background: var(--clr-bg0);
+    color: #666;
+    color: var(--clr-js-etc);
+    white-space: pre-wrap;
+}
+
+a.unstable {
+    color: var(--clr-link-unstable);
+}
+
+a.unstable:hover {
+    color: var(--clr-link-unstable-hover);
+}
+
+span.js-keyword { color: #22F; color: var(--clr-js-keyword); }
+span.js-string { color: #880; color: var(--clr-js-string); }
+span.js-number { color: #722; color: var(--clr-js-number); }
+span.js-comment { color: #272; color: var(--clr-js-comment); }
+span.js-word { color: #222; color: var(--clr-js-word); }
+</style>
+<script>
+if(localStorage && localStorage.getItem('theme')) {
+    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme'));
+}
+else if(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+}
+
+window.addEventListener('load', function() {
+    if(document.documentElement.getAttribute('data-theme') == 'dark') {
+        document.querySelector('#darkmode-toggle').checked = true;
+    }
+    
+    document.querySelector('#darkmode-toggle').onchange = function(e) {
+        var theme = e.target.checked ? 'dark' : 'default';
+        document.documentElement.setAttribute('data-theme', theme);
+        if(localStorage) {
+            localStorage.setItem('theme', theme);
+        }
+    }
+});
+
+</script>
+</head>
+<body>
+<div class="sidebar">
+<div class="sidebar-content">
+<div class="pagetitle">Project64 JavaScript API</div>
+2021.09.02
+<hr>
+<ul>
+<p><li><a class="" href="#Project64 JavaScript API">Project64 JavaScript API</a><ul>
+<li><a class="" href="#Required_settings">Required settings</a></li>
+<li><a class="" href="#Script_console">Script console</a></li>
+<li><a class="" href="#JavaScript_environment">JavaScript environment</a></li>
+</ul></li></p>
+<p><li><a class="" href="#console">console</a>: Console interface<ul>
+<li><a class="" href="#console_log">console.log(message[, ...])</a></li>
+<li><a class="" href="#console_print">console.print(message[, ...])</a></li>
+<li><a class="" href="#console_error">console.error(err)</a></li>
+<li><a class="" href="#console_clear">console.clear()</a></li>
+<li><a class="" href="#console_listen">console.listen(inputListener)</a></li>
+</ul></li></p>
+<p><li><a class="" href="#pj64">pj64</a>: Project64 interface<ul>
+<li><a class="" href="#pj64_open">pj64.open(romPath)</a></li>
+<li><a class="" href="#pj64_close">pj64.close()</a></li>
+<li><a class="" href="#pj64_reset">pj64.reset([soft])</a></li>
+<li><a class="" href="#pj64_pause">pj64.pause()</a></li>
+<li><a class="" href="#pj64_resume">pj64.resume()</a></li>
+<li><a class="" href="#pj64_limitfps">pj64.limitfps(limitFps)</a></li>
+<li><a class="" href="#pj64_installDirectory">pj64.installDirectory</a></li>
+<li><a class="" href="#pj64_scriptsDirectory">pj64.scriptsDirectory</a></li>
+<li><a class="" href="#pj64_modulesDirectory">pj64.modulesDirectory</a></li>
+<li><a class="" href="#pj64_romDirectory">pj64.romDirectory</a></li>
+<li><a class="" href="#pj64_romInfo">pj64.romInfo</a></li>
+</ul></li></p>
+<p><li><a class="" href="#mem">mem</a>: N64 memory interface<ul>
+<li><a class="" href="#mem__">mem.u8|u16|u32|s8|s16|s32|f32|f64</a></li>
+<li><a class="" href="#mem_bindvar">mem.bindvar(object, address, name, typeId)</a></li>
+<li><a class="" href="#mem_bindvars">mem.bindvars(object, vars)</a></li>
+<li><a class="" href="#mem_bindstruct">mem.bindstruct(object, address, properties)</a></li>
+<li><a class="" href="#mem_typedef">mem.typedef(properties)</a></li>
+<li><a class="" href="#mem_getblock">mem.getblock(address, length)</a></li>
+<li><a class="" href="#mem_setblock">mem.setblock(address, data[, length])</a></li>
+<li><a class="" href="#mem_getstring">mem.getstring(address[, length])</a></li>
+<li><a class="" href="#mem_setstring">mem.setstring(address, data[, length])</a></li>
+<li><a class="" href="#mem_ramSize">mem.ramSize</a></li>
+<li><a class="" href="#mem_romSize">mem.romSize</a></li>
+<li><a class="" href="#mem_ptr">mem.ptr</a></li>
+</ul></li></p>
+<p><li><a class="" href="#events">events</a>: Event hooking interface<ul>
+<li><a class="" href="#events_onstatechange">events.onstatechange(callback)</a></li>
+<li><a class="" href="#EmuStateChangeEvent">EmuStateChangeEvent</a></li>
+<li><a class="" href="#events_onexec">events.onexec(address, callback)</a></li>
+<li><a class="" href="#CPUExecEvent">CPUExecEvent</a></li>
+<li><a class="" href="#events_onread">events.onread(address, callback)</a></li>
+<li><a class="" href="#events_onwrite">events.onwrite(address, callback)</a></li>
+<li><a class="" href="#CPUReadWriteEvent">CPUReadWriteEvent</a></li>
+<li><a class="" href="#events_onopcode">events.onopcode(address, opcode, mask, callback)</a></li>
+<li><a class="" href="#CPUOpcodeEvent">CPUOpcodeEvent</a></li>
+<li><a class="" href="#events_ongprvalue">events.ongprvalue(address, regFlags, value, callback)</a></li>
+<li><a class="" href="#GPR_flags">General purpose register flags</a></li>
+<li><a class="" href="#CPURegValueEvent">CPURegValueEvent</a></li>
+<li><a class="" href="#events_onpifread">events.onpifread(callback)</a></li>
+<li><a class="" href="#GenericEvent">GenericEvent</a></li>
+<li><a class="" href="#events_onsptask">events.onsptask(callback)</a></li>
+<li><a class="" href="#SPTaskEvent">SPTaskEvent</a></li>
+<li><a class="" href="#events_onpidma">events.onpidma(callback)</a></li>
+<li><a class="" href="#PIEvent">PIEvent</a></li>
+<li><a class="" href="#events_onmousedown">events.onmousedown(callback)</a></li>
+<li><a class="" href="#events_onmouseup">events.onmouseup(callback)</a></li>
+<li><a class="" href="#events_onmousemove">events.onmousemove(callback)</a></li>
+<li><a class="" href="#MouseEvent">MouseEvent</a></li>
+<li><a class="" href="#events_remove">events.remove(callbackId)</a></li>
+<li><a class="" href="#AddressRange">new AddressRange(start, end)</a></li>
+</ul></li></p>
+<p><li><a class="" href="#N64Image">N64Image</a>: N64 image class<ul>
+<li><a class="" href="#new_N64Image">new N64Image(width, height[, format [, pixels[, palette]]])</a></li>
+<li><a class="" href="#N64Image_fromPNG">N64Image.fromPNG(pngData[, format])</a></li>
+<li><a class="" href="#N64Image_format">N64Image.format(gbiFmt, gbiSiz[, gbiTlutFmt])</a></li>
+<li><a class="" href="#N64Image_bpp">N64Image.bpp(format)</a></li>
+<li><a class="" href="#image_toPNG">image.toPNG()</a></li>
+<li><a class="" href="#image_update">image.update()</a></li>
+<li><a class="" href="#image_format">image.format</a></li>
+<li><a class="" href="#image_width">image.width</a></li>
+<li><a class="" href="#image_height">image.height</a></li>
+<li><a class="" href="#image_pixels">image.pixels</a></li>
+<li><a class="" href="#image_palette">image.palette</a></li>
+</ul></li></p>
+<p><li><a class="" href="#cpu">cpu</a>: CPU register interface<ul>
+<li><a class="" href="#cpu_pc">cpu.pc</a></li>
+<li><a class="" href="#cpu_hi">cpu.hi</a></li>
+<li><a class="" href="#cpu_lo">cpu.lo</a></li>
+<li><a class="" href="#cpu_uhi">cpu.uhi</a></li>
+<li><a class="" href="#cpu_ulo">cpu.ulo</a></li>
+<li><a class="" href="#cpu_gpr__">cpu.gpr.r0|at|v0|v1..ra</a></li>
+<li><a class="" href="#cpu_ugpr__">cpu.ugpr.r0|at|v0|v1..ra</a></li>
+<li><a class="" href="#cpu_fpr__">cpu.fpr.f0..f31</a></li>
+<li><a class="" href="#cpu_dfpr__">cpu.dfpr.f0..f30</a></li>
+<li><a class="" href="#cpu_cop0">cpu.cop0.index..errorepc</a></li>
+</ul></li></p>
+<p><li><a class="" href="#debug">debug</a>: Debugger interface<ul>
+<li><a class="" href="#debug_breakhere">debug.breakhere([silent])</a></li>
+<li><a class="" href="#debug_resume">debug.resume()</a></li>
+<li><a class="" href="#debug_step">debug.step()</a></li>
+<li><a class="" href="#debug_skip">debug.skip()</a></li>
+<li><a class="" href="#debug_showmemory">debug.showmemory(address[, physical])</a></li>
+<li><a class="" href="#debug_showcommands">debug.showcommands(address)</a></li>
+<li><a class="" href="#debug_paused">debug.paused</a></li>
+</ul></li></p>
+<p><li><a class="" href="#asm">asm</a>: ASM utilities<ul>
+<li><a class="" href="#asm_encode">asm.encode(command[, address])</a></li>
+<li><a class="" href="#asm_decode">asm.decode(opcode[, address])</a></li>
+<li><a class="" href="#asm_gprname">asm.gprname(regIndex)</a></li>
+</ul></li></p>
+<p><li><a class="" href="#fs">fs</a>: File system interface<ul>
+<li><a class="" href="#fs_open">fs.open(path, mode)</a></li>
+<li><a class="" href="#fs_close">fs.close(fd)</a></li>
+<li><a class="" href="#fs_write">fs.write(fd, buffer[, offset[, length[, position]]])</a></li>
+<li><a class="" href="#fs_writefile">fs.writefile(path, buffer)</a></li>
+<li><a class="" href="#fs_read">fs.read(fd, buffer, offset, length, position)</a></li>
+<li><a class="" href="#fs_readfile">fs.readfile(path)</a></li>
+<li><a class="" href="#fs_fstat">fs.fstat(fd)</a></li>
+<li><a class="" href="#fs_stat">fs.stat(path)</a></li>
+<li><a class="" href="#fs_unlink">fs.unlink(path)</a></li>
+<li><a class="" href="#fs_mkdir">fs.mkdir(path)</a></li>
+<li><a class="" href="#fs_rmdir">fs.rmdir(path)</a></li>
+<li><a class="" href="#fs_readdir">fs.readdir(path)</a></li>
+<li><a class="" href="#fs_Stats">fs.Stats</a></li>
+</ul></li></p>
+<p><li><a class="" href="#Socket">Socket</a>: TCP socket class<ul>
+<li><a class="" href="#new_Socket">new Socket([options])</a></li>
+<li><a class="" href="#socket_connect">socket.connect(port, host[, connectListener])</a></li>
+<li><a class="" href="#socket_write">socket.write(data[, callback])</a></li>
+<li><a class="" href="#socket_end">socket.end([data[, callback]])</a></li>
+<li><a class="" href="#socket_close">socket.close()</a></li>
+<li><a class="" href="#socket_on_connect">socket.on('connect', listener)</a></li>
+<li><a class="" href="#socket_on_lookup">socket.on('lookup', listener)</a></li>
+<li><a class="" href="#socket_on_data">socket.on('data', listener)</a></li>
+<li><a class="" href="#socket_on_end">socket.on('end', listener)</a></li>
+<li><a class="" href="#socket_on_close">socket.on('close', listener)</a></li>
+<li><a class="" href="#socket_on_drain">socket.on('drain', listener)</a></li>
+<li><a class="" href="#socket_on_error">socket.on('error', listener)</a></li>
+<li><a class="" href="#socket_off">socket.off(eventName, listener)</a></li>
+<li><a class="" href="#socket_remoteAddress">socket.remoteAddress</a></li>
+<li><a class="" href="#socket_remotePort">socket.remotePort</a></li>
+<li><a class="" href="#socket_localAddress">socket.localAddress</a></li>
+<li><a class="" href="#socket_localPort">socket.localPort</a></li>
+<li><a class="" href="#socket_addressFamily">socket.addressFamily</a></li>
+</ul></li></p>
+<p><li><a class="" href="#Server">Server</a>: TCP server class<ul>
+<li><a class="" href="#new_Server">new Server()</a></li>
+<li><a class="" href="#server_listen">server.listen(port[, address])</a></li>
+<li><a class="" href="#server_close">server.close()</a></li>
+<li><a class="" href="#server_on_connection">server.on('connection', listener)</a></li>
+<li><a class="" href="#server_on_listening">server.on('listening', listener)</a></li>
+<li><a class="" href="#server_on_close">server.on('close', listener)</a></li>
+<li><a class="" href="#server_on_error">server.on('error', listener)</a></li>
+<li><a class="" href="#server_off">server.off(eventName, listener)</a></li>
+<li><a class="" href="#server_port">server.port</a></li>
+<li><a class="" href="#server_address">server.address</a></li>
+<li><a class="" href="#server_addressFamily">server.addressFamily</a></li>
+</ul></li></p>
+<p><li><a class="" href="#script">script</a>: Script instance configuration interface<ul>
+<li><a class="" href="#script_keepalive">script.keepalive(keepAlive)</a></li>
+<li><a class="" href="#script_timeout">script.timeout(milliseconds)</a></li>
+</ul></li></p>
+<p><li><a class="" href="#Globals">Globals</a><ul>
+<li><a class="" href="#global">global</a></li>
+<li><a class="" href="#require">require(id)</a></li>
+<li><a class="" href="#exec">exec(command[, options])</a></li>
+<li><a class="" href="#alert">alert(message[, caption])</a></li>
+<li><a class="" href="#setTimeout">setTimeout(callback, delay)</a></li>
+<li><a class="" href="#clearTimeout">clearTimeout(timeoutId)</a></li>
+<li><a class="" href="#setInterval">setInterval(callback, delay)</a></li>
+<li><a class="" href="#clearInterval">clearInterval(intervalId)</a></li>
+<li><a class="" href="#number_hex">number.hex([numChars])</a></li>
+<li><a class="" href="#type_ids">Type IDs</a></li>
+<li><a class="" href="#N64_memory_addresses">N64 memory addresses</a></li>
+<li><a class="" href="#Miscellaneous">Miscellaneous</a></li>
+</ul></li></p>
+</ul>
+<hr>
+<label style="font-size: 12px; vertical-align: middle; user-select: none;">
+    <input id="darkmode-toggle" type="checkbox" style="vertical-align: bottom; margin-right: 5px;"/>
+    Dark theme
+</label>
+</div>
+</div>
+<div class="content">
+<!-- Project64 JavaScript API -->
+<div class="module">
+<div class="modtitle"><span class="title" id="Project64 JavaScript API">Project64 JavaScript API</span></div>
+<!-- Required_settings -->
+<p><div class="prop"><span class="title" id="Required_settings">Required settings</span></div>
+</p>
+<p>The following settings must be used to enable the script console.</p>
+<p>Go to <i>Options &gt; Configuration</i> and uncheck <i>Hide advanced settings</i>.
+Optional: You may also want to uncheck <i>Pause emulation when window is not active</i> for general debugging.</p>
+<p><img src="data:image/png;base64,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"></p>
+<p><img src="data:image/png;base64,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"></p>
+<p>Click <i>Advanced</i>, then check <i>Enable Debugger</i>.
+Optional: Check <i>Always use interpreter core</i> -- 
+This is required for some of the <a href="#events">events</a> interface functions to work, but it may impact game performance.</p>
+<p><img src="data:image/png;base64,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"></p>
+<!-- Script_console -->
+<p><div class="prop"><span class="title" id="Script_console">Script console</span></div>
+</p>
+<p>Go to <i>Debugger > Scripts...</i> to open the script console.</p>
+<p><img src="data:image/png;base64,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"></p>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAGGCAYAAADrfDCjAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAjFUlEQVR4Xu3cvY4j6ZUm4LwM/XULkLV+o2T0Jay9zpaVwAK1znjjCHIaWKPaGaMEzAW0KaigAeSUOY22BGGEsgQIsy0MIAzaGYwhyBlhHS5PkMH8InjI5GEy88tkPC/woMiIYDDIjOR5O1jVNz/+8Y9Xo08//XTPJ598AgDAC5X1u6EAtguyB4Yf/ehHAAC8EPMu1/a9m/ZOu1G2ox/+8IcAALwAbYdrO96kAMaC1//rfwMAcIXaIjgUwPFOrPzv/+N/AgBwRQ4WwFioAAIAXJ/oeOPXwgogAMACtAUw3IyXAhVAAIDrpAACACxMdLwf/OAHuxI4FMCxDSqAAADX52ABjAUKIADA9VEAAQAWpi2AQQEEALhyYwEcS6ACCAC8WKcme2xP//qv/3f1D7/4x3RdiHWxTbbuHNHxvv/97z+wAP7iX7ZvZ+RfVv+QbXPI3/9m9e+r71a/+vtkHQBAQSRb3jplm6cWBe///e2/0hJ4bN25Hl4AhwLXlL71/V/9oll/Mf+4+q2iCAAccUq5O2WbHrKi9xjlL+wVwCh/pQIYV/+++83q77J1F6UAAgDHnVLuTtmml7bwPVb5Cw8vgEMxW63+/Z9+lqz72epX3w3v85DfDlcGN0Xut7+LFXHlsC1229u/iKuKm2z2u3mOXX4Xb0S2bwBgySLZ8tYp2/Q0Fr/HKn/hAgUw3JWxuyK2WbZfDOeFcV4A1xmvKE7+fmC73VpceRyK4PY+AHBRpyZ7bC+nHM8p2/T0ggrg1lDYtiVw/ncDd2ZFbq8AtuvWb8LvplcOd+u2z5VfeQQAluiUcnfKNr2M5S/+bG9n2z7EZQvg2t/903ebK3MXKYCbq4hpAdwanm8dXwEDAJFseeuUbXrICt9jlcCHF8Bf/GavsG2uyh37CvhYAWweMymReQEMUQJdCQQATil3p2zz1I4VvccogRe4ArgpbbtM/l7edF1+Ja+9v7m9+Qcim7RX9uLr4CHxHA/5fw8CAFfp1GSP7an7/wi6XgAvaV4OAQC4NAUQAGBhFEAAgIV5ZgUQAIDHpgACACyMAggAsDAKIADAwiiAAAALowACACyMAggAsDAKIADAwtxbAP/yl78AAHBFFEAAgIVRAAEAFkYBBABYGAUQAGBhFEAAgIVRAAEAFkYBBABYGAUQAGBhFEAAgIVRAAEAFubpC+DHt6tXNzerm61Xbz/m283F4169XX3M1o1O2QYe0ce3r3bn9snn90PPW+c9AEVPXgBvb16t3n4c779f3d6+n6x/EIOQjobyNzn/1uf3KSVQAQTgiXUogLer98nycViOV05u326G2tvbuL9+zDjkhj9vV7evmm3fx+M/rt42y2LoTq7GGJA8sul/3GxNztvmHNzdn523t7f5+X3q40+9og7Aol20AP7pT386aNzm/VDo1iZX/jZDbFPktmLAjcNvvD8O0nbQvr9d729bKtshOWx3VzbfrwdrWzyzY4Tx/JjLth2N20wK2k78h03zHzDj8vm5Ojlvk/P71Mc3smMF4Lq1c+CYixfAbHlqGGzbIpgNsEMDb2/bGLDbgTlZN15RnBY/OOTY+XvKub13Dg/OKICT/WzP7/cnPh6AxXoZBXBwYDiG+bLx/t62hwpgu14R5H4PLYDnfQV85PZAAQTgNM+6AL5qv/rdDa4DXwFnA2++PK4kjvdj3Vj01rdvd38fKvafDGdoPLQAHv1HIO25Od92dt6m5/epjwdgsZ51AWz/wvpNe8VkGGJ368Z/BLIbhONgnG03v7I3/h3DV+vHt/+oxF+O5z4PLYBh8g+P1tr/qGnXbf6xx935vTtvY/l2m41Z6dsuP/h45znAYj3rAvhgYxHM1sEDXKIAPpjzG4AzKYBwBgUQgJfsugsgPJJnUQAB4EwKIJxBAQTgJVMA4QwKIAAv2bMugP/ny3fQRXY+ti5RAH/+858DwKPK5k949gVQ5KnzlAVQRETksaIAihTy1AXwJz/5CQDsRLK5URFRAEUKUQAB6CmSzY2KiAIoUogCCEBPkWxuVEQUQJFCFEAAeopkc6MiogCKFKIAAtBTJJsbFREFsEe+fbf6/PN3q2+3d+XlRAEEoKdINjcqIgrgJVItdM+9AJ56fO12l3xNz/j9UQAB6CmSzY3R119/nS5vRRTAHrnGAriQKIAA9BTJ5kaI8jfK1o8iCuCBfPvu89XNzc3W56t30XKGwvNm9ebzcfnN6s2Hcfk9RSi22e1vbdx+svzNKna3yYfVm2b7N+9mzzE+5+yY3nz4dvVud7vZdrev9rW8W717My4ft797fPh8vXH6Xsy3e/Pm7viy13Tw+Wb58GazfruvyXOP++8YBRCAniLZ3GjL330lMKIAnpIoJdFWhmIzFqDt8ig423JzuJxsytykkA3bT5cPZWe4sylXk4I0f47xfntMw/E0t3fP0RTLyeOa59htv878udqM70Wk3W53+8BrOvZ884z7Gh5zd+wf1iVzvN0rCiAAPUXmM2Ne+ub35yJXWwDbK0dxFaucbWGZXH3alZwxUXbWhevDfPks88e1BWe+/FChPGUf2e34s30dg+Q5Du0nMt9Htt14O33sPc83z27dpkxOr4z2jQIIQE+R+czIyt5iC+BDM7nSNxaSvdLyQgpg+7gx8+XH9pO9F4dut8siw+PPLYBjnk8RVAAB6CkynxmHip4CeEbaAjJcTYz782Iyfo15rMwM2RbF7Qa7/W2Lzd7Xpes16VfATQFKjym9PX2OXebHPH/s+Fyz7e6OfbiTbHfgNc32M7nf7icyrlv/+eauea7fk6aIdooCCEBPkWxuVEQUwAP50Pxjhd0/cBiKyt3y+T9wONpNoizO9xfLJ/uclaDd8k2hGsrU9v7kmNp9Hbrd7CstrbP74+uPr8/T92K+3X2v6djzDdsnBXC9ZHPlb/scvdvfOgogAD1FsrlREVEAK5mXGHmcHPsHIp2jAALQUySbGxURBbCSewvg9IrVnf5fXb6MjO/f832/FEAAeopkc6MiogCKFKIAAtBTJJsbFREFUKQQBRCAniLZ3KiIKIAihSiAAPQUyeZGReTqCuDNz/64Wn353/zpz8v/uY4CCEBPkWxuVESu7wrgdljDJcV5FVEAAegpks2NishVXgGExxBRAAHoKZLNjYqIK4BwAlcAAXgOItncqIi4AggniiiAAPQUyeZGRcQVwOfo3X+uvv2P/1x9nq2jC1cAAXgOItncqIi4AvgcnVMAlcZHF1EAAegpks2NiogrgM+RMvfsuAIIwHMQyeZGRcQVwEOihG33uVr9bfXuXSz/bvVhfe/bf/63ZpvNus//+W+bTYdstx+K3F9XH/5js/TDL/9t9W53e3995G75tgCmxzHzy79uVm8fMzkWRfJiIgogAD1FsrlREXEF8IAPq7+u3oz39wpZrIsyd6SQ/eG77bbbbYaS1tyO/bXrx8fFvnfPF4XzwHHMjeuGfd495s0fmsdzNlcAAXgOItncqIhc7RXA9irY7opdwd1VtzF3RWrc92S/Q/FqMpaxsbBlt9tlgyh860L4y2b9dnd3OVDodvvaXKU8uB1niyiAAPQUyeZGRcQVwAOmxWxm+5Vr9lXw7v684GW322WDpABO1h+R7iuiCF6CK4AAPAeRbG5URK72CuBDRXka/j7e3rrxa9ltWYvSNytfwxXCeYHLbs9LW/vV8LB8U+LS44ht2nLX7PPD7srkka+pKYsogAD0FMnmRkXEFcBDhoLVJCtk49/ZW99+84dhqyHf/uGv+wUvuz1/jrHQzbfdrh0yWZ4UwN2Vv03O+fqbfa4AAvAcRLK5URFxBbCntug91Hj1MFvHRUQUQAB6imRzoyLiCmBPFymA4xU/X/U+JlcAAXgOItncqIi4AggniiiAAPQUyeZGRcQVQDiBK4AAPAeRbG5URK7yCuBYAv3pz4v+uY4CCEBPkWxuVESu7wqgyCNGAQSgp0g2NyoiCqBIIQogAD1FsrlREVEARQpRAAHoKZLNjYqIAihSiAIIQE+RbG5URBRAkUIUQAB6imRzoyKiAIoUogAC0FMkmxsVEQVQpBAFEICeItncqIgogCKFKIAA9BTJ5kZFRAEUKUQBBKCnSDY3KiIKoEghCiAAPUWyuVERUQBFClEAAegpks2NiogCKFKIAghAT5FsblREFECRQhRAAHqKZHOjIqIAihSiAALQUySbGxURBVCkEAUQgJ4i2dyoiCiAIoUogAD0FMnmRkVEARQpRAEEoKdINjcqIgqgSCEKIAA9RbK5URFRAEUKUQAB6CmSzY2KiAIoUogCCEBPkWxuVEQUQJFCFEAAeopkc6MiogCKFKIAAtBTJJsbFREFUKQQBRCAniLZ3KiIKIAihSiAAPQUyeZGRUQBFClEAQSgp0g2NyoiCqBIIQogAD1FsrlREVEARQpRAAHoKZLNjYqIAihSiAIIQE+RbG5URBRAkUIUQAB6imRzoyKiAIoUogAC0FMkmxsVEQVQpBAFEICeItncqIgogCKFKIAA9BTJ5kZFRAEUKUQBBKCnSDY3KiIKoEghCiAAPUWyuVERUQBFClEAAegpks2NiogCKFKIAghAT5FsblREFECRQhRAAHqKZHOjIqIAihSiAALQUySbGxURBVCkEAUQgJ4i2dyoiCiAIoUogAD0FMnmRkVEARQpRAEEoKdINjcqIgqgSCEKIAA9RbK5URFRAEUKUQAB6CmSzY2KiAIoUogCCEBPkWxuVEQUQJFCFEAAeopkc6MiogCKFKIAAtBTJJsbFREFUKQQBRCAniLZ3KiIKIAihSiAAPQUyeZGRUQBFClEAQSgp0g2NyoiCqBIIQogAD1FsrlREVEARQpRAAHoKZLNjYqIAihSiAIIQE+RbG5URBRAkUIUQAB6imRzoyKiAIoUogAC0FMkmxsVEQVQpBAFEICeItncqIgogCKFKIAA9BTJ5kZFRAEUKUQBBKCnSDY3KiIKoEghCiAAPUWyuVERUQBFClEAAegpks2NiogCKFKIAghAT5FsblREFECRQhRAAHqKZHOjIqIAihSiAALQUySbGxURBVCkEAUQgJ4i2dyoiCiAIoUogAD0FMnmRkVEARQpRAEEoKdINjcqIgqgSCEKIAA9RbK5URFRAEUKUQAB6CmSzY2KiAIoUogCCEBPkWxuVEQUQJFCFEAAeopkc6MiogCKFKIAAtBTJJsbFREFUKQQBRCAniLZ3KiIKIAihSiAAPQUyeZGRUQBFClEAQSgp0g2NyoiCqBIIQogAD1FsrlREVEARQpRAAHoKZLNjYqIAihSiAIIQE+RbG5URBRAkUIUQAB6imRzoyKiAIoUogAC0FMkmxsVEQVQpBAFEICeItncqIgogCKFKIAA9BTJ5kZFRAEUKUQBBKCnSDY3KiIKoEghCiAAPUWyuVERUQBFClEAAegpks2NiogCKFKIAghAT5FsblREFECRQhRAAHqKZHOjIqIAihSiAALQUySbGxURBVCkEAUQgJ4i2dyoiCiAIoUogAD0FMnmRkVEARQpRAEEoKdINjcqIgqgSCEKIAA9RbK5URFRAEUKUQAB6CmSzY2KiAIoUogCCEBPkWxuVEQUQJFCFEAAeopkc6MiogCKFKIAAtBTJJsbFREFUKQQBRCAniLZ3KiIKIAihSiAAPQUyeZGRUQBFClEAQSgp0g2NyoiCqBIIQogAD1FsrlREVEARQpRAAHoKZLNjYqIAihSiAIIQE+RbG5URBRAkUIUQAB6imRzoyKiAIoUogAC0FMkmxsVEQVQpBAFEICeItncqIgogCKFKIAA9BTJ5kZFRAEUKUQBBKCnSDY3KiIKoEghCiAAPUWyuVERUQBFClEAAegpks2NiogCKFKIAghAT5FsblREFECRQhRAAHqKZHOjIqIAihSiAALQUySbGxURBVCkEAUQgJ4i2dyoiCiAIoUogAD0FMnmRkVEARQpRAEEoKdINjcqIgqgSCEKIAA9RbK5URFRAEUKUQAB6CmSzY2KiAIoUogCCEBPkWxuVEQUQJFCFEAAeopkc6MiogCKFKIAAtBTJJsbFREFUKQQBRCAniLZ3KiIKIAihSiAAPQUyeZGRUQBFClEAQSgp0g2NyoiCqBIIQogAD1FsrlREVEARQpRAAHoKZLNjYqIAihSiAIIQE+RbG5URBRAkUIUQAB6imRzoyKiAIoUogAC0FMkmxsVEQVQpBAFEICeItncqIgogCKFKIAA9BTJ5kZFRAEUKUQBBKCnSDY3KiIKoEghCiAAPUWyuVERUQBFClEAAegpks2NiogCKFKIAghAT5FsblREFECRQhRAAHqKZHOjIqIAihSiAALQUySbGxURBVCkEAUQgJ4i2dyoiCiAIoUogAD0FMnmRkVEARQpRAEEoKdINjcqIgqgSCEKIAA9RbK5URFRAEUKUQAB6CmSzY2KiAIoUogCCEBPkWxuVEQUQJFCFEAAeopkc6MiogCKFKIAAtBTJJsbFREFUKQQBRCAniLZ3KiIKIAihSiAAPQUyeZGRUQBFClEAQSgp0g2NyoiCqBIIQogAD1FsrlREVEARQpRAAHoKZLNjYqIAihSiAIIQE+RbG5URBRAkUIUQAB6imRzoyKiAIoUogAC0FMkmxsVEQVQpBAFEICeItncqIgogCKFKIAA9BTJ5kZFRAEUKUQBBKCnSDY3KiIKoEghCiAAPUWyuVERUQBFClEAAegpks2NiogCKFKIAghAT5FsblREFECRQhRAAHqKZHOjIqIAihSiAALQUySbGxURBVCkEAUQgJ4i2dyoiCiAIoUogAD0FMnmRkVEARQpRAEEoKdINjcqIgqgSCEKIAA9RbK5URFRAEUKUQAB6CmSzY2KiAIoUogCCEBPkWxuVEQUQJFCFEAAeopkc6MiogCKFKIAAtBTJJsbFREFUKQQBRCAniLZ3KiIKIAihSiAAPQUyeZGRUQBFClEAQSgp0g2NyoiCqBIIQogAD1FsrlREVEARQpRAAHoKZLNjYqIAihSiAIIQE+RbG5URBRAkUIUQAB6imRzoyKiAIoUogAC0FMkmxsVEQVQpBAFEICeItncqIgogCKFKIAA9BTJ5kZFRAEUKUQBBKCnSDY3KiIKoEghCiAAPUWyuVERUQBFClEAAegpks2NiogCKFKIAghAT5FsblREFECRQhRAAHqKZHOjIqIAihSiAALQUySbGxURBVCkEAUQgJ4i2dyoiCiAIoUogAD0FMnmRkVEARQpRAEEoKdINjcqIgqgSCEKIAA9RbK5URFRAEUKUQAB6Ckynxlff/313rJjyyMKoEghCiAAPUXmMyOK3rzsZctGEQVQpBAFEICeIvOZMZa9sfDN789FFECRQhRAAHqKZHOjLX3Hyl+IKIAihSiAAPQUyeZGOKX8hYgCKFKIAghAT5FsbozuK38hogCKFKIAAtBTJJsbFREFUKQQBRCAniLZ3KiIKIAihSiAAPQUyeZGRUQBFClEAQSgp0g2NyoiCqBIIQogAD1FsrlREVEARQp56gIoIiLyGHnRBRB6yM7H1qUKIAA8pmz+hGddAOG5ukQBBIBeFEA4gwIIwEumAMIZFEAAXjIFEM6gAALwkimAcAYFEICXTAGEMyiAALxkz74A/vrXv+4iOxZy2ft3DbLXOlIAgWuXfS5eg+y1hmzba5C91vAiCuCf//znJ3XsDWNfj5/RY7vvHFAAgWu3tM/2pb1eBTBx7A1j39J+aYICCFy7pX22L+31KoCJY28Y+5b2SxMUQODaLe2zfWmvVwFMHHvD2Le0X5qgAALXbmmf7Ut7vQpg4tgbxr6l/dIEBRC4dkv7bL/46/3mi9Vnn32x+iZb90SOvV4FMHHsDWPfg39G8Utyc7O62fls9cU3yXZP6L5zQAEErt2DPtu/et18pq+9/irf7okd+2y/+OtVAHMK4PV48M9o/ksyFMLXq6/abZ7YfeeAAghcu3M/27/54rN1CZp+hn/1uu9n+ujYZ/vFX68CmFMAr8eDf0Z7vyRfrV6Pv0xZOYz72z+/eH33X1yvvxof/3D3nQMKIHDtzvts/2b1xWdHvsWJz+7dlbL2c/716vVn88/z2Ff72R6z4WHfEB37bL/4623n1+R1322/KY+z5ZP59rDifOz1KoCJY28Y+x78M2p/SUJcSm9/adp14/3tL9Pug6F9zAXcdw4ogMC1O+uzffhsPlRaosDdfW4P5Wf8qrQtdsPXqdt9xO3x6+P29pmOfbZf/PWO86q9qDFZ3mwbxtc37PMyFzWOvV4FMHHsDWPfg39G25N9919BWeGb3z+0fLz/QPedAwogcO3O+mw/9lmcfW5HMdp7THul7648ffX64aXo2Gf7o73e4XU2M26wLYTzdeP2h/ZZdOz1KoCJY28Y+x78M2pP9uGX4ch/KY33Dy0f7z/QfeeAAghcu/M+2498TZt9bt9bAMfiN7uKdqZjn+2P9noPzafh9TePvW/7Mxx7vddRAIc3cVYajt2/x7E3jH3n/dI05id7e/l/9rMbvjLIfkHm9x/ovnNAAQSu3bmf7Yf/EUiUpQNfAc9nwPzzff24z774Zre/cx37bL/46929runr3pm97oPz7QGOvV4FMHHsDWPfub80O8nJvvmF2vyX0eb25vL4Z+tfqmHb+WOSfTzEfeeAAghcu4d8tref24Px7+4N83hcvp3Lk2XN8p17/mFJwbHP9ou/3nYuzV/jdnlc3RyXHZxvD3Ds9V5HAbywY28Y+3r8jB7bfeeAAghcuyf7bL+v8MyvCD7Asc/2pc0yBTBx7A1j39J+aYICCFy7J/tsv6cAXuIff4yOfbYvbZYpgIljbxj7lvZLExRA4Not7bN9aa9XAUwce8PYt7RfmqAAAtduaZ/tS3u9L6IA9pAdC7ns/bsG2WsdKYDAtcs+F69B9lpDtu01yF5rePYFEJ4jBRCAl0wBhDMogAC8ZAognEEBBOAlUwDhDAogAC+ZAghnUAABeMkUQDiDAgjAS9a1AMJLlp3XIdsWAJ6bbIZlLloAAQB4/hRAAICFUQABABZGAQQAWBgFEABgYRRAAICFUQABABbmyQvg73//ewAAHkHWvTJdCqCIiIiIXDYvogBm6wAAqIsogAAACxJRAAEAFiSiAAIALEhEAQQAWJDIkxfA97c3q5uffrn6mKybUwABAC4r8vRXAD9+ufrpzboE3tyu3mfrGwogAMBlRZ6+AA4+rr78aZTAn66+/Jit31AAAQAuK9KpAG4MXwff3Kxu3+frFUAAgMuKuAIIALAgkacvgP4OIABAN5EnL4D+FTAAQD+Rp78CWKAAAgBcVkQBBABYkIgCCACwIBEFEABgQSIvogCKiIiIyOXy7AsgAACXl3WvzJMXQAAA+lIAAQAWRgEEAFgYBRAAYGEUQACAhVEAAQAW5t4C+Mc//hEAgCviCiAAwMIogAAAC6MAAgAsjAIIALAwCiAAwMIogAAAC6MAAgAszKMUwI9vX61evf2YrnsOJsf38e3q1au3q4+zbR7D2e/LBY/xQT+b6nEc2f65nyNP7bm9H8/qeJ7wdxRgKWoF8P3t6ubm5s7t++n6drtD6x5Lc2zZ4Hp/u143DpH2+J5yuKTvy8fV21fNsWVOPcZTtjvlZ9Pu59DtUxzb/tLnSPXYRtnjKufSpczfjziu7TEcOo7UKe/DKdtc+ufzEOf8bM95DMCCnFwA44rAzc3t6n3z4Pe30/t33q9uZ9s+qmFgH36+GNiv1sd6NxCa43vSQZG8L8Pz365uX71avf3YLN/b5lLHWPzZtM9dPY6j2z/xOXLI/BjL59KltO9H3G7Ph/X9Jy/Lz+TnE6rnHQD3OrkAvr2voEwG1mZQ3r7frhsKzuZKxu377RWv4fZm20253F7tGD7oN9uM69uBuL9tPNfhY9t9lTUbItPje7t6G1d1tvvdPe/wusbl22F4wuuZPu7A+7K9Px7fUCzaqzyTfazFsd/33MP6cbsDr2ltcgwHnyfeq7v9h7H47O13t32zz91+7o734Huxt910v5vna97/7Ta7ZeMVu/EYJtu0zxnn0bg8nmP2+oafQ/1c2pm9jvPPjWPla/Ya3m6OZfcejcc2O5a7Y9h/zdnv1PR41tLj3hzL7rwdttmsm+xz3H52TPn5e/g8OP6zbczOh0OvD2DJTi6Arw4OpLXmg39cNhmW47rhg7m5PQ6qZt+7q4qxfrzqMd5Ot50OxDAOrd0xxPbx2ObDf3p8zaAbj2u733Zfd8dw5PXMh/eh5x3uxwCcPz6WT597t4/7nnuyXfaaNvfvjuHI84zbz29n+223me9nPMb18uE9bLab/gzuttu8tvV7OH++Qz+TWLc7hkPv/6Zs3O1rvj7ub/ZfPZcm+zr28zl4bJv77XNE+RqOYXLlL3kNw3M2y8Z9tscSy8f3tN1m9/i7Y2qv6t8dz5Hj3j2+OZfH7Ubx3Kf87rTrx8fFvnfPd/z9mxjXDfu8e8zhby0AluX0Anjog/aQ9gN4fGx6exy68w/muw/76ZWR+bbJUBju311dmJg/f3tM9y2P/bbLs9vDdvPnnR1f9vjhdWyH32R5c//QY+fr23XzbbPtjy0/dPvQ9vctz96L+Xbje/E+efyh/bX7yt7/vedo9rFbXj+X3kcJ3d6ffDXc7ne8Pexvto/s/Rjvh6EErbcbC9R8/XxZ+1yTbQ+dX7F8dhyjdl+TY55uPxTx9bJdQR4f224/P6bsdrtsMDsP5vscJMcddvs68voAFuTrr78ejPdPLoC74bG9f7/tFYF2iGcf+rvt9z+oN8Uvls8/vNtt5+sPXInYe77k+Nrt5tvH/Xiednl2e/64PXfHNw7O1u6K2Py55/vObmfbzbcdbI/h7fbKy3y7dvtDtw9tf9/y7Gc1/xnMB/+4/Nj+Dj1nu+29y889l5Ll2e1Dj9s58HzjcWWPny87+Fzb9zT2nR5HrJ/+/h3++cxsS+rkCmn7eZEdU3a7XTaYnQd7649I9zV/fQDLcXYB3JSV6Yfn7uuU+LBNCuJQ4LZ/R+nYh/7t7srBbAAO+50OlmzbeJ7p8Ek+5Mfna5btHd9ku83AaL8C3LsKk96ePi6zKbZx/LPtxq/CxsG3fR+G547l9z33/M9xv/P7a3flevZ+zx8ft8f389B+223W0uMdl0++0jzwM2i/EmyXH/qZxLrdtofe/+T9DrNjP/dc2lue3j7x3Ij3o32fdo9PXsP8WMb78+W7c2u7TfMzPfj7t3Z3nhw67lgX+4o/t4+dPXf5/N0+bv88OHIcsU37s2r2eez1ASzVyQUwDB/k6w/gnXb4JgVw8wH+av+DfnJ786E+7nM3fAfzD+xD224G42b5gQ/49rlH8+Obbze8rnG/dwNz/zUce9xau/+QPe+gGaKxzfbxu68W73vu+Z/jfuf3Q+w/fn7N8+yOdbZ9lIDJcYz7aLZrz43J8Y77De1jR+N70W6XvdejyT6Tgb+3zdqB5WOR2L2+4Xw681yaLz92uzmG9Ny4fdscQ2iOY/b4g/8BM3+e9r1au3vN64LUbDf9/Vsbz5P0uGeFbDiXNs8z7n/YZ+X8Hfc/OPA7124zWZ6dD8c+XwCuW3vV794rgJ988snBAlgXH77TwVMylIPtB/yjeODxna3X87aSYxiHfbvs0W0H9EN/zo9+rjyVC50bbWl6kCc8Vy92zGtXcz4AnK9jAYwrAQeuopxg8/VTvu5SHnJ8D9HreVtxDK8mV5r6lNLhatHZw3pbIA9drXuBLnJuXLBMPdm5epFjvr7zAeAxPHoBBADgaRy66tfeDgogAMCVOFT62tshOl6UPwUQAGAhxgIYfS96364ABgUQAOD6pAVwLIGxEgCA6xPlb1cAP/30010BDOPK8XviUfzFQQAA+vve9763k60fjT2uLX+TAtiWwLYIjtoy2MqeDACAp5N1tNB2ubHjRecbCmBbAu8rgqPsSQAA6CfrbG2vG7vergDOS2BoHzDKdgwAwPORdbi7jvfJ6v8DmJyiP3NqVakAAAAASUVORK5CYII="></p>
+<p>You can view the scripts directory in the file explorer by clicking the <span class="snip">...</span> button.
+JavaScript (<span class="snip">*.js</span>) files in the root of this directory are visible to the console.</p>
+<p>A script may be toggled by double clicking it, or selecting it and then clicking the <i>Run/Stop</i> button.</p>
+<p>While a script is active you may select it and enter code in the input box at the bottom of of the window.
+Entered code is evaluated in the selected script's instance (namespace is not shared between instances).
+You can use the up and down arrow keys to scroll through input history.</p>
+<p>You may configure a script to run automatically when Project64 is started by right clicking it and clicking <i>Autorun...</i></p>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOUAAAB9CAYAAABd/KQ4AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAI9klEQVR4Xu2dsYtUSR7H+3+QwYFxhhmjCzZtg4kNDi65Mbngkj5BN7kBwWQdWViWOfvYQPrAzEnMBDvYAdFsU/tAaIMREZtNZJNlBR3QW0St61+997rrval+dpf9q66Z/XzhQ79Xv+rqYXyf/tV7gjYMIZHzfbtjXr9+XctgMPCOC3U1l52dHft5Z8+ePVYgJYkepKwHKUn0IGU9Xikb3zwzpv0nXnmd/+swSFmPv1Pmv0CAeSLXlQQp65nYKQE0kCBlPXRKiAadcjrolBAVCVLWc3I7Zec38+LX38ymrwYLgU45HSe3U4ZIicjqSJCyHjolRINOOR26nVLEyNc05nfT6cj4L+bB8OzFTz87c7La5k+/Z1Nt8vlWrkPz4Nds9MHdn01ndHy0LhmP51J6f44Kdw+zcv6e0s+C3HNDgpT1qHbKB+bQXC7Oj0giNRGsRpKDX/K5+RwrjnMs67n14n2y9ujz5Etgws9RpajZNcfvuXzgvB+CoVNOR22ndLvFqLPNwLg7FRlf3MXapXWtDE4KQQqJfMfumEUkHEp616nny40zQbLRWlk3nzgPgpEgZT2qnbIsS4V8u+jbxo7Oq9L5jt0xi0fKUr0G71oS5JwHdMrpUL2nlAva3t8dqRVbylwgEbEihO2kVal8x1WR3G2tHc/E8v4cMscVzlnzwaiD12yxYWYkSFmPaqfMLnonPkmKe8Dh8eUDO8vmxfA+7oh0vuPqZxSSVefmVZvSuEfKUYfMMmnr/vjxY4AgfDIWqHbKKLjyfSlFl/XVPMgv9/DwEGAmgqScW6eMwVykLDrjbNtUpIQQTn6nXCCulL57Gk3cP2Q4Xpz8TrlAkBJCCO6UhZi8Tn5FSghBrpv19XWzsbFhmUpKMl2QEkKQ62Z1ddWsra2N5ETKOQUpIQS5bpaXl83KyooVEynnGKSEEOS6WVpasmJKx5RuiZRzSlpSdk2r0TANh1a3OgdSQK6bU6dOmdOnT5szZ84g5TyTnpRN0+7n593WUMyW6R6ZB4sGKRWTtJRHziEVkFIxyXfKZtv0fbXSeX7cls6abXub7X4+DzRASsWkJ6VzT9nqVmp1Ujrz2faqg5SKSbZT9tumWRLrc1JOqoEGSKmYZKUcnvfbTWcbipQpgZSKSVnK8nnftJvOX5HYLSpSLgqkVEzaUmbdcvSwx4pY3G+2nLlIGRukVExaUsJxASkVg5QQAlIqBikhBKRUDFJCCEipGKSEEJBSMUgJISClYpASQkBKxSAlhICUikFKCAEpFYOUEAJSKgYpIQSkVAxSQghIqRikhBCQUjHJSdnbM9vb2zl7puebAwsHKRWTlJSDfbPrijg83+/Jcc/sbe+a/UE+DgsHKRWTlJTSJXf3zaA6jpTJgZSKSUpKK9+22d0fHBkbbWn3etm47arj8T3bUYv5Q4F743p5PZgHSKmYtKQUBmZ/d4Joo06ZiTqqW0GLei5x0XFLNZgXSKmY9KTMyTthJl5FSlsrPwTq7U2YW6rBvEBKxSQr5ZDB/m6+Xf0SKbPOi5TzBSkVk5SUw/vAqkzZ/WBVNDl3RCtJmtVG95EegeHLQUrFpNUpM6GKhzejhzpDpBOWxvLtbTa3Kuyu2dsbdtm8TpecP0ipmLSknAfVrgoaIKVikBJCQErFICWEgJSKOXlSQgyQUjFICSEgpWKQEkJASsUgJYSAlIpBSggBKRWDlBACUioGKSEEpFQMUkIISKkYpIQQkFIxSAkhIKVi0pKya1qNhmk4tLrVOcW8pmn3h8f9tmkWx0fmgRZIqZj0pJxGsEnzpn0/fClIqRikhBCQUjHHRkq7Tc22tM1225lXvEdena1vq3t0DZgbSKmY9KR0xGq0TNcZL+4v++3msFaVsnoMmiClYo5Fp5Qu2WybvnceUi4CpFQMUkIISKmYYyGlHWf7mhJIqZj0pHTvKeWhTj+rdVvOmO9BT7ZGt5W/lwc9qiClYtKSEo4LSKkYpIQQkFIxSAkhIKVikBJCQErFICWEgJSKQUoIASkVg5QQAlIqBikhBKRUDFJCCEipGKSEEJBSMYuU8tmzZ3DMQMoIoVNCCEipGKSEEJBSMUgJISClYlwpO713UfnPf/8HxwykjBCkhFlAyghBSpgFpIwQpIRZQMoIQUqYBaSMEKSEWUDKCElVyq+3Gqax9aO3BosDKSMkSSm7P5j1ry6aza/Oma2up+7lR7PZmGU+hICUEZKilN9eOWfWrxyMXn1zjoKUMUDKCElPygOzVXRI2zF/MN+OalXxinN5zf+9V6HY9sr7nfHNTvl9m1vnhuMXzdcT13WOr1wcrTP9F8XJAykjJDkpSyI6gtrzKeQp1RwRraDuXFeuz63riN4ROUXkYu4fC6SMkNSkrG5Z5Xz8wOdz8jg1K2FZHnl4lElat071/HNz/1ggZYSkJaVc8OPt5phCrhnkQUoVkDJCkpJStoale0hBtrCFTO7xELuVrJOnun2dJPes6/pqk45PFkgZISlJKZ3M9xCltIW1wuQddOti6eK3f7dpx30PelxJPNJMXLc6dxoRPeufEJAyQpLqlJA8SBkhSAmzgJQRgpQwC0gZIUgJs4CUEYKUMAtIGSFICbOAlBGClDALSBkhrpQA04KUikFKCAEpFSO/XIAQkDJi5Jvw+fPn5v79++b27dum0+mYmzdvgsOf//JXc+PGjVquX7/uHRfqai7nz5+3nycCpMbS0pJZXl42q6urSKmdd+/emZcvX5pHjx5ZMbvdrrl37x44/O3v/zB37typ5datW95xoa7mcuHCBft50pFSQ4RcWVkxa2trZmNjAyk18/79e/PmzRsrpnTMp0+fmoODA3D455VvTK/Xq+Xhw4fecaGu5nLp0iX7ebJFTA3pkCKkdEmkVM7Hjx+tmG/fvrVbWREUylz/7t/2S6uOJ0+eeMeFuprL1atX7efJhZ8iImNVSKRUyKdPnywip/Dhwweo8N2/bppXr17VIrsM37hQV3O5du2a/bzqRZ86SEmi5/t2x/vf+7kMBgPvuFBXc9nZ2bGf57vwUwYpSfQgZT1ISaIHKes4a/4PipCEqgHeGysAAAAASUVORK5CYII="></p>
+<!-- JavaScript_environment -->
+<p><div class="prop"><span class="title" id="JavaScript_environment">JavaScript environment</span></div>
+</p>
+<p>Project64's script system uses the <a target="blank" href="https://duktape.org/">Duktape JavaScript engine</a>. Duktape supports ECMAScript E5 and some features from ES2015+.</p>
+<ul>
+<li><a target="blank" href="https://wiki.duktape.org/postes5features">Post-ES5 features</a></li>
+<li><a target="blank" href="https://duktape.org/guide.html#duktapebuiltins">Duktape built-ins</a></li>
+</ul>
+
+</div>
+<!-- console -->
+<div class="module">
+<div class="modtitle"><span class="title" id="console">console</span></div>
+Console interface
+<!-- console_log -->
+<p><div class="prop"><span class="title" id="console_log">console.log(message[, ...])</span></div>
+<div class="tsproto">console.log(message: any, ...optionalParams): void</div>
+</p>
+Prints all provided arguments to the console with a trailing newline.
+<pre class="ex">
+<span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-string">"Hello"</span>, <span class="js-string">"world!"</span>);
+</pre>
+<!-- console_print -->
+<p><div class="prop"><span class="title" id="console_print">console.print(message[, ...])</span></div>
+<div class="tsproto">console.print(message: any, ...optionalParams): void</div>
+</p>
+Prints all provided arguments to the console.
+<pre class="ex">
+<span class="js-word">console</span>.<span class="js-word">print</span>(<span class="js-string">"Hello "</span>);
+<span class="js-word">console</span>.<span class="js-word">print</span>(<span class="js-string">"world!\n"</span>);
+</pre>
+<!-- console_error -->
+<p><div class="prop"><span class="title" id="console_error">console.error(err)</span></div>
+<div class="tsproto">console.print(err: Error): void</div>
+</p>
+Prints the stack property of an error object.
+<!-- console_clear -->
+<p><div class="prop"><span class="title" id="console_clear">console.clear()</span></div>
+<div class="tsproto">console.clear(): void</div>
+</p>
+Clears the console.
+<!-- console_listen -->
+<p><div class="prop"><span class="title" id="console_listen">console.listen(inputListener)</span></div>
+<div class="tsproto">console.listen(inputListener: null | (input: string) => void): void</div>
+</p>
+<p>Overrides the default input behavior; console input will be passed to <span class="snip">inputListener</span> instead of being evaluated as JS code.</p>
+
+<p>The listener may be unset by calling <span class="snip">console.listen(null)</span>.</p>
+<pre class="ex">
+<span class="js-word">console</span>.<span class="js-word">listen</span>(<span class="js-keyword">function</span>(<span class="js-word">input</span>) {
+    <span class="js-keyword">var</span> <span class="js-word">args</span> = <span class="js-word">input</span>.<span class="js-word">split</span>(<span class="js-string">" "</span>);
+    <span class="js-keyword">var</span> <span class="js-word">command</span> = <span class="js-word">args</span>.<span class="js-word">shift</span>();
+    <span class="js-keyword">switch</span>(<span class="js-word">command</span>) {
+    <span class="js-keyword">case</span> <span class="js-string">"ping"</span>:
+        <span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-string">"pong (args were:"</span>, <span class="js-word">args</span>.<span class="js-word">join</span>(<span class="js-string">", "</span>), <span class="js-string">")"</span>);
+        <span class="js-keyword">return</span>;
+    <span class="js-keyword">case</span> <span class="js-string">"end"</span>:
+        <span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-string">"done"</span>);
+        <span class="js-word">console</span>.<span class="js-word">listen</span>(<span class="js-keyword">null</span>);
+        <span class="js-keyword">return</span>;
+    <span class="js-keyword">default</span>:
+        <span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-string">"unknown command '"</span> + <span class="js-word">command</span> + <span class="js-string">"'"</span>);
+    }
+});
+</pre>
+
+</div>
+<!-- pj64 -->
+<div class="module">
+<div class="modtitle"><span class="title" id="pj64">pj64</span></div>
+Project64 interface
+<!-- pj64_open -->
+<p><div class="prop"><span class="title" id="pj64_open">pj64.open(romPath)</span></div>
+<div class="tsproto">pj64.open(romPath: string): void</div>
+</p>
+Opens a ROM.
+<!-- pj64_close -->
+<p><div class="prop"><span class="title" id="pj64_close">pj64.close()</span></div>
+<div class="tsproto">pj64.close(): void</div>
+</p>
+Closes the current ROM.
+<!-- pj64_reset -->
+<p><div class="prop"><span class="title" id="pj64_reset">pj64.reset([soft])</span></div>
+<div class="tsproto">pj64.reset(soft?: boolean = false): void</div>
+</p>
+Resets emulation. Performs a soft reset if <span class="snip">soft</span> is true.
+<!-- pj64_pause -->
+<p><div class="prop"><span class="title" id="pj64_pause">pj64.pause()</span></div>
+<div class="tsproto">pj64.pause(): void</div>
+</p>
+Pauses emulation.
+<!-- pj64_resume -->
+<p><div class="prop"><span class="title" id="pj64_resume">pj64.resume()</span></div>
+<div class="tsproto">pj64.resume(): void</div>
+</p>
+Resumes emulation.
+<!-- pj64_limitfps -->
+<p><div class="prop"><span class="title" id="pj64_limitfps">pj64.limitfps(limitFps)</span></div>
+<div class="tsproto">pj64.limitfps(limitFps: boolean)</div>
+</p>
+Enables or disables the FPS limit.
+<!-- pj64.installDirectory -->
+<p><div class="prop"><span class="title" id="pj64_installDirectory">pj64.installDirectory</span></div>
+<div class="tsproto">pj64.installDirectory: string</div>
+</p>
+Path to the directory containing the Project64 executable. Read-only.
+<!-- pj64.scriptsDirectory -->
+<p><div class="prop"><span class="title" id="pj64_scriptsDirectory">pj64.scriptsDirectory</span></div>
+<div class="tsproto">pj64.scriptsDirectory: string</div>
+</p>
+Path to the scripts directory. Read-only.
+<!-- pj64.modulesDirectory -->
+<p><div class="prop"><span class="title" id="pj64_modulesDirectory">pj64.modulesDirectory</span></div>
+<div class="tsproto">pj64.modulesDirectory: string</div>
+</p>
+Path to the script modules directory. Read-only.
+<!-- pj64.romDirectory -->
+<p><div class="prop"><span class="title" id="pj64_romDirectory">pj64.romDirectory</span></div>
+<div class="tsproto">pj64.romDirectory: string</div>
+</p>
+<p>Path to the current ROM directory. Read-only.</p>
+<!-- pj64.romInfo -->
+<p><div class="prop"><span class="title" id="pj64_romInfo">pj64.romInfo</span></div>
+<div class="tsproto">pj64.romInfo: null | Object</div>
+</p>
+<p>Object containing information about the current ROM. <span class="snip">null</span> if no ROM is loaded.</p>
+<table>
+<tr><td><span class="snip">pj64.romInfo.goodName</span>       </td><td>RDB "Good Name".</td></tr>
+<tr><td><span class="snip">pj64.romInfo.fileName</span>       </td><td>Name of the ROM file including the file extension.</td></tr>
+<tr><td><span class="snip">pj64.romInfo.filePath</span>       </td><td>Path to the ROM file.</td></tr>
+<tr><td><span class="snip">pj64.romInfo.crc1</span>           </td><td>Internal CRC 1.</td></tr>
+<tr><td><span class="snip">pj64.romInfo.crc2</span>           </td><td>Internal CRC 2.</td></tr>
+<tr><td><span class="snip">pj64.romInfo.name</span>           </td><td>Internal name.</td></tr>
+<tr><td><span class="snip">pj64.romInfo.mediaFormat</span>    </td><td>Internal media format number.</td></tr>
+<tr><td><span class="snip">pj64.romInfo.id</span>             </td><td>Internal ID character pair.</td></tr>
+<tr><td><span class="snip">pj64.romInfo.countryCode</span>    </td><td>Internal country code character.</td></tr>
+<tr><td><span class="snip">pj64.romInfo.version</span>        </td><td>Internal version number.</td></tr>
+</table>
+
+</div>
+<!-- mem -->
+<div class="module">
+<div class="modtitle"><span class="title" id="mem">mem</span></div>
+N64 memory interface
+<!-- mem__ -->
+<p><div class="prop"><span class="title" id="mem__">mem.u8|u16|u32|s8|s16|s32|f32|f64</span></div>
+</p>
+Arrays for reading and writing memory. Virtual addresses are used as indices.
+<pre class="ex">
+<span class="js-comment">// Read some data from ROM and RAM</span>
+<span class="js-keyword">var</span> <span class="js-word">firstWordInROM</span> = <span class="js-word">mem</span>.<span class="js-word">u32</span>[<span class="js-number">0xB0000000</span>];
+<span class="js-keyword">var</span> <span class="js-word">firstWordInRAM</span> = <span class="js-word">mem</span>.<span class="js-word">u32</span>[<span class="js-number">0x80000000</span>];
+</pre>
+<pre class="ex">
+<span class="js-comment">// Move player to 0,0,0 (SM64 US)</span>
+<span class="js-keyword">const</span> <span class="js-word">pPlayerX</span> = <span class="js-number">0x8033B1AC</span>;
+<span class="js-keyword">const</span> <span class="js-word">pPlayerY</span> = <span class="js-number">0x8033B1B0</span>;
+<span class="js-keyword">const</span> <span class="js-word">pPlayerZ</span> = <span class="js-number">0x8033B1B4</span>;
+
+<span class="js-word">mem</span>.<span class="js-word">f32</span>[<span class="js-word">pPlayerX</span>] = <span class="js-number">0</span>;
+<span class="js-word">mem</span>.<span class="js-word">f32</span>[<span class="js-word">pPlayerY</span>] = <span class="js-number">0</span>;
+<span class="js-word">mem</span>.<span class="js-word">f32</span>[<span class="js-word">pPlayerZ</span>] = <span class="js-number">0</span>;
+</pre>
+<!-- mem_bindvar -->
+<p><div class="prop"><span class="title" id="mem_bindvar">mem.bindvar(object, address, name, typeId)</span></div>
+<div class="tsproto">mem.bindvar(object: Object, address: number, name: string, typeId: number): void</div>
+</p>
+Adds a memory-bound property to <span class="snip">object</span>.
+Valid types are <span class="snip">u8</span>, <span class="snip">u16</span>, <span class="snip">u32</span>, <span class="snip">s8</span>, <span class="snip">s16</span>, <span class="snip">s32</span>, <span class="snip">f32</span>, <span class="snip">f64</span>.
+See <a href="#type_ids">Type IDs</a> for more details.
+<pre class="ex">
+<span class="js-word">mem</span>.<span class="js-word">bindvar</span>(<span class="js-word">global</span>, <span class="js-number">0x8033B1AC</span>, <span class="js-string">'playerX'</span>, <span class="js-word">f32</span>);
+<span class="js-word">mem</span>.<span class="js-word">bindvar</span>(<span class="js-word">global</span>, <span class="js-number">0x8033B1B0</span>, <span class="js-string">'playerY'</span>, <span class="js-word">f32</span>);
+<span class="js-word">mem</span>.<span class="js-word">bindvar</span>(<span class="js-word">global</span>, <span class="js-number">0x8033B1B4</span>, <span class="js-string">'playerZ'</span>, <span class="js-word">f32</span>);
+
+<span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-string">"Player's coordinates are "</span>, <span class="js-word">playerX</span>, <span class="js-word">playerY</span>, <span class="js-word">playerZ</span>);
+</pre>
+<!-- mem_bindvars -->
+<p><div class="prop"><span class="title" id="mem_bindvars">mem.bindvars(object, vars)</span></div>
+<div class="tsproto">mem.bindvars(object: Object, vars: any[]): Object</div>
+</p>
+<p>Adds multiple memory-bound properties to <span class="snip">object</span>.
+<span class="snip">vars</span> must be an array in which each item is an array containing an address, name, and <a href="#type_ids">type ID</a> (in order) describing a variable.</p>
+
+<p>Returns <span class="snip">object</span>.</p>
+<pre class="ex">
+<span class="js-word">mem</span>.<span class="js-word">bindvars</span>(<span class="js-word">global</span>, [
+    [ <span class="js-number">0x8033B1AC</span>, <span class="js-string">'playerX'</span>, <span class="js-word">f32</span> ],
+    [ <span class="js-number">0x8033B1B0</span>, <span class="js-string">'playerY'</span>, <span class="js-word">f32</span> ],
+    [ <span class="js-number">0x8033B1B4</span>, <span class="js-string">'playerZ'</span>, <span class="js-word">f32</span> ]
+]);
+
+<span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-string">"Player's coordinates are "</span>, <span class="js-word">playerX</span>, <span class="js-word">playerY</span>, <span class="js-word">playerZ</span>);
+</pre>
+<!-- mem_bindstruct -->
+<p><div class="prop"><span class="title" id="mem_bindstruct">mem.bindstruct(object, address, properties)</span></div>
+<div class="tsproto">mem.bindstruct(object: Object, address: number, properties: Object): Object</div>
+</p>
+<p>Adds multiple memory-bound properties to <span class="snip">object</span>.
+<span class="snip">properties</span> must be an object in which each key/value pair specifies the name and <a href="#type_ids">type ID</a> of a variable.</p>
+
+<p>Returns <span class="snip">object</span>.</p>
+<pre class="ex">
+<span class="js-keyword">var</span> <span class="js-word">playerPos</span> = <span class="js-word">mem</span>.<span class="js-word">bindstruct</span>({}, <span class="js-number">0x8033B1AC</span>, { <span class="js-word">x</span>: <span class="js-word">f32</span>, <span class="js-word">y</span>: <span class="js-word">f32</span>, <span class="js-word">z</span>: <span class="js-word">f32</span> });
+<span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-string">"Player's coordinates are "</span>, <span class="js-word">playerPos</span>.<span class="js-word">x</span>, <span class="js-word">playerPos</span>.<span class="js-word">y</span>, <span class="js-word">playerPos</span>.<span class="js-word">z</span>);
+</pre>
+<!-- mem_typedef -->
+<p><div class="prop"><span class="title" id="mem_typedef">mem.typedef(properties)</span></div>
+<div class="tsproto">mem.typedef(properties: Object): MemTypeConstructor</div>
+</p>
+Returns a constructor function that will create an object representing a structure in memory, given its address.
+<pre class="ex">
+<span class="js-keyword">const</span> <span class="js-word">vec3f</span> = <span class="js-word">mem</span>.<span class="js-word">typedef</span>({ <span class="js-word">x</span>: <span class="js-word">f32</span>, <span class="js-word">y</span>: <span class="js-word">f32</span>, <span class="js-word">z</span>: <span class="js-word">f32</span> });
+<span class="js-keyword">var</span> <span class="js-word">playerAngle</span> = <span class="js-keyword">new</span> <span class="js-word">vec3f</span>(<span class="js-number">0x8033B19C</span>);
+<span class="js-keyword">var</span> <span class="js-word">playerPos</span> = <span class="js-keyword">new</span> <span class="js-word">vec3f</span>(<span class="js-number">0x8033B1AC</span>);
+</pre>
+<!-- mem_getblock -->
+<p><div class="prop"><span class="title" id="mem_getblock">mem.getblock(address, length)</span></div>
+<div class="tsproto">mem.getblock(address: number, length: number): Buffer</div>
+</p>
+Returns a block of data from memory as a <a target="blank" href="https://nodejs.org/docs/v6.9.1/api/buffer.html">Buffer</a> object.
+<pre class="ex">
+<span class="js-word">fs</span>.<span class="js-word">writefile</span>(<span class="js-string">"ram_dump.bin"</span>, <span class="js-word">mem</span>.<span class="js-word">getblock</span>(<span class="js-word">K0BASE</span>, <span class="js-word">mem</span>.<span class="js-word">ramSize</span>));
+</pre>
+<!-- mem_setblock -->
+<p><div class="prop"><span class="title" id="mem_setblock">mem.setblock(address, data[, length])</span></div>
+<div class="tsproto">mem.setblock(address: number, data: string | Buffer | TypedArray, length: number): Buffer</div>
+</p>
+Writes a block of data into memory. <span class="snip">data</span> may be one of the following types&#58;
+<a target="blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer">ArrayBuffer</a>,
+<a target="blank" href="https://nodejs.org/docs/v6.9.1/api/buffer.html">Buffer</a>,
+<a target="blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView">DataView</a>,
+<a target="blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray">TypedArray</a>, string.
+<pre class="ex">
+<span class="js-word">mem</span>.<span class="js-word">setblock</span>(<span class="js-number">0x80400000</span>, <span class="js-word">fs</span>.<span class="js-word">readfile</span>(<span class="js-string">"textures.bin"</span>));
+</pre>
+<!-- mem_getstring -->
+<p><div class="prop"><span class="title" id="mem_getstring">mem.getstring(address[, length])</span></div>
+<div class="tsproto">mem.getblock(address: number, length?: number): string</div>
+</p>
+Returns a zero-terminated ASCII string from memory.
+<pre class="ex">
+<span class="js-keyword">const</span> <span class="js-word">romName</span> = <span class="js-word">mem</span>.<span class="js-word">getstring</span>(<span class="js-number">0xB0000020</span>, <span class="js-number">0x14</span>);
+</pre>
+<!-- mem_setstring -->
+<p><div class="prop"><span class="title" id="mem_setstring">mem.setstring(address, data[, length])</span></div>
+<div class="tsproto">mem.setstring(address: number, data: string | Buffer | TypedArray, length?: number): Buffer</div>
+</p>
+Writes a string into memory (alias of <a href="#mem_setblock">mem.setblock</a>).
+<!-- mem_ramSize -->
+<p><div class="prop"><span class="title" id="mem_ramSize">mem.ramSize</span></div>
+<div class="tsproto">mem.ramSize: number</div>
+</p>
+The size of RDRAM in bytes. <span class="snip">0</span> if RDRAM is not initialized.
+<!-- mem_romSize -->
+<p><div class="prop"><span class="title" id="mem_romSize">mem.romSize</span></div>
+<div class="tsproto">mem.romSize: number</div>
+</p>
+The size of cartridge ROM in bytes. <span class="snip">0</span> if ROM is not initialized.
+<!-- mem_ptr -->
+<p><div class="prop"><span class="title" id="mem_ptr">mem.ptr</span></div>
+<div class="tsproto">mem.ptr: pointer</div>
+</p>
+Native pointer to Project64's N64 memory buffer. May be used by native modules for faster memory access.
+<pre class="ex">
+<span class="js-comment">// C</span>
+<span class="js-word">duk_ret_t</span> <span class="js-word">example</span>(<span class="js-word">duk_context</span>* <span class="js-word">ctx</span>)
+{
+    <span class="js-word">uint8_t</span>* <span class="js-word">memory</span> = <span class="js-word">NULL</span>;
+    <span class="js-word">duk_get_global_string</span>(<span class="js-word">ctx</span>, <span class="js-string">"mem"</span>);
+    <span class="js-word">duk_get_prop_string</span>(<span class="js-word">ctx</span>, -<span class="js-number">1</span>, <span class="js-string">"ptr"</span>);
+    <span class="js-word">memory</span> = <span class="js-word">duk_get_pointer</span>(<span class="js-word">ctx</span>, -<span class="js-number">1</span>);
+    <span class="js-word">duk_pop_n</span>(<span class="js-word">ctx</span>, <span class="js-number">3</span>);
+    <span class="js-comment">// do something to memory here</span>
+    <span class="js-keyword">return</span> <span class="js-number">0</span>;
+}
+</pre>
+
+</div>
+<!-- events -->
+<div class="module">
+<div class="modtitle"><span class="title" id="events">events</span></div>
+Event hooking interface
+<!-- events_onstatechange -->
+<p><div class="prop"><span class="title" id="events_onstatechange">events.onstatechange(callback)</span></div>
+<div class="tsproto">events.onstatechange(callback: (e: EmuStateChangeEvent) => void): number</div>
+</p>
+Registers a callback that is invoked when the state of the emulator changes.
+<span class="snip">callback</span> receives an <a href="#EmuStateChangeEvent">EmuStateChangeEvent</a> object.
+<p>Returns a callback ID.</p>
+<!-- EmuStateChangeEvent -->
+<p><div class="prop"><span class="title" id="EmuStateChangeEvent">EmuStateChangeEvent</span></div>
+</p>
+<p>
+<table>
+<tr><td><span class="snip">e.callbackId</span></td><td>ID of the callback associated with the event.</td></tr>
+<tr><td><span class="snip">e.state</span></td><td>State number. See table below.</td></tr>
+</table>
+</p>
+
+<table>
+<tr><td><span class="snip">EMU_STARTED</span></td><td>Emulation started.</td></tr>
+<tr><td><span class="snip">EMU_STOPPED</span></td><td>Emulation stopped.</td></tr>
+<tr><td><span class="snip">EMU_PAUSED</span></td><td>Emulation paused.</td></tr>
+<tr><td><span class="snip">EMU_RESUMED</span></td><td>Emulation resumed from a pause.</td></tr>
+<tr><td><span class="snip">EMU_RESETTING</span></td><td>Emulation is resetting.</td></tr>
+<tr><td><span class="snip">EMU_RESET</span></td><td>Emulation reset.</td></tr>
+<tr><td><span class="snip">EMU_LOADED_ROM</span></td><td>A ROM or 64DD image has been loaded.</td></tr>
+<tr><td><span class="snip">EMU_DEBUG_PAUSED</span></td><td>Emulation paused via debugger break.</td></tr>
+<tr><td><span class="snip">EMU_DEBUG_RESUMED</span></td><td>Emulation resumed via the debugger.</td></tr>
+</table>
+<!-- events_onexec -->
+<p><div class="prop"><span class="title" id="events_onexec">events.onexec(address, callback)</span><div class="tag blue">Requires interpreter core</div></div>
+<div class="tsproto">events.onexec(address: number | AddressRange, callback: (e: CPUExecEvent) => void): number</div>
+</p>
+Registers a callback that is invoked at the beginning of a CPU step if the program counter is at <span class="snip">address</span>.
+<span class="snip">address</span> may be a single address or an object containing <span class="snip">start</span> and <span class="snip">end</span> address properties (e.g. <a href="#AddressRange">AddressRange</a>).
+<span class="snip">callback</span> receives a <a href="#CPUExecEvent">CPUExecEvent</a> object.
+<p>Returns a callback ID.</p>
+<pre class="ex">
+<span class="js-word">events</span>.<span class="js-word">onexec</span>(<span class="js-number">0x802CB1C0</span>, <span class="js-keyword">function</span>() {
+    <span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-string">"func_802CB1C0 was called"</span>);
+});
+</pre>
+<pre class="ex">
+<span class="js-comment">// Log every CPU step</span>
+<span class="js-word">events</span>.<span class="js-word">onexec</span>(<span class="js-word">ADDR_ANY</span>, <span class="js-keyword">function</span>(<span class="js-word">e</span>) {
+    <span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-word">e</span>.<span class="js-word">pc</span>.<span class="js-word">hex</span>() + <span class="js-string">": "</span> + <span class="js-word">asm</span>.<span class="js-word">decode</span>(<span class="js-word">mem</span>.<span class="js-word">u32</span>[<span class="js-word">e</span>.<span class="js-word">pc</span>], <span class="js-word">e</span>.<span class="js-word">pc</span>));
+});
+</pre>
+<!-- CPUExecEvent -->
+<p><div class="prop"><span class="title" id="CPUExecEvent">CPUExecEvent</span></div>
+</p>
+<table>
+<tr><td><span class="snip">e.callbackId</span></td><td>ID of the callback associated with the event.</td></tr>
+<tr><td><span class="snip">e.pc</span></td><td>Program counter address.</td></tr>
+</table>
+<!-- events_onread -->
+<p><div class="prop"><span class="title" id="events_onread">events.onread(address, callback)</span><div class="tag blue">Requires interpreter core</div></div>
+<div class="tsproto">events.onread(address: number | AddressRange, callback: (e: CPUReadWriteEvent) => void): number</div>
+</p>
+Registers a callback that is invoked at the beginning of a CPU step if the CPU is going to read from <span class="snip">address</span>.
+<span class="snip">address</span> may be a single address or an object containing <span class="snip">start</span> and <span class="snip">end</span> address properties (e.g. <a href="#AddressRange">AddressRange</a>).
+<span class="snip">callback</span> receives a <a href="#CPUReadWriteEvent">CPUReadWriteEvent</a> object.
+<p>Returns a callback ID.</p>
+<!-- events_onwrite -->
+<p><div class="prop"><span class="title" id="events_onwrite">events.onwrite(address, callback)</span><div class="tag blue">Requires interpreter core</div></div>
+<div class="tsproto">events.onwrite(address: number | AddressRange, callback: (e: CPUReadWriteEvent) => void): number</div>
+</p>
+Registers a callback that is invoked at the beginning of a CPU step if the CPU is going to write to <span class="snip">address</span>.
+<span class="snip">address</span> may be a single address or an object containing <span class="snip">start</span> and <span class="snip">end</span> address properties (e.g. <a href="#AddressRange">AddressRange</a>).
+<span class="snip">callback</span> receives a <a href="#CPUReadWriteEvent">CPUReadWriteEvent</a> object.
+<p>Returns a callback ID.</p>
+<pre class="ex">
+<span class="js-word">events</span>.<span class="js-word">onwrite</span>(<span class="js-word">PI_WR_LEN_REG</span>, <span class="js-keyword">function</span>(<span class="js-word">e</span>) {
+    <span class="js-keyword">var</span> <span class="js-word">romAddr</span> = <span class="js-word">mem</span>.<span class="js-word">u32</span>[<span class="js-word">PI_CART_ADDR_REG</span>] + <span class="js-word">K1BASE</span>;
+    <span class="js-keyword">var</span> <span class="js-word">ramAddr</span> = <span class="js-word">mem</span>.<span class="js-word">u32</span>[<span class="js-word">PI_DRAM_ADDR_REG</span>] + <span class="js-word">K0BASE</span>;
+    <span class="js-keyword">var</span> <span class="js-word">length</span> = <span class="js-word">e</span>.<span class="js-word">value</span> + <span class="js-number">1</span>;
+    <span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-string">"Loaded "</span> + <span class="js-word">romAddr</span>.<span class="js-word">hex</span>() + <span class="js-string">" -> "</span> + <span class="js-word">ramAddr</span>.<span class="js-word">hex</span>() + <span class="js-string">" (Length: "</span> + <span class="js-word">length</span>.<span class="js-word">hex</span>() + <span class="js-string">")"</span>);
+});
+</pre>
+<!-- CPUReadWriteEvent -->
+<p><div class="prop"><span class="title" id="CPUReadWriteEvent">CPUReadWriteEvent</span></div>
+</p>
+<p>
+    <table>
+    <tr><td><span class="snip">e.callbackId</span></td><td>ID of the callback associated with the event.</td></tr>
+    <tr><td><span class="snip">e.pc</span></td><td>Program counter address.</td></tr>
+    <tr><td><span class="snip">e.address</span></td><td>Address that the CPU is going to read/write.</td></tr>
+    <tr><td><span class="snip">e.fpu</span></td><td><span class="snip">true</span> if the source/destination register is on the floating point unit.</td></tr>
+    <tr><td><span class="snip">e.reg</span></td><td>Index of the source/destination register.</td></tr>
+    <tr><td><span class="snip">e.valueType</span></td><td>The value's <a href="#type_ids">type ID</a>. Varies depending on the opcode; refer to the table below.</td></tr>
+    <tr><td><span class="snip">e.value</span></td><td>Value that the CPU is going to read/write.</td></tr>
+    <tr><td><span class="snip">e.valueHi</span></td><td>Upper 32 bits of the value if <span class="snip">e.valueType</span> is <span class="snip">u64</span>; otherwise <span class="snip">undefined</span>.</td></tr>
+    </table>
+</p>
+<p>
+  <table>
+  <thead><tr><td><b>e.type</b></td><td><b>Opcode(s)</b></td></tr></thead>
+  <tr><td><span class="snip">s8</span></td><td>LB, SB</td></tr>
+  <tr><td><span class="snip">u8</span></td><td>LBU</td></tr>
+  <tr><td><span class="snip">s16</span></td><td>LH, SH</td></tr>
+  <tr><td><span class="snip">u16</span></td><td>LHU</td></tr>
+  <tr><td><span class="snip">s32</span></td><td>LL, LW, LWL, LWR, SW, SWL, SWR</td></tr>
+  <tr><td><span class="snip">u32</span></td><td>LWU</td></tr>
+  <tr><td><span class="snip">u64</span></td><td>LD, LDL, LDR, SD, SDL, SDR</td></tr>
+  <tr><td><span class="snip">f32</span></td><td>LWC1, SWC1</td></tr>
+  <tr><td><span class="snip">f64</span></td><td>LDC1, SDC1</td></tr>
+  </table>
+</p>
+<!-- events_onopcode -->
+<p><div class="prop"><span class="title" id="events_onopcode">events.onopcode(address, opcode, mask, callback)</span><div class="tag blue">Requires interpreter core</div></div>
+<div class="tsproto">events.onopcode(address: number | AddressRange, opcode: number, mask: number, callback: (e: CPUOpcodeEvent) => void): number</div>
+</p>
+Registers a callback that is invoked at the beginning of a CPU step if the program counter is at <span class="snip">address</span> and
+<span class="snip">opcode</span> is equal to the current opcode ANDed with <span class="snip">mask</span>.
+<span class="snip">callback</span> receives a <a href="#CPUOpcodeEvent">CPUOpcodeEvent</a> object.
+<p>Returns a callback ID.</p>
+<pre class="ex">
+<span class="js-comment">// Log every JAL</span>
+<span class="js-keyword">const</span> <span class="js-word">JAL</span> = <span class="js-word">asm</span>.<span class="js-word">encode</span>(<span class="js-string">"jal 0"</span>);
+<span class="js-keyword">const</span> <span class="js-word">ANY_TARGET</span> = <span class="js-number">0xFC000000</span>; <span class="js-comment">// Mask off target field</span>
+<span class="js-word">events</span>.<span class="js-word">onopcode</span>(<span class="js-word">ADDR_ANY</span>, <span class="js-word">JAL</span>, <span class="js-word">ANY_TARGET</span>, <span class="js-keyword">function</span>(<span class="js-word">e</span>) {
+    <span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-word">e</span>.<span class="js-word">pc</span>.<span class="js-word">hex</span>() + <span class="js-string">": "</span> + <span class="js-word">asm</span>.<span class="js-word">decode</span>(<span class="js-word">mem</span>.<span class="js-word">u32</span>[<span class="js-word">e</span>.<span class="js-word">pc</span>], <span class="js-word">e</span>.<span class="js-word">pc</span>));
+});
+</pre>
+<!-- CPUOpcodeEvent -->
+<p><div class="prop"><span class="title" id="CPUOpcodeEvent">CPUOpcodeEvent</span></div>
+</p>
+<table>
+<tr><td><span class="snip">e.callbackId</span></td><td>ID of the callback associated with the event.</td></tr>
+<tr><td><span class="snip">e.pc</span></td><td>Program counter address.</td></tr>
+<tr><td><span class="snip">e.opcode</span></td><td>The opcode.</td></tr>
+</table>
+<!-- events_ongprvalue -->
+<p><div class="prop"><span class="title" id="events_ongprvalue">events.ongprvalue(address, regFlags, value, callback)</span><div class="tag blue">Requires interpreter core</div></div>
+<div class="tsproto">events.ongprvalue(address: number | AddressRange, regFlags: number, value: number, callback: (e: CPURegValueEvent) => void): number</div>
+</p>
+Registers a callback that is invoked at the beginning of a CPU step if the program counter is at <span class="snip">address</span> and at least one of
+the general purpose registers specified by <span class="snip">regFlags</span> is equal to <span class="snip">value</span> (lower 32 bits only).
+<span class="snip">callback</span> receives a <a href="#CPURegValueEvent">CPURegValueEvent</a> object.
+<p>Returns a callback ID.</p>
+<p>See <a href="#GPR_flags">General purpose register flags</a> for a list of valid flags. Multiple registers may be specified via bitwise OR.</p>
+<pre class="ex">
+<span class="js-comment">// Break when any general purpose register contains 0x49533634</span>
+<span class="js-keyword">const</span> <span class="js-word">IS64_SIGNATURE</span> = <span class="js-number">0x49533634</span>;
+<span class="js-word">events</span>.<span class="js-word">ongprvalue</span>(<span class="js-word">ADDR_ANY</span>, <span class="js-word">GPR_ANY</span>, <span class="js-word">IS64_SIGNATURE</span>, <span class="js-keyword">function</span>() {
+    <span class="js-word">debug</span>.<span class="js-word">breakhere</span>();
+});
+</pre>
+<!-- GPR_flags -->
+<p><div class="prop"><span class="title" id="GPR_flags">General purpose register flags</span></div>
+</p>
+Global flags for <a href="#events_ongprvalue">events.ongprvalue</a>'s <span class="snip">regFlags</span> parameter.
+<p><span class="snip">GPR_ANY</span></p>
+<p><span class="snip">GPR_R0</span> <span class="snip">GPR_AT</span> <span class="snip">GPR_V0</span> <span class="snip">GPR_V1</span> <span class="snip">GPR_A0</span> <span class="snip">GPR_A1</span> <span class="snip">GPR_A2</span> <span class="snip">GPR_A3</span></p>
+<p><span class="snip">GPR_T0</span> <span class="snip">GPR_T1</span> <span class="snip">GPR_T2</span> <span class="snip">GPR_T3</span> <span class="snip">GPR_T4</span> <span class="snip">GPR_T5</span> <span class="snip">GPR_T6</span> <span class="snip">GPR_T7</span></p>
+<p><span class="snip">GPR_S0</span> <span class="snip">GPR_S1</span> <span class="snip">GPR_S2</span> <span class="snip">GPR_S3</span> <span class="snip">GPR_S4</span> <span class="snip">GPR_S5</span> <span class="snip">GPR_S6</span> <span class="snip">GPR_S7</span></p>
+<p><span class="snip">GPR_T8</span> <span class="snip">GPR_T9</span> <span class="snip">GPR_K0</span> <span class="snip">GPR_K1</span> <span class="snip">GPR_GP</span> <span class="snip">GPR_SP</span> <span class="snip">GPR_FP</span> <span class="snip">GPR_RA</span></p>
+<!-- CPURegValueEvent -->
+<p><div class="prop"><span class="title" id="CPURegValueEvent">CPURegValueEvent</span></div>
+</p>
+<table>
+<tr><td><span class="snip">e.callbackId</span></td><td>ID of the callback associated with the event.</td></tr>
+<tr><td><span class="snip">e.pc</span></td><td>Program counter address.</td></tr>
+<tr><td><span class="snip">e.value</span></td><td>The value.</td></tr>
+<tr><td><span class="snip">e.reg</span></td><td>Index of the register containing the value.</td></tr>
+</table>
+<!-- events_onpifread -->
+<p><div class="prop"><span class="title" id="events_onpifread">events.onpifread(callback)</span></div>
+<div class="tsproto">events.onpifread(callback: (e: GenericEvent) => void): number</div>
+</p>
+Registers a callback that is invoked when PIF RAM data is going to be read into RDRAM.
+<span class="snip">callback</span> receives a <a href="#GenericEvent">GenericEvent</a> object.
+<p>Returns a callback ID.</p>
+<p>Useful for monitoring and overriding controller input.</p>
+<pre class="ex">
+<span class="js-comment">// Log P1's controller input</span>
+<span class="js-word">events</span>.<span class="js-word">onpifread</span>(<span class="js-keyword">function</span>() {
+    <span class="js-keyword">if</span>(<span class="js-word">mem</span>.<span class="js-word">u32</span>[<span class="js-word">PIF_RAM_START</span> + <span class="js-number">0x00</span>] == <span class="js-number">0xFF010401</span>) {
+        <span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-word">mem</span>.<span class="js-word">u32</span>[<span class="js-word">PIF_RAM_START</span> + <span class="js-number">0x04</span>].<span class="js-word">hex</span>());
+    }
+});
+</pre>
+
+<pre class="ex">
+<span class="js-comment">// Play an M64 TAS file</span>
+<span class="js-keyword">var</span> <span class="js-word">m64file</span> = <span class="js-word">fs</span>.<span class="js-word">readfile</span>(<span class="js-string">"sm64-1key.m64"</span>);
+<span class="js-keyword">var</span> <span class="js-word">numSamples</span> = <span class="js-word">m64file</span>.<span class="js-word">readUInt32LE</span>(<span class="js-number">0x018</span>);
+<span class="js-keyword">var</span> <span class="js-word">sampleIndex</span> = <span class="js-number">0</span>;
+
+<span class="js-word">events</span>.<span class="js-word">onpifread</span>(<span class="js-keyword">function</span>() {
+    <span class="js-keyword">for</span>(<span class="js-keyword">var</span> <span class="js-word">nController</span> = <span class="js-number">0</span>; <span class="js-word">nController</span> < <span class="js-number">4</span>; <span class="js-word">nController</span>++) {
+        <span class="js-keyword">var</span> <span class="js-word">cmdAddr</span> = <span class="js-word">PIF_RAM_START</span> + (<span class="js-word">nController</span> * <span class="js-number">8</span>);
+        <span class="js-keyword">if</span>(<span class="js-word">mem</span>.<span class="js-word">u32</span>[<span class="js-word">cmdAddr</span> + <span class="js-number">0x00</span>] == <span class="js-number">0xFF010401</span> && <span class="js-word">sampleIndex</span> < <span class="js-word">numSamples</span>) {
+            <span class="js-word">mem</span>.<span class="js-word">u32</span>[<span class="js-word">cmdAddr</span> + <span class="js-number">0x04</span>] = <span class="js-word">m64file</span>.<span class="js-word">readUInt32BE</span>(<span class="js-number">0x400</span> + <span class="js-word">sampleIndex</span> * <span class="js-number">4</span>);
+            <span class="js-word">sampleIndex</span>++;
+        }
+    }
+});
+</pre>
+<!-- GenericEvent -->
+<p><div class="prop"><span class="title" id="GenericEvent">GenericEvent</span></div>
+</p>
+<table>
+<tr><td><span class="snip">e.callbackId</span></td><td>ID of the callback associated with the event.</td></tr>
+</table>
+<!-- events_onsptask -->
+<p><div class="prop"><span class="title" id="events_onsptask">events.onsptask(callback)</span></div>
+<div class="tsproto">events.onsptask(callback: (e: SPTaskEvent) => void): number</div>
+</p>
+Registers a callback that is invoked when a task is sent to the RSP.
+<span class="snip">callback</span> receives an <a href="#SPTaskEvent">SPTaskEvent</a> object.
+<p>Returns a callback ID.</p>
+<p>Useful for monitoring and overriding display lists and audio lists.</p>
+<pre class="ex">
+<span class="js-word">events</span>.<span class="js-word">onsptask</span>(<span class="js-keyword">function</span>(<span class="js-word">e</span>) {
+    <span class="js-keyword">if</span> (<span class="js-word">e</span>.<span class="js-word">taskType</span> == <span class="js-word">M_GFXTASK</span>) {
+        <span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-string">"Display list address: "</span> + <span class="js-word">e</span>.<span class="js-word">dataAddress</span>);
+    }
+    <span class="js-keyword">else</span> <span class="js-keyword">if</span> (<span class="js-word">e</span>.<span class="js-word">taskType</span> == <span class="js-word">M_AUDTASK</span>) {
+        <span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-string">"Audio list address: "</span> + <span class="js-word">e</span>.<span class="js-word">dataAddress</span>);
+    }
+});
+</pre>
+<!-- SPTaskEvent -->
+<p><div class="prop"><span class="title" id="SPTaskEvent">SPTaskEvent</span></div>
+</p>
+<table>
+<tr><td><span class="snip">e.callbackId</span>       </td><td>ID of the callback associated with the event.</td></tr>
+<tr><td><span class="snip">e.taskType</span>         </td><td>The task type. <span class="snip">M_GFXTASK</span> (1) for graphics tasks, or <span class="snip">M_AUDTASK</span> (2) for audio tasks.</td></tr>
+<tr><td><span class="snip">e.taskFlags</span>        </td><td>Task flags.</td></tr>
+<tr><td><span class="snip">e.ucodeBootAddress</span> </td><td>Address of the boot microcode.</td></tr>
+<tr><td><span class="snip">e.ucodeBootSize</span>    </td><td>Size of the boot microcode.</td></tr>
+<tr><td><span class="snip">e.ucodeAddress</span>     </td><td>Address of the task microcode.</td></tr>
+<tr><td><span class="snip">e.ucodeSize</span>        </td><td>Size of the task microcode.</td></tr>
+<tr><td><span class="snip">e.ucodeDataAddress</span> </td><td>Address of the microcode data.</td></tr>
+<tr><td><span class="snip">e.ucodeDataSize</span>    </td><td>Size of the microcode data.</td></tr>
+<tr><td><span class="snip">e.dramStackAddress</span> </td><td>Address of the DRAM matrix stack.</td></tr>
+<tr><td><span class="snip">e.dramStackSize</span>    </td><td>Size of the DRAM matrix stack.</td></tr>
+<tr><td><span class="snip">e.outputBuffAddress</span></td><td>DP command buffer address for "_dram" and "_fifo" graphics microcodes.</td></tr>
+<tr><td><span class="snip">e.outputBuffSize</span>   </td><td>DP command buffer size for "_dram" and "_fifo" graphics microcodes.</td></tr>
+<tr><td><span class="snip">e.dataAddress</span>      </td><td>Address of the display list or audio list.</td></tr>
+<tr><td><span class="snip">e.dataSize</span>         </td><td>Size of the display list or audio list.</td></tr>
+<tr><td><span class="snip">e.yieldDataAddress</span> </td><td>Address of the yield data buffer.</td></tr>
+<tr><td><span class="snip">e.yieldDataSize</span>    </td><td>Size of the yield data buffer.</td></tr>
+</table>
+<p>Note: The properties of this object differ slightly from those in the DMEM OSTask structure;
+all physical addresses are converted to KSEG0 addresses.</p>
+<!-- events_onpidma -->
+<p><div class="prop"><span class="title" id="events_onpidma">events.onpidma(callback)</span></div>
+<div class="tsproto">events.onpidma(callback: (e: PIEvent) => void)</div>
+</p>
+Registers a callback that is invoked when a PI DMA transfer is going to occur.
+<span class="snip">callback</span> receives a <a href="#PIEvent">PIEvent</a> object.
+<p>Returns a callback ID.</p>
+<pre class="ex">
+<span class="js-comment">// Log all cartridge <-> RDRAM data transfers</span>
+<span class="js-word">events</span>.<span class="js-word">onpidma</span>(<span class="js-keyword">function</span>(<span class="js-word">e</span>) {
+    <span class="js-keyword">var</span> <span class="js-word">dir</span> = <span class="js-word">e</span>.<span class="js-word">direction</span> == <span class="js-word">OS_READ</span> ? <span class="js-string">'READ'</span> : <span class="js-string">'WRITE'</span>;
+    <span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-string">'[PI]'</span>, <span class="js-word">dir</span>, <span class="js-word">e</span>.<span class="js-word">dramAddress</span>.<span class="js-word">hex</span>(), <span class="js-word">e</span>.<span class="js-word">cartAddress</span>.<span class="js-word">hex</span>(), <span class="js-word">e</span>.<span class="js-word">length</span>.<span class="js-word">hex</span>());
+});
+</pre>
+<!-- PIEvent -->
+<p><div class="prop"><span class="title" id="PIEvent">PIEvent</span></div>
+</p>
+<table>
+<tr><td><span class="snip">e.callbackId</span>  </td><td>The ID of the callback associated with the event.</td></tr>
+<tr><td><span class="snip">e.direction</span>   </td><td>The direction of the DMA transfer. May be <span class="snip">OS_READ</span> (0), or <span class="snip">OS_WRITE</span> (1).</td></tr>
+<tr><td><span class="snip">e.dramAddress</span> </td><td>The address in PI_DRAM_ADDR_REG (+<span class="snip">K0BASE</span>).</td></tr>
+<tr><td><span class="snip">e.cartAddress</span> </td><td>The address in PI_CART_ADDR_REG (+<span class="snip">K1BASE</span>).</td></tr>
+<tr><td><span class="snip">e.length</span>      </td><td>The value of PI_RD_LEN_REG or PI_WR_LEN_REG (+1), depending on the transfer direction.</td></tr>
+</table>
+<!-- events_onmousedown -->
+<p><div class="prop"><span class="title" id="events_onmousedown">events.onmousedown(callback)</span></div>
+<div class="tsproto">events.onmousedown(callback: (e: MouseEvent) => void): number</div>
+</p>
+Registers a callback that is invoked when a mouse button is pressed over the main screen.
+<span class="snip">callback</span> receives a <a href="#MouseEvent">MouseEvent</a> object.
+
+<p>Returns a callback ID.</p>
+<!-- events_onmouseup -->
+<p><div class="prop"><span class="title" id="events_onmouseup">events.onmouseup(callback)</span></div>
+<div class="tsproto">events.onmouseup(callback: (e: MouseEvent) => void): number</div>
+</p>
+Registers a callback that is invoked when a mouse button is released over the main screen.
+<span class="snip">callback</span> receives a <a href="#MouseEvent">MouseEvent</a> object.
+<p>Returns a callback ID.</p>
+<!-- events_onmousemove -->
+<p><div class="prop"><span class="title" id="events_onmousemove">events.onmousemove(callback)</span></div>
+<div class="tsproto">events.onmousemove(callback: (e: MouseEvent) => void): number</div>
+</p>
+Registers a callback that is invoked when the mouse is moved over the main screen.
+<span class="snip">callback</span> receives a <a href="#MouseEvent">MouseEvent</a> object.
+<p>Returns a callback ID.</p>
+<!-- MouseEvent -->
+<p><div class="prop"><span class="title" id="MouseEvent">MouseEvent</span></div>
+</p>
+<p>
+  <table>
+  <tr><td><span class="snip">e.callbackId</span></td><td>ID of the callback associated with the event.</td></tr>
+  <tr><td><span class="snip">e.button</span></td><td>The mouse button number. See table below.</td></tr>
+  <tr><td><span class="snip">e.x</span></td><td>Cursor X position.</td></tr>
+  <tr><td><span class="snip">e.y</span></td><td>Cursor Y position.</td></tr>
+  </table>
+</p>
+<p>
+  <table>
+  <tr><td><span class="snip">MouseEvent.LEFT</span></td><td>0</td></tr>
+  <tr><td><span class="snip">MouseEvent.MIDDLE</span></td><td>1</td></tr>
+  <tr><td><span class="snip">MouseEvent.RIGHT</span></td><td>2</td></tr>
+  <tr><td><span class="snip">MouseEvent.NONE</span></td><td>-1</td></tr>
+  </table>
+</p>
+<!-- events_remove -->
+<p><div class="prop"><span class="title" id="events_remove">events.remove(callbackId)</span></div>
+<div class="tsproto">events.remove(callbackId: number): void</div>
+</p>
+Unregisters the callback specified by <span class="snip">callbackId</span>.
+<pre class="ex">
+<span class="js-comment">// This callback will only be invoked once</span>
+<span class="js-word">events</span>.<span class="js-word">onexec</span>(<span class="js-number">0x802CB1C0</span>, <span class="js-keyword">function</span>(<span class="js-word">e</span>) {
+    <span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-string">"func_802CB1C0 was called"</span>);
+    <span class="js-word">events</span>.<span class="js-word">remove</span>(<span class="js-word">e</span>.<span class="js-word">callbackId</span>);
+});
+</pre>
+<!-- AddressRange -->
+<p><div class="prop"><span class="title" id="AddressRange">new AddressRange(start, end)</span></div>
+<div class="tsproto">new AddressRange(start: number, end: number)</div>
+</p>
+Creates an immutable object with <span class="snip">start</span> and <span class="snip">end</span> address properties.
+
+<p>The following <span class="snip">AddressRange</span> objects are defined globally&#58;</p>
+
+<table>
+<tr><td><span class="snip">ADDR_ANY</span>              </td><td>0x00000000 &#58; 0xFFFFFFFF</td><td>Any address</td></tr>
+<tr><td><span class="snip">ADDR_ANY_KUSEG</span>        </td><td>0x00000000 &#58; 0x7FFFFFFF</td><td>MIPS user mode TLB mapped segment</td></tr>
+<tr><td><span class="snip">ADDR_ANY_KSEG0</span>        </td><td>0x80000000 &#58; 0x9FFFFFFF</td><td>MIPS cached unmapped segment</td></tr>
+<tr><td><span class="snip">ADDR_ANY_KSEG1</span>        </td><td>0xA0000000 &#58; 0xBFFFFFFF</td><td>MIPS uncached unmapped segment</td></tr>
+<tr><td><span class="snip">ADDR_ANY_KSEG2</span>        </td><td>0xC0000000 &#58; 0xFFFFFFFF</td><td>MIPS kernel mode TLB mapped segment</td></tr>
+<tr><td><span class="snip">ADDR_ANY_RDRAM</span>        </td><td>0x80000000 &#58; 0x807FFFFF</td><td>Cached RDRAM</td></tr>
+<tr><td><span class="snip">ADDR_ANY_RDRAM_UNC</span>    </td><td>0xA0000000 &#58; 0xA07FFFFF</td><td>Uncached RDRAM</td></tr>
+<tr><td><span class="snip">ADDR_ANY_CART_ROM</span>     </td><td>0x90000000 &#58; 0x95FFFFFF</td><td>Cached cartridge ROM</td></tr>
+<tr><td><span class="snip">ADDR_ANY_CART_ROM_UNC</span> </td><td>0xB0000000 &#58; 0xB5FFFFFF</td><td>Uncached cartridge ROM</td></tr>
+</table>
+
+</div>
+<!-- N64Image -->
+<div class="module">
+<div class="modtitle"><span class="title" id="N64Image">N64Image</span></div>
+N64 image class
+<!-- new_N64Image -->
+<p><div class="prop"><span class="title" id="new_N64Image">new N64Image(width, height[, format [, pixels[, palette]]])</span></div>
+<div class="tsproto">new N64Image(width: number, height: number, format: number = IMG_RGBA32, pixels?: Buffer, palette?: Buffer)</div>
+</p>
+Creates an <a href="#N64Image">N64Image</a> object.
+<p>
+<span class="snip">width</span>&#58; Width of the image.<br>
+<span class="snip">height</span>&#58; Height of the image.<br>
+<span class="snip">format</span>&#58; Optional image format. <span class="snip">IMG_RGBA32</span> by default. See the table below for supported formats.<br>
+<span class="snip">pixels</span>&#58; Optional <a target="blank" href="https://nodejs.org/docs/v6.9.1/api/buffer.html">Buffer</a> object containing pixel data.
+The byte length must be equal to <span class="snip">(width * height * N64Image.bpp(format)) / 8</span>. Copied to <a href="#image_pixels">image.pixels</a>.<br>
+<span class="snip">palette</span>&#58; Optional <a target="blank" href="https://nodejs.org/docs/v6.9.1/api/buffer.html">Buffer</a> object containing palette data. Copied to <a href="#image_palette">image.palette</a>.
+</p>
+<table>
+<thead>
+<tr><td>Format</td><td>Pixels</td><td>Palette</td></tr>
+</thead>
+<tr><td><span class="snip">IMG_RGBA16</span>    </td><td>16-bit colors (r5g5b5a1)            </td><td>(not used)</td></tr>
+<tr><td><span class="snip">IMG_RGBA32</span>    </td><td>32-bit colors (r8g8b8a8)            </td><td>(not used)</td></tr>
+<tr><td><span class="snip">IMG_CI4_RGBA16</span></td><td>4-bit color indices                 </td><td>16-bit colors (r5g5b5a1)</td></tr>
+<tr><td><span class="snip">IMG_CI4_IA16</span>  </td><td>4-bit color indices                 </td><td>16-bit intensity/alpha values (i8a8)</td></tr>
+<tr><td><span class="snip">IMG_CI8_RGBA16</span></td><td>8-bit color indices                 </td><td>16-bit colors (r5g5b5a1)</td></tr>
+<tr><td><span class="snip">IMG_CI8_IA16</span>  </td><td>8-bit color indices                 </td><td>16-bit intensity/alpha values (i8a8)</td></tr>
+<tr><td><span class="snip">IMG_IA4</span>       </td><td>4-bit intensity/alpha values (i3a1) </td><td>(not used)</td></tr>
+<tr><td><span class="snip">IMG_IA8</span>       </td><td>8-bit intensity/alpha values (i4a4) </td><td>(not used)</td></tr>
+<tr><td><span class="snip">IMG_IA16</span>      </td><td>16-bit intensity/alpha values (i8a8)</td><td>(not used)</td></tr>
+<tr><td><span class="snip">IMG_I4</span>        </td><td>4-bit intensity values              </td><td>(not used)</td></tr>
+<tr><td><span class="snip">IMG_I8</span>        </td><td>8-bit intensity values              </td><td>(not used)</td></tr>
+</table>
+<!-- N64Image_fromPNG -->
+<p><div class="prop"><span class="title" id="N64Image_fromPNG">N64Image.fromPNG(pngData[, format])</span></div>
+<div class="tsproto">N64Image.fromPNG(pngData: Buffer, format?: number = IMG_RGBA32): N64Image</div>
+</p>
+Static function. Creates an <a href="#N64Image">N64Image</a> object from a PNG file.
+<pre class="ex">
+<span class="js-keyword">var</span> <span class="js-word">image</span> = <span class="js-word">N64Image</span>.<span class="js-word">fromPNG</span>(<span class="js-word">fs</span>.<span class="js-word">readfile</span>(<span class="js-string">"image.png"</span>));
+</pre>
+Color quantization is not implemented. An error is thrown if <span class="snip">format</span> is a color-index (CI) type
+and the color count of the PNG image exceeds the maximum number of colors supported. The maximum
+number of colors supported by the CI4 and CI8 formats are 16 and 256, respectively.
+<!-- N64Image_format -->
+<p><div class="prop"><span class="title" id="N64Image_format">N64Image.format(gbiFmt, gbiSiz[, gbiTlutFmt])</span></div>
+<div class="tsproto">N64Image.format(gbiFmt: number, gbiSiz: number, gbiTlutFmt?: number): number</div>
+</p>
+<p>Static function. Returns a simplified image format number from a given GBI pixel size and format configuration.
+Returns <span class="snip">-1</span> if the configuration is invalid or unsupported. See the table below for supported configurations.</p>
+<table>
+<thead>
+<tr><td><span class="snip">gbiFmt</span>      </td><td><span class="snip">gbiSiz</span>     </td><td><span class="snip">gbiTlutFmt</span> </td><td>Return value</td></tr>
+</thead>
+<tr><td><span class="snip">G_IM_FMT_RGBA</span> </td><td><span class="snip">G_IM_SIZ_16b</span> </td><td>(not used)   </td><td><span class="snip">IMG_RGBA16</span></td></tr>
+<tr><td><span class="snip">G_IM_FMT_RGBA</span> </td><td><span class="snip">G_IM_SIZ_32b</span> </td><td>(not used)   </td><td><span class="snip">IMG_RGBA32</span></td></tr>
+<tr><td><span class="snip">G_IM_FMT_CI</span>   </td><td><span class="snip">G_IM_SIZ_4b</span>  </td><td><span class="snip">G_TT_RGBA16</span></td><td><span class="snip">IMG_CI4_RGBA16</span></td></tr>
+<tr><td><span class="snip">G_IM_FMT_CI</span>   </td><td><span class="snip">G_IM_SIZ_4b</span>  </td><td><span class="snip">G_TT_IA16</span>  </td><td><span class="snip">IMG_CI4_IA16</span></td></tr>
+<tr><td><span class="snip">G_IM_FMT_CI</span>   </td><td><span class="snip">G_IM_SIZ_8b</span>  </td><td><span class="snip">G_TT_RGBA16</span></td><td><span class="snip">IMG_CI8_RGBA16</span></td></tr>
+<tr><td><span class="snip">G_IM_FMT_CI</span>   </td><td><span class="snip">G_IM_SIZ_8b</span>  </td><td><span class="snip">G_TT_IA16</span>  </td><td><span class="snip">IMG_CI8_IA16</span></td></tr>
+<tr><td><span class="snip">G_IM_FMT_IA</span>   </td><td><span class="snip">G_IM_SIZ_4b</span>  </td><td>(not used)   </td><td><span class="snip">IMG_IA4</span></td></tr>
+<tr><td><span class="snip">G_IM_FMT_IA</span>   </td><td><span class="snip">G_IM_SIZ_8b</span>  </td><td>(not used)   </td><td><span class="snip">IMG_IA8</span></td></tr>
+<tr><td><span class="snip">G_IM_FMT_IA</span>   </td><td><span class="snip">G_IM_SIZ_16b</span> </td><td>(not used)   </td><td><span class="snip">IMG_IA16</span></td></tr>
+<tr><td><span class="snip">G_IM_FMT_I</span>    </td><td><span class="snip">G_IM_SIZ_4b</span>  </td><td>(not used)   </td><td><span class="snip">IMG_I4</span></td></tr>
+<tr><td><span class="snip">G_IM_FMT_I</span>    </td><td><span class="snip">G_IM_SIZ_8b</span>  </td><td>(not used)   </td><td><span class="snip">IMG_I8</span></td></tr>
+</table>
+<!-- N64Image_bpp -->
+<p><div class="prop"><span class="title" id="N64Image_bpp">N64Image.bpp(format)</span></div>
+<div class="tsproto">N64Image.bpp(format: number): number</div>
+</p>
+Static function. Returns the number of bits used per pixel for a given image format number or <span class="snip">G_IM_SIZ_*</span> constant. Does not include bits used for palette data.
+<pre class="ex">
+<span class="js-word">N64Image</span>.<span class="js-word">bpp</span>(<span class="js-word">IMG_CI8_RGBA16</span>); <span class="js-comment">// 8</span>
+<span class="js-word">N64Image</span>.<span class="js-word">bpp</span>(<span class="js-word">G_IM_SIZ_16b</span>); <span class="js-comment">// 16</span>
+</pre>
+<!-- image_toPNG -->
+<p><div class="prop"><span class="title" id="image_toPNG">image.toPNG()</span></div>
+<div class="tsproto">image.toPNG(): Buffer</div>
+</p>
+Returns a PNG representation of the image data as a <a target="blank" href="https://nodejs.org/docs/v6.9.1/api/buffer.html">Buffer</a> object.
+<pre class="ex">
+<span class="js-word">fs</span>.<span class="js-word">writefile</span>(<span class="js-string">"image.png"</span>, <span class="js-word">image</span>.<span class="js-word">toPNG</span>());
+</pre>
+<!-- image_update -->
+<p><div class="prop"><span class="title" id="image_update">image.update()</span></div>
+<div class="tsproto">image.update(): void</div>
+</p>
+Updates the internal bitmap. Should be called after alterations are made to <span class="snip">image.pixels</span> or <span class="snip">image.palette</span>.
+<!-- image_format -->
+<p><div class="prop"><span class="title" id="image_format">image.format</span></div>
+<div class="tsproto">image.format: number</div>
+</p>
+The format ID. Read-only.
+<!-- image_width -->
+<p><div class="prop"><span class="title" id="image_width">image.width</span></div>
+<div class="tsproto">image.width: number</div>
+</p>
+Width of the image. Read-only.
+<!-- image_height -->
+<p><div class="prop"><span class="title" id="image_height">image.height</span></div>
+<div class="tsproto">image.height: number</div>
+</p>
+Height of the image. Read-only.
+<!-- image_pixels -->
+<p><div class="prop"><span class="title" id="image_pixels">image.pixels</span></div>
+<div class="tsproto">image.pixels: Buffer</div>
+</p>
+The pixel data of the image.
+<!-- image_palette -->
+<p><div class="prop"><span class="title" id="image_palette">image.palette</span></div>
+<div class="tsproto">image.palette: Buffer</div>
+</p>
+The palette data of the image. <span class="snip">null</span> if the image does not use a color-index format.
+
+</div>
+<!-- cpu -->
+<div class="module">
+<div class="modtitle"><span class="title" id="cpu">cpu</span></div>
+CPU register interface
+<!-- cpu_pc -->
+<p><div class="prop"><span class="title" id="cpu_pc">cpu.pc</span></div>
+</p>
+Variable representing the CPU's program counter.
+<!-- cpu_hi -->
+<p><div class="prop"><span class="title" id="cpu_hi">cpu.hi</span></div>
+</p>
+Variable representing the lower 32 bits of the CPU's HI register.
+<!-- cpu_lo -->
+<p><div class="prop"><span class="title" id="cpu_lo">cpu.lo</span></div>
+</p>
+Variable representing the lower 32 bits of the CPU's LO register.
+<!-- cpu_uhi -->
+<p><div class="prop"><span class="title" id="cpu_uhi">cpu.uhi</span></div>
+</p>
+Variable representing the upper 32 bits of the CPU's HI register.
+<!-- cpu_ulo -->
+<p><div class="prop"><span class="title" id="cpu_ulo">cpu.ulo</span></div>
+</p>
+Variable representing the upper 32 bits of the CPU's LO register.
+<!-- cpu_gpr__ -->
+<p><div class="prop"><span class="title" id="cpu_gpr__">cpu.gpr.r0|at|v0|v1..ra</span></div>
+<div><span class="title2">cpu.gpr[0..31]</span></div><div class="tsproto">cpu.gpr.r0|at|v0|v1|a0|a1|a2|a3|t0|t1|t2|t3|t4|t5|t6|t7|s0|s1|s2|s3|s4|s5|s6|s7|t8|t9|k0|k1|gp|sp|fp|ra</div>
+</p>
+Variables representing the lower 32 bits of the CPU's general purpose registers.
+<!-- cpu_ugpr__ -->
+<p><div class="prop"><span class="title" id="cpu_ugpr__">cpu.ugpr.r0|at|v0|v1..ra</span></div>
+<div><span class="title2">cpu.ugpr[0..31]</span></div><div class="tsproto">cpu.ugpr.r0|at|v0|v1|a0|a1|a2|a3|t0|t1|t2|t3|t4|t5|t6|t7|s0|s1|s2|s3|s4|s5|s6|s7|t8|t9|k0|k1|gp|sp|fp|ra</div>
+</p>
+Variables representing the upper 32 bits of the CPU's general purpose registers.
+<!-- cpu_fpr__ -->
+<p><div class="prop"><span class="title" id="cpu_fpr__">cpu.fpr.f0..f31</span></div>
+<div><span class="title2">cpu.fpr[0..31]</span></div></p>
+Variables representing the CPU's 32-bit floating-point registers.
+<!-- cpu_dfpr__ -->
+<p><div class="prop"><span class="title" id="cpu_dfpr__">cpu.dfpr.f0..f30</span></div>
+<div><span class="title2">cpu.dfpr[0..30]</span></div></p>
+Variables representing the CPU's 64-bit floating-point registers.
+<!-- cpu_cop0 -->
+<p><div class="prop"><span class="title" id="cpu_cop0">cpu.cop0.index..errorepc</span></div>
+</p>
+<p>Variables representing the CPU's Coprocessor 0 registers.</p>
+<table>
+<tr><td><span class="snip">cpu.cop0.index</span>       </td><td>Index register.</td></tr>
+<tr><td><span class="snip">cpu.cop0.random</span>      </td><td>Random register.</td></tr>
+<tr><td><span class="snip">cpu.cop0.entrylo0</span>    </td><td>EntryLo0 register.</td></tr>
+<tr><td><span class="snip">cpu.cop0.entrylo1</span>    </td><td>EntryLo1 register.</td></tr>
+<tr><td><span class="snip">cpu.cop0.context</span>     </td><td>Context register.</td></tr>
+<tr><td><span class="snip">cpu.cop0.pagemask</span>    </td><td>PageMask register.</td></tr>
+<tr><td><span class="snip">cpu.cop0.wired</span>       </td><td>Wired register.</td></tr>
+<tr><td><span class="snip">cpu.cop0.badvaddr</span>    </td><td>BadVAddr register.</td></tr>
+<tr><td><span class="snip">cpu.cop0.count</span>       </td><td>Count register.</td></tr>
+<tr><td><span class="snip">cpu.cop0.entryhi</span>     </td><td>EntryHi register.</td></tr>
+<tr><td><span class="snip">cpu.cop0.compare</span>     </td><td>Compare register.</td></tr>
+<tr><td><span class="snip">cpu.cop0.status</span>      </td><td>Status register.</td></tr>
+<tr><td><span class="snip">cpu.cop0.cause</span>       </td><td>Cause register. Generates an interrupt when written.</td></tr>
+<tr><td><span class="snip">cpu.cop0.epc</span>         </td><td>EPC register.</td></tr>
+<tr><td><span class="snip">cpu.cop0.config</span>      </td><td>Config register.</td></tr>
+<tr><td><span class="snip">cpu.cop0.taglo</span>       </td><td>TagLo register.</td></tr>
+<tr><td><span class="snip">cpu.cop0.taghi</span>       </td><td>TagHi register.</td></tr>
+<tr><td><span class="snip">cpu.cop0.errorepc</span>    </td><td>ErrorEPC register.</td></tr>
+</table>
+
+</div>
+<!-- debug -->
+<div class="module">
+<div class="modtitle"><span class="title" id="debug">debug</span></div>
+Debugger interface
+<!-- debug_breakhere -->
+<p><div class="prop"><span class="title" id="debug_breakhere">debug.breakhere([silent])</span></div>
+<div class="tsproto">debug.breakhere(silent?: boolean = false): void</div>
+</p>
+Pauses emulation via the debugger. The CPU commands window is not shown if <span class="snip">silent</span> is true.
+<p>
+Emulation may be resumed by calling <a href="#debug_resume">debug.resume()</a> or clicking the "Go" button in the CPU commands window.
+</p>
+<pre class="ex">
+<span class="js-comment">// Break if the CPU tries to write 5 to 0x80339EA8</span>
+<span class="js-word">events</span>.<span class="js-word">onwrite</span>(<span class="js-number">0x80339EA8</span>, <span class="js-keyword">function</span>(<span class="js-word">e</span>) {
+    <span class="js-keyword">if</span>(<span class="js-word">e</span>.<span class="js-word">value</span> == <span class="js-number">5</span>) {
+        <span class="js-word">debug</span>.<span class="js-word">breakhere</span>();
+    }
+});
+</pre>
+<!-- debug_resume -->
+<p><div class="prop"><span class="title" id="debug_resume">debug.resume()</span></div>
+<div class="tsproto">debug.resume(): void</div>
+</p>
+Resumes emulation from a debugger pause.
+<!-- debug_step -->
+<p><div class="prop"><span class="title" id="debug_step">debug.step()</span></div>
+<div class="tsproto">debug.step(): void</div>
+</p>
+Executes a single CPU command. Does nothing if emulation is not paused by the debugger.
+<!-- debug_skip -->
+<p><div class="prop"><span class="title" id="debug_skip">debug.skip()</span></div>
+<div class="tsproto">debug.skip(): void</div>
+</p>
+Skips the current CPU command. Useful for preventing or overriding an operation.
+<pre class="ex">
+<span class="js-comment">// Do not let the CPU write to 0x8033B21E</span>
+<span class="js-word">events</span>.<span class="js-word">onwrite</span>(<span class="js-number">0x8033B21E</span>, <span class="js-keyword">function</span>() {
+    <span class="js-word">debug</span>.<span class="js-word">skip</span>();
+});
+</pre>
+<!-- debug_showmemory -->
+<p><div class="prop"><span class="title" id="debug_showmemory">debug.showmemory(address[, physical])</span></div>
+<div class="tsproto">debug.showmemory(address: number, physical?: boolean = false): void</div>
+</p>
+Shows the memory window at <span class="snip">address</span>. Physical address space is used if <span class="snip">physical</span> is <span class="snip">true</span>.
+<!-- debug_showcommands -->
+<p><div class="prop"><span class="title" id="debug_showcommands">debug.showcommands(address)</span></div>
+<div class="tsproto">debug.showcommands(address: number): void</div>
+</p>
+Shows the CPU commands window at <span class="snip">address</span>.
+<!-- debug_paused -->
+<p><div class="prop"><span class="title" id="debug_paused">debug.paused</span></div>
+<div class="tsproto">debug.paused: boolean</div>
+</p>
+<span class="snip">true</span> if emulation is currently paused by the debugger.
+
+</div>
+<!-- asm -->
+<div class="module">
+<div class="modtitle"><span class="title" id="asm">asm</span></div>
+ASM utilities
+<!-- asm_encode -->
+<p><div class="prop"><span class="title" id="asm_encode">asm.encode(command[, address])</span></div>
+<div class="tsproto">asm.encode(command: string, address?: number): number</div>
+</p>
+Encodes a single MIPS R4300i opcode. <span class="snip">address</span> is an optional parameter that may be used to hint the address of the instruction for branch offset calculation.
+<p>Returns the opcode as a number.</p>
+<pre class="ex">
+<span class="js-word">asm</span>.<span class="js-word">encode</span>(<span class="js-string">"nop"</span>);                      <span class="js-comment">// 0x00000000</span>
+<span class="js-word">asm</span>.<span class="js-word">encode</span>(<span class="js-string">"addiu sp, sp, -24"</span>);        <span class="js-comment">// 0x27BDFFE8</span>
+<span class="js-word">asm</span>.<span class="js-word">encode</span>(<span class="js-string">"b 0x80400000"</span>, <span class="js-number">0x803FFF00</span>); <span class="js-comment">// 0x1000003F</span>
+<span class="js-word">asm</span>.<span class="js-word">encode</span>(<span class="js-string">"b 0x80400000"</span>, <span class="js-number">0x80400100</span>); <span class="js-comment">// 0x1000FFBF</span>
+</pre>
+<!-- asm_decode -->
+<p><div class="prop"><span class="title" id="asm_decode">asm.decode(opcode[, address])</span></div>
+<div class="tsproto">asm.decode(opcode: number, address?: number)</div>
+</p>
+Decodes a single MIPS R4300i opcode. <span class="snip">address</span> is an optional parameter that may be used to hint the address of the instruction for branch address calculation.
+<p>Returns a line of assembly code as a string.</p>
+<pre class="ex">
+<span class="js-word">asm</span>.<span class="js-word">decode</span>(<span class="js-number">0x00000000</span>);             <span class="js-comment">// "NOP"</span>
+<span class="js-word">asm</span>.<span class="js-word">decode</span>(<span class="js-number">0x27BDFFE8</span>);             <span class="js-comment">// "ADDIU SP, SP, -0x18"</span>
+<span class="js-word">asm</span>.<span class="js-word">decode</span>(<span class="js-number">0x1000003F</span>, <span class="js-number">0x803FFF00</span>); <span class="js-comment">// "B 0x80400000"</span>
+<span class="js-word">asm</span>.<span class="js-word">decode</span>(<span class="js-number">0x1000FFBF</span>, <span class="js-number">0x80400100</span>); <span class="js-comment">// "B 0x80400000"</span>
+</pre>
+<!-- asm_gprname -->
+<p><div class="prop"><span class="title" id="asm_gprname">asm.gprname(regIndex)</span></div>
+<div class="tsproto">asm.gprname(regIndex: number): string</div>
+</p>
+Returns the name of the general purpose register specified by <span class="snip">regIndex</span>.
+<pre class="ex">
+<span class="js-word">asm</span>.<span class="js-word">gprname</span>(<span class="js-number">4</span>); <span class="js-comment">// Returns "a0"</span>
+</pre>
+
+</div>
+<!-- fs -->
+<div class="module">
+<div class="modtitle"><span class="title" id="fs">fs</span></div>
+File system interface
+<!-- fs_open -->
+<p><div class="prop"><span class="title" id="fs_open">fs.open(path, mode)</span></div>
+<div class="tsproto">fs.open(path: string, mode: string): number</div>
+</p>
+Opens the file pointed to by <span class="snip">path</span> in the mode specified by <span class="snip">mode</span>.
+See <a target="blank" href="https://pubs.opengroup.org/onlinepubs/009604599/functions/fopen.html">fopen</a> for a list of valid modes.
+<p>Returns a file descriptor.</p>
+<!-- fs_close -->
+<p><div class="prop"><span class="title" id="fs_close">fs.close(fd)</span></div>
+<div class="tsproto">fs.close(fd): void</div>
+</p>
+Closes the file referenced by <span class="snip">fd</span>.
+<!-- fs_write -->
+<p><div class="prop"><span class="title" id="fs_write">fs.write(fd, buffer[, offset[, length[, position]]])</span></div>
+<div class="tsproto">fs.write(fd: number, buffer: string | Buffer | ArrayBuffer, offset?: number, length?: number, position?: number): number</div>
+</p>
+Writes <span class="snip">buffer</span> to the file referenced by file descriptor <span class="snip">fd</span>. <span class="snip">buffer</span> may be one of the following types&#58;
+<a target="blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer">ArrayBuffer</a>,
+<a target="blank" href="https://nodejs.org/docs/v6.9.1/api/buffer.html">Buffer</a>,
+<a target="blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView">DataView</a>,
+<a target="blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray">TypedArray</a>, string.
+<p>
+<span class="snip">offset</span>&#58; Optional position in the source buffer.<br>
+<span class="snip">length</span>&#58; Optional maximum number of bytes to write.<br>
+<span class="snip">position</span>&#58; Optional file position.
+</p>
+<p>Returns the number of bytes written.</p>
+<pre class="ex">
+<span class="js-keyword">var</span> <span class="js-word">fd</span> = <span class="js-word">fs</span>.<span class="js-word">open</span>(<span class="js-string">"file.txt"</span>, <span class="js-string">"wb"</span>);
+<span class="js-word">fs</span>.<span class="js-word">write</span>(<span class="js-word">fd</span>, <span class="js-string">"Hello "</span>);
+<span class="js-word">fs</span>.<span class="js-word">write</span>(<span class="js-word">fd</span>, <span class="js-string">"world!\n"</span>);
+<span class="js-word">fs</span>.<span class="js-word">close</span>(<span class="js-word">fd</span>);
+</pre>
+<!-- fs_writefile -->
+<p><div class="prop"><span class="title" id="fs_writefile">fs.writefile(path, buffer)</span></div>
+<div class="tsproto">fs.writefile(path: string, buffer: string | Buffer | ArrayBuffer): void</div>
+</p>
+Writes <span class="snip">buffer</span> to the file specified by <span class="snip">path</span>.
+<pre class="ex">
+<span class="js-word">fs</span>.<span class="js-word">writefile</span>(<span class="js-string">"ram_dump.bin"</span>, <span class="js-word">mem</span>.<span class="js-word">getblock</span>(<span class="js-word">K0BASE</span>, <span class="js-word">mem</span>.<span class="js-word">ramSize</span>));
+</pre>
+<!-- fs_read -->
+<p><div class="prop"><span class="title" id="fs_read">fs.read(fd, buffer, offset, length, position)</span></div>
+<div class="tsproto">fs.read(fd: number, buffer: Buffer | ArrayBuffer, offset: number, length: number, position: number) : number</div>
+</p>
+Reads data from the file referenced by <span class="snip">fd</span> into <span class="snip">buffer</span>. <span class="snip">buffer</span> may be one of the following types&#58;
+<a target="blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer">ArrayBuffer</a>,
+<a target="blank" href="https://nodejs.org/docs/v6.9.1/api/buffer.html">Buffer</a>,
+<a target="blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView">DataView</a>,
+<a target="blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray">TypedArray</a>.<br><br>
+<span class="snip">offset</span>&#58; Position in the source buffer.<br>
+<span class="snip">length</span>&#58; Number of bytes to read.<br>
+<span class="snip">position</span>&#58; File position.
+<p>Returns the number of bytes read.</p>
+<!-- fs_readfile -->
+<p><div class="prop"><span class="title" id="fs_readfile">fs.readfile(path)</span></div>
+<div class="tsproto">fs.readfile(path: string): Buffer</div>
+</p>
+Returns a <a target="blank" href="https://nodejs.org/docs/v6.9.1/api/buffer.html">Buffer</a> object representing the data of the file specified by <span class="snip">path</span>.
+<!-- fs_fstat -->
+<p><div class="prop"><span class="title" id="fs_fstat">fs.fstat(fd)</span></div>
+<div class="tsproto">fs.fstat(fd: number): fs.Stats</div>
+</p>
+Returns an <a href="#fs_Stats">fs.Stats</a> object containing information about the file referenced by <span class="snip">fd</span>.
+<!-- fs_stat -->
+<p><div class="prop"><span class="title" id="fs_stat">fs.stat(path)</span></div>
+<div class="tsproto">fs.stat(path: string): fs.Stats</div>
+</p>
+Returns an <a href="#fs_Stats">fs.Stats</a> object containing information about the file specified by <span class="snip">path</span>.
+<!-- fs_unlink -->
+<p><div class="prop"><span class="title" id="fs_unlink">fs.unlink(path)</span></div>
+<div class="tsproto">fs.unlink(path: string): boolean</div>
+</p>
+Deletes the file specified by <span class="snip">path</span>. Returns <span class="snip">true</span> if the operation is successful.
+<!-- fs_mkdir -->
+<p><div class="prop"><span class="title" id="fs_mkdir">fs.mkdir(path)</span></div>
+<div class="tsproto">fs.mkdir(path: string): boolean</div>
+</p>
+Creates a directory. Returns <span class="snip">true</span> if the operation is successful.
+<!-- fs_rmdir -->
+<p><div class="prop"><span class="title" id="fs_rmdir">fs.rmdir(path)</span></div>
+<div class="tsproto">fs.rmdir(path: string): boolean</div>
+</p>
+Deletes a directory. The directory must be empty. Returns <span class="snip">true</span> if the operation is successful.
+<!-- fs_readdir -->
+<p><div class="prop"><span class="title" id="fs_readdir">fs.readdir(path)</span></div>
+<div class="tsproto">fs.readdir(path: string): string[]</div>
+</p>
+Returns an array of file names from a directory.
+<!-- fs_Stats -->
+<p><div class="prop"><span class="title" id="fs_Stats">fs.Stats</span></div>
+</p>
+<p>Object containing information about a file or directory. Generated by <a href="#fs_fstat">fs.fstat/fs.stat</a>.</p>
+<p>
+<table>
+<tr><td><span class="snip">stats.dev</span></td><td>ID of the device the file resides on</td></tr>
+<tr><td><span class="snip">stats.ino</span></td><td>inode number</td></tr>
+<tr><td><span class="snip">stats.mode</span></td><td>File permissions</td></tr>
+<tr><td><span class="snip">stats.nlink</span></td><td>Number of links to the file</td></tr>
+<tr><td><span class="snip">stats.uid</span></td><td>User ID</td></tr>
+<tr><td><span class="snip">stats.gid</span></td><td>Group ID</td></tr>
+<tr><td><span class="snip">stats.rdev</span></td><td>Device ID (if file is character or block special)</td></tr>
+<tr><td><span class="snip">stats.size</span></td><td>Size of the file in bytes</td></tr>
+<tr><td><span class="snip">stats.atimeMs</span></td><td>Last access timestamp in milliseconds</td></tr>
+<tr><td><span class="snip">stats.mtimeMs</span></td><td>Last modification timestamp in milliseconds</td></tr>
+<tr><td><span class="snip">stats.ctimeMs</span></td><td>Creation timestamp in milliseconds</td></tr>
+<tr><td><span class="snip">stats.atime</span></td><td>JS Date object representing the last access time</td></tr>
+<tr><td><span class="snip">stats.mtime</span></td><td>JS Date object representing the last modification time</td></tr>
+<tr><td><span class="snip">stats.ctime</span></td><td>JS Date object representing the creation time</td></tr>
+</table>
+</p>
+
+<b>stats.isDirectory()</b><br>
+<div class="tsproto">stats.isDirectory(): boolean</div>
+<p>Returns <span class="snip">true</span> if the <span class="snip">fs.Stats</span> object describes a directory.</p>
+
+<b>stats.isFile()</b><br>
+<div class="tsproto">stats.isFile(): boolean</div>
+<p>Returns <span class="snip">true</span> if the <span class="snip">fs.Stats</span> object describes a regular file.</p>
+
+</div>
+<!-- Socket -->
+<div class="module">
+<div class="modtitle"><span class="title" id="Socket">Socket</span></div>
+TCP socket class
+<!-- new_Socket -->
+<p><div class="prop"><span class="title" id="new_Socket">new Socket([options])</span></div>
+<div class="tsproto">new Socket(options?: Object)</div>
+</p>
+<p>Creates a <a href="#Socket">Socket</a> object. <span class="snip">options</span> may contain the following properties:</p>
+<table>
+<tr><td><span class="snip">allowHalfOpen</span></td><td>If <span class="snip">true</span>, the socket will not automatically fully close when the read half is closed. <span class="snip">false</span> by default.</td></tr>
+</table>
+<!-- socket_connect -->
+<p><div class="prop"><span class="title" id="socket_connect">socket.connect(port, host[, connectListener])</span></div>
+<div class="tsproto">socket.connect(port: number, host: string, connectListener: () => void): void</div>
+</p>
+Initiates a TCP connection.
+Optional <span class="snip">connectListener</span> is invoked when the connection is established (i.e the socket is writable).
+<pre class="ex">
+<span class="js-keyword">var</span> <span class="js-word">client</span> = <span class="js-keyword">new</span> <span class="js-word">Socket</span>();
+
+<span class="js-word">client</span>.<span class="js-word">connect</span>(<span class="js-number">80</span>, <span class="js-string">'www.example.com'</span>, <span class="js-keyword">function</span>() {
+    <span class="js-keyword">var</span> <span class="js-word">response</span> = <span class="js-string">''</span>;
+
+    <span class="js-word">client</span>.<span class="js-word">on</span>(<span class="js-string">'data'</span>, <span class="js-keyword">function</span>(<span class="js-word">data</span>) {
+        <span class="js-word">response</span> += <span class="js-word">data</span>.<span class="js-word">toString</span>();
+    });
+
+    <span class="js-word">client</span>.<span class="js-word">on</span>(<span class="js-string">'end'</span>, <span class="js-keyword">function</span>() {
+        <span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-word">response</span>);
+    });
+
+    <span class="js-keyword">const</span> <span class="js-word">message</span> = [
+        <span class="js-string">"GET / HTTP/1.1"</span>,
+        <span class="js-string">"Host: www.example.com"</span>,
+        <span class="js-string">"Connection: close"</span>,
+        <span class="js-string">"\r\n"</span>
+    ].<span class="js-word">join</span>(<span class="js-string">"\r\n"</span>);
+
+    <span class="js-word">client</span>.<span class="js-word">end</span>(<span class="js-word">message</span>);
+});
+</pre>
+<!-- socket_write -->
+<p><div class="prop"><span class="title" id="socket_write">socket.write(data[, callback])</span></div>
+<div class="tsproto">socket.write(data: Buffer | string, callback?: () => void): void</div>
+</p>
+<p>Sends <span class="snip">data</span> on the socket.</p>
+Optional <span class="snip">callback</span> is invoked when all bytes of <span class="snip">data</span> are sent.
+<!-- socket_end -->
+<p><div class="prop"><span class="title" id="socket_end">socket.end([data[, callback]])</span></div>
+<div class="tsproto">socket.end(data?: Buffer | string, callback?: () => void): void</div>
+</p>
+<p>Sends optional <span class="snip">data</span> and closes the write half of the socket after all buffered writes are sent.</p>
+Optional <span class="snip">callback</span> is invoked when all buffered writes are sent and the write half of the socket is closed.
+<!-- socket_close -->
+<p><div class="prop"><span class="title" id="socket_close">socket.close()</span></div>
+<div class="tsproto">socket.close(): void</div>
+</p>
+Fully closes the socket.
+<!-- socket_on_connect -->
+<p><div class="prop"><span class="title" id="socket_on_connect">socket.on('connect', listener)</span></div>
+<div class="tsproto">socket.on('connect', listener: () => void): Socket</div>
+</p>
+<p>Registers a listener for the <span class="snip">'connect'</span> event.</p>
+<span class="snip">listener</span> is invoked when the connection is established.
+<p>Returns the Socket object.</p>
+<!-- socket_on_lookup -->
+<p><div class="prop"><span class="title" id="socket_on_lookup">socket.on('lookup', listener)</span></div>
+<div class="tsproto">socket.on('lookup', listener: (Object) => void): Socket</div>
+</p>
+<p>Registers a listener for the <span class="snip">'lookup'</span> event.</p>
+<p><span class="snip">listener</span> receives an object with the following properties when the host name is resolved:</p>
+<table>
+<tr><td><span class="snip">err</span></td><td><span class="snip">null</span>, or an <span class="snip">Error</span> object if an error occurred <span style="color:red;">(TODO)</span></td></tr>
+<tr><td><span class="snip">address</span></td><td>IP address string</td></tr>
+<tr><td><span class="snip">port</span></td><td>Port number</td></tr>
+<tr><td><span class="snip">family</span></td><td>"IPv4" or "IPv6"</td></tr>
+</table>
+<p>Returns the Socket object.</p>
+<!-- socket_on_data -->
+<p><div class="prop"><span class="title" id="socket_on_data">socket.on('data', listener)</span></div>
+<div class="tsproto">socket.on('data', listener: (data: Buffer) => void): Socket</div>
+</p>
+<p>Registers a listener for the <span class="snip">'data'</span> event.</p>
+<span class="snip">listener</span> receives data as a <a target="blank" href="https://nodejs.org/docs/v6.9.1/api/buffer.html">Buffer</a> object.
+<p>Returns the Socket object.</p>
+<!-- socket_on_end -->
+<p><div class="prop"><span class="title" id="socket_on_end">socket.on('end', listener)</span></div>
+<div class="tsproto">socket.on('end', listener: () => void): Socket</div>
+</p>
+<p>Registers a listener for the <span class="snip">'end'</span> event.</p>
+<span class="snip">listener</span> is invoked when the other side closes the read half of the socket.
+<p>Returns the Socket object.</p>
+<!-- socket_on_close -->
+<p><div class="prop"><span class="title" id="socket_on_close">socket.on('close', listener)</span></div>
+<div class="tsproto">socket.on('close', listener: () => void): Socket</div>
+</p>
+<p>Registers a listener for the <span class="snip">'close'</span> event.</p>
+<span class="snip">listener</span> is invoked when the socket is fully closed.
+<p>Returns the Socket object.</p>
+<!-- socket_on_drain -->
+<p><div class="prop"><span class="title" id="socket_on_drain">socket.on('drain', listener)</span></div>
+<div class="tsproto">socket.on('drain', listener: () => void): Socket</div>
+</p>
+<p>Registers a listener for the <span class="snip">'drain'</span> event.</p>
+<span class="snip">listener</span> is invoked when all buffered writes are sent.
+<p>Returns the Socket object.</p>
+<!-- socket_on_error -->
+<p><div class="prop"><span class="title" id="socket_on_error">socket.on('error', listener)</span></div>
+<div class="tsproto">socket.on('error', listener: (Error) => void): Socket</div>
+</p>
+<p>Registers a listener for the <span class="snip">'error'</span> event.</p>
+<span class="snip">listener</span> receives an <span class="snip">Error</span> object when an error occurs.
+<p>Returns the Socket object.</p>
+<!-- socket_off -->
+<p><div class="prop"><span class="title" id="socket_off">socket.off(eventName, listener)</span></div>
+<div class="tsproto">socket.off(eventName: string, listener: function): Socket</div>
+</p>
+Removes a listener.
+<p>Returns the Socket object.</p>
+<!-- socket_remoteAddress -->
+<p><div class="prop"><span class="title" id="socket_remoteAddress">socket.remoteAddress</span></div>
+<div class="tsproto">socket.remoteAddress: string</div>
+</p>
+The remote address. <span class="snip">""</span> if the socket is not connected.
+<!-- socket_remotePort -->
+<p><div class="prop"><span class="title" id="socket_remotePort">socket.remotePort</span></div>
+<div class="tsproto">socket.remotePort: number</div>
+</p>
+The remote port. <span class="snip">0</span> if the socket is not connected.
+<!-- socket_localAddress -->
+<p><div class="prop"><span class="title" id="socket_localAddress">socket.localAddress</span></div>
+<div class="tsproto">socket.localAddress: string</div>
+</p>
+The local address. <span class="snip">""</span> if the socket is not connected.
+<!-- socket_localPort -->
+<p><div class="prop"><span class="title" id="socket_localPort">socket.localPort</span></div>
+<div class="tsproto">socket.localPort: number</div>
+</p>
+The local port. <span class="snip">""</span> if the socket is not connected.
+<!-- socket_addressFamily -->
+<p><div class="prop"><span class="title" id="socket_addressFamily">socket.addressFamily</span></div>
+<div class="tsproto">socket.addressFamily: string</div>
+</p>
+The address family. <span class="snip">""</span> if the socket is not connected.
+
+</div>
+<!-- Server -->
+<div class="module">
+<div class="modtitle"><span class="title" id="Server">Server</span></div>
+TCP server class
+<!-- new_Server -->
+<p><div class="prop"><span class="title" id="new_Server">new Server()</span></div>
+<div class="tsproto">new Server()</div>
+</p>
+Creates a <a href="#Server">Server</a> object.
+<pre class="ex">
+<span class="js-keyword">var</span> <span class="js-word">server</span> = <span class="js-keyword">new</span> <span class="js-word">Server</span>();
+<span class="js-word">server</span>.<span class="js-word">listen</span>(<span class="js-number">1337</span>, <span class="js-string">"127.0.0.1"</span>);
+
+<span class="js-word">server</span>.<span class="js-word">on</span>(<span class="js-string">'connection'</span>, <span class="js-keyword">function</span>(<span class="js-word">c</span>) {
+    <span class="js-word">c</span>.<span class="js-word">on</span>(<span class="js-string">'data'</span>, <span class="js-keyword">function</span>(<span class="js-word">data</span>) {
+        <span class="js-keyword">if</span>(<span class="js-word">data</span>.<span class="js-word">toString</span>() == <span class="js-string">'ping'</span>) {
+            <span class="js-word">c</span>.<span class="js-word">write</span>(<span class="js-string">'pong'</span>);
+        }
+    });
+
+    <span class="js-word">c</span>.<span class="js-word">on</span>(<span class="js-string">'end'</span>, <span class="js-keyword">function</span>() {
+        <span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-string">"client ended connection"</span>);
+    })
+});
+</pre>
+<!-- server_listen -->
+<p><div class="prop"><span class="title" id="server_listen">server.listen(port[, address])</span></div>
+<div class="tsproto">server.listen(port: number, address: string): void</div>
+</p>
+Binds the server to the specified address and port and starts listening.
+<!-- server_close -->
+<p><div class="prop"><span class="title" id="server_close">server.close()</span></div>
+<div class="tsproto">server.close(): void</div>
+</p>
+Stops listening for new connections (does not affect existing connections).
+<!-- server_on_connection -->
+<p><div class="prop"><span class="title" id="server_on_connection">server.on('connection', listener)</span></div>
+<div class="tsproto">server.on('connection', listener: (Socket) => void): Server</div>
+</p>
+<p>Registers a listener for the <span class="snip">'connection'</span> event.</p>
+<span class="snip">listener</span> receives a <a href="#Socket">Socket</a> object when a client has connected.
+<p>Returns the Server object.</p>
+<!-- server_on_listening -->
+<p><div class="prop"><span class="title" id="server_on_listening">server.on('listening', listener)</span></div>
+<div class="tsproto">server.on('listening', listener: () => void): Server</div>
+</p>
+<p>Registers a listener for the <span class="snip">'listening'</span> event.</p>
+<span class="snip">listener</span> is invoked when the server begins listening for connections.
+<p>Returns the Server object.</p>
+<!-- server_on_close -->
+<p><div class="prop"><span class="title" id="server_on_close">server.on('close', listener)</span></div>
+<div class="tsproto">server.on('close', listener: () => void): Server</div>
+</p>
+<p>Registers a listener for the <span class="snip">'close'</span> event.</p>
+<span class="snip">listener</span> is invoked when the server is closed.
+<p>Returns the Server object.</p>
+<!-- server_on_error -->
+<p><div class="prop"><span class="title" id="server_on_error">server.on('error', listener)</span></div>
+<div class="tsproto">server.on('error', listener: (Error) => void): Server</div>
+</p>
+<p>Registers a listener for the <span class="snip">'error'</span> event.</p>
+<span class="snip">listener</span> receives an <span class="snip">Error</span> object when an error occurs.
+<p>Returns the Server object.</p>
+<!-- server_off -->
+<p><div class="prop"><span class="title" id="server_off">server.off(eventName, listener)</span></div>
+<div class="tsproto">server.off(eventName: string, listener: function): Server</div>
+</p>
+Removes a listener.
+<p>Returns the Server object.</p>
+<!-- server_port -->
+<p><div class="prop"><span class="title" id="server_port">server.port</span></div>
+<div class="tsproto">server.port: number</div>
+</p>
+The bound port number. <span class="snip">0</span> if the server is not listening.
+<!-- server_address -->
+<p><div class="prop"><span class="title" id="server_address">server.address</span></div>
+<div class="tsproto">server.address: string</div>
+</p>
+The bound address. <span class="snip">""</span> if the server is not listening.
+<!-- server_addressFamily -->
+<p><div class="prop"><span class="title" id="server_addressFamily">server.addressFamily</span></div>
+<div class="tsproto">server.addressFamily: string</div>
+</p>
+The bound address family. <span class="snip">""</span> if the server is not listening.
+
+</div>
+<!-- script -->
+<div class="module">
+<div class="modtitle"><span class="title" id="script">script</span></div>
+Script instance configuration interface
+<!-- script_keepalive -->
+<p><div class="prop"><span class="title" id="script_keepalive">script.keepalive(keepAlive)</span></div>
+<div class="tsproto">script.keepalive(keepAlive: boolean): void</div>
+</p>
+Prevents the script instance from being destroyed when it has nothing left to do.
+Useful when the default console input behavior is desired.
+<!-- script_timeout -->
+<p><div class="prop"><span class="title" id="script_timeout">script.timeout(milliseconds)</span></div>
+<div class="tsproto">script.timeout(milliseconds: number): void</div>
+</p>
+Sets the maximum amount of time tasks may run on the script instance before errors are thrown. By default this value is 500 milliseconds.
+Setting this value to zero will allow tasks to run indefinitely.
+
+</div>
+<!-- Globals -->
+<div class="module">
+<div class="modtitle"><span class="title" id="Globals">Globals</span></div>
+<!-- global -->
+<p><div class="prop"><span class="title" id="global">global</span></div>
+<div class="tsproto">global: Object</div>
+</p>
+Reference to the global object.
+<pre class="ex">
+<span class="js-word">global</span>.<span class="js-word">test</span> = <span class="js-number">1</span>;
+<span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-word">test</span>); <span class="js-comment">// "1"</span>
+</pre>
+<!-- require -->
+<p><div class="prop"><span class="title" id="require">require(id)</span></div>
+<div class="tsproto">require(id: string): Object</div>
+</p>
+Loads a module and returns its <span class="snip">module.exports</span> object. <span class="snip">id</span> may be one of the following:
+<p>
+<ul>
+<li>The name of a JavaScript (*.js) or DLL (*.dll) file in the <span class="snip">Scripts/modules</span> directory.</i>
+<li>If <span class="snip">id</span> begins with <span class="snip">./</span> or <span class="snip">../</span>, the path of a JavaScript  or DLL file relative to the calling module's location.</i>
+</ul>
+</p>
+<pre class="ex">
+<span class="js-comment">/* Scripts/module_example.js */</span>
+
+<span class="js-keyword">const</span> <span class="js-word">mymodule</span> = <span class="js-word">require</span>(<span class="js-string">'mymodule/lib.js'</span>); <span class="js-comment">// Loads Scripts/modules/mymodule/lib.js</span>
+<span class="js-word">mymodule</span>.<span class="js-word">init</span>(); <span class="js-comment">// Prints "Loaded mymodule"</span>
+</pre>
+<pre class="ex">
+<span class="js-comment">/* Scripts/modules/mymodule/lib.js */</span>
+
+<span class="js-keyword">function</span> <span class="js-word">init</span>() {
+    <span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-string">"Loaded mymodule"</span>);
+}
+
+<span class="js-word">module</span>.<span class="js-word">exports</span> = {
+    <span class="js-word">init</span>: <span class="js-word">init</span>
+};
+</pre>
+<p>Native modules use the <a target="blank" href="https://github.com/svaarala/duktape/blob/master/doc/c-module-convention.rst">Duktape C module convention</a>.</p>
+<!-- exec -->
+<p><div class="prop"><span class="title" id="exec">exec(command[, options])</span></div>
+<div class="tsproto">exec(command: string, options?: Object): string</div>
+</p>
+Executes a system command. Does not return until the subprocess exits.
+<p>Returns the standard output of the subprocess as a string.</p>
+
+<p><span class="snip">options</span> may contain any of the following properties:</p>
+
+<table>
+<tr><td><span class="snip">showWindow</span></td><td>If <span class="snip">true</span>, the window of the subprocess is visible. <span class="snip">false</span> by default.</td></tr>
+<tr><td><span class="snip">verbose</span></td><td>If <span class="snip">true</span>, the output of the subprocess is sent to the script manager console. <span class="snip">false</span> by default.</td></tr>
+<tr><td><span class="snip">cwd</span></td><td>Current working directory of the subprocess. By default this is the directory containing Project64.</td></tr>
+</table>
+
+<p>This function throws an error if the operation fails or if the exit code of the subprocess is non-zero.
+The thrown error object contains the following properties:</p>
+
+<table>
+<tr><td><span class="snip">status</span></td><td>The exit code of the subprocess.</td></tr>
+<tr><td><span class="snip">stdout</span></td><td>The standard output of the subprocess.</td></tr>
+<tr><td><span class="snip">stderr</span></td><td>The standard error output of the subprocess.</td></tr>
+<tr><td><span class="snip">pid</span></td><td>The PID of the subprocess.</td></tr>
+</table>
+<pre class="ex">
+<span class="js-keyword">try</span> {
+    <span class="js-word">exec</span>(<span class="js-string">"dir"</span>, { <span class="js-word">verbose</span>: <span class="js-keyword">true</span> });
+} <span class="js-keyword">catch</span>(<span class="js-word">err</span>) {
+    <span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-string">"exec() failed with code"</span>, <span class="js-word">err</span>.<span class="js-word">status</span>);
+    <span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-word">err</span>.<span class="js-word">stderr</span>);
+}
+</pre>
+<!-- alert -->
+<p><div class="prop"><span class="title" id="alert">alert(message[, caption])</span></div>
+<div class="tsproto">alert(message: string, caption?: string): void</div>
+</p>
+Shows a message box over the main window. Does not return until the message box is dismissed.
+<!-- setTimeout -->
+<p><div class="prop"><span class="title" id="setTimeout">setTimeout(callback, delay)</span></div>
+<div class="tsproto">setTimeout(callback: () => void, delay: number): number</div>
+</p>
+<span class="snip">callback</span> is invoked once after the number of milliseconds specified by <span class="snip">delay</span>.
+<p>Returns a timeout ID.</p>
+<!-- clearTimeout -->
+<p><div class="prop"><span class="title" id="clearTimeout">clearTimeout(timeoutId)</span></div>
+<div class="tsproto">setTimeout(timeoutId: number): void</div>
+</p>
+Cancels the timeout specified by <span class="snip">timeoutId</span>.
+<!-- setInterval -->
+<p><div class="prop"><span class="title" id="setInterval">setInterval(callback, delay)</span></div>
+<div class="tsproto">setInterval(callback: () => void, delay: number): number</div>
+</p>
+<span class="snip">callback</span> is invoked periodically. <span class="snip">delay</span> specifies the amount of time in milliseconds to wait before each invocation.
+<p>Returns an interval ID.</p>
+<!-- clearInterval -->
+<p><div class="prop"><span class="title" id="clearInterval">clearInterval(intervalId)</span></div>
+<div class="tsproto">setTimeout(intervalId: number): void</div>
+</p>
+Cancels the interval specified by <span class="snip">intervalId</span>.
+<!-- number_hex -->
+<p><div class="prop"><span class="title" id="number_hex">number.hex([numChars])</span></div>
+<div class="tsproto">number.hex(numChars?: number): string</div>
+</p>
+Returns a hexadecimal string representation of the number object.
+The returned string is prepended with zeroes so that its character length is <span class="snip">numChars</span> or 8 by default.
+<pre class="ex">
+<span class="js-keyword">var</span> <span class="js-word">n</span> = <span class="js-number">123</span>;
+<span class="js-word">n</span>.<span class="js-word">hex</span>();  <span class="js-comment">// 0000007B</span>
+<span class="js-word">n</span>.<span class="js-word">hex</span>(<span class="js-number">4</span>); <span class="js-comment">// 007B</span>
+</pre>
+<!-- type_ids -->
+<p><div class="prop"><span class="title" id="type_ids">Type IDs</span></div>
+</p>
+<table>
+<tr><td><span class="snip">u8</span>  </td><td>Unsigned 8-bit integer</td></tr>
+<tr><td><span class="snip">u16</span> </td><td>Unsigned 16-bit integer</td></tr>
+<tr><td><span class="snip">u32</span> </td><td>Unsigned 32-bit integer</td></tr>
+<tr><td><span class="snip">s8</span>  </td><td>Signed 8-bit integer</td></tr>
+<tr><td><span class="snip">s16</span> </td><td>Signed 16-bit integer</td></tr>
+<tr><td><span class="snip">s32</span> </td><td>Signed 32-bit integer</td></tr>
+<tr><td><span class="snip">f32</span> </td><td>32-bit single precision floating-point</td></tr>
+<tr><td><span class="snip">f64</span> </td><td>64-bit double precision floating-point</td></tr>
+<tr><td><span class="snip">u64</span> </td><td>Unsigned 64-bit integer</td></tr>
+<tr><td><span class="snip">s64</span> </td><td>Signed 64-bit integer</td></tr>
+</table>
+
+<p>Note: The <a href="#mem_bindvar">mem.bind*</a>/<a href="#mem_typedef">mem.typedef</a> APIs do not currently support <span class="snip">u64</span> and <span class="snip">s64</span>.</p>
+<!-- N64_memory_addresses -->
+<p><div class="prop"><span class="title" id="N64_memory_addresses">N64 memory addresses</span></div>
+</p>
+<p>
+  <table>
+  <tr><td><span class="snip">RDRAM_CONFIG_REG</span>       </td><td>0xA3F00000</td></tr>
+  <tr><td><span class="snip">RDRAM_DEVICE_TYPE_REG</span>  </td><td>0xA3F00000</td></tr>
+  <tr><td><span class="snip">RDRAM_DEVICE_ID_REG</span>    </td><td>0xA3F00004</td></tr>
+  <tr><td><span class="snip">RDRAM_DELAY_REG</span>        </td><td>0xA3F00008</td></tr>
+  <tr><td><span class="snip">RDRAM_MODE_REG</span>         </td><td>0xA3F0000C</td></tr>
+  <tr><td><span class="snip">RDRAM_REF_INTERVAL_REG</span> </td><td>0xA3F00010</td></tr>
+  <tr><td><span class="snip">RDRAM_REF_ROW_REG</span>      </td><td>0xA3F00014</td></tr>
+  <tr><td><span class="snip">RDRAM_RAS_INTERVAL_REG</span> </td><td>0xA3F00018</td></tr>
+  <tr><td><span class="snip">RDRAM_MIN_INTERVAL_REG</span> </td><td>0xA3F0001C</td></tr>
+  <tr><td><span class="snip">RDRAM_ADDR_SELECT_REG</span>  </td><td>0xA3F00020</td></tr>
+  <tr><td><span class="snip">RDRAM_DEVICE_MANUF_REG</span> </td><td>0xA3F00024</td></tr>
+  <tr><td><span class="snip">SP_MEM_ADDR_REG</span>        </td><td>0xA4040000</td></tr>
+  <tr><td><span class="snip">SP_DRAM_ADDR_REG</span>       </td><td>0xA4040004</td></tr>
+  <tr><td><span class="snip">SP_RD_LEN_REG</span>          </td><td>0xA4040008</td></tr>
+  <tr><td><span class="snip">SP_WR_LEN_REG</span>          </td><td>0xA404000C</td></tr>
+  <tr><td><span class="snip">SP_STATUS_REG</span>          </td><td>0xA4040010</td></tr>
+  <tr><td><span class="snip">SP_DMA_FULL_REG</span>        </td><td>0xA4040014</td></tr>
+  <tr><td><span class="snip">SP_DMA_BUSY_REG</span>        </td><td>0xA4040018</td></tr>
+  <tr><td><span class="snip">SP_SEMAPHORE_REG</span>       </td><td>0xA404001C</td></tr>
+  <tr><td><span class="snip">SP_PC_REG</span>              </td><td>0xA4080000</td></tr>
+  <tr><td><span class="snip">SP_IBIST_REG</span>           </td><td>0xA4080004</td></tr>
+  <tr><td><span class="snip">DPC_START_REG</span>          </td><td>0xA4100000</td></tr>
+  <tr><td><span class="snip">DPC_END_REG</span>            </td><td>0xA4100004</td></tr>
+  <tr><td><span class="snip">DPC_CURRENT_REG</span>        </td><td>0xA4100008</td></tr>
+  <tr><td><span class="snip">DPC_STATUS_REG</span>         </td><td>0xA410000C</td></tr>
+  <tr><td><span class="snip">DPC_CLOCK_REG</span>          </td><td>0xA4100010</td></tr>
+  <tr><td><span class="snip">DPC_BUFBUSY_REG</span>        </td><td>0xA4100014</td></tr>
+  <tr><td><span class="snip">DPC_PIPEBUSY_REG</span>       </td><td>0xA4100018</td></tr>
+  <tr><td><span class="snip">DPC_TMEM_REG</span>           </td><td>0xA410001C</td></tr>
+  <tr><td><span class="snip">DPS_TBIST_REG</span>          </td><td>0xA4200000</td></tr>
+  <tr><td><span class="snip">DPS_TEST_MODE_REG</span>      </td><td>0xA4200004</td></tr>
+  <tr><td><span class="snip">DPS_BUFTEST_ADDR_REG</span>   </td><td>0xA4200008</td></tr>
+  <tr><td><span class="snip">DPS_BUFTEST_DATA_REG</span>   </td><td>0xA420000C</td></tr>
+  <tr><td><span class="snip">MI_INIT_MODE_REG</span>       </td><td>0xA4300000</td></tr>
+  <tr><td><span class="snip">MI_MODE_REG</span>            </td><td>0xA4300000</td></tr>
+  <tr><td><span class="snip">MI_VERSION_REG</span>         </td><td>0xA4300004</td></tr>
+  <tr><td><span class="snip">MI_NOOP_REG</span>            </td><td>0xA4300004</td></tr>
+  <tr><td><span class="snip">MI_INTR_REG</span>            </td><td>0xA4300008</td></tr>
+  <tr><td><span class="snip">MI_INTR_MASK_REG</span>       </td><td>0xA430000C</td></tr>
+  <tr><td><span class="snip">VI_STATUS_REG</span>          </td><td>0xA4400000</td></tr>
+  <tr><td><span class="snip">VI_CONTROL_REG</span>         </td><td>0xA4400000</td></tr>
+  <tr><td><span class="snip">VI_ORIGIN_REG</span>          </td><td>0xA4400004</td></tr>
+  <tr><td><span class="snip">VI_DRAM_ADDR_REG</span>       </td><td>0xA4400004</td></tr>
+  <tr><td><span class="snip">VI_WIDTH_REG</span>           </td><td>0xA4400008</td></tr>
+  <tr><td><span class="snip">VI_H_WIDTH_REG</span>         </td><td>0xA4400008</td></tr>
+  <tr><td><span class="snip">VI_INTR_REG</span>            </td><td>0xA440000C</td></tr>
+  <tr><td><span class="snip">VI_V_INTR_REG</span>          </td><td>0xA440000C</td></tr>
+  <tr><td><span class="snip">VI_CURRENT_REG</span>         </td><td>0xA4400010</td></tr>
+  <tr><td><span class="snip">VI_V_CURRENT_LINE_REG</span>  </td><td>0xA4400010</td></tr>
+  <tr><td><span class="snip">VI_BURST_REG</span>           </td><td>0xA4400014</td></tr>
+  <tr><td><span class="snip">VI_TIMING_REG</span>          </td><td>0xA4400014</td></tr>
+  <tr><td><span class="snip">VI_V_SYNC_REG</span>          </td><td>0xA4400018</td></tr>
+  <tr><td><span class="snip">VI_H_SYNC_REG</span>          </td><td>0xA440001C</td></tr>
+  <tr><td><span class="snip">VI_LEAP_REG</span>            </td><td>0xA4400020</td></tr>
+  <tr><td><span class="snip">VI_H_SYNC_LEAP_REG</span>     </td><td>0xA4400020</td></tr>
+  <tr><td><span class="snip">VI_H_START_REG</span>         </td><td>0xA4400024</td></tr>
+  <tr><td><span class="snip">VI_H_VIDEO_REG</span>         </td><td>0xA4400024</td></tr>
+  <tr><td><span class="snip">VI_V_START_REG</span>         </td><td>0xA4400028</td></tr>
+  <tr><td><span class="snip">VI_V_VIDEO_REG</span>         </td><td>0xA4400028</td></tr>
+  <tr><td><span class="snip">VI_V_BURST_REG</span>         </td><td>0xA440002C</td></tr>
+  <tr><td><span class="snip">VI_X_SCALE_REG</span>         </td><td>0xA4400030</td></tr>
+  <tr><td><span class="snip">VI_Y_SCALE_REG</span>         </td><td>0xA4400034</td></tr>
+  <tr><td><span class="snip">AI_DRAM_ADDR_REG</span>       </td><td>0xA4500000</td></tr>
+  <tr><td><span class="snip">AI_LEN_REG</span>             </td><td>0xA4500004</td></tr>
+  <tr><td><span class="snip">AI_CONTROL_REG</span>         </td><td>0xA4500008</td></tr>
+  <tr><td><span class="snip">AI_STATUS_REG</span>          </td><td>0xA450000C</td></tr>
+  <tr><td><span class="snip">AI_DACRATE_REG</span>         </td><td>0xA4500010</td></tr>
+  <tr><td><span class="snip">AI_BITRATE_REG</span>         </td><td>0xA4500014</td></tr>
+  <tr><td><span class="snip">PI_DRAM_ADDR_REG</span>       </td><td>0xA4600000</td></tr>
+  <tr><td><span class="snip">PI_CART_ADDR_REG</span>       </td><td>0xA4600004</td></tr>
+  <tr><td><span class="snip">PI_RD_LEN_REG</span>          </td><td>0xA4600008</td></tr>
+  <tr><td><span class="snip">PI_WR_LEN_REG</span>          </td><td>0xA460000C</td></tr>
+  <tr><td><span class="snip">PI_STATUS_REG</span>          </td><td>0xA4600010</td></tr>
+  <tr><td><span class="snip">PI_BSD_DOM1_LAT_REG</span>    </td><td>0xA4600014</td></tr>
+  <tr><td><span class="snip">PI_BSD_DOM1_PWD_REG</span>    </td><td>0xA4600018</td></tr>
+  <tr><td><span class="snip">PI_BSD_DOM1_PGS_REG</span>    </td><td>0xA460001C</td></tr>
+  <tr><td><span class="snip">PI_BSD_DOM1_RLS_REG</span>    </td><td>0xA4600020</td></tr>
+  <tr><td><span class="snip">PI_BSD_DOM2_LAT_REG</span>    </td><td>0xA4600024</td></tr>
+  <tr><td><span class="snip">PI_BSD_DOM2_PWD_REG</span>    </td><td>0xA4600028</td></tr>
+  <tr><td><span class="snip">PI_BSD_DOM2_PGS_REG</span>    </td><td>0xA460002C</td></tr>
+  <tr><td><span class="snip">PI_BSD_DOM2_RLS_REG</span>    </td><td>0xA4600030</td></tr>
+  <tr><td><span class="snip">RI_MODE_REG</span>            </td><td>0xA4700000</td></tr>
+  <tr><td><span class="snip">RI_CONFIG_REG</span>          </td><td>0xA4700004</td></tr>
+  <tr><td><span class="snip">RI_CURRENT_LOAD_REG</span>    </td><td>0xA4700008</td></tr>
+  <tr><td><span class="snip">RI_SELECT_REG</span>          </td><td>0xA470000C</td></tr>
+  <tr><td><span class="snip">RI_REFRESH_REG</span>         </td><td>0xA4700010</td></tr>
+  <tr><td><span class="snip">RI_COUNT_REG</span>           </td><td>0xA4700010</td></tr>
+  <tr><td><span class="snip">RI_LATENCY_REG</span>         </td><td>0xA4700014</td></tr>
+  <tr><td><span class="snip">RI_RERROR_REG</span>          </td><td>0xA4700018</td></tr>
+  <tr><td><span class="snip">RI_WERROR_REG</span>          </td><td>0xA470001C</td></tr>
+  <tr><td><span class="snip">SI_DRAM_ADDR_REG</span>       </td><td>0xA4800000</td></tr>
+  <tr><td><span class="snip">SI_PIF_ADDR_RD64B_REG</span>  </td><td>0xA4800004</td></tr>
+  <tr><td><span class="snip">SI_PIF_ADDR_WR64B_REG</span>  </td><td>0xA4800010</td></tr>
+  <tr><td><span class="snip">SI_STATUS_REG</span>          </td><td>0xA4800018</td></tr>
+  </table>
+</p>
+<p>
+    <table>
+    <tr><td><span class="snip">PIF_ROM_START</span> </td><td>0xBFC00000</td></tr>
+    <tr><td><span class="snip">PIF_RAM_START</span> </td><td>0xBFC007C0</td></tr>
+    <tr><td><span class="snip">SP_DMEM_START</span> </td><td>0xA4000000</td></tr>
+    <tr><td><span class="snip">SP_IMEM_START</span> </td><td>0xA4001000</td></tr>
+    </table>
+</p>
+<p>
+    <table>
+    <tr><td><span class="snip">KUBASE</span>  </td><td>0x00000000</td></tr>
+    <tr><td><span class="snip">K0BASE</span>  </td><td>0x80000000</td></tr>
+    <tr><td><span class="snip">K1BASE</span>  </td><td>0xA0000000</td></tr>
+    <tr><td><span class="snip">K2BASE</span>  </td><td>0xC0000000</td></tr>
+    </table>
+</p>
+<p>
+    <table>
+    <tr><td><span class="snip">UT_VEC</span>  </td><td>0x80000000</td></tr>
+    <tr><td><span class="snip">R_VEC</span>   </td><td>0xBFC00000</td></tr>
+    <tr><td><span class="snip">XUT_VEC</span> </td><td>0x80000080</td></tr>
+    <tr><td><span class="snip">ECC_VEC</span> </td><td>0x80000100</td></tr>
+    <tr><td><span class="snip">E_VEC</span>   </td><td>0x80000180</td></tr>
+    </table>
+</p>
+<!-- Miscellaneous -->
+<p><div class="prop"><span class="title" id="Miscellaneous">Miscellaneous</span></div>
+</p>
+<p>
+  <table>
+  <tr><td><span class="snip">M_GFXTASK</span></td><td>1</td></tr>
+  <tr><td><span class="snip">M_AUDTASK</span></td><td>2</td></tr>
+  </table>
+</p>
+<p>
+  <table>
+  <tr><td><span class="snip">OS_READ</span></td><td>0</td></tr>
+  <tr><td><span class="snip">OS_WRITE</span></td><td>1</td></tr>
+  </table>
+</p>
+<p>
+  <table>
+  <tr><td><span class="snip">G_IM_FMT_RGBA</span></td><td>0</td></tr>
+  <tr><td><span class="snip">G_IM_FMT_YUV</span></td><td>1</td></tr>
+  <tr><td><span class="snip">G_IM_FMT_CI</span></td><td>2</td></tr>
+  <tr><td><span class="snip">G_IM_FMT_IA</span></td><td>3</td></tr>
+  <tr><td><span class="snip">G_IM_FMT_I</span></td><td>4</td></tr>
+  </table>
+</p>
+<p>
+  <table>
+  <tr><td><span class="snip">G_IM_SIZ_4b</span></td><td>0</td></tr>
+  <tr><td><span class="snip">G_IM_SIZ_8b</span></td><td>1</td></tr>
+  <tr><td><span class="snip">G_IM_SIZ_16b</span></td><td>2</td></tr>
+  <tr><td><span class="snip">G_IM_SIZ_32b</span></td><td>3</td></tr>
+  </table>
+</p>
+<p>
+  <table>
+  <tr><td><span class="snip">G_TT_NONE</span>  </td><td>0x0000</td></tr>
+  <tr><td><span class="snip">G_TT_RGBA16</span></td><td>0x8000</td></tr>
+  <tr><td><span class="snip">G_TT_IA16</span>  </td><td>0xC000</td></tr>
+  </table>
+</p>
+
+</div>
+</div>
+</body>

@@ -9,6 +9,7 @@
 #include <Project64-core/N64System/Mips/Disk.h>
 #include <Project64-core/N64System/N64Disk.h>
 #include <Project64-core/N64System/N64System.h>
+#include <Project64-core/Debugger.h>
 
 CDMA::CDMA(CFlashram & FlashRam, CSram & Sram) :
     m_FlashRam(FlashRam),
@@ -43,6 +44,11 @@ void CDMA::OnFirstDMA()
 
 void CDMA::PI_DMA_READ()
 {
+    if (g_Debugger != NULL && HaveDebugger())
+    {
+        g_Debugger->PIDMAReadStarted();
+    }
+
     //	PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
     uint32_t PI_RD_LEN_REG = ((g_Reg->PI_RD_LEN_REG) & 0x00FFFFFFul) + 1;
 
@@ -190,6 +196,11 @@ void CDMA::PI_DMA_READ()
 
 void CDMA::PI_DMA_WRITE()
 {
+    if (g_Debugger != NULL && HaveDebugger())
+    {
+        g_Debugger->PIDMAWriteStarted();
+    }
+
     // Rounding PI_WR_LEN_REG up to the nearest even number fixes AI Shougi 3, Doraemon 3, etc.
     uint32_t PI_WR_LEN_REG = ((g_Reg->PI_WR_LEN_REG) & 0x00FFFFFEul) + 2;
     uint32_t PI_CART_ADDR_REG = !g_Settings->LoadBool(Game_UnalignedDMA) ? g_Reg->PI_CART_ADDR_REG & ~1 : g_Reg->PI_CART_ADDR_REG;

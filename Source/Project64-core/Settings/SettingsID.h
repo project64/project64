@@ -253,6 +253,7 @@ enum SettingID
     Debugger_ShowRecompMemSize,
     Debugger_DebugLanguage,
     Debugger_RecordExecutionTimes,
+    Debugger_SilentBreak,
     Debugger_SteppingOps,
     Debugger_SkipOp,
     Debugger_HaveExecutionBP,
@@ -265,6 +266,7 @@ enum SettingID
     Debugger_FpExceptionBreakpoints,
     Debugger_IntrBreakpoints,
     Debugger_RcpIntrBreakpoints,
+    Debugger_AutorunScripts,
 
     // Trace
     Debugger_TraceMD5,

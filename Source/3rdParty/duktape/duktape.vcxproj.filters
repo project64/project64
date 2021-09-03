@@ -17,9 +17,15 @@
     <ClInclude Include="duktape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="duk_module_duktape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="duktape.c">
+    <ClCompile Include="duktape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="duk_module_duktape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -25,6 +25,11 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         Notify().SetMainWindow(&MainWindow);
         bool isROMLoaded = false;
 
+        if (CDebuggerUI::HaveDebugger())
+        {
+            Debugger.StartAutorunScripts();
+        }
+
         if (g_Settings->LoadStringVal(Cmd_RomFile).length() > 0 && g_Settings->LoadStringVal(Cmd_ComboDiskFile).length() > 0)
         {
             // Handle combo loading (N64 ROM and 64DD Disk)
