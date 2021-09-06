@@ -2,10 +2,10 @@ package emu.project64.settings;
 
 import emu.project64.R;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.preference.DialogPreference;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceDialogFragmentCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.preference.DialogPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceDialogFragmentCompat;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;

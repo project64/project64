@@ -1,7 +1,7 @@
 package emu.project64.settings;
 
 import emu.project64.R;
-import android.support.v7.preference.Preference;
+import androidx.preference.Preference;
 
 public class AdvancedFragment extends BaseSettingsFragment
 {

@@ -2,13 +2,14 @@ package emu.project64.game;
 
 import emu.project64.jni.NativeExports;
 import emu.project64.jni.SystemEvent;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
-public class GameActivity extends Activity
+import androidx.appcompat.app.AppCompatActivity;
+
+public class GameActivity extends AppCompatActivity
 {
     private GameLifecycleHandler mLifecycleHandler;
     @SuppressWarnings("unused")

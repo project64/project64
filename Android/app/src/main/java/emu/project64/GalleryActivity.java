@@ -37,7 +37,7 @@ import emu.project64.util.Strings;
 import emu.project64.util.Utility;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -51,14 +51,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
@@ -74,6 +66,16 @@ import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class GalleryActivity extends AppCompatActivity implements IabBroadcastListener
 {
@@ -231,14 +233,14 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
             }
         });
         UpdateLanguage();
-        
+
         int RunCount = NativeExports.UISettingsLoadDword(UISettingID.AppInfo_RunCount.getValue()) + 1;
-		if (RunCount < 1) { RunCount = 1; }
+        if (RunCount < 1) { RunCount = 1; }
         NativeExports.UISettingsSaveDword(UISettingID.AppInfo_RunCount.getValue(), RunCount);
         Log.d("GalleryActivity", "ShowSupportWindow RunCount = " + RunCount);
         if (RunCount == 5 || RunCount == 10)
         {
-        	ShowReviewOptions();        	
+            ShowReviewOptions();
         }
     }
 
@@ -388,10 +390,10 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
     {
         switch( item.getItemId() )
         {
-            case R.id.menuItem_gameDir:
-                Intent intent = new Intent(this, ScanRomsActivity.class);
-                startActivityForResult( intent, GAME_DIR_REQUEST_CODE );
-                return true;
+        case R.id.menuItem_GameDir:
+            Intent ScanRomsIntent = new Intent(this, ScanRomsActivity.class);
+            startActivityForResult( ScanRomsIntent, GAME_DIR_REQUEST_CODE );
+            return true;
             case R.id.menuItem_settings:
                 Intent SettingsIntent = new Intent(this, SettingsActivity.class);
                 startActivity( SettingsIntent );
@@ -405,10 +407,10 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                 startActivity(IssueIntent);
                 return true;
             case R.id.menuItem_review:
-            	ShowReviewOptions();
+                ShowReviewOptions();
                 return true;
             case R.id.menuItem_support:
-            	ShowPaymentOptions();
+                ShowPaymentOptions();
                 return true;
             case R.id.menuItem_about:
                 Intent AboutIntent = new Intent(this, AboutActivity.class);
@@ -605,7 +607,6 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
     {
         NativeExports.LoadGame(item.romFile.getAbsolutePath());
         StartGameMenu(true);
-        Log.d("GalleryActivity", "onGalleryItemLongClick 4");
         return true;
     }
 
@@ -817,7 +818,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         })
         .setCancelable(false).show();
     }
-    
+
     public void ShowPaymentOptions()
     {
         ArrayList<String> skuList = new ArrayList<String>();
