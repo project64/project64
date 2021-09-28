@@ -4,6 +4,8 @@
 
 #pragma once
 
+#define PJ64_JSAPI_VERSION "jsapi-2"
+
 #define HS_gAppCallbacks             DUK_HIDDEN_SYMBOL("gAppCallbacks")
 #define HS_gInstancePtr              DUK_HIDDEN_SYMBOL("gInstancePtr")
 #define HS_gInputListener            DUK_HIDDEN_SYMBOL("gInputListener")
