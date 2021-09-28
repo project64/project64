@@ -13,6 +13,12 @@ void ScriptAPI::InitEnvironment(duk_context* ctx, CScriptInstance* inst)
     duk_def_prop(ctx, -3, DUK_DEFPROP_HAVE_VALUE | DUK_DEFPROP_SET_ENUMERABLE);
     duk_pop(ctx);
 
+    duk_push_global_object(ctx);
+    duk_push_string(ctx, "PJ64_JSAPI_VERSION");
+    duk_push_string(ctx, PJ64_JSAPI_VERSION);
+    duk_def_prop(ctx, -3, DUK_DEFPROP_HAVE_VALUE | DUK_DEFPROP_SET_ENUMERABLE);
+    duk_pop(ctx);
+
     duk_module_duktape_init(ctx);
     duk_get_global_string(ctx, "Duktape");
     duk_push_c_function(ctx, js_Duktape_modSearch, 4);
