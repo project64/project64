@@ -152,6 +152,7 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
             case CIC_UNKNOWN: CicChip = L"Unknown"; break;
             case CIC_NUS_8303: CicChip = L"CIC-NUS-8303"; break;
             case CIC_NUS_5167: CicChip = L"CIC-NUS-5167"; break;
+            case CIC_NUS_5101: CicChip = L"CIC-NUS-5101"; break;
             case CIC_NUS_DDUS: CicChip = L"CIC-NUS-????"; break;
             case CIC_NUS_DDTL: CicChip = L"CIC-NUS-????"; break;
             default: CicChip = stdstr_f("CIC-NUS-610%d", _this->m_pRomInfo->CicChipID()).ToUTF16(); break;

@@ -1072,6 +1072,7 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
             case CIC_NUS_8303:
             case CIC_NUS_DDUS:
             case CIC_NUS_DDTL:
+            case CIC_NUS_5101:
             default:
                 // No specific values
                 break;
@@ -1094,6 +1095,9 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
             break;
         case CIC_NUS_DDUS:        // 64DD US IPL CIC
             m_Reg.m_GPR[22].DW = 0x00000000000000DE;
+            break;
+        case CIC_NUS_5101:        // Aleck64 CIC
+            m_Reg.m_GPR[22].DW = 0x00000000000000AC;
             break;
         case CIC_UNKNOWN:
         case CIC_NUS_6102:
