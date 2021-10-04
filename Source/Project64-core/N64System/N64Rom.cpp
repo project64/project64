@@ -282,7 +282,7 @@ CICChip CN64Rom::GetCicChipID(uint8_t * RomData, uint64_t * CRC)
     case 0x000000D6D5BE5580: return CIC_NUS_6106;
     case 0x000001053BC19870: return CIC_NUS_5167; // 64DD conversion CIC
     case 0x000000D2E53EF008: return CIC_NUS_8303; // 64DD IPL
-    case 0x000000D2E53EF39F: return CIC_NUS_DDTL; // 64DD IPL tool
+    case 0x000000D2E53EF39F: return CIC_NUS_8401; // 64DD IPL tool
     case 0x000000D2E53E5DDA: return CIC_NUS_DDUS; // 64DD IPL US (different CIC)
     default:
         //Aleck64 CIC
@@ -344,7 +344,7 @@ void CN64Rom::CalculateRomCrc()
     case CIC_NUS_6106: v0 = 0x1FEA617A; break;
     case CIC_NUS_DDUS: length = 0x000A0000; v0 = 0x861AE3A7; break;
     case CIC_NUS_8303: length = 0x000A0000; v0 = 0x8331D4CA; break;
-    case CIC_NUS_DDTL: length = 0x000A0000; v0 = 0x0D8303E2; break;
+    case CIC_NUS_8401: length = 0x000A0000; v0 = 0x0D8303E2; break;
     case CIC_NUS_5101: v0 = 0x95104FDD; break;
     default:
         return;
@@ -456,7 +456,7 @@ bool CN64Rom::IsLoadedRomDDIPL()
     {
     case CIC_NUS_8303:
     case CIC_NUS_DDUS:
-    case CIC_NUS_DDTL:
+    case CIC_NUS_8401:
         return true;
     default:
         return false;

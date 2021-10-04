@@ -750,6 +750,10 @@ void CRomBrowser::RomList_GetDispInfo(uint32_t pnmh)
         {
             swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"CIC-NUS-????");
         }
+        else if (pRomInfo->CicChip == CIC_NUS_8401)
+        {
+            swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"CIC-NUS-8401");
+        }
         else if (pRomInfo->CicChip == CIC_NUS_5101)
         {
             swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"CIC-NUS-5101");
