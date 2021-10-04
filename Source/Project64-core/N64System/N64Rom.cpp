@@ -288,7 +288,7 @@ CICChip CN64Rom::GetCicChipID(uint8_t * RomData, uint64_t * CRC)
         //Aleck64 CIC
         if (crcAleck64 == 0x000000A5F80BF620)
         {
-            *CRC = crcAleck64;
+            if (CRC != nullptr) { *CRC = crcAleck64; }
             return CIC_NUS_5101;
         }
         return CIC_UNKNOWN;
