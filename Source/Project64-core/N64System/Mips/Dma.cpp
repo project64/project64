@@ -29,12 +29,13 @@ void CDMA::OnFirstDMA()
     case CIC_NUS_5167:  offset = +0x0318; break;
     case CIC_NUS_8303:  offset = +0x0318; break;
     case CIC_NUS_DDUS:  offset = +0x0318; break;
-    case CIC_NUS_DDTL:  offset = +0x0318; break;
+    case CIC_NUS_8401:  offset = +0x0318; break;
     case CIC_UNKNOWN:
     case CIC_NUS_6102:  offset = +0x0318; break;
     case CIC_NUS_6103:  offset = +0x0318; break;
     case CIC_NUS_6105:  offset = +0x03F0; break;
     case CIC_NUS_6106:  offset = +0x0318; break;
+    case CIC_NUS_5101:  offset = +0x0318; break;
     default:
         g_Notify->DisplayError(stdstr_f("Unhandled CicChip(%d) in first DMA", g_Rom->CicChipID()).c_str());
         return;
