@@ -62,11 +62,11 @@ duk_ret_t ScriptAPI::js_Server__finalizer(duk_context* ctx)
 
 duk_ret_t ScriptAPI::js_Server_listen(duk_context* ctx)
 {
-    CheckArgs(ctx, { Arg_Number, Arg_String, Arg_OptFunction });
+    CheckArgs(ctx, { Arg_Number, Arg_OptString, Arg_OptFunction });
     CJSServerWorker* serverWorker = GetThisServer(ctx);
 
     unsigned short port = (unsigned short)duk_get_int(ctx, 0);
-    const char* address = duk_get_string(ctx, 1);
+    const char* address = duk_get_string_default(ctx, 1, "0.0.0.0");
 
     // todo callback
 
