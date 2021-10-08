@@ -112,11 +112,6 @@ error_cleanup:
     return false;
 }
 
-size_t CScriptInstance::GetRefCount()
-{
-    return m_RefCount;
-}
-
 void CScriptInstance::IncRefCount()
 {
     m_RefCount++;
@@ -133,27 +128,6 @@ void CScriptInstance::DecRefCount()
 void CScriptInstance::SetStopping(bool bStopping)
 {
     m_bStopping = bStopping;
-}
-
-bool CScriptInstance::IsStopping()
-{
-    return m_bStopping;
-}
-
-void CScriptInstance::RawCall(void *dukFuncHeapPtr, JSDukArgSetupFunc argSetupFunc, void *param)
-{
-    m_ExecStartTime = Timestamp();
-    duk_push_heapptr(m_Ctx, dukFuncHeapPtr);
-    duk_idx_t nargs = argSetupFunc ? argSetupFunc(m_Ctx, param) : 0;
-
-    if(duk_pcall(m_Ctx, nargs) == DUK_EXEC_ERROR)
-    {
-        duk_get_prop_string(m_Ctx, -1, "stack");
-        m_System->ConsoleLog("%s", duk_safe_to_string(m_Ctx, -1));
-        duk_pop(m_Ctx);
-    }
-
-    duk_pop(m_Ctx);
 }
 
 void CScriptInstance::RawCMethodCall(void* dukThisHeapPtr, duk_c_function func, JSDukArgSetupFunc argSetupFunc, void *argSetupParam)
@@ -177,25 +151,6 @@ void CScriptInstance::PostCMethodCall(void* dukThisHeapPtr, duk_c_function func,
     void* argSetupParam, size_t argSetupParamSize)
 {
     m_System->PostCMethodCall(m_InstanceName.c_str(), dukThisHeapPtr, func, argSetupFunc, argSetupParam, argSetupParamSize);
-}
-
-void CScriptInstance::RawInvokeAppCallback(JSAppCallback& cb, void* _hookEnv)
-{
-    if (cb.m_ConditionFunc != nullptr && !cb.m_ConditionFunc(&cb, _hookEnv))
-    {
-        return;
-    }
-
-    m_CurExecCallbackId = cb.m_CallbackId;
-
-    RawCall(cb.m_DukFuncHeapPtr, cb.m_DukArgSetupFunc, _hookEnv);
-
-    if (cb.m_CleanupFunc != nullptr)
-    {
-        cb.m_CleanupFunc(m_Ctx, _hookEnv);
-    }
-    
-    m_CurExecCallbackId = JS_INVALID_CALLBACK;
 }
 
 void CScriptInstance::RawConsoleInput(const char* code)

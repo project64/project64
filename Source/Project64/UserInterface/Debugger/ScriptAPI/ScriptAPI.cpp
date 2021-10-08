@@ -369,7 +369,7 @@ JSAppCallbackID ScriptAPI::AddAppCallback(duk_context* ctx, duk_idx_t callbackId
 JSAppCallbackID ScriptAPI::AddAppCallback(duk_context* ctx, JSAppHookID hookId, JSAppCallback& callback)
 {
     CScriptInstance* inst = GetInstance(ctx);
-    JSAppCallbackID callbackId = inst->System()->RawAddAppCallback(hookId, callback);
+    JSAppCallbackID callbackId = inst->System()->QueueAddAppCallback(hookId, callback);
 
     if(callbackId == JS_INVALID_CALLBACK)
     {
@@ -393,8 +393,6 @@ JSAppCallbackID ScriptAPI::AddAppCallback(duk_context* ctx, JSAppHookID hookId, 
     duk_put_prop_index(ctx, -2, callbackId);
 
     duk_pop(ctx);
-
-    inst->IncRefCount();
 
     return callbackId;
 }
@@ -425,13 +423,8 @@ duk_ret_t ScriptAPI::js__AppCallbackFinalizer(duk_context* ctx)
     JSAppCallbackID callbackId = (JSAppCallbackID)duk_get_uint(ctx, -1);
     duk_pop_n(ctx, 2);
 
-    bool bRemoved = inst->System()->RawRemoveAppCallback(hookId, callbackId);
+    inst->System()->QueueRemoveAppCallback(hookId, callbackId);
 
-    if(bRemoved)
-    {
-        inst->DecRefCount();
-    }
-    
     return 0;
 }
 

@@ -14,9 +14,19 @@ class CScriptSystem
 {
     typedef std::map<JSInstanceName, CScriptInstance*> JSInstanceMap;
     typedef std::map<JSAppCallbackID, JSAppCallback> JSAppCallbackMap;
-    typedef std::map<JSAppHookID, JSAppCallbackMap> JSAppHookMap;
+    typedef std::vector<JSAppCallbackMap> JSAppHookList;
     typedef std::map<JSInstanceName, JSInstanceStatus> JSInstanceStatusMap;
     typedef std::vector<JSSysCommand> JSSysCommandQueue;
+
+    struct JSQueuedCallbackAdd {
+        JSAppHookID hookId;
+        JSAppCallback callback;
+    };
+
+    struct JSQueuedCallbackRemove {
+        JSAppHookID hookId;
+        JSAppCallbackID callbackId;
+    };
 
     HANDLE              m_hThread;
 
@@ -26,10 +36,13 @@ class CScriptSystem
 
     CriticalSection     m_InstancesCS;
     JSInstanceMap       m_Instances;
-    JSAppHookMap        m_AppCallbackHooks;
+    JSAppHookList       m_AppCallbackHooks;
     JSAppCallbackID     m_NextAppCallbackId;
     size_t              m_AppCallbackCount;
 
+    std::vector<JSQueuedCallbackRemove> m_CBRemoveQueue;
+    std::vector<JSQueuedCallbackAdd> m_CBAddQueue;
+    
     CriticalSection     m_UIStateCS;
     JSInstanceStatusMap m_UIInstanceStatus;
     stdstr              m_UILog;
@@ -69,16 +82,23 @@ public:
         size_t argSetupParamSize = 0);
 
     bool HaveAppCallbacks(JSAppHookID hookId);
-    void InvokeAppCallbacks(JSAppHookID hookId, void* env = nullptr);
+
+    // Note: Unguarded for speed, shouldn't matter
+    inline bool HaveAppCallbacks() {
+        return m_AppCallbackCount != 0;
+    }
+
     void DoMouseEvent(JSAppHookID hookId, int x, int y, DWORD uMsg = (DWORD)-1);
-    JSAppCallbackID RawAddAppCallback(JSAppHookID hookId, JSAppCallback& callback);
-    bool RawRemoveAppCallback(JSAppHookID hookId, JSAppCallbackID callbackId);
+
+    JSAppCallbackID QueueAddAppCallback(JSAppHookID hookId, JSAppCallback callback);
+    void QueueRemoveAppCallback(JSAppHookID hookId, JSAppCallbackID callbackId);
+    void InvokeAppCallbacks(JSAppHookID hookId, void* env = nullptr);
 
     void ExecAutorunList();
     std::set<std::string>& AutorunList();
     void LoadAutorunList();
     void SaveAutorunList();
-    
+
 private:
     void InitDirectories();
 
@@ -98,6 +118,10 @@ private:
     void OnSweep(bool bIfDone);
 
     bool RawRemoveInstance(const char* key);
+    
+    void RawAddAppCallback(JSAppHookID hookId, JSAppCallback& callback);
+    void RawRemoveAppCallback(JSAppHookID hookId, JSAppCallbackID callbackId);
+    void RefreshCallbackMaps();
 
     static stdstr FixStringReturns(const char* str);
 };

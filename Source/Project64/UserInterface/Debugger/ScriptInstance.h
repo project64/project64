@@ -32,21 +32,45 @@ public:
     void   SetExecTimeout(uint64_t timeout);
     bool   IsTimedOut();
 
-    size_t GetRefCount();
+    inline size_t GetRefCount() { return m_RefCount; }
     void   IncRefCount();
     void   DecRefCount();
     void   SetStopping(bool bStopping);
-    bool   IsStopping();
+    inline bool IsStopping() { return m_bStopping; }
 
     bool RegisterWorker(CScriptWorker* worker);
     void UnregisterWorker(CScriptWorker* worker);
     void StopRegisteredWorkers();
 
-    void   RawInvokeAppCallback(JSAppCallback& cb, void *_hookEnv);
+    inline void RawInvokeAppCallback(JSAppCallback& cb, void* _hookEnv)
+    {
+        m_CurExecCallbackId = cb.m_CallbackId;
 
-    void   RawConsoleInput(const char* code);
+        RawCall(cb.m_DukFuncHeapPtr, cb.m_DukArgSetupFunc, _hookEnv);
 
-    void   RawCall(void* dukFuncHeapPtr, JSDukArgSetupFunc argSetupFunc, void* param = nullptr);
+        if (cb.m_CleanupFunc != nullptr)
+        {
+            cb.m_CleanupFunc(m_Ctx, _hookEnv);
+        }
+
+        m_CurExecCallbackId = JS_INVALID_CALLBACK;
+    }
+
+    inline void RawCall(void *dukFuncHeapPtr, JSDukArgSetupFunc argSetupFunc, void *param = nullptr)
+    {
+        m_ExecStartTime = Timestamp();
+        duk_push_heapptr(m_Ctx, dukFuncHeapPtr);
+        duk_idx_t nargs = argSetupFunc ? argSetupFunc(m_Ctx, param) : 0;
+
+        if (duk_pcall(m_Ctx, nargs) == DUK_EXEC_ERROR)
+        {
+            duk_get_prop_string(m_Ctx, -1, "stack");
+            m_System->ConsoleLog("%s", duk_safe_to_string(m_Ctx, -1));
+            duk_pop(m_Ctx);
+        }
+
+        duk_pop(m_Ctx);
+    }
 
     void   RawCMethodCall(void* dukThisHeapPtr, duk_c_function func,
                           JSDukArgSetupFunc argSetupFunc = nullptr,
@@ -55,6 +79,8 @@ public:
     void   PostCMethodCall(void* dukThisHeapPtr, duk_c_function func,
                            JSDukArgSetupFunc argSetupFunc = nullptr,
                            void* argSetupParam = nullptr, size_t argSetupParamSize = 0);
+
+    void   RawConsoleInput(const char* code);
 
 private:
     static uint64_t Timestamp();
