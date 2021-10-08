@@ -3,7 +3,7 @@ package emu.project64.settings;
 import emu.project64.R;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v7.preference.ListPreference;
+import androidx.preference.ListPreference;
 import android.util.AttributeSet;
 
 public class TwoLinesListPreference extends ListPreference

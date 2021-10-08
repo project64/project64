@@ -530,7 +530,7 @@ bool CRomList::FillRomInfo(ROM_INFO * pRomInfo)
             pRomInfo->CRC1 = *(uint32_t *)(RomData + 0x10);
             pRomInfo->CRC2 = *(uint32_t *)(RomData + 0x14);
             pRomInfo->CicChip = CN64Rom::GetCicChipID(RomData);
-            if (pRomInfo->CicChip == CIC_NUS_8303 || pRomInfo->CicChip == CIC_NUS_DDUS || pRomInfo->CicChip == CIC_NUS_DDTL)
+            if (pRomInfo->CicChip == CIC_NUS_8303 || pRomInfo->CicChip == CIC_NUS_DDUS || pRomInfo->CicChip == CIC_NUS_8401)
             {
                 pRomInfo->CRC1 = (*(uint16_t *)(RomData + 0x608) << 16) | *(uint16_t *)(RomData + 0x60C);
                 pRomInfo->CRC2 = (*(uint16_t *)(RomData + 0x638) << 16) | *(uint16_t *)(RomData + 0x63C);

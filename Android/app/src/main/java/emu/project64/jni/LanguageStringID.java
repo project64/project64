@@ -1,7 +1,7 @@
 package emu.project64.jni;
 
 public enum LanguageStringID
-{		
+{
     EMPTY_STRING(0),
 
     /*********************************************************************************
@@ -379,7 +379,7 @@ public enum LanguageStringID
     STR_FR_DLS(701),
     STR_FR_PERCENT(702),
     STR_FR_DLS_VIS(703),
-	STR_FR_NONE(704),
+    STR_FR_NONE(704),
 
     // Increase speed
     STR_INSREASE_SPEED(710),
@@ -531,7 +531,7 @@ public enum LanguageStringID
     MSG_DEL_TITLE(2042),
     MSG_CHEAT_NAME_IN_USE(2043),
     MSG_MAX_CHEATS(2044),
-    MSG_PLUGIN_INIT(2045),	
+    MSG_PLUGIN_INIT(2045),
     MSG_NO_SHORTCUT_SEL(2046),
     MSG_NO_MENUITEM_SEL(2047),
     MSG_MENUITEM_ASSIGNED(2048),
@@ -569,10 +569,10 @@ public enum LanguageStringID
     ANDROID_ABOUT_REVISION(3018),
     ANDROID_ABOUT_TEXT(3019),
     ANDROID_ABOUT_PJ64_AUTHORS(3020),
-	ANDROID_DISCORD(3021),
-	ANDROID_SUPPORT_PJ64(3022),
-	ANDROID_REVIEW_PJ64(3023),
-    
+    ANDROID_DISCORD(3021),
+    ANDROID_SUPPORT_PJ64(3022),
+    ANDROID_REVIEW_PJ64(3023),
+
     //In game menu
     ANDROID_MENU_SETTINGS(3100),
     ANDROID_MENU_SAVESTATE(3101),
@@ -592,26 +592,26 @@ public enum LanguageStringID
     //Video plugin
     ANDROID_VIDEO_NATIVE_RES(3200),
     ;
-    
+
     private int value;
-    
-    public int getValue() 
+
+    public int getValue()
     {
         return this.value;
     }
-    private static final class StaticFields 
+    private static final class StaticFields
     {
         public static int Counter = 0;
     }
-    
+
     private LanguageStringID()
     {
-    	this.value = StaticFields.Counter;
-    	StaticFields.Counter += 1;
+        this.value = StaticFields.Counter;
+        StaticFields.Counter += 1;
     }
     private LanguageStringID(int value)
     {
-    	this.value = value;
-    	StaticFields.Counter = this.value + 1;
-    } 
+        this.value = value;
+        StaticFields.Counter = this.value + 1;
+    }
 }

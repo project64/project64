@@ -7,9 +7,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import emu.project64.Project64Application;
 
-/**
- * Utility class which collects a bunch of commonly used methods into one class.
- */
 public final class Utility
 {
     

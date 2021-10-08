@@ -340,7 +340,7 @@ bool CN64System::LoadFileImage(const char * FileLoc)
                 g_Settings->SaveString(File_DiskIPLPath, FileLoc);
             else if (g_DDRom->CicChipID() == CIC_NUS_DDUS)
                 g_Settings->SaveString(File_DiskIPLUSAPath, FileLoc);
-            else if (g_DDRom->CicChipID() == CIC_NUS_DDTL)
+            else if (g_DDRom->CicChipID() == CIC_NUS_8401)
                 g_Settings->SaveString(File_DiskIPLTOOLPath, FileLoc);
         }
 
@@ -411,7 +411,7 @@ bool CN64System::LoadFileImageIPL(const char * FileLoc)
             g_Settings->SaveString(File_DiskIPLPath, FileLoc);
         else if (g_DDRom->CicChipID() == CIC_NUS_DDUS)
             g_Settings->SaveString(File_DiskIPLUSAPath, FileLoc);
-        else if (g_DDRom->CicChipID() == CIC_NUS_DDTL)
+        else if (g_DDRom->CicChipID() == CIC_NUS_8401)
             g_Settings->SaveString(File_DiskIPLTOOLPath, FileLoc);
 
         //g_Settings->SaveString(Game_File, FileLoc);
@@ -502,7 +502,7 @@ bool CN64System::RunFileImage(const char * FileLoc)
             g_Settings->SaveString(File_DiskIPLPath, FileLoc);
         else if (g_Rom->CicChipID() == CIC_NUS_DDUS)
             g_Settings->SaveString(File_DiskIPLUSAPath, FileLoc);
-        else if (g_Rom->CicChipID() == CIC_NUS_DDTL)
+        else if (g_Rom->CicChipID() == CIC_NUS_8401)
             g_Settings->SaveString(File_DiskIPLTOOLPath, FileLoc);
     }
     RunLoadedImage();
@@ -986,7 +986,7 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
     // Start N64DD in reset state and motor not spinning
     m_Reg.ASIC_STATUS = DD_STATUS_RST_STATE | DD_STATUS_MTR_N_SPIN;
     m_Reg.ASIC_ID_REG = 0x00030000;
-    if (g_DDRom && (g_DDRom->CicChipID() == CIC_NUS_DDTL || (g_Disk && g_Disk->GetCountry() == Country_Unknown)))
+    if (g_DDRom && (g_DDRom->CicChipID() == CIC_NUS_8401 || (g_Disk && g_Disk->GetCountry() == Country_Unknown)))
         m_Reg.ASIC_ID_REG = 0x00040000;
 
     //m_Reg.REVISION_REGISTER   = 0x00000511;
@@ -1071,7 +1071,8 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
             case CIC_NUS_5167:
             case CIC_NUS_8303:
             case CIC_NUS_DDUS:
-            case CIC_NUS_DDTL:
+            case CIC_NUS_8401:
+            case CIC_NUS_5101:
             default:
                 // No specific values
                 break;
@@ -1088,12 +1089,15 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
             m_Reg.m_GPR[22].DW = 0x000000000000003F;
             break;
         case CIC_NUS_8303:        // 64DD IPL CIC
-        case CIC_NUS_DDTL:        // 64DD IPL tool CIC
+        case CIC_NUS_8401:        // 64DD IPL tool CIC
         case CIC_NUS_5167:        // 64DD conversion CIC
             m_Reg.m_GPR[22].DW = 0x00000000000000DD;
             break;
         case CIC_NUS_DDUS:        // 64DD US IPL CIC
             m_Reg.m_GPR[22].DW = 0x00000000000000DE;
+            break;
+        case CIC_NUS_5101:        // Aleck64 CIC
+            m_Reg.m_GPR[22].DW = 0x00000000000000AC;
             break;
         case CIC_UNKNOWN:
         case CIC_NUS_6102:

@@ -118,7 +118,7 @@ public class SplashActivity extends AppCompatActivity implements ExtractAssetsLi
         }
         mInit = true;
         String ConfigFile = AndroidDevice.PACKAGE_DIRECTORY + "/Config/Project64.cfg";
-        if(( new File( ConfigFile ) ).exists())
+        if((new File(ConfigFile)).exists())
         {
             InitProject64();
         }
@@ -284,7 +284,7 @@ public class SplashActivity extends AppCompatActivity implements ExtractAssetsLi
         @Override
         public void run()
         {
-            Log.e( "Splash", "extractAssetsTaskLauncher - start");
+            Log.i( "Splash", "extractAssetsTaskLauncher - start");
             TOTAL_ASSETS = 0;
             CountTotalAssetFiles(SOURCE_DIR);
             mAssetsExtracted = 0;
@@ -312,12 +312,8 @@ public class SplashActivity extends AppCompatActivity implements ExtractAssetsLi
             }
             mTextView.setText( R.string.assetExtractor_finished );
             NativeExports.UISettingsSaveDword(UISettingID.Asserts_Version.getValue(), ASSET_VERSION);
-
-            // Launch gallery activity
             Intent intent = new Intent( this, GalleryActivity.class );
             this.startActivity( intent );
-
-            // We never want to come back to this activity, so finish it
             finish();
         }
         else

@@ -1,17 +1,10 @@
 package emu.project64.jni;
 
-/**
- * Calls made between the native input-android library and Java. Any function names changed here
- * should also be changed in the corresponding C code, and vice versa.
- * 
- * @see /Source/Android/PluginInput/Main.cpp
- * @see CoreInterface
- */
 public class NativeVideo
 {
     static
     {
-        System.loadLibrary( "Project64-gfx" );
+        System.loadLibrary( "Project64-video" );
     }
     
     public static native void UpdateScreenRes(int ScreenWidth, int ScreenHeight);
