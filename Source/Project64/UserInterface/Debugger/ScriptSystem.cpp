@@ -11,14 +11,12 @@
 CScriptSystem::CScriptSystem(CDebuggerUI *debugger) :
     m_Debugger(debugger),
     m_NextAppCallbackId(0),
-    m_AppCallbackCount(0)
+    m_AppCallbackCount(0),
+    m_CpuExecCbInfo({}),
+    m_CpuReadCbInfo({}),
+    m_CpuWriteCbInfo({})
 {
     InitDirectories();
-
-    for (int i = 0; i < JS_NUM_APP_HOOKS; i++)
-    {
-        m_AppCallbackHooks.push_back(JSAppCallbackMap());
-    }
 
     m_hCmdEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
     m_hThread = CreateThread(nullptr, 0, ThreadProc, this, 0, nullptr);
@@ -171,27 +169,18 @@ void CScriptSystem::InvokeAppCallbacks(JSAppHookID hookId, void* env)
 {
     CGuard guard(m_InstancesCS);
 
-    JSAppCallbackMap& callbacks = m_AppCallbackHooks[hookId];
-
-    if (hookId >= JS_NUM_APP_HOOKS ||
-        callbacks.size() == 0)
-    {
-        return;
-    }
+    JSAppCallbackList& callbacks = m_AppCallbackHooks[hookId];
 
     bool bNeedSweep = false;
 
-    JSAppCallbackMap::iterator it;
-    for (it = callbacks.begin(); it != callbacks.end(); it++)
+    for (JSAppCallback& callback : callbacks)
     {
-        JSAppCallback& callback = it->second;
-        CScriptInstance* instance = callback.m_Instance;
-
-        if (callback.m_ConditionFunc != nullptr &&
-            !callback.m_ConditionFunc(&callback, env))
+        if (!callback.m_ConditionFunc(&callback, env))
         {
             continue;
         }
+
+        CScriptInstance* instance = callback.m_Instance;
 
         if (!instance->IsStopping())
         {
@@ -210,17 +199,80 @@ void CScriptSystem::InvokeAppCallbacks(JSAppHookID hookId, void* env)
     }
 }
 
-void CScriptSystem::RefreshCallbackMaps() {
-    for (JSQueuedCallbackRemove& cbRemove : m_CBRemoveQueue) {
+void CScriptSystem::UpdateCpuCbListInfo(volatile JSCpuCbListInfo& info, JSAppCallbackList& callbacks)
+{
+    uint32_t minAddrStart = 0;
+    uint32_t maxAddrEnd = 0;
+    int numCacheEntries = 0;
+    bool bCacheExceeded = false;
+
+    for (JSAppCallback& callback : callbacks)
+    {
+        size_t i;
+        for (i = 0; i < numCacheEntries; i++)
+        {
+            // combine adjacent/overlapping ranges
+            if ((callback.m_Params.addrStart >= info.rangeCache[i].addrStart &&
+                 callback.m_Params.addrStart <= info.rangeCache[i].addrEnd + 1) ||
+                (callback.m_Params.addrEnd >= info.rangeCache[i].addrStart - 1 &&
+                 callback.m_Params.addrEnd <= info.rangeCache[i].addrEnd))
+            {
+                info.rangeCache[i].addrStart = min(info.rangeCache[i].addrStart, callback.m_Params.addrStart);
+                info.rangeCache[i].addrEnd = max(info.rangeCache[i].addrEnd, callback.m_Params.addrEnd);
+                break;
+            }
+        }
+
+        if (i == numCacheEntries)
+        {
+            if (i == JS_CPU_CB_RANGE_CACHE_SIZE)
+            {
+                bCacheExceeded = true;
+            }
+            else
+            {
+                info.rangeCache[i].addrStart = callback.m_Params.addrStart;
+                info.rangeCache[i].addrEnd = callback.m_Params.addrEnd;
+                numCacheEntries++;
+            }
+        }
+        
+        if (callback.m_Params.addrStart < minAddrStart)
+        {
+            minAddrStart = callback.m_Params.addrStart;
+        }
+
+        if (callback.m_Params.addrEnd > maxAddrEnd)
+        {
+            maxAddrEnd = callback.m_Params.addrEnd;
+        }
+    }
+
+    info.numRangeCacheEntries = numCacheEntries;
+    info.bRangeCacheExceeded = bCacheExceeded;
+    info.numCallbacks = callbacks.size();
+    info.minAddrStart = minAddrStart;
+    info.maxAddrEnd = maxAddrEnd;
+}
+
+void CScriptSystem::RefreshCallbackMaps()
+{
+    for (JSQueuedCallbackRemove& cbRemove : m_CbRemoveQueue)
+    {
         RawRemoveAppCallback(cbRemove.hookId, cbRemove.callbackId);
     }
 
-    for (JSQueuedCallbackAdd& cbAdd : m_CBAddQueue) {
+    for (JSQueuedCallbackAdd& cbAdd : m_CbAddQueue)
+    {
         RawAddAppCallback(cbAdd.hookId, cbAdd.callback);
     }
 
-    m_CBRemoveQueue.clear();
-    m_CBAddQueue.clear();
+    m_CbRemoveQueue.clear();
+    m_CbAddQueue.clear();
+
+    UpdateCpuCbListInfo(m_CpuExecCbInfo, m_AppCallbackHooks[JS_HOOK_CPU_EXEC]);
+    UpdateCpuCbListInfo(m_CpuReadCbInfo, m_AppCallbackHooks[JS_HOOK_CPU_READ]);
+    UpdateCpuCbListInfo(m_CpuWriteCbInfo, m_AppCallbackHooks[JS_HOOK_CPU_WRITE]);
 }
 
 JSAppCallbackID CScriptSystem::QueueAddAppCallback(JSAppHookID hookId, JSAppCallback callback)
@@ -231,29 +283,40 @@ JSAppCallbackID CScriptSystem::QueueAddAppCallback(JSAppHookID hookId, JSAppCall
     }
 
     callback.m_CallbackId = m_NextAppCallbackId++;
-    m_CBAddQueue.push_back({ hookId, callback });
+    m_CbAddQueue.push_back({ hookId, callback });
     callback.m_Instance->IncRefCount();
     return callback.m_CallbackId;
 }
 
 void CScriptSystem::QueueRemoveAppCallback(JSAppHookID hookId, JSAppCallbackID callbackId)
 {
-    if (m_AppCallbackHooks[hookId].count(callbackId) == 0)
-    {
-        return;
-    }
+    // todo also remove from addqueue
 
-    for (size_t i = 0; i < m_CBRemoveQueue.size(); i++)
+    for (size_t i = 0; i < m_CbRemoveQueue.size(); i++)
     {
-        if (m_CBRemoveQueue[i].hookId == hookId &&
-            m_CBRemoveQueue[i].callbackId == callbackId)
+        if (m_CbRemoveQueue[i].hookId == hookId &&
+            m_CbRemoveQueue[i].callbackId == callbackId)
         {
             return;
         }
     }
 
-    m_CBRemoveQueue.push_back({ hookId, callbackId });
-    m_AppCallbackHooks[hookId][callbackId].m_Instance->DecRefCount();
+    JSAppCallbackList::iterator it;
+    for (it = m_AppCallbackHooks[hookId].begin(); it != m_AppCallbackHooks[hookId].end(); it++)
+    {
+        if (it->m_CallbackId == callbackId)
+        {
+            break;
+        }
+    }
+
+    if (it == m_AppCallbackHooks[hookId].end())
+    {
+        return;
+    }
+
+    m_CbRemoveQueue.push_back({ hookId, callbackId });
+    it->m_Instance->DecRefCount();
 }
 
 void CScriptSystem::DoMouseEvent(JSAppHookID hookId, int x, int y, DWORD uMsg)
@@ -453,19 +516,22 @@ void CScriptSystem::RawAddAppCallback(JSAppHookID hookId, JSAppCallback& callbac
         return;
     }
 
-    m_AppCallbackHooks[hookId][callback.m_CallbackId] = callback;
+    m_AppCallbackHooks[hookId].push_back(callback);
     m_AppCallbackCount++;
 }
 
 void CScriptSystem::RawRemoveAppCallback(JSAppHookID hookId, JSAppCallbackID callbackId)
 {
-    if(m_AppCallbackHooks[hookId].count(callbackId) == 0)
+    JSAppCallbackList::iterator it;
+    for (it = m_AppCallbackHooks[hookId].begin(); it != m_AppCallbackHooks[hookId].end(); it++)
     {
-        return;
+        if (it->m_CallbackId == callbackId)
+        {
+            m_AppCallbackHooks[hookId].erase(it);
+            m_AppCallbackCount--;
+            return;
+        }
     }
-
-    m_AppCallbackHooks[hookId].erase(callbackId);
-    m_AppCallbackCount--;
 }
 
 void CScriptSystem::ExecAutorunList()

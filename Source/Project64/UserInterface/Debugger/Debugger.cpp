@@ -603,10 +603,25 @@ void CDebuggerUI::CPUStepStarted()
 
     if (m_ScriptSystem->HaveAppCallbacks())
     {
-        JSHookCpuStepEnv hookEnv = { 0 };
+        JSHookCpuStepEnv hookEnv;
         hookEnv.pc = g_Reg->m_PROGRAM_COUNTER;
         hookEnv.opInfo = COpInfo(R4300iOp::m_Opcode);
-        m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_CPUSTEP, (void*)&hookEnv);
+
+        if(m_ScriptSystem->HaveCpuExecCallbacks(hookEnv.pc))
+        {
+            m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_CPU_EXEC, (void*)&hookEnv);
+        }
+
+        if (hookEnv.opInfo.IsLoadCommand() &&
+            m_ScriptSystem->HaveCpuReadCallbacks(hookEnv.opInfo.GetLoadStoreAddress()))
+        {
+            m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_CPU_READ, (void*)&hookEnv);
+        }
+        else if (hookEnv.opInfo.IsStoreCommand() &&
+            m_ScriptSystem->HaveCpuWriteCallbacks(hookEnv.opInfo.GetLoadStoreAddress()))
+        {
+            m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_CPU_WRITE, (void*)&hookEnv);
+        }
     }
 
     if (CDebugSettings::ExceptionBreakpoints() != 0)

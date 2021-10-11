@@ -92,7 +92,7 @@ duk_ret_t ScriptAPI::js_events_onexec(duk_context* ctx)
     cb.m_Params.addrStart = addrStart;
     cb.m_Params.addrEnd = addrEnd;
 
-    JSAppCallbackID callbackId = AddAppCallback(ctx, JS_HOOK_CPUSTEP, cb);
+    JSAppCallbackID callbackId = AddAppCallback(ctx, JS_HOOK_CPU_EXEC, cb);
 
     duk_push_uint(ctx, callbackId);
     return 1;
@@ -112,7 +112,7 @@ duk_ret_t ScriptAPI::js_events_onread(duk_context* ctx)
     cb.m_Params.addrStart = addrStart;
     cb.m_Params.addrEnd = addrEnd;
 
-    JSAppCallbackID callbackId = AddAppCallback(ctx, JS_HOOK_CPUSTEP, cb);
+    JSAppCallbackID callbackId = AddAppCallback(ctx, JS_HOOK_CPU_READ, cb);
 
     duk_push_uint(ctx, callbackId);
     return 1;
@@ -132,7 +132,7 @@ duk_ret_t ScriptAPI::js_events_onwrite(duk_context* ctx)
     cb.m_Params.addrStart = addrStart;
     cb.m_Params.addrEnd = addrEnd;
 
-    JSAppCallbackID callbackId = AddAppCallback(ctx, JS_HOOK_CPUSTEP, cb);
+    JSAppCallbackID callbackId = AddAppCallback(ctx, JS_HOOK_CPU_WRITE, cb);
 
     duk_push_uint(ctx, callbackId);
     return 1;
@@ -157,7 +157,7 @@ duk_ret_t ScriptAPI::js_events_onopcode(duk_context* ctx)
     cb.m_Params.opcode = opcode;
     cb.m_Params.opcodeMask = mask;
 
-    JSAppCallbackID callbackId = AddAppCallback(ctx, JS_HOOK_CPUSTEP, cb);
+    JSAppCallbackID callbackId = AddAppCallback(ctx, JS_HOOK_CPU_EXEC, cb);
 
     duk_push_uint(ctx, callbackId);
     return 1;
@@ -179,7 +179,7 @@ duk_ret_t ScriptAPI::js_events_ongprvalue(duk_context* ctx)
     cb.m_Params.regIndices = duk_get_uint(ctx, 1);
     cb.m_Params.regValue = duk_get_uint(ctx, 2);
 
-    JSAppCallbackID callbackId = AddAppCallback(ctx, JS_HOOK_CPUSTEP, cb);
+    JSAppCallbackID callbackId = AddAppCallback(ctx, JS_HOOK_CPU_EXEC, cb);
 
     duk_push_uint(ctx, callbackId);
     return 1;
@@ -258,7 +258,7 @@ bool CbCond_ReadAddrBetween(JSAppCallback* cb, void* _env)
 {
     JSHookCpuStepEnv* env = (JSHookCpuStepEnv*)_env;
 
-    if(!env->opInfo.IsLoadCommand())
+    if (!env->opInfo.IsLoadCommand())
     {
         return false;
     }
@@ -273,7 +273,7 @@ bool CbCond_WriteAddrBetween(JSAppCallback* cb, void* _env)
 {
     JSHookCpuStepEnv* env = (JSHookCpuStepEnv*)_env;
 
-    if(!env->opInfo.IsStoreCommand())
+    if (!env->opInfo.IsStoreCommand())
     {
         return false;
     }
