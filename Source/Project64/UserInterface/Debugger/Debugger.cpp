@@ -579,34 +579,55 @@ void CDebuggerUI::HandleCartToRamDMA(void)
 // Called from the interpreter core at the beginning of every CPU step
 void CDebuggerUI::CPUStepStarted()
 {
-    uint32_t pc = g_Reg->m_PROGRAM_COUNTER;
-    COpInfo opInfo(R4300iOp::m_Opcode);
-    bool bStoreOp = opInfo.IsStoreCommand();
-    uint32_t storeAddress = bStoreOp ? opInfo.GetLoadStoreAddress() : 0;
-
     if (isStepping() && bCPULoggingEnabled())
     {
         Debug_RefreshCPULogWindow();
     }
 
-    if(bStoreOp && m_Breakpoints->NumMemLocks() > 0)
+    if(m_Breakpoints->NumMemLocks() > 0)
     {
-        if (m_Breakpoints->MemLockExists(storeAddress, opInfo.NumBytesToStore()))
+        COpInfo opInfo(R4300iOp::m_Opcode);
+        bool bStoreOp = opInfo.IsStoreCommand();
+
+        if (bStoreOp)
         {
-            // Memory is locked, skip op
-            g_Settings->SaveBool(Debugger_SkipOp, true);
-            return;
+            uint32_t storeAddress = bStoreOp ? opInfo.GetLoadStoreAddress() : 0;
+            if (m_Breakpoints->MemLockExists(storeAddress, opInfo.NumBytesToStore()))
+            {
+                // Memory is locked, skip op
+                g_Settings->SaveBool(Debugger_SkipOp, true);
+                return;
+            }
         }
     }
 
-    JSHookCpuStepEnv hookEnv = { 0 };
-    hookEnv.pc = pc;
-    hookEnv.opInfo = opInfo;
-    
-    m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_CPUSTEP, (void*)&hookEnv);
+    if (m_ScriptSystem->HaveAppCallbacks())
+    {
+        JSHookCpuStepEnv hookEnv;
+        hookEnv.pc = g_Reg->m_PROGRAM_COUNTER;
+        hookEnv.opInfo = COpInfo(R4300iOp::m_Opcode);
+
+        if(m_ScriptSystem->HaveCpuExecCallbacks(hookEnv.pc))
+        {
+            m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_CPU_EXEC, (void*)&hookEnv);
+        }
+
+        if (hookEnv.opInfo.IsLoadCommand() &&
+            m_ScriptSystem->HaveCpuReadCallbacks(hookEnv.opInfo.GetLoadStoreAddress()))
+        {
+            m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_CPU_READ, (void*)&hookEnv);
+        }
+        else if (hookEnv.opInfo.IsStoreCommand() &&
+            m_ScriptSystem->HaveCpuWriteCallbacks(hookEnv.opInfo.GetLoadStoreAddress()))
+        {
+            m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_CPU_WRITE, (void*)&hookEnv);
+        }
+    }
 
     if (CDebugSettings::ExceptionBreakpoints() != 0)
     {
+        uint32_t pc = g_Reg->m_PROGRAM_COUNTER;
+
         if (pc == 0x80000000 || pc == 0x80000080 ||
             pc == 0xA0000100 || pc == 0x80000180)
         {
@@ -619,6 +640,8 @@ void CDebuggerUI::CPUStepStarted()
 
     if (m_Breakpoints->HaveRegBP())
     {
+        COpInfo opInfo(R4300iOp::m_Opcode);
+
         if (m_Breakpoints->HaveAnyGPRWriteBP())
         {
             int nReg = 0;

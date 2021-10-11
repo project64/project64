@@ -13,10 +13,36 @@
 class CScriptSystem
 {
     typedef std::map<JSInstanceName, CScriptInstance*> JSInstanceMap;
-    typedef std::map<JSAppCallbackID, JSAppCallback> JSAppCallbackMap;
-    typedef std::map<JSAppHookID, JSAppCallbackMap> JSAppHookMap;
+    typedef std::vector<JSAppCallback> JSAppCallbackList;
     typedef std::map<JSInstanceName, JSInstanceStatus> JSInstanceStatusMap;
     typedef std::vector<JSSysCommand> JSSysCommandQueue;
+
+    struct JSQueuedCallbackAdd
+    {
+        JSAppHookID hookId;
+        JSAppCallback callback;
+    };
+
+    struct JSQueuedCallbackRemove
+    {
+        JSAppHookID hookId;
+        JSAppCallbackID callbackId;
+    };
+
+    enum { JS_CPU_CB_RANGE_CACHE_SIZE = 256 };
+
+    struct JSCpuCbListInfo
+    {
+        size_t   numCallbacks;
+        uint32_t minAddrStart;
+        uint32_t maxAddrEnd;
+        size_t   numRangeCacheEntries;
+        bool     bRangeCacheExceeded;
+        struct {
+            uint32_t addrStart;
+            uint32_t addrEnd;
+        } rangeCache[JS_CPU_CB_RANGE_CACHE_SIZE];
+    };
 
     HANDLE              m_hThread;
 
@@ -26,10 +52,18 @@ class CScriptSystem
 
     CriticalSection     m_InstancesCS;
     JSInstanceMap       m_Instances;
-    JSAppHookMap        m_AppCallbackHooks;
+    JSAppCallbackList   m_AppCallbackHooks[JS_NUM_APP_HOOKS];
     JSAppCallbackID     m_NextAppCallbackId;
-    size_t              m_AppCallbackCount;
+    
+    std::vector<JSQueuedCallbackRemove> m_CbRemoveQueue;
+    std::vector<JSQueuedCallbackAdd> m_CbAddQueue;
 
+    volatile size_t   m_AppCallbackCount;
+
+    volatile JSCpuCbListInfo m_CpuExecCbInfo;
+    volatile JSCpuCbListInfo m_CpuReadCbInfo;
+    volatile JSCpuCbListInfo m_CpuWriteCbInfo;
+    
     CriticalSection     m_UIStateCS;
     JSInstanceStatusMap m_UIInstanceStatus;
     stdstr              m_UILog;
@@ -69,17 +103,74 @@ public:
         size_t argSetupParamSize = 0);
 
     bool HaveAppCallbacks(JSAppHookID hookId);
-    void InvokeAppCallbacks(JSAppHookID hookId, void* env = nullptr);
+
+    // Note: Unguarded for speed, shouldn't matter
+    inline bool HaveAppCallbacks() { return m_AppCallbackCount != 0; }
+
+    inline bool HaveCpuExecCallbacks(uint32_t address)
+    {
+        return HaveCpuCallbacks(m_CpuExecCbInfo, m_AppCallbackHooks[JS_HOOK_CPU_EXEC], address);
+    }
+
+    inline bool HaveCpuReadCallbacks(uint32_t address)
+    {
+        return HaveCpuCallbacks(m_CpuReadCbInfo, m_AppCallbackHooks[JS_HOOK_CPU_READ], address);
+    }
+
+    inline bool HaveCpuWriteCallbacks(uint32_t address)
+    {
+        return HaveCpuCallbacks(m_CpuWriteCbInfo, m_AppCallbackHooks[JS_HOOK_CPU_WRITE], address);
+    }
+    
+    static void UpdateCpuCbListInfo(volatile JSCpuCbListInfo& info, JSAppCallbackList& callbacks);
+
     void DoMouseEvent(JSAppHookID hookId, int x, int y, DWORD uMsg = (DWORD)-1);
-    JSAppCallbackID RawAddAppCallback(JSAppHookID hookId, JSAppCallback& callback);
-    bool RawRemoveAppCallback(JSAppHookID hookId, JSAppCallbackID callbackId);
+
+    JSAppCallbackID QueueAddAppCallback(JSAppHookID hookId, JSAppCallback callback);
+    void QueueRemoveAppCallback(JSAppHookID hookId, JSAppCallbackID callbackId);
+    void InvokeAppCallbacks(JSAppHookID hookId, void* env = nullptr);
 
     void ExecAutorunList();
     std::set<std::string>& AutorunList();
     void LoadAutorunList();
     void SaveAutorunList();
-    
+
 private:
+    inline bool HaveCpuCallbacks(volatile JSCpuCbListInfo& info, JSAppCallbackList& callbacks, uint32_t address)
+    {
+        if (info.numCallbacks == 0 || address < info.minAddrStart || address > info.maxAddrEnd)
+        {
+            return false;
+        }
+
+        if (!info.bRangeCacheExceeded)
+        {
+            for (size_t i = 0; i < info.numRangeCacheEntries; i++)
+            {
+                if (address >= info.rangeCache[i].addrStart &&
+                    address <= info.rangeCache[i].addrEnd)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        CGuard guard(m_InstancesCS);
+
+        for (JSAppCallback& callback : callbacks)
+        {
+            if (address >= callback.m_Params.addrStart &&
+                address <= callback.m_Params.addrEnd)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     void InitDirectories();
 
     void PostCommand(JSSysCommandID id, stdstr paramA = "", stdstr paramB = "", void* paramC = nullptr);
@@ -98,6 +189,10 @@ private:
     void OnSweep(bool bIfDone);
 
     bool RawRemoveInstance(const char* key);
+    
+    void RawAddAppCallback(JSAppHookID hookId, JSAppCallback& callback);
+    void RawRemoveAppCallback(JSAppHookID hookId, JSAppCallbackID callbackId);
+    void RefreshCallbackMaps();
 
     static stdstr FixStringReturns(const char* str);
 };

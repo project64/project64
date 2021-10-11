@@ -14,7 +14,9 @@ enum
 
 enum JSAppHookID
 {
-    JS_HOOK_CPUSTEP,
+    JS_HOOK_CPU_EXEC,
+    JS_HOOK_CPU_READ,
+    JS_HOOK_CPU_WRITE,
     JS_HOOK_PIFREAD,
     JS_HOOK_PIDMA,
     JS_HOOK_GFXUPDATE,
@@ -90,6 +92,8 @@ struct JSAppCallback
         };
     } m_Params;
 
+    static bool CbCondTrue(JSAppCallback*, void*) { return true; }
+
     JSAppCallback(CScriptInstance* instance, void* dukFuncHeapPtr,
                   JSAppCallbackCondFunc condFunc = nullptr,
                   JSDukArgSetupFunc argSetupFunc = nullptr,
@@ -101,6 +105,11 @@ struct JSAppCallback
         m_CleanupFunc(cleanupFunc),
         m_CallbackId(JS_INVALID_CALLBACK)
     {
+        if (m_ConditionFunc == nullptr)
+        {
+            m_ConditionFunc = CbCondTrue;
+        }
+
         m_Params = {};
     }
 
@@ -112,6 +121,11 @@ struct JSAppCallback
         m_CleanupFunc(nullptr),
         m_CallbackId(JS_INVALID_CALLBACK)
     {
+        if (m_ConditionFunc == nullptr)
+        {
+            m_ConditionFunc = CbCondTrue;
+        }
+
         m_Params = {};
     }
 };
