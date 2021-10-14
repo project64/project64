@@ -13,5 +13,5 @@ private:
 
 	static bool m_bCPURunning;
 	
-	static int  m_RefCount;
+	static int m_RefCount;
 };

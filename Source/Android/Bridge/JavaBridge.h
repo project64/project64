@@ -2,7 +2,7 @@
 
 #ifdef ANDROID
 
-#include <Project64-core/Plugins/PluginClass.h>
+#include <Project64-core/Plugins/Plugin.h>
 #include <jni.h>
 
 class JavaBridge :
