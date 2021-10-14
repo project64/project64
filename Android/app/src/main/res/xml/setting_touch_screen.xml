@@ -7,11 +7,7 @@
         android:defaultValue="100"
         android:key="touchscreenScale"
         android:title="@string/touchscreenScale_title"
-        project64:maximumValue="400"
-        project64:minimumValue="50"
-        project64:stepSize="1"
-        project64:units="%"
-    /> 
+    />
 
     <emu.project64.settings.TwoLinesListPreference
         android:defaultValue="0"

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menuItem_GameDir"
+        android:icon="@drawable/ic_folder"
+        app:showAsAction="ifRoom|collapseActionView"
+        />
+	<item
+        android:id="@+id/menuItem_settings"
+        android:icon="@drawable/ic_settings"/>
+    <item
+        android:id="@+id/menuItem_discord"
+        android:icon="@drawable/ic_discord" />
+    <item
+        android:id="@+id/menuItem_about"
+        android:icon="@drawable/ic_about" />
+</menu>

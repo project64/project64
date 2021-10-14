@@ -1,45 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="@string/preferences">
+<androidx.preference.PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:title="@string/preferences">
 
-    <PreferenceCategory android:title="@string/Hardware" >
+    <PreferenceCategory app:title="@string/Hardware">
         <Preference
-            android:summary="@string/input_screen_summary"
-            android:title="@string/input_screen_title"
-            android:key="settings_input" 
-            android:icon="@drawable/ic_controller"
+            app:key="settings_input"
+            app:title="@string/input_screen_title"
+            app:summary="@string/input_screen_summary"
+            app:icon="@drawable/ic_controller"
             />
         <Preference
-            android:summary="@string/video_screen_summary"
-            android:title="@string/video_screen_title"
-            android:key="settings_video" 
-            android:icon="@drawable/ic_picture"
+            app:key="settings_video"
+            app:title="@string/video_screen_title"
+            app:summary="@string/video_screen_summary"
+            app:icon="@drawable/ic_picture"
             />
         <Preference
-            android:summary="@string/audio_screen_summary"
-            android:title="@string/audio_screen_title"
-            android:key="settings_audio" 
-            android:icon="@drawable/ic_speaker"
+            app:key="settings_audio"
+            app:title="@string/audio_screen_title"
+            app:summary="@string/audio_screen_summary"
+            app:icon="@drawable/ic_speaker"
             />
-      <Preference
-          android:summary="@string/game_list_summary"
-          android:title="@string/game_list_title"
-          android:key="settings_game_list"
-          android:icon="@drawable/ic_storage"
+        <Preference
+            app:key="settings_game_list"
+            app:title="@string/game_list_title"
+            app:summary="@string/game_list_summary"
+            app:icon="@drawable/ic_storage"
             />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/Other" >
+    <PreferenceCategory app:title="@string/Other">
         <Preference
-            android:summary="@string/advanced_screen_summary"
-            android:title="@string/advanced_screen_title"
-            android:key="settings_advanced" 
-            android:icon="@drawable/ic_debug"
+            app:key="settings_advanced"
+            app:title="@string/advanced_screen_title"
+            app:summary="@string/advanced_screen_summary"
+            app:icon="@drawable/ic_debug"
             />
         <Preference
-            android:summary="@string/reset_summary"
-            android:title="@string/reset_title"
-            android:key="settings_reset" 
-            android:icon="@drawable/ic_undo"
+            app:key="settings_reset"
+            app:title="@string/reset_title"
+            app:summary="@string/reset_summary"
+            app:icon="@drawable/ic_undo"
             />
     </PreferenceCategory>
-</PreferenceScreen>
+</androidx.preference.PreferenceScreen>

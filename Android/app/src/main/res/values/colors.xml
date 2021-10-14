@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorPrimary">#4683ec</color>
+    <color name="SettingsPrimary">#212121</color>
+    <color name="SettingsSecondary">#616161</color>
+    <color name="TextColor">#000000</color>
+    <color name="TabInactive">#000000</color>
+    <color name="TabActive">#4683ec</color>
+    <color name="ButtonTextColor">#ffffff</color>
 
     <color name="black">#000001</color>
     <color name="white">#ffffff</color>

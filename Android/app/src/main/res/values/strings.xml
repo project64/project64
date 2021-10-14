@@ -45,7 +45,7 @@
     <string name="reset_summary">Restore default settings</string>
     <string name="reset_title">Reset</string>
     <string name="settings_title">Settings</string>
-    <string name="preferences">preferences</string>
+    <string name="preferences">Preferences</string>
     <string name="displayFps_title">Framerate</string>
     <string name="displayFps_summary">Display FPS on screen</string>
     <string name="audioEnabled_title">Enable Audio</string>
@@ -189,7 +189,7 @@
     <string name="confirmResetGame_message">The game will go back to a clear state, all progress made will be lost.</string>
    
     <!-- Asset Extractor -->
-    <string name="assetExtractor_startingUp">Starting Up …</string>
+    <string name="assetExtractor_startingUp">Starting Up ...</string>
     <string name="assetExtractor_version">version</string>
     <string name="assetExtractor_progress">%1$.0f%% done: extracting - %2$s</string>
     <string name="assetExtractor_finished">Finished</string>

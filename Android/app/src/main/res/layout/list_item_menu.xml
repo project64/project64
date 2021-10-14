@@ -36,17 +36,6 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="?attr/textMenuColor"
             android:textIsSelectable="false" />
-
-        <TextView
-            android:id="@+id/text2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/text1"
-            android:layout_alignStart="@id/text1"
-            android:layout_below="@id/text1"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="?android:attr/textColorSecondary"
-            android:textIsSelectable="false" />
     </RelativeLayout>
 
     <ImageView
@@ -56,7 +45,7 @@
         android:layout_gravity="center" />
 
     <LinearLayout
-        android:id="@+android:id/widget_frame"
+        android:id="@android:id/widget_frame"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center_vertical"

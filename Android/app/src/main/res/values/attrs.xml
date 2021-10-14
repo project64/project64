@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="LogLevelPreferenceStyle" format="reference" />
+    <attr name="ListPreferenceStyle" format="reference" />
     <attr name="toolbar_popup_style" format="reference" />
     <attr name="background_actionbar" format="reference|color" />
     <attr name="background_gallerymenu" format="reference|color" />

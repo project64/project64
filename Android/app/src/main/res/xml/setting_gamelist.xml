@@ -7,10 +7,6 @@
         android:defaultValue="10"
         android:key="MaxRomsRemembered"
         android:title="@string/MaxRomsRemembered_title"
-        project64:maximumValue="20"
-        project64:minimumValue="0"
-        project64:stepSize="1"
-        project64:units=""
-    /> 
+    />
 
 	</PreferenceScreen>

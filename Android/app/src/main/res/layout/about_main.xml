@@ -54,25 +54,29 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
-            android:layout_weight="0.12"
             android:gravity="center|top"
-            android:text="@string/about_copyright"
+            android:text="Special Thanks to previous members"
             android:textSize="14sp" />
 
       <TextView
-          android:id="@+id/Project64_authors"
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
           android:gravity="center"
+          android:text="Jabo, Smiff, Gent"
           android:textSize="12sp" />
-      <TextView
+        <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="22dp"
+            android:gravity="center|top"
+            android:text="Thanks also goes to:"
+            android:textSize="14sp" />
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/authors"
+            android:text="Jahra!n, Witten, RadeonUser, Azimer, Shygoo, Frank, LuigiBlood, theboy181, Gonetz, BlueToonYoshi, Kimbjo, Melchior, retroben, AIO, and krom"
             android:textSize="12sp" />
-
         <TextView
             android:id="@+id/main_link"
             android:layout_width="fill_parent"

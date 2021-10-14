@@ -1,60 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Theme.Project64" parent="@android:style/Theme">
         <item name="android:alertDialogTheme">@style/Theme.Project64.Dialog</item>
     </style>
 
-    <style name="Theme.Project64.Apearance" parent="Theme.AppCompat.NoActionBar">
-        <item name="background_actionbar">#4683ec</item>
-        <item name="background_gallerymenu">@color/black</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="font_actionbar">@color/grey600</item>
-        <item name="font_actionbar_selected">@color/grey200</item>
-        <item name="textMenuColor">@color/white</item>
-        <item name="preferenceTheme">@style/Theme.Project64.Preference</item>
-        <item name="android:alertDialogTheme">@style/Theme.Project64.Dialog</item>
+    <style name="Theme.Project64.Base" parent="Theme.Project64.Base.7" />
+
+    <style name="Theme.Project64.Base.7" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:colorBackground">@android:color/white</item>
+        <item name="android:textColorPrimary">@color/TextColor</item>
+        <item name="android:textColor">@color/TextColor</item>
     </style>
 
-    <style name="Theme.Project64.GameActivity">
+    <style name="Theme.Project64.Apearance" parent="Theme.Project64.Base">
+    </style>
+
+    <style name="Theme.Project64.ToolBar" parent="ThemeOverlay.MaterialComponents.Toolbar.Surface">
+        <item name="colorControlNormal">@color/grey700</item>
+        <item name="android:textColorPrimary">@color/grey700</item>
+        <item name="android:textColor">@color/grey700</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+    </style>
+
+    <style name="Theme.Project64.ToolBar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">26sp</item>
+    </style>
+
+    <style name="Theme.Project64.About" parent="Theme.Project64.Base">
+        <item name="colorControlNormal">@color/grey700</item>
+        <item name="android:textColorPrimary">@color/grey700</item>
+        <item name="android:textColor">@color/grey700</item>
+    </style>
+
+    <style name="Theme.Project64.Dialog">
+    </style>
+
+    <style name="Theme.Project64.GameActivity" parent="Theme.Project64.Base">
         <item name="android:windowBackground">@android:color/black</item>
         <item name="android:colorBackground">@android:color/black</item>
     </style>
 
-    <style name="Theme.Project64.Splash" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">@android:color/white</item>
-        <item name="android:colorBackground">@android:color/white</item>
-        <item name="android:textColor">#000000</item>
-    </style>
-
-    <style name="Theme.Project64.Preference" parent="PreferenceThemeOverlay" />
-
-    <style name="Theme.Project64.About" parent="Theme.Project64.Apearance">
+    <style name="Theme.Project64.Gallery" parent="Theme.Project64.Base">
         <item name="android:windowBackground">@android:color/white</item>
         <item name="android:colorBackground">@android:color/white</item>
     </style>
-    <style name="Theme.Project64.Dialog">
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowTitleStyle">@style/Theme.Project64.DialogWindowTitle</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:windowCloseOnTouchOutside">false</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
-        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
-        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
+
+    <style name="Theme.Project64.PreferenceCategory" parent="Preference.Material">
+        <item name="iconSpaceReserved">false</item>
+        <item name="android:layout">@layout/preference_category</item>
+        <item name="android:shouldDisableView">false</item>
+        <item name="android:selectable">false</item>
     </style>
 
-    <style name="Theme.Project64.DialogWindowTitle">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textAppearance">@style/Theme.Project64.DialogWindowTitleStyle</item>
+    <style name="Theme.Project64.PreferenceCheckBox" parent="Preference.CheckBoxPreference.Material">
+        <item name="iconSpaceReserved">false</item>
     </style>
-    
-    <style name="Theme.Project64.DialogWindowTitleStyle">
-        <item name="android:textSize">25sp</item>
+
+    <style name="Theme.Project64.PreferenceLogLevel" parent="Preference.Material">
+        <item name="iconSpaceReserved">false</item>
     </style>
-    
-    <style name="Project64.Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.Project64.PreferenceList" parent="Preference.Material">
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="Theme.Project64.PreferenceNoIcon" parent="Preference.Material">
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="Theme.Project64.Settings" parent="Theme.Project64.Base">
+        <item name="android:textColor">@color/SettingsPrimary</item>
+        <item name="android:textColorPrimary">@color/SettingsPrimary</item>
+        <item name="android:textColorSecondary">@color/SettingsSecondary</item>
+        <item name="preferenceCategoryStyle">@style/Theme.Project64.PreferenceCategory</item>
+        <item name="checkBoxPreferenceStyle">@style/Theme.Project64.PreferenceCheckBox</item>
+        <item name="LogLevelPreferenceStyle">@style/Theme.Project64.PreferenceLogLevel</item>
+        <item name="ListPreferenceStyle">@style/Theme.Project64.PreferenceList</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="Theme.Project64.Splash" parent="Theme.Project64.Base">
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:colorBackground">@android:color/white</item>
+        <item name="android:textColor">@color/TextColor</item>
+    </style>
+
     <style name="btnMappable" parent="@android:style/Widget.Button">
         <item name="android:layout_width">@dimen/inputMapPreferenceButtonSize</item>
         <item name="android:layout_height">@dimen/inputMapPreferenceButtonSize</item>

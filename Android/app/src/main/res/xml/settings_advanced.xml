@@ -32,12 +32,15 @@
       android:title="@string/DebugLanguage_title" />
   <PreferenceCategory android:title="@string/logging" >
       <Preference
+          style="@style/Theme.Project64.PreferenceNoIcon"
           android:title="@string/project64core"
           android:key="logging_core" />
       <Preference
+          style="@style/Theme.Project64.PreferenceNoIcon"
           android:title="@string/VideoPlugin"
           android:key="logging_video" />
       <Preference
+          style="@style/Theme.Project64.PreferenceNoIcon"
           android:title="@string/AudioPlugin"
           android:key="logging_audio" />
     </PreferenceCategory>   

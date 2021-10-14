@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/background_actionbar"
-        android:theme="@style/Project64.Toolbar" />    
+        android:theme="@style/Theme.Project64.ToolBar" />
 
 <!--
     ***********************************************************************************

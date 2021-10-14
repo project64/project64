@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="@string/preferences">
 
-    <ListPreference
-        android:entries="@array/cpu_core_list"
-        android:entryValues="@array/cpu_core_values"
+    <emu.project64.settings.ListPreference
+        app:entries="@array/cpu_core_list"
+        app:entryValues="@array/cpu_core_values"
         android:key="Game_CpuType"
-        android:title="@string/CpuType" />
+        android:title="@string/CpuType"
+        />
     
     <CheckBoxPreference
         android:key="Game_BlockLinking"

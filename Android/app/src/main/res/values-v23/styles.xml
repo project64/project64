@@ -1,0 +1,7 @@
+<resources>
+    <style name="Theme.Project64.Base" parent="Theme.Project64.Base.7">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>
