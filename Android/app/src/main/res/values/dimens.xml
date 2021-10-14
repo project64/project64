@@ -9,4 +9,6 @@
     <dimen name="galleryImageHeight">15dp</dimen>
     <dimen name="galleryHalfSpacing">5dp</dimen>
     <dimen name="actionBarSize">56dp</dimen>
+    <dimen name="toolbar_height">48dp</dimen>
+    <dimen name="default_margin">8dp</dimen>
 </resources>
