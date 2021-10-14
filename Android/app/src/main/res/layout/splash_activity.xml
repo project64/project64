@@ -5,17 +5,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:ignore="UseCompoundDrawables" >
-    
-    <ImageView android:id="@+id/mainImage" 
-        android:layout_width="wrap_content" 
-        android:layout_gravity="center" 
-        android:layout_height="match_parent" 
-        android:scaleType="fitXY" 
-        android:adjustViewBounds="true" 
-        android:contentDescription="@string/app_name" 
-        android:src="@drawable/publisherlogo" 
-        android:layout_weight="1"
-     />
+
+	<ImageView
+		android:id="@+id/mainImage"
+		android:layout_width="wrap_content"
+		android:layout_height="match_parent"
+		android:layout_gravity="center"
+		android:layout_weight="1"
+		android:adjustViewBounds="true"
+		android:contentDescription="@string/app_name"
+		android:scaleType="fitXY"
+		android:src="@drawable/publisherlogo"
+		tools:src="@drawable/publisherlogo" />
     
     <LinearLayout
         android:layout_width="match_parent"

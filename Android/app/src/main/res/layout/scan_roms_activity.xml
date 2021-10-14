@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/scanRomsDialog_selectDir"
@@ -23,7 +24,10 @@
         android:id="@+id/ScanRecursively"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp" />
+        android:padding="10dp"
+        android:textColor="@color/TextColor"
+        app:buttonTint="@color/TextColor"
+        />
     <RelativeLayout
         android:id="@+id/linearLayoutButtons"
         android:layout_width="match_parent"
@@ -37,7 +41,8 @@
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@+id/buttonOk"
             android:layout_toStartOf="@+id/buttonOk"
-            android:text="@android:string/cancel" />
+            android:text="@android:string/cancel"
+            android:textColor="@color/ButtonTextColor" />
 
         <Button
             android:id="@+id/buttonOk"
@@ -45,6 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:text="@android:string/ok" />
+            android:text="@android:string/ok"
+            android:textColor="@color/ButtonTextColor" />
     </RelativeLayout>
 </LinearLayout>
