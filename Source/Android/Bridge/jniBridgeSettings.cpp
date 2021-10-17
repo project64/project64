@@ -1,5 +1,10 @@
 #include "jniBridgeSettings.h"
+#include "UISettings.h"
 #include <Project64-core/Settings.h>
+#include <Project64-video/SettingsID.h>
+#ifdef ANDROID
+#include <android/log.h>
+#endif
 
 int CJniBridegSettings::m_RefCount = 0; 
 bool CJniBridegSettings::m_bCPURunning; 
@@ -13,7 +18,9 @@ CJniBridegSettings::CJniBridegSettings()
 		RefreshSettings(NULL);
 	}
 
-#define ADD_SETTING(ID) m_SettingNameList.insert(SettingNameList::value_type(#ID,ID));
+#define ADD_SETTING(ID) m_SettingNameList.insert(SettingNameList::value_type("Core." #ID,ID));
+#define ADD_UI_SETTING(ID) m_SettingNameList.insert(SettingNameList::value_type("UISettingID." #ID,(SettingID)ID));
+#define ADD_VIDEO_SETTING(ID) m_SettingNameList.insert(SettingNameList::value_type("VideoSettingID." #ID,(SettingID)(FirstGfxSettings + ID)));
 
 	ADD_SETTING(Cmd_BaseDirectory);
 	ADD_SETTING(Cmd_RomFile);
@@ -331,6 +338,132 @@ CJniBridegSettings::CJniBridegSettings()
 	ADD_SETTING(Logging_LogCache);
 	ADD_SETTING(Logging_LogRomHeader);
 	ADD_SETTING(Logging_LogUnknown);
+
+	ADD_UI_SETTING(AssertsVersion);
+    ADD_UI_SETTING(BuildVersion);
+    ADD_UI_SETTING(ScreenOrientation);
+
+    //Recent Game
+    ADD_UI_SETTING(FileRecentGameFileCount);
+    ADD_UI_SETTING(FileRecentGameFileIndex);
+
+    //Touch Screen
+    ADD_UI_SETTING(TouchScreenButtonScale);
+    ADD_UI_SETTING(TouchScreenLayout);
+
+    //Controller Config
+    ADD_UI_SETTING(ControllerConfigFile);
+    ADD_UI_SETTING(ControllerCurrentProfile);
+    ADD_UI_SETTING(ControllerDeadzone);
+    ADD_UI_SETTING(ControllerSensitivity);
+
+    //App Info
+    ADD_UI_SETTING(AppInfoRunCount);
+	
+	// General Settings
+    ADD_VIDEO_SETTING(Set_vsync);
+	ADD_VIDEO_SETTING(Set_Rotate);
+	ADD_VIDEO_SETTING(Set_texenh_options);
+	ADD_VIDEO_SETTING(Set_wrpVRAM);
+    ADD_VIDEO_SETTING(Set_wrpFBO);
+	ADD_VIDEO_SETTING(Set_wrpAnisotropic);
+	ADD_VIDEO_SETTING(Set_autodetect_ucode);
+	ADD_VIDEO_SETTING(Set_ucode);
+	ADD_VIDEO_SETTING(Set_wireframe);
+    ADD_VIDEO_SETTING(Set_wfmode);
+	ADD_VIDEO_SETTING(Set_ghq_fltr);
+	ADD_VIDEO_SETTING(Set_ghq_cmpr);
+	ADD_VIDEO_SETTING(Set_ghq_enht);
+	ADD_VIDEO_SETTING(Set_ghq_hirs);
+	ADD_VIDEO_SETTING(Set_ghq_enht_cmpr);
+    ADD_VIDEO_SETTING(Set_ghq_enht_f16bpp);
+	ADD_VIDEO_SETTING(Set_ghq_enht_gz);
+	ADD_VIDEO_SETTING(Set_ghq_enht_nobg);
+	ADD_VIDEO_SETTING(Set_ghq_hirs_cmpr);
+    ADD_VIDEO_SETTING(Set_ghq_hirs_tile);
+	ADD_VIDEO_SETTING(Set_ghq_hirs_f16bpp);
+	ADD_VIDEO_SETTING(Set_ghq_hirs_gz);
+	ADD_VIDEO_SETTING(Set_ghq_hirs_altcrc);
+    ADD_VIDEO_SETTING(Set_ghq_cache_save);
+	ADD_VIDEO_SETTING(Set_ghq_cache_size);
+	ADD_VIDEO_SETTING(Set_ghq_hirs_let_texartists_fly);
+    ADD_VIDEO_SETTING(Set_ghq_hirs_dump);
+	ADD_VIDEO_SETTING(Set_Resolution);
+
+    // Default Game Settings
+    ADD_VIDEO_SETTING(Set_optimize_texrect_default);
+	ADD_VIDEO_SETTING(Set_filtering_default);
+	ADD_VIDEO_SETTING(Set_lodmode_default);
+    ADD_VIDEO_SETTING(Set_fog_default);
+	ADD_VIDEO_SETTING(Set_buff_clear_default);
+	ADD_VIDEO_SETTING(Set_swapmode_default);
+    ADD_VIDEO_SETTING(Set_aspect_default);
+	ADD_VIDEO_SETTING(Set_fb_smart_default);
+	ADD_VIDEO_SETTING(Set_fb_hires_default);
+    ADD_VIDEO_SETTING(Set_fb_read_always_default);
+	ADD_VIDEO_SETTING(Set_read_back_to_screen_default);
+	ADD_VIDEO_SETTING(Set_detect_cpu_write_default);
+    ADD_VIDEO_SETTING(Set_fb_get_info_default);
+	ADD_VIDEO_SETTING(Set_fb_render_default);
+
+    //Game Settings
+    ADD_VIDEO_SETTING(Set_alt_tex_size);
+	ADD_VIDEO_SETTING(Set_use_sts1_only);
+	ADD_VIDEO_SETTING(Set_force_calc_sphere);
+	ADD_VIDEO_SETTING(Set_correct_viewport);
+    ADD_VIDEO_SETTING(Set_increase_texrect_edge);
+	ADD_VIDEO_SETTING(Set_decrease_fillrect_edge);
+	ADD_VIDEO_SETTING(Set_texture_correction);
+    ADD_VIDEO_SETTING(Set_pal230);
+	ADD_VIDEO_SETTING(Set_stipple_mode);
+	ADD_VIDEO_SETTING(Set_stipple_pattern);
+	ADD_VIDEO_SETTING(Set_force_microcheck);
+	ADD_VIDEO_SETTING(Set_force_quad3d);
+    ADD_VIDEO_SETTING(Set_clip_zmin);
+	ADD_VIDEO_SETTING(Set_clip_zmax);
+	ADD_VIDEO_SETTING(Set_fast_crc);
+	ADD_VIDEO_SETTING(Set_adjust_aspect);
+	ADD_VIDEO_SETTING(Set_zmode_compare_less);
+    ADD_VIDEO_SETTING(Set_old_style_adither);
+	ADD_VIDEO_SETTING(Set_n64_z_scale);
+	ADD_VIDEO_SETTING(Set_optimize_texrect);
+	ADD_VIDEO_SETTING(Set_ignore_aux_copy);
+    ADD_VIDEO_SETTING(Set_hires_buf_clear);
+	ADD_VIDEO_SETTING(Set_fb_read_alpha);
+	ADD_VIDEO_SETTING(Set_useless_is_useless);
+	ADD_VIDEO_SETTING(Set_fb_crc_mode);
+    ADD_VIDEO_SETTING(Set_filtering);
+	ADD_VIDEO_SETTING(Set_fog);
+	ADD_VIDEO_SETTING(Set_buff_clear);
+	ADD_VIDEO_SETTING(Set_swapmode);
+	ADD_VIDEO_SETTING(Set_aspect);
+	ADD_VIDEO_SETTING(Set_lodmode);
+    ADD_VIDEO_SETTING(Set_fb_smart);
+	ADD_VIDEO_SETTING(Set_fb_hires);
+	ADD_VIDEO_SETTING(Set_fb_read_always);
+	ADD_VIDEO_SETTING(Set_read_back_to_screen);
+    ADD_VIDEO_SETTING(Set_detect_cpu_write);
+	ADD_VIDEO_SETTING(Set_fb_get_info);
+	ADD_VIDEO_SETTING(Set_fb_render);
+
+    //RDB Setting
+    ADD_VIDEO_SETTING(Set_ucodeLookup);
+
+    //Logging Settings
+    ADD_VIDEO_SETTING(Set_Logging_MD5);
+	ADD_VIDEO_SETTING(Set_Logging_Thread);
+	ADD_VIDEO_SETTING(Set_Logging_Path);
+	ADD_VIDEO_SETTING(Set_Logging_Settings); 
+    ADD_VIDEO_SETTING(Set_Logging_Unknown);
+	ADD_VIDEO_SETTING(Set_Logging_Glide64);
+	ADD_VIDEO_SETTING(Set_Logging_Interface);
+	ADD_VIDEO_SETTING(Set_Logging_Resolution); 
+    ADD_VIDEO_SETTING(Set_Logging_Glitch);
+	ADD_VIDEO_SETTING(Set_Logging_VideoRDP);
+	ADD_VIDEO_SETTING(Set_Logging_TLUT);
+	ADD_VIDEO_SETTING(Set_Logging_PNG);	
+    ADD_VIDEO_SETTING(Set_Logging_OGLWrapper);
+	ADD_VIDEO_SETTING(Set_Logging_RDPCommands);
 }
 
 CJniBridegSettings::~CJniBridegSettings()

@@ -1,17 +1,13 @@
 #include <stdlib.h>
 #ifdef ANDROID
-#include <unistd.h>
-#include <sys/inotify.h>
-#include <sys/file.h>
+#include <jni.h>
 #endif
 #include <Project64-core/AppInit.h>
 #include <Project64-core/Version.h>
 #include <Project64-core/TraceModulesProject64.h>
 #include <Project64-core/Settings.h>
-#include <Project64-core/Settings/SettingType/SettingsType-Application.h>
 #include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/Plugin.h>
 #include <Common/Trace.h>
 #include <Common/Thread.h>
 #include <Common/StdString.h>
@@ -90,28 +86,18 @@ EXPORT jint CALL JNI_OnLoad(JavaVM* vm, void* reserved)
     return JNI_VERSION_1_4;
 }
 
-std::string UISettingsLoadStringIndex(UISettingID Type, int32_t index)
-{
-    return g_Settings->LoadStringIndex((SettingID)(FirstUISettings + Type), index);
-}
-
-void UISettingsSaveStringIndex(UISettingID Type, int32_t index, const std::string & Value)
-{
-    g_Settings->SaveStringIndex((SettingID)(FirstUISettings + Type), index, Value);
-}
-
 void AddRecentRom(const char * ImagePath)
 {
     if (ImagePath == NULL) { return; }
     WriteTrace(TraceUserInterface, TraceDebug, "Start (ImagePath: %s)", ImagePath);
 
     // Get information about the stored ROM list
-    size_t MaxRememberedFiles = UISettingsLoadDword(File_RecentGameFileCount);
+    size_t MaxRememberedFiles = g_Settings->LoadDword((SettingID)FileRecentGameFileCount);
     strlist RecentGames;
     size_t i;
     for (i = 0; i < MaxRememberedFiles; i++)
     {
-        stdstr RecentGame = UISettingsLoadStringIndex(File_RecentGameFileIndex, i);
+        stdstr RecentGame = g_Settings->LoadStringIndex((SettingID)FileRecentGameFileIndex, i);
         if (RecentGame.empty())
         {
             break;
@@ -138,7 +124,7 @@ void AddRecentRom(const char * ImagePath)
 
     for (i = 0, iter = RecentGames.begin(); iter != RecentGames.end(); iter++, i++)
     {
-        UISettingsSaveStringIndex(File_RecentGameFileIndex, i, *iter);
+        g_Settings->SaveStringIndex((SettingID)FileRecentGameFileIndex, i, *iter);
     }
 
     if (g_JavaBridge)
@@ -164,9 +150,9 @@ void GameCpuRunning(void * /*NotUsed*/)
         }
         g_System->RefreshGameSettings();
 
-        int RunCount = UISettingsLoadDword(Game_RunCount);
-        WriteTrace(TraceUserInterface, TraceDebug, "Setting run count to %d", RunCount + 1);
-        UISettingsSaveDword(Game_RunCount, RunCount + 1);
+        //int RunCount = UISettingsLoadDword(Game_RunCount);
+        //WriteTrace(TraceUserInterface, TraceDebug, "Setting run count to %d", RunCount + 1);
+        //UISettingsSaveDword(Game_RunCount, RunCount + 1);
         if (env != NULL)
         {
             if (g_JavaBridge)
@@ -348,9 +334,28 @@ EXPORT jstring CALL Java_emu_project64_jni_NativeExports_SettingsLoadString(JNIE
     return env->NewStringUTF("");
 }
 
+EXPORT jstring CALL Java_emu_project64_jni_NativeExports_SettingsLoadStringIndex(JNIEnv* env, jclass cls, jstring Type, int32_t Index)
+{
+    const char * szType = env->GetStringUTFChars(Type, 0);
+    SettingID Id = JniBridegSettings->TranslateSettingID(szType);
+    env->ReleaseStringUTFChars(Type, szType);
+    if (Id != Default_None)
+    {
+        return env->NewStringUTF(g_Settings->LoadStringIndex(Id,Index).c_str());
+    }
+    return env->NewStringUTF("");
+}
+
 EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_IsSettingSet(JNIEnv* env, jclass cls, jstring Type)
 {
-    return g_Settings->IsSettingSet((SettingID)Type);
+    const char * szType = env->GetStringUTFChars(Type, 0);
+    SettingID Id = JniBridegSettings->TranslateSettingID(szType);
+    env->ReleaseStringUTFChars(Type, szType);
+    if (Id != Default_None)
+    {
+        return g_Settings->IsSettingSet(Id);
+    }
+    return false;
 }
 
 EXPORT void CALL Java_emu_project64_jni_NativeExports_LoadRomList(JNIEnv* env, jclass cls)
@@ -516,49 +521,6 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_onSurfaceChanged(JNIEnv * 
         }
     }
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
-}
-
-EXPORT void CALL Java_emu_project64_jni_NativeExports_UISettingsSaveBool(JNIEnv* env, jclass cls, jint Type, jboolean Value)
-{
-    WriteTrace(TraceUserInterface, TraceDebug, "Saving UI %d value: %s", Type, Value ? "true" : "false");
-    UISettingsSaveBool((UISettingID)Type, Value);
-    WriteTrace(TraceUserInterface, TraceDebug, "Saved");
-}
-
-EXPORT void CALL Java_emu_project64_jni_NativeExports_UISettingsSaveDword(JNIEnv* env, jclass cls, jint Type, jint Value)
-{
-    WriteTrace(TraceUserInterface, TraceDebug, "Saving UI %d value: %X", Type, Value);
-    UISettingsSaveDword((UISettingID)Type, Value);
-    WriteTrace(TraceUserInterface, TraceDebug, "Saved");
-}
-
-EXPORT void CALL Java_emu_project64_jni_NativeExports_UISettingsSaveString(JNIEnv* env, jclass cls, jint Type, jstring Buffer)
-{
-    const char *value = env->GetStringUTFChars(Buffer, 0);
-    WriteTrace(TraceUserInterface, TraceDebug, "Saving UI %d value: %s", Type, value);
-    UISettingsSaveString((UISettingID)Type, value);
-    WriteTrace(TraceUserInterface, TraceDebug, "Saved");
-    env->ReleaseStringUTFChars(Buffer, value);
-}
-
-EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_UISettingsLoadBool(JNIEnv* env, jclass cls, jint Type)
-{
-    return UISettingsLoadBool((UISettingID)Type);
-}
-
-EXPORT int CALL Java_emu_project64_jni_NativeExports_UISettingsLoadDword(JNIEnv* env, jclass cls, jint Type)
-{
-    return UISettingsLoadDword((UISettingID)Type);
-}
-
-EXPORT jstring CALL Java_emu_project64_jni_NativeExports_UISettingsLoadString(JNIEnv* env, jclass cls, int Type)
-{
-    return env->NewStringUTF(UISettingsLoadStringVal((UISettingID)Type).c_str());
-}
-
-EXPORT jstring CALL Java_emu_project64_jni_NativeExports_UISettingsLoadStringIndex(JNIEnv* env, jclass cls, jint Type, jint Index)
-{
-    return env->NewStringUTF(UISettingsLoadStringIndex((UISettingID)Type, Index).c_str());
 }
 
 EXPORT void CALL Java_emu_project64_jni_NativeExports_StopEmulation(JNIEnv* env, jclass cls)

@@ -1,34 +1,32 @@
 #pragma once
 #include <string>
 #include <stdint.h>
+#include <Project64-core\Settings\SettingsID.h>
 
 enum UISettingID
 {
-    Asserts_Version,
-    Screen_Orientation,
+	StartUISetting = SettingID::FirstUISettings,
 
-    // Recent game
-    File_RecentGameFileCount,
-    File_RecentGameFileIndex,
+    AssertsVersion,
+    BuildVersion,
+    ScreenOrientation,
 
-    // Touch screen
-    TouchScreen_ButtonScale,
-    TouchScreen_Layout,
+    //Recent Game
+    FileRecentGameFileCount,
+    FileRecentGameFileIndex,
 
-    // Controller config
-    Controller_ConfigFile,
-    Controller_CurrentProfile,
-    Controller_Deadzone,
-    Controller_Sensitivity,
+    //Touch Screen
+    TouchScreenButtonScale,
+    TouchScreenLayout,
 
-    // Support window
-    SupportWindow_FirstRun,
-    SupportWindow_AlwaysShow,
-    SupportWindow_ShowingSupportWindow,
-    SupportWindow_RunCount,
+    //Controller Config
+    ControllerConfigFile,
+    ControllerCurrentProfile,
+    ControllerDeadzone,
+    ControllerSensitivity,
 
-    // Game settings
-    Game_RunCount,
+    //App Info
+    AppInfoRunCount,
 };
 
 void RegisterUISettings(void);
