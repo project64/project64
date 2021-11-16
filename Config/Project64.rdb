@@ -11229,7 +11229,7 @@ Counter Factor=1
 Unaligned DMA=1
 
 [3A82F2E2-AA26DB24-C:45]
-Good Name=SM64 The Nostalgia Trip (Full Version)
+Good Name=SM64 The Nostalgia Trip
 Status=Compatible
 Counter Factor=1
 Unaligned DMA=1
@@ -11248,6 +11248,178 @@ Unaligned DMA=1
 
 [19C35F38-DEF57075-C:45]
 Good Name=Super Mario 74 - Ten Years After (v2.74.2 Deluxe Hotfix 1)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[6733FDE8-4D13E41D-C:45]
+Good Name=SM64 The Nostalgia Trip (V1.1)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[041ACAB1-C239679B-C:45]
+Good Name=Super Mario 64 (O2 Reduced Lag) (U)
+Internal Name=SUPER MARIO 64
+Status=Compatible
+32bit=Yes
+Culling=1
+RDRAM Size=4
+
+[7BFD81D7-1AD5F4B9-C:4A]
+Good Name=Super Mario 64 (O2 Reduced Lag) (J)
+Internal Name=SUPER MARIO 64
+Status=Compatible
+32bit=Yes
+Culling=1
+RDRAM Size=4
+
+[8CDD7051-8FE39E38-C:45]
+Good Name=The Legend of Zelda - The Missing Link (v2.0)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[68191D55-B31B2ECD-C:45]
+Good Name=Paper Mario - Black Pit
+Status=Compatible
+Reg Cache=No
+
+[4A41C9A5-EEB5876B-C:45]
+Good Name=Mario's Vacation Course (v1.6)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[FDFC3328-A0B2BA23-C:45]
+Good Name=Smash Remix 1.0.1
+Internal Name=SmashRemix
+Status=Compatible
+Counter Factor=1
+Culling=1
+SMM-Cache=0
+SMM-FUNC=0
+SMM-TLB=0
+RDRAM Size=8
+ViRefresh=2200
+
+[034790E7-09FAA04A-C:45]
+Good Name=SM64 Stellato v1.1.0
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[AEA328E7-8EB43B9F-C:45]
+Good Name=Plutonium Mario 64
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[5F9B2EA3-E70BD0A0-C:45]
+Good Name=Lego Mario is Real 64
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[4C35B1CE-DA00CF35-C:45]
+Good Name=Star Revenge 11 - Star Adventure (v1.2)
+Status=Compatible
+Counter Factor=1
+Fast SP=No
+Linking=Off
+Unaligned DMA=1
+
+[9A5AB117-DD26D277-C:45]
+Good Name=SM64 The Green Star Comet
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[12849689-72E194D2-C:45]
+Good Name=Another Mario Adventure v1.11
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[8A593EA5-1806EA78-C:45]
+Good Name=Mario's New Earth v1.0
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[6964CC31-1706052A-C:45]
+Good Name=Mario's Treasure Dome - The Revial v1.0
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[81A308F0-A8A7A33F-C:45]
+Good Name=Summer Mixhack 2021 1.0.1
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[635A42C5-BDC58EDC-C:45]
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[54564BDE-72ADAF30-C:45]
+Good Name=Mario's Adventure 64
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[8D3BD49B-D425E220-C:45]
+Good Name=Gamma64 V1.10
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[1548ABD4-8F7A3DD2-C:45]
+Good Name=Lug's Tiny Torture Lite (v1.0) (English)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[1548AE74-C6FCA67B-C:45]
+Good Name=Lug's Tiny Torture Hardcore (v1.0) (English)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[21C77449-6FC7DE67-C:45]
+Good Name=Blossoming Buds
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[BE07DD64-1E278618-C:45]
+Good Name=Super Mario Parallel Stars (Beta)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[8D05B8E1-3E9285F4-C:45]
+Good Name=Super Mario Senseless Delirium (v1.0.3)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[13AA53EE-5A2ED337-C:45]
+Good Name=Insanity Cauldron v1.0
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[E08690D4-F1E04168-C:45]
+Good Name=Super Mario 74 & EE (v0.99)
+Status=Compatible
+Counter Factor=1
+Unaligned DMA=1
+
+[EE927E37-B5E9C89D-C:45]
+Good Name=SM64 ROM Hack Community Collab Hack (fixed)
 Status=Compatible
 Counter Factor=1
 Unaligned DMA=1
