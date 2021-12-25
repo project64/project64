@@ -211,7 +211,7 @@ duk_ret_t ScriptAPI::js_mem_getstring(duk_context *ctx)
 
 duk_ret_t ScriptAPI::js_mem_setblock(duk_context *ctx)
 {
-    CheckArgs(ctx, { Arg_Number, Arg_OptNumber });
+    CheckArgs(ctx, { Arg_Number, Arg_Any, Arg_OptNumber });
     CScriptInstance *inst = GetInstance(ctx);
     CDebuggerUI *debugger = inst->Debugger();
 
