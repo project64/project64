@@ -9413,7 +9413,7 @@ Status=Issues (core)
 CPU Type=Interpreter
 
 [002FE030-FFD01FCF-C:45]
-Good Name=Zelda 64 Custom Expansion Disk (U)
+Good Name=Zelda 64 Dawn & Dusk - Expansion Disk (U)
 Status=Compatible
 32bit=Yes
 SMM-PI DMA=0
@@ -9421,7 +9421,23 @@ SMM-Protect=1
 SMM-TLB=0
 
 [002FE030-FFD01FCF-C:4A]
-Good Name=Zelda 64 Custom Expansion Disk (J)
+Good Name=Zelda 64 Dawn & Dusk - Expansion Disk (J)
+Status=Compatible
+32bit=Yes
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
+
+[5582218A-AA7DDE75-C:45]
+Good Name=Zelda Ocarina of Time Expansion Disk (U)
+Status=Compatible
+32bit=Yes
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
+
+[5582218A-AA7DDE75-C:4A]
+Good Name=Zelda Ocarina of Time Expansion Disk (J)
 Status=Compatible
 32bit=Yes
 SMM-PI DMA=0
@@ -9432,6 +9448,11 @@ SMM-TLB=0
 Good Name=F-ZERO X Expansion Kit (U)
 Status=Compatible
 Culling=1
+Fixed Audio=0
+
+[2E91FFC8-D16E0037-C:45]
+Good Name=Mario Artist Polygon Studio (U)
+Status=Issues (plugin)
 Fixed Audio=0
 
 //================  N64 HACKS/MODS  ================
