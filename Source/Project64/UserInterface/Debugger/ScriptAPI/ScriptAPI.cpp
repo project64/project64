@@ -375,7 +375,7 @@ JSAppCallbackID ScriptAPI::AddAppCallback(duk_context* ctx, duk_idx_t callbackId
 JSAppCallbackID ScriptAPI::AddAppCallback(duk_context* ctx, JSAppHookID hookId, JSAppCallback& callback)
 {
     CScriptInstance* inst = GetInstance(ctx);
-    JSAppCallbackID callbackId = inst->System()->QueueAddAppCallback(hookId, callback);
+    JSAppCallbackID callbackId = inst->System()->RawAddAppCallback(hookId, callback);
 
     if(callbackId == JS_INVALID_CALLBACK)
     {
@@ -429,7 +429,7 @@ duk_ret_t ScriptAPI::js__AppCallbackFinalizer(duk_context* ctx)
     JSAppCallbackID callbackId = (JSAppCallbackID)duk_get_uint(ctx, -1);
     duk_pop_n(ctx, 2);
 
-    inst->System()->QueueRemoveAppCallback(hookId, callbackId);
+    inst->System()->RawRemoveAppCallback(hookId, callbackId);
 
     return 0;
 }
@@ -531,6 +531,8 @@ duk_ret_t ScriptAPI::js__Emitter_emit(duk_context* ctx)
     duk_get_prop_string(ctx, -1, eventName);
     duk_enum(ctx, -1, 0);
 
+    int count = 0;
+
     while (duk_next(ctx, -1, (duk_bool_t)true))
     {
         duk_push_this(ctx);
@@ -546,6 +548,14 @@ duk_ret_t ScriptAPI::js__Emitter_emit(duk_context* ctx)
         }
 
         duk_pop_n(ctx, 2);
+        count++;
+    }
+
+    // throw if there are no listeners for error event
+    if (count == 0 && strcmp("error", eventName) == 0)
+    {
+        duk_dup(ctx, 1);
+        duk_throw(ctx);
     }
 
     return 0;
