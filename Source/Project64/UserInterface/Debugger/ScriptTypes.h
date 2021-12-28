@@ -77,6 +77,7 @@ struct JSAppCallback
 {
     // assigned by scriptsys when this is added to a callback map
     JSAppCallbackID          m_CallbackId;
+    bool                     m_bDisabled;
 
     CScriptInstance         *m_Instance;
     void                    *m_DukFuncHeapPtr;
@@ -98,12 +99,13 @@ struct JSAppCallback
                   JSAppCallbackCondFunc condFunc = nullptr,
                   JSDukArgSetupFunc argSetupFunc = nullptr,
                   JSAppCallbackCleanupFunc cleanupFunc = nullptr) :
+        m_CallbackId(JS_INVALID_CALLBACK),
+        m_bDisabled(false),
         m_Instance(instance),
         m_DukFuncHeapPtr(dukFuncHeapPtr),
         m_ConditionFunc(condFunc),
         m_DukArgSetupFunc(argSetupFunc),
-        m_CleanupFunc(cleanupFunc),
-        m_CallbackId(JS_INVALID_CALLBACK)
+        m_CleanupFunc(cleanupFunc)
     {
         if (m_ConditionFunc == nullptr)
         {
@@ -114,12 +116,13 @@ struct JSAppCallback
     }
 
     JSAppCallback() :
+        m_CallbackId(JS_INVALID_CALLBACK),
+        m_bDisabled(false),
         m_Instance(nullptr),
         m_DukFuncHeapPtr(nullptr),
         m_ConditionFunc(nullptr),
         m_DukArgSetupFunc(nullptr),
-        m_CleanupFunc(nullptr),
-        m_CallbackId(JS_INVALID_CALLBACK)
+        m_CleanupFunc(nullptr)
     {
         if (m_ConditionFunc == nullptr)
         {
@@ -163,7 +166,8 @@ struct JSHookSpTaskEnv
     uint32_t yieldDataSize;
 };
 
-struct JSHookPiDmaEnv {
+struct JSHookPiDmaEnv
+{
     int      direction;
     uint32_t dramAddress;
     uint32_t cartAddress;
@@ -208,6 +212,9 @@ struct JSSysCMethodCall
 
     ~JSSysCMethodCall()
     {
-        delete[] (char*)m_ArgSetupParam;
+        if (m_ArgSetupParam != nullptr)
+        {
+            delete[](char*)m_ArgSetupParam;
+        }
     }
 };

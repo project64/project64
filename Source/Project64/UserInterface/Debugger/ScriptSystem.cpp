@@ -168,6 +168,7 @@ bool CScriptSystem::HaveAppCallbacks(JSAppHookID hookId)
 void CScriptSystem::InvokeAppCallbacks(JSAppHookID hookId, void* env)
 {
     CGuard guard(m_InstancesCS);
+    RefreshCallbackMaps();
 
     JSAppCallbackList& callbacks = m_AppCallbackHooks[hookId];
 
@@ -175,7 +176,7 @@ void CScriptSystem::InvokeAppCallbacks(JSAppHookID hookId, void* env)
 
     for (JSAppCallback& callback : callbacks)
     {
-        if (!callback.m_ConditionFunc(&callback, env))
+        if (callback.m_bDisabled || !callback.m_ConditionFunc(&callback, env))
         {
             continue;
         }
@@ -257,66 +258,26 @@ void CScriptSystem::UpdateCpuCbListInfo(volatile JSCpuCbListInfo& info, JSAppCal
 
 void CScriptSystem::RefreshCallbackMaps()
 {
-    for (JSQueuedCallbackRemove& cbRemove : m_CbRemoveQueue)
+    for (JSAppCallbackList& callbacks : m_AppCallbackHooks)
     {
-        RawRemoveAppCallback(cbRemove.hookId, cbRemove.callbackId);
-    }
+        JSAppCallbackList::iterator it = callbacks.begin();
 
-    for (JSQueuedCallbackAdd& cbAdd : m_CbAddQueue)
-    {
-        RawAddAppCallback(cbAdd.hookId, cbAdd.callback);
+        while (it != callbacks.end())
+        {
+            if (it->m_bDisabled)
+            {
+                callbacks.erase(it);
+            }
+            else
+            {
+                it++;
+            }
+        }
     }
-
-    m_CbRemoveQueue.clear();
-    m_CbAddQueue.clear();
 
     UpdateCpuCbListInfo(m_CpuExecCbInfo, m_AppCallbackHooks[JS_HOOK_CPU_EXEC]);
     UpdateCpuCbListInfo(m_CpuReadCbInfo, m_AppCallbackHooks[JS_HOOK_CPU_READ]);
     UpdateCpuCbListInfo(m_CpuWriteCbInfo, m_AppCallbackHooks[JS_HOOK_CPU_WRITE]);
-}
-
-JSAppCallbackID CScriptSystem::QueueAddAppCallback(JSAppHookID hookId, JSAppCallback callback)
-{
-    if (hookId >= JS_NUM_APP_HOOKS)
-    {
-        return JS_INVALID_CALLBACK;
-    }
-
-    callback.m_CallbackId = m_NextAppCallbackId++;
-    m_CbAddQueue.push_back({ hookId, callback });
-    callback.m_Instance->IncRefCount();
-    return callback.m_CallbackId;
-}
-
-void CScriptSystem::QueueRemoveAppCallback(JSAppHookID hookId, JSAppCallbackID callbackId)
-{
-    // todo also remove from addqueue
-
-    for (size_t i = 0; i < m_CbRemoveQueue.size(); i++)
-    {
-        if (m_CbRemoveQueue[i].hookId == hookId &&
-            m_CbRemoveQueue[i].callbackId == callbackId)
-        {
-            return;
-        }
-    }
-
-    JSAppCallbackList::iterator it;
-    for (it = m_AppCallbackHooks[hookId].begin(); it != m_AppCallbackHooks[hookId].end(); it++)
-    {
-        if (it->m_CallbackId == callbackId)
-        {
-            break;
-        }
-    }
-
-    if (it == m_AppCallbackHooks[hookId].end())
-    {
-        return;
-    }
-
-    m_CbRemoveQueue.push_back({ hookId, callbackId });
-    it->m_Instance->DecRefCount();
 }
 
 void CScriptSystem::DoMouseEvent(JSAppHookID hookId, int x, int y, DWORD uMsg)
@@ -474,7 +435,7 @@ void CScriptSystem::OnSweep(bool bIfDone)
         {
             NotifyStatus(inst->Name().c_str(), JS_STATUS_STOPPED);
             delete inst;
-            m_Instances.erase(it++);
+            m_Instances.erase(it);
         }
         else
         {
@@ -509,28 +470,34 @@ bool CScriptSystem::RawRemoveInstance(const char *name)
     return true;
 }
 
-void CScriptSystem::RawAddAppCallback(JSAppHookID hookId, JSAppCallback& callback)
+JSAppCallbackID CScriptSystem::RawAddAppCallback(JSAppHookID hookId, JSAppCallback& callback)
 {
     if(hookId >= JS_NUM_APP_HOOKS)
     {
-        return;
+        return JS_INVALID_CALLBACK;
     }
 
+    callback.m_Instance->IncRefCount();
+    callback.m_CallbackId = m_NextAppCallbackId++;
     m_AppCallbackHooks[hookId].push_back(callback);
     m_AppCallbackCount++;
+    return callback.m_CallbackId;
 }
 
 void CScriptSystem::RawRemoveAppCallback(JSAppHookID hookId, JSAppCallbackID callbackId)
 {
-    JSAppCallbackList::iterator it;
-    for (it = m_AppCallbackHooks[hookId].begin(); it != m_AppCallbackHooks[hookId].end(); it++)
+    JSAppCallbackList::iterator it = m_AppCallbackHooks[hookId].begin();
+    while (it != m_AppCallbackHooks[hookId].end())
     {
         if (it->m_CallbackId == callbackId)
         {
-            m_AppCallbackHooks[hookId].erase(it);
             m_AppCallbackCount--;
+            it->m_Instance->DecRefCount();
+            it->m_bDisabled = true;
             return;
         }
+
+        it++;
     }
 }
 
