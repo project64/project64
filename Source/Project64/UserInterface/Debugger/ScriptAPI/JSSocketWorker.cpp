@@ -100,7 +100,7 @@ void CJSSocketWorker::WorkerProc()
     timeout.tv_sec = 0;
     timeout.tv_usec = TIMEOUT_MS * 1000;
 
-    bool bWritable = false;
+    bool bHaveConnection = false;
     bool bConnectPending = false;
     bool bWritesPending = false;
     bool bRecvClosed = false;
@@ -112,8 +112,8 @@ void CJSSocketWorker::WorkerProc()
 
     if (!bConnectPending)
     {
-        // assume it's already writable
-        bWritable = true;
+        // assume it's already connected
+        bHaveConnection = true;
     }
 
     if (bConnectPending && ProcConnect())
@@ -158,7 +158,7 @@ void CJSSocketWorker::WorkerProc()
             FD_SET(m_Socket, pReadFds);
         }
 
-        if (bWritesPending || !bWritable)
+        if (bWritesPending || !bHaveConnection)
         {
             pWriteFds = &writeFds;
             FD_ZERO(pWriteFds);
@@ -169,6 +169,7 @@ void CJSSocketWorker::WorkerProc()
         if (numFds == SOCKET_ERROR)
         {
             JSEmitError("select() error");
+            break;
         }
 
         if (numFds == 0)
@@ -176,11 +177,14 @@ void CJSSocketWorker::WorkerProc()
             continue;
         }
 
-        if (pWriteFds && FD_ISSET(m_Socket, pWriteFds))
+        bool bWritable = pWriteFds && FD_ISSET(m_Socket, pWriteFds);
+        bool bReadable = pReadFds && FD_ISSET(m_Socket, pReadFds);
+
+        if (bWritable && !m_Queue.bSendClosed)
         {
-            if (!bWritable)
+            if (!bHaveConnection)
             {
-                bWritable = true;
+                bHaveConnection = true;
                 JSEmitConnect();
             }
 
@@ -189,8 +193,13 @@ void CJSSocketWorker::WorkerProc()
                 ProcSendData();
             }
         }
+        else if (bHaveConnection)
+        {
+            JSEmitError("connection reset");
+            break;
+        }
 
-        if (pReadFds && FD_ISSET(m_Socket, pReadFds))
+        if (bReadable)
         {
             ProcRecvData();
         }

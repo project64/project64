@@ -17,18 +17,6 @@ class CScriptSystem
     typedef std::map<JSInstanceName, JSInstanceStatus> JSInstanceStatusMap;
     typedef std::vector<JSSysCommand> JSSysCommandQueue;
 
-    struct JSQueuedCallbackAdd
-    {
-        JSAppHookID hookId;
-        JSAppCallback callback;
-    };
-
-    struct JSQueuedCallbackRemove
-    {
-        JSAppHookID hookId;
-        JSAppCallbackID callbackId;
-    };
-
     enum { JS_CPU_CB_RANGE_CACHE_SIZE = 256 };
 
     struct JSCpuCbListInfo
@@ -55,9 +43,6 @@ class CScriptSystem
     JSAppCallbackList   m_AppCallbackHooks[JS_NUM_APP_HOOKS];
     JSAppCallbackID     m_NextAppCallbackId;
     
-    std::vector<JSQueuedCallbackRemove> m_CbRemoveQueue;
-    std::vector<JSQueuedCallbackAdd> m_CbAddQueue;
-
     volatile size_t   m_AppCallbackCount;
 
     volatile JSCpuCbListInfo m_CpuExecCbInfo;
@@ -125,15 +110,15 @@ public:
     static void UpdateCpuCbListInfo(volatile JSCpuCbListInfo& info, JSAppCallbackList& callbacks);
 
     void DoMouseEvent(JSAppHookID hookId, int x, int y, DWORD uMsg = (DWORD)-1);
-
-    JSAppCallbackID QueueAddAppCallback(JSAppHookID hookId, JSAppCallback callback);
-    void QueueRemoveAppCallback(JSAppHookID hookId, JSAppCallbackID callbackId);
     void InvokeAppCallbacks(JSAppHookID hookId, void* env = nullptr);
 
     void ExecAutorunList();
     std::set<std::string>& AutorunList();
     void LoadAutorunList();
     void SaveAutorunList();
+
+    JSAppCallbackID RawAddAppCallback(JSAppHookID hookId, JSAppCallback& callback);
+    void RawRemoveAppCallback(JSAppHookID hookId, JSAppCallbackID callbackId);
 
 private:
     inline bool HaveCpuCallbacks(volatile JSCpuCbListInfo& info, JSAppCallbackList& callbacks, uint32_t address)
@@ -189,9 +174,6 @@ private:
     void OnSweep(bool bIfDone);
 
     bool RawRemoveInstance(const char* key);
-    
-    void RawAddAppCallback(JSAppHookID hookId, JSAppCallback& callback);
-    void RawRemoveAppCallback(JSAppHookID hookId, JSAppCallbackID callbackId);
     void RefreshCallbackMaps();
 
     static stdstr FixStringReturns(const char* str);
