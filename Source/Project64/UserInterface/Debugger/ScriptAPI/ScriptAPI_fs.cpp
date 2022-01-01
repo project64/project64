@@ -19,6 +19,7 @@ void ScriptAPI::Define_fs(duk_context *ctx)
         { "writefile", js_fs_writefile, DUK_VARARGS },
         { "read",      js_fs_read,      DUK_VARARGS },
         { "readfile",  js_fs_readfile,  DUK_VARARGS },
+        { "exists",    js_fs_exists,    DUK_VARARGS },
         { "fstat",     js_fs_fstat,     DUK_VARARGS },
         { "stat",      js_fs_stat,      DUK_VARARGS },
         { "unlink",    js_fs_unlink,    DUK_VARARGS },
@@ -231,6 +232,14 @@ duk_ret_t ScriptAPI::js_fs_readfile(duk_context *ctx)
     }
 
     fclose(fp);
+    return 1;
+}
+
+duk_ret_t ScriptAPI::js_fs_exists(duk_context* ctx)
+{
+    CheckArgs(ctx, { Arg_String });
+    const char* path = duk_get_string(ctx, 0);
+    duk_push_boolean(ctx, PathFileExistsA(path) ? 1 : 0);
     return 1;
 }
 

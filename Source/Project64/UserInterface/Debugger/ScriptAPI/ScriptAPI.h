@@ -203,6 +203,7 @@ namespace ScriptAPI
     duk_ret_t js_fs_writefile(duk_context* ctx);
     duk_ret_t js_fs_read(duk_context* ctx);
     duk_ret_t js_fs_readfile(duk_context* ctx);
+    duk_ret_t js_fs_exists(duk_context* ctx);
     duk_ret_t js_fs_fstat(duk_context* ctx);
     duk_ret_t js_fs_stat(duk_context* ctx);
     duk_ret_t js_fs_unlink(duk_context* ctx);
