@@ -51,11 +51,11 @@ public:
     static void ReserveMemory();
     static void FreeReservedMemory();
 
-    bool   Initialize(bool SyncSystem);
-    void   Reset(bool EraseMemory);
+    bool Initialize(bool SyncSystem);
+    void Reset(bool EraseMemory);
 
     uint8_t * Rdram();
-    uint32_t  RdramSize();
+    uint32_t RdramSize();
     uint8_t * Dmem();
     uint8_t * Imem();
     uint8_t * PifRam();
@@ -63,36 +63,37 @@ public:
     CSram * GetSram();
     CFlashram * GetFlashram();
 
-    bool  LB_VAddr(uint32_t VAddr, uint8_t & Value);
-    bool  LH_VAddr(uint32_t VAddr, uint16_t & Value);
-    bool  LW_VAddr(uint32_t VAddr, uint32_t & Value);
-    bool  LD_VAddr(uint32_t VAddr, uint64_t & Value);
+    bool LB_VAddr(uint32_t VAddr, uint8_t & Value);
+    bool LH_VAddr(uint32_t VAddr, uint16_t & Value);
+    bool LW_VAddr(uint32_t VAddr, uint32_t & Value);
+    bool LD_VAddr(uint32_t VAddr, uint64_t & Value);
 
-    bool  LB_PAddr(uint32_t PAddr, uint8_t & Value);
-    bool  LH_PAddr(uint32_t PAddr, uint16_t & Value);
-    bool  LW_PAddr(uint32_t PAddr, uint32_t & Value);
-    bool  LD_PAddr(uint32_t PAddr, uint64_t & Value);
+    bool LB_PAddr(uint32_t PAddr, uint8_t & Value);
+    bool LH_PAddr(uint32_t PAddr, uint16_t & Value);
+    bool LW_PAddr(uint32_t PAddr, uint32_t & Value);
+    bool LD_PAddr(uint32_t PAddr, uint64_t & Value);
 
-    bool  SB_VAddr(uint32_t VAddr, uint8_t Value);
-    bool  SH_VAddr(uint32_t VAddr, uint16_t Value);
-    bool  SW_VAddr(uint32_t VAddr, uint32_t Value);
-    bool  SD_VAddr(uint32_t VAddr, uint64_t Value);
+    bool SB_VAddr(uint32_t VAddr, uint8_t Value);
+    bool SH_VAddr(uint32_t VAddr, uint16_t Value);
+    bool SW_VAddr(uint32_t VAddr, uint32_t Value);
+    bool SD_VAddr(uint32_t VAddr, uint64_t Value);
 
-    bool  SB_PAddr(uint32_t PAddr, uint8_t Value);
-    bool  SH_PAddr(uint32_t PAddr, uint16_t Value);
-    bool  SW_PAddr(uint32_t PAddr, uint32_t Value);
-    bool  SD_PAddr(uint32_t PAddr, uint64_t Value);
+    bool SB_PAddr(uint32_t PAddr, uint8_t Value);
+    bool SH_PAddr(uint32_t PAddr, uint16_t Value);
+    bool SW_PAddr(uint32_t PAddr, uint32_t Value);
+    bool SD_PAddr(uint32_t PAddr, uint64_t Value);
 
     int32_t   MemoryFilter(uint32_t dwExptCode, void * lpExceptionPointer);
-    void  UpdateFieldSerration(uint32_t interlaced);
+    void UpdateFieldSerration(uint32_t interlaced);
+
 #ifndef _WIN32
     static bool SetupSegvHandler(void);
     static void segv_handler(int signal, siginfo_t *siginfo, void *sigcontext);
 #endif
 
     // Protect the memory from being written to
-    void  ProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr);
-    void  UnProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr);
+    void ProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr);
+    void UnProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr);
 
     // Functions for TLB notification
     void TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly);
@@ -180,36 +181,25 @@ private:
     static void DumpArmExceptionInfo(uint32_t MemAddress, mcontext_t & context);
     static bool FilterArmException(uint32_t MemAddress, mcontext_t & context);
 #endif
-
-    // Memory locations
-    static uint8_t   * m_Reserve1, *m_Reserve2;
-    uint8_t          * m_RDRAM, *m_DMEM, *m_IMEM;
-    uint32_t         m_AllocatedRdramSize;
-
-    // ROM information
-    bool          m_RomMapped;
-    uint8_t *     m_Rom;
-    uint32_t      m_RomSize;
-    bool          m_RomWrittenTo;
-    uint32_t      m_RomWroteValue;
-
-    // DDRom information
-    bool          m_DDRomMapped;
-    uint8_t *     m_DDRom;
-    uint32_t      m_DDRomSize;
-
-    //Current half line
     void UpdateHalfLine();
-    uint32_t         m_HalfLine;
-    uint32_t         m_HalfLineCheck;
-    uint32_t         m_FieldSerration;
-
-    // Initializing and resetting information about the memory system
     void FreeMemory();
 
-    mutable char m_strLabelName[100];
+    static uint8_t   * m_Reserve1, *m_Reserve2;
+    uint8_t * m_RDRAM, *m_DMEM, *m_IMEM;
+    uint32_t m_AllocatedRdramSize;
+    bool m_RomMapped;
+    uint8_t * m_Rom;
+    uint32_t m_RomSize;
+    bool m_RomWrittenTo;
+    uint32_t m_RomWroteValue;
+    bool m_DDRomMapped;
+    uint8_t * m_DDRom;
+    uint32_t m_DDRomSize;
+    uint32_t m_HalfLine;
+    uint32_t m_HalfLineCheck;
+    uint32_t m_FieldSerration;
 
-    // Big look up table to quickly translate the TLB to real memory addresses
+    mutable char m_strLabelName[100];
     size_t * m_TLB_ReadMap;
     size_t * m_TLB_WriteMap;
 

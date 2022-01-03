@@ -50,7 +50,7 @@ void CDMA::PI_DMA_READ()
         g_Debugger->PIDMAReadStarted();
     }
 
-    //	PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
+    // PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
     uint32_t PI_RD_LEN_REG = ((g_Reg->PI_RD_LEN_REG) & 0x00FFFFFFul) + 1;
 
     if ((PI_RD_LEN_REG & 1) != 0)

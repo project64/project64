@@ -287,7 +287,7 @@ void CInterpreterCPU::ExecuteCPU()
                 continue;
             }
 
-            if (CDebugSettings::HaveDebugger())
+            if (HaveDebugger())
             {
                 if (HaveExecutionBP() && g_Debugger->ExecutionBP(PROGRAM_COUNTER))
                 {

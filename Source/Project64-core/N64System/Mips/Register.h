@@ -586,36 +586,6 @@ class CRegisters :
 public:
     CRegisters(CN64System * System, CSystemEvents * SystemEvents);
 
-    // General registers
-    uint32_t    m_PROGRAM_COUNTER;
-    MIPS_DWORD  m_GPR[32];
-    uint32_t    m_CP0[33];
-    MIPS_DWORD  m_HI;
-    MIPS_DWORD  m_LO;
-    uint32_t    m_LLBit;
-
-    // Floating point registers/information
-    uint32_t        m_FPCR[32];
-    int32_t         m_RoundingModel;
-    MIPS_DWORD      m_FPR[32];
-    float         * m_FPR_S[32];
-    double        * m_FPR_D[32];
-
-    // Memory-mapped N64 registers
-    uint32_t           m_RDRAM_Registers[10];
-    uint32_t           m_SigProcessor_Interface[10];
-    uint32_t           m_Display_ControlReg[10];
-    uint32_t           m_Mips_Interface[4];
-    uint32_t           m_Video_Interface[14];
-    uint32_t           m_Audio_Interface[6];
-    uint32_t           m_Peripheral_Interface[13];
-    uint32_t           m_RDRAM_Interface[8];
-    uint32_t           m_SerialInterface[4];
-    uint32_t           m_DiskInterface[22];
-    uint32_t           m_AudioIntrReg;
-    uint32_t           m_GfxIntrReg;
-    uint32_t           m_RspIntrReg;
-
     void CheckInterrupts();
     void DoAddressError( bool DelaySlot, uint32_t BadVaddr, bool FromRead );
     void DoBreakException( bool DelaySlot );
@@ -628,6 +598,36 @@ public:
     void FixFpuLocations();
     void Reset();
     void SetAsCurrentSystem();
+
+    // General registers
+    uint32_t m_PROGRAM_COUNTER;
+    MIPS_DWORD m_GPR[32];
+    uint32_t m_CP0[33];
+    MIPS_DWORD m_HI;
+    MIPS_DWORD m_LO;
+    uint32_t m_LLBit;
+
+    // Floating point registers/information
+    uint32_t m_FPCR[32];
+    int32_t m_RoundingModel;
+    MIPS_DWORD m_FPR[32];
+    float * m_FPR_S[32];
+    double * m_FPR_D[32];
+
+    // Memory-mapped N64 registers
+    uint32_t m_RDRAM_Registers[10];
+    uint32_t m_SigProcessor_Interface[10];
+    uint32_t m_Display_ControlReg[10];
+    uint32_t m_Mips_Interface[4];
+    uint32_t m_Video_Interface[14];
+    uint32_t m_Audio_Interface[6];
+    uint32_t m_Peripheral_Interface[13];
+    uint32_t m_RDRAM_Interface[8];
+    uint32_t m_SerialInterface[4];
+    uint32_t m_DiskInterface[22];
+    uint32_t m_AudioIntrReg;
+    uint32_t m_GfxIntrReg;
+    uint32_t m_RspIntrReg;
 
 private:
     CRegisters();

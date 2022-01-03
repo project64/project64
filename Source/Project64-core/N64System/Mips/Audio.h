@@ -11,22 +11,22 @@ public:
     CAudio();
     ~CAudio();
 
-    uint32_t GetLength         ();
-    uint32_t GetStatus         ();
-    void  LenChanged        ();
+    uint32_t GetLength();
+    uint32_t GetStatus();
+    void  LenChanged();
     void  InterruptTimerDone();
-    void  BusyTimerDone     ();
-    void  Reset             ();
-    void  SetViIntr         ( uint32_t VI_INTR_TIME );
-    void  SetFrequency      ( uint32_t Dacrate, uint32_t System );
+    void  BusyTimerDone();
+    void  Reset();
+    void  SetViIntr(uint32_t VI_INTR_TIME);
+    void  SetFrequency(uint32_t Dacrate, uint32_t System);
 
 private:
     CAudio(const CAudio&);
     CAudio& operator=(const CAudio&);
 
-    uint32_t  m_SecondBuff;
-    uint32_t  m_Status;
-    uint32_t  m_BytesPerSecond;
-    int32_t   m_CountsPerByte;
-    int32_t   m_FramesPerSecond;
+    uint32_t m_SecondBuff;
+    uint32_t m_Status;
+    uint32_t m_BytesPerSecond;
+    int32_t m_CountsPerByte;
+    int32_t m_FramesPerSecond;
 };
