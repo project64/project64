@@ -20,10 +20,17 @@ uint8_t* CDebugMMU::GetPhysicalPtr(uint32_t paddr, WORD* flags)
     bool bBigEndian = false;
     bool bCartRom = false;
 
-    if ((paddr < g_MMU->RdramSize()) || 
-        (paddr >= 0x04000000 && paddr <= 0x04001FFF)) // RDRAM and DMEM/IMEM
+    if (paddr < g_MMU->RdramSize()) 
     {
         ptr = (uint8_t*)(g_MMU->Rdram() + paddr);
+    }
+    else if (paddr >= 0x04000000 && paddr <= 0x04000FFF)
+    {
+        ptr = (uint8_t*)(g_MMU->Dmem() + paddr - 0x04000000);
+    }
+    else if (paddr >= 0x04001000 && paddr <= 0x04001FFF)
+    {
+        ptr = (uint8_t*)(g_MMU->Imem() + paddr - 0x04001000);
     }
     else if (paddr >= 0x05000000 && paddr <= 0x050004FF) // 64DD buffer
     {
