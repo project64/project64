@@ -3443,7 +3443,7 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
             break;
         case 0x05000000:
             // 64DD registers
-            if (g_Settings->LoadBool(Setting_EnableDisk))
+            if (EnableDisk())
             {
                 switch (PAddr)
                 {
@@ -11261,7 +11261,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         break;
     case 0x05000000:
         // 64DD registers
-        if (g_Settings->LoadBool(Setting_EnableDisk))
+        if (EnableDisk())
         {
             switch (PAddr)
             {
@@ -11603,7 +11603,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         case 0x04600000: MoveX86regToVariable(Reg, &g_Reg->PI_DRAM_ADDR_REG, "PI_DRAM_ADDR_REG"); break;
         case 0x04600004:
             MoveX86regToVariable(Reg, &g_Reg->PI_CART_ADDR_REG, "PI_CART_ADDR_REG");
-            if (g_Settings->LoadBool(Setting_EnableDisk))
+            if (EnableDisk())
             {
                 m_RegWorkingSet.BeforeCallDirect();
                 Call_Direct(AddressOf(&DiskDMACheck), "DiskDMACheck");
@@ -11763,7 +11763,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         break;
     case 0x05000000:
         // 64DD registers
-        if (g_Settings->LoadBool(Setting_EnableDisk))
+        if (EnableDisk())
         {
             switch (PAddr)
             {

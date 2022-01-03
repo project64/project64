@@ -7,6 +7,7 @@
 #include <Project64-core/N64System/Mips/FlashRam.h>
 #include <Project64-core/N64System/Mips/Sram.h>
 #include <Project64-core/N64System/Mips/Dma.h>
+#include <Project64-core\Settings\GameSettings.h>
 
 #ifdef __arm__
 #include <sys/ucontext.h>
@@ -40,7 +41,8 @@ class CMipsMemoryVM :
     private CPifRam,
     private CFlashram,
     private CSram,
-    private CDMA
+    private CDMA,
+    private CGameSettings
 {
 public:
     CMipsMemoryVM(bool SavesReadOnly);

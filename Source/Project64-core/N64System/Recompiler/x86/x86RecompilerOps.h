@@ -11,6 +11,7 @@
 #include <Project64-core/N64System/Interpreter/InterpreterOps.h>
 #include <Project64-core/Settings/N64SystemSettings.h>
 #include <Project64-core/Settings/RecompilerSettings.h>
+#include <Project64-core\Settings\GameSettings.h>
 
 class CCodeBlock;
 class CCodeSection;
@@ -20,7 +21,8 @@ class CX86RecompilerOps :
     protected R4300iOp,
     protected CX86Ops,
     protected CN64SystemSettings,
-    protected CRecompilerSettings
+    protected CRecompilerSettings,
+    private CGameSettings
 {
 public:
     // Trap functions

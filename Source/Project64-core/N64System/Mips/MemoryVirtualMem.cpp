@@ -1453,7 +1453,7 @@ void CMipsMemoryVM::Load32CartridgeDomain1Address3(void)
 void CMipsMemoryVM::Load32CartridgeDomain2Address1(void)
 {
     // 64DD registers
-    if (g_Settings->LoadBool(Setting_EnableDisk))
+    if (EnableDisk())
     {
         switch (m_MemLookupAddress & 0x1FFFFFFF)
         {
@@ -2050,7 +2050,7 @@ void CMipsMemoryVM::Write32PeripheralInterface(void)
     case 0x04600000: g_Reg->PI_DRAM_ADDR_REG = m_MemLookupValue.UW[0]; break;
     case 0x04600004:
         g_Reg->PI_CART_ADDR_REG = m_MemLookupValue.UW[0];
-        if (g_Settings->LoadBool(Setting_EnableDisk))
+        if (EnableDisk())
         {
             DiskDMACheck();
         }
@@ -2139,7 +2139,7 @@ void CMipsMemoryVM::Write32SerialInterface(void)
 void CMipsMemoryVM::Write32CartridgeDomain2Address1(void)
 {
     // 64DD registers
-    if (g_Settings->LoadBool(Setting_EnableDisk))
+    if (EnableDisk())
     {
         switch (m_MemLookupAddress & 0xFFFFFFF)
         {

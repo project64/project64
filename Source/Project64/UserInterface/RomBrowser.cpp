@@ -814,9 +814,13 @@ void CRomBrowser::RomList_OpenRom(uint32_t /*pnmh*/)
     }
 
     if ((CPath(pRomInfo->szFullFileName).GetExtension() != "ndd") && (CPath(pRomInfo->szFullFileName).GetExtension() != "d64"))
+    {
         CN64System::RunFileImage(pRomInfo->szFullFileName);
+    }
     else
+    {
         CN64System::RunDiskImage(pRomInfo->szFullFileName);
+    }
 }
 
 void CRomBrowser::RomList_PopupMenu(uint32_t /*pnmh*/)

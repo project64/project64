@@ -6,6 +6,9 @@
 class CGameSettings
 {
 public:
+    CGameSettings();
+    virtual ~CGameSettings();
+
     void RefreshGameSettings(void);
 
     inline static bool UseHleGfx(void) { return m_UseHleGfx; }
@@ -36,14 +39,21 @@ public:
     inline static CPU_TYPE CpuType(void) { return m_CpuType; }
     inline static uint32_t OverClockModifier(void) { return m_OverClockModifier; }
     inline static DISK_SEEK_TYPE DiskSeekTimingType(void) { return m_DiskSeekTimingType; };
+    inline static bool EnableDisk(void) { return m_EnableDisk; }
 
 	void RefreshSyncToAudio(void);
     static void SetOverClockModifier(bool EnhancmentOverClock, uint32_t EnhancmentOverClockModifier);
 
 protected:
     static void SpeedChanged(int32_t SpeedLimit);
+    static void EnableDiskChanged(void);
 
 private:
+    CGameSettings(const CGameSettings&);
+    CGameSettings& operator=(const CGameSettings&);
+
+    static void EnableDiskChanged(void *);
+
     // Settings that can be changed on the fly
     static bool m_UseHleGfx;
     static bool m_bRomInMemory;
@@ -75,4 +85,6 @@ private:
     static DISK_SEEK_TYPE m_DiskSeekTimingType;
     static bool m_EnhancmentOverClock;
     static uint32_t m_EnhancmentOverClockModifier;
+    static bool m_EnableDisk;
+    static int32_t m_RefCount;
 };

@@ -499,11 +499,17 @@ bool CN64System::RunFileImage(const char * FileLoc)
     if (g_Rom->IsLoadedRomDDIPL())
     {
         if (g_Rom->CicChipID() == CIC_NUS_8303)
+        {
             g_Settings->SaveString(File_DiskIPLPath, FileLoc);
+        }
         else if (g_Rom->CicChipID() == CIC_NUS_DDUS)
+        {
             g_Settings->SaveString(File_DiskIPLUSAPath, FileLoc);
+        }
         else if (g_Rom->CicChipID() == CIC_NUS_8401)
+        {
             g_Settings->SaveString(File_DiskIPLTOOLPath, FileLoc);
+        }
     }
     RunLoadedImage();
     return true;
@@ -1762,7 +1768,7 @@ bool CN64System::SaveState()
         zipOpenNewFileInZip(file, SaveFile.GetNameExtension().c_str(), nullptr, nullptr, 0, nullptr, 0, nullptr, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
         zipWriteInFileInZip(file, &SaveID_0, sizeof(SaveID_0));
         zipWriteInFileInZip(file, &RdramSize, sizeof(uint32_t));
-        if (g_Settings->LoadBool(Setting_EnableDisk) && g_Disk)
+        if (EnableDisk() && g_Disk)
         {
             // Keep base ROM information (64DD IPL / compatible game ROM)
             zipWriteInFileInZip(file, &g_Rom->GetRomAddress()[0x10], 0x20);
@@ -1832,7 +1838,7 @@ bool CN64System::SaveState()
         hSaveFile.SeekToBegin();
         hSaveFile.Write(&SaveID_0, sizeof(uint32_t));
         hSaveFile.Write(&RdramSize, sizeof(uint32_t));
-        if (g_Settings->LoadBool(Setting_EnableDisk) && g_Disk)
+        if (EnableDisk() && g_Disk)
         {
             // Keep base ROM information (64DD IPL / compatible game ROM)
             hSaveFile.Write(&g_Rom->GetRomAddress()[0x10], 0x20);
@@ -2013,7 +2019,7 @@ bool CN64System::LoadState(const char * FileName)
 
                 uint8_t LoadHeader[64];
                 unzReadCurrentFile(file, LoadHeader, 0x40);
-                if (g_Settings->LoadBool(Setting_EnableDisk) && g_Disk)
+                if (EnableDisk() && g_Disk)
                 {
                     // Base ROM information (64DD IPL / compatible game ROM) and disk info check
                     if ((memcmp(LoadHeader, &g_Rom->GetRomAddress()[0x10], 0x20) != 0 ||
@@ -2108,7 +2114,7 @@ bool CN64System::LoadState(const char * FileName)
         // Check header
         uint8_t LoadHeader[64];
         hSaveFile.Read(LoadHeader, 0x40);
-        if (g_Settings->LoadBool(Setting_EnableDisk) && g_Disk)
+        if (EnableDisk() && g_Disk)
         {
             // Base ROM information (64DD IPL / compatible game ROM) and disk info check
             if ((memcmp(LoadHeader, &g_Rom->GetRomAddress()[0x10], 0x20) != 0 ||

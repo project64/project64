@@ -33,6 +33,28 @@ uint32_t CGameSettings::m_OverClockModifier = 1;
 DISK_SEEK_TYPE CGameSettings::m_DiskSeekTimingType = DiskSeek_Turbo;
 bool CGameSettings::m_EnhancmentOverClock = false;
 uint32_t CGameSettings::m_EnhancmentOverClockModifier = 1;
+bool CGameSettings::m_EnableDisk = false;
+
+int32_t CGameSettings::m_RefCount = 0;
+
+CGameSettings::CGameSettings()
+{
+    m_RefCount += 1;
+    if (m_RefCount == 1)
+    {
+        g_Settings->RegisterChangeCB(Setting_EnableDisk, nullptr, EnableDiskChanged);
+        EnableDiskChanged(nullptr);
+    }
+}
+
+CGameSettings::~CGameSettings()
+{
+    m_RefCount -= 1;
+    if (m_RefCount == 0)
+    {
+        g_Settings->RegisterChangeCB(Setting_EnableDisk, nullptr, EnableDiskChanged);
+    }
+}
 
 void CGameSettings::RefreshGameSettings()
 {
@@ -104,4 +126,9 @@ void CGameSettings::SetOverClockModifier(bool EnhancmentOverClock, uint32_t Enha
     }
     if (m_OverClockModifier < 1) { m_OverClockModifier = 1; }
     if (m_OverClockModifier > 20) { m_OverClockModifier = 20; }
+}
+
+void CGameSettings::EnableDiskChanged(void *)
+{
+    m_EnableDisk = g_Settings->LoadBool(Setting_EnableDisk);
 }
