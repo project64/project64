@@ -670,20 +670,6 @@ bool CMipsMemoryVM::LH_NonMemory(uint32_t PAddr, uint32_t* Value, bool/* SignExt
 
 bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
 {
-#ifdef CFB_READ
-    if (PAddr >= CFBStart && PAddr < CFBEnd)
-    {
-        uint32_t OldProtect;
-        VirtualProtect(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, PAGE_READONLY, &OldProtect);
-        if (FrameBufferRead)
-        {
-            FrameBufferRead(PAddr & ~0xFFF);
-        }
-        *Value = *(uint32_t *)(m_RDRAM + PAddr);
-        return true;
-    }
-#endif
-
     m_MemLookupAddress = PAddr;
     if (PAddr >= 0x10000000 && PAddr < 0x16000000)
     {
@@ -728,18 +714,6 @@ bool CMipsMemoryVM::SB_NonMemory(uint32_t PAddr, uint8_t Value)
     case 0x00500000:
     case 0x00600000:
     case 0x00700000:
-#ifdef CFB_READ
-        if (PAddr >= CFBStart && PAddr < CFBEnd)
-        {
-            uint32_t OldProtect;
-            VirtualProtect(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, PAGE_READWRITE, &OldProtect);
-            *(uint8_t *)(m_RDRAM + PAddr) = Value;
-            VirtualProtect(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, OldProtect, &OldProtect);
-            g_Notify->DisplayError("FrameBufferWrite");
-            if (FrameBufferWrite) { FrameBufferWrite(PAddr, 1); }
-            break;
-        }
-#endif
         if (PAddr < RdramSize())
         {
             g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0xFFC, CRecompiler::Remove_ProtectedMem);
@@ -766,19 +740,6 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t PAddr, uint16_t Value)
     case 0x00500000:
     case 0x00600000:
     case 0x00700000:
-#ifdef CFB_READ
-        if (PAddr >= CFBStart && PAddr < CFBEnd)
-        {
-            uint32_t OldProtect;
-            VirtualProtect(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, PAGE_READWRITE, &OldProtect);
-            *(uint16_t *)(m_RDRAM + PAddr) = Value;
-            if (FrameBufferWrite) { FrameBufferWrite(PAddr & ~0xFFF, 2); }
-            //*(uint16_t *)(m_RDRAM+PAddr) = 0xFFFF;
-            //VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,PAGE_NOACCESS, &OldProtect);
-            g_Notify->DisplayError("PAddr = %x", PAddr);
-            break;
-        }
-#endif
         if (PAddr < RdramSize())
         {
             g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0x1000, CRecompiler::Remove_ProtectedMem);
@@ -828,18 +789,6 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
     case 0x00500000:
     case 0x00600000:
     case 0x00700000:
-#ifdef CFB_READ
-        if (PAddr >= CFBStart && PAddr < CFBEnd)
-        {
-            uint32_t OldProtect;
-            VirtualProtect(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, PAGE_READWRITE, &OldProtect);
-            *(uint32_t *)(m_RDRAM + PAddr) = Value;
-            VirtualProtect(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, OldProtect, &OldProtect);
-            g_Notify->DisplayError("FrameBufferWrite %X", PAddr);
-            if (FrameBufferWrite) { FrameBufferWrite(PAddr, 4); }
-            break;
-        }
-#endif
         if (PAddr < RdramSize())
         {
             g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0x1000, CRecompiler::Remove_ProtectedMem);
@@ -1912,17 +1861,7 @@ void CMipsMemoryVM::Write32VideoInterface(void)
         }
         break;
     case 0x04400004:
-#ifdef CFB_READ
-        if (g_Reg->VI_ORIGIN_REG > 0x280)
-        {
-            SetFrameBuffer(g_Reg->VI_ORIGIN_REG, (uint32_t)(VI_WIDTH_REG * (VI_WIDTH_REG *.75)));
-        }
-#endif
         g_Reg->VI_ORIGIN_REG = (m_MemLookupValue.UW[0] & 0xFFFFFF);
-        //if (UpdateScreen != nullptr )
-        //{
-        //	UpdateScreen();
-        //}
         break;
     case 0x04400008:
         if (g_Reg->VI_WIDTH_REG != m_MemLookupValue.UW[0])

@@ -51,21 +51,6 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
             }
             return false;
         }
-#ifdef CFB_READ
-        uint32_t count, OldProtect;
-        if (Start >= CFBStart && End < CFBEnd)
-        {
-            for (count = Start; count < End; count += 0x1000)
-            {
-                VirtualProtect(m_RDRAM + count, 4, PAGE_READONLY, &OldProtect);
-                if (FrameBufferRead)
-                {
-                    FrameBufferRead(count & ~0xFFF);
-                }
-            }
-            return EXCEPTION_CONTINUE_EXECUTION;
-        }
-#endif
         if (End < g_MMU->RdramSize() && g_Recompiler)
         {
             for (uint32_t count = (Start & ~0xFFF); count < End; count += 0x1000)
