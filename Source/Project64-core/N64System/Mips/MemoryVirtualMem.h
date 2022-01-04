@@ -7,6 +7,7 @@
 #include <Project64-core\N64System\Mips\FlashRam.h>
 #include <Project64-core\N64System\Mips\Sram.h>
 #include <Project64-core\N64System\Mips\Dma.h>
+#include <Project64-core\N64System\MemoryHandler\PeripheralInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RDRAMInterfaceHandler.h>
 #include <Project64-core\Settings\GameSettings.h>
 
@@ -42,7 +43,7 @@ class CMipsMemoryVM :
     private CPifRam,
     private CFlashram,
     private CSram,
-    private CDMA,
+    public CDMA,
     private CGameSettings
 {
 public:
@@ -138,7 +139,6 @@ private:
     static void Load32MIPSInterface(void);
     static void Load32VideoInterface(void);
     static void Load32AudioInterface(void);
-    static void Load32PeripheralInterface(void);
     static void Load32SerialInterface(void);
     static void Load32CartridgeDomain1Address1(void);
     static void Load32CartridgeDomain1Address3(void);
@@ -153,7 +153,6 @@ private:
     static void Write32MIPSInterface(void);
     static void Write32VideoInterface(void);
     static void Write32AudioInterface(void);
-    static void Write32PeripheralInterface(void);
     static void Write32SerialInterface(void);
     static void Write32CartridgeDomain2Address1(void);
     static void Write32CartridgeDomain2Address2(void);
@@ -185,6 +184,7 @@ private:
 
     static uint8_t   * m_Reserve1, *m_Reserve2;
 	CRegisters & m_Reg;
+	PeripheralInterfaceHandler m_PeripheralInterfaceHandler;
 	RDRAMInterfaceHandler m_RDRAMInterfaceHandler;
     uint8_t * m_RDRAM, *m_DMEM, *m_IMEM;
     uint32_t m_AllocatedRdramSize;

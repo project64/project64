@@ -137,25 +137,6 @@ AudioInterfaceReg::AudioInterfaceReg(uint32_t * _AudioInterface) :
 {
 }
 
-PeripheralInterfaceReg::PeripheralInterfaceReg(uint32_t * PeripheralInterface) :
-    PI_DRAM_ADDR_REG(PeripheralInterface[0]),
-    PI_CART_ADDR_REG(PeripheralInterface[1]),
-    PI_RD_LEN_REG(PeripheralInterface[2]),
-    PI_WR_LEN_REG(PeripheralInterface[3]),
-    PI_STATUS_REG(PeripheralInterface[4]),
-    PI_BSD_DOM1_LAT_REG(PeripheralInterface[5]),
-    PI_DOMAIN1_REG(PeripheralInterface[5]),
-    PI_BSD_DOM1_PWD_REG(PeripheralInterface[6]),
-    PI_BSD_DOM1_PGS_REG(PeripheralInterface[7]),
-    PI_BSD_DOM1_RLS_REG(PeripheralInterface[8]),
-    PI_BSD_DOM2_LAT_REG(PeripheralInterface[9]),
-    PI_DOMAIN2_REG(PeripheralInterface[9]),
-    PI_BSD_DOM2_PWD_REG(PeripheralInterface[10]),
-    PI_BSD_DOM2_PGS_REG(PeripheralInterface[11]),
-    PI_BSD_DOM2_RLS_REG(PeripheralInterface[12])
-{
-}
-
 DisplayControlReg::DisplayControlReg(uint32_t * _DisplayProcessor) :
     DPC_START_REG(_DisplayProcessor[0]),
     DPC_END_REG(_DisplayProcessor[1]),

@@ -2,6 +2,7 @@
 
 #include <Common/Platform.h>
 #include <Project64-core\N64System\N64Types.h>
+#include <Project64-core\N64System\MemoryHandler\PeripheralInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RDRAMInterfaceHandler.h>
 #include <Project64-core\Settings\DebugSettings.h>
 #include <Project64-core\Settings\GameSettings.h>
@@ -312,35 +313,6 @@ enum
     AI_STATUS_DMA_BUSY			= 0x40000000,	// Bit 30: Busy
 };
 
-// Audio interface registers
-
-class PeripheralInterfaceReg
-{
-protected:
-    PeripheralInterfaceReg (uint32_t * PeripheralInterface);
-
-public:
-    uint32_t & PI_DRAM_ADDR_REG;
-    uint32_t & PI_CART_ADDR_REG;
-    uint32_t & PI_RD_LEN_REG;
-    uint32_t & PI_WR_LEN_REG;
-    uint32_t & PI_STATUS_REG;
-    uint32_t & PI_BSD_DOM1_LAT_REG;
-    uint32_t & PI_DOMAIN1_REG;
-    uint32_t & PI_BSD_DOM1_PWD_REG;
-    uint32_t & PI_BSD_DOM1_PGS_REG;
-    uint32_t & PI_BSD_DOM1_RLS_REG;
-    uint32_t & PI_BSD_DOM2_LAT_REG;
-    uint32_t & PI_DOMAIN2_REG;
-    uint32_t & PI_BSD_DOM2_PWD_REG;
-    uint32_t & PI_BSD_DOM2_PGS_REG;
-    uint32_t & PI_BSD_DOM2_RLS_REG;
-
-private:
-    PeripheralInterfaceReg();
-    PeripheralInterfaceReg(const PeripheralInterfaceReg&);
-    PeripheralInterfaceReg& operator=(const PeripheralInterfaceReg&);
-};
 
 // Signal processor interface
 class SigProcessor_InterfaceReg

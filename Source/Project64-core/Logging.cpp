@@ -175,31 +175,6 @@ void CLogging::Log_LW(uint32_t PC, uint32_t VAddr)
         case 0xA4500014: LogMessage("%08X: read from AI_BITRATE_REG (%08X)", PC, Value); return;
         }
     }
-    if (VAddr >= 0xA4600000 && VAddr <= 0xA4600030)
-    {
-        if (!LogPerInterface())
-        {
-            return;
-        }
-        g_MMU->LW_VAddr(VAddr, Value);
-
-        switch (VAddr)
-        {
-        case 0xA4600000: LogMessage("%08X: read from PI_DRAM_ADDR_REG (%08X)", PC, Value); return;
-        case 0xA4600004: LogMessage("%08X: read from PI_CART_ADDR_REG (%08X)", PC, Value); return;
-        case 0xA4600008: LogMessage("%08X: read from PI_RD_LEN_REG (%08X)", PC, Value); return;
-        case 0xA460000C: LogMessage("%08X: read from PI_WR_LEN_REG (%08X)", PC, Value); return;
-        case 0xA4600010: LogMessage("%08X: read from PI_STATUS_REG (%08X)", PC, Value); return;
-        case 0xA4600014: LogMessage("%08X: read from PI_BSD_DOM1_LAT_REG/PI_DOMAIN1_REG (%08X)", PC, Value); return;
-        case 0xA4600018: LogMessage("%08X: read from PI_BSD_DOM1_PWD_REG (%08X)", PC, Value); return;
-        case 0xA460001C: LogMessage("%08X: read from PI_BSD_DOM1_PGS_REG (%08X)", PC, Value); return;
-        case 0xA4600020: LogMessage("%08X: read from PI_BSD_DOM1_RLS_REG (%08X)", PC, Value); return;
-        case 0xA4600024: LogMessage("%08X: read from PI_BSD_DOM2_LAT_REG/PI_DOMAIN2_REG (%08X)", PC, Value); return;
-        case 0xA4600028: LogMessage("%08X: read from PI_BSD_DOM2_PWD_REG (%08X)", PC, Value); return;
-        case 0xA460002C: LogMessage("%08X: read from PI_BSD_DOM2_PGS_REG (%08X)", PC, Value); return;
-        case 0xA4600030: LogMessage("%08X: read from PI_BSD_DOM2_RLS_REG (%08X)", PC, Value); return;
-        }
-    }
     if (VAddr == 0xA4800000)
     {
         if (!LogSerialInterface())
@@ -451,29 +426,6 @@ void CLogging::Log_SW(uint32_t PC, uint32_t VAddr, uint32_t Value)
         }
     }
 
-    if (VAddr >= 0xA4600000 && VAddr <= 0xA4600030)
-    {
-        if (!LogPerInterface())
-        {
-            return;
-        }
-        switch (VAddr)
-        {
-        case 0xA4600000: LogMessage("%08X: Writing 0x%08X to PI_DRAM_ADDR_REG", PC, Value); return;
-        case 0xA4600004: LogMessage("%08X: Writing 0x%08X to PI_CART_ADDR_REG", PC, Value); return;
-        case 0xA4600008: LogMessage("%08X: Writing 0x%08X to PI_RD_LEN_REG", PC, Value); return;
-        case 0xA460000C: LogMessage("%08X: Writing 0x%08X to PI_WR_LEN_REG", PC, Value); return;
-        case 0xA4600010: LogMessage("%08X: Writing 0x%08X to PI_STATUS_REG", PC, Value); return;
-        case 0xA4600014: LogMessage("%08X: Writing 0x%08X to PI_BSD_DOM1_LAT_REG/PI_DOMAIN1_REG", PC, Value); return;
-        case 0xA4600018: LogMessage("%08X: Writing 0x%08X to PI_BSD_DOM1_PWD_REG", PC, Value); return;
-        case 0xA460001C: LogMessage("%08X: Writing 0x%08X to PI_BSD_DOM1_PGS_REG", PC, Value); return;
-        case 0xA4600020: LogMessage("%08X: Writing 0x%08X to PI_BSD_DOM1_RLS_REG", PC, Value); return;
-        case 0xA4600024: LogMessage("%08X: Writing 0x%08X to PI_BSD_DOM2_LAT_REG/PI_DOMAIN2_REG", PC, Value); return;
-        case 0xA4600028: LogMessage("%08X: Writing 0x%08X to PI_BSD_DOM2_PWD_REG", PC, Value); return;
-        case 0xA460002C: LogMessage("%08X: Writing 0x%08X to PI_BSD_DOM2_PGS_REG", PC, Value); return;
-        case 0xA4600030: LogMessage("%08X: Writing 0x%08X to PI_BSD_DOM2_RLS_REG", PC, Value); return;
-        }
-    }
     if (VAddr == 0xA4800000)
     {
         if (!LogSerialInterface())

@@ -28,6 +28,7 @@ CMipsMemoryVM::CMipsMemoryVM(CRegisters & Reg, bool SavesReadOnly) :
     CDMA(*this, *this),
     m_Reg(Reg),
     m_RomMapped(false),
+    m_PeripheralInterfaceHandler(*this, Reg),
     m_RDRAMInterfaceHandler(Reg),
     m_Rom(nullptr),
     m_RomSize(0),
@@ -698,7 +699,7 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
         case 0x04300000: Load32MIPSInterface(); break;
         case 0x04400000: Load32VideoInterface(); break;
         case 0x04500000: Load32AudioInterface(); break;
-        case 0x04600000: Load32PeripheralInterface(); break;
+        case 0x04600000: m_PeripheralInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
         case 0x04700000: m_RDRAMInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
         case 0x04800000: Load32SerialInterface(); break;
         case 0x05000000: Load32CartridgeDomain2Address1(); break;
@@ -862,7 +863,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
     case 0x04300000: Write32MIPSInterface(); break;
     case 0x04400000: Write32VideoInterface(); break;
     case 0x04500000: Write32AudioInterface(); break;
-    case 0x04600000: Write32PeripheralInterface(); break;
+    case 0x04600000: m_PeripheralInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x04700000: m_RDRAMInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x04800000: Write32SerialInterface(); break;
     case 0x05000000: Write32CartridgeDomain2Address1(); break;
@@ -1362,32 +1363,6 @@ void CMipsMemoryVM::Load32AudioInterface(void)
             m_MemLookupValue.UW[0] = g_Reg->AI_STATUS_REG;
         }
         break;
-    default:
-        m_MemLookupValue.UW[0] = 0;
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-    }
-}
-
-void CMipsMemoryVM::Load32PeripheralInterface(void)
-{
-    switch (m_MemLookupAddress & 0x1FFFFFFF)
-    {
-    case 0x04600000: m_MemLookupValue.UW[0] = g_Reg->PI_DRAM_ADDR_REG; break;
-    case 0x04600004: m_MemLookupValue.UW[0] = g_Reg->PI_CART_ADDR_REG; break;
-    case 0x04600008: m_MemLookupValue.UW[0] = g_Reg->PI_RD_LEN_REG; break;
-    case 0x0460000C: m_MemLookupValue.UW[0] = g_Reg->PI_WR_LEN_REG; break;
-    case 0x04600010: m_MemLookupValue.UW[0] = g_Reg->PI_STATUS_REG; break;
-    case 0x04600014: m_MemLookupValue.UW[0] = g_Reg->PI_DOMAIN1_REG; break;
-    case 0x04600018: m_MemLookupValue.UW[0] = g_Reg->PI_BSD_DOM1_PWD_REG; break;
-    case 0x0460001C: m_MemLookupValue.UW[0] = g_Reg->PI_BSD_DOM1_PGS_REG; break;
-    case 0x04600020: m_MemLookupValue.UW[0] = g_Reg->PI_BSD_DOM1_RLS_REG; break;
-    case 0x04600024: m_MemLookupValue.UW[0] = g_Reg->PI_DOMAIN2_REG; break;
-    case 0x04600028: m_MemLookupValue.UW[0] = g_Reg->PI_BSD_DOM2_PWD_REG; break;
-    case 0x0460002C: m_MemLookupValue.UW[0] = g_Reg->PI_BSD_DOM2_PGS_REG; break;
-    case 0x04600030: m_MemLookupValue.UW[0] = g_Reg->PI_BSD_DOM2_RLS_REG; break;
     default:
         m_MemLookupValue.UW[0] = 0;
         if (HaveDebugger())
@@ -2016,53 +1991,6 @@ void CMipsMemoryVM::Write32AudioInterface(void)
         }
         break;
     case 0x04500014:  g_Reg->AI_BITRATE_REG = m_MemLookupValue.UW[0]; break;
-    default:
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-    }
-}
-
-void CMipsMemoryVM::Write32PeripheralInterface(void)
-{
-    switch (m_MemLookupAddress & 0xFFFFFFF)
-    {
-    case 0x04600000: g_Reg->PI_DRAM_ADDR_REG = m_MemLookupValue.UW[0]; break;
-    case 0x04600004:
-        g_Reg->PI_CART_ADDR_REG = m_MemLookupValue.UW[0];
-        if (EnableDisk())
-        {
-            DiskDMACheck();
-        }
-        break;
-    case 0x04600008:
-        g_Reg->PI_RD_LEN_REG = m_MemLookupValue.UW[0];
-        g_MMU->PI_DMA_READ();
-        break;
-    case 0x0460000C:
-        g_Reg->PI_WR_LEN_REG = m_MemLookupValue.UW[0];
-        g_MMU->PI_DMA_WRITE();
-        break;
-    case 0x04600010:
-        //if ((Value & PI_SET_RESET) != 0 )
-        //{
-        //	g_Notify->DisplayError("reset Controller");
-        //}
-        if ((m_MemLookupValue.UW[0] & PI_CLR_INTR) != 0)
-        {
-            g_Reg->MI_INTR_REG &= ~MI_INTR_PI;
-            g_Reg->CheckInterrupts();
-        }
-        break;
-    case 0x04600014: g_Reg->PI_DOMAIN1_REG = (m_MemLookupValue.UW[0] & 0xFF); break;
-    case 0x04600018: g_Reg->PI_BSD_DOM1_PWD_REG = (m_MemLookupValue.UW[0] & 0xFF); break;
-    case 0x0460001C: g_Reg->PI_BSD_DOM1_PGS_REG = (m_MemLookupValue.UW[0] & 0xFF); break;
-    case 0x04600020: g_Reg->PI_BSD_DOM1_RLS_REG = (m_MemLookupValue.UW[0] & 0xFF); break;
-    case 0x04600024: g_Reg->PI_DOMAIN2_REG = (m_MemLookupValue.UW[0] & 0xFF); break;
-    case 0x04600028: g_Reg->PI_BSD_DOM2_PWD_REG = (m_MemLookupValue.UW[0] & 0xFF); break;
-    case 0x0460002C: g_Reg->PI_BSD_DOM2_PGS_REG = (m_MemLookupValue.UW[0] & 0xFF); break;
-    case 0x04600030: g_Reg->PI_BSD_DOM2_RLS_REG = (m_MemLookupValue.UW[0] & 0xFF); break;
     default:
         if (HaveDebugger())
         {

@@ -360,6 +360,9 @@
     <ClCompile Include="N64System\MemoryHandler\RDRAMInterfaceHandler.cpp">
       <Filter>Source Files\N64 System\MemoryHandler</Filter>
     </ClCompile>
+    <ClCompile Include="N64System\MemoryHandler\PeripheralInterfaceHandler.cpp">
+      <Filter>Source Files\N64 System\MemoryHandler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -681,6 +684,9 @@
       <Filter>Header Files\N64 System\MemoryHandler</Filter>
     </ClInclude>
     <ClInclude Include="N64System\MemoryHandler\MemoryHandler.h">
+      <Filter>Header Files\N64 System\MemoryHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\MemoryHandler\PeripheralInterfaceHandler.h">
       <Filter>Header Files\N64 System\MemoryHandler</Filter>
     </ClInclude>
   </ItemGroup>
