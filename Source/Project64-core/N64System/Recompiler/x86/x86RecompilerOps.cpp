@@ -10441,20 +10441,6 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         break;
     case CExitInfo::ExitResetRecompCode:
         g_Notify->BreakPoint(__FILE__, __LINE__);
-#ifdef legacycode
-        if (m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT)
-        {
-            X86BreakPoint(__FILEW__, __LINE__);
-        }
-        if (g_SyncSystem)
-        {
-            MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
-            Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-        }
-        X86BreakPoint(__FILEW__, __LINE__);
-        MoveVariableToX86reg(g_Recomp, "g_Recomp", x86_ECX);
-        Call_Direct(AddressOf(ResetRecompCode), "ResetRecompCode");
-#endif
         ExitCodeBlock();
         break;
     case CExitInfo::TLBReadMiss:

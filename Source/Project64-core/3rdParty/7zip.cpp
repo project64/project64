@@ -70,19 +70,6 @@ C7zip::~C7zip(void)
         delete m_db;
         m_db = nullptr;
     }
-#ifdef legacycode
-    SetNotificationCallback(nullptr,nullptr);
-    SzArDbExFree(&m_db, m_allocImp.Free);
-
-    if (m_archiveStream.File)
-    {
-        fclose(m_archiveStream.File);
-    }
-    if (m_outBuffer)
-    {
-        m_allocImp.Free(m_outBuffer);
-    }
-#endif
 }
 
 void C7zip::SetNotificationCallback(LP7ZNOTIFICATION NotfyFnc, void * CBInfo)
@@ -91,25 +78,6 @@ void C7zip::SetNotificationCallback(LP7ZNOTIFICATION NotfyFnc, void * CBInfo)
     m_NotfyCallbackInfo = CBInfo;
 }
 
-#ifdef legacycode
-void C7zip::StatusUpdate(_7Z_STATUS status, int Value1, int Value2, C7zip * _this )
-{
-    CFileItem * File = _this->m_CurrentFile >= 0 ? _this->FileItem(_this->m_CurrentFile) : nullptr;
-
-    switch (status)
-    {
-    case LZMADECODE_START: 	_this->m_NotfyCallback("Start decoding",_this->m_NotfyCallbackInfo); break;
-    case LZMADECODE_UPDATE:
-    {
-        char Msg[200];
-        sprintf(Msg,"decoding %s: %0.2f%%",File->Name, (Value1/(float)Value2) * 100);
-        _this->m_NotfyCallback(Msg,_this->m_NotfyCallbackInfo);
-    }
-    break;
-    case LZMADECODE_DONE:  _this->m_NotfyCallback("Finished decoding",_this->m_NotfyCallbackInfo); break;
-    }
-}
-#endif
 
 bool C7zip::GetFile(int index, Byte * Data, size_t DataLen)
 {

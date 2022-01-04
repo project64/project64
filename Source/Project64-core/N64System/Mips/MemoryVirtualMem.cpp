@@ -606,44 +606,8 @@ bool CMipsMemoryVM::LB_NonMemory(uint32_t PAddr, uint32_t* Value, bool /*SignExt
     if (PAddr >= 0x10000000 && PAddr < 0x16000000)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
-#ifdef legacycode
-        if (WrittenToRom)
-        {
-            return false;
-        }
-
-        if ((PAddr & 2) == 0)
-        {
-            PAddr = (PAddr + 4) ^ 2;
-        }
-
-        if ((PAddr - 0x10000000) < RomFileSize)
-        {
-            if (SignExtend)
-            {
-                *Value = (int32_t)((char)ROM[PAddr - 0x10000000]);
-            }
-            else
-            {
-                *Value = ROM[PAddr - 0x10000000];
-            }
-
-            return true;
-        }
-        else
-        {
-            *Value = 0;
-            return false;
-        }
-#endif
     }
-    //	switch (PAddr & 0xFFF00000)
-    //{
-    //	default:
     *Value = 0;
-    //		return false;
-    //		break;
-    //	}
     return true;
 }
 
@@ -659,13 +623,8 @@ bool CMipsMemoryVM::LH_NonMemory(uint32_t PAddr, uint32_t* Value, bool/* SignExt
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-    //	switch (PAddr & 0xFFF00000)
-    //	{
-    //	default:
     *Value = 0;
     return false;
-    //	}
-    //	return true;
 }
 
 bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
@@ -916,12 +875,6 @@ void CMipsMemoryVM::UnProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr)
 
 const char * CMipsMemoryVM::LabelName(uint32_t Address) const
 {
-    //StringMap::iterator theIterator = m_LabelList.find(Address);
-    //if (theIterator != m_LabelList.end())
-    //{
-    //	return (*theIterator).second;
-    //}
-
     sprintf(m_strLabelName, "0x%08X", Address);
     return m_strLabelName;
 }
@@ -1707,27 +1660,6 @@ void CMipsMemoryVM::Write32DPCommandRegisters(void)
                 }
             }
         }
-#ifdef legacycode
-        if (ShowUnhandledMemory)
-        {
-            //if ( ( m_MemLookupValue.UW[0] & DPC_CLR_TMEM_CTR ) != 0)
-            //{
-            //	g_Notify->DisplayError("RSP: DPC_STATUS_REG: DPC_CLR_TMEM_CTR");
-            //}
-            //if ( ( m_MemLookupValue.UW[0] & DPC_CLR_PIPE_CTR ) != 0)
-            //{
-            //	g_Notify->DisplayError("RSP: DPC_STATUS_REG: DPC_CLR_PIPE_CTR");
-            //}
-            //if ( ( m_MemLookupValue.UW[0] & DPC_CLR_CMD_CTR ) != 0)
-            //{
-            //	g_Notify->DisplayError("RSP: DPC_STATUS_REG: DPC_CLR_CMD_CTR");
-            //}
-            //if ( ( m_MemLookupValue.UW[0] & DPC_CLR_CLOCK_CTR ) != 0)
-            //{
-            //	g_Notify->DisplayError("RSP: DPC_STATUS_REG: DPC_CLR_CLOCK_CTR");
-            //}
-        }
-#endif
         break;
     default:
         if (HaveDebugger())

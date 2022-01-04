@@ -3049,21 +3049,6 @@ void R4300iOp::UnknownOpcode()
     g_System->m_EndEmulation = true;
 
     g_Notify->BreakPoint(__FILE__, __LINE__);
-#ifdef legacycode
-    if (HaveDebugger && !inFullScreen)
-    {
-        int32_t response;
-
-        strcat(Message, "\n\nDo you wish to enter the debugger?");
-
-        response = MessageBox(nullptr, Message, GS(MSG_MSGBOX_ERROR_TITLE), MB_YESNO | MB_ICONERROR);
-        if (response == IDYES)
-        {
-            Enter_R4300i_Commands_Window();
-        }
-        ExitThread(0);
-    }
-#endif
 }
 
 bool R4300iOp::MemoryBreakpoint()
