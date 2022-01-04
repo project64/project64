@@ -156,19 +156,6 @@ PeripheralInterfaceReg::PeripheralInterfaceReg(uint32_t * PeripheralInterface) :
 {
 }
 
-RDRAMInt_InterfaceReg::RDRAMInt_InterfaceReg(uint32_t * RdramInterface) :
-    RI_MODE_REG(RdramInterface[0]),
-    RI_CONFIG_REG(RdramInterface[1]),
-    RI_CURRENT_LOAD_REG(RdramInterface[2]),
-    RI_SELECT_REG(RdramInterface[3]),
-    RI_COUNT_REG(RdramInterface[4]),
-    RI_REFRESH_REG(RdramInterface[4]),
-    RI_LATENCY_REG(RdramInterface[5]),
-    RI_RERROR_REG(RdramInterface[6]),
-    RI_WERROR_REG(RdramInterface[7])
-{
-}
-
 DisplayControlReg::DisplayControlReg(uint32_t * _DisplayProcessor) :
     DPC_START_REG(_DisplayProcessor[0]),
     DPC_END_REG(_DisplayProcessor[1]),
@@ -236,7 +223,7 @@ CRegisters::CRegisters(CN64System * System, CSystemEvents * SystemEvents) :
     Video_InterfaceReg(m_Video_Interface),
     AudioInterfaceReg(m_Audio_Interface),
     PeripheralInterfaceReg(m_Peripheral_Interface),
-    RDRAMInt_InterfaceReg(m_RDRAM_Interface),
+    RDRAMInterfaceReg(m_RDRAM_Interface),
     SigProcessor_InterfaceReg(m_SigProcessor_Interface),
     DisplayControlReg(m_Display_ControlReg),
     Serial_InterfaceReg(m_SerialInterface),

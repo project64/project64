@@ -30,7 +30,7 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     m_Plugins(Plugins),
     m_SyncCPU(nullptr),
     m_SyncPlugins(nullptr),
-    m_MMU_VM(SavesReadOnly),
+    m_MMU_VM(m_Reg, SavesReadOnly),
     //m_Cheats(m_MMU_VM),
     m_TLB(this),
     m_Reg(this, this),

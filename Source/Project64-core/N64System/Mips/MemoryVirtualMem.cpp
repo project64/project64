@@ -1,13 +1,13 @@
 #include "stdafx.h"
 
-#include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
-#include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/N64Rom.h>
-#include <Project64-core/N64System/N64System.h>
-#include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
-#include <Project64-core/N64System/Mips/OpcodeName.h>
-#include <Project64-core/N64System/Mips/Disk.h>
-#include <Project64-core/ExceptionHandler.h>
+#include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
+#include <Project64-core\N64System\SystemGlobals.h>
+#include <Project64-core\N64System\N64Rom.h>
+#include <Project64-core\N64System\N64System.h>
+#include <Project64-core\N64System\Recompiler\RecompilerCodeLog.h>
+#include <Project64-core\N64System\Mips\OpcodeName.h>
+#include <Project64-core\N64System\Mips\Disk.h>
+#include <Project64-core\ExceptionHandler.h>
 
 #include <stdio.h>
 #include <Common/MemoryManagement.h>
@@ -21,12 +21,14 @@ uint32_t CMipsMemoryVM::RegModValue;
 
 #pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
 
-CMipsMemoryVM::CMipsMemoryVM(bool SavesReadOnly) :
+CMipsMemoryVM::CMipsMemoryVM(CRegisters & Reg, bool SavesReadOnly) :
     CPifRam(SavesReadOnly),
     CFlashram(SavesReadOnly),
     CSram(SavesReadOnly),
     CDMA(*this, *this),
+    m_Reg(Reg),
     m_RomMapped(false),
+    m_RDRAMInterfaceHandler(Reg),
     m_Rom(nullptr),
     m_RomSize(0),
     m_RomWrittenTo(false),
@@ -697,7 +699,7 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
         case 0x04400000: Load32VideoInterface(); break;
         case 0x04500000: Load32AudioInterface(); break;
         case 0x04600000: Load32PeripheralInterface(); break;
-        case 0x04700000: Load32RDRAMInterface(); break;
+        case 0x04700000: m_RDRAMInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
         case 0x04800000: Load32SerialInterface(); break;
         case 0x05000000: Load32CartridgeDomain2Address1(); break;
         case 0x06000000: Load32CartridgeDomain1Address1(); break;
@@ -861,7 +863,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
     case 0x04400000: Write32VideoInterface(); break;
     case 0x04500000: Write32AudioInterface(); break;
     case 0x04600000: Write32PeripheralInterface(); break;
-    case 0x04700000: Write32RDRAMInterface(); break;
+    case 0x04700000: m_RDRAMInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x04800000: Write32SerialInterface(); break;
     case 0x05000000: Write32CartridgeDomain2Address1(); break;
     case 0x08000000: Write32CartridgeDomain2Address2(); break;
@@ -1386,27 +1388,6 @@ void CMipsMemoryVM::Load32PeripheralInterface(void)
     case 0x04600028: m_MemLookupValue.UW[0] = g_Reg->PI_BSD_DOM2_PWD_REG; break;
     case 0x0460002C: m_MemLookupValue.UW[0] = g_Reg->PI_BSD_DOM2_PGS_REG; break;
     case 0x04600030: m_MemLookupValue.UW[0] = g_Reg->PI_BSD_DOM2_RLS_REG; break;
-    default:
-        m_MemLookupValue.UW[0] = 0;
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-    }
-}
-
-void CMipsMemoryVM::Load32RDRAMInterface(void)
-{
-    switch (m_MemLookupAddress & 0x1FFFFFFF)
-    {
-    case 0x04700000: m_MemLookupValue.UW[0] = g_Reg->RI_MODE_REG; break;
-    case 0x04700004: m_MemLookupValue.UW[0] = g_Reg->RI_CONFIG_REG; break;
-    case 0x04700008: m_MemLookupValue.UW[0] = g_Reg->RI_CURRENT_LOAD_REG; break;
-    case 0x0470000C: m_MemLookupValue.UW[0] = g_Reg->RI_SELECT_REG; break;
-    case 0x04700010: m_MemLookupValue.UW[0] = g_Reg->RI_REFRESH_REG; break;
-    case 0x04700014: m_MemLookupValue.UW[0] = g_Reg->RI_LATENCY_REG; break;
-    case 0x04700018: m_MemLookupValue.UW[0] = g_Reg->RI_RERROR_REG; break;
-    case 0x0470001C: m_MemLookupValue.UW[0] = g_Reg->RI_WERROR_REG; break;
     default:
         m_MemLookupValue.UW[0] = 0;
         if (HaveDebugger())
@@ -2082,26 +2063,6 @@ void CMipsMemoryVM::Write32PeripheralInterface(void)
     case 0x04600028: g_Reg->PI_BSD_DOM2_PWD_REG = (m_MemLookupValue.UW[0] & 0xFF); break;
     case 0x0460002C: g_Reg->PI_BSD_DOM2_PGS_REG = (m_MemLookupValue.UW[0] & 0xFF); break;
     case 0x04600030: g_Reg->PI_BSD_DOM2_RLS_REG = (m_MemLookupValue.UW[0] & 0xFF); break;
-    default:
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-    }
-}
-
-void CMipsMemoryVM::Write32RDRAMInterface(void)
-{
-    switch (m_MemLookupAddress & 0xFFFFFFF)
-    {
-    case 0x04700000: g_Reg->RI_MODE_REG = m_MemLookupValue.UW[0]; break;
-    case 0x04700004: g_Reg->RI_CONFIG_REG = m_MemLookupValue.UW[0]; break;
-    case 0x04700008: g_Reg->RI_CURRENT_LOAD_REG = m_MemLookupValue.UW[0]; break;
-    case 0x0470000C: g_Reg->RI_SELECT_REG = m_MemLookupValue.UW[0]; break;
-    case 0x04700010: g_Reg->RI_REFRESH_REG = m_MemLookupValue.UW[0]; break;
-    case 0x04700014: g_Reg->RI_LATENCY_REG = m_MemLookupValue.UW[0]; break;
-    case 0x04700018: g_Reg->RI_RERROR_REG = m_MemLookupValue.UW[0]; break;
-    case 0x0470001C: g_Reg->RI_WERROR_REG = m_MemLookupValue.UW[0]; break;
     default:
         if (HaveDebugger())
         {

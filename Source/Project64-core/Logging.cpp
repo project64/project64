@@ -200,26 +200,6 @@ void CLogging::Log_LW(uint32_t PC, uint32_t VAddr)
         case 0xA4600030: LogMessage("%08X: read from PI_BSD_DOM2_RLS_REG (%08X)", PC, Value); return;
         }
     }
-    if (VAddr >= 0xA4700000 && VAddr <= 0xA470001C)
-    {
-        if (!LogRDRAMInterface())
-        {
-            return;
-        }
-        g_MMU->LW_VAddr(VAddr, Value);
-
-        switch (VAddr)
-        {
-        case 0xA4700000: LogMessage("%08X: read from RI_MODE_REG (%08X)", PC, Value); return;
-        case 0xA4700004: LogMessage("%08X: read from RI_CONFIG_REG (%08X)", PC, Value); return;
-        case 0xA4700008: LogMessage("%08X: read from RI_CURRENT_LOAD_REG (%08X)", PC, Value); return;
-        case 0xA470000C: LogMessage("%08X: read from RI_SELECT_REG (%08X)", PC, Value); return;
-        case 0xA4700010: LogMessage("%08X: read from RI_REFRESH_REG/RI_COUNT_REG (%08X)", PC, Value); return;
-        case 0xA4700014: LogMessage("%08X: read from RI_LATENCY_REG (%08X)", PC, Value); return;
-        case 0xA4700018: LogMessage("%08X: read from RI_RERROR_REG (%08X)", PC, Value); return;
-        case 0xA470001C: LogMessage("%08X: read from RI_WERROR_REG (%08X)", PC, Value); return;
-        }
-    }
     if (VAddr == 0xA4800000)
     {
         if (!LogSerialInterface())
@@ -492,24 +472,6 @@ void CLogging::Log_SW(uint32_t PC, uint32_t VAddr, uint32_t Value)
         case 0xA4600028: LogMessage("%08X: Writing 0x%08X to PI_BSD_DOM2_PWD_REG", PC, Value); return;
         case 0xA460002C: LogMessage("%08X: Writing 0x%08X to PI_BSD_DOM2_PGS_REG", PC, Value); return;
         case 0xA4600030: LogMessage("%08X: Writing 0x%08X to PI_BSD_DOM2_RLS_REG", PC, Value); return;
-        }
-    }
-    if (VAddr >= 0xA4700000 && VAddr <= 0xA470001C)
-    {
-        if (!LogRDRAMInterface())
-        {
-            return;
-        }
-        switch (VAddr)
-        {
-        case 0xA4700000: LogMessage("%08X: Writing 0x%08X to RI_MODE_REG", PC, Value); return;
-        case 0xA4700004: LogMessage("%08X: Writing 0x%08X to RI_CONFIG_REG", PC, Value); return;
-        case 0xA4700008: LogMessage("%08X: Writing 0x%08X to RI_CURRENT_LOAD_REG", PC, Value); return;
-        case 0xA470000C: LogMessage("%08X: Writing 0x%08X to RI_SELECT_REG", PC, Value); return;
-        case 0xA4700010: LogMessage("%08X: Writing 0x%08X to RI_REFRESH_REG/RI_COUNT_REG", PC, Value); return;
-        case 0xA4700014: LogMessage("%08X: Writing 0x%08X to RI_LATENCY_REG", PC, Value); return;
-        case 0xA4700018: LogMessage("%08X: Writing 0x%08X to RI_RERROR_REG", PC, Value); return;
-        case 0xA470001C: LogMessage("%08X: Writing 0x%08X to RI_WERROR_REG", PC, Value); return;
         }
     }
     if (VAddr == 0xA4800000)

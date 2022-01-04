@@ -1,10 +1,11 @@
 #pragma once
 
 #include <Common/Platform.h>
-#include <Project64-core/N64System/N64Types.h>
-#include <Project64-core/Settings/DebugSettings.h>
-#include <Project64-core/Settings/GameSettings.h>
-#include <Project64-core/Logging.h>
+#include <Project64-core\N64System\N64Types.h>
+#include <Project64-core\N64System\MemoryHandler\RDRAMInterfaceHandler.h>
+#include <Project64-core\Settings\DebugSettings.h>
+#include <Project64-core\Settings\GameSettings.h>
+#include <Project64-core\Logging.h>
 
 // CPO registers by name
 class CP0registers
@@ -341,28 +342,6 @@ private:
     PeripheralInterfaceReg& operator=(const PeripheralInterfaceReg&);
 };
 
-class RDRAMInt_InterfaceReg
-{
-protected:
-    RDRAMInt_InterfaceReg (uint32_t * RdramInterface);
-
-public:
-    uint32_t & RI_MODE_REG;
-    uint32_t & RI_CONFIG_REG;
-    uint32_t & RI_CURRENT_LOAD_REG;
-    uint32_t & RI_SELECT_REG;
-    uint32_t & RI_COUNT_REG;
-    uint32_t & RI_REFRESH_REG;
-    uint32_t & RI_LATENCY_REG;
-    uint32_t & RI_RERROR_REG;
-    uint32_t & RI_WERROR_REG;
-
-private:
-    RDRAMInt_InterfaceReg();
-    RDRAMInt_InterfaceReg(const RDRAMInt_InterfaceReg&);
-    RDRAMInt_InterfaceReg& operator=(const RDRAMInt_InterfaceReg&);
-};
-
 // Signal processor interface
 class SigProcessor_InterfaceReg
 {
@@ -577,7 +556,7 @@ class CRegisters :
     public Video_InterfaceReg,
     public AudioInterfaceReg,
     public PeripheralInterfaceReg,
-    public RDRAMInt_InterfaceReg,
+    public RDRAMInterfaceReg,
     public SigProcessor_InterfaceReg,
     public DisplayControlReg,
     public Serial_InterfaceReg,

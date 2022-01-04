@@ -94,6 +94,12 @@
     <Filter Include="Header Files\N64 System\Enhancement">
       <UniqueIdentifier>{ec73ae9e-54e8-4cbe-93fb-1d98d6755619}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\N64 System\MemoryHandler">
+      <UniqueIdentifier>{3e6f4352-4933-4138-bbed-1094b988638e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\N64 System\MemoryHandler">
+      <UniqueIdentifier>{f32cf723-4acb-4d3d-9bd9-05823579f8dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -350,6 +356,9 @@
     </ClCompile>
     <ClCompile Include="N64System\N64Rom.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\MemoryHandler\RDRAMInterfaceHandler.cpp">
+      <Filter>Source Files\N64 System\MemoryHandler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -667,6 +676,12 @@
     </ClInclude>
     <ClInclude Include="N64System\Enhancement\EnhancementList.h">
       <Filter>Header Files\N64 System\Enhancement</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\MemoryHandler\RDRAMInterfaceHandler.h">
+      <Filter>Header Files\N64 System\MemoryHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\MemoryHandler\MemoryHandler.h">
+      <Filter>Header Files\N64 System\MemoryHandler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,12 +1,13 @@
 #pragma once
-#include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
+#include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
 #include "TranslateVaddr.h"
-#include <Project64-core/N64System/Recompiler/RecompilerOps.h>
-#include <Project64-core/N64System/Interpreter/InterpreterOps.h>
-#include <Project64-core/N64System/Mips/PifRam.h>
-#include <Project64-core/N64System/Mips/FlashRam.h>
-#include <Project64-core/N64System/Mips/Sram.h>
-#include <Project64-core/N64System/Mips/Dma.h>
+#include <Project64-core\N64System\Recompiler\RecompilerOps.h>
+#include <Project64-core\N64System\Interpreter\InterpreterOps.h>
+#include <Project64-core\N64System\Mips\PifRam.h>
+#include <Project64-core\N64System\Mips\FlashRam.h>
+#include <Project64-core\N64System\Mips\Sram.h>
+#include <Project64-core\N64System\Mips\Dma.h>
+#include <Project64-core\N64System\MemoryHandler\RDRAMInterfaceHandler.h>
 #include <Project64-core\Settings\GameSettings.h>
 
 #ifdef __arm__
@@ -45,7 +46,7 @@ class CMipsMemoryVM :
     private CGameSettings
 {
 public:
-    CMipsMemoryVM(bool SavesReadOnly);
+    CMipsMemoryVM(CRegisters & Reg, bool SavesReadOnly);
     ~CMipsMemoryVM();
 
     static void ReserveMemory();
@@ -138,7 +139,6 @@ private:
     static void Load32VideoInterface(void);
     static void Load32AudioInterface(void);
     static void Load32PeripheralInterface(void);
-    static void Load32RDRAMInterface(void);
     static void Load32SerialInterface(void);
     static void Load32CartridgeDomain1Address1(void);
     static void Load32CartridgeDomain1Address3(void);
@@ -154,7 +154,6 @@ private:
     static void Write32VideoInterface(void);
     static void Write32AudioInterface(void);
     static void Write32PeripheralInterface(void);
-    static void Write32RDRAMInterface(void);
     static void Write32SerialInterface(void);
     static void Write32CartridgeDomain2Address1(void);
     static void Write32CartridgeDomain2Address2(void);
@@ -185,6 +184,8 @@ private:
     void FreeMemory();
 
     static uint8_t   * m_Reserve1, *m_Reserve2;
+	CRegisters & m_Reg;
+	RDRAMInterfaceHandler m_RDRAMInterfaceHandler;
     uint8_t * m_RDRAM, *m_DMEM, *m_IMEM;
     uint32_t m_AllocatedRdramSize;
     bool m_RomMapped;
