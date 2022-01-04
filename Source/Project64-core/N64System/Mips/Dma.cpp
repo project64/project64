@@ -352,16 +352,6 @@ void CDMA::PI_DMA_WRITE()
     {
         uint32_t i;
 
-#ifdef legacycode
-#ifdef ROM_IN_MAPSPACE
-        if (WrittenToRom)
-        {
-            uint32_t OldProtect;
-            VirtualProtect(ROM,m_RomFileSize,PAGE_READONLY, &OldProtect);
-        }
-#endif
-#endif
-
         uint8_t * ROM = g_Rom->GetRomAddress();
         uint8_t * RDRAM = g_MMU->Rdram();
         PI_CART_ADDR_REG -= 0x10000000;

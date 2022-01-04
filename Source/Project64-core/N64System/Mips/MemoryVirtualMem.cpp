@@ -765,13 +765,6 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
         {
             m_RomWrittenTo = true;
             m_RomWroteValue = Value;
-#ifdef ROM_IN_MAPSPACE
-            {
-                uint32_t OldProtect;
-                VirtualProtect(ROM, RomFileSize, PAGE_NOACCESS, &OldProtect);
-            }
-#endif
-            //LogMessage("%X: Wrote To ROM %08X from %08X",PROGRAM_COUNTER,Value,PAddr);
         }
         else
         {
@@ -1468,12 +1461,6 @@ void CMipsMemoryVM::Load32Rom(void)
         m_MemLookupValue.UW[0] = g_MMU->m_RomWroteValue;
         //LogMessage("%X: Read crap from ROM %08X from %08X",PROGRAM_COUNTER,*Value,PAddr);
         g_MMU->m_RomWrittenTo = false;
-#ifdef ROM_IN_MAPSPACE
-        {
-            uint32_t OldProtect;
-            VirtualProtect(ROM, RomFileSize, PAGE_READONLY, &OldProtect);
-        }
-#endif
     }
     else if ((m_MemLookupAddress & 0xFFFFFFF) < g_MMU->m_RomSize)
     {
