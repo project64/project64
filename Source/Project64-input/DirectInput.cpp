@@ -191,11 +191,7 @@ CDirectInput::ScanResult CDirectInput::ScanDevices(BUTTON & Button)
         {
             Result = ScanKeyboard(itr->first, device.didHandle, device.State.Keyboard, Button);
         }
-        else if (DeviceType == DI8DEVTYPE_MOUSE)
-        {
-            Result = ScanMouse(itr->first, device.didHandle, device.State.Mouse, Button);
-        }
-        else //if (DeviceType != DI8DEVTYPE_MOUSE)
+        else if (DeviceType != DI8DEVTYPE_MOUSE)
         {
             Result = ScanGamePad(itr->first, device.didHandle, device.State.Joy, Button);
         }

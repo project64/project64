@@ -45,7 +45,7 @@ void CProject64Input::InitiateControllers(CONTROL_INFO * ControlInfo)
     {
         g_Settings->LoadController(i, m_ControlInfo.Controls[i], m_Controllers[i]);
         m_DirectInput->MapControllerDevice(m_Controllers[i]);
-        if (m_ControlInfo.Controls[i].Present != 0 && m_iFirstController < 0)
+        if (m_ControlInfo.Controls[i].Present != PRESENT_NONE && m_iFirstController < 0)
         {
             m_iFirstController = i;
         }
