@@ -101,5 +101,8 @@
     <Image Include="Controller.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Mouse.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

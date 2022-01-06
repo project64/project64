@@ -87,6 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Controller.bmp" />
+    <Image Include="Mouse.bmp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.vcxproj">

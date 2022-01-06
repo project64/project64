@@ -53,6 +53,7 @@ private:
     void OptionsBtnClicked(UINT Code, int id, HWND ctl);
     void PluggedInChanged(UINT Code, int id, HWND ctl);
     LRESULT	ItemChangedNotify(NMHDR* /*pNMHDR*/);
+    void DisplayControllerImage(void);
     void DisplayController(void);
     void ButtonChannged(const BUTTON & Button);
     void EnablePage(bool Enable);
@@ -134,7 +135,7 @@ BOOL CControllerSettings::OnInitDialog(CWindow /*wndFocus*/, LPARAM /*lInitParam
     m_DeviceType.Attach(GetDlgItem(IDC_DEVICETYPE));
 
     m_ControllerImg.SubclassWindow(GetDlgItem(IDC_BMP_CONTROLLER));
-    m_ControllerImg.SetBitmap(MAKEINTRESOURCE(IDB_CONTROLLER));
+
     CScanButton * Buttons[] = {
         &m_ButtonUDPad, &m_ButtonDDPad, &m_ButtonLDPad, &m_ButtonRDPad, &m_ButtonA, &m_ButtonB,
         &m_ButtonCUp, &m_ButtonCDown, &m_ButtonCLeft, &m_ButtonCRight, &m_ButtonStart,
@@ -156,7 +157,7 @@ BOOL CControllerSettings::OnInitDialog(CWindow /*wndFocus*/, LPARAM /*lInitParam
     m_DeviceType.SetItemData(Index, PRESENT_MOUSE);
 
     DisplayController();
-    EnablePage(m_DeviceType.GetItemData(m_DeviceType.GetCurSel()) != PRESENT_NONE);
+    EnablePage(m_DeviceType.GetItemData(m_DeviceType.GetCurSel()) == PRESENT_CONT);
     return TRUE;
 }
 
@@ -251,13 +252,27 @@ void CControllerSettings::OptionsBtnClicked(UINT /*Code*/, int /*id*/, HWND /*ct
 void CControllerSettings::PluggedInChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
     SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
-    EnablePage(m_DeviceType.GetItemData(m_DeviceType.GetCurSel()) != PRESENT_NONE);
+    EnablePage(m_DeviceType.GetItemData(m_DeviceType.GetCurSel()) == PRESENT_CONT);
+    DisplayControllerImage();
 }
 
 LRESULT	CControllerSettings::ItemChangedNotify(NMHDR* /*pNMHDR*/)
 {
     SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
     return 0;
+}
+
+void CControllerSettings::DisplayControllerImage(void)
+{
+    if (m_DeviceType.GetItemData(m_DeviceType.GetCurSel()) != PRESENT_MOUSE)
+    {
+        m_ControllerImg.SetBitmap(MAKEINTRESOURCE(IDB_CONTROLLER));
+    }
+    else
+    {
+        m_ControllerImg.SetBitmap(MAKEINTRESOURCE(IDB_MOUSE));
+    }
+    m_ControllerImg.Invalidate();
 }
 
 void CControllerSettings::DisplayController(void)
@@ -272,6 +287,9 @@ void CControllerSettings::DisplayController(void)
             break;
         }
     }
+
+    DisplayControllerImage();
+
     m_Range.SetPos(m_Controller.Range);
     m_DeadZone.SetPos(m_Controller.DeadZone);
     CWindow(GetDlgItem(IDC_LABEL_RANGE)).SetWindowText(stdstr_f("%d%%", m_Range.GetPos()).ToUTF16().c_str());
