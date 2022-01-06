@@ -60,6 +60,13 @@ enum PluginType
     PLUGIN_RAW = 5, // The controller plugin is passed in raw data
 };
 
+enum PresentType
+{
+    PRESENT_NONE = 0,
+    PRESENT_CONT = 1,
+    PRESENT_MOUSE = 2,
+};
+
 class CControl_Plugin;
 
 class CCONTROL

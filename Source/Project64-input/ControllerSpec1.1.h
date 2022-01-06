@@ -27,6 +27,13 @@ enum
     PLUGIN_RAW = 5,
 };
 
+enum
+{
+    PRESENT_NONE = 0,
+    PRESENT_CONT = 1,
+    PRESENT_MOUSE = 2,
+};
+
 // Structures
 
 typedef struct

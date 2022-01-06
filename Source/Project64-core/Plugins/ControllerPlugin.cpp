@@ -58,7 +58,7 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
 
     for (int32_t i = 0; i < 4; i++)
     {
-        m_PluginControllers[i].Present = false;
+        m_PluginControllers[i].Present = PRESENT_NONE;
         m_PluginControllers[i].RawData = false;
         m_PluginControllers[i].Plugin = PLUGIN_NONE;
     }

@@ -460,18 +460,29 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
                 g_Notify->DisplayError("What am I meant to do with this controller command?");
             }
         }
-        if (Controllers[Control].Present != 0)
+        if (Controllers[Control].Present != PRESENT_NONE)
         {
-            Command[3] = 0x05;
-            Command[4] = 0x00;
-            switch (Controllers[Control].Plugin)
+            if (Controllers[Control].Present != PRESENT_MOUSE)
             {
-            case PLUGIN_TANSFER_PAK:
-            case PLUGIN_RUMBLE_PAK:
-            case PLUGIN_MEMPAK:
-            case PLUGIN_RAW:
-                Command[5] = 1; break;
-            default: Command[5] = 0; break;
+                //N64 Controller
+                Command[3] = 0x05;
+                Command[4] = 0x00;
+                switch (Controllers[Control].Plugin)
+                {
+                case PLUGIN_TANSFER_PAK:
+                case PLUGIN_RUMBLE_PAK:
+                case PLUGIN_MEMPAK:
+                case PLUGIN_RAW:
+                    Command[5] = 1; break;
+                default: Command[5] = 0; break;
+                }
+            }
+            else //if (Controllers[Control].Present == PRESENT_MOUSE)
+            {
+                //N64 Mouse
+                Command[3] = 0x02;
+                Command[4] = 0x00;
+                Command[5] = 0x00;
             }
         }
         else
@@ -487,7 +498,7 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
                 g_Notify->DisplayError("What am I meant to do with this controller command?");
             }
         }
-        if (Controllers[Control].Present == false)
+        if (Controllers[Control].Present == PRESENT_NONE)
         {
             Command[1] |= 0x80;
         }
@@ -504,7 +515,7 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
                 g_Notify->DisplayError("What am I meant to do with this controller command?");
             }
         }
-        if (Controllers[Control].Present != 0)
+        if (Controllers[Control].Present != PRESENT_NONE)
         {
             uint32_t address = (Command[3] << 8) | (Command[4] & 0xE0);
             uint8_t* data = &Command[5];
@@ -545,7 +556,7 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
                 g_Notify->DisplayError("What am I meant to do with this controller command?");
             }
         }
-        if (Controllers[Control].Present != 0)
+        if (Controllers[Control].Present != PRESENT_NONE)
         {
             uint32_t address = (Command[3] << 8) | (Command[4] & 0xE0);
             uint8_t* data = &Command[5];
@@ -587,7 +598,7 @@ void CPifRam::ReadControllerCommand(int32_t Control, uint8_t * Command)
     switch (Command[2])
     {
     case 0x01: // Read controller
-        if (Controllers[Control].Present != 0)
+        if (Controllers[Control].Present != PRESENT_NONE)
         {
             if (bShowPifRamErrors())
             {
@@ -599,7 +610,7 @@ void CPifRam::ReadControllerCommand(int32_t Control, uint8_t * Command)
         }
         break;
     case 0x02: // Read from controller pak
-        if (Controllers[Control].Present != 0)
+        if (Controllers[Control].Present != PRESENT_NONE)
         {
             switch (Controllers[Control].Plugin)
             {
@@ -608,7 +619,7 @@ void CPifRam::ReadControllerCommand(int32_t Control, uint8_t * Command)
         }
         break;
     case 0x03: // Write controller pak
-        if (Controllers[Control].Present != 0)
+        if (Controllers[Control].Present != PRESENT_NONE)
         {
             switch (Controllers[Control].Plugin)
             {

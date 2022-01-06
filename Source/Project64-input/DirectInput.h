@@ -23,6 +23,7 @@ class CDirectInput
         AI_AXE_POSITIVE = 0,
         AI_AXE_NEGATIVE = 1,
         THRESHOLD = 50,
+        MOUSESCALEVALUE = 10,
     };
 
     enum AI_POV
@@ -63,6 +64,7 @@ private:
     BOOL EnumMakeDeviceList(LPCDIDEVICEINSTANCE lpddi);
     ScanResult ScanKeyboard(const GUID & DeviceGuid, LPDIRECTINPUTDEVICE8 didHandle, uint8_t * KeyboardState, BUTTON & pButton);
     ScanResult ScanGamePad(const GUID & DeviceGuid, LPDIRECTINPUTDEVICE8 didHandle, DIJOYSTATE & BaseState, BUTTON & pButton);
+    ScanResult ScanMouse(const GUID& DeviceGuid, LPDIRECTINPUTDEVICE8 didHandle, DIMOUSESTATE2& BaseState, BUTTON& pButton);
     bool AcquireDevice(LPDIRECTINPUTDEVICE8 lpDirectInputDevice);
     void RefreshDeviceList(void);
     bool JoyPadPovPressed(AI_POV Pov, int32_t Angle);

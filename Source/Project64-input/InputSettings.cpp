@@ -142,7 +142,7 @@ void CInputSettings::LoadController(uint32_t ControlIndex, CONTROL & ControllerI
     InputSettingID RealN64RangeSettings[] = { Set_Control0_RealN64Range,  Set_Control1_RealN64Range, Set_Control2_RealN64Range, Set_Control3_RealN64Range };
     InputSettingID RemoveDuplicateSettings[] = { Set_Control0_RemoveDuplicate, Set_Control1_RemoveDuplicate, Set_Control2_RemoveDuplicate, Set_Control3_RemoveDuplicate };
 
-    ControllerInfo.Present = ControlIndex < (sizeof(PresentSettings) / sizeof(PresentSettings[0])) ? GetSetting((short)PresentSettings[ControlIndex]) != 0 : 0;
+    ControllerInfo.Present = ControlIndex < (sizeof(PresentSettings) / sizeof(PresentSettings[0])) ? GetSetting((short)PresentSettings[ControlIndex]) : 0;
     ControllerInfo.Plugin = ControlIndex < (sizeof(PluginSettings) / sizeof(PluginSettings[0])) ? GetSetting((short)PluginSettings[ControlIndex]) : Default_Plugin;
     Controller.Range = (uint8_t)(ControlIndex < (sizeof(RangeSettings) / sizeof(RangeSettings[0])) ? GetSetting((short)RangeSettings[ControlIndex]) : Default_Range);
     if (Controller.Range == 0) { Controller.Range = 1; }
@@ -381,7 +381,7 @@ void CInputSettings::ResetController(uint32_t ControlIndex, CONTROL & Controller
     }
     Controller.Range = Default_Range;
     Controller.DeadZone = Default_DeadZone;
-    ControllerInfo.Present = ControlIndex == 0 ? 1 : 0;
+    ControllerInfo.Present = ControlIndex == 0 ? PRESENT_CONT : PRESENT_NONE;
     ControllerInfo.Plugin = Default_Plugin;
 }
 
