@@ -74,21 +74,24 @@ void CProject64Input::GetKeys(int32_t Control, BUTTONS * Keys)
     if (m_ControlInfo.Controls[Control].Present == PRESENT_MOUSE)
     {
         //Mouse
-        Keys->R_DPAD = m_DirectInput->IsButtonPressed(m_N64Mouse.R_DPAD);
-        Keys->L_DPAD = m_DirectInput->IsButtonPressed(m_N64Mouse.L_DPAD);
-        Keys->D_DPAD = m_DirectInput->IsButtonPressed(m_N64Mouse.D_DPAD);
-        Keys->U_DPAD = m_DirectInput->IsButtonPressed(m_N64Mouse.U_DPAD);
-        Keys->START_BUTTON = m_DirectInput->IsButtonPressed(m_N64Mouse.START_BUTTON);
-        Keys->Z_TRIG = m_DirectInput->IsButtonPressed(m_N64Mouse.Z_TRIG);
-        Keys->B_BUTTON = m_DirectInput->IsButtonPressed(m_N64Mouse.B_BUTTON);
-        Keys->A_BUTTON = m_DirectInput->IsButtonPressed(m_N64Mouse.A_BUTTON);
-        Keys->R_CBUTTON = m_DirectInput->IsButtonPressed(m_N64Mouse.R_CBUTTON);
-        Keys->L_CBUTTON = m_DirectInput->IsButtonPressed(m_N64Mouse.L_CBUTTON);
-        Keys->D_CBUTTON = m_DirectInput->IsButtonPressed(m_N64Mouse.D_CBUTTON);
-        Keys->U_CBUTTON = m_DirectInput->IsButtonPressed(m_N64Mouse.U_CBUTTON);
-        Keys->R_TRIG = m_DirectInput->IsButtonPressed(m_N64Mouse.R_TRIG);
-        Keys->L_TRIG = m_DirectInput->IsButtonPressed(m_N64Mouse.L_TRIG);
-        m_DirectInput->GetAxis(m_N64Mouse, Keys);
+        if (m_MouseLock)
+        {
+            Keys->R_DPAD = m_DirectInput->IsButtonPressed(m_N64Mouse.R_DPAD);
+            Keys->L_DPAD = m_DirectInput->IsButtonPressed(m_N64Mouse.L_DPAD);
+            Keys->D_DPAD = m_DirectInput->IsButtonPressed(m_N64Mouse.D_DPAD);
+            Keys->U_DPAD = m_DirectInput->IsButtonPressed(m_N64Mouse.U_DPAD);
+            Keys->START_BUTTON = m_DirectInput->IsButtonPressed(m_N64Mouse.START_BUTTON);
+            Keys->Z_TRIG = m_DirectInput->IsButtonPressed(m_N64Mouse.Z_TRIG);
+            Keys->B_BUTTON = m_DirectInput->IsButtonPressed(m_N64Mouse.B_BUTTON);
+            Keys->A_BUTTON = m_DirectInput->IsButtonPressed(m_N64Mouse.A_BUTTON);
+            Keys->R_CBUTTON = m_DirectInput->IsButtonPressed(m_N64Mouse.R_CBUTTON);
+            Keys->L_CBUTTON = m_DirectInput->IsButtonPressed(m_N64Mouse.L_CBUTTON);
+            Keys->D_CBUTTON = m_DirectInput->IsButtonPressed(m_N64Mouse.D_CBUTTON);
+            Keys->U_CBUTTON = m_DirectInput->IsButtonPressed(m_N64Mouse.U_CBUTTON);
+            Keys->R_TRIG = m_DirectInput->IsButtonPressed(m_N64Mouse.R_TRIG);
+            Keys->L_TRIG = m_DirectInput->IsButtonPressed(m_N64Mouse.L_TRIG);
+            m_DirectInput->GetAxis(m_N64Mouse, Keys);
+        }
     }
     else
     {
@@ -219,11 +222,11 @@ void CProject64Input::LockMouseSwitch()
 {
     if (m_MouseLock == true)
     {
-        LockMouse();
+        UnlockMouse();
     }
     else
     {
-        UnlockMouse();
+        LockMouse();
     }
 }
 
