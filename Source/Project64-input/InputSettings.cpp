@@ -60,120 +60,113 @@ void CInputSettings::LoadController(uint32_t ControlIndex, CONTROL & ControllerI
     ControllerInfo.Present = ControlIndex < (sizeof(PresentSettings) / sizeof(PresentSettings[0])) ? GetSetting((short)PresentSettings[ControlIndex]) : PRESENT_NONE;
     ControllerInfo.Plugin = ControlIndex < (sizeof(PluginSettings) / sizeof(PluginSettings[0])) ? GetSetting((short)PluginSettings[ControlIndex]) : Default_Plugin;
 
-    if (ControllerInfo.Present == PRESENT_MOUSE)
+    struct
     {
-        GetControllerMouse(Controller);
+        BUTTON& Button;
+        InputSettingID SettingId;
+        uint32_t ControlIndex;
     }
-    else
+    Buttons[] =
     {
-        struct
+        { Controller.U_DPAD, Set_Control0_U_DPAD, 0 },
+        { Controller.D_DPAD, Set_Control0_D_DPAD, 0 },
+        { Controller.L_DPAD, Set_Control0_L_DPAD, 0 },
+        { Controller.R_DPAD, Set_Control0_R_DPAD, 0 },
+        { Controller.A_BUTTON, Set_Control0_A_BUTTON, 0 },
+        { Controller.B_BUTTON, Set_Control0_B_BUTTON, 0 },
+        { Controller.U_CBUTTON, Set_Control0_U_CBUTTON, 0 },
+        { Controller.D_CBUTTON, Set_Control0_D_CBUTTON, 0 },
+        { Controller.L_CBUTTON, Set_Control0_L_CBUTTON, 0 },
+        { Controller.R_CBUTTON, Set_Control0_R_CBUTTON, 0 },
+        { Controller.START_BUTTON, Set_Control0_START_BUTTON, 0 },
+        { Controller.Z_TRIG, Set_Control0_Z_TRIG, 0 },
+        { Controller.R_TRIG, Set_Control0_R_TRIG, 0 },
+        { Controller.L_TRIG, Set_Control0_L_TRIG, 0 },
+        { Controller.U_ANALOG, Set_Control0_U_ANALOG, 0 },
+        { Controller.D_ANALOG, Set_Control0_D_ANALOG, 0 },
+        { Controller.L_ANALOG, Set_Control0_L_ANALOG, 0 },
+        { Controller.R_ANALOG, Set_Control0_R_ANALOG, 0 },
+
+        { Controller.U_DPAD, Set_Control1_U_DPAD, 1 },
+        { Controller.D_DPAD, Set_Control1_D_DPAD, 1 },
+        { Controller.L_DPAD, Set_Control1_L_DPAD, 1 },
+        { Controller.R_DPAD, Set_Control1_R_DPAD, 1 },
+        { Controller.A_BUTTON, Set_Control1_A_BUTTON, 1 },
+        { Controller.B_BUTTON, Set_Control1_B_BUTTON, 1 },
+        { Controller.U_CBUTTON, Set_Control1_U_CBUTTON, 1 },
+        { Controller.D_CBUTTON, Set_Control1_D_CBUTTON, 1 },
+        { Controller.L_CBUTTON, Set_Control1_L_CBUTTON, 1 },
+        { Controller.R_CBUTTON, Set_Control1_R_CBUTTON, 1 },
+        { Controller.START_BUTTON, Set_Control1_START_BUTTON, 1 },
+        { Controller.Z_TRIG, Set_Control1_Z_TRIG, 1 },
+        { Controller.R_TRIG, Set_Control1_R_TRIG, 1 },
+        { Controller.L_TRIG, Set_Control1_L_TRIG, 1 },
+        { Controller.U_ANALOG, Set_Control1_U_ANALOG, 1 },
+        { Controller.D_ANALOG, Set_Control1_D_ANALOG, 1 },
+        { Controller.L_ANALOG, Set_Control1_L_ANALOG, 1 },
+        { Controller.R_ANALOG, Set_Control1_R_ANALOG, 1 },
+
+        { Controller.U_DPAD, Set_Control2_U_DPAD, 2 },
+        { Controller.D_DPAD, Set_Control2_D_DPAD, 2 },
+        { Controller.L_DPAD, Set_Control2_L_DPAD, 2 },
+        { Controller.R_DPAD, Set_Control2_R_DPAD, 2 },
+        { Controller.A_BUTTON, Set_Control2_A_BUTTON, 2 },
+        { Controller.B_BUTTON, Set_Control2_B_BUTTON, 2 },
+        { Controller.U_CBUTTON, Set_Control2_U_CBUTTON, 2 },
+        { Controller.D_CBUTTON, Set_Control2_D_CBUTTON, 2 },
+        { Controller.L_CBUTTON, Set_Control2_L_CBUTTON, 2 },
+        { Controller.R_CBUTTON, Set_Control2_R_CBUTTON, 2 },
+        { Controller.START_BUTTON, Set_Control2_START_BUTTON, 2 },
+        { Controller.Z_TRIG, Set_Control2_Z_TRIG, 2 },
+        { Controller.R_TRIG, Set_Control2_R_TRIG, 2 },
+        { Controller.L_TRIG, Set_Control2_L_TRIG, 2 },
+        { Controller.U_ANALOG, Set_Control2_U_ANALOG, 2 },
+        { Controller.D_ANALOG, Set_Control2_D_ANALOG, 2 },
+        { Controller.L_ANALOG, Set_Control2_L_ANALOG, 2 },
+        { Controller.R_ANALOG, Set_Control2_R_ANALOG, 2 },
+
+        { Controller.U_DPAD, Set_Control3_U_DPAD, 3 },
+        { Controller.D_DPAD, Set_Control3_D_DPAD, 3 },
+        { Controller.L_DPAD, Set_Control3_L_DPAD, 3 },
+        { Controller.R_DPAD, Set_Control3_R_DPAD, 3 },
+        { Controller.A_BUTTON, Set_Control3_A_BUTTON, 3 },
+        { Controller.B_BUTTON, Set_Control3_B_BUTTON, 3 },
+        { Controller.U_CBUTTON, Set_Control3_U_CBUTTON, 3 },
+        { Controller.D_CBUTTON, Set_Control3_D_CBUTTON, 3 },
+        { Controller.L_CBUTTON, Set_Control3_L_CBUTTON, 3 },
+        { Controller.R_CBUTTON, Set_Control3_R_CBUTTON, 3 },
+        { Controller.START_BUTTON, Set_Control3_START_BUTTON, 3 },
+        { Controller.Z_TRIG, Set_Control3_Z_TRIG, 3 },
+        { Controller.R_TRIG, Set_Control3_R_TRIG, 3 },
+        { Controller.L_TRIG, Set_Control3_L_TRIG, 3 },
+        { Controller.U_ANALOG, Set_Control3_U_ANALOG, 3 },
+        { Controller.D_ANALOG, Set_Control3_D_ANALOG, 3 },
+        { Controller.L_ANALOG, Set_Control3_L_ANALOG, 3 },
+        { Controller.R_ANALOG, Set_Control3_R_ANALOG, 3 },
+    };
+
+    char Buffer[400];
+    for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
+    {
+        if (Buttons[i].ControlIndex != ControlIndex)
         {
-            BUTTON& Button;
-            InputSettingID SettingId;
-            uint32_t ControlIndex;
+            continue;
         }
-        Buttons[] =
-        {
-            { Controller.U_DPAD, Set_Control0_U_DPAD, 0 },
-            { Controller.D_DPAD, Set_Control0_D_DPAD, 0 },
-            { Controller.L_DPAD, Set_Control0_L_DPAD, 0 },
-            { Controller.R_DPAD, Set_Control0_R_DPAD, 0 },
-            { Controller.A_BUTTON, Set_Control0_A_BUTTON, 0 },
-            { Controller.B_BUTTON, Set_Control0_B_BUTTON, 0 },
-            { Controller.U_CBUTTON, Set_Control0_U_CBUTTON, 0 },
-            { Controller.D_CBUTTON, Set_Control0_D_CBUTTON, 0 },
-            { Controller.L_CBUTTON, Set_Control0_L_CBUTTON, 0 },
-            { Controller.R_CBUTTON, Set_Control0_R_CBUTTON, 0 },
-            { Controller.START_BUTTON, Set_Control0_START_BUTTON, 0 },
-            { Controller.Z_TRIG, Set_Control0_Z_TRIG, 0 },
-            { Controller.R_TRIG, Set_Control0_R_TRIG, 0 },
-            { Controller.L_TRIG, Set_Control0_L_TRIG, 0 },
-            { Controller.U_ANALOG, Set_Control0_U_ANALOG, 0 },
-            { Controller.D_ANALOG, Set_Control0_D_ANALOG, 0 },
-            { Controller.L_ANALOG, Set_Control0_L_ANALOG, 0 },
-            { Controller.R_ANALOG, Set_Control0_R_ANALOG, 0 },
-
-            { Controller.U_DPAD, Set_Control1_U_DPAD, 1 },
-            { Controller.D_DPAD, Set_Control1_D_DPAD, 1 },
-            { Controller.L_DPAD, Set_Control1_L_DPAD, 1 },
-            { Controller.R_DPAD, Set_Control1_R_DPAD, 1 },
-            { Controller.A_BUTTON, Set_Control1_A_BUTTON, 1 },
-            { Controller.B_BUTTON, Set_Control1_B_BUTTON, 1 },
-            { Controller.U_CBUTTON, Set_Control1_U_CBUTTON, 1 },
-            { Controller.D_CBUTTON, Set_Control1_D_CBUTTON, 1 },
-            { Controller.L_CBUTTON, Set_Control1_L_CBUTTON, 1 },
-            { Controller.R_CBUTTON, Set_Control1_R_CBUTTON, 1 },
-            { Controller.START_BUTTON, Set_Control1_START_BUTTON, 1 },
-            { Controller.Z_TRIG, Set_Control1_Z_TRIG, 1 },
-            { Controller.R_TRIG, Set_Control1_R_TRIG, 1 },
-            { Controller.L_TRIG, Set_Control1_L_TRIG, 1 },
-            { Controller.U_ANALOG, Set_Control1_U_ANALOG, 1 },
-            { Controller.D_ANALOG, Set_Control1_D_ANALOG, 1 },
-            { Controller.L_ANALOG, Set_Control1_L_ANALOG, 1 },
-            { Controller.R_ANALOG, Set_Control1_R_ANALOG, 1 },
-
-            { Controller.U_DPAD, Set_Control2_U_DPAD, 2 },
-            { Controller.D_DPAD, Set_Control2_D_DPAD, 2 },
-            { Controller.L_DPAD, Set_Control2_L_DPAD, 2 },
-            { Controller.R_DPAD, Set_Control2_R_DPAD, 2 },
-            { Controller.A_BUTTON, Set_Control2_A_BUTTON, 2 },
-            { Controller.B_BUTTON, Set_Control2_B_BUTTON, 2 },
-            { Controller.U_CBUTTON, Set_Control2_U_CBUTTON, 2 },
-            { Controller.D_CBUTTON, Set_Control2_D_CBUTTON, 2 },
-            { Controller.L_CBUTTON, Set_Control2_L_CBUTTON, 2 },
-            { Controller.R_CBUTTON, Set_Control2_R_CBUTTON, 2 },
-            { Controller.START_BUTTON, Set_Control2_START_BUTTON, 2 },
-            { Controller.Z_TRIG, Set_Control2_Z_TRIG, 2 },
-            { Controller.R_TRIG, Set_Control2_R_TRIG, 2 },
-            { Controller.L_TRIG, Set_Control2_L_TRIG, 2 },
-            { Controller.U_ANALOG, Set_Control2_U_ANALOG, 2 },
-            { Controller.D_ANALOG, Set_Control2_D_ANALOG, 2 },
-            { Controller.L_ANALOG, Set_Control2_L_ANALOG, 2 },
-            { Controller.R_ANALOG, Set_Control2_R_ANALOG, 2 },
-
-            { Controller.U_DPAD, Set_Control3_U_DPAD, 3 },
-            { Controller.D_DPAD, Set_Control3_D_DPAD, 3 },
-            { Controller.L_DPAD, Set_Control3_L_DPAD, 3 },
-            { Controller.R_DPAD, Set_Control3_R_DPAD, 3 },
-            { Controller.A_BUTTON, Set_Control3_A_BUTTON, 3 },
-            { Controller.B_BUTTON, Set_Control3_B_BUTTON, 3 },
-            { Controller.U_CBUTTON, Set_Control3_U_CBUTTON, 3 },
-            { Controller.D_CBUTTON, Set_Control3_D_CBUTTON, 3 },
-            { Controller.L_CBUTTON, Set_Control3_L_CBUTTON, 3 },
-            { Controller.R_CBUTTON, Set_Control3_R_CBUTTON, 3 },
-            { Controller.START_BUTTON, Set_Control3_START_BUTTON, 3 },
-            { Controller.Z_TRIG, Set_Control3_Z_TRIG, 3 },
-            { Controller.R_TRIG, Set_Control3_R_TRIG, 3 },
-            { Controller.L_TRIG, Set_Control3_L_TRIG, 3 },
-            { Controller.U_ANALOG, Set_Control3_U_ANALOG, 3 },
-            { Controller.D_ANALOG, Set_Control3_D_ANALOG, 3 },
-            { Controller.L_ANALOG, Set_Control3_L_ANALOG, 3 },
-            { Controller.R_ANALOG, Set_Control3_R_ANALOG, 3 },
-        };
-
-        char Buffer[400];
-        for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
-        {
-            if (Buttons[i].ControlIndex != ControlIndex)
-            {
-                continue;
-            }
-            Buttons[i].Button = StrToButton(GetSettingSz((short)Buttons[i].SettingId, Buffer, sizeof(Buffer) / sizeof(Buffer[0])));
-        }
-
-        InputSettingID RangeSettings[] = { Set_Control0_Range, Set_Control1_Range, Set_Control2_Range, Set_Control3_Range };
-        InputSettingID DeadZoneSettings[] = { Set_Control0_Deadzone, Set_Control1_Deadzone, Set_Control2_Deadzone,Set_Control3_Deadzone };
-        InputSettingID RealN64RangeSettings[] = { Set_Control0_RealN64Range,  Set_Control1_RealN64Range, Set_Control2_RealN64Range, Set_Control3_RealN64Range };
-        InputSettingID RemoveDuplicateSettings[] = { Set_Control0_RemoveDuplicate, Set_Control1_RemoveDuplicate, Set_Control2_RemoveDuplicate, Set_Control3_RemoveDuplicate };
-
-        Controller.Range = (uint8_t)(ControlIndex < (sizeof(RangeSettings) / sizeof(RangeSettings[0])) ? GetSetting((short)RangeSettings[ControlIndex]) : Default_Range);
-        if (Controller.Range == 0) { Controller.Range = 1; }
-        if (Controller.Range > 100) { Controller.Range = 100; }
-        Controller.DeadZone = (uint8_t)(ControlIndex < (sizeof(DeadZoneSettings) / sizeof(DeadZoneSettings[0])) ? GetSetting((short)DeadZoneSettings[ControlIndex]) : Default_DeadZone);
-        if (Controller.DeadZone > 100) { Controller.DeadZone = 100; }
-        Controller.RealN64Range = (ControlIndex < (sizeof(RealN64RangeSettings) / sizeof(RealN64RangeSettings[0])) ? GetSetting((short)RealN64RangeSettings[ControlIndex]) != 0 : Default_RealN64Range);
-        Controller.RemoveDuplicate = (ControlIndex < (sizeof(RemoveDuplicateSettings) / sizeof(RemoveDuplicateSettings[0])) ? GetSetting((short)RemoveDuplicateSettings[ControlIndex]) != 0 : Default_RemoveDuplicate);
+        Buttons[i].Button = StrToButton(GetSettingSz((short)Buttons[i].SettingId, Buffer, sizeof(Buffer) / sizeof(Buffer[0])));
     }
+
+    InputSettingID RangeSettings[] = { Set_Control0_Range, Set_Control1_Range, Set_Control2_Range, Set_Control3_Range };
+    InputSettingID DeadZoneSettings[] = { Set_Control0_Deadzone, Set_Control1_Deadzone, Set_Control2_Deadzone,Set_Control3_Deadzone };
+    InputSettingID RealN64RangeSettings[] = { Set_Control0_RealN64Range,  Set_Control1_RealN64Range, Set_Control2_RealN64Range, Set_Control3_RealN64Range };
+    InputSettingID RemoveDuplicateSettings[] = { Set_Control0_RemoveDuplicate, Set_Control1_RemoveDuplicate, Set_Control2_RemoveDuplicate, Set_Control3_RemoveDuplicate };
+
+    Controller.Range = (uint8_t)(ControlIndex < (sizeof(RangeSettings) / sizeof(RangeSettings[0])) ? GetSetting((short)RangeSettings[ControlIndex]) : Default_Range);
+    if (Controller.Range == 0) { Controller.Range = 1; }
+    if (Controller.Range > 100) { Controller.Range = 100; }
+    Controller.DeadZone = (uint8_t)(ControlIndex < (sizeof(DeadZoneSettings) / sizeof(DeadZoneSettings[0])) ? GetSetting((short)DeadZoneSettings[ControlIndex]) : Default_DeadZone);
+    if (Controller.DeadZone > 100) { Controller.DeadZone = 100; }
+    Controller.RealN64Range = (ControlIndex < (sizeof(RealN64RangeSettings) / sizeof(RealN64RangeSettings[0])) ? GetSetting((short)RealN64RangeSettings[ControlIndex]) != 0 : Default_RealN64Range);
+    Controller.RemoveDuplicate = (ControlIndex < (sizeof(RemoveDuplicateSettings) / sizeof(RemoveDuplicateSettings[0])) ? GetSetting((short)RemoveDuplicateSettings[ControlIndex]) != 0 : Default_RemoveDuplicate);
 }
 
 void CInputSettings::SaveController(uint32_t ControlIndex, const CONTROL & ControllerInfo, const N64CONTROLLER & Controller)
@@ -188,13 +181,6 @@ void CInputSettings::SaveController(uint32_t ControlIndex, const CONTROL & Contr
     if (ControlIndex < (sizeof(PluginSettings) / sizeof(PluginSettings[0])))
     {
         SetSetting((short)PluginSettings[ControlIndex], ControllerInfo.Plugin);
-    }
-
-    if (ControllerInfo.Present == PRESENT_MOUSE)
-    {
-        //Using Forced Controller Mouse Setup, do not overwrite Controller Configuration with it
-        FlushSettings();
-        return;
     }
 
     struct 
