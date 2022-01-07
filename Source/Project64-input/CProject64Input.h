@@ -37,6 +37,7 @@ private:
     CriticalSection m_CS;
     CONTROL_INFO m_ControlInfo;
     N64CONTROLLER m_Controllers[4];
+    N64CONTROLLER m_N64Mouse;
     std::unique_ptr<CDirectInput> m_DirectInput;
     HINSTANCE m_hinst;
     bool m_Scanning;
