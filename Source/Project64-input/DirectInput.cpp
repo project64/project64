@@ -90,6 +90,28 @@ void CDirectInput::MapControllerDevice(N64CONTROLLER & Controller)
     }
 }
 
+void CDirectInput::MapShortcutDevice(SHORTCUTS& Shortcuts)
+{
+    BUTTON* Buttons[] =
+    {
+        &Shortcuts.LOCKMOUSE,
+    };
+
+    CGuard Guard(m_DeviceCS);
+    for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
+    {
+        DEVICE_MAP::iterator itr = m_Devices.find(Buttons[i]->DeviceGuid);
+        if (itr != m_Devices.end())
+        {
+            Buttons[i]->Device = &itr->second;
+        }
+        else
+        {
+            Buttons[i]->Device = nullptr;
+        }
+    }
+}
+
 BOOL CDirectInput::stEnumMakeDeviceList(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef)
 {
     return ((CDirectInput *)pvRef)->EnumMakeDeviceList(lpddi);
@@ -290,7 +312,7 @@ std::wstring CDirectInput::ButtonAssignment(BUTTON & Button)
         stdstr_f Offset("%u", Button.Offset);
         if (Button.Offset < (sizeof(iMouse) / sizeof(iMouse[0])))
         {
-            Offset = iGamepad[Button.Offset];
+            Offset = iMouse[Button.Offset];
         }
         stdstr_f AxisId(" %u", Button.AxisID);
         if (Button.AxisID < (sizeof(AxeID) / sizeof(AxeID[0])))
@@ -889,4 +911,19 @@ bool CDirectInput::JoyPadPovPressed(AI_POV Pov, int32_t Angle)
         return ((Angle >= 27000 - POV_ANGLE_THRESH) && (Angle <= 27000 + POV_ANGLE_THRESH));
     }
     return false;
+}
+
+void CDirectInput::LockDevice(bool set, const N64CONTROLLER & Controller)
+{
+    DEVICE & Device = *(DEVICE *)Controller.A_BUTTON.Device;
+    Device.didHandle->Unacquire();
+    if (set == true)
+    {
+        Device.didHandle->SetCooperativeLevel(m_hWnd, DISCL_EXCLUSIVE | DISCL_FOREGROUND);
+    }
+    else
+    {
+        Device.didHandle->SetCooperativeLevel(m_hWnd, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
+    }
+    Device.didHandle->Acquire();
 }

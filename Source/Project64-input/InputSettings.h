@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <string>
 #include "N64Controller.h"
+#include "Shortcuts.h"
 #include "ControllerSpec1.1.h"
 
 class CInputSettings
@@ -14,6 +15,10 @@ public:
     void SaveController(uint32_t ControlIndex, const CONTROL & ControllerInfo, const N64CONTROLLER & Controller);
     void ResetController(uint32_t ControlIndex, CONTROL & ControllerInfo, N64CONTROLLER & Controller);
     void GetControllerMouse(N64CONTROLLER& Controller);
+
+    void LoadShortcuts(SHORTCUTS& Shortcuts);
+    void SaveShortcuts(SHORTCUTS& Shortcuts);
+    void ResetShortcuts(SHORTCUTS& Shortcuts);
 
 private:
     CInputSettings(const CInputSettings&);

@@ -43,6 +43,9 @@ static const uint32_t DefaultMouse_Plugin = PLUGIN_NONE;
 static const bool DefaultMouse_RealN64Range = false;
 static const bool DefaultMouse_RemoveDuplicate = true;
 
+/* Default Shortcuts Setup */
+static char* Shortcuts_LOCKMOUSE_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} 0F 0 5";
+
 CInputSettings::CInputSettings()
 {
     RegisterSettings();
@@ -442,6 +445,63 @@ void CInputSettings::GetControllerMouse(N64CONTROLLER& Controller)
     Controller.RemoveDuplicate = DefaultMouse_RemoveDuplicate;
 }
 
+void CInputSettings::LoadShortcuts(SHORTCUTS& Shortcuts)
+{
+    struct
+    {
+        BUTTON& Button;
+        InputSettingID SettingId;
+    }
+    Buttons[] =
+    {
+        { Shortcuts.LOCKMOUSE, Set_Shortcut_LOCKMOUSE },
+    };
+
+    char Buffer[400];
+    for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
+    {
+        Buttons[i].Button = StrToButton(GetSettingSz((short)Buttons[i].SettingId, Buffer, sizeof(Buffer) / sizeof(Buffer[0])));
+    }
+}
+
+void CInputSettings::SaveShortcuts(SHORTCUTS& Shortcuts)
+{
+    struct
+    {
+        const BUTTON& Button;
+        InputSettingID SettingId;
+    }
+    Buttons[] =
+    {
+        { Shortcuts.LOCKMOUSE, Set_Shortcut_LOCKMOUSE },
+    };
+
+    for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
+    {
+        SetSettingSz((short)Buttons[i].SettingId, ButtonToStr(Buttons[i].Button).c_str());
+    }
+}
+
+void CInputSettings::ResetShortcuts(SHORTCUTS& Shortcuts)
+{
+    struct
+    {
+        BUTTON& Button;
+        const char* DefaultValue;
+    }
+    Buttons[] =
+    {
+        { Shortcuts.LOCKMOUSE, Shortcuts_LOCKMOUSE_Default },
+    };
+
+    for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
+    {
+        Buttons[i].Button = StrToButton(Buttons[i].DefaultValue);
+    }
+
+    Shortcuts.LOCKMOUSE_PRESSED = false;
+}
+
 BUTTON CInputSettings::StrToButton(const char * Buffer)
 {
     BUTTON Button = { 0 };
@@ -571,6 +631,8 @@ void CInputSettings::RegisterSettings(void)
     RegisterSetting(Set_Control3_D_ANALOG, Data_String_General, "AnalogDown", "Controller 4", 0, "");
     RegisterSetting(Set_Control3_L_ANALOG, Data_String_General, "AnalogLeft", "Controller 4", 0, "");
     RegisterSetting(Set_Control3_R_ANALOG, Data_String_General, "AnalogRight", "Controller 4", 0, "");
+
+    RegisterSetting(Set_Shortcut_LOCKMOUSE, Data_String_General, "LockMouse", "Shortcuts", 0, Shortcuts_LOCKMOUSE_Default);
 }
 
 void SetupInputSettings(void)

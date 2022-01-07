@@ -4,6 +4,7 @@
 #include "wtl-BitmapPicture.h"
 #include "wtl-ScanButton.h"
 #include "OptionsUI.h"
+#include "ShortcutsUI.h"
 #include <stdint.h>
 #include <Common/StdString.h>
 #include "resource.h"
@@ -30,6 +31,7 @@ public:
         COMMAND_HANDLER_EX(IDC_BTN_DEFAULTS, BN_CLICKED, DefaultBtnClicked)
         COMMAND_HANDLER_EX(IDC_BTN_SETUP, BN_CLICKED, SetupBtnClicked)
         COMMAND_HANDLER_EX(IDC_BTN_OPTIONS, BN_CLICKED, OptionsBtnClicked)
+        COMMAND_HANDLER_EX(IDC_BTN_SHORTCUT, BN_CLICKED, ShortcutsBtnClicked)
         COMMAND_HANDLER_EX(IDC_DEVICETYPE, CBN_SELCHANGE, PluggedInChanged)
         NOTIFY_HANDLER_EX(IDC_TACK_RANGE, NM_RELEASEDCAPTURE, ItemChangedNotify);
         MESSAGE_HANDLER(WM_HSCROLL, OnScroll)
@@ -51,6 +53,7 @@ private:
     void DefaultBtnClicked(UINT Code, int id, HWND ctl);
     void SetupBtnClicked(UINT Code, int id, HWND ctl);
     void OptionsBtnClicked(UINT Code, int id, HWND ctl);
+    void ShortcutsBtnClicked(UINT Code, int id, HWND ctl);
     void PluggedInChanged(UINT Code, int id, HWND ctl);
     LRESULT	ItemChangedNotify(NMHDR* /*pNMHDR*/);
     void DisplayControllerImage(void);
@@ -75,6 +78,7 @@ private:
     CScanButton m_ButtonZtrigger, m_ButtonRTrigger, m_ButtonLTrigger;
     CScanButton m_ButtonAnalogU, m_ButtonAnalogD, m_ButtonAnalogL, m_ButtonAnalogR;
     CComboBox m_DeviceType;
+    SHORTCUTS m_Shortcuts;
 };
 
 class CInputConfigUI :
@@ -98,6 +102,7 @@ CControllerSettings::CControllerSettings(uint32_t ControllerNumber) :
     m_SetupIndex(-1),
     m_Controller(g_InputPlugin->Controllers(ControllerNumber)),
     m_ControlInfo(g_InputPlugin->ControlInfo(ControllerNumber)),
+    m_Shortcuts(g_InputPlugin->Shortcuts()),
     m_ButtonUDPad(m_Controller.U_DPAD, IDC_EDIT_DIGITIAL_UP, IDC_BTN_DIGITIAL_UP),
     m_ButtonDDPad(m_Controller.D_DPAD, IDC_EDIT_DIGITIAL_DOWN, IDC_BTN_DIGITIAL_DOWN),
     m_ButtonLDPad(m_Controller.L_DPAD, IDC_EDIT_DIGITIAL_LEFT, IDC_BTN_DIGITIAL_LEFT),
@@ -247,6 +252,11 @@ void CControllerSettings::SetupBtnClicked(UINT /*Code*/, int /*id*/, HWND /*ctl*
 void CControllerSettings::OptionsBtnClicked(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
     ConfigOption(m_ControllerNumber, m_ControlInfo, m_Controller);
+}
+
+void CControllerSettings::ShortcutsBtnClicked(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
+{
+    ConfigShortcut(m_Shortcuts);
 }
 
 void CControllerSettings::PluggedInChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)

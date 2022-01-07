@@ -154,6 +154,10 @@ Output: None
 
 EXPORT void CALL RomClosed(void)
 {
+    if (g_InputPlugin != nullptr)
+    {
+        g_InputPlugin->UnlockMouse();
+    }
 }
 
 /*
@@ -166,6 +170,10 @@ Output: None
 
 EXPORT void CALL RomOpen(void)
 {
+    if (g_InputPlugin != nullptr)
+    {
+        g_InputPlugin->LockMouse();
+    }
 }
 
 /*

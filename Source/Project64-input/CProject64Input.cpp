@@ -8,7 +8,8 @@ CProject64Input::CProject64Input(HINSTANCE hinst) :
     m_hinst(hinst),
     m_Scanning(false),
     m_DisplayCtrlId(0),
-    m_iFirstController(-1)
+    m_iFirstController(-1),
+    m_MouseLock(false)
 {
     memset(m_Controllers, 0, sizeof(m_Controllers));
 }
@@ -53,6 +54,9 @@ void CProject64Input::InitiateControllers(CONTROL_INFO * ControlInfo)
 
     g_Settings->GetControllerMouse(m_N64Mouse);
     m_DirectInput->MapControllerDevice(m_N64Mouse);
+
+    g_Settings->LoadShortcuts(m_Shortcuts);
+    m_DirectInput->MapShortcutDevice(m_Shortcuts);
 }
 
 void CProject64Input::GetKeys(int32_t Control, BUTTONS * Keys)
@@ -65,6 +69,7 @@ void CProject64Input::GetKeys(int32_t Control, BUTTONS * Keys)
     if (Control == m_iFirstController)
     {
         m_DirectInput->UpdateDeviceData();
+        CheckShortcuts();
     }
     if (m_ControlInfo.Controls[Control].Present == PRESENT_MOUSE)
     {
@@ -167,4 +172,69 @@ bool CProject64Input::ResetController(uint32_t ControlIndex, CONTROL & ControlIn
     g_Settings->ResetController(ControlIndex, ControlInfo, Controller);
     m_DirectInput->MapControllerDevice(Controller);
     return true;
+}
+
+void CProject64Input::CheckShortcuts()
+{
+    bool isPressed = m_DirectInput->IsButtonPressed(m_Shortcuts.LOCKMOUSE);
+    if ((isPressed == true) && (m_Shortcuts.LOCKMOUSE_PRESSED == false))
+    {
+        LockMouseSwitch();
+    }
+    m_Shortcuts.LOCKMOUSE_PRESSED = isPressed;
+}
+
+bool CProject64Input::SaveShortcuts()
+{
+    CGuard guard(m_CS);
+
+    g_Settings->SaveShortcuts(m_Shortcuts);
+    m_DirectInput->MapShortcutDevice(m_Shortcuts);
+    return true;
+}
+
+bool CProject64Input::ResetShortcuts(SHORTCUTS& Shortcuts)
+{
+    g_Settings->ResetShortcuts(Shortcuts);
+    m_DirectInput->MapShortcutDevice(Shortcuts);
+    return true;
+}
+
+void CProject64Input::LockMouse()
+{
+    if (IsMouseUsed() == false) return UnlockMouse();
+    if (m_MouseLock == true) return;
+    m_DirectInput->LockDevice(true, m_N64Mouse);
+    m_MouseLock = true;
+}
+
+void CProject64Input::UnlockMouse()
+{
+    if (m_MouseLock == false) return;
+    m_DirectInput->LockDevice(false, m_N64Mouse);
+    m_MouseLock = false;
+}
+
+void CProject64Input::LockMouseSwitch()
+{
+    if (m_MouseLock == true)
+    {
+        LockMouse();
+    }
+    else
+    {
+        UnlockMouse();
+    }
+}
+
+bool CProject64Input::IsMouseUsed()
+{
+    for (uint32_t i = 0, n = sizeof(m_Controllers) / sizeof(m_Controllers[0]); i < n; i++)
+    {
+        if (m_ControlInfo.Controls[i].Present == PRESENT_MOUSE)
+        {
+            return true;
+        }
+    }
+    return false;
 }

@@ -3,6 +3,7 @@
 #include "Button.h"
 #include "DeviceNotification.h"
 #include "N64Controller.h"
+#include "Shortcuts.h"
 #include <Common/CriticalSection.h>
 #define DIRECTINPUT_VERSION 0x0800
 #include <Windows.h>
@@ -47,6 +48,7 @@ public:
 
     void Initiate(CONTROL_INFO * ControlInfo);
     void MapControllerDevice(N64CONTROLLER & Controller);
+    void MapShortcutDevice(SHORTCUTS& Shortcuts);
     ScanResult ScanDevices(BUTTON & Button);
     std::wstring ButtonAssignment(BUTTON & Button);
     std::wstring ControllerDevices(const N64CONTROLLER & Controller);
@@ -54,6 +56,7 @@ public:
     void GetAxis(N64CONTROLLER & Controller, BUTTONS * Keys);
     void UpdateDeviceData(void);
     void DevicesChanged(void);
+    void LockDevice(bool set, const N64CONTROLLER & Controller);
 
 private:
     CDirectInput();
