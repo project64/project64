@@ -919,11 +919,13 @@ void CDirectInput::LockDevice(bool set, const N64CONTROLLER & Controller)
     Device.didHandle->Unacquire();
     if (set == true)
     {
+        PostMessage(m_hWnd, WM_HIDE_CUROSR, false, 0);
         Device.didHandle->SetCooperativeLevel(m_hWnd, DISCL_EXCLUSIVE | DISCL_FOREGROUND);
     }
     else
     {
         Device.didHandle->SetCooperativeLevel(m_hWnd, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
+        PostMessage(m_hWnd, WM_HIDE_CUROSR, true, 0);
     }
     Device.didHandle->Acquire();
 }

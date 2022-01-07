@@ -27,6 +27,12 @@ class CDirectInput
         MOUSESCALEVALUE = 10,
     };
 
+    enum
+    {
+        WM_HIDE_CUROSR = WM_USER + 10,
+        WM_MAKE_FOCUS = WM_USER + 17
+    };
+
     enum AI_POV
     {
         AI_POV_UP = 0,
