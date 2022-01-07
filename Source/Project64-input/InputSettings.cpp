@@ -462,6 +462,8 @@ void CInputSettings::LoadShortcuts(SHORTCUTS& Shortcuts)
     {
         Buttons[i].Button = StrToButton(GetSettingSz((short)Buttons[i].SettingId, Buffer, sizeof(Buffer) / sizeof(Buffer[0])));
     }
+
+    Shortcuts.LOCKMOUSE_PRESSED = false;
 }
 
 void CInputSettings::SaveShortcuts(SHORTCUTS& Shortcuts)

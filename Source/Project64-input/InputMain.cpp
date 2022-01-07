@@ -60,6 +60,10 @@ Output: None
 #ifdef _WIN32
 EXPORT void CALL DllConfig(void * hParent)
 {
+    if (g_InputPlugin != nullptr)
+    {
+        g_InputPlugin->UnlockMouse();
+    }
     ConfigInput(hParent);
 }
 #endif
