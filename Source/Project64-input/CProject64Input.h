@@ -8,6 +8,12 @@
 
 class CProject64Input
 {
+    enum
+    {
+        WM_HIDE_CUROSR = WM_USER + 10,
+        WM_MAKE_FOCUS = WM_USER + 17
+    };
+
 public:
     CProject64Input(HINSTANCE hinst);
     ~CProject64Input();
@@ -30,6 +36,7 @@ public:
     void UnlockMouse();
     void LockMouseSwitch();
     bool IsMouseUsed();
+    void ClipCursorSet();
 
     inline HINSTANCE hInst(void) const { return m_hinst; }
     inline bool IsScanning(void) const { return m_Scanning; }
