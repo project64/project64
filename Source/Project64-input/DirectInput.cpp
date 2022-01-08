@@ -484,7 +484,7 @@ void CDirectInput::GetAxis(N64CONTROLLER & Controller, BUTTONS * Keys)
             break;
         case BTNTYPE_MOUSEAXE:
             l_Value = (plRawStateMouse[Button.Offset]) * -1;
-            l_Value *= 100 * MOUSESCALEVALUE;
+            l_Value *= Controller.Sensitivity * MOUSESCALEVALUE;
 
             if (Button.AxisID == AI_AXE_NEGATIVE)
             {

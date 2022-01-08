@@ -26,6 +26,7 @@ static char * Control0_L_ANALOG_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000
 static char * Control0_R_ANALOG_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} CD 0 5";
 static const uint32_t Default_DeadZone = 25;
 static const uint32_t Default_Range = 100;
+static const uint32_t Default_Sensitivity = 100;
 static const uint32_t Default_Plugin = PLUGIN_MEMPAK;
 static const bool Default_RealN64Range = true;
 static const bool Default_RemoveDuplicate = true;
@@ -40,6 +41,7 @@ static char* Mouse_R_ANALOG_Default = "{6F1D2B60-D5A0-11CF-BFC7-444553540000} 00
 static const uint32_t DefaultMouse_DeadZone = 1;
 static const uint32_t DefaultMouse_Range = 100;
 static const uint32_t DefaultMouse_Plugin = PLUGIN_NONE;
+static const uint32_t DefaultMouse_Sensitivity = 100;
 static const bool DefaultMouse_RealN64Range = false;
 static const bool DefaultMouse_RemoveDuplicate = true;
 
@@ -160,6 +162,7 @@ void CInputSettings::LoadController(uint32_t ControlIndex, CONTROL & ControllerI
 
     InputSettingID RangeSettings[] = { Set_Control0_Range, Set_Control1_Range, Set_Control2_Range, Set_Control3_Range };
     InputSettingID DeadZoneSettings[] = { Set_Control0_Deadzone, Set_Control1_Deadzone, Set_Control2_Deadzone,Set_Control3_Deadzone };
+    InputSettingID SensitivitySettings[] = { Set_Control0_Sensitivity, Set_Control1_Sensitivity, Set_Control2_Sensitivity, Set_Control3_Sensitivity };
     InputSettingID RealN64RangeSettings[] = { Set_Control0_RealN64Range,  Set_Control1_RealN64Range, Set_Control2_RealN64Range, Set_Control3_RealN64Range };
     InputSettingID RemoveDuplicateSettings[] = { Set_Control0_RemoveDuplicate, Set_Control1_RemoveDuplicate, Set_Control2_RemoveDuplicate, Set_Control3_RemoveDuplicate };
 
@@ -168,6 +171,8 @@ void CInputSettings::LoadController(uint32_t ControlIndex, CONTROL & ControllerI
     if (Controller.Range > 100) { Controller.Range = 100; }
     Controller.DeadZone = (uint8_t)(ControlIndex < (sizeof(DeadZoneSettings) / sizeof(DeadZoneSettings[0])) ? GetSetting((short)DeadZoneSettings[ControlIndex]) : Default_DeadZone);
     if (Controller.DeadZone > 100) { Controller.DeadZone = 100; }
+    Controller.Sensitivity = (uint8_t)(ControlIndex < (sizeof(SensitivitySettings) / sizeof(SensitivitySettings[0])) ? GetSetting((short)SensitivitySettings[ControlIndex]) : Default_Sensitivity);
+    if (Controller.Sensitivity > 100) { Controller.Sensitivity = 100; }
     Controller.RealN64Range = (ControlIndex < (sizeof(RealN64RangeSettings) / sizeof(RealN64RangeSettings[0])) ? GetSetting((short)RealN64RangeSettings[ControlIndex]) != 0 : Default_RealN64Range);
     Controller.RemoveDuplicate = (ControlIndex < (sizeof(RemoveDuplicateSettings) / sizeof(RemoveDuplicateSettings[0])) ? GetSetting((short)RemoveDuplicateSettings[ControlIndex]) != 0 : Default_RemoveDuplicate);
 }
@@ -273,6 +278,7 @@ void CInputSettings::SaveController(uint32_t ControlIndex, const CONTROL & Contr
 
     InputSettingID RangeSettings[] = { Set_Control0_Range, Set_Control1_Range, Set_Control2_Range, Set_Control3_Range };
     InputSettingID DeadZoneSettings[] = { Set_Control0_Deadzone, Set_Control1_Deadzone, Set_Control2_Deadzone,Set_Control3_Deadzone };
+    InputSettingID SensitivitySettings[] = { Set_Control0_Sensitivity, Set_Control1_Sensitivity, Set_Control2_Sensitivity, Set_Control3_Sensitivity };
     InputSettingID RealN64RangeSettings[] = { Set_Control0_RealN64Range,  Set_Control1_RealN64Range, Set_Control2_RealN64Range, Set_Control3_RealN64Range };
     InputSettingID RemoveDuplicateSettings[] = { Set_Control0_RemoveDuplicate, Set_Control1_RemoveDuplicate, Set_Control2_RemoveDuplicate, Set_Control3_RemoveDuplicate };
 
@@ -293,6 +299,10 @@ void CInputSettings::SaveController(uint32_t ControlIndex, const CONTROL & Contr
     if (ControlIndex < (sizeof(DeadZoneSettings) / sizeof(DeadZoneSettings[0])))
     {
         SetSetting((short)DeadZoneSettings[ControlIndex], Controller.DeadZone);
+    }
+    if (ControlIndex < (sizeof(SensitivitySettings) / sizeof(SensitivitySettings[0])))
+    {
+        SetSetting((short)SensitivitySettings[ControlIndex], Controller.Sensitivity);
     }
     if (ControlIndex < (sizeof(RealN64RangeSettings) / sizeof(RealN64RangeSettings[0])))
     {
@@ -402,6 +412,7 @@ void CInputSettings::ResetController(uint32_t ControlIndex, CONTROL & Controller
     }
     Controller.Range = Default_Range;
     Controller.DeadZone = Default_DeadZone;
+    Controller.Sensitivity = Default_Sensitivity;
     ControllerInfo.Present = ControlIndex == 0 ? PRESENT_CONT : PRESENT_NONE;
     ControllerInfo.Plugin = Default_Plugin;
 }
@@ -441,6 +452,7 @@ void CInputSettings::GetControllerMouse(N64CONTROLLER& Controller)
     }
     Controller.Range = DefaultMouse_Range;
     Controller.DeadZone = DefaultMouse_DeadZone;
+    Controller.Sensitivity = DefaultMouse_Sensitivity;
     Controller.RealN64Range = DefaultMouse_RealN64Range;
     Controller.RemoveDuplicate = DefaultMouse_RemoveDuplicate;
 }
@@ -538,6 +550,7 @@ void CInputSettings::RegisterSettings(void)
     RegisterSetting(Set_Control0_Plugin, Data_DWORD_General, "Plugin", "Controller 1", Default_Plugin, nullptr);
     RegisterSetting(Set_Control0_Range, Data_DWORD_General, "Range", "Controller 1", Default_Range, nullptr);
     RegisterSetting(Set_Control0_Deadzone, Data_DWORD_General, "Deadzone", "Controller 1", Default_DeadZone, nullptr);
+    RegisterSetting(Set_Control0_Sensitivity, Data_DWORD_General, "Sensitivity", "Controller 1", Default_Sensitivity, nullptr);
     RegisterSetting(Set_Control0_RealN64Range, Data_DWORD_General, "RealN64Range", "Controller 1", Default_RealN64Range, nullptr);
     RegisterSetting(Set_Control0_RemoveDuplicate, Data_DWORD_General, "Remove Duplicate", "Controller 1", Default_RemoveDuplicate, nullptr);
     RegisterSetting(Set_Control0_U_DPAD, Data_String_General, "DPadUp", "Controller 1", 0, Control0_U_DPAD_Default);
@@ -563,6 +576,7 @@ void CInputSettings::RegisterSettings(void)
     RegisterSetting(Set_Control1_Plugin, Data_DWORD_General, "Plugin", "Controller 2", Default_Plugin, nullptr);
     RegisterSetting(Set_Control1_Range, Data_DWORD_General, "Range", "Controller 2", Default_Range, nullptr);
     RegisterSetting(Set_Control1_Deadzone, Data_DWORD_General, "Deadzone", "Controller 2", Default_DeadZone, nullptr);
+    RegisterSetting(Set_Control1_Sensitivity, Data_DWORD_General, "Sensitivity", "Controller 2", Default_Sensitivity, nullptr);
     RegisterSetting(Set_Control1_RealN64Range, Data_DWORD_General, "RealN64Range", "Controller 2", Default_RealN64Range, nullptr);
     RegisterSetting(Set_Control1_RemoveDuplicate, Data_DWORD_General, "Remove Duplicate", "Controller 2", Default_RemoveDuplicate, nullptr);
     RegisterSetting(Set_Control1_U_DPAD, Data_String_General, "DPadUp", "Controller 2", 0, "");
@@ -588,6 +602,7 @@ void CInputSettings::RegisterSettings(void)
     RegisterSetting(Set_Control2_Plugin, Data_DWORD_General, "Plugin", "Controller 3", Default_Plugin, nullptr);
     RegisterSetting(Set_Control2_Range, Data_DWORD_General, "Range", "Controller 3", Default_Range, nullptr);
     RegisterSetting(Set_Control2_Deadzone, Data_DWORD_General, "Deadzone", "Controller 3", Default_DeadZone, nullptr);
+    RegisterSetting(Set_Control2_Sensitivity, Data_DWORD_General, "Sensitivity", "Controller 3", Default_Sensitivity, nullptr);
     RegisterSetting(Set_Control2_RealN64Range, Data_DWORD_General, "RealN64Range", "Controller 3", Default_RealN64Range, nullptr);
     RegisterSetting(Set_Control2_RemoveDuplicate, Data_DWORD_General, "Remove Duplicate", "Controller 3", Default_RemoveDuplicate, nullptr);
     RegisterSetting(Set_Control2_U_DPAD, Data_String_General, "DPadUp", "Controller 3", 0, "");
@@ -613,6 +628,7 @@ void CInputSettings::RegisterSettings(void)
     RegisterSetting(Set_Control3_Plugin, Data_DWORD_General, "Plugin", "Controller 4", Default_Plugin, nullptr);
     RegisterSetting(Set_Control3_Range, Data_DWORD_General, "Range", "Controller 4", Default_Range, nullptr);
     RegisterSetting(Set_Control3_Deadzone, Data_DWORD_General, "Deadzone", "Controller 4", Default_DeadZone, nullptr);
+    RegisterSetting(Set_Control3_Sensitivity, Data_DWORD_General, "Sensitivity", "Controller 4", Default_Sensitivity, nullptr);
     RegisterSetting(Set_Control3_RealN64Range, Data_DWORD_General, "RealN64Range", "Controller 4", Default_RealN64Range, nullptr);
     RegisterSetting(Set_Control3_RemoveDuplicate, Data_DWORD_General, "Remove Duplicate", "Controller 4", Default_RemoveDuplicate, nullptr);
     RegisterSetting(Set_Control3_U_DPAD, Data_String_General, "DPadUp", "Controller 4", 0, "");

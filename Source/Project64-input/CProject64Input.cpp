@@ -76,7 +76,8 @@ void CProject64Input::GetKeys(int32_t Control, BUTTONS * Keys)
         //Mouse
         if (m_MouseLock)
         {
-            ClipCursorSet();
+            LockCursor();
+            m_N64Mouse.Sensitivity = m_Controllers[Control].Sensitivity;
             Keys->R_DPAD = m_DirectInput->IsButtonPressed(m_N64Mouse.R_DPAD);
             Keys->L_DPAD = m_DirectInput->IsButtonPressed(m_N64Mouse.L_DPAD);
             Keys->D_DPAD = m_DirectInput->IsButtonPressed(m_N64Mouse.D_DPAD);
@@ -243,14 +244,9 @@ bool CProject64Input::IsMouseUsed()
     return false;
 }
 
-void CProject64Input::ClipCursorSet()
+void CProject64Input::LockCursor()
 {
     RECT rect;
     GetWindowRect((HWND)m_ControlInfo.hwnd, &rect);
-    rect.top += 50;
-    rect.left += 50;
-    rect.right -= 50;
-    rect.bottom -= 50;
-
-    ClipCursor(&rect);
+    SetCursorPos((rect.left + rect.right) / 2, (rect.top + rect.bottom) / 2);
 }

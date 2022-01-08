@@ -36,7 +36,7 @@ public:
     void UnlockMouse();
     void LockMouseSwitch();
     bool IsMouseUsed();
-    void ClipCursorSet();
+    void LockCursor();
 
     inline HINSTANCE hInst(void) const { return m_hinst; }
     inline bool IsScanning(void) const { return m_Scanning; }

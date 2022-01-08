@@ -59,7 +59,7 @@ private:
     void DisplayControllerImage(void);
     void DisplayController(void);
     void ButtonChannged(const BUTTON & Button);
-    void EnablePage(bool Enable);
+    void EnablePage(int32_t Present);
     static void stButtonChanged(size_t data, const BUTTON & Button) { ((CControllerSettings *)data)->ButtonChannged(Button); }
 
     std::wstring m_Title;
@@ -162,7 +162,7 @@ BOOL CControllerSettings::OnInitDialog(CWindow /*wndFocus*/, LPARAM /*lInitParam
     m_DeviceType.SetItemData(Index, PRESENT_MOUSE);
 
     DisplayController();
-    EnablePage(m_DeviceType.GetItemData(m_DeviceType.GetCurSel()) == PRESENT_CONT);
+    EnablePage(m_DeviceType.GetItemData(m_DeviceType.GetCurSel()));
     return TRUE;
 }
 
@@ -262,7 +262,7 @@ void CControllerSettings::ShortcutsBtnClicked(UINT /*Code*/, int /*id*/, HWND /*
 void CControllerSettings::PluggedInChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
     SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
-    EnablePage(m_DeviceType.GetItemData(m_DeviceType.GetCurSel()) == PRESENT_CONT);
+    EnablePage(m_DeviceType.GetItemData(m_DeviceType.GetCurSel()));
     DisplayControllerImage();
 }
 
@@ -328,8 +328,9 @@ void CControllerSettings::ButtonChannged(const BUTTON & Button)
     CPropertySheetWindow(GetParent()).SetModified(m_hWnd);
 }
 
-void CControllerSettings::EnablePage(bool Enable)
+void CControllerSettings::EnablePage(int32_t Present)
 {
+    bool Enable = Present == PRESENT_CONT;
     GetDlgItem(IDC_SLIDE_DEADZONE).EnableWindow(Enable);
     GetDlgItem(IDC_SLIDER_RANGE).EnableWindow(Enable);
     GetDlgItem(IDC_EDIT_LTRIGGER).EnableWindow(Enable);
@@ -369,6 +370,8 @@ void CControllerSettings::EnablePage(bool Enable)
     GetDlgItem(IDC_BTN_BUTTON_START).EnableWindow(Enable);
     GetDlgItem(IDC_BTN_BUTTON_Z).EnableWindow(Enable);
     GetDlgItem(IDC_BTN_SETUP).EnableWindow(Enable);
+
+    Enable = Present != PRESENT_NONE;
     GetDlgItem(IDC_BTN_DEFAULTS).EnableWindow(Enable);
     GetDlgItem(IDC_BTN_OPTIONS).EnableWindow(Enable);
 }
