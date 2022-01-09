@@ -455,7 +455,7 @@ bool CRomList::LoadDataFromRomFile(const char * FileName, uint8_t * Data, int32_
                 return false;
             }
             File.Seek(romdataoffset, CFileBase::begin);
-            if (!File.Read(Data + 0x200, 0x200))
+            if (!File.Read(Data + 0x200, 0x4D08))
             {
                 return false;
             }
@@ -484,7 +484,7 @@ bool CRomList::LoadDataFromRomFile(const char * FileName, uint8_t * Data, int32_
                 return false;
             }
             File.Seek(romdataoffset, CFileBase::begin);
-            if (!File.Read(Data + 0x200, 0x200))
+            if (!File.Read(Data + 0x200, 0x4D08))
             {
                 return false;
             }
@@ -503,7 +503,7 @@ bool CRomList::LoadDataFromRomFile(const char * FileName, uint8_t * Data, int32_
 
 bool CRomList::FillRomInfo(ROM_INFO * pRomInfo)
 {
-    uint8_t RomData[0x1000];
+    uint8_t RomData[0x4F08];
 
     if (LoadDataFromRomFile(pRomInfo->szFullFileName, RomData, sizeof(RomData), &pRomInfo->RomSize, pRomInfo->FileFormat))
     {
@@ -543,13 +543,13 @@ bool CRomList::FillRomInfo(ROM_INFO * pRomInfo)
             char InternalName[22];
             memcpy(InternalName, (void *)(RomData + 0x100), 4);
             strcpy(pRomInfo->InternalName, InternalName);
-            pRomInfo->CartID[0] = *(RomData + 0x100);
+            pRomInfo->CartID[0] = *(RomData + 0x102);
             pRomInfo->CartID[1] = *(RomData + 0x101);
-            pRomInfo->CartID[2] = *(RomData + 0x102);
-            pRomInfo->Media = '\0';
+            pRomInfo->CartID[2] = '\0';
+            pRomInfo->Media = *(RomData + 0x103);
             pRomInfo->Country = *(RomData + 0x100);
             pRomInfo->CRC1 = 0;
-            for (uint32_t i = 0; i < 0x200; i += 4)
+            for (uint32_t i = 0; i < 0x4D08; i += 4)
             {
                 pRomInfo->CRC1 += *(uint32_t *)(&RomData[0x200 + i]);
             }

@@ -21,6 +21,7 @@ public:
     uint8_t *  GetDiskAddressID() { return m_DiskImage + m_DiskIDAddress; }
     uint8_t *  GetDiskAddressRom() { return m_DiskImage + m_DiskRomAddress; }
     uint8_t *  GetDiskAddressRam() { return m_DiskImage + m_DiskRamAddress; }
+    uint32_t GetDiskSize() const { return m_DiskFileSize; }
     uint8_t *  GetDiskHeader() { return m_DiskHeader; }
     void    SetDiskAddressBuffer(uint32_t address) { m_DiskBufAddress = address; }
     uint32_t   GetDiskAddressBlock(uint16_t head, uint16_t track, uint16_t block, uint16_t sector, uint16_t sectorsize);
