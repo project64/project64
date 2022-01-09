@@ -772,6 +772,9 @@ void CN64System::Pause()
     {
         return;
     }
+    if (g_Plugins && g_Plugins->Control()->EmulationPaused) {
+        g_Plugins->Control()->EmulationPaused();
+    }
     PauseType pause_type = (PauseType)g_Settings->LoadDword(GameRunning_CPU_PausedType);
     m_hPauseEvent.Reset();
     g_Settings->SaveBool(GameRunning_CPU_Paused, true);

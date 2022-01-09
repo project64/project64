@@ -823,11 +823,18 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                 break;
             }
 
-            if (_this->m_bMainWindow && bCPURunning() && bAutoSleep())
+            if (_this->m_bMainWindow && bCPURunning())
             {
                 if (g_BaseSystem)
                 {
-                    g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_AppLostFocus);
+                    if (bAutoSleep())
+                    {
+                        g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_AppLostFocus);
+                    }
+
+                    if (g_Plugins && g_Plugins->Control()->WM_KillFocus) {
+                        g_Plugins->Control()->WM_KillFocus(wParam, lParam);
+                    }
                 }
             }
         }

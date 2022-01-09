@@ -103,6 +103,8 @@ public:
 
     void(CALL *WM_KeyDown) (uint32_t wParam, uint32_t lParam);
     void(CALL *WM_KeyUp) (uint32_t wParam, uint32_t lParam);
+    void(CALL *WM_KillFocus) (uint32_t wParam, uint32_t lParam);
+    void(CALL *EmulationPaused) ();
     void(CALL *RumbleCommand) (int32_t Control, int32_t bRumble);
     fnGetKeys GetKeys;
     void(CALL *ReadController) (int32_t Control, uint8_t * Command);
