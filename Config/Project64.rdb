@@ -7971,6 +7971,12 @@ Status=Compatible
 32bit=Yes
 Save Type=Sram
 
+[BB7CD63F-448329C0-C:41]
+Good Name=Dezaemon 3D Expansion Disk (J) (Proto) [a1]
+Status=Compatible
+32bit=Yes
+Save Type=Sram
+
 [63BBA730-9C4458CF-C:54]
 Good Name=Mario Artist Paint Studio (J) (1999-02-11 Proto)
 Status=Compatible
