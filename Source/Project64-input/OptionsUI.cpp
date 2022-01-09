@@ -11,6 +11,7 @@ public:
 
     BEGIN_MSG_MAP(COptionsDlg)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
+        MESSAGE_HANDLER(WM_HSCROLL, OnScroll)
         COMMAND_ID_HANDLER(IDOK, OnOkCmd)
         COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
     END_MSG_MAP()
@@ -28,6 +29,13 @@ public:
         SetWindowText(stdstr_f("Options - Player %d", m_ControlIndex + 1).ToUTF16().c_str());
         CButton(GetDlgItem(IDC_REAL_N64_RANGE)).SetCheck(m_Controller.RealN64Range ? BST_CHECKED : BST_UNCHECKED);
         CButton(GetDlgItem(IDC_REMOVE_DUPLICATE)).SetCheck(m_Controller.RemoveDuplicate ? BST_CHECKED : BST_UNCHECKED);
+
+        m_Sensitivity.Attach(GetDlgItem(IDC_SLIDE_SENSITIVITY));
+        m_Sensitivity.SetTicFreq(1);
+        m_Sensitivity.SetRangeMin(1);
+        m_Sensitivity.SetRangeMax(100);
+        m_Sensitivity.SetPos(m_Controller.Sensitivity);
+        CWindow(GetDlgItem(IDC_TXT_SENSITIVITY)).SetWindowText(stdstr_f("Mouse Sensitivity: %d%%", m_Sensitivity.GetPos()).ToUTF16().c_str());
 
         CComboBox ControllerPak(GetDlgItem(IDC_PAKTYPE));
         int Index = ControllerPak.AddString(L"None");
@@ -67,6 +75,13 @@ public:
             bChanged = true;
         }
 
+        uint8_t Sensitivity = (uint8_t)m_Sensitivity.GetPos();
+        if (Sensitivity != m_Controller.Sensitivity)
+        {
+            m_Controller.Sensitivity = Sensitivity;
+            bChanged = true;
+        }
+
         CComboBox ControllerPak(GetDlgItem(IDC_PAKTYPE));
         DWORD_PTR Pak = ControllerPak.GetItemData(ControllerPak.GetCurSel());
         if (Pak != m_ControlInfo.Plugin)
@@ -87,9 +102,19 @@ public:
         EndDialog(wID);
         return 0;
     }
+    LRESULT OnScroll(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
+    {
+        LONG SliderId = CWindow((HWND)lParam).GetWindowLong(GWL_ID);
+        if (SliderId == IDC_SLIDE_SENSITIVITY)
+        {
+            CWindow(GetDlgItem(IDC_TXT_SENSITIVITY)).SetWindowText(stdstr_f("Mouse Sensitivity: %d%%", m_Sensitivity.GetPos()).ToUTF16().c_str());
+        }
+        return 0;
+    }
     uint32_t m_ControlIndex;
     CONTROL & m_ControlInfo;
     N64CONTROLLER & m_Controller;
+    CTrackBarCtrl m_Sensitivity;
 };
 
 void ConfigOption(uint32_t ControlIndex, CONTROL & ControlInfo, N64CONTROLLER & Controller)

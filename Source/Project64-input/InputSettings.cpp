@@ -5,6 +5,7 @@
 
 CInputSettings * g_Settings = nullptr;
 
+/* Default First N64 Controller Setup */
 static char * Control0_U_DPAD_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} 17 0 5";
 static char * Control0_D_DPAD_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} 25 0 5";
 static char * Control0_L_DPAD_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} 24 0 5";
@@ -25,9 +26,27 @@ static char * Control0_L_ANALOG_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000
 static char * Control0_R_ANALOG_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} CD 0 5";
 static const uint32_t Default_DeadZone = 25;
 static const uint32_t Default_Range = 100;
+static const uint32_t Default_Sensitivity = 100;
 static const uint32_t Default_Plugin = PLUGIN_MEMPAK;
 static const bool Default_RealN64Range = true;
 static const bool Default_RemoveDuplicate = true;
+
+/* Default Mouse Setup (Forced) */
+static char* Mouse_A_BUTTON_Default = "{6F1D2B60-D5A0-11CF-BFC7-444553540000} 00 0 6";
+static char* Mouse_B_BUTTON_Default = "{6F1D2B60-D5A0-11CF-BFC7-444553540000} 01 0 6";
+static char* Mouse_U_ANALOG_Default = "{6F1D2B60-D5A0-11CF-BFC7-444553540000} 01 0 7";
+static char* Mouse_D_ANALOG_Default = "{6F1D2B60-D5A0-11CF-BFC7-444553540000} 01 1 7";
+static char* Mouse_L_ANALOG_Default = "{6F1D2B60-D5A0-11CF-BFC7-444553540000} 00 0 7";
+static char* Mouse_R_ANALOG_Default = "{6F1D2B60-D5A0-11CF-BFC7-444553540000} 00 1 7";
+static const uint32_t DefaultMouse_DeadZone = 1;
+static const uint32_t DefaultMouse_Range = 100;
+static const uint32_t DefaultMouse_Plugin = PLUGIN_NONE;
+static const uint32_t DefaultMouse_Sensitivity = 100;
+static const bool DefaultMouse_RealN64Range = false;
+static const bool DefaultMouse_RemoveDuplicate = true;
+
+/* Default Shortcuts Setup */
+static char* Shortcuts_LOCKMOUSE_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} 0F 0 5";
 
 CInputSettings::CInputSettings()
 {
@@ -40,12 +59,18 @@ CInputSettings::~CInputSettings()
 
 void CInputSettings::LoadController(uint32_t ControlIndex, CONTROL & ControllerInfo, N64CONTROLLER & Controller)
 {
-    struct 
+    InputSettingID PresentSettings[] = { Set_Control0_Present, Set_Control1_Present, Set_Control2_Present, Set_Control3_Present };
+    InputSettingID PluginSettings[] = { Set_Control0_Plugin, Set_Control1_Plugin, Set_Control2_Plugin, Set_Control3_Plugin };
+
+    ControllerInfo.Present = ControlIndex < (sizeof(PresentSettings) / sizeof(PresentSettings[0])) ? GetSetting((short)PresentSettings[ControlIndex]) : PRESENT_NONE;
+    ControllerInfo.Plugin = ControlIndex < (sizeof(PluginSettings) / sizeof(PluginSettings[0])) ? GetSetting((short)PluginSettings[ControlIndex]) : Default_Plugin;
+
+    struct
     {
-        BUTTON & Button;
+        BUTTON& Button;
         InputSettingID SettingId;
         uint32_t ControlIndex;
-    } 
+    }
     Buttons[] =
     {
         { Controller.U_DPAD, Set_Control0_U_DPAD, 0 },
@@ -135,26 +160,37 @@ void CInputSettings::LoadController(uint32_t ControlIndex, CONTROL & ControllerI
         Buttons[i].Button = StrToButton(GetSettingSz((short)Buttons[i].SettingId, Buffer, sizeof(Buffer) / sizeof(Buffer[0])));
     }
 
-    InputSettingID PresentSettings[] = { Set_Control0_Present, Set_Control1_Present, Set_Control2_Present, Set_Control3_Present };
-    InputSettingID PluginSettings[] = { Set_Control0_Plugin, Set_Control1_Plugin, Set_Control2_Plugin, Set_Control3_Plugin };
     InputSettingID RangeSettings[] = { Set_Control0_Range, Set_Control1_Range, Set_Control2_Range, Set_Control3_Range };
     InputSettingID DeadZoneSettings[] = { Set_Control0_Deadzone, Set_Control1_Deadzone, Set_Control2_Deadzone,Set_Control3_Deadzone };
+    InputSettingID SensitivitySettings[] = { Set_Control0_Sensitivity, Set_Control1_Sensitivity, Set_Control2_Sensitivity, Set_Control3_Sensitivity };
     InputSettingID RealN64RangeSettings[] = { Set_Control0_RealN64Range,  Set_Control1_RealN64Range, Set_Control2_RealN64Range, Set_Control3_RealN64Range };
     InputSettingID RemoveDuplicateSettings[] = { Set_Control0_RemoveDuplicate, Set_Control1_RemoveDuplicate, Set_Control2_RemoveDuplicate, Set_Control3_RemoveDuplicate };
 
-    ControllerInfo.Present = ControlIndex < (sizeof(PresentSettings) / sizeof(PresentSettings[0])) ? GetSetting((short)PresentSettings[ControlIndex]) != 0 : 0;
-    ControllerInfo.Plugin = ControlIndex < (sizeof(PluginSettings) / sizeof(PluginSettings[0])) ? GetSetting((short)PluginSettings[ControlIndex]) : Default_Plugin;
     Controller.Range = (uint8_t)(ControlIndex < (sizeof(RangeSettings) / sizeof(RangeSettings[0])) ? GetSetting((short)RangeSettings[ControlIndex]) : Default_Range);
     if (Controller.Range == 0) { Controller.Range = 1; }
     if (Controller.Range > 100) { Controller.Range = 100; }
     Controller.DeadZone = (uint8_t)(ControlIndex < (sizeof(DeadZoneSettings) / sizeof(DeadZoneSettings[0])) ? GetSetting((short)DeadZoneSettings[ControlIndex]) : Default_DeadZone);
     if (Controller.DeadZone > 100) { Controller.DeadZone = 100; }
+    Controller.Sensitivity = (uint8_t)(ControlIndex < (sizeof(SensitivitySettings) / sizeof(SensitivitySettings[0])) ? GetSetting((short)SensitivitySettings[ControlIndex]) : Default_Sensitivity);
+    if (Controller.Sensitivity > 100) { Controller.Sensitivity = 100; }
     Controller.RealN64Range = (ControlIndex < (sizeof(RealN64RangeSettings) / sizeof(RealN64RangeSettings[0])) ? GetSetting((short)RealN64RangeSettings[ControlIndex]) != 0 : Default_RealN64Range);
     Controller.RemoveDuplicate = (ControlIndex < (sizeof(RemoveDuplicateSettings) / sizeof(RemoveDuplicateSettings[0])) ? GetSetting((short)RemoveDuplicateSettings[ControlIndex]) != 0 : Default_RemoveDuplicate);
 }
 
 void CInputSettings::SaveController(uint32_t ControlIndex, const CONTROL & ControllerInfo, const N64CONTROLLER & Controller)
 {
+    InputSettingID PresentSettings[] = { Set_Control0_Present, Set_Control1_Present, Set_Control2_Present, Set_Control3_Present };
+    InputSettingID PluginSettings[] = { Set_Control0_Plugin, Set_Control1_Plugin, Set_Control2_Plugin, Set_Control3_Plugin };
+
+    if (ControlIndex < (sizeof(PresentSettings) / sizeof(PresentSettings[0])))
+    {
+        SetSetting((short)PresentSettings[ControlIndex], ControllerInfo.Present);
+    }
+    if (ControlIndex < (sizeof(PluginSettings) / sizeof(PluginSettings[0])))
+    {
+        SetSetting((short)PluginSettings[ControlIndex], ControllerInfo.Plugin);
+    }
+
     struct 
     {
         const BUTTON & Button;
@@ -181,6 +217,7 @@ void CInputSettings::SaveController(uint32_t ControlIndex, const CONTROL & Contr
         { Controller.D_ANALOG, Set_Control0_D_ANALOG, 0 },
         { Controller.L_ANALOG, Set_Control0_L_ANALOG, 0 },
         { Controller.R_ANALOG, Set_Control0_R_ANALOG, 0 },
+
         { Controller.U_DPAD, Set_Control1_U_DPAD, 1 },
         { Controller.D_DPAD, Set_Control1_D_DPAD, 1 },
         { Controller.L_DPAD, Set_Control1_L_DPAD, 1 },
@@ -239,10 +276,9 @@ void CInputSettings::SaveController(uint32_t ControlIndex, const CONTROL & Contr
         { Controller.R_ANALOG, Set_Control3_R_ANALOG, 3 },
     };
 
-    InputSettingID PresentSettings[] = { Set_Control0_Present, Set_Control1_Present, Set_Control2_Present, Set_Control3_Present };
-    InputSettingID PluginSettings[] = { Set_Control0_Plugin, Set_Control1_Plugin, Set_Control2_Plugin, Set_Control3_Plugin };
     InputSettingID RangeSettings[] = { Set_Control0_Range, Set_Control1_Range, Set_Control2_Range, Set_Control3_Range };
     InputSettingID DeadZoneSettings[] = { Set_Control0_Deadzone, Set_Control1_Deadzone, Set_Control2_Deadzone,Set_Control3_Deadzone };
+    InputSettingID SensitivitySettings[] = { Set_Control0_Sensitivity, Set_Control1_Sensitivity, Set_Control2_Sensitivity, Set_Control3_Sensitivity };
     InputSettingID RealN64RangeSettings[] = { Set_Control0_RealN64Range,  Set_Control1_RealN64Range, Set_Control2_RealN64Range, Set_Control3_RealN64Range };
     InputSettingID RemoveDuplicateSettings[] = { Set_Control0_RemoveDuplicate, Set_Control1_RemoveDuplicate, Set_Control2_RemoveDuplicate, Set_Control3_RemoveDuplicate };
 
@@ -255,15 +291,6 @@ void CInputSettings::SaveController(uint32_t ControlIndex, const CONTROL & Contr
         SetSettingSz((short)Buttons[i].SettingId, ButtonToStr(Buttons[i].Button).c_str());
     }
 
-    if (ControlIndex < (sizeof(PresentSettings) / sizeof(PresentSettings[0])))
-    {
-        SetSetting((short)PresentSettings[ControlIndex], ControllerInfo.Present);
-    }
-    if (ControlIndex < (sizeof(PluginSettings) / sizeof(PluginSettings[0])))
-    {
-        SetSetting((short)PluginSettings[ControlIndex], ControllerInfo.Plugin);
-    }
-
     if (ControlIndex < (sizeof(RangeSettings) / sizeof(RangeSettings[0])))
     {
         SetSetting((short)RangeSettings[ControlIndex], Controller.Range);
@@ -272,6 +299,10 @@ void CInputSettings::SaveController(uint32_t ControlIndex, const CONTROL & Contr
     if (ControlIndex < (sizeof(DeadZoneSettings) / sizeof(DeadZoneSettings[0])))
     {
         SetSetting((short)DeadZoneSettings[ControlIndex], Controller.DeadZone);
+    }
+    if (ControlIndex < (sizeof(SensitivitySettings) / sizeof(SensitivitySettings[0])))
+    {
+        SetSetting((short)SensitivitySettings[ControlIndex], Controller.Sensitivity);
     }
     if (ControlIndex < (sizeof(RealN64RangeSettings) / sizeof(RealN64RangeSettings[0])))
     {
@@ -381,8 +412,108 @@ void CInputSettings::ResetController(uint32_t ControlIndex, CONTROL & Controller
     }
     Controller.Range = Default_Range;
     Controller.DeadZone = Default_DeadZone;
-    ControllerInfo.Present = ControlIndex == 0 ? 1 : 0;
+    Controller.Sensitivity = Default_Sensitivity;
+    ControllerInfo.Present = ControlIndex == 0 ? PRESENT_CONT : PRESENT_NONE;
     ControllerInfo.Plugin = Default_Plugin;
+}
+
+void CInputSettings::GetControllerMouse(N64CONTROLLER& Controller)
+{
+    struct
+    {
+        BUTTON& Button;
+        const char* DefaultValue;
+    }
+    Buttons[] =
+    {
+        { Controller.U_DPAD, "" },
+        { Controller.D_DPAD, "" },
+        { Controller.L_DPAD, "" },
+        { Controller.R_DPAD, "" },
+        { Controller.A_BUTTON, Mouse_A_BUTTON_Default },
+        { Controller.B_BUTTON, Mouse_B_BUTTON_Default },
+        { Controller.U_CBUTTON, "" },
+        { Controller.D_CBUTTON, "" },
+        { Controller.L_CBUTTON, "" },
+        { Controller.R_CBUTTON, "" },
+        { Controller.START_BUTTON, "" },
+        { Controller.Z_TRIG, "" },
+        { Controller.R_TRIG, "" },
+        { Controller.L_TRIG, "" },
+        { Controller.U_ANALOG, Mouse_U_ANALOG_Default },
+        { Controller.D_ANALOG, Mouse_D_ANALOG_Default },
+        { Controller.L_ANALOG, Mouse_L_ANALOG_Default },
+        { Controller.R_ANALOG, Mouse_R_ANALOG_Default },
+    };
+
+    for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
+    {
+        Buttons[i].Button = StrToButton(Buttons[i].DefaultValue);
+    }
+    Controller.Range = DefaultMouse_Range;
+    Controller.DeadZone = DefaultMouse_DeadZone;
+    Controller.Sensitivity = DefaultMouse_Sensitivity;
+    Controller.RealN64Range = DefaultMouse_RealN64Range;
+    Controller.RemoveDuplicate = DefaultMouse_RemoveDuplicate;
+}
+
+void CInputSettings::LoadShortcuts(SHORTCUTS& Shortcuts)
+{
+    struct
+    {
+        BUTTON& Button;
+        InputSettingID SettingId;
+    }
+    Buttons[] =
+    {
+        { Shortcuts.LOCKMOUSE, Set_Shortcut_LOCKMOUSE },
+    };
+
+    char Buffer[400];
+    for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
+    {
+        Buttons[i].Button = StrToButton(GetSettingSz((short)Buttons[i].SettingId, Buffer, sizeof(Buffer) / sizeof(Buffer[0])));
+    }
+
+    Shortcuts.LOCKMOUSE_PRESSED = false;
+}
+
+void CInputSettings::SaveShortcuts(SHORTCUTS& Shortcuts)
+{
+    struct
+    {
+        const BUTTON& Button;
+        InputSettingID SettingId;
+    }
+    Buttons[] =
+    {
+        { Shortcuts.LOCKMOUSE, Set_Shortcut_LOCKMOUSE },
+    };
+
+    for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
+    {
+        SetSettingSz((short)Buttons[i].SettingId, ButtonToStr(Buttons[i].Button).c_str());
+    }
+}
+
+void CInputSettings::ResetShortcuts(SHORTCUTS& Shortcuts)
+{
+    struct
+    {
+        BUTTON& Button;
+        const char* DefaultValue;
+    }
+    Buttons[] =
+    {
+        { Shortcuts.LOCKMOUSE, Shortcuts_LOCKMOUSE_Default },
+    };
+
+    for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
+    {
+        Buttons[i].Button = StrToButton(Buttons[i].DefaultValue);
+    }
+
+    Shortcuts.LOCKMOUSE_PRESSED = false;
 }
 
 BUTTON CInputSettings::StrToButton(const char * Buffer)
@@ -419,6 +550,7 @@ void CInputSettings::RegisterSettings(void)
     RegisterSetting(Set_Control0_Plugin, Data_DWORD_General, "Plugin", "Controller 1", Default_Plugin, nullptr);
     RegisterSetting(Set_Control0_Range, Data_DWORD_General, "Range", "Controller 1", Default_Range, nullptr);
     RegisterSetting(Set_Control0_Deadzone, Data_DWORD_General, "Deadzone", "Controller 1", Default_DeadZone, nullptr);
+    RegisterSetting(Set_Control0_Sensitivity, Data_DWORD_General, "Sensitivity", "Controller 1", Default_Sensitivity, nullptr);
     RegisterSetting(Set_Control0_RealN64Range, Data_DWORD_General, "RealN64Range", "Controller 1", Default_RealN64Range, nullptr);
     RegisterSetting(Set_Control0_RemoveDuplicate, Data_DWORD_General, "Remove Duplicate", "Controller 1", Default_RemoveDuplicate, nullptr);
     RegisterSetting(Set_Control0_U_DPAD, Data_String_General, "DPadUp", "Controller 1", 0, Control0_U_DPAD_Default);
@@ -444,6 +576,7 @@ void CInputSettings::RegisterSettings(void)
     RegisterSetting(Set_Control1_Plugin, Data_DWORD_General, "Plugin", "Controller 2", Default_Plugin, nullptr);
     RegisterSetting(Set_Control1_Range, Data_DWORD_General, "Range", "Controller 2", Default_Range, nullptr);
     RegisterSetting(Set_Control1_Deadzone, Data_DWORD_General, "Deadzone", "Controller 2", Default_DeadZone, nullptr);
+    RegisterSetting(Set_Control1_Sensitivity, Data_DWORD_General, "Sensitivity", "Controller 2", Default_Sensitivity, nullptr);
     RegisterSetting(Set_Control1_RealN64Range, Data_DWORD_General, "RealN64Range", "Controller 2", Default_RealN64Range, nullptr);
     RegisterSetting(Set_Control1_RemoveDuplicate, Data_DWORD_General, "Remove Duplicate", "Controller 2", Default_RemoveDuplicate, nullptr);
     RegisterSetting(Set_Control1_U_DPAD, Data_String_General, "DPadUp", "Controller 2", 0, "");
@@ -469,6 +602,7 @@ void CInputSettings::RegisterSettings(void)
     RegisterSetting(Set_Control2_Plugin, Data_DWORD_General, "Plugin", "Controller 3", Default_Plugin, nullptr);
     RegisterSetting(Set_Control2_Range, Data_DWORD_General, "Range", "Controller 3", Default_Range, nullptr);
     RegisterSetting(Set_Control2_Deadzone, Data_DWORD_General, "Deadzone", "Controller 3", Default_DeadZone, nullptr);
+    RegisterSetting(Set_Control2_Sensitivity, Data_DWORD_General, "Sensitivity", "Controller 3", Default_Sensitivity, nullptr);
     RegisterSetting(Set_Control2_RealN64Range, Data_DWORD_General, "RealN64Range", "Controller 3", Default_RealN64Range, nullptr);
     RegisterSetting(Set_Control2_RemoveDuplicate, Data_DWORD_General, "Remove Duplicate", "Controller 3", Default_RemoveDuplicate, nullptr);
     RegisterSetting(Set_Control2_U_DPAD, Data_String_General, "DPadUp", "Controller 3", 0, "");
@@ -494,6 +628,7 @@ void CInputSettings::RegisterSettings(void)
     RegisterSetting(Set_Control3_Plugin, Data_DWORD_General, "Plugin", "Controller 4", Default_Plugin, nullptr);
     RegisterSetting(Set_Control3_Range, Data_DWORD_General, "Range", "Controller 4", Default_Range, nullptr);
     RegisterSetting(Set_Control3_Deadzone, Data_DWORD_General, "Deadzone", "Controller 4", Default_DeadZone, nullptr);
+    RegisterSetting(Set_Control3_Sensitivity, Data_DWORD_General, "Sensitivity", "Controller 4", Default_Sensitivity, nullptr);
     RegisterSetting(Set_Control3_RealN64Range, Data_DWORD_General, "RealN64Range", "Controller 4", Default_RealN64Range, nullptr);
     RegisterSetting(Set_Control3_RemoveDuplicate, Data_DWORD_General, "Remove Duplicate", "Controller 4", Default_RemoveDuplicate, nullptr);
     RegisterSetting(Set_Control3_U_DPAD, Data_String_General, "DPadUp", "Controller 4", 0, "");
@@ -514,6 +649,8 @@ void CInputSettings::RegisterSettings(void)
     RegisterSetting(Set_Control3_D_ANALOG, Data_String_General, "AnalogDown", "Controller 4", 0, "");
     RegisterSetting(Set_Control3_L_ANALOG, Data_String_General, "AnalogLeft", "Controller 4", 0, "");
     RegisterSetting(Set_Control3_R_ANALOG, Data_String_General, "AnalogRight", "Controller 4", 0, "");
+
+    RegisterSetting(Set_Shortcut_LOCKMOUSE, Data_String_General, "LockMouse", "Shortcuts", 0, Shortcuts_LOCKMOUSE_Default);
 }
 
 void SetupInputSettings(void)

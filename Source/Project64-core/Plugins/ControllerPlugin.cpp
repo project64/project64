@@ -34,6 +34,8 @@ bool CControl_Plugin::LoadFunctions(void)
     LoadFunction(WM_KeyDown);
     LoadFunction(WM_KeyUp);
     LoadFunction(RumbleCommand);
+    LoadFunction(WM_KillFocus);
+    LoadFunction(EmulationPaused);
 
     // Make sure DLL had all needed functions
     if (InitiateControllers == nullptr) { UnloadPlugin(); return false; }
@@ -58,7 +60,7 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
 
     for (int32_t i = 0; i < 4; i++)
     {
-        m_PluginControllers[i].Present = false;
+        m_PluginControllers[i].Present = PRESENT_NONE;
         m_PluginControllers[i].RawData = false;
         m_PluginControllers[i].Plugin = PLUGIN_NONE;
     }

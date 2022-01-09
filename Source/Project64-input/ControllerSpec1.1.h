@@ -27,6 +27,13 @@ enum
     PLUGIN_RAW = 5,
 };
 
+enum
+{
+    PRESENT_NONE = 0,
+    PRESENT_CONT = 1,
+    PRESENT_MOUSE = 2,
+};
+
 // Structures
 
 typedef struct
@@ -213,6 +220,16 @@ Output: None
 EXPORT void CALL RomOpen(void);
 
 /*
+Function: EmulationPaused
+Purpose: This function is called when the emulation is paused. (from the
+emulation thread)
+Input: None
+Output: None
+*/
+
+EXPORT void CALL EmulationPaused(void);
+
+/*
 Function: WM_KeyDown
 Purpose: To pass the WM_KeyDown message from the emulator to the
 plugin.
@@ -231,3 +248,13 @@ Output: None
 */
 
 EXPORT void CALL WM_KeyUp(uint32_t wParam, uint32_t lParam);
+
+/*
+Function: WM_KillFocus
+Purpose: To pass the WM_KILLFOCUS message from the emulator to the
+plugin.
+Input: wParam and lParam of the WM_KILLFOCUS message.
+Output: None
+*/
+
+EXPORT void CALL WM_KillFocus(uint32_t wParam, uint32_t lParam);

@@ -4,6 +4,7 @@
 #include "wtl-BitmapPicture.h"
 #include "wtl-ScanButton.h"
 #include "OptionsUI.h"
+#include "ShortcutsUI.h"
 #include <stdint.h>
 #include <Common/StdString.h>
 #include "resource.h"
@@ -30,7 +31,8 @@ public:
         COMMAND_HANDLER_EX(IDC_BTN_DEFAULTS, BN_CLICKED, DefaultBtnClicked)
         COMMAND_HANDLER_EX(IDC_BTN_SETUP, BN_CLICKED, SetupBtnClicked)
         COMMAND_HANDLER_EX(IDC_BTN_OPTIONS, BN_CLICKED, OptionsBtnClicked)
-        COMMAND_HANDLER_EX(IDC_CHK_PLUGGED_IN, BN_CLICKED, PluggedInChanged)
+        COMMAND_HANDLER_EX(IDC_BTN_SHORTCUT, BN_CLICKED, ShortcutsBtnClicked)
+        COMMAND_HANDLER_EX(IDC_DEVICETYPE, CBN_SELCHANGE, PluggedInChanged)
         NOTIFY_HANDLER_EX(IDC_TACK_RANGE, NM_RELEASEDCAPTURE, ItemChangedNotify);
         MESSAGE_HANDLER(WM_HSCROLL, OnScroll)
         MESSAGE_HANDLER(CScanButton::WM_SCAN_SUCCESS, OnScanSuccess)
@@ -51,11 +53,13 @@ private:
     void DefaultBtnClicked(UINT Code, int id, HWND ctl);
     void SetupBtnClicked(UINT Code, int id, HWND ctl);
     void OptionsBtnClicked(UINT Code, int id, HWND ctl);
+    void ShortcutsBtnClicked(UINT Code, int id, HWND ctl);
     void PluggedInChanged(UINT Code, int id, HWND ctl);
     LRESULT	ItemChangedNotify(NMHDR* /*pNMHDR*/);
+    void DisplayControllerImage(void);
     void DisplayController(void);
     void ButtonChannged(const BUTTON & Button);
-    void EnablePage(bool Enable);
+    void EnablePage(int32_t Present);
     static void stButtonChanged(size_t data, const BUTTON & Button) { ((CControllerSettings *)data)->ButtonChannged(Button); }
 
     std::wstring m_Title;
@@ -73,6 +77,8 @@ private:
     CScanButton m_ButtonA, m_ButtonB, m_ButtonStart;
     CScanButton m_ButtonZtrigger, m_ButtonRTrigger, m_ButtonLTrigger;
     CScanButton m_ButtonAnalogU, m_ButtonAnalogD, m_ButtonAnalogL, m_ButtonAnalogR;
+    CComboBox m_DeviceType;
+    SHORTCUTS m_Shortcuts;
 };
 
 class CInputConfigUI :
@@ -96,6 +102,7 @@ CControllerSettings::CControllerSettings(uint32_t ControllerNumber) :
     m_SetupIndex(-1),
     m_Controller(g_InputPlugin->Controllers(ControllerNumber)),
     m_ControlInfo(g_InputPlugin->ControlInfo(ControllerNumber)),
+    m_Shortcuts(g_InputPlugin->Shortcuts()),
     m_ButtonUDPad(m_Controller.U_DPAD, IDC_EDIT_DIGITIAL_UP, IDC_BTN_DIGITIAL_UP),
     m_ButtonDDPad(m_Controller.D_DPAD, IDC_EDIT_DIGITIAL_DOWN, IDC_BTN_DIGITIAL_DOWN),
     m_ButtonLDPad(m_Controller.L_DPAD, IDC_EDIT_DIGITIAL_LEFT, IDC_BTN_DIGITIAL_LEFT),
@@ -130,9 +137,10 @@ BOOL CControllerSettings::OnInitDialog(CWindow /*wndFocus*/, LPARAM /*lInitParam
     m_Range.SetRangeMin(1);
     m_Range.SetRangeMax(100);
     m_PluggedIn.Attach(GetDlgItem(IDC_CHK_PLUGGED_IN));
+    m_DeviceType.Attach(GetDlgItem(IDC_DEVICETYPE));
 
     m_ControllerImg.SubclassWindow(GetDlgItem(IDC_BMP_CONTROLLER));
-    m_ControllerImg.SetBitmap(MAKEINTRESOURCE(IDB_CONTROLLER));
+
     CScanButton * Buttons[] = {
         &m_ButtonUDPad, &m_ButtonDDPad, &m_ButtonLDPad, &m_ButtonRDPad, &m_ButtonA, &m_ButtonB,
         &m_ButtonCUp, &m_ButtonCDown, &m_ButtonCLeft, &m_ButtonCRight, &m_ButtonStart,
@@ -145,8 +153,16 @@ BOOL CControllerSettings::OnInitDialog(CWindow /*wndFocus*/, LPARAM /*lInitParam
         Buttons[i]->SubclassWindow(m_hWnd);
         Buttons[i]->SetChangeCallback(stButtonChanged, (size_t)this);
     }
+
+    int Index = m_DeviceType.AddString(L"None");
+    m_DeviceType.SetItemData(Index, PRESENT_NONE);
+    Index = m_DeviceType.AddString(L"N64 Controller");
+    m_DeviceType.SetItemData(Index, PRESENT_CONT);
+    Index = m_DeviceType.AddString(L"N64 Mouse");
+    m_DeviceType.SetItemData(Index, PRESENT_MOUSE);
+
     DisplayController();
-    EnablePage(m_PluggedIn.GetCheck() == BST_CHECKED);
+    EnablePage(m_DeviceType.GetItemData(m_DeviceType.GetCurSel()));
     return TRUE;
 }
 
@@ -170,7 +186,7 @@ LRESULT CControllerSettings::OnApply()
     Controller.Range = (uint8_t)m_Range.GetPos();
     Controller.DeadZone = (uint8_t)m_DeadZone.GetPos();
     CONTROL & ControlInfo = g_InputPlugin->ControlInfo(m_ControllerNumber);
-    ControlInfo.Present = (m_PluggedIn.GetCheck() == BST_CHECKED) ? 1 : 0;
+    ControlInfo.Present = m_DeviceType.GetItemData(m_DeviceType.GetCurSel());
     ControlInfo.Plugin = m_ControlInfo.Plugin;
     return g_InputPlugin->SaveController(m_ControllerNumber) ? PSNRET_NOERROR : PSNRET_INVALID_NOCHANGEPAGE;
 }
@@ -238,10 +254,16 @@ void CControllerSettings::OptionsBtnClicked(UINT /*Code*/, int /*id*/, HWND /*ct
     ConfigOption(m_ControllerNumber, m_ControlInfo, m_Controller);
 }
 
+void CControllerSettings::ShortcutsBtnClicked(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
+{
+    ConfigShortcut(m_Shortcuts);
+}
+
 void CControllerSettings::PluggedInChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
     SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
-    EnablePage(m_PluggedIn.GetCheck() == BST_CHECKED);
+    EnablePage(m_DeviceType.GetItemData(m_DeviceType.GetCurSel()));
+    DisplayControllerImage();
 }
 
 LRESULT	CControllerSettings::ItemChangedNotify(NMHDR* /*pNMHDR*/)
@@ -250,9 +272,34 @@ LRESULT	CControllerSettings::ItemChangedNotify(NMHDR* /*pNMHDR*/)
     return 0;
 }
 
+void CControllerSettings::DisplayControllerImage(void)
+{
+    if (m_DeviceType.GetItemData(m_DeviceType.GetCurSel()) != PRESENT_MOUSE)
+    {
+        m_ControllerImg.SetBitmap(MAKEINTRESOURCE(IDB_CONTROLLER));
+    }
+    else
+    {
+        m_ControllerImg.SetBitmap(MAKEINTRESOURCE(IDB_MOUSE));
+    }
+    m_ControllerImg.Invalidate();
+}
+
 void CControllerSettings::DisplayController(void)
 {
-    m_PluggedIn.SetCheck(m_ControlInfo.Present != 0 ? BST_CHECKED : BST_UNCHECKED);
+    int32_t index = 0;
+    m_DeviceType.SetCurSel(0);
+    for (index = 0; index < m_DeviceType.GetCount(); index++)
+    {
+        if (m_DeviceType.GetItemData(index) == m_ControlInfo.Present)
+        {
+            m_DeviceType.SetCurSel(index);
+            break;
+        }
+    }
+
+    DisplayControllerImage();
+
     m_Range.SetPos(m_Controller.Range);
     m_DeadZone.SetPos(m_Controller.DeadZone);
     CWindow(GetDlgItem(IDC_LABEL_RANGE)).SetWindowText(stdstr_f("%d%%", m_Range.GetPos()).ToUTF16().c_str());
@@ -281,8 +328,9 @@ void CControllerSettings::ButtonChannged(const BUTTON & Button)
     CPropertySheetWindow(GetParent()).SetModified(m_hWnd);
 }
 
-void CControllerSettings::EnablePage(bool Enable)
+void CControllerSettings::EnablePage(int32_t Present)
 {
+    bool Enable = Present == PRESENT_CONT;
     GetDlgItem(IDC_SLIDE_DEADZONE).EnableWindow(Enable);
     GetDlgItem(IDC_SLIDER_RANGE).EnableWindow(Enable);
     GetDlgItem(IDC_EDIT_LTRIGGER).EnableWindow(Enable);
@@ -322,6 +370,8 @@ void CControllerSettings::EnablePage(bool Enable)
     GetDlgItem(IDC_BTN_BUTTON_START).EnableWindow(Enable);
     GetDlgItem(IDC_BTN_BUTTON_Z).EnableWindow(Enable);
     GetDlgItem(IDC_BTN_SETUP).EnableWindow(Enable);
+
+    Enable = Present != PRESENT_NONE;
     GetDlgItem(IDC_BTN_DEFAULTS).EnableWindow(Enable);
     GetDlgItem(IDC_BTN_OPTIONS).EnableWindow(Enable);
 }
