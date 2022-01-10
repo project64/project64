@@ -2353,37 +2353,21 @@ void R4300iOp::COP0_MT()
 
 void R4300iOp::COP0_CO_TLBR()
 {
-    if (!g_System->bUseTlb())
-    {
-        return;
-    }
     g_TLB->ReadEntry();
 }
 
 void R4300iOp::COP0_CO_TLBWI()
 {
-    if (!g_System->bUseTlb())
-    {
-        return;
-    }
     g_TLB->WriteEntry(g_Reg->INDEX_REGISTER & 0x1F, false);
 }
 
 void R4300iOp::COP0_CO_TLBWR()
 {
-    if (!g_System->bUseTlb())
-    {
-        return;
-    }
     g_TLB->WriteEntry(g_Reg->RANDOM_REGISTER & 0x1F, true);
 }
 
 void R4300iOp::COP0_CO_TLBP()
 {
-    if (!g_System->bUseTlb())
-    {
-        return;
-    }
     g_TLB->Probe();
 }
 

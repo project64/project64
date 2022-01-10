@@ -310,7 +310,6 @@ enum LanguageStringID
     ROM_SAVE_TYPE = 524,
     ROM_COUNTER_FACTOR = 525,
     ROM_LARGE_BUFFER = 526,
-    ROM_USE_TLB = 527,
     ROM_REG_CACHE = 528,
     ROM_DELAY_SI = 529,
     ROM_FAST_SP = 530,

@@ -689,6 +689,9 @@
     <ClInclude Include="N64System\MemoryHandler\PeripheralInterfaceHandler.h">
       <Filter>Header Files\N64 System\MemoryHandler</Filter>
     </ClInclude>
+    <ClInclude Include="N64System\Recompiler\Recompiler.h">
+      <Filter>Header Files\N64 System\Recompiler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Version.h.in">

@@ -65,7 +65,6 @@ enum SettingID
     // Default settings
     Default_RDRamSize,
 	Default_UseHleGfx,
-	Default_UseTlb,
 	Default_ViRefreshRate,
 	Default_AiCountPerBytes,
 	Default_CounterFactor,
@@ -83,7 +82,6 @@ enum SettingID
     Rdb_CpuType,
     Rdb_RDRamSize,
     Rdb_CounterFactor,
-    Rdb_UseTlb,
     Rdb_DelayDP,
     Rdb_DelaySi,
     Rdb_32Bit,
@@ -149,7 +147,6 @@ enum SettingID
     Game_LastSaveTime,
     Game_RDRamSize,
     Game_CounterFactor,
-    Game_UseTlb,
     Game_DelayDP,
     Game_DelaySI,
     Game_FastSP,

@@ -129,7 +129,6 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 
 	AddHandler(Default_RDRamSize, new CSettingTypeApplication("Defaults", "RDRAM Size", 0x800000u));
 	AddHandler(Default_UseHleGfx, new CSettingTypeApplication("Defaults", "HLE GFX Default", true));
-	AddHandler(Default_UseTlb, new CSettingTypeApplication("Defaults", "Use TLB", true));
 	AddHandler(Default_ViRefreshRate, new CSettingTypeApplication("Defaults", "ViRefresh", 1500u));
 	AddHandler(Default_AiCountPerBytes, new CSettingTypeApplication("Defaults", "AiCountPerBytes", 0u));
 	AddHandler(Default_CounterFactor, new CSettingTypeApplication("Defaults", "Counter Factor", 2u));
@@ -147,7 +146,6 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_CpuType, new CSettingTypeRDBCpuType("CPU Type", CPU_Recompiler));
     AddHandler(Rdb_RDRamSize, new CSettingTypeRDBRDRamSize("RDRAM Size", Default_RDRamSize));
     AddHandler(Rdb_CounterFactor, new CSettingTypeRomDatabase("Counter Factor", Default_CounterFactor));
-    AddHandler(Rdb_UseTlb, new CSettingTypeRDBYesNo("Use TLB", Default_UseTlb));
     AddHandler(Rdb_DelayDP, new CSettingTypeRDBYesNo("Delay DP", true));
     AddHandler(Rdb_DelaySi, new CSettingTypeRDBYesNo("Delay SI", false));
     AddHandler(Rdb_32Bit, new CSettingTypeRDBYesNo("32bit", Default_32Bit));
@@ -205,7 +203,6 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Game_FixedAudio, new CSettingTypeGame("Fixed Audio", Rdb_FixedAudio));
     AddHandler(Game_RDRamSize, new CSettingTypeGame("RDRamSize", Rdb_RDRamSize));
     AddHandler(Game_CounterFactor, new CSettingTypeGame("Counter Factor", Rdb_CounterFactor));
-    AddHandler(Game_UseTlb, new CSettingTypeGame("Use TLB", Rdb_UseTlb));
     AddHandler(Game_DelayDP, new CSettingTypeGame("Delay DP", Rdb_DelayDP));
     AddHandler(Game_DelaySI, new CSettingTypeGame("Delay SI", Rdb_DelaySi));
     AddHandler(Game_RspAudioSignal, new CSettingTypeGame("Audio Signal", Rdb_RspAudioSignal));

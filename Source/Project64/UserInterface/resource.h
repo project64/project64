@@ -344,7 +344,6 @@
 #define IDC_MEMORY_SIZE_TEXT            1153
 #define IDC_SAVE_TYPE_TEXT              1154
 #define IDC_SYNC_AUDIO                  1156
-#define IDC_USE_TLB                     1157
 #define IDC_UNALIGNED_DMA               1158
 #define IDC_RANDOMIZE_SIPI_INTERRUPTS   1159
 #define IDC_PROTECT_MEMORY              1160

@@ -526,7 +526,6 @@ Internal Name=LAMBORGHINI
 Status=Compatible
 32bit=Yes
 RDRAM Size=4
-Use TLB=No
 
 [41B25DC4-1B726786-C:45]
 Good Name=Automobili Lamborghini (U)
@@ -534,7 +533,6 @@ Internal Name=LAMBORGHINI
 Status=Compatible
 32bit=Yes
 RDRAM Size=4
-Use TLB=No
 
 //================  B  ================
 [E340A49C-74318D41-C:4A]
@@ -4799,7 +4797,6 @@ SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
 SMM-TLB=0
-Use TLB=No
 
 [09CC4801-E42EE491-C:4A]
 Good Name=Pilotwings 64 (J)
@@ -4813,7 +4810,6 @@ SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
 SMM-TLB=0
-Use TLB=No
 
 [C851961C-78FCAAFA-C:45]
 Good Name=Pilotwings 64 (U)
@@ -4828,7 +4824,6 @@ SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
 SMM-TLB=0
-Use TLB=No
 
 [4A1CD153-D830AEF8-C:50]
 Good Name=Pokemon Puzzle League (E)
@@ -5339,7 +5334,6 @@ Status=Issues (core)
 32bit=Yes
 RDRAM Size=4
 SMM-FUNC=0
-Use TLB=No
 
 [0304C48E-AC4001B8-C:45]
 Good Name=Rat Attack (U) (M6)
@@ -5348,7 +5342,6 @@ Status=Issues (core)
 32bit=Yes
 RDRAM Size=4
 SMM-FUNC=0
-Use TLB=No
 
 [60D5E10B-8BEDED46-C:50]
 Good Name=Rayman 2 - The Great Escape (E) (M5)
@@ -6301,7 +6294,6 @@ Internal Name=SUPER SPEED RACE 64
 Status=Compatible
 32bit=Yes
 RDRAM Size=4
-Use TLB=No
 
 [2CBB127F-09C2BFD8-C:50]
 Good Name=Supercross 2000 (E) (M3)
@@ -8110,7 +8102,6 @@ Status=Compatible
 32bit=Yes
 CPU Type=Interpreter
 RDRAM Size=4
-Use TLB=No
 
 [EDA1A0C7-58EE0464-C:0]
 Good Name=Chaos 89 Demo (PD)

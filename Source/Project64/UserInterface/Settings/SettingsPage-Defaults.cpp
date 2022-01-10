@@ -11,7 +11,6 @@ CDefaultsOptionsPage::CDefaultsOptionsPage(HWND hParent, const RECT & rcDispay)
 
     SetDlgItemText(IDC_MEMORY_SIZE_TEXT, wGS(ROM_MEM_SIZE).c_str());
     SetDlgItemText(IDC_HLE_GFX, wGS(PLUG_HLE_GFX).c_str());
-    SetDlgItemText(IDC_USE_TLB, wGS(ROM_USE_TLB).c_str());
     SetDlgItemText(IDC_VIREFESH_TEXT, wGS(ROM_VIREFRESH).c_str());
     SetDlgItemText(IDC_COUNTPERBYTE_TEXT, wGS(ROM_COUNTPERBYTE).c_str());
     SetDlgItemText(IDC_COUNTFACT_TEXT, wGS(ROM_COUNTER_FACTOR).c_str());
@@ -50,7 +49,6 @@ CDefaultsOptionsPage::CDefaultsOptionsPage(HWND hParent, const RECT & rcDispay)
     TxtBox->SetTextField(GetDlgItem(IDC_COUNTPERBYTE_TEXT));
 
     AddModCheckBox(GetDlgItem(IDC_HLE_GFX), Default_UseHleGfx);
-    AddModCheckBox(GetDlgItem(IDC_USE_TLB), Default_UseTlb);
     AddModCheckBox(GetDlgItem(IDC_ROM_32BIT), Default_32Bit);
     AddModCheckBox(GetDlgItem(IDC_SYNC_AUDIO), Default_SyncViaAudio);
     AddModCheckBox(GetDlgItem(IDC_ROM_FIXEDAUDIO), Default_FixedAudio);

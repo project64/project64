@@ -65,22 +65,17 @@ private:
 
     typedef std::map <CCompiledFunc::Func, FUNCTION_PROFILE_DATA> FUNCTION_PROFILE;
 
-    // Main loops for the different look up methods
     void RecompilerMain_VirtualTable();
     void RecompilerMain_VirtualTable_validate();
     void RecompilerMain_ChangeMemory();
     void RecompilerMain_Lookup();
-    void RecompilerMain_Lookup_TLB();
     void RecompilerMain_Lookup_validate();
-    void RecompilerMain_Lookup_validate_TLB();
 
     CCompiledFuncList  m_Functions;
-    CMipsMemoryVM    & m_MMU;
-    CRegisters       & m_Registers;
-    bool             & m_EndEmulation;
-    uint32_t           m_MemoryStack;
+    CMipsMemoryVM & m_MMU;
+    CRegisters & m_Registers;
+    bool & m_EndEmulation;
+    uint32_t m_MemoryStack;
     FUNCTION_PROFILE m_BlockProfile;
-
-    // Quick access to registers
-    uint32_t            & PROGRAM_COUNTER;
+    uint32_t & PROGRAM_COUNTER;
 };

@@ -273,7 +273,6 @@
 #524#  "Default save type:"
 #525#  "Counter factor:"
 #526#  "Larger compile buffer"
-#527#  "Use TLB"
 #528#  "Register caching"
 #529#  "Delay SI interrupt"
 #530#  "Fast SP"

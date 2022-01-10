@@ -74,7 +74,6 @@ CJniBridegSettings::CJniBridegSettings()
 	// Default settings
 	ADD_SETTING(Default_RDRamSize);
 	ADD_SETTING(Default_UseHleGfx);
-	ADD_SETTING(Default_UseTlb);
 	ADD_SETTING(Default_ViRefreshRate);
 	ADD_SETTING(Default_AiCountPerBytes);
 	ADD_SETTING(Default_CounterFactor);
@@ -92,7 +91,6 @@ CJniBridegSettings::CJniBridegSettings()
 	ADD_SETTING(Rdb_CpuType);
 	ADD_SETTING(Rdb_RDRamSize);
 	ADD_SETTING(Rdb_CounterFactor);
-	ADD_SETTING(Rdb_UseTlb);
 	ADD_SETTING(Rdb_DelayDP);
 	ADD_SETTING(Rdb_DelaySi);
 	ADD_SETTING(Rdb_32Bit);
@@ -158,7 +156,6 @@ CJniBridegSettings::CJniBridegSettings()
 	ADD_SETTING(Game_LastSaveTime);
 	ADD_SETTING(Game_RDRamSize);
 	ADD_SETTING(Game_CounterFactor);
-	ADD_SETTING(Game_UseTlb);
 	ADD_SETTING(Game_DelayDP);
 	ADD_SETTING(Game_DelaySI);
 	ADD_SETTING(Game_FastSP);

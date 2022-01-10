@@ -16,7 +16,6 @@ public:
     inline static bool bRegCaching(void) { return m_RegCaching; }
     inline static bool bLinkBlocks(void) { return m_bLinkBlocks && !CDebugSettings::HaveWriteBP() && !CDebugSettings::HaveReadBP(); }
     inline static FUNC_LOOKUP_METHOD LookUpMode(void) { return (FUNC_LOOKUP_METHOD)m_LookUpMode; }
-    inline static bool bUseTlb(void) { return m_bUseTlb; }
     inline static uint32_t CountPerOp(void) { return m_CountPerOp; }
     inline static uint32_t ViRefreshRate(void) { return m_ViRefreshRate; }
     inline static uint32_t AiCountPerBytes(void) { return m_AiCountPerBytes; }
@@ -60,7 +59,6 @@ private:
     static bool m_RegCaching;
     static bool m_bLinkBlocks;
     static uint32_t m_LookUpMode; //FUNC_LOOKUP_METHOD
-    static bool m_bUseTlb;
     static uint32_t m_CountPerOp;
     static uint32_t m_ViRefreshRate;
     static uint32_t m_AiCountPerBytes;

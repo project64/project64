@@ -9,7 +9,6 @@ bool CGameSettings::m_bSMM_Protect;
 bool CGameSettings::m_bSMM_ValidFunc;
 bool CGameSettings::m_bSMM_PIDMA;
 bool CGameSettings::m_bSMM_TLB;
-bool CGameSettings::m_bUseTlb;
 uint32_t CGameSettings::m_CountPerOp = 2;
 uint32_t CGameSettings::m_ViRefreshRate = 1500;
 uint32_t CGameSettings::m_AiCountPerBytes = 500;
@@ -65,7 +64,6 @@ void CGameSettings::RefreshGameSettings()
     m_bSMM_ValidFunc = g_Settings->LoadBool(Game_SMM_ValidFunc);
     m_bSMM_PIDMA = g_Settings->LoadBool(Game_SMM_PIDMA);
     m_bSMM_TLB = g_Settings->LoadBool(Game_SMM_TLB);
-    m_bUseTlb = g_Settings->LoadBool(Game_UseTlb);
     m_ViRefreshRate = g_Settings->LoadDword(Game_ViRefreshRate);
     m_AiCountPerBytes = g_Settings->LoadDword(Game_AiCountPerBytes);
     m_CountPerOp = g_Settings->LoadDword(Game_CounterFactor);

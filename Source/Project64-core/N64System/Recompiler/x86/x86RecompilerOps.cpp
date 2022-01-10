@@ -2741,12 +2741,6 @@ void CX86RecompilerOps::LB_KnownAddress(x86Reg Reg, uint32_t VAddr, bool SignExt
 
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
-        if (!g_System->bUseTlb())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            return;
-        }
-
         x86Reg TlbMappReg = Map_TempReg(x86_Any, -1, false);
         MoveConstToX86reg(VAddr >> 12, TlbMappReg);
         x86Reg AddrReg = Map_TempReg(x86_Any, -1, false);
@@ -2812,12 +2806,6 @@ void CX86RecompilerOps::LH_KnownAddress(x86Reg Reg, uint32_t VAddr, bool SignExt
 
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
-        if (!g_System->bUseTlb())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            return;
-        }
-
         x86Reg TlbMappReg = Map_TempReg(x86_Any, -1, false);
         MoveConstToX86reg(VAddr >> 12, TlbMappReg);
         x86Reg AddrReg = Map_TempReg(x86_Any, -1, false);
@@ -2920,24 +2908,14 @@ void CX86RecompilerOps::LB()
         AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
     }
     TestReadBreakpoint(TempReg1, (void *)x86TestReadBreakpoint8, "x86TestReadBreakpoint8");
-    if (g_System->bUseTlb())
-    {
-        TempReg2 = Map_TempReg(x86_Any, -1, false);
-        MoveX86RegToX86Reg(TempReg1, TempReg2);
-        ShiftRightUnsignImmed(TempReg2, 12);
-        MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
-        CompileReadTLBMiss(TempReg1, TempReg2);
-        XorConstToX86Reg(TempReg1, 3);
-        Map_GPR_32bit(m_Opcode.rt, true, -1);
-        MoveSxByteX86regPointerToX86reg(TempReg1, TempReg2, GetMipsRegMapLo(m_Opcode.rt));
-    }
-    else
-    {
-        AndConstToX86Reg(TempReg1, 0x1FFFFFFF);
-        XorConstToX86Reg(TempReg1, 3);
-        Map_GPR_32bit(m_Opcode.rt, true, -1);
-        MoveSxN64MemToX86regByte(GetMipsRegMapLo(m_Opcode.rt), TempReg1);
-    }
+    TempReg2 = Map_TempReg(x86_Any, -1, false);
+    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    ShiftRightUnsignImmed(TempReg2, 12);
+    MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
+    CompileReadTLBMiss(TempReg1, TempReg2);
+    XorConstToX86Reg(TempReg1, 3);
+    Map_GPR_32bit(m_Opcode.rt, true, -1);
+    MoveSxByteX86regPointerToX86reg(TempReg1, TempReg2, GetMipsRegMapLo(m_Opcode.rt));
 }
 
 void CX86RecompilerOps::LH()
@@ -2983,24 +2961,14 @@ void CX86RecompilerOps::LH()
     }
     TestReadBreakpoint(TempReg1, (void *)x86TestReadBreakpoint16, "x86TestReadBreakpoint16");
 
-    if (g_System->bUseTlb())
-    {
-        x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
-        MoveX86RegToX86Reg(TempReg1, TempReg2);
-        ShiftRightUnsignImmed(TempReg2, 12);
-        MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
-        CompileReadTLBMiss(TempReg1, TempReg2);
-        XorConstToX86Reg(TempReg1, 2);
-        Map_GPR_32bit(m_Opcode.rt, true, -1);
-        MoveSxHalfX86regPointerToX86reg(TempReg1, TempReg2, GetMipsRegMapLo(m_Opcode.rt));
-    }
-    else
-    {
-        AndConstToX86Reg(TempReg1, 0x1FFFFFFF);
-        XorConstToX86Reg(TempReg1, 2);
-        Map_GPR_32bit(m_Opcode.rt, true, -1);
-        MoveSxN64MemToX86regHalf(GetMipsRegMapLo(m_Opcode.rt), TempReg1);
-    }
+    x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
+    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    ShiftRightUnsignImmed(TempReg2, 12);
+    MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
+    CompileReadTLBMiss(TempReg1, TempReg2);
+    XorConstToX86Reg(TempReg1, 2);
+    Map_GPR_32bit(m_Opcode.rt, true, -1);
+    MoveSxHalfX86regPointerToX86reg(TempReg1, TempReg2, GetMipsRegMapLo(m_Opcode.rt));
 }
 
 void CX86RecompilerOps::LWL()
@@ -3055,15 +3023,12 @@ void CX86RecompilerOps::LWL()
         AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
     }
     x86Reg TempReg2 = x86_Unknown;
-    if (g_System->bUseTlb())
-    {
-        TempReg2 = Map_TempReg(x86_Any, -1, false);
-        MoveX86RegToX86Reg(TempReg1, TempReg2);
-        ShiftRightUnsignImmed(TempReg2, 12);
-        MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
+    TempReg2 = Map_TempReg(x86_Any, -1, false);
+    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    ShiftRightUnsignImmed(TempReg2, 12);
+    MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
 
-        CompileReadTLBMiss(TempReg1, TempReg2);
-    }
+    CompileReadTLBMiss(TempReg1, TempReg2);
     x86Reg OffsetReg = Map_TempReg(x86_Any, -1, false);
     MoveX86RegToX86Reg(TempReg1, OffsetReg);
     AndConstToX86Reg(OffsetReg, 3);
@@ -3073,15 +3038,7 @@ void CX86RecompilerOps::LWL()
     Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.rt);
     AndVariableDispToX86Reg((void *)R4300iOp::LWL_MASK, "LWL_MASK", GetMipsRegMapLo(m_Opcode.rt), OffsetReg, Multip_x4);
     MoveVariableDispToX86Reg((void *)R4300iOp::LWL_SHIFT, "LWL_SHIFT", shift, OffsetReg, 4);
-    if (g_System->bUseTlb())
-    {
-        MoveX86regPointerToX86reg(TempReg1, TempReg2, TempReg1);
-    }
-    else
-    {
-        AndConstToX86Reg(TempReg1, 0x1FFFFFFF);
-        MoveN64MemToX86reg(TempReg1, TempReg1);
-    }
+    MoveX86regPointerToX86reg(TempReg1, TempReg2, TempReg1);
     ShiftLeftSign(TempReg1);
     AddX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rt), TempReg1);
 }
@@ -3121,7 +3078,7 @@ void CX86RecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }
-    else if (g_System->bUseTlb())
+    else
     {
         PreReadInstruction();
         if (IsMapped(m_Opcode.rt))
@@ -3166,35 +3123,6 @@ void CX86RecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
             MoveConstToVariable(1, _LLBit, "LLBit");
         }
     }
-    else
-    {
-        PreReadInstruction();
-        if (IsMapped(m_Opcode.base))
-        {
-            ProtectGPR(m_Opcode.base);
-            if (m_Opcode.offset != 0)
-            {
-                Map_GPR_32bit(m_Opcode.rt, ResultSigned, -1);
-                LeaSourceAndOffset(GetMipsRegMapLo(m_Opcode.rt), GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-            }
-            else
-            {
-                Map_GPR_32bit(m_Opcode.rt, ResultSigned, m_Opcode.base);
-            }
-        }
-        else
-        {
-            Map_GPR_32bit(m_Opcode.rt, ResultSigned, m_Opcode.base);
-            AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rt), (int16_t)m_Opcode.immediate);
-        }
-        TestReadBreakpoint(GetMipsRegMapLo(m_Opcode.rt), (void *)x86TestReadBreakpoint32, "x86TestReadBreakpoint32");
-        AndConstToX86Reg(GetMipsRegMapLo(m_Opcode.rt), 0x1FFFFFFF);
-        MoveN64MemToX86reg(GetMipsRegMapLo(m_Opcode.rt), GetMipsRegMapLo(m_Opcode.rt));
-        if (bRecordLLBit)
-        {
-            MoveConstToVariable(1, _LLBit, "LLBit");
-        }
-    }
     if (g_System->bFastSP() && m_Opcode.rt == 29)
     {
         ResetX86Protection();
@@ -3210,12 +3138,6 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
     m_RegWorkingSet.SetX86Protected(Reg, true);
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
-        if (!g_System->bUseTlb())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            return;
-        }
-
         x86Reg TlbMappReg = Map_TempReg(x86_Any, -1, false);
         MoveConstToX86reg(VAddr >> 12, TlbMappReg);
         MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TlbMappReg, TlbMappReg, 4);
@@ -3559,24 +3481,14 @@ void CX86RecompilerOps::LBU()
         AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
     }
     TestReadBreakpoint(TempReg1, (void *)x86TestReadBreakpoint8, "x86TestReadBreakpoint8");
-    if (g_System->bUseTlb())
-    {
-        TempReg2 = Map_TempReg(x86_Any, -1, false);
-        MoveX86RegToX86Reg(TempReg1, TempReg2);
-        ShiftRightUnsignImmed(TempReg2, 12);
-        MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
-        CompileReadTLBMiss(TempReg1, TempReg2);
-        XorConstToX86Reg(TempReg1, 3);
-        Map_GPR_32bit(m_Opcode.rt, false, -1);
-        MoveZxByteX86regPointerToX86reg(TempReg1, TempReg2, GetMipsRegMapLo(m_Opcode.rt));
-    }
-    else
-    {
-        AndConstToX86Reg(TempReg1, 0x1FFFFFFF);
-        XorConstToX86Reg(TempReg1, 3);
-        Map_GPR_32bit(m_Opcode.rt, false, -1);
-        MoveZxN64MemToX86regByte(GetMipsRegMapLo(m_Opcode.rt), TempReg1);
-    }
+    TempReg2 = Map_TempReg(x86_Any, -1, false);
+    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    ShiftRightUnsignImmed(TempReg2, 12);
+    MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
+    CompileReadTLBMiss(TempReg1, TempReg2);
+    XorConstToX86Reg(TempReg1, 3);
+    Map_GPR_32bit(m_Opcode.rt, false, -1);
+    MoveZxByteX86regPointerToX86reg(TempReg1, TempReg2, GetMipsRegMapLo(m_Opcode.rt));
 }
 
 void CX86RecompilerOps::LHU()
@@ -3624,24 +3536,14 @@ void CX86RecompilerOps::LHU()
         AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
     }
     TestReadBreakpoint(TempReg1, (void *)x86TestReadBreakpoint16, "x86TestReadBreakpoint16");
-    if (g_System->bUseTlb())
-    {
-        TempReg2 = Map_TempReg(x86_Any, -1, false);
-        MoveX86RegToX86Reg(TempReg1, TempReg2);
-        ShiftRightUnsignImmed(TempReg2, 12);
-        MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
-        CompileReadTLBMiss(TempReg1, TempReg2);
-        XorConstToX86Reg(TempReg1, 2);
-        Map_GPR_32bit(m_Opcode.rt, false, -1);
-        MoveZxHalfX86regPointerToX86reg(TempReg1, TempReg2, GetMipsRegMapLo(m_Opcode.rt));
-    }
-    else
-    {
-        AndConstToX86Reg(TempReg1, 0x1FFFFFFF);
-        XorConstToX86Reg(TempReg1, 2);
-        Map_GPR_32bit(m_Opcode.rt, true, -1);
-        MoveZxN64MemToX86regHalf(GetMipsRegMapLo(m_Opcode.rt), TempReg1);
-    }
+    TempReg2 = Map_TempReg(x86_Any, -1, false);
+    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    ShiftRightUnsignImmed(TempReg2, 12);
+    MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
+    CompileReadTLBMiss(TempReg1, TempReg2);
+    XorConstToX86Reg(TempReg1, 2);
+    Map_GPR_32bit(m_Opcode.rt, false, -1);
+    MoveZxHalfX86regPointerToX86reg(TempReg1, TempReg2, GetMipsRegMapLo(m_Opcode.rt));
 }
 
 void CX86RecompilerOps::LWR()
@@ -3698,15 +3600,12 @@ void CX86RecompilerOps::LWR()
     }
 
     TestReadBreakpoint(TempReg1, (void *)x86TestReadBreakpoint32, "x86TestReadBreakpoint32");
-    if (g_System->bUseTlb())
-    {
-        TempReg2 = Map_TempReg(x86_Any, -1, false);
-        MoveX86RegToX86Reg(TempReg1, TempReg2);
-        ShiftRightUnsignImmed(TempReg2, 12);
-        MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
+    TempReg2 = Map_TempReg(x86_Any, -1, false);
+    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    ShiftRightUnsignImmed(TempReg2, 12);
+    MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
 
-        CompileReadTLBMiss(TempReg1, TempReg2);
-    }
+    CompileReadTLBMiss(TempReg1, TempReg2);
     OffsetReg = Map_TempReg(x86_Any, -1, false);
     MoveX86RegToX86Reg(TempReg1, OffsetReg);
     AndConstToX86Reg(OffsetReg, 3);
@@ -3715,15 +3614,7 @@ void CX86RecompilerOps::LWR()
     Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.rt);
     AndVariableDispToX86Reg((void *)R4300iOp::LWR_MASK, "R4300iOp::LWR_MASK", GetMipsRegMapLo(m_Opcode.rt), OffsetReg, Multip_x4);
     MoveVariableDispToX86Reg((void *)R4300iOp::LWR_SHIFT, "R4300iOp::LWR_SHIFT", shift, OffsetReg, 4);
-    if (g_System->bUseTlb())
-    {
-        MoveX86regPointerToX86reg(TempReg1, TempReg2, TempReg1);
-    }
-    else
-    {
-        AndConstToX86Reg(TempReg1, 0x1FFFFFFF);
-        MoveN64MemToX86reg(TempReg1, TempReg1);
-    }
+    MoveX86regPointerToX86reg(TempReg1, TempReg2, TempReg1);
     ShiftRightUnsign(TempReg1);
     AddX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rt), TempReg1);
 }
@@ -3790,45 +3681,24 @@ void CX86RecompilerOps::SB()
     Compile_StoreInstructClean(TempReg1, 4);
     TestWriteBreakpoint(TempReg1, (void *)x86TestWriteBreakpoint8, "x86TestWriteBreakpoint8");
 
-    if (g_System->bUseTlb())
+    TempReg2 = Map_TempReg(x86_Any, -1, false);
+    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    ShiftRightUnsignImmed(TempReg2, 12);
+    MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
+    CompileWriteTLBMiss(TempReg1, TempReg2);
+    XorConstToX86Reg(TempReg1, 3);
+    if (IsConst(m_Opcode.rt))
     {
-        TempReg2 = Map_TempReg(x86_Any, -1, false);
-        MoveX86RegToX86Reg(TempReg1, TempReg2);
-        ShiftRightUnsignImmed(TempReg2, 12);
-        MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
-        CompileWriteTLBMiss(TempReg1, TempReg2);
-        XorConstToX86Reg(TempReg1, 3);
-        if (IsConst(m_Opcode.rt))
-        {
-            MoveConstByteToX86regPointer((uint8_t)(GetMipsRegLo(m_Opcode.rt) & 0xFF), TempReg1, TempReg2);
-        }
-        else if (IsMapped(m_Opcode.rt) && Is8BitReg(GetMipsRegMapLo(m_Opcode.rt)))
-        {
-            MoveX86regByteToX86regPointer(GetMipsRegMapLo(m_Opcode.rt), TempReg1, TempReg2);
-        }
-        else
-        {
-            UnProtectGPR(m_Opcode.rt);
-            MoveX86regByteToX86regPointer(Map_TempReg(x86_Any8Bit, m_Opcode.rt, false), TempReg1, TempReg2);
-        }
+        MoveConstByteToX86regPointer((uint8_t)(GetMipsRegLo(m_Opcode.rt) & 0xFF), TempReg1, TempReg2);
+    }
+    else if (IsMapped(m_Opcode.rt) && Is8BitReg(GetMipsRegMapLo(m_Opcode.rt)))
+    {
+        MoveX86regByteToX86regPointer(GetMipsRegMapLo(m_Opcode.rt), TempReg1, TempReg2);
     }
     else
     {
-        AndConstToX86Reg(TempReg1, 0x1FFFFFFF);
-        XorConstToX86Reg(TempReg1, 3);
-        if (IsConst(m_Opcode.rt))
-        {
-            MoveConstByteToN64Mem((uint8_t)(GetMipsRegLo(m_Opcode.rt) & 0xFF), TempReg1);
-        }
-        else if (IsMapped(m_Opcode.rt) && Is8BitReg(GetMipsRegMapLo(m_Opcode.rt)))
-        {
-            MoveX86regByteToN64Mem(GetMipsRegMapLo(m_Opcode.rt), TempReg1);
-        }
-        else
-        {
-            UnProtectGPR(m_Opcode.rt);
-            MoveX86regByteToN64Mem(Map_TempReg(x86_Any8Bit, m_Opcode.rt, false), TempReg1);
-        }
+        UnProtectGPR(m_Opcode.rt);
+        MoveX86regByteToX86regPointer(Map_TempReg(x86_Any8Bit, m_Opcode.rt, false), TempReg1, TempReg2);
     }
 }
 
@@ -3887,43 +3757,23 @@ void CX86RecompilerOps::SH()
     }
     TestWriteBreakpoint(TempReg1, (void *)x86TestWriteBreakpoint16, "x86TestWriteBreakpoint16");
 
-    if (g_System->bUseTlb())
+    TempReg2 = Map_TempReg(x86_Any, -1, false);
+    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    ShiftRightUnsignImmed(TempReg2, 12);
+    MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
+    CompileWriteTLBMiss(TempReg1, TempReg2);
+    XorConstToX86Reg(TempReg1, 2);
+    if (IsConst(m_Opcode.rt))
     {
-        TempReg2 = Map_TempReg(x86_Any, -1, false);
-        MoveX86RegToX86Reg(TempReg1, TempReg2);
-        ShiftRightUnsignImmed(TempReg2, 12);
-        MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
-        CompileWriteTLBMiss(TempReg1, TempReg2);
-        XorConstToX86Reg(TempReg1, 2);
-        if (IsConst(m_Opcode.rt))
-        {
-            MoveConstHalfToX86regPointer((uint16_t)(GetMipsRegLo(m_Opcode.rt) & 0xFFFF), TempReg1, TempReg2);
-        }
-        else if (IsMapped(m_Opcode.rt))
-        {
-            MoveX86regHalfToX86regPointer(GetMipsRegMapLo(m_Opcode.rt), TempReg1, TempReg2);
-        }
-        else
-        {
-            MoveX86regHalfToX86regPointer(Map_TempReg(x86_Any, m_Opcode.rt, false), TempReg1, TempReg2);
-        }
+        MoveConstHalfToX86regPointer((uint16_t)(GetMipsRegLo(m_Opcode.rt) & 0xFFFF), TempReg1, TempReg2);
+    }
+    else if (IsMapped(m_Opcode.rt))
+    {
+        MoveX86regHalfToX86regPointer(GetMipsRegMapLo(m_Opcode.rt), TempReg1, TempReg2);
     }
     else
     {
-        AndConstToX86Reg(TempReg1, 0x1FFFFFFF);
-        XorConstToX86Reg(TempReg1, 2);
-        if (IsConst(m_Opcode.rt))
-        {
-            MoveConstHalfToN64Mem((uint16_t)(GetMipsRegLo(m_Opcode.rt) & 0xFFFF), TempReg1);
-        }
-        else if (IsMapped(m_Opcode.rt))
-        {
-            MoveX86regHalfToN64Mem(GetMipsRegMapLo(m_Opcode.rt), TempReg1);
-        }
-        else
-        {
-            MoveX86regHalfToN64Mem(Map_TempReg(x86_Any, m_Opcode.rt, false), TempReg1);
-        }
+        MoveX86regHalfToX86regPointer(Map_TempReg(x86_Any, m_Opcode.rt, false), TempReg1, TempReg2);
     }
 }
 
@@ -3974,14 +3824,11 @@ void CX86RecompilerOps::SWL()
     TestWriteBreakpoint(TempReg1, (void *)x86TestWriteBreakpoint32, "x86TestWriteBreakpoint32");
 
     x86Reg TempReg2 = x86_Unknown;
-    if (g_System->bUseTlb())
-    {
-        TempReg2 = Map_TempReg(x86_Any, -1, false);
-        MoveX86RegToX86Reg(TempReg1, TempReg2);
-        ShiftRightUnsignImmed(TempReg2, 12);
-        MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
-        CompileReadTLBMiss(TempReg1, TempReg2);
-    }
+    TempReg2 = Map_TempReg(x86_Any, -1, false);
+    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    ShiftRightUnsignImmed(TempReg2, 12);
+    MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
+    CompileReadTLBMiss(TempReg1, TempReg2);
 
     x86Reg OffsetReg = Map_TempReg(x86_Any, -1, false);
     MoveX86RegToX86Reg(TempReg1, OffsetReg);
@@ -3989,15 +3836,7 @@ void CX86RecompilerOps::SWL()
     AndConstToX86Reg(TempReg1, (uint32_t)~3);
 
     x86Reg Value = Map_TempReg(x86_Any, -1, false);
-    if (g_System->bUseTlb())
-    {
-        MoveX86regPointerToX86reg(TempReg1, TempReg2, Value);
-    }
-    else
-    {
-        AndConstToX86Reg(TempReg1, 0x1FFFFFFF);
-        MoveN64MemToX86reg(Value, TempReg1);
-    }
+    MoveX86regPointerToX86reg(TempReg1, TempReg2, Value);
 
     AndVariableDispToX86Reg((void *)R4300iOp::SWL_MASK, "R4300iOp::SWL_MASK", Value, OffsetReg, Multip_x4);
     if (!IsConst(m_Opcode.rt) || GetMipsRegLo(m_Opcode.rt) != 0)
@@ -4019,18 +3858,11 @@ void CX86RecompilerOps::SWL()
         AddX86RegToX86Reg(Value, OffsetReg);
     }
 
-    if (g_System->bUseTlb())
-    {
-        MoveX86RegToX86Reg(TempReg1, TempReg2);
-        ShiftRightUnsignImmed(TempReg2, 12);
-        MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
+    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    ShiftRightUnsignImmed(TempReg2, 12);
+    MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
 
-        MoveX86regToX86regPointer(Value, TempReg1, TempReg2);
-    }
-    else
-    {
-        MoveX86regToN64Mem(Value, TempReg1);
-    }
+    MoveX86regToX86regPointer(Value, TempReg1, TempReg2);
 }
 
 void CX86RecompilerOps::SW()
@@ -4130,60 +3962,37 @@ void CX86RecompilerOps::SW(bool bCheckLLbit)
         }
         Compile_StoreInstructClean(TempReg1, 4);
         TestWriteBreakpoint(TempReg1, (void *)x86TestWriteBreakpoint32, "x86TestWriteBreakpoint32");
-        if (g_System->bUseTlb())
+        TempReg2 = Map_TempReg(x86_Any, -1, false);
+        MoveX86RegToX86Reg(TempReg1, TempReg2);
+        ShiftRightUnsignImmed(TempReg2, 12);
+        MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
+        CompileWriteTLBMiss(TempReg1, TempReg2);
+        uint8_t * Jump = nullptr;
+        if (bCheckLLbit)
         {
-            TempReg2 = Map_TempReg(x86_Any, -1, false);
-            MoveX86RegToX86Reg(TempReg1, TempReg2);
-            ShiftRightUnsignImmed(TempReg2, 12);
-            MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
-            CompileWriteTLBMiss(TempReg1, TempReg2);
-            uint8_t * Jump = nullptr;
-            if (bCheckLLbit)
-            {
-                CompConstToVariable(1, _LLBit, "_LLBit");
-                JneLabel8("LLBit_Continue", 0);
-                Jump = *g_RecompPos - 1;
-            }
-            if (IsConst(m_Opcode.rt))
-            {
-                MoveConstToX86regPointer(GetMipsRegLo(m_Opcode.rt), TempReg1, TempReg2);
-            }
-            else if (IsMapped(m_Opcode.rt))
-            {
-                MoveX86regToX86regPointer(GetMipsRegMapLo(m_Opcode.rt), TempReg1, TempReg2);
-            }
-            else
-            {
-                MoveX86regToX86regPointer(Map_TempReg(x86_Any, m_Opcode.rt, false), TempReg1, TempReg2);
-            }
-            if (bCheckLLbit)
-            {
-                CPU_Message("      ");
-                CPU_Message("      LLBit_Continue:");
-                SetJump8(Jump, *g_RecompPos);
-                Map_GPR_32bit(m_Opcode.rt, false, -1);
-                MoveVariableToX86reg(_LLBit, "_LLBit", GetMipsRegMapLo(m_Opcode.rt));
-            }
+            CompConstToVariable(1, _LLBit, "_LLBit");
+            JneLabel8("LLBit_Continue", 0);
+            Jump = *g_RecompPos - 1;
+        }
+        if (IsConst(m_Opcode.rt))
+        {
+            MoveConstToX86regPointer(GetMipsRegLo(m_Opcode.rt), TempReg1, TempReg2);
+        }
+        else if (IsMapped(m_Opcode.rt))
+        {
+            MoveX86regToX86regPointer(GetMipsRegMapLo(m_Opcode.rt), TempReg1, TempReg2);
         }
         else
         {
-            if (bCheckLLbit)
-            {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
-            }
-            AndConstToX86Reg(TempReg1, 0x1FFFFFFF);
-            if (IsConst(m_Opcode.rt))
-            {
-                MoveConstToN64Mem(GetMipsRegLo(m_Opcode.rt), TempReg1);
-            }
-            else if (IsMapped(m_Opcode.rt))
-            {
-                MoveX86regToN64Mem(GetMipsRegMapLo(m_Opcode.rt), TempReg1);
-            }
-            else
-            {
-                MoveX86regToN64Mem(Map_TempReg(x86_Any, m_Opcode.rt, false), TempReg1);
-            }
+            MoveX86regToX86regPointer(Map_TempReg(x86_Any, m_Opcode.rt, false), TempReg1, TempReg2);
+        }
+        if (bCheckLLbit)
+        {
+            CPU_Message("      ");
+            CPU_Message("      LLBit_Continue:");
+            SetJump8(Jump, *g_RecompPos);
+            Map_GPR_32bit(m_Opcode.rt, false, -1);
+            MoveVariableToX86reg(_LLBit, "_LLBit", GetMipsRegMapLo(m_Opcode.rt));
         }
     }
 }
@@ -4234,14 +4043,11 @@ void CX86RecompilerOps::SWR()
         AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
     }
     TestWriteBreakpoint(TempReg1, (void *)x86TestWriteBreakpoint32, "x86TestWriteBreakpoint32");
-    if (g_System->bUseTlb())
-    {
-        TempReg2 = Map_TempReg(x86_Any, -1, false);
-        MoveX86RegToX86Reg(TempReg1, TempReg2);
-        ShiftRightUnsignImmed(TempReg2, 12);
-        MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
-        CompileReadTLBMiss(TempReg1, TempReg2);
-    }
+    TempReg2 = Map_TempReg(x86_Any, -1, false);
+    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    ShiftRightUnsignImmed(TempReg2, 12);
+    MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
+    CompileReadTLBMiss(TempReg1, TempReg2);
 
     OffsetReg = Map_TempReg(x86_Any, -1, false);
     MoveX86RegToX86Reg(TempReg1, OffsetReg);
@@ -4249,15 +4055,7 @@ void CX86RecompilerOps::SWR()
     AndConstToX86Reg(TempReg1, (uint32_t)~3);
 
     Value = Map_TempReg(x86_Any, -1, false);
-    if (g_System->bUseTlb())
-    {
-        MoveX86regPointerToX86reg(TempReg1, TempReg2, Value);
-    }
-    else
-    {
-        AndConstToX86Reg(TempReg1, 0x1FFFFFFF);
-        MoveN64MemToX86reg(Value, TempReg1);
-    }
+    MoveX86regPointerToX86reg(TempReg1, TempReg2, Value);
 
     AndVariableDispToX86Reg((void *)R4300iOp::SWR_MASK, "R4300iOp::SWR_MASK", Value, OffsetReg, Multip_x4);
     if (!IsConst(m_Opcode.rt) || GetMipsRegLo(m_Opcode.rt) != 0)
@@ -4279,18 +4077,11 @@ void CX86RecompilerOps::SWR()
         AddX86RegToX86Reg(Value, OffsetReg);
     }
 
-    if (g_System->bUseTlb())
-    {
-        MoveX86RegToX86Reg(TempReg1, TempReg2);
-        ShiftRightUnsignImmed(TempReg2, 12);
-        MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
+    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    ShiftRightUnsignImmed(TempReg2, 12);
+    MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
 
-        MoveX86regToX86regPointer(Value, TempReg1, TempReg2);
-    }
-    else
-    {
-        MoveX86regToN64Mem(Value, TempReg1);
-    }
+    MoveX86regToX86regPointer(Value, TempReg1, TempReg2);
 }
 
 void CX86RecompilerOps::SDL()
@@ -4375,15 +4166,8 @@ void CX86RecompilerOps::LWC1()
     x86Reg TempReg1;
     if (IsMapped(m_Opcode.base) && m_Opcode.offset == 0)
     {
-        if (g_System->bUseTlb())
-        {
-            ProtectGPR(m_Opcode.base);
-            TempReg1 = GetMipsRegMapLo(m_Opcode.base);
-        }
-        else
-        {
-            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        }
+        ProtectGPR(m_Opcode.base);
+        TempReg1 = GetMipsRegMapLo(m_Opcode.base);
     }
     else
     {
@@ -4409,22 +4193,13 @@ void CX86RecompilerOps::LWC1()
     }
     TestReadBreakpoint(TempReg1, (void *)x86TestReadBreakpoint32, "x86TestReadBreakpoint32");
     x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false), TempReg3;
-    if (g_System->bUseTlb())
-    {
-        MoveX86RegToX86Reg(TempReg1, TempReg2);
-        ShiftRightUnsignImmed(TempReg2, 12);
-        MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
-        CompileReadTLBMiss(TempReg1, TempReg2);
+    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    ShiftRightUnsignImmed(TempReg2, 12);
+    MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
+    CompileReadTLBMiss(TempReg1, TempReg2);
 
-        TempReg3 = Map_TempReg(x86_Any, -1, false);
-        MoveX86regPointerToX86reg(TempReg1, TempReg2, TempReg3);
-    }
-    else
-    {
-        AndConstToX86Reg(TempReg1, 0x1FFFFFFF);
-        TempReg3 = Map_TempReg(x86_Any, -1, false);
-        MoveN64MemToX86reg(TempReg3, TempReg1);
-    }
+    TempReg3 = Map_TempReg(x86_Any, -1, false);
+    MoveX86regPointerToX86reg(TempReg1, TempReg2, TempReg3);
     sprintf(Name, "_FPR_S[%d]", m_Opcode.ft);
     MoveVariableToX86reg(&_FPR_S[m_Opcode.ft], Name, TempReg2);
     MoveX86regToX86Pointer(TempReg3, TempReg2);
@@ -4464,15 +4239,8 @@ void CX86RecompilerOps::LDC1()
     PreReadInstruction();
     if (IsMapped(m_Opcode.base) && m_Opcode.offset == 0)
     {
-        if (g_System->bUseTlb())
-        {
-            ProtectGPR(m_Opcode.base);
-            TempReg1 = GetMipsRegMapLo(m_Opcode.base);
-        }
-        else
-        {
-            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        }
+        ProtectGPR(m_Opcode.base);
+        TempReg1 = GetMipsRegMapLo(m_Opcode.base);
     }
     else
     {
@@ -4511,41 +4279,22 @@ void CX86RecompilerOps::LDC1()
     }
     TestReadBreakpoint(TempReg1, (void *)x86TestReadBreakpoint64, "x86TestReadBreakpoint64");
     TempReg2 = Map_TempReg(x86_Any, -1, false);
-    if (g_System->bUseTlb())
-    {
-        MoveX86RegToX86Reg(TempReg1, TempReg2);
-        ShiftRightUnsignImmed(TempReg2, 12);
-        MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
-        CompileReadTLBMiss(TempReg1, TempReg2);
-        TempReg3 = Map_TempReg(x86_Any, -1, false);
-        MoveX86regPointerToX86reg(TempReg1, TempReg2, TempReg3);
-        Push(TempReg2);
-        sprintf(Name, "_FPR_S[%d]", m_Opcode.ft);
-        MoveVariableToX86reg(&_FPR_D[m_Opcode.ft], Name, TempReg2);
-        AddConstToX86Reg(TempReg2, 4);
-        MoveX86regToX86Pointer(TempReg3, TempReg2);
-        Pop(TempReg2);
-        MoveX86regPointerToX86regDisp8(TempReg1, TempReg2, TempReg3, 4);
-        sprintf(Name, "_FPR_S[%d]", m_Opcode.ft);
-        MoveVariableToX86reg(&_FPR_D[m_Opcode.ft], Name, TempReg2);
-        MoveX86regToX86Pointer(TempReg3, TempReg2);
-    }
-    else
-    {
-        AndConstToX86Reg(TempReg1, 0x1FFFFFFF);
-        TempReg3 = Map_TempReg(x86_Any, -1, false);
-        MoveN64MemToX86reg(TempReg3, TempReg1);
-
-        sprintf(Name, "_FPR_S[%d]", m_Opcode.ft);
-        MoveVariableToX86reg(&_FPR_D[m_Opcode.ft], Name, TempReg2);
-        AddConstToX86Reg(TempReg2, 4);
-        MoveX86regToX86Pointer(TempReg3, TempReg2);
-
-        MoveN64MemDispToX86reg(TempReg3, TempReg1, 4);
-        sprintf(Name, "_FPR_S[%d]", m_Opcode.ft);
-        MoveVariableToX86reg(&_FPR_D[m_Opcode.ft], Name, TempReg2);
-        MoveX86regToX86Pointer(TempReg3, TempReg2);
-    }
+    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    ShiftRightUnsignImmed(TempReg2, 12);
+    MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
+    CompileReadTLBMiss(TempReg1, TempReg2);
+    TempReg3 = Map_TempReg(x86_Any, -1, false);
+    MoveX86regPointerToX86reg(TempReg1, TempReg2, TempReg3);
+    Push(TempReg2);
+    sprintf(Name, "_FPR_S[%d]", m_Opcode.ft);
+    MoveVariableToX86reg(&_FPR_D[m_Opcode.ft], Name, TempReg2);
+    AddConstToX86Reg(TempReg2, 4);
+    MoveX86regToX86Pointer(TempReg3, TempReg2);
+    Pop(TempReg2);
+    MoveX86regPointerToX86regDisp8(TempReg1, TempReg2, TempReg3, 4);
+    sprintf(Name, "_FPR_S[%d]", m_Opcode.ft);
+    MoveVariableToX86reg(&_FPR_D[m_Opcode.ft], Name, TempReg2);
+    MoveX86regToX86Pointer(TempReg3, TempReg2);
 }
 
 void CX86RecompilerOps::LD()
@@ -4581,15 +4330,8 @@ void CX86RecompilerOps::LD()
     }
     if (IsMapped(m_Opcode.base) && m_Opcode.offset == 0)
     {
-        if (g_System->bUseTlb())
-        {
-            ProtectGPR(m_Opcode.base);
-            TempReg1 = GetMipsRegMapLo(m_Opcode.base);
-        }
-        else
-        {
-            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        }
+        ProtectGPR(m_Opcode.base);
+        TempReg1 = GetMipsRegMapLo(m_Opcode.base);
     }
     else
     {
@@ -4613,24 +4355,14 @@ void CX86RecompilerOps::LD()
         }
     }
     TestReadBreakpoint(TempReg1, (void *)x86TestReadBreakpoint64, "x86TestReadBreakpoint64");
-    if (g_System->bUseTlb())
-    {
-        TempReg2 = Map_TempReg(x86_Any, -1, false);
-        MoveX86RegToX86Reg(TempReg1, TempReg2);
-        ShiftRightUnsignImmed(TempReg2, 12);
-        MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
-        CompileReadTLBMiss(TempReg1, TempReg2);
-        Map_GPR_64bit(m_Opcode.rt, -1);
-        MoveX86regPointerToX86reg(TempReg1, TempReg2, GetMipsRegMapHi(m_Opcode.rt));
-        MoveX86regPointerToX86regDisp8(TempReg1, TempReg2, GetMipsRegMapLo(m_Opcode.rt), 4);
-    }
-    else
-    {
-        AndConstToX86Reg(TempReg1, 0x1FFFFFFF);
-        Map_GPR_64bit(m_Opcode.rt, -1);
-        MoveN64MemToX86reg(GetMipsRegMapHi(m_Opcode.rt), TempReg1);
-        MoveN64MemDispToX86reg(GetMipsRegMapLo(m_Opcode.rt), TempReg1, 4);
-    }
+    TempReg2 = Map_TempReg(x86_Any, -1, false);
+    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    ShiftRightUnsignImmed(TempReg2, 12);
+    MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
+    CompileReadTLBMiss(TempReg1, TempReg2);
+    Map_GPR_64bit(m_Opcode.rt, -1);
+    MoveX86regPointerToX86reg(TempReg1, TempReg2, GetMipsRegMapHi(m_Opcode.rt));
+    MoveX86regPointerToX86regDisp8(TempReg1, TempReg2, GetMipsRegMapLo(m_Opcode.rt), 4);
     if (g_System->bFastSP() && m_Opcode.rt == 29)
     {
         ResetX86Protection();
@@ -4689,31 +4421,18 @@ void CX86RecompilerOps::SWC1()
         AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
     }
     TestWriteBreakpoint(TempReg1, (void *)x86TestWriteBreakpoint32, "x86TestWriteBreakpoint32");
-    if (g_System->bUseTlb())
-    {
-        x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
-        MoveX86RegToX86Reg(TempReg1, TempReg2);
-        ShiftRightUnsignImmed(TempReg2, 12);
-        MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
-        CompileWriteTLBMiss(TempReg1, TempReg2);
+    x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
+    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    ShiftRightUnsignImmed(TempReg2, 12);
+    MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
+    CompileWriteTLBMiss(TempReg1, TempReg2);
 
-        UnMap_FPR(m_Opcode.ft, true);
-        x86Reg TempReg3 = Map_TempReg(x86_Any, -1, false);
-        sprintf(Name, "_FPR_S[%d]", m_Opcode.ft);
-        MoveVariableToX86reg(&_FPR_S[m_Opcode.ft], Name, TempReg3);
-        MoveX86PointerToX86reg(TempReg3, TempReg3);
-        MoveX86regToX86regPointer(TempReg3, TempReg1, TempReg2);
-    }
-    else
-    {
-        x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
-        UnMap_FPR(m_Opcode.ft, true);
-        sprintf(Name, "_FPR_S[%d]", m_Opcode.ft);
-        MoveVariableToX86reg(&_FPR_S[m_Opcode.ft], Name, TempReg2);
-        MoveX86PointerToX86reg(TempReg2, TempReg2);
-        AndConstToX86Reg(TempReg1, 0x1FFFFFFF);
-        MoveX86regToN64Mem(TempReg2, TempReg1);
-    }
+    UnMap_FPR(m_Opcode.ft, true);
+    x86Reg TempReg3 = Map_TempReg(x86_Any, -1, false);
+    sprintf(Name, "_FPR_S[%d]", m_Opcode.ft);
+    MoveVariableToX86reg(&_FPR_S[m_Opcode.ft], Name, TempReg3);
+    MoveX86PointerToX86reg(TempReg3, TempReg3);
+    MoveX86regToX86regPointer(TempReg3, TempReg1, TempReg2);
 }
 
 void CX86RecompilerOps::SDC1()
@@ -4765,41 +4484,24 @@ void CX86RecompilerOps::SDC1()
         AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
     }
     TestWriteBreakpoint(TempReg1, (void *)x86TestWriteBreakpoint64, "x86TestWriteBreakpoint64");
-    if (g_System->bUseTlb())
-    {
-        x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
-        MoveX86RegToX86Reg(TempReg1, TempReg2);
-        ShiftRightUnsignImmed(TempReg2, 12);
-        MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
-        CompileWriteTLBMiss(TempReg1, TempReg2);
+    x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
+    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    ShiftRightUnsignImmed(TempReg2, 12);
+    MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
+    CompileWriteTLBMiss(TempReg1, TempReg2);
 
-        x86Reg TempReg3 = Map_TempReg(x86_Any, -1, false);
-        sprintf(Name, "_FPR_D[%d]", m_Opcode.ft);
-        MoveVariableToX86reg((uint8_t *)&_FPR_D[m_Opcode.ft], Name, TempReg3);
-        AddConstToX86Reg(TempReg3, 4);
-        MoveX86PointerToX86reg(TempReg3, TempReg3);
-        MoveX86regToX86regPointer(TempReg3, TempReg1, TempReg2);
-        AddConstToX86Reg(TempReg1, 4);
+    x86Reg TempReg3 = Map_TempReg(x86_Any, -1, false);
+    sprintf(Name, "_FPR_D[%d]", m_Opcode.ft);
+    MoveVariableToX86reg((uint8_t *)&_FPR_D[m_Opcode.ft], Name, TempReg3);
+    AddConstToX86Reg(TempReg3, 4);
+    MoveX86PointerToX86reg(TempReg3, TempReg3);
+    MoveX86regToX86regPointer(TempReg3, TempReg1, TempReg2);
+    AddConstToX86Reg(TempReg1, 4);
 
-        sprintf(Name, "_FPR_D[%d]", m_Opcode.ft);
-        MoveVariableToX86reg((uint8_t *)&_FPR_D[m_Opcode.ft], Name, TempReg3);
-        MoveX86PointerToX86reg(TempReg3, TempReg3);
-        MoveX86regToX86regPointer(TempReg3, TempReg1, TempReg2);
-    }
-    else
-    {
-        AndConstToX86Reg(TempReg1, 0x1FFFFFFF);
-        x86Reg TempReg3 = Map_TempReg(x86_Any, -1, false);
-        sprintf(Name, "_FPR_D[%d]", m_Opcode.ft);
-        MoveVariableToX86reg((uint8_t *)&_FPR_D[m_Opcode.ft], Name, TempReg3);
-        AddConstToX86Reg(TempReg3, 4);
-        MoveX86PointerToX86reg(TempReg3, TempReg3);
-        MoveX86regToN64Mem(TempReg3, TempReg1);
-        sprintf(Name, "_FPR_D[%d]", m_Opcode.ft);
-        MoveVariableToX86reg((uint8_t *)&_FPR_D[m_Opcode.ft], Name, TempReg3);
-        MoveX86PointerToX86reg(TempReg3, TempReg3);
-        MoveX86regToN64MemDisp(TempReg3, TempReg1, 4);
-    }
+    sprintf(Name, "_FPR_D[%d]", m_Opcode.ft);
+    MoveVariableToX86reg((uint8_t *)&_FPR_D[m_Opcode.ft], Name, TempReg3);
+    MoveX86PointerToX86reg(TempReg3, TempReg3);
+    MoveX86regToX86regPointer(TempReg3, TempReg1, TempReg2);
 }
 
 void CX86RecompilerOps::SD()
@@ -4862,89 +4564,44 @@ void CX86RecompilerOps::SD()
         Compile_StoreInstructClean(TempReg1, 8);
 
         TestWriteBreakpoint(TempReg1, (void *)x86TestWriteBreakpoint64, "x86TestWriteBreakpoint64");
-        if (g_System->bUseTlb())
-        {
-            TempReg2 = Map_TempReg(x86_Any, -1, false);
-            MoveX86RegToX86Reg(TempReg1, TempReg2);
-            ShiftRightUnsignImmed(TempReg2, 12);
-            MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
-            CompileWriteTLBMiss(TempReg1, TempReg2);
+        TempReg2 = Map_TempReg(x86_Any, -1, false);
+        MoveX86RegToX86Reg(TempReg1, TempReg2);
+        ShiftRightUnsignImmed(TempReg2, 12);
+        MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
+        CompileWriteTLBMiss(TempReg1, TempReg2);
 
-            if (IsConst(m_Opcode.rt))
+        if (IsConst(m_Opcode.rt))
+        {
+            if (Is64Bit(m_Opcode.rt))
             {
-                if (Is64Bit(m_Opcode.rt))
-                {
-                    MoveConstToX86regPointer(GetMipsRegHi(m_Opcode.rt), TempReg1, TempReg2);
-                }
-                else
-                {
-                    MoveConstToX86regPointer((GetMipsRegLo_S(m_Opcode.rt) >> 31), TempReg1, TempReg2);
-                }
-                AddConstToX86Reg(TempReg1, 4);
-                MoveConstToX86regPointer(GetMipsRegLo(m_Opcode.rt), TempReg1, TempReg2);
-            }
-            else if (IsMapped(m_Opcode.rt))
-            {
-                if (Is64Bit(m_Opcode.rt))
-                {
-                    MoveX86regToX86regPointer(GetMipsRegMapHi(m_Opcode.rt), TempReg1, TempReg2);
-                }
-                else
-                {
-                    MoveX86regToX86regPointer(Map_TempReg(x86_Any, m_Opcode.rt, true), TempReg1, TempReg2);
-                }
-                AddConstToX86Reg(TempReg1, 4);
-                MoveX86regToX86regPointer(GetMipsRegMapLo(m_Opcode.rt), TempReg1, TempReg2);
+                MoveConstToX86regPointer(GetMipsRegHi(m_Opcode.rt), TempReg1, TempReg2);
             }
             else
             {
-                x86Reg Reg = Map_TempReg(x86_Any, m_Opcode.rt, true);
-                MoveX86regToX86regPointer(Reg, TempReg1, TempReg2);
-                AddConstToX86Reg(TempReg1, 4);
-                MoveX86regToX86regPointer(Map_TempReg(Reg, m_Opcode.rt, false), TempReg1, TempReg2);
+                MoveConstToX86regPointer((GetMipsRegLo_S(m_Opcode.rt) >> 31), TempReg1, TempReg2);
             }
+            AddConstToX86Reg(TempReg1, 4);
+            MoveConstToX86regPointer(GetMipsRegLo(m_Opcode.rt), TempReg1, TempReg2);
+        }
+        else if (IsMapped(m_Opcode.rt))
+        {
+            if (Is64Bit(m_Opcode.rt))
+            {
+                MoveX86regToX86regPointer(GetMipsRegMapHi(m_Opcode.rt), TempReg1, TempReg2);
+            }
+            else
+            {
+                MoveX86regToX86regPointer(Map_TempReg(x86_Any, m_Opcode.rt, true), TempReg1, TempReg2);
+            }
+            AddConstToX86Reg(TempReg1, 4);
+            MoveX86regToX86regPointer(GetMipsRegMapLo(m_Opcode.rt), TempReg1, TempReg2);
         }
         else
         {
-            AndConstToX86Reg(TempReg1, 0x1FFFFFFF);
-            if (IsConst(m_Opcode.rt))
-            {
-                if (Is64Bit(m_Opcode.rt))
-                {
-                    MoveConstToN64Mem(GetMipsRegHi(m_Opcode.rt), TempReg1);
-                }
-                else if (IsSigned(m_Opcode.rt))
-                {
-                    MoveConstToN64Mem((GetMipsRegLo_S(m_Opcode.rt) >> 31), TempReg1);
-                }
-                else
-                {
-                    MoveConstToN64Mem(0, TempReg1);
-                }
-                MoveConstToN64MemDisp(GetMipsRegLo(m_Opcode.rt), TempReg1, 4);
-            }
-            else if (IsKnown(m_Opcode.rt) && IsMapped(m_Opcode.rt))
-            {
-                if (Is64Bit(m_Opcode.rt))
-                {
-                    MoveX86regToN64Mem(GetMipsRegMapHi(m_Opcode.rt), TempReg1);
-                }
-                else if (IsSigned(m_Opcode.rt))
-                {
-                    MoveX86regToN64Mem(Map_TempReg(x86_Any, m_Opcode.rt, true), TempReg1);
-                }
-                else
-                {
-                    MoveConstToN64Mem(0, TempReg1);
-                }
-                MoveX86regToN64MemDisp(GetMipsRegMapLo(m_Opcode.rt), TempReg1, 4);
-            }
-            else
-            {
-                x86Reg Reg;
-                MoveX86regToN64Mem(Reg = Map_TempReg(x86_Any, m_Opcode.rt, true), TempReg1);
-                MoveX86regToN64MemDisp(Map_TempReg(Reg, m_Opcode.rt, false), TempReg1, 4);
-            }
+            x86Reg Reg = Map_TempReg(x86_Any, m_Opcode.rt, true);
+            MoveX86regToX86regPointer(Reg, TempReg1, TempReg2);
+            AddConstToX86Reg(TempReg1, 4);
+            MoveX86regToX86regPointer(Map_TempReg(Reg, m_Opcode.rt, false), TempReg1, TempReg2);
         }
     }
 }
@@ -8070,7 +7727,6 @@ void CX86RecompilerOps::COP0_MT()
 // COP0 CO functions
 void CX86RecompilerOps::COP0_CO_TLBR(void)
 {
-    if (!g_System->bUseTlb()) { return; }
     m_RegWorkingSet.BeforeCallDirect();
 #ifdef _MSC_VER
     MoveConstToX86reg((uint32_t)g_TLB, x86_ECX);
@@ -8085,7 +7741,6 @@ void CX86RecompilerOps::COP0_CO_TLBR(void)
 
 void CX86RecompilerOps::COP0_CO_TLBWI(void)
 {
-    if (!g_System->bUseTlb()) { return; }
     m_RegWorkingSet.BeforeCallDirect();
     PushImm32("false", 0);
     MoveVariableToX86reg(&g_Reg->INDEX_REGISTER, "INDEX_REGISTER", x86_ECX);
@@ -8104,8 +7759,6 @@ void CX86RecompilerOps::COP0_CO_TLBWI(void)
 
 void CX86RecompilerOps::COP0_CO_TLBWR(void)
 {
-    if (!g_System->bUseTlb()) { return; }
-
     m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
     UpdateCounters(m_RegWorkingSet, false, true);
     m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
@@ -8136,7 +7789,6 @@ void CX86RecompilerOps::COP0_CO_TLBWR(void)
 
 void CX86RecompilerOps::COP0_CO_TLBP(void)
 {
-    if (!g_System->bUseTlb()) { return; }
     m_RegWorkingSet.BeforeCallDirect();
 #ifdef _MSC_VER
     MoveConstToX86reg((uint32_t)g_TLB, x86_ECX);
@@ -11825,19 +11477,11 @@ void CX86RecompilerOps::ResetMemoryStack()
         }
     }
 
-    if (g_System->bUseTlb())
-    {
-        TempReg = Map_TempReg(x86_Any, -1, false);
-        MoveX86RegToX86Reg(Reg, TempReg);
-        ShiftRightUnsignImmed(TempReg, 12);
-        MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg, TempReg, 4);
-        AddX86RegToX86Reg(Reg, TempReg);
-    }
-    else
-    {
-        AndConstToX86Reg(Reg, 0x1FFFFFFF);
-        AddConstToX86Reg(Reg, (uint32_t)g_MMU->Rdram());
-    }
+    TempReg = Map_TempReg(x86_Any, -1, false);
+    MoveX86RegToX86Reg(Reg, TempReg);
+    ShiftRightUnsignImmed(TempReg, 12);
+    MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg, TempReg, 4);
+    AddX86RegToX86Reg(Reg, TempReg);
     MoveX86regToVariable(Reg, &(g_Recompiler->MemoryStackPos()), "MemoryStack");
 }
 

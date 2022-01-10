@@ -14,7 +14,6 @@ class CGameGeneralPage :
         COMMAND_ID_HANDLER_EX(IDC_ROM_32BIT, CheckBoxChanged)
         COMMAND_ID_HANDLER_EX(IDC_SYNC_AUDIO, CheckBoxChanged)
         COMMAND_ID_HANDLER_EX(IDC_ROM_FIXEDAUDIO, CheckBoxChanged)
-        COMMAND_ID_HANDLER_EX(IDC_USE_TLB, CheckBoxChanged)
         COMMAND_ID_HANDLER_EX(IDC_DELAY_DP, CheckBoxChanged)
         COMMAND_ID_HANDLER_EX(IDC_DELAY_SI, CheckBoxChanged)
         COMMAND_ID_HANDLER_EX(IDC_AUDIO_SIGNAL, CheckBoxChanged)
