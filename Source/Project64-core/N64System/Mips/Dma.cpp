@@ -146,7 +146,7 @@ void CDMA::PI_DMA_READ()
         return;
     }
 
-    if (g_Reg->PI_CART_ADDR_REG >= 0x08000000 && g_Reg->PI_CART_ADDR_REG <= 0x08010000)
+    if (g_Reg->PI_CART_ADDR_REG >= 0x08000000 && g_Reg->PI_CART_ADDR_REG < 0x08088000)
     {
         if (g_System->m_SaveUsing == SaveChip_Auto)
         {

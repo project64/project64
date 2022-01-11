@@ -183,7 +183,7 @@ bool CDebugMMU::GetPhysicalByte(uint32_t paddr, uint8_t* value)
     {
         uint32_t saveOffset = paddr & 0x000FFFFF;
 
-        if (g_System->m_SaveUsing == SaveChip_Sram && saveOffset <= 0x7FFF) // SRAM
+        if (g_System->m_SaveUsing == SaveChip_Sram && saveOffset < 0x88000 && (saveOffset & 0x3FFFF) < 0x8000) // SRAM
         {
             uint32_t wordpaddr = paddr & ~3;
             uint8_t data[4];
@@ -257,7 +257,7 @@ bool CDebugMMU::SetPhysicalByte(uint32_t paddr, uint8_t value)
     {
         uint32_t saveOffset = paddr & 0x000FFFFF;
 
-        if (g_System->m_SaveUsing == SaveChip_Sram && saveOffset <= 0x7FFF)
+        if (g_System->m_SaveUsing == SaveChip_Sram && saveOffset < 0x88000 && (saveOffset & 0x3FFFF) < 0x8000)
         {
             uint32_t wordpaddr = paddr & ~3;
             uint8_t data[4];
