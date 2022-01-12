@@ -279,6 +279,7 @@ bool CScriptInstance::RegisterWorker(CScriptWorker* worker)
 void CScriptInstance::UnregisterWorker(CScriptWorker* worker)
 {
     std::vector<CScriptWorker*>::iterator it;
+
     for (it = m_Workers.begin(); it != m_Workers.end(); it++)
     {
         if (*it == worker)

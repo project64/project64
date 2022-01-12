@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<!-- Generated Dec 31 2021 -->
+<!-- Generated Jan 12 2022 -->
 <!-- YAML source: https://github.com/shygoo/pj64d-docs -->
 <head>
-<title>Project64 JavaScript API 2021.12.31</title>
+<title>Project64 JavaScript API 2022.01.12</title>
 <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
 <style>
 :root {
@@ -279,7 +279,7 @@ window.addEventListener('load', function() {
 <div class="sidebar">
 <div class="sidebar-content">
 <div class="pagetitle">Project64 JavaScript API</div>
-2021.12.31
+2022.01.12
 <hr>
 <ul>
 <p><li><a class="" href="#Project64 JavaScript API">Project64 JavaScript API</a><ul>
@@ -345,7 +345,15 @@ window.addEventListener('load', function() {
 <li><a class="" href="#events_onmousemove">events.onmousemove(callback)</a></li>
 <li><a class="" href="#MouseEvent">MouseEvent</a></li>
 <li><a class="" href="#events_remove">events.remove(callbackId)</a></li>
-<li><a class="" href="#AddressRange">new AddressRange(start, end)</a></li>
+</ul></li></p>
+<p><li><a class="" href="#AddressRange">AddressRange</a>: Address range class<ul>
+<li><a class="" href="#new_AddressRange">new AddressRange(start, end)</a></li>
+<li><a class="" href="#range_size">range.size()</a></li>
+<li><a class="" href="#range_includes">range.includes(address)</a></li>
+<li><a class="" href="#range_offset">range.offset(address)</a></li>
+<li><a class="" href="#range_address">range.address(offset)</a></li>
+<li><a class="" href="#range_start">range.start</a></li>
+<li><a class="" href="#range_end">range.end</a></li>
 </ul></li></p>
 <p><li><a class="" href="#N64Image">N64Image</a>: N64 image class<ul>
 <li><a class="" href="#new_N64Image">new N64Image(width, height[, format [, pixels[, palette]]])</a></li>
@@ -438,6 +446,7 @@ window.addEventListener('load', function() {
 <p><li><a class="" href="#script">script</a>: Script instance configuration interface<ul>
 <li><a class="" href="#script_keepalive">script.keepalive(keepAlive)</a></li>
 <li><a class="" href="#script_timeout">script.timeout(milliseconds)</a></li>
+<li><a class="" href="#script_abort">script.abort()</a></li>
 </ul></li></p>
 <p><li><a class="" href="#Globals">Globals</a><ul>
 <li><a class="" href="#global">global</a></li>
@@ -590,7 +599,7 @@ Pauses emulation.
 Resumes emulation.
 <!-- pj64_limitfps -->
 <p><div class="prop"><span class="title" id="pj64_limitfps">pj64.limitfps(limitFps)</span></div>
-<div class="tsproto">pj64.limitfps(limitFps: boolean)</div>
+<div class="tsproto">pj64.limitfps(limitFps: boolean): void</div>
 </p>
 Enables or disables the FPS limit.
 <!-- pj64.installDirectory -->
@@ -718,7 +727,7 @@ Returns a block of data from memory as a <a target="blank" href="https://nodejs.
 </pre>
 <!-- mem_setblock -->
 <p><div class="prop"><span class="title" id="mem_setblock">mem.setblock(address, data[, length])</span></div>
-<div class="tsproto">mem.setblock(address: number, data: string | Buffer | TypedArray, length: number): Buffer</div>
+<div class="tsproto">mem.setblock(address: number, data: string | Buffer | TypedArray, length?: number): void</div>
 </p>
 Writes a block of data into memory. <span class="snip">data</span> may be one of the following types&#58;
 <a target="blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer">ArrayBuffer</a>,
@@ -738,7 +747,7 @@ Returns a zero-terminated ASCII string from memory.
 </pre>
 <!-- mem_setstring -->
 <p><div class="prop"><span class="title" id="mem_setstring">mem.setstring(address, data[, length])</span></div>
-<div class="tsproto">mem.setstring(address: number, data: string | Buffer | TypedArray, length?: number): Buffer</div>
+<div class="tsproto">mem.setstring(address: number, data: string | Buffer | TypedArray, length?: number): void</div>
 </p>
 Writes a string into memory (alias of <a href="#mem_setblock">mem.setblock</a>).
 <!-- mem_ramSize -->
@@ -812,6 +821,7 @@ Registers a callback that is invoked at the beginning of a CPU step if the progr
 <span class="snip">callback</span> receives a <a href="#CPUExecEvent">CPUExecEvent</a> object.
 <p>Returns a callback ID.</p>
 <pre class="ex">
+<span class="js-comment">// SM64 US</span>
 <span class="js-word">events</span>.<span class="js-word">onexec</span>(<span class="js-number">0x802CB1C0</span>, <span class="js-keyword">function</span>() {
     <span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-string">"func_802CB1C0 was called"</span>);
 });
@@ -845,14 +855,6 @@ Registers a callback that is invoked at the beginning of a CPU step if the CPU i
 <span class="snip">address</span> may be a single address or an object containing <span class="snip">start</span> and <span class="snip">end</span> address properties (e.g. <a href="#AddressRange">AddressRange</a>).
 <span class="snip">callback</span> receives a <a href="#CPUReadWriteEvent">CPUReadWriteEvent</a> object.
 <p>Returns a callback ID.</p>
-<pre class="ex">
-<span class="js-word">events</span>.<span class="js-word">onwrite</span>(<span class="js-word">PI_WR_LEN_REG</span>, <span class="js-keyword">function</span>(<span class="js-word">e</span>) {
-    <span class="js-keyword">var</span> <span class="js-word">romAddr</span> = <span class="js-word">mem</span>.<span class="js-word">u32</span>[<span class="js-word">PI_CART_ADDR_REG</span>] + <span class="js-word">K1BASE</span>;
-    <span class="js-keyword">var</span> <span class="js-word">ramAddr</span> = <span class="js-word">mem</span>.<span class="js-word">u32</span>[<span class="js-word">PI_DRAM_ADDR_REG</span>] + <span class="js-word">K0BASE</span>;
-    <span class="js-keyword">var</span> <span class="js-word">length</span> = <span class="js-word">e</span>.<span class="js-word">value</span> + <span class="js-number">1</span>;
-    <span class="js-word">console</span>.<span class="js-word">log</span>(<span class="js-string">"Loaded "</span> + <span class="js-word">romAddr</span>.<span class="js-word">hex</span>() + <span class="js-string">" -> "</span> + <span class="js-word">ramAddr</span>.<span class="js-word">hex</span>() + <span class="js-string">" (Length: "</span> + <span class="js-word">length</span>.<span class="js-word">hex</span>() + <span class="js-string">")"</span>);
-});
-</pre>
 <!-- CPUReadWriteEvent -->
 <p><div class="prop"><span class="title" id="CPUReadWriteEvent">CPUReadWriteEvent</span></div>
 </p>
@@ -870,7 +872,7 @@ Registers a callback that is invoked at the beginning of a CPU step if the CPU i
 </p>
 <p>
   <table>
-  <thead><tr><td><b>e.type</b></td><td><b>Opcode(s)</b></td></tr></thead>
+  <thead><tr><td><b>e.valueType</b></td><td><b>Opcode(s)</b></td></tr></thead>
   <tr><td><span class="snip">s8</span></td><td>LB, SB</td></tr>
   <tr><td><span class="snip">u8</span></td><td>LBU</td></tr>
   <tr><td><span class="snip">s16</span></td><td>LH, SH</td></tr>
@@ -1023,7 +1025,7 @@ Registers a callback that is invoked when a task is sent to the RSP.
 all physical addresses are converted to KSEG0 addresses.</p>
 <!-- events_onpidma -->
 <p><div class="prop"><span class="title" id="events_onpidma">events.onpidma(callback)</span></div>
-<div class="tsproto">events.onpidma(callback: (e: PIEvent) => void)</div>
+<div class="tsproto">events.onpidma(callback: (e: PIEvent) => void): number</div>
 </p>
 Registers a callback that is invoked when a PI DMA transfer is going to occur.
 <span class="snip">callback</span> receives a <a href="#PIEvent">PIEvent</a> object.
@@ -1098,8 +1100,14 @@ Unregisters the callback specified by <span class="snip">callbackId</span>.
     <span class="js-word">events</span>.<span class="js-word">remove</span>(<span class="js-word">e</span>.<span class="js-word">callbackId</span>);
 });
 </pre>
+
+</div>
 <!-- AddressRange -->
-<p><div class="prop"><span class="title" id="AddressRange">new AddressRange(start, end)</span></div>
+<div class="module">
+<div class="modtitle"><span class="title" id="AddressRange">AddressRange</span></div>
+Address range class
+<!-- new_AddressRange -->
+<p><div class="prop"><span class="title" id="new_AddressRange">new AddressRange(start, end)</span></div>
 <div class="tsproto">new AddressRange(start: number, end: number)</div>
 </p>
 Creates an immutable object with <span class="snip">start</span> and <span class="snip">end</span> address properties.
@@ -1117,6 +1125,38 @@ Creates an immutable object with <span class="snip">start</span> and <span class
 <tr><td><span class="snip">ADDR_ANY_CART_ROM</span>     </td><td>0x90000000 &#58; 0x95FFFFFF</td><td>Cached cartridge ROM</td></tr>
 <tr><td><span class="snip">ADDR_ANY_CART_ROM_UNC</span> </td><td>0xB0000000 &#58; 0xB5FFFFFF</td><td>Uncached cartridge ROM</td></tr>
 </table>
+<!-- range_size -->
+<p><div class="prop"><span class="title" id="range_size">range.size()</span></div>
+<div class="tsproto">range.size(): number</div>
+</p>
+Returns the byte length of the address range (<span class="snip">range.end</span> - <span class="snip">range.start</span> + 1).
+<!-- range_includes -->
+<p><div class="prop"><span class="title" id="range_includes">range.includes(address)</span></div>
+<div class="tsproto">range.includes(address: number): boolean</div>
+</p>
+Returns <span class="snip">true</span> if <span class="snip">address</span> is within the bounds of the address range.
+<!-- range_offset -->
+<p><div class="prop"><span class="title" id="range_offset">range.offset(address)</span></div>
+<div class="tsproto">range.offset(address: number): number</div>
+</p>
+Converts <span class="snip">address</span> to an offset and returns the result (<span class="snip">address</span> - <span class="snip">range.start</span>).
+<p>Throws an error if <span class="snip">address</span> is out of bounds.</p>
+<!-- range_address -->
+<p><div class="prop"><span class="title" id="range_address">range.address(offset)</span></div>
+<div class="tsproto">range.address(offset: number): number</div>
+</p>
+Converts <span class="snip">offset</span> to an address and returns the result (<span class="snip">range.start</span> + <span class="snip">offset</span>).
+<p>Throws an error if <span class="snip">offset</span> is out of bounds.</p>
+<!-- range_start -->
+<p><div class="prop"><span class="title" id="range_start">range.start</span></div>
+<div class="tsproto">range.start: number</div>
+</p>
+The start address.
+<!-- range_end -->
+<p><div class="prop"><span class="title" id="range_end">range.end</span></div>
+<div class="tsproto">range.end: number</div>
+</p>
+The end address.
 
 </div>
 <!-- N64Image -->
@@ -1125,7 +1165,7 @@ Creates an immutable object with <span class="snip">start</span> and <span class
 N64 image class
 <!-- new_N64Image -->
 <p><div class="prop"><span class="title" id="new_N64Image">new N64Image(width, height[, format [, pixels[, palette]]])</span></div>
-<div class="tsproto">new N64Image(width: number, height: number, format: number = IMG_RGBA32, pixels?: Buffer, palette?: Buffer)</div>
+<div class="tsproto">new N64Image(width: number, height: number, format?: number = IMG_RGBA32, pixels?: Buffer, palette?: Buffer)</div>
 </p>
 Creates an <a href="#N64Image">N64Image</a> object.
 <p>
@@ -1229,7 +1269,7 @@ Height of the image. Read-only.
 The pixel data of the image.
 <!-- image_palette -->
 <p><div class="prop"><span class="title" id="image_palette">image.palette</span></div>
-<div class="tsproto">image.palette: Buffer</div>
+<div class="tsproto">image.palette: Buffer | null</div>
 </p>
 The palette data of the image. <span class="snip">null</span> if the image does not use a color-index format.
 
@@ -1378,7 +1418,7 @@ Encodes a single MIPS R4300i opcode. <span class="snip">address</span> is an opt
 </pre>
 <!-- asm_decode -->
 <p><div class="prop"><span class="title" id="asm_decode">asm.decode(opcode[, address])</span></div>
-<div class="tsproto">asm.decode(opcode: number, address?: number)</div>
+<div class="tsproto">asm.decode(opcode: number, address?: number): string</div>
 </p>
 Decodes a single MIPS R4300i opcode. <span class="snip">address</span> is an optional parameter that may be used to hint the address of the instruction for branch address calculation.
 <p>Returns a line of assembly code as a string.</p>
@@ -1542,7 +1582,7 @@ TCP socket class
 </table>
 <!-- socket_connect -->
 <p><div class="prop"><span class="title" id="socket_connect">socket.connect(port, host[, connectListener])</span></div>
-<div class="tsproto">socket.connect(port: number, host: string, connectListener: () => void): void</div>
+<div class="tsproto">socket.connect(port: number, host: string, connectListener?: () => void): void</div>
 </p>
 Initiates a TCP connection.
 Optional <span class="snip">connectListener</span> is invoked when the connection is established (i.e the socket is writable).
@@ -1644,7 +1684,7 @@ Fully closes the socket.
 <p>Returns the Socket object.</p>
 <!-- socket_off -->
 <p><div class="prop"><span class="title" id="socket_off">socket.off(eventName, listener)</span></div>
-<div class="tsproto">socket.off(eventName: string, listener: function): Socket</div>
+<div class="tsproto">socket.off(eventName: string, listener: Function): Socket</div>
 </p>
 Removes a listener.
 <p>Returns the Socket object.</p>
@@ -1702,9 +1742,9 @@ Creates a <a href="#Server">Server</a> object.
 </pre>
 <!-- server_listen -->
 <p><div class="prop"><span class="title" id="server_listen">server.listen(port[, address])</span></div>
-<div class="tsproto">server.listen(port: number, address: string): void</div>
+<div class="tsproto">server.listen(port: number, address?: string = "0.0.0.0"): void</div>
 </p>
-Binds the server to the specified address and port and starts listening.
+Binds the server to the specified port and address and starts listening.
 <!-- server_close -->
 <p><div class="prop"><span class="title" id="server_close">server.close()</span></div>
 <div class="tsproto">server.close(): void</div>
@@ -1740,7 +1780,7 @@ Stops listening for new connections (does not affect existing connections).
 <p>Returns the Server object.</p>
 <!-- server_off -->
 <p><div class="prop"><span class="title" id="server_off">server.off(eventName, listener)</span></div>
-<div class="tsproto">server.off(eventName: string, listener: function): Server</div>
+<div class="tsproto">server.off(eventName: string, listener: Function): Server</div>
 </p>
 Removes a listener.
 <p>Returns the Server object.</p>
@@ -1777,6 +1817,11 @@ Useful when the default console input behavior is desired.
 </p>
 Sets the maximum amount of time tasks may run on the script instance before errors are thrown. By default this value is 500 milliseconds.
 Setting this value to zero will allow tasks to run indefinitely.
+<!-- script_abort -->
+<p><div class="prop"><span class="title" id="script_abort">script.abort()</span></div>
+<div class="tsproto">script.abort(): void</div>
+</p>
+Terminates the script instance.
 
 </div>
 <!-- Globals -->
@@ -1883,7 +1928,7 @@ Shows a message box over the main window. Does not return until the message box 
 <p>Returns a timeout ID.</p>
 <!-- clearTimeout -->
 <p><div class="prop"><span class="title" id="clearTimeout">clearTimeout(timeoutId)</span></div>
-<div class="tsproto">setTimeout(timeoutId: number): void</div>
+<div class="tsproto">clearTimeout(timeoutId: number): void</div>
 </p>
 Cancels the timeout specified by <span class="snip">timeoutId</span>.
 <!-- setInterval -->
@@ -1894,7 +1939,7 @@ Cancels the timeout specified by <span class="snip">timeoutId</span>.
 <p>Returns an interval ID.</p>
 <!-- clearInterval -->
 <p><div class="prop"><span class="title" id="clearInterval">clearInterval(intervalId)</span></div>
-<div class="tsproto">setTimeout(intervalId: number): void</div>
+<div class="tsproto">clearInterval(intervalId: number): void</div>
 </p>
 Cancels the interval specified by <span class="snip">intervalId</span>.
 <!-- number_hex -->

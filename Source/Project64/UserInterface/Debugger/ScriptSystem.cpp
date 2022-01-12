@@ -168,29 +168,30 @@ bool CScriptSystem::HaveAppCallbacks(JSAppHookID hookId)
 void CScriptSystem::InvokeAppCallbacks(JSAppHookID hookId, void* env)
 {
     CGuard guard(m_InstancesCS);
-    RefreshCallbackMaps();
-
+    
     JSAppCallbackList& callbacks = m_AppCallbackHooks[hookId];
+    size_t numCallbacks = callbacks.size();
 
     bool bNeedSweep = false;
 
-    for (JSAppCallback& callback : callbacks)
+    for (size_t i = 0; i < numCallbacks; i++)
     {
-        if (callback.m_bDisabled || !callback.m_ConditionFunc(&callback, env))
+        JSAppCallback& callback = callbacks[i];
+        CScriptInstance* instance = callback.m_Instance;
+
+        if (callback.m_bDisabled ||
+            instance->IsStopping() ||
+            m_StopsIssued.count(instance->Name()) != 0 ||
+            !callback.m_ConditionFunc(&callback, env))
         {
             continue;
         }
 
-        CScriptInstance* instance = callback.m_Instance;
+        instance->RawInvokeAppCallback(callback, env);
 
-        if (!instance->IsStopping())
+        if (instance->GetRefCount() == 0)
         {
-            instance->RawInvokeAppCallback(callback, env);
-
-            if (instance->GetRefCount() == 0)
-            {
-                bNeedSweep = true;
-            }
+            bNeedSweep = true;
         }
     }
 
@@ -266,7 +267,7 @@ void CScriptSystem::RefreshCallbackMaps()
         {
             if (it->m_bDisabled)
             {
-                callbacks.erase(it);
+                it = callbacks.erase(it);
             }
             else
             {
@@ -317,6 +318,20 @@ void CScriptSystem::PostCommand(JSSysCommandID id, stdstr paramA, stdstr paramB,
 {
     CGuard guard(m_CmdQueueCS);
     JSSysCommand cmd = { id, paramA, paramB, paramC };
+
+    if (id == JS_CMD_STOP_SCRIPT)
+    {
+        JSInstanceName instName = paramA;
+        if (m_StopsIssued.count(instName) != 0)
+        {
+            return;
+        }
+        else
+        {
+            m_StopsIssued.insert(instName);
+        }
+    }
+
     m_CmdQueue.push_back(cmd);
     SetEvent(m_hCmdEvent);
 }
@@ -379,6 +394,7 @@ void CScriptSystem::OnStopScript(const char *name)
         return;
     }
 
+    m_StopsIssued.erase(name);
     RawRemoveInstance(name);
     NotifyStatus(name, JS_STATUS_STOPPED);
 }
@@ -435,7 +451,7 @@ void CScriptSystem::OnSweep(bool bIfDone)
         {
             NotifyStatus(inst->Name().c_str(), JS_STATUS_STOPPED);
             delete inst;
-            m_Instances.erase(it);
+            it = m_Instances.erase(it);
         }
         else
         {
@@ -481,6 +497,7 @@ JSAppCallbackID CScriptSystem::RawAddAppCallback(JSAppHookID hookId, JSAppCallba
     callback.m_CallbackId = m_NextAppCallbackId++;
     m_AppCallbackHooks[hookId].push_back(callback);
     m_AppCallbackCount++;
+    RefreshCallbackMaps();
     return callback.m_CallbackId;
 }
 
@@ -499,6 +516,7 @@ void CScriptSystem::RawRemoveAppCallback(JSAppHookID hookId, JSAppCallbackID cal
 
         it++;
     }
+    RefreshCallbackMaps();
 }
 
 void CScriptSystem::ExecAutorunList()

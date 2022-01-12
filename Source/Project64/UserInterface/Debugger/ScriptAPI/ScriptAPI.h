@@ -129,7 +129,6 @@ namespace ScriptAPI
     duk_ret_t js_events_onwrite(duk_context* ctx);
     duk_ret_t js_events_onopcode(duk_context* ctx);
     duk_ret_t js_events_ongprvalue(duk_context* ctx);
-    duk_ret_t js_events_ondraw(duk_context* ctx);
     duk_ret_t js_events_onpifread(duk_context* ctx);
     duk_ret_t js_events_onsptask(duk_context* ctx);
     duk_ret_t js_events_onpidma(duk_context* ctx);
@@ -272,6 +271,10 @@ namespace ScriptAPI
     // ScriptAPI_AddressRange
     void Define_AddressRange(duk_context* ctx);
     duk_ret_t js_AddressRange__constructor(duk_context* ctx);
+    duk_ret_t js_AddressRange_size(duk_context* ctx);
+    duk_ret_t js_AddressRange_includes(duk_context* ctx);
+    duk_ret_t js_AddressRange_offset(duk_context* ctx);
+    duk_ret_t js_AddressRange_address(duk_context* ctx);
 
     // ScriptAPI_Number_hex
     void Define_Number_prototype_hex(duk_context* ctx);
