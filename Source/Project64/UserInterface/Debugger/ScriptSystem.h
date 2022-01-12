@@ -34,9 +34,10 @@ class CScriptSystem
 
     HANDLE              m_hThread;
 
-    CriticalSection     m_CmdQueueCS;
-    JSSysCommandQueue   m_CmdQueue;
-    HANDLE              m_hCmdEvent;
+    CriticalSection          m_CmdQueueCS;
+    JSSysCommandQueue        m_CmdQueue;
+    HANDLE                   m_hCmdEvent;
+    std::set<JSInstanceName> m_StopsIssued;
 
     CriticalSection     m_InstancesCS;
     JSInstanceMap       m_Instances;
