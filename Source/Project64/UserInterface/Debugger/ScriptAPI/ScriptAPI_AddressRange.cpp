@@ -1,6 +1,8 @@
 #include <stdafx.h>
 #include "ScriptAPI.h"
 
+#pragma warning(disable: 4702) // disable unreachable code warning
+
 static void GetRange(duk_context* ctx, duk_idx_t idx, uint32_t* start, uint32_t* end);
 
 void ScriptAPI::Define_AddressRange(duk_context* ctx)
