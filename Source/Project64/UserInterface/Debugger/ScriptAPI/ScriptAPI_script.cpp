@@ -1,11 +1,14 @@
 #include <stdafx.h>
 #include "ScriptAPI.h"
 
+#pragma warning(disable: 4702) // disable unreachable code warning
+
 void ScriptAPI::Define_script(duk_context *ctx)
 {
     const DukPropListEntry props[] = {
         { "timeout",   DukCFunction(js_script_timeout) },
         { "keepalive", DukCFunction(js_script_keepalive) },
+        { "abort",     DukCFunction(js_script_abort) },
         { nullptr }
     };
 
@@ -44,5 +47,16 @@ duk_ret_t ScriptAPI::js_script_keepalive(duk_context *ctx)
 
     duk_pop(ctx);
 
+    return 0;
+}
+
+duk_ret_t ScriptAPI::js_script_abort(duk_context* ctx)
+{
+    CheckArgs(ctx, {});
+    CScriptInstance* inst = GetInstance(ctx);
+    if (inst->PrepareAbort())
+    {
+        return duk_fatal(ctx, "aborted");
+    }
     return 0;
 }

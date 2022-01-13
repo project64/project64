@@ -193,6 +193,7 @@ namespace ScriptAPI
     void Define_script(duk_context* ctx);
     duk_ret_t js_script_keepalive(duk_context* ctx);
     duk_ret_t js_script_timeout(duk_context* ctx);
+    duk_ret_t js_script_abort(duk_context* ctx);
 
     // ScriptAPI_fs
     void Define_fs(duk_context* ctx);

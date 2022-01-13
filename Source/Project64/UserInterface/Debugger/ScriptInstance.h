@@ -18,6 +18,7 @@ private:
     JSAppCallbackID m_CurExecCallbackId;
     std::vector<CScriptWorker*> m_Workers;
     bool            m_bStopping;
+    bool            m_bAborting;
 
 public:
     CScriptInstance(CScriptSystem* sys, const char* name);
@@ -37,6 +38,7 @@ public:
     void   DecRefCount();
     void   SetStopping(bool bStopping);
     inline bool IsStopping() { return m_bStopping; }
+    bool   PrepareAbort();
 
     bool RegisterWorker(CScriptWorker* worker);
     void UnregisterWorker(CScriptWorker* worker);
@@ -62,14 +64,21 @@ public:
         duk_push_heapptr(m_Ctx, dukFuncHeapPtr);
         duk_idx_t nargs = argSetupFunc ? argSetupFunc(m_Ctx, param) : 0;
 
-        if (duk_pcall(m_Ctx, nargs) == DUK_EXEC_ERROR)
+        try
         {
-            duk_get_prop_string(m_Ctx, -1, "stack");
-            m_System->ConsoleLog("%s", duk_safe_to_string(m_Ctx, -1));
+            if (duk_pcall(m_Ctx, nargs) == DUK_EXEC_ERROR)
+            {
+                duk_get_prop_string(m_Ctx, -1, "stack");
+                m_System->ConsoleLog("%s", duk_safe_to_string(m_Ctx, -1));
+                duk_pop(m_Ctx);
+            }
+
             duk_pop(m_Ctx);
         }
-
-        duk_pop(m_Ctx);
+        catch (std::runtime_error& exc)
+        {
+            FatalHandler(exc);
+        }
     }
 
     void   RawCMethodCall(void* dukThisHeapPtr, duk_c_function func,
@@ -83,6 +92,7 @@ public:
     void   RawConsoleInput(const char* code);
 
 private:
+    void FatalHandler(std::runtime_error& exc);
     static uint64_t Timestamp();
     void Cleanup();
 };

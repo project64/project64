@@ -2,7 +2,6 @@
 #include "ScriptTypes.h"
 #include "ScriptInstance.h"
 #include "ScriptAPI/ScriptAPI.h"
-
 #include <sys/stat.h>
 
 extern "C" {
@@ -22,7 +21,8 @@ CScriptInstance::CScriptInstance(CScriptSystem* sys, const char* name) :
     m_ExecStartTime(0),
     m_SourceCode(nullptr),
     m_CurExecCallbackId(JS_INVALID_CALLBACK),
-    m_bStopping(false)
+    m_bStopping(false),
+    m_bAborting(false)
 {
 }
 
@@ -94,18 +94,27 @@ bool CScriptInstance::Run(const char* path)
 
     ScriptAPI::InitEnvironment(m_Ctx, this);
 
-    duk_push_string(m_Ctx, m_InstanceName.c_str());
-    if(duk_pcompile_string_filename(m_Ctx, DUK_COMPILE_STRICT, m_SourceCode) != 0 ||
-       duk_pcall(m_Ctx, 0) == DUK_EXEC_ERROR)
+    try
     {
-        duk_get_prop_string(m_Ctx, -1, "stack");
-        m_System->ConsoleLog("%s", duk_safe_to_string(m_Ctx, -1));
-        duk_pop_n(m_Ctx, 2);
-        goto error_cleanup;
+        duk_push_string(m_Ctx, m_InstanceName.c_str());
+        if (duk_pcompile_string_filename(m_Ctx, DUK_COMPILE_STRICT, m_SourceCode) != 0 ||
+            duk_pcall(m_Ctx, 0) == DUK_EXEC_ERROR)
+        {
+            duk_get_prop_string(m_Ctx, -1, "stack");
+            m_System->ConsoleLog("%s", duk_safe_to_string(m_Ctx, -1));
+            duk_pop_n(m_Ctx, 2);
+            goto error_cleanup;
+        }
+
+        duk_pop(m_Ctx);
+    }
+    catch (std::runtime_error& exc)
+    {
+        FatalHandler(exc);
     }
 
-    duk_pop(m_Ctx);
     return true;
+    
 
 error_cleanup:
     Cleanup();
@@ -130,21 +139,39 @@ void CScriptInstance::SetStopping(bool bStopping)
     m_bStopping = bStopping;
 }
 
+bool CScriptInstance::PrepareAbort()
+{
+    if (!m_bAborting)
+    {
+        m_bAborting = true;
+        m_RefCount = 0;
+        return true;
+    }
+    return false;
+}
+
 void CScriptInstance::RawCMethodCall(void* dukThisHeapPtr, duk_c_function func, JSDukArgSetupFunc argSetupFunc, void *argSetupParam)
 {
-    m_ExecStartTime = Timestamp();
-    duk_push_c_function(m_Ctx, func, DUK_VARARGS);
-    duk_push_heapptr(m_Ctx, dukThisHeapPtr);
-    duk_idx_t nargs = argSetupFunc ? argSetupFunc(m_Ctx, argSetupParam) : 0;
-
-    if (duk_pcall_method(m_Ctx, nargs) == DUK_EXEC_ERROR)
+    try
     {
-        duk_get_prop_string(m_Ctx, -1, "stack");
-        m_System->ConsoleLog("%s", duk_safe_to_string(m_Ctx, -1));
+        m_ExecStartTime = Timestamp();
+        duk_push_c_function(m_Ctx, func, DUK_VARARGS);
+        duk_push_heapptr(m_Ctx, dukThisHeapPtr);
+        duk_idx_t nargs = argSetupFunc ? argSetupFunc(m_Ctx, argSetupParam) : 0;
+
+        if (duk_pcall_method(m_Ctx, nargs) == DUK_EXEC_ERROR)
+        {
+            duk_get_prop_string(m_Ctx, -1, "stack");
+            m_System->ConsoleLog("%s", duk_safe_to_string(m_Ctx, -1));
+            duk_pop(m_Ctx);
+        }
+
         duk_pop(m_Ctx);
     }
-
-    duk_pop(m_Ctx);
+    catch (std::runtime_error& exc)
+    {
+        FatalHandler(exc);
+    }
 }
 
 void CScriptInstance::PostCMethodCall(void* dukThisHeapPtr, duk_c_function func, JSDukArgSetupFunc argSetupFunc,
@@ -156,67 +183,74 @@ void CScriptInstance::PostCMethodCall(void* dukThisHeapPtr, duk_c_function func,
 void CScriptInstance::RawConsoleInput(const char* code)
 {
     m_System->ConsoleLog("> %s", code);
-
-    duk_get_global_string(m_Ctx, HS_gInputListener);
-
-    if (duk_is_function(m_Ctx, -1))
+    
+    try
     {
+        duk_get_global_string(m_Ctx, HS_gInputListener);
+
+        if (duk_is_function(m_Ctx, -1))
+        {
+            m_ExecStartTime = Timestamp();
+            duk_push_string(m_Ctx, code);
+            if (duk_pcall(m_Ctx, 1) != DUK_EXEC_SUCCESS)
+            {
+                duk_get_prop_string(m_Ctx, -1, "stack");
+                m_System->ConsoleLog("%s", duk_safe_to_string(m_Ctx, -1));
+                duk_pop_n(m_Ctx, 2);
+                return;
+            }
+            else
+            {
+                duk_pop(m_Ctx);
+                return;
+            }
+        }
+        duk_pop(m_Ctx);
+
         m_ExecStartTime = Timestamp();
-        duk_push_string(m_Ctx, code);
-        if (duk_pcall(m_Ctx, 1) != DUK_EXEC_SUCCESS)
+
+        duk_push_string(m_Ctx, stdstr_f("<input:%s>", m_InstanceName.c_str()).c_str());
+        if (duk_pcompile_string_filename(m_Ctx, DUK_COMPILE_STRICT, code) != 0 ||
+            duk_pcall(m_Ctx, 0) == DUK_EXEC_ERROR)
         {
             duk_get_prop_string(m_Ctx, -1, "stack");
             m_System->ConsoleLog("%s", duk_safe_to_string(m_Ctx, -1));
-            duk_pop_n(m_Ctx, 2);
-            return;
+            duk_pop(m_Ctx);
         }
         else
         {
-            duk_pop(m_Ctx);
-            return;
-        }
-    }
-    duk_pop(m_Ctx);
+            if (duk_is_string(m_Ctx, -1))
+            {
+                m_System->ConsoleLog("\"%s\"", duk_get_string(m_Ctx, -1));
+            }
+            else if (duk_is_object(m_Ctx, -1))
+            {
+                duk_dup(m_Ctx, -1);
+                duk_get_global_string(m_Ctx, "JSON");
+                duk_get_prop_string(m_Ctx, -1, "stringify");
+                duk_remove(m_Ctx, -2);
+                duk_pull(m_Ctx, -3);
+                duk_push_null(m_Ctx);
+                duk_push_int(m_Ctx, 2);
+                duk_pcall(m_Ctx, 3);
 
-    m_ExecStartTime = Timestamp();
-    
-    duk_push_string(m_Ctx, stdstr_f("<input:%s>", m_InstanceName.c_str()).c_str());
-    if (duk_pcompile_string_filename(m_Ctx, DUK_COMPILE_STRICT, code) != 0 ||
-        duk_pcall(m_Ctx, 0) == DUK_EXEC_ERROR)
-    {
-        duk_get_prop_string(m_Ctx, -1, "stack");
-        m_System->ConsoleLog("%s", duk_safe_to_string(m_Ctx, -1));
+                const char* str = duk_safe_to_string(m_Ctx, -2);
+                const char* res = duk_get_string(m_Ctx, -1);
+
+                m_System->ConsoleLog("%s %s", str, res);
+                duk_pop(m_Ctx);
+            }
+            else
+            {
+                m_System->ConsoleLog("%s", duk_safe_to_string(m_Ctx, -1));
+            }
+        }
         duk_pop(m_Ctx);
     }
-    else
+    catch (std::runtime_error& exc)
     {
-        if (duk_is_string(m_Ctx, -1))
-        {
-            m_System->ConsoleLog("\"%s\"", duk_get_string(m_Ctx, -1));
-        }
-        else if(duk_is_object(m_Ctx, -1))
-        {
-            duk_dup(m_Ctx, -1);
-            duk_get_global_string(m_Ctx, "JSON");
-            duk_get_prop_string(m_Ctx, -1, "stringify");
-            duk_remove(m_Ctx, -2);
-            duk_pull(m_Ctx, -3);
-            duk_push_null(m_Ctx);
-            duk_push_int(m_Ctx, 2);
-            duk_pcall(m_Ctx, 3);
-
-            const char* str = duk_safe_to_string(m_Ctx, -2);
-            const char* res = duk_get_string(m_Ctx, -1);
-
-            m_System->ConsoleLog("%s %s", str, res);
-            duk_pop(m_Ctx);
-        }
-        else
-        {
-            m_System->ConsoleLog("%s", duk_safe_to_string(m_Ctx, -1));
-        }
+        FatalHandler(exc);
     }
-    duk_pop(m_Ctx);
 }
 
 void CScriptInstance::SetExecTimeout(uint64_t timeout)
@@ -297,5 +331,18 @@ void CScriptInstance::StopRegisteredWorkers()
     {
         CScriptWorker* worker = *it;
         worker->StopWorkerProc();
+    }
+}
+
+void CScriptInstance::FatalHandler(std::runtime_error& exc)
+{
+    if (m_bAborting)
+    {
+        m_System->ConsoleLog("[SCRIPTSYS]: '%s' aborted", m_InstanceName.c_str());
+    }
+    else
+    {
+        m_System->ConsoleLog("%s", exc.what());
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 }
