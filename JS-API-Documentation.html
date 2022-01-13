@@ -721,7 +721,7 @@ Returns a constructor function that will create an object representing a structu
 <p><div class="prop"><span class="title" id="mem_getblock">mem.getblock(address, length)</span></div>
 <div class="tsproto">mem.getblock(address: number, length: number): Buffer</div>
 </p>
-Returns a block of data from memory as a <a target="blank" href="https://nodejs.org/docs/v6.9.1/api/buffer.html">Buffer</a> object.
+Returns a block of data from memory as a <a target="blank" href="https://nodejs.org/docs/v0.12.1/api/buffer.html">Buffer</a> object.
 <pre class="ex">
 <span class="js-word">fs</span>.<span class="js-word">writefile</span>(<span class="js-string">"ram_dump.bin"</span>, <span class="js-word">mem</span>.<span class="js-word">getblock</span>(<span class="js-word">K0BASE</span>, <span class="js-word">mem</span>.<span class="js-word">ramSize</span>));
 </pre>
@@ -731,7 +731,7 @@ Returns a block of data from memory as a <a target="blank" href="https://nodejs.
 </p>
 Writes a block of data into memory. <span class="snip">data</span> may be one of the following types&#58;
 <a target="blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer">ArrayBuffer</a>,
-<a target="blank" href="https://nodejs.org/docs/v6.9.1/api/buffer.html">Buffer</a>,
+<a target="blank" href="https://nodejs.org/docs/v0.12.1/api/buffer.html">Buffer</a>,
 <a target="blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView">DataView</a>,
 <a target="blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray">TypedArray</a>, string.
 <pre class="ex">
@@ -1172,9 +1172,9 @@ Creates an <a href="#N64Image">N64Image</a> object.
 <span class="snip">width</span>&#58; Width of the image.<br>
 <span class="snip">height</span>&#58; Height of the image.<br>
 <span class="snip">format</span>&#58; Optional image format. <span class="snip">IMG_RGBA32</span> by default. See the table below for supported formats.<br>
-<span class="snip">pixels</span>&#58; Optional <a target="blank" href="https://nodejs.org/docs/v6.9.1/api/buffer.html">Buffer</a> object containing pixel data.
+<span class="snip">pixels</span>&#58; Optional <a target="blank" href="https://nodejs.org/docs/v0.12.1/api/buffer.html">Buffer</a> object containing pixel data.
 The byte length must be equal to <span class="snip">(width * height * N64Image.bpp(format)) / 8</span>. Copied to <a href="#image_pixels">image.pixels</a>.<br>
-<span class="snip">palette</span>&#58; Optional <a target="blank" href="https://nodejs.org/docs/v6.9.1/api/buffer.html">Buffer</a> object containing palette data. Copied to <a href="#image_palette">image.palette</a>.
+<span class="snip">palette</span>&#58; Optional <a target="blank" href="https://nodejs.org/docs/v0.12.1/api/buffer.html">Buffer</a> object containing palette data. Copied to <a href="#image_palette">image.palette</a>.
 </p>
 <table>
 <thead>
@@ -1238,7 +1238,7 @@ Static function. Returns the number of bits used per pixel for a given image for
 <p><div class="prop"><span class="title" id="image_toPNG">image.toPNG()</span></div>
 <div class="tsproto">image.toPNG(): Buffer</div>
 </p>
-Returns a PNG representation of the image data as a <a target="blank" href="https://nodejs.org/docs/v6.9.1/api/buffer.html">Buffer</a> object.
+Returns a PNG representation of the image data as a <a target="blank" href="https://nodejs.org/docs/v0.12.1/api/buffer.html">Buffer</a> object.
 <pre class="ex">
 <span class="js-word">fs</span>.<span class="js-word">writefile</span>(<span class="js-string">"image.png"</span>, <span class="js-word">image</span>.<span class="js-word">toPNG</span>());
 </pre>
@@ -1460,7 +1460,7 @@ Closes the file referenced by <span class="snip">fd</span>.
 </p>
 Writes <span class="snip">buffer</span> to the file referenced by file descriptor <span class="snip">fd</span>. <span class="snip">buffer</span> may be one of the following types&#58;
 <a target="blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer">ArrayBuffer</a>,
-<a target="blank" href="https://nodejs.org/docs/v6.9.1/api/buffer.html">Buffer</a>,
+<a target="blank" href="https://nodejs.org/docs/v0.12.1/api/buffer.html">Buffer</a>,
 <a target="blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView">DataView</a>,
 <a target="blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray">TypedArray</a>, string.
 <p>
@@ -1489,7 +1489,7 @@ Writes <span class="snip">buffer</span> to the file specified by <span class="sn
 </p>
 Reads data from the file referenced by <span class="snip">fd</span> into <span class="snip">buffer</span>. <span class="snip">buffer</span> may be one of the following types&#58;
 <a target="blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer">ArrayBuffer</a>,
-<a target="blank" href="https://nodejs.org/docs/v6.9.1/api/buffer.html">Buffer</a>,
+<a target="blank" href="https://nodejs.org/docs/v0.12.1/api/buffer.html">Buffer</a>,
 <a target="blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView">DataView</a>,
 <a target="blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray">TypedArray</a>.<br><br>
 <span class="snip">offset</span>&#58; Position in the source buffer.<br>
@@ -1500,7 +1500,7 @@ Reads data from the file referenced by <span class="snip">fd</span> into <span c
 <p><div class="prop"><span class="title" id="fs_readfile">fs.readfile(path)</span></div>
 <div class="tsproto">fs.readfile(path: string): Buffer</div>
 </p>
-Returns a <a target="blank" href="https://nodejs.org/docs/v6.9.1/api/buffer.html">Buffer</a> object representing the data of the file specified by <span class="snip">path</span>.
+Returns a <a target="blank" href="https://nodejs.org/docs/v0.12.1/api/buffer.html">Buffer</a> object representing the data of the file specified by <span class="snip">path</span>.
 <!-- fs_exists -->
 <p><div class="prop"><span class="title" id="fs_exists">fs.exists(path)</span></div>
 <div class="tsproto">fs.exists(path: string): boolean</div>
@@ -1652,7 +1652,7 @@ Fully closes the socket.
 <div class="tsproto">socket.on('data', listener: (data: Buffer) => void): Socket</div>
 </p>
 <p>Registers a listener for the <span class="snip">'data'</span> event.</p>
-<span class="snip">listener</span> receives data as a <a target="blank" href="https://nodejs.org/docs/v6.9.1/api/buffer.html">Buffer</a> object.
+<span class="snip">listener</span> receives data as a <a target="blank" href="https://nodejs.org/docs/v0.12.1/api/buffer.html">Buffer</a> object.
 <p>Returns the Socket object.</p>
 <!-- socket_on_end -->
 <p><div class="prop"><span class="title" id="socket_on_end">socket.on('end', listener)</span></div>
