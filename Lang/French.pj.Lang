@@ -2,10 +2,10 @@
 * Meta Information                                                               *
 *********************************************************************************/
 //About DLL
-#1  #  "Français"		// LANGUAGE ID
-#2  #  "Benjamin Siskoo"			// Author
-#3  #  "2.2"			// Version
-#4  #  "2 Décembre 2015"		// Date
+#1  #  "Français"		                                // LANGUAGE ID
+#2  #  "Benjamin Siskoo, corrections par Adri1"			// Author
+#3  #  "3.0"			                                  // Version
+#4  #  "2 Décembre 2015"		                        // Date
 
 //About DLL Dialog
 #5  #  "Langue actuelle"
@@ -53,6 +53,7 @@
 #133#  "Redémarrage &logiciel"
 #134#  "Redémarrage &matériel"
 #135#  "Changer &disque"
+#136#  "&Améliorations..."
 
 //Options Menu
 #140#  "&Options"
@@ -69,14 +70,14 @@
 #160#  "&Débogueur"
 
 //Language Menu
-#175#  "&Langage"
+#175#  "&Langue"
 
 //Help Menu
 #180#  "&Aide"
-#181#  "À propos des fichiers de conf&iguration"
 #182#  "À &propos de Project64"
-#183#  "&Forum de support"
 #184#  "Site &web"
+#185#  "&Soutenir Project64"
+#186#  "&Discord"
 
 //Current Save Slot menu
 #190#  "Défaut"
@@ -90,7 +91,7 @@
 #198#  "Emplacement 8"
 #199#  "Emplacement 9"
 #200#  "Emplacement 10"
-#201#  "Sélection de l’emplacement de sauvegarde (%ws)"
+#201#  "Emplacement de sauvegarde (%ws) sélectionné"
 
 //Pop up Menu
 #210#  "Lancer le jeu"
@@ -99,6 +100,7 @@
 #213#  "Éditer les cheats"
 #214#  "Plugin graphique"
 #215#  "Lancer le jeu avec un disque"
+#216#  "Choisir des améliorations..."
 
 //Alternate Name to save Slot
 #220#  "Emplacement de sauvegarde - Défaut"
@@ -135,7 +137,7 @@
 #268#  "Permet de mettre la fenêtre Project64 toujours au premier plan"
 #269#  "Configurer le plugin graphique"
 #270#  "Configurer le plugin audio"
-#271#  "Configurer le plugin contrôleur (ex : choisir les touches)"
+#271#  "Configurer le plugin manettes (ex : choisir les touches)"
 #272#  "Configurer le plugin RSP"
 #273#  "Afficher l’utilisation du CPU de l’émulateur répartie sur les différentes ressources"
 #274#  "Voir/changer les paramètres pour cette application"
@@ -193,24 +195,23 @@
 //Tabs
 #401#  "Plugins"
 #402#  "Répertoires"
-#403#  "Options"
+#403#  "Paramètres généraux"
 #404#  "Navigateur de ROM"
 #405#  "Avancé"
-#406#  "Paramètres généraux"
-#407#  "Intégration au shell"
+#406#  "Paramètres de la ROM"
 #408#  "Notes"
 #409#  "Raccourcis clavier"
 #410#  "Statut"
-#411#  "Recompilateur"
-#412#  "Par Défaut"
+#411#  "Recompileur"
+#412#  "Par défaut"
 #413#  "64DD"
 
 //Plugin Dialog
 #420#  "À propos"
 #421#  " Plugin RSP (Reality Signal Processor) : "
-#422#  " Plugin vidéo (graphique) : "
+#422#  " Plugin vidéo (graphismes) : "
 #423#  " Plugin audio (son) : "
-#424#  " Plugin input (contrôleur) : "
+#424#  " Plugin d'entées (manettes) : "
 #425#  "Graphismes HLE"
 #426#  "Audio HLE"
 #427#  "** Utiliser le plugin système **"
@@ -244,6 +245,10 @@
 #470#  "Chemin vers 64DD IPL ROM Américain:"
 #471#  "Chemin vers 64DD IPL ROM Développement:"
 #472#  "Type de sauvegarde:"
+#473#  "Activer améliorations"
+#474#  "Afficher la barre de statut"
+#475#  "Quitter le plein écran si le logiciel n'est plus en avant"
+#476#  "Activer Discord Rich Presence"
 
 //ROM Browser Tab
 #480#  "Max de ROM à retenir (0-10) :"
@@ -258,7 +263,7 @@
 #489#  "<- Supprimer"
 #490#  "Haut"
 #491#  "Bas"
-#492#  "Rafraîchir automatiquement le navigateur"
+#492#  "Rafraichir automatiquement le navigateur"
 
 //Advanced Options
 #500#  "La plupart de ces changements ne prendront pas effet avant qu’une nouvelle ROM soit ouverte ou que la ROM actuelle soit redémarrée."
@@ -276,6 +281,7 @@
 #512#  "Lancer si modifié"
 #513#  "Protéger la mémoire"
 #514#  "TLB unmapping"
+#515#  "Always use interpreter core"
 
 //ROM Options
 #520#  "Style de noyau CPU :"
@@ -445,7 +451,7 @@
 
 // short-cut editor
 #1100#  "Réinitialiser les raccourcis"
-#1101#  "Êtes-vous sûr de vouloir réinitialiser les raccourcis?\n\nCette action ne peut pas être annulée."
+#1101#  "Êtes-vous sûr·e de vouloir réinitialiser les raccourcis?\n\nCette action sera irréversible."
 #1102#  "Menu fichier"
 #1103#  "Menu système"
 #1104#  "Options"
@@ -455,17 +461,20 @@
 * Support Window                                                                 *
 *********************************************************************************/
 #1200#  "Support Project64"
-#1201#  "Project64 est un logiciel crée pour émuler le système de jeu vidéo Nintendo64 sur un PC basé sur Microsoft Windows. Ceci vous permet de jouer avec des jeux N64  comme vous le feriez sur avec une vrai console.\n\nSi vous appréciez Project64, alors veuillez supporter Project64 avec soit des remerciements soit en proposant des idées d'améliorations.\n\nSi vous avez supporté Project64 :"
-#1202#  "Entrez un Code de Notification"
-#1203#  "Supporter Project64"
+#1201#  "Project64 est un émulateur open source de Nintendo 64.\n\nCelui-ci vous permet de jouer à des jeux N64 comme vous le feriez avec la vraie console.\n\nJe suis désolé de vous déranger avec cet encart, mais merci à vous de patienter quelques secondes dans le but d'apprécier le résultat de centaines d'heures de travail.\n\nSi vous le pouvez et le désirez soutenir Project64 ou en avez tiré quelque chose de son usage, merci de soutenir le projet soit avec de simples remerciments, ou votre volonter de supprimer cet encartn\n\nSi vous avez soutenu Project64 :"
+#1202#  "Entrer/Demander un Code de Soutien"
+#1203#  "Soutenir Project64"
 #1204#  "Continuer"
-#1205#  "Veuillez entrer un Code de Support"
-#1206#  "Code de Support Incorrecte"
+#1205#  "Veuillez entrer le Code de Soutien"
+#1206#  "Échec de validation du Code. Assurez-vous que le code que vous avez reçu corresponde à celui de votre appareil."
 #1207#  "Remerciements"
 #1208#  "Entrez un Code"
-#1209#  "Veuillez entrer le code se trouvant dans l'email"
+#1209#  "Veuillez entrer le code se trouvant dans l'email.\n\nL'email sera envoyé à l'adresse utilisée pour soutenir Project64.\n\nVeuillez noter que ce code ne fonctionnera que pour un seul appareil. L'ID de cet appareil est :"
 #1210#  "OK"
 #1211#  "Annuler"
+#1212#  "Demander un Code"
+#1213#  "Le Code a été envoyé à votre adresse email"
+#1214#  "Échec de l'envoi du code, assuez-vous que ce soit bien l'adresse email avec laquelle vous soutenez"
 
 /*********************************************************************************
 * Messages                                                                       *
@@ -474,10 +483,10 @@
 #2001#  "Reprise du CPU"
 #2002#  "Dans une boucle permanente dont il est impossible de sortir.\nL’émulation va maintenant s’arrêter.\n\nVérifiez la ROM et les paramètres de la ROM."
 #2003#  "L’allocation de mémoire a échoué"
-#2004#  "Le plugin vidéo sélectionné ou par défaut est manquant ou invalide.\n\nVous devez aller dans les paramètres et sélectionner un plugin vidéo (graphique).\nVérifiez que vous avez au moins un fichier plugin compatible dans votre répertoire de plugins."
-#2005#  "Le plugin audio sélectionné ou par défaut est manquant ou invalide.\n\nVous devez aller dans les paramètres et sélectionner un plugin audio (son).\nVérifiez que vous avez au moins un fichier plugin compatible dans votre répertoire de plugins."
-#2006#  "Le plugin RSP sélectionné ou par défaut est manquant ou invalide.\n\nVous devez aller dans les paramètres et sélectionner un plugin RSP (Reality Signal Processor).\nVérifiez que vous avez au moins un fichier plugin compatible dans votre répertoire de plugins."
-#2007#  "Le plugin input sélectionné ou par défaut est manquant ou invalide.\n\nVous devez aller dans les paramètres et sélectionner un plugin input (contrôleur).\nVérifiez que vous avez au moins un fichier plugin compatible dans votre répertoire de plugins."
+#2004#  "Le plugin vidéo sélectionné ou par défaut est manquant ou invalide.\n\nAllez dans les paramètres et sélectionnez un plugin vidéo (graphismes).\nVérifiez que vous avez au moins un fichier plugin compatible dans votre répertoire de plugins."
+#2005#  "Le plugin audio sélectionné ou par défaut est manquant ou invalide.\n\nAllez dans les paramètres et sélectionnez un plugin audio (son).\nVérifiez que vous avez au moins un fichier plugin compatible dans votre répertoire de plugins."
+#2006#  "Le plugin RSP sélectionné ou par défaut est manquant ou invalide.\n\nAllez dans les paramètres et sélectionnez un plugin RSP (Reality Signal Processor).\nVérifiez que vous avez au moins un fichier plugin compatible dans votre répertoire de plugins."
+#2007#  "Le plugin input sélectionné ou par défaut est manquant ou invalide.\n\nAllez dans les paramètres et sélectionnez un plugin d'entrées (manettes).\nVérifiez que vous avez au moins un fichier plugin compatible dans votre répertoire de plugins."
 #2008#  "Échec du chargement du plugin :"
 #2009#  "Échec du chargement word.\n\nVérifier la ROM et les paramètres de la ROM."
 #2010#  "Échec à l’ouverture du fichier de sauvegarde"
@@ -494,11 +503,11 @@
 #2021#  "Action de la mémoire inconnue\n\nL’émulation s’est arrêtée."
 #2022#  "Opcode R4300i non pris en charge à"
 #2023#  "Exécution depuis un espace non mappé.\n\nVérifiez la ROM et les paramètres de ROM."
-#2024#  "Cette sauvegarde d’état ne semble pas correspondre à la ROM qui est lancée.\n\nLes états sauvegardés et chargés doivent être à 100 % identiques à la ROM.\nEn particulier la RÉGION et la VERSION doivent être identiques.\nLe chargement de cette sauvegarde va probablement faire planter le jeu ou l’émulateur.\n\nSouhaitez-vous le charger quand même ?"
+#2024#  "Cette sauvegarde d’état ne semble pas correspondre à la ROM qui est lancée.\n\nLes sauvegardes d'états ne peuvent êtres chargés qu'entre des ROMs 100 % identiques.\nEParticulièrement la RÉGION et la VERSION doivent être identiques.\nLe chargement de cette sauvegarde va probablement faire planter le jeu et/ou l’émulateur.\n\nSouhaitez-vous la charger quand même ?"
 #2025#  "Erreur"
-#2026#  "La séquence de copyright n’a pas été trouvé dans la LUT. Le jeu ne fonctionnera plus."
+#2026#  "La séquence de copyright n’a pas été trouvée dans la LUT. Le jeu ne fonctionnera plus."
 #2027#  "Échec de la protection de copie"
-#2028#  "Changer un plugin nécessite que Project64 redémarre la ROM lancée.\nSi vous ne voulez pas perdre votre progression, répondez non et sauvegardez l’état actuel d’abord.\n\nChanger les plugins et redémarrer maintenant ?"
+#2028#  "Changer un plugin nécessite que Project64 redémarre la ROM lancée.\nSi vous ne voulez pas perdre votre progression, répondez non et sauvegardez.\n\nChanger les plugins et redémarrer maintenant ?"
 #2029#  "Changer les plugins"
 #2030#  "Émulation terminée"
 #2031#  "Émulation démarrée"
@@ -511,7 +520,7 @@
 #2038#  "Chargé"
 #2039#  "Chargement de l’image"
 #2040#  "Impossible d’ouvrir une ROM car les plugins n’ont pas été initialisés."
-#2041#  "Êtes-vous sûr de vouloir effacer ceci ?"
+#2041#  "Êtes-vous sûr·e de vouloir effacer ceci ?"
 #2042#  "Effacer le cheat"
 #2043#  "Le nom du cheat est déjà utilisé."
 #2044#  "Vous avez atteint le nombre maximum de codes cheats pour ce jeu"
@@ -525,30 +534,31 @@
 #2052#  "Erreur du programme"
 #2053#  "Impossible de trouver le nom de fichier dans l’archive 7z"
 #2054#  "Émulation des graphismes bas niveau (LLE)"
-#2055#  "Les graphismes LLE ne sont pas à utiliser par tout le monde !!!\nIl est recommandé d’utiliser seulement ceci à des fins de test et non pour jouer.\n\nChanger pour les graphismes en mode LLE ?"
+#2055#  "Les graphismes LLE ne sont pas à utiliser par tout le monde !\nIl est recommandé d’utiliser seulement ceci à des fins de test et non pour jouer.\n\nChanger pour les graphismes en mode LLE ?"
 #2056#  "Émulation audio haut niveau (HLE)"
-#2057#  "L’audio HLE nécessite un plugin tiers !!!\nSi vous n’utilisez pas un plugin audio tiers qui supporte le HLE, vous n’entendrez aucun son.\n\nChanger pour l’audio en mode HLE ?"
+#2057#  "L’audio HLE nécessite un plugin tiers !\nSi vous n’utilisez pas un plugin audio tiers qui supporte le HLE, vous n’entendrez aucun son.\n\nChanger pour l’audio en mode HLE ?"
 #2058#  "Le fichier chargé ne semble pas être une ROM IPL 64DD valide.\n\nVérifiez vos ROM avec GoodN64."
-#2059#  "La ROM IPL 64DD Japonaise n’a pas pu être trouvée.\nIl est nécéssaire pour jouer avec des disques 64DD japonais.\n\nVeuillez sélectionner la ROM requise dans les paramètres."
-#2061#  "La ROM IPL 64DD Américaine n’a pas pu être trouvée.\nIl est nécéssaire pour jouer avec des disques 64DD américain.\n\nVeuillez sélectionner la ROM requise dans les paramètres."
-#2062#  "La ROM IPL 64DD Développement n’a pas pu être trouvée.\nIl est nécéssaire pour jouer avec des disques 64DD de développement.\n\nVeuillez sélectionner la ROM requise dans les paramètres."
-
+#2059#  "La ROM IPL 64DD Japonaise n’a pas pu être trouvée.\nElle est nécéssaire pour jouer avec des disques 64DD japonais.\n\nVeuillez sélectionner la ROM requise dans les paramètres."
+#2061#  "La ROM IPL 64DD Américaine n’a pas pu être trouvée.\nElle est nécéssaire pour jouer avec des disques 64DD américains.\n\nVeuillez sélectionner la ROM requise dans les paramètres."
+#2062#  "La ROM IPL 64DD Développement n’a pas pu être trouvée.\nElle est nécéssaire pour jouer avec des disques 64DD de développement.\n\nVeuillez sélectionner la ROM requise dans les paramètres."
+#2063#  "Cheat erroné, échec de sa mise à jour"
+#2064#  "Cheat erroné"
 
 /*********************************************************************************
 * Android                                                                        *
 *********************************************************************************/
 #3000#  "Paramètres"
 #3001#  "Aide/Forum"
-#3002#  "Rapporter un Problème"
-#3003#  "A Propos De"
-#3004#  "Jeu Récemment Joué"
+#3002#  "Rapporter un problème"
+#3003#  "À propos de"
+#3004#  "Jeu récemment joué"
 #3005#  "Jeux"
-#3006#  "Répertoire du Jeu"
+#3006#  "Répertoire du jeu"
 #3007#  "Choisir un dossier à scanner"
-#3008#  "Inclure les sous répertoires"
-#3009#  "Dossier Parent"
+#3008#  "Inclure les sous-répertoires"
+#3009#  "Dossier parent"
 #3010#  "Répertoires"
-#3011#  "Mémoire Interne"
+#3011#  "Mémoire interne"
 #3012#  "Scan..."
 #3013#  "OK"
 #3014#  "Annuler"
@@ -556,21 +566,25 @@
 #3016#  "Project64 pour Android"
 #3017#  "Licence"
 #3018#  "Révision"
-#3019#  "Project64 pour Android\u2122 est un port de la version Windows de project64. La version Android\u2122 peut lancer la plupart des jeux N64."
+#3019#  "Project64 pour Android\u2122 est un portage de la version Windows de Project64. La version Android\u2122 peut lancer la plupart des jeux N64."
 #3020#  "Auteurs de Project64."
+#3021#  "Discord"
 
 //In game menu
 #3100#  "Paramètres"
-#3101#  "Sauvegarder un Etat"
-#3102#  "Charger un Etat"
-#3103#  "Fin de l'Emulation"
+#3101#  "Sauvegarde d'état"
+#3102#  "Charger un état"
+#3103#  "Fin de l'émulation"
 #3104#  "Pause"
-#3105#  "Résumer"
-#3106#  "Vitesse du Jeu"
-#3107#  "Sauvegarde d'Etat en Cours..."
+#3105#  "Reprendre"
+#3106#  "Vitesse du jeu"
+#3107#  "Sauvegarde d'état en Cours..."
 #3108#  "Auto"
 #3109#  "Emplacement"
 #3110#  "Redémarrer"
-#3111#  "Options de Débuguage"
+#3111#  "Options de débuguage"
 #3112#  "Temps de la Fonction Redémarrer"
 #3113#  "Temps de la Fonction de Copie"
+
+// Video plugin
+#3200#  "Natif"
