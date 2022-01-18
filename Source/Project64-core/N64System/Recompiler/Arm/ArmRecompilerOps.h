@@ -268,7 +268,7 @@ private:
     void OverflowDelaySlot(bool TestTimer);
 
     EXIT_LIST m_ExitInfo;
-    STEP_TYPE m_NextInstruction;
+    STEP_TYPE m_PipelineStage;
     uint32_t m_CompilePC;
     OPCODE m_Opcode;
     CCodeSection * m_Section;

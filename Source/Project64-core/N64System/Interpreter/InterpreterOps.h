@@ -209,24 +209,22 @@ public:
 
     static Func* BuildInterpreter();
 
-    static bool        m_TestTimer;
-    static uint32_t    m_NextInstruction;
-    static OPCODE      m_Opcode;
-    static uint32_t    m_JumpToLocation;
+    static bool m_TestTimer;
+    static OPCODE m_Opcode;
 
     static bool  MemoryBreakpoint();
 
 protected:
-    static void  SPECIAL();
-    static void  REGIMM();
-    static void  COP0();
-    static void  COP0_CO();
-    static void  COP1();
-    static void  COP1_BC();
-    static void  COP1_S();
-    static void  COP1_D();
-    static void  COP1_W();
-    static void  COP1_L();
+    static void SPECIAL();
+    static void REGIMM();
+    static void COP0();
+    static void COP0_CO();
+    static void COP1();
+    static void COP1_BC();
+    static void COP1_S();
+    static void COP1_D();
+    static void COP1_W();
+    static void COP1_L();
 
     static Func Jump_Opcode[64];
     static Func Jump_Special[64];

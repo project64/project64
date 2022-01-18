@@ -18,12 +18,12 @@ struct CExitInfo
         ExitResetRecompCode = 8,
     };
 
-    uint32_t    ID;
-    uint32_t    TargetPC;
-    CRegInfo    ExitRegSet;
+    uint32_t ID;
+    uint32_t TargetPC;
+    CRegInfo ExitRegSet;
     EXIT_REASON reason;
-    STEP_TYPE   NextInstruction;
-    uint32_t *  JumpLoc; // 32-bit jump
+    PIPELINE_STAGE PipelineStage;
+    uint32_t * JumpLoc; // 32-bit jump
 };
 
 typedef std::list<CExitInfo> EXIT_LIST;

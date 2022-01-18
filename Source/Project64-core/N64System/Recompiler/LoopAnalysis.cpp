@@ -19,7 +19,7 @@ LoopAnalysis::LoopAnalysis(CCodeBlock * CodeBlock, CCodeSection * Section) :
     m_EnterSection(Section),
     m_BlockInfo(CodeBlock),
     m_PC((uint32_t)-1),
-    m_NextInstruction(NORMAL),
+    m_PipelineStage(PIPELINE_STAGE_NORMAL),
     m_Test(m_BlockInfo->NextTest())
 {
     memset(&m_Command, 0, sizeof(m_Command));
@@ -166,7 +166,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
     RegisterMap::iterator itr = m_EnterRegisters.find(Section->m_SectionID);
     m_Reg = itr != m_EnterRegisters.end() ? *(itr->second) : Section->m_RegEnter;
 
-    m_NextInstruction = NORMAL;
+    m_PipelineStage = PIPELINE_STAGE_NORMAL;
     uint32_t ContinueSectionPC = Section->m_ContinueSection ? Section->m_ContinueSection->m_EnterPC : (uint32_t)-1;
     CPU_Message("ContinueSectionPC = %08X", ContinueSectionPC);
 
@@ -233,7 +233,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                 break;
             default:
                 g_Notify->BreakPoint(__FILE__, __LINE__);
-                m_NextInstruction = END_BLOCK;
+                m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
                 m_PC -= 4;
             }
             break;
@@ -245,7 +245,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                 break;
             case R4300i_REGIMM_BLTZ:
             case R4300i_REGIMM_BGEZ:
-                m_NextInstruction = DELAY_SLOT;
+                m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
 #ifdef CHECKED_BUILD
                 if (Section->m_Cont.TargetPC != m_PC + 8 &&
                     Section->m_ContinueSection != nullptr &&
@@ -270,7 +270,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                 break;
             case R4300i_REGIMM_BLTZL:
             case R4300i_REGIMM_BGEZL:
-                m_NextInstruction = LIKELY_DELAY_SLOT;
+                m_PipelineStage = PIPELINE_STAGE_LIKELY_DELAY_SLOT;
 #ifdef CHECKED_BUILD
                 if (Section->m_Cont.TargetPC != m_PC + 8 &&
                     Section->m_ContinueSection != nullptr &&
@@ -312,7 +312,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
             g_Notify->BreakPoint(__FILE__, __LINE__);
             break;
         case R4300i_J:
-            m_NextInstruction = DELAY_SLOT;
+            m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
 #ifdef CHECKED_BUILD
             if (Section->m_Jump.TargetPC != (m_PC & 0xF0000000) + (m_Command.target << 2))
             {
@@ -327,7 +327,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
         case R4300i_BEQ:
             if (m_PC + ((int16_t)m_Command.offset << 2) + 4 != m_PC + 8)
             {
-                m_NextInstruction = DELAY_SLOT;
+                m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
 #ifdef CHECKED_BUILD
                 if (m_Command.rs != 0 || m_Command.rt != 0)
                 {
@@ -364,7 +364,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
         case R4300i_BGTZ:
             if (m_PC + ((int16_t)m_Command.offset << 2) + 4 != m_PC + 8)
             {
-                m_NextInstruction = DELAY_SLOT;
+                m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
 #ifdef CHECKED_BUILD
                 if (Section->m_Cont.TargetPC != m_PC + 8 &&
                     Section->m_ContinueSection != nullptr &&
@@ -462,17 +462,17 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                     case R4300i_COP0_CO_TLBWI: break;
                     case R4300i_COP0_CO_TLBWR: break;
                     case R4300i_COP0_CO_TLBP: break;
-                    case R4300i_COP0_CO_ERET: m_NextInstruction = END_BLOCK; break;
+                    case R4300i_COP0_CO_ERET: m_PipelineStage = PIPELINE_STAGE_END_BLOCK; break;
                     default:
                         g_Notify->DisplayError(stdstr_f("Unhandled R4300i opcode in FillSectionInfo\n%s", R4300iOpcodeName(m_Command.Hex, m_PC)).c_str());
-                        m_NextInstruction = END_BLOCK;
+                        m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
                         m_PC -= 4;
                     }
                 }
                 else
                 {
                     g_Notify->DisplayError(stdstr_f("Unhandled R4300i opcode in FillSectionInfo 3\n%s", R4300iOpcodeName(m_Command.Hex, m_PC)).c_str());
-                    m_NextInstruction = END_BLOCK;
+                    m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
                     m_PC -= 4;
                 }
             }
@@ -491,7 +491,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                 {
                 case R4300i_COP1_BC_BCFL:
                 case R4300i_COP1_BC_BCTL:
-                    m_NextInstruction = LIKELY_DELAY_SLOT;
+                    m_PipelineStage = PIPELINE_STAGE_LIKELY_DELAY_SLOT;
 #ifdef CHECKED_BUILD
                     if (Section->m_Cont.TargetPC != m_PC + 8 &&
                         Section->m_ContinueSection != nullptr &&
@@ -507,7 +507,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                     break;
                 case R4300i_COP1_BC_BCF:
                 case R4300i_COP1_BC_BCT:
-                    m_NextInstruction = DELAY_SLOT;
+                    m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
 #ifdef CHECKED_BUILD
                     if (Section->m_Cont.TargetPC != m_PC + 8 &&
                         Section->m_ContinueSection != nullptr &&
@@ -536,7 +536,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
             case R4300i_COP1_L: break;
             default:
                 g_Notify->DisplayError(stdstr_f("Unhandled R4300i opcode in FillSectionInfo 2\n%s", R4300iOpcodeName(m_Command.Hex, m_PC)).c_str());
-                m_NextInstruction = END_BLOCK;
+                m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
                 m_PC -= 4;
             }
             break;
@@ -544,7 +544,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
         case R4300i_BNEL:
         case R4300i_BLEZL:
         case R4300i_BGTZL:
-            m_NextInstruction = LIKELY_DELAY_SLOT;
+            m_PipelineStage = PIPELINE_STAGE_LIKELY_DELAY_SLOT;
 #ifdef CHECKED_BUILD
             if (Section->m_Cont.TargetPC != m_PC + 8 &&
                 Section->m_ContinueSection != nullptr &&
@@ -628,7 +628,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
         case R4300i_SDC1: break;
         case R4300i_SD: break;
         default:
-            m_NextInstruction = END_BLOCK;
+            m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
             m_PC -= 4;
             if (m_Command.Hex == 0x7C1C97C0) { break; }
             if (m_Command.Hex == 0x7FFFFFFF) { break; }
@@ -642,60 +642,60 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
 
         if (Section->m_DelaySlot)
         {
-            if (m_NextInstruction != NORMAL && m_NextInstruction != END_BLOCK)
+            if (m_PipelineStage != PIPELINE_STAGE_NORMAL && m_PipelineStage != PIPELINE_STAGE_END_BLOCK)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
-            m_NextInstruction = END_BLOCK;
+            m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
             SetJumpRegSet(Section, m_Reg);
         }
         else 
         {
-            switch (m_NextInstruction)
+            switch (m_PipelineStage)
             {
-            case NORMAL:
+            case PIPELINE_STAGE_NORMAL:
                 m_PC += 4;
                 break;
-            case DELAY_SLOT:
-                m_NextInstruction = DELAY_SLOT_DONE;
+            case PIPELINE_STAGE_DELAY_SLOT:
+                m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT_DONE;
                 m_PC += 4;
                 if ((m_PC & 0xFFFFF000) != (m_EnterSection->m_EnterPC & 0xFFFFF000))
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 break;
-            case LIKELY_DELAY_SLOT:
+            case PIPELINE_STAGE_LIKELY_DELAY_SLOT:
                 SetContinueRegSet(Section, m_Reg);
                 SetJumpRegSet(Section, m_Reg);
-                m_NextInstruction = END_BLOCK;
+                m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
                 break;
-            case DELAY_SLOT_DONE:
+            case PIPELINE_STAGE_DELAY_SLOT_DONE:
                 SetContinueRegSet(Section, m_Reg);
                 SetJumpRegSet(Section, m_Reg);
-                m_NextInstruction = END_BLOCK;
+                m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
                 break;
-            case LIKELY_DELAY_SLOT_DONE:
+            default:
                 g_Notify->BreakPoint(__FILE__, __LINE__);
-                m_NextInstruction = END_BLOCK;
+                m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
                 break;
             }
         }
 
         if (m_PC == ContinueSectionPC)
         {
-            m_NextInstruction = END_BLOCK;
+            m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
             SetContinueRegSet(Section, m_Reg);
         }
 
         if ((m_PC & 0xFFFFF000) != (m_EnterSection->m_EnterPC & 0xFFFFF000))
         {
-            if (m_NextInstruction != END_BLOCK && m_NextInstruction != NORMAL)
+            if (m_PipelineStage != PIPELINE_STAGE_END_BLOCK && m_PipelineStage != PIPELINE_STAGE_NORMAL)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
-    } while (m_NextInstruction != END_BLOCK);
+    } while (m_PipelineStage != PIPELINE_STAGE_END_BLOCK);
 
     if (!CheckLoopRegisterUsage(Section->m_ContinueSection)) { return false; }
     if (!CheckLoopRegisterUsage(Section->m_JumpSection)) { return false; }
@@ -828,13 +828,13 @@ void LoopAnalysis::SPECIAL_SRAV()
 void LoopAnalysis::SPECIAL_JR()
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
-    m_NextInstruction = DELAY_SLOT;
+    m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
 }
 
 void LoopAnalysis::SPECIAL_JALR()
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
-    m_NextInstruction = DELAY_SLOT;
+    m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
 }
 
 void LoopAnalysis::SPECIAL_SYSCALL(CCodeSection * Section)
@@ -853,7 +853,7 @@ void LoopAnalysis::SPECIAL_SYSCALL(CCodeSection * Section)
 #else
     Section = Section;
 #endif
-    m_NextInstruction = END_BLOCK;
+    m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
     m_PC -= 4;
 }
 
@@ -873,7 +873,7 @@ void LoopAnalysis::SPECIAL_BREAK(CCodeSection * Section)
 #else
     Section = Section;
 #endif
-    m_NextInstruction = END_BLOCK;
+    m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
     m_PC -= 4;
 }
 

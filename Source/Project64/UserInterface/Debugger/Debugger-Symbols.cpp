@@ -344,7 +344,7 @@ LRESULT CDebugSymbols::OnListCacheHint(NMHDR * pNMHDR)
     return 0;
 }
 
-LRESULT CDebugSymbols::OnFilterChanged(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CDebugSymbols::OnFilterChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
     if (::GetWindowTextLength(GetDlgItem(IDC_FILTER_EDIT)) == 0)
     {

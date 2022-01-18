@@ -698,7 +698,7 @@ void CDebuggerUI::CPUStepEnded()
 
     if (op == R4300i_JAL || ((op == R4300i_SPECIAL) && (funct == R4300i_SPECIAL_JALR) && (Opcode.rd == 31))) // JAL or JALR RA, x
     {
-        m_StackTrace->PushEntry(R4300iOp::m_JumpToLocation, g_Reg->m_PROGRAM_COUNTER);
+        m_StackTrace->PushEntry(g_System->JumpToLocation(), g_Reg->m_PROGRAM_COUNTER);
     }
     else if (funct == R4300i_SPECIAL_JR && Opcode.rs == 31) // JR RA
     {

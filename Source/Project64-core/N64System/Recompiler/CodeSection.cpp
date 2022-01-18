@@ -429,7 +429,7 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
     m_CompiledLocation = *g_RecompPos;
     m_RecompilerOps->SetRegWorkingSet(m_RegEnter);
     m_RecompilerOps->SetCurrentPC(m_EnterPC);
-    m_RecompilerOps->SetNextStepType(m_DelaySlot ? JUMP : NORMAL);
+    m_RecompilerOps->SetNextStepType(m_DelaySlot ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
 
     if (m_RecompilerOps->GetCurrentPC() < m_BlockInfo->VAddrFirst())
     {
@@ -727,11 +727,11 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
 
         if ((m_RecompilerOps->GetCurrentPC() & 0xFFC) == 0xFFC)
         {
-            if (m_RecompilerOps->GetNextStepType() == DO_DELAY_SLOT)
+            if (m_RecompilerOps->GetNextStepType() == PIPELINE_STAGE_DO_DELAY_SLOT)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
-            if (m_RecompilerOps->GetNextStepType() == NORMAL)
+            if (m_RecompilerOps->GetNextStepType() == PIPELINE_STAGE_NORMAL)
             {
                 if (m_DelaySlot)
                 {
@@ -741,26 +741,26 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
                 {
                     m_RecompilerOps->CompileExit(m_RecompilerOps->GetCurrentPC(), m_RecompilerOps->GetCurrentPC() + 4, m_RecompilerOps->GetRegWorkingSet(), CExitInfo::Normal);
                 }
-                m_RecompilerOps->SetNextStepType(END_BLOCK);
+                m_RecompilerOps->SetNextStepType(PIPELINE_STAGE_END_BLOCK);
             }
         }
 
         switch (m_RecompilerOps->GetNextStepType())
         {
-        case NORMAL:
+        case PIPELINE_STAGE_NORMAL:
             m_RecompilerOps->SetCurrentPC(m_RecompilerOps->GetCurrentPC() + 4);
             break;
-        case DO_DELAY_SLOT:
-            m_RecompilerOps->SetNextStepType(DELAY_SLOT);
+        case PIPELINE_STAGE_DO_DELAY_SLOT:
+            m_RecompilerOps->SetNextStepType(PIPELINE_STAGE_DELAY_SLOT);
             m_RecompilerOps->SetCurrentPC(m_RecompilerOps->GetCurrentPC() + 4);
             break;
-        case DELAY_SLOT:
-            m_RecompilerOps->SetNextStepType(DELAY_SLOT_DONE);
+        case PIPELINE_STAGE_DELAY_SLOT:
+            m_RecompilerOps->SetNextStepType(PIPELINE_STAGE_DELAY_SLOT_DONE);
             m_RecompilerOps->GetRegWorkingSet().SetBlockCycleCount(m_RecompilerOps->GetRegWorkingSet().GetBlockCycleCount() - g_System->CountPerOp());
             m_RecompilerOps->SetCurrentPC(m_RecompilerOps->GetCurrentPC() - 4);
             break;
-        case JUMP:
-        case END_BLOCK:
+        case PIPELINE_STAGE_JUMP:
+        case PIPELINE_STAGE_END_BLOCK:
             // Do nothing, the block will end
             break;
         default:
@@ -782,11 +782,11 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             {
                 m_RecompilerOps->CompileExit(m_Jump.JumpPC, m_Jump.TargetPC, m_RecompilerOps->GetRegWorkingSet(), CExitInfo::Normal);
             }
-            m_RecompilerOps->SetNextStepType(END_BLOCK);
+            m_RecompilerOps->SetNextStepType(PIPELINE_STAGE_END_BLOCK);
         }
-        else if (m_RecompilerOps->GetNextStepType() != END_BLOCK && m_RecompilerOps->GetCurrentPC() == ContinueSectionPC)
+        else if (m_RecompilerOps->GetNextStepType() != PIPELINE_STAGE_END_BLOCK && m_RecompilerOps->GetCurrentPC() == ContinueSectionPC)
         {
-            if (m_RecompilerOps->GetNextStepType() != NORMAL)
+            if (m_RecompilerOps->GetNextStepType() != PIPELINE_STAGE_NORMAL)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -795,9 +795,9 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             m_Cont.FallThrough = true;
             m_Cont.JumpPC = m_RecompilerOps->GetCurrentPC();
             GenerateSectionLinkage();
-            m_RecompilerOps->SetNextStepType(END_BLOCK);
+            m_RecompilerOps->SetNextStepType(PIPELINE_STAGE_END_BLOCK);
         }
-    } while (m_RecompilerOps->GetNextStepType() != END_BLOCK);
+    } while (m_RecompilerOps->GetNextStepType() != PIPELINE_STAGE_END_BLOCK);
     return true;
 }
 

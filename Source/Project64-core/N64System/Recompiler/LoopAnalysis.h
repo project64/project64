@@ -1,8 +1,8 @@
 #pragma once
-
 #include <Project64-core/N64System/Recompiler/RegInfo.h>
 #include <Project64-core/N64System/Mips/OpCode.h>
 #include <Project64-core/N64System/N64Types.h>
+#include <map>
 
 class CCodeSection;
 class CCodeBlock;
@@ -67,14 +67,14 @@ private:
 
     typedef std::map<int32_t, CRegInfo *> RegisterMap;
 
-    RegisterMap    m_EnterRegisters;
-    RegisterMap    m_ContinueRegisters;
-    RegisterMap    m_JumpRegisters;
+    RegisterMap m_EnterRegisters;
+    RegisterMap m_ContinueRegisters;
+    RegisterMap m_JumpRegisters;
     CCodeSection * m_EnterSection;
-    CCodeBlock   * m_BlockInfo;
-    uint32_t       m_PC;
-    CRegInfo       m_Reg;
-    STEP_TYPE      m_NextInstruction;
-    OPCODE         m_Command;
-    uint32_t       m_Test;
+    CCodeBlock * m_BlockInfo;
+    uint32_t m_PC;
+    CRegInfo m_Reg;
+    PIPELINE_STAGE m_PipelineStage;
+    OPCODE m_Command;
+    uint32_t m_Test;
 };

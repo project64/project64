@@ -215,8 +215,6 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2)
 void CInterpreterCPU::BuildCPU()
 {
     R4300iOp::m_TestTimer = false;
-    R4300iOp::m_NextInstruction = NORMAL;
-    R4300iOp::m_JumpToLocation = 0;
 
     if (g_Settings->LoadBool(Game_32Bit))
     {
@@ -230,12 +228,6 @@ void CInterpreterCPU::BuildCPU()
 
 void CInterpreterCPU::InPermLoop()
 {
-    // Changed
-    //if (CPU_Type == CPU_SyncCores)
-    //{
-    //	SyncRegisters.CP0[9] +=5;
-    //}
-
     // Interrupts enabled
     if ((g_Reg->STATUS_REGISTER & STATUS_IE) == 0 ||
         (g_Reg->STATUS_REGISTER & STATUS_EXL) != 0 ||
@@ -267,9 +259,10 @@ void CInterpreterCPU::ExecuteCPU()
     WriteTrace(TraceN64System, TraceDebug, "Start");
 
     bool & Done = g_System->m_EndEmulation;
+    PIPELINE_STAGE & PipelineStage = g_System->m_PipelineStage;
     uint32_t & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
     OPCODE & Opcode = R4300iOp::m_Opcode;
-    uint32_t & JumpToLocation = R4300iOp::m_JumpToLocation;
+    uint32_t & JumpToLocation = g_System->m_JumpToLocation;
     bool & TestTimer = R4300iOp::m_TestTimer;
     const int32_t & bDoSomething = g_SystemEvents->DoSomething();
     uint32_t CountPerOp = g_System->CountPerOp();
@@ -282,8 +275,8 @@ void CInterpreterCPU::ExecuteCPU()
         {
             if (!g_MMU->LW_VAddr(PROGRAM_COUNTER, Opcode.Hex))
             {
-                g_Reg->DoTLBReadMiss(R4300iOp::m_NextInstruction == JUMP, PROGRAM_COUNTER);
-                R4300iOp::m_NextInstruction = NORMAL;
+                g_Reg->DoTLBReadMiss(PipelineStage == PIPELINE_STAGE_JUMP, PROGRAM_COUNTER);
+                PipelineStage = PIPELINE_STAGE_NORMAL;
                 continue;
             }
 
@@ -326,20 +319,20 @@ void CInterpreterCPU::ExecuteCPU()
             if (CDebugSettings::HaveDebugger()) { g_Debugger->CPUStepEnded(); }
 
             PROGRAM_COUNTER += 4;
-            switch (R4300iOp::m_NextInstruction)
+            switch (PipelineStage)
             {
-            case NORMAL:
+            case PIPELINE_STAGE_NORMAL:
                 break;
-            case DELAY_SLOT:
-                R4300iOp::m_NextInstruction = JUMP;
+            case PIPELINE_STAGE_DELAY_SLOT:
+                PipelineStage = PIPELINE_STAGE_JUMP;
                 break;
-            case PERMLOOP_DO_DELAY:
-                R4300iOp::m_NextInstruction = PERMLOOP_DELAY_DONE;
+            case  PIPELINE_STAGE_PERMLOOP_DO_DELAY:
+                PipelineStage = PIPELINE_STAGE_PERMLOOP_DELAY_DONE;
                 break;
-            case JUMP:
+            case  PIPELINE_STAGE_JUMP:
                 CheckTimer = (JumpToLocation < PROGRAM_COUNTER - 4 || TestTimer);
                 PROGRAM_COUNTER = JumpToLocation;
-                R4300iOp::m_NextInstruction = NORMAL;
+                PipelineStage = PIPELINE_STAGE_NORMAL;
                 if (CheckTimer)
                 {
                     TestTimer = false;
@@ -353,9 +346,9 @@ void CInterpreterCPU::ExecuteCPU()
                     }
                 }
                 break;
-            case PERMLOOP_DELAY_DONE:
+            case PIPELINE_STAGE_PERMLOOP_DELAY_DONE:
                 PROGRAM_COUNTER = JumpToLocation;
-                R4300iOp::m_NextInstruction = NORMAL;
+                PipelineStage = PIPELINE_STAGE_NORMAL;
                 CInterpreterCPU::InPermLoop();
                 g_SystemTimer->TimerDone();
                 if (bDoSomething)
@@ -377,10 +370,11 @@ void CInterpreterCPU::ExecuteCPU()
 
 void CInterpreterCPU::ExecuteOps(int32_t Cycles)
 {
-    bool   & Done = g_System->m_EndEmulation;
+    bool & Done = g_System->m_EndEmulation;
     uint32_t  & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
     OPCODE & Opcode = R4300iOp::m_Opcode;
-    uint32_t  & JumpToLocation = R4300iOp::m_JumpToLocation;
+    PIPELINE_STAGE & PipelineStage = g_System->m_PipelineStage;
+    uint32_t & JumpToLocation = g_System->m_JumpToLocation;
     bool   & TestTimer = R4300iOp::m_TestTimer;
     const int32_t & DoSomething = g_SystemEvents->DoSomething();
     uint32_t CountPerOp = g_System->CountPerOp();
@@ -426,23 +420,23 @@ void CInterpreterCPU::ExecuteOps(int32_t Cycles)
                 }
                 }*/
 
-                switch (R4300iOp::m_NextInstruction)
+                switch (PipelineStage)
                 {
-                case NORMAL:
+                case PIPELINE_STAGE_NORMAL:
                     PROGRAM_COUNTER += 4;
                     break;
-                case DELAY_SLOT:
-                    R4300iOp::m_NextInstruction = JUMP;
+                case PIPELINE_STAGE_DELAY_SLOT:
+                    PipelineStage = PIPELINE_STAGE_JUMP;
                     PROGRAM_COUNTER += 4;
                     break;
-                case PERMLOOP_DO_DELAY:
-                    R4300iOp::m_NextInstruction = PERMLOOP_DELAY_DONE;
+                case PIPELINE_STAGE_PERMLOOP_DO_DELAY:
+                    PipelineStage = PIPELINE_STAGE_PERMLOOP_DELAY_DONE;
                     PROGRAM_COUNTER += 4;
                     break;
-                case JUMP:
+                case PIPELINE_STAGE_JUMP:
                     CheckTimer = (JumpToLocation < PROGRAM_COUNTER || TestTimer);
                     PROGRAM_COUNTER = JumpToLocation;
-                    R4300iOp::m_NextInstruction = NORMAL;
+                    PipelineStage = PIPELINE_STAGE_NORMAL;
                     if (CheckTimer)
                     {
                         TestTimer = false;
@@ -456,9 +450,9 @@ void CInterpreterCPU::ExecuteOps(int32_t Cycles)
                         }
                     }
                     break;
-                case PERMLOOP_DELAY_DONE:
+                case PIPELINE_STAGE_PERMLOOP_DELAY_DONE:
                     PROGRAM_COUNTER = JumpToLocation;
-                    R4300iOp::m_NextInstruction = NORMAL;
+                    PipelineStage = PIPELINE_STAGE_NORMAL;
                     CInterpreterCPU::InPermLoop();
                     g_SystemTimer->TimerDone();
                     if (DoSomething)
@@ -472,8 +466,8 @@ void CInterpreterCPU::ExecuteOps(int32_t Cycles)
             }
             else
             {
-                g_Reg->DoTLBReadMiss(R4300iOp::m_NextInstruction == JUMP, PROGRAM_COUNTER);
-                R4300iOp::m_NextInstruction = NORMAL;
+                g_Reg->DoTLBReadMiss(PipelineStage == PIPELINE_STAGE_JUMP, PROGRAM_COUNTER);
+                PipelineStage = PIPELINE_STAGE_NORMAL;
             }
         }
     }

@@ -224,8 +224,8 @@ public:
     virtual void SetCurrentPC(uint32_t ProgramCounter) = 0;
     virtual uint32_t GetCurrentPC(void) = 0;
     virtual void SetCurrentSection(CCodeSection * section) = 0;
-    virtual void SetNextStepType(STEP_TYPE StepType) = 0;
-    virtual STEP_TYPE GetNextStepType(void) = 0;
+    virtual void SetNextStepType(PIPELINE_STAGE StepType) = 0;
+    virtual PIPELINE_STAGE GetNextStepType(void) = 0;
     virtual const OPCODE & GetOpcode(void) const = 0;
     virtual void PreCompileOpcode(void) = 0;
     virtual void PostCompileOpcode(void) = 0;

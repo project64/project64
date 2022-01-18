@@ -24,7 +24,7 @@ CPU_Message("%s: %X t2: %X", __FUNCTION__,TestValue, g_Reg->m_GPR[10].UW[0]);
 }*/
 void CArmRecompilerOps::PreCompileOpcode(void)
 {
-    if (m_NextInstruction != DELAY_SLOT_DONE)
+    if (m_PipelineStage != DELAY_SLOT_DONE)
     {
         CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     }
@@ -39,7 +39,7 @@ void CArmRecompilerOps::PreCompileOpcode(void)
     CallFunction(AddressOf(&TestFunc), "TestFunc");
     m_RegWorkingSet.AfterCallDirect();*/
 
-    /*if ((m_CompilePC == 0x8027F564 || m_CompilePC == 0x8027F574) && m_NextInstruction == NORMAL)
+    /*if ((m_CompilePC == 0x8027F564 || m_CompilePC == 0x8027F574) && m_PipelineStage == NORMAL)
     {
     m_RegWorkingSet.BeforeCallDirect();
     MoveConstToArmReg(Arm_R0,(uint32_t)&TestValue, "TestValue");
@@ -64,7 +64,7 @@ void CArmRecompilerOps::PreCompileOpcode(void)
     }
     }*/
 
-    /*if (m_CompilePC == 0x8027F564 && m_NextInstruction == NORMAL)
+    /*if (m_CompilePC == 0x8027F564 && m_PipelineStage == NORMAL)
     {
     m_RegWorkingSet.WriteBackRegisters();
     UpdateCounters(m_RegWorkingSet,false,true);
@@ -89,7 +89,7 @@ void CArmRecompilerOps::PostCompileOpcode(void)
 }
 
 CArmRecompilerOps::CArmRecompilerOps() :
-    m_NextInstruction(NORMAL)
+    m_PipelineStage(NORMAL)
 {
     memset(&m_Opcode, 0, sizeof(m_Opcode));
 }
@@ -192,7 +192,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
     static bool EffectDelaySlot;
     OPCODE Command = { 0 };
 
-    if (m_NextInstruction == NORMAL)
+    if (m_PipelineStage == NORMAL)
     {
         if (CompareType == CompareTypeCOP1BCF || CompareType == CompareTypeCOP1BCT)
         {
@@ -368,9 +368,9 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
             ResetRegProtection();
             RegBeforeDelay = m_RegWorkingSet;
         }
-        m_NextInstruction = DO_DELAY_SLOT;
+        m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
     }
-    else if (m_NextInstruction == DELAY_SLOT_DONE)
+    else if (m_PipelineStage == DELAY_SLOT_DONE)
     {
         if (EffectDelaySlot)
         {
@@ -424,7 +424,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
                         CPU_Message("      %s:", JumpInfo->BranchLabel.c_str());
                         LinkJump(*JumpInfo);
                         JumpInfo->FallThrough = true;
-                        m_NextInstruction = DO_DELAY_SLOT;
+                        m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
                         m_RegWorkingSet = RegBeforeDelay;
                         return;
                     }
@@ -461,20 +461,20 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
             }
         }
         m_Section->GenerateSectionLinkage();
-        m_NextInstruction = END_BLOCK;
+        m_PipelineStage = END_BLOCK;
     }
     else
     {
         if (HaveDebugger())
         {
-            g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_NextInstruction).c_str());
+            g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_PipelineStage).c_str());
         }
     }
 }
 
 void CArmRecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Link)
 {
-    if (m_NextInstruction == NORMAL)
+    if (m_PipelineStage == NORMAL)
     {
         if (CompareType == CompareTypeCOP1BCF || CompareType == CompareTypeCOP1BCT)
         {
@@ -572,14 +572,14 @@ void CArmRecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
         }
         else
         {
-            m_NextInstruction = DO_DELAY_SLOT;
+            m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
         }
 
         if (g_System->bLinkBlocks())
         {
             m_Section->m_Jump.RegSet = m_RegWorkingSet;
             m_Section->GenerateSectionLinkage();
-            m_NextInstruction = END_BLOCK;
+            m_PipelineStage = END_BLOCK;
         }
         else
         {
@@ -590,20 +590,20 @@ void CArmRecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 m_Section->GenerateSectionLinkage();
-                m_NextInstruction = END_BLOCK;
+                m_PipelineStage = END_BLOCK;
             }
         }
     }
-    else if (m_NextInstruction == DELAY_SLOT_DONE)
+    else if (m_PipelineStage == DELAY_SLOT_DONE)
     {
         ResetRegProtection();
         m_Section->m_Jump.RegSet = m_RegWorkingSet;
         m_Section->GenerateSectionLinkage();
-        m_NextInstruction = END_BLOCK;
+        m_PipelineStage = END_BLOCK;
     }
     else if (HaveDebugger())
     {
-        g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_NextInstruction).c_str());
+        g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_PipelineStage).c_str());
     }
 }
 
@@ -1835,7 +1835,7 @@ void CArmRecompilerOps::COP1_BCT_Compare()
 
 void CArmRecompilerOps::J()
 {
-    if (m_NextInstruction == NORMAL)
+    if (m_PipelineStage == NORMAL)
     {
         if ((m_CompilePC & 0xFFC) == 0xFFC)
         {
@@ -1857,23 +1857,23 @@ void CArmRecompilerOps::J()
         m_Section->m_Jump.FallThrough = true;
         m_Section->m_Jump.LinkLocation = nullptr;
         m_Section->m_Jump.LinkLocation2 = nullptr;
-        m_NextInstruction = DO_DELAY_SLOT;
+        m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
     }
-    else if (m_NextInstruction == DELAY_SLOT_DONE)
+    else if (m_PipelineStage == DELAY_SLOT_DONE)
     {
         m_Section->m_Jump.RegSet = m_RegWorkingSet;
         m_Section->GenerateSectionLinkage();
-        m_NextInstruction = END_BLOCK;
+        m_PipelineStage = END_BLOCK;
     }
     else if (HaveDebugger())
     {
-        g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_NextInstruction).c_str());
+        g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_PipelineStage).c_str());
     }
 }
 
 void CArmRecompilerOps::JAL()
 {
-    if (m_NextInstruction == NORMAL)
+    if (m_PipelineStage == NORMAL)
     {
         Map_GPR_32bit(31, true, -1);
         MoveVariableToArmReg(_PROGRAM_COUNTER, "_PROGRAM_COUNTER", GetMipsRegMapLo(31));
@@ -1903,9 +1903,9 @@ void CArmRecompilerOps::JAL()
         m_Section->m_Jump.FallThrough = true;
         m_Section->m_Jump.LinkLocation = nullptr;
         m_Section->m_Jump.LinkLocation2 = nullptr;
-        m_NextInstruction = DO_DELAY_SLOT;
+        m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
     }
-    else if (m_NextInstruction == DELAY_SLOT_DONE)
+    else if (m_PipelineStage == DELAY_SLOT_DONE)
     {
         if (m_Section->m_JumpSection)
         {
@@ -1930,7 +1930,7 @@ void CArmRecompilerOps::JAL()
 
             CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, bCheck ? CExitInfo::Normal : CExitInfo::Normal_NoSysCheck);
         }
-        m_NextInstruction = END_BLOCK;
+        m_PipelineStage = END_BLOCK;
     }
     else
     {
@@ -2800,7 +2800,7 @@ void CArmRecompilerOps::SPECIAL_SRAV()
 
 void CArmRecompilerOps::SPECIAL_JR()
 {
-    if (m_NextInstruction == NORMAL)
+    if (m_PipelineStage == NORMAL)
     {
         if ((m_CompilePC & 0xFFC) == 0xFFC)
         {
@@ -2847,9 +2847,9 @@ void CArmRecompilerOps::SPECIAL_JR()
             }
             m_RegWorkingSet.SetArmRegProtected(PCTempReg, false);
         }
-        m_NextInstruction = DO_DELAY_SLOT;
+        m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
     }
-    else if (m_NextInstruction == DELAY_SLOT_DONE)
+    else if (m_PipelineStage == DELAY_SLOT_DONE)
     {
         if (DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0))
         {
@@ -2884,17 +2884,17 @@ void CArmRecompilerOps::SPECIAL_JR()
                 m_Section->GenerateSectionLinkage();
             }
         }
-        m_NextInstruction = END_BLOCK;
+        m_PipelineStage = END_BLOCK;
     }
     else if (HaveDebugger())
     {
-        g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_NextInstruction).c_str());
+        g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_PipelineStage).c_str());
     }
 }
 
 void CArmRecompilerOps::SPECIAL_JALR()
 {
-    if (m_NextInstruction == NORMAL)
+    if (m_PipelineStage == NORMAL)
     {
         if (DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0) && (m_CompilePC & 0xFFC) != 0xFFC)
         {
@@ -2939,9 +2939,9 @@ void CArmRecompilerOps::SPECIAL_JALR()
         m_Section->m_Cont.LinkLocation = nullptr;
         m_Section->m_Cont.LinkLocation2 = nullptr;
 
-        m_NextInstruction = DO_DELAY_SLOT;
+        m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
     }
-    else if (m_NextInstruction == DELAY_SLOT_DONE)
+    else if (m_PipelineStage == DELAY_SLOT_DONE)
     {
         if (DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0))
         {
@@ -2963,18 +2963,18 @@ void CArmRecompilerOps::SPECIAL_JALR()
                 m_Section->GenerateSectionLinkage();
             }
         }
-        m_NextInstruction = END_BLOCK;
+        m_PipelineStage = END_BLOCK;
     }
     else if (HaveDebugger())
     {
-        g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_NextInstruction).c_str());
+        g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_PipelineStage).c_str());
     }
 }
 
 void CArmRecompilerOps::SPECIAL_SYSCALL()
 {
     CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::DoSysCall);
-    m_NextInstruction = END_BLOCK;
+    m_PipelineStage = END_BLOCK;
 }
 
 void CArmRecompilerOps::SPECIAL_MFLO()
@@ -4000,7 +4000,7 @@ void CArmRecompilerOps::COP0_CO_ERET()
 
     UpdateCounters(m_RegWorkingSet, true, true);
     CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal);
-    m_NextInstruction = END_BLOCK;
+    m_PipelineStage = END_BLOCK;
 }
 
 // COP1 functions
@@ -4693,7 +4693,7 @@ void CArmRecompilerOps::UnknownOpcode()
     MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
     CallFunction((void *)R4300iOp::UnknownOpcode, "R4300iOp::UnknownOpcode");
     ExitCodeBlock();
-    if (m_NextInstruction == NORMAL) { m_NextInstruction = END_BLOCK; }
+    if (m_PipelineStage == NORMAL) { m_PipelineStage = END_BLOCK; }
 }
 
 void CArmRecompilerOps::EnterCodeBlock()
@@ -4718,7 +4718,7 @@ void CArmRecompilerOps::CompileExitCode()
         CPU_Message("");
         CPU_Message("      $Exit_%d", ExitIter->ID);
         SetJump20(ExitIter->JumpLoc, (uint32_t *)*g_RecompPos);
-        m_NextInstruction = ExitIter->NextInstruction;
+        m_PipelineStage = ExitIter->PipelineStage;
         CompileExit((uint32_t)-1, ExitIter->TargetPC, ExitIter->ExitRegSet, ExitIter->reason);
     }
 }
@@ -5276,14 +5276,14 @@ void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         ExitCodeBlock();
         break;
     case CExitInfo::DoSysCall:
-        bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
+        bDelay = m_PipelineStage == JUMP || m_PipelineStage == DELAY_SLOT;
         MoveConstToArmReg(Arm_R1, (uint32_t)bDelay, bDelay ? "true" : "false");
         MoveConstToArmReg(Arm_R0, (uint32_t)g_Reg);
         CallFunction(AddressOf(&CRegisters::DoSysCallException), "CRegisters::DoSysCallException");
         ExitCodeBlock();
         break;
     case CExitInfo::COP1_Unuseable:
-        bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
+        bDelay = m_PipelineStage == JUMP || m_PipelineStage == DELAY_SLOT;
         MoveConstToArmReg(Arm_R2, (uint32_t)1, "1");
         MoveConstToArmReg(Arm_R1, (uint32_t)bDelay, bDelay ? "true" : "false");
         MoveConstToArmReg(Arm_R0, (uint32_t)g_Reg);
@@ -5291,7 +5291,7 @@ void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         ExitCodeBlock();
         break;
     case CExitInfo::TLBReadMiss:
-        bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
+        bDelay = m_PipelineStage == JUMP || m_PipelineStage == DELAY_SLOT;
         MoveVariableToArmReg(g_TLBLoadAddress, "g_TLBLoadAddress", Arm_R2);
         MoveConstToArmReg(Arm_R1, (uint32_t)bDelay, bDelay ? "true" : "false");
         MoveConstToArmReg(Arm_R0, (uint32_t)g_Reg);
@@ -5316,7 +5316,7 @@ void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
     ExitInfo.TargetPC = TargetPC;
     ExitInfo.ExitRegSet = ExitRegSet;
     ExitInfo.reason = reason;
-    ExitInfo.NextInstruction = m_NextInstruction;
+    ExitInfo.PipelineStage = m_PipelineStage;
     ExitInfo.JumpLoc = (uint32_t *)(*g_RecompPos - 4);
     m_ExitInfo.push_back(ExitInfo);
 }
@@ -5870,12 +5870,12 @@ void CArmRecompilerOps::SetCurrentSection(CCodeSection * section)
 
 void CArmRecompilerOps::SetNextStepType(STEP_TYPE StepType)
 {
-    m_NextInstruction = StepType;
+    m_PipelineStage = StepType;
 }
 
 STEP_TYPE CArmRecompilerOps::GetNextStepType(void)
 {
-    return m_NextInstruction;
+    return m_PipelineStage;
 }
 
 const OPCODE &CArmRecompilerOps::GetOpcode(void) const
@@ -5970,7 +5970,7 @@ void CArmRecompilerOps::OverflowDelaySlot(bool TestTimer)
         CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
     }
 
-    MoveConstToVariable(JUMP, &R4300iOp::m_NextInstruction, "R4300iOp::m_NextInstruction");
+    MoveConstToVariable(JUMP, &R4300iOp::m_PipelineStage, "R4300iOp::m_PipelineStage");
 
     if (TestTimer)
     {
@@ -5991,7 +5991,7 @@ void CArmRecompilerOps::OverflowDelaySlot(bool TestTimer)
     }
 
     ExitCodeBlock();
-    m_NextInstruction = END_BLOCK;
+    m_PipelineStage = END_BLOCK;
 }
 
 void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)

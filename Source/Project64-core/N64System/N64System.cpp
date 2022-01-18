@@ -42,7 +42,7 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     m_RspBroke(true),
     m_DMAUsed(false),
     m_TestTimer(false),
-    m_NextInstruction(0),
+    m_PipelineStage(PIPELINE_STAGE_NORMAL),
     m_JumpToLocation(0),
     m_TLBLoadAddress(0),
     m_TLBStoreAddress(0),
@@ -920,8 +920,6 @@ bool CN64System::SetActiveSystem(bool bActive)
         if (g_System)
         {
             g_System->m_TestTimer = R4300iOp::m_TestTimer;
-            g_System->m_NextInstruction = R4300iOp::m_NextInstruction;
-            g_System->m_JumpToLocation = R4300iOp::m_JumpToLocation;
         }
 
         g_System = this;
@@ -944,8 +942,6 @@ bool CN64System::SetActiveSystem(bool bActive)
         g_TLBStoreAddress = &m_TLBStoreAddress;
         g_RecompPos = m_Recomp ? m_Recomp->RecompPos() : nullptr;
         R4300iOp::m_TestTimer = m_TestTimer;
-        R4300iOp::m_NextInstruction = m_NextInstruction;
-        R4300iOp::m_JumpToLocation = m_JumpToLocation;
         g_Random = &m_Random;
     }
     else

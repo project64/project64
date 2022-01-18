@@ -223,8 +223,8 @@ public:
     void SetCurrentPC(uint32_t ProgramCounter);
     uint32_t GetCurrentPC(void);
     void SetCurrentSection(CCodeSection * section);
-    void SetNextStepType(STEP_TYPE StepType);
-    STEP_TYPE GetNextStepType(void);
+    void SetNextStepType(PIPELINE_STAGE StepType);
+    PIPELINE_STAGE GetNextStepType(void);
     const OPCODE & GetOpcode(void) const;
     void PreCompileOpcode(void);
     void PostCompileOpcode(void);
@@ -367,11 +367,11 @@ private:
     void ResetMemoryStack();
 
     EXIT_LIST m_ExitInfo;
-    static STEP_TYPE      m_NextInstruction;
-    static uint32_t       m_CompilePC;
-    static OPCODE         m_Opcode;
-    static CX86RegInfo    m_RegWorkingSet;
-    static uint32_t       m_BranchCompare;
+    static PIPELINE_STAGE m_PipelineStage;
+    static uint32_t m_CompilePC;
+    static OPCODE m_Opcode;
+    static CX86RegInfo m_RegWorkingSet;
+    static uint32_t m_BranchCompare;
     static CCodeSection * m_Section;
     static uint32_t m_TempValue;
 };
