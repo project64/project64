@@ -104,6 +104,7 @@ void CJSSocketWorker::WorkerProc()
     bool bConnectPending = false;
     bool bWritesPending = false;
     bool bRecvClosed = false;
+    bool bSendClosed = false;
 
     {
         CGuard guard(m_Queue.cs);
@@ -132,6 +133,7 @@ void CJSSocketWorker::WorkerProc()
             CGuard guard(m_Queue.cs);
             bWritesPending = m_Queue.writes.size() > 0;
             bRecvClosed = m_Queue.bRecvClosed;
+            bSendClosed = m_Queue.bSendClosed;
 
             if (m_Queue.bFullClosePending && !bWritesPending)
             {
@@ -180,7 +182,7 @@ void CJSSocketWorker::WorkerProc()
         bool bWritable = pWriteFds && FD_ISSET(m_Socket, pWriteFds);
         bool bReadable = pReadFds && FD_ISSET(m_Socket, pReadFds);
 
-        if (bWritable && !m_Queue.bSendClosed)
+        if (bWritable)
         {
             if (!bHaveConnection)
             {
@@ -188,12 +190,12 @@ void CJSSocketWorker::WorkerProc()
                 JSEmitConnect();
             }
 
-            if (bWritesPending)
+            if (!bSendClosed && bWritesPending)
             {
                 ProcSendData();
             }
         }
-        else if (bHaveConnection)
+        else if (pWriteFds && bHaveConnection)
         {
             JSEmitError("connection reset");
             break;
