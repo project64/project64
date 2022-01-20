@@ -132,28 +132,37 @@ LRESULT CScriptsAutorunDlg::OnRefreshScriptList(UINT /*uMsg*/, WPARAM /*wParam*/
         return 0;
     }
 
-    m_ScriptListView.SetRedraw(false);
-    m_ScriptListView.DeleteAllItems();
-
-    size_t nItem = 0;
+    strlist fileNames;
 
     do
     {
-        stdstr scriptFileName = searchPath.GetNameExtension();
+        stdstr fileName = searchPath.GetNameExtension();
         if (searchPath.GetExtension() == "js" &&
-            m_ScriptSystem->AutorunList().count(scriptFileName) == 0)
+            m_ScriptSystem->AutorunList().count(fileName) == 0)
         {
-            m_ScriptListView.AddItem(nItem, 0, scriptFileName.ToUTF16().c_str());
-            if (scriptFileName == m_InitSelectedScriptName)
-            {
-                nSelectedItem = nItem;
-                m_bScriptListNeedsRefocus = true;
-                m_InitSelectedScriptName = "";
-            }
-
-            nItem++;
+            fileNames.push_back(searchPath.GetNameExtension());
         }
     } while (searchPath.FindNext());
+
+    fileNames.sort([](stdstr a, stdstr b) {
+        return a.ToLower() < b.ToLower();
+    });
+
+    m_ScriptListView.SetRedraw(false);
+    m_ScriptListView.DeleteAllItems();
+
+    int nItem = 0;
+    for (const stdstr& fileName : fileNames)
+    {
+        m_ScriptListView.AddItem(nItem, 0, fileName.ToUTF16().c_str());
+        if (fileName == m_InitSelectedScriptName)
+        {
+            nSelectedItem = nItem;
+            m_bScriptListNeedsRefocus = true;
+            m_InitSelectedScriptName = "";
+        }
+        nItem++;
+    }
 
     m_ScriptListView.SetColumnWidth(0, LVSCW_AUTOSIZE_USEHEADER);
 
@@ -178,16 +187,19 @@ LRESULT CScriptsAutorunDlg::OnRefreshAutorunList(UINT /*uMsg*/, WPARAM /*wParam*
 {
     int nSelectedItem = m_AutorunListView.GetSelectedIndex();
 
+    strlist fileNames(m_ScriptSystem->AutorunList().begin(), m_ScriptSystem->AutorunList().end());
+    fileNames.sort([](stdstr a, stdstr b) {
+        return a.ToLower() < b.ToLower();
+    });
+
     m_AutorunListView.SetRedraw(FALSE);
     m_AutorunListView.DeleteAllItems();
 
     int nItem = 0;
-    std::set<std::string>& scripts = m_ScriptSystem->AutorunList();
-    std::set<std::string>::iterator it;
-    for (it = scripts.begin(); it != scripts.end(); it++)
+    for (const stdstr& fileName : fileNames)
     {
-        m_AutorunListView.AddItem(nItem, 0, stdstr(*it).ToUTF16().c_str());
-        if (*it == m_InitSelectedScriptName)
+        m_AutorunListView.AddItem(nItem, 0, fileName.ToUTF16().c_str());
+        if (fileName == m_InitSelectedScriptName)
         {
             nSelectedItem = nItem;
             m_bAutorunListNeedsRefocus = true;
