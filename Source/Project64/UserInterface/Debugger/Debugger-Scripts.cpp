@@ -423,8 +423,8 @@ LRESULT CDebugScripts::OnConsoleClear(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /
 LRESULT CDebugScripts::OnRefreshList(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
     int nIndex = m_ScriptList.GetSelectedIndex();
-
     CPath searchPath(m_ScriptsDir.c_str(), "*");
+    strlist fileNames;
 
     if (!searchPath.FindFirst(CPath::FIND_ATTRIBUTE_FILES))
     {
@@ -432,22 +432,27 @@ LRESULT CDebugScripts::OnRefreshList(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
         return FALSE;
     }
 
+    do
+    {
+        if (searchPath.GetExtension() == "js")
+        {
+            fileNames.push_back(searchPath.GetNameExtension());
+        }
+    } while (searchPath.FindNext());
+    
+    fileNames.sort([](stdstr a, stdstr b) {
+        return a.ToLower() < b.ToLower();
+    });
+
     m_ScriptList.SetRedraw(false);
     m_ScriptList.DeleteAllItems();
 
-    size_t nItem = 0;
-
-    do
+    int nItem = 0;
+    for (const stdstr& fileName : fileNames)
     {
-        if (searchPath.GetExtension() != "js")
-        {
-            continue;
-        }
+        JSInstanceStatus status = m_Debugger->ScriptSystem()->GetStatus(fileName.c_str());
+        const wchar_t* statusIcon = L"";
 
-        stdstr scriptFileName = searchPath.GetNameExtension();
-        JSInstanceStatus status = m_Debugger->ScriptSystem()->GetStatus(scriptFileName.c_str());
-        const wchar_t *statusIcon = L"";
-    
         switch (status)
         {
         case JS_STATUS_STARTING:
@@ -460,11 +465,11 @@ LRESULT CDebugScripts::OnRefreshList(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
             statusIcon = L"-";
             break;
         }
-    
+
         m_ScriptList.AddItem(nItem, 0, statusIcon);
-        m_ScriptList.SetItemText(nItem, 1, scriptFileName.ToUTF16().c_str());
+        m_ScriptList.SetItemText(nItem, 1, fileName.ToUTF16().c_str());
         nItem++;
-    } while (searchPath.FindNext());
+    }
 
     m_ScriptList.SetRedraw(true);
     m_ScriptList.Invalidate();
