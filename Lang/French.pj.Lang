@@ -5,7 +5,7 @@
 #1  #  "Français"		                                // LANGUAGE ID
 #2  #  "Benjamin Siskoo, corrections par Adri1"			// Author
 #3  #  "3.0"			                                  // Version
-#4  #  "2 Décembre 2015"		                        // Date
+#4  #  "19 janvier 2022"		                        // Date
 
 //About DLL Dialog
 #5  #  "Langue actuelle"
@@ -116,7 +116,7 @@
 #230#  "Emplacement de sauvegarde - 10"
 
 // Menu Descriptions
-#250#  "Ouvrir une image ROM N64"
+#250#  "Ouvrir une ROM N64"
 #251#  "Afficher les informations concernant l’image chargée"
 #252#  "Lancer l’émulation de l’image ROM chargée"
 #253#  "Arrêter l’émulation de l’image ROM chargée"
@@ -145,7 +145,7 @@
 #276#  "Voir la FAQ pour l’application"
 #278#  "À propos de l’application et des auteurs"
 #277#  "À propos des auteurs sur les fichiers de support"
-#279#  "Ouvrir l’image ROM ouverte précédemment"
+#279#  "Ouvrir la ROM ouverte précédemment"
 #280#  "Choisir ce répertoire comme votre répertoire de jeu"
 #281#  "Changer l’application pour utiliser cette langue"
 #282#  "Choisir l’emplacement de sauvegarde pour l’état sauvegardé"
@@ -241,9 +241,9 @@
 #466#  "Vitesse affichée :"
 #467#  "Vérifier si Project64 est déjà lancé"
 #468#  "Répertoire de sauvegarde unique"
-#469#  "Chemin vers 64DD IPL ROM Japonais:"
-#470#  "Chemin vers 64DD IPL ROM Américain:"
-#471#  "Chemin vers 64DD IPL ROM Développement:"
+#469#  "Chemin de ROM 64DD IPL Japonaise:"
+#470#  "Chemin de ROM 64DD IPL Américaine:"
+#471#  "Chemin de ROM 64DD IPL ROM de développement:"
 #472#  "Type de sauvegarde:"
 #473#  "Activer améliorations"
 #474#  "Afficher la barre de statut"
@@ -281,15 +281,15 @@
 #512#  "Lancer si modifié"
 #513#  "Protéger la mémoire"
 #514#  "TLB unmapping"
-#515#  "Always use interpreter core"
+#515#  "TOujours utiliser l'interpréteur de cœur"
 
 //ROM Options
 #520#  "Style de noyau CPU :"
-#521#  "Taux de rafraîchissement VI :"
+#521#  "Taux de rafraichissement VI :"
 #522#  "Taille de la mémoire :"
 #523#  "Liaison de blocs avancée"
 #524#  "Type de sauvegarde :"
-#525#  "Facteur compteur :"
+#525#  "Facteur de comptage :"
 #526#  "Plus grand tampon de compilation"
 #527#  "Utiliser le TLB"
 #528#  "Mettre en cache les registres"
@@ -355,7 +355,7 @@
 #684#  "Actuellement assigné à :"
 #685#  "Assigner"
 #686#  "Supprimer"
-#687#  "Tout Réinitialiser"
+#687#  "Tout réinitialiser"
 #688#  "Aucun jeu lancé"
 #689#  "Un jeu est lancé"
 #690#  "Un jeu est lancé (Fenêtré)"
@@ -365,7 +365,7 @@
 // Frame Rate Option
 #700#  "Interruptions verticales par seconde"
 #701#  "Listes d’affichage par seconde"
-#702#  "Pourcentage de la vitesse normale"
+#702#  "Pourcentage de la vitesse de base"
 
 // Increase speed
 #710#  "Augmenter la vitesse du jeu"
@@ -378,8 +378,8 @@
 #723#  "Fermer"
 
 //Disk Save Type
-#730#  "Copie Complète du Disque"
-#731#  "Zone Sauvegarde Uniquement"
+#730#  "Copie complète du disque"
+#731#  "Zone sauvegarde uniquement"
 
 /*********************************************************************************
 * ROM Information                                                                *
@@ -472,8 +472,8 @@
 #1209#  "Veuillez entrer le code se trouvant dans l'email.\n\nL'email sera envoyé à l'adresse utilisée pour soutenir Project64.\n\nVeuillez noter que ce code ne fonctionnera que pour un seul appareil. L'ID de cet appareil est :"
 #1210#  "OK"
 #1211#  "Annuler"
-#1212#  "Demander un Code"
-#1213#  "Le Code a été envoyé à votre adresse email"
+#1212#  "Demander un code"
+#1213#  "Le code a été envoyé à votre adresse email"
 #1214#  "Échec de l'envoi du code, assuez-vous que ce soit bien l'adresse email avec laquelle vous soutenez"
 
 /*********************************************************************************
@@ -509,12 +509,12 @@
 #2027#  "Échec de la protection de copie"
 #2028#  "Changer un plugin nécessite que Project64 redémarre la ROM lancée.\nSi vous ne voulez pas perdre votre progression, répondez non et sauvegardez.\n\nChanger les plugins et redémarrer maintenant ?"
 #2029#  "Changer les plugins"
-#2030#  "Émulation terminée"
+#2030#  "Émulation arrêtée"
 #2031#  "Émulation démarrée"
 #2032#  "Impossible de charger l’état"
-#2033#  "État chargé"
-#2034#  "État sauvegardé vers"
-#2035#  "Emplacement d’état"
+#2033#  "Sauvegarde d'état chargée"
+#2034#  "Sauvegarde d'état vers"
+#2035#  "Emplacement de sauvegarde d’état"
 #2036#  "Byte-swapping image"
 #2037#  "Choisir une image N64"
 #2038#  "Chargé"
@@ -540,7 +540,7 @@
 #2058#  "Le fichier chargé ne semble pas être une ROM IPL 64DD valide.\n\nVérifiez vos ROM avec GoodN64."
 #2059#  "La ROM IPL 64DD Japonaise n’a pas pu être trouvée.\nElle est nécéssaire pour jouer avec des disques 64DD japonais.\n\nVeuillez sélectionner la ROM requise dans les paramètres."
 #2061#  "La ROM IPL 64DD Américaine n’a pas pu être trouvée.\nElle est nécéssaire pour jouer avec des disques 64DD américains.\n\nVeuillez sélectionner la ROM requise dans les paramètres."
-#2062#  "La ROM IPL 64DD Développement n’a pas pu être trouvée.\nElle est nécéssaire pour jouer avec des disques 64DD de développement.\n\nVeuillez sélectionner la ROM requise dans les paramètres."
+#2062#  "La ROM IPL 64DD de développement n’a pas pu être trouvée.\nElle est nécéssaire pour jouer avec des disques 64DD de développement.\n\nVeuillez sélectionner la ROM requise dans les paramètres."
 #2063#  "Cheat erroné, échec de sa mise à jour"
 #2064#  "Cheat erroné"
 
@@ -549,9 +549,9 @@
 *********************************************************************************/
 #3000#  "Paramètres"
 #3001#  "Aide/Forum"
-#3002#  "Rapporter un problème"
-#3003#  "À propos de"
-#3004#  "Jeu récemment joué"
+#3002#  "Signaler un problème"
+#3003#  "À propos"
+#3004#  "Récemment joué"
 #3005#  "Jeux"
 #3006#  "Répertoire du jeu"
 #3007#  "Choisir un dossier à scanner"
@@ -559,7 +559,7 @@
 #3009#  "Dossier parent"
 #3010#  "Répertoires"
 #3011#  "Mémoire interne"
-#3012#  "Scan..."
+#3012#  "Scan en cours..."
 #3013#  "OK"
 #3014#  "Annuler"
 #3015#  "Information"
@@ -573,12 +573,12 @@
 //In game menu
 #3100#  "Paramètres"
 #3101#  "Sauvegarde d'état"
-#3102#  "Charger un état"
-#3103#  "Fin de l'émulation"
+#3102#  "Charger sauvegarde d'état"
+#3103#  "Arrêter l'émulation"
 #3104#  "Pause"
 #3105#  "Reprendre"
 #3106#  "Vitesse du jeu"
-#3107#  "Sauvegarde d'état en Cours..."
+#3107#  "Sauvegarde d'état actuelle..."
 #3108#  "Auto"
 #3109#  "Emplacement"
 #3110#  "Redémarrer"
