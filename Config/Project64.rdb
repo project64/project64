@@ -7890,80 +7890,86 @@ Good Name=64DD TOOL IPL (JPN)
 Status=Compatible
 Fixed Audio=0
 
-[D06F15D7-2F90EA28-C:4A]
+[0E652C21-F19AD3DE-C:4A]
 Good Name=Mario Artist Paint Studio (J)
 Status=Compatible
 Fixed Audio=0
 
-[56A227D6-A95DD829-C:4A]
+[A2569512-5DA96AED-C:4A]
 Good Name=Mario Artist Talent Studio (J)
 Status=Compatible
 Fixed Audio=0
 
-[30B9A412-CF465BED-C:4A]
+[4D0319BD-B2FCE642-C:4A]
 Good Name=Mario Artist Communication Kit (J)
 Status=Compatible
 Fixed Audio=0
 
-[2E91FFC8-D16E0037-C:4A]
+[D889EB0F-277614F0-C:4A]
 Good Name=Mario Artist Polygon Studio (J)
 Status=Issues (plugin)
 Fixed Audio=0
 
-[7BD92DC6-8426D239-C:4A]
+[9C40016E-63BFFE91-C:4A]
 Good Name=Sim City 64 (J)
 Status=Issues (plugin)
 Linking=Off
 
-[905063EB-6FAF9C14-C:4A]
+[65E02B30-9A1FD4CF-C:4A]
 Good Name=Nihon Pro Golf Tour 64 (J)
 Status=Compatible
 Counter Factor=1
 Fixed Audio=0
 
-[A11940D1-5EE6BF2E-C:4A]
+[E0125D56-1FEDA2A9-C:4A]
 Good Name=Kyojin no Doshin 1 (J)
 Status=Compatible
 Fixed Audio=0
 
-[A1193471-5EE6CB8E-C:4A]
+[F4D293CC-0B2D6C33-C:4A]
 Good Name=Kyojin no Doshin 1 (J) (Store Demo)
 Status=Compatible
 Fixed Audio=0
 
-[8EFB4B2D-7104B4D2-C:4A]
+[45FD11C0-BA02EE3F-C:4A]
 Good Name=Randnet Disk (J) [Rev. 00]
 Status=Only intro/part OK
 Fixed Audio=0
 
-[8EFC7632-710389CD-C:4A]
+[8DBCAE69-72435196-C:4A]
 Good Name=Randnet Disk (J) [Rev. 01]
 Status=Only intro/part OK
 Fixed Audio=0
 
-[B75CBC4E-48A343B1-C:4A]
+[0890ED9D-F76F1262-C:4A]
 Good Name=Kyojin no Doshin - Kaihou Sensen Chibikkochikko Dai Shuugou (J)
 Status=Compatible
 Fixed Audio=0
 
-[CD999CC9-32666336-C:4A]
+[32A47D0F-CD5B82F0-C:4A]
 Good Name=F-ZERO X Expansion Kit (J)
 Status=Compatible
 Culling=1
 Fixed Audio=0
 
-[41252DA2-BEDAD25D-C:0]
+[6974573F-968BA8C0-C:0]
 Good Name=Super Mario 64 Disk Version (J) (Spaceworld 1996 Demo)
 Status=Compatible
 Fixed Audio=0
 
-[87FAF438-78050BC7-C:41]
+[6E059418-91FA6BE7-C:41]
 Good Name=Dezaemon 3D Expansion Disk (J) (Proto)
 Status=Compatible
 32bit=Yes
 Save Type=Sram
 
-[D06E3B75-2F91C48A-C:54]
+[BB7CD63F-448329C0-C:41]
+Good Name=Dezaemon 3D Expansion Disk (J) (Proto) [a1]
+Status=Compatible
+32bit=Yes
+Save Type=Sram
+
+[63BBA730-9C4458CF-C:54]
 Good Name=Mario Artist Paint Studio (J) (1999-02-11 Proto)
 Status=Compatible
 Counter Factor=1
@@ -9403,6 +9409,8 @@ Status=Issues (core)
 32bit=Yes
 CPU Type=Interpreter
 
+//================  N64 FAN TRANSLATIONS  ================
+
 [002FE030-FFD01FCF-C:45]
 Good Name=Zelda 64 Dawn & Dusk - Expansion Disk (U)
 Status=Compatible
@@ -9435,16 +9443,25 @@ SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
 
-[CD999CC9-32666336-C:45]
-Good Name=F-ZERO X Expansion Kit (U)
+[32A47D0F-CD5B82F0-C:45]
+Good Name=F-ZERO X Expansion Kit (J) [T+Eng]
 Status=Compatible
 Culling=1
 Fixed Audio=0
 
-[2E91FFC8-D16E0037-C:45]
-Good Name=Mario Artist Polygon Studio (U)
+[D889EB0F-277614F0-C:45]
+Good Name=Mario Artist Polygon Studio (J) [T+Eng]
 Status=Issues (plugin)
 Fixed Audio=0
+
+[5BA2BBC0-4C9C0D28-C:45]
+Good Name=Mario no Photopi (J) [T+Eng]
+Internal Name=ÏØµÉÌ«ÄËß°
+Status=Issues (plugin)
+32bit=Yes
+HLE GFX=No
+RDRAM Size=4
+RSP-SemaphoreExit=1
 
 //================  N64 HACKS/MODS  ================
 

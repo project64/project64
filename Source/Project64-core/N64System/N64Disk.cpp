@@ -572,8 +572,8 @@ void CN64Disk::UnallocateDiskImage()
 uint32_t CN64Disk::CalculateCrc()
 {
     // Custom CRC
-    int crc = 0;
-    for (int i = 0; i < 0x200; i += 4)
+    uint32_t crc = 0;
+    for (int i = 0; i < 0x4D08; i += 4)
     {
         crc += *(uint32_t*)(&GetDiskAddressRom()[i]);
     }

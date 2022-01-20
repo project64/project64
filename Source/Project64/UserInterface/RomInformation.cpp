@@ -166,14 +166,14 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
             SetDlgItemText(hDlg, IDC_ROM_NAME, wGS(INFO_ROM_NAME_TEXT).c_str());
             SetDlgItemText(hDlg, IDC_FILE_NAME, wGS(INFO_FILE_NAME_TEXT).c_str());
             SetDlgItemText(hDlg, IDC_LOCATION, wGS(INFO_LOCATION_TEXT).c_str());
-            //SetDlgItemText(hDlg, IDC_ROM_MD5, wGS(INFO_MD5_TEXT).c_str());
-            //SetDlgItemText(hDlg, IDC_ROM_SIZE, wGS(INFO_SIZE_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_ROM_MD5, wGS(INFO_MD5_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_ROM_SIZE, wGS(INFO_SIZE_TEXT).c_str());
             SetDlgItemText(hDlg, IDC_CART_ID, wGS(INFO_CART_ID_TEXT).c_str());
-            //SetDlgItemText(hDlg, IDC_MEDIA, wGS(INFO_MEDIA_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_MEDIA, wGS(INFO_MEDIA_TEXT).c_str());
             SetDlgItemText(hDlg, IDC_COUNTRY, wGS(INFO_COUNTRY_TEXT).c_str());
-            //SetDlgItemText(hDlg, IDC_CRC1, wGS(INFO_CRC1_TEXT).c_str());
-            //SetDlgItemText(hDlg, IDC_CRC2, wGS(INFO_CRC2_TEXT).c_str());
-            //SetDlgItemText(hDlg, IDC_CIC_CHIP, wGS(INFO_CIC_CHIP_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_CRC1, wGS(INFO_CRC1_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_CRC2, wGS(INFO_CRC2_TEXT).c_str());
+            SetDlgItemText(hDlg, IDC_CIC_CHIP, wGS(INFO_CIC_CHIP_TEXT).c_str());
             SetDlgItemText(hDlg, IDC_CLOSE_BUTTON, wGS(BOTTOM_CLOSE).c_str());
 
             SetDlgItemText(hDlg, IDC_INFO_ROMNAME, _this->m_pDiskInfo->GetRomName().ToUTF16(stdstr::CODEPAGE_932).c_str());
@@ -182,18 +182,18 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
             SetDlgItemText(hDlg, IDC_INFO_LOCATION, stdstr(CPath(_this->m_pDiskInfo->GetFileName()).GetDriveDirectory()).ToUTF16(CP_ACP).c_str());
 
             //SetDlgItemText(hDlg, IDC_INFO_MD5, _this->m_pRomInfo->GetRomMD5().ToUTF16().c_str());
-            //SetDlgItemText(hDlg, IDC_INFO_ROMSIZE, stdstr_f("%.1f MBit", (float)_this->m_pDiskInfo->GetRomSize() / 0x20000).ToUTF16().c_str());
+            SetDlgItemText(hDlg, IDC_INFO_ROMSIZE, stdstr_f("%.1f MBit", (float)_this->m_pDiskInfo->GetDiskSize() / 0x20000).ToUTF16().c_str());
 
             BYTE * DiskHeader = _this->m_pDiskInfo->GetDiskAddressID();
             SetDlgItemText(hDlg, IDC_INFO_CARTID, stdstr_f("%c%c", DiskHeader[0x02], DiskHeader[0x01]).ToUTF16().c_str());
 
-            /*switch (DiskHeader[0x00])
+            switch (DiskHeader[0x03])
             {
             case 'D': SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"64DD Disk"); break;
-            case 'E': SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"64DD Disk Expansion"); break;
+            case 'E': SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"64DD Disk (Expansion)"); break;
             case 0:   SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"None"); break;
             default:  SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"(Unknown)"); break;
-            }*/
+            }
 
             switch (DiskHeader[0x00])
             {
