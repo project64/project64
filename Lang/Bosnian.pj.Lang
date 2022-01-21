@@ -5,7 +5,7 @@
 # 1 # "Bosanski" // ID JEZIKA
 # 2 # "Alen Alic" // Autor
 # 3 # "2.3" // Verzija
-# 4 # "April, 2021" // Datum
+# 4 # "Januar, 2022" // Datum
 
 // O DLL dijalogu
 # 5 # "Trenutni jezik"
@@ -247,9 +247,9 @@
 # 472 # "Tip spremanja diska:"
 
 // Kartica Browser Browser
-# 480 # "Maks. Broj zapamćenih ROM-a (0-10):"
+# 480 # "Maksimum Broj zapamćenih ROM-a (0-10):"
 # 481 # "ROM-ovi"
-# 482 # "Maks. Broj zapamćenih ROM-ova (0-10):"
+# 482 # "Maksimum Broj zapamćenih ROM-ova (0-10):"
 # 483 # "dirs"
 # 484 # "Koristite ROM pretraživač"
 # 485 # "Koristi rekurziju direktorija"
@@ -300,7 +300,6 @@
 # 538 # "32-bitni motor"
 # 539 # "Odgoda DP prekida"
 
-
 // Osnovni stilovi
 # 540 # "Interpreter"
 # 541 # "Repipiler"
@@ -335,7 +334,7 @@
 # 623 # "SRAM"
 # 624 # "Flash RAM-a"
 
-// Sheb Integration Shell
+// Sheb Integracija Shell
 # 640 # "Udruženje za proširenje datoteka:"
 
 // Bilješke o ROM-u
@@ -373,7 +372,7 @@
 # 722 # "Primjeni"
 # 723 # "Zatvori"
 
-// Disk Save Type
+// Disk Save Tip
 # 730 # "Puna kopija diska"
 # 731 # "Samo sačuvaj područje"
 
