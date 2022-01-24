@@ -64,35 +64,8 @@ void CLogging::Log_LW(uint32_t PC, uint32_t VAddr)
     {
         return;
     }
-    if (VAddr >= 0xA4040000 && VAddr <= 0xA404001C)
-    {
-        if (!LogSPRegisters())
-        {
-            return;
-        }
-        g_MMU->LW_VAddr(VAddr, Value);
-
-        switch (VAddr)
-        {
-        case 0xA4040000: LogMessage("%08X: read from SP_MEM_ADDR_REG (%08X)", PC, Value); break;
-        case 0xA4040004: LogMessage("%08X: read from SP_DRAM_ADDR_REG (%08X)", PC, Value); break;
-        case 0xA4040008: LogMessage("%08X: read from SP_RD_LEN_REG (%08X)", PC, Value); break;
-        case 0xA404000C: LogMessage("%08X: read from SP_WR_LEN_REG (%08X)", PC, Value); break;
-        case 0xA4040010: LogMessage("%08X: read from SP_STATUS_REG (%08X)", PC, Value); break;
-        case 0xA4040014: LogMessage("%08X: read from SP_DMA_FULL_REG (%08X)", PC, Value); break;
-        case 0xA4040018: LogMessage("%08X: read from SP_DMA_BUSY_REG (%08X)", PC, Value); break;
-        case 0xA404001C: LogMessage("%08X: read from SP_SEMAPHORE_REG (%08X)", PC, Value); break;
-        }
-        return;
-    }
     if (VAddr == 0xA4080000)
     {
-        if (!LogSPRegisters())
-        {
-            return;
-        }
-        g_MMU->LW_VAddr(VAddr, Value);
-        LogMessage("%08X: read from SP_PC (%08X)", PC, Value);
         return;
     }
     if (VAddr >= 0xA4100000 && VAddr <= 0xA410001C)
@@ -311,29 +284,11 @@ void CLogging::Log_SW(uint32_t PC, uint32_t VAddr, uint32_t Value)
 
     if (VAddr >= 0xA4040000 && VAddr <= 0xA404001C)
     {
-        if (!LogSPRegisters())
-        {
-            return;
-        }
-        switch (VAddr)
-        {
-        case 0xA4040000: LogMessage("%08X: Writing 0x%08X to SP_MEM_ADDR_REG", PC, Value); return;
-        case 0xA4040004: LogMessage("%08X: Writing 0x%08X to SP_DRAM_ADDR_REG", PC, Value); return;
-        case 0xA4040008: LogMessage("%08X: Writing 0x%08X to SP_RD_LEN_REG", PC, Value); return;
-        case 0xA404000C: LogMessage("%08X: Writing 0x%08X to SP_WR_LEN_REG", PC, Value); return;
-        case 0xA4040010: LogMessage("%08X: Writing 0x%08X to SP_STATUS_REG", PC, Value); return;
-        case 0xA4040014: LogMessage("%08X: Writing 0x%08X to SP_DMA_FULL_REG", PC, Value); return;
-        case 0xA4040018: LogMessage("%08X: Writing 0x%08X to SP_DMA_BUSY_REG", PC, Value); return;
-        case 0xA404001C: LogMessage("%08X: Writing 0x%08X to SP_SEMAPHORE_REG", PC, Value); return;
-        }
+        return;
     }
     if (VAddr == 0xA4080000)
     {
-        if (!LogSPRegisters())
-        {
-            return;
-        }
-        LogMessage("%08X: Writing 0x%08X to SP_PC", PC, Value); return;
+        return;
     }
 
     if (VAddr >= 0xA4100000 && VAddr <= 0xA410001C)

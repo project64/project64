@@ -9,6 +9,7 @@
 #include <Project64-core\N64System\Mips\Dma.h>
 #include <Project64-core\N64System\MemoryHandler\PeripheralInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RDRAMInterfaceHandler.h>
+#include <Project64-core\N64System\MemoryHandler\SPRegistersHandler.h>
 #include <Project64-core\Settings\GameSettings.h>
 
 #ifdef __arm__
@@ -47,7 +48,7 @@ class CMipsMemoryVM :
     private CGameSettings
 {
 public:
-    CMipsMemoryVM(CRegisters & Reg, bool SavesReadOnly);
+    CMipsMemoryVM(CN64System & System, CRegisters & Reg, bool SavesReadOnly);
     ~CMipsMemoryVM();
 
     static void ReserveMemory();
@@ -134,7 +135,6 @@ private:
     bool SW_NonMemory(uint32_t PAddr, uint32_t Value);
 
     static void Load32RDRAMRegisters(void);
-    static void Load32SPRegisters(void);
     static void Load32DPCommand(void);
     static void Load32MIPSInterface(void);
     static void Load32VideoInterface(void);
@@ -148,7 +148,6 @@ private:
     static void Load32Rom(void);
 
     static void Write32RDRAMRegisters(void);
-    static void Write32SPRegisters(void);
     static void Write32DPCommandRegisters(void);
     static void Write32MIPSInterface(void);
     static void Write32VideoInterface(void);
@@ -186,6 +185,7 @@ private:
 	CRegisters & m_Reg;
 	PeripheralInterfaceHandler m_PeripheralInterfaceHandler;
 	RDRAMInterfaceHandler m_RDRAMInterfaceHandler;
+    SPRegistersHandler m_SPRegistersHandler;
     uint8_t * m_RDRAM, *m_DMEM, *m_IMEM;
     uint32_t m_AllocatedRdramSize;
     bool m_RomMapped;

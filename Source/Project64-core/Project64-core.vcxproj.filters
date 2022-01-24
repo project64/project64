@@ -363,6 +363,9 @@
     <ClCompile Include="N64System\MemoryHandler\PeripheralInterfaceHandler.cpp">
       <Filter>Source Files\N64 System\MemoryHandler</Filter>
     </ClCompile>
+    <ClCompile Include="N64System\MemoryHandler\SPRegistersHandler.cpp">
+      <Filter>Source Files\N64 System\MemoryHandler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -691,6 +694,9 @@
     </ClInclude>
     <ClInclude Include="N64System\Recompiler\Recompiler.h">
       <Filter>Header Files\N64 System\Recompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\MemoryHandler\SPRegistersHandler.h">
+      <Filter>Header Files\N64 System\MemoryHandler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

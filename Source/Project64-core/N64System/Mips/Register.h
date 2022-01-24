@@ -4,6 +4,7 @@
 #include <Project64-core\N64System\N64Types.h>
 #include <Project64-core\N64System\MemoryHandler\PeripheralInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RDRAMInterfaceHandler.h>
+#include <Project64-core\N64System\MemoryHandler\SPRegistersHandler.h>
 #include <Project64-core\Settings\DebugSettings.h>
 #include <Project64-core\Settings\GameSettings.h>
 #include <Project64-core\Logging.h>
@@ -313,31 +314,6 @@ enum
     AI_STATUS_DMA_BUSY			= 0x40000000,	// Bit 30: Busy
 };
 
-
-// Signal processor interface
-class SigProcessor_InterfaceReg
-{
-protected:
-    SigProcessor_InterfaceReg (uint32_t * _SignalProcessorInterface);
-
-public:
-    uint32_t & SP_MEM_ADDR_REG;
-    uint32_t & SP_DRAM_ADDR_REG;
-    uint32_t & SP_RD_LEN_REG;
-    uint32_t & SP_WR_LEN_REG;
-    uint32_t & SP_STATUS_REG;
-    uint32_t & SP_DMA_FULL_REG;
-    uint32_t & SP_DMA_BUSY_REG;
-    uint32_t & SP_SEMAPHORE_REG;
-    uint32_t & SP_PC_REG;
-    uint32_t & SP_IBIST_REG;
-
-private:
-    SigProcessor_InterfaceReg();
-    SigProcessor_InterfaceReg(const SigProcessor_InterfaceReg&);
-    SigProcessor_InterfaceReg& operator=(const SigProcessor_InterfaceReg&);
-};
-
 // Signal processor interface flags
 enum
 {
@@ -529,7 +505,7 @@ class CRegisters :
     public AudioInterfaceReg,
     public PeripheralInterfaceReg,
     public RDRAMInterfaceReg,
-    public SigProcessor_InterfaceReg,
+    public SPRegistersReg,
     public DisplayControlReg,
     public Serial_InterfaceReg,
     public Disk_InterfaceReg

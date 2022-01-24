@@ -21,7 +21,7 @@ uint32_t CMipsMemoryVM::RegModValue;
 
 #pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
 
-CMipsMemoryVM::CMipsMemoryVM(CRegisters & Reg, bool SavesReadOnly) :
+CMipsMemoryVM::CMipsMemoryVM(CN64System & System, CRegisters & Reg, bool SavesReadOnly) :
     CPifRam(SavesReadOnly),
     CFlashram(SavesReadOnly),
     CSram(SavesReadOnly),
@@ -30,6 +30,7 @@ CMipsMemoryVM::CMipsMemoryVM(CRegisters & Reg, bool SavesReadOnly) :
     m_RomMapped(false),
     m_PeripheralInterfaceHandler(*this, Reg),
     m_RDRAMInterfaceHandler(Reg),
+    m_SPRegistersHandler(System, *this, Reg),
     m_Rom(nullptr),
     m_RomSize(0),
     m_RomWrittenTo(false),
@@ -639,7 +640,7 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
         switch (PAddr & 0xFFF00000)
         {
         case 0x03F00000: Load32RDRAMRegisters(); break;
-        case 0x04000000: Load32SPRegisters(); break;
+        case 0x04000000: m_SPRegistersHandler.Read32(PAddr, m_MemLookupValue.UW[0]);; break;
         case 0x04100000: Load32DPCommand(); break;
         case 0x04300000: Load32MIPSInterface(); break;
         case 0x04400000: Load32VideoInterface(); break;
@@ -757,7 +758,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
         }
         else
         {
-            Write32SPRegisters();
+            m_SPRegistersHandler.Write32(PAddr, Value, 0xFFFFFFFF);
         }
         break;
     case 0x04100000: Write32DPCommandRegisters(); break;
@@ -1141,27 +1142,6 @@ void CMipsMemoryVM::Load32RDRAMRegisters(void)
     m_MemLookupValid = true;
 }
 
-void CMipsMemoryVM::Load32SPRegisters(void)
-{
-    switch (m_MemLookupAddress & 0x1FFFFFFF)
-    {
-    case 0x04040010: m_MemLookupValue.UW[0] = g_Reg->SP_STATUS_REG; break;
-    case 0x04040014: m_MemLookupValue.UW[0] = g_Reg->SP_DMA_FULL_REG; break;
-    case 0x04040018: m_MemLookupValue.UW[0] = g_Reg->SP_DMA_BUSY_REG; break;
-    case 0x0404001C:
-        m_MemLookupValue.UW[0] = g_Reg->SP_SEMAPHORE_REG;
-        g_Reg->SP_SEMAPHORE_REG = 1;
-        break;
-    case 0x04080000: m_MemLookupValue.UW[0] = g_Reg->SP_PC_REG; break;
-    default:
-        m_MemLookupValue.UW[0] = 0;
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-    }
-}
-
 void CMipsMemoryVM::Load32DPCommand(void)
 {
     switch (m_MemLookupAddress & 0x1FFFFFFF)
@@ -1446,154 +1426,6 @@ void CMipsMemoryVM::Write32RDRAMRegisters(void)
     case 0x03F80008: break;
     case 0x03F8000C: break;
     case 0x03F80014: break;
-    default:
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-    }
-}
-
-void CMipsMemoryVM::Write32SPRegisters(void)
-{
-    switch ((m_MemLookupAddress & 0xFFFFFFF))
-    {
-    case 0x04040000: g_Reg->SP_MEM_ADDR_REG = m_MemLookupValue.UW[0]; break;
-    case 0x04040004: g_Reg->SP_DRAM_ADDR_REG = m_MemLookupValue.UW[0]; break;
-    case 0x04040008:
-        g_Reg->SP_RD_LEN_REG = m_MemLookupValue.UW[0];
-        g_MMU->SP_DMA_READ();
-        break;
-    case 0x0404000C:
-        g_Reg->SP_WR_LEN_REG = m_MemLookupValue.UW[0];
-        g_MMU->SP_DMA_WRITE();
-        break;
-    case 0x04040010:
-        if ((m_MemLookupValue.UW[0] & SP_CLR_HALT) != 0)
-        {
-            g_Reg->SP_STATUS_REG &= ~SP_STATUS_HALT;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_SET_HALT) != 0)
-        {
-            g_Reg->SP_STATUS_REG |= SP_STATUS_HALT;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_CLR_BROKE) != 0)
-        {
-            g_Reg->SP_STATUS_REG &= ~SP_STATUS_BROKE;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_CLR_INTR) != 0)
-        {
-            g_Reg->MI_INTR_REG &= ~MI_INTR_SP;
-            g_Reg->m_RspIntrReg &= ~MI_INTR_SP;
-            g_Reg->CheckInterrupts();
-        }
-        if ((m_MemLookupValue.UW[0] & SP_SET_INTR) != 0)
-        {
-            g_Notify->DisplayError("SP_SET_INTR");
-        }
-        if ((m_MemLookupValue.UW[0] & SP_CLR_SSTEP) != 0)
-        {
-            g_Reg->SP_STATUS_REG &= ~SP_STATUS_SSTEP;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_SET_SSTEP) != 0)
-        {
-            g_Reg->SP_STATUS_REG |= SP_STATUS_SSTEP;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_CLR_INTR_BREAK) != 0)
-        {
-            g_Reg->SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_SET_INTR_BREAK) != 0)
-        {
-            g_Reg->SP_STATUS_REG |= SP_STATUS_INTR_BREAK;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_CLR_SIG0) != 0)
-        {
-            g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG0;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_SET_SIG0) != 0)
-        {
-            g_Reg->SP_STATUS_REG |= SP_STATUS_SIG0;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_CLR_SIG1) != 0)
-        {
-            g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG1;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_SET_SIG1) != 0)
-        {
-            g_Reg->SP_STATUS_REG |= SP_STATUS_SIG1;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_CLR_SIG2) != 0)
-        {
-            g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG2;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_SET_SIG2) != 0)
-        {
-            g_Reg->SP_STATUS_REG |= SP_STATUS_SIG2;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_CLR_SIG3) != 0)
-        {
-            g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG3;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_SET_SIG3) != 0)
-        {
-            g_Reg->SP_STATUS_REG |= SP_STATUS_SIG3;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_CLR_SIG4) != 0)
-        {
-            g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG4;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_SET_SIG4) != 0)
-        {
-            g_Reg->SP_STATUS_REG |= SP_STATUS_SIG4;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_CLR_SIG5) != 0)
-        {
-            g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG5;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_SET_SIG5) != 0)
-        {
-            g_Reg->SP_STATUS_REG |= SP_STATUS_SIG5;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_CLR_SIG6) != 0)
-        {
-            g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG6;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_SET_SIG6) != 0)
-        {
-            g_Reg->SP_STATUS_REG |= SP_STATUS_SIG6;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_CLR_SIG7) != 0)
-        {
-            g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG7;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_SET_SIG7) != 0)
-        {
-            g_Reg->SP_STATUS_REG |= SP_STATUS_SIG7;
-        }
-        if ((m_MemLookupValue.UW[0] & SP_SET_SIG0) != 0 && g_System->RspAudioSignal())
-        {
-            g_Reg->MI_INTR_REG |= MI_INTR_SP;
-            g_Reg->CheckInterrupts();
-        }
-        //if (*( uint32_t *)(DMEM + 0xFC0) == 1)
-        //{
-        //	ChangeTimer(RspTimer,0x30000);
-        //}
-        //else
-        //{
-        try
-        {
-            g_System->RunRSP();
-        }
-        catch (...)
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-        //}
-        break;
-    case 0x0404001C: g_Reg->SP_SEMAPHORE_REG = 0; break;
-    case 0x04080000: g_Reg->SP_PC_REG = m_MemLookupValue.UW[0] & 0xFFC; break;
     default:
         if (HaveDebugger())
         {

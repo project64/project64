@@ -149,20 +149,6 @@ DisplayControlReg::DisplayControlReg(uint32_t * _DisplayProcessor) :
 {
 }
 
-SigProcessor_InterfaceReg::SigProcessor_InterfaceReg(uint32_t * _SignalProcessorInterface) :
-    SP_MEM_ADDR_REG(_SignalProcessorInterface[0]),
-    SP_DRAM_ADDR_REG(_SignalProcessorInterface[1]),
-    SP_RD_LEN_REG(_SignalProcessorInterface[2]),
-    SP_WR_LEN_REG(_SignalProcessorInterface[3]),
-    SP_STATUS_REG(_SignalProcessorInterface[4]),
-    SP_DMA_FULL_REG(_SignalProcessorInterface[5]),
-    SP_DMA_BUSY_REG(_SignalProcessorInterface[6]),
-    SP_SEMAPHORE_REG(_SignalProcessorInterface[7]),
-    SP_PC_REG(_SignalProcessorInterface[8]),
-    SP_IBIST_REG(_SignalProcessorInterface[9])
-{
-}
-
 Serial_InterfaceReg::Serial_InterfaceReg(uint32_t * SerialInterface) :
     SI_DRAM_ADDR_REG(SerialInterface[0]),
     SI_PIF_ADDR_RD64B_REG(SerialInterface[1]),
@@ -205,7 +191,7 @@ CRegisters::CRegisters(CN64System * System, CSystemEvents * SystemEvents) :
     AudioInterfaceReg(m_Audio_Interface),
     PeripheralInterfaceReg(m_Peripheral_Interface),
     RDRAMInterfaceReg(m_RDRAM_Interface),
-    SigProcessor_InterfaceReg(m_SigProcessor_Interface),
+    SPRegistersReg(m_SigProcessor_Interface),
     DisplayControlReg(m_Display_ControlReg),
     Serial_InterfaceReg(m_SerialInterface),
     Disk_InterfaceReg(m_DiskInterface),
