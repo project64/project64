@@ -58,6 +58,8 @@ CDebugCommandsView::~CDebugCommandsView()
 
 LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
+    m_StartAddress = g_Reg ? g_Reg->m_PROGRAM_COUNTER : 0x80000000;
+
     g_Settings->RegisterChangeCB(Debugger_WaitingForStep, this, (CSettings::SettingChangedFunc)StaticWaitingForStepChanged);
     g_Settings->RegisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)StaticSteppingOpsChanged);
 
@@ -89,7 +91,7 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     m_PCEdit.SetLimitText(8);
 
     m_bIgnorePCChange = true;
-    m_PCEdit.SetValue(0x80000180, DisplayMode::ZeroExtend);
+    m_PCEdit.SetValue(m_StartAddress, DisplayMode::ZeroExtend);
 
     // Setup view PC button
     m_ViewPCButton.EnableWindow(FALSE);
@@ -113,8 +115,8 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     m_OpEdit.SetCommandsWindow(this);
 
     m_bIgnoreAddrChange = true;
-    m_AddressEdit.SetValue(0x80000000, DisplayMode::ZeroExtend);
-    ShowAddress(0x80000000, TRUE);
+    m_AddressEdit.SetValue(m_StartAddress, DisplayMode::ZeroExtend);
+    ShowAddress(m_StartAddress, TRUE);
     m_bIgnoreAddrChange = false;
 
     if (isStepping())
