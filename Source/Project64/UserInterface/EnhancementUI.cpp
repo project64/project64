@@ -247,6 +247,33 @@ LRESULT CEnhancementUI::OnEnhancementListClicked(NMHDR* lpnmh)
     return 0;
 }
 
+LRESULT CEnhancementUI::OnPopupDelete(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
+{
+    int Response = MessageBox(wGS(MSG_DEL_SURE).c_str(), wGS(MSG_DEL_TITLE).c_str(), MB_YESNO | MB_ICONQUESTION);
+    if (Response != IDYES)
+    {
+        return 0;
+    }
+
+    TVITEM item = { 0 };
+    item.hItem = m_hSelectedItem;
+    item.mask = TVIF_PARAM;
+    m_TreeList.GetItem(&item);
+
+    ChangeChildrenStatus(TVI_ROOT, false);
+    for (CEnhancementList::iterator itr = m_Enhancements.begin(); itr != m_Enhancements.end(); itr++)
+    {
+        if (item.lParam != (LPARAM)&itr->second)
+        {
+            continue;
+        }
+        m_Enhancements.erase(itr);
+        g_Enhancements->UpdateEnhancements(m_Enhancements);
+        break;
+    }
+    RefreshList();
+}
+
 LRESULT CEnhancementUI::OnEnhancementListRClicked(NMHDR* pNMHDR)
 {
     TVHITTESTINFO ht = { 0 };
