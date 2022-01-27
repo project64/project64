@@ -8,6 +8,15 @@
 #include <time.h>
 #endif
 
+static bool IsWinVistaOrLater()
+{
+#ifdef _WIN32
+    return GetProcAddress(LoadLibrary(TEXT("KERNEL32")), "CancelIoEx") != nullptr;
+#else
+    return false;
+#endif
+}
+
 void pjutil::Sleep(uint32_t timeout)
 {
 #ifdef _WIN32
@@ -36,6 +45,7 @@ bool pjutil::TerminatedExistingExe()
     HANDLE nSearch = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     if (nSearch != INVALID_HANDLE_VALUE)
     {
+        DWORD processAllAccess = IsWinVistaOrLater() ? (PROCESS_ALL_ACCESS) : (PROCESS_ALL_ACCESS & ~0xF000);
         PROCESSENTRY32 lppe;
 
         memset(&lppe, 0, sizeof(PROCESSENTRY32));
@@ -63,7 +73,7 @@ bool pjutil::TerminatedExistingExe()
                         break;
                     }
                 }
-                HANDLE hHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, lppe.th32ProcessID);
+                HANDLE hHandle = OpenProcess(processAllAccess, FALSE, lppe.th32ProcessID);
                 if (hHandle != nullptr)
                 {
                     if (TerminateProcess(hHandle, 0))
