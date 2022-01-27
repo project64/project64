@@ -63,7 +63,7 @@ bool pjutil::TerminatedExistingExe()
                         break;
                     }
                 }
-                HANDLE hHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, lppe.th32ProcessID);
+                HANDLE hHandle = OpenProcess(SYNCHRONIZE|PROCESS_TERMINATE, FALSE, lppe.th32ProcessID);
                 if (hHandle != nullptr)
                 {
                     if (TerminateProcess(hHandle, 0))
