@@ -21,6 +21,7 @@ public:
         COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
         COMMAND_ID_HANDLER(ID_POPUP_EDIT, OnEditEnhancement)
         COMMAND_ID_HANDLER(ID_POPUP_ADDENHANCEMENT, OnAddEnhancement)
+        COMMAND_ID_HANDLER(ID_POPUP_DELETE, OnPopupDelete)
         NOTIFY_HANDLER_EX(IDC_ENHANCEMENTLIST, NM_CLICK, OnEnhancementListClicked)
         NOTIFY_HANDLER_EX(IDC_ENHANCEMENTLIST, NM_RCLICK, OnEnhancementListRClicked)
         NOTIFY_HANDLER_EX(IDC_ENHANCEMENTLIST, NM_DBLCLK, OnEnhancementListDClicked)
@@ -44,6 +45,7 @@ private:
     LRESULT OnEditEnhancement(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
     LRESULT OnAddEnhancement(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled );
     LRESULT OnCloseCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    LRESULT OnPopupDelete(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
     LRESULT OnEnhancementListClicked(NMHDR * lpnmh);
     LRESULT OnEnhancementListRClicked(NMHDR * lpnmh);
     LRESULT OnEnhancementListDClicked(NMHDR * lpnmh);
