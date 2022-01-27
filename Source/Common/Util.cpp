@@ -11,7 +11,9 @@
 static bool IsWinVistaOrLater()
 {
 #ifdef _WIN32
-    return GetProcAddress(LoadLibrary(TEXT("KERNEL32")), "CancelIoEx") != nullptr;
+    OSVERSIONINFO vi;
+    vi.dwOSVersionInfoSize = sizeof(vi);
+    return GetVersionEx(&vi) && vi.dwMajorVersion >= 6;
 #else
     return false;
 #endif
