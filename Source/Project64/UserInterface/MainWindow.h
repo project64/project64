@@ -21,7 +21,8 @@ enum
     WM_RESET_PLUGIN = WM_USER + 18,
     WM_GAME_CLOSED = WM_USER + 19,
     WM_BROWSER_TOP = WM_USER + 40,
-    WM_JSAPI_ACTION = WM_USER + 41
+    WM_JSAPI_ACTION = WM_USER + 41,
+    WM_EXTERNALAPI = WM_APP + 1 // Can be used by other processes
 };
 
 enum
@@ -31,6 +32,16 @@ enum
     JSAPI_ACT_RESET,
     JSAPI_ACT_PAUSE,
     JSAPI_ACT_RESUME
+};
+
+enum 
+{
+    EXAPI_QUERY_SIMPLE = 1 // Query simple states/properties
+};
+
+enum
+{
+    COPYDATAOPERATION_RUNIMAGE = 1
 };
 
 class CMainGui :
@@ -82,6 +93,7 @@ public:
     void * GetWindowHandle(void) const { return m_hMainWindow; }
     void * GetStatusBar(void) const;
     void * GetModuleInstance(void) const;
+    static std::wstring GetWindowClassName();
 
     inline CProjectSupport & Support(void) { return m_Support; }
 
@@ -103,7 +115,7 @@ private:
     void SetWindowCaption(const wchar_t * Caption);
     void ShowRomBrowser(void);
 
-    static LRESULT CALLBACK MainGui_Proc(HWND, DWORD, DWORD, DWORD);
+    static LRESULT CALLBACK MainGui_Proc(HWND, UINT, WPARAM, LPARAM);
 
     friend void RomBowserEnabledChanged(CMainGui * Gui);
     friend void RomBowserColoumnsChanged(CMainGui * Gui);
@@ -140,3 +152,6 @@ private:
     LONG m_SaveRomBrowserTop;
     LONG m_SaveRomBrowserLeft;
 };
+
+HWND WINAPI FindOtherInstanceWindow();
+bool WINAPI LoadInOtherInstance(HWND hWndOther, LPCSTR RomFile);
