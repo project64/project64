@@ -973,7 +973,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
             case JSAPI_ACT_RESET:
                 if (g_BaseSystem)
                 {
-                    g_BaseSystem->ExternalEvent((bool)lParam ? SysEvent_ResetCPU_Soft : SysEvent_ResetCPU_Hard);
+                    g_BaseSystem->ExternalEvent(lParam ? SysEvent_ResetCPU_Soft : SysEvent_ResetCPU_Hard);
                 }
                break;
             case JSAPI_ACT_PAUSE:
@@ -1247,7 +1247,7 @@ HWND WINAPI FindOtherInstanceWindow()
 {
     std::wstring classNameStr = CMainGui::GetWindowClassName();
     LPCWSTR className = classNameStr.c_str();
-    SIZE_T data[2] = { nullptr, (SIZE_T) className };
+    SIZE_T data[2] = { 0, (SIZE_T) className };
     EnumWindows(FindOtherInstanceWindowEnumProc, (LPARAM) data);
     return (HWND) data[0];
 }
