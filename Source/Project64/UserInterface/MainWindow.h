@@ -152,6 +152,3 @@ private:
     LONG m_SaveRomBrowserTop;
     LONG m_SaveRomBrowserLeft;
 };
-
-HWND WINAPI FindOtherInstanceWindow();
-bool WINAPI LoadInOtherInstance(HWND hWndOther, LPCSTR RomFile);

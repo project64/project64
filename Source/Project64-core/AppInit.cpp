@@ -16,7 +16,9 @@ static void FixDirectories(void);
 void SetTraceModuleNames(void);
 
 #ifdef _WIN32
-#include <Project64\UserInterface\MainWindow.h>
+HWND WINAPI FindOtherInstanceWindow();
+bool WINAPI LoadInOtherInstance(HWND hWndOther, LPCSTR RomFile);
+
 static void IncreaseThreadPriority(void);
 #endif
 
