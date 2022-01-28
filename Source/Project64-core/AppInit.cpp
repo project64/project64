@@ -248,7 +248,7 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
         }
 
 #ifdef _WIN32
-        bool singleInstance = g_Settings->LoadBool(Setting_CheckEmuRunning)
+        bool singleInstance = g_Settings->LoadBool(Setting_CheckEmuRunning);
         if (singleInstance || (parsedFlags & PARSECMD_REUSEINSTANCE))
         {
             bool usedOther = false;
