@@ -956,7 +956,7 @@ void LoadTex(int id, gfxChipID_t tmu)
     cache->format = rdp.tiles(td).format;
     cache->size = rdp.tiles(td).size;
     cache->tmem_addr = voodoo.tmem_ptr[tmu];
-    cache->set_by = rdp.timg.set_by;
+    safe_truncate_cast_assign<uint8_t>(&cache->set_by, rdp.timg.set_by);
     cache->texrecting = rdp.texrecting;
     cache->last_used = frame_count;
     cache->uses = rdp.debug_n;
@@ -1537,7 +1537,7 @@ void LoadTex(int id, gfxChipID_t tmu)
                 {
                     texture = (uint8_t *)ghqTexInfo.data;
                     lod = (gfxLOD_t)ghqTexInfo.largeLodLog2;
-                    int splits = cache->splits;
+                    int orgcachesplits = cache->splits;
                     if (ghqTexInfo.is_hires_tex)
                     {
                         if (ghqTexInfo.tiles)
@@ -1548,11 +1548,11 @@ void LoadTex(int id, gfxChipID_t tmu)
                             cache->splitheight = ghqTexInfo.untiled_height;
                             cache->scale_x = 1.0f;
                             cache->scale_y = float(ghqTexInfo.untiled_height*ghqTexInfo.tiles) / float(ghqTexInfo.width);//*sy;
-                            if (splits == 1)
+                            if (orgcachesplits == 1)
                             {
-                                int shift;
-                                for (shift = 9; (1 << shift) < ghqTexInfo.untiled_width; shift++);
-                                float mult = float(1 << shift >> 8);
+                                int shi;
+                                for (shi = 9; (1 << shi) < ghqTexInfo.untiled_width; shi++);
+                                float mult = float(1 << shi >> 8);
                                 cache->c_scl_x *= mult;
                                 cache->c_scl_y *= mult;
                             }
@@ -1590,10 +1590,10 @@ void LoadTex(int id, gfxChipID_t tmu)
                                     cache->scale_x = 1.0f / float(1 << (-ghqTexInfo.aspectRatioLog2));
                                 }
                             }
-                            else if (splits > 1)
+                            else if (orgcachesplits > 1)
                             {
-                                cache->c_scl_x /= splits;
-                                cache->c_scl_y /= splits;
+                                cache->c_scl_x /= orgcachesplits;
+                                cache->c_scl_y /= orgcachesplits;
                             }
                         }
                         if (!g_settings->hacks(CSettings::hack_Zelda))

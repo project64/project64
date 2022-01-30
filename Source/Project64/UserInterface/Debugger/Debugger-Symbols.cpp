@@ -436,7 +436,7 @@ void CDebugSymbols::Refresh()
     m_SymbolsListView.SetItemCountEx(numSymbols, LVSICF_NOSCROLL);
 }
 
-int CDebugSymbols::GetListItemSymbolId(int nItem)
+int CDebugSymbols::GetListItemSymbolId(size_t nItem)
 {
     if (m_bFiltering)
     {

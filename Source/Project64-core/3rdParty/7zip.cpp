@@ -198,7 +198,12 @@ std::wstring C7zip::FileNameIndex(int index)
         // No filename
         return filename;
     }
-    int namelen = SzArEx_GetFileNameUtf16(m_db, index, nullptr);
+#ifdef _WIN64
+    Int64 namelen
+#else
+    int namelen
+#endif
+        = SzArEx_GetFileNameUtf16(m_db, index, nullptr);
     if (namelen <= 0)
     {
         // No filename

@@ -30,7 +30,7 @@ private:
     BOOL OnEraseBackground(CDCHandle dc);
     LRESULT OnOkCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 
-    static int CALLBACK SelectDirCallBack(HWND hwnd, DWORD uMsg, DWORD lp, DWORD lpData);
+    static int CALLBACK SelectDirCallBack(HWND hwnd, UINT uMsg, LPARAM lp, LPARAM lpData);
 
     CBitmapPicture m_Logo;
 };

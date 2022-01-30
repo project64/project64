@@ -1163,7 +1163,7 @@ void gfxTexCombine(gfxChipID_t tmu, gfxCombineFunction_t rgb_function, gfxCombin
         static int last_factor = 0;
         static int last_afunction = 0;
         static int last_afactor = 0;
-        static int last_rgb_invert = 0;
+        static bool last_rgb_invert = 0;
 
         if (last_function == rgb_function && last_factor == rgb_factor &&
             last_afunction == alpha_function && last_afactor == alpha_factor &&
@@ -1188,7 +1188,7 @@ void gfxTexCombine(gfxChipID_t tmu, gfxCombineFunction_t rgb_function, gfxCombin
         static int last_factor = 0;
         static int last_afunction = 0;
         static int last_afactor = 0;
-        static int last_rgb_invert = 0;
+        static bool last_rgb_invert = 0;
 
         if (last_function == rgb_function && last_factor == rgb_factor &&
             last_afunction == alpha_function && last_afactor == alpha_factor &&

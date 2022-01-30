@@ -56,7 +56,7 @@ MD5::~MD5()
 // operation, processing another message block, and updating the
 // context.
 
-void MD5::update(const uint1 *input, uint4 input_length)
+void MD5::internal_update(const uint1 *input, uint4 input_length)
 {
     uint4 input_index, buffer_index;
     uint4 buffer_space;
@@ -104,6 +104,17 @@ void MD5::update(const uint1 *input, uint4 input_length)
     memcpy(buffer + buffer_index, (unsigned char *)(input + input_index), input_length - input_index);
 }
 
+void MD5::update(const unsigned char *input, size_t input_length)
+{
+    for (size_t left = input_length, chunk, multi = sizeof(uint4) < sizeof(left);;)
+    {
+        chunk = multi && left > 0xffffffff ? 0xffffffff : (uint4) left;
+        internal_update(input, chunk);
+        if (!multi || !left) break;
+        input += chunk, left -= chunk;
+    }
+}
+
 // MD5 update for files
 // Like above, except that it works on files (and uses above as a primitive)
 
@@ -117,7 +128,7 @@ void MD5::update(FILE *file)
         len = (int)fread(update_buffer, 1, 1024, file);
         if (len)
         {
-            update(update_buffer, len);
+            internal_update(update_buffer, len);
         }
     } while (len);
 
@@ -150,10 +161,10 @@ void MD5::finalize()
     // Pad out to 56 mod 64
     index = (uint4)((count[0] >> 3) & 0x3f);
     padLen = (index < 56) ? (56 - index) : (120 - index);
-    update(PADDING, padLen);
+    internal_update(PADDING, padLen);
 
     // Append length (before padding)
-    update(bits, 8);
+    internal_update(bits, 8);
 
     // Store state in digest
     encode(digest, state, 16);
@@ -185,7 +196,7 @@ MD5::MD5(FILE *file)
     finalize();
 }
 
-MD5::MD5(const unsigned char *input, unsigned int input_length)
+MD5::MD5(const unsigned char *input, size_t input_length)
 {
     init();  // Must be called by all constructors
     update(input, input_length);

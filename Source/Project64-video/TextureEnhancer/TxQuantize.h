@@ -49,7 +49,7 @@ private:
 
     // Compressors
     bool FXT1(uint8 *src, uint8 *dest,
-        int srcwidth, int srcheight, uint16 srcformat,
+        int srcwidth, int srcheight, uint16 /* srcformat */,
         int *destwidth, int *destheight, uint16 *destformat);
     bool DXTn(uint8 *src, uint8 *dest,
         int srcwidth, int srcheight, uint16 srcformat,

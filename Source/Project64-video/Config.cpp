@@ -174,7 +174,7 @@ private:
         int idTool = ::GetWindowLong(hTool, GWL_ID);
         if (idTool != IDC_STATIC)
         {
-            CToolInfo ToolInfo(pT->m_uToolFlags, hTool, 0, 0, (LPTSTR)idTool);
+            CToolInfo ToolInfo(pT->m_uToolFlags, hTool, 0, 0, (LPTSTR)(SIZE_T)idTool);
             pT->m_TT.AddTool(&ToolInfo);
         }
         return TRUE;
@@ -267,11 +267,12 @@ public:
         m_cbxTextureSettings.SetCheck(g_settings->texenh_options() ? BST_CHECKED : BST_UNCHECKED);
 
         m_cmbFSResolution.Attach(GetDlgItem(IDC_CMB_FS_RESOLUTION));
-        int32_t size = 0;
-        const char ** aRes = getFullScreenResList(&size);
+        int32_t tmpsize = 0;
+        const char ** aRes = getFullScreenResList(&tmpsize);
+        uint32_t size = tmpsize;
         if (aRes && size)
         {
-            for (int r = 0; r < size; r++)
+            for (uint32_t r = 0; r < size; r++)
             {
                 m_cmbFSResolution.AddString(stdstr(aRes[r]).ToUTF16().c_str());
             }

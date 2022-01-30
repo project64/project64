@@ -1859,10 +1859,10 @@ static void cc__prim_inter_env_using_enva__mul_shade()
     uint32_t er = (rdp.env_color >> 24) & 0xFF;
     uint32_t eg = (rdp.env_color >> 16) & 0xFF;
     uint32_t eb = (rdp.env_color >> 8) & 0xFF;
-    uint32_t r = minval(255, (uint32_t)(er*ea + pr*ea_i));
-    uint32_t g = minval(255, (uint32_t)(eg*ea + pg*ea_i));
-    uint32_t b = minval(255, (uint32_t)(eb*ea + pb*ea_i));
-    uint32_t col = (r << 24) | (g << 16) | (b << 8) | 0xFF;
+    uint32_t finalr = minval(255, (uint32_t)(er*ea + pr*ea_i));
+    uint32_t finalg = minval(255, (uint32_t)(eg*ea + pg*ea_i));
+    uint32_t finalb = minval(255, (uint32_t)(eb*ea + pb*ea_i));
+    uint32_t col = (finalr << 24) | (finalg << 16) | (finalb << 8) | 0xFF;
     CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GFX_COMBINE_FACTOR_LOCAL,
         GFX_COMBINE_LOCAL_ITERATED,
@@ -2203,13 +2203,13 @@ static void cc_t0_add_env_mul_k5()
         GFX_COMBINE_LOCAL_CONSTANT,
         GFX_COMBINE_OTHER_TEXTURE);
     float scale = rdp.K5 / 255.0f;
-    uint8_t r = (uint8_t)(rdp.env_color >> 24) & 0xFF;
-    r = (uint8_t)(r*scale);
-    uint8_t g = (uint8_t)(rdp.env_color >> 16) & 0xFF;
-    g = (uint8_t)(g*scale);
-    uint8_t b = (uint8_t)(rdp.env_color >> 8) & 0xFF;
-    b = (uint8_t)(b*scale);
-    CC((r << 24) | (g << 16) | (b << 8));
+    uint8_t r8 = (uint8_t)(rdp.env_color >> 24) & 0xFF;
+    r8 = (uint8_t)(r8*scale);
+    uint8_t g8 = (uint8_t)(rdp.env_color >> 16) & 0xFF;
+    g8 = (uint8_t)(g8*scale);
+    uint8_t b8 = (uint8_t)(rdp.env_color >> 8) & 0xFF;
+    b8 = (uint8_t)(b8*scale);
+    CC((r8 << 24) | (g8 << 16) | (b8 << 8));
     USE_T0();
 }
 
@@ -5888,13 +5888,13 @@ static void cc__prim_sub_env_mul_t0_add_env__mul_primlod()
         GFX_COMBINE_LOCAL_ITERATED,
         GFX_COMBINE_OTHER_CONSTANT);
     float factor = (float)rdp.prim_lodfrac / 255.0f;
-    uint8_t r = (uint8_t)((rdp.prim_color >> 24) & 0xFF);
-    r = (uint8_t)((float)r * factor);
-    uint8_t g = (uint8_t)((rdp.prim_color >> 16) & 0xFF);
-    g = (uint8_t)((float)g * factor);
-    uint8_t b = (uint8_t)((rdp.prim_color >> 8) & 0xFF);
-    b = (uint8_t)((float)b * factor);
-    CC((r << 24) | (g << 16) | (b << 8));
+    uint8_t r8 = (uint8_t)((rdp.prim_color >> 24) & 0xFF);
+    r8 = (uint8_t)((float)r8 * factor);
+    uint8_t g8 = (uint8_t)((rdp.prim_color >> 16) & 0xFF);
+    g8 = (uint8_t)((float)g8 * factor);
+    uint8_t b8 = (uint8_t)((rdp.prim_color >> 8) & 0xFF);
+    b8 = (uint8_t)((float)b8 * factor);
+    CC((r8 << 24) | (g8 << 16) | (b8 << 8));
     SETSHADE_ENV();
     MULSHADE_PRIMLOD();
     USE_T0();
@@ -8313,10 +8313,10 @@ static void cc__env_inter_prim_using_prima__mul_shade()
     int envr = (rdp.env_color >> 24) & 0xFF;
     int envg = (rdp.env_color >> 16) & 0xFF;
     int envb = (rdp.env_color >> 8) & 0xFF;
-    int r = (((primr - envr)*prima) / 256) + envr;
-    int g = (((primg - envg)*prima) / 256) + envg;
-    int b = (((primb - envb)*prima) / 256) + envb;
-    cmb.ccolor = (r << 24) | (g << 16) | (b << 8);
+    int finalr = (((primr - envr)*prima) / 256) + envr;
+    int finalg = (((primg - envg)*prima) / 256) + envg;
+    int finalb = (((primb - envb)*prima) / 256) + envb;
+    cmb.ccolor = (finalr << 24) | (finalg << 16) | (finalb << 8);
     CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GFX_COMBINE_FACTOR_LOCAL,
         GFX_COMBINE_LOCAL_ITERATED,

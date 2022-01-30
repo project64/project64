@@ -534,7 +534,8 @@ HACCEL CShortCuts::GetAcceleratorTable(void)
     CGuard CS(m_CS);
 
     // Generate an ACCEL list
-    int size = 0, MaxSize = m_ShortCuts.size() * 5;
+    unsigned int size = 0;
+    size_t MaxSize = m_ShortCuts.size() * 5;
     ACCEL * AccelList = new ACCEL[MaxSize];
     CMenuShortCutKey::RUNNING_STATE RunningState = CMenuShortCutKey::RunningState();
 

@@ -24,7 +24,7 @@ int DeviceNotification::OnCreate(LPCREATESTRUCT /*lpCreateStruct*/)
     return TRUE;
 }
 
-BOOL DeviceNotification::OnDeviceChange(UINT nEventType, DWORD /*dwData*/)
+BOOL DeviceNotification::OnDeviceChange(UINT nEventType, DWORD_PTR /*dwData*/)
 {
     if (g_InputPlugin != nullptr && (nEventType == DBT_DEVICEARRIVAL || nEventType == DBT_DEVICEREMOVECOMPLETE))
     {

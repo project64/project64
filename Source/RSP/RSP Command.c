@@ -267,12 +267,12 @@ void DrawRSPCommand ( LPARAM lParam )
 	if (strchr(Command,'\t'))
 	{
 		p1 = strchr(Command,'\t');
-		printed_offset = sprintf(Offset, "%.*s", p1 - Command, Command);
+		printed_offset = sprintf(Offset, "%.*s", (int)(INT_PTR)(p1 - Command), Command);
 		p1++;
 		if (strchr(p1,'\t'))
 		{
 			p2 = strchr(p1,'\t');
-			printed_instruction = sprintf(Instruction, "%.*s", p2 - p1, p1);
+			printed_instruction = sprintf(Instruction, "%.*s", (int)(INT_PTR)(p2 - p1), p1);
 			printed_arguments   = sprintf(Arguments, "%s", p2 + 1);
 		}
 		else

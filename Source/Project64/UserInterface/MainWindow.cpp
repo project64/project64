@@ -115,9 +115,9 @@ void CMainGui::AddRecentRom(const char * ImagePath)
     if (HIWORD(ImagePath) == NULL) { return; }
 
     // Get information about the stored ROM list
-    size_t MaxRememberedFiles = UISettingsLoadDword(File_RecentGameFileCount);
+    UINT MaxRememberedFiles = UISettingsLoadDword(File_RecentGameFileCount);
     strlist RecentGames;
-    size_t i;
+    UINT i;
     for (i = 0; i < MaxRememberedFiles; i++)
     {
         stdstr RecentGame = UISettingsLoadStringIndex(File_RecentGameFileIndex, i);
@@ -710,7 +710,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
     case WM_SIZE:
         {
             CMainGui * _this = (CMainGui *)GetProp(hWnd, L"Class");
-            if (_this) { _this->Resize(wParam, LOWORD(lParam), HIWORD(lParam)); }
+            if (_this) { _this->Resize((DWORD)wParam, LOWORD(lParam), HIWORD(lParam)); }
             if (_this)
             {
                 if (wParam == SIZE_MAXIMIZED)
@@ -775,7 +775,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                 if (g_BaseSystem)
                 {
                     if (g_Plugins && g_Plugins->Control()->WM_KeyUp) {
-                        g_Plugins->Control()->WM_KeyUp(wParam, lParam);
+                        g_Plugins->Control()->WM_KeyUp((UINT)(SIZE_T)wParam, (UINT)(SIZE_T)lParam);
                     }
                 }
             }
@@ -791,7 +791,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                 {
                     if (g_Plugins && g_Plugins->Control()->WM_KeyDown)
                     {
-                        g_Plugins->Control()->WM_KeyDown(wParam, lParam);
+                        g_Plugins->Control()->WM_KeyDown((UINT)(SIZE_T)wParam, (UINT)(SIZE_T)lParam);
                     }
                 }
             }
@@ -833,7 +833,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                     }
 
                     if (g_Plugins && g_Plugins->Control()->WM_KillFocus) {
-                        g_Plugins->Control()->WM_KillFocus(wParam, lParam);
+                        g_Plugins->Control()->WM_KillFocus((UINT)(SIZE_T)wParam, (UINT)(SIZE_T)lParam);
                     }
                 }
             }

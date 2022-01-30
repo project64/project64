@@ -19,7 +19,7 @@ class OpenSLESDriver :
 public:
     void AI_Startup(void);
     void AI_Shutdown(void);
-    void AI_SetFrequency(uint32_t freq, uint32_t BufferSize);
+    void AI_SetFrequency(uint32_t freq, uint32_t /* BufferSize */);
     void AI_LenChanged(uint8_t *start, uint32_t length);
     void AI_Update(bool Wait);
 

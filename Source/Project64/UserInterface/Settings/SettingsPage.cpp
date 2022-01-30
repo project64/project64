@@ -22,9 +22,9 @@ void CConfigSettingSection::AddPage(CSettingsPage * Page)
 	m_Pages.push_back(Page);
 }
 
-CSettingsPage * CConfigSettingSection::GetPage(int PageNo)
+CSettingsPage * CConfigSettingSection::GetPage(size_t PageNo)
 {
-	if (PageNo < 0 || PageNo >= (int)m_Pages.size())
+	if (PageNo >= m_Pages.size())
 	{
 		return nullptr;
 	}

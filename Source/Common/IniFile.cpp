@@ -504,7 +504,9 @@ bool CIniFileBase::DeleteSection(const char * lpSectionName)
         return false;
     }
     m_File.Seek(m_CurrentSectionFilePos, CFileBase::begin);
-    long DeleteSectionStart = m_CurrentSectionFilePos - (strlen(lpSectionName) + strlen(m_LineFeed) + 2);
+    size_t tmp = (strlen(lpSectionName) + strlen(m_LineFeed) + 2);
+    if (tmp != (long)(unsigned long) tmp) return false;
+    long DeleteSectionStart = m_CurrentSectionFilePos - (long)(unsigned long) tmp;
     long NextSectionStart = -1;
 
     {

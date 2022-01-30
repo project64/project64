@@ -161,7 +161,7 @@ bool CProjectSupport::PerformRequest(const wchar_t * Url, const std::string & Po
         return false;
     }
     wchar_t hdheaders[] = _T("Content-Type: application/x-www-form-urlencoded\r\n");
-    BOOL Success = HttpSendRequest(hRequest, hdheaders, _tcslen(hdheaders), (LPVOID)PostData.c_str(), PostData.length());
+    BOOL Success = HttpSendRequest(hRequest, hdheaders, _tcslen(hdheaders), (LPVOID)PostData.c_str(), (DWORD)PostData.length());
     if (!Success)
     {
         InternetCloseHandle(hRequest);
@@ -232,7 +232,7 @@ void CProjectSupport::SaveSupportInfo(void)
     long lResult = RegCreateKeyEx(HKEY_CURRENT_USER, L"SOFTWARE\\Project64", 0, L"", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, nullptr, &hKeyResults, &Disposition);
     if (lResult == ERROR_SUCCESS)
     {
-        RegSetValueEx(hKeyResults, L"user", 0, REG_BINARY, (BYTE *)OutData.data(), OutData.size());
+        RegSetValueEx(hKeyResults, L"user", 0, REG_BINARY, (BYTE *)OutData.data(), (DWORD) OutData.size());
         RegCloseKey(hKeyResults);
     }
 }
@@ -271,7 +271,7 @@ void CProjectSupport::LoadSupportInfo(void)
             InData[i] ^= 0xAA;
         }
         OutData.resize(sizeof(m_SupportInfo) + 100);
-        uLongf DestLen = OutData.size();
+        uLongf DestLen = (ULONG) OutData.size();
         if (uncompress(OutData.data(), &DestLen, InData.data(), InData.size()) >= 0)
         {
             OutData.resize(DestLen);

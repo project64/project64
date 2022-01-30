@@ -242,9 +242,9 @@ void uc8_moveword()
 
     case 0x10:  // moveword coord mod
     {
-        uint8_t n = offset >> 2;
+        uint16_t n = offset >> 2;
 
-        WriteTrace(TraceRDP, TraceDebug, "coord mod:%d, %08lx", n, data);
+        WriteTrace(TraceRDP, TraceDebug, "coord mod:%u, %08lx", n, data);
         if (rdp.cmd0 & 8)
             return;
         uint32_t idx = (rdp.cmd0 >> 1) & 3;

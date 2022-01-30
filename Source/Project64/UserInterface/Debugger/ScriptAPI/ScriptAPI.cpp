@@ -768,7 +768,7 @@ bool ScriptAPI::PrivateCallAllowed(duk_context* ctx)
         return false;
     }
 
-    bool bAllowed = duk_get_boolean(ctx, -1);
+    bool bAllowed = duk_get_boolean(ctx, -1) != (duk_bool_t)false;
     duk_pop(ctx);
     return bAllowed;
 }

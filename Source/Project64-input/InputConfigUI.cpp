@@ -59,7 +59,7 @@ private:
     void DisplayControllerImage(void);
     void DisplayController(void);
     void ButtonChannged(const BUTTON & Button);
-    void EnablePage(int32_t Present);
+    void EnablePage(size_t Present);
     static void stButtonChanged(size_t data, const BUTTON & Button) { ((CControllerSettings *)data)->ButtonChannged(Button); }
 
     std::wstring m_Title;
@@ -328,7 +328,7 @@ void CControllerSettings::ButtonChannged(const BUTTON & Button)
     CPropertySheetWindow(GetParent()).SetModified(m_hWnd);
 }
 
-void CControllerSettings::EnablePage(int32_t Present)
+void CControllerSettings::EnablePage(size_t Present)
 {
     bool Enable = Present == PRESENT_CONT;
     GetDlgItem(IDC_SLIDE_DEADZONE).EnableWindow(Enable);

@@ -21,8 +21,8 @@ static int xy_off = offsetof(gfxVERTEX, x);
 static int z_off = offsetof(gfxVERTEX, z);
 static int q_off = offsetof(gfxVERTEX, q);
 static int pargb_off = offsetof(gfxVERTEX, b);
-static int st0_off = offsetof(gfxVERTEX, coord[0]);
-static int st1_off = offsetof(gfxVERTEX, coord[2]);
+static int st0_off = (int)(offsetof(gfxVERTEX, coord[0]));
+static int st1_off = (int)(offsetof(gfxVERTEX, coord[2]));
 static int fog_ext_off = offsetof(gfxVERTEX, f);
 
 int w_buffer_mode;

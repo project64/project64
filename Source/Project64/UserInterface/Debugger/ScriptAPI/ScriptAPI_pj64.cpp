@@ -64,10 +64,10 @@ duk_ret_t ScriptAPI::js_pj64_close(duk_context* /*ctx*/)
 duk_ret_t ScriptAPI::js_pj64_reset(duk_context* ctx)
 {
     CheckArgs(ctx, { Arg_OptBoolean });
-    bool bSoftReset = (bool)duk_get_boolean_default(ctx, 0, (duk_bool_t)false);
+    LPARAM bSoftReset = duk_get_boolean_default(ctx, 0, (duk_bool_t)false);
 
     HWND hMainWindow = (HWND)g_Plugins->MainWindow()->GetWindowHandle();
-    PostMessage(hMainWindow, WM_JSAPI_ACTION, JSAPI_ACT_RESET, (WPARAM)bSoftReset);
+    PostMessage(hMainWindow, WM_JSAPI_ACTION, JSAPI_ACT_RESET, bSoftReset);
     return 0;
 }
 
@@ -88,7 +88,7 @@ duk_ret_t ScriptAPI::js_pj64_resume(duk_context* /*ctx*/)
 duk_ret_t ScriptAPI::js_pj64_limitfps(duk_context* ctx)
 {
     CheckArgs(ctx, { Arg_Boolean });
-    bool bLimitFps = duk_get_boolean(ctx, 0);
+    bool bLimitFps = duk_get_boolean(ctx, 0) != (duk_bool_t)false;
     g_Settings->SaveBool(GameRunning_LimitFPS, bLimitFps);
     return 0;
 }
