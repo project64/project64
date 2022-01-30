@@ -109,7 +109,7 @@ void MD5::update(const unsigned char *input, size_t input_length)
     for (size_t left = input_length, chunk, multi = sizeof(uint4) < sizeof(left);;)
     {
         chunk = multi && left > 0xffffffff ? 0xffffffff : (uint4) left;
-        internal_update(input, chunk);
+        internal_update(input, (uint4) chunk);
         if (!multi || !left) break;
         input += chunk, left -= chunk;
     }
