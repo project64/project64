@@ -6072,10 +6072,12 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x04040000: MoveConstToVariable(Value, &g_Reg->SP_MEM_ADDR_REG, "SP_MEM_ADDR_REG"); break;
         case 0x04040004: MoveConstToVariable(Value, &g_Reg->SP_DRAM_ADDR_REG, "SP_DRAM_ADDR_REG"); break;
         case 0x04040008:
-            MoveConstToVariable(Value, &g_Reg->SP_RD_LEN_REG, "SP_RD_LEN_REG");
             m_RegWorkingSet.BeforeCallDirect();
-            MoveConstToArmReg(Arm_R0, (uint32_t)((CDMA *)g_MMU), "(CDMA *)g_MMU");
-            CallFunction(AddressOf(&CDMA::SP_DMA_READ), "CDMA::SP_DMA_READ");
+            PushImm32(0xFFFFFFFF);
+            PushImm32(Value);
+            PushImm32(PAddr & 0x1FFFFFFF);
+            MoveConstToArmReg(Arm_R0, (uint32_t)(MemoryHandler *)&g_MMU->m_SPRegistersHandler, "(MemoryHandler *)g_MMU->m_SPRegistersHandler");
+            CallFunction((void *)((long**)(MemoryHandler *)&g_MMU->m_SPRegistersHandler)[0][1], "SPRegistersHandler::Write32");
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04040010:
@@ -6573,10 +6575,12 @@ void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
         case 0x04040000: MoveArmRegToVariable(Reg, &g_Reg->SP_MEM_ADDR_REG, "SP_MEM_ADDR_REG"); break;
         case 0x04040004: MoveArmRegToVariable(Reg, &g_Reg->SP_DRAM_ADDR_REG, "SP_DRAM_ADDR_REG"); break;
         case 0x04040008:
-            MoveArmRegToVariable(Reg, &g_Reg->SP_RD_LEN_REG, "SP_RD_LEN_REG");
             m_RegWorkingSet.BeforeCallDirect();
-            MoveConstToArmReg(Arm_R0, (uint32_t)((CDMA *)g_MMU), "(CDMA *)g_MMU");
-            CallFunction(AddressOf(&CDMA::SP_DMA_READ), "CDMA::SP_DMA_READ");
+            PushImm32(0xFFFFFFFF);
+            Push(Reg);
+            PushImm32(PAddr & 0x1FFFFFFF);
+            MoveConstToArmReg(Arm_R0, (uint32_t)(MemoryHandler *)&g_MMU->m_SPRegistersHandler, "(MemoryHandler *)g_MMU->m_SPRegistersHandler");
+            CallFunction((void *)((long**)(MemoryHandler *)&g_MMU->m_SPRegistersHandler)[0][1], "SPRegistersHandler::Write32");
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x0404000C:

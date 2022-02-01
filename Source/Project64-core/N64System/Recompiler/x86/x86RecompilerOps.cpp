@@ -10465,15 +10465,17 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x04040000: MoveConstToVariable(Value, &g_Reg->SP_MEM_ADDR_REG, "SP_MEM_ADDR_REG"); break;
         case 0x04040004: MoveConstToVariable(Value, &g_Reg->SP_DRAM_ADDR_REG, "SP_DRAM_ADDR_REG"); break;
         case 0x04040008:
-            MoveConstToVariable(Value, &g_Reg->SP_RD_LEN_REG, "SP_RD_LEN_REG");
             m_RegWorkingSet.BeforeCallDirect();
+            PushImm32(0xFFFFFFFF);
+            PushImm32(Value);
+            PushImm32(PAddr & 0x1FFFFFFF);
 #ifdef _MSC_VER
-            MoveConstToX86reg((uint32_t)((CDMA *)g_MMU), x86_ECX);
-            Call_Direct(AddressOf(&CDMA::SP_DMA_READ), "CDMA::SP_DMA_READ");
+            MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_SPRegistersHandler, x86_ECX);
+            Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_SPRegistersHandler)[0][1], "SPRegistersHandler::Write32");
 #else
-            PushImm32((uint32_t)((CDMA *)g_MMU));
-            Call_Direct(AddressOf(&CDMA::SP_DMA_READ), "CDMA::SP_DMA_READ");
-            AddConstToX86Reg(x86_ESP, 4);
+            PushImm32((uint32_t)&g_MMU->m_SPRegistersHandler);
+            Call_Direct(AddressOf(&SPRegistersHandler::Write32), "SPRegistersHandler::Write32");
+            AddConstToX86Reg(x86_ESP, 16);
 #endif
             m_RegWorkingSet.AfterCallDirect();
             break;
@@ -11009,15 +11011,17 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         case 0x04040000: MoveX86regToVariable(Reg, &g_Reg->SP_MEM_ADDR_REG, "SP_MEM_ADDR_REG"); break;
         case 0x04040004: MoveX86regToVariable(Reg, &g_Reg->SP_DRAM_ADDR_REG, "SP_DRAM_ADDR_REG"); break;
         case 0x04040008:
-            MoveX86regToVariable(Reg, &g_Reg->SP_RD_LEN_REG, "SP_RD_LEN_REG");
             m_RegWorkingSet.BeforeCallDirect();
+            PushImm32(0xFFFFFFFF);
+            Push(Reg);
+            PushImm32(PAddr & 0x1FFFFFFF);
 #ifdef _MSC_VER
-            MoveConstToX86reg((uint32_t)((CDMA *)g_MMU), x86_ECX);
-            Call_Direct(AddressOf(&CDMA::SP_DMA_READ), "CDMA::SP_DMA_READ");
+            MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_SPRegistersHandler, x86_ECX);
+            Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_SPRegistersHandler)[0][1], "SPRegistersHandler::Write32");
 #else
-            PushImm32((uint32_t)((CDMA *)g_MMU));
-            Call_Direct(AddressOf(&CDMA::SP_DMA_READ), "CDMA::SP_DMA_READ");
-            AddConstToX86Reg(x86_ESP, 4);
+            PushImm32((uint32_t)&g_MMU->m_SPRegistersHandler);
+            Call_Direct(AddressOf(&SPRegistersHandler::Write32), "SPRegistersHandler::Write32");
+            AddConstToX86Reg(x86_ESP, 16);
 #endif
             m_RegWorkingSet.AfterCallDirect();
             break;

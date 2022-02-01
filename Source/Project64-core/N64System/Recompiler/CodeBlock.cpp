@@ -17,13 +17,13 @@ extern "C" void __clear_cache_android(uint8_t* begin, uint8_t *end);
 #endif
 
 CCodeBlock::CCodeBlock(uint32_t VAddrEnter, uint8_t * CompiledLocation) :
-m_VAddrEnter(VAddrEnter),
-m_VAddrFirst(VAddrEnter),
-m_VAddrLast(VAddrEnter),
-m_CompiledLocation(CompiledLocation),
-m_EnterSection(nullptr),
-m_RecompilerOps(nullptr),
-m_Test(1)
+    m_VAddrEnter(VAddrEnter),
+    m_VAddrFirst(VAddrEnter),
+    m_VAddrLast(VAddrEnter),
+    m_CompiledLocation(CompiledLocation),
+    m_EnterSection(nullptr),
+    m_RecompilerOps(nullptr),
+    m_Test(1)
 {
 #if defined(__arm__) || defined(_M_ARM)
     // Make sure function starts at an odd address so that the system knows it is in thumb mode

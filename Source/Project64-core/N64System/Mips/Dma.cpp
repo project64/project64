@@ -477,50 +477,6 @@ void CDMA::PI_DMA_WRITE()
     g_Reg->CheckInterrupts();
 }
 
-void CDMA::SP_DMA_READ()
-{
-    g_Reg->SP_DRAM_ADDR_REG &= 0x1FFFFFFF;
-
-    if (g_Reg->SP_DRAM_ADDR_REG > g_MMU->RdramSize())
-    {
-        if (HaveDebugger())
-        {
-            g_Notify->DisplayError(stdstr_f("%s\nSP_DRAM_ADDR_REG not in RDRAM space: % 08X", __FUNCTION__, g_Reg->SP_DRAM_ADDR_REG).c_str());
-        }
-        g_Reg->SP_DMA_BUSY_REG = 0;
-        g_Reg->SP_STATUS_REG &= ~SP_STATUS_DMA_BUSY;
-        return;
-    }
-
-    if (g_Reg->SP_RD_LEN_REG + 1 + (g_Reg->SP_MEM_ADDR_REG & 0xFFF) > 0x1000)
-    {
-        if (HaveDebugger())
-        {
-            g_Notify->DisplayError(stdstr_f("%s\nCould not fit copy in memory segment",__FUNCTION__).c_str());
-        }
-        return;
-    }
-
-    if ((g_Reg->SP_MEM_ADDR_REG & 3) != 0)
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-    if ((g_Reg->SP_DRAM_ADDR_REG & 3) != 0)
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-    if (((g_Reg->SP_RD_LEN_REG + 1) & 3) != 0)
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-
-    memcpy(g_MMU->Dmem() + (g_Reg->SP_MEM_ADDR_REG & 0x1FFF), g_MMU->Rdram() + g_Reg->SP_DRAM_ADDR_REG,
-        g_Reg->SP_RD_LEN_REG + 1);
-
-    g_Reg->SP_DMA_BUSY_REG = 0;
-    g_Reg->SP_STATUS_REG &= ~SP_STATUS_DMA_BUSY;
-}
-
 void CDMA::SP_DMA_WRITE()
 {
     if (g_Reg->SP_DRAM_ADDR_REG > g_MMU->RdramSize())
