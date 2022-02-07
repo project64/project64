@@ -3096,16 +3096,17 @@ typedef struct duk_hthread duk_context;
  */
 
 /* __OVERRIDE_DEFINES__ */
+
+#if defined(DUK_USE_DATE_NOW_WINDOWS_SUBMS)
+#undef DUK_USE_DATE_NOW_WINDOWS_SUBMS
+#define DUK_USE_DATE_NOW_WINDOWS
+#endif
+
 #define DUK_USE_CPP_EXCEPTIONS
 #define DUK_USE_INTERRUPT_COUNTER
 #define DUK_USE_EXEC_TIMEOUT_CHECK(udata) DukTimeoutCheck(udata)
-#ifdef DUK_F_CPP
-extern "C" {
-#endif
-extern int DukTimeoutCheck(void*);
-#ifdef DUK_F_CPP
-}
-#endif
+
+extern "C" int DukTimeoutCheck(void*);
 
 /*
  *  Conditional includes
