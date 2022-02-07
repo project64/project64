@@ -232,10 +232,6 @@ void CSettingTypeRomDatabase::LoadDefault(uint32_t /*Index*/, std::string & Valu
 // Update the settings
 void CSettingTypeRomDatabase::Save(uint32_t /*Index*/, bool Value)
 {
-    if (!g_Settings->LoadBool(Setting_RdbEditor))
-    {
-        return;
-    }
     if (m_DeleteOnDefault)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -256,10 +252,6 @@ void CSettingTypeRomDatabase::Save(uint32_t /*Index*/, bool Value)
 
 void CSettingTypeRomDatabase::Save(uint32_t Index, uint32_t Value)
 {
-    if (!g_Settings->LoadBool(Setting_RdbEditor))
-    {
-        return;
-    }
     if (m_DeleteOnDefault)
     {
         uint32_t defaultValue = 0;
@@ -286,10 +278,6 @@ void CSettingTypeRomDatabase::Save(uint32_t Index, uint32_t Value)
 
 void CSettingTypeRomDatabase::Save(uint32_t /*Index*/, const std::string & Value)
 {
-    if (!g_Settings->LoadBool(Setting_RdbEditor))
-    {
-        return;
-    }
     if (m_VideoSetting)
     {
         m_VideoIniFile->SaveString(Section(), m_KeyName.c_str(), Value.c_str());
@@ -306,10 +294,6 @@ void CSettingTypeRomDatabase::Save(uint32_t /*Index*/, const std::string & Value
 
 void CSettingTypeRomDatabase::Save(uint32_t /*Index*/, const char * Value)
 {
-    if (!g_Settings->LoadBool(Setting_RdbEditor))
-    {
-        return;
-    }
     if (m_VideoSetting)
     {
         m_VideoIniFile->SaveString(Section(), m_KeyName.c_str(), Value);
@@ -326,10 +310,6 @@ void CSettingTypeRomDatabase::Save(uint32_t /*Index*/, const char * Value)
 
 void CSettingTypeRomDatabase::Delete(uint32_t /*Index*/)
 {
-    if (!g_Settings->LoadBool(Setting_RdbEditor))
-    {
-        return;
-    }
     if (m_VideoSetting)
     {
         m_VideoIniFile->SaveString(Section(), m_KeyName.c_str(), nullptr);
