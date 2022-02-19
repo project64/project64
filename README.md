@@ -17,7 +17,7 @@ Project64 is a free and open-source emulator for the Nintendo 64 and Nintendo 64
   
 ### Stable Builds
 
-Installer for the latest stable release: https://www.pj64-emu.com/download/project64-latest
+Installer for the latest stable release: https://www.pj64-emu.com/windows-downloads
 
 Follow the instructions in the setup window to complete the installation.
 
