@@ -27,6 +27,7 @@ CMipsMemoryVM::CMipsMemoryVM(CN64System & System, CRegisters & Reg, bool SavesRe
     CSram(SavesReadOnly),
     CDMA(*this, *this),
     m_Reg(Reg),
+    m_RDRAMRegistersHandler(Reg),
     m_RomMapped(false),
     m_PeripheralInterfaceHandler(*this, Reg),
     m_RDRAMInterfaceHandler(Reg),
@@ -639,8 +640,8 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
     {
         switch (PAddr & 0xFFF00000)
         {
-        case 0x03F00000: Load32RDRAMRegisters(); break;
-        case 0x04000000: m_SPRegistersHandler.Read32(PAddr, m_MemLookupValue.UW[0]);; break;
+        case 0x03F00000: m_RDRAMRegistersHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
+        case 0x04000000: m_SPRegistersHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
         case 0x04100000: Load32DPCommand(); break;
         case 0x04300000: Load32MIPSInterface(); break;
         case 0x04400000: Load32VideoInterface(); break;
@@ -749,7 +750,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             *(uint32_t *)(m_RDRAM + PAddr) = Value;
         }
         break;
-    case 0x03F00000: Write32RDRAMRegisters(); break;
+    case 0x03F00000: m_RDRAMRegistersHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x04000000:
         if (PAddr < 0x04002000)
         {
@@ -1118,30 +1119,6 @@ void CMipsMemoryVM::ChangeMiIntrMask()
     }
 }
 
-void CMipsMemoryVM::Load32RDRAMRegisters(void)
-{
-    switch (m_MemLookupAddress & 0x1FFFFFFF)
-    {
-    case 0x03F00000: m_MemLookupValue.UW[0] = g_Reg->RDRAM_CONFIG_REG; break;
-    case 0x03F00004: m_MemLookupValue.UW[0] = g_Reg->RDRAM_DEVICE_ID_REG; break;
-    case 0x03F00008: m_MemLookupValue.UW[0] = g_Reg->RDRAM_DELAY_REG; break;
-    case 0x03F0000C: m_MemLookupValue.UW[0] = g_Reg->RDRAM_MODE_REG; break;
-    case 0x03F00010: m_MemLookupValue.UW[0] = g_Reg->RDRAM_REF_INTERVAL_REG; break;
-    case 0x03F00014: m_MemLookupValue.UW[0] = g_Reg->RDRAM_REF_ROW_REG; break;
-    case 0x03F00018: m_MemLookupValue.UW[0] = g_Reg->RDRAM_RAS_INTERVAL_REG; break;
-    case 0x03F0001C: m_MemLookupValue.UW[0] = g_Reg->RDRAM_MIN_INTERVAL_REG; break;
-    case 0x03F00020: m_MemLookupValue.UW[0] = g_Reg->RDRAM_ADDR_SELECT_REG; break;
-    case 0x03F00024: m_MemLookupValue.UW[0] = g_Reg->RDRAM_DEVICE_MANUF_REG; break;
-    default:
-        m_MemLookupValue.UW[0] = 0;
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-    }
-    m_MemLookupValid = true;
-}
-
 void CMipsMemoryVM::Load32DPCommand(void)
 {
     switch (m_MemLookupAddress & 0x1FFFFFFF)
@@ -1403,34 +1380,6 @@ void CMipsMemoryVM::Load32Rom(void)
     {
         m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
         m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
-    }
-}
-
-void CMipsMemoryVM::Write32RDRAMRegisters(void)
-{
-    switch ((m_MemLookupAddress & 0xFFFFFFF))
-    {
-    case 0x03F00000: g_Reg->RDRAM_CONFIG_REG = m_MemLookupValue.UW[0]; break;
-    case 0x03F00004: g_Reg->RDRAM_DEVICE_ID_REG = m_MemLookupValue.UW[0]; break;
-    case 0x03F00008: g_Reg->RDRAM_DELAY_REG = m_MemLookupValue.UW[0]; break;
-    case 0x03F0000C: g_Reg->RDRAM_MODE_REG = m_MemLookupValue.UW[0]; break;
-    case 0x03F00010: g_Reg->RDRAM_REF_INTERVAL_REG = m_MemLookupValue.UW[0]; break;
-    case 0x03F00014: g_Reg->RDRAM_REF_ROW_REG = m_MemLookupValue.UW[0]; break;
-    case 0x03F00018: g_Reg->RDRAM_RAS_INTERVAL_REG = m_MemLookupValue.UW[0]; break;
-    case 0x03F0001C: g_Reg->RDRAM_MIN_INTERVAL_REG = m_MemLookupValue.UW[0]; break;
-    case 0x03F00020: g_Reg->RDRAM_ADDR_SELECT_REG = m_MemLookupValue.UW[0]; break;
-    case 0x03F00024: g_Reg->RDRAM_DEVICE_MANUF_REG = m_MemLookupValue.UW[0]; break;
-    case 0x03F04004: break;
-    case 0x03F08004: break;
-    case 0x03F80004: break;
-    case 0x03F80008: break;
-    case 0x03F8000C: break;
-    case 0x03F80014: break;
-    default:
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
     }
 }
 

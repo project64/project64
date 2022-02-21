@@ -9,6 +9,7 @@
 #include <Project64-core\N64System\Mips\Dma.h>
 #include <Project64-core\N64System\MemoryHandler\PeripheralInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RDRAMInterfaceHandler.h>
+#include <Project64-core\N64System\MemoryHandler\RDRAMRegistersHandler.h>
 #include <Project64-core\N64System\MemoryHandler\SPRegistersHandler.h>
 #include <Project64-core\Settings\GameSettings.h>
 
@@ -134,7 +135,6 @@ private:
     bool SH_NonMemory(uint32_t PAddr, uint16_t Value);
     bool SW_NonMemory(uint32_t PAddr, uint32_t Value);
 
-    static void Load32RDRAMRegisters(void);
     static void Load32DPCommand(void);
     static void Load32MIPSInterface(void);
     static void Load32VideoInterface(void);
@@ -147,7 +147,6 @@ private:
     static void Load32PifRam(void);
     static void Load32Rom(void);
 
-    static void Write32RDRAMRegisters(void);
     static void Write32DPCommandRegisters(void);
     static void Write32MIPSInterface(void);
     static void Write32VideoInterface(void);
@@ -183,8 +182,9 @@ private:
 
     static uint8_t   * m_Reserve1, *m_Reserve2;
 	CRegisters & m_Reg;
-	PeripheralInterfaceHandler m_PeripheralInterfaceHandler;
+    PeripheralInterfaceHandler m_PeripheralInterfaceHandler;
 	RDRAMInterfaceHandler m_RDRAMInterfaceHandler;
+    RDRAMRegistersHandler m_RDRAMRegistersHandler;
     SPRegistersHandler m_SPRegistersHandler;
     uint8_t * m_RDRAM, *m_DMEM, *m_IMEM;
     uint32_t m_AllocatedRdramSize;

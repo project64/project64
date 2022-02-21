@@ -75,21 +75,6 @@ CP0registers::CP0registers(uint32_t * _CP0) :
 {
 }
 
-Rdram_InterfaceReg::Rdram_InterfaceReg(uint32_t * _RdramInterface) :
-    RDRAM_CONFIG_REG(_RdramInterface[0]),
-    RDRAM_DEVICE_TYPE_REG(_RdramInterface[0]),
-    RDRAM_DEVICE_ID_REG(_RdramInterface[1]),
-    RDRAM_DELAY_REG(_RdramInterface[2]),
-    RDRAM_MODE_REG(_RdramInterface[3]),
-    RDRAM_REF_INTERVAL_REG(_RdramInterface[4]),
-    RDRAM_REF_ROW_REG(_RdramInterface[5]),
-    RDRAM_RAS_INTERVAL_REG(_RdramInterface[6]),
-    RDRAM_MIN_INTERVAL_REG(_RdramInterface[7]),
-    RDRAM_ADDR_SELECT_REG(_RdramInterface[8]),
-    RDRAM_DEVICE_MANUF_REG(_RdramInterface[9])
-{
-}
-
 Mips_InterfaceReg::Mips_InterfaceReg(uint32_t * _MipsInterface) :
     MI_INIT_MODE_REG(_MipsInterface[0]),
     MI_MODE_REG(_MipsInterface[0]),
@@ -185,7 +170,7 @@ Disk_InterfaceReg::Disk_InterfaceReg(uint32_t * DiskInterface) :
 
 CRegisters::CRegisters(CN64System * System, CSystemEvents * SystemEvents) :
     CP0registers(m_CP0),
-    Rdram_InterfaceReg(m_RDRAM_Registers),
+	RDRAMRegistersReg(m_RDRAM_Registers),
     Mips_InterfaceReg(m_Mips_Interface),
     Video_InterfaceReg(m_Video_Interface),
     AudioInterfaceReg(m_Audio_Interface),

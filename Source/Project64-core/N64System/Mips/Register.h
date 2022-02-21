@@ -4,6 +4,7 @@
 #include <Project64-core\N64System\N64Types.h>
 #include <Project64-core\N64System\MemoryHandler\PeripheralInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RDRAMInterfaceHandler.h>
+#include <Project64-core\N64System\MemoryHandler\RDRAMRegistersHandler.h>
 #include <Project64-core\N64System\MemoryHandler\SPRegistersHandler.h>
 #include <Project64-core\Settings\DebugSettings.h>
 #include <Project64-core\Settings\GameSettings.h>
@@ -111,31 +112,6 @@ enum
     FPCSR_RM_RZ			= 0x00000001, // Round to zero
     FPCSR_RM_RP			= 0x00000002, // Round to positive infinity
     FPCSR_RM_RM			= 0x00000003, // Round to negative infinity
-};
-
-// RDRAM registers
-class Rdram_InterfaceReg
-{
-protected:
-    Rdram_InterfaceReg (uint32_t * _RdramInterface);
-
-public:
-    uint32_t & RDRAM_CONFIG_REG;
-    uint32_t & RDRAM_DEVICE_TYPE_REG;
-    uint32_t & RDRAM_DEVICE_ID_REG;
-    uint32_t & RDRAM_DELAY_REG;
-    uint32_t & RDRAM_MODE_REG;
-    uint32_t & RDRAM_REF_INTERVAL_REG;
-    uint32_t & RDRAM_REF_ROW_REG;
-    uint32_t & RDRAM_RAS_INTERVAL_REG;
-    uint32_t & RDRAM_MIN_INTERVAL_REG;
-    uint32_t & RDRAM_ADDR_SELECT_REG;
-    uint32_t & RDRAM_DEVICE_MANUF_REG;
-
-private:
-    Rdram_InterfaceReg();
-    Rdram_InterfaceReg(const Rdram_InterfaceReg&);
-    Rdram_InterfaceReg& operator=(const Rdram_InterfaceReg&);
 };
 
 // MIPS interface registers
@@ -499,7 +475,7 @@ class CRegisters :
     private CGameSettings,
     protected CSystemRegisters,
     public CP0registers,
-    public Rdram_InterfaceReg,
+    public RDRAMRegistersReg,
     public Mips_InterfaceReg,
     public Video_InterfaceReg,
     public AudioInterfaceReg,

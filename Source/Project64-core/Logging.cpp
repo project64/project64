@@ -39,27 +39,8 @@ void CLogging::Log_LW(uint32_t PC, uint32_t VAddr)
     }
     if (VAddr >= 0xA3F00000 && VAddr <= 0xA3F00024)
     {
-        if (!LogRDRamRegisters())
-        {
-            return;
-        }
-        g_MMU->LW_VAddr(VAddr, Value);
-
-        switch (VAddr)
-        {
-        case 0xA3F00000: LogMessage("%08X: read from RDRAM_CONFIG_REG/RDRAM_DEVICE_TYPE_REG (%08X)", PC, Value); return;
-        case 0xA3F00004: LogMessage("%08X: read from RDRAM_DEVICE_ID_REG (%08X)", PC, Value); return;
-        case 0xA3F00008: LogMessage("%08X: read from RDRAM_DELAY_REG (%08X)", PC, Value); return;
-        case 0xA3F0000C: LogMessage("%08X: read from RDRAM_MODE_REG (%08X)", PC, Value); return;
-        case 0xA3F00010: LogMessage("%08X: read from RDRAM_REF_INTERVAL_REG (%08X)", PC, Value); return;
-        case 0xA3F00014: LogMessage("%08X: read from RDRAM_REF_ROW_REG (%08X)", PC, Value); return;
-        case 0xA3F00018: LogMessage("%08X: read from RDRAM_RAS_INTERVAL_REG (%08X)", PC, Value); return;
-        case 0xA3F0001C: LogMessage("%08X: read from RDRAM_MIN_INTERVAL_REG (%08X)", PC, Value); return;
-        case 0xA3F00020: LogMessage("%08X: read from RDRAM_ADDR_SELECT_REG (%08X)", PC, Value); return;
-        case 0xA3F00024: LogMessage("%08X: read from RDRAM_DEVICE_MANUF_REG (%08X)", PC, Value); return;
-        }
+        return;
     }
-
     if (VAddr >= 0xA4000000 && VAddr <= 0xA4001FFC)
     {
         return;
@@ -259,23 +240,6 @@ void CLogging::Log_SW(uint32_t PC, uint32_t VAddr, uint32_t Value)
     }
     if (VAddr >= 0xA3F00000 && VAddr <= 0xA3F00024)
     {
-        if (!LogRDRamRegisters())
-        {
-            return;
-        }
-        switch (VAddr)
-        {
-        case 0xA3F00000: LogMessage("%08X: Writing 0x%08X to RDRAM_CONFIG_REG/RDRAM_DEVICE_TYPE_REG", PC, Value); return;
-        case 0xA3F00004: LogMessage("%08X: Writing 0x%08X to RDRAM_DEVICE_ID_REG", PC, Value); return;
-        case 0xA3F00008: LogMessage("%08X: Writing 0x%08X to RDRAM_DELAY_REG", PC, Value); return;
-        case 0xA3F0000C: LogMessage("%08X: Writing 0x%08X to RDRAM_MODE_REG", PC, Value); return;
-        case 0xA3F00010: LogMessage("%08X: Writing 0x%08X to RDRAM_REF_INTERVAL_REG", PC, Value); return;
-        case 0xA3F00014: LogMessage("%08X: Writing 0x%08X to RDRAM_REF_ROW_REG", PC, Value); return;
-        case 0xA3F00018: LogMessage("%08X: Writing 0x%08X to RDRAM_RAS_INTERVAL_REG", PC, Value); return;
-        case 0xA3F0001C: LogMessage("%08X: Writing 0x%08X to RDRAM_MIN_INTERVAL_REG", PC, Value); return;
-        case 0xA3F00020: LogMessage("%08X: Writing 0x%08X to RDRAM_ADDR_SELECT_REG", PC, Value); return;
-        case 0xA3F00024: LogMessage("%08X: Writing 0x%08X to RDRAM_DEVICE_MANUF_REG", PC, Value); return;
-        }
     }
     if (VAddr >= 0xA4000000 && VAddr <= 0xA4001FFC)
     {
