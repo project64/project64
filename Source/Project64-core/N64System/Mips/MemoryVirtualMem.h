@@ -7,6 +7,7 @@
 #include <Project64-core\N64System\Mips\FlashRam.h>
 #include <Project64-core\N64System\Mips\Sram.h>
 #include <Project64-core\N64System\Mips\Dma.h>
+#include <Project64-core\N64System\MemoryHandler\DisplayControlRegHandler.h>
 #include <Project64-core\N64System\MemoryHandler\PeripheralInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RDRAMInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RDRAMRegistersHandler.h>
@@ -135,7 +136,6 @@ private:
     bool SH_NonMemory(uint32_t PAddr, uint16_t Value);
     bool SW_NonMemory(uint32_t PAddr, uint32_t Value);
 
-    static void Load32DPCommand(void);
     static void Load32MIPSInterface(void);
     static void Load32VideoInterface(void);
     static void Load32AudioInterface(void);
@@ -147,7 +147,6 @@ private:
     static void Load32PifRam(void);
     static void Load32Rom(void);
 
-    static void Write32DPCommandRegisters(void);
     static void Write32MIPSInterface(void);
     static void Write32VideoInterface(void);
     static void Write32AudioInterface(void);
@@ -182,6 +181,7 @@ private:
 
     static uint8_t   * m_Reserve1, *m_Reserve2;
 	CRegisters & m_Reg;
+    DisplayControlRegHandler m_DPCommandRegistersHandler;
     PeripheralInterfaceHandler m_PeripheralInterfaceHandler;
 	RDRAMInterfaceHandler m_RDRAMInterfaceHandler;
     RDRAMRegistersHandler m_RDRAMRegistersHandler;

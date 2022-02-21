@@ -51,23 +51,7 @@ void CLogging::Log_LW(uint32_t PC, uint32_t VAddr)
     }
     if (VAddr >= 0xA4100000 && VAddr <= 0xA410001C)
     {
-        if (!LogDPCRegisters())
-        {
-            return;
-        }
-        g_MMU->LW_VAddr(VAddr, Value);
-
-        switch (VAddr)
-        {
-        case 0xA4100000: LogMessage("%08X: read from DPC_START_REG (%08X)", PC, Value); return;
-        case 0xA4100004: LogMessage("%08X: read from DPC_END_REG (%08X)", PC, Value); return;
-        case 0xA4100008: LogMessage("%08X: read from DPC_CURRENT_REG (%08X)", PC, Value); return;
-        case 0xA410000C: LogMessage("%08X: read from DPC_STATUS_REG (%08X)", PC, Value); return;
-        case 0xA4100010: LogMessage("%08X: read from DPC_CLOCK_REG (%08X)", PC, Value); return;
-        case 0xA4100014: LogMessage("%08X: read from DPC_BUFBUSY_REG (%08X)", PC, Value); return;
-        case 0xA4100018: LogMessage("%08X: read from DPC_PIPEBUSY_REG (%08X)", PC, Value); return;
-        case 0xA410001C: LogMessage("%08X: read from DPC_TMEM_REG (%08X)", PC, Value); return;
-        }
+        return;
     }
     if (VAddr >= 0xA4300000 && VAddr <= 0xA430000C)
     {
@@ -257,21 +241,7 @@ void CLogging::Log_SW(uint32_t PC, uint32_t VAddr, uint32_t Value)
 
     if (VAddr >= 0xA4100000 && VAddr <= 0xA410001C)
     {
-        if (!LogDPCRegisters())
-        {
-            return;
-        }
-        switch (VAddr)
-        {
-        case 0xA4100000: LogMessage("%08X: Writing 0x%08X to DPC_START_REG", PC, Value); return;
-        case 0xA4100004: LogMessage("%08X: Writing 0x%08X to DPC_END_REG", PC, Value); return;
-        case 0xA4100008: LogMessage("%08X: Writing 0x%08X to DPC_CURRENT_REG", PC, Value); return;
-        case 0xA410000C: LogMessage("%08X: Writing 0x%08X to DPC_STATUS_REG", PC, Value); return;
-        case 0xA4100010: LogMessage("%08X: Writing 0x%08X to DPC_CLOCK_REG", PC, Value); return;
-        case 0xA4100014: LogMessage("%08X: Writing 0x%08X to DPC_BUFBUSY_REG", PC, Value); return;
-        case 0xA4100018: LogMessage("%08X: Writing 0x%08X to DPC_PIPEBUSY_REG", PC, Value); return;
-        case 0xA410001C: LogMessage("%08X: Writing 0x%08X to DPC_TMEM_REG", PC, Value); return;
-        }
+        return;
     }
 
     if (VAddr >= 0xA4200000 && VAddr <= 0xA420000C)

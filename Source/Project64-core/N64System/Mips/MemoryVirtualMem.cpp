@@ -29,6 +29,7 @@ CMipsMemoryVM::CMipsMemoryVM(CN64System & System, CRegisters & Reg, bool SavesRe
     m_Reg(Reg),
     m_RDRAMRegistersHandler(Reg),
     m_RomMapped(false),
+    m_DPCommandRegistersHandler(System, System.GetPlugins(), Reg),
     m_PeripheralInterfaceHandler(*this, Reg),
     m_RDRAMInterfaceHandler(Reg),
     m_SPRegistersHandler(System, *this, Reg),
@@ -642,7 +643,7 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
         {
         case 0x03F00000: m_RDRAMRegistersHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
         case 0x04000000: m_SPRegistersHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
-        case 0x04100000: Load32DPCommand(); break;
+        case 0x04100000: m_DPCommandRegistersHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
         case 0x04300000: Load32MIPSInterface(); break;
         case 0x04400000: Load32VideoInterface(); break;
         case 0x04500000: Load32AudioInterface(); break;
@@ -762,7 +763,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             m_SPRegistersHandler.Write32(PAddr, Value, 0xFFFFFFFF);
         }
         break;
-    case 0x04100000: Write32DPCommandRegisters(); break;
+    case 0x04100000: m_DPCommandRegistersHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x04300000: Write32MIPSInterface(); break;
     case 0x04400000: Write32VideoInterface(); break;
     case 0x04500000: Write32AudioInterface(); break;
@@ -1119,24 +1120,6 @@ void CMipsMemoryVM::ChangeMiIntrMask()
     }
 }
 
-void CMipsMemoryVM::Load32DPCommand(void)
-{
-    switch (m_MemLookupAddress & 0x1FFFFFFF)
-    {
-    case 0x0410000C: m_MemLookupValue.UW[0] = g_Reg->DPC_STATUS_REG; break;
-    case 0x04100010: m_MemLookupValue.UW[0] = g_Reg->DPC_CLOCK_REG; break;
-    case 0x04100014: m_MemLookupValue.UW[0] = g_Reg->DPC_BUFBUSY_REG; break;
-    case 0x04100018: m_MemLookupValue.UW[0] = g_Reg->DPC_PIPEBUSY_REG; break;
-    case 0x0410001C: m_MemLookupValue.UW[0] = g_Reg->DPC_TMEM_REG; break;
-    default:
-        m_MemLookupValue.UW[0] = 0;
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-    }
-}
-
 void CMipsMemoryVM::Load32MIPSInterface(void)
 {
     switch (m_MemLookupAddress & 0x1FFFFFFF)
@@ -1380,73 +1363,6 @@ void CMipsMemoryVM::Load32Rom(void)
     {
         m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
         m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
-    }
-}
-
-void CMipsMemoryVM::Write32DPCommandRegisters(void)
-{
-    switch ((m_MemLookupAddress & 0xFFFFFFF))
-    {
-    case 0x04100000:
-        g_Reg->DPC_START_REG = m_MemLookupValue.UW[0];
-        g_Reg->DPC_CURRENT_REG = m_MemLookupValue.UW[0];
-        break;
-    case 0x04100004:
-        g_Reg->DPC_END_REG = m_MemLookupValue.UW[0];
-        if (g_Plugins->Gfx()->ProcessRDPList)
-        {
-            g_Plugins->Gfx()->ProcessRDPList();
-        }
-        break;
-        //case 0x04100008: g_Reg->DPC_CURRENT_REG = Value; break;
-    case 0x0410000C:
-        if ((m_MemLookupValue.UW[0] & DPC_CLR_XBUS_DMEM_DMA) != 0)
-        {
-            g_Reg->DPC_STATUS_REG &= ~DPC_STATUS_XBUS_DMEM_DMA;
-        }
-        if ((m_MemLookupValue.UW[0] & DPC_SET_XBUS_DMEM_DMA) != 0)
-        {
-            g_Reg->DPC_STATUS_REG |= DPC_STATUS_XBUS_DMEM_DMA;
-        }
-        if ((m_MemLookupValue.UW[0] & DPC_CLR_FREEZE) != 0)
-        {
-            g_Reg->DPC_STATUS_REG &= ~DPC_STATUS_FREEZE;
-        }
-        if ((m_MemLookupValue.UW[0] & DPC_SET_FREEZE) != 0)
-        {
-            g_Reg->DPC_STATUS_REG |= DPC_STATUS_FREEZE;
-        }
-        if ((m_MemLookupValue.UW[0] & DPC_CLR_FLUSH) != 0)
-        {
-            g_Reg->DPC_STATUS_REG &= ~DPC_STATUS_FLUSH;
-        }
-        if ((m_MemLookupValue.UW[0] & DPC_SET_FLUSH) != 0)
-        {
-            g_Reg->DPC_STATUS_REG |= DPC_STATUS_FLUSH;
-        }
-        if ((m_MemLookupValue.UW[0] & DPC_CLR_FREEZE) != 0)
-        {
-            if ((g_Reg->SP_STATUS_REG & SP_STATUS_HALT) == 0)
-            {
-                if ((g_Reg->SP_STATUS_REG & SP_STATUS_BROKE) == 0)
-                {
-                    __except_try()
-                    {
-                        g_System->RunRSP();
-                    }
-                    __except_catch()
-                    {
-                        g_Notify->BreakPoint(__FILE__, __LINE__);
-                    }
-                }
-            }
-        }
-        break;
-    default:
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
     }
 }
 
