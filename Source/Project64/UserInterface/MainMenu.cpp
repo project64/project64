@@ -1075,7 +1075,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         DebugR4300Menu.push_back(Item);
         Item.Reset(ID_DEBUGGER_STACKVIEW, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Stack...");
         DebugR4300Menu.push_back(Item);
-        Item.Reset(ID_DEBUGGER_STACKTRACE, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Stack lrace...");
+        Item.Reset(ID_DEBUGGER_STACKTRACE, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Stack Trace...");
         DebugR4300Menu.push_back(Item);
 
         Item.Reset(ID_DEBUG_DISABLE_GAMEFIX, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Disable game fixes");
