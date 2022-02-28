@@ -68,10 +68,9 @@ duk_ret_t ScriptAPI::js__IntervalContext_remove(duk_context* ctx)
 
 duk_ret_t ScriptAPI::js__IntervalContext_finalizer(duk_context* ctx)
 {
-    duk_push_this(ctx);
-    duk_get_prop_string(ctx, -1, "worker");
-
+    duk_get_prop_string(ctx, 0, "worker");
     CJSIntervalWorker* intervalWorker = (CJSIntervalWorker*)duk_get_pointer(ctx, -1);
+    
     if (intervalWorker != nullptr)
     {
         delete intervalWorker;
