@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Create a Feature request to suggest improvements and additions
+about: Create a Feature request to suggest improvements and additions.
 title: ''
 labels: ''
 assignees: ''
