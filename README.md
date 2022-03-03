@@ -5,9 +5,9 @@ Project64 is a free and open-source emulator for the Nintendo 64 and Nintendo 64
 ## System Requirements
 
 * Operating System
-  * Windows XP/Vista/7/8/10
+  * Windows XP and later
 * CPU
-  * Intel or AMD processor with SSE2 support
+  * Intel or AMD processor with at least SSE2 support
 * RAM
   * 512MB or more
 * Graphics card
@@ -30,7 +30,7 @@ AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/project
 
 ## Support
 
-[**Join the official Project64 Discord server**](https://discord.gg/Cg3zquF) to seek help from Project64 developers, contributors, and the community!
+[**Join the official Project64 Discord server**](https://discord.gg/Cg3zquF) to seek help from Project64 developers, contributors, and the community! Please ask questions here first and see if you should open an issue.
 
 ### Compiling
 
@@ -38,17 +38,17 @@ AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/project
 Visual Studio Community
 ```
 
-Load .sln project file and compile
+Load .sln project file and compile.
 
 See the [BUILDING.md](https://github.com/project64/project64/blob/develop/BUILDING.md) file for details.
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://github.com/project64/project64/blob/develop/.github/CONTRIBUTING.md) before contributing.
+Please read [CONTRIBUTING.md](https://github.com/project64/project64/blob/develop/.github/CONTRIBUTING.md) before contributing, opening issues or pull requests, or for other contributions.
 
 ## Versioning
 
-We use semantic versioning for Project64. For the versions available, see the [tags on this repository](https://github.com/project64/project64/tags)
+We use semantic versioning for Project64. For the versions available, see the [tags on this repository](https://github.com/project64/project64/tags).
 
 ## Author / Contributors
 
@@ -61,4 +61,4 @@ See also the list of [contributors](https://github.com/project64/project64/contr
 
 ## License
 
-This project is licensed under the GPLv2 License - see the [LICENSE.md](https://github.com/project64/project64/blob/develop/license.md) file for details
+This project is licensed under the GPLv2 License - see the [LICENSE.md](https://github.com/project64/project64/blob/develop/license.md) file for details.
