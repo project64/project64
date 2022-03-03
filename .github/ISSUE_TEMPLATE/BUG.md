@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: If you experience a bug in the Emulator and its default plugins, please open an issue here and fill out the template.
 title: ''
 labels: ''
 assignees: ''
