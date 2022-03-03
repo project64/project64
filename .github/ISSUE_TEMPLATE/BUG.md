@@ -36,6 +36,10 @@
   - Windows version (include version and OS build number using WinVer):
   - Project64 version (include commit version number and whether you are using the 32-bit or 64-bit version):
 
+### Please make sure you are using the inlcuded plugins before opening an issue:
+
+- [ ] I can confirm I am on the default RSP, audio, and graphics plugins
+
 ### Plugins used while the issue occurred:
 
   - Graphics plugin (and HLE or LLE):
