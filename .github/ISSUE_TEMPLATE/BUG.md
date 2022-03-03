@@ -38,7 +38,7 @@
 
 ### Please make sure you are using the inlcuded plugins before opening an issue:
 
-- [ ] I can confirm I am on the default RSP, audio, and graphics plugins
+- [ ] I can confirm I am on the default RSP, audio, input, and graphics plugins
 
 ### Plugins used while the issue occurred:
 
