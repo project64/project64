@@ -1,3 +1,12 @@
+---
+name: Bug report
+about: If you experience a bug in the Emulator and its default plugins, please open an issue here and fill out the template.
+title: ''
+labels: ''
+assignees: ''
+
+---
+
 ### Expected behavior
 - 
 - 
