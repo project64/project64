@@ -55,19 +55,7 @@ void CLogging::Log_LW(uint32_t PC, uint32_t VAddr)
     }
     if (VAddr >= 0xA4300000 && VAddr <= 0xA430000C)
     {
-        if (!LogMIPSInterface())
-        {
-            return;
-        }
-        g_MMU->LW_VAddr(VAddr, Value);
-
-        switch (VAddr)
-        {
-        case 0xA4300000: LogMessage("%08X: read from MI_INIT_MODE_REG/MI_MODE_REG (%08X)", PC, Value); return;
-        case 0xA4300004: LogMessage("%08X: read from MI_VERSION_REG/MI_NOOP_REG (%08X)", PC, Value); return;
-        case 0xA4300008: LogMessage("%08X: read from MI_INTR_REG (%08X)", PC, Value); return;
-        case 0xA430000C: LogMessage("%08X: read from MI_INTR_MASK_REG (%08X)", PC, Value); return;
-        }
+        return;
     }
     if (VAddr >= 0xA4400000 && VAddr <= 0xA4400034)
     {
@@ -261,17 +249,7 @@ void CLogging::Log_SW(uint32_t PC, uint32_t VAddr, uint32_t Value)
 
     if (VAddr >= 0xA4300000 && VAddr <= 0xA430000C)
     {
-        if (!LogMIPSInterface())
-        {
-            return;
-        }
-        switch (VAddr)
-        {
-        case 0xA4300000: LogMessage("%08X: Writing 0x%08X to MI_INIT_MODE_REG/MI_MODE_REG", PC, Value); return;
-        case 0xA4300004: LogMessage("%08X: Writing 0x%08X to MI_VERSION_REG/MI_NOOP_REG", PC, Value); return;
-        case 0xA4300008: LogMessage("%08X: Writing 0x%08X to MI_INTR_REG", PC, Value); return;
-        case 0xA430000C: LogMessage("%08X: Writing 0x%08X to MI_INTR_MASK_REG", PC, Value); return;
-        }
+        return;
     }
     if (VAddr >= 0xA4400000 && VAddr <= 0xA4400034)
     {

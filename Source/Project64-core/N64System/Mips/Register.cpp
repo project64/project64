@@ -75,16 +75,6 @@ CP0registers::CP0registers(uint32_t * _CP0) :
 {
 }
 
-Mips_InterfaceReg::Mips_InterfaceReg(uint32_t * _MipsInterface) :
-    MI_INIT_MODE_REG(_MipsInterface[0]),
-    MI_MODE_REG(_MipsInterface[0]),
-    MI_VERSION_REG(_MipsInterface[1]),
-    MI_NOOP_REG(_MipsInterface[1]),
-    MI_INTR_REG(_MipsInterface[2]),
-    MI_INTR_MASK_REG(_MipsInterface[3])
-{
-}
-
 Video_InterfaceReg::Video_InterfaceReg(uint32_t * _VideoInterface) :
     VI_STATUS_REG(_VideoInterface[0]),
     VI_CONTROL_REG(_VideoInterface[0]),
@@ -170,8 +160,8 @@ Disk_InterfaceReg::Disk_InterfaceReg(uint32_t * DiskInterface) :
 
 CRegisters::CRegisters(CN64System * System, CSystemEvents * SystemEvents) :
     CP0registers(m_CP0),
-	RDRAMRegistersReg(m_RDRAM_Registers),
-    Mips_InterfaceReg(m_Mips_Interface),
+    RDRAMRegistersReg(m_RDRAM_Registers),
+    MIPSInterfaceReg(m_Mips_Interface),
     Video_InterfaceReg(m_Video_Interface),
     AudioInterfaceReg(m_Audio_Interface),
     PeripheralInterfaceReg(m_Peripheral_Interface),

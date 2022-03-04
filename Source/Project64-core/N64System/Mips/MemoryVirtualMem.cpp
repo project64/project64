@@ -30,6 +30,7 @@ CMipsMemoryVM::CMipsMemoryVM(CN64System & System, CRegisters & Reg, bool SavesRe
     m_RDRAMRegistersHandler(Reg),
     m_RomMapped(false),
     m_DPCommandRegistersHandler(System, System.GetPlugins(), Reg),
+    m_MIPSInterfaceHandler(Reg),
     m_PeripheralInterfaceHandler(*this, Reg),
     m_RDRAMInterfaceHandler(Reg),
     m_SPRegistersHandler(System, *this, Reg),
@@ -644,7 +645,7 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
         case 0x03F00000: m_RDRAMRegistersHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
         case 0x04000000: m_SPRegistersHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
         case 0x04100000: m_DPCommandRegistersHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
-        case 0x04300000: Load32MIPSInterface(); break;
+        case 0x04300000: m_MIPSInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
         case 0x04400000: Load32VideoInterface(); break;
         case 0x04500000: Load32AudioInterface(); break;
         case 0x04600000: m_PeripheralInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
@@ -764,7 +765,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
         }
         break;
     case 0x04100000: m_DPCommandRegistersHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
-    case 0x04300000: Write32MIPSInterface(); break;
+    case 0x04300000: m_MIPSInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x04400000: Write32VideoInterface(); break;
     case 0x04500000: Write32AudioInterface(); break;
     case 0x04600000: m_PeripheralInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
@@ -1120,23 +1121,6 @@ void CMipsMemoryVM::ChangeMiIntrMask()
     }
 }
 
-void CMipsMemoryVM::Load32MIPSInterface(void)
-{
-    switch (m_MemLookupAddress & 0x1FFFFFFF)
-    {
-    case 0x04300000: m_MemLookupValue.UW[0] = g_Reg->MI_MODE_REG; break;
-    case 0x04300004: m_MemLookupValue.UW[0] = g_Reg->MI_VERSION_REG; break;
-    case 0x04300008: m_MemLookupValue.UW[0] = g_Reg->MI_INTR_REG; break;
-    case 0x0430000C: m_MemLookupValue.UW[0] = g_Reg->MI_INTR_MASK_REG; break;
-    default:
-        m_MemLookupValue.UW[0] = 0;
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-    }
-}
-
 void CMipsMemoryVM::Load32VideoInterface(void)
 {
     switch (m_MemLookupAddress & 0x1FFFFFFF)
@@ -1363,102 +1347,6 @@ void CMipsMemoryVM::Load32Rom(void)
     {
         m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
         m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
-    }
-}
-
-void CMipsMemoryVM::Write32MIPSInterface(void)
-{
-    switch ((m_MemLookupAddress & 0xFFFFFFF))
-    {
-    case 0x04300000:
-        g_Reg->MI_MODE_REG &= ~0x7F;
-        g_Reg->MI_MODE_REG |= (m_MemLookupValue.UW[0] & 0x7F);
-        if ((m_MemLookupValue.UW[0] & MI_CLR_INIT) != 0)
-        {
-            g_Reg->MI_MODE_REG &= ~MI_MODE_INIT;
-        }
-        if ((m_MemLookupValue.UW[0] & MI_SET_INIT) != 0)
-        {
-            g_Reg->MI_MODE_REG |= MI_MODE_INIT;
-        }
-        if ((m_MemLookupValue.UW[0] & MI_CLR_EBUS) != 0)
-        {
-            g_Reg->MI_MODE_REG &= ~MI_MODE_EBUS;
-        }
-        if ((m_MemLookupValue.UW[0] & MI_SET_EBUS) != 0)
-        {
-            g_Reg->MI_MODE_REG |= MI_MODE_EBUS;
-        }
-        if ((m_MemLookupValue.UW[0] & MI_CLR_DP_INTR) != 0)
-        {
-            g_Reg->MI_INTR_REG &= ~MI_INTR_DP;
-            g_Reg->m_GfxIntrReg &= ~MI_INTR_DP;
-            g_Reg->CheckInterrupts();
-        }
-        if ((m_MemLookupValue.UW[0] & MI_CLR_RDRAM) != 0)
-        {
-            g_Reg->MI_MODE_REG &= ~MI_MODE_RDRAM;
-        }
-        if ((m_MemLookupValue.UW[0] & MI_SET_RDRAM) != 0)
-        {
-            g_Reg->MI_MODE_REG |= MI_MODE_RDRAM;
-        }
-        break;
-    case 0x0430000C:
-        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_CLR_SP) != 0)
-        {
-            g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SP;
-        }
-        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_SET_SP) != 0)
-        {
-            g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SP;
-        }
-        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_CLR_SI) != 0)
-        {
-            g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SI;
-        }
-        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_SET_SI) != 0)
-        {
-            g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SI;
-        }
-        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_CLR_AI) != 0)
-        {
-            g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_AI;
-        }
-        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_SET_AI) != 0)
-        {
-            g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_AI;
-        }
-        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_CLR_VI) != 0)
-        {
-            g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_VI;
-        }
-        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_SET_VI) != 0)
-        {
-            g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_VI;
-        }
-        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_CLR_PI) != 0)
-        {
-            g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_PI;
-        }
-        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_SET_PI) != 0)
-        {
-            g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_PI;
-        }
-        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_CLR_DP) != 0)
-        {
-            g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_DP;
-        }
-        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_SET_DP) != 0)
-        {
-            g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_DP;
-        }
-        break;
-    default:
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
     }
 }
 

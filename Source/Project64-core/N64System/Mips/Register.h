@@ -3,6 +3,7 @@
 #include <Common/Platform.h>
 #include <Project64-core\N64System\N64Types.h>
 #include <Project64-core\N64System\MemoryHandler\DisplayControlRegHandler.h>
+#include <Project64-core\N64System\MemoryHandler\MIPSInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\PeripheralInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RDRAMInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RDRAMRegistersHandler.h>
@@ -48,136 +49,117 @@ private:
 enum
 {
     // Status register
-    STATUS_IE  = 0x00000001, STATUS_EXL = 0x00000002, STATUS_ERL = 0x00000004,
+    STATUS_IE = 0x00000001, STATUS_EXL = 0x00000002, STATUS_ERL = 0x00000004,
     STATUS_IP0 = 0x00000100, STATUS_IP1 = 0x00000200, STATUS_IP2 = 0x00000400,
     STATUS_IP3 = 0x00000800, STATUS_IP4 = 0x00001000, STATUS_IP5 = 0x00002000,
     STATUS_IP6 = 0x00004000, STATUS_IP7 = 0x00008000, STATUS_BEV = 0x00400000,
-    STATUS_FR  = 0x04000000, STATUS_CU0 = 0x10000000, STATUS_CU1 = 0x20000000,
+    STATUS_FR = 0x04000000, STATUS_CU0 = 0x10000000, STATUS_CU1 = 0x20000000,
 
     // Cause flags
-    CAUSE_EXC_CODE		=	0xFF,
-    CAUSE_IP0			=	0x100,
-    CAUSE_IP1			=	0x200,
-    CAUSE_IP2			=	0x400,
-    CAUSE_IP3			=	0x800,
-    CAUSE_IP4			=	0x1000,
-    CAUSE_IP5			=	0x2000,
-    CAUSE_IP6			=	0x4000,
-    CAUSE_IP7			=	0x8000,
-    CAUSE_BD			=	0x80000000,
+    CAUSE_EXC_CODE = 0xFF,
+    CAUSE_IP0 = 0x100,
+    CAUSE_IP1 = 0x200,
+    CAUSE_IP2 = 0x400,
+    CAUSE_IP3 = 0x800,
+    CAUSE_IP4 = 0x1000,
+    CAUSE_IP5 = 0x2000,
+    CAUSE_IP6 = 0x4000,
+    CAUSE_IP7 = 0x8000,
+    CAUSE_BD = 0x80000000,
 
     // Cause exception ID's
-    EXC_INT				= 0,	// Interrupt
-    EXC_MOD				= 4,	// TLB mod
-    EXC_RMISS			= 8,	// Read TLB miss
-    EXC_WMISS			= 12,	// Write TLB miss
-    EXC_RADE			= 16,	// Read address error
-    EXC_WADE			= 20,	// Write address error
-    EXC_IBE				= 24,	// Instruction bus error
-    EXC_DBE				= 28,	// Data bus error
-    EXC_SYSCALL			= 32,	// Syscall
-    EXC_BREAK			= 36,	// Breakpoint
-    EXC_II				= 40,   // Illegal instruction
-    EXC_CPU				= 44,   // Co-processor unusable
-    EXC_OV				= 48,   // Overflow
-    EXC_TRAP			= 52,   // Trap exception
-    EXC_VCEI			= 56,   // Virtual coherency on instruction fetch
-    EXC_FPE				= 60,   // Floating point exception
-    EXC_WATCH			= 92,   // Watchpoint reference
-    EXC_VCED			= 124,  // Virtual coherency on data read
+    EXC_INT = 0,    // Interrupt
+    EXC_MOD = 4,    // TLB mod
+    EXC_RMISS = 8,    // Read TLB miss
+    EXC_WMISS = 12,    // Write TLB miss
+    EXC_RADE = 16,    // Read address error
+    EXC_WADE = 20,    // Write address error
+    EXC_IBE = 24,    // Instruction bus error
+    EXC_DBE = 28,    // Data bus error
+    EXC_SYSCALL = 32,    // Syscall
+    EXC_BREAK = 36,    // Breakpoint
+    EXC_II = 40,   // Illegal instruction
+    EXC_CPU = 44,   // Co-processor unusable
+    EXC_OV = 48,   // Overflow
+    EXC_TRAP = 52,   // Trap exception
+    EXC_VCEI = 56,   // Virtual coherency on instruction fetch
+    EXC_FPE = 60,   // Floating point exception
+    EXC_WATCH = 92,   // Watchpoint reference
+    EXC_VCED = 124,  // Virtual coherency on data read
 };
 
 // Float point control status register flags
 enum
 {
-    FPCSR_FS			= 0x01000000, // Flush denormalization to zero
-    FPCSR_C				= 0x00800000, // Condition bit
-    FPCSR_CE			= 0x00020000, // Cause: unimplemented operation
-    FPCSR_CV			= 0x00010000, // Cause: invalid operation
-    FPCSR_CZ			= 0x00008000, // Cause: division by zero
-    FPCSR_CO			= 0x00004000, // Cause: overflow
-    FPCSR_CU			= 0x00002000, // Cause: underflow
-    FPCSR_CI			= 0x00001000, // Cause: inexact operation
-    FPCSR_EV			= 0x00000800, // Enable: invalid operation
-    FPCSR_EZ			= 0x00000400, // Enable: division by zero
-    FPCSR_EO			= 0x00000200, // Enable: overflow
-    FPCSR_EU			= 0x00000100, // Enable: underflow
-    FPCSR_EI			= 0x00000080, // Enable: inexact operation
-    FPCSR_FV			= 0x00000040, // Flag: invalid operation
-    FPCSR_FZ			= 0x00000020, // Flag: division by zero
-    FPCSR_FO			= 0x00000010, // Flag: overflow
-    FPCSR_FU			= 0x00000008, // Flag: underflow
-    FPCSR_FI			= 0x00000004, // Flag: inexact operation
-    FPCSR_RM_MASK		= 0x00000003, // Rounding mode mask
-    FPCSR_RM_RN			= 0x00000000, // Round to nearest
-    FPCSR_RM_RZ			= 0x00000001, // Round to zero
-    FPCSR_RM_RP			= 0x00000002, // Round to positive infinity
-    FPCSR_RM_RM			= 0x00000003, // Round to negative infinity
+    FPCSR_FS = 0x01000000, // Flush denormalization to zero
+    FPCSR_C = 0x00800000, // Condition bit
+    FPCSR_CE = 0x00020000, // Cause: unimplemented operation
+    FPCSR_CV = 0x00010000, // Cause: invalid operation
+    FPCSR_CZ = 0x00008000, // Cause: division by zero
+    FPCSR_CO = 0x00004000, // Cause: overflow
+    FPCSR_CU = 0x00002000, // Cause: underflow
+    FPCSR_CI = 0x00001000, // Cause: inexact operation
+    FPCSR_EV = 0x00000800, // Enable: invalid operation
+    FPCSR_EZ = 0x00000400, // Enable: division by zero
+    FPCSR_EO = 0x00000200, // Enable: overflow
+    FPCSR_EU = 0x00000100, // Enable: underflow
+    FPCSR_EI = 0x00000080, // Enable: inexact operation
+    FPCSR_FV = 0x00000040, // Flag: invalid operation
+    FPCSR_FZ = 0x00000020, // Flag: division by zero
+    FPCSR_FO = 0x00000010, // Flag: overflow
+    FPCSR_FU = 0x00000008, // Flag: underflow
+    FPCSR_FI = 0x00000004, // Flag: inexact operation
+    FPCSR_RM_MASK = 0x00000003, // Rounding mode mask
+    FPCSR_RM_RN = 0x00000000, // Round to nearest
+    FPCSR_RM_RZ = 0x00000001, // Round to zero
+    FPCSR_RM_RP = 0x00000002, // Round to positive infinity
+    FPCSR_RM_RM = 0x00000003, // Round to negative infinity
 };
 
-// MIPS interface registers
-class Mips_InterfaceReg
-{
-protected:
-    Mips_InterfaceReg (uint32_t * _MipsInterface);
-
-public:
-    uint32_t & MI_INIT_MODE_REG;
-    uint32_t & MI_MODE_REG;
-    uint32_t & MI_VERSION_REG;
-    uint32_t & MI_NOOP_REG;
-    uint32_t & MI_INTR_REG;
-    uint32_t & MI_INTR_MASK_REG;
-
-private:
-    Mips_InterfaceReg();
-    Mips_InterfaceReg(const Mips_InterfaceReg&);
-    Mips_InterfaceReg& operator=(const Mips_InterfaceReg&);
-};
 
 // MIPS interface flags
 enum
 {
-    MI_MODE_INIT			= 0x0080,		// Bit  7: Initialization mode
-    MI_MODE_EBUS			= 0x0100,		// Bit  8: EBUS test mode
-    MI_MODE_RDRAM			= 0x0200,		// Bit  9: RDRAM register mode
+    MI_MODE_INIT = 0x0080,        // Bit  7: Initialization mode
+    MI_MODE_EBUS = 0x0100,        // Bit  8: EBUS test mode
+    MI_MODE_RDRAM = 0x0200,        // Bit  9: RDRAM register mode
 
-    MI_CLR_INIT				= 0x0080,		// Bit  7: Clear initialization mode
-    MI_SET_INIT				= 0x0100,		// Bit  8: Set initialization mode
-    MI_CLR_EBUS				= 0x0200,		// Bit  9: Clear EBUS test
-    MI_SET_EBUS				= 0x0400,		// Bit 10: Set EBUS test mode
-    MI_CLR_DP_INTR			= 0x0800,		// Bit 11: Clear DP interrupt
-    MI_CLR_RDRAM			= 0x1000,		// Bit 12: Clear RDRAM register
-    MI_SET_RDRAM			= 0x2000,		// Bit 13: Set RDRAM register mode
+    MI_CLR_INIT = 0x0080,        // Bit  7: Clear initialization mode
+    MI_SET_INIT = 0x0100,        // Bit  8: Set initialization mode
+    MI_CLR_EBUS = 0x0200,        // Bit  9: Clear EBUS test
+    MI_SET_EBUS = 0x0400,        // Bit 10: Set EBUS test mode
+    MI_CLR_DP_INTR = 0x0800,        // Bit 11: Clear DP interrupt
+    MI_CLR_RDRAM = 0x1000,        // Bit 12: Clear RDRAM register
+    MI_SET_RDRAM = 0x2000,        // Bit 13: Set RDRAM register mode
 
     // Flags for writing to MI_INTR_MASK_REG
-    MI_INTR_MASK_CLR_SP		= 0x0001,		// Bit  0: Clear SP mask
-    MI_INTR_MASK_SET_SP		= 0x0002,		// Bit  1: Set SP mask
-    MI_INTR_MASK_CLR_SI		= 0x0004,		// Bit  2: Clear SI mask
-    MI_INTR_MASK_SET_SI		= 0x0008,		// Bit  3: Set SI mask
-    MI_INTR_MASK_CLR_AI		= 0x0010,		// Bit  4: Clear AI mask
-    MI_INTR_MASK_SET_AI		= 0x0020,		// Bit  5: Set AI mask
-    MI_INTR_MASK_CLR_VI		= 0x0040,		// Bit  6: Clear VI mask
-    MI_INTR_MASK_SET_VI		= 0x0080,		// Bit  7: Set VI mask
-    MI_INTR_MASK_CLR_PI		= 0x0100,		// Bit  8: Clear PI mask
-    MI_INTR_MASK_SET_PI		= 0x0200,		// Bit  9: Set PI mask
-    MI_INTR_MASK_CLR_DP		= 0x0400,		// Bit 10: Clear DP mask
-    MI_INTR_MASK_SET_DP		= 0x0800,		// Bit 11: Set DP mask
+    MI_INTR_MASK_CLR_SP = 0x0001,        // Bit  0: Clear SP mask
+    MI_INTR_MASK_SET_SP = 0x0002,        // Bit  1: Set SP mask
+    MI_INTR_MASK_CLR_SI = 0x0004,        // Bit  2: Clear SI mask
+    MI_INTR_MASK_SET_SI = 0x0008,        // Bit  3: Set SI mask
+    MI_INTR_MASK_CLR_AI = 0x0010,        // Bit  4: Clear AI mask
+    MI_INTR_MASK_SET_AI = 0x0020,        // Bit  5: Set AI mask
+    MI_INTR_MASK_CLR_VI = 0x0040,        // Bit  6: Clear VI mask
+    MI_INTR_MASK_SET_VI = 0x0080,        // Bit  7: Set VI mask
+    MI_INTR_MASK_CLR_PI = 0x0100,        // Bit  8: Clear PI mask
+    MI_INTR_MASK_SET_PI = 0x0200,        // Bit  9: Set PI mask
+    MI_INTR_MASK_CLR_DP = 0x0400,        // Bit 10: Clear DP mask
+    MI_INTR_MASK_SET_DP = 0x0800,        // Bit 11: Set DP mask
 
     // Flags for reading from MI_INTR_MASK_REG
-    MI_INTR_MASK_SP			= 0x01,		// Bit 0: SP INTR mask
-    MI_INTR_MASK_SI			= 0x02,		// Bit 1: SI INTR mask
-    MI_INTR_MASK_AI			= 0x04,		// Bit 2: AI INTR mask
-    MI_INTR_MASK_VI			= 0x08,		// Bit 3: VI INTR mask
-    MI_INTR_MASK_PI			= 0x10,		// Bit 4: PI INTR mask
-    MI_INTR_MASK_DP			= 0x20,		// Bit 5: DP INTR mask
+    MI_INTR_MASK_SP = 0x01,        // Bit 0: SP INTR mask
+    MI_INTR_MASK_SI = 0x02,        // Bit 1: SI INTR mask
+    MI_INTR_MASK_AI = 0x04,        // Bit 2: AI INTR mask
+    MI_INTR_MASK_VI = 0x08,        // Bit 3: VI INTR mask
+    MI_INTR_MASK_PI = 0x10,        // Bit 4: PI INTR mask
+    MI_INTR_MASK_DP = 0x20,        // Bit 5: DP INTR mask
 
-    MI_INTR_SP				= 0x01,		// Bit 0: SP INTR
-    MI_INTR_SI				= 0x02,		// Bit 1: SI INTR
-    MI_INTR_AI				= 0x04,		// Bit 2: AI INTR
-    MI_INTR_VI				= 0x08,		// Bit 3: VI INTR
-    MI_INTR_PI				= 0x10,		// Bit 4: PI INTR
-    MI_INTR_DP				= 0x20,		// Bit 5: DP INTR
+    MI_INTR_SP = 0x01,        // Bit 0: SP INTR
+    MI_INTR_SI = 0x02,        // Bit 1: SI INTR
+    MI_INTR_AI = 0x04,        // Bit 2: AI INTR
+    MI_INTR_VI = 0x08,        // Bit 3: VI INTR
+    MI_INTR_PI = 0x10,        // Bit 4: PI INTR
+    MI_INTR_DP = 0x20,        // Bit 5: DP INTR
 };
 
 // MIPS interface registers
@@ -239,65 +221,65 @@ private:
 
 enum
 {
-    AI_STATUS_FIFO_FULL			= 0x80000000,	// Bit 31: Full
-    AI_STATUS_DMA_BUSY			= 0x40000000,	// Bit 30: Busy
+    AI_STATUS_FIFO_FULL = 0x80000000,    // Bit 31: Full
+    AI_STATUS_DMA_BUSY = 0x40000000,    // Bit 30: Busy
 };
 
 // Signal processor interface flags
 enum
 {
-    SP_CLR_HALT				= 0x00001,	    // Bit  0: Clear halt
-    SP_SET_HALT				= 0x00002,	    // Bit  1: Set halt
-    SP_CLR_BROKE			= 0x00004,	    // Bit  2: Clear broke
-    SP_CLR_INTR				= 0x00008,	    // Bit  3: Clear INTR
-    SP_SET_INTR				= 0x00010,	    // Bit  4: Set INTR
-    SP_CLR_SSTEP			= 0x00020,	    // Bit  5: Clear SSTEP
-    SP_SET_SSTEP			= 0x00040,	    // Bit  6: Set SSTEP
-    SP_CLR_INTR_BREAK		= 0x00080,	    // Bit  7: Clear INTR on break
-    SP_SET_INTR_BREAK		= 0x00100,	    // Bit  8: Set INTR on break
-    SP_CLR_SIG0				= 0x00200,	    // Bit  9: Clear signal 0
-    SP_SET_SIG0				= 0x00400,	    // Bit 10: Set signal 0
-    SP_CLR_SIG1				= 0x00800,	    // Bit 11: Clear signal 1
-    SP_SET_SIG1				= 0x01000,	    // Bit 12: Set signal 1
-    SP_CLR_SIG2				= 0x02000,	    // Bit 13: Clear signal 2
-    SP_SET_SIG2				= 0x04000,	    // Bit 14: Set signal 2
-    SP_CLR_SIG3				= 0x08000,	    // Bit 15: Clear signal 3
-    SP_SET_SIG3				= 0x10000,	    // Bit 16: Set signal 3
-    SP_CLR_SIG4				= 0x20000,	    // Bit 17: Clear signal 4
-    SP_SET_SIG4				= 0x40000,	    // Bit 18: Set signal 4
-    SP_CLR_SIG5				= 0x80000,	    // Bit 19: Clear signal 5
-    SP_SET_SIG5				= 0x100000,	    // Bit 20: Set signal 5
-    SP_CLR_SIG6				= 0x200000,	    // Bit 21: Clear signal 6
-    SP_SET_SIG6				= 0x400000,	    // Bit 22: Set signal 6
-    SP_CLR_SIG7				= 0x800000,	    // Bit 23: Clear signal 7
-    SP_SET_SIG7				= 0x1000000,    // Bit 24: Set signal 7
+    SP_CLR_HALT = 0x00001,        // Bit  0: Clear halt
+    SP_SET_HALT = 0x00002,        // Bit  1: Set halt
+    SP_CLR_BROKE = 0x00004,        // Bit  2: Clear broke
+    SP_CLR_INTR = 0x00008,        // Bit  3: Clear INTR
+    SP_SET_INTR = 0x00010,        // Bit  4: Set INTR
+    SP_CLR_SSTEP = 0x00020,        // Bit  5: Clear SSTEP
+    SP_SET_SSTEP = 0x00040,        // Bit  6: Set SSTEP
+    SP_CLR_INTR_BREAK = 0x00080,        // Bit  7: Clear INTR on break
+    SP_SET_INTR_BREAK = 0x00100,        // Bit  8: Set INTR on break
+    SP_CLR_SIG0 = 0x00200,        // Bit  9: Clear signal 0
+    SP_SET_SIG0 = 0x00400,        // Bit 10: Set signal 0
+    SP_CLR_SIG1 = 0x00800,        // Bit 11: Clear signal 1
+    SP_SET_SIG1 = 0x01000,        // Bit 12: Set signal 1
+    SP_CLR_SIG2 = 0x02000,        // Bit 13: Clear signal 2
+    SP_SET_SIG2 = 0x04000,        // Bit 14: Set signal 2
+    SP_CLR_SIG3 = 0x08000,        // Bit 15: Clear signal 3
+    SP_SET_SIG3 = 0x10000,        // Bit 16: Set signal 3
+    SP_CLR_SIG4 = 0x20000,        // Bit 17: Clear signal 4
+    SP_SET_SIG4 = 0x40000,        // Bit 18: Set signal 4
+    SP_CLR_SIG5 = 0x80000,        // Bit 19: Clear signal 5
+    SP_SET_SIG5 = 0x100000,        // Bit 20: Set signal 5
+    SP_CLR_SIG6 = 0x200000,        // Bit 21: Clear signal 6
+    SP_SET_SIG6 = 0x400000,        // Bit 22: Set signal 6
+    SP_CLR_SIG7 = 0x800000,        // Bit 23: Clear signal 7
+    SP_SET_SIG7 = 0x1000000,    // Bit 24: Set signal 7
 
-    SP_STATUS_HALT			= 0x001,		// Bit  0: Halt
-    SP_STATUS_BROKE			= 0x002,		// Bit  1: Broke
-    SP_STATUS_DMA_BUSY		= 0x004,		// Bit  2: DMA busy
-    SP_STATUS_DMA_FULL		= 0x008,		// Bit  3: DMA full
-    SP_STATUS_IO_FULL		= 0x010,		// Bit  4: IO full
-    SP_STATUS_SSTEP			= 0x020,		// Bit  5: Single step
-    SP_STATUS_INTR_BREAK	= 0x040,		// Bit  6: Interrupt on break
-    SP_STATUS_SIG0			= 0x080,		// Bit  7: Signal 0 set
-    SP_STATUS_SIG1			= 0x100,		// Bit  8: Signal 1 set
-    SP_STATUS_SIG2			= 0x200,		// Bit  9: Signal 2 set
-    SP_STATUS_SIG3			= 0x400,		// Bit 10: Signal 3 set
-    SP_STATUS_SIG4			= 0x800,		// Bit 11: Signal 4 set
-    SP_STATUS_SIG5	       = 0x1000,		// Bit 12: Signal 5 set
-    SP_STATUS_SIG6	       = 0x2000,		// Bit 13: Signal 6 set
-    SP_STATUS_SIG7	       = 0x4000,		// Bit 14: Signal 7 set
+    SP_STATUS_HALT = 0x001,        // Bit  0: Halt
+    SP_STATUS_BROKE = 0x002,        // Bit  1: Broke
+    SP_STATUS_DMA_BUSY = 0x004,        // Bit  2: DMA busy
+    SP_STATUS_DMA_FULL = 0x008,        // Bit  3: DMA full
+    SP_STATUS_IO_FULL = 0x010,        // Bit  4: IO full
+    SP_STATUS_SSTEP = 0x020,        // Bit  5: Single step
+    SP_STATUS_INTR_BREAK = 0x040,        // Bit  6: Interrupt on break
+    SP_STATUS_SIG0 = 0x080,        // Bit  7: Signal 0 set
+    SP_STATUS_SIG1 = 0x100,        // Bit  8: Signal 1 set
+    SP_STATUS_SIG2 = 0x200,        // Bit  9: Signal 2 set
+    SP_STATUS_SIG3 = 0x400,        // Bit 10: Signal 3 set
+    SP_STATUS_SIG4 = 0x800,        // Bit 11: Signal 4 set
+    SP_STATUS_SIG5 = 0x1000,        // Bit 12: Signal 5 set
+    SP_STATUS_SIG6 = 0x2000,        // Bit 13: Signal 6 set
+    SP_STATUS_SIG7 = 0x4000,        // Bit 14: Signal 7 set
 };
 
 // Peripheral interface flags
 enum
 {
-    PI_STATUS_DMA_BUSY	=	0x01,
-    PI_STATUS_IO_BUSY	=	0x02,
-    PI_STATUS_ERROR		=	0x04,
+    PI_STATUS_DMA_BUSY = 0x01,
+    PI_STATUS_IO_BUSY = 0x02,
+    PI_STATUS_ERROR = 0x04,
 
-    PI_SET_RESET		=	0x01,
-    PI_CLR_INTR			=	0x02,
+    PI_SET_RESET = 0x01,
+    PI_CLR_INTR = 0x02,
 };
 
 class Serial_InterfaceReg
@@ -320,10 +302,10 @@ private:
 // Serial interface flags
 enum
 {
-    SI_STATUS_DMA_BUSY	=	0x0001,
-    SI_STATUS_RD_BUSY   =	0x0002,
-    SI_STATUS_DMA_ERROR	=	0x0008,
-    SI_STATUS_INTERRUPT	=	0x1000,
+    SI_STATUS_DMA_BUSY = 0x0001,
+    SI_STATUS_RD_BUSY = 0x0002,
+    SI_STATUS_DMA_ERROR = 0x0008,
+    SI_STATUS_INTERRUPT = 0x1000,
 };
 
 // Disk interface
@@ -365,31 +347,31 @@ private:
 // Disk interface flags
 enum
 {
-    DD_STATUS_DATA_RQ    =	0x40000000,
-    DD_STATUS_C2_XFER    =	0x10000000,
-    DD_STATUS_BM_ERR     =	0x08000000,
-    DD_STATUS_BM_INT     =	0x04000000,
-    DD_STATUS_MECHA_INT  =	0x02000000,
-    DD_STATUS_DISK_PRES  =	0x01000000,
-    DD_STATUS_BUSY_STATE =	0x00800000,
-    DD_STATUS_RST_STATE  =	0x00400000,
-    DD_STATUS_MTR_N_SPIN =	0x00100000,
-    DD_STATUS_HEAD_RTRCT =	0x00080000,
-    DD_STATUS_WR_PR_ERR  =	0x00040000,
-    DD_STATUS_MECHA_ERR  =	0x00020000,
-    DD_STATUS_DISK_CHNG  =	0x00010000,
+    DD_STATUS_DATA_RQ = 0x40000000,
+    DD_STATUS_C2_XFER = 0x10000000,
+    DD_STATUS_BM_ERR = 0x08000000,
+    DD_STATUS_BM_INT = 0x04000000,
+    DD_STATUS_MECHA_INT = 0x02000000,
+    DD_STATUS_DISK_PRES = 0x01000000,
+    DD_STATUS_BUSY_STATE = 0x00800000,
+    DD_STATUS_RST_STATE = 0x00400000,
+    DD_STATUS_MTR_N_SPIN = 0x00100000,
+    DD_STATUS_HEAD_RTRCT = 0x00080000,
+    DD_STATUS_WR_PR_ERR = 0x00040000,
+    DD_STATUS_MECHA_ERR = 0x00020000,
+    DD_STATUS_DISK_CHNG = 0x00010000,
 
-    DD_BM_STATUS_RUNNING =	0x80000000,
-    DD_BM_STATUS_ERROR   =	0x04000000,
-    DD_BM_STATUS_MICRO   =	0x02000000,
-    DD_BM_STATUS_BLOCK   =	0x01000000,
+    DD_BM_STATUS_RUNNING = 0x80000000,
+    DD_BM_STATUS_ERROR = 0x04000000,
+    DD_BM_STATUS_MICRO = 0x02000000,
+    DD_BM_STATUS_BLOCK = 0x01000000,
 
-    DD_BM_CTL_START      =	0x80000000,
-    DD_BM_CTL_MNGRMODE   =	0x40000000,
-    DD_BM_CTL_INTMASK    =	0x20000000,
-    DD_BM_CTL_RESET      =	0x10000000,
-    DD_BM_CTL_BLK_TRANS  =	0x02000000,
-    DD_BM_CTL_MECHA_RST  =	0x01000000
+    DD_BM_CTL_START = 0x80000000,
+    DD_BM_CTL_MNGRMODE = 0x40000000,
+    DD_BM_CTL_INTMASK = 0x20000000,
+    DD_BM_CTL_RESET = 0x10000000,
+    DD_BM_CTL_BLK_TRANS = 0x02000000,
+    DD_BM_CTL_MECHA_RST = 0x01000000
 };
 
 class CRegName
@@ -429,7 +411,7 @@ class CRegisters :
     protected CSystemRegisters,
     public CP0registers,
     public RDRAMRegistersReg,
-    public Mips_InterfaceReg,
+    public MIPSInterfaceReg,
     public Video_InterfaceReg,
     public AudioInterfaceReg,
     public PeripheralInterfaceReg,

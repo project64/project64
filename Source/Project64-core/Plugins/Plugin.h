@@ -60,7 +60,7 @@ typedef struct
     void(*FlushSettings) (void * handle);
 } PLUGIN_SETTINGS3;
 
-typedef struct
+typedef struct _PLUGIN_SETTINGS_NOTIFICATION
 {
     typedef void(*SettingChangedFunc)(void *);
 
