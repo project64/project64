@@ -2438,7 +2438,7 @@ void CN64System::RefreshScreen()
     {
         WriteTrace(TraceGFXPlugin, TraceError, "Exception caught");
     }
-    g_MMU->UpdateFieldSerration((m_Reg.VI_STATUS_REG & 0x40) != 0);
+    g_MMU->VideoInterface().UpdateFieldSerration((m_Reg.VI_STATUS_REG & 0x40) != 0);
 
     if ((bBasicMode() || bLimitFPS()) && (!bSyncToAudio() || !FullSpeed()))
     {

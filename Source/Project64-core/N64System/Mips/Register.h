@@ -8,6 +8,7 @@
 #include <Project64-core\N64System\MemoryHandler\RDRAMInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RDRAMRegistersHandler.h>
 #include <Project64-core\N64System\MemoryHandler\SPRegistersHandler.h>
+#include <Project64-core\N64System\MemoryHandler\VideoInterfaceHandler.h>
 #include <Project64-core\Settings\DebugSettings.h>
 #include <Project64-core\Settings\GameSettings.h>
 #include <Project64-core\Logging.h>
@@ -160,43 +161,6 @@ enum
     MI_INTR_VI = 0x08,        // Bit 3: VI INTR
     MI_INTR_PI = 0x10,        // Bit 4: PI INTR
     MI_INTR_DP = 0x20,        // Bit 5: DP INTR
-};
-
-// MIPS interface registers
-class Video_InterfaceReg
-{
-protected:
-    Video_InterfaceReg (uint32_t * _VideoInterface);
-
-public:
-    uint32_t & VI_STATUS_REG;
-    uint32_t & VI_CONTROL_REG;
-    uint32_t & VI_ORIGIN_REG;
-    uint32_t & VI_DRAM_ADDR_REG;
-    uint32_t & VI_WIDTH_REG;
-    uint32_t & VI_H_WIDTH_REG;
-    uint32_t & VI_INTR_REG;
-    uint32_t & VI_V_INTR_REG;
-    uint32_t & VI_CURRENT_REG;
-    uint32_t & VI_V_CURRENT_LINE_REG;
-    uint32_t & VI_BURST_REG;
-    uint32_t & VI_TIMING_REG;
-    uint32_t & VI_V_SYNC_REG;
-    uint32_t & VI_H_SYNC_REG;
-    uint32_t & VI_LEAP_REG;
-    uint32_t & VI_H_SYNC_LEAP_REG;
-    uint32_t & VI_H_START_REG;
-    uint32_t & VI_H_VIDEO_REG;
-    uint32_t & VI_V_START_REG;
-    uint32_t & VI_V_VIDEO_REG;
-    uint32_t & VI_V_BURST_REG;
-    uint32_t & VI_X_SCALE_REG;
-    uint32_t & VI_Y_SCALE_REG;
-
-private:
-    Video_InterfaceReg();
-    Video_InterfaceReg(const Video_InterfaceReg&);
-    Video_InterfaceReg& operator=(const Video_InterfaceReg&);
 };
 
 // Audio interface registers
@@ -412,7 +376,7 @@ class CRegisters :
     public CP0registers,
     public RDRAMRegistersReg,
     public MIPSInterfaceReg,
-    public Video_InterfaceReg,
+    public VideoInterfaceReg,
     public AudioInterfaceReg,
     public PeripheralInterfaceReg,
     public RDRAMInterfaceReg,

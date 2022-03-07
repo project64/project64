@@ -3224,20 +3224,26 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
             switch (PAddr)
             {
             case 0x04400010:
-                m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
-                UpdateCounters(m_RegWorkingSet, false, true);
-                m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-                m_RegWorkingSet.BeforeCallDirect();
+                {
+                    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+                    UpdateCounters(m_RegWorkingSet, false, true);
+                    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+
+                    static uint32_t TempValue = 0;
+                    m_RegWorkingSet.BeforeCallDirect();
+                    PushImm32("TempValue", (uint32_t)&TempValue);
+                    PushImm32(PAddr & 0x1FFFFFFF);
 #ifdef _MSC_VER
-                MoveConstToX86reg((uint32_t)g_MMU, x86_ECX);
-                Call_Direct(AddressOf(&CMipsMemoryVM::UpdateHalfLine), "CMipsMemoryVM::UpdateHalfLine");
+                    MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_VideoInterfaceHandler, x86_ECX);
+                    Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_VideoInterfaceHandler)[0][0], "VideoInterfaceHandler::Read32");
 #else
-                PushImm32((uint32_t)g_MMU);
-                Call_Direct(AddressOf(&CMipsMemoryVM::UpdateHalfLine), "CMipsMemoryVM::UpdateHalfLine");
-                AddConstToX86Reg(x86_ESP, 4);
+                    PushImm32((uint32_t)&g_MMU->m_VideoInterfaceHandler);
+                    Call_Direct(AddressOf(&SPRegistersHandler::Read32), "SPRegistersHandler::Read32");
+                    AddConstToX86Reg(x86_ESP, 16);
 #endif
-                m_RegWorkingSet.AfterCallDirect();
-                MoveVariableToX86reg((void *)&g_MMU->m_HalfLine, "MMU->m_HalfLine", Reg);
+                    m_RegWorkingSet.AfterCallDirect();
+                    MoveVariableToX86reg(&m_TempValue, "m_TempValue", Reg);
+                }
                 break;
             default:
                 MoveConstToX86reg(0, Reg);

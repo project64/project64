@@ -59,29 +59,7 @@ void CLogging::Log_LW(uint32_t PC, uint32_t VAddr)
     }
     if (VAddr >= 0xA4400000 && VAddr <= 0xA4400034)
     {
-        if (!LogVideoInterface())
-        {
-            return;
-        }
-        g_MMU->LW_VAddr(VAddr, Value);
-
-        switch (VAddr)
-        {
-        case 0xA4400000: LogMessage("%08X: read from VI_STATUS_REG/VI_CONTROL_REG (%08X)", PC, Value); return;
-        case 0xA4400004: LogMessage("%08X: read from VI_ORIGIN_REG/VI_DRAM_ADDR_REG (%08X)", PC, Value); return;
-        case 0xA4400008: LogMessage("%08X: read from VI_WIDTH_REG/VI_H_WIDTH_REG (%08X)", PC, Value); return;
-        case 0xA440000C: LogMessage("%08X: read from VI_INTR_REG/VI_V_INTR_REG (%08X)", PC, Value); return;
-        case 0xA4400010: LogMessage("%08X: read from VI_CURRENT_REG/VI_V_CURRENT_LINE_REG (%08X)", PC, Value); return;
-        case 0xA4400014: LogMessage("%08X: read from VI_BURST_REG/VI_TIMING_REG (%08X)", PC, Value); return;
-        case 0xA4400018: LogMessage("%08X: read from VI_V_SYNC_REG (%08X)", PC, Value); return;
-        case 0xA440001C: LogMessage("%08X: read from VI_H_SYNC_REG (%08X)", PC, Value); return;
-        case 0xA4400020: LogMessage("%08X: read from VI_LEAP_REG/VI_H_SYNC_LEAP_REG (%08X)", PC, Value); return;
-        case 0xA4400024: LogMessage("%08X: read from VI_H_START_REG/VI_H_VIDEO_REG (%08X)", PC, Value); return;
-        case 0xA4400028: LogMessage("%08X: read from VI_V_START_REG/VI_V_VIDEO_REG (%08X)", PC, Value); return;
-        case 0xA440002C: LogMessage("%08X: read from VI_V_BURST_REG (%08X)", PC, Value); return;
-        case 0xA4400030: LogMessage("%08X: read from VI_X_SCALE_REG (%08X)", PC, Value); return;
-        case 0xA4400034: LogMessage("%08X: read from VI_Y_SCALE_REG (%08X)", PC, Value); return;
-        }
+        return;
     }
     if (VAddr >= 0xA4500000 && VAddr <= 0xA4500014)
     {
@@ -253,27 +231,7 @@ void CLogging::Log_SW(uint32_t PC, uint32_t VAddr, uint32_t Value)
     }
     if (VAddr >= 0xA4400000 && VAddr <= 0xA4400034)
     {
-        if (!LogVideoInterface())
-        {
-            return;
-        }
-        switch (VAddr)
-        {
-        case 0xA4400000: LogMessage("%08X: Writing 0x%08X to VI_STATUS_REG/VI_CONTROL_REG", PC, Value); return;
-        case 0xA4400004: LogMessage("%08X: Writing 0x%08X to VI_ORIGIN_REG/VI_DRAM_ADDR_REG", PC, Value); return;
-        case 0xA4400008: LogMessage("%08X: Writing 0x%08X to VI_WIDTH_REG/VI_H_WIDTH_REG", PC, Value); return;
-        case 0xA440000C: LogMessage("%08X: Writing 0x%08X to VI_INTR_REG/VI_V_INTR_REG", PC, Value); return;
-        case 0xA4400010: LogMessage("%08X: Writing 0x%08X to VI_CURRENT_REG/VI_V_CURRENT_LINE_REG", PC, Value); return;
-        case 0xA4400014: LogMessage("%08X: Writing 0x%08X to VI_BURST_REG/VI_TIMING_REG", PC, Value); return;
-        case 0xA4400018: LogMessage("%08X: Writing 0x%08X to VI_V_SYNC_REG", PC, Value); return;
-        case 0xA440001C: LogMessage("%08X: Writing 0x%08X to VI_H_SYNC_REG", PC, Value); return;
-        case 0xA4400020: LogMessage("%08X: Writing 0x%08X to VI_LEAP_REG/VI_H_SYNC_LEAP_REG", PC, Value); return;
-        case 0xA4400024: LogMessage("%08X: Writing 0x%08X to VI_H_START_REG/VI_H_VIDEO_REG", PC, Value); return;
-        case 0xA4400028: LogMessage("%08X: Writing 0x%08X to VI_V_START_REG/VI_V_VIDEO_REG", PC, Value); return;
-        case 0xA440002C: LogMessage("%08X: Writing 0x%08X to VI_V_BURST_REG", PC, Value); return;
-        case 0xA4400030: LogMessage("%08X: Writing 0x%08X to VI_X_SCALE_REG", PC, Value); return;
-        case 0xA4400034: LogMessage("%08X: Writing 0x%08X to VI_Y_SCALE_REG", PC, Value); return;
-        }
+        return;
     }
 
     if (VAddr >= 0xA4500000 && VAddr <= 0xA4500014)

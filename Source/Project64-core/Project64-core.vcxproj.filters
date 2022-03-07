@@ -375,6 +375,9 @@
     <ClCompile Include="N64System\MemoryHandler\MIPSInterfaceHandler.cpp">
       <Filter>Source Files\N64 System\MemoryHandler</Filter>
     </ClCompile>
+    <ClCompile Include="N64System\MemoryHandler\VideoInterfaceHandler.cpp">
+      <Filter>Source Files\N64 System\MemoryHandler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -714,6 +717,9 @@
       <Filter>Header Files\N64 System\MemoryHandler</Filter>
     </ClInclude>
     <ClInclude Include="N64System\MemoryHandler\MIPSInterfaceHandler.h">
+      <Filter>Header Files\N64 System\MemoryHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\MemoryHandler\VideoInterfaceHandler.h">
       <Filter>Header Files\N64 System\MemoryHandler</Filter>
     </ClInclude>
   </ItemGroup>

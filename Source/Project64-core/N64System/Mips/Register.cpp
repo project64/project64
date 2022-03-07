@@ -75,33 +75,6 @@ CP0registers::CP0registers(uint32_t * _CP0) :
 {
 }
 
-Video_InterfaceReg::Video_InterfaceReg(uint32_t * _VideoInterface) :
-    VI_STATUS_REG(_VideoInterface[0]),
-    VI_CONTROL_REG(_VideoInterface[0]),
-    VI_ORIGIN_REG(_VideoInterface[1]),
-    VI_DRAM_ADDR_REG(_VideoInterface[1]),
-    VI_WIDTH_REG(_VideoInterface[2]),
-    VI_H_WIDTH_REG(_VideoInterface[2]),
-    VI_INTR_REG(_VideoInterface[3]),
-    VI_V_INTR_REG(_VideoInterface[3]),
-    VI_CURRENT_REG(_VideoInterface[4]),
-    VI_V_CURRENT_LINE_REG(_VideoInterface[4]),
-    VI_BURST_REG(_VideoInterface[5]),
-    VI_TIMING_REG(_VideoInterface[5]),
-    VI_V_SYNC_REG(_VideoInterface[6]),
-    VI_H_SYNC_REG(_VideoInterface[7]),
-    VI_LEAP_REG(_VideoInterface[8]),
-    VI_H_SYNC_LEAP_REG(_VideoInterface[8]),
-    VI_H_START_REG(_VideoInterface[9]),
-    VI_H_VIDEO_REG(_VideoInterface[9]),
-    VI_V_START_REG(_VideoInterface[10]),
-    VI_V_VIDEO_REG(_VideoInterface[10]),
-    VI_V_BURST_REG(_VideoInterface[11]),
-    VI_X_SCALE_REG(_VideoInterface[12]),
-    VI_Y_SCALE_REG(_VideoInterface[13])
-{
-}
-
 AudioInterfaceReg::AudioInterfaceReg(uint32_t * _AudioInterface) :
     AI_DRAM_ADDR_REG(_AudioInterface[0]),
     AI_LEN_REG(_AudioInterface[1]),
@@ -162,7 +135,7 @@ CRegisters::CRegisters(CN64System * System, CSystemEvents * SystemEvents) :
     CP0registers(m_CP0),
     RDRAMRegistersReg(m_RDRAM_Registers),
     MIPSInterfaceReg(m_Mips_Interface),
-    Video_InterfaceReg(m_Video_Interface),
+    VideoInterfaceReg(m_Video_Interface),
     AudioInterfaceReg(m_Audio_Interface),
     PeripheralInterfaceReg(m_Peripheral_Interface),
     RDRAMInterfaceReg(m_RDRAM_Interface),

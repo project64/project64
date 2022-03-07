@@ -34,13 +34,11 @@ CMipsMemoryVM::CMipsMemoryVM(CN64System & System, CRegisters & Reg, bool SavesRe
     m_PeripheralInterfaceHandler(*this, Reg),
     m_RDRAMInterfaceHandler(Reg),
     m_SPRegistersHandler(System, *this, Reg),
+    m_VideoInterfaceHandler(*this, System.GetPlugins(), Reg, System.m_SystemTimer, System.m_NextTimer),
     m_Rom(nullptr),
     m_RomSize(0),
     m_RomWrittenTo(false),
     m_RomWroteValue(0),
-    m_HalfLine(0),
-    m_HalfLineCheck(false),
-    m_FieldSerration(0),
     m_TLB_ReadMap(nullptr),
     m_TLB_WriteMap(nullptr),
     m_RDRAM(nullptr),
@@ -646,7 +644,7 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
         case 0x04000000: m_SPRegistersHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
         case 0x04100000: m_DPCommandRegistersHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
         case 0x04300000: m_MIPSInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
-        case 0x04400000: Load32VideoInterface(); break;
+        case 0x04400000: m_VideoInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
         case 0x04500000: Load32AudioInterface(); break;
         case 0x04600000: m_PeripheralInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
         case 0x04700000: m_RDRAMInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
@@ -766,7 +764,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
         break;
     case 0x04100000: m_DPCommandRegistersHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x04300000: m_MIPSInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
-    case 0x04400000: Write32VideoInterface(); break;
+    case 0x04400000: m_VideoInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x04500000: Write32AudioInterface(); break;
     case 0x04600000: m_PeripheralInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x04700000: m_RDRAMInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
@@ -780,40 +778,6 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
     }
 
     return true;
-}
-
-void CMipsMemoryVM::UpdateHalfLine()
-{
-    uint32_t NextViTimer = g_SystemTimer->GetTimer(CSystemTimer::ViTimer);
-
-    if (*g_NextTimer < 0)
-    {
-        m_HalfLine = 0;
-        return;
-    }
-
-    int32_t check_value = (int32_t)(m_HalfLineCheck - NextViTimer);
-    if (check_value > 0 && check_value < 40)
-    {
-        *g_NextTimer -= g_System->ViRefreshRate();
-        if (*g_NextTimer < 0)
-        {
-            *g_NextTimer = 0 - g_System->CountPerOp();
-        }
-        g_SystemTimer->UpdateTimers();
-        NextViTimer = g_SystemTimer->GetTimer(CSystemTimer::ViTimer);
-    }
-    m_HalfLine = (uint32_t)(*g_NextTimer / g_System->ViRefreshRate());
-    m_HalfLine &= ~1;
-    m_HalfLine |= m_FieldSerration;
-    g_Reg->VI_V_CURRENT_LINE_REG = m_HalfLine;
-    m_HalfLineCheck = NextViTimer;
-}
-
-void CMipsMemoryVM::UpdateFieldSerration(uint32_t interlaced)
-{
-    m_FieldSerration ^= 1;
-    m_FieldSerration &= interlaced;
 }
 
 void CMipsMemoryVM::ProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr)
@@ -1121,36 +1085,6 @@ void CMipsMemoryVM::ChangeMiIntrMask()
     }
 }
 
-void CMipsMemoryVM::Load32VideoInterface(void)
-{
-    switch (m_MemLookupAddress & 0x1FFFFFFF)
-    {
-    case 0x04400000: m_MemLookupValue.UW[0] = g_Reg->VI_STATUS_REG; break;
-    case 0x04400004: m_MemLookupValue.UW[0] = g_Reg->VI_ORIGIN_REG; break;
-    case 0x04400008: m_MemLookupValue.UW[0] = g_Reg->VI_WIDTH_REG; break;
-    case 0x0440000C: m_MemLookupValue.UW[0] = g_Reg->VI_INTR_REG; break;
-    case 0x04400010:
-        g_MMU->UpdateHalfLine();
-        m_MemLookupValue.UW[0] = g_MMU->m_HalfLine;
-        break;
-    case 0x04400014: m_MemLookupValue.UW[0] = g_Reg->VI_BURST_REG; break;
-    case 0x04400018: m_MemLookupValue.UW[0] = g_Reg->VI_V_SYNC_REG; break;
-    case 0x0440001C: m_MemLookupValue.UW[0] = g_Reg->VI_H_SYNC_REG; break;
-    case 0x04400020: m_MemLookupValue.UW[0] = g_Reg->VI_LEAP_REG; break;
-    case 0x04400024: m_MemLookupValue.UW[0] = g_Reg->VI_H_START_REG; break;
-    case 0x04400028: m_MemLookupValue.UW[0] = g_Reg->VI_V_START_REG; break;
-    case 0x0440002C: m_MemLookupValue.UW[0] = g_Reg->VI_V_BURST_REG; break;
-    case 0x04400030: m_MemLookupValue.UW[0] = g_Reg->VI_X_SCALE_REG; break;
-    case 0x04400034: m_MemLookupValue.UW[0] = g_Reg->VI_Y_SCALE_REG; break;
-    default:
-        m_MemLookupValue.UW[0] = 0;
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-    }
-}
-
 void CMipsMemoryVM::Load32AudioInterface(void)
 {
     switch (m_MemLookupAddress & 0x1FFFFFFF)
@@ -1347,55 +1281,6 @@ void CMipsMemoryVM::Load32Rom(void)
     {
         m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
         m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
-    }
-}
-
-void CMipsMemoryVM::Write32VideoInterface(void)
-{
-    switch ((m_MemLookupAddress & 0xFFFFFFF))
-    {
-    case 0x04400000:
-        if (g_Reg->VI_STATUS_REG != m_MemLookupValue.UW[0])
-        {
-            g_Reg->VI_STATUS_REG = m_MemLookupValue.UW[0];
-            if (g_Plugins->Gfx()->ViStatusChanged != nullptr)
-            {
-                g_Plugins->Gfx()->ViStatusChanged();
-            }
-        }
-        break;
-    case 0x04400004:
-        g_Reg->VI_ORIGIN_REG = (m_MemLookupValue.UW[0] & 0xFFFFFF);
-        break;
-    case 0x04400008:
-        if (g_Reg->VI_WIDTH_REG != m_MemLookupValue.UW[0])
-        {
-            g_Reg->VI_WIDTH_REG = m_MemLookupValue.UW[0];
-            if (g_Plugins->Gfx()->ViWidthChanged != nullptr)
-            {
-                g_Plugins->Gfx()->ViWidthChanged();
-            }
-        }
-        break;
-    case 0x0440000C: g_Reg->VI_INTR_REG = m_MemLookupValue.UW[0]; break;
-    case 0x04400010:
-        g_Reg->MI_INTR_REG &= ~MI_INTR_VI;
-        g_Reg->CheckInterrupts();
-        break;
-    case 0x04400014: g_Reg->VI_BURST_REG = m_MemLookupValue.UW[0]; break;
-    case 0x04400018: g_Reg->VI_V_SYNC_REG = m_MemLookupValue.UW[0]; break;
-    case 0x0440001C: g_Reg->VI_H_SYNC_REG = m_MemLookupValue.UW[0]; break;
-    case 0x04400020: g_Reg->VI_LEAP_REG = m_MemLookupValue.UW[0]; break;
-    case 0x04400024: g_Reg->VI_H_START_REG = m_MemLookupValue.UW[0]; break;
-    case 0x04400028: g_Reg->VI_V_START_REG = m_MemLookupValue.UW[0]; break;
-    case 0x0440002C: g_Reg->VI_V_BURST_REG = m_MemLookupValue.UW[0]; break;
-    case 0x04400030: g_Reg->VI_X_SCALE_REG = m_MemLookupValue.UW[0]; break;
-    case 0x04400034: g_Reg->VI_Y_SCALE_REG = m_MemLookupValue.UW[0]; break;
-    default:
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
     }
 }
 

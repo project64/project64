@@ -13,6 +13,7 @@
 #include <Project64-core\N64System\MemoryHandler\RDRAMInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RDRAMRegistersHandler.h>
 #include <Project64-core\N64System\MemoryHandler\SPRegistersHandler.h>
+#include <Project64-core\N64System\MemoryHandler\VideoInterfaceHandler.h>
 #include <Project64-core\Settings\GameSettings.h>
 
 #ifdef __arm__
@@ -90,7 +91,6 @@ public:
     bool SD_PAddr(uint32_t PAddr, uint64_t Value);
 
     int32_t   MemoryFilter(uint32_t dwExptCode, void * lpExceptionPointer);
-    void UpdateFieldSerration(uint32_t interlaced);
 
 #ifndef _WIN32
     static bool SetupSegvHandler(void);
@@ -112,6 +112,8 @@ public:
 
     // Labels
     const char * LabelName(uint32_t Address) const;
+
+    VideoInterfaceHandler & VideoInterface(void) { return m_VideoInterfaceHandler; }
 
 private:
     CMipsMemoryVM();
@@ -137,7 +139,6 @@ private:
     bool SH_NonMemory(uint32_t PAddr, uint16_t Value);
     bool SW_NonMemory(uint32_t PAddr, uint32_t Value);
 
-    static void Load32VideoInterface(void);
     static void Load32AudioInterface(void);
     static void Load32SerialInterface(void);
     static void Load32CartridgeDomain1Address1(void);
@@ -147,7 +148,6 @@ private:
     static void Load32PifRam(void);
     static void Load32Rom(void);
 
-    static void Write32VideoInterface(void);
     static void Write32AudioInterface(void);
     static void Write32SerialInterface(void);
     static void Write32CartridgeDomain2Address1(void);
@@ -175,7 +175,6 @@ private:
     static void DumpArmExceptionInfo(uint32_t MemAddress, mcontext_t & context);
     static bool FilterArmException(uint32_t MemAddress, mcontext_t & context);
 #endif
-    void UpdateHalfLine();
     void FreeMemory();
 
     static uint8_t   * m_Reserve1, *m_Reserve2;
@@ -186,6 +185,7 @@ private:
     RDRAMInterfaceHandler m_RDRAMInterfaceHandler;
     RDRAMRegistersHandler m_RDRAMRegistersHandler;
     SPRegistersHandler m_SPRegistersHandler;
+    VideoInterfaceHandler m_VideoInterfaceHandler;
     uint8_t * m_RDRAM, *m_DMEM, *m_IMEM;
     uint32_t m_AllocatedRdramSize;
     bool m_RomMapped;
@@ -196,9 +196,6 @@ private:
     bool m_DDRomMapped;
     uint8_t * m_DDRom;
     uint32_t m_DDRomSize;
-    uint32_t m_HalfLine;
-    uint32_t m_HalfLineCheck;
-    uint32_t m_FieldSerration;
 
     mutable char m_strLabelName[100];
     size_t * m_TLB_ReadMap;
