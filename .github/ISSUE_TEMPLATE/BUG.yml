@@ -1,29 +1,38 @@
-name: Bug Report
-description: If you experience a bug in the Emulator and its default plugins, please open an issue here and fill out the template.
-title: "[Bug]: "
-labels: ["bug", "triage"]
-assignees: 
-  - 
+name: Bug report
+description: >-
+  If you experience a bug in Project64 and its default plugins, please open an
+  issue here and fill out the template.
+title: '[Bug]: '
+labels:
+  - bug
+  - triage
+assignees:
+  - null
 body:
   - type: markdown
     attributes:
-      value: "## FAQ's and a warning"      
+      value: '## FAQs and a warning'
   - type: markdown
     attributes:
-      value: |
-            If you are having issues with a plugin that isn't included with and supported by the Project64 team, we cannot support you other then pointing you to the developer of those plugins.
-            
-            Please join the Discord first and ask questions and ask for support there first. If the issue should require an open GitHub issue, somebody will ask you to open one. We have a lot of people in the Discord who are more then happy to help you with any issues you may be having!
-            
-            Please avoid opening issues if you do not meet the minimum requirements for Project64. These are outlined in the README for this repository.
+      value: >
+        If you are having issues with a plugin that isn't included with and
+        supported by the Project64 team, we cannot support you other then
+        pointing you to the developer or repository for those plugins.
 
+        Please join the Discord first and ask questions and ask for support
+        there first. If the issue should require an open GitHub issue, somebody
+        will ask you to open one. We have a lot of people in the Discord who are
+        more then happy to help you with any issues you may be having!
+
+        Please avoid opening issues if you do not meet the minimum requirements
+        for Project64. These are outlined in the README for this repository.
   - type: textarea
     id: what-should-happen
     attributes:
       label: Expected behavior?
       description: How was the emulator supposed to behave
       placeholder: Tell us what you expect to see!; use screenshots if necessary.
-      value: 
+      value: null
     validations:
       required: true
   - type: textarea
@@ -32,21 +41,21 @@ body:
       label: Actual behavior?
       description: Describe the issue you encountered.
       placeholder: Tell us what you see!; use screenshots if necessary.
-      value: 
+      value: null
     validations:
       required: true
   - type: textarea
     id: repro
     attributes:
       label: Steps to reproduce the problem
-      description: "How do you trigger this bug? Please walk us through it step by step."
+      description: How do you trigger this bug? Please walk us through it step by step.
       value: |
-            1.
-            2.
-            3.
-            4.
-            5.
-            ...
+        1.
+        2.
+        3.
+        4.
+        5.
+        ...
     validations:
       required: true
   - type: textarea
@@ -54,61 +63,79 @@ body:
     attributes:
       label: Error messages?
       description: Was there an error message?
-      placeholder: List any exception messages here!; use screenshots if necessary.
-      value: 
+      placeholder: List any error messages here!; use screenshots if necessary.
+      value: null
     validations:
       required: false
   - type: textarea
     id: Rom_Details
     attributes:
-      label: What game were you playing
-      description: "What is the specific rom that you encountered an issue with"
-      value: |
-            Title:
-            N64 or 64DD:
-            ROM CODE: (File > ROM Info, or Context Menu > Rom Information in the ROM List)
-            SAVE TYPE: (Attach MPK, Battery or Savestate here)
-            Clean or Hacked?:(Attach Patch here)
+      label: What game were you playing?
+      description: What is the specific ROM that you encountered an issue with?
+      value: >
+        Title:
+
+        Nintendo 64 game or Nintendo 64 Disk Drive:
+
+        ROM CODE: (File > ROM info, or context menu > ROM Information in the ROM
+        list)
+
+        SAVE TYPE: (Attach game save or save state here)
+
+        Original or modified ROM?:(attach patch here)
     validations:
       required: false
   - type: textarea
     id: SysInfo
     attributes:
-      label: Specifications and Build details
-      description: "List your system information, you can obtain this from MSINFO32 and the emulators Titlebar."
-      value: |
-            Project64: (include commit version number and whether you are using the 32-bit or 64-bit version)
-            OS: (include version and OS build number using WinVer):
-            CPU:
-            GPU:
-            RAM:
+      label: Specifications and build details
+      description: >-
+        List your system information, you can obtain this from MSINFO32 and the
+        emulators title bar and about page.
+      value: >
+        Project64: (include commit version number and whether you are using the
+        32-bit or 64-bit version)
+
+        OS: (include version and OS build number using WinVer):
+
+        CPU:
+
+        GPU:
+
+        RAM:
     validations:
       required: true
   - type: checkboxes
     id: DefaultPlugins
     attributes:
-      label: Using included Plugins
-      description: Please make sure you are using the included plugins before opening an issue
+      label: Using included plugins
+      description: >-
+        Please make sure you are using the included plugins before opening an
+        issue:
       options:
-        - label: I can confirm I am using the included RSP, audio, input, and graphics plugins
+        - label: >-
+            I can confirm I am using the included RSP, audio, input, and
+            graphics plugins
           required: true
   - type: textarea
     id: PluginsUsed
     attributes:
       label: Plugins used while the issue occurred
-      description: "What plugins is the issue occuring with"
+      description: What plugins is the issue occuring with?
       value: |
-            Graphics plugin (and HLE or LLE):
-            Audio plugin:
-            Input plugin:
-            RSP plugin:
+        Graphics plugin (and HLE or LLE):
+        Audio plugin:
+        Input plugin:
+        RSP plugin:
     validations:
       required: true
   - type: checkboxes
     id: Copyright_Compliance
     attributes:
       label: Copyright Compliance
-      description: Please do not attach any files that infringe on the copyright of Nintendo or its partners, this in
+      description: >-
+        Please do not attach any files that infringe on the copyright of any
+        party.
       options:
         - label: There are no infringing files attached to this bug report.
-          required: true      
+          required: true
