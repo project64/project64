@@ -27,7 +27,7 @@ body:
     attributes:
       label: Examples
       description: Provide examples of this feature
-	  placeholder: Provide examples or screenshots of this feature in other software
+      placeholder: Provide examples or screenshots of this feature in other software
       value: null
     validations:
       required: true
