@@ -104,7 +104,7 @@ body:
 
       Graphics:
     validations: 
-    required: true
+      required: true
   - type: checkboxes
     id: DefaultPlugins
     attributes: 
@@ -128,7 +128,7 @@ body:
       Input plugin:
       RSP plugin:
     validations: 
-    required: true
+      required: true
   - type: checkboxes
     id: Copyright_Compliance
     attributes: 
