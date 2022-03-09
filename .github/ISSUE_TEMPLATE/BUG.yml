@@ -4,15 +4,15 @@ description: >-
   issue here and fill out the template.
 title: '[Bug]: '
 labels:
-  - bug
-  - triage
+    - bug
+    - triage
 assignees:
-  - null
+    - null
 body:
-  - type: markdown
+    - type: markdown
     attributes:
       value: '## FAQs and a warning'
-  - type: markdown
+    - type: markdown
     attributes:
       value: >
         If you are having issues with a plugin that isn't included with and
@@ -26,7 +26,7 @@ body:
 
         Please avoid opening issues if you do not meet the minimum requirements
         for Project64. These are outlined in the README for this repository.
-  - type: textarea
+    - type: textarea
     id: what-should-happen
     attributes:
       label: Expected behavior?
@@ -35,7 +35,7 @@ body:
       value: null
     validations:
       required: true
-  - type: textarea
+    - type: textarea
     id: what-happened
     attributes:
       label: Actual behavior?
@@ -44,7 +44,7 @@ body:
       value: null
     validations:
       required: true
-  - type: textarea
+    - type: textarea
     id: repro
     attributes:
       label: Steps to reproduce the problem
@@ -58,7 +58,7 @@ body:
         ...
     validations:
       required: true
-  - type: textarea
+    - type: textarea
     id: error-messages
     attributes:
       label: Error messages?
@@ -67,8 +67,8 @@ body:
       value: null
     validations:
       required: false
-  - type: textarea
-    id: Rom_Details
+    - type: textarea
+    id: ROM_details
     attributes:
       label: What game were you playing?
       description: What is the specific ROM that you encountered an issue with?
@@ -85,7 +85,7 @@ body:
         Original or modified ROM?:(attach patch here)
     validations:
       required: false
-  - type: textarea
+    - type: textarea
     id: SysInfo
     attributes:
       label: Specifications and build details
@@ -100,12 +100,12 @@ body:
 
         CPU:
 
-        GPU:
-
         RAM:
+
+        Graphics:
     validations:
       required: true
-  - type: checkboxes
+    - type: checkboxes
     id: DefaultPlugins
     attributes:
       label: Using included plugins
@@ -117,7 +117,7 @@ body:
             I can confirm I am using the included RSP, audio, input, and
             graphics plugins
           required: true
-  - type: textarea
+    - type: textarea
     id: PluginsUsed
     attributes:
       label: Plugins used while the issue occurred
@@ -129,7 +129,7 @@ body:
         RSP plugin:
     validations:
       required: true
-  - type: checkboxes
+    - type: checkboxes
     id: Copyright_Compliance
     attributes:
       label: Copyright Compliance

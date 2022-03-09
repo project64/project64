@@ -5,7 +5,7 @@ labels: ["feature request", "enhancement"]
 assignees: 
      - null
 body:
-  - type: textarea
+     - type: textarea
     id: feature-request
     attributes:
       label: Request box
@@ -14,7 +14,7 @@ body:
       value: null
     validations:
       required: true
-  - type: textarea
+     - type: textarea
     id: reason-why
     attributes:
       label: Reason box
@@ -23,7 +23,7 @@ body:
       value: null
     validations:
       required: true
-  - type: textarea
+     - type: textarea
     id: Examples
     attributes:
       label: Examples
