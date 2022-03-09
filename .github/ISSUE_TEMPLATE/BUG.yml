@@ -15,17 +15,17 @@ body:
   - type: markdown
     attributes: 
       value: |
-      If you are having issues with a plugin that isn't included with and
-      supported by the Project64 team, we cannot support you other then pointing
-      you to the developer or repository for those plugins.
+        If you are having issues with a plugin that isn't included with and
+        supported by the Project64 team, we cannot support you other then pointing
+        you to the developer or repository for those plugins.
 
-      Please join the Discord first and ask questions and ask for support there
-      first. If the issue should require an open GitHub issue, somebody will ask
-      you to open one. We have a lot of people in the Discord who are more then
-      happy to help you with any issues you may be having!
+        Please join the Discord first and ask questions and ask for support there
+        first. If the issue should require an open GitHub issue, somebody will ask
+        you to open one. We have a lot of people in the Discord who are more then
+        happy to help you with any issues you may be having!
 
-      Please avoid opening issues if you do not meet the minimum requirements
-      for Project64. These are outlined in the README for this repository.
+        Please avoid opening issues if you do not meet the minimum requirements
+        for Project64. These are outlined in the README for this repository.
   - type: textarea
     id: what-should-happen
     attributes: 
@@ -50,12 +50,12 @@ body:
       label: Steps to reproduce the problem
       description: How do you trigger this bug? Please walk us through it step by step.
       value: |
-      1.
-      2.
-      3.
-      4.
-      5.
-      ...
+        1.
+        2.
+        3.
+        4.
+        5.
+        ...
     validations: 
       required: true
   - type: textarea
@@ -73,16 +73,16 @@ body:
       label: What game were you playing?
       description: What is the specific ROM that you encountered an issue with?
       value: |
-      Title:
+        Title:
 
-      Nintendo 64 game or Nintendo 64 Disk Drive:
+        Nintendo 64 game or Nintendo 64 Disk Drive:
 
-      ROM CODE: (File > ROM info, or context menu > ROM Information in the ROM
-      list)
+        ROM information: (File > ROM info, or context menu > ROM information in the ROM
+        list)
 
-      SAVE TYPE: (Attach game save or save state here)
+        Save type: (Attach game save or save state here)
 
-      Original or modified ROM?:(attach patch here)
+        Original or modified ROM?:(attach patch here)
     validations: 
       required: false
   - type: textarea
