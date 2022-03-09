@@ -2,7 +2,8 @@ name: Feature request
 description: If you would like a new feature in Project64 or its default plugins, please open an issue here and fill out the template.
 title: "[Feature request]: "
 labels: ["feature request", "enhancement"]
-assignees: - null
+assignees: 
+- null
 body:
   - type: textarea
     id: feature-request
