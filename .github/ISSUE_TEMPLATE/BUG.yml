@@ -10,11 +10,11 @@ assignees:
   - null
 body:
   - type: markdown
-    attributes: null
-    value: '## FAQs and a warning'
+    attributes: 
+      value: '## FAQs and a warning'
   - type: markdown
-    attributes: null
-    value: >
+    attributes: 
+      value: >
       If you are having issues with a plugin that isn't included with and
       supported by the Project64 team, we cannot support you other then pointing
       you to the developer or repository for those plugins.
@@ -28,51 +28,51 @@ body:
       for Project64. These are outlined in the README for this repository.
   - type: textarea
     id: what-should-happen
-    attributes: null
-    label: Expected behavior?
-    description: How was the emulator supposed to behave
-    placeholder: Tell us what you expect to see!; use screenshots if necessary.
-    value: null
-    validations: null
-    required: true
+    attributes: 
+      label: Expected behavior?
+      description: How was the emulator supposed to behave
+      placeholder: Tell us what you expect to see!; use screenshots if necessary.
+      value: null
+    validations: 
+      required: true
   - type: textarea
     id: what-happened
-    attributes: null
-    label: Actual behavior?
-    description: Describe the issue you encountered.
-    placeholder: Tell us what you see!; use screenshots if necessary.
-    value: null
-    validations: null
-    required: true
+    attributes: 
+      label: Actual behavior?
+      description: Describe the issue you encountered.
+      placeholder: Tell us what you see!; use screenshots if necessary.
+      value: null
+    validations: 
+      required: true
   - type: textarea
     id: repro
-    attributes: null
-    label: Steps to reproduce the problem
-    description: How do you trigger this bug? Please walk us through it step by step.
-    value: |
+    attributes: 
+      label: Steps to reproduce the problem
+      description: How do you trigger this bug? Please walk us through it step by step.
+      value: |
       1.
       2.
       3.
       4.
       5.
       ...
-    validations: null
-    required: true
+    validations: 
+      required: true
   - type: textarea
     id: error-messages
-    attributes: null
-    label: Error messages?
-    description: Was there an error message?
-    placeholder: List any error messages here!; use screenshots if necessary.
-    value: null
-    validations: null
-    required: false
+    attributes: 
+      label: Error messages?
+      description: Was there an error message?
+      placeholder: List any error messages here!; use screenshots if necessary.
+      value: null
+    validations: 
+      required: false
   - type: textarea
     id: ROM_details
-    attributes: null
-    label: What game were you playing?
-    description: What is the specific ROM that you encountered an issue with?
-    value: >
+    attributes: 
+      label: What game were you playing?
+      description: What is the specific ROM that you encountered an issue with?
+      value: >
       Title:
 
       Nintendo 64 game or Nintendo 64 Disk Drive:
@@ -83,11 +83,11 @@ body:
       SAVE TYPE: (Attach game save or save state here)
 
       Original or modified ROM?:(attach patch here)
-    validations: null
-    required: false
+    validations: 
+      required: false
   - type: textarea
     id: SysInfo
-    attributes: null
+    attributes: 
     label: Specifications and build details
     description: >-
       List your system information, you can obtain this from MSINFO32 and the
@@ -103,11 +103,11 @@ body:
       RAM:
 
       Graphics:
-    validations: null
+    validations: 
     required: true
   - type: checkboxes
     id: DefaultPlugins
-    attributes: null
+    attributes: 
     label: Using included plugins
     description: >-
       Please make sure you are using the included plugins before opening an
@@ -119,7 +119,7 @@ body:
         required: true
   - type: textarea
     id: PluginsUsed
-    attributes: null
+    attributes: 
     label: Plugins used while the issue occurred
     description: What plugins is the issue occuring with?
     value: |
@@ -127,11 +127,11 @@ body:
       Audio plugin:
       Input plugin:
       RSP plugin:
-    validations: null
+    validations: 
     required: true
   - type: checkboxes
     id: Copyright_Compliance
-    attributes: null
+    attributes: 
     label: Copyright Compliance
     description: >-
       Please do not attach any files that infringe on the copyright of any
