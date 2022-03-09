@@ -3,7 +3,7 @@ description: If you would like a new feature in Project64 or its default plugins
 title: "[Feature request]: "
 labels: ["feature request", "enhancement"]
 assignees: 
-- null
+     - null
 body:
   - type: textarea
     id: feature-request
