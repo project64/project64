@@ -35,7 +35,7 @@ AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/project
 ### Compiling
 
 ```
-Visual Studio Community
+Visual Studio Community 2015 or later
 ```
 
 Load .sln project file and compile.
