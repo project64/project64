@@ -6,7 +6,7 @@
 
 /*** Menu ***/
 
-//File menu
+// File menu
 #100#  "&Ficheiro"
 #101#  "&Abrir a ROM"
 #102#  "Informação &da ROM..."
@@ -19,7 +19,7 @@
 #109#  "S&air"
 #110#  "Abrir &combinação"
 
-//System menu
+// System menu
 #120#  "&Sistema"
 #121#  "&Reiniciar"
 #122#  "&Colocar em pausa"
@@ -38,7 +38,7 @@
 #135#  "Trocar &disco"
 #136#  "&Melhorias..."
 
-//Options menu
+// Options menu
 #140#  "&Opções"
 #141#  "&Ecrã inteiro"
 #142#  "Sempre na &frente"
@@ -49,13 +49,13 @@
 #147#  "Mostrar as estatísticas da &CPU"
 #148#  "Defini&ções..."
 
-//Debugger menu
+// Debugger menu
 #160#  "&Depurador"
 
-//Language menu
+// Language menu
 #175#  "&Idioma"
 
-//Help menu
+// Help menu
 #180#  "&Ajuda"
 #182#  "&Acerca do Project 64"
 #184# "&Site da Web"
@@ -162,10 +162,10 @@
 #319#  "Formato do ficheiro"
 #321#  "Nome"
 
-//Select ROM
+// Select ROM
 #320#  "Seleccionar o directório actual das ROMs"
 
-//Messages
+// Messages
 #340#  "Má ROM? Usar o GoodN64 e verificar se a RDB está actualizada"
 
 /*** Options ***/
@@ -198,7 +198,7 @@
 #426#  "Áudio HLE"
 #427#  "** Usar o Plugin do Sistema **"
 
-//Directory dialog
+// Directory dialog
 #440#  " Directório dos plugins: "
 #441#  " Directório das ROMs: "
 #442#  " Directório das gravações nativas do N64: "
@@ -213,7 +213,7 @@
 #451#  " Directório do pacote das texturas: "
 #452#  "Seleccionar o directório do pacote das texturas"
 
-//Options (general) tab
+// Options (general) tab
 #460#  "Interromper a emulação quando a janela não está activa"
 #461#  "Entrar no modo de ecrã inteiro quando carregar uma ROM"
 #462#  "Ocultar as definições avançadas"
@@ -247,7 +247,7 @@
 #491#  "Abaixo"
 #492#  "Recarregar o explorador automaticamente"
 
-//Advanced options
+// Advanced options
 #500#  "A maioria destas alterações não terão efeito até que uma nova ROM seja aberta ou que a ROM actual seja reposta."
 #501#  "Padrões do core"
 #502#  "Estilo do core da CPU:"
@@ -265,7 +265,7 @@
 #514#  "Desmapear o TLB"
 #515#  "Usar sempre o núcleo do interpretador"
 
-//ROM options
+// ROM options
 #520#  "Estilo do núcleo da CPU:"
 #521#  "Taxa de actualização da VI:"
 #522#  "Tamanho da memória:"
@@ -273,7 +273,6 @@
 #524#  "Tipo da gravação predefinida:"
 #525#  "Contra fator:"
 #526#  "Buffer de compilação maior"
-#527#  "Usar o TLB"
 #528#  "Caching de registo"
 #529#  "Atrasar a interrupção do SI"
 #530#  "SP Rápido"
@@ -287,12 +286,12 @@
 #538#  "Engine de 32 bits"
 #539#  "Atrasar a interrupção do DP"
 
-//Core styles
+// Core styles
 #540#  "Interpretador"
 #541#  "Recompilador"
 #542#  "Sincronizar núcleos"
 
-//Self-mod methods
+// Self-mod methods
 #560#  "Nenhum"
 #561#  "Cache"
 #562#  "Proteger a memória"
@@ -301,20 +300,20 @@
 #565#  "Verificar o avanço da memória"
 #566#  "Limpar o código no cache"
 
-//Function lookup method
+// Function lookup method
 #570#  "Tabela de procura física"
 #571#  "Tabela de procura virtual"
 #572#  "Alterar memória"
 
-//RDRAM size
+// RDRAM size
 #580#  "4 MBs"
 #581#  "8 MBs"
 
-//Advanced block linking
+// Advanced block linking
 #600#  "Ligado"
 #601#  "Desligado"
 
-//Save type
+// Save type
 #620#  "Usar o tipo de gravação usado pela primeira vez"
 #621#  "EEPROM de 4 kbits"
 #622#  "EEPROM de 16 kbits"
@@ -350,13 +349,13 @@
 #710#  "Aumentar a velocidade do jogo"
 #711#  "Diminuir a velocidade do jogo"
 
-//Bottom page buttons
+// Bottom page buttons
 #720#  "Repor página"
 #721#  "Repor tudo"
 #722#  "Aplicar"
 #723#  "Fechar"
 
-//Disk save type
+// Disk save type
 #730#  "Cópia completa do disco"
 #731#  "Apenas a área de gravação"
 
@@ -365,7 +364,7 @@
 // ROM info title
 #800#  "Informação da ROM"
 
-//ROM info text
+// ROM info text
 #801#  "Nome da ROM:"
 #802#  "Nome do ficheiro:"
 #803#  "Local:"
@@ -387,7 +386,7 @@
 #1003#  "Marcar tudo"
 #1004#  "Desmarcar tudo"
 
-//Add cheat
+// Add cheat
 #1005#  "Adicionar batota"
 #1006#  "Nome:"
 #1007#  "Código:"
@@ -396,13 +395,13 @@
 #1010#  " Notas da batota: "
 #1011#  "Adicionar à base de dados"
 
-//Code extension
+// Code extension
 #1012#  "Extensões do código"
 #1013#  "Escolha um valor a ser utilizado para:"
 #1014#  "Aceitar"
 #1015#  "Cancelar"
 
-//Digital value
+// Digital value
 #1016#  "Dígito da quantidade"
 #1017#  "Escolha um valor pra:"
 #1018#  "&Valor"
