@@ -1909,8 +1909,8 @@ RDRAM Size=4
 [02B1538F-C94B88D0-C:45]
 Good Name=Elmo's Number Journey (U)
 Internal Name=Elmo's Number Journey
-Status=Compatible
-32bit=Yes
+Status=Issues (core)
+32bit=No
 RDRAM Size=4
 
 [E13AE2DC-4FB65CE8-C:4A]
