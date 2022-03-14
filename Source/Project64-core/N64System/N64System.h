@@ -27,7 +27,14 @@ class CPlugins;
 class CRSP_Plugin;
 class CRecompiler;
 
+class VideoInterfaceHandler;
+
 //#define TEST_SP_TRACKING  // Track the SP to make sure all ops pick it up fine
+enum CN64SystemCB
+{
+    CN64SystemCB_Reset,
+    CN64SystemCB_LoadedGameState,
+};
 
 class CN64System :
     public CLogging,
@@ -38,6 +45,8 @@ class CN64System :
     protected CDebugSettings
 {
 public:
+    typedef void(*CallBackFunction)(void *);
+
     CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesReadOnly, bool SyncSystem);
     virtual ~CN64System(void);
 
@@ -54,6 +63,9 @@ public:
     static bool RunDiskComboImage(const char * FileLoc, const char * FileLocDisk);
     static void RunLoadedImage(void);
     static void CloseSystem(void);
+
+    void RegisterCallBack(CN64SystemCB Type, void * Data, CallBackFunction Func);
+    void UnregisterCallBack(CN64SystemCB Type, void * Data, CallBackFunction Func);
 
     void CloseCpu();
     void ExternalEvent(SystemEvent action); // Covers GUI interactions and timers etc.
@@ -93,6 +105,14 @@ public:
     uint32_t JumpToLocation() const { return m_JumpToLocation; }
 
 private:
+    struct SETTING_CHANGED_CB
+    {
+        void * Data;
+        CallBackFunction Func;
+    };
+    typedef std::vector<SETTING_CHANGED_CB> SETTING_CHANGED_CB_LIST;
+    typedef std::map<CN64SystemCB, SETTING_CHANGED_CB_LIST> SETTING_CALLBACK;
+
     // Make sure plugins can directly access this information
     friend class CGfxPlugin;
     friend class CAudioPlugin;
@@ -108,6 +128,8 @@ private:
     friend class R4300iOp32;
     friend class R4300iOp;
 
+    friend class VideoInterfaceHandler;
+
     // Used for loading and potentially executing the CPU in its own thread
     static void StartEmulationThread(CThread * thread);
     static bool EmulationStarting(CThread * thread);
@@ -120,6 +142,7 @@ private:
     bool SetActiveSystem(bool bActive = true);
     void InitRegisters(bool bPostPif, CMipsMemoryVM & MMU);
     void DisplayRSPListCount();
+    void NotifyCallback(CN64SystemCB Type);
 
     // CPU methods
     void ExecuteRecompiler();
@@ -134,6 +157,7 @@ private:
     void TLB_Unmaped(uint32_t VAddr, uint32_t Len);
     void TLB_Changed();
 
+    SETTING_CALLBACK m_Callback;
     CPlugins * const m_Plugins;  // The plugin container
     CPlugins * m_SyncPlugins;
     CN64System * m_SyncCPU;

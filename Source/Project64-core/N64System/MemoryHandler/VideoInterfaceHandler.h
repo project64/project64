@@ -45,6 +45,7 @@ class CMipsMemoryVM;
 class CPlugins;
 class CRegisters;
 class CSystemTimer;
+class CN64System;
 
 class VideoInterfaceHandler :
     public MemoryHandler,
@@ -54,7 +55,8 @@ class VideoInterfaceHandler :
     private CLogging
 {
 public:
-    VideoInterfaceHandler(CMipsMemoryVM & MMU, CPlugins * Plugins, CRegisters & Reg, CSystemTimer & SystemTimer, int32_t & NextTimer);
+    VideoInterfaceHandler(CN64System & System, CMipsMemoryVM & MMU, CRegisters & Reg);
+    ~VideoInterfaceHandler();
 
     void UpdateFieldSerration(uint32_t interlaced);
     bool Read32(uint32_t Address, uint32_t & Value);
@@ -65,8 +67,14 @@ private:
     VideoInterfaceHandler(const VideoInterfaceHandler &);
     VideoInterfaceHandler & operator=(const VideoInterfaceHandler &);
 
-    void UpdateHalfLine();
+    static void stSystemReset(VideoInterfaceHandler * _this) { _this->SystemReset(); }
+    static void stLoadedGameState(VideoInterfaceHandler * _this) { _this->LoadedGameState(); }
 
+    void UpdateHalfLine();
+    void LoadedGameState(void);
+    void SystemReset(void);
+
+    CN64System & m_System;
     uint32_t m_FieldSerration;
     uint32_t m_HalfLine;
     uint32_t m_HalfLineCheck;

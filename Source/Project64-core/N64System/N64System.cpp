@@ -152,6 +152,56 @@ CN64System::~CN64System()
     }
 }
 
+void CN64System::RegisterCallBack(CN64SystemCB Type, void * Data, CallBackFunction Func)
+{
+    SETTING_CHANGED_CB Item;
+    Item.Data = Data;
+    Item.Func = Func;
+
+    SETTING_CALLBACK::iterator Callback = m_Callback.find(Type);
+    if (Callback != m_Callback.end())
+    {
+        SETTING_CHANGED_CB_LIST & List = Callback->second;
+        bool found = false;
+        for (SETTING_CHANGED_CB_LIST::const_iterator itr = List.begin(); itr != List.end(); itr++)
+        {
+            if (itr->Data == Data && itr->Func == Func)
+            {
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+        {
+            Callback->second.push_back(Item);
+        }
+    }
+    else
+    {
+        SETTING_CHANGED_CB_LIST List;
+        List.push_back(Item);
+        m_Callback.insert(SETTING_CALLBACK::value_type(Type, List));
+    }
+}
+
+void CN64System::UnregisterCallBack(CN64SystemCB Type, void * Data, CallBackFunction Func)
+{
+    SETTING_CALLBACK::iterator Callback = m_Callback.find(Type);
+    if (Callback != m_Callback.end())
+    {
+        SETTING_CHANGED_CB_LIST & List = Callback->second;
+        bool found = false;
+        for (SETTING_CHANGED_CB_LIST::const_iterator itr = List.begin(); itr != List.end(); itr++)
+        {
+            if (itr->Data == Data && itr->Func == Func)
+            {
+                List.erase(itr);
+                return;
+            }
+        }
+    }
+}
+
 void CN64System::ExternalEvent(SystemEvent action)
 {
     WriteTrace(TraceN64System, TraceDebug, "Action: %s", SystemEventName(action));
@@ -898,6 +948,7 @@ void CN64System::Reset(bool bInitReg, bool ClearMenory)
     {
         m_SyncCPU->Reset(bInitReg, ClearMenory);
     }
+    NotifyCallback(CN64SystemCB_Reset);
     g_Settings->SaveBool(GameRunning_InReset, false);
 
     WriteTrace(TraceN64System, TraceDebug, "Done");
@@ -1184,6 +1235,7 @@ void CN64System::ExecuteCPU()
     g_Notify->DisplayMessage(2, MSG_EMULATION_STARTED);
 
     m_EndEmulation = false;
+    NotifyCallback(CN64SystemCB_LoadedGameState);
 
     m_Plugins->RomOpened();
     if (m_SyncCPU)
@@ -2253,6 +2305,7 @@ bool CN64System::LoadState(const char * FileName)
             SyncCPU(m_SyncCPU);
         }
     }
+    NotifyCallback(CN64SystemCB_LoadedGameState);
     std::string LoadMsg = g_Lang->GetString(MSG_LOADED_STATE);
     g_Notify->DisplayMessage(3, stdstr_f("%s %s", LoadMsg.c_str(), stdstr(SaveFile.GetNameExtension()).c_str()).c_str());
     WriteTrace(TraceN64System, TraceDebug, "Done");
@@ -2275,6 +2328,19 @@ uint32_t CN64System::GetButtons(int32_t Control) const
 void CN64System::DisplayRSPListCount()
 {
     g_Notify->DisplayMessage(0, stdstr_f("Dlist: %d   Alist: %d   Unknown: %d", m_DlistCount, m_AlistCount, m_UnknownCount).c_str());
+}
+
+void CN64System::NotifyCallback(CN64SystemCB Type)
+{
+    SETTING_CALLBACK::iterator Callback = m_Callback.find(Type);
+    if (Callback != m_Callback.end())
+    {
+        SETTING_CHANGED_CB_LIST & List = Callback->second;
+        for (SETTING_CHANGED_CB_LIST::const_iterator itr = List.begin(); itr != List.end(); itr++)
+        {
+            itr->Func(itr->Data);
+        }
+    }
 }
 
 void CN64System::RunRSP()

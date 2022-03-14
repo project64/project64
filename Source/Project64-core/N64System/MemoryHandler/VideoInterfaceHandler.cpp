@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "VideoInterfaceHandler.h"
+#include <Project64-core\N64System\N64System.h>
 #include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
 #include <Project64-core\N64System\Mips\SystemTiming.h>
 #include <Project64-core\N64System\Mips\Register.h>
@@ -33,18 +34,27 @@ VideoInterfaceReg::VideoInterfaceReg(uint32_t * VideoInterface) :
 {
 }
 
-VideoInterfaceHandler::VideoInterfaceHandler(CMipsMemoryVM & MMU, CPlugins * Plugins, CRegisters & Reg, CSystemTimer & SystemTimer, int32_t & NextTimer) :
+VideoInterfaceHandler::VideoInterfaceHandler(CN64System & System, CMipsMemoryVM & MMU, CRegisters & Reg) :
     VideoInterfaceReg(Reg.m_Video_Interface),
+    m_System(System),
     m_MMU(MMU),
-    m_Plugins(Plugins),
+    m_Plugins(System.GetPlugins()),
     m_Reg(Reg),
-    m_SystemTimer(SystemTimer),
-    m_NextTimer(NextTimer),
+    m_SystemTimer(System.m_SystemTimer),
+    m_NextTimer(System.m_NextTimer),
     m_PC(Reg.m_PROGRAM_COUNTER),
     m_FieldSerration(0),
     m_HalfLine(0),
     m_HalfLineCheck(false)
 {
+    System.RegisterCallBack(CN64SystemCB_Reset, this, (CN64System::CallBackFunction)stSystemReset);
+    System.RegisterCallBack(CN64SystemCB_LoadedGameState, this, (CN64System::CallBackFunction)stLoadedGameState);
+}
+
+VideoInterfaceHandler::~VideoInterfaceHandler()
+{
+    m_System.UnregisterCallBack(CN64SystemCB_Reset, this, (CN64System::CallBackFunction)stSystemReset);
+    m_System.UnregisterCallBack(CN64SystemCB_LoadedGameState, this, (CN64System::CallBackFunction)stLoadedGameState);
 }
 
 bool VideoInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
@@ -213,4 +223,18 @@ void VideoInterfaceHandler::UpdateHalfLine()
     m_HalfLine |= m_FieldSerration;
     VI_V_CURRENT_LINE_REG = m_HalfLine;
     m_HalfLineCheck = NextViTimer;
+}
+
+void VideoInterfaceHandler::LoadedGameState(void)
+{
+    SystemReset();
+}
+
+void VideoInterfaceHandler::SystemReset(void)
+{
+    m_FieldSerration = 0;
+    m_HalfLine = 0;
+    m_HalfLineCheck = false;
+    UpdateFieldSerration((VI_STATUS_REG & 0x40) != 0);
+    UpdateHalfLine();
 }

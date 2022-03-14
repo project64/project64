@@ -34,7 +34,7 @@ CMipsMemoryVM::CMipsMemoryVM(CN64System & System, CRegisters & Reg, bool SavesRe
     m_PeripheralInterfaceHandler(*this, Reg),
     m_RDRAMInterfaceHandler(Reg),
     m_SPRegistersHandler(System, *this, Reg),
-    m_VideoInterfaceHandler(*this, System.GetPlugins(), Reg, System.m_SystemTimer, System.m_NextTimer),
+    m_VideoInterfaceHandler(System, *this, Reg),
     m_Rom(nullptr),
     m_RomSize(0),
     m_RomWrittenTo(false),
