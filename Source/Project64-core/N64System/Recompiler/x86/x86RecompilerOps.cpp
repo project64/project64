@@ -187,12 +187,12 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     {
         CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     }
-    /*if (m_CompilePC == 0x803245C4 && m_PipelineStage == NORMAL)
+    /*if (m_CompilePC == 0x803275F4 && m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
-    X86BreakPoint(__FILE__, __LINE__);
-    }*/
+        X86BreakPoint(__FILE__, __LINE__);
+    }
 
-    /*if (m_CompilePC >= 0x80000000 && m_CompilePC <= 0x80400000 && m_PipelineStage == NORMAL)
+    /*if (m_CompilePC >= 0x80000000 && m_CompilePC <= 0x80400000 && m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
     m_RegWorkingSet.WriteBackRegisters();
     UpdateCounters(m_RegWorkingSet, false, true);
@@ -211,7 +211,7 @@ void CX86RecompilerOps::PreCompileOpcode(void)
 
     /*if ((m_CompilePC == 0x8031C0E4 || m_CompilePC == 0x8031C118 ||
     m_CompilePC == 0x8031CD88 ||  m_CompilePC == 0x8031CE24 ||
-    m_CompilePC == 0x8031CE30 || m_CompilePC == 0x8031CE40) && m_PipelineStage == NORMAL)
+    m_CompilePC == 0x8031CE30 || m_CompilePC == 0x8031CE40) && m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
         m_RegWorkingSet.WriteBackRegisters();
         UpdateCounters(m_RegWorkingSet, false, true);
@@ -236,7 +236,7 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     m_RegWorkingSet.AfterCallDirect();
     }*/
 
-    /*if (m_CompilePC >= 0x801C1AF8 && m_CompilePC <= 0x801C1C00 && m_PipelineStage == NORMAL)
+    /*if (m_CompilePC >= 0x801C1AF8 && m_CompilePC <= 0x801C1C00 && m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
     UpdateCounters(m_RegWorkingSet,false,true);
     MoveConstToVariable(m_CompilePC,&g_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
@@ -248,12 +248,12 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     }
     }*/
 
-    /*if ((m_CompilePC == 0x80263900) && m_PipelineStage == NORMAL)
+    /*if ((m_CompilePC == 0x80263900) && m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
     X86BreakPoint(__FILEW__,__LINE__);
     }*/
 
-    /*if ((m_CompilePC >= 0x80325D80 && m_CompilePC <= 0x80325DF0) && m_PipelineStage == NORMAL)
+    /*if ((m_CompilePC >= 0x80325D80 && m_CompilePC <= 0x80325DF0) && m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
     m_RegWorkingSet.WriteBackRegisters();
     UpdateCounters(m_RegWorkingSet,false,true);
@@ -269,12 +269,12 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     #endif
     }
     }*/
-    /*if ((m_CompilePC == 0x80324E14) && m_PipelineStage == NORMAL)
+    /*if ((m_CompilePC == 0x80324E14) && m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
     X86BreakPoint(__FILEW__,__LINE__);
     }*/
 
-    /*if (m_CompilePC == 0x80324E18 && m_PipelineStage == NORMAL)
+    /*if (m_CompilePC == 0x80324E18 && m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
     m_RegWorkingSet.WriteBackRegisters();
     UpdateCounters(m_RegWorkingSet,false,true);
@@ -290,7 +290,7 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     #endif
     }
     }*/
-    /*if (m_CompilePC >= 0x80324E00 && m_CompilePC <= 0x80324E18 && m_PipelineStage == NORMAL)
+    /*if (m_CompilePC >= 0x80324E00 && m_CompilePC <= 0x80324E18 && m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
     m_RegWorkingSet.WriteBackRegisters();
     UpdateCounters(m_RegWorkingSet,false,true);
@@ -306,7 +306,7 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     #endif
     }
     }*/
-    /*        if (m_CompilePC == 0x803245CC && m_PipelineStage == NORMAL)
+    /*        if (m_CompilePC == 0x803245CC && m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
     //m_RegWorkingSet.UnMap_AllFPRs();
     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -314,7 +314,7 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     //X86BreakPoint(__FILEW__,__LINE__);
     //m_RegWorkingSet.UnMap_AllFPRs();
     }*/
-    /*if (m_CompilePC >= 0x80179DC4 && m_CompilePC <= 0x80179DF0 && m_PipelineStage == NORMAL)
+    /*if (m_CompilePC >= 0x80179DC4 && m_CompilePC <= 0x80179DF0 && m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
     m_RegWorkingSet.UnMap_AllFPRs();
     }*/
@@ -3221,36 +3221,24 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
             }
             break;
         case 0x04400000:
-            switch (PAddr)
             {
-            case 0x04400010:
-                {
-                    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
-                    UpdateCounters(m_RegWorkingSet, false, true);
-                    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+                m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+                UpdateCounters(m_RegWorkingSet, false, true);
+                m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 
-                    static uint32_t TempValue = 0;
-                    m_RegWorkingSet.BeforeCallDirect();
-                    PushImm32("TempValue", (uint32_t)&TempValue);
-                    PushImm32(PAddr & 0x1FFFFFFF);
+                m_RegWorkingSet.BeforeCallDirect();
+                PushImm32("m_TempValue", (uint32_t)&m_TempValue);
+                PushImm32(PAddr & 0x1FFFFFFF);
 #ifdef _MSC_VER
-                    MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_VideoInterfaceHandler, x86_ECX);
-                    Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_VideoInterfaceHandler)[0][0], "VideoInterfaceHandler::Read32");
+                MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_VideoInterfaceHandler, x86_ECX);
+                Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_VideoInterfaceHandler)[0][0], "VideoInterfaceHandler::Read32");
 #else
-                    PushImm32((uint32_t)&g_MMU->m_VideoInterfaceHandler);
-                    Call_Direct(AddressOf(&SPRegistersHandler::Read32), "SPRegistersHandler::Read32");
-                    AddConstToX86Reg(x86_ESP, 16);
+                PushImm32((uint32_t)&g_MMU->m_VideoInterfaceHandler);
+                Call_Direct(AddressOf(&SPRegistersHandler::Read32), "SPRegistersHandler::Read32");
+                AddConstToX86Reg(x86_ESP, 16);
 #endif
-                    m_RegWorkingSet.AfterCallDirect();
-                    MoveVariableToX86reg(&m_TempValue, "m_TempValue", Reg);
-                }
-                break;
-            default:
-                MoveConstToX86reg(0, Reg);
-                if (ShowUnhandledMemory())
-                {
-                    g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str());
-                }
+                m_RegWorkingSet.AfterCallDirect();
+                MoveVariableToX86reg(&m_TempValue, "m_TempValue", Reg);
             }
             break;
         case 0x04500000: // AI registers
@@ -10657,66 +10645,89 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         }
         break;
     case 0x04400000:
-        switch (PAddr)
+        if (GenerateLog() && LogVideoInterface())
         {
-        case 0x04400000:
-            if (g_Plugins->Gfx()->ViStatusChanged != nullptr)
-            {
-                CompConstToVariable(Value, &g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
-                JeLabel8("Continue", 0);
-                Jump = *g_RecompPos - 1;
-                MoveConstToVariable(Value, &g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
-                m_RegWorkingSet.BeforeCallDirect();
-                Call_Direct((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
-                m_RegWorkingSet.AfterCallDirect();
-                CPU_Message("");
-                CPU_Message("      Continue:");
-                SetJump8(Jump, *g_RecompPos);
-            }
-            break;
-        case 0x04400004: MoveConstToVariable((Value & 0xFFFFFF), &g_Reg->VI_ORIGIN_REG, "VI_ORIGIN_REG"); break;
-        case 0x04400008:
-            if (g_Plugins->Gfx()->ViWidthChanged != nullptr)
-            {
-                CompConstToVariable(Value, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
-                JeLabel8("Continue", 0);
-                Jump = *g_RecompPos - 1;
-                MoveConstToVariable(Value, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
-                m_RegWorkingSet.BeforeCallDirect();
-                Call_Direct((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
-                m_RegWorkingSet.AfterCallDirect();
-                CPU_Message("");
-                CPU_Message("      Continue:");
-                SetJump8(Jump, *g_RecompPos);
-            }
-            break;
-        case 0x0440000C: MoveConstToVariable(Value, &g_Reg->VI_INTR_REG, "VI_INTR_REG"); break;
-        case 0x04400010:
-            AndConstToVariable((uint32_t)~MI_INTR_VI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+            UpdateCounters(m_RegWorkingSet, false, true);
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+
             m_RegWorkingSet.BeforeCallDirect();
+            PushImm32(0xFFFFFFFF);
+            PushImm32(Value);
+            PushImm32(PAddr & 0x1FFFFFFF);
 #ifdef _MSC_VER
-            MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
-            Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+            MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_VideoInterfaceHandler, x86_ECX);
+            Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_VideoInterfaceHandler)[0][1], "VideoInterfaceHandler::Write32");
 #else
-            PushImm32((uint32_t)g_Reg);
-            Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-            AddConstToX86Reg(x86_ESP, 4);
+            PushImm32((uint32_t)&g_MMU->m_VideoInterfaceHandler);
+            Call_Direct(AddressOf(&SPRegistersHandler::Read32), "SPRegistersHandler::Write32");
+            AddConstToX86Reg(x86_ESP, 16);
 #endif
             m_RegWorkingSet.AfterCallDirect();
-            break;
-        case 0x04400014: MoveConstToVariable(Value, &g_Reg->VI_BURST_REG, "VI_BURST_REG"); break;
-        case 0x04400018: MoveConstToVariable(Value, &g_Reg->VI_V_SYNC_REG, "VI_V_SYNC_REG"); break;
-        case 0x0440001C: MoveConstToVariable(Value, &g_Reg->VI_H_SYNC_REG, "VI_H_SYNC_REG"); break;
-        case 0x04400020: MoveConstToVariable(Value, &g_Reg->VI_LEAP_REG, "VI_LEAP_REG"); break;
-        case 0x04400024: MoveConstToVariable(Value, &g_Reg->VI_H_START_REG, "VI_H_START_REG"); break;
-        case 0x04400028: MoveConstToVariable(Value, &g_Reg->VI_V_START_REG, "VI_V_START_REG"); break;
-        case 0x0440002C: MoveConstToVariable(Value, &g_Reg->VI_V_BURST_REG, "VI_V_BURST_REG"); break;
-        case 0x04400030: MoveConstToVariable(Value, &g_Reg->VI_X_SCALE_REG, "VI_X_SCALE_REG"); break;
-        case 0x04400034: MoveConstToVariable(Value, &g_Reg->VI_Y_SCALE_REG, "VI_Y_SCALE_REG"); break;
-        default:
-            if (ShowUnhandledMemory())
+        }
+        else
+        {
+            switch (PAddr)
             {
-                g_Notify->DisplayError(stdstr_f("%s\nTrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+            case 0x04400000:
+                if (g_Plugins->Gfx()->ViStatusChanged != nullptr)
+                {
+                    CompConstToVariable(Value, &g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
+                    JeLabel8("Continue", 0);
+                    Jump = *g_RecompPos - 1;
+                    MoveConstToVariable(Value, &g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
+                    m_RegWorkingSet.BeforeCallDirect();
+                    Call_Direct((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
+                    m_RegWorkingSet.AfterCallDirect();
+                    CPU_Message("");
+                    CPU_Message("      Continue:");
+                    SetJump8(Jump, *g_RecompPos);
+                }
+                break;
+            case 0x04400004: MoveConstToVariable((Value & 0xFFFFFF), &g_Reg->VI_ORIGIN_REG, "VI_ORIGIN_REG"); break;
+            case 0x04400008:
+                if (g_Plugins->Gfx()->ViWidthChanged != nullptr)
+                {
+                    CompConstToVariable(Value, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
+                    JeLabel8("Continue", 0);
+                    Jump = *g_RecompPos - 1;
+                    MoveConstToVariable(Value, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
+                    m_RegWorkingSet.BeforeCallDirect();
+                    Call_Direct((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
+                    m_RegWorkingSet.AfterCallDirect();
+                    CPU_Message("");
+                    CPU_Message("      Continue:");
+                    SetJump8(Jump, *g_RecompPos);
+                }
+                break;
+            case 0x0440000C: MoveConstToVariable(Value, &g_Reg->VI_INTR_REG, "VI_INTR_REG"); break;
+            case 0x04400010:
+                AndConstToVariable((uint32_t)~MI_INTR_VI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
+                m_RegWorkingSet.BeforeCallDirect();
+#ifdef _MSC_VER
+                MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
+                Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+#else
+                PushImm32((uint32_t)g_Reg);
+                Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+                AddConstToX86Reg(x86_ESP, 4);
+#endif
+                m_RegWorkingSet.AfterCallDirect();
+                break;
+            case 0x04400014: MoveConstToVariable(Value, &g_Reg->VI_BURST_REG, "VI_BURST_REG"); break;
+            case 0x04400018: MoveConstToVariable(Value, &g_Reg->VI_V_SYNC_REG, "VI_V_SYNC_REG"); break;
+            case 0x0440001C: MoveConstToVariable(Value, &g_Reg->VI_H_SYNC_REG, "VI_H_SYNC_REG"); break;
+            case 0x04400020: MoveConstToVariable(Value, &g_Reg->VI_LEAP_REG, "VI_LEAP_REG"); break;
+            case 0x04400024: MoveConstToVariable(Value, &g_Reg->VI_H_START_REG, "VI_H_START_REG"); break;
+            case 0x04400028: MoveConstToVariable(Value, &g_Reg->VI_V_START_REG, "VI_V_START_REG"); break;
+            case 0x0440002C: MoveConstToVariable(Value, &g_Reg->VI_V_BURST_REG, "VI_V_BURST_REG"); break;
+            case 0x04400030: MoveConstToVariable(Value, &g_Reg->VI_X_SCALE_REG, "VI_X_SCALE_REG"); break;
+            case 0x04400034: MoveConstToVariable(Value, &g_Reg->VI_Y_SCALE_REG, "VI_Y_SCALE_REG"); break;
+            default:
+                if (ShowUnhandledMemory())
+                {
+                    g_Notify->DisplayError(stdstr_f("%s\nTrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+                }
             }
         }
         break;
@@ -11126,71 +11137,95 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         }
         break;
     case 0x04400000:
-        switch (PAddr) {
-        case 0x04400000:
-            if (g_Plugins->Gfx()->ViStatusChanged != nullptr)
-            {
-                uint8_t * Jump;
-                CompX86regToVariable(Reg, &g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
-                JeLabel8("Continue", 0);
-                Jump = *g_RecompPos - 1;
-                MoveX86regToVariable(Reg, &g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
-                m_RegWorkingSet.BeforeCallDirect();
-                Call_Direct((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
-                m_RegWorkingSet.AfterCallDirect();
-                CPU_Message("");
-                CPU_Message("      Continue:");
-                SetJump8(Jump, *g_RecompPos);
-            }
-            break;
-        case 0x04400004:
-            MoveX86regToVariable(Reg, &g_Reg->VI_ORIGIN_REG, "VI_ORIGIN_REG");
-            AndConstToVariable(0xFFFFFF, &g_Reg->VI_ORIGIN_REG, "VI_ORIGIN_REG");
-            break;
-        case 0x04400008:
-            if (g_Plugins->Gfx()->ViWidthChanged != nullptr)
-            {
-                uint8_t * Jump;
-                CompX86regToVariable(Reg, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
-                JeLabel8("Continue", 0);
-                Jump = *g_RecompPos - 1;
-                MoveX86regToVariable(Reg, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
-                m_RegWorkingSet.BeforeCallDirect();
-                Call_Direct((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
-                m_RegWorkingSet.AfterCallDirect();
-                CPU_Message("");
-                CPU_Message("      Continue:");
-                SetJump8(Jump, *g_RecompPos);
-            }
-            break;
-        case 0x0440000C: MoveX86regToVariable(Reg, &g_Reg->VI_INTR_REG, "VI_INTR_REG"); break;
-        case 0x04400010:
-            AndConstToVariable((uint32_t)~MI_INTR_VI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
+        if (GenerateLog() && LogVideoInterface())
+        {
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+            UpdateCounters(m_RegWorkingSet, false, true);
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+
             m_RegWorkingSet.BeforeCallDirect();
+            PushImm32(0xFFFFFFFF);
+            Push(Reg);
+            PushImm32(PAddr & 0x1FFFFFFF);
 #ifdef _MSC_VER
-            MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
-            Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+            MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_VideoInterfaceHandler, x86_ECX);
+            Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_VideoInterfaceHandler)[0][1], "VideoInterfaceHandler::Write32");
 #else
-            PushImm32((uint32_t)g_Reg);
-            Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-            AddConstToX86Reg(x86_ESP, 4);
+            PushImm32((uint32_t)&g_MMU->m_VideoInterfaceHandler);
+            Call_Direct(AddressOf(&SPRegistersHandler::Read32), "SPRegistersHandler::Write32");
+            AddConstToX86Reg(x86_ESP, 16);
 #endif
             m_RegWorkingSet.AfterCallDirect();
-            break;
-        case 0x04400014: MoveX86regToVariable(Reg, &g_Reg->VI_BURST_REG, "VI_BURST_REG"); break;
-        case 0x04400018: MoveX86regToVariable(Reg, &g_Reg->VI_V_SYNC_REG, "VI_V_SYNC_REG"); break;
-        case 0x0440001C: MoveX86regToVariable(Reg, &g_Reg->VI_H_SYNC_REG, "VI_H_SYNC_REG"); break;
-        case 0x04400020: MoveX86regToVariable(Reg, &g_Reg->VI_LEAP_REG, "VI_LEAP_REG"); break;
-        case 0x04400024: MoveX86regToVariable(Reg, &g_Reg->VI_H_START_REG, "VI_H_START_REG"); break;
-        case 0x04400028: MoveX86regToVariable(Reg, &g_Reg->VI_V_START_REG, "VI_V_START_REG"); break;
-        case 0x0440002C: MoveX86regToVariable(Reg, &g_Reg->VI_V_BURST_REG, "VI_V_BURST_REG"); break;
-        case 0x04400030: MoveX86regToVariable(Reg, &g_Reg->VI_X_SCALE_REG, "VI_X_SCALE_REG"); break;
-        case 0x04400034: MoveX86regToVariable(Reg, &g_Reg->VI_Y_SCALE_REG, "VI_Y_SCALE_REG"); break;
-        default:
-            CPU_Message("    should be moving %s in to %08X ?", x86_Name(Reg), VAddr);
-            if (ShowUnhandledMemory())
+        }
+        else
+        {
+            switch (PAddr)
             {
-                g_Notify->DisplayError(stdstr_f("%s\nTrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+            case 0x04400000:
+                if (g_Plugins->Gfx()->ViStatusChanged != nullptr)
+                {
+                    uint8_t * Jump;
+                    CompX86regToVariable(Reg, &g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
+                    JeLabel8("Continue", 0);
+                    Jump = *g_RecompPos - 1;
+                    MoveX86regToVariable(Reg, &g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
+                    m_RegWorkingSet.BeforeCallDirect();
+                    Call_Direct((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
+                    m_RegWorkingSet.AfterCallDirect();
+                    CPU_Message("");
+                    CPU_Message("      Continue:");
+                    SetJump8(Jump, *g_RecompPos);
+                }
+                break;
+            case 0x04400004:
+                MoveX86regToVariable(Reg, &g_Reg->VI_ORIGIN_REG, "VI_ORIGIN_REG");
+                AndConstToVariable(0xFFFFFF, &g_Reg->VI_ORIGIN_REG, "VI_ORIGIN_REG");
+                break;
+            case 0x04400008:
+                if (g_Plugins->Gfx()->ViWidthChanged != nullptr)
+                {
+                    uint8_t * Jump;
+                    CompX86regToVariable(Reg, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
+                    JeLabel8("Continue", 0);
+                    Jump = *g_RecompPos - 1;
+                    MoveX86regToVariable(Reg, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
+                    m_RegWorkingSet.BeforeCallDirect();
+                    Call_Direct((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
+                    m_RegWorkingSet.AfterCallDirect();
+                    CPU_Message("");
+                    CPU_Message("      Continue:");
+                    SetJump8(Jump, *g_RecompPos);
+                }
+                break;
+            case 0x0440000C: MoveX86regToVariable(Reg, &g_Reg->VI_INTR_REG, "VI_INTR_REG"); break;
+            case 0x04400010:
+                AndConstToVariable((uint32_t)~MI_INTR_VI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
+                m_RegWorkingSet.BeforeCallDirect();
+    #ifdef _MSC_VER
+                MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
+                Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+    #else
+                PushImm32((uint32_t)g_Reg);
+                Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+                AddConstToX86Reg(x86_ESP, 4);
+    #endif
+                m_RegWorkingSet.AfterCallDirect();
+                break;
+            case 0x04400014: MoveX86regToVariable(Reg, &g_Reg->VI_BURST_REG, "VI_BURST_REG"); break;
+            case 0x04400018: MoveX86regToVariable(Reg, &g_Reg->VI_V_SYNC_REG, "VI_V_SYNC_REG"); break;
+            case 0x0440001C: MoveX86regToVariable(Reg, &g_Reg->VI_H_SYNC_REG, "VI_H_SYNC_REG"); break;
+            case 0x04400020: MoveX86regToVariable(Reg, &g_Reg->VI_LEAP_REG, "VI_LEAP_REG"); break;
+            case 0x04400024: MoveX86regToVariable(Reg, &g_Reg->VI_H_START_REG, "VI_H_START_REG"); break;
+            case 0x04400028: MoveX86regToVariable(Reg, &g_Reg->VI_V_START_REG, "VI_V_START_REG"); break;
+            case 0x0440002C: MoveX86regToVariable(Reg, &g_Reg->VI_V_BURST_REG, "VI_V_BURST_REG"); break;
+            case 0x04400030: MoveX86regToVariable(Reg, &g_Reg->VI_X_SCALE_REG, "VI_X_SCALE_REG"); break;
+            case 0x04400034: MoveX86regToVariable(Reg, &g_Reg->VI_Y_SCALE_REG, "VI_Y_SCALE_REG"); break;
+            default:
+                CPU_Message("    should be moving %s in to %08X ?", x86_Name(Reg), VAddr);
+                if (ShowUnhandledMemory())
+                {
+                    g_Notify->DisplayError(stdstr_f("%s\nTrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+                }
             }
         }
         break;
