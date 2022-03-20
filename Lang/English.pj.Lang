@@ -246,6 +246,7 @@
 #490#  "Up"
 #491#  "Down"
 #492#  "Automatically refresh browser"
+#493#  "Show file extensions"
 
 // Advanced options
 #500#  "Most of these changes will not take effect until a new ROM is opened or current ROM is reset."
@@ -285,6 +286,13 @@
 #537#  "AI count per byte:"
 #538#  "32-bit engine"
 #539#  "Delay DP interrupt"
+#5440# "Disk seek timing:"
+#5441# "Turbo"
+#5442# "Slow"
+
+#5410# "Randomized SI/PI interrupts"
+
+#5420# "Unaligned DMA"
 
 // Core styles
 #540#  "Interpreter"

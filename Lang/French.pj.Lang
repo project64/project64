@@ -238,12 +238,12 @@
 #463#  "Retenir les cheats sélectionnés"
 #464#  "Désactiver l’écran de veille quand une ROM est lancée"
 #465#  "Afficher la vitesse"
-#466#  "Vitesse affichée :"
+#466#  "Vitesse affichée:"
 #467#  "Vérifier si Project64 est déjà lancé"
 #468#  "Répertoire de sauvegarde unique"
 #469#  "Chemin de ROM 64DD IPL Japonaise:"
 #470#  "Chemin de ROM 64DD IPL Américaine:"
-#471#  "Chemin de ROM 64DD IPL ROM de développement:"
+#471#  "Chemin de ROM 64DD IPL développement:"
 #472#  "Type de sauvegarde:"
 #473#  "Activer améliorations"
 #474#  "Afficher la barre de statut"
@@ -264,6 +264,7 @@
 #490#  "Haut"
 #491#  "Bas"
 #492#  "Rafraichir automatiquement le navigateur"
+#493#  "Afficher les extensions"
 
 //Advanced Options
 #500#  "La plupart de ces changements ne prendront pas effet avant qu’une nouvelle ROM soit ouverte ou que la ROM actuelle soit redémarrée."
@@ -304,6 +305,13 @@
 #537#  "Compteur AI par octet"
 #538#  "Moteur 32 bits"
 #539#  "Retarder l’interruption DP"
+#5440# "Vitesse d'accès disque:"
+#5441# "Rapide"
+#5442# "Lente"
+
+#5410# "Interruptions SI/PI aléatoires"
+
+#5420# "DMA non alignée"
 
 //Core Styles
 #540#  "Interpréteur"
@@ -352,7 +360,7 @@
 #681#  "Menu objet :"
 #682#  "Touches actuelles :"
 #683#  "Sélectionner nouveau raccourci :"
-#684#  "Actuellement assigné à :"
+#684#  "Actuellement assigné à:"
 #685#  "Assigner"
 #686#  "Supprimer"
 #687#  "Tout réinitialiser"
