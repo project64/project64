@@ -87,14 +87,6 @@ DisplayControlReg::DisplayControlReg(uint32_t * _DisplayProcessor) :
 {
 }
 
-Serial_InterfaceReg::Serial_InterfaceReg(uint32_t * SerialInterface) :
-    SI_DRAM_ADDR_REG(SerialInterface[0]),
-    SI_PIF_ADDR_RD64B_REG(SerialInterface[1]),
-    SI_PIF_ADDR_WR64B_REG(SerialInterface[2]),
-    SI_STATUS_REG(SerialInterface[3])
-{
-}
-
 Disk_InterfaceReg::Disk_InterfaceReg(uint32_t * DiskInterface) :
     ASIC_DATA(DiskInterface[0]),
     ASIC_MISC_REG(DiskInterface[1]),
@@ -131,7 +123,7 @@ CRegisters::CRegisters(CN64System * System, CSystemEvents * SystemEvents) :
     RDRAMInterfaceReg(m_RDRAM_Interface),
     SPRegistersReg(m_SigProcessor_Interface),
     DisplayControlReg(m_Display_ControlReg),
-    Serial_InterfaceReg(m_SerialInterface),
+    SerialInterfaceReg(m_SerialInterface),
     Disk_InterfaceReg(m_DiskInterface),
     m_System(System),
     m_SystemEvents(SystemEvents)

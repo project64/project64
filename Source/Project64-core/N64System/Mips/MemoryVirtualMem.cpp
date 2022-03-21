@@ -34,6 +34,7 @@ CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
     m_MIPSInterfaceHandler(System.m_Reg),
     m_PeripheralInterfaceHandler(*this, System.m_Reg),
     m_RDRAMInterfaceHandler(System.m_Reg),
+    m_SerialInterfaceHandler(*this, System.m_Reg),
     m_SPRegistersHandler(System, *this, System.m_Reg),
     m_VideoInterfaceHandler(System, *this, System.m_Reg),
     m_Rom(nullptr),
@@ -649,7 +650,7 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
         case 0x04500000: m_AudioInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
         case 0x04600000: m_PeripheralInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
         case 0x04700000: m_RDRAMInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
-        case 0x04800000: Load32SerialInterface(); break;
+        case 0x04800000: m_SerialInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
         case 0x05000000: Load32CartridgeDomain2Address1(); break;
         case 0x06000000: Load32CartridgeDomain1Address1(); break;
         case 0x08000000: Load32CartridgeDomain2Address2(); break;
@@ -1083,20 +1084,6 @@ void CMipsMemoryVM::ChangeMiIntrMask()
     if ((RegModValue & MI_INTR_MASK_SET_DP) != 0)
     {
         g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_DP;
-    }
-}
-
-void CMipsMemoryVM::Load32SerialInterface(void)
-{
-    switch (m_MemLookupAddress & 0x1FFFFFFF)
-    {
-    case 0x04800018: m_MemLookupValue.UW[0] = g_Reg->SI_STATUS_REG; break;
-    default:
-        m_MemLookupValue.UW[0] = 0;
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
     }
 }
 

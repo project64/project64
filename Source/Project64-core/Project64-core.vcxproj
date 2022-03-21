@@ -59,6 +59,7 @@
     <ClCompile Include="N64System\MemoryHandler\PeripheralInterfaceHandler.cpp" />
     <ClCompile Include="N64System\MemoryHandler\RDRAMInterfaceHandler.cpp" />
     <ClCompile Include="N64System\MemoryHandler\RDRAMRegistersHandler.cpp" />
+    <ClCompile Include="N64System\MemoryHandler\SerialInterfaceHandler.cpp" />
     <ClCompile Include="N64System\MemoryHandler\SPRegistersHandler.cpp" />
     <ClCompile Include="N64System\MemoryHandler\VideoInterfaceHandler.cpp" />
     <ClCompile Include="N64System\Mips\Disk.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="N64System\MemoryHandler\PeripheralInterfaceHandler.h" />
     <ClInclude Include="N64System\MemoryHandler\RDRAMInterfaceHandler.h" />
     <ClInclude Include="N64System\MemoryHandler\RDRAMRegistersHandler.h" />
+    <ClInclude Include="N64System\MemoryHandler\SerialInterfaceHandler.h" />
     <ClInclude Include="N64System\MemoryHandler\SPRegistersHandler.h" />
     <ClInclude Include="N64System\MemoryHandler\VideoInterfaceHandler.h" />
     <ClInclude Include="N64System\Mips\Disk.h" />

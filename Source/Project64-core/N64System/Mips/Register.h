@@ -8,6 +8,7 @@
 #include <Project64-core\N64System\MemoryHandler\PeripheralInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RDRAMInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RDRAMRegistersHandler.h>
+#include <Project64-core\N64System\MemoryHandler\SerialInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\SPRegistersHandler.h>
 #include <Project64-core\N64System\MemoryHandler\VideoInterfaceHandler.h>
 #include <Project64-core\Settings\DebugSettings.h>
@@ -221,32 +222,6 @@ enum
     PI_CLR_INTR = 0x02,
 };
 
-class Serial_InterfaceReg
-{
-protected:
-    Serial_InterfaceReg (uint32_t * SerialInterface);
-
-public:
-    uint32_t & SI_DRAM_ADDR_REG;
-    uint32_t & SI_PIF_ADDR_RD64B_REG;
-    uint32_t & SI_PIF_ADDR_WR64B_REG;
-    uint32_t & SI_STATUS_REG;
-
-private:
-    Serial_InterfaceReg();
-    Serial_InterfaceReg(const Serial_InterfaceReg&);
-    Serial_InterfaceReg& operator=(const Serial_InterfaceReg&);
-};
-
-// Serial interface flags
-enum
-{
-    SI_STATUS_DMA_BUSY = 0x0001,
-    SI_STATUS_RD_BUSY = 0x0002,
-    SI_STATUS_DMA_ERROR = 0x0008,
-    SI_STATUS_INTERRUPT = 0x1000,
-};
-
 // Disk interface
 class Disk_InterfaceReg
 {
@@ -357,7 +332,7 @@ class CRegisters :
     public RDRAMInterfaceReg,
     public SPRegistersReg,
     public DisplayControlReg,
-    public Serial_InterfaceReg,
+    public SerialInterfaceReg,
     public Disk_InterfaceReg
 {
 public:

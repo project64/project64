@@ -14,7 +14,7 @@ enum
 class AudioInterfaceReg
 {
 protected:
-    AudioInterfaceReg(uint32_t * _AudioInterface);
+    AudioInterfaceReg(uint32_t * Interface);
 
 public:
     uint32_t & AI_DRAM_ADDR_REG;

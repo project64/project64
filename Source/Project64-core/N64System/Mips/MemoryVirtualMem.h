@@ -45,7 +45,7 @@ class CArmRecompilerOps;
 class CMipsMemoryVM :
     public CTransVaddr,
     private R4300iOp,
-    private CPifRam,
+    public CPifRam,
     private CFlashram,
     private CSram,
     public CDMA,
@@ -140,7 +140,6 @@ private:
     bool SH_NonMemory(uint32_t PAddr, uint16_t Value);
     bool SW_NonMemory(uint32_t PAddr, uint32_t Value);
 
-    static void Load32SerialInterface(void);
     static void Load32CartridgeDomain1Address1(void);
     static void Load32CartridgeDomain1Address3(void);
     static void Load32CartridgeDomain2Address1(void);
@@ -184,6 +183,7 @@ private:
     PeripheralInterfaceHandler m_PeripheralInterfaceHandler;
     RDRAMInterfaceHandler m_RDRAMInterfaceHandler;
     RDRAMRegistersHandler m_RDRAMRegistersHandler;
+    SerialInterfaceHandler m_SerialInterfaceHandler;
     SPRegistersHandler m_SPRegistersHandler;
     VideoInterfaceHandler m_VideoInterfaceHandler;
     uint8_t * m_RDRAM, *m_DMEM, *m_IMEM;

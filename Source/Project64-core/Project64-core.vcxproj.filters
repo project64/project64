@@ -378,6 +378,9 @@
     <ClCompile Include="N64System\MemoryHandler\AudioInterfaceHandler.cpp">
       <Filter>Source Files\N64 System\MemoryHandler</Filter>
     </ClCompile>
+    <ClCompile Include="N64System\MemoryHandler\SerialInterfaceHandler.cpp">
+      <Filter>Source Files\N64 System\MemoryHandler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -720,6 +723,9 @@
       <Filter>Header Files\N64 System\MemoryHandler</Filter>
     </ClInclude>
     <ClInclude Include="N64System\MemoryHandler\AudioInterfaceHandler.h">
+      <Filter>Header Files\N64 System\MemoryHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\MemoryHandler\SerialInterfaceHandler.h">
       <Filter>Header Files\N64 System\MemoryHandler</Filter>
     </ClInclude>
   </ItemGroup>
