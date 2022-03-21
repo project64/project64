@@ -770,7 +770,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
     case 0x04500000: m_AudioInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x04600000: m_PeripheralInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x04700000: m_RDRAMInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
-    case 0x04800000: Write32SerialInterface(); break;
+    case 0x04800000: m_SerialInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x05000000: Write32CartridgeDomain2Address1(); break;
     case 0x08000000: Write32CartridgeDomain2Address2(); break;
     case 0x1FC00000: Write32PifRam(); break;
@@ -1229,32 +1229,6 @@ void CMipsMemoryVM::Load32Rom(void)
     {
         m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
         m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
-    }
-}
-
-void CMipsMemoryVM::Write32SerialInterface(void)
-{
-    switch (m_MemLookupAddress & 0xFFFFFFF)
-    {
-    case 0x04800000: g_Reg->SI_DRAM_ADDR_REG = m_MemLookupValue.UW[0]; break;
-    case 0x04800004:
-        g_Reg->SI_PIF_ADDR_RD64B_REG = m_MemLookupValue.UW[0];
-        g_MMU->SI_DMA_READ();
-        break;
-    case 0x04800010:
-        g_Reg->SI_PIF_ADDR_WR64B_REG = m_MemLookupValue.UW[0];
-        g_MMU->SI_DMA_WRITE();
-        break;
-    case 0x04800018:
-        g_Reg->MI_INTR_REG &= ~MI_INTR_SI;
-        g_Reg->SI_STATUS_REG &= ~SI_STATUS_INTERRUPT;
-        g_Reg->CheckInterrupts();
-        break;
-    default:
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
     }
 }
 
