@@ -54,6 +54,7 @@
     <ClCompile Include="N64System\Interpreter\InterpreterOps.cpp" />
     <ClCompile Include="N64System\Interpreter\InterpreterOps32.cpp" />
     <ClCompile Include="N64System\MemoryHandler\AudioInterfaceHandler.cpp" />
+    <ClCompile Include="N64System\MemoryHandler\CartridgeDomain2Address1Handler.cpp" />
     <ClCompile Include="N64System\MemoryHandler\DisplayControlRegHandler.cpp" />
     <ClCompile Include="N64System\MemoryHandler\MIPSInterfaceHandler.cpp" />
     <ClCompile Include="N64System\MemoryHandler\PeripheralInterfaceHandler.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="N64System\Interpreter\InterpreterOps32.h" />
     <ClInclude Include="N64System\Interpreter\InterpreterOps.h" />
     <ClInclude Include="N64System\MemoryHandler\AudioInterfaceHandler.h" />
+    <ClInclude Include="N64System\MemoryHandler\CartridgeDomain2Address1Handler.h" />
     <ClInclude Include="N64System\MemoryHandler\DisplayControlRegHandler.h" />
     <ClInclude Include="N64System\MemoryHandler\MemoryHandler.h" />
     <ClInclude Include="N64System\MemoryHandler\MIPSInterfaceHandler.h" />

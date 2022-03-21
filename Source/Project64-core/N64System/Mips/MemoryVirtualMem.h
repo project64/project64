@@ -7,6 +7,7 @@
 #include <Project64-core\N64System\Mips\FlashRam.h>
 #include <Project64-core\N64System\Mips\Sram.h>
 #include <Project64-core\N64System\Mips\Dma.h>
+#include <Project64-core\N64System\MemoryHandler\CartridgeDomain2Address1Handler.h>
 #include <Project64-core\N64System\MemoryHandler\DisplayControlRegHandler.h>
 #include <Project64-core\N64System\MemoryHandler\MIPSInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\PeripheralInterfaceHandler.h>
@@ -142,12 +143,10 @@ private:
 
     static void Load32CartridgeDomain1Address1(void);
     static void Load32CartridgeDomain1Address3(void);
-    static void Load32CartridgeDomain2Address1(void);
     static void Load32CartridgeDomain2Address2(void);
     static void Load32PifRam(void);
     static void Load32Rom(void);
 
-    static void Write32CartridgeDomain2Address1(void);
     static void Write32CartridgeDomain2Address2(void);
     static void Write32PifRam(void);
 
@@ -177,6 +176,7 @@ private:
     static uint8_t   * m_Reserve1, *m_Reserve2;
     CRegisters & m_Reg;
     AudioInterfaceHandler m_AudioInterfaceHandler;
+    CartridgeDomain2Address1Handler m_CartridgeDomain2Address1Handler;
     DisplayControlRegHandler m_DPCommandRegistersHandler;
     MIPSInterfaceHandler m_MIPSInterfaceHandler;
     PeripheralInterfaceHandler m_PeripheralInterfaceHandler;

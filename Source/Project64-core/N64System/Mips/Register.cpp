@@ -87,32 +87,6 @@ DisplayControlReg::DisplayControlReg(uint32_t * _DisplayProcessor) :
 {
 }
 
-Disk_InterfaceReg::Disk_InterfaceReg(uint32_t * DiskInterface) :
-    ASIC_DATA(DiskInterface[0]),
-    ASIC_MISC_REG(DiskInterface[1]),
-    ASIC_STATUS(DiskInterface[2]),
-    ASIC_CUR_TK(DiskInterface[3]),
-    ASIC_BM_STATUS(DiskInterface[4]),
-    ASIC_ERR_SECTOR(DiskInterface[5]),
-    ASIC_SEQ_STATUS(DiskInterface[6]),
-    ASIC_CUR_SECTOR(DiskInterface[7]),
-    ASIC_HARD_RESET(DiskInterface[8]),
-    ASIC_C1_S0(DiskInterface[9]),
-    ASIC_HOST_SECBYTE(DiskInterface[10]),
-    ASIC_C1_S2(DiskInterface[11]),
-    ASIC_SEC_BYTE(DiskInterface[12]),
-    ASIC_C1_S4(DiskInterface[13]),
-    ASIC_C1_S6(DiskInterface[14]),
-    ASIC_CUR_ADDR(DiskInterface[15]),
-    ASIC_ID_REG(DiskInterface[16]),
-    ASIC_TEST_REG(DiskInterface[17]),
-    ASIC_TEST_PIN_SEL(DiskInterface[18]),
-    ASIC_CMD(DiskInterface[19]),
-    ASIC_BM_CTL(DiskInterface[20]),
-    ASIC_SEQ_CTL(DiskInterface[21])
-{
-}
-
 CRegisters::CRegisters(CN64System * System, CSystemEvents * SystemEvents) :
     CP0registers(m_CP0),
     RDRAMRegistersReg(m_RDRAM_Registers),
@@ -124,7 +98,7 @@ CRegisters::CRegisters(CN64System * System, CSystemEvents * SystemEvents) :
     SPRegistersReg(m_SigProcessor_Interface),
     DisplayControlReg(m_Display_ControlReg),
     SerialInterfaceReg(m_SerialInterface),
-    Disk_InterfaceReg(m_DiskInterface),
+    DiskInterfaceReg(m_DiskInterface),
     m_System(System),
     m_SystemEvents(SystemEvents)
 {
