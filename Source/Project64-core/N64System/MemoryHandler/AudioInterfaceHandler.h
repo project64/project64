@@ -1,6 +1,5 @@
 #pragma once
 #include "MemoryHandler.h"
-#include <Project64-core/N64System/Mips/Audio.h>
 #include <Project64-core\Settings\DebugSettings.h>
 #include <Project64-core\Settings\GameSettings.h>
 #include <Project64-core\Logging.h>
@@ -34,7 +33,6 @@ private:
 class CRegisters;
 class CN64System;
 class CPlugins;
-class CAudio;
 
 class AudioInterfaceHandler :
     public MemoryHandler,
@@ -67,10 +65,15 @@ private:
 
     void LoadedGameState(void);
     void SystemReset(void);
+    void LenChanged();
 
     CN64System & m_System;
     CRegisters & m_Reg;
     CPlugins * m_Plugins;
-    CAudio m_Audio;
     uint32_t & m_PC;
+    uint32_t m_Status;
+    uint32_t m_SecondBuff;
+    uint32_t m_BytesPerSecond;
+    int32_t m_CountsPerByte;
+    int32_t m_FramesPerSecond;
 };
