@@ -4,14 +4,16 @@
 #include <Project64-core/N64System/Mips/Register.h>
 #include <Project64-core/N64System/Mips/Disk.h>
 #include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/MemoryHandler/AudioInterfaceHandler.h>
 #include <Project64-core/3rdParty/zip.h>
 
-CSystemTimer::CSystemTimer(CRegisters &Reg, int32_t & NextTimer) :
+CSystemTimer::CSystemTimer(CRegisters &Reg, AudioInterfaceHandler & AudioInterface, int32_t & NextTimer) :
     m_LastUpdate(0),
     m_NextTimer(NextTimer),
     m_Current(UnknownTimer),
     m_inFixTimer(false),
-    m_Reg(Reg)
+    m_Reg(Reg),
+    m_AudioInterface(AudioInterface)
 {
     memset(m_TimerDetatils, 0, sizeof(m_TimerDetatils));
 }
@@ -251,11 +253,11 @@ void CSystemTimer::TimerDone()
         break;
     case CSystemTimer::AiTimerInterrupt:
         g_SystemTimer->StopTimer(CSystemTimer::AiTimerInterrupt);
-        g_Audio->InterruptTimerDone();
+        m_AudioInterface.TimerInterrupt();
         break;
     case CSystemTimer::AiTimerBusy:
         g_SystemTimer->StopTimer(CSystemTimer::AiTimerBusy);
-        g_Audio->BusyTimerDone();
+        m_AudioInterface.TimerBusy();
         break;
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);

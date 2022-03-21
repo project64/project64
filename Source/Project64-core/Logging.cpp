@@ -63,21 +63,7 @@ void CLogging::Log_LW(uint32_t PC, uint32_t VAddr)
     }
     if (VAddr >= 0xA4500000 && VAddr <= 0xA4500014)
     {
-        if (!LogAudioInterface())
-        {
-            return;
-        }
-        g_MMU->LW_VAddr(VAddr, Value);
-
-        switch (VAddr)
-        {
-        case 0xA4500000: LogMessage("%08X: read from AI_DRAM_ADDR_REG (%08X)", PC, Value); return;
-        case 0xA4500004: LogMessage("%08X: read from AI_LEN_REG (%08X)", PC, Value); return;
-        case 0xA4500008: LogMessage("%08X: read from AI_CONTROL_REG (%08X)", PC, Value); return;
-        case 0xA450000C: LogMessage("%08X: read from AI_STATUS_REG (%08X)", PC, Value); return;
-        case 0xA4500010: LogMessage("%08X: read from AI_DACRATE_REG (%08X)", PC, Value); return;
-        case 0xA4500014: LogMessage("%08X: read from AI_BITRATE_REG (%08X)", PC, Value); return;
-        }
+        return;
     }
     if (VAddr == 0xA4800000)
     {
@@ -225,30 +211,11 @@ void CLogging::Log_SW(uint32_t PC, uint32_t VAddr, uint32_t Value)
         }
     }
 
-    if (VAddr >= 0xA4300000 && VAddr <= 0xA430000C)
+    if ((VAddr >= 0xA4300000 && VAddr <= 0xA430000C) ||
+        (VAddr >= 0xA4400000 && VAddr <= 0xA4400034) ||
+        (VAddr >= 0xA4500000 && VAddr <= 0xA4500014))
     {
         return;
-    }
-    if (VAddr >= 0xA4400000 && VAddr <= 0xA4400034)
-    {
-        return;
-    }
-
-    if (VAddr >= 0xA4500000 && VAddr <= 0xA4500014)
-    {
-        if (!LogAudioInterface())
-        {
-            return;
-        }
-        switch (VAddr)
-        {
-        case 0xA4500000: LogMessage("%08X: Writing 0x%08X to AI_DRAM_ADDR_REG", PC, Value); return;
-        case 0xA4500004: LogMessage("%08X: Writing 0x%08X to AI_LEN_REG", PC, Value); return;
-        case 0xA4500008: LogMessage("%08X: Writing 0x%08X to AI_CONTROL_REG", PC, Value); return;
-        case 0xA450000C: LogMessage("%08X: Writing 0x%08X to AI_STATUS_REG", PC, Value); return;
-        case 0xA4500010: LogMessage("%08X: Writing 0x%08X to AI_DACRATE_REG", PC, Value); return;
-        case 0xA4500014: LogMessage("%08X: Writing 0x%08X to AI_BITRATE_REG", PC, Value); return;
-        }
     }
 
     if (VAddr == 0xA4800000)

@@ -30,14 +30,14 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     m_Plugins(Plugins),
     m_SyncCPU(nullptr),
     m_SyncPlugins(nullptr),
-    m_MMU_VM(*this, m_Reg, SavesReadOnly),
+    m_MMU_VM(*this, SavesReadOnly),
     //m_Cheats(m_MMU_VM),
     m_TLB(this),
     m_Reg(this, this),
     m_Recomp(nullptr),
     m_InReset(false),
     m_NextTimer(0),
-    m_SystemTimer(m_Reg, m_NextTimer),
+    m_SystemTimer(m_Reg, m_MMU_VM.AudioInterface(), m_NextTimer),
     m_bCleanFrameBox(true),
     m_RspBroke(true),
     m_DMAUsed(false),
@@ -190,7 +190,6 @@ void CN64System::UnregisterCallBack(CN64SystemCB Type, void * Data, CallBackFunc
     if (Callback != m_Callback.end())
     {
         SETTING_CHANGED_CB_LIST & List = Callback->second;
-        bool found = false;
         for (SETTING_CHANGED_CB_LIST::const_iterator itr = List.begin(); itr != List.end(); itr++)
         {
             if (itr->Data == Data && itr->Func == Func)
@@ -901,7 +900,6 @@ void CN64System::Reset(bool bInitReg, bool ClearMenory)
     WriteTrace(TraceN64System, TraceDebug, "Start (bInitReg: %s, ClearMenory: %s)", bInitReg ? "true" : "false", ClearMenory ? "true" : "false");
     g_Settings->SaveBool(GameRunning_InReset, true);
     RefreshGameSettings();
-    m_Audio.Reset();
     m_MMU_VM.Reset(ClearMenory);
 
     m_CyclesToSkip = 0;
@@ -983,7 +981,6 @@ bool CN64System::SetActiveSystem(bool bActive)
         g_TLB = &m_TLB;
         g_Reg = &m_Reg;
         g_Mempak = &m_Mempak;
-        g_Audio = &m_Audio;
         g_SystemTimer = &m_SystemTimer;
         g_TransVaddr = &m_MMU_VM;
         g_SystemEvents = this;
@@ -1005,7 +1002,6 @@ bool CN64System::SetActiveSystem(bool bActive)
             g_MMU = nullptr;
             g_TLB = nullptr;
             g_Reg = nullptr;
-            g_Audio = nullptr;
             g_SystemTimer = nullptr;
             g_TransVaddr = nullptr;
             g_SystemEvents = nullptr;
@@ -2248,11 +2244,6 @@ bool CN64System::LoadState(const char * FileName)
         m_Reg.MI_INTR_REG |= MI_INTR_AI;
     }
 
-    if (bFixedAudio())
-    {
-        m_Audio.SetFrequency(m_Reg.AI_DACRATE_REG, SystemType());
-    }
-
     if (old_status != m_Reg.VI_STATUS_REG)
     {
         g_Plugins->Gfx()->ViStatusChanged();
@@ -2474,7 +2465,7 @@ void CN64System::RefreshScreen()
     g_SystemTimer->SetTimer(CSystemTimer::ViTimer, VI_INTR_TIME, true);
     if (bFixedAudio())
     {
-        g_Audio->SetViIntr(VI_INTR_TIME);
+        m_MMU_VM.AudioInterface().SetViIntr(VI_INTR_TIME);
     }
     if (UpdateControllerOnRefresh() && g_Plugins->Control()->GetKeys != nullptr)
     {

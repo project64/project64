@@ -30,9 +30,6 @@ extern CN64Rom * g_DDRom;    // 64DD IPL ROM
 class CN64Disk;
 extern CN64Disk * g_Disk;     // 64DD disk
 
-class CAudio;
-extern CAudio * g_Audio;
-
 class CSystemTimer;
 extern CSystemTimer * g_SystemTimer;
 

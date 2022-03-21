@@ -3234,78 +3234,32 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
                 Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_VideoInterfaceHandler)[0][0], "VideoInterfaceHandler::Read32");
 #else
                 PushImm32((uint32_t)&g_MMU->m_VideoInterfaceHandler);
-                Call_Direct(AddressOf(&SPRegistersHandler::Read32), "SPRegistersHandler::Read32");
+                Call_Direct(AddressOf(&VideoInterfaceHandler::Read32), "VideoInterfaceHandler::Read32");
                 AddConstToX86Reg(x86_ESP, 16);
 #endif
                 m_RegWorkingSet.AfterCallDirect();
                 MoveVariableToX86reg(&m_TempValue, "m_TempValue", Reg);
             }
             break;
-        case 0x04500000: // AI registers
-            switch (PAddr)
+        case 0x04500000:
             {
-            case 0x04500004:
-                if (g_System->bFixedAudio())
-                {
-                    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
-                    UpdateCounters(m_RegWorkingSet, false, true);
-                    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-                    m_RegWorkingSet.BeforeCallDirect();
-#ifdef _MSC_VER
-                    MoveConstToX86reg((uint32_t)g_Audio, x86_ECX);
-                    Call_Direct(AddressOf(&CAudio::GetLength), "CAudio::GetLength");
-#else
-                    PushImm32((uint32_t)g_Audio);
-                    Call_Direct(AddressOf(&CAudio::GetLength), "CAudio::GetLength");
-                    AddConstToX86Reg(x86_ESP, 4);
-#endif
-                    MoveX86regToVariable(x86_EAX, &m_TempValue, "m_TempValue");
-                    m_RegWorkingSet.AfterCallDirect();
-                    MoveVariableToX86reg(&m_TempValue, "m_TempValue", Reg);
-                }
-                else
-                {
-                    if (g_Plugins->Audio()->AiReadLength != nullptr)
-                    {
-                        m_RegWorkingSet.BeforeCallDirect();
-                        Call_Direct((void *)g_Plugins->Audio()->AiReadLength, "AiReadLength");
-                        MoveX86regToVariable(x86_EAX, &m_TempValue, "m_TempValue");
-                        m_RegWorkingSet.AfterCallDirect();
-                        MoveVariableToX86reg(&m_TempValue, "m_TempValue", Reg);
-                    }
-                    else
-                    {
-                        MoveConstToX86reg(0, Reg);
-                    }
-                }
-                break;
-            case 0x0450000C:
-                if (g_System->bFixedAudio())
-                {
-                    m_RegWorkingSet.BeforeCallDirect();
-#ifdef _MSC_VER
-                    MoveConstToX86reg((uint32_t)g_Audio, x86_ECX);
-                    Call_Direct(AddressOf(&CAudio::GetStatus), "GetStatus");
-#else
-                    PushImm32((uint32_t)g_Audio);
-                    Call_Direct(AddressOf(&CAudio::GetStatus), "GetStatus");
-                    AddConstToX86Reg(x86_ESP, 4);
-#endif
-                    MoveX86regToVariable(x86_EAX, &m_TempValue, "m_TempValue");
-                    m_RegWorkingSet.AfterCallDirect();
-                    MoveVariableToX86reg(&m_TempValue, "m_TempValue", Reg);
-                }
-                else
-                {
-                    MoveVariableToX86reg(&g_Reg->AI_STATUS_REG, "AI_STATUS_REG", Reg);
-                }
-                break;
-            default:
-                MoveConstToX86reg(0, Reg);
-                if (ShowUnhandledMemory())
-                {
-                    g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str());
-                }
+                m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+                UpdateCounters(m_RegWorkingSet, false, true);
+                m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+
+                m_RegWorkingSet.BeforeCallDirect();
+                PushImm32("m_TempValue", (uint32_t)&m_TempValue);
+                PushImm32(PAddr & 0x1FFFFFFF);
+    #ifdef _MSC_VER
+                MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_AudioInterfaceHandler, x86_ECX);
+                Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_AudioInterfaceHandler)[0][0], "AudioInterfaceHandler::Read32");
+    #else
+                PushImm32((uint32_t)&g_MMU->m_AudioInterfaceHandler);
+                Call_Direct(AddressOf(&AudioInterfaceHandler::Read32), "AudioInterfaceHandler::Read32");
+                AddConstToX86Reg(x86_ESP, 16);
+    #endif
+                m_RegWorkingSet.AfterCallDirect();
+                MoveVariableToX86reg(&m_TempValue, "m_TempValue", Reg);
             }
             break;
         case 0x04600000:
@@ -10660,7 +10614,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_VideoInterfaceHandler)[0][1], "VideoInterfaceHandler::Write32");
 #else
             PushImm32((uint32_t)&g_MMU->m_VideoInterfaceHandler);
-            Call_Direct(AddressOf(&SPRegistersHandler::Read32), "SPRegistersHandler::Write32");
+            Call_Direct(AddressOf(&m_VideoInterfaceHandler::Write32), "m_VideoInterfaceHandler::Write32");
             AddConstToX86Reg(x86_ESP, 16);
 #endif
             m_RegWorkingSet.AfterCallDirect();
@@ -10731,54 +10685,24 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             }
         }
         break;
-    case 0x04500000: // AI registers
-        switch (PAddr)
-        {
-        case 0x04500000: MoveConstToVariable(Value, &g_Reg->AI_DRAM_ADDR_REG, "AI_DRAM_ADDR_REG"); break;
-        case 0x04500004:
-            MoveConstToVariable(Value, &g_Reg->AI_LEN_REG, "AI_LEN_REG");
-            m_RegWorkingSet.BeforeCallDirect();
-            if (g_System->bFixedAudio())
-            {
-                X86BreakPoint(__FILE__, __LINE__);
-                MoveConstToX86reg((uint32_t)g_Audio, x86_ECX);
-                Call_Direct(AddressOf(&CAudio::LenChanged), "LenChanged");
-            }
-            else
-            {
-                Call_Direct((void *)g_Plugins->Audio()->AiLenChanged, "AiLenChanged");
-            }
-            m_RegWorkingSet.AfterCallDirect();
-            break;
-        case 0x04500008: MoveConstToVariable((Value & 1), &g_Reg->AI_CONTROL_REG, "AI_CONTROL_REG"); break;
-        case 0x0450000C:
-            // Clear interrupt
-            AndConstToVariable((uint32_t)~MI_INTR_AI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
-            AndConstToVariable((uint32_t)~MI_INTR_AI, &g_Reg->m_AudioIntrReg, "m_AudioIntrReg");
-            m_RegWorkingSet.BeforeCallDirect();
+    case 0x04500000:
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+        UpdateCounters(m_RegWorkingSet, false, true);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+
+        m_RegWorkingSet.BeforeCallDirect();
+        PushImm32(0xFFFFFFFF);
+        PushImm32(Value);
+        PushImm32(PAddr & 0x1FFFFFFF);
 #ifdef _MSC_VER
-            MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
-            Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+        MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_AudioInterfaceHandler, x86_ECX);
+        Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_AudioInterfaceHandler)[0][1], "AudioInterfaceHandler::Write32");
 #else
-            PushImm32((uint32_t)g_Reg);
-            Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-            AddConstToX86Reg(x86_ESP, 4);
+        PushImm32((uint32_t)&g_MMU->m_AudioInterfaceHandler);
+        Call_Direct(AddressOf(&AudioInterfaceHandler::Write32), "AudioInterfaceHandler::Write32");
+        AddConstToX86Reg(x86_ESP, 16);
 #endif
-            m_RegWorkingSet.AfterCallDirect();
-            break;
-        case 0x04500010:
-            sprintf(VarName, "RDRAM + %X", PAddr);
-            MoveConstToVariable(Value, PAddr + g_MMU->Rdram(), VarName);
-            break;
-        case 0x04500014: MoveConstToVariable(Value, &g_Reg->AI_BITRATE_REG, "AI_BITRATE_REG"); break;
-        default:
-            sprintf(VarName, "RDRAM + %X", PAddr);
-            MoveConstToVariable(Value, PAddr + g_MMU->Rdram(), VarName);
-            if (ShowUnhandledMemory())
-            {
-                g_Notify->DisplayError(stdstr_f("%s\nTrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
-            }
-        }
+        m_RegWorkingSet.AfterCallDirect();
         break;
     case 0x04600000:
         switch (PAddr)
@@ -11152,7 +11076,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_VideoInterfaceHandler)[0][1], "VideoInterfaceHandler::Write32");
 #else
             PushImm32((uint32_t)&g_MMU->m_VideoInterfaceHandler);
-            Call_Direct(AddressOf(&SPRegistersHandler::Read32), "SPRegistersHandler::Write32");
+            Call_Direct(AddressOf(&VideoInterfaceHandler::Write32), "SPRegistersHandler::Write32");
             AddConstToX86Reg(x86_ESP, 16);
 #endif
             m_RegWorkingSet.AfterCallDirect();
@@ -11230,62 +11154,23 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         }
         break;
     case 0x04500000: // AI registers
-        switch (PAddr) {
-        case 0x04500000: MoveX86regToVariable(Reg, &g_Reg->AI_DRAM_ADDR_REG, "AI_DRAM_ADDR_REG"); break;
-        case 0x04500004:
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
-            UpdateCounters(m_RegWorkingSet, false, true);
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-            MoveX86regToVariable(Reg, &g_Reg->AI_LEN_REG, "AI_LEN_REG");
-            m_RegWorkingSet.BeforeCallDirect();
-            if (g_System->bFixedAudio())
-            {
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+        UpdateCounters(m_RegWorkingSet, false, true);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+
+        m_RegWorkingSet.BeforeCallDirect();
+        PushImm32(0xFFFFFFFF);
+        Push(Reg);
+        PushImm32(PAddr & 0x1FFFFFFF);
 #ifdef _MSC_VER
-                MoveConstToX86reg((uint32_t)g_Audio, x86_ECX);
-                Call_Direct(AddressOf(&CAudio::LenChanged), "LenChanged");
+        MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_AudioInterfaceHandler, x86_ECX);
+        Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_AudioInterfaceHandler)[0][1], "AudioInterfaceHandler::Write32");
 #else
-                PushImm32((uint32_t)g_Audio);
-                Call_Direct(AddressOf(&CAudio::LenChanged), "LenChanged");
-                AddConstToX86Reg(x86_ESP, 4);
+        PushImm32((uint32_t)&g_MMU->m_AudioInterfaceHandler);
+        Call_Direct(AddressOf(&AudioInterfaceHandler::Write32), "AudioInterfaceHandler::Write32");
+        AddConstToX86Reg(x86_ESP, 16);
 #endif
-            }
-            else
-            {
-                Call_Direct((void *)g_Plugins->Audio()->AiLenChanged, "g_Plugins->Audio()->LenChanged");
-            }
-            m_RegWorkingSet.AfterCallDirect();
-            break;
-        case 0x04500008:
-            MoveX86regToVariable(Reg, &g_Reg->AI_CONTROL_REG, "AI_CONTROL_REG");
-            AndConstToVariable(1, &g_Reg->AI_CONTROL_REG, "AI_CONTROL_REG");
-        case 0x0450000C:
-            // Clear interrupt
-            AndConstToVariable((uint32_t)~MI_INTR_AI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
-            AndConstToVariable((uint32_t)~MI_INTR_AI, &g_Reg->m_AudioIntrReg, "m_AudioIntrReg");
-            m_RegWorkingSet.BeforeCallDirect();
-#ifdef _MSC_VER
-            MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
-            Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-#else
-            PushImm32((uint32_t)g_Reg);
-            Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-            AddConstToX86Reg(x86_ESP, 4);
-#endif
-            m_RegWorkingSet.AfterCallDirect();
-            break;
-        case 0x04500010:
-            sprintf(VarName, "RDRAM + %X", PAddr);
-            MoveX86regToVariable(Reg, PAddr + g_MMU->Rdram(), VarName);
-            break;
-        case 0x04500014: MoveX86regToVariable(Reg, &g_Reg->AI_BITRATE_REG, "AI_BITRATE_REG"); break;
-        default:
-            sprintf(VarName, "RDRAM + %X", PAddr);
-            MoveX86regToVariable(Reg, PAddr + g_MMU->Rdram(), VarName);
-            if (ShowUnhandledMemory())
-            {
-                g_Notify->DisplayError(stdstr_f("%s\nTrying to store in %08X?", __FUNCTION__, VAddr).c_str());
-            }
-        }
+        m_RegWorkingSet.AfterCallDirect();
         break;
     case 0x04600000:
         switch (PAddr)

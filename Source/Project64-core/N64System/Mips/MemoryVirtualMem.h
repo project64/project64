@@ -52,7 +52,7 @@ class CMipsMemoryVM :
     private CGameSettings
 {
 public:
-    CMipsMemoryVM(CN64System & System, CRegisters & Reg, bool SavesReadOnly);
+    CMipsMemoryVM(CN64System & System, bool SavesReadOnly);
     ~CMipsMemoryVM();
 
     static void ReserveMemory();
@@ -113,6 +113,7 @@ public:
     // Labels
     const char * LabelName(uint32_t Address) const;
 
+    AudioInterfaceHandler & AudioInterface(void) { return m_AudioInterfaceHandler; }
     VideoInterfaceHandler & VideoInterface(void) { return m_VideoInterfaceHandler; }
 
 private:
@@ -139,7 +140,6 @@ private:
     bool SH_NonMemory(uint32_t PAddr, uint16_t Value);
     bool SW_NonMemory(uint32_t PAddr, uint32_t Value);
 
-    static void Load32AudioInterface(void);
     static void Load32SerialInterface(void);
     static void Load32CartridgeDomain1Address1(void);
     static void Load32CartridgeDomain1Address3(void);
@@ -148,7 +148,6 @@ private:
     static void Load32PifRam(void);
     static void Load32Rom(void);
 
-    static void Write32AudioInterface(void);
     static void Write32SerialInterface(void);
     static void Write32CartridgeDomain2Address1(void);
     static void Write32CartridgeDomain2Address2(void);
@@ -179,6 +178,7 @@ private:
 
     static uint8_t   * m_Reserve1, *m_Reserve2;
     CRegisters & m_Reg;
+    AudioInterfaceHandler m_AudioInterfaceHandler;
     DisplayControlRegHandler m_DPCommandRegistersHandler;
     MIPSInterfaceHandler m_MIPSInterfaceHandler;
     PeripheralInterfaceHandler m_PeripheralInterfaceHandler;

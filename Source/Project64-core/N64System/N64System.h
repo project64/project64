@@ -6,7 +6,6 @@
 #include <Project64-core/Settings/N64SystemSettings.h>
 #include <Project64-core/N64System/Profiling.h>
 #include <Project64-core/N64System/Recompiler/Recompiler.h>
-#include <Project64-core/N64System/Mips/Audio.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/SystemEvents.h>
 #include <Project64-core/N64System/Mips/SystemTiming.h>
@@ -161,14 +160,13 @@ private:
     CPlugins * const m_Plugins;  // The plugin container
     CPlugins * m_SyncPlugins;
     CN64System * m_SyncCPU;
-    CMipsMemoryVM m_MMU_VM;   // Memory of the N64
+    CMipsMemoryVM m_MMU_VM;
     CTLB m_TLB;
     CRegisters m_Reg;
     CMempak m_Mempak;
     CFramePerSecond m_FPS;
     CProfiling m_CPU_Usage; // Used to track the CPU usage
     CRecompiler * m_Recomp;
-    CAudio m_Audio;
     CSpeedLimiter m_Limiter;
     bool m_InReset;
     int32_t m_NextTimer;

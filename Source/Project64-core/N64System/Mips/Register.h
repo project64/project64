@@ -2,6 +2,7 @@
 
 #include <Common/Platform.h>
 #include <Project64-core\N64System\N64Types.h>
+#include <Project64-core\N64System\MemoryHandler\AudioInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\DisplayControlRegHandler.h>
 #include <Project64-core\N64System\MemoryHandler\MIPSInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\PeripheralInterfaceHandler.h>
@@ -161,32 +162,6 @@ enum
     MI_INTR_VI = 0x08,        // Bit 3: VI INTR
     MI_INTR_PI = 0x10,        // Bit 4: PI INTR
     MI_INTR_DP = 0x20,        // Bit 5: DP INTR
-};
-
-// Audio interface registers
-class AudioInterfaceReg
-{
-protected:
-    AudioInterfaceReg (uint32_t * _AudioInterface);
-
-public:
-    uint32_t & AI_DRAM_ADDR_REG;
-    uint32_t & AI_LEN_REG;
-    uint32_t & AI_CONTROL_REG;
-    uint32_t & AI_STATUS_REG;
-    uint32_t & AI_DACRATE_REG;
-    uint32_t & AI_BITRATE_REG;
-
-private:
-    AudioInterfaceReg();
-    AudioInterfaceReg(const AudioInterfaceReg&);
-    AudioInterfaceReg& operator=(const AudioInterfaceReg&);
-};
-
-enum
-{
-    AI_STATUS_FIFO_FULL = 0x80000000,    // Bit 31: Full
-    AI_STATUS_DMA_BUSY = 0x40000000,    // Bit 30: Busy
 };
 
 // Signal processor interface flags

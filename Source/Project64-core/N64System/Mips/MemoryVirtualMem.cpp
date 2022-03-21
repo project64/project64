@@ -21,20 +21,21 @@ uint32_t CMipsMemoryVM::RegModValue;
 
 #pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
 
-CMipsMemoryVM::CMipsMemoryVM(CN64System & System, CRegisters & Reg, bool SavesReadOnly) :
+CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
     CPifRam(SavesReadOnly),
     CFlashram(SavesReadOnly),
     CSram(SavesReadOnly),
     CDMA(*this, *this),
-    m_Reg(Reg),
-    m_RDRAMRegistersHandler(Reg),
+    m_Reg(System.m_Reg),
+    m_AudioInterfaceHandler(System, System.m_Reg),
+    m_RDRAMRegistersHandler(System.m_Reg),
     m_RomMapped(false),
-    m_DPCommandRegistersHandler(System, System.GetPlugins(), Reg),
-    m_MIPSInterfaceHandler(Reg),
-    m_PeripheralInterfaceHandler(*this, Reg),
-    m_RDRAMInterfaceHandler(Reg),
-    m_SPRegistersHandler(System, *this, Reg),
-    m_VideoInterfaceHandler(System, *this, Reg),
+    m_DPCommandRegistersHandler(System, System.GetPlugins(), System.m_Reg),
+    m_MIPSInterfaceHandler(System.m_Reg),
+    m_PeripheralInterfaceHandler(*this, System.m_Reg),
+    m_RDRAMInterfaceHandler(System.m_Reg),
+    m_SPRegistersHandler(System, *this, System.m_Reg),
+    m_VideoInterfaceHandler(System, *this, System.m_Reg),
     m_Rom(nullptr),
     m_RomSize(0),
     m_RomWrittenTo(false),
@@ -645,7 +646,7 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
         case 0x04100000: m_DPCommandRegistersHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
         case 0x04300000: m_MIPSInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
         case 0x04400000: m_VideoInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
-        case 0x04500000: Load32AudioInterface(); break;
+        case 0x04500000: m_AudioInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
         case 0x04600000: m_PeripheralInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
         case 0x04700000: m_RDRAMInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
         case 0x04800000: Load32SerialInterface(); break;
@@ -765,7 +766,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
     case 0x04100000: m_DPCommandRegistersHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x04300000: m_MIPSInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x04400000: m_VideoInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
-    case 0x04500000: Write32AudioInterface(); break;
+    case 0x04500000: m_AudioInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x04600000: m_PeripheralInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x04700000: m_RDRAMInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x04800000: Write32SerialInterface(); break;
@@ -1085,46 +1086,6 @@ void CMipsMemoryVM::ChangeMiIntrMask()
     }
 }
 
-void CMipsMemoryVM::Load32AudioInterface(void)
-{
-    switch (m_MemLookupAddress & 0x1FFFFFFF)
-    {
-    case 0x04500004:
-        if (g_System->bFixedAudio())
-        {
-            m_MemLookupValue.UW[0] = g_Audio->GetLength();
-        }
-        else
-        {
-            if (g_Plugins->Audio()->AiReadLength != nullptr)
-            {
-                m_MemLookupValue.UW[0] = g_Plugins->Audio()->AiReadLength();
-            }
-            else
-            {
-                m_MemLookupValue.UW[0] = 0;
-            }
-        }
-        break;
-    case 0x0450000C:
-        if (g_System->bFixedAudio())
-        {
-            m_MemLookupValue.UW[0] = g_Audio->GetStatus();
-        }
-        else
-        {
-            m_MemLookupValue.UW[0] = g_Reg->AI_STATUS_REG;
-        }
-        break;
-    default:
-        m_MemLookupValue.UW[0] = 0;
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-    }
-}
-
 void CMipsMemoryVM::Load32SerialInterface(void)
 {
     switch (m_MemLookupAddress & 0x1FFFFFFF)
@@ -1281,49 +1242,6 @@ void CMipsMemoryVM::Load32Rom(void)
     {
         m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
         m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
-    }
-}
-
-void CMipsMemoryVM::Write32AudioInterface(void)
-{
-    switch (m_MemLookupAddress & 0xFFFFFFF)
-    {
-    case 0x04500000: g_Reg->AI_DRAM_ADDR_REG = m_MemLookupValue.UW[0]; break;
-    case 0x04500004:
-        g_Reg->AI_LEN_REG = m_MemLookupValue.UW[0];
-        if (g_System->bFixedAudio())
-        {
-            g_Audio->LenChanged();
-        }
-        else
-        {
-            if (g_Plugins->Audio()->AiLenChanged != nullptr)
-            {
-                g_Plugins->Audio()->AiLenChanged();
-            }
-        }
-        break;
-    case 0x04500008: g_Reg->AI_CONTROL_REG = (m_MemLookupValue.UW[0] & 1); break;
-    case 0x0450000C:
-        // Clear interrupt
-        g_Reg->MI_INTR_REG &= ~MI_INTR_AI;
-        g_Reg->m_AudioIntrReg &= ~MI_INTR_AI;
-        g_Reg->CheckInterrupts();
-        break;
-    case 0x04500010:
-        g_Reg->AI_DACRATE_REG = m_MemLookupValue.UW[0];
-        g_Plugins->Audio()->DacrateChanged(g_System->SystemType());
-        if (g_System->bFixedAudio())
-        {
-            g_Audio->SetFrequency(m_MemLookupValue.UW[0], g_System->SystemType());
-        }
-        break;
-    case 0x04500014:  g_Reg->AI_BITRATE_REG = m_MemLookupValue.UW[0]; break;
-    default:
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
     }
 }
 

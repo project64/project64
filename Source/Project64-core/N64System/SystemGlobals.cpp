@@ -13,7 +13,6 @@ CPlugins * g_Plugins = nullptr;
 CN64Rom * g_Rom = nullptr;      // The current ROM that this system is executing, it can only execute one file at the time
 CN64Rom * g_DDRom = nullptr;    // 64DD IPL ROM
 CN64Disk * g_Disk = nullptr;     // 64DD disk
-CAudio * g_Audio = nullptr;
 CSystemTimer  * g_SystemTimer = nullptr;
 CTransVaddr * g_TransVaddr = nullptr;
 CSystemEvents * g_SystemEvents = nullptr;

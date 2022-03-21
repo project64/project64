@@ -5,6 +5,8 @@
 #include <Project64-core/N64System/Mips/Register.h>
 #include <Project64-core/3rdParty/zip.h>
 
+class AudioInterfaceHandler;
+
 class CSystemTimer
 {
 public:
@@ -37,7 +39,7 @@ public:
         int64_t CyclesToTimer;
     };
 
-    CSystemTimer(CRegisters &Reg, int32_t & NextTimer);
+    CSystemTimer(CRegisters &Reg, AudioInterfaceHandler & AudioInterface, int32_t & NextTimer);
     void SetTimer(TimerType Type, uint32_t Cycles, bool bRelative);
     uint32_t  GetTimer(TimerType Type);
     void StopTimer(TimerType Type);
@@ -73,4 +75,5 @@ private:
     TimerType m_Current;
     bool m_inFixTimer;
     CRegisters & m_Reg;
+    AudioInterfaceHandler & m_AudioInterface;
 };

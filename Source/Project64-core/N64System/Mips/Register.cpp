@@ -75,16 +75,6 @@ CP0registers::CP0registers(uint32_t * _CP0) :
 {
 }
 
-AudioInterfaceReg::AudioInterfaceReg(uint32_t * _AudioInterface) :
-    AI_DRAM_ADDR_REG(_AudioInterface[0]),
-    AI_LEN_REG(_AudioInterface[1]),
-    AI_CONTROL_REG(_AudioInterface[2]),
-    AI_STATUS_REG(_AudioInterface[3]),
-    AI_DACRATE_REG(_AudioInterface[4]),
-    AI_BITRATE_REG(_AudioInterface[5])
-{
-}
-
 DisplayControlReg::DisplayControlReg(uint32_t * _DisplayProcessor) :
     DPC_START_REG(_DisplayProcessor[0]),
     DPC_END_REG(_DisplayProcessor[1]),
