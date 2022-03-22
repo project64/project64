@@ -2,11 +2,14 @@
 
 #include <Common/Platform.h>
 #include <Project64-core\N64System\N64Types.h>
+#include <Project64-core\N64System\MemoryHandler\AudioInterfaceHandler.h>
+#include <Project64-core\N64System\MemoryHandler\CartridgeDomain2Address1Handler.h>
 #include <Project64-core\N64System\MemoryHandler\DisplayControlRegHandler.h>
 #include <Project64-core\N64System\MemoryHandler\MIPSInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\PeripheralInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RDRAMInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RDRAMRegistersHandler.h>
+#include <Project64-core\N64System\MemoryHandler\SerialInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\SPRegistersHandler.h>
 #include <Project64-core\N64System\MemoryHandler\VideoInterfaceHandler.h>
 #include <Project64-core\Settings\DebugSettings.h>
@@ -163,32 +166,6 @@ enum
     MI_INTR_DP = 0x20,        // Bit 5: DP INTR
 };
 
-// Audio interface registers
-class AudioInterfaceReg
-{
-protected:
-    AudioInterfaceReg (uint32_t * _AudioInterface);
-
-public:
-    uint32_t & AI_DRAM_ADDR_REG;
-    uint32_t & AI_LEN_REG;
-    uint32_t & AI_CONTROL_REG;
-    uint32_t & AI_STATUS_REG;
-    uint32_t & AI_DACRATE_REG;
-    uint32_t & AI_BITRATE_REG;
-
-private:
-    AudioInterfaceReg();
-    AudioInterfaceReg(const AudioInterfaceReg&);
-    AudioInterfaceReg& operator=(const AudioInterfaceReg&);
-};
-
-enum
-{
-    AI_STATUS_FIFO_FULL = 0x80000000,    // Bit 31: Full
-    AI_STATUS_DMA_BUSY = 0x40000000,    // Bit 30: Busy
-};
-
 // Signal processor interface flags
 enum
 {
@@ -246,98 +223,6 @@ enum
     PI_CLR_INTR = 0x02,
 };
 
-class Serial_InterfaceReg
-{
-protected:
-    Serial_InterfaceReg (uint32_t * SerialInterface);
-
-public:
-    uint32_t & SI_DRAM_ADDR_REG;
-    uint32_t & SI_PIF_ADDR_RD64B_REG;
-    uint32_t & SI_PIF_ADDR_WR64B_REG;
-    uint32_t & SI_STATUS_REG;
-
-private:
-    Serial_InterfaceReg();
-    Serial_InterfaceReg(const Serial_InterfaceReg&);
-    Serial_InterfaceReg& operator=(const Serial_InterfaceReg&);
-};
-
-// Serial interface flags
-enum
-{
-    SI_STATUS_DMA_BUSY = 0x0001,
-    SI_STATUS_RD_BUSY = 0x0002,
-    SI_STATUS_DMA_ERROR = 0x0008,
-    SI_STATUS_INTERRUPT = 0x1000,
-};
-
-// Disk interface
-class Disk_InterfaceReg
-{
-protected:
-    Disk_InterfaceReg (uint32_t * Disk_Interface);
-
-public:
-    uint32_t & ASIC_DATA;
-    uint32_t & ASIC_MISC_REG;
-    uint32_t & ASIC_STATUS;
-    uint32_t & ASIC_CMD;
-    uint32_t & ASIC_CUR_TK;
-    uint32_t & ASIC_BM_STATUS;
-    uint32_t & ASIC_BM_CTL;
-    uint32_t & ASIC_ERR_SECTOR;
-    uint32_t & ASIC_SEQ_STATUS;
-    uint32_t & ASIC_SEQ_CTL;
-    uint32_t & ASIC_CUR_SECTOR;
-    uint32_t & ASIC_HARD_RESET;
-    uint32_t & ASIC_C1_S0;
-    uint32_t & ASIC_HOST_SECBYTE;
-    uint32_t & ASIC_C1_S2;
-    uint32_t & ASIC_SEC_BYTE;
-    uint32_t & ASIC_C1_S4;
-    uint32_t & ASIC_C1_S6;
-    uint32_t & ASIC_CUR_ADDR;
-    uint32_t & ASIC_ID_REG;
-    uint32_t & ASIC_TEST_REG;
-    uint32_t & ASIC_TEST_PIN_SEL;
-
-private:
-    Disk_InterfaceReg();
-    Disk_InterfaceReg(const Disk_InterfaceReg&);
-    Disk_InterfaceReg& operator=(const Disk_InterfaceReg&);
-};
-
-// Disk interface flags
-enum
-{
-    DD_STATUS_DATA_RQ = 0x40000000,
-    DD_STATUS_C2_XFER = 0x10000000,
-    DD_STATUS_BM_ERR = 0x08000000,
-    DD_STATUS_BM_INT = 0x04000000,
-    DD_STATUS_MECHA_INT = 0x02000000,
-    DD_STATUS_DISK_PRES = 0x01000000,
-    DD_STATUS_BUSY_STATE = 0x00800000,
-    DD_STATUS_RST_STATE = 0x00400000,
-    DD_STATUS_MTR_N_SPIN = 0x00100000,
-    DD_STATUS_HEAD_RTRCT = 0x00080000,
-    DD_STATUS_WR_PR_ERR = 0x00040000,
-    DD_STATUS_MECHA_ERR = 0x00020000,
-    DD_STATUS_DISK_CHNG = 0x00010000,
-
-    DD_BM_STATUS_RUNNING = 0x80000000,
-    DD_BM_STATUS_ERROR = 0x04000000,
-    DD_BM_STATUS_MICRO = 0x02000000,
-    DD_BM_STATUS_BLOCK = 0x01000000,
-
-    DD_BM_CTL_START = 0x80000000,
-    DD_BM_CTL_MNGRMODE = 0x40000000,
-    DD_BM_CTL_INTMASK = 0x20000000,
-    DD_BM_CTL_RESET = 0x10000000,
-    DD_BM_CTL_BLK_TRANS = 0x02000000,
-    DD_BM_CTL_MECHA_RST = 0x01000000
-};
-
 class CRegName
 {
 public:
@@ -382,8 +267,8 @@ class CRegisters :
     public RDRAMInterfaceReg,
     public SPRegistersReg,
     public DisplayControlReg,
-    public Serial_InterfaceReg,
-    public Disk_InterfaceReg
+    public SerialInterfaceReg,
+    public DiskInterfaceReg
 {
 public:
     CRegisters(CN64System * System, CSystemEvents * SystemEvents);
@@ -436,7 +321,7 @@ private:
     CRegisters(const CRegisters&);
     CRegisters& operator=(const CRegisters&);
 
-    bool            m_FirstInterupt;
-    CN64System    * m_System;
+    bool m_FirstInterupt;
+    CN64System * m_System;
     CSystemEvents * m_SystemEvents;
 };

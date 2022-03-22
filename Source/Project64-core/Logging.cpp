@@ -33,93 +33,16 @@ void CLogging::Log_LW(uint32_t PC, uint32_t VAddr)
     }
 
     uint32_t Value;
-    if (VAddr >= 0xA0000000 && VAddr < (0xA0000000 + g_MMU->RdramSize()))
-    {
-        return;
-    }
-    if (VAddr >= 0xA3F00000 && VAddr <= 0xA3F00024)
-    {
-        return;
-    }
-    if (VAddr >= 0xA4000000 && VAddr <= 0xA4001FFC)
-    {
-        return;
-    }
-    if (VAddr == 0xA4080000)
-    {
-        return;
-    }
-    if (VAddr >= 0xA4100000 && VAddr <= 0xA410001C)
-    {
-        return;
-    }
-    if (VAddr >= 0xA4300000 && VAddr <= 0xA430000C)
-    {
-        return;
-    }
-    if (VAddr >= 0xA4400000 && VAddr <= 0xA4400034)
-    {
-        return;
-    }
-    if (VAddr >= 0xA4500000 && VAddr <= 0xA4500014)
-    {
-        if (!LogAudioInterface())
-        {
-            return;
-        }
-        g_MMU->LW_VAddr(VAddr, Value);
-
-        switch (VAddr)
-        {
-        case 0xA4500000: LogMessage("%08X: read from AI_DRAM_ADDR_REG (%08X)", PC, Value); return;
-        case 0xA4500004: LogMessage("%08X: read from AI_LEN_REG (%08X)", PC, Value); return;
-        case 0xA4500008: LogMessage("%08X: read from AI_CONTROL_REG (%08X)", PC, Value); return;
-        case 0xA450000C: LogMessage("%08X: read from AI_STATUS_REG (%08X)", PC, Value); return;
-        case 0xA4500010: LogMessage("%08X: read from AI_DACRATE_REG (%08X)", PC, Value); return;
-        case 0xA4500014: LogMessage("%08X: read from AI_BITRATE_REG (%08X)", PC, Value); return;
-        }
-    }
-    if (VAddr == 0xA4800000)
-    {
-        if (!LogSerialInterface())
-        {
-            return;
-        }
-        g_MMU->LW_VAddr(VAddr, Value);
-        LogMessage("%08X: read from SI_DRAM_ADDR_REG (%08X)", PC, Value);
-        return;
-    }
-    if (VAddr == 0xA4800004)
-    {
-        if (!LogSerialInterface())
-        {
-            return;
-        }
-        g_MMU->LW_VAddr(VAddr, Value);
-        LogMessage("%08X: read from SI_PIF_ADDR_RD64B_REG (%08X)", PC, Value);
-        return;
-    }
-    if (VAddr == 0xA4800010)
-    {
-        if (!LogSerialInterface())
-        {
-            return;
-        }
-        g_MMU->LW_VAddr(VAddr, Value);
-        LogMessage("%08X: read from SI_PIF_ADDR_WR64B_REG (%08X)", PC, Value);
-        return;
-    }
-    if (VAddr == 0xA4800018)
-    {
-        if (!LogSerialInterface())
-        {
-            return;
-        }
-        g_MMU->LW_VAddr(VAddr, Value);
-        LogMessage("%08X: read from SI_STATUS_REG (%08X)", PC, Value);
-        return;
-    }
-    if (VAddr >= 0xBFC00000 && VAddr <= 0xBFC007C0)
+    if ((VAddr >= 0xA0000000 && VAddr < (0xA0000000 + g_MMU->RdramSize())) ||
+        (VAddr >= 0xA3F00000 && VAddr <= 0xA3F00024) ||
+        (VAddr >= 0xA4000000 && VAddr <= 0xA4001FFC) ||
+        (VAddr == 0xA4080000) || 
+        (VAddr >= 0xA4100000 && VAddr <= 0xA410001C) ||
+        (VAddr >= 0xA4300000 && VAddr <= 0xA430000C) ||
+        (VAddr >= 0xA4400000 && VAddr <= 0xA4400034) ||
+        (VAddr >= 0xA4500000 && VAddr <= 0xA4500014) ||
+        (VAddr == 0xA4800000 && VAddr <= 0xA4800018) ||
+        (VAddr >= 0xBFC00000 && VAddr <= 0xBFC007C0))
     {
         return;
     }
@@ -184,31 +107,16 @@ void CLogging::Log_SW(uint32_t PC, uint32_t VAddr, uint32_t Value)
         VAddr = PAddr + 0xA0000000;
     }
 
-    if (VAddr >= 0xA0000000 && VAddr < (0xA0000000 + g_MMU->RdramSize()))
-    {
-        return;
-    }
-    if (VAddr >= 0xA3F00000 && VAddr <= 0xA3F00024)
-    {
-    }
-    if (VAddr >= 0xA4000000 && VAddr <= 0xA4001FFC)
-    {
-        return;
-    }
-
-    if (VAddr >= 0xA4040000 && VAddr <= 0xA404001C)
-    {
-        return;
-    }
-    if (VAddr == 0xA4080000)
+    if ((VAddr >= 0xA0000000 && VAddr < (0xA0000000 + g_MMU->RdramSize())) ||
+        (VAddr >= 0xA3F00000 && VAddr <= 0xA3F00024) ||
+        (VAddr >= 0xA4000000 && VAddr <= 0xA4001FFC) || 
+        (VAddr >= 0xA4040000 && VAddr <= 0xA404001C) ||
+        (VAddr == 0xA4080000) || 
+        (VAddr >= 0xA4100000 && VAddr <= 0xA410001C))
     {
         return;
     }
 
-    if (VAddr >= 0xA4100000 && VAddr <= 0xA410001C)
-    {
-        return;
-    }
 
     if (VAddr >= 0xA4200000 && VAddr <= 0xA420000C)
     {
@@ -225,71 +133,12 @@ void CLogging::Log_SW(uint32_t PC, uint32_t VAddr, uint32_t Value)
         }
     }
 
-    if (VAddr >= 0xA4300000 && VAddr <= 0xA430000C)
+    if ((VAddr >= 0xA4300000 && VAddr <= 0xA430000C) ||
+        (VAddr >= 0xA4400000 && VAddr <= 0xA4400034) ||
+        (VAddr >= 0xA4500000 && VAddr <= 0xA4500014) ||
+        (VAddr >= 0xA4800000 && VAddr <= 0xA4800018))
     {
         return;
-    }
-    if (VAddr >= 0xA4400000 && VAddr <= 0xA4400034)
-    {
-        return;
-    }
-
-    if (VAddr >= 0xA4500000 && VAddr <= 0xA4500014)
-    {
-        if (!LogAudioInterface())
-        {
-            return;
-        }
-        switch (VAddr)
-        {
-        case 0xA4500000: LogMessage("%08X: Writing 0x%08X to AI_DRAM_ADDR_REG", PC, Value); return;
-        case 0xA4500004: LogMessage("%08X: Writing 0x%08X to AI_LEN_REG", PC, Value); return;
-        case 0xA4500008: LogMessage("%08X: Writing 0x%08X to AI_CONTROL_REG", PC, Value); return;
-        case 0xA450000C: LogMessage("%08X: Writing 0x%08X to AI_STATUS_REG", PC, Value); return;
-        case 0xA4500010: LogMessage("%08X: Writing 0x%08X to AI_DACRATE_REG", PC, Value); return;
-        case 0xA4500014: LogMessage("%08X: Writing 0x%08X to AI_BITRATE_REG", PC, Value); return;
-        }
-    }
-
-    if (VAddr == 0xA4800000)
-    {
-        if (!LogSerialInterface())
-        {
-            return;
-        }
-        LogMessage("%08X: Writing 0x%08X to SI_DRAM_ADDR_REG", PC, Value); return;
-    }
-    if (VAddr == 0xA4800004)
-    {
-        if (LogPRDMAOperations())
-        {
-            LogMessage("%08X: A DMA transfer from the PIF RAM has occurred", PC);
-        }
-        if (!LogSerialInterface())
-        {
-            return;
-        }
-        LogMessage("%08X: Writing 0x%08X to SI_PIF_ADDR_RD64B_REG", PC, Value); return;
-    }
-    if (VAddr == 0xA4800010)
-    {
-        if (LogPRDMAOperations())
-        {
-            LogMessage("%08X: A DMA transfer to the PIF RAM has occurred", PC);
-        }
-        if (!LogSerialInterface())
-        {
-            return;
-        }
-        LogMessage("%08X: Writing 0x%08X to SI_PIF_ADDR_WR64B_REG", PC, Value); return;
-    }
-    if (VAddr == 0xA4800018)
-    {
-        if (!LogSerialInterface())
-        {
-            return;
-        }
-        LogMessage("%08X: Writing 0x%08X to SI_STATUS_REG", PC, Value); return;
     }
 
     if (VAddr >= 0xBFC007C0 && VAddr <= 0xBFC007FC)

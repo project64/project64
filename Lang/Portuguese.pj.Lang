@@ -1,6 +1,6 @@
 ﻿// Meta information
 #1  #  "Português"      // Language ID
-#2  #  "Hugo Carvalho"  // Author
+#2  #  "Tiago Gomes"  // Author
 #3  #  "3.0"            // Version
 #4  #  "Março, 2022"	// Date
 
@@ -246,6 +246,7 @@
 #490#  "Acima"
 #491#  "Abaixo"
 #492#  "Recarregar o explorador automaticamente"
+#493#  "Mostrar extensão dos ficheiros"
 
 // Advanced options
 #500#  "A maioria destas alterações não terão efeito até que uma nova ROM seja aberta ou que a ROM actual seja reposta."
@@ -565,3 +566,7 @@
 
 // Video plugin
 #3200#  "Nativo"
+
+#5410#  "DMA desalinhado"
+#5420#  "Randomizar interrupções SI/PI"
+#5440#  "Tempo de busca em disco"

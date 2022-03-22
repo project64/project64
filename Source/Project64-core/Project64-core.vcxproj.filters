@@ -243,9 +243,6 @@
     <ClCompile Include="N64System\Recompiler\SectionInfo.cpp">
       <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\Mips\Audio.cpp">
-      <Filter>Source Files\N64 System\Mips</Filter>
-    </ClCompile>
     <ClCompile Include="N64System\Mips\Dma.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
@@ -376,6 +373,15 @@
       <Filter>Source Files\N64 System\MemoryHandler</Filter>
     </ClCompile>
     <ClCompile Include="N64System\MemoryHandler\VideoInterfaceHandler.cpp">
+      <Filter>Source Files\N64 System\MemoryHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\MemoryHandler\AudioInterfaceHandler.cpp">
+      <Filter>Source Files\N64 System\MemoryHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\MemoryHandler\SerialInterfaceHandler.cpp">
+      <Filter>Source Files\N64 System\MemoryHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\MemoryHandler\CartridgeDomain2Address1Handler.cpp">
       <Filter>Source Files\N64 System\MemoryHandler</Filter>
     </ClCompile>
   </ItemGroup>
@@ -563,9 +569,6 @@
     <ClInclude Include="N64System\Recompiler\SectionInfo.h">
       <Filter>Header Files\N64 System\Recompiler</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\Mips\Audio.h">
-      <Filter>Header Files\N64 System\Mips</Filter>
-    </ClInclude>
     <ClInclude Include="N64System\Mips\Dma.h">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
@@ -720,6 +723,15 @@
       <Filter>Header Files\N64 System\MemoryHandler</Filter>
     </ClInclude>
     <ClInclude Include="N64System\MemoryHandler\VideoInterfaceHandler.h">
+      <Filter>Header Files\N64 System\MemoryHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\MemoryHandler\AudioInterfaceHandler.h">
+      <Filter>Header Files\N64 System\MemoryHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\MemoryHandler\SerialInterfaceHandler.h">
+      <Filter>Header Files\N64 System\MemoryHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\MemoryHandler\CartridgeDomain2Address1Handler.h">
       <Filter>Header Files\N64 System\MemoryHandler</Filter>
     </ClInclude>
   </ItemGroup>

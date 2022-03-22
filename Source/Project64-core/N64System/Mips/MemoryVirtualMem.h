@@ -7,6 +7,7 @@
 #include <Project64-core\N64System\Mips\FlashRam.h>
 #include <Project64-core\N64System\Mips\Sram.h>
 #include <Project64-core\N64System\Mips\Dma.h>
+#include <Project64-core\N64System\MemoryHandler\CartridgeDomain2Address1Handler.h>
 #include <Project64-core\N64System\MemoryHandler\DisplayControlRegHandler.h>
 #include <Project64-core\N64System\MemoryHandler\MIPSInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\PeripheralInterfaceHandler.h>
@@ -45,14 +46,14 @@ class CArmRecompilerOps;
 class CMipsMemoryVM :
     public CTransVaddr,
     private R4300iOp,
-    private CPifRam,
+    public CPifRam,
     private CFlashram,
     private CSram,
     public CDMA,
     private CGameSettings
 {
 public:
-    CMipsMemoryVM(CN64System & System, CRegisters & Reg, bool SavesReadOnly);
+    CMipsMemoryVM(CN64System & System, bool SavesReadOnly);
     ~CMipsMemoryVM();
 
     static void ReserveMemory();
@@ -113,6 +114,7 @@ public:
     // Labels
     const char * LabelName(uint32_t Address) const;
 
+    AudioInterfaceHandler & AudioInterface(void) { return m_AudioInterfaceHandler; }
     VideoInterfaceHandler & VideoInterface(void) { return m_VideoInterfaceHandler; }
 
 private:
@@ -139,18 +141,12 @@ private:
     bool SH_NonMemory(uint32_t PAddr, uint16_t Value);
     bool SW_NonMemory(uint32_t PAddr, uint32_t Value);
 
-    static void Load32AudioInterface(void);
-    static void Load32SerialInterface(void);
     static void Load32CartridgeDomain1Address1(void);
     static void Load32CartridgeDomain1Address3(void);
-    static void Load32CartridgeDomain2Address1(void);
     static void Load32CartridgeDomain2Address2(void);
     static void Load32PifRam(void);
     static void Load32Rom(void);
 
-    static void Write32AudioInterface(void);
-    static void Write32SerialInterface(void);
-    static void Write32CartridgeDomain2Address1(void);
     static void Write32CartridgeDomain2Address2(void);
     static void Write32PifRam(void);
 
@@ -179,11 +175,14 @@ private:
 
     static uint8_t   * m_Reserve1, *m_Reserve2;
     CRegisters & m_Reg;
+    AudioInterfaceHandler m_AudioInterfaceHandler;
+    CartridgeDomain2Address1Handler m_CartridgeDomain2Address1Handler;
     DisplayControlRegHandler m_DPCommandRegistersHandler;
     MIPSInterfaceHandler m_MIPSInterfaceHandler;
     PeripheralInterfaceHandler m_PeripheralInterfaceHandler;
     RDRAMInterfaceHandler m_RDRAMInterfaceHandler;
     RDRAMRegistersHandler m_RDRAMRegistersHandler;
+    SerialInterfaceHandler m_SerialInterfaceHandler;
     SPRegistersHandler m_SPRegistersHandler;
     VideoInterfaceHandler m_VideoInterfaceHandler;
     uint8_t * m_RDRAM, *m_DMEM, *m_IMEM;
