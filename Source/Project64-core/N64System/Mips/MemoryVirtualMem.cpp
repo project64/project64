@@ -83,8 +83,8 @@ void CMipsMemoryVM::Reset(bool /*EraseMemory*/)
     {
         size_t address;
 
-        memset(m_TLB_ReadMap, -1, 0xFFFFF * sizeof(size_t));
-        memset(m_TLB_WriteMap, -1, 0xFFFFF * sizeof(size_t));
+        memset(m_TLB_ReadMap, -1, 0x100000 * sizeof(size_t));
+        memset(m_TLB_WriteMap, -1, 0x100000 * sizeof(size_t));
         for (address = 0x80000000; address < 0xC0000000; address += 0x1000)
         {
             m_TLB_ReadMap[address >> 12] = ((size_t)m_RDRAM + (address & 0x1FFFFFFF)) - address;
@@ -233,7 +233,7 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
     m_TLB_WriteMap = new size_t[0x100000];
     if (m_TLB_WriteMap == nullptr)
     {
-        WriteTrace(TraceN64System, TraceError, "Failed to allocate m_TLB_WriteMap (Size: 0x%X)", 0xFFFFF * sizeof(size_t));
+        WriteTrace(TraceN64System, TraceError, "Failed to allocate m_TLB_WriteMap (Size: 0x%X)", 0x100000 * sizeof(size_t));
         FreeMemory();
         return false;
     }
