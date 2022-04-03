@@ -8,13 +8,16 @@
 #include <Project64/UserInterface/Debugger/DebuggerUI.h>
 #include "DiscordRPC.h"
 
+#include <Uxtheme.h>
+
+
 void EnterLogOptions(HWND hwndOwner);
 
 #pragma comment(lib, "Comctl32.lib")
 
 LRESULT CALLBACK MainGui_Proc(HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD lParam);
 
-CMainGui::CMainGui(bool bMainWindow, const char * WindowTitle) :
+CMainGui::CMainGui(bool bMainWindow, const char* WindowTitle) :
     CRomBrowser(m_hMainWindow, m_hStatusWnd),
     m_ThreadId(GetCurrentThreadId()),
     m_bMainWindow(bMainWindow),

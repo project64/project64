@@ -197,6 +197,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(DIR_SELECT_TEXTURE, "Select texture pack directory");
 
     // Options (general) tab
+    DEF_STR(OPTION_DO_NOT_SHOW_NAG, "Do not show Support window on start-up");
     DEF_STR(OPTION_AUTO_SLEEP, "Pause emulation when window is not active");
     DEF_STR(OPTION_AUTO_FULLSCREEN, "Enter full-screen mode when loading a ROM");
     DEF_STR(OPTION_BASIC_MODE, "Hide advanced settings");

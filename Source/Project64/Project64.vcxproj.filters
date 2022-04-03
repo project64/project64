@@ -616,6 +616,7 @@
     <None Include="UserInterface\icons\javascri.bin">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\ListItems.bmp">

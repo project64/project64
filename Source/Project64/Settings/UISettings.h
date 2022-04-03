@@ -18,6 +18,7 @@ enum UISettingID
     Setting_DisableScrSaver,
 	Setting_EnableDiscordRPC,
     Setting_AutoSleep,
+    Setting_DarkMode,
     Setting_AutoFullscreen,
 
     // RDB TLB settings
@@ -33,6 +34,7 @@ enum UISettingID
     UserInterface_ShowStatusBar,
     UserInterface_ExitFullscreenOnLoseFocus,
     UserInterface_ShowingNagWindow,
+    UserInterface_DoNotShowNag,
 
     RomBrowser_Enabled,
     RomBrowser_ColoumnsChanged,

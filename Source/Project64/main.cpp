@@ -71,7 +71,10 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 
         if (!isROMLoaded)
         {
-            CSupportWindow(MainWindow.Support()).Show((HWND)MainWindow.GetWindowHandle(), true);
+            bool doNotShowNagChecked = g_Settings->LoadBool((SettingID)UserInterface_DoNotShowNag);
+            if (!doNotShowNagChecked)
+                CSupportWindow(MainWindow.Support()).Show((HWND)MainWindow.GetWindowHandle(), true);
+           
             if (UISettingsLoadBool(RomBrowser_Enabled))
             {
                 WriteTrace(TraceUserInterface, TraceDebug, "Show ROM browser");

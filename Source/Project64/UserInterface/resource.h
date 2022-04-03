@@ -874,6 +874,9 @@
 #define IDC_REMOVE_BTN                  1734
 #define IDC_ADD_BTN                     1735
 #define IDC_AUTORUN_LIST                1737
+
+#define IDC_DONOTSHOWNAG				1738
+
 #define ID_POPUPMENU_PLAYGAMEWITHDISK   40008
 #define ID_POPUPMENU_ADDSYMBOL          40013
 #define ID_POPUPMENU_VIEWDISASM         40017

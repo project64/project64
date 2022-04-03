@@ -11,6 +11,7 @@ m_SettingsConfig(SettingsConfig)
     }
 
     // Set the text for all GUI items
+    SetDlgItemText(IDC_DONOTSHOWNAG, wGS(OPTION_DO_NOT_SHOW_NAG).c_str());
     SetDlgItemText(IDC_AUTOSLEEP, wGS(OPTION_AUTO_SLEEP).c_str());
     SetDlgItemText(IDC_LOAD_FULLSCREEN, wGS(OPTION_AUTO_FULLSCREEN).c_str());
     SetDlgItemText(IDC_SCREEN_SAVER, wGS(OPTION_DISABLE_SS).c_str());
@@ -22,6 +23,7 @@ m_SettingsConfig(SettingsConfig)
     SetDlgItemText(IDC_ROMSEL_TEXT4, wGS(RB_DIRS).c_str());
     SetDlgItemText(IDC_IPLDIR_TXT, wGS(OPTION_IPL_ROM_PATH).c_str());
 
+    AddModCheckBox(GetDlgItem(IDC_DONOTSHOWNAG), (SettingID)UserInterface_DoNotShowNag);
     AddModCheckBox(GetDlgItem(IDC_AUTOSLEEP), (SettingID)Setting_AutoSleep);
     AddModCheckBox(GetDlgItem(IDC_LOAD_FULLSCREEN), (SettingID)Setting_AutoFullscreen);
     AddModCheckBox(GetDlgItem(IDC_SCREEN_SAVER), (SettingID)Setting_DisableScrSaver);
