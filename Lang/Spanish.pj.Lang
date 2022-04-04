@@ -1,8 +1,8 @@
 ﻿// Meta information
-#1  #  "Español"		// LANGUAGE ID
+#1  #  "Español"		// Language ID
 #2  #  "MELERIX"		// Author
 #3  #  "3.0.1"			// Version
-#4  #  "01/09/2021"		// Date
+#4  #  "30/03/2022"		// Date
 
 /*** Menu ***/
 
@@ -41,13 +41,13 @@
 // Options menu
 #140#  "&Opciones"
 #141#  "&Pantalla completa"
-#142#  "&Siempre por encima"
+#142#  "Siempre por &encima"
 #143#  "Ajustes de &Gráficos"
 #144#  "Ajustes de &Audio"
 #145#  "Ajustes de &Entrada"
 #146#  "Ajustes de &RSP"
 #147#  "Mostrar &Estadísticas de CPU"
-#148#  "&Ajustes..."
+#148#  "Configura&ción"
 
 // Debugger menu
 #160#  "&Depurador"
@@ -56,7 +56,7 @@
 #175#  "&Lenguaje"
 
 // Help menu
-#180#  "Ayuda"
+#180#  "&Ayuda"
 #182#  "&Acerca de Project64"
 #184#  "&Sitio Web"
 #185#  "&Apoyar a Project64"
@@ -80,8 +80,8 @@
 #210#  "Jugar Juego"
 #211#  "Información de la ROM"
 #212#  "Editar Ajustes del Juego"
-#213#  "Editar Trucos"
-#214#  "Complemento Gráfico"
+#213#  "Editar Trucos..."
+#214#  "Complemento de Gráficos"
 #215#  "Jugar Juego con Disco"
 #216#  "Elegir Mejoras..."
 
@@ -120,7 +120,7 @@
 #268#  "Hacer que la ventana quede por encima las demás ventanas"
 #269#  "Cambiar ajustes dentro del complemento de gráficos"
 #270#  "Cambiar ajustes dentro del complemento de audio"
-#271#  "Cambiar ajustes dentro del complemento de control (es decir, definir las teclas)"
+#271#  "Cambiar ajustes dentro del complemento de control (es decir, establecer las teclas)"
 #272#  "Cambiar ajustes dentro del complemento de RSP"
 #273#  "Mostrar uso de la CPU del emulador dividido sobre diferentes recursos"
 #274#  "Ver/cambiar ajustes para esta aplicación"
@@ -131,7 +131,7 @@
 #279#  "Abrir esta imagen de ROM previamente abierta"
 #280#  "Elegir este directorio como tu directorio de ROMs"
 #281#  "Cambiar aplicación para usar este lenguaje"
-#282#  "Elegir esta ubicación de guardado para los estados guardados"
+#282#  "Elegir esta ubicación de guardado para el estado guardado"
 #283#  "Jugar juego seleccionado"
 #284#  "Información acerca del juego seleccionado"
 #285#  "Editar ajustes para el juego seleccionado"
@@ -246,6 +246,7 @@
 #490#  "Arriba"
 #491#  "Abajo"
 #492#  "Actualizar navegador automáticamente"
+#493#  "Mostrar extensiones de archivo"							 
 
 // Advanced options
 #500#  "La mayoría de estos cambios no tendrán efecto hasta que una nueva ROM sea abierta o la ROM actual sea reiniciada."
@@ -273,7 +274,6 @@
 #524#  "Tipo de guardado predeterminado:"
 #525#  "Factor de contador:"
 #526#  "Buffer de compilación ampliado"
-#527#  "Usar TLB"
 #528#  "Registrar almacenamiento en caché"
 #529#  "Demorar interrupción SI"
 #530#  "SP Rápido"
@@ -286,6 +286,13 @@
 #537#  "Contador de AI por byte"
 #538#  "Motor de 32 bits"
 #539#  "Demorar interrupción DP"
+#5440# "Tiempo de búsqueda de disco:"
+#5441# "Turbo"
+#5442# "Lento"
+
+#5410# "Interrupciones aleatorias SI/PI"
+
+#5420# "DMA desalineado"
 
 // Core styles
 #540#  "Interpretador"
@@ -328,7 +335,7 @@
 
 // Accelerator selector
 #680#  "Estado de la CPU:"
-#681#  "Elemento del menú"
+#681#  "Elemento del menú:"
 #682#  "Teclas actuales:"
 #683#  "Seleccionar nueva tecla de atajo:"
 #684#  "Actualmente asignado a:"
@@ -422,9 +429,9 @@
 #1030#  "Truco actualizado"
 
 // Cheat pop-up menu
-#1040# "Añadir Nuevo Truco..."
-#1041# "Editar"
-#1042# "Borrar"
+#1040#  "Añadir Nuevo Truco..."
+#1041#  "Editar"
+#1042#  "Borrar"
 
 // Shortcut editor
 #1100#  "Reiniciar accesos directos"
