@@ -62,11 +62,12 @@ public:
     bool Initialize(bool SyncSystem);
     void Reset(bool EraseMemory);
 
-    uint8_t * Rdram();
-    uint32_t RdramSize();
-    uint8_t * Dmem();
-    uint8_t * Imem();
-    uint8_t * PifRam();
+    uint8_t * Rdram() const { return m_RDRAM; }
+    uint32_t RdramSize() const { return m_AllocatedRdramSize; }
+    uint8_t * Dmem() const { return m_DMEM; }
+    uint8_t * Imem() const { return m_IMEM; }
+    uint8_t * Rom() const { return m_Rom; }
+    uint8_t * PifRam() { return &m_PifRam[0]; }
 
     CSram * GetSram();
     CFlashram * GetFlashram();
@@ -76,20 +77,10 @@ public:
     bool LW_VAddr(uint32_t VAddr, uint32_t & Value);
     bool LD_VAddr(uint32_t VAddr, uint64_t & Value);
 
-    bool LB_PAddr(uint32_t PAddr, uint8_t & Value);
-    bool LH_PAddr(uint32_t PAddr, uint16_t & Value);
-    bool LW_PAddr(uint32_t PAddr, uint32_t & Value);
-    bool LD_PAddr(uint32_t PAddr, uint64_t & Value);
-
     bool SB_VAddr(uint32_t VAddr, uint8_t Value);
     bool SH_VAddr(uint32_t VAddr, uint16_t Value);
     bool SW_VAddr(uint32_t VAddr, uint32_t Value);
     bool SD_VAddr(uint32_t VAddr, uint64_t Value);
-
-    bool SB_PAddr(uint32_t PAddr, uint8_t Value);
-    bool SH_PAddr(uint32_t PAddr, uint16_t Value);
-    bool SW_PAddr(uint32_t PAddr, uint32_t Value);
-    bool SD_PAddr(uint32_t PAddr, uint64_t Value);
 
     int32_t   MemoryFilter(uint32_t dwExptCode, void * lpExceptionPointer);
 
@@ -199,6 +190,8 @@ private:
     mutable char m_strLabelName[100];
     size_t * m_TLB_ReadMap;
     size_t * m_TLB_WriteMap;
+    size_t * m_MemoryReadMap;
+    size_t * m_MemoryWriteMap;
 
     static uint32_t m_MemLookupAddress;
     static MIPS_DWORD m_MemLookupValue;

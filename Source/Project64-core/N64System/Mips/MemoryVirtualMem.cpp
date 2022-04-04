@@ -40,6 +40,8 @@ CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
     m_VideoInterfaceHandler(System, *this, System.m_Reg),
     m_Rom(nullptr),
     m_RomSize(0),
+    m_MemoryReadMap(nullptr),
+    m_MemoryWriteMap(nullptr),
     m_RomWrittenTo(false),
     m_RomWroteValue(0),
     m_TLB_ReadMap(nullptr),
@@ -79,28 +81,61 @@ CMipsMemoryVM::~CMipsMemoryVM()
 
 void CMipsMemoryVM::Reset(bool /*EraseMemory*/)
 {
+    if (m_MemoryReadMap != nullptr && m_MemoryWriteMap != nullptr)
+    {
+        memset(m_MemoryReadMap, -1, 0x100000 * sizeof(size_t));
+        memset(m_MemoryWriteMap, -1, 0x100000 * sizeof(size_t));
+        for (uint32_t i = 0; i < 2; i++)
+        {
+            uint32_t BaseAddress = i == 0 ? 0x80000000 : 0xA0000000;
+            for (size_t Address = BaseAddress; Address < BaseAddress + m_AllocatedRdramSize; Address += 0x1000)
+            {
+                m_MemoryReadMap[Address >> 12] = (size_t)((m_RDRAM + (Address & 0x1FFFFFFF)) - Address);
+                m_MemoryWriteMap[Address >> 12] = (size_t)((m_RDRAM + (Address & 0x1FFFFFFF)) - Address);
+            }
+            for (size_t Address = BaseAddress + 0x04000000; Address < (BaseAddress + 0x04001000); Address += 0x1000)
+            {
+                m_MemoryReadMap[Address >> 12] = (size_t)(m_DMEM - Address);
+                m_MemoryWriteMap[Address >> 12] = (size_t)(m_DMEM - Address);
+            }
+            for (size_t Address = BaseAddress + 0x04001000; Address < (BaseAddress + 0x04002000); Address += 0x1000)
+            {
+                m_MemoryReadMap[Address >> 12] = (size_t)(m_IMEM - Address);
+                m_MemoryWriteMap[Address >> 12] = (size_t)(m_IMEM - Address);
+            }
+        }
+    }
     if (m_TLB_ReadMap)
     {
-        size_t address;
-
         memset(m_TLB_ReadMap, 0, 0xFFFFF * sizeof(size_t));
         memset(m_TLB_WriteMap, 0, 0xFFFFF * sizeof(size_t));
-        for (address = 0x80000000; address < 0xC0000000; address += 0x1000)
+        for (size_t Address = 0x80000000; Address < 0xC0000000; Address += 0x1000)
         {
-            m_TLB_ReadMap[address >> 12] = ((size_t)m_RDRAM + (address & 0x1FFFFFFF)) - address;
-            m_TLB_WriteMap[address >> 12] = ((size_t)m_RDRAM + (address & 0x1FFFFFFF)) - address;
+            m_TLB_ReadMap[Address >> 12] = ((size_t)m_RDRAM + (Address & 0x1FFFFFFF)) - Address;
+            m_TLB_WriteMap[Address >> 12] = ((size_t)m_RDRAM + (Address & 0x1FFFFFFF)) - Address;
         }
 
         if (g_Settings->LoadDword(Rdb_TLB_VAddrStart) != 0)
         {
-            size_t Start = g_Settings->LoadDword(Rdb_TLB_VAddrStart); //0x7F000000;
-            size_t Len = g_Settings->LoadDword(Rdb_TLB_VAddrLen);   //0x01000000;
-            size_t PAddr = g_Settings->LoadDword(Rdb_TLB_PAddrStart); //0x10034b30;
-            size_t End = Start + Len;
-            for (address = Start; address < End; address += 0x1000)
+            uint32_t Start = g_Settings->LoadDword(Rdb_TLB_VAddrStart); //0x7F000000;
+            uint32_t Len = g_Settings->LoadDword(Rdb_TLB_VAddrLen);   //0x01000000;
+            uint32_t PAddr = g_Settings->LoadDword(Rdb_TLB_PAddrStart); //0x10034b30;
+            uint32_t End = Start + Len;
+            for (uint32_t Address = Start; Address < End; Address += 0x1000)
             {
-                m_TLB_ReadMap[address >> 12] = ((size_t)m_RDRAM + (address - Start + PAddr)) - address;
-                m_TLB_WriteMap[address >> 12] = ((size_t)m_RDRAM + (address - Start + PAddr)) - address;
+                uint32_t TargetAddress = (Address - Start + PAddr);
+                if (TargetAddress < m_AllocatedRdramSize)
+                {
+                    m_MemoryReadMap[Address >> 12] = ((size_t)m_RDRAM + TargetAddress) - Address;
+                    m_MemoryWriteMap[Address >> 12] = ((size_t)m_RDRAM + TargetAddress) - Address;
+                }
+                if (TargetAddress >= 0x10000000 && TargetAddress < (0x10000000 + m_RomSize))
+                {
+                    m_MemoryReadMap[Address >> 12] = ((size_t)m_Rom + (TargetAddress - 0x10000000)) - Address;
+                }
+                m_TLB_ReadMap[Address >> 12] = ((size_t)m_RDRAM + TargetAddress) - Address;
+                m_TLB_WriteMap[Address >> 12] = ((size_t)m_RDRAM + TargetAddress) - Address;
+
             }
         }
     }
@@ -222,6 +257,21 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
 
     CPifRam::Reset();
 
+    m_MemoryReadMap = new size_t [0x100000];
+    if (m_MemoryReadMap == nullptr)
+    {
+        WriteTrace(TraceN64System, TraceError, "Failed to allocate m_MemoryReadMap (Size: 0x%X)", 0x100000 * sizeof(size_t));
+        FreeMemory();
+        return false;
+    }
+    m_MemoryWriteMap = new size_t [0x100000];
+    if (m_MemoryWriteMap == nullptr)
+    {
+        WriteTrace(TraceN64System, TraceError, "Failed to allocate m_MemoryWriteMap (Size: 0x%X)", 0x100000 * sizeof(size_t));
+        FreeMemory();
+        return false;
+    }
+
     m_TLB_ReadMap = new size_t[0x100000];
     if (m_TLB_ReadMap == nullptr)
     {
@@ -278,46 +328,37 @@ void CMipsMemoryVM::FreeMemory()
         delete[] m_TLB_WriteMap;
         m_TLB_WriteMap = nullptr;
     }
+    if (m_MemoryReadMap)
+    {
+        delete[] m_MemoryReadMap;
+        m_MemoryReadMap = nullptr;
+    }
+    if (m_MemoryWriteMap)
+    {
+        delete[] m_MemoryWriteMap;
+        m_MemoryWriteMap = nullptr;
+    }
     CPifRam::Reset();
-}
-
-uint8_t * CMipsMemoryVM::Rdram()
-{
-    return m_RDRAM;
-}
-
-uint32_t CMipsMemoryVM::RdramSize()
-{
-    return m_AllocatedRdramSize;
-}
-
-uint8_t * CMipsMemoryVM::Dmem()
-{
-    return m_DMEM;
-}
-
-uint8_t * CMipsMemoryVM::Imem()
-{
-    return m_IMEM;
-}
-
-uint8_t * CMipsMemoryVM::PifRam()
-{
-    return m_PifRam;
 }
 
 CSram* CMipsMemoryVM::GetSram(void)
 {
-	return dynamic_cast<CSram*>(this);
+    return dynamic_cast<CSram*>(this);
 }
 
 CFlashram* CMipsMemoryVM::GetFlashram()
 {
-	return dynamic_cast<CFlashram*>(this);
+    return dynamic_cast<CFlashram*>(this);
 }
 
 bool CMipsMemoryVM::LB_VAddr(uint32_t VAddr, uint8_t& Value)
 {
+    uint8_t * MemoryPtr = (uint8_t*)m_MemoryReadMap[VAddr >> 12];
+    if (MemoryPtr != (uint8_t*)-1)
+    {
+        Value = *(uint8_t*)(MemoryPtr + (VAddr ^ 3));
+        return true;
+    }
     if (m_TLB_ReadMap[VAddr >> 12] == 0)
     {
         return false;
@@ -329,6 +370,12 @@ bool CMipsMemoryVM::LB_VAddr(uint32_t VAddr, uint8_t& Value)
 
 bool CMipsMemoryVM::LH_VAddr(uint32_t VAddr, uint16_t& Value)
 {
+    uint8_t * MemoryPtr = (uint8_t*)m_MemoryReadMap[VAddr >> 12];
+    if (MemoryPtr != (uint8_t*)-1)
+    {
+        Value = *(uint16_t*)(MemoryPtr + (VAddr ^ 2));
+        return true;
+    }
     if (m_TLB_ReadMap[VAddr >> 12] == 0)
     {
         return false;
@@ -338,8 +385,14 @@ bool CMipsMemoryVM::LH_VAddr(uint32_t VAddr, uint16_t& Value)
     return true;
 }
 
-bool CMipsMemoryVM::LW_VAddr(uint32_t VAddr, uint32_t& Value)
+bool CMipsMemoryVM::LW_VAddr(uint32_t VAddr, uint32_t & Value)
 {
+    uint8_t * MemoryPtr = (uint8_t*)m_MemoryReadMap[VAddr >> 12];
+    if (MemoryPtr != (uint8_t *)-1)
+    {
+        Value = *(uint32_t*)(MemoryPtr + VAddr);
+        return true;
+    }
     if (VAddr >= 0xA3F00000 && VAddr < 0xC0000000)
     {
         if ((VAddr & 0xFFFFE000ul) != 0xA4000000ul) // !(A4000000 <= addr < A4002000)
@@ -358,19 +411,26 @@ bool CMipsMemoryVM::LW_VAddr(uint32_t VAddr, uint32_t& Value)
 
     Value = *(uint32_t*)(BaseAddress + VAddr);
 
-    //	if (LookUpMode == FuncFind_ChangeMemory)
-    //	{
-    //		g_Notify->BreakPoint(__FILE__, __LINE__);
-    //		if ( (Command.Hex >> 16) == 0x7C7C)
-    //		{
-    //			Command.Hex = OrigMem[(Command.Hex & 0xFFFF)].OriginalValue;
-    //		}
-    //	}
+    //    if (LookUpMode == FuncFind_ChangeMemory)
+    //    {
+    //        g_Notify->BreakPoint(__FILE__, __LINE__);
+    //        if ( (Command.Hex >> 16) == 0x7C7C)
+    //        {
+    //            Command.Hex = OrigMem[(Command.Hex & 0xFFFF)].OriginalValue;
+    //        }
+    //    }
     return true;
 }
 
 bool CMipsMemoryVM::LD_VAddr(uint32_t VAddr, uint64_t& Value)
 {
+    uint8_t * MemoryPtr = (uint8_t*)m_MemoryReadMap[VAddr >> 12];
+    if (MemoryPtr != (uint8_t *)-1)
+    {
+        *((uint32_t*)(&Value) + 1) = *(uint32_t*)(MemoryPtr + VAddr);
+        *((uint32_t*)(&Value) + 0) = *(uint32_t*)(MemoryPtr + VAddr + 4);
+        return true;
+    }
     if (m_TLB_ReadMap[VAddr >> 12] == 0)
     {
         return false;
@@ -381,77 +441,14 @@ bool CMipsMemoryVM::LD_VAddr(uint32_t VAddr, uint64_t& Value)
     return true;
 }
 
-bool CMipsMemoryVM::LB_PAddr(uint32_t PAddr, uint8_t& Value)
-{
-    if (PAddr < RdramSize())
-    {
-        Value = *(uint8_t*)(m_RDRAM + (PAddr ^ 3));
-        return true;
-    }
-
-    if (PAddr > 0x18000000)
-    {
-        return false;
-    }
-
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    return false;
-}
-
-bool CMipsMemoryVM::LH_PAddr(uint32_t PAddr, uint16_t& Value)
-{
-    if (PAddr < RdramSize())
-    {
-        Value = *(uint16_t*)(m_RDRAM + (PAddr ^ 2));
-        return true;
-    }
-
-    if (PAddr > 0x18000000)
-    {
-        return false;
-    }
-
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    return false;
-}
-
-bool CMipsMemoryVM::LW_PAddr(uint32_t PAddr, uint32_t& Value)
-{
-    if (PAddr < RdramSize())
-    {
-        Value = *(uint32_t*)(m_RDRAM + PAddr);
-        return true;
-    }
-
-    if (PAddr > 0x18000000)
-    {
-        return false;
-    }
-
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    return false;
-}
-
-bool CMipsMemoryVM::LD_PAddr(uint32_t PAddr, uint64_t& Value)
-{
-    if (PAddr < RdramSize())
-    {
-        *((uint32_t*)(&Value) + 1) = *(uint32_t*)(m_RDRAM + PAddr);
-        *((uint32_t*)(&Value) + 0) = *(uint32_t*)(m_RDRAM + PAddr + 4);
-        return true;
-    }
-
-    if (PAddr > 0x18000000)
-    {
-        return false;
-    }
-
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    return false;
-}
-
 bool CMipsMemoryVM::SB_VAddr(uint32_t VAddr, uint8_t Value)
 {
+    uint8_t * MemoryPtr = (uint8_t*)m_MemoryWriteMap[VAddr >> 12];
+    if (MemoryPtr != (uint8_t *)-1)
+    {
+        *(uint8_t*)(MemoryPtr + (VAddr ^ 3)) = Value;
+        return true;
+    }
     if (m_TLB_WriteMap[VAddr >> 12] == 0)
     {
         return false;
@@ -463,6 +460,12 @@ bool CMipsMemoryVM::SB_VAddr(uint32_t VAddr, uint8_t Value)
 
 bool CMipsMemoryVM::SH_VAddr(uint32_t VAddr, uint16_t Value)
 {
+    uint8_t * MemoryPtr = (uint8_t*)m_MemoryWriteMap[VAddr >> 12];
+    if (MemoryPtr != (uint8_t *)-1)
+    {
+        *(uint16_t*)(MemoryPtr + (VAddr ^ 2)) = Value;
+        return true;
+    }
     if (m_TLB_WriteMap[VAddr >> 12] == 0)
     {
         return false;
@@ -474,6 +477,12 @@ bool CMipsMemoryVM::SH_VAddr(uint32_t VAddr, uint16_t Value)
 
 bool CMipsMemoryVM::SW_VAddr(uint32_t VAddr, uint32_t Value)
 {
+    uint8_t * MemoryPtr = (uint8_t*)m_MemoryWriteMap[VAddr >> 12];
+    if (MemoryPtr != (uint8_t *)-1)
+    {
+        *(uint32_t*)(MemoryPtr + VAddr) = Value;
+        return true;
+    }
     if (VAddr >= 0xA3F00000 && VAddr < 0xC0000000)
     {
         if ((VAddr & 0xFFFFE000ul) != 0xA4000000ul) // !(A4000000 <= addr < A4002000)
@@ -495,6 +504,13 @@ bool CMipsMemoryVM::SW_VAddr(uint32_t VAddr, uint32_t Value)
 
 bool CMipsMemoryVM::SD_VAddr(uint32_t VAddr, uint64_t Value)
 {
+    uint8_t * MemoryPtr = (uint8_t*)m_MemoryWriteMap[VAddr >> 12];
+    if (MemoryPtr != (uint8_t *)-1)
+    {
+        *(uint32_t*)(MemoryPtr + VAddr + 0) = *((uint32_t*)(&Value) + 1);
+        *(uint32_t*)(MemoryPtr + VAddr + 4) = *((uint32_t*)(&Value));
+        return true;
+    }
     if (m_TLB_WriteMap[VAddr >> 12] == 0)
     {
         return false;
@@ -503,75 +519,6 @@ bool CMipsMemoryVM::SD_VAddr(uint32_t VAddr, uint64_t Value)
     *(uint32_t*)(m_TLB_WriteMap[VAddr >> 12] + VAddr + 0) = *((uint32_t*)(&Value) + 1);
     *(uint32_t*)(m_TLB_WriteMap[VAddr >> 12] + VAddr + 4) = *((uint32_t*)(&Value));
     return true;
-}
-
-bool CMipsMemoryVM::SB_PAddr(uint32_t PAddr, uint8_t Value)
-{
-    if (PAddr < RdramSize())
-    {
-        *(uint8_t*)(m_RDRAM + (PAddr ^ 3)) = Value;
-        return true;
-    }
-
-    if (PAddr > 0x18000000)
-    {
-        return false;
-    }
-
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    return false;
-}
-
-bool CMipsMemoryVM::SH_PAddr(uint32_t PAddr, uint16_t Value)
-{
-    if (PAddr < RdramSize())
-    {
-        *(uint16_t*)(m_RDRAM + (PAddr ^ 2)) = Value;
-        return true;
-    }
-
-    if (PAddr > 0x18000000)
-    {
-        return false;
-    }
-
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    return false;
-}
-
-bool CMipsMemoryVM::SW_PAddr(uint32_t PAddr, uint32_t Value)
-{
-    if (PAddr < RdramSize())
-    {
-        *(uint32_t*)(m_RDRAM + PAddr) = Value;
-        return true;
-    }
-
-    if (PAddr > 0x18000000)
-    {
-        return false;
-    }
-
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    return false;
-}
-
-bool CMipsMemoryVM::SD_PAddr(uint32_t PAddr, uint64_t Value)
-{
-    if (PAddr < RdramSize())
-    {
-        *(uint32_t*)(m_RDRAM + PAddr + 0) = *((uint32_t*)(&Value) + 1);
-        *(uint32_t*)(m_RDRAM + PAddr + 4) = *((uint32_t*)(&Value));
-        return true;
-    }
-
-    if (PAddr > 0x18000000)
-    {
-        return false;
-    }
-
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    return false;
 }
 
 bool CMipsMemoryVM::ValidVaddr(uint32_t VAddr) const
@@ -852,28 +799,28 @@ const char * CMipsMemoryVM::LabelName(uint32_t Address) const
 
 void CMipsMemoryVM::TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly)
 {
-    size_t count, VEnd;
-
-    VEnd = VAddr + Len;
-    for (count = VAddr; count < VEnd; count += 0x1000)
+    uint32_t VEnd = VAddr + Len;
+    for (uint32_t Address = VAddr; Address < VEnd; Address += 0x1000)
     {
-        size_t Index = count >> 12;
-        m_TLB_ReadMap[Index] = ((size_t)m_RDRAM + (count - VAddr + PAddr)) - count;
+        size_t Index = Address >> 12;
+        m_MemoryReadMap[Index] = (size_t)((m_RDRAM + (Address - VAddr + PAddr)) - Address);
+        m_TLB_ReadMap[Index] = ((size_t)m_RDRAM + (Address - VAddr + PAddr)) - Address;
         if (!bReadOnly)
         {
-            m_TLB_WriteMap[Index] = ((size_t)m_RDRAM + (count - VAddr + PAddr)) - count;
+            m_MemoryWriteMap[Index] = (size_t)((m_RDRAM + (Address - VAddr + PAddr)) - Address);
+            m_TLB_WriteMap[Index] = ((size_t)m_RDRAM + (Address - VAddr + PAddr)) - Address;
         }
     }
 }
 
 void CMipsMemoryVM::TLB_Unmaped(uint32_t Vaddr, uint32_t Len)
 {
-    size_t count, End;
-
-    End = Vaddr + Len;
-    for (count = Vaddr; count < End; count += 0x1000)
+    uint32_t End = Vaddr + Len;
+    for (uint32_t Address = Vaddr; Address < End; Address += 0x1000)
     {
-        size_t Index = count >> 12;
+        size_t Index = Address >> 12;
+        m_MemoryReadMap[Index] = (size_t)-1;
+        m_MemoryWriteMap[Index] = (size_t)-1;
         m_TLB_ReadMap[Index] = 0;
         m_TLB_WriteMap[Index] = 0;
     }
@@ -1021,7 +968,7 @@ void CMipsMemoryVM::ChangeSpStatus()
     }
     //if (*( uint32_t *)(DMEM + 0xFC0) == 1)
     //{
-    //	ChangeTimer(RspTimer,0x40000);
+    //    ChangeTimer(RspTimer,0x40000);
     //}
     //else
     //{
