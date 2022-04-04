@@ -1,8 +1,8 @@
 ﻿// Meta information
 #1  #  "Português Brasileiro"		// Language ID
 #2  #  "Marcos Spíndula e Felipe"   // Author
-#3  #  "3.0"			            // Version
-#4  #  "17 de junho de 2021"		// Date
+#3  #  "3.01"			            // Version
+#4  #  "30 de março de 2022"		// Date
 
 /*** Menu ***/
 
@@ -29,7 +29,7 @@
 #126#  "Salvar Como..."
 #127#  "&Carregar o State"
 #128#  "Carregar..."
-#129#  "Salvar o State A&tual"
+#129#  "Salve State A&tual"
 #130#  "&Trapaças..."
 #131#  "Botão GS"
 #132#  "R&esumir"
@@ -78,7 +78,7 @@
 
 // Pop-up menu
 #210#  "Jogar o Jogo"
-#211#  "Informação da ROM"
+#211#  "Informações da ROM"
 #212#  "Editar as Configurações do Jogo"
 #213#  "Editar as Trapaças..."
 #214#  "Plugin dos Gráficos"
@@ -100,29 +100,29 @@
 
 // Menu descriptions
 #250#  "Abrir uma imagem da ROM do N64"
-#251#  "Exibir informação sobre a imagem carregada"
+#251#  "Exibir informações sobre a imagem carregada"
 #252#  "Iniciar a emulação da imagem da ROM carregada"
 #253#  "Parar a emulação da imagem da ROM carregada"
 #254#  "Selecionar o diretório das ROMs"
-#255#  "Atualizar a lista das ROMs atuais no explorador de ROMs"
+#255#  "Atualizar a lista atual das ROMs no explorador de ROMs"
 #256#  "Sair deste aplicativo"
 #257#  "Reiniciar a imagem da ROM atual (recarregar quaisquer mudanças nas configurações)"
 #258#  "Pausar/resumir a emulação da ROM atual em execução"
 #259#  "Gerar uma imagem bitmap da tela atual"
 #260#  "Limitar o FPS para a velocidade correta do N64"
-#261#  "Salvar o estado do sistema atual"
-#262#  "Salvar o estado do sistema atual num local selecionado pro arquivo"
+#261#  "Salvar o estado atual do sistema"
+#262#  "Salvar o estado atual do sistema no local do arquivo selecionado"
 #263#  "Carregar o estado salvo do sistema"
 #264#  "Escolher um arquivo do estado salvo do sistema pra carregar"
 #265#  "Ativar/desativar as trapaças do Gameshark"
-#266#  "O botão do Gameshark é usado com trapaças especifícas."
+#266#  "O botão do Gameshark é usado com trapaças específicas."
 #267#  "Mudar a emulação do modo janela pra tela cheia."
 #268#  "Fazer a janela ficar na frente de todas as outras janelas"
 #269#  "Mudar as configurações dentro do plugin dos gráficos"
 #270#  "Mudar as configurações dentro do plugin do áudio"
 #271#  "Mudar as configurações dentro do plugin do controle (ex: definir as teclas)"
 #272#  "Mudar as configurações dentro do plugin RSP"
-#273#  "Mostrar o uso da CPU pelo emulador dividida sobre recursos diferentes"
+#273#  "Mostrar o uso da CPU pelo emulador dividido por recursos diferentes"
 #274#  "Visualizar/mudar as configurações pra este aplicativo"
 #275#  "Visualizar o manual do aplicativo"
 #276#  "Visualizar o FAQ do aplicativo"
@@ -131,9 +131,9 @@
 #279#  "Abrir esta imagem da ROM aberta anteriormente"
 #280#  "Escolher este diretório como seu diretório das ROMs"
 #281#  "Mudar o aplicativo pra usar este idioma"
-#282#  "Escolher este local pro save state"
+#282#  "Escolher este local do salvamento pro save state"
 #283#  "Jogar o jogo selecionado"
-#284#  "Informação sobre o jogo selecionado"
+#284#  "Informações sobre o jogo selecionado"
 #285#  "Editar as configurações do jogo selecionado"
 #286#  "Editar as trapaças do jogo selecionado"
 
@@ -145,7 +145,7 @@
 #302#  "Good Name"
 #303#  "Status"
 #304#  "Tamanho da ROM"
-#305#  "Notas (core)"
+#305#  "Notas (núcleo)"
 #306#  "Notas (plugins padrão)"
 #307#  "Notas (usuário)"
 #308#  "ID do Cartucho"
@@ -222,41 +222,42 @@
 #465#  "Exibir a velocidade"
 #466#  "Visor da velocidade:"
 #467#  "Verificar se o Project64 já está em execução"
-#468#  "Armazenar salvamentos do jogo em pastas separadas"
-#469#  "Caminho da ROM IPL da Venda do 64DD Japonês:"
-#470#  "Caminho da ROM IPL da Venda do 64DD Americano:"
+#468#  "Armazenar os salvamentos dos jogos em pastas separadas"
+#469#  "Caminho da ROM IPL do Varejo do 64DD Japonês:"
+#470#  "Caminho da ROM IPL da Varejo do 64DD Americano:"
 #471#  "Caminho da ROM IPL do 64DD de Desenvolvimento:"
-#472#  "Tipo de Salvamento em Disco:"
+#472#  "Tipo de Salvamento no Disco:"
 #473#  "Ativar melhorias"
-#474#  "Mostrar barra de status"
+#474#  "Mostrar a barra de status"
 #475#  "Sair da tela cheia ao perder o foco"
-#476#  "Ativar Discord Rich Presence"
+#476#  "Ativar o Discord Rich Presence"
 
 // ROM browser tab
 #480#  "Máximo # de ROMs lembradas (0-10):"
 #481#  "ROMs"
-#482#  "Máximo # de diretórios das ROMs lembrados (0-10):"
-#483#  "diretórios"
-#484#  "Usar explorador de ROMs"
-#485#  "Usar repetição de diretório"
+#482#  "Máximo # de diretórios lembrados das ROMs (0-10):"
+#483#  "Diretórios"
+#484#  "Usar o explorador de ROMs"
+#485#  "Usar a repetição de diretório"
 #486#  "Campos disponíveis:"
 #487#  "Ordem dos campos:"
 #488#  "Adicionar ->"
 #489#  "<- Remover"
 #490#  "Pra Cima"
 #491#  "Pra Baixo"
-#492#  "Automaticamente atualizar o explorador"
+#492#  "Atualizar o explorador automaticamente"
+#493#  "Mostrar as extensões dos arquivos"
 
 //Advanced options
-#500#  "A maioria destas mudanças não terão efeito até que uma nova ROM seja aberta ou que a ROM atual seja resetada."
-#501#  "Padrões do Core"
-#502#  "Estilo do core da CPU:"
+#500#  "A maioria destas mudanças não terão efeito até uma nova ROM ser aberta ou que a ROM atual seja resetada."
+#501#  "Padrões do núcleo"
+#502#  "Estilo do núcleo da CPU:"
 #503#  "Métodos de auto-modificação"
 #504#  "Tamanho padrão da memória:"
 #505#  "Ligamento avançado dos blocos"
-#506#  "Iniciar a emulação quando a ROM está aberta"
+#506#  "Iniciar a emulação quando a ROM for aberta"
 #507#  "Sempre sobrescrever as configurações padrão com as do RDB"
-#508#  "Automaticamente comprimir os save states"
+#508#  "Comprimir os save states automaticamente"
 #509#  "Ativar debugger"
 #510#  "Cache"
 #511#  "DMA do PI"
@@ -266,31 +267,37 @@
 #515#  "Sempre usar o núcleo do interpretador"
 
 //ROM options
-#520#  "Estilo do core da CPU:"
+#520#  "Estilo do núcleo da CPU:"
 #521#  "Taxa de atualização da VI:"
 #522#  "Tamanho da memória:"
 #523#  "Ligamento avançado dos blocos"
 #524#  "Tipo do salvamento padrão:"
-#525#  "Contra fator:"
+#525#  "Contra-fator:"
 #526#  "Buffer de compilação maior"
-#527#  "Usar o TLB"
 #528#  "Caching do registro"
 #529#  "Atrasar a interrupção do SI"
 #530#  "SP Rápido"
 #531#  "Padrão"
 #532#  "Sinal de áudio do RSP"
-#533#  "Timing do áudio fixo"
+#533#  "Cronometragem do áudio fixo"
 #534#  "Método de procura da função:"
 #535#  "Método de auto-modificação personalizado"
 #536#  "Sincronizar usando o áudio"
 #537#  "Contagem de AIs por byte:"
 #538#  "Engine de 32 bits"
 #539#  "Atrasar a interrupção do DP"
+#5440# "Cronometragem da busca no disco:"
+#5441# "Turbo"
+#5442# "Lento"
+
+#5410# "Interrupções Aleatórias do SI/PI"
+
+#5420# "DMA Não-Alinhado"
 
 //Core styles
 #540#  "Interpretador"
 #541#  "Recompilador"
-#542#  "Sincronizar cores"
+#542#  "Sincronizar os núcleos"
 
 //Self-mod methods
 #560#  "Nenhum"
@@ -323,7 +330,7 @@
 
 // ROM notes
 #660#  "Status da ROM:"
-#661#  "Nota do core:"
+#661#  "Nota do núcleo:"
 #662#  "Nota do plugin:"
 
 // Accelerator selector
@@ -335,10 +342,10 @@
 #685#  "Designar"
 #686#  "Remover"
 #687#  "Resetar Tudo"
-#688#  "O jogo não está em execução"
-#689#  "Jogo em execução"
-#690#  "Jogo em execução (janela)"
-#691#  "Jogo em execução (tela cheia)"
+#688#  "O jogo não está sendo jogado"
+#689#  "Jogando o jogo"
+#690#  "Jogando o jogo (janela)"
+#691#  "Jogando o jogo (tela cheia)"
 #692#  "Detectar Tecla"
 
 // Framerate option
@@ -363,7 +370,7 @@
 /*** ROM information ***/
 
 // ROM info title
-#800#  "Informação da ROM"
+#800#  "Informações da ROM"
 
 //ROM info text
 #801#  "Nome da ROM:"
@@ -437,15 +444,15 @@
 /*** Support window ***/
 
 #1200#  "Apoie o Project64"
-#1201#  "O Project64 é um emulador de Nintendo64 grátis e de código fonte aberto.\n\nEste permite a você reproduzir o software real do N64 do mesmo jeito que seria no sistema do hardware original.\n\nEu lamento sobre a inconveniência deste alerta mas está sendo pedido a você esperar por alguns segundos de modo a apreciar o resultado de centenas de horas de trabalho.\n\nSe você puder e gostaria de apoiar o Project64 ou se você obteve algum valor dele então por favor apoie o Project64, seja como um obrigado ou como um desejo seu de remover este alerta.\n\nSe você tiver apoiado o Project64:"
-#1202#  "Inserir/Requisitar o Código de Notificação"
+#1201#  "O Project64 é um emulador de Nintendo 64 grátis e de código fonte aberto.\n\nEle permite a você reproduzir o software real do N64 do mesmo jeito que seria no console original.\n\nEu lamento sobre a inconveniência deste alerta mas está sendo pedido a você esperar por alguns segundos de modo a apreciar o resultado de centenas de horas de trabalho.\n\nSe você puder e gostaria de apoiar o Project64 ou se você obteve algum valor dele então por favor apoie o Project64, seja como um obrigado ou como um desejo seu de remover este alerta.\n\nSe você tiver apoiado o Project64:"
+#1202#  "Inserir/Requisitar o Código de Apoio"
 #1203#  "Apoie o Project64"
 #1204#  "Continuar"
 #1205#  "Por favor insira o código de apoio"
-#1206#  "Falhou em validar o código\n\nTenha certeza que o código no email combina baseado na sua máquina"
+#1206#  "Falhou em validar o código\n\nTenha certeza que o código no email combina baseado na seu dispositivo"
 #1207#  "Obrigado"
 #1208#  "Por favor insira seu código de apoio"
-#1209#  "Por favor insira o código que você recebeu no email.\n\nEste email será enviado para o endereço de email usado pra apoiar o Project64.\n\nPor favor note que o código só funcionará pra uma única máquina. A ID deste computador é:"
+#1209#  "Por favor insira o código que você recebeu no email.\n\nEste email será enviado para o endereço de email usado pra apoiar o Project64.\n\nPor favor note que o código só funcionará pra um dispositivo único. A ID deste dispositivo é:"
 #1210#  "OK"
 #1211#  "Cancelar"
 #1212#  "Requisitar Código"
@@ -500,7 +507,7 @@
 #2039#  "Carregando imagem"
 #2040#  "Não pôde abrir uma ROM porque os plugins não foram inicializados com sucesso."
 #2041#  "Você tem certeza que você realmente quer apagar isto?"
-#2042#  "Apagar Trapaça"
+#2042#  "Apagar trapaça"
 #2043#  "O nome da trapaça já está em uso."
 #2044#  "Você alcançou a quantia máxima de trapaças pra esta ROM."
 #2045#  "Plugin inicializando"
@@ -517,9 +524,9 @@
 #2056#  "Emulação High-Level do Áudio"
 #2057#  "O Áudio HLE requer um plugin de terceiros!!!\nSe você não tem um plugin de áudio de terceiros que suporta HLE você não ouvirá o som.\n\nMudar pra áudio HLE?"
 #2058#  "O arquivo carregado não aparenta ser uma ROM IPL válida do 64DD.\n\nVerifique suas ROMs com o GoodN64."
-#2059#  "O caminho da ROM IPL da Venda do 64DD Japonês não foi achado.\nÉ requerido pra jogar imagens de disco da região japonesa do 64DD.\n\nPor favor selecione a ROM requerida nas Configurações."
-#2061#  "O caminho da ROM IPL da Venda do 64DD Americano não foi achado.\nÉ requerido pra jogar imagens de disco da região americana do 64DD.\n\nPor favor selecione a ROM requerida nas Configurações."
-#2062#  "O caminho da ROM IPL da Venda do 64DD de Desenvolvimento não foi achado.\nÉ requerido jogar imagens de disco do 64DD de desenvolvimento.\n\nPor favor selecione a ROM requerida nas Configurações."
+#2059#  "O caminho da ROM IPL da Varejo do 64DD Japonês não foi achado.\nÉ requerido pra jogar imagens de disco da região japonesa do 64DD.\n\nPor favor selecione a ROM requerida nas Configurações."
+#2061#  "O caminho da ROM IPL da Varejo do 64DD Americano não foi achado.\nÉ requerido pra jogar imagens de disco da região americana do 64DD.\n\nPor favor selecione a ROM requerida nas Configurações."
+#2062#  "O caminho da ROM IPL da Varejo do 64DD de Desenvolvimento não foi achado.\nÉ requerido jogar imagens de disco do 64DD de desenvolvimento.\n\nPor favor selecione a ROM requerida nas Configurações."
 #2063#  "Falhou em atualizar a trapaça, é inválido"
 #2064#  "Trapaça Inválida"
 
@@ -540,7 +547,7 @@
 #3012#  "Escaneando..."
 #3013#  "OK"
 #3014#  "Cancelar"
-#3015#  "Informação"
+#3015#  "Informações"
 #3016#  "Project64 do Android"
 #3017#  "Licença"
 #3018#  "Revisão"
