@@ -94,14 +94,14 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
         }
         if (CpuType == CPU_SyncCores)
         {
-            if (g_Plugins->SyncWindow() == nullptr)
+            if (m_Plugins->SyncWindow() == nullptr)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
             g_Notify->DisplayMessage(5, "Copy plugins");
-            g_Plugins->CopyPlugins(g_Settings->LoadStringVal(Directory_PluginSync));
+            m_Plugins->CopyPlugins(g_Settings->LoadStringVal(Directory_PluginSync));
             m_SyncPlugins = new CPlugins(Directory_PluginSync, true);
-            m_SyncPlugins->SetRenderWindows(g_Plugins->SyncWindow(), nullptr);
+            m_SyncPlugins->SetRenderWindows(m_Plugins->SyncWindow(), nullptr);
             m_SyncCPU = new CN64System(m_SyncPlugins, randomizer_seed, true, true);
         }
 
@@ -817,8 +817,8 @@ void CN64System::EndEmulation(void)
 
 void CN64System::Pause()
 {
-    if (g_Plugins && g_Plugins->Control()->EmulationPaused) {
-        g_Plugins->Control()->EmulationPaused();
+    if (m_Plugins && m_Plugins->Control()->EmulationPaused) {
+        m_Plugins->Control()->EmulationPaused();
     }
     if (m_EndEmulation)
     {
@@ -2246,14 +2246,14 @@ bool CN64System::LoadState(const char * FileName)
 
     if (old_status != m_Reg.VI_STATUS_REG)
     {
-        g_Plugins->Gfx()->ViStatusChanged();
+        m_Plugins->Gfx()->ViStatusChanged();
     }
 
     if (old_width != m_Reg.VI_WIDTH_REG)
     {
-        g_Plugins->Gfx()->ViWidthChanged();
+        m_Plugins->Gfx()->ViWidthChanged();
     }
-    g_Plugins->Audio()->DacrateChanged(SystemType());
+    m_Plugins->Audio()->DacrateChanged(SystemType());
 
     // Fix random register
     while ((int)m_Reg.RANDOM_REGISTER < (int)m_Reg.WIRED_REGISTER)
@@ -2305,7 +2305,7 @@ bool CN64System::LoadState(const char * FileName)
 
 uint32_t CN64System::GetButtons(int32_t Control) const
 { 
-    CControl_Plugin::fnGetKeys GetKeys = g_Plugins->Control()->GetKeys;
+    CControl_Plugin::fnGetKeys GetKeys = m_Plugins->Control()->GetKeys;
     if (!UpdateControllerOnRefresh() && GetKeys != nullptr)
     {
         BUTTONS Keys;
@@ -2391,7 +2391,7 @@ void CN64System::RunRSP()
             __except_try()
             {
                 WriteTrace(TraceRSP, TraceDebug, "Do cycles - starting");
-                g_Plugins->RSP()->DoRspCycles(100);
+                m_Plugins->RSP()->DoRspCycles(100);
                 WriteTrace(TraceRSP, TraceDebug, "Do cycles - done");
             }
             __except_catch()
@@ -2467,14 +2467,14 @@ void CN64System::RefreshScreen()
     {
         m_MMU_VM.AudioInterface().SetViIntr(VI_INTR_TIME);
     }
-    if (UpdateControllerOnRefresh() && g_Plugins->Control()->GetKeys != nullptr)
+    if (UpdateControllerOnRefresh() && m_Plugins->Control()->GetKeys != nullptr)
     {
         BUTTONS Keys;
         memset(&Keys, 0, sizeof(Keys));
 
         for (int Control = 0; Control < 4; Control++)
         {
-            g_Plugins->Control()->GetKeys(Control, &Keys);
+            m_Plugins->Control()->GetKeys(Control, &Keys);
             m_Buttons[Control] = Keys.Value;
         }
     }
@@ -2484,7 +2484,7 @@ void CN64System::RefreshScreen()
     __except_try()
     {
         WriteTrace(TraceGFXPlugin, TraceDebug, "UpdateScreen starting");
-        g_Plugins->Gfx()->UpdateScreen();
+        m_Plugins->Gfx()->UpdateScreen();
 		if (g_Debugger != nullptr && HaveDebugger())
 		{
 			g_Debugger->FrameDrawn();
