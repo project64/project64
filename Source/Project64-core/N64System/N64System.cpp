@@ -54,6 +54,7 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
 {
     WriteTrace(TraceN64System, TraceDebug, "Start");
     memset(m_LastSuccessSyncPC, 0, sizeof(m_LastSuccessSyncPC));
+    memset(m_Buttons, 0, sizeof(m_Buttons));
 
     uint32_t gameHertz = g_Settings->LoadDword(Game_ScreenHertz);
     if (gameHertz == 0)
@@ -2475,7 +2476,7 @@ void CN64System::RefreshScreen()
         for (int Control = 0; Control < 4; Control++)
         {
             m_Plugins->Control()->GetKeys(Control, &Keys);
-            m_Buttons[Control] = Keys.Value;
+            m_Buttons[Control] = m_SyncSystem ? g_BaseSystem->m_Buttons[Control] : Keys.Value;
         }
     }
 

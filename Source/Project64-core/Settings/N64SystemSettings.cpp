@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "N64SystemSettings.h"
+#include <Project64-core/N64System/N64Types.h>
 
 int32_t CN64SystemSettings::m_RefCount = 0;
 
@@ -46,4 +47,8 @@ void CN64SystemSettings::RefreshSettings(void *)
     m_bShowDListAListCount = g_Settings->LoadBool(Debugger_ShowDListAListCount);
     m_bLimitFPS = g_Settings->LoadBool(GameRunning_LimitFPS);
     m_UpdateControllerOnRefresh = g_Settings->LoadBool(Setting_UpdateControllerOnRefresh);
+    if (g_Settings->LoadDword(Game_CpuType) == CPU_SyncCores)
+    {
+        m_UpdateControllerOnRefresh = true;
+    }
 }
