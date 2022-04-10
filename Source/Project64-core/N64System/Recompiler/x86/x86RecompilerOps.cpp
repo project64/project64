@@ -4012,15 +4012,12 @@ void CX86RecompilerOps::SW(bool bCheckLLbit)
             ProtectGPR(m_Opcode.rt);
         }
 
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+        UpdateCounters(m_RegWorkingSet, false, true);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
         if (IsMapped(m_Opcode.base))
         {
             ProtectGPR(m_Opcode.base);
-            if (g_System->bDelaySI() || g_System->bDelayDP())
-            {
-                m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
-                UpdateCounters(m_RegWorkingSet, false, true);
-                m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-            }
             if (m_Opcode.offset != 0)
             {
                 TempReg1 = Map_TempReg(x86_Any, -1, false);
