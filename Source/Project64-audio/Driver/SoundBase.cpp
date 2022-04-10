@@ -33,6 +33,10 @@ void SoundDriverBase::AI_SetFrequency(uint32_t Frequency, uint32_t BufferSize)
 {
     SetFrequency(Frequency, BufferSize);
     m_MaxBufferSize = (BufferSize * 8);
+    if (m_MaxBufferSize > MAX_SIZE)
+    {
+        m_MaxBufferSize = MAX_SIZE;
+    }
     m_CurrentReadLoc = m_CurrentWriteLoc = m_BufferRemaining = 0;
 }
 
