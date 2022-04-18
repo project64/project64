@@ -7,12 +7,14 @@
 #include <Project64-core\N64System\Mips\FlashRam.h>
 #include <Project64-core\N64System\Mips\Sram.h>
 #include <Project64-core\N64System\Mips\Dma.h>
+#include <Project64-core\N64System\MemoryHandler\AudioInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\CartridgeDomain2Address1Handler.h>
 #include <Project64-core\N64System\MemoryHandler\DisplayControlRegHandler.h>
 #include <Project64-core\N64System\MemoryHandler\MIPSInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\PeripheralInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RDRAMInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RDRAMRegistersHandler.h>
+#include <Project64-core\N64System\MemoryHandler\RomMemoryHandler.h>
 #include <Project64-core\N64System\MemoryHandler\SPRegistersHandler.h>
 #include <Project64-core\N64System\MemoryHandler\VideoInterfaceHandler.h>
 #include <Project64-core\Settings\GameSettings.h>
@@ -66,7 +68,6 @@ public:
     uint32_t RdramSize() const { return m_AllocatedRdramSize; }
     uint8_t * Dmem() const { return m_DMEM; }
     uint8_t * Imem() const { return m_IMEM; }
-    uint8_t * Rom() const { return m_Rom; }
     uint8_t * PifRam() { return &m_PifRam[0]; }
 
     CSram * GetSram();
@@ -136,7 +137,6 @@ private:
     static void Load32CartridgeDomain1Address3(void);
     static void Load32CartridgeDomain2Address2(void);
     static void Load32PifRam(void);
-    static void Load32Rom(void);
 
     static void Write32CartridgeDomain2Address2(void);
     static void Write32PifRam(void);
@@ -171,6 +171,7 @@ private:
     DisplayControlRegHandler m_DPCommandRegistersHandler;
     MIPSInterfaceHandler m_MIPSInterfaceHandler;
     PeripheralInterfaceHandler m_PeripheralInterfaceHandler;
+    RomMemoryHandler m_RomMemoryHandler;
     RDRAMInterfaceHandler m_RDRAMInterfaceHandler;
     RDRAMRegistersHandler m_RDRAMRegistersHandler;
     SerialInterfaceHandler m_SerialInterfaceHandler;
@@ -178,11 +179,6 @@ private:
     VideoInterfaceHandler m_VideoInterfaceHandler;
     uint8_t * m_RDRAM, *m_DMEM, *m_IMEM;
     uint32_t m_AllocatedRdramSize;
-    bool m_RomMapped;
-    uint8_t * m_Rom;
-    uint32_t m_RomSize;
-    bool m_RomWrittenTo;
-    uint32_t m_RomWroteValue;
     bool m_DDRomMapped;
     uint8_t * m_DDRom;
     uint32_t m_DDRomSize;

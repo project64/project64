@@ -5899,7 +5899,7 @@ void CArmRecompilerOps::UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles)
     RegSet.AfterCallDirect();
 }
 
-void CArmRecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues)
+void CArmRecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues, bool /*UpdateTimer*/)
 {
     if (RegSet.GetBlockCycleCount() != 0)
     {

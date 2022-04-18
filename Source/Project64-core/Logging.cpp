@@ -42,7 +42,8 @@ void CLogging::Log_LW(uint32_t PC, uint32_t VAddr)
         (VAddr >= 0xA4400000 && VAddr <= 0xA4400034) ||
         (VAddr >= 0xA4500000 && VAddr <= 0xA4500014) ||
         (VAddr == 0xA4800000 && VAddr <= 0xA4800018) ||
-        (VAddr >= 0xBFC00000 && VAddr <= 0xBFC007C0))
+        (VAddr >= 0xBFC00000 && VAddr <= 0xBFC007C0) ||
+        (VAddr >= 0xB0000000 && ((VAddr - 0xB0000000) < g_Rom->GetRomSize())))
     {
         return;
     }
@@ -54,29 +55,6 @@ void CLogging::Log_LW(uint32_t PC, uint32_t VAddr)
         }
         g_MMU->LW_VAddr(VAddr, Value);
         LogMessage("%08X: read word from PIF RAM at 0x%X (%08X)", PC, VAddr - 0xBFC007C0, Value);
-        return;
-    }
-    if (VAddr >= 0xB0000040 && ((VAddr - 0xB0000000) < g_Rom->GetRomSize()))
-    {
-        return;
-    }
-    if (VAddr >= 0xB0000000 && VAddr < 0xB0000040)
-    {
-        if (!LogRomHeader())
-        {
-            return;
-        }
-
-        g_MMU->LW_VAddr(VAddr, Value);
-        switch (VAddr)
-        {
-        case 0xB0000004: LogMessage("%08X: read from ROM clock rate (%08X)", PC, Value); break;
-        case 0xB0000008: LogMessage("%08X: read from ROM boot address offset (%08X)", PC, Value); break;
-        case 0xB000000C: LogMessage("%08X: read from ROM release offset (%08X)", PC, Value); break;
-        case 0xB0000010: LogMessage("%08X: read from ROM CRC1 (%08X)", PC, Value); break;
-        case 0xB0000014: LogMessage("%08X: read from ROM CRC2 (%08X)", PC, Value); break;
-        default: LogMessage("%08X: read from ROM header 0x%X (%08X)", PC, VAddr & 0xFF, Value);  break;
-        }
         return;
     }
     if (!LogUnknown())

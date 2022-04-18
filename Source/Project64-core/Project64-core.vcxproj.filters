@@ -40,9 +40,6 @@
     <Filter Include="Header Files\Plugins">
       <UniqueIdentifier>{e3f8ea19-e06b-47a7-8d69-14a0c1cfa8f1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Plugins">
-      <UniqueIdentifier>{ac92e812-22e1-4a1a-8dd5-5055073c882c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\N64 System\Mips">
       <UniqueIdentifier>{febaabe1-9838-4211-970d-2af9a003ef8f}</UniqueIdentifier>
     </Filter>
@@ -99,6 +96,9 @@
     </Filter>
     <Filter Include="Source Files\N64 System\MemoryHandler">
       <UniqueIdentifier>{f32cf723-4acb-4d3d-9bd9-05823579f8dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\N64 System\Plugins">
+      <UniqueIdentifier>{ac92e812-22e1-4a1a-8dd5-5055073c882c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -184,22 +184,22 @@
       <Filter>Source Files\Settings</Filter>
     </ClCompile>
     <ClCompile Include="Plugins\AudioPlugin.cpp">
-      <Filter>Source Files\Plugins</Filter>
+      <Filter>Source Files\N64 System\Plugins</Filter>
     </ClCompile>
     <ClCompile Include="Plugins\ControllerPlugin.cpp">
-      <Filter>Source Files\Plugins</Filter>
+      <Filter>Source Files\N64 System\Plugins</Filter>
     </ClCompile>
     <ClCompile Include="Plugins\GFXPlugin.cpp">
-      <Filter>Source Files\Plugins</Filter>
+      <Filter>Source Files\N64 System\Plugins</Filter>
     </ClCompile>
     <ClCompile Include="Plugins\PluginBase.cpp">
-      <Filter>Source Files\Plugins</Filter>
+      <Filter>Source Files\N64 System\Plugins</Filter>
     </ClCompile>
     <ClCompile Include="Plugins\Plugin.cpp">
-      <Filter>Source Files\Plugins</Filter>
+      <Filter>Source Files\N64 System\Plugins</Filter>
     </ClCompile>
     <ClCompile Include="Plugins\RSPPlugin.cpp">
-      <Filter>Source Files\Plugins</Filter>
+      <Filter>Source Files\N64 System\Plugins</Filter>
     </ClCompile>
     <ClCompile Include="N64System\EmulationThread.cpp">
       <Filter>Source Files\N64 System</Filter>
@@ -382,6 +382,9 @@
       <Filter>Source Files\N64 System\MemoryHandler</Filter>
     </ClCompile>
     <ClCompile Include="N64System\MemoryHandler\CartridgeDomain2Address1Handler.cpp">
+      <Filter>Source Files\N64 System\MemoryHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\MemoryHandler\RomMemoryHandler.cpp">
       <Filter>Source Files\N64 System\MemoryHandler</Filter>
     </ClCompile>
   </ItemGroup>
@@ -732,6 +735,9 @@
       <Filter>Header Files\N64 System\MemoryHandler</Filter>
     </ClInclude>
     <ClInclude Include="N64System\MemoryHandler\CartridgeDomain2Address1Handler.h">
+      <Filter>Header Files\N64 System\MemoryHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\MemoryHandler\RomMemoryHandler.h">
       <Filter>Header Files\N64 System\MemoryHandler</Filter>
     </ClInclude>
   </ItemGroup>

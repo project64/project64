@@ -1325,9 +1325,7 @@ void CN64System::UpdateSyncCPU(CN64System * const SecondCPU, uint32_t const Cycl
     if (CyclesToExecute < 0) { return; }
 
     SecondCPU->SetActiveSystem(true);
-
     CInterpreterCPU::ExecuteOps(Cycles);
-
     SetActiveSystem(true);
 }
 

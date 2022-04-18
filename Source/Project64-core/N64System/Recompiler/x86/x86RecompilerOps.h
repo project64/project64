@@ -234,7 +234,7 @@ public:
     void CompileReadTLBMiss(x86Reg AddressReg, x86Reg LookUpReg);
     void CompileWriteTLBMiss(x86Reg AddressReg, x86Reg LookUpReg);
     static void UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles);
-    void UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false);
+    void UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false, bool UpdateTimer = true);
     void CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegSet);
     void CompileExecuteBP(void);
     void CompileExecuteDelaySlotBP(void);

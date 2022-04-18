@@ -22,7 +22,6 @@ bool CGameSettings::m_FullSpeed = true;
 bool CGameSettings::m_bFastSP = true;
 bool CGameSettings::m_b32Bit = true;
 bool CGameSettings::m_RspAudioSignal;
-bool CGameSettings::m_bRomInMemory;
 bool CGameSettings::m_RegCaching;
 bool CGameSettings::m_bLinkBlocks;
 uint32_t CGameSettings::m_LookUpMode; //FUNC_LOOKUP_METHOD
@@ -80,7 +79,6 @@ void CGameSettings::RefreshGameSettings()
     m_bFastSP = g_Settings->LoadBool(Game_FastSP);
 #endif
     m_RspAudioSignal = g_Settings->LoadBool(Game_RspAudioSignal);
-    m_bRomInMemory = g_Settings->LoadBool(Game_LoadRomToMemory);
     m_RegCaching = g_Settings->LoadBool(Game_RegCache);
     m_bLinkBlocks = g_Settings->LoadBool(Game_BlockLinking);
     m_LookUpMode = g_Settings->LoadDword(Game_FuncLookupMode);

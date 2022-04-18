@@ -158,7 +158,6 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_TLB_PAddrStart, new CSettingTypeRomDatabase("TLB: PAddr Start", (uint32_t)0));
     AddHandler(Rdb_UseHleGfx, new CSettingTypeRomDatabase("HLE GFX RDB", Plugin_UseHleGfx));
     AddHandler(Rdb_UseHleAudio, new CSettingTypeRomDatabase("HLE Audio RDB", Plugin_UseHleAudio));
-    AddHandler(Rdb_LoadRomToMemory, new CSettingTypeRomDatabase("Rom In Memory", false));
     AddHandler(Rdb_ScreenHertz, new CSettingTypeRomDatabase("ScreenHertz", (uint32_t)0));
     AddHandler(Rdb_FuncLookupMode, new CSettingTypeRomDatabase("FuncFind", (uint32_t)FuncFind_PhysicalLookup));
     AddHandler(Rdb_RegCache, new CSettingTypeRDBYesNo("Reg Cache", true));
@@ -217,7 +216,6 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Game_SyncViaAudio, new CSettingTypeGame("Sync Audio", Rdb_SyncViaAudio));
     AddHandler(Game_UseHleGfx, new CSettingTypeGame("HLE GFX", Rdb_UseHleGfx));
     AddHandler(Game_UseHleAudio, new CSettingTypeGame("HLE Audio", Rdb_UseHleAudio));
-    AddHandler(Game_LoadRomToMemory, new CSettingTypeGame("Rom In Memory", Rdb_LoadRomToMemory));
     AddHandler(Game_ScreenHertz, new CSettingTypeGame("ScreenHertz", Rdb_ScreenHertz));
     AddHandler(Game_FuncLookupMode, new CSettingTypeGame("FuncFind", Rdb_FuncLookupMode));
     AddHandler(Game_RegCache, new CSettingTypeGame("Reg Cache", Rdb_RegCache));

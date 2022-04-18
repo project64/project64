@@ -215,7 +215,7 @@ private:
     void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason);
     void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, CArmOps::ArmCompareType CompareType);
     static void UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles);
-    void UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false);
+    void UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false, bool UpdateTimer = true);
     void CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegSet);
     void CompileReadTLBMiss(ArmReg AddressReg, ArmReg LookUpReg);
     void CompileWriteTLBMiss(ArmReg AddressReg, ArmReg LookUpReg);

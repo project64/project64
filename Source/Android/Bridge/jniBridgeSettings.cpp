@@ -103,7 +103,6 @@ CJniBridegSettings::CJniBridegSettings()
 	ADD_SETTING(Rdb_TLB_PAddrStart);
 	ADD_SETTING(Rdb_UseHleGfx);
 	ADD_SETTING(Rdb_UseHleAudio);
-	ADD_SETTING(Rdb_LoadRomToMemory);
 	ADD_SETTING(Rdb_ScreenHertz);
 	ADD_SETTING(Rdb_FuncLookupMode);
 	ADD_SETTING(Rdb_RegCache);
@@ -166,7 +165,6 @@ CJniBridegSettings::CJniBridegSettings()
 	ADD_SETTING(Game_RspAudioSignal);
 	ADD_SETTING(Game_UseHleGfx);
 	ADD_SETTING(Game_UseHleAudio);
-	ADD_SETTING(Game_LoadRomToMemory);
 	ADD_SETTING(Game_ViRefreshRate);
 	ADD_SETTING(Game_AiCountPerBytes);
 	ADD_SETTING(Game_AudioResetOnLoad);

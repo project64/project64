@@ -2493,7 +2493,6 @@ Clear Frame=2
 Culling=1
 FuncFind=2
 RDRAM Size=4
-Rom In Memory=1
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0

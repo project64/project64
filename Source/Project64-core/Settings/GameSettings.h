@@ -12,7 +12,6 @@ public:
     void RefreshGameSettings(void);
 
     inline static bool UseHleGfx(void) { return m_UseHleGfx; }
-    inline static bool bRomInMemory(void) { return m_bRomInMemory; }
     inline static bool bRegCaching(void) { return m_RegCaching; }
     inline static bool bLinkBlocks(void) { return m_bLinkBlocks && !CDebugSettings::HaveWriteBP() && !CDebugSettings::HaveReadBP(); }
     inline static FUNC_LOOKUP_METHOD LookUpMode(void) { return (FUNC_LOOKUP_METHOD)m_LookUpMode; }
@@ -55,7 +54,6 @@ private:
 
     // Settings that can be changed on the fly
     static bool m_UseHleGfx;
-    static bool m_bRomInMemory;
     static bool m_RegCaching;
     static bool m_bLinkBlocks;
     static uint32_t m_LookUpMode; //FUNC_LOOKUP_METHOD

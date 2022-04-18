@@ -3421,7 +3421,7 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
             {
                 // Read from ROM
                 sprintf(VarName, "Rom + %X", (PAddr - 0x10000000));
-                MoveVariableToX86reg((PAddr - 0x10000000) + g_MMU->Rom(), VarName, Reg);
+                MoveVariableToX86reg((PAddr - 0x10000000) + g_Rom->GetRomAddress(), VarName, Reg);
             }
             else if (g_DDRom != nullptr && ((PAddr & 0xFF000000) == 0x06000000 && (PAddr - 0x06000000) < g_DDRom->GetRomSize()))
             {
@@ -9089,7 +9089,7 @@ void CX86RecompilerOps::CompileInPermLoop(CRegInfo & RegSet, uint32_t ProgramCou
 {
     MoveConstToVariable(ProgramCounter, _PROGRAM_COUNTER, "PROGRAM_COUNTER");
     RegSet.WriteBackRegisters();
-    UpdateCounters(RegSet, false, true);
+    UpdateCounters(RegSet, false, true, false);
     Call_Direct(AddressOf(CInterpreterCPU::InPermLoop), "CInterpreterCPU::InPermLoop");
 #ifdef _MSC_VER
     MoveConstToX86reg((uint32_t)g_SystemTimer, x86_ECX);
@@ -9871,7 +9871,7 @@ void CX86RecompilerOps::UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles)
     RegSet.AfterCallDirect();
 }
 
-void CX86RecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues)
+void CX86RecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues, bool UpdateTimer)
 {
     if (RegSet.GetBlockCycleCount() != 0)
     {
@@ -9906,6 +9906,20 @@ void CX86RecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool 
         CPU_Message("");
         CPU_Message("      $Continue_From_Timer_Test:");
         SetJump8(Jump, *g_RecompPos);
+    }
+
+    if (UpdateTimer && g_SyncSystem)
+    {
+        m_RegWorkingSet.BeforeCallDirect();
+#ifdef _MSC_VER
+        MoveConstToX86reg((uint32_t)g_SystemTimer, x86_ECX);
+        Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
+#else
+        PushImm32((uint32_t)g_SystemTimer);
+        Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
+        AddConstToX86Reg(x86_ESP, 4);
+#endif
+        m_RegWorkingSet.AfterCallDirect();
     }
 }
 
