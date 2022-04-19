@@ -32,7 +32,6 @@ void CLogging::Log_LW(uint32_t PC, uint32_t VAddr)
         VAddr = PAddr + 0xA0000000;
     }
 
-    uint32_t Value;
     if ((VAddr >= 0xA0000000 && VAddr < (0xA0000000 + g_MMU->RdramSize())) ||
         (VAddr >= 0xA3F00000 && VAddr <= 0xA3F00024) ||
         (VAddr >= 0xA4000000 && VAddr <= 0xA4001FFC) ||
@@ -42,19 +41,9 @@ void CLogging::Log_LW(uint32_t PC, uint32_t VAddr)
         (VAddr >= 0xA4400000 && VAddr <= 0xA4400034) ||
         (VAddr >= 0xA4500000 && VAddr <= 0xA4500014) ||
         (VAddr == 0xA4800000 && VAddr <= 0xA4800018) ||
-        (VAddr >= 0xBFC00000 && VAddr <= 0xBFC007C0) ||
-        (VAddr >= 0xB0000000 && ((VAddr - 0xB0000000) < g_Rom->GetRomSize())))
+        (VAddr >= 0xB0000000 && ((VAddr - 0xB0000000) < g_Rom->GetRomSize())) ||
+        (VAddr >= 0xBFC00000 && VAddr <= 0xBFC007FC))
     {
-        return;
-    }
-    if (VAddr >= 0xBFC007C0 && VAddr <= 0xBFC007FC)
-    {
-        if (!LogPRDirectMemLoads())
-        {
-            return;
-        }
-        g_MMU->LW_VAddr(VAddr, Value);
-        LogMessage("%08X: read word from PIF RAM at 0x%X (%08X)", PC, VAddr - 0xBFC007C0, Value);
         return;
     }
     if (!LogUnknown())
@@ -85,17 +74,6 @@ void CLogging::Log_SW(uint32_t PC, uint32_t VAddr, uint32_t Value)
         VAddr = PAddr + 0xA0000000;
     }
 
-    if ((VAddr >= 0xA0000000 && VAddr < (0xA0000000 + g_MMU->RdramSize())) ||
-        (VAddr >= 0xA3F00000 && VAddr <= 0xA3F00024) ||
-        (VAddr >= 0xA4000000 && VAddr <= 0xA4001FFC) || 
-        (VAddr >= 0xA4040000 && VAddr <= 0xA404001C) ||
-        (VAddr == 0xA4080000) || 
-        (VAddr >= 0xA4100000 && VAddr <= 0xA410001C))
-    {
-        return;
-    }
-
-
     if (VAddr >= 0xA4200000 && VAddr <= 0xA420000C)
     {
         if (!LogDPSRegisters())
@@ -111,23 +89,21 @@ void CLogging::Log_SW(uint32_t PC, uint32_t VAddr, uint32_t Value)
         }
     }
 
-    if ((VAddr >= 0xA4300000 && VAddr <= 0xA430000C) ||
+    if ((VAddr >= 0xA0000000 && VAddr < (0xA0000000 + g_MMU->RdramSize())) ||
+        (VAddr >= 0xA3F00000 && VAddr <= 0xA3F00024) ||
+        (VAddr >= 0xA4000000 && VAddr <= 0xA4001FFC) || 
+        (VAddr >= 0xA4040000 && VAddr <= 0xA404001C) ||
+        (VAddr == 0xA4080000) || 
+        (VAddr >= 0xA4100000 && VAddr <= 0xA410001C) ||
+        (VAddr >= 0xA4300000 && VAddr <= 0xA430000C) ||
         (VAddr >= 0xA4400000 && VAddr <= 0xA4400034) ||
         (VAddr >= 0xA4500000 && VAddr <= 0xA4500014) ||
-        (VAddr >= 0xA4800000 && VAddr <= 0xA4800018))
+        (VAddr >= 0xA4800000 && VAddr <= 0xA4800018) ||
+        (VAddr >= 0xBFC007C0 && VAddr <= 0xBFC007FC))
     {
         return;
     }
 
-    if (VAddr >= 0xBFC007C0 && VAddr <= 0xBFC007FC)
-    {
-        if (!LogPRDirectMemStores())
-        {
-            return;
-        }
-        LogMessage("%08X: Writing 0x%08X to PIF RAM at 0x%X", PC, Value, VAddr - 0xBFC007C0);
-        return;
-    }
     if (!LogUnknown())
     {
         return;

@@ -8,9 +8,8 @@
 #include <Project64-core\N64System\Mips\OpcodeName.h>
 #include <Project64-core\N64System\Mips\Disk.h>
 #include <Project64-core\ExceptionHandler.h>
-
+#include <Common\MemoryManagement.h>
 #include <stdio.h>
-#include <Common/MemoryManagement.h>
 
 uint8_t * CMipsMemoryVM::m_Reserve1 = nullptr;
 uint8_t * CMipsMemoryVM::m_Reserve2 = nullptr;
@@ -33,6 +32,7 @@ CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
     m_DPCommandRegistersHandler(System, System.GetPlugins(), System.m_Reg),
     m_MIPSInterfaceHandler(System.m_Reg),
     m_PeripheralInterfaceHandler(*this, System.m_Reg),
+    m_PifRamHandler(*this, System.m_Reg),
     m_RDRAMInterfaceHandler(System.m_Reg),
     m_RomMemoryHandler(System, System.m_Reg, *g_Rom),
     m_SerialInterfaceHandler(*this, System.m_Reg),
@@ -50,23 +50,6 @@ CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
     m_DDRomSize(0)
 {
     g_Settings->RegisterChangeCB(Game_RDRamSize, this, (CSettings::SettingChangedFunc)RdramChanged);
-}
-
-uint32_t swap32by8(uint32_t word)
-{
-    const uint32_t swapped =
-#if defined(_MSC_VER)
-        _byteswap_ulong(word)
-#elif defined(__GNUC__)
-        __builtin_bswap32(word)
-#else
-        (word & 0x000000FFul) << 24
-        | (word & 0x0000FF00ul) << 8
-        | (word & 0x00FF0000ul) >> 8
-        | (word & 0xFF000000ul) >> 24
-#endif
-        ;
-    return (swapped & 0xFFFFFFFFul);
 }
 
 CMipsMemoryVM::~CMipsMemoryVM()
@@ -561,7 +544,7 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
     case 0x05000000: m_CartridgeDomain2Address1Handler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
     case 0x06000000: Load32CartridgeDomain1Address1(); break;
     case 0x08000000: Load32CartridgeDomain2Address2(); break;
-    case 0x1FC00000: Load32PifRam(); break;
+    case 0x1FC00000: m_PifRamHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
     case 0x1FF00000: Load32CartridgeDomain1Address3(); break;
     default:
         if (PAddr >= 0x10000000 && PAddr < 0x16000000)
@@ -672,7 +655,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
     case 0x04800000: m_SerialInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x05000000: m_CartridgeDomain2Address1Handler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x08000000: Write32CartridgeDomain2Address2(); break;
-    case 0x1FC00000: Write32PifRam(); break;
+    case 0x1FC00000: m_PifRamHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     default:
         if (PAddr >= 0x10000000 && PAddr < 0x16000000)
         {
@@ -1045,33 +1028,6 @@ void CMipsMemoryVM::Load32CartridgeDomain2Address2(void)
     }
 }
 
-void CMipsMemoryVM::Load32PifRam(void)
-{
-    if ((m_MemLookupAddress & 0x1FFFFFFF) < 0x1FC007C0)
-    {
-        //m_MemLookupValue.UW[0] = swap32by8(*(uint32_t *)(&PifRom[PAddr - 0x1FC00000]));
-        m_MemLookupValue.UW[0] = 0;
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-    }
-    else if ((m_MemLookupAddress & 0x1FFFFFFF) < 0x1FC00800)
-    {
-        uint8_t * PIF_Ram = g_MMU->PifRam();
-        m_MemLookupValue.UW[0] = *(uint32_t *)(&PIF_Ram[(m_MemLookupAddress & 0x1FFFFFFF) - 0x1FC007C0]);
-        m_MemLookupValue.UW[0] = swap32by8(m_MemLookupValue.UW[0]);
-    }
-    else
-    {
-        m_MemLookupValue.UW[0] = 0;
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-    }
-}
-
 void CMipsMemoryVM::Write32CartridgeDomain2Address2(void)
 {
     uint32_t offset = (m_MemLookupAddress & 0x1FFFFFFF) - 0x08000000;
@@ -1104,25 +1060,5 @@ void CMipsMemoryVM::Write32CartridgeDomain2Address2(void)
     if (g_System->m_SaveUsing == SaveChip_FlashRam)
     {
         g_MMU->WriteToFlashCommand(m_MemLookupValue.UW[0]);
-    }
-}
-
-void CMipsMemoryVM::Write32PifRam(void)
-{
-    if ((m_MemLookupAddress & 0x1FFFFFFF) < 0x1FC007C0)
-    {
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-    }
-    else if ((m_MemLookupAddress & 0x1FFFFFFF) < 0x1FC00800)
-    {
-        uint32_t Value = swap32by8(m_MemLookupValue.UW[0]);
-        *(uint32_t *)(&g_MMU->m_PifRam[(m_MemLookupAddress & 0x1FFFFFFF) - 0x1FC007C0]) = Value;
-        if ((m_MemLookupAddress & 0x1FFFFFFF) == 0x1FC007FC)
-        {
-            g_MMU->PifRamWrite();
-        }
     }
 }

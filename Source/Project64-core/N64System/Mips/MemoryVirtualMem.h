@@ -12,9 +12,11 @@
 #include <Project64-core\N64System\MemoryHandler\DisplayControlRegHandler.h>
 #include <Project64-core\N64System\MemoryHandler\MIPSInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\PeripheralInterfaceHandler.h>
+#include <Project64-core\N64System\MemoryHandler\PifRamHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RDRAMInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RDRAMRegistersHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RomMemoryHandler.h>
+#include <Project64-core\N64System\MemoryHandler\SerialInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\SPRegistersHandler.h>
 #include <Project64-core\N64System\MemoryHandler\VideoInterfaceHandler.h>
 #include <Project64-core\Settings\GameSettings.h>
@@ -136,10 +138,8 @@ private:
     static void Load32CartridgeDomain1Address1(void);
     static void Load32CartridgeDomain1Address3(void);
     static void Load32CartridgeDomain2Address2(void);
-    static void Load32PifRam(void);
 
     static void Write32CartridgeDomain2Address2(void);
-    static void Write32PifRam(void);
 
 #if defined(__i386__) || defined(_M_IX86)
 
@@ -171,6 +171,7 @@ private:
     DisplayControlRegHandler m_DPCommandRegistersHandler;
     MIPSInterfaceHandler m_MIPSInterfaceHandler;
     PeripheralInterfaceHandler m_PeripheralInterfaceHandler;
+    PifRamHandler m_PifRamHandler;
     RomMemoryHandler m_RomMemoryHandler;
     RDRAMInterfaceHandler m_RDRAMInterfaceHandler;
     RDRAMRegistersHandler m_RDRAMRegistersHandler;

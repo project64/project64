@@ -36,7 +36,7 @@ bool MIPSInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
         }
     }
 
-    if (LogMIPSInterface())
+    if (GenerateLog() && LogMIPSInterface())
     {
         switch (Address & 0x1FFFFFFF)
         {
@@ -56,7 +56,7 @@ bool MIPSInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
 
 bool MIPSInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask)
 {
-    if (LogMIPSInterface())
+    if (GenerateLog() && LogMIPSInterface())
     {
         switch (Address & 0x1FFFFFFF)
         {

@@ -387,6 +387,9 @@
     <ClCompile Include="N64System\MemoryHandler\RomMemoryHandler.cpp">
       <Filter>Source Files\N64 System\MemoryHandler</Filter>
     </ClCompile>
+    <ClCompile Include="N64System\MemoryHandler\PifRamHandler.cpp">
+      <Filter>Source Files\N64 System\MemoryHandler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -738,6 +741,9 @@
       <Filter>Header Files\N64 System\MemoryHandler</Filter>
     </ClInclude>
     <ClInclude Include="N64System\MemoryHandler\RomMemoryHandler.h">
+      <Filter>Header Files\N64 System\MemoryHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\MemoryHandler\PifRamHandler.h">
       <Filter>Header Files\N64 System\MemoryHandler</Filter>
     </ClInclude>
   </ItemGroup>
