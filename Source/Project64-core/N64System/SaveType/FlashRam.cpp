@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include <Project64-core/N64System/Mips/FlashRam.h>
-#include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
-#include <Common/path.h>
+#include <Project64-core\N64System\SaveType\FlashRam.h>
+#include <Project64-core\N64System\SystemGlobals.h>
+#include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
+#include <Common\path.h>
 
 CFlashram::CFlashram(bool ReadOnly) :
 m_FlashRamPointer(nullptr),

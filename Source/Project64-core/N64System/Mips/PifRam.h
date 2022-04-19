@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Project64-core/Logging.h>
-#include <Project64-core/N64System/Mips/Eeprom.h>
+#include <Project64-core\Logging.h>
+#include <Project64-core\N64System\SaveType\Eeprom.h>
 
 class CPifRam :
     public CLogging,

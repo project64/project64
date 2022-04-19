@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include <Project64-core/N64System/Mips/Sram.h>
-#include <Common/path.h>
+#include <Project64-core\N64System\SaveType\Sram.h>
+#include <Common\path.h>
 
 CSram::CSram(bool ReadOnly) :
-m_ReadOnly(ReadOnly)
+    m_ReadOnly(ReadOnly)
 {
 }
 

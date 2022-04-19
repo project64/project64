@@ -4,8 +4,8 @@
 #include <Project64-core\N64System\Recompiler\RecompilerOps.h>
 #include <Project64-core\N64System\Interpreter\InterpreterOps.h>
 #include <Project64-core\N64System\Mips\PifRam.h>
-#include <Project64-core\N64System\Mips\FlashRam.h>
-#include <Project64-core\N64System\Mips\Sram.h>
+#include <Project64-core\N64System\SaveType\FlashRam.h>
+#include <Project64-core\N64System\SaveType\Sram.h>
 #include <Project64-core\N64System\Mips\Dma.h>
 #include <Project64-core\N64System\MemoryHandler\AudioInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\CartridgeDomain2Address1Handler.h>

@@ -67,8 +67,6 @@
     <ClCompile Include="N64System\MemoryHandler\VideoInterfaceHandler.cpp" />
     <ClCompile Include="N64System\Mips\Disk.cpp" />
     <ClCompile Include="N64System\Mips\Dma.cpp" />
-    <ClCompile Include="N64System\Mips\Eeprom.cpp" />
-    <ClCompile Include="N64System\Mips\FlashRam.cpp" />
     <ClCompile Include="N64System\Mips\GBCart.cpp" />
     <ClCompile Include="N64System\Mips\MemoryVirtualMem.cpp" />
     <ClCompile Include="N64System\Mips\Mempak.cpp" />
@@ -76,7 +74,6 @@
     <ClCompile Include="N64System\Mips\PifRam.cpp" />
     <ClCompile Include="N64System\Mips\Register.cpp" />
     <ClCompile Include="N64System\Mips\Rumblepak.cpp" />
-    <ClCompile Include="N64System\Mips\Sram.cpp" />
     <ClCompile Include="N64System\Mips\SystemEvents.cpp" />
     <ClCompile Include="N64System\Mips\SystemTiming.cpp" />
     <ClCompile Include="N64System\Mips\TLB.cpp" />
@@ -101,6 +98,9 @@
     <ClCompile Include="N64System\Recompiler\x86\x86ops.cpp" />
     <ClCompile Include="N64System\Recompiler\x86\x86RecompilerOps.cpp" />
     <ClCompile Include="N64System\Recompiler\x86\x86RegInfo.cpp" />
+    <ClCompile Include="N64System\SaveType\Eeprom.cpp" />
+    <ClCompile Include="N64System\SaveType\FlashRam.cpp" />
+    <ClCompile Include="N64System\SaveType\Sram.cpp" />
     <ClCompile Include="N64System\SpeedLimiter.cpp" />
     <ClCompile Include="N64System\SystemGlobals.cpp" />
     <ClCompile Include="Plugins\AudioPlugin.cpp" />
@@ -217,6 +217,9 @@
     <ClInclude Include="N64System\Recompiler\x86\x86ops.h" />
     <ClInclude Include="N64System\Recompiler\x86\x86RecompilerOps.h" />
     <ClInclude Include="N64System\Recompiler\x86\x86RegInfo.h" />
+    <ClInclude Include="N64System\SaveType\Eeprom.h" />
+    <ClInclude Include="N64System\SaveType\FlashRam.h" />
+    <ClInclude Include="N64System\SaveType\Sram.h" />
     <ClInclude Include="N64System\SpeedLimiter.h" />
     <ClInclude Include="N64System\SystemGlobals.h" />
     <ClInclude Include="Notification.h" />
