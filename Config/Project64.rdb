@@ -464,6 +464,14 @@ RDRAM Size=4
 Save Type=FlashRam
 SMM-Protect=1
 
+[0290AEB9-67A3B6C1-C:45]
+Good Name=Animal Forest [T-Eng-Zoinkity]
+Status=Compatible
+32bit=Yes
+RDRAM Size=4
+Save Type=FlashRam
+SMM-Protect=1
+
 [3CC77150-21CDB987-C:50]
 Good Name=Armorines - Project S.W.A.R.M. (E)
 Internal Name=Armorines Project S.
