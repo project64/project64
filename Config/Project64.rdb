@@ -1673,6 +1673,20 @@ Status=Compatible
 Counter Factor=1
 Save Type=4kbit Eeprom
 
+[DONKEY KONG 64-C:45]
+Alt Identifier=69696969-69696969-C:45
+RDRAM Size=8
+
+[69696969-69696969-C:45]
+Internal Name=DONKEY KONG 64
+Status=Compatible
+Counter Factor=1
+Culling=1
+Emulate Clear=1
+Primary Frame Buffer=1
+Save Type=16kbit Eeprom
+Linking=Off
+
 [11936D8C-6F2C4B43-C:50]
 Good Name=Donkey Kong 64 (E)
 Internal Name=DONKEY KONG 64
