@@ -1,7 +1,7 @@
 #pragma once
 #include <Project64-core\Settings\DebugSettings.h>
-#include <Project64-core\N64System\SaveType\FlashRam.h>
-#include <Project64-core\N64System\SaveType\Sram.h>
+
+class CartridgeDomain2Address2Handler;
 
 class CDMA :
     private CDebugSettings
@@ -14,14 +14,13 @@ public:
     void PI_DMA_WRITE();
 
 protected:
-    CDMA(CFlashram & FlashRam, CSram & Sram);
+    CDMA(CartridgeDomain2Address2Handler & Domain2Address2Handler);
 
 private:
     CDMA(const CDMA&);
     CDMA& operator=(const CDMA&);
 
-    CFlashram & m_FlashRam;
-    CSram     & m_Sram;
-
     void OnFirstDMA();
+
+    CartridgeDomain2Address2Handler & m_Domain2Address2Handler;
 };

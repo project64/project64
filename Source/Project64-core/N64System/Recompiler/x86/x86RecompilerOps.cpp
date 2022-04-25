@@ -11299,9 +11299,10 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         switch (PAddr)
         {
         case 0x04300000:
-            MoveX86regToVariable(Reg, &CMipsMemoryVM::m_MemLookupValue.UW[0], "CMipsMemoryVM::m_MemLookupValue.UW[0]");
-            MoveConstToVariable(PAddr, &CMipsMemoryVM::m_MemLookupAddress, "m_MemLookupAddress");
             m_RegWorkingSet.BeforeCallDirect();
+            PushImm32(0xFFFFFFFF);
+            Push(Reg);
+            PushImm32(PAddr & 0x1FFFFFFF);
 #ifdef _MSC_VER
             MoveConstToX86reg((uint32_t)(MemoryHandler*)&g_MMU->m_MIPSInterfaceHandler, x86_ECX);
             Call_Direct((void*)((long**)(MemoryHandler*)&g_MMU->m_MIPSInterfaceHandler)[0][1], "MIPSInterfaceHandler::Write32");

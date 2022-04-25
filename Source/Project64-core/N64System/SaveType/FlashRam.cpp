@@ -4,20 +4,20 @@
 #include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
 #include <Common\path.h>
 
-CFlashram::CFlashram(bool ReadOnly) :
-m_FlashRamPointer(nullptr),
-m_FlashFlag(FLASHRAM_MODE_NOPES),
-m_FlashStatus(0),
-m_FlashRAM_Offset(0),
-m_ReadOnly(ReadOnly)
+CFlashRam::CFlashRam(bool ReadOnly) :
+    m_FlashRamPointer(nullptr),
+    m_FlashFlag(FLASHRAM_MODE_NOPES),
+    m_FlashStatus(0),
+    m_FlashRAM_Offset(0),
+    m_ReadOnly(ReadOnly)
 {
 }
 
-CFlashram::~CFlashram()
+CFlashRam::~CFlashRam()
 {
 }
 
-void CFlashram::DmaFromFlashram(uint8_t * dest, int32_t StartOffset, int32_t len)
+void CFlashRam::DmaFromFlashram(uint8_t * dest, int32_t StartOffset, int32_t len)
 {
     uint8_t FlipBuffer[0x10000];
 
@@ -78,7 +78,7 @@ void CFlashram::DmaFromFlashram(uint8_t * dest, int32_t StartOffset, int32_t len
     }
 }
 
-void CFlashram::DmaToFlashram(uint8_t * Source, int32_t StartOffset, int32_t len)
+void CFlashRam::DmaToFlashram(uint8_t * Source, int32_t StartOffset, int32_t len)
 {
     switch (m_FlashFlag)
     {
@@ -93,7 +93,7 @@ void CFlashram::DmaToFlashram(uint8_t * Source, int32_t StartOffset, int32_t len
     }
 }
 
-uint32_t CFlashram::ReadFromFlashStatus(uint32_t PAddr)
+uint32_t CFlashRam::ReadFromFlashStatus(uint32_t PAddr)
 {
     switch (PAddr)
     {
@@ -108,7 +108,7 @@ uint32_t CFlashram::ReadFromFlashStatus(uint32_t PAddr)
     return (uint32_t)(m_FlashStatus >> 32);
 }
 
-bool CFlashram::LoadFlashram()
+bool CFlashRam::LoadFlashram()
 {
     CPath FileName(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), stdstr_f("%s.fla", g_Settings->LoadStringVal(Game_GameName).c_str()).c_str());
     if (g_Settings->LoadBool(Setting_UniqueSaveDir))
@@ -134,7 +134,7 @@ bool CFlashram::LoadFlashram()
     return true;
 }
 
-void CFlashram::WriteToFlashCommand(uint32_t FlashRAM_Command)
+void CFlashRam::WriteToFlashCommand(uint32_t FlashRAM_Command)
 {
     uint8_t EmptyBlock[16 * sizeof(int64_t)];
 

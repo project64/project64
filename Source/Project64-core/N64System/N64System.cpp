@@ -387,11 +387,17 @@ bool CN64System::LoadFileImage(const char * FileLoc)
             }
             g_DDRom->LoadN64ImageIPL(FileLoc);
             if (g_DDRom->CicChipID() == CIC_NUS_8303)
+            {
                 g_Settings->SaveString(File_DiskIPLPath, FileLoc);
+            }
             else if (g_DDRom->CicChipID() == CIC_NUS_DDUS)
+            {
                 g_Settings->SaveString(File_DiskIPLUSAPath, FileLoc);
+            }
             else if (g_DDRom->CicChipID() == CIC_NUS_8401)
+            {
                 g_Settings->SaveString(File_DiskIPLTOOLPath, FileLoc);
+            }
         }
 
         g_System->RefreshGameSettings();

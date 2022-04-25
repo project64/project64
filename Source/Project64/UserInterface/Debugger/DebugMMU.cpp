@@ -188,15 +188,15 @@ bool CDebugMMU::GetPhysicalByte(uint32_t paddr, uint8_t* value)
             uint32_t wordpaddr = paddr & ~3;
             uint8_t data[4];
 
-            CSram *sram = g_MMU->GetSram();
-            sram->DmaFromSram(data, wordpaddr - 0x08000000, 4);
+            CSram & sram = g_MMU->GetSram();
+            sram.DmaFromSram(data, wordpaddr - 0x08000000, 4);
             *value = data[nByte ^ 3];
             return true;
         }
         else if (g_System->m_SaveUsing == SaveChip_FlashRam && saveOffset <= 3) // FlashRAM status
         {
-            CFlashram* flashRam = g_MMU->GetFlashram();
-            uint32_t flashStatus = flashRam->ReadFromFlashStatus(0x08000000);
+            CFlashRam & FlashRam = g_MMU->GetFlashRam();
+            uint32_t flashStatus = FlashRam.ReadFromFlashStatus(0x08000000);
             *value = (flashStatus >> (24 - nByte * 8)) & 0xFF;
             return true;
         }
@@ -262,10 +262,10 @@ bool CDebugMMU::SetPhysicalByte(uint32_t paddr, uint8_t value)
             uint32_t wordpaddr = paddr & ~3;
             uint8_t data[4];
 
-            CSram *sram = g_MMU->GetSram();
-            sram->DmaFromSram(data, wordpaddr - 0x08000000, sizeof(data));
+            CSram & sram = g_MMU->GetSram();
+            sram.DmaFromSram(data, wordpaddr - 0x08000000, sizeof(data));
             data[nByte ^ 3] = value;
-            sram->DmaToSram(data, wordpaddr - 0x08000000, sizeof(data));
+            sram.DmaToSram(data, wordpaddr - 0x08000000, sizeof(data));
             return true;
         }
     }

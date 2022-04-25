@@ -77,6 +77,7 @@ class CartridgeDomain2Address1Handler :
 {
 public:
     CartridgeDomain2Address1Handler(CRegisters & Reg);
+
     bool Read32(uint32_t Address, uint32_t & Value);
     bool Write32(uint32_t Address, uint32_t Value, uint32_t Mask);
 

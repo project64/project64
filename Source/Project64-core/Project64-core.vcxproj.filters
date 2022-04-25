@@ -396,6 +396,15 @@
     <ClCompile Include="N64System\SaveType\Sram.cpp">
       <Filter>Source Files\N64 System\SaveType</Filter>
     </ClCompile>
+    <ClCompile Include="N64System\MemoryHandler\CartridgeDomain1Address1Handler.cpp">
+      <Filter>Source Files\N64 System\MemoryHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\MemoryHandler\CartridgeDomain1Address3Handler.cpp">
+      <Filter>Source Files\N64 System\MemoryHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\MemoryHandler\CartridgeDomain2Address2Handler.cpp">
+      <Filter>Source Files\N64 System\MemoryHandler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -760,6 +769,15 @@
     </ClInclude>
     <ClInclude Include="N64System\SaveType\Sram.h">
       <Filter>Header Files\N64 System\SaveType</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\MemoryHandler\CartridgeDomain1Address1Handler.h">
+      <Filter>Header Files\N64 System\MemoryHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\MemoryHandler\CartridgeDomain1Address3Handler.h">
+      <Filter>Header Files\N64 System\MemoryHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\MemoryHandler\CartridgeDomain2Address2Handler.h">
+      <Filter>Header Files\N64 System\MemoryHandler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

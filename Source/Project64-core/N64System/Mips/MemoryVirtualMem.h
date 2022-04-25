@@ -5,10 +5,12 @@
 #include <Project64-core\N64System\Interpreter\InterpreterOps.h>
 #include <Project64-core\N64System\Mips\PifRam.h>
 #include <Project64-core\N64System\SaveType\FlashRam.h>
-#include <Project64-core\N64System\SaveType\Sram.h>
 #include <Project64-core\N64System\Mips\Dma.h>
 #include <Project64-core\N64System\MemoryHandler\AudioInterfaceHandler.h>
+#include <Project64-core\N64System\MemoryHandler\CartridgeDomain1Address1Handler.h>
+#include <Project64-core\N64System\MemoryHandler\CartridgeDomain1Address3Handler.h>
 #include <Project64-core\N64System\MemoryHandler\CartridgeDomain2Address1Handler.h>
+#include <Project64-core\N64System\MemoryHandler\CartridgeDomain2Address2Handler.h>
 #include <Project64-core\N64System\MemoryHandler\DisplayControlRegHandler.h>
 #include <Project64-core\N64System\MemoryHandler\MIPSInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\PeripheralInterfaceHandler.h>
@@ -51,8 +53,6 @@ class CMipsMemoryVM :
     public CTransVaddr,
     private R4300iOp,
     public CPifRam,
-    private CFlashram,
-    private CSram,
     public CDMA,
     private CGameSettings
 {
@@ -72,8 +72,8 @@ public:
     uint8_t * Imem() const { return m_IMEM; }
     uint8_t * PifRam() { return &m_PifRam[0]; }
 
-    CSram * GetSram();
-    CFlashram * GetFlashram();
+    CSram & GetSram() { return m_CartridgeDomain2Address2Handler.Sram(); }
+    CFlashRam & GetFlashRam() { return m_CartridgeDomain2Address2Handler.FlashRam(); }
 
     bool LB_VAddr(uint32_t VAddr, uint8_t & Value);
     bool LH_VAddr(uint32_t VAddr, uint16_t & Value);
@@ -135,12 +135,6 @@ private:
     bool SH_NonMemory(uint32_t PAddr, uint16_t Value);
     bool SW_NonMemory(uint32_t PAddr, uint32_t Value);
 
-    static void Load32CartridgeDomain1Address1(void);
-    static void Load32CartridgeDomain1Address3(void);
-    static void Load32CartridgeDomain2Address2(void);
-
-    static void Write32CartridgeDomain2Address2(void);
-
 #if defined(__i386__) || defined(_M_IX86)
 
     typedef struct _X86_CONTEXT
@@ -167,7 +161,10 @@ private:
     static uint8_t   * m_Reserve1, *m_Reserve2;
     CRegisters & m_Reg;
     AudioInterfaceHandler m_AudioInterfaceHandler;
+    CartridgeDomain1Address1Handler m_CartridgeDomain1Address1Handler;
+    CartridgeDomain1Address3Handler m_CartridgeDomain1Address3Handler;
     CartridgeDomain2Address1Handler m_CartridgeDomain2Address1Handler;
+    CartridgeDomain2Address2Handler m_CartridgeDomain2Address2Handler;
     DisplayControlRegHandler m_DPCommandRegistersHandler;
     MIPSInterfaceHandler m_MIPSInterfaceHandler;
     PeripheralInterfaceHandler m_PeripheralInterfaceHandler;
@@ -180,9 +177,6 @@ private:
     VideoInterfaceHandler m_VideoInterfaceHandler;
     uint8_t * m_RDRAM, *m_DMEM, *m_IMEM;
     uint32_t m_AllocatedRdramSize;
-    bool m_DDRomMapped;
-    uint8_t * m_DDRom;
-    uint32_t m_DDRomSize;
 
     mutable char m_strLabelName[100];
     size_t * m_TLB_ReadMap;
@@ -190,8 +184,6 @@ private:
     size_t * m_MemoryReadMap;
     size_t * m_MemoryWriteMap;
 
-    static uint32_t m_MemLookupAddress;
-    static MIPS_DWORD m_MemLookupValue;
     static bool m_MemLookupValid;
     static uint32_t RegModValue;
 };

@@ -13,8 +13,6 @@
 
 uint8_t * CMipsMemoryVM::m_Reserve1 = nullptr;
 uint8_t * CMipsMemoryVM::m_Reserve2 = nullptr;
-uint32_t CMipsMemoryVM::m_MemLookupAddress = 0;
-MIPS_DWORD CMipsMemoryVM::m_MemLookupValue;
 bool CMipsMemoryVM::m_MemLookupValid = true;
 uint32_t CMipsMemoryVM::RegModValue;
 
@@ -22,12 +20,12 @@ uint32_t CMipsMemoryVM::RegModValue;
 
 CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
     CPifRam(SavesReadOnly),
-    CFlashram(SavesReadOnly),
-    CSram(SavesReadOnly),
-    CDMA(*this, *this),
+    CDMA(m_CartridgeDomain2Address2Handler),
     m_Reg(System.m_Reg),
     m_AudioInterfaceHandler(System, System.m_Reg),
+    m_CartridgeDomain1Address1Handler(g_DDRom),
     m_CartridgeDomain2Address1Handler(System.m_Reg),
+    m_CartridgeDomain2Address2Handler(System, System.m_Reg, *this, SavesReadOnly),
     m_RDRAMRegistersHandler(System.m_Reg),
     m_DPCommandRegistersHandler(System, System.GetPlugins(), System.m_Reg),
     m_MIPSInterfaceHandler(System.m_Reg),
@@ -44,10 +42,7 @@ CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
     m_TLB_WriteMap(nullptr),
     m_RDRAM(nullptr),
     m_DMEM(nullptr),
-    m_IMEM(nullptr),
-    m_DDRomMapped(false),
-    m_DDRom(nullptr),
-    m_DDRomSize(0)
+    m_IMEM(nullptr)
 {
     g_Settings->RegisterChangeCB(Game_RDRamSize, this, (CSettings::SettingChangedFunc)RdramChanged);
 }
@@ -185,15 +180,6 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
 
     m_DMEM = (uint8_t *)(m_RDRAM + 0x04000000);
     m_IMEM = (uint8_t *)(m_RDRAM + 0x04001000);
-
-    // 64DD IPL
-    if (g_DDRom != nullptr)
-    {
-        m_DDRomMapped = false;
-        m_DDRom = g_DDRom->GetRomAddress();
-        m_DDRomSize = g_DDRom->GetRomSize();
-    }
-
     CPifRam::Reset();
 
     m_MemoryReadMap = new size_t [0x100000];
@@ -278,16 +264,6 @@ void CMipsMemoryVM::FreeMemory()
         m_MemoryWriteMap = nullptr;
     }
     CPifRam::Reset();
-}
-
-CSram* CMipsMemoryVM::GetSram(void)
-{
-    return dynamic_cast<CSram*>(this);
-}
-
-CFlashram* CMipsMemoryVM::GetFlashram()
-{
-    return dynamic_cast<CFlashram*>(this);
 }
 
 bool CMipsMemoryVM::LB_VAddr(uint32_t VAddr, uint8_t& Value)
@@ -529,34 +505,32 @@ bool CMipsMemoryVM::LH_NonMemory(uint32_t PAddr, uint32_t* Value, bool/* SignExt
 
 bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
 {
-    m_MemLookupAddress = PAddr;
     switch (PAddr & 0xFFF00000)
     {
-    case 0x03F00000: m_RDRAMRegistersHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
-    case 0x04000000: m_SPRegistersHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
-    case 0x04100000: m_DPCommandRegistersHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
-    case 0x04300000: m_MIPSInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
-    case 0x04400000: m_VideoInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
-    case 0x04500000: m_AudioInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
-    case 0x04600000: m_PeripheralInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
-    case 0x04700000: m_RDRAMInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
-    case 0x04800000: m_SerialInterfaceHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
-    case 0x05000000: m_CartridgeDomain2Address1Handler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
-    case 0x06000000: Load32CartridgeDomain1Address1(); break;
-    case 0x08000000: Load32CartridgeDomain2Address2(); break;
-    case 0x1FC00000: m_PifRamHandler.Read32(PAddr, m_MemLookupValue.UW[0]); break;
-    case 0x1FF00000: Load32CartridgeDomain1Address3(); break;
+    case 0x03F00000: m_RDRAMRegistersHandler.Read32(PAddr, *Value); break;
+    case 0x04000000: m_SPRegistersHandler.Read32(PAddr, *Value); break;
+    case 0x04100000: m_DPCommandRegistersHandler.Read32(PAddr, *Value); break;
+    case 0x04300000: m_MIPSInterfaceHandler.Read32(PAddr, *Value); break;
+    case 0x04400000: m_VideoInterfaceHandler.Read32(PAddr, *Value); break;
+    case 0x04500000: m_AudioInterfaceHandler.Read32(PAddr, *Value); break;
+    case 0x04600000: m_PeripheralInterfaceHandler.Read32(PAddr, *Value); break;
+    case 0x04700000: m_RDRAMInterfaceHandler.Read32(PAddr, *Value); break;
+    case 0x04800000: m_SerialInterfaceHandler.Read32(PAddr, *Value); break;
+    case 0x05000000: m_CartridgeDomain2Address1Handler.Read32(PAddr, *Value); break;
+    case 0x06000000: m_CartridgeDomain1Address1Handler.Read32(PAddr, *Value); break;
+    case 0x08000000: m_CartridgeDomain2Address2Handler.Read32(PAddr, *Value); break;
+    case 0x1FC00000: m_PifRamHandler.Read32(PAddr, *Value); break;
+    case 0x1FF00000: m_CartridgeDomain1Address3Handler.Read32(PAddr, *Value); break;
     default:
         if (PAddr >= 0x10000000 && PAddr < 0x16000000)
         {
-            m_RomMemoryHandler.Read32(PAddr, m_MemLookupValue.UW[0]);
+            m_RomMemoryHandler.Read32(PAddr, *Value);
         }
         else
         {
-            m_MemLookupValue.UW[0] = ((PAddr & 0xFFFF) << 16) | PAddr & 0xFFFF;
+            *Value = ((PAddr & 0xFFFF) << 16) | (PAddr & 0xFFFF);
         }
     }
-    *Value = m_MemLookupValue.UW[0];
     return true;
 }
 
@@ -614,9 +588,6 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t PAddr, uint16_t Value)
 
 bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
 {
-    m_MemLookupValue.UW[0] = Value;
-    m_MemLookupAddress = PAddr;
-
     switch (PAddr & 0xFFF00000)
     {
     case 0x00000000:
@@ -654,8 +625,10 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
     case 0x04700000: m_RDRAMInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x04800000: m_SerialInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x05000000: m_CartridgeDomain2Address1Handler.Write32(PAddr, Value, 0xFFFFFFFF); break;
-    case 0x08000000: Write32CartridgeDomain2Address2(); break;
+    case 0x06000000: m_CartridgeDomain1Address1Handler.Write32(PAddr, Value, 0xFFFFFFFF); break;
+    case 0x08000000: m_CartridgeDomain2Address2Handler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x1FC00000: m_PifRamHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
+    case 0x1FF00000: m_CartridgeDomain1Address3Handler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     default:
         if (PAddr >= 0x10000000 && PAddr < 0x16000000)
         {
@@ -971,94 +944,5 @@ void CMipsMemoryVM::ChangeMiIntrMask()
     if ((RegModValue & MI_INTR_MASK_SET_DP) != 0)
     {
         g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_DP;
-    }
-}
-
-void CMipsMemoryVM::Load32CartridgeDomain1Address1(void)
-{
-    // 64DD IPL ROM
-    if (g_DDRom != nullptr && (m_MemLookupAddress & 0xFFFFFF) < g_MMU->m_DDRomSize)
-    {
-        m_MemLookupValue.UW[0] = *(uint32_t *)&g_MMU->m_DDRom[(m_MemLookupAddress & 0xFFFFFF)];
-    }
-    else
-    {
-        m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
-        m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
-    }
-}
-
-void CMipsMemoryVM::Load32CartridgeDomain1Address3(void)
-{
-    m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
-    m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
-}
-
-void CMipsMemoryVM::Load32CartridgeDomain2Address2(void)
-{
-    uint32_t offset = (m_MemLookupAddress & 0x1FFFFFFF) - 0x08000000;
-    if (offset > 0x88000)
-    {
-        m_MemLookupValue.UW[0] = ((offset & 0xFFFF) << 16) | (offset & 0xFFFF);
-        return;
-    }
-    if (g_System->m_SaveUsing == SaveChip_Auto)
-    {
-        g_System->m_SaveUsing = SaveChip_FlashRam;
-    }
-    if (g_System->m_SaveUsing == SaveChip_Sram)
-    {
-        // Load SRAM
-        uint8_t tmp[4] = "";
-        g_MMU->DmaFromSram(tmp, offset, 4);
-        m_MemLookupValue.UW[0] = tmp[3] << 24 | tmp[2] << 16 | tmp[1] << 8 | tmp[0];
-    }
-    else if (g_System->m_SaveUsing != SaveChip_FlashRam)
-    {
-        if (HaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-        m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
-        m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
-    }
-    else
-    {
-        m_MemLookupValue.UW[0] = g_MMU->ReadFromFlashStatus(m_MemLookupAddress & 0x1FFFFFFF);
-    }
-}
-
-void CMipsMemoryVM::Write32CartridgeDomain2Address2(void)
-{
-    uint32_t offset = (m_MemLookupAddress & 0x1FFFFFFF) - 0x08000000;
-    if (g_System->m_SaveUsing == SaveChip_Sram && offset < 0x88000)
-    {
-        // Store SRAM
-        uint8_t tmp[4] = "";
-        tmp[0] = 0xFF & (m_MemLookupValue.UW[0]);
-        tmp[1] = 0xFF & (m_MemLookupValue.UW[0] >> 8);
-        tmp[2] = 0xFF & (m_MemLookupValue.UW[0] >> 16);
-        tmp[3] = 0xFF & (m_MemLookupValue.UW[0] >> 24);
-        g_MMU->DmaToSram(tmp, (m_MemLookupAddress & 0x1FFFFFFF) - 0x08000000, 4);
-        return;
-    }
-    /*if ((m_MemLookupAddress & 0x1FFFFFFF) != 0x08010000)
-    {
-    if (HaveDebugger())
-    {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-    }*/
-    if (offset > 0x10000)
-    {
-        return;
-    }
-    if (g_System->m_SaveUsing == SaveChip_Auto)
-    {
-        g_System->m_SaveUsing = SaveChip_FlashRam;
-    }
-    if (g_System->m_SaveUsing == SaveChip_FlashRam)
-    {
-        g_MMU->WriteToFlashCommand(m_MemLookupValue.UW[0]);
     }
 }

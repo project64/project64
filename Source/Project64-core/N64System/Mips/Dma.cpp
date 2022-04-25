@@ -11,9 +11,8 @@
 #include <Project64-core/N64System/N64System.h>
 #include <Project64-core/Debugger.h>
 
-CDMA::CDMA(CFlashram & FlashRam, CSram & Sram) :
-    m_FlashRam(FlashRam),
-    m_Sram(Sram)
+CDMA::CDMA(CartridgeDomain2Address2Handler & Domain2Address2Handler) :
+    m_Domain2Address2Handler(Domain2Address2Handler)
 {
 }
 
@@ -148,32 +147,8 @@ void CDMA::PI_DMA_READ()
 
     if (g_Reg->PI_CART_ADDR_REG >= 0x08000000 && g_Reg->PI_CART_ADDR_REG < 0x08088000)
     {
-        if (g_System->m_SaveUsing == SaveChip_Auto)
+        if (m_Domain2Address2Handler.DMARead())
         {
-            g_System->m_SaveUsing = SaveChip_Sram;
-        }
-        if (g_System->m_SaveUsing == SaveChip_Sram)
-        {
-            m_Sram.DmaToSram(
-                g_MMU->Rdram() + g_Reg->PI_DRAM_ADDR_REG,
-                g_Reg->PI_CART_ADDR_REG - 0x08000000,
-                PI_RD_LEN_REG
-                );
-            g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-            g_Reg->MI_INTR_REG |= MI_INTR_PI;
-            g_Reg->CheckInterrupts();
-            return;
-        }
-        if (g_System->m_SaveUsing == SaveChip_FlashRam)
-        {
-            m_FlashRam.DmaToFlashram(
-                g_MMU->Rdram() + g_Reg->PI_DRAM_ADDR_REG,
-                g_Reg->PI_CART_ADDR_REG - 0x08000000,
-                PI_RD_LEN_REG
-                );
-            g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-            g_Reg->MI_INTR_REG |= MI_INTR_PI;
-            g_Reg->CheckInterrupts();
             return;
         }
     }
@@ -318,33 +293,7 @@ void CDMA::PI_DMA_WRITE()
 
     if (PI_CART_ADDR_REG >= 0x08000000 && PI_CART_ADDR_REG <= 0x08088000)
     {
-        if (g_System->m_SaveUsing == SaveChip_Auto)
-        {
-            g_System->m_SaveUsing = SaveChip_Sram;
-        }
-        if (g_System->m_SaveUsing == SaveChip_Sram)
-        {
-            m_Sram.DmaFromSram(
-                g_MMU->Rdram() + g_Reg->PI_DRAM_ADDR_REG,
-                PI_CART_ADDR_REG - 0x08000000,
-                PI_WR_LEN_REG
-                );
-            g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-            g_Reg->MI_INTR_REG |= MI_INTR_PI;
-            g_Reg->CheckInterrupts();
-            return;
-        }
-        if (g_System->m_SaveUsing == SaveChip_FlashRam)
-        {
-            m_FlashRam.DmaFromFlashram(
-                g_MMU->Rdram() + g_Reg->PI_DRAM_ADDR_REG,
-                PI_CART_ADDR_REG - 0x08000000,
-                PI_WR_LEN_REG
-                );
-            g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-            g_Reg->MI_INTR_REG |= MI_INTR_PI;
-            g_Reg->CheckInterrupts();
-        }
+        m_Domain2Address2Handler.DMAWrite();
         return;
     }
 

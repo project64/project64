@@ -1,7 +1,7 @@
 #pragma once
 #include <Project64-core/Settings/DebugSettings.h>
 
-class CFlashram :
+class CFlashRam :
     private CDebugSettings
 {
     enum Modes
@@ -14,25 +14,25 @@ class CFlashram :
     };
 
 public:
-    CFlashram(bool ReadOnly);
-    ~CFlashram();
+    CFlashRam(bool ReadOnly);
+    ~CFlashRam();
 
-    void  DmaFromFlashram(uint8_t * dest, int32_t StartOffset, int32_t len);
-    void  DmaToFlashram(uint8_t * Source, int32_t StartOffset, int32_t len);
+    void DmaFromFlashram(uint8_t * dest, int32_t StartOffset, int32_t len);
+    void DmaToFlashram(uint8_t * Source, int32_t StartOffset, int32_t len);
     uint32_t ReadFromFlashStatus(uint32_t PAddr);
-    void     WriteToFlashCommand(uint32_t Value);
+    void WriteToFlashCommand(uint32_t Value);
 
 private:
-    CFlashram(void);
-    CFlashram(const CFlashram&);
-    CFlashram& operator=(const CFlashram&);
+    CFlashRam(void);
+    CFlashRam(const CFlashRam&);
+    CFlashRam& operator=(const CFlashRam&);
 
-    bool  LoadFlashram();
+    bool LoadFlashram();
 
     uint8_t * m_FlashRamPointer;
-    Modes     m_FlashFlag;
-    uint64_t  m_FlashStatus;
-    uint32_t  m_FlashRAM_Offset;
-    bool      m_ReadOnly;
-    CFile     m_File;
+    Modes m_FlashFlag;
+    uint64_t m_FlashStatus;
+    uint32_t m_FlashRAM_Offset;
+    bool m_ReadOnly;
+    CFile m_File;
 };
