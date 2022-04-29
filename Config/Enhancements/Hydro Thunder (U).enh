@@ -1,0 +1,30 @@
+[C8DC65EB-3D8C8904-C:45]
+Name=Hydro Thunder (U)
+
+$Multiplayer Enhancement
+Author=theboy181
+WIP=1
+Note= Boats added back into the game while playing 3-4 Player modes, water relections, boost animations and transparencies added. "Water wake, and hazzards" memory addresses still needed.
+A11DC7A0 2402
+A11DC7A2 0000
+A121E7C0 2403
+A121E7C2 0002
+D02BF5EB 0000
+802BF5EB 0002
+D02BF7EF 0000
+802BF7EF 0002
+D02BF9F3 0000
+802BF9F3 0002
+D02BFBF7 0000
+802BFBF7 0002
+81217F50 2402
+81217F52 0000
+8121E930 2402
+8121E932 0001
+811F121C 2402
+811F121E 0001
+
+$Widescreen Hack
+Author=theboy181
+8120B20E 3FE3
+8120B212 8E39

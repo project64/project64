@@ -1,0 +1,19 @@
+[036897CE-E0D4FA54-C:45]
+Name=Shadowgate 64 - Trials Of The Four Towers (U) (M2)
+
+$Widescreen Hack
+Author=theboy181
+Note=Sets in game ratio to 16:9.
+8103B714 3C08
+8103B716 3FAA
+8103B718 3508
+8103B71A AAAB
+8103B71C 4488
+8103B71E 6000
+
+$60 FPS
+Author=theboy181
+WIP=1
+Overclock=2
+Note=Camera is correct speed player animations are too fast..
+8102C84A 0001

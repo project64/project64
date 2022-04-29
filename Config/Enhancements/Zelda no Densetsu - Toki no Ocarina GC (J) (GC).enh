@@ -2,13 +2,13 @@
 Name=Zelda no Densetsu - Toki no Ocarina GC (J) (GC)
 
 $End Credits Fix
-OnByDefault=1
+On By Default=1
 D109A834 0320
 8109A834 0000
 D109A836 F809
 8109A836 0000
 
 $Subscreen Delay Fix
-PluginList=Glide64 For PJ64,Jabo's Direct3D8
-OnByDefault=1
+Plugin List=Project64 video,Jabo's Direct3D8
+On By Default=1
 801DB78B 0002

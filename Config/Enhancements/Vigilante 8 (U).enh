@@ -1,0 +1,21 @@
+[EA71056A-E4214847-C:45]
+Name=Vigilante 8 (U)
+
+$Perf Boost (30 FPS)
+Author=theboy181
+Note=Makes game playable on AIO's system: Makes LLE playable
+8112B8BC 0000
+8112B8BE 0000
+
+$Perf Boost (60 FPS)
+Author=theboy181
+Note=This hack improves performance in 60fps modes.
+8112B8BC 0000
+8112B8BE 0000
+8112B8EE 0001
+
+$LOD Hack
+Author=theboy181
+Note=Makes all objects highest level of detail
+811387F4 1000
+811387F6 002E

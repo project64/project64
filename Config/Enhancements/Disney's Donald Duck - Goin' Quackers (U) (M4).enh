@@ -1,7 +1,9 @@
 [C16C421B-A21580F7-C:45]
 Name=Disney's Donald Duck - Goin' Quackers (U) (M4)
 
-$Widescreen
+$Widescreen Hack
+Author=theboy181
+WIP=1
 81094100 2402
 81094102 0190
 81094124 2402
@@ -10,3 +12,9 @@ $Widescreen
 8107EFB6 0008
 8107EFB8 2402
 8107EFBA 0001
+
+$Widescreen Object Culling Fix
+Author=theboy181
+WIP=1
+Note=Need to find culling fix for background geometry in the scrolling levels.
+81094074 460C

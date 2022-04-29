@@ -1,0 +1,12 @@
+[1B598BF1-ECA29B45-C:45]
+Name=AeroFighters Assault (U)
+
+$Extended Draw Distance Hack
+Author=theboy181
+Note=Draw distance improved, minor popups.
+81079F7C 460C
+81079F7E A000
+81079F80 0000
+81079F82 0000
+81079F84 0000
+81079F86 0000

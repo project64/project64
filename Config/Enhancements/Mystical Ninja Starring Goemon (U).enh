@@ -1,6 +1,13 @@
 [FCBCCB21-72903C6B-C:45]
-Good Name=Mystical Ninja Starring Goemon (U)
+Name=Mystical Ninja Starring Goemon (U)
 
 $Widescreen
+Author=gamemasterplc
 Note=Some Textboxes Too Small
 81017F2A 3FE3
+
+$60 FPS
+Author=theboy181
+WIP=1
+Note=needs pacing code
+800C7A8A 0000

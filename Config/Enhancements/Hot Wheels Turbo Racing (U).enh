@@ -1,0 +1,61 @@
+[C7C98F8E-42145DDE-C:45]
+Name=Hot Wheels Turbo Racing (U)
+
+$Extended Draw Distance Hack
+Author=theboy181
+On By Default=1
+Note=Draw distance improved, no more popups.
+810F2118 4120
+
+$Widescreen Hack
+Author=theboy181
+WIP=1
+810AECF2 3FE3
+810AECFA 8E39
+810AED02 4063
+810AED06 8E14
+8107135A 4016
+8107135E CBE4
+810B32BA 3FE3
+810B32C2 8E39
+
+$WS Menu Car Placment Work Around
+Author=theboy181
+WIP=1
+810B3CB6 3FFF
+810B3CEE 3FAA
+810B3C2A 3FAA
+
+$WS Menu Arrows Work Around
+Author=theboy181
+WIP=1
+810B9914 0000
+810B9916 0000
+810BB3CC 0000
+810BB3CE 0000
+
+$WS Culling Fix
+Author=theboy181
+WIP=1
+81070E8A 4000
+
+$Car Level Of Detail Hack
+Author=theboy181
+800745D7 0000
+800745F3 0000
+8007460F 0000
+8107461C 2402
+8107461E 0000
+81074638 0000
+8107463A 0000
+
+$Draw Distance Hack
+Author=theboy181
+WIP=1
+Note=Several menus need work around hacks.
+810AEB8E 477A
+
+$60 FPS
+Counter Factor=1
+Overclock=2
+On By Default=1
