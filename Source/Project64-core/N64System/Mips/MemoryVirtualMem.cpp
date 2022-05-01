@@ -21,6 +21,7 @@ uint32_t CMipsMemoryVM::RegModValue;
 CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
     CPifRam(SavesReadOnly),
     CDMA(m_CartridgeDomain2Address2Handler),
+    m_System(System),
     m_Reg(System.m_Reg),
     m_AudioInterfaceHandler(System, System.m_Reg),
     m_CartridgeDomain1Address1Handler(g_DDRom),
@@ -109,7 +110,6 @@ void CMipsMemoryVM::Reset(bool /*EraseMemory*/)
                 }
                 m_TLB_ReadMap[Address >> 12] = ((size_t)m_RDRAM + TargetAddress) - Address;
                 m_TLB_WriteMap[Address >> 12] = ((size_t)m_RDRAM + TargetAddress) - Address;
-
             }
         }
     }
@@ -441,19 +441,8 @@ bool CMipsMemoryVM::ValidVaddr(uint32_t VAddr) const
     return m_TLB_ReadMap[VAddr >> 12] != 0;
 }
 
-bool CMipsMemoryVM::VAddrToRealAddr(uint32_t VAddr, void * &RealAddress) const
+bool CMipsMemoryVM::VAddrToPAddr(uint32_t VAddr, uint32_t &PAddr) const
 {
-    if (m_TLB_ReadMap[VAddr >> 12] == 0)
-    {
-        return false;
-    }
-    RealAddress = (uint8_t *)(m_TLB_ReadMap[VAddr >> 12] + VAddr);
-    return true;
-}
-
-bool CMipsMemoryVM::TranslateVaddr(uint32_t VAddr, uint32_t &PAddr) const
-{
-    // Change the virtual address to a physical address
     if (m_TLB_ReadMap[VAddr >> 12] == 0)
     {
         return false;
@@ -652,11 +641,11 @@ void CMipsMemoryVM::ProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr)
 
     // Get physical addresses passed
     uint32_t StartPAddr, EndPAddr;
-    if (!TranslateVaddr(StartVaddr, StartPAddr))
+    if (!VAddrToPAddr(StartVaddr, StartPAddr))
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-    if (!TranslateVaddr(EndVaddr, EndPAddr))
+    if (!VAddrToPAddr(EndVaddr, EndPAddr))
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
@@ -682,11 +671,11 @@ void CMipsMemoryVM::UnProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr)
 
     // Get physical addresses passed
     uint32_t StartPAddr, EndPAddr;
-    if (!TranslateVaddr(StartVaddr, StartPAddr))
+    if (!VAddrToPAddr(StartVaddr, StartPAddr))
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-    if (!TranslateVaddr(EndVaddr, EndPAddr))
+    if (!VAddrToPAddr(EndVaddr, EndPAddr))
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }

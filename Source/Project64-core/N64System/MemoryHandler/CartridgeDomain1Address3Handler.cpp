@@ -11,7 +11,7 @@ bool CartridgeDomain1Address3Handler::Read32(uint32_t Address, uint32_t & Value)
     return true;
 }
 
-bool CartridgeDomain1Address3Handler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask)
+bool CartridgeDomain1Address3Handler::Write32(uint32_t /*Address*/, uint32_t /*Value*/, uint32_t /*Mask*/)
 {
     return true;
 }

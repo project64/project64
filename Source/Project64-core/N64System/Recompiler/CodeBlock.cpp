@@ -5,7 +5,6 @@
 #include <Project64-core/N64System/Recompiler/x86/x86RecompilerOps.h>
 #include <Project64-core/N64System/Recompiler/Arm/ArmRecompilerOps.h>
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/Mips/TranslateVaddr.h>
 #include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/Mips/OpcodeName.h>
 
@@ -16,7 +15,8 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
 extern "C" void __clear_cache_android(uint8_t* begin, uint8_t *end);
 #endif
 
-CCodeBlock::CCodeBlock(uint32_t VAddrEnter, uint8_t * CompiledLocation) :
+CCodeBlock::CCodeBlock(CMipsMemoryVM & MMU, uint32_t VAddrEnter, uint8_t * CompiledLocation) :
+    m_MMU(MMU),
     m_VAddrEnter(VAddrEnter),
     m_VAddrFirst(VAddrEnter),
     m_VAddrLast(VAddrEnter),
@@ -33,7 +33,7 @@ CCodeBlock::CCodeBlock(uint32_t VAddrEnter, uint8_t * CompiledLocation) :
     }
 #endif
 #if defined(__i386__) || defined(_M_IX86)
-    m_RecompilerOps = new CX86RecompilerOps;
+    m_RecompilerOps = new CX86RecompilerOps(MMU);
 #elif defined(__arm__) || defined(_M_ARM)
     m_RecompilerOps = new CArmRecompilerOps;
 #endif
@@ -65,8 +65,16 @@ CCodeBlock::CCodeBlock(uint32_t VAddrEnter, uint8_t * CompiledLocation) :
     m_Sections.push_back(m_EnterSection);
     m_SectionMap.insert(SectionMap::value_type(VAddrEnter, m_EnterSection));
 
-    if (g_TransVaddr->VAddrToRealAddr(VAddrEnter, *(reinterpret_cast<void **>(&m_MemLocation[0]))))
+    uint32_t PAddr;
+    if (!MMU.VAddrToPAddr(VAddrEnter, PAddr))
     {
+        memset(m_MemLocation, 0, sizeof(m_MemLocation));
+        memset(m_MemContents, 0, sizeof(m_MemContents));
+        return;
+    }
+    if (PAddr + 16 < MMU.RdramSize())
+    {
+        m_MemLocation[0] = (uint64_t *)(MMU.Rdram() + PAddr);
         m_MemLocation[1] = m_MemLocation[0] + 1;
         m_MemContents[0] = *m_MemLocation[0];
         m_MemContents[1] = *m_MemLocation[1];
@@ -75,8 +83,8 @@ CCodeBlock::CCodeBlock(uint32_t VAddrEnter, uint8_t * CompiledLocation) :
     {
         memset(m_MemLocation, 0, sizeof(m_MemLocation));
         memset(m_MemContents, 0, sizeof(m_MemContents));
+        return;
     }
-
     AnalyseBlock();
 }
 
@@ -767,9 +775,8 @@ bool CCodeBlock::Compile()
     m_CompiledLocationEnd = *g_RecompPos;
 
     uint32_t PAddr;
-    g_TransVaddr->TranslateVaddr(VAddrFirst(), PAddr);
-    MD5(g_MMU->Rdram() + PAddr, (VAddrLast() - VAddrFirst()) + 4).get_digest(m_Hash);
-
+    m_MMU.VAddrToPAddr(VAddrFirst(), PAddr);
+    MD5(g_MMU->Rdram() + PAddr, (VAddrLast() - VAddrFirst()) + 4).get_digest(m_Hash);    
 #if defined(ANDROID) && (defined(__arm__) || defined(_M_ARM))
 	__clear_cache((uint8_t *)((uint32_t)m_CompiledLocation & ~1), m_CompiledLocationEnd);
 #endif

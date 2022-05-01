@@ -93,7 +93,7 @@ duk_ret_t ScriptAPI::js_mem_getblock(duk_context *ctx)
 
     if (addr < 0x80000000 || addr >= 0xC0000000)
     {
-        if (!g_MMU || !g_MMU->TranslateVaddr(addr, paddr))
+        if (!g_MMU || !g_MMU->VAddrToPAddr(addr, paddr))
         {
             return ThrowMemoryError(ctx, addr);
         }

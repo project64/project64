@@ -147,10 +147,10 @@ void CRecompiler::RecompilerMain_Lookup()
 
     while (!m_EndEmulation)
     {
-        if (!m_MMU.TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
+        if (!m_MMU.VAddrToPAddr(PROGRAM_COUNTER, PhysicalAddr))
         {
             m_Registers.DoTLBReadMiss(false, PROGRAM_COUNTER);
-            if (!m_MMU.TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr))
+            if (!m_MMU.VAddrToPAddr(PROGRAM_COUNTER, PhysicalAddr))
             {
                 g_Notify->DisplayError(stdstr_f("Failed to translate PC to a PAddr: %X\n\nEmulation stopped", PROGRAM_COUNTER).c_str());
                 m_EndEmulation = true;
@@ -180,7 +180,7 @@ void CRecompiler::RecompilerMain_Lookup()
         {
             uint32_t opsExecuted = 0;
 
-            while (m_MMU.TranslateVaddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
+            while (m_MMU.VAddrToPAddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
             {
                 CInterpreterCPU::ExecuteOps(g_System->CountPerOp());
                 opsExecuted += g_System->CountPerOp();
@@ -205,10 +205,10 @@ void CRecompiler::RecompilerMain_Lookup_validate()
 
     while (!Done)
     {
-        if (!m_MMU.TranslateVaddr(PC, PhysicalAddr))
+        if (!m_MMU.VAddrToPAddr(PC, PhysicalAddr))
         {
             m_Registers.DoTLBReadMiss(false, PC);
-            if (!m_MMU.TranslateVaddr(PC, PhysicalAddr))
+            if (!m_MMU.VAddrToPAddr(PC, PhysicalAddr))
             {
                 g_Notify->DisplayError(stdstr_f("Failed to translate PC to a PAddr: %X\n\nEmulation stopped", PC).c_str());
                 Done = true;
@@ -292,7 +292,7 @@ void CRecompiler::RecompilerMain_Lookup_validate()
         {
             uint32_t opsExecuted = 0;
 
-            while (m_MMU.TranslateVaddr(PC, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
+            while (m_MMU.VAddrToPAddr(PC, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
             {
                 CInterpreterCPU::ExecuteOps(g_System->CountPerOp());
                 opsExecuted += g_System->CountPerOp();
@@ -347,7 +347,7 @@ CCompiledFunc * CRecompiler::CompileCode()
     WriteTrace(TraceRecompiler, TraceDebug, "Start (PC: %X)", PROGRAM_COUNTER);
 
     uint32_t pAddr = 0;
-    if (!m_MMU.TranslateVaddr(PROGRAM_COUNTER, pAddr))
+    if (!m_MMU.VAddrToPAddr(PROGRAM_COUNTER, pAddr))
     {
         WriteTrace(TraceRecompiler, TraceError, "Failed to translate %X", PROGRAM_COUNTER);
         return nullptr;
@@ -360,7 +360,7 @@ CCompiledFunc * CRecompiler::CompileCode()
         for (CCompiledFunc * Func = iter->second; Func != nullptr; Func = Func->Next())
         {
             uint32_t PAddr;
-            if (m_MMU.TranslateVaddr(Func->MinPC(), PAddr))
+            if (m_MMU.VAddrToPAddr(Func->MinPC(), PAddr))
             {
                 MD5Digest Hash;
                 MD5(m_MMU.Rdram() + PAddr, (Func->MaxPC() - Func->MinPC()) + 4).get_digest(Hash);
@@ -376,7 +376,7 @@ CCompiledFunc * CRecompiler::CompileCode()
     CheckRecompMem();
     WriteTrace(TraceRecompiler, TraceDebug, "Compile Block-Start: Program Counter: %X pAddr: %X", PROGRAM_COUNTER, pAddr);
 
-    CCodeBlock CodeBlock(PROGRAM_COUNTER, *g_RecompPos);
+    CCodeBlock CodeBlock(m_MMU, PROGRAM_COUNTER, *g_RecompPos);
     if (!CodeBlock.Compile())
     {
         return nullptr;
@@ -500,7 +500,7 @@ void CRecompiler::ClearRecompCode_Virt(uint32_t Address, int length, REMOVE_REAS
     case FuncFind_PhysicalLookup:
         {
             uint32_t pAddr = 0;
-            if (m_MMU.TranslateVaddr(Address, pAddr))
+            if (m_MMU.VAddrToPAddr(Address, pAddr))
             {
                 ClearRecompCode_Phys(pAddr, length, Reason);
             }
@@ -523,7 +523,7 @@ void CRecompiler::ResetMemoryStackPos()
     }
 
     uint32_t pAddr = 0;
-    if (m_MMU.TranslateVaddr(m_Registers.m_GPR[29].UW[0], pAddr))
+    if (m_MMU.VAddrToPAddr(m_Registers.m_GPR[29].UW[0], pAddr))
     {
         m_MemoryStack = (uint32_t)(m_MMU.Rdram() + pAddr);
     }

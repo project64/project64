@@ -272,6 +272,7 @@ LRESULT CEnhancementUI::OnPopupDelete(WORD wNotifyCode, WORD wID, HWND hWndCtl, 
         break;
     }
     RefreshList();
+    return 0;
 }
 
 LRESULT CEnhancementUI::OnEnhancementListRClicked(NMHDR* pNMHDR)

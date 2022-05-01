@@ -989,7 +989,6 @@ bool CN64System::SetActiveSystem(bool bActive)
         g_Reg = &m_Reg;
         g_Mempak = &m_Mempak;
         g_SystemTimer = &m_SystemTimer;
-        g_TransVaddr = &m_MMU_VM;
         g_SystemEvents = this;
         g_NextTimer = &m_NextTimer;
         g_Plugins = m_Plugins;
@@ -1010,7 +1009,6 @@ bool CN64System::SetActiveSystem(bool bActive)
             g_TLB = nullptr;
             g_Reg = nullptr;
             g_SystemTimer = nullptr;
-            g_TransVaddr = nullptr;
             g_SystemEvents = nullptr;
             g_NextTimer = nullptr;
             g_Plugins = m_Plugins;

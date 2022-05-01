@@ -33,9 +33,6 @@ extern CN64Disk * g_Disk;     // 64DD disk
 class CSystemTimer;
 extern CSystemTimer * g_SystemTimer;
 
-__interface CTransVaddr;
-extern CTransVaddr * g_TransVaddr;
-
 class CSystemEvents;
 extern CSystemEvents * g_SystemEvents;
 

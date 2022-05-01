@@ -964,11 +964,6 @@ void R4300iOp32::LW()
         return;
     }
 
-    if (GenerateLog())
-    {
-        Log_LW((*_PROGRAM_COUNTER), Address);
-    }
-
     if (!g_MMU->LW_VAddr(Address, _GPR[m_Opcode.rt].UW[0]))
     {
         if (bShowTLBMisses())

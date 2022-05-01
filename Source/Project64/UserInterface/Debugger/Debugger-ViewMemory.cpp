@@ -773,7 +773,7 @@ LRESULT CDebugMemoryView::OnHxGetByteInfo(LPNMHDR lpNMHDR)
         newByte->bkColor = BKCOLOR_DEFAULT;
         newByte->color = COLOR_DEFAULT;
 
-        if (m_bVirtualMemory && (g_MMU == nullptr || !g_MMU->TranslateVaddr(address, paddress)))
+        if (m_bVirtualMemory && (g_MMU == nullptr || !g_MMU->VAddrToPAddr(address, paddress)))
         {
             newByte->bValid = false;
             continue;

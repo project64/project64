@@ -181,6 +181,15 @@ static void x86TestWriteBreakpoint64()
     }
 }
 
+CX86RecompilerOps::CX86RecompilerOps(CMipsMemoryVM & MMU) :
+    m_MMU(MMU)
+{
+}
+
+CX86RecompilerOps::~CX86RecompilerOps()
+{
+}
+
 void CX86RecompilerOps::PreCompileOpcode(void)
 {
     if (m_PipelineStage != PIPELINE_STAGE_DELAY_SLOT_DONE)
@@ -2606,7 +2615,7 @@ void CX86RecompilerOps::LUI()
         x86Reg Reg = Map_MemoryStack(x86_Any, true, false);
         uint32_t Address;
 
-        g_TransVaddr->TranslateVaddr(((int16_t)m_Opcode.offset << 16), Address);
+        m_MMU.VAddrToPAddr(((int16_t)m_Opcode.offset << 16), Address);
         if (Reg < 0)
         {
             MoveConstToVariable((uint32_t)(Address + g_MMU->Rdram()), &(g_Recompiler->MemoryStackPos()), "MemoryStack");
@@ -2766,7 +2775,7 @@ void CX86RecompilerOps::LB_KnownAddress(x86Reg Reg, uint32_t VAddr, bool SignExt
         return;
     }
 
-    if (!g_TransVaddr->TranslateVaddr(VAddr, PAddr))
+    if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
         MoveConstToX86reg(0, Reg);
         CPU_Message("%s\nFailed to translate address %08X", __FUNCTION__, VAddr);
@@ -2839,7 +2848,7 @@ void CX86RecompilerOps::LH_KnownAddress(x86Reg Reg, uint32_t VAddr, bool SignExt
         return;
     }
 
-    if (!g_TransVaddr->TranslateVaddr(VAddr, PAddr))
+    if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
         MoveConstToX86reg(0, Reg);
         CPU_Message("%s\nFailed to translate address %08X", __FUNCTION__, VAddr);
@@ -3205,7 +3214,7 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
     }
     else
     {
-        if (!g_TransVaddr->TranslateVaddr(VAddr, PAddr))
+        if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -10387,7 +10396,7 @@ void CX86RecompilerOps::SB_Const(uint8_t Value, uint32_t VAddr)
         return;
     }
 
-    if (!g_TransVaddr->TranslateVaddr(VAddr, PAddr))
+    if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
         CPU_Message("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
         if (ShowUnhandledMemory()) { g_Notify->DisplayError(stdstr_f("%s, \nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str()); }
@@ -10444,7 +10453,7 @@ void CX86RecompilerOps::SB_Register(x86Reg Reg, uint32_t VAddr)
         return;
     }
 
-    if (!g_TransVaddr->TranslateVaddr(VAddr, PAddr))
+    if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
         CPU_Message("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
         if (ShowUnhandledMemory())
@@ -10502,7 +10511,7 @@ void CX86RecompilerOps::SH_Const(uint16_t Value, uint32_t VAddr)
         return;
     }
 
-    if (!g_TransVaddr->TranslateVaddr(VAddr, PAddr))
+    if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
         CPU_Message("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
         if (ShowUnhandledMemory())
@@ -10562,7 +10571,7 @@ void CX86RecompilerOps::SH_Register(x86Reg Reg, uint32_t VAddr)
         return;
     }
 
-    if (!g_TransVaddr->TranslateVaddr(VAddr, PAddr))
+    if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
         CPU_Message("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
         if (ShowUnhandledMemory())
@@ -10621,7 +10630,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         return;
     }
 
-    if (!g_TransVaddr->TranslateVaddr(VAddr, PAddr))
+    if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
         CPU_Message("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
         if (ShowUnhandledMemory())
@@ -11201,7 +11210,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
     char VarName[100];
     uint32_t PAddr;
 
-    if (!g_TransVaddr->TranslateVaddr(VAddr, PAddr))
+    if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
         CPU_Message("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
         if (ShowUnhandledMemory())

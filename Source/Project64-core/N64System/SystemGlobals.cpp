@@ -14,7 +14,6 @@ CN64Rom * g_Rom = nullptr;      // The current ROM that this system is executing
 CN64Rom * g_DDRom = nullptr;    // 64DD IPL ROM
 CN64Disk * g_Disk = nullptr;     // 64DD disk
 CSystemTimer  * g_SystemTimer = nullptr;
-CTransVaddr * g_TransVaddr = nullptr;
 CSystemEvents * g_SystemEvents = nullptr;
 uint32_t * g_TLBLoadAddress = nullptr;
 uint32_t * g_TLBStoreAddress = nullptr;

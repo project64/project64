@@ -1133,10 +1133,6 @@ void R4300iOp::LW()
     {
         return;
     }
-    if (GenerateLog())
-    {
-        Log_LW((*_PROGRAM_COUNTER), Address);
-    }
 
     if (!g_MMU->LW_VAddr(Address, _GPR[m_Opcode.rt].UW[0]))
     {
@@ -1329,10 +1325,6 @@ void R4300iOp::SW()
     if (HaveWriteBP() && g_Debugger->WriteBP32(Address) && MemoryBreakpoint())
     {
         return;
-    }
-    if (GenerateLog())
-    {
-        Log_SW((*_PROGRAM_COUNTER), Address, _GPR[m_Opcode.rt].UW[0]);
     }
     if (!g_MMU->SW_VAddr(Address, _GPR[m_Opcode.rt].UW[0]))
     {
@@ -1536,7 +1528,6 @@ void R4300iOp::SC()
     {
         return;
     }
-    Log_SW((*_PROGRAM_COUNTER), Address, _GPR[m_Opcode.rt].UW[0]);
     if ((*_LLBit) == 1)
     {
         if (!g_MMU->SW_VAddr(Address, _GPR[m_Opcode.rt].UW[0]))

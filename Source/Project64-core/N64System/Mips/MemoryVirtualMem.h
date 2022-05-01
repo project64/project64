@@ -1,6 +1,5 @@
 #pragma once
 #include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
-#include "TranslateVaddr.h"
 #include <Project64-core\N64System\Recompiler\RecompilerOps.h>
 #include <Project64-core\N64System\Interpreter\InterpreterOps.h>
 #include <Project64-core\N64System\Mips\PifRam.h>
@@ -50,7 +49,6 @@ class CArmRecompilerOps;
 #endif
 
 class CMipsMemoryVM :
-    public CTransVaddr,
     private R4300iOp,
     public CPifRam,
     public CDMA,
@@ -100,10 +98,8 @@ public:
     void TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly);
     void TLB_Unmaped(uint32_t Vaddr, uint32_t Len);
 
-    // CTransVaddr interface
-    bool TranslateVaddr(uint32_t VAddr, uint32_t &PAddr) const;
     bool ValidVaddr(uint32_t VAddr) const;
-    bool VAddrToRealAddr(uint32_t VAddr, void * &RealAddress) const;
+    bool VAddrToPAddr(uint32_t VAddr, uint32_t & PAddr) const;
 
     // Labels
     const char * LabelName(uint32_t Address) const;
@@ -159,6 +155,7 @@ private:
     void FreeMemory();
 
     static uint8_t   * m_Reserve1, *m_Reserve2;
+    CN64System & m_System;
     CRegisters & m_Reg;
     AudioInterfaceHandler m_AudioInterfaceHandler;
     CartridgeDomain1Address1Handler m_CartridgeDomain1Address1Handler;

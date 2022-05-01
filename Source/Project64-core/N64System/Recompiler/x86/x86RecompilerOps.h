@@ -25,6 +25,9 @@ class CX86RecompilerOps :
     private CGameSettings
 {
 public:
+    CX86RecompilerOps(CMipsMemoryVM & MMU);
+    ~CX86RecompilerOps();
+
     // Trap functions
     void Compile_TrapCompare(TRAP_COMPARE CompareType);
 
@@ -351,6 +354,9 @@ public:
     static uint32_t CompilePC() { return m_CompilePC; }
 
 private:
+    CX86RecompilerOps(const CX86RecompilerOps&);
+    CX86RecompilerOps& operator=(const CX86RecompilerOps&);
+
     void SB_Const(uint8_t Value, uint32_t Addr);
     void SB_Register(CX86Ops::x86Reg Reg, uint32_t Addr);
     void SH_Const(uint16_t Value, uint32_t Addr);
@@ -367,6 +373,7 @@ private:
     void ResetMemoryStack();
 
     EXIT_LIST m_ExitInfo;
+    CMipsMemoryVM & m_MMU;
     static PIPELINE_STAGE m_PipelineStage;
     static uint32_t m_CompilePC;
     static OPCODE m_Opcode;
