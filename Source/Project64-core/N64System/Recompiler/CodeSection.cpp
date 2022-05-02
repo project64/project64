@@ -64,7 +64,7 @@ static bool DelaySlotEffectsJump(uint32_t JumpPC)
 {
     OPCODE Command;
 
-    if (!g_MMU->LW_VAddr(JumpPC, Command.Hex))
+    if (!g_MMU->MemoryValue32(JumpPC, Command.Hex))
     {
         return true;
     }
@@ -112,7 +112,7 @@ static bool DelaySlotEffectsJump(uint32_t JumpPC)
                     bool EffectDelaySlot = false;
                     OPCODE NewCommand;
 
-                    if (!g_MMU->LW_VAddr(JumpPC + 4, NewCommand.Hex))
+                    if (!g_MMU->MemoryValue32(JumpPC + 4, NewCommand.Hex))
                     {
                         return true;
                     }

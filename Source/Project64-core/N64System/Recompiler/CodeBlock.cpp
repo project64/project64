@@ -445,7 +445,7 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
     PermLoop = false;
 
     OPCODE Command;
-    if (!g_MMU->LW_VAddr(PC, Command.Hex))
+    if (!g_MMU->MemoryValue32(PC, Command.Hex))
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return false;

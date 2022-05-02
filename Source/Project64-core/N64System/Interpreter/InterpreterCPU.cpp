@@ -22,7 +22,7 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2)
 {
     OPCODE Command;
 
-    if (!g_MMU->LW_VAddr(PC + 4, Command.Hex))
+    if (!g_MMU->MemoryValue32(PC + 4, Command.Hex))
     {
         //g_Notify->DisplayError("Failed to load word 2");
         //ExitThread(0);
@@ -273,7 +273,7 @@ void CInterpreterCPU::ExecuteCPU()
     {
         while (!Done)
         {
-            if (!g_MMU->LW_VAddr(PROGRAM_COUNTER, Opcode.Hex))
+            if (!g_MMU->MemoryValue32(PROGRAM_COUNTER, Opcode.Hex))
             {
                 g_Reg->DoTLBReadMiss(PipelineStage == PIPELINE_STAGE_JUMP, PROGRAM_COUNTER);
                 PipelineStage = PIPELINE_STAGE_NORMAL;
@@ -390,7 +390,7 @@ void CInterpreterCPU::ExecuteOps(int32_t Cycles)
                 return;
             }
 
-            if (g_MMU->LW_VAddr(PROGRAM_COUNTER, Opcode.Hex))
+            if (g_MMU->MemoryValue32(PROGRAM_COUNTER, Opcode.Hex))
             {
                 /*if (PROGRAM_COUNTER > 0x80000300 && PROGRAM_COUNTER< 0x80380000)
                 {
@@ -411,7 +411,7 @@ void CInterpreterCPU::ExecuteOps(int32_t Cycles)
                 *g_NextTimer -= CountPerOp;
 
                 /*static uint32_t TestAddress = 0x80077B0C, TestValue = 0, CurrentValue = 0;
-                if (g_MMU->LW_VAddr(TestAddress, TestValue))
+                if (g_MMU->MemoryValue32(TestAddress, TestValue))
                 {
                 if (TestValue != CurrentValue)
                 {

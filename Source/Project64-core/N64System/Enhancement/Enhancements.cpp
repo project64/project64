@@ -212,9 +212,9 @@ void CEnhancements::ResetCodes(CMipsMemoryVM * MMU)
         for (ORIGINAL_VALUES8::iterator itr = m_OriginalValues8.begin(); itr != m_OriginalValues8.end(); itr++)
         {
             uint8_t CurrentValue;
-            if (MMU->LB_VAddr(itr->first, CurrentValue) && itr->second.Changed == CurrentValue)
+            if (MMU->MemoryValue8(itr->first, CurrentValue) && itr->second.Changed == CurrentValue)
             {
-                MMU->SB_VAddr(itr->first, itr->second.Original);
+                MMU->UpdateMemoryValue8(itr->first, itr->second.Original);
             }
         }
     }
@@ -225,9 +225,9 @@ void CEnhancements::ResetCodes(CMipsMemoryVM * MMU)
         for (ORIGINAL_VALUES16::iterator itr = m_OriginalValues16.begin(); itr != m_OriginalValues16.end(); itr++)
         {
             uint16_t CurrentValue;
-            if (MMU->LH_VAddr(itr->first, CurrentValue) && itr->second.Changed == CurrentValue)
+            if (MMU->MemoryValue16(itr->first, CurrentValue) && itr->second.Changed == CurrentValue)
             {
-                MMU->SH_VAddr(itr->first, itr->second.Original);
+                MMU->UpdateMemoryValue16(itr->first, itr->second.Original);
             }
         }
     }
@@ -468,28 +468,28 @@ void CEnhancements::ApplyGameSharkCodes(CMipsMemoryVM & MMU, CODES & CodeEntry, 
         ModifyMemory16(MMU, 0xA0000000 | (Code.Command() & 0xFFFFFF), Code.Value(), Code.HasDisableValue(), Code.DisableValue());
         break;
     case 0xD0000000:
-        MMU.LB_VAddr(0x80000000 | (Code.Command() & 0xFFFFFF), bMemory);
+        MMU.MemoryValue8(0x80000000 | (Code.Command() & 0xFFFFFF), bMemory);
         if (bMemory == Code.Value())
         {
             ApplyGameSharkCodes(MMU, CodeEntry, CurrentEntry + 1);
         }
         break;
     case 0xD1000000:
-        MMU.LH_VAddr(0x80000000 | (Code.Command() & 0xFFFFFF), wMemory);
+        MMU.MemoryValue16(0x80000000 | (Code.Command() & 0xFFFFFF), wMemory);
         if (wMemory == Code.Value())
         {
             ApplyGameSharkCodes(MMU, CodeEntry, CurrentEntry + 1);
         }
         break;
     case 0xD2000000:
-        MMU.LB_VAddr(0x80000000 | (Code.Command() & 0xFFFFFF), bMemory);
+        MMU.MemoryValue8(0x80000000 | (Code.Command() & 0xFFFFFF), bMemory);
         if (bMemory != Code.Value())
         {
             ApplyGameSharkCodes(MMU, CodeEntry, CurrentEntry + 1);
         }
         break;
     case 0xD3000000:
-        MMU.LH_VAddr(0x80000000 | (Code.Command() & 0xFFFFFF), wMemory);
+        MMU.MemoryValue16(0x80000000 | (Code.Command() & 0xFFFFFF), wMemory);
         if (wMemory != Code.Value())
         {
             ApplyGameSharkCodes(MMU, CodeEntry, CurrentEntry + 1);
@@ -514,7 +514,7 @@ void CEnhancements::ApplyGameSharkCodes(CMipsMemoryVM & MMU, CODES & CodeEntry, 
         break;
     case 0xB8000000:
     case 0xBA000000:
-        MMU.LB_VAddr(0x80000000 | (ConvertXP64Address(Code.Command()) & 0xFFFFFF), bMemory);
+        MMU.MemoryValue8(0x80000000 | (ConvertXP64Address(Code.Command()) & 0xFFFFFF), bMemory);
         if (bMemory == ConvertXP64Value(Code.Value()))
         {
             ApplyGameSharkCodes(MMU, CodeEntry, CurrentEntry + 1);
@@ -522,7 +522,7 @@ void CEnhancements::ApplyGameSharkCodes(CMipsMemoryVM & MMU, CODES & CodeEntry, 
         break;
     case 0xB9000000:
     case 0xBB000000:
-        MMU.LH_VAddr(0x80000000 | (ConvertXP64Address(Code.Command()) & 0xFFFFFF), wMemory);
+        MMU.MemoryValue16(0x80000000 | (ConvertXP64Address(Code.Command()) & 0xFFFFFF), wMemory);
         if (wMemory == ConvertXP64Value(Code.Value()))
         {
             ApplyGameSharkCodes(MMU, CodeEntry, CurrentEntry + 1);
@@ -587,7 +587,7 @@ void CEnhancements::ModifyMemory8(CMipsMemoryVM & MMU, uint32_t Address, uint8_t
     }
     else
     {
-        if (!MMU.LB_VAddr(Address, OriginalValue.Original))
+        if (!MMU.MemoryValue8(Address, OriginalValue.Original))
         {
             return;
         }
@@ -596,7 +596,7 @@ void CEnhancements::ModifyMemory8(CMipsMemoryVM & MMU, uint32_t Address, uint8_t
     {
         return;
     }
-    MMU.SB_VAddr(Address, Value);
+    MMU.UpdateMemoryValue8(Address, Value);
     if (g_Recompiler)
     {
         g_Recompiler->ClearRecompCode_Virt(Address & ~0xFFF, 0x1000, CRecompiler::Remove_Cheats);
@@ -614,7 +614,7 @@ void CEnhancements::ModifyMemory16(CMipsMemoryVM & MMU, uint32_t Address, uint16
     }
     else
     {
-        if (!MMU.LH_VAddr(Address, OriginalValue.Original))
+        if (!MMU.MemoryValue16(Address, OriginalValue.Original))
         {
             return;
         }
@@ -625,7 +625,7 @@ void CEnhancements::ModifyMemory16(CMipsMemoryVM & MMU, uint32_t Address, uint16
     }
     OriginalValue.Changed = Value;
     std::pair<ORIGINAL_VALUES16::iterator, bool> itr = m_OriginalValues16.insert(ORIGINAL_VALUES16::value_type(Address, OriginalValue));
-    MMU.SH_VAddr(Address, OriginalValue.Changed);
+    MMU.UpdateMemoryValue16(Address, OriginalValue.Changed);
     if (g_Recompiler)
     {
         g_Recompiler->ClearRecompCode_Virt(Address & ~0xFFF, 0x1000, CRecompiler::Remove_Cheats);

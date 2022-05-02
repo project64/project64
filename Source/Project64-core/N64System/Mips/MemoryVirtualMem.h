@@ -73,6 +73,14 @@ public:
     CSram & GetSram() { return m_CartridgeDomain2Address2Handler.Sram(); }
     CFlashRam & GetFlashRam() { return m_CartridgeDomain2Address2Handler.FlashRam(); }
 
+    bool MemoryValue8(uint32_t VAddr, uint8_t & Value);
+    bool MemoryValue16(uint32_t VAddr, uint16_t & Value);
+    bool MemoryValue32(uint32_t VAddr, uint32_t & Value);
+
+    bool UpdateMemoryValue8(uint32_t VAddr, uint8_t Value);
+    bool UpdateMemoryValue16(uint32_t VAddr, uint16_t Value);
+    bool UpdateMemoryValue32(uint32_t VAddr, uint32_t Value);
+
     bool LB_VAddr(uint32_t VAddr, uint8_t & Value);
     bool LH_VAddr(uint32_t VAddr, uint16_t & Value);
     bool LW_VAddr(uint32_t VAddr, uint32_t & Value);

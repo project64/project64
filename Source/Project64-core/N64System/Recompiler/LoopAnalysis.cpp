@@ -172,7 +172,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
 
     do
     {
-        if (!g_MMU->LW_VAddr(m_PC, m_Command.Hex))
+        if (!g_MMU->MemoryValue32(m_PC, m_Command.Hex))
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
             return false;

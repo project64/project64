@@ -266,6 +266,168 @@ void CMipsMemoryVM::FreeMemory()
     CPifRam::Reset();
 }
 
+bool CMipsMemoryVM::MemoryValue8(uint32_t VAddr, uint8_t& Value)
+{
+    if (m_TLB_ReadMap[VAddr >> 12] == -1)
+    {
+        return false;
+    }
+    uint32_t PAddr = (m_TLB_ReadMap[VAddr >> 12] + VAddr) ^ 3;
+    if (PAddr < m_AllocatedRdramSize)
+    {
+        Value = *(uint8_t*)(m_RDRAM + PAddr);
+        return true;
+    }
+
+    if (PAddr >= 0x04000000 && PAddr < 0x04001000)
+    {
+        Value = *(uint8_t*)(m_DMEM + (PAddr - 0x04000000));
+        return true;
+    }
+    if (PAddr >= 0x04001000 && PAddr < 0x04002000)
+    {
+        Value = *(uint8_t*)(m_IMEM + (PAddr - 0x04001000));
+        return true;
+    }
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+    return false;
+}
+
+bool CMipsMemoryVM::MemoryValue16(uint32_t VAddr, uint16_t& Value)
+{
+    if (m_TLB_ReadMap[VAddr >> 12] == -1)
+    {
+        return false;
+    }
+    uint32_t PAddr = (m_TLB_ReadMap[VAddr >> 12] + VAddr) ^ 2;
+    if (PAddr < m_AllocatedRdramSize)
+    {
+        Value = *(uint16_t*)(m_RDRAM + PAddr);
+        return true;
+    }
+
+    if (PAddr >= 0x04000000 && PAddr < 0x04001000)
+    {
+        Value = *(uint16_t*)(m_DMEM + (PAddr - 0x04000000));
+        return true;
+    }
+    if (PAddr >= 0x04001000 && PAddr < 0x04002000)
+    {
+        Value = *(uint16_t*)(m_IMEM + (PAddr - 0x04001000));
+        return true;
+    }
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+    return false;
+}
+
+bool CMipsMemoryVM::MemoryValue32(uint32_t VAddr, uint32_t& Value)
+{
+    if (m_TLB_ReadMap[VAddr >> 12] == -1)
+    {
+        return false;
+    }
+    uint32_t PAddr = m_TLB_ReadMap[VAddr >> 12] + VAddr;
+    if (PAddr < m_AllocatedRdramSize)
+    {
+        Value = *(uint32_t*)(m_RDRAM + PAddr);
+        return true;
+    }
+
+    if (PAddr >= 0x04000000 && PAddr < 0x04001000)
+    {
+        Value = *(uint32_t*)(m_DMEM + (PAddr - 0x04000000));
+        return true;
+    }
+    if (PAddr >= 0x04001000 && PAddr < 0x04002000)
+    {
+        Value = *(uint32_t*)(m_IMEM + (PAddr - 0x04001000));
+        return true;
+    }
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+    return false;
+}
+
+bool CMipsMemoryVM::UpdateMemoryValue8(uint32_t VAddr, uint8_t Value)
+{
+    if (m_TLB_ReadMap[VAddr >> 12] == -1)
+    {
+        return false;
+    }
+    uint32_t PAddr = (m_TLB_ReadMap[VAddr >> 12] + VAddr) ^ 3;
+    if (PAddr < m_AllocatedRdramSize)
+    {
+        *(uint8_t*)(m_RDRAM + PAddr) = Value;
+        return true;
+    }
+
+    if (PAddr >= 0x04000000 && PAddr < 0x04001000)
+    {
+        *(uint8_t*)(m_DMEM + (PAddr - 0x04000000)) = Value;
+        return true;
+    }
+    if (PAddr >= 0x04001000 && PAddr < 0x04002000)
+    {
+        *(uint8_t*)(m_IMEM + (PAddr - 0x04001000)) = Value;
+        return true;
+    }
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+    return false;
+}
+
+bool CMipsMemoryVM::UpdateMemoryValue16(uint32_t VAddr, uint16_t Value)
+{
+    if (m_TLB_ReadMap[VAddr >> 12] == -1)
+    {
+        return false;
+    }
+    uint32_t PAddr = (m_TLB_ReadMap[VAddr >> 12] + VAddr) ^ 2;
+    if (PAddr < m_AllocatedRdramSize)
+    {
+        *(uint16_t*)(m_RDRAM + PAddr) = Value;
+        return true;
+    }
+
+    if (PAddr >= 0x04000000 && PAddr < 0x04001000)
+    {
+        *(uint16_t*)(m_DMEM + (PAddr - 0x04000000)) = Value;
+        return true;
+    }
+    if (PAddr >= 0x04001000 && PAddr < 0x04002000)
+    {
+        *(uint16_t*)(m_IMEM + (PAddr - 0x04001000)) = Value;
+        return true;
+    }
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+    return false;
+}
+
+bool CMipsMemoryVM::UpdateMemoryValue32(uint32_t VAddr, uint32_t Value)
+{
+    if (m_TLB_ReadMap[VAddr >> 12] == -1)
+    {
+        return false;
+    }
+    uint32_t PAddr = m_TLB_ReadMap[VAddr >> 12] + VAddr;
+    if (PAddr < m_AllocatedRdramSize)
+    {
+        *(uint32_t*)(m_RDRAM + PAddr) = Value;
+        return true;
+    }
+
+    if (PAddr >= 0x04000000 && PAddr < 0x04001000)
+    {
+        *(uint32_t*)(m_DMEM + (PAddr - 0x04000000)) = Value;
+        return true;
+    }
+    if (PAddr >= 0x04001000 && PAddr < 0x04002000)
+    {
+        *(uint32_t*)(m_IMEM + (PAddr - 0x04001000)) = Value;
+        return true;
+    }
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+    return false;
+}
+
 bool CMipsMemoryVM::LB_VAddr(uint32_t VAddr, uint8_t& Value)
 {
     uint8_t * MemoryPtr = (uint8_t*)m_MemoryReadMap[VAddr >> 12];
@@ -438,7 +600,7 @@ bool CMipsMemoryVM::VAddrToPAddr(uint32_t VAddr, uint32_t &PAddr) const
     {
         return false;
     }
-    PAddr = (uint32_t)(uint8_t *)(m_TLB_ReadMap[VAddr >> 12] + VAddr);
+    PAddr = m_TLB_ReadMap[VAddr >> 12] + VAddr;
     return true;
 }
 

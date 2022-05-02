@@ -1087,7 +1087,7 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
                 m_Reg.m_GPR[24].DW = 0x0000000000000000;
                 break;
             case CIC_NUS_6105:
-                MMU.SW_VAddr(0xA4001004, 0xBDA807FC);
+                MMU.UpdateMemoryValue32(0xA4001004, 0xBDA807FC);
                 m_Reg.m_GPR[5].DW = 0xFFFFFFFFDECAAAD1;
                 m_Reg.m_GPR[14].DW = 0x000000000CF85C13;
                 m_Reg.m_GPR[24].DW = 0x0000000000000002;
@@ -1116,7 +1116,7 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
                 m_Reg.m_GPR[14].DW = 0x000000005BACA1DF;
                 break;
             case CIC_NUS_6105:
-                MMU.SW_VAddr(0xA4001004, 0x8DA807FC);
+                MMU.UpdateMemoryValue32(0xA4001004, 0x8DA807FC);
                 m_Reg.m_GPR[5].DW = 0x000000005493FB9A;
                 m_Reg.m_GPR[14].DW = 0xFFFFFFFFC2C20384;
             case CIC_NUS_6106:
@@ -1180,13 +1180,13 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
             m_Reg.m_GPR[25].DW = 0xFFFFFFFF825B21C9;
             break;
         case CIC_NUS_6105:
-            MMU.SW_VAddr(0xA4001000, 0x3C0DBFC0);
-            MMU.SW_VAddr(0xA4001008, 0x25AD07C0);
-            MMU.SW_VAddr(0xA400100C, 0x31080080);
-            MMU.SW_VAddr(0xA4001010, 0x5500FFFC);
-            MMU.SW_VAddr(0xA4001014, 0x3C0DBFC0);
-            MMU.SW_VAddr(0xA4001018, 0x8DA80024);
-            MMU.SW_VAddr(0xA400101C, 0x3C0BB000);
+            MMU.UpdateMemoryValue32(0xA4001000, 0x3C0DBFC0);
+            MMU.UpdateMemoryValue32(0xA4001008, 0x25AD07C0);
+            MMU.UpdateMemoryValue32(0xA400100C, 0x31080080);
+            MMU.UpdateMemoryValue32(0xA4001010, 0x5500FFFC);
+            MMU.UpdateMemoryValue32(0xA4001014, 0x3C0DBFC0);
+            MMU.UpdateMemoryValue32(0xA4001018, 0x8DA80024);
+            MMU.UpdateMemoryValue32(0xA400101C, 0x3C0BB000);
             m_Reg.m_GPR[1].DW = 0x0000000000000000;
             m_Reg.m_GPR[2].DW = 0xFFFFFFFFF58B0FBF;
             m_Reg.m_GPR[3].DW = 0xFFFFFFFFF58B0FBF;
@@ -1733,7 +1733,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
         for (count = -10; count < 10; count++)
         {
             uint32_t OpcodeValue, Addr = m_Reg.m_PROGRAM_COUNTER + (count << 2);
-            if (g_MMU->LW_VAddr(Addr, OpcodeValue))
+            if (g_MMU->MemoryValue32(Addr, OpcodeValue))
             {
                 Error.LogF("%X: %s\r\n", Addr, R4300iOpcodeName(OpcodeValue, Addr));
             }
@@ -1743,7 +1743,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
         for (count = 0; count < 50; count++)
         {
             uint32_t OpcodeValue, Addr = m_LastSuccessSyncPC[0] + (count << 2);
-            if (g_MMU->LW_VAddr(Addr, OpcodeValue))
+            if (g_MMU->MemoryValue32(Addr, OpcodeValue))
             {
                 Error.LogF("%X: %s\r\n", Addr, R4300iOpcodeName(OpcodeValue, Addr));
             }
@@ -2352,7 +2352,7 @@ void CN64System::RunRSP()
             uint32_t Task = 0;
             if (m_RspBroke)
             {
-                g_MMU->LW_VAddr(0xA4000FC0, Task);
+                g_MMU->MemoryValue32(0xA4000FC0, Task);
                 if (Task == 1 && UseHleGfx() && (m_Reg.DPC_STATUS_REG & DPC_STATUS_FREEZE) != 0)
                 {
                     WriteTrace(TraceRSP, TraceDebug, "Dlist that is frozen");

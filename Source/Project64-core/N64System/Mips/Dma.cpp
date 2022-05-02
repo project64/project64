@@ -19,27 +19,30 @@ CDMA::CDMA(CartridgeDomain2Address2Handler & Domain2Address2Handler) :
 void CDMA::OnFirstDMA()
 {
     int16_t offset;
-    const uint32_t base = 0x80000000;
     const uint32_t rt = g_MMU->RdramSize();
 
     switch (g_Rom->CicChipID())
     {
-    case CIC_NUS_6101:  offset = 0x0318; break;
-    case CIC_NUS_5167:  offset = 0x0318; break;
-    case CIC_NUS_8303:  offset = 0x0318; break;
-    case CIC_NUS_DDUS:  offset = 0x0318; break;
-    case CIC_NUS_8401:  offset = 0x0318; break;
+    case CIC_NUS_6101: 
+    case CIC_NUS_5167:
+    case CIC_NUS_8303:
+    case CIC_NUS_DDUS:
+    case CIC_NUS_8401:
     case CIC_UNKNOWN:
-    case CIC_NUS_6102:  offset = 0x0318; break;
-    case CIC_NUS_6103:  offset = 0x0318; break;
-    case CIC_NUS_6105:  offset = 0x03F0; break;
-    case CIC_NUS_6106:  offset = 0x0318; break;
-    case CIC_NUS_5101:  offset = 0x0318; break;
+    case CIC_NUS_6102: 
+    case CIC_NUS_6103: 
+    case CIC_NUS_6106:
+    case CIC_NUS_5101:
+        offset = 0x0318;
+        break;
+    case CIC_NUS_6105: 
+        offset = 0x03F0; 
+        break;
     default:
         g_Notify->DisplayError(stdstr_f("Unhandled CicChip(%d) in first DMA", g_Rom->CicChipID()).c_str());
         return;
     }
-    g_MMU->SW_VAddr(base + offset, rt);
+    g_MMU->UpdateMemoryValue32(0x80000000 + offset, rt);
 }
 
 void CDMA::PI_DMA_READ()
