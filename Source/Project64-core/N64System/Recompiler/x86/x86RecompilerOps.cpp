@@ -341,21 +341,21 @@ void CX86RecompilerOps::PostCompileOpcode(void)
 void CX86RecompilerOps::CompileReadTLBMiss(uint32_t VirtualAddress, x86Reg LookUpReg)
 {
     MoveConstToVariable(VirtualAddress, g_TLBLoadAddress, "TLBLoadAddress");
-    TestX86RegToX86Reg(LookUpReg, LookUpReg);
+    CompConstToX86reg(LookUpReg, (uint32_t)-1);
     CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBReadMiss, false, JeLabel32);
 }
 
 void CX86RecompilerOps::CompileReadTLBMiss(x86Reg AddressReg, x86Reg LookUpReg)
 {
     MoveX86regToVariable(AddressReg, g_TLBLoadAddress, "TLBLoadAddress");
-    TestX86RegToX86Reg(LookUpReg, LookUpReg);
+    CompConstToX86reg(LookUpReg, (uint32_t)-1);
     CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBReadMiss, false, JeLabel32);
 }
 
 void CX86RecompilerOps::CompileWriteTLBMiss(x86Reg AddressReg, x86Reg LookUpReg)
 {
     MoveX86regToVariable(AddressReg, &g_TLBStoreAddress, "g_TLBStoreAddress");
-    TestX86RegToX86Reg(LookUpReg, LookUpReg);
+    CompConstToX86reg(LookUpReg, (uint32_t)-1);
     CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBWriteMiss, false, JeLabel32);
 }
 
@@ -2761,6 +2761,7 @@ void CX86RecompilerOps::LB_KnownAddress(x86Reg Reg, uint32_t VAddr, bool SignExt
         MoveConstToX86reg(VAddr >> 12, TlbMappReg);
         MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TlbMappReg, TlbMappReg, 4);
         CompileReadTLBMiss(AddrReg, TlbMappReg);
+        AddConstToX86Reg(TlbMappReg, (uint32_t)m_MMU.Rdram());
         CPU_Message("");
         CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
         SetJump8(JumpFound, *g_RecompPos);
@@ -2834,6 +2835,7 @@ void CX86RecompilerOps::LH_KnownAddress(x86Reg Reg, uint32_t VAddr, bool SignExt
         MoveConstToX86reg(VAddr >> 12, TlbMappReg);
         MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TlbMappReg, TlbMappReg, 4);
         CompileReadTLBMiss(AddrReg, TlbMappReg);
+        AddConstToX86Reg(TlbMappReg, (uint32_t)m_MMU.Rdram());
         CPU_Message("");
         CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
         SetJump8(JumpFound, *g_RecompPos);
@@ -2944,6 +2946,7 @@ void CX86RecompilerOps::LB()
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
     CompileReadTLBMiss(TempReg1, TempReg2);
+    AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
@@ -3006,6 +3009,7 @@ void CX86RecompilerOps::LH()
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
     CompileReadTLBMiss(TempReg1, TempReg2);
+    AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
@@ -3075,6 +3079,7 @@ void CX86RecompilerOps::LWL()
     MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
 
     CompileReadTLBMiss(TempReg1, TempReg2);
+    AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
@@ -3129,6 +3134,10 @@ void CX86RecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
     }
     else
     {
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+        UpdateCounters(m_RegWorkingSet, false, true);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+
         PreReadInstruction();
         if (IsMapped(m_Opcode.rt))
         {
@@ -3171,6 +3180,7 @@ void CX86RecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
         ShiftRightUnsignImmed(TempReg2, 12);
         MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
         CompileReadTLBMiss(TempReg1, TempReg2);
+        AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
         CPU_Message("");
         CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
         SetJump8(JumpFound, *g_RecompPos);
@@ -3206,6 +3216,7 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
         MoveConstToX86reg(VAddr >> 12, TlbMappReg);
         MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TlbMappReg, TlbMappReg, 4);
         CompileReadTLBMiss(VAddr, TlbMappReg);
+        AddConstToX86Reg(TlbMappReg, (uint32_t)m_MMU.Rdram());
         CPU_Message("");
         CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
         SetJump8(JumpFound, *g_RecompPos);
@@ -3507,6 +3518,7 @@ void CX86RecompilerOps::LBU()
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
     CompileReadTLBMiss(TempReg1, TempReg2);
+    AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
@@ -3571,6 +3583,7 @@ void CX86RecompilerOps::LHU()
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
     CompileReadTLBMiss(TempReg1, TempReg2);
+    AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
@@ -3645,6 +3658,7 @@ void CX86RecompilerOps::LWR()
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
     CompileReadTLBMiss(TempReg1, TempReg2);
+    AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
@@ -3741,6 +3755,7 @@ void CX86RecompilerOps::SB()
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
     CompileWriteTLBMiss(TempReg1, TempReg2);
+    AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
@@ -3830,6 +3845,7 @@ void CX86RecompilerOps::SH()
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
     CompileWriteTLBMiss(TempReg1, TempReg2);
+    AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
@@ -3907,6 +3923,7 @@ void CX86RecompilerOps::SWL()
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
     CompileReadTLBMiss(TempReg1, TempReg2);
+    AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
@@ -3945,6 +3962,7 @@ void CX86RecompilerOps::SWL()
     MoveX86RegToX86Reg(TempReg1, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
+    AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound2, *g_RecompPos);
@@ -4057,6 +4075,7 @@ void CX86RecompilerOps::SW(bool bCheckLLbit)
         ShiftRightUnsignImmed(TempReg2, 12);
         MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
         CompileWriteTLBMiss(TempReg1, TempReg2);
+        AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
         CPU_Message("");
         CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
         SetJump8(JumpFound, *g_RecompPos);
@@ -4149,6 +4168,7 @@ void CX86RecompilerOps::SWR()
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
     CompileReadTLBMiss(TempReg1, TempReg2);
+    AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
@@ -4188,10 +4208,10 @@ void CX86RecompilerOps::SWR()
     MoveX86RegToX86Reg(TempReg1, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
+    AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryReadMap_%X_Found2:", m_CompilePC).c_str());
     SetJump8(JumpFound2, *g_RecompPos);
-
     MoveX86regToX86regPointer(Value, TempReg1, TempReg2);
 }
 
@@ -4315,6 +4335,7 @@ void CX86RecompilerOps::LWC1()
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
     CompileReadTLBMiss(TempReg1, TempReg2);
+    AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
@@ -4410,6 +4431,7 @@ void CX86RecompilerOps::LDC1()
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
     CompileReadTLBMiss(TempReg1, TempReg2);
+    AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
@@ -4495,6 +4517,7 @@ void CX86RecompilerOps::LD()
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
     CompileReadTLBMiss(TempReg1, TempReg2);
+    AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
@@ -4572,6 +4595,7 @@ void CX86RecompilerOps::SWC1()
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
     CompileWriteTLBMiss(TempReg1, TempReg2);
+    AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
@@ -4644,6 +4668,7 @@ void CX86RecompilerOps::SDC1()
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
     CompileWriteTLBMiss(TempReg1, TempReg2);
+    AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
@@ -4733,6 +4758,7 @@ void CX86RecompilerOps::SD()
         ShiftRightUnsignImmed(TempReg2, 12);
         MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
         CompileWriteTLBMiss(TempReg1, TempReg2);
+        AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
         CPU_Message("");
         CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
         SetJump8(JumpFound, *g_RecompPos);
@@ -10389,6 +10415,7 @@ void CX86RecompilerOps::SB_Const(uint8_t Value, uint32_t VAddr)
         ShiftRightUnsignImmed(TempReg2, 12);
         MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
         CompileWriteTLBMiss(TempReg1, TempReg2);
+        AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
         CPU_Message("");
         CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
         SetJump8(JumpFound, *g_RecompPos);
@@ -10446,6 +10473,7 @@ void CX86RecompilerOps::SB_Register(x86Reg Reg, uint32_t VAddr)
         ShiftRightUnsignImmed(TempReg2, 12);
         MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
         CompileWriteTLBMiss(TempReg1, TempReg2);
+        AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
         CPU_Message("");
         CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
         SetJump8(JumpFound, *g_RecompPos);
@@ -10504,6 +10532,7 @@ void CX86RecompilerOps::SH_Const(uint16_t Value, uint32_t VAddr)
         ShiftRightUnsignImmed(TempReg2, 12);
         MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
         CompileWriteTLBMiss(TempReg1, TempReg2);
+        AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
         CPU_Message("");
         CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
         SetJump8(JumpFound, *g_RecompPos);
@@ -10564,6 +10593,7 @@ void CX86RecompilerOps::SH_Register(x86Reg Reg, uint32_t VAddr)
         ShiftRightUnsignImmed(TempReg2, 12);
         MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
         CompileWriteTLBMiss(TempReg1, TempReg2);
+        AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
         CPU_Message("");
         CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
         SetJump8(JumpFound, *g_RecompPos);
@@ -10623,6 +10653,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         ShiftRightUnsignImmed(TempReg2, 12);
         MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
         CompileWriteTLBMiss(TempReg1, TempReg2);
+        AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
         CPU_Message("");
         CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
         SetJump8(JumpFound, *g_RecompPos);
@@ -11200,6 +11231,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         ShiftRightUnsignImmed(TempReg2, 12);
         MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
         CompileWriteTLBMiss(TempReg1, TempReg2);
+        AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
         CPU_Message("");
         CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
         SetJump8(JumpFound, *g_RecompPos);

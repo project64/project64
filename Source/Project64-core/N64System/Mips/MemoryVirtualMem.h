@@ -176,8 +176,8 @@ private:
     uint32_t m_AllocatedRdramSize;
 
     mutable char m_strLabelName[100];
-    size_t * m_TLB_ReadMap;
-    size_t * m_TLB_WriteMap;
+    uint32_t * m_TLB_ReadMap;
+    uint32_t * m_TLB_WriteMap;
     size_t * m_MemoryReadMap;
     size_t * m_MemoryWriteMap;
 
