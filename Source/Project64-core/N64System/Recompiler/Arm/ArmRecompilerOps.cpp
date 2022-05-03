@@ -211,7 +211,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
             case BranchTypeRsRt: EffectDelaySlot = DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, m_Opcode.rt); break;
             case BranchTypeCop1:
 
-                if (!g_MMU->LW_VAddr(m_CompilePC + 4, Command.Hex))
+                if (!g_MMU->MemoryValue32(m_CompilePC + 4, Command.Hex))
                 {
                     g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
                 }
@@ -5847,7 +5847,7 @@ void CArmRecompilerOps::SetCurrentPC(uint32_t ProgramCounter)
     m_CompilePC = ProgramCounter;
     __except_try()
     {
-        if (!g_MMU->LW_VAddr(m_CompilePC, m_Opcode.Hex))
+        if (!g_MMU->MemoryValue32(m_CompilePC, m_Opcode.Hex))
         {
             g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
         }

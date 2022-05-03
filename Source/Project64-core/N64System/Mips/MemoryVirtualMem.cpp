@@ -875,8 +875,8 @@ void CMipsMemoryVM::TLB_Unmaped(uint32_t Vaddr, uint32_t Len)
         size_t Index = Address >> 12;
         m_MemoryReadMap[Index] = (size_t)-1;
         m_MemoryWriteMap[Index] = (size_t)-1;
-        m_TLB_ReadMap[Index] = -1;
-        m_TLB_WriteMap[Index] = -1;
+        m_TLB_ReadMap[Index] = (uint32_t)-1;
+        m_TLB_WriteMap[Index] = (uint32_t)-1;
     }
 }
 
