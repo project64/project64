@@ -238,6 +238,9 @@ protected:
     static Func Jump_CoP1_W[64];
     static Func Jump_CoP1_L[64];
 
+    static void GenerateTLBReadException(uint32_t VAddr, const char * function);
+    static void GenerateTLBWriteException(uint32_t VAddr, const char * function);
+
     static const uint32_t SWL_MASK[4], SWR_MASK[4], LWL_MASK[4], LWR_MASK[4];
-    static const int32_t   SWL_SHIFT[4], SWR_SHIFT[4], LWL_SHIFT[4], LWR_SHIFT[4];
+    static const int32_t SWL_SHIFT[4], SWR_SHIFT[4], LWL_SHIFT[4], LWR_SHIFT[4];
 };

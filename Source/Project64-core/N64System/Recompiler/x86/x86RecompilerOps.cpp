@@ -3270,10 +3270,9 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
             break;
         case 0x04100000:
              {
-                 static uint32_t TempValue = 0;
                  m_RegWorkingSet.BeforeCallDirect();
-                 PushImm32("TempValue", (uint32_t)&TempValue);
-                 PushImm32(PAddr);
+                 PushImm32("TempValue", (uint32_t)&m_TempValue);
+                 PushImm32(PAddr | 0xA0000000);
 #ifdef _MSC_VER
                  MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
                  Call_Direct(AddressOf(&CMipsMemoryVM::LW_NonMemory), "CMipsMemoryVM::LW_NonMemory");
@@ -3283,7 +3282,7 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
                  AddConstToX86Reg(x86_ESP, 12);
 #endif
                  m_RegWorkingSet.AfterCallDirect();
-                 MoveVariableToX86reg(&TempValue, "TempValue", Reg);
+                 MoveVariableToX86reg(&m_TempValue, "TempValue", Reg);
             }
             break;
         case 0x04300000:
@@ -10744,7 +10743,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
 
                 m_RegWorkingSet.BeforeCallDirect();
                 PushImm32(Value);
-                PushImm32(PAddr);
+                PushImm32(PAddr | 0xA0000000);
 #ifdef _MSC_VER
                 MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
                 Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
@@ -10771,7 +10770,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x0410000C:
             m_RegWorkingSet.BeforeCallDirect();
             PushImm32(Value);
-            PushImm32(PAddr);
+            PushImm32(PAddr | 0xA0000000);
 #ifdef _MSC_VER
             MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
@@ -11176,7 +11175,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
 
             m_RegWorkingSet.BeforeCallDirect();
             PushImm32(Value);
-            PushImm32(PAddr);
+            PushImm32(PAddr | 0xA0000000);
 #ifdef _MSC_VER
             MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
@@ -11199,7 +11198,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
 
         m_RegWorkingSet.BeforeCallDirect();
         PushImm32(Value);
-        PushImm32(PAddr);
+        PushImm32(PAddr | 0xA0000000);
 #ifdef _MSC_VER
         MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
         Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
@@ -11325,7 +11324,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         }
         m_RegWorkingSet.BeforeCallDirect();
         Push(Reg);
-        PushImm32(PAddr);
+        PushImm32(PAddr | 0xA0000000);
 #ifdef _MSC_VER
         MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
         Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");

@@ -6087,7 +6087,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
 
             m_RegWorkingSet.BeforeCallDirect();
             MoveConstToArmReg(Arm_R2, Value);
-            MoveConstToArmReg(Arm_R1, PAddr);
+            MoveConstToArmReg(Arm_R1, PAddr | 0xA0000000);
             MoveConstToArmReg(Arm_R0, (uint32_t)(g_MMU), "g_MMU");
             CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
             m_RegWorkingSet.AfterCallDirect();
@@ -6109,7 +6109,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x0410000C:
             m_RegWorkingSet.BeforeCallDirect();
             MoveConstToArmReg(Arm_R2, Value);
-            MoveConstToArmReg(Arm_R1, PAddr);
+            MoveConstToArmReg(Arm_R1, PAddr | 0xA0000000);
             MoveConstToArmReg(Arm_R0, (uint32_t)(g_MMU), "g_MMU");
             CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
             m_RegWorkingSet.AfterCallDirect();
@@ -6345,7 +6345,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x04500010:
             m_RegWorkingSet.BeforeCallDirect();
             MoveConstToArmReg(Arm_R2, Value);
-            MoveConstToArmReg(Arm_R1, PAddr);
+            MoveConstToArmReg(Arm_R1, PAddr | 0xA0000000);
             MoveConstToArmReg(Arm_R0, (uint32_t)(g_MMU), "g_MMU");
             CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
             m_RegWorkingSet.AfterCallDirect();
@@ -6494,7 +6494,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
 
         m_RegWorkingSet.BeforeCallDirect();
         MoveConstToArmReg(Arm_R2, Value);
-        MoveConstToArmReg(Arm_R1, PAddr);
+        MoveConstToArmReg(Arm_R1, PAddr | 0xA0000000);
         MoveConstToArmReg(Arm_R0, (uint32_t)(g_MMU), "g_MMU");
         CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
         m_RegWorkingSet.AfterCallDirect();
@@ -6632,7 +6632,7 @@ void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
         {
             AddConstToArmReg(Arm_R2, Reg, 0);
         }
-        MoveConstToArmReg(Arm_R1, PAddr);
+        MoveConstToArmReg(Arm_R1, PAddr | 0xA0000000);
         MoveConstToArmReg(Arm_R0, (uint32_t)(g_MMU), "g_MMU");
         CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
         m_RegWorkingSet.AfterCallDirect();
@@ -6771,7 +6771,7 @@ void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
             {
                 AddConstToArmReg(Arm_R2, Reg, 0);
             }
-            MoveConstToArmReg(Arm_R1, PAddr);
+            MoveConstToArmReg(Arm_R1, PAddr | 0xA0000000);
             MoveConstToArmReg(Arm_R0, (uint32_t)(g_MMU), "g_MMU");
             CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
             m_RegWorkingSet.AfterCallDirect();

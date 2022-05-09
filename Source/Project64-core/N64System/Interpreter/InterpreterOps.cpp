@@ -62,18 +62,6 @@ const int32_t   R4300iOp::LWR_SHIFT[4] = { 24, 16, 8, 0 };
     g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);\
     return;}\
 
-#define TLB_READ_EXCEPTION(Address) \
-    g_Reg->DoTLBReadMiss(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP,Address);\
-    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;\
-    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);\
-    return;
-
-#define TLB_WRITE_EXCEPTION(Address) \
-    g_Reg->DoTLBWriteMiss(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP,Address);\
-    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;\
-    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);\
-    return;
-
 void R4300iOp::SPECIAL()
 {
     Jump_Special[m_Opcode.funct]();
@@ -999,26 +987,23 @@ int32_t LDL_SHIFT[8] = { 0, 8, 16, 24, 32, 40, 48, 56 };
 
 void R4300iOp::LDL()
 {
-    uint32_t Offset, Address;
-    uint64_t Value;
-
-    Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
     if (HaveReadBP() && g_Debugger->ReadBP64(Address) && MemoryBreakpoint())
     {
         return;
     }
-    Offset = Address & 7;
 
-    if (!g_MMU->LD_VAddr((Address & ~7), Value))
+    uint64_t Value;
+    if (!g_MMU->LD_Memory((Address & ~7), Value))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_READ_EXCEPTION(Address);
+        GenerateTLBReadException(Address, __FUNCTION__);
     }
-    _GPR[m_Opcode.rt].DW = _GPR[m_Opcode.rt].DW & LDL_MASK[Offset];
-    _GPR[m_Opcode.rt].DW += Value << LDL_SHIFT[Offset];
+    else
+    {
+        uint32_t Offset = Address & 7;
+        _GPR[m_Opcode.rt].DW = _GPR[m_Opcode.rt].DW & LDL_MASK[Offset];
+        _GPR[m_Opcode.rt].DW += Value << LDL_SHIFT[Offset];
+    }
 }
 
 uint64_t LDR_MASK[8] = { 0xFFFFFFFFFFFFFF00, 0xFFFFFFFFFFFF0000,
@@ -1029,27 +1014,24 @@ int32_t LDR_SHIFT[8] = { 56, 48, 40, 32, 24, 16, 8, 0 };
 
 void R4300iOp::LDR()
 {
-    uint32_t Offset, Address;
-    uint64_t Value;
-
-    Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
     if (HaveReadBP() && g_Debugger->ReadBP64(Address) && MemoryBreakpoint())
     {
         return;
     }
-    Offset = Address & 7;
 
-    if (!g_MMU->LD_VAddr((Address & ~7), Value))
+    uint64_t Value;
+    if (!g_MMU->LD_Memory((Address & ~7), Value))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_READ_EXCEPTION(Address);
+        GenerateTLBReadException(Address, __FUNCTION__);
     }
+    else
+    {
+        uint32_t Offset = Address & 7;
 
-    _GPR[m_Opcode.rt].DW = _GPR[m_Opcode.rt].DW & LDR_MASK[Offset];
-    _GPR[m_Opcode.rt].DW += Value >> LDR_SHIFT[Offset];
+        _GPR[m_Opcode.rt].DW = _GPR[m_Opcode.rt].DW & LDR_MASK[Offset];
+        _GPR[m_Opcode.rt].DW += Value >> LDR_SHIFT[Offset];
+    }
 }
 
 void R4300iOp::LB()
@@ -1059,13 +1041,9 @@ void R4300iOp::LB()
     {
         return;
     }
-    if (!g_MMU->LB_VAddr(Address, _GPR[m_Opcode.rt].UB[0]))
+    if (!g_MMU->LB_Memory(Address, _GPR[m_Opcode.rt].UB[0]))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_READ_EXCEPTION(Address);
+        GenerateTLBReadException(Address, __FUNCTION__);
     }
     else
     {
@@ -1084,13 +1062,9 @@ void R4300iOp::LH()
     {
         return;
     }
-    if (!g_MMU->LH_VAddr(Address, _GPR[m_Opcode.rt].UHW[0]))
+    if (!g_MMU->LH_Memory(Address, _GPR[m_Opcode.rt].UHW[0]))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_READ_EXCEPTION(Address);
+        GenerateTLBReadException(Address, __FUNCTION__);
     }
     else
     {
@@ -1100,26 +1074,22 @@ void R4300iOp::LH()
 
 void R4300iOp::LWL()
 {
-    uint32_t Offset, Address, Value;
-
-    Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
     if (HaveReadBP() && g_Debugger->ReadBP32(Address) && MemoryBreakpoint())
     {
         return;
     }
-    Offset = Address & 3;
-
-    if (!g_MMU->LW_VAddr((Address & ~3), Value))
+    uint32_t Value;
+    if (!g_MMU->LW_Memory((Address & ~3), Value))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_READ_EXCEPTION(Address);
+        GenerateTLBReadException(Address, __FUNCTION__);
     }
-
-    _GPR[m_Opcode.rt].DW = (int32_t)(_GPR[m_Opcode.rt].W[0] & LWL_MASK[Offset]);
-    _GPR[m_Opcode.rt].DW += (int32_t)(Value << LWL_SHIFT[Offset]);
+    else
+    {
+        uint32_t Offset = Address & 3;
+        _GPR[m_Opcode.rt].DW = (int32_t)(_GPR[m_Opcode.rt].W[0] & LWL_MASK[Offset]);
+        _GPR[m_Opcode.rt].DW += (int32_t)(Value << LWL_SHIFT[Offset]);
+    }
 }
 
 void R4300iOp::LW()
@@ -1134,13 +1104,9 @@ void R4300iOp::LW()
         return;
     }
 
-    if (!g_MMU->LW_VAddr(Address, _GPR[m_Opcode.rt].UW[0]))
+    if (!g_MMU->LW_Memory(Address, _GPR[m_Opcode.rt].UW[0]))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_READ_EXCEPTION(Address);
+        GenerateTLBReadException(Address, __FUNCTION__);
     }
     else
     {
@@ -1155,13 +1121,9 @@ void R4300iOp::LBU()
     {
         return;
     }
-    if (!g_MMU->LB_VAddr(Address, _GPR[m_Opcode.rt].UB[0]))
+    if (!g_MMU->LB_Memory(Address, _GPR[m_Opcode.rt].UB[0]))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_READ_EXCEPTION(Address);
+        GenerateTLBReadException(Address, __FUNCTION__);
     }
     else
     {
@@ -1180,13 +1142,9 @@ void R4300iOp::LHU()
     {
         return;
     }
-    if (!g_MMU->LH_VAddr(Address, _GPR[m_Opcode.rt].UHW[0]))
+    if (!g_MMU->LH_Memory(Address, _GPR[m_Opcode.rt].UHW[0]))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_READ_EXCEPTION(Address);
+        GenerateTLBReadException(Address, __FUNCTION__);
     }
     else
     {
@@ -1196,26 +1154,23 @@ void R4300iOp::LHU()
 
 void R4300iOp::LWR()
 {
-    uint32_t Offset, Address, Value;
-
-    Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
-    Offset = Address & 3;
+    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
     if (HaveReadBP() && g_Debugger->ReadBP32(Address) && MemoryBreakpoint())
     {
         return;
     }
 
-    if (!g_MMU->LW_VAddr((Address & ~3), Value))
+    uint32_t Value;
+    if (!g_MMU->LW_Memory((Address & ~3), Value))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_READ_EXCEPTION(Address);
+        GenerateTLBReadException(Address, __FUNCTION__);
     }
-
-    _GPR[m_Opcode.rt].DW = (int32_t)(_GPR[m_Opcode.rt].W[0] & LWR_MASK[Offset]);
-    _GPR[m_Opcode.rt].DW += (int32_t)(Value >> LWR_SHIFT[Offset]);
+    else
+    {
+        uint32_t Offset = Address & 3;
+        _GPR[m_Opcode.rt].DW = (int32_t)(_GPR[m_Opcode.rt].W[0] & LWR_MASK[Offset]);
+        _GPR[m_Opcode.rt].DW += (int32_t)(Value >> LWR_SHIFT[Offset]);
+    }
 }
 
 void R4300iOp::LWU()
@@ -1230,13 +1185,9 @@ void R4300iOp::LWU()
         return;
     }
 
-    if (!g_MMU->LW_VAddr(Address, _GPR[m_Opcode.rt].UW[0]))
+    if (!g_MMU->LW_Memory(Address, _GPR[m_Opcode.rt].UW[0]))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_READ_EXCEPTION(Address);
+        GenerateTLBReadException(Address, __FUNCTION__);
     }
     else
     {
@@ -1253,11 +1204,7 @@ void R4300iOp::SB()
     }
     if (!g_MMU->SB_VAddr(Address, _GPR[m_Opcode.rt].UB[0]))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_WRITE_EXCEPTION(Address);
+        GenerateTLBWriteException(Address, __FUNCTION__);
     }
 }
 
@@ -1274,11 +1221,7 @@ void R4300iOp::SH()
     }
     if (!g_MMU->SH_VAddr(Address, _GPR[m_Opcode.rt].UHW[0]))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_WRITE_EXCEPTION(Address);
+        GenerateTLBWriteException(Address, __FUNCTION__);
     }
 }
 
@@ -1293,26 +1236,15 @@ void R4300iOp::SWL()
     }
     Offset = Address & 3;
 
-    if (!g_MMU->LW_VAddr((Address & ~3), Value))
+    if (!g_MMU->LW_Memory((Address & ~3), Value))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_WRITE_EXCEPTION(Address);
+        GenerateTLBWriteException(Address, __FUNCTION__);
+        return;
     }
 
     Value &= SWL_MASK[Offset];
     Value += _GPR[m_Opcode.rt].UW[0] >> SWL_SHIFT[Offset];
-
-    if (!g_MMU->SW_VAddr((Address & ~0x03), Value))
-    {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_WRITE_EXCEPTION(Address);
-    }
+    g_MMU->SW_VAddr((Address & ~0x03), Value);
 }
 
 void R4300iOp::SW()
@@ -1328,11 +1260,7 @@ void R4300iOp::SW()
     }
     if (!g_MMU->SW_VAddr(Address, _GPR[m_Opcode.rt].UW[0]))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_WRITE_EXCEPTION(Address);
+        GenerateTLBWriteException(Address, __FUNCTION__);
     }
 }
 
@@ -1358,26 +1286,14 @@ void R4300iOp::SDL()
     }
     Offset = Address & 7;
 
-    if (!g_MMU->LD_VAddr((Address & ~7), Value))
+    if (!g_MMU->LD_Memory((Address & ~7), Value))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_WRITE_EXCEPTION(Address);
+        GenerateTLBWriteException(Address, __FUNCTION__);
     }
 
     Value &= SDL_MASK[Offset];
     Value += _GPR[m_Opcode.rt].UDW >> SDL_SHIFT[Offset];
-
-    if (!g_MMU->SD_VAddr((Address & ~7), Value))
-    {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_WRITE_EXCEPTION(Address);
-    }
+    g_MMU->SD_VAddr((Address & ~7), Value);
 }
 
 uint64_t SDR_MASK[8] = { 0x00FFFFFFFFFFFFFF,
@@ -1403,26 +1319,15 @@ void R4300iOp::SDR()
     }
     Offset = Address & 7;
 
-    if (!g_MMU->LD_VAddr((Address & ~7), Value))
+    if (!g_MMU->LD_Memory((Address & ~7), Value))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_WRITE_EXCEPTION(Address);
+        GenerateTLBWriteException(Address, __FUNCTION__);
+        return;
     }
 
     Value &= SDR_MASK[Offset];
     Value += _GPR[m_Opcode.rt].UDW << SDR_SHIFT[Offset];
-
-    if (!g_MMU->SD_VAddr((Address & ~7), Value))
-    {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_WRITE_EXCEPTION(Address);
-    }
+    g_MMU->SD_VAddr((Address & ~7), Value);
 }
 
 void R4300iOp::SWR()
@@ -1436,26 +1341,17 @@ void R4300iOp::SWR()
     }
     Offset = Address & 3;
 
-    if (!g_MMU->LW_VAddr((Address & ~3), Value))
+    if (g_MMU->LW_Memory((Address & ~3), Value))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_WRITE_EXCEPTION(Address);
+        Value &= SWR_MASK[Offset];
+        Value += _GPR[m_Opcode.rt].UW[0] << SWR_SHIFT[Offset];
+        g_MMU->SW_VAddr((Address & ~0x03), Value);
+    }
+    else
+    {
+        GenerateTLBWriteException(Address, __FUNCTION__);
     }
 
-    Value &= SWR_MASK[Offset];
-    Value += _GPR[m_Opcode.rt].UW[0] << SWR_SHIFT[Offset];
-
-    if (!g_MMU->SW_VAddr((Address & ~0x03), Value))
-    {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_WRITE_EXCEPTION(Address);
-    }
 }
 
 void R4300iOp::CACHE()
@@ -1480,13 +1376,9 @@ void R4300iOp::LL()
         return;
     }
 
-    if (!g_MMU->LW_VAddr(Address, _GPR[m_Opcode.rt].UW[0]))
+    if (!g_MMU->LW_Memory(Address, _GPR[m_Opcode.rt].UW[0]))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_READ_EXCEPTION(Address);
+        GenerateTLBReadException(Address, __FUNCTION__);
     }
     else
     {
@@ -1507,13 +1399,9 @@ void R4300iOp::LWC1()
     {
         return;
     }
-    if (!g_MMU->LW_VAddr(Address, *(uint32_t *)_FPR_S[m_Opcode.ft]))
+    if (!g_MMU->LW_Memory(Address, *(uint32_t *)_FPR_S[m_Opcode.ft]))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_READ_EXCEPTION(Address);
+        GenerateTLBReadException(Address, __FUNCTION__);
     }
 }
 
@@ -1532,11 +1420,8 @@ void R4300iOp::SC()
     {
         if (!g_MMU->SW_VAddr(Address, _GPR[m_Opcode.rt].UW[0]))
         {
-            if (bShowTLBMisses())
-            {
-                g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-            }
-            TLB_WRITE_EXCEPTION(Address);
+            GenerateTLBWriteException(Address, __FUNCTION__);
+            return;
         }
     }
     _GPR[m_Opcode.rt].UW[0] = (*_LLBit);
@@ -1553,13 +1438,10 @@ void R4300iOp::LD()
     {
         return;
     }
-    if (!g_MMU->LD_VAddr(Address, _GPR[m_Opcode.rt].UDW))
+    if (!g_MMU->LD_Memory(Address, _GPR[m_Opcode.rt].UDW))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_WRITE_EXCEPTION(Address);
+        GenerateTLBWriteException(Address, __FUNCTION__);
+        return;
     }
 #ifdef Interpreter_StackTest
     if (m_Opcode.rt == 29)
@@ -1582,13 +1464,9 @@ void R4300iOp::LDC1()
     {
         return;
     }
-    if (!g_MMU->LD_VAddr(Address, *(uint64_t *)_FPR_D[m_Opcode.ft]))
+    if (!g_MMU->LD_Memory(Address, *(uint64_t *)_FPR_D[m_Opcode.ft]))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_READ_EXCEPTION(Address);
+        GenerateTLBReadException(Address, __FUNCTION__);
     }
 }
 
@@ -1607,11 +1485,7 @@ void R4300iOp::SWC1()
 
     if (!g_MMU->SW_VAddr(Address, *(uint32_t *)_FPR_S[m_Opcode.ft]))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_WRITE_EXCEPTION(Address);
+        GenerateTLBWriteException(Address, __FUNCTION__);
     }
 }
 
@@ -1631,11 +1505,7 @@ void R4300iOp::SDC1()
     }
     if (!g_MMU->SD_VAddr(Address, *(int64_t *)_FPR_D[m_Opcode.ft]))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_WRITE_EXCEPTION(Address);
+        GenerateTLBWriteException(Address, __FUNCTION__);
     }
 }
 
@@ -1652,11 +1522,7 @@ void R4300iOp::SD()
     }
     if (!g_MMU->SD_VAddr(Address, _GPR[m_Opcode.rt].UDW))
     {
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        TLB_WRITE_EXCEPTION(Address);
+        GenerateTLBWriteException(Address, __FUNCTION__);
     }
 }
 
@@ -3022,4 +2888,26 @@ bool R4300iOp::MemoryBreakpoint()
         return true;
     }
     return false;
+}
+
+void R4300iOp::GenerateTLBReadException(uint32_t VAddr, const char * function)
+{
+    if (bShowTLBMisses())
+    {
+        g_Notify->DisplayError(stdstr_f("%s TLB: %X", function, VAddr).c_str());
+    }
+    g_Reg->DoTLBReadMiss(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP, VAddr);
+    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+}
+
+void R4300iOp::GenerateTLBWriteException(uint32_t VAddr, const char * function)
+{
+    if (bShowTLBMisses())
+    {
+        g_Notify->DisplayError(stdstr_f("%s TLB: %X", function, VAddr).c_str());
+    }
+    g_Reg->DoTLBWriteMiss(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP, VAddr);
+    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
 }
