@@ -174,11 +174,11 @@ int main()
         }
         else if (_strnicmp(line.c_str(), "VersionPrefix = ", 15) == 0)
         {
-            size_t StartPrefix = line.find("\"", 15);
+            size_t StartPrefix = line.find('\"', 15);
             size_t EndPrefix = std::string::npos;
             if (StartPrefix != std::string::npos)
             {
-                EndPrefix = line.find("\"", StartPrefix + 1);
+                EndPrefix = line.find('\"', StartPrefix + 1);
             }
             if (EndPrefix != std::string::npos)
             {

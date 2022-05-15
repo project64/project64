@@ -93,11 +93,11 @@ void COptionsShortCutsPage::OnCpuStateChanged(UINT /*Code*/, int /*id*/, HWND /*
         }
 
         wstring str = wGS(Item->second.Title());
-        std::wstring::size_type pos = str.find(L"&");
+        std::wstring::size_type pos = str.find(L'&');
         while (pos != std::wstring::npos)
         {
             str.replace(pos, 1, L"");
-            pos = str.find(L"&", pos);
+            pos = str.find(L'&', pos);
         }
         pos = str.find(L"...");
         while (pos != std::wstring::npos)

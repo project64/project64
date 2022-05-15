@@ -157,7 +157,7 @@ void MD5::finalize()
     encode(digest, state, 16);
 
     // Zeroize sensitive information
-    memset(buffer, 0, sizeof(*buffer));
+    memset(buffer, 0, 64 * sizeof(uint1));
 
     finalized = 1;
 }

@@ -380,12 +380,12 @@ bool ConvertCheatEntry(std::string& CheatEntry, std::string& CheatOptions)
 {
     typedef std::vector<std::string> CodeEntries;
 
-    size_t StartOfName = CheatEntry.find("\"");
+    size_t StartOfName = CheatEntry.find('\"');
     if (StartOfName == std::string::npos)
     {
         return false;
     }
-    size_t EndOfName = CheatEntry.find("\"", StartOfName + 1);
+    size_t EndOfName = CheatEntry.find('\"', StartOfName + 1);
     if (EndOfName == std::string::npos)
     {
         return false;
@@ -642,12 +642,12 @@ void convertGS(const char* Directory)
 
 bool ParseCheatEntry(const stdstr & CheatEntry, const stdstr& CheatOptions, CEnhancement & Enhancement)
 {
-    size_t StartOfName = CheatEntry.find("\"");
+    size_t StartOfName = CheatEntry.find('\"');
     if (StartOfName == std::string::npos)
     {
         return false;
     }
-    size_t EndOfName = CheatEntry.find("\"", StartOfName + 1);
+    size_t EndOfName = CheatEntry.find('\"', StartOfName + 1);
     if (EndOfName == std::string::npos)
     {
         return false;

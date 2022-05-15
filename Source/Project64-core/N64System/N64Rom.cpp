@@ -674,7 +674,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
         if (GameIdentifiers.find(m_RomIdent.c_str()) == GameIdentifiers.end())
         {
             char InternalName[22] = { 0 };
-            memcpy(InternalName, (void *)(m_ROMImage + 0x20), 20);
+            memcpy(InternalName, (void *)(m_ROMImage + 0x20), 20 * sizeof(char));
             CN64Rom::CleanRomName(InternalName);
 
             std::string AltIdentifier = stdstr_f("%s-C:%X", stdstr(InternalName).Trim().ToUpper().c_str(), m_Country);
