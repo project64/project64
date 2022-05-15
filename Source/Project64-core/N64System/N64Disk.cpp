@@ -22,9 +22,7 @@ CN64Disk::CN64Disk() :
 {
 }
 
-CN64Disk::~CN64Disk()
-{
-}
+CN64Disk::~CN64Disk() = default;
 
 bool CN64Disk::LoadDiskImage(const char * FileLoc)
 {

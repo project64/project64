@@ -158,7 +158,7 @@ bool CEnhancmentFile::MoveToSection(const char * Section, bool ChangeCurrentSect
     if (ChangeCurrentSection)
     {
         SaveCurrentSection();
-        m_CurrentSection = "";
+        m_CurrentSection.clear();
         m_SectionName.clear();
         m_EnhancementList.clear();
     }
@@ -321,7 +321,7 @@ void CEnhancmentFile::SaveCurrentSection(void)
                 {
                     PluginList += ",";
                 }
-                PluginList += List[i].c_str();
+                PluginList += List[i];
             }
             Section += stdstr_f("Plugin List=%s%s", PluginList.c_str() , m_LineFeed);
         }

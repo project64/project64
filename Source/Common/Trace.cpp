@@ -23,9 +23,7 @@ class CTraceLog
     CriticalSection m_CS;
 
 public:
-    CTraceLog()
-    {
-    }
+    CTraceLog() = default;
     ~CTraceLog() { CloseTrace(); }
 
     void TraceMessage(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char * Message);

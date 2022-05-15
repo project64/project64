@@ -6,9 +6,7 @@
 #include <Windows.h>
 #endif
 
-stdstr::stdstr()
-{
-}
+stdstr::stdstr() = default;
 
 stdstr::stdstr(const std::string & str) :
     std::string(str)

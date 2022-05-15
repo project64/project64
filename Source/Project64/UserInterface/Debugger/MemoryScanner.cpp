@@ -145,9 +145,7 @@ CScanResult::CScanResult(AddressType addressType, DisplayFormat displayFormat) :
 {
 }
 
-CScanResult::~CScanResult(void)
-{
-}
+CScanResult::~CScanResult(void) = default;
 
 void CScanResult::SetDescription(const char* str)
 {

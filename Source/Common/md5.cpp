@@ -48,9 +48,7 @@ MD5::MD5()
     init();
 }
 
-MD5::~MD5()
-{
-}
+MD5::~MD5() = default;
 
 // MD5 block update operation. Continues an MD5 message-digest
 // operation, processing another message block, and updating the

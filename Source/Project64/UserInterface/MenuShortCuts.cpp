@@ -176,7 +176,7 @@ CMenuShortCutKey::CMenuShortCutKey(WORD key, bool bCtrl, bool bAlt, bool bShift,
     m_bUserAdded(bUserAdded),
     m_bInactive(bInactive)
 {
-    m_ShortCutName = L"";
+    m_ShortCutName.clear();
     for (int i = 0, n = sizeof(m_VirtualKeyList) / sizeof(m_VirtualKeyList[0]); i < n; i++)
     {
         if (key == m_VirtualKeyList[i].Key)
@@ -328,9 +328,7 @@ CShortCuts::CShortCuts()
     Load();
 }
 
-CShortCuts::~CShortCuts()
-{
-}
+CShortCuts::~CShortCuts() = default;
 
 std::wstring CShortCuts::ShortCutString(int MenuID, CMenuShortCutKey::RUNNING_STATE RunningState)
 {

@@ -271,8 +271,6 @@ void JoinFile(const char * Directory, const char * Target)
 void UpdateNames(const char* Directory, const char* RdbFile)
 {
     CIniFile RdbIni(RdbFile);
-
-    Files files;
     CPath SearchDir(Directory, "*.cht");
     if (SearchDir.FindFirst())
     {
@@ -658,8 +656,6 @@ bool ParseCheatEntry(const stdstr & CheatEntry, const stdstr& CheatOptions, CEnh
     const char * CheatString = &CheatEntry.c_str()[EndOfName + 2];
 
     CEnhancement::CodeOptions Options;
-    std::string OptionValue;
-
     CEnhancement::CodeEntries Entries;
     const char * ReadPos = CheatString;
     while (ReadPos)
@@ -682,7 +678,7 @@ bool ParseCheatEntry(const stdstr & CheatEntry, const stdstr& CheatOptions, CEnh
 
         CEnhancement::CodeEntry Entry;
         Entry.Command = CodeCommand;
-        Entry.Value = ValueStr;
+        Entry.Value = std::move(ValueStr);
         Entries.push_back(Entry);
     }
     Enhancement.SetEntries(Entries);

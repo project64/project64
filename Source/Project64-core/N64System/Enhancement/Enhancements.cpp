@@ -711,8 +711,8 @@ void CEnhancements::ScanFileThread(void)
 
     {
         CGuard Guard(m_CS);
-        m_CheatFiles = CheatFiles;
-        m_EnhancementFiles = EnhancementFiles;
+        m_CheatFiles = std::move(CheatFiles);
+        m_EnhancementFiles = std::move(EnhancementFiles);
         m_Scanned = true;
     }
 }

@@ -357,7 +357,7 @@ void CEnhancement::SetOverClock(bool OverClock, uint32_t OverClockModifier)
 void CEnhancement::CheckValid(void)
 {
     m_Valid = false;
-    m_OptionValue = "";
+    m_OptionValue.clear();
     m_CodeOptionSize = 0;
 
     if (m_Name.empty())
@@ -430,7 +430,7 @@ void CEnhancement::CheckValid(void)
     {
         return;
     }
-    m_OptionValue = OptionValue;
+    m_OptionValue = std::move(OptionValue);
     m_CodeOptionSize = CodeOptionSize;
     m_Valid = true;
     if (m_CodeOptionSize != 0)

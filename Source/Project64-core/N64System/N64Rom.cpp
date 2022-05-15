@@ -640,7 +640,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
 
     m_RomName = RomName;
     m_FileName = FileLoc;
-    m_MD5 = "";
+    m_MD5.clear();
 
     if (!LoadBootCodeOnly)
     {
@@ -681,7 +681,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
             AltIdentifier = RomDatabase.GetString(AltIdentifier.c_str(), "Alt Identifier", "");
             if (!AltIdentifier.empty())
             {
-                m_RomIdent = AltIdentifier;
+                m_RomIdent = std::move(AltIdentifier);
             }
         }
     }
@@ -832,7 +832,7 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
 
     m_RomName = RomName;
     m_FileName = FileLoc;
-    m_MD5 = "";
+    m_MD5.clear();
 
     if (!LoadBootCodeOnly)
     {

@@ -57,7 +57,7 @@ private:
             bSendClosePending(false),
             bSendClosed(false),
             bRecvClosed(false),
-            connectHost(""),
+            connectHost(),
             connectPort(0)
         {
         }

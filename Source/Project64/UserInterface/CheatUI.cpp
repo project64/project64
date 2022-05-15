@@ -794,7 +794,6 @@ bool CEditCheat::ReadEnhancement(CEnhancement & Enhancement)
 
     CEdit CheatOptions(GetDlgItem(IDC_CHEAT_OPTIONS));
     NumLines = CheatOptions.GetLineCount();
-    std::string OptionsStr;
     CEnhancement::CodeOptions Options;
     for (int i = 0; i < NumLines; i++)
     {

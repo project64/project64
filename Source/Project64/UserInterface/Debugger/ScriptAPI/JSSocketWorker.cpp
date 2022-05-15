@@ -602,7 +602,7 @@ void CJSSocketWorker::ClearQueue()
     m_Queue.bSendClosed = false;
     m_Queue.bFullClosePending = false;
     m_Queue.bConnectPending = false;
-    m_Queue.connectHost = "";
+    m_Queue.connectHost.clear();
     m_Queue.connectPort = 0;
     m_Queue.writes.clear();
 }

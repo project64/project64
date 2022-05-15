@@ -15,7 +15,6 @@ LRESULT CBitmapPicture::OnPaint(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPara
 	CRect rect;
 	GetClientRect(&rect);
 
-	CBrush PaintBrush;
 	HBRUSH OldBrush = dc.SelectBrush(m_BackgroundBrush);
 	dc.PatBlt(rect.left, rect.top, rect.Width(), rect.Height(), PATCOPY);
 	if (m_ResourceIcon)

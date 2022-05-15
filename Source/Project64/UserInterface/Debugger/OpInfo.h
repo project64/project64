@@ -10,9 +10,7 @@ public:
 
     OPCODE m_OpCode;
 
-    COpInfo()
-    {
-    }
+    COpInfo() = default;
 
     inline COpInfo(OPCODE opcode):
         m_OpCode(opcode)

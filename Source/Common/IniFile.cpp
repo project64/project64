@@ -293,7 +293,7 @@ bool CIniFileBase::MoveToSectionNameData(const char * lpSectionName, bool Change
     if (ChangeCurrentSection)
     {
         SaveCurrentSection();
-        m_CurrentSection = "";
+        m_CurrentSection.clear();
     }
 
     std::unique_ptr<char> Data;
@@ -560,7 +560,7 @@ bool CIniFileBase::DeleteSection(const char * lpSectionName)
     }
     m_File.Flush();
     ClearSectionPosList(0);
-    m_CurrentSection = "";
+    m_CurrentSection.clear();
     m_CurrentSectionData.clear();
     m_CurrentSectionFilePos = -1;
     return true;
@@ -682,7 +682,7 @@ void  CIniFileBase::SaveString(const char * lpSectionName, const char * lpKeyNam
 
     if (!MoveToSectionNameData(strSection.c_str(), true))
     {
-        m_CurrentSection = strSection;
+        m_CurrentSection = std::move(strSection);
         m_CurrentSectionData.clear();
         m_CurrentSectionFilePos = -1;
     }

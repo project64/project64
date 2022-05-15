@@ -608,7 +608,7 @@ void CRomBrowser::RomList_ColoumnSortList(uint32_t pnmh)
 
         for (count = NoOfSortKeys; count > 0; count--)
         {
-            UISettingsSaveStringIndex(RomBrowser_SortFieldIndex, count, UISettingsLoadStringIndex(RomBrowser_SortFieldIndex, count - 1).c_str());
+            UISettingsSaveStringIndex(RomBrowser_SortFieldIndex, count, UISettingsLoadStringIndex(RomBrowser_SortFieldIndex, count - 1));
             UISettingsSaveBoolIndex(RomBrowser_SortAscendingIndex, count, UISettingsLoadBoolIndex(RomBrowser_SortAscendingIndex, count - 1));
         }
         UISettingsSaveStringIndex(RomBrowser_SortFieldIndex, 0, m_Fields[index].Name());
@@ -828,7 +828,7 @@ void CRomBrowser::RomList_OpenRom(uint32_t /*pnmh*/)
 void CRomBrowser::RomList_PopupMenu(uint32_t /*pnmh*/)
 {
     LONG iItem = ListView_GetNextItem(m_hRomList, -1, LVNI_SELECTED);
-    m_SelectedRom = "";
+    m_SelectedRom.clear();
     if (iItem != -1)
     {
         LV_ITEM lvItem;
@@ -992,7 +992,7 @@ void CRomBrowser::SelectRomDir(void)
     std::wstring title = wGS(SELECT_ROM_DIR);
 
     WriteTrace(TraceUserInterface, TraceDebug, "1");
-    stdstr RomDir = g_Settings->LoadStringVal(RomList_GameDir).c_str();
+    stdstr RomDir = g_Settings->LoadStringVal(RomList_GameDir);
     bi.hwndOwner = m_MainWindow;
     bi.pidlRoot = nullptr;
     bi.pszDisplayName = SelectedDir;
