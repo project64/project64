@@ -157,7 +157,11 @@ void MD5::finalize()
     encode(digest, state, 16);
 
     // Zeroize sensitive information
+#ifdef _WIN32
+    RtlSecureZeroMemory(buffer, 64 * sizeof(uint1));
+#else
     memset(buffer, 0, 64 * sizeof(uint1));
+#endif
 
     finalized = 1;
 }
@@ -375,7 +379,11 @@ void MD5::transform(uint1 block[64])
     state[3] += d;
 
     // Zeroize sensitive information
+#ifdef _WIN32
+    RtlSecureZeroMemory((uint1 *)x, sizeof(x));
+#else
     memset((uint1 *)x, 0, sizeof(x));
+#endif
 }
 
 // Encodes input (UINT4) into output (unsigned char). Assumes len is
