@@ -302,6 +302,11 @@ void CDMA::PI_DMA_WRITE()
 
     if (PI_CART_ADDR_REG >= 0x10000000 && PI_CART_ADDR_REG <= 0x1FFFFFFF)
     {
+        if (g_Recompiler && g_System->bSMM_PIDMA())
+        {
+            g_Recompiler->ClearRecompCode_Phys(g_Reg->PI_DRAM_ADDR_REG, g_Reg->PI_WR_LEN_REG, CRecompiler::Remove_DMA);
+        }
+
         uint32_t i;
 
         uint8_t * ROM = g_Rom->GetRomAddress();
@@ -399,10 +404,6 @@ void CDMA::PI_DMA_WRITE()
         {
             g_System->SetDmaUsed(true);
             OnFirstDMA();
-        }
-        if (g_Recompiler && g_System->bSMM_PIDMA())
-        {
-            g_Recompiler->ClearRecompCode_Phys(g_Reg->PI_DRAM_ADDR_REG, g_Reg->PI_WR_LEN_REG, CRecompiler::Remove_DMA);
         }
 
         if(g_System->bRandomizeSIPIInterrupts())
