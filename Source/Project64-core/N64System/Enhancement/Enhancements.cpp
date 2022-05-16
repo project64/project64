@@ -468,29 +468,25 @@ void CEnhancements::ApplyGameSharkCodes(CMipsMemoryVM & MMU, CODES & CodeEntry, 
         ModifyMemory16(MMU, 0xA0000000 | (Code.Command() & 0xFFFFFF), Code.Value(), Code.HasDisableValue(), Code.DisableValue());
         break;
     case 0xD0000000:
-        MMU.MemoryValue8(0x80000000 | (Code.Command() & 0xFFFFFF), bMemory);
-        if (bMemory == Code.Value())
+        if (MMU.MemoryValue8(0x80000000 | (Code.Command() & 0xFFFFFF), bMemory) && bMemory == Code.Value())
         {
             ApplyGameSharkCodes(MMU, CodeEntry, CurrentEntry + 1);
         }
         break;
     case 0xD1000000:
-        MMU.MemoryValue16(0x80000000 | (Code.Command() & 0xFFFFFF), wMemory);
-        if (wMemory == Code.Value())
+        if (MMU.MemoryValue16(0x80000000 | (Code.Command() & 0xFFFFFF), wMemory) && wMemory == Code.Value())
         {
             ApplyGameSharkCodes(MMU, CodeEntry, CurrentEntry + 1);
         }
         break;
     case 0xD2000000:
-        MMU.MemoryValue8(0x80000000 | (Code.Command() & 0xFFFFFF), bMemory);
-        if (bMemory != Code.Value())
+        if (MMU.MemoryValue8(0x80000000 | (Code.Command() & 0xFFFFFF), bMemory) && bMemory != Code.Value())
         {
             ApplyGameSharkCodes(MMU, CodeEntry, CurrentEntry + 1);
         }
         break;
     case 0xD3000000:
-        MMU.MemoryValue16(0x80000000 | (Code.Command() & 0xFFFFFF), wMemory);
-        if (wMemory != Code.Value())
+        if (MMU.MemoryValue16(0x80000000 | (Code.Command() & 0xFFFFFF), wMemory) && wMemory != Code.Value())
         {
             ApplyGameSharkCodes(MMU, CodeEntry, CurrentEntry + 1);
         }
@@ -514,16 +510,14 @@ void CEnhancements::ApplyGameSharkCodes(CMipsMemoryVM & MMU, CODES & CodeEntry, 
         break;
     case 0xB8000000:
     case 0xBA000000:
-        MMU.MemoryValue8(0x80000000 | (ConvertXP64Address(Code.Command()) & 0xFFFFFF), bMemory);
-        if (bMemory == ConvertXP64Value(Code.Value()))
+        if (MMU.MemoryValue8(0x80000000 | (ConvertXP64Address(Code.Command()) & 0xFFFFFF), bMemory) && bMemory == ConvertXP64Value(Code.Value()))
         {
             ApplyGameSharkCodes(MMU, CodeEntry, CurrentEntry + 1);
         }
         break;
     case 0xB9000000:
     case 0xBB000000:
-        MMU.MemoryValue16(0x80000000 | (ConvertXP64Address(Code.Command()) & 0xFFFFFF), wMemory);
-        if (wMemory == ConvertXP64Value(Code.Value()))
+        if (MMU.MemoryValue16(0x80000000 | (ConvertXP64Address(Code.Command()) & 0xFFFFFF), wMemory) && wMemory == ConvertXP64Value(Code.Value()))
         {
             ApplyGameSharkCodes(MMU, CodeEntry, CurrentEntry + 1);
         }
@@ -585,12 +579,9 @@ void CEnhancements::ModifyMemory8(CMipsMemoryVM & MMU, uint32_t Address, uint8_t
     {
         OriginalValue.Original = DisableValue;
     }
-    else
+    else if (!MMU.MemoryValue8(Address, OriginalValue.Original))
     {
-        if (!MMU.MemoryValue8(Address, OriginalValue.Original))
-        {
-            return;
-        }
+        return;
     }
     if (OriginalValue.Original == Value)
     {
@@ -612,12 +603,9 @@ void CEnhancements::ModifyMemory16(CMipsMemoryVM & MMU, uint32_t Address, uint16
     {
         OriginalValue.Original = DisableValue;
     }
-    else
+    else if (!MMU.MemoryValue16(Address, OriginalValue.Original))
     {
-        if (!MMU.MemoryValue16(Address, OriginalValue.Original))
-        {
-            return;
-        }
+        return;
     }
     if (OriginalValue.Original == Value)
     {

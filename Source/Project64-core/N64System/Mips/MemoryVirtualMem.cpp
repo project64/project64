@@ -267,178 +267,100 @@ void CMipsMemoryVM::FreeMemory()
     CPifRam::Reset();
 }
 
-bool CMipsMemoryVM::MemoryValue8(uint32_t VAddr, uint8_t& Value)
+uint8_t * CMipsMemoryVM::MemoryPtr(uint32_t VAddr, uint32_t size, bool Read)
 {
     if (m_TLB_ReadMap[VAddr >> 12] == -1)
     {
-        return false;
+        return nullptr;
     }
-    uint32_t PAddr = (m_TLB_ReadMap[VAddr >> 12] + VAddr) ^ 3;
-    if (PAddr < m_AllocatedRdramSize)
+    uint32_t PAddr = m_TLB_ReadMap[VAddr >> 12] + VAddr;
+    if ((PAddr + size) < m_AllocatedRdramSize)
     {
-        Value = *(uint8_t*)(m_RDRAM + PAddr);
-        return true;
+        return (uint8_t*)(m_RDRAM + PAddr);
     }
 
-    if (PAddr >= 0x04000000 && PAddr < 0x04001000)
+    if (PAddr >= 0x04000000 && (PAddr + size) < 0x04001000)
     {
-        Value = *(uint8_t*)(m_DMEM + (PAddr - 0x04000000));
-        return true;
+        return (uint8_t*)(m_DMEM + (PAddr - 0x04000000));
     }
-    if (PAddr >= 0x04001000 && PAddr < 0x04002000)
+    if (PAddr >= 0x04001000 && (PAddr + size) < 0x04002000)
     {
-        Value = *(uint8_t*)(m_IMEM + (PAddr - 0x04001000));
-        return true;
+        return (uint8_t*)(m_IMEM + (PAddr - 0x04001000));
     }
+    if (Read && PAddr >= 0x10000000 && (PAddr + size) < (0x10000000 + m_Rom.GetRomSize()))
+    {
+        return (uint8_t *)&m_Rom.GetRomAddress()[PAddr - 0x10000000];
+    }
+
     g_Notify->BreakPoint(__FILE__, __LINE__);
-    return false;
+    return nullptr;
+
+}
+
+bool CMipsMemoryVM::MemoryValue8(uint32_t VAddr, uint8_t & Value)
+{
+    uint8_t * ptr = MemoryPtr(VAddr ^ 3, 1, true);
+    if (ptr == nullptr)
+    {
+        return false;
+    }
+    Value = *ptr;
+    return true;
 }
 
 bool CMipsMemoryVM::MemoryValue16(uint32_t VAddr, uint16_t& Value)
 {
-    if (m_TLB_ReadMap[VAddr >> 12] == -1)
+    uint8_t * ptr = MemoryPtr(VAddr ^ 2, 2, true);
+    if (ptr == nullptr)
     {
         return false;
     }
-    uint32_t PAddr = (m_TLB_ReadMap[VAddr >> 12] + VAddr) ^ 2;
-    if (PAddr < m_AllocatedRdramSize)
-    {
-        Value = *(uint16_t*)(m_RDRAM + PAddr);
-        return true;
-    }
-
-    if (PAddr >= 0x04000000 && PAddr < 0x04001000)
-    {
-        Value = *(uint16_t*)(m_DMEM + (PAddr - 0x04000000));
-        return true;
-    }
-    if (PAddr >= 0x04001000 && PAddr < 0x04002000)
-    {
-        Value = *(uint16_t*)(m_IMEM + (PAddr - 0x04001000));
-        return true;
-    }
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    return false;
+    Value = *(uint16_t*)(ptr);
+    return true;
 }
 
 bool CMipsMemoryVM::MemoryValue32(uint32_t VAddr, uint32_t& Value)
 {
-    if (m_TLB_ReadMap[VAddr >> 12] == -1)
+    uint8_t * ptr = MemoryPtr(VAddr, 4, true);
+    if (ptr == nullptr)
     {
         return false;
     }
-    uint32_t PAddr = m_TLB_ReadMap[VAddr >> 12] + VAddr;
-    if (PAddr < m_AllocatedRdramSize)
-    {
-        Value = *(uint32_t*)(m_RDRAM + PAddr);
-        return true;
-    }
-
-    if (PAddr >= 0x04000000 && PAddr < 0x04001000)
-    {
-        Value = *(uint32_t*)(m_DMEM + (PAddr - 0x04000000));
-        return true;
-    }
-    if (PAddr >= 0x04001000 && PAddr < 0x04002000)
-    {
-        Value = *(uint32_t*)(m_IMEM + (PAddr - 0x04001000));
-        return true;
-    }
-    if (PAddr >= 0x10000000 && PAddr < 0x16000000)
-    {
-        if ((PAddr & 0xFFFFFFF) < m_Rom.GetRomSize())
-        {
-            Value = *(uint32_t *)&m_Rom.GetRomAddress()[(PAddr & 0xFFFFFFF)];
-        }
-        else
-        {
-            Value = (PAddr << 16) | (PAddr & 0xFFFF);
-        }
-        return true;
-    }
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    return false;
+    Value = *(uint32_t*)(ptr);
+    return true;
 }
 
 bool CMipsMemoryVM::UpdateMemoryValue8(uint32_t VAddr, uint8_t Value)
 {
-    if (m_TLB_ReadMap[VAddr >> 12] == -1)
+    uint8_t * ptr = MemoryPtr(VAddr ^ 3, 1, false);
+    if (ptr == nullptr)
     {
         return false;
     }
-    uint32_t PAddr = (m_TLB_ReadMap[VAddr >> 12] + VAddr) ^ 3;
-    if (PAddr < m_AllocatedRdramSize)
-    {
-        *(uint8_t*)(m_RDRAM + PAddr) = Value;
-        return true;
-    }
-
-    if (PAddr >= 0x04000000 && PAddr < 0x04001000)
-    {
-        *(uint8_t*)(m_DMEM + (PAddr - 0x04000000)) = Value;
-        return true;
-    }
-    if (PAddr >= 0x04001000 && PAddr < 0x04002000)
-    {
-        *(uint8_t*)(m_IMEM + (PAddr - 0x04001000)) = Value;
-        return true;
-    }
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    return false;
+    *ptr = Value;
+    return true;
 }
 
 bool CMipsMemoryVM::UpdateMemoryValue16(uint32_t VAddr, uint16_t Value)
 {
-    if (m_TLB_ReadMap[VAddr >> 12] == -1)
+    uint8_t * ptr = MemoryPtr(VAddr ^ 2, 2, false);
+    if (ptr == nullptr)
     {
         return false;
     }
-    uint32_t PAddr = (m_TLB_ReadMap[VAddr >> 12] + VAddr) ^ 2;
-    if (PAddr < m_AllocatedRdramSize)
-    {
-        *(uint16_t*)(m_RDRAM + PAddr) = Value;
-        return true;
-    }
-
-    if (PAddr >= 0x04000000 && PAddr < 0x04001000)
-    {
-        *(uint16_t*)(m_DMEM + (PAddr - 0x04000000)) = Value;
-        return true;
-    }
-    if (PAddr >= 0x04001000 && PAddr < 0x04002000)
-    {
-        *(uint16_t*)(m_IMEM + (PAddr - 0x04001000)) = Value;
-        return true;
-    }
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    return false;
+    *(uint16_t*)(ptr) = Value;
+    return true;
 }
 
 bool CMipsMemoryVM::UpdateMemoryValue32(uint32_t VAddr, uint32_t Value)
 {
-    if (m_TLB_ReadMap[VAddr >> 12] == -1)
+    uint8_t * ptr = MemoryPtr(VAddr, 4, false);
+    if (ptr == nullptr)
     {
         return false;
     }
-    uint32_t PAddr = m_TLB_ReadMap[VAddr >> 12] + VAddr;
-    if (PAddr < m_AllocatedRdramSize)
-    {
-        *(uint32_t*)(m_RDRAM + PAddr) = Value;
-        return true;
-    }
-
-    if (PAddr >= 0x04000000 && PAddr < 0x04001000)
-    {
-        *(uint32_t*)(m_DMEM + (PAddr - 0x04000000)) = Value;
-        return true;
-    }
-    if (PAddr >= 0x04001000 && PAddr < 0x04002000)
-    {
-        *(uint32_t*)(m_IMEM + (PAddr - 0x04001000)) = Value;
-        return true;
-    }
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    return false;
+    *(uint32_t*)(ptr) = Value;
+    return true;
 }
 
 bool CMipsMemoryVM::LB_Memory(uint32_t VAddr, uint8_t& Value)
@@ -822,7 +744,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t VAddr, uint32_t Value)
     return true;
 }
 
-bool CMipsMemoryVM::SD_NonMemory(uint32_t VAddr, uint64_t Value)
+bool CMipsMemoryVM::SD_NonMemory(uint32_t VAddr, uint64_t /*Value*/)
 {
     uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
     if (BaseAddress == -1)

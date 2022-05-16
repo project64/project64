@@ -66,26 +66,17 @@ CCodeBlock::CCodeBlock(CMipsMemoryVM & MMU, uint32_t VAddrEnter, uint8_t * Compi
     m_SectionMap.insert(SectionMap::value_type(VAddrEnter, m_EnterSection));
 
     uint32_t PAddr;
-    if (!MMU.VAddrToPAddr(VAddrEnter, PAddr))
+    memset(m_MemLocation, 0, sizeof(m_MemLocation));
+    memset(m_MemContents, 0, sizeof(m_MemContents));
+
+    m_MemLocation[0] = (uint64_t *)MMU.MemoryPtr(VAddrEnter, 16, true);
+    if (m_MemLocation[0] != 0)
     {
-        memset(m_MemLocation, 0, sizeof(m_MemLocation));
-        memset(m_MemContents, 0, sizeof(m_MemContents));
-        return;
-    }
-    if (PAddr + 16 < MMU.RdramSize())
-    {
-        m_MemLocation[0] = (uint64_t *)(MMU.Rdram() + PAddr);
         m_MemLocation[1] = m_MemLocation[0] + 1;
         m_MemContents[0] = *m_MemLocation[0];
         m_MemContents[1] = *m_MemLocation[1];
+        AnalyseBlock();
     }
-    else
-    {
-        memset(m_MemLocation, 0, sizeof(m_MemLocation));
-        memset(m_MemContents, 0, sizeof(m_MemContents));
-        return;
-    }
-    AnalyseBlock();
 }
 
 CCodeBlock::~CCodeBlock()
