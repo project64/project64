@@ -2915,44 +2915,26 @@ void CX86RecompilerOps::LB()
     {
         ProtectGPR(m_Opcode.rt);
     }
-    x86Reg TempReg1, TempReg2;
-    if (IsMapped(m_Opcode.base))
-    {
-        ProtectGPR(m_Opcode.base);
-        if (m_Opcode.offset != 0)
-        {
-            TempReg1 = Map_TempReg(x86_Any, -1, false);
-            LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-        }
-        else
-        {
-            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        }
-    }
-    else
-    {
-        TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
-    }
-    TestReadBreakpoint(TempReg1, (void *)x86TestReadBreakpoint8, "x86TestReadBreakpoint8");
+    x86Reg AddressReg = BaseOffsetAddress(false), TempReg2;
+    TestReadBreakpoint(AddressReg, (void *)x86TestReadBreakpoint8, "x86TestReadBreakpoint8");
     TempReg2 = Map_TempReg(x86_Any, -1, false);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    MoveX86RegToX86Reg(AddressReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_MemoryReadMap, "MMU->m_MemoryReadMap", TempReg2, TempReg2, 4);
     CompConstToX86reg(TempReg2, (uint32_t)-1);
     JneLabel8(stdstr_f("MemoryReadMap_%X_Found", m_CompilePC).c_str(), 0);
     uint8_t * JumpFound = (uint8_t *)(*g_RecompPos - 1);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    MoveX86RegToX86Reg(AddressReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
-    CompileReadTLBMiss(TempReg1, TempReg2);
+    CompileReadTLBMiss(AddressReg, TempReg2);
     AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
-    XorConstToX86Reg(TempReg1, 3);
+    XorConstToX86Reg(AddressReg, 3);
     Map_GPR_32bit(m_Opcode.rt, true, -1);
-    MoveSxByteX86regPointerToX86reg(TempReg1, TempReg2, GetMipsRegMapLo(m_Opcode.rt));
+    MoveSxByteX86regPointerToX86reg(AddressReg, TempReg2, GetMipsRegMapLo(m_Opcode.rt));
 }
 
 void CX86RecompilerOps::LH()
@@ -2977,45 +2959,27 @@ void CX86RecompilerOps::LH()
         ProtectGPR(m_Opcode.rt);
     }
 
-    x86Reg TempReg1;
-    if (IsMapped(m_Opcode.base))
-    {
-        ProtectGPR(m_Opcode.base);
-        if (m_Opcode.offset != 0)
-        {
-            TempReg1 = Map_TempReg(x86_Any, -1, false);
-            LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-        }
-        else
-        {
-            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        }
-    }
-    else
-    {
-        TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
-    }
-    TestReadBreakpoint(TempReg1, (void *)x86TestReadBreakpoint16, "x86TestReadBreakpoint16");
+    x86Reg AddressReg = BaseOffsetAddress(false);
+    TestReadBreakpoint(AddressReg, (void *)x86TestReadBreakpoint16, "x86TestReadBreakpoint16");
 
     x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    MoveX86RegToX86Reg(AddressReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_MemoryReadMap, "MMU->m_MemoryReadMap", TempReg2, TempReg2, 4);
     CompConstToX86reg(TempReg2, (uint32_t)-1);
     JneLabel8(stdstr_f("MemoryReadMap_%X_Found", m_CompilePC).c_str(), 0);
     uint8_t * JumpFound = (uint8_t *)(*g_RecompPos - 1);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    MoveX86RegToX86Reg(AddressReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
-    CompileReadTLBMiss(TempReg1, TempReg2);
+    CompileReadTLBMiss(AddressReg, TempReg2);
     AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
-    XorConstToX86Reg(TempReg1, 2);
+    XorConstToX86Reg(AddressReg, 2);
     Map_GPR_32bit(m_Opcode.rt, true, -1);
-    MoveSxHalfX86regPointerToX86reg(TempReg1, TempReg2, GetMipsRegMapLo(m_Opcode.rt));
+    MoveSxHalfX86regPointerToX86reg(AddressReg, TempReg2, GetMipsRegMapLo(m_Opcode.rt));
 }
 
 void CX86RecompilerOps::LWL()
@@ -3045,30 +3009,12 @@ void CX86RecompilerOps::LWL()
     }
 
     PreReadInstruction();
-    x86Reg shift = Map_TempReg(x86_ECX, -1, false), TempReg1 = x86_Unknown;
+    x86Reg shift = Map_TempReg(x86_ECX, -1, false);
     if (IsMapped(m_Opcode.rt))
     {
         ProtectGPR(m_Opcode.rt);
     }
-    if (IsMapped(m_Opcode.base))
-    {
-        ProtectGPR(m_Opcode.base);
-        if (m_Opcode.offset != 0)
-        {
-            TempReg1 = Map_TempReg(x86_Any, -1, false);
-            LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-        }
-        else
-        {
-            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        }
-        UnProtectGPR(m_Opcode.base);
-    }
-    else
-    {
-        TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
-    }
+    x86Reg TempReg1 = BaseOffsetAddress(false);
     x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
     MoveX86RegToX86Reg(TempReg1, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
@@ -3106,11 +3052,10 @@ void CX86RecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
 {
     if (m_Opcode.rt == 0) return;
 
-    x86Reg TempReg1, TempReg2;
     if (!HaveReadBP() && m_Opcode.base == 29 && g_System->bFastSP())
     {
         Map_GPR_32bit(m_Opcode.rt, ResultSigned, -1);
-        TempReg1 = Map_MemoryStack(x86_Any, true);
+        x86Reg TempReg1 = Map_MemoryStack(x86_Any, true);
         MoveVariableDispToX86Reg((void *)((uint32_t)(int16_t)m_Opcode.offset), stdstr_f("%Xh", (int16_t)m_Opcode.offset).c_str(), GetMipsRegMapLo(m_Opcode.rt), TempReg1, 1);
         if (bRecordLLBit)
         {
@@ -3143,33 +3088,9 @@ void CX86RecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
         {
             ProtectGPR(m_Opcode.rt);
         }
-        if (IsMapped(m_Opcode.base) && m_Opcode.offset == 0)
-        {
-            ProtectGPR(m_Opcode.base);
-            TempReg1 = GetMipsRegMapLo(m_Opcode.base);
-        }
-        else
-        {
-            if (IsMapped(m_Opcode.base))
-            {
-                ProtectGPR(m_Opcode.base);
-                if (m_Opcode.offset != 0) {
-                    TempReg1 = Map_TempReg(x86_Any, -1, false);
-                    LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-                }
-                else
-                {
-                    TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-                }
-            }
-            else
-            {
-                TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-                AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
-            }
-        }
+        x86Reg TempReg1 = BaseOffsetAddress(true);
         TestReadBreakpoint(TempReg1, (void *)x86TestReadBreakpoint32, "x86TestReadBreakpoint32");
-        TempReg2 = Map_TempReg(x86_Any, -1, false);
+        x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
         MoveX86RegToX86Reg(TempReg1, TempReg2);
         ShiftRightUnsignImmed(TempReg2, 12);
         MoveVariableDispToX86Reg(g_MMU->m_MemoryReadMap, "MMU->m_MemoryReadMap", TempReg2, TempReg2, 4);
@@ -3463,8 +3384,6 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
 
 void CX86RecompilerOps::LBU()
 {
-    x86Reg TempReg1, TempReg2;
-
     if (m_Opcode.rt == 0)
     {
         return;
@@ -3487,43 +3406,26 @@ void CX86RecompilerOps::LBU()
     {
         ProtectGPR(m_Opcode.rt);
     }
-    if (IsMapped(m_Opcode.base))
-    {
-        ProtectGPR(m_Opcode.base);
-        if (m_Opcode.offset != 0)
-        {
-            TempReg1 = Map_TempReg(x86_Any, -1, false);
-            LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-        }
-        else
-        {
-            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        }
-    }
-    else
-    {
-        TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
-    }
-    TestReadBreakpoint(TempReg1, (void *)x86TestReadBreakpoint8, "x86TestReadBreakpoint8");
-    TempReg2 = Map_TempReg(x86_Any, -1, false);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    x86Reg AddressReg = BaseOffsetAddress(false);
+    TestReadBreakpoint(AddressReg, (void *)x86TestReadBreakpoint8, "x86TestReadBreakpoint8");
+    x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
+    MoveX86RegToX86Reg(AddressReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_MemoryReadMap, "MMU->m_MemoryReadMap", TempReg2, TempReg2, 4);
     CompConstToX86reg(TempReg2, (uint32_t)-1);
     JneLabel8(stdstr_f("MemoryReadMap_%X_Found", m_CompilePC).c_str(), 0);
     uint8_t * JumpFound = (uint8_t *)(*g_RecompPos - 1);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    MoveX86RegToX86Reg(AddressReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
-    CompileReadTLBMiss(TempReg1, TempReg2);
+    CompileReadTLBMiss(AddressReg, TempReg2);
     AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
-    XorConstToX86Reg(TempReg1, 3);
+    XorConstToX86Reg(AddressReg, 3);
     Map_GPR_32bit(m_Opcode.rt, false, -1);
-    MoveZxByteX86regPointerToX86reg(TempReg1, TempReg2, GetMipsRegMapLo(m_Opcode.rt));
+    MoveZxByteX86regPointerToX86reg(AddressReg, TempReg2, GetMipsRegMapLo(m_Opcode.rt));
 }
 
 void CX86RecompilerOps::LHU()
@@ -3551,50 +3453,30 @@ void CX86RecompilerOps::LHU()
         ProtectGPR(m_Opcode.rt);
     }
 
-    x86Reg TempReg1, TempReg2;
-    if (IsMapped(m_Opcode.base))
-    {
-        ProtectGPR(m_Opcode.base);
-        if (m_Opcode.offset != 0)
-        {
-            TempReg1 = Map_TempReg(x86_Any, -1, false);
-            LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-        }
-        else
-        {
-            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        }
-    }
-    else
-    {
-        TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
-    }
-    TestReadBreakpoint(TempReg1, (void *)x86TestReadBreakpoint16, "x86TestReadBreakpoint16");
+    x86Reg AddressReg = BaseOffsetAddress(false), TempReg2;
+    TestReadBreakpoint(AddressReg, (void *)x86TestReadBreakpoint16, "x86TestReadBreakpoint16");
     TempReg2 = Map_TempReg(x86_Any, -1, false);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    MoveX86RegToX86Reg(AddressReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_MemoryReadMap, "MMU->m_MemoryReadMap", TempReg2, TempReg2, 4);
     CompConstToX86reg(TempReg2, (uint32_t)-1);
     JneLabel8(stdstr_f("MemoryReadMap_%X_Found", m_CompilePC).c_str(), 0);
     uint8_t * JumpFound = (uint8_t *)(*g_RecompPos - 1);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    MoveX86RegToX86Reg(AddressReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
-    CompileReadTLBMiss(TempReg1, TempReg2);
+    CompileReadTLBMiss(AddressReg, TempReg2);
     AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
-    XorConstToX86Reg(TempReg1, 2);
+    XorConstToX86Reg(AddressReg, 2);
     Map_GPR_32bit(m_Opcode.rt, false, -1);
-    MoveZxHalfX86regPointerToX86reg(TempReg1, TempReg2, GetMipsRegMapLo(m_Opcode.rt));
+    MoveZxHalfX86regPointerToX86reg(AddressReg, TempReg2, GetMipsRegMapLo(m_Opcode.rt));
 }
 
 void CX86RecompilerOps::LWR()
 {
-    x86Reg TempReg1 = x86_Unknown, shift = x86_Unknown;
-
     if (m_Opcode.rt == 0)
     {
         return;
@@ -3619,30 +3501,12 @@ void CX86RecompilerOps::LWR()
     }
 
     PreReadInstruction();
-    shift = Map_TempReg(x86_ECX, -1, false);
+    x86Reg shift = Map_TempReg(x86_ECX, -1, false);
     if (IsMapped(m_Opcode.rt))
     {
         ProtectGPR(m_Opcode.rt);
     }
-    if (IsMapped(m_Opcode.base))
-    {
-        ProtectGPR(m_Opcode.base);
-        if (m_Opcode.offset != 0)
-        {
-            TempReg1 = Map_TempReg(x86_Any, -1, false);
-            LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-        }
-        else
-        {
-            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        }
-        UnProtectGPR(m_Opcode.base);
-    }
-    else
-    {
-        TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
-    }
+    x86Reg TempReg1 = BaseOffsetAddress(false);
 
     TestReadBreakpoint(TempReg1, (void *)x86TestReadBreakpoint32, "x86TestReadBreakpoint32");
     x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
@@ -3681,8 +3545,6 @@ void CX86RecompilerOps::LWU()
 
 void CX86RecompilerOps::SB()
 {
-    x86Reg TempReg1, TempReg2;
-
     if (IsConst(m_Opcode.base))
     {
         uint32_t Address = (GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset) ^ 3;
@@ -3714,27 +3576,9 @@ void CX86RecompilerOps::SB()
         ProtectGPR(m_Opcode.rt);
     }
 
-    if (IsMapped(m_Opcode.base))
-    {
-        ProtectGPR(m_Opcode.base);
-        if (m_Opcode.offset != 0)
-        {
-            TempReg1 = Map_TempReg(x86_Any, -1, false);
-            LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-        }
-        else
-        {
-            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        }
-        UnProtectGPR(m_Opcode.base);
-    }
-    else
-    {
-        TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
-    }
-    Compile_StoreInstructClean(TempReg1, 4);
-    TestWriteBreakpoint(TempReg1, (void *)x86TestWriteBreakpoint8, "x86TestWriteBreakpoint8");
+    x86Reg AddressReg = BaseOffsetAddress(false);
+    Compile_StoreInstructClean(AddressReg, 4);
+    TestWriteBreakpoint(AddressReg, (void *)x86TestWriteBreakpoint8, "x86TestWriteBreakpoint8");
 
     x86Reg TempRtReg = IsUnknown(m_Opcode.rt) ? Map_TempReg(x86_Any8Bit, -1, false) : x86_Any8Bit;
     if (IsMapped(m_Opcode.rt) && !Is8BitReg(GetMipsRegMapLo(m_Opcode.rt)))
@@ -3742,41 +3586,39 @@ void CX86RecompilerOps::SB()
         UnProtectGPR(m_Opcode.rt);
         TempRtReg = Map_TempReg(x86_Any8Bit, -1, false);
     }
-    TempReg2 = Map_TempReg(x86_Any, -1, false);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
+    MoveX86RegToX86Reg(AddressReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
 
     MoveVariableDispToX86Reg(g_MMU->m_MemoryWriteMap, "MMU->m_MemoryWriteMap", TempReg2, TempReg2, 4);
     CompConstToX86reg(TempReg2, (uint32_t)-1);
     JneLabel8(stdstr_f("MemoryWriteMap_%X_Found", m_CompilePC).c_str(), 0);
     uint8_t * JumpFound = (uint8_t *)(*g_RecompPos - 1);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    MoveX86RegToX86Reg(AddressReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
-    CompileWriteTLBMiss(TempReg1, TempReg2);
+    CompileWriteTLBMiss(AddressReg, TempReg2);
     AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
-    XorConstToX86Reg(TempReg1, 3);
+    XorConstToX86Reg(AddressReg, 3);
     if (IsConst(m_Opcode.rt))
     {
-        MoveConstByteToX86regPointer((uint8_t)(GetMipsRegLo(m_Opcode.rt) & 0xFF), TempReg1, TempReg2);
+        MoveConstByteToX86regPointer((uint8_t)(GetMipsRegLo(m_Opcode.rt) & 0xFF), AddressReg, TempReg2);
     }
     else if (IsMapped(m_Opcode.rt) && Is8BitReg(GetMipsRegMapLo(m_Opcode.rt)))
     {
-        MoveX86regByteToX86regPointer(GetMipsRegMapLo(m_Opcode.rt), TempReg1, TempReg2);
+        MoveX86regByteToX86regPointer(GetMipsRegMapLo(m_Opcode.rt), AddressReg, TempReg2);
     }
     else
     {
-        MoveX86regByteToX86regPointer(Map_TempReg(TempRtReg, m_Opcode.rt, false), TempReg1, TempReg2);
+        MoveX86regByteToX86regPointer(Map_TempReg(TempRtReg, m_Opcode.rt, false), AddressReg, TempReg2);
     }
 }
 
 void CX86RecompilerOps::SH()
 {
-    x86Reg TempReg1, TempReg2;
-
     if (IsConst(m_Opcode.base))
     {
         uint32_t Address = (GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset) ^ 2;
@@ -3807,59 +3649,41 @@ void CX86RecompilerOps::SH()
         ProtectGPR(m_Opcode.rt);
     }
 
-    if (IsMapped(m_Opcode.base))
-    {
-        ProtectGPR(m_Opcode.base);
-        if (m_Opcode.offset != 0)
-        {
-            TempReg1 = Map_TempReg(x86_Any, -1, false);
-            LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-        }
-        else
-        {
-            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        }
-        UnProtectGPR(m_Opcode.base);
-    }
-    else
-    {
-        TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
-    }
-    TestWriteBreakpoint(TempReg1, (void *)x86TestWriteBreakpoint16, "x86TestWriteBreakpoint16");
+    x86Reg AddressReg = BaseOffsetAddress(false);
+    TestWriteBreakpoint(AddressReg, (void *)x86TestWriteBreakpoint16, "x86TestWriteBreakpoint16");
 
     x86Reg RtTemp = x86_Any;
     if (!IsConst(m_Opcode.rt) && !IsMapped(m_Opcode.rt))
     {
         RtTemp = Map_TempReg(x86_Any, m_Opcode.rt, false);
     }
-    TempReg2 = Map_TempReg(x86_Any, -1, false);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
+    MoveX86RegToX86Reg(AddressReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_MemoryWriteMap, "MMU->m_MemoryWriteMap", TempReg2, TempReg2, 4);
     CompConstToX86reg(TempReg2, (uint32_t)-1);
     JneLabel8(stdstr_f("MemoryWriteMap_%X_Found", m_CompilePC).c_str(), 0);
     uint8_t * JumpFound = (uint8_t *)(*g_RecompPos - 1);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    MoveX86RegToX86Reg(AddressReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
-    CompileWriteTLBMiss(TempReg1, TempReg2);
+    CompileWriteTLBMiss(AddressReg, TempReg2);
     AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
-    XorConstToX86Reg(TempReg1, 2);
+    XorConstToX86Reg(AddressReg, 2);
     if (IsConst(m_Opcode.rt))
     {
-        MoveConstHalfToX86regPointer((uint16_t)(GetMipsRegLo(m_Opcode.rt) & 0xFFFF), TempReg1, TempReg2);
+        MoveConstHalfToX86regPointer((uint16_t)(GetMipsRegLo(m_Opcode.rt) & 0xFFFF), AddressReg, TempReg2);
     }
     else if (IsMapped(m_Opcode.rt))
     {
-        MoveX86regHalfToX86regPointer(GetMipsRegMapLo(m_Opcode.rt), TempReg1, TempReg2);
+        MoveX86regHalfToX86regPointer(GetMipsRegMapLo(m_Opcode.rt), AddressReg, TempReg2);
     }
     else
     {
-        MoveX86regHalfToX86regPointer(RtTemp, TempReg1, TempReg2);
+        MoveX86regHalfToX86regPointer(RtTemp, AddressReg, TempReg2);
     }
 }
 
@@ -3887,26 +3711,7 @@ void CX86RecompilerOps::SWL()
         return;
     }
     PreWriteInstruction();
-    x86Reg shift = Map_TempReg(x86_ECX, -1, false), TempReg1 = x86_Unknown;
-    if (IsMapped(m_Opcode.base))
-    {
-        ProtectGPR(m_Opcode.base);
-        if (m_Opcode.offset != 0)
-        {
-            TempReg1 = Map_TempReg(x86_Any, -1, false);
-            LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-        }
-        else
-        {
-            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        }
-        UnProtectGPR(m_Opcode.base);
-    }
-    else
-    {
-        TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
-    }
+    x86Reg shift = Map_TempReg(x86_ECX, -1, false), TempReg1 = BaseOffsetAddress(false);
     TestWriteBreakpoint(TempReg1, (void *)x86TestWriteBreakpoint32, "x86TestWriteBreakpoint32");
 
     x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
@@ -3975,7 +3780,6 @@ void CX86RecompilerOps::SW()
 
 void CX86RecompilerOps::SW(bool bCheckLLbit)
 {
-    x86Reg TempReg1, TempReg2;
     if (!HaveWriteBP() && m_Opcode.base == 29 && g_System->bFastSP())
     {
         if (bCheckLLbit)
@@ -3986,7 +3790,7 @@ void CX86RecompilerOps::SW(bool bCheckLLbit)
         {
             ProtectGPR(m_Opcode.rt);
         }
-        TempReg1 = Map_MemoryStack(x86_Any, true);
+        x86Reg TempReg1 = Map_MemoryStack(x86_Any, true);
 
         if (IsConst(m_Opcode.rt))
         {
@@ -3998,7 +3802,7 @@ void CX86RecompilerOps::SW(bool bCheckLLbit)
         }
         else
         {
-            TempReg2 = Map_TempReg(x86_Any, m_Opcode.rt, false);
+            x86Reg TempReg2 = Map_TempReg(x86_Any, m_Opcode.rt, false);
             MoveX86regToMemory(TempReg2, TempReg1, (uint32_t)((int16_t)m_Opcode.offset));
         }
     }
@@ -4041,44 +3845,6 @@ void CX86RecompilerOps::SW(bool bCheckLLbit)
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         UpdateCounters(m_RegWorkingSet, false, true);
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-        if (IsMapped(m_Opcode.base))
-        {
-            ProtectGPR(m_Opcode.base);
-            if (m_Opcode.offset != 0)
-            {
-                TempReg1 = Map_TempReg(x86_Any, -1, false);
-                LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-            }
-            else
-            {
-                TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-            }
-            UnProtectGPR(m_Opcode.base);
-        }
-        else
-        {
-            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-            AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
-        }
-        Compile_StoreInstructClean(TempReg1, 4);
-        TestWriteBreakpoint(TempReg1, (void *)x86TestWriteBreakpoint32, "x86TestWriteBreakpoint32");
-        x86Reg TempRtReg = IsUnknown(m_Opcode.rt) ? Map_TempReg(x86_Any, -1, false) : x86_Any;
-        TempReg2 = Map_TempReg(x86_Any, -1, false);
-        MoveX86RegToX86Reg(TempReg1, TempReg2);
-        ShiftRightUnsignImmed(TempReg2, 12);
-        MoveVariableDispToX86Reg(g_MMU->m_MemoryWriteMap, "MMU->m_MemoryWriteMap", TempReg2, TempReg2, 4);
-        CompConstToX86reg(TempReg2, (uint32_t)-1);
-        JneLabel8(stdstr_f("MemoryWriteMap_%X_Found", m_CompilePC).c_str(), 0);
-        uint8_t * JumpFound = (uint8_t *)(*g_RecompPos - 1);
-        MoveX86RegToX86Reg(TempReg1, TempReg2);
-        ShiftRightUnsignImmed(TempReg2, 12);
-        MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
-        CompileWriteTLBMiss(TempReg1, TempReg2);
-        AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
-        CPU_Message("");
-        CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
-        SetJump8(JumpFound, *g_RecompPos);
-
         uint8_t * JumpLLBit = nullptr;
         if (bCheckLLbit)
         {
@@ -4086,17 +3852,37 @@ void CX86RecompilerOps::SW(bool bCheckLLbit)
             JneLabel8("LLBit_Continue", 0);
             JumpLLBit = *g_RecompPos - 1;
         }
+        x86Reg AddressReg = BaseOffsetAddress(true);
+        Compile_StoreInstructClean(AddressReg, 4);
+        TestWriteBreakpoint(AddressReg, (void *)x86TestWriteBreakpoint32, "x86TestWriteBreakpoint32");
+        x86Reg TempRtReg = IsUnknown(m_Opcode.rt) ? Map_TempReg(x86_Any, -1, false) : x86_Any;
+        x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
+        MoveX86RegToX86Reg(AddressReg, TempReg2);
+        ShiftRightUnsignImmed(TempReg2, 12);
+        MoveVariableDispToX86Reg(g_MMU->m_MemoryWriteMap, "MMU->m_MemoryWriteMap", TempReg2, TempReg2, 4);
+        CompConstToX86reg(TempReg2, (uint32_t)-1);
+        JneLabel8(stdstr_f("MemoryWriteMap_%X_Found", m_CompilePC).c_str(), 0);
+        uint8_t * JumpFound = (uint8_t *)(*g_RecompPos - 1);
+        MoveX86RegToX86Reg(AddressReg, TempReg2);
+        ShiftRightUnsignImmed(TempReg2, 12);
+        MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
+        CompileWriteTLBMiss(AddressReg, TempReg2);
+        AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
+        CPU_Message("");
+        CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
+        SetJump8(JumpFound, *g_RecompPos);
+
         if (IsConst(m_Opcode.rt))
         {
-            MoveConstToX86regPointer(GetMipsRegLo(m_Opcode.rt), TempReg1, TempReg2);
+            MoveConstToX86regPointer(GetMipsRegLo(m_Opcode.rt), AddressReg, TempReg2);
         }
         else if (IsMapped(m_Opcode.rt))
         {
-            MoveX86regToX86regPointer(GetMipsRegMapLo(m_Opcode.rt), TempReg1, TempReg2);
+            MoveX86regToX86regPointer(GetMipsRegMapLo(m_Opcode.rt), AddressReg, TempReg2);
         }
         else
         {
-            MoveX86regToX86regPointer(Map_TempReg(TempRtReg, m_Opcode.rt, false), TempReg1, TempReg2);
+            MoveX86regToX86regPointer(Map_TempReg(TempRtReg, m_Opcode.rt, false), AddressReg, TempReg2);
         }
         if (bCheckLLbit)
         {
@@ -4111,8 +3897,6 @@ void CX86RecompilerOps::SW(bool bCheckLLbit)
 
 void CX86RecompilerOps::SWR()
 {
-    x86Reg TempReg1 = x86_Unknown, shift = x86_Unknown;
-
     if (IsConst(m_Opcode.base))
     {
         uint32_t Address = GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
@@ -4126,33 +3910,15 @@ void CX86RecompilerOps::SWR()
         x86Reg Value = Map_TempReg(x86_Any, -1, false);
         LW_KnownAddress(Value, (Address & ~3));
         AndConstToX86Reg(Value, R4300iOp::SWR_MASK[Offset]);
-        TempReg1 = Map_TempReg(x86_Any, m_Opcode.rt, false);
-        ShiftLeftSignImmed(TempReg1, (uint8_t)R4300iOp::SWR_SHIFT[Offset]);
-        AddX86RegToX86Reg(Value, TempReg1);
+        x86Reg TempReg = Map_TempReg(x86_Any, m_Opcode.rt, false);
+        ShiftLeftSignImmed(TempReg, (uint8_t)R4300iOp::SWR_SHIFT[Offset]);
+        AddX86RegToX86Reg(Value, TempReg);
         SW_Register(Value, (Address & ~3));
         return;
     }
     PreWriteInstruction();
-    shift = Map_TempReg(x86_ECX, -1, false);
-    if (IsMapped(m_Opcode.base))
-    {
-        ProtectGPR(m_Opcode.base);
-        if (m_Opcode.offset != 0)
-        {
-            TempReg1 = Map_TempReg(x86_Any, -1, false);
-            LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-        }
-        else
-        {
-            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        }
-        UnProtectGPR(m_Opcode.base);
-    }
-    else
-    {
-        TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
-    }
+    x86Reg shift = Map_TempReg(x86_ECX, -1, false);
+    x86Reg TempReg1 = BaseOffsetAddress(false);
     TestWriteBreakpoint(TempReg1, (void *)x86TestWriteBreakpoint32, "x86TestWriteBreakpoint32");
     x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
     x86Reg OffsetReg = Map_TempReg(x86_Any, -1, false);
@@ -4293,53 +4059,26 @@ void CX86RecompilerOps::LWC1()
         return;
     }
     PreReadInstruction();
-    x86Reg TempReg1;
-    if (IsMapped(m_Opcode.base) && m_Opcode.offset == 0)
-    {
-        ProtectGPR(m_Opcode.base);
-        TempReg1 = GetMipsRegMapLo(m_Opcode.base);
-    }
-    else
-    {
-        if (IsMapped(m_Opcode.base))
-        {
-            ProtectGPR(m_Opcode.base);
-            if (m_Opcode.offset != 0)
-            {
-                TempReg1 = Map_TempReg(x86_Any, -1, false);
-                LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-            }
-            else
-            {
-                TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-            }
-            UnProtectGPR(m_Opcode.base);
-        }
-        else
-        {
-            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-            AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
-        }
-    }
-    TestReadBreakpoint(TempReg1, (void *)x86TestReadBreakpoint32, "x86TestReadBreakpoint32");
+    x86Reg AddrReg = BaseOffsetAddress(true);
+    TestReadBreakpoint(AddrReg, (void *)x86TestReadBreakpoint32, "x86TestReadBreakpoint32");
     x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
     x86Reg TempReg3 = Map_TempReg(x86_Any, -1, false);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    MoveX86RegToX86Reg(AddrReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_MemoryReadMap, "MMU->m_MemoryReadMap", TempReg2, TempReg2, 4);
     CompConstToX86reg(TempReg2, (uint32_t)-1);
     JneLabel8(stdstr_f("MemoryReadMap_%X_Found", m_CompilePC).c_str(), 0);
     uint8_t * JumpFound = (uint8_t *)(*g_RecompPos - 1);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    MoveX86RegToX86Reg(AddrReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
-    CompileReadTLBMiss(TempReg1, TempReg2);
+    CompileReadTLBMiss(AddrReg, TempReg2);
     AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
 
-    MoveX86regPointerToX86reg(TempReg1, TempReg2, TempReg3);
+    MoveX86regPointerToX86reg(AddrReg, TempReg2, TempReg3);
     sprintf(Name, "_FPR_S[%d]", m_Opcode.ft);
     MoveVariableToX86reg(&_FPR_S[m_Opcode.ft], Name, TempReg2);
     MoveX86regToX86Pointer(TempReg3, TempReg2);
@@ -4347,7 +4086,6 @@ void CX86RecompilerOps::LWC1()
 
 void CX86RecompilerOps::LDC1()
 {
-    x86Reg TempReg1, TempReg2, TempReg3;
     char Name[50];
 
     CompileCop1Test();
@@ -4361,10 +4099,10 @@ void CX86RecompilerOps::LDC1()
             FoundMemoryBreakpoint();
             return;
         }
-        TempReg1 = Map_TempReg(x86_Any, -1, false);
+        x86Reg TempReg1 = Map_TempReg(x86_Any, -1, false);
         LW_KnownAddress(TempReg1, Address);
 
-        TempReg2 = Map_TempReg(x86_Any, -1, false);
+        x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
         sprintf(Name, "_FPR_D[%d]", m_Opcode.ft);
         MoveVariableToX86reg(&_FPR_D[m_Opcode.ft], Name, TempReg2);
         AddConstToX86Reg(TempReg2, 4);
@@ -4377,71 +4115,32 @@ void CX86RecompilerOps::LDC1()
         return;
     }
     PreReadInstruction();
-    if (IsMapped(m_Opcode.base) && m_Opcode.offset == 0)
-    {
-        ProtectGPR(m_Opcode.base);
-        TempReg1 = GetMipsRegMapLo(m_Opcode.base);
-    }
-    else
-    {
-        if (IsMapped(m_Opcode.base))
-        {
-            ProtectGPR(m_Opcode.base);
-            if (m_Opcode.offset != 0)
-            {
-                TempReg1 = Map_TempReg(x86_Any, -1, false);
-                LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-            }
-            else
-            {
-                TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-            }
-        }
-        else
-        {
-            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-            if (m_Opcode.immediate == 0)
-            {
-            }
-            else if (m_Opcode.immediate == 1)
-            {
-                IncX86reg(TempReg1);
-            }
-            else if (m_Opcode.immediate == 0xFFFF)
-            {
-                DecX86reg(TempReg1);
-            }
-            else
-            {
-                AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
-            }
-        }
-    }
-    TestReadBreakpoint(TempReg1, (void *)x86TestReadBreakpoint64, "x86TestReadBreakpoint64");
-    TempReg2 = Map_TempReg(x86_Any, -1, false);
-    TempReg3 = Map_TempReg(x86_Any, -1, false);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    x86Reg AddrReg = BaseOffsetAddress(true);
+    TestReadBreakpoint(AddrReg, (void *)x86TestReadBreakpoint64, "x86TestReadBreakpoint64");
+    x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
+    x86Reg TempReg3 = Map_TempReg(x86_Any, -1, false);
+    MoveX86RegToX86Reg(AddrReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_MemoryReadMap, "MMU->m_MemoryReadMap", TempReg2, TempReg2, 4);
     CompConstToX86reg(TempReg2, (uint32_t)-1);
     JneLabel8(stdstr_f("MemoryReadMap_%X_Found", m_CompilePC).c_str(), 0);
     uint8_t * JumpFound = (uint8_t *)(*g_RecompPos - 1);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    MoveX86RegToX86Reg(AddrReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
-    CompileReadTLBMiss(TempReg1, TempReg2);
+    CompileReadTLBMiss(AddrReg, TempReg2);
     AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
-    MoveX86regPointerToX86reg(TempReg1, TempReg2, TempReg3);
+    MoveX86regPointerToX86reg(AddrReg, TempReg2, TempReg3);
     Push(TempReg2);
     sprintf(Name, "_FPR_S[%d]", m_Opcode.ft);
     MoveVariableToX86reg(&_FPR_D[m_Opcode.ft], Name, TempReg2);
     AddConstToX86Reg(TempReg2, 4);
     MoveX86regToX86Pointer(TempReg3, TempReg2);
     Pop(TempReg2);
-    MoveX86regPointerToX86regDisp8(TempReg1, TempReg2, TempReg3, 4);
+    MoveX86regPointerToX86regDisp8(AddrReg, TempReg2, TempReg3, 4);
     sprintf(Name, "_FPR_S[%d]", m_Opcode.ft);
     MoveVariableToX86reg(&_FPR_D[m_Opcode.ft], Name, TempReg2);
     MoveX86regToX86Pointer(TempReg3, TempReg2);
@@ -4454,7 +4153,7 @@ void CX86RecompilerOps::LD()
         return;
     }
 
-    x86Reg TempReg1, TempReg2;
+    x86Reg TempReg2;
 
     if (IsConst(m_Opcode.base))
     {
@@ -4478,51 +4177,26 @@ void CX86RecompilerOps::LD()
     {
         ProtectGPR(m_Opcode.rt);
     }
-    if (IsMapped(m_Opcode.base) && m_Opcode.offset == 0)
-    {
-        ProtectGPR(m_Opcode.base);
-        TempReg1 = GetMipsRegMapLo(m_Opcode.base);
-    }
-    else
-    {
-        if (IsMapped(m_Opcode.base))
-        {
-            ProtectGPR(m_Opcode.base);
-            if (m_Opcode.offset != 0)
-            {
-                TempReg1 = Map_TempReg(x86_Any, -1, false);
-                LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-            }
-            else
-            {
-                TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-            }
-        }
-        else
-        {
-            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-            AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
-        }
-    }
-    TestReadBreakpoint(TempReg1, (void *)x86TestReadBreakpoint64, "x86TestReadBreakpoint64");
+    x86Reg AddrReg = BaseOffsetAddress(true);
+    TestReadBreakpoint(AddrReg, (void *)x86TestReadBreakpoint64, "x86TestReadBreakpoint64");
     TempReg2 = Map_TempReg(x86_Any, -1, false);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    MoveX86RegToX86Reg(AddrReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_MemoryReadMap, "MMU->m_MemoryReadMap", TempReg2, TempReg2, 4);
     CompConstToX86reg(TempReg2, (uint32_t)-1);
     JneLabel8(stdstr_f("MemoryReadMap_%X_Found", m_CompilePC).c_str(), 0);
     uint8_t * JumpFound = (uint8_t *)(*g_RecompPos - 1);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    MoveX86RegToX86Reg(AddrReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
-    CompileReadTLBMiss(TempReg1, TempReg2);
+    CompileReadTLBMiss(AddrReg, TempReg2);
     AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
     Map_GPR_64bit(m_Opcode.rt, -1);
-    MoveX86regPointerToX86reg(TempReg1, TempReg2, GetMipsRegMapHi(m_Opcode.rt));
-    MoveX86regPointerToX86regDisp8(TempReg1, TempReg2, GetMipsRegMapLo(m_Opcode.rt), 4);
+    MoveX86regPointerToX86reg(AddrReg, TempReg2, GetMipsRegMapHi(m_Opcode.rt));
+    MoveX86regPointerToX86regDisp8(AddrReg, TempReg2, GetMipsRegMapLo(m_Opcode.rt), 4);
     if (g_System->bFastSP() && m_Opcode.rt == 29)
     {
         ResetX86Protection();
@@ -4561,39 +4235,21 @@ void CX86RecompilerOps::SWC1()
     }
     PreWriteInstruction();
 
-    x86Reg TempReg1;
-    if (IsMapped(m_Opcode.base))
-    {
-        ProtectGPR(m_Opcode.base);
-        if (m_Opcode.offset != 0)
-        {
-            TempReg1 = Map_TempReg(x86_Any, -1, false);
-            LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-        }
-        else
-        {
-            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        }
-    }
-    else
-    {
-        TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
-    }
-    TestWriteBreakpoint(TempReg1, (void *)x86TestWriteBreakpoint32, "x86TestWriteBreakpoint32");
+    x86Reg AddrReg = BaseOffsetAddress(true);
+    TestWriteBreakpoint(AddrReg, (void *)x86TestWriteBreakpoint32, "x86TestWriteBreakpoint32");
     UnMap_FPR(m_Opcode.ft, true);
     x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
     x86Reg TempReg3 = Map_TempReg(x86_Any, -1, false);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    MoveX86RegToX86Reg(AddrReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_MemoryWriteMap, "MMU->m_MemoryWriteMap", TempReg2, TempReg2, 4);
     CompConstToX86reg(TempReg2, (uint32_t)-1);
     JneLabel8(stdstr_f("MemoryWriteMap_%X_Found", m_CompilePC).c_str(), 0);
     uint8_t * JumpFound = (uint8_t *)(*g_RecompPos - 1);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    MoveX86RegToX86Reg(AddrReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
-    CompileWriteTLBMiss(TempReg1, TempReg2);
+    CompileWriteTLBMiss(AddrReg, TempReg2);
     AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
@@ -4602,7 +4258,7 @@ void CX86RecompilerOps::SWC1()
     sprintf(Name, "_FPR_S[%d]", m_Opcode.ft);
     MoveVariableToX86reg(&_FPR_S[m_Opcode.ft], Name, TempReg3);
     MoveX86PointerToX86reg(TempReg3, TempReg3);
-    MoveX86regToX86regPointer(TempReg3, TempReg1, TempReg2);
+    MoveX86regToX86regPointer(TempReg3, AddrReg, TempReg2);
 }
 
 void CX86RecompilerOps::SDC1()
@@ -4634,39 +4290,21 @@ void CX86RecompilerOps::SDC1()
         return;
     }
     PreWriteInstruction();
-    x86Reg TempReg1;
-    if (IsMapped(m_Opcode.base))
-    {
-        ProtectGPR(m_Opcode.base);
-        if (m_Opcode.offset != 0)
-        {
-            TempReg1 = Map_TempReg(x86_Any, -1, false);
-            LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-        }
-        else
-        {
-            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        }
-    }
-    else
-    {
-        TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-        AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
-    }
-    TestWriteBreakpoint(TempReg1, (void *)x86TestWriteBreakpoint64, "x86TestWriteBreakpoint64");
+    x86Reg AddrReg = BaseOffsetAddress(true);
+    TestWriteBreakpoint(AddrReg, (void *)x86TestWriteBreakpoint64, "x86TestWriteBreakpoint64");
     x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
     x86Reg TempReg3 = Map_TempReg(x86_Any, -1, false);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    MoveX86RegToX86Reg(AddrReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
 
     MoveVariableDispToX86Reg(g_MMU->m_MemoryWriteMap, "MMU->m_MemoryWriteMap", TempReg2, TempReg2, 4);
     CompConstToX86reg(TempReg2, (uint32_t)-1);
     JneLabel8(stdstr_f("MemoryWriteMap_%X_Found", m_CompilePC).c_str(), 0);
     uint8_t * JumpFound = (uint8_t *)(*g_RecompPos - 1);
-    MoveX86RegToX86Reg(TempReg1, TempReg2);
+    MoveX86RegToX86Reg(AddrReg, TempReg2);
     ShiftRightUnsignImmed(TempReg2, 12);
     MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
-    CompileWriteTLBMiss(TempReg1, TempReg2);
+    CompileWriteTLBMiss(AddrReg, TempReg2);
     AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
@@ -4676,18 +4314,17 @@ void CX86RecompilerOps::SDC1()
     MoveVariableToX86reg((uint8_t *)&_FPR_D[m_Opcode.ft], Name, TempReg3);
     AddConstToX86Reg(TempReg3, 4);
     MoveX86PointerToX86reg(TempReg3, TempReg3);
-    MoveX86regToX86regPointer(TempReg3, TempReg1, TempReg2);
-    AddConstToX86Reg(TempReg1, 4);
+    MoveX86regToX86regPointer(TempReg3, AddrReg, TempReg2);
+    AddConstToX86Reg(AddrReg, 4);
 
     sprintf(Name, "_FPR_D[%d]", m_Opcode.ft);
     MoveVariableToX86reg((uint8_t *)&_FPR_D[m_Opcode.ft], Name, TempReg3);
     MoveX86PointerToX86reg(TempReg3, TempReg3);
-    MoveX86regToX86regPointer(TempReg3, TempReg1, TempReg2);
+    MoveX86regToX86regPointer(TempReg3, AddrReg, TempReg2);
 }
 
 void CX86RecompilerOps::SD()
 {
-    x86Reg TempReg1, TempReg2;
 
     if (IsConst(m_Opcode.base))
     {
@@ -4710,7 +4347,7 @@ void CX86RecompilerOps::SD()
         }
         else
         {
-            TempReg1 = Map_TempReg(x86_Any, m_Opcode.rt, true);
+            x86Reg TempReg1 = Map_TempReg(x86_Any, m_Opcode.rt, true);
             SW_Register(TempReg1, Address);
             SW_Register(Map_TempReg(TempReg1, m_Opcode.rt, false), Address + 4);
         }
@@ -4722,41 +4359,22 @@ void CX86RecompilerOps::SD()
         {
             ProtectGPR(m_Opcode.rt);
         }
-        if (IsMapped(m_Opcode.base))
-        {
-            ProtectGPR(m_Opcode.base);
-            if (m_Opcode.offset != 0)
-            {
-                TempReg1 = Map_TempReg(x86_Any, -1, false);
-                LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-            }
-            else
-            {
-                TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-            }
-            UnProtectGPR(m_Opcode.base);
-        }
-        else
-        {
-            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-            AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
-        }
+        x86Reg AddrReg = BaseOffsetAddress(true);
+        Compile_StoreInstructClean(AddrReg, 8);
 
-        Compile_StoreInstructClean(TempReg1, 8);
-
-        TestWriteBreakpoint(TempReg1, (void *)x86TestWriteBreakpoint64, "x86TestWriteBreakpoint64");
+        TestWriteBreakpoint(AddrReg, (void *)x86TestWriteBreakpoint64, "x86TestWriteBreakpoint64");
         x86Reg RtTempReg = IsUnknown(m_Opcode.rt) ? Map_TempReg(x86_Any, -1, false) : x86_Any;
-        TempReg2 = Map_TempReg(x86_Any, -1, false);
-        MoveX86RegToX86Reg(TempReg1, TempReg2);
+        x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
+        MoveX86RegToX86Reg(AddrReg, TempReg2);
         ShiftRightUnsignImmed(TempReg2, 12);
         MoveVariableDispToX86Reg(g_MMU->m_MemoryWriteMap, "MMU->m_MemoryWriteMap", TempReg2, TempReg2, 4);
         CompConstToX86reg(TempReg2, (uint32_t)-1);
         JneLabel8(stdstr_f("MemoryWriteMap_%X_Found", m_CompilePC).c_str(), 0);
         uint8_t * JumpFound = (uint8_t *)(*g_RecompPos - 1);
-        MoveX86RegToX86Reg(TempReg1, TempReg2);
+        MoveX86RegToX86Reg(AddrReg, TempReg2);
         ShiftRightUnsignImmed(TempReg2, 12);
         MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg2, TempReg2, 4);
-        CompileWriteTLBMiss(TempReg1, TempReg2);
+        CompileWriteTLBMiss(AddrReg, TempReg2);
         AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
         CPU_Message("");
         CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
@@ -4766,34 +4384,34 @@ void CX86RecompilerOps::SD()
         {
             if (Is64Bit(m_Opcode.rt))
             {
-                MoveConstToX86regPointer(GetMipsRegHi(m_Opcode.rt), TempReg1, TempReg2);
+                MoveConstToX86regPointer(GetMipsRegHi(m_Opcode.rt), AddrReg, TempReg2);
             }
             else
             {
-                MoveConstToX86regPointer((GetMipsRegLo_S(m_Opcode.rt) >> 31), TempReg1, TempReg2);
+                MoveConstToX86regPointer((GetMipsRegLo_S(m_Opcode.rt) >> 31), AddrReg, TempReg2);
             }
-            AddConstToX86Reg(TempReg1, 4);
-            MoveConstToX86regPointer(GetMipsRegLo(m_Opcode.rt), TempReg1, TempReg2);
+            AddConstToX86Reg(AddrReg, 4);
+            MoveConstToX86regPointer(GetMipsRegLo(m_Opcode.rt), AddrReg, TempReg2);
         }
         else if (IsMapped(m_Opcode.rt))
         {
             if (Is64Bit(m_Opcode.rt))
             {
-                MoveX86regToX86regPointer(GetMipsRegMapHi(m_Opcode.rt), TempReg1, TempReg2);
+                MoveX86regToX86regPointer(GetMipsRegMapHi(m_Opcode.rt), AddrReg, TempReg2);
             }
             else
             {
-                MoveX86regToX86regPointer(Map_TempReg(x86_Any, m_Opcode.rt, true), TempReg1, TempReg2);
+                MoveX86regToX86regPointer(Map_TempReg(x86_Any, m_Opcode.rt, true), AddrReg, TempReg2);
             }
-            AddConstToX86Reg(TempReg1, 4);
-            MoveX86regToX86regPointer(GetMipsRegMapLo(m_Opcode.rt), TempReg1, TempReg2);
+            AddConstToX86Reg(AddrReg, 4);
+            MoveX86regToX86regPointer(GetMipsRegMapLo(m_Opcode.rt), AddrReg, TempReg2);
         }
         else
         {
             Map_TempReg(RtTempReg, m_Opcode.rt, true);
-            MoveX86regToX86regPointer(RtTempReg, TempReg1, TempReg2);
-            AddConstToX86Reg(TempReg1, 4);
-            MoveX86regToX86regPointer(Map_TempReg(RtTempReg, m_Opcode.rt, false), TempReg1, TempReg2);
+            MoveX86regToX86regPointer(RtTempReg, AddrReg, TempReg2);
+            AddConstToX86Reg(AddrReg, 4);
+            MoveX86regToX86regPointer(Map_TempReg(RtTempReg, m_Opcode.rt, false), AddrReg, TempReg2);
         }
     }
 }
@@ -10394,6 +10012,36 @@ void CX86RecompilerOps::Compile_StoreInstructClean(x86Reg AddressReg, int32_t Le
     X86Protected(StoreTemp1) = false;*/
 }
 
+CX86Ops::x86Reg CX86RecompilerOps::BaseOffsetAddress(bool UseBaseRegister)
+{
+    x86Reg AddressReg;
+    if (IsMapped(m_Opcode.base))
+    {
+        if (m_Opcode.offset != 0)
+        {
+            ProtectGPR(m_Opcode.base);
+            AddressReg = Map_TempReg(x86_Any, -1, false);
+            LeaSourceAndOffset(AddressReg, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
+            UnProtectGPR(m_Opcode.base);
+        }
+        else if (UseBaseRegister)
+        {
+            ProtectGPR(m_Opcode.base);
+            AddressReg = GetMipsRegMapLo(m_Opcode.base);
+        }
+        else
+        {
+            AddressReg = Map_TempReg(x86_Any, m_Opcode.base, false);
+        }
+    }
+    else
+    {
+        AddressReg = Map_TempReg(x86_Any, m_Opcode.base, false);
+        AddConstToX86Reg(AddressReg, (int16_t)m_Opcode.immediate);
+    }
+    return AddressReg;
+}
+
 void CX86RecompilerOps::SB_Const(uint8_t Value, uint32_t VAddr)
 {
     char VarName[100];
@@ -11168,7 +10816,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             break;
         }
     case 0x1fc00000:
-		{
+        {
             m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
             UpdateCounters(m_RegWorkingSet, false, true);
             m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
