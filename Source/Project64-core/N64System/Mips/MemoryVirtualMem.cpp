@@ -43,7 +43,8 @@ CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
     m_TLB_WriteMap(nullptr),
     m_RDRAM(nullptr),
     m_DMEM(nullptr),
-    m_IMEM(nullptr)
+    m_IMEM(nullptr),
+    m_Rom(*g_Rom)
 {
     g_Settings->RegisterChangeCB(Game_RDRamSize, this, (CSettings::SettingChangedFunc)RdramChanged);
 }
@@ -341,6 +342,18 @@ bool CMipsMemoryVM::MemoryValue32(uint32_t VAddr, uint32_t& Value)
     if (PAddr >= 0x04001000 && PAddr < 0x04002000)
     {
         Value = *(uint32_t*)(m_IMEM + (PAddr - 0x04001000));
+        return true;
+    }
+    if (PAddr >= 0x10000000 && PAddr < 0x16000000)
+    {
+        if ((PAddr & 0xFFFFFFF) < m_Rom.GetRomSize())
+        {
+            Value = *(uint32_t *)&m_Rom.GetRomAddress()[(PAddr & 0xFFFFFFF)];
+        }
+        else
+        {
+            Value = (PAddr << 16) | (PAddr & 0xFFFF);
+        }
         return true;
     }
     g_Notify->BreakPoint(__FILE__, __LINE__);

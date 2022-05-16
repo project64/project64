@@ -184,6 +184,7 @@ private:
     VideoInterfaceHandler m_VideoInterfaceHandler;
     uint8_t * m_RDRAM, *m_DMEM, *m_IMEM;
     uint32_t m_AllocatedRdramSize;
+    CN64Rom & m_Rom;
 
     mutable char m_strLabelName[100];
     uint32_t * m_TLB_ReadMap;
