@@ -381,7 +381,7 @@ private:
     static CX86RegInfo m_RegWorkingSet;
     static uint32_t m_BranchCompare;
     static CCodeSection * m_Section;
-    static uint32_t m_TempValue;
+    static uint32_t m_TempValue32;
 };
 
 #endif

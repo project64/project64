@@ -26,7 +26,7 @@ PIPELINE_STAGE CX86RecompilerOps::m_PipelineStage;
 uint32_t CX86RecompilerOps::m_CompilePC;
 OPCODE CX86RecompilerOps::m_Opcode;
 uint32_t CX86RecompilerOps::m_BranchCompare = 0;
-uint32_t CX86RecompilerOps::m_TempValue = 0;
+uint32_t CX86RecompilerOps::m_TempValue32 = 0;
 
 /*int TestValue = 0;
 void TestFunc()
@@ -3192,7 +3192,7 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
         case 0x04100000:
              {
                  m_RegWorkingSet.BeforeCallDirect();
-                 PushImm32("TempValue", (uint32_t)&m_TempValue);
+                 PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
                  PushImm32(PAddr | 0xA0000000);
 #ifdef _MSC_VER
                  MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
@@ -3203,7 +3203,7 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
                  AddConstToX86Reg(x86_ESP, 12);
 #endif
                  m_RegWorkingSet.AfterCallDirect();
-                 MoveVariableToX86reg(&m_TempValue, "TempValue", Reg);
+                 MoveVariableToX86reg(&m_TempValue32, "m_TempValue32", Reg);
             }
             break;
         case 0x04300000:
@@ -3225,7 +3225,7 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
                 m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 
                 m_RegWorkingSet.BeforeCallDirect();
-                PushImm32("m_TempValue", (uint32_t)&m_TempValue);
+                PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
                 PushImm32(PAddr & 0x1FFFFFFF);
 #ifdef _MSC_VER
                 MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_VideoInterfaceHandler, x86_ECX);
@@ -3236,7 +3236,7 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
                 AddConstToX86Reg(x86_ESP, 16);
 #endif
                 m_RegWorkingSet.AfterCallDirect();
-                MoveVariableToX86reg(&m_TempValue, "m_TempValue", Reg);
+                MoveVariableToX86reg(&m_TempValue32, "m_TempValue32", Reg);
             }
             break;
         case 0x04500000:
@@ -3246,7 +3246,7 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
                 m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 
                 m_RegWorkingSet.BeforeCallDirect();
-                PushImm32("m_TempValue", (uint32_t)&m_TempValue);
+                PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
                 PushImm32(PAddr & 0x1FFFFFFF);
     #ifdef _MSC_VER
                 MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_AudioInterfaceHandler, x86_ECX);
@@ -3257,7 +3257,7 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
                 AddConstToX86Reg(x86_ESP, 16);
     #endif
                 m_RegWorkingSet.AfterCallDirect();
-                MoveVariableToX86reg(&m_TempValue, "m_TempValue", Reg);
+                MoveVariableToX86reg(&m_TempValue32, "m_TempValue32", Reg);
             }
             break;
         case 0x04600000:
