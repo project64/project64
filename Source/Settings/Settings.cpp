@@ -198,7 +198,7 @@ void RegisterSetting(short SettingID, SETTING_DATA_TYPE Type, const char * Name,
     case Data_String_Game:
     case Data_String_RDB:
     case Data_String_RDB_Setting:
-        if (DefaultStr != nullptr && strlen(DefaultStr) > 0)
+        if (DefaultStr != nullptr && DefaultStr[0] != '\0')
         {
             // Create default
             DefaultID = SettingID + g_PluginSettings.DefaultStartRange;

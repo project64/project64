@@ -277,7 +277,7 @@ void CRecompiler::RecompilerMain_Lookup_validate()
                 {
                     FUNCTION_PROFILE_DATA data = { 0 };
                     data.Address = info->EnterPC();
-                    std::pair<FUNCTION_PROFILE::iterator, bool> res = m_BlockProfile.insert(FUNCTION_PROFILE::value_type(info->Function(), data));
+                    std::pair<FUNCTION_PROFILE::iterator, bool> res = m_BlockProfile.emplace(info->Function(), data);
                     itr = res.first;
                 }
                 WriteTrace(TraceN64System, TraceNotice, "EndTime: %X StartTime: %X TimeTaken: %X", (uint32_t)(EndTime.GetMicroSeconds() & 0xFFFFFFFF), (uint32_t)(StartTime.GetMicroSeconds() & 0xFFFFFFFF), (uint32_t)TimeTaken);
@@ -388,7 +388,7 @@ CCompiledFunc * CRecompiler::CompileCode()
     }
 
     CCompiledFunc * Func = new CCompiledFunc(CodeBlock);
-    std::pair<CCompiledFuncList::iterator, bool> ret = m_Functions.insert(CCompiledFuncList::value_type(Func->EnterPC(), Func));
+    std::pair<CCompiledFuncList::iterator, bool> ret = m_Functions.emplace(Func->EnterPC(), Func);
     if (ret.second == false)
     {
         Func->SetNext(ret.first->second->Next());

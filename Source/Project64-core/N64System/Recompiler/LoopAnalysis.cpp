@@ -133,7 +133,7 @@ bool LoopAnalysis::SetupEnterSection(CCodeSection * Section, bool & bChanged, bo
     }
     else
     {
-        m_EnterRegisters.insert(RegisterMap::value_type(Section->m_SectionID, new CRegInfo(RegEnter)));
+        m_EnterRegisters.emplace(Section->m_SectionID, new CRegInfo(RegEnter));
     }
     return true;
 }
@@ -736,7 +736,7 @@ void LoopAnalysis::SetJumpRegSet(CCodeSection * Section, const CRegInfo &Reg)
     }
     else
     {
-        m_JumpRegisters.insert(RegisterMap::value_type(Section->m_SectionID, new CRegInfo(Reg)));
+        m_JumpRegisters.emplace(Section->m_SectionID, new CRegInfo(Reg));
     }
 }
 
@@ -749,7 +749,7 @@ void LoopAnalysis::SetContinueRegSet(CCodeSection * Section, const CRegInfo &Reg
     }
     else
     {
-        m_ContinueRegisters.insert(RegisterMap::value_type(Section->m_SectionID, new CRegInfo(Reg)));
+        m_ContinueRegisters.emplace(Section->m_SectionID, new CRegInfo(Reg));
     }
 }
 

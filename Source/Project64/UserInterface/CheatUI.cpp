@@ -586,7 +586,7 @@ bool CCheatList::TV_SetCheckState(HTREEITEM hItem, TV_CHECK_STATE state)
 
 void CCheatList::MenuSetText(HMENU hMenu, int MenuPos, const wchar_t * Title, const wchar_t * ShortCut)
 {
-    if (Title == nullptr || wcslen(Title) == 0)
+    if (Title == nullptr || Title[0] == '\0')
     {
         return;
     }

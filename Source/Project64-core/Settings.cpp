@@ -55,12 +55,12 @@ CSettings::~CSettings()
 
 void CSettings::AddHandler(SettingID TypeID, CSettingType * Handler)
 {
-    std::pair<SETTING_MAP::iterator, bool> res = m_SettingInfo.insert(SETTING_MAP::value_type(TypeID, Handler));
+    std::pair<SETTING_MAP::iterator, bool> res = m_SettingInfo.emplace(TypeID, Handler);
     if (!res.second)
     {
         delete res.first->second;
         m_SettingInfo.erase(res.first);
-        res = m_SettingInfo.insert(SETTING_MAP::value_type(TypeID, Handler));
+        res = m_SettingInfo.emplace(TypeID, Handler);
         if (!res.second)
         {
             delete Handler;
@@ -1275,7 +1275,7 @@ void CSettings::RegisterChangeCB(SettingID Type, void * Data, SettingChangedFunc
     }
     else
     {
-        m_Callback.insert(SETTING_CALLBACK::value_type(Type, new_item));
+        m_Callback.emplace(Type, new_item);
     }
 }
 
@@ -1302,7 +1302,7 @@ void CSettings::UnregisterChangeCB(SettingID Type, void * Data, SettingChangedFu
                         SettingID CallbackType = Callback->first;
                         SETTING_CHANGED_CB * Next = item->Next;
                         m_Callback.erase(Callback);
-                        m_Callback.insert(SETTING_CALLBACK::value_type(CallbackType, Next));
+                        m_Callback.emplace(CallbackType, Next);
                     }
                     else
                     {

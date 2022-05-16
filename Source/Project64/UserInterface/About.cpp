@@ -12,7 +12,7 @@ LRESULT CAboutDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPara
     m_Logo.SetBitmap(MAKEINTRESOURCE(IDB_ABOUT_LOGO));
 
     stdstr AboutMsg;
-    if (m_Support.Validated() && strlen(m_Support.Name()) > 0)
+    if (m_Support.Validated() && m_Support.Name()[0] != '\0')
     {
         AboutMsg += stdstr_f("Thank you %s for the support!\n\n", m_Support.Name());
     }

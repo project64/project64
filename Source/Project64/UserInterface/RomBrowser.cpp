@@ -362,7 +362,7 @@ void CRomBrowser::MenuSetText(HMENU hMenu, int32_t MenuPos, const wchar_t * Titl
     MENUITEMINFO MenuInfo;
     wchar_t String[256];
 
-    if (Title == nullptr || wcslen(Title) == 0) { return; }
+    if (Title == nullptr || Title[0] == '\0') { return; }
 
     memset(&MenuInfo, 0, sizeof(MENUITEMINFO));
     MenuInfo.cbSize = sizeof(MENUITEMINFO);
@@ -500,7 +500,7 @@ bool CRomBrowser::RomListDrawItem(int32_t idCtrl, uint32_t lParam)
         }
         else
         {
-            std::pair<HBRUSH_MAP::iterator, bool> res = m_Brushes.insert(HBRUSH_MAP::value_type(pRomInfo->SelColor, CreateSolidBrush(pRomInfo->SelColor)));
+            std::pair<HBRUSH_MAP::iterator, bool> res = m_Brushes.emplace(pRomInfo->SelColor, CreateSolidBrush(pRomInfo->SelColor));
             hBrush = res.first->second;
         }
         SetTextColor(ditem->hDC, pRomInfo->SelTextColor);
@@ -782,7 +782,7 @@ void CRomBrowser::RomList_GetDispInfo(uint32_t pnmh)
         break;
     default: wcsncpy(lpdi->item.pszText, L" ", lpdi->item.cchTextMax);
     }
-    if (lpdi->item.pszText == nullptr || wcslen(lpdi->item.pszText) == 0) { lpdi->item.pszText = L" "; }
+    if (lpdi->item.pszText == nullptr || lpdi->item.pszText[0] == '\0') { lpdi->item.pszText = L" "; }
 }
 
 void CRomBrowser::RomList_OpenRom(uint32_t /*pnmh*/)

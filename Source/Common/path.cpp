@@ -580,7 +580,7 @@ void CPath::SetComponents(const char * lpszDrive, const char * lpszDirectory, co
     char buff_fullname[MAX_PATH];
 
     memset(buff_fullname, 0, sizeof(buff_fullname));
-    if (lpszDirectory == nullptr || strlen(lpszDirectory) == 0)
+    if (lpszDirectory == nullptr || lpszDirectory[0] == '\0')
     {
         static char empty_dir[] = { DIRECTORY_DELIMITER, '\0' };
         lpszDirectory = empty_dir;

@@ -181,7 +181,7 @@ void CN64System::RegisterCallBack(CN64SystemCB Type, void * Data, CallBackFuncti
     {
         SETTING_CHANGED_CB_LIST List;
         List.push_back(Item);
-        m_Callback.insert(SETTING_CALLBACK::value_type(Type, List));
+        m_Callback.emplace(Type, List);
     }
 }
 

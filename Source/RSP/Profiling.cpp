@@ -75,7 +75,7 @@ public:
 		}
 		else
 		{
-			m_Entries.insert(PROFILE_ENRTIES::value_type(m_CurrentTimerAddr, TimeTaken));
+			m_Entries.emplace(m_CurrentTimerAddr, TimeTaken);
 		}
 #else
 		DebugBreak();

@@ -174,7 +174,7 @@ BOOL CDirectInput::EnumMakeDeviceList(LPCDIDEVICEINSTANCE lpddi)
 
     {
         CGuard Guard(m_DeviceCS);
-        std::pair<DEVICE_MAP::iterator, bool> res = m_Devices.insert(DEVICE_MAP::value_type(lpddi->guidInstance, Device));
+        std::pair<DEVICE_MAP::iterator, bool> res = m_Devices.emplace(lpddi->guidInstance, Device);
         if (!res.second)
         {
             Device.didHandle->Release();

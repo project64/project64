@@ -630,7 +630,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
     memcpy(&RomName[0], (void *)(m_ROMImage + 0x20), 20);
     CN64Rom::CleanRomName(RomName);
 
-    if (strlen(RomName) == 0)
+    if (RomName[0] == '\0')
     {
         strcpy(RomName, CPath(FileLoc).GetName().c_str());
         CN64Rom::CleanRomName(RomName, false);
@@ -823,7 +823,7 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
     // Get the header from the ROM image
     memcpy(&RomName[0], (void *)(m_ROMImage + 0x20), 20);
     CN64Rom::CleanRomName(RomName);
-    if (strlen(RomName) == 0)
+    if (RomName[0] == '\0')
     {
         strcpy(RomName, CPath(FileLoc).GetName().c_str());
         CN64Rom::CleanRomName(RomName,false);

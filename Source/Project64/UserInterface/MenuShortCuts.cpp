@@ -369,7 +369,7 @@ LanguageStringID CShortCuts::GetMenuItemName(WORD key, bool bCtrl, bool bAlt, bo
 
 void CShortCuts::AddShortCut(WORD ID, LanguageStringID Section, LanguageStringID LangID, CMenuShortCutKey::ACCESS_MODE AccessMode)
 {
-    m_ShortCuts.insert(MSC_MAP::value_type(ID, CShortCutItem(Section, LangID, AccessMode)));
+    m_ShortCuts.emplace(ID, CShortCutItem(Section, LangID, AccessMode));
 }
 
 void CShortCuts::Load(bool InitialValues)
