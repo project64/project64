@@ -308,7 +308,7 @@ bool CMipsMemoryVM::MemoryValue8(uint32_t VAddr, uint8_t & Value)
     return true;
 }
 
-bool CMipsMemoryVM::MemoryValue16(uint32_t VAddr, uint16_t& Value)
+bool CMipsMemoryVM::MemoryValue16(uint32_t VAddr, uint16_t & Value)
 {
     uint8_t * ptr = MemoryPtr(VAddr ^ 2, 2, true);
     if (ptr == nullptr)
@@ -319,7 +319,7 @@ bool CMipsMemoryVM::MemoryValue16(uint32_t VAddr, uint16_t& Value)
     return true;
 }
 
-bool CMipsMemoryVM::MemoryValue32(uint32_t VAddr, uint32_t& Value)
+bool CMipsMemoryVM::MemoryValue32(uint32_t VAddr, uint32_t & Value)
 {
     uint8_t * ptr = MemoryPtr(VAddr, 4, true);
     if (ptr == nullptr)

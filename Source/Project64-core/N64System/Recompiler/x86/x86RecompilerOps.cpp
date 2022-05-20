@@ -4290,7 +4290,7 @@ void CX86RecompilerOps::SDC1()
         return;
     }
     PreWriteInstruction();
-    x86Reg AddrReg = BaseOffsetAddress(true);
+    x86Reg AddrReg = BaseOffsetAddress(false);
     TestWriteBreakpoint(AddrReg, (void *)x86TestWriteBreakpoint64, "x86TestWriteBreakpoint64");
     x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
     x86Reg TempReg3 = Map_TempReg(x86_Any, -1, false);
