@@ -13,7 +13,6 @@
 
 uint8_t * CMipsMemoryVM::m_Reserve1 = nullptr;
 uint8_t * CMipsMemoryVM::m_Reserve2 = nullptr;
-bool CMipsMemoryVM::m_MemLookupValid = true;
 uint32_t CMipsMemoryVM::RegModValue;
 
 #pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
@@ -59,8 +58,8 @@ void CMipsMemoryVM::Reset(bool /*EraseMemory*/)
 {
     if (m_MemoryReadMap != nullptr && m_MemoryWriteMap != nullptr)
     {
-        memset(m_MemoryReadMap, -1, 0x100000 * sizeof(size_t));
-        memset(m_MemoryWriteMap, -1, 0x100000 * sizeof(size_t));
+        memset(m_MemoryReadMap, -1, 0x100000 * sizeof(m_MemoryReadMap[0]));
+        memset(m_MemoryWriteMap, -1, 0x100000 * sizeof(m_MemoryWriteMap[0]));
         for (uint32_t i = 0; i < 2; i++)
         {
             uint32_t BaseAddress = i == 0 ? 0x80000000 : 0xA0000000;
@@ -83,9 +82,9 @@ void CMipsMemoryVM::Reset(bool /*EraseMemory*/)
     }
     if (m_TLB_ReadMap)
     {
-        memset(m_TLB_ReadMap, -1, 0xFFFFF * sizeof(size_t));
-        memset(m_TLB_WriteMap, -1, 0xFFFFF * sizeof(size_t));
-        for (size_t Address = 0x80000000; Address < 0xC0000000; Address += 0x1000)
+        memset(m_TLB_ReadMap, -1, 0xFFFFF * sizeof(m_TLB_ReadMap[0]));
+        memset(m_TLB_WriteMap, -1, 0xFFFFF * sizeof(m_TLB_WriteMap[0]));
+        for (uint32_t Address = 0x80000000; Address < 0xC0000000; Address += 0x1000)
         {
             m_TLB_ReadMap[Address >> 12] = (Address & 0x1FFFFFFF) - Address;
             m_TLB_WriteMap[Address >> 12] = (Address & 0x1FFFFFFF) - Address;

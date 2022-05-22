@@ -65,7 +65,6 @@ CCodeBlock::CCodeBlock(CMipsMemoryVM & MMU, uint32_t VAddrEnter, uint8_t * Compi
     m_Sections.push_back(m_EnterSection);
     m_SectionMap.insert(SectionMap::value_type(VAddrEnter, m_EnterSection));
 
-    uint32_t PAddr;
     memset(m_MemLocation, 0, sizeof(m_MemLocation));
     memset(m_MemContents, 0, sizeof(m_MemContents));
 

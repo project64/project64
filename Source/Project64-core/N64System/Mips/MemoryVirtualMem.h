@@ -194,6 +194,5 @@ private:
     size_t * m_MemoryReadMap;
     size_t * m_MemoryWriteMap;
 
-    static bool m_MemLookupValid;
     static uint32_t RegModValue;
 };
