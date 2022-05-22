@@ -3788,7 +3788,6 @@ void CX86RecompilerOps::SW(bool bCheckLLbit)
             ValueReg = IsUnknown(m_Opcode.rt) ? Map_TempReg(x86_Any, m_Opcode.rt, false) : GetMipsRegMapLo(m_Opcode.rt);
         }
         x86Reg AddressReg = BaseOffsetAddress(true);
-        Compile_StoreInstructClean(AddressReg, 4);
         TestWriteBreakpoint(AddressReg, (void *)x86TestWriteBreakpoint32, "x86TestWriteBreakpoint32");
         CompileStoreMemoryValue(AddressReg, ValueReg, x86_Unknown, GetMipsRegLo(m_Opcode.rt), 32);
         if (bCheckLLbit)
@@ -4134,7 +4133,6 @@ void CX86RecompilerOps::SWC1()
     MoveX86PointerToX86reg(ValueReg, ValueReg);
 
     x86Reg AddressReg = BaseOffsetAddress(false);
-    Compile_StoreInstructClean(AddressReg, 8);
     TestWriteBreakpoint(AddressReg, (void *)x86TestWriteBreakpoint64, "x86TestWriteBreakpoint32");
     CompileStoreMemoryValue(AddressReg, ValueReg, x86_Unknown, 0, 32);
 }
@@ -4177,7 +4175,6 @@ void CX86RecompilerOps::SDC1()
     MoveX86PointerToX86reg(ValueRegLo, ValueRegLo);
 
     x86Reg AddressReg = BaseOffsetAddress(false);
-    Compile_StoreInstructClean(AddressReg, 8);
     TestWriteBreakpoint(AddressReg, (void *)x86TestWriteBreakpoint64, "x86TestWriteBreakpoint64");
     CompileStoreMemoryValue(AddressReg, ValueRegLo, ValueRegHi, 0, 64);
 }
@@ -4241,7 +4238,6 @@ void CX86RecompilerOps::SD()
         }
         
         x86Reg AddressReg = BaseOffsetAddress(false);
-        Compile_StoreInstructClean(AddressReg, 8);
         TestWriteBreakpoint(AddressReg, (void *)x86TestWriteBreakpoint64, "x86TestWriteBreakpoint64");
         CompileStoreMemoryValue(AddressReg, ValueReg, ValueRegHi, RtValue, 64);
     }
@@ -9783,64 +9779,6 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         WriteTrace(TraceRecompiler, TraceError, "How did you want to exit on reason (%d) ???", reason);
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-}
-
-void CX86RecompilerOps::Compile_StoreInstructClean(x86Reg AddressReg, int32_t Length)
-{
-    if (!g_System->bSMM_StoreInstruc())
-    {
-        return;
-    }
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-
-    /*
-    stdstr_f strLen("%d",Length);
-    UnMap_AllFPRs();
-
-    /*x86Reg StoreTemp1 = Map_TempReg(x86_Any,-1,false);
-    MoveX86RegToX86Reg(AddressReg, StoreTemp1);
-    AndConstToX86Reg(StoreTemp1,0xFFC);*/
-    m_RegWorkingSet.BeforeCallDirect();
-    PushImm32("CRecompiler::Remove_StoreInstruc", CRecompiler::Remove_StoreInstruc);
-    PushImm32(Length);
-    Push(AddressReg);
-#ifdef _MSC_VER
-    MoveConstToX86reg((uint32_t)g_Recompiler, x86_ECX);
-    Call_Direct(AddressOf(&CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
-#else
-    PushImm32((uint32_t)g_Recompiler);
-    Call_Direct(AddressOf(&CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
-    AddConstToX86Reg(x86_ESP, 16);
-#endif
-    m_RegWorkingSet.AfterCallDirect();
-    /*JmpLabel8("MemCheckDone",0);
-    uint8_t * MemCheckDone = *g_RecompPos - 1;
-
-    CPU_Message("      ");
-    CPU_Message("      NotDelaySlot:");
-    SetJump8(NotDelaySlotJump,*g_RecompPos);
-
-    MoveX86RegToX86Reg(AddressReg, StoreTemp1);
-    ShiftRightUnsignImmed(StoreTemp1,12);
-    LeaRegReg(StoreTemp1,StoreTemp1,(uint32_t)&(g_Recompiler->FunctionTable()[0]),Multip_x4);
-    CompConstToX86regPointer(StoreTemp1,0);
-    JeLabel8("MemCheckDone",0);
-    uint8_t * MemCheckDone2 = *g_RecompPos - 1;
-
-    m_RegWorkingSet.BeforeCallDirect();
-    PushImm32("CRecompiler::Remove_StoreInstruc",CRecompiler::Remove_StoreInstruc);
-    PushImm32(strLen.c_str(),Length);
-    Push(AddressReg);
-    MoveConstToX86reg((uint32_t)g_Recompiler,x86_ECX);
-    Call_Direct(AddressOf(&CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
-    m_RegWorkingSet.AfterCallDirect();
-
-    CPU_Message("      ");
-    CPU_Message("      MemCheckDone:");
-    SetJump8(MemCheckDone,*g_RecompPos);
-    SetJump8(MemCheckDone2,*g_RecompPos);
-
-    X86Protected(StoreTemp1) = false;*/
 }
 
 CX86Ops::x86Reg CX86RecompilerOps::BaseOffsetAddress(bool UseBaseRegister)

@@ -372,7 +372,6 @@ private:
     void LW(bool ResultSigned, bool bRecordLLBit);
     void SW(bool bCheckLLbit);
     void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow, void(*x86Jmp)(const char * Label, uint32_t Value));
-    void Compile_StoreInstructClean(x86Reg AddressReg, int32_t Length);
     void ResetMemoryStack();
 
     EXIT_LIST m_ExitInfo;
