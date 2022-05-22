@@ -3584,9 +3584,7 @@ void CX86RecompilerOps::SB()
             ValueReg = Map_TempReg(x86_Any8Bit, m_Opcode.rt, false);
         }
     }
-    x86Reg AddressReg = BaseOffsetAddress(false);
-    TestWriteBreakpoint(AddressReg, (void *)x86TestWriteBreakpoint8, "x86TestWriteBreakpoint8");
-    CompileStoreMemoryValue(AddressReg, ValueReg, x86_Unknown, GetMipsRegLo(m_Opcode.rt), 8);
+    CompileStoreMemoryValue(x86_Unknown, ValueReg, x86_Unknown, GetMipsRegLo(m_Opcode.rt), 8);
 }
 
 void CX86RecompilerOps::SH()
@@ -3626,9 +3624,7 @@ void CX86RecompilerOps::SH()
         }
         ValueReg = IsUnknown(m_Opcode.rt) ? Map_TempReg(x86_Any, m_Opcode.rt, false) : GetMipsRegMapLo(m_Opcode.rt);
     }
-    x86Reg AddressReg = BaseOffsetAddress(false);
-    TestWriteBreakpoint(AddressReg, (void *)x86TestWriteBreakpoint16, "x86TestWriteBreakpoint16");
-    CompileStoreMemoryValue(AddressReg, ValueReg, x86_Unknown, GetMipsRegLo(m_Opcode.rt), 16);
+    CompileStoreMemoryValue(x86_Unknown, ValueReg, x86_Unknown, GetMipsRegLo(m_Opcode.rt), 16);
 }
 
 void CX86RecompilerOps::SWL()
@@ -3787,9 +3783,7 @@ void CX86RecompilerOps::SW(bool bCheckLLbit)
             }
             ValueReg = IsUnknown(m_Opcode.rt) ? Map_TempReg(x86_Any, m_Opcode.rt, false) : GetMipsRegMapLo(m_Opcode.rt);
         }
-        x86Reg AddressReg = BaseOffsetAddress(true);
-        TestWriteBreakpoint(AddressReg, (void *)x86TestWriteBreakpoint32, "x86TestWriteBreakpoint32");
-        CompileStoreMemoryValue(AddressReg, ValueReg, x86_Unknown, GetMipsRegLo(m_Opcode.rt), 32);
+        CompileStoreMemoryValue(x86_Unknown, ValueReg, x86_Unknown, GetMipsRegLo(m_Opcode.rt), 32);
         if (bCheckLLbit)
         {
             CPU_Message("      ");
@@ -3916,8 +3910,6 @@ void CX86RecompilerOps::LL()
 
 void CX86RecompilerOps::LWC1()
 {
-    char Name[50];
-
     CompileCop1Test();
     if ((m_Opcode.ft & 1) != 0)
     {
@@ -3946,8 +3938,7 @@ void CX86RecompilerOps::LWC1()
         LW_KnownAddress(TempReg1, Address);
 
         x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
-        sprintf(Name, "_FPR_S[%d]", m_Opcode.ft);
-        MoveVariableToX86reg(&_FPR_S[m_Opcode.ft], Name, TempReg2);
+        MoveVariableToX86reg(&_FPR_S[m_Opcode.ft], stdstr_f("_FPR_S[%d]", m_Opcode.ft).c_str(), TempReg2);
         MoveX86regToX86Pointer(TempReg1, TempReg2);
         return;
     }
@@ -3972,8 +3963,7 @@ void CX86RecompilerOps::LWC1()
     SetJump8(JumpFound, *g_RecompPos);
 
     MoveX86regPointerToX86reg(AddrReg, TempReg2, TempReg3);
-    sprintf(Name, "_FPR_S[%d]", m_Opcode.ft);
-    MoveVariableToX86reg(&_FPR_S[m_Opcode.ft], Name, TempReg2);
+    MoveVariableToX86reg(&_FPR_S[m_Opcode.ft], stdstr_f("_FPR_S[%d]", m_Opcode.ft).c_str(), TempReg2);
     MoveX86regToX86Pointer(TempReg3, TempReg2);
 }
 
@@ -4104,8 +4094,6 @@ void CX86RecompilerOps::SC()
 
 void CX86RecompilerOps::SWC1()
 {
-    char Name[50];
-
     CompileCop1Test();
 
     if (IsConst(m_Opcode.base))
@@ -4119,9 +4107,7 @@ void CX86RecompilerOps::SWC1()
 
         UnMap_FPR(m_Opcode.ft, true);
         x86Reg TempReg1 = Map_TempReg(x86_Any, -1, false);
-
-        sprintf(Name, "_FPR_S[%d]", m_Opcode.ft);
-        MoveVariableToX86reg(&_FPR_S[m_Opcode.ft], Name, TempReg1);
+        MoveVariableToX86reg(&_FPR_S[m_Opcode.ft], stdstr_f("_FPR_S[%d]", m_Opcode.ft).c_str(), TempReg1);
         MoveX86PointerToX86reg(TempReg1, TempReg1);
         SW_Register(TempReg1, Address);
         return;
@@ -4132,9 +4118,7 @@ void CX86RecompilerOps::SWC1()
     MoveVariableToX86reg(&_FPR_S[m_Opcode.ft], stdstr_f("_FPR_S[%d]", m_Opcode.ft).c_str() , ValueReg);
     MoveX86PointerToX86reg(ValueReg, ValueReg);
 
-    x86Reg AddressReg = BaseOffsetAddress(false);
-    TestWriteBreakpoint(AddressReg, (void *)x86TestWriteBreakpoint64, "x86TestWriteBreakpoint32");
-    CompileStoreMemoryValue(AddressReg, ValueReg, x86_Unknown, 0, 32);
+    CompileStoreMemoryValue(x86_Unknown, ValueReg, x86_Unknown, 0, 32);
 }
 
 void CX86RecompilerOps::SDC1()
@@ -9813,6 +9797,33 @@ CX86Ops::x86Reg CX86RecompilerOps::BaseOffsetAddress(bool UseBaseRegister)
 
 void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86Ops::x86Reg ValueReg, CX86Ops::x86Reg ValueRegHi, uint64_t Value, uint8_t ValueSize)
 {
+    if (AddressReg == x86_Unknown)
+    {
+        if (ValueSize == 8)
+        {
+            AddressReg = BaseOffsetAddress(false);
+            TestWriteBreakpoint(AddressReg, (void *)x86TestWriteBreakpoint8, "x86TestWriteBreakpoint8");
+        }
+        else if (ValueSize == 16)
+        {
+            AddressReg = BaseOffsetAddress(false);
+            TestWriteBreakpoint(AddressReg, (void *)x86TestWriteBreakpoint16, "x86TestWriteBreakpoint16");
+        }
+        else if (ValueSize == 32)
+        {
+            AddressReg = BaseOffsetAddress(true);
+            TestWriteBreakpoint(AddressReg, (void *)x86TestWriteBreakpoint32, "x86TestWriteBreakpoint32");
+        }
+        else if (ValueSize == 64)
+        {
+            AddressReg = BaseOffsetAddress(false);
+            TestWriteBreakpoint(AddressReg, (void *)x86TestWriteBreakpoint64, "x86TestWriteBreakpoint64");
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
     x86Reg TempReg = Map_TempReg(x86_Any, -1, false);
     MoveX86RegToX86Reg(AddressReg, TempReg);
     ShiftRightUnsignImmed(TempReg, 12);
