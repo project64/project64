@@ -696,7 +696,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="N64System\Recompiler\x64-86\x64RegInfo.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\N64 System\Recompiler</Filter>
     </ClInclude>
     <ClInclude Include="Debugger.h">
       <Filter>Header Files</Filter>

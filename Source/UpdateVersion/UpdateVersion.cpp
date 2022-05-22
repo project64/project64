@@ -1,8 +1,10 @@
-#include <stdlib.h>
-#include <memory>
 #include <Common/path.h>
 #include <Common/File.h>
 #include <Common/StdString.h>
+#include <Common/md5.h>
+#include <stdlib.h>
+#include <memory>
+#include <time.h>
 
 bool GitCommand(CPath & SourceDirectory, const char * Command, std::string & Output)
 {
@@ -23,10 +25,8 @@ bool GitCommand(CPath & SourceDirectory, const char * Command, std::string & Out
     }
 
     char buffer[128];
-
     while (!feof(pipe))
     {
-        // use buffer to read and add to result
         if (fgets(buffer, 128, pipe) != NULL)
         {
             Output += buffer;
@@ -122,11 +122,18 @@ int main()
         return 0;
     }
 
+    MD5Digest DestHash;
     if (DestFile.Exists())
     {
-        if (!DestFile.Delete())
+        CFile OutFile(DestFile, CFileBase::modeRead);
+        if (OutFile.IsOpen())
         {
-            return 0;
+            uint32_t OutFileLen = OutFile.GetLength();
+            std::unique_ptr<uint8_t[]> data(new uint8_t[OutFileLen]);
+            if (OutFile.Read(data.get(), OutFileLen) != 0)
+            {
+                MD5(data.get(), OutFileLen).get_digest(DestHash);
+            }
         }
     }
 
@@ -146,12 +153,6 @@ int main()
     std::auto_ptr<uint8_t> InputData(new uint8_t[FileLen]);
     InFile.Read(InputData.get(), FileLen);
     strvector VersionData = stdstr(std::string((char *)InputData.get(), FileLen)).Tokenize("\n");
-
-    CFile OutFile(DestFile, CFileBase::modeWrite | CFileBase::modeCreate);
-    if (!OutFile.IsOpen())
-    {
-        return 0;
-    }
 
     uint32_t VersionMajor = 0, VersionMinor = 0, VersionRevison = 0;
     std::string VersionPrefix;
@@ -194,6 +195,7 @@ int main()
         n -= 1;
     }
     
+    std::string OutData;
     for (size_t i = 0, n = VersionData.size(); i < n; i++)
     {
         stdstr &line = VersionData[i];
@@ -202,9 +204,16 @@ int main()
         {
             line.Format("#define GIT_VERSION                 \"%s%s%s\"\n", RevisionShort.c_str(), BuildDirty ? "-" : "", BuildDirty ? "Dirty" : "");
         }
-        else if (_strnicmp(line.c_str(), "#define VERSION_BUILD", 21) == 0)
+        else if (_strnicmp(line.c_str(), "#define VERSION_BUILD ", 22) == 0)
         {
             line.Format("#define VERSION_BUILD               %d\n", VersionBuild);
+        }
+        else if (_strnicmp(line.c_str(), "#define VERSION_BUILD_YEAR ", 27) == 0)
+        {
+            time_t now = time(NULL);
+            struct tm * tnow = gmtime(&now);
+
+            line.Format("#define VERSION_BUILD_YEAR          %d\n", tnow->tm_year + 1900);
         }
         else if (_strnicmp(line.c_str(), "#define GIT_REVISION ", 21) == 0)
         {
@@ -231,10 +240,25 @@ int main()
             }
             line += "\"\n";
         }
-        if (!OutFile.Write(line.c_str(), (uint32_t)line.length()))
+        OutData += line.c_str();
+    }
+
+    MD5Digest OutHash;
+    MD5((const uint8_t *)OutData.c_str(), (unsigned int)OutData.length()).get_digest(OutHash);
+
+    if (memcmp(OutHash.digest, DestHash.digest, sizeof(DestHash.digest)) != 0)
+    {
+        if (DestFile.Exists() && !DestFile.Delete())
         {
             return 0;
         }
+
+        CFile OutFile(DestFile, CFileBase::modeWrite | CFileBase::modeCreate);
+        if (!OutFile.IsOpen())
+        {
+            return 0;
+        }
+        OutFile.Write(OutData.c_str(), (uint32_t)OutData.length());
     }
     return 0;
 }
