@@ -358,6 +358,7 @@ private:
     CX86RecompilerOps& operator=(const CX86RecompilerOps&);
 
     CX86Ops::x86Reg BaseOffsetAddress(bool UseBaseRegister);
+    void CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86Ops::x86Reg ValueReg, CX86Ops::x86Reg ValueRegHi, uint8_t ValueSize, bool SignExtend);
     void CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86Ops::x86Reg ValueReg, CX86Ops::x86Reg ValueRegHi, uint64_t Value, uint8_t ValueSize);
 
     void SB_Const(uint8_t Value, uint32_t Addr);
