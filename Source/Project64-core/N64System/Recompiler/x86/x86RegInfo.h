@@ -108,5 +108,6 @@ private:
     FPU_ROUND   m_x86fpu_RoundingModel[8];
 
     static uint32_t m_fpuControl;
+    bool m_InBeforeCallDirect;
 };
 #endif

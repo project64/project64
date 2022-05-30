@@ -248,6 +248,7 @@ void CInterpreterCPU::InPermLoop()
     {
         if (*g_NextTimer > 0)
         {
+            g_SystemTimer->UpdateTimers();
             *g_NextTimer = 0 - g_System->CountPerOp();
             g_SystemTimer->UpdateTimers();
         }

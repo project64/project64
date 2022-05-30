@@ -3,7 +3,7 @@
 #include <Project64-core/Settings/GameSettings.h>
 
 class CFunctionMap :
-    private CGameSettings
+    public CGameSettings
 {
 protected:
     typedef CCompiledFunc *  PCCompiledFunc;

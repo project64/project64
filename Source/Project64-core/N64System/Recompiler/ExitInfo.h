@@ -18,6 +18,7 @@ struct CExitInfo
         ExitResetRecompCode = 8,
     };
 
+    std::string Name;
     uint32_t ID;
     uint32_t TargetPC;
     CRegInfo ExitRegSet;

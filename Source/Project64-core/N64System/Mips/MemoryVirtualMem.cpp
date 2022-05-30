@@ -743,7 +743,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t VAddr, uint32_t Value)
     return true;
 }
 
-bool CMipsMemoryVM::SD_NonMemory(uint32_t VAddr, uint64_t /*Value*/)
+bool CMipsMemoryVM::SD_NonMemory(uint32_t VAddr, uint64_t Value)
 {
     uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
     if (BaseAddress == -1)
@@ -751,7 +751,29 @@ bool CMipsMemoryVM::SD_NonMemory(uint32_t VAddr, uint64_t /*Value*/)
         GenerateTLBWriteException(VAddr, __FUNCTION__);
         return false;
     }
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    uint32_t PAddr = BaseAddress + VAddr;
+    switch (PAddr & 0xFFF00000)
+    {
+    case 0x00000000:
+    case 0x00100000:
+    case 0x00200000:
+    case 0x00300000:
+    case 0x00400000:
+    case 0x00500000:
+    case 0x00600000:
+    case 0x00700000:
+        if (PAddr < RdramSize())
+        {
+            g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0xFFC, CRecompiler::Remove_ProtectedMem);
+            ::ProtectMemory(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, MEM_READWRITE);
+            *(uint64_t *)(m_RDRAM + PAddr) = Value;
+        }
+        break;
+    default:
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return false;
+    }
+
     return true;
 }
 
@@ -759,61 +781,50 @@ bool CMipsMemoryVM::SD_NonMemory(uint32_t VAddr, uint64_t /*Value*/)
 void CMipsMemoryVM::ProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr)
 {
     WriteTrace(TraceProtectedMem, TraceDebug, "StartVaddr: %08X EndVaddr: %08X", StartVaddr, EndVaddr);
-    if (!ValidVaddr(StartVaddr) || !ValidVaddr(EndVaddr))
+
+    if (!ValidVaddr(StartVaddr) || !ValidVaddr(EndVaddr) || EndVaddr < StartVaddr)
     {
         return;
     }
 
-    // Get physical addresses passed
-    uint32_t StartPAddr, EndPAddr;
-    if (!VAddrToPAddr(StartVaddr, StartPAddr))
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-    if (!VAddrToPAddr(EndVaddr, EndPAddr))
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-
-    // Get length of memory being protected
-    int32_t Length = ((EndPAddr + 3) - StartPAddr) & ~3;
+    int32_t Length = ((EndVaddr + 3) - StartVaddr) & ~3;
     if (Length < 0)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
     }
-
-    // Protect that memory address space
-    uint8_t * MemLoc = Rdram() + StartPAddr;
-    WriteTrace(TraceProtectedMem, TraceDebug, "Paddr: %08X Length: %X", StartPAddr, Length);
-
+    uint8_t * MemLoc = MemoryPtr(StartVaddr, Length, true);
+    if (MemLoc == nullptr)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+    WriteTrace(TraceProtectedMem, TraceDebug, "Length: 0x%X", Length);
     ::ProtectMemory(MemLoc, Length, MEM_READONLY);
 }
 
 void CMipsMemoryVM::UnProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr)
 {
     WriteTrace(TraceProtectedMem, TraceDebug, "StartVaddr: %08X EndVaddr: %08X", StartVaddr, EndVaddr);
-    if (!ValidVaddr(StartVaddr) || !ValidVaddr(EndVaddr)) { return; }
-
-    // Get physical addresses passed
-    uint32_t StartPAddr, EndPAddr;
-    if (!VAddrToPAddr(StartVaddr, StartPAddr))
+    if (!ValidVaddr(StartVaddr) || !ValidVaddr(EndVaddr) || EndVaddr < StartVaddr)
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-    if (!VAddrToPAddr(EndVaddr, EndPAddr))
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
     }
 
-    // Get length of memory being protected
-    int32_t Length = ((EndPAddr + 3) - StartPAddr) & ~3;
+    int32_t Length = ((EndVaddr + 3) - StartVaddr) & ~3;
     if (Length < 0)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+    uint8_t * MemLoc = MemoryPtr(StartVaddr, Length, true);
+    if (MemLoc == nullptr)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
     }
 
-    //Protect that memory address space
-    uint8_t * MemLoc = Rdram() + StartPAddr;
+    WriteTrace(TraceProtectedMem, TraceDebug, "Length: 0x%X", Length);
     ::ProtectMemory(MemLoc, Length, MEM_READWRITE);
 }
 

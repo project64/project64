@@ -764,9 +764,14 @@ bool CCodeBlock::Compile()
     m_RecompilerOps->CompileExitCode();
     m_CompiledLocationEnd = *g_RecompPos;
 
-    uint32_t PAddr;
-    m_MMU.VAddrToPAddr(VAddrFirst(), PAddr);
-    MD5(g_MMU->Rdram() + PAddr, (VAddrLast() - VAddrFirst()) + 4).get_digest(m_Hash);    
+    uint32_t BlockSize = (VAddrLast() - VAddrFirst()) + 4;
+    uint8_t * BlockPtr = m_MMU.MemoryPtr(VAddrFirst(), BlockSize, true);
+    if (BlockPtr == nullptr)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return false;
+    }
+    MD5(BlockPtr, BlockSize).get_digest(m_Hash);
 #if defined(ANDROID) && (defined(__arm__) || defined(_M_ARM))
 	__clear_cache((uint8_t *)((uint32_t)m_CompiledLocation & ~1), m_CompiledLocationEnd);
 #endif

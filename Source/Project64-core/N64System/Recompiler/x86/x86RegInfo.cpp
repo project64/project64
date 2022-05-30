@@ -16,7 +16,8 @@ uint32_t CX86RegInfo::m_fpuControl = 0;
 const char *Format_Name[] = { "Unknown", "dword", "qword", "float", "double" };
 
 CX86RegInfo::CX86RegInfo() :
-    m_Stack_TopPos(0)
+    m_Stack_TopPos(0),
+    m_InBeforeCallDirect(false)
 {
     for (int32_t i = 0; i < 32; i++)
     {
@@ -51,6 +52,7 @@ CX86RegInfo& CX86RegInfo::operator=(const CX86RegInfo& right)
 {
     CRegBase::operator=(right);
     m_Stack_TopPos = right.m_Stack_TopPos;
+    m_InBeforeCallDirect = right.m_InBeforeCallDirect;
 
     memcpy(&m_RegMapLo, &right.m_RegMapLo, sizeof(m_RegMapLo));
     memcpy(&m_RegMapHi, &right.m_RegMapHi, sizeof(m_RegMapHi));
@@ -112,12 +114,22 @@ CX86RegInfo::REG_STATE CX86RegInfo::ConstantsType(int64_t Value)
 
 void CX86RegInfo::BeforeCallDirect(void)
 {
+    if (m_InBeforeCallDirect)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    m_InBeforeCallDirect = true;
     UnMap_AllFPRs();
     Pushad();
 }
 
 void CX86RegInfo::AfterCallDirect(void)
 {
+    if (!m_InBeforeCallDirect)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    m_InBeforeCallDirect = false;
     Popad();
     SetRoundingModel(CRegInfo::RoundUnknown);
 }
