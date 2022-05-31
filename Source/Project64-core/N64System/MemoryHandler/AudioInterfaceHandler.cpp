@@ -148,7 +148,7 @@ bool AudioInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t M
             SetFrequency(AI_DACRATE_REG, m_System.SystemType());
         }
         break;
-    case 0x04500014: AI_DACRATE_REG = (AI_BITRATE_REG & ~Mask) | (MaskedValue); break;
+    case 0x04500014: AI_BITRATE_REG = (AI_BITRATE_REG & ~Mask) | (MaskedValue); break;
     default:
         if (HaveDebugger())
         {

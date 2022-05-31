@@ -2090,7 +2090,8 @@ bool CN64System::LoadState(const char * FileName)
                 Reset(false, true);
 
                 m_MMU_VM.UnProtectMemory(0x80000000, 0x80000000 + g_Settings->LoadDword(Game_RDRamSize) - 4);
-                m_MMU_VM.UnProtectMemory(0xA4000000, 0xA4001FFC);
+                m_MMU_VM.UnProtectMemory(0xA4000000, 0xA4000FFC);
+                m_MMU_VM.UnProtectMemory(0xA4001000, 0xA4001FFC);
                 g_Settings->SaveDword(Game_RDRamSize, SaveRDRAMSize);
                 unzReadCurrentFile(file, &NextVITimer, sizeof(NextVITimer));
                 unzReadCurrentFile(file, &m_Reg.m_PROGRAM_COUNTER, sizeof(m_Reg.m_PROGRAM_COUNTER));
