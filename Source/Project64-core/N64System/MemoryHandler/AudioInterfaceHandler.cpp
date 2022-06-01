@@ -222,6 +222,7 @@ void AudioInterfaceHandler::LoadedGameState(void)
 
 void AudioInterfaceHandler::SystemReset(void)
 {
+    m_Status = 0;
     m_SecondBuff = 0;
     m_BytesPerSecond = 0;
     m_CountsPerByte = g_System->AiCountPerBytes();
