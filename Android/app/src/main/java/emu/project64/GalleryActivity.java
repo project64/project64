@@ -12,20 +12,10 @@ import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-
 import emu.project64.R;
 import emu.project64.dialog.ProgressDialog;
 import emu.project64.game.GameActivity;
 import emu.project64.game.GameActivityXperiaPlay;
-import emu.project64.inAppPurchase.IabBroadcastReceiver;
-import emu.project64.inAppPurchase.IabBroadcastReceiver.IabBroadcastListener;
-import emu.project64.inAppPurchase.IabHelper;
-import emu.project64.inAppPurchase.IabHelper.IabAsyncInProgressException;
-import emu.project64.inAppPurchase.IabResult;
-import emu.project64.inAppPurchase.Inventory;
-import emu.project64.inAppPurchase.Purchase;
 import emu.project64.jni.LanguageStringID;
 import emu.project64.jni.NativeExports;
 import emu.project64.jni.SettingsID;
@@ -77,7 +67,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class GalleryActivity extends AppCompatActivity implements IabBroadcastListener
+public class GalleryActivity extends AppCompatActivity
 {
     //Progress dialog for ROM scan
     private ProgressDialog mProgress = null;
@@ -99,22 +89,6 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
     private static List<GalleryItem> mRecentItems = new ArrayList<GalleryItem>();
     private static GalleryActivity mActiveGalleryActivity = null;
 
-    // The IAB helper object
-    IabHelper mIabHelper;
-    private boolean mPj64Supporter = false;
-
-    // Provides purchase notification while this app is running
-    IabBroadcastReceiver mBroadcastReceiver;
-
-    public static final int GAME_DIR_REQUEST_CODE = 1;
-    static final String SKU_SAVESUPPORT = "save_support";
-    static final String SKU_PJ64SUPPORTOR_2 = "supportproject64_2";
-    static final String SKU_PJ64SUPPORTOR_5 = "supportproject64_5";
-    static final String SKU_PJ64SUPPORTOR_8 = "supportproject64_8";
-    static final String SKU_PJ64SUPPORTOR_10 = "supportproject64_10";
-
-    // (arbitrary) request code for the purchase flow
-    static final int RC_REQUEST = 10001;
     static final int RC_SETTINGS = 10002;
 
     @Override
@@ -140,53 +114,8 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         super.onCreate( savedInstanceState );
         mActiveGalleryActivity = this;
 
-        mIabHelper = new IabHelper(this, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnfHFIq+X0oIvV+bwcvdqQv5GmpWLL6Bw8xE6MLFzXzUGUIUZBwQS6Cz5IC0UM76ujPDPqQPeGy/8oq/bswB5pHCz2iS4ySGalzFfYfeIDklOe+R1pLEqmHuwsR5o4b8rLePLGmUI7hA0kozOTb0i+epANV3Pj63i5XFZLA7RMi5I+YysoE9Fob6kCx0kb02AATacF0OXI9paE1izvsHhZcOIrT4TRMbGlZjBVE/pcJtoBDh33QKz/JBOXWvwnh+efqhVsq/UfA6jYI+U4Z4tsnWhem8DB6Kqj5EhClC6qCPmkBFiOabyKaqhI/urBtYOwxkW9erwtA6OcDoHm5J/JwIDAQAB");
-
-        // enable debug logging (for a production application, you should set this to false).
-        mIabHelper.enableDebugLogging(true);
 
         Log.d("GalleryActivity", "Starting setup.");
-        mIabHelper.startSetup(new IabHelper.OnIabSetupFinishedListener()
-        {
-            public void onIabSetupFinished(IabResult result)
-            {
-                Log.d("GalleryActivity", "onIabSetupFinished.");
-
-                if (!result.isSuccess())
-                {
-                    // Oh noes, there was a problem.
-                    Log.d("GalleryActivity", "Problem setting up in-app billing: " + result);
-                    // complain("Problem setting up in-app billing: " + result);
-                    mPj64Supporter = true;
-                    return;
-                }
-                // Have we been disposed of in the meantime? If so, quit.
-                if (mIabHelper == null) return;
-
-                // Important: Dynamically register for broadcast messages about updated purchases.
-                // We register the receiver here instead of as a <receiver> in the Manifest
-                // because we always call getPurchases() at startup, so therefore we can ignore
-                // any broadcasts sent while the app isn't running.
-                // Note: registering this listener in an Activity is a bad idea, but is done here
-                // because this is a SAMPLE. Regardless, the receiver must be registered after
-                // IabHelper is setup, but before first call to getPurchases().
-                mBroadcastReceiver = new IabBroadcastReceiver(GalleryActivity.this);
-                IntentFilter broadcastFilter = new IntentFilter(IabBroadcastReceiver.ACTION);
-                registerReceiver(mBroadcastReceiver, broadcastFilter);
-
-                // IAB is fully set up. Now, let's get an inventory of stuff we own.
-                Log.d("GalleryActivity", "Setup successful. Querying inventory.");
-                try
-                {
-                    mIabHelper.queryInventoryAsync(mGotInventoryListener);
-                }
-                catch (IabAsyncInProgressException e)
-                {
-                    //complain("Error querying inventory. Another async operation in progress.");
-                }
-            }
-        });
-
         // Lay out the content
         setContentView( R.layout.gallery_activity );
         mGridView = (RecyclerView) findViewById( R.id.gridview );
@@ -210,7 +139,6 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         GridLayoutManager layoutManager = (GridLayoutManager) mGridView.getLayoutManager();
         layoutManager.setSpanCount( galleryColumns );
 
-        // Add the toolbar to the activity (which supports the fancy menu/arrow animation)
         Toolbar toolbar = (Toolbar) findViewById( R.id.toolbar );
         toolbar.setTitle( R.string.app_name );
         setSupportActionBar( toolbar );
@@ -234,14 +162,6 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         });
         UpdateLanguage();
 
-        int RunCount = NativeExports.UISettingsLoadDword(UISettingID.AppInfo_RunCount.getValue()) + 1;
-        if (RunCount < 1) { RunCount = 1; }
-        NativeExports.UISettingsSaveDword(UISettingID.AppInfo_RunCount.getValue(), RunCount);
-        Log.d("GalleryActivity", "ShowSupportWindow RunCount = " + RunCount);
-        if (RunCount == 5 || RunCount == 10)
-        {
-            ShowReviewOptions();
-        }
     }
 
     void UpdateLanguage()
@@ -254,90 +174,6 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_about, LanguageStringID.ANDROID_ABOUT);
     }
 
-    // Listener that's called when we finish querying the items and subscriptions we own
-    IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener()
-    {
-        public void onQueryInventoryFinished(IabResult result, Inventory inventory)
-        {
-            Log.d("GalleryActivity", "Query inventory finished.");
-
-            // Have we been disposed of in the meantime? If so, quit.
-            if (mIabHelper == null) return;
-
-            // Is it a failure?
-            if (result.isFailure())
-            {
-                //complain("Failed to query inventory: " + result);
-                return;
-            }
-
-            Log.d("GalleryActivity", "Query inventory was successful.");
-
-            /*
-             * Check for items we own. Notice that for each purchase, we check
-             * the developer payload to see if it's correct! See
-             * verifyDeveloperPayload().
-             */
-
-            /*IabHelper.OnConsumeFinishedListener listener = new IabHelper.OnConsumeFinishedListener()
-            {
-                @Override
-                public
-                void onConsumeFinished(Purchase purchase, IabResult result)
-                {
-                    Log.d("GalleryActivity", "SKU_SAVESUPPORT consumed");
-                }
-            };
-            try {
-                mIabHelper.consumeAsync(inventory.getPurchase(SKU_SAVESUPPORT), listener);
-            } catch (IabAsyncInProgressException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }*/
-            Purchase ItemPurchase = inventory.getPurchase(SKU_SAVESUPPORT);
-            Log.d("GalleryActivity", "Purchased SKU_SAVESUPPORT " + (ItemPurchase!= null ? "Yes" : "No"));
-            if (ItemPurchase != null)
-            {
-                mPj64Supporter = true;
-            }
-            if (!mPj64Supporter)
-            {
-                ItemPurchase = inventory.getPurchase(SKU_PJ64SUPPORTOR_2);
-                Log.d("GalleryActivity", "Purchased SKU_PJ64SUPPORTOR_2 " + (ItemPurchase != null ? "Yes" : "No"));
-                if (ItemPurchase != null)
-                {
-                    mPj64Supporter = true;
-                }
-            }
-            if (!mPj64Supporter)
-            {
-                ItemPurchase = inventory.getPurchase(SKU_PJ64SUPPORTOR_5);
-                Log.d("GalleryActivity", "Purchased SKU_PJ64SUPPORTOR_5 " + (ItemPurchase != null ? "Yes" : "No"));
-                if (ItemPurchase != null)
-                {
-                    mPj64Supporter = true;
-                }
-            }
-            if (!mPj64Supporter)
-            {
-                ItemPurchase = inventory.getPurchase(SKU_PJ64SUPPORTOR_8);
-                Log.d("GalleryActivity", "Purchased SKU_PJ64SUPPORTOR_8 " + (ItemPurchase != null ? "Yes" : "No"));
-                if (ItemPurchase != null)
-                {
-                    mPj64Supporter = true;
-                }
-            }
-            if (!mPj64Supporter)
-            {
-                ItemPurchase = inventory.getPurchase(SKU_PJ64SUPPORTOR_10);
-                Log.d("GalleryActivity", "Purchased SKU_PJ64SUPPORTOR_10 " + (ItemPurchase != null ? "Yes" : "No"));
-                if (ItemPurchase != null)
-                {
-                    mPj64Supporter = true;
-                }
-            }
-        }
-    };
 
     void alert(String message)
     {
@@ -348,19 +184,6 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         bld.create().show();
     }
 
-    public void receivedBroadcast()
-    {
-        // Received a broadcast notification that the inventory of items has changed
-        Log.d("GalleryActivity", "Received broadcast notification. Querying inventory.");
-        try
-        {
-            mIabHelper.queryInventoryAsync(mGotInventoryListener);
-        }
-        catch (IabAsyncInProgressException e)
-        {
-            //complain("Error querying inventory. Another async operation in progress.");
-        }
-    }
 
     @Override
     protected void onPostCreate( Bundle savedInstanceState )
@@ -636,14 +459,6 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                 }
             }
         }
-        // Pass on the activity result to the helper for handling
-        if (mIabHelper != null && !mIabHelper.handleActivityResult(requestCode, resultCode, data))
-        {
-            // not handled, so handle it ourselves (here's where you'd
-            // perform any handling of activity results not related to in-app
-            // billing...
-            super.onActivityResult(requestCode, resultCode, data);
-        }
     }
 
     void refreshGrid( )
@@ -729,168 +544,6 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
     }
 
     // Enables or disables the "please wait" screen.
-    void setWaitScreen(boolean set)
-    {
-        if (set)
-        {
-            WebView webView = (WebView)findViewById(R.id.screen_wait);
-            webView.loadData(Utility.readAsset("loading.htm", ""), "text/html", "UTF8");
-        }
-        findViewById(R.id.screen_main).setVisibility(set ? View.GONE : View.VISIBLE);
-        findViewById(R.id.screen_wait).setVisibility(set ? View.VISIBLE : View.GONE);
-    }
-
-    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener()
-    {
-        public void onIabPurchaseFinished(IabResult result, Purchase purchase)
-        {
-            Log.d("GalleryActivity", "Purchase finished: " + result + ", purchase: " + purchase);
-            // if we were disposed of in the meantime, quit.
-            if (mIabHelper == null) return;
-
-            if (result.isFailure())
-            {
-                Log.e("GalleryActivity", "**** Purcahse Error: " + result);
-                alert("Save Support Upgrade failed\n\n" + result.getMessage());
-                setWaitScreen(false);
-                return;
-            }
-
-            Log.d("GalleryActivity", "Purchase successful.");
-
-            if (purchase.getSku().equals(SKU_SAVESUPPORT))
-            {
-                // bought the premium upgrade!
-                Log.d("GalleryActivity", "Purchase is save support. Congratulating user.");
-                alert("Thank you for upgrading to have save support!");
-                setWaitScreen(false);
-            }
-
-            if (purchase.getSku().equals(SKU_PJ64SUPPORTOR_2) ||
-                purchase.getSku().equals(SKU_PJ64SUPPORTOR_5) ||
-                purchase.getSku().equals(SKU_PJ64SUPPORTOR_8) ||
-                purchase.getSku().equals(SKU_PJ64SUPPORTOR_10))
-            {
-                // bought the premium upgrade!
-                Log.d("GalleryActivity", "Purchase is project64 support. Congratulating user.");
-                alert("Thank you for supporting Project64!");
-                mPj64Supporter = true;
-                setWaitScreen(false);
-            }
-        }
-    };
-
-    public void PurcahseProject64Support(Activity activity, String sku)
-    {
-        setWaitScreen(true);
-        //Purchase save support
-        try
-        {
-            String payload = NativeExports.appVersion();
-            mIabHelper.launchPurchaseFlow(activity, sku, RC_REQUEST, mPurchaseFinishedListener, payload);
-        }
-        catch (IabAsyncInProgressException e)
-        {
-            setWaitScreen(false);
-        }
-    }
-
-    public void ShowReviewOptions()
-    {
-        new AlertDialog.Builder(GalleryActivity.this).setTitle(getString(R.string.review_title))
-        .setMessage(getString(R.string.review_decription))
-        .setPositiveButton(getString( R.string.review_ok ), new OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                Intent IssueIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=emu.project64&hl=en"));
-                startActivity(IssueIntent);
-            }
-
-        })
-        .setNegativeButton( getString( R.string.review_cancel), new OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-            }
-        })
-        .setCancelable(false).show();
-    }
-
-    public void ShowPaymentOptions()
-    {
-        ArrayList<String> skuList = new ArrayList<String>();
-        skuList.add(SKU_PJ64SUPPORTOR_2);
-        skuList.add(SKU_PJ64SUPPORTOR_5);
-        skuList.add(SKU_PJ64SUPPORTOR_8);
-        skuList.add(SKU_PJ64SUPPORTOR_10);
-        Bundle querySkus = new Bundle();
-        querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
-
-        final Context context = this;
-        final Activity activity = this;
-        IabHelper.QueryInventoryFinishedListener GotPaymentOptionListener = new IabHelper.QueryInventoryFinishedListener()
-        {
-            public void onQueryInventoryFinished(IabResult result, Inventory inventory)
-            {
-                Log.d("GalleryActivity", "Query inventory finished.");
-
-                // Have we been disposed of in the meantime? If so, quit.
-                if (mIabHelper == null) return;
-
-                // Is it a failure?
-                if (result.isFailure())
-                {
-                    //complain("Failed to query inventory: " + result);
-                    return;
-                }
-
-                Log.d("GalleryActivity", "SKU_PJ64SUPPORTOR_2 price: " + inventory.getSkuDetails(SKU_PJ64SUPPORTOR_2).getPrice());
-                Log.d("GalleryActivity", "SKU_PJ64SUPPORTOR_5 price: " + inventory.getSkuDetails(SKU_PJ64SUPPORTOR_5).getPrice());
-                Log.d("GalleryActivity", "SKU_PJ64SUPPORTOR_8 price: " + inventory.getSkuDetails(SKU_PJ64SUPPORTOR_8).getPrice());
-                Log.d("GalleryActivity", "SKU_PJ64SUPPORTOR_10 price: " + inventory.getSkuDetails(SKU_PJ64SUPPORTOR_10).getPrice());
-
-                CharSequence options[] = new CharSequence[]
-                {
-                    inventory.getSkuDetails(SKU_PJ64SUPPORTOR_10).getPrice(),
-                    inventory.getSkuDetails(SKU_PJ64SUPPORTOR_8).getPrice(),
-                    inventory.getSkuDetails(SKU_PJ64SUPPORTOR_5).getPrice(),
-                    inventory.getSkuDetails(SKU_PJ64SUPPORTOR_2).getPrice()
-                };
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("Select an amount");
-                builder.setItems(options, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        switch (which)
-                        {
-                        case 0: PurcahseProject64Support(activity,SKU_PJ64SUPPORTOR_10); break;
-                        case 1: PurcahseProject64Support(activity,SKU_PJ64SUPPORTOR_8); break;
-                        case 2: PurcahseProject64Support(activity,SKU_PJ64SUPPORTOR_5); break;
-                        case 3: PurcahseProject64Support(activity,SKU_PJ64SUPPORTOR_2); break;
-                        }
-                    }
-                });
-                final AlertDialog dialog = builder.create();
-                dialog.show();
-            }
-        };
-
-        try
-        {
-            mIabHelper.queryInventoryAsync(true, skuList, null, GotPaymentOptionListener);
-        }
-        catch (IabAsyncInProgressException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
 
     public void launchGameActivity(boolean ResumeGame)
     {
