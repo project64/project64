@@ -1618,7 +1618,7 @@ bool gfxLfbWriteRegion(gfxBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, g
 {
     unsigned char *buf;
     unsigned int i, j;
-    unsigned short *frameBuffer = (unsigned short*)src_data;
+    unsigned short *frameBuf = (unsigned short*)src_data;
     int texture_number;
     unsigned int tex_width = 1, tex_height = 1;
     WriteTrace(TraceGlitch, TraceDebug, "dst_buffer: %d dst_x: %d dst_y: %d src_format: %d src_width: %d src_height: %d pixelPipeline: %d src_stride: %d", dst_buffer, dst_x, dst_y, src_format, src_width, src_height, pixelPipeline, src_stride);
@@ -1655,7 +1655,7 @@ bool gfxLfbWriteRegion(gfxBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, g
             {
                 for (i = 0; i < src_width; i++)
                 {
-                    const unsigned int col = frameBuffer[j*half_stride + i];
+                    const unsigned int col = frameBuf[j*half_stride + i];
                     buf[j*tex_width * 4 + i * 4 + 0] = ((col >> 10) & 0x1F) << 3;
                     buf[j*tex_width * 4 + i * 4 + 1] = ((col >> 5) & 0x1F) << 3;
                     buf[j*tex_width * 4 + i * 4 + 2] = ((col >> 0) & 0x1F) << 3;
@@ -1668,7 +1668,7 @@ bool gfxLfbWriteRegion(gfxBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, g
             {
                 for (i = 0; i < src_width; i++)
                 {
-                    const unsigned int col = frameBuffer[j*half_stride + i];
+                    const unsigned int col = frameBuf[j*half_stride + i];
                     buf[j*tex_width * 4 + i * 4 + 0] = ((col >> 10) & 0x1F) << 3;
                     buf[j*tex_width * 4 + i * 4 + 1] = ((col >> 5) & 0x1F) << 3;
                     buf[j*tex_width * 4 + i * 4 + 2] = ((col >> 0) & 0x1F) << 3;
@@ -1681,7 +1681,7 @@ bool gfxLfbWriteRegion(gfxBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, g
             {
                 for (i = 0; i < src_width; i++)
                 {
-                    const unsigned int col = frameBuffer[j*half_stride + i];
+                    const unsigned int col = frameBuf[j*half_stride + i];
                     buf[j*tex_width * 4 + i * 4 + 0] = ((col >> 11) & 0x1F) << 3;
                     buf[j*tex_width * 4 + i * 4 + 1] = ((col >> 5) & 0x3F) << 2;
                     buf[j*tex_width * 4 + i * 4 + 2] = ((col >> 0) & 0x1F) << 3;
@@ -1708,7 +1708,7 @@ bool gfxLfbWriteRegion(gfxBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, g
     }
     else
     {
-        float *buf = (float*)malloc(src_width*(src_height + (g_viewport_offset)) * sizeof(float));
+        float *fltbuf = (float*)malloc(src_width*(src_height + (g_viewport_offset)) * sizeof(float));
 
         if (src_format != GFX_LFBWRITEMODE_ZA16)
             WriteTrace(TraceGlitch, TraceWarning, "Unknown depth buffer write format:%x", src_format);
@@ -1720,8 +1720,8 @@ bool gfxLfbWriteRegion(gfxBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, g
         {
             for (i = 0; i < src_width; i++)
             {
-                buf[(j + (g_viewport_offset))*src_width + i] =
-                    (frameBuffer[(src_height - j - 1)*(src_stride / 2) + i] / (65536.0f*(2.0f / zscale))) + 1 - zscale / 2.0f;
+                fltbuf[(j + (g_viewport_offset))*src_width + i] =
+                    (frameBuf[(src_height - j - 1)*(src_stride / 2) + i] / (65536.0f*(2.0f / zscale))) + 1 - zscale / 2.0f;
             }
         }
 
@@ -1731,9 +1731,9 @@ bool gfxLfbWriteRegion(gfxBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, g
         glDrawBuffer(GL_BACK);
         glClear(GL_DEPTH_BUFFER_BIT);
         glDepthMask(1);
-        glDrawPixels(src_width, src_height + (g_viewport_offset), GL_DEPTH_COMPONENT, GL_FLOAT, buf);
+        glDrawPixels(src_width, src_height + (g_viewport_offset), GL_DEPTH_COMPONENT, GL_FLOAT, fltbuf);
 
-        free(buf);
+        free(fltbuf);
     }
     glDrawBuffer(current_buffer);
     glPopAttrib();

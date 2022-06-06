@@ -45,7 +45,7 @@ m_InUpdateSettings(false)
     UpdatePageSettings();
 }
 
-int CALLBACK COptionsDirectoriesPage::SelectDirCallBack(HWND hwnd, DWORD uMsg, DWORD /*lp*/, DWORD lpData)
+int CALLBACK COptionsDirectoriesPage::SelectDirCallBack(HWND hwnd, UINT uMsg, LPARAM /*lp*/, LPARAM lpData)
 {
     switch (uMsg)
     {
@@ -74,8 +74,8 @@ void COptionsDirectoriesPage::SelectDirectory(LanguageStringID Title, CModifiedE
     bi.pszDisplayName = Buffer;
     bi.lpszTitle = wTitle.c_str();
     bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS;
-    bi.lpfn = (BFFCALLBACK)SelectDirCallBack;
-    bi.lParam = (DWORD)InitialDir.c_str();
+    bi.lpfn = SelectDirCallBack;
+    bi.lParam = (LPARAM)InitialDir.c_str();
     if ((pidl = SHBrowseForFolder(&bi)) != nullptr)
     {
         if (SHGetPathFromIDList(pidl, Directory))
@@ -216,7 +216,7 @@ void COptionsDirectoriesPage::UseSelectedClicked(UINT /*Code*/, int id, HWND /*c
 
     if (!Button->IsChanged() || Button->IsReset())
     {
-        if ((int)Button->GetMenu() == id)
+        if ((INT_PTR)Button->GetMenu() == id)
         {
             return;
         }

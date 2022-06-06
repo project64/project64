@@ -1794,7 +1794,7 @@ TxQuantize::quantize(uint8* src, uint8* dest, int width, int height, uint16 srcf
 
 bool
 TxQuantize::FXT1(uint8 *src, uint8 *dest,
-    int srcwidth, int srcheight, uint16 srcformat,
+    int srcwidth, int srcheight, uint16 /* srcformat */,
     int *destwidth, int *destheight, uint16 *destformat)
 {
     /*

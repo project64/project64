@@ -19,8 +19,8 @@ void WelcomeScreen::SelectGameDir(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
     bi.pszDisplayName = Buffer;
     bi.lpszTitle = wTitle.c_str();
     bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS;
-    bi.lpfn = (BFFCALLBACK)SelectDirCallBack;
-    bi.lParam = (DWORD)InitialDir.c_str();
+    bi.lpfn = SelectDirCallBack;
+    bi.lParam = (LPARAM)InitialDir.c_str();
     if ((pidl = SHBrowseForFolder(&bi)) != nullptr)
     {
         if (SHGetPathFromIDList(pidl, Directory))
@@ -114,7 +114,7 @@ LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
     return TRUE;
 }
 
-int CALLBACK WelcomeScreen::SelectDirCallBack(HWND hwnd, DWORD uMsg, DWORD /*lp*/, DWORD lpData)
+int CALLBACK WelcomeScreen::SelectDirCallBack(HWND hwnd, UINT uMsg, LPARAM /*lp*/, LPARAM lpData)
 {
     switch (uMsg)
     {

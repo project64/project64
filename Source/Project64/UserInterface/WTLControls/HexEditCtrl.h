@@ -123,6 +123,7 @@ class CHexEditCtrl :
     public CWindowImpl<CHexEditCtrl>
 {
 public:
+    typedef uint32_t address_type;
     CHexEditCtrl(void);
     ~CHexEditCtrl(void);
     DECLARE_WND_CLASS(_T("HexEditCtrl"))

@@ -205,7 +205,7 @@ void CScriptSystem::UpdateCpuCbListInfo(volatile JSCpuCbListInfo& info, JSAppCal
 {
     uint32_t minAddrStart = 0;
     uint32_t maxAddrEnd = 0;
-    int numCacheEntries = 0;
+    size_t numCacheEntries = 0;
     bool bCacheExceeded = false;
 
     for (JSAppCallback& callback : callbacks)

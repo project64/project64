@@ -67,7 +67,7 @@ public:
 
     void Refresh();
     void UpdateFilteredSymbols();
-    int  GetListItemSymbolId(int nItem);
+    int  GetListItemSymbolId(size_t nItem);
     int  ColumnHitTest(POINT& pt);
 
     LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);

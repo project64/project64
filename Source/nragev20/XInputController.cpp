@@ -182,7 +182,7 @@ void GetXInputControllerKeys( const int indexController, LPDWORD Keys )
     DWORD result;
     XINPUT_STATE state;
 
-    ULONGLONG time = GetTickCount() / 1000;
+    ULONG time = GetTickCount() / 1000;
     if (g_pcControllers[indexController].XcheckTime != NULL && (time - g_pcControllers[indexController].XcheckTime) < 3)
         return;
 
@@ -663,14 +663,14 @@ void StoreAnalogConfig( LPXCONTROLLER gController, int ComboBox, int index )
 
 void StoreXInputControllerKeys( HWND hDlg, LPXCONTROLLER gController )
 {
-    LRESULT index = -1;
+    int index = -1;
     DWORD value = 0;
 
     ResetXInputControllerKeys( gController );
 
     for( int i = IDC_XC_A; i <= IDC_XC_RTS; i++ )
     {
-        index = SendDlgItemMessage( hDlg, i, CB_GETCURSEL, 0, 0 );
+        index = (int)(INT_PTR) SendDlgItemMessage( hDlg, i, CB_GETCURSEL, 0, 0 );
         value = GetComboBoxXInputKey( i );
         if( value == 0 )
             continue;

@@ -1030,9 +1030,7 @@ bool BrowseFolders( HWND hwndParent, TCHAR *pszHeader, TCHAR *pszDirectory )
     brInfo.ulFlags = BIF_RETURNONLYFSDIRS;
     brInfo.lpfn = NULL;
 
-    ITEMIDLIST *piList;
-
-    piList = SHBrowseForFolder( &brInfo );
+    LPITEMIDLIST piList = SHBrowseForFolder( &brInfo );
     if( piList )
     {
         SHGetPathFromIDList( (const LPITEMIDLIST)piList, pszDirectory );
@@ -1475,6 +1473,12 @@ inline void GUIDtoStringA( char * szGUIDbuf, const GUID guid )
 
 inline bool StringtoGUIDA( LPGUID guid, const char * szGUIDbuf )
 {
+    // Instead of trying to figure out if the CRT supports %hhX, just ignore the warning since the code is already aware that %hX will write a short.
+    #if defined(_MSC_VER) && _MSC_VER >= 1200
+    #pragma warning( push )
+    #pragma warning( disable : 4477 )
+    #endif
+
     short unsigned int lastbyte;
     int blah = sscanf(szGUIDbuf, "{%08lX-%04hX-%04hX-%02hX%02hX-%02hX%02hX%02hX%02hX%02hX%02hX}", &guid->Data1, &guid->Data2, &guid->Data3, &guid->Data4[0], &guid->Data4[1], &guid->Data4[2], &guid->Data4[3], &guid->Data4[4], &guid->Data4[5], &guid->Data4[6], &lastbyte);
     if (blah == 11)
@@ -1484,6 +1488,10 @@ inline bool StringtoGUIDA( LPGUID guid, const char * szGUIDbuf )
     }
     else
         return false;
+
+    #if defined(_MSC_VER) && _MSC_VER >= 1200
+    #pragma warning( pop )
+    #endif
 }
 
 // Takes in a file to dump to, and an 'int i' telling which controller's settings to dump. Does not dump buttons or modifiers.

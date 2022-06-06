@@ -30,7 +30,7 @@ struct compareKeyValueItem
                 return i1 < i2;
             }
             char Buffer[40];
-            int number_len = strlen(_itoa(i1, Buffer, 10));
+            size_t number_len = strlen(_itoa(i1, Buffer, 10));
             if (strlen(&a[5 + number_len]) == 0)
             {
                 return true;

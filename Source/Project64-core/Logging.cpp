@@ -30,7 +30,7 @@ void CLogging::LogMessage(const char * Message, ...)
 
     strcat(Msg, "\r\n");
 
-    m_hLogFile->Write(Msg, strlen(Msg));
+    m_hLogFile->Write(Msg, (unsigned int) strlen(Msg));
 }
 
 void CLogging::StartLog(void)

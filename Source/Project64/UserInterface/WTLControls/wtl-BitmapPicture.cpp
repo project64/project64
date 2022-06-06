@@ -56,7 +56,7 @@ bool CBitmapPicture::SetIcon(LPCWSTR lpszResourceName, uint32_t nWidth, uint32_t
 	}
 	if (IS_INTRESOURCE(lpszResourceName))
 	{
-		m_nResourceID = (int)lpszResourceName;
+		m_nResourceID = (int)(INT_PTR)lpszResourceName;
 	}
 	else
 	{
@@ -78,7 +78,7 @@ void CBitmapPicture::SetBitmap(LPCWSTR lpszResourceName)
 {
     if (IS_INTRESOURCE(lpszResourceName))
     {
-        m_nResourceID = (int)lpszResourceName;
+        m_nResourceID = (int)(INT_PTR)lpszResourceName;
     }
     else
     {

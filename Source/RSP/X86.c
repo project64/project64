@@ -406,6 +406,9 @@ void X86BreakPoint (LPCSTR FileName, int LineNumber) {
 #if defined(_M_IX86)
 	PushImm32("FileName",(DWORD)FileName);
 #else
+	#ifdef UNREFERENCED_PARAMETER
+		UNREFERENCED_PARAMETER(FileName);
+	#endif
 	DisplayError("PushImm64\nUnimplemented.");
 #endif
 	Call_Direct(BreakPointNotification,"BreakPointNotification");

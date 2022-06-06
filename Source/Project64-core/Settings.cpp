@@ -837,8 +837,8 @@ bool CSettings::LoadStringVal(SettingID Type, char * Buffer, uint32_t BufferSize
     {
         stdstr Value;
         bRes = FindInfo->second->Load(0, Value);
-        int len = BufferSize;
-        if ((Value.length() + 1) < (size_t)len)
+        size_t len = BufferSize;
+        if ((Value.length() + 1) < len)
         {
             len = Value.length() + 1;
         }

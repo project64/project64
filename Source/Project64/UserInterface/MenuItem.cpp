@@ -9,7 +9,7 @@ bool CBaseMenu::AddMenu(HMENU hMenu, MenuItemList Items)
 {
     if (Items.begin() == Items.end()) { return false; }
 
-    UINT ItemID, uFlags;
+    SIZE_T ItemID, uFlags;
     std::wstring Text, String;
     for (MenuItemList::iterator MenuItem = Items.begin(); MenuItem != Items.end(); MenuItem++)
     {
@@ -41,7 +41,7 @@ bool CBaseMenu::AddMenu(HMENU hMenu, MenuItemList Items)
         MenuItemList * SubMenu = (MenuItemList *)MenuItem->SubMenu();
         if (ItemID == SUB_MENU && HIWORD(SubMenu) != 0 && (SubMenu->begin() != SubMenu->end()))
         {
-            ItemID = (UINT)CreatePopupMenu();
+            ItemID = (SIZE_T)CreatePopupMenu();
             uFlags |= MF_POPUP;
 
             AddMenu((HMENU)ItemID, *SubMenu);
@@ -49,14 +49,14 @@ bool CBaseMenu::AddMenu(HMENU hMenu, MenuItemList Items)
 
         if (ItemID == ID_PLUGIN_MENU)
         {
-            ItemID = (UINT)MenuItem->SubMenu();
+            ItemID = (SIZE_T)MenuItem->SubMenu();
             uFlags |= MF_POPUP;
             MENUITEMINFO lpmii;
 
             lpmii.cbSize = sizeof(MENUITEMINFO);
             lpmii.fMask = MIIM_STATE;
             lpmii.fState = 0;
-            SetMenuItemInfo((HMENU)ItemID, (DWORD)MenuItem->SubMenu(), FALSE, &lpmii);
+            SetMenuItemInfo((HMENU)ItemID, (DWORD)MenuItem->SubMenu(), FALSE, &lpmii); // BUGBUG: Truncating 2nd parameter on 64-bit
         }
 
         if (MenuItem->ShortCut().empty() == false)

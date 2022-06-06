@@ -87,7 +87,7 @@ public:
     TxImage() {}
     ~TxImage() {}
     uint8* readPNG(FILE* fp, int* width, int* height, uint16* format);
-    bool writePNG(uint8* src, FILE* fp, int width, int height, int rowStride, uint16 format, uint8 *palette);
+    bool writePNG(uint8* src, FILE* fp, int width, int height, int rowStride, uint16 format, uint8 /* *palette */);
     uint8* readBMP(FILE* fp, int* width, int* height, uint16* format);
     uint8* readDDS(FILE* fp, int* width, int* height, uint16* format);
 };

@@ -171,9 +171,9 @@ void CNotificationImp::AddRecentDir(const char * RomDir)
     if (HIWORD(RomDir) == NULL) { return; }
 
     // Get information about the stored ROM list
-    size_t MaxRememberedDirs = UISettingsLoadDword(Directory_RecentGameDirCount);
+    UINT MaxRememberedDirs = UISettingsLoadDword(Directory_RecentGameDirCount);
     strlist RecentDirs;
-    size_t i;
+    UINT i;
     for (i = 0; i < MaxRememberedDirs; i++)
     {
         stdstr RecentDir = UISettingsLoadStringIndex(Directory_RecentGameDirIndex, i);

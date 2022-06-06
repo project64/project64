@@ -8,6 +8,9 @@
 
 #include <Project64-video/Renderer/Renderer.h>
 #include <stdint.h>
+#ifdef _WIN32
+#include <Windows.h> // HIWORD/LOWORD
+#endif
 
 extern char out_buf[2048];
 

@@ -965,7 +965,7 @@ int ReverseNotesA( LPCSTR Text, LPBYTE Note )
         TextPos++;
         Note++;
     }
-    return TextPos - Text;
+    return (UINT)(SIZE_T)(TextPos - Text);
 }
 
 WORD ShowMemPakContent( const unsigned char * bMemPakBinary, HWND hListWindow )

@@ -41,7 +41,7 @@ void COptionsGameBrowserPage::UpdateFieldList(const ROMBROWSER_FIELDS_LIST & Fie
     m_Using.ResetContent();
 
     m_OrderChanged = false;
-    for (int i = 0, n = Fields.size(); i < n; i++)
+    for (size_t i = 0, n = Fields.size(); i < n; i++)
     {
         if (Fields[i].PosChanged())
         {
@@ -94,7 +94,7 @@ void COptionsGameBrowserPage::AddFieldClicked(UINT /*Code*/, int /*id*/, HWND /*
         return;
     }
     // Remove from list
-    int i = m_Avaliable.GetItemData(index);
+    size_t i = m_Avaliable.GetItemData(index);
     m_Avaliable.DeleteString(index);
 
     // Select next in list
@@ -120,7 +120,7 @@ void COptionsGameBrowserPage::RemoveFieldClicked(UINT /*Code*/, int /*id*/, HWND
         return;
     }
     // Remove from list
-    int i = m_Using.GetItemData(index);
+    size_t i = m_Using.GetItemData(index);
     m_Using.DeleteString(index);
 
     // Select next in list
@@ -145,7 +145,7 @@ void COptionsGameBrowserPage::MoveFieldUpClicked(UINT /*Code*/, int /*id*/, HWND
     {
         return;
     }
-    int i = m_Using.GetItemData(index);
+    size_t i = m_Using.GetItemData(index);
     m_Using.DeleteString(index);
 
     index = m_Using.InsertString(index - 1, wGS(m_Fields[i].LangID()).c_str());
@@ -164,7 +164,7 @@ void COptionsGameBrowserPage::MoveFieldDownClicked(UINT /*Code*/, int /*id*/, HW
     {
         return;
     }
-    int i = m_Using.GetItemData(index);
+    size_t i = m_Using.GetItemData(index);
     m_Using.DeleteString(index);
 
     index = m_Using.InsertString(index + 1, wGS(m_Fields[i].LangID()).c_str());
@@ -202,7 +202,7 @@ void COptionsGameBrowserPage::ApplySettings(bool UpdateScreen)
         size_t Item, listCount = m_Using.GetCount();
         for (Item = 0; Item < listCount; Item++)
         {
-            int Pos = m_Using.GetItemData(Item);
+            size_t Pos = m_Using.GetItemData(Item);
             if (m_OrderReset || m_Fields[Pos].Pos() != Item)
             {
                 m_Fields[Pos].SetColPos(Item);
@@ -213,7 +213,7 @@ void COptionsGameBrowserPage::ApplySettings(bool UpdateScreen)
         listCount = m_Avaliable.GetCount();
         for (Item = 0; Item < listCount; Item++)
         {
-            int Pos = m_Avaliable.GetItemData(Item);
+            size_t Pos = m_Avaliable.GetItemData(Item);
             if (m_OrderReset || m_Fields[Pos].Pos() != -1)
             {
                 m_Fields[Pos].SetColPos(-1);

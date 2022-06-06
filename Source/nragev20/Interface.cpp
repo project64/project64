@@ -73,7 +73,7 @@ BOOL CALLBACK MainDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
     static HWND hTabControl;
     HWND hDlgItem;
-    long i,j;
+    LONG_PTR i,j;
 
     switch(uMsg)
     {
@@ -363,7 +363,7 @@ BOOL CALLBACK ControllerTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 
     CONTROLLER *pcController = &g_ivConfig->Controllers[g_ivConfig->ChosenTab];;
     HWND hDlgItem;
-    long i,j;
+    LONG_PTR i,j;
 
     switch(uMsg)
     {
@@ -1044,7 +1044,7 @@ BOOL CALLBACK DevicesTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 BOOL CALLBACK MoveModifierDialog( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
     HWND hDlgItem;
-    long i,j;
+    LONG_PTR i,j;
     DWORD dwValue;
     TCHAR szBuffer[DEFAULT_BUFFER], szTemp[DEFAULT_BUFFER];
 
@@ -1080,13 +1080,13 @@ BOOL CALLBACK MoveModifierDialog( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
         case IDC_XMODIFIER:
             i = SendMessage( (HWND)lParam, TBM_GETPOS, 0, 0 );
             LoadString( g_hResourceDLL, IDS_M_MOVEVALUE, szTemp, DEFAULT_BUFFER );
-            wsprintf( szBuffer, szTemp, i );
+            wsprintf( szBuffer, szTemp, (long)i );
             SendMessage( GetDlgItem( hDlg, IDT_XMODIFIER ), WM_SETTEXT , 0, (LPARAM)szBuffer );
             return TRUE;
         case IDC_YMODIFIER:
             i = SendMessage( (HWND)lParam, TBM_GETPOS, 0, 0 );
             LoadString( g_hResourceDLL, IDS_M_MOVEVALUE, szTemp, DEFAULT_BUFFER );
-            wsprintf( szBuffer, szTemp, i );
+            wsprintf( szBuffer, szTemp, (long)i );
             SendMessage( GetDlgItem( hDlg, IDT_YMODIFIER ), WM_SETTEXT , 0, (LPARAM)szBuffer );
             return TRUE;
         default:
@@ -1110,7 +1110,7 @@ BOOL CALLBACK MoveModifierDialog( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
             CheckDlgButton( hDlg, IDC_XNEGATE, BST_UNCHECKED );
         SendMessage( GetDlgItem( hDlg, IDC_XMODIFIER ), TBM_SETPOS, TRUE, i );
         LoadString( g_hResourceDLL, IDS_M_MOVEVALUE, szTemp, DEFAULT_BUFFER );
-        wsprintf( szBuffer, szTemp, i );
+        wsprintf( szBuffer, szTemp, (long)i );
         SendMessage( GetDlgItem( hDlg, IDT_XMODIFIER ), WM_SETTEXT , 0, (LPARAM)szBuffer );
 
         i = (short)((dwValue >> 16) & 0x0000FFFF);
@@ -1124,7 +1124,7 @@ BOOL CALLBACK MoveModifierDialog( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
             CheckDlgButton( hDlg, IDC_YNEGATE, BST_UNCHECKED );
         SendMessage( GetDlgItem( hDlg, IDC_YMODIFIER ), TBM_SETPOS, TRUE, i );
         LoadString( g_hResourceDLL, IDS_M_MOVEVALUE, szTemp, DEFAULT_BUFFER );
-        wsprintf( szBuffer, szTemp, i );
+        wsprintf( szBuffer, szTemp, (long)i );
         SendMessage( GetDlgItem( hDlg, IDT_YMODIFIER ), WM_SETTEXT , 0, (LPARAM)szBuffer );
         return TRUE;
 
@@ -1430,7 +1430,7 @@ BOOL CALLBACK ModifierTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
     TCHAR szBuffer[40];
     HWND hDlgItem;
-    long i;
+    LONG_PTR i;
     BYTE bByte;
 
     switch(uMsg)
@@ -1685,7 +1685,7 @@ BOOL CALLBACK ModifierTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 lvItem.iItem = lvItem.lParam;
                 i = ListView_InsertItem( hDlgItem, &lvItem );
 
-                ModDescription( hDlgItem, i, &pcController->pModifiers[lvItem.lParam] );
+                ModDescription( hDlgItem, (int)i, &pcController->pModifiers[lvItem.lParam] );
             }
             if( iSelectedMod >= 0 && iSelectedMod < ListView_GetItemCount( hDlgItem ))
 
@@ -1823,7 +1823,7 @@ BOOL CALLBACK ControllerPakTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
     static bool bAdaptoidInList;
     static BYTE bCurrentPak;
     HWND hDlgItem;
-    long i,j;
+    LONG_PTR i,j;
     BYTE bByte;
     TCHAR tszMsg[DEFAULT_BUFFER];
 
@@ -2053,7 +2053,7 @@ BOOL CALLBACK MemPakProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
     TCHAR szBuffer[MAX_PATH+1], szTemp[MAX_PATH+1];
 
     HWND hDlgItem;
-    long i,j;
+    LONG_PTR i,j;
 
     switch(uMsg)
     {
@@ -2435,7 +2435,7 @@ BOOL CALLBACK RumblePakProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam 
     CONTROLLER *pcController = &g_ivConfig->Controllers[g_ivConfig->ChosenTab];
     TCHAR szBuffer[DEFAULT_BUFFER], szTemp[DEFAULT_BUFFER];
     HWND hDlgItem;
-    long i = 0,j;
+    LONG_PTR i = 0,j;
 
     switch(uMsg)
     {

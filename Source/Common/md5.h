@@ -93,7 +93,7 @@ public:
     // Methods for controlled operation:
     MD5();  // Simple initializer
     ~MD5();
-    void  update(const unsigned char *input, unsigned int input_length);
+    void  update(const unsigned char *input, size_t input_length);
     void  update(FILE *file);
     void  finalize();
 
@@ -101,7 +101,7 @@ public:
     MD5(CPath File);            // Digest file, finalize
     MD5(const unsigned char *string); // Digest string, finalize
     MD5(FILE *file);            // Digest file, close, finalize
-    MD5(const unsigned char *input, unsigned int input_length);
+    MD5(const unsigned char *input, size_t input_length);
     MD5(const stdstr & string);
 
     // Methods to acquire finalized result
@@ -127,6 +127,7 @@ private:
     // Last, the private methods, mostly static:
     void init();               // Called by all constructors
     void transform(uint1 *buffer);  // Does the real update work. Note that length is implied to be 64.
+    void internal_update(const unsigned char *input, unsigned int input_length);
 
     static void encode(uint1 *dest, uint4 *src, uint4 length);
     static void decode(uint4 *dest, uint1 *src, uint4 length);

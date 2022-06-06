@@ -230,7 +230,7 @@ filled by the function. (see def above)
 Output: None
 */
 
-EXPORT void GetRspDebugInfo(RSPDEBUG_INFO * DebugInfo)
+EXPORT void GetRspDebugInfo(RSPDEBUG_INFO * OutDI)
 {
 #ifdef _WIN32
 	if (hRSPMenu == NULL)
@@ -238,22 +238,22 @@ EXPORT void GetRspDebugInfo(RSPDEBUG_INFO * DebugInfo)
 		hRSPMenu = LoadMenu((HINSTANCE)hinstDLL,MAKEINTRESOURCE(RspMenu));
 		FixMenuState();
 	}
-	DebugInfo->hRSPMenu = hRSPMenu;
+	OutDI->hRSPMenu = hRSPMenu;
 #endif
-	DebugInfo->ProcessMenuItem = ProcessMenuItem;
+	OutDI->ProcessMenuItem = ProcessMenuItem;
 
-	DebugInfo->UseBPoints = TRUE;
-	sprintf(DebugInfo->BPPanelName," RSP ");
-	DebugInfo->Add_BPoint = Add_BPoint;
-	DebugInfo->CreateBPPanel = CreateBPPanel;
-	DebugInfo->HideBPPanel = HideBPPanel;
-	DebugInfo->PaintBPPanel = PaintBPPanel;
-	DebugInfo->RefreshBpoints = RefreshBpoints;
-	DebugInfo->RemoveAllBpoint = RemoveAllBpoint;
-	DebugInfo->RemoveBpoint = RemoveBpoint;
-	DebugInfo->ShowBPPanel = ShowBPPanel;
+	OutDI->UseBPoints = TRUE;
+	sprintf(OutDI->BPPanelName," RSP ");
+	OutDI->Add_BPoint = Add_BPoint;
+	OutDI->CreateBPPanel = CreateBPPanel;
+	OutDI->HideBPPanel = HideBPPanel;
+	OutDI->PaintBPPanel = PaintBPPanel;
+	OutDI->RefreshBpoints = RefreshBpoints;
+	OutDI->RemoveAllBpoint = RemoveAllBpoint;
+	OutDI->RemoveBpoint = RemoveBpoint;
+	OutDI->ShowBPPanel = ShowBPPanel;
 
-	DebugInfo->Enter_RSP_Commands_Window = Enter_RSP_Commands_Window;
+	OutDI->Enter_RSP_Commands_Window = Enter_RSP_Commands_Window;
 }
 
 /*

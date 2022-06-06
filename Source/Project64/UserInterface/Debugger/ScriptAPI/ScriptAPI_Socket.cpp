@@ -47,7 +47,7 @@ duk_ret_t ScriptAPI::js_Socket__constructor(duk_context* ctx)
         if (duk_has_prop_string(ctx, 0, "allowHalfOpen"))
         {
             duk_get_prop_string(ctx, 0, "allowHalfOpen");
-            bAllowHalfOpen = (bool)duk_get_boolean_default(ctx, -1, 0);
+            bAllowHalfOpen = duk_get_boolean_default(ctx, -1, 0) != (duk_bool_t)false;
             duk_pop(ctx);
         }
     }

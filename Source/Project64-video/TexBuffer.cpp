@@ -154,7 +154,7 @@ static TBUFF_COLOR_IMAGE * AllocateTextureBuffer(COLOR_IMAGE & cimage)
             rdp.texbufs[i].count++;
             rdp.texbufs[i].clear_allowed = FALSE;
             texbuf.tex_addr = top;
-            rdp.cur_tex_buf = i;
+            rdp.cur_tex_buf = (uint8_t) i;
             texbuf.tmu = rdp.texbufs[i].tmu;
             rdp.texbufs[i].images[rdp.texbufs[i].count - 1] = texbuf;
             return &(rdp.texbufs[i].images[rdp.texbufs[i].count - 1]);
@@ -241,7 +241,7 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
                     texbuf->t_mem = 0;
                     texbuf->tile = 0;
                     found = TRUE;
-                    rdp.cur_tex_buf = i;
+                    rdp.cur_tex_buf = (uint8_t) i;
                     rdp.texbufs[i].clear_allowed = FALSE;
                 }
                 else //check intersection

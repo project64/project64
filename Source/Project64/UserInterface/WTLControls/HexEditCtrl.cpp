@@ -509,8 +509,8 @@ bool CHexEditCtrl::UpdateCaretUI(bool bEnsureVisible, bool bTop)
 void CHexEditCtrl::Text(int x, int y, const char *text, COLORREF bg, COLORREF fg, CRect *rcOut)
 {
     std::wstring textOuput = stdstr(text).ToUTF16(CP_ACP);
-    size_t length = textOuput.length();
-    int calcWidth = length * m_CharWidth;
+    size_t length = textOuput.length(), tmpW = length * m_CharWidth;
+    int imax = 0x7fffffff, calcWidth = tmpW <= imax ? (LONG) tmpW : imax;
 
     CRect rc(x, y, 0, 0);
     COLORREF orgBg = ::SetBkColor(m_BackDC, bg);
@@ -1095,8 +1095,8 @@ void CHexEditCtrl::OnChar(UINT nChar, UINT /*nRepCnt*/, UINT /*nFlags*/)
 
 void CHexEditCtrl::Paste(bool bAdvanceCaret)
 {
-    uint32_t targetAddress = m_bHaveRealSel ? m_RealSelStartAddress : m_CaretAddress;
-    int retLength = NotifyPaste(targetAddress);
+    address_type targetAddress = m_bHaveRealSel ? m_RealSelStartAddress : m_CaretAddress;
+    int retLength = (address_type) NotifyPaste(targetAddress);
 
     if (retLength != 0)
     {
