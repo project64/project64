@@ -10463,7 +10463,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_VideoInterfaceHandler)[0][1], "VideoInterfaceHandler::Write32");
 #else
             PushImm32((uint32_t)&g_MMU->m_VideoInterfaceHandler);
-            Call_Direct(AddressOf(&m_VideoInterfaceHandler::Write32), "m_VideoInterfaceHandler::Write32");
+            Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_VideoInterfaceHandler)[0][1], "VideoInterfaceHandler::Write32");
             AddConstToX86Reg(x86_ESP, 16);
 #endif
             m_RegWorkingSet.AfterCallDirect();

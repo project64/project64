@@ -28,7 +28,7 @@ public final class DeviceUtil
     public static String getCpuInfo()
     {
         // From http://android-er.blogspot.com/2009/09/read-android-cpu-info.html
-        String result = Utility.executeShellCommand( "/system/bin/cat", "/proc/cpuinfo" );
+        /*String result = Utility.executeShellCommand( "/system/bin/cat", "/proc/cpuinfo" );
         
         // Remove the serial number for privacy
         Pattern pattern = Pattern.compile( "^serial\\s*?:.*?$", Pattern.CASE_INSENSITIVE
@@ -46,17 +46,19 @@ public final class DeviceUtil
         result += "Manufacturer: " + Build.MANUFACTURER + "\n";
         result += "Model: " + Build.MODEL + "\n";
         result += "Product: " + Build.PRODUCT + "\n";
-        return result;
+        return result;*/
+        return "";
     }
     
     public static String getLogCat()
     {
-        return Utility.executeShellCommand( "logcat", "-d", "-v", "long" );
+        //return Utility.executeShellCommand( "logcat", "-d", "-v", "long" );
+        return "";
     }
     
     public static void clearLogCat()
     {
-        Utility.executeShellCommand( "logcat", "-c" );
+        //Utility.executeShellCommand( "logcat", "-c" );
     }
     
     @TargetApi( 12 )

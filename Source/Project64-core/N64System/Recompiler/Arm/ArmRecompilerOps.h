@@ -12,7 +12,8 @@ class CArmRecompilerOps :
     private CGameSettings
 {
 public:
-    CArmRecompilerOps();
+    CArmRecompilerOps(CMipsMemoryVM & MMU);
+    ~CArmRecompilerOps();
 
     // Trap functions
     void Compile_TrapCompare(TRAP_COMPARE CompareType);
@@ -207,8 +208,8 @@ private:
     void SetCurrentPC(uint32_t ProgramCounter);
     uint32_t GetCurrentPC(void);
     void SetCurrentSection(CCodeSection * section);
-    void SetNextStepType(STEP_TYPE StepType);
-    STEP_TYPE GetNextStepType( void );
+    void SetNextStepType(PIPELINE_STAGE StepType);
+    PIPELINE_STAGE GetNextStepType( void );
     const OPCODE & GetOpcode ( void ) const;
     void PreCompileOpcode(void);
     void PostCompileOpcode ( void );
@@ -268,7 +269,8 @@ private:
     void OverflowDelaySlot(bool TestTimer);
 
     EXIT_LIST m_ExitInfo;
-    STEP_TYPE m_PipelineStage;
+    CMipsMemoryVM & m_MMU;
+    PIPELINE_STAGE m_PipelineStage;
     uint32_t m_CompilePC;
     OPCODE m_Opcode;
     CCodeSection * m_Section;

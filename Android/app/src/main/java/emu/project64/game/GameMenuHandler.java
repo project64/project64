@@ -5,7 +5,7 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 
 import emu.project64.R;
-import emu.project64.jni.LanguageStringID;
+//import emu.project64.jni.LanguageStringID;
 import emu.project64.jni.NativeExports;
 import emu.project64.jni.SettingsID;
 import emu.project64.jni.SystemEvent;
@@ -32,7 +32,7 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
 
     public GameMenuHandler( Activity activity, GameLifecycleHandler LifecycleHandler )
     {
-        mActivity = activity;
+        /*mActivity = activity;
         mLifecycleHandler = LifecycleHandler;
 
         final ImageButton MenuButton = (ImageButton)activity.findViewById( R.id.gameMenu );
@@ -43,7 +43,7 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
             @Override
             public void onClick(View view)
             {
-                Boolean GamePaused = NativeExports.SettingsLoadBool(SettingsID.GameRunning_CPU_Paused.getValue());
+                /*Boolean GamePaused = NativeExports.SettingsLoadBool(SettingsID.GameRunning_CPU_Paused.getValue());
                 Boolean RecordExecutionTimes = NativeExports.SettingsLoadBool(SettingsID.Debugger_RecordExecutionTimes.getValue());
                 Boolean ShowDebugMenu = NativeExports.SettingsLoadBool(SettingsID.Debugger_Enabled.getValue());
 
@@ -99,9 +99,9 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
                 FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave8, 8);
                 FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave9, 9);
                 FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave10, 10);
-                popupMenu.show();
-            }
-        });
+                popupMenu.show();*/
+            /*}
+        });*/
     }
 
     public boolean onMenuItemClick(MenuItem item)
@@ -122,7 +122,7 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
         case R.id.menuItem_LoadState:
             NativeExports.ExternalEvent(SystemEvent.SysEvent_LoadMachineState.getValue());
             break;
-       case R.id.menuItem_CurrentSaveAuto:
+       /*case R.id.menuItem_CurrentSaveAuto:
             NativeExports.SettingsSaveDword(SettingsID.Game_CurrentSaveState.getValue(), 0);
             break;
         case R.id.menuItem_CurrentSave1:
@@ -154,7 +154,7 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
             break;
         case R.id.menuItem_CurrentSave10:
             NativeExports.SettingsSaveDword(SettingsID.Game_CurrentSaveState.getValue(), 10);
-            break;
+            break;*/
         case R.id.menuItem_pause:
             NativeExports.ExternalEvent( SystemEvent.SysEvent_PauseCPU_FromMenu.getValue());
             break;
@@ -195,7 +195,7 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
     @SuppressLint("SimpleDateFormat")
     private void FixSaveStateMenu(String SaveDirectory, int CurrentSaveState,Menu menu, int MenuId, int SaveSlot )
     {
-        MenuItem item = menu.findItem(MenuId);
+        /*MenuItem item = menu.findItem(MenuId);
         if (CurrentSaveState == SaveSlot)
         {
             item.setChecked(true);
@@ -219,12 +219,12 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
         }
         String SlotName = SaveSlot == 0 ? Strings.GetString(LanguageStringID.ANDROID_MENU_CURRENTSAVEAUTO) :
         Strings.GetString(LanguageStringID.ANDROID_MENU_CURRENTSAVESLOT) + " " + SaveSlot;
-        item.setTitle(SlotName + Timestamp);
+        item.setTitle(SlotName + Timestamp);*/
     }
 
     private void SelectGameSpeed()
     {
-        NativeExports.ExternalEvent( SystemEvent.SysEvent_PauseCPU_AppLostActive.getValue());
+        /*NativeExports.ExternalEvent( SystemEvent.SysEvent_PauseCPU_AppLostActive.getValue());
         final int MAX_SPEED = 300;
         final int MIN_SPEED = 10;
         final int initial = (NativeExports.GetSpeed() * 100) / NativeExports.GetBaseSpeed();
@@ -291,6 +291,6 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
                 dialog.dismiss();
                 NativeExports.ExternalEvent( SystemEvent.SysEvent_ResumeCPU_AppGainedActive.getValue());
             }
-        });
+        });*/
     }
 }

@@ -2,11 +2,12 @@ package emu.project64;
 
 import emu.project64.R;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.support.v7.view.menu.MenuBuilder;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +19,7 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import androidx.appcompat.view.menu.MenuBuilder;
 
 /* ExpandableListView which stores its data set as a Menu hierarchy */
 
@@ -71,38 +73,39 @@ public class MenuListView extends ExpandableListView
             {
                 reload();
             }
-        } );
+        });
         
         setOnGroupClickListener( new OnGroupClickListener()
         {
             @Override
-            public boolean onGroupClick( ExpandableListView parent, View view, int groupPosition,
-                    long itemId )
+            public boolean onGroupClick( ExpandableListView parent, View view, int groupPosition, long itemId )
             {
                 MenuItem menuItem = mListData.getItem( groupPosition );
                 SubMenu submenu = menuItem.getSubMenu();
                 if( submenu == null )
                 {
                     if( mListener != null )
+                    {
                         mListener.onClick( menuItem );
+                    }
                 }
                 return false;
             }
-        } );
+        });
         
         setOnChildClickListener( new OnChildClickListener()
         {
             @Override
-            public boolean onChildClick( ExpandableListView parent, View view, int groupPosition,
-                    int childPosition, long itemId )
+            public boolean onChildClick( ExpandableListView parent, View view, int groupPosition, int childPosition, long itemId )
             {
-                MenuItem menuItem = mListData.getItem( groupPosition ).getSubMenu()
-                        .getItem( childPosition );
-                if( mListener != null )
+                MenuItem menuItem = mListData.getItem( groupPosition ).getSubMenu() .getItem( childPosition );
+                if (mListener != null)
+                {
                     mListener.onClick( menuItem );
+                }
                 return false;
             }
-        } );
+        });
     }
     
     public Menu getMenu()
@@ -162,15 +165,15 @@ public class MenuListView extends ExpandableListView
         }
         
         @Override
-        public View getChildView( int groupPosition, final int childPosition, boolean isLastChild,
-                View convertView, ViewGroup parent )
+        public View getChildView( int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent )
         {
-            LayoutInflater inflater = (LayoutInflater) mListView.getContext().getSystemService(
-                    Context.LAYOUT_INFLATER_SERVICE );
+            LayoutInflater inflater = (LayoutInflater) mListView.getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
             View view = convertView;
             if( view == null )
+            {
                 view = inflater.inflate( R.layout.list_item_menu, null );
-            
+            }
+
             MenuItem item = getChild( groupPosition, childPosition );
             if( item != null )
             {
@@ -187,11 +190,9 @@ public class MenuListView extends ExpandableListView
                 
                 // Indent child views by 15 points
                 DisplayMetrics metrics = new DisplayMetrics();
-                ( (Activity) mListView.getContext() ).getWindowManager().getDefaultDisplay()
-                        .getMetrics( metrics );
+                ( (Activity) mListView.getContext() ).getWindowManager().getDefaultDisplay().getMetrics( metrics );
                 
-                view.setPadding( (int) ( 15 * metrics.density ), view.getPaddingTop(),
-                        view.getPaddingRight(), view.getPaddingBottom() );
+                view.setPadding((int)(15 * metrics.density), view.getPaddingTop(), view.getPaddingRight(), view.getPaddingBottom() );
                 
                 if( !item.isCheckable() )
                     indicator.setImageResource( 0x0 );
@@ -222,25 +223,23 @@ public class MenuListView extends ExpandableListView
         }
         
         @Override
-        public View getGroupView( int groupPosition, boolean isExpanded, View convertView,
-                ViewGroup parent )
+        public View getGroupView( int groupPosition, boolean isExpanded, View convertView, ViewGroup parent )
         {
-            LayoutInflater inflater = (LayoutInflater) mListView.getContext().getSystemService(
-                    Context.LAYOUT_INFLATER_SERVICE );
+            LayoutInflater inflater = (LayoutInflater) mListView.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE );
             View view = convertView;
             if( view == null )
+            {
                 view = inflater.inflate( R.layout.list_item_menu, null );
-            
+            }
+
             MenuItem item = getGroup( groupPosition );
             if( item != null )
             {
                 TextView text1 = (TextView) view.findViewById( R.id.text1 );
-                TextView text2 = (TextView) view.findViewById( R.id.text2 );
                 ImageView icon = (ImageView) view.findViewById( R.id.icon );
                 ImageView indicator = (ImageView) view.findViewById( R.id.indicator );
-                
-                text1.setText( item.getTitle() );
-                text2.setVisibility( View.GONE );
+
+                text1.setText(item.getTitle());
                 icon.setImageDrawable( item.getIcon() );
                 
                 if( item.isChecked() )

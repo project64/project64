@@ -330,36 +330,10 @@ public enum SettingsID
     Enhancement_Gameshark,
     Enhancement_GamesharkCode,
     Enhancement_Notes,
-
-    FirstUISettings, LastUISettings(FirstUISettings.getValue() + 65535),
-    FirstRSPDefaultSet, LastRSPDefaultSet(FirstRSPDefaultSet.getValue() + 65535),
-    FirstRSPSettings, LastRSPSettings(FirstRSPSettings.getValue() + 65535),
-    FirstGfxDefaultSet, LastGfxDefaultSet(FirstGfxDefaultSet.getValue() + 65535),
-    FirstGfxSettings, LastGfxSettings(FirstGfxSettings.getValue() + 65535),
-    FirstAudioDefaultSet, LastAudioDefaultSet(FirstAudioDefaultSet.getValue() + 65535),
-    FirstAudioSettings, LastAudioSettings(FirstAudioSettings.getValue() + 65535),
-    FirstCtrlDefaultSet, LastCtrlDefaultSet(FirstCtrlDefaultSet.getValue() + 65535),
-    FirstCtrlSettings, LastCtrlSettings(FirstCtrlSettings.getValue() + 65535),
     ;
-    private int value;
-    
-    public int getValue() 
-    {
-        return this.value;
+
+    @Override
+    public String toString() {
+        return "Core." + super.toString();
     }
-    private static final class StaticFields 
-    {
-        public static int Counter = 0;
-    }
-    
-    private SettingsID()
-    {
-    	this.value = StaticFields.Counter;
-    	StaticFields.Counter += 1;
-    }
-    private SettingsID(int value)
-    {
-    	this.value = value;
-    	StaticFields.Counter = this.value + 1;
-    } 
 }

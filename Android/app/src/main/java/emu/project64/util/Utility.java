@@ -9,54 +9,6 @@ import emu.project64.Project64Application;
 
 public final class Utility
 {
-    
-    /**
-     * Clamps a value to the limit defined by min and max.
-     * 
-     * @param val The value to clamp to min and max.
-     * @param min The lowest number val can be equal to.
-     * @param max The largest number val can be equal to.
-     * 
-     * @return If the value is lower than min, min is returned. <br/>
-     *         If the value is higher than max, max is returned.
-     */
-    public static<T extends Comparable<? super T>> T clamp( T val, T min, T max )
-    {
-        final T temp;
-
-        //  val < max
-        if ( val.compareTo(max) < 0 )
-            temp = val;
-        else
-            temp = max;
-
-        // temp > min
-        if ( temp.compareTo(min) > 0 )
-            return temp;
-        else
-            return min;
-    }
-    
-    public static String executeShellCommand(String... args)
-    {
-        try
-        {
-            Process process = Runtime.getRuntime().exec( args );
-            BufferedReader reader = new BufferedReader( new InputStreamReader( process.getInputStream() ) );
-            StringBuilder result = new StringBuilder();
-            String line;
-            while( ( line = reader.readLine() ) != null )
-            {
-                result.append( line + "\n" );
-            }
-            return result.toString();
-        }
-        catch( IOException ignored )
-        {
-        }
-        return "";
-    }
-    
     public static boolean close(Closeable closeable) 
     {
         if (closeable != null)

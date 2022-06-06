@@ -24,7 +24,7 @@ CPU_Message("%s: %X t2: %X", __FUNCTION__,TestValue, g_Reg->m_GPR[10].UW[0]);
 }*/
 void CArmRecompilerOps::PreCompileOpcode(void)
 {
-    if (m_PipelineStage != DELAY_SLOT_DONE)
+    if (m_PipelineStage != PIPELINE_STAGE_DELAY_SLOT_DONE)
     {
         CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     }
@@ -39,7 +39,7 @@ void CArmRecompilerOps::PreCompileOpcode(void)
     CallFunction(AddressOf(&TestFunc), "TestFunc");
     m_RegWorkingSet.AfterCallDirect();*/
 
-    /*if ((m_CompilePC == 0x8027F564 || m_CompilePC == 0x8027F574) && m_PipelineStage == NORMAL)
+    /*if ((m_CompilePC == 0x8027F564 || m_CompilePC == 0x8027F574) && m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
     m_RegWorkingSet.BeforeCallDirect();
     MoveConstToArmReg(Arm_R0,(uint32_t)&TestValue, "TestValue");
@@ -64,7 +64,7 @@ void CArmRecompilerOps::PreCompileOpcode(void)
     }
     }*/
 
-    /*if (m_CompilePC == 0x8027F564 && m_PipelineStage == NORMAL)
+    /*if (m_CompilePC == 0x8027F564 && m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
     m_RegWorkingSet.WriteBackRegisters();
     UpdateCounters(m_RegWorkingSet,false,true);
@@ -88,10 +88,15 @@ void CArmRecompilerOps::PostCompileOpcode(void)
     m_RegWorkingSet.ResetRegProtection();
 }
 
-CArmRecompilerOps::CArmRecompilerOps() :
-    m_PipelineStage(NORMAL)
+CArmRecompilerOps::CArmRecompilerOps(CMipsMemoryVM & MMU) :
+    m_MMU(MMU),
+    m_PipelineStage(PIPELINE_STAGE_NORMAL)
 {
     memset(&m_Opcode, 0, sizeof(m_Opcode));
+}
+
+CArmRecompilerOps::~CArmRecompilerOps()
+{
 }
 
 bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
@@ -192,7 +197,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
     static bool EffectDelaySlot;
     OPCODE Command = { 0 };
 
-    if (m_PipelineStage == NORMAL)
+    if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
         if (CompareType == CompareTypeCOP1BCF || CompareType == CompareTypeCOP1BCT)
         {
@@ -322,7 +327,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
-                    MoveConstToVariable(m_Section->m_Jump.TargetPC, &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
+                    MoveConstToVariable(m_Section->m_Jump.TargetPC, &g_System->m_JumpToLocation, "System::m_JumpToLocation");
                 }
                 else if (m_Section->m_Cont.FallThrough)
                 {
@@ -330,7 +335,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
-                    MoveConstToVariable(m_Section->m_Cont.TargetPC, &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
+                    MoveConstToVariable(m_Section->m_Cont.TargetPC, &g_System->m_JumpToLocation, "System::m_JumpToLocation");
                 }
 
                 if (m_Section->m_Jump.LinkLocation != nullptr || m_Section->m_Jump.LinkLocation2 != nullptr)
@@ -342,7 +347,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
                     CPU_Message("      ");
                     CPU_Message("      %s:", m_Section->m_Jump.BranchLabel.c_str());
                     LinkJump(m_Section->m_Jump);
-                    MoveConstToVariable(m_Section->m_Jump.TargetPC, &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
+                    MoveConstToVariable(m_Section->m_Jump.TargetPC, &g_System->m_JumpToLocation, "System::m_JumpToLocation");
                 }
                 if (m_Section->m_Cont.LinkLocation != nullptr || m_Section->m_Cont.LinkLocation2 != nullptr)
                 {
@@ -353,7 +358,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
                     CPU_Message("      ");
                     CPU_Message("      %s:", m_Section->m_Cont.BranchLabel.c_str());
                     LinkJump(m_Section->m_Cont);
-                    MoveConstToVariable(m_Section->m_Cont.TargetPC, &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
+                    MoveConstToVariable(m_Section->m_Cont.TargetPC, &g_System->m_JumpToLocation, "System::m_JumpToLocation");
                 }
                 if (DelayLinkLocation)
                 {
@@ -370,7 +375,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
         }
         m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
     }
-    else if (m_PipelineStage == DELAY_SLOT_DONE)
+    else if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT_DONE)
     {
         if (EffectDelaySlot)
         {
@@ -461,7 +466,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
             }
         }
         m_Section->GenerateSectionLinkage();
-        m_PipelineStage = END_BLOCK;
+        m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
     }
     else
     {
@@ -474,7 +479,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
 
 void CArmRecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Link)
 {
-    if (m_PipelineStage == NORMAL)
+    if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
         if (CompareType == CompareTypeCOP1BCF || CompareType == CompareTypeCOP1BCT)
         {
@@ -556,7 +561,7 @@ void CArmRecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
             {
                 LinkJump(m_Section->m_Jump);
 
-                MoveConstToVariable(m_Section->m_Jump.TargetPC, &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
+                MoveConstToVariable(m_Section->m_Jump.TargetPC, &g_System->m_JumpToLocation, "System::m_JumpToLocation");
                 OverflowDelaySlot(false);
                 CPU_Message("      ");
                 CPU_Message("      %s:", m_Section->m_Cont.BranchLabel.c_str());
@@ -579,7 +584,7 @@ void CArmRecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
         {
             m_Section->m_Jump.RegSet = m_RegWorkingSet;
             m_Section->GenerateSectionLinkage();
-            m_PipelineStage = END_BLOCK;
+            m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
         }
         else
         {
@@ -590,16 +595,16 @@ void CArmRecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 m_Section->GenerateSectionLinkage();
-                m_PipelineStage = END_BLOCK;
+                m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
             }
         }
     }
-    else if (m_PipelineStage == DELAY_SLOT_DONE)
+    else if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT_DONE)
     {
         ResetRegProtection();
         m_Section->m_Jump.RegSet = m_RegWorkingSet;
         m_Section->GenerateSectionLinkage();
-        m_PipelineStage = END_BLOCK;
+        m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
     }
     else if (HaveDebugger())
     {
@@ -1835,11 +1840,11 @@ void CArmRecompilerOps::COP1_BCT_Compare()
 
 void CArmRecompilerOps::J()
 {
-    if (m_PipelineStage == NORMAL)
+    if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
         if ((m_CompilePC & 0xFFC) == 0xFFC)
         {
-            MoveConstToVariable((m_CompilePC & 0xF0000000) + (m_Opcode.target << 2), &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
+            MoveConstToVariable((m_CompilePC & 0xF0000000) + (m_Opcode.target << 2), &g_System->m_JumpToLocation, "System::m_JumpToLocation");
             OverflowDelaySlot(false);
             return;
         }
@@ -1859,11 +1864,11 @@ void CArmRecompilerOps::J()
         m_Section->m_Jump.LinkLocation2 = nullptr;
         m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
     }
-    else if (m_PipelineStage == DELAY_SLOT_DONE)
+    else if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT_DONE)
     {
         m_Section->m_Jump.RegSet = m_RegWorkingSet;
         m_Section->GenerateSectionLinkage();
-        m_PipelineStage = END_BLOCK;
+        m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
     }
     else if (HaveDebugger())
     {
@@ -1873,7 +1878,7 @@ void CArmRecompilerOps::J()
 
 void CArmRecompilerOps::JAL()
 {
-    if (m_PipelineStage == NORMAL)
+    if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
         Map_GPR_32bit(31, true, -1);
         MoveVariableToArmReg(_PROGRAM_COUNTER, "_PROGRAM_COUNTER", GetMipsRegMapLo(31));
@@ -1886,7 +1891,7 @@ void CArmRecompilerOps::JAL()
 
         if ((m_CompilePC & 0xFFC) == 0xFFC)
         {
-            MoveConstToVariable((m_CompilePC & 0xF0000000) + (m_Opcode.target << 2), &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
+            MoveConstToVariable((m_CompilePC & 0xF0000000) + (m_Opcode.target << 2), &g_System->m_JumpToLocation, "System::m_JumpToLocation");
             OverflowDelaySlot(false);
             return;
         }
@@ -1905,7 +1910,7 @@ void CArmRecompilerOps::JAL()
         m_Section->m_Jump.LinkLocation2 = nullptr;
         m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
     }
-    else if (m_PipelineStage == DELAY_SLOT_DONE)
+    else if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT_DONE)
     {
         if (m_Section->m_JumpSection)
         {
@@ -1930,7 +1935,7 @@ void CArmRecompilerOps::JAL()
 
             CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, bCheck ? CExitInfo::Normal : CExitInfo::Normal_NoSysCheck);
         }
-        m_PipelineStage = END_BLOCK;
+        m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
     }
     else
     {
@@ -2800,20 +2805,20 @@ void CArmRecompilerOps::SPECIAL_SRAV()
 
 void CArmRecompilerOps::SPECIAL_JR()
 {
-    if (m_PipelineStage == NORMAL)
+    if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
         if ((m_CompilePC & 0xFFC) == 0xFFC)
         {
             if (IsKnown(m_Opcode.rs) && IsMapped(m_Opcode.rs))
             {
-                MoveArmRegToVariable(GetMipsRegMapLo(m_Opcode.rs), &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
+                MoveArmRegToVariable(GetMipsRegMapLo(m_Opcode.rs), &g_System->m_JumpToLocation, "System::m_JumpToLocation");
                 m_RegWorkingSet.WriteBackRegisters();
             }
             else
             {
                 m_RegWorkingSet.WriteBackRegisters();
                 MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-                MoveConstToArmReg(Arm_R1, (uint32_t)&R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
+                MoveConstToArmReg(Arm_R1, (uint32_t)&g_System->m_JumpToLocation, "System::m_JumpToLocation");
                 StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
             }
             OverflowDelaySlot(true);
@@ -2849,7 +2854,7 @@ void CArmRecompilerOps::SPECIAL_JR()
         }
         m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
     }
-    else if (m_PipelineStage == DELAY_SLOT_DONE)
+    else if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT_DONE)
     {
         if (DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0))
         {
@@ -2884,7 +2889,7 @@ void CArmRecompilerOps::SPECIAL_JR()
                 m_Section->GenerateSectionLinkage();
             }
         }
-        m_PipelineStage = END_BLOCK;
+        m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
     }
     else if (HaveDebugger())
     {
@@ -2894,7 +2899,7 @@ void CArmRecompilerOps::SPECIAL_JR()
 
 void CArmRecompilerOps::SPECIAL_JALR()
 {
-    if (m_PipelineStage == NORMAL)
+    if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
         if (DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0) && (m_CompilePC & 0xFFC) != 0xFFC)
         {
@@ -2913,7 +2918,7 @@ void CArmRecompilerOps::SPECIAL_JALR()
         if ((m_CompilePC & 0xFFC) == 0xFFC)
         {
             ArmReg TempRegVar = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
-            MoveConstToArmReg(TempRegVar, (uint32_t)&R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
+            MoveConstToArmReg(TempRegVar, (uint32_t)&g_System->m_JumpToLocation, "System::m_JumpToLocation");
 
             ArmReg TempRegRs = Arm_Unknown;
             if (IsKnown(m_Opcode.rs) && IsMapped(m_Opcode.rs))
@@ -2941,7 +2946,7 @@ void CArmRecompilerOps::SPECIAL_JALR()
 
         m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
     }
-    else if (m_PipelineStage == DELAY_SLOT_DONE)
+    else if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT_DONE)
     {
         if (DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0))
         {
@@ -2963,7 +2968,7 @@ void CArmRecompilerOps::SPECIAL_JALR()
                 m_Section->GenerateSectionLinkage();
             }
         }
-        m_PipelineStage = END_BLOCK;
+        m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
     }
     else if (HaveDebugger())
     {
@@ -2974,7 +2979,7 @@ void CArmRecompilerOps::SPECIAL_JALR()
 void CArmRecompilerOps::SPECIAL_SYSCALL()
 {
     CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::DoSysCall);
-    m_PipelineStage = END_BLOCK;
+    m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
 }
 
 void CArmRecompilerOps::SPECIAL_MFLO()
@@ -4000,7 +4005,7 @@ void CArmRecompilerOps::COP0_CO_ERET()
 
     UpdateCounters(m_RegWorkingSet, true, true);
     CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal);
-    m_PipelineStage = END_BLOCK;
+    m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
 }
 
 // COP1 functions
@@ -4693,7 +4698,7 @@ void CArmRecompilerOps::UnknownOpcode()
     MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
     CallFunction((void *)R4300iOp::UnknownOpcode, "R4300iOp::UnknownOpcode");
     ExitCodeBlock();
-    if (m_PipelineStage == NORMAL) { m_PipelineStage = END_BLOCK; }
+    if (m_PipelineStage == PIPELINE_STAGE_NORMAL) { m_PipelineStage = PIPELINE_STAGE_END_BLOCK; }
 }
 
 void CArmRecompilerOps::EnterCodeBlock()
@@ -5276,14 +5281,14 @@ void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         ExitCodeBlock();
         break;
     case CExitInfo::DoSysCall:
-        bDelay = m_PipelineStage == JUMP || m_PipelineStage == DELAY_SLOT;
+        bDelay = m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT;
         MoveConstToArmReg(Arm_R1, (uint32_t)bDelay, bDelay ? "true" : "false");
         MoveConstToArmReg(Arm_R0, (uint32_t)g_Reg);
         CallFunction(AddressOf(&CRegisters::DoSysCallException), "CRegisters::DoSysCallException");
         ExitCodeBlock();
         break;
     case CExitInfo::COP1_Unuseable:
-        bDelay = m_PipelineStage == JUMP || m_PipelineStage == DELAY_SLOT;
+        bDelay = m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT;
         MoveConstToArmReg(Arm_R2, (uint32_t)1, "1");
         MoveConstToArmReg(Arm_R1, (uint32_t)bDelay, bDelay ? "true" : "false");
         MoveConstToArmReg(Arm_R0, (uint32_t)g_Reg);
@@ -5291,7 +5296,7 @@ void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         ExitCodeBlock();
         break;
     case CExitInfo::TLBReadMiss:
-        bDelay = m_PipelineStage == JUMP || m_PipelineStage == DELAY_SLOT;
+        bDelay = m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT;
         MoveVariableToArmReg(g_TLBLoadAddress, "g_TLBLoadAddress", Arm_R2);
         MoveConstToArmReg(Arm_R1, (uint32_t)bDelay, bDelay ? "true" : "false");
         MoveConstToArmReg(Arm_R0, (uint32_t)g_Reg);
@@ -5868,12 +5873,12 @@ void CArmRecompilerOps::SetCurrentSection(CCodeSection * section)
     m_Section = section;
 }
 
-void CArmRecompilerOps::SetNextStepType(STEP_TYPE StepType)
+void CArmRecompilerOps::SetNextStepType(PIPELINE_STAGE StepType)
 {
     m_PipelineStage = StepType;
 }
 
-STEP_TYPE CArmRecompilerOps::GetNextStepType(void)
+PIPELINE_STAGE CArmRecompilerOps::GetNextStepType(void)
 {
     return m_PipelineStage;
 }
@@ -5970,7 +5975,7 @@ void CArmRecompilerOps::OverflowDelaySlot(bool TestTimer)
         CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
     }
 
-    MoveConstToVariable(JUMP, &R4300iOp::m_PipelineStage, "R4300iOp::m_PipelineStage");
+    MoveConstToVariable(PIPELINE_STAGE_JUMP, &g_System->m_PipelineStage, "g_System->m_PipelineStage");
 
     if (TestTimer)
     {
@@ -5991,7 +5996,7 @@ void CArmRecompilerOps::OverflowDelaySlot(bool TestTimer)
     }
 
     ExitCodeBlock();
-    m_PipelineStage = END_BLOCK;
+    m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
 }
 
 void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
@@ -6012,7 +6017,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
     }
 
     uint32_t PAddr;
-    if (!g_TransVaddr->TranslateVaddr(VAddr, PAddr))
+    if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
         CPU_Message("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
         if (ShowUnhandledMemory())
@@ -6073,9 +6078,10 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x04040004: MoveConstToVariable(Value, &g_Reg->SP_DRAM_ADDR_REG, "SP_DRAM_ADDR_REG"); break;
         case 0x04040008:
             m_RegWorkingSet.BeforeCallDirect();
-            PushImm32(0xFFFFFFFF);
+            ArmBreakPoint(__FILE__, __LINE__);
+            /*PushImm32(0xFFFFFFFF);
             PushImm32(Value);
-            PushImm32(PAddr & 0x1FFFFFFF);
+            PushImm32(PAddr & 0x1FFFFFFF);*/
             MoveConstToArmReg(Arm_R0, (uint32_t)(MemoryHandler *)&g_MMU->m_SPRegistersHandler, "(MemoryHandler *)g_MMU->m_SPRegistersHandler");
             CallFunction((void *)((long**)(MemoryHandler *)&g_MMU->m_SPRegistersHandler)[0][1], "SPRegistersHandler::Write32");
             m_RegWorkingSet.AfterCallDirect();
@@ -6323,8 +6329,8 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             if (g_System->bFixedAudio())
             {
                 ArmBreakPoint(__FILE__, __LINE__);
-                MoveConstToArmReg(Arm_R0, (uint32_t)g_Audio, "g_Audio");
-                CallFunction(AddressOf(&CAudio::LenChanged), "LenChanged");
+                //MoveConstToArmReg(Arm_R0, (uint32_t)g_Audio, "g_Audio");
+                //CallFunction(AddressOf(&CAudio::LenChanged), "LenChanged");
             }
             else
             {
@@ -6529,7 +6535,7 @@ void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
     }
 
     uint32_t PAddr;
-    if (!g_TransVaddr->TranslateVaddr(VAddr, PAddr))
+    if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
         CPU_Message("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
         if (ShowUnhandledMemory())
@@ -6576,9 +6582,10 @@ void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
         case 0x04040004: MoveArmRegToVariable(Reg, &g_Reg->SP_DRAM_ADDR_REG, "SP_DRAM_ADDR_REG"); break;
         case 0x04040008:
             m_RegWorkingSet.BeforeCallDirect();
-            PushImm32(0xFFFFFFFF);
+            ArmBreakPoint(__FILE__, __LINE__);
+            /*PushImm32(0xFFFFFFFF);
             Push(Reg);
-            PushImm32(PAddr & 0x1FFFFFFF);
+            PushImm32(PAddr & 0x1FFFFFFF);*/
             MoveConstToArmReg(Arm_R0, (uint32_t)(MemoryHandler *)&g_MMU->m_SPRegistersHandler, "(MemoryHandler *)g_MMU->m_SPRegistersHandler");
             CallFunction((void *)((long**)(MemoryHandler *)&g_MMU->m_SPRegistersHandler)[0][1], "SPRegistersHandler::Write32");
             m_RegWorkingSet.AfterCallDirect();
@@ -6641,11 +6648,12 @@ void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
         switch (PAddr)
         {
         case 0x04300000:
-            MoveArmRegToVariable(Reg, &CMipsMemoryVM::m_MemLookupValue.UW[0], "CMipsMemoryVM::m_MemLookupValue.UW[0]");
+            ArmBreakPoint(__FILE__, __LINE__);
+            /*MoveArmRegToVariable(Reg, &CMipsMemoryVM::m_MemLookupValue.UW[0], "CMipsMemoryVM::m_MemLookupValue.UW[0]");
             MoveConstToVariable(PAddr, &CMipsMemoryVM::m_MemLookupAddress, "m_MemLookupAddress");
             m_RegWorkingSet.BeforeCallDirect();
             CallFunction((void *)CMipsMemoryVM::Write32MIPSInterface, "CMipsMemoryVM::Write32MIPSInterface");
-            m_RegWorkingSet.AfterCallDirect();
+            m_RegWorkingSet.AfterCallDirect();*/
             break;
         case 0x0430000C:
             MoveArmRegToVariable(Reg, &CMipsMemoryVM::RegModValue, "CMipsMemoryVM::RegModValue");
@@ -6744,8 +6752,9 @@ void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
             m_RegWorkingSet.BeforeCallDirect();
             if (g_System->bFixedAudio())
             {
-                MoveConstToArmReg(Arm_R0, (uint32_t)g_Audio, "g_Audio");
-                CallFunction(AddressOf(&CAudio::LenChanged), "LenChanged");
+                ArmBreakPoint(__FILE__, __LINE__);
+                //MoveConstToArmReg(Arm_R0, (uint32_t)g_Audio, "g_Audio");
+                //CallFunction(AddressOf(&CAudio::LenChanged), "LenChanged");
             }
             else
             {
@@ -6982,7 +6991,7 @@ void CArmRecompilerOps::LB_KnownAddress(ArmReg Reg, uint32_t VAddr, bool SignExt
     }
 
     uint32_t PAddr;
-    if (!g_TransVaddr->TranslateVaddr(VAddr, PAddr))
+    if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
@@ -7031,7 +7040,7 @@ void CArmRecompilerOps::LW_KnownAddress(ArmReg Reg, uint32_t VAddr)
     else
     {
         uint32_t PAddr;
-        if (!g_TransVaddr->TranslateVaddr(VAddr, PAddr))
+        if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -7078,13 +7087,14 @@ void CArmRecompilerOps::LW_KnownAddress(ArmReg Reg, uint32_t VAddr)
             }
             break;
         case 0x04100000:
-            m_RegWorkingSet.BeforeCallDirect();
+            ArmBreakPoint(__FILE__, __LINE__);
+            /*m_RegWorkingSet.BeforeCallDirect();
             MoveConstToArmReg(Arm_R1, PAddr);
             MoveConstToArmReg(Arm_R2, (uint32_t)&CMipsMemoryVM::m_MemLookupAddress, "m_MemLookupAddress");
             StoreArmRegToArmRegPointer(Arm_R1, Arm_R2, 0);
             CallFunction((void *)CMipsMemoryVM::Load32DPCommand, "CMipsMemoryVM::Load32DPCommand");
             m_RegWorkingSet.AfterCallDirect();
-            MoveVariableToArmReg(&CMipsMemoryVM::m_MemLookupValue.UW[0], "CMipsMemoryVM::m_MemLookupValue.UW[0]", Reg);
+            MoveVariableToArmReg(&CMipsMemoryVM::m_MemLookupValue.UW[0], "CMipsMemoryVM::m_MemLookupValue.UW[0]", Reg);*/
             break;
         case 0x04300000:
             switch (PAddr)
@@ -7104,14 +7114,15 @@ void CArmRecompilerOps::LW_KnownAddress(ArmReg Reg, uint32_t VAddr)
             switch (PAddr)
             {
             case 0x04400010:
-                m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+                ArmBreakPoint(__FILE__, __LINE__);
+                /*m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
                 UpdateCounters(m_RegWorkingSet, false, true);
                 m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
                 m_RegWorkingSet.BeforeCallDirect();
                 MoveConstToArmReg(Arm_R0, (uint32_t)g_MMU);
                 CallFunction(AddressOf(&CMipsMemoryVM::UpdateHalfLine), "CMipsMemoryVM::UpdateHalfLine");
                 m_RegWorkingSet.AfterCallDirect();
-                MoveVariableToArmReg((void *)&g_MMU->m_HalfLine, "MMU->m_HalfLine", Reg);
+                MoveVariableToArmReg((void *)&g_MMU->m_HalfLine, "MMU->m_HalfLine", Reg);*/
                 break;
             default:
                 MoveConstToArmReg(Reg, (uint32_t)0);
@@ -7126,7 +7137,8 @@ void CArmRecompilerOps::LW_KnownAddress(ArmReg Reg, uint32_t VAddr)
             case 0x04500004:
                 if (g_System->bFixedAudio())
                 {
-                    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+                    ArmBreakPoint(__FILE__, __LINE__);
+                    /*m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
                     UpdateCounters(m_RegWorkingSet, false, true);
                     m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
                     m_RegWorkingSet.BeforeCallDirect();
@@ -7135,7 +7147,7 @@ void CArmRecompilerOps::LW_KnownAddress(ArmReg Reg, uint32_t VAddr)
                     MoveConstToArmReg(Arm_R1, (uint32_t)&m_TempValue, "m_TempValue");
                     StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
                     m_RegWorkingSet.AfterCallDirect();
-                    MoveVariableToArmReg(&m_TempValue, "m_TempValue", Reg);
+                    MoveVariableToArmReg(&m_TempValue, "m_TempValue", Reg);*/
                 }
                 else
                 {
@@ -7157,13 +7169,14 @@ void CArmRecompilerOps::LW_KnownAddress(ArmReg Reg, uint32_t VAddr)
             case 0x0450000C:
                 if (g_System->bFixedAudio())
                 {
-                    m_RegWorkingSet.BeforeCallDirect();
+                    ArmBreakPoint(__FILE__, __LINE__);
+                    /*m_RegWorkingSet.BeforeCallDirect();
                     MoveConstToArmReg(Arm_R0, (uint32_t)g_Audio, "g_Audio");
                     CallFunction(AddressOf(&CAudio::GetStatus), "CAudio::GetStatus");
                     MoveConstToArmReg(Arm_R1, (uint32_t)&m_TempValue, "m_TempValue");
                     StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
                     m_RegWorkingSet.AfterCallDirect();
-                    MoveVariableToArmReg(&m_TempValue, "m_TempValue", Reg);
+                    MoveVariableToArmReg(&m_TempValue, "m_TempValue", Reg);*/
                 }
                 else
                 {
@@ -7279,13 +7292,14 @@ void CArmRecompilerOps::LW_KnownAddress(ArmReg Reg, uint32_t VAddr)
             }
             break;
         case 0x06000000:
-            m_RegWorkingSet.BeforeCallDirect();
+            ArmBreakPoint(__FILE__, __LINE__);
+            /*m_RegWorkingSet.BeforeCallDirect();
             MoveConstToArmReg(Arm_R1, PAddr);
             MoveConstToArmReg(Arm_R2, (uint32_t)&CMipsMemoryVM::m_MemLookupAddress, "m_MemLookupAddress");
             StoreArmRegToArmRegPointer(Arm_R1, Arm_R2, 0);
             CallFunction((void *)CMipsMemoryVM::Load32CartridgeDomain1Address1, "CMipsMemoryVM::Load32CartridgeDomain1Address1");
             m_RegWorkingSet.AfterCallDirect();
-            MoveVariableToArmReg(&CMipsMemoryVM::m_MemLookupValue.UW[0], "CMipsMemoryVM::m_MemLookupValue.UW[0]", Reg);
+            MoveVariableToArmReg(&CMipsMemoryVM::m_MemLookupValue.UW[0], "CMipsMemoryVM::m_MemLookupValue.UW[0]", Reg);*/
             break;
         default:
             if ((PAddr & 0xF0000000) == 0x10000000 && (PAddr - 0x10000000) < g_Rom->GetRomSize())

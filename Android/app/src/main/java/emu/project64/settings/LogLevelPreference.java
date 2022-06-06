@@ -3,95 +3,56 @@ package emu.project64.settings;
 import emu.project64.R;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v7.preference.ListPreference;
 import android.util.AttributeSet;
+import android.util.TypedValue;
+import android.text.TextUtils;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.res.TypedArrayUtils;
+import androidx.preference.Preference;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 
-public class LogLevelPreference extends ListPreference
-{
+public class LogLevelPreference extends Preference {
+    private CharSequence[] mEntries;
+    private CharSequence[] mEntryValues;
     private CharSequence[] mEntriesSubtitles;
+    private String mValue;
     private int mValueIndex;
+    private boolean mValueSet;
 
     public LogLevelPreference(Context context, AttributeSet attrs)
     {
-        super(context, attrs);
+        super(context, attrs, getAttr(context, R.attr.LogLevelPreferenceStyle, android.R.attr.preferenceStyle));
+
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TwoLinesListPreference);
         mEntriesSubtitles = a.getTextArray(R.styleable.TwoLinesListPreference_entriesSubtitles);
-        
-        String[] TraceSeverityList=context.getResources().getStringArray(R.array.trace_severity_list);
-        setEntries(TraceSeverityList);
-        
-        String[] TraceSeverityValues=context.getResources().getStringArray(R.array.trace_severity_values);        
-        setEntryValues(TraceSeverityValues);
+        mEntries = context.getResources().getStringArray(R.array.trace_severity_list);
+        mEntryValues = context.getResources().getStringArray(R.array.trace_severity_values);
         a.recycle();
-    }
-        
-    @Override
-    protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
-    {
-        super.onSetInitialValue(restoreValue, defaultValue);
 
-        mEntriesSubtitles = getEntriesSubtitles();
-        mValueIndex = getValueIndex();
-    }
-
-    @Override
-    public void setValue(String value) 
-    {
-        super.setValue(value);
-        mValueIndex = getValueIndex();
-        updateSummary();
-    }
-    /**
-    * Returns the index of the given value (in the entry values array).
-    *
-    * @param value The value whose index should be returned.
-    * @return The index of the value, or -1 if not found.
-    */
-    public int findIndexOfValue(String value)
-    {
-        CharSequence[] EntryValues = getEntryValues();
-        if (value != null && EntryValues != null)
-        {
-            for (int i = EntryValues.length - 1; i >= 0; i--)
-            {
-                if (EntryValues[i].equals(value))
-                {
-                    return i;
-                }
-            }
-        }
-        return -1;
-    }
-
-    public int getValueIndex()
-    {
-        return findIndexOfValue(getValue());
-    }
-
-    public CharSequence[] getEntriesSubtitles()
-    {
-        return mEntriesSubtitles;
-    }
-
-    @Override
-    public void setEntries(CharSequence[] Entries)
-    {
-        super.setEntries(Entries);
         updateSummary();
     }
 
     @Override
-    public void setEntryValues(CharSequence[] EntryValues)
-    {
-        super.setEntryValues(EntryValues);
-        mValueIndex = getValueIndex();
-        updateSummary();
-    }
-
-    public void setEntriesSubtitles(CharSequence[] mEntriesSubtitles)
-    {
-        this.mEntriesSubtitles = mEntriesSubtitles;
-        updateSummary();
+    protected void onClick() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(getTitle())
+                .setSingleChoiceItems(mEntries, mValueIndex, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int index) {
+                        setValueIndex(index);
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton("Go", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int index) {
+                        setValueIndex(index);
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void updateSummary()
@@ -100,16 +61,50 @@ public class LogLevelPreference extends ListPreference
         {
             return;
         }
-        CharSequence[] Entries = getEntries();
-        String summary = Entries[mValueIndex].toString();
-        if (mEntriesSubtitles != null && mEntriesSubtitles.length > mValueIndex)
-        {
-            String subtitle = mEntriesSubtitles[mValueIndex].toString();
-            if (summary.length() > 0 && subtitle.length() > 0)
-            {
-                summary += " - " + subtitle;
-            }            
+        setSummary(mEntries[mValueIndex].toString());
+    }
+
+    private void setValueIndex(int index)
+    {
+        String value = mEntryValues[index].toString();
+        final boolean changed = !TextUtils.equals(mValue, value);
+        if (changed || !mValueSet) {
+            mValueIndex = index;
+            mValue = value;
+            mValueSet = true;
+            persistString(value);
+            if (changed) {
+                notifyChanged();
+            }
+            updateSummary();
         }
-        setSummary( summary );
+    }
+
+    private static int getAttr(Context context, int attr, int fallbackAttr)
+    {
+        TypedValue value = new TypedValue();
+        context.getTheme().resolveAttribute(attr, value, true);
+        if (value.resourceId != 0)
+        {
+            return attr;
+        }
+        return fallbackAttr;
+    }
+
+    @Override
+    protected void onSetInitialValue(Object defaultValue)
+    {
+        if (getSharedPreferences().contains(getKey()))
+        {
+            String Value = getPersistedString( Integer.toString(mValueIndex));
+            for (int i = 0, n = mEntryValues.length; i < n; i++)
+            {
+                if (mEntryValues[i].equals(Value))
+                {
+                    mValueIndex = i;
+                    updateSummary();
+                }
+            }
+        }
     }
 }

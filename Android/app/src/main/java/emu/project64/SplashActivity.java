@@ -125,7 +125,7 @@ public class SplashActivity extends AppCompatActivity implements ExtractAssetsLi
 
         Log.i( "Splash", "extractAssetsTaskLauncher - startup");
         final Handler handler = new Handler();
-        if (!mAppInit || NativeExports.UISettingsLoadDword(UISettingID.Asserts_Version.getValue()) != ASSET_VERSION)
+        if (!mAppInit || NativeExports.SettingsLoadDword(UISettingID.AssertsVersion.toString()) != NativeExports.SettingsLoadDword(UISettingID.BuildVersion.toString()))
         {
             handler.post( extractAssetsTaskLauncher );
         }
@@ -207,35 +207,35 @@ public class SplashActivity extends AppCompatActivity implements ExtractAssetsLi
         }
         String SyncDir = this.getFilesDir().getParentFile().getAbsolutePath() + "/lib-sync/";
         NativeExports.appInit(AndroidDevice.PACKAGE_DIRECTORY);
-        NativeExports.SettingsSaveString(SettingsID.Directory_PluginSelected.getValue(), LibsDir);
-        NativeExports.SettingsSaveBool(SettingsID.Directory_PluginUseSelected.getValue(), true);
-        NativeExports.SettingsSaveString(SettingsID.Directory_PluginSyncSelected.getValue(), SyncDir);
-        NativeExports.SettingsSaveBool(SettingsID.Directory_PluginSyncUseSelected.getValue(), true);
+        NativeExports.SettingsSaveString(SettingsID.Directory_PluginSelected.toString(), LibsDir);
+        NativeExports.SettingsSaveBool(SettingsID.Directory_PluginUseSelected.toString(), true);
+        NativeExports.SettingsSaveString(SettingsID.Directory_PluginSyncSelected.toString(), SyncDir);
+        NativeExports.SettingsSaveBool(SettingsID.Directory_PluginSyncUseSelected.toString(), true);
         String SaveDir = AndroidDevice.EXTERNAL_PUBLIC_DIRECTORY + "/Project64/Save";
-        if (!NativeExports.IsSettingSet(SettingsID.Directory_NativeSave.getValue()))
+        if (!NativeExports.IsSettingSet(SettingsID.Directory_NativeSave.toString()))
         {
-            NativeExports.SettingsSaveString(SettingsID.Directory_NativeSaveSelected.getValue(), SaveDir);
-            NativeExports.SettingsSaveBool(SettingsID.Directory_NativeSaveUseSelected.getValue(), true);
+            NativeExports.SettingsSaveString(SettingsID.Directory_NativeSaveSelected.toString(), SaveDir);
+            NativeExports.SettingsSaveBool(SettingsID.Directory_NativeSaveUseSelected.toString(), true);
         }
 
-        if (!NativeExports.IsSettingSet(SettingsID.Directory_InstantSave.getValue()))
+        if (!NativeExports.IsSettingSet(SettingsID.Directory_InstantSave.toString()))
         {
-            NativeExports.SettingsSaveString(SettingsID.Directory_InstantSaveSelected.getValue(), SaveDir);
-            NativeExports.SettingsSaveBool(SettingsID.Directory_InstantSaveUseSelected.getValue(), true);
+            NativeExports.SettingsSaveString(SettingsID.Directory_InstantSaveSelected.toString(), SaveDir);
+            NativeExports.SettingsSaveBool(SettingsID.Directory_InstantSaveUseSelected.toString(), true);
         }
 
-        if (!NativeExports.IsSettingSet(SettingsID.Directory_Log.getValue()))
+        if (!NativeExports.IsSettingSet(SettingsID.Directory_Log.toString()))
         {
             String LogDir = AndroidDevice.EXTERNAL_PUBLIC_DIRECTORY + "/Project64/Logs";
-            NativeExports.SettingsSaveString(SettingsID.Directory_LogSelected.getValue(), LogDir);
-            NativeExports.SettingsSaveBool(SettingsID.Directory_LogUseSelected.getValue(), true);
+            NativeExports.SettingsSaveString(SettingsID.Directory_LogSelected.toString(), LogDir);
+            NativeExports.SettingsSaveBool(SettingsID.Directory_LogUseSelected.toString(), true);
         }
 
-        if (!NativeExports.IsSettingSet(SettingsID.Directory_SnapShot.getValue()))
+        if (!NativeExports.IsSettingSet(SettingsID.Directory_SnapShot.toString()))
         {
             String SnapShotDir = AndroidDevice.EXTERNAL_PUBLIC_DIRECTORY + "/Project64/Screenshots";
-            NativeExports.SettingsSaveString(SettingsID.Directory_SnapShotSelected.getValue(), SnapShotDir);
-            NativeExports.SettingsSaveBool(SettingsID.Directory_SnapShotUseSelected.getValue(), true);
+            NativeExports.SettingsSaveString(SettingsID.Directory_SnapShotSelected.toString(), SnapShotDir);
+            NativeExports.SettingsSaveBool(SettingsID.Directory_SnapShotUseSelected.toString(), true);
         }
         mAppInit = true;
     }
@@ -311,7 +311,7 @@ public class SplashActivity extends AppCompatActivity implements ExtractAssetsLi
                 InitProject64();
             }
             mTextView.setText( R.string.assetExtractor_finished );
-            NativeExports.UISettingsSaveDword(UISettingID.Asserts_Version.getValue(), ASSET_VERSION);
+            NativeExports.SettingsSaveDword(UISettingID.AssertsVersion.toString(), NativeExports.SettingsLoadDword(UISettingID.BuildVersion.toString()));
             Intent intent = new Intent( this, GalleryActivity.class );
             this.startActivity( intent );
             finish();

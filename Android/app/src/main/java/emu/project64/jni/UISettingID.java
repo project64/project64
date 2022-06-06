@@ -2,41 +2,30 @@ package emu.project64.jni;
 
 public enum UISettingID
 {		
-    Asserts_Version,
-    Screen_Orientation,
+    AssertsVersion,
+    BuildVersion,
+    ScreenOrientation,
 
     //Recent Game
-    File_RecentGameFileCount,
-    File_RecentGameFileIndex,
+    FileRecentGameFileCount,
+    FileRecentGameFileIndex,
 
     //Touch Screen
-    TouchScreen_ButtonScale,
-    TouchScreen_Layout,
+    TouchScreenButtonScale,
+    TouchScreenLayout,
 
     //Controller Config
-    Controller_ConfigFile,
-    Controller_CurrentProfile,
-    Controller_Deadzone,
-    Controller_Sensitivity,
+    ControllerConfigFile,
+    ControllerCurrentProfile,
+    ControllerDeadzone,
+    ControllerSensitivity,
 
     //App Info
-    AppInfo_RunCount,
+    AppInfoRunCount,
     ;
-    
-    private int value;
-    
-    public int getValue() 
-    {
-        return this.value;
+
+    @Override
+    public String toString() {
+        return "UISettingID." + super.toString();
     }
-    private static final class StaticFields 
-    {
-        public static int Counter = 0;
-    }
-    
-    private UISettingID()
-    {
-    	this.value = StaticFields.Counter;
-    	StaticFields.Counter += 1;
-    }   
 }

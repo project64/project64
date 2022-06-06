@@ -172,7 +172,8 @@ public class SeekBarPreference extends DialogPreference
      */
     public String getValueString( int value )
     {
-        return getContext().getString( R.string.seekBarPreference_summary, value, mUnits );
+        //return getContext().getString( R.string.seekBarPreference_summary, value, mUnits );
+        return "";
     }
     
     @Override

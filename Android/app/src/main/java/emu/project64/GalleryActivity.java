@@ -15,16 +15,13 @@ import java.util.regex.Pattern;
 import emu.project64.R;
 import emu.project64.dialog.ProgressDialog;
 import emu.project64.game.GameActivity;
-import emu.project64.game.GameActivityXperiaPlay;
 import emu.project64.jni.LanguageStringID;
 import emu.project64.jni.NativeExports;
 import emu.project64.jni.SettingsID;
-import emu.project64.jni.SystemEvent;
 import emu.project64.jni.UISettingID;
 import emu.project64.settings.GameSettingsActivity;
 import emu.project64.settings.SettingsActivity;
 import emu.project64.util.Strings;
-import emu.project64.util.Utility;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import androidx.appcompat.app.AlertDialog;
@@ -57,6 +54,7 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
 
+import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -89,6 +87,7 @@ public class GalleryActivity extends AppCompatActivity
     private static List<GalleryItem> mRecentItems = new ArrayList<GalleryItem>();
     private static GalleryActivity mActiveGalleryActivity = null;
 
+    public static final int GAME_DIR_REQUEST_CODE = 1;
     static final int RC_SETTINGS = 10002;
 
     @Override
@@ -113,7 +112,6 @@ public class GalleryActivity extends AppCompatActivity
     {
         super.onCreate( savedInstanceState );
         mActiveGalleryActivity = this;
-
 
         Log.d("GalleryActivity", "Starting setup.");
         // Lay out the content
@@ -142,38 +140,19 @@ public class GalleryActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById( R.id.toolbar );
         toolbar.setTitle( R.string.app_name );
         setSupportActionBar( toolbar );
-
-        // Configure the navigation drawer
-        mDrawerLayout = (DrawerLayout) findViewById( R.id.drawerLayout );
-        mDrawerToggle = new ActionBarDrawerToggle( this, mDrawerLayout, toolbar, 0, 0 );
-        mDrawerLayout.addDrawerListener( mDrawerToggle );
-
-        // Configure the list in the navigation drawer
-        mDrawerList = (MenuListView) findViewById( R.id.drawerNavigation );
-        mDrawerList.setMenuResource( R.menu.gallery_drawer );
-        // Handle menu item selections
-        mDrawerList.setOnClickListener( new MenuListView.OnClickListener()
-        {
-            @Override
-            public void onClick( MenuItem menuItem )
-            {
-                GalleryActivity.this.onOptionsItemSelected( menuItem );
-            }
-        });
-        UpdateLanguage();
-
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setHomeButtonEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(false);
     }
 
-    void UpdateLanguage()
+    void UpdateMenuLanguage(Menu menu)
     {
-        Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_settings, LanguageStringID.ANDROID_SETTINGS);
-        Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_discord, LanguageStringID.ANDROID_DISCORD);
-        Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_reportBug, LanguageStringID.ANDROID_REPORT_BUG);
-        Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_review, LanguageStringID.ANDROID_REVIEW_PJ64);
-        Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_support, LanguageStringID.ANDROID_SUPPORT_PJ64);
-        Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_about, LanguageStringID.ANDROID_ABOUT);
+        Strings.SetMenuTitle(menu, R.id.menuItem_GameDir, LanguageStringID.ANDROID_GAMEDIR);
+        Strings.SetMenuTitle(menu, R.id.menuItem_settings, LanguageStringID.ANDROID_SETTINGS);
+        Strings.SetMenuTitle(menu, R.id.menuItem_discord, LanguageStringID.ANDROID_DISCORD);
+        Strings.SetMenuTitle(menu, R.id.menuItem_about, LanguageStringID.ANDROID_ABOUT);
     }
-
 
     void alert(String message)
     {
@@ -184,28 +163,30 @@ public class GalleryActivity extends AppCompatActivity
         bld.create().show();
     }
 
-
     @Override
     protected void onPostCreate( Bundle savedInstanceState )
     {
         super.onPostCreate( savedInstanceState );
-        mDrawerToggle.syncState();
     }
 
     @Override
     public void onConfigurationChanged( Configuration newConfig )
     {
         super.onConfigurationChanged( newConfig );
-        mDrawerToggle.onConfigurationChanged( newConfig );
     }
 
     @Override
     public boolean onCreateOptionsMenu( Menu menu )
     {
-        getMenuInflater().inflate( R.menu.gallery_activity, menu );
-        Strings.SetMenuTitle(menu, R.id.menuItem_gameDir, LanguageStringID.ANDROID_GAMEDIR);
-
-        return super.onCreateOptionsMenu( menu );
+        super.onCreateOptionsMenu( menu );
+        getMenuInflater().inflate( R.menu.gallery, menu );
+        UpdateMenuLanguage(menu);
+        if(menu instanceof MenuBuilder)
+        {
+            MenuBuilder menuBuilder = (MenuBuilder) menu;
+            menuBuilder.setOptionalIconsVisible(true);
+        }
+        return true;
     }
 
     @Override
@@ -217,31 +198,20 @@ public class GalleryActivity extends AppCompatActivity
             Intent ScanRomsIntent = new Intent(this, ScanRomsActivity.class);
             startActivityForResult( ScanRomsIntent, GAME_DIR_REQUEST_CODE );
             return true;
-            case R.id.menuItem_settings:
-                Intent SettingsIntent = new Intent(this, SettingsActivity.class);
-                startActivity( SettingsIntent );
-                return true;
-            case R.id.menuItem_discord:
-                Intent ForumIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://discord.gg/sbYbnda"));
-                startActivity(ForumIntent);
-                return true;
-            case R.id.menuItem_reportBug:
-                Intent IssueIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/project64/project64/issues"));
-                startActivity(IssueIntent);
-                return true;
-            case R.id.menuItem_review:
-                ShowReviewOptions();
-                return true;
-            case R.id.menuItem_support:
-                ShowPaymentOptions();
-                return true;
-            case R.id.menuItem_about:
-                Intent AboutIntent = new Intent(this, AboutActivity.class);
-                startActivity( AboutIntent );
-                return true;
-            default:
-                return super.onOptionsItemSelected( item );
+        case R.id.menuItem_settings:
+            Intent SettingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity( SettingsIntent );
+            return true;
+        case R.id.menuItem_discord:
+            Intent DiscordIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://discord.gg/Cg3zquF"));
+            startActivity(DiscordIntent);
+            return true;
+        case R.id.menuItem_about:
+            Intent AboutIntent = new Intent(this, AboutActivity.class);
+            startActivity( AboutIntent );
+            return true;
         }
+        return super.onOptionsItemSelected( item );
     }
 
     private boolean HasAutoSave(File GameSaveDir)
@@ -280,8 +250,8 @@ public class GalleryActivity extends AppCompatActivity
 
     private void StartGameMenu (boolean ShowSettings)
     {
-        File InstantSaveDir = new File(NativeExports.SettingsLoadString(SettingsID.Directory_InstantSave.getValue()));
-        final File GameSaveDir = new File(InstantSaveDir,NativeExports.SettingsLoadString(SettingsID.Game_UniqueSaveDir.getValue()));
+        File InstantSaveDir = new File(NativeExports.SettingsLoadString(SettingsID.Directory_InstantSave.toString()));
+        final File GameSaveDir = new File(InstantSaveDir,NativeExports.SettingsLoadString(SettingsID.Game_UniqueSaveDir.toString()));
 
         class Item
         {
@@ -303,7 +273,7 @@ public class GalleryActivity extends AppCompatActivity
         menuItemLst.add(new Item("Resume from Native save", R.drawable.ic_controller));
         menuItemLst.add(new Item("Resume from Auto save", R.drawable.ic_play));
         menuItemLst.add(new Item("Restart", R.drawable.ic_refresh));
-        if (ShowSettings && !NativeExports.SettingsLoadBool(SettingsID.UserInterface_BasicMode.getValue()))
+        if (ShowSettings && !NativeExports.SettingsLoadBool(SettingsID.UserInterface_BasicMode.toString()))
         {
             menuItemLst.add(new Item("Settings", R.drawable.ic_sliders));
         }
@@ -370,7 +340,7 @@ public class GalleryActivity extends AppCompatActivity
 
         final Context finalContext = this;
         AlertDialog.Builder GameMenu = new AlertDialog.Builder(finalContext);
-        GameMenu.setTitle(NativeExports.SettingsLoadString(SettingsID.Rdb_GoodName.getValue()));
+        GameMenu.setTitle(NativeExports.SettingsLoadString(SettingsID.Rdb_GoodName.toString()));
         GameMenu.setAdapter(adapter, new DialogInterface.OnClickListener()
         {
             @Override
@@ -420,8 +390,8 @@ public class GalleryActivity extends AppCompatActivity
     public void onGalleryItemClick( GalleryItem item )
     {
         NativeExports.LoadGame(item.romFile.getAbsolutePath());
-        File InstantSaveDir = new File(NativeExports.SettingsLoadString(SettingsID.Directory_InstantSave.getValue()));
-        File GameSaveDir = new File(InstantSaveDir,NativeExports.SettingsLoadString(SettingsID.Game_UniqueSaveDir.getValue()));
+        File InstantSaveDir = new File(NativeExports.SettingsLoadString(SettingsID.Directory_InstantSave.toString()));
+        File GameSaveDir = new File(InstantSaveDir,NativeExports.SettingsLoadString(SettingsID.Game_UniqueSaveDir.toString()));
         Boolean ResumeGame = HasAutoSave(GameSaveDir);
         launchGameActivity(ResumeGame);
     }
@@ -438,11 +408,6 @@ public class GalleryActivity extends AppCompatActivity
     {
         Log.d("GalleryActivity", "onActivityResult(" + requestCode + "," + resultCode + "," + data);
 
-        if (requestCode == RC_SETTINGS)
-        {
-            StartGameMenu(true);
-            return;
-        }
         // Check which request we're responding to
         if (requestCode == GAME_DIR_REQUEST_CODE)
         {
@@ -544,18 +509,14 @@ public class GalleryActivity extends AppCompatActivity
     }
 
     // Enables or disables the "please wait" screen.
-
     public void launchGameActivity(boolean ResumeGame)
     {
         if (ResumeGame)
         {
-            NativeExports.SettingsSaveDword(SettingsID.Game_CurrentSaveState.getValue(), 0);
+            NativeExports.SettingsSaveDword(SettingsID.Game_CurrentSaveState.toString(), 0);
         }
-        NativeExports.SettingsSaveBool(SettingsID.Game_LoadSaveAtStart.getValue(), ResumeGame);
-        // Launch the game activity
-        boolean isXperiaPlay = false;
-
-        Intent intent = isXperiaPlay ? new Intent( this, GameActivityXperiaPlay.class ) : new Intent( this, GameActivity.class );
+        NativeExports.SettingsSaveBool(SettingsID.Game_LoadSaveAtStart.toString(), ResumeGame);
+        Intent intent = new Intent( this, GameActivity.class );
         this.startActivity( intent );
     }
 
@@ -611,9 +572,9 @@ public class GalleryActivity extends AppCompatActivity
     {
         mRecentItems = new ArrayList<GalleryItem>();
 
-        for (int i = 0, n = NativeExports.UISettingsLoadDword(UISettingID.File_RecentGameFileCount.getValue()); i < n; i++)
+        for (int i = 0, n = NativeExports.SettingsLoadDword(UISettingID.FileRecentGameFileCount.toString()); i < n; i++)
         {
-            String RecentFile = NativeExports.UISettingsLoadStringIndex(UISettingID.File_RecentGameFileIndex.getValue(), i);
+            String RecentFile = NativeExports.SettingsLoadStringIndex(UISettingID.FileRecentGameFileIndex.toString(), i);
             if (RecentFile.length() == 0)
             {
                 break;

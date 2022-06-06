@@ -8,7 +8,7 @@
     <color name="TabActive">#4683ec</color>
     <color name="ButtonTextColor">#ffffff</color>
 
-    <color name="black">#000001</color>
+
     <color name="white">#ffffff</color>
     <color name="yellow1">#F8E334</color>
     <color name="yellow2">#F29620</color>
@@ -22,21 +22,12 @@
     <color name="gray2">#9C9897</color>
     <color name="gray3">#747273</color>
     <color name="gray4">#424042</color>
-    <color name="grey50">#fafafa</color>
-    <color name="grey100">#f5f5f5</color>
-    <color name="grey200">#eeeeee</color>
+    <color name="orange500">#FF8800</color>
+    <color name="orange800">#ff610a</color>
     <color name="grey300">#e0e0e0</color>
-    <color name="grey400">#bdbdbd</color>
-    <color name="grey500">#9e9e9e</color>
-    <color name="grey600">#757575</color>
     <color name="grey700">#616161</color>
-    <color name="grey800">#424242</color>
-    <color name="grey850">#323232</color>
-    <color name="grey875">#2a2a2a</color>
-    <color name="grey900">#212121</color>
     <color name="holo_blue1">#33B5E5</color>
     <color name="holo_blue2">#0099CC</color>
     <color name="holo_purple1">#AA66CC</color>
     <color name="holo_purple2">#9933CC</color>
-
 </resources>

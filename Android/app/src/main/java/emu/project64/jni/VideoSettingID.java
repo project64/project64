@@ -38,21 +38,10 @@ public enum VideoSettingID
     Set_Logging_Glitch, Set_Logging_VideoRDP, Set_Logging_TLUT, Set_Logging_PNG, 
     Set_Logging_OGLWrapper, Set_Logging_RDPCommands,
     ;
-    
-    private int value;
-    
-    public int getValue() 
+
+    @Override
+    public String toString()
     {
-        return this.value;
+        return "VideoSettingID." + super.toString();
     }
-    private static final class StaticFields 
-    {
-        public static int Counter = 0;
-    }
-    
-    private VideoSettingID()
-    {
-        this.value = StaticFields.Counter;
-        StaticFields.Counter += 1;
-    }   
 }

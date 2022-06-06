@@ -377,9 +377,10 @@ public class TouchMap
      */
     public float getAnalogStrength( float displacement )
     {
-        displacement /= scale;
+        /*displacement /= scale;
         float p = ( displacement - analogDeadzone ) / ( analogMaximum - analogDeadzone );
-        return Utility.clamp( p, 0.0f, 1.0f );
+        return Utility.clamp( p, 0.0f, 1.0f );*/
+        return 0.0f;
     }
     
     /**

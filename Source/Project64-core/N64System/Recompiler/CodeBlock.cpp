@@ -35,7 +35,7 @@ CCodeBlock::CCodeBlock(CMipsMemoryVM & MMU, uint32_t VAddrEnter, uint8_t * Compi
 #if defined(__i386__) || defined(_M_IX86)
     m_RecompilerOps = new CX86RecompilerOps(MMU);
 #elif defined(__arm__) || defined(_M_ARM)
-    m_RecompilerOps = new CArmRecompilerOps;
+    m_RecompilerOps = new CArmRecompilerOps(MMU);
 #endif
     if (m_RecompilerOps == nullptr)
     {

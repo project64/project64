@@ -1,12 +1,10 @@
 package emu.project64.util;
 
-import emu.project64.game.GameOverlay;
+//import emu.project64.game.GameOverlay;
 import emu.project64.jni.NativeExports;
 import emu.project64.jni.SettingsID;
 import emu.project64.Project64Application;
 import emu.project64.R;
-
-import com.google.android.gms.analytics.HitBuilders;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -81,11 +79,11 @@ public final class Notifier
         if( activity == null )
             return;
 
-        GameOverlay overlay = (GameOverlay) activity.findViewById(R.id.gameOverlay);
+        /*GameOverlay overlay = (GameOverlay) activity.findViewById(R.id.gameOverlay);
         if (overlay == null)
             return;
 
-        overlay.SetDisplayMessage(message, Duratation);
+        overlay.SetDisplayMessage(message, Duratation);*/
     }
 
     public static void showMessage2( Activity activity, String message )
@@ -93,17 +91,17 @@ public final class Notifier
         if( activity == null )
             return;
 
-        GameOverlay overlay = (GameOverlay) activity.findViewById(R.id.gameOverlay);
-        overlay.SetDisplayMessage2(message);
+        /*GameOverlay overlay = (GameOverlay) activity.findViewById(R.id.gameOverlay);
+        overlay.SetDisplayMessage2(message);*/
     }
 
     public static void EmulationStarted (Activity activity)
     {
-        ((Project64Application) activity.getApplication()).getDefaultTracker().send(new HitBuilders.EventBuilder()
+        /*((Project64Application) activity.getApplication()).getDefaultTracker().send(new HitBuilders.EventBuilder()
             .setCategory("game")
             .setAction(NativeExports.SettingsLoadString(SettingsID.Rdb_GoodName.getValue()))
             .setLabel(NativeExports.appVersion())
-            .build());
+            .build());*/
     }
 
     private static Runnable runEmulationStopped = null;

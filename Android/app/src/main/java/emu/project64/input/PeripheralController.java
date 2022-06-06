@@ -141,14 +141,14 @@ public class PeripheralController extends AbstractController implements
             if( magnitude > mDeadzoneFraction )
             {
                 // Normalize the vector
-                float normalizedX = rawX / magnitude;
+                /*float normalizedX = rawX / magnitude;
                 float normalizedY = rawY / magnitude;
 
                 // Rescale strength to account for deadzone
                 magnitude = ( magnitude - mDeadzoneFraction ) / ( 1f - mDeadzoneFraction );
 				magnitude = Utility.clamp( magnitude, 0f, 1f );
                 mState.axisFractionX = normalizedX * magnitude;
-                mState.axisFractionY = normalizedY * magnitude;
+                mState.axisFractionY = normalizedY * magnitude;*/
             }
             else
             {

@@ -68,9 +68,6 @@ public class AboutActivity extends AppCompatActivity
         TextView about_text = (TextView)findViewById(R.id.about_text);
         about_text.setText(Strings.GetString(LanguageStringID.ANDROID_ABOUT_TEXT));
 
-        TextView Project64_authors = (TextView)findViewById(R.id.Project64_authors);
-        Project64_authors.setText(Strings.GetString(LanguageStringID.ANDROID_ABOUT_PJ64_AUTHORS));
-
         webView.loadData(Utility.readAsset("licence.htm", ""), "text/html", "UTF8");
     }
 
@@ -91,7 +88,7 @@ public class AboutActivity extends AppCompatActivity
         m_title_clicks += 1;
         if (m_title_clicks == 6)
         {
-            NativeExports.SettingsSaveBool(SettingsID.UserInterface_BasicMode.getValue(), false);
+            NativeExports.SettingsSaveBool(SettingsID.UserInterface_BasicMode.toString(), false);
             Toast.makeText(this, "Advanced Mode Enabled", Toast.LENGTH_SHORT).show();
         }
     }

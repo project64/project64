@@ -3,7 +3,6 @@ package emu.project64.input.provider;
 import java.util.ArrayList;
 
 import emu.project64.AndroidDevice;
-import tv.ouya.console.api.OuyaController;
 import android.annotation.TargetApi;
 import android.view.InputDevice;
 import android.view.KeyEvent;
@@ -214,7 +213,7 @@ public abstract class AbstractProvider
     {
         if( inputCode > 0 )
         {
-            if( AndroidDevice.IS_HONEYCOMB_MR1 )
+            /*if( AndroidDevice.IS_HONEYCOMB_MR1 )
             {
                 String name = null;
                 if( inputCode != -1 && AndroidDevice.IS_OUYA_HARDWARE )
@@ -255,14 +254,14 @@ public abstract class AbstractProvider
                 else
                     return name + " (" + KeyEvent.keyCodeToString( inputCode ) + ")";
             }
-            else
+            else*/
                 return "KEYCODE_" + inputCode;
         }
         else if( inputCode < 0 )
         {
             int axis = inputToAxisCode( inputCode );
             String direction = inputToAxisDirection( inputCode ) ? " (+)" : " (-)";
-            if( AndroidDevice.IS_HONEYCOMB_MR1 )
+            /*if( AndroidDevice.IS_HONEYCOMB_MR1 )
             {
                 String name = null;
                 if( axis != -1 && AndroidDevice.IS_OUYA_HARDWARE )
@@ -285,7 +284,7 @@ public abstract class AbstractProvider
                 else
                     return name + " (" + MotionEvent.axisToString( axis ) + ")" + direction;
             }
-            else
+            else*/
                 return "AXIS_" + axis + direction;
         }
         else

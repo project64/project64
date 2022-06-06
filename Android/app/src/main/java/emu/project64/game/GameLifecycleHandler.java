@@ -72,7 +72,6 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
     private Controller mMogaController;
 
     // Internal flags
-    private final boolean mIsXperiaPlay;
     private boolean mStarted = false;
     private boolean mStopped = false;
 
@@ -81,14 +80,13 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
     private boolean mIsResumed = false; // true if the activity is resumed
     private boolean mIsSurface = false; // true if the surface is available
 
-    private float mtouchscreenScale = ((float)NativeExports.UISettingsLoadDword(UISettingID.TouchScreen_ButtonScale.getValue())) / 100.0f;
-    private String mlayout = NativeExports.UISettingsLoadString(UISettingID.TouchScreen_Layout.getValue());
+    private float mtouchscreenScale = ((float)NativeExports.SettingsLoadDword(UISettingID.TouchScreenButtonScale.toString())) / 100.0f;
+    private String mlayout = NativeExports.SettingsLoadString(UISettingID.TouchScreenLayout.toString());
 
     public GameLifecycleHandler(Activity activity)
     {
         mActivity = activity;
         mControllers = new ArrayList<AbstractController>();
-        mIsXperiaPlay = !(activity instanceof GameActivity);
         mMogaController = Controller.getInstance(mActivity);
     }
 
@@ -97,7 +95,7 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
     {
         if (LOG_GAMELIFECYCLEHANDLER)
         {
-            Log.i("GameLifecycleHandler", "onCreateBegin");
+            Log.i("GameLifecycleHandler", "onCreateBegin - Start");
         }
         // Initialize MOGA controller API
         // TODO: Remove hack after MOGA SDK is fixed
@@ -117,7 +115,11 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
         window.setFlags(LayoutParams.FLAG_KEEP_SCREEN_ON, LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         // Set the screen orientation
-        mActivity.setRequestedOrientation(NativeExports.UISettingsLoadDword(UISettingID.Screen_Orientation.getValue()));
+        mActivity.setRequestedOrientation(NativeExports.SettingsLoadDword(UISettingID.ScreenOrientation.toString()));
+        if (LOG_GAMELIFECYCLEHANDLER)
+        {
+            Log.i("GameLifecycleHandler", "onCreateBegin - end");
+        }
     }
 
     @TargetApi(11)
@@ -125,13 +127,7 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
     {
         if (LOG_GAMELIFECYCLEHANDLER)
         {
-            Log.i("GameLifecycleHandler", "onCreateEnd");
-        }
-
-        // Take control of the GameSurface if necessary
-        if (mIsXperiaPlay)
-        {
-            mActivity.getWindow().takeSurface(null);
+            Log.i("GameLifecycleHandler", "onCreateEnd start");
         }
 
         // Lay out content and get the views
@@ -139,8 +135,13 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
         mSurface = (GameSurface) mActivity.findViewById(R.id.gameSurface);
         mOverlay = (GameOverlay) mActivity.findViewById(R.id.gameOverlay);
 
+        if (NativeVideo.getResolutionCount() == 0)
+        {
+            NativeVideo.UpdateScreenRes(AndroidDevice.nativeWidth, AndroidDevice.nativeHeight);
+        }
+
         float widthRatio = (float)AndroidDevice.nativeWidth/(float)AndroidDevice.nativeHeight;
-        int ScreenRes = NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Resolution.getValue());
+        int ScreenRes = NativeExports.SettingsLoadDword(VideoSettingID.Set_Resolution.toString());
         int videoRenderWidth = Math.round(NativeVideo.GetScreenResHeight(ScreenRes) * widthRatio);
         int videoRenderHeight = Math.round(NativeVideo.GetScreenResHeight(ScreenRes));
 
@@ -156,24 +157,17 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
         mSurface.getHolder().addCallback(this);
         mSurface.createGLContext((ActivityManager) mActivity.getSystemService(Context.ACTIVITY_SERVICE));
 
-        // Configure the action bar introduced in higher Android versions
-        if (AndroidDevice.IS_ACTION_BAR_AVAILABLE)
-        {
-            mActivity.getActionBar().hide();
-            ColorDrawable color = new ColorDrawable(Color.parseColor("#303030"));
-            color.setAlpha(50 /* mGlobalPrefs.displayActionBarTransparency */);
-            mActivity.getActionBar().setBackgroundDrawable(color);
-        }
-
-        CreateTouchScreenControls();
-
-        // Initialize user interface devices
-        View inputSource = mIsXperiaPlay ? new NativeXperiaTouchpad(mActivity) : mOverlay;
-        initControllers(inputSource);
+        //CreateTouchScreenControls();
+        //View inputSource = mOverlay;
+        //initControllers(inputSource);
 
         // Override the peripheral controllers' key provider, to add some extra
         // functionality
-        inputSource.setOnKeyListener(this);
+        //inputSource.setOnKeyListener(this);
+        if (LOG_GAMELIFECYCLEHANDLER)
+        {
+            Log.i("GameLifecycleHandler", "onCreateEnd done");
+        }
     }
 
     public void onStart()
@@ -237,7 +231,7 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
         {
             Log.i("GameLifecycleHandler", "OnAutoSave");
         }
-        if (NativeExports.SettingsLoadBool(SettingsID.GameRunning_CPU_Running.getValue()) == true)
+        /*if (NativeExports.SettingsLoadBool(SettingsID.GameRunning_CPU_Running.getValue()) == true)
         {
             Boolean pause = false;
             int PauseType = 0;
@@ -286,12 +280,12 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
         if (LOG_GAMELIFECYCLEHANDLER)
         {
             Log.i("GameLifecycleHandler", "OnAutoSave Done");
-        }
+        }*/
     }
 
     public void onPause()
     {
-        if (LOG_GAMELIFECYCLEHANDLER)
+        /*if (LOG_GAMELIFECYCLEHANDLER)
         {
             Log.i("GameLifecycleHandler", "onPause");
         }
@@ -304,7 +298,7 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
         if (LOG_GAMELIFECYCLEHANDLER)
         {
             Log.i("GameLifecycleHandler", "onPause - done");
-        }
+        }*/
     }
 
     @Override
@@ -336,7 +330,7 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
 
     public void onSettingDone()
     {
-        mtouchscreenScale = ((float) NativeExports.UISettingsLoadDword(UISettingID.TouchScreen_ButtonScale.getValue())) / 100.0f;
+        /*mtouchscreenScale = ((float) NativeExports.UISettingsLoadDword(UISettingID.TouchScreen_ButtonScale.getValue())) / 100.0f;
         mlayout = NativeExports.UISettingsLoadString(UISettingID.TouchScreen_Layout.getValue());
         mControllers = new ArrayList<AbstractController>();
         CreateTouchScreenControls();
@@ -344,12 +338,12 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
         // Initialize user interface devices
         View inputSource = mIsXperiaPlay ? new NativeXperiaTouchpad(mActivity) : mOverlay;
         initControllers(inputSource);
-
+*/
     }
 
     private void CreateTouchScreenControls()
     {
-        boolean isTouchscreenAnimated = false; // mGlobalPrefs.isTouchscreenAnimated
+        /*boolean isTouchscreenAnimated = false; // mGlobalPrefs.isTouchscreenAnimated
         boolean isTouchscreenHidden = false; // !isTouchscreenEnabled ||
                                                 // globalPrefs.touchscreenTransparency
                                                 // == 0;
@@ -371,7 +365,7 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
         // controls
         mTouchscreenMap = new VisibleTouchMap(mActivity.getResources());
         mTouchscreenMap.load(touchscreenSkin, touchscreenProfile, isTouchscreenAnimated, mtouchscreenScale, touchscreenTransparency);
-        mOverlay.initialize(mTouchscreenMap, !isTouchscreenHidden, isTouchscreenAnimated);
+        mOverlay.initialize(mTouchscreenMap, !isTouchscreenHidden, isTouchscreenAnimated);*/
     }
 
     @Override
@@ -391,7 +385,7 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
     private void initControllers(View inputSource)
     {
         // By default, send Player 1 rumbles through phone vibrator
-        Vibrator vibrator = (Vibrator) mActivity.getSystemService(Context.VIBRATOR_SERVICE);
+        /*Vibrator vibrator = (Vibrator) mActivity.getSystemService(Context.VIBRATOR_SERVICE);
         int touchscreenAutoHold = 0;
         boolean isTouchscreenFeedbackEnabled = false;
         Set<Integer> autoHoldableButtons = null;
@@ -417,7 +411,7 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
             int Deadzone = NativeExports.UISettingsLoadDword(UISettingID.Controller_Deadzone.getValue());
             int Sensitivity = NativeExports.UISettingsLoadDword(UISettingID.Controller_Sensitivity.getValue());
             mControllers.add(new PeripheralController(1, map, Deadzone, Sensitivity, mKeyProvider, axisProvider, mogaProvider));
-        }
+        }*/
     }
 
     private void tryRunning()

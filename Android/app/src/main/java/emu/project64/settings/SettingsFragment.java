@@ -9,7 +9,7 @@ public class SettingsFragment extends BaseSettingsFragment
     @Override
     protected int getXml() 
     {
-        if (NativeExports.SettingsLoadBool(SettingsID.UserInterface_BasicMode.getValue()))
+        if (NativeExports.SettingsLoadBool(SettingsID.UserInterface_BasicMode.toString()))
         {
             return R.xml.settings_basic;
         }

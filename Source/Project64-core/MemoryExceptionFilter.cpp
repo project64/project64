@@ -516,7 +516,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         return true;
     }
 
-    if (OpCode32->uint16.opcode == ArmLDRH_W)
+    /*if (OpCode32->uint16.opcode == ArmLDRH_W)
     {
         // f833 c001 ldrh.w	ip, [r3, r1]
         g_MMU->LH_NonMemory((MemAddress | 0x80000000) ^ 2, ArmRegisters[OpCode32->uint16.rt]);
@@ -539,7 +539,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         !g_MMU->LH_NonMemory((MemAddress | 0x80000000) ^ 2, ArmRegisters[OpCode32->reg_cond.rt], false);
         context.arm_pc = context.arm_pc + 4;
         return true;
-    }
+    }*/
 
     if (OpCode32->reg_cond_imm5.opcode == 3 && OpCode32->reg_cond_imm5.opcode1 == 0 && OpCode32->reg_cond_imm5.opcode2 == 1 && OpCode32->reg_cond_imm5.opcode3 == 0)
     {

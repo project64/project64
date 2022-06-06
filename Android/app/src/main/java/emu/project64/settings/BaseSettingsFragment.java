@@ -3,7 +3,6 @@ package emu.project64.settings;
 import emu.project64.R;
 import emu.project64.SplashActivity;
 import emu.project64.jni.NativeExports;
-import emu.project64.profile.ControllerProfileActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -48,25 +47,6 @@ public abstract class BaseSettingsFragment extends PreferenceFragmentCompat
     @Override
     public void onDisplayPreferenceDialog(Preference preference)
     {
-        DialogFragment dialogFragment = null;
-        if (preference instanceof SeekBarPreference)
-        {
-            dialogFragment = SeekBarPreferencePreferenceDialogFragmentCompat.newInstance(preference.getKey());
-        }
-        else if (preference instanceof TwoLinesListPreference)
-        {
-            dialogFragment = TwoLinesListPreferenceDialogFragmentCompat.newInstance(preference.getKey());
-        }
-        else
-        {
-            super.onDisplayPreferenceDialog(preference);
-        }
-
-        if (dialogFragment != null)
-        {
-            dialogFragment.setTargetFragment(this, 0);
-            dialogFragment.show(getFragmentManager(), DIALOG_FRAGMENT_TAG);
-        }
     }
 
     @Override
@@ -84,9 +64,6 @@ public abstract class BaseSettingsFragment extends PreferenceFragmentCompat
             }
             else if (preference.getKey().equals("settings_gamepad_screen"))
             {
-                final AppCompatActivity activity = (AppCompatActivity)getActivity();
-                Intent intent = new Intent( activity, ControllerProfileActivity.class );
-                activity.startActivity( intent );
             }
             else if (preference.getKey().equals("settings_video"))
             {
@@ -125,7 +102,6 @@ public abstract class BaseSettingsFragment extends PreferenceFragmentCompat
                     {
                         if( which == DialogInterface.BUTTON_POSITIVE )
                         {
-                            NativeExports.ResetApplicationSettings();
                             SplashActivity.Reset();
                             Intent SplashIntent = new Intent(getActivity(), SplashActivity.class);
                             SplashIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -133,14 +109,7 @@ public abstract class BaseSettingsFragment extends PreferenceFragmentCompat
                         }
                     }
                 };
-
-                String title = getString( R.string.settings_reset_title );
-                String message = getString( R.string.settings_reset_message );
-                AlertDialog.Builder builder = new AlertDialog.Builder( getActivity() ).setTitle( title ).setMessage( message ).setCancelable( false )
-                        .setNegativeButton( getString( android.R.string.cancel ), internalListener )
-                        .setPositiveButton( getString( android.R.string.ok ), internalListener );
-                builder.create().show();
-        	}
+            }
             else
             {
                 return super.onPreferenceTreeClick(preference);

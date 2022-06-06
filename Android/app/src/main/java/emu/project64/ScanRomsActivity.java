@@ -14,10 +14,10 @@ import android.content.Intent;
 import android.content.Context;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -28,6 +28,7 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class ScanRomsActivity extends AppCompatActivity implements OnItemClickListener
 {
@@ -49,9 +50,9 @@ public class ScanRomsActivity extends AppCompatActivity implements OnItemClickLi
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.scan_roms_activity);
-        if (NativeExports.SettingsLoadBool(SettingsID.RomList_GameDirUseSelected.getValue()))
+        if (NativeExports.SettingsLoadBool(SettingsID.RomList_GameDirUseSelected.toString()))
         {
-            File CurrentPath = new File(NativeExports.SettingsLoadString(SettingsID.RomList_GameDir.getValue()));
+            File CurrentPath = new File(NativeExports.SettingsLoadString(SettingsID.RomList_GameDir.toString()));
             if (CurrentPath.exists() && CurrentPath.isDirectory())
             {
                 mCurrentPath = CurrentPath;
@@ -62,7 +63,7 @@ public class ScanRomsActivity extends AppCompatActivity implements OnItemClickLi
 
         // Set check box state
         mScanRecursively = (CheckBox) findViewById( R.id.ScanRecursively );
-        mScanRecursively.setChecked( NativeExports.SettingsLoadBool(SettingsID.RomList_GameDirRecursive.getValue()) );
+        mScanRecursively.setChecked( NativeExports.SettingsLoadBool(SettingsID.RomList_GameDirRecursive.toString()) );
         mScanRecursively.setText(Strings.GetString(LanguageStringID.ANDROID_INCLUDE_SUBDIRECTORIES));
 
         mCancelButton = (Button) findViewById( R.id.buttonCancel );

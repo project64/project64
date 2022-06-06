@@ -35,8 +35,8 @@ public class GameSettingsActivity extends AppCompatActivity implements SharedPre
         
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPrefs.edit().clear()
-        .putString("Game_CpuType",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.Game_CpuType.getValue())))
-        .putBoolean("Game_BlockLinking",NativeExports.SettingsLoadBool(SettingsID.Game_BlockLinking.getValue()))
+        .putString("Game_CpuType",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.Game_CpuType.toString())))
+        .putBoolean("Game_BlockLinking",NativeExports.SettingsLoadBool(SettingsID.Game_BlockLinking.toString()))
         .apply();  
 
         sharedPrefs.registerOnSharedPreferenceChangeListener(this);
@@ -71,7 +71,7 @@ public class GameSettingsActivity extends AppCompatActivity implements SharedPre
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
     {
-        if (key.equals("Game_CpuType")) { NativeExports.SettingsSaveDword(SettingsID.Game_CpuType.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
-        else if (key.equals("Game_BlockLinking")) { NativeExports.SettingsSaveBool(SettingsID.Game_BlockLinking.getValue(), sharedPreferences.getBoolean(key,false)); }
+        if (key.equals("Game_CpuType")) { NativeExports.SettingsSaveDword(SettingsID.Game_CpuType.toString(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Game_BlockLinking")) { NativeExports.SettingsSaveBool(SettingsID.Game_BlockLinking.toString(), sharedPreferences.getBoolean(key,false)); }
     }
 }
