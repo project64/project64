@@ -3171,6 +3171,31 @@ void CX86Ops::TestX86RegToX86Reg(x86Reg Destination, x86Reg Source)
     AddCode16(x86Command);
 }
 
+void CX86Ops::TestX86ByteRegToX86Reg(x86Reg Destination, x86Reg Source)
+{
+    uint16_t x86Command = 0;
+    CPU_Message("      test %s, %s", x86_ByteName(Destination), x86_ByteName(Source));
+    switch (Source)
+    {
+    case x86_AL: x86Command = 0x0084; break;
+    case x86_BL: x86Command = 0x0384; break;
+    case x86_CL: x86Command = 0x0184; break;
+    case x86_DL: x86Command = 0x0284; break;
+    default:
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    switch (Destination)
+    {
+    case x86_AL: x86Command += 0xC000; break;
+    case x86_BL: x86Command += 0xD800; break;
+    case x86_CL: x86Command += 0xC800; break;
+    case x86_DL: x86Command += 0xD000; break;
+    default:
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    AddCode16(x86Command);
+}
+
 void CX86Ops::XorConstToX86Reg(x86Reg reg, uint32_t Const)
 {
     CPU_Message("      xor %s, %Xh", x86_Name(reg), Const);

@@ -212,6 +212,7 @@ protected:
     static void TestConstToX86Reg(uint32_t Const, x86Reg reg);
     static void TestVariable(uint32_t Const, void * Variable, const char * VariableName);
     static void TestX86RegToX86Reg(x86Reg Destination, x86Reg Source);
+    static void TestX86ByteRegToX86Reg(x86Reg Destination, x86Reg Source);
     static void XorConstToX86Reg(x86Reg Reg, uint32_t Const);
     static void XorX86RegToX86Reg(x86Reg Source, x86Reg Destination);
     static void XorVariableToX86reg(void * Variable, const char * VariableName, x86Reg reg);

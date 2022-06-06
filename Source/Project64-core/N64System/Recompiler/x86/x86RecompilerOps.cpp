@@ -9625,11 +9625,40 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
     CompConstToX86reg(TempReg, (uint32_t)-1);
     JneLabel8(stdstr_f("MemoryReadMap_%X_Found", m_CompilePC).c_str(), 0);
     uint8_t * JumpFound = (uint8_t *)(*g_RecompPos - 1);
-    MoveX86RegToX86Reg(AddressReg, TempReg);
-    ShiftRightUnsignImmed(TempReg, 12);
-    MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg, TempReg, 4);
-    CompileReadTLBMiss(AddressReg, TempReg);
-    AddConstToX86Reg(TempReg, (uint32_t)m_MMU.Rdram());
+    uint32_t OpsExecuted = m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp();
+    if (OpsExecuted != 0)
+    {
+        SubConstFromVariable(OpsExecuted, g_NextTimer, "g_NextTimer");
+    }
+    MoveConstToVariable(m_CompilePC, &g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+    MoveConstToVariable(m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL, &g_System->m_PipelineStage, "g_System->m_PipelineStage");
+    if (ValueSize == 32)
+    {
+        m_RegWorkingSet.BeforeCallDirect();
+        PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
+        Push(AddressReg);
+#ifdef _MSC_VER
+        MoveConstToX86reg((uint32_t)(&m_MMU), x86_ECX);
+        Call_Direct(AddressOf(&CMipsMemoryVM::LW_NonMemory), "CMipsMemoryVM::LW_NonMemory");
+#else
+        PushImm32((uint32_t)(&m_MMU));
+        Call_Direct(AddressOf(&CMipsMemoryVM::LW_NonMemory), "CMipsMemoryVM::LW_NonMemory");
+        AddConstToX86Reg(x86_ESP, 12);
+#endif
+        TestX86ByteRegToX86Reg(x86_AL, x86_AL);
+        m_RegWorkingSet.AfterCallDirect();
+        CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, JeLabel32);
+        MoveConstToX86reg((uint32_t)&m_TempValue32, TempReg);
+        SubX86RegToX86Reg(TempReg, AddressReg);
+    }
+    else
+    {
+        X86BreakPoint(__FILE__,__LINE__);
+    }
+    if (OpsExecuted != 0)
+    {
+        AddConstToVariable(OpsExecuted, g_NextTimer, "g_NextTimer");
+    }
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
@@ -9702,6 +9731,8 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
 
 void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86Ops::x86Reg ValueReg, CX86Ops::x86Reg ValueRegHi, uint64_t Value, uint8_t ValueSize)
 {
+    uint8_t * MemoryWriteDone = nullptr;
+
     if (AddressReg == x86_Unknown)
     {
         if (ValueSize == 8)
@@ -9736,11 +9767,145 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
     CompConstToX86reg(TempReg, (uint32_t)-1);
     JneLabel8(stdstr_f("MemoryWriteMap_%X_Found", m_CompilePC).c_str(), 0);
     uint8_t * JumpFound = (uint8_t *)(*g_RecompPos - 1);
-    MoveX86RegToX86Reg(AddressReg, TempReg);
-    ShiftRightUnsignImmed(TempReg, 12);
-    MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg, TempReg, 4);
-    CompileWriteTLBMiss(AddressReg, TempReg);
-    AddConstToX86Reg(TempReg, (uint32_t)m_MMU.Rdram());
+
+    MoveConstToVariable(m_CompilePC, &g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+    MoveConstToVariable(m_PipelineStage, &g_System->m_PipelineStage, "g_System->m_PipelineStage");
+    uint32_t OpsExecuted = m_RegWorkingSet.GetBlockCycleCount();
+    if (OpsExecuted != 0)
+    {
+        SubConstFromVariable(OpsExecuted, g_NextTimer, "g_NextTimer");
+    }
+    if (ValueSize == 8)
+    {
+        m_RegWorkingSet.BeforeCallDirect();
+        if (ValueReg == x86_Unknown)
+        {
+            PushImm32((uint32_t)(Value & 0xFF));
+        }
+        else
+        {
+            Push(ValueReg);
+        }
+        Push(AddressReg);
+#ifdef _MSC_VER
+        MoveConstToX86reg((uint32_t)(&m_MMU), x86_ECX);
+        Call_Direct(AddressOf(&CMipsMemoryVM::SB_NonMemory), "CMipsMemoryVM::SB_NonMemory");
+#else
+        PushImm32((uint32_t)(&m_MMU));
+        Call_Direct(AddressOf(&CMipsMemoryVM::SB_NonMemory), "CMipsMemoryVM::SB_NonMemory");
+        AddConstToX86Reg(x86_ESP, 12);
+#endif
+        if (OpsExecuted != 0)
+        {
+            AddConstToVariable(OpsExecuted, g_NextTimer, "g_NextTimer");
+        }
+        TestX86ByteRegToX86Reg(x86_AL, x86_AL);
+        m_RegWorkingSet.AfterCallDirect();
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, JeLabel32);
+        JmpLabel8(stdstr_f("MemoryWrite_%X_Done:", m_CompilePC).c_str(), 0);
+        MemoryWriteDone = (uint8_t *)(*g_RecompPos - 1);
+    }
+    else if (ValueSize == 16)
+    {
+        m_RegWorkingSet.BeforeCallDirect();
+        if (ValueReg == x86_Unknown)
+        {
+            PushImm32((uint32_t)(Value & 0xFFFF));
+        }
+        else
+        {
+            Push(ValueReg);
+        }
+        Push(AddressReg);
+#ifdef _MSC_VER
+        MoveConstToX86reg((uint32_t)(&m_MMU), x86_ECX);
+        Call_Direct(AddressOf(&CMipsMemoryVM::SH_NonMemory), "CMipsMemoryVM::SH_NonMemory");
+#else
+        PushImm32((uint32_t)(&m_MMU));
+        Call_Direct(AddressOf(&CMipsMemoryVM::SH_NonMemory), "CMipsMemoryVM::SH_NonMemory");
+        AddConstToX86Reg(x86_ESP, 12);
+#endif
+        if (OpsExecuted != 0)
+        {
+            AddConstToVariable(OpsExecuted, g_NextTimer, "g_NextTimer");
+        }
+        TestX86ByteRegToX86Reg(x86_AL, x86_AL);
+        m_RegWorkingSet.AfterCallDirect();
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, JeLabel32);
+        JmpLabel8(stdstr_f("MemoryWrite_%X_Done:", m_CompilePC).c_str(), 0);
+        MemoryWriteDone = (uint8_t *)(*g_RecompPos - 1);
+    }
+    else if (ValueSize == 32)
+    {
+        m_RegWorkingSet.BeforeCallDirect();
+        if (ValueReg == x86_Unknown)
+        {
+            PushImm32((uint32_t)(Value & 0xFFFFFFFF));
+        }
+        else
+        {
+            Push(ValueReg);
+        }
+        Push(AddressReg);
+#ifdef _MSC_VER
+        MoveConstToX86reg((uint32_t)(&m_MMU), x86_ECX);
+        Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+#else
+        PushImm32((uint32_t)(&m_MMU));
+        Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+        AddConstToX86Reg(x86_ESP, 12);
+#endif
+        if (OpsExecuted != 0)
+        {
+            AddConstToVariable(OpsExecuted, g_NextTimer, "g_NextTimer");
+        }
+        TestX86ByteRegToX86Reg(x86_AL, x86_AL);
+        m_RegWorkingSet.AfterCallDirect();
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, JeLabel32);
+        JmpLabel8(stdstr_f("MemoryWrite_%X_Done:", m_CompilePC).c_str(), 0);
+        MemoryWriteDone = (uint8_t *)(*g_RecompPos - 1);
+    }
+    else if (ValueSize == 64)
+    {
+        m_RegWorkingSet.BeforeCallDirect();
+        if (ValueReg == x86_Unknown)
+        {
+            PushImm32((uint32_t)(Value & 0xFFFFFFFF));
+            PushImm32((uint32_t)((Value >> 32) & 0xFFFFFFFF));
+        }
+        else
+        {
+            Push(ValueReg);
+            Push(ValueRegHi);
+        }
+        Push(AddressReg);
+#ifdef _MSC_VER
+        MoveConstToX86reg((uint32_t)(&m_MMU), x86_ECX);
+        Call_Direct(AddressOf(&CMipsMemoryVM::SD_NonMemory), "CMipsMemoryVM::SD_NonMemory");
+#else
+        PushImm32((uint32_t)(&m_MMU));
+        Call_Direct(AddressOf(&CMipsMemoryVM::SD_NonMemory), "CMipsMemoryVM::SD_NonMemory");
+        AddConstToX86Reg(x86_ESP, 12);
+#endif
+        if (OpsExecuted != 0)
+        {
+            AddConstToVariable(OpsExecuted, g_NextTimer, "g_NextTimer");
+        }
+        TestX86ByteRegToX86Reg(x86_AL, x86_AL);
+        m_RegWorkingSet.AfterCallDirect();
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, JeLabel32);
+        JmpLabel8(stdstr_f("MemoryWrite_%X_Done:", m_CompilePC).c_str(), 0);
+        MemoryWriteDone = (uint8_t *)(*g_RecompPos - 1);
+    }
+    else
+    {
+        X86BreakPoint(__FILE__, __LINE__);
+        MoveX86RegToX86Reg(AddressReg, TempReg);
+        ShiftRightUnsignImmed(TempReg, 12);
+        MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg, TempReg, 4);
+        CompileWriteTLBMiss(AddressReg, TempReg);
+        AddConstToX86Reg(TempReg, (uint32_t)m_MMU.Rdram());
+    }
     CPU_Message("");
     CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
@@ -9802,6 +9967,13 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
     else
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+
+    if (MemoryWriteDone != nullptr)
+    {
+        CPU_Message("");
+        CPU_Message(stdstr_f("      MemoryWrite_%X_Done:", m_CompilePC).c_str());
+        SetJump8(MemoryWriteDone, *g_RecompPos);
     }
 }
 
