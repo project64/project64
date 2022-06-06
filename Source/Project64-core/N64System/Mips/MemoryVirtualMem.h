@@ -100,6 +100,8 @@ public:
     static void segv_handler(int signal, siginfo_t *siginfo, void *sigcontext);
 #endif
 
+    void ClearMemoryWriteMap(uint32_t VAddr, uint32_t Length);
+
     // Protect the memory from being written to
     void ProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr);
     void UnProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr);

@@ -58,7 +58,7 @@ void CGameSettings::RefreshGameSettings()
 {
     WriteTrace(TraceN64System, TraceDebug, "start");
     m_UseHleGfx = g_Settings->LoadBool(Game_UseHleGfx);
-    m_bSMM_StoreInstruc = false /*g_Settings->LoadBool(Game_SMM_StoreInstruc)*/;
+    m_bSMM_StoreInstruc = g_Settings->LoadBool(Game_SMM_StoreInstruc);
     m_bSMM_Protect = g_Settings->LoadBool(Game_SMM_Protect);
     m_bSMM_ValidFunc = g_Settings->LoadBool(Game_SMM_ValidFunc);
     m_bSMM_PIDMA = g_Settings->LoadBool(Game_SMM_PIDMA);

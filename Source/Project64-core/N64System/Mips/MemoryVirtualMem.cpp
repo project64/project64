@@ -670,9 +670,19 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t VAddr, uint16_t Value)
     case 0x00700000:
         if (PAddr < RdramSize())
         {
-            g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0x1000, CRecompiler::Remove_ProtectedMem);
-            ::ProtectMemory(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, MEM_READWRITE);
-            *(uint16_t *)(m_RDRAM + (PAddr ^ 2)) = Value;
+            if (CGameSettings::bSMM_Protect() || CGameSettings::bSMM_StoreInstruc())
+            {
+                g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0x1000, CRecompiler::Remove_ProtectedMem);
+                if (CGameSettings::bSMM_Protect())
+                {
+                    ::ProtectMemory(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, MEM_READWRITE);
+                }
+                if (CGameSettings::bSMM_StoreInstruc())
+                {
+                    m_TLB_WriteMap[VAddr >> 12] = PAddr - VAddr;
+                }
+                *(uint16_t *)(m_RDRAM + (PAddr ^ 2)) = Value;
+            }
         }
         break;
     default:
@@ -704,9 +714,19 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t VAddr, uint32_t Value)
     case 0x00700000:
         if (PAddr < RdramSize())
         {
-            g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0x1000, CRecompiler::Remove_ProtectedMem);
-            ::ProtectMemory(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, MEM_READWRITE);
-            *(uint32_t *)(m_RDRAM + PAddr) = Value;
+            if (CGameSettings::bSMM_Protect() || CGameSettings::bSMM_StoreInstruc())
+            {
+                g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0x1000, CRecompiler::Remove_ProtectedMem);
+                if (CGameSettings::bSMM_Protect())
+                {
+                    ::ProtectMemory(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, MEM_READWRITE);
+                }
+                if (CGameSettings::bSMM_StoreInstruc())
+                {
+                    m_TLB_WriteMap[VAddr >> 12] = PAddr - VAddr;
+                }
+                *(uint32_t *)(m_RDRAM + PAddr) = Value;
+            }
         }
         break;
     case 0x03F00000: m_RDRAMRegistersHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
@@ -777,6 +797,20 @@ bool CMipsMemoryVM::SD_NonMemory(uint32_t VAddr, uint64_t Value)
     return true;
 }
 
+void CMipsMemoryVM::ClearMemoryWriteMap(uint32_t VAddr, uint32_t Length)
+{
+    uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
+    if (BaseAddress == -1)
+    {
+        return;
+    }
+    uint32_t PAddr = m_TLB_ReadMap[VAddr >> 12] + VAddr;
+    for (uint32_t i = PAddr, n = (PAddr + Length) + 0x1000; i < n; i += 0x1000)
+    {
+        m_MemoryWriteMap[(i + 0x80000000) >> 12] = (size_t)-1;
+        m_MemoryWriteMap[(i + 0xA0000000) >> 12] = (size_t)-1;
+    }
+}
 
 void CMipsMemoryVM::ProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr)
 {

@@ -9846,7 +9846,13 @@ void CX86RecompilerOps::SB_Const(uint8_t Value, uint32_t VAddr)
     case 0x00500000:
     case 0x00600000:
     case 0x00700000:
-        if (PAddr < g_MMU->RdramSize())
+        if (CGameSettings::bSMM_StoreInstruc())
+        {
+            x86Reg AddressReg = Map_TempReg(x86_Any, -1, false);
+            MoveConstToX86reg(VAddr, AddressReg);
+            CompileStoreMemoryValue(AddressReg, x86_Unknown, x86_Unknown, Value, 8);
+        }
+        else if (PAddr < g_MMU->RdramSize())
         {
             MoveConstByteToVariable(Value, (PAddr ^ 3) + g_MMU->Rdram(), stdstr_f("RDRAM + (%X ^ 3)", PAddr).c_str());
         }
@@ -9891,7 +9897,13 @@ void CX86RecompilerOps::SB_Register(x86Reg Reg, uint32_t VAddr)
     case 0x00500000:
     case 0x00600000:
     case 0x00700000:
-        if (PAddr < g_MMU->RdramSize())
+        if (CGameSettings::bSMM_StoreInstruc())
+        {
+            x86Reg AddressReg = Map_TempReg(x86_Any, -1, false);
+            MoveConstToX86reg(VAddr, AddressReg);
+            CompileStoreMemoryValue(AddressReg, Reg, x86_Unknown, 0, 8);
+        }
+        else if (PAddr < g_MMU->RdramSize())
         {
             MoveX86regByteToVariable(Reg, (PAddr ^ 3) + g_MMU->Rdram(), stdstr_f("RDRAM + (%X ^ 3)", PAddr).c_str());
         }
@@ -9935,7 +9947,13 @@ void CX86RecompilerOps::SH_Const(uint16_t Value, uint32_t VAddr)
     case 0x00500000:
     case 0x00600000:
     case 0x00700000:
-        if (PAddr < g_MMU->RdramSize())
+        if (CGameSettings::bSMM_StoreInstruc())
+        {
+            x86Reg AddressReg = Map_TempReg(x86_Any, -1, false);
+            MoveConstToX86reg(VAddr, AddressReg);
+            CompileStoreMemoryValue(AddressReg, x86_Unknown, x86_Unknown, Value, 16);
+        }
+        else if (PAddr < g_MMU->RdramSize())
         {
             MoveConstHalfToVariable(Value, (PAddr ^ 2) + g_MMU->Rdram(), stdstr_f("RDRAM + (%X ^ 2)", PAddr).c_str());
         }
@@ -9973,7 +9991,13 @@ void CX86RecompilerOps::SH_Register(x86Reg Reg, uint32_t VAddr)
             case 0x00500000:
             case 0x00600000:
             case 0x00700000:
-                if (PAddr < g_MMU->RdramSize())
+                if (CGameSettings::bSMM_StoreInstruc())
+                {
+                    x86Reg AddressReg = Map_TempReg(x86_Any, -1, false);
+                    MoveConstToX86reg(VAddr, AddressReg);
+                    CompileStoreMemoryValue(AddressReg, Reg, x86_Unknown, 0, 16);
+                }
+                else if (PAddr < g_MMU->RdramSize())
                 {
                     MoveX86regHalfToVariable(Reg, (PAddr ^ 2) + g_MMU->Rdram(), stdstr_f("RDRAM + (%X ^ 2)", PAddr).c_str());
                 }
@@ -10029,7 +10053,13 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
     case 0x00500000:
     case 0x00600000:
     case 0x00700000:
-        if (PAddr < g_MMU->RdramSize())
+        if (CGameSettings::bSMM_StoreInstruc())
+        {
+            x86Reg AddressReg = Map_TempReg(x86_Any, -1, false);
+            MoveConstToX86reg(VAddr, AddressReg);
+            CompileStoreMemoryValue(AddressReg, x86_Unknown, x86_Unknown, Value, 32);
+        }
+        else if (PAddr < g_MMU->RdramSize())
         {
             MoveConstToVariable(Value, PAddr + g_MMU->Rdram(), stdstr_f("RDRAM + %X", PAddr).c_str());
         }
@@ -10601,7 +10631,13 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
     case 0x00500000:
     case 0x00600000:
     case 0x00700000:
-        if (PAddr < g_MMU->RdramSize())
+        if (CGameSettings::bSMM_StoreInstruc())
+        {
+            x86Reg AddressReg = Map_TempReg(x86_Any, -1, false);
+            MoveConstToX86reg(VAddr, AddressReg);
+            CompileStoreMemoryValue(AddressReg, Reg, x86_Unknown, 0, 32);
+        }
+        else if (PAddr < g_MMU->RdramSize())
         {
             sprintf(VarName, "RDRAM + %X", PAddr);
             MoveX86regToVariable(Reg, PAddr + g_MMU->Rdram(), VarName);
@@ -10643,7 +10679,13 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             AndConstToVariable(0xFFC, &g_Reg->SP_PC_REG, "SP_PC_REG");
             break;
         default:
-            if (PAddr < 0x04001000)
+            if (CGameSettings::bSMM_StoreInstruc())
+            {
+                x86Reg AddressReg = Map_TempReg(x86_Any, -1, false);
+                MoveConstToX86reg(VAddr, AddressReg);
+                CompileStoreMemoryValue(AddressReg, Reg, x86_Unknown, 0, 32);
+            }
+            else if (PAddr < 0x04001000)
             {
                 MoveX86regToVariable(Reg, g_MMU->Dmem() + (PAddr - 0x04000000), stdstr_f("DMEM + 0x%X", (PAddr - 0x04000000)).c_str());
             }
