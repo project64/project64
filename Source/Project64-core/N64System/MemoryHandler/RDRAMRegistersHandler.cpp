@@ -86,12 +86,12 @@ bool RDRAMRegistersHandler::Write32(uint32_t Address, uint32_t Value, uint32_t M
         case 0x03F0001C: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to RDRAM_MIN_INTERVAL_REG", m_PC, Value, Mask); break;
         case 0x03F00020: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to RDRAM_ADDR_SELECT_REG", m_PC, Value, Mask); break;
         case 0x03F00024: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to RDRAM_DEVICE_MANUF_REG", m_PC, Value, Mask); break;
-        case 0x03F04004: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to 0x08X - Ignored", m_PC, Value, Mask, Address); break;
-        case 0x03F08004: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to 0x08X - Ignored", m_PC, Value, Mask, Address); break;
-        case 0x03F80004: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to 0x08X - Ignored", m_PC, Value, Mask, Address); break;
-        case 0x03F80008: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to 0x08X - Ignored", m_PC, Value, Mask, Address); break;
-        case 0x03F8000C: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to 0x08X - Ignored", m_PC, Value, Mask, Address); break;
-        case 0x03F80014: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to 0x08X - Ignored", m_PC, Value, Mask, Address); break;
+        case 0x03F04004: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to 0x%08X - Ignored", m_PC, Value, Mask, Address); break;
+        case 0x03F08004: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to 0x%08X - Ignored", m_PC, Value, Mask, Address); break;
+        case 0x03F80004: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to 0x%08X - Ignored", m_PC, Value, Mask, Address); break;
+        case 0x03F80008: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to 0x%08X - Ignored", m_PC, Value, Mask, Address); break;
+        case 0x03F8000C: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to 0x%08X - Ignored", m_PC, Value, Mask, Address); break;
+        case 0x03F80014: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to 0x%08X - Ignored", m_PC, Value, Mask, Address); break;
         default:
             if (HaveDebugger())
             {
