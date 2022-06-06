@@ -245,18 +245,6 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     m_RegWorkingSet.AfterCallDirect();
     }*/
 
-    /*if (m_CompilePC >= 0x801C1AF8 && m_CompilePC <= 0x801C1C00 && m_PipelineStage == PIPELINE_STAGE_NORMAL)
-    {
-    UpdateCounters(m_RegWorkingSet,false,true);
-    MoveConstToVariable(m_CompilePC,&g_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
-    if (g_SyncSystem) {
-    m_RegWorkingSet.BeforeCallDirect();
-    MoveConstToX86reg((uint32_t)g_BaseSystem,x86_ECX);
-    Call_Direct(AddressOf(&CN64System::SyncSystemPC), "CN64System::SyncSystemPC");
-    m_RegWorkingSet.AfterCallDirect();
-    }
-    }*/
-
     /*if ((m_CompilePC == 0x80263900) && m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
     X86BreakPoint(__FILEW__,__LINE__);
@@ -328,14 +316,31 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     m_RegWorkingSet.UnMap_AllFPRs();
     }*/
 
-    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
     m_RegWorkingSet.ResetX86Protection();
 }
 
 void CX86RecompilerOps::PostCompileOpcode(void)
 {
+    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
     if (!g_System->bRegCaching()) { m_RegWorkingSet.WriteBackRegisters(); }
     m_RegWorkingSet.UnMap_AllFPRs();
+
+    /*if (m_CompilePC >= 0x800933B4 && m_CompilePC <= 0x80093414 && (m_PipelineStage == PIPELINE_STAGE_NORMAL || m_PipelineStage == PIPELINE_STAGE_DO_DELAY_SLOT))
+    {
+        MoveConstToVariable(m_CompilePC + 4, &g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+        UpdateSyncCPU(m_RegWorkingSet, m_RegWorkingSet.GetBlockCycleCount());
+        SubConstFromVariable(m_RegWorkingSet.GetBlockCycleCount(), g_NextTimer, "g_NextTimer"); // Updates compare flag
+        m_RegWorkingSet.SetBlockCycleCount(0);
+
+        UpdateCounters(m_RegWorkingSet, false, true);
+        if (g_SyncSystem)
+        {
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
+            Call_Direct(AddressOf(&CN64System::SyncSystemPC), "CN64System::SyncSystemPC");
+            m_RegWorkingSet.AfterCallDirect();
+        }
+    }*/
 }
 
 void CX86RecompilerOps::CompileReadTLBMiss(uint32_t VirtualAddress, x86Reg LookUpReg)
@@ -808,6 +813,7 @@ void CX86RecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
         ResetX86Protection();
 
         m_Section->m_Cont.RegSet = m_RegWorkingSet;
+        m_Section->m_Cont.RegSet.SetBlockCycleCount(m_Section->m_Cont.RegSet.GetBlockCycleCount() + g_System->CountPerOp());
         if ((m_CompilePC & 0xFFC) == 0xFFC)
         {
             if (m_Section->m_Cont.FallThrough)
@@ -844,6 +850,7 @@ void CX86RecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
         if (g_System->bLinkBlocks())
         {
             m_Section->m_Jump.RegSet = m_RegWorkingSet;
+            m_Section->m_Jump.RegSet.SetBlockCycleCount(m_Section->m_Jump.RegSet.GetBlockCycleCount() + g_System->CountPerOp());
             m_Section->GenerateSectionLinkage();
             m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
         }
@@ -864,6 +871,7 @@ void CX86RecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
     {
         ResetX86Protection();
         m_Section->m_Jump.RegSet = m_RegWorkingSet;
+        m_Section->m_Jump.RegSet.SetBlockCycleCount(m_Section->m_Jump.RegSet.GetBlockCycleCount());
         m_Section->GenerateSectionLinkage();
         m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
     }
@@ -3019,10 +3027,6 @@ void CX86RecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
     }
     else
     {
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
-        UpdateCounters(m_RegWorkingSet, false, true);
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-
         PreReadInstruction();
         Map_GPR_32bit(m_Opcode.rt, ResultSigned, m_Opcode.base == m_Opcode.rt ? m_Opcode.rt : -1);
         CompileLoadMemoryValue(x86_Unknown, GetMipsRegMapLo(m_Opcode.rt), x86_Unknown, 32, false);
@@ -3135,9 +3139,7 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
             break;
         case 0x04400000:
             {
-                m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
                 UpdateCounters(m_RegWorkingSet, false, true);
-                m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 
                 m_RegWorkingSet.BeforeCallDirect();
                 PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
@@ -3156,9 +3158,7 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
             break;
         case 0x04500000:
             {
-                m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
                 UpdateCounters(m_RegWorkingSet, false, true, false);
-                m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 
                 m_RegWorkingSet.BeforeCallDirect();
                 PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
@@ -3613,9 +3613,6 @@ void CX86RecompilerOps::SW(bool bCheckLLbit)
         }
 
         PreWriteInstruction();
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
-        UpdateCounters(m_RegWorkingSet, false, true);
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
         uint8_t * JumpLLBit = nullptr;
         if (bCheckLLbit)
         {
@@ -6926,9 +6923,7 @@ void CX86RecompilerOps::COP0_MF()
     switch (m_Opcode.rd)
     {
     case 9: // Count
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         UpdateCounters(m_RegWorkingSet, false, true);
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
         m_RegWorkingSet.BeforeCallDirect();
 #ifdef _MSC_VER
         MoveConstToX86reg((uint32_t)g_SystemTimer, x86_ECX);
@@ -6981,9 +6976,7 @@ void CX86RecompilerOps::COP0_MT()
         }
         break;
     case 11: // Compare
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         UpdateCounters(m_RegWorkingSet, false, true);
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
         m_RegWorkingSet.BeforeCallDirect();
 #ifdef _MSC_VER
         MoveConstToX86reg((uint32_t)g_SystemTimer, x86_ECX);
@@ -7019,9 +7012,7 @@ void CX86RecompilerOps::COP0_MT()
         m_RegWorkingSet.AfterCallDirect();
         break;
     case 9: // Count
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         UpdateCounters(m_RegWorkingSet, false, true);
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
         m_RegWorkingSet.BeforeCallDirect();
 #ifdef _MSC_VER
         MoveConstToX86reg((uint32_t)g_SystemTimer, x86_ECX);
@@ -7093,10 +7084,7 @@ void CX86RecompilerOps::COP0_MT()
     }
         break;
     case 6: // Wired
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         UpdateCounters(m_RegWorkingSet, false, true);
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-
         m_RegWorkingSet.BeforeCallDirect();
 #ifdef _MSC_VER
         MoveConstToX86reg((uint32_t)g_SystemTimer, x86_ECX);
@@ -7185,9 +7173,7 @@ void CX86RecompilerOps::COP0_CO_TLBWI(void)
 
 void CX86RecompilerOps::COP0_CO_TLBWR(void)
 {
-    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
     UpdateCounters(m_RegWorkingSet, false, true);
-    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
     m_RegWorkingSet.BeforeCallDirect();
 #ifdef _MSC_VER
     MoveConstToX86reg((uint32_t)g_SystemTimer, x86_ECX);
@@ -7245,6 +7231,7 @@ void x86_compiler_COP0_CO_ERET()
 
 void CX86RecompilerOps::COP0_CO_ERET(void)
 {
+    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
     m_RegWorkingSet.WriteBackRegisters();
     Call_Direct((void *)x86_compiler_COP0_CO_ERET, "x86_compiler_COP0_CO_ERET");
 
@@ -8216,9 +8203,7 @@ void CX86RecompilerOps::UnknownOpcode()
 void CX86RecompilerOps::ClearCachedInstructionInfo()
 {
     m_RegWorkingSet.WriteBackRegisters();
-    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
     UpdateCounters(m_RegWorkingSet, false, true);
-    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
     MoveConstToVariable(m_CompilePC, &g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER");
     if (g_SyncSystem) {
 #ifdef _WIN32
@@ -8350,6 +8335,7 @@ void CX86RecompilerOps::CompileCop1Test()
 
     TestVariable(STATUS_CU1, &g_Reg->STATUS_REGISTER, "STATUS_REGISTER");
     CRegInfo ExitRegSet = m_RegWorkingSet;
+    ExitRegSet.SetBlockCycleCount(ExitRegSet.GetBlockCycleCount() + g_System->CountPerOp());
     CompileExit(m_CompilePC, m_CompilePC, ExitRegSet, CExitInfo::COP1_Unuseable, false, JeLabel32);
     m_RegWorkingSet.SetFpuBeenUsed(true);
 }
@@ -9275,6 +9261,7 @@ void CX86RecompilerOps::CompileExecuteDelaySlotBP(void)
 
 void CX86RecompilerOps::OverflowDelaySlot(bool TestTimer)
 {
+    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
     m_RegWorkingSet.WriteBackRegisters();
     UpdateCounters(m_RegWorkingSet, false, true);
     MoveConstToVariable(CompilePC() + 4, _PROGRAM_COUNTER, "PROGRAM_COUNTER");
@@ -10122,9 +10109,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
                 break;
             case 0x04040010:
                 {
-                    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
                     UpdateCounters(m_RegWorkingSet, false, true, false);
-                    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 
                     m_RegWorkingSet.BeforeCallDirect();
                     PushImm32(Value);
@@ -10295,9 +10280,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
     case 0x04400000:
         if (GenerateLog() && LogVideoInterface())
         {
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
             UpdateCounters(m_RegWorkingSet, false, true, false);
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 
             m_RegWorkingSet.BeforeCallDirect();
             PushImm32(0xFFFFFFFF);
@@ -10380,9 +10363,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         }
         break;
     case 0x04500000:
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         UpdateCounters(m_RegWorkingSet, false, true, false);
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 
         m_RegWorkingSet.BeforeCallDirect();
         PushImm32(0xFFFFFFFF);
@@ -10417,9 +10398,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x0460000C:
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
             UpdateCounters(m_RegWorkingSet, false, true, false);
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
             MoveConstToVariable(Value, &g_Reg->PI_WR_LEN_REG, "PI_WR_LEN_REG");
             m_RegWorkingSet.BeforeCallDirect();
 #ifdef _MSC_VER
@@ -10482,9 +10461,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         {
         case 0x04800000: MoveConstToVariable(Value, &g_Reg->SI_DRAM_ADDR_REG, "SI_DRAM_ADDR_REG"); break;
         case 0x04800004:
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
             UpdateCounters(m_RegWorkingSet, false, true, false);
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
             MoveConstToVariable(Value, &g_Reg->SI_PIF_ADDR_RD64B_REG, "SI_PIF_ADDR_RD64B_REG");
             m_RegWorkingSet.BeforeCallDirect();
 #ifdef _MSC_VER
@@ -10498,9 +10475,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04800010:
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
             UpdateCounters(m_RegWorkingSet, false, true, false);
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
             MoveConstToVariable(Value, &g_Reg->SI_PIF_ADDR_WR64B_REG, "SI_PIF_ADDR_WR64B_REG");
             m_RegWorkingSet.BeforeCallDirect();
 #ifdef _MSC_VER
@@ -10555,9 +10530,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         }
     case 0x1fc00000:
         {
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
             UpdateCounters(m_RegWorkingSet, false, true, false);
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 
             m_RegWorkingSet.BeforeCallDirect();
             PushImm32(Value);
@@ -10578,9 +10551,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         {
             g_Notify->DisplayError(stdstr_f("%s\nTrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
         }
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         UpdateCounters(m_RegWorkingSet, false, true, true);
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 
         m_RegWorkingSet.BeforeCallDirect();
         PushImm32(Value);
@@ -10665,9 +10636,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04040010:
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
             UpdateCounters(m_RegWorkingSet, false, true, false);
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
             MoveX86regToVariable(Reg, &CMipsMemoryVM::RegModValue, "CMipsMemoryVM::RegModValue");
             m_RegWorkingSet.BeforeCallDirect();
             Call_Direct((void *)CMipsMemoryVM::ChangeSpStatus, "CMipsMemoryVM::ChangeSpStatus");
@@ -10706,9 +10675,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
     case 0x04100000:
         if (PAddr == 0x0410000C)
         {
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
             UpdateCounters(m_RegWorkingSet, false, true, false);
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
         }
         m_RegWorkingSet.BeforeCallDirect();
         Push(Reg);
@@ -10758,9 +10725,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
     case 0x04400000:
         if (GenerateLog() && LogVideoInterface())
         {
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
             UpdateCounters(m_RegWorkingSet, false, true, false);
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 
             m_RegWorkingSet.BeforeCallDirect();
             PushImm32(0xFFFFFFFF);
@@ -10849,9 +10814,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         }
         break;
     case 0x04500000: // AI registers
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         UpdateCounters(m_RegWorkingSet, false, true);
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 
         m_RegWorkingSet.BeforeCallDirect();
         PushImm32(0xFFFFFFFF);
@@ -10894,9 +10857,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x0460000C:
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
             UpdateCounters(m_RegWorkingSet, false, true, false);
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
             MoveX86regToVariable(Reg, &g_Reg->PI_WR_LEN_REG, "PI_WR_LEN_REG");
             m_RegWorkingSet.BeforeCallDirect();
 #ifdef _MSC_VER

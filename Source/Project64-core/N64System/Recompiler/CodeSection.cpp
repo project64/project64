@@ -756,7 +756,6 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             break;
         case PIPELINE_STAGE_DELAY_SLOT:
             m_RecompilerOps->SetNextStepType(PIPELINE_STAGE_DELAY_SLOT_DONE);
-            m_RecompilerOps->GetRegWorkingSet().SetBlockCycleCount(m_RecompilerOps->GetRegWorkingSet().GetBlockCycleCount() - g_System->CountPerOp());
             m_RecompilerOps->SetCurrentPC(m_RecompilerOps->GetCurrentPC() - 4);
             break;
         case PIPELINE_STAGE_JUMP:

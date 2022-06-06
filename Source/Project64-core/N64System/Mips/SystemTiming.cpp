@@ -155,13 +155,13 @@ void CSystemTimer::FixTimers()
 
 void CSystemTimer::UpdateTimers()
 {
-    int TimeTaken = m_LastUpdate - m_NextTimer;
+    int TimeTaken = (m_LastUpdate - m_NextTimer) / CGameSettings::OverClockModifier();
     if (TimeTaken != 0)
     {
         int32_t random, wired;
         m_LastUpdate = m_NextTimer;
-        m_Reg.COUNT_REGISTER += (TimeTaken / CGameSettings::OverClockModifier());
-        random = m_Reg.RANDOM_REGISTER - (TimeTaken / g_System->CountPerOp());
+        m_Reg.COUNT_REGISTER += TimeTaken;
+        random = m_Reg.RANDOM_REGISTER - ((TimeTaken * CGameSettings::OverClockModifier()) / g_System->CountPerOp());
         wired = m_Reg.WIRED_REGISTER;
         if (random < wired)
         {
