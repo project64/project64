@@ -50,6 +50,7 @@ private:
     SPRegistersHandler & operator=(const SPRegistersHandler &);
 
     void SP_DMA_READ();
+    void SP_DMA_WRITE();
 
     CN64System & m_System;
     CMipsMemoryVM & m_MMU;

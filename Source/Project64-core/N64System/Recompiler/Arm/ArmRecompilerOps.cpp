@@ -6591,11 +6591,12 @@ void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x0404000C:
-            MoveArmRegToVariable(Reg, &g_Reg->SP_WR_LEN_REG, "SP_WR_LEN_REG");
+            ArmBreakPoint(__FILE__, __LINE__);
+            /*MoveArmRegToVariable(Reg, &g_Reg->SP_WR_LEN_REG, "SP_WR_LEN_REG");
             m_RegWorkingSet.BeforeCallDirect();
             MoveConstToArmReg(Arm_R0, (uint32_t)((CDMA *)g_MMU), "(CDMA *)g_MMU");
             CallFunction(AddressOf(&CDMA::SP_DMA_WRITE), "CDMA::SP_DMA_WRITE");
-            m_RegWorkingSet.AfterCallDirect();
+            m_RegWorkingSet.AfterCallDirect();*/
             break;
         case 0x04040010:
             m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());

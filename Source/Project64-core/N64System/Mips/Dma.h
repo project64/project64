@@ -9,7 +9,6 @@ class CDMA :
     CDMA();
 
 public:
-    void SP_DMA_WRITE();
     void PI_DMA_READ();
     void PI_DMA_WRITE();
 

@@ -106,7 +106,7 @@ bool SPRegistersHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask
         break;
     case 0x0404000C:
         SP_WR_LEN_REG = (SP_WR_LEN_REG & ~Mask) | (MaskedValue);
-        m_MMU.SP_DMA_WRITE();
+        SP_DMA_WRITE();
         break;
     case 0x04040010:
         if ((MaskedValue & SP_CLR_HALT) != 0) { SP_STATUS_REG &= ~SP_STATUS_HALT; }
@@ -200,3 +200,43 @@ void SPRegistersHandler::SP_DMA_READ()
     SP_STATUS_REG &= ~SP_STATUS_DMA_BUSY;
 }
 
+void SPRegistersHandler::SP_DMA_WRITE()
+{
+    if (g_Reg->SP_DRAM_ADDR_REG > g_MMU->RdramSize())
+    {
+        if (HaveDebugger())
+        {
+            g_Notify->DisplayError(stdstr_f("%s\nSP_DRAM_ADDR_REG not in RDRAM space: %08X", __FUNCTION__, g_Reg->SP_DRAM_ADDR_REG).c_str());
+        }
+        return;
+    }
+
+    if (g_Reg->SP_WR_LEN_REG + 1 + (g_Reg->SP_MEM_ADDR_REG & 0xFFF) > 0x1000)
+    {
+        if (HaveDebugger())
+        {
+            g_Notify->DisplayError("SP DMA WRITE\nCould not fit copy in memory segment");
+        }
+        return;
+    }
+
+    if ((g_Reg->SP_MEM_ADDR_REG & 3) != 0)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+
+    if ((g_Reg->SP_DRAM_ADDR_REG & 3) != 0)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    if (((g_Reg->SP_WR_LEN_REG + 1) & 3) != 0)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+
+    memcpy(g_MMU->Rdram() + g_Reg->SP_DRAM_ADDR_REG, g_MMU->Dmem() + (g_Reg->SP_MEM_ADDR_REG & 0x1FFF),
+        g_Reg->SP_WR_LEN_REG + 1);
+
+    g_Reg->SP_DMA_BUSY_REG = 0;
+    g_Reg->SP_STATUS_REG &= ~SP_STATUS_DMA_BUSY;
+}
