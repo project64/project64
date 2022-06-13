@@ -73,11 +73,12 @@ public:
     CSram & GetSram() { return m_CartridgeDomain2Address2Handler.Sram(); }
     CFlashRam & GetFlashRam() { return m_CartridgeDomain2Address2Handler.FlashRam(); }
 
-    uint8_t * MemoryPtr(uint32_t VAddr, uint32_t size, bool Read);
+    uint8_t * MemoryPtr(uint32_t VAddr, uint32_t Size, bool Read);
 
     bool MemoryValue8(uint32_t VAddr, uint8_t & Value);
     bool MemoryValue16(uint32_t VAddr, uint16_t & Value);
     bool MemoryValue32(uint32_t VAddr, uint32_t & Value);
+    bool MemoryValue64(uint32_t VAddr, uint64_t & Value);
 
     bool UpdateMemoryValue8(uint32_t VAddr, uint8_t Value);
     bool UpdateMemoryValue16(uint32_t VAddr, uint16_t Value);
@@ -88,10 +89,10 @@ public:
     bool LW_Memory(uint32_t VAddr, uint32_t & Value);
     bool LD_Memory(uint32_t VAddr, uint64_t & Value);
 
-    bool SB_VAddr(uint32_t VAddr, uint8_t Value);
-    bool SH_VAddr(uint32_t VAddr, uint16_t Value);
-    bool SW_VAddr(uint32_t VAddr, uint32_t Value);
-    bool SD_VAddr(uint32_t VAddr, uint64_t Value);
+    bool SB_Memory(uint32_t VAddr, uint8_t Value);
+    bool SH_Memory(uint32_t VAddr, uint16_t Value);
+    bool SW_Memory(uint32_t VAddr, uint32_t Value);
+    bool SD_Memory(uint32_t VAddr, uint64_t Value);
 
     int32_t   MemoryFilter(uint32_t dwExptCode, void * lpExceptionPointer);
 

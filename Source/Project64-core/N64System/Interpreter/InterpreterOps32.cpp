@@ -10,12 +10,6 @@
 
 bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
 
-#define ADDRESS_ERROR_EXCEPTION(Address,FromRead) \
-    g_Reg->DoAddressError(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP,Address,FromRead);\
-    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;\
-    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);\
-    return;
-
 #define TEST_COP1_USABLE_EXCEPTION \
     if ((g_Reg->STATUS_REGISTER & STATUS_CU1) == 0) {\
     g_Reg->DoCopUnusableException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP,1);\
@@ -878,184 +872,82 @@ void R4300iOp32::BGTZL()
 void R4300iOp32::LB()
 {
     uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
-    if (HaveReadBP() && g_Debugger->ReadBP8(Address) && MemoryBreakpoint())
+    uint8_t MemoryValue;
+    if (g_MMU->LB_Memory(Address, MemoryValue))
     {
-        return;
-    }
-    if (!g_MMU->LB_Memory(Address, _GPR[m_Opcode.rt].UB[0]))
-    {
-        GenerateTLBReadException(Address, __FUNCTION__);
-    }
-    else
-    {
-        _GPR[m_Opcode.rt].W[0] = _GPR[m_Opcode.rt].B[0];
+        _GPR[m_Opcode.rt].W[0] = (int8_t)MemoryValue;
     }
 }
 
 void R4300iOp32::LH()
 {
     uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
-    if ((Address & 1) != 0)
+    uint16_t MemoryValue;
+    if (g_MMU->LH_Memory(Address, MemoryValue))
     {
-        ADDRESS_ERROR_EXCEPTION(Address, true);
-    }
-    if (HaveReadBP() && g_Debugger->ReadBP16(Address) && MemoryBreakpoint())
-    {
-        return;
-    }
-    if (!g_MMU->LH_Memory(Address, _GPR[m_Opcode.rt].UHW[0]))
-    {
-        GenerateTLBReadException(Address, __FUNCTION__);
-    }
-    else
-    {
-        _GPR[m_Opcode.rt].W[0] = _GPR[m_Opcode.rt].HW[0];
+        _GPR[m_Opcode.rt].W[0] = (int16_t)MemoryValue;
     }
 }
 
 void R4300iOp32::LWL()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
-    if (HaveReadBP() && g_Debugger->ReadBP32(Address) && MemoryBreakpoint())
-    {
-        return;
-    }
-    uint32_t Value;
-    if (!g_MMU->LW_Memory((Address & ~3), Value))
-    {
-        GenerateTLBReadException(Address, __FUNCTION__);
-    }
-    else
+    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset, MemoryValue;
+    if (g_MMU->LW_Memory((Address & ~3), MemoryValue))
     {
         uint32_t Offset = Address & 3;
         _GPR[m_Opcode.rt].W[0] = (int32_t)(_GPR[m_Opcode.rt].W[0] & LWL_MASK[Offset]);
-        _GPR[m_Opcode.rt].W[0] += (int32_t)(Value << LWL_SHIFT[Offset]);
+        _GPR[m_Opcode.rt].W[0] += (int32_t)(MemoryValue << LWL_SHIFT[Offset]);
     }
 }
 
 void R4300iOp32::LW()
 {
     uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
-    if ((Address & 3) != 0)
-    {
-        ADDRESS_ERROR_EXCEPTION(Address, true);
-    }
-    if (HaveReadBP() && g_Debugger->ReadBP32(Address) && MemoryBreakpoint())
-    {
-        return;
-    }
-    if (!g_MMU->LW_Memory(Address, _GPR[m_Opcode.rt].UW[0]))
-    {
-        GenerateTLBReadException(Address, __FUNCTION__);
-    }
-    else
-    {
-        _GPR[m_Opcode.rt].W[0] = _GPR[m_Opcode.rt].W[0];
-    }
+    g_MMU->LW_Memory(Address, _GPR[m_Opcode.rt].UW[0]);
 }
 
 void R4300iOp32::LBU()
 {
     uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
-    if (HaveReadBP() && g_Debugger->ReadBP8(Address) && MemoryBreakpoint())
+    uint8_t MemoryValue;
+    if (g_MMU->LB_Memory(Address, MemoryValue))
     {
-        return;
-    }
-    if (!g_MMU->LB_Memory(Address, _GPR[m_Opcode.rt].UB[0]))
-    {
-        GenerateTLBReadException(Address, __FUNCTION__);
-    }
-    else
-    {
-        _GPR[m_Opcode.rt].UW[0] = _GPR[m_Opcode.rt].UB[0];
+        _GPR[m_Opcode.rt].UW[0] = MemoryValue;
     }
 }
 
 void R4300iOp32::LHU()
 {
     uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
-    if ((Address & 1) != 0)
+    uint16_t MemoryValue;
+    if (g_MMU->LH_Memory(Address, MemoryValue))
     {
-        ADDRESS_ERROR_EXCEPTION(Address, true);
-    }
-    if (HaveReadBP() && g_Debugger->ReadBP16(Address) && MemoryBreakpoint())
-    {
-        return;
-    }
-    if (!g_MMU->LH_Memory(Address, _GPR[m_Opcode.rt].UHW[0]))
-    {
-        GenerateTLBReadException(Address, __FUNCTION__);
-    }
-    else
-    {
-        _GPR[m_Opcode.rt].UW[0] = _GPR[m_Opcode.rt].UHW[0];
+        _GPR[m_Opcode.rt].UW[0] = MemoryValue;
     }
 }
 
 void R4300iOp32::LWR()
 {
-    uint32_t Offset, Address, Value;
-
-    Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
-    Offset = Address & 3;
-    if (HaveReadBP() && g_Debugger->ReadBP32(Address) && MemoryBreakpoint())
+    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset, MemoryValue;
+    if (g_MMU->LW_Memory((Address & ~3), MemoryValue))
     {
-        return;
+        uint32_t Offset = Address & 3;
+        _GPR[m_Opcode.rt].W[0] = (int32_t)(_GPR[m_Opcode.rt].W[0] & LWR_MASK[Offset]);
+        _GPR[m_Opcode.rt].W[0] += (int32_t)(MemoryValue >> LWR_SHIFT[Offset]);
     }
-    if (!g_MMU->LW_Memory((Address & ~3), Value))
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-        if (bShowTLBMisses())
-        {
-            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
-        }
-        return;
-    }
-
-    _GPR[m_Opcode.rt].W[0] = (int32_t)(_GPR[m_Opcode.rt].W[0] & LWR_MASK[Offset]);
-    _GPR[m_Opcode.rt].W[0] += (int32_t)(Value >> LWR_SHIFT[Offset]);
 }
 
 void R4300iOp32::LWU()
 {
     uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
-    if ((Address & 3) != 0)
-    {
-        ADDRESS_ERROR_EXCEPTION(Address, true);
-    }
-
-    if (HaveReadBP() && g_Debugger->ReadBP32(Address) && MemoryBreakpoint())
-    {
-        return;
-    }
-    if (!g_MMU->LW_Memory(Address, _GPR[m_Opcode.rt].UW[0]))
-    {
-        GenerateTLBReadException(Address, __FUNCTION__);
-    }
-    else
-    {
-        _GPR[m_Opcode.rt].UW[0] = _GPR[m_Opcode.rt].UW[0];
-    }
+    g_MMU->LW_Memory(Address, _GPR[m_Opcode.rt].UW[0]);
 }
 
 void R4300iOp32::LL()
 {
     uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
-    if ((Address & 3) != 0)
+    if (g_MMU->LW_Memory(Address, _GPR[m_Opcode.rt].UW[0]))
     {
-        ADDRESS_ERROR_EXCEPTION(Address, true);
-    }
-    if (HaveReadBP() && g_Debugger->ReadBP32(Address) && MemoryBreakpoint())
-    {
-        return;
-    }
-    if (!g_MMU->LW_Memory(Address, _GPR[m_Opcode.rt].UW[0]))
-    {
-        GenerateTLBReadException(Address, __FUNCTION__);
-    }
-    else
-    {
-        _GPR[m_Opcode.rt].W[0] = _GPR[m_Opcode.rt].W[0];
         (*_LLBit) = 1;
     }
 }

@@ -238,6 +238,7 @@ protected:
     static Func Jump_CoP1_W[64];
     static Func Jump_CoP1_L[64];
 
+    static void GenerateAddressErrorException(uint32_t VAddr, bool FromRead);
     static void GenerateTLBReadException(uint32_t VAddr, const char * function);
     static void GenerateTLBWriteException(uint32_t VAddr, const char * function);
 
