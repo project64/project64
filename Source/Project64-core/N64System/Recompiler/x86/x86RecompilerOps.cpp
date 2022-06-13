@@ -3100,30 +3100,37 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
                     break;
                 case 0x04080000: MoveVariableToX86reg(&g_Reg->SP_PC_REG, "SP_PC_REG", Reg); break;
                 default:
-                    MoveConstToX86reg(0, Reg);
-                    if (ShowUnhandledMemory())
-                    {
-                        g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str());
-                    }
+                    m_RegWorkingSet.BeforeCallDirect();
+                    PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
+                    PushImm32(PAddr | 0xA0000000);
+#ifdef _MSC_VER
+                    MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
+                    Call_Direct(AddressOf(&CMipsMemoryVM::LW_NonMemory), "CMipsMemoryVM::LW_NonMemory");
+#else
+                    PushImm32((uint32_t)(g_MMU));
+                    Call_Direct(AddressOf(&CMipsMemoryVM::LW_NonMemory), "CMipsMemoryVM::LW_NonMemory");
+                    AddConstToX86Reg(x86_ESP, 12);
+#endif
+                    m_RegWorkingSet.AfterCallDirect();
+                    MoveVariableToX86reg(&m_TempValue32, "m_TempValue32", Reg);
+                    break;
                 }
             }
             break;
         case 0x04100000:
-             {
-                 m_RegWorkingSet.BeforeCallDirect();
-                 PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
-                 PushImm32(PAddr | 0xA0000000);
+            m_RegWorkingSet.BeforeCallDirect();
+            PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
+            PushImm32(PAddr | 0xA0000000);
 #ifdef _MSC_VER
-                 MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
-                 Call_Direct(AddressOf(&CMipsMemoryVM::LW_NonMemory), "CMipsMemoryVM::LW_NonMemory");
+            MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
+            Call_Direct(AddressOf(&CMipsMemoryVM::LW_NonMemory), "CMipsMemoryVM::LW_NonMemory");
 #else
-                 PushImm32((uint32_t)(g_MMU));
-                 Call_Direct(AddressOf(&CMipsMemoryVM::LW_NonMemory), "CMipsMemoryVM::LW_NonMemory");
-                 AddConstToX86Reg(x86_ESP, 12);
+            PushImm32((uint32_t)(g_MMU));
+            Call_Direct(AddressOf(&CMipsMemoryVM::LW_NonMemory), "CMipsMemoryVM::LW_NonMemory");
+            AddConstToX86Reg(x86_ESP, 12);
 #endif
-                 m_RegWorkingSet.AfterCallDirect();
-                 MoveVariableToX86reg(&m_TempValue32, "m_TempValue32", Reg);
-            }
+            m_RegWorkingSet.AfterCallDirect();
+            MoveVariableToX86reg(&m_TempValue32, "m_TempValue32", Reg);
             break;
         case 0x04300000:
             switch (PAddr)
@@ -10016,6 +10023,23 @@ void CX86RecompilerOps::SB_Const(uint8_t Value, uint32_t VAddr)
             MoveConstByteToVariable(Value, (PAddr ^ 3) + g_MMU->Rdram(), stdstr_f("RDRAM + (%X ^ 3)", PAddr).c_str());
         }
         break;
+    case 0x04000000:
+        if (PAddr < 0x04001000)
+        {
+            MoveConstByteToVariable(Value, ((PAddr - 0x04000000) ^ 3) + g_MMU->Dmem(), stdstr_f("DMem + (%X ^ 3)", (PAddr - 0x04000000)).c_str());
+        }
+        else if (PAddr < 0x04002000)
+        {
+            MoveConstByteToVariable(Value, ((PAddr - 0x04001000) ^ 3) + g_MMU->Imem(), stdstr_f("Imem + (%X ^ 3)", (PAddr - 0x04001000)).c_str());
+        }
+        else
+        {
+            if (ShowUnhandledMemory())
+            {
+                g_Notify->DisplayError(stdstr_f("%s\nTrying to store %02X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+            }
+        }
+        break;
     default:
         if (ShowUnhandledMemory())
         {
@@ -10265,6 +10289,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             case 0x04040000: MoveConstToVariable(Value, &g_Reg->SP_MEM_ADDR_REG, "SP_MEM_ADDR_REG"); break;
             case 0x04040004: MoveConstToVariable(Value, &g_Reg->SP_DRAM_ADDR_REG, "SP_DRAM_ADDR_REG"); break;
             case 0x04040008:
+            case 0x0404000C:
                 m_RegWorkingSet.BeforeCallDirect();
                 PushImm32(0xFFFFFFFF);
                 PushImm32(Value);
@@ -10280,22 +10305,20 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
                 m_RegWorkingSet.AfterCallDirect();
                 break;
             case 0x04040010:
-                {
-                    UpdateCounters(m_RegWorkingSet, false, true, false);
+                UpdateCounters(m_RegWorkingSet, false, true, false);
 
-                    m_RegWorkingSet.BeforeCallDirect();
-                    PushImm32(Value);
-                    PushImm32(PAddr | 0xA0000000);
+                m_RegWorkingSet.BeforeCallDirect();
+                PushImm32(Value);
+                PushImm32(PAddr | 0xA0000000);
 #ifdef _MSC_VER
-                    MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
-                    Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+                MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
+                Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
 #else
-                    PushImm32((uint32_t)(g_MMU));
-                    Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
-                    AddConstToX86Reg(x86_ESP, 12);
+                PushImm32((uint32_t)(g_MMU));
+                Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+                AddConstToX86Reg(x86_ESP, 12);
 #endif
-                    m_RegWorkingSet.AfterCallDirect();
-                }
+                m_RegWorkingSet.AfterCallDirect();
                 break;
             case 0x0404001C: MoveConstToVariable(0, &g_Reg->SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG"); break;
             case 0x04080000: MoveConstToVariable(Value & 0xFFC, &g_Reg->SP_PC_REG, "SP_PC_REG"); break;
