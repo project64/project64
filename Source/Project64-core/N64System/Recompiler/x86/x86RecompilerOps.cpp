@@ -9625,7 +9625,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
     CompConstToX86reg(TempReg, (uint32_t)-1);
     JneLabel8(stdstr_f("MemoryReadMap_%X_Found", m_CompilePC).c_str(), 0);
     uint8_t * JumpFound = (uint8_t *)(*g_RecompPos - 1);
-    uint32_t OpsExecuted = m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp();
+    uint32_t OpsExecuted = m_RegWorkingSet.GetBlockCycleCount();
     if (OpsExecuted != 0)
     {
         SubConstFromVariable(OpsExecuted, g_NextTimer, "g_NextTimer");
