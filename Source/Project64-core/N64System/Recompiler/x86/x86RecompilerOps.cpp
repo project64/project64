@@ -10580,47 +10580,23 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x04600000: MoveConstToVariable(Value, &g_Reg->PI_DRAM_ADDR_REG, "PI_DRAM_ADDR_REG"); break;
         case 0x04600004: MoveConstToVariable(Value, &g_Reg->PI_CART_ADDR_REG, "PI_CART_ADDR_REG"); break;
         case 0x04600008:
-            MoveConstToVariable(Value, &g_Reg->PI_RD_LEN_REG, "PI_RD_LEN_REG");
-            m_RegWorkingSet.BeforeCallDirect();
-#ifdef _MSC_VER
-            MoveConstToX86reg((uint32_t)((CDMA *)g_MMU), x86_ECX);
-            Call_Direct(AddressOf(&CDMA::PI_DMA_READ), "CDMA::PI_DMA_READ");
-#else
-            PushImm32((uint32_t)((CDMA *)g_MMU));
-            Call_Direct(AddressOf(&CDMA::PI_DMA_READ), "CDMA::PI_DMA_READ");
-            AddConstToX86Reg(x86_ESP, 4);
-#endif
-            m_RegWorkingSet.AfterCallDirect();
-            break;
         case 0x0460000C:
+        case 0x04600010:
             UpdateCounters(m_RegWorkingSet, false, true, false);
-            MoveConstToVariable(Value, &g_Reg->PI_WR_LEN_REG, "PI_WR_LEN_REG");
+
             m_RegWorkingSet.BeforeCallDirect();
+            PushImm32(0xFFFFFFFF);
+            PushImm32(Value);
+            PushImm32(PAddr & 0x1FFFFFFF);
 #ifdef _MSC_VER
-            MoveConstToX86reg((uint32_t)((CDMA *)g_MMU), x86_ECX);
-            Call_Direct(AddressOf(&CDMA::PI_DMA_WRITE), "CDMA::PI_DMA_WRITE");
+            MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_PeripheralInterfaceHandler, x86_ECX);
+            Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_PeripheralInterfaceHandler)[0][1], "PeripheralInterfaceHandler::Write32");
 #else
-            PushImm32((uint32_t)((CDMA *)g_MMU));
-            Call_Direct(AddressOf(&CDMA::PI_DMA_WRITE), "CDMA::PI_DMA_WRITE");
-            AddConstToX86Reg(x86_ESP, 4);
+            PushImm32((uint32_t)&g_MMU->m_PeripheralInterfaceHandler);
+            Call_Direct(AddressOf(&m_PeripheralInterfaceHandler::Write32), "PeripheralInterfaceHandler::Write32");
+            AddConstToX86Reg(x86_ESP, 16);
 #endif
             m_RegWorkingSet.AfterCallDirect();
-            break;
-        case 0x04600010:
-            if ((Value & PI_CLR_INTR) != 0)
-            {
-                AndConstToVariable((uint32_t)~MI_INTR_PI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
-                m_RegWorkingSet.BeforeCallDirect();
-#ifdef _MSC_VER
-                MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
-                Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-#else
-                PushImm32((uint32_t)g_Reg);
-                Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-                AddConstToX86Reg(x86_ESP, 4);
-#endif
-                m_RegWorkingSet.AfterCallDirect();
-            }
             break;
         case 0x04600014: MoveConstToVariable((Value & 0xFF), &g_Reg->PI_DOMAIN1_REG, "PI_DOMAIN1_REG"); break;
         case 0x04600018: MoveConstToVariable((Value & 0xFF), &g_Reg->PI_BSD_DOM1_PWD_REG, "PI_BSD_DOM1_PWD_REG"); break;
@@ -11039,29 +11015,20 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             }
             break;
         case 0x04600008:
-            MoveX86regToVariable(Reg, &g_Reg->PI_RD_LEN_REG, "PI_RD_LEN_REG");
-            m_RegWorkingSet.BeforeCallDirect();
-#ifdef _MSC_VER
-            MoveConstToX86reg((uint32_t)((CDMA *)g_MMU), x86_ECX);
-            Call_Direct(AddressOf(&CDMA::PI_DMA_READ), "CDMA::PI_DMA_READ");
-#else
-            PushImm32((uint32_t)((CDMA *)g_MMU));
-            Call_Direct(AddressOf(&CDMA::PI_DMA_READ), "CDMA::PI_DMA_READ");
-            AddConstToX86Reg(x86_ESP, 4);
-#endif
-            m_RegWorkingSet.AfterCallDirect();
-            break;
         case 0x0460000C:
-            UpdateCounters(m_RegWorkingSet, false, true, false);
-            MoveX86regToVariable(Reg, &g_Reg->PI_WR_LEN_REG, "PI_WR_LEN_REG");
+            UpdateCounters(m_RegWorkingSet, false, true);
+
             m_RegWorkingSet.BeforeCallDirect();
+            PushImm32(0xFFFFFFFF);
+            Push(Reg);
+            PushImm32(PAddr & 0x1FFFFFFF);
 #ifdef _MSC_VER
-            MoveConstToX86reg((uint32_t)((CDMA *)g_MMU), x86_ECX);
-            Call_Direct(AddressOf(&CDMA::PI_DMA_WRITE), "CDMA::PI_DMA_WRITE");
+            MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_PeripheralInterfaceHandler, x86_ECX);
+            Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_PeripheralInterfaceHandler)[0][1], "PeripheralInterfaceHandler::Write32");
 #else
-            PushImm32((uint32_t)((CDMA *)g_MMU));
-            Call_Direct(AddressOf(&CDMA::PI_DMA_WRITE), "CDMA::PI_DMA_WRITE");
-            AddConstToX86Reg(x86_ESP, 4);
+            PushImm32((uint32_t)&g_MMU->PeripheralInterfaceHandler);
+            Call_Direct(AddressOf(&PeripheralInterfaceHandler::Write32), "PeripheralInterfaceHandler::Write32");
+            AddConstToX86Reg(x86_ESP, 16);
 #endif
             m_RegWorkingSet.AfterCallDirect();
             break;

@@ -249,9 +249,6 @@
     <ClCompile Include="N64System\Recompiler\SectionInfo.cpp">
       <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\Mips\Dma.cpp">
-      <Filter>Source Files\N64 System\Mips</Filter>
-    </ClCompile>
     <ClCompile Include="N64System\Mips\MemoryVirtualMem.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
@@ -589,9 +586,6 @@
     </ClInclude>
     <ClInclude Include="N64System\Recompiler\SectionInfo.h">
       <Filter>Header Files\N64 System\Recompiler</Filter>
-    </ClInclude>
-    <ClInclude Include="N64System\Mips\Dma.h">
-      <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
     <ClInclude Include="N64System\Mips\Eeprom.h">
       <Filter>Header Files\N64 System\Mips</Filter>

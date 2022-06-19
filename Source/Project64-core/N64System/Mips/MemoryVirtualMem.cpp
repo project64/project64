@@ -20,7 +20,6 @@ uint32_t CMipsMemoryVM::RegModValue;
 
 CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
     CPifRam(SavesReadOnly),
-    CDMA(m_CartridgeDomain2Address2Handler),
     m_System(System),
     m_Reg(System.m_Reg),
     m_AudioInterfaceHandler(System, System.m_Reg),
@@ -30,7 +29,7 @@ CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
     m_RDRAMRegistersHandler(System.m_Reg),
     m_DPCommandRegistersHandler(System, System.GetPlugins(), System.m_Reg),
     m_MIPSInterfaceHandler(System.m_Reg),
-    m_PeripheralInterfaceHandler(*this, System.m_Reg),
+    m_PeripheralInterfaceHandler(*this, System.m_Reg, m_CartridgeDomain2Address2Handler),
     m_PifRamHandler(*this, System.m_Reg),
     m_RDRAMInterfaceHandler(System.m_Reg),
     m_RomMemoryHandler(System, System.m_Reg, *g_Rom),

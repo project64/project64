@@ -4,7 +4,6 @@
 #include <Project64-core\N64System\Interpreter\InterpreterOps.h>
 #include <Project64-core\N64System\Mips\PifRam.h>
 #include <Project64-core\N64System\SaveType\FlashRam.h>
-#include <Project64-core\N64System\Mips\Dma.h>
 #include <Project64-core\N64System\MemoryHandler\AudioInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\CartridgeDomain1Address1Handler.h>
 #include <Project64-core\N64System\MemoryHandler\CartridgeDomain1Address3Handler.h>
@@ -51,7 +50,6 @@ class CArmRecompilerOps;
 class CMipsMemoryVM :
     private R4300iOp,
     public CPifRam,
-    public CDMA,
     private CGameSettings
 {
 public:

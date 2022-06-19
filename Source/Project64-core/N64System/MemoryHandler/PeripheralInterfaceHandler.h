@@ -35,6 +35,7 @@ private:
 
 class CRegisters;
 class CMipsMemoryVM;
+class CartridgeDomain2Address2Handler;
 
 class PeripheralInterfaceHandler :
     public MemoryHandler,
@@ -44,7 +45,7 @@ class PeripheralInterfaceHandler :
     private PeripheralInterfaceReg
 {
 public:
-    PeripheralInterfaceHandler(CMipsMemoryVM & MMU, CRegisters & Reg);
+    PeripheralInterfaceHandler(CMipsMemoryVM & MMU, CRegisters & Reg, CartridgeDomain2Address2Handler & Domain2Address2Handler);
 
     bool Read32(uint32_t Address, uint32_t & Value);
     bool Write32(uint32_t Address, uint32_t Value, uint32_t Mask);
@@ -54,6 +55,12 @@ private:
     PeripheralInterfaceHandler(const PeripheralInterfaceHandler &);
     PeripheralInterfaceHandler & operator=(const PeripheralInterfaceHandler &);
 
+    void PI_DMA_READ();
+    void PI_DMA_WRITE();
+
+    void OnFirstDMA();
+
+    CartridgeDomain2Address2Handler & m_Domain2Address2Handler;
     CMipsMemoryVM & m_MMU;
     CRegisters & m_Reg;
     uint32_t & m_PC;
