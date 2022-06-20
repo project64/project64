@@ -2799,6 +2799,38 @@ void CX86RecompilerOps::LB_KnownAddress(x86Reg Reg, uint32_t VAddr, bool SignExt
             MoveConstToX86reg(0, Reg);
         }
         break;
+    case 0x04000000:
+        if (PAddr < 0x04001000)
+        {
+            if (SignExtend)
+            {
+                MoveSxVariableToX86regByte(((PAddr ^ 3) - 0x04000000) + g_MMU->Dmem(), stdstr_f("Dmem + (%X ^ 3)", (PAddr - 0x04000000)).c_str(), Reg);
+            }
+            else
+            {
+                MoveZxVariableToX86regByte(((PAddr ^ 3) - 0x04000000) + g_MMU->Dmem(), stdstr_f("Dmem + (%X ^ 3)", (PAddr - 0x04000000)).c_str(), Reg);
+            }
+        }
+        else if (PAddr < 0x04002000)
+        {
+            if (SignExtend)
+            {
+                MoveSxVariableToX86regByte(((PAddr ^ 3) - 0x04001000) + g_MMU->Imem(), stdstr_f("Imem + (%X ^ 3)", (PAddr - 0x04001000)).c_str(), Reg);
+            }
+            else
+            {
+                MoveZxVariableToX86regByte(((PAddr ^ 3) - 0x04001000) + g_MMU->Imem(), stdstr_f("Imem + (%X ^ 3)", (PAddr - 0x04001000)).c_str(), Reg);
+            }
+        }
+        else
+        {
+            MoveConstToX86reg(0, Reg);
+            if (ShowUnhandledMemory())
+            {
+                g_Notify->DisplayError(stdstr_f("%s\nFailed to compile address: %08X", __FUNCTION__, VAddr).c_str());
+            }
+        }
+        break;
     case 0x10000000:
         if ((PAddr - 0x10000000) < g_Rom->GetRomSize())
         {
