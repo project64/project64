@@ -280,7 +280,7 @@ CJniBridegSettings::CJniBridegSettings()
 	ADD_SETTING(Debugger_TraceAppCleanup);
 	ADD_SETTING(Debugger_TraceN64System);
 	ADD_SETTING(Debugger_TracePlugins);
-	ADD_SETTING(Debugger_TraceGFXPlugin);
+	ADD_SETTING(Debugger_TraceVideoPlugin);
 	ADD_SETTING(Debugger_TraceAudioPlugin);
 	ADD_SETTING(Debugger_TraceControllerPlugin);
 	ADD_SETTING(Debugger_TraceRSPPlugin);

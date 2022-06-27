@@ -216,8 +216,8 @@ EXPORT void GetDllInfo(PLUGIN_INFO * PluginInfo)
 #else
 	sprintf(PluginInfo->Name, "RSP plugin %s", VER_FILE_VERSION_STR);
 #endif
-	PluginInfo->NormalMemory = FALSE;
-	PluginInfo->MemoryBswaped = TRUE;
+	PluginInfo->Reserved2 = FALSE;
+	PluginInfo->Reserved1 = TRUE;
 }
 
 /*

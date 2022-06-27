@@ -86,12 +86,12 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
         ControlInfo.HEADER = (System == nullptr ? Buffer : g_Rom->GetRomAddress());
 #ifdef _WIN32
         ControlInfo.hinst = Window ? Window->GetModuleInstance() : nullptr;
-        ControlInfo.hMainWindow = Window ? Window->GetWindowHandle() : nullptr;
+        ControlInfo.hWnd = Window ? Window->GetWindowHandle() : nullptr;
 #else
         ControlInfo.hinst = nullptr;
         ControlInfo.hMainWindow = nullptr;
 #endif
-        ControlInfo.MemoryBswaped = true;
+        ControlInfo.Reserved = true;
 
         if (m_PluginInfo.Version == 0x0101)
         {

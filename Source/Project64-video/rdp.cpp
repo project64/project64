@@ -21,6 +21,7 @@
 #include "trace.h"
 #include "SettingsID.h"
 #include <Settings/Settings.h>
+#include<Project64-plugin-spec\Video.h>
 
 #ifdef _WIN32
 #include <Common/CriticalSection.h>
@@ -3237,19 +3238,6 @@ EXPORT void CALL FBRead(uint32_t addr)
             rdp.fb_drawn_front = TRUE;
         }
     }
-}
-
-/******************************************************************
-Function: FrameBufferWriteList
-Purpose:  This function is called to notify the dll that the
-frame buffer has been modified by CPU at the given address.
-input:    FrameBufferModifyEntry *plist
-size = size of the plist, max = 1024
-output:   none
-*******************************************************************/
-EXPORT void CALL FBWList(FrameBufferModifyEntry* /*plist*/, uint32_t size)
-{
-    WriteTrace(TraceGlide64, TraceDebug, "size: %d", size);
 }
 
 /******************************************************************

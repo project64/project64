@@ -106,6 +106,9 @@
     <Filter Include="Source Files\N64 System\SaveType">
       <UniqueIdentifier>{f058be82-aec4-4e3d-a163-2eec0aa64feb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Plugin Spec">
+      <UniqueIdentifier>{a29536c1-cda4-43b0-b3c6-12a24f42be64}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -772,6 +775,21 @@
     </ClInclude>
     <ClInclude Include="N64System\MemoryHandler\CartridgeDomain2Address2Handler.h">
       <Filter>Header Files\N64 System\MemoryHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Project64-plugin-spec\Base.h">
+      <Filter>Header Files\Plugin Spec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Project64-plugin-spec\Video.h">
+      <Filter>Header Files\Plugin Spec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Project64-plugin-spec\Audio.h">
+      <Filter>Header Files\Plugin Spec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Project64-plugin-spec\Input.h">
+      <Filter>Header Files\Plugin Spec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Project64-plugin-spec\Rsp.h">
+      <Filter>Header Files\Plugin Spec</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

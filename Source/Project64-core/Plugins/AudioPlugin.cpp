@@ -6,6 +6,7 @@
 #include <Project64-core/N64System/Mips/Register.h>
 #include <Project64-core/N64System/N64System.h>
 #include <Project64-core/Plugins/AudioPlugin.h>
+#include <Project64-plugin-spec/Audio.h>
 #ifdef _WIN32
 #include <Windows.h>
 #endif
@@ -28,7 +29,7 @@ CAudioPlugin::~CAudioPlugin()
 
 bool CAudioPlugin::LoadFunctions(void)
 {
-	g_Settings->SaveBool(Setting_SyncViaAudioEnabled, false);
+    g_Settings->SaveBool(Setting_SyncViaAudioEnabled, false);
 
     // Find entries for functions in DLL
     void(CALL *InitiateAudio)(void);
@@ -55,32 +56,6 @@ bool CAudioPlugin::LoadFunctions(void)
 
 bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
 {
-    struct AUDIO_INFO
-    {
-        void * hwnd;
-        void * hinst;
-
-        int32_t MemoryBswaped;    // If this is set to TRUE, then the memory has been pre-bswap'd on a DWORD (32-bit) boundary
-        //	eg. the first 8 bytes are stored like this:
-        //  4 3 2 1   8 7 6 5
-        uint8_t * HEADER;	// This is the ROM header (first 40h bytes of the ROM)
-        // This will be in the same memory format as the rest of the memory
-        uint8_t * RDRAM;
-        uint8_t * DMEM;
-        uint8_t * IMEM;
-
-        uint32_t * MI__INTR_REG;
-
-        uint32_t * AI__DRAM_ADDR_REG;
-        uint32_t * AI__LEN_REG;
-        uint32_t * AI__CONTROL_REG;
-        uint32_t * AI__STATUS_REG;
-        uint32_t * AI__DACRATE_REG;
-        uint32_t * AI__BITRATE_REG;
-
-        void(CALL *CheckInterrupts)(void);
-    };
-
     // Get function from DLL
     int32_t(CALL *InitiateAudio)(AUDIO_INFO Audio_Info);
     LoadFunction(InitiateAudio);
@@ -89,13 +64,13 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
     AUDIO_INFO Info = { 0 };
 
 #ifdef _WIN32
-    Info.hwnd = Window ? Window->GetWindowHandle() : nullptr;
+    Info.hWnd = Window ? Window->GetWindowHandle() : nullptr;
     Info.hinst = Window ? Window->GetModuleInstance() : nullptr;
 #else
-    Info.hwnd = nullptr;
+    Info.hWnd = nullptr;
     Info.hinst = nullptr;
 #endif
-    Info.MemoryBswaped = true;
+    Info.Reserved = true;
     Info.CheckInterrupts = DummyCheckInterrupts;
 
     // We are initializing the plugin before any ROM is loaded so we do not have any correct
@@ -109,13 +84,13 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
         Info.RDRAM = Buffer;
         Info.DMEM = Buffer;
         Info.IMEM = Buffer;
-        Info.MI__INTR_REG = &Value;
-        Info.AI__DRAM_ADDR_REG = &Value;
-        Info.AI__LEN_REG = &Value;
-        Info.AI__CONTROL_REG = &Value;
-        Info.AI__STATUS_REG = &Value;
-        Info.AI__DACRATE_REG = &Value;
-        Info.AI__BITRATE_REG = &Value;
+        Info.MI_INTR_REG = &Value;
+        Info.AI_DRAM_ADDR_REG = &Value;
+        Info.AI_LEN_REG = &Value;
+        Info.AI_CONTROL_REG = &Value;
+        Info.AI_STATUS_REG = &Value;
+        Info.AI_DACRATE_REG = &Value;
+        Info.AI_BITRATE_REG = &Value;
     }
     // Send initialization information to the DLL
     else
@@ -130,15 +105,14 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
         Info.RDRAM = MMU.Rdram();
         Info.DMEM = MMU.Dmem();
         Info.IMEM = MMU.Imem();
-        Info.MI__INTR_REG = &Reg.m_AudioIntrReg;
-        Info.AI__DRAM_ADDR_REG = &Reg.AI_DRAM_ADDR_REG;
-        Info.AI__LEN_REG = &Reg.AI_LEN_REG;
-        Info.AI__CONTROL_REG = &Reg.AI_CONTROL_REG;
-        Info.AI__STATUS_REG = &Reg.AI_STATUS_REG;
-        Info.AI__DACRATE_REG = &Reg.AI_DACRATE_REG;
-        Info.AI__BITRATE_REG = &Reg.AI_BITRATE_REG;
+        Info.MI_INTR_REG = &Reg.m_AudioIntrReg;
+        Info.AI_DRAM_ADDR_REG = &Reg.AI_DRAM_ADDR_REG;
+        Info.AI_LEN_REG = &Reg.AI_LEN_REG;
+        Info.AI_CONTROL_REG = &Reg.AI_CONTROL_REG;
+        Info.AI_STATUS_REG = &Reg.AI_STATUS_REG;
+        Info.AI_DACRATE_REG = &Reg.AI_DACRATE_REG;
+        Info.AI_BITRATE_REG = &Reg.AI_BITRATE_REG;
     }
-
     m_Initialized = InitiateAudio(Info) != 0;
 
 #ifdef _WIN32

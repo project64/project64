@@ -9,7 +9,7 @@ enum TraceModuleProject64
     TraceAppCleanup,
     TraceN64System,
     TracePlugins,
-    TraceGFXPlugin,
+    TraceVideoPlugin,
     TraceAudioPlugin,
     TraceControllerPlugin,
     TraceRSPPlugin,

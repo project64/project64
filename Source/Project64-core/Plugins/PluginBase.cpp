@@ -3,18 +3,18 @@
 #include <Common/path.h>
 
 CPlugin::CPlugin() :
-DllAbout(nullptr),
-DllConfig(nullptr),
-CloseDLL(nullptr),
-RomOpen(nullptr),
-RomClosed(nullptr),
-PluginOpened(nullptr),
-SetSettingInfo(nullptr),
-SetSettingInfo2(nullptr),
-SetSettingInfo3(nullptr),
-m_LibHandle(nullptr),
-m_Initialized(false),
-m_RomOpen(false)
+    DllAbout(nullptr),
+    DllConfig(nullptr),
+    CloseDLL(nullptr),
+    RomOpen(nullptr),
+    RomClosed(nullptr),
+    PluginOpened(nullptr),
+    SetSettingInfo(nullptr),
+    SetSettingInfo2(nullptr),
+    SetSettingInfo3(nullptr),
+    m_LibHandle(nullptr),
+    m_Initialized(false),
+    m_RomOpen(false)
 {
     memset(&m_PluginInfo, 0, sizeof(m_PluginInfo));
 }
@@ -154,7 +154,7 @@ void CPlugin::RomOpened(RenderWindow * Render)
     }
 
 #ifdef ANDROID
-    if (m_PluginInfo.Type == PLUGIN_TYPE_GFX)
+    if (m_PluginInfo.Type == PLUGIN_TYPE_VIDEO)
     {
         WriteTrace(PluginTraceType(), TraceDebug, "Render = %p", Render);
         if (Render != nullptr)
@@ -186,7 +186,7 @@ void CPlugin::RomClose(RenderWindow * Render)
     }
 
 #ifdef ANDROID
-    if (m_PluginInfo.Type == PLUGIN_TYPE_GFX)
+    if (m_PluginInfo.Type == PLUGIN_TYPE_VIDEO)
     {
         WriteTrace(PluginTraceType(), TraceDebug, "Render = %p", Render);
         if (Render != NULL)
@@ -258,7 +258,7 @@ const char * CPlugin::PluginType() const
     switch (m_PluginInfo.Type)
     {
     case PLUGIN_TYPE_RSP: return "RSP";
-    case PLUGIN_TYPE_GFX: return "GFX";
+    case PLUGIN_TYPE_VIDEO: return "Video";
     case PLUGIN_TYPE_AUDIO: return "Audio";
     case PLUGIN_TYPE_CONTROLLER: return "Control";
     }
@@ -270,7 +270,7 @@ TraceModuleProject64 CPlugin::PluginTraceType() const
     switch (m_PluginInfo.Type)
     {
     case PLUGIN_TYPE_RSP: return TraceRSPPlugin;
-    case PLUGIN_TYPE_GFX: return TraceGFXPlugin;
+    case PLUGIN_TYPE_VIDEO: return TraceVideoPlugin;
     case PLUGIN_TYPE_AUDIO: return TraceAudioPlugin;
     case PLUGIN_TYPE_CONTROLLER: return TraceControllerPlugin;
     }
@@ -282,21 +282,18 @@ bool CPlugin::ValidPluginVersion(PLUGIN_INFO & PluginInfo)
     switch (PluginInfo.Type)
     {
     case PLUGIN_TYPE_RSP:
-        if (!PluginInfo.MemoryBswaped)	  { return false; }
         if (PluginInfo.Version == 0x0001) { return true; }
         if (PluginInfo.Version == 0x0100) { return true; }
         if (PluginInfo.Version == 0x0101) { return true; }
         if (PluginInfo.Version == 0x0102) { return true; }
         if (PluginInfo.Version == 0x0103) { return true; }
         break;
-    case PLUGIN_TYPE_GFX:
-        if (!PluginInfo.MemoryBswaped)	  { return false; }
+    case PLUGIN_TYPE_VIDEO:
         if (PluginInfo.Version == 0x0102) { return true; }
         if (PluginInfo.Version == 0x0103) { return true; }
         if (PluginInfo.Version == 0x0104) { return true; }
         break;
     case PLUGIN_TYPE_AUDIO:
-        if (!PluginInfo.MemoryBswaped)	  { return false; }
         if (PluginInfo.Version == 0x0101) { return true; }
         if (PluginInfo.Version == 0x0102) { return true; }
         break;

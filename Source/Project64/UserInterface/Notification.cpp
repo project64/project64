@@ -112,9 +112,9 @@ void CNotificationImp::DisplayMessage(int DisplayTime, const char * Message) con
     {
         if (m_gfxPlugin && m_gfxPlugin->DrawStatus)
         {
-            WriteTrace(TraceGFXPlugin, TraceDebug, "DrawStatus - Starting");
+            WriteTrace(TraceVideoPlugin, TraceDebug, "DrawStatus - Starting");
             m_gfxPlugin->DrawStatus(Message, FALSE);
-            WriteTrace(TraceGFXPlugin, TraceDebug, "DrawStatus - Done");
+            WriteTrace(TraceVideoPlugin, TraceDebug, "DrawStatus - Done");
         }
     }
     else

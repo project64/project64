@@ -692,9 +692,9 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
         {
             if (g_Plugins->Gfx() && g_Plugins->Gfx()->MoveScreen)
             {
-                WriteTrace(TraceGFXPlugin, TraceDebug, "Starting");
+                WriteTrace(TraceVideoPlugin, TraceDebug, "Starting");
                 g_Plugins->Gfx()->MoveScreen((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam));
-                WriteTrace(TraceGFXPlugin, TraceDebug, "Done");
+                WriteTrace(TraceVideoPlugin, TraceDebug, "Done");
             }
         }
         break;
@@ -1110,9 +1110,9 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                     {
                         if (g_Plugins->Gfx())
                         {
-                            WriteTrace(TraceGFXPlugin, TraceDebug, "Starting");
+                            WriteTrace(TraceVideoPlugin, TraceDebug, "Starting");
                             g_Plugins->Gfx()->ProcessMenuItem(LOWORD(wParam));
-                            WriteTrace(TraceGFXPlugin, TraceDebug, "Done");
+                            WriteTrace(TraceVideoPlugin, TraceDebug, "Done");
                         }
                     }
                     else if (LOWORD(wParam) > 5200 && LOWORD(wParam) <= 5300)
@@ -1127,9 +1127,9 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                             Rom.SaveRomSettingID(true);
                             g_Notify->DisplayMessage(0, EMPTY_STRING);
                             BYTE * RomHeader = Rom.GetRomAddress();
-                            WriteTrace(TraceGFXPlugin, TraceDebug, "OnRomBrowserMenuItem - Starting");
+                            WriteTrace(TraceVideoPlugin, TraceDebug, "OnRomBrowserMenuItem - Starting");
                             g_Plugins->Gfx()->OnRomBrowserMenuItem(LOWORD(wParam), hWnd, RomHeader);
-                            WriteTrace(TraceGFXPlugin, TraceDebug, "OnRomBrowserMenuItem - Done");
+                            WriteTrace(TraceVideoPlugin, TraceDebug, "OnRomBrowserMenuItem - Done");
                             if (g_Rom)
                             {
                                 g_Rom->SaveRomSettingID(false);

@@ -61,7 +61,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioMain.h" />
-    <ClInclude Include="Audio_1.1.h" />
     <ClInclude Include="AudioSettings.h" />
     <ClInclude Include="ConfigUI.h" />
     <ClInclude Include="Driver\DirectSound.h" />

@@ -608,7 +608,7 @@ Purpose:  This function dumps the current frame to a file
 input:    pointer to the directory to save the file to
 output:   none
 *******************************************************************/
-EXPORT void CALL CaptureScreen(char * Directory)
+void CALL CaptureScreen(const char * Directory)
 {
     g_capture_screen = true;
     g_capture_path = Directory;
@@ -708,7 +708,7 @@ output:   none
 void CALL GetDllInfo(PLUGIN_INFO * PluginInfo)
 {
     PluginInfo->Version = 0x0104;     // Set to 0x0104
-    PluginInfo->Type = PLUGIN_TYPE_GFX;  // Set to PLUGIN_TYPE_GFX
+    PluginInfo->Type = PLUGIN_TYPE_VIDEO;  // Set to PLUGIN_TYPE_GFX
 #ifdef _DEBUG
     sprintf(PluginInfo->Name, "Project64 Video Plugin (Debug): %s", VER_FILE_VERSION_STR);
 #else
@@ -717,8 +717,8 @@ void CALL GetDllInfo(PLUGIN_INFO * PluginInfo)
 
     // If DLL supports memory these memory options then set them to TRUE or FALSE
     //  if it does not support it
-    PluginInfo->NormalMemory = FALSE;  // a normal uint8_t array
-    PluginInfo->MemoryBswaped = TRUE; // a normal uint8_t array where the memory has been pre
+    PluginInfo->Reserved1 = FALSE;  // a normal uint8_t array
+    PluginInfo->Reserved2 = TRUE; // a normal uint8_t array where the memory has been pre
     // bswap on a dword (32 bits) boundry
 }
 

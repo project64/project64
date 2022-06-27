@@ -36,7 +36,6 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Controller_1.1.h" />
     <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>

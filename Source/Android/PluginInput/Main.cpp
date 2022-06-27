@@ -1,5 +1,5 @@
-#include "Controller_1.1.h"
 #include "Version.h"
+#include <Project64-plugin-spec/Input.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -131,9 +131,9 @@ the emulator to know how to handle each controller.
 Output:   None
 */
 
-EXPORT void CALL InitiateControllers (CONTROL_INFO ControlInfo)
+EXPORT void CALL InitiateControllers (CONTROL_INFO * ControlInfo)
 {
-    g_control_info = ControlInfo;
+    g_control_info = *ControlInfo;
     g_control_info.Controls[0].Present = true;
     g_control_info.Controls[0].Plugin = PLUGIN_MEMPAK;
 }

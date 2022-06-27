@@ -83,7 +83,7 @@ void CPluginList::AddPluginFromDir(CPath Dir)
             }
 
             PLUGIN Plugin = { 0 };
-            Plugin.Info.MemoryBswaped = true;
+            Plugin.Info.Reserved2 = true;
             GetDllInfo(&Plugin.Info);
             if (!CPlugin::ValidPluginVersion(Plugin.Info))
             {

@@ -12,6 +12,7 @@
 #include <Project64-core/N64System/Mips/Mempak.h>
 #include <Project64-core/Logging.h>
 #include <Project64-core/Debugger.h>
+#include <Project64-plugin-spec/Input.h>
 
 CPifRam::CPifRam(bool SavesReadOnly) :
     CEeprom(SavesReadOnly)
@@ -469,7 +470,7 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
                 Command[4] = 0x00;
                 switch (Controllers[Control].Plugin)
                 {
-                case PLUGIN_TANSFER_PAK:
+                case PLUGIN_TRANSFER_PAK:
                 case PLUGIN_RUMBLE_PAK:
                 case PLUGIN_MEMPAK:
                 case PLUGIN_RAW:
@@ -524,7 +525,7 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
             {
             case PLUGIN_RUMBLE_PAK: Rumblepak::ReadFrom(address, data); break;
             case PLUGIN_MEMPAK: g_Mempak->ReadFrom(Control, address, data); break;
-            case PLUGIN_TANSFER_PAK: Transferpak::ReadFrom((uint16_t)address, data); break;
+            case PLUGIN_TRANSFER_PAK: Transferpak::ReadFrom((uint16_t)address, data); break;
             case PLUGIN_RAW: if (g_Plugins->Control()->ControllerCommand) { g_Plugins->Control()->ControllerCommand(Control, Command); } break;
             default:
                 memset(&Command[5], 0, 0x20);
@@ -565,7 +566,7 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
             {
             case PLUGIN_MEMPAK: g_Mempak->WriteTo(Control, address, data); break;
             case PLUGIN_RUMBLE_PAK: Rumblepak::WriteTo(Control, address, data); break;
-            case PLUGIN_TANSFER_PAK: Transferpak::WriteTo((uint16_t)address, data); break;
+            case PLUGIN_TRANSFER_PAK: Transferpak::WriteTo((uint16_t)address, data); break;
             case PLUGIN_RAW: if (g_Plugins->Control()->ControllerCommand) { g_Plugins->Control()->ControllerCommand(Control, Command); } break;
             }
 

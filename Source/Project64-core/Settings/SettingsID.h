@@ -273,7 +273,7 @@ enum SettingID
     Debugger_TraceAppCleanup,
     Debugger_TraceN64System,
     Debugger_TracePlugins,
-    Debugger_TraceGFXPlugin,
+    Debugger_TraceVideoPlugin,
     Debugger_TraceAudioPlugin,
     Debugger_TraceControllerPlugin,
     Debugger_TraceRSPPlugin,

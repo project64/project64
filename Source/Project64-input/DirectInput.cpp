@@ -48,7 +48,7 @@ CDirectInput::~CDirectInput()
 
 void CDirectInput::Initiate(CONTROL_INFO * ControlInfo)
 {
-    m_hWnd = (HWND)ControlInfo->hwnd;
+    m_hWnd = (HWND)ControlInfo->hWnd;
 }
 
 void CDirectInput::MapControllerDevice(N64CONTROLLER & Controller)

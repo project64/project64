@@ -1,5 +1,5 @@
 #pragma once
-#include "ControllerSpec1.1.h"
+#include <Project64-plugin-spec\Input.h>
 #include "DirectInput.h"
 #include "N64Controller.h"
 #include "Shortcuts.h"

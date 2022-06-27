@@ -141,7 +141,7 @@ void CPlugins::CreatePlugins(void)
 {
     WriteTrace(TracePlugins, TraceInfo, "Start");
 
-    LoadPlugin(Game_Plugin_Gfx, Plugin_GFX_CurVer, m_Gfx, m_PluginDir.c_str(), m_GfxFile, TraceGFXPlugin, "GFX", m_SyncPlugins);
+    LoadPlugin(Game_Plugin_Gfx, Plugin_GFX_CurVer, m_Gfx, m_PluginDir.c_str(), m_GfxFile, TraceVideoPlugin, "GFX", m_SyncPlugins);
     LoadPlugin(Game_Plugin_Audio, Plugin_AUDIO_CurVer, m_Audio, m_PluginDir.c_str(), m_AudioFile, TraceAudioPlugin, "Audio", m_SyncPlugins);
     LoadPlugin(Game_Plugin_RSP, Plugin_RSP_CurVer, m_RSP, m_PluginDir.c_str(), m_RSPFile, TraceRSPPlugin, "RSP", m_SyncPlugins);
     LoadPlugin(Game_Plugin_Controller, Plugin_CONT_CurVer, m_Control, m_PluginDir.c_str(), m_ControlFile, TraceControllerPlugin, "Control", m_SyncPlugins);
@@ -182,15 +182,15 @@ void CPlugins::DestroyGfxPlugin(void)
     {
         return;
     }
-    WriteTrace(TraceGFXPlugin, TraceDebug, "Before close");
+    WriteTrace(TraceVideoPlugin, TraceDebug, "Before close");
     m_Gfx->Close(m_MainWindow);
-    WriteTrace(TraceGFXPlugin, TraceInfo, "Deleting");
+    WriteTrace(TraceVideoPlugin, TraceInfo, "Deleting");
     delete m_Gfx;
-    WriteTrace(TraceGFXPlugin, TraceInfo, "m_Gfx deleted");
+    WriteTrace(TraceVideoPlugin, TraceInfo, "m_Gfx deleted");
     m_Gfx = nullptr;
     //		g_Settings->UnknownSetting_GFX = nullptr;
     DestroyRspPlugin();
-    WriteTrace(TraceGFXPlugin, TraceInfo, "Done");
+    WriteTrace(TraceVideoPlugin, TraceInfo, "Done");
 }
 
 void CPlugins::DestroyAudioPlugin(void)
@@ -281,9 +281,9 @@ bool CPlugins::Initiate(CN64System * System)
     if (m_RSP == nullptr) { return false; }
     if (m_Control == nullptr) { return false; }
 
-    WriteTrace(TraceGFXPlugin, TraceDebug, "GFX initiate starting");
+    WriteTrace(TraceVideoPlugin, TraceDebug, "GFX initiate starting");
     if (!m_Gfx->Initiate(System, m_MainWindow))   { return false; }
-    WriteTrace(TraceGFXPlugin, TraceDebug, "GFX initiate done");
+    WriteTrace(TraceVideoPlugin, TraceDebug, "GFX initiate done");
     WriteTrace(TraceAudioPlugin, TraceDebug, "Audio initiate starting");
     if (!m_Audio->Initiate(System, m_MainWindow)) { return false; }
     WriteTrace(TraceAudioPlugin, TraceDebug, "Audio initiate done");
@@ -331,9 +331,9 @@ bool CPlugins::Reset(CN64System * System)
 
     if (m_Gfx && bGfxChange)
     {
-        WriteTrace(TraceGFXPlugin, TraceDebug, "GFX initiate starting");
+        WriteTrace(TraceVideoPlugin, TraceDebug, "GFX initiate starting");
         if (!m_Gfx->Initiate(System, m_MainWindow)) { return false; }
-        WriteTrace(TraceGFXPlugin, TraceDebug, "GFX initiate done");
+        WriteTrace(TraceVideoPlugin, TraceDebug, "GFX initiate done");
     }
     if (m_Audio && bAudioChange)
     {
@@ -382,7 +382,7 @@ void CPlugins::ConfigPlugin(void* hParent, PLUGIN_TYPE Type)
         }
         m_RSP->DllConfig(hParent);
         break;
-    case PLUGIN_TYPE_GFX:
+    case PLUGIN_TYPE_VIDEO:
         if (m_Gfx == nullptr || m_Gfx->DllConfig == nullptr) { break; }
         if (!m_Gfx->Initialized())
         {

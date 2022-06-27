@@ -209,14 +209,14 @@ void CProject64Input::LockMouse()
 {
     if (IsMouseUsed() == false) return UnlockMouse();
     if (m_MouseLock == true) return;
-    PostMessage((HWND)m_ControlInfo.hwnd, WM_HIDE_CUROSR, false, 0);
+    PostMessage((HWND)m_ControlInfo.hWnd, WM_HIDE_CUROSR, false, 0);
     m_MouseLock = true;
 }
 
 void CProject64Input::UnlockMouse()
 {
     if (m_MouseLock == false) return;
-    PostMessage((HWND)m_ControlInfo.hwnd, WM_HIDE_CUROSR, true, 0);
+    PostMessage((HWND)m_ControlInfo.hWnd, WM_HIDE_CUROSR, true, 0);
     m_MouseLock = false;
 }
 
@@ -247,6 +247,6 @@ bool CProject64Input::IsMouseUsed()
 void CProject64Input::LockCursor()
 {
     RECT rect;
-    GetWindowRect((HWND)m_ControlInfo.hwnd, &rect);
+    GetWindowRect((HWND)m_ControlInfo.hWnd, &rect);
     SetCursorPos((rect.left + rect.right) / 2, (rect.top + rect.bottom) / 2);
 }

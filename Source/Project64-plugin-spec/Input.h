@@ -1,24 +1,12 @@
-// Project64 controller plugin spec, version 1.1
-
 #pragma once
-#include <stdint.h>
-
-enum { PLUGIN_TYPE_CONTROLLER = 4 };
-
-#if defined(_WIN32)
-#define EXPORT      extern "C" __declspec(dllexport)
-#define CALL        __cdecl
-#else
-#define EXPORT      extern "C" __attribute__((visibility("default")))
-#define CALL
-#endif
+#include "Base.h"
 
 enum 
 {
     CONTROLLER_SPECS_VERSION = 0x0102
 };
 
-enum
+enum PluginType
 {
     PLUGIN_NONE = 1,
     PLUGIN_MEMPAK = 2,
@@ -27,23 +15,16 @@ enum
     PLUGIN_RAW = 5,
 };
 
-enum
+enum PresentType
 {
     PRESENT_NONE = 0,
     PRESENT_CONT = 1,
     PRESENT_MOUSE = 2,
 };
 
-// Structures
-
-typedef struct
-{
-    uint16_t Version;    // Should be set to 0x0101
-    uint16_t Type;       // Set to PLUGIN_TYPE_CONTROLLER
-    char Name[100];      // Name of the DLL
-    int32_t NormalMemory;
-    int32_t MemoryBswaped;
-} PLUGIN_INFO;
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 typedef struct
 {
@@ -78,9 +59,9 @@ typedef union
         unsigned Reserved1 : 1;
         unsigned Reserved2 : 1;
 
-        signed   X_AXIS : 8;
+        signed X_AXIS : 8;
 
-        signed   Y_AXIS : 8;
+        signed Y_AXIS : 8;
     };
 } BUTTONS;
 
@@ -88,22 +69,12 @@ typedef union
 
 typedef struct
 {
-    void * hwnd;
+    void * hWnd;
     void * hinst;
-    int32_t MemoryBswaped;    // Set this to true
+    int32_t Reserved;
     uint8_t * HEADER;         // This is the ROM header (first 40h bytes of the ROM)
     CONTROL * Controls;       // A pointer to an array of 4 controllers
 } CONTROL_INFO;
-
-/*
-Function: CloseDLL
-Purpose: This function is called when the emulator is closing
-down allowing the DLL to de-initialize.
-Input: None
-Output: None
-*/
-
-EXPORT void CALL CloseDLL(void);
 
 /*
 Function: ControllerCommand
@@ -119,49 +90,7 @@ The data that is being processed looks like this:
 Initialize controller: 01 03 00 FF FF FF
 Read controller: 01 04 01 FF FF FF FF
 */
-
 EXPORT void CALL ControllerCommand(int32_t Control, uint8_t * Command);
-
-/*
-Function: DllAbout
-Purpose: This function is optional function that is provided
-to give further information about the DLL.
-Input: A handle to the window that calls this function.
-Output: None
-*/
-
-EXPORT void CALL DllAbout(void * hParent);
-
-/*
-Function: DllConfig
-Purpose: This function is optional function that is provided
-to allow the user to configure the DLL.
-Input: A handle to the window that calls this function.
-Output: None
-*/
-
-EXPORT void CALL DllConfig(void * hParent);
-
-/*
-Function: DllTest
-Purpose: This function is optional function that is provided
-to allow the user to test the DLL.
-Input: A handle to the window that calls this function.
-Output: None
-*/
-
-EXPORT void CALL DllTest(void * hParent);
-
-/*
-Function: GetDllInfo
-Purpose: This function allows the emulator to gather information
-about the DLL by filling in the PluginInfo structure.
-Input: A pointer to a PLUGIN_INFO structure that needs to be
-filled by the function. (see def above)
-Output: None
-*/
-
-EXPORT void CALL GetDllInfo(PLUGIN_INFO * PluginInfo);
 
 /*
 Function: GetKeys
@@ -171,7 +100,6 @@ Input: Controller number (0 to 3)
 the controller state.
 Output: None
 */
-
 EXPORT void CALL GetKeys(int32_t Control, BUTTONS * Keys);
 
 /*
@@ -183,7 +111,6 @@ Input: The handle to the main window.
 the emulator to know how to handle each controller.
 Output: None
 */
-
 EXPORT void CALL InitiateControllers(CONTROL_INFO * ControlInfo);
 
 /*
@@ -197,27 +124,7 @@ Output: None
 Note: This function is only needed if the DLL is allowing raw
 data.
 */
-
 EXPORT void CALL ReadController(int Control, uint8_t * Command);
-
-/*
-Function: RomClosed
-Purpose: This function is called when a ROM is closed.
-Input: None
-Output: None
-*/
-
-EXPORT void CALL RomClosed(void);
-
-/*
-Function: RomOpen
-Purpose: This function is called when a ROM is open. (from the
-emulation thread)
-Input: None
-Output: None
-*/
-
-EXPORT void CALL RomOpen(void);
 
 /*
 Function: EmulationPaused
@@ -226,7 +133,6 @@ emulation thread)
 Input: None
 Output: None
 */
-
 EXPORT void CALL EmulationPaused(void);
 
 /*
@@ -236,7 +142,6 @@ plugin.
 Input: wParam and lParam of the WM_KEYDOWN message.
 Output: None
 */
-
 EXPORT void CALL WM_KeyDown(uint32_t wParam, uint32_t lParam);
 
 /*
@@ -246,7 +151,6 @@ plugin.
 Input: wParam and lParam of the WM_KEYDOWN message.
 Output: None
 */
-
 EXPORT void CALL WM_KeyUp(uint32_t wParam, uint32_t lParam);
 
 /*
@@ -256,5 +160,8 @@ plugin.
 Input: wParam and lParam of the WM_KILLFOCUS message.
 Output: None
 */
-
 EXPORT void CALL WM_KillFocus(uint32_t wParam, uint32_t lParam);
+
+#if defined(__cplusplus)
+}
+#endif

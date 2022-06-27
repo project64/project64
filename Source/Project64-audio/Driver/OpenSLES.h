@@ -10,7 +10,7 @@
 
 #pragma once
 #include <Common/SyncEvent.h>
-#include <Project64-audio/Audio_1.1.h>
+#include <Project64-plugin-spec\Audio.h>
 #include "SoundBase.h"
 
 class OpenSLESDriver :

@@ -2487,17 +2487,17 @@ void CN64System::RefreshScreen()
 
     __except_try()
     {
-        WriteTrace(TraceGFXPlugin, TraceDebug, "UpdateScreen starting");
+        WriteTrace(TraceVideoPlugin, TraceDebug, "UpdateScreen starting");
         m_Plugins->Gfx()->UpdateScreen();
 		if (g_Debugger != nullptr && HaveDebugger())
 		{
 			g_Debugger->FrameDrawn();
 		}
-        WriteTrace(TraceGFXPlugin, TraceDebug, "UpdateScreen done");
+        WriteTrace(TraceVideoPlugin, TraceDebug, "UpdateScreen done");
     }
     __except_catch()
     {
-        WriteTrace(TraceGFXPlugin, TraceError, "Exception caught");
+        WriteTrace(TraceVideoPlugin, TraceError, "Exception caught");
     }
     g_MMU->VideoInterface().UpdateFieldSerration((m_Reg.VI_STATUS_REG & 0x40) != 0);
 

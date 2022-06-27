@@ -1,4 +1,4 @@
-#include "ControllerSpec1.1.h"
+#include <Project64-plugin-spec/Input.h>
 #include "InputConfigUI.h"
 #include "Version.h"
 #include "CProject64Input.h"
@@ -98,8 +98,8 @@ EXPORT void CALL GetDllInfo(PLUGIN_INFO * PluginInfo)
 #else
     sprintf(PluginInfo->Name, "Project64 input plugin: %s", VER_FILE_VERSION_STR);
 #endif
-    PluginInfo->MemoryBswaped = true;
-    PluginInfo->NormalMemory = false;
+    PluginInfo->Reserved2 = true;
+    PluginInfo->Reserved1 = false;
 }
 
 /*

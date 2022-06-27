@@ -34,7 +34,6 @@ add_library(Project64-core STATIC
     N64System/MemoryHandler/SerialInterfaceHandler.cpp
     N64System/MemoryHandler/SPRegistersHandler.cpp
     N64System/MemoryHandler/VideoInterfaceHandler.cpp
-    N64System/Mips/Dma.cpp
     N64System/Mips/Disk.cpp
     N64System/Mips/GBCart.cpp
     N64System/Mips/MemoryVirtualMem.cpp

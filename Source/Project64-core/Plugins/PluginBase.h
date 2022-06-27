@@ -3,13 +3,8 @@
 #include <Project64-core/Settings/DebugSettings.h>
 #include <Project64-core/TraceModulesProject64.h>
 #include <Project64-core/Plugins/Plugin.h>
+#include <Project64-plugin-spec\Base.h>
 #include <Common/DynamicLibrary.h>
-
-#if defined(_WIN32)
-#define CALL        __cdecl
-#else
-#define CALL
-#endif
 
 class CPlugin :
     private CDebugSettings
@@ -43,15 +38,15 @@ protected:
     virtual PLUGIN_TYPE type() = 0;
     virtual bool LoadFunctions(void) = 0;
 
-    void(CALL *CloseDLL)            (void);
-    void(CALL *RomOpen)             (void);
-    void(CALL *RomClosed)           (void);
-    void(CALL *PluginOpened)(void);
-    void(CALL *SetSettingInfo)(PLUGIN_SETTINGS  *);
-    void(CALL *SetSettingInfo2)(PLUGIN_SETTINGS2 *);
-    void(CALL *SetSettingInfo3)(PLUGIN_SETTINGS3 *);
-    void(CALL *SetSettingNotificationInfo)(PLUGIN_SETTINGS_NOTIFICATION *);
-    void(CALL *SetPluginNotification)(PLUGIN_NOTIFICATION *);
+    void(CALL * CloseDLL)            (void);
+    void(CALL * RomOpen)             (void);
+    void(CALL * RomClosed)           (void);
+    void(CALL * PluginOpened)(void);
+    void(CALL * SetSettingInfo)(PLUGIN_SETTINGS  *);
+    void(CALL * SetSettingInfo2)(PLUGIN_SETTINGS2 *);
+    void(CALL * SetSettingInfo3)(PLUGIN_SETTINGS3 *);
+    void(CALL * SetSettingNotificationInfo)(PLUGIN_SETTINGS_NOTIFICATION *);
+    void(CALL * SetPluginNotification)(PLUGIN_NOTIFICATION *);
 
     DynLibHandle m_LibHandle;
     bool m_Initialized, m_RomOpen;

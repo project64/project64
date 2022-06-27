@@ -75,7 +75,7 @@ private:
 
     virtual int32_t GetDefaultSettingStartRange() const { return FirstGfxDefaultSet; }
     virtual int32_t GetSettingStartRange() const { return FirstGfxSettings; }
-    PLUGIN_TYPE type() { return PLUGIN_TYPE_GFX; }
+    PLUGIN_TYPE type() { return PLUGIN_TYPE_VIDEO; }
 
     void UnloadPluginDetails(void);
 

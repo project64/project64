@@ -355,7 +355,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Debugger_TraceAppCleanup, new CSettingTypeApplication("Logging", "App Cleanup", (uint32_t)g_ModuleLogLevel[TraceAppCleanup]));
     AddHandler(Debugger_TraceN64System, new CSettingTypeApplication("Logging", "N64 System", (uint32_t)g_ModuleLogLevel[TraceN64System]));
     AddHandler(Debugger_TracePlugins, new CSettingTypeApplication("Logging", "Plugins", (uint32_t)g_ModuleLogLevel[TracePlugins]));
-    AddHandler(Debugger_TraceGFXPlugin, new CSettingTypeApplication("Logging", "GFX Plugin", (uint32_t)g_ModuleLogLevel[TraceGFXPlugin]));
+    AddHandler(Debugger_TraceVideoPlugin, new CSettingTypeApplication("Logging", "GFX Plugin", (uint32_t)g_ModuleLogLevel[TraceVideoPlugin]));
     AddHandler(Debugger_TraceAudioPlugin, new CSettingTypeApplication("Logging", "Audio Plugin", (uint32_t)g_ModuleLogLevel[TraceAudioPlugin]));
     AddHandler(Debugger_TraceControllerPlugin, new CSettingTypeApplication("Logging", "Controller Plugin", (uint32_t)g_ModuleLogLevel[TraceControllerPlugin]));
     AddHandler(Debugger_TraceRSPPlugin, new CSettingTypeApplication("Logging", "RSP Plugin", (uint32_t)g_ModuleLogLevel[TraceRSPPlugin]));

@@ -1,6 +1,6 @@
 #pragma once
 #include <stdint.h>
-#include "ControllerSpec1.1.h"
+#include <Project64-plugin-spec/Input.h>
 #include "Shortcuts.h"
 
 void ConfigShortcut(SHORTCUTS & Shortcuts);

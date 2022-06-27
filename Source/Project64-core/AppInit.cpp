@@ -59,7 +59,7 @@ void SetTraceModuleNames(void)
     TraceSetModuleName(TraceAppCleanup, "App Cleanup");
     TraceSetModuleName(TraceN64System, "N64 System");
     TraceSetModuleName(TracePlugins, "Plugins");
-    TraceSetModuleName(TraceGFXPlugin, "GFX Plugin");
+    TraceSetModuleName(TraceVideoPlugin, "GFX Plugin");
     TraceSetModuleName(TraceAudioPlugin, "Audio Plugin");
     TraceSetModuleName(TraceControllerPlugin, "Controller Plugin");
     TraceSetModuleName(TraceRSPPlugin, "RSP Plugin");
@@ -85,7 +85,7 @@ void UpdateTraceLevel(void * /*NotUsed*/)
     g_ModuleLogLevel[TraceAppCleanup] = (uint8_t)g_Settings->LoadDword(Debugger_TraceAppCleanup);
     g_ModuleLogLevel[TraceN64System] = (uint8_t)g_Settings->LoadDword(Debugger_TraceN64System);
     g_ModuleLogLevel[TracePlugins] = (uint8_t)g_Settings->LoadDword(Debugger_TracePlugins);
-    g_ModuleLogLevel[TraceGFXPlugin] = (uint8_t)g_Settings->LoadDword(Debugger_TraceGFXPlugin);
+    g_ModuleLogLevel[TraceVideoPlugin] = (uint8_t)g_Settings->LoadDword(Debugger_TraceVideoPlugin);
     g_ModuleLogLevel[TraceAudioPlugin] = (uint8_t)g_Settings->LoadDword(Debugger_TraceAudioPlugin);
     g_ModuleLogLevel[TraceControllerPlugin] = (uint8_t)g_Settings->LoadDword(Debugger_TraceControllerPlugin);
     g_ModuleLogLevel[TraceRSPPlugin] = (uint8_t)g_Settings->LoadDword(Debugger_TraceRSPPlugin);
@@ -113,7 +113,7 @@ void SetupTrace(void)
     g_Settings->RegisterChangeCB(Debugger_TraceAppCleanup, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->RegisterChangeCB(Debugger_TraceN64System, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->RegisterChangeCB(Debugger_TracePlugins, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TraceGFXPlugin, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceVideoPlugin, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->RegisterChangeCB(Debugger_TraceAudioPlugin, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->RegisterChangeCB(Debugger_TraceControllerPlugin, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->RegisterChangeCB(Debugger_TraceRSPPlugin, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
@@ -145,7 +145,7 @@ void CleanupTrace(void)
     g_Settings->UnregisterChangeCB(Debugger_TraceAppCleanup, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_TraceN64System, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_TracePlugins, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TraceGFXPlugin, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceVideoPlugin, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_TraceAudioPlugin, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_TraceControllerPlugin, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_TraceRSPPlugin, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);

@@ -3,7 +3,7 @@
 #include <string>
 #include "N64Controller.h"
 #include "Shortcuts.h"
-#include "ControllerSpec1.1.h"
+#include <Project64-plugin-spec\Input.h>
 
 class CInputSettings
 {

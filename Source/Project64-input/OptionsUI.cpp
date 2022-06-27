@@ -84,7 +84,7 @@ public:
 
         CComboBox ControllerPak(GetDlgItem(IDC_PAKTYPE));
         DWORD_PTR Pak = ControllerPak.GetItemData(ControllerPak.GetCurSel());
-        if (Pak != m_ControlInfo.Plugin)
+        if (Pak != (DWORD_PTR)m_ControlInfo.Plugin)
         {
             m_ControlInfo.Plugin = (Pak & 0xFFFFFFFF);
             bChanged = true;

@@ -2,22 +2,7 @@
 #include <list>
 #include <Project64-core/Settings.h>
 #include <Project64-core/Settings/DebugSettings.h>
-
-#ifndef PLUGIN_INFO_STRUCT
-#define PLUGIN_INFO_STRUCT
-
-typedef struct _PLUGIN_INFO
-{
-    uint16_t Version;        // Should be set to 1
-    uint16_t Type;           // Set to PLUGIN_TYPE_GFX
-    char Name[100];      // Name of the DLL
-
-    // If DLL supports these memory options then set them to TRUE or FALSE if it does not support it
-    int32_t NormalMemory;   // A normal BYTE array
-    int32_t MemoryBswaped;  // A normal BYTE array where the memory has been pre-bswap'd on a DWORD (32-bit) boundary
-} PLUGIN_INFO;
-
-#endif
+#include <Project64-plugin-spec/Base.h>
 
 // Enums
 enum SETTING_DATA_TYPE
@@ -76,15 +61,6 @@ typedef struct
     void(*DisplayMessage2)(const char * Message);
     void(*BreakPoint)(const char * FileName, int32_t LineNumber);
 } PLUGIN_NOTIFICATION;
-
-enum PLUGIN_TYPE
-{
-    PLUGIN_TYPE_NONE = 0,
-    PLUGIN_TYPE_RSP = 1,
-    PLUGIN_TYPE_GFX = 2,
-    PLUGIN_TYPE_AUDIO = 3,
-    PLUGIN_TYPE_CONTROLLER = 4,
-};
 
 class CSettings;
 class CGfxPlugin; class CAudioPlugin; class CRSP_Plugin; class CControl_Plugin;

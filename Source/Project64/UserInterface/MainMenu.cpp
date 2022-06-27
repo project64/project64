@@ -40,7 +40,7 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
     m_ChangeSettingList.push_back(Debugger_TraceAppCleanup);
     m_ChangeSettingList.push_back(Debugger_TraceN64System);
     m_ChangeSettingList.push_back(Debugger_TracePlugins);
-    m_ChangeSettingList.push_back(Debugger_TraceGFXPlugin);
+    m_ChangeSettingList.push_back(Debugger_TraceVideoPlugin);
     m_ChangeSettingList.push_back(Debugger_TraceAudioPlugin);
     m_ChangeSettingList.push_back(Debugger_TraceControllerPlugin);
     m_ChangeSettingList.push_back(Debugger_TraceRSPPlugin);
@@ -211,9 +211,9 @@ void CMainMenu::OnEndEmulation(void)
 void CMainMenu::OnScreenShot(void)
 {
     stdstr Dir(g_Settings->LoadStringVal(Directory_SnapShot));
-    WriteTrace(TraceGFXPlugin, TraceDebug, "CaptureScreen(%s): Starting", Dir.c_str());
+    WriteTrace(TraceVideoPlugin, TraceDebug, "CaptureScreen(%s): Starting", Dir.c_str());
     g_Plugins->Gfx()->CaptureScreen(Dir.c_str());
-    WriteTrace(TraceGFXPlugin, TraceDebug, "CaptureScreen: Done");
+    WriteTrace(TraceVideoPlugin, TraceDebug, "CaptureScreen: Done");
 }
 
 void CMainMenu::OnSaveAs(HWND hWnd)
@@ -412,9 +412,9 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN a");
             m_Gui->MakeWindowOnTop(false);
             Notify().SetGfxPlugin(nullptr);
-            WriteTrace(TraceGFXPlugin, TraceDebug, "ChangeWindow: Starting");
+            WriteTrace(TraceVideoPlugin, TraceDebug, "ChangeWindow: Starting");
             g_Plugins->Gfx()->ChangeWindow();
-            WriteTrace(TraceGFXPlugin, TraceDebug, "ChangeWindow: Done");
+            WriteTrace(TraceVideoPlugin, TraceDebug, "ChangeWindow: Done");
             ShowCursor(true);
             m_Gui->ShowStatusBar(g_Settings->LoadBool((SettingID)UserInterface_ShowStatusBar));
             m_Gui->MakeWindowOnTop(UISettingsLoadBool(UserInterface_AlwaysOnTop));
@@ -429,9 +429,9 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN b 2");
             try
             {
-                WriteTrace(TraceGFXPlugin, TraceDebug, "ChangeWindow: Starting");
+                WriteTrace(TraceVideoPlugin, TraceDebug, "ChangeWindow: Starting");
                 g_Plugins->Gfx()->ChangeWindow();
-                WriteTrace(TraceGFXPlugin, TraceDebug, "ChangeWindow: Done");
+                WriteTrace(TraceVideoPlugin, TraceDebug, "ChangeWindow: Done");
             }
             catch (...)
             {
@@ -468,7 +468,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         break;
     case ID_OPTIONS_CONFIG_GFX:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_CONFIG_GFX");
-        g_Plugins->ConfigPlugin(hWnd, PLUGIN_TYPE_GFX);
+        g_Plugins->ConfigPlugin(hWnd, PLUGIN_TYPE_VIDEO);
         break;
     case ID_OPTIONS_CONFIG_AUDIO:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_CONFIG_AUDIO");
@@ -535,7 +535,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_DEBUGGER_TRACE_APPCLEANUP: SetTraceModuleSetttings(Debugger_TraceAppCleanup); break;
     case ID_DEBUGGER_TRACE_N64SYSTEM: SetTraceModuleSetttings(Debugger_TraceN64System); break;
     case ID_DEBUGGER_TRACE_PLUGINS: SetTraceModuleSetttings(Debugger_TracePlugins); break;
-    case ID_DEBUGGER_TRACE_GFXPLUGIN: SetTraceModuleSetttings(Debugger_TraceGFXPlugin); break;
+    case ID_DEBUGGER_TRACE_GFXPLUGIN: SetTraceModuleSetttings(Debugger_TraceVideoPlugin); break;
     case ID_DEBUGGER_TRACE_AUDIOPLUGIN: SetTraceModuleSetttings(Debugger_TraceAudioPlugin); break;
     case ID_DEBUGGER_TRACE_CONTROLLERPLUGIN: SetTraceModuleSetttings(Debugger_TraceControllerPlugin); break;
     case ID_DEBUGGER_TRACE_RSPPLUGIN: SetTraceModuleSetttings(Debugger_TraceRSPPlugin); break;
@@ -1131,7 +1131,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         DebugAppLoggingMenu.push_back(Item);
 
         Item.Reset(ID_DEBUGGER_TRACE_GFXPLUGIN, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"GFX plugin");
-        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceGFXPlugin) == TraceVerbose);
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceVideoPlugin) == TraceVerbose);
         DebugAppLoggingMenu.push_back(Item);
 
         Item.Reset(ID_DEBUGGER_TRACE_AUDIOPLUGIN, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Audio plugin");

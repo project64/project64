@@ -8,32 +8,32 @@
 #include "GFXPlugin.h"
 
 CGfxPlugin::CGfxPlugin() :
-CaptureScreen(nullptr),
-ChangeWindow(nullptr),
-DrawScreen(nullptr),
-DrawStatus(nullptr),
-MoveScreen(nullptr),
-ProcessDList(nullptr),
-ProcessRDPList(nullptr),
-ShowCFB(nullptr),
-UpdateScreen(nullptr),
-ViStatusChanged(nullptr),
-ViWidthChanged(nullptr),
-SoftReset(nullptr),
-GetRomBrowserMenu(nullptr),
-OnRomBrowserMenuItem(nullptr),
-GetDebugInfo(nullptr),
-InitiateDebugger(nullptr)
+    CaptureScreen(nullptr),
+    ChangeWindow(nullptr),
+    DrawScreen(nullptr),
+    DrawStatus(nullptr),
+    MoveScreen(nullptr),
+    ProcessDList(nullptr),
+    ProcessRDPList(nullptr),
+    ShowCFB(nullptr),
+    UpdateScreen(nullptr),
+    ViStatusChanged(nullptr),
+    ViWidthChanged(nullptr),
+    SoftReset(nullptr),
+    GetRomBrowserMenu(nullptr),
+    OnRomBrowserMenuItem(nullptr),
+    GetDebugInfo(nullptr),
+    InitiateDebugger(nullptr)
 {
     memset(&m_GFXDebug, 0, sizeof(m_GFXDebug));
 }
 
 CGfxPlugin::~CGfxPlugin()
 {
-    WriteTrace(TraceGFXPlugin, TraceDebug, "Start");
+    WriteTrace(TraceVideoPlugin, TraceDebug, "Start");
     Close(nullptr);
     UnloadPlugin();
-    WriteTrace(TraceGFXPlugin, TraceDebug, "Done");
+    WriteTrace(TraceVideoPlugin, TraceDebug, "Done");
 }
 
 bool CGfxPlugin::LoadFunctions(void)
@@ -99,7 +99,7 @@ bool CGfxPlugin::LoadFunctions(void)
 
 bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
 {
-    WriteTrace(TraceGFXPlugin, TraceDebug, "Start");
+    WriteTrace(TraceVideoPlugin, TraceDebug, "Start");
     if (m_Initialized)
     {
         Close(Window);
@@ -163,7 +163,7 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
     _LoadFunction("InitiateGFX", InitiateGFX);
     if (InitiateGFX == nullptr)
     {
-        WriteTrace(TraceGFXPlugin, TraceDebug, "Failed to find InitiateGFX");
+        WriteTrace(TraceVideoPlugin, TraceDebug, "Failed to find InitiateGFX");
         return false;
     }
 
@@ -186,7 +186,7 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
 
     // We are initializing the plugin before any ROM is loaded so we do not have any correct
     // parameters here, it's just needed so we can config the DLL
-    WriteTrace(TraceGFXPlugin, TraceDebug, "System = %X", System);
+    WriteTrace(TraceVideoPlugin, TraceDebug, "System = %X", System);
     if (System == nullptr)
     {
         static uint8_t Buffer[100];
@@ -250,16 +250,16 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
         Info.VI__Y_SCALE_REG = &Reg.VI_Y_SCALE_REG;
     }
 
-    WriteTrace(TraceGFXPlugin, TraceDebug, "Calling InitiateGFX");
+    WriteTrace(TraceVideoPlugin, TraceDebug, "Calling InitiateGFX");
     m_Initialized = InitiateGFX(Info) != 0;
 
-    WriteTrace(TraceGFXPlugin, TraceDebug, "Done (res: %s)", m_Initialized ? "true" : "false");
+    WriteTrace(TraceVideoPlugin, TraceDebug, "Done (res: %s)", m_Initialized ? "true" : "false");
     return m_Initialized;
 }
 
 void CGfxPlugin::UnloadPluginDetails(void)
 {
-    WriteTrace(TraceGFXPlugin, TraceDebug, "Start");
+    WriteTrace(TraceVideoPlugin, TraceDebug, "Start");
     if (m_LibHandle != nullptr)
     {
         DynamicLibraryClose(m_LibHandle);
@@ -267,13 +267,10 @@ void CGfxPlugin::UnloadPluginDetails(void)
     }
     memset(&m_GFXDebug, 0, sizeof(m_GFXDebug));
 
-    //	CaptureScreen        = nullptr;
     ChangeWindow = nullptr;
     GetDebugInfo = nullptr;
     DrawScreen = nullptr;
     DrawStatus = nullptr;
-    //	FrameBufferRead      = nullptr;
-    //	FrameBufferWrite     = nullptr;
     InitiateDebugger = nullptr;
     MoveScreen = nullptr;
     ProcessDList = nullptr;
@@ -284,7 +281,7 @@ void CGfxPlugin::UnloadPluginDetails(void)
     ViWidthChanged = nullptr;
     GetRomBrowserMenu = nullptr;
     OnRomBrowserMenuItem = nullptr;
-    WriteTrace(TraceGFXPlugin, TraceDebug, "Done");
+    WriteTrace(TraceVideoPlugin, TraceDebug, "Done");
 }
 
 void CGfxPlugin::ProcessMenuItem(int32_t id)
@@ -299,11 +296,11 @@ void CGfxPlugin::ProcessMenuItem(int32_t id)
 void CGfxPlugin::SwapBuffers(void)
 {
     RenderWindow * render = g_Plugins ? g_Plugins->MainWindow() : nullptr;
-    WriteTrace(TraceGFXPlugin, TraceDebug, "Start (render: %p)",render);
+    WriteTrace(TraceVideoPlugin, TraceDebug, "Start (render: %p)",render);
     if (render != nullptr)
     {
         render->SwapWindow();
     }
-    WriteTrace(TraceGFXPlugin, TraceDebug, "Done");
+    WriteTrace(TraceVideoPlugin, TraceDebug, "Done");
 }
 #endif
