@@ -2908,13 +2908,38 @@ void CX86RecompilerOps::LH_KnownAddress(x86Reg Reg, uint32_t VAddr, bool SignExt
     case 0x10000000:
         if ((PAddr - 0x10000000) < g_Rom->GetRomSize())
         {
-            if (SignExtend)
+            m_RegWorkingSet.BeforeCallDirect();
+            PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
+            PushImm32(PAddr & 0x1FFFFFFC);
+#ifdef _MSC_VER
+            MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_RomMemoryHandler, x86_ECX);
+            Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_RomMemoryHandler)[0][0], "RomMemoryHandler::Read32");
+#else
+            PushImm32((uint32_t)&g_MMU->m_RomMemoryHandler);
+            Call_Direct(AddressOf(&RomMemoryHandler::Read32), "RomMemoryHandler::Read32");
+            AddConstToX86Reg(x86_ESP, 16);
+#endif
+            m_RegWorkingSet.AfterCallDirect();
+            uint8_t ShiftValue = (((PAddr & 2) ^ 2) << 3);
+            if (ShiftValue != 0)
             {
-                MoveSxVariableToX86regHalf(((PAddr ^ 2) - 0x10000000) + g_Rom->GetRomAddress(), stdstr_f("Rom + (%X ^ 2)", (PAddr - 0x10000000)).c_str(), Reg);
+                MoveVariableToX86reg(&m_TempValue32, "m_TempValue32", Reg);
+                if (SignExtend)
+                {
+                    ShiftRightSignImmed(Reg, ShiftValue);
+                }
+                else
+                {
+                    ShiftRightUnsignImmed(Reg, ShiftValue);
+                }
+            }
+            else if (SignExtend)
+            {
+                MoveSxVariableToX86regHalf(&m_TempValue32, "m_TempValue32", Reg);
             }
             else
             {
-                MoveZxVariableToX86regHalf(((PAddr ^ 2) - 0x10000000) + g_Rom->GetRomAddress(), stdstr_f("Rom + (%X ^ 2)", (PAddr - 0x10000000)).c_str(), Reg);
+                MoveZxVariableToX86regHalf(&m_TempValue32, "m_TempValue32", Reg);
             }
         }
         else
@@ -3312,7 +3337,19 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
         default:
             if ((PAddr & 0xF0000000) == 0x10000000 && (PAddr - 0x10000000) < g_Rom->GetRomSize())
             {
-                MoveVariableToX86reg((PAddr - 0x10000000) + g_Rom->GetRomAddress(), stdstr_f("Rom + %X", (PAddr - 0x10000000)).c_str(), Reg);
+                m_RegWorkingSet.BeforeCallDirect();
+                PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
+                PushImm32(PAddr & 0x1FFFFFFF);
+#ifdef _MSC_VER
+                MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_RomMemoryHandler, x86_ECX);
+                Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_RomMemoryHandler)[0][0], "RomMemoryHandler::Read32");
+#else
+                PushImm32((uint32_t)&g_MMU->m_RomMemoryHandler);
+                Call_Direct(AddressOf(&RomMemoryHandler::Read32), "RomMemoryHandler::Read32");
+                AddConstToX86Reg(x86_ESP, 16);
+#endif
+                m_RegWorkingSet.AfterCallDirect();
+                MoveVariableToX86reg(&m_TempValue32, "m_TempValue32", Reg);
             }
             else if (g_DDRom != nullptr && ((PAddr & 0xFF000000) == 0x06000000 && (PAddr - 0x06000000) < g_DDRom->GetRomSize()))
             {
@@ -10609,13 +10646,15 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
     case 0x04600000:
         switch (PAddr)
         {
-        case 0x04600000: MoveConstToVariable(Value, &g_Reg->PI_DRAM_ADDR_REG, "PI_DRAM_ADDR_REG"); break;
-        case 0x04600004: MoveConstToVariable(Value, &g_Reg->PI_CART_ADDR_REG, "PI_CART_ADDR_REG"); break;
+        case 0x04600000:
+        case 0x04600004:
         case 0x04600008:
         case 0x0460000C:
         case 0x04600010:
-            UpdateCounters(m_RegWorkingSet, false, true, false);
-
+            if (PAddr == 0x04600008 || PAddr == 0x0460000C)
+            {
+                UpdateCounters(m_RegWorkingSet, false, true, false);
+            }
             m_RegWorkingSet.BeforeCallDirect();
             PushImm32(0xFFFFFFFF);
             PushImm32(Value);
@@ -11036,20 +11075,15 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
     case 0x04600000:
         switch (PAddr)
         {
-        case 0x04600000: MoveX86regToVariable(Reg, &g_Reg->PI_DRAM_ADDR_REG, "PI_DRAM_ADDR_REG"); break;
+        case 0x04600000:
         case 0x04600004:
-            MoveX86regToVariable(Reg, &g_Reg->PI_CART_ADDR_REG, "PI_CART_ADDR_REG");
-            if (EnableDisk())
-            {
-                m_RegWorkingSet.BeforeCallDirect();
-                Call_Direct(AddressOf(&DiskDMACheck), "DiskDMACheck");
-                m_RegWorkingSet.AfterCallDirect();
-            }
-            break;
         case 0x04600008:
         case 0x0460000C:
-            UpdateCounters(m_RegWorkingSet, false, true);
-
+        case 0x04600010:
+            if (PAddr == 0x04600008 || PAddr == 0x0460000C)
+            {
+                UpdateCounters(m_RegWorkingSet, false, true);
+            }
             m_RegWorkingSet.BeforeCallDirect();
             PushImm32(0xFFFFFFFF);
             Push(Reg);
@@ -11061,23 +11095,6 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             PushImm32((uint32_t)&g_MMU->PeripheralInterfaceHandler);
             Call_Direct(AddressOf(&PeripheralInterfaceHandler::Write32), "PeripheralInterfaceHandler::Write32");
             AddConstToX86Reg(x86_ESP, 16);
-#endif
-            m_RegWorkingSet.AfterCallDirect();
-            break;
-        case 0x04600010:
-            if (ShowUnhandledMemory())
-            {
-                g_Notify->DisplayError(stdstr_f("%s\nTrying to store in %08X?", __FUNCTION__, VAddr).c_str());
-            }
-            AndConstToVariable((uint32_t)~MI_INTR_PI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
-            m_RegWorkingSet.BeforeCallDirect();
-#ifdef _MSC_VER
-            MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
-            Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-#else
-            PushImm32((uint32_t)g_Reg);
-            Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-            AddConstToX86Reg(x86_ESP, 4);
 #endif
             m_RegWorkingSet.AfterCallDirect();
             break;

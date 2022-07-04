@@ -212,17 +212,6 @@ enum
     SP_STATUS_SIG7 = 0x4000,        // Bit 14: Signal 7 set
 };
 
-// Peripheral interface flags
-enum
-{
-    PI_STATUS_DMA_BUSY = 0x01,
-    PI_STATUS_IO_BUSY = 0x02,
-    PI_STATUS_ERROR = 0x04,
-
-    PI_SET_RESET = 0x01,
-    PI_CLR_INTR = 0x02,
-};
-
 class CRegName
 {
 public:

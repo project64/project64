@@ -6,6 +6,7 @@
 
 RomMemoryHandler::RomMemoryHandler(CN64System & System, CRegisters & Reg, CN64Rom & Rom) :
     m_PC(Reg.m_PROGRAM_COUNTER),
+    m_Reg(Reg),
     m_Rom(Rom),
     m_RomWrittenTo(false),
     m_RomWroteValue(0)
@@ -16,6 +17,7 @@ RomMemoryHandler::RomMemoryHandler(CN64System & System, CRegisters & Reg, CN64Ro
 
 bool RomMemoryHandler::Read32(uint32_t Address, uint32_t & Value)
 {
+    m_Reg.PI_CART_ADDR_REG = Address + 4;
     if (m_RomWrittenTo)
     {
         Value = m_RomWroteValue;

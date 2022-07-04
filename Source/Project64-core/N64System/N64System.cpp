@@ -1077,6 +1077,7 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
             {
             case CIC_UNKNOWN:
             case CIC_NUS_6102:
+            case CIC_MINI_IPL3:
                 m_Reg.m_GPR[5].DW = 0xFFFFFFFFC0F1D859;
                 m_Reg.m_GPR[14].DW = 0x000000002DE108EA;
                 m_Reg.m_GPR[24].DW = 0x0000000000000000;
@@ -1108,6 +1109,7 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
             {
             case CIC_UNKNOWN:
             case CIC_NUS_6102:
+            case CIC_MINI_IPL3:
                 m_Reg.m_GPR[5].DW = 0xFFFFFFFFC95973D5;
                 m_Reg.m_GPR[14].DW = 0x000000002449A366;
                 break;
@@ -1158,6 +1160,7 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
             break;
         case CIC_UNKNOWN:
         case CIC_NUS_6102:
+        case CIC_MINI_IPL3:
             m_Reg.m_GPR[1].DW = 0x0000000000000001;
             m_Reg.m_GPR[2].DW = 0x000000000EBDA536;
             m_Reg.m_GPR[3].DW = 0x000000000EBDA536;

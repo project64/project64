@@ -37,15 +37,28 @@ class CRegisters;
 class CMipsMemoryVM;
 class CartridgeDomain2Address2Handler;
 
+// Peripheral interface flags
+enum
+{
+    PI_STATUS_DMA_BUSY = 0x01,
+    PI_STATUS_IO_BUSY = 0x02,
+    PI_STATUS_ERROR = 0x04,
+    PI_STATUS_INTERRUPT = 0x08,
+
+    PI_SET_RESET = 0x01,
+    PI_CLR_INTR = 0x02,
+};
+
 class PeripheralInterfaceHandler :
     public MemoryHandler,
     private CGameSettings,
     private CDebugSettings,
     private CLogging,
-    private PeripheralInterfaceReg
+    private PeripheralInterfaceReg,
+    private MIPSInterfaceReg
 {
 public:
-    PeripheralInterfaceHandler(CMipsMemoryVM & MMU, CRegisters & Reg, CartridgeDomain2Address2Handler & Domain2Address2Handler);
+    PeripheralInterfaceHandler(CN64System & System, CMipsMemoryVM & MMU, CRegisters & Reg, CartridgeDomain2Address2Handler & Domain2Address2Handler);
 
     bool Read32(uint32_t Address, uint32_t & Value);
     bool Write32(uint32_t Address, uint32_t Value, uint32_t Mask);
@@ -55,10 +68,13 @@ private:
     PeripheralInterfaceHandler(const PeripheralInterfaceHandler &);
     PeripheralInterfaceHandler & operator=(const PeripheralInterfaceHandler &);
 
+    static void stSystemReset(PeripheralInterfaceHandler * _this) { _this->SystemReset(); }
+
     void PI_DMA_READ();
     void PI_DMA_WRITE();
-
+    void SystemReset(void);
     void OnFirstDMA();
+    void ReadBlock(uint32_t Address, uint8_t * Block, uint32_t BlockLen);
 
     CartridgeDomain2Address2Handler & m_Domain2Address2Handler;
     CMipsMemoryVM & m_MMU;

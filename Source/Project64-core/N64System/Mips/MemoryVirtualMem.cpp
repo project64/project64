@@ -29,7 +29,7 @@ CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
     m_RDRAMRegistersHandler(System.m_Reg),
     m_DPCommandRegistersHandler(System, System.GetPlugins(), System.m_Reg),
     m_MIPSInterfaceHandler(System.m_Reg),
-    m_PeripheralInterfaceHandler(*this, System.m_Reg, m_CartridgeDomain2Address2Handler),
+    m_PeripheralInterfaceHandler(System, *this, System.m_Reg, m_CartridgeDomain2Address2Handler),
     m_PifRamHandler(*this, System.m_Reg),
     m_RDRAMInterfaceHandler(System.m_Reg),
     m_RomMemoryHandler(System, System.m_Reg, *g_Rom),
@@ -598,10 +598,8 @@ bool CMipsMemoryVM::LB_NonMemory(uint32_t VAddr, uint8_t & Value)
     if (PAddr < 0x800000)
     {
         Value = 0;
-        return true;
     }
-
-    if (PAddr >= 0x10000000 && PAddr < 0x16000000)
+    else if (PAddr >= 0x10000000 && PAddr < 0x16000000)
     {
         uint32_t Value32;
         if (!m_RomMemoryHandler.Read32(PAddr & ~0x3, Value32))
@@ -630,12 +628,22 @@ bool CMipsMemoryVM::LH_NonMemory(uint32_t VAddr, uint16_t & Value)
     if (PAddr < 0x800000)
     {
         Value = 0;
-        return true;
     }
-
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    Value = 0;
-    return false;
+    else if (PAddr >= 0x10000000 && PAddr < 0x16000000)
+    {
+        uint32_t Value32;
+        if (!m_RomMemoryHandler.Read32(PAddr & ~0x3, Value32))
+        {
+            return false;
+        }
+        Value = ((Value32 >> (((PAddr & 2) ^ 2) << 3)) & 0xffff);
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        Value = 0;
+    }
+    return true;
 }
 
 bool CMipsMemoryVM::LW_NonMemory(uint32_t VAddr, uint32_t & Value)

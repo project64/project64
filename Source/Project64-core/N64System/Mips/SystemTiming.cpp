@@ -203,6 +203,7 @@ void CSystemTimer::TimerDone()
     case CSystemTimer::PiTimer:
         g_SystemTimer->StopTimer(CSystemTimer::PiTimer);
         m_Reg.PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+        m_Reg.PI_STATUS_REG |= PI_STATUS_INTERRUPT;
         m_Reg.MI_INTR_REG |= MI_INTR_PI;
         m_Reg.CheckInterrupts();
         break;
@@ -211,6 +212,7 @@ void CSystemTimer::TimerDone()
         m_Reg.PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
         DiskBMUpdate();
         m_Reg.MI_INTR_REG |= MI_INTR_PI;
+        m_Reg.PI_STATUS_REG |= PI_STATUS_INTERRUPT;
         m_Reg.CheckInterrupts();
         break;
     case CSystemTimer::DDSeekTimer:

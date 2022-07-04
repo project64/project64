@@ -93,6 +93,7 @@ bool CartridgeDomain2Address2Handler::DMARead()
     {
         m_Sram.DmaToSram(m_MMU.Rdram() + m_Reg.PI_DRAM_ADDR_REG,m_Reg.PI_CART_ADDR_REG - 0x08000000, PI_RD_LEN_REG);
         m_Reg.PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+        m_Reg.PI_STATUS_REG |= PI_STATUS_INTERRUPT;
         m_Reg.MI_INTR_REG |= MI_INTR_PI;
         m_Reg.CheckInterrupts();
         return true;
@@ -101,6 +102,7 @@ bool CartridgeDomain2Address2Handler::DMARead()
     {
         m_FlashRam.DmaToFlashram(m_MMU.Rdram() + m_Reg.PI_DRAM_ADDR_REG, m_Reg.PI_CART_ADDR_REG - 0x08000000, PI_RD_LEN_REG);
         m_Reg.PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+        m_Reg.PI_STATUS_REG |= PI_STATUS_INTERRUPT;
         m_Reg.MI_INTR_REG |= MI_INTR_PI;
         m_Reg.CheckInterrupts();
         return true;
@@ -120,6 +122,7 @@ void CartridgeDomain2Address2Handler::DMAWrite()
     {
         m_Sram.DmaFromSram(m_MMU.Rdram() + m_Reg.PI_DRAM_ADDR_REG, m_Reg.PI_CART_ADDR_REG - 0x08000000, PI_WR_LEN_REG);
         m_Reg.PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+        m_Reg.PI_STATUS_REG |= PI_STATUS_INTERRUPT;
         m_Reg.MI_INTR_REG |= MI_INTR_PI;
         m_Reg.CheckInterrupts();
     }

@@ -31,6 +31,7 @@ private:
     static void stLoadedGameState(RomMemoryHandler * _this) { _this->LoadedGameState(); }
 
     uint32_t & m_PC;
+    CRegisters & m_Reg;
     CN64Rom & m_Rom;
     bool m_RomWrittenTo;
     uint32_t m_RomWroteValue;

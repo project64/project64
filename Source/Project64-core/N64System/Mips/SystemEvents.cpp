@@ -132,6 +132,7 @@ void CSystemEvents::ExecuteEvents()
             g_Reg->DoIntrException(false);
             break;
         case SysEvent_Interrupt_PI:
+            g_Reg->PI_STATUS_REG |= PI_STATUS_INTERRUPT;
             g_Reg->MI_INTR_REG |= MI_INTR_PI;
             g_Reg->DoIntrException(false);
             break;
