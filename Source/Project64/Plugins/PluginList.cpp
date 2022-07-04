@@ -12,9 +12,7 @@ m_PluginDir(g_Settings->LoadStringVal(Directory_Plugin), "")
     }
 }
 
-CPluginList::~CPluginList()
-{
-}
+CPluginList::~CPluginList() = default;
 
 int CPluginList::GetPluginCount() const
 {

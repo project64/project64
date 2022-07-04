@@ -768,7 +768,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     int Offset = 0;
     for (LanguageList::iterator Language = LangList.begin(); Language != LangList.end(); Language++)
     {
-        Item.Reset(ID_LANG_START + Offset++, EMPTY_STRING, EMPTY_STDSTR, nullptr, stdstr(Language->LanguageName).ToUTF16().c_str());
+        Item.Reset(ID_LANG_START + Offset++, EMPTY_STRING, EMPTY_STDSTR, nullptr, stdstr(Language->LanguageName).ToUTF16());
         if (g_Lang->IsCurrentLang(*Language))
         {
             Item.SetItemTicked(true);
@@ -789,7 +789,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         }
         stdstr_f MenuString("&%d %s", (count + 1) % 10, LastRom.c_str());
 
-        RecentRomMenu.push_back(MENU_ITEM(ID_RECENT_ROM_START + count, EMPTY_STRING, EMPTY_STDSTR, nullptr, MenuString.ToUTF16(CP_ACP).c_str()));
+        RecentRomMenu.push_back(MENU_ITEM(ID_RECENT_ROM_START + count, EMPTY_STRING, EMPTY_STDSTR, nullptr, MenuString.ToUTF16(CP_ACP)));
     }
 
     // Recent directory
@@ -806,7 +806,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
 
         stdstr_f MenuString("&%d %s", (count + 1) % 10, LastDir.c_str());
 
-        RecentDirMenu.push_back(MENU_ITEM(ID_RECENT_DIR_START + count, EMPTY_STRING, EMPTY_STDSTR, nullptr, MenuString.ToUTF16(CP_ACP).c_str()));
+        RecentDirMenu.push_back(MENU_ITEM(ID_RECENT_DIR_START + count, EMPTY_STRING, EMPTY_STDSTR, nullptr, MenuString.ToUTF16(CP_ACP)));
     }
 
     // File menu

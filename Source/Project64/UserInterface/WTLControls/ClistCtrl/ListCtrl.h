@@ -2724,7 +2724,7 @@ public:
 								{
 									if ( m_strSearchString.substr(0, 1 ) != strStart )
 										nStartItem = 0;
-									m_strSearchString = strStart;
+									m_strSearchString = std::move(strStart);
 								}
 								
 								m_dwSearchTick = GetTickCount();

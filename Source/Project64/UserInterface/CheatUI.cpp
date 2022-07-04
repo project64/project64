@@ -586,7 +586,7 @@ bool CCheatList::TV_SetCheckState(HTREEITEM hItem, TV_CHECK_STATE state)
 
 void CCheatList::MenuSetText(HMENU hMenu, int MenuPos, const wchar_t * Title, const wchar_t * ShortCut)
 {
-    if (Title == nullptr || wcslen(Title) == 0)
+    if (Title == nullptr || Title[0] == '\0')
     {
         return;
     }
@@ -794,7 +794,6 @@ bool CEditCheat::ReadEnhancement(CEnhancement & Enhancement)
 
     CEdit CheatOptions(GetDlgItem(IDC_CHEAT_OPTIONS));
     NumLines = CheatOptions.GetLineCount();
-    std::string OptionsStr;
     CEnhancement::CodeOptions Options;
     for (int i = 0; i < NumLines; i++)
     {

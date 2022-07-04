@@ -7,7 +7,7 @@ CLanguage * g_Lang = nullptr;
 
 void CLanguage::LoadDefaultStrings(void)
 {
-#define DEF_STR(ID,str) m_DefaultStrings.insert(LANG_STRINGS::value_type(ID,str))
+#define DEF_STR(ID,str) m_DefaultStrings.emplace(ID,str)
 
     DEF_STR(EMPTY_STRING, "");
 
@@ -676,7 +676,7 @@ const std::string & CLanguage::GetString(LanguageStringID StringID)
 
     if (g_Settings->LoadBool(Debugger_DebugLanguage))
     {
-        std::pair<LANG_STRINGS::iterator, bool> ret = m_CurrentStrings.insert(LANG_STRINGS::value_type(StringID, stdstr_f("#%d#", StringID)));
+        std::pair<LANG_STRINGS::iterator, bool> ret = m_CurrentStrings.emplace(StringID, stdstr_f("#%d#", StringID));
         if (ret.second)
         {
             return ret.first->second;

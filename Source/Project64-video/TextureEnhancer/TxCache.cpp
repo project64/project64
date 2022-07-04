@@ -161,7 +161,7 @@ TxCache::add(uint64_t checksum, GHQTexInfo *info, int dataSize)
                 txCache->it = --(_cachelist.end());
             }
             // _cache[checksum] = txCache;
-            _cache.insert(std::map<uint64_t, TXCACHE*>::value_type(checksum, txCache));
+            _cache.emplace(checksum, txCache);
 
 #ifdef DEBUG
             DBG_INFO(80, "[%5d] added! CRC:%08X %08X %d x %d gfmt:%x total:%.02fmb\n",

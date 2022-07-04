@@ -153,7 +153,7 @@ static void mod_tex_sub_col_mul_fac_add_tex_CI(uint32_t color, uint32_t factor)
         if (g > 255.0f) g = 255.0f;
         if (g < 0.0f) g = 0.0f;
         b = (b - cb) * percent + b;
-        if (b > 255.0f) g = 255.0f;
+        if (b > 255.0f) b = 255.0f;
         if (b < 0.0f) b = 0.0f;
         rdp.pal_8[i] = (uint16_t)(((uint16_t)((uint8_t)(r) >> 3) << 11) |
             ((uint16_t)((uint8_t)(g) >> 3) << 6) |
@@ -272,7 +272,7 @@ static void mod_tex_sub_col_mul_fac_CI(uint32_t color, uint32_t factor)
         if (g > 255.0f) g = 255.0f;
         if (g < 0.0f) g = 0.0f;
         b = (b - cb) * percent;
-        if (b > 255.0f) g = 255.0f;
+        if (b > 255.0f) b = 255.0f;
         if (b < 0.0f) b = 0.0f;
 
         rdp.pal_8[i] = (uint16_t)(((uint16_t)((uint8_t)(r) >> 3) << 11) |

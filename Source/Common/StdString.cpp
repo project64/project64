@@ -6,9 +6,7 @@
 #include <Windows.h>
 #endif
 
-stdstr::stdstr()
-{
-}
+stdstr::stdstr() = default;
 
 stdstr::stdstr(const std::string & str) :
     std::string(str)
@@ -206,7 +204,7 @@ stdstr & stdstr::FromUTF16(const wchar_t * UTF16Source, bool * bSuccess)
         *this = "";
         bConverted = true;
     }
-    else if (wcslen(UTF16Source) > 0)
+    else if (UTF16Source[0] != '\0')
     {
         uint32_t nNeeded = WideCharToMultiByte(CODEPAGE_UTF8, 0, UTF16Source, -1, nullptr, 0, nullptr, nullptr);
         if (nNeeded > 0)

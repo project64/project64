@@ -1180,7 +1180,7 @@ void DoShortcut( int iControl, int iShortcut )
         iControl = -2;  // This is just a hack to get around the check that appends "Changing pak X to..."
     }
 
-    if( g_strEmuInfo.fDisplayShortPop && _tcslen(pszMessage) > 0 )
+    if( g_strEmuInfo.fDisplayShortPop && pszMessage[0] != '\0')
     {
         if( iControl >= 0 )
         {

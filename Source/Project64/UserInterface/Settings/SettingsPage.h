@@ -168,7 +168,7 @@ protected:
             }
             EditBox->Attach(hWnd);
 
-            m_TxtBoxList.insert(TextBoxList::value_type(Type, EditBox));
+            m_TxtBoxList.emplace(Type, EditBox);
             return EditBox;
         }
         return nullptr;
@@ -186,7 +186,7 @@ protected:
             }
             Button->Attach(hWnd);
 
-            m_ButtonList.insert(ButtonList::value_type(Type, Button));
+            m_ButtonList.emplace(Type, Button);
         }
     }
 
@@ -204,7 +204,7 @@ protected:
             return nullptr;
         }
         ComboBox->Attach(hWnd);
-        m_ComboBoxList.insert(ComboBoxList::value_type(Type, ComboBox));
+        m_ComboBoxList.emplace(Type, ComboBox);
         return ComboBox;
     }
 
@@ -222,7 +222,7 @@ protected:
             return nullptr;
         }
         ComboBox->Attach(hWnd);
-        m_ComboBoxTxtList.insert(ComboBoxTxtList::value_type(Type, ComboBox));
+        m_ComboBoxTxtList.emplace(Type, ComboBox);
         return ComboBox;
     }
 

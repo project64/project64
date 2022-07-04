@@ -176,7 +176,7 @@ CMenuShortCutKey::CMenuShortCutKey(WORD key, bool bCtrl, bool bAlt, bool bShift,
     m_bUserAdded(bUserAdded),
     m_bInactive(bInactive)
 {
-    m_ShortCutName = L"";
+    m_ShortCutName.clear();
     for (int i = 0, n = sizeof(m_VirtualKeyList) / sizeof(m_VirtualKeyList[0]); i < n; i++)
     {
         if (key == m_VirtualKeyList[i].Key)
@@ -328,9 +328,7 @@ CShortCuts::CShortCuts()
     Load();
 }
 
-CShortCuts::~CShortCuts()
-{
-}
+CShortCuts::~CShortCuts() = default;
 
 std::wstring CShortCuts::ShortCutString(int MenuID, CMenuShortCutKey::RUNNING_STATE RunningState)
 {
@@ -371,7 +369,7 @@ LanguageStringID CShortCuts::GetMenuItemName(WORD key, bool bCtrl, bool bAlt, bo
 
 void CShortCuts::AddShortCut(WORD ID, LanguageStringID Section, LanguageStringID LangID, CMenuShortCutKey::ACCESS_MODE AccessMode)
 {
-    m_ShortCuts.insert(MSC_MAP::value_type(ID, CShortCutItem(Section, LangID, AccessMode)));
+    m_ShortCuts.emplace(ID, CShortCutItem(Section, LangID, AccessMode));
 }
 
 void CShortCuts::Load(bool InitialValues)

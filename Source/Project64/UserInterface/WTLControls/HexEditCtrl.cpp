@@ -52,6 +52,8 @@ CHexEditCtrl::CHexEditCtrl(void) :
 
 CHexEditCtrl::~CHexEditCtrl(void)
 {
+    free(m_NewBytes);
+    free(m_OldBytes);
 }
 
 int CALLBACK CHexEditCtrl::HaveFontCb(CONST LOGFONTW* lplf, CONST TEXTMETRICW* /*lptm*/, DWORD /*FontType*/, LPARAM lParam)

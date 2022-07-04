@@ -48,14 +48,14 @@ void CSettingTypeRelativePath::Save(uint32_t /*Index*/, uint32_t /*Value*/)
 
 void CSettingTypeRelativePath::Save(uint32_t /*Index*/, const std::string & Value)
 {
-    m_Directory = "";
+    m_Directory.clear();
     m_FileName = Value;
     BuildPath();
 }
 
 void CSettingTypeRelativePath::Save(uint32_t /*Index*/, const char * Value)
 {
-    m_Directory = "";
+    m_Directory.clear();
     m_FileName = Value;
     BuildPath();
 }

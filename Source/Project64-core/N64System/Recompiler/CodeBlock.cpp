@@ -63,7 +63,7 @@ CCodeBlock::CCodeBlock(CMipsMemoryVM & MMU, uint32_t VAddrEnter, uint8_t * Compi
     baseSection->m_ContinueSection = m_EnterSection;
     m_EnterSection->AddParent(baseSection);
     m_Sections.push_back(m_EnterSection);
-    m_SectionMap.insert(SectionMap::value_type(VAddrEnter, m_EnterSection));
+    m_SectionMap.emplace(VAddrEnter, m_EnterSection);
 
     memset(m_MemLocation, 0, sizeof(m_MemLocation));
     memset(m_MemContents, 0, sizeof(m_MemContents));
@@ -138,7 +138,7 @@ bool CCodeBlock::SetSection(CCodeSection * & Section, CCodeSection * CurrentSect
         m_Sections.push_back(Section);
         if (LinkAllowed)
         {
-            m_SectionMap.insert(SectionMap::value_type(TargetPC, Section));
+            m_SectionMap.emplace(TargetPC, Section);
         }
         Section->AddParent(CurrentSection);
         if (TargetPC <= CurrentPC && TargetPC != m_VAddrEnter)

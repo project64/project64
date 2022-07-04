@@ -23,9 +23,7 @@ TxLoadLib::TxLoadLib()
     _tx_compress_fxt1 = fxt1_encode;
 }
 
-TxLoadLib::~TxLoadLib()
-{
-}
+TxLoadLib::~TxLoadLib() = default;
 
 fxtCompressTexFuncExt TxLoadLib::getfxtCompressTexFuncExt()
 {

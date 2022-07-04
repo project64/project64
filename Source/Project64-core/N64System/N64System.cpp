@@ -181,7 +181,7 @@ void CN64System::RegisterCallBack(CN64SystemCB Type, void * Data, CallBackFuncti
     {
         SETTING_CHANGED_CB_LIST List;
         List.push_back(Item);
-        m_Callback.insert(SETTING_CALLBACK::value_type(Type, List));
+        m_Callback.emplace(Type, List);
     }
 }
 
@@ -1944,7 +1944,7 @@ bool CN64System::SaveState()
     g_Settings->SaveDword(Game_LastSaveTime, (uint32_t)time(nullptr));
     if (g_Settings->LoadDword(Setting_AutoZipInstantSave))
     {
-        SaveFile = ZipFile;
+        SaveFile = std::move(ZipFile);
     }
     g_Notify->DisplayMessage(3, stdstr_f("%s %s", g_Lang->GetString(MSG_SAVED_STATE).c_str(), stdstr(SaveFile.GetNameExtension()).c_str()).c_str());
     WriteTrace(TraceN64System, TraceDebug, "Done");

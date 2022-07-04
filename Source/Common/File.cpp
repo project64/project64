@@ -66,7 +66,7 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
         return false;
     }
 
-    if (lpszFileName == nullptr || strlen(lpszFileName) == 0)
+    if (lpszFileName == nullptr || lpszFileName[0] == '\0')
     {
         return false;
     }

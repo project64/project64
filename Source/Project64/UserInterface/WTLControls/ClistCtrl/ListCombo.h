@@ -380,7 +380,7 @@ public:
 					}
 					else 
 					{
-						strValue = L"";
+						strValue.clear();
 					}
 				}
 			}

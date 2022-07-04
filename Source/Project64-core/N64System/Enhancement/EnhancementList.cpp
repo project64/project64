@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/Enhancement/EnhancementList.h>
 
-CEnhancementList::CEnhancementList()
-{
-}
+CEnhancementList::CEnhancementList() = default;
 
 void CEnhancementList::AddItem(const CEnhancement & Details)
 {

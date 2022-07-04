@@ -22,7 +22,7 @@ bool CBreakpoints::RBPAdd(uint32_t address)
     if (!ReadBPExists8(address))
     {
         PreUpdateBP();
-        m_ReadMem.insert(breakpoints_t::value_type(address, false));
+        m_ReadMem.emplace(address, false);
         UpdateAlignedReadBP();
         if (!HaveReadBP())
         {
@@ -39,7 +39,7 @@ bool CBreakpoints::WBPAdd(uint32_t address)
     if (!WriteBPExists8(address))
     {
         PreUpdateBP();
-        m_WriteMem.insert(breakpoints_t::value_type(address, false));
+        m_WriteMem.emplace(address, false);
         UpdateAlignedWriteBP();
         if (!HaveWriteBP())
         {
@@ -297,9 +297,9 @@ void CBreakpoints::UpdateAlignedReadBP()
 
     for (breakpoints_t::const_iterator itr = m_ReadMem.begin(); itr != m_ReadMem.end(); itr++)
     {
-        m_ReadMem16.insert(breakpoints_t::value_type((itr->first & ~0x1), false));
-        m_ReadMem32.insert(breakpoints_t::value_type((itr->first & ~0x3), false));
-        m_ReadMem64.insert(breakpoints_t::value_type((itr->first & ~0x7), false));
+        m_ReadMem16.emplace((itr->first & ~0x1), false);
+        m_ReadMem32.emplace((itr->first & ~0x3), false);
+        m_ReadMem64.emplace((itr->first & ~0x7), false);
     }
 }
 
@@ -311,9 +311,9 @@ void CBreakpoints::UpdateAlignedWriteBP()
 
     for (breakpoints_t::const_iterator itr = m_WriteMem.begin(); itr != m_WriteMem.end(); itr++)
     {
-        m_WriteMem16.insert(breakpoints_t::value_type((itr->first & ~0x1), false));
-        m_WriteMem32.insert(breakpoints_t::value_type((itr->first & ~0x3), false));
-        m_WriteMem64.insert(breakpoints_t::value_type((itr->first & ~0x7), false));
+        m_WriteMem16.emplace((itr->first & ~0x1), false);
+        m_WriteMem32.emplace((itr->first & ~0x3), false);
+        m_WriteMem64.emplace((itr->first & ~0x7), false);
     }
 }
 

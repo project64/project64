@@ -170,7 +170,7 @@ void CDebugMemorySearch::ReloadWatchList(void)
 
     if (m_StrGame != strGame)
     {
-        m_StrGame = strGame;
+        m_StrGame = std::move(strGame);
         LoadWatchList();
     }
 }
@@ -2110,7 +2110,7 @@ void CDebugMemorySearch::LoadWatchList(void)
             goto parse_error;
         }
 
-        if (strlen(szDescription) > 0)
+        if (szDescription[0] != '\0')
         {
             result.SetDescription(szDescription);
         }

@@ -31,11 +31,11 @@ struct compareKeyValueItem
             }
             char Buffer[40];
             int number_len = strlen(_itoa(i1, Buffer, 10));
-            if (strlen(&a[5 + number_len]) == 0)
+            if ((&a[5 + number_len])[0] == '\0')
             {
                 return true;
             }
-            if (strlen(&b[5 + number_len]) == 0)
+            if ((&b[5 + number_len])[0] == '\0')
             {
                 return false;
             }
@@ -163,7 +163,7 @@ void RegionSection(CFile &TargetIniFile, Files &files, const char * Region, cons
             CIniFile::KeyValueVector data2;
             for (CIniFile::KeyValueData::const_iterator DataItr = data.begin(); DataItr != data.end(); DataItr++)
             {
-                data2.push_back(CIniFile::KeyValueItem(&DataItr->first, &DataItr->second));
+                data2.emplace_back(&DataItr->first, &DataItr->second);
             }
             std::sort(data2.begin(), data2.end(), compareKeyValueItem());
 
@@ -207,7 +207,7 @@ void JoinFile(const char * Directory, const char * Target)
                 Name.Trim("\t =");
                 if (Name.size() > 0)
                 {
-                    files.insert(Files::value_type(Name, SearchDir));
+                    files.emplace(Name, SearchDir);
                     break;
                 }
             }
@@ -271,8 +271,6 @@ void JoinFile(const char * Directory, const char * Target)
 void UpdateNames(const char* Directory, const char* RdbFile)
 {
     CIniFile RdbIni(RdbFile);
-
-    Files files;
     CPath SearchDir(Directory, "*.cht");
     if (SearchDir.FindFirst())
     {
@@ -382,12 +380,12 @@ bool ConvertCheatEntry(std::string& CheatEntry, std::string& CheatOptions)
 {
     typedef std::vector<std::string> CodeEntries;
 
-    size_t StartOfName = CheatEntry.find("\"");
+    size_t StartOfName = CheatEntry.find('\"');
     if (StartOfName == std::string::npos)
     {
         return false;
     }
-    size_t EndOfName = CheatEntry.find("\"", StartOfName + 1);
+    size_t EndOfName = CheatEntry.find('\"', StartOfName + 1);
     if (EndOfName == std::string::npos)
     {
         return false;
@@ -644,12 +642,12 @@ void convertGS(const char* Directory)
 
 bool ParseCheatEntry(const stdstr & CheatEntry, const stdstr& CheatOptions, CEnhancement & Enhancement)
 {
-    size_t StartOfName = CheatEntry.find("\"");
+    size_t StartOfName = CheatEntry.find('\"');
     if (StartOfName == std::string::npos)
     {
         return false;
     }
-    size_t EndOfName = CheatEntry.find("\"", StartOfName + 1);
+    size_t EndOfName = CheatEntry.find('\"', StartOfName + 1);
     if (EndOfName == std::string::npos)
     {
         return false;
@@ -658,8 +656,6 @@ bool ParseCheatEntry(const stdstr & CheatEntry, const stdstr& CheatOptions, CEnh
     const char * CheatString = &CheatEntry.c_str()[EndOfName + 2];
 
     CEnhancement::CodeOptions Options;
-    std::string OptionValue;
-
     CEnhancement::CodeEntries Entries;
     const char * ReadPos = CheatString;
     while (ReadPos)
@@ -682,7 +678,7 @@ bool ParseCheatEntry(const stdstr & CheatEntry, const stdstr& CheatOptions, CEnh
 
         CEnhancement::CodeEntry Entry;
         Entry.Command = CodeCommand;
-        Entry.Value = ValueStr;
+        Entry.Value = std::move(ValueStr);
         Entries.push_back(Entry);
     }
     Enhancement.SetEntries(Entries);

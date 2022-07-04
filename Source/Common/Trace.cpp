@@ -23,9 +23,7 @@ class CTraceLog
     CriticalSection m_CS;
 
 public:
-    CTraceLog()
-    {
-    }
+    CTraceLog() = default;
     ~CTraceLog() { CloseTrace(); }
 
     void TraceMessage(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char * Message);
@@ -44,7 +42,7 @@ CTraceLog & GetTraceObjet(void)
 
 void TraceSetModuleName(uint8_t module, const char * Name)
 {
-    g_ModuleNames.insert(ModuleNameMap::value_type(module, Name));
+    g_ModuleNames.emplace(module, Name);
 }
 
 void WriteTraceFull(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char *format, ...)

@@ -113,7 +113,7 @@ void CDebugTlb::RefreshTLBWindow(void)
     CTLB::TLB_ENTRY * tlb = g_TLB->m_tlb;
     for (count = 0; count < 32; count++)
     {
-        swprintf(Output, sizeof(Output), L"0x%02X", count);
+        swprintf(Output, 100 * sizeof(wchar_t), L"0x%02X", count);
         item.mask = LVIF_TEXT;
         item.iItem = count;
         item.pszText = Output;
@@ -139,7 +139,7 @@ void CDebugTlb::RefreshTLBWindow(void)
         }
         if (tlb[count].EntryDefined)
         {
-            swprintf(Output, sizeof(Output), L"0x%08X", tlb[count].PageMask.Value);
+            swprintf(Output, 100 * sizeof(wchar_t), L"0x%08X", tlb[count].PageMask.Value);
         }
         else
         {
@@ -155,7 +155,7 @@ void CDebugTlb::RefreshTLBWindow(void)
 
         if (tlb[count].EntryDefined)
         {
-            swprintf(Output, sizeof(Output), L"0x%08X", tlb[count].EntryHi.Value);
+            swprintf(Output, 100 * sizeof(wchar_t), L"0x%08X", tlb[count].EntryHi.Value);
         }
         else
         {
@@ -171,7 +171,7 @@ void CDebugTlb::RefreshTLBWindow(void)
 
         if (tlb[count].EntryDefined)
         {
-            swprintf(Output, sizeof(Output), L"0x%08X", tlb[count].EntryLo0.Value);
+            swprintf(Output, 100 * sizeof(wchar_t), L"0x%08X", tlb[count].EntryLo0.Value);
         }
         else
         {
@@ -187,7 +187,7 @@ void CDebugTlb::RefreshTLBWindow(void)
 
         if (tlb[count].EntryDefined)
         {
-            swprintf(Output, sizeof(Output), L"0x%08X", tlb[count].EntryLo1.Value);
+            swprintf(Output, 100 * sizeof(wchar_t), L"0x%08X", tlb[count].EntryLo1.Value);
         }
         else
         {
@@ -206,7 +206,7 @@ void CDebugTlb::RefreshTLBWindow(void)
     hList = GetDlgItem(IDC_LIST2);
     for (count = 0; count < 64; count++)
     {
-        swprintf(Output, sizeof(Output), L"0x%02X", count);
+        swprintf(Output, 100 * sizeof(wchar_t), L"0x%02X", count);
         item.mask = LVIF_TEXT;
         item.iItem = count;
         item.pszText = Output;
@@ -233,7 +233,7 @@ void CDebugTlb::RefreshTLBWindow(void)
 
         if (FastTlb[count].ValidEntry)
         {
-            swprintf(Output, sizeof(Output), L"%s", FastTlb[count].VALID ? L"Yes" : L"No");
+            swprintf(Output, 100 * sizeof(wchar_t), L"%s", FastTlb[count].VALID ? L"Yes" : L"No");
         }
         else
         {
@@ -249,7 +249,7 @@ void CDebugTlb::RefreshTLBWindow(void)
 
         if (FastTlb[count].ValidEntry && FastTlb[count].VALID)
         {
-            swprintf(Output, sizeof(Output), L"%s", FastTlb[count].DIRTY ? L"Yes" : L"No");
+            swprintf(Output, 100 * sizeof(wchar_t), L"%s", FastTlb[count].DIRTY ? L"Yes" : L"No");
         }
         else
         {
@@ -265,7 +265,7 @@ void CDebugTlb::RefreshTLBWindow(void)
 
         if (FastTlb[count].ValidEntry && FastTlb[count].VALID)
         {
-            swprintf(Output, sizeof(Output), L"%08X:%08X -> %08X:%08X", FastTlb[count].VSTART, FastTlb[count].VEND,
+            swprintf(Output, 100 * sizeof(wchar_t), L"%08X:%08X -> %08X:%08X", FastTlb[count].VSTART, FastTlb[count].VEND,
                 FastTlb[count].PHYSSTART, FastTlb[count].PHYSEND);
         }
         else

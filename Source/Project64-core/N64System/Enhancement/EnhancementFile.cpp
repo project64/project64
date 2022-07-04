@@ -158,7 +158,7 @@ bool CEnhancmentFile::MoveToSection(const char * Section, bool ChangeCurrentSect
     if (ChangeCurrentSection)
     {
         SaveCurrentSection();
-        m_CurrentSection = "";
+        m_CurrentSection.clear();
         m_SectionName.clear();
         m_EnhancementList.clear();
     }
@@ -210,7 +210,7 @@ bool CEnhancmentFile::MoveToSection(const char * Section, bool ChangeCurrentSect
             CurrentSection[lineEndPos] = 0;
             CurrentSection += 1;
             m_lastSectionSearch = (m_File.GetPosition() - DataSize) + ReadPos;
-            m_SectionsPos.insert(FILELOC::value_type(CurrentSection, m_lastSectionSearch));
+            m_SectionsPos.emplace(CurrentSection, m_lastSectionSearch);
 
             if (_stricmp(Section, CurrentSection) != 0)
             {
@@ -321,7 +321,7 @@ void CEnhancmentFile::SaveCurrentSection(void)
                 {
                     PluginList += ",";
                 }
-                PluginList += List[i].c_str();
+                PluginList += List[i];
             }
             Section += stdstr_f("Plugin List=%s%s", PluginList.c_str() , m_LineFeed);
         }
@@ -378,7 +378,7 @@ void CEnhancmentFile::SaveCurrentSection(void)
         }
         m_File.Write(SectionName.get(), (int)strlen(SectionName.get()));
         m_CurrentSectionFilePos = m_File.GetPosition();
-        m_SectionsPos.insert(FILELOC::value_type(m_CurrentSection, m_CurrentSectionFilePos));
+        m_SectionsPos.emplace(m_CurrentSection, m_CurrentSectionFilePos);
     } 
     else
     {

@@ -631,7 +631,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
     memcpy(&RomName[0], (void *)(m_ROMImage + 0x20), 20);
     CN64Rom::CleanRomName(RomName);
 
-    if (strlen(RomName) == 0)
+    if (RomName[0] == '\0')
     {
         strcpy(RomName, CPath(FileLoc).GetName().c_str());
         CN64Rom::CleanRomName(RomName, false);
@@ -641,7 +641,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
 
     m_RomName = RomName;
     m_FileName = FileLoc;
-    m_MD5 = "";
+    m_MD5.clear();
 
     if (!LoadBootCodeOnly)
     {
@@ -675,14 +675,14 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
         if (GameIdentifiers.find(m_RomIdent.c_str()) == GameIdentifiers.end())
         {
             char InternalName[22] = { 0 };
-            memcpy(InternalName, (void *)(m_ROMImage + 0x20), 20);
+            memcpy(InternalName, (void *)(m_ROMImage + 0x20), 20 * sizeof(char));
             CN64Rom::CleanRomName(InternalName);
 
             std::string AltIdentifier = stdstr_f("%s-C:%X", stdstr(InternalName).Trim().ToUpper().c_str(), m_Country);
             AltIdentifier = RomDatabase.GetString(AltIdentifier.c_str(), "Alt Identifier", "");
             if (!AltIdentifier.empty())
             {
-                m_RomIdent = AltIdentifier;
+                m_RomIdent = std::move(AltIdentifier);
             }
         }
     }
@@ -824,7 +824,7 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
     // Get the header from the ROM image
     memcpy(&RomName[0], (void *)(m_ROMImage + 0x20), 20);
     CN64Rom::CleanRomName(RomName);
-    if (strlen(RomName) == 0)
+    if (RomName[0] == '\0')
     {
         strcpy(RomName, CPath(FileLoc).GetName().c_str());
         CN64Rom::CleanRomName(RomName,false);
@@ -833,7 +833,7 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
 
     m_RomName = RomName;
     m_FileName = FileLoc;
-    m_MD5 = "";
+    m_MD5.clear();
 
     if (!LoadBootCodeOnly)
     {

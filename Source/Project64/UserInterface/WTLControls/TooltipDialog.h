@@ -14,9 +14,7 @@ private:
 	HWND m_hWndTooltip;
 
 public:
-	CToolTipDialog()
-	{
-	}
+	CToolTipDialog() = default;
 
 	void AddToolTip(WORD ctrlId, char* lpszText)
 	{

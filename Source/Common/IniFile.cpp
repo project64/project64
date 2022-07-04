@@ -180,7 +180,7 @@ void CIniFileBase::SaveCurrentSection(void)
         }
         m_File.Write(SectionName.get(), (int)strlen(SectionName.get()));
         m_CurrentSectionFilePos = m_File.GetPosition();
-        m_SectionsPos.insert(FILELOC::value_type(m_CurrentSection, m_CurrentSectionFilePos));
+        m_SectionsPos.emplace(m_CurrentSection, m_CurrentSectionFilePos);
     }
     else
     {
@@ -250,7 +250,7 @@ void CIniFileBase::SaveCurrentSection(void)
             KeyValueVector data;
             for (KeyValueList::iterator iter = m_CurrentSectionData.begin(); iter != m_CurrentSectionData.end(); iter++)
             {
-                data.push_back(KeyValueItem(&iter->first, &iter->second));
+                data.emplace_back(&iter->first, &iter->second);
             }
             m_SortFunction(data);
             for (size_t i = 0, n = data.size(); i < n; i++)
@@ -293,7 +293,7 @@ bool CIniFileBase::MoveToSectionNameData(const char * lpSectionName, bool Change
     if (ChangeCurrentSection)
     {
         SaveCurrentSection();
-        m_CurrentSection = "";
+        m_CurrentSection.clear();
     }
 
     std::unique_ptr<char> Data;
@@ -343,7 +343,7 @@ bool CIniFileBase::MoveToSectionNameData(const char * lpSectionName, bool Change
             CurrentSection[lineEndPos] = 0;
             CurrentSection += 1;
             m_lastSectionSearch = (m_File.GetPosition() - DataSize) + ReadPos;
-            m_SectionsPos.insert(FILELOC::value_type(CurrentSection, m_lastSectionSearch));
+            m_SectionsPos.emplace(CurrentSection, m_lastSectionSearch);
 
             if (_stricmp(lpSectionName, CurrentSection) != 0)
             {
@@ -366,7 +366,7 @@ bool CIniFileBase::MoveToSectionNameData(const char * lpSectionName, bool Change
 
     if (!bFoundSection && strcmp(lpSectionName, "default") == 0)
     {
-        m_SectionsPos.insert(FILELOC::value_type(lpSectionName, 0));
+        m_SectionsPos.emplace(lpSectionName, 0);
         if (ChangeCurrentSection)
         {
             m_CurrentSection = lpSectionName;
@@ -396,7 +396,7 @@ bool CIniFileBase::MoveToSectionNameData(const char * lpSectionName, bool Change
             }
             Pos1[1] = 0;
 
-            m_CurrentSectionData.insert(KeyValueList::value_type(Input, Value));
+            m_CurrentSectionData.emplace(Input, Value);
         } while (result >= 0);
     }
 
@@ -560,7 +560,7 @@ bool CIniFileBase::DeleteSection(const char * lpSectionName)
     }
     m_File.Flush();
     ClearSectionPosList(0);
-    m_CurrentSection = "";
+    m_CurrentSection.clear();
     m_CurrentSectionData.clear();
     m_CurrentSectionFilePos = -1;
     return true;
@@ -570,7 +570,7 @@ bool CIniFileBase::GetString(const char * lpSectionName, const char * lpKeyName,
 {
     CGuard Guard(m_CS);
 
-    if (lpSectionName == nullptr || strlen(lpSectionName) == 0)
+    if (lpSectionName == nullptr || lpSectionName[0] == '\0')
     {
         lpSectionName = "default";
     }
@@ -601,7 +601,7 @@ uint32_t CIniFileBase::GetString(const char * lpSectionName, const char * lpKeyN
 
     std::string strSection;
 
-    if (lpSectionName == nullptr || strlen(lpSectionName) == 0)
+    if (lpSectionName == nullptr || lpSectionName[0] == '\0')
     {
         strSection = "default";
     }
@@ -636,7 +636,7 @@ bool CIniFileBase::GetNumber(const char * lpSectionName, const char * lpKeyName,
 {
     CGuard Guard(m_CS);
 
-    if (lpSectionName == nullptr || strlen(lpSectionName) == 0)
+    if (lpSectionName == nullptr || lpSectionName[0] == '\0')
     {
         lpSectionName = "default";
     }
@@ -671,7 +671,7 @@ void  CIniFileBase::SaveString(const char * lpSectionName, const char * lpKeyNam
     }
     std::string strSection;
 
-    if (lpSectionName == nullptr || strlen(lpSectionName) == 0)
+    if (lpSectionName == nullptr || lpSectionName[0] == '\0')
     {
         strSection = "default";
     }
@@ -682,7 +682,7 @@ void  CIniFileBase::SaveString(const char * lpSectionName, const char * lpKeyNam
 
     if (!MoveToSectionNameData(strSection.c_str(), true))
     {
-        m_CurrentSection = strSection;
+        m_CurrentSection = std::move(strSection);
         m_CurrentSectionData.clear();
         m_CurrentSectionFilePos = -1;
     }
@@ -708,7 +708,7 @@ void  CIniFileBase::SaveString(const char * lpSectionName, const char * lpKeyNam
     {
         if (lpString)
         {
-            m_CurrentSectionData.insert(KeyValueList::value_type(lpKeyName, lpString));
+            m_CurrentSectionData.emplace(lpKeyName, lpString);
             m_CurrentSectionDirty = true;
         }
     }
@@ -729,7 +729,7 @@ bool CIniFileBase::EntryExists(const char * lpSectionName, const char * lpKeyNam
 {
     CGuard Guard(m_CS);
 
-    if (lpSectionName == nullptr || strlen(lpSectionName) == 0)
+    if (lpSectionName == nullptr || lpSectionName[0] == '\0')
     {
         lpSectionName = "default";
     }
@@ -770,7 +770,7 @@ void CIniFileBase::GetKeyList(const char * lpSectionName, strlist &List)
         return;
     }
 
-    if (lpSectionName == nullptr || strlen(lpSectionName) == 0)
+    if (lpSectionName == nullptr || lpSectionName[0] == '\0')
     {
         lpSectionName = "default";
     }
@@ -794,7 +794,7 @@ void CIniFileBase::GetKeyValueData(const char * lpSectionName, KeyValueData & Li
 
     std::string strSection;
 
-    if (lpSectionName == nullptr || strlen(lpSectionName) == 0)
+    if (lpSectionName == nullptr || lpSectionName[0] == '\0')
     {
         strSection = "default";
     }
@@ -818,7 +818,7 @@ void CIniFileBase::GetKeyValueData(const char * lpSectionName, KeyValueData & Li
         if (Pos == nullptr) { continue; }
         Pos[0] = 0;
 
-        List.insert(KeyValueData::value_type(Input, &Pos[1]));
+        List.emplace(Input, &Pos[1]);
     } while (result >= 0);
 }
 

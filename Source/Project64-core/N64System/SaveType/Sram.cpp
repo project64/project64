@@ -7,9 +7,7 @@ CSram::CSram(bool ReadOnly) :
 {
 }
 
-CSram::~CSram()
-{
-}
+CSram::~CSram() = default;
 
 bool CSram::LoadSram()
 {

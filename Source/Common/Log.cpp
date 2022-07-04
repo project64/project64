@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-CLog::CLog (void ) :
+CLog::CLog (void) :
 	m_FlushOnWrite(false),
 	m_TruncateFileLog(true),
 	m_MaxFileSize(MAX_FILE_SIZE),
@@ -13,9 +13,7 @@ CLog::CLog (void ) :
 {
 }
 
-CLog::~CLog (void)
-{
-}
+CLog::~CLog (void) = default;
 
 bool CLog::Open( const char * FileName, LOG_OPEN_MODE mode /* = Log_New  */)
 {

@@ -8,10 +8,8 @@ class CEnumFormatEtc : public IEnumFORMATETC
 {
 public:
 	CEnumFormatEtc( const vector < FORMATETC >& vFormatEtc )
+		: m_nRefCount(0), m_nIndex(0), m_vFormatEtc(vFormatEtc)
 	{
-		m_nRefCount = 0;
-		m_nIndex = 0;
-		m_vFormatEtc = vFormatEtc;
 	}
 	
 protected:

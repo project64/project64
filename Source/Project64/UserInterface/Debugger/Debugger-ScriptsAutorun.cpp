@@ -21,7 +21,7 @@ INT_PTR CScriptsAutorunDlg::DoModal(CDebuggerUI* debugger, stdstr selectedScript
 {
     m_Debugger = debugger;
     m_ScriptSystem = debugger->ScriptSystem();
-    m_InitSelectedScriptName = selectedScriptName;
+    m_InitSelectedScriptName = std::move(selectedScriptName);
     return CDialogImpl<CScriptsAutorunDlg>::DoModal();
 }
 

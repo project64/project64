@@ -14,9 +14,7 @@ CProject64Input::CProject64Input(HINSTANCE hinst) :
     memset(m_Controllers, 0, sizeof(m_Controllers));
 }
 
-CProject64Input::~CProject64Input()
-{
-}
+CProject64Input::~CProject64Input() = default;
 
 void CProject64Input::DevicesChanged(void)
 {

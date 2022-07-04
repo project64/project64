@@ -100,7 +100,7 @@ LRESULT    CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl
         DWORD EndPC = m_EndAddress.GetValue();
         DWORD DumpPC = m_PC.GetValue();
         GetDlgItemText(IDC_FILENAME, FileName, sizeof(FileName));
-        if (wcslen(FileName) == 0)
+        if (FileName[0] == '\0')
         {
             g_Notify->DisplayWarning("Please choose target file");
             ::SetFocus(GetDlgItem(IDC_FILENAME));

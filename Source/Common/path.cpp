@@ -137,10 +137,9 @@ CPath::CPath(const char * lpszPath, const char * NameExten)
 
 // Task: Constructs a path and points it to strPath
 
-CPath::CPath(const std::string& strPath)
+CPath::CPath(const std::string& strPath) : m_strPath(strPath)
 {
     Init();
-    m_strPath = strPath;
     cleanPathString(m_strPath);
 }
 
@@ -515,7 +514,7 @@ void CPath::GetLastDirectory(std::string& rDirectory) const
 {
     std::string Directory;
 
-    rDirectory = "";
+    rDirectory.clear();
 
     GetDirectory(Directory);
     StripTrailingBackslash(Directory);
@@ -581,7 +580,7 @@ void CPath::SetComponents(const char * lpszDrive, const char * lpszDirectory, co
     char buff_fullname[MAX_PATH];
 
     memset(buff_fullname, 0, sizeof(buff_fullname));
-    if (lpszDirectory == nullptr || strlen(lpszDirectory) == 0)
+    if (lpszDirectory == nullptr || lpszDirectory[0] == '\0')
     {
         static char empty_dir[] = { DIRECTORY_DELIMITER, '\0' };
         lpszDirectory = empty_dir;

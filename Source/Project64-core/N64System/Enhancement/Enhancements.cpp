@@ -113,7 +113,7 @@ void CEnhancements::UpdateCheats(const CEnhancementList & Cheats)
             m_CheatFiles.erase(CheatFileItr);
         }
         m_CheatFile.reset(new CEnhancmentFile(OutFile, CEnhancement::CheatIdent));
-        m_CheatFiles.insert(SectionFiles::value_type(SectionIdent, OutFile));
+        m_CheatFiles.emplace(SectionIdent, OutFile);
     }
 
     m_CheatFile->SetName(SectionIdent.c_str(), GameName.c_str());
@@ -159,7 +159,7 @@ void CEnhancements::UpdateEnhancements(const CEnhancementList & Enhancements)
             m_EnhancementFiles.erase(EnhancementFileItr);
         }
         m_EnhancementFile.reset(new CEnhancmentFile(OutFile, CEnhancement::EnhancementIdent));
-        m_EnhancementFiles.insert(SectionFiles::value_type(SectionIdent, OutFile));
+        m_EnhancementFiles.emplace(SectionIdent, OutFile);
     }
 
     m_EnhancementFile->SetName(SectionIdent.c_str(), GameName.c_str());
@@ -593,7 +593,7 @@ void CEnhancements::ModifyMemory8(CMipsMemoryVM & MMU, uint32_t Address, uint8_t
         g_Recompiler->ClearRecompCode_Virt(Address & ~0xFFF, 0x1000, CRecompiler::Remove_Cheats);
     }
     OriginalValue.Changed = Value;
-    std::pair<ORIGINAL_VALUES8::iterator, bool> itr = m_OriginalValues8.insert(ORIGINAL_VALUES8::value_type(Address, OriginalValue));
+    m_OriginalValues8.emplace(Address, OriginalValue);
 }
 
 void CEnhancements::ModifyMemory16(CMipsMemoryVM & MMU, uint32_t Address, uint16_t Value, bool HasDisableValue, uint16_t DisableValue)
@@ -612,7 +612,7 @@ void CEnhancements::ModifyMemory16(CMipsMemoryVM & MMU, uint32_t Address, uint16
         return;
     }
     OriginalValue.Changed = Value;
-    std::pair<ORIGINAL_VALUES16::iterator, bool> itr = m_OriginalValues16.insert(ORIGINAL_VALUES16::value_type(Address, OriginalValue));
+    m_OriginalValues16.emplace(Address, OriginalValue);
     MMU.UpdateMemoryValue16(Address, OriginalValue.Changed);
     if (g_Recompiler)
     {
@@ -637,7 +637,7 @@ void CEnhancements::ScanFileThread(void)
             EnhancmentFile.GetSections(Sections);
             for (CEnhancmentFile::SectionList::const_iterator itr = Sections.begin(); itr != Sections.end(); itr++)
             {
-                CheatFiles.insert(SectionFiles::value_type(itr->c_str(), File));
+                CheatFiles.emplace(itr->c_str(), File);
             }
         } while (m_Scan && File.FindNext());
     }
@@ -674,7 +674,7 @@ void CEnhancements::ScanFileThread(void)
             EnhancmentFile.GetSections(Sections);
             for (CEnhancmentFile::SectionList::const_iterator itr = Sections.begin(); itr != Sections.end(); itr++)
             {
-                EnhancementFiles.insert(SectionFiles::value_type(itr->c_str(), File));
+                EnhancementFiles.emplace(itr->c_str(), File);
             }
         } while (m_Scan && File.FindNext());
     }
@@ -699,8 +699,8 @@ void CEnhancements::ScanFileThread(void)
 
     {
         CGuard Guard(m_CS);
-        m_CheatFiles = CheatFiles;
-        m_EnhancementFiles = EnhancementFiles;
+        m_CheatFiles = std::move(CheatFiles);
+        m_EnhancementFiles = std::move(EnhancementFiles);
         m_Scanned = true;
     }
 }
