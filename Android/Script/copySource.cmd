@@ -39,6 +39,10 @@ echo copy Project64-audio
 xcopy "%base_dir%/Source/Project64-audio" "%base_dir%/Android/jni/Project64-audio/" /D /I /F /Y /E
 IF %ERRORLEVEL% NEQ 0 (exit /B 1)
 
+echo copy Project64-plugin-spec
+xcopy "%base_dir%/Source/Project64-plugin-spec" "%base_dir%/Android/jni/Project64-plugin-spec/" /D /I /F /Y /E
+IF %ERRORLEVEL% NEQ 0 (exit /B 1)
+
 echo copy Project64-core
 xcopy "%base_dir%/Source/Project64-core" "%base_dir%/Android/jni/Project64-core/" /D /I /F /Y /E
 IF %ERRORLEVEL% NEQ 0 (exit /B 1)
