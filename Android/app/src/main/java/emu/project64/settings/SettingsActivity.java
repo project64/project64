@@ -6,7 +6,6 @@ import emu.project64.jni.NativeExports;
 import emu.project64.jni.SettingsID;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
 import androidx.appcompat.app.ActionBar;
 import androidx.preference.PreferenceManager;
 import androidx.appcompat.app.AppCompatActivity;

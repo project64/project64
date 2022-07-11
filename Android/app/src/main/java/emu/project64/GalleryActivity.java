@@ -1,16 +1,9 @@
 package emu.project64;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import emu.project64.R;
 import emu.project64.dialog.ProgressDialog;
@@ -23,14 +16,10 @@ import emu.project64.settings.GameSettingsActivity;
 import emu.project64.settings.SettingsActivity;
 import emu.project64.util.Strings;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import androidx.appcompat.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -38,22 +27,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.SpannableStringBuilder;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.TextView.BufferType;
+import android.widget.Toast;
 
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -117,7 +105,7 @@ public class GalleryActivity extends AppCompatActivity
         // Lay out the content
         setContentView( R.layout.gallery_activity );
         mGridView = (RecyclerView) findViewById( R.id.gridview );
-        mProgress = new ProgressDialog( null, this, getString( R.string.scanning_title ), "", getString( R.string.toast_pleaseWait ), false );
+        mProgress = new ProgressDialog(this, getString( R.string.scanning_title ), getString( R.string.toast_pleaseWait ), false );
 
         // Load Cached Rom List
         NativeExports.LoadRomList();
@@ -293,27 +281,21 @@ public class GalleryActivity extends AppCompatActivity
 
                 // Get Drawable icon
                 Drawable d = items[position].icon != 0 ? ResourcesCompat.getDrawable(getResources(), items[position].icon, null) : null;
-                tv.setTextColor(Color.parseColor("#FFFFFF"));
+                tv.setTextColor(Color.parseColor("#000000"));
                 if (d != null)
                 {
-                    d.setColorFilter(Color.parseColor("#FFFFFF"), android.graphics.PorterDuff.Mode.SRC_ATOP);
+                    d.setColorFilter(Color.parseColor("#000000"), android.graphics.PorterDuff.Mode.SRC_ATOP);
                 }
                 if (!isEnabled(position))
                 {
-                    tv.setTextColor(Color.parseColor("#555555"));
+                    tv.setTextColor(Color.parseColor("#AAAAAA"));
                     if (d != null)
                     {
-                        d.setColorFilter(Color.parseColor("#555555"), android.graphics.PorterDuff.Mode.SRC_ATOP);
+                        d.setColorFilter(Color.parseColor("#AAAAAA"), android.graphics.PorterDuff.Mode.SRC_ATOP);
                     }
                 }
-
-                //Put the image on the TextView
                 tv.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null);
-
-                //Add margin between image and text (support various screen densities)
-                int dp5 = (int) (5 * getResources().getDisplayMetrics().density + 0.5f);
-                tv.setCompoundDrawablePadding(dp5);
-
+                tv.setCompoundDrawablePadding((int) (15 * getResources().getDisplayMetrics().density + 0.5f));
                 return v;
             }
 
@@ -338,53 +320,65 @@ public class GalleryActivity extends AppCompatActivity
             }
         };
 
+        final LayoutInflater inflater = (LayoutInflater) getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+        View layout = inflater.inflate( R.layout.dialog_menu, null );
+
         final Context finalContext = this;
-        AlertDialog.Builder GameMenu = new AlertDialog.Builder(finalContext);
-        GameMenu.setTitle(NativeExports.SettingsLoadString(SettingsID.Rdb_GoodName.toString()));
-        GameMenu.setAdapter(adapter, new DialogInterface.OnClickListener()
+        AlertDialog.Builder GameMenu = new AlertDialog.Builder(new ContextThemeWrapper(finalContext,R.style.Theme_Project64_Dialog_Alert));
+        GameMenu.setView( layout);
+
+        TextView DlgTitle = (TextView)layout.findViewById(R.id.dlg_title);
+        DlgTitle.setText(NativeExports.SettingsLoadString(SettingsID.Rdb_GoodName.toString()));
+
+        ListView ListOptions = (ListView)layout.findViewById(R.id.list_options);
+        ListOptions.setAdapter(adapter);
+        AlertDialog dialog = GameMenu.create();
+
+        ListOptions.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
-            public void onClick(DialogInterface dialog, int item)
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                if (item == 0)
+                if (position == 0)
                 {
                     launchGameActivity(false);
                 }
-                else if (item == 1)
+                else if (position == 1)
                 {
                     launchGameActivity(true);
                 }
-                else if (item == 2)
+                else if (position == 2)
                 {
-                    AlertDialog.Builder ResetPrompt = new AlertDialog.Builder(finalContext);
+                    /*AlertDialog.Builder ResetPrompt = new AlertDialog.Builder(finalContext);
                     ResetPrompt
-                    .setTitle(getText(R.string.confirmResetGame_title))
-                    .setMessage(getText(R.string.confirmResetGame_message))
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
-                    {
-                        public void onClick(DialogInterface dialog, int id)
-                        {
-                            String[]entries = SaveDir.list();
-                            for(String s: entries)
+                            .setTitle(getText(R.string.confirmResetGame_title))
+                            .setMessage(getText(R.string.confirmResetGame_message))
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
                             {
-                                File currentFile = new File(SaveDir.getPath(),s);
-                                currentFile.delete();
-                            }
-                            SaveDir.delete();
-                            launchGameActivity(false);
-                        }
-                    })
-                    .setNegativeButton(android.R.string.cancel, this)
-                    .show();
+                                public void onClick(DialogInterface dialog, int id)
+                                {
+                                    String[]entries = SaveDir.list();
+                                    for(String s: entries)
+                                    {
+                                        File currentFile = new File(SaveDir.getPath(),s);
+                                        currentFile.delete();
+                                    }
+                                    SaveDir.delete();
+                                    launchGameActivity(false);
+                                }
+                            })
+                            .setNegativeButton(android.R.string.cancel, this)
+                            .show();*/
                 }
-                else if (item == 3)
+                else if (position == 3)
                 {
                     Intent SettingsIntent = new Intent(finalContext, GameSettingsActivity.class);
                     startActivityForResult( SettingsIntent, RC_SETTINGS );
+                    dialog.dismiss();
                 }
             }
         });
-        GameMenu.show();
+        dialog.show();
     }
 
     public void onGalleryItemClick( GalleryItem item )
@@ -552,16 +546,12 @@ public class GalleryActivity extends AppCompatActivity
         if (mActiveGalleryActivity != null && mActiveGalleryActivity.mProgress != null)
         {
             Handler h = new Handler(Looper.getMainLooper());
-            final String ProgressText = new String(FileName);
-            final String ProgressSubText = new String(FullFileName);
             final String ProgressMessage = new String("Added " + GoodName);
 
             h.post(new Runnable()
             {
                 public void run()
                 {
-                    mActiveGalleryActivity.mProgress.setText(ProgressText);
-                    mActiveGalleryActivity.mProgress.setSubtext(ProgressSubText);
                     mActiveGalleryActivity.mProgress.setMessage(ProgressMessage);
                 }
             });

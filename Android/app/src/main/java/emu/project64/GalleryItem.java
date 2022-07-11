@@ -51,7 +51,7 @@ public class GalleryItem
     @Override
     public String toString()
     {
-        if( !TextUtils.isEmpty( goodName ) )
+        if( !TextUtils.isEmpty(goodName) && !goodName.equals("#340#"))
         {
             return goodName;
         }

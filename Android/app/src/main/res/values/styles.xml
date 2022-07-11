@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Theme.Project64" parent="@android:style/Theme">
-        <item name="android:alertDialogTheme">@style/Theme.Project64.Dialog</item>
     </style>
 
     <style name="Theme.Project64.Base" parent="Theme.Project64.Base.7" />
@@ -61,6 +60,10 @@
         <item name="iconSpaceReserved">false</item>
     </style>
 
+    <style name="Theme.Project64.ListPreference" parent="Preference.Material">
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
     <style name="Theme.Project64.PreferenceLogLevel" parent="Preference.Material">
         <item name="iconSpaceReserved">false</item>
     </style>
@@ -80,7 +83,7 @@
         <item name="preferenceCategoryStyle">@style/Theme.Project64.PreferenceCategory</item>
         <item name="checkBoxPreferenceStyle">@style/Theme.Project64.PreferenceCheckBox</item>
         <item name="LogLevelPreferenceStyle">@style/Theme.Project64.PreferenceLogLevel</item>
-        <item name="ListPreferenceStyle">@style/Theme.Project64.PreferenceList</item>
+        <item name="ListPreferenceStyle">@style/Theme.Project64.PreferenceNoIcon</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="android:textSize">18sp</item>
@@ -90,6 +93,23 @@
         <item name="android:windowBackground">@android:color/white</item>
         <item name="android:colorBackground">@android:color/white</item>
         <item name="android:textColor">@color/TextColor</item>
+    </style>
+
+    <style name="Theme.Project64.Dialog.Title">
+        <item name="android:background">@color/white</item>
+        <item name="android:textColor">@color/grey700</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="Theme.Project64.Dialog.Alert" parent="Base.Theme.AppCompat.Dialog.Alert">
+        <item name="android:windowBackground">#00FF00</item>
+        <item name="android:windowTitleStyle">@style/Theme.Project64.Dialog.Title</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:dividerHorizontal">@null</item>
+        <item name="android:dividerVertical">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:backgroundDimEnabled">true</item>
     </style>
 
     <style name="btnMappable" parent="@android:style/Widget.Button">

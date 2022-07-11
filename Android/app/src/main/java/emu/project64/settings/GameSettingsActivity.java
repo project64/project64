@@ -20,33 +20,30 @@ public class GameSettingsActivity extends AppCompatActivity implements SharedPre
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.settings_activity);
-        
-        // Add the tool bar to the activity (which supports the fancy menu/arrow animation)
+
         Toolbar toolbar = (Toolbar) findViewById( R.id.toolbar );
-        toolbar.setTitle( getString(R.string.settings_title) );
         setSupportActionBar( toolbar );
-        ActionBar actionbar = getSupportActionBar();
-        
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setTitle(getString(R.string.game_settings_title));
         if (AndroidDevice.IS_ICE_CREAM_SANDWICH)
         {
+            ActionBar actionbar = getSupportActionBar();
             actionbar.setHomeButtonEnabled(true);
             actionbar.setDisplayHomeAsUpEnabled(true);
         }
-        
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPrefs.edit().clear()
         .putString("Game_CpuType",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.Game_CpuType.toString())))
         .putBoolean("Game_BlockLinking",NativeExports.SettingsLoadBool(SettingsID.Game_BlockLinking.toString()))
-        .apply();  
+        .apply();
 
         sharedPrefs.registerOnSharedPreferenceChangeListener(this);
-        
         if (savedInstanceState == null)
         {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_placeholder, new GameSettingsFragment()).commit();
         }
     }
-    
+
     @Override
     protected void onStop()
     {
@@ -54,11 +51,11 @@ public class GameSettingsActivity extends AppCompatActivity implements SharedPre
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
     }
-    
+
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) 
+    public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch (item.getItemId()) 
+        switch (item.getItemId())
         {
         case android.R.id.home:
             if (!getSupportFragmentManager().popBackStackImmediate())

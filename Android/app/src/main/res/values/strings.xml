@@ -45,6 +45,7 @@
     <string name="reset_summary">Restore default settings</string>
     <string name="reset_title">Reset</string>
     <string name="settings_title">Settings</string>
+    <string name="game_settings_title">Game Settings</string>
     <string name="preferences">Preferences</string>
     <string name="displayFps_title">Framerate</string>
     <string name="displayFps_summary">Display FPS on screen</string>
