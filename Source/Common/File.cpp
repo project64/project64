@@ -18,17 +18,17 @@
 
 CFile::CFile() :
 #ifdef USE_WINDOWS_API
-m_hFile(INVALID_HANDLE_VALUE),
+    m_hFile(INVALID_HANDLE_VALUE),
 #else
-m_hFile(nullptr),
+    m_hFile(nullptr),
 #endif
-m_bCloseOnDelete(false)
+    m_bCloseOnDelete(false)
 {
 }
 
 CFile::CFile(void * hFile) :
-m_hFile(hFile),
-m_bCloseOnDelete(true)
+    m_hFile(hFile),
+    m_bCloseOnDelete(true)
 {
     if (hFile == 0)
     {
@@ -38,11 +38,11 @@ m_bCloseOnDelete(true)
 
 CFile::CFile(const char * lpszFileName, uint32_t nOpenFlags) :
 #ifdef USE_WINDOWS_API
-m_hFile(INVALID_HANDLE_VALUE),
+    m_hFile(INVALID_HANDLE_VALUE),
 #else
-m_hFile(nullptr),
+    m_hFile(nullptr),
 #endif
-m_bCloseOnDelete(true)
+    m_bCloseOnDelete(true)
 {
     Open(lpszFileName, nOpenFlags);
 }

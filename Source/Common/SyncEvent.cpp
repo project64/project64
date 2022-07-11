@@ -42,7 +42,7 @@ void SyncEvent::Trigger()
 #endif
 }
 
-bool SyncEvent::IsTriggered(int32_t iWaitTime)
+bool SyncEvent::IsTriggered(int32_t iWaitTime) const
 {
 #ifdef _WIN32
     return (WAIT_OBJECT_0 == WaitForSingleObject(m_Event, iWaitTime));

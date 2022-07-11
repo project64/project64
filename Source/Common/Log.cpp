@@ -39,7 +39,7 @@ bool CLog::Open( const char * FileName, LOG_OPEN_MODE mode /* = Log_New  */)
 	}
 	m_FileName = (const char *)File;
 	m_hLogFile.Seek(0,mode == Log_Append ? CFile::end : CFile::begin);
-    m_FileSize = mode == Log_Append ? m_hLogFile.GetLength() : 0;
+    m_FileSize = mode == Log_Append ? (uint32_t)m_hLogFile.GetLength() : 0;
 	return true;
 }
 
@@ -94,17 +94,17 @@ void CLog::Log( const char * Message )
 	if (m_TruncateFileLog && m_FileSize > m_MaxFileSize)
 	{
 		// Check file size
-        m_FileSize = m_hLogFile.GetLength();
+        m_FileSize = (uint32_t)m_hLogFile.GetLength();
 		// If larger then maximum size then
 		if (m_FileSize > m_MaxFileSize)
 		{
 			if (!m_FlushOnWrite)
 			{
 				m_hLogFile.Flush();
-                m_FileSize = m_hLogFile.GetLength();
+                m_FileSize = (uint32_t)m_hLogFile.GetLength();
 			}
 
-			uint32_t end = m_hLogFile.SeekToEnd();
+			uint32_t end = (uint32_t)m_hLogFile.SeekToEnd();
 
 			// Move to reduce size
 			m_hLogFile.Seek((end - m_MaxFileSize) + m_FileChangeSize,CFile::begin);
@@ -162,7 +162,7 @@ void CLog::Log( const char * Message )
 			// Clean up
 			m_hLogFile.SetEndOfFile();
 			m_hLogFile.Flush();
-            m_FileSize = m_hLogFile.GetLength();
+            m_FileSize = (uint32_t)m_hLogFile.GetLength();
 		} // end if
 	}
 }

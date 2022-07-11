@@ -35,7 +35,7 @@
     <ClCompile>
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
-      <DisableSpecificWarnings>4005;4006;4100;4127;4131;4189;4244;4701;4703;4996</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4005;4006;4100;4127;4131;4189;4244;4701;4703;4996;4267;4067</DisableSpecificWarnings>
       <!-- Fix for later VC versions on XP: 45KB + 436 -->
       <PreprocessorDefinitions>Z_BUFSIZE=46516;$(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>

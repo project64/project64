@@ -90,13 +90,13 @@ void stdstr::Format(const char * strFormat, ...)
 
 stdstr& stdstr::ToLower(void)
 {
-    std::transform(begin(), end(), begin(), (int(*)(int)) tolower);
+    std::transform(begin(), end(), begin(), (char(*)(int)) tolower);
     return *this;
 }
 
 stdstr& stdstr::ToUpper(void)
 {
-    std::transform(begin(), end(), begin(), (int(*)(int)) toupper);
+    std::transform(begin(), end(), begin(), (char(*)(int)) toupper);
     return *this;
 }
 

@@ -19,11 +19,11 @@ public:
         modeNoTruncate = 0x2000,
     };
 
-    enum SeekPosition 
-	{ 
-		begin = 0x0, 
-		current = 0x1, 
-		end = 0x2 
+    enum SeekPosition
+	{
+		begin = 0x0,
+		current = 0x1,
+		end = 0x2
 	};
 
     virtual bool Open(const char * lpszFileName, uint32_t nOpenFlags ) = 0;
@@ -44,28 +44,18 @@ public:
 
 class CFile : public CFileBase
 {
-    // Attributes
-    void *  m_hFile;
-    bool    m_bCloseOnDelete;
-
 public:
-    // Flag values
-
-    // Constructors
     CFile();
     CFile(void * hFile);
     CFile(const char * lpszFileName, uint32_t nOpenFlags);
 
-    // Deconstructors
     virtual ~CFile();
 
-    // Operations
     virtual bool Open(const char * lpszFileName, uint32_t nOpenFlags );
 
-    uint32_t SeekToEnd   ( void );
-    void  SeekToBegin ( void );
+    uint32_t SeekToEnd ( void );
+    void SeekToBegin ( void );
 
-    // Overridable
     virtual uint32_t GetPosition() const;
     virtual int32_t Seek(int32_t lOff, SeekPosition nFrom);
     virtual bool SetLength(uint32_t dwNewLen);
@@ -82,4 +72,7 @@ public:
 private:
     CFile(const CFile&);
     CFile& operator=(const CFile&);
+
+    void * m_hFile;
+    bool m_bCloseOnDelete;
 };

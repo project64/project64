@@ -195,7 +195,7 @@ MD5::MD5(const unsigned char *input, unsigned int input_length)
 MD5::MD5(const stdstr & string)
 {
     init();  // Must be called by all constructors
-    update((const unsigned char *)string.c_str(), string.length());
+    update((const unsigned char *)string.c_str(), (uint4)string.length());
     finalize();
 }
 

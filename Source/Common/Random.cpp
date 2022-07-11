@@ -27,10 +27,7 @@ uint32_t CRandom::next()
 
 void CRandom::set_state(uint32_t state_value)
 {
-    if (state_value == 0)
-        m_state = 1;
-    else
-        m_state = state_value;
+    m_state = state_value == 0 ? 1 : state_value;
 }
 
 uint32_t CRandom::get_state()

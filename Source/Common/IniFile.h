@@ -29,6 +29,7 @@ public:
 
     bool IsEmpty();
     bool IsFileOpen(void);
+    bool IsReadOnly(void);
     bool DeleteSection(const char * lpSectionName);
     bool GetString(const char * lpSectionName, const char * lpKeyName, const char * lpDefault, std::string & Value);
     std::string GetString(const char * lpSectionName, const char * lpKeyName, const char * lpDefault);
@@ -37,7 +38,7 @@ public:
     bool GetNumber(const char * lpSectionName, const char * lpKeyName, uint32_t nDefault, uint32_t & Value);
 
     virtual void SaveString(const char * lpSectionName, const char * lpKeyName, const char * lpString);
-    virtual void SaveNumber(const char * lpSectionName, const char * lpKeyName, int32_t Value);
+    virtual void SaveNumber(const char * lpSectionName, const char * lpKeyName, uint32_t Value);
     void SetAutoFlush(bool AutoFlush);
     void FlushChanges(void);
     bool EntryExists(const char * lpSectionName, const char * lpKeyName);
@@ -67,7 +68,7 @@ private:
         }
     };
 
-    typedef std::map<std::string, long> FILELOC;
+    typedef std::map<std::string, long, insensitive_compare> FILELOC;
     typedef FILELOC::iterator FILELOC_ITR;
     typedef std::map<std::string, std::string, insensitive_compare> KeyValueList;
 
@@ -91,7 +92,6 @@ private:
     bool MoveToSectionNameData(const char * lpSectionName, bool ChangeCurrentSection);
     const char * CleanLine(char * Line);
     void ClearSectionPosList(long FilePos);
-
 };
 
 template <class CFileStorage>

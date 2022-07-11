@@ -45,9 +45,6 @@
     <ClCompile Include="pngset.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="pngtest.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="pngtrans.c">
       <Filter>Source Files</Filter>
     </ClCompile>
