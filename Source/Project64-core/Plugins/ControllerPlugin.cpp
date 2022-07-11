@@ -89,7 +89,7 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
         ControlInfo.hWnd = Window ? Window->GetWindowHandle() : nullptr;
 #else
         ControlInfo.hinst = nullptr;
-        ControlInfo.hMainWindow = nullptr;
+        ControlInfo.hWnd = nullptr;
 #endif
         ControlInfo.Reserved = true;
 

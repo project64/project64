@@ -10664,7 +10664,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_PeripheralInterfaceHandler)[0][1], "PeripheralInterfaceHandler::Write32");
 #else
             PushImm32((uint32_t)&g_MMU->m_PeripheralInterfaceHandler);
-            Call_Direct(AddressOf(&m_PeripheralInterfaceHandler::Write32), "PeripheralInterfaceHandler::Write32");
+            Call_Direct(AddressOf(&PeripheralInterfaceHandler::Write32), "PeripheralInterfaceHandler::Write32");
             AddConstToX86Reg(x86_ESP, 16);
 #endif
             m_RegWorkingSet.AfterCallDirect();
@@ -11092,7 +11092,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_PeripheralInterfaceHandler, x86_ECX);
             Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_PeripheralInterfaceHandler)[0][1], "PeripheralInterfaceHandler::Write32");
 #else
-            PushImm32((uint32_t)&g_MMU->PeripheralInterfaceHandler);
+            PushImm32((uint32_t)&g_MMU->m_PeripheralInterfaceHandler);
             Call_Direct(AddressOf(&PeripheralInterfaceHandler::Write32), "PeripheralInterfaceHandler::Write32");
             AddConstToX86Reg(x86_ESP, 16);
 #endif

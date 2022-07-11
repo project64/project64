@@ -6372,21 +6372,23 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x04600000: MoveConstToVariable(Value, &g_Reg->PI_DRAM_ADDR_REG, "PI_DRAM_ADDR_REG"); break;
         case 0x04600004: MoveConstToVariable(Value, &g_Reg->PI_CART_ADDR_REG, "PI_CART_ADDR_REG"); break;
         case 0x04600008:
-            MoveConstToVariable(Value, &g_Reg->PI_RD_LEN_REG, "PI_RD_LEN_REG");
+            ArmBreakPoint(__FILE__, __LINE__);
+            /*MoveConstToVariable(Value, &g_Reg->PI_RD_LEN_REG, "PI_RD_LEN_REG");
             m_RegWorkingSet.BeforeCallDirect();
             MoveConstToArmReg(Arm_R0, (uint32_t)((CDMA *)g_MMU), "(CDMA *)g_MMU");
             CallFunction(AddressOf(&CDMA::PI_DMA_READ), "CDMA::PI_DMA_READ");
-            m_RegWorkingSet.AfterCallDirect();
+            m_RegWorkingSet.AfterCallDirect();*/
             break;
         case 0x0460000C:
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+            ArmBreakPoint(__FILE__, __LINE__);
+            /*m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
             UpdateCounters(m_RegWorkingSet, false, true);
             m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
             MoveConstToVariable(Value, &g_Reg->PI_WR_LEN_REG, "PI_WR_LEN_REG");
             m_RegWorkingSet.BeforeCallDirect();
             MoveConstToArmReg(Arm_R0, (uint32_t)((CDMA *)g_MMU), "(CDMA *)g_MMU");
             CallFunction(AddressOf(&CDMA::PI_DMA_WRITE), "CDMA::PI_DMA_WRITE");
-            m_RegWorkingSet.AfterCallDirect();
+            m_RegWorkingSet.AfterCallDirect();*/
             break;
         case 0x04600010:
             if ((Value & PI_CLR_INTR) != 0)
@@ -6809,21 +6811,23 @@ void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
             }
             break;
         case 0x04600008:
-            MoveArmRegToVariable(Reg, &g_Reg->PI_RD_LEN_REG, "PI_RD_LEN_REG");
+            ArmBreakPoint(__FILE__, __LINE__);
+            /*MoveArmRegToVariable(Reg, &g_Reg->PI_RD_LEN_REG, "PI_RD_LEN_REG");
             m_RegWorkingSet.BeforeCallDirect();
             MoveConstToArmReg(Arm_R0, (uint32_t)((CDMA *)g_MMU), "(CDMA *)g_MMU");
             CallFunction(AddressOf(&CDMA::PI_DMA_READ), "CDMA::PI_DMA_READ");
-            m_RegWorkingSet.AfterCallDirect();
+            m_RegWorkingSet.AfterCallDirect();*/
             break;
         case 0x0460000C:
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+            ArmBreakPoint(__FILE__, __LINE__);
+            /*m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
             UpdateCounters(m_RegWorkingSet, false, true);
             m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
             MoveArmRegToVariable(Reg, &g_Reg->PI_WR_LEN_REG, "PI_WR_LEN_REG");
             m_RegWorkingSet.BeforeCallDirect();
             MoveConstToArmReg(Arm_R0, (uint32_t)((CDMA *)g_MMU), "(CDMA *)g_MMU");
             CallFunction(AddressOf(&CDMA::PI_DMA_WRITE), "CDMA::PI_DMA_WRITE");
-            m_RegWorkingSet.AfterCallDirect();
+            m_RegWorkingSet.AfterCallDirect();*/
             break;
         case 0x04600010:
             if (ShowUnhandledMemory())
