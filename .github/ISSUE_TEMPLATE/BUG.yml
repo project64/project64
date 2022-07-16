@@ -81,9 +81,7 @@ body:
 
         Nintendo 64 game or Nintendo 64 Disk Drive:
 
-        ROM information: (File > ROM info, or context menu > ROM information in the ROM
-        list)
-
+        ROM information (First you must uncheck "hide advanced settings" in the settings menu, then File > ROM info should show up, post the information contained there in this field): 
         Save type: (Attach game save or save state here)
 
         Original or modified ROM?:(attach patch here)
