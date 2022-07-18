@@ -40,7 +40,7 @@ public class MenuListView extends ExpandableListView
     public void setMenuResource( int menuResource )
     {
         Context context = getContext();
-        Menu menu = new MenuBuilder( context );
+        @SuppressLint("RestrictedApi") Menu menu = new MenuBuilder( context );
         Activity activity = (Activity) context;
         activity.getMenuInflater().inflate( menuResource, menu );
         setMenu( menu );

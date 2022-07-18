@@ -303,7 +303,7 @@ public abstract class AbstractProvider
     {
         return getInputName( inputCode ) + ( inputCode == 0
                 ? ""
-                : String.format( " %4.2f", strength ) );
+                : String.format( java.util.Locale.US, " %4.2f", strength ) );
     }    
     
     /**

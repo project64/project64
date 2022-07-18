@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" >
-    <item android:id="@+id/menuItem_SaveState"/>
-    <item android:id="@+id/menuItem_LoadState"/>
-    <item android:id="@+id/menuItem_CurrentSaveState" >
+    <item android:id="@+id/menuItem_SaveState" android:title="Save State" />
+    <item android:id="@+id/menuItem_LoadState" android:title="Load State" />
+    <item android:id="@+id/menuItem_CurrentSaveState" android:title="Current Save State">
         <menu>
             <group android:checkableBehavior="single">
-                <item android:id="@+id/menuItem_CurrentSaveAuto"/>
-                <item android:id="@+id/menuItem_CurrentSave1"/>
-                <item android:id="@+id/menuItem_CurrentSave2"/>
-                <item android:id="@+id/menuItem_CurrentSave3"/>
-                <item android:id="@+id/menuItem_CurrentSave4"/>
-                <item android:id="@+id/menuItem_CurrentSave5"/>
-                <item android:id="@+id/menuItem_CurrentSave6"/>
-                <item android:id="@+id/menuItem_CurrentSave7"/>
-                <item android:id="@+id/menuItem_CurrentSave8"/>
-                <item android:id="@+id/menuItem_CurrentSave9"/>
-                <item android:id="@+id/menuItem_CurrentSave10"/>
+                <item android:id="@+id/menuItem_CurrentSaveAuto" android:title="Current Save Auto" />
+                <item android:id="@+id/menuItem_CurrentSave1" android:title="Current Save 1" />
+                <item android:id="@+id/menuItem_CurrentSave2" android:title="Current Save 2" />
+                <item android:id="@+id/menuItem_CurrentSave3" android:title="Current Save 3" />
+                <item android:id="@+id/menuItem_CurrentSave4" android:title="Current Save 4" />
+                <item android:id="@+id/menuItem_CurrentSave5" android:title="Current Save 5" />
+                <item android:id="@+id/menuItem_CurrentSave6" android:title="Current Save 6" />
+                <item android:id="@+id/menuItem_CurrentSave7" android:title="Current Save 7" />
+                <item android:id="@+id/menuItem_CurrentSave8" android:title="Current Save 8" />
+                <item android:id="@+id/menuItem_CurrentSave9" android:title="Current Save 9" />
+                <item android:id="@+id/menuItem_CurrentSave10" android:title="Current Save 10" />
             </group>
         </menu>
     </item>
-    <item android:id="@+id/menuItem_GameSpeed" />
-    <item android:id="@+id/menuItem_settings" />
-    <item android:id="@+id/menuItem_DebuggingMenu" >
+    <item android:id="@+id/menuItem_GameSpeed" android:title="Game Speed" />
+    <item android:id="@+id/menuItem_settings" android:title="Settings" />
+    <item android:id="@+id/menuItem_DebuggingMenu" android:title="Debugging Menu">
         <menu>
-            <item android:id="@+id/menuItem_ResetFunctionTimes" />
-            <item android:id="@+id/menuItem_DumpFunctionTimes" />
+            <item android:id="@+id/menuItem_ResetFunctionTimes" android:title="Reset Function Times" />
+            <item android:id="@+id/menuItem_DumpFunctionTimes" android:title="Dump Function Times" />
         </menu>
     </item>
-    <item android:id="@+id/menuItem_pause" />
-    <item android:id="@+id/menuItem_resume" />
-    <item android:id="@+id/menuItem_HardReset" />
-    <item android:id="@+id/menuItem_EndEmulation" />
+    <item android:id="@+id/menuItem_pause"  android:title="pause" />
+    <item android:id="@+id/menuItem_resume" android:title="resume" />
+    <item android:id="@+id/menuItem_HardReset" android:title="HardReset" />
+    <item android:id="@+id/menuItem_EndEmulation" android:title="EndEmulation" />
 </menu>

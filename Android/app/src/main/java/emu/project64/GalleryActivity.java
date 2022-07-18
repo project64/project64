@@ -15,10 +15,11 @@ import emu.project64.jni.UISettingID;
 import emu.project64.settings.GameSettingsActivity;
 import emu.project64.settings.SettingsActivity;
 import emu.project64.util.Strings;
+
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import androidx.appcompat.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -39,7 +40,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.view.menu.MenuBuilder;
@@ -163,6 +163,7 @@ public class GalleryActivity extends AppCompatActivity
         super.onConfigurationChanged( newConfig );
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public boolean onCreateOptionsMenu( Menu menu )
     {
@@ -400,6 +401,8 @@ public class GalleryActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        super.onActivityResult(requestCode, resultCode, data);
+
         Log.d("GalleryActivity", "onActivityResult(" + requestCode + "," + resultCode + "," + data);
 
         // Check which request we're responding to
