@@ -27,6 +27,7 @@ CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
     m_CartridgeDomain2Address2Handler(System, System.m_Reg, *this, SavesReadOnly),
     m_RDRAMRegistersHandler(System.m_Reg),
     m_DPCommandRegistersHandler(System, System.GetPlugins(), System.m_Reg),
+    m_ISViewerHandler(System),
     m_MIPSInterfaceHandler(System.m_Reg),
     m_PeripheralInterfaceHandler(System, *this, System.m_Reg, m_CartridgeDomain2Address2Handler),
     m_PifRamHandler(*this, System.m_Reg),
@@ -839,12 +840,17 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t VAddr, uint32_t Value)
     case 0x05000000: m_CartridgeDomain2Address1Handler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x06000000: m_CartridgeDomain1Address1Handler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x08000000: m_CartridgeDomain2Address2Handler.Write32(PAddr, Value, 0xFFFFFFFF); break;
+    case 0x13F00000: m_ISViewerHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x1FC00000: m_PifRamHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x1FF00000: m_CartridgeDomain1Address3Handler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     default:
         if (PAddr >= 0x10000000 && PAddr < 0x16000000)
         {
             m_RomMemoryHandler.Write32(PAddr, Value, 0xFFFFFFFF);
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         break;
     }

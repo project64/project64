@@ -405,6 +405,9 @@
     <ClCompile Include="N64System\Mips\R4300iInstruction.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
+    <ClCompile Include="N64System\MemoryHandler\ISViewerHandler.cpp">
+      <Filter>Source Files\N64 System\MemoryHandler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -790,6 +793,9 @@
     </ClInclude>
     <ClInclude Include="N64System\Mips\R4300iOpcode.h">
       <Filter>Header Files\N64 System\Mips</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\MemoryHandler\ISViewerHandler.h">
+      <Filter>Header Files\N64 System\MemoryHandler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

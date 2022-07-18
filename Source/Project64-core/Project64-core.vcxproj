@@ -59,6 +59,7 @@
     <ClCompile Include="N64System\MemoryHandler\CartridgeDomain2Address1Handler.cpp" />
     <ClCompile Include="N64System\MemoryHandler\CartridgeDomain2Address2Handler.cpp" />
     <ClCompile Include="N64System\MemoryHandler\DisplayControlRegHandler.cpp" />
+    <ClCompile Include="N64System\MemoryHandler\ISViewerHandler.cpp" />
     <ClCompile Include="N64System\MemoryHandler\MIPSInterfaceHandler.cpp" />
     <ClCompile Include="N64System\MemoryHandler\PeripheralInterfaceHandler.cpp" />
     <ClCompile Include="N64System\MemoryHandler\PifRamHandler.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="N64System\MemoryHandler\CartridgeDomain2Address1Handler.h" />
     <ClInclude Include="N64System\MemoryHandler\CartridgeDomain2Address2Handler.h" />
     <ClInclude Include="N64System\MemoryHandler\DisplayControlRegHandler.h" />
+    <ClInclude Include="N64System\MemoryHandler\ISViewerHandler.h" />
     <ClInclude Include="N64System\MemoryHandler\MemoryHandler.h" />
     <ClInclude Include="N64System\MemoryHandler\MIPSInterfaceHandler.h" />
     <ClInclude Include="N64System\MemoryHandler\PeripheralInterfaceHandler.h" />

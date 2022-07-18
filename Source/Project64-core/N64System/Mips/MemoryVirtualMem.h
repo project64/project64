@@ -10,6 +10,7 @@
 #include <Project64-core\N64System\MemoryHandler\CartridgeDomain2Address1Handler.h>
 #include <Project64-core\N64System\MemoryHandler\CartridgeDomain2Address2Handler.h>
 #include <Project64-core\N64System\MemoryHandler\DisplayControlRegHandler.h>
+#include <Project64-core\N64System\MemoryHandler\ISViewerHandler.h>
 #include <Project64-core\N64System\MemoryHandler\MIPSInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\PeripheralInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\PifRamHandler.h>
@@ -176,6 +177,7 @@ private:
     CartridgeDomain2Address1Handler m_CartridgeDomain2Address1Handler;
     CartridgeDomain2Address2Handler m_CartridgeDomain2Address2Handler;
     DisplayControlRegHandler m_DPCommandRegistersHandler;
+    ISViewerHandler m_ISViewerHandler;
     MIPSInterfaceHandler m_MIPSInterfaceHandler;
     PeripheralInterfaceHandler m_PeripheralInterfaceHandler;
     PifRamHandler m_PifRamHandler;
