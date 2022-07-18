@@ -2,6 +2,7 @@
 #include "ISViewerHandler.h"
 #include <Project64-core\N64System\N64System.h>
 #include <Common/path.h>
+#include <Common/File.h>
 
 ISViewerHandler::ISViewerHandler(CN64System & System) :
     m_hLogFile(nullptr),
@@ -39,7 +40,7 @@ bool ISViewerHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask)
                 if (m_hLogFile == nullptr)
                 {
                     CPath LogFile(g_Settings->LoadStringVal(Directory_Log).c_str(), "ISViewer.log");
-                    m_hLogFile = std::make_unique<CFile>(LogFile, CFileBase::modeCreate | CFileBase::modeWrite);
+                    m_hLogFile.reset(new CFile(LogFile, CFileBase::modeCreate | CFileBase::modeWrite));
                 }
                 if (m_hLogFile != nullptr && NewLine != m_Buffer)
                 {

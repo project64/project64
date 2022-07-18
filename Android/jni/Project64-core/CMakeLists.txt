@@ -25,6 +25,7 @@ add_library(Project64-core STATIC
     N64System/MemoryHandler/CartridgeDomain2Address1Handler.cpp
     N64System/MemoryHandler/CartridgeDomain2Address2Handler.cpp
     N64System/MemoryHandler/DisplayControlRegHandler.cpp
+    N64System/MemoryHandler/ISViewerHandler.cpp
     N64System/MemoryHandler/MIPSInterfaceHandler.cpp
     N64System/MemoryHandler/PeripheralInterfaceHandler.cpp
     N64System/MemoryHandler/PifRamHandler.cpp
