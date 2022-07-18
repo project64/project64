@@ -72,8 +72,8 @@
     <ClCompile Include="N64System\Mips\GBCart.cpp" />
     <ClCompile Include="N64System\Mips\MemoryVirtualMem.cpp" />
     <ClCompile Include="N64System\Mips\Mempak.cpp" />
-    <ClCompile Include="N64System\Mips\OpcodeName.cpp" />
     <ClCompile Include="N64System\Mips\PifRam.cpp" />
+    <ClCompile Include="N64System\Mips\R4300iInstruction.cpp" />
     <ClCompile Include="N64System\Mips\Register.cpp" />
     <ClCompile Include="N64System\Mips\Rumblepak.cpp" />
     <ClCompile Include="N64System\Mips\SystemEvents.cpp" />
@@ -188,9 +188,9 @@
     <ClInclude Include="N64System\Mips\GBCart.h" />
     <ClInclude Include="N64System\Mips\MemoryVirtualMem.h" />
     <ClInclude Include="N64System\Mips\Mempak.h" />
-    <ClInclude Include="N64System\Mips\OpCode.h" />
-    <ClInclude Include="N64System\Mips\OpcodeName.h" />
     <ClInclude Include="N64System\Mips\PifRam.h" />
+    <ClInclude Include="N64System\Mips\R4300iInstruction.h" />
+    <ClInclude Include="N64System\Mips\R4300iOpcode.h" />
     <ClInclude Include="N64System\Mips\Register.h" />
     <ClInclude Include="N64System\Mips\Rumblepak.h" />
     <ClInclude Include="N64System\Mips\Sram.h" />

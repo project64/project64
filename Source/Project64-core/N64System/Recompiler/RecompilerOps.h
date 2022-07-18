@@ -1,7 +1,7 @@
 #pragma once
 #include <Project64-core/N64System/Recompiler/RegInfo.h>
 #include <Project64-core/N64System/Recompiler/JumpInfo.h>
-#include <Project64-core/N64System/Mips/OpCode.h>
+#include <Project64-core/N64System/Mips/R4300iOpcode.h>
 
 class CCodeSection;
 
@@ -226,7 +226,7 @@ public:
     virtual void SetCurrentSection(CCodeSection * section) = 0;
     virtual void SetNextStepType(PIPELINE_STAGE StepType) = 0;
     virtual PIPELINE_STAGE GetNextStepType(void) = 0;
-    virtual const OPCODE & GetOpcode(void) const = 0;
+    virtual const R4300iOpcode & GetOpcode(void) const = 0;
     virtual void PreCompileOpcode(void) = 0;
     virtual void PostCompileOpcode(void) = 0;
     virtual void UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false, bool UpdateTimer = true) = 0;

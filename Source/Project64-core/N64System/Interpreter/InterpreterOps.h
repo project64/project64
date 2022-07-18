@@ -2,7 +2,7 @@
 
 #include <Project64-core/Settings/DebugSettings.h>
 #include <Project64-core/N64System/Mips/Register.h>
-#include <Project64-core/N64System/Mips/OpCode.h>
+#include <Project64-core/N64System/Mips/R4300iOpcode.h>
 
 class R4300iOp :
     public CLogging,
@@ -210,7 +210,7 @@ public:
     static Func* BuildInterpreter();
 
     static bool m_TestTimer;
-    static OPCODE m_Opcode;
+    static R4300iOpcode m_Opcode;
 
     static bool  MemoryBreakpoint();
 

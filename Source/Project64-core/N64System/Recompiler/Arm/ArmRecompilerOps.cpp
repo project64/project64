@@ -26,7 +26,7 @@ void CArmRecompilerOps::PreCompileOpcode(void)
 {
     if (m_PipelineStage != PIPELINE_STAGE_DELAY_SLOT_DONE)
     {
-        CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
+        CPU_Message("  %X %s", m_CompilePC, R4300iInstruction(m_CompilePC, m_Opcode.Value).NameAndParam().c_str());
     }
 
     /*FlushPopArmReg();
@@ -195,7 +195,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
 {
     static CRegInfo RegBeforeDelay;
     static bool EffectDelaySlot;
-    OPCODE Command = { 0 };
+    R4300iOpcode Command = { 0 };
 
     if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
@@ -216,7 +216,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
             case BranchTypeRsRt: EffectDelaySlot = DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, m_Opcode.rt); break;
             case BranchTypeCop1:
 
-                if (!g_MMU->MemoryValue32(m_CompilePC + 4, Command.Hex))
+                if (!g_MMU->MemoryValue32(m_CompilePC + 4, Command.Value))
                 {
                     g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
                 }
@@ -4695,7 +4695,7 @@ void CArmRecompilerOps::UnknownOpcode()
         CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
     }
 
-    MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
+    MoveConstToVariable(m_Opcode.Value, &R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value");
     CallFunction((void *)R4300iOp::UnknownOpcode, "R4300iOp::UnknownOpcode");
     ExitCodeBlock();
     if (m_PipelineStage == PIPELINE_STAGE_NORMAL) { m_PipelineStage = PIPELINE_STAGE_END_BLOCK; }
@@ -5852,7 +5852,7 @@ void CArmRecompilerOps::SetCurrentPC(uint32_t ProgramCounter)
     m_CompilePC = ProgramCounter;
     __except_try()
     {
-        if (!g_MMU->MemoryValue32(m_CompilePC, m_Opcode.Hex))
+        if (!g_MMU->MemoryValue32(m_CompilePC, m_Opcode.Value))
         {
             g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
         }
@@ -5883,7 +5883,7 @@ PIPELINE_STAGE CArmRecompilerOps::GetNextStepType(void)
     return m_PipelineStage;
 }
 
-const OPCODE &CArmRecompilerOps::GetOpcode(void) const
+const R4300iOpcode &CArmRecompilerOps::GetOpcode(void) const
 {
     return m_Opcode;
     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -5956,8 +5956,8 @@ void CArmRecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool 
 void CArmRecompilerOps::CompileInterpterCall(void * Function, const char * FunctionName)
 {
     m_RegWorkingSet.BeforeCallDirect();
-    MoveConstToArmReg(Arm_R1, m_Opcode.Hex);
-    MoveConstToArmReg(Arm_R2, (uint32_t)(void *)&R4300iOp::m_Opcode.Hex, "&R4300iOp::m_Opcode.Hex");
+    MoveConstToArmReg(Arm_R1, m_Opcode.Value);
+    MoveConstToArmReg(Arm_R2, (uint32_t)(void *)&R4300iOp::m_Opcode.Value, "&R4300iOp::m_Opcode.Value");
     StoreArmRegToArmRegPointer(Arm_R1, Arm_R2, 0);
     CallFunction(Function, FunctionName);
     m_RegWorkingSet.AfterCallDirect();

@@ -3,7 +3,7 @@
 #include "CPULog.h"
 
 #include "Debugger-CPULogView.h"
-#include <Project64-core/N64System/Mips/OpCodeName.h>
+#include <Project64-core/N64System/Mips/R4300iInstruction.h>
 
 CDebugCPULogView* CDebugCPULogView::_this = nullptr;
 HHOOK CDebugCPULogView::hWinMessageHook = nullptr;
@@ -327,17 +327,11 @@ void CDebugCPULogView::RefreshList(bool bUpdateBuffer)
 
         char szPC[9];
         sprintf(szPC, "%08X", state->pc);
-
-        char *tokctx;
-
-        char* szCommand = (char*)R4300iOpcodeName(state->opcode.Hex, state->pc);
-        char* szCmdName = strtok_s((char*)szCommand, "\t", &tokctx);
-        char* szCmdArgs = strtok_s(nullptr, "\t", &tokctx);
+        R4300iInstruction Instruction(state->pc, state->opcode.Value);
 
         m_CPUListView.AddItem(nItem, 0, stdstr(szPC).ToUTF16().c_str());
-        m_CPUListView.AddItem(nItem, 1, stdstr(szCmdName).ToUTF16().c_str());
-        m_CPUListView.AddItem(nItem, 2, stdstr(szCmdArgs).ToUTF16().c_str());
-
+        m_CPUListView.AddItem(nItem, 1, stdstr(Instruction.Name()).ToUTF16().c_str());
+        m_CPUListView.AddItem(nItem, 2, stdstr(Instruction.Param()).ToUTF16().c_str());
         nItem++;
     }
 

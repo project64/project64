@@ -2,7 +2,7 @@
 
 #include "DebuggerUI.h"
 
-#include <Project64-core/N64System/Mips/OpCodeName.h>
+#include <Project64-core/N64System/Mips/R4300iInstruction.h>
 
 CDumpMemory::CDumpMemory(CDebuggerUI * debugger) :
 CDebugDialog<CDumpMemory>(debugger)
@@ -52,7 +52,7 @@ void CDumpMemory::OnExitSizeMove(void)
     SaveWindowPos(0);
 }
 
-LRESULT    CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
     switch (wID)
     {
@@ -152,16 +152,11 @@ bool CDumpMemory::DumpMemory(LPCTSTR FileName, DumpFormat Format, DWORD StartPC,
 
         for (uint32_t pc = StartPC; pc < EndPC; pc += 4, DumpPC += 4)
         {
-            OPCODE opcode;
-            m_Debugger->DebugLoad_VAddr(pc, opcode.Hex);
+            R4300iOpcode opcode;
+            m_Debugger->DebugLoad_VAddr(pc, opcode.Value);
 
-            const char* command = R4300iOpcodeName(opcode.Hex, DumpPC);
-
-            char* cmdName = strtok((char*)command, "\t");
-            char* cmdArgs = strtok(nullptr, "\t");
-            cmdArgs = cmdArgs ? cmdArgs : "";
-
-            LogFile.LogF("%X: %-15s%s\r\n", DumpPC, cmdName, cmdArgs);
+            R4300iInstruction Instruction(DumpPC, opcode.Value);
+            LogFile.LogF("%X: %-15s%s\r\n", DumpPC, Instruction.Name(), Instruction.Param());
         }
 
         m_StartAddress.SetValue(StartPC, DisplayMode::AllHex);

@@ -258,9 +258,6 @@
     <ClCompile Include="N64System\Mips\Mempak.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\Mips\OpcodeName.cpp">
-      <Filter>Source Files\N64 System\Mips</Filter>
-    </ClCompile>
     <ClCompile Include="N64System\Mips\PifRam.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
@@ -404,6 +401,9 @@
     </ClCompile>
     <ClCompile Include="N64System\MemoryHandler\CartridgeDomain2Address2Handler.cpp">
       <Filter>Source Files\N64 System\MemoryHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Mips\R4300iInstruction.cpp">
+      <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -602,12 +602,6 @@
     <ClInclude Include="N64System\Mips\Mempak.H">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\Mips\OpCode.h">
-      <Filter>Header Files\N64 System\Mips</Filter>
-    </ClInclude>
-    <ClInclude Include="N64System\Mips\OpcodeName.h">
-      <Filter>Header Files\N64 System\Mips</Filter>
-    </ClInclude>
     <ClInclude Include="N64System\Mips\PifRam.h">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
@@ -790,6 +784,12 @@
     </ClInclude>
     <ClInclude Include="..\Project64-plugin-spec\Rsp.h">
       <Filter>Header Files\Plugin Spec</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Mips\R4300iInstruction.h">
+      <Filter>Header Files\N64 System\Mips</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Mips\R4300iOpcode.h">
+      <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/Recompiler/CodeSection.h>
-#include <Project64-core/N64System/Mips/OpCode.h>
+#include <Project64-core/N64System/Mips/R4300iOpcode.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
@@ -16,7 +16,7 @@ void InPermLoop();
 
 bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
 
-static bool OpHasDelaySlot(const OPCODE & Opcode)
+static bool OpHasDelaySlot(const R4300iOpcode & Opcode)
 {
     if (Opcode.op == R4300i_J || 
         Opcode.op == R4300i_JAL ||
@@ -62,9 +62,9 @@ static bool OpHasDelaySlot(const OPCODE & Opcode)
 
 static bool DelaySlotEffectsJump(uint32_t JumpPC)
 {
-    OPCODE Command;
+    R4300iOpcode Command;
 
-    if (!g_MMU->MemoryValue32(JumpPC, Command.Hex))
+    if (!g_MMU->MemoryValue32(JumpPC, Command.Value))
     {
         return true;
     }
@@ -110,9 +110,9 @@ static bool DelaySlotEffectsJump(uint32_t JumpPC)
             case R4300i_COP1_BC_BCTL:
                 {
                     bool EffectDelaySlot = false;
-                    OPCODE NewCommand;
+                    R4300iOpcode NewCommand;
 
-                    if (!g_MMU->MemoryValue32(JumpPC + 4, NewCommand.Hex))
+                    if (!g_MMU->MemoryValue32(JumpPC + 4, NewCommand.Value))
                     {
                         return true;
                     }
@@ -437,7 +437,7 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
     }
 
     uint32_t ContinueSectionPC = m_ContinueSection ? m_ContinueSection->m_EnterPC : (uint32_t)-1;
-    const OPCODE & Opcode = m_RecompilerOps->GetOpcode();
+    const R4300iOpcode & Opcode = m_RecompilerOps->GetOpcode();
     do
     {
         if (m_RecompilerOps->GetCurrentPC() > m_BlockInfo->VAddrLast())

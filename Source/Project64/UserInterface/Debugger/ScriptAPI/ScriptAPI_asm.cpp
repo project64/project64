@@ -1,7 +1,7 @@
 #include <stdafx.h>
 #include "ScriptAPI.h"
 #include "../Assembler.h"
-#include <Project64-core/N64System/Mips/OpCodeName.h>
+#include <Project64-core/N64System/Mips/R4300iInstruction.h>
 
 void ScriptAPI::Define_asm(duk_context *ctx)
 {
@@ -67,16 +67,6 @@ duk_ret_t ScriptAPI::js_asm_decode(duk_context* ctx)
 
     uint32_t opcode = duk_get_uint(ctx, 0);
     uint32_t address = duk_get_uint_default(ctx, 1, 0);
-
-    // TODO: Thread safe version of R4300iOpcodeName
-
-    char* code = (char*)R4300iOpcodeName(opcode, address);
-    char* ptab = strchr(code, '\t');
-    if (ptab != nullptr)
-    {
-        *ptab = ' ';
-    }
-
-    duk_push_string(ctx, code);
+    duk_push_string(ctx, R4300iInstruction(address, opcode).NameAndParam().c_str());
     return 1;
 }

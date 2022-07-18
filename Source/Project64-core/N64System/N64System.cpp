@@ -6,7 +6,7 @@
 #include <Project64-core/N64System/Mips/Mempak.h>
 #include <Project64-core/N64System/Mips/Transferpak.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
-#include <Project64-core/N64System/Mips/OpcodeName.h>
+#include <Project64-core/N64System/Mips/R4300iInstruction.h>
 #include <Project64-core/N64System/Mips/Disk.h>
 #include <Project64-core/N64System/N64Disk.h>
 #include <Project64-core/N64System/Enhancement/Enhancements.h>
@@ -1738,7 +1738,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
             uint32_t OpcodeValue, Addr = m_Reg.m_PROGRAM_COUNTER + (count << 2);
             if (g_MMU->MemoryValue32(Addr, OpcodeValue))
             {
-                Error.LogF("%X: %s\r\n", Addr, R4300iOpcodeName(OpcodeValue, Addr));
+                Error.LogF("%X: %s\r\n", Addr, R4300iInstruction(Addr, OpcodeValue).NameAndParam().c_str());
             }
         }
         Error.Log("\r\n");
@@ -1748,7 +1748,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
             uint32_t OpcodeValue, Addr = m_LastSuccessSyncPC[0] + (count << 2);
             if (g_MMU->MemoryValue32(Addr, OpcodeValue))
             {
-                Error.LogF("%X: %s\r\n", Addr, R4300iOpcodeName(OpcodeValue, Addr));
+                Error.LogF("%X: %s\r\n", Addr, R4300iInstruction(Addr, OpcodeValue).NameAndParam().c_str());
             }
         }
     }

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CPULog.h"
-#include <Project64-core/N64System/Mips/OpCodeName.h>
+#include <Project64-core/N64System/Mips/R4300iInstruction.h>
 
 CCPULog::CCPULog(size_t size) :
     m_bMaxed(false),
@@ -166,19 +166,8 @@ void CCPULog::DumpToFile(const char* path)
     for (size_t i = 0; i < count; i++)
     {
         CPUState* state = GetEntry(i);
-
-        char *tokctx;
-
-        char* szCommand = (char*)R4300iOpcodeName(state->opcode.Hex, state->pc);
-        char* szCmdName = strtok_s((char*)szCommand, "\t", &tokctx);
-        char* szCmdArgs = strtok_s(nullptr, "\t", &tokctx);
-
-        if (szCmdArgs == nullptr)
-        {
-            szCmdArgs = "";
-        }
-
-        fprintf(fp, "%08X: %08X %s %s\n", state->pc, state->opcode.Hex, szCmdName, szCmdArgs);
+        R4300iInstruction Instruction(state->pc, state->opcode.Value);
+        fprintf(fp, "%08X: %08X %s %s\n", state->pc, state->opcode.Value, Instruction.Name(), Instruction.Param());
     }
 
     fclose(fp);

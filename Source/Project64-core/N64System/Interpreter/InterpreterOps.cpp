@@ -5,7 +5,7 @@
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/SystemTiming.h>
 #include <Project64-core/N64System/Mips/TLB.h>
-#include <Project64-core/N64System/Mips/OpcodeName.h>
+#include <Project64-core/N64System/Mips/R4300iInstruction.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/Logging.h>
 #include <Project64-core/Debugger.h>
@@ -25,7 +25,7 @@ float truncf(float num)
 #endif
 
 bool R4300iOp::m_TestTimer = false;
-OPCODE R4300iOp::m_Opcode;
+R4300iOpcode R4300iOp::m_Opcode;
 
 R4300iOp::Func R4300iOp::Jump_Opcode[64];
 R4300iOp::Func R4300iOp::Jump_Special[64];
@@ -2612,8 +2612,8 @@ void R4300iOp::COP1_L_CVT_D()
 
 void R4300iOp::UnknownOpcode()
 {
-    g_Notify->DisplayError(stdstr_f("%s: %08X\n%s\n\nStopping emulation", GS(MSG_UNHANDLED_OP), (*_PROGRAM_COUNTER),
-        R4300iOpcodeName(m_Opcode.Hex, (*_PROGRAM_COUNTER))).c_str());
+    R4300iInstruction Opcode(*_PROGRAM_COUNTER, m_Opcode.Value);
+    g_Notify->DisplayError(stdstr_f("%s: %08X\n%s %s\n\nStopping emulation", GS(MSG_UNHANDLED_OP), (*_PROGRAM_COUNTER), Opcode.Name(), Opcode.Param()).c_str());
     g_System->m_EndEmulation = true;
 
     g_Notify->BreakPoint(__FILE__, __LINE__);

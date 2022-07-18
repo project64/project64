@@ -692,7 +692,7 @@ void CDebuggerUI::CPUStepEnded()
         return;
     }
     
-    OPCODE Opcode = R4300iOp::m_Opcode;
+    R4300iOpcode Opcode = R4300iOp::m_Opcode;
     uint32_t op = Opcode.op;
     uint32_t funct = Opcode.funct;
 

@@ -2,7 +2,7 @@
 #if defined(__i386__) || defined(_M_IX86)
 
 #include <Project64-core/N64System/Mips/Register.h>
-#include <Project64-core/N64System/Mips/OpCode.h>
+#include <Project64-core/N64System/Mips/R4300iOpcode.h>
 #include <Project64-core/N64System/Recompiler/ExitInfo.h>
 #include <Project64-core/N64System/Recompiler/RegInfo.h>
 #include <Project64-core/N64System/Recompiler/RecompilerOps.h>
@@ -228,7 +228,7 @@ public:
     void SetCurrentSection(CCodeSection * section);
     void SetNextStepType(PIPELINE_STAGE StepType);
     PIPELINE_STAGE GetNextStepType(void);
-    const OPCODE & GetOpcode(void) const;
+    const R4300iOpcode & GetOpcode(void) const;
     void PreCompileOpcode(void);
     void PostCompileOpcode(void);
     void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason);
@@ -379,7 +379,7 @@ private:
     CMipsMemoryVM & m_MMU;
     static PIPELINE_STAGE m_PipelineStage;
     static uint32_t m_CompilePC;
-    static OPCODE m_Opcode;
+    static R4300iOpcode m_Opcode;
     static CX86RegInfo m_RegWorkingSet;
     static uint32_t m_BranchCompare;
     static CCodeSection * m_Section;

@@ -1,6 +1,6 @@
 #pragma once
 #include <Project64-core/N64System/Recompiler/RegInfo.h>
-#include <Project64-core/N64System/Mips/OpCode.h>
+#include <Project64-core/N64System/Mips/R4300iOpcode.h>
 #include <Project64-core/N64System/N64Types.h>
 #include <map>
 
@@ -75,6 +75,6 @@ private:
     uint32_t m_PC;
     CRegInfo m_Reg;
     PIPELINE_STAGE m_PipelineStage;
-    OPCODE m_Command;
+    R4300iOpcode m_Command;
     uint32_t m_Test;
 };

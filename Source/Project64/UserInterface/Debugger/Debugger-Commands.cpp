@@ -6,7 +6,7 @@
 #include "Assembler.h"
 #include "OpInfo.h"
 
-#include <Project64-core/N64System/Mips/OpCodeName.h>
+#include <Project64-core/N64System/Mips/R4300iInstruction.h>
 
 void CCommandList::Attach(HWND hWndNew)
 {
@@ -531,18 +531,17 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
         m_CommandList.AddItem(i, CCommandList::COL_ADDRESS, stdstr(addrStr).ToUTF16().c_str());
 
         COpInfo OpInfo;
-        OPCODE& OpCode = OpInfo.m_OpCode;
+        R4300iOpcode& OpCode = OpInfo.m_OpCode;
 
-        if (!m_Debugger->DebugLoad_VAddr(opAddr, OpCode.Hex))
+        if (!m_Debugger->DebugLoad_VAddr(opAddr, OpCode.Value))
         {
             m_CommandList.AddItem(i, CCommandList::COL_COMMAND, L"***");
             m_bvAnnotatedLines.push_back(false);
             continue;
         }
 
-        char* command = (char*)R4300iOpcodeName(OpCode.Hex, opAddr);
-        char* cmdName = strtok((char*)command, "\t");
-        char* cmdArgs = strtok(nullptr, "\t");
+        R4300iInstruction Instruction(opAddr, OpCode.Value);
+        std::string cmdArgs = Instruction.Param();
 
         CSymbol jalSymbol;
 
@@ -553,7 +552,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
 
             if (m_Debugger->SymbolTable()->GetSymbolByAddress(targetAddr, &jalSymbol))
             {
-                cmdArgs = (char*)jalSymbol.m_Name;
+                cmdArgs = jalSymbol.m_Name;
             }
         }
 
@@ -567,9 +566,9 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
         {
             for (int offset = -4; offset > -24; offset -= 4)
             {
-                OPCODE OpCodeTest;
+                R4300iOpcode OpCodeTest;
 
-                if (!m_Debugger->DebugLoad_VAddr(opAddr + offset, OpCodeTest.Hex))
+                if (!m_Debugger->DebugLoad_VAddr(opAddr + offset, OpCodeTest.Value))
                 {
                     break;
                 }
@@ -607,7 +606,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
             bLoadStoreAnnotation = true;
         }
 
-        m_CommandList.AddItem(i, CCommandList::COL_COMMAND, stdstr(cmdName).ToUTF16().c_str());
+        m_CommandList.AddItem(i, CCommandList::COL_COMMAND, stdstr(Instruction.Name()).ToUTF16().c_str());
         m_CommandList.AddItem(i, CCommandList::COL_PARAMETERS, stdstr(cmdArgs).ToUTF16().c_str());
 
         // Show routine symbol name for this address
@@ -685,10 +684,10 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
     uint32_t address = m_StartAddress + (nItem * 4);
     uint32_t pc = (g_Reg != nullptr) ? g_Reg->m_PROGRAM_COUNTER : 0;
 
-    OPCODE pcOpcode;
-    if (!m_Debugger->DebugLoad_VAddr(pc, pcOpcode.Hex))
+    R4300iOpcode pcOpcode;
+    if (!m_Debugger->DebugLoad_VAddr(pc, pcOpcode.Value))
     {
-        pcOpcode.Hex = 0;
+        pcOpcode.Value = 0;
     }
 
     if (nSubItem == CCommandList::COL_ARROWS)
@@ -735,8 +734,8 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
 
     // Command and arguments
     COpInfo OpInfo;
-    OPCODE& OpCode = OpInfo.m_OpCode;
-    bool bAddrOkay = m_Debugger->DebugLoad_VAddr(address, OpCode.Hex);
+    R4300iOpcode& OpCode = OpInfo.m_OpCode;
+    bool bAddrOkay = m_Debugger->DebugLoad_VAddr(address, OpCode.Value);
 
     struct {
         COLORREF bg;
@@ -1057,7 +1056,7 @@ void CDebugCommandsView::CPUResume()
 void CDebugCommandsView::CPUStepOver()
 {
     COpInfo opInfo;
-    if (!m_Debugger->DebugLoad_VAddr(g_Reg->m_PROGRAM_COUNTER, opInfo.m_OpCode.Hex))
+    if (!m_Debugger->DebugLoad_VAddr(g_Reg->m_PROGRAM_COUNTER, opInfo.m_OpCode.Value))
     {
         return;
     }
@@ -1282,12 +1281,10 @@ void CDebugCommandsView::BeginOpEdit(uint32_t address)
     itemRect.left += listRect.left + 3;
     itemRect.right += 100;
     
-    char* command = (char*)R4300iOpcodeName(opcode, address);
-
     m_OpEdit.ShowWindow(SW_SHOW);
     m_OpEdit.MoveWindow(&itemRect);
     m_OpEdit.BringWindowToTop();
-    m_OpEdit.SetWindowText(stdstr(command).ToUTF16().c_str());
+    m_OpEdit.SetWindowText(stdstr(R4300iInstruction(address, opcode).NameAndParam()).ToUTF16().c_str());
     m_OpEdit.SetFocus();
     m_OpEdit.SetSelAll();
 
@@ -1376,7 +1373,7 @@ LRESULT CDebugCommandsView::OnCommandListRightClicked(NMHDR* pNMHDR)
     uint32_t address = m_StartAddress + nItem * 4;
     m_SelectedAddress = address;
 
-    if (!m_Debugger->DebugLoad_VAddr(m_SelectedAddress, m_SelectedOpCode.Hex))
+    if (!m_Debugger->DebugLoad_VAddr(m_SelectedAddress, m_SelectedOpCode.Value))
     {
         return 0;
     }

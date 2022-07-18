@@ -210,7 +210,7 @@ private:
     void SetCurrentSection(CCodeSection * section);
     void SetNextStepType(PIPELINE_STAGE StepType);
     PIPELINE_STAGE GetNextStepType( void );
-    const OPCODE & GetOpcode ( void ) const;
+    const R4300iOpcode & GetOpcode ( void ) const;
     void PreCompileOpcode(void);
     void PostCompileOpcode ( void );
     void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason);
@@ -272,7 +272,7 @@ private:
     CMipsMemoryVM & m_MMU;
     PIPELINE_STAGE m_PipelineStage;
     uint32_t m_CompilePC;
-    OPCODE m_Opcode;
+    R4300iOpcode m_Opcode;
     CCodeSection * m_Section;
 
     static uint32_t m_TempValue;

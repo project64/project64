@@ -7,7 +7,7 @@
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
-#include <Project64-core/N64System/Mips/OpcodeName.h>
+#include <Project64-core/N64System/Mips/R4300iInstruction.h>
 
 #ifdef _DEBUG
 #define CHECKED_BUILD 1
@@ -172,12 +172,12 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
 
     do
     {
-        if (!g_MMU->MemoryValue32(m_PC, m_Command.Hex))
+        if (!g_MMU->MemoryValue32(m_PC, m_Command.Value))
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
             return false;
         }
-        CPU_Message("  %08X: %s", m_PC, R4300iOpcodeName(m_Command.Hex, m_PC));
+        CPU_Message("  %08X: %s", m_PC, R4300iInstruction(m_PC, m_Command.Value).NameAndParam().c_str());
         switch (m_Command.op)
         {
         case R4300i_SPECIAL:
@@ -464,14 +464,14 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                     case R4300i_COP0_CO_TLBP: break;
                     case R4300i_COP0_CO_ERET: m_PipelineStage = PIPELINE_STAGE_END_BLOCK; break;
                     default:
-                        g_Notify->DisplayError(stdstr_f("Unhandled R4300i opcode in FillSectionInfo\n%s", R4300iOpcodeName(m_Command.Hex, m_PC)).c_str());
+                        g_Notify->DisplayError(stdstr_f("Unhandled R4300i opcode in FillSectionInfo\n%s", R4300iInstruction(m_PC, m_Command.Value).NameAndParam().c_str()).c_str());
                         m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
                         m_PC -= 4;
                     }
                 }
                 else
                 {
-                    g_Notify->DisplayError(stdstr_f("Unhandled R4300i opcode in FillSectionInfo 3\n%s", R4300iOpcodeName(m_Command.Hex, m_PC)).c_str());
+                    g_Notify->DisplayError(stdstr_f("Unhandled R4300i opcode in FillSectionInfo 3\n%s", R4300iInstruction(m_PC, m_Command.Value).NameAndParam().c_str()).c_str());
                     m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
                     m_PC -= 4;
                 }
@@ -535,7 +535,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
             case R4300i_COP1_W: break;
             case R4300i_COP1_L: break;
             default:
-                g_Notify->DisplayError(stdstr_f("Unhandled R4300i opcode in FillSectionInfo 2\n%s", R4300iOpcodeName(m_Command.Hex, m_PC)).c_str());
+                g_Notify->DisplayError(stdstr_f("Unhandled R4300i opcode in FillSectionInfo 2\n%s", R4300iInstruction(m_PC, m_Command.Value).NameAndParam().c_str()).c_str());
                 m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
                 m_PC -= 4;
             }
@@ -630,12 +630,12 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
         default:
             m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
             m_PC -= 4;
-            if (m_Command.Hex == 0x7C1C97C0) { break; }
-            if (m_Command.Hex == 0x7FFFFFFF) { break; }
-            if (m_Command.Hex == 0xF1F3F5F7) { break; }
-            if (m_Command.Hex == 0xC1200000) { break; }
-            if (m_Command.Hex == 0x4C5A5353) { break; }
-            g_Notify->DisplayError(stdstr_f("Unhandled R4300i opcode in FillSectionInfo 1\n%s\n%X", R4300iOpcodeName(m_Command.Hex, m_PC), m_Command.Hex).c_str());
+            if (m_Command.Value == 0x7C1C97C0) { break; }
+            if (m_Command.Value == 0x7FFFFFFF) { break; }
+            if (m_Command.Value == 0xF1F3F5F7) { break; }
+            if (m_Command.Value == 0xC1200000) { break; }
+            if (m_Command.Value == 0x4C5A5353) { break; }
+            g_Notify->DisplayError(stdstr_f("Unhandled R4300i opcode in FillSectionInfo 1\n%s\n%X", R4300iInstruction(m_PC, m_Command.Value).NameAndParam().c_str(), m_Command.Value).c_str());
         }
 
         CPU_Message("  %s state: %X value: %X", CRegName::GPR[5], m_Reg.GetMipsRegState(5), m_Reg.GetMipsRegLo(5));

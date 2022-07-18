@@ -6,7 +6,7 @@
 #include <Project64-core/N64System/Recompiler/Arm/ArmRecompilerOps.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64System.h>
-#include <Project64-core/N64System/Mips/OpcodeName.h>
+#include <Project64-core/N64System/Mips/R4300iInstruction.h>
 
 bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
 
@@ -434,16 +434,16 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
     EndBlock = false;
     PermLoop = false;
 
-    OPCODE Command;
-    if (!g_MMU->MemoryValue32(PC, Command.Hex))
+    R4300iOpcode Command;
+    if (!g_MMU->MemoryValue32(PC, Command.Value))
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return false;
     }
 
 #ifdef _DEBUG
-    const char * Name = R4300iOpcodeName(Command.Hex, PC);
-    CPU_Message("  0x%08X %s", PC, Name);
+    R4300iInstruction Instruction(PC, Command.Value);
+    CPU_Message("  0x%08X %s %s", PC, Instruction.Name(), Instruction.Param());
 #endif
     switch (Command.op)
     {
@@ -550,7 +550,7 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
         case R4300i_REGIMM_TGEIU:   case R4300i_REGIMM_TLTI:    case R4300i_REGIMM_TLTIU:
             break;
         default:
-            if (Command.Hex == 0x0407000D)
+            if (Command.Value == 0x0407000D)
             {
                 EndBlock = true;
                 break;
@@ -729,8 +729,8 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
         IncludeDelaySlot = true;
         break;
     default:
-        if (Command.Hex == 0x7C1C97C0 ||
-            Command.Hex == 0xF1F3F5F7)
+        if (Command.Value == 0x7C1C97C0 ||
+            Command.Value == 0xF1F3F5F7)
         {
             EndBlock = true;
             break;

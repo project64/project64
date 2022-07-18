@@ -299,7 +299,7 @@ bool CbCond_PcBetween_OpcodeEquals(JSAppCallback* cb, void* _env)
     }
 
     JSHookCpuStepEnv* env = (JSHookCpuStepEnv*)_env;
-    return cb->m_Params.opcode == (env->opInfo.m_OpCode.Hex & cb->m_Params.opcodeMask);
+    return cb->m_Params.opcode == (env->opInfo.m_OpCode.Value & cb->m_Params.opcodeMask);
 }
 
 static bool CbCond_PcBetween_GprValueEquals(JSAppCallback* cb, void* _env)
@@ -654,7 +654,7 @@ duk_idx_t CbArgs_OpcodeEventObject(duk_context* ctx, void* _env)
     const DukPropListEntry props[] = {
         { "callbackId", DukUInt(inst->CallbackId()) },
         { "pc", DukUInt(env->pc) },
-        { "opcode", DukUInt(env->opInfo.m_OpCode.Hex) },
+        { "opcode", DukUInt(env->opInfo.m_OpCode.Value) },
         { nullptr }
     };
 

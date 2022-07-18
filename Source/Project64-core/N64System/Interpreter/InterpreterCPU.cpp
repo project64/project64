@@ -4,8 +4,8 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
-#include <Project64-core/N64System/Mips/OpcodeName.h>
 #include <Project64-core/N64System/Interpreter/InterpreterOps32.h>
+#include <Project64-core/N64System/Mips/R4300iInstruction.h>
 #include <Project64-core/Plugins/Plugin.h>
 #include <Project64-core/Plugins/GFXPlugin.h>
 #include <Project64-core/ExceptionHandler.h>
@@ -20,9 +20,9 @@ void ExecuteInterpreterOps(uint32_t /*Cycles*/)
 
 bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2)
 {
-    OPCODE Command;
+    R4300iOpcode Command;
 
-    if (!g_MMU->MemoryValue32(PC + 4, Command.Hex))
+    if (!g_MMU->MemoryValue32(PC + 4, Command.Value))
     {
         //g_Notify->DisplayError("Failed to load word 2");
         //ExitThread(0);
@@ -88,7 +88,7 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2)
         default:
             if (CDebugSettings::HaveDebugger())
             {
-                g_Notify->DisplayError(stdstr_f("Does %s effect delay slot at %X?", R4300iOpcodeName(Command.Hex, PC + 4), PC).c_str());
+                g_Notify->DisplayError(stdstr_f("Does %s effect delay slot at %X?", R4300iInstruction(PC + 4, Command.Value).Name(), PC).c_str());
             }
             return true;
         }
@@ -119,7 +119,7 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2)
                 default:
                     if (CDebugSettings::HaveDebugger())
                     {
-                        g_Notify->DisplayError(stdstr_f("Does %s effect delay slot at %X?\n6", R4300iOpcodeName(Command.Hex, PC + 4), PC).c_str());
+                        g_Notify->DisplayError(stdstr_f("Does %s effect delay slot at %X?\n6", R4300iInstruction(PC + 4, Command.Value).Name(), PC).c_str());
                     }
                     return true;
                 }
@@ -128,7 +128,7 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2)
             {
                 if (CDebugSettings::HaveDebugger())
                 {
-                    g_Notify->DisplayError(stdstr_f("Does %s effect delay slot at %X?\n7", R4300iOpcodeName(Command.Hex, PC + 4), PC).c_str());
+                    g_Notify->DisplayError(stdstr_f("Does %s effect delay slot at %X?\n7", R4300iInstruction(PC + 4, Command.Value).Name(), PC).c_str());
                 }
                 return true;
             }
@@ -157,7 +157,7 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2)
         default:
             if (CDebugSettings::HaveDebugger())
             {
-                g_Notify->DisplayError(stdstr_f("Does %s effect delay slot at %X?", R4300iOpcodeName(Command.Hex, PC + 4), PC).c_str());
+                g_Notify->DisplayError(stdstr_f("Does %s effect delay slot at %X?", R4300iInstruction(PC + 4, Command.Value).Name(), PC).c_str());
             }
             return true;
         }
@@ -205,7 +205,7 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2)
     default:
         if (CDebugSettings::HaveDebugger())
         {
-            g_Notify->DisplayError(stdstr_f("Does %s effect delay slot at %X?", R4300iOpcodeName(Command.Hex, PC + 4), PC).c_str());
+            g_Notify->DisplayError(stdstr_f("Does %s effect delay slot at %X?", R4300iInstruction(PC + 4, Command.Value).Name(), PC).c_str());
         }
         return true;
     }
@@ -262,7 +262,7 @@ void CInterpreterCPU::ExecuteCPU()
     bool & Done = g_System->m_EndEmulation;
     PIPELINE_STAGE & PipelineStage = g_System->m_PipelineStage;
     uint32_t & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
-    OPCODE & Opcode = R4300iOp::m_Opcode;
+    R4300iOpcode & Opcode = R4300iOp::m_Opcode;
     uint32_t & JumpToLocation = g_System->m_JumpToLocation;
     bool & TestTimer = R4300iOp::m_TestTimer;
     const int32_t & bDoSomething = g_SystemEvents->DoSomething();
@@ -274,7 +274,7 @@ void CInterpreterCPU::ExecuteCPU()
     {
         while (!Done)
         {
-            if (!g_MMU->MemoryValue32(PROGRAM_COUNTER, Opcode.Hex))
+            if (!g_MMU->MemoryValue32(PROGRAM_COUNTER, Opcode.Value))
             {
                 g_Reg->DoTLBReadMiss(PipelineStage == PIPELINE_STAGE_JUMP, PROGRAM_COUNTER);
                 PipelineStage = PIPELINE_STAGE_NORMAL;
@@ -308,8 +308,8 @@ void CInterpreterCPU::ExecuteCPU()
 
             /* if (PROGRAM_COUNTER > 0x80000300 && PROGRAM_COUNTER < 0x80380000)
             {
-            WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER));
-            // WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
+            WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",*_PROGRAM_COUNTER,R4300iInstruction(*_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str());
+            // WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iInstruction(*_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str(),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
             // WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
             } */
 
@@ -373,7 +373,7 @@ void CInterpreterCPU::ExecuteOps(int32_t Cycles)
 {
     bool & Done = g_System->m_EndEmulation;
     uint32_t  & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
-    OPCODE & Opcode = R4300iOp::m_Opcode;
+    R4300iOpcode & Opcode = R4300iOp::m_Opcode;
     PIPELINE_STAGE & PipelineStage = g_System->m_PipelineStage;
     uint32_t & JumpToLocation = g_System->m_JumpToLocation;
     bool   & TestTimer = R4300iOp::m_TestTimer;
@@ -391,18 +391,18 @@ void CInterpreterCPU::ExecuteOps(int32_t Cycles)
                 return;
             }
 
-            if (g_MMU->MemoryValue32(PROGRAM_COUNTER, Opcode.Hex))
+            if (g_MMU->MemoryValue32(PROGRAM_COUNTER, Opcode.Value))
             {
                 /*if (PROGRAM_COUNTER > 0x80000300 && PROGRAM_COUNTER< 0x80380000)
                 {
-                WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER));
-                //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
+                WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",*_PROGRAM_COUNTER,R4300iInstruction(*_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str());
+                //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iInstruction(*_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str(),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
                 //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
                 }*/
                 /*if (PROGRAM_COUNTER > 0x80323000 && PROGRAM_COUNTER< 0x80380000)
                 {
-                WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER));
-                //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
+                WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",*_PROGRAM_COUNTER,R4300iInstruction(*_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str());
+                //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iInstruction(*_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str(),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
                 //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
                 }*/
                 m_R4300i_Opcode[Opcode.op]();
@@ -416,7 +416,7 @@ void CInterpreterCPU::ExecuteOps(int32_t Cycles)
                 {
                 if (TestValue != CurrentValue)
                 {
-                WriteTraceF(TraceError,"%X: %X changed (%s)",PROGRAM_COUNTER,TestAddress,R4300iOpcodeName(m_Opcode.Hex,PROGRAM_COUNTER) );
+                WriteTraceF(TraceError,"%X: %X changed (%s)",PROGRAM_COUNTER,TestAddress,R4300iInstruction(PROGRAM_COUNTER, m_Opcode.Value).NameAndParam().c_str());
                 CurrentValue = TestValue;
                 }
                 }*/

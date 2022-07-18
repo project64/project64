@@ -4,7 +4,7 @@
 
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/Disk.h>
-#include <Project64-core/N64System/Mips/OpcodeName.h>
+#include <Project64-core/N64System/Mips/R4300iInstruction.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Interpreter/InterpreterOps.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
@@ -24,7 +24,7 @@ CCodeSection * CX86RecompilerOps::m_Section = nullptr;
 CRegInfo CX86RecompilerOps::m_RegWorkingSet;
 PIPELINE_STAGE CX86RecompilerOps::m_PipelineStage;
 uint32_t CX86RecompilerOps::m_CompilePC;
-OPCODE CX86RecompilerOps::m_Opcode;
+R4300iOpcode CX86RecompilerOps::m_Opcode;
 uint32_t CX86RecompilerOps::m_BranchCompare = 0;
 uint32_t CX86RecompilerOps::m_TempValue32 = 0;
 
@@ -194,7 +194,7 @@ void CX86RecompilerOps::PreCompileOpcode(void)
 {
     if (m_PipelineStage != PIPELINE_STAGE_DELAY_SLOT_DONE)
     {
-        CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
+        CPU_Message("  %X %s", m_CompilePC, R4300iInstruction(m_CompilePC, m_Opcode.Value).NameAndParam().c_str());
     }
     /*if (m_CompilePC == 0x803275F4 && m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
@@ -434,7 +434,7 @@ void CX86RecompilerOps::Compile_TrapCompare(TRAP_COMPARE CompareType)
             UnMap_GPR(m_Opcode.rt, true);
         }
         m_RegWorkingSet.BeforeCallDirect();
-        MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
+        MoveConstToVariable(m_Opcode.Value, &R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value");
         Call_Direct(FunctAddress, FunctName);
         m_RegWorkingSet.AfterCallDirect();
     }
@@ -486,9 +486,9 @@ void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
             case BranchTypeRsRt: EffectDelaySlot = DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, m_Opcode.rt); break;
             case BranchTypeCop1:
                 {
-                    OPCODE Command;
+                    R4300iOpcode Command;
 
-                    if (!g_MMU->MemoryValue32(m_CompilePC + 4, Command.Hex))
+                    if (!g_MMU->MemoryValue32(m_CompilePC + 4, Command.Value))
                     {
                         g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
                     }
@@ -2652,7 +2652,7 @@ void CX86RecompilerOps::DADDIU()
     }
 
     m_RegWorkingSet.BeforeCallDirect();
-    MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
+    MoveConstToVariable(m_Opcode.Value, &R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value");
     Call_Direct((void *)R4300iOp::DADDIU, "R4300iOp::DADDIU");
     m_RegWorkingSet.AfterCallDirect();
 }
@@ -2728,7 +2728,7 @@ void CX86RecompilerOps::LDL()
     }
 
     m_RegWorkingSet.BeforeCallDirect();
-    MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
+    MoveConstToVariable(m_Opcode.Value, &R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value");
     Call_Direct((void *)R4300iOp::LDL, "R4300iOp::LDL");
     m_RegWorkingSet.AfterCallDirect();
 }
@@ -2746,7 +2746,7 @@ void CX86RecompilerOps::LDR()
     }
 
     m_RegWorkingSet.BeforeCallDirect();
-    MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
+    MoveConstToVariable(m_Opcode.Value, &R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value");
     Call_Direct((void *)R4300iOp::LDR, "R4300iOp::LDR");
     m_RegWorkingSet.AfterCallDirect();
 }
@@ -3803,7 +3803,7 @@ void CX86RecompilerOps::SDL()
     }
 
     m_RegWorkingSet.BeforeCallDirect();
-    MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
+    MoveConstToVariable(m_Opcode.Value, &R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value");
     Call_Direct((void *)R4300iOp::SDL, "R4300iOp::SDL");
     m_RegWorkingSet.AfterCallDirect();
 }
@@ -3821,7 +3821,7 @@ void CX86RecompilerOps::SDR()
     }
 
     m_RegWorkingSet.BeforeCallDirect();
-    MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
+    MoveConstToVariable(m_Opcode.Value, &R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value");
     Call_Direct((void *)R4300iOp::SDR, "R4300iOp::SDR");
     m_RegWorkingSet.AfterCallDirect();
 }
@@ -4908,7 +4908,7 @@ void CX86RecompilerOps::SPECIAL_DMULT()
     }
 
     m_RegWorkingSet.BeforeCallDirect();
-    MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
+    MoveConstToVariable(m_Opcode.Value, &R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value");
     Call_Direct((void *)R4300iOp::SPECIAL_DMULT, "R4300iOp::SPECIAL_DMULT");
     m_RegWorkingSet.AfterCallDirect();
 }
@@ -4918,7 +4918,7 @@ void CX86RecompilerOps::SPECIAL_DMULTU()
     UnMap_GPR(m_Opcode.rs, true);
     UnMap_GPR(m_Opcode.rt, true);
     m_RegWorkingSet.BeforeCallDirect();
-    MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
+    MoveConstToVariable(m_Opcode.Value, &R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value");
     Call_Direct((void *)R4300iOp::SPECIAL_DMULTU, "R4300iOp::SPECIAL_DMULTU");
     m_RegWorkingSet.AfterCallDirect();
 
@@ -4995,7 +4995,7 @@ void CX86RecompilerOps::SPECIAL_DDIV()
     UnMap_GPR(m_Opcode.rs, true);
     UnMap_GPR(m_Opcode.rt, true);
     m_RegWorkingSet.BeforeCallDirect();
-    MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
+    MoveConstToVariable(m_Opcode.Value, &R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value");
     Call_Direct((void *)R4300iOp::SPECIAL_DDIV, "R4300iOp::SPECIAL_DDIV");
     m_RegWorkingSet.AfterCallDirect();
 }
@@ -5005,7 +5005,7 @@ void CX86RecompilerOps::SPECIAL_DDIVU()
     UnMap_GPR(m_Opcode.rs, true);
     UnMap_GPR(m_Opcode.rt, true);
     m_RegWorkingSet.BeforeCallDirect();
-    MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
+    MoveConstToVariable(m_Opcode.Value, &R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value");
     Call_Direct((void *)R4300iOp::SPECIAL_DDIVU, "R4300iOp::SPECIAL_DDIVU");
     m_RegWorkingSet.AfterCallDirect();
 }
@@ -8252,7 +8252,7 @@ void CX86RecompilerOps::COP1_L_CVT_D()
 // Other functions
 void CX86RecompilerOps::UnknownOpcode()
 {
-    CPU_Message("  %X Unhandled opcode: %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
+    CPU_Message("  %X Unhandled opcode: %s", m_CompilePC, R4300iInstruction(m_CompilePC, m_Opcode.Value).NameAndParam().c_str());
 
     m_RegWorkingSet.WriteBackRegisters();
     UpdateCounters(m_RegWorkingSet, false, true);
@@ -8270,7 +8270,7 @@ void CX86RecompilerOps::UnknownOpcode()
     }
     m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
 
-    MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
+    MoveConstToVariable(m_Opcode.Value, &R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value");
     Call_Direct((void *)R4300iOp::UnknownOpcode, "R4300iOp::UnknownOpcode");
     Ret();
     if (m_PipelineStage == PIPELINE_STAGE_NORMAL) { m_PipelineStage = PIPELINE_STAGE_END_BLOCK; }
@@ -9144,7 +9144,7 @@ void CX86RecompilerOps::SetCurrentPC(uint32_t ProgramCounter)
     m_CompilePC = ProgramCounter;
     __except_try()
     {
-        if (!g_MMU->MemoryValue32(m_CompilePC, m_Opcode.Hex))
+        if (!g_MMU->MemoryValue32(m_CompilePC, m_Opcode.Value))
         {
             g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
         }
@@ -9175,7 +9175,7 @@ PIPELINE_STAGE CX86RecompilerOps::GetNextStepType(void)
     return m_PipelineStage;
 }
 
-const OPCODE & CX86RecompilerOps::GetOpcode(void) const
+const R4300iOpcode & CX86RecompilerOps::GetOpcode(void) const
 {
     return m_Opcode;
 }

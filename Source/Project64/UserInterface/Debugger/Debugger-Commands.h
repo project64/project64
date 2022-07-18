@@ -282,7 +282,7 @@ private:
 
     uint32_t m_SelectedAddress;
     COpInfo  m_SelectedOpInfo;
-    OPCODE&  m_SelectedOpCode = m_SelectedOpInfo.m_OpCode;
+    R4300iOpcode&  m_SelectedOpCode = m_SelectedOpInfo.m_OpCode;
 
     uint32_t m_FollowAddress;
     uint32_t m_RowHeight;
