@@ -637,7 +637,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
         CN64Rom::CleanRomName(RomName, false);
     }
 
-    WriteTrace(TraceN64System, TraceDebug, "RomName %s", RomName);
+    WriteTrace(TraceN64System, TraceDebug, "RomName \"%s\"", RomName);
 
     m_RomName = RomName;
     m_FileName = FileLoc;
