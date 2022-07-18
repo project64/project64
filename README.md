@@ -1,6 +1,6 @@
 # Project64 - Nintendo 64 Emulator
 
-Project64 is a free and open-source emulator for the Nintendo 64 and Nintendo 64 Disk Drive written in C++ currently for Windows (planned support for other platforms in the future)
+Project64 is a free and open-source emulator for the Nintendo 64 and Nintendo 64 Disk Drive written in C++ currently for Windows (planned support for other platforms in the future).
 
 ## System Requirements
 
@@ -21,6 +21,8 @@ Installer for the latest stable release: https://www.pj64-emu.com/windows-downlo
 
 Follow the instructions in the setup window to complete the installation.
 
+If you would like to see the changelog: [Changelog here](https://github.com/project64/project64/blob/develop/Docs/CHANGELOG.md)
+
 Download nightly builds here: https://www.pj64-emu.com/nightly-builds
 
 AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/projects/status/sbtwyhaexslyhgx3?svg=true
@@ -40,7 +42,7 @@ Visual Studio Community 2015 or later
 
 Load .sln project file and compile.
 
-See the [BUILDING.md](https://github.com/project64/project64/blob/develop/BUILDING.md) file for details.
+See the [BUILDING.md](https://github.com/project64/project64/blob/develop/Docs/BUILDING.md) file for details.
 
 ## Contributing
 
