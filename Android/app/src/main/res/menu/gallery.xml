@@ -6,14 +6,17 @@
         android:id="@+id/menuItem_GameDir"
         android:icon="@drawable/ic_folder"
         app:showAsAction="ifRoom|collapseActionView"
-        />
+        android:title="Game Dir" />
 	<item
         android:id="@+id/menuItem_settings"
-        android:icon="@drawable/ic_settings"/>
+        android:icon="@drawable/ic_settings"
+        android:title="Settings" />
     <item
         android:id="@+id/menuItem_discord"
-        android:icon="@drawable/ic_discord" />
+        android:icon="@drawable/ic_discord"
+        android:title="Discord" />
     <item
         android:id="@+id/menuItem_about"
-        android:icon="@drawable/ic_about" />
+        android:icon="@drawable/ic_about"
+        android:title="About" />
 </menu>

@@ -62,7 +62,7 @@ public class ListPreference extends Preference {
         TextView DlgTitle = (TextView)layout.findViewById(R.id.dlg_title);
         DlgTitle.setText(mTitle);
         ListView ListOptions = (ListView)layout.findViewById(R.id.list_options);
-        ListAdapter adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_single_choice,mEntriesString);
+        ListAdapter adapter = new ArrayAdapter<String>(getContext(), R.layout.simple_list_item_single_choice,mEntriesString);
         ListOptions.setAdapter(adapter);
         ListOptions.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         ListOptions.setItemChecked(mValueIndex,true);
@@ -84,7 +84,7 @@ public class ListPreference extends Preference {
 
     private void updateSummary()
     {
-        if (mValueIndex < 0)
+        if (mValueIndex < 0 && mValueIndex < mEntries.length)
         {
             return;
         }

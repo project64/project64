@@ -76,7 +76,7 @@ public class MogaHack
                 
                 // Start the service explicitly
                 context.startService( intent );
-                context.bindService( intent, mServiceConnection, 1 );
+                context.bindService( intent, mServiceConnection, Context.BIND_AUTO_CREATE );
                 try
                 {
                     fIsBound.setBoolean( controller, true );

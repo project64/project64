@@ -163,7 +163,7 @@ public class GameOverlay extends View implements TouchController.OnStateChangedL
                     Typeface.BOLD_ITALIC);
             mPaint.setTypeface(typeface);
             mPaint.getTextBounds(txt, 0, txt.length(), mRectangle);
-            canvas.drawText(txt, Math.abs(canvas.getWidth() / 2), Math.abs((int) (canvas.getHeight() * 0.95)) - Math.abs(mRectangle.height()), mPaint);
+            canvas.drawText(txt, Math.abs(getWidth() / 2), Math.abs((int) (getHeight() * 0.95)) - Math.abs(mRectangle.height()), mPaint);
         }
     }
 }
