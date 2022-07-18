@@ -1035,7 +1035,8 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
     m_Reg.EPC_REGISTER = 0xFFFFFFFF;
     m_Reg.BAD_VADDR_REGISTER = 0xFFFFFFFF;
     m_Reg.ERROREPC_REGISTER = 0xFFFFFFFF;
-    m_Reg.CONFIG_REGISTER = 0x0006E463;
+    m_Reg.PREVID_REGISTER = 0x00000B22;
+    m_Reg.CONFIG_REGISTER = 0x7006E463;
     m_Reg.STATUS_REGISTER = 0x34000000;
 
     // N64DD registers

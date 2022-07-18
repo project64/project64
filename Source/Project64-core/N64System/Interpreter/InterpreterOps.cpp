@@ -274,11 +274,11 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_Regimm[31] = UnknownOpcode;
 
     Jump_CoP0[0] = COP0_MF;
-    Jump_CoP0[1] = UnknownOpcode;
+    Jump_CoP0[1] = COP0_MF;
     Jump_CoP0[2] = UnknownOpcode;
     Jump_CoP0[3] = UnknownOpcode;
     Jump_CoP0[4] = COP0_MT;
-    Jump_CoP0[5] = UnknownOpcode;
+    Jump_CoP0[5] = COP0_MT;
     Jump_CoP0[6] = UnknownOpcode;
     Jump_CoP0[7] = UnknownOpcode;
     Jump_CoP0[8] = UnknownOpcode;
@@ -1882,6 +1882,7 @@ void R4300iOp::COP0_MT()
     case 16: // Config
     case 18: // WatchLo
     case 19: // WatchHi
+    case 20: // XContext
     case 28: // Tag lo
     case 29: // Tag Hi
     case 30: // ErrEPC

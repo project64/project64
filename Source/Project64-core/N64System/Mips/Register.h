@@ -37,6 +37,7 @@ public:
     uint32_t & STATUS_REGISTER;
     uint32_t & CAUSE_REGISTER;
     uint32_t & EPC_REGISTER;
+    uint32_t & PREVID_REGISTER;
     uint32_t & CONFIG_REGISTER;
     uint32_t & TAGLO_REGISTER;
     uint32_t & TAGHI_REGISTER;
