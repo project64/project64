@@ -3,7 +3,7 @@
 #if defined(__arm__) || defined(_M_ARM)
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/Disk.h>
-#include <Project64-core/N64System/Mips/OpcodeName.h>
+#include <Project64-core/N64System/Mips/R4300iInstruction.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Interpreter/InterpreterOps32.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>

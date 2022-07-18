@@ -38,8 +38,8 @@ add_library(Project64-core STATIC
     N64System/Mips/GBCart.cpp
     N64System/Mips/MemoryVirtualMem.cpp
     N64System/Mips/Mempak.cpp
-    N64System/Mips/OpcodeName.cpp
     N64System/Mips/PifRam.cpp
+    N64System/Mips/R4300iInstruction.cpp
     N64System/Mips/Register.cpp
     N64System/Mips/Rumblepak.cpp
     N64System/Mips/Transferpak.cpp
