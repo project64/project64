@@ -6,7 +6,6 @@
 
 Project64 is a free and open-source emulator for the Nintendo 64 and Nintendo 64 Disk Drive written in C++ currently only for Windows (planned support for other platforms in the future).
 
-
 ## Features
 
 - Development and debugging tools
@@ -35,7 +34,6 @@ AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/project
 
 ## Minimum requirements
 
-
 * Operating system (limited support for Windows 8.1 and below)
   * Windows XP SP3, Windows 7 SP1, Windows 8.1, and the latest version of Windows 10
 * CPU
@@ -46,6 +44,7 @@ AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/project
   * DirectX 8 capable (Jabo's Direct3D8)
   * OpenGL 1.1 capable (Project64 Video)
   * OpenGL 3.3 capable (GLideN64)
+
 ## Support
 
 For support, we ask all users read our [support document](https://github.com/project64/project64/blob/develop/Docs/SUPPORT.md). Read this ***before*** opening issues.
@@ -55,6 +54,7 @@ Please join our [Discord server](https://discord.gg/Cg3zquF) for support, questi
 ## Changelog
 
 If you would like to see a changelog that is available [here](https://github.com/project64/project64/blob/develop/Docs/CHANGELOG.md).
+
 ## Dependencies
 
 - Duktape: MIT license
@@ -64,6 +64,7 @@ If you would like to see a changelog that is available [here](https://github.com
 - discord-rpc: Copyright (C) Discord
 - DirectX: Copyright (C) Microsoft
 - Windows Template Library: Copyright (C) Microsoft
+
 ## Contributing
 
 Contributions are always welcome!
@@ -72,7 +73,7 @@ See the [contributing](https://github.com/project64/project64/blob/develop/.gith
 
 ## Roadmap
 
-#### Just a note that these aren't guaranteed to happen, just things we'd like to implement at some point
+#### Just a note that these aren't guaranteed to happen, just things we'd like to implement at some point!
 
 - Improve the accuracy of the CPU interpreter/CPU recompiler
 - Improve the accuracy of the RSP interpreter/RSP recompiler
@@ -83,7 +84,8 @@ See the [contributing](https://github.com/project64/project64/blob/develop/.gith
 - Update dependencies
 - Code cleanup and refactoring
 - UI/UX improvements
-## Authors and contributors
+
+## Maintainers and contributors
 
 - [@Project64](https://www.github.com/project64) - Zilmar - current maintainer
 - Jabo - Previous contributor
@@ -91,14 +93,17 @@ See the [contributing](https://github.com/project64/project64/blob/develop/.gith
 - Gent - Previous contributor
 
 Also see the list of [community contributors](https://github.com/project64/project64/contributors).
+
 ## 🔗 Links
 - [Website](https://pj64-emu.com)
 - [Discord](https://discord.gg/Cg3zquF)
+
 ## License
 
 ![GitHub](https://img.shields.io/github/license/project64/project64)
 
 Please see the [license](https://github.com/project64/project64/blob/develop/license.md) for more details.
+
 ## Acknowledgements
  
  - [Past and current contributors of MAME](https://github.com/mamedev/mame)
