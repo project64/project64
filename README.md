@@ -30,6 +30,9 @@ Download nightly builds [here](https://www.pj64-emu.com/nightly-builds).
 
 AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/projects/status/sbtwyhaexslyhgx3?svg=true
 )](https://ci.appveyor.com/project/project64/project64/branch/develop)
+
+*Side note: 64-bit builds are considered experimental and aren't currently supported*
+
 ## Minimum requirements
 
 
