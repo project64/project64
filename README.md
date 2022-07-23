@@ -2,7 +2,6 @@
   <img src="./Docs/img/icon.png" alt="logo" width="200" />
 </p>
 
-![Logo](./Docs/img/icon.png)
 # Project64
 
 Project64 is a free and open-source emulator for the Nintendo 64 and Nintendo 64 Disk Drive written in C++ currently only for Windows (planned support for other platforms in the future).
