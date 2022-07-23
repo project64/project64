@@ -47,13 +47,13 @@ AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/project
 
 ## Support
 
-For support, we ask all users read our [support document](https://github.com/project64/project64/blob/develop/Docs/SUPPORT.md). Read this ***before*** opening issues.
+For support, we ask all users read our [support document](./Docs/SUPPORT.md). Read this ***before*** opening issues.
 
 Please join our [Discord server](https://discord.gg/Cg3zquF) for support, questions, etc.
 
 ## Changelog
 
-If you would like to see a changelog that is available [here](https://github.com/project64/project64/blob/develop/Docs/CHANGELOG.md).
+If you would like to see a changelog that is available [here](./Docs/CHANGELOG.md).
 
 ## Dependencies
 
@@ -69,7 +69,7 @@ If you would like to see a changelog that is available [here](https://github.com
 
 Contributions are always welcome!
 
-See the [contributing](https://github.com/project64/project64/blob/develop/.github/CONTRIBUTING.md) file for ways to get started.
+See the [contributing](./.github/CONTRIBUTING.md) file for ways to get started.
 
 ## Roadmap
 
@@ -102,7 +102,7 @@ Also see the list of [community contributors](https://github.com/project64/proje
 
 ![GitHub](https://img.shields.io/github/license/project64/project64)
 
-Please see the [license](https://github.com/project64/project64/blob/develop/license.md) for more details.
+Please see the [license](./license.md) for more details.
 
 ## Acknowledgements
  
