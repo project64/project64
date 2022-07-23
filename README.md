@@ -1,3 +1,6 @@
+<p align="center">
+  <img src="./Docs/img/icon.png" alt="logo" width="200" />
+</p>
 
 ![Logo](./Docs/img/icon.png)
 # Project64
