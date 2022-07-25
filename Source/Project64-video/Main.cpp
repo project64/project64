@@ -455,7 +455,7 @@ int InitGfx()
     voodoo.gamma_table_size = 256;
 
     srand(g_settings->stipple_pattern());
-    setPattern();
+    //setPattern();
 
     InitCombine();
 
