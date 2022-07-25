@@ -254,7 +254,7 @@ void R4300iInstruction::DecodeName(void)
         break;
     case R4300i_LBU:
         strcpy(m_Name, "LBU");
-        sprintf(m_Param, "t%s, 0x%04X (%s)", CRegName::GPR[m_Instruction.rt], m_Instruction.offset, CRegName::GPR[m_Instruction.base]);
+        sprintf(m_Param, "%s, 0x%04X (%s)", CRegName::GPR[m_Instruction.rt], m_Instruction.offset, CRegName::GPR[m_Instruction.base]);
         break;
     case R4300i_LHU:
         strcpy(m_Name, "LHU");
@@ -531,7 +531,7 @@ void R4300iInstruction::DecodeSpecialName(void)
         break;
     case R4300i_SPECIAL_TNE:
         strcpy(m_Name, "TNE");
-        sprintf(m_Param, "t%s, %s", CRegName::GPR[m_Instruction.rs], CRegName::GPR[m_Instruction.rt]);
+        sprintf(m_Param, "%s, %s", CRegName::GPR[m_Instruction.rs], CRegName::GPR[m_Instruction.rt]);
         break;
     case R4300i_SPECIAL_DSLL:
         strcpy(m_Name, "DSLL");
@@ -757,7 +757,7 @@ void R4300iInstruction::DecodeCop1Name(void)
             break;
         case R4300i_COP1_FUNCT_TRUNC_W:
             sprintf(m_Name, "TRUNC.W.%s", FPR_Type(m_Instruction.fmt));
-            sprintf(m_Param, "t%s, %s", CRegName::FPR[m_Instruction.fd], CRegName::FPR[m_Instruction.fs]);
+            sprintf(m_Param, "%s, %s", CRegName::FPR[m_Instruction.fd], CRegName::FPR[m_Instruction.fs]);
             break;
         case R4300i_COP1_FUNCT_CEIL_W:
             sprintf(m_Name, "CEIL.W.%s", FPR_Type(m_Instruction.fmt));
