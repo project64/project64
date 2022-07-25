@@ -2811,13 +2811,31 @@ void CX86RecompilerOps::LB_KnownAddress(x86Reg Reg, uint32_t VAddr, bool SignExt
     case 0x10000000:
         if ((PAddr - 0x10000000) < g_Rom->GetRomSize())
         {
+            m_RegWorkingSet.BeforeCallDirect();
+            PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
+            PushImm32(((PAddr + 2) & ~0x3) & 0x1FFFFFFC);
+#ifdef _MSC_VER
+            MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_RomMemoryHandler, x86_ECX);
+            Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_RomMemoryHandler)[0][0], "RomMemoryHandler::Read32");
+#else
+            PushImm32((uint32_t)&g_MMU->m_RomMemoryHandler);
+            Call_Direct(AddressOf(&RomMemoryHandler::Read32), "RomMemoryHandler::Read32");
+            AddConstToX86Reg(x86_ESP, 16);
+#endif
+            m_RegWorkingSet.AfterCallDirect();
+            MoveVariableToX86reg(&m_TempValue32, "m_TempValue32", Reg);
+            uint8_t Shift = (((PAddr & 1) ^ 3) << 3);
+            if (Shift == 0x10)
+            {
+                ShiftLeftSignImmed(Reg, 0x8);
+            }
             if (SignExtend)
             {
-                MoveSxVariableToX86regByte(((PAddr ^ 3) - 0x10000000) + g_Rom->GetRomAddress(), stdstr_f("Rom + (%X ^ 3)", (PAddr - 0x10000000)).c_str(), Reg);
+                ShiftRightSignImmed(Reg, 0x18);
             }
             else
             {
-                MoveZxVariableToX86regByte(((PAddr ^ 3) - 0x10000000) + g_Rom->GetRomAddress(), stdstr_f("Rom + (%X ^ 3)", (PAddr - 0x10000000)).c_str(), Reg);
+                ShiftRightUnsignImmed(Reg, 0x18);
             }
         }
         else
@@ -2887,7 +2905,7 @@ void CX86RecompilerOps::LH_KnownAddress(x86Reg Reg, uint32_t VAddr, bool SignExt
         {
             m_RegWorkingSet.BeforeCallDirect();
             PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
-            PushImm32(PAddr & 0x1FFFFFFC);
+            PushImm32(((PAddr + 2) & ~0x3) & 0x1FFFFFFC);
 #ifdef _MSC_VER
             MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_RomMemoryHandler, x86_ECX);
             Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_RomMemoryHandler)[0][0], "RomMemoryHandler::Read32");
@@ -2897,26 +2915,14 @@ void CX86RecompilerOps::LH_KnownAddress(x86Reg Reg, uint32_t VAddr, bool SignExt
             AddConstToX86Reg(x86_ESP, 16);
 #endif
             m_RegWorkingSet.AfterCallDirect();
-            uint8_t ShiftValue = (((PAddr & 2) ^ 2) << 3);
-            if (ShiftValue != 0)
+            MoveVariableToX86reg(&m_TempValue32, "m_TempValue32", Reg);
+            if (SignExtend)
             {
-                MoveVariableToX86reg(&m_TempValue32, "m_TempValue32", Reg);
-                if (SignExtend)
-                {
-                    ShiftRightSignImmed(Reg, ShiftValue);
-                }
-                else
-                {
-                    ShiftRightUnsignImmed(Reg, ShiftValue);
-                }
-            }
-            else if (SignExtend)
-            {
-                MoveSxVariableToX86regHalf(&m_TempValue32, "m_TempValue32", Reg);
+                ShiftRightSignImmed(Reg, 16);
             }
             else
             {
-                MoveZxVariableToX86regHalf(&m_TempValue32, "m_TempValue32", Reg);
+                ShiftRightUnsignImmed(Reg, 16);
             }
         }
         else
