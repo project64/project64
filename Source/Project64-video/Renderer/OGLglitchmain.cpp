@@ -285,9 +285,9 @@ int buffer_cleared;
 // Comment by Ziggy
 // To allocate a new static texture name, take the value (free_texture++)
 int free_texture;
-int default_texture; // The infamous "32*1024*1024" is now configurable
+GLuint default_texture; // The infamous "32*1024*1024" is now configurable
 int current_texture;
-int depth_texture, color_texture;
+GLuint depth_texture, color_texture;
 int glsl_support = 1;
 int viewport_width, viewport_height, g_viewport_offset = 0, nvidia_viewport_hack = 0;
 int save_w, save_h;
