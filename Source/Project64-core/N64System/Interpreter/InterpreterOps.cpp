@@ -2613,11 +2613,19 @@ void R4300iOp::COP1_L_CVT_D()
 
 void R4300iOp::UnknownOpcode()
 {
-    R4300iInstruction Opcode(*_PROGRAM_COUNTER, m_Opcode.Value);
-    g_Notify->DisplayError(stdstr_f("%s: %08X\n%s %s\n\nStopping emulation", GS(MSG_UNHANDLED_OP), (*_PROGRAM_COUNTER), Opcode.Name(), Opcode.Param()).c_str());
-    g_System->m_EndEmulation = true;
+    if (HaveDebugger())
+    {
+        g_Settings->SaveBool(Debugger_SteppingOps, true);
+        g_Debugger->WaitForStep();
+    }
+    else
+    {
+        R4300iInstruction Opcode(*_PROGRAM_COUNTER, m_Opcode.Value);
+        g_Notify->DisplayError(stdstr_f("%s: %08X\n%s %s\n\nStopping emulation", GS(MSG_UNHANDLED_OP), (*_PROGRAM_COUNTER), Opcode.Name(), Opcode.Param()).c_str());
+        g_System->m_EndEmulation = true;
 
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 bool R4300iOp::MemoryBreakpoint()
