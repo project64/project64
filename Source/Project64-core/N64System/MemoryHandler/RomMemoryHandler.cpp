@@ -3,6 +3,7 @@
 #include <Project64-core\N64System\N64System.h>
 #include <Project64-core\N64System\Mips\Register.h>
 #include <Project64-core\N64System\N64Rom.h>
+#include <Project64-core\N64System\SystemGlobals.h>
 
 RomMemoryHandler::RomMemoryHandler(CN64System & System, CRegisters & Reg, CN64Rom & Rom) :
     m_PC(Reg.m_PROGRAM_COUNTER),
@@ -17,7 +18,10 @@ RomMemoryHandler::RomMemoryHandler(CN64System & System, CRegisters & Reg, CN64Ro
 
 bool RomMemoryHandler::Read32(uint32_t Address, uint32_t & Value)
 {
-    m_Reg.PI_CART_ADDR_REG = Address + 4;
+    if (g_DDRom == nullptr)
+    {
+        m_Reg.PI_CART_ADDR_REG = Address + 4;
+    }
     if (m_RomWrittenTo)
     {
         Value = m_RomWroteValue;
