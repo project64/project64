@@ -33,6 +33,50 @@ std::string R4300iInstruction::NameAndParam()
     return stdstr_f("%s %s", Name(), Param());
 }
 
+bool R4300iInstruction::HasDelaySlot(void) const
+{
+    if (m_Instruction.op == R4300i_J ||
+        m_Instruction.op == R4300i_JAL ||
+        m_Instruction.op == R4300i_BEQ ||
+        m_Instruction.op == R4300i_BNE ||
+        m_Instruction.op == R4300i_BLEZ ||
+        m_Instruction.op == R4300i_BGTZ ||
+        m_Instruction.op == R4300i_BEQL ||
+        m_Instruction.op == R4300i_BNEL ||
+        m_Instruction.op == R4300i_BLEZL ||
+        m_Instruction.op == R4300i_BGTZL)
+    {
+        return true;
+    }
+    else if (m_Instruction.op == R4300i_SPECIAL)
+    {
+        if (m_Instruction.funct == R4300i_SPECIAL_JR ||
+            m_Instruction.funct == R4300i_SPECIAL_JALR)
+        {
+            return true;
+        }
+    }
+    else if (m_Instruction.op == R4300i_REGIMM)
+    {
+        if (m_Instruction.rt == R4300i_REGIMM_BLTZ ||
+            m_Instruction.rt == R4300i_REGIMM_BGEZ ||
+            m_Instruction.rt == R4300i_REGIMM_BLTZL ||
+            m_Instruction.rt == R4300i_REGIMM_BGEZL ||
+            m_Instruction.rt == R4300i_REGIMM_BLTZAL ||
+            m_Instruction.rt == R4300i_REGIMM_BGEZAL ||
+            m_Instruction.rt == R4300i_REGIMM_BLTZALL ||
+            m_Instruction.rt == R4300i_REGIMM_BGEZALL)
+        {
+            return true;
+        }
+    }
+    else if (m_Instruction.op == R4300i_CP1 && m_Instruction.fmt == R4300i_COP1_BC)
+    {
+        return true;
+    }
+    return false;
+}
+
 const char * R4300iInstruction::FPR_Type(uint32_t COP1OpCode)
 {
     if (COP1OpCode == R4300i_COP1_S) { return "S"; };

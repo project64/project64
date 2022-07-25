@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/Recompiler/CodeSection.h>
 #include <Project64-core/N64System/Mips/R4300iOpcode.h>
+#include <Project64-core/N64System/Mips/R4300iInstruction.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
@@ -15,50 +16,6 @@
 void InPermLoop();
 
 bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
-
-static bool OpHasDelaySlot(const R4300iOpcode & Opcode)
-{
-    if (Opcode.op == R4300i_J || 
-        Opcode.op == R4300i_JAL ||
-        Opcode.op == R4300i_BEQ ||
-        Opcode.op == R4300i_BNE ||
-        Opcode.op == R4300i_BLEZ ||
-        Opcode.op == R4300i_BGTZ ||
-        Opcode.op == R4300i_BEQL ||
-        Opcode.op == R4300i_BNEL ||
-        Opcode.op == R4300i_BLEZL ||
-        Opcode.op == R4300i_BGTZL)
-    {
-        return true;
-    }
-    else if (Opcode.op == R4300i_SPECIAL)
-    {
-        if (Opcode.funct == R4300i_SPECIAL_JR ||
-            Opcode.funct == R4300i_SPECIAL_JALR)
-        {
-            return true;
-        }
-    }
-    else if (Opcode.op == R4300i_REGIMM)
-    {
-        if (Opcode.rt == R4300i_REGIMM_BLTZ || 
-            Opcode.rt == R4300i_REGIMM_BGEZ ||
-            Opcode.rt == R4300i_REGIMM_BLTZL ||
-            Opcode.rt == R4300i_REGIMM_BGEZL ||
-            Opcode.rt == R4300i_REGIMM_BLTZAL ||
-            Opcode.rt == R4300i_REGIMM_BGEZAL ||
-            Opcode.rt == R4300i_REGIMM_BLTZALL ||
-            Opcode.rt == R4300i_REGIMM_BGEZALL)
-        {
-            return true;
-        }
-    }
-    else if (Opcode.op == R4300i_CP1 && Opcode.fmt == R4300i_COP1_BC)
-    {
-        return true;
-    }
-    return false;
-}
 
 static bool DelaySlotEffectsJump(uint32_t JumpPC)
 {
@@ -438,6 +395,7 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
 
     uint32_t ContinueSectionPC = m_ContinueSection ? m_ContinueSection->m_EnterPC : (uint32_t)-1;
     const R4300iOpcode & Opcode = m_RecompilerOps->GetOpcode();
+    R4300iInstruction Instruction(m_RecompilerOps->GetCurrentPC(), Opcode.Value);
     do
     {
         if (m_RecompilerOps->GetCurrentPC() > m_BlockInfo->VAddrLast())
@@ -445,7 +403,7 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             m_BlockInfo->SetVAddrLast(m_RecompilerOps->GetCurrentPC());
         }
 
-        if (isDebugging() && HaveExecutionBP() && OpHasDelaySlot(Opcode) && g_Debugger->ExecutionBP(m_RecompilerOps->GetCurrentPC() + 4))
+        if (isDebugging() && HaveExecutionBP() && Instruction.HasDelaySlot() && g_Debugger->ExecutionBP(m_RecompilerOps->GetCurrentPC() + 4))
         {
             m_RecompilerOps->CompileExecuteDelaySlotBP();
             break;

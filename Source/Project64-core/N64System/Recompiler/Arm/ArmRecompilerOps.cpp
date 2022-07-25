@@ -5886,7 +5886,6 @@ PIPELINE_STAGE CArmRecompilerOps::GetNextStepType(void)
 const R4300iOpcode &CArmRecompilerOps::GetOpcode(void) const
 {
     return m_Opcode;
-    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CArmRecompilerOps::UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles)

@@ -11,6 +11,8 @@ public:
     const char * Param();
     std::string NameAndParam();
 
+    bool HasDelaySlot(void) const;
+
 private:
     R4300iInstruction(void);
     R4300iInstruction(const R4300iInstruction&);
