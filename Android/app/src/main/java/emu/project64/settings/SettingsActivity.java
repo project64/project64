@@ -4,6 +4,8 @@ import emu.project64.AndroidDevice;
 import emu.project64.R;
 import emu.project64.jni.NativeExports;
 import emu.project64.jni.SettingsID;
+import emu.project64.jni.VideoSettingID;
+
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.appcompat.app.ActionBar;
@@ -74,24 +76,24 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         .putString("Debugger_TraceUserInterface",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.Debugger_TraceUserInterface.toString())))
         .putString("Debugger_TraceRomList",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.Debugger_TraceRomList.toString())))
         .putString("Debugger_TraceExceptionHandler",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.Debugger_TraceExceptionHandler.toString())))
-        /*.putString("Debugger_TraceVideoMD5",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_MD5.getValue())))
-        .putString("Debugger_TraceVideoThread",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_Thread.getValue())))
-        .putString("Debugger_TraceVideoPath",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_Path.getValue())))
-        .putString("Debugger_TraceVideoSettings",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_Settings.getValue())))
-        .putString("Debugger_TraceVideoUnknown",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_Unknown.getValue())))
-        .putString("Debugger_TraceVideoGlide64",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_Glide64.getValue())))
-        .putString("Debugger_TraceVideoInterface",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_Interface.getValue())))
-        .putString("Debugger_TraceVideoResolution",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_Resolution.getValue())))
-        .putString("Debugger_TraceVideoGlitch",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_Glitch.getValue())))
-        .putString("Debugger_TraceTraceVideoRDP",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_VideoRDP.getValue())))
-        .putString("Debugger_TraceVideoTLUT",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_TLUT.getValue())))
-        .putString("Debugger_TraceVideoPNG",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_PNG.getValue())))
-        .putString("Debugger_TraceVideoOGLWrapper",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_OGLWrapper.getValue())))
-        .putString("Debugger_TraceAudioInitShutdown",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstAudioSettings.getValue() + AudioSettingID.Logging_LogAudioInitShutdown.getValue())))
+        .putString("Debugger_TraceVideoMD5",String.valueOf(NativeExports.SettingsLoadDword(VideoSettingID.Set_Logging_MD5.toString())))
+        .putString("Debugger_TraceVideoThread",String.valueOf(NativeExports.SettingsLoadDword( VideoSettingID.Set_Logging_Thread.toString())))
+        .putString("Debugger_TraceVideoPath",String.valueOf(NativeExports.SettingsLoadDword( VideoSettingID.Set_Logging_Path.toString())))
+        .putString("Debugger_TraceVideoSettings",String.valueOf(NativeExports.SettingsLoadDword( VideoSettingID.Set_Logging_Settings.toString())))
+        .putString("Debugger_TraceVideoUnknown",String.valueOf(NativeExports.SettingsLoadDword( VideoSettingID.Set_Logging_Unknown.toString())))
+        .putString("Debugger_TraceVideoGlide64",String.valueOf(NativeExports.SettingsLoadDword(VideoSettingID.Set_Logging_Glide64.toString())))
+        .putString("Debugger_TraceVideoInterface",String.valueOf(NativeExports.SettingsLoadDword(VideoSettingID.Set_Logging_Interface.toString())))
+        .putString("Debugger_TraceVideoResolution",String.valueOf(NativeExports.SettingsLoadDword(VideoSettingID.Set_Logging_Resolution.toString())))
+        .putString("Debugger_TraceVideoGlitch",String.valueOf(NativeExports.SettingsLoadDword( VideoSettingID.Set_Logging_Glitch.toString())))
+        .putString("Debugger_TraceTraceVideoRDP",String.valueOf(NativeExports.SettingsLoadDword(VideoSettingID.Set_Logging_VideoRDP.toString())))
+        .putString("Debugger_TraceVideoTLUT",String.valueOf(NativeExports.SettingsLoadDword( VideoSettingID.Set_Logging_TLUT.toString())))
+        .putString("Debugger_TraceVideoPNG",String.valueOf(NativeExports.SettingsLoadDword(VideoSettingID.Set_Logging_PNG.toString())))
+        .putString("Debugger_TraceVideoOGLWrapper",String.valueOf(NativeExports.SettingsLoadDword(VideoSettingID.Set_Logging_OGLWrapper.toString())))
+        /*.putString("Debugger_TraceAudioInitShutdown",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstAudioSettings.getValue() + AudioSettingID.Logging_LogAudioInitShutdown.getValue())))
         .putString("Debugger_TraceAudioAudioInterface",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstAudioSettings.getValue() + AudioSettingID.Logging_LogAudioInterface.getValue())))
         .putString("video_screenResolution",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Resolution.getValue())))
-        .putString("video_AspectRatio",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_aspect.getValue())))
-        .putInt("MaxRomsRemembered",NativeExports.UISettingsLoadDword(UISettingID.File_RecentGameFileCount.getValue()))*/
+        .putString("video_AspectRatio",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_aspect.getValue())))*/
+        //.putInt("MaxRomsRemembered",NativeExports.UISettingsLoadDword(UISettingID.File_RecentGameFileCount.getValue()))
         .apply();
 
         sharedPrefs.registerOnSharedPreferenceChangeListener(this);
@@ -169,20 +171,20 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         else if (key.equals("Debugger_TraceUserInterface")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceUserInterface.toString(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
         else if (key.equals("Debugger_TraceRomList")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceRomList.toString(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
         else if (key.equals("Debugger_TraceExceptionHandler")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceExceptionHandler.toString(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
-        /*else if (key.equals("Debugger_TraceVideoMD5")) { NativeExports.SettingsSaveDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_MD5.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
-        else if (key.equals("Debugger_TraceVideoThread")) { NativeExports.SettingsSaveDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_Thread.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
-        else if (key.equals("Debugger_TraceVideoPath")) { NativeExports.SettingsSaveDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_Path.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
-        else if (key.equals("Debugger_TraceVideoSettings")) { NativeExports.SettingsSaveDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_Settings.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
-        else if (key.equals("Debugger_TraceVideoUnknown")) { NativeExports.SettingsSaveDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_Unknown.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
-        else if (key.equals("Debugger_TraceVideoGlide64")) { NativeExports.SettingsSaveDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_Glide64.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
-        else if (key.equals("Debugger_TraceVideoInterface")) { NativeExports.SettingsSaveDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_Interface.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
-        else if (key.equals("Debugger_TraceVideoResolution")) { NativeExports.SettingsSaveDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_Resolution.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
-        else if (key.equals("Debugger_TraceVideoGlitch")) { NativeExports.SettingsSaveDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_Glitch.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
-        else if (key.equals("Debugger_TraceTraceVideoRDP")) { NativeExports.SettingsSaveDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_VideoRDP.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
-        else if (key.equals("Debugger_TraceVideoTLUT")) { NativeExports.SettingsSaveDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_TLUT.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
-        else if (key.equals("Debugger_TraceVideoPNG")) { NativeExports.SettingsSaveDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_PNG.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
-        else if (key.equals("Debugger_TraceVideoOGLWrapper")) { NativeExports.SettingsSaveDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Logging_OGLWrapper.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
-        else if (key.equals("Debugger_TraceAudioInitShutdown")) { NativeExports.SettingsSaveDword(SettingsID.FirstAudioSettings.getValue() + AudioSettingID.Logging_LogAudioInitShutdown.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceVideoMD5")) { NativeExports.SettingsSaveDword(VideoSettingID.Set_Logging_MD5.toString(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceVideoThread")) { NativeExports.SettingsSaveDword(VideoSettingID.Set_Logging_Thread.toString(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceVideoPath")) { NativeExports.SettingsSaveDword(VideoSettingID.Set_Logging_Path.toString(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceVideoSettings")) { NativeExports.SettingsSaveDword(VideoSettingID.Set_Logging_Settings.toString(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceVideoUnknown")) { NativeExports.SettingsSaveDword(VideoSettingID.Set_Logging_Unknown.toString(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceVideoGlide64")) { NativeExports.SettingsSaveDword(VideoSettingID.Set_Logging_Glide64.toString(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceVideoInterface")) { NativeExports.SettingsSaveDword(VideoSettingID.Set_Logging_Interface.toString(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceVideoResolution")) { NativeExports.SettingsSaveDword(VideoSettingID.Set_Logging_Resolution.toString(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceVideoGlitch")) { NativeExports.SettingsSaveDword(VideoSettingID.Set_Logging_Glitch.toString(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceTraceVideoRDP")) { NativeExports.SettingsSaveDword( VideoSettingID.Set_Logging_VideoRDP.toString(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceVideoTLUT")) { NativeExports.SettingsSaveDword(VideoSettingID.Set_Logging_TLUT.toString(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceVideoPNG")) { NativeExports.SettingsSaveDword(VideoSettingID.Set_Logging_PNG.toString(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceVideoOGLWrapper")) { NativeExports.SettingsSaveDword(VideoSettingID.Set_Logging_OGLWrapper.toString(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        /*else if (key.equals("Debugger_TraceAudioInitShutdown")) { NativeExports.SettingsSaveDword(SettingsID.FirstAudioSettings.getValue() + AudioSettingID.Logging_LogAudioInitShutdown.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
         else if (key.equals("Debugger_TraceAudioAudioInterface")) { NativeExports.SettingsSaveDword(SettingsID.FirstAudioSettings.getValue() + AudioSettingID.Logging_LogAudioInterface.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
         /*else if (key.equals("video_screenResolution")) { NativeExports.SettingsSaveDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Resolution.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
         else if (key.equals("video_AspectRatio"))

@@ -95,6 +95,7 @@
     <string name="TraceRomList">Rom List</string>
     <string name="TraceExceptionHandler">Exception Handler</string>
     <string name="TraceVideoMD5">MD5</string>
+    <string name="TraceVideoThread">Thread</string>
     <string name="TraceVideoPath">Path</string>
     <string name="TraceVideoSettings">Settings</string>
     <string name="TraceVideoUnknown">Unknown</string>
