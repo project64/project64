@@ -20,7 +20,7 @@ public:
 
     // Branch functions
     void Compile_BranchCompare(BRANCH_COMPARE CompareType);
-    void Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE BranchType, bool Link);
+    void Compile_Branch(BRANCH_COMPARE CompareType, bool Link);
     void Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Link);
     void BNE_Compare();
     void BEQ_Compare();

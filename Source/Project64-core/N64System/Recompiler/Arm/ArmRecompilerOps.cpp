@@ -189,7 +189,7 @@ void CArmRecompilerOps::Compile_BranchCompare(BRANCH_COMPARE CompareType)
     }
 }
 
-void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE BranchType, bool Link)
+void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, bool Link)
 {
     static CRegInfo RegBeforeDelay;
     static bool EffectDelaySlot;
@@ -208,30 +208,12 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
 
         if ((m_CompilePC & 0xFFC) != 0xFFC)
         {
-            switch (BranchType)
+            R4300iOpcode DelaySlot;
+            if (!g_MMU->MemoryValue32(m_CompilePC + 4, DelaySlot.Value))
             {
-            case BranchTypeRs: EffectDelaySlot = DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0); break;
-            case BranchTypeRsRt: EffectDelaySlot = DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, m_Opcode.rt); break;
-            case BranchTypeCop1:
-
-                if (!g_MMU->MemoryValue32(m_CompilePC + 4, Command.Value))
-                {
-                    g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
-                }
-
-                EffectDelaySlot = false;
-                if (Command.op == R4300i_CP1)
-                {
-                    if ((Command.fmt == R4300i_COP1_S && (Command.funct & 0x30) == 0x30) ||
-                        (Command.fmt == R4300i_COP1_D && (Command.funct & 0x30) == 0x30))
-                    {
-                        EffectDelaySlot = true;
-                    }
-                }
-                break;
-            default:
-                if (HaveDebugger()) { g_Notify->DisplayError("Unknown branch type"); }
+                g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
             }
+            EffectDelaySlot = R4300iInstruction(m_CompilePC, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value);
         }
         else
         {
