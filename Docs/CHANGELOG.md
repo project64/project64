@@ -1,5 +1,5 @@
 # Changelog
-All notable changes to this project will be documented in this file. This is only for the Windows version of the emulator. For the Android changelog, refer to the Android changelog.
+All notable changes to this project will be documented in this file. This is only for the Windows version of the emulator. For the Android changelog, refer to the [Android changelog](../Docs/CHANGELOG-ANDROID.md).
 
 Minor note: Before version 4.0, the changelog didn't exist, and the changelog that did exist that was implemented after version 2.3.2 was very basic and version history before that was 99% guessed. So after 4.0 we hope for that to change!
 
