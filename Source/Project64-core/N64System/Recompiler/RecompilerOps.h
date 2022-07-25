@@ -45,7 +45,7 @@ public:
     virtual void Compile_TrapCompare(TRAP_COMPARE CompareType) = 0;
 
     // Branch functions
-    virtual void Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE BranchType, bool Link) = 0;
+    virtual void Compile_Branch(BRANCH_COMPARE CompareType, bool Link) = 0;
     virtual void Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Link) = 0;
 
     //  Opcode functions

@@ -13,8 +13,6 @@
 #define CHECKED_BUILD 1
 #endif
 
-bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
-
 LoopAnalysis::LoopAnalysis(CCodeBlock * CodeBlock, CCodeSection * Section) :
     m_EnterSection(Section),
     m_BlockInfo(CodeBlock),
@@ -261,7 +259,10 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                 }
                 if (m_PC == Section->m_Jump.TargetPC)
                 {
-                    if (!DelaySlotEffectsCompare(m_PC, m_Command.rs, 0) && !Section->m_Jump.PermLoop)
+                    R4300iOpcode DelaySlot;
+                    if (g_MMU->MemoryValue32(m_PC + 4, DelaySlot.Value) &&
+                        !R4300iInstruction(m_PC, m_Command.Value).DelaySlotEffectsCompare(DelaySlot.Value) &&
+                        !Section->m_Jump.PermLoop)
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
@@ -291,7 +292,10 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                 }*/
                 if (m_PC == m_PC + ((int16_t)m_Command.offset << 2) + 4)
                 {
-                    if (!DelaySlotEffectsCompare(m_PC, m_Command.rs, 0) && !Section->m_Jump.PermLoop)
+                    R4300iOpcode DelaySlot;
+                    if (g_MMU->MemoryValue32(m_PC + 4, DelaySlot.Value) &&
+                        !R4300iInstruction(m_PC, m_Command.Value).DelaySlotEffectsCompare(DelaySlot.Value) &&
+                        !Section->m_Jump.PermLoop)
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
@@ -351,7 +355,10 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                 }
                 if (m_PC == Section->m_Jump.TargetPC)
                 {
-                    if (!DelaySlotEffectsCompare(m_PC, m_Command.rs, m_Command.rt) && !Section->m_Jump.PermLoop)
+                    R4300iOpcode DelaySlot;
+                    if (g_MMU->MemoryValue32(m_PC + 4, DelaySlot.Value) &&
+                        !R4300iInstruction(m_PC, m_Command.Value).DelaySlotEffectsCompare(DelaySlot.Value) &&
+                        !Section->m_Jump.PermLoop)
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
@@ -380,7 +387,10 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                 }
                 if (m_PC == Section->m_Jump.TargetPC)
                 {
-                    if (!DelaySlotEffectsCompare(m_PC, m_Command.rs, m_Command.rt) && !Section->m_Jump.PermLoop)
+                    R4300iOpcode DelaySlot;
+                    if (g_MMU->MemoryValue32(m_PC + 4, DelaySlot.Value) &&
+                        !R4300iInstruction(m_PC, m_Command.Value).DelaySlotEffectsCompare(DelaySlot.Value) &&
+                        !Section->m_Jump.PermLoop)
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
@@ -562,7 +572,10 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
             }*/
             if (m_PC == m_PC + ((int16_t)m_Command.offset << 2) + 4)
             {
-                if (!DelaySlotEffectsCompare(m_PC, m_Command.rs, m_Command.rt) && !Section->m_Jump.PermLoop)
+                R4300iOpcode DelaySlot;
+                if (g_MMU->MemoryValue32(m_PC + 4, DelaySlot.Value) && 
+                    !R4300iInstruction(m_PC, m_Command.Value).DelaySlotEffectsCompare(DelaySlot.Value) &&
+                    !Section->m_Jump.PermLoop)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }

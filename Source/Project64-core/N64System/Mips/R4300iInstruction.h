@@ -12,6 +12,7 @@ public:
     std::string NameAndParam();
 
     bool HasDelaySlot(void) const;
+    bool DelaySlotEffectsCompare(uint32_t DelayInstruction) const;
 
 private:
     R4300iInstruction(void);

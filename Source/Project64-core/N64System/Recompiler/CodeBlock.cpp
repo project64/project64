@@ -8,8 +8,6 @@
 #include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/Mips/R4300iInstruction.h>
 
-bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
-
 #if defined(ANDROID) && (defined(__arm__) || defined(_M_ARM))
 /* bug-fix to implement __clear_cache (missing in Android; http://code.google.com/p/android/issues/detail?id=1803) */
 extern "C" void __clear_cache_android(uint8_t* begin, uint8_t *end);
@@ -493,7 +491,13 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
             }
             else
             {
-                if (TargetPC == PC && !DelaySlotEffectsCompare(PC, Command.rs, 0))
+                R4300iOpcode DelaySlot;
+                if (!g_MMU->MemoryValue32(PC + 4, DelaySlot.Value))
+                {
+                    g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
+                }
+
+                if (TargetPC == PC && !R4300iInstruction(PC, Command.Value).DelaySlotEffectsCompare(DelaySlot.Value))
                 {
                     PermLoop = true;
                 }
@@ -519,7 +523,12 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
                     }
                     else
                     {
-                        if (!DelaySlotEffectsCompare(PC, Command.rs, Command.rt))
+                        R4300iOpcode DelaySlot;
+                        if (!g_MMU->MemoryValue32(PC + 4, DelaySlot.Value))
+                        {
+                            g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
+                        }
+                        if (!R4300iInstruction(PC, Command.Value).DelaySlotEffectsCompare(DelaySlot.Value))
                         {
                             PermLoop = true;
                         }
@@ -537,7 +546,12 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
             TargetPC = PC + ((int16_t)Command.offset << 2) + 4;
             if (TargetPC == PC)
             {
-                if (!DelaySlotEffectsCompare(PC, Command.rs, 0))
+                R4300iOpcode DelaySlot;
+                if (!g_MMU->MemoryValue32(PC + 4, DelaySlot.Value))
+                {
+                    g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
+                }
+                if (!R4300iInstruction(PC, Command.Value).DelaySlotEffectsCompare(DelaySlot.Value))
                 {
                     PermLoop = true;
                 }
@@ -583,8 +597,12 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
             {
                 ContinuePC = PC + 8;
             }
-
-            if (TargetPC == PC && !DelaySlotEffectsCompare(PC, Command.rs, Command.rt))
+            R4300iOpcode DelaySlot;
+            if (!g_MMU->MemoryValue32(PC + 4, DelaySlot.Value))
+            {
+                g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
+            }
+            if (TargetPC == PC && !R4300iInstruction(PC, Command.Value).DelaySlotEffectsCompare(DelaySlot.Value))
             {
                 PermLoop = true;
             }
@@ -603,7 +621,12 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
         {
             if (TargetPC == PC)
             {
-                if (!DelaySlotEffectsCompare(PC, Command.rs, Command.rt))
+                R4300iOpcode DelaySlot;
+                if (!g_MMU->MemoryValue32(PC + 4, DelaySlot.Value))
+                {
+                    g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
+                }
+                if (!R4300iInstruction(PC, Command.Value).DelaySlotEffectsCompare(DelaySlot.Value))
                 {
                     PermLoop = true;
                 }
@@ -701,7 +724,12 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
         TargetPC = PC + ((int16_t)Command.offset << 2) + 4;
         if (TargetPC == PC)
         {
-            if (!DelaySlotEffectsCompare(PC, Command.rs, Command.rt))
+            R4300iOpcode DelaySlot;
+            if (!g_MMU->MemoryValue32(PC + 4, DelaySlot.Value))
+            {
+                g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
+            }
+            if (!R4300iInstruction(PC, Command.Value).DelaySlotEffectsCompare(DelaySlot.Value))
             {
                 PermLoop = true;
             }
@@ -720,7 +748,12 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
         ContinuePC = PC + 8;
         if (TargetPC == PC)
         {
-            if (!DelaySlotEffectsCompare(PC, Command.rs, Command.rt))
+            R4300iOpcode DelaySlot;
+            if (!g_MMU->MemoryValue32(PC + 4, DelaySlot.Value))
+            {
+                g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
+            }
+            if (!R4300iInstruction(PC, Command.Value).DelaySlotEffectsCompare(DelaySlot.Value))
             {
                 PermLoop = true;
             }

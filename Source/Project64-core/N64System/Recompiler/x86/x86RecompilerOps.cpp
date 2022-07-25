@@ -364,8 +364,6 @@ void CX86RecompilerOps::CompileWriteTLBMiss(x86Reg AddressReg, x86Reg LookUpReg)
     CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBWriteMiss, false, JeLabel32);
 }
 
-bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
-
 // Trap functions
 void CX86RecompilerOps::Compile_TrapCompare(TRAP_COMPARE CompareType)
 {
@@ -462,7 +460,7 @@ void CX86RecompilerOps::Compile_BranchCompare(BRANCH_COMPARE CompareType)
     }
 }
 
-void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE BranchType, bool Link)
+void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, bool Link)
 {
     static CRegInfo RegBeforeDelay;
     static bool EffectDelaySlot;
@@ -480,33 +478,12 @@ void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
 
         if ((m_CompilePC & 0xFFC) != 0xFFC)
         {
-            switch (BranchType)
+            R4300iOpcode DelaySlot;
+            if (!g_MMU->MemoryValue32(m_CompilePC + 4, DelaySlot.Value))
             {
-            case BranchTypeRs: EffectDelaySlot = DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0); break;
-            case BranchTypeRsRt: EffectDelaySlot = DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, m_Opcode.rt); break;
-            case BranchTypeCop1:
-                {
-                    R4300iOpcode Command;
-
-                    if (!g_MMU->MemoryValue32(m_CompilePC + 4, Command.Value))
-                    {
-                        g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
-                    }
-
-                    EffectDelaySlot = false;
-                    if (Command.op == R4300i_CP1)
-                    {
-                        if ((Command.fmt == R4300i_COP1_S && (Command.funct & 0x30) == 0x30) ||
-                            (Command.fmt == R4300i_COP1_D && (Command.funct & 0x30) == 0x30))
-                        {
-                            EffectDelaySlot = true;
-                        }
-                    }
-                }
-                break;
-            default:
-                if (HaveDebugger()) { g_Notify->DisplayError("Unknown branch type"); }
+                g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
             }
+            EffectDelaySlot = R4300iInstruction(m_CompilePC, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value);
         }
         else
         {
@@ -4323,7 +4300,13 @@ void CX86RecompilerOps::SPECIAL_JR()
         m_Section->m_Cont.LinkLocation = nullptr;
         m_Section->m_Cont.LinkLocation2 = nullptr;
 
-        if (DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0))
+        R4300iOpcode DelaySlot;
+        if (!g_MMU->MemoryValue32(m_CompilePC + 4, DelaySlot.Value))
+        {
+            g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
+        }
+
+        if (R4300iInstruction(m_CompilePC, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
         {
             if (IsConst(m_Opcode.rs))
             {
@@ -4342,7 +4325,13 @@ void CX86RecompilerOps::SPECIAL_JR()
     }
     else if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT_DONE)
     {
-        if (DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0))
+        R4300iOpcode DelaySlot;
+        if (!g_MMU->MemoryValue32(m_CompilePC + 4, DelaySlot.Value))
+        {
+            g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
+        }
+
+        if (R4300iInstruction(m_CompilePC, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
         {
             CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal, true, nullptr);
         }
@@ -4379,7 +4368,13 @@ void CX86RecompilerOps::SPECIAL_JALR()
 {
     if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
-        if (DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0) && (m_CompilePC & 0xFFC) != 0xFFC)
+        R4300iOpcode DelaySlot;
+        if (!g_MMU->MemoryValue32(m_CompilePC + 4, DelaySlot.Value))
+        {
+            g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
+        }
+
+        if (R4300iInstruction(m_CompilePC, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value) && (m_CompilePC & 0xFFC) != 0xFFC)
         {
             if (IsConst(m_Opcode.rs))
             {
@@ -4424,7 +4419,13 @@ void CX86RecompilerOps::SPECIAL_JALR()
     }
     else if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT_DONE)
     {
-        if (DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0))
+        R4300iOpcode DelaySlot;
+        if (!g_MMU->MemoryValue32(m_CompilePC + 4, DelaySlot.Value))
+        {
+            g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
+        }
+
+        if (R4300iInstruction(m_CompilePC, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
         {
             CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal, true, nullptr);
         }

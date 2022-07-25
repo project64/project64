@@ -13,94 +13,6 @@
 #include <Project64-core/ExceptionHandler.h>
 #include <Project64-core/Debugger.h>
 
-void InPermLoop();
-
-bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
-
-static bool DelaySlotEffectsJump(uint32_t JumpPC)
-{
-    R4300iOpcode Command;
-
-    if (!g_MMU->MemoryValue32(JumpPC, Command.Value))
-    {
-        return true;
-    }
-
-    switch (Command.op)
-    {
-    case R4300i_SPECIAL:
-        switch (Command.funct)
-        {
-        case R4300i_SPECIAL_JR: return DelaySlotEffectsCompare(JumpPC, Command.rs, 0);
-        case R4300i_SPECIAL_JALR: return DelaySlotEffectsCompare(JumpPC, Command.rs, 31);
-        }
-        break;
-    case R4300i_REGIMM:
-        switch (Command.rt)
-        {
-        case R4300i_REGIMM_BLTZ:
-        case R4300i_REGIMM_BGEZ:
-        case R4300i_REGIMM_BLTZL:
-        case R4300i_REGIMM_BGEZL:
-        case R4300i_REGIMM_BLTZAL:
-        case R4300i_REGIMM_BGEZAL:
-            return DelaySlotEffectsCompare(JumpPC, Command.rs, 0);
-        }
-        break;
-    case R4300i_JAL:
-    case R4300i_SPECIAL_JALR: return DelaySlotEffectsCompare(JumpPC, 31, 0); break;
-    case R4300i_J: return false;
-    case R4300i_BEQ:
-    case R4300i_BNE:
-    case R4300i_BLEZ:
-    case R4300i_BGTZ:
-        return DelaySlotEffectsCompare(JumpPC, Command.rs, Command.rt);
-    case R4300i_CP1:
-        switch (Command.fmt)
-        {
-        case R4300i_COP1_BC:
-            switch (Command.ft)
-            {
-            case R4300i_COP1_BC_BCF:
-            case R4300i_COP1_BC_BCT:
-            case R4300i_COP1_BC_BCFL:
-            case R4300i_COP1_BC_BCTL:
-                {
-                    bool EffectDelaySlot = false;
-                    R4300iOpcode NewCommand;
-
-                    if (!g_MMU->MemoryValue32(JumpPC + 4, NewCommand.Value))
-                    {
-                        return true;
-                    }
-
-                    if (NewCommand.op == R4300i_CP1)
-                    {
-                        if (NewCommand.fmt == R4300i_COP1_S && (NewCommand.funct & 0x30) == 0x30)
-                        {
-                            EffectDelaySlot = true;
-                        }
-                        if (NewCommand.fmt == R4300i_COP1_D && (NewCommand.funct & 0x30) == 0x30)
-                        {
-                            EffectDelaySlot = true;
-                        }
-                    }
-                    return EffectDelaySlot;
-                }
-                break;
-            }
-            break;
-        }
-        break;
-    case R4300i_BEQL:
-    case R4300i_BNEL:
-    case R4300i_BLEZL:
-    case R4300i_BGTZL:
-        return DelaySlotEffectsCompare(JumpPC, Command.rs, Command.rt);
-    }
-    return true;
-}
-
 CCodeSection::CCodeSection(CCodeBlock * CodeBlock, uint32_t EnterPC, uint32_t ID, bool LinkAllowed) :
     m_BlockInfo(CodeBlock),
     m_SectionID(ID),
@@ -148,7 +60,10 @@ void CCodeSection::GenerateSectionLinkage()
     // Handle permanent loop
     if (m_RecompilerOps->GetCurrentPC() == m_Jump.TargetPC && (m_Cont.FallThrough == false))
     {
-        if (!DelaySlotEffectsJump(m_RecompilerOps->GetCurrentPC()))
+        R4300iOpcode JumpOp, DelaySlot;
+        if (g_MMU->MemoryValue32(m_RecompilerOps->GetCurrentPC(), JumpOp.Value) &&
+            g_MMU->MemoryValue32(m_RecompilerOps->GetCurrentPC() + 4, DelaySlot.Value) &&
+            !R4300iInstruction(m_RecompilerOps->GetCurrentPC(), JumpOp.Value).DelaySlotEffectsCompare(DelaySlot.Value))
         {
             m_RecompilerOps->CompileInPermLoop(m_Jump.RegSet, m_RecompilerOps->GetCurrentPC());
         }
@@ -480,12 +395,12 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
         case R4300i_REGIMM:
             switch (Opcode.rt)
             {
-            case R4300i_REGIMM_BLTZ: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBLTZ, CRecompilerOps::BranchTypeRs, false); break;
-            case R4300i_REGIMM_BGEZ: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBGEZ, CRecompilerOps::BranchTypeRs, false); break;
+            case R4300i_REGIMM_BLTZ: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBLTZ, false); break;
+            case R4300i_REGIMM_BGEZ: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBGEZ, false); break;
             case R4300i_REGIMM_BLTZL: m_RecompilerOps->Compile_BranchLikely(CRecompilerOps::CompareTypeBLTZ, false); break;
             case R4300i_REGIMM_BGEZL: m_RecompilerOps->Compile_BranchLikely(CRecompilerOps::CompareTypeBGEZ, false); break;
-            case R4300i_REGIMM_BLTZAL: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBLTZ, CRecompilerOps::BranchTypeRs, true); break;
-            case R4300i_REGIMM_BGEZAL: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBGEZ, CRecompilerOps::BranchTypeRs, true); break;
+            case R4300i_REGIMM_BLTZAL: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBLTZ, true); break;
+            case R4300i_REGIMM_BGEZAL: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBGEZ, true); break;
             case R4300i_REGIMM_TEQI: m_RecompilerOps->Compile_TrapCompare(CRecompilerOps::TRAP_COMPARE::CompareTypeTEQI); break;
             case R4300i_REGIMM_TNEI: m_RecompilerOps->Compile_TrapCompare(CRecompilerOps::TRAP_COMPARE::CompareTypeTNEI); break;
             case R4300i_REGIMM_TGEI: m_RecompilerOps->Compile_TrapCompare(CRecompilerOps::TRAP_COMPARE::CompareTypeTGEI); break;
@@ -496,10 +411,10 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
                 m_RecompilerOps->UnknownOpcode(); break;
             }
             break;
-        case R4300i_BEQ: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBEQ, CRecompilerOps::BranchTypeRsRt, false); break;
-        case R4300i_BNE: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBNE, CRecompilerOps::BranchTypeRsRt, false); break;
-        case R4300i_BGTZ: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBGTZ, CRecompilerOps::BranchTypeRs, false); break;
-        case R4300i_BLEZ: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBLEZ, CRecompilerOps::BranchTypeRs, false); break;
+        case R4300i_BEQ: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBEQ, false); break;
+        case R4300i_BNE: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBNE, false); break;
+        case R4300i_BGTZ: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBGTZ, false); break;
+        case R4300i_BLEZ: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBLEZ, false); break;
         case R4300i_J: m_RecompilerOps->J(); break;
         case R4300i_JAL: m_RecompilerOps->JAL(); break;
         case R4300i_ADDI: m_RecompilerOps->ADDI(); break;
@@ -546,8 +461,8 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             case R4300i_COP1_BC:
                 switch (Opcode.ft)
                 {
-                case R4300i_COP1_BC_BCF: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeCOP1BCF, CRecompilerOps::BranchTypeCop1, false); break;
-                case R4300i_COP1_BC_BCT: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeCOP1BCT, CRecompilerOps::BranchTypeCop1, false); break;
+                case R4300i_COP1_BC_BCF: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeCOP1BCF, false); break;
+                case R4300i_COP1_BC_BCT: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeCOP1BCT, false); break;
                 case R4300i_COP1_BC_BCFL: m_RecompilerOps->Compile_BranchLikely(CRecompilerOps::CompareTypeCOP1BCF, false); break;
                 case R4300i_COP1_BC_BCTL: m_RecompilerOps->Compile_BranchLikely(CRecompilerOps::CompareTypeCOP1BCT, false); break;
                 default:
