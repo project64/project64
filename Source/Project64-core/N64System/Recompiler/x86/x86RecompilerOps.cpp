@@ -9727,6 +9727,46 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
         MoveConstToX86reg((uint32_t)&m_TempValue32, TempReg);
         SubX86RegToX86Reg(TempReg, AddressReg);
     }
+    else if (ValueSize == 16)
+    {
+        m_RegWorkingSet.BeforeCallDirect();
+        PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
+        Push(AddressReg);
+#ifdef _MSC_VER
+        MoveConstToX86reg((uint32_t)(&m_MMU), x86_ECX);
+        Call_Direct(AddressOf(&CMipsMemoryVM::LH_NonMemory), "CMipsMemoryVM::LH_NonMemory");
+#else
+        PushImm32((uint32_t)(&m_MMU));
+        Call_Direct(AddressOf(&CMipsMemoryVM::LH_NonMemory), "CMipsMemoryVM::LH_NonMemory");
+        AddConstToX86Reg(x86_ESP, 12);
+#endif
+        TestX86ByteRegToX86Reg(x86_AL, x86_AL);
+        m_RegWorkingSet.AfterCallDirect();
+        CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, JeLabel32);
+        MoveConstToX86reg((uint32_t)&m_TempValue32, TempReg);
+        SubX86RegToX86Reg(TempReg, AddressReg);
+        XorConstToX86Reg(AddressReg, 2);
+    }
+    else if (ValueSize == 8)
+    {
+        m_RegWorkingSet.BeforeCallDirect();
+        PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
+        Push(AddressReg);
+#ifdef _MSC_VER
+        MoveConstToX86reg((uint32_t)(&m_MMU), x86_ECX);
+        Call_Direct(AddressOf(&CMipsMemoryVM::LB_NonMemory), "CMipsMemoryVM::LB_NonMemory");
+#else
+        PushImm32((uint32_t)(&m_MMU));
+        Call_Direct(AddressOf(&CMipsMemoryVM::LB_NonMemory), "CMipsMemoryVM::LB_NonMemory");
+        AddConstToX86Reg(x86_ESP, 12);
+#endif
+        TestX86ByteRegToX86Reg(x86_AL, x86_AL);
+        m_RegWorkingSet.AfterCallDirect();
+        CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, JeLabel32);
+        MoveConstToX86reg((uint32_t)&m_TempValue32, TempReg);
+        SubX86RegToX86Reg(TempReg, AddressReg);
+        XorConstToX86Reg(AddressReg, 3);
+    }
     else
     {
         X86BreakPoint(__FILE__,__LINE__);

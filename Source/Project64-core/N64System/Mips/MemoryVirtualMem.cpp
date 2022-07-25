@@ -602,11 +602,11 @@ bool CMipsMemoryVM::LB_NonMemory(uint32_t VAddr, uint8_t & Value)
     else if (PAddr >= 0x10000000 && PAddr < 0x16000000)
     {
         uint32_t Value32;
-        if (!m_RomMemoryHandler.Read32(PAddr & ~0x3, Value32))
+        if (!m_RomMemoryHandler.Read32((PAddr + 2) & ~0x3, Value32))
         {
             return false;
         }
-        Value = ((Value32 >> (((PAddr & 3) ^ 3) << 3)) & 0xff);
+        Value = ((Value32 >> (((PAddr & 1) ^ 3) << 3)) & 0xff);
     }
     else
     {
@@ -632,11 +632,11 @@ bool CMipsMemoryVM::LH_NonMemory(uint32_t VAddr, uint16_t & Value)
     else if (PAddr >= 0x10000000 && PAddr < 0x16000000)
     {
         uint32_t Value32;
-        if (!m_RomMemoryHandler.Read32(PAddr & ~0x3, Value32))
+        if (!m_RomMemoryHandler.Read32((PAddr + 2) & ~0x3, Value32))
         {
             return false;
         }
-        Value = ((Value32 >> (((PAddr & 2) ^ 2) << 3)) & 0xffff);
+        Value = ((Value32 >> 16) & 0xffff);
     }
     else
     {
