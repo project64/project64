@@ -139,9 +139,9 @@ int buffer_cleared;
 // Comment by Ziggy
 // To allocate a new static texture name, take the value (free_texture++)
 int free_texture;
-int default_texture; // The infamous "32*1024*1024" is now configurable
+GLuint default_texture; // The infamous "32*1024*1024" is now configurable
 int current_texture;
-int depth_texture, color_texture;
+GLuint depth_texture, color_texture;
 int glsl_support = 1;
 int viewport_width, viewport_height, g_viewport_offset = 0, nvidia_viewport_hack = 0;
 int save_w, save_h;
@@ -319,9 +319,9 @@ bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_loc
     // Allocate static texture names
     // The initial value should be big enough to support the maximal resolution
     free_texture = 32 * 2048 * 2048;
-    default_texture = free_texture++;
-    color_texture = free_texture++;
-    depth_texture = free_texture++;
+    glGenTextures(1, &default_texture);
+    glGenTextures(1, &color_texture);
+    glGenTextures(1, &depth_texture);
 
     WriteTrace(TraceGlitch, TraceDebug, "color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", color_format, origin_location, nColBuffers, nAuxBuffers);
     WriteTrace(TraceGlitch, TraceDebug, "g_width: %d, g_height: %d fullscreen: %d", g_width, g_height, fullscreen);

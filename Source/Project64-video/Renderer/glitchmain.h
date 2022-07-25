@@ -20,26 +20,6 @@ extern int dumping;
 #include <Project64-video/trace.h>
 #include "types.h"
 
-#define zscale 1.0f
-
-// VP added this utility function
-// Returns the bytes per pixel of a given GR texture format
-int grTexFormatSize(int fmt);
-
-// 03/07/2015 Comment by cxd4 -- regulated GL state machine debugging using glGetError
-extern int grDisplayGLError(const char* message);
-
-extern int packed_pixels_support;
-extern int ati_sucks;
-extern float largest_supported_anisotropy;
-
-extern int default_texture; // The infamous "32*1024*1024" is now configurable
-extern int depth_texture;
-void set_depth_shader();
-void set_bw_shader();
-extern float invtex[2];
-extern int buffer_cleared; // Mark that the buffer has been cleared, used to check if we need to reload the texture buffer content
-
 #ifdef _WIN32
 #include <windows.h>
 typedef const char * (WINAPI * PFNWGLGETEXTENSIONSSTRINGARBPROC)(HDC hdc);
@@ -86,6 +66,26 @@ extern "C" {
     extern PFNGLGETHANDLEARBPROC glGetHandleARB;
 }
 #endif
+
+#define zscale 1.0f
+
+// VP added this utility function
+// Returns the bytes per pixel of a given GR texture format
+int grTexFormatSize(int fmt);
+
+// 03/07/2015 Comment by cxd4 -- regulated GL state machine debugging using glGetError
+extern int grDisplayGLError(const char* message);
+
+extern int packed_pixels_support;
+extern int ati_sucks;
+extern float largest_supported_anisotropy;
+
+extern GLuint default_texture; // The infamous "32*1024*1024" is now configurable
+extern GLuint depth_texture;
+void set_depth_shader();
+void set_bw_shader();
+extern float invtex[2];
+extern int buffer_cleared; // Mark that the buffer has been cleared, used to check if we need to reload the texture buffer content
 
 void init_geometry();
 void init_textures();
