@@ -99,8 +99,6 @@ CArmRecompilerOps::~CArmRecompilerOps()
 {
 }
 
-bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
-
 void CArmRecompilerOps::Compile_TrapCompare(TRAP_COMPARE CompareType)
 {
     void *FunctAddress = nullptr;
@@ -2832,7 +2830,13 @@ void CArmRecompilerOps::SPECIAL_JR()
         m_Section->m_Cont.LinkLocation = nullptr;
         m_Section->m_Cont.LinkLocation2 = nullptr;
 
-        if (DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0))
+        R4300iOpcode DelaySlot;
+        if (!g_MMU->MemoryValue32(m_CompilePC + 4, DelaySlot.Value))
+        {
+            g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
+        }
+
+        if (R4300iInstruction(m_CompilePC, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
         {
             ArmReg PCTempReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
             MoveConstToArmReg(PCTempReg, (uint32_t)_PROGRAM_COUNTER, "PROGRAM_COUNTER");
@@ -2856,7 +2860,13 @@ void CArmRecompilerOps::SPECIAL_JR()
     }
     else if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT_DONE)
     {
-        if (DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0))
+        R4300iOpcode DelaySlot;
+        if (!g_MMU->MemoryValue32(m_CompilePC + 4, DelaySlot.Value))
+        {
+            g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
+        }
+
+        if (R4300iInstruction(m_CompilePC, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
         {
             CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal);
         }
@@ -2901,7 +2911,13 @@ void CArmRecompilerOps::SPECIAL_JALR()
 {
     if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
-        if (DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0) && (m_CompilePC & 0xFFC) != 0xFFC)
+        R4300iOpcode DelaySlot;
+        if (!g_MMU->MemoryValue32(m_CompilePC + 4, DelaySlot.Value))
+        {
+            g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
+        }
+
+        if (R4300iInstruction(m_CompilePC, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value) && (m_CompilePC & 0xFFC) != 0xFFC)
         {
             if (IsKnown(m_Opcode.rs))
             {
@@ -2948,7 +2964,13 @@ void CArmRecompilerOps::SPECIAL_JALR()
     }
     else if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT_DONE)
     {
-        if (DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0))
+        R4300iOpcode DelaySlot;
+        if (!g_MMU->MemoryValue32(m_CompilePC + 4, DelaySlot.Value))
+        {
+            g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
+        }
+
+        if (R4300iInstruction(m_CompilePC, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
         {
             CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal);
         }
