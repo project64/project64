@@ -839,7 +839,10 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t VAddr, uint32_t Value)
     case 0x04800000: m_SerialInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x05000000: m_CartridgeDomain2Address1Handler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x06000000: m_CartridgeDomain1Address1Handler.Write32(PAddr, Value, 0xFFFFFFFF); break;
-    case 0x08000000: m_CartridgeDomain2Address2Handler.Write32(PAddr, Value, 0xFFFFFFFF); break;
+    case 0x08000000:
+    case 0x0fe00000:
+        m_CartridgeDomain2Address2Handler.Write32(PAddr, Value, 0xFFFFFFFF); 
+        break;
     case 0x13F00000: m_ISViewerHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x1FC00000: m_PifRamHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x1FF00000: m_CartridgeDomain1Address3Handler.Write32(PAddr, Value, 0xFFFFFFFF); break;
