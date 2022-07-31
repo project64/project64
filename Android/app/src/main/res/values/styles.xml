@@ -101,10 +101,23 @@
         <item name="android:textSize">30sp</item>
     </style>
 
+    <style name="Theme.Project64.Dialog.Button">
+        <item name="android:textColor">@color/ButtonTextColor</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:clickable">true</item>
+
+        <item name="android:layout_width">270dp</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:background">@drawable/button_shape</item>
+        <item name="android:shadowColor">#A8A8A8</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
+        <item name="android:shadowRadius">5</item>
+    </style>
+
     <style name="Theme.Project64.Dialog.Alert" parent="Base.Theme.AppCompat.Dialog.Alert">
-        <item name="android:windowBackground">#00FF00</item>
-        <item name="android:windowTitleStyle">@style/Theme.Project64.Dialog.Title</item>
         <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowTitleStyle">@style/Theme.Project64.Dialog.Title</item>
         <item name="android:dividerHorizontal">@null</item>
         <item name="android:dividerVertical">@null</item>
         <item name="android:windowNoTitle">true</item>

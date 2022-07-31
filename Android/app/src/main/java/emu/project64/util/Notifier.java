@@ -1,15 +1,19 @@
 package emu.project64.util;
 
-//import emu.project64.game.GameOverlay;
-import emu.project64.jni.NativeExports;
-import emu.project64.jni.SettingsID;
-import emu.project64.Project64Application;
 import emu.project64.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import androidx.appcompat.view.ContextThemeWrapper;
 
 /**
  * A small class to encapsulate the notification process for Mupen64PlusAE.
@@ -37,20 +41,17 @@ public final class Notifier
             @Override
             public void run()
             {
-                final AlertDialog dialog = new AlertDialog.Builder(finalActivity)
-                .setTitle("Error")
-                .setMessage(finalMessage)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        // You don't have to do anything here if you just want it dismissed when clicked
-                       synchronized(sDisplayMessager)
-                       {
-                           sDisplayMessager.notify();
-                       };
-                    }
-                })
+                final LayoutInflater inflater = (LayoutInflater) finalActivity.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+                View layout = inflater.inflate( R.layout.dialog_menu, null );
+                TextView DlgTitle = (TextView)layout.findViewById(R.id.dlg_title);
+                DlgTitle.setText("Error");
+                ListView ListOptions = (ListView)layout.findViewById(R.id.list_options);
+                String[] data = { finalMessage };
+                NotifierAdapter ad = new NotifierAdapter(finalActivity, sDisplayMessager, data);
+                ListOptions.setAdapter(ad);
+
+                final AlertDialog dialog = new AlertDialog.Builder(new ContextThemeWrapper(finalActivity,R.style.Theme_Project64_Dialog_Alert))
+                .setView( layout)
                 .setCancelable(false)
                 .create();
                 dialog.setCanceledOnTouchOutside(false);

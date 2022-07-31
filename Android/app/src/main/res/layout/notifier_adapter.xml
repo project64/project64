@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:layout_marginLeft="0dp"
+    android:layout_marginRight="0dp"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/text"
+        android:text=""
+        android:textSize="24dp"
+        android:paddingBottom = "20dp"
+        />
+    <Button
+        style="@style/Theme.Project64.Dialog.Button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/button"
+        android:gravity="center"
+        android:text="OK"
+        />
+</LinearLayout>

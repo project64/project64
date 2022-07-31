@@ -7,6 +7,10 @@
     <color name="TabInactive">#000000</color>
     <color name="TabActive">#4683ec</color>
     <color name="ButtonTextColor">#ffffff</color>
+    <color name="ButtonCenterColor">#8AADE8</color>
+    <color name="ButtonStartColor">#C7DCFF</color>
+    <color name="ButtonEndColor">#1750B3</color>
+    <color name="buttonBorderColor">#4683ec</color>
 
 
     <color name="white">#ffffff</color>
