@@ -22,7 +22,7 @@ CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
     m_System(System),
     m_Reg(System.m_Reg),
     m_AudioInterfaceHandler(System, System.m_Reg),
-    m_CartridgeDomain1Address1Handler(g_DDRom),
+    m_CartridgeDomain1Address1Handler(System.m_Reg, g_DDRom),
     m_CartridgeDomain2Address1Handler(System.m_Reg),
     m_CartridgeDomain2Address2Handler(System, System.m_Reg, *this, SavesReadOnly),
     m_RDRAMRegistersHandler(System.m_Reg),
@@ -602,7 +602,7 @@ bool CMipsMemoryVM::LB_NonMemory(uint32_t VAddr, uint8_t & Value)
     else if (PAddr >= 0x10000000 && PAddr < 0x16000000)
     {
         uint32_t Value32;
-        if (!m_RomMemoryHandler.Read32((PAddr + 2) & ~0x3, Value32))
+        if (!m_RomMemoryHandler.Read32(PAddr, Value32))
         {
             return false;
         }
@@ -635,7 +635,7 @@ bool CMipsMemoryVM::LH_NonMemory(uint32_t VAddr, uint16_t & Value)
     else if (PAddr >= 0x10000000 && PAddr < 0x16000000)
     {
         uint32_t Value32;
-        if (!m_RomMemoryHandler.Read32((PAddr + 2) & ~0x3, Value32))
+        if (!m_RomMemoryHandler.Read32(PAddr, Value32))
         {
             return false;
         }
