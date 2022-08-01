@@ -819,16 +819,13 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     FileMenu.push_back(Item);
     Item.Reset(ID_FILE_OPEN_COMBO, MENU_OPEN_COMBO, m_ShortCuts.ShortCutString(ID_FILE_OPEN_COMBO, RunningState));
     FileMenu.push_back(Item);
-    if (!inBasicMode)
-    {
-        Item.Reset(ID_FILE_ROM_INFO, MENU_ROM_INFO, m_ShortCuts.ShortCutString(ID_FILE_ROM_INFO, RunningState));
-        Item.SetItemEnabled(RomLoaded);
-        FileMenu.push_back(Item);
-        FileMenu.push_back(MENU_ITEM(SPLITER));
-        Item.Reset(ID_FILE_STARTEMULATION, MENU_START, m_ShortCuts.ShortCutString(ID_FILE_STARTEMULATION, RunningState));
-        Item.SetItemEnabled(RomLoaded && !CPURunning);
-        FileMenu.push_back(Item);
-    }
+    Item.Reset(ID_FILE_ROM_INFO, MENU_ROM_INFO, m_ShortCuts.ShortCutString(ID_FILE_ROM_INFO, RunningState));
+    Item.SetItemEnabled(RomLoaded);
+    FileMenu.push_back(Item);
+    FileMenu.push_back(MENU_ITEM(SPLITER));
+    Item.Reset(ID_FILE_STARTEMULATION, MENU_START, m_ShortCuts.ShortCutString(ID_FILE_STARTEMULATION, RunningState));
+    Item.SetItemEnabled(RomLoaded && !CPURunning);
+    FileMenu.push_back(Item);
     Item.Reset(ID_FILE_ENDEMULATION, MENU_END, m_ShortCuts.ShortCutString(ID_FILE_ENDEMULATION, RunningState));
     Item.SetItemEnabled(CPURunning);
     FileMenu.push_back(Item);
