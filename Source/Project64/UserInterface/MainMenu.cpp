@@ -24,8 +24,7 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
     m_ChangeSettingList.push_back(UserInterface_ShowCPUPer);
     m_ChangeSettingList.push_back(Logging_GenerateLog);
     m_ChangeSettingList.push_back(Debugger_RecordExecutionTimes);
-    m_ChangeSettingList.push_back(Debugger_ShowTLBMisses);
-    m_ChangeSettingList.push_back(Debugger_ShowUnhandledMemory);
+    m_ChangeSettingList.push_back(Debugger_BreakOnUnhandledMemory);
     m_ChangeSettingList.push_back(Debugger_ShowPifErrors);
     m_ChangeSettingList.push_back(Debugger_ShowDListAListCount);
     m_ChangeSettingList.push_back(Debugger_DebugLanguage);
@@ -497,11 +496,8 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         break;
     case ID_PROFILE_RESETCOUNTER: g_BaseSystem->ExternalEvent(SysEvent_ResetFunctionTimes); break;
     case ID_PROFILE_GENERATELOG: g_BaseSystem->ExternalEvent(SysEvent_DumpFunctionTimes); break;
-    case ID_DEBUG_SHOW_TLB_MISSES:
-        g_Settings->SaveBool(Debugger_ShowTLBMisses, !g_Settings->LoadBool(Debugger_ShowTLBMisses));
-        break;
-    case ID_DEBUG_SHOW_UNHANDLED_MEM:
-        g_Settings->SaveBool(Debugger_ShowUnhandledMemory, !g_Settings->LoadBool(Debugger_ShowUnhandledMemory));
+    case ID_DEBUG_BREAK_ON_UNHANDLED_MEM:
+        g_Settings->SaveBool(Debugger_BreakOnUnhandledMemory, !g_Settings->LoadBool(Debugger_BreakOnUnhandledMemory));
         break;
     case ID_DEBUG_SHOW_PIF_ERRORS:
         g_Settings->SaveBool(Debugger_ShowPifErrors, !g_Settings->LoadBool(Debugger_ShowPifErrors));
@@ -1221,8 +1217,8 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         }
 
         // Notification menu
-        Item.Reset(ID_DEBUG_SHOW_UNHANDLED_MEM, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"On unhandled memory actions");
-        if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+        Item.Reset(ID_DEBUG_BREAK_ON_UNHANDLED_MEM, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Break on unhandled memory actions");
+        if (g_Settings->LoadBool(Debugger_BreakOnUnhandledMemory))
         {
             Item.SetItemTicked(true);
         }
@@ -1250,12 +1246,6 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         Item.Reset(SUB_MENU, EMPTY_STRING, EMPTY_STDSTR, &DebugNotificationMenu, L"Notification");
         DebugMenu.push_back(Item);
         DebugMenu.push_back(MENU_ITEM(SPLITER));
-        Item.Reset(ID_DEBUG_SHOW_TLB_MISSES, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Show TLB misses");
-        if (g_Settings->LoadBool(Debugger_ShowTLBMisses))
-        {
-            Item.SetItemTicked(true);
-        }
-        DebugMenu.push_back(Item);
         Item.Reset(ID_DEBUG_SHOW_DLIST_COUNT, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Display Alist/Dlist count");
         if (g_Settings->LoadBool(Debugger_ShowDListAListCount))
         {

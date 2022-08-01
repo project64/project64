@@ -53,7 +53,7 @@ bool PifRamHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask)
 
     if (Address < 0x1FC007C0)
     {
-        if (HaveDebugger())
+        if (BreakOnUnhandledMemory())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }

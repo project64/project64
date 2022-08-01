@@ -319,8 +319,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(File_DiskIPLTOOLPath, new CSettingTypeApplicationPath("Settings", "Disk IPL TOOL ROM Path", Default_None));
 
     AddHandler(Debugger_Enabled, new CSettingTypeApplication("Debugger", "Debugger", false));
-    AddHandler(Debugger_ShowTLBMisses, new CSettingTypeApplication("Debugger", "Show TLB Misses", false));
-    AddHandler(Debugger_ShowUnhandledMemory, new CSettingTypeApplication("Debugger", "Show Unhandled Memory", false));
+    AddHandler(Debugger_BreakOnUnhandledMemory, new CSettingTypeApplication("Debugger", "Break On Unhandled Memory", false));
     AddHandler(Debugger_ShowPifErrors, new CSettingTypeApplication("Debugger", "Show Pif Errors", false));
     AddHandler(Debugger_DisableGameFixes, new CSettingTypeApplication("Debugger", "Disable Game Fixes", false));
     AddHandler(Debugger_ShowDListAListCount, new CSettingTypeApplication("Debugger", "Show Dlist Alist Count", false));

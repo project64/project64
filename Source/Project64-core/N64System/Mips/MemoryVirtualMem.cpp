@@ -610,7 +610,10 @@ bool CMipsMemoryVM::LB_NonMemory(uint32_t VAddr, uint8_t & Value)
     }
     else
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        if (BreakOnUnhandledMemory())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
         Value = 0;
     }
     return true;
@@ -731,7 +734,10 @@ bool CMipsMemoryVM::SB_NonMemory(uint32_t VAddr, uint8_t Value)
         }
         break;
     default:
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        if (BreakOnUnhandledMemory())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
         return false;
     }
 
@@ -775,7 +781,10 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t VAddr, uint16_t Value)
         }
         break;
     default:
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        if (BreakOnUnhandledMemory())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
         return false;
     }
 
@@ -801,6 +810,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t VAddr, uint32_t Value)
     case 0x00500000:
     case 0x00600000:
     case 0x00700000:
+    case 0x00800000:
         if (PAddr < RdramSize())
         {
             if (CGameSettings::bSMM_Protect() || CGameSettings::bSMM_StoreInstruc())
@@ -847,11 +857,11 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t VAddr, uint32_t Value)
     case 0x1FC00000: m_PifRamHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x1FF00000: m_CartridgeDomain1Address3Handler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     default:
-        if (PAddr >= 0x10000000 && PAddr < 0x16000000)
+        if (PAddr >= 0x10000000 && PAddr < 0x20000000)
         {
             m_RomMemoryHandler.Write32(PAddr, Value, 0xFFFFFFFF);
         }
-        else
+        else if (BreakOnUnhandledMemory())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -887,7 +897,10 @@ bool CMipsMemoryVM::SD_NonMemory(uint32_t VAddr, uint64_t Value)
         }
         break;
     default:
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        if (BreakOnUnhandledMemory())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
         return false;
     }
 

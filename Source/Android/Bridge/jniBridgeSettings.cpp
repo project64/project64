@@ -245,8 +245,7 @@ CJniBridegSettings::CJniBridegSettings()
 
 	// Debugger
 	ADD_SETTING(Debugger_Enabled);
-	ADD_SETTING(Debugger_ShowTLBMisses);
-	ADD_SETTING(Debugger_ShowUnhandledMemory);
+	ADD_SETTING(Debugger_BreakOnUnhandledMemory);
 	ADD_SETTING(Debugger_ShowPifErrors);
 	ADD_SETTING(Debugger_ShowDivByZero);
 	ADD_SETTING(Debugger_RecordRecompilerAsm);
