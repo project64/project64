@@ -24,6 +24,7 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
     m_ChangeSettingList.push_back(UserInterface_ShowCPUPer);
     m_ChangeSettingList.push_back(Logging_GenerateLog);
     m_ChangeSettingList.push_back(Debugger_RecordExecutionTimes);
+    m_ChangeSettingList.push_back(Debugger_EndOnPermLoop);
     m_ChangeSettingList.push_back(Debugger_BreakOnUnhandledMemory);
     m_ChangeSettingList.push_back(Debugger_BreakOnAddressError);
     m_ChangeSettingList.push_back(Debugger_ShowPifErrors);
@@ -497,6 +498,9 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         break;
     case ID_PROFILE_RESETCOUNTER: g_BaseSystem->ExternalEvent(SysEvent_ResetFunctionTimes); break;
     case ID_PROFILE_GENERATELOG: g_BaseSystem->ExternalEvent(SysEvent_DumpFunctionTimes); break;
+    case ID_DEBUG_END_ON_PERM_LOOP:
+        g_Settings->SaveBool(Debugger_EndOnPermLoop, !g_Settings->LoadBool(Debugger_EndOnPermLoop));
+        break;
     case ID_DEBUG_BREAK_ON_UNHANDLED_MEM:
         g_Settings->SaveBool(Debugger_BreakOnUnhandledMemory, !g_Settings->LoadBool(Debugger_BreakOnUnhandledMemory));
         break;
@@ -1221,6 +1225,12 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         }
 
         // Notification menu
+        Item.Reset(ID_DEBUG_END_ON_PERM_LOOP, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"End on perm loop");
+        if (g_Settings->LoadBool(Debugger_EndOnPermLoop))
+        {
+            Item.SetItemTicked(true);
+        }
+        DebugNotificationMenu.push_back(Item);
         Item.Reset(ID_DEBUG_BREAK_ON_UNHANDLED_MEM, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Break on unhandled memory actions");
         if (g_Settings->LoadBool(Debugger_BreakOnUnhandledMemory))
         {

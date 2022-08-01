@@ -26,6 +26,7 @@ public:
     static inline uint32_t FpExceptionBreakpoints(void) { return m_FpExceptionBreakpoints; }
     static inline uint32_t IntrBreakpoints(void) { return m_IntrBreakpoints; }
     static inline uint32_t RcpIntrBreakpoints(void) { return m_RcpIntrBreakpoints; }
+    static inline bool EndOnPermLoop(void) { return m_EndOnPermLoop; }
     static inline bool BreakOnUnhandledMemory(void) { return m_BreakOnUnhandledMemory; }
     static inline bool BreakOnAddressError(void) { return m_BreakOnAddressError; }
 
@@ -55,6 +56,7 @@ private:
     static uint32_t m_FpExceptionBreakpoints;
     static uint32_t m_IntrBreakpoints;
     static uint32_t m_RcpIntrBreakpoints;
+    static bool m_EndOnPermLoop;
     static bool m_BreakOnUnhandledMemory;
     static bool m_BreakOnAddressError;
 

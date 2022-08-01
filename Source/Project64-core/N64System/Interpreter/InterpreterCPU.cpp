@@ -34,30 +34,24 @@ void CInterpreterCPU::BuildCPU()
 
 void CInterpreterCPU::InPermLoop()
 {
-    // Interrupts enabled
-    if ((g_Reg->STATUS_REGISTER & STATUS_IE) == 0 ||
+    if (EndOnPermLoop() &&
+        ((g_Reg->STATUS_REGISTER & STATUS_IE) == 0 ||
         (g_Reg->STATUS_REGISTER & STATUS_EXL) != 0 ||
         (g_Reg->STATUS_REGISTER & STATUS_ERL) != 0 ||
-        (g_Reg->STATUS_REGISTER & 0xFF00) == 0)
+        (g_Reg->STATUS_REGISTER & 0xFF00) == 0))
     {
         if (g_Plugins->Gfx()->UpdateScreen != nullptr)
         {
             g_Plugins->Gfx()->UpdateScreen();
         }
-        //CurrentFrame = 0;
-        //CurrentPercent = 0;
-        //DisplayFPS();
         g_Notify->DisplayError(GS(MSG_PERM_LOOP));
         g_System->CloseCpu();
     }
-    else
+    else if (*g_NextTimer > 0)
     {
-        if (*g_NextTimer > 0)
-        {
-            g_SystemTimer->UpdateTimers();
-            *g_NextTimer = 0 - g_System->CountPerOp();
-            g_SystemTimer->UpdateTimers();
-        }
+        g_SystemTimer->UpdateTimers();
+        *g_NextTimer = 0 - g_System->CountPerOp();
+        g_SystemTimer->UpdateTimers();
     }
 }
 

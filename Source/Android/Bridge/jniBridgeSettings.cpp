@@ -245,6 +245,7 @@ CJniBridegSettings::CJniBridegSettings()
 
     // Debugger
     ADD_SETTING(Debugger_Enabled);
+    ADD_SETTING(Debugger_EndOnPermLoop);
     ADD_SETTING(Debugger_BreakOnUnhandledMemory);
     ADD_SETTING(Debugger_BreakOnAddressError);
     ADD_SETTING(Debugger_ShowPifErrors);
