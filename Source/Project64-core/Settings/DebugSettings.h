@@ -29,6 +29,7 @@ public:
     static inline bool EndOnPermLoop(void) { return m_EndOnPermLoop; }
     static inline bool BreakOnUnhandledMemory(void) { return m_BreakOnUnhandledMemory; }
     static inline bool BreakOnAddressError(void) { return m_BreakOnAddressError; }
+    static inline bool StepOnBreakOpCode(void) { return m_StepOnBreakOpCode; }
 
 private:
     static void StaticRefreshSettings(CDebugSettings * _this)
@@ -59,6 +60,7 @@ private:
     static bool m_EndOnPermLoop;
     static bool m_BreakOnUnhandledMemory;
     static bool m_BreakOnAddressError;
+    static bool m_StepOnBreakOpCode;
 
     static int32_t m_RefCount;
     static bool m_Registered;

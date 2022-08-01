@@ -26,6 +26,7 @@ uint32_t CDebugSettings::m_RcpIntrBreakpoints = 0;
 bool CDebugSettings::m_EndOnPermLoop = false;
 bool CDebugSettings::m_BreakOnUnhandledMemory = false;
 bool CDebugSettings::m_BreakOnAddressError = false;
+bool CDebugSettings::m_StepOnBreakOpCode = false;
 
 CDebugSettings::CDebugSettings()
 {
@@ -52,6 +53,7 @@ CDebugSettings::CDebugSettings()
         g_Settings->RegisterChangeCB(Debugger_EndOnPermLoop, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_BreakOnUnhandledMemory, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_BreakOnAddressError, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->RegisterChangeCB(Debugger_StepOnBreakOpCode, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
 
         RefreshSettings();
     }
@@ -80,6 +82,7 @@ CDebugSettings::~CDebugSettings()
         g_Settings->UnregisterChangeCB(Debugger_EndOnPermLoop, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_BreakOnUnhandledMemory, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_BreakOnAddressError, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->UnregisterChangeCB(Debugger_StepOnBreakOpCode, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
     }
 }
 
@@ -104,6 +107,7 @@ void CDebugSettings::RefreshSettings()
     m_EndOnPermLoop = m_HaveDebugger && g_Settings->LoadBool(Debugger_EndOnPermLoop);
     m_BreakOnUnhandledMemory = m_HaveDebugger && g_Settings->LoadBool(Debugger_BreakOnUnhandledMemory);
     m_BreakOnAddressError = m_HaveDebugger && g_Settings->LoadBool(Debugger_BreakOnAddressError);
+    m_StepOnBreakOpCode = m_HaveDebugger && g_Settings->LoadBool(Debugger_StepOnBreakOpCode);
 
     m_Debugging = m_HaveDebugger && (m_HaveExecutionBP || m_WaitingForStep || m_HaveWriteBP || m_HaveReadBP);
 }

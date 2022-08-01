@@ -188,7 +188,7 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_Special[10] = UnknownOpcode;
     Jump_Special[11] = UnknownOpcode;
     Jump_Special[12] = SPECIAL_SYSCALL;
-    Jump_Special[13] = UnknownOpcode;
+    Jump_Special[13] = SPECIAL_BREAK;
     Jump_Special[14] = UnknownOpcode;
     Jump_Special[15] = SPECIAL_SYNC;
     Jump_Special[16] = SPECIAL_MFHI;
@@ -1334,9 +1334,17 @@ void R4300iOp::SPECIAL_SYSCALL()
 
 void R4300iOp::SPECIAL_BREAK()
 {
-    g_Reg->DoBreakException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+    if (StepOnBreakOpCode())
+    {
+        g_Settings->SaveBool(Debugger_SteppingOps, true);
+        g_Debugger->WaitForStep();
+    }
+    else
+    {
+        g_Reg->DoBreakException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+    }
 }
 
 void R4300iOp::SPECIAL_SYNC()

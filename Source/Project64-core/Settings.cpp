@@ -322,6 +322,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Debugger_EndOnPermLoop, new CSettingTypeApplication("Debugger", "End On Perm Loop", false));
     AddHandler(Debugger_BreakOnUnhandledMemory, new CSettingTypeApplication("Debugger", "Break On Unhandled Memory", false));
     AddHandler(Debugger_BreakOnAddressError, new CSettingTypeApplication("Debugger", "Break On Address Error", false));
+    AddHandler(Debugger_StepOnBreakOpCode, new CSettingTypeApplication("Debugger", "Step On Break OpCode", false));
     AddHandler(Debugger_ShowPifErrors, new CSettingTypeApplication("Debugger", "Show Pif Errors", false));
     AddHandler(Debugger_DisableGameFixes, new CSettingTypeApplication("Debugger", "Disable Game Fixes", false));
     AddHandler(Debugger_ShowDListAListCount, new CSettingTypeApplication("Debugger", "Show Dlist Alist Count", false));

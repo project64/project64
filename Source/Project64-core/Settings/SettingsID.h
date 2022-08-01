@@ -239,6 +239,7 @@ enum SettingID
     Debugger_EndOnPermLoop,
     Debugger_BreakOnUnhandledMemory,
     Debugger_BreakOnAddressError,
+    Debugger_StepOnBreakOpCode,
     Debugger_ShowPifErrors,
     Debugger_ShowDivByZero,
     Debugger_RecordRecompilerAsm,
