@@ -438,7 +438,7 @@ void R4300iInstruction::DecodeName(void)
             break;
         case R4300i_COP1_DMF:
             strcpy(m_Name, "DMFC0");
-            sprintf(m_Param, "%s, %s", CRegName::GPR[m_Instruction.rt], CRegName::FPR[m_Instruction.fs]);
+            sprintf(m_Param, "%s, %s", CRegName::GPR[m_Instruction.rt], CRegName::Cop0[m_Instruction.rd]);
             break;
         case R4300i_COP0_MT:
             strcpy(m_Name, "MTC0");
