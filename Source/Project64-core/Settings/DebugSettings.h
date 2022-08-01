@@ -27,6 +27,7 @@ public:
     static inline uint32_t IntrBreakpoints(void) { return m_IntrBreakpoints; }
     static inline uint32_t RcpIntrBreakpoints(void) { return m_RcpIntrBreakpoints; }
     static inline bool BreakOnUnhandledMemory(void) { return m_BreakOnUnhandledMemory; }
+    static inline bool BreakOnAddressError(void) { return m_BreakOnAddressError; }
 
 private:
     static void StaticRefreshSettings(CDebugSettings * _this)
@@ -55,6 +56,7 @@ private:
     static uint32_t m_IntrBreakpoints;
     static uint32_t m_RcpIntrBreakpoints;
     static bool m_BreakOnUnhandledMemory;
+    static bool m_BreakOnAddressError;
 
     static int32_t m_RefCount;
     static bool m_Registered;

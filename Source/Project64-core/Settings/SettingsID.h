@@ -237,6 +237,7 @@ enum SettingID
     // Debugger
     Debugger_Enabled,
     Debugger_BreakOnUnhandledMemory,
+    Debugger_BreakOnAddressError,
     Debugger_ShowPifErrors,
     Debugger_ShowDivByZero,
     Debugger_RecordRecompilerAsm,

@@ -25,6 +25,7 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
     m_ChangeSettingList.push_back(Logging_GenerateLog);
     m_ChangeSettingList.push_back(Debugger_RecordExecutionTimes);
     m_ChangeSettingList.push_back(Debugger_BreakOnUnhandledMemory);
+    m_ChangeSettingList.push_back(Debugger_BreakOnAddressError);
     m_ChangeSettingList.push_back(Debugger_ShowPifErrors);
     m_ChangeSettingList.push_back(Debugger_ShowDListAListCount);
     m_ChangeSettingList.push_back(Debugger_DebugLanguage);
@@ -498,6 +499,9 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_PROFILE_GENERATELOG: g_BaseSystem->ExternalEvent(SysEvent_DumpFunctionTimes); break;
     case ID_DEBUG_BREAK_ON_UNHANDLED_MEM:
         g_Settings->SaveBool(Debugger_BreakOnUnhandledMemory, !g_Settings->LoadBool(Debugger_BreakOnUnhandledMemory));
+        break;
+    case ID_DEBUG_BREAK_ON_ADDRESS_ERROR:
+        g_Settings->SaveBool(Debugger_BreakOnAddressError, !g_Settings->LoadBool(Debugger_BreakOnAddressError));
         break;
     case ID_DEBUG_SHOW_PIF_ERRORS:
         g_Settings->SaveBool(Debugger_ShowPifErrors, !g_Settings->LoadBool(Debugger_ShowPifErrors));
@@ -1219,6 +1223,12 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         // Notification menu
         Item.Reset(ID_DEBUG_BREAK_ON_UNHANDLED_MEM, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Break on unhandled memory actions");
         if (g_Settings->LoadBool(Debugger_BreakOnUnhandledMemory))
+        {
+            Item.SetItemTicked(true);
+        }
+        DebugNotificationMenu.push_back(Item);
+        Item.Reset(ID_DEBUG_BREAK_ON_ADDRESS_ERROR, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Break on address error");
+        if (g_Settings->LoadBool(Debugger_BreakOnAddressError))
         {
             Item.SetItemTicked(true);
         }

@@ -204,17 +204,9 @@ void CRegisters::CheckInterrupts()
 
 void CRegisters::DoAddressError(bool DelaySlot, uint32_t BadVaddr, bool FromRead)
 {
-    if (HaveDebugger())
+    if (BreakOnAddressError())
     {
-        g_Notify->DisplayError(stdstr_f("AddressError %s Vaddr: %X", FromRead ? "reading" : "writing", BadVaddr).c_str());
-        if ((STATUS_REGISTER & STATUS_EXL) != 0)
-        {
-            g_Notify->DisplayError("EXL set in AddressError exception");
-        }
-        if ((STATUS_REGISTER & STATUS_ERL) != 0)
-        {
-            g_Notify->DisplayError("ERL set in AddressError exception");
-        }
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
     if (FromRead)
