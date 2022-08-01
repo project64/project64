@@ -6,6 +6,8 @@ Minor note: Before version 4.0, the changelog didn't exist, and the changelog th
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- ROM info now always shows even if "hide advanced options" is checked
+- If emulator runs into permanent loop, it will no longer end emulation
 
 ## [3.0.1] - June 17, 2021
 
@@ -16,12 +18,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - New input plugin
 - Added enhancements functionality
 - Added Shygoo's debugger code
-- Ability to change defaults
+- Added the ability to change defaults
 
 ### Changed
-- Saves in their own unique directory
-- Cheat system has been rebuilt from the ground up
-- Large address aware
+- Saves now have their own unique directory
+- Cheat system has been completely rebuilt
+- Project64 is now large address aware
 - Default compiler is now Visual Studio 2015
 
 ### Fixes
@@ -39,4 +41,23 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [2.2] - March 30, 2015
 
-## [1.0 - 2.1] - May 26, 2001 - March 29, 2015
+## [2.1] - March 29, 2015
+
+## [2.0] - Unknown date
+
+## [1.7] - Unknown date
+- Changes unknown, but first major open-source release
+- Major updates to the core
+
+## [1.6.1] - Unknown date
+- Last update of the Jabo plugins
+- Minor update
+
+## [1.6] - Unknown date
+- Last major release before major changes and open-source release in 1.7
+
+## [1.1 - 1.5] - Unknown date
+- Changes unknown currently
+
+## [1.0] - May 26, 2001
+- First release!
