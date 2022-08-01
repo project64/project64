@@ -1292,7 +1292,7 @@ void R4300iOp::SPECIAL_SRL()
 
 void R4300iOp::SPECIAL_SRA()
 {
-    _GPR[m_Opcode.rd].DW = (_GPR[m_Opcode.rt].W[0] >> m_Opcode.sa);
+    _GPR[m_Opcode.rd].DW = (int32_t)(_GPR[m_Opcode.rt].DW >> m_Opcode.sa);
 }
 
 void R4300iOp::SPECIAL_SLLV()
