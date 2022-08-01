@@ -2,14 +2,14 @@
 
 ### Hello, this document is to help you out if you are looking to get support for Project64.
 
-#### First of all, GitHub issues are ***not*** for general inquiries, support questions, or anything that can be handled on our support Discord. Issues opened without first reading this document or attempting help in the Discord will be closed. Issues opened regarding software we don't maintain will also be closed.
+#### First of all, GitHub issues are ***not*** for general inquiries, support questions, or anything that can be handled on our support Discord. Issues opened without first reading this document or attempting to get support in the Discord will be closed. Issues opened regarding software we don't maintain will also be closed.
 
 #### Here is a non-exhaustive list of things you should do before asking for help on the Discord:
 - Fully update Windows
 - Update all of your drivers
 - Make sure you are using either the latest stable version of Project64, or the latest nightly build of Project64
 - Make sure you aren't using a bad ROM dump
-- If you have issues with a ROM hack, make sure the unmodified game doesn't have the issue as well
+- If you have issues with a ROM hack, make sure the unmodified game doesn't have issues as well as the ROM hack
 - Try other plugins if a plugin isn't working correctly for you
 - Try one of the recommended plugins setups below if the current setup isn't working for you
 
