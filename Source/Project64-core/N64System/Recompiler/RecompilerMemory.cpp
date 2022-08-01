@@ -76,7 +76,7 @@ void CRecompMemory::Reset()
 
 void CRecompMemory::ShowMemUsed()
 {
-    uint32_t Size = m_RecompPos - m_RecompCode;
+    uint32_t Size = (uint32_t)(m_RecompPos - m_RecompCode);
     uint32_t MB = Size / 0x100000;
     Size -= MB * 0x100000;
     uint32_t KB = Size / 1024;

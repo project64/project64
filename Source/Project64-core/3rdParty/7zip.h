@@ -29,7 +29,7 @@ public:
     inline bool          OpenSuccess(void)    const { return m_Opened; }
 
     bool   GetFile(int index, Byte * Data, size_t DataLen);
-    const char * FileName(char * FileName, int SizeOfFileName) const;
+    const char * FileName(char * FileName, size_t SizeOfFileName) const;
     std::wstring FileNameIndex(int index);
 
     void SetNotificationCallback(LP7ZNOTIFICATION NotfyFnc, void * CBInfo);

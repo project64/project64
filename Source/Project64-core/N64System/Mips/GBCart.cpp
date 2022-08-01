@@ -699,7 +699,7 @@ bool GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
     rom_size = tempFile.GetLength();
     rom.reset(new uint8_t[rom_size]);
 
-    tempFile.Read(rom.get(), rom_size);
+    tempFile.Read(rom.get(), (uint32_t)rom_size);
     tempFile.Close();
 
     if (rom_size < 0x8000)
@@ -742,7 +742,7 @@ bool GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
                 return false;
             }
 
-            tempFile.Read(ram.get(), ram_size);
+            tempFile.Read(ram.get(), (uint32_t)ram_size);
         }
 
         // If we have RTC we need to load in the data, we assume the save will use the VBA-M format
@@ -781,7 +781,7 @@ void GBCart::save_gb_cart(struct gb_cart* gb_cart)
 {
     CFile ramFile;
     ramFile.Open(g_Settings->LoadStringVal(Game_Transferpak_Sav).c_str(), CFileBase::modeWrite | CFileBase::modeCreate);
-    ramFile.Write(gb_cart->ram, gb_cart->ram_size);
+    ramFile.Write(gb_cart->ram, (uint32_t)gb_cart->ram_size);
 
     if (gb_cart->has_rtc)
     {

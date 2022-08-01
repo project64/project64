@@ -34,7 +34,7 @@ bool ISViewerHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask)
             size_t DataStrLen = strnlen((const char *)&m_Data[0x20], m_Data.size() - 0x20);
             if (DataStrLen < MaskedValue)
             {
-                MaskedValue = DataStrLen;
+                MaskedValue = (uint32_t)DataStrLen;
             }
             memcpy(&m_Buffer[m_BufferPos], (const char *)&m_Data[0x20], MaskedValue);
             m_BufferPos += MaskedValue;
@@ -49,7 +49,7 @@ bool ISViewerHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask)
                 }
                 if (m_hLogFile != nullptr && NewLine != m_Buffer)
                 {
-                    m_hLogFile->Write(m_Buffer, (NewLine - m_Buffer) + 1);
+                    m_hLogFile->Write(m_Buffer, (uint32_t)((NewLine - m_Buffer) + 1));
                     m_hLogFile->Flush();
                 }
             }

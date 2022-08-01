@@ -660,6 +660,8 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
     }
     return EXCEPTION_EXECUTE_HANDLER;
 #else
+    dwExptCode = dwExptCode; //unreferenced formal parameter
+    lpExceptionPointer = lpExceptionPointer; // unreferenced formal parameter
     return EXCEPTION_EXECUTE_HANDLER;
 #endif
 }

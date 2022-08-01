@@ -138,7 +138,7 @@ SRes C7zip::SzFileReadImp(void *object, void *buffer, size_t *processedSize)
 {
     CFileInStream *p = (CFileInStream *)object;
     DWORD dwRead;
-    if (!ReadFile(p->file.handle, buffer, *processedSize, &dwRead, nullptr))
+    if (!ReadFile(p->file.handle, buffer, (DWORD)*processedSize, &dwRead, nullptr))
     {
         return SZ_ERROR_FAIL;
     }
@@ -174,13 +174,13 @@ SRes C7zip::SzFileSeekImp(void *p, Int64 *pos, ESzSeek origin)
     return SZ_OK;
 }
 
-const char * C7zip::FileName(char * FileName, int SizeOfFileName) const
+const char * C7zip::FileName(char * FileName, size_t SizeOfFileName) const
 {
     if (FileName == nullptr)
     {
         return nullptr;
     }
-    int Len = strlen(m_FileName);
+    size_t Len = strlen(m_FileName);
     if (Len > (SizeOfFileName - 1))
     {
         Len = (SizeOfFileName - 1);
@@ -198,7 +198,7 @@ std::wstring C7zip::FileNameIndex(int index)
         // No filename
         return filename;
     }
-    int namelen = SzArEx_GetFileNameUtf16(m_db, index, nullptr);
+    size_t namelen = SzArEx_GetFileNameUtf16(m_db, index, nullptr);
     if (namelen <= 0)
     {
         // No filename

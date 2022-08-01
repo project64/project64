@@ -382,7 +382,7 @@ void CEnhancmentFile::SaveCurrentSection(void)
     } 
     else
     {
-        int NeededBufferLen = Section.length();
+        int NeededBufferLen = (int)Section.length();
         int currentLen = 0;
 
         m_File.Seek(m_CurrentSectionFilePos, CFileBase::begin);
@@ -420,7 +420,7 @@ void CEnhancmentFile::SaveCurrentSection(void)
         }
         m_File.Seek(StartPos, CFileBase::begin);
     }
-    m_File.Write(Section.data(), Section.length());
+    m_File.Write(Section.data(), (uint32_t)Section.length());
 }
 
 int CEnhancmentFile::GetStringFromFile(char * & String, std::unique_ptr<char> & Data, int & MaxDataSize, int & DataSize, int & ReadPos)

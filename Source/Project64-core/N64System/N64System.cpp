@@ -1252,7 +1252,7 @@ void CN64System::ExecuteCPU()
     {
         g_Debugger->EmulationStarted();
     }
-#ifdef _WIN32
+#if defined(_WIN32) && (defined(__i386__) || defined(_M_IX86))
     _controlfp(_PC_53, _MCW_PC);
 #endif
 

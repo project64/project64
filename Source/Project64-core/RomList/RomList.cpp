@@ -128,7 +128,7 @@ void CRomList::AddRomToList(const char * RomLocation)
     strncpy(RomInfo.szFullFileName, RomLocation, (sizeof(RomInfo.szFullFileName) / sizeof(RomInfo.szFullFileName[0])) - 1);
     if (FillRomInfo(&RomInfo))
     {
-        int32_t ListPos = m_RomInfo.size();
+        int32_t ListPos = (int32_t)m_RomInfo.size();
         m_RomInfo.push_back(RomInfo);
         RomAddedToList(ListPos);
     }
@@ -303,7 +303,7 @@ void CRomList::FillRomList(strlist & FileList, const char * Directory)
                         FillRomExtensionInfo(&RomInfo);
 
                         WriteTrace(TraceUserInterface, TraceDebug, "17");
-                        int32_t ListPos = m_RomInfo.size();
+                        int32_t ListPos = (int32_t)m_RomInfo.size();
                         m_RomInfo.push_back(RomInfo);
                         RomAddedToList(ListPos);
                     }
@@ -714,7 +714,7 @@ void CRomList::LoadRomList(void)
     {
         ROM_INFO RomInfo;
         file.Read(&RomInfo, RomInfoSize);
-        int32_t ListPos = m_RomInfo.size();
+        int32_t ListPos = (int32_t)m_RomInfo.size();
         m_RomInfo.push_back(RomInfo);
         RomAddedToList(ListPos);
     }
@@ -738,7 +738,7 @@ void CRomList::SaveRomList(strlist & FileList)
     file.Write(&RomInfoSize, sizeof(RomInfoSize));
 
     // Write the number of entries
-    int32_t Entries = m_RomInfo.size();
+    int32_t Entries = (int32_t)m_RomInfo.size();
     file.Write(&Entries, sizeof(Entries));
 
     // Write every entry
@@ -760,7 +760,7 @@ MD5 CRomList::RomListHash(strlist & FileList)
         NewFileNames += *iter;
         NewFileNames += ";";
     }
-    MD5 md5Hash((const unsigned char *)NewFileNames.c_str(), NewFileNames.length());
+    MD5 md5Hash((const unsigned char *)NewFileNames.c_str(), (unsigned int)NewFileNames.length());
     WriteTrace(TraceUserInterface, TraceDebug, "%s - %s", md5Hash.hex_digest(), NewFileNames.c_str());
     return md5Hash;
 }

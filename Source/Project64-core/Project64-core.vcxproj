@@ -35,6 +35,9 @@
     <PreBuildEvent>
       <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(Platform)" "$(SolutionDir)Source\Project64-core\Version.h.in" "$(SolutionDir)Source\Project64-core\Version.h"</Command>
     </PreBuildEvent>
+    <Lib>
+      <AdditionalOptions>/ignore:4221%(AdditionalOptions)</AdditionalOptions>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="3rdParty\7zip.cpp">

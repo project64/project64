@@ -127,7 +127,7 @@ bool CCodeBlock::SetSection(CCodeSection * & Section, CCodeSection * CurrentSect
 
     if (Section == nullptr)
     {
-        Section = new CCodeSection(this, TargetPC, m_Sections.size(), LinkAllowed);
+        Section = new CCodeSection(this, TargetPC, (uint32_t)m_Sections.size(), LinkAllowed);
         if (Section == nullptr)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
