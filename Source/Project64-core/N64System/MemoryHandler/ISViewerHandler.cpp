@@ -31,6 +31,11 @@ bool ISViewerHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask)
     {
         if (m_BufferPos + MaskedValue <= (sizeof(m_Buffer) / sizeof(m_Buffer[0])))
         {
+            size_t DataStrLen = strnlen((const char *)&m_Data[0x20], m_Data.size() - 0x20);
+            if (DataStrLen < MaskedValue)
+            {
+                MaskedValue = DataStrLen;
+            }
             memcpy(&m_Buffer[m_BufferPos], (const char *)&m_Data[0x20], MaskedValue);
             m_BufferPos += MaskedValue;
             char * NewLine = (char *)memchr((void *)&m_Buffer[0], '\n', m_BufferPos);
