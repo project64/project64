@@ -73,7 +73,7 @@ See the [contributing](./.github/CONTRIBUTING.md) file for ways to get started.
 
 ## Roadmap
 
-#### Just a note that these aren't guaranteed to happen, just things we'd like to implement at some point!
+#### Just a note that these aren't guaranteed to happen, just things the community or we'd like to implement at some point!
 
 - Improve the accuracy of the CPU interpreter/CPU recompiler
 - Improve the accuracy of the RSP interpreter/RSP recompiler
@@ -81,6 +81,9 @@ See the [contributing](./.github/CONTRIBUTING.md) file for ways to get started.
 - Working Android port
 - Working Linux port
 - Dark mode
+- Make Project64 more portable on Windows
+- Add requested hotkeys, such as swapping memory paks and rumble paks
+- Improve the installer
 - Update dependencies
 - Code cleanup and refactoring
 - UI/UX improvements
