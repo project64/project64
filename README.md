@@ -42,8 +42,12 @@ AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/project
   * 512MB or more
 * Graphics card
   * DirectX 8 capable (Jabo's Direct3D8)
-  * OpenGL 1.1 capable (Project64 Video)
+  * OpenGL 2.0 capable (3.0+ recommended) (Project64 Video)
   * OpenGL 3.3 capable (GLideN64)
+  
+<sub>Intel Integrated Graphics can have issues that are not present with Nvidia and AMD GPU's even when the requirements are met.</sub>
+  
+### Stable Builds
 
 ## Support
 
