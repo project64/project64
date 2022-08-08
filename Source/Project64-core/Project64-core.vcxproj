@@ -93,11 +93,11 @@
     <ClCompile Include="N64System\Recompiler\Arm\ArmRegInfo.cpp" />
     <ClCompile Include="N64System\Recompiler\CodeBlock.cpp" />
     <ClCompile Include="N64System\Recompiler\CodeSection.cpp" />
+    <ClCompile Include="N64System\Recompiler\ExitInfo.cpp" />
     <ClCompile Include="N64System\Recompiler\FunctionInfo.cpp" />
     <ClCompile Include="N64System\Recompiler\FunctionMap.cpp" />
     <ClCompile Include="N64System\Recompiler\LoopAnalysis.cpp" />
     <ClCompile Include="N64System\Recompiler\Recompiler.cpp" />
-    <ClCompile Include="N64System\Recompiler\RecompilerCodeLog.cpp" />
     <ClCompile Include="N64System\Recompiler\RecompilerMemory.cpp" />
     <ClCompile Include="N64System\Recompiler\RegBase.cpp" />
     <ClCompile Include="N64System\Recompiler\SectionInfo.cpp" />
@@ -221,7 +221,6 @@
     <ClInclude Include="N64System\Recompiler\JumpInfo.h" />
     <ClInclude Include="N64System\Recompiler\LoopAnalysis.h" />
     <ClInclude Include="N64System\Recompiler\Recompiler.h" />
-    <ClInclude Include="N64System\Recompiler\RecompilerCodeLog.h" />
     <ClInclude Include="N64System\Recompiler\RecompilerMemory.h" />
     <ClInclude Include="N64System\Recompiler\RecompilerOps.h" />
     <ClInclude Include="N64System\Recompiler\RegBase.h" />

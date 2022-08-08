@@ -11,7 +11,7 @@ class CCodeSection :
 public:
     typedef std::list<CCodeSection *> SECTION_LIST;
 
-    CCodeSection(CCodeBlock * CodeBlock, uint32_t EnterPC, uint32_t ID, bool LinkAllowed);
+    CCodeSection(CCodeBlock & CodeBlock, uint32_t EnterPC, uint32_t ID, bool LinkAllowed);
     ~CCodeSection();
 
     void SetDelaySlot();
@@ -28,28 +28,28 @@ public:
     void SwitchParent(CCodeSection * OldParent, CCodeSection * NewParent);
 
     // Block connection info
-    SECTION_LIST       m_ParentSection;
-    CCodeBlock * const m_BlockInfo;
-    const uint32_t     m_SectionID;
-    const uint32_t	   m_EnterPC;
-    uint32_t	       m_EndPC;
-    CCodeSection     * m_ContinueSection;
-    CCodeSection     * m_JumpSection;
-    bool               m_EndSection;   // If this section does not link, are other sections allowed to find block to link to it?
-    bool               m_LinkAllowed;
-    uint32_t           m_Test;
-    uint32_t           m_Test2;
-    uint8_t          * m_CompiledLocation;
-    bool               m_InLoop;
-    bool               m_DelaySlot;
+    SECTION_LIST m_ParentSection;
+    CCodeBlock & m_CodeBlock;
+    const uint32_t m_SectionID;
+    const uint32_t m_EnterPC;
+    uint32_t m_EndPC;
+    CCodeSection * m_ContinueSection;
+    CCodeSection * m_JumpSection;
+    bool m_EndSection;   // If this section does not link, are other sections allowed to find block to link to it?
+    bool m_LinkAllowed;
+    uint32_t m_Test;
+    uint32_t m_Test2;
+    uint8_t * m_CompiledLocation;
+    bool m_InLoop;
+    bool m_DelaySlot;
     CRecompilerOps * & m_RecompilerOps;
 
     // Register info
-    CRegInfo    m_RegEnter;
+    CRegInfo m_RegEnter;
 
     // Jump info
-    CJumpInfo   m_Jump;
-    CJumpInfo   m_Cont;
+    CJumpInfo m_Jump;
+    CJumpInfo m_Cont;
 
 private:
     CCodeSection(void);

@@ -33,7 +33,7 @@ public:
     };
 
 public:
-    CX86RegInfo();
+    CX86RegInfo(CCodeBlock & CodeBlock);
     CX86RegInfo(const CX86RegInfo&);
     ~CX86RegInfo();
 
@@ -70,19 +70,19 @@ public:
     bool   UnMap_X86reg(x86Reg Reg);
     void   WriteBackRegisters();
 
-    CX86Ops::x86Reg   GetMipsRegMapLo(int32_t Reg) const { return m_RegMapLo[Reg]; }
-    CX86Ops::x86Reg   GetMipsRegMapHi(int32_t Reg) const { return m_RegMapHi[Reg]; }
+    CX86Ops::x86Reg GetMipsRegMapLo(int32_t Reg) const { return m_RegMapLo[Reg]; }
+    CX86Ops::x86Reg GetMipsRegMapHi(int32_t Reg) const { return m_RegMapHi[Reg]; }
 
-    uint32_t             GetX86MapOrder(x86Reg Reg) const { return m_x86reg_MapOrder[Reg]; }
-    bool              GetX86Protected(x86Reg Reg) const { return m_x86reg_Protected[Reg]; }
-    REG_MAPPED        GetX86Mapped(x86Reg Reg) const { return m_x86reg_MappedTo[Reg]; }
+    uint32_t GetX86MapOrder(x86Reg Reg) const { return m_x86reg_MapOrder[Reg]; }
+    bool GetX86Protected(x86Reg Reg) const { return m_x86reg_Protected[Reg]; }
+    REG_MAPPED GetX86Mapped(x86Reg Reg) const { return m_x86reg_MappedTo[Reg]; }
 
-    void              SetMipsRegMapLo(int32_t GetMipsReg, x86Reg Reg)      { m_RegMapLo[GetMipsReg] = Reg; }
-    void              SetMipsRegMapHi(int32_t GetMipsReg, x86Reg Reg)      { m_RegMapHi[GetMipsReg] = Reg; }
+    void SetMipsRegMapLo(int32_t GetMipsReg, x86Reg Reg) { m_RegMapLo[GetMipsReg] = Reg; }
+    void SetMipsRegMapHi(int32_t GetMipsReg, x86Reg Reg) { m_RegMapHi[GetMipsReg] = Reg; }
 
-    void              SetX86MapOrder(x86Reg Reg, uint32_t Order)         { m_x86reg_MapOrder[Reg] = Order; }
-    void              SetX86Protected(x86Reg Reg, bool Protected)      { m_x86reg_Protected[Reg] = Protected; }
-    void              SetX86Mapped(x86Reg Reg, REG_MAPPED Mapping)  { m_x86reg_MappedTo[Reg] = Mapping; }
+    void SetX86MapOrder(x86Reg Reg, uint32_t Order) { m_x86reg_MapOrder[Reg] = Order; }
+    void SetX86Protected(x86Reg Reg, bool Protected) { m_x86reg_Protected[Reg] = Protected; }
+    void SetX86Mapped(x86Reg Reg, REG_MAPPED Mapping) { m_x86reg_MappedTo[Reg] = Mapping; }
 
     int32_t & StackTopPos() { return m_Stack_TopPos; }
     int32_t & FpuMappedTo(int32_t Reg) { return m_x86fpu_MappedTo[Reg]; }
@@ -90,22 +90,25 @@ public:
     FPU_ROUND & FpuRoundingModel(int32_t Reg) { return m_x86fpu_RoundingModel[Reg]; }
 
 private:
+    CX86RegInfo();
+
+    CCodeBlock & m_CodeBlock;
     x86Reg UnMap_8BitTempReg();
 
     // r4k
-    x86Reg      m_RegMapHi[32];
-    x86Reg      m_RegMapLo[32];
+    x86Reg m_RegMapHi[32];
+    x86Reg m_RegMapLo[32];
 
-    REG_MAPPED  m_x86reg_MappedTo[10];
-    uint32_t    m_x86reg_MapOrder[10];
-    bool        m_x86reg_Protected[10];
+    REG_MAPPED m_x86reg_MappedTo[10];
+    uint32_t m_x86reg_MapOrder[10];
+    bool m_x86reg_Protected[10];
 
     // FPU
-    int32_t     m_Stack_TopPos;
-    int32_t     m_x86fpu_MappedTo[8];
-    FPU_STATE   m_x86fpu_State[8];
-    bool        m_x86fpu_StateChanged[8];
-    FPU_ROUND   m_x86fpu_RoundingModel[8];
+    int32_t m_Stack_TopPos;
+    int32_t m_x86fpu_MappedTo[8];
+    FPU_STATE m_x86fpu_State[8];
+    bool m_x86fpu_StateChanged[8];
+    FPU_ROUND m_x86fpu_RoundingModel[8];
 
     static uint32_t m_fpuControl;
     bool m_InBeforeCallDirect;

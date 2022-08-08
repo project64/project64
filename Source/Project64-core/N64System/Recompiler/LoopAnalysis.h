@@ -10,7 +10,7 @@ class CCodeBlock;
 class LoopAnalysis
 {
 public:
-    LoopAnalysis(CCodeBlock * CodeBlock, CCodeSection * Section);
+    LoopAnalysis(CCodeBlock & CodeBlock, CCodeSection * Section);
     ~LoopAnalysis();
 
     bool SetupRegisterForLoop();
@@ -71,7 +71,7 @@ private:
     RegisterMap m_ContinueRegisters;
     RegisterMap m_JumpRegisters;
     CCodeSection * m_EnterSection;
-    CCodeBlock * m_BlockInfo;
+    CCodeBlock & m_CodeBlock;
     uint32_t m_PC;
     CRegInfo m_Reg;
     PIPELINE_STAGE m_PipelineStage;

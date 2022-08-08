@@ -10,7 +10,6 @@
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/N64System/Recompiler/CodeSection.h>
-#include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/Recompiler/SectionInfo.h>
 #include <Project64-core/N64System/Recompiler/LoopAnalysis.h>
 #include <Project64-core/N64System/Recompiler/x86/x86RecompilerOps.h>
@@ -20,13 +19,8 @@
 #include <Project64-core/Debugger.h>
 #include <stdio.h>
 
-CCodeSection * CX86RecompilerOps::m_Section = nullptr;
-CRegInfo CX86RecompilerOps::m_RegWorkingSet;
-PIPELINE_STAGE CX86RecompilerOps::m_PipelineStage;
-uint32_t CX86RecompilerOps::m_CompilePC;
-R4300iOpcode CX86RecompilerOps::m_Opcode;
-uint32_t CX86RecompilerOps::m_BranchCompare = 0;
 uint32_t CX86RecompilerOps::m_TempValue32 = 0;
+uint32_t CX86RecompilerOps::m_BranchCompare = 0;
 
 /*int TestValue = 0;
 void TestFunc()
@@ -181,8 +175,15 @@ static void x86TestWriteBreakpoint64()
     }
 }
 
-CX86RecompilerOps::CX86RecompilerOps(CMipsMemoryVM & MMU) :
-    m_MMU(MMU)
+CX86RecompilerOps::CX86RecompilerOps(CMipsMemoryVM & MMU, CCodeBlock & CodeBlock) :
+    CX86Ops(CodeBlock),
+    m_MMU(MMU),
+    m_CodeBlock(CodeBlock),
+    m_RegWorkingSet(CodeBlock),
+    m_CompilePC(0),
+    m_Section(nullptr),
+    m_RegBeforeDelay(CodeBlock),
+    m_EffectDelaySlot(false)
 {
 }
 
@@ -194,7 +195,7 @@ void CX86RecompilerOps::PreCompileOpcode(void)
 {
     if (m_PipelineStage != PIPELINE_STAGE_DELAY_SLOT_DONE)
     {
-        CPU_Message("  %X %s", m_CompilePC, R4300iInstruction(m_CompilePC, m_Opcode.Value).NameAndParam().c_str());
+        m_CodeBlock.Log("  %X %s", m_CompilePC, R4300iInstruction(m_CompilePC, m_Opcode.Value).NameAndParam().c_str());
     }
     /*if (m_CompilePC == 0x803275F4 && m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
@@ -347,21 +348,21 @@ void CX86RecompilerOps::CompileReadTLBMiss(uint32_t VirtualAddress, x86Reg LookU
 {
     MoveConstToVariable(VirtualAddress, g_TLBLoadAddress, "TLBLoadAddress");
     CompConstToX86reg(LookUpReg, (uint32_t)-1);
-    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBReadMiss, false, JeLabel32);
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBReadMiss, false, &CX86Ops::JeLabel32);
 }
 
 void CX86RecompilerOps::CompileReadTLBMiss(x86Reg AddressReg, x86Reg LookUpReg)
 {
     MoveX86regToVariable(AddressReg, g_TLBLoadAddress, "TLBLoadAddress");
     CompConstToX86reg(LookUpReg, (uint32_t)-1);
-    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBReadMiss, false, JeLabel32);
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBReadMiss, false, &CX86Ops::JeLabel32);
 }
 
 void CX86RecompilerOps::CompileWriteTLBMiss(x86Reg AddressReg, x86Reg LookUpReg)
 {
     MoveX86regToVariable(AddressReg, &g_TLBStoreAddress, "g_TLBStoreAddress");
     CompConstToX86reg(LookUpReg, (uint32_t)-1);
-    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBWriteMiss, false, JeLabel32);
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBWriteMiss, false, &CX86Ops::JeLabel32);
 }
 
 // Trap functions
@@ -462,9 +463,6 @@ void CX86RecompilerOps::Compile_BranchCompare(BRANCH_COMPARE CompareType)
 
 void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, bool Link)
 {
-    static CRegInfo RegBeforeDelay;
-    static bool EffectDelaySlot;
-
     if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
         if (CompareType == CompareTypeCOP1BCF || CompareType == CompareTypeCOP1BCT)
@@ -483,21 +481,21 @@ void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, bool Link)
             {
                 g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
             }
-            EffectDelaySlot = R4300iInstruction(m_CompilePC, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value);
+            m_EffectDelaySlot = R4300iInstruction(m_CompilePC, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value);
         }
         else
         {
-            EffectDelaySlot = true;
+            m_EffectDelaySlot = true;
         }
         m_Section->m_Jump.JumpPC = m_CompilePC;
         m_Section->m_Jump.TargetPC = m_CompilePC + ((int16_t)m_Opcode.offset << 2) + 4;
         if (m_Section->m_JumpSection != nullptr)
         {
-            m_Section->m_Jump.BranchLabel.Format("Section_%d", m_Section->m_JumpSection->m_SectionID);
+            m_Section->m_Jump.BranchLabel = stdstr_f("Section_%d", m_Section->m_JumpSection->m_SectionID);
         }
         else
         {
-            m_Section->m_Jump.BranchLabel.Format("Exit_%X_jump_%X", m_Section->m_EnterPC, m_Section->m_Jump.TargetPC);
+            m_Section->m_Jump.BranchLabel = stdstr_f("Exit_%X_jump_%X", m_Section->m_EnterPC, m_Section->m_Jump.TargetPC);
         }
         m_Section->m_Jump.LinkLocation = nullptr;
         m_Section->m_Jump.LinkLocation2 = nullptr;
@@ -506,11 +504,11 @@ void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, bool Link)
         m_Section->m_Cont.TargetPC = m_CompilePC + 8;
         if (m_Section->m_ContinueSection != nullptr)
         {
-            m_Section->m_Cont.BranchLabel.Format("Section_%d", m_Section->m_ContinueSection->m_SectionID);
+            m_Section->m_Cont.BranchLabel = stdstr_f("Section_%d", m_Section->m_ContinueSection->m_SectionID);
         }
         else
         {
-            m_Section->m_Cont.BranchLabel.Format("Exit_%X_continue_%X", m_Section->m_EnterPC, m_Section->m_Cont.TargetPC);
+            m_Section->m_Cont.BranchLabel = stdstr_f("Exit_%X_continue_%X", m_Section->m_EnterPC, m_Section->m_Cont.TargetPC);
         }
         m_Section->m_Cont.LinkLocation = nullptr;
         m_Section->m_Cont.LinkLocation2 = nullptr;
@@ -532,12 +530,12 @@ void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, bool Link)
             m_RegWorkingSet.SetMipsRegLo(31, m_CompilePC + 8);
             m_RegWorkingSet.SetMipsRegState(31, CRegInfo::STATE_CONST_32_SIGN);
         }
-        if (EffectDelaySlot)
+        if (m_EffectDelaySlot)
         {
             if ((m_CompilePC & 0xFFC) != 0xFFC)
             {
-                m_Section->m_Cont.BranchLabel = m_Section->m_ContinueSection != nullptr ? "Continue" : "ExitBlock";
-                m_Section->m_Jump.BranchLabel = m_Section->m_JumpSection != nullptr ? "Jump" : "ExitBlock";
+                m_Section->m_Cont.BranchLabel = m_Section->m_ContinueSection != nullptr ? "Continue" : stdstr_f("ExitBlock_%X_Continue", m_Section->m_EnterPC);
+                m_Section->m_Jump.BranchLabel = m_Section->m_JumpSection != nullptr ? "Jump" : stdstr_f("ExitBlock_%X_Jump", m_Section->m_EnterPC);
             }
             else
             {
@@ -552,15 +550,15 @@ void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, bool Link)
             {
                 if (m_Section->m_Jump.LinkLocation != nullptr)
                 {
-                    CPU_Message("");
-                    CPU_Message("      %s:", m_Section->m_Jump.BranchLabel.c_str());
+                    m_CodeBlock.Log("");
+                    m_CodeBlock.Log("      %s:", m_Section->m_Jump.BranchLabel.c_str());
                     LinkJump(m_Section->m_Jump);
                     m_Section->m_Jump.FallThrough = true;
                 }
                 else if (m_Section->m_Cont.LinkLocation != nullptr)
                 {
-                    CPU_Message("");
-                    CPU_Message("      %s:", m_Section->m_Cont.BranchLabel.c_str());
+                    m_CodeBlock.Log("");
+                    m_CodeBlock.Log("      %s:", m_Section->m_Cont.BranchLabel.c_str());
                     LinkJump(m_Section->m_Cont);
                     m_Section->m_Cont.FallThrough = true;
                 }
@@ -591,8 +589,8 @@ void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, bool Link)
                     if (DelayLinkLocation != nullptr) { g_Notify->BreakPoint(__FILE__, __LINE__); }
                     DelayLinkLocation = (uint8_t *)(*g_RecompPos - 1);
 
-                    CPU_Message("      ");
-                    CPU_Message("      %s:", m_Section->m_Jump.BranchLabel.c_str());
+                    m_CodeBlock.Log("      ");
+                    m_CodeBlock.Log("      %s:", m_Section->m_Jump.BranchLabel.c_str());
                     LinkJump(m_Section->m_Jump);
                     MoveConstToVariable(m_Section->m_Jump.TargetPC, &g_System->m_JumpToLocation, "System::m_JumpToLocation");
                 }
@@ -602,28 +600,28 @@ void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, bool Link)
                     if (DelayLinkLocation != nullptr) { g_Notify->BreakPoint(__FILE__, __LINE__); }
                     DelayLinkLocation = (uint8_t *)(*g_RecompPos - 1);
 
-                    CPU_Message("      ");
-                    CPU_Message("      %s:", m_Section->m_Cont.BranchLabel.c_str());
+                    m_CodeBlock.Log("      ");
+                    m_CodeBlock.Log("      %s:", m_Section->m_Cont.BranchLabel.c_str());
                     LinkJump(m_Section->m_Cont);
                     MoveConstToVariable(m_Section->m_Cont.TargetPC, &g_System->m_JumpToLocation, "System::m_JumpToLocation");
                 }
                 if (DelayLinkLocation)
                 {
-                    CPU_Message("");
-                    CPU_Message("      DoDelaySlot:");
+                    m_CodeBlock.Log("");
+                    m_CodeBlock.Log("      DoDelaySlot:");
                     SetJump8(DelayLinkLocation, *g_RecompPos);
                 }
                 OverflowDelaySlot(false);
                 return;
             }
             ResetX86Protection();
-            RegBeforeDelay = m_RegWorkingSet;
+            m_RegBeforeDelay = m_RegWorkingSet;
         }
         m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
     }
     else if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT_DONE)
     {
-        if (EffectDelaySlot)
+        if (m_EffectDelaySlot)
         {
             CJumpInfo * FallInfo = m_Section->m_Jump.FallThrough ? &m_Section->m_Jump : &m_Section->m_Cont;
             CJumpInfo * JumpInfo = m_Section->m_Jump.FallThrough ? &m_Section->m_Cont : &m_Section->m_Jump;
@@ -636,7 +634,7 @@ void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, bool Link)
                 {
                     if (m_Section->m_JumpSection != nullptr)
                     {
-                        m_Section->m_Jump.BranchLabel.Format("Section_%d", m_Section->m_JumpSection->m_SectionID);
+                        m_Section->m_Jump.BranchLabel = stdstr_f("Section_%d", m_Section->m_JumpSection->m_SectionID);
                     }
                     else
                     {
@@ -645,7 +643,7 @@ void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, bool Link)
                     if (FallInfo->TargetPC <= m_CompilePC)
                     {
                         UpdateCounters(m_Section->m_Jump.RegSet, true, true, true);
-                        CPU_Message("CompileSystemCheck 12");
+                        m_CodeBlock.Log("CompileSystemCheck 12");
                         CompileSystemCheck(FallInfo->TargetPC, m_Section->m_Jump.RegSet);
                         ResetX86Protection();
                         FallInfo->ExitReason = CExitInfo::Normal_NoSysCheck;
@@ -656,11 +654,11 @@ void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, bool Link)
                 {
                     if (m_Section->m_ContinueSection != nullptr)
                     {
-                        m_Section->m_Cont.BranchLabel.Format("Section_%d", m_Section->m_ContinueSection->m_SectionID);
+                        m_Section->m_Cont.BranchLabel = stdstr_f("Section_%d", m_Section->m_ContinueSection->m_SectionID);
                     }
                     else
                     {
-                        m_Section->m_Cont.BranchLabel = "ExitBlock";
+                        m_Section->m_Cont.BranchLabel = stdstr_f("ExitBlock_%X_Continue", m_Section->m_EnterPC);
                     }
                 }
                 FallInfo->DoneDelaySlot = true;
@@ -672,11 +670,11 @@ void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, bool Link)
 
                     if (JumpInfo->LinkLocation != nullptr)
                     {
-                        CPU_Message("      %s:", JumpInfo->BranchLabel.c_str());
+                        m_CodeBlock.Log("      %s:", JumpInfo->BranchLabel.c_str());
                         LinkJump(*JumpInfo);
                         JumpInfo->FallThrough = true;
                         m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
-                        m_RegWorkingSet = RegBeforeDelay;
+                        m_RegWorkingSet = m_RegBeforeDelay;
                         return;
                     }
                 }
@@ -703,7 +701,7 @@ void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, bool Link)
                 }
                 if (m_Section->m_ContinueSection != nullptr)
                 {
-                    m_Section->m_Cont.BranchLabel.Format("Section_%d", m_Section->m_ContinueSection->m_SectionID);
+                    m_Section->m_Cont.BranchLabel = stdstr_f("Section_%d", m_Section->m_ContinueSection->m_SectionID);
                 }
                 else
                 {
@@ -756,7 +754,7 @@ void CX86RecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
 
         if (m_Section->m_JumpSection != nullptr)
         {
-            m_Section->m_Jump.BranchLabel.Format("Section_%d", ((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
+            m_Section->m_Jump.BranchLabel = stdstr_f("Section_%d", ((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
         }
         else
         {
@@ -765,7 +763,7 @@ void CX86RecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
 
         if (m_Section->m_ContinueSection != nullptr)
         {
-            m_Section->m_Cont.BranchLabel.Format("Section_%d", ((CCodeSection *)m_Section->m_ContinueSection)->m_SectionID);
+            m_Section->m_Cont.BranchLabel = stdstr_f("Section_%d", ((CCodeSection *)m_Section->m_ContinueSection)->m_SectionID);
         }
         else
         {
@@ -807,8 +805,8 @@ void CX86RecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
 
                 MoveConstToVariable(m_Section->m_Jump.TargetPC, &g_System->m_JumpToLocation, "System::m_JumpToLocation");
                 OverflowDelaySlot(false);
-                CPU_Message("      ");
-                CPU_Message("      %s:", m_Section->m_Cont.BranchLabel.c_str());
+                m_CodeBlock.Log("      ");
+                m_CodeBlock.Log("      %s:", m_Section->m_Cont.BranchLabel.c_str());
             }
             else if (!m_Section->m_Cont.FallThrough)
             {
@@ -912,8 +910,8 @@ void CX86RecompilerOps::BNE_Compare()
                 {
                     JeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
                     m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
-                    CPU_Message("      ");
-                    CPU_Message("      continue:");
+                    m_CodeBlock.Log("      ");
+                    m_CodeBlock.Log("      continue:");
                     SetJump8(Jump, *g_RecompPos);
                 }
                 else
@@ -989,8 +987,8 @@ void CX86RecompilerOps::BNE_Compare()
                 {
                     JeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
                     m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
-                    CPU_Message("      ");
-                    CPU_Message("      continue:");
+                    m_CodeBlock.Log("      ");
+                    m_CodeBlock.Log("      continue:");
                     SetJump8(Jump, *g_RecompPos);
                 }
                 else
@@ -1100,8 +1098,8 @@ void CX86RecompilerOps::BNE_Compare()
 
             if (Jump)
             {
-                CPU_Message("      ");
-                CPU_Message("      continue:");
+                m_CodeBlock.Log("      ");
+                m_CodeBlock.Log("      continue:");
 
                 SetJump8(Jump, *g_RecompPos);
             }
@@ -1161,8 +1159,8 @@ void CX86RecompilerOps::BNE_Compare()
             m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             if (Jump)
             {
-                CPU_Message("      ");
-                CPU_Message("      continue:");
+                m_CodeBlock.Log("      ");
+                m_CodeBlock.Log("      continue:");
                 SetJump8(Jump, *g_RecompPos);
             }
         }
@@ -1232,8 +1230,8 @@ void CX86RecompilerOps::BEQ_Compare()
                 {
                     JeLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
                     m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
-                    CPU_Message("      ");
-                    CPU_Message("      continue:");
+                    m_CodeBlock.Log("      ");
+                    m_CodeBlock.Log("      continue:");
                     SetJump8(Jump, *g_RecompPos);
                 }
                 else if (m_Section->m_Jump.FallThrough)
@@ -1308,8 +1306,8 @@ void CX86RecompilerOps::BEQ_Compare()
                 {
                     JeLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
                     m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
-                    CPU_Message("      ");
-                    CPU_Message("      continue:");
+                    m_CodeBlock.Log("      ");
+                    m_CodeBlock.Log("      continue:");
                     SetJump8(Jump, *g_RecompPos);
                 }
                 else if (m_Section->m_Jump.FallThrough)
@@ -1411,8 +1409,8 @@ void CX86RecompilerOps::BEQ_Compare()
             m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             if (Jump)
             {
-                CPU_Message("      ");
-                CPU_Message("      continue:");
+                m_CodeBlock.Log("      ");
+                m_CodeBlock.Log("      continue:");
                 SetJump8(Jump, *g_RecompPos);
             }
         }
@@ -1461,8 +1459,8 @@ void CX86RecompilerOps::BEQ_Compare()
             m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             if (Jump)
             {
-                CPU_Message("      ");
-                CPU_Message("      continue:");
+                m_CodeBlock.Log("      ");
+                m_CodeBlock.Log("      continue:");
                 SetJump8(Jump, *g_RecompPos);
             }
         }
@@ -1614,14 +1612,14 @@ void CX86RecompilerOps::BGTZ_Compare()
         {
             JeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
             m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
-            CPU_Message("      continue:");
+            m_CodeBlock.Log("      continue:");
             SetJump8(Jump, *g_RecompPos);
         }
         else if (m_Section->m_Cont.FallThrough)
         {
             JneLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
             m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
-            CPU_Message("      continue:");
+            m_CodeBlock.Log("      continue:");
             SetJump8(Jump, *g_RecompPos);
         }
         else
@@ -1747,14 +1745,14 @@ void CX86RecompilerOps::BLEZ_Compare()
             {
                 JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
                 m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
-                CPU_Message("      continue:");
+                m_CodeBlock.Log("      continue:");
                 SetJump8(Jump, *g_RecompPos);
             }
             else if (m_Section->m_Cont.FallThrough)
             {
                 JeLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
                 m_Section->m_Jump.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
-                CPU_Message("      continue:");
+                m_CodeBlock.Log("      continue:");
                 SetJump8(Jump, *g_RecompPos);
             }
             else
@@ -1807,7 +1805,7 @@ void CX86RecompilerOps::BLEZ_Compare()
                 }
                 if (Jump)
                 {
-                    CPU_Message("      continue:");
+                    m_CodeBlock.Log("      continue:");
                     SetJump8(Jump, *g_RecompPos);
                 }
             }
@@ -1817,7 +1815,7 @@ void CX86RecompilerOps::BLEZ_Compare()
                 m_Section->m_Jump.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
                 if (Jump)
                 {
-                    CPU_Message("      continue:");
+                    m_CodeBlock.Log("      continue:");
                     SetJump8(Jump, *g_RecompPos);
                 }
             }
@@ -2137,7 +2135,7 @@ void CX86RecompilerOps::J()
         m_Section->m_Jump.JumpPC = m_CompilePC;
         if (m_Section->m_JumpSection != nullptr)
         {
-            m_Section->m_Jump.BranchLabel.Format("Section_%d", ((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
+            m_Section->m_Jump.BranchLabel = stdstr_f("Section_%d", ((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
         }
         else
         {
@@ -2178,7 +2176,7 @@ void CX86RecompilerOps::JAL()
         m_Section->m_Jump.JumpPC = m_CompilePC;
         if (m_Section->m_JumpSection != nullptr)
         {
-            m_Section->m_Jump.BranchLabel.Format("Section_%d", ((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
+            m_Section->m_Jump.BranchLabel = stdstr_f("Section_%d", ((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
         }
         else
         {
@@ -2315,13 +2313,13 @@ void CX86RecompilerOps::SLTIU()
             SetbVariable(&m_BranchCompare, "m_BranchCompare");
             JmpLabel8("Continue", 0);
             Jump[1] = *g_RecompPos - 1;
-            CPU_Message("");
-            CPU_Message("      Low Compare:");
+            m_CodeBlock.Log("");
+            m_CodeBlock.Log("      Low Compare:");
             SetJump8(Jump[0], *g_RecompPos);
             CompConstToX86reg(GetMipsRegMapLo(m_Opcode.rs), (int16_t)m_Opcode.immediate);
             SetbVariable(&m_BranchCompare, "m_BranchCompare");
-            CPU_Message("");
-            CPU_Message("      Continue:");
+            m_CodeBlock.Log("");
+            m_CodeBlock.Log("      Continue:");
             SetJump8(Jump[1], *g_RecompPos);
             Map_GPR_32bit(m_Opcode.rt, false, -1);
             MoveVariableToX86reg(&m_BranchCompare, "m_BranchCompare", GetMipsRegMapLo(m_Opcode.rt));
@@ -2349,8 +2347,8 @@ void CX86RecompilerOps::SLTIU()
         JneLabel8("CompareSet", 0);
         Jump = *g_RecompPos - 1;
         CompConstToVariable((int16_t)m_Opcode.immediate, &_GPR[m_Opcode.rs].W[0], CRegName::GPR_Lo[m_Opcode.rs]);
-        CPU_Message("");
-        CPU_Message("      CompareSet:");
+        m_CodeBlock.Log("");
+        m_CodeBlock.Log("      CompareSet:");
         SetJump8(Jump, *g_RecompPos);
         SetbVariable(&m_BranchCompare, "m_BranchCompare");
         Map_GPR_32bit(m_Opcode.rt, false, -1);
@@ -2387,13 +2385,13 @@ void CX86RecompilerOps::SLTI()
             SetlVariable(&m_BranchCompare, "m_BranchCompare");
             JmpLabel8("Continue", 0);
             Jump[1] = *g_RecompPos - 1;
-            CPU_Message("");
-            CPU_Message("      Low Compare:");
+            m_CodeBlock.Log("");
+            m_CodeBlock.Log("      Low Compare:");
             SetJump8(Jump[0], *g_RecompPos);
             CompConstToX86reg(GetMipsRegMapLo(m_Opcode.rs), (int16_t)m_Opcode.immediate);
             SetbVariable(&m_BranchCompare, "m_BranchCompare");
-            CPU_Message("");
-            CPU_Message("      Continue:");
+            m_CodeBlock.Log("");
+            m_CodeBlock.Log("      Continue:");
             SetJump8(Jump[1], *g_RecompPos);
             Map_GPR_32bit(m_Opcode.rt, false, -1);
             MoveVariableToX86reg(&m_BranchCompare, "m_BranchCompare", GetMipsRegMapLo(m_Opcode.rt));
@@ -2446,15 +2444,15 @@ void CX86RecompilerOps::SLTI()
         SetlVariable(&m_BranchCompare, "m_BranchCompare");
         JmpLabel8("Continue", 0);
         Jump[1] = *g_RecompPos - 1;
-        CPU_Message("");
-        CPU_Message("      Low Compare:");
+        m_CodeBlock.Log("");
+        m_CodeBlock.Log("      Low Compare:");
         SetJump8(Jump[0], *g_RecompPos);
         CompConstToVariable((int16_t)m_Opcode.immediate, &_GPR[m_Opcode.rs].W[0], CRegName::GPR_Lo[m_Opcode.rs]);
         SetbVariable(&m_BranchCompare, "m_BranchCompare");
         if (Jump[1])
         {
-            CPU_Message("");
-            CPU_Message("      Continue:");
+            m_CodeBlock.Log("");
+            m_CodeBlock.Log("      Continue:");
             SetJump8(Jump[1], *g_RecompPos);
         }
         Map_GPR_32bit(m_Opcode.rt, false, -1);
@@ -2742,7 +2740,7 @@ void CX86RecompilerOps::LB_KnownAddress(x86Reg Reg, uint32_t VAddr, bool SignExt
     if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
         MoveConstToX86reg(0, Reg);
-        CPU_Message("%s\nFailed to translate address %08X", __FUNCTION__, VAddr);
+        m_CodeBlock.Log("%s\nFailed to translate address %08X", __FUNCTION__, VAddr);
         if (BreakOnUnhandledMemory())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -2866,7 +2864,7 @@ void CX86RecompilerOps::LH_KnownAddress(x86Reg Reg, uint32_t VAddr, bool SignExt
     if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
         MoveConstToX86reg(0, Reg);
-        CPU_Message("%s\nFailed to translate address %08X", __FUNCTION__, VAddr);
+        m_CodeBlock.Log("%s\nFailed to translate address %08X", __FUNCTION__, VAddr);
         if (BreakOnUnhandledMemory())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -3466,7 +3464,7 @@ void CX86RecompilerOps::SB()
 
         if (IsConst(m_Opcode.rt))
         {
-            SB_Const((uint8_t)(GetMipsRegLo(m_Opcode.rt) & 0xFF), Address);
+            SB_Const(GetMipsRegLo(m_Opcode.rt), Address);
         }
         else if (IsMapped(m_Opcode.rt) && Is8BitReg(GetMipsRegMapLo(m_Opcode.rt)))
         {
@@ -3510,7 +3508,7 @@ void CX86RecompilerOps::SH()
 
         if (IsConst(m_Opcode.rt))
         {
-            SH_Const((uint16_t)(GetMipsRegLo(m_Opcode.rt) & 0xFFFF), Address);
+            SH_Const(GetMipsRegLo(m_Opcode.rt), Address);
         }
         else if (IsMapped(m_Opcode.rt))
         {
@@ -3578,8 +3576,8 @@ void CX86RecompilerOps::SWL()
     MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
     CompileReadTLBMiss(AddressReg, TempReg2);
     AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
-    CPU_Message("");
-    CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
     MoveX86RegToX86Reg(AddressReg, OffsetReg);
     AndConstToX86Reg(OffsetReg, 3);
@@ -3694,8 +3692,8 @@ void CX86RecompilerOps::SW(bool bCheckLLbit)
         CompileStoreMemoryValue(x86_Unknown, ValueReg, x86_Unknown, GetMipsRegLo(m_Opcode.rt), 32);
         if (bCheckLLbit)
         {
-            CPU_Message("      ");
-            CPU_Message("      LLBit_Continue:");
+            m_CodeBlock.Log("      ");
+            m_CodeBlock.Log("      LLBit_Continue:");
             SetJump8(JumpLLBit, *g_RecompPos);
             Map_GPR_32bit(m_Opcode.rt, false, -1);
             MoveVariableToX86reg(_LLBit, "_LLBit", GetMipsRegMapLo(m_Opcode.rt));
@@ -3742,8 +3740,8 @@ void CX86RecompilerOps::SWR()
     MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
     CompileReadTLBMiss(AddressReg, TempReg2);
     AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
-    CPU_Message("");
-    CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
 
     MoveX86RegToX86Reg(AddressReg, OffsetReg);
@@ -4601,8 +4599,8 @@ void CX86RecompilerOps::SPECIAL_DSLLV()
     Jump[1] = *g_RecompPos - 1;
 
     // MORE32:
-    CPU_Message("");
-    CPU_Message("      MORE32:");
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      MORE32:");
     SetJump8(Jump[0], *g_RecompPos);
     MoveX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapHi(m_Opcode.rd));
     XorX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapLo(m_Opcode.rd));
@@ -4610,8 +4608,8 @@ void CX86RecompilerOps::SPECIAL_DSLLV()
     ShiftLeftSign(GetMipsRegMapHi(m_Opcode.rd));
 
     // Continue:
-    CPU_Message("");
-    CPU_Message("      continue:");
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      continue:");
     SetJump8(Jump[1], *g_RecompPos);
 }
 
@@ -4686,8 +4684,8 @@ void CX86RecompilerOps::SPECIAL_DSRLV()
         Jump[1] = *g_RecompPos - 1;
 
         // MORE32:
-        CPU_Message("");
-        CPU_Message("      MORE32:");
+        m_CodeBlock.Log("");
+        m_CodeBlock.Log("      MORE32:");
         SetJump8(Jump[0], *g_RecompPos);
         MoveX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd), GetMipsRegMapLo(m_Opcode.rd));
         XorX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd), GetMipsRegMapHi(m_Opcode.rd));
@@ -4695,8 +4693,8 @@ void CX86RecompilerOps::SPECIAL_DSRLV()
         ShiftRightUnsign(GetMipsRegMapLo(m_Opcode.rd));
 
         // Continue:
-        CPU_Message("");
-        CPU_Message("      continue:");
+        m_CodeBlock.Log("");
+        m_CodeBlock.Log("      continue:");
         SetJump8(Jump[1], *g_RecompPos);
     }
 }
@@ -4728,8 +4726,8 @@ void CX86RecompilerOps::SPECIAL_DSRAV()
     Jump[1] = *g_RecompPos - 1;
 
     // MORE32:
-    CPU_Message("");
-    CPU_Message("      MORE32:");
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      MORE32:");
     SetJump8(Jump[0], *g_RecompPos);
     MoveX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd), GetMipsRegMapLo(m_Opcode.rd));
     ShiftRightSignImmed(GetMipsRegMapHi(m_Opcode.rd), 0x1F);
@@ -4737,8 +4735,8 @@ void CX86RecompilerOps::SPECIAL_DSRAV()
     ShiftRightSign(GetMipsRegMapLo(m_Opcode.rd));
 
     // Continue:
-    CPU_Message("");
-    CPU_Message("      continue:");
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      continue:");
     SetJump8(Jump[1], *g_RecompPos);
 }
 
@@ -4799,7 +4797,7 @@ void CX86RecompilerOps::SPECIAL_DIV()
         {
             CompConstToVariable(0, &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
         }
-        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::DivByZero, false, JeLabel32);
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::DivByZero, false, &CX86Ops::JeLabel32);
     }
     /* lo = (SD)rs / (SD)rt;
     hi = (SD)rs % (SD)rt; */
@@ -4869,8 +4867,8 @@ void CX86RecompilerOps::SPECIAL_DIVU()
         JmpLabel8("EndDivu", 0);
         Jump[1] = *g_RecompPos - 1;
 
-        CPU_Message("");
-        CPU_Message("      NoExcept:");
+        m_CodeBlock.Log("");
+        m_CodeBlock.Log("      NoExcept:");
         SetJump8(Jump[0], *g_RecompPos);
     }
 
@@ -4898,8 +4896,8 @@ void CX86RecompilerOps::SPECIAL_DIVU()
 
     if (Jump[1] != nullptr)
     {
-        CPU_Message("");
-        CPU_Message("      EndDivu:");
+        m_CodeBlock.Log("");
+        m_CodeBlock.Log("      EndDivu:");
         SetJump8(Jump[1], *g_RecompPos);
     }
 }
@@ -5947,13 +5945,13 @@ void CX86RecompilerOps::SPECIAL_SLT()
                 JmpLabel8("Continue", 0);
                 Jump[1] = *g_RecompPos - 1;
 
-                CPU_Message("");
-                CPU_Message("      Low Compare:");
+                m_CodeBlock.Log("");
+                m_CodeBlock.Log("      Low Compare:");
                 SetJump8(Jump[0], *g_RecompPos);
                 CompX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rs), GetMipsRegMapLo(m_Opcode.rt));
                 SetbVariable(&m_BranchCompare, "m_BranchCompare");
-                CPU_Message("");
-                CPU_Message("      Continue:");
+                m_CodeBlock.Log("");
+                m_CodeBlock.Log("      Continue:");
                 SetJump8(Jump[1], *g_RecompPos);
                 Map_GPR_32bit(m_Opcode.rd, true, -1);
                 MoveVariableToX86reg(&m_BranchCompare, "m_BranchCompare", GetMipsRegMapLo(m_Opcode.rd));
@@ -6002,8 +6000,8 @@ void CX86RecompilerOps::SPECIAL_SLT()
                 JmpLabel8("Continue", 0);
                 Jump[1] = *g_RecompPos - 1;
 
-                CPU_Message("");
-                CPU_Message("      Low Compare:");
+                m_CodeBlock.Log("");
+                m_CodeBlock.Log("      Low Compare:");
                 SetJump8(Jump[0], *g_RecompPos);
                 CompConstToX86reg(GetMipsRegMapLo(MappedReg), GetMipsRegLo(ConstReg));
                 if (MappedReg == m_Opcode.rs)
@@ -6014,8 +6012,8 @@ void CX86RecompilerOps::SPECIAL_SLT()
                 {
                     SetaVariable(&m_BranchCompare, "m_BranchCompare");
                 }
-                CPU_Message("");
-                CPU_Message("      Continue:");
+                m_CodeBlock.Log("");
+                m_CodeBlock.Log("      Continue:");
                 SetJump8(Jump[1], *g_RecompPos);
                 Map_GPR_32bit(m_Opcode.rd, true, -1);
                 MoveVariableToX86reg(&m_BranchCompare, "m_BranchCompare", GetMipsRegMapLo(m_Opcode.rd));
@@ -6097,8 +6095,8 @@ void CX86RecompilerOps::SPECIAL_SLT()
             JmpLabel8("Continue", 0);
             Jump[1] = *g_RecompPos - 1;
 
-            CPU_Message("");
-            CPU_Message("      Low Compare:");
+            m_CodeBlock.Log("");
+            m_CodeBlock.Log("      Low Compare:");
             SetJump8(Jump[0], *g_RecompPos);
             if (IsConst(KnownReg))
             {
@@ -6115,8 +6113,8 @@ void CX86RecompilerOps::SPECIAL_SLT()
             {
                 SetbVariable(&m_BranchCompare, "m_BranchCompare");
             }
-            CPU_Message("");
-            CPU_Message("      Continue:");
+            m_CodeBlock.Log("");
+            m_CodeBlock.Log("      Continue:");
             SetJump8(Jump[1], *g_RecompPos);
             Map_GPR_32bit(m_Opcode.rd, true, -1);
             MoveVariableToX86reg(&m_BranchCompare, "m_BranchCompare", GetMipsRegMapLo(m_Opcode.rd));
@@ -6193,15 +6191,15 @@ void CX86RecompilerOps::SPECIAL_SLT()
         JmpLabel8("Continue", 0);
         Jump[1] = *g_RecompPos - 1;
 
-        CPU_Message("");
-        CPU_Message("      Low Compare:");
+        m_CodeBlock.Log("");
+        m_CodeBlock.Log("      Low Compare:");
         SetJump8(Jump[0], *g_RecompPos);
         CompX86regToVariable(Map_TempReg(Reg, m_Opcode.rs, false), &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
         SetbVariable(&m_BranchCompare, "m_BranchCompare");
         if (Jump[1])
         {
-            CPU_Message("");
-            CPU_Message("      Continue:");
+            m_CodeBlock.Log("");
+            m_CodeBlock.Log("      Continue:");
             SetJump8(Jump[1], *g_RecompPos);
         }
         Map_GPR_32bit(m_Opcode.rd, true, -1);
@@ -6262,13 +6260,13 @@ void CX86RecompilerOps::SPECIAL_SLTU()
                 JmpLabel8("Continue", 0);
                 Jump[1] = *g_RecompPos - 1;
 
-                CPU_Message("");
-                CPU_Message("      Low Compare:");
+                m_CodeBlock.Log("");
+                m_CodeBlock.Log("      Low Compare:");
                 SetJump8(Jump[0], *g_RecompPos);
                 CompX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rs), GetMipsRegMapLo(m_Opcode.rt));
                 SetbVariable(&m_BranchCompare, "m_BranchCompare");
-                CPU_Message("");
-                CPU_Message("      Continue:");
+                m_CodeBlock.Log("");
+                m_CodeBlock.Log("      Continue:");
                 SetJump8(Jump[1], *g_RecompPos);
                 Map_GPR_32bit(m_Opcode.rd, true, -1);
                 MoveVariableToX86reg(&m_BranchCompare, "m_BranchCompare", GetMipsRegMapLo(m_Opcode.rd));
@@ -6319,8 +6317,8 @@ void CX86RecompilerOps::SPECIAL_SLTU()
                 JmpLabel8("Continue", 0);
                 Jump[1] = *g_RecompPos - 1;
 
-                CPU_Message("");
-                CPU_Message("      Low Compare:");
+                m_CodeBlock.Log("");
+                m_CodeBlock.Log("      Low Compare:");
                 SetJump8(Jump[0], *g_RecompPos);
                 CompConstToX86reg(MappedRegLo, ConstLo);
                 if (MappedReg == m_Opcode.rs)
@@ -6331,8 +6329,8 @@ void CX86RecompilerOps::SPECIAL_SLTU()
                 {
                     SetaVariable(&m_BranchCompare, "m_BranchCompare");
                 }
-                CPU_Message("");
-                CPU_Message("      Continue:");
+                m_CodeBlock.Log("");
+                m_CodeBlock.Log("      Continue:");
                 SetJump8(Jump[1], *g_RecompPos);
                 Map_GPR_32bit(m_Opcode.rd, true, -1);
                 MoveVariableToX86reg(&m_BranchCompare, "m_BranchCompare", GetMipsRegMapLo(m_Opcode.rd));
@@ -6424,8 +6422,8 @@ void CX86RecompilerOps::SPECIAL_SLTU()
             JmpLabel8("Continue", 0);
             Jump[1] = *g_RecompPos - 1;
 
-            CPU_Message("");
-            CPU_Message("      Low Compare:");
+            m_CodeBlock.Log("");
+            m_CodeBlock.Log("      Low Compare:");
             SetJump8(Jump[0], *g_RecompPos);
             if (IsConst(KnownReg))
             {
@@ -6445,8 +6443,8 @@ void CX86RecompilerOps::SPECIAL_SLTU()
             }
             if (Jump[1])
             {
-                CPU_Message("");
-                CPU_Message("      Continue:");
+                m_CodeBlock.Log("");
+                m_CodeBlock.Log("      Continue:");
                 SetJump8(Jump[1], *g_RecompPos);
             }
         }
@@ -6473,15 +6471,15 @@ void CX86RecompilerOps::SPECIAL_SLTU()
         JmpLabel8("Continue", 0);
         Jump[1] = *g_RecompPos - 1;
 
-        CPU_Message("");
-        CPU_Message("      Low Compare:");
+        m_CodeBlock.Log("");
+        m_CodeBlock.Log("      Low Compare:");
         SetJump8(Jump[0], *g_RecompPos);
         CompX86regToVariable(Map_TempReg(Reg, m_Opcode.rs, false), &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
         SetbVariable(&m_BranchCompare, "m_BranchCompare");
         if (Jump[1])
         {
-            CPU_Message("");
-            CPU_Message("      Continue:");
+            m_CodeBlock.Log("");
+            m_CodeBlock.Log("      Continue:");
             SetJump8(Jump[1], *g_RecompPos);
         }
         Map_GPR_32bit(m_Opcode.rd, true, -1);
@@ -6879,7 +6877,7 @@ void CX86RecompilerOps::SPECIAL_DSLL32()
         }
         else
         {
-            CPU_Message("    regcache: switch hi (%s) with lo (%s) for %s", x86_Name(GetMipsRegMapHi(m_Opcode.rt)), x86_Name(GetMipsRegMapLo(m_Opcode.rt)), CRegName::GPR[m_Opcode.rt]);
+            m_CodeBlock.Log("    regcache: switch hi (%s) with lo (%s) for %s", x86_Name(GetMipsRegMapHi(m_Opcode.rt)), x86_Name(GetMipsRegMapLo(m_Opcode.rt)), CRegName::GPR[m_Opcode.rt]);
             x86Reg HiReg = GetMipsRegMapHi(m_Opcode.rt);
             m_RegWorkingSet.SetMipsRegMapHi(m_Opcode.rt, GetMipsRegMapLo(m_Opcode.rt));
             m_RegWorkingSet.SetMipsRegMapLo(m_Opcode.rt, HiReg);
@@ -6921,7 +6919,7 @@ void CX86RecompilerOps::SPECIAL_DSRL32()
         {
             if (m_Opcode.rt == m_Opcode.rd)
             {
-                CPU_Message("    regcache: switch hi (%s) with lo (%s) for %s", x86_Name(GetMipsRegMapHi(m_Opcode.rt)), x86_Name(GetMipsRegMapLo(m_Opcode.rt)), CRegName::GPR[m_Opcode.rt]);
+                m_CodeBlock.Log("    regcache: switch hi (%s) with lo (%s) for %s", x86_Name(GetMipsRegMapHi(m_Opcode.rt)), x86_Name(GetMipsRegMapLo(m_Opcode.rt)), CRegName::GPR[m_Opcode.rt]);
                 x86Reg HiReg = GetMipsRegMapHi(m_Opcode.rt);
                 m_RegWorkingSet.SetMipsRegMapHi(m_Opcode.rt, GetMipsRegMapLo(m_Opcode.rt));
                 m_RegWorkingSet.SetMipsRegMapLo(m_Opcode.rt, HiReg);
@@ -6971,7 +6969,7 @@ void CX86RecompilerOps::SPECIAL_DSRA32()
         {
             if (m_Opcode.rt == m_Opcode.rd)
             {
-                CPU_Message("    regcache: switch hi (%s) with lo (%s) for %s", x86_Name(GetMipsRegMapHi(m_Opcode.rt)), x86_Name(GetMipsRegMapLo(m_Opcode.rt)), CRegName::GPR[m_Opcode.rt]);
+                m_CodeBlock.Log("    regcache: switch hi (%s) with lo (%s) for %s", x86_Name(GetMipsRegMapHi(m_Opcode.rt)), x86_Name(GetMipsRegMapLo(m_Opcode.rt)), CRegName::GPR[m_Opcode.rt]);
                 x86Reg HiReg = GetMipsRegMapHi(m_Opcode.rt);
                 m_RegWorkingSet.SetMipsRegMapHi(m_Opcode.rt, GetMipsRegMapLo(m_Opcode.rt));
                 m_RegWorkingSet.SetMipsRegMapLo(m_Opcode.rt, HiReg);
@@ -8261,7 +8259,7 @@ void CX86RecompilerOps::COP1_L_CVT_D()
 // Other functions
 void CX86RecompilerOps::UnknownOpcode()
 {
-    CPU_Message("  %X Unhandled opcode: %s", m_CompilePC, R4300iInstruction(m_CompilePC, m_Opcode.Value).NameAndParam().c_str());
+    m_CodeBlock.Log("  %X Unhandled opcode: %s", m_CompilePC, R4300iInstruction(m_CompilePC, m_Opcode.Value).NameAndParam().c_str());
 
     m_RegWorkingSet.WriteBackRegisters();
     UpdateCounters(m_RegWorkingSet, false, true);
@@ -8342,8 +8340,8 @@ void CX86RecompilerOps::TestBreakpoint(x86Reg AddressReg, void * FunctAddress, c
     uint8_t *  Jump = *g_RecompPos - 1;
     MoveConstToVariable(0, &memory_breakpoint_found, "memory_breakpoint_found");
     ExitCodeBlock();
-    CPU_Message("      ");
-    CPU_Message("      NoBreakPoint:");
+    m_CodeBlock.Log("      ");
+    m_CodeBlock.Log("      NoBreakPoint:");
     SetJump8(Jump, *g_RecompPos);
 }
 
@@ -8403,8 +8401,8 @@ void CX86RecompilerOps::CompileExitCode()
 {
     for (EXIT_LIST::iterator ExitIter = m_ExitInfo.begin(); ExitIter != m_ExitInfo.end(); ExitIter++)
     {
-        CPU_Message("");
-        CPU_Message("      $%s", ExitIter->Name.c_str());
+        m_CodeBlock.Log("");
+        m_CodeBlock.Log("      $%s", ExitIter->Name.c_str());
         SetJump32(ExitIter->JumpLoc, (uint32_t *)*g_RecompPos);
         m_PipelineStage = ExitIter->PipelineStage;
         CompileExit((uint32_t)-1, ExitIter->TargetPC, ExitIter->ExitRegSet, ExitIter->reason, true, nullptr);
@@ -8421,7 +8419,7 @@ void CX86RecompilerOps::CompileCop1Test()
     TestVariable(STATUS_CU1, &g_Reg->STATUS_REGISTER, "STATUS_REGISTER");
     CRegInfo ExitRegSet = m_RegWorkingSet;
     ExitRegSet.SetBlockCycleCount(ExitRegSet.GetBlockCycleCount() + g_System->CountPerOp());
-    CompileExit(m_CompilePC, m_CompilePC, ExitRegSet, CExitInfo::COP1_Unuseable, false, JeLabel32);
+    CompileExit(m_CompilePC, m_CompilePC, ExitRegSet, CExitInfo::COP1_Unuseable, false, &CX86Ops::JeLabel32);
     m_RegWorkingSet.SetFpuBeenUsed(true);
 }
 
@@ -8439,7 +8437,7 @@ void CX86RecompilerOps::CompileInPermLoop(CRegInfo & RegSet, uint32_t ProgramCou
     Call_Direct(AddressOf(&CSystemTimer::TimerDone), "CSystemTimer::TimerDone");
     AddConstToX86Reg(x86_ESP, 4);
 #endif
-    CPU_Message("CompileSystemCheck 3");
+    m_CodeBlock.Log("CompileSystemCheck 3");
     CompileSystemCheck((uint32_t)-1, RegSet);
     if (g_SyncSystem)
     {
@@ -8454,7 +8452,7 @@ void CX86RecompilerOps::CompileInPermLoop(CRegInfo & RegSet, uint32_t ProgramCou
     }
 }
 
-bool CX86RecompilerOps::SetupRegisterForLoop(CCodeBlock * BlockInfo, const CRegInfo & RegSet)
+bool CX86RecompilerOps::SetupRegisterForLoop(CCodeBlock & BlockInfo, const CRegInfo & RegSet)
 {
     CRegInfo OriginalReg = m_RegWorkingSet;
     if (!LoopAnalysis(BlockInfo, m_Section).SetupRegisterForLoop())
@@ -8481,7 +8479,7 @@ void CX86RecompilerOps::SyncRegState(const CRegInfo & SyncTo)
     x86Reg MemStackReg = Get_MemoryStack();
     x86Reg TargetStackReg = SyncTo.Get_MemoryStack();
 
-    //CPU_Message("MemoryStack for Original State = %s",MemStackReg > 0?x86_Name(MemStackReg):"Not Mapped");
+    //m_CodeBlock.Log("MemoryStack for Original State = %s",MemStackReg > 0?x86_Name(MemStackReg):"Not Mapped");
     if (MemStackReg != TargetStackReg)
     {
         if (TargetStackReg == x86_Unknown)
@@ -8491,14 +8489,14 @@ void CX86RecompilerOps::SyncRegState(const CRegInfo & SyncTo)
         else if (MemStackReg == x86_Unknown)
         {
             UnMap_X86reg(TargetStackReg);
-            CPU_Message("    regcache: allocate %s as memory stack", x86_Name(TargetStackReg));
+            m_CodeBlock.Log("    regcache: allocate %s as memory stack", x86_Name(TargetStackReg));
             m_RegWorkingSet.SetX86Mapped(TargetStackReg, CRegInfo::Stack_Mapped);
             MoveVariableToX86reg(&g_Recompiler->MemoryStackPos(), "MemoryStack", TargetStackReg);
         }
         else
         {
             UnMap_X86reg(TargetStackReg);
-            CPU_Message("    regcache: change allocation of memory stack from %s to %s", x86_Name(MemStackReg), x86_Name(TargetStackReg));
+            m_CodeBlock.Log("    regcache: change allocation of memory stack from %s to %s", x86_Name(MemStackReg), x86_Name(TargetStackReg));
             m_RegWorkingSet.SetX86Mapped(TargetStackReg, CRegInfo::Stack_Mapped);
             m_RegWorkingSet.SetX86Mapped(MemStackReg, CRegInfo::NotMapped);
             MoveX86RegToX86Reg(MemStackReg, TargetStackReg);
@@ -8511,7 +8509,8 @@ void CX86RecompilerOps::SyncRegState(const CRegInfo & SyncTo)
             (g_System->b32BitCore() && GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_ZERO && SyncTo.GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_SIGN) ||
             (g_System->b32BitCore() && GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_SIGN && SyncTo.GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_ZERO))
         {
-            switch (GetMipsRegState(i)) {
+            switch (GetMipsRegState(i)) 
+            {
             case CRegInfo::STATE_UNKNOWN: continue;
             case CRegInfo::STATE_MAPPED_64:
                 if (GetMipsRegMapHi(i) == SyncTo.GetMipsRegMapHi(i) &&
@@ -8536,12 +8535,12 @@ void CX86RecompilerOps::SyncRegState(const CRegInfo & SyncTo)
             case CRegInfo::STATE_CONST_32_SIGN:
                 if (GetMipsRegLo(i) != SyncTo.GetMipsRegLo(i))
                 {
-                    CPU_Message("Value of constant is different register %d (%s) Value: 0x%08X to 0x%08X", i, CRegName::GPR[i], GetMipsRegLo(i), SyncTo.GetMipsRegLo(i));
+                    m_CodeBlock.Log("Value of constant is different register %d (%s) Value: 0x%08X to 0x%08X", i, CRegName::GPR[i], GetMipsRegLo(i), SyncTo.GetMipsRegLo(i));
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 continue;
             default:
-                CPU_Message("Unhandled register state %d\nin SyncRegState", GetMipsRegState(i));
+                m_CodeBlock.Log("Unhandled register state %d\nin SyncRegState", GetMipsRegState(i));
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
         }
@@ -8551,139 +8550,139 @@ void CX86RecompilerOps::SyncRegState(const CRegInfo & SyncTo)
         {
         case CRegInfo::STATE_UNKNOWN: UnMap_GPR(i, true);  break;
         case CRegInfo::STATE_MAPPED_64:
-        {
-                                          x86Reg Reg = SyncTo.GetMipsRegMapLo(i);
-                                          x86Reg x86RegHi = SyncTo.GetMipsRegMapHi(i);
-                                          UnMap_X86reg(Reg);
-                                          UnMap_X86reg(x86RegHi);
-                                          switch (GetMipsRegState(i))
-                                          {
-                                          case CRegInfo::STATE_UNKNOWN:
-                                              MoveVariableToX86reg(&_GPR[i].UW[0], CRegName::GPR_Lo[i], Reg);
-                                              MoveVariableToX86reg(&_GPR[i].UW[1], CRegName::GPR_Hi[i], x86RegHi);
-                                              break;
-                                          case CRegInfo::STATE_MAPPED_64:
-                                              MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                                              m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
-                                              MoveX86RegToX86Reg(GetMipsRegMapHi(i), x86RegHi);
-                                              m_RegWorkingSet.SetX86Mapped(GetMipsRegMapHi(i), CRegInfo::NotMapped);
-                                              break;
-                                          case CRegInfo::STATE_MAPPED_32_SIGN:
-                                              MoveX86RegToX86Reg(GetMipsRegMapLo(i), x86RegHi);
-                                              ShiftRightSignImmed(x86RegHi, 31);
-                                              MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                                              m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
-                                              break;
-                                          case CRegInfo::STATE_MAPPED_32_ZERO:
-                                              XorX86RegToX86Reg(x86RegHi, x86RegHi);
-                                              MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                                              m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
-                                              break;
-                                          case CRegInfo::STATE_CONST_64:
-                                              MoveConstToX86reg(GetMipsRegHi(i), x86RegHi);
-                                              MoveConstToX86reg(GetMipsRegLo(i), Reg);
-                                              break;
-                                          case CRegInfo::STATE_CONST_32_SIGN:
-                                              MoveConstToX86reg(GetMipsRegLo_S(i) >> 31, x86RegHi);
-                                              MoveConstToX86reg(GetMipsRegLo(i), Reg);
-                                              break;
-                                          default:
-                                              CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_64\n%d", GetMipsRegState(i));
-                                              g_Notify->BreakPoint(__FILE__, __LINE__);
-                                              continue;
-                                          }
-                                          m_RegWorkingSet.SetMipsRegMapLo(i, Reg);
-                                          m_RegWorkingSet.SetMipsRegMapHi(i, x86RegHi);
-                                          m_RegWorkingSet.SetMipsRegState(i, CRegInfo::STATE_MAPPED_64);
-                                          m_RegWorkingSet.SetX86Mapped(Reg, CRegInfo::GPR_Mapped);
-                                          m_RegWorkingSet.SetX86Mapped(x86RegHi, CRegInfo::GPR_Mapped);
-                                          m_RegWorkingSet.SetX86MapOrder(Reg, 1);
-                                          m_RegWorkingSet.SetX86MapOrder(x86RegHi, 1);
-        }
+            {
+                x86Reg Reg = SyncTo.GetMipsRegMapLo(i);
+                x86Reg x86RegHi = SyncTo.GetMipsRegMapHi(i);
+                UnMap_X86reg(Reg);
+                UnMap_X86reg(x86RegHi);
+                switch (GetMipsRegState(i))
+                {
+                case CRegInfo::STATE_UNKNOWN:
+                    MoveVariableToX86reg(&_GPR[i].UW[0], CRegName::GPR_Lo[i], Reg);
+                    MoveVariableToX86reg(&_GPR[i].UW[1], CRegName::GPR_Hi[i], x86RegHi);
+                    break;
+                case CRegInfo::STATE_MAPPED_64:
+                    MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
+                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                    MoveX86RegToX86Reg(GetMipsRegMapHi(i), x86RegHi);
+                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapHi(i), CRegInfo::NotMapped);
+                    break;
+                case CRegInfo::STATE_MAPPED_32_SIGN:
+                    MoveX86RegToX86Reg(GetMipsRegMapLo(i), x86RegHi);
+                    ShiftRightSignImmed(x86RegHi, 31);
+                    MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
+                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                    break;
+                case CRegInfo::STATE_MAPPED_32_ZERO:
+                    XorX86RegToX86Reg(x86RegHi, x86RegHi);
+                    MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
+                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                    break;
+                case CRegInfo::STATE_CONST_64:
+                    MoveConstToX86reg(GetMipsRegHi(i), x86RegHi);
+                    MoveConstToX86reg(GetMipsRegLo(i), Reg);
+                    break;
+                case CRegInfo::STATE_CONST_32_SIGN:
+                    MoveConstToX86reg(GetMipsRegLo_S(i) >> 31, x86RegHi);
+                    MoveConstToX86reg(GetMipsRegLo(i), Reg);
+                    break;
+                default:
+                    m_CodeBlock.Log("Do something with states in SyncRegState\nSTATE_MAPPED_64\n%d", GetMipsRegState(i));
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                    continue;
+                }
+                m_RegWorkingSet.SetMipsRegMapLo(i, Reg);
+                m_RegWorkingSet.SetMipsRegMapHi(i, x86RegHi);
+                m_RegWorkingSet.SetMipsRegState(i, CRegInfo::STATE_MAPPED_64);
+                m_RegWorkingSet.SetX86Mapped(Reg, CRegInfo::GPR_Mapped);
+                m_RegWorkingSet.SetX86Mapped(x86RegHi, CRegInfo::GPR_Mapped);
+                m_RegWorkingSet.SetX86MapOrder(Reg, 1);
+                m_RegWorkingSet.SetX86MapOrder(x86RegHi, 1);
+            }
             break;
         case CRegInfo::STATE_MAPPED_32_SIGN:
-        {
-                                               x86Reg Reg = SyncTo.GetMipsRegMapLo(i);
-                                               UnMap_X86reg(Reg);
-                                               switch (GetMipsRegState(i))
-                                               {
-                                               case CRegInfo::STATE_UNKNOWN: MoveVariableToX86reg(&_GPR[i].UW[0], CRegName::GPR_Lo[i], Reg); break;
-                                               case CRegInfo::STATE_CONST_32_SIGN: MoveConstToX86reg(GetMipsRegLo(i), Reg); break;
-                                               case CRegInfo::STATE_MAPPED_32_SIGN:
-                                                   MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                                                   m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
-                                                   break;
-                                               case CRegInfo::STATE_MAPPED_32_ZERO:
-                                                   if (GetMipsRegMapLo(i) != Reg)
-                                                   {
-                                                       MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                                                       m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
-                                                   }
-                                                   break;
-                                               case CRegInfo::STATE_MAPPED_64:
-                                                   MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                                                   m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
-                                                   m_RegWorkingSet.SetX86Mapped(GetMipsRegMapHi(i), CRegInfo::NotMapped);
-                                                   break;
-                                               case CRegInfo::STATE_CONST_64:
-                                                   CPU_Message("hi %X\nLo %X", GetMipsRegHi(i), GetMipsRegLo(i));
-                                               default:
-                                                   CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_SIGN\n%d", GetMipsRegState(i));
-                                                   g_Notify->BreakPoint(__FILE__, __LINE__);
-                                               }
-                                               m_RegWorkingSet.SetMipsRegMapLo(i, Reg);
-                                               m_RegWorkingSet.SetMipsRegState(i, CRegInfo::STATE_MAPPED_32_SIGN);
-                                               m_RegWorkingSet.SetX86Mapped(Reg, CRegInfo::GPR_Mapped);
-                                               m_RegWorkingSet.SetX86MapOrder(Reg, 1);
-        }
+            {
+                x86Reg Reg = SyncTo.GetMipsRegMapLo(i);
+                UnMap_X86reg(Reg);
+                switch (GetMipsRegState(i))
+                {
+                case CRegInfo::STATE_UNKNOWN: MoveVariableToX86reg(&_GPR[i].UW[0], CRegName::GPR_Lo[i], Reg); break;
+                case CRegInfo::STATE_CONST_32_SIGN: MoveConstToX86reg(GetMipsRegLo(i), Reg); break;
+                case CRegInfo::STATE_MAPPED_32_SIGN:
+                    MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
+                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                    break;
+                case CRegInfo::STATE_MAPPED_32_ZERO:
+                    if (GetMipsRegMapLo(i) != Reg)
+                    {
+                        MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
+                        m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                    }
+                    break;
+                case CRegInfo::STATE_MAPPED_64:
+                    MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
+                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapHi(i), CRegInfo::NotMapped);
+                    break;
+                case CRegInfo::STATE_CONST_64:
+                    m_CodeBlock.Log("hi %X\nLo %X", GetMipsRegHi(i), GetMipsRegLo(i));
+                default:
+                    m_CodeBlock.Log("Do something with states in SyncRegState\nSTATE_MAPPED_32_SIGN\n%d", GetMipsRegState(i));
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                }
+                m_RegWorkingSet.SetMipsRegMapLo(i, Reg);
+                m_RegWorkingSet.SetMipsRegState(i, CRegInfo::STATE_MAPPED_32_SIGN);
+                m_RegWorkingSet.SetX86Mapped(Reg, CRegInfo::GPR_Mapped);
+                m_RegWorkingSet.SetX86MapOrder(Reg, 1);
+            }
             break;
         case CRegInfo::STATE_MAPPED_32_ZERO:
-        {
-                                               x86Reg Reg = SyncTo.GetMipsRegMapLo(i);
-                                               UnMap_X86reg(Reg);
-                                               switch (GetMipsRegState(i))
-                                               {
-                                               case CRegInfo::STATE_MAPPED_64:
-                                               case CRegInfo::STATE_UNKNOWN:
-                                                   MoveVariableToX86reg(&_GPR[i].UW[0], CRegName::GPR_Lo[i], Reg);
-                                                   break;
-                                               case CRegInfo::STATE_MAPPED_32_ZERO:
-                                                   MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                                                   m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
-                                                   break;
-                                               case CRegInfo::STATE_MAPPED_32_SIGN:
-                                                   if (g_System->b32BitCore())
-                                                   {
-                                                       MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                                                       m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
-                                                   }
-                                                   else
-                                                   {
-                                                       CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d", GetMipsRegState(i));
-                                                       g_Notify->BreakPoint(__FILE__, __LINE__);
-                                                   }
-                                                   break;
-                                               case CRegInfo::STATE_CONST_32_SIGN:
-                                                   if (!g_System->b32BitCore() && GetMipsRegLo_S(i) < 0)
-                                                   {
-                                                       CPU_Message("Sign problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
-                                                       CPU_Message("%s: %X", CRegName::GPR[i], GetMipsRegLo_S(i));
-                                                       g_Notify->BreakPoint(__FILE__, __LINE__);
-                                                   }
-                                                   MoveConstToX86reg(GetMipsRegLo(i), Reg);
-                                                   break;
-                                               default:
-                                                   CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d", GetMipsRegState(i));
-                                                   g_Notify->BreakPoint(__FILE__, __LINE__);
-                                               }
-                                               m_RegWorkingSet.SetMipsRegMapLo(i, Reg);
-                                               m_RegWorkingSet.SetMipsRegState(i, SyncTo.GetMipsRegState(i));
-                                               m_RegWorkingSet.SetX86Mapped(Reg, CRegInfo::GPR_Mapped);
-                                               m_RegWorkingSet.SetX86MapOrder(Reg, 1);
-        }
+            {
+                x86Reg Reg = SyncTo.GetMipsRegMapLo(i);
+                UnMap_X86reg(Reg);
+                switch (GetMipsRegState(i))
+                {
+                case CRegInfo::STATE_MAPPED_64:
+                case CRegInfo::STATE_UNKNOWN:
+                    MoveVariableToX86reg(&_GPR[i].UW[0], CRegName::GPR_Lo[i], Reg);
+                    break;
+                case CRegInfo::STATE_MAPPED_32_ZERO:
+                    MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
+                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                    break;
+                case CRegInfo::STATE_MAPPED_32_SIGN:
+                    if (g_System->b32BitCore())
+                    {
+                        MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
+                        m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                    }
+                    else
+                    {
+                        m_CodeBlock.Log("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d", GetMipsRegState(i));
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
+                    }
+                    break;
+                case CRegInfo::STATE_CONST_32_SIGN:
+                    if (!g_System->b32BitCore() && GetMipsRegLo_S(i) < 0)
+                    {
+                        m_CodeBlock.Log("Sign problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
+                        m_CodeBlock.Log("%s: %X", CRegName::GPR[i], GetMipsRegLo_S(i));
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
+                    }
+                    MoveConstToX86reg(GetMipsRegLo(i), Reg);
+                    break;
+                default:
+                    m_CodeBlock.Log("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d", GetMipsRegState(i));
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                }
+                m_RegWorkingSet.SetMipsRegMapLo(i, Reg);
+                m_RegWorkingSet.SetMipsRegState(i, SyncTo.GetMipsRegState(i));
+                m_RegWorkingSet.SetX86Mapped(Reg, CRegInfo::GPR_Mapped);
+                m_RegWorkingSet.SetX86MapOrder(Reg, 1);
+            }
             break;
         default:
-            CPU_Message("%d - %d reg: %s (%d)", SyncTo.GetMipsRegState(i), GetMipsRegState(i), CRegName::GPR[i], i);
+            m_CodeBlock.Log("%d - %d reg: %s (%d)", SyncTo.GetMipsRegState(i), GetMipsRegState(i), CRegName::GPR[i], i);
             g_Notify->BreakPoint(__FILE__, __LINE__);
             changed = false;
         }
@@ -8835,7 +8834,7 @@ bool CX86RecompilerOps::InheritParentInfo()
         }
         if (m_Section->m_EnterPC <= JumpInfo->JumpPC)
         {
-            CPU_Message("CompileSystemCheck 10");
+            m_CodeBlock.Log("CompileSystemCheck 10");
             CompileSystemCheck(m_Section->m_EnterPC, GetRegWorkingSet());
         }
     }
@@ -8847,7 +8846,7 @@ bool CX86RecompilerOps::InheritParentInfo()
     // Determine loop registry usage
     if (m_Section->m_InLoop && ParentList.size() > 1)
     {
-        if (!SetupRegisterForLoop(m_Section->m_BlockInfo, m_Section->m_RegEnter)) { return false; }
+        if (!SetupRegisterForLoop(m_Section->m_CodeBlock, m_Section->m_RegEnter)) { return false; }
         m_RegWorkingSet.SetRoundingModel(CRegInfo::RoundUnknown);
     }
 
@@ -8920,7 +8919,7 @@ bool CX86RecompilerOps::InheritParentInfo()
                     }
                     break;
                 default:
-                    CPU_Message("Unknown CPU state(%d) in InheritParentInfo", GetMipsRegState(i2));
+                    m_CodeBlock.Log("Unknown CPU state(%d) in InheritParentInfo", GetMipsRegState(i2));
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
             }
@@ -8963,7 +8962,7 @@ bool CX86RecompilerOps::InheritParentInfo()
                         }
                         break;
                     default:
-                        CPU_Message("Unknown CPU state(%d) in InheritParentInfo", RegSet->GetMipsRegState(i2));
+                        m_CodeBlock.Log("Unknown CPU state(%d) in InheritParentInfo", RegSet->GetMipsRegState(i2));
                         g_Notify->BreakPoint(__FILE__, __LINE__);
                         break;
                     }
@@ -9070,7 +9069,7 @@ bool CX86RecompilerOps::InheritParentInfo()
         CurrentParent = i;
         Parent = ParentList[CurrentParent].Parent;
         JumpInfo = ParentList[CurrentParent].JumpInfo;
-        CPU_Message("   Section_%d (from %d):", m_Section->m_SectionID, Parent->m_SectionID);
+        m_CodeBlock.Log("   Section_%d (from %d):", m_Section->m_SectionID, Parent->m_SectionID);
         if (JumpInfo->LinkLocation != nullptr)
         {
             SetJump32(JumpInfo->LinkLocation, (uint32_t *)*g_RecompPos);
@@ -9086,7 +9085,7 @@ bool CX86RecompilerOps::InheritParentInfo()
         if (m_Section->m_EnterPC < JumpInfo->JumpPC)
         {
             UpdateCounters(m_RegWorkingSet, true, true);
-            CPU_Message("CompileSystemCheck 11");
+            m_CodeBlock.Log("CompileSystemCheck 11");
             CompileSystemCheck(m_Section->m_EnterPC, m_RegWorkingSet);
         }
         else
@@ -9104,7 +9103,7 @@ bool CX86RecompilerOps::InheritParentInfo()
         LinkJump(*JumpInfo);
     }
 
-    CPU_Message("   Section_%d:", m_Section->m_SectionID);
+    m_CodeBlock.Log("   Section_%d:", m_Section->m_SectionID);
     m_Section->m_RegEnter.SetBlockCycleCount(0);
     return true;
 }
@@ -9117,11 +9116,11 @@ void CX86RecompilerOps::LinkJump(CJumpInfo & JumpInfo, uint32_t SectionID, uint3
         {
             if (FromSectionID != -1)
             {
-                CPU_Message("   Section_%d (from %d):", SectionID, FromSectionID);
+                m_CodeBlock.Log("   Section_%d (from %d):", SectionID, FromSectionID);
             }
             else
             {
-                CPU_Message("   Section_%d:", SectionID);
+                m_CodeBlock.Log("   Section_%d:", SectionID);
             }
         }
         SetJump32(JumpInfo.LinkLocation, (uint32_t *)*g_RecompPos);
@@ -9243,8 +9242,8 @@ void CX86RecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool 
 #endif
         RegSet.AfterCallDirect();
 
-        CPU_Message("");
-        CPU_Message("      $Continue_From_Timer_Test:");
+        m_CodeBlock.Log("");
+        m_CodeBlock.Log("      $Continue_From_Timer_Test:");
         SetJump8(Jump, *g_RecompPos);
     }
 
@@ -9285,8 +9284,8 @@ void CX86RecompilerOps::CompileSystemCheck(uint32_t TargetPC, const CRegInfo & R
     AddConstToX86Reg(x86_ESP, 4);
 #endif
     ExitCodeBlock();
-    CPU_Message("");
-    CPU_Message("      $Continue_From_Interrupt_Test:");
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      $Continue_From_Interrupt_Test:");
     SetJump32(Jump, (uint32_t *)*g_RecompPos);
 }
 
@@ -9399,7 +9398,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
     CompileExit(JumpPC, TargetPC, ExitRegSet, reason, true, nullptr);
 }
 
-void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow, void(*x86Jmp)(const char * Label, uint32_t Value))
+void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow, void(CX86Ops::*x86Jmp)(const char * Label, uint32_t Value))
 {
     if (!CompileNow)
     {
@@ -9409,8 +9408,8 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
             return;
         }
         stdstr_f ExitName("Exit_%08X_%d", JumpPC, m_ExitInfo.size());
-        x86Jmp(ExitName.c_str(), 0);
-        CExitInfo ExitInfo;
+        (this->*x86Jmp)(ExitName.c_str(), 0);
+        CExitInfo ExitInfo(m_CodeBlock);
         ExitInfo.ID = m_ExitInfo.size();
         ExitInfo.Name = ExitName;
         ExitInfo.TargetPC = TargetPC;
@@ -9422,7 +9421,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         return;
     }
 
-    //CPU_Message("CompileExit: %d",reason);
+    //m_CodeBlock.Log("CompileExit: %d",reason);
     ExitRegSet.WriteBackRegisters();
 
     if (TargetPC != (uint32_t)-1)
@@ -9444,7 +9443,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         {
             if (TargetPC <= JumpPC && reason == CExitInfo::Normal)
             {
-                CPU_Message("CompileSystemCheck 1");
+                m_CodeBlock.Log("CompileSystemCheck 1");
                 CompileSystemCheck((uint32_t)-1, ExitRegSet);
             }
         }
@@ -9452,7 +9451,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         {
             if (reason == CExitInfo::Normal)
             {
-                CPU_Message("CompileSystemCheck 2");
+                m_CodeBlock.Log("CompileSystemCheck 2");
                 CompileSystemCheck((uint32_t)-1, ExitRegSet);
             }
         }
@@ -9498,10 +9497,10 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
                 //            AddConstToX86Reg(x86_EAX,0xC);
                 //            MoveVariableDispToX86Reg(OrigMem,"OrigMem",x86_ECX,x86_EAX,1);
                 //            JmpDirectReg(x86_ECX);
-                //            CPU_Message("      NoCode:");
+                //            m_CodeBlock.Log("      NoCode:");
                 //            *((uint8_t *)(Jump))=(uint8_t)(*g_RecompPos - Jump - 1);
                 //            if (Jump2 != nullptr) {
-                //                CPU_Message("      NoTlbEntry:");
+                //                m_CodeBlock.Log("      NoTlbEntry:");
                 //                *((uint8_t *)(Jump2))=(uint8_t)(*g_RecompPos - Jump2 - 1);
                 //            }
             }
@@ -9515,7 +9514,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
                 uint8_t * Jump = *g_RecompPos - 1;
                 MoveX86PointerToX86regDisp(x86_EBX, x86_ECX, 0xC);
                 JmpDirectReg(x86_EBX);
-                CPU_Message("      NullPointer:");
+                m_CodeBlock.Log("      NullPointer:");
                 *((uint8_t *)(Jump)) = (uint8_t)(*g_RecompPos - Jump - 1);
             }
             else if (LookUpMode() == FuncFind_PhysicalLookup)
@@ -9546,11 +9545,11 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
                     uint8_t * Jump = *g_RecompPos - 1;
                     MoveX86PointerToX86regDisp(x86_EAX, x86_ECX, 0xC);
                     JmpDirectReg(x86_EAX);
-                    CPU_Message("      NullPointer:");
+                    m_CodeBlock.Log("      NullPointer:");
                     *((uint8_t *)(Jump)) = (uint8_t)(*g_RecompPos - Jump - 1);
                     if (Jump2 != nullptr)
                     {
-                        CPU_Message("      NoTlbEntry:");
+                        m_CodeBlock.Log("      NoTlbEntry:");
                         *((uint8_t *)(Jump2)) = (uint8_t)(*g_RecompPos - Jump2 - 1);
                     }
                 }
@@ -9732,7 +9731,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
 #endif
         TestX86ByteRegToX86Reg(x86_AL, x86_AL);
         m_RegWorkingSet.AfterCallDirect();
-        CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, JeLabel32);
+        CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, &CX86Ops::JeLabel32);
         MoveConstToX86reg((uint32_t)&m_TempValue32, TempReg);
         SubX86RegToX86Reg(TempReg, AddressReg);
     }
@@ -9751,7 +9750,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
 #endif
         TestX86ByteRegToX86Reg(x86_AL, x86_AL);
         m_RegWorkingSet.AfterCallDirect();
-        CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, JeLabel32);
+        CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, &CX86Ops::JeLabel32);
         MoveConstToX86reg((uint32_t)&m_TempValue32, TempReg);
         SubX86RegToX86Reg(TempReg, AddressReg);
         XorConstToX86Reg(AddressReg, 2);
@@ -9771,7 +9770,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
 #endif
         TestX86ByteRegToX86Reg(x86_AL, x86_AL);
         m_RegWorkingSet.AfterCallDirect();
-        CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, JeLabel32);
+        CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, &CX86Ops::JeLabel32);
         MoveConstToX86reg((uint32_t)&m_TempValue32, TempReg);
         SubX86RegToX86Reg(TempReg, AddressReg);
         XorConstToX86Reg(AddressReg, 3);
@@ -9784,8 +9783,8 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
     {
         AddConstToVariable(OpsExecuted, g_NextTimer, "g_NextTimer");
     }
-    CPU_Message("");
-    CPU_Message(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
 
     if (ValueSize == 8)
@@ -9905,7 +9904,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         m_RegWorkingSet.BeforeCallDirect();
         if (ValueReg == x86_Unknown)
         {
-            PushImm32((uint32_t)(Value & 0xFF));
+            PushImm32((uint32_t)Value);
         }
         else
         {
@@ -9926,7 +9925,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         }
         TestX86ByteRegToX86Reg(x86_AL, x86_AL);
         m_RegWorkingSet.AfterCallDirect();
-        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, JeLabel32);
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, &CX86Ops::JeLabel32);
         JmpLabel8(stdstr_f("MemoryWrite_%X_Done:", m_CompilePC).c_str(), 0);
         MemoryWriteDone = (uint8_t *)(*g_RecompPos - 1);
     }
@@ -9956,7 +9955,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         }
         TestX86ByteRegToX86Reg(x86_AL, x86_AL);
         m_RegWorkingSet.AfterCallDirect();
-        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, JeLabel32);
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, &CX86Ops::JeLabel32);
         JmpLabel8(stdstr_f("MemoryWrite_%X_Done:", m_CompilePC).c_str(), 0);
         MemoryWriteDone = (uint8_t *)(*g_RecompPos - 1);
     }
@@ -9986,7 +9985,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         }
         TestX86ByteRegToX86Reg(x86_AL, x86_AL);
         m_RegWorkingSet.AfterCallDirect();
-        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, JeLabel32);
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, &CX86Ops::JeLabel32);
         JmpLabel8(stdstr_f("MemoryWrite_%X_Done:", m_CompilePC).c_str(), 0);
         MemoryWriteDone = (uint8_t *)(*g_RecompPos - 1);
     }
@@ -10018,7 +10017,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         }
         TestX86ByteRegToX86Reg(x86_AL, x86_AL);
         m_RegWorkingSet.AfterCallDirect();
-        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, JeLabel32);
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, &CX86Ops::JeLabel32);
         JmpLabel8(stdstr_f("MemoryWrite_%X_Done:", m_CompilePC).c_str(), 0);
         MemoryWriteDone = (uint8_t *)(*g_RecompPos - 1);
     }
@@ -10031,8 +10030,8 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         CompileWriteTLBMiss(AddressReg, TempReg);
         AddConstToX86Reg(TempReg, (uint32_t)m_MMU.Rdram());
     }
-    CPU_Message("");
-    CPU_Message(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log(stdstr_f("      MemoryWriteMap_%X_Found:", m_CompilePC).c_str());
     SetJump8(JumpFound, *g_RecompPos);
 
     if (ValueSize == 8)
@@ -10096,13 +10095,13 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
 
     if (MemoryWriteDone != nullptr)
     {
-        CPU_Message("");
-        CPU_Message(stdstr_f("      MemoryWrite_%X_Done:", m_CompilePC).c_str());
+        m_CodeBlock.Log("");
+        m_CodeBlock.Log(stdstr_f("      MemoryWrite_%X_Done:", m_CompilePC).c_str());
         SetJump8(MemoryWriteDone, *g_RecompPos);
     }
 }
 
-void CX86RecompilerOps::SB_Const(uint8_t Value, uint32_t VAddr)
+void CX86RecompilerOps::SB_Const(uint32_t Value, uint32_t VAddr)
 {
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
@@ -10115,7 +10114,7 @@ void CX86RecompilerOps::SB_Const(uint8_t Value, uint32_t VAddr)
     uint32_t PAddr;
     if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
-        CPU_Message("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
+        m_CodeBlock.Log("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
         if (BreakOnUnhandledMemory())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -10141,17 +10140,17 @@ void CX86RecompilerOps::SB_Const(uint8_t Value, uint32_t VAddr)
         }
         else if (PAddr < g_MMU->RdramSize())
         {
-            MoveConstByteToVariable(Value, (PAddr ^ 3) + g_MMU->Rdram(), stdstr_f("RDRAM + (%X ^ 3)", PAddr).c_str());
+            MoveConstByteToVariable((uint8_t)Value, (PAddr ^ 3) + g_MMU->Rdram(), stdstr_f("RDRAM + (%X ^ 3)", PAddr).c_str());
         }
         break;
     case 0x04000000:
         if (PAddr < 0x04001000)
         {
-            MoveConstByteToVariable(Value, ((PAddr - 0x04000000) ^ 3) + g_MMU->Dmem(), stdstr_f("DMem + (%X ^ 3)", (PAddr - 0x04000000)).c_str());
+            MoveConstByteToVariable((uint8_t)Value, ((PAddr - 0x04000000) ^ 3) + g_MMU->Dmem(), stdstr_f("DMem + (%X ^ 3)", (PAddr - 0x04000000)).c_str());
         }
         else if (PAddr < 0x04002000)
         {
-            MoveConstByteToVariable(Value, ((PAddr - 0x04001000) ^ 3) + g_MMU->Imem(), stdstr_f("Imem + (%X ^ 3)", (PAddr - 0x04001000)).c_str());
+            MoveConstByteToVariable((uint8_t)Value, ((PAddr - 0x04001000) ^ 3) + g_MMU->Imem(), stdstr_f("Imem + (%X ^ 3)", (PAddr - 0x04001000)).c_str());
         }
         else
         {
@@ -10162,7 +10161,23 @@ void CX86RecompilerOps::SB_Const(uint8_t Value, uint32_t VAddr)
         }
         break;
     default:
-        if (BreakOnUnhandledMemory())
+        if (PAddr >= 0x10000000 && PAddr < 0x20000000)
+        {
+            m_RegWorkingSet.BeforeCallDirect();
+            PushImm32(0xFFFFFFFF);
+            PushImm32(Value << ((3 - (PAddr & 3)) * 8));
+            PushImm32(PAddr);
+#ifdef _MSC_VER
+            MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_RomMemoryHandler, x86_ECX);
+            Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_RomMemoryHandler)[0][1], "RomMemoryHandler::Write32");
+#else
+            PushImm32((uint32_t)&g_MMU->m_RomMemoryHandler);
+            Call_Direct(AddressOf(&RomMemoryHandler::Write32), "RomMemoryHandler::Write32");
+            AddConstToX86Reg(x86_ESP, 16);
+#endif
+            m_RegWorkingSet.AfterCallDirect();
+        }
+        else if (BreakOnUnhandledMemory())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -10183,7 +10198,7 @@ void CX86RecompilerOps::SB_Register(x86Reg Reg, uint32_t VAddr)
     uint32_t PAddr;
     if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
-        CPU_Message("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
+        m_CodeBlock.Log("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
         if (BreakOnUnhandledMemory())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -10220,20 +10235,20 @@ void CX86RecompilerOps::SB_Register(x86Reg Reg, uint32_t VAddr)
     }
 }
 
-void CX86RecompilerOps::SH_Const(uint16_t Value, uint32_t VAddr)
+void CX86RecompilerOps::SH_Const(uint32_t Value, uint32_t VAddr)
 {
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
         x86Reg AddressReg = Map_TempReg(x86_Any, -1, false);
         MoveConstToX86reg(VAddr, AddressReg);
-        CompileStoreMemoryValue(AddressReg, x86_Unknown, x86_Unknown, Value, 16);
+        CompileStoreMemoryValue(AddressReg, x86_Unknown, x86_Unknown, (uint16_t)Value, 16);
         return;
     }
 
     uint32_t PAddr;
     if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
-        CPU_Message("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
+        m_CodeBlock.Log("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
         if (BreakOnUnhandledMemory())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -10255,15 +10270,31 @@ void CX86RecompilerOps::SH_Const(uint16_t Value, uint32_t VAddr)
         {
             x86Reg AddressReg = Map_TempReg(x86_Any, -1, false);
             MoveConstToX86reg(VAddr, AddressReg);
-            CompileStoreMemoryValue(AddressReg, x86_Unknown, x86_Unknown, Value, 16);
+            CompileStoreMemoryValue(AddressReg, x86_Unknown, x86_Unknown, (uint16_t)Value, 16);
         }
         else if (PAddr < g_MMU->RdramSize())
         {
-            MoveConstHalfToVariable(Value, (PAddr ^ 2) + g_MMU->Rdram(), stdstr_f("RDRAM + (%X ^ 2)", PAddr).c_str());
+            MoveConstHalfToVariable((uint16_t)Value, (PAddr ^ 2) + g_MMU->Rdram(), stdstr_f("RDRAM + (%X ^ 2)", PAddr).c_str());
         }
         break;
     default:
-        if (BreakOnUnhandledMemory())
+        if (PAddr >= 0x10000000 && PAddr < 0x20000000)
+        {
+            m_RegWorkingSet.BeforeCallDirect();
+            PushImm32(0xFFFFFFFF);
+            PushImm32(Value << ((2 - (PAddr & 2)) * 8));
+            PushImm32(PAddr);
+#ifdef _MSC_VER
+            MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_RomMemoryHandler, x86_ECX);
+            Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_RomMemoryHandler)[0][1], "RomMemoryHandler::Write32");
+#else
+            PushImm32((uint32_t)&g_MMU->m_RomMemoryHandler);
+            Call_Direct(AddressOf(&RomMemoryHandler::Write32), "RomMemoryHandler::Write32");
+            AddConstToX86Reg(x86_ESP, 16);
+#endif
+            m_RegWorkingSet.AfterCallDirect();
+        }
+        else if (BreakOnUnhandledMemory())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -10315,7 +10346,7 @@ void CX86RecompilerOps::SH_Register(x86Reg Reg, uint32_t VAddr)
         }
         else
         {
-            CPU_Message("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
+            m_CodeBlock.Log("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
             if (BreakOnUnhandledMemory())
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -10339,7 +10370,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
     uint32_t PAddr;
     if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
-        CPU_Message("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
+        m_CodeBlock.Log("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
         if (BreakOnUnhandledMemory())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -10626,8 +10657,8 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
                     m_RegWorkingSet.BeforeCallDirect();
                     Call_Direct((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
                     m_RegWorkingSet.AfterCallDirect();
-                    CPU_Message("");
-                    CPU_Message("      Continue:");
+                    m_CodeBlock.Log("");
+                    m_CodeBlock.Log("      Continue:");
                     SetJump8(Jump, *g_RecompPos);
                 }
                 break;
@@ -10642,8 +10673,8 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
                     m_RegWorkingSet.BeforeCallDirect();
                     Call_Direct((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
                     m_RegWorkingSet.AfterCallDirect();
-                    CPU_Message("");
-                    CPU_Message("      Continue:");
+                    m_CodeBlock.Log("");
+                    m_CodeBlock.Log("      Continue:");
                     SetJump8(Jump, *g_RecompPos);
                 }
                 break;
@@ -10841,24 +10872,43 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         }
         break;
     default:
-        if (BreakOnUnhandledMemory())
+        if (PAddr >= 0x10000000 && PAddr < 0x20000000)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-        UpdateCounters(m_RegWorkingSet, false, true, true);
-
-        m_RegWorkingSet.BeforeCallDirect();
-        PushImm32(Value);
-        PushImm32(PAddr | 0xA0000000);
+            m_RegWorkingSet.BeforeCallDirect();
+            PushImm32(0xFFFFFFFF);
+            PushImm32(Value);
+            PushImm32(PAddr);
 #ifdef _MSC_VER
-        MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
-        Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+            MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_RomMemoryHandler, x86_ECX);
+            Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_RomMemoryHandler)[0][1], "RomMemoryHandler::Write32");
 #else
-        PushImm32((uint32_t)(g_MMU));
-        Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
-        AddConstToX86Reg(x86_ESP, 12);
+            PushImm32((uint32_t)&g_MMU->m_RomMemoryHandler);
+            Call_Direct(AddressOf(&RomMemoryHandler::Write32), "RomMemoryHandler::Write32");
+            AddConstToX86Reg(x86_ESP, 16);
 #endif
-        m_RegWorkingSet.AfterCallDirect();
+            m_RegWorkingSet.AfterCallDirect();
+        }
+        else
+        {
+            if (BreakOnUnhandledMemory())
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            UpdateCounters(m_RegWorkingSet, false, true, true);
+
+            m_RegWorkingSet.BeforeCallDirect();
+            PushImm32(Value);
+            PushImm32(PAddr | 0xA0000000);
+#ifdef _MSC_VER
+            MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
+            Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+#else
+            PushImm32((uint32_t)(g_MMU));
+            Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+            AddConstToX86Reg(x86_ESP, 12);
+#endif
+            m_RegWorkingSet.AfterCallDirect();
+        }
     }
 }
 
@@ -10878,7 +10928,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
 
     if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
-        CPU_Message("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
+        m_CodeBlock.Log("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
         if (BreakOnUnhandledMemory())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -10958,7 +11008,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             }
             else
             {
-                CPU_Message("    should be moving %s in to %08X ?", x86_Name(Reg), VAddr);
+                m_CodeBlock.Log("    should be moving %s in to %08X ?", x86_Name(Reg), VAddr);
                 if (BreakOnUnhandledMemory())
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -11009,7 +11059,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             m_RegWorkingSet.AfterCallDirect();
             break;
         default:
-            CPU_Message("    should be moving %s in to %08X ?", x86_Name(Reg), VAddr);
+            m_CodeBlock.Log("    should be moving %s in to %08X ?", x86_Name(Reg), VAddr);
             if (BreakOnUnhandledMemory())
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -11050,8 +11100,8 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
                     m_RegWorkingSet.BeforeCallDirect();
                     Call_Direct((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
                     m_RegWorkingSet.AfterCallDirect();
-                    CPU_Message("");
-                    CPU_Message("      Continue:");
+                    m_CodeBlock.Log("");
+                    m_CodeBlock.Log("      Continue:");
                     SetJump8(Jump, *g_RecompPos);
                 }
                 break;
@@ -11070,8 +11120,8 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
                     m_RegWorkingSet.BeforeCallDirect();
                     Call_Direct((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
                     m_RegWorkingSet.AfterCallDirect();
-                    CPU_Message("");
-                    CPU_Message("      Continue:");
+                    m_CodeBlock.Log("");
+                    m_CodeBlock.Log("      Continue:");
                     SetJump8(Jump, *g_RecompPos);
                 }
                 break;
@@ -11099,7 +11149,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             case 0x04400030: MoveX86regToVariable(Reg, &g_Reg->VI_X_SCALE_REG, "VI_X_SCALE_REG"); break;
             case 0x04400034: MoveX86regToVariable(Reg, &g_Reg->VI_Y_SCALE_REG, "VI_Y_SCALE_REG"); break;
             default:
-                CPU_Message("    should be moving %s in to %08X ?", x86_Name(Reg), VAddr);
+                m_CodeBlock.Log("    should be moving %s in to %08X ?", x86_Name(Reg), VAddr);
                 if (BreakOnUnhandledMemory())
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -11183,7 +11233,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             AndConstToVariable(0xFF, &g_Reg->PI_BSD_DOM2_RLS_REG, "PI_BSD_DOM2_RLS_REG");
             break;
         default:
-            CPU_Message("    should be moving %s in to %08X ?", x86_Name(Reg), VAddr);
+            m_CodeBlock.Log("    should be moving %s in to %08X ?", x86_Name(Reg), VAddr);
             if (BreakOnUnhandledMemory())
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -11293,12 +11343,27 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             }
             break;
         }
+    case 0x13F00000:
+        m_RegWorkingSet.BeforeCallDirect();
+        PushImm32(0xFFFFFFFF);
+        Push(Reg);
+        PushImm32(PAddr & 0x1FFFFFFF);
+#ifdef _MSC_VER
+        MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_ISViewerHandler, x86_ECX);
+        Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_ISViewerHandler)[0][1], "ISViewerHandler::Write32");
+#else
+        PushImm32((uint32_t)&g_MMU->m_ISViewerHandler);
+        Call_Direct(AddressOf(&ISViewerHandler::Write32), "ISViewerHandler::Write32");
+        AddConstToX86Reg(x86_ESP, 16);
+#endif
+        m_RegWorkingSet.AfterCallDirect();
+        break;
     case 0x1FC00000:
         sprintf(VarName, "RDRAM + %X", PAddr);
         MoveX86regToVariable(Reg, PAddr + g_MMU->Rdram(), VarName);
         break;
     default:
-        CPU_Message("    should be moving %s in to %08X ?", x86_Name(Reg), VAddr);
+        m_CodeBlock.Log("    should be moving %s in to %08X ?", x86_Name(Reg), VAddr);
         if (BreakOnUnhandledMemory())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -11311,7 +11376,7 @@ void CX86RecompilerOps::ResetMemoryStack()
     x86Reg Reg, TempReg;
 
     int32_t MipsReg = 29;
-    CPU_Message("    ResetMemoryStack");
+    m_CodeBlock.Log("    ResetMemoryStack");
     Reg = Get_MemoryStack();
     if (Reg == x86_Unknown)
     {

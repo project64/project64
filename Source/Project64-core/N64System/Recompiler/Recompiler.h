@@ -8,6 +8,8 @@
 #include <Project64-core/Settings/RecompilerSettings.h>
 #include <Project64-core/Settings/DebugSettings.h>
 
+class CLog;
+
 class CRecompiler :
     protected CDebugSettings,
     public CRecompilerSettings,
@@ -44,6 +46,7 @@ public:
     void ClearRecompCode_Virt(uint32_t VirtualAddress, int32_t length, REMOVE_REASON Reason);
     void ClearRecompCode_Phys(uint32_t PhysicalAddress, int32_t length, REMOVE_REASON Reason);
 
+    void ResetLog();
     void ResetMemoryStackPos();
     void ResetFunctionTimes();
     void DumpFunctionTimes();
@@ -71,6 +74,10 @@ private:
     void RecompilerMain_Lookup();
     void RecompilerMain_Lookup_validate();
 
+    void StartLog();
+    void StopLog();
+    void LogCodeBlock(const CCodeBlock & CodeBlock);
+
     CCompiledFuncList  m_Functions;
     CMipsMemoryVM & m_MMU;
     CRegisters & m_Registers;
@@ -78,4 +85,5 @@ private:
     uint32_t m_MemoryStack;
     FUNCTION_PROFILE m_BlockProfile;
     uint32_t & PROGRAM_COUNTER;
+    CLog * m_LogFile;
 };

@@ -303,9 +303,6 @@
     <ClCompile Include="RomList\RomList.cpp">
       <Filter>Source Files\Rom List</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\Recompiler\RecompilerCodeLog.cpp">
-      <Filter>Source Files\N64 System\Recompiler</Filter>
-    </ClCompile>
     <ClCompile Include="N64System\Recompiler\x86\x86RecompilerOps.cpp">
       <Filter>Source Files\N64 System\Recompiler\x86</Filter>
     </ClCompile>
@@ -407,6 +404,9 @@
     </ClCompile>
     <ClCompile Include="N64System\MemoryHandler\ISViewerHandler.cpp">
       <Filter>Source Files\N64 System\MemoryHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\ExitInfo.cpp">
+      <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -661,9 +661,6 @@
     </ClInclude>
     <ClInclude Include="RomList\RomList.h">
       <Filter>Header Files\Rom List</Filter>
-    </ClInclude>
-    <ClInclude Include="N64System\Recompiler\RecompilerCodeLog.h">
-      <Filter>Header Files\N64 System\Recompiler</Filter>
     </ClInclude>
     <ClInclude Include="N64System\Recompiler\x86\x86RecompilerOps.h">
       <Filter>Header Files\N64 System\Recompiler\x86</Filter>

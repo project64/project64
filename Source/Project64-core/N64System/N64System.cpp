@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "N64System.h"
 #include <Project64-core/3rdParty/zip.h>
-#include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/Mempak.h>
 #include <Project64-core/N64System/Mips/Transferpak.h>
@@ -2279,10 +2278,9 @@ bool CN64System::LoadState(const char * FileName)
     }
     m_CPU_Usage.ResetTimers();
     m_FPS.Reset(true);
-    if (bRecordRecompilerAsm())
+    if (bRecordRecompilerAsm() && m_Recomp)
     {
-        Stop_Recompiler_Log();
-        Start_Recompiler_Log();
+        m_Recomp->ResetLog();
     }
 
 #ifdef TEST_SP_TRACKING

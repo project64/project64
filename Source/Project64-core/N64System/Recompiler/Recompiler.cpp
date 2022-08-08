@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/ExceptionHandler.h>
@@ -11,7 +10,8 @@ CRecompiler::CRecompiler(CMipsMemoryVM & MMU, CRegisters & Registers, bool & End
     m_Registers(Registers),
     m_EndEmulation(EndEmulation),
     m_MemoryStack(0),
-    PROGRAM_COUNTER(Registers.m_PROGRAM_COUNTER)
+    PROGRAM_COUNTER(Registers.m_PROGRAM_COUNTER),
+    m_LogFile(nullptr)
 {
     CFunctionMap::AllocateMemory();
     ResetMemoryStackPos();
@@ -20,16 +20,13 @@ CRecompiler::CRecompiler(CMipsMemoryVM & MMU, CRegisters & Registers, bool & End
 CRecompiler::~CRecompiler()
 {
     ResetRecompCode(false);
+    StopLog();
 }
 
 void CRecompiler::Run()
 {
     WriteTrace(TraceRecompiler, TraceDebug, "Start");
-
-    if (bRecordRecompilerAsm())
-    {
-        Start_Recompiler_Log();
-    }
+    StartLog();
 
     if (!CRecompMemory::AllocateMemory())
     {
@@ -387,6 +384,8 @@ CCompiledFunc * CRecompiler::CompileCode()
         ShowMemUsed();
     }
 
+    LogCodeBlock(CodeBlock);
+
     CCompiledFunc * Func = new CCompiledFunc(CodeBlock);
     std::pair<CCompiledFuncList::iterator, bool> ret = m_Functions.insert(CCompiledFuncList::value_type(Func->EnterPC(), Func));
     if (ret.second == false)
@@ -511,6 +510,12 @@ void CRecompiler::ClearRecompCode_Virt(uint32_t Address, int length, REMOVE_REAS
     }
 }
 
+void CRecompiler::ResetLog()
+{
+    StopLog();
+    StartLog();
+}
+
 void CRecompiler::ResetMemoryStackPos()
 {
 #if defined(__aarch64__) || defined(__amd64__)
@@ -555,4 +560,49 @@ void CRecompiler::DumpFunctionTimes()
 void CRecompiler::ResetFunctionTimes()
 {
     m_BlockProfile.clear();
+}
+
+void CRecompiler::StartLog()
+{
+    if (!bRecordRecompilerAsm())
+    {
+        return;
+    }
+    CPath LogFileName(g_Settings->LoadStringVal(Directory_Log).c_str(), "CPUoutput.log");
+    if (m_LogFile != nullptr)
+    {
+        StopLog();
+    }
+    m_LogFile = new CLog();
+    if (m_LogFile)
+    {
+        if (m_LogFile->Open(LogFileName))
+        {
+            m_LogFile->SetMaxFileSize(300 * CLog::MB);
+        }
+        else
+        {
+            StopLog();
+        }
+    }
+}
+
+void CRecompiler::StopLog(void)
+{
+    if (m_LogFile != nullptr)
+    {
+        delete m_LogFile;
+        m_LogFile = nullptr;
+    }
+}
+
+void CRecompiler::LogCodeBlock(const CCodeBlock & CodeBlock)
+{
+    if (!bRecordRecompilerAsm() || m_LogFile == nullptr || CodeBlock.CodeLog().empty())
+    {
+        return;
+    }
+    m_LogFile->Log(CodeBlock.CodeLog().c_str());
+    m_LogFile->Log("\r\n");
+    m_LogFile->Flush();
 }

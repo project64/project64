@@ -4,7 +4,6 @@
 
 #include <Project64-core/N64System/N64Types.h>
 #include <Project64-core/N64System/Recompiler/CodeBlock.h>
-#include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/R4300iInstruction.h>
@@ -13,12 +12,13 @@
 #define CHECKED_BUILD 1
 #endif
 
-LoopAnalysis::LoopAnalysis(CCodeBlock * CodeBlock, CCodeSection * Section) :
+LoopAnalysis::LoopAnalysis(CCodeBlock & CodeBlock, CCodeSection * Section) :
     m_EnterSection(Section),
-    m_BlockInfo(CodeBlock),
+    m_CodeBlock(CodeBlock),
     m_PC((uint32_t)-1),
     m_PipelineStage(PIPELINE_STAGE_NORMAL),
-    m_Test(m_BlockInfo->NextTest())
+    m_Test(CodeBlock.NextTest()),
+    m_Reg(CodeBlock)
 {
     memset(&m_Command, 0, sizeof(m_Command));
 }
@@ -50,7 +50,7 @@ bool LoopAnalysis::SetupRegisterForLoop()
     {
         return false;
     }
-    CPU_Message("%s: Section ID: %d Test: %X", __FUNCTION__, m_EnterSection->m_SectionID, m_Test);
+    m_CodeBlock.Log("%s: Section ID: %d Test: %X", __FUNCTION__, m_EnterSection->m_SectionID, m_Test);
     if (!CheckLoopRegisterUsage(m_EnterSection))
     {
         return false;
@@ -71,18 +71,18 @@ bool LoopAnalysis::SetupEnterSection(CCodeSection * Section, bool & bChanged, bo
     bSkipedSection = false;
     if (Section->m_ParentSection.empty()) { g_Notify->BreakPoint(__FILE__, __LINE__); return true; }
 
-    CPU_Message("%s: Block EnterPC: %X Section ID %d Test: %X Section Test: %X CompiledLocation: %X", __FUNCTION__, m_BlockInfo->VAddrEnter(), Section->m_SectionID, m_Test, Section->m_Test, Section->m_CompiledLocation);
+    m_CodeBlock.Log("%s: Block EnterPC: %X Section ID %d Test: %X Section Test: %X CompiledLocation: %X", __FUNCTION__, m_CodeBlock.VAddrEnter(), Section->m_SectionID, m_Test, Section->m_Test, Section->m_CompiledLocation);
 
     bool bFirstParent = true;
-    CRegInfo RegEnter;
+    CRegInfo RegEnter(m_CodeBlock);
     for (CCodeSection::SECTION_LIST::iterator iter = Section->m_ParentSection.begin(); iter != Section->m_ParentSection.end(); iter++)
     {
         CCodeSection * Parent = *iter;
 
-        CPU_Message("%s: Parent Section ID %d Test: %X Section Test: %X CompiledLocation: %X", __FUNCTION__, Parent->m_SectionID, m_Test, Parent->m_Test, Parent->m_CompiledLocation);
+        m_CodeBlock.Log("%s: Parent Section ID %d Test: %X Section Test: %X CompiledLocation: %X", __FUNCTION__, Parent->m_SectionID, m_Test, Parent->m_Test, Parent->m_CompiledLocation);
         if (Parent->m_Test != m_Test && (m_EnterSection != Section || Parent->m_CompiledLocation == nullptr) && Parent->m_InLoop)
         {
-            CPU_Message("%s: Ignore Parent Section ID %d Test: %X  Section Test: %X CompiledLocation: %X", __FUNCTION__, Parent->m_SectionID, m_Test, Parent->m_Test, Parent->m_CompiledLocation);
+            m_CodeBlock.Log("%s: Ignore Parent Section ID %d Test: %X  Section Test: %X CompiledLocation: %X", __FUNCTION__, Parent->m_SectionID, m_Test, Parent->m_Test, Parent->m_CompiledLocation);
             bSkipedSection = true;
             continue;
         }
@@ -141,7 +141,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
     if (Section == nullptr) { return true; }
     if (!Section->m_InLoop) { return true; }
 
-    CPU_Message("%s: Section %d Block PC: 0x%X", __FUNCTION__, Section->m_SectionID, m_BlockInfo->VAddrEnter());
+    m_CodeBlock.Log("%s: Section %d Block PC: 0x%X", __FUNCTION__, Section->m_SectionID, m_CodeBlock.VAddrEnter());
 
     bool bChanged = false, bSkipedSection = false;
     if (Section == m_EnterSection && Section->m_Test == m_Test)
@@ -157,7 +157,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
         return true;
     }
 
-    CPU_Message("%s: Set Section %d test to %X from %X", __FUNCTION__, Section->m_SectionID, m_Test, Section->m_Test);
+    m_CodeBlock.Log("%s: Set Section %d test to %X from %X", __FUNCTION__, Section->m_SectionID, m_Test, Section->m_Test);
     Section->m_Test = m_Test;
     m_PC = Section->m_EnterPC;
 
@@ -166,7 +166,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
 
     m_PipelineStage = PIPELINE_STAGE_NORMAL;
     uint32_t ContinueSectionPC = Section->m_ContinueSection ? Section->m_ContinueSection->m_EnterPC : (uint32_t)-1;
-    CPU_Message("ContinueSectionPC = %08X", ContinueSectionPC);
+    m_CodeBlock.Log("ContinueSectionPC = %08X", ContinueSectionPC);
 
     do
     {
@@ -175,7 +175,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
             g_Notify->BreakPoint(__FILE__, __LINE__);
             return false;
         }
-        CPU_Message("  %08X: %s", m_PC, R4300iInstruction(m_PC, m_Command.Value).NameAndParam().c_str());
+        m_CodeBlock.Log("  %08X: %s", m_PC, R4300iInstruction(m_PC, m_Command.Value).NameAndParam().c_str());
         switch (m_Command.op)
         {
         case R4300i_SPECIAL:
@@ -651,7 +651,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
             g_Notify->DisplayError(stdstr_f("Unhandled R4300i opcode in FillSectionInfo 1\n%s\n%X", R4300iInstruction(m_PC, m_Command.Value).NameAndParam().c_str(), m_Command.Value).c_str());
         }
 
-        CPU_Message("  %s state: %X value: %X", CRegName::GPR[5], m_Reg.GetMipsRegState(5), m_Reg.GetMipsRegLo(5));
+        m_CodeBlock.Log("  %s state: %X value: %X", CRegName::GPR[5], m_Reg.GetMipsRegState(5), m_Reg.GetMipsRegLo(5));
 
         if (Section->m_DelaySlot)
         {
@@ -722,13 +722,13 @@ bool LoopAnalysis::SyncRegState(CRegInfo & RegSet, const CRegInfo& SyncReg)
     {
         if (RegSet.GetMipsRegState(x) != SyncReg.GetMipsRegState(x))
         {
-            CPU_Message("%s: Clear state %s RegEnter State: %X Jump Reg State: %X", __FUNCTION__, CRegName::GPR[x], RegSet.GetMipsRegState(x), SyncReg.GetMipsRegState(x));
+            m_CodeBlock.Log("%s: Clear state %s RegEnter State: %X Jump Reg State: %X", __FUNCTION__, CRegName::GPR[x], RegSet.GetMipsRegState(x), SyncReg.GetMipsRegState(x));
             RegSet.SetMipsRegState(x, CRegInfo::STATE_MODIFIED);
             bChanged = true;
         }
         else if (RegSet.IsConst(x) && RegSet.Is32Bit(x) && RegSet.GetMipsRegLo(x) != SyncReg.GetMipsRegLo(x))
         {
-            CPU_Message("%s: Clear state %s RegEnter State: %X Jump Reg State: %X", __FUNCTION__, CRegName::GPR[x], RegSet.GetMipsRegState(x), SyncReg.GetMipsRegState(x));
+            m_CodeBlock.Log("%s: Clear state %s RegEnter State: %X Jump Reg State: %X", __FUNCTION__, CRegName::GPR[x], RegSet.GetMipsRegState(x), SyncReg.GetMipsRegState(x));
             RegSet.SetMipsRegState(x, CRegInfo::STATE_MODIFIED);
             bChanged = true;
         }

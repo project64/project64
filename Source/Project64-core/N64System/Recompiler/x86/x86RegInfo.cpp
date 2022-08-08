@@ -4,7 +4,6 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/Recompiler/Recompiler.h>
-#include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/Recompiler/x86/x86RegInfo.h>
 
 #include <stdio.h>
@@ -15,7 +14,9 @@ uint32_t CX86RegInfo::m_fpuControl = 0;
 
 const char *Format_Name[] = { "Unknown", "dword", "qword", "float", "double" };
 
-CX86RegInfo::CX86RegInfo() :
+CX86RegInfo::CX86RegInfo(CCodeBlock & CodeBlock) :
+    CX86Ops(CodeBlock),
+    m_CodeBlock(CodeBlock),
     m_Stack_TopPos(0),
     m_InBeforeCallDirect(false)
 {
@@ -39,7 +40,9 @@ CX86RegInfo::CX86RegInfo() :
     }
 }
 
-CX86RegInfo::CX86RegInfo(const CX86RegInfo& rhs)
+CX86RegInfo::CX86RegInfo(const CX86RegInfo& rhs) :
+    CX86Ops(rhs),
+    m_CodeBlock(rhs.m_CodeBlock)
 {
     *this = rhs;
 }
@@ -140,7 +143,7 @@ void CX86RegInfo::FixRoundModel(FPU_ROUND RoundMethod)
     {
         return;
     }
-    CPU_Message("    FixRoundModel: CurrentRoundingModel: %s  targetRoundModel: %s", RoundingModelName(GetRoundingModel()), RoundingModelName(RoundMethod));
+    m_CodeBlock.Log("    FixRoundModel: CurrentRoundingModel: %s  targetRoundModel: %s", RoundingModelName(GetRoundingModel()), RoundingModelName(RoundMethod));
 
     m_fpuControl = 0;
     fpuStoreControl(&m_fpuControl, "m_fpuControl");
@@ -205,7 +208,7 @@ void CX86RegInfo::ChangeFPURegFormat(int32_t Reg, FPU_STATE OldFormat, FPU_STATE
         }
         else
         {
-            CPU_Message("    regcache: Changed format of ST(%d) from %s to %s", (i - StackTopPos() + 8) & 7, Format_Name[OldFormat], Format_Name[NewFormat]);
+            m_CodeBlock.Log("    regcache: Changed format of ST(%d) from %s to %s", (i - StackTopPos() + 8) & 7, Format_Name[OldFormat], Format_Name[NewFormat]);
         }
         FpuRoundingModel(i) = RoundingModel;
         m_x86fpu_State[i] = NewFormat;
@@ -225,7 +228,7 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
     {
         FixRoundModel(RoundDefault);
     }
-    CPU_Message("CurrentRoundingModel: %s  FpuRoundingModel(StackTopPos()): %s", RoundingModelName(GetRoundingModel()), RoundingModelName(FpuRoundingModel(StackTopPos())));
+    m_CodeBlock.Log("CurrentRoundingModel: %s  FpuRoundingModel(StackTopPos()): %s", RoundingModelName(GetRoundingModel()), RoundingModelName(FpuRoundingModel(StackTopPos())));
     int32_t i;
 
     if (RegToLoad < 0) { g_Notify->DisplayError("Load_FPR_ToTop\nRegToLoad < 0 ???"); return; }
@@ -305,7 +308,7 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
             if (m_x86fpu_MappedTo[(StackTopPos() - 1) & 7] != RegToLoad)
             {
                 UnMap_FPR(m_x86fpu_MappedTo[(StackTopPos() - 1) & 7], true);
-                CPU_Message("    regcache: allocate ST(0) to %s", CRegName::FPR[Reg]);
+                m_CodeBlock.Log("    regcache: allocate ST(0) to %s", CRegName::FPR[Reg]);
                 fpuLoadReg(&StackTopPos(), StackPosition(RegToLoad));
                 FpuRoundingModel(StackTopPos()) = RoundDefault;
                 m_x86fpu_MappedTo[StackTopPos()] = Reg;
@@ -340,8 +343,8 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
             m_x86fpu_MappedTo[RegPos] = m_x86fpu_MappedTo[StackTopPos()];
             m_x86fpu_State[RegPos] = m_x86fpu_State[StackTopPos()];
             m_x86fpu_StateChanged[RegPos] = m_x86fpu_StateChanged[StackTopPos()];
-            CPU_Message("    regcache: allocate ST(%d) to %s", StackPos, CRegName::FPR[m_x86fpu_MappedTo[RegPos]]);
-            CPU_Message("    regcache: allocate ST(0) to %s", CRegName::FPR[Reg]);
+            m_CodeBlock.Log("    regcache: allocate ST(%d) to %s", StackPos, CRegName::FPR[m_x86fpu_MappedTo[RegPos]]);
+            m_CodeBlock.Log("    regcache: allocate ST(0) to %s", CRegName::FPR[Reg]);
 
             fpuExchange(StackPos);
 
@@ -365,7 +368,7 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
                 i = 8;
             }
         }
-        CPU_Message("    regcache: allocate ST(0) to %s", CRegName::FPR[Reg]);
+        m_CodeBlock.Log("    regcache: allocate ST(0) to %s", CRegName::FPR[Reg]);
         TempReg = Map_TempReg(x86_Any, -1, false);
         switch (Format)
         {
@@ -536,7 +539,7 @@ CX86Ops::x86Reg CX86RegInfo::UnMap_8BitTempReg()
         {
             if (GetX86Protected((x86Reg)count) == false)
             {
-                CPU_Message("    regcache: unallocate %s from temp storage", x86_Name((x86Reg)count));
+                m_CodeBlock.Log("    regcache: unallocate %s from temp storage", x86_Name((x86Reg)count));
                 SetX86Mapped((x86Reg)count, CX86RegInfo::NotMapped);
                 return (x86Reg)count;
             }
@@ -585,7 +588,7 @@ CX86RegInfo::x86Reg CX86RegInfo::Map_MemoryStack(x86Reg Reg, bool bMapRegister, 
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         SetX86Mapped(Reg, CX86RegInfo::Stack_Mapped);
-        CPU_Message("    regcache: allocate %s as Memory Stack", x86_Name(Reg));
+        m_CodeBlock.Log("    regcache: allocate %s as Memory Stack", x86_Name(Reg));
         if (LoadValue)
         {
             MoveVariableToX86reg(&g_Recompiler->MemoryStackPos(), "MemoryStack", Reg);
@@ -597,7 +600,7 @@ CX86RegInfo::x86Reg CX86RegInfo::Map_MemoryStack(x86Reg Reg, bool bMapRegister, 
     UnMap_X86reg(Reg);
     if (CurrentMap != x86_Unknown)
     {
-        CPU_Message("    regcache: change allocation of memory stack from %s to %s", x86_Name(CurrentMap), x86_Name(Reg));
+        m_CodeBlock.Log("    regcache: change allocation of memory stack from %s to %s", x86_Name(CurrentMap), x86_Name(Reg));
         SetX86Mapped(Reg, CX86RegInfo::Stack_Mapped);
         SetX86Mapped(CurrentMap, CX86RegInfo::NotMapped);
         MoveX86RegToX86Reg(CurrentMap, Reg);
@@ -605,7 +608,7 @@ CX86RegInfo::x86Reg CX86RegInfo::Map_MemoryStack(x86Reg Reg, bool bMapRegister, 
     else
     {
         SetX86Mapped(Reg, CX86RegInfo::Stack_Mapped);
-        CPU_Message("    regcache: allocate %s as memory stack", x86_Name(Reg));
+        m_CodeBlock.Log("    regcache: allocate %s as memory stack", x86_Name(Reg));
         if (LoadValue)
         {
             MoveVariableToX86reg(&g_Recompiler->MemoryStackPos(), "MemoryStack", Reg);
@@ -634,13 +637,13 @@ void CX86RegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsReg
             g_Notify->BreakPoint(__FILE__, __LINE__);
             return;
         }
-        CPU_Message("    regcache: allocate %s to %s", x86_Name(Reg), CRegName::GPR[MipsReg]);
+        m_CodeBlock.Log("    regcache: allocate %s to %s", x86_Name(Reg), CRegName::GPR[MipsReg]);
     }
     else
     {
         if (Is64Bit(MipsReg))
         {
-            CPU_Message("    regcache: unallocate %s from high 32-bit of %s", x86_Name(GetMipsRegMapHi(MipsReg)), CRegName::GPR_Hi[MipsReg]);
+            m_CodeBlock.Log("    regcache: unallocate %s from high 32-bit of %s", x86_Name(GetMipsRegMapHi(MipsReg)), CRegName::GPR_Hi[MipsReg]);
             SetX86MapOrder(GetMipsRegMapHi(MipsReg), 0);
             SetX86Mapped(GetMipsRegMapHi(MipsReg), NotMapped);
             SetX86Protected(GetMipsRegMapHi(MipsReg), false);
@@ -712,8 +715,8 @@ void CX86RegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
         if (x86lo < 0) { g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); return; }
         SetX86Protected(x86lo, true);
 
-        CPU_Message("    regcache: allocate %s to hi word of %s", x86_Name(x86Hi), CRegName::GPR[MipsReg]);
-        CPU_Message("    regcache: allocate %s to low word of %s", x86_Name(x86lo), CRegName::GPR[MipsReg]);
+        m_CodeBlock.Log("    regcache: allocate %s to hi word of %s", x86_Name(x86Hi), CRegName::GPR[MipsReg]);
+        m_CodeBlock.Log("    regcache: allocate %s to low word of %s", x86_Name(x86lo), CRegName::GPR[MipsReg]);
     }
     else
     {
@@ -729,7 +732,7 @@ void CX86RegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
             }
             SetX86Protected(x86Hi, true);
 
-            CPU_Message("    regcache: allocate %s to hi word of %s", x86_Name(x86Hi), CRegName::GPR[MipsReg]);
+            m_CodeBlock.Log("    regcache: allocate %s to hi word of %s", x86_Name(x86Hi), CRegName::GPR[MipsReg]);
         }
         else
         {
@@ -784,7 +787,7 @@ void CX86RegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
         }
         else
         {
-            CPU_Message("Map_GPR_64bit 11");
+            m_CodeBlock.Log("Map_GPR_64bit 11");
             if (Is32Bit(MipsRegToLoad))
             {
                 if (IsSigned(MipsRegToLoad))
@@ -883,7 +886,7 @@ CX86Ops::x86Reg CX86RegInfo::Map_TempReg(CX86Ops::x86Reg Reg, int32_t MipsReg, b
                     UnMap_GPR(count, true);
                     break;
                 }
-                CPU_Message("    regcache: change allocation of %s from %s to %s", CRegName::GPR[count], x86_Name(Reg), x86_Name(NewReg));
+                m_CodeBlock.Log("    regcache: change allocation of %s from %s to %s", CRegName::GPR[count], x86_Name(Reg), x86_Name(NewReg));
                 SetX86Mapped(NewReg, GPR_Mapped);
                 SetX86MapOrder(NewReg, GetX86MapOrder(Reg));
                 SetMipsRegMapLo(count, NewReg);
@@ -901,7 +904,7 @@ CX86Ops::x86Reg CX86RegInfo::Map_TempReg(CX86Ops::x86Reg Reg, int32_t MipsReg, b
                     UnMap_GPR(count, true);
                     break;
                 }
-                CPU_Message("    regcache: change allocation of %s from %s to %s", CRegName::GPR_Hi[count], x86_Name(Reg), x86_Name(NewReg));
+                m_CodeBlock.Log("    regcache: change allocation of %s from %s to %s", CRegName::GPR_Hi[count], x86_Name(Reg), x86_Name(NewReg));
                 SetX86Mapped(NewReg, GPR_Mapped);
                 SetX86MapOrder(NewReg, GetX86MapOrder(Reg));
                 SetMipsRegMapHi(count, NewReg);
@@ -918,7 +921,7 @@ CX86Ops::x86Reg CX86RegInfo::Map_TempReg(CX86Ops::x86Reg Reg, int32_t MipsReg, b
     {
         UnMap_X86reg(Reg);
     }
-    CPU_Message("    regcache: allocate %s as temp storage", x86_Name(Reg));
+    m_CodeBlock.Log("    regcache: allocate %s as temp storage", x86_Name(Reg));
 
     if (MipsReg >= 0)
     {
@@ -1066,7 +1069,7 @@ void CX86RegInfo::UnMap_FPR(int32_t Reg, bool WriteBackValue)
     for (i = 0; i < 8; i++)
     {
         if (m_x86fpu_MappedTo[i] != Reg) { continue; }
-        CPU_Message("    regcache: unallocate %s from ST(%d)", CRegName::FPR[Reg], (i - StackTopPos() + 8) & 7);
+        m_CodeBlock.Log("    regcache: unallocate %s from ST(%d)", CRegName::FPR[Reg], (i - StackTopPos() + 8) & 7);
         if (WriteBackValue)
         {
             int32_t RegPos;
@@ -1157,7 +1160,7 @@ void CX86RegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
     }
 
     if (IsUnknown(Reg)) { return; }
-    //CPU_Message("UnMap_GPR: State: %X\tReg: %s\tWriteBack: %s",State,CRegName::GPR[Reg],WriteBackValue?"true":"false");
+    //m_CodeBlock.Log("UnMap_GPR: State: %X\tReg: %s\tWriteBack: %s",State,CRegName::GPR[Reg],WriteBackValue?"true":"false");
     if (IsConst(Reg))
     {
         if (!WriteBackValue)
@@ -1186,11 +1189,11 @@ void CX86RegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
     }
     if (Is64Bit(Reg))
     {
-        CPU_Message("    regcache: unallocate %s from %s", x86_Name(GetMipsRegMapHi(Reg)), CRegName::GPR_Hi[Reg]);
+        m_CodeBlock.Log("    regcache: unallocate %s from %s", x86_Name(GetMipsRegMapHi(Reg)), CRegName::GPR_Hi[Reg]);
         SetX86Mapped(GetMipsRegMapHi(Reg), NotMapped);
         SetX86Protected(GetMipsRegMapHi(Reg), false);
     }
-    CPU_Message("    regcache: unallocate %s from %s", x86_Name(GetMipsRegMapLo(Reg)), CRegName::GPR_Lo[Reg]);
+    m_CodeBlock.Log("    regcache: unallocate %s from %s", x86_Name(GetMipsRegMapLo(Reg)), CRegName::GPR_Lo[Reg]);
     SetX86Mapped(GetMipsRegMapLo(Reg), NotMapped);
     SetX86Protected(GetMipsRegMapLo(Reg), false);
     if (!WriteBackValue)
@@ -1241,7 +1244,7 @@ CX86Ops::x86Reg CX86RegInfo::UnMap_TempReg()
     {
         if (GetX86Mapped(Reg) == Temp_Mapped)
         {
-            CPU_Message("    regcache: unallocate %s from temp storage", x86_Name(Reg));
+            m_CodeBlock.Log("    regcache: unallocate %s from temp storage", x86_Name(Reg));
         }
         SetX86Mapped(Reg, NotMapped);
     }
@@ -1292,14 +1295,14 @@ bool CX86RegInfo::UnMap_X86reg(CX86Ops::x86Reg Reg)
     {
         if (!GetX86Protected(Reg))
         {
-            CPU_Message("    regcache: unallocate %s from temp storage", x86_Name(Reg));
+            m_CodeBlock.Log("    regcache: unallocate %s from temp storage", x86_Name(Reg));
             SetX86Mapped(Reg, NotMapped);
             return true;
         }
     }
     else if (GetX86Mapped(Reg) == CX86RegInfo::Stack_Mapped)
     {
-        CPU_Message("    regcache: unallocate %s from memory stack", x86_Name(Reg));
+        m_CodeBlock.Log("    regcache: unallocate %s from memory stack", x86_Name(Reg));
         MoveX86regToVariable(Reg, &(g_Recompiler->MemoryStackPos()), "MemoryStack");
         SetX86Mapped(Reg, NotMapped);
         return true;
@@ -1448,7 +1451,7 @@ void CX86RegInfo::WriteBackRegisters()
             SetMipsRegState(count, CX86RegInfo::STATE_UNKNOWN);
             break;
         default:
-            CPU_Message("%s: Unknown State: %d reg %d (%s)", __FUNCTION__, GetMipsRegState(count), count, CRegName::GPR[count]);
+            m_CodeBlock.Log("%s: Unknown State: %d reg %d (%s)", __FUNCTION__, GetMipsRegState(count), count, CRegName::GPR[count]);
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }

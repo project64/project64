@@ -5,6 +5,8 @@
 
 struct CExitInfo
 {
+    CExitInfo(CCodeBlock & CodeBlock);
+
     enum EXIT_REASON
     {
         Normal = 0,

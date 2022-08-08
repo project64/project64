@@ -22,6 +22,8 @@ public:
     const CCodeSection & EnterSection() const { return *m_EnterSection; }
     const MD5Digest & Hash() const { return m_Hash; }
     CRecompilerOps *& RecompilerOps() { return m_RecompilerOps; }
+    const std::string & CodeLog() const { return m_CodeLog; }
+
     void SetVAddrFirst(uint32_t VAddr) { m_VAddrFirst = VAddr; }
     void SetVAddrLast(uint32_t VAddr) { m_VAddrLast = VAddr; }
 
@@ -32,6 +34,8 @@ public:
     uint64_t * MemLocation(int32_t i) const { return m_MemLocation[i]; }
 
     uint32_t NextTest();
+
+    void Log(_Printf_format_string_ const char * Text, ...);
 
 private:
     CCodeBlock();
@@ -64,4 +68,5 @@ private:
     uint64_t m_MemContents[2];
     uint64_t * m_MemLocation[2];
     CRecompilerOps * m_RecompilerOps;
+    std::string m_CodeLog;
 };

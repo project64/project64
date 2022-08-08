@@ -4,7 +4,7 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Recompiler/x86/x86ops.h>
-#include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
+#include <Project64-core/N64System/Recompiler/CodeBlock.h>
 
 char CX86Ops::m_fpupop[2][2] =
 {
@@ -23,29 +23,34 @@ CX86Ops::x86Reg CX86Ops::x86_Registers[8] =
     x86_ESP
 };
 
+CX86Ops::CX86Ops(CCodeBlock & CodeBlock) :
+    m_CodeBlock(CodeBlock)
+{
+}
+
 // Logging functions
 void CX86Ops::WriteX86Comment(const char * Comment)
 {
-    CPU_Message("");
-    CPU_Message("      // %s", Comment);
+    CodeLog("");
+    CodeLog("      // %s", Comment);
 }
 
 void CX86Ops::WriteX86Label(const char * Label)
 {
-    CPU_Message("");
-    CPU_Message("      %s:", Label);
+    CodeLog("");
+    CodeLog("      %s:", Label);
 }
 
 void CX86Ops::AdcX86regToVariable(x86Reg reg, void * Variable, const char * VariableName)
 {
-    CPU_Message("      adc dword ptr [%s], %s", VariableName, x86_Name(reg));
+    CodeLog("      adc dword ptr [%s], %s", VariableName, x86_Name(reg));
     AddCode16((uint16_t)(0x0511 + (reg * 0x100)));
     AddCode32((uint32_t)Variable);
 }
 
 void CX86Ops::AdcConstToVariable(void *Variable, const char * VariableName, uint8_t Constant)
 {
-    CPU_Message("      adc dword ptr [%s], %Xh", VariableName, Constant);
+    CodeLog("      adc dword ptr [%s], %Xh", VariableName, Constant);
     AddCode16(0x1583);
     AddCode32((uint32_t)Variable);
     AddCode8(Constant);
@@ -53,7 +58,7 @@ void CX86Ops::AdcConstToVariable(void *Variable, const char * VariableName, uint
 
 void CX86Ops::AdcConstToX86Reg(x86Reg reg, uint32_t Const)
 {
-    CPU_Message("      adc %s, %Xh", x86_Name(reg), Const);
+    CodeLog("      adc %s, %Xh", x86_Name(reg), Const);
     if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
     {
         AddCode16((uint16_t)(0xD081 + (reg * 0x100)));
@@ -68,20 +73,20 @@ void CX86Ops::AdcConstToX86Reg(x86Reg reg, uint32_t Const)
 
 void CX86Ops::AdcVariableToX86reg(x86Reg reg, void * Variable, const char * VariableName)
 {
-    CPU_Message("      adc %s, dword ptr [%s]", x86_Name(reg), VariableName);
+    CodeLog("      adc %s, dword ptr [%s]", x86_Name(reg), VariableName);
     AddCode16((uint16_t)(0x0513 + (reg * 0x800)));
     AddCode32((uint32_t)Variable);
 }
 
 void CX86Ops::AdcX86RegToX86Reg(x86Reg Destination, x86Reg Source)
 {
-    CPU_Message("      adc %s, %s", x86_Name(Destination), x86_Name(Source));
+    CodeLog("      adc %s, %s", x86_Name(Destination), x86_Name(Source));
     AddCode16((uint16_t)(0xC013 + (Source * 0x100) + (Destination * 0x800)));
 }
 
 void CX86Ops::AddConstToVariable(uint32_t Const, void *Variable, const char * VariableName)
 {
-    CPU_Message("      add dword ptr [%s], 0x%X", VariableName, Const);
+    CodeLog("      add dword ptr [%s], 0x%X", VariableName, Const);
     AddCode16(0x0581);
     AddCode32((uint32_t)Variable);
     AddCode32(Const);
@@ -102,13 +107,13 @@ void CX86Ops::AddConstToX86Reg(x86Reg reg, uint32_t Const)
     }
     else if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
     {
-        CPU_Message("      add %s, %Xh", x86_Name(reg), Const);
+        CodeLog("      add %s, %Xh", x86_Name(reg), Const);
         AddCode16((uint16_t)(0xC081 + (reg * 0x100)));
         AddCode32(Const);
     }
     else
     {
-        CPU_Message("      add %s, %Xh", x86_Name(reg), Const);
+        CodeLog("      add %s, %Xh", x86_Name(reg), Const);
         AddCode16((uint16_t)(0xC083 + (reg * 0x100)));
         AddCode8((uint8_t)Const);
     }
@@ -116,27 +121,27 @@ void CX86Ops::AddConstToX86Reg(x86Reg reg, uint32_t Const)
 
 void CX86Ops::AddVariableToX86reg(x86Reg reg, void * Variable, const char * VariableName)
 {
-    CPU_Message("      add %s, dword ptr [%s]", x86_Name(reg), VariableName);
+    CodeLog("      add %s, dword ptr [%s]", x86_Name(reg), VariableName);
     AddCode16((uint16_t)(0x0503 + (reg * 0x800)));
     AddCode32((uint32_t)Variable);
 }
 
 void CX86Ops::AddX86regToVariable(x86Reg reg, void * Variable, const char * VariableName)
 {
-    CPU_Message("      add dword ptr [%s], %s", VariableName, x86_Name(reg));
+    CodeLog("      add dword ptr [%s], %s", VariableName, x86_Name(reg));
     AddCode16((uint16_t)(0x0501 + (reg * 0x800)));
     AddCode32((uint32_t)Variable);
 }
 
 void CX86Ops::AddX86RegToX86Reg(x86Reg Destination, x86Reg Source)
 {
-    CPU_Message("      add %s, %s", x86_Name(Destination), x86_Name(Source));
+    CodeLog("      add %s, %s", x86_Name(Destination), x86_Name(Source));
     AddCode16((uint16_t)(0xC003 + (Source * 0x100) + (Destination * 0x800)));
 }
 
 void CX86Ops::AndConstToVariable(uint32_t Const, void *Variable, const char * VariableName)
 {
-    CPU_Message("      and dword ptr [%s], 0x%X", VariableName, Const);
+    CodeLog("      and dword ptr [%s], 0x%X", VariableName, Const);
     AddCode16(0x2581);
     AddCode32((uint32_t)Variable);
     AddCode32(Const);
@@ -144,7 +149,7 @@ void CX86Ops::AndConstToVariable(uint32_t Const, void *Variable, const char * Va
 
 void CX86Ops::AndConstToX86Reg(x86Reg reg, uint32_t Const)
 {
-    CPU_Message("      and %s, %Xh", x86_Name(reg), Const);
+    CodeLog("      and %s, %Xh", x86_Name(reg), Const);
     if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
     {
         AddCode16((uint16_t)(0xE081 + (reg * 0x100)));
@@ -159,7 +164,7 @@ void CX86Ops::AndConstToX86Reg(x86Reg reg, uint32_t Const)
 
 void CX86Ops::AndVariableDispToX86Reg(void *Variable, const char * VariableName, x86Reg reg, x86Reg AddrReg, Multipler Multiply)
 {
-    CPU_Message("      and %s, dword ptr [%s+%s*%i]", x86_Name(reg), VariableName, x86_Name(AddrReg), Multiply);
+    CodeLog("      and %s, dword ptr [%s+%s*%i]", x86_Name(reg), VariableName, x86_Name(AddrReg), Multiply);
 
     AddCode16((uint16_t)(0x0423 + (reg * 0x800)));
     AddCode8((uint8_t)(0x05 + CalcMultiplyCode(Multiply) + (AddrReg * 0x8)));
@@ -168,14 +173,14 @@ void CX86Ops::AndVariableDispToX86Reg(void *Variable, const char * VariableName,
 
 void CX86Ops::AndVariableToX86Reg(void * Variable, const char * VariableName, x86Reg reg)
 {
-    CPU_Message("      and %s, dword ptr [%s]", x86_Name(reg), VariableName);
+    CodeLog("      and %s, dword ptr [%s]", x86_Name(reg), VariableName);
     AddCode16((uint16_t)(0x0523 + (reg * 0x800)));
     AddCode32((uint32_t)(Variable));
 }
 
 void CX86Ops::AndX86RegToX86Reg(x86Reg Destination, x86Reg Source)
 {
-    CPU_Message("      and %s, %s", x86_Name(Destination), x86_Name(Source));
+    CodeLog("      and %s, %s", x86_Name(Destination), x86_Name(Source));
     AddCode16((uint16_t)(0xC021 + (Destination * 0x100) + (Source * 0x800)));
 }
 
@@ -186,7 +191,7 @@ void CX86Ops::BreakPointNotification(const char * FileName, int32_t LineNumber)
 
 void CX86Ops::X86HardBreakPoint()
 {
-    CPU_Message("      int 3");
+    CodeLog("      int 3");
     AddCode8(0xCC);
 }
 
@@ -202,21 +207,21 @@ void CX86Ops::X86BreakPoint(const char * FileName, int LineNumber)
 
 void CX86Ops::Call_Direct(void * FunctAddress, const char * FunctName)
 {
-    CPU_Message("      call offset %s", FunctName);
+    CodeLog("      call offset %s", FunctName);
     AddCode8(0xE8);
     AddCode32((uint32_t)FunctAddress - (uint32_t)*g_RecompPos - 4);
 }
 
 void CX86Ops::Call_Indirect(void * FunctAddress, const char * FunctName)
 {
-    CPU_Message("      call [%s]", FunctName);
+    CodeLog("      call [%s]", FunctName);
     AddCode16(0x15FF);
     AddCode32((uint32_t)FunctAddress);
 }
 
 void CX86Ops::CompConstToVariable(uint32_t Const, void * Variable, const char * VariableName)
 {
-    CPU_Message("      cmp dword ptr [%s], 0x%X", VariableName, Const);
+    CodeLog("      cmp dword ptr [%s], 0x%X", VariableName, Const);
     AddCode16(0x3D81);
     AddCode32((uint32_t)Variable);
     AddCode32(Const);
@@ -230,7 +235,7 @@ void CX86Ops::CompConstToX86reg(x86Reg reg, uint32_t Const)
     }
     else
     {
-        CPU_Message("      cmp %s, %Xh", x86_Name(reg), Const);
+        CodeLog("      cmp %s, %Xh", x86_Name(reg), Const);
         if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
         {
             AddCode16((uint16_t)(0xF881 + (reg * 0x100)));
@@ -248,13 +253,13 @@ void CX86Ops::CompConstToX86regPointer(x86Reg reg, uint32_t Const)
 {
     if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
     {
-        CPU_Message("      cmp dword ptr [%s], %Xh", x86_Name(reg), Const);
+        CodeLog("      cmp dword ptr [%s], %Xh", x86_Name(reg), Const);
         AddCode16((uint16_t)(0x3881 + (reg * 0x100)));
         AddCode32(Const);
     }
     else
     {
-        CPU_Message("      cmp byte ptr [%s], %Xh", x86_Name(reg), Const);
+        CodeLog("      cmp byte ptr [%s], %Xh", x86_Name(reg), Const);
         AddCode16((uint16_t)(0x3883 + (reg * 0x100)));
         AddCode8((uint8_t)Const);
     }
@@ -262,14 +267,14 @@ void CX86Ops::CompConstToX86regPointer(x86Reg reg, uint32_t Const)
 
 void CX86Ops::CompX86regToVariable(x86Reg reg, void * Variable, const char * VariableName)
 {
-    CPU_Message("      cmp %s, dword ptr [%s]", x86_Name(reg), VariableName);
+    CodeLog("      cmp %s, dword ptr [%s]", x86_Name(reg), VariableName);
     AddCode16((uint16_t)(0x053B + (reg * 0x800)));
     AddCode32((uint32_t)Variable);
 }
 
 void CX86Ops::CompVariableToX86reg(x86Reg reg, void * Variable, const char * VariableName)
 {
-    CPU_Message("      cmp dword ptr [%s], %s", VariableName, x86_Name(reg));
+    CodeLog("      cmp dword ptr [%s], %s", VariableName, x86_Name(reg));
     AddCode16((uint16_t)(0x0539 + (reg * 0x800)));
     AddCode32((uint32_t)Variable);
 }
@@ -278,7 +283,7 @@ void CX86Ops::CompX86RegToX86Reg(x86Reg Destination, x86Reg Source)
 {
     uint16_t x86Command = 0;
 
-    CPU_Message("      cmp %s, %s", x86_Name(Destination), x86_Name(Source));
+    CodeLog("      cmp %s, %s", x86_Name(Destination), x86_Name(Source));
 
     switch (Source)
     {
@@ -309,7 +314,7 @@ void CX86Ops::CompX86RegToX86Reg(x86Reg Destination, x86Reg Source)
 
 void CX86Ops::DecX86reg(x86Reg reg)
 {
-    CPU_Message("      dec %s", x86_Name(reg));
+    CodeLog("      dec %s", x86_Name(reg));
 
     switch (reg)
     {
@@ -328,7 +333,7 @@ void CX86Ops::DecX86reg(x86Reg reg)
 
 void CX86Ops::DivX86reg(x86Reg reg)
 {
-    CPU_Message("      div %s", x86_Name(reg));
+    CodeLog("      div %s", x86_Name(reg));
     switch (reg)
     {
     case x86_EBX: AddCode16(0xf3F7); break;
@@ -345,7 +350,7 @@ void CX86Ops::DivX86reg(x86Reg reg)
 
 void CX86Ops::idivX86reg(x86Reg reg)
 {
-    CPU_Message("      idiv %s", x86_Name(reg));
+    CodeLog("      idiv %s", x86_Name(reg));
 
     switch (reg)
     {
@@ -363,7 +368,7 @@ void CX86Ops::idivX86reg(x86Reg reg)
 
 void CX86Ops::imulX86reg(x86Reg reg)
 {
-    CPU_Message("      imul %s", x86_Name(reg));
+    CodeLog("      imul %s", x86_Name(reg));
 
     switch (reg)
     {
@@ -382,7 +387,7 @@ void CX86Ops::imulX86reg(x86Reg reg)
 
 void CX86Ops::IncX86reg(x86Reg reg)
 {
-    CPU_Message("      inc %s", x86_Name(reg));
+    CodeLog("      inc %s", x86_Name(reg));
 
     switch (reg)
     {
@@ -401,119 +406,119 @@ void CX86Ops::IncX86reg(x86Reg reg)
 
 void CX86Ops::JaeLabel8(const char * Label, uint8_t Value)
 {
-    CPU_Message("      jae $%s", Label);
+    CodeLog("      jae $%s", Label);
     AddCode8(0x73);
     AddCode8(Value);
 }
 
 void CX86Ops::JaeLabel32(const char * Label, uint32_t Value)
 {
-    CPU_Message("      jae $%s", Label);
+    CodeLog("      jae $%s", Label);
     AddCode16(0x830F);
     AddCode32(Value);
 }
 
 void CX86Ops::JaLabel8(const char * Label, uint8_t Value)
 {
-    CPU_Message("      ja $%s", Label);
+    CodeLog("      ja $%s", Label);
     AddCode8(0x77);
     AddCode8(Value);
 }
 
 void CX86Ops::JaLabel32(const char * Label, uint32_t Value)
 {
-    CPU_Message("      ja $%s", Label);
+    CodeLog("      ja $%s", Label);
     AddCode16(0x870F);
     AddCode32(Value);
 }
 
 void CX86Ops::JbLabel8(const char * Label, uint8_t Value)
 {
-    CPU_Message("      jb $%s", Label);
+    CodeLog("      jb $%s", Label);
     AddCode8(0x72);
     AddCode8(Value);
 }
 
 void CX86Ops::JbLabel32(const char * Label, uint32_t Value)
 {
-    CPU_Message("      jb $%s", Label);
+    CodeLog("      jb $%s", Label);
     AddCode16(0x820F);
     AddCode32(Value);
 }
 
 void CX86Ops::JecxzLabel8(const char * Label, uint8_t Value)
 {
-    CPU_Message("      jecxz $%s", Label);
+    CodeLog("      jecxz $%s", Label);
     AddCode8(0xE3);
     AddCode8(Value);
 }
 
 void CX86Ops::JeLabel8(const char * Label, uint8_t Value)
 {
-    CPU_Message("      je $%s", Label);
+    CodeLog("      je $%s", Label);
     AddCode8(0x74);
     AddCode8(Value);
 }
 
 void CX86Ops::JeLabel32(const char * Label, uint32_t Value)
 {
-    CPU_Message("      je $%s", Label);
+    CodeLog("      je $%s", Label);
     AddCode16(0x840F);
     AddCode32(Value);
 }
 
 void CX86Ops::JgeLabel32(const char * Label, uint32_t Value)
 {
-    CPU_Message("      jge $%s", Label);
+    CodeLog("      jge $%s", Label);
     AddCode16(0x8D0F);
     AddCode32(Value);
 }
 
 void CX86Ops::JgLabel8(const char * Label, uint8_t Value)
 {
-    CPU_Message("      jg $%s", Label);
+    CodeLog("      jg $%s", Label);
     AddCode8(0x7F);
     AddCode8(Value);
 }
 
 void CX86Ops::JgLabel32(const char * Label, uint32_t Value)
 {
-    CPU_Message("      jg $%s", Label);
+    CodeLog("      jg $%s", Label);
     AddCode16(0x8F0F);
     AddCode32(Value);
 }
 
 void CX86Ops::JleLabel8(const char * Label, uint8_t Value)
 {
-    CPU_Message("      jle $%s", Label);
+    CodeLog("      jle $%s", Label);
     AddCode8(0x7E);
     AddCode8(Value);
 }
 
 void CX86Ops::JleLabel32(const char * Label, uint32_t Value)
 {
-    CPU_Message("      jle $%s", Label);
+    CodeLog("      jle $%s", Label);
     AddCode16(0x8E0F);
     AddCode32(Value);
 }
 
 void CX86Ops::JlLabel8(const char * Label, uint8_t Value)
 {
-    CPU_Message("      jl $%s", Label);
+    CodeLog("      jl $%s", Label);
     AddCode8(0x7C);
     AddCode8(Value);
 }
 
 void CX86Ops::JlLabel32(const char * Label, uint32_t Value)
 {
-    CPU_Message("      jl $%s", Label);
+    CodeLog("      jl $%s", Label);
     AddCode16(0x8C0F);
     AddCode32(Value);
 }
 
 void CX86Ops::JmpDirectReg(x86Reg reg)
 {
-    CPU_Message("      jmp %s", x86_Name(reg));
+    CodeLog("      jmp %s", x86_Name(reg));
 
     switch (reg)
     {
@@ -530,14 +535,14 @@ void CX86Ops::JmpDirectReg(x86Reg reg)
 
 void CX86Ops::JmpIndirectLabel32(const char * Label, uint32_t location)
 {
-    CPU_Message("      jmp dword ptr [%s]", Label);
+    CodeLog("      jmp dword ptr [%s]", Label);
     AddCode16(0x25ff);
     AddCode32(location);
 }
 
 void CX86Ops::JmpIndirectReg(x86Reg reg)
 {
-    CPU_Message("      jmp dword ptr [%s]", x86_Name(reg));
+    CodeLog("      jmp dword ptr [%s]", x86_Name(reg));
 
     switch (reg) {
     case x86_EAX: AddCode16(0x20ff); break;
@@ -561,77 +566,77 @@ void CX86Ops::JmpIndirectReg(x86Reg reg)
 
 void CX86Ops::JmpLabel8(const char * Label, uint8_t Value)
 {
-    CPU_Message("      jmp $%s", Label);
+    CodeLog("      jmp $%s", Label);
     AddCode8(0xEB);
     AddCode8(Value);
 }
 
 void CX86Ops::JmpLabel32(const char * Label, uint32_t Value)
 {
-    CPU_Message("      jmp $%s", Label);
+    CodeLog("      jmp $%s", Label);
     AddCode8(0xE9);
     AddCode32(Value);
 }
 
 void CX86Ops::JneLabel8(const char * Label, uint8_t Value)
 {
-    CPU_Message("      jne $%s", Label);
+    CodeLog("      jne $%s", Label);
     AddCode8(0x75);
     AddCode8(Value);
 }
 
 void CX86Ops::JneLabel32(const char *Label, uint32_t Value)
 {
-    CPU_Message("      jne $%s", Label);
+    CodeLog("      jne $%s", Label);
     AddCode16(0x850F);
     AddCode32(Value);
 }
 
 void CX86Ops::JnsLabel8(const char * Label, uint8_t Value)
 {
-    CPU_Message("      jns $%s", Label);
+    CodeLog("      jns $%s", Label);
     AddCode8(0x79);
     AddCode8(Value);
 }
 
 void CX86Ops::JnsLabel32(const char *Label, uint32_t Value)
 {
-    CPU_Message("      jns $%s", Label);
+    CodeLog("      jns $%s", Label);
     AddCode16(0x890F);
     AddCode32(Value);
 }
 
 void CX86Ops::JnzLabel8(const char *Label, uint8_t Value)
 {
-    CPU_Message("      jnz $%s", Label);
+    CodeLog("      jnz $%s", Label);
     AddCode8(0x75);
     AddCode8(Value);
 }
 
 void CX86Ops::JnzLabel32(const char *Label, uint32_t Value)
 {
-    CPU_Message("      jnz $%s", Label);
+    CodeLog("      jnz $%s", Label);
     AddCode16(0x850F);
     AddCode32(Value);
 }
 
 void CX86Ops::JsLabel32(const char *Label, uint32_t Value)
 {
-    CPU_Message("      js $%s", Label);
+    CodeLog("      js $%s", Label);
     AddCode16(0x880F);
     AddCode32(Value);
 }
 
 void CX86Ops::JzLabel8(const char *Label, uint8_t Value)
 {
-    CPU_Message("      jz $%s", Label);
+    CodeLog("      jz $%s", Label);
     AddCode8(0x74);
     AddCode8(Value);
 }
 
 void CX86Ops::JzLabel32(const char *Label, uint32_t Value)
 {
-    CPU_Message("      jz $%s", Label);
+    CodeLog("      jz $%s", Label);
     AddCode16(0x840F);
     AddCode32(Value);
 }
@@ -640,10 +645,10 @@ void CX86Ops::LeaRegReg(x86Reg RegDest, x86Reg RegSrc, uint32_t Const, Multipler
 {
     if (Const != 0)
     {
-        CPU_Message("      lea %s, [%s*%i+%X]", x86_Name(RegDest), x86_Name(RegSrc), multiplier, Const);
+        CodeLog("      lea %s, [%s*%i+%X]", x86_Name(RegDest), x86_Name(RegSrc), multiplier, Const);
     }
     else {
-        CPU_Message("      lea %s, [%s*%i]", x86_Name(RegDest), x86_Name(RegSrc), multiplier);
+        CodeLog("      lea %s, [%s*%i]", x86_Name(RegDest), x86_Name(RegSrc), multiplier);
     }
 
     AddCode8(0x8D);
@@ -654,7 +659,7 @@ void CX86Ops::LeaRegReg(x86Reg RegDest, x86Reg RegSrc, uint32_t Const, Multipler
 
 void CX86Ops::LeaRegReg2(x86Reg RegDest, x86Reg RegSrc, x86Reg RegSrc2, Multipler multiplier)
 {
-    CPU_Message("      lea %s, [%s+%s*%i]", x86_Name(RegDest), x86_Name(RegSrc), x86_Name(RegSrc2), multiplier);
+    CodeLog("      lea %s, [%s+%s*%i]", x86_Name(RegDest), x86_Name(RegSrc), x86_Name(RegSrc2), multiplier);
 
     if (RegSrc2 == x86_ESP || RegSrc2 == x86_EBP)
     {
@@ -670,7 +675,7 @@ void CX86Ops::LeaSourceAndOffset(x86Reg x86DestReg, x86Reg x86SourceReg, int off
 {
     uint16_t x86Command = 0;
 
-    CPU_Message("      lea %s, [%s + %0Xh]", x86_Name(x86DestReg), x86_Name(x86SourceReg), offset);
+    CodeLog("      lea %s, [%s + %0Xh]", x86_Name(x86DestReg), x86_Name(x86SourceReg), offset);
 
     //	if ((offset & 0xFFFFFF80) != 0 && (offset & 0xFFFFFF80) != 0xFFFFFF80) {
     if (1)
@@ -739,7 +744,7 @@ void CX86Ops::LeaSourceAndOffset(x86Reg x86DestReg, x86Reg x86SourceReg, int off
 
 void CX86Ops::MoveConstByteToN64Mem(uint8_t Const, x86Reg AddrReg)
 {
-    CPU_Message("      mov byte ptr [%s+N64mem], %Xh", x86_Name(AddrReg), Const);
+    CodeLog("      mov byte ptr [%s+N64mem], %Xh", x86_Name(AddrReg), Const);
     switch (AddrReg)
     {
     case x86_EAX: AddCode16(0x80C6); break;
@@ -759,7 +764,7 @@ void CX86Ops::MoveConstByteToN64Mem(uint8_t Const, x86Reg AddrReg)
 
 void CX86Ops::MoveConstByteToVariable(uint8_t Const, void *Variable, const char * VariableName)
 {
-    CPU_Message("      mov byte ptr [%s], %Xh", VariableName, Const);
+    CodeLog("      mov byte ptr [%s], %Xh", VariableName, Const);
     AddCode16(0x05C6);
     AddCode32((uint32_t)Variable);
     AddCode8(Const);
@@ -767,7 +772,7 @@ void CX86Ops::MoveConstByteToVariable(uint8_t Const, void *Variable, const char 
 
 void CX86Ops::MoveConstHalfToN64Mem(uint16_t Const, x86Reg AddrReg)
 {
-    CPU_Message("      mov word ptr [%s+N64mem], %Xh", x86_Name(AddrReg), Const);
+    CodeLog("      mov word ptr [%s+N64mem], %Xh", x86_Name(AddrReg), Const);
     AddCode8(0x66);
     switch (AddrReg)
     {
@@ -788,7 +793,7 @@ void CX86Ops::MoveConstHalfToN64Mem(uint16_t Const, x86Reg AddrReg)
 
 void CX86Ops::MoveConstHalfToVariable(uint16_t Const, void *Variable, const char * VariableName)
 {
-    CPU_Message("      mov word ptr [%s], %Xh", VariableName, Const);
+    CodeLog("      mov word ptr [%s], %Xh", VariableName, Const);
     AddCode8(0x66);
     AddCode16(0x05C7);
     AddCode32((uint32_t)Variable);
@@ -799,7 +804,7 @@ void CX86Ops::MoveConstHalfToX86regPointer(uint16_t Const, x86Reg AddrReg1, x86R
 {
     uint8_t Param = 0;
 
-    CPU_Message("      mov word ptr [%s+%s],%Xh", x86_Name(AddrReg1), x86_Name(AddrReg2), Const);
+    CodeLog("      mov word ptr [%s+%s],%Xh", x86_Name(AddrReg1), x86_Name(AddrReg2), Const);
 
     AddCode8(0x66);
     AddCode16(0x04C7);
@@ -835,7 +840,7 @@ void CX86Ops::MoveConstHalfToX86regPointer(uint16_t Const, x86Reg AddrReg1, x86R
 
 void CX86Ops::MoveConstToMemoryDisp(uint32_t Const, x86Reg AddrReg, uint32_t Disp)
 {
-    CPU_Message("      mov dword ptr [%s+%Xh], %Xh", x86_Name(AddrReg), Disp, Const);
+    CodeLog("      mov dword ptr [%s+%Xh], %Xh", x86_Name(AddrReg), Disp, Const);
     switch (AddrReg)
     {
     case x86_EAX: AddCode16(0x80C7); break;
@@ -855,7 +860,7 @@ void CX86Ops::MoveConstToMemoryDisp(uint32_t Const, x86Reg AddrReg, uint32_t Dis
 
 void CX86Ops::MoveConstToN64Mem(uint32_t Const, x86Reg AddrReg)
 {
-    CPU_Message("      mov dword ptr [%s+N64mem], %Xh", x86_Name(AddrReg), Const);
+    CodeLog("      mov dword ptr [%s+N64mem], %Xh", x86_Name(AddrReg), Const);
     switch (AddrReg)
     {
     case x86_EAX: AddCode16(0x80C7); break;
@@ -875,7 +880,7 @@ void CX86Ops::MoveConstToN64Mem(uint32_t Const, x86Reg AddrReg)
 
 void CX86Ops::MoveConstToN64MemDisp(uint32_t Const, x86Reg AddrReg, uint8_t Disp)
 {
-    CPU_Message("      mov dword ptr [%s+N64mem+%Xh], %Xh", x86_Name(AddrReg), Const, Disp);
+    CodeLog("      mov dword ptr [%s+N64mem+%Xh], %Xh", x86_Name(AddrReg), Const, Disp);
     switch (AddrReg)
     {
     case x86_EAX: AddCode16(0x80C7); break;
@@ -895,7 +900,7 @@ void CX86Ops::MoveConstToN64MemDisp(uint32_t Const, x86Reg AddrReg, uint8_t Disp
 
 void CX86Ops::MoveConstToVariable(uint32_t Const, void *Variable, const char * VariableName)
 {
-    CPU_Message("      mov dword ptr [%s], %Xh", VariableName, Const);
+    CodeLog("      mov dword ptr [%s], %Xh", VariableName, Const);
     AddCode16(0x05C7);
     AddCode32((uint32_t)Variable);
     AddCode32(Const);
@@ -903,7 +908,7 @@ void CX86Ops::MoveConstToVariable(uint32_t Const, void *Variable, const char * V
 
 void CX86Ops::MoveConstToX86Pointer(uint32_t Const, x86Reg X86Pointer)
 {
-    CPU_Message("      mov dword ptr [%s], %Xh", x86_Name(X86Pointer), Const);
+    CodeLog("      mov dword ptr [%s], %Xh", x86_Name(X86Pointer), Const);
     AddCode16((uint16_t)(0x00C7 + (X86Pointer * 0x100)));
     AddCode32(Const);
 }
@@ -916,7 +921,7 @@ void CX86Ops::MoveConstToX86reg(uint32_t Const, x86Reg reg)
     }
     else
     {
-        CPU_Message("      mov %s, %Xh", x86_Name(reg), Const);
+        CodeLog("      mov %s, %Xh", x86_Name(reg), Const);
         AddCode16((uint16_t)(0xC0C7 + (reg * 0x100)));
         AddCode32(Const);
     }
@@ -926,7 +931,7 @@ void CX86Ops::MoveConstByteToX86regPointer(uint8_t Const, x86Reg AddrReg1, x86Re
 {
     uint8_t Param = 0;
 
-    CPU_Message("      mov byte ptr [%s+%s],%Xh", x86_Name(AddrReg1), x86_Name(AddrReg2), Const);
+    CodeLog("      mov byte ptr [%s+%s],%Xh", x86_Name(AddrReg1), x86_Name(AddrReg2), Const);
 
     AddCode16(0x04C6);
 
@@ -963,7 +968,7 @@ void CX86Ops::MoveConstToX86regPointer(uint32_t Const, x86Reg AddrReg1, x86Reg A
 {
     uint8_t Param = 0;
 
-    CPU_Message("      mov dword ptr [%s+%s],%Xh", x86_Name(AddrReg1), x86_Name(AddrReg2), Const);
+    CodeLog("      mov dword ptr [%s+%s],%Xh", x86_Name(AddrReg1), x86_Name(AddrReg2), Const);
 
     AddCode16(0x04C7);
 
@@ -998,7 +1003,7 @@ void CX86Ops::MoveN64MemDispToX86reg(x86Reg reg, x86Reg AddrReg, uint8_t Disp)
 {
     uint16_t x86Command = 0;
 
-    CPU_Message("      mov %s, dword ptr [%s+N64mem+%Xh]", x86_Name(reg), x86_Name(AddrReg), Disp);
+    CodeLog("      mov %s, dword ptr [%s+N64mem+%Xh]", x86_Name(reg), x86_Name(AddrReg), Disp);
     switch (AddrReg)
     {
     case x86_EAX: x86Command = 0x008B; break;
@@ -1031,7 +1036,7 @@ void CX86Ops::MoveN64MemToX86reg(x86Reg reg, x86Reg AddrReg)
 {
     uint16_t x86Command = 0;
 
-    CPU_Message("      mov %s, dword ptr [%s+N64mem]", x86_Name(reg), x86_Name(AddrReg));
+    CodeLog("      mov %s, dword ptr [%s+N64mem]", x86_Name(reg), x86_Name(AddrReg));
 
     switch (AddrReg)
     {
@@ -1065,7 +1070,7 @@ void CX86Ops::MoveN64MemToX86regByte(x86Reg reg, x86Reg AddrReg)
 {
     uint16_t x86Command = 0;
 
-    CPU_Message("      mov %s, byte ptr [%s+N64mem]", x86_ByteName(reg), x86_Name(AddrReg));
+    CodeLog("      mov %s, byte ptr [%s+N64mem]", x86_ByteName(reg), x86_Name(AddrReg));
     switch (AddrReg)
     {
     case x86_EAX: x86Command = 0x008A; break;
@@ -1100,7 +1105,7 @@ void CX86Ops::MoveN64MemToX86regHalf(x86Reg reg, x86Reg AddrReg)
 {
     uint16_t x86Command = 0;
 
-    CPU_Message("      mov %s, word ptr [%s+N64mem]", x86_HalfName(reg), x86_Name(AddrReg));
+    CodeLog("      mov %s, word ptr [%s+N64mem]", x86_HalfName(reg), x86_Name(AddrReg));
 
     AddCode8(0x66);
     switch (AddrReg)
@@ -1135,7 +1140,7 @@ void CX86Ops::MoveSxByteX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, 
 {
     uint8_t Param = 0;
 
-    CPU_Message("      movsx %s, byte ptr [%s+%s]", x86_Name(reg), x86_Name(AddrReg1), x86_Name(AddrReg2));
+    CodeLog("      movsx %s, byte ptr [%s+%s]", x86_Name(reg), x86_Name(AddrReg1), x86_Name(AddrReg2));
 
     AddCode16(0xBE0F);
     switch (reg)
@@ -1184,7 +1189,7 @@ void CX86Ops::MoveSxHalfX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, 
 {
     uint8_t Param = 0;
 
-    CPU_Message("      movsx %s, word ptr [%s+%s]", x86_Name(reg), x86_Name(AddrReg1), x86_Name(AddrReg2));
+    CodeLog("      movsx %s, word ptr [%s+%s]", x86_Name(reg), x86_Name(AddrReg1), x86_Name(AddrReg2));
 
     AddCode16(0xBF0F);
     switch (reg)
@@ -1233,7 +1238,7 @@ void CX86Ops::MoveSxN64MemToX86regByte(x86Reg reg, x86Reg AddrReg)
 {
     uint16_t x86Command = 0;
 
-    CPU_Message("      movsx %s, byte ptr [%s+Dmem]", x86_Name(reg), x86_Name(AddrReg));
+    CodeLog("      movsx %s, byte ptr [%s+Dmem]", x86_Name(reg), x86_Name(AddrReg));
     switch (AddrReg)
     {
     case x86_EAX: x86Command = 0x00BE; break;
@@ -1270,7 +1275,7 @@ void CX86Ops::MoveSxN64MemToX86regHalf(x86Reg reg, x86Reg AddrReg)
 {
     uint16_t x86Command = 0;
 
-    CPU_Message("      movsx %s, word ptr [%s+Dmem]", x86_Name(reg), x86_Name(AddrReg));
+    CodeLog("      movsx %s, word ptr [%s+Dmem]", x86_Name(reg), x86_Name(AddrReg));
 
     switch (AddrReg)
     {
@@ -1304,7 +1309,7 @@ void CX86Ops::MoveSxN64MemToX86regHalf(x86Reg reg, x86Reg AddrReg)
 
 void CX86Ops::MoveSxVariableToX86regByte(void *Variable, const char * VariableName, x86Reg reg)
 {
-    CPU_Message("      movsx %s, byte ptr [%s]", x86_Name(reg), VariableName);
+    CodeLog("      movsx %s, byte ptr [%s]", x86_Name(reg), VariableName);
 
     AddCode16(0xbe0f);
 
@@ -1326,7 +1331,7 @@ void CX86Ops::MoveSxVariableToX86regByte(void *Variable, const char * VariableNa
 
 void CX86Ops::MoveSxVariableToX86regHalf(void *Variable, const char * VariableName, x86Reg reg)
 {
-    CPU_Message("      movsx %s, word ptr [%s]", x86_Name(reg), VariableName);
+    CodeLog("      movsx %s, word ptr [%s]", x86_Name(reg), VariableName);
 
     AddCode16(0xbf0f);
 
@@ -1348,7 +1353,7 @@ void CX86Ops::MoveSxVariableToX86regHalf(void *Variable, const char * VariableNa
 
 void CX86Ops::MoveVariableToX86reg(void *Variable, const char * VariableName, x86Reg reg)
 {
-    CPU_Message("      mov %s, dword ptr [%s]", x86_Name(reg), VariableName);
+    CodeLog("      mov %s, dword ptr [%s]", x86_Name(reg), VariableName);
     switch (reg)
     {
     case x86_EAX: AddCode16(0x058B); break;
@@ -1368,7 +1373,7 @@ void CX86Ops::MoveVariableToX86reg(void *Variable, const char * VariableName, x8
 void CX86Ops::MoveVariableDispToX86Reg(void *Variable, const char * VariableName, x86Reg reg, x86Reg AddrReg, int Multiplier)
 {
     int x = 0;
-    CPU_Message("      mov %s, dword ptr [%s+%s*%i]", x86_Name(reg), VariableName, x86_Name(AddrReg), Multiplier);
+    CodeLog("      mov %s, dword ptr [%s+%s*%i]", x86_Name(reg), VariableName, x86_Name(AddrReg), Multiplier);
 
     AddCode8(0x8B);
 
@@ -1417,7 +1422,7 @@ void CX86Ops::MoveVariableDispToX86Reg(void *Variable, const char * VariableName
 
 void CX86Ops::MoveVariableToX86regByte(void *Variable, const char * VariableName, x86Reg reg)
 {
-    CPU_Message("      mov %s, byte ptr [%s]", x86_ByteName(reg), VariableName);
+    CodeLog("      mov %s, byte ptr [%s]", x86_ByteName(reg), VariableName);
 
     switch (reg)
     {
@@ -1433,7 +1438,7 @@ void CX86Ops::MoveVariableToX86regByte(void *Variable, const char * VariableName
 
 void CX86Ops::MoveVariableToX86regHalf(void *Variable, const char * VariableName, x86Reg reg)
 {
-    CPU_Message("      mov %s, word ptr [%s]", x86_HalfName(reg), VariableName);
+    CodeLog("      mov %s, word ptr [%s]", x86_HalfName(reg), VariableName);
 
     AddCode8(0x66);
     switch (reg)
@@ -1456,7 +1461,7 @@ void CX86Ops::MoveX86regByteToN64Mem(x86Reg reg, x86Reg AddrReg)
 {
     uint16_t x86Command = 0;
 
-    CPU_Message("      mov byte ptr [%s+N64mem], %s", x86_Name(AddrReg), x86_ByteName(reg));
+    CodeLog("      mov byte ptr [%s+N64mem], %s", x86_Name(AddrReg), x86_ByteName(reg));
 
     switch (AddrReg)
     {
@@ -1485,7 +1490,7 @@ void CX86Ops::MoveX86regByteToN64Mem(x86Reg reg, x86Reg AddrReg)
 
 void CX86Ops::MoveX86regByteToVariable(x86Reg reg, void * Variable, const char * VariableName)
 {
-    CPU_Message("      mov byte ptr [%s], %s", VariableName, x86_ByteName(reg));
+    CodeLog("      mov byte ptr [%s], %s", VariableName, x86_ByteName(reg));
 
     switch (reg)
     {
@@ -1503,7 +1508,7 @@ void CX86Ops::MoveX86regByteToX86regPointer(x86Reg reg, x86Reg AddrReg1, x86Reg 
 {
     uint8_t Param = 0;
 
-    CPU_Message("      mov byte ptr [%s+%s],%s", x86_Name(AddrReg1), x86_Name(AddrReg2), x86_ByteName(reg));
+    CodeLog("      mov byte ptr [%s+%s],%s", x86_Name(AddrReg1), x86_Name(AddrReg2), x86_ByteName(reg));
 
     switch (reg)
     {
@@ -1551,7 +1556,7 @@ void CX86Ops::MoveX86regHalfToN64Mem(x86Reg reg, x86Reg AddrReg)
 {
     uint16_t x86Command = 0;
 
-    CPU_Message("      mov word ptr [%s+N64mem], %s", x86_Name(AddrReg), x86_HalfName(reg));
+    CodeLog("      mov word ptr [%s+N64mem], %s", x86_Name(AddrReg), x86_HalfName(reg));
 
     AddCode8(0x66);
     switch (AddrReg)
@@ -1586,7 +1591,7 @@ void CX86Ops::MoveX86regHalfToN64Mem(x86Reg reg, x86Reg AddrReg)
 
 void CX86Ops::MoveX86regHalfToVariable(x86Reg reg, void * Variable, const char * VariableName)
 {
-    CPU_Message("      mov word ptr [%s], %s", VariableName, x86_HalfName(reg));
+    CodeLog("      mov word ptr [%s], %s", VariableName, x86_HalfName(reg));
     AddCode8(0x66);
     switch (reg)
     {
@@ -1608,7 +1613,7 @@ void CX86Ops::MoveX86regHalfToX86regPointer(x86Reg reg, x86Reg AddrReg1, x86Reg 
 {
     uint8_t Param = 0;
 
-    CPU_Message("      mov word ptr [%s+%s],%s", x86_Name(AddrReg1), x86_Name(AddrReg2), x86_HalfName(reg));
+    CodeLog("      mov word ptr [%s+%s],%s", x86_Name(AddrReg1), x86_Name(AddrReg2), x86_HalfName(reg));
 
     AddCode8(0x66);
     switch (reg)
@@ -1657,7 +1662,7 @@ void CX86Ops::MoveX86PointerToX86reg(x86Reg reg, x86Reg X86Pointer)
 {
     uint16_t x86Command = 0;
 
-    CPU_Message("      mov %s, dword ptr [%s]", x86_Name(reg), x86_Name(X86Pointer));
+    CodeLog("      mov %s, dword ptr [%s]", x86_Name(reg), x86_Name(X86Pointer));
 
     switch (X86Pointer)
     {
@@ -1691,7 +1696,7 @@ void CX86Ops::MoveX86PointerToX86regDisp(x86Reg reg, x86Reg X86Pointer, uint8_t 
 {
     uint16_t x86Command = 0;
 
-    CPU_Message("      mov %s, dword ptr [%s] + %d", x86_Name(reg), x86_Name(X86Pointer), Disp);
+    CodeLog("      mov %s, dword ptr [%s] + %d", x86_Name(reg), x86_Name(X86Pointer), Disp);
 
     switch (X86Pointer)
     {
@@ -1726,7 +1731,7 @@ void CX86Ops::MoveX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg
 {
     uint8_t Param = 0;
 
-    CPU_Message("      mov %s, dword ptr [%s+%s]", x86_Name(reg), x86_Name(AddrReg1), x86_Name(AddrReg2));
+    CodeLog("      mov %s, dword ptr [%s+%s]", x86_Name(reg), x86_Name(AddrReg1), x86_Name(AddrReg2));
 
     switch (reg)
     {
@@ -1774,7 +1779,7 @@ void CX86Ops::MoveX86regPointerToX86regDisp8(x86Reg AddrReg1, x86Reg AddrReg2, x
 {
     uint8_t Param = 0;
 
-    CPU_Message("      mov %s, dword ptr [%s+%s]", x86_Name(reg), x86_Name(AddrReg1), x86_Name(AddrReg2));
+    CodeLog("      mov %s, dword ptr [%s+%s]", x86_Name(reg), x86_Name(AddrReg1), x86_Name(AddrReg2));
 
     switch (reg)
     {
@@ -1823,7 +1828,7 @@ void CX86Ops::MoveX86regToMemory(x86Reg reg, x86Reg AddrReg, uint32_t Disp)
 {
     uint16_t x86Command = 0;
 
-    CPU_Message("      mov dword ptr [%s+%X], %s", x86_Name(AddrReg), Disp, x86_Name(reg));
+    CodeLog("      mov dword ptr [%s+%X], %s", x86_Name(AddrReg), Disp, x86_Name(reg));
     switch (AddrReg)
     {
     case x86_EAX: x86Command = 0x0089; break;
@@ -1858,7 +1863,7 @@ void CX86Ops::MoveX86regToN64Mem(x86Reg reg, x86Reg AddrReg)
 {
     uint16_t x86Command = 0;
 
-    CPU_Message("      mov dword ptr [%s+N64mem], %s", x86_Name(AddrReg), x86_Name(reg));
+    CodeLog("      mov dword ptr [%s+N64mem], %s", x86_Name(AddrReg), x86_Name(reg));
     switch (AddrReg)
     {
     case x86_EAX: x86Command = 0x0089; break;
@@ -1891,7 +1896,7 @@ void CX86Ops::MoveX86regToN64Mem(x86Reg reg, x86Reg AddrReg)
 
 void CX86Ops::MoveX86regToN64MemDisp(x86Reg reg, x86Reg AddrReg, uint8_t Disp)
 {
-    CPU_Message("      mov dword ptr [%s+N64mem+%d], %s", x86_Name(AddrReg), Disp, x86_Name(reg));
+    CodeLog("      mov dword ptr [%s+N64mem+%d], %s", x86_Name(AddrReg), Disp, x86_Name(reg));
     uint16_t x86Command = 0;
 
     switch (AddrReg)
@@ -1926,7 +1931,7 @@ void CX86Ops::MoveX86regToN64MemDisp(x86Reg reg, x86Reg AddrReg, uint8_t Disp)
 
 void CX86Ops::MoveX86regToVariable(x86Reg reg, void * Variable, const char * VariableName)
 {
-    CPU_Message("      mov dword ptr [%s], %s", VariableName, x86_Name(reg));
+    CodeLog("      mov dword ptr [%s], %s", VariableName, x86_Name(reg));
     switch (reg)
     {
     case x86_EAX: AddCode16(0x0589); break;
@@ -1951,7 +1956,7 @@ void CX86Ops::MoveX86RegToX86Reg(x86Reg Source, x86Reg Destination)
     {
         return;
     }
-    CPU_Message("      mov %s, %s", x86_Name(Destination), x86_Name(Source));
+    CodeLog("      mov %s, %s", x86_Name(Destination), x86_Name(Source));
 
     switch (Destination)
     {
@@ -1987,7 +1992,7 @@ void CX86Ops::MoveX86regToX86Pointer(x86Reg reg, x86Reg X86Pointer)
 {
     uint16_t x86Command = 0;
 
-    CPU_Message("      mov dword ptr [%s], %s", x86_Name(X86Pointer), x86_Name(reg));
+    CodeLog("      mov dword ptr [%s], %s", x86_Name(X86Pointer), x86_Name(reg));
 
     switch (X86Pointer)
     {
@@ -2021,7 +2026,7 @@ void CX86Ops::MoveX86regToX86regPointer(x86Reg reg, x86Reg AddrReg1, x86Reg Addr
 {
     uint8_t Param = 0;
 
-    CPU_Message("      mov dword ptr [%s+%s],%s", x86_Name(AddrReg1), x86_Name(AddrReg2), x86_Name(reg));
+    CodeLog("      mov dword ptr [%s+%s],%s", x86_Name(AddrReg1), x86_Name(AddrReg2), x86_Name(reg));
 
     switch (reg)
     {
@@ -2069,7 +2074,7 @@ void CX86Ops::MoveZxByteX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, 
 {
     uint8_t Param = 0;
 
-    CPU_Message("      movzx %s, byte ptr [%s+%s]", x86_Name(reg), x86_Name(AddrReg1), x86_Name(AddrReg2));
+    CodeLog("      movzx %s, byte ptr [%s+%s]", x86_Name(reg), x86_Name(AddrReg1), x86_Name(AddrReg2));
 
     AddCode16(0xB60F);
     switch (reg)
@@ -2118,7 +2123,7 @@ void CX86Ops::MoveZxHalfX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, 
 {
     uint8_t Param = 0;
 
-    CPU_Message("      movzx %s, word ptr [%s+%s]", x86_Name(reg), x86_Name(AddrReg1), x86_Name(AddrReg2));
+    CodeLog("      movzx %s, word ptr [%s+%s]", x86_Name(reg), x86_Name(AddrReg1), x86_Name(AddrReg2));
 
     AddCode16(0xB70F);
     switch (reg)
@@ -2167,7 +2172,7 @@ void CX86Ops::MoveZxN64MemToX86regByte(x86Reg reg, x86Reg AddrReg)
 {
     uint16_t x86Command = 0;
 
-    CPU_Message("      movzx %s, byte ptr [%s+g_MMU->Rdram()]", x86_Name(reg), x86_Name(AddrReg));
+    CodeLog("      movzx %s, byte ptr [%s+g_MMU->Rdram()]", x86_Name(reg), x86_Name(AddrReg));
     switch (AddrReg)
     {
     case x86_EAX: x86Command = 0x00B6; break;
@@ -2204,7 +2209,7 @@ void CX86Ops::MoveZxN64MemToX86regHalf(x86Reg reg, x86Reg AddrReg)
 {
     uint16_t x86Command = 0;
 
-    CPU_Message("      movzx %s, word ptr [%s+g_MMU->Rdram()]", x86_Name(reg), x86_Name(AddrReg));
+    CodeLog("      movzx %s, word ptr [%s+g_MMU->Rdram()]", x86_Name(reg), x86_Name(AddrReg));
 
     switch (AddrReg)
     {
@@ -2240,7 +2245,7 @@ void CX86Ops::MoveZxN64MemToX86regHalf(x86Reg reg, x86Reg AddrReg)
 
 void CX86Ops::MoveZxVariableToX86regByte(void *Variable, const char * VariableName, x86Reg reg)
 {
-    CPU_Message("      movzx %s, byte ptr [%s]", x86_Name(reg), VariableName);
+    CodeLog("      movzx %s, byte ptr [%s]", x86_Name(reg), VariableName);
 
     AddCode16(0xb60f);
 
@@ -2262,7 +2267,7 @@ void CX86Ops::MoveZxVariableToX86regByte(void *Variable, const char * VariableNa
 
 void CX86Ops::MoveZxVariableToX86regHalf(void *Variable, const char * VariableName, x86Reg reg)
 {
-    CPU_Message("      movzx %s, word ptr [%s]", x86_Name(reg), VariableName);
+    CodeLog("      movzx %s, word ptr [%s]", x86_Name(reg), VariableName);
 
     AddCode16(0xb70f);
 
@@ -2284,7 +2289,7 @@ void CX86Ops::MoveZxVariableToX86regHalf(void *Variable, const char * VariableNa
 
 void CX86Ops::MulX86reg(x86Reg reg)
 {
-    CPU_Message("      mul %s", x86_Name(reg));
+    CodeLog("      mul %s", x86_Name(reg));
     switch (reg)
     {
     case x86_EAX: AddCode16(0xE0F7); break;
@@ -2302,7 +2307,7 @@ void CX86Ops::MulX86reg(x86Reg reg)
 
 void CX86Ops::NotX86Reg(x86Reg reg)
 {
-    CPU_Message("      not %s", x86_Name(reg));
+    CodeLog("      not %s", x86_Name(reg));
     switch (reg)
     {
     case x86_EAX: AddCode16(0xD0F7); break;
@@ -2320,7 +2325,7 @@ void CX86Ops::NotX86Reg(x86Reg reg)
 
 void CX86Ops::OrConstToVariable(uint32_t Const, void * Variable, const char * VariableName)
 {
-    CPU_Message("      or dword ptr [%s], 0x%X", VariableName, Const);
+    CodeLog("      or dword ptr [%s], 0x%X", VariableName, Const);
     AddCode16(0x0D81);
     AddCode32((uint32_t)(Variable));
     AddCode32(Const);
@@ -2332,7 +2337,7 @@ void CX86Ops::OrConstToX86Reg(uint32_t Const, x86Reg reg)
     {
         return;
     }
-    CPU_Message("      or %s, %Xh", x86_Name(reg), Const);
+    CodeLog("      or %s, %Xh", x86_Name(reg), Const);
     if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
     {
         switch (reg) {
@@ -2370,7 +2375,7 @@ void CX86Ops::OrConstToX86Reg(uint32_t Const, x86Reg reg)
 
 void CX86Ops::OrVariableToX86Reg(void * Variable, const char * VariableName, x86Reg reg)
 {
-    CPU_Message("      or %s, dword ptr [%s]", x86_Name(reg), VariableName);
+    CodeLog("      or %s, dword ptr [%s]", x86_Name(reg), VariableName);
     switch (reg)
     {
     case x86_EAX: AddCode16(0x050B); break;
@@ -2389,7 +2394,7 @@ void CX86Ops::OrVariableToX86Reg(void * Variable, const char * VariableName, x86
 
 void CX86Ops::OrX86RegToVariable(void * Variable, const char * VariableName, x86Reg reg)
 {
-    CPU_Message("      or dword ptr [%s], %s", VariableName, x86_Name(reg));
+    CodeLog("      or dword ptr [%s], %s", VariableName, x86_Name(reg));
     switch (reg)
     {
     case x86_EAX: AddCode16(0x0509); break;
@@ -2410,7 +2415,7 @@ void CX86Ops::OrX86RegToX86Reg(x86Reg Destination, x86Reg Source)
 {
     uint16_t x86Command = 0;
 
-    CPU_Message("      or %s, %s", x86_Name(Destination), x86_Name(Source));
+    CodeLog("      or %s, %s", x86_Name(Destination), x86_Name(Source));
     switch (Source)
     {
     case x86_EAX: x86Command = 0x000B; break;
@@ -2442,19 +2447,19 @@ void CX86Ops::OrX86RegToX86Reg(x86Reg Destination, x86Reg Source)
 
 void CX86Ops::Popad(void)
 {
-    CPU_Message("      popad");
+    CodeLog("      popad");
     AddCode8(0x61);
 }
 
 void CX86Ops::Pushad(void)
 {
-    CPU_Message("      pushad");
+    CodeLog("      pushad");
     AddCode8(0x60);
 }
 
 void CX86Ops::Push(x86Reg reg)
 {
-    CPU_Message("      push %s", x86_Name(reg));
+    CodeLog("      push %s", x86_Name(reg));
 
     switch (reg)
     {
@@ -2473,7 +2478,7 @@ void CX86Ops::Push(x86Reg reg)
 
 void CX86Ops::Pop(x86Reg reg)
 {
-    CPU_Message("      pop %s", x86_Name(reg));
+    CodeLog("      pop %s", x86_Name(reg));
 
     switch (reg)
     {
@@ -2504,19 +2509,19 @@ void CX86Ops::PushImm32(uint32_t Value)
 
 void CX86Ops::PushImm32(const char * String, uint32_t Value)
 {
-    CPU_Message("      push %s", String);
+    CodeLog("      push %s", String);
     AddCode8(0x68);
     AddCode32(Value);
 }
 
 void CX86Ops::Ret(void) {
-    CPU_Message("      ret");
+    CodeLog("      ret");
     AddCode8(0xC3);
 }
 
 void CX86Ops::Seta(x86Reg reg)
 {
-    CPU_Message("      seta %s", x86_ByteName(reg));
+    CodeLog("      seta %s", x86_ByteName(reg));
     AddCode16(0x970F);
     switch (reg)
     {
@@ -2531,7 +2536,7 @@ void CX86Ops::Seta(x86Reg reg)
 
 void CX86Ops::SetaVariable(void * Variable, const char * VariableName)
 {
-    CPU_Message("      seta byte ptr [%s]", VariableName);
+    CodeLog("      seta byte ptr [%s]", VariableName);
     AddCode16(0x970F);
     AddCode8(0x05);
     AddCode32((uint32_t)(Variable));
@@ -2539,7 +2544,7 @@ void CX86Ops::SetaVariable(void * Variable, const char * VariableName)
 
 void CX86Ops::Setae(x86Reg reg)
 {
-    CPU_Message("      setae %s", x86_ByteName(reg));
+    CodeLog("      setae %s", x86_ByteName(reg));
     AddCode16(0x930F);
     switch (reg)
     {
@@ -2554,7 +2559,7 @@ void CX86Ops::Setae(x86Reg reg)
 
 void CX86Ops::Setb(x86Reg reg)
 {
-    CPU_Message("      setb %s", x86_ByteName(reg));
+    CodeLog("      setb %s", x86_ByteName(reg));
     AddCode16(0x920F);
     switch (reg)
     {
@@ -2569,7 +2574,7 @@ void CX86Ops::Setb(x86Reg reg)
 
 void CX86Ops::SetbVariable(void * Variable, const char * VariableName)
 {
-    CPU_Message("      setb byte ptr [%s]", VariableName);
+    CodeLog("      setb byte ptr [%s]", VariableName);
     AddCode16(0x920F);
     AddCode8(0x05);
     AddCode32((uint32_t)(Variable));
@@ -2577,7 +2582,7 @@ void CX86Ops::SetbVariable(void * Variable, const char * VariableName)
 
 void CX86Ops::Setg(x86Reg reg)
 {
-    CPU_Message("      setg %s", x86_ByteName(reg));
+    CodeLog("      setg %s", x86_ByteName(reg));
     AddCode16(0x9F0F);
     switch (reg)
     {
@@ -2592,7 +2597,7 @@ void CX86Ops::Setg(x86Reg reg)
 
 void CX86Ops::SetgVariable(void * Variable, const char * VariableName)
 {
-    CPU_Message("      setg byte ptr [%s]", VariableName);
+    CodeLog("      setg byte ptr [%s]", VariableName);
     AddCode16(0x9F0F);
     AddCode8(0x05);
     AddCode32((uint32_t)Variable);
@@ -2600,7 +2605,7 @@ void CX86Ops::SetgVariable(void * Variable, const char * VariableName)
 
 void CX86Ops::Setl(x86Reg reg)
 {
-    CPU_Message("      setl %s", x86_ByteName(reg));
+    CodeLog("      setl %s", x86_ByteName(reg));
     AddCode16(0x9C0F);
     switch (reg)
     {
@@ -2615,7 +2620,7 @@ void CX86Ops::Setl(x86Reg reg)
 
 void CX86Ops::SetlVariable(void * Variable, const char * VariableName)
 {
-    CPU_Message("      setl byte ptr [%s]", VariableName);
+    CodeLog("      setl byte ptr [%s]", VariableName);
     AddCode16(0x9C0F);
     AddCode8(0x05);
     AddCode32((uint32_t)Variable);
@@ -2623,7 +2628,7 @@ void CX86Ops::SetlVariable(void * Variable, const char * VariableName)
 
 void CX86Ops::Setz(x86Reg reg)
 {
-    CPU_Message("      setz %s", x86_ByteName(reg));
+    CodeLog("      setz %s", x86_ByteName(reg));
     AddCode16(0x940F);
     switch (reg)
     {
@@ -2638,7 +2643,7 @@ void CX86Ops::Setz(x86Reg reg)
 
 void CX86Ops::Setnz(x86Reg reg)
 {
-    CPU_Message("      setnz %s", x86_ByteName(reg));
+    CodeLog("      setnz %s", x86_ByteName(reg));
     AddCode16(0x950F);
     switch (reg)
     {
@@ -2655,7 +2660,7 @@ void CX86Ops::ShiftLeftDouble(x86Reg Destination, x86Reg Source)
 {
     uint8_t s = 0xC0;
 
-    CPU_Message("      shld %s, %s, cl", x86_Name(Destination), x86_Name(Source));
+    CodeLog("      shld %s, %s, cl", x86_Name(Destination), x86_Name(Source));
     AddCode16(0xA50F);
 
     switch (Destination)
@@ -2693,7 +2698,7 @@ void CX86Ops::ShiftLeftDoubleImmed(x86Reg Destination, x86Reg Source, uint8_t Im
 {
     uint8_t s = 0xC0;
 
-    CPU_Message("      shld %s, %s, %Xh", x86_Name(Destination), x86_Name(Source), Immediate);
+    CodeLog("      shld %s, %s, %Xh", x86_Name(Destination), x86_Name(Source), Immediate);
     AddCode16(0xA40F);
 
     switch (Destination)
@@ -2730,7 +2735,7 @@ void CX86Ops::ShiftLeftDoubleImmed(x86Reg Destination, x86Reg Source, uint8_t Im
 
 void CX86Ops::ShiftLeftSign(x86Reg reg)
 {
-    CPU_Message("      shl %s, cl", x86_Name(reg));
+    CodeLog("      shl %s, cl", x86_Name(reg));
     switch (reg)
     {
     case x86_EAX: AddCode16(0xE0D3); break;
@@ -2748,7 +2753,7 @@ void CX86Ops::ShiftLeftSign(x86Reg reg)
 
 void CX86Ops::ShiftLeftSignImmed(x86Reg reg, uint8_t Immediate)
 {
-    CPU_Message("      shl %s, %Xh", x86_Name(reg), Immediate);
+    CodeLog("      shl %s, %Xh", x86_Name(reg), Immediate);
     switch (reg)
     {
     case x86_EAX: AddCode16(0xE0C1); break;
@@ -2767,7 +2772,7 @@ void CX86Ops::ShiftLeftSignImmed(x86Reg reg, uint8_t Immediate)
 
 void CX86Ops::ShiftRightSign(x86Reg reg)
 {
-    CPU_Message("      sar %s, cl", x86_Name(reg));
+    CodeLog("      sar %s, cl", x86_Name(reg));
     switch (reg)
     {
     case x86_EAX: AddCode16(0xF8D3); break;
@@ -2785,7 +2790,7 @@ void CX86Ops::ShiftRightSign(x86Reg reg)
 
 void CX86Ops::ShiftRightSignImmed(x86Reg reg, uint8_t Immediate)
 {
-    CPU_Message("      sar %s, %Xh", x86_Name(reg), Immediate);
+    CodeLog("      sar %s, %Xh", x86_Name(reg), Immediate);
     switch (reg)
     {
     case x86_EAX: AddCode16(0xF8C1); break;
@@ -2804,7 +2809,7 @@ void CX86Ops::ShiftRightSignImmed(x86Reg reg, uint8_t Immediate)
 
 void CX86Ops::ShiftRightUnsign(x86Reg reg)
 {
-    CPU_Message("      shr %s, cl", x86_Name(reg));
+    CodeLog("      shr %s, cl", x86_Name(reg));
     switch (reg)
     {
     case x86_EAX: AddCode16(0xE8D3); break;
@@ -2824,7 +2829,7 @@ void CX86Ops::ShiftRightDouble(x86Reg Destination, x86Reg Source)
 {
     uint8_t s = 0xC0;
 
-    CPU_Message("      shrd %s, %s, cl", x86_Name(Destination), x86_Name(Source));
+    CodeLog("      shrd %s, %s, cl", x86_Name(Destination), x86_Name(Source));
     AddCode16(0xAD0F);
 
     switch (Destination)
@@ -2862,7 +2867,7 @@ void CX86Ops::ShiftRightDoubleImmed(x86Reg Destination, x86Reg Source, uint8_t I
 {
     uint8_t s = 0xC0;
 
-    CPU_Message("      shrd %s, %s, %Xh", x86_Name(Destination), x86_Name(Source), Immediate);
+    CodeLog("      shrd %s, %s, %Xh", x86_Name(Destination), x86_Name(Source), Immediate);
     AddCode16(0xAC0F);
 
     switch (Destination)
@@ -2899,7 +2904,7 @@ void CX86Ops::ShiftRightDoubleImmed(x86Reg Destination, x86Reg Source, uint8_t I
 
 void CX86Ops::ShiftRightUnsignImmed(x86Reg reg, uint8_t Immediate)
 {
-    CPU_Message("      shr %s, %Xh", x86_Name(reg), Immediate);
+    CodeLog("      shr %s, %Xh", x86_Name(reg), Immediate);
     switch (reg)
     {
     case x86_EAX: AddCode16(0xE8C1); break;
@@ -2918,7 +2923,7 @@ void CX86Ops::ShiftRightUnsignImmed(x86Reg reg, uint8_t Immediate)
 
 void CX86Ops::SbbConstFromX86Reg(x86Reg reg, uint32_t Const)
 {
-    CPU_Message("      sbb %s, %Xh", x86_Name(reg), Const);
+    CodeLog("      sbb %s, %Xh", x86_Name(reg), Const);
     if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
     {
         switch (reg)
@@ -2957,7 +2962,7 @@ void CX86Ops::SbbConstFromX86Reg(x86Reg reg, uint32_t Const)
 
 void CX86Ops::SbbVariableFromX86reg(x86Reg reg, void * Variable, const char * VariableName)
 {
-    CPU_Message("      sbb %s, dword ptr [%s]", x86_Name(reg), VariableName);
+    CodeLog("      sbb %s, dword ptr [%s]", x86_Name(reg), VariableName);
     switch (reg)
     {
     case x86_EAX: AddCode16(0x051B); break;
@@ -2977,7 +2982,7 @@ void CX86Ops::SbbVariableFromX86reg(x86Reg reg, void * Variable, const char * Va
 void CX86Ops::SbbX86RegToX86Reg(x86Reg Destination, x86Reg Source)
 {
     uint16_t x86Command = 0;
-    CPU_Message("      sbb %s, %s", x86_Name(Destination), x86_Name(Source));
+    CodeLog("      sbb %s, %s", x86_Name(Destination), x86_Name(Source));
     switch (Source)
     {
     case x86_EAX: x86Command = 0x001B; break;
@@ -3009,7 +3014,7 @@ void CX86Ops::SbbX86RegToX86Reg(x86Reg Destination, x86Reg Source)
 
 void CX86Ops::SubConstFromVariable(uint32_t Const, void *Variable, const char * VariableName)
 {
-    CPU_Message("      sub dword ptr [%s], 0x%X", VariableName, Const);
+    CodeLog("      sub dword ptr [%s], 0x%X", VariableName, Const);
 
     AddCode16(0x2D81);
     AddCode32((uint32_t)Variable);
@@ -3018,7 +3023,7 @@ void CX86Ops::SubConstFromVariable(uint32_t Const, void *Variable, const char * 
 
 void CX86Ops::SubConstFromX86Reg(x86Reg reg, uint32_t Const)
 {
-    CPU_Message("      sub %s, %Xh", x86_Name(reg), Const);
+    CodeLog("      sub %s, %Xh", x86_Name(reg), Const);
     if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
     {
         switch (reg)
@@ -3057,7 +3062,7 @@ void CX86Ops::SubConstFromX86Reg(x86Reg reg, uint32_t Const)
 
 void CX86Ops::SubVariableFromX86reg(x86Reg reg, void * Variable, const char * VariableName)
 {
-    CPU_Message("      sub %s, dword ptr [%s]", x86_Name(reg), VariableName);
+    CodeLog("      sub %s, dword ptr [%s]", x86_Name(reg), VariableName);
 
     switch (reg)
     {
@@ -3078,7 +3083,7 @@ void CX86Ops::SubVariableFromX86reg(x86Reg reg, void * Variable, const char * Va
 void CX86Ops::SubX86RegToX86Reg(x86Reg Destination, x86Reg Source)
 {
     uint16_t x86Command = 0;
-    CPU_Message("      sub %s, %s", x86_Name(Destination), x86_Name(Source));
+    CodeLog("      sub %s, %s", x86_Name(Destination), x86_Name(Source));
 
     switch (Source)
     {
@@ -3112,7 +3117,7 @@ void CX86Ops::SubX86RegToX86Reg(x86Reg Destination, x86Reg Source)
 
 void CX86Ops::TestConstToX86Reg(uint32_t Const, x86Reg reg)
 {
-    CPU_Message("      test %s, 0x%X", x86_Name(reg), Const);
+    CodeLog("      test %s, 0x%X", x86_Name(reg), Const);
 
     switch (reg)
     {
@@ -3132,7 +3137,7 @@ void CX86Ops::TestConstToX86Reg(uint32_t Const, x86Reg reg)
 
 void CX86Ops::TestVariable(uint32_t Const, void * Variable, const char * VariableName)
 {
-    CPU_Message("      test dword ptr ds:[%s], 0x%X", VariableName, Const);
+    CodeLog("      test dword ptr ds:[%s], 0x%X", VariableName, Const);
     AddCode16(0x05F7);
     AddCode32((uint32_t)Variable);
     AddCode32(Const);
@@ -3141,7 +3146,7 @@ void CX86Ops::TestVariable(uint32_t Const, void * Variable, const char * Variabl
 void CX86Ops::TestX86RegToX86Reg(x86Reg Destination, x86Reg Source)
 {
     uint16_t x86Command = 0;
-    CPU_Message("      test %s, %s", x86_Name(Destination), x86_Name(Source));
+    CodeLog("      test %s, %s", x86_Name(Destination), x86_Name(Source));
     switch (Source)
     {
     case x86_EAX: x86Command = 0x0085; break;
@@ -3174,7 +3179,7 @@ void CX86Ops::TestX86RegToX86Reg(x86Reg Destination, x86Reg Source)
 void CX86Ops::TestX86ByteRegToX86Reg(x86Reg Destination, x86Reg Source)
 {
     uint16_t x86Command = 0;
-    CPU_Message("      test %s, %s", x86_ByteName(Destination), x86_ByteName(Source));
+    CodeLog("      test %s, %s", x86_ByteName(Destination), x86_ByteName(Source));
     switch (Source)
     {
     case x86_AL: x86Command = 0x0084; break;
@@ -3198,7 +3203,7 @@ void CX86Ops::TestX86ByteRegToX86Reg(x86Reg Destination, x86Reg Source)
 
 void CX86Ops::XorConstToX86Reg(x86Reg reg, uint32_t Const)
 {
-    CPU_Message("      xor %s, %Xh", x86_Name(reg), Const);
+    CodeLog("      xor %s, %Xh", x86_Name(reg), Const);
     if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
     {
         switch (reg)
@@ -3239,7 +3244,7 @@ void CX86Ops::XorX86RegToX86Reg(x86Reg Source, x86Reg Destination)
 {
     uint16_t x86Command = 0;
 
-    CPU_Message("      xor %s, %s", x86_Name(Source), x86_Name(Destination));
+    CodeLog("      xor %s, %s", x86_Name(Source), x86_Name(Destination));
 
     switch (Source)
     {
@@ -3272,7 +3277,7 @@ void CX86Ops::XorX86RegToX86Reg(x86Reg Source, x86Reg Destination)
 
 void CX86Ops::XorVariableToX86reg(void *Variable, const char * VariableName, x86Reg reg)
 {
-    CPU_Message("      Xor %s, dword ptr [%s]", x86_Name(reg), VariableName);
+    CodeLog("      Xor %s, dword ptr [%s]", x86_Name(reg), VariableName);
 
     switch (reg)
     {
@@ -3292,20 +3297,20 @@ void CX86Ops::XorVariableToX86reg(void *Variable, const char * VariableName, x86
 
 void CX86Ops::fpuAbs(void)
 {
-    CPU_Message("      fabs ST(0)");
+    CodeLog("      fabs ST(0)");
     AddCode16(0xE1D9);
 }
 
 void CX86Ops::fpuAddDword(void *Variable, const char * VariableName)
 {
-    CPU_Message("      fadd ST(0), dword ptr [%s]", VariableName);
+    CodeLog("      fadd ST(0), dword ptr [%s]", VariableName);
     AddCode16(0x05D8);
     AddCode32((uint32_t)Variable);
 }
 
 void CX86Ops::fpuAddDwordRegPointer(x86Reg x86Pointer)
 {
-    CPU_Message("      fadd ST(0), dword ptr [%s]", x86_Name(x86Pointer));
+    CodeLog("      fadd ST(0), dword ptr [%s]", x86_Name(x86Pointer));
     switch (x86Pointer)
     {
     case x86_EAX: AddCode16(0x00D8); break;
@@ -3322,14 +3327,14 @@ void CX86Ops::fpuAddDwordRegPointer(x86Reg x86Pointer)
 
 void CX86Ops::fpuAddQword(void *Variable, const char * VariableName)
 {
-    CPU_Message("      fadd ST(0), qword ptr [%s]", VariableName);
+    CodeLog("      fadd ST(0), qword ptr [%s]", VariableName);
     AddCode16(0x05DC);
     AddCode32((uint32_t)Variable);
 }
 
 void CX86Ops::fpuAddQwordRegPointer(x86Reg x86Pointer)
 {
-    CPU_Message("      fadd ST(0), qword ptr [%s]", x86_Name(x86Pointer));
+    CodeLog("      fadd ST(0), qword ptr [%s]", x86_Name(x86Pointer));
     switch (x86Pointer)
     {
     case x86_EAX: AddCode16(0x00DC); break;
@@ -3346,7 +3351,7 @@ void CX86Ops::fpuAddQwordRegPointer(x86Reg x86Pointer)
 
 void CX86Ops::fpuAddReg(x86FpuValues x86reg)
 {
-    CPU_Message("      fadd ST(0), %s", fpu_Name(x86reg));
+    CodeLog("      fadd ST(0), %s", fpu_Name(x86reg));
     switch (x86reg) {
     case x86_ST0: AddCode16(0xC0D8); break;
     case x86_ST1: AddCode16(0xC1D8); break;
@@ -3364,7 +3369,7 @@ void CX86Ops::fpuAddReg(x86FpuValues x86reg)
 
 void CX86Ops::fpuAddRegPop(int * StackPos, x86FpuValues reg)
 {
-    CPU_Message("      faddp ST(0), %s", fpu_Name(reg));
+    CodeLog("      faddp ST(0), %s", fpu_Name(reg));
     *StackPos = (*StackPos + 1) & 7;
     switch (reg)
     {
@@ -3384,7 +3389,7 @@ void CX86Ops::fpuAddRegPop(int * StackPos, x86FpuValues reg)
 
 void CX86Ops::fpuComDword(void *Variable, const char * VariableName, bool Pop)
 {
-    CPU_Message("      fcom%s ST(0), dword ptr [%s]", m_fpupop[Pop], VariableName);
+    CodeLog("      fcom%s ST(0), dword ptr [%s]", m_fpupop[Pop], VariableName);
     AddCode16(Pop ? 0x1DD8 : 0x15D8);
     AddCode32((uint32_t)Variable);
 }
@@ -3393,7 +3398,7 @@ void CX86Ops::fpuComDwordRegPointer(x86Reg x86Pointer, bool Pop)
 {
     uint16_t x86Command;
 
-    CPU_Message("      fcom%s ST(0), dword ptr [%s]", m_fpupop[Pop], x86_Name(x86Pointer));
+    CodeLog("      fcom%s ST(0), dword ptr [%s]", m_fpupop[Pop], x86_Name(x86Pointer));
     switch (x86Pointer)
     {
     case x86_EAX: x86Command = 0x10D8; break;
@@ -3416,7 +3421,7 @@ void CX86Ops::fpuComDwordRegPointer(x86Reg x86Pointer, bool Pop)
 
 void CX86Ops::fpuComQword(void *Variable, const char * VariableName, bool Pop)
 {
-    CPU_Message("      fcom%s ST(0), qword ptr [%s]", m_fpupop[Pop], VariableName);
+    CodeLog("      fcom%s ST(0), qword ptr [%s]", m_fpupop[Pop], VariableName);
     AddCode16(Pop ? 0x1DDC : 0x15DC);
     AddCode32((uint32_t)Variable);
 }
@@ -3425,7 +3430,7 @@ void CX86Ops::fpuComQwordRegPointer(x86Reg x86Pointer, bool Pop)
 {
     uint16_t x86Command;
 
-    CPU_Message("      fcom%s ST(0), qword ptr [%s]", m_fpupop[Pop], x86_Name(x86Pointer));
+    CodeLog("      fcom%s ST(0), qword ptr [%s]", m_fpupop[Pop], x86_Name(x86Pointer));
     switch (x86Pointer)
     {
     case x86_EAX: x86Command = 0x10DC; break;
@@ -3449,7 +3454,7 @@ void CX86Ops::fpuComQwordRegPointer(x86Reg x86Pointer, bool Pop)
 void CX86Ops::fpuComReg(x86FpuValues x86reg, bool Pop)
 {
     int s = Pop ? 0x0800 : 0x0000;
-    CPU_Message("      fcom%s ST(0), %s", m_fpupop[Pop], fpu_Name(x86reg));
+    CodeLog("      fcom%s ST(0), %s", m_fpupop[Pop], fpu_Name(x86reg));
 
     switch (x86reg)
     {
@@ -3469,14 +3474,14 @@ void CX86Ops::fpuComReg(x86FpuValues x86reg, bool Pop)
 
 void CX86Ops::fpuDivDword(void *Variable, const char * VariableName)
 {
-    CPU_Message("      fdiv ST(0), dword ptr [%s]", VariableName);
+    CodeLog("      fdiv ST(0), dword ptr [%s]", VariableName);
     AddCode16(0x35D8);
     AddCode32((uint32_t)Variable);
 }
 
 void CX86Ops::fpuDivDwordRegPointer(x86Reg x86Pointer)
 {
-    CPU_Message("      fdiv ST(0), dword ptr [%s]", x86_Name(x86Pointer));
+    CodeLog("      fdiv ST(0), dword ptr [%s]", x86_Name(x86Pointer));
     switch (x86Pointer)
     {
     case x86_EAX: AddCode16(0x30D8); break;
@@ -3493,14 +3498,14 @@ void CX86Ops::fpuDivDwordRegPointer(x86Reg x86Pointer)
 
 void CX86Ops::fpuDivQword(void *Variable, const char * VariableName)
 {
-    CPU_Message("      fdiv ST(0), qword ptr [%s]", VariableName);
+    CodeLog("      fdiv ST(0), qword ptr [%s]", VariableName);
     AddCode16(0x35DC);
     AddCode32((uint32_t)Variable);
 }
 
 void CX86Ops::fpuDivQwordRegPointer(x86Reg x86Pointer)
 {
-    CPU_Message("      fdiv ST(0), qword ptr [%s]", x86_Name(x86Pointer));
+    CodeLog("      fdiv ST(0), qword ptr [%s]", x86_Name(x86Pointer));
     switch (x86Pointer)
     {
     case x86_EAX: AddCode16(0x30DC); break;
@@ -3517,7 +3522,7 @@ void CX86Ops::fpuDivQwordRegPointer(x86Reg x86Pointer)
 
 void CX86Ops::fpuDivReg(x86FpuValues Reg)
 {
-    CPU_Message("      fdiv ST(0), %s", fpu_Name(Reg));
+    CodeLog("      fdiv ST(0), %s", fpu_Name(Reg));
     switch (Reg)
     {
     case x86_ST0: AddCode16(0xF0D8); break;
@@ -3536,7 +3541,7 @@ void CX86Ops::fpuDivReg(x86FpuValues Reg)
 
 void CX86Ops::fpuDivRegPop(x86FpuValues reg)
 {
-    CPU_Message("      fdivp ST(0), %s", fpu_Name(reg));
+    CodeLog("      fdivp ST(0), %s", fpu_Name(reg));
     switch (reg)
     {
     case x86_ST0: AddCode16(0xF8DE); break;
@@ -3555,7 +3560,7 @@ void CX86Ops::fpuDivRegPop(x86FpuValues reg)
 
 void CX86Ops::fpuExchange(x86FpuValues Reg)
 {
-    CPU_Message("      fxch ST(0), %s", fpu_Name(Reg));
+    CodeLog("      fxch ST(0), %s", fpu_Name(Reg));
     switch (Reg)
     {
     case x86_ST0: AddCode16(0xC8D9); break;
@@ -3574,7 +3579,7 @@ void CX86Ops::fpuExchange(x86FpuValues Reg)
 
 void CX86Ops::fpuFree(x86FpuValues Reg)
 {
-    CPU_Message("      ffree %s", fpu_Name(Reg));
+    CodeLog("      ffree %s", fpu_Name(Reg));
     switch (Reg)
     {
     case x86_ST0: AddCode16(0xC0DD); break;
@@ -3593,28 +3598,28 @@ void CX86Ops::fpuFree(x86FpuValues Reg)
 
 void CX86Ops::fpuDecStack(int * StackPos)
 {
-    CPU_Message("      fdecstp");
+    CodeLog("      fdecstp");
     *StackPos = (*StackPos - 1) & 7;
     AddCode16(0xF6D9);
 }
 
 void CX86Ops::fpuIncStack(int * StackPos)
 {
-    CPU_Message("      fincstp");
+    CodeLog("      fincstp");
     *StackPos = (*StackPos + 1) & 7;
     AddCode16(0xF7D9);
 }
 
 void CX86Ops::fpuLoadControl(void *Variable, const char * VariableName)
 {
-    CPU_Message("      fldcw [%s]", VariableName);
+    CodeLog("      fldcw [%s]", VariableName);
     AddCode16(0x2DD9);
     AddCode32((uint32_t)Variable);
 }
 
 void CX86Ops::fpuLoadDword(int * StackPos, void *Variable, const char * VariableName)
 {
-    CPU_Message("      fld dword ptr [%s]", VariableName);
+    CodeLog("      fld dword ptr [%s]", VariableName);
     *StackPos = (*StackPos - 1) & 7;
     AddCode16(0x05D9);
     AddCode32((uint32_t)Variable);
@@ -3622,7 +3627,7 @@ void CX86Ops::fpuLoadDword(int * StackPos, void *Variable, const char * Variable
 
 void CX86Ops::fpuLoadDwordFromX86Reg(int * StackPos, x86Reg x86reg)
 {
-    CPU_Message("      fld dword ptr [%s]", x86_Name(x86reg));
+    CodeLog("      fld dword ptr [%s]", x86_Name(x86reg));
     *StackPos = (*StackPos - 1) & 7;
     AddCode8(0xD9);
     switch (x86reg)
@@ -3640,7 +3645,7 @@ void CX86Ops::fpuLoadDwordFromX86Reg(int * StackPos, x86Reg x86reg)
 
 void CX86Ops::fpuLoadDwordFromN64Mem(int * StackPos, x86Reg x86reg)
 {
-    CPU_Message("      fld dword ptr [%s+N64mem]", x86_Name(x86reg));
+    CodeLog("      fld dword ptr [%s+N64mem]", x86_Name(x86reg));
     *StackPos = (*StackPos - 1) & 7;
     switch (x86reg)
     {
@@ -3659,7 +3664,7 @@ void CX86Ops::fpuLoadDwordFromN64Mem(int * StackPos, x86Reg x86reg)
 
 void CX86Ops::fpuLoadInt32bFromN64Mem(int * StackPos, x86Reg x86reg)
 {
-    CPU_Message("      fild dword ptr [%s+N64mem]", x86_Name(x86reg));
+    CodeLog("      fild dword ptr [%s+N64mem]", x86_Name(x86reg));
     *StackPos = (*StackPos - 1) & 7;
     switch (x86reg)
     {
@@ -3678,7 +3683,7 @@ void CX86Ops::fpuLoadInt32bFromN64Mem(int * StackPos, x86Reg x86reg)
 
 void CX86Ops::fpuLoadIntegerDword(int * StackPos, void *Variable, const char * VariableName)
 {
-    CPU_Message("      fild dword ptr [%s]", VariableName);
+    CodeLog("      fild dword ptr [%s]", VariableName);
     *StackPos = (*StackPos - 1) & 7;
     AddCode16(0x05DB);
     AddCode32((uint32_t)Variable);
@@ -3686,7 +3691,7 @@ void CX86Ops::fpuLoadIntegerDword(int * StackPos, void *Variable, const char * V
 
 void CX86Ops::fpuLoadIntegerDwordFromX86Reg(int * StackPos, x86Reg x86reg)
 {
-    CPU_Message("      fild dword ptr [%s]", x86_Name(x86reg));
+    CodeLog("      fild dword ptr [%s]", x86_Name(x86reg));
     *StackPos = (*StackPos - 1) & 7;
     AddCode8(0xDB);
     switch (x86reg)
@@ -3704,7 +3709,7 @@ void CX86Ops::fpuLoadIntegerDwordFromX86Reg(int * StackPos, x86Reg x86reg)
 
 void CX86Ops::fpuLoadIntegerQword(int * StackPos, void *Variable, const char * VariableName)
 {
-    CPU_Message("      fild qword ptr [%s]", VariableName);
+    CodeLog("      fild qword ptr [%s]", VariableName);
     *StackPos = (*StackPos - 1) & 7;
     AddCode16(0x2DDF);
     AddCode32((uint32_t)Variable);
@@ -3712,7 +3717,7 @@ void CX86Ops::fpuLoadIntegerQword(int * StackPos, void *Variable, const char * V
 
 void CX86Ops::fpuLoadIntegerQwordFromX86Reg(int * StackPos, x86Reg x86reg)
 {
-    CPU_Message("      fild qword ptr [%s]", x86_Name(x86reg));
+    CodeLog("      fild qword ptr [%s]", x86_Name(x86reg));
     *StackPos = (*StackPos - 1) & 7;
     AddCode8(0xDF);
     switch (x86reg)
@@ -3730,7 +3735,7 @@ void CX86Ops::fpuLoadIntegerQwordFromX86Reg(int * StackPos, x86Reg x86reg)
 
 void CX86Ops::fpuLoadQword(int * StackPos, void *Variable, const char * VariableName)
 {
-    CPU_Message("      fld qword ptr [%s]", VariableName);
+    CodeLog("      fld qword ptr [%s]", VariableName);
     *StackPos = (*StackPos - 1) & 7;
     AddCode16(0x05DD);
     AddCode32((uint32_t)Variable);
@@ -3738,7 +3743,7 @@ void CX86Ops::fpuLoadQword(int * StackPos, void *Variable, const char * Variable
 
 void CX86Ops::fpuLoadQwordFromX86Reg(int * StackPos, x86Reg x86reg)
 {
-    CPU_Message("      fld qword ptr [%s]", x86_Name(x86reg));
+    CodeLog("      fld qword ptr [%s]", x86_Name(x86reg));
     *StackPos = (*StackPos - 1) & 7;
     AddCode8(0xDD);
     switch (x86reg)
@@ -3756,7 +3761,7 @@ void CX86Ops::fpuLoadQwordFromX86Reg(int * StackPos, x86Reg x86reg)
 
 void CX86Ops::fpuLoadQwordFromN64Mem(int * StackPos, x86Reg x86reg)
 {
-    CPU_Message("      fld qword ptr [%s+N64mem]", x86_Name(x86reg));
+    CodeLog("      fld qword ptr [%s+N64mem]", x86_Name(x86reg));
     *StackPos = (*StackPos - 1) & 7;
     switch (x86reg)
     {
@@ -3775,7 +3780,7 @@ void CX86Ops::fpuLoadQwordFromN64Mem(int * StackPos, x86Reg x86reg)
 
 void CX86Ops::fpuLoadReg(int * StackPos, x86FpuValues Reg)
 {
-    CPU_Message("      fld ST(0), %s", fpu_Name(Reg));
+    CodeLog("      fld ST(0), %s", fpu_Name(Reg));
     *StackPos = (*StackPos - 1) & 7;
     switch (Reg)
     {
@@ -3795,14 +3800,14 @@ void CX86Ops::fpuLoadReg(int * StackPos, x86FpuValues Reg)
 
 void CX86Ops::fpuMulDword(void *Variable, const char * VariableName)
 {
-    CPU_Message("      fmul ST(0), dword ptr [%s]", VariableName);
+    CodeLog("      fmul ST(0), dword ptr [%s]", VariableName);
     AddCode16(0x0DD8);
     AddCode32((uint32_t)Variable);
 }
 
 void CX86Ops::fpuMulDwordRegPointer(x86Reg x86Pointer)
 {
-    CPU_Message("      fmul ST(0), dword ptr [%s]", x86_Name(x86Pointer));
+    CodeLog("      fmul ST(0), dword ptr [%s]", x86_Name(x86Pointer));
     switch (x86Pointer)
     {
     case x86_EAX: AddCode16(0x08D8); break;
@@ -3819,14 +3824,14 @@ void CX86Ops::fpuMulDwordRegPointer(x86Reg x86Pointer)
 
 void CX86Ops::fpuMulQword(void *Variable, const char * VariableName)
 {
-    CPU_Message("      fmul ST(0), qword ptr [%s]", VariableName);
+    CodeLog("      fmul ST(0), qword ptr [%s]", VariableName);
     AddCode16(0x0DDC);
     AddCode32((uint32_t)Variable);
 }
 
 void CX86Ops::fpuMulQwordRegPointer(x86Reg x86Pointer)
 {
-    CPU_Message("      fmul ST(0), qword ptr [%s]", x86_Name(x86Pointer));
+    CodeLog("      fmul ST(0), qword ptr [%s]", x86_Name(x86Pointer));
     switch (x86Pointer)
     {
     case x86_EAX: AddCode16(0x08DC); break;
@@ -3843,7 +3848,7 @@ void CX86Ops::fpuMulQwordRegPointer(x86Reg x86Pointer)
 
 void CX86Ops::fpuMulReg(x86FpuValues x86reg)
 {
-    CPU_Message("      fmul ST(0), %s", fpu_Name(x86reg));
+    CodeLog("      fmul ST(0), %s", fpu_Name(x86reg));
     switch (x86reg)
     {
     case x86_ST0: AddCode16(0xC8D8); break;
@@ -3862,7 +3867,7 @@ void CX86Ops::fpuMulReg(x86FpuValues x86reg)
 
 void CX86Ops::fpuMulRegPop(x86FpuValues x86reg)
 {
-    CPU_Message("      fmulp ST(0), %s", fpu_Name(x86reg));
+    CodeLog("      fmulp ST(0), %s", fpu_Name(x86reg));
     switch (x86reg)
     {
     case x86_ST0: AddCode16(0xC8DE); break;
@@ -3881,32 +3886,32 @@ void CX86Ops::fpuMulRegPop(x86FpuValues x86reg)
 
 void CX86Ops::fpuNeg(void)
 {
-    CPU_Message("      fchs ST(0)");
+    CodeLog("      fchs ST(0)");
     AddCode16(0xE0D9);
 }
 
 void CX86Ops::fpuRound(void)
 {
-    CPU_Message("      frndint ST(0)");
+    CodeLog("      frndint ST(0)");
     AddCode16(0xFCD9);
 }
 
 void CX86Ops::fpuSqrt(void)
 {
-    CPU_Message("      fsqrt ST(0)");
+    CodeLog("      fsqrt ST(0)");
     AddCode16(0xFAD9);
 }
 
 void CX86Ops::fpuStoreControl(void *Variable, const char * VariableName)
 {
-    CPU_Message("      fnstcw [%s]", VariableName);
+    CodeLog("      fnstcw [%s]", VariableName);
     AddCode16(0x3DD9);
     AddCode32((uint32_t)Variable);
 }
 
 void CX86Ops::fpuStoreDword(int * StackPos, void *Variable, const char * VariableName, bool pop)
 {
-    CPU_Message("      fst%s dword ptr [%s]", m_fpupop[pop], VariableName);
+    CodeLog("      fst%s dword ptr [%s]", m_fpupop[pop], VariableName);
 
     if (pop)
     {
@@ -3921,7 +3926,7 @@ void CX86Ops::fpuStoreDwordFromX86Reg(int * StackPos, x86Reg x86reg, bool pop)
 {
     uint8_t Command = 0;
 
-    CPU_Message("      fst%s dword ptr [%s]", m_fpupop[pop], x86_Name(x86reg));
+    CodeLog("      fst%s dword ptr [%s]", m_fpupop[pop], x86_Name(x86reg));
 
     if (pop)
     {
@@ -3949,7 +3954,7 @@ void CX86Ops::fpuStoreDwordToN64Mem(int * StackPos, x86Reg x86reg, bool Pop)
 {
     int s = Pop ? 0x0800 : 0;
 
-    CPU_Message("      fst%s dword ptr [%s+N64mem]", m_fpupop[Pop], x86_Name(x86reg));
+    CodeLog("      fst%s dword ptr [%s+N64mem]", m_fpupop[Pop], x86_Name(x86reg));
 
     if (Pop)
     {
@@ -3974,7 +3979,7 @@ void CX86Ops::fpuStoreDwordToN64Mem(int * StackPos, x86Reg x86reg, bool Pop)
 
 void CX86Ops::fpuStoreIntegerDword(int * StackPos, void *Variable, const char * VariableName, bool pop)
 {
-    CPU_Message("      fist%s dword ptr [%s]", m_fpupop[pop], VariableName);
+    CodeLog("      fist%s dword ptr [%s]", m_fpupop[pop], VariableName);
 
     if (pop)
     {
@@ -3988,7 +3993,7 @@ void CX86Ops::fpuStoreIntegerDwordFromX86Reg(int * StackPos, x86Reg x86reg, bool
 {
     uint8_t Command = 0;
 
-    CPU_Message("      fist%s dword ptr [%s]", m_fpupop[pop], x86_Name(x86reg));
+    CodeLog("      fist%s dword ptr [%s]", m_fpupop[pop], x86_Name(x86reg));
 
     if (pop)
     {
@@ -4014,7 +4019,7 @@ void CX86Ops::fpuStoreIntegerDwordFromX86Reg(int * StackPos, x86Reg x86reg, bool
 
 void CX86Ops::fpuStoreIntegerQword(int * StackPos, void *Variable, const char * VariableName, bool pop)
 {
-    CPU_Message("      fist%s qword ptr [%s]", m_fpupop[pop], VariableName);
+    CodeLog("      fist%s qword ptr [%s]", m_fpupop[pop], VariableName);
 
     if (pop)
     {
@@ -4034,7 +4039,7 @@ void CX86Ops::fpuStoreIntegerQwordFromX86Reg(int * StackPos, x86Reg x86reg, bool
 {
     uint8_t Command = 0;
 
-    CPU_Message("      fist%s qword ptr [%s]", m_fpupop[pop], x86_Name(x86reg));
+    CodeLog("      fist%s qword ptr [%s]", m_fpupop[pop], x86_Name(x86reg));
 
     if (pop)
     {
@@ -4061,7 +4066,7 @@ void CX86Ops::fpuStoreQwordFromX86Reg(int * StackPos, x86Reg x86reg, bool pop)
 {
     uint8_t Command = 0;
 
-    CPU_Message("      fst%s qword ptr [%s]", m_fpupop[pop], x86_Name(x86reg));
+    CodeLog("      fst%s qword ptr [%s]", m_fpupop[pop], x86_Name(x86reg));
 
     if (pop)
     {
@@ -4087,20 +4092,20 @@ void CX86Ops::fpuStoreQwordFromX86Reg(int * StackPos, x86Reg x86reg, bool pop)
 
 void CX86Ops::fpuStoreStatus(void)
 {
-    CPU_Message("      fnstsw ax");
+    CodeLog("      fnstsw ax");
     AddCode16(0xE0DF);
 }
 
 void CX86Ops::fpuSubDword(void *Variable, const char * VariableName)
 {
-    CPU_Message("      fsub ST(0), dword ptr [%s]", VariableName);
+    CodeLog("      fsub ST(0), dword ptr [%s]", VariableName);
     AddCode16(0x25D8);
     AddCode32((uint32_t)Variable);
 }
 
 void CX86Ops::fpuSubDwordRegPointer(x86Reg x86Pointer)
 {
-    CPU_Message("      fsub ST(0), dword ptr [%s]", x86_Name(x86Pointer));
+    CodeLog("      fsub ST(0), dword ptr [%s]", x86_Name(x86Pointer));
     switch (x86Pointer)
     {
     case x86_EAX: AddCode16(0x20D8); break;
@@ -4117,21 +4122,21 @@ void CX86Ops::fpuSubDwordRegPointer(x86Reg x86Pointer)
 
 void CX86Ops::fpuSubDwordReverse(void *Variable, const char * VariableName)
 {
-    CPU_Message("      fsubr ST(0), dword ptr [%s]", VariableName);
+    CodeLog("      fsubr ST(0), dword ptr [%s]", VariableName);
     AddCode16(0x2DD8);
     AddCode32((uint32_t)Variable);
 }
 
 void CX86Ops::fpuSubQword(void *Variable, const char * VariableName)
 {
-    CPU_Message("      fsub ST(0), qword ptr [%s]", VariableName);
+    CodeLog("      fsub ST(0), qword ptr [%s]", VariableName);
     AddCode16(0x25DC);
     AddCode32((uint32_t)Variable);
 }
 
 void CX86Ops::fpuSubQwordRegPointer(x86Reg x86Pointer)
 {
-    CPU_Message("      fsub ST(0), qword ptr [%s]", x86_Name(x86Pointer));
+    CodeLog("      fsub ST(0), qword ptr [%s]", x86_Name(x86Pointer));
     switch (x86Pointer) {
     case x86_EAX: AddCode16(0x20DC); break;
     case x86_EBX: AddCode16(0x23DC); break;
@@ -4147,14 +4152,14 @@ void CX86Ops::fpuSubQwordRegPointer(x86Reg x86Pointer)
 
 void CX86Ops::fpuSubQwordReverse(void *Variable, const char * VariableName)
 {
-    CPU_Message("      fsubr ST(0), qword ptr [%s]", VariableName);
+    CodeLog("      fsubr ST(0), qword ptr [%s]", VariableName);
     AddCode16(0x2DDC);
     AddCode32((uint32_t)Variable);
 }
 
 void CX86Ops::fpuSubReg(x86FpuValues x86reg)
 {
-    CPU_Message("      fsub ST(0), %s", fpu_Name(x86reg));
+    CodeLog("      fsub ST(0), %s", fpu_Name(x86reg));
     switch (x86reg) {
     case x86_ST0: AddCode16(0xE0D8); break;
     case x86_ST1: AddCode16(0xE1D8); break;
@@ -4172,7 +4177,7 @@ void CX86Ops::fpuSubReg(x86FpuValues x86reg)
 
 void CX86Ops::fpuSubRegPop(x86FpuValues x86reg)
 {
-    CPU_Message("      fsubp ST(0), %s", fpu_Name(x86reg));
+    CodeLog("      fsubp ST(0), %s", fpu_Name(x86reg));
     switch (x86reg) {
     case x86_ST0: AddCode16(0xE8DE); break;
     case x86_ST1: AddCode16(0xE9DE); break;
@@ -4343,6 +4348,29 @@ void CX86Ops::AddCode32(uint32_t value)
 #endif
     (*((uint32_t *)(*g_RecompPos))=(uint32_t)(value));
     *g_RecompPos += 4;
+}
+
+void CX86Ops::CodeLog(_Printf_format_string_ const char * Text, ...)
+{
+    if (!CDebugSettings::bRecordRecompilerAsm())
+    {
+        return;
+    }
+
+    va_list args;
+    va_start(args, Text);
+#pragma warning(push)
+#pragma warning(disable : 4996)
+    size_t nlen = _vscprintf(Text, args) + 1;
+    char * buffer = (char*)alloca(nlen * sizeof(char));
+    buffer[nlen - 1] = 0;
+    if (buffer != nullptr)
+    {
+        vsprintf(buffer, Text, args);
+        m_CodeBlock.Log(buffer);
+    }
+#pragma warning(pop)
+    va_end(args);
 }
 
 #endif

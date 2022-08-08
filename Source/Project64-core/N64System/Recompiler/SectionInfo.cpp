@@ -2,7 +2,8 @@
 #include "SectionInfo.h"
 #include "JumpInfo.h"
 
-CJumpInfo::CJumpInfo()
+CJumpInfo::CJumpInfo(CCodeBlock & CodeBlock) :
+    RegSet(CodeBlock)
 {
 	TargetPC = (uint32_t)-1;
 	JumpPC = (uint32_t)-1;

@@ -4,7 +4,6 @@
 #include <Project64-core/N64System/Mips/R4300iInstruction.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
-#include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/Recompiler/CodeBlock.h>
 #include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
@@ -13,8 +12,8 @@
 #include <Project64-core/ExceptionHandler.h>
 #include <Project64-core/Debugger.h>
 
-CCodeSection::CCodeSection(CCodeBlock * CodeBlock, uint32_t EnterPC, uint32_t ID, bool LinkAllowed) :
-    m_BlockInfo(CodeBlock),
+CCodeSection::CCodeSection(CCodeBlock & CodeBlock, uint32_t EnterPC, uint32_t ID, bool LinkAllowed) :
+    m_CodeBlock(CodeBlock),
     m_SectionID(ID),
     m_EnterPC(EnterPC),
     m_EndPC((uint32_t)-1),
@@ -27,9 +26,12 @@ CCodeSection::CCodeSection(CCodeBlock * CodeBlock, uint32_t EnterPC, uint32_t ID
     m_CompiledLocation(nullptr),
     m_InLoop(false),
     m_DelaySlot(false),
-    m_RecompilerOps(CodeBlock->RecompilerOps())
+    m_RecompilerOps(CodeBlock.RecompilerOps()),
+    m_RegEnter(CodeBlock),
+    m_Jump(CodeBlock),
+    m_Cont(CodeBlock)
 {
-    CPU_Message("%s: ID %d EnterPC 0x%08X", __FUNCTION__, ID, EnterPC);
+    m_CodeBlock.Log("%s: ID %d EnterPC 0x%08X", __FUNCTION__, ID, EnterPC);
     m_RecompilerOps->SetCurrentSection(this);
 }
 
@@ -121,13 +123,13 @@ void CCodeSection::GenerateSectionLinkage()
             {
                 if (JumpInfo[i]->PermLoop)
                 {
-                    CPU_Message("PermLoop *** 1");
+                    m_CodeBlock.Log("PermLoop *** 1");
                     m_RecompilerOps->CompileInPermLoop(JumpInfo[i]->RegSet, JumpInfo[i]->TargetPC);
                 }
                 else
                 {
                     m_RecompilerOps->UpdateCounters(JumpInfo[i]->RegSet, true, true);
-                    CPU_Message("CompileSystemCheck 5");
+                    m_CodeBlock.Log("CompileSystemCheck 5");
                     m_RecompilerOps->CompileSystemCheck(JumpInfo[i]->TargetPC, JumpInfo[i]->RegSet);
                 }
             }
@@ -155,7 +157,7 @@ void CCodeSection::GenerateSectionLinkage()
             if (Parent->m_InLoop) { continue; }
             if (JumpInfo[i]->PermLoop)
             {
-                CPU_Message("PermLoop *** 2");
+                m_CodeBlock.Log("PermLoop *** 2");
                 m_RecompilerOps->CompileInPermLoop(JumpInfo[i]->RegSet, JumpInfo[i]->TargetPC);
             }
             if (JumpInfo[i]->FallThrough)
@@ -173,30 +175,30 @@ void CCodeSection::GenerateSectionLinkage()
             if (JumpInfo[i]->TargetPC < m_RecompilerOps->GetCurrentPC())
             {
                 m_RecompilerOps->UpdateCounters(JumpInfo[i]->RegSet, true, true);
-                CPU_Message("CompileSystemCheck 7");
+                m_CodeBlock.Log("CompileSystemCheck 7");
                 m_RecompilerOps->CompileSystemCheck(JumpInfo[i]->TargetPC, JumpInfo[i]->RegSet);
             }
         }
     }
 
-    CPU_Message("====== End of Section %d ======", m_SectionID);
+    m_CodeBlock.Log("====== End of Section %d ======", m_SectionID);
 
     for (i = 0; i < 2; i++)
     {
-        if (JumpInfo[i]->FallThrough && (TargetSection[i] == nullptr || !TargetSection[i]->GenerateNativeCode(m_BlockInfo->NextTest())))
+        if (JumpInfo[i]->FallThrough && (TargetSection[i] == nullptr || !TargetSection[i]->GenerateNativeCode(m_CodeBlock.NextTest())))
         {
             JumpInfo[i]->FallThrough = false;
             m_RecompilerOps->JumpToUnknown(JumpInfo[i]);
         }
     }
 
-    //CPU_Message("Section %d",m_SectionID);
+    //CodeLog("Section %d",m_SectionID);
     for (i = 0; i < 2; i++)
     {
         if (JumpInfo[i]->LinkLocation == nullptr) { continue; }
         if (TargetSection[i] == nullptr)
         {
-            CPU_Message("ExitBlock (from %d):", m_SectionID);
+            m_CodeBlock.Log("ExitBlock (from %d):", m_SectionID);
             m_RecompilerOps->LinkJump(*JumpInfo[i], (uint32_t)-1);
             m_RecompilerOps->CompileExit(JumpInfo[i]->JumpPC, JumpInfo[i]->TargetPC, JumpInfo[i]->RegSet, JumpInfo[i]->ExitReason);
             continue;
@@ -207,13 +209,13 @@ void CCodeSection::GenerateSectionLinkage()
         }
         if (TargetSection[i]->m_CompiledLocation == nullptr)
         {
-            TargetSection[i]->GenerateNativeCode(m_BlockInfo->NextTest());
+            TargetSection[i]->GenerateNativeCode(m_CodeBlock.NextTest());
         }
         else
         {
             stdstr_f Label("Section_%d (from %d):", TargetSection[i]->m_SectionID, m_SectionID);
 
-            CPU_Message(Label.c_str());
+            m_CodeBlock.Log(Label.c_str());
             m_RecompilerOps->LinkJump(*JumpInfo[i], (uint32_t)-1);
             m_RecompilerOps->SetRegWorkingSet(JumpInfo[i]->RegSet);
             if (JumpInfo[i]->TargetPC <= JumpInfo[i]->JumpPC)
@@ -221,12 +223,12 @@ void CCodeSection::GenerateSectionLinkage()
                 m_RecompilerOps->UpdateCounters(m_RecompilerOps->GetRegWorkingSet(), true, true);
                 if (JumpInfo[i]->PermLoop)
                 {
-                    CPU_Message("PermLoop *** 3");
+                    m_CodeBlock.Log("PermLoop *** 3");
                     m_RecompilerOps->CompileInPermLoop(m_RecompilerOps->GetRegWorkingSet(), JumpInfo[i]->TargetPC);
                 }
                 else
                 {
-                    CPU_Message("CompileSystemCheck 9");
+                    m_CodeBlock.Log("CompileSystemCheck 9");
                     m_RecompilerOps->CompileSystemCheck(JumpInfo[i]->TargetPC, m_RecompilerOps->GetRegWorkingSet());
                 }
             }
@@ -249,7 +251,7 @@ void CCodeSection::SetJumpAddress(uint32_t JumpPC, uint32_t TargetPC, bool PermL
 {
     m_Jump.JumpPC = JumpPC;
     m_Jump.TargetPC = TargetPC;
-    m_Jump.BranchLabel.Format("0x%08X", TargetPC);
+    m_Jump.BranchLabel = stdstr_f("0x%08X", TargetPC);
     m_Jump.PermLoop = PermLoop;
 }
 
@@ -257,7 +259,7 @@ void CCodeSection::SetContinueAddress(uint32_t JumpPC, uint32_t TargetPC)
 {
     m_Cont.JumpPC = JumpPC;
     m_Cont.TargetPC = TargetPC;
-    m_Cont.BranchLabel.Format("0x%08X", TargetPC);
+    m_Cont.BranchLabel = stdstr_f("0x%08X", TargetPC);
 }
 
 bool CCodeSection::ParentContinue()
@@ -268,7 +270,7 @@ bool CCodeSection::ParentContinue()
         {
             CCodeSection * Parent = *iter;
             if (Parent->m_CompiledLocation != nullptr) { continue; }
-            if (IsAllParentLoops(Parent, true, m_BlockInfo->NextTest())) { continue; }
+            if (IsAllParentLoops(Parent, true, m_CodeBlock.NextTest())) { continue; }
             return false;
         }
         m_RecompilerOps->SetCurrentSection(this);
@@ -303,9 +305,9 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
     m_RecompilerOps->SetCurrentPC(m_EnterPC);
     m_RecompilerOps->SetNextStepType(m_DelaySlot ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
 
-    if (m_RecompilerOps->GetCurrentPC() < m_BlockInfo->VAddrFirst())
+    if (m_RecompilerOps->GetCurrentPC() < m_CodeBlock.VAddrFirst())
     {
-        m_BlockInfo->SetVAddrFirst(m_RecompilerOps->GetCurrentPC());
+        m_CodeBlock.SetVAddrFirst(m_RecompilerOps->GetCurrentPC());
     }
 
     uint32_t ContinueSectionPC = m_ContinueSection ? m_ContinueSection->m_EnterPC : (uint32_t)-1;
@@ -313,9 +315,9 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
     R4300iInstruction Instruction(m_RecompilerOps->GetCurrentPC(), Opcode.Value);
     do
     {
-        if (m_RecompilerOps->GetCurrentPC() > m_BlockInfo->VAddrLast())
+        if (m_RecompilerOps->GetCurrentPC() > m_CodeBlock.VAddrLast())
         {
-            m_BlockInfo->SetVAddrLast(m_RecompilerOps->GetCurrentPC());
+            m_CodeBlock.SetVAddrLast(m_RecompilerOps->GetCurrentPC());
         }
 
         if (isDebugging() && HaveExecutionBP() && Instruction.HasDelaySlot() && g_Debugger->ExecutionBP(m_RecompilerOps->GetCurrentPC() + 4))
@@ -636,7 +638,7 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             // Do nothing, the block will end
             break;
         default:
-            CPU_Message("m_RecompilerOps->GetNextStepType() = %d", m_RecompilerOps->GetNextStepType());
+            m_CodeBlock.Log("m_RecompilerOps->GetNextStepType() = %d", m_RecompilerOps->GetNextStepType());
             g_Notify->BreakPoint(__FILE__, __LINE__);
             break;
         }
@@ -790,11 +792,11 @@ void CCodeSection::DetermineLoop(uint32_t Test, uint32_t Test2, uint32_t TestID)
                 m_Test = Test;
                 if (m_ContinueSection != nullptr)
                 {
-                    m_ContinueSection->DetermineLoop(Test, m_BlockInfo->NextTest(), m_ContinueSection->m_SectionID);
+                    m_ContinueSection->DetermineLoop(Test, m_CodeBlock.NextTest(), m_ContinueSection->m_SectionID);
                 }
                 if (m_JumpSection != nullptr)
                 {
-                    m_JumpSection->DetermineLoop(Test, m_BlockInfo->NextTest(), m_JumpSection->m_SectionID);
+                    m_JumpSection->DetermineLoop(Test, m_CodeBlock.NextTest(), m_JumpSection->m_SectionID);
                 }
             }
         }
@@ -856,7 +858,7 @@ bool CCodeSection::SectionAccessible(uint32_t SectionId, uint32_t Test)
 
 void CCodeSection::UnlinkParent(CCodeSection * Parent, bool ContinueSection)
 {
-    CPU_Message("%s: Section %d Parent: %d ContinueSection = %s", __FUNCTION__, m_SectionID, Parent->m_SectionID, ContinueSection ? "Yes" : "No");
+    m_CodeBlock.Log("%s: Section %d Parent: %d ContinueSection = %s", __FUNCTION__, m_SectionID, Parent->m_SectionID, ContinueSection ? "Yes" : "No");
     if (Parent->m_ContinueSection == this && Parent->m_JumpSection == this)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -889,7 +891,7 @@ void CCodeSection::UnlinkParent(CCodeSection * Parent, bool ContinueSection)
     bool bRemove = false;
     if (m_ParentSection.size() > 0)
     {
-        if (!m_BlockInfo->SectionAccessible(m_SectionID))
+        if (!m_CodeBlock.SectionAccessible(m_SectionID))
         {
             for (SECTION_LIST::iterator iter = m_ParentSection.begin(); iter != m_ParentSection.end(); iter++)
             {
@@ -975,13 +977,13 @@ void CCodeSection::DisplaySectionInformation()
         return;
     }
 
-    CPU_Message("====== Section %d ======", m_SectionID);
-    CPU_Message("Start PC: 0x%X", m_EnterPC);
+    m_CodeBlock.Log("====== Section %d ======", m_SectionID);
+    m_CodeBlock.Log("Start PC: 0x%X", m_EnterPC);
     if (g_System->bLinkBlocks())
     {
-        CPU_Message("End PC: 0x%X", m_EndPC);
+        m_CodeBlock.Log("End PC: 0x%X", m_EndPC);
     }
-    CPU_Message("CompiledLocation: 0x%X", m_CompiledLocation);
+    m_CodeBlock.Log("CompiledLocation: 0x%X", m_CompiledLocation);
     if (g_System->bLinkBlocks() && !m_ParentSection.empty())
     {
         stdstr ParentList;
@@ -994,32 +996,32 @@ void CCodeSection::DisplaySectionInformation()
             }
             ParentList += stdstr_f("%d", Parent->m_SectionID);
         }
-        CPU_Message("Number of parents: %d (%s)", m_ParentSection.size(), ParentList.c_str());
+        m_CodeBlock.Log("Number of parents: %d (%s)", m_ParentSection.size(), ParentList.c_str());
     }
 
     if (g_System->bLinkBlocks())
     {
-        CPU_Message("Jump address: 0x%08X", m_Jump.JumpPC);
-        CPU_Message("Jump target address: 0x%08X", m_Jump.TargetPC);
+        m_CodeBlock.Log("Jump address: 0x%08X", m_Jump.JumpPC);
+        m_CodeBlock.Log("Jump target address: 0x%08X", m_Jump.TargetPC);
         if (m_JumpSection != nullptr)
         {
-            CPU_Message("Jump section: %d", m_JumpSection->m_SectionID);
+            m_CodeBlock.Log("Jump section: %d", m_JumpSection->m_SectionID);
         }
         else
         {
-            CPU_Message("Jump section: None");
+            m_CodeBlock.Log("Jump section: None");
         }
-        CPU_Message("Continue address: 0x%08X", m_Cont.JumpPC);
-        CPU_Message("Continue target address: 0x%08X", m_Cont.TargetPC);
+        m_CodeBlock.Log("Continue address: 0x%08X", m_Cont.JumpPC);
+        m_CodeBlock.Log("Continue target address: 0x%08X", m_Cont.TargetPC);
         if (m_ContinueSection != nullptr)
         {
-            CPU_Message("Continue section: %d", m_ContinueSection->m_SectionID);
+            m_CodeBlock.Log("Continue section: %d", m_ContinueSection->m_SectionID);
         }
         else
         {
-            CPU_Message("Continue section: None");
+            m_CodeBlock.Log("Continue section: None");
         }
-        CPU_Message("In loop: %s", m_InLoop ? "Yes" : "No");
+        m_CodeBlock.Log("In loop: %s", m_InLoop ? "Yes" : "No");
     }
-    CPU_Message("=======================");
+    m_CodeBlock.Log("=======================");
 }
