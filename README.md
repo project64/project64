@@ -71,24 +71,6 @@ Contributions are always welcome!
 
 See the [contributing](./.github/CONTRIBUTING.md) file for ways to get started.
 
-## Roadmap
-
-#### Just a note that these aren't guaranteed to happen, just things the community or we'd like to implement at some point!
-
-- Improve the accuracy of the CPU interpreter/CPU recompiler
-- Improve the accuracy of the RSP interpreter/RSP recompiler
-- Feature parity between the CPU interpreter/recompiler and feature parity between the RSP interpreter/recompiler
-- Working Android port
-- Working Linux port
-- Dark mode
-- Make Project64 more portable on Windows
-- Add requested hotkeys, such as swapping memory paks and rumble paks
-- Add command-line options
-- Improve the installer
-- Update dependencies
-- Code cleanup and refactoring
-- UI/UX improvements
-
 ## Maintainers and contributors
 
 - [@Project64](https://www.github.com/project64) - Zilmar - current maintainer
@@ -107,14 +89,3 @@ Also see the list of [community contributors](https://github.com/project64/proje
 ![GitHub](https://img.shields.io/github/license/project64/project64)
 
 Please see the [license](./license.md) for more details.
-
-## Acknowledgements
- 
- - [Past and current contributors of MAME](https://github.com/mamedev/mame)
- - [Past and current contributors of Ares](https://github.com/ares-emulator/ares)
- - [Past and current contributors of Mupen64Plus](https://github.com/mupen64plus)
- - [Past and current contributors of RetroArch](https://github.com/libretro/RetroArch)
- - [Past and current contributors of CEN64](https://github.com/n64dev/cen64)
- - All of the people who have contributed to Project64 over the years!
- - The efforts of the community to endlessly research and improve!
- - You for reading this, thanks! 😉
