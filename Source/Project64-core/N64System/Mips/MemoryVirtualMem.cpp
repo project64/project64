@@ -476,7 +476,7 @@ bool CMipsMemoryVM::LD_Memory(uint32_t VAddr, uint64_t& Value)
     return LD_NonMemory(VAddr, Value);
 }
 
-bool CMipsMemoryVM::SB_Memory(uint32_t VAddr, uint8_t Value)
+bool CMipsMemoryVM::SB_Memory(uint32_t VAddr, uint32_t Value)
 {
     if (HaveWriteBP() && g_Debugger->WriteBP8(VAddr) && MemoryBreakpoint())
     {
@@ -485,7 +485,7 @@ bool CMipsMemoryVM::SB_Memory(uint32_t VAddr, uint8_t Value)
     uint8_t * MemoryPtr = (uint8_t*)m_MemoryWriteMap[VAddr >> 12];
     if (MemoryPtr != (uint8_t *)-1)
     {
-        *(uint8_t*)(MemoryPtr + (VAddr ^ 3)) = Value;
+        *(uint8_t*)(MemoryPtr + (VAddr ^ 3)) = (uint8_t)Value;
         return true;
     }
     if (m_TLB_WriteMap[VAddr >> 12] == -1)
@@ -496,7 +496,7 @@ bool CMipsMemoryVM::SB_Memory(uint32_t VAddr, uint8_t Value)
     return SB_NonMemory(VAddr, Value);
 }
 
-bool CMipsMemoryVM::SH_Memory(uint32_t VAddr, uint16_t Value)
+bool CMipsMemoryVM::SH_Memory(uint32_t VAddr, uint32_t Value)
 {
     if ((VAddr & 1) != 0)
     {
@@ -510,7 +510,7 @@ bool CMipsMemoryVM::SH_Memory(uint32_t VAddr, uint16_t Value)
     uint8_t * MemoryPtr = (uint8_t*)m_MemoryWriteMap[VAddr >> 12];
     if (MemoryPtr != (uint8_t *)-1)
     {
-        *(uint16_t*)(MemoryPtr + (VAddr ^ 2)) = Value;
+        *(uint16_t*)(MemoryPtr + (VAddr ^ 2)) = (uint16_t)Value;
         return true;
     }
     uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
@@ -711,7 +711,7 @@ bool CMipsMemoryVM::LD_NonMemory(uint32_t VAddr, uint64_t & Value)
     return false;
 }
 
-bool CMipsMemoryVM::SB_NonMemory(uint32_t VAddr, uint8_t Value)
+bool CMipsMemoryVM::SB_NonMemory(uint32_t VAddr, uint32_t Value)
 {
     uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
     if (BaseAddress == -1)
@@ -734,11 +734,15 @@ bool CMipsMemoryVM::SB_NonMemory(uint32_t VAddr, uint8_t Value)
         {
             g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0xFFC, CRecompiler::Remove_ProtectedMem);
             ::ProtectMemory(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, MEM_READWRITE);
-            *(uint8_t *)(m_RDRAM + (PAddr  ^ 3)) = Value;
+            *(uint8_t *)(m_RDRAM + (PAddr  ^ 3)) = (uint8_t)Value;
         }
         break;
     default:
-        if (BreakOnUnhandledMemory())
+        if (PAddr >= 0x10000000 && PAddr < 0x20000000)
+        {
+            m_RomMemoryHandler.Write32(PAddr, Value << ((3 - (PAddr & 3)) * 8), 0xFFFFFFFF);
+        }
+        else if (BreakOnUnhandledMemory())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -748,7 +752,7 @@ bool CMipsMemoryVM::SB_NonMemory(uint32_t VAddr, uint8_t Value)
     return true;
 }
 
-bool CMipsMemoryVM::SH_NonMemory(uint32_t VAddr, uint16_t Value)
+bool CMipsMemoryVM::SH_NonMemory(uint32_t VAddr, uint32_t Value)
 {
     uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
     if (BaseAddress == -1)
@@ -780,12 +784,16 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t VAddr, uint16_t Value)
                 {
                     m_TLB_WriteMap[VAddr >> 12] = PAddr - VAddr;
                 }
-                *(uint16_t *)(m_RDRAM + (PAddr ^ 2)) = Value;
+                *(uint16_t *)(m_RDRAM + (PAddr ^ 2)) = (uint16_t)Value;
             }
         }
         break;
     default:
-        if (BreakOnUnhandledMemory())
+        if (PAddr >= 0x10000000 && PAddr < 0x20000000)
+        {
+            m_RomMemoryHandler.Write32(PAddr, Value << ((2 - (PAddr & 2)) * 8), 0xFFFFFFFF);
+        }
+        else if (BreakOnUnhandledMemory())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -901,7 +909,11 @@ bool CMipsMemoryVM::SD_NonMemory(uint32_t VAddr, uint64_t Value)
         }
         break;
     default:
-        if (BreakOnUnhandledMemory())
+        if (PAddr >= 0x10000000 && PAddr < 0x20000000)
+        {
+            m_RomMemoryHandler.Write32(PAddr, (int32_t)(Value >> 32), 0xFFFFFFFF);
+        }
+        else if (BreakOnUnhandledMemory())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }

@@ -44,10 +44,10 @@ const uint32_t R4300iOp::SWR_MASK[4] = { 0x00FFFFFF, 0x0000FFFF, 0x000000FF, 0x0
 const uint32_t R4300iOp::LWL_MASK[4] = { 0x00000000, 0x000000FF, 0x0000FFFF, 0x00FFFFFF };
 const uint32_t R4300iOp::LWR_MASK[4] = { 0xFFFFFF00, 0xFFFF0000, 0xFF000000, 0x0000000 };
 
-const int32_t   R4300iOp::SWL_SHIFT[4] = { 0, 8, 16, 24 };
-const int32_t   R4300iOp::SWR_SHIFT[4] = { 24, 16, 8, 0 };
-const int32_t   R4300iOp::LWL_SHIFT[4] = { 0, 8, 16, 24 };
-const int32_t   R4300iOp::LWR_SHIFT[4] = { 24, 16, 8, 0 };
+const int32_t R4300iOp::SWL_SHIFT[4] = { 0, 8, 16, 24 };
+const int32_t R4300iOp::SWR_SHIFT[4] = { 24, 16, 8, 0 };
+const int32_t R4300iOp::LWL_SHIFT[4] = { 0, 8, 16, 24 };
+const int32_t R4300iOp::LWR_SHIFT[4] = { 24, 16, 8, 0 };
 
 #define TEST_COP1_USABLE_EXCEPTION() \
     if ((g_Reg->STATUS_REGISTER & STATUS_CU1) == 0) {\
@@ -1098,13 +1098,13 @@ void R4300iOp::LWU()
 void R4300iOp::SB()
 {
     uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
-    g_MMU->SB_Memory(Address, _GPR[m_Opcode.rt].UB[0]);
+    g_MMU->SB_Memory(Address, _GPR[m_Opcode.rt].UW[0]);
 }
 
 void R4300iOp::SH()
 {
     uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
-    g_MMU->SH_Memory(Address, _GPR[m_Opcode.rt].UHW[0]);
+    g_MMU->SH_Memory(Address, _GPR[m_Opcode.rt].UW[0]);
 }
 
 void R4300iOp::SWL()

@@ -88,8 +88,8 @@ public:
     bool LW_Memory(uint32_t VAddr, uint32_t & Value);
     bool LD_Memory(uint32_t VAddr, uint64_t & Value);
 
-    bool SB_Memory(uint32_t VAddr, uint8_t Value);
-    bool SH_Memory(uint32_t VAddr, uint16_t Value);
+    bool SB_Memory(uint32_t VAddr, uint32_t Value);
+    bool SH_Memory(uint32_t VAddr, uint32_t Value);
     bool SW_Memory(uint32_t VAddr, uint32_t Value);
     bool SD_Memory(uint32_t VAddr, uint64_t Value);
 
@@ -140,8 +140,8 @@ private:
     bool LW_NonMemory(uint32_t VAddr, uint32_t & Value);
     bool LD_NonMemory(uint32_t VAddr, uint64_t & Value);
 
-    bool SB_NonMemory(uint32_t VAddr, uint8_t Value);
-    bool SH_NonMemory(uint32_t VAddr, uint16_t Value);
+    bool SB_NonMemory(uint32_t VAddr, uint32_t Value);
+    bool SH_NonMemory(uint32_t VAddr, uint32_t Value);
     bool SW_NonMemory(uint32_t VAddr, uint32_t Value);
     bool SD_NonMemory(uint32_t VAddr, uint64_t Value);
 
