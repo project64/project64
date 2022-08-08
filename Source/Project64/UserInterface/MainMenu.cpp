@@ -1092,6 +1092,31 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         Item.Reset(SUB_MENU, EMPTY_STRING, EMPTY_STDSTR, &DebugInterrupt, L"&Generate interrupt");
         DebugR4300Menu.push_back(Item);
 
+        Item.Reset(ID_DEBUG_END_ON_PERM_LOOP, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"End on perm loop");
+        if (g_Settings->LoadBool(Debugger_EndOnPermLoop))
+        {
+            Item.SetItemTicked(true);
+        }
+        DebugR4300Menu.push_back(Item);
+        Item.Reset(ID_DEBUG_BREAK_ON_UNHANDLED_MEM, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Break on unhandled memory actions");
+        if (g_Settings->LoadBool(Debugger_BreakOnUnhandledMemory))
+        {
+            Item.SetItemTicked(true);
+        }
+        DebugR4300Menu.push_back(Item);
+        Item.Reset(ID_DEBUG_BREAK_ON_ADDRESS_ERROR, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Break on address error");
+        if (g_Settings->LoadBool(Debugger_BreakOnAddressError))
+        {
+            Item.SetItemTicked(true);
+        }
+        DebugR4300Menu.push_back(Item);
+        Item.Reset(ID_DEBUG_STEP_ON_BREAK_OPCODE, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Step on break OpCode");
+        if (g_Settings->LoadBool(Debugger_StepOnBreakOpCode))
+        {
+            Item.SetItemTicked(true);
+        }
+        DebugR4300Menu.push_back(Item);
+
         // Debug - memory
         Item.Reset(ID_DEBUGGER_MEMORY, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"View...");
         DebugMemoryMenu.push_back(Item);
@@ -1226,30 +1251,6 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         }
 
         // Notification menu
-        Item.Reset(ID_DEBUG_END_ON_PERM_LOOP, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"End on perm loop");
-        if (g_Settings->LoadBool(Debugger_EndOnPermLoop))
-        {
-            Item.SetItemTicked(true);
-        }
-        DebugNotificationMenu.push_back(Item);
-        Item.Reset(ID_DEBUG_BREAK_ON_UNHANDLED_MEM, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Break on unhandled memory actions");
-        if (g_Settings->LoadBool(Debugger_BreakOnUnhandledMemory))
-        {
-            Item.SetItemTicked(true);
-        }
-        DebugNotificationMenu.push_back(Item);
-        Item.Reset(ID_DEBUG_BREAK_ON_ADDRESS_ERROR, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Break on address error");
-        if (g_Settings->LoadBool(Debugger_BreakOnAddressError))
-        {
-            Item.SetItemTicked(true);
-        }
-        DebugNotificationMenu.push_back(Item);
-        Item.Reset(ID_DEBUG_STEP_ON_BREAK_OPCODE, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Step on break OpCode");
-        if (g_Settings->LoadBool(Debugger_StepOnBreakOpCode))
-        {
-            Item.SetItemTicked(true);
-        }
-        DebugNotificationMenu.push_back(Item);
         Item.Reset(ID_DEBUG_SHOW_PIF_ERRORS, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"On PIF errors");
         if (g_Settings->LoadBool(Debugger_ShowPifErrors))
         {
