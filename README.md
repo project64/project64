@@ -83,6 +83,7 @@ See the [contributing](./.github/CONTRIBUTING.md) file for ways to get started.
 - Dark mode
 - Make Project64 more portable on Windows
 - Add requested hotkeys, such as swapping memory paks and rumble paks
+- Add command-line options
 - Improve the installer
 - Update dependencies
 - Code cleanup and refactoring
