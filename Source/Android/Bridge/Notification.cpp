@@ -3,7 +3,6 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Settings.h>
 #include <Project64-core/N64System/N64System.h>
-#include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include "Notification.h"
 #include "JavaBridge.h"
 #if defined(ANDROID)
@@ -117,7 +116,6 @@ bool CNotificationImp::AskYesNoQuestion(const char * /*Question*/) const
 
 void CNotificationImp::BreakPoint(const char * FileName, int32_t LineNumber)
 {
-    Flush_Recompiler_Log();
     TraceFlushLog();
     if (g_Settings->LoadBool(Debugger_Enabled))
     {
