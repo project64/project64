@@ -7016,7 +7016,7 @@ RDRAM Size=4
 Good Name=Turok - Dinosaur Hunter (U) (E3 Alpha) (Fixed)
 Internal Name=TUROKDH_E3_1996ALPHA
 Status=Unsupported
-Core Notes=Hangs on a black screen. Game is playable on real hardware.
+Core Note=Hangs on a black screen. Game is playable on real hardware.
 RDRAM Size=4
 
 [2F70F10D-5C4187FF-C:45]
