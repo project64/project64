@@ -1799,8 +1799,16 @@ Status=Compatible
 32bit=Yes
 RDRAM Size=4
 
-[AE6B1E11-B7CBD69E-C:50]
+[AE6B1E11-B7CBD69E-C:0]
 Good Name=Dragon Sword (U) (Unreleased Alpha)
+Internal Name=DragonStorm
+Status=Needs video plugin
+Plugin Note=Use GlideN64
+32bit=Yes
+RDRAM Size=4
+
+[AE6B1E11-B7CBD69E-C:50]
+Good Name=Dragon Sword (U) (Media Header Patch)
 Internal Name=DragonStorm
 Status=Needs video plugin
 Plugin Note=Use GlideN64
