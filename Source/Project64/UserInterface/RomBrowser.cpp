@@ -708,6 +708,7 @@ void CRomBrowser::RomList_GetDispInfo(uint32_t pnmh)
         case 'C':wcsncpy(lpdi->item.pszText, L"N64 Cartridge (Disk Compatible)", lpdi->item.cchTextMax / sizeof(wchar_t)); break;
         case 'D':wcsncpy(lpdi->item.pszText, L"64DD Disk", lpdi->item.cchTextMax / sizeof(wchar_t)); break;
         case 'E':wcsncpy(lpdi->item.pszText, L"64DD Disk (Expansion)", lpdi->item.cchTextMax / sizeof(wchar_t)); break;
+        case 'M':wcsncpy(lpdi->item.pszText, L"N64 Development Cartridge", lpdi->item.cchTextMax / sizeof(wchar_t)); break;           
         case 'N':wcsncpy(lpdi->item.pszText, L"N64 Cartridge", lpdi->item.cchTextMax / sizeof(wchar_t)); break;
         case 'Z':wcsncpy(lpdi->item.pszText, L"Aleck64", lpdi->item.cchTextMax / sizeof(wchar_t)); break;
         case 0:  wcsncpy(lpdi->item.pszText, L"None", lpdi->item.cchTextMax / sizeof(wchar_t)); break;
