@@ -45,6 +45,8 @@ AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/project
   * OpenGL 2.0 capable (3.0+ recommended) (Project64 Video)
   * OpenGL 3.3 capable (GLideN64)
 
+<sub>Intel integrated graphics can have issues that are not present with Nvidia and AMD GPU's even when the requirements are met.</sub>
+
 ## Support
 
 For support, we ask all users read our [support document](./Docs/SUPPORT.md). Read this ***before*** opening issues.
