@@ -1799,6 +1799,14 @@ Status=Compatible
 32bit=Yes
 RDRAM Size=4
 
+[AE6B1E11-B7CBD69E-C:50]
+Good Name=Dragon Sword (U) (Unreleased Alpha)
+Internal Name=DragonStorm
+Status=Needs video plugin
+Plugin Note=Use GlideN64
+32bit=Yes
+RDRAM Size=4
+
 [B6524461-ED6D04B1-C:50]
 Good Name=Dual Heroes (E)
 Internal Name=Dual heroes PAL
@@ -7016,7 +7024,7 @@ RDRAM Size=4
 Good Name=Turok - Dinosaur Hunter (U) (E3 Alpha) (Fixed)
 Internal Name=TUROKDH_E3_1996ALPHA
 Status=Unsupported
-Core Notes=Hangs on a black screen. Game is playable on real hardware.
+Core Note=Hangs on a black screen. Game is playable on real hardware.
 RDRAM Size=4
 
 [2F70F10D-5C4187FF-C:45]
