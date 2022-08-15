@@ -43,7 +43,7 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
     Jump_Opcode[21] = BNEL;
     Jump_Opcode[22] = BLEZL;
     Jump_Opcode[23] = BGTZL;
-    Jump_Opcode[24] = R4300iOp::UnknownOpcode;
+    Jump_Opcode[24] = R4300iOp::DADDI;
     Jump_Opcode[25] = R4300iOp::DADDIU;
     Jump_Opcode[26] = R4300iOp::LDL;
     Jump_Opcode[27] = R4300iOp::LDR;

@@ -59,6 +59,7 @@ public:
     virtual void ORI() = 0;
     virtual void XORI() = 0;
     virtual void LUI() = 0;
+    virtual void DADDI() = 0;
     virtual void DADDIU() = 0;
     virtual void LDL() = 0;
     virtual void LDR() = 0;

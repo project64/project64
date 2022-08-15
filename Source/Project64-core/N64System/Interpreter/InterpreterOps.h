@@ -31,6 +31,7 @@ public:
     static void BNEL();
     static void BLEZL();
     static void BGTZL();
+    static void DADDI();
     static void DADDIU();
     static void LDL();
     static void LDR();

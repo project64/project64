@@ -55,6 +55,7 @@ public:
     void ORI();
     void XORI();
     void LUI();
+    void DADDI();
     void DADDIU();
     void LDL();
     void LDR();

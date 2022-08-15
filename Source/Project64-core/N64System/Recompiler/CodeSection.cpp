@@ -567,6 +567,7 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
         case R4300i_BNEL: m_RecompilerOps->Compile_BranchLikely(CRecompilerOps::CompareTypeBNE, false); break;
         case R4300i_BGTZL: m_RecompilerOps->Compile_BranchLikely(CRecompilerOps::CompareTypeBGTZ, false); break;
         case R4300i_BLEZL: m_RecompilerOps->Compile_BranchLikely(CRecompilerOps::CompareTypeBLEZ, false); break;
+        case R4300i_DADDI: m_RecompilerOps->DADDI(); break;
         case R4300i_DADDIU: m_RecompilerOps->DADDIU(); break;
         case R4300i_LDL: m_RecompilerOps->LDL(); break;
         case R4300i_LDR: m_RecompilerOps->LDR(); break;

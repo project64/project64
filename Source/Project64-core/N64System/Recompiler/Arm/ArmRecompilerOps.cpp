@@ -2106,6 +2106,20 @@ void CArmRecompilerOps::LUI()
     m_RegWorkingSet.SetMipsRegState(m_Opcode.rt, CRegInfo::STATE_CONST_32_SIGN);
 }
 
+void CArmRecompilerOps::DADDI()
+{
+    if (m_Opcode.rs != 0) { WriteBack_GPR(m_Opcode.rs, false); }
+    if (m_Opcode.rt != 0) { UnMap_GPR(m_Opcode.rt, true); }
+    if (g_Settings->LoadBool(Game_32Bit))
+    {
+        CompileInterpterCall((void *)R4300iOp32::DADDI, "R4300iOp32::DADDI");
+    }
+    else
+    {
+        CompileInterpterCall((void *)R4300iOp::DADDI, "R4300iOp::DADDI");
+    }
+}
+
 void CArmRecompilerOps::DADDIU()
 {
     if (m_Opcode.rs != 0) { WriteBack_GPR(m_Opcode.rs, false); }

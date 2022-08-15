@@ -2614,6 +2614,24 @@ void CX86RecompilerOps::LUI()
     m_RegWorkingSet.SetMipsRegState(m_Opcode.rt, CRegInfo::STATE_CONST_32_SIGN);
 }
 
+void CX86RecompilerOps::DADDI()
+{
+    if (m_Opcode.rs != 0)
+    {
+        UnMap_GPR(m_Opcode.rs, true);
+    }
+
+    if (m_Opcode.rs != 0)
+    {
+        UnMap_GPR(m_Opcode.rt, true);
+    }
+
+    m_RegWorkingSet.BeforeCallDirect();
+    MoveConstToVariable(m_Opcode.Value, &R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value");
+    Call_Direct((void *)R4300iOp::DADDI, "R4300iOp::DADDI");
+    m_RegWorkingSet.AfterCallDirect();
+}
+
 void CX86RecompilerOps::DADDIU()
 {
     if (m_Opcode.rs != 0)

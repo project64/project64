@@ -134,7 +134,7 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_Opcode[21] = BNEL;
     Jump_Opcode[22] = BLEZL;
     Jump_Opcode[23] = BGTZL;
-    Jump_Opcode[24] = UnknownOpcode;
+    Jump_Opcode[24] = DADDI;
     Jump_Opcode[25] = DADDIU;
     Jump_Opcode[26] = LDL;
     Jump_Opcode[27] = LDR;
@@ -975,6 +975,11 @@ void R4300iOp::BGTZL()
         g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
         g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
     }
+}
+
+void R4300iOp::DADDI()
+{
+    _GPR[m_Opcode.rt].DW = _GPR[m_Opcode.rs].DW + (int64_t)((int16_t)m_Opcode.immediate);
 }
 
 void R4300iOp::DADDIU()
