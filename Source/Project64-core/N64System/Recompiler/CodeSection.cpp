@@ -27,7 +27,7 @@ CCodeSection::CCodeSection(CCodeBlock & CodeBlock, uint32_t EnterPC, uint32_t ID
     m_InLoop(false),
     m_DelaySlot(false),
     m_RecompilerOps(CodeBlock.RecompilerOps()),
-    m_RegEnter(CodeBlock),
+    m_RegEnter(CodeBlock, CodeBlock.RecompilerOps()->Assembler()),
     m_Jump(CodeBlock),
     m_Cont(CodeBlock)
 {
@@ -383,12 +383,12 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             case R4300i_SPECIAL_DSLL32: m_RecompilerOps->SPECIAL_DSLL32(); break;
             case R4300i_SPECIAL_DSRL32: m_RecompilerOps->SPECIAL_DSRL32(); break;
             case R4300i_SPECIAL_DSRA32: m_RecompilerOps->SPECIAL_DSRA32(); break;
-            case R4300i_SPECIAL_TEQ: m_RecompilerOps->Compile_TrapCompare(CRecompilerOps::TRAP_COMPARE::CompareTypeTEQ); break;
-            case R4300i_SPECIAL_TNE: m_RecompilerOps->Compile_TrapCompare(CRecompilerOps::TRAP_COMPARE::CompareTypeTNE); break;
-            case R4300i_SPECIAL_TGE: m_RecompilerOps->Compile_TrapCompare(CRecompilerOps::TRAP_COMPARE::CompareTypeTGE); break;
-            case R4300i_SPECIAL_TGEU: m_RecompilerOps->Compile_TrapCompare(CRecompilerOps::TRAP_COMPARE::CompareTypeTGEU); break;
-            case R4300i_SPECIAL_TLT: m_RecompilerOps->Compile_TrapCompare(CRecompilerOps::TRAP_COMPARE::CompareTypeTLT); break;
-            case R4300i_SPECIAL_TLTU: m_RecompilerOps->Compile_TrapCompare(CRecompilerOps::TRAP_COMPARE::CompareTypeTLTU); break;
+            case R4300i_SPECIAL_TEQ: m_RecompilerOps->Compile_TrapCompare(RecompilerTrapCompare_TEQ); break;
+            case R4300i_SPECIAL_TNE: m_RecompilerOps->Compile_TrapCompare(RecompilerTrapCompare_TNE); break;
+            case R4300i_SPECIAL_TGE: m_RecompilerOps->Compile_TrapCompare(RecompilerTrapCompare_TGE); break;
+            case R4300i_SPECIAL_TGEU: m_RecompilerOps->Compile_TrapCompare(RecompilerTrapCompare_TGEU); break;
+            case R4300i_SPECIAL_TLT: m_RecompilerOps->Compile_TrapCompare(RecompilerTrapCompare_TLT); break;
+            case R4300i_SPECIAL_TLTU: m_RecompilerOps->Compile_TrapCompare(RecompilerTrapCompare_TLTU); break;
                 break;
             default:
                 m_RecompilerOps->UnknownOpcode(); break;
@@ -397,26 +397,26 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
         case R4300i_REGIMM:
             switch (Opcode.rt)
             {
-            case R4300i_REGIMM_BLTZ: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBLTZ, false); break;
-            case R4300i_REGIMM_BGEZ: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBGEZ, false); break;
-            case R4300i_REGIMM_BLTZL: m_RecompilerOps->Compile_BranchLikely(CRecompilerOps::CompareTypeBLTZ, false); break;
-            case R4300i_REGIMM_BGEZL: m_RecompilerOps->Compile_BranchLikely(CRecompilerOps::CompareTypeBGEZ, false); break;
-            case R4300i_REGIMM_BLTZAL: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBLTZ, true); break;
-            case R4300i_REGIMM_BGEZAL: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBGEZ, true); break;
-            case R4300i_REGIMM_TEQI: m_RecompilerOps->Compile_TrapCompare(CRecompilerOps::TRAP_COMPARE::CompareTypeTEQI); break;
-            case R4300i_REGIMM_TNEI: m_RecompilerOps->Compile_TrapCompare(CRecompilerOps::TRAP_COMPARE::CompareTypeTNEI); break;
-            case R4300i_REGIMM_TGEI: m_RecompilerOps->Compile_TrapCompare(CRecompilerOps::TRAP_COMPARE::CompareTypeTGEI); break;
-            case R4300i_REGIMM_TGEIU: m_RecompilerOps->Compile_TrapCompare(CRecompilerOps::TRAP_COMPARE::CompareTypeTGEIU); break;
-            case R4300i_REGIMM_TLTI: m_RecompilerOps->Compile_TrapCompare(CRecompilerOps::TRAP_COMPARE::CompareTypeTLTI); break;
-            case R4300i_REGIMM_TLTIU: m_RecompilerOps->Compile_TrapCompare(CRecompilerOps::TRAP_COMPARE::CompareTypeTLTIU); break;
+            case R4300i_REGIMM_BLTZ: m_RecompilerOps->Compile_Branch(RecompilerBranchCompare_BLTZ, false); break;
+            case R4300i_REGIMM_BGEZ: m_RecompilerOps->Compile_Branch(RecompilerBranchCompare_BGEZ, false); break;
+            case R4300i_REGIMM_BLTZL: m_RecompilerOps->Compile_BranchLikely(RecompilerBranchCompare_BLTZ, false); break;
+            case R4300i_REGIMM_BGEZL: m_RecompilerOps->Compile_BranchLikely(RecompilerBranchCompare_BGEZ, false); break;
+            case R4300i_REGIMM_BLTZAL: m_RecompilerOps->Compile_Branch(RecompilerBranchCompare_BLTZ, true); break;
+            case R4300i_REGIMM_BGEZAL: m_RecompilerOps->Compile_Branch(RecompilerBranchCompare_BGEZ, true); break;
+            case R4300i_REGIMM_TEQI: m_RecompilerOps->Compile_TrapCompare(RecompilerTrapCompare_TEQI); break;
+            case R4300i_REGIMM_TNEI: m_RecompilerOps->Compile_TrapCompare(RecompilerTrapCompare_TNEI); break;
+            case R4300i_REGIMM_TGEI: m_RecompilerOps->Compile_TrapCompare(RecompilerTrapCompare_TGEI); break;
+            case R4300i_REGIMM_TGEIU: m_RecompilerOps->Compile_TrapCompare(RecompilerTrapCompare_TGEIU); break;
+            case R4300i_REGIMM_TLTI: m_RecompilerOps->Compile_TrapCompare(RecompilerTrapCompare_TLTI); break;
+            case R4300i_REGIMM_TLTIU: m_RecompilerOps->Compile_TrapCompare(RecompilerTrapCompare_TLTIU); break;
             default:
                 m_RecompilerOps->UnknownOpcode(); break;
             }
             break;
-        case R4300i_BEQ: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBEQ, false); break;
-        case R4300i_BNE: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBNE, false); break;
-        case R4300i_BGTZ: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBGTZ, false); break;
-        case R4300i_BLEZ: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeBLEZ, false); break;
+        case R4300i_BEQ: m_RecompilerOps->Compile_Branch(RecompilerBranchCompare_BEQ, false); break;
+        case R4300i_BNE: m_RecompilerOps->Compile_Branch(RecompilerBranchCompare_BNE, false); break;
+        case R4300i_BGTZ: m_RecompilerOps->Compile_Branch(RecompilerBranchCompare_BGTZ, false); break;
+        case R4300i_BLEZ: m_RecompilerOps->Compile_Branch(RecompilerBranchCompare_BLEZ, false); break;
         case R4300i_J: m_RecompilerOps->J(); break;
         case R4300i_JAL: m_RecompilerOps->JAL(); break;
         case R4300i_ADDI: m_RecompilerOps->ADDI(); break;
@@ -463,10 +463,10 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             case R4300i_COP1_BC:
                 switch (Opcode.ft)
                 {
-                case R4300i_COP1_BC_BCF: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeCOP1BCF, false); break;
-                case R4300i_COP1_BC_BCT: m_RecompilerOps->Compile_Branch(CRecompilerOps::CompareTypeCOP1BCT, false); break;
-                case R4300i_COP1_BC_BCFL: m_RecompilerOps->Compile_BranchLikely(CRecompilerOps::CompareTypeCOP1BCF, false); break;
-                case R4300i_COP1_BC_BCTL: m_RecompilerOps->Compile_BranchLikely(CRecompilerOps::CompareTypeCOP1BCT, false); break;
+                case R4300i_COP1_BC_BCF: m_RecompilerOps->Compile_Branch(RecompilerBranchCompare_COP1BCF, false); break;
+                case R4300i_COP1_BC_BCT: m_RecompilerOps->Compile_Branch(RecompilerBranchCompare_COP1BCT, false); break;
+                case R4300i_COP1_BC_BCFL: m_RecompilerOps->Compile_BranchLikely(RecompilerBranchCompare_COP1BCF, false); break;
+                case R4300i_COP1_BC_BCTL: m_RecompilerOps->Compile_BranchLikely(RecompilerBranchCompare_COP1BCT, false); break;
                 default:
                     m_RecompilerOps->UnknownOpcode(); break;
                 }
@@ -563,10 +563,10 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
                 m_RecompilerOps->UnknownOpcode(); break;
             }
             break;
-        case R4300i_BEQL: m_RecompilerOps->Compile_BranchLikely(CRecompilerOps::CompareTypeBEQ, false); break;
-        case R4300i_BNEL: m_RecompilerOps->Compile_BranchLikely(CRecompilerOps::CompareTypeBNE, false); break;
-        case R4300i_BGTZL: m_RecompilerOps->Compile_BranchLikely(CRecompilerOps::CompareTypeBGTZ, false); break;
-        case R4300i_BLEZL: m_RecompilerOps->Compile_BranchLikely(CRecompilerOps::CompareTypeBLEZ, false); break;
+        case R4300i_BEQL: m_RecompilerOps->Compile_BranchLikely(RecompilerBranchCompare_BEQ, false); break;
+        case R4300i_BNEL: m_RecompilerOps->Compile_BranchLikely(RecompilerBranchCompare_BNE, false); break;
+        case R4300i_BGTZL: m_RecompilerOps->Compile_BranchLikely(RecompilerBranchCompare_BGTZ, false); break;
+        case R4300i_BLEZL: m_RecompilerOps->Compile_BranchLikely(RecompilerBranchCompare_BLEZ, false); break;
         case R4300i_DADDI: m_RecompilerOps->DADDI(); break;
         case R4300i_DADDIU: m_RecompilerOps->DADDIU(); break;
         case R4300i_LDL: m_RecompilerOps->LDL(); break;

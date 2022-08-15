@@ -195,7 +195,7 @@ void CX86Ops::X86HardBreakPoint()
     AddCode8(0xCC);
 }
 
-void CX86Ops::X86BreakPoint(const char * FileName, int LineNumber)
+void CX86Ops::X86BreakPoint(const char * FileName, int32_t LineNumber)
 {
     Pushad();
     PushImm32(stdstr_f("%d", LineNumber).c_str(), LineNumber);
@@ -671,7 +671,7 @@ void CX86Ops::LeaRegReg2(x86Reg RegDest, x86Reg RegSrc, x86Reg RegSrc2, Multiple
     AddCode8((uint8_t)(0x05 + (RegSrc * 0x8) + RegSrc2 + CalcMultiplyCode(multiplier)));
 }
 
-void CX86Ops::LeaSourceAndOffset(x86Reg x86DestReg, x86Reg x86SourceReg, int offset)
+void CX86Ops::LeaSourceAndOffset(x86Reg x86DestReg, x86Reg x86SourceReg, int32_t offset)
 {
     uint16_t x86Command = 0;
 
@@ -1370,7 +1370,7 @@ void CX86Ops::MoveVariableToX86reg(void *Variable, const char * VariableName, x8
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::MoveVariableDispToX86Reg(void *Variable, const char * VariableName, x86Reg reg, x86Reg AddrReg, int Multiplier)
+void CX86Ops::MoveVariableDispToX86Reg(void *Variable, const char * VariableName, x86Reg reg, x86Reg AddrReg, int32_t Multiplier)
 {
     int x = 0;
     CodeLog("      mov %s, dword ptr [%s+%s*%i]", x86_Name(reg), VariableName, x86_Name(AddrReg), Multiplier);
@@ -3367,7 +3367,7 @@ void CX86Ops::fpuAddReg(x86FpuValues x86reg)
     }
 }
 
-void CX86Ops::fpuAddRegPop(int * StackPos, x86FpuValues reg)
+void CX86Ops::fpuAddRegPop(int32_t * StackPos, x86FpuValues reg)
 {
     CodeLog("      faddp ST(0), %s", fpu_Name(reg));
     *StackPos = (*StackPos + 1) & 7;
@@ -3596,14 +3596,14 @@ void CX86Ops::fpuFree(x86FpuValues Reg)
     }
 }
 
-void CX86Ops::fpuDecStack(int * StackPos)
+void CX86Ops::fpuDecStack(int32_t * StackPos)
 {
     CodeLog("      fdecstp");
     *StackPos = (*StackPos - 1) & 7;
     AddCode16(0xF6D9);
 }
 
-void CX86Ops::fpuIncStack(int * StackPos)
+void CX86Ops::fpuIncStack(int32_t * StackPos)
 {
     CodeLog("      fincstp");
     *StackPos = (*StackPos + 1) & 7;
@@ -3617,7 +3617,7 @@ void CX86Ops::fpuLoadControl(void *Variable, const char * VariableName)
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuLoadDword(int * StackPos, void *Variable, const char * VariableName)
+void CX86Ops::fpuLoadDword(int32_t * StackPos, void *Variable, const char * VariableName)
 {
     CodeLog("      fld dword ptr [%s]", VariableName);
     *StackPos = (*StackPos - 1) & 7;
@@ -3625,7 +3625,7 @@ void CX86Ops::fpuLoadDword(int * StackPos, void *Variable, const char * Variable
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuLoadDwordFromX86Reg(int * StackPos, x86Reg x86reg)
+void CX86Ops::fpuLoadDwordFromX86Reg(int32_t * StackPos, x86Reg x86reg)
 {
     CodeLog("      fld dword ptr [%s]", x86_Name(x86reg));
     *StackPos = (*StackPos - 1) & 7;
@@ -3643,7 +3643,7 @@ void CX86Ops::fpuLoadDwordFromX86Reg(int * StackPos, x86Reg x86reg)
     }
 }
 
-void CX86Ops::fpuLoadDwordFromN64Mem(int * StackPos, x86Reg x86reg)
+void CX86Ops::fpuLoadDwordFromN64Mem(int32_t * StackPos, x86Reg x86reg)
 {
     CodeLog("      fld dword ptr [%s+N64mem]", x86_Name(x86reg));
     *StackPos = (*StackPos - 1) & 7;
@@ -3662,7 +3662,7 @@ void CX86Ops::fpuLoadDwordFromN64Mem(int * StackPos, x86Reg x86reg)
     AddCode32((uint32_t)g_MMU->Rdram());
 }
 
-void CX86Ops::fpuLoadInt32bFromN64Mem(int * StackPos, x86Reg x86reg)
+void CX86Ops::fpuLoadInt32bFromN64Mem(int32_t * StackPos, x86Reg x86reg)
 {
     CodeLog("      fild dword ptr [%s+N64mem]", x86_Name(x86reg));
     *StackPos = (*StackPos - 1) & 7;
@@ -3681,7 +3681,7 @@ void CX86Ops::fpuLoadInt32bFromN64Mem(int * StackPos, x86Reg x86reg)
     AddCode32((uint32_t)g_MMU->Rdram());
 }
 
-void CX86Ops::fpuLoadIntegerDword(int * StackPos, void *Variable, const char * VariableName)
+void CX86Ops::fpuLoadIntegerDword(int32_t * StackPos, void *Variable, const char * VariableName)
 {
     CodeLog("      fild dword ptr [%s]", VariableName);
     *StackPos = (*StackPos - 1) & 7;
@@ -3689,7 +3689,7 @@ void CX86Ops::fpuLoadIntegerDword(int * StackPos, void *Variable, const char * V
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuLoadIntegerDwordFromX86Reg(int * StackPos, x86Reg x86reg)
+void CX86Ops::fpuLoadIntegerDwordFromX86Reg(int32_t * StackPos, x86Reg x86reg)
 {
     CodeLog("      fild dword ptr [%s]", x86_Name(x86reg));
     *StackPos = (*StackPos - 1) & 7;
@@ -3707,7 +3707,7 @@ void CX86Ops::fpuLoadIntegerDwordFromX86Reg(int * StackPos, x86Reg x86reg)
     }
 }
 
-void CX86Ops::fpuLoadIntegerQword(int * StackPos, void *Variable, const char * VariableName)
+void CX86Ops::fpuLoadIntegerQword(int32_t * StackPos, void *Variable, const char * VariableName)
 {
     CodeLog("      fild qword ptr [%s]", VariableName);
     *StackPos = (*StackPos - 1) & 7;
@@ -3715,7 +3715,7 @@ void CX86Ops::fpuLoadIntegerQword(int * StackPos, void *Variable, const char * V
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuLoadIntegerQwordFromX86Reg(int * StackPos, x86Reg x86reg)
+void CX86Ops::fpuLoadIntegerQwordFromX86Reg(int32_t * StackPos, x86Reg x86reg)
 {
     CodeLog("      fild qword ptr [%s]", x86_Name(x86reg));
     *StackPos = (*StackPos - 1) & 7;
@@ -3733,7 +3733,7 @@ void CX86Ops::fpuLoadIntegerQwordFromX86Reg(int * StackPos, x86Reg x86reg)
     }
 }
 
-void CX86Ops::fpuLoadQword(int * StackPos, void *Variable, const char * VariableName)
+void CX86Ops::fpuLoadQword(int32_t * StackPos, void *Variable, const char * VariableName)
 {
     CodeLog("      fld qword ptr [%s]", VariableName);
     *StackPos = (*StackPos - 1) & 7;
@@ -3741,7 +3741,7 @@ void CX86Ops::fpuLoadQword(int * StackPos, void *Variable, const char * Variable
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuLoadQwordFromX86Reg(int * StackPos, x86Reg x86reg)
+void CX86Ops::fpuLoadQwordFromX86Reg(int32_t * StackPos, x86Reg x86reg)
 {
     CodeLog("      fld qword ptr [%s]", x86_Name(x86reg));
     *StackPos = (*StackPos - 1) & 7;
@@ -3759,7 +3759,7 @@ void CX86Ops::fpuLoadQwordFromX86Reg(int * StackPos, x86Reg x86reg)
     }
 }
 
-void CX86Ops::fpuLoadQwordFromN64Mem(int * StackPos, x86Reg x86reg)
+void CX86Ops::fpuLoadQwordFromN64Mem(int32_t * StackPos, x86Reg x86reg)
 {
     CodeLog("      fld qword ptr [%s+N64mem]", x86_Name(x86reg));
     *StackPos = (*StackPos - 1) & 7;
@@ -3778,7 +3778,7 @@ void CX86Ops::fpuLoadQwordFromN64Mem(int * StackPos, x86Reg x86reg)
     AddCode32((uint32_t)g_MMU->Rdram());
 }
 
-void CX86Ops::fpuLoadReg(int * StackPos, x86FpuValues Reg)
+void CX86Ops::fpuLoadReg(int32_t * StackPos, x86FpuValues Reg)
 {
     CodeLog("      fld ST(0), %s", fpu_Name(Reg));
     *StackPos = (*StackPos - 1) & 7;
@@ -3909,7 +3909,7 @@ void CX86Ops::fpuStoreControl(void *Variable, const char * VariableName)
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuStoreDword(int * StackPos, void *Variable, const char * VariableName, bool pop)
+void CX86Ops::fpuStoreDword(int32_t * StackPos, void *Variable, const char * VariableName, bool pop)
 {
     CodeLog("      fst%s dword ptr [%s]", m_fpupop[pop], VariableName);
 
@@ -3922,7 +3922,7 @@ void CX86Ops::fpuStoreDword(int * StackPos, void *Variable, const char * Variabl
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuStoreDwordFromX86Reg(int * StackPos, x86Reg x86reg, bool pop)
+void CX86Ops::fpuStoreDwordFromX86Reg(int32_t * StackPos, x86Reg x86reg, bool pop)
 {
     uint8_t Command = 0;
 
@@ -3950,7 +3950,7 @@ void CX86Ops::fpuStoreDwordFromX86Reg(int * StackPos, x86Reg x86reg, bool pop)
     AddCode8(pop ? (Command + 0x8) : Command);
 }
 
-void CX86Ops::fpuStoreDwordToN64Mem(int * StackPos, x86Reg x86reg, bool Pop)
+void CX86Ops::fpuStoreDwordToN64Mem(int32_t * StackPos, x86Reg x86reg, bool Pop)
 {
     int s = Pop ? 0x0800 : 0;
 
@@ -3977,7 +3977,7 @@ void CX86Ops::fpuStoreDwordToN64Mem(int * StackPos, x86Reg x86reg, bool Pop)
     AddCode32((uint32_t)g_MMU->Rdram());
 }
 
-void CX86Ops::fpuStoreIntegerDword(int * StackPos, void *Variable, const char * VariableName, bool pop)
+void CX86Ops::fpuStoreIntegerDword(int32_t * StackPos, void *Variable, const char * VariableName, bool pop)
 {
     CodeLog("      fist%s dword ptr [%s]", m_fpupop[pop], VariableName);
 
@@ -3989,7 +3989,7 @@ void CX86Ops::fpuStoreIntegerDword(int * StackPos, void *Variable, const char * 
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuStoreIntegerDwordFromX86Reg(int * StackPos, x86Reg x86reg, bool pop)
+void CX86Ops::fpuStoreIntegerDwordFromX86Reg(int32_t * StackPos, x86Reg x86reg, bool pop)
 {
     uint8_t Command = 0;
 
@@ -4017,7 +4017,7 @@ void CX86Ops::fpuStoreIntegerDwordFromX86Reg(int * StackPos, x86Reg x86reg, bool
     AddCode8(pop ? (Command + 0x8) : Command);
 }
 
-void CX86Ops::fpuStoreIntegerQword(int * StackPos, void *Variable, const char * VariableName, bool pop)
+void CX86Ops::fpuStoreIntegerQword(int32_t * StackPos, void *Variable, const char * VariableName, bool pop)
 {
     CodeLog("      fist%s qword ptr [%s]", m_fpupop[pop], VariableName);
 
@@ -4035,7 +4035,7 @@ void CX86Ops::fpuStoreIntegerQword(int * StackPos, void *Variable, const char * 
     }
 }
 
-void CX86Ops::fpuStoreIntegerQwordFromX86Reg(int * StackPos, x86Reg x86reg, bool pop)
+void CX86Ops::fpuStoreIntegerQwordFromX86Reg(int32_t * StackPos, x86Reg x86reg, bool pop)
 {
     uint8_t Command = 0;
 
@@ -4062,7 +4062,7 @@ void CX86Ops::fpuStoreIntegerQwordFromX86Reg(int * StackPos, x86Reg x86reg, bool
     AddCode8(pop ? (Command + 0x8) : Command);
 }
 
-void CX86Ops::fpuStoreQwordFromX86Reg(int * StackPos, x86Reg x86reg, bool pop)
+void CX86Ops::fpuStoreQwordFromX86Reg(int32_t * StackPos, x86Reg x86reg, bool pop)
 {
     uint8_t Command = 0;
 

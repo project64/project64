@@ -18,7 +18,7 @@ LoopAnalysis::LoopAnalysis(CCodeBlock & CodeBlock, CCodeSection * Section) :
     m_PC((uint32_t)-1),
     m_PipelineStage(PIPELINE_STAGE_NORMAL),
     m_Test(CodeBlock.NextTest()),
-    m_Reg(CodeBlock)
+    m_Reg(CodeBlock, CodeBlock.RecompilerOps()->Assembler())
 {
     memset(&m_Command, 0, sizeof(m_Command));
 }
@@ -74,7 +74,7 @@ bool LoopAnalysis::SetupEnterSection(CCodeSection * Section, bool & bChanged, bo
     m_CodeBlock.Log("%s: Block EnterPC: %X Section ID %d Test: %X Section Test: %X CompiledLocation: %X", __FUNCTION__, m_CodeBlock.VAddrEnter(), Section->m_SectionID, m_Test, Section->m_Test, Section->m_CompiledLocation);
 
     bool bFirstParent = true;
-    CRegInfo RegEnter(m_CodeBlock);
+    CRegInfo RegEnter(m_CodeBlock, m_CodeBlock.RecompilerOps()->Assembler());
     for (CCodeSection::SECTION_LIST::iterator iter = Section->m_ParentSection.begin(); iter != Section->m_ParentSection.end(); iter++)
     {
         CCodeSection * Parent = *iter;

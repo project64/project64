@@ -249,9 +249,6 @@
     <ClCompile Include="N64System\Recompiler\RecompilerMemory.cpp">
       <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\Recompiler\SectionInfo.cpp">
-      <Filter>Source Files\N64 System\Recompiler</Filter>
-    </ClCompile>
     <ClCompile Include="N64System\Mips\MemoryVirtualMem.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
@@ -406,6 +403,9 @@
       <Filter>Source Files\N64 System\MemoryHandler</Filter>
     </ClCompile>
     <ClCompile Include="N64System\Recompiler\ExitInfo.cpp">
+      <Filter>Source Files\N64 System\Recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\JumpInfo.cpp">
       <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>
   </ItemGroup>

@@ -286,13 +286,15 @@ public:
 
     static bool Is8BitReg(x86Reg Reg);
     static uint8_t CalcMultiplyCode(Multipler Multiply);
+    static void * GetAddressOf(int32_t value, ...);
 
-    void * GetAddressOf(int32_t value, ...);
     void SetJump32(uint32_t * Loc, uint32_t * JumpLoc);
     void SetJump8(uint8_t * Loc, uint8_t * JumpLoc);
 
 private:
     CX86Ops(void);
+    CX86Ops(const CX86Ops&);
+    CX86Ops& operator=(const CX86Ops&);
 
     void CodeLog(_Printf_format_string_ const char * Text, ...);
 
