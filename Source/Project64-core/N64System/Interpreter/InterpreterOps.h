@@ -121,6 +121,7 @@ public:
     static void REGIMM_BGEZL();
     static void REGIMM_BLTZAL();
     static void REGIMM_BGEZAL();
+    static void REGIMM_BGEZALL();
     static void REGIMM_TEQI();
     static void REGIMM_TGEI();
     static void REGIMM_TGEIU();

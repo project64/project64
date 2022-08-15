@@ -259,7 +259,7 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_Regimm[16] = REGIMM_BLTZAL;
     Jump_Regimm[17] = REGIMM_BGEZAL;
     Jump_Regimm[18] = UnknownOpcode;
-    Jump_Regimm[19] = UnknownOpcode;
+    Jump_Regimm[19] = REGIMM_BGEZALL;
     Jump_Regimm[20] = UnknownOpcode;
     Jump_Regimm[21] = UnknownOpcode;
     Jump_Regimm[22] = UnknownOpcode;
@@ -1808,6 +1808,21 @@ void R4300iOp::REGIMM_BGEZAL()
     }
     else
     {
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
+    }
+    _GPR[31].DW = (int32_t)((*_PROGRAM_COUNTER) + 8);
+}
+
+void R4300iOp::REGIMM_BGEZALL()
+{
+    g_System->m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
+    if (_GPR[m_Opcode.rs].DW >= 0)
+    {
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
+    }
+    else
+    {
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
         g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
     }
     _GPR[31].DW = (int32_t)((*_PROGRAM_COUNTER) + 8);
