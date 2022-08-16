@@ -1,0 +1,423 @@
+﻿/*********************************************************************************
+* Meta Information                                                               *
+*********************************************************************************/
+//About DLL
+#1  #  "Italiano alt."	// LANGUAGE ID
+#2  #  "Burzum"		// Author
+#3  #  "1.2"		// Version
+#4  #  "2002-08-31"	// Date
+
+//About DLL Dialog
+#5  #  "Traduzione della GUI (ITA_by_Burzum.pj.Lang)"
+#6  #  "Autore"
+#7  #  "Versione"
+#8  #  "Data"
+#9  #  "Sito Web dell'autore"
+#10 #  "File contente le impostazioni delle ROM (Project64.rdb)"
+#11 #  "File contente i cheat (Project64.cht)"
+#12 #  "File contente le informazioni sulle ROM (Project64.rdx)"
+
+//About INI title
+#20 #  "Project64 sta utilizzando:"
+
+/*********************************************************************************
+* Menu                                                                           *
+*********************************************************************************/
+//File Menu
+#100#  "&File"
+#101#  "&Carica una ROM"
+#102#  "&Informazioni sulla ROM"
+#103#  "&Avvia l'emulazione"
+#104#  "&Termina l'emulazione"
+#105#  "&Scegli una cartella contente le ROM (per il Rom-Browser)"
+#106#  "Aggiorna il ROM-&Browser"
+#107#  "&ROM emulate di recente"
+#108#  "&Directory aperte di recente"
+#109#  "&Esci"
+
+//System Menu
+#120#  "&Sistema"
+#121#  "&Reset"
+#122#  "&Pausa"
+#123#  "&Acquisisci uno screenshot (bitmap)"
+#124#  "&Limita la velocita' di emulazione"
+#125#  "&Salvataggio rapido"
+#126#  "Salva la partita"
+#127#  "&Carica il salvataggio rapido"
+#128#  "Carica una partita"
+#129#  "Slot in uso per il salvataggio rapido"
+#130#  "&Trucchi..."
+#131#  "&Usa i trucchi del GameShark"
+#132#  "&Riprendi il gioco"
+
+//Options Menu
+#140#  "&Opzioni"
+#141#  "Attiva &Fullscreen"
+#142#  "Sempre in &Primo piano"
+#143#  "Configura il plugin &Video..."
+#144#  "Configura il  plugin &Audio..."
+#145#  "Configura il plugin per i &Controller..."
+#146#  "Configura &RSP..."
+#147#  "Mostra la percentuale di &Utilizzo della CPU"
+#148#  "&Settaggi..."
+
+//Debugger Menu
+#160#  "&Debugger"
+
+//Language Menu
+#175#  "&Lingua"
+
+//Help Menu
+#180#  "&Aiuto"
+#181#  "Dettagli sui file &INI"
+#182#  "Dettagli sul &Project64"
+
+//Current Save Slot menu
+#190#  "&slot predefinito (.pj)"
+#191#  "Slot&1 (.pj1)"
+#192#  "Slot&2 (.pj2)"
+#193#  "Slot&3 (.pj3)"
+#194#  "Slot&4 (.pj4)"
+#195#  "Slot&5 (.pj5)"
+#196#  "Slot&6 (.pj6)"
+#197#  "Slot&7 (.pj7)"
+#198#  "Slot&8 (.pj8)"
+#199#  "Slot&9 (.pj9)"
+#200#  "Slot1&0 (.pj0)"
+
+//Pop up Menu
+#210#  "Gioca"
+#211#  "Dettagli sulla ROM"
+#212#  "Edita i Settaggi della ROM"
+#213#  "Edita i Trucchi"
+
+// Menu Descriptions
+#250#  "Carica una ROM da emulare"
+#251#  "Mostra le informazioni sulla ROM caricata"
+#252#  "Avvia l'emulazione della ROM che hai caricato"
+#253#  "Ferma l'emulazione della ROM che stai usando e ritorna al ROM-Browser"
+#254#  "Scegli la directory in cui sono presenti le ROM del N64,affinche' siano rappresentate nel ROM-Browser"
+#255#  "Aggiorna il ROM-Browser cosi' da rendere effettivi eventuali cambiamenti"
+#256#  "Esci del Project64"
+#257#  "Ricarica la ROM per rendere effettive le nuove impostazioni "
+#258#  "Mette in Pausa/Ricomincia l'emulazione di una ROM"
+#259#  "Genera una bitmap del gioco attraverso il plugin video"
+#260#  "Limita la velocita' in base alla provenienza della ROM (PAL o NTSC)"
+#261#  "Salva la partita su uno slot predefinito per velocizzare l'operazione di salvataggio"
+#262#  "Salva la partita in uno slot scelto dall'utente"
+#263#  "Ripristina una partita salvata nello slot predefinito"
+#264#  "Carica una partita salvata da uno slot scelto dall'utente"
+#265#  "Seleziona o aggiungi dei trucchi per la ROM che stai emulando"
+#266#  "Emula la pressione del pulsante del GameShark (funziona solamente per alcuni trucchi)"
+#267#  "Avvia la modalita' Fullscreen (premi il tasto Esc per tornare in Finestra!)"
+#268#  "Mantieni il Project64 sempre in primo piano"
+#269#  "Configura il plugin video che stai utilizzando"
+#270#  "Configura il plugin audio che stai utilizzando"
+#271#  "Configura il plugin dei controlli che stai utilizzando"
+#272#  "Configura il plugin RSP che stai utilizzando"
+#273#  "Mostra/nascondi l'utilizzo della CPU"
+#274#  "Settaggi principali del Project64 (scelta dei plugin e impostazioni varie)"
+#275#  "Guida all'utilizzo del Project64"
+#276#  "FAQ sui singoli giochi"
+#277#  "Dettagli sul programma e sugli autori"
+#278#  "Info sugli autori dei files di supporto"
+#279#  "Carica una ROM emulata di recente"
+#280#  "Cambia la visualizzazione del browser per questa cartella"
+#281#  "Cambia la lingua della GUI del Project64"
+#282#  "Cambia lo slot del salvataggio rapido"
+#283#  "Carica e avvia l'emulazione della ROM selezionata"
+#284#  "Informazioni sul gioco che stai emulando"
+#285#  "Aggiungi/modifica i settaggi di questo gioco nel file RDB"
+#286#  "Aggiungi/modifica i trucchi per questo gioco nel file CHT"
+
+/*********************************************************************************
+* ROM Browser                                                                    *
+*********************************************************************************/
+//ROM Browser Fields
+#300#  "Nome File"
+#301#  "Titolo"
+#302#  "Nome GoodN64"
+#303#  "Stato"
+#304#  "Dimensioni della ROM"
+#305#  "Note (core)"
+#306#  "Note (plugins)"
+#307#  "Note dell'utente)"
+#308#  "ID Cartuccia"
+#309#  "Tipo di supporto"
+#310#  "path"
+#311#  "Sviluppatore"
+#312#  "CRC1"
+#313#  "CRC2"
+#314#  "Chip CIC"
+#315#  "Data della versione"
+#316#  "Genere"
+#317#  "Giocatori"
+
+//Select ROM
+#320#  "Scegli una directory contente ROM per il ROM-Browser"
+
+//Messages
+#340#  "La ROM non funziona? Usa il GoodN64 oppure cerca un file RDB piu' aggiornato"
+
+/*********************************************************************************
+* Options                                                                        *
+*********************************************************************************/
+//Options Title
+#400#  "Impostazioni"
+
+//Tabs
+#401#  "Scelta Plugins"
+#402#  "directory"
+#403#  "Opzioni"
+#404#  "Gestione delle ROM"
+#405#  "Avanzate"
+#406#  "Settaggi della ROM"
+#407#  "Associa le estensioni delle ROM al Project64"
+#408#  "Dettagli sulla ROM"
+
+//Plugin Dialog
+#420#  "Dettagli"
+#421#  "Plugin &Reality Signal Processor (RSP)"
+#422#  "Plugin &Video"
+#423#  "Plugin &Audio"
+#424#  "Plugin &Controlli"
+
+//Directory Dialog
+#440#  "Directory Plugins"
+#441#  "Directory ROM"
+#442#  "Directory dei salvataggi del N64"
+#443#  "Directory dei salvataggi rapidi"
+#444#  "Directory in cui verranno stipati gli screenshot"
+#445#  "Ricorda l'ultima directory da cui e' stata aperta una ROM"
+#446#  "Scegli una directory per i Plugins"
+#447#  "Scegli una directory per le ROM"
+#448#  "Scegli una directory per i salvataggi del N64"
+#449#  "Scegli una directory per i salvataggi rapidi"
+#450#  "Scegli una directory per gli screenshot"
+
+//Options Dialog
+#460#  "&Metti in pausa quando la finestra del Project64 non è attiva"
+#461#  "Attiva la modalita' Fullscreen all'avvio di una ROM"
+#462#  "Nascondi i settaggi avanzati (raccomandato)"
+#463#  "&Ricorda i trucchi scelti per ogni singolo gioco"
+
+//ROM Browser Tab
+#480#  "Numero di ROM da ricordare (0-10)"
+#481#  "ROM"
+#482#  "Numero di directory con ROM da ricordare (0-10)"
+#483#  "Directory"
+#484#  "Usa il ROM-Browser"
+#485#  "Usa il directory recursion"
+#486#  "Campi disponibili:"
+#487#  "Mostra i campi in quest'ordine:"
+#488#  "&Aggiungi ->"
+#489#  "<- &Rimuovi"
+#490#  "&Sù"
+#491#  "&Giù"
+
+//Advanced Options
+#500#  "Questi settaggi vengono utilizzati nei casi in cui non si trovino valori nell'RDB, non sia presente un RDB, l'opzione 'sovrascrivi' non sia selezionata"
+#501#  "Impostazioni predefinite del Core"
+#502#  "Core della CPU"
+#503#  "Codice del Self-mod:"
+#504#  "Grandezza della RDRAM"
+#505#  "Advanced Block Linking"
+#506#  "Avvia l'emulazione dopo che la ROM e' stata caricata"
+#507#  "Sovrascrivi questi settaggi predefiniti con quelli presi dall' RDB"
+#508#  "Comprimi i salvataggi rapidi"
+
+//ROM Options
+#520#  "Core della CPU:"
+#521#  "Metodo del Self-mode:"
+#522#  "Grandezza della RDRAM:"
+#523#  "Advanced Block Linking:"
+#524#  "Tipo di Salvataggio:"
+#525#  "Fattore del Counter:"
+#526#  "&Larger Compile Buffer"
+#527#  "Attiva TLB"
+#528#  "Register Caching"
+#529#  "Delay SI Interrupt"
+#530#  "SP Hack"
+#531#  "* Predefinito"
+
+//Core Styles
+#540#  "Interpreta"
+#541#  "Ricompila"
+#542#  "Sincronizza CPU"
+
+//Self Mod Methods
+#560#  "Nessuno"
+#561#  "Cache"
+#562#  "Proteggi Memoria"
+#563#  "Controlla Memoria & Cache"
+#564#  "Cambia Memoria & Cache"
+#565#  "Controllo memoria avanzata"
+
+//RDRAM Size
+#580#  "4 Mb"
+#581#  "8 Mb"
+
+//Advanced Block Linking
+#600#  "On"
+#601#  "Off"
+
+//Save Type
+#620#  "Riconosci il salvataggio automaticamente"
+#621#  "4-kbit EEPROM"
+#622#  "16-kbit EEPROM"
+#623#  "SRAM"
+#624#  "128-ko flash RAM"
+
+//Shell Intergration Tab
+#640#  "Seleziona i file da associare al Project64"
+
+//ROM Notes
+#660#  "Stato"
+#661#  "Note (core)"
+#662#  "Note (plugins)"
+
+/*********************************************************************************
+* ROM Information                                                                *
+*********************************************************************************/
+//ROM Info Title Title
+#800#  "Informazioni sulla ROM"
+
+//ROM Info Text
+#801#  "Titolo"
+#802#  "Nome File"
+#803#  "Path"
+#804#  "Dimensioni"
+#805#  "ID Cartuccia"
+#806#  "Tipo di supporto"
+#807#  "Regione"
+#808#  "CRC1"
+#809#  "CRC2"
+#810#  "Chip CIC"
+
+/*********************************************************************************
+* Cheats                                                                         *
+*********************************************************************************/
+//Cheat List
+#1000#  "Trucchi"
+#1001#  "Trucchi:"
+#1002#  "Note:"
+#1003#  "Seleziona tutto"
+#1004#  "Deseleziona tutto"
+
+//Add Cheat
+#1005#  "Aggiungi un trucco"
+#1006#  "Nome:"
+#1007#  "Codice:"
+#1008#  "Inserisci"
+#1009#  "Rimuovi"
+#1010#  "Informazioni sul codice : "
+#1011#  "Aggiungi al database"
+#1022#  "Aggiungi un trucco"
+#1023#  "Nuovo trucco"
+#1024#  "<indirizzo> <valore>"
+#1025#  "Opzioni :"
+#1026#  "<valore> <etichetta>"
+
+//Code extension
+#1012#  "Estensioni del codice"
+#1013#  "Per favore,scegli un valore da usare per :"
+#1014#  "OK"
+#1015#  "Cancella"
+
+//Digital Value
+#1016#  "Digita la quantità"
+#1017#  "Per favore, scegli un valore per :"
+#1018#  "&Valore"
+#1019#  "da"
+#1020#  "fino a"
+#1021#  "&Note aggiuntive :"
+
+//Edit Cheat
+#1027#  "Edita il trucco"
+#1028#  "Aggiorna/modifica il trucco"
+
+//Cheat Popup Menu
+#1040#  "Aggiungi un nuovo trucco..."
+#1041#  "Edita..."
+#1042#  "Elimina"
+
+/*********************************************************************************
+* Messages                                                                       *
+*********************************************************************************/
+#2000#  "Pausa"
+#2001#  "Riprendi"
+#2002#  "Il programma si trova in una condizione di loop permanente da cui non si puo' uscire.
+A causa di questo problema l'emulazione verra' terminata.
+
+Verifica la qualita' della ROM e i suoi settaggi."
+#2003#  "Allocazione della memoria non riuscita"
+#2004#  "Il plugin video e' assente o non è corretto.
+
+Controlla di avere almeno un plugin video compatibile con pj64 nella directory che hai scelto per i plugin."
+#2005#  "Il plugin audio e' assente o non è corretto.
+
+Controlla di avere almeno un plugin audio compatibile con pj64 nella directory che hai scelto per i plugin."
+#2006#  "Il plugin RSP e' assente o non è corretto.
+
+Controlla che la directory che hai scelto per i plugin sia giusta."
+#2007#  "Il plugin per i controlli e' assente o non è corretto.
+
+Controlla di avere almeno un plugin per i controlli compatibile con pj64 nella directory che hai scelto per i plugin."
+#2008#  "Caricamento plugin non riuscito:"
+#2009#  "Caricamento della parola non riuscito
+
+Verifica la ROM e i suoi settaggi."
+#2010#  "Caricamento del salvataggio rapido non riuscito"
+#2011#  "Caricamento EEPROM fallito"
+#2012#  "Caricamento flash RAM fallito"
+#2013#  "Caricamento del MemoryPack fallito"
+#2014#  "Il tentativo di aprire il file zip è fallito.
+
+File compresso (.zip) mancante o corrotto - verifica il percorso e il file.
+
+Potresti aver bisogno di chiudere e riavviare il programma."
+#2015#  "Il tentativo di caricamento del file fallito."
+#2016#  "Si è verificato un errore nel tentativo di apertura di un file compresso (.zip)."
+#2017#  "Il file caricato non sembra essere una ROM valida.
+
+Verifica la ROM con il GoodN64."
+#2018#  "Regione sconosciuta"
+#2019#  "Chip CIC sconosciuto"
+#2020#  "Formato del file non riconosciuto"
+#2021#  "Memory action non riconosciuta.
+
+Emulazione terminata"
+#2022#  "OpCode R4300i non caricato"
+#2023#  "Avvio da uno spazio "non-mappato".
+
+Verifica la ROM e i suoi settaggi."
+#2024#  "Il salvataggio rapido non appartiene a questa ROM.
+
+I salvataggi rapidi devono essere salvati e caricati da ROM identiche al 100%, 
+in particolare, la REGIONE e la VERSIONE devono essere le stesse.
+Il caricamento di questo salvataggio rapido potrebbe cusare crash del gioco e/o dell'emulatore.
+
+Sei sicuro di voler continuare il caricamento?"
+#2025#  "Errore dell'Applicazione o nel Core"
+#2026#  "Sequenza del 'copyright' non trovata nel LUT. Il gioco non funzionera'."
+#2027#  "Errore nella Copy Protection"
+#2028#  "Per cambiare un plugin è necessario che il Project64 resetti e riavvii la ROM.
+Se non vuoi perdere la posizione, rispondi 'no' e salva il gioco.
+
+Vuoi riavviare la ROM adesso?"
+#2029#  "Cambia plugin"
+#2030#  "Emulazione terminata"
+#2031#  "Emulazione avviata"
+#2032#  "Impossibile caricare il salvataggio rapido"
+#2033#  "Caricamento effettuato"
+#2034#  "Salvataggio effettuato"
+#2035#  "Utilizzo di questo slot per il salvataggio rapido"
+#2036#  "'Byteswapping' della ROM in corso..."
+#2037#  "Sono in attesa che tu scelga una ROM"
+#2038#  "Percentuale caricata della della ROM: "
+#2039#  "Caricamento della ROM"
+#2040#  "Non puoi aprire una ROM se tutti i plugins (Video, Audio, Controller e RSP) non sono stati correttamente inizializzati"
+#2041#  "Sei sicuro di voler rimuovere questo trucco?"
+#2042#  "Rimuovi trucco"
+#2043#  "Il nome del trucco e' già usato, scegline un altro "
+#2044#  "Hai raggiunto il massimo numero di trucchi per il gioco"
