@@ -49,12 +49,12 @@ Version=3.0.0
 [Rom Status]
 // Setting up ROM browser status categories & colour definitions:
 //
-// colours are standard 6-digit hex values [RRGGBB] 000000 - black, FFFFFF - white
+// Colours are standard 6-digit hex values [RRGGBB] 000000 - black, FFFFFF - white
 // you can use e.g. Photoshop to get these colour codes from any source
 // 	 equals-sign defines normal text colour (ROMs not highlighted)
 // 	.Sel defines background colour of highlighted row
 //	.Seltext defines highlighted text colour
-// ".AutoFullScreen=False" can be used to overide users' auto fullscreen on load option
+// ".AutoFullScreen=False" can be used to override users' auto fullscreen on load option
 // there is no practical limit to the number of categories you may define
 // categories will be used to populate a drop-down menu in the Project64 GUI, ROM Notes tab
 // To edit colours you must edit this file directly.
@@ -153,6 +153,7 @@ Bad ROM?.AutoFullScreen=False
 [B2242748-FFBD61DA-C:45]
 Good Name=007 - Goldfinger (Beta)
 Internal Name=GOLDFINGER
+Status=Compatible
 Counter Factor=1
 Fast SP=No
 Linking=Off
@@ -199,7 +200,6 @@ SMM-TLB=0
 Good Name=40 Winks (E) (M3) (Beta)
 Internal Name=40 WINKS
 Status=Compatible
-32bit=Yes
 
 [B98BA456-5B2B76AF-C:4A]
 Good Name=64 de Hakken!! Tamagotchi - Minna de Tamagotchi World (J)
@@ -1570,8 +1570,6 @@ RDRAM Size=4
 Good Name=Dexanoid R1 by Protest Design (PD)
 Internal Name=Dexanoid - ProtestDe
 Status=Compatible
-32bit=Yes
-RDRAM Size=4
 
 [8979169C-F189F6A0-C:4A]
 Good Name=Dezaemon 3D (J)
@@ -1723,27 +1721,23 @@ Save Type=16kbit Eeprom
 Good Name=Doom 64 (E)
 Internal Name=Doom64
 Status=Compatible
-RDRAM Size=4
 
 [7AA65B36-FDCEE5AD-C:4A]
 Good Name=Doom 64 (J)
 Internal Name=DOOM64
 Status=Compatible
-RDRAM Size=4
 
 [A83E101A-E937B69D-C:45]
 Good Name=Doom 64 (U) (V1.0)
 Internal Name=Doom64
 Status=Compatible
 Culling=1
-RDRAM Size=4
 
 [423E96F4-CE88F05B-C:45]
 Good Name=Doom 64 (U) (V1.1)
 Internal Name=Doom64
 Status=Compatible
 Culling=1
-RDRAM Size=4
 
 [BFF7B1C2-AEBF148E-C:4A]
 Good Name=Doraemon - Nobita to 3tsu no Seireiseki (J)
@@ -1796,24 +1790,16 @@ Primary Frame Buffer=1
 Good Name=Dragon Sword (E) (Unreleased Alpha)
 Internal Name=DragonStorm
 Status=Compatible
-32bit=Yes
-RDRAM Size=4
 
 [AE6B1E11-B7CBD69E-C:0]
 Good Name=Dragon Sword (U) (Unreleased Alpha)
 Internal Name=DragonStorm
-Status=Needs video plugin
-Plugin Note=Use GlideN64
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [AE6B1E11-B7CBD69E-C:50]
 Good Name=Dragon Sword (U) (Unreleased Alpha) [F](Media Header Patch)
 Internal Name=DragonStorm
-Status=Needs video plugin
-Plugin Note=Use GlideN64
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [B6524461-ED6D04B1-C:50]
 Good Name=Dual Heroes (E)
@@ -1874,7 +1860,6 @@ RDRAM Size=4
 Good Name=Duke Nukem 64 (Prototype)
 Internal Name=duke
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -1947,7 +1932,7 @@ RDRAM Size=4
 [02B1538F-C94B88D0-C:45]
 Good Name=Elmo's Number Journey (U)
 Internal Name=Elmo's Number Journey
-Status=Issues (core)
+Status=Compatible
 32bit=No
 RDRAM Size=4
 
@@ -2314,12 +2299,7 @@ RDRAM Size=4
 [4471C13E-CE7F44A9-C:0]
 Good Name=Freak Boy (U) (Alpha) (Unreleased)
 Internal Name=
-Status=Issues (core)
-Core Note=Breakpoint error when firing missile with Recompiler
-CPU Type=Interpreter
-Linking=0
-SMM-Protect=1
-RDRAM Size=4
+Status=Compatible
 
 [F774EAEE-F0D8B13E-C:4A]
 Good Name=Fushigi no Dungeon - Fuurai no Shiren 2 - Oni Shuurai! Shiren Jou! (J)
@@ -2450,7 +2430,6 @@ RDRAM Size=4
 Good Name=Glover (U) (Beta)
 Internal Name=whack 'n' roll
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -2466,14 +2445,12 @@ RDRAM Size=4
 Good Name=Glover 2 (U) (Beta)
 Internal Name=Glover 2
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [8E9F21D2-DC19C5AB-C:45]
 Good Name=Glover 2 (U) (Early Beta)
 Internal Name=Glover 2
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [B2C6D27F-2DA48CFD-C:4A]
@@ -3336,7 +3313,6 @@ Good Name=Knife Edge - Nose Gunner (U)
 Internal Name=KNIFE EDGE
 Status=Compatible
 Counter Factor=1
-
 32bit=Yes
 Culling=1
 RDRAM Size=4
@@ -3846,7 +3822,6 @@ Save Type=16kbit Eeprom
 Good Name=Mega Man 64 (Proto)
 Internal Name=Megaman 64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [0EC158F5-FB3E6896-C:45]
@@ -4654,14 +4629,12 @@ RDRAM Size=4
 Good Name=O.D.T (Or Die Trying) (E) (M5) (Unreleased Final)
 Internal Name=O.D.T
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [2655BB70-667D9925-C:45]
 Good Name=O.D.T (Or Die Trying) (U) (M3) (Unreleased Final)
 Internal Name=O.D.T
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 //================  P  ================
@@ -5271,7 +5244,6 @@ RDRAM Size=4
 Good Name=Quake 64 Intro (PD)
 Internal Name=Quake 64 Intro
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [7433D9D7-2C4322D0-C:50]
@@ -6175,7 +6147,6 @@ Culling=1
 Good Name=StarCraft 64 (G) (Beta)
 Internal Name=STARCRAFT 64
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Clear Frame=2
 Culling=1
@@ -6184,7 +6155,6 @@ Culling=1
 Good Name=StarCraft 64 (U) (Beta)
 Internal Name=Á2ÙE8y)±tU…y7àÕ]¹9
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Clear Frame=2
 Culling=1
@@ -6359,7 +6329,6 @@ RDRAM Size=4
 [944FAFC4-B288266A-C:0]
 Good Name=Superman (Prototype)
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [35E811F3-99792724-C:4A]
@@ -6373,21 +6342,16 @@ RDRAM Size=4
 Good Name=Sydney 2000 (E) (Unreleased)
 Internal Name=Syd2k GBR
 Status=Compatible
-32bit=Yes
-Resolution Height=239
 
 [80A78080-5F9F8833-C:0]
 Good Name=Sydney 2000 (U) (Unreleased)
 Internal Name=Syd2k USA
 Status=Compatible
-32bit=Yes
-Resolution Height=239
 
 //================  T  ================
 [37955E65-C6F2B7B3-C:0]
 Good Name=Tamiya Racing 64 (Unreleased)
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [AEBCDD54-15FF834A-C:50]
@@ -6400,7 +6364,6 @@ Status=Compatible
 Good Name=Taz Express (U) (Unreleased)
 Internal Name=Taz Express
 Status=Compatible
-32bit=Yes
 
 [D9042FBB-FCFF997C-C:46]
 Good Name=Telefoot Soccer 2000 (F)
@@ -6440,7 +6403,6 @@ RDRAM Size=4
 Good Name=The Legend of Zelda - Majora's Mask (E) (M4) (Debug)
 Internal Name=ZELDA MAJORA'S MASK
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [E97955C6-BC338D38-C:50]
@@ -6492,7 +6454,6 @@ Self Texture=1
 Good Name=The Legend of Zelda - Majora's Mask - Preview Demo (U)
 Internal Name=MAJORA'S MASK
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Self Texture=1
@@ -6732,7 +6693,6 @@ Status=Compatible
 Good Name=Tommy Thunder (U) (Unreleased Alpha)
 Internal Name=LALA
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -6809,7 +6769,6 @@ Culling=1
 Good Name=Toon Panic (J) (Beta)
 Internal Name=Toon Panic
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [5F3F49C6-0DC714B0-C:50]
@@ -6834,7 +6793,6 @@ Status=Compatible
 [75FBDE20-A3189B31-C:0]
 Good Name=Top Gear Hyper Bike (Beta)
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [D09BA538-1C1A5489-C:50]
@@ -6903,7 +6861,6 @@ Status=Compatible
 [EFDF9140-A4168D6B-C:0]
 Good Name=Top Gear Rally 2 (Beta)
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [90AF8D2C-E1AC1B37-C:0]
@@ -7031,7 +6988,7 @@ RDRAM Size=4
 [24699912-082B3068-C:45]
 Good Name=Turok - Dinosaur Hunter (U) (E3 Alpha) (Fixed)
 Internal Name=TUROKDH_E3_1996ALPHA
-Status=Unsupported
+Status=Issues (core)
 Core Note=Hangs on a black screen. Game is playable on real hardware.
 RDRAM Size=4
 
@@ -7092,7 +7049,6 @@ AudioResetOnLoad=Yes
 Good Name=Turok 2 - Seeds of Evil (E) (Kiosk Demo)
 Internal Name=Turok 2: Kiosk
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [E0B92B94-80E87CBD-C:50]
@@ -7120,7 +7076,6 @@ AudioResetOnLoad=Yes
 Good Name=Turok 2 - Seeds of Evil (U) (Kiosk Demo)
 Internal Name=Turok 2: Kiosk
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [49088A11-6494957E-C:45]
@@ -7155,7 +7110,6 @@ AudioResetOnLoad=Yes
 Good Name=Turok 3 - Shadow of Oblivion (U) (Beta)
 Internal Name=turok
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 RDRAM Size=4
 
@@ -7208,41 +7162,35 @@ RDRAM Size=4
 [151F79F4-8EEDC8E5-C:50]
 Good Name=Vigilante 8 (E)
 Internal Name=VIGILANTE 8
-Status=Issues (core)
-32bit=Yes
+Status=Compatible
 Counter Factor=1
 Linking=Off
 
 [E2BC82A2-591CD694-C:46]
 Good Name=Vigilante 8 (F)
 Internal Name=VIGILANTE 8
-Status=Issues (core)
-32bit=Yes
+Status=Compatible
 Counter Factor=1
 Linking=Off
 
 [6EDA5178-D396FEC1-C:44]
 Good Name=Vigilante 8 (G)
 Internal Name=VIGILANTE 8
-Status=Issues (core)
-32bit=Yes
+Status=Compatible
 Counter Factor=1
 Linking=Off
 
 [EA71056A-E4214847-C:45]
 Good Name=Vigilante 8 (U)
 Internal Name=VIGILANTE 8
-Status=Issues (core)
-32bit=Yes
+Status=Compatible
 Counter Factor=1
-Culling=1
 Linking=Off
 
 [DD10BC7E-F900B351-C:50]
-Good Name=Vigilante 8 - 2nd Offence (E)
+Good Name=Vigilante 8 - 2nd Offense (E)
 Internal Name=V8: SECOND OFFENSE
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Linking=Off
 
@@ -7250,7 +7198,6 @@ Linking=Off
 Good Name=Vigilante 8 - 2nd Offense (U)
 Internal Name=V8: SECOND OFFENSE
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Linking=Off
 
@@ -7561,7 +7508,6 @@ RDRAM Size=4
 [A04237B9-68F62C72-C:0]
 Good Name=Wildwaters (Unreleased)
 Status=Compatible
-32bit=Yes
 
 [1FA056E0-A4B9946A-C:4A]
 Good Name=WinBack (J) (V1.0)
@@ -7730,7 +7676,7 @@ Status=Compatible
 RDRAM Size=4
 
 [12737DA5-23969159-C:4A]
-Good Name=WWF Wrestlemania 2000 (J)
+Good Name=WWF WrestleMania 2000 (J)
 Internal Name=Ú¯½ÙÏÆ± 2000
 Status=Compatible
 32bit=Yes
@@ -8022,1013 +7968,850 @@ Fixed Audio=0
 [5C450380-4B5CB6E6-C:0]
 Good Name=1964 Demo by Steb (PD)
 Internal Name=1964 test rom
-Status=Unsupported
-32bit=Yes
-RDRAM Size=4
+Status=Issues (core)
 
 [04815914-87141455-C:45]
 Good Name=2 Blokes'n'Armchair
 Internal Name=2 Blokes'n'Armchair
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [4C304819-2CBE7573-C:0]
 Good Name=3DS Model Conversion by Snake (PD)
 Internal Name=3DS Model Conversion
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [D6D29529-D4EADEE4-C:0]
 Good Name=77a by Count0 (POM '98) (PD)
 Internal Name=77a By Count0
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [975B7845-A2505C18-C:0]
 Good Name=77a Special Edition by Count0 (PD)
 Internal Name=77a-SE By Count0
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [B0667DED-BB39A4B8-C:0]
 Good Name=Absolute Crap Intro 1 by Kid Stardust (PD)
 Internal Name=®
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [2E7E893C-4E68B642-C:0]
 Good Name=Absolute Crap Intro 2 by Lem (PD)
 Internal Name=Ð*E
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [888EEC7A-42361983-C:0]
 Good Name=Alienstyle Intro by Renderman (PD)
 Internal Name=ReNdErMaN
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [43EFB5BB-D8C62E2B-C:0]
 Good Name=Alienstyle Intro by Renderman (PD) [a1]
 Internal Name=ReNdErMaN
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [306B3375-05F4E698-C:45]
 Good Name=Alleycat 64 by Dosin (POM '99) (PD)
 Internal Name=Alleycat64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [26E43C40-E11F283C-C:0]
 Good Name=Attax64 by Pookae (POM '99) (PD)
 Internal Name=Ataxx64 by Pookae
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [4E5507F2-E7D3B413-C:0]
 Good Name=BB SRAM Manager (PD)
 Internal Name=BB Sram Manager
 Status=Unknown
-32bit=Yes
 RDRAM Size=4
 
 [3A089BBC-54AB2C06-C:0]
 Good Name=Berney Must Die! by Nop_ (POM '99) (PD)
 Internal Name=Berney must die!
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [713FDDD3-72D6A0EF-C:20]
 Good Name=Bike Race '98 V1.0 by NAN (PD)
 Internal Name=Bike Race by NaN
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [F4B64159-46FC16CF-C:20]
 Good Name=Bike Race '98 V1.2 by NAN (PD)
 Internal Name=Bike Race V1.2 NaN
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [C2B35C2F-5CD995A2-C:0]
 Good Name=Birthday Demo for Steve by Nep (PD)
 Internal Name=happy b-day Steve
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [2D15DC8C-D3BBDB52-C:0]
 Good Name=Boot Emu by Jovis (PD)
 Internal Name=h¼
-Status=Unsupported
-32bit=Yes
+Status=Issues (core)
 RDRAM Size=4
 
 [95081A8B-49DFE4FA-C:45]
 Good Name=CD64 Memory Test (PD)
 Internal Name=CD64 SIMMtest
 Status=Compatible
-32bit=Yes
-CPU Type=Interpreter
 RDRAM Size=4
 
 [EDA1A0C7-58EE0464-C:0]
 Good Name=Chaos 89 Demo (PD)
 Internal Name=Ð*E
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [B484EB31-D44B1928-C:0]
 Good Name=Christmas Flame Demo (PD)
 Internal Name=Flame Demo 12/25/01
-Status=Issues (core)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [7739A454-A2F52A66-C:0]
 Good Name=Chrome Demo - Enhanced (PD)
 Internal Name=A HORiZON64 RELEASE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [95013CCC-73F7C072-C:0]
 Good Name=Chrome Demo - Original (PD)
 Internal Name=Chrome demo
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [4B0313E2-65657446-C:0]
 Good Name=Cliffi's Little Intro by Cliffi (POM '99) (PD)
 Internal Name=pom-clif
-32bit=Yes
 RDRAM Size=4
 
 [D2B908C8-E0E73A1D-C:0]
 Good Name=Congratulations Demo for SPLiT by Widget and Immo (PD)
 Internal Name=congrats split!
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [0E3ED77B-8E1C26FD-C:0]
 Good Name=Cube Demo (PD)
 Internal Name=h¼
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [5B9D65DF-A18AB4AE-C:0]
 Good Name=CZN Module Player (PD)
 Internal Name=CZN module player
-Status=Issues (core)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [887C368D-D1663AA2-C:0]
 Good Name=Display List Ate My Mind Demo by Kid Stardust (PD)
 Internal Name=DL Ate My Mind - TSF
-Status=Issues (core)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [19E0E54C-CB721FD2-C:0]
 Good Name=DKONG Demo (PD)
 Internal Name=DragonKing-CrowTRobo
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [B323E37C-BBC35EC4-C:0]
 Good Name=DKONG Demo (PD)
 Internal Name=DONKEY KONG (DEMO)
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [1194FFD2-808C6FB1-C:45]
 Good Name=DS1 Manager 1.0 by RBubba (PD)
 Internal Name=DS1 Manager V1.0
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [D7484C2A-56CFF26D-C:45]
 Good Name=DS1 Manager 1.1 by RBubba (PD)
 Internal Name=®
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [B8E73356-040E42EC-C:0]
 Good Name=Dynamix Intro (Hidden Song) by Widget and Immo (PD)
 Internal Name=    DYNAMIX
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [086E91C9-89F47C51-C:0]
 Good Name=Dynamix Intro by Widget and Immo (PD)
 Internal Name=    DYNAMIX
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [186CC1A9-A0DE4C8D-C:0]
 Good Name=Dynamix Readme by Widget and Immo (PD
 Internal Name=Dynamix POM Readme
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [52F22511-B9D85F75-C:0]
 Good Name=Eurasia first N64 Intro by Sispeo (PD)
 Internal Name=Eurasia first N64 Intro by Sispeo (PD).v64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [93A94333-5A613C39-C:0]
 Good Name=Eurasia Intro by Ste (PD)
 Internal Name=Ste-Eurasia
-Status=Issues (plugin)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [D49DFF90-8DB53A8C-C:0]
 Good Name=Evek - V64jr Save Manager by WT_Riker (PD)
 Internal Name=OBS-Evek
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [3E5D6755-9AE4BD3B-C:20]
 Good Name=Explode Demo by NaN (PD)
 Internal Name=kaboom v0.9  NaN
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [8E248649-2E1CDE52-C:0]
 Good Name=Fire_Demo_by_Lac_(PD)
 Internal Name=Fire Demo by Lac (PD)
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [ECAEC238-EE351DDA-C:0]
 Good Name=Fireworks Demo by CrowTRobo (PD)
 Internal Name=Fireworks Demo - OBS
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [5CABD891-6229F6CE-C:20]
 Good Name=Fish Demo by NaN (PD)
 Internal Name=Fishy by NaN v0.3141
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [11C646E7-4D86C048-C:0]
 Good Name=Fogworld USA Demo (PD)
 Internal Name=This CD by "SPLAT!
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [30E6FE79-3EEA5386-C:0]
 Good Name=Fractal Zoomer Demo by RedboX (PD)
 Internal Name=Test Program
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [714001E3-2EB04B67-C:0]
 Good Name=Freekworld BBS Intro by Rene (PD)
 Internal Name=h¼
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [69458FFE-C9D007AB-C:0]
 Good Name=Freekworld New Intro by Ste (PD)
 Internal Name=fwIntro
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [CEE5C8CD-D3D85466-C:0]
 Good Name=Friendship Demo by Renderman (PD)
 Internal Name=PD-HS Friendship
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [E8E5B179-44AA30E8-C:45]
 Good Name=Frogger 2 (U) (Unreleased Alpha)
 Internal Name=Frogger2
-Status=Issues (plugin)
-32bit=Yes
+Status=Compatible
 RDRAM Size=4
 
 [97FC2167-4616872B-C:0]
 Good Name=Game Boy Emulator (POM '98) (PD)
 Internal Name=pom98 GB Emu
-32bit=Yes
+Status=Issues (core)
 RDRAM Size=4
 
 [60D0A702-432236C6-C:50]
 Good Name=Game Boy Emulator + Super Mario 3 (PD)
 Internal Name=GameBooster 64 v1.1
-32bit=Yes
+Status=Issues (core)
 RDRAM Size=4
 
 [5D8B9226-47605A2A-C:50]
 Good Name=GBlator for CD64 (PD)
 Internal Name=N64 GAMEBOY EMULATOR
-Status=Unsupported
-32bit=Yes
+Status=Issues (core)
 RDRAM Size=4
 
 [5C1AAD1C-AF7BF297-C:45]
 Good Name=GBlator for NTSC Dr V64 (PD)
 Internal Name=Gblator NTSC Version
-32bit=Yes
+Status=Issues (core)
 RDRAM Size=4
 
 [5D0F8DD2-990BE538-C:50]
 Good Name=GBlator for PAL Dr V64 (PD)
 Internal Name=N64 GAMEBOY EM6V+4A
-32bit=Yes
+Status=Issues (core)
 RDRAM Size=4
 
 [2F67DC59-74AAD9F1-C:0]
 Good Name=Ghemor - CD64 Xfer & Save Util (CommsLink) by CrowTRobo (PD)
 Internal Name=Ghemor CL - OBSIDIAN
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [0D99E899-43E0FCD1-C:0]
 Good Name=Ghemor - CD64 Xfer & Save Util (Parallel) by CrowTRobo (PD)
 Internal Name=Ghemor PP - OBSIDIAN
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [2575EF19-D13D2A2C-C:0]
 Good Name=GT Demo (PD)
 Internal Name=GT Demo (PD) [a1]
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [9856E53D-AF483207-C:0]
 Good Name=Hard Pom '99 Demo by TS_Garp (POM '99) (PD)
 Internal Name=Hard
-32bit=Yes
+Status=Compatible
 RDRAM Size=4
 
 [775AFA9C-0EB52EF6-C:45]
 Good Name=HardCoded by Iceage
 Internal Name=HardCoded by Iceage
-Status=Issues (plugin)
-32bit=Yes
+Status=Compatible
 Counter Factor=1
-RDRAM Size=4
 
 [5D391A40-84D7A637-C:0]
 Good Name=Heavy 64 Demo by Destop (PD)
 Internal Name=Destop production
 Status=Issues (core)
-32bit=Yes
 RDRAM Size=4
 
 [4072572D-A23DB72C-C:45]
 Good Name=HiRes CFB Demo (PD)
 Internal Name=h¼
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [BD1263E5-388C9BE7-C:45]
 Good Name=HSD Quick Intro (PD)
 Internal Name=HSD Quick Intro
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [847BA4C2-1D3128F8-C:4A]
 Good Name=IPL4ROM (J)
 Internal Name=IPL4ROM
 Status=Only intro/part OK
-32bit=Yes
 RDRAM Size=4
 
 [A957851C-535A5667-C:0]
 Good Name=JPEG Slideshow Viewer by Garth Elgar (PD)
 Internal Name=Jpeg Viewer
-Status=Issues (core)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [64709212-699BCF3B-C:0]
 Good Name=Kid Stardust Intro with Sound by Kid Stardust (PD)
 Internal Name=(E
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [8E97A4A6-D1F31B33-C:0]
 Good Name=LaC MOD Player - The Temple Gates (PD)
 Internal Name=toms fucking demo
-Status=Issues (mixed)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [F828DF21-C5E83F66-C:0]
 Good Name=LCARS Demo by WT Riker (PD)
 Internal Name=LCARS - WT_Riker
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [7D292963-D5277C1F-C:45]
 Good Name=Light Force First N64 Demo by Fractal (PD)
 Internal Name=LFC Intro
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [8A8E474B-6458BF2B-C:0]
 Good Name=Liner V1.00 by Colin Phillipps of Memir (PD)
 Internal Name=h¼
 Status=Issues (core)
-32bit=No
 RDRAM Size=4
 
 [D5CA46C2-F8555155-C:0]
 Good Name=MAME 64 Emulator Beta 3 (PD)
 Internal Name=MAME-64 beta3
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [9CCE5B1D-6351E283-C:0]
 Good Name=MAME 64 Emulator V1.0 (PD)
 Internal Name=MAME 64 Emulator V1.0 (PD)
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [A47D4AD4-F5B0C6CB-C:45]
 Good Name=Manic Miner - Hidden Levels by RedboX (PD)
 Internal Name=Manic Miner 64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [A47D4AD4-8BFA81F9-C:45]
 Good Name=Manic Miner by RedboX (PD)
 Internal Name=Manic Miner 64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [A806749B-1F521F45-C:0]
 Good Name=MeeTING Demo by Renderman (PD)
 Internal Name=PROTEST DESIGN
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [81A3F478-B6965E3E-C:0]
 Good Name=Mempack Manager for Jr 0.9 by deas (PD)
 Internal Name=mmjr by deas
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [1EC6C03C-B0954ADA-C:0]
 Good Name=Mempack Manager for Jr 0.9b by deas (PD)
 Internal Name=mmjr by deas
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [D2015E56-A9FE0CE6-C:0]
 Good Name=Mempack Manager for Jr 0.9c by deas (PD)
 Internal Name=mmjr by deas
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [6A097D8B-F999048C-C:0]
 Good Name=Mempack to N64 Uploader by Destop V1.0 (PD)
 Internal Name=Crazy Nation
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [C811CBB1-8FB7617C-C:0]
 Good Name=Mind Present Demo 0 by Widget and Immo (POM '98) (PD)
 Internal Name=Mind Present / DNX
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [139A06BC-416B0055-C:0]
 Good Name=Mind Present Demo Readme (POM '98) (PD)
 Internal Name=Mind Present-Readme
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [21548CA9-9059F32C-C:0]
 Good Name=Mini Racers (Unreleased)
 Internal Name=Mini Racers
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [9E6581AB-57CC8CED-C:0]
 Good Name=MMR by Count0 (PD)
 Internal Name=MMR By Count0
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [282A4262-58B47E76-C:0]
 Good Name=Money Creates Taste Demo by Count0 (POM '99) (PD)
 Internal Name=MCT by WH
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [947A4B47-90BFECA6-C:0]
 Good Name=Mortal Kombat SRAM Loader (PD)
 Internal Name=Mario Kart SRAM
-Status=Issues (plugin)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [94D3D5CB-E8808606-C:0]
 Good Name=MSFTUG Intro #1 by Lac (PD)
 Internal Name=msftug
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [9865799F-006F908C-C:45]
 Good Name=My Angel Demo (PD)
 Internal Name=My Angel
 Status=Issues (core)
-32bit=Yes
 RDRAM Size=4
 
 [6D2C07F1-C884F0D0-C:0]
 Good Name=N64 Scene Gallery by CALi (PD)
 Internal Name=The N64 Scene
-Status=Issues (core)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [71255651-C6AE0EA6-C:0]
 Good Name=N64 Stars Demo (PD)
 Internal Name=N64 Stars Demo (PD)
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [C4855DA2-83BBA182-C:0]
 Good Name=Namp64 - N64 MP3-Player by Obsidian (PD)
 Internal Name=Namp64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [15DB95D4-77BC52D8-C:45]
 Good Name=NBC First Intro by CALi (PD)
 Internal Name=h¼
-32bit=Yes
 RDRAM Size=4
 
 [AB9F8D97-95EAA766-C:0]
 Good Name=NBC-LFC Kings of Porn Vol 01 (PD)
 Internal Name=Kings of Porn Vol 01
-Status=Issues (core)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [DD95F49D-2A9B8893-C:0]
 Good Name=NBC-LFC Kings of Porn Vol 01 (PD) [a1]
 Internal Name=The Kings of Porn
-Status=Issues (core)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [61A5FCEE-B59FD8D3-C:0]
 Good Name=NBC-LFC Kings of Porn Vol 01 (PD) [a2]
 Internal Name=The Kings of Porn
-Status=Issues (core)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [011F98B2-1E1C8263-C:0]
 Good Name=NBCG Special Edition (PD)
 Internal Name=NBCG Special Edition
-Status=Issues (core)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [61A5FCEE-B59FD8D3-C:0]
 Good Name=NBCG's Kings of Porn Demo (PD)
 Internal Name=The Kings Of Porn
-Status=Issues (mixed)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [15AA9AF2-FF33D333-C:0]
 Good Name=NBCG's Tag Gallery 01 by CALi (PD)
 Internal Name=NBCG TAG Gallery 01
-Status=Issues (core)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [84067BAC-87FBA623-C:45]
 Good Name=NBCrew 2 Demo (PD)
 Internal Name=h¼
-32bit=Yes
 RDRAM Size=4
 
 [3B18F4F7-82BFB2B3-C:45]
 Good Name=Neon64 First Public Beta Release by HCS (PD)
 Internal Name=Neon64 by HCS
-32bit=Yes
 RDRAM Size=4
 
 [3B18F6F9-8C4BE567-C:45]
 Good Name=Neon64 First Public Beta Release V2 by HCS (PD)
 Internal Name=Neon64 by HCS
-32bit=Yes
 RDRAM Size=4
 
 [60E528A6-9500D4D3-C:0]
 Good Name=Nintendo Family by CALi (PD)
 Internal Name=The Nintendo Family
-Status=Issues (core)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [6B2AFCC7-EEB27A34-C:0]
 Good Name=Nintendo On My Mind Demo by Kid Stardust (PD)
 Internal Name=Nintendo On My Mind
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [D1C6C55D-F010EF52-C:0]
 Good Name=Nintendo WideBoy 64 by SonCrap (PD)
 Internal Name=h¼
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [4E01B4A6-C884D085-C:0]
 Good Name=Nintro64 Demo by Lem (POM '98) (PD)
 Internal Name=  Nintro64 by SPLiT
 Status=Issues (core)
-32bit=Yes
 RDRAM Size=4
 
 [FA7D3935-97AC54FC-C:0]
 Good Name=NuFan Demo by Kid Stardust (PD)
 Internal Name=TSF - NUfaN
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [7F2D025D-2B7DA4AD-C:0]
 Good Name=Oerjan Intro by Oerjan (POM '99) (PD)
 Internal Name=oErjan78
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [26AD85C5-F908A36B-C:0]
 Good Name=Pamela Demo (padded) (PD)
 Internal Name=Pamela Demo Nr.1
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [7D1727F1-6C6B83EB-C:0]
 Good Name=Pause Demo by RedboX (PD)
 Internal Name=Test Program
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [9118F1B8-987DAC8C-C:0]
 Good Name=PC-Engine 64 Emulator (POM '99) (PD)
 Internal Name=PC-Engine 64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [D072CFE7-CE134788-C:0]
 Good Name=Pip's Pong by Mr. Pips (PD)
 Internal Name=Pip's Pong by Mr. Pips (PD).v64
-Status=Issues (plugin)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [D851B920-F3D6C0CE-C:0]
 Good Name=Pip's Porn Pack 1 by Mr. Pips (PD
 Internal Name=Pips PP1
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [BF9D0FB0-981C22D1-C:4A]
 Good Name=Pip's Porn Pack 2 by Mr. Pips (POM '99) (PD)
 Internal Name=PoM99 PPP2
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [EA2A6A75-52B2C00F-C:0]
 Good Name=Pip's Porn Pack 3 by Mr. Pips (PD)
 Internal Name=PPP3
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [3CB8AAB8-05C8E573-C:0]
 Good Name=Pip's RPGs Beta 12 by Mr. Pips (PD)
 Internal Name=Pip's RPGs Beta 12 by Mr. Pips (PD).v64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [56563C89-C803F77B-C:0]
 Good Name=Pip's RPGs Beta 14 by Mr. Pips (PD)
 Internal Name=Pip's RPGs Beta 14 by Mr. Pips (PD).v64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [AFBBB9D5-8EE82954-C:0]
 Good Name=Pip's RPGs Beta 15 by Mr. Pips (PD)
 Internal Name=Pip's RPGs Beta 15 by Mr. Pips (PD).v64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [DAD7F751-8B6322F0-C:0]
 Good Name=Pip's RPGs Beta 2 by Mr. Pips (PD)
 Internal Name=Pip's RPGs Beta 2 by Mr. Pips (PD).v64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [C830954A-29E257FC-C:0]
 Good Name=Pip's RPGs Beta 3 by Mr. Pips (PD)
 Internal Name=Pip's RPGs Beta 3 by Mr. Pips (PD).v64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [7194B65B-9DE67E7D-C:0]
 Good Name=Pip's RPGs Beta 6 by Mr. Pips (PD)
 Internal Name=Pip's RPGs Beta 6 by Mr. Pips (PD).v64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [DB363DDA-50C1C2A5-C:0]
 Good Name=Pip's RPGs Beta 7 by Mr. Pips (PD)
 Internal Name=Pip's RPGs Beta 7 by Mr. Pips (PD).v64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [BB787C13-78C1605D-C:0]
 Good Name=Pip's RPGs Beta x (PD
 Internal Name=Pips AZbeta
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [668FA336-2C67F3AC-C:0]
 Good Name=Pip's RPGs Beta x (PD) [a1
 Internal Name=Pips AZbeta
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [762C75D1-AA09C759-C:0]
 Good Name=Pip's World Game 1 by Mr. Pips (PD
 Internal Name=Pip's World Game 1 by Mr. Pips (PD).v64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [FC051819-A46A48F6-C:0]
 Good Name=Pip's World Game 2 by Mr. Pips (PD)
 Internal Name=Pip's World Game 2 by Mr. Pips (PD).v64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [45627CED-28005F9C-C:0]
 Good Name=Pipendo by Mr. Pips (PD)
 Internal Name=h¼
-Status=Issues (core)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [1077590A-B537FDA2-C:0]
 Good Name=Planet Console Intro (PD)
 Internal Name=planet console ftp!
-32bit=Yes
 RDRAM Size=4
 
 [E9F52336-6BEFAA5F-C:45]
 Good Name=Plasma Demo (PD)
 Internal Name=h¼
-Status=Issues (plugin)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [1BC0CA2C-0F516B86-C:0]
 Good Name=Pom Part 1 Demo (PD
 Internal Name=Pom Part 1 Demo (PD)
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [ACD51083-EEC8DBED-C:0]
 Good Name=Pom Part 2 Demo (PD)
 Internal Name=Pom Part 2 Demo (PD)
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [1FE04890-D6696958-C:0]
 Good Name=Pom Part 3 Demo (PD)
 Internal Name=Pom Part 3 Demo (PD)
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [CFBEE39B-76F0A14A-C:0]
 Good Name=Pom Part 4 Demo (PD)
 Internal Name=Pom Part 4 Demo (PD)
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [2803B8CE-4A1EE409-C:0]
 Good Name=Pom Part 5 Demo (PD)
 Internal Name=Pom Part 5 Demo (PD)
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [9D63C653-C26B460F-C:0]
 Good Name=POMbaer Demo by Kid Stardust (POM '99) (PD)
 Internal Name=POMBAER - TSF
-32bit=Yes
+Status:Compatible
 RDRAM Size=4
 
 [EDAFD3C0-39EF3599-C:0]
 Good Name=POMolizer Demo by Renderman (POM '99) (PD)
 Internal Name=Protest Design
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [DAA76993-D8ACF77C-C:0]
 Good Name=Pong by Oman (PD)
 Internal Name=h¼
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [C252F9B1-AD70338C-C:0]
 Good Name=Pong V0.01 by Omsk (PD)
 Internal Name=omsk - pong v0.01
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [C5C4F0D5-4EEF2573-C:0]
 Good Name=Psychodelic Demo by Ste (POM '98) (PD)
 Internal Name=ste - pyscodelic
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [32A92961-DB34982C-C:0]
 Good Name=R.I.P. Jay Demo by Ste (PD)
 Internal Name=R.I.P JAY
-Status=Issues (core)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [C9011D05-EF078B8C-C:0]
 Good Name=RADWAR 2K Party Inv. Intro by Ayatolloh (PD)
 Internal Name=Live suxx!
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [75A0B893-4CA321B5-C:0]
 Good Name=Robotech - Crystal Dreams (U) (Beta)
 Internal Name=Robotech - Crystal Dreams (PD)
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [6FA4B821-29561690-C:0]
-Good Name=Rotating Demo USA by Rene (PD) [a1]
+Good Name=Rotating Demo USA by Rene (PD)
 Internal Name=h¼
-Status=Issues (plugin)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [79E318E1-86861726-C:0]
 Good Name=RPA Site Intro by Lem (PD)
 Internal Name=h¼
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [C541EAB4-7397CB5F-C:0]
 Good Name=Sample Demo by Florian (PD)
 Internal Name=Sample Demo by Florian (PD)
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [9D9C362D-5BE66B08-C:0]
 Good Name=Shag'a'Delic Demo by Steve and NEP (PD)
 Internal Name=Shag-a-delic/CAMELOT
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [F7DF7D0D-ED52018F-C:0]
 Good Name=Shuffle Puck 64 (PD)
 Internal Name=Shufflepuck 64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [18531B7D-074AF73E-C:0]
 Good Name=Simon for N64 V0.1a by Jean-Luc Picard (POM '99) (PD)
 Internal Name=h¼
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [C603175E-ACADF5EC-C:45]
 Good Name=Sinus (PD)
 Internal Name=h¼
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [9A6CF2F5-D5F365EE-C:0]
 Good Name=Sitero Demo by Renderman (PD)
 Internal Name=Protest Design
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [5BBE6E34-088B6D0E-C:0]
 Good Name=SLiDeS (PD)
 Internal Name=LaMeRS PiC PRoGGie
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 RDRAM Size=4
@@ -9036,399 +8819,339 @@ RDRAM Size=4
 [CA69ECE5-13A88244-C:21]
 Good Name=SNES 9X Alpha (PD)
 Internal Name=TRAINER INTRO #2 CZN
-Status=Unsupported
-32bit=Yes
+Status=Issues (core)
 RDRAM Size=4
 
 [9303DD17-0813B398-C:0]
 Good Name=Soncrap Golden Eye Intro (PD) aka Rad's Bird
 Internal Name=Test Program
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [AAA66229-98CA5CAA-C:0]
 Good Name=Soncrap Intro by RedboX (PD) aka Rad's Bird
 Internal Name=SonCrap Intro
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [A3A044B5-6DB1BF5E-C:0]
 Good Name=Spacer by Memir (POM '99) (PD)
 Internal Name=POM-Spacer By Memir
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 
 [8F5179C4-803526DC-C:0]
 Good Name=Spice Girls Rotator Demo by RedboX (PD)
 Internal Name=Space Rotator
-Status=Issues (plugin)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [1FBD27A9-6CC3EB42-C:0]
 Good Name=SPLiT's Nacho64 by SPLiT (PD)
 Internal Name= NACHO64
-32bit=Yes
 RDRAM Size=4
 
 [E584FE34-9D91B1E2-C:0]
 Good Name=Sporting Clays by Charles Doty (PD)
 Internal Name=Sporting Clays by Charles Doty (PD).v64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [5402C27E-60021F86-C:0]
 Good Name=Sporting Clays by Charles Doty (PD) [a1]
 Internal Name=Sporting Clays by Charles Doty (PD) [a1].v64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [029CAE05-2B8F9DF1-C:0]
 Good Name=SRAM Manager V1.0 Beta (32Mbit) (PD)
 Internal Name=SRAM BACKUP
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [4DEC9986-A8904450-C:0]
 Good Name=SRAM Manager V1.0 PAL Beta (PD)
 Internal Name=SRAM Manager
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [52BA5D2A-9BE3AB78-C:0]
 Good Name=SRAM to DS1 Tool by WT_Riker (PD)
 Internal Name=OBSIDIAN - SRAM2DS1
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [98A2BB11-EE4D4A86-C:0]
 Good Name=SRAM Upload Tool (PD)
 Internal Name=SRAM Upload Tool
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [3C524346-E4ABE776-C:0]
 Good Name=SRAM Upload Tool + Star Fox 64 SRAM (PD)
 Internal Name=STARFOX SRAM
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [EC9BECFF-CAB83632-C:0]
 Good Name=SRAM Uploader-Editor by BlackBag (PD)
 Internal Name=h¼
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [4794B85F-3EBD5B68-C:0]
 Good Name=Summer64 Demo by Lem (PD)
 Internal Name= Split Summer64
-32bit=Yes
+Status=Compatible
 RDRAM Size=4
 
 [BB214F79-8B88B16B-C:0]
 Good Name=Super Bomberman 2 by Rider (POM '99) (PD)
 Internal Name=h¼
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [1AD61BB9-F1E2BE1A-C:45]
 Good Name=Super Fighter Demo (PD)
 Internal Name=Super Fighter Demo
-Status=Issues (core)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [1AA71519-51360D55-C:0]
 Good Name=T-Shirt Demo by Neptune and Steve (POM '98) (PD)
 Internal Name=T-Shirt/CML+Antihero
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [81361532-2AEB643F-C:0]
 Good Name=Tetris Beta Demo by FusionMan (POM '98) (PD)
 Internal Name=Tetris Beta Demo by FusionMan (POM '98) (PD)
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [41B1BF58-A1EB9BB7-C:0]
 Good Name=Textlight Demo (PD)
 Internal Name=GONZOiD AMPHETAMiNE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [44705CED-6FDFDE02-C:0]
 Good Name=The Corporation 1st Intro by i_savant (PD)
 Internal Name=The Corporation
-32bit=Yes
+Status=Compatible
 RDRAM Size=4
 
 [C3AB938D-D48143B2-C:0]
 Good Name=The Corporation 2nd Intro by TS_Garp (PD)
 Internal Name=The Corporation
-32bit=Yes
+Status=Compatible
 RDRAM Size=4
 
 [93DA8551-D231E8AB-C:0]
 Good Name=The Corporation XMAS Demo '99 by TS_Garp (PD)
 Internal Name=TC Xmas Demo '99
-32bit=Yes
+Status=Compatible
 RDRAM Size=4
 
 [5ECE09AE-8230C82D-C:0]
 Good Name=Tom Demo (PD)
 Internal Name=Tom Demo (PD)
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [E8BF8416-F2D9DA43-C:0]
 Good Name=TopGun Demo (PD)
 Internal Name=TopGun Demo (PD)
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [2070044B-E7D82D16-C:0]
 Good Name=TR64 Demo by FIres and Icepir8 (PD)
 Internal Name=TR64 Demo by Icepir8
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [CB3FF554-8773CD0B-C:0]
 Good Name=TRON Demo (PD)
 Internal Name=Tron Demo
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [2DD07E20-24D40CD6-C:0]
 Good Name=TRSI Intro by Ayatollah (POM '99) (PD)
 Internal Name=Live suxx!
-Status=Issues (core)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [37B8F920-A58BB3EF-C:45]
 Good Name=Twintris by Twinsen (POM '98) (PD)
 Internal Name=Twintris
 Status=Compatible
-32bit=Yes
-RDRAM Size=4
 
 [ED42A2D4-7A71CD91-C:0]
 Good Name=Ultra 1 Demo by Locke^ (PD)
 Internal Name=Ultra by Locke
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [4E7DE4EF-0DEC3712-C:0]
 Good Name=UltraMSX2 V1.0 (PD)
 Internal Name=ultraMSX2
-Status=Issues (core)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [504ABA0A-269AA7F4-C:0]
 Good Name=UltraMSX2 V1.0 (ROMS Inserted) (PD)
 Internal Name=ultraMSX2
-Status=Issues (core)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [F291B959-A24CBCAF-C:0]
 Good Name=UltraSMS V1.0 (PD)
 Internal Name=ultraSMS
-Status=Issues (core)
-32bit=Yes
-RDRAM Size=4
+Status=Compatible
 
 [EF623F50-ECBB509B-C:0]
 Good Name=Universal Bootemu V1.0 (PD)
 Internal Name=Universal Bootemu
 Status=Compatible
-32bit=Yes
 
 [BB752DA7-30D8BEF4-C:0]
 Good Name=Universal Bootemu V1.1 (PD)
 Internal Name=¢r [xg
 Status=Compatible
-32bit=Yes
 
 [5F44492A-18552A0A-C:0]
 Good Name=Unix SRAM-Upload Utility 1.0 by Madman (PD)
 Internal Name=h¼
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [3B8E7E01-6AE876A8-C:0]
 Good Name=Upload SRAM V1 by LaC (PD)
 Internal Name=p&E
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [760EF304-AD6D6A7C-C:45]
 Good Name=V64Jr 512M Backup Program by HKPhooey (PD)
 Internal Name=h¼
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [4BD245D4-4202B322-C:0]
 Good Name=V64Jr Backup Tool by WT_Riker (PD)
 Internal Name=OBSIDIAN - JR Backup
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [F11B663A-698824C0-C:45]
 Good Name=V64Jr Backup Tool V0.2b_Beta by RedboX (PD)
 Internal Name=v64jr Backup v0.2b
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [1CEACBA0-42BC06D6-C:0]
 Good Name=Vector Demo by Destop (POM '99) (PD)
 Internal Name=VECTOR DEMO
 Status=Issues (core)
-32bit=Yes
 RDRAM Size=4
 
 [34B493C9-07654185-C:0]
 Good Name=View N64 Test Program (PD)
 Internal Name= R3 VIEWER
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [4F55D05C-0CD66C91-C:0]
 Good Name=Virtual Springfield Site Intro by Presten (PD)
 Internal Name=VSF INTRO
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [DCBE12CD-FCCB5E58-C:0]
 Good Name=VNES64 + Galaga (PD)
 Internal Name=JL_Picard vNES64
-Status=Only intro/part OK
-32bit=Yes
+Status=Issues (core)
 RDRAM Size=4
 
 [66807E77-EBEA2D76-C:0]
 Good Name=VNES64 + Mario (PD)
 Internal Name=JL_Picard vNES64
-Status=Only intro/part OK
-32bit=Yes
+Status=Issues (core)
 RDRAM Size=4
 
 [4537BDFF-D1ECB425-C:0]
 Good Name=VNES64 + Test Cart (PD)
 Internal Name=JL_Picard vNES64
-Status=Only intro/part OK
-32bit=Yes
+Status=Issues (core)
 RDRAM Size=4
 
 [0E4B8C92-7F47A9B8-C:0]
 Good Name=VNES64 Emulator V0.12 by Jean-Luc Picard (PD)
 Internal Name=JL_Picard vNES64 .12
-Status=Issues (plugin)
-32bit=Yes
+Status=Issues (core)
 RDRAM Size=4
 
 [CA3BC095-9649860A-C:50]
 Good Name=Wet Dreams Can Beta Demo by Immo (POM '99) (PD)
 Internal Name=POM99 - CAN-BETA
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [993B7D7A-2E54F04D-C:50]
 Good Name=Wet Dreams Madeiragames Demo by Immo (POM '99) (PD)
 Internal Name=POM99 - MADEIRAGAMES
-32bit=Yes
+Status=Compatible
 RDRAM Size=4
 
 [A3A95A57-9FE6C27D-C:50]
 Good Name=Wet Dreams Main Demo by Immo (POM '99) (PD)
 Internal Name=POM99 - WET DREAMS
-32bit=Yes
+Status=Compatible
 RDRAM Size=4
 
 [9C044945-D31E0B0C-C:50]
 Good Name=Wet Dreams Readme by Immo (POM '99) (PD)
 Internal Name=POM99 - README
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [1EDA4DE0-22BF698D-C:0]
 Good Name=XtraLife Dextrose Demo by RedboX (PD)
 Internal Name=Test Program
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [83F9F2CB-E7BC4744-C:0]
 Good Name=Y2K Demo by WT_Riker (PD)
 Internal Name=OBS-Y2KD
-Status=Issues (core)
-32bit=No
-RDRAM Size=4
+Status=Compatible
 Delay DP=0
 
 [83D8A30C-8552C117-C:0]
 Good Name=Yoshi's Story BootEmu (PD)
 Internal Name=YOSHI BOOT EMU
-Status=Unsupported
-32bit=Yes
+Status=Issues (core)
 RDRAM Size=4
 
 [5A4C57FE-AA6807C4-C:41]
 Good Name=NUS-64 Aging Cassette
 Internal Name=AGING ROM
-Status=Needs RSP plugin
-32bit=Yes
+Status=Issues (core)
 RDRAM Size=4
 
 [BB0598C7-AE917C5D-C:0]
 Good Name=64GB Checker V1.05
 Internal Name=64GB Checker V1.05
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [816BE37F-9BCE6CAA-C:0]
 Good Name=Dolphin Controller Test
 Internal Name=Dolphin Controller Test
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [6F46DA42-D971A312-C:45]
 Good Name=Ronaldinho's Soccer 64
 Internal Name=RONALDINHO SOCCER
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 RDRAM Size=4
@@ -9437,21 +9160,18 @@ RDRAM Size=4
 Good Name=Photo Viewer
 Internal Name=Photo Viewer
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [2F33EFCA-6CA95A9C-C:0]
 Good Name=funnelcube (PD)
 Internal Name=funnelcube
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [D55891EB-2BEFD9C8-C:0]
 Good Name=MGC 2011 Demo (PD)
 Internal Name=shut up and code
 Status=Issues (core)
-32bit=Yes
 CPU Type=Interpreter
 
 //================  N64 FAN TRANSLATIONS  ================
@@ -9459,7 +9179,6 @@ CPU Type=Interpreter
 [002FE030-FFD01FCF-C:45]
 Good Name=Zelda 64 Dawn & Dusk - Expansion Disk (U)
 Status=Compatible
-32bit=Yes
 SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
@@ -9467,7 +9186,6 @@ SMM-TLB=0
 [002FE030-FFD01FCF-C:4A]
 Good Name=Zelda 64 Dawn & Dusk - Expansion Disk (J)
 Status=Compatible
-32bit=Yes
 SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
@@ -9475,7 +9193,6 @@ SMM-TLB=0
 [5582218A-AA7DDE75-C:45]
 Good Name=Zelda Ocarina of Time Expansion Disk (U)
 Status=Compatible
-32bit=Yes
 SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
@@ -9483,7 +9200,6 @@ SMM-TLB=0
 [5582218A-AA7DDE75-C:4A]
 Good Name=Zelda Ocarina of Time Expansion Disk (J)
 Status=Compatible
-32bit=Yes
 SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
@@ -11336,7 +11052,6 @@ Unaligned DMA=1
 Good Name=Super Mario 64 (O2 Reduced Lag) (U)
 Internal Name=SUPER MARIO 64
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -11344,7 +11059,6 @@ RDRAM Size=4
 Good Name=Super Mario 64 (O2 Reduced Lag) (J)
 Internal Name=SUPER MARIO 64
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
