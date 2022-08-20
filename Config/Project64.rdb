@@ -1,13 +1,13 @@
-﻿// ============ RDB for PJ64 v3.0. GoodN64 v327 =====================================
-// PJ64 v3.0 Official RDB
-// Not for use with previous versions of PJ64
-//---- START OF RDB FILE HEADER ---------------------------------------------------------
+﻿// ============ Project64 v4.0 official RDB =================================
 
+// Not for use with previous versions of Project64
+
+// ---- START OF RDB FILE HEADER ---------------------------------------------------------
 [Meta]
 Author=Project64 Team
-Date=2021/05/30
-Homepage=www.pj64-emu.com
-Version=3.0.0
+Date=2022/08/20
+Homepage=pj64-emu.com
+Version=4.0.0
 
 [Microcode Identifiers]
 //38221D7F=0 //SD Hiryuu no Ken Densetsu (J), near start (Smiff)
@@ -26,7 +26,7 @@ Version=3.0.0
 //8A4F88F1=0 //Star Wars Episode I - Battle for Naboo (U, On load (Gent)
 //69BE49A0=0 //Frogger 2 (On load (Gent))
 //E46FD8D3=0 //Tamiya Racing
-//57A168B0=1
+//57A168B0=1 //???
 
 // PD ROMs below (thanks Gent and SGi etc.)
 //6582C258=0 //Berney Must Die! by Nop_(POM '99) (PD), Om load (Gent)
@@ -47,19 +47,19 @@ Version=3.0.0
 //A21D415B=0 //TRSI Intro by Ayatollah (POM '99) (PD), On load (Gent)
 
 [Rom Status]
-// Setting up ROM browser status categories & colour definitions:
+// Setting up ROM browser status categories and colour definitions:
 //
 // Colours are standard 6-digit hex values [RRGGBB] 000000 - black, FFFFFF - white
-// you can use e.g. Photoshop to get these colour codes from any source
-// 	 equals-sign defines normal text colour (ROMs not highlighted)
+// You can use any color picker to get these colour codes from any source.
+// 	 Equals-sign defines normal text colour (ROMs not highlighted)
 // 	.Sel defines background colour of highlighted row
 //	.Seltext defines highlighted text colour
 // ".AutoFullScreen=False" can be used to override users' auto fullscreen on load option
-// there is no practical limit to the number of categories you may define
-// categories will be used to populate a drop-down menu in the Project64 GUI, ROM Notes tab
+// There is no practical limit to the number of categories you may define.
+// Categories will be used to populate a drop-down menu in the Project64 GUI, ROM Notes tab.
 // To edit colours you must edit this file directly.
 // To translate the RDB, edit each category group below, then do a Find>Replace on "Status" lines
-// Core Notes and Plugin Notes would have to be manually translated of course.
+// Core notes and plugin notes would have to be manually translated, of course.
 
 Compatible=006600
 Compatible.Sel=006600
@@ -141,7 +141,7 @@ Bad ROM?.Sel=000000
 Bad ROM?.Seltext=FFFFFF
 Bad ROM?.AutoFullScreen=False
 
-// various colours, currently unused:
+// Various colours, currently unused:
 // 630460 purple
 // BF6E29 orange
 // 603913 brown
