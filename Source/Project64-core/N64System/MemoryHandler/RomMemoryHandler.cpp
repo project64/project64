@@ -27,6 +27,7 @@ bool RomMemoryHandler::Read32(uint32_t Address, uint32_t & Value)
     if (m_RomWrittenTo)
     {
         Value = m_RomWroteValue;
+        m_Reg.PI_STATUS_REG &= ~PI_STATUS_IO_BUSY;
         m_RomWrittenTo = false;
     }
     else if ((Address & 0xFFFFFFF) < m_Rom.GetRomSize())
@@ -58,6 +59,7 @@ bool RomMemoryHandler::Write32(uint32_t /*Address*/, uint32_t Value, uint32_t Ma
     {
         m_RomWrittenTo = true;
         m_RomWroteValue = (Value & Mask);
+        m_Reg.PI_STATUS_REG |= PI_STATUS_IO_BUSY;
     }
     return true;
 }
