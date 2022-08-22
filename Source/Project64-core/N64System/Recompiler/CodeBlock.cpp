@@ -597,11 +597,9 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
                 ContinuePC = PC + 8;
             }
             R4300iOpcode DelaySlot;
-            if (!g_MMU->MemoryValue32(PC + 4, DelaySlot.Value))
-            {
-                g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
-            }
-            if (TargetPC == PC && !R4300iInstruction(PC, Command.Value).DelaySlotEffectsCompare(DelaySlot.Value))
+            if (TargetPC == PC && 
+                g_MMU->MemoryValue32(PC + 4, DelaySlot.Value) && 
+                !R4300iInstruction(PC, Command.Value).DelaySlotEffectsCompare(DelaySlot.Value))
             {
                 PermLoop = true;
             }
