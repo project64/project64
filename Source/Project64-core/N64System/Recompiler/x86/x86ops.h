@@ -97,6 +97,7 @@ public:
     void JecxzLabel8(const char * Label, uint8_t Value);
     void JeLabel8(const char * Label, uint8_t Value);
     void JeLabel32(const char * Label, uint32_t Value);
+    void JgeLabel8(const char * Label, uint8_t Value);
     void JgeLabel32(const char * Label, uint32_t Value);
     void JgLabel8(const char * Label, uint8_t Value);
     void JgLabel32(const char * Label, uint32_t Value);

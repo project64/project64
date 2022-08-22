@@ -1409,17 +1409,21 @@ void R4300iOp::SPECIAL_DIV()
 {
     if (_GPR[m_Opcode.rt].W[0] != 0)
     {
-        _RegLO->DW = _GPR[m_Opcode.rs].W[0] / _GPR[m_Opcode.rt].W[0];
-        _RegHI->DW = _GPR[m_Opcode.rs].W[0] % _GPR[m_Opcode.rt].W[0];
+        if (_GPR[m_Opcode.rs].W[0] != 0x80000000 || _GPR[m_Opcode.rt].W[0] != -1)
+        {
+            _RegLO->DW = _GPR[m_Opcode.rs].W[0] / _GPR[m_Opcode.rt].W[0];
+            _RegHI->DW = _GPR[m_Opcode.rs].W[0] % _GPR[m_Opcode.rt].W[0];
+        }
+        else
+        {
+            _RegLO->DW = 0xFFFFFFFF80000000;
+            _RegHI->DW = 0x0000000000000000;
+        }
     }
     else
     {
-        if (bShowDivByZero())
-        {
-            g_Notify->DisplayError("DIV by 0");
-        }
-        _RegLO->DW = 0;
-        _RegHI->DW = 0;
+        _RegLO->DW = _GPR[m_Opcode.rs].W[0] < 0 ? 0x0000000000000001 : 0xFFFFFFFFFFFFFFFF;
+        _RegHI->DW = _GPR[m_Opcode.rs].W[0];
     }
 }
 
@@ -1432,12 +1436,8 @@ void R4300iOp::SPECIAL_DIVU()
     }
     else
     {
-        if (bShowDivByZero())
-        {
-            g_Notify->DisplayError("DIVU by 0");
-        }
-        _RegLO->DW = 0;
-        _RegHI->DW = 0;
+        _RegLO->DW = 0xFFFFFFFFFFFFFFFF;
+        _RegHI->DW = _GPR[m_Opcode.rs].W[0];
     }
 }
 
@@ -1478,10 +1478,8 @@ void R4300iOp::SPECIAL_DDIV()
     }
     else
     {
-        if (HaveDebugger())
-        {
-            g_Notify->DisplayError("DDIV by 0");
-        }
+        _RegLO->DW = _GPR[m_Opcode.rs].DW < 0 ? 0x0000000000000001 : 0xFFFFFFFFFFFFFFFF;
+        _RegHI->DW = _GPR[m_Opcode.rs].DW;
     }
 }
 
@@ -1494,10 +1492,8 @@ void R4300iOp::SPECIAL_DDIVU()
     }
     else
     {
-        if (HaveDebugger())
-        {
-            g_Notify->DisplayError("DDIVU by 0");
-        }
+        _RegLO->DW = 0xFFFFFFFFFFFFFFFF;
+        _RegHI->DW = _GPR[m_Opcode.rs].DW;
     }
 }
 

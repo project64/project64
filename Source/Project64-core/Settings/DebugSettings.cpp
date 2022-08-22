@@ -12,7 +12,6 @@ bool CDebugSettings::m_SkipOp = false;
 bool CDebugSettings::m_WaitingForStep = false;
 bool CDebugSettings::m_bRecordRecompilerAsm = false;
 bool CDebugSettings::m_bShowTLBMisses = false;
-bool CDebugSettings::m_bShowDivByZero = false;
 bool CDebugSettings::m_RecordExecutionTimes = false;
 bool CDebugSettings::m_HaveExecutionBP = false;
 bool CDebugSettings::m_HaveWriteBP = false;
@@ -36,7 +35,6 @@ CDebugSettings::CDebugSettings()
         m_Registered = true;
         g_Settings->RegisterChangeCB(Debugger_Enabled, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_RecordRecompilerAsm, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_ShowDivByZero, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_RecordExecutionTimes, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_SkipOp, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
@@ -66,7 +64,6 @@ CDebugSettings::~CDebugSettings()
     {
         g_Settings->UnregisterChangeCB(Debugger_Enabled, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_RecordRecompilerAsm, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->UnregisterChangeCB(Debugger_ShowDivByZero, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_RecordExecutionTimes, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_SkipOp, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
@@ -90,7 +87,6 @@ void CDebugSettings::RefreshSettings()
 {
     m_HaveDebugger = g_Settings->LoadBool(Debugger_Enabled);
     m_bRecordRecompilerAsm = m_HaveDebugger && g_Settings->LoadBool(Debugger_RecordRecompilerAsm);
-    m_bShowDivByZero = m_HaveDebugger && g_Settings->LoadBool(Debugger_ShowDivByZero);
     m_RecordExecutionTimes = m_HaveDebugger && g_Settings->LoadBool(Debugger_RecordExecutionTimes);
     m_Stepping = m_HaveDebugger && g_Settings->LoadBool(Debugger_SteppingOps);
     m_SkipOp = m_HaveDebugger && g_Settings->LoadBool(Debugger_SkipOp);

@@ -4773,129 +4773,308 @@ void CX86RecompilerOps::SPECIAL_MULTU()
 
 void CX86RecompilerOps::SPECIAL_DIV()
 {
-    if (IsConst(m_Opcode.rt))
+    CX86Ops::x86Reg RegRs  = CX86Ops::x86_Unknown, RegRsHi = CX86Ops::x86_Unknown, DivReg = CX86Ops::x86_Unknown;
+    uint8_t * JumpNotDiv0 = nullptr;
+    uint8_t * JumpEnd = nullptr;
+    uint8_t * JumpEnd2 = nullptr;
+
+    if (IsConst(m_Opcode.rt) && GetMipsRegLo(m_Opcode.rt) == 0)
     {
-        if (GetMipsRegLo(m_Opcode.rt) == 0)
+        if (IsConst(m_Opcode.rs))
         {
-            m_Assembler.MoveConstToVariable(0, &_RegLO->UW[0], "_RegLO->UW[0]");
-            m_Assembler.MoveConstToVariable(0, &_RegLO->UW[1], "_RegLO->UW[1]");
-            m_Assembler.MoveConstToVariable(0, &_RegHI->UW[0], "_RegHI->UW[0]");
-            m_Assembler.MoveConstToVariable(0, &_RegHI->UW[1], "_RegHI->UW[1]");
-            return;
-        }
-    }
-    else
-    {
-        if (IsMapped(m_Opcode.rt))
-        {
-            m_Assembler.CompConstToX86reg(GetMipsRegMapLo(m_Opcode.rt), 0);
+            m_Assembler.MoveConstToVariable(GetMipsRegLo_S(m_Opcode.rs) < 0 ? 0x00000001 : 0xFFFFFFFF, &_RegLO->UW[0], "_RegLO->UW[0]");
+            m_Assembler.MoveConstToVariable(GetMipsRegLo_S(m_Opcode.rs) < 0 ? 0x00000000 : 0xFFFFFFFF, &_RegLO->UW[1], "_RegLO->UW[1]");
+            m_Assembler.MoveConstToVariable(GetMipsRegLo(m_Opcode.rs), &_RegHI->UW[0], "_RegHI->UW[0]");
+            m_Assembler.MoveConstToVariable(GetMipsRegLo_S(m_Opcode.rs) < 0 ? 0xFFFFFFFF : 0x00000000, &_RegHI->UW[1], "_RegHI->UW[1]");
         }
         else
         {
-            m_Assembler.CompConstToVariable(0, &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
+            CX86Ops::x86Reg Reg = IsMapped(m_Opcode.rs) ? GetMipsRegMapLo(m_Opcode.rs) : Map_TempReg(CX86Ops::x86_Any, m_Opcode.rs, false);
+            m_Assembler.CompConstToX86reg(Reg, 0);
+            m_Assembler.JgeLabel8(stdstr_f("RsPositive_%08X", m_CompilePC).c_str(), 0);
+            uint8_t * JumpPositive = *g_RecompPos - 1;
+            m_Assembler.MoveConstToVariable(0x00000001, &_RegLO->UW[0], "_RegLO->UW[0]");
+            m_Assembler.MoveConstToVariable(0x00000000, &_RegLO->UW[1], "_RegLO->UW[1]");
+            m_Assembler.JmpLabel8(stdstr_f("LoSet_%08X", m_CompilePC).c_str(), 0);
+            uint8_t * JumpLoSet = *g_RecompPos - 1;
+            m_CodeBlock.Log("");
+            m_CodeBlock.Log("      RsPositive_%08X:", m_CompilePC);
+            m_Assembler.SetJump8(JumpPositive, *g_RecompPos);
+            m_Assembler.MoveConstToVariable(0xFFFFFFFF, &_RegLO->UW[0], "_RegLO->UW[0]");
+            m_Assembler.MoveConstToVariable(0xFFFFFFFF, &_RegLO->UW[1], "_RegLO->UW[1]");
+            m_CodeBlock.Log("");
+            m_CodeBlock.Log("      LoSet_%08X:", m_CompilePC);
+            m_Assembler.SetJump8(JumpLoSet, *g_RecompPos);
+            m_Assembler.MoveX86regToVariable(Reg, &_RegHI->UW[0], "_RegHI->UW[0]");
+            if (IsMapped(m_Opcode.rs))
+            {
+                Reg = Map_TempReg(CX86Ops::x86_Any, m_Opcode.rs, true);
+            }
+            else
+            {
+                m_Assembler.ShiftRightSignImmed(Reg, 31);
+            }
+            m_Assembler.MoveX86regToVariable(Reg, &_RegHI->UW[1], "_RegHI->UW[1]");
         }
-        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::DivByZero, false, &CX86Ops::JeLabel32);
+        return;
     }
-    /* lo = (SD)rs / (SD)rt;
-    hi = (SD)rs % (SD)rt; */
-
-    m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EDX, true);
-    Map_TempReg(CX86Ops::x86_EAX, m_Opcode.rs, false);
-
-    // EDX is the signed portion to EAX
-    m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EDX, false);
-    Map_TempReg(CX86Ops::x86_EDX, -1, false);
-
-    m_Assembler.MoveX86RegToX86Reg(CX86Ops::x86_EAX, CX86Ops::x86_EDX);
-    m_Assembler.ShiftRightSignImmed(CX86Ops::x86_EDX, 31);
-
-    if (IsMapped(m_Opcode.rt))
+    else if (IsConst(m_Opcode.rt) && GetMipsRegLo(m_Opcode.rt) == -1)
     {
-        m_Assembler.idivX86reg(GetMipsRegMapLo(m_Opcode.rt));
+        if (IsConst(m_Opcode.rs) && GetMipsRegLo(m_Opcode.rs) == 0x80000000)
+        {
+            m_Assembler.MoveConstToVariable(0x80000000, &_RegLO->UW[0], "_RegLO->UW[0]");
+            m_Assembler.MoveConstToVariable(0xFFFFFFFF, &_RegLO->UW[1], "_RegLO->UW[1]");
+            m_Assembler.MoveConstToVariable(0x00000000, &_RegHI->UW[0], "_RegHI->UW[0]");
+            m_Assembler.MoveConstToVariable(0x00000000, &_RegHI->UW[1], "_RegHI->UW[1]");
+            return;
+        }
+        
+        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, true);
+        UnMap_X86reg(CX86Ops::x86_EDX);
+        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, false);
+        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EDX, true);
+        UnMap_X86reg(CX86Ops::x86_EAX);
+        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, true);
+        RegRs = IsMapped(m_Opcode.rs) ? GetMipsRegMapLo(m_Opcode.rs) : Map_TempReg(CX86Ops::x86_Any, m_Opcode.rs, false);
+        m_RegWorkingSet.SetX86Protected(RegRs, true);
+        RegRsHi = IsMapped(m_Opcode.rs) && Is64Bit(m_Opcode.rs) ? GetMipsRegMapHi(m_Opcode.rs) : Map_TempReg(CX86Ops::x86_Any, IsMapped(m_Opcode.rs) ? m_Opcode.rs : -1, true);
+        DivReg = IsMapped(m_Opcode.rt) ? GetMipsRegMapLo(m_Opcode.rt) : Map_TempReg(CX86Ops::x86_Any, m_Opcode.rt, false);
+
+        if (!IsConst(m_Opcode.rs))
+        {
+            m_Assembler.CompConstToX86reg(RegRs, 0x80000000);
+            m_Assembler.JneLabel8(stdstr_f("ValidDiv_%08X", m_CompilePC).c_str(), 0);
+            uint8_t * JumpValid = *g_RecompPos - 1;
+            m_Assembler.MoveConstToVariable(0x80000000, &_RegLO->UW[0], "_RegLO->UW[0]");
+            m_Assembler.MoveConstToVariable(0xFFFFFFFF, &_RegLO->UW[1], "_RegLO->UW[1]");
+            m_Assembler.MoveConstToVariable(0x00000000, &_RegHI->UW[0], "_RegHI->UW[0]");
+            m_Assembler.MoveConstToVariable(0x00000000, &_RegHI->UW[1], "_RegHI->UW[1]");
+            m_Assembler.JmpLabel8(stdstr_f("EndDiv_%08X", m_CompilePC).c_str(), 0);
+            JumpEnd = *g_RecompPos - 1;
+            m_CodeBlock.Log("");
+            m_CodeBlock.Log("      ValidDiv_%08X:", m_CompilePC);
+            m_Assembler.SetJump8(JumpValid, *g_RecompPos);
+        }
     }
     else
     {
-        m_Assembler.idivX86reg(Map_TempReg(CX86Ops::x86_Any, m_Opcode.rt, false));
+        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, true);
+        UnMap_X86reg(CX86Ops::x86_EDX);
+        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, false);
+        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EDX, true);
+        UnMap_X86reg(CX86Ops::x86_EAX);
+        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, true);
+        RegRs = IsMapped(m_Opcode.rs) ? GetMipsRegMapLo(m_Opcode.rs) : Map_TempReg(CX86Ops::x86_Any, m_Opcode.rs, false);
+        m_RegWorkingSet.SetX86Protected(RegRs, true);
+        RegRsHi = IsMapped(m_Opcode.rs) && Is64Bit(m_Opcode.rs) ? GetMipsRegMapHi(m_Opcode.rs) : Map_TempReg(CX86Ops::x86_Any, IsMapped(m_Opcode.rs) ? m_Opcode.rs : -1, true);
+        DivReg = IsMapped(m_Opcode.rt) ? GetMipsRegMapLo(m_Opcode.rt) : Map_TempReg(CX86Ops::x86_Any, m_Opcode.rt, false);
+
+        if (!IsConst(m_Opcode.rs))
+        {
+            if (IsMapped(m_Opcode.rt))
+            {
+                m_Assembler.CompConstToX86reg(GetMipsRegMapLo(m_Opcode.rt), 0);
+            }
+            else
+            {
+                m_Assembler.CompConstToVariable(0, &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
+            }
+            m_Assembler.JneLabel8(stdstr_f("NotDiv0_%08X", m_CompilePC).c_str(), 0);
+            JumpNotDiv0 = *g_RecompPos - 1;
+
+            m_Assembler.CompConstToX86reg(RegRs, 0);
+            m_Assembler.JgeLabel8(stdstr_f("RsPositive_%08X", m_CompilePC).c_str(), 0);
+            uint8_t * JumpPositive = *g_RecompPos - 1;
+            m_Assembler.MoveConstToVariable(0x00000001, &_RegLO->UW[0], "_RegLO->UW[0]");
+            m_Assembler.MoveConstToVariable(0x00000000, &_RegLO->UW[1], "_RegLO->UW[1]");
+            m_Assembler.JmpLabel8(stdstr_f("LoSet_%08X", m_CompilePC).c_str(), 0);
+            uint8_t * JumpLoSet = *g_RecompPos - 1;
+            m_CodeBlock.Log("");
+            m_CodeBlock.Log("      RsPositive_%08X:", m_CompilePC);
+            m_Assembler.SetJump8(JumpPositive, *g_RecompPos);
+            m_Assembler.MoveConstToVariable(0xFFFFFFFF, &_RegLO->UW[0], "_RegLO->UW[0]");
+            m_Assembler.MoveConstToVariable(0xFFFFFFFF, &_RegLO->UW[1], "_RegLO->UW[1]");
+            m_CodeBlock.Log("");
+            m_CodeBlock.Log("      LoSet_%08X:", m_CompilePC);
+            m_Assembler.SetJump8(JumpLoSet, *g_RecompPos);
+            m_Assembler.MoveX86regToVariable(RegRs, &_RegHI->UW[0], "_RegHI->UW[0]");
+            if (!IsMapped(m_Opcode.rs))
+            {
+                m_Assembler.ShiftRightSignImmed(RegRsHi, 31);
+            }
+            m_Assembler.MoveX86regToVariable(RegRsHi, &_RegHI->UW[1], "_RegHI->UW[1]");
+            m_Assembler.JmpLabel8(stdstr_f("EndDiv_%08X", m_CompilePC).c_str(), 0);
+            JumpEnd = *g_RecompPos - 1;
+
+            m_CodeBlock.Log("");
+            m_CodeBlock.Log("      NotDiv0_%08X:", m_CompilePC);
+            m_Assembler.SetJump8(JumpNotDiv0, *g_RecompPos);
+            if (IsMapped(m_Opcode.rt))
+            {
+                m_Assembler.CompConstToX86reg(GetMipsRegMapLo(m_Opcode.rt), (uint32_t)-1);
+            }
+            else
+            {
+                m_Assembler.CompConstToVariable((uint32_t)-1, &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
+            }
+            m_Assembler.JneLabel8(stdstr_f("ValidDiv0_%08X", m_CompilePC).c_str(), 0);
+            uint8_t * JumpValidDiv0 = *g_RecompPos - 1;
+
+            m_Assembler.MoveConstToVariable(0x80000000, &_RegLO->UW[0], "_RegLO->UW[0]");
+            m_Assembler.MoveConstToVariable(0xFFFFFFFF, &_RegLO->UW[1], "_RegLO->UW[1]");
+            m_Assembler.MoveConstToVariable(0x00000000, &_RegHI->UW[0], "_RegHI->UW[0]");
+            m_Assembler.MoveConstToVariable(0x00000000, &_RegHI->UW[1], "_RegHI->UW[1]");
+            m_Assembler.JmpLabel8(stdstr_f("EndDiv_%08X", m_CompilePC).c_str(), 0);
+            JumpEnd2 = *g_RecompPos - 1;
+
+            m_CodeBlock.Log("");
+            m_CodeBlock.Log("      ValidDiv0_%08X:", m_CompilePC);
+            m_Assembler.SetJump8(JumpValidDiv0, *g_RecompPos);
+        }
     }
 
+    m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, true);
+    UnMap_X86reg(CX86Ops::x86_EDX);
+    Map_TempReg(CX86Ops::x86_EDX, -1, false);
+    m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, false);
+    Map_TempReg(CX86Ops::x86_EAX, m_Opcode.rs, false);
+
+    if (IsConst(m_Opcode.rs))
+    {
+        m_Assembler.MoveConstToX86reg(GetMipsRegLo_S(m_Opcode.rs) >> 31, CX86Ops::x86_EDX);
+    }
+    else
+    {
+        m_Assembler.MoveX86RegToX86Reg(CX86Ops::x86_EAX, CX86Ops::x86_EDX);
+        m_Assembler.ShiftRightSignImmed(CX86Ops::x86_EDX, 31);
+    }
+
+    m_Assembler.idivX86reg(DivReg);
     m_Assembler.MoveX86regToVariable(CX86Ops::x86_EAX, &_RegLO->UW[0], "_RegLO->UW[0]");
     m_Assembler.MoveX86regToVariable(CX86Ops::x86_EDX, &_RegHI->UW[0], "_RegHI->UW[0]");
-    m_Assembler.ShiftRightSignImmed(CX86Ops::x86_EAX, 31);    // Paired
+    m_Assembler.ShiftRightSignImmed(CX86Ops::x86_EAX, 31);
     m_Assembler.ShiftRightSignImmed(CX86Ops::x86_EDX, 31);
     m_Assembler.MoveX86regToVariable(CX86Ops::x86_EAX, &_RegLO->UW[1], "_RegLO->UW[1]");
     m_Assembler.MoveX86regToVariable(CX86Ops::x86_EDX, &_RegHI->UW[1], "_RegHI->UW[1]");
+
+    if (JumpEnd != nullptr || JumpEnd2 != nullptr)
+    {
+        m_CodeBlock.Log("");
+        m_CodeBlock.Log("      EndDiv_%08X:", m_CompilePC);
+        if (JumpEnd != nullptr)
+        {
+            m_Assembler.SetJump8(JumpEnd, *g_RecompPos);
+        }
+        if (JumpEnd2 != nullptr)
+        {
+            m_Assembler.SetJump8(JumpEnd2, *g_RecompPos);
+        }
+    }
 }
 
 void CX86RecompilerOps::SPECIAL_DIVU()
 {
-    uint8_t *Jump[2];
-    CX86Ops::x86Reg Reg;
-
-    if (IsConst(m_Opcode.rt))
+    uint8_t * JumpEndDivu = nullptr;
+    if (IsConst(m_Opcode.rt) && GetMipsRegLo(m_Opcode.rt) == 0)
     {
-        if (GetMipsRegLo(m_Opcode.rt) == 0)
+        if (IsConst(m_Opcode.rs))
         {
-            m_Assembler.MoveConstToVariable(0, &_RegLO->UW[0], "_RegLO->UW[0]");
-            m_Assembler.MoveConstToVariable(0, &_RegLO->UW[1], "_RegLO->UW[1]");
-            m_Assembler.MoveConstToVariable(0, &_RegHI->UW[0], "_RegHI->UW[0]");
-            m_Assembler.MoveConstToVariable(0, &_RegHI->UW[1], "_RegHI->UW[1]");
-            return;
-        }
-        Jump[1] = nullptr;
-    }
-    else
-    {
-        if (IsMapped(m_Opcode.rt))
-        {
-            m_Assembler.CompConstToX86reg(GetMipsRegMapLo(m_Opcode.rt), 0);
+            m_Assembler.MoveConstToVariable(0xFFFFFFFF, &_RegLO->UW[0], "_RegLO->UW[0]");
+            m_Assembler.MoveConstToVariable(0xFFFFFFFF, &_RegLO->UW[1], "_RegLO->UW[1]");
+            m_Assembler.MoveConstToVariable(GetMipsRegLo(m_Opcode.rs), &_RegHI->UW[0], "_RegHI->UW[0]");
+            m_Assembler.MoveConstToVariable(GetMipsRegLo_S(m_Opcode.rs) < 0 ? 0xFFFFFFFF : 0x00000000, &_RegHI->UW[1], "_RegHI->UW[1]");
         }
         else
         {
-            m_Assembler.CompConstToVariable(0, &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
+            CX86Ops::x86Reg RegRs = IsMapped(m_Opcode.rs) ? GetMipsRegMapLo(m_Opcode.rs) : Map_TempReg(CX86Ops::x86_Any, m_Opcode.rs, false);
+            m_Assembler.CompConstToX86reg(RegRs, 0);
+            m_Assembler.JgeLabel8(stdstr_f("RsPositive_%08X", m_CompilePC).c_str(), 0);
+            uint8_t * JumpPositive = *g_RecompPos - 1;
+            m_Assembler.MoveConstToVariable(0x00000001, &_RegLO->UW[0], "_RegLO->UW[0]");
+            m_Assembler.MoveConstToVariable(0x00000000, &_RegLO->UW[1], "_RegLO->UW[1]");
+            m_Assembler.JmpLabel8(stdstr_f("LoSet_%08X", m_CompilePC).c_str(), 0);
+            uint8_t * JumpLoSet = *g_RecompPos - 1;
+            m_CodeBlock.Log("");
+            m_CodeBlock.Log("      RsPositive_%08X:", m_CompilePC);
+            m_Assembler.SetJump8(JumpPositive, *g_RecompPos);
+            m_Assembler.MoveConstToVariable(0xFFFFFFFF, &_RegLO->UW[0], "_RegLO->UW[0]");
+            m_Assembler.MoveConstToVariable(0xFFFFFFFF, &_RegLO->UW[1], "_RegLO->UW[1]");
+            m_CodeBlock.Log("");
+            m_CodeBlock.Log("      LoSet_%08X:", m_CompilePC);
+            m_Assembler.SetJump8(JumpLoSet, *g_RecompPos);
+            m_Assembler.MoveX86regToVariable(RegRs, &_RegHI->UW[0], "_RegHI->UW[0]");
+            if (IsMapped(m_Opcode.rs))
+            {
+                RegRs = Map_TempReg(CX86Ops::x86_Any, m_Opcode.rs, true);
+            }
+            else
+            {
+                m_Assembler.ShiftRightSignImmed(RegRs, 31);
+            }
+            m_Assembler.MoveX86regToVariable(RegRs, &_RegHI->UW[1], "_RegHI->UW[1]");
         }
-        m_Assembler.JneLabel8("NoExcept", 0);
-        Jump[0] = *g_RecompPos - 1;
-
-        m_Assembler.MoveConstToVariable(0, &_RegLO->UW[0], "_RegLO->UW[0]");
-        m_Assembler.MoveConstToVariable(0, &_RegLO->UW[1], "_RegLO->UW[1]");
-        m_Assembler.MoveConstToVariable(0, &_RegHI->UW[0], "_RegHI->UW[0]");
-        m_Assembler.MoveConstToVariable(0, &_RegHI->UW[1], "_RegHI->UW[1]");
-
-        m_Assembler.JmpLabel8("EndDivu", 0);
-        Jump[1] = *g_RecompPos - 1;
-
-        m_CodeBlock.Log("");
-        m_CodeBlock.Log("      NoExcept:");
-        m_Assembler.SetJump8(Jump[0], *g_RecompPos);
     }
-
-    /*    lo = (UD)rs / (UD)rt;
-    hi = (UD)rs % (UD)rt; */
-
-    m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, true);
-    Map_TempReg(CX86Ops::x86_EDX, 0, false);
-    m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, false);
-
-    Map_TempReg(CX86Ops::x86_EAX, m_Opcode.rs, false);
-    Reg = Map_TempReg(CX86Ops::x86_Any, m_Opcode.rt, false);
-
-    m_Assembler.DivX86reg(Reg);
-
-    m_Assembler.MoveX86regToVariable(CX86Ops::x86_EAX, &_RegLO->UW[0], "_RegLO->UW[0]");
-    m_Assembler.MoveX86regToVariable(CX86Ops::x86_EDX, &_RegHI->UW[0], "_RegHI->UW[0]");
-
-    // Wouldn't these be zero?
-
-    m_Assembler.ShiftRightSignImmed(CX86Ops::x86_EAX, 31);    // Paired
-    m_Assembler.ShiftRightSignImmed(CX86Ops::x86_EDX, 31);
-    m_Assembler.MoveX86regToVariable(CX86Ops::x86_EAX, &_RegLO->UW[1], "_RegLO->UW[1]");
-    m_Assembler.MoveX86regToVariable(CX86Ops::x86_EDX, &_RegHI->UW[1], "_RegHI->UW[1]");
-
-    if (Jump[1] != nullptr)
+    else
     {
-        m_CodeBlock.Log("");
-        m_CodeBlock.Log("      EndDivu:");
-        m_Assembler.SetJump8(Jump[1], *g_RecompPos);
+        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, true);
+        UnMap_X86reg(CX86Ops::x86_EDX);
+        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, false);
+        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EDX, true);
+        UnMap_X86reg(CX86Ops::x86_EAX);
+        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, true);
+        CX86Ops::x86Reg RegRsLo = IsMapped(m_Opcode.rs) ? GetMipsRegMapLo(m_Opcode.rs) : Map_TempReg(CX86Ops::x86_Any, m_Opcode.rs, false);
+        CX86Ops::x86Reg RegRsHi = IsMapped(m_Opcode.rs) ? Map_TempReg(CX86Ops::x86_Any, IsMapped(m_Opcode.rs), true) : CX86Ops::x86_Unknown;
+        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, true);
+        Map_TempReg(CX86Ops::x86_EDX, 0, false);
+        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, false);
+
+        Map_TempReg(CX86Ops::x86_EAX, m_Opcode.rs, false);
+        CX86Ops::x86Reg DivReg = Map_TempReg(CX86Ops::x86_Any, m_Opcode.rt, false);
+        
+        if (!IsConst(m_Opcode.rt))
+        {
+            if (IsMapped(m_Opcode.rt))
+            {
+                m_Assembler.CompConstToX86reg(GetMipsRegMapLo(m_Opcode.rt), 0);
+            }
+            else
+            {
+                m_Assembler.CompConstToVariable(0, &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
+            }
+            m_Assembler.JneLabel8("NoExcept", 0);
+            uint8_t * JumpNoExcept = *g_RecompPos - 1;
+
+            m_Assembler.MoveConstToVariable(0xFFFFFFFF, &_RegLO->UW[0], "_RegLO->UW[0]");
+            m_Assembler.MoveConstToVariable(0xFFFFFFFF, &_RegLO->UW[1], "_RegLO->UW[1]");
+            m_Assembler.MoveX86regToVariable(RegRsLo, &_RegHI->UW[0], "_RegHI->UW[0]");
+            if (!IsMapped(m_Opcode.rs))
+            {
+                RegRsHi = RegRsLo;
+                m_Assembler.ShiftRightSignImmed(RegRsHi, 31);
+            }
+            m_Assembler.MoveX86regToVariable(RegRsHi, &_RegHI->UW[1], "_RegHI->UW[1]");
+
+            m_Assembler.JmpLabel8("EndDivu", 0);
+            JumpEndDivu = *g_RecompPos - 1;
+            m_CodeBlock.Log("");
+            m_CodeBlock.Log("      NoExcept:");
+            m_Assembler.SetJump8(JumpNoExcept, *g_RecompPos);
+        }
+        m_Assembler.DivX86reg(DivReg);
+
+        m_Assembler.MoveX86regToVariable(CX86Ops::x86_EAX, &_RegLO->UW[0], "_RegLO->UW[0]");
+        m_Assembler.MoveX86regToVariable(CX86Ops::x86_EDX, &_RegHI->UW[0], "_RegHI->UW[0]");
+        m_Assembler.ShiftRightSignImmed(CX86Ops::x86_EAX, 31);
+        m_Assembler.ShiftRightSignImmed(CX86Ops::x86_EDX, 31);
+        m_Assembler.MoveX86regToVariable(CX86Ops::x86_EAX, &_RegLO->UW[1], "_RegLO->UW[1]");
+        m_Assembler.MoveX86regToVariable(CX86Ops::x86_EDX, &_RegHI->UW[1], "_RegHI->UW[1]");
+
+        if (JumpEndDivu != nullptr)
+        {
+            m_CodeBlock.Log("");
+            m_CodeBlock.Log("      EndDivu:");
+            m_Assembler.SetJump8(JumpEndDivu, *g_RecompPos);
+        }
     }
 }
 
@@ -9619,17 +9798,6 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         break;
     case CExitInfo::TLBWriteMiss:
         m_Assembler.X86BreakPoint(__FILE__, __LINE__);
-        ExitCodeBlock();
-        break;
-    case CExitInfo::DivByZero:
-        m_Assembler.AddConstToVariable(4, _PROGRAM_COUNTER, "PROGRAM_COUNTER");
-        if (!g_System->b32BitCore())
-        {
-            m_Assembler.MoveConstToVariable(0, &_RegHI->UW[1], "_RegHI->UW[1]");
-            m_Assembler.MoveConstToVariable(0, &_RegLO->UW[1], "_RegLO->UW[1]");
-        }
-        m_Assembler.MoveConstToVariable(0, &_RegHI->UW[0], "_RegHI->UW[0]");
-        m_Assembler.MoveConstToVariable(0, &_RegLO->UW[0], "_RegLO->UW[0]");
         ExitCodeBlock();
         break;
     default:

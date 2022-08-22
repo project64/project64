@@ -241,7 +241,6 @@ enum SettingID
     Debugger_BreakOnAddressError,
     Debugger_StepOnBreakOpCode,
     Debugger_ShowPifErrors,
-    Debugger_ShowDivByZero,
     Debugger_RecordRecompilerAsm,
     Debugger_DisableGameFixes,
     Debugger_AppLogLevel,

@@ -342,7 +342,6 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Debugger_IntrBreakpoints, new CSettingTypeApplication("Debugger", "Interrupt Breakpoints", (uint32_t)0));
     AddHandler(Debugger_RcpIntrBreakpoints, new CSettingTypeApplication("Debugger", "RCP Interrupt Breakpoints", (uint32_t)0));
     AddHandler(Debugger_DebugLanguage, new CSettingTypeApplication("Debugger", "Debug Language", false));
-    AddHandler(Debugger_ShowDivByZero, new CSettingTypeApplication("Debugger", "Show Div by zero", false));
     AddHandler(Debugger_AppLogFlush, new CSettingTypeApplication("Logging", "Log Auto Flush", (uint32_t)false));
     AddHandler(Debugger_RecordRecompilerAsm, new CSettingTypeApplication("Debugger", "Record Recompiler Asm", false));
     AddHandler(Debugger_AutorunScripts, new CSettingTypeApplication("Debugger", "Autorun Scripts", ""));

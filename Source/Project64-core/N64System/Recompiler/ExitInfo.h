@@ -16,7 +16,6 @@ struct CExitInfo
         DoSysCall = 4,
         TLBReadMiss = 5,
         TLBWriteMiss = 6,
-        DivByZero = 7,
         ExitResetRecompCode = 8,
     };
 

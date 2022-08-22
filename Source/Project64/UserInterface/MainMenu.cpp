@@ -32,7 +32,6 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
     m_ChangeSettingList.push_back(Debugger_ShowDListAListCount);
     m_ChangeSettingList.push_back(Debugger_DebugLanguage);
     m_ChangeSettingList.push_back(Debugger_ShowRecompMemSize);
-    m_ChangeSettingList.push_back(Debugger_ShowDivByZero);
     m_ChangeSettingList.push_back(Debugger_RecordRecompilerAsm);
     m_ChangeSettingList.push_back(Debugger_DisableGameFixes);
     m_ChangeSettingList.push_back(Debugger_TraceMD5);
@@ -526,9 +525,6 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_DEBUG_SHOW_RECOMP_MEM_SIZE:
         g_Settings->SaveBool(Debugger_ShowRecompMemSize, !g_Settings->LoadBool(Debugger_ShowRecompMemSize));
         g_Notify->DisplayMessage(0, EMPTY_STRING);
-        break;
-    case ID_DEBUG_SHOW_DIV_BY_ZERO:
-        g_Settings->SaveBool(Debugger_ShowDivByZero, !g_Settings->LoadBool(Debugger_ShowDivByZero));
         break;
     case ID_DEBUG_RECORD_RECOMPILER_ASM:
         g_Settings->SaveBool(Debugger_RecordRecompilerAsm, !g_Settings->LoadBool(Debugger_RecordRecompilerAsm));
@@ -1253,12 +1249,6 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         // Notification menu
         Item.Reset(ID_DEBUG_SHOW_PIF_ERRORS, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"On PIF errors");
         if (g_Settings->LoadBool(Debugger_ShowPifErrors))
-        {
-            Item.SetItemTicked(true);
-        }
-        DebugNotificationMenu.push_back(Item);
-        Item.Reset(ID_DEBUG_SHOW_DIV_BY_ZERO, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"On division by zero errors");
-        if (g_Settings->LoadBool(Debugger_ShowDivByZero))
         {
             Item.SetItemTicked(true);
         }

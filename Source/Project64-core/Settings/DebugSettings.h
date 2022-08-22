@@ -15,7 +15,6 @@ public:
     static inline bool WaitingForStep(void) { return m_WaitingForStep; }
     static inline bool bRecordRecompilerAsm(void) { return m_bRecordRecompilerAsm; }
     static inline bool bShowTLBMisses(void) { return m_bShowTLBMisses; }
-    static inline bool bShowDivByZero(void) { return m_bShowDivByZero; }
     static inline bool bRecordExecutionTimes(void) { return m_RecordExecutionTimes; }
     static inline bool HaveExecutionBP(void) { return m_HaveExecutionBP; }
     static inline bool HaveWriteBP(void) { return m_HaveWriteBP; }
@@ -46,7 +45,6 @@ private:
     static bool m_WaitingForStep;
     static bool m_bRecordRecompilerAsm;
     static bool m_bShowTLBMisses;
-    static bool m_bShowDivByZero;
     static bool m_RecordExecutionTimes;
     static bool m_HaveExecutionBP;
     static bool m_HaveWriteBP;

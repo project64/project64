@@ -250,7 +250,6 @@ CJniBridegSettings::CJniBridegSettings()
     ADD_SETTING(Debugger_BreakOnAddressError);
     ADD_SETTING(Debugger_StepOnBreakOpCode);
     ADD_SETTING(Debugger_ShowPifErrors);
-    ADD_SETTING(Debugger_ShowDivByZero);
     ADD_SETTING(Debugger_RecordRecompilerAsm);
     ADD_SETTING(Debugger_DisableGameFixes);
     ADD_SETTING(Debugger_AppLogLevel);

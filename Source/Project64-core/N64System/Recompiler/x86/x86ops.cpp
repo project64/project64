@@ -467,6 +467,13 @@ void CX86Ops::JeLabel32(const char * Label, uint32_t Value)
     AddCode32(Value);
 }
 
+void CX86Ops::JgeLabel8(const char * Label, uint8_t Value)
+{
+    CodeLog("      jge $%s", Label);
+    AddCode8(0x7D);
+    AddCode8(Value);
+}
+
 void CX86Ops::JgeLabel32(const char * Label, uint32_t Value)
 {
     CodeLog("      jge $%s", Label);
