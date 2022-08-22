@@ -8024,6 +8024,16 @@ Internal Name=Alleycat64
 Status=Compatible
 RDRAM Size=4
 
+[E4C44FDA-98532F4A-C:0]
+Good Name=Analogue Test Utility V1.00 by WT_Riker (POM '99)
+Internal Name=POM-WT_Riker-ATU
+Status=Compatible
+
+[4983921C-4B3BB453-C:0]
+Good Name=Anim01 Demo by Acclaim & marshallh
+Internal Name=Anim01 Demo by Accla
+Status=Issues (core)
+
 [26E43C40-E11F283C-C:0]
 Good Name=Attax64 by Pookae (POM '99) (PD)
 Internal Name=Ataxx64 by Pookae
@@ -8033,8 +8043,12 @@ RDRAM Size=4
 [4E5507F2-E7D3B413-C:0]
 Good Name=BB SRAM Manager (PD)
 Internal Name=BB Sram Manager
-Status=Unknown
-RDRAM Size=4
+Status=Compatible
+
+[273433C0-02B1F61B-C:0]
+Good Name=BMP View by Count0
+Internal Name=BMP VIEWER by C0
+Status=Compatible
 
 [3A089BBC-54AB2C06-C:0]
 Good Name=Berney Must Die! by Nop_ (POM '99) (PD)
@@ -8098,7 +8112,13 @@ RDRAM Size=4
 [4B0313E2-65657446-C:0]
 Good Name=Cliffi's Little Intro by Cliffi (POM '99) (PD)
 Internal Name=pom-clif
+Status=Compatible
 RDRAM Size=4
+
+[38026C18-32991CF5-C:0]
+Good Name=Coco Demo (PD)
+Internal Name=      coco
+Status=Compatible
 
 [D2B908C8-E0E73A1D-C:0]
 Good Name=Congratulations Demo for SPLiT by Widget and Immo (PD)
@@ -8115,6 +8135,11 @@ RDRAM Size=4
 [5B9D65DF-A18AB4AE-C:0]
 Good Name=CZN Module Player (PD)
 Internal Name=CZN module player
+Status=Compatible
+
+[9F35059D-48B7F411-C:0]
+Good Name=Diddy Kong Racing SRAM by Group5 (PD)
+Internal Name=Diddy Kong Racing SR
 Status=Compatible
 
 [887C368D-D1663AA2-C:0]
@@ -8146,6 +8171,11 @@ Internal Name=®
 Status=Compatible
 RDRAM Size=4
 
+[201DA461-EC0C992B-C:45]
+Good Name=DS1 SRAM Manager V1.1 by _Sage_ (PD)
+Internal Name=DS1 SRAM Manager V1.
+Status=Issues (core)
+
 [B8E73356-040E42EC-C:0]
 Good Name=Dynamix Intro (Hidden Song) by Widget and Immo (PD)
 Internal Name=    DYNAMIX
@@ -8175,8 +8205,8 @@ Good Name=Eurasia Intro by Ste (PD)
 Internal Name=Ste-Eurasia
 Status=Compatible
 
-[D49DFF90-8DB53A8C-C:0]
-Good Name=Evek - V64jr Save Manager by WT_Riker (PD)
+[EE79F44A-079A2B0C-C:0]
+Good Name=EveKillIII - V64jr-6105 Save Manager by WT_Riker (PD)
 Internal Name=OBS-Evek
 Status=Compatible
 RDRAM Size=4
@@ -8253,6 +8283,26 @@ Internal Name=GameBooster 64 v1.1
 Status=Issues (core)
 RDRAM Size=4
 
+[16FB52A4-7AED1FB3-C:0]
+Good Name=GameShark Pro V2.0 (Unl)
+Internal Name=(C) DATEL D&D NU10;0
+Status=Compatible
+
+[AFFA9067-C24922D0-C:39]
+Good Name=GameShark Pro V3.2 (Unl)
+Internal Name=(C) MUSHROOM &NU18;4
+Status=Issues (core)
+
+[EA6D5BF8-E2B4696C-C:27]
+Good Name=GameShark Pro V3.3 (Apr 2000) (Unl)
+Internal Name=(C) MUSHROOM &NU15;5
+Status=Issues (core)
+
+[EA6D5BF8-E2B4696C-C:70]
+Good Name=GameShark Pro V3.3 (Mar 2000) (Unl)
+Internal Name=(C) MUSHROOM &NU09;5
+Status=Issues (core)
+
 [5D8B9226-47605A2A-C:50]
 Good Name=GBlator for CD64 (PD)
 Internal Name=N64 GAMEBOY EMULATOR
@@ -8307,6 +8357,11 @@ Internal Name=Destop production
 Status=Issues (core)
 RDRAM Size=4
 
+[88A12FB3-8A583CBD-C:0]
+Good Name=HIPTHRUST by MooglyGuy (PD)
+Internal Name=HCS N64 Demo
+Status=Compatible
+
 [4072572D-A23DB72C-C:45]
 Good Name=HiRes CFB Demo (PD)
 Internal Name=h¼
@@ -8341,6 +8396,11 @@ Good Name=LaC MOD Player - The Temple Gates (PD)
 Internal Name=toms fucking demo
 Status=Compatible
 
+[FF0AC362-F4EC09B3-C:0]
+Good Name=LaC's Universal Bootemu V1.2 (PD)
+Internal Name=LaC's Universal Boot
+Status=Compatible
+
 [F828DF21-C5E83F66-C:0]
 Good Name=LCARS Demo by WT Riker (PD)
 Internal Name=LCARS - WT_Riker
@@ -8355,7 +8415,13 @@ RDRAM Size=4
 
 [8A8E474B-6458BF2B-C:0]
 Good Name=Liner V1.00 by Colin Phillipps of Memir (PD)
-Internal Name=h¼
+Internal Name=Liner V1.00 by Colin
+Status=Issues (core)
+RDRAM Size=4
+
+[F7B1C8E8-70536D3E-C:0]
+Good Name=Liner V1.02 by Colin Phillipps of Memir (PD)
+Internal Name=Liner V1.02 by Colin
 Status=Issues (core)
 RDRAM Size=4
 
@@ -8388,6 +8454,21 @@ Good Name=MeeTING Demo by Renderman (PD)
 Internal Name=PROTEST DESIGN
 Status=Compatible
 RDRAM Size=4
+
+[46F52280-BC5A6DEC-C:0]
+Good Name=Megahawks Inc Musicdisk 1 (PD)
+Internal Name=MegaHawks music
+Status=Compatible
+
+[4F81BB1E-3FFC8E73-C:0]
+Good Name=Melon Demo (PD)
+Internal Name=Melon
+Status=Issues (core)
+
+[5F44492A-18552A0D-C:0]
+Good Name=Memory Manager V1.0b by R. Bubba Magillicutty (PD) (PAL)
+Internal Name=Memory Manager
+Status=Issues (core)
 
 [81A3F478-B6965E3E-C:0]
 Good Name=Mempack Manager for Jr 0.9 by deas (PD)
@@ -8460,10 +8541,35 @@ Internal Name=My Angel
 Status=Issues (core)
 RDRAM Size=4
 
+[DDBA4DE5-B107004A-C:0]
+Good Name=Mupen64plus Emulator Demo (PD)
+Internal Name=Mupen64Plus
+Status=Compatible
+
+[44410533-0C61FA96-C:0]
+Good Name=N64probe (Button Test) by MooglyGuy (PD)
+Internal Name=HCS N64 Demo
+Status=Compatible
+
+[B216B9F1-AB27D881-C:0]
+Good Name=N64probe by MooglyGuy (PD)
+Internal Name=HCS N64 Demo
+Status=Compatible
+
 [6D2C07F1-C884F0D0-C:0]
 Good Name=N64 Scene Gallery by CALi (PD)
 Internal Name=The N64 Scene
 Status=Compatible
+
+[FD61BB45-FBB51EB2-C:45]
+Good Name=N64 Seminar Demo - CPU by ZoRAXE (PD)
+Internal Name=N64 Seminar  Demo
+Status=Issues (core)
+
+[6D03673A-1D63C191-C:45]
+Good Name=N64 Seminar Demo - RSP by ZoRAXE (PD)
+Internal Name=N64 Seminar  Demo
+Status=Issues (core)
 
 [71255651-C6AE0EA6-C:0]
 Good Name=N64 Stars Demo (PD)
@@ -8478,8 +8584,8 @@ Status=Compatible
 RDRAM Size=4
 
 [15DB95D4-77BC52D8-C:45]
-Good Name=NBC First Intro by CALi (PD)
-Internal Name=h¼
+Good Name=NBCG First Intro by CALi (PD)
+Internal Name=NBCG First Intro by
 RDRAM Size=4
 
 [AB9F8D97-95EAA766-C:0]
@@ -8514,18 +8620,43 @@ Status=Compatible
 
 [84067BAC-87FBA623-C:45]
 Good Name=NBCrew 2 Demo (PD)
-Internal Name=h¼
+Internal Name=NBCrew 2 Demo (PD)
 RDRAM Size=4
+
+[E6C36E1A-33A7F967-C:54]
+Good Name=NDDT Monitor v1.0.0 (PD)
+Internal Name=NDDT MONITOR 1.0.0
+Status=Compatible
 
 [3B18F4F7-82BFB2B3-C:45]
 Good Name=Neon64 First Public Beta Release by HCS (PD)
 Internal Name=Neon64 by HCS
-RDRAM Size=4
+Status=Issues (core)
 
 [3B18F6F9-8C4BE567-C:45]
 Good Name=Neon64 First Public Beta Release V2 by HCS (PD)
 Internal Name=Neon64 by HCS
-RDRAM Size=4
+Status=Issues (core)
+
+[4F707583-2D6326AA-C:45]
+Good Name=Neon64 First Public Beta Release V3 by HCS (PD)
+Internal Name=Neon64 by HCS
+Status=Issues (core)
+
+[E87D098B-4C70341C-C:0]
+Good Name=Neon64 V1.0 by Halley's Comet Software (PD)
+Internal Name=Neon64 v1.0
+Status=Issues (core)
+
+[ED42A2D4-7A71CD91-C:45]
+Good Name=Neon64 V1.1 by Halley's Comet Software (PD)
+Internal Name=Neon64 1.1  12-29-03
+Status=Issues (core)
+
+[5AAD4E36-6625D1D2-C:45]
+Good Name=Neon64 V1.2a by Halley's Comet Software (PD)
+Internal Name=Neon64 1.2a 06-01-04
+Status=Issues (core)
 
 [60E528A6-9500D4D3-C:0]
 Good Name=Nintendo Family by CALi (PD)
@@ -8556,6 +8687,16 @@ Internal Name=TSF - NUfaN
 Status=Compatible
 RDRAM Size=4
 
+[EFDAFEA4-E38D6A80-C:0]
+Good Name=NUTS - Nintendo Ultra64 Test Suite by MooglyGuy (PD)
+Internal Name=HCS N64 Demo
+Status=Compatible
+
+[34E42466-F50868AC-C:0]
+Good Name=ObjectVIEWER V1.1 by Kid Stardust (PD)
+Internal Name=ObjectVIEWer V1.1
+Status=Compatible
+
 [7F2D025D-2B7DA4AD-C:0]
 Good Name=Oerjan Intro by Oerjan (POM '99) (PD)
 Internal Name=oErjan78
@@ -8579,6 +8720,11 @@ Good Name=PC-Engine 64 Emulator (POM '99) (PD)
 Internal Name=PC-Engine 64
 Status=Compatible
 RDRAM Size=4
+
+[D06080CD-1F73F9FE-C:20]
+Good Name=Perfect Trainer v1.0b by iCEMARiO (Decrypted Version) (PD)
+Internal Name=Perfect Trainer 2003
+Status=Issues (core)
 
 [D072CFE7-CE134788-C:0]
 Good Name=Pip's Pong by Mr. Pips (PD)
@@ -8656,6 +8802,11 @@ Good Name=Pip's RPGs Beta x (PD) [a1
 Internal Name=Pips AZbeta
 Status=Compatible
 RDRAM Size=4
+
+[6459533B-7E22B56C-C:0]
+Good Name=Pip's Tic Tak Toe by Mark Pips (PD)
+Internal Name=Pip's Tic Tak Toe by
+Status=Compatible
 
 [762C75D1-AA09C759-C:0]
 Good Name=Pip's World Game 1 by Mr. Pips (PD
@@ -8744,6 +8895,11 @@ Internal Name=ste - pyscodelic
 Status=Compatible
 RDRAM Size=4
 
+[00681A2D-51E35EB1-C:0]
+Good Name=Raycast Demo (PD)
+Internal Name=Raycast Demo (PD)
+Status=Compatible
+
 [32A92961-DB34982C-C:0]
 Good Name=R.I.P. Jay Demo by Ste (PD)
 Internal Name=R.I.P JAY
@@ -8754,6 +8910,16 @@ Good Name=RADWAR 2K Party Inv. Intro by Ayatolloh (PD)
 Internal Name=Live suxx!
 Status=Compatible
 RDRAM Size=4
+
+[281F6D04-236D6228-C:0]
+Good Name=RDP Probe by MooglyGuy (PD)
+Internal Name=HCS N64 Demo
+Status=Compatible
+
+[51EE25C8-0884C66C-C:0]
+Good Name=RMGeom01 Demo by Acclaim & marshallh (PD)
+Internal Name=RMGeom01 Demo by Acc
+Status=Issues (core)
 
 [75A0B893-4CA321B5-C:0]
 Good Name=Robotech - Crystal Dreams (U) (Beta)
@@ -8820,7 +8986,6 @@ RDRAM Size=4
 Good Name=SNES 9X Alpha (PD)
 Internal Name=TRAINER INTRO #2 CZN
 Status=Issues (core)
-RDRAM Size=4
 
 [9303DD17-0813B398-C:0]
 Good Name=Soncrap Golden Eye Intro (PD) aka Rad's Bird
@@ -8833,6 +8998,16 @@ Good Name=Soncrap Intro by RedboX (PD) aka Rad's Bird
 Internal Name=SonCrap Intro
 Status=Compatible
 RDRAM Size=4
+
+[BA895F89-87FFA3A4-C:0]
+Good Name=SMOS01 Demo by Acclaim & marshallh (PD)
+Internal Name=SMOS01 Demo by Accla
+Status=Issues (core)
+
+[D100C4AD-E7EE35F1-C:0]
+Good Name=SMPlayer V20100820 (PD)
+Internal Name=N64 Myth SMPlayer
+Status=Issues (core)
 
 [A3A044B5-6DB1BF5E-C:0]
 Good Name=Spacer by Memir (POM '99) (PD)
@@ -8933,6 +9108,11 @@ Internal Name=GONZOiD AMPHETAMiNE
 Status=Compatible
 RDRAM Size=4
 
+[B0565CCB-BDA2C237-C:0]
+Good Name=TheMuscularDemo by megahawks (PD)
+Internal Name=The Muscular Demo
+Status=Compatible
+
 [44705CED-6FDFDE02-C:0]
 Good Name=The Corporation 1st Intro by i_savant (PD)
 Internal Name=The Corporation
@@ -8991,6 +9171,11 @@ Internal Name=Ultra by Locke
 Status=Compatible
 RDRAM Size=4
 
+[66D8DE56-C2AA25B2-C:0]
+Good Name=Ultrafox 64 by Megahawks (PD)
+Internal Name=MegaHawks inc
+Status=Compatible
+
 [4E7DE4EF-0DEC3712-C:0]
 Good Name=UltraMSX2 V1.0 (PD)
 Internal Name=ultraMSX2
@@ -9046,6 +9231,11 @@ Internal Name=v64jr Backup v0.2b
 Status=Compatible
 RDRAM Size=4
 
+[6FC4EEBC-125BF459-C:0]
+Good Name=V64Jr Flash Save Util by CrowTRobo (PD)
+Internal Name=CTR-JFSU
+Status=Compatible
+
 [1CEACBA0-42BC06D6-C:0]
 Good Name=Vector Demo by Destop (POM '99) (PD)
 Internal Name=VECTOR DEMO
@@ -9087,6 +9277,16 @@ Good Name=VNES64 Emulator V0.12 by Jean-Luc Picard (PD)
 Internal Name=JL_Picard vNES64 .12
 Status=Issues (core)
 RDRAM Size=4
+
+[02BEBCAC-D72EBF04-C:0]
+Good Name=VRMl2vtx Demo (PD)
+Internal Name=vrml2vtx demo
+Status=Compatible
+
+[5DDFCC73-9465DFEC-C:0]
+Good Name=Wave Race SRAM Uploader (PD)
+Internal Name=Wave Race Sram
+Status=Compatible
 
 [CA3BC095-9649860A-C:50]
 Good Name=Wet Dreams Can Beta Demo by Immo (POM '99) (PD)
