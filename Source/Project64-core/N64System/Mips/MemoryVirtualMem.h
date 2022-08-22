@@ -118,6 +118,7 @@ public:
 
     AudioInterfaceHandler & AudioInterface(void) { return m_AudioInterfaceHandler; }
     VideoInterfaceHandler & VideoInterface(void) { return m_VideoInterfaceHandler; }
+    RomMemoryHandler & RomMemory(void) { return m_RomMemoryHandler; };
 
 private:
     CMipsMemoryVM();

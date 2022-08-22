@@ -19,6 +19,8 @@ public:
     bool Read32(uint32_t Address, uint32_t & Value);
     bool Write32(uint32_t Address, uint32_t Value, uint32_t Mask);
 
+    void RomWriteDecayed(void);
+
 private:
     RomMemoryHandler();
     RomMemoryHandler(const RomMemoryHandler&);

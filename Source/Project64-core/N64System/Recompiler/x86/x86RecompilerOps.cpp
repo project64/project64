@@ -11381,10 +11381,29 @@ void CX86RecompilerOps::SW_Register(CX86Ops::x86Reg Reg, uint32_t VAddr)
         m_Assembler.MoveX86regToVariable(Reg, PAddr + g_MMU->Rdram(), VarName);
         break;
     default:
-        m_CodeBlock.Log("    should be moving %s in to %08X ?", CX86Ops::x86_Name(Reg), VAddr);
-        if (BreakOnUnhandledMemory())
+        if (PAddr >= 0x10000000 && PAddr < 0x20000000)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            m_RegWorkingSet.BeforeCallDirect();
+            m_Assembler.PushImm32(0xFFFFFFFF);
+            m_Assembler.Push(Reg);
+            m_Assembler.PushImm32(PAddr);
+#ifdef _MSC_VER
+            m_Assembler.MoveConstToX86reg((uint32_t)(MemoryHandler *)&g_MMU->m_RomMemoryHandler, CX86Ops::x86_ECX);
+            m_Assembler.Call_Direct((void *)((long**)(MemoryHandler *)&g_MMU->m_RomMemoryHandler)[0][1], "RomMemoryHandler::Write32");
+#else
+            m_Assembler.PushImm32((uint32_t)&g_MMU->m_RomMemoryHandler);
+            m_Assembler.Call_Direct(AddressOf(&RomMemoryHandler::Write32), "RomMemoryHandler::Write32");
+            m_Assembler.AddConstToX86Reg(CX86Ops::x86_ESP, 16);
+#endif
+            m_RegWorkingSet.AfterCallDirect();
+        }
+        else
+        {
+            m_CodeBlock.Log("    should be moving %s in to %08X ?", CX86Ops::x86_Name(Reg), VAddr);
+            if (BreakOnUnhandledMemory())
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
         }
     }
 }

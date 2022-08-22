@@ -26,6 +26,7 @@ public:
         DDPiTimer,
         DDSeekTimer,
         DDMotorTimer,
+        RomWriteDecay,
         MaxTimer
     };
 
@@ -39,7 +40,7 @@ public:
         int64_t CyclesToTimer;
     };
 
-    CSystemTimer(CRegisters &Reg, AudioInterfaceHandler & AudioInterface, int32_t & NextTimer);
+    CSystemTimer(CN64System & System);
     void SetTimer(TimerType Type, uint32_t Cycles, bool bRelative);
     uint32_t  GetTimer(TimerType Type);
     void StopTimer(TimerType Type);
@@ -68,12 +69,14 @@ private:
 
     void SetCompareTimer();
     void FixTimers();
-
+    
+    CN64System & m_System;
     TIMER_DETAILS m_TimerDetatils[MaxTimer];
     int32_t m_LastUpdate;
     int32_t & m_NextTimer;
     TimerType m_Current;
     bool m_inFixTimer;
     CRegisters & m_Reg;
+    RomMemoryHandler & m_RomMemoryHandler;
     AudioInterfaceHandler & m_AudioInterface;
 };

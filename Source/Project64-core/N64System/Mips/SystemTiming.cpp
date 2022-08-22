@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/Mips/SystemTiming.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/Register.h>
@@ -7,13 +8,15 @@
 #include <Project64-core/N64System/MemoryHandler/AudioInterfaceHandler.h>
 #include <Project64-core/3rdParty/zip.h>
 
-CSystemTimer::CSystemTimer(CRegisters &Reg, AudioInterfaceHandler & AudioInterface, int32_t & NextTimer) :
+CSystemTimer::CSystemTimer(CN64System & System) :
+    m_System(System),
     m_LastUpdate(0),
-    m_NextTimer(NextTimer),
+    m_NextTimer(System.m_NextTimer),
     m_Current(UnknownTimer),
     m_inFixTimer(false),
-    m_Reg(Reg),
-    m_AudioInterface(AudioInterface)
+    m_Reg(System.m_Reg),
+    m_RomMemoryHandler(System.m_MMU_VM.RomMemory()),
+    m_AudioInterface(System.m_MMU_VM.AudioInterface())
 {
     memset(m_TimerDetatils, 0, sizeof(m_TimerDetatils));
 }
@@ -161,7 +164,7 @@ void CSystemTimer::UpdateTimers()
         int32_t random, wired;
         m_LastUpdate = m_NextTimer;
         m_Reg.COUNT_REGISTER += TimeTaken;
-        random = m_Reg.RANDOM_REGISTER - ((TimeTaken * CGameSettings::OverClockModifier()) / g_System->CountPerOp());
+        random = m_Reg.RANDOM_REGISTER - ((TimeTaken * CGameSettings::OverClockModifier()) / m_System.CountPerOp());
         wired = m_Reg.WIRED_REGISTER;
         if (random < wired)
         {
@@ -191,24 +194,24 @@ void CSystemTimer::TimerDone()
         UpdateCompareTimer();
         break;
     case CSystemTimer::SoftResetTimer:
-        g_SystemTimer->StopTimer(CSystemTimer::SoftResetTimer);
-        g_System->ExternalEvent(SysEvent_ResetCPU_SoftDone);
+        StopTimer(CSystemTimer::SoftResetTimer);
+        m_System.ExternalEvent(SysEvent_ResetCPU_SoftDone);
         break;
     case CSystemTimer::SiTimer:
-        g_SystemTimer->StopTimer(CSystemTimer::SiTimer);
+        StopTimer(CSystemTimer::SiTimer);
         m_Reg.MI_INTR_REG |= MI_INTR_SI;
         m_Reg.SI_STATUS_REG |= SI_STATUS_INTERRUPT;
         m_Reg.CheckInterrupts();
         break;
     case CSystemTimer::PiTimer:
-        g_SystemTimer->StopTimer(CSystemTimer::PiTimer);
+        StopTimer(CSystemTimer::PiTimer);
         m_Reg.PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
         m_Reg.PI_STATUS_REG |= PI_STATUS_INTERRUPT;
         m_Reg.MI_INTR_REG |= MI_INTR_PI;
         m_Reg.CheckInterrupts();
         break;
     case CSystemTimer::DDPiTimer:
-        g_SystemTimer->StopTimer(CSystemTimer::DDPiTimer);
+        StopTimer(CSystemTimer::DDPiTimer);
         m_Reg.PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
         DiskBMUpdate();
         m_Reg.MI_INTR_REG |= MI_INTR_PI;
@@ -216,19 +219,19 @@ void CSystemTimer::TimerDone()
         m_Reg.CheckInterrupts();
         break;
     case CSystemTimer::DDSeekTimer:
-        g_SystemTimer->StopTimer(CSystemTimer::DDSeekTimer);
-        g_Reg->ASIC_STATUS |= DD_STATUS_MECHA_INT;
-        g_Reg->FAKE_CAUSE_REGISTER |= CAUSE_IP3;
-        g_Reg->CheckInterrupts();
+        StopTimer(CSystemTimer::DDSeekTimer);
+        m_Reg.ASIC_STATUS |= DD_STATUS_MECHA_INT;
+        m_Reg.FAKE_CAUSE_REGISTER |= CAUSE_IP3;
+        m_Reg.CheckInterrupts();
         break;
     case CSystemTimer::DDMotorTimer:
-        g_SystemTimer->StopTimer(CSystemTimer::DDMotorTimer);
-        g_Reg->ASIC_STATUS |= DD_STATUS_MTR_N_SPIN;
+        StopTimer(CSystemTimer::DDMotorTimer);
+        m_Reg.ASIC_STATUS |= DD_STATUS_MTR_N_SPIN;
         break;
     case CSystemTimer::ViTimer:
         try
         {
-            g_System->RefreshScreen();
+            m_System.RefreshScreen();
         }
         catch (...)
         {
@@ -238,10 +241,10 @@ void CSystemTimer::TimerDone()
         m_Reg.CheckInterrupts();
         break;
     case CSystemTimer::RspTimer:
-        g_SystemTimer->StopTimer(CSystemTimer::RspTimer);
+        StopTimer(CSystemTimer::RspTimer);
         try
         {
-            g_System->RunRSP();
+            m_System.RunRSP();
         }
         catch (...)
         {
@@ -249,17 +252,20 @@ void CSystemTimer::TimerDone()
         }
         break;
     case CSystemTimer::RSPTimerDlist:
-        g_SystemTimer->StopTimer(CSystemTimer::RSPTimerDlist);
+        StopTimer(CSystemTimer::RSPTimerDlist);
         m_Reg.m_GfxIntrReg |= MI_INTR_DP;
         m_Reg.CheckInterrupts();
         break;
     case CSystemTimer::AiTimerInterrupt:
-        g_SystemTimer->StopTimer(CSystemTimer::AiTimerInterrupt);
+        StopTimer(CSystemTimer::AiTimerInterrupt);
         m_AudioInterface.TimerInterrupt();
         break;
     case CSystemTimer::AiTimerBusy:
-        g_SystemTimer->StopTimer(CSystemTimer::AiTimerBusy);
+        StopTimer(CSystemTimer::AiTimerBusy);
         m_AudioInterface.TimerBusy();
+        break;
+    case CSystemTimer::RomWriteDecay:
+        m_RomMemoryHandler.RomWriteDecayed();
         break;
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -274,13 +280,10 @@ void CSystemTimer::TimerDone()
 void CSystemTimer::SetCompareTimer()
 {
     uint32_t NextCompare = 0x7FFFFFFF;
-    if (g_Reg)
+    NextCompare = m_Reg.COMPARE_REGISTER - m_Reg.COUNT_REGISTER;
+    if ((NextCompare & 0x80000000) != 0)
     {
-        NextCompare = m_Reg.COMPARE_REGISTER - m_Reg.COUNT_REGISTER;
-        if ((NextCompare & 0x80000000) != 0)
-        {
-            NextCompare = 0x7FFFFFFF;
-        }
+        NextCompare = 0x7FFFFFFF;
     }
     SetTimer(CompareTimer, NextCompare, false);
 }

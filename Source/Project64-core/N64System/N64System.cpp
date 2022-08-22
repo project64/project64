@@ -36,7 +36,7 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     m_Recomp(nullptr),
     m_InReset(false),
     m_NextTimer(0),
-    m_SystemTimer(m_Reg, m_MMU_VM.AudioInterface(), m_NextTimer),
+    m_SystemTimer(*this),
     m_bCleanFrameBox(true),
     m_RspBroke(true),
     m_DMAUsed(false),

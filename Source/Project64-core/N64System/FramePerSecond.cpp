@@ -3,12 +3,12 @@
 #include <Project64-core/N64System/N64Types.h>
 
 CFramePerSecond::CFramePerSecond() :
-m_CurrentViFrame(0),
-m_CurrentDlistFrame(0),
-m_iFrameRateType(g_Settings->LoadDword(UserInterface_FrameDisplayType)),
-m_ScreenHertz(g_Settings->LoadDword(GameRunning_ScreenHertz)),
-m_ViFrameRateWhole(0),
-m_ViFrameRateFraction(0)
+    m_CurrentViFrame(0),
+    m_CurrentDlistFrame(0),
+    m_iFrameRateType(g_Settings->LoadDword(UserInterface_FrameDisplayType)),
+    m_ScreenHertz(g_Settings->LoadDword(GameRunning_ScreenHertz)),
+    m_ViFrameRateWhole(0),
+    m_ViFrameRateFraction(0)
 {
     g_Settings->RegisterChangeCB(UserInterface_FrameDisplayType, this, (CSettings::SettingChangedFunc)FrameRateTypeChanged);
     g_Settings->RegisterChangeCB(GameRunning_ScreenHertz, this, (CSettings::SettingChangedFunc)ScreenHertzChanged);
