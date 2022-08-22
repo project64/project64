@@ -39,7 +39,6 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     m_SystemTimer(*this),
     m_bCleanFrameBox(true),
     m_RspBroke(true),
-    m_DMAUsed(false),
     m_TestTimer(false),
     m_PipelineStage(PIPELINE_STAGE_NORMAL),
     m_JumpToLocation(0),
@@ -912,7 +911,6 @@ void CN64System::Reset(bool bInitReg, bool ClearMenory)
     m_AlistCount = 0;
     m_DlistCount = 0;
     m_UnknownCount = 0;
-    m_DMAUsed = false;
     m_RspBroke = true;
     m_SyncCount = 0;
 

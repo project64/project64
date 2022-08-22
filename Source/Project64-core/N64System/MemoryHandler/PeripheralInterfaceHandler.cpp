@@ -35,9 +35,11 @@ PeripheralInterfaceHandler::PeripheralInterfaceHandler(CN64System & System, CMip
     m_Domain2Address2Handler(Domain2Address2Handler),
     m_MMU(MMU),
     m_Reg(Reg),
-    m_PC(Reg.m_PROGRAM_COUNTER)
+    m_PC(Reg.m_PROGRAM_COUNTER),
+    m_DMAUsed(false)
 {
     System.RegisterCallBack(CN64SystemCB_Reset, this, (CN64System::CallBackFunction)stSystemReset);
+    System.RegisterCallBack(CN64SystemCB_LoadedGameState, this, (CN64System::CallBackFunction)stLoadedGameState);
 }
 
 bool PeripheralInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
@@ -166,10 +168,16 @@ bool PeripheralInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint3
     return true;
 }
 
+void PeripheralInterfaceHandler::LoadedGameState(void)
+{
+    m_DMAUsed = true;
+}
+
 void PeripheralInterfaceHandler::SystemReset(void)
 {
     PI_RD_LEN_REG = 0x0000007F;
     PI_WR_LEN_REG = 0x0000007F;
+    m_DMAUsed = false;
 }
 
 void PeripheralInterfaceHandler::OnFirstDMA()
@@ -282,9 +290,9 @@ void PeripheralInterfaceHandler::PI_DMA_READ()
         }
         PI_CART_ADDR_REG += 0x10000000;
 
-        if (!g_System->DmaUsed())
+        if (!m_DMAUsed)
         {
-            g_System->SetDmaUsed(true);
+            m_DMAUsed = true;
             OnFirstDMA();
         }
         if (g_Recompiler && g_System->bSMM_PIDMA())
@@ -335,9 +343,9 @@ void PeripheralInterfaceHandler::PI_DMA_WRITE()
         g_Debugger->PIDMAWriteStarted();
     }
 
-    if (!g_System->DmaUsed())
+    if (!m_DMAUsed)
     {
-        g_System->SetDmaUsed(true);
+        m_DMAUsed = true;
         OnFirstDMA();
     }
 

@@ -97,8 +97,6 @@ public:
     void SyncSystem();
     void SyncSystemPC();
 
-    bool DmaUsed() const { return m_DMAUsed; }
-    void SetDmaUsed(bool DMAUsed) { m_DMAUsed = DMAUsed; }
     CPlugins * GetPlugins() { return m_Plugins; }
     PIPELINE_STAGE PipelineStage() const { return m_PipelineStage; }
     uint32_t JumpToLocation() const { return m_JumpToLocation; }
@@ -174,7 +172,6 @@ private:
     CSystemTimer m_SystemTimer;
     bool m_bCleanFrameBox;
     bool m_RspBroke;
-    bool m_DMAUsed;
     uint32_t m_Buttons[4];
     bool m_TestTimer;
     PIPELINE_STAGE m_PipelineStage;

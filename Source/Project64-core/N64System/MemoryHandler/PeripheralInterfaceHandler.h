@@ -69,9 +69,11 @@ private:
     PeripheralInterfaceHandler & operator=(const PeripheralInterfaceHandler &);
 
     static void stSystemReset(PeripheralInterfaceHandler * _this) { _this->SystemReset(); }
+    static void stLoadedGameState(PeripheralInterfaceHandler * _this) { _this->LoadedGameState(); }
 
     void PI_DMA_READ();
     void PI_DMA_WRITE();
+    void LoadedGameState(void);
     void SystemReset(void);
     void OnFirstDMA();
     void ReadBlock(uint32_t Address, uint8_t * Block, uint32_t BlockLen);
@@ -80,4 +82,6 @@ private:
     CMipsMemoryVM & m_MMU;
     CRegisters & m_Reg;
     uint32_t & m_PC;
+
+    bool m_DMAUsed;
 };
