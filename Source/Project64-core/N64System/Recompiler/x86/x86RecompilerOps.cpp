@@ -4817,14 +4817,7 @@ void CX86RecompilerOps::SPECIAL_DIV()
 
         if (!IsConst(m_Opcode.rs))
         {
-            if (IsMapped(m_Opcode.rt))
-            {
-                m_Assembler.CompConstToX86reg(GetMipsRegMapLo(m_Opcode.rt), 0);
-            }
-            else
-            {
-                m_Assembler.CompConstToVariable(0, &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
-            }
+            m_Assembler.CompConstToX86reg(DivReg, 0);
             m_Assembler.JneLabel8(stdstr_f("NotDiv0_%08X", m_CompilePC).c_str(), 0);
             JumpNotDiv0 = *g_RecompPos - 1;
 
@@ -4975,18 +4968,11 @@ void CX86RecompilerOps::SPECIAL_DIVU()
         m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, false);
 
         Map_TempReg(CX86Ops::x86_EAX, m_Opcode.rs, false);
-        CX86Ops::x86Reg DivReg = Map_TempReg(CX86Ops::x86_Any, m_Opcode.rt, false);
-        
+        CX86Ops::x86Reg DivReg = IsMapped(m_Opcode.rt) ? GetMipsRegMapLo(m_Opcode.rt) : Map_TempReg(CX86Ops::x86_Any, m_Opcode.rt, false);
+
         if (!IsConst(m_Opcode.rt))
         {
-            if (IsMapped(m_Opcode.rt))
-            {
-                m_Assembler.CompConstToX86reg(GetMipsRegMapLo(m_Opcode.rt), 0);
-            }
-            else
-            {
-                m_Assembler.CompConstToVariable(0, &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
-            }
+            m_Assembler.CompConstToX86reg(DivReg, 0);
             m_Assembler.JneLabel8("NoExcept", 0);
             uint8_t * JumpNoExcept = *g_RecompPos - 1;
 
