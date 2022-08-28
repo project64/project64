@@ -637,7 +637,7 @@ void R4300iInstruction::DecodeSpecialName(void)
         if (m_Instruction.Value != 0)
         {
             strcpy(m_Name, "SLL");
-            sprintf(m_Param, "SLL\t%s, %s, %d", CRegName::GPR[m_Instruction.rd], CRegName::GPR[m_Instruction.rt], m_Instruction.sa);
+            sprintf(m_Param, "%s, %s, %d", CRegName::GPR[m_Instruction.rd], CRegName::GPR[m_Instruction.rt], m_Instruction.sa);
         }
         else
         {
