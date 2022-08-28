@@ -206,9 +206,9 @@ public:
     void FoundMemoryBreakpoint();
     void PreReadInstruction();
     void PreWriteInstruction();
-    void TestWriteBreakpoint(CX86Ops::x86Reg AddressReg, void * FunctAddress, const char * FunctName);
-    void TestReadBreakpoint(CX86Ops::x86Reg AddressReg, void * FunctAddress, const char * FunctName);
-    void TestBreakpoint(CX86Ops::x86Reg AddressReg, void * FunctAddress, const char * FunctName);
+    void TestWriteBreakpoint(CX86Ops::x86Reg AddressReg, uint32_t FunctAddress, const char * FunctName);
+    void TestReadBreakpoint(CX86Ops::x86Reg AddressReg, uint32_t FunctAddress, const char * FunctName);
+    void TestBreakpoint(CX86Ops::x86Reg AddressReg, uint32_t FunctAddress, const char * FunctName);
     void EnterCodeBlock();
     void ExitCodeBlock();
     void CompileExitCode();

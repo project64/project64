@@ -200,24 +200,32 @@ void CX86Ops::X86BreakPoint(const char * FileName, int32_t LineNumber)
     Pushad();
     PushImm32(stdstr_f("%d", LineNumber).c_str(), LineNumber);
     PushImm32(FileName, (uint32_t)FileName);
-    Call_Direct((void *)BreakPointNotification, "BreakPointNotification");
+    CallFunc((uint32_t)BreakPointNotification, "BreakPointNotification");
     AddConstToX86Reg(x86_ESP, 8);
     Popad();
 }
 
-void CX86Ops::Call_Direct(void * FunctAddress, const char * FunctName)
+void CX86Ops::CallFunc(uint32_t FunctPtr, const char * FunctName)
 {
     CodeLog("      call offset %s", FunctName);
     AddCode8(0xE8);
-    AddCode32((uint32_t)FunctAddress - (uint32_t)*g_RecompPos - 4);
+    AddCode32(FunctPtr - (uint32_t)*g_RecompPos - 4);
 }
 
-void CX86Ops::Call_Indirect(void * FunctAddress, const char * FunctName)
+#ifdef _MSC_VER
+void CX86Ops::CallThis(uint32_t ThisPtr, uint32_t FunctPtr, char * FunctName, uint32_t /*StackSize*/)
 {
-    CodeLog("      call [%s]", FunctName);
-    AddCode16(0x15FF);
-    AddCode32((uint32_t)FunctAddress);
+    MoveConstToX86reg(ThisPtr, CX86Ops::x86_ECX);
+    CallFunc(FunctPtr, FunctName);
 }
+#else
+void CX86Ops::CallThis(uint32_t ThisPtr, uint32_t FunctPtr, char * FunctName, uint32_t StackSize)
+{
+    m_Assembler.PushImm32(ThisPtr);
+    CallFunc(FunctPtr, FunctName);
+    m_Assembler.AddConstToX86Reg(CX86Ops::x86_ESP, StackSize);
+}
+#endif
 
 void CX86Ops::CompConstToVariable(uint32_t Const, void * Variable, const char * VariableName)
 {
@@ -4309,7 +4317,7 @@ void CX86Ops::SetJump8(uint8_t * Loc, uint8_t * JumpLoc)
     *Loc = (uint8_t)diffrence;
 }
 
-void * CX86Ops::GetAddressOf(int value, ...)
+uint32_t CX86Ops::GetAddressOf(int value, ...)
 {
     void * Address;
 
@@ -4318,7 +4326,7 @@ void * CX86Ops::GetAddressOf(int value, ...)
     Address = va_arg(ap, void *);
     va_end(ap);
 
-    return Address;
+    return (uint32_t)Address;
 }
 
 void CX86Ops::AddCode8(uint8_t value)

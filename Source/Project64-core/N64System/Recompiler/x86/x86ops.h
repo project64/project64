@@ -75,8 +75,8 @@ public:
     void AndX86RegToX86Reg(x86Reg Destination, x86Reg Source);
     void X86HardBreakPoint();
     void X86BreakPoint(const char * FileName, int32_t LineNumber);
-    void Call_Direct(void * FunctAddress, const char * FunctName);
-    void Call_Indirect(void * FunctAddress, const char * FunctName);
+    void CallFunc(uint32_t FunctPtr, const char * FunctName);
+    void CallThis(uint32_t ThisPtr, uint32_t FunctPtr, char * FunctName, uint32_t StackSize);
     void CompConstToVariable(uint32_t Const, void * Variable, const char * VariableName);
     void CompConstToX86reg(x86Reg Reg, uint32_t Const);
     void CompConstToX86regPointer(x86Reg Reg, uint32_t Const);
@@ -287,7 +287,7 @@ public:
 
     static bool Is8BitReg(x86Reg Reg);
     static uint8_t CalcMultiplyCode(Multipler Multiply);
-    static void * GetAddressOf(int32_t value, ...);
+    static uint32_t GetAddressOf(int32_t value, ...);
 
     void SetJump32(uint32_t * Loc, uint32_t * JumpLoc);
     void SetJump8(uint8_t * Loc, uint8_t * JumpLoc);
