@@ -40,4 +40,12 @@ enum RecompilerTrapCompare
 
 typedef CX86RecompilerOps CRecompilerOps;
 
+#elif defined(__amd64__) || defined(_M_X64)
+#include <Project64-core/N64System/Recompiler/x64-86/x64RecompilerOps.h>
+
+#elif defined(__arm__) || defined(_M_ARM)
+#include <Project64-core/N64System/Recompiler/Arm/ArmRecompilerOps.h>
+
+typedef CX86RecompilerOps CArmRecompilerOps;
+
 #endif

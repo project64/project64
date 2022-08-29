@@ -109,6 +109,15 @@
     <Filter Include="Header Files\Plugin Spec">
       <UniqueIdentifier>{a29536c1-cda4-43b0-b3c6-12a24f42be64}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\N64 System\Recompiler\x64-86">
+      <UniqueIdentifier>{ec8602cf-3980-4a8e-8cac-25f9ad4f7a42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\N64 System\Recompiler\Aarch64">
+      <UniqueIdentifier>{ae9f1045-e15e-4a27-8891-937c7608ee06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\N64 System\Recompiler\x64-86">
+      <UniqueIdentifier>{56644680-2b82-4343-8619-660b68685cba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -408,6 +417,15 @@
     <ClCompile Include="N64System\Recompiler\JumpInfo.cpp">
       <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>
+    <ClCompile Include="N64System\Recompiler\x64-86\x64RecompilerOps.cpp">
+      <Filter>Source Files\N64 System\Recompiler\x64-86</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\x64-86\x86RegInfo.cpp">
+      <Filter>Source Files\N64 System\Recompiler\x64-86</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\x64-86\x64ops.cpp">
+      <Filter>Source Files\N64 System\Recompiler\x64-86</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -686,9 +704,6 @@
     <ClInclude Include="N64System\Recompiler\RegBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\Recompiler\x64-86\x64RegInfo.h">
-      <Filter>Header Files\N64 System\Recompiler</Filter>
-    </ClInclude>
     <ClInclude Include="Debugger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -793,6 +808,18 @@
     </ClInclude>
     <ClInclude Include="N64System\MemoryHandler\ISViewerHandler.h">
       <Filter>Header Files\N64 System\MemoryHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\x64-86\x64RegInfo.h">
+      <Filter>Header Files\N64 System\Recompiler\x64-86</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\Aarch64\Aarch64RegInfo.h">
+      <Filter>Header Files\N64 System\Recompiler\Aarch64</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\x64-86\x64RecompilerOps.h">
+      <Filter>Header Files\N64 System\Recompiler\x64-86</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\x64-86\x64ops.h">
+      <Filter>Header Files\N64 System\Recompiler\x64-86</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

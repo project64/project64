@@ -33,6 +33,8 @@ CCodeBlock::CCodeBlock(CMipsMemoryVM & MMU, uint32_t VAddrEnter, uint8_t * Compi
     m_RecompilerOps = new CX86RecompilerOps(MMU, *this);
 #elif defined(__arm__) || defined(_M_ARM)
     m_RecompilerOps = new CArmRecompilerOps(MMU);
+#else
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
     if (m_RecompilerOps == nullptr)
     {
@@ -88,6 +90,8 @@ CCodeBlock::~CCodeBlock()
     {
 #if defined(__i386__) || defined(_M_IX86)
         delete (CX86RecompilerOps *)m_RecompilerOps;
+#else
+        g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
         m_RecompilerOps = nullptr;
     }

@@ -394,7 +394,7 @@ CCompiledFunc * CRecompiler::CompileCode()
         ret.first->second->SetNext(Func);
     }
 
-#if defined(__aarch64__) || defined(__amd64__)
+#if defined(__aarch64__) || defined(__amd64__) || defined(_M_X64)
     g_Notify->BreakPoint(__FILE__,__LINE__);
 #else
     if (g_ModuleLogLevel[TraceRecompiler] >= TraceDebug)
@@ -518,7 +518,7 @@ void CRecompiler::ResetLog()
 
 void CRecompiler::ResetMemoryStackPos()
 {
-#if defined(__aarch64__) || defined(__amd64__)
+#if defined(__aarch64__) || defined(__amd64__) || defined(_M_X64)
     g_Notify->BreakPoint(__FILE__,__LINE__);
 #else
     if (m_Registers.m_GPR[29].UW[0] == 0)
@@ -542,7 +542,7 @@ void CRecompiler::ResetMemoryStackPos()
 
 void CRecompiler::DumpFunctionTimes()
 {
-#if defined(__aarch64__) || defined(__amd64__)
+#if defined(__aarch64__) || defined(__amd64__) || defined(_M_X64)
 	g_Notify->BreakPoint(__FILE__,__LINE__);
 #else
     CPath LogFileName(g_Settings->LoadStringVal(Directory_Log).c_str(), "FunctionTimes.csv");

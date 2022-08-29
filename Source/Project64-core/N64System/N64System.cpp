@@ -1446,7 +1446,7 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
 
     if (bFastSP() && m_Recomp)
     {
-#if defined(__aarch64__) || defined(__amd64__)
+#if defined(__aarch64__) || defined(__amd64__) || defined(_M_X64)
         g_Notify->BreakPoint(__FILE__,__LINE__);
 #else
         if (m_Recomp->MemoryStackPos() != (uint32_t)(m_MMU_VM.Rdram() + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)))
@@ -1616,7 +1616,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
         }
         if (bFastSP() && m_Recomp)
         {
-#if defined(__aarch64__) || defined(__amd64__)
+#if defined(__aarch64__) || defined(__amd64__) || defined(_M_X64)
             g_Notify->BreakPoint(__FILE__,__LINE__);
 #else
             if (m_Recomp->MemoryStackPos() != (uint32_t)(m_MMU_VM.Rdram() + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)))

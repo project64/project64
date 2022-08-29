@@ -49,12 +49,12 @@ add_library(Project64-core STATIC
     N64System/Mips/TLB.cpp
     N64System/Recompiler/CodeBlock.cpp
     N64System/Recompiler/CodeSection.cpp
-    N64System/Recompiler/SectionInfo.cpp
+    N64System/Recompiler/ExitInfo.cpp
     N64System/Recompiler/FunctionInfo.cpp
     N64System/Recompiler/FunctionMap.cpp
+    N64System/Recompiler/JumpInfo.cpp
     N64System/Recompiler/LoopAnalysis.cpp
     N64System/Recompiler/Recompiler.cpp
-    N64System/Recompiler/RecompilerCodeLog.cpp
     N64System/Recompiler/RecompilerMemory.cpp
     N64System/Recompiler/RegBase.cpp
     N64System/Recompiler/Aarch64/Aarch64RegInfo.cpp

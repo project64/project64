@@ -20,7 +20,7 @@ void WelcomeScreen::SelectGameDir(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
     bi.lpszTitle = wTitle.c_str();
     bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS;
     bi.lpfn = (BFFCALLBACK)SelectDirCallBack;
-    bi.lParam = (DWORD)InitialDir.c_str();
+    bi.lParam = (LPARAM)InitialDir.c_str();
     if ((pidl = SHBrowseForFolder(&bi)) != nullptr)
     {
         if (SHGetPathFromIDList(pidl, Directory))

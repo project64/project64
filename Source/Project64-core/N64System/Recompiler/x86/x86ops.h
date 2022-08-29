@@ -50,7 +50,6 @@ public:
     static const char * x86_HalfName(x86Reg Reg);
     static const char * fpu_Name(x86FpuValues Reg);
 
-public:
     CX86Ops(CCodeBlock & CodeBlock);
 
     // Logging functions

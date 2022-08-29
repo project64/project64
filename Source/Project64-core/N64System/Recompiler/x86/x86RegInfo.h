@@ -47,7 +47,6 @@ public:
         FPU_Double = 4,
     };
 
-public:
     CX86RegInfo(CCodeBlock & CodeBlock, CX86Ops & Assembler);
     CX86RegInfo(const CX86RegInfo&);
     ~CX86RegInfo();
