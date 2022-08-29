@@ -1,0 +1,574 @@
+﻿// Meta information
+#1  #  "Tiếng Việt"		        // Language ID
+#2  #  "Derek 'Turtle' Roe"		// Author
+#3  #  "1.0"			        // Version
+#4  #  "August 11, 2022"		// Date
+
+/*** Menu ***/
+
+// File menu
+# 100 # "& Tệp"
+# 101 # "& Mở ROM"
+# 102 # "ROM & Thông tin ..."
+# 103 # "Bắt đầu mô phỏng"
+# 104 # "& Kết thúc Mô phỏng"
+# 105 # "Chọn Thư mục ROM ..."
+# 106 # "Làm mới Danh sách ROM"
+# 107 # "ROM gần đây"
+# 108 # "Thư mục ROM gần đây"
+# 109 # "E & xit"
+# 110 # "Mở & Kết hợp"
+
+// System menu
+# 120 # "& Hệ thống"
+# 121 # "& Đặt lại"
+# 122 # "& Tạm dừng"
+# 123 # "Chụp ảnh màn hình"
+# 124 # "Giới hạn FPS"
+# 125 # "& Lưu trạng thái"
+# 126 # "Lưu dưới dạng ..."
+# 127 # "& Trạng thái tải"
+# 128 # "Tải ..."
+# 129 # "Tiết kiệm hiện tại và ngày"
+# 130 # "& Gian lận ..."
+# 131 # "Nút GS"
+# 132 # "R & esume"
+# 133 # "& Soft Reset"
+# 134 # "& Hard Reset"
+# 135 # "Hoán đổi & Đĩa"
+# 136 # "& Cải tiến ..."
+
+// Options menu
+# 140 # "& Tùy chọn"
+# 141 # "& Toàn màn hình"
+# 142 # "Luôn ở trên & hàng đầu"
+# 143 # "& Cài đặt Đồ họa"
+# 144 # "& Cài đặt âm thanh"
+# 145 # "& Cài đặt đầu vào"
+# 146 # "& Cài đặt RSP"
+# 147 # "Hiển thị CPU & Thống kê"
+# 148 # "Configura & tion"
+
+// Debugger menu
+# 160 # "& Trình gỡ lỗi"
+
+// Language menu
+# 175 # "& Ngôn ngữ"
+
+// Help menu
+# 180 # "& Trợ giúp"
+# 182 # "& Giới thiệu về Project64"
+# 184 # "& Trang web"
+# 185 # "& Hỗ trợ Project64"
+# 186 # "& Bất hòa"
+
+// Current save slot menu
+# 190 # "Mặc định"
+# 191 # "Vị trí 1"
+# 192 # "Vị trí 2"
+# 193 # "Vị trí 3"
+# 194 # "Vị trí 4"
+# 195 # "Vị trí 5"
+# 196 # "Vị trí 6"
+# 197 # "Vị trí 7"
+# 198 # "Vị trí 8"
+# 199 # "Vị trí số 9"
+# 200 # "Vị trí 10"
+# 201 # "Đã chọn vùng lưu (% ws)"
+
+// Pop-up menu
+# 210 # "Chơi trò chơi"
+# 211 # "Thông tin ROM"
+# 212 # "Chỉnh sửa Cài đặt Trò chơi"
+# 213 # "Chỉnh sửa Gian lận ..."
+# 214 # "Trình cắm Đồ họa"
+# 215 # "Chơi Game bằng Đĩa"
+# 216 # "Chọn Cải tiến ..."
+
+// Alternate name to save slot
+# 220 # "Lưu vị trí - Mặc định"
+# 221 # "Lưu vị trí - 1"
+# 222 # "Lưu vị trí - 2"
+# 223 # "Lưu vị trí - 3"
+# 224 # "Lưu vị trí - 4"
+# 225 # "Lưu vị trí - 5"
+# 226 # "Lưu vị trí - 6"
+# 227 # "Lưu vị trí - 7"
+# 228 # "Lưu vị trí - 8"
+# 229 # "Lưu vị trí - 9"
+# 230 # "Lưu vị trí - 10"
+
+// Menu descriptions
+# 250 # "Mở ảnh ROM N64"
+# 251 # "Hiển thị thông tin về hình ảnh đã tải"
+# 252 # "Bắt đầu mô phỏng ảnh ROM đã tải"
+# 253 # "Dừng mô phỏng ảnh ROM đã tải"
+# 254 # "Chọn thư mục ROM"
+# 255 # "Làm mới danh sách ROM hiện tại trong trình duyệt ROM"
+# 256 # "Thoát khỏi ứng dụng này"
+# 257 # "Khởi động lại hình ảnh ROM hiện tại (tải lại mọi thay đổi cài đặt)"
+# 258 # "Tạm dừng / tiếp tục mô phỏng của ROM đang chạy hiện tại"
+# 259 # "Tạo hình ảnh bitmap của màn hình hiện tại"
+# 260 # "Giới hạn FPS ở tốc độ chính xác của N64"
+# 261 # "Lưu trạng thái hệ thống hiện tại"
+# 262 # "Lưu trạng thái hệ thống hiện tại ở vị trí tệp đã chọn"
+# 263 # "Tải trạng thái hệ thống đã lưu"
+# 264 # "Chọn tệp trạng thái hệ thống đã lưu để tải"
+# 265 # "Bật / tắt GameShark gian lận"
+# 266 # "Nút GameShark được sử dụng với các trò gian lận cụ thể."
+# 267 # "Thay đổi mô phỏng từ chế độ cửa sổ sang chế độ toàn màn hình."
+# 268 # "Đặt cửa sổ luôn ở trên tất cả các cửa sổ khác"
+# 269 # "Thay đổi cài đặt bên trong plugin đồ họa"
+# 270 # "Thay đổi cài đặt bên trong plugin âm thanh"
+# 271 # "Thay đổi cài đặt bên trong plugin bộ điều khiển (tức là đặt phím)"
+# 272 # "Thay đổi cài đặt bên trong plugin RSP"
+# 273 # "Hiển thị mức sử dụng CPU của trình giả lập được chia thành các tài nguyên khác nhau"
+# 274 # "Xem / thay đổi cài đặt cho ứng dụng này"
+# 275 # "Xem hướng dẫn sử dụng cho ứng dụng"
+# 276 # "Xem Câu hỏi thường gặp về ứng dụng"
+# 278 # "Giới thiệu về ứng dụng và tác giả"
+# 277 # "Giới thiệu về tác giả của các tệp hỗ trợ"
+# 279 # "Mở ảnh ROM đã mở trước đó"
+# 280 # "Chọn thư mục này làm thư mục ROM của bạn"
+# 281 # "Thay đổi ứng dụng sang sử dụng ngôn ngữ này"
+# 282 # "Chọn vị trí lưu này cho trạng thái đã lưu"
+# 283 # "Chơi trò chơi đã chọn"
+# 284 # "Thông tin về trò chơi đã chọn"
+# 285 # "Chỉnh sửa cài đặt cho trò chơi đã chọn"
+# 286 # "Chỉnh sửa gian lận cho trò chơi đã chọn"
+
+/ *** ROM browser *** /
+
+// ROM browser fields
+# 300 # "Tên tệp"
+# 301 # "Tên nội bộ"
+# 302 # "Tên hay"
+# 303 # "Trạng thái"
+# 304 # "Kích thước ROM"
+# 305 # "Ghi chú (cốt lõi)"
+# 306 # "Ghi chú (plugin mặc định)"
+# 307 # "Ghi chú (người dùng)"
+# 308 # "ID hộp mực"
+# 309 # "Loại phương tiện"
+# 310 # "Quốc gia"
+# 311 # "Nhà phát triển"
+# 312 # "CRC1"
+# 313 # "CRC2"
+# 314 # "Chip CIC"
+# 315 # "Ngày phát hành"
+# 316 # "Thể loại"
+# 317 # "Người chơi"
+# 318 # "Buộc phản hồi"
+# 319 # "Định dạng tệp"
+# 321 # "Tên"
+
+// Select ROM
+# 320 # "Chọn thư mục ROM hiện tại"
+
+// Messages
+# 340 # "ROM kém? Sử dụng GoodN64 và kiểm tra xem RDB có được cập nhật hay không."
+
+/*** Options ***/
+
+// Options title
+# 400 # "Cấu hình"
+
+// Tabs
+# 401 # "Plugin"
+# 402 # "Thư mục"
+# 403 # "Cài đặt chung"
+# 404 # "Trình duyệt ROM"
+# 405 # "Nâng cao"
+# 406 # "Cài đặt ROM"
+# 408 # "Ghi chú"
+# 409 # "Phím nóng"
+# 410 # "Trạng thái"
+# 411 # "Trình biên dịch"
+# 412 # "Mặc định"
+# 413 # "64DD"
+# 414 # "64DD"
+
+// Plugin dialog
+# 420 # "Giới thiệu"
+# 421 # "Plugin RSP (Reality Signal Processor):"
+# 422 # "Trình cắm video (đồ họa):"
+# 423 # "Plugin âm thanh (âm thanh):"
+# 424 # "Plugin đầu vào (bộ điều khiển):"
+# 425 # "Đồ họa HLE"
+# 426 # "Audio HLE"
+# 427 # "** Sử dụng Plugin hệ thống **"
+
+// Directory dialog
+# 440 # "Thư mục plugin:"
+# 441 # "Thư mục ROM:"
+# 442 # "N64 native lưu thư mục: "
+# 443 # "Thư mục trạng thái đã lưu:"
+# 444 # "Thư mục ảnh chụp màn hình:"
+# 445 # "Thư mục cuối cùng mà ROM được mở từ"
+# 446 # "Chọn thư mục plugin"
+# 447 # "Chọn thư mục ROM"
+# 448 # "Chọn thư mục lưu gốc N64"
+# 449 # "Chọn thư mục trạng thái đã lưu"
+# 450 # "Chọn thư mục ảnh chụp màn hình"
+# 451 # "Thư mục gói kết cấu:"
+# 452 # "Chọn thư mục gói kết cấu"
+
+// Options (general) tab
+# 460 # "Tạm dừng mô phỏng khi cửa sổ không hoạt động"
+# 461 # "Vào chế độ toàn màn hình khi tải ROM"
+# 462 # "Ẩn cài đặt nâng cao"
+# 463 # "Nhớ các lừa đã chọn"
+# 464 # "Tắt bảo vệ màn hình khi chạy ROM"
+# 465 # "Tốc độ hiển thị"
+# 466 # "Hiển thị tốc độ:"
+# 467 # "Kiểm tra xem Project64 đã chạy chưa"
+# 468 # "Trò chơi lưu trữ trong các thư mục riêng biệt"
+# 469 # "Đường dẫn ROM 64DD IPL bán lẻ của Nhật Bản:"
+# 470 # "Đường dẫn ROM 64DD IPL bán lẻ của Mỹ:"
+# 471 # "Đường dẫn ROM 64DD IPL phát triển:"
+# 472 # "Loại lưu đĩa:"
+# 473 # "Bật các tính năng nâng cao"
+# 474 # "Hiển thị thanh trạng thái"
+# 475 # "Thoát chế độ toàn màn hình khi mất tiêu điểm"
+# 476 # "Bật tính năng hiện diện phong phú Discord"
+
+// ROM browser tab
+# 480 # "Số ROM tối đa được nhớ (0-10):"
+# 481 # "ROM"
+# 482 # "Số bộ nhớ ROM tối đa (0-10):"
+# 483 # "dirs"
+# 484 # "Sử dụng trình duyệt ROM"
+# 485 # "Sử dụng đệ quy thư mục"
+# 486 # "Các trường có sẵn:"
+# 487 # "Thứ tự các trường:"
+# 488 # "Thêm ->"
+# 489 # "<- Xóa"
+# 490 # "Lên"
+# 491 # "Xuống"
+# 492 # "Tự động làm mới trình duyệt"
+# 493 # "Hiển thị phần mở rộng tệp"
+
+// Advanced options
+# 500 # "Hầu hết những thay đổi này sẽ không có hiệu lực cho đến khi một ROM mới được mở hoặc ROM hiện tại được thiết lập lại."
+# 501 # "Mặc định chính"
+# 502 # "Kiểu lõi CPU:"
+# 503 # "Phương pháp tự mod"
+# 504 # "Kích thước bộ nhớ mặc định:"
+# 505 # "Liên kết khối nâng cao"
+# 506 # "Bắt đầu mô phỏng khi ROM được mở"
+# 507 # "Luôn ghi đè cài đặt mặc định bằng những cài đặt từ RDB"
+# 508 # "Tự động nén các trạng thái đã lưu"
+# 509 # "Bật trình gỡ lỗi"
+# 510 # "Bộ nhớ đệm"
+# 511 # "PI DMA"
+# 512 # "Bắt đầu đã thay đổi"
+# 513 # "Bảo vệ bộ nhớ"
+# 514 # "Giải nén TLB"
+# 515 # "Luôn sử dụng lõi thông dịch"
+
+// ROM options
+# 520 # "Kiểu lõi CPU:"
+# 521 # "Tốc độ làm mới VI:"
+# 522 # "Kích thước bộ nhớ:"
+# 523 # "Liên kết khối nâng cao"
+# 524 # "Loại lưu mặc định:"
+# 525 # "Hệ số truy cập:"
+# 526 # "Bộ đệm biên dịch lớn hơn"
+# 528 # "Đăng ký bộ nhớ đệm"
+# 529 # "Trì hoãn ngắt SI"
+# 530 # "SP nhanh"
+# 531 # "Mặc định"
+# 532 # "Tín hiệu âm thanh RSP"
+# 533 # "Định giờ âm thanh cố định"
+# 534 # "Phương pháp tra cứu hàm:"
+# 535 # "Phương pháp tự mod tùy chỉnh"
+# 536 # "Đồng bộ hóa bằng âm thanh"
+# 537 # "Số lượng AI trên mỗi byte:"
+# 538 # "Động cơ 32-bit"
+# 539 # "Trì hoãn ngắt DP"
+# 5400 # "Công cụ sửa đổi ép xung:"
+# 5410 # "DMA không dấu"
+# 5420 # "Ngẫu nhiên ngắt SI / PI"
+# 5440 # "Thời gian tìm kiếm đĩa:"
+# 5441 # "Turbo"
+# 5442 # "Chậm"
+
+// Core styles
+# 540 # "Thông dịch viên"
+# 541 # "Trình biên dịch"
+# 542 # "Đồng bộ hóa lõi"
+
+// Self-mod methods
+# 560 # "Không có"
+# 561 # "Bộ nhớ đệm"
+# 562 # "Bảo vệ bộ nhớ"
+# 563 # "Kiểm tra bộ nhớ và bộ nhớ đệm"
+# 564 # "Thay đổi bộ nhớ và bộ đệm"
+# 565 # "Kiểm tra bộ nhớ trước"
+# 566 # "Xóa mã trên bộ nhớ cache"
+
+// Function lookup method
+# 570 # "Bảng tra cứu vật lý"
+# 571 # "Bảng tra cứu ảo"
+# 572 # "Thay đổi bộ nhớ"
+
+// RDRAM size
+# 580 # "4 MB"
+# 581 # "8 MB"
+
+// Advanced block linking
+# 600 # "Bật"
+# 601 # "Tắt"
+
+// Save type
+# 620 # "Sử dụng loại lưu được sử dụng đầu tiên"
+# 621 # "EEPROM 4-kbit"
+# 622 # "EEPROM 16-kbit"
+# 623 # "SRAM"
+# 624 # "RAM flash"
+
+// ROM notes
+# 660 # "Trạng thái ROM:"
+# 661 # "Lưu ý cốt lõi:"
+# 662 # "Ghi chú của plugin:"
+
+// Accelerator selector
+# 680 # "Trạng thái CPU:"
+# 681 # "Mục menu:"
+# 682 # "Các khóa hiện tại:"
+# 683 # "Chọn phím tắt mới:"
+# 684 # "Hiện được gán cho:"
+# 685 # "Chỉ định"
+# 686 # "Xóa"
+# 687 # "Đặt lại tất cả"
+# 688 # "Game không chơi"
+# 689 # "Chơi trò chơi"
+# 690 # "Chơi trò chơi (cửa sổ)"
+# 691 # "Chơi game (toàn màn hình)"
+# 692 # "Phát hiện Khóa"
+
+// Framerate option
+# 700 # "Ngắt theo chiều dọc mỗi giây"
+# 701 # "Hiển thị danh sách mỗi giây"
+# 702 # "Phần trăm tốc độ tối đa"
+
+// Increase speed
+# 710 # "Tăng tốc độ trò chơi"
+# 711 # "Giảm tốc độ trò chơi"
+
+// Bottom page buttons
+# 720 # "Đặt lại trang"
+# 721 # "Đặt lại tất cả"
+# 722 # "Áp dụng"
+# 723 # "Đóng"
+
+// Disk save type
+# 730 # "Sao chép toàn bộ đĩa"
+# 731 # "Chỉ Tiết kiệm Khu vực"
+
+/ *** ROM information *** /
+
+// ROM info title
+# 800 # "Thông tin ROM"
+
+// ROM info text
+# 801 # "Tên ROM:"
+# 802 # "Tên tệp:"
+# 803 # "Vị trí:"
+# 804 # "Kích thước ROM:"
+# 805 # "ID hộp mực:"
+# 806 # "Loại Phương tiện:"
+# 807 # "Quốc gia:"
+# 808 # "CRC1:"
+# 809 # "CRC2:"
+# 810 # "Chip CIC:"
+# 811 # "MD5:"
+
+/ *** Cheats *** /
+
+// Cheat list
+# 1000 # "Gian lận"
+# 1001 # "Gian lận:"
+# 1002 # "Ghi chú:"
+# 1003 # "Đánh dấu Tất cả"
+# 1004 # "Bỏ đánh dấu tất cả"
+
+// Add cheat
+# 1005 # "Thêm gian lận"
+# 1006 # "Tên:"
+# 1007 # "Mã:"
+# 1008 # "Chèn"
+# 1009 # "Rõ ràng"
+# 1010 # "Ghi chú gian lận:"
+# 1011 # "Thêm vào DB"
+
+// Code extension
+# 1012 # "Phần mở rộng Mã"
+# 1013 # "Vui lòng chọn một giá trị được sử dụng cho:"
+# 1014 # "Được"
+# 1015 # "Hủy"
+
+// Digital value
+# 1016 # "Số lượng"
+# 1017 # "Vui lòng chọn giá trị cho:"
+# 1018 # "& Giá trị"
+# 1019 # "từ"
+# 1020 # "tới"
+# 1021 # "& Ghi chú:"
+# 1022 # "Thêm gian lận"
+# 1023 # "Gian lận mới"
+# 1024 # "<địa chỉ> <giá trị>: <dấu>"
+# 1025 # "Tùy chọn:"
+# 1026 # "<value> <nhãn> "
+
+// Edit cheat
+# 1027 # "Chỉnh sửa gian lận"
+# 1028 # "Cập nhật Cheat"
+# 1029 # "Cheat đã được thay đổi. \ N \ nBạn có muốn cập nhật không?"
+# 1030 # "Đã cập nhật gian lận"
+
+// Cheat pop-up menu
+# 1040 # "Thêm trò gian lận mới ..."
+# 1041 # "Chỉnh sửa"
+# 1042 # "Xóa"
+
+// Shortcut editor
+# 1100 # "Đặt lại phím tắt"
+# 1101 # "Bạn có chắc chắn muốn đặt lại các phím tắt không? \ N \ nKhông thể hoàn tác hành động này."
+# 1102 # "Trình đơn Tệp"
+# 1103 # "Trình đơn Hệ thống"
+# 1104 # "Tùy chọn"
+# 1105 # "Lưu Slots"
+
+/ *** Support window *** /
+
+# 1200 # "Hỗ trợ Project64"
+# 1201 # "Project64 là trình giả lập Nintendo 64 mã nguồn mở và miễn phí. \ N \ n Nó cho phép bạn chơi phần mềm N64 thực theo cách giống như trên bảng điều khiển gốc. \ N \ n Tôi xin lỗi về sự bất tiện của lời nhắc này, nhưng bạn đang được yêu cầu đợi vài giây để tận hưởng thành quả của hàng trăm giờ làm việc. \ n \ nNếu bạn có thể và muốn hỗ trợ Project64 hoặc bạn đã nhận được một số giá trị từ nó thì vui lòng hỗ trợ Project64 như một lời cảm ơn hoặc bạn muốn xóa lời nhắc này. \ n \ nNếu bạn đã hỗ trợ Project64: "
+# 1202 # "Nhập / Yêu cầu Mã Hỗ trợ"
+# 1203 # "Hỗ trợ Project64"
+# 1204 # "Tiếp tục"
+# 1205 # "Vui lòng nhập mã hỗ trợ"
+# 1206 # "Không xác thực được mã \ n \ nĐảm bảo rằng mã trong email khớp với thiết bị của bạn"
+# 1207 # "Cảm ơn"
+# 1208 # "Vui lòng nhập mã hỗ trợ của bạn"
+# 1209 # "Vui lòng nhập mã bạn nhận được trong email. \ N \ nEmail sẽ được gửi đến địa chỉ email được sử dụng để hỗ trợ Project64. \ N \ nXin lưu ý rằng mã sẽ chỉ hoạt động cho một thiết bị duy nhất. ID của thiết bị này Là:"
+# 1210 # "Được"
+# 1211 # "Hủy"
+# 1212 # "Mã Yêu cầu"
+# 1213 # "Mã đã được gửi đến email của bạn"
+# 1214 # "Không gửi được mã, vui lòng đảm bảo rằng đó là email mà bạn đã hỗ trợ"
+
+/ *** Enhancements *** /
+
+# 1300 # "Cải tiến"
+
+/ *** Messages *** /
+
+# 2000 # "*** CPU ĐÃ TẠM DỪNG ***"
+# 2001 # "CPU được tiếp tục"
+# 2002 # "Trong một vòng lặp vĩnh viễn không thể thoát ra được. \ NSự điều chế sẽ dừng lại. \ N \ nXác minh ROM và các cài đặt của nó."
+# 2003 # "Không thể cấp phát bộ nhớ"
+# 2004 # "Plugin video mặc định hoặc đã chọn bị thiếu hoặc không hợp lệ. \ N \ nBạn cần vào Cài đặt và chọn một plugin video (đồ họa). \ NKiểm tra để đảm bảo rằng bạn có ít nhất một tệp plugin tương thích trong thư mục plugin của mình."
+# 2005 # "Plugin âm thanh mặc định hoặc đã chọn bị thiếu hoặc không hợp lệ. \ N \ nBạn cần vào Cài đặt và chọn plugin âm thanh (âm thanh). \ NKiểm tra để đảm bảo rằng bạn có ít nhất một tệp plugin tương thích trong thư mục plugin của mình."
+# 2006 # "Plugin RSP mặc định hoặc đã chọn bị thiếu hoặc không hợp lệ. \ N \ nBạn cần vào Cài đặt và chọn plugin RSP (Bộ xử lý tín hiệu thực tế). \ NKiểm tra để đảm bảo rằng bạn có ít nhất một tệp plugin tương thích trong thư mục plugin của mình . "
+# 2007 # "Plugin đầu vào mặc định hoặc đã chọn bị thiếu hoặc không hợp lệ. \ N \ nBạn cần vào Cài đặt và chọn plugin đầu vào (bộ điều khiển). \ NKiểm tra để đảm bảo rằng bạn có ít nhất một tệp plugin tương thích trong thư mục plugin của mình."
+# 2008 # "Không tải được plugin:"
+# 2009 # "Không tải được từ. \ N \ nXác minh ROM và cài đặt của nó."
+# 2010 # "Không mở được tệp lưu"
+# 2011 # "Không mở được EEPROM"
+# 2012 # "Không mở được RAM flash"
+# 2013 # "Không mở được mempak"
+# 2014 # "Không thể mở tệp zip. \ N \ nCó thể là tệp zip bị hỏng - hãy thử giải nén ROM theo cách thủ công."
+# 2015 # "Không thể mở tệp."
+# 2016 # "Đã xảy ra lỗi khi cố mở tệp zip."
+# 2017 # "Tệp được tải có vẻ không phải là ROM N64 hợp lệ. \ N \ nXác minh ROM của bạn bằng GoodN64."
+# 2018 # "Quốc gia không xác định"
+# 2019 # "Chip CIC không xác định"
+# 2020 # "Định dạng tệp không xác định"
+# 2021 # "Tác vụ bộ nhớ không xác định \ n \ n Đã dừng điều chế"
+# 2022 # "Mã opcode R4300i chưa xử lý tại"
+# 2023 # "Đang thực thi từ không gian không được ánh xạ. \ N \ nXác minh ROM và cài đặt của nó."
+# 2024 # "Trạng thái đã lưu này dường như không khớp với ROM đang chạy. \ N \ n Các trạng thái phải được lưu và tải giữa các ROM giống nhau 100%. \ N Đặc biệt, khu vực và VERSION phải giống nhau. \ NTải trạng thái này là có khả năng khiến trò chơi và / hoặc trình mô phỏng gặp sự cố. \ n \ nBạn có chắc chắn muốn tiếp tục tải không? "
+# 2025 # "Lỗi"
+# 2026 # "Không tìm thấy chuỗi bản quyền trong LUT. Trò chơi sẽ không hoạt động nữa."
+# 2027 # "Lỗi Bảo vệ Sao chép"
+# 2028 # "Thay đổi plugin yêu cầu Project64 đặt lại ROM đang chạy. \ NNếu bạn không muốn mất vị trí của mình, hãy trả lời Không và lưu trạng thái hiện tại trước. \ N \ nThay đổi plugin và đặt lại ROM ngay bây giờ?"
+# 2029 # "Thay đổi Plugin"
+# 2030 # "Thi đua đã kết thúc"
+# 2031 # "Bắt đầu thi đua"
+# 2032 # "Không thể tải trạng thái"
+# 2033 # "Trạng thái đã tải"
+# 2034 # "Đã lưu trạng thái hiện tại vào"
+# 2035 # "Khe trạng thái"
+# 2036 # "Hình ảnh hoán đổi byte"
+# 2037 # "Chọn hình ảnh N64"
+# 2038 # "Đã tải"
+# 2039 # "Đang tải hình ảnh"
+# 2040 # "Không thể mở ROM vì plugin chưa được khởi tạo thành công."
+# 2041 # "Bạn có chắc chắn muốn xóa phần này không?"
+# 2042 # "Xóa Cheat"
+# 2043 # "Tên gian lận đã được sử dụng."
+# 2044 # "Bạn đã đạt đến số lượng gian lận tối đa cho ROM này."
+# 2045 # "Khởi tạo plugin"
+# 2046 # "Bạn chưa chọn phím ảo để gán cho mục menu."
+# 2047 # "Bạn cần chọn một mục menu đểgán khóa này cho. "
+# 2048 # "Cắt ngắn đã được chỉ định cho một mục menu khác."
+# 2049 # "Không có phím tắt nào được chọn để xóa."
+# 2050 # "Đã tải ROM. Đang chờ bắt đầu mô phỏng."
+# 2051 # "Phiên bản Project64 beta chỉ dành cho thành viên. \ N \ nNếu bạn có tài khoản tại www.pj64-emu.com, bạn sẽ không gặp lỗi này !! \ nVui lòng liên hệ với chúng tôi trên trang web."
+# 2052 # "Lỗi Chương trình"
+# 2053 # "Không tìm thấy tên tệp trong tệp 7z"
+# 2054 # "Mô phỏng mức thấp đồ họa"
+# 2055 # "Đồ họa LLE không dành cho mục đích sử dụng chung !!! \ n Bạn chỉ nên sử dụng cái này để thử nghiệm chứ không phải để chơi trò chơi. \ N \ nThay đổi sang LLE đồ họa?"
+# 2056 # "Mô phỏng mức độ âm thanh cao"
+# 2057 # "Audio HLE yêu cầu plugin của bên thứ ba !!! \ nNếu bạn không sử dụng plugin âm thanh của bên thứ ba hỗ trợ HLE, bạn sẽ không nghe thấy âm thanh. \ N \ nChuyển sang âm thanh HLE?"
+# 2058 # "Tệp được tải có vẻ không phải là ROM IPL 64DD hợp lệ. \ N \ nXác minh ROM của bạn bằng GoodN64."
+# 2059 # "Không tìm thấy ROM IPL bán lẻ của Nintendo 64DD Nhật Bản. \ N Cần phải phát ảnh đĩa 64DD của khu vực Nhật Bản. \ N \ nVui lòng chọn ROM cần thiết trong Cài đặt."
+# 2061 # "Không tìm thấy ROM IPL bán lẻ của Nintendo 64DD của Mỹ. \ N Cần phải có để phát ảnh đĩa 64DD của khu vực Mỹ. \ N \ nVui lòng chọn ROM cần thiết trong Cài đặt."
+# 2062 # "Không tìm thấy ROM IPL dành cho Phát triển Nintendo 64DD. \ NBạn cần phải phát ảnh đĩa 64DD phát triển. \ N \ nVui lòng chọn ROM cần thiết trong Cài đặt."
+# 2063 # "Không cập nhật được cheat, nó không hợp lệ"
+# 2064 # "Gian lận không hợp lệ"
+
+/ *** Android *** /
+
+# 3000 # "Cài đặt"
+# 3001 # "Trợ giúp / Diễn đàn"
+# 3002 # "Báo cáo Sự cố"
+# 3003 # "Giới thiệu"
+# 3004 # "Đã chơi gần đây"
+# 3005 # "Trò chơi"
+# 3006 # "Trò chơi Dir"
+# 3007 # "Chọn một thư mục để quét"
+# 3008 # "Bao gồm các thư mục con"
+# 3009 # "Thư mục mẹ"
+# 3010 # "Thư mục"
+# 3011 # "Bộ nhớ trong"
+# 3012 # "Đang quét ..."
+# 3013 # "Được"
+# 3014 # "Hủy"
+# 3015 # "Thông tin"
+# 3016 # "Project64 dành cho Android"
+# 3017 # "Giấy phép"
+# 3018 # "Bản sửa đổi"
+# 3019 # "Project64 dành cho Android \ u2122 là một cổng của phiên bản Windows của Project64. Phiên bản Android \ u2122 có thể chơi hầu hết các trò chơi N64."
+# 3020 # "Tác giả Project64."
+# 3021 # "Bất hòa"
+
+// In-game menu
+# 3100 # "Cài đặt"
+# 3101 # "Lưu trạng thái"
+# 3102 # "Trạng thái tải"
+# 3103 # "Kết thúc Thi đua"
+# 3104 # "Tạm dừng"
+# 3105 # "Tiếp tục"
+# 3106 # "Tốc độ trò chơi"
+# 3107 # "Trạng thái Lưu hiện tại ..."
+# 3108 # "Tự động"
+# 3109 # "Khe"
+# 3110 # "Đặt lại"
+# 3111 # "Tùy chọn gỡ lỗi"
+# 3112 # "Đặt lại thời gian chức năng"
+# 3113 # "Thời gian Chức năng Dump"
+
+// Plugin video
+# 3200 # "Bản địa"

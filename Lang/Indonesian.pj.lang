@@ -1,0 +1,574 @@
+﻿// Meta information
+#1  #  "Indonesian"             // Language ID
+#2  #  "Derek 'Turtle' Roe"		// Author
+#3  #  "1.0"			        // Version
+#4  #  "August 11, 2022"		// Date
+
+/*** Menu ***/
+
+// File menu
+#100# "&Berkas"
+#101# "&Buka ROM"
+#102# "ROM & Info..."
+#103# "Mulai Emulasi"
+#104# "&Akhiri Emulasi"
+#105# "Pilih Direktori ROM..."
+#106# "Segarkan Daftar ROM"
+#107# "ROM Terbaru"
+#108# "Direktori ROM Terbaru"
+#109# "Keluar&keluar"
+#110# "Buka &Kombo"
+
+// System menu
+#120# "&Sistem"
+#121# "&Setel Ulang"
+#12# "&Jeda"
+#123# "Tangkap tangkapan layar"
+#124# "Batasi FPS"
+#125# "&Simpan Status"
+#126# "Simpan Sebagai..."
+#127# "&Memuat Status"
+#128# "Muat..."
+#129# "Simpanan&Tate Saat Ini"
+#130# "&Cheat..."
+#131# "Tombol GS"
+#132# "L&lanjutkan"
+#133# "&Soft Reset"
+#134# "&Hard Reset"
+#135# "Tukar & Disk"
+#136# "&Peningkatan..."
+
+// Options menu
+#140# "&Opsi"
+#141# "&Layar Penuh"
+#142# "Selalu di & atas"
+#143# "&Pengaturan Grafik"
+#144# "&Pengaturan Audio"
+#145# "&Pengaturan Masukan"
+#146# "&Pengaturan RSP"
+#147# "Tampilkan CPU &Statistik"
+#148# "Konfigurasi"
+
+// Debugger menu
+#160# "&Debugger"
+
+// Language menu
+#175# "&Bahasa"
+
+// Help menu
+#180# "&Bantuan"
+#182# "&Tentang Project64"
+#184# "&Situs Web"
+#185# "&Dukungan Proyek64"
+#186# "&Perselisihan"
+
+// Current save slot menu
+#190# "Bawaan"
+#191# "Slot 1"
+#192# "Slot 2"
+#193# "Slot 3"
+#194# "Slot 4"
+#195# "Slot 5"
+#196# "Slot 6"
+#197# "Slot 7"
+#198# "Slot 8"
+#199# "Slot 9"
+#200# "Slot 10"
+#201# "Simpan slot (%ws) dipilih"
+
+// Pop-up menu
+#210# "Mainkan Game"
+#211# "Informasi ROM"
+#212# "Edit Pengaturan Permainan"
+#213# "Mengedit Cheat..."
+#214# "Plugin Grafik"
+#215# "Mainkan Game dengan Disk"
+#216# "Pilih Peningkatan..."
+
+// Alternate name to save slot
+#220# "Simpan Slot - Default"
+#221# "Simpan Slot - 1"
+#222# "Simpan Slot - 2"
+#223# "Simpan Slot - 3"
+#224# "Simpan Slot - 4"
+#225# "Simpan Slot - 5"
+#226# "Simpan Slot - 6"
+#227# "Simpan Slot - 7"
+#228# "Simpan Slot - 8"
+#229# "Simpan Slot - 9"
+#230# "Simpan Slot - 10"
+
+// Menu descriptions
+#250# "Buka gambar ROM N64"
+#251# "Menampilkan informasi tentang gambar yang dimuat"
+#252# "Mulai emulasi gambar ROM yang dimuat"
+#253# "Hentikan emulasi gambar ROM yang dimuat"
+#254# "Pilih direktori ROM"
+#255# "Refresh daftar ROM saat ini di browser ROM"
+#256# "Keluar dari aplikasi ini"
+#257# "Reboot image ROM saat ini (muat ulang semua perubahan pengaturan)"
+#258# "Jeda/lanjutkan emulasi dari ROM yang sedang berjalan"
+#259# "Hasilkan gambar bitmap dari layar saat ini"
+#260# "Batasi FPS ke kecepatan N64 yang benar"
+#261# "Simpan status sistem saat ini"
+#262# "Simpan status sistem saat ini di lokasi file yang dipilih"
+#263# "Muat status sistem yang disimpan"
+#264# "Pilih file status sistem yang disimpan untuk dimuat"
+#265# "Aktifkan/nonaktifkan cheat GameShark"
+#266# "Tombol GameShark digunakan dengan cheat tertentu."
+#267# "Ubah emulasi dari mode berjendela ke mode layar penuh."
+#268# "Buat jendela tetap di atas semua jendela lain"
+#269# "Ubah pengaturan di dalam plugin grafis"
+#270# "Ubah pengaturan di dalam plugin audio"
+#271# "Ubah pengaturan di dalam plugin pengontrol (yaitu, setel kunci)"
+#272# "Ubah pengaturan di dalam plugin RSP"
+#273# "Tampilkan penggunaan CPU dari emulator yang terbagi atas sumber daya yang berbeda"
+#274# "Lihat/ubah pengaturan untuk aplikasi ini"
+#275# "Lihat manual untuk aplikasi"
+#276# "Lihat FAQ untuk aplikasi"
+#278# "Tentang aplikasi dan penulis"
+#277# "Tentang pembuat file pendukung"
+#279# "Buka gambar ROM yang sebelumnya dibuka ini"
+#280# "Pilih direktori ini sebagai direktori ROM Anda"
+#281# "Ubah aplikasi menggunakan bahasa ini"
+#282# "Pilih lokasi penyimpanan ini untuk status tersimpan"
+#283# "Mainkan game yang dipilih"
+#284# "Informasi tentang permainan yang dipilih"
+#285# "Edit pengaturan untuk game yang dipilih"
+#286# "Edit cheat untuk game yang dipilih"
+
+/*** ROM browser ***/
+
+// ROM browser fields
+#300# "Nama Berkas"
+#301# "Nama Dalam"
+#302# "Nama Baik"
+#303# "Status"
+#304# "Ukuran ROM"
+#305# "Catatan (inti)"
+#306# "Catatan (plugin default)"
+#307# "Catatan (pengguna)"
+#308# "ID Kartrid"
+#309# "Jenis Media"
+#310# "Negara"
+#311# "Pengembang"
+#312# "CRC1"
+#313# "CRC2"
+#314# "Chip CIC"
+#315# "Tanggal Rilis"
+#316# "Genre"
+#317# "Pemain"
+#318# "Paksa Umpan Balik"
+#319# "Format Berkas"
+#321# "Nama"
+
+// Select ROM
+#320# "Pilih direktori ROM saat ini"
+
+// Messages
+#340# "ROM buruk? Gunakan GoodN64 & periksa apakah RDB sudah mutakhir."
+
+/*** Options ***/
+
+// Options title
+#400# "Konfigurasi"
+
+// Tabs
+#401# "Plugin"
+#402# "Direktori"
+#403# "Pengaturan umum"
+#404# "peramban ROM"
+#405# "Lanjutan"
+#406# "pengaturan ROM"
+#408# "Catatan"
+#409# "Tombol Cepat"
+#410# "Status"
+#411# "Penyusun Ulang"
+#412# "Default"
+#413# "64DD"
+#414# "64DD"
+
+// Plugin dialog
+#420# "Tentang"
+#421# " Plugin RSP (Reality Signal Processor): "
+#422# " Plugin video (grafik): "
+#423# "Audio (suara) plugin: "
+#424# " Plugin input (pengontrol): "
+#425# "HLE Grafik"
+#426# "HLE Audio"
+#427# "** Gunakan Plugin Sistem **"
+
+// Directory dialog
+#440# " Direktori plugin: "
+#441# " Direktori ROM: "
+#442# " N64 native menyimpan direktori: "
+#443# " Direktori status tersimpan: "
+#444# " Direktori tangkapan layar: "
+#445# "Folder terakhir tempat ROM dibuka"
+#446# "Pilih direktori plugin"
+#447# "Pilih direktori ROM"
+#448# "Pilih direktori penyimpanan asli N64"
+#449# "Pilih direktori status tersimpan"
+#450# "Pilih direktori tangkapan layar"
+#451# " Direktori paket tekstur: "
+#452# "Pilih direktori paket tekstur"
+
+// Options (general) tab
+#460# "Jeda emulasi saat jendela tidak aktif"
+#461# "Masuk ke mode layar penuh saat memuat ROM"
+#462# "Sembunyikan pengaturan lanjutan"
+#463# "Ingat cheat yang dipilih"
+#464# "Nonaktifkan screensaver saat menjalankan ROM"
+#465# "Kecepatan tampilan"
+#466# "Tampilan kecepatan:"
+#467# "Periksa apakah Project64 sudah berjalan"
+#468# "Simpan penyimpanan game di folder terpisah"
+#469# "Jalur ROM 64DD IPL Ritel Jepang:"
+#470# "Jalur ROM 64DD IPL ritel Amerika:"
+#471# "Jalur pengembangan 64DD IPL ROM:"
+#472# "Jenis penyimpanan disk:"
+#473# "Aktifkan peningkatan"
+#474# "Tampilkan bilah status"
+#475# "Keluar dari layar penuh saat kehilangan fokus"
+#476# "Aktifkan Kehadiran Kaya Discord"
+
+// ROM browser tab
+#480# "Maks # ROM yang diingat (0-10):"
+#481# "ROM"
+#482# "Maks # direktori ROM yang diingat (0-10):"
+#483# "dir"
+#484# "Gunakan browser ROM"
+#485# "Gunakan rekursi direktori"
+#486# "Bidang yang tersedia:"
+#487# "Urutan bidang:"
+#488# "Tambah ->"
+#489# "<- Hapus"
+#490# "Naik"
+#491# "Turun"
+#492# "Segarkan peramban secara otomatis"
+#493# "Tampilkan ekstensi file"
+
+// Advanced options
+#500# "Sebagian besar perubahan ini tidak akan berlaku sampai ROM baru dibuka atau ROM saat ini direset."
+#501# "Default Inti"
+#502# "Gaya inti CPU:"
+#503# "Metode mod mandiri"
+#504# "Ukuran memori default:"
+#505# "Penautan blok lanjutan"
+#506# "Mulai emulasi saat ROM dibuka"
+#507# "Selalu timpa pengaturan default dengan yang dari RDB"
+#508# "Kompres status tersimpan secara otomatis"
+#509# "Aktifkan debugger"
+#510# "Tembolok"
+#511# "PI DMA"
+#512# "Mulai berubah"
+#513# "Lindungi memori"
+#514# "Pembukaan peta TLB"
+#515# "Selalu gunakan inti juru bahasa"
+
+// ROM options
+#520# "Gaya inti CPU:"
+#521# "Kecepatan penyegaran VI:"
+#522# "Ukuran memori:"
+#523# "Penautan blok lanjutan"
+#524# "Jenis penyimpanan default:"
+#525# "Faktor penghitung:"
+#526# "Buffer kompilasi lebih besar"
+#528# "Daftar cache"
+#529# "Menunda interupsi SI"
+#530# "SP Cepat"
+#531# "Bawaan"
+#532# "Sinyal audio RSP"
+#533# "Waktu audio tetap"
+#534# "Metode pencarian fungsi:"
+#535# "Metode self-mod khusus"
+#536# "Sinkronkan menggunakan audio"
+#537# "Jumlah AI per byte:"
+#538# "mesin 32-bit"
+#539# "Menunda interupsi DP"
+#5400# "Pengubah overclock:"
+#5410# "DMA Tidak Sejajar"
+#5420# "Acak interupsi SI/PI"
+#5440# "Waktu pencarian disk:"
+#5441# "Turbo"
+#5442# "Lambat"
+
+// Core styles
+#540# "Penerjemah"
+#541# "Penyusun Ulang"
+#542# "Sinkronisasi inti"
+
+// Self-mod methods
+#560# "Tidak ada"
+#561# "Tembolok"
+#562# "Lindungi memori"
+#563# "Periksa memori & cache"
+#564# "Ubah memori & cache"
+#565# "Periksa kemajuan memori"
+#566# "Hapus kode pada cache"
+
+// Function lookup method
+#570# "Tabel pencarian fisik"
+#571# "Tabel pencarian virtual"
+#572# "Ubah memori"
+
+// RDRAM size
+#580# "4 MB"
+#581# "8 MB"
+
+// Advanced block linking
+#600# "Aktif"
+#601# "Mati"
+
+// Save type
+#620# "Gunakan tipe penyimpanan yang digunakan pertama kali"
+#621# "EEPROM 4-kbit"
+#622# "EEPROM 16-kbit"
+#623# "SRAM"
+#624# "Flash RAM"
+
+// ROM notes
+#660# "Status ROM:"
+#661# "Catatan inti:"
+#662# "Catatan plugin:"
+
+// Accelerator selector
+#680# "Keadaan CPU:"
+#681# "Item menu:"
+#682# "Kunci saat ini:"
+#683# "Pilih tombol pintasan baru:"
+#684# "Saat ini ditugaskan ke:"
+#685# "Tugaskan"
+#686# "Hapus"
+#687# "Setel Ulang Semua"
+#688# "Permainan tidak dimainkan"
+#689# "Bermain game"
+#690# "Bermain game (berjendela)"
+#691# "Bermain game (layar penuh)"
+#692# "Deteksi Kunci"
+
+// Framerate option
+#700# "Interupsi vertikal per detik"
+#701# "Tampilkan daftar per detik"
+#702# "Persentase kecepatan penuh"
+
+// Increase speed
+#710# "Meningkatkan Kecepatan Game"
+#711# "Turunkan Kecepatan Game"
+
+// Bottom page buttons
+#720# "Setel Ulang Halaman"
+#721# "Setel Ulang Semua"
+#722# "Terapkan"
+#723# "Tutup"
+
+// Disk save type
+#730# "Salinan Disk Penuh"
+#731# "Hanya Simpan Area"
+
+/*** ROM information ***/
+
+// ROM info title
+#800# "Informasi ROM"
+
+// ROM info text
+#801# "nama ROM:"
+#802# "Nama berkas:"
+#803# "Lokasi:"
+#804# "Ukuran ROM:"
+#805# "ID Kartrid:"
+#806# "Jenis Media:"
+#807# "Negara:"
+#808# "CRC1:"
+#809# "CRC2:"
+#810# "Chip CIC:"
+#811# "MD5:"
+
+/*** Cheats ***/
+
+// Cheat list
+#1000# "Cheat"
+#1001# "Cheat:"
+#1002# " Catatan: "
+#1003# "Tandai Semua"
+#1004# "Hapus Tanda Semua"
+
+// Add cheat
+#1005# "Tambahkan Cheat"
+#1006# "Nama:"
+#1007# "Kode:"
+#1008# "Sisipkan"
+#109# "Bersihkan"
+#1010# " Catatan Curang: "
+#1011# "Tambahkan ke DB"
+
+// Code extension
+#1012# "Ekstensi Kode"
+#1013# "Silakan pilih nilai yang akan digunakan untuk:"
+#1014# "Oke"
+#1015# "Batalkan"
+
+// Digital value
+#1016# "Digit Kuantitas"
+#1017# "Silakan pilih nilai untuk:"
+#1018# "&Nilai"
+#1019# "dari"
+#1020# "ke"
+#1021# "&Catatan:"
+#1022# "Tambahkan Cheat"
+#1023# "Cheat Baru"
+#1024# "<alamat> <nilai>:<lama>"
+#1025# "Opsi:"
+#1026# "<value> <label>"
+
+// Edit cheat
+#1027# "Edit Cheat"
+#1028# "Perbarui Cheat"
+#1029# "Cheat telah diubah.\n\nApakah Anda ingin memperbarui?"
+#1030# "Cheat diperbarui"
+
+// Cheat pop-up menu
+#1040# "Tambahkan Cheat Baru..."
+#1041# "Sunting"
+#1042# "Hapus"
+
+// Shortcut editor
+#1100# "Setel ulang pintasan"
+#1101# "Anda yakin ingin menyetel ulang pintasan?\n\nTindakan ini tidak dapat dibatalkan."
+#1102# "Menu Berkas"
+#1103# "Menu Sistem"
+#1104# "Opsi"
+#1105# "Simpan Slot"
+
+/*** Support window ***/
+
+#1200# "Dukungan Proyek64"
+#1201# "Project64 adalah emulator Nintendo 64 sumber terbuka dan gratis.\n\nProject64 memungkinkan Anda memainkan perangkat lunak N64 asli dengan cara yang sama seperti pada konsol asli.\n\nSaya mohon maaf atas ketidaknyamanan ini permintaan ini, tetapi Anda diminta untuk menunggu beberapa detik untuk menikmati hasil dari ratusan jam kerja.\n\nJika Anda dapat dan ingin mendukung Project64 atau Anda mendapatkan beberapa nilai darinya, silakan dukung Project64 sebagai ucapan terima kasih, atau keinginan Anda untuk menghapus perintah ini.\n\nJika Anda telah mendukung Project64:"
+#1202# "Masukkan/Minta Kode Dukungan"
+#1203# "Dukungan Proyek64"
+#1204# "Lanjutkan"
+#1205# "Silakan masukkan kode dukungan"
+#1206# "Gagal memvalidasi kode\n\nPastikan kode di email sesuai dengan perangkat Anda"
+#1207# "Terima kasih"
+#1208# "Silakan masukkan kode dukungan Anda"
+#1209# "Silakan masukkan kode yang Anda terima di email.\n\nEmail akan dikirim ke alamat email yang digunakan untuk mendukung Project64.\n\nHarap diperhatikan bahwa kode hanya akan berfungsi untuk perangkat unik. ID perangkat ini adalah:"
+#1210# "Oke"
+#1211# "Batalkan"
+#1212# "Kode Permintaan"
+#1213# "Kode telah terkirim ke email anda"
+#1214# "Gagal mengirim kode, pastikan itu adalah email yang Anda dukung"
+
+/*** Enhancements ***/
+
+#1300# "Peningkatan"
+
+/*** Messages ***/
+
+#2000# "*** CPU DIJEDA ***"
+#2001# "CPU Dilanjutkan"
+#2002# "Dalam loop permanen yang tidak dapat keluar.\nEmulasi sekarang akan berhenti.\n\nVerifikasi ROM dan pengaturannya."
+#2003# "Gagal mengalokasikan memori"
+#2004# "Plugin video default atau yang dipilih tidak ada atau tidak valid.\n\nAnda harus masuk ke Pengaturan dan memilih plugin video (grafik).\nPeriksa bahwa Anda memiliki setidaknya satu file plugin yang kompatibel di folder plugin Anda."
+#2005# "Plugin audio default atau yang dipilih tidak ada atau tidak valid.\n\nAnda harus masuk ke Pengaturan dan memilih plugin audio (suara).\nPeriksa bahwa Anda memiliki setidaknya satu file plugin yang kompatibel di folder plugin Anda."
+#2006# "Plugin RSP default atau yang dipilih tidak ada atau tidak valid.\n\nAnda harus masuk ke Pengaturan dan memilih plugin RSP (Reality Signal Processor).\nPeriksa bahwa Anda memiliki setidaknya satu file plugin yang kompatibel di folder plugin Anda ."
+#2007# "Plugin input default atau yang dipilih tidak ada atau tidak valid.\n\nAnda harus masuk ke Pengaturan dan memilih plugin input (pengontrol).\nPeriksa bahwa Anda memiliki setidaknya satu file plugin yang kompatibel di folder plugin Anda."
+#2008# "Gagal memuat plugin:"
+#2009# "Gagal memuat kata.\n\nVerifikasi ROM dan pengaturannya."
+#2010# "Gagal membuka file simpan"
+#2011# "Gagal membuka EEPROM"
+#2012# "Gagal membuka flash RAM"
+#2013# "Gagal membuka mempak"
+#2014# "Upaya membuka file zip gagal.\n\nMungkin file zip rusak - coba buka ritsleting ROM secara manual."
+#2015# "Upaya membuka file gagal."
+#2016# "Terjadi kesalahan saat mencoba membuka file zip."
+#2017# "File yang dimuat tampaknya bukan ROM N64 yang valid.\n\nVerifikasi ROM Anda dengan GoodN64."
+#2018# "Negara tidak dikenal"
+#2019# "Chip CIC tidak diketahui"
+#2020# "Format file tidak dikenal"
+#2021# "Tindakan memori tidak dikenal\n\nEmulasi dihentikan"
+#2022# "opcode R4300i tidak tertangani di"
+#2023# "Mengeksekusi dari ruang yang tidak dipetakan.\n\nVerifikasi ROM dan pengaturannya."
+#2024# "Status yang disimpan ini tampaknya tidak cocok dengan ROM yang sedang berjalan.\n\nStatus harus disimpan & dimuat antara 100% ROM yang identik.\nKhususnya, REGION dan VERSION harus sama.\nMemuat status ini adalah kemungkinan menyebabkan game dan/atau emulator mogok.\n\nApakah Anda yakin ingin melanjutkan memuat?"
+#2025# "Kesalahan"
+#2026# "Urutan hak cipta tidak ditemukan di LUT. Game tidak akan berfungsi lagi."
+#2027# "Kegagalan Perlindungan Salin"
+#2028# "Mengubah plugin memerlukan Project64 untuk mereset ROM yang sedang berjalan.\nJika Anda tidak ingin kehilangan tempat, jawab Tidak dan simpan status saat ini terlebih dahulu.\n\nUbah plugin dan setel ulang ROM sekarang?"
+#2029# "Ubah Plugin"
+#2030# "Emulasi berakhir"
+#2031# "Emulasi dimulai"
+#2032# "Tidak dapat memuat status"
+#2033# "Kondisi dimuat"
+#2034# "Menyimpan status saat ini ke"
+#2035# "Slot negara"
+#2036# "Byte-swapping image"
+#2037# "Memilih gambar N64"
+#2038# "Termuat"
+#2039# "Memuat gambar"
+#2040# "Tidak dapat membuka ROM karena plugin tidak berhasil diinisialisasi."
+#2041# "Apakah Anda yakin ingin menghapus ini?"
+#2042# "Hapus Cheat"
+#2043# "Nama cheat sudah digunakan."
+#2044# "Anda telah mencapai jumlah maksimum cheat untuk ROM ini."
+#2045# "Inisialisasi plugin"
+#2046# "Anda belum memilih kunci virtual untuk ditetapkan ke item menu."
+#2047# "Anda harus memilih item menu untuktetapkan kunci ini untuk."
+#2048# "Pintasan telah ditetapkan ke item menu lain."
+#2049# "Tidak ada jalan pintas yang dipilih untuk dihapus."
+#2050# "ROM dimuat. Menunggu emulasi dimulai."
+#2051# "Project64 versi beta hanya untuk anggota.\n\nJika Anda memiliki akun di www.pj64-emu.com, Anda seharusnya tidak melihat kesalahan ini!!\nSilakan hubungi kami di situs."
+#2052# "Kesalahan Program"
+#2053# "Gagal menemukan nama file di file 7z"
+#2054# "Emulasi Tingkat Rendah Grafik"
+#2055# "Graphics LLE bukan untuk penggunaan umum!!!\nDisarankan agar Anda hanya menggunakan ini untuk pengujian dan bukan untuk bermain game.\n\nUbah ke LLE grafis?"
+#2056# "Emulasi Tingkat Tinggi Audio"
+#2057# "Audio HLE memerlukan plugin pihak ketiga!!!\nJika Anda tidak menggunakan plugin audio pihak ketiga yang mendukung HLE, Anda tidak akan mendengar suara.\n\nUbah ke audio HLE?"
+#2058# "File yang dimuat tampaknya bukan ROM IPL 64DD yang valid.\n\nVerifikasi ROM Anda dengan GoodN64."
+#2059# "Nintendo 64DD Japanese Retail IPL ROM not found.\nDiperlukan untuk memutar image disk 64DD wilayah Jepang.\n\nSilakan pilih ROM yang diperlukan di Pengaturan."
+#2061# "Nintendo 64DD American Retail IPL ROM tidak ditemukan.\nDiperlukan untuk memutar gambar disk 64DD wilayah amerika.\n\nSilakan pilih ROM yang diperlukan di Pengaturan."
+#2062# "ROM IPL Pengembangan Nintendo 64DD tidak ditemukan.\nDiperlukan untuk memainkan gambar disk pengembangan 64DD.\n\nSilakan pilih ROM yang diperlukan di Pengaturan."
+#2063# "Gagal memperbarui cheat, tidak valid"
+#2064# "Cheat Tidak Valid"
+
+/*** Android ***/
+
+#3000# "Pengaturan"
+#3001# "Bantuan/Forum"
+#3002# "Laporkan Masalah"
+#3003# "Tentang"
+#3004# "Baru saja diputar"
+#3005# "Permainan"
+#3006# "Dir Permainan"
+#3007# "Pilih folder yang akan dipindai"
+#3008# "Sertakan subdirektori"
+#3009# "Folder induk"
+#3010# "Direktori"
+#3011# "Memori internal"
+#3012# "Memindai..."
+#3013# "Oke"
+#3014# "Batalkan"
+#3015# "Informasi"
+#3016# "Project64 untuk Android"
+#3017# "Lisensi"
+#3018# "Revisi"
+#3019# "Project64 untuk Android\u2122 adalah port Project64 versi windows. Versi Android\u2122 dapat memainkan sebagian besar game N64."
+#3020# "Penulis Project64."
+#3021# "Perselisihan"
+
+// In-game menu
+#3100# "Pengaturan"
+#3101# "Simpan Status"
+#3102# "Kondisi Muat"
+#3103# "Akhiri Emulasi"
+#3104# "Jeda"
+#3105# "Lanjutkan"
+#3106# "Kecepatan Permainan"
+#3107# "Simpan Status Saat Ini..."
+#3108# "Otomatis"
+#3109# "Slot"
+#3110# "Setel Ulang"
+#3111# "Opsi Debug"
+#3112# "Setel Ulang Waktu Fungsi"
+#3113# "Waktu Fungsi Buang"
+
+// Video plugin
+#3200# "Asli"
