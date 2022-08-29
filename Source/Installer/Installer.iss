@@ -54,9 +54,9 @@ Name: "{app}\Plugin\GFX\GLideN64"; Permissions: everyone-full
 
 [Icons]
 Name: "{commondesktop}\Project64"; Filename: "{app}\Project64.exe"; Tasks: desktopicon
-Name: "{commonprograms}\Project64 2.3\Project64"; Filename: "{app}\Project64.exe"
-Name: "{commonprograms}\Project64 2.3\Uninstall Project64 2.3"; Filename: "{uninstallexe}"; Parameters: "/LOG"; Flags: createonlyiffileexists
-Name: "{commonprograms}\Project64 2.3\Support"; Filename: "http://forum.pj64-emu.com"
+Name: "{commonprograms}\Project64 4.0\Project64"; Filename: "{app}\Project64.exe"
+Name: "{commonprograms}\Project64 4.0\Uninstall Project64 4.0"; Filename: "{uninstallexe}"; Parameters: "/LOG"; Flags: createonlyiffileexists
+Name: "{commonprograms}\Project64 4.0\Support"; Filename: "https://discord.gg/Cg3zquF"
 
 [Tasks]
 Name: desktopicon; Description: "Create a &desktop icon"
