@@ -103,7 +103,7 @@
     <ClCompile Include="N64System\Recompiler\RegBase.cpp" />
     <ClCompile Include="N64System\Recompiler\x64-86\x64ops.cpp" />
     <ClCompile Include="N64System\Recompiler\x64-86\x64RecompilerOps.cpp" />
-    <ClCompile Include="N64System\Recompiler\x64-86\x86RegInfo.cpp" />
+    <ClCompile Include="N64System\Recompiler\x64-86\x64RegInfo.cpp" />
     <ClCompile Include="N64System\Recompiler\x86\x86ops.cpp" />
     <ClCompile Include="N64System\Recompiler\x86\x86RecompilerOps.cpp" />
     <ClCompile Include="N64System\Recompiler\x86\x86RegInfo.cpp" />

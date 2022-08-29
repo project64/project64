@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#if defined(__amd64__) || defined(_M_X64)
+
 #include <Project64-core/N64System/Recompiler/x64-86/x64RegInfo.h>
 
 CX64RegInfo::CX64RegInfo(CCodeBlock & /*CodeBlock*/, CX64Ops & /*Assembler*/)
@@ -32,3 +34,5 @@ bool CX64RegInfo::operator!=(const CX64RegInfo & /*right*/) const
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
+
+#endif

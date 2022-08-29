@@ -420,10 +420,10 @@
     <ClCompile Include="N64System\Recompiler\x64-86\x64RecompilerOps.cpp">
       <Filter>Source Files\N64 System\Recompiler\x64-86</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\Recompiler\x64-86\x86RegInfo.cpp">
+    <ClCompile Include="N64System\Recompiler\x64-86\x64ops.cpp">
       <Filter>Source Files\N64 System\Recompiler\x64-86</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\Recompiler\x64-86\x64ops.cpp">
+    <ClCompile Include="N64System\Recompiler\x64-86\x64RegInfo.cpp">
       <Filter>Source Files\N64 System\Recompiler\x64-86</Filter>
     </ClCompile>
   </ItemGroup>
