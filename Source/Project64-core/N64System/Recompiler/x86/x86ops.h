@@ -45,7 +45,6 @@ public:
         Multip_x8 = 8
     };
 
-    static x86Reg x86_Registers[8];
     static const char * x86_Name(x86Reg Reg);
     static const char * x86_ByteName(x86Reg Reg);
     static const char * x86_HalfName(x86Reg Reg);

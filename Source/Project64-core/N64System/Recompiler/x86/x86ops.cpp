@@ -11,18 +11,6 @@ char CX86Ops::m_fpupop[2][2] =
     "", "p"
 };
 
-CX86Ops::x86Reg CX86Ops::x86_Registers[8] =
-{
-    x86_ESI,
-    x86_EDI,
-    x86_EBX,
-    x86_ECX,
-    x86_EDX,
-    x86_EAX,
-    x86_EBP,
-    x86_ESP
-};
-
 CX86Ops::CX86Ops(CCodeBlock & CodeBlock) :
     m_CodeBlock(CodeBlock)
 {

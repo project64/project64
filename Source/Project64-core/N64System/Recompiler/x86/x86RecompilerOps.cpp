@@ -3077,7 +3077,7 @@ void CX86RecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
 
 void CX86RecompilerOps::LW_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr)
 {
-    m_RegWorkingSet.SetX86Protected(Reg, true);
+    m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(Reg), true);
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
         CX86Ops::x86Reg AddressReg = Map_TempReg(CX86Ops::x86_Any, -1, false);
@@ -4685,9 +4685,9 @@ void CX86RecompilerOps::SPECIAL_DSRAV()
 
 void CX86RecompilerOps::SPECIAL_MULT()
 {
-    m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EDX, true);
+    m_RegWorkingSet.SetX86Protected(x86RegIndex_EDX, true);
     Map_TempReg(CX86Ops::x86_EAX, m_Opcode.rs, false);
-    m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EDX, false);
+    m_RegWorkingSet.SetX86Protected(x86RegIndex_EDX, false);
     Map_TempReg(CX86Ops::x86_EDX, m_Opcode.rt, false);
 
     m_Assembler.imulX86reg(CX86Ops::x86_EDX);
@@ -4702,9 +4702,9 @@ void CX86RecompilerOps::SPECIAL_MULT()
 
 void CX86RecompilerOps::SPECIAL_MULTU()
 {
-    m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EDX, true);
+    m_RegWorkingSet.SetX86Protected(x86RegIndex_EDX, true);
     Map_TempReg(CX86Ops::x86_EAX, m_Opcode.rs, false);
-    m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EDX, false);
+    m_RegWorkingSet.SetX86Protected(x86RegIndex_EDX, false);
     Map_TempReg(CX86Ops::x86_EDX, m_Opcode.rt, false);
 
     m_Assembler.MulX86reg(CX86Ops::x86_EDX);
@@ -4775,14 +4775,14 @@ void CX86RecompilerOps::SPECIAL_DIV()
             return;
         }
         
-        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, true);
+        m_RegWorkingSet.SetX86Protected(x86RegIndex_EAX, true);
         UnMap_X86reg(CX86Ops::x86_EDX);
-        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, false);
-        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EDX, true);
+        m_RegWorkingSet.SetX86Protected(x86RegIndex_EAX, false);
+        m_RegWorkingSet.SetX86Protected(x86RegIndex_EDX, true);
         UnMap_X86reg(CX86Ops::x86_EAX);
-        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, true);
+        m_RegWorkingSet.SetX86Protected(x86RegIndex_EAX, true);
         RegRs = IsMapped(m_Opcode.rs) ? GetMipsRegMapLo(m_Opcode.rs) : Map_TempReg(CX86Ops::x86_Any, m_Opcode.rs, false);
-        m_RegWorkingSet.SetX86Protected(RegRs, true);
+        m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(RegRs), true);
         RegRsHi = IsMapped(m_Opcode.rs) && Is64Bit(m_Opcode.rs) ? GetMipsRegMapHi(m_Opcode.rs) : Map_TempReg(CX86Ops::x86_Any, IsMapped(m_Opcode.rs) ? m_Opcode.rs : -1, true);
         DivReg = IsMapped(m_Opcode.rt) ? GetMipsRegMapLo(m_Opcode.rt) : Map_TempReg(CX86Ops::x86_Any, m_Opcode.rt, false);
 
@@ -4804,14 +4804,14 @@ void CX86RecompilerOps::SPECIAL_DIV()
     }
     else
     {
-        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, true);
+        m_RegWorkingSet.SetX86Protected(x86RegIndex_EAX, true);
         UnMap_X86reg(CX86Ops::x86_EDX);
-        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, false);
-        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EDX, true);
+        m_RegWorkingSet.SetX86Protected(x86RegIndex_EAX, false);
+        m_RegWorkingSet.SetX86Protected(x86RegIndex_EDX, true);
         UnMap_X86reg(CX86Ops::x86_EAX);
-        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, true);
+        m_RegWorkingSet.SetX86Protected(x86RegIndex_EAX, true);
         RegRs = IsMapped(m_Opcode.rs) ? GetMipsRegMapLo(m_Opcode.rs) : Map_TempReg(CX86Ops::x86_Any, m_Opcode.rs, false);
-        m_RegWorkingSet.SetX86Protected(RegRs, true);
+        m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(RegRs), true);
         RegRsHi = IsMapped(m_Opcode.rs) && Is64Bit(m_Opcode.rs) ? GetMipsRegMapHi(m_Opcode.rs) : Map_TempReg(CX86Ops::x86_Any, IsMapped(m_Opcode.rs) ? m_Opcode.rs : -1, true);
         DivReg = IsMapped(m_Opcode.rt) ? GetMipsRegMapLo(m_Opcode.rt) : Map_TempReg(CX86Ops::x86_Any, m_Opcode.rt, false);
 
@@ -4872,10 +4872,10 @@ void CX86RecompilerOps::SPECIAL_DIV()
         }
     }
 
-    m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, true);
+    m_RegWorkingSet.SetX86Protected(x86RegIndex_EAX, true);
     UnMap_X86reg(CX86Ops::x86_EDX);
     Map_TempReg(CX86Ops::x86_EDX, -1, false);
-    m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, false);
+    m_RegWorkingSet.SetX86Protected(x86RegIndex_EAX, false);
     Map_TempReg(CX86Ops::x86_EAX, m_Opcode.rs, false);
 
     if (IsConst(m_Opcode.rs))
@@ -4955,17 +4955,17 @@ void CX86RecompilerOps::SPECIAL_DIVU()
     }
     else
     {
-        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, true);
+        m_RegWorkingSet.SetX86Protected(x86RegIndex_EAX, true);
         UnMap_X86reg(CX86Ops::x86_EDX);
-        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, false);
-        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EDX, true);
+        m_RegWorkingSet.SetX86Protected(x86RegIndex_EAX, false);
+        m_RegWorkingSet.SetX86Protected(x86RegIndex_EDX, true);
         UnMap_X86reg(CX86Ops::x86_EAX);
-        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, true);
+        m_RegWorkingSet.SetX86Protected(x86RegIndex_EAX, true);
         CX86Ops::x86Reg RegRsLo = IsMapped(m_Opcode.rs) ? GetMipsRegMapLo(m_Opcode.rs) : Map_TempReg(CX86Ops::x86_Any, m_Opcode.rs, false);
         CX86Ops::x86Reg RegRsHi = IsMapped(m_Opcode.rs) ? Map_TempReg(CX86Ops::x86_Any, IsMapped(m_Opcode.rs), true) : CX86Ops::x86_Unknown;
-        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, true);
+        m_RegWorkingSet.SetX86Protected(x86RegIndex_EAX, true);
         Map_TempReg(CX86Ops::x86_EDX, 0, false);
-        m_RegWorkingSet.SetX86Protected(CX86Ops::x86_EAX, false);
+        m_RegWorkingSet.SetX86Protected(x86RegIndex_EAX, false);
 
         Map_TempReg(CX86Ops::x86_EAX, m_Opcode.rs, false);
         CX86Ops::x86Reg DivReg = IsMapped(m_Opcode.rt) ? GetMipsRegMapLo(m_Opcode.rt) : Map_TempReg(CX86Ops::x86_Any, m_Opcode.rt, false);
@@ -8471,15 +8471,15 @@ void CX86RecompilerOps::SyncRegState(const CRegInfo & SyncTo)
         {
             UnMap_X86reg(TargetStackReg);
             m_CodeBlock.Log("    regcache: allocate %s as memory stack", CX86Ops::x86_Name(TargetStackReg));
-            m_RegWorkingSet.SetX86Mapped(TargetStackReg, CRegInfo::Stack_Mapped);
+            m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(TargetStackReg), CRegInfo::Stack_Mapped);
             m_Assembler.MoveVariableToX86reg(&g_Recompiler->MemoryStackPos(), "MemoryStack", TargetStackReg);
         }
         else
         {
             UnMap_X86reg(TargetStackReg);
             m_CodeBlock.Log("    regcache: change allocation of memory stack from %s to %s", CX86Ops::x86_Name(MemStackReg), CX86Ops::x86_Name(TargetStackReg));
-            m_RegWorkingSet.SetX86Mapped(TargetStackReg, CRegInfo::Stack_Mapped);
-            m_RegWorkingSet.SetX86Mapped(MemStackReg, CRegInfo::NotMapped);
+            m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(TargetStackReg), CRegInfo::Stack_Mapped);
+            m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(MemStackReg), CRegInfo::NotMapped);
             m_Assembler.MoveX86RegToX86Reg(MemStackReg, TargetStackReg);
         }
     }
@@ -8544,20 +8544,20 @@ void CX86RecompilerOps::SyncRegState(const CRegInfo & SyncTo)
                     break;
                 case CRegInfo::STATE_MAPPED_64:
                     m_Assembler.MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                    m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(GetMipsRegMapLo(i)), CRegInfo::NotMapped);
                     m_Assembler.MoveX86RegToX86Reg(GetMipsRegMapHi(i), x86RegHi);
-                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapHi(i), CRegInfo::NotMapped);
+                    m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(GetMipsRegMapHi(i)), CRegInfo::NotMapped);
                     break;
                 case CRegInfo::STATE_MAPPED_32_SIGN:
                     m_Assembler.MoveX86RegToX86Reg(GetMipsRegMapLo(i), x86RegHi);
                     m_Assembler.ShiftRightSignImmed(x86RegHi, 31);
                     m_Assembler.MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                    m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(GetMipsRegMapLo(i)), CRegInfo::NotMapped);
                     break;
                 case CRegInfo::STATE_MAPPED_32_ZERO:
                     m_Assembler.XorX86RegToX86Reg(x86RegHi, x86RegHi);
                     m_Assembler.MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                    m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(GetMipsRegMapLo(i)), CRegInfo::NotMapped);
                     break;
                 case CRegInfo::STATE_CONST_64:
                     m_Assembler.MoveConstToX86reg(GetMipsRegHi(i), x86RegHi);
@@ -8575,10 +8575,10 @@ void CX86RecompilerOps::SyncRegState(const CRegInfo & SyncTo)
                 m_RegWorkingSet.SetMipsRegMapLo(i, Reg);
                 m_RegWorkingSet.SetMipsRegMapHi(i, x86RegHi);
                 m_RegWorkingSet.SetMipsRegState(i, CRegInfo::STATE_MAPPED_64);
-                m_RegWorkingSet.SetX86Mapped(Reg, CRegInfo::GPR_Mapped);
-                m_RegWorkingSet.SetX86Mapped(x86RegHi, CRegInfo::GPR_Mapped);
-                m_RegWorkingSet.SetX86MapOrder(Reg, 1);
-                m_RegWorkingSet.SetX86MapOrder(x86RegHi, 1);
+                m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(Reg), CRegInfo::GPR_Mapped);
+                m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(x86RegHi), CRegInfo::GPR_Mapped);
+                m_RegWorkingSet.SetX86MapOrder(GetIndexFromX86Reg(Reg), 1);
+                m_RegWorkingSet.SetX86MapOrder(GetIndexFromX86Reg(x86RegHi), 1);
             }
             break;
         case CRegInfo::STATE_MAPPED_32_SIGN:
@@ -8591,19 +8591,19 @@ void CX86RecompilerOps::SyncRegState(const CRegInfo & SyncTo)
                 case CRegInfo::STATE_CONST_32_SIGN: m_Assembler.MoveConstToX86reg(GetMipsRegLo(i), Reg); break;
                 case CRegInfo::STATE_MAPPED_32_SIGN:
                     m_Assembler.MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                    m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(GetMipsRegMapLo(i)), CRegInfo::NotMapped);
                     break;
                 case CRegInfo::STATE_MAPPED_32_ZERO:
                     if (GetMipsRegMapLo(i) != Reg)
                     {
                         m_Assembler.MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                        m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                        m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(GetMipsRegMapLo(i)), CRegInfo::NotMapped);
                     }
                     break;
                 case CRegInfo::STATE_MAPPED_64:
                     m_Assembler.MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
-                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapHi(i), CRegInfo::NotMapped);
+                    m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(GetMipsRegMapLo(i)), CRegInfo::NotMapped);
+                    m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(GetMipsRegMapHi(i)), CRegInfo::NotMapped);
                     break;
                 case CRegInfo::STATE_CONST_64:
                     m_CodeBlock.Log("hi %X\nLo %X", GetMipsRegHi(i), GetMipsRegLo(i));
@@ -8613,8 +8613,8 @@ void CX86RecompilerOps::SyncRegState(const CRegInfo & SyncTo)
                 }
                 m_RegWorkingSet.SetMipsRegMapLo(i, Reg);
                 m_RegWorkingSet.SetMipsRegState(i, CRegInfo::STATE_MAPPED_32_SIGN);
-                m_RegWorkingSet.SetX86Mapped(Reg, CRegInfo::GPR_Mapped);
-                m_RegWorkingSet.SetX86MapOrder(Reg, 1);
+                m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(Reg), CRegInfo::GPR_Mapped);
+                m_RegWorkingSet.SetX86MapOrder(GetIndexFromX86Reg(Reg), 1);
             }
             break;
         case CRegInfo::STATE_MAPPED_32_ZERO:
@@ -8629,13 +8629,13 @@ void CX86RecompilerOps::SyncRegState(const CRegInfo & SyncTo)
                     break;
                 case CRegInfo::STATE_MAPPED_32_ZERO:
                     m_Assembler.MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                    m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(GetMipsRegMapLo(i)), CRegInfo::NotMapped);
                     break;
                 case CRegInfo::STATE_MAPPED_32_SIGN:
                     if (g_System->b32BitCore())
                     {
                         m_Assembler.MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                        m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                        m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(GetMipsRegMapLo(i)), CRegInfo::NotMapped);
                     }
                     else
                     {
@@ -8658,8 +8658,8 @@ void CX86RecompilerOps::SyncRegState(const CRegInfo & SyncTo)
                 }
                 m_RegWorkingSet.SetMipsRegMapLo(i, Reg);
                 m_RegWorkingSet.SetMipsRegState(i, SyncTo.GetMipsRegState(i));
-                m_RegWorkingSet.SetX86Mapped(Reg, CRegInfo::GPR_Mapped);
-                m_RegWorkingSet.SetX86MapOrder(Reg, 1);
+                m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(Reg), CRegInfo::GPR_Mapped);
+                m_RegWorkingSet.SetX86MapOrder(GetIndexFromX86Reg(Reg), 1);
             }
             break;
         default:
@@ -8848,11 +8848,11 @@ bool CX86RecompilerOps::InheritParentInfo()
 
         // Find parent MapRegState
         MemoryStackPos = CX86Ops::x86_Unknown;
-        for (i2 = 0; i2 < sizeof(CX86Ops::x86_Registers) / sizeof(CX86Ops::x86_Registers[0]); i2++)
+        for (i2 = 0; i2 < x86RegIndex_Size; i2++)
         {
-            if (RegSet->GetX86Mapped(CX86Ops::x86_Registers[i2]) == CRegInfo::Stack_Mapped)
+            if (RegSet->GetX86Mapped((x86RegIndex)i2) == CRegInfo::Stack_Mapped)
             {
-                MemoryStackPos = CX86Ops::x86_Registers[i2];
+                MemoryStackPos = GetX86RegFromIndex((x86RegIndex)i2);
                 break;
             }
         }
@@ -8991,11 +8991,11 @@ bool CX86RecompilerOps::InheritParentInfo()
             }
         }
 
-        for (i2 = 0; !NeedSync && i2 < sizeof(CX86Ops::x86_Registers) / sizeof(CX86Ops::x86_Registers[0]); i2++)
+        for (i2 = 0; !NeedSync && i2 < x86RegIndex_Size; i2++)
         {
-            if (m_RegWorkingSet.GetX86Mapped(CX86Ops::x86_Registers[i2]) == CRegInfo::Stack_Mapped)
+            if (m_RegWorkingSet.GetX86Mapped((x86RegIndex)i2) == CRegInfo::Stack_Mapped)
             {
-                if (m_RegWorkingSet.GetX86Mapped(CX86Ops::x86_Registers[i2]) != RegSet->GetX86Mapped(CX86Ops::x86_Registers[i2]))
+                if (m_RegWorkingSet.GetX86Mapped((x86RegIndex)i2) != RegSet->GetX86Mapped((x86RegIndex)i2))
                 {
                     NeedSync = true;
                 }
@@ -9706,7 +9706,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
 
     if (UnprotectAddressReg)
     {
-        m_RegWorkingSet.SetX86Protected(AddressReg, false);
+        m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(AddressReg), false);
     }
 }
 
@@ -10010,7 +10010,7 @@ void CX86RecompilerOps::SB_Register(CX86Ops::x86Reg Reg, uint32_t VAddr)
 {
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
-        m_RegWorkingSet.SetX86Protected(Reg, true);
+        m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(Reg), true);
         CX86Ops::x86Reg AddressReg = Map_TempReg(CX86Ops::x86_Any, -1, false);
         m_Assembler.MoveConstToX86reg(VAddr, AddressReg);
         CompileStoreMemoryValue(AddressReg, Reg, CX86Ops::x86_Unknown, 0, 8);
@@ -10120,7 +10120,7 @@ void CX86RecompilerOps::SH_Register(CX86Ops::x86Reg Reg, uint32_t VAddr)
 {
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
-        m_RegWorkingSet.SetX86Protected(Reg, true);
+        m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(Reg), true);
 
         CX86Ops::x86Reg AddressReg = Map_TempReg(CX86Ops::x86_Any, -1, false);
         m_Assembler.MoveConstToX86reg(VAddr, AddressReg);
@@ -10639,7 +10639,7 @@ void CX86RecompilerOps::SW_Register(CX86Ops::x86Reg Reg, uint32_t VAddr)
 {
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
-        m_RegWorkingSet.SetX86Protected(Reg, true);
+        m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(Reg), true);
         CX86Ops::x86Reg AddressReg = Map_TempReg(CX86Ops::x86_Any, -1, false);
         m_Assembler.MoveConstToX86reg(VAddr, AddressReg);
         CompileStoreMemoryValue(AddressReg, Reg, CX86Ops::x86_Unknown, 0, 32);

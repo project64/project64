@@ -14,6 +14,42 @@ uint32_t CX86RegInfo::m_fpuControl = 0;
 
 const char *Format_Name[] = { "Unknown", "dword", "qword", "float", "double" };
 
+x86RegIndex GetIndexFromX86Reg(const CX86Ops::x86Reg & Reg)
+{
+    switch (Reg)
+    {
+    case CX86Ops::x86_EAX: return x86RegIndex_EAX;
+    case CX86Ops::x86_EBX: return x86RegIndex_EBX;
+    case CX86Ops::x86_ECX: return x86RegIndex_ECX;
+    case CX86Ops::x86_EDX: return x86RegIndex_EDX;
+    case CX86Ops::x86_ESI: return x86RegIndex_ESI;
+    case CX86Ops::x86_EDI: return x86RegIndex_EDI;
+    case CX86Ops::x86_EBP: return x86RegIndex_EBP;
+    case CX86Ops::x86_ESP: return x86RegIndex_ESP;
+    }
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+    return x86RegIndex_EAX;
+}
+
+CX86Ops::x86Reg GetX86RegFromIndex(x86RegIndex Index)
+{
+    switch (Index)
+    {
+    case x86RegIndex_EAX: return CX86Ops::x86_EAX;
+    case x86RegIndex_ECX: return CX86Ops::x86_ECX;
+    case x86RegIndex_EDX: return CX86Ops::x86_EDX;
+    case x86RegIndex_EBX: return CX86Ops::x86_EBX;
+    case x86RegIndex_ESP: return CX86Ops::x86_ESP;
+    case x86RegIndex_EBP: return CX86Ops::x86_EBP;
+    case x86RegIndex_ESI: return CX86Ops::x86_ESI;
+    case x86RegIndex_EDI: return CX86Ops::x86_EDI;
+    }
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+    return CX86Ops::x86_Unknown;
+}
+
+
+
 CX86RegInfo::CX86RegInfo(CCodeBlock & CodeBlock, CX86Ops & Assembler) :
     m_CodeBlock(CodeBlock),
     m_Assembler(Assembler),
@@ -25,7 +61,7 @@ CX86RegInfo::CX86RegInfo(CCodeBlock & CodeBlock, CX86Ops & Assembler) :
         m_RegMapLo[i] = CX86Ops::x86_Unknown;
         m_RegMapHi[i] = CX86Ops::x86_Unknown;
     }
-    for (int32_t i = 0, n = sizeof(m_x86reg_MappedTo) / sizeof(m_x86reg_MappedTo[0]); i < n; i++)
+    for (int32_t i = 0; i < x86RegIndex_Size; i++)
     {
         m_x86reg_MappedTo[i] = NotMapped;
         m_x86reg_Protected[i] = false;
@@ -173,7 +209,7 @@ void CX86RegInfo::FixRoundModel(FPU_ROUND RoundMethod)
         m_Assembler.MoveVariableToX86reg(_RoundingModel, "_RoundingModel", RoundReg);
         m_Assembler.OrX86RegToX86Reg(reg, RoundReg);
 #endif
-        SetX86Protected(RoundReg, false);
+        SetX86Protected(GetIndexFromX86Reg(RoundReg), false);
     }
     else
     {
@@ -188,7 +224,7 @@ void CX86RegInfo::FixRoundModel(FPU_ROUND RoundMethod)
         }
     }
     m_Assembler.MoveX86regToVariable(reg, &m_fpuControl, "m_fpuControl");
-    SetX86Protected(reg, false);
+    SetX86Protected(GetIndexFromX86Reg(reg), false);
     m_Assembler.fpuLoadControl(&m_fpuControl, "m_fpuControl");
     SetRoundingModel(RoundMethod);
 }
@@ -395,7 +431,7 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
         default:
             if (HaveDebugger()) { g_Notify->DisplayError(stdstr_f("Load_FPR_ToTop\nUnkown format to load %d", Format).c_str()); }
         }
-        SetX86Protected(TempReg, false);
+        SetX86Protected(GetIndexFromX86Reg(TempReg), false);
         FpuRoundingModel(StackTopPos()) = RoundDefault;
         m_x86fpu_MappedTo[StackTopPos()] = Reg;
         m_x86fpu_State[StackTopPos()] = Format;
@@ -419,56 +455,51 @@ CX86Ops::x86FpuValues CX86RegInfo::StackPosition(int32_t Reg)
 
 CX86Ops::CX86Ops::x86Reg CX86RegInfo::FreeX86Reg()
 {
-    if (GetX86Mapped(CX86Ops::x86_EDI) == NotMapped && !GetX86Protected(CX86Ops::x86_EDI)) { return CX86Ops::x86_EDI; }
-    if (GetX86Mapped(CX86Ops::x86_ESI) == NotMapped && !GetX86Protected(CX86Ops::x86_ESI)) { return CX86Ops::x86_ESI; }
-    if (GetX86Mapped(CX86Ops::x86_EBX) == NotMapped && !GetX86Protected(CX86Ops::x86_EBX)) { return CX86Ops::x86_EBX; }
-    if (GetX86Mapped(CX86Ops::x86_EAX) == NotMapped && !GetX86Protected(CX86Ops::x86_EAX)) { return CX86Ops::x86_EAX; }
-    if (GetX86Mapped(CX86Ops::x86_EDX) == NotMapped && !GetX86Protected(CX86Ops::x86_EDX)) { return CX86Ops::x86_EDX; }
-    if (GetX86Mapped(CX86Ops::x86_ECX) == NotMapped && !GetX86Protected(CX86Ops::x86_ECX)) { return CX86Ops::x86_ECX; }
+    if (GetX86Mapped(x86RegIndex_EDI) == NotMapped && !GetX86Protected(x86RegIndex_EDI)) { return CX86Ops::x86_EDI; }
+    if (GetX86Mapped(x86RegIndex_ESI) == NotMapped && !GetX86Protected(x86RegIndex_ESI)) { return CX86Ops::x86_ESI; }
+    if (GetX86Mapped(x86RegIndex_EBX) == NotMapped && !GetX86Protected(x86RegIndex_EBX)) { return CX86Ops::x86_EBX; }
+    if (GetX86Mapped(x86RegIndex_EAX) == NotMapped && !GetX86Protected(x86RegIndex_EAX)) { return CX86Ops::x86_EAX; }
+    if (GetX86Mapped(x86RegIndex_EDX) == NotMapped && !GetX86Protected(x86RegIndex_EDX)) { return CX86Ops::x86_EDX; }
+    if (GetX86Mapped(x86RegIndex_ECX) == NotMapped && !GetX86Protected(x86RegIndex_ECX)) { return CX86Ops::x86_ECX; }
 
     CX86Ops::x86Reg Reg = UnMap_TempReg();
     if (Reg != CX86Ops::x86_Unknown) { return Reg; }
 
-    int32_t count, MapCount[10];
-    CX86Ops::x86Reg MapReg[10];
+    uint32_t MapCount[x86RegIndex_Size];
+    x86RegIndex MapReg[x86RegIndex_Size];
 
-    for (count = 0; count < 10; count++)
+    for (int i = 0; i < x86RegIndex_Size; i++)
     {
-        MapCount[count] = GetX86MapOrder((CX86Ops::x86Reg)count);
-        MapReg[count] = (CX86Ops::x86Reg)count;
+        MapCount[i] = GetX86MapOrder((x86RegIndex)i);
+        MapReg[i] = (x86RegIndex)i;
     }
-    for (count = 0; count < 10; count++)
+    for (int i = 0; i < x86RegIndex_Size; i++)
     {
-        int32_t i;
-
-        for (i = 0; i < 9; i++)
+        for (int32_t z = 0; z < 9; z++)
         {
-            CX86Ops::x86Reg tempReg;
-            uint32_t temp;
-
-            if (MapCount[i] < MapCount[i + 1])
+            if (MapCount[z] < MapCount[z + 1])
             {
-                temp = MapCount[i];
-                MapCount[i] = MapCount[i + 1];
-                MapCount[i + 1] = temp;
-                tempReg = MapReg[i];
-                MapReg[i] = MapReg[i + 1];
-                MapReg[i + 1] = tempReg;
+                uint32_t TempCount = MapCount[z];
+                MapCount[z] = MapCount[z + 1];
+                MapCount[z + 1] = TempCount;
+                x86RegIndex tempReg = MapReg[z];
+                MapReg[z] = MapReg[z + 1];
+                MapReg[z + 1] = tempReg;
             }
         }
     }
 
     CX86Ops::x86Reg StackReg = CX86Ops::x86_Unknown;
-    for (count = 0; count < 10; count++)
+    for (int i = 0; i < x86RegIndex_Size; i++)
     {
-        if (MapCount[count] > 0 && GetX86Mapped(MapReg[count]) != Stack_Mapped)
+        if (MapCount[i] > 0 && GetX86Mapped(MapReg[i]) != Stack_Mapped)
         {
-            if (UnMap_X86reg((CX86Ops::x86Reg)MapReg[count]))
+            if (UnMap_X86reg((CX86Ops::x86Reg)MapReg[i]))
             {
-                return (CX86Ops::x86Reg)MapReg[count];
+                return (CX86Ops::x86Reg)MapReg[i];
             }
         }
-        if (GetX86Mapped(MapReg[count]) == Stack_Mapped) { StackReg = MapReg[count]; }
+        if (GetX86Mapped(MapReg[i]) == Stack_Mapped) { StackReg = GetX86RegFromIndex(MapReg[i]); }
     }
     if (StackReg != CX86Ops::x86_Unknown)
     {
@@ -481,47 +512,44 @@ CX86Ops::CX86Ops::x86Reg CX86RegInfo::FreeX86Reg()
 
 CX86Ops::CX86Ops::x86Reg CX86RegInfo::Free8BitX86Reg()
 {
-    if (GetX86Mapped(CX86Ops::x86_EBX) == NotMapped && !GetX86Protected(CX86Ops::x86_EBX)) { return CX86Ops::x86_EBX; }
-    if (GetX86Mapped(CX86Ops::x86_EAX) == NotMapped && !GetX86Protected(CX86Ops::x86_EAX)) { return CX86Ops::x86_EAX; }
-    if (GetX86Mapped(CX86Ops::x86_EDX) == NotMapped && !GetX86Protected(CX86Ops::x86_EDX)) { return CX86Ops::x86_EDX; }
-    if (GetX86Mapped(CX86Ops::x86_ECX) == NotMapped && !GetX86Protected(CX86Ops::x86_ECX)) { return CX86Ops::x86_ECX; }
+    if (GetX86Mapped(x86RegIndex_EBX) == NotMapped && !GetX86Protected(x86RegIndex_EBX)) { return CX86Ops::x86_EBX; }
+    if (GetX86Mapped(x86RegIndex_EAX) == NotMapped && !GetX86Protected(x86RegIndex_EAX)) { return CX86Ops::x86_EAX; }
+    if (GetX86Mapped(x86RegIndex_EDX) == NotMapped && !GetX86Protected(x86RegIndex_EDX)) { return CX86Ops::x86_EDX; }
+    if (GetX86Mapped(x86RegIndex_ECX) == NotMapped && !GetX86Protected(x86RegIndex_ECX)) { return CX86Ops::x86_ECX; }
 
     CX86Ops::x86Reg Reg = UnMap_8BitTempReg();
     if (Reg > 0) { return Reg; }
 
-    int32_t count, MapCount[10], MapReg[10];
-    for (count = 0; count < 10; count++)
+    uint32_t MapCount[10];
+    x86RegIndex MapReg[10];
+    for (uint32_t i = 0; i < x86RegIndex_Size; i++)
     {
-        MapCount[count] = GetX86MapOrder((CX86Ops::x86Reg)count);
-        MapReg[count] = count;
+        MapCount[i] = GetX86MapOrder((x86RegIndex)i);
+        MapReg[i] = (x86RegIndex)i;
     }
-    for (count = 0; count < 10; count++)
+    for (uint32_t i = 0; i < x86RegIndex_Size; i++)
     {
-        int32_t i;
-
-        for (i = 0; i < 9; i++)
+        for (uint32_t z = 0; z < x86RegIndex_Size; z++)
         {
-            int32_t temp;
-
-            if (MapCount[i] < MapCount[i + 1])
+            if (MapCount[z] < MapCount[z + 1])
             {
-                temp = MapCount[i];
-                MapCount[i] = MapCount[i + 1];
-                MapCount[i + 1] = temp;
-                temp = MapReg[i];
-                MapReg[i] = MapReg[i + 1];
-                MapReg[i + 1] = temp;
+                uint32_t TempCount = MapCount[z];
+                MapCount[z] = MapCount[z + 1];
+                MapCount[z + 1] = TempCount;
+                x86RegIndex TempIndex = MapReg[z];
+                MapReg[z] = MapReg[z + 1];
+                MapReg[z + 1] = TempIndex;
             }
         }
     }
-    for (count = 0; count < 10; count++)
+    for (uint32_t i = 0; i < x86RegIndex_Size; i++)
     {
-        if (MapCount[count] > 0)
+        if (MapCount[i] > 0)
         {
-            if (!CX86Ops::Is8BitReg((CX86Ops::x86Reg)count)) { continue; }
-            if (UnMap_X86reg((CX86Ops::x86Reg)count))
+            if (!CX86Ops::Is8BitReg((CX86Ops::x86Reg)i)) { continue; }
+            if (UnMap_X86reg((CX86Ops::x86Reg)i))
             {
-                return (CX86Ops::x86Reg)count;
+                return (CX86Ops::x86Reg)i;
             }
         }
     }
@@ -530,18 +558,16 @@ CX86Ops::CX86Ops::x86Reg CX86RegInfo::Free8BitX86Reg()
 
 CX86Ops::CX86Ops::x86Reg CX86RegInfo::UnMap_8BitTempReg()
 {
-    int32_t count;
-
-    for (count = 0; count < 10; count++)
+    for (uint32_t i = 0; i < x86RegIndex_Size; i++)
     {
-        if (!CX86Ops::Is8BitReg((CX86Ops::x86Reg)count)) { continue; }
-        if (GetX86Mapped((CX86Ops::x86Reg)count) == Temp_Mapped)
+        if (!CX86Ops::Is8BitReg(GetX86RegFromIndex((x86RegIndex)i))) { continue; }
+        if (GetX86Mapped((x86RegIndex)i) == Temp_Mapped)
         {
-            if (GetX86Protected((CX86Ops::x86Reg)count) == false)
+            if (GetX86Protected((x86RegIndex)i) == false)
             {
-                m_CodeBlock.Log("    regcache: unallocate %s from temp storage", CX86Ops::x86_Name((CX86Ops::x86Reg)count));
-                SetX86Mapped((CX86Ops::x86Reg)count, CX86RegInfo::NotMapped);
-                return (CX86Ops::x86Reg)count;
+                m_CodeBlock.Log("    regcache: unallocate %s from temp storage", CX86Ops::x86_Name(GetX86RegFromIndex((x86RegIndex)i)));
+                SetX86Mapped((x86RegIndex)i, CX86RegInfo::NotMapped);
+                return GetX86RegFromIndex((x86RegIndex)i);
             }
         }
     }
@@ -550,11 +576,11 @@ CX86Ops::CX86Ops::x86Reg CX86RegInfo::UnMap_8BitTempReg()
 
 CX86Ops::x86Reg CX86RegInfo::Get_MemoryStack() const
 {
-    for (int32_t i = 0, n = sizeof(CX86Ops::x86_Registers) / sizeof(CX86Ops::x86_Registers[0]); i < n; i++)
+    for (int32_t i = 0, n = x86RegIndex_Size; i < n; i++)
     {
-        if (GetX86Mapped(CX86Ops::x86_Registers[i]) == Stack_Mapped)
+        if (GetX86Mapped((x86RegIndex)i) == Stack_Mapped)
         {
-            return CX86Ops::x86_Registers[i];
+            return GetX86RegFromIndex((x86RegIndex)i);
         }
     }
     return CX86Ops::x86_Unknown;
@@ -587,7 +613,7 @@ CX86Ops::x86Reg CX86RegInfo::Map_MemoryStack(CX86Ops::x86Reg Reg, bool bMapRegis
             g_Notify->DisplayError("Map_MemoryStack\n\nOut of registers");
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
-        SetX86Mapped(Reg, CX86RegInfo::Stack_Mapped);
+        SetX86Mapped(GetIndexFromX86Reg(Reg), CX86RegInfo::Stack_Mapped);
         m_CodeBlock.Log("    regcache: allocate %s as Memory Stack", CX86Ops::x86_Name(Reg));
         if (LoadValue)
         {
@@ -601,13 +627,13 @@ CX86Ops::x86Reg CX86RegInfo::Map_MemoryStack(CX86Ops::x86Reg Reg, bool bMapRegis
     if (CurrentMap != CX86Ops::x86_Unknown)
     {
         m_CodeBlock.Log("    regcache: change allocation of memory stack from %s to %s", CX86Ops::x86_Name(CurrentMap), CX86Ops::x86_Name(Reg));
-        SetX86Mapped(Reg, CX86RegInfo::Stack_Mapped);
-        SetX86Mapped(CurrentMap, CX86RegInfo::NotMapped);
+        SetX86Mapped(GetIndexFromX86Reg(Reg), CX86RegInfo::Stack_Mapped);
+        SetX86Mapped(GetIndexFromX86Reg(CurrentMap), CX86RegInfo::NotMapped);
         m_Assembler.MoveX86RegToX86Reg(CurrentMap, Reg);
     }
     else
     {
-        SetX86Mapped(Reg, CX86RegInfo::Stack_Mapped);
+        SetX86Mapped(GetIndexFromX86Reg(Reg), CX86RegInfo::Stack_Mapped);
         m_CodeBlock.Log("    regcache: allocate %s as memory stack", CX86Ops::x86_Name(Reg));
         if (LoadValue)
         {
@@ -619,8 +645,6 @@ CX86Ops::x86Reg CX86RegInfo::Map_MemoryStack(CX86Ops::x86Reg Reg, bool bMapRegis
 
 void CX86RegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsRegToLoad)
 {
-    int32_t count;
-
     CX86Ops::x86Reg Reg;
     if (MipsReg == 0)
     {
@@ -644,22 +668,23 @@ void CX86RegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsReg
         if (Is64Bit(MipsReg))
         {
             m_CodeBlock.Log("    regcache: unallocate %s from high 32-bit of %s", CX86Ops::x86_Name(GetMipsRegMapHi(MipsReg)), CRegName::GPR_Hi[MipsReg]);
-            SetX86MapOrder(GetMipsRegMapHi(MipsReg), 0);
-            SetX86Mapped(GetMipsRegMapHi(MipsReg), NotMapped);
-            SetX86Protected(GetMipsRegMapHi(MipsReg), false);
+            x86RegIndex RegIndex = GetIndexFromX86Reg(GetMipsRegMapHi(MipsReg));
+            SetX86MapOrder(RegIndex, 0);
+            SetX86Mapped(RegIndex, NotMapped);
+            SetX86Protected(RegIndex, false);
             SetMipsRegHi(MipsReg, 0);
         }
         Reg = GetMipsRegMapLo(MipsReg);
     }
-    for (count = 0; count < 10; count++)
+    for (uint32_t i = 0; i < x86RegIndex_Size; i++)
     {
-        uint32_t Count = GetX86MapOrder((CX86Ops::x86Reg)count);
-        if (Count > 0)
+        uint32_t MapOrder = GetX86MapOrder((x86RegIndex)i);
+        if (MapOrder > 0)
         {
-            SetX86MapOrder((CX86Ops::x86Reg)count, Count + 1);
+            SetX86MapOrder((x86RegIndex)i, MapOrder);
         }
     }
-    SetX86MapOrder(Reg, 1);
+    SetX86MapOrder(GetIndexFromX86Reg(Reg), 1);
 
     if (MipsRegToLoad > 0)
     {
@@ -683,17 +708,15 @@ void CX86RegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsReg
     {
         m_Assembler.XorX86RegToX86Reg(Reg, Reg);
     }
-    SetX86Mapped(Reg, GPR_Mapped);
-    SetX86Protected(Reg, true);
+    SetX86Mapped(GetIndexFromX86Reg(Reg), GPR_Mapped);
+    SetX86Protected(GetIndexFromX86Reg(Reg), true);
     SetMipsRegMapLo(MipsReg, Reg);
     SetMipsRegState(MipsReg, SignValue ? STATE_MAPPED_32_SIGN : STATE_MAPPED_32_ZERO);
 }
 
 void CX86RegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
 {
-    CX86Ops::x86Reg x86Hi, x86lo;
-    int32_t count;
-
+    CX86Ops::x86Reg x86Hi = CX86Ops::x86_Unknown, x86lo = CX86Ops::x86_Unknown;
     if (MipsReg == 0)
     {
         if (HaveDebugger()) { g_Notify->DisplayError("Map_GPR_32bit\n\nWhy are you trying to map register 0?"); }
@@ -709,11 +732,11 @@ void CX86RegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
             if (HaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); }
             return;
         }
-        SetX86Protected(x86Hi, true);
+        SetX86Protected(GetIndexFromX86Reg(x86Hi), true);
 
         x86lo = FreeX86Reg();
         if (x86lo < 0) { g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); return; }
-        SetX86Protected(x86lo, true);
+        SetX86Protected(GetIndexFromX86Reg(x86lo), true);
 
         m_CodeBlock.Log("    regcache: allocate %s to hi word of %s", CX86Ops::x86_Name(x86Hi), CRegName::GPR[MipsReg]);
         m_CodeBlock.Log("    regcache: allocate %s to low word of %s", CX86Ops::x86_Name(x86lo), CRegName::GPR[MipsReg]);
@@ -723,14 +746,14 @@ void CX86RegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
         x86lo = GetMipsRegMapLo(MipsReg);
         if (Is32Bit(MipsReg))
         {
-            SetX86Protected(x86lo, true);
+            SetX86Protected(GetIndexFromX86Reg(x86lo), true);
             x86Hi = FreeX86Reg();
             if (x86Hi == CX86Ops::x86_Unknown)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
                 return;
             }
-            SetX86Protected(x86Hi, true);
+            SetX86Protected(GetIndexFromX86Reg(x86Hi), true);
 
             m_CodeBlock.Log("    regcache: allocate %s to hi word of %s", CX86Ops::x86_Name(x86Hi), CRegName::GPR[MipsReg]);
         }
@@ -740,17 +763,17 @@ void CX86RegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
         }
     }
 
-    for (count = 0; count < 10; count++)
+    for (uint32_t i = 0; i < x86RegIndex_Size; i++)
     {
-        int32_t MapOrder = GetX86MapOrder((CX86Ops::x86Reg)count);
+        uint32_t MapOrder = GetX86MapOrder((x86RegIndex)i);
         if (MapOrder > 0)
         {
-            SetX86MapOrder((CX86Ops::x86Reg)count, MapOrder + 1);
+            SetX86MapOrder((x86RegIndex)i, MapOrder + 1);
         }
     }
 
-    SetX86MapOrder(x86Hi, 1);
-    SetX86MapOrder(x86lo, 1);
+    SetX86MapOrder(GetIndexFromX86Reg(x86Hi), 1);
+    SetX86MapOrder(GetIndexFromX86Reg(x86lo), 1);
     if (MipsRegToLoad > 0)
     {
         if (IsUnknown(MipsRegToLoad))
@@ -811,8 +834,8 @@ void CX86RegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
         m_Assembler.XorX86RegToX86Reg(x86Hi, x86Hi);
         m_Assembler.XorX86RegToX86Reg(x86lo, x86lo);
     }
-    SetX86Mapped(x86Hi, GPR_Mapped);
-    SetX86Mapped(x86lo, GPR_Mapped);
+    SetX86Mapped(GetIndexFromX86Reg(x86Hi), GPR_Mapped);
+    SetX86Mapped(GetIndexFromX86Reg(x86lo), GPR_Mapped);
     SetMipsRegMapHi(MipsReg, x86Hi);
     SetMipsRegMapLo(MipsReg, x86lo);
     SetMipsRegState(MipsReg, STATE_MAPPED_64);
@@ -820,18 +843,16 @@ void CX86RegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
 
 CX86Ops::CX86Ops::x86Reg CX86RegInfo::Map_TempReg(CX86Ops::CX86Ops::x86Reg Reg, int32_t MipsReg, bool LoadHiWord)
 {
-    int32_t count;
-
     if (Reg == CX86Ops::x86_Any)
     {
-        if (GetX86Mapped(CX86Ops::x86_EAX) == Temp_Mapped && !GetX86Protected(CX86Ops::x86_EAX)) { Reg = CX86Ops::x86_EAX; }
-        else if (GetX86Mapped(CX86Ops::x86_EBX) == Temp_Mapped && !GetX86Protected(CX86Ops::x86_EBX)) { Reg = CX86Ops::x86_EBX; }
-        else if (GetX86Mapped(CX86Ops::x86_ECX) == Temp_Mapped && !GetX86Protected(CX86Ops::x86_ECX)) { Reg = CX86Ops::x86_ECX; }
-        else if (GetX86Mapped(CX86Ops::x86_EDX) == Temp_Mapped && !GetX86Protected(CX86Ops::x86_EDX)) { Reg = CX86Ops::x86_EDX; }
-        else if (GetX86Mapped(CX86Ops::x86_ESI) == Temp_Mapped && !GetX86Protected(CX86Ops::x86_ESI)) { Reg = CX86Ops::x86_ESI; }
-        else if (GetX86Mapped(CX86Ops::x86_EDI) == Temp_Mapped && !GetX86Protected(CX86Ops::x86_EDI)) { Reg = CX86Ops::x86_EDI; }
-        else if (GetX86Mapped(CX86Ops::x86_EBP) == Temp_Mapped && !GetX86Protected(CX86Ops::x86_EBP)) { Reg = CX86Ops::x86_EBP; }
-        else if (GetX86Mapped(CX86Ops::x86_ESP) == Temp_Mapped && !GetX86Protected(CX86Ops::x86_ESP)) { Reg = CX86Ops::x86_ESP; }
+        if (GetX86Mapped(x86RegIndex_EAX) == Temp_Mapped && !GetX86Protected(x86RegIndex_EAX)) { Reg = CX86Ops::x86_EAX; }
+        else if (GetX86Mapped(x86RegIndex_EBX) == Temp_Mapped && !GetX86Protected(x86RegIndex_EBX)) { Reg = CX86Ops::x86_EBX; }
+        else if (GetX86Mapped(x86RegIndex_ECX) == Temp_Mapped && !GetX86Protected(x86RegIndex_ECX)) { Reg = CX86Ops::x86_ECX; }
+        else if (GetX86Mapped(x86RegIndex_EDX) == Temp_Mapped && !GetX86Protected(x86RegIndex_EDX)) { Reg = CX86Ops::x86_EDX; }
+        else if (GetX86Mapped(x86RegIndex_ESI) == Temp_Mapped && !GetX86Protected(x86RegIndex_ESI)) { Reg = CX86Ops::x86_ESI; }
+        else if (GetX86Mapped(x86RegIndex_EDI) == Temp_Mapped && !GetX86Protected(x86RegIndex_EDI)) { Reg = CX86Ops::x86_EDI; }
+        else if (GetX86Mapped(x86RegIndex_EBP) == Temp_Mapped && !GetX86Protected(x86RegIndex_EBP)) { Reg = CX86Ops::x86_EBP; }
+        else if (GetX86Mapped(x86RegIndex_ESP) == Temp_Mapped && !GetX86Protected(x86RegIndex_ESP)) { Reg = CX86Ops::x86_ESP; }
 
         if (Reg == CX86Ops::x86_Any)
         {
@@ -846,10 +867,10 @@ CX86Ops::CX86Ops::x86Reg CX86RegInfo::Map_TempReg(CX86Ops::CX86Ops::x86Reg Reg, 
     }
     else if (Reg == CX86Ops::x86_Any8Bit)
     {
-        if (GetX86Mapped(CX86Ops::x86_EAX) == Temp_Mapped && !GetX86Protected(CX86Ops::x86_EAX)) { Reg = CX86Ops::x86_EAX; }
-        else if (GetX86Mapped(CX86Ops::x86_EBX) == Temp_Mapped && !GetX86Protected(CX86Ops::x86_EBX)) { Reg = CX86Ops::x86_EBX; }
-        else if (GetX86Mapped(CX86Ops::x86_ECX) == Temp_Mapped && !GetX86Protected(CX86Ops::x86_ECX)) { Reg = CX86Ops::x86_ECX; }
-        else if (GetX86Mapped(CX86Ops::x86_EDX) == Temp_Mapped && !GetX86Protected(CX86Ops::x86_EDX)) { Reg = CX86Ops::x86_EDX; }
+        if (GetX86Mapped(x86RegIndex_EAX) == Temp_Mapped && !GetX86Protected(x86RegIndex_EAX)) { Reg = CX86Ops::x86_EAX; }
+        else if (GetX86Mapped(x86RegIndex_EBX) == Temp_Mapped && !GetX86Protected(x86RegIndex_EBX)) { Reg = CX86Ops::x86_EBX; }
+        else if (GetX86Mapped(x86RegIndex_ECX) == Temp_Mapped && !GetX86Protected(x86RegIndex_ECX)) { Reg = CX86Ops::x86_ECX; }
+        else if (GetX86Mapped(x86RegIndex_EDX) == Temp_Mapped && !GetX86Protected(x86RegIndex_EDX)) { Reg = CX86Ops::x86_EDX; }
 
         if (Reg == CX86Ops::x86_Any8Bit)
         {
@@ -862,54 +883,54 @@ CX86Ops::CX86Ops::x86Reg CX86RegInfo::Map_TempReg(CX86Ops::CX86Ops::x86Reg Reg, 
             }
         }
     }
-    else if (GetX86Mapped(Reg) == GPR_Mapped)
+    else if (GetX86Mapped(GetIndexFromX86Reg(Reg)) == GPR_Mapped)
     {
-        if (GetX86Protected(Reg))
+        if (GetX86Protected(GetIndexFromX86Reg(Reg)))
         {
             WriteTrace(TraceRegisterCache, TraceError, "Register is protected");
             g_Notify->BreakPoint(__FILE__, __LINE__);
             return CX86Ops::x86_Unknown;
         }
 
-        SetX86Protected(Reg, true);
+        SetX86Protected(GetIndexFromX86Reg(Reg), true);
         CX86Ops::x86Reg NewReg = FreeX86Reg();
-        for (count = 1; count < 32; count++)
+        for (uint32_t i = 1; i < 32; i++)
         {
-            if (!IsMapped(count))
+            if (!IsMapped(i))
             {
                 continue;
             }
-            if (GetMipsRegMapLo(count) == Reg)
+            if (GetMipsRegMapLo(i) == Reg)
             {
                 if (NewReg == CX86Ops::x86_Unknown)
                 {
-                    UnMap_GPR(count, true);
+                    UnMap_GPR(i, true);
                     break;
                 }
-                m_CodeBlock.Log("    regcache: change allocation of %s from %s to %s", CRegName::GPR[count], CX86Ops::x86_Name(Reg), CX86Ops::x86_Name(NewReg));
-                SetX86Mapped(NewReg, GPR_Mapped);
-                SetX86MapOrder(NewReg, GetX86MapOrder(Reg));
-                SetMipsRegMapLo(count, NewReg);
+                m_CodeBlock.Log("    regcache: change allocation of %s from %s to %s", CRegName::GPR[i], CX86Ops::x86_Name(Reg), CX86Ops::x86_Name(NewReg));
+                SetX86Mapped(GetIndexFromX86Reg(NewReg), GPR_Mapped);
+                SetX86MapOrder(GetIndexFromX86Reg(NewReg), GetX86MapOrder(GetIndexFromX86Reg(Reg)));
+                SetMipsRegMapLo(i, NewReg);
                 m_Assembler.MoveX86RegToX86Reg(Reg, NewReg);
-                if (MipsReg == count && !LoadHiWord)
+                if (MipsReg == (int32_t)i && !LoadHiWord)
                 {
                     MipsReg = -1;
                 }
                 break;
             }
-            if (Is64Bit(count) && GetMipsRegMapHi(count) == Reg)
+            if (Is64Bit(i) && GetMipsRegMapHi(i) == Reg)
             {
                 if (NewReg == CX86Ops::x86_Unknown)
                 {
-                    UnMap_GPR(count, true);
+                    UnMap_GPR(i, true);
                     break;
                 }
-                m_CodeBlock.Log("    regcache: change allocation of %s from %s to %s", CRegName::GPR_Hi[count], CX86Ops::x86_Name(Reg), CX86Ops::x86_Name(NewReg));
-                SetX86Mapped(NewReg, GPR_Mapped);
-                SetX86MapOrder(NewReg, GetX86MapOrder(Reg));
-                SetMipsRegMapHi(count, NewReg);
+                m_CodeBlock.Log("    regcache: change allocation of %s from %s to %s", CRegName::GPR_Hi[i], CX86Ops::x86_Name(Reg), CX86Ops::x86_Name(NewReg));
+                SetX86Mapped(GetIndexFromX86Reg(NewReg), GPR_Mapped);
+                SetX86MapOrder(GetIndexFromX86Reg(NewReg), GetX86MapOrder(GetIndexFromX86Reg(Reg)));
+                SetMipsRegMapHi(i, NewReg);
                 m_Assembler.MoveX86RegToX86Reg(Reg, NewReg);
-                if (MipsReg == count && LoadHiWord)
+                if (MipsReg == (int32_t)i && LoadHiWord)
                 {
                     MipsReg = -1;
                 }
@@ -917,7 +938,7 @@ CX86Ops::CX86Ops::x86Reg CX86RegInfo::Map_TempReg(CX86Ops::CX86Ops::x86Reg Reg, 
             }
         }
     }
-    else if (GetX86Mapped(Reg) == Stack_Mapped)
+    else if (GetX86Mapped(GetIndexFromX86Reg(Reg)) == Stack_Mapped)
     {
         UnMap_X86reg(Reg);
     }
@@ -975,17 +996,17 @@ CX86Ops::CX86Ops::x86Reg CX86RegInfo::Map_TempReg(CX86Ops::CX86Ops::x86Reg Reg, 
             }
         }
     }
-    SetX86Mapped(Reg, Temp_Mapped);
-    SetX86Protected(Reg, true);
-    for (count = 0; count < 10; count++)
+    SetX86Mapped(GetIndexFromX86Reg(Reg), Temp_Mapped);
+    SetX86Protected(GetIndexFromX86Reg(Reg), true);
+    for (uint32_t i = 0; i < x86RegIndex_Size; i++)
     {
-        int32_t MapOrder = GetX86MapOrder((CX86Ops::x86Reg)count);
+        int32_t MapOrder = GetX86MapOrder((x86RegIndex)i);
         if (MapOrder > 0)
         {
-            SetX86MapOrder((CX86Ops::x86Reg)count, MapOrder + 1);
+            SetX86MapOrder((x86RegIndex)i, MapOrder + 1);
         }
     }
-    SetX86MapOrder(Reg, 1);
+    SetX86MapOrder(GetIndexFromX86Reg(Reg), 1);
     return Reg;
 }
 
@@ -997,9 +1018,9 @@ void CX86RegInfo::ProtectGPR(uint32_t Reg)
     }
     if (Is64Bit(Reg))
     {
-        SetX86Protected(GetMipsRegMapHi(Reg), true);
+        SetX86Protected(GetIndexFromX86Reg(GetMipsRegMapHi(Reg)), true);
     }
-    SetX86Protected(GetMipsRegMapLo(Reg), true);
+    SetX86Protected(GetIndexFromX86Reg(GetMipsRegMapLo(Reg)), true);
 }
 
 void CX86RegInfo::UnProtectGPR(uint32_t Reg)
@@ -1010,16 +1031,16 @@ void CX86RegInfo::UnProtectGPR(uint32_t Reg)
     }
     if (Is64Bit(Reg))
     {
-        SetX86Protected(GetMipsRegMapHi(Reg), false);
+        SetX86Protected(GetIndexFromX86Reg(GetMipsRegMapHi(Reg)), false);
     }
-    SetX86Protected(GetMipsRegMapLo(Reg), false);
+    SetX86Protected(GetIndexFromX86Reg(GetMipsRegMapLo(Reg)), false);
 }
 
 void CX86RegInfo::ResetX86Protection()
 {
-    for (int32_t count = 0; count < 10; count++)
+    for (int32_t i = 0; i < x86RegIndex_Size; i++)
     {
-        SetX86Protected((CX86Ops::x86Reg)count, false);
+        SetX86Protected((x86RegIndex)i, false);
     }
 }
 
@@ -1130,7 +1151,7 @@ void CX86RegInfo::UnMap_FPR(int32_t Reg, bool WriteBackValue)
                     g_Notify->DisplayError(stdstr_f("%s\nUnknown format to load %d", __FUNCTION__, m_x86fpu_State[StackTopPos()]).c_str());
                 }
             }
-            SetX86Protected(TempReg, false);
+            SetX86Protected(GetIndexFromX86Reg(TempReg), false);
             FpuRoundingModel(RegPos) = RoundDefault;
             m_x86fpu_MappedTo[RegPos] = -1;
             m_x86fpu_State[RegPos] = FPU_Unknown;
@@ -1190,12 +1211,12 @@ void CX86RegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
     if (Is64Bit(Reg))
     {
         m_CodeBlock.Log("    regcache: unallocate %s from %s", CX86Ops::x86_Name(GetMipsRegMapHi(Reg)), CRegName::GPR_Hi[Reg]);
-        SetX86Mapped(GetMipsRegMapHi(Reg), NotMapped);
-        SetX86Protected(GetMipsRegMapHi(Reg), false);
+        SetX86Mapped(GetIndexFromX86Reg(GetMipsRegMapHi(Reg)), NotMapped);
+        SetX86Protected(GetIndexFromX86Reg(GetMipsRegMapHi(Reg)), false);
     }
     m_CodeBlock.Log("    regcache: unallocate %s from %s", CX86Ops::x86_Name(GetMipsRegMapLo(Reg)), CRegName::GPR_Lo[Reg]);
-    SetX86Mapped(GetMipsRegMapLo(Reg), NotMapped);
-    SetX86Protected(GetMipsRegMapLo(Reg), false);
+    SetX86Mapped(GetIndexFromX86Reg(GetMipsRegMapLo(Reg)), NotMapped);
+    SetX86Protected(GetIndexFromX86Reg(GetMipsRegMapLo(Reg)), false);
     if (!WriteBackValue)
     {
         SetMipsRegState(Reg, STATE_UNKNOWN);
@@ -1231,38 +1252,38 @@ CX86Ops::CX86Ops::x86Reg CX86RegInfo::UnMap_TempReg()
 {
     CX86Ops::CX86Ops::x86Reg Reg = CX86Ops::x86_Unknown;
 
-    if (GetX86Mapped(CX86Ops::x86_EAX) == Temp_Mapped && !GetX86Protected(CX86Ops::x86_EAX)) { Reg = CX86Ops::x86_EAX; }
-    else if (GetX86Mapped(CX86Ops::x86_EBX) == Temp_Mapped && !GetX86Protected(CX86Ops::x86_EBX)) { Reg = CX86Ops::x86_EBX; }
-    else if (GetX86Mapped(CX86Ops::x86_ECX) == Temp_Mapped && !GetX86Protected(CX86Ops::x86_ECX)) { Reg = CX86Ops::x86_ECX; }
-    else if (GetX86Mapped(CX86Ops::x86_EDX) == Temp_Mapped && !GetX86Protected(CX86Ops::x86_EDX)) { Reg = CX86Ops::x86_EDX; }
-    else if (GetX86Mapped(CX86Ops::x86_ESI) == Temp_Mapped && !GetX86Protected(CX86Ops::x86_ESI)) { Reg = CX86Ops::x86_ESI; }
-    else if (GetX86Mapped(CX86Ops::x86_EDI) == Temp_Mapped && !GetX86Protected(CX86Ops::x86_EDI)) { Reg = CX86Ops::x86_EDI; }
-    else if (GetX86Mapped(CX86Ops::x86_EBP) == Temp_Mapped && !GetX86Protected(CX86Ops::x86_EBP)) { Reg = CX86Ops::x86_EBP; }
-    else if (GetX86Mapped(CX86Ops::x86_ESP) == Temp_Mapped && !GetX86Protected(CX86Ops::x86_ESP)) { Reg = CX86Ops::x86_ESP; }
+    if (GetX86Mapped(x86RegIndex_EAX) == Temp_Mapped && !GetX86Protected(x86RegIndex_EAX)) { Reg = CX86Ops::x86_EAX; }
+    else if (GetX86Mapped(x86RegIndex_EBX) == Temp_Mapped && !GetX86Protected(x86RegIndex_EBX)) { Reg = CX86Ops::x86_EBX; }
+    else if (GetX86Mapped(x86RegIndex_ECX) == Temp_Mapped && !GetX86Protected(x86RegIndex_ECX)) { Reg = CX86Ops::x86_ECX; }
+    else if (GetX86Mapped(x86RegIndex_EDX) == Temp_Mapped && !GetX86Protected(x86RegIndex_EDX)) { Reg = CX86Ops::x86_EDX; }
+    else if (GetX86Mapped(x86RegIndex_ESI) == Temp_Mapped && !GetX86Protected(x86RegIndex_ESI)) { Reg = CX86Ops::x86_ESI; }
+    else if (GetX86Mapped(x86RegIndex_EDI) == Temp_Mapped && !GetX86Protected(x86RegIndex_EDI)) { Reg = CX86Ops::x86_EDI; }
+    else if (GetX86Mapped(x86RegIndex_EBP) == Temp_Mapped && !GetX86Protected(x86RegIndex_EBP)) { Reg = CX86Ops::x86_EBP; }
+    else if (GetX86Mapped(x86RegIndex_ESP) == Temp_Mapped && !GetX86Protected(x86RegIndex_ESP)) { Reg = CX86Ops::x86_ESP; }
 
     if (Reg != CX86Ops::x86_Unknown)
     {
-        if (GetX86Mapped(Reg) == Temp_Mapped)
+        if (GetX86Mapped(GetIndexFromX86Reg(Reg)) == Temp_Mapped)
         {
             m_CodeBlock.Log("    regcache: unallocate %s from temp storage", CX86Ops::x86_Name(Reg));
         }
-        SetX86Mapped(Reg, NotMapped);
+        SetX86Mapped(GetIndexFromX86Reg(Reg), NotMapped);
     }
     return Reg;
 }
 
-bool CX86RegInfo::UnMap_X86reg(CX86Ops::CX86Ops::x86Reg Reg)
+bool CX86RegInfo::UnMap_X86reg(CX86Ops::x86Reg Reg)
 {
     int32_t count;
 
-    if (GetX86Mapped(Reg) == NotMapped)
+    if (GetX86Mapped(GetIndexFromX86Reg(Reg)) == NotMapped)
     {
-        if (!GetX86Protected(Reg))
+        if (!GetX86Protected(GetIndexFromX86Reg(Reg)))
         {
             return true;
         }
     }
-    else if (GetX86Mapped(Reg) == CX86RegInfo::GPR_Mapped)
+    else if (GetX86Mapped(GetIndexFromX86Reg(Reg)) == CX86RegInfo::GPR_Mapped)
     {
         for (count = 1; count < 32; count++)
         {
@@ -1273,7 +1294,7 @@ bool CX86RegInfo::UnMap_X86reg(CX86Ops::CX86Ops::x86Reg Reg)
 
             if (Is64Bit(count) && GetMipsRegMapHi(count) == Reg)
             {
-                if (!GetX86Protected(Reg))
+                if (!GetX86Protected(GetIndexFromX86Reg(Reg)))
                 {
                     UnMap_GPR(count, true);
                     return true;
@@ -1282,7 +1303,7 @@ bool CX86RegInfo::UnMap_X86reg(CX86Ops::CX86Ops::x86Reg Reg)
             }
             if (GetMipsRegMapLo(count) == Reg)
             {
-                if (!GetX86Protected(Reg))
+                if (!GetX86Protected(GetIndexFromX86Reg(Reg)))
                 {
                     UnMap_GPR(count, true);
                     return true;
@@ -1291,20 +1312,20 @@ bool CX86RegInfo::UnMap_X86reg(CX86Ops::CX86Ops::x86Reg Reg)
             }
         }
     }
-    else if (GetX86Mapped(Reg) == CX86RegInfo::Temp_Mapped)
+    else if (GetX86Mapped(GetIndexFromX86Reg(Reg)) == CX86RegInfo::Temp_Mapped)
     {
-        if (!GetX86Protected(Reg))
+        if (!GetX86Protected(GetIndexFromX86Reg(Reg)))
         {
             m_CodeBlock.Log("    regcache: unallocate %s from temp storage", CX86Ops::x86_Name(Reg));
-            SetX86Mapped(Reg, NotMapped);
+            SetX86Mapped(GetIndexFromX86Reg(Reg), NotMapped);
             return true;
         }
     }
-    else if (GetX86Mapped(Reg) == CX86RegInfo::Stack_Mapped)
+    else if (GetX86Mapped(GetIndexFromX86Reg(Reg)) == CX86RegInfo::Stack_Mapped)
     {
         m_CodeBlock.Log("    regcache: unallocate %s from memory stack", CX86Ops::x86_Name(Reg));
         m_Assembler.MoveX86regToVariable(Reg, &(g_Recompiler->MemoryStackPos()), "MemoryStack");
-        SetX86Mapped(Reg, NotMapped);
+        SetX86Mapped(GetIndexFromX86Reg(Reg), NotMapped);
         return true;
     }
 
@@ -1319,9 +1340,8 @@ void CX86RegInfo::WriteBackRegisters()
     bool bEdiZero = false;
     bool bEsiSign = false;
 
-    int32_t X86RegCount = sizeof(CX86Ops::x86_Registers) / sizeof(CX86Ops::x86_Registers[0]);
-    for (int32_t i = 0; i < X86RegCount; i++) { SetX86Protected(CX86Ops::x86_Registers[i], false); }
-    for (int32_t i = 0; i < X86RegCount; i++) { UnMap_X86reg(CX86Ops::x86_Registers[i]); }
+    for (uint32_t i = 0; i < x86RegIndex_Size; i++) { SetX86Protected((x86RegIndex)i, false); }
+    for (uint32_t i = 0; i < x86RegIndex_Size; i++) { UnMap_X86reg(GetX86RegFromIndex((x86RegIndex)i)); }
 
     for (count = 1; count < 32; count++)
     {
