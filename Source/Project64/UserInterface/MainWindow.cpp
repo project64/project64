@@ -8,11 +8,28 @@
 #include <Project64/UserInterface/Debugger/DebuggerUI.h>
 #include "DiscordRPC.h"
 
-void EnterLogOptions(HWND hwndOwner);
-
 #pragma comment(lib, "Comctl32.lib")
 
-LRESULT CALLBACK MainGui_Proc(HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD lParam);
+UINT GetSimpleInternalAppId();
+void EnterLogOptions(HWND hwndOwner);
+LRESULT CALLBACK MainGui_Proc(HWND WndHandle, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+
+static DWORD_PTR SendMessageTimeout(HWND hWnd, UINT Msg, WPARAM wp, LPARAM lp)
+{
+    DWORD_PTR v, r = SendMessageTimeout(hWnd, Msg, wp, lp, SMTO_ABORTIFHUNG, 3000, &v);
+    return r ? v: r;
+}
+
+static bool RunImage(const char*filename)
+{
+    stdstr ext = CPath(filename).GetExtension();
+    if ((!(_stricmp(ext.c_str(), "ndd") == 0)) && (!(_stricmp(ext.c_str(), "d64") == 0)))
+        return CN64System::RunFileImage(filename);
+    else
+        return CN64System::RunDiskImage(filename);
+}
+
 
 CMainGui::CMainGui(bool bMainWindow, const char * WindowTitle) :
     CRomBrowser(m_hMainWindow, m_hStatusWnd),
@@ -89,23 +106,29 @@ CMainGui::~CMainGui(void)
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
+std::wstring CMainGui::GetWindowClassName()
+{
+    std::wstring className = stdstr_f("Project64 %s", VER_FILE_VERSION_STR).ToUTF16();
+    return className;
+}
+
 bool CMainGui::RegisterWinClass(void)
 {
-    std::wstring VersionDisplay = stdstr_f("Project64 %s", VER_FILE_VERSION_STR).ToUTF16();
-
+    std::wstring className = GetWindowClassName();
+    HMODULE hExeModule = GetModuleHandle(nullptr), hThisModule = hExeModule;
     WNDCLASS wcl;
 
     wcl.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
     wcl.cbClsExtra = 0;
     wcl.cbWndExtra = 0;
-    wcl.hIcon = LoadIcon(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDI_PJ64_Icon));
+    wcl.hIcon = LoadIcon(hExeModule, MAKEINTRESOURCE(IDI_PJ64_Icon));
     wcl.hCursor = LoadCursor(nullptr, IDC_ARROW);
-    wcl.hInstance = GetModuleHandle(nullptr);
+    wcl.hInstance = hThisModule;
 
-    wcl.lpfnWndProc = (WNDPROC)MainGui_Proc;
+    wcl.lpfnWndProc = MainGui_Proc;
     wcl.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
     wcl.lpszMenuName = nullptr;
-    wcl.lpszClassName = VersionDisplay.c_str();
+    wcl.lpszClassName = className.c_str();
     if (RegisterClass(&wcl) == 0) return false;
     return true;
 }
@@ -589,7 +612,7 @@ void CMainGui::SaveWindowLoc(void)
     }
 }
 
-LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
+LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)
     {
@@ -950,7 +973,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             case JSAPI_ACT_RESET:
                 if (g_BaseSystem)
                 {
-                    g_BaseSystem->ExternalEvent((bool)lParam ? SysEvent_ResetCPU_Soft : SysEvent_ResetCPU_Hard);
+                    g_BaseSystem->ExternalEvent(lParam ? SysEvent_ResetCPU_Soft : SysEvent_ResetCPU_Hard);
                 }
                break;
             case JSAPI_ACT_PAUSE:
@@ -962,6 +985,24 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             }
         }
         break;
+    case WM_EXTERNALAPI:
+        switch(LOWORD(wParam))
+        {
+        case EXAPI_QUERY_SIMPLE:
+            if (lParam == 0) return GetSimpleInternalAppId();
+            break;
+        }
+        return 0;
+    case WM_COPYDATA:
+        if (lParam)
+        {
+            COPYDATASTRUCT &cds = *(COPYDATASTRUCT*) lParam;
+            if (cds.dwData == COPYDATAOPERATION_RUNIMAGE && cds.cbData > 1)
+            {
+                return RunImage((char*) cds.lpData) ? 2 : 1;
+            }
+        }
+        return 0;
     case WM_LBUTTONDOWN:
     case WM_MBUTTONDOWN:
     case WM_RBUTTONDOWN:
@@ -1151,20 +1192,10 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
     case WM_DROPFILES:
         {
             char filename[MAX_PATH];
-
             HDROP hDrop = (HDROP)wParam;
-            DragQueryFileA(hDrop, 0, filename, sizeof(filename));
+            UINT cch = DragQueryFileA(hDrop, 0, filename, sizeof(filename));
             DragFinish(hDrop);
-
-            stdstr ext = CPath(filename).GetExtension();
-            if ((!(_stricmp(ext.c_str(), "ndd") == 0)) && (!(_stricmp(ext.c_str(), "d64") == 0)))
-            {
-                CN64System::RunFileImage(filename);
-            }
-            else
-            {
-                CN64System::RunDiskImage(filename);
-            }
+            if (cch) RunImage(filename);
         }
         break;
     case WM_DESTROY:
@@ -1194,4 +1225,43 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
         return DefWindowProc(hWnd, uMsg, wParam, lParam);
     }
     return TRUE;
+}
+
+static BOOL CALLBACK FindOtherInstanceWindowEnumProc(HWND hWnd, LPARAM param)
+{
+    SIZE_T *data = (SIZE_T*) param;
+    WCHAR buf[200];
+    if (GetClassName(hWnd, buf, 200) && !lstrcmp(buf, (LPCWSTR) data[1]))
+    {
+        // Sending this simple message verifies that the window is not hung.
+        if (GetSimpleInternalAppId() == SendMessageTimeout(hWnd, WM_EXTERNALAPI, EXAPI_QUERY_SIMPLE, 0))
+        {
+            data[0] = (SIZE_T) hWnd;
+            return false;
+        }
+    }
+    return true;
+}
+
+HWND WINAPI FindOtherInstanceWindow()
+{
+    std::wstring classNameStr = CMainGui::GetWindowClassName();
+    LPCWSTR className = classNameStr.c_str();
+    SIZE_T data[2] = { 0, (SIZE_T) className };
+    EnumWindows(FindOtherInstanceWindowEnumProc, (LPARAM) data);
+    return (HWND) data[0];
+}
+
+bool WINAPI LoadInOtherInstance(HWND hWndOther, LPCSTR RomFile)
+{
+    UINT cbChar = sizeof(char), cch = lstrlenA(RomFile);
+    COPYDATASTRUCT cds = { COPYDATAOPERATION_RUNIMAGE };
+    cds.cbData = cbChar * (cch + 1);
+    cds.lpData = (void*) RomFile;
+    return SendMessageTimeout(hWndOther, WM_COPYDATA, 0, (LPARAM) &cds) != 0;
+}
+
+UINT GetSimpleInternalAppId()
+{
+    return 0x50363400 ^ __LINE__; // 'P64\0' xor some value that hopefully changes if there are major WM_EXTERNALAPI changes
 }
