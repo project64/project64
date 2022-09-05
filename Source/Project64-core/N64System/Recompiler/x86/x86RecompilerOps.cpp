@@ -620,6 +620,13 @@ void CX86RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
     }
     else if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT_DONE)
     {
+        if (m_CompilePC + ((int16_t)m_Opcode.offset << 2) + 4 == m_CompilePC + 8)
+        {
+            m_PipelineStage = PIPELINE_STAGE_NORMAL;
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+            SetCurrentPC(GetCurrentPC() + 4);
+            return;
+        }
         if (m_EffectDelaySlot)
         {
             CJumpInfo * FallInfo = m_Section->m_Jump.FallThrough ? &m_Section->m_Jump : &m_Section->m_Cont;
