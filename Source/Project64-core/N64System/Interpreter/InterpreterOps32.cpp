@@ -715,7 +715,15 @@ void R4300iOp32::ADDI()
         StackValue += (int16_t)m_Opcode.immediate;
     }
 #endif
-    _GPR[m_Opcode.rt].W[0] = (_GPR[m_Opcode.rs].W[0] + ((int16_t)m_Opcode.immediate));
+    int32_t rs = _GPR[m_Opcode.rs].W[0];
+    int32_t imm = (int16_t)m_Opcode.immediate;
+    int32_t sum = rs + imm;
+    if ((~(rs ^ imm) & (rs ^ sum)) & 0x80000000)
+    {
+        GenerateOverflowException();
+        return;
+    }
+    _GPR[m_Opcode.rt].W[0] = sum;
 #ifdef Interpreter_StackTest
     if (m_Opcode.rt == 29 && m_Opcode.rs != 29)
     {
@@ -1001,7 +1009,15 @@ void R4300iOp32::SPECIAL_JALR()
 
 void R4300iOp32::SPECIAL_ADD()
 {
-    _GPR[m_Opcode.rd].W[0] = _GPR[m_Opcode.rs].W[0] + _GPR[m_Opcode.rt].W[0];
+    int32_t rs = _GPR[m_Opcode.rs].W[0];
+    int32_t rt = _GPR[m_Opcode.rt].W[0];
+    int32_t sum = rs + rt;
+    if ((~(rs ^ rt) & (rs ^ sum)) & 0x80000000)
+    {
+        GenerateOverflowException();
+        return;
+    }
+    _GPR[m_Opcode.rd].W[0] = sum;
 }
 
 void R4300iOp32::SPECIAL_ADDU()
@@ -1011,7 +1027,16 @@ void R4300iOp32::SPECIAL_ADDU()
 
 void R4300iOp32::SPECIAL_SUB()
 {
-    _GPR[m_Opcode.rd].W[0] = _GPR[m_Opcode.rs].W[0] - _GPR[m_Opcode.rt].W[0];
+    int32_t rs = _GPR[m_Opcode.rs].W[0];
+    int32_t rt = _GPR[m_Opcode.rt].W[0];
+    int32_t sub = rs - rt;
+
+    if (((rs ^ rt) & (rs ^ sub)) & 0x80000000)
+    {
+        GenerateOverflowException();
+        return;
+    }
+    _GPR[m_Opcode.rd].W[0] = sub;
 }
 
 void R4300iOp32::SPECIAL_SUBU()

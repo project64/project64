@@ -19,6 +19,7 @@ struct CExitInfo
         TLBReadMiss = 5,
         TLBWriteMiss = 6,
         ExitResetRecompCode = 8,
+        Exit_ExceptionOverflow,
     };
 
     std::string Name;

@@ -816,7 +816,15 @@ void R4300iOp::ADDI()
         StackValue += (int16_t)m_Opcode.immediate;
     }
 #endif
-    _GPR[m_Opcode.rt].DW = (_GPR[m_Opcode.rs].W[0] + ((int16_t)m_Opcode.immediate));
+    int32_t rs = _GPR[m_Opcode.rs].W[0];
+    int32_t imm = (int16_t)m_Opcode.immediate;
+    int32_t sum = rs + imm;
+    if ((~(rs ^ imm) & (rs ^ sum)) & 0x80000000)
+    {
+        GenerateOverflowException();
+        return;
+    }
+    _GPR[m_Opcode.rt].DW = sum;
 #ifdef Interpreter_StackTest
     if (m_Opcode.rt == 29 && m_Opcode.rs != 29)
     {
@@ -979,7 +987,16 @@ void R4300iOp::BGTZL()
 
 void R4300iOp::DADDI()
 {
-    _GPR[m_Opcode.rt].DW = _GPR[m_Opcode.rs].DW + (int64_t)((int16_t)m_Opcode.immediate);
+    int64_t rs = _GPR[m_Opcode.rs].DW;
+    int64_t imm = (int64_t)((int16_t)m_Opcode.immediate);
+    int64_t sum = rs + imm;
+    if ((~(rs ^ imm) & (rs ^ sum)) & 0x8000000000000000)
+    {
+        GenerateOverflowException();
+        return;
+    }
+    _GPR[m_Opcode.rt].DW = sum;
+
 }
 
 void R4300iOp::DADDIU()
@@ -1499,7 +1516,15 @@ void R4300iOp::SPECIAL_DDIVU()
 
 void R4300iOp::SPECIAL_ADD()
 {
-    _GPR[m_Opcode.rd].DW = _GPR[m_Opcode.rs].W[0] + _GPR[m_Opcode.rt].W[0];
+    int32_t rs = _GPR[m_Opcode.rs].W[0];
+    int32_t rt = _GPR[m_Opcode.rt].W[0];
+    int32_t sum = rs + rt;
+    if ((~(rs ^ rt) & (rs ^ sum)) & 0x80000000)
+    {
+        GenerateOverflowException();
+        return;
+    }
+    _GPR[m_Opcode.rd].DW = sum;
 }
 
 void R4300iOp::SPECIAL_ADDU()
@@ -1509,7 +1534,16 @@ void R4300iOp::SPECIAL_ADDU()
 
 void R4300iOp::SPECIAL_SUB()
 {
-    _GPR[m_Opcode.rd].DW = _GPR[m_Opcode.rs].W[0] - _GPR[m_Opcode.rt].W[0];
+    int32_t rs = _GPR[m_Opcode.rs].W[0];
+    int32_t rt = _GPR[m_Opcode.rt].W[0];
+    int32_t sub = rs - rt;
+
+    if (((rs ^ rt) & (rs ^ sub)) & 0x80000000)
+    {
+        GenerateOverflowException();
+        return;
+    }
+    _GPR[m_Opcode.rd].DW = sub;
 }
 
 void R4300iOp::SPECIAL_SUBU()
@@ -1569,7 +1603,15 @@ void R4300iOp::SPECIAL_SLTU()
 
 void R4300iOp::SPECIAL_DADD()
 {
-    _GPR[m_Opcode.rd].DW = _GPR[m_Opcode.rs].DW + _GPR[m_Opcode.rt].DW;
+    int64_t rs = _GPR[m_Opcode.rs].DW;
+    int64_t rt = _GPR[m_Opcode.rt].DW;
+    int64_t sum = rs + rt;
+    if ((~(rs ^ rt) & (rs ^ sum)) & 0x8000000000000000)
+    {
+        GenerateOverflowException();
+        return;
+    }
+    _GPR[m_Opcode.rd].DW = sum;
 }
 
 void R4300iOp::SPECIAL_DADDU()
@@ -1579,7 +1621,16 @@ void R4300iOp::SPECIAL_DADDU()
 
 void R4300iOp::SPECIAL_DSUB()
 {
-    _GPR[m_Opcode.rd].DW = _GPR[m_Opcode.rs].DW - _GPR[m_Opcode.rt].DW;
+    int64_t rs = _GPR[m_Opcode.rs].DW;
+    int64_t rt = _GPR[m_Opcode.rt].DW;
+    int64_t sub = rs - rt;
+
+    if (((rs ^ rt) & (rs ^ sub)) & 0x8000000000000000)
+    {
+        GenerateOverflowException();
+        return;
+    }
+    _GPR[m_Opcode.rd].DW = sub;
 }
 
 void R4300iOp::SPECIAL_DSUBU()
@@ -2684,6 +2735,13 @@ bool R4300iOp::MemoryBreakpoint()
 void R4300iOp::GenerateAddressErrorException(uint32_t VAddr, bool FromRead)
 {
     g_Reg->DoAddressError(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP, VAddr, FromRead);
+    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+}
+
+void R4300iOp::GenerateOverflowException(void)
+{
+    g_Reg->DoOverflowException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
     g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
     g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
 }

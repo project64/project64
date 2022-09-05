@@ -473,6 +473,7 @@ void CX86RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
         }
         if (m_CompilePC + ((int16_t)m_Opcode.offset << 2) + 4 == m_CompilePC + 8)
         {
+            m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
             return;
         }
 
@@ -2218,8 +2219,6 @@ void CX86RecompilerOps::JAL()
 
 void CX86RecompilerOps::ADDI()
 {
-    if (m_Opcode.rt == 0) { return; }
-
     if (g_System->bFastSP() && m_Opcode.rs == 29 && m_Opcode.rt == 29)
     {
         m_Assembler.AddConstToX86Reg(Map_MemoryStack(CX86Ops::x86_Any, true), (int16_t)m_Opcode.immediate);
@@ -2227,17 +2226,36 @@ void CX86RecompilerOps::ADDI()
 
     if (IsConst(m_Opcode.rs))
     {
-        if (IsMapped(m_Opcode.rt))
+        int32_t rs = GetMipsRegLo(m_Opcode.rs);
+        int32_t imm = (int16_t)m_Opcode.immediate;
+        int32_t sum = rs + imm;
+        if ((~(rs ^ imm) & (rs ^ sum)) & 0x80000000)
         {
-            UnMap_GPR(m_Opcode.rt, false);
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+            CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Exit_ExceptionOverflow, true, nullptr);
+            m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
         }
-        m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt, GetMipsRegLo(m_Opcode.rs) + (int16_t)m_Opcode.immediate);
-        m_RegWorkingSet.SetMipsRegState(m_Opcode.rt, CRegInfo::STATE_CONST_32_SIGN);
+        else if (m_Opcode.rt != 0)
+        {
+            if (IsMapped(m_Opcode.rt))
+            {
+                UnMap_GPR(m_Opcode.rt, false);
+            }
+            m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt, sum);
+            m_RegWorkingSet.SetMipsRegState(m_Opcode.rt, CRegInfo::STATE_CONST_32_SIGN);
+        }
     }
     else
     {
-        Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.rs);
-        m_Assembler.AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rt), (int16_t)m_Opcode.immediate);
+        ProtectGPR(m_Opcode.rt);
+        CX86Ops::x86Reg Reg = Map_TempReg(CX86Ops::x86_Any, m_Opcode.rs, false);
+        m_Assembler.AddConstToX86Reg(Reg, (int16_t)m_Opcode.immediate);
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Exit_ExceptionOverflow, false, &CX86Ops::JoLabel32);
+        if (m_Opcode.rt != 0)
+        {
+            Map_GPR_32bit(m_Opcode.rt, true, -1);
+            m_Assembler.MoveX86RegToX86Reg(Reg, GetMipsRegMapLo(m_Opcode.rt));
+        }
     }
     if (g_System->bFastSP() && m_Opcode.rt == 29 && m_Opcode.rs != 29)
     {
@@ -2619,7 +2637,7 @@ void CX86RecompilerOps::DADDI()
         UnMap_GPR(m_Opcode.rs, true);
     }
 
-    if (m_Opcode.rs != 0)
+    if (m_Opcode.rt != 0)
     {
         UnMap_GPR(m_Opcode.rt, true);
     }
@@ -4523,13 +4541,6 @@ void CX86RecompilerOps::SPECIAL_DSLLV()
     {
         return;
     }
-
-    if (IsConst(m_Opcode.rs))
-    {
-        //uint32_t Shift = (GetMipsRegLo(m_Opcode.rs) & 0x3F);
-        CX86RecompilerOps::UnknownOpcode();
-        return;
-    }
     Map_TempReg(CX86Ops::x86_ECX, m_Opcode.rs, false);
     m_Assembler.AndConstToX86Reg(CX86Ops::x86_ECX, 0x3F);
     Map_GPR_64bit(m_Opcode.rd, m_Opcode.rt);
@@ -4591,12 +4602,6 @@ void CX86RecompilerOps::SPECIAL_DSRLV()
             }
             return;
         }
-        if (m_Opcode.rd == m_Opcode.rt)
-        {
-            CX86RecompilerOps::UnknownOpcode();
-            return;
-        }
-
         Map_TempReg(CX86Ops::x86_ECX, -1, false);
         m_Assembler.MoveConstToX86reg(Shift, CX86Ops::x86_ECX);
         Map_GPR_64bit(m_Opcode.rd, m_Opcode.rt);
@@ -4648,13 +4653,6 @@ void CX86RecompilerOps::SPECIAL_DSRAV()
 
     if (m_Opcode.rd == 0)
     {
-        return;
-    }
-
-    if (IsConst(m_Opcode.rs))
-    {
-        //uint32_t Shift = (GetMipsRegLo(m_Opcode.rs) & 0x3F);
-        CX86RecompilerOps::UnknownOpcode();
         return;
     }
     Map_TempReg(CX86Ops::x86_ECX, m_Opcode.rs, false);
@@ -5127,43 +5125,55 @@ void CX86RecompilerOps::SPECIAL_DDIVU()
 
 void CX86RecompilerOps::SPECIAL_ADD()
 {
-    if (m_Opcode.rd == 0)
-    {
-        return;
-    }
-
     int source1 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rt : m_Opcode.rs;
     int source2 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rs : m_Opcode.rt;
 
     if (IsConst(source1) && IsConst(source2))
     {
-        uint32_t temp = GetMipsRegLo(source1) + GetMipsRegLo(source2);
-        if (IsMapped(m_Opcode.rd))
+        int32_t Val1 = GetMipsRegLo(source1);
+        int32_t Val2 = GetMipsRegLo(source2);
+        int32_t Sum = Val1 + Val2;
+        if ((~(Val1 ^ Val2) & (Val1 ^ Sum)) & 0x80000000)
         {
-            UnMap_GPR(m_Opcode.rd, false);
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+            CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Exit_ExceptionOverflow, true, nullptr);
+            m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
         }
-
-        m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, temp);
-        m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
+        else if (m_Opcode.rd != 0)
+        {
+            if (IsMapped(m_Opcode.rd))
+            {
+                UnMap_GPR(m_Opcode.rd, false);
+            }
+            m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, Sum);
+            m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
+        }
         return;
     }
 
-    Map_GPR_32bit(m_Opcode.rd, true, source1);
+    ProtectGPR(m_Opcode.rd);
+    CX86Ops::x86Reg Reg = Map_TempReg(CX86Ops::x86_Any, source1, false);
     if (IsConst(source2))
     {
-        m_Assembler.AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegLo(source2));
+        m_Assembler.AddConstToX86Reg(Reg, GetMipsRegLo(source2));
     }
     else if (IsKnown(source2) && IsMapped(source2))
     {
-        m_Assembler.AddX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapLo(source2));
+        m_Assembler.AddX86RegToX86Reg(Reg, GetMipsRegMapLo(source2));
     }
     else
     {
-        m_Assembler.AddVariableToX86reg(GetMipsRegMapLo(m_Opcode.rd), &_GPR[source2].W[0], CRegName::GPR_Lo[source2]);
+        m_Assembler.AddVariableToX86reg(Reg, &_GPR[source2].W[0], CRegName::GPR_Lo[source2]);
     }
     if (g_System->bFastSP() && m_Opcode.rd == 29)
     {
         ResetMemoryStack();
+    }
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Exit_ExceptionOverflow, false, &CX86Ops::JoLabel32);
+    if (m_Opcode.rd != 0)
+    {
+        Map_GPR_32bit(m_Opcode.rd, true, -1);
+        m_Assembler.MoveX86RegToX86Reg(Reg, GetMipsRegMapLo(m_Opcode.rd));
     }
 }
 
@@ -5210,44 +5220,49 @@ void CX86RecompilerOps::SPECIAL_ADDU()
 
 void CX86RecompilerOps::SPECIAL_SUB()
 {
-    if (m_Opcode.rd == 0)
-    {
-        return;
-    }
-
     if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs))
     {
-        uint32_t temp = GetMipsRegLo(m_Opcode.rs) - GetMipsRegLo(m_Opcode.rt);
+        int32_t rs = GetMipsRegLo(m_Opcode.rs);
+        int32_t rt = GetMipsRegLo(m_Opcode.rt);
+        int32_t sub = rs - rt;
 
-        if (IsMapped(m_Opcode.rd))
+        if (((rs ^ rt) & (rs ^ sub)) & 0x80000000)
         {
-            UnMap_GPR(m_Opcode.rd, false);
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+            CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Exit_ExceptionOverflow, true, nullptr);
+            m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
         }
-
-        m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, temp);
-        m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
+        else if (m_Opcode.rd != 0)
+        {
+            if (IsMapped(m_Opcode.rd))
+            {
+                UnMap_GPR(m_Opcode.rd, false);
+            }
+            m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, sub);
+            m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
+        }
     }
     else
     {
-        if (m_Opcode.rd == m_Opcode.rt)
-        {
-            CX86Ops::x86Reg Reg = Map_TempReg(CX86Ops::x86_Any, m_Opcode.rt, false);
-            Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rs);
-            m_Assembler.SubX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd), Reg);
-            return;
-        }
-        Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rs);
+        ProtectGPR(m_Opcode.rd);
+        CX86Ops::x86Reg Reg = Map_TempReg(CX86Ops::x86_Any, m_Opcode.rs, false);
         if (IsConst(m_Opcode.rt))
         {
-            m_Assembler.SubConstFromX86Reg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegLo(m_Opcode.rt));
+            m_Assembler.SubConstFromX86Reg(Reg, GetMipsRegLo(m_Opcode.rt));
         }
         else if (IsMapped(m_Opcode.rt))
         {
-            m_Assembler.SubX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapLo(m_Opcode.rt));
+            m_Assembler.SubX86RegToX86Reg(Reg, GetMipsRegMapLo(m_Opcode.rt));
         }
         else
         {
-            m_Assembler.SubVariableFromX86reg(GetMipsRegMapLo(m_Opcode.rd), &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
+            m_Assembler.SubVariableFromX86reg(Reg, &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
+        }
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Exit_ExceptionOverflow, false, &CX86Ops::JoLabel32);
+        if (m_Opcode.rd != 0)
+        {
+            Map_GPR_32bit(m_Opcode.rd, true, -1);
+            m_Assembler.MoveX86RegToX86Reg(Reg, GetMipsRegMapLo(m_Opcode.rd));
         }
     }
     if (g_System->bFastSP() && m_Opcode.rd == 29)
@@ -6597,33 +6612,36 @@ void CX86RecompilerOps::SPECIAL_SLTU()
 
 void CX86RecompilerOps::SPECIAL_DADD()
 {
-    if (m_Opcode.rd == 0)
-    {
-        return;
-    }
-
     if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs))
     {
-        if (IsMapped(m_Opcode.rd))
+        int64_t rs = Is64Bit(m_Opcode.rs) ? GetMipsReg(m_Opcode.rs) : (int64_t)GetMipsRegLo_S(m_Opcode.rs);
+        int64_t rt = Is64Bit(m_Opcode.rt) ? GetMipsReg(m_Opcode.rt) : (int64_t)GetMipsRegLo_S(m_Opcode.rt);
+        int64_t sum = rs + rt;
+        if ((~(rs ^ rt) & (rs ^ sum)) & 0x8000000000000000)
         {
-            UnMap_GPR(m_Opcode.rd, false);
-        }
-
-        m_RegWorkingSet.SetMipsReg(m_Opcode.rd,
-            Is64Bit(m_Opcode.rs) ? GetMipsReg(m_Opcode.rs) : (int64_t)GetMipsRegLo_S(m_Opcode.rs) +
-            Is64Bit(m_Opcode.rt) ? GetMipsReg(m_Opcode.rt) : (int64_t)GetMipsRegLo_S(m_Opcode.rt)
-            );
-        if (GetMipsRegLo_S(m_Opcode.rd) < 0 && GetMipsRegHi_S(m_Opcode.rd) == -1)
-        {
-            m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
-        }
-        else if (GetMipsRegLo_S(m_Opcode.rd) >= 0 && GetMipsRegHi_S(m_Opcode.rd) == 0)
-        {
-            m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+            CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Exit_ExceptionOverflow, true, nullptr);
+            m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
         }
         else
         {
-            m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_64);
+            if (IsMapped(m_Opcode.rd))
+            {
+                UnMap_GPR(m_Opcode.rd, false);
+            }
+            m_RegWorkingSet.SetMipsReg(m_Opcode.rd, sum);
+            if (GetMipsRegLo_S(m_Opcode.rd) < 0 && GetMipsRegHi_S(m_Opcode.rd) == -1)
+            {
+                m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
+            }
+            else if (GetMipsRegLo_S(m_Opcode.rd) >= 0 && GetMipsRegHi_S(m_Opcode.rd) == 0)
+            {
+                m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
+            }
+            else
+            {
+                m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_64);
+            }
         }
     }
     else
@@ -6631,23 +6649,35 @@ void CX86RecompilerOps::SPECIAL_DADD()
         int source1 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rt : m_Opcode.rs;
         int source2 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rs : m_Opcode.rt;
 
-        if (IsMapped(source2)) { ProtectGPR(source2); }
-        Map_GPR_64bit(m_Opcode.rd, source1);
+        ProtectGPR(source1);
+        ProtectGPR(source2);
+        CX86Ops::x86Reg RegLo = Map_TempReg(CX86Ops::x86_Any, source1, false);
+        CX86Ops::x86Reg RegHi = Map_TempReg(CX86Ops::x86_Any, source1, true);
+
         if (IsConst(source2))
         {
-            m_Assembler.AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegLo(source2));
-            m_Assembler.AddConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd), GetMipsRegHi(source2));
+            m_Assembler.AddConstToX86Reg(RegLo, GetMipsRegLo(source2));
+            m_Assembler.AdcConstToX86Reg(RegHi, GetMipsRegHi(source2));
         }
         else if (IsMapped(source2))
         {
             CX86Ops::x86Reg HiReg = Is64Bit(source2) ? GetMipsRegMapHi(source2) : Map_TempReg(CX86Ops::x86_Any, source2, true);
-            m_Assembler.AddX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapLo(source2));
-            m_Assembler.AdcX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd), HiReg);
+            m_Assembler.AddX86RegToX86Reg(RegLo, GetMipsRegMapLo(source2));
+            m_Assembler.AdcX86RegToX86Reg(RegHi, HiReg);
         }
         else
         {
-            m_Assembler.AddVariableToX86reg(GetMipsRegMapLo(m_Opcode.rd), &_GPR[source2].W[0], CRegName::GPR_Lo[source2]);
-            m_Assembler.AdcVariableToX86reg(GetMipsRegMapHi(m_Opcode.rd), &_GPR[source2].W[1], CRegName::GPR_Hi[source2]);
+            m_Assembler.AddVariableToX86reg(RegLo, &_GPR[source2].W[0], CRegName::GPR_Lo[source2]);
+            m_Assembler.AdcVariableToX86reg(RegHi, &_GPR[source2].W[1], CRegName::GPR_Hi[source2]);
+        }
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Exit_ExceptionOverflow, false, &CX86Ops::JoLabel32);
+        if (m_Opcode.rd != 0)
+        {
+            UnProtectGPR(source1);
+            UnProtectGPR(source2);
+            Map_GPR_64bit(m_Opcode.rd, source1);
+            m_Assembler.MoveX86RegToX86Reg(RegLo, GetMipsRegMapLo(m_Opcode.rd));
+            m_Assembler.MoveX86RegToX86Reg(RegHi, GetMipsRegMapHi(m_Opcode.rd));
         }
     }
 }
@@ -6716,64 +6746,73 @@ void CX86RecompilerOps::SPECIAL_DADDU()
 
 void CX86RecompilerOps::SPECIAL_DSUB()
 {
-    if (m_Opcode.rd == 0)
-    {
-        return;
-    }
-
     if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs))
     {
-        if (IsMapped(m_Opcode.rd))
-        {
-            UnMap_GPR(m_Opcode.rd, false);
-        }
+        int64_t rs = Is64Bit(m_Opcode.rs) ? GetMipsReg(m_Opcode.rs) : (int64_t)GetMipsRegLo_S(m_Opcode.rs);
+        int64_t rt = Is64Bit(m_Opcode.rt) ? GetMipsReg(m_Opcode.rt) : (int64_t)GetMipsRegLo_S(m_Opcode.rt);
+        int64_t sub = rs - rt;
 
-        m_RegWorkingSet.SetMipsReg(m_Opcode.rd,
-            Is64Bit(m_Opcode.rs) ? GetMipsReg(m_Opcode.rs) : (int64_t)GetMipsRegLo_S(m_Opcode.rs) -
-            Is64Bit(m_Opcode.rt) ? GetMipsReg(m_Opcode.rt) : (int64_t)GetMipsRegLo_S(m_Opcode.rt)
-            );
-        if (GetMipsRegLo_S(m_Opcode.rd) < 0 && GetMipsRegHi_S(m_Opcode.rd) == -1)
+        if (((rs ^ rt) & (rs ^ sub)) & 0x8000000000000000)
         {
-            m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
-        }
-        else if (GetMipsRegLo_S(m_Opcode.rd) >= 0 && GetMipsRegHi_S(m_Opcode.rd) == 0)
-        {
-            m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+            CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Exit_ExceptionOverflow, true, nullptr);
+            m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
         }
         else
         {
-            m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_64);
+            if (IsMapped(m_Opcode.rd))
+            {
+                UnMap_GPR(m_Opcode.rd, false);
+            }
+            m_RegWorkingSet.SetMipsReg(m_Opcode.rd, sub);
+            if (GetMipsRegLo_S(m_Opcode.rd) < 0 && GetMipsRegHi_S(m_Opcode.rd) == -1)
+            {
+                m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
+            }
+            else if (GetMipsRegLo_S(m_Opcode.rd) >= 0 && GetMipsRegHi_S(m_Opcode.rd) == 0)
+            {
+                m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
+            }
+            else
+            {
+                m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_64);
+            }
         }
     }
     else
     {
-        if (m_Opcode.rd == m_Opcode.rt)
-        {
-            CX86Ops::x86Reg HiReg = Map_TempReg(CX86Ops::x86_Any, m_Opcode.rt, true);
-            CX86Ops::x86Reg LoReg = Map_TempReg(CX86Ops::x86_Any, m_Opcode.rt, false);
-            Map_GPR_64bit(m_Opcode.rd, m_Opcode.rs);
-            m_Assembler.SubX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd), LoReg);
-            m_Assembler.SbbX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd), HiReg);
-            return;
-        }
+        int source1 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rt : m_Opcode.rs;
+        int source2 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rs : m_Opcode.rt;
 
-        if (IsMapped(m_Opcode.rt)) { ProtectGPR(m_Opcode.rt); }
-        Map_GPR_64bit(m_Opcode.rd, m_Opcode.rs);
-        if (IsConst(m_Opcode.rt))
+        ProtectGPR(source1);
+        ProtectGPR(source2);
+        CX86Ops::x86Reg RegLo = Map_TempReg(CX86Ops::x86_Any, source1, false);
+        CX86Ops::x86Reg RegHi = Map_TempReg(CX86Ops::x86_Any, source1, true);
+
+        if (IsConst(source2))
         {
-            m_Assembler.SubConstFromX86Reg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegLo(m_Opcode.rt));
-            m_Assembler.SbbConstFromX86Reg(GetMipsRegMapHi(m_Opcode.rd), GetMipsRegHi(m_Opcode.rt));
+            m_Assembler.SubConstFromX86Reg(RegLo, GetMipsRegLo(source2));
+            m_Assembler.SbbConstFromX86Reg(RegHi, GetMipsRegHi(source2));
         }
-        else if (IsMapped(m_Opcode.rt))
+        else if (IsMapped(source2))
         {
-            CX86Ops::x86Reg HiReg = Is64Bit(m_Opcode.rt) ? GetMipsRegMapHi(m_Opcode.rt) : Map_TempReg(CX86Ops::x86_Any, m_Opcode.rt, true);
-            m_Assembler.SubX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapLo(m_Opcode.rt));
-            m_Assembler.SbbX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd), HiReg);
+            CX86Ops::x86Reg HiReg = Is64Bit(source2) ? GetMipsRegMapHi(source2) : Map_TempReg(CX86Ops::x86_Any, source2, true);
+            m_Assembler.SubX86RegToX86Reg(RegLo, GetMipsRegMapLo(source2));
+            m_Assembler.SbbX86RegToX86Reg(RegHi, HiReg);
         }
         else
         {
-            m_Assembler.SubVariableFromX86reg(GetMipsRegMapLo(m_Opcode.rd), &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
-            m_Assembler.SbbVariableFromX86reg(GetMipsRegMapHi(m_Opcode.rd), &_GPR[m_Opcode.rt].W[1], CRegName::GPR_Hi[m_Opcode.rt]);
+            m_Assembler.SubVariableFromX86reg(RegLo, &_GPR[source2].W[0], CRegName::GPR_Lo[source2]);
+            m_Assembler.SbbVariableFromX86reg(RegHi, &_GPR[source2].W[1], CRegName::GPR_Hi[source2]);
+        }
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Exit_ExceptionOverflow, false, &CX86Ops::JoLabel32);
+        if (m_Opcode.rd != 0)
+        {
+            UnProtectGPR(source1);
+            UnProtectGPR(source2);
+            Map_GPR_64bit(m_Opcode.rd, source1);
+            m_Assembler.MoveX86RegToX86Reg(RegLo, GetMipsRegMapLo(m_Opcode.rd));
+            m_Assembler.MoveX86RegToX86Reg(RegHi, GetMipsRegMapHi(m_Opcode.rd));
         }
     }
 }
@@ -9511,6 +9550,11 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         break;
     case CExitInfo::TLBWriteMiss:
         m_Assembler.X86BreakPoint(__FILE__, __LINE__);
+        ExitCodeBlock();
+        break;
+    case CExitInfo::Exit_ExceptionOverflow:
+        m_Assembler.PushImm32(m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT);
+        m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::DoOverflowException), "CRegisters::DoOverflowException", 12);
         ExitCodeBlock();
         break;
     default:

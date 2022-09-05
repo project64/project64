@@ -269,6 +269,7 @@ public:
     void DoTrapException( bool DelaySlot );
     void DoCopUnusableException( bool DelaySlot, int32_t Coprocessor );
     bool DoIntrException( bool DelaySlot );
+    void DoOverflowException(bool DelaySlot);
     void DoTLBReadMiss(bool DelaySlot, uint32_t BadVaddr);
     void DoTLBWriteMiss(bool DelaySlot, uint32_t BadVaddr);
     void DoSysCallException ( bool DelaySlot);

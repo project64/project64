@@ -114,6 +114,7 @@ public:
     void JnsLabel32(const char * Label, uint32_t Value);
     void JnzLabel8(const char * Label, uint8_t Value);
     void JnzLabel32(const char * Label, uint32_t Value);
+    void JoLabel32(const char * Label, uint32_t Value);
     void JsLabel32(const char * Label, uint32_t Value);
     void JzLabel8(const char * Label, uint8_t Value);
     void JzLabel32(const char * Label, uint32_t Value);

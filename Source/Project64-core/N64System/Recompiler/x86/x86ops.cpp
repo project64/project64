@@ -630,6 +630,13 @@ void CX86Ops::JsLabel32(const char *Label, uint32_t Value)
     AddCode32(Value);
 }
 
+void CX86Ops::JoLabel32(const char *Label, uint32_t Value)
+{
+    CodeLog("      jo $%s", Label);
+    AddCode16(0x800F);
+    AddCode32(Value);
+}
+
 void CX86Ops::JzLabel8(const char *Label, uint8_t Value)
 {
     CodeLog("      jz $%s", Label);
