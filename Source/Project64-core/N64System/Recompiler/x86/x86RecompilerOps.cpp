@@ -4434,6 +4434,7 @@ void CX86RecompilerOps::SPECIAL_JALR()
 
 void CX86RecompilerOps::SPECIAL_SYSCALL()
 {
+    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
     CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, ExitReason_DoSysCall, true, nullptr);
     m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
 }
