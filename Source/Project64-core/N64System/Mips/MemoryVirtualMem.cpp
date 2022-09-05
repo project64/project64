@@ -748,9 +748,7 @@ bool CMipsMemoryVM::SB_NonMemory(uint32_t VAddr, uint32_t Value)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
-        return false;
     }
-
     return true;
 }
 
