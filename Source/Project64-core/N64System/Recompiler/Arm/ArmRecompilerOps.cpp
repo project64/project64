@@ -382,7 +382,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, bool Link)
                         CPU_Message("CompileSystemCheck 12");
                         CompileSystemCheck(FallInfo->TargetPC, m_Section->m_Jump.RegSet);
                         ResetRegProtection();
-                        FallInfo->ExitReason = CExitInfo::Normal_NoSysCheck;
+                        FallInfo->ExitReason = ExitReason_NormalNoSysCheck;
                         FallInfo->JumpPC = (uint32_t)-1;
                     }
                 }
@@ -552,7 +552,7 @@ void CArmRecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
             }
 
             LinkJump(m_Section->m_Cont);
-            CompileExit(m_CompilePC, m_CompilePC + 8, m_Section->m_Cont.RegSet, CExitInfo::Normal);
+            CompileExit(m_CompilePC, m_CompilePC + 8, m_Section->m_Cont.RegSet, ExitReason_Normal);
             return;
         }
         else
@@ -1913,7 +1913,7 @@ void CArmRecompilerOps::JAL()
             bool bCheck = TargetPC <= m_CompilePC;
             UpdateCounters(m_RegWorkingSet, bCheck, true);
 
-            CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, bCheck ? CExitInfo::Normal : CExitInfo::Normal_NoSysCheck);
+            CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, bCheck ? ExitReason_Normal : ExitReason_NormalNoSysCheck);
         }
         m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
     }
@@ -2864,7 +2864,7 @@ void CArmRecompilerOps::SPECIAL_JR()
 
         if (R4300iInstruction(m_CompilePC, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
         {
-            CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal);
+            CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, ExitReason_Normal);
         }
         else
         {
@@ -2889,7 +2889,7 @@ void CArmRecompilerOps::SPECIAL_JR()
                 m_RegWorkingSet.SetArmRegProtected(ValueTempReg, false);
             }
             m_RegWorkingSet.SetArmRegProtected(PCTempReg, false);
-            CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal);
+            CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, ExitReason_Normal);
             if (m_Section->m_JumpSection)
             {
                 m_Section->GenerateSectionLinkage();
@@ -2968,7 +2968,7 @@ void CArmRecompilerOps::SPECIAL_JALR()
 
         if (R4300iInstruction(m_CompilePC, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
         {
-            CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal);
+            CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, ExitReason_Normal);
         }
         else
         {
@@ -2980,7 +2980,7 @@ void CArmRecompilerOps::SPECIAL_JALR()
             StoreArmRegToArmRegPointer(ArmRegRs, TempRegPC, 0);
             m_RegWorkingSet.SetArmRegProtected(ArmRegRs, false);
             m_RegWorkingSet.SetArmRegProtected(TempRegPC, false);
-            CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal);
+            CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, ExitReason_Normal);
             if (m_Section->m_JumpSection)
             {
                 m_Section->GenerateSectionLinkage();
@@ -2996,7 +2996,7 @@ void CArmRecompilerOps::SPECIAL_JALR()
 
 void CArmRecompilerOps::SPECIAL_SYSCALL()
 {
-    CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::DoSysCall);
+    CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, ExitReason_DoSysCall);
     m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
 }
 
@@ -4022,7 +4022,7 @@ void CArmRecompilerOps::COP0_CO_ERET()
     CallFunction((void *)arm_compiler_COP0_CO_ERET, "arm_compiler_COP0_CO_ERET");
 
     UpdateCounters(m_RegWorkingSet, true, true);
-    CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal);
+    CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, ExitReason_Normal);
     m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
 }
 
@@ -4759,7 +4759,7 @@ void CArmRecompilerOps::CompileCop1Test()
     CompareArmRegToConst(TempReg1, 0);
     m_RegWorkingSet.SetArmRegProtected(TempReg1, false);
     m_RegWorkingSet.SetArmRegProtected(TempReg2, false);
-    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::COP1_Unuseable, ArmBranch_Equal);
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_COP1Unuseable, ArmBranch_Equal);
     m_RegWorkingSet.SetFpuBeenUsed(true);
 }
 
@@ -5251,7 +5251,7 @@ void CArmRecompilerOps::SyncRegState(const CRegInfo & SyncTo)
     }
 }
 
-void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason)
+void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, ExitReason reason)
 {
     m_RegWorkingSet = ExitRegSet;
     for (int32_t i = 0; i < 16; i++)
@@ -5267,22 +5267,22 @@ void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         MoveConstToArmReg(Arm_R2, (uint32_t)&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER");
         StoreArmRegToArmRegPointer(Arm_R1, Arm_R2, 0);
 
-        UpdateCounters(ExitRegSet, TargetPC <= JumpPC && JumpPC != -1, reason == CExitInfo::Normal);
+        UpdateCounters(ExitRegSet, TargetPC <= JumpPC && JumpPC != -1, reason == ExitReason_Normal);
     }
     else
     {
-        UpdateCounters(ExitRegSet, false, reason == CExitInfo::Normal);
+        UpdateCounters(ExitRegSet, false, reason == ExitReason_Normal);
     }
 
     bool bDelay;
     switch (reason)
     {
-    case CExitInfo::Normal:
-    case CExitInfo::Normal_NoSysCheck:
+    case ExitReason_Normal:
+    case ExitReason_NormalNoSysCheck:
         ExitRegSet.SetBlockCycleCount(0);
         if (TargetPC != (uint32_t)-1)
         {
-            if (TargetPC <= JumpPC && reason == CExitInfo::Normal)
+            if (TargetPC <= JumpPC && reason == ExitReason_Normal)
             {
                 CPU_Message("CompileSystemCheck 1");
                 CompileSystemCheck((uint32_t)-1, ExitRegSet);
@@ -5290,7 +5290,7 @@ void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         }
         else
         {
-            if (reason == CExitInfo::Normal)
+            if (reason == ExitReason_Normal)
             {
                 CPU_Message("CompileSystemCheck 2");
                 CompileSystemCheck((uint32_t)-1, ExitRegSet);
@@ -5298,14 +5298,14 @@ void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         }
         ExitCodeBlock();
         break;
-    case CExitInfo::DoSysCall:
+    case ExitReason_DoSysCall:
         bDelay = m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT;
         MoveConstToArmReg(Arm_R1, (uint32_t)bDelay, bDelay ? "true" : "false");
         MoveConstToArmReg(Arm_R0, (uint32_t)g_Reg);
         CallFunction(AddressOf(&CRegisters::DoSysCallException), "CRegisters::DoSysCallException");
         ExitCodeBlock();
         break;
-    case CExitInfo::COP1_Unuseable:
+    case ExitReason_COP1Unuseable:
         bDelay = m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT;
         MoveConstToArmReg(Arm_R2, (uint32_t)1, "1");
         MoveConstToArmReg(Arm_R1, (uint32_t)bDelay, bDelay ? "true" : "false");
@@ -5313,7 +5313,7 @@ void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         CallFunction(AddressOf(&CRegisters::DoCopUnusableException), "CRegisters::DoCopUnusableException");
         ExitCodeBlock();
         break;
-    case CExitInfo::TLBReadMiss:
+    case ExitReason_TLBReadMiss:
         bDelay = m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT;
         MoveVariableToArmReg(g_TLBLoadAddress, "g_TLBLoadAddress", Arm_R2);
         MoveConstToArmReg(Arm_R1, (uint32_t)bDelay, bDelay ? "true" : "false");
@@ -5321,7 +5321,7 @@ void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         CallFunction(AddressOf(&CRegisters::DoTLBReadMiss), "CRegisters::DoTLBReadMiss");
         ExitCodeBlock();
         break;
-    case CExitInfo::TLBWriteMiss:
+    case ExitReason_TLBWriteMiss:
         ArmBreakPoint(__FILE__, __LINE__);
         ExitCodeBlock();
         break;
@@ -5330,7 +5330,7 @@ void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
     }
 }
 
-void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, CArmOps::ArmCompareType CompareType)
+void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, ExitReason reason, CArmOps::ArmCompareType CompareType)
 {
     BranchLabel20(CompareType, stdstr_f("Exit_%d", m_ExitInfo.size()).c_str());
 
@@ -5380,7 +5380,7 @@ void CArmRecompilerOps::CompileReadTLBMiss(ArmReg AddressReg, ArmReg LookUpReg)
     ArmReg TlbLoadReg = Map_Variable(CArmRegInfo::VARIABLE_TLB_LOAD_ADDRESS);
     StoreArmRegToArmRegPointer(AddressReg, TlbLoadReg, 0);
     CompareArmRegToConst(LookUpReg, 0);
-    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBReadMiss, ArmBranch_Equal);
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_TLBReadMiss, ArmBranch_Equal);
     m_RegWorkingSet.SetArmRegProtected(TlbLoadReg, false);
 }
 
@@ -5392,7 +5392,7 @@ void CArmRecompilerOps::CompileWriteTLBMiss(ArmReg AddressReg, ArmReg LookUpReg)
     ArmReg TlbStoreReg = Map_Variable(CArmRegInfo::VARIABLE_TLB_STORE_ADDRESS);
     StoreArmRegToArmRegPointer(AddressReg, TlbStoreReg, 0);
     CompareArmRegToConst(LookUpReg, 0);
-    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBWriteMiss, ArmBranch_Equal);
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_TLBWriteMiss, ArmBranch_Equal);
     m_RegWorkingSet.SetArmRegProtected(TlbStoreReg, false);
 }
 
@@ -5531,7 +5531,7 @@ bool CArmRecompilerOps::InheritParentInfo()
     m_RegWorkingSet.ResetRegProtection();
     LinkJump(*JumpInfo, m_Section->m_SectionID, Parent->m_SectionID);
 
-    if (JumpInfo->ExitReason == CExitInfo::Normal_NoSysCheck)
+    if (JumpInfo->ExitReason == ExitReason_NormalNoSysCheck)
     {
         if (m_RegWorkingSet.GetBlockCycleCount() != 0)
         {

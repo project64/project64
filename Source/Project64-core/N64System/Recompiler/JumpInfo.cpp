@@ -14,5 +14,5 @@ CJumpInfo::CJumpInfo(CCodeBlock & CodeBlock) :
 	FallThrough = false;
 	PermLoop = false;
 	DoneDelaySlot = false;
-	ExitReason = CExitInfo::Normal;
+	Reason = ExitReason_Normal;
 }

@@ -866,7 +866,7 @@ void CX64RecompilerOps::PostCompileOpcode(void)
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CX64RecompilerOps::CompileExit(uint32_t /*JumpPC*/, uint32_t /*TargetPC*/, CRegInfo & /*ExitRegSet*/, CExitInfo::EXIT_REASON /*reason*/)
+void CX64RecompilerOps::CompileExit(uint32_t /*JumpPC*/, uint32_t /*TargetPC*/, CRegInfo & /*ExitRegSet*/, ExitReason /*reason*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }

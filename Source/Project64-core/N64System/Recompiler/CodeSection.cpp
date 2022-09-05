@@ -85,7 +85,7 @@ void CCodeSection::GenerateSectionLinkage()
             else if (TargetSection[i] == nullptr && JumpInfo[i]->FallThrough)
             {
                 m_RecompilerOps->LinkJump(*JumpInfo[i], (uint32_t)-1);
-                m_RecompilerOps->CompileExit(JumpInfo[i]->JumpPC, JumpInfo[i]->TargetPC, JumpInfo[i]->RegSet, JumpInfo[i]->ExitReason);
+                m_RecompilerOps->CompileExit(JumpInfo[i]->JumpPC, JumpInfo[i]->TargetPC, JumpInfo[i]->RegSet, JumpInfo[i]->Reason);
                 JumpInfo[i]->FallThrough = false;
             }
             else if (TargetSection[i] != nullptr && JumpInfo[i] != nullptr)
@@ -93,7 +93,7 @@ void CCodeSection::GenerateSectionLinkage()
                 if (!JumpInfo[i]->FallThrough) { continue; }
                 if (JumpInfo[i]->TargetPC == TargetSection[i]->m_EnterPC) { continue; }
                 m_RecompilerOps->LinkJump(*JumpInfo[i], (uint32_t)-1);
-                m_RecompilerOps->CompileExit(JumpInfo[i]->JumpPC, JumpInfo[i]->TargetPC, JumpInfo[i]->RegSet, JumpInfo[i]->ExitReason);
+                m_RecompilerOps->CompileExit(JumpInfo[i]->JumpPC, JumpInfo[i]->TargetPC, JumpInfo[i]->RegSet, JumpInfo[i]->Reason);
                 //FreeSection(TargetSection[i],Section);
             }
         }
@@ -200,7 +200,7 @@ void CCodeSection::GenerateSectionLinkage()
         {
             m_CodeBlock.Log("ExitBlock (from %d):", m_SectionID);
             m_RecompilerOps->LinkJump(*JumpInfo[i], (uint32_t)-1);
-            m_RecompilerOps->CompileExit(JumpInfo[i]->JumpPC, JumpInfo[i]->TargetPC, JumpInfo[i]->RegSet, JumpInfo[i]->ExitReason);
+            m_RecompilerOps->CompileExit(JumpInfo[i]->JumpPC, JumpInfo[i]->TargetPC, JumpInfo[i]->RegSet, JumpInfo[i]->Reason);
             continue;
         }
         if (JumpInfo[i]->TargetPC != TargetSection[i]->m_EnterPC)
@@ -611,11 +611,11 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             {
                 if (m_DelaySlot)
                 {
-                    m_RecompilerOps->CompileExit(m_RecompilerOps->GetCurrentPC(), m_Jump.TargetPC, m_RecompilerOps->GetRegWorkingSet(), CExitInfo::Normal);
+                    m_RecompilerOps->CompileExit(m_RecompilerOps->GetCurrentPC(), m_Jump.TargetPC, m_RecompilerOps->GetRegWorkingSet(), ExitReason_Normal);
                 }
                 else
                 {
-                    m_RecompilerOps->CompileExit(m_RecompilerOps->GetCurrentPC(), m_RecompilerOps->GetCurrentPC() + 4, m_RecompilerOps->GetRegWorkingSet(), CExitInfo::Normal);
+                    m_RecompilerOps->CompileExit(m_RecompilerOps->GetCurrentPC(), m_RecompilerOps->GetCurrentPC() + 4, m_RecompilerOps->GetRegWorkingSet(), ExitReason_Normal);
                 }
                 m_RecompilerOps->SetNextStepType(PIPELINE_STAGE_END_BLOCK);
             }
@@ -655,7 +655,7 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             }
             else
             {
-                m_RecompilerOps->CompileExit(m_Jump.JumpPC, m_Jump.TargetPC, m_RecompilerOps->GetRegWorkingSet(), CExitInfo::Normal);
+                m_RecompilerOps->CompileExit(m_Jump.JumpPC, m_Jump.TargetPC, m_RecompilerOps->GetRegWorkingSet(), ExitReason_Normal);
             }
             m_RecompilerOps->SetNextStepType(PIPELINE_STAGE_END_BLOCK);
         }

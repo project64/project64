@@ -230,7 +230,7 @@ public:
     const R4300iOpcode & GetOpcode(void) const;
     void PreCompileOpcode(void);
     void PostCompileOpcode(void);
-    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason);
+    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, ExitReason Reason);
 
     void CompileReadTLBMiss(uint32_t VirtualAddress, CX86Ops::x86Reg LookUpReg);
     void CompileReadTLBMiss(CX86Ops::x86Reg AddressReg, CX86Ops::x86Reg LookUpReg);
@@ -313,7 +313,7 @@ private:
     void LW_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr);
     void LW(bool ResultSigned, bool bRecordLLBit);
     void SW(bool bCheckLLbit);
-    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow, void(CX86Ops::*x86Jmp)(const char * Label, uint32_t Value));
+    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, ExitReason Reason, bool CompileNow, void(CX86Ops::*x86Jmp)(const char * Label, uint32_t Value));
     void ResetMemoryStack();
 
     EXIT_LIST m_ExitInfo;

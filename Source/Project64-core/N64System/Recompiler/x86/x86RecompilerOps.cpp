@@ -348,21 +348,21 @@ void CX86RecompilerOps::CompileReadTLBMiss(uint32_t VirtualAddress, CX86Ops::x86
 {
     m_Assembler.MoveConstToVariable(VirtualAddress, g_TLBLoadAddress, "TLBLoadAddress");
     m_Assembler.CompConstToX86reg(LookUpReg, (uint32_t)-1);
-    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBReadMiss, false, &CX86Ops::JeLabel32);
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_TLBReadMiss, false, &CX86Ops::JeLabel32);
 }
 
 void CX86RecompilerOps::CompileReadTLBMiss(CX86Ops::x86Reg AddressReg, CX86Ops::x86Reg LookUpReg)
 {
     m_Assembler.MoveX86regToVariable(AddressReg, g_TLBLoadAddress, "TLBLoadAddress");
     m_Assembler.CompConstToX86reg(LookUpReg, (uint32_t)-1);
-    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBReadMiss, false, &CX86Ops::JeLabel32);
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_TLBReadMiss, false, &CX86Ops::JeLabel32);
 }
 
 void CX86RecompilerOps::CompileWriteTLBMiss(CX86Ops::x86Reg AddressReg, CX86Ops::x86Reg LookUpReg)
 {
     m_Assembler.MoveX86regToVariable(AddressReg, &g_TLBStoreAddress, "g_TLBStoreAddress");
     m_Assembler.CompConstToX86reg(LookUpReg, (uint32_t)-1);
-    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBWriteMiss, false, &CX86Ops::JeLabel32);
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_TLBWriteMiss, false, &CX86Ops::JeLabel32);
 }
 
 // Trap functions
@@ -645,7 +645,7 @@ void CX86RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
                         m_CodeBlock.Log("CompileSystemCheck 12");
                         CompileSystemCheck(FallInfo->TargetPC, m_Section->m_Jump.RegSet);
                         ResetX86Protection();
-                        FallInfo->ExitReason = CExitInfo::Normal_NoSysCheck;
+                        FallInfo->Reason = ExitReason_NormalNoSysCheck;
                         FallInfo->JumpPC = (uint32_t)-1;
                     }
                 }
@@ -813,7 +813,7 @@ void CX86RecompilerOps::Compile_BranchLikely(RecompilerBranchCompare CompareType
             }
 
             LinkJump(m_Section->m_Cont);
-            CompileExit(m_CompilePC, m_CompilePC + 8, m_Section->m_Cont.RegSet, CExitInfo::Normal, true, nullptr);
+            CompileExit(m_CompilePC, m_CompilePC + 8, m_Section->m_Cont.RegSet, ExitReason_Normal, true, nullptr);
             return;
         }
         else
@@ -2207,7 +2207,7 @@ void CX86RecompilerOps::JAL()
             bool bCheck = TargetPC <= m_CompilePC;
             UpdateCounters(m_RegWorkingSet, bCheck, true);
 
-            CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, bCheck ? CExitInfo::Normal : CExitInfo::Normal_NoSysCheck, true, nullptr);
+            CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, bCheck ? ExitReason_Normal : ExitReason_NormalNoSysCheck, true, nullptr);
         }
         m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
     }
@@ -2232,7 +2232,7 @@ void CX86RecompilerOps::ADDI()
         if ((~(rs ^ imm) & (rs ^ sum)) & 0x80000000)
         {
             m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-            CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Exit_ExceptionOverflow, true, nullptr);
+            CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_ExceptionOverflow, true, nullptr);
             m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
         }
         else if (m_Opcode.rt != 0)
@@ -2250,7 +2250,7 @@ void CX86RecompilerOps::ADDI()
         ProtectGPR(m_Opcode.rt);
         CX86Ops::x86Reg Reg = Map_TempReg(CX86Ops::x86_Any, m_Opcode.rs, false);
         m_Assembler.AddConstToX86Reg(Reg, (int16_t)m_Opcode.immediate);
-        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Exit_ExceptionOverflow, false, &CX86Ops::JoLabel32);
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_ExceptionOverflow, false, &CX86Ops::JoLabel32);
         if (m_Opcode.rt != 0)
         {
             Map_GPR_32bit(m_Opcode.rt, true, -1);
@@ -4308,7 +4308,7 @@ void CX86RecompilerOps::SPECIAL_JR()
         R4300iOpcode DelaySlot;
         if (g_MMU->MemoryValue32(m_CompilePC + 4, DelaySlot.Value) && R4300iInstruction(m_CompilePC, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
         {
-            CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal, true, nullptr);
+            CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, ExitReason_Normal, true, nullptr);
         }
         else
         {
@@ -4325,7 +4325,7 @@ void CX86RecompilerOps::SPECIAL_JR()
             {
                 m_Assembler.MoveX86regToVariable(Map_TempReg(CX86Ops::x86_Any, m_Opcode.rs, false), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
             }
-            CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal, true, nullptr);
+            CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, ExitReason_Normal, true, nullptr);
             if (m_Section->m_JumpSection)
             {
                 m_Section->GenerateSectionLinkage();
@@ -4394,7 +4394,7 @@ void CX86RecompilerOps::SPECIAL_JALR()
         if (g_MMU->MemoryValue32(m_CompilePC + 4, DelaySlot.Value) && 
             R4300iInstruction(m_CompilePC, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
         {
-            CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal, true, nullptr);
+            CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, ExitReason_Normal, true, nullptr);
         }
         else
         {
@@ -4411,7 +4411,7 @@ void CX86RecompilerOps::SPECIAL_JALR()
             {
                 m_Assembler.MoveX86regToVariable(Map_TempReg(CX86Ops::x86_Any, m_Opcode.rs, false), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
             }
-            CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal, true, nullptr);
+            CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, ExitReason_Normal, true, nullptr);
             if (m_Section->m_JumpSection)
             {
                 m_Section->GenerateSectionLinkage();
@@ -4427,7 +4427,7 @@ void CX86RecompilerOps::SPECIAL_JALR()
 
 void CX86RecompilerOps::SPECIAL_SYSCALL()
 {
-    CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::DoSysCall, true, nullptr);
+    CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, ExitReason_DoSysCall, true, nullptr);
     m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
 }
 
@@ -5136,7 +5136,7 @@ void CX86RecompilerOps::SPECIAL_ADD()
         if ((~(Val1 ^ Val2) & (Val1 ^ Sum)) & 0x80000000)
         {
             m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-            CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Exit_ExceptionOverflow, true, nullptr);
+            CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_ExceptionOverflow, true, nullptr);
             m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
         }
         else if (m_Opcode.rd != 0)
@@ -5169,7 +5169,7 @@ void CX86RecompilerOps::SPECIAL_ADD()
     {
         ResetMemoryStack();
     }
-    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Exit_ExceptionOverflow, false, &CX86Ops::JoLabel32);
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_ExceptionOverflow, false, &CX86Ops::JoLabel32);
     if (m_Opcode.rd != 0)
     {
         Map_GPR_32bit(m_Opcode.rd, true, -1);
@@ -5229,7 +5229,7 @@ void CX86RecompilerOps::SPECIAL_SUB()
         if (((rs ^ rt) & (rs ^ sub)) & 0x80000000)
         {
             m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-            CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Exit_ExceptionOverflow, true, nullptr);
+            CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_ExceptionOverflow, true, nullptr);
             m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
         }
         else if (m_Opcode.rd != 0)
@@ -5258,7 +5258,7 @@ void CX86RecompilerOps::SPECIAL_SUB()
         {
             m_Assembler.SubVariableFromX86reg(Reg, &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
         }
-        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Exit_ExceptionOverflow, false, &CX86Ops::JoLabel32);
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_ExceptionOverflow, false, &CX86Ops::JoLabel32);
         if (m_Opcode.rd != 0)
         {
             Map_GPR_32bit(m_Opcode.rd, true, -1);
@@ -6620,7 +6620,7 @@ void CX86RecompilerOps::SPECIAL_DADD()
         if ((~(rs ^ rt) & (rs ^ sum)) & 0x8000000000000000)
         {
             m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-            CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Exit_ExceptionOverflow, true, nullptr);
+            CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_ExceptionOverflow, true, nullptr);
             m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
         }
         else
@@ -6670,7 +6670,7 @@ void CX86RecompilerOps::SPECIAL_DADD()
             m_Assembler.AddVariableToX86reg(RegLo, &_GPR[source2].W[0], CRegName::GPR_Lo[source2]);
             m_Assembler.AdcVariableToX86reg(RegHi, &_GPR[source2].W[1], CRegName::GPR_Hi[source2]);
         }
-        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Exit_ExceptionOverflow, false, &CX86Ops::JoLabel32);
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_ExceptionOverflow, false, &CX86Ops::JoLabel32);
         if (m_Opcode.rd != 0)
         {
             UnProtectGPR(source1);
@@ -6755,7 +6755,7 @@ void CX86RecompilerOps::SPECIAL_DSUB()
         if (((rs ^ rt) & (rs ^ sub)) & 0x8000000000000000)
         {
             m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-            CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Exit_ExceptionOverflow, true, nullptr);
+            CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_ExceptionOverflow, true, nullptr);
             m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
         }
         else
@@ -6805,7 +6805,7 @@ void CX86RecompilerOps::SPECIAL_DSUB()
             m_Assembler.SubVariableFromX86reg(RegLo, &_GPR[source2].W[0], CRegName::GPR_Lo[source2]);
             m_Assembler.SbbVariableFromX86reg(RegHi, &_GPR[source2].W[1], CRegName::GPR_Hi[source2]);
         }
-        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Exit_ExceptionOverflow, false, &CX86Ops::JoLabel32);
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_ExceptionOverflow, false, &CX86Ops::JoLabel32);
         if (m_Opcode.rd != 0)
         {
             UnProtectGPR(source1);
@@ -7373,7 +7373,7 @@ void CX86RecompilerOps::COP0_CO_ERET(void)
     m_Assembler.CallFunc((uint32_t)x86_compiler_COP0_CO_ERET, "x86_compiler_COP0_CO_ERET");
 
     UpdateCounters(m_RegWorkingSet, true, true);
-    CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal, true, nullptr);
+    CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, ExitReason_Normal, true, nullptr);
     m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
 }
 
@@ -8439,7 +8439,7 @@ void CX86RecompilerOps::CompileExitCode()
         m_CodeBlock.Log("      $%s", ExitIter->Name.c_str());
         m_Assembler.SetJump32(ExitIter->JumpLoc, (uint32_t *)*g_RecompPos);
         m_PipelineStage = ExitIter->PipelineStage;
-        CompileExit((uint32_t)-1, ExitIter->TargetPC, ExitIter->ExitRegSet, ExitIter->reason, true, nullptr);
+        CompileExit((uint32_t)-1, ExitIter->TargetPC, ExitIter->ExitRegSet, ExitIter->Reason, true, nullptr);
     }
 }
 
@@ -8453,7 +8453,7 @@ void CX86RecompilerOps::CompileCop1Test()
     m_Assembler.TestVariable(STATUS_CU1, &g_Reg->STATUS_REGISTER, "STATUS_REGISTER");
     CRegInfo ExitRegSet = m_RegWorkingSet;
     ExitRegSet.SetBlockCycleCount(ExitRegSet.GetBlockCycleCount() + g_System->CountPerOp());
-    CompileExit(m_CompilePC, m_CompilePC, ExitRegSet, CExitInfo::COP1_Unuseable, false, &CX86Ops::JeLabel32);
+    CompileExit(m_CompilePC, m_CompilePC, ExitRegSet, ExitReason_COP1Unuseable, false, &CX86Ops::JeLabel32);
     m_RegWorkingSet.SetFpuBeenUsed(true);
 }
 
@@ -8834,7 +8834,7 @@ bool CX86RecompilerOps::InheritParentInfo()
     m_RegWorkingSet.ResetX86Protection();
     LinkJump(*JumpInfo, m_Section->m_SectionID, Parent->m_SectionID);
 
-    if (JumpInfo->ExitReason == CExitInfo::Normal_NoSysCheck)
+    if (JumpInfo->Reason == ExitReason_NormalNoSysCheck)
     {
         if (JumpInfo->RegSet.GetBlockCycleCount() != 0)
         {
@@ -9356,12 +9356,12 @@ void CX86RecompilerOps::OverflowDelaySlot(bool TestTimer)
     m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
 }
 
-void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason)
+void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, ExitReason reason)
 {
     CompileExit(JumpPC, TargetPC, ExitRegSet, reason, true, nullptr);
 }
 
-void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow, void(CX86Ops::*x86Jmp)(const char * Label, uint32_t Value))
+void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, ExitReason reason, bool CompileNow, void(CX86Ops::*x86Jmp)(const char * Label, uint32_t Value))
 {
     if (!CompileNow)
     {
@@ -9377,7 +9377,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         ExitInfo.Name = ExitName;
         ExitInfo.TargetPC = TargetPC;
         ExitInfo.ExitRegSet = ExitRegSet;
-        ExitInfo.reason = reason;
+        ExitInfo.Reason = reason;
         ExitInfo.PipelineStage = m_PipelineStage;
         ExitInfo.JumpLoc = (uint32_t *)(*g_RecompPos - 4);
         m_ExitInfo.push_back(ExitInfo);
@@ -9390,21 +9390,21 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
     if (TargetPC != (uint32_t)-1)
     {
         m_Assembler.MoveConstToVariable(TargetPC, &g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER");
-        UpdateCounters(ExitRegSet, TargetPC <= JumpPC && JumpPC != -1, reason == CExitInfo::Normal);
+        UpdateCounters(ExitRegSet, TargetPC <= JumpPC && JumpPC != -1, reason == ExitReason_Normal);
     }
     else
     {
-        UpdateCounters(ExitRegSet, false, reason == CExitInfo::Normal);
+        UpdateCounters(ExitRegSet, false, reason == ExitReason_Normal);
     }
 
     switch (reason)
     {
-    case CExitInfo::Normal:
-    case CExitInfo::Normal_NoSysCheck:
+    case ExitReason_Normal:
+    case ExitReason_NormalNoSysCheck:
         ExitRegSet.SetBlockCycleCount(0);
         if (TargetPC != (uint32_t)-1)
         {
-            if (TargetPC <= JumpPC && reason == CExitInfo::Normal)
+            if (TargetPC <= JumpPC && reason == ExitReason_Normal)
             {
                 m_CodeBlock.Log("CompileSystemCheck 1");
                 CompileSystemCheck((uint32_t)-1, ExitRegSet);
@@ -9412,7 +9412,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         }
         else
         {
-            if (reason == CExitInfo::Normal)
+            if (reason == ExitReason_Normal)
             {
                 m_CodeBlock.Log("CompileSystemCheck 2");
                 CompileSystemCheck((uint32_t)-1, ExitRegSet);
@@ -9516,11 +9516,11 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         ExitCodeBlock();
 #endif
         break;
-    case CExitInfo::DoCPU_Action:
+    case ExitReason_DoCPUAction:
         m_Assembler.CallThis((uint32_t)g_SystemEvents, AddressOf(&CSystemEvents::ExecuteEvents), "CSystemEvents::ExecuteEvents", 4);
         ExitCodeBlock();
         break;
-    case CExitInfo::DoSysCall:
+    case ExitReason_DoSysCall:
         {
              bool bDelay = m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT;
              m_Assembler.PushImm32(bDelay ? "true" : "false", bDelay);
@@ -9528,7 +9528,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
              ExitCodeBlock();
         }
         break;
-    case CExitInfo::COP1_Unuseable:
+    case ExitReason_COP1Unuseable:
         {
             bool bDelay = m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT;
             m_Assembler.PushImm32("1", 1);
@@ -9537,22 +9537,22 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
             ExitCodeBlock();
         }
         break;
-    case CExitInfo::ExitResetRecompCode:
+    case ExitReason_ResetRecompCode:
         g_Notify->BreakPoint(__FILE__, __LINE__);
         ExitCodeBlock();
         break;
-    case CExitInfo::TLBReadMiss:
+    case ExitReason_TLBReadMiss:
         m_Assembler.MoveVariableToX86reg(g_TLBLoadAddress, "g_TLBLoadAddress", CX86Ops::x86_EDX);
         m_Assembler.Push(CX86Ops::x86_EDX);
         m_Assembler.PushImm32(m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT);
         m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::DoTLBReadMiss), "CRegisters::DoTLBReadMiss", 12);
         ExitCodeBlock();
         break;
-    case CExitInfo::TLBWriteMiss:
+    case ExitReason_TLBWriteMiss:
         m_Assembler.X86BreakPoint(__FILE__, __LINE__);
         ExitCodeBlock();
         break;
-    case CExitInfo::Exit_ExceptionOverflow:
+    case ExitReason_ExceptionOverflow:
         m_Assembler.PushImm32(m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT);
         m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::DoOverflowException), "CRegisters::DoOverflowException", 12);
         ExitCodeBlock();
@@ -9650,7 +9650,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
         m_Assembler.CallThis((uint32_t)(&m_MMU), AddressOf(&CMipsMemoryVM::LW_NonMemory), "CMipsMemoryVM::LW_NonMemory", 12);
         m_Assembler.TestX86ByteRegToX86Reg(CX86Ops::x86_AL, CX86Ops::x86_AL);
         m_RegWorkingSet.AfterCallDirect();
-        CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, &CX86Ops::JeLabel32);
+        CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, ExitReason_NormalNoSysCheck, false, &CX86Ops::JeLabel32);
         m_Assembler.MoveConstToX86reg((uint32_t)&m_TempValue32, TempReg);
         m_Assembler.SubX86RegToX86Reg(TempReg, AddressReg);
     }
@@ -9662,7 +9662,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
         m_Assembler.CallThis((uint32_t)(&m_MMU), AddressOf(&CMipsMemoryVM::LH_NonMemory), "CMipsMemoryVM::LH_NonMemory", 12);
         m_Assembler.TestX86ByteRegToX86Reg(CX86Ops::x86_AL, CX86Ops::x86_AL);
         m_RegWorkingSet.AfterCallDirect();
-        CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, &CX86Ops::JeLabel32);
+        CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, ExitReason_NormalNoSysCheck, false, &CX86Ops::JeLabel32);
         m_Assembler.MoveConstToX86reg((uint32_t)&m_TempValue32, TempReg);
         m_Assembler.SubX86RegToX86Reg(TempReg, AddressReg);
         m_Assembler.XorConstToX86Reg(AddressReg, 2);
@@ -9675,7 +9675,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
         m_Assembler.CallThis((uint32_t)&m_MMU, AddressOf(&CMipsMemoryVM::LB_NonMemory), "CMipsMemoryVM::LB_NonMemory", 12);
         m_Assembler.TestX86ByteRegToX86Reg(CX86Ops::x86_AL, CX86Ops::x86_AL);
         m_RegWorkingSet.AfterCallDirect();
-        CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, &CX86Ops::JeLabel32);
+        CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, ExitReason_NormalNoSysCheck, false, &CX86Ops::JeLabel32);
         m_Assembler.MoveConstToX86reg((uint32_t)&m_TempValue32, TempReg);
         m_Assembler.SubX86RegToX86Reg(TempReg, AddressReg);
         m_Assembler.XorConstToX86Reg(AddressReg, 3);
@@ -9823,7 +9823,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         }
         m_Assembler.TestX86ByteRegToX86Reg(CX86Ops::x86_AL, CX86Ops::x86_AL);
         m_RegWorkingSet.AfterCallDirect();
-        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, &CX86Ops::JeLabel32);
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_NormalNoSysCheck, false, &CX86Ops::JeLabel32);
         m_Assembler.JmpLabel8(stdstr_f("MemoryWrite_%X_Done:", m_CompilePC).c_str(), 0);
         MemoryWriteDone = (uint8_t *)(*g_RecompPos - 1);
     }
@@ -9846,7 +9846,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         }
         m_Assembler.TestX86ByteRegToX86Reg(CX86Ops::x86_AL, CX86Ops::x86_AL);
         m_RegWorkingSet.AfterCallDirect();
-        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, &CX86Ops::JeLabel32);
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_NormalNoSysCheck, false, &CX86Ops::JeLabel32);
         m_Assembler.JmpLabel8(stdstr_f("MemoryWrite_%X_Done:", m_CompilePC).c_str(), 0);
         MemoryWriteDone = (uint8_t *)(*g_RecompPos - 1);
     }
@@ -9869,7 +9869,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         }
         m_Assembler.TestX86ByteRegToX86Reg(CX86Ops::x86_AL, CX86Ops::x86_AL);
         m_RegWorkingSet.AfterCallDirect();
-        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, &CX86Ops::JeLabel32);
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_NormalNoSysCheck, false, &CX86Ops::JeLabel32);
         m_Assembler.JmpLabel8(stdstr_f("MemoryWrite_%X_Done:", m_CompilePC).c_str(), 0);
         MemoryWriteDone = (uint8_t *)(*g_RecompPos - 1);
     }
@@ -9894,7 +9894,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         }
         m_Assembler.TestX86ByteRegToX86Reg(CX86Ops::x86_AL, CX86Ops::x86_AL);
         m_RegWorkingSet.AfterCallDirect();
-        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::Normal_NoSysCheck, false, &CX86Ops::JeLabel32);
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_NormalNoSysCheck, false, &CX86Ops::JeLabel32);
         m_Assembler.JmpLabel8(stdstr_f("MemoryWrite_%X_Done:", m_CompilePC).c_str(), 0);
         MemoryWriteDone = (uint8_t *)(*g_RecompPos - 1);
     }

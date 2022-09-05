@@ -4,7 +4,6 @@
 
 struct CJumpInfo
 {
-    typedef CExitInfo::EXIT_REASON EXIT_REASON;
     CJumpInfo(CCodeBlock & CodeBlock);
 
     uint32_t TargetPC;
@@ -16,5 +15,5 @@ struct CJumpInfo
     bool PermLoop;
     bool DoneDelaySlot;
     CRegInfo RegSet;
-    EXIT_REASON ExitReason;
+    ExitReason Reason;
 };

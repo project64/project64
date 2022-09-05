@@ -5,28 +5,28 @@
 
 class CCodeBlock;
 
+enum ExitReason
+{
+    ExitReason_Normal,
+    ExitReason_NormalNoSysCheck,
+    ExitReason_DoCPUAction,
+    ExitReason_COP1Unuseable,
+    ExitReason_DoSysCall,
+    ExitReason_TLBReadMiss,
+    ExitReason_TLBWriteMiss,
+    ExitReason_ResetRecompCode,
+    ExitReason_ExceptionOverflow,
+};
+
 struct CExitInfo
 {
     CExitInfo(CCodeBlock & CodeBlock);
-
-    enum EXIT_REASON
-    {
-        Normal = 0,
-        Normal_NoSysCheck = 1,
-        DoCPU_Action = 2,
-        COP1_Unuseable = 3,
-        DoSysCall = 4,
-        TLBReadMiss = 5,
-        TLBWriteMiss = 6,
-        ExitResetRecompCode = 8,
-        Exit_ExceptionOverflow,
-    };
 
     std::string Name;
     uint32_t ID;
     uint32_t TargetPC;
     CRegInfo ExitRegSet;
-    EXIT_REASON reason;
+    ExitReason Reason;
     PIPELINE_STAGE PipelineStage;
     uint32_t * JumpLoc; // 32-bit jump
 };
