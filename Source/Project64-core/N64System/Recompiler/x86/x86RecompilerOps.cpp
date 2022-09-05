@@ -9526,10 +9526,14 @@ CX86Ops::x86Reg CX86RecompilerOps::BaseOffsetAddress(bool UseBaseRegister)
     {
         if (m_Opcode.offset != 0)
         {
+            bool UnProtect = m_RegWorkingSet.GetX86Protected(GetIndexFromX86Reg(GetMipsRegMapLo(m_Opcode.base)));
             ProtectGPR(m_Opcode.base);
             AddressReg = Map_TempReg(CX86Ops::x86_Any, -1, false);
             m_Assembler.LeaSourceAndOffset(AddressReg, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-            UnProtectGPR(m_Opcode.base);
+            if (!UnProtect)
+            {
+                UnProtectGPR(m_Opcode.base);
+            }
         }
         else if (UseBaseRegister)
         {
