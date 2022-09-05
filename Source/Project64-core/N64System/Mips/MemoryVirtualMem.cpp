@@ -646,7 +646,10 @@ bool CMipsMemoryVM::LH_NonMemory(uint32_t VAddr, uint16_t & Value)
     }
     else
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        if (BreakOnUnhandledMemory())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
         Value = 0;
     }
     return true;

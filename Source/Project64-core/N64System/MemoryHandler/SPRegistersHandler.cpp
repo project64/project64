@@ -53,7 +53,7 @@ bool SPRegistersHandler::Read32(uint32_t Address, uint32_t & Value)
     case 0x04080000: Value = SP_PC_REG; break;
     default:
         Value = 0;
-        if (HaveDebugger())
+        if (BreakOnUnhandledMemory())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -73,7 +73,7 @@ bool SPRegistersHandler::Read32(uint32_t Address, uint32_t & Value)
         case 0x0404001C: LogMessage("%08X: read from SP_SEMAPHORE_REG (%08X)", m_PC, Value); break;
         case 0x04080000: LogMessage("%08X: read from SP_PC (%08X)", m_PC, Value); break;
         default:
-            if (HaveDebugger())
+            if (BreakOnUnhandledMemory())
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -98,7 +98,7 @@ bool SPRegistersHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask
         case 0x0404001C: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to SP_SEMAPHORE_REG", m_PC, Value, Mask); break;
         case 0x04080000: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to SP_PC", m_PC, Value, Mask); break;
         default:
-            if (HaveDebugger())
+            if (BreakOnUnhandledMemory())
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -128,7 +128,7 @@ bool SPRegistersHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask
             m_RspIntrReg &= ~MI_INTR_SP;
             m_Reg.CheckInterrupts();
         }
-        if ((MaskedValue & SP_SET_INTR) != 0) { if (HaveDebugger()) { g_Notify->DisplayError("SP_SET_INTR"); } }
+        if ((MaskedValue & SP_SET_INTR) != 0) { if (BreakOnUnhandledMemory()) { g_Notify->BreakPoint(__FILE__, __LINE__); } }
         if ((MaskedValue & SP_CLR_SSTEP) != 0) { SP_STATUS_REG &= ~SP_STATUS_SSTEP; }
         if ((MaskedValue & SP_SET_SSTEP) != 0) { SP_STATUS_REG |= SP_STATUS_SSTEP; }
         if ((MaskedValue & SP_CLR_INTR_BREAK) != 0) { SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK; }
@@ -159,7 +159,7 @@ bool SPRegistersHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask
     case 0x0404001C: SP_SEMAPHORE_REG = 0; break;
     case 0x04080000: SP_PC_REG = MaskedValue & 0xFFC; break;
     default:
-        if (HaveDebugger())
+        if (BreakOnUnhandledMemory())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
