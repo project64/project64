@@ -1329,7 +1329,7 @@ void R4300iOp::SPECIAL_SRLV()
 
 void R4300iOp::SPECIAL_SRAV()
 {
-    _GPR[m_Opcode.rd].DW = (_GPR[m_Opcode.rt].W[0] >> (_GPR[m_Opcode.rs].UW[0] & 0x1F));
+    _GPR[m_Opcode.rd].DW = (int32_t)(_GPR[m_Opcode.rt].DW >> (_GPR[m_Opcode.rs].UW[0] & 0x1F));
 }
 
 void R4300iOp::SPECIAL_JR()
