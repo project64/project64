@@ -475,7 +475,7 @@ CX86Ops::CX86Ops::x86Reg CX86RegInfo::FreeX86Reg()
     }
     for (int i = 0; i < x86RegIndex_Size; i++)
     {
-        for (int32_t z = 0; z < 9; z++)
+        for (int32_t z = 0; z < x86RegIndex_Size - 1; z++)
         {
             if (MapCount[z] < MapCount[z + 1])
             {
