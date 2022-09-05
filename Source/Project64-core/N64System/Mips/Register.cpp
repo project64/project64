@@ -23,10 +23,10 @@ const char *CRegName::GPR_Lo[32] = { "r0.LO", "at.LO", "v0.LO", "v1.LO", "a0.LO"
 "t8.LO", "t9.LO", "k0.LO", "k1.LO", "gp.LO", "sp.LO",
 "fp.LO", "ra.LO" };
 
-const char * CRegName::Cop0[32] = { "Index", "Random", "EntryLo0", "EntryLo1", "Context", "PageMask", "Wired", "",
+const char * CRegName::Cop0[32] = { "Index", "Random", "EntryLo0", "EntryLo1", "Context", "PageMask", "Wired", "Reg7",
 "BadVAddr", "Count", "EntryHi", "Compare", "Status", "Cause", "EPC", "PRId",
-"Config", "LLAddr", "WatchLo", "WatchHi", "XContext", "", "", "",
-"", "", "ECC", "CacheErr", "TagLo", "TagHi", "ErrEPC", "" };
+"Config", "LLAddr", "WatchLo", "WatchHi", "XContext", "Reg21", "Reg22", "Reg23",
+"Reg24", "Reg25", "ECC", "CacheErr", "TagLo", "TagHi", "ErrEPC", "Reg31" };
 
 const char * CRegName::FPR[32] = { "F0", "F1", "F2", "F3", "F4", "F5", "F6", "F7",
 "F8", "F9", "F10", "F11", "F12", "F13", "F14", "F15",
