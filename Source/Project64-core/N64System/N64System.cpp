@@ -1237,7 +1237,6 @@ void CN64System::ExecuteCPU()
     g_Notify->DisplayMessage(2, MSG_EMULATION_STARTED);
 
     m_EndEmulation = false;
-    NotifyCallback(CN64SystemCB_LoadedGameState);
 
     m_Plugins->RomOpened();
     if (m_SyncCPU)
