@@ -283,7 +283,7 @@ public:
     void Map_GPR_64bit(int32_t Reg, int32_t MipsRegToLoad) { m_RegWorkingSet.Map_GPR_64bit(Reg, MipsRegToLoad); }
     CX86Ops::x86Reg Get_MemoryStack() { return m_RegWorkingSet.Get_MemoryStack(); }
     CX86Ops::x86Reg Map_MemoryStack(CX86Ops::x86Reg Reg, bool bMapRegister, bool LoadValue = true) { return m_RegWorkingSet.Map_MemoryStack(Reg, bMapRegister, LoadValue); }
-    CX86Ops::x86Reg Map_TempReg(CX86Ops::x86Reg Reg, int32_t MipsReg, bool LoadHiWord) { return m_RegWorkingSet.Map_TempReg(Reg, MipsReg, LoadHiWord); }
+    CX86Ops::x86Reg Map_TempReg(CX86Ops::x86Reg Reg, int32_t MipsReg, bool LoadHiWord, bool Reg8Bit) { return m_RegWorkingSet.Map_TempReg(Reg, MipsReg, LoadHiWord, Reg8Bit); }
     void ProtectGPR(uint32_t Reg) { m_RegWorkingSet.ProtectGPR(Reg); }
     void UnProtectGPR(uint32_t Reg) { m_RegWorkingSet.UnProtectGPR(Reg); }
     void ResetX86Protection() { m_RegWorkingSet.ResetX86Protection(); }

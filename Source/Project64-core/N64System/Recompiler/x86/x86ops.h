@@ -16,8 +16,6 @@ public:
         x86_EDI = 7,
         x86_EBP = 5,
         x86_ESP = 4,
-        x86_Any8Bit = -3,
-        x86_Any = -2,
         x86_Unknown = -1,
 
         x86_AL = 0, x86_BL = 3, x86_CL = 1, x86_DL = 2,

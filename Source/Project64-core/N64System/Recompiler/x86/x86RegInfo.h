@@ -75,9 +75,9 @@ public:
     void Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad);
     CX86Ops::x86Reg Get_MemoryStack() const;
     CX86Ops::x86Reg Map_MemoryStack(CX86Ops::x86Reg Reg, bool bMapRegister, bool LoadValue = true);
-    CX86Ops::x86Reg Map_TempReg(CX86Ops::x86Reg Reg, int32_t MipsReg, bool LoadHiWord);
-    void ProtectGPR(uint32_t Reg);
-    void UnProtectGPR(uint32_t Reg);
+    CX86Ops::x86Reg Map_TempReg(CX86Ops::x86Reg Reg, int32_t MipsReg, bool LoadHiWord, bool Reg8Bit);
+    void ProtectGPR(uint32_t MipsReg);
+    void UnProtectGPR(uint32_t MipsReg);
     void ResetX86Protection();
     CX86Ops::x86Reg UnMap_TempReg();
     void UnMap_GPR(uint32_t Reg, bool WriteBackValue);

@@ -2019,7 +2019,7 @@ void CArmRecompilerOps::ORI()
 
     if (g_System->bFastSP() && m_Opcode.rs == 29 && m_Opcode.rt == 29)
     {
-        //OrConstToX86Reg(m_Opcode.immediate, Map_MemoryStack(x86_Any, true));
+        //OrConstToX86Reg(m_Opcode.immediate, Map_MemoryStack(x86_Unknown, true, false));
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
@@ -2245,7 +2245,7 @@ void CArmRecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
         /*Map_GPR_32bit(m_Opcode.rt, ResultSigned, -1);
-        TempReg1 = Map_MemoryStack(x86_Any, true);
+        TempReg1 = Map_MemoryStack(x86_Unknown, true, false);
         MoveVariableDispToX86Reg((void *)((uint32_t)(int16_t)m_Opcode.offset), stdstr_f("%Xh", (int16_t)m_Opcode.offset).c_str(), GetMipsRegMapLo(m_Opcode.rt), TempReg1, 1);
         if (bRecordLLBit)
         {
