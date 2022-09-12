@@ -1,6 +1,10 @@
 #pragma once
 #if defined(__i386__) || defined(_M_IX86)
 
+#if !defined(_MSC_VER) && !defined(_Printf_format_string_)
+#define _Printf_format_string_
+#endif
+
 class CCodeBlock;
 
 class CX86Ops

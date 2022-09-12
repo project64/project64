@@ -3,6 +3,10 @@
 #include <Project64-core/N64System/Recompiler/RecompilerOps.h>
 #include <Project64-core/N64System/Recompiler/CodeSection.h>
 
+#if !defined(_MSC_VER) && !defined(_Printf_format_string_)
+#define _Printf_format_string_
+#endif
+
 class CMipsMemoryVM;
 
 class CCodeBlock

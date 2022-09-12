@@ -1,7 +1,13 @@
 #pragma once
 #if defined(__arm__) || defined(_M_ARM)
+
+#if !defined(_MSC_VER) && !defined(_Printf_format_string_)
+#define _Printf_format_string_
+#endif
+
 #include <Project64-core/Settings/DebugSettings.h>
 
+class CCodeBlock;
 class CArmRegInfo;
 
 class CArmOps :
@@ -143,102 +149,106 @@ public:
         ItMask_EEE,
     };
 
-protected:
+    CArmOps(CCodeBlock & CodeBlock, CArmRegInfo & RegWorkingSet);
+
     // Logging functions
-    static void WriteArmComment(const char * Comment);
-    static void WriteArmLabel(const char * Label);
+    void WriteArmComment(const char * Comment);
+    void WriteArmLabel(const char * Label);
 
-    static void AddArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2);
-    static void AddConstToArmReg(ArmReg DestReg, uint32_t Const);
-    static void AddConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const);
-    static void AndConstToVariable(void *Variable, const char * VariableName, uint32_t Const);
-    static void AndConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const);
-    static void AndArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2);
-    static void ArmBreakPoint(const char * FileName, uint32_t LineNumber);
-    static void ArmNop(void);
-    static void BranchLabel8(ArmCompareType CompareType, const char * Label);
-    static void BranchLabel20(ArmCompareType CompareType, const char * Label);
-    static void CallFunction(void * Function, const char * FunctionName);
-    static void CompareArmRegToConst(ArmReg Reg, uint32_t value);
-    static void CompareArmRegToArmReg(ArmReg Reg1, ArmReg Reg2);
-    static void IfBlock(ArmItMask mask, ArmCompareType CompareType);
-    static void LoadArmRegPointerByteToArmReg(ArmReg DestReg, ArmReg RegPointer, uint16_t offset);
-    static void LoadArmRegPointerByteToArmReg(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift);
-    static void LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, uint8_t Offset, const char * comment = nullptr);
-    static void LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift);
-    static void LoadArmRegPointerToFloatReg(ArmReg RegPointer, ArmFpuSingle Reg, uint8_t Offset);
-    static void LoadFloatingPointControlReg(ArmReg DestReg);
-    static void MoveArmRegArmReg(ArmReg DestReg, ArmReg SourceReg);
-    static void MoveArmRegToVariable(ArmReg Reg, void * Variable, const char * VariableName);
-    static void MoveConstToArmReg(ArmReg DestReg, uint16_t Const, const char * comment = nullptr);
-    static void MoveConstToArmRegTop(ArmReg DestReg, uint16_t Const, const char * comment = nullptr);
-    static void MoveConstToArmReg(ArmReg DestReg, uint32_t Const, const char * comment = nullptr);
-    static void MoveConstToVariable(uint32_t Const, void * Variable, const char * VariableName);
-    static void MoveFloatRegToVariable(ArmFpuSingle reg, void * Variable, const char * VariableName);
-    static void MoveVariableToArmReg(void * Variable, const char * VariableName, ArmReg reg);
-    static void MoveVariableToFloatReg(void * Variable, const char * VariableName, ArmFpuSingle reg);
-    static void OrArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2, uint32_t shift);
-    static void OrConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t value);
-    static void OrConstToVariable(void * Variable, const char * VariableName, uint32_t value);
-    static void MulF32(ArmFpuSingle DestReg, ArmFpuSingle SourceReg1, ArmFpuSingle SourceReg2);
-    static void PushArmReg(uint16_t Registers);
-    static void PopArmReg(uint16_t Registers);
-    static void ShiftRightSignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift);
-    static void ShiftRightUnsignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift);
-    static void ShiftLeftImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift);
-    static void SignExtendByte(ArmReg Reg);
-    static void StoreArmRegToArmRegPointer(ArmReg DestReg, ArmReg RegPointer, uint8_t Offset, const char * comment = nullptr);
-    static void StoreArmRegToArmRegPointer(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift);
-    static void StoreFloatingPointControlReg(ArmReg SourceReg);
-    static void StoreFloatRegToArmRegPointer(ArmFpuSingle Reg, ArmReg RegPointer, uint8_t Offset);
-    static void SubArmRegFromArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2);
-    static void SubConstFromArmReg(ArmReg Reg, ArmReg SourceReg, uint32_t Const);
-    static void SubConstFromVariable(uint32_t Const, void * Variable, const char * VariableName);
-    static void TestVariable(uint32_t Const, void * Variable, const char * VariableName);
-    static void XorConstToArmReg(ArmReg DestReg, uint32_t value);
-    static void XorArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg);
-    static void XorArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2);
+    void AddArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2);
+    void AddConstToArmReg(ArmReg DestReg, uint32_t Const);
+    void AddConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const);
+    void AndConstToVariable(void *Variable, const char * VariableName, uint32_t Const);
+    void AndConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const);
+    void AndArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2);
+    void ArmBreakPoint(const char * FileName, uint32_t LineNumber);
+    void ArmNop(void);
+    void BranchLabel8(ArmCompareType CompareType, const char * Label);
+    void BranchLabel20(ArmCompareType CompareType, const char * Label);
+    void CallFunction(void * Function, const char * FunctionName);
+    void CompareArmRegToConst(ArmReg Reg, uint32_t value);
+    void CompareArmRegToArmReg(ArmReg Reg1, ArmReg Reg2);
+    void IfBlock(ArmItMask mask, ArmCompareType CompareType);
+    void LoadArmRegPointerByteToArmReg(ArmReg DestReg, ArmReg RegPointer, uint16_t offset);
+    void LoadArmRegPointerByteToArmReg(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift);
+    void LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, uint8_t Offset, const char * comment = nullptr);
+    void LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift);
+    void LoadArmRegPointerToFloatReg(ArmReg RegPointer, ArmFpuSingle Reg, uint8_t Offset);
+    void LoadFloatingPointControlReg(ArmReg DestReg);
+    void MoveArmRegArmReg(ArmReg DestReg, ArmReg SourceReg);
+    void MoveArmRegToVariable(ArmReg Reg, void * Variable, const char * VariableName);
+    void MoveConstToArmReg(ArmReg DestReg, uint16_t Const, const char * comment = nullptr);
+    void MoveConstToArmRegTop(ArmReg DestReg, uint16_t Const, const char * comment = nullptr);
+    void MoveConstToArmReg(ArmReg DestReg, uint32_t Const, const char * comment = nullptr);
+    void MoveConstToVariable(uint32_t Const, void * Variable, const char * VariableName);
+    void MoveFloatRegToVariable(ArmFpuSingle reg, void * Variable, const char * VariableName);
+    void MoveVariableToArmReg(void * Variable, const char * VariableName, ArmReg reg);
+    void MoveVariableToFloatReg(void * Variable, const char * VariableName, ArmFpuSingle reg);
+    void OrArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2, uint32_t shift);
+    void OrConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t value);
+    void OrConstToVariable(void * Variable, const char * VariableName, uint32_t value);
+    void MulF32(ArmFpuSingle DestReg, ArmFpuSingle SourceReg1, ArmFpuSingle SourceReg2);
+    void PushArmReg(uint16_t Registers);
+    void PopArmReg(uint16_t Registers);
+    void ShiftRightSignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift);
+    void ShiftRightUnsignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift);
+    void ShiftLeftImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift);
+    void SignExtendByte(ArmReg Reg);
+    void StoreArmRegToArmRegPointer(ArmReg DestReg, ArmReg RegPointer, uint8_t Offset, const char * comment = nullptr);
+    void StoreArmRegToArmRegPointer(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift);
+    void StoreFloatingPointControlReg(ArmReg SourceReg);
+    void StoreFloatRegToArmRegPointer(ArmFpuSingle Reg, ArmReg RegPointer, uint8_t Offset);
+    void SubArmRegFromArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2);
+    void SubConstFromArmReg(ArmReg Reg, ArmReg SourceReg, uint32_t Const);
+    void SubConstFromVariable(uint32_t Const, void * Variable, const char * VariableName);
+    void TestVariable(uint32_t Const, void * Variable, const char * VariableName);
+    void XorConstToArmReg(ArmReg DestReg, uint32_t value);
+    void XorArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg);
+    void XorArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2);
 
-    static void * GetAddressOf(int32_t value, ...);
-    static void SetJump8(uint8_t * Loc, uint8_t * JumpLoc);
-    static void SetJump20(uint32_t * Loc, uint32_t * JumpLoc);
-    static void FlushPopArmReg(void);
+    void * GetAddressOf(int32_t value, ...);
+    void SetJump8(uint8_t * Loc, uint8_t * JumpLoc);
+    void SetJump20(uint32_t * Loc, uint32_t * JumpLoc);
+    void FlushPopArmReg(void);
 
-    static CArmRegInfo m_RegWorkingSet;
-
-protected:
-    static const char * ArmRegName(ArmReg Reg);
-    static uint32_t PushPopRegisterSize(uint16_t Registers);
-    static std::string PushPopRegisterList(uint16_t Registers);
+    const char * ArmRegName(ArmReg Reg);
+    uint32_t PushPopRegisterSize(uint16_t Registers);
+    std::string PushPopRegisterList(uint16_t Registers);
 
 private:
-    friend class CArmRegInfo;
+    CArmOps(void);
+    CArmOps(const CArmOps&);
+    CArmOps& operator=(const CArmOps&);
 
-    static void PreOpCheck(ArmReg DestReg, bool AllowedInItBlock, const char * FileName, uint32_t LineNumber);
-    static void BreakPointNotification(const char * FileName, uint32_t LineNumber);
-    static bool ArmCompareInverse(ArmCompareType CompareType);
-    static ArmCompareType ArmCompareInverseType(ArmCompareType CompareType);
-    static const char * ArmCompareSuffix(ArmCompareType CompareType);
-    static const char * ArmFpuSingleName(ArmFpuSingle Reg);
-    static const char * ArmItMaskName(ArmItMask mask);
-    static const char * ArmCurrentItCondition();
+    void CodeLog(_Printf_format_string_ const char * Text, ...);
 
-    static void ProgressItBlock(void);
+    void PreOpCheck(ArmReg DestReg, bool AllowedInItBlock, const char * FileName, uint32_t LineNumber);
+    void BreakPointNotification(const char * FileName, uint32_t LineNumber);
+    bool ArmCompareInverse(ArmCompareType CompareType);
+    ArmCompareType ArmCompareInverseType(ArmCompareType CompareType);
+    const char * ArmCompareSuffix(ArmCompareType CompareType);
+    const char * ArmFpuSingleName(ArmFpuSingle Reg);
+    const char * ArmItMaskName(ArmItMask mask);
+    const char * ArmCurrentItCondition();
 
-    static bool CanThumbCompressConst(uint32_t value);
-    static uint16_t ThumbCompressConst(uint32_t value);
+    void ProgressItBlock(void);
 
-    static void AddCode8(uint8_t value);
-    static void AddCode16(uint16_t value);
-    static void AddCode32(uint32_t value);
+    bool CanThumbCompressConst(uint32_t value);
+    uint16_t ThumbCompressConst(uint32_t value);
 
-    static bool m_InItBlock;
-    static int m_ItBlockInstruction;
-    static ArmCompareType m_ItBlockCompareType;
-    static ArmItMask m_ItBlockMask;
-    static ArmReg m_LastStoreReg;
-    static uint16_t m_PopRegisters;
-    static uint16_t m_PushRegisters;
+    void AddCode8(uint8_t value);
+    void AddCode16(uint16_t value);
+    void AddCode32(uint32_t value);
+
+    CCodeBlock & m_CodeBlock;
+    CArmRegInfo & m_RegWorkingSet;
+    bool m_InItBlock;
+    int m_ItBlockInstruction;
+    ArmCompareType m_ItBlockCompareType;
+    ArmItMask m_ItBlockMask;
+    ArmReg m_LastStoreReg;
+    uint16_t m_PopRegisters;
+    uint16_t m_PushRegisters;
 };
 
 #define AddressOf(Addr) CArmOps::GetAddressOf(5,(Addr))

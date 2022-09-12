@@ -366,7 +366,6 @@ void CMipsMemoryVM::DumpArmExceptionInfo(uint32_t MemAddress, mcontext_t & conte
     {
         WriteTrace(TraceExceptionHandler, TraceError, "GPR[%s] 0x%08X%08X", CRegName::GPR[count], g_Reg->m_GPR[count].W[1], g_Reg->m_GPR[count].W[0]);
     }
-    Flush_Recompiler_Log();
     TraceFlushLog();
 }
 

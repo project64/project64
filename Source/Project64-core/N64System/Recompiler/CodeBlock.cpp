@@ -32,7 +32,7 @@ CCodeBlock::CCodeBlock(CMipsMemoryVM & MMU, uint32_t VAddrEnter, uint8_t * Compi
 #if defined(__i386__) || defined(_M_IX86)
     m_RecompilerOps = new CX86RecompilerOps(MMU, *this);
 #elif defined(__arm__) || defined(_M_ARM)
-    m_RecompilerOps = new CArmRecompilerOps(MMU);
+    m_RecompilerOps = new CArmRecompilerOps(MMU, *this);
 #else
     g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif

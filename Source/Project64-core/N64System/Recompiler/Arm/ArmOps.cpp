@@ -2,32 +2,37 @@
 
 #if defined(__arm__) || defined(_M_ARM)
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
+#include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Recompiler/Arm/ArmOps.h>
 #include <Project64-core/N64System/Recompiler/Arm/ArmOpCode.h>
 #include <Project64-core/N64System/Recompiler/Arm/ArmRegInfo.h>
+#include <Project64-core/N64System/Recompiler/CodeBlock.h>
 
-CArmRegInfo CArmOps::m_RegWorkingSet;
-bool CArmOps::m_InItBlock = false;
-int CArmOps::m_ItBlockInstruction = 0;
-CArmOps::ArmCompareType CArmOps::m_ItBlockCompareType;
-CArmOps::ArmItMask CArmOps::m_ItBlockMask;
-CArmOps::ArmReg CArmOps::m_LastStoreReg;
-uint16_t CArmOps::m_PopRegisters = 0;
-uint16_t CArmOps::m_PushRegisters = 0;
+CArmOps::CArmOps(CCodeBlock & CodeBlock, CArmRegInfo & RegWorkingSet) :
+    m_CodeBlock(CodeBlock),
+    m_RegWorkingSet(RegWorkingSet),
+    m_InItBlock(false),
+    m_ItBlockInstruction(0),
+    m_ItBlockCompareType(ArmBranch_Equal),
+    m_ItBlockMask(ItMask_None),
+    m_LastStoreReg(CArmOps::Arm_Unknown),
+    m_PopRegisters(0),
+    m_PushRegisters(0)
+{
+}
 
 // Logging functions
 
 void CArmOps::WriteArmComment(const char * Comment)
 {
-    CPU_Message("");
-    CPU_Message("      // %s", Comment);
+    CodeLog("");
+    CodeLog("      // %s", Comment);
 }
 
 void CArmOps::WriteArmLabel(const char * Label)
 {
-    CPU_Message("");
-    CPU_Message("      %s:", Label);
+    CodeLog("");
+    CodeLog("      %s:", Label);
 }
 
 void CArmOps::AddArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2)
@@ -36,7 +41,7 @@ void CArmOps::AddArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg Source
 
     if (DestReg <= 7 && SourceReg1 <= 7 && SourceReg2 <= 7)
     {
-        CPU_Message("      add\t%s,%s,%s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
+        CodeLog("      add\t%s,%s,%s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
         ArmThumbOpcode op = { 0 };
         op.Reg.rt = DestReg;
         op.Reg.rn = SourceReg1;
@@ -46,7 +51,7 @@ void CArmOps::AddArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg Source
     }
     else
     {
-        CPU_Message("      add.w\t%s,%s,%s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
+        CodeLog("      add.w\t%s,%s,%s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
         Arm32Opcode op = { 0 };
         op.imm5.rn = SourceReg1;
         op.imm5.s = 0;
@@ -75,7 +80,7 @@ void CArmOps::AndConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const)
 
     if (CanThumbCompressConst(Const))
     {
-        CPU_Message("      and\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), Const);
+        CodeLog("      and\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), Const);
         uint16_t CompressedConst = ThumbCompressConst(Const);
         Arm32Opcode op = { 0 };
         op.imm8_3_1.rn = SourceReg;
@@ -129,7 +134,7 @@ void CArmOps::AddConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const)
     }
     else if ((Const & 0xFFFFFFF8) == 0 && DestReg <= 7 && SourceReg <= 7)
     {
-        CPU_Message("      adds\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), Const);
+        CodeLog("      adds\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), Const);
         ArmThumbOpcode op = { 0 };
         op.Imm3.rd = DestReg;
         op.Imm3.rn = SourceReg;
@@ -139,7 +144,7 @@ void CArmOps::AddConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const)
     }
     else if ((Const & 0xFFFFFF00) == 0 && DestReg <= 7 && DestReg == SourceReg)
     {
-        CPU_Message("      adds\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), Const);
+        CodeLog("      adds\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), Const);
         ArmThumbOpcode op = { 0 };
         op.Imm8.imm8 = Const;
         op.Imm8.rdn = DestReg;
@@ -148,7 +153,7 @@ void CArmOps::AddConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const)
     }
     else if ((Const & 0xFFFFFF80) == 0xFFFFFF80 && DestReg <= 7 && DestReg == SourceReg)
     {
-        CPU_Message("      sub\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), (~Const) + 1);
+        CodeLog("      sub\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), (~Const) + 1);
         ArmThumbOpcode op = { 0 };
         op.Imm8.imm8 = ((~Const) + 1) & 0xFF;
         op.Imm8.rdn = DestReg;
@@ -157,7 +162,7 @@ void CArmOps::AddConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const)
     }
     else if (CanThumbCompressConst(Const))
     {
-        CPU_Message("      add.w\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), Const);
+        CodeLog("      add.w\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), Const);
         uint16_t CompressedConst = ThumbCompressConst(Const);
         Arm32Opcode op = { 0 };
         op.imm8_3_1.rn = SourceReg;
@@ -181,7 +186,7 @@ void CArmOps::AddConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const)
     }
     else
     {
-        CPU_Message("%s: DestReg = %X Const = %X", __FUNCTION__, DestReg, Const);
+        CodeLog("%s: DestReg = %X Const = %X", __FUNCTION__, DestReg, Const);
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 }
@@ -192,7 +197,7 @@ void CArmOps::AndArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg Source
 
     if (DestReg <= 0x7 && SourceReg2 <= 0x7 && SourceReg1 == DestReg)
     {
-        CPU_Message("      ands\t%s, %s", ArmRegName(DestReg), ArmRegName(SourceReg2));
+        CodeLog("      ands\t%s, %s", ArmRegName(DestReg), ArmRegName(SourceReg2));
         ArmThumbOpcode op = { 0 };
         op.Reg2.rn = DestReg;
         op.Reg2.rm = SourceReg2;
@@ -201,7 +206,7 @@ void CArmOps::AndArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg Source
     }
     else
     {
-        CPU_Message("      and.w\t%s, %s, %s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
+        CodeLog("      and.w\t%s, %s, %s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
         Arm32Opcode op = { 0 };
         op.imm5.rn = SourceReg1;
         op.imm5.s = 0;
@@ -223,7 +228,7 @@ void CArmOps::ArmBreakPoint(const char * FileName, uint32_t LineNumber)
     m_RegWorkingSet.BeforeCallDirect();
     MoveConstToArmReg(Arm_R1, LineNumber);
     MoveConstToArmReg(Arm_R0, (uint32_t)FileName, FileName);
-    CallFunction(AddressOf(&BreakPointNotification), "BreakPointNotification");
+    CallFunction(AddressOf(&CArmOps::BreakPointNotification), "BreakPointNotification");
     m_RegWorkingSet.AfterCallDirect();
 }
 
@@ -231,7 +236,7 @@ void CArmOps::ArmNop(void)
 {
     PreOpCheck(Arm_Unknown, false, __FILE__, __LINE__);
 
-    CPU_Message("      nop");
+    CodeLog("      nop");
     AddCode16(0xbf00);
 }
 
@@ -239,7 +244,7 @@ void CArmOps::BranchLabel8(ArmCompareType CompareType, const char * Label)
 {
     PreOpCheck(Arm_Unknown, false, __FILE__, __LINE__);
 
-    CPU_Message("      b%s\t%s", ArmCompareSuffix(CompareType), Label);
+    CodeLog("      b%s\t%s", ArmCompareSuffix(CompareType), Label);
     ArmThumbOpcode op = { 0 };
     if (CompareType == ArmBranch_Always)
     {
@@ -259,7 +264,7 @@ void CArmOps::BranchLabel20(ArmCompareType CompareType, const char * Label)
 {
     PreOpCheck(Arm_Unknown, false, __FILE__, __LINE__);
 
-    CPU_Message("      b%s\t%s", ArmCompareSuffix(CompareType), Label);
+    CodeLog("      b%s\t%s", ArmCompareSuffix(CompareType), Label);
     Arm32Opcode op = { 0 };
     op.Branch20.imm6 = 0;
     op.Branch20.cond = CompareType == ArmBranch_Always ? 0 : CompareType;
@@ -284,7 +289,7 @@ void CArmOps::CallFunction(void * Function, const char * FunctionName)
     op.Branch.reserved = 0;
     op.Branch.rm = reg;
     op.Branch.opcode = 0x8F;
-    CPU_Message("      blx\t%s", ArmRegName(reg));
+    CodeLog("      blx\t%s", ArmRegName(reg));
     AddCode16(op.Hex);
 }
 
@@ -317,7 +322,7 @@ void CArmOps::MoveConstToArmReg(ArmReg Reg, uint16_t value, const char * comment
     PreOpCheck(Arm_Unknown, true, __FILE__, __LINE__);
     if ((value & 0xFF00) == 0 && Reg <= 7)
     {
-        CPU_Message("      mov%s\t%s, #0x%X\t; %s", m_InItBlock ? ArmCurrentItCondition() : "s", ArmRegName(Reg), (uint32_t)value, comment != nullptr ? comment : stdstr_f("0x%X", (uint32_t)value).c_str());
+        CodeLog("      mov%s\t%s, #0x%X\t; %s", m_InItBlock ? ArmCurrentItCondition() : "s", ArmRegName(Reg), (uint32_t)value, comment != nullptr ? comment : stdstr_f("0x%X", (uint32_t)value).c_str());
         ArmThumbOpcode op = { 0 };
         op.Imm8.imm8 = value;
         op.Imm8.rdn = Reg;
@@ -326,7 +331,7 @@ void CArmOps::MoveConstToArmReg(ArmReg Reg, uint16_t value, const char * comment
     }
     else if (CanThumbCompressConst(value))
     {
-        CPU_Message("      mov%s.w\t%s, #0x%X\t; %s", m_InItBlock ? ArmCurrentItCondition() : "", ArmRegName(Reg), (uint32_t)value, comment != nullptr ? comment : stdstr_f("0x%X", (uint32_t)value).c_str());
+        CodeLog("      mov%s.w\t%s, #0x%X\t; %s", m_InItBlock ? ArmCurrentItCondition() : "", ArmRegName(Reg), (uint32_t)value, comment != nullptr ? comment : stdstr_f("0x%X", (uint32_t)value).c_str());
         uint16_t CompressedValue = ThumbCompressConst(value);
         Arm32Opcode op = { 0 };
         op.imm8_3_1.rn = 0xF;
@@ -343,7 +348,7 @@ void CArmOps::MoveConstToArmReg(ArmReg Reg, uint16_t value, const char * comment
     }
     else
     {
-        CPU_Message("      movw%s\t%s, #0x%X\t; %s", m_InItBlock ? ArmCurrentItCondition() : "", ArmRegName(Reg), (uint32_t)value, comment != nullptr ? comment : stdstr_f("0x%X", (uint32_t)value).c_str());
+        CodeLog("      movw%s\t%s, #0x%X\t; %s", m_InItBlock ? ArmCurrentItCondition() : "", ArmRegName(Reg), (uint32_t)value, comment != nullptr ? comment : stdstr_f("0x%X", (uint32_t)value).c_str());
 
         Arm32Opcode op = { 0 };
         op.imm16.opcode = ArmMOV_IMM16;
@@ -367,7 +372,7 @@ void CArmOps::MoveConstToArmRegTop(ArmReg DestReg, uint16_t Const, const char * 
 {
     PreOpCheck(DestReg, false, __FILE__, __LINE__);
 
-    CPU_Message("      movt\t%s, %s", ArmRegName(DestReg), comment != nullptr ? stdstr_f("#0x%X\t; %s", (uint32_t)Const, comment).c_str() : stdstr_f("#%d\t; 0x%X", (uint32_t)Const, (uint32_t)Const).c_str());
+    CodeLog("      movt\t%s, %s", ArmRegName(DestReg), comment != nullptr ? stdstr_f("#0x%X\t; %s", (uint32_t)Const, comment).c_str() : stdstr_f("#%d\t; 0x%X", (uint32_t)Const, (uint32_t)Const).c_str());
 
     Arm32Opcode op = { 0 };
     op.imm16.opcode = ArmMOV_IMM16;
@@ -391,7 +396,7 @@ void CArmOps::CompareArmRegToConst(ArmReg Reg, uint32_t value)
 
     if (Reg <= 0x7 && (value & 0xFFFFFF00) == 0)
     {
-        CPU_Message("      cmp\t%s, #%d\t; 0x%X", ArmRegName(Reg), value, value);
+        CodeLog("      cmp\t%s, #%d\t; 0x%X", ArmRegName(Reg), value, value);
         ArmThumbOpcode op = { 0 };
         op.Imm8.imm8 = value;
         op.Imm8.rdn = Reg;
@@ -400,7 +405,7 @@ void CArmOps::CompareArmRegToConst(ArmReg Reg, uint32_t value)
     }
     else if (CanThumbCompressConst(value))
     {
-        CPU_Message("      cmp\t%s, #%d\t; 0x%X", ArmRegName(Reg), value, value);
+        CodeLog("      cmp\t%s, #%d\t; 0x%X", ArmRegName(Reg), value, value);
         uint16_t CompressedValue = ThumbCompressConst(value);
         Arm32Opcode op = { 0 };
         op.imm8_3_1.rn = Reg;
@@ -430,7 +435,7 @@ void CArmOps::CompareArmRegToArmReg(ArmReg Reg1, ArmReg Reg2)
 
     if (Reg1 <= 0x7 && Reg2 <= 0x7)
     {
-        CPU_Message("      cmp\t%s, %s", ArmRegName(Reg1), ArmRegName(Reg2));
+        CodeLog("      cmp\t%s, %s", ArmRegName(Reg1), ArmRegName(Reg2));
         ArmThumbOpcode op = { 0 };
         op.Reg2.rn = Reg1;
         op.Reg2.rm = Reg2;
@@ -439,7 +444,7 @@ void CArmOps::CompareArmRegToArmReg(ArmReg Reg1, ArmReg Reg2)
     }
     else
     {
-        CPU_Message("      cmp.w\t%s, %s", ArmRegName(Reg1), ArmRegName(Reg2));
+        CodeLog("      cmp.w\t%s, %s", ArmRegName(Reg1), ArmRegName(Reg2));
         Arm32Opcode op = { 0 };
         op.imm5.rn = Reg1;
         op.imm5.s = 1;
@@ -460,7 +465,7 @@ void CArmOps::IfBlock(ArmItMask mask, ArmCompareType CompareType)
 {
     PreOpCheck(Arm_Unknown, false, __FILE__, __LINE__);
 
-    CPU_Message("      it%s\t%s", ArmItMaskName(mask), ArmCompareSuffix(CompareType));
+    CodeLog("      it%s\t%s", ArmItMaskName(mask), ArmCompareSuffix(CompareType));
     m_InItBlock = true;
     m_ItBlockInstruction = 0;
     m_ItBlockCompareType = CompareType;
@@ -490,11 +495,11 @@ void CArmOps::LoadArmRegPointerByteToArmReg(ArmReg DestReg, ArmReg RegPointer, u
     {
         if ((offset & (~0xFFF)) != 0)
         {
-            CPU_Message("      RegPointer: %d Reg: %d Offset: 0x%X", RegPointer, DestReg, offset);
+            CodeLog("      RegPointer: %d Reg: %d Offset: 0x%X", RegPointer, DestReg, offset);
             g_Notify->BreakPoint(__FILE__, __LINE__);
             return;
         }
-        CPU_Message("      ldrb.w\t%s, [%s, #%d]", ArmRegName(DestReg), ArmRegName(RegPointer), (uint32_t)offset);
+        CodeLog("      ldrb.w\t%s, [%s, #%d]", ArmRegName(DestReg), ArmRegName(RegPointer), (uint32_t)offset);
         Arm32Opcode op = { 0 };
         op.imm12.rt = DestReg;
         op.imm12.rn = RegPointer;
@@ -504,7 +509,7 @@ void CArmOps::LoadArmRegPointerByteToArmReg(ArmReg DestReg, ArmReg RegPointer, u
     }
     else
     {
-        CPU_Message("      ldrb\t%s, [%s%s%s]", ArmRegName(DestReg), ArmRegName(RegPointer), offset == 0 ? "" : ",", offset == 0 ? "" : stdstr_f("#%d", offset).c_str());
+        CodeLog("      ldrb\t%s, [%s%s%s]", ArmRegName(DestReg), ArmRegName(RegPointer), offset == 0 ? "" : ",", offset == 0 ? "" : stdstr_f("#%d", offset).c_str());
         ArmThumbOpcode op = { 0 };
         op.Imm5.rt = DestReg;
         op.Imm5.rn = RegPointer;
@@ -520,7 +525,7 @@ void CArmOps::LoadArmRegPointerByteToArmReg(ArmReg DestReg, ArmReg RegPointer, A
 
     if ((DestReg > 0x7 || RegPointer > 0x7 || RegPointer2 > 0x7) && (shift & ~3) == 0)
     {
-        CPU_Message("      ldrb\t%s, [%s,%s]", ArmRegName(DestReg), ArmRegName(RegPointer), ArmRegName(RegPointer2));
+        CodeLog("      ldrb\t%s, [%s,%s]", ArmRegName(DestReg), ArmRegName(RegPointer), ArmRegName(RegPointer2));
         Arm32Opcode op = { 0 };
         op.uint16.rn = RegPointer;
         op.uint16.opcode = 0xF81;
@@ -532,7 +537,7 @@ void CArmOps::LoadArmRegPointerByteToArmReg(ArmReg DestReg, ArmReg RegPointer, A
     }
     else if (shift == 0 && DestReg <= 0x7 && RegPointer <= 0x7 && RegPointer2 <= 0x7)
     {
-        CPU_Message("      ldrb\t%s, [%s,%s]", ArmRegName(DestReg), ArmRegName(RegPointer), ArmRegName(RegPointer2));
+        CodeLog("      ldrb\t%s, [%s,%s]", ArmRegName(DestReg), ArmRegName(RegPointer), ArmRegName(RegPointer2));
         ArmThumbOpcode op = { 0 };
         op.Reg.rm = RegPointer2;
         op.Reg.rt = DestReg;
@@ -554,11 +559,11 @@ void CArmOps::LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, uint8
     {
         if ((Offset & (~0xFFF)) != 0)
         {
-            CPU_Message("      RegPointer: %d Reg: %d Offset: 0x%X", RegPointer, DestReg, Offset);
+            CodeLog("      RegPointer: %d Reg: %d Offset: 0x%X", RegPointer, DestReg, Offset);
             g_Notify->BreakPoint(__FILE__, __LINE__);
             return;
         }
-        CPU_Message("      ldr.w\t%s, [%s, #%d]%s%s", ArmRegName(DestReg), ArmRegName(RegPointer), (uint32_t)Offset, comment != nullptr ? "\t; " : "", comment != nullptr ? comment : "");
+        CodeLog("      ldr.w\t%s, [%s, #%d]%s%s", ArmRegName(DestReg), ArmRegName(RegPointer), (uint32_t)Offset, comment != nullptr ? "\t; " : "", comment != nullptr ? comment : "");
         Arm32Opcode op = { 0 };
         op.imm12.rt = DestReg;
         op.imm12.rn = RegPointer;
@@ -568,7 +573,7 @@ void CArmOps::LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, uint8
     }
     else
     {
-        CPU_Message("      ldr\t%s, [%s, #%d]%s%s", ArmRegName(DestReg), ArmRegName(RegPointer), (uint32_t)Offset, comment != nullptr ? "\t; " : "", comment != nullptr ? comment : "");
+        CodeLog("      ldr\t%s, [%s, #%d]%s%s", ArmRegName(DestReg), ArmRegName(RegPointer), (uint32_t)Offset, comment != nullptr ? "\t; " : "", comment != nullptr ? comment : "");
         ArmThumbOpcode op = { 0 };
         op.Imm5.rt = DestReg;
         op.Imm5.rn = RegPointer;
@@ -590,7 +595,7 @@ void CArmOps::LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, ArmRe
 
     if (shift == 0 && DestReg <= 0x7 && RegPointer <= 0x7 && RegPointer2 <= 0x7)
     {
-        CPU_Message("      ldr\t%s, [%s,%s]", ArmRegName(DestReg), ArmRegName(RegPointer), ArmRegName(RegPointer2));
+        CodeLog("      ldr\t%s, [%s,%s]", ArmRegName(DestReg), ArmRegName(RegPointer), ArmRegName(RegPointer2));
         ArmThumbOpcode op = { 0 };
         op.Reg.rm = RegPointer2;
         op.Reg.rt = DestReg;
@@ -600,7 +605,7 @@ void CArmOps::LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, ArmRe
     }
     else
     {
-        CPU_Message("      ldr.w\t%s, [%s, %s, lsl #%d]", ArmRegName(DestReg), ArmRegName(RegPointer), ArmRegName(RegPointer2), shift);
+        CodeLog("      ldr.w\t%s, [%s, %s, lsl #%d]", ArmRegName(DestReg), ArmRegName(RegPointer), ArmRegName(RegPointer2), shift);
         Arm32Opcode op = { 0 };
         op.imm2.rm = RegPointer2;
         op.imm2.imm = shift;
@@ -618,11 +623,11 @@ void CArmOps::LoadArmRegPointerToFloatReg(ArmReg RegPointer, ArmFpuSingle Reg, u
 
     if (Offset != 0)
     {
-        CPU_Message("      vldr\t%s, [%s, #%d]", ArmFpuSingleName(Reg), ArmRegName(RegPointer), (uint32_t)Offset);
+        CodeLog("      vldr\t%s, [%s, #%d]", ArmFpuSingleName(Reg), ArmRegName(RegPointer), (uint32_t)Offset);
     }
     else
     {
-        CPU_Message("      vldr\t%s, [%s]", ArmFpuSingleName(Reg), ArmRegName(RegPointer));
+        CodeLog("      vldr\t%s, [%s]", ArmFpuSingleName(Reg), ArmRegName(RegPointer));
     }
     Arm32Opcode op = { 0 };
     op.RnVdImm8.Rn = RegPointer;
@@ -648,7 +653,7 @@ void CArmOps::LoadFloatingPointControlReg(ArmReg DestReg)
 {
     PreOpCheck(DestReg, false, __FILE__, __LINE__);
 
-    CPU_Message("      vmrs\t%s, fpscr", ArmRegName(DestReg));
+    CodeLog("      vmrs\t%s, fpscr", ArmRegName(DestReg));
     Arm32Opcode op = { 0 };
     op.fpscr.opcode2 = 0xA10;
     op.fpscr.rt = DestReg;
@@ -662,7 +667,7 @@ void CArmOps::MoveConstToArmReg(ArmReg DestReg, uint32_t value, const char * com
     {
         PreOpCheck(DestReg, false, __FILE__, __LINE__);
 
-        CPU_Message("      mov.w\t%s, #0x%X\t; %s", ArmRegName(DestReg), (uint32_t)value, comment != nullptr ? comment : stdstr_f("0x%X", (uint32_t)value).c_str());
+        CodeLog("      mov.w\t%s, #0x%X\t; %s", ArmRegName(DestReg), (uint32_t)value, comment != nullptr ? comment : stdstr_f("0x%X", (uint32_t)value).c_str());
         uint16_t CompressedValue = ThumbCompressConst(value);
         Arm32Opcode op = { 0 };
         op.imm8_3_1.rn = 0xF;
@@ -734,7 +739,7 @@ void CArmOps::OrArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceR
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
-    CPU_Message("      orr.w\t%s, %s, %s%s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2), shift ? stdstr_f(", lsl #%d", shift).c_str() : "");
+    CodeLog("      orr.w\t%s, %s, %s%s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2), shift ? stdstr_f(", lsl #%d", shift).c_str() : "");
     Arm32Opcode op = { 0 };
     op.imm5.rn = SourceReg1;
     op.imm5.s = 0;
@@ -762,7 +767,7 @@ void CArmOps::OrConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t value)
     else if (CanThumbCompressConst(value))
     {
         uint16_t CompressedValue = ThumbCompressConst(value);
-        CPU_Message("      orr\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), value);
+        CodeLog("      orr\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), value);
         Arm32Opcode op = { 0 };
         op.imm8_3_1.rn = SourceReg;
         op.imm8_3_1.s = 0;
@@ -810,7 +815,7 @@ void CArmOps::MulF32(ArmFpuSingle DestReg, ArmFpuSingle SourceReg1, ArmFpuSingle
 {
     PreOpCheck(Arm_Unknown, false, __FILE__, __LINE__);
 
-    CPU_Message("      vmul.f32\t%s, %s, %s", ArmFpuSingleName(DestReg), ArmFpuSingleName(SourceReg1), ArmFpuSingleName(SourceReg2));
+    CodeLog("      vmul.f32\t%s, %s, %s", ArmFpuSingleName(DestReg), ArmFpuSingleName(SourceReg1), ArmFpuSingleName(SourceReg2));
     Arm32Opcode op = { 0 };
     op.VnVmVd.vn = SourceReg1 >> 1;
     op.VnVmVd.op1 = 0x2;
@@ -835,7 +840,7 @@ void CArmOps::PushArmReg(uint16_t Registers)
     {
         if (Registers == m_PopRegisters)
         {
-            CPU_Message("%s: Ignoring push/pop", __FUNCTION__);
+            CodeLog("%s: Ignoring push/pop", __FUNCTION__);
             m_PopRegisters = 0;
             PreOpCheck(Arm_Unknown, false, __FILE__, __LINE__);
             return;
@@ -872,7 +877,7 @@ void CArmOps::PushArmReg(uint16_t Registers)
         (Registers & ArmPushPop_R11) != 0 ||
         (Registers & ArmPushPop_R12) != 0)
     {
-        CPU_Message("%X:      push\t{%s}", (int32_t)*g_RecompPos, pushed.c_str());
+        CodeLog("%X:      push\t{%s}", (int32_t)*g_RecompPos, pushed.c_str());
 
         Arm32Opcode op = { 0 };
         op.PushPop.register_list = Registers;
@@ -881,7 +886,7 @@ void CArmOps::PushArmReg(uint16_t Registers)
     }
     else
     {
-        CPU_Message("      push\t%s", pushed.c_str());
+        CodeLog("      push\t%s", pushed.c_str());
         bool lr = (Registers & ArmPushPop_LR) != 0;
         Registers &= Registers & ~ArmPushPop_LR;
 
@@ -905,12 +910,12 @@ void CArmOps::PopArmReg(uint16_t Registers)
     }
     if (m_PushRegisters == 0 && (Registers & ArmPushPop_PC) == 0)
     {
-        CPU_Message("%s: Setting m_PushRegisters: %X Registers: %X", __FUNCTION__, m_PushRegisters, Registers);
+        CodeLog("%s: Setting m_PushRegisters: %X Registers: %X", __FUNCTION__, m_PushRegisters, Registers);
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     if (m_PushRegisters != Registers && (Registers & ArmPushPop_PC) == 0)
     {
-        CPU_Message("%s: Setting m_PushRegisters: %X Registers: %X", __FUNCTION__, m_PushRegisters, Registers);
+        CodeLog("%s: Setting m_PushRegisters: %X Registers: %X", __FUNCTION__, m_PushRegisters, Registers);
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     if ((Registers & ArmPushPop_SP) != 0) { g_Notify->BreakPoint(__FILE__, __LINE__); }
@@ -942,7 +947,7 @@ void CArmOps::FlushPopArmReg(void)
         (m_PopRegisters & ArmPushPop_R11) != 0 ||
         (m_PopRegisters & ArmPushPop_R12) != 0)
     {
-        CPU_Message("%X      pop\t{%s}", (int32_t)*g_RecompPos, pushed.c_str());
+        CodeLog("%X      pop\t{%s}", (int32_t)*g_RecompPos, pushed.c_str());
 
         Arm32Opcode op = { 0 };
         op.PushPop.register_list = m_PopRegisters;
@@ -951,7 +956,7 @@ void CArmOps::FlushPopArmReg(void)
     }
     else
     {
-        CPU_Message("      pop\t%s", pushed.c_str());
+        CodeLog("      pop\t%s", pushed.c_str());
         bool pc = (m_PopRegisters & ArmPushPop_PC) != 0;
         m_PopRegisters &= ~ArmPushPop_PC;
 
@@ -1021,7 +1026,7 @@ void CArmOps::ShiftRightSignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shi
     }
     else if (DestReg > 0x7 || SourceReg > 0x7)
     {
-        CPU_Message("      asrs.w\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), (uint32_t)shift);
+        CodeLog("      asrs.w\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), (uint32_t)shift);
         Arm32Opcode op = { 0 };
         op.imm5.rn = 0xF;
         op.imm5.s = 0;
@@ -1037,7 +1042,7 @@ void CArmOps::ShiftRightSignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shi
     }
     else
     {
-        CPU_Message("      asrs\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), (uint32_t)shift);
+        CodeLog("      asrs\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), (uint32_t)shift);
 
         ArmThumbOpcode op = { 0 };
         op.Imm5.rt = DestReg;
@@ -1058,7 +1063,7 @@ void CArmOps::ShiftRightUnsignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t s
     }
     if (DestReg > 0x7 || SourceReg > 0x7)
     {
-        CPU_Message("      lsrs.w\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), (uint32_t)shift);
+        CodeLog("      lsrs.w\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), (uint32_t)shift);
         Arm32Opcode op = { 0 };
         op.imm5.rn = 0xF;
         op.imm5.s = 0;
@@ -1074,7 +1079,7 @@ void CArmOps::ShiftRightUnsignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t s
     }
     else
     {
-        CPU_Message("      lsrs\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), (uint32_t)shift);
+        CodeLog("      lsrs\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), (uint32_t)shift);
 
         ArmThumbOpcode op = { 0 };
         op.Imm5.rt = DestReg;
@@ -1094,7 +1099,7 @@ void CArmOps::ShiftLeftImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift)
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
-    CPU_Message("      lsls\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), (uint32_t)shift);
+    CodeLog("      lsls\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), (uint32_t)shift);
 
     ArmThumbOpcode op = { 0 };
     op.Imm5.rt = DestReg;
@@ -1108,7 +1113,7 @@ void CArmOps::SignExtendByte(ArmReg Reg)
 {
     if (Reg > 0x7)
     {
-        CPU_Message("      sxtb.w\t%s, %s", ArmRegName(Reg), ArmRegName(Reg));
+        CodeLog("      sxtb.w\t%s, %s", ArmRegName(Reg), ArmRegName(Reg));
         Arm32Opcode op = { 0 };
         op.rotate.opcode = 0xFA4F;
         op.rotate.rm = Reg;
@@ -1120,7 +1125,7 @@ void CArmOps::SignExtendByte(ArmReg Reg)
     }
     else
     {
-        CPU_Message("      sxtb\t%s, %s", ArmRegName(Reg), ArmRegName(Reg));
+        CodeLog("      sxtb\t%s, %s", ArmRegName(Reg), ArmRegName(Reg));
         ArmThumbOpcode op = { 0 };
         op.Reg2.rn = Reg;
         op.Reg2.rm = Reg;
@@ -1137,7 +1142,7 @@ void CArmOps::StoreArmRegToArmRegPointer(ArmReg DestReg, ArmReg RegPointer, uint
     {
         if ((Offset & (~0xFFF)) != 0) { g_Notify->BreakPoint(__FILE__, __LINE__); return; }
 
-        CPU_Message("      str\t%s, [%s, #%d]%s%s", ArmRegName(DestReg), ArmRegName(RegPointer), (uint32_t)Offset, comment != nullptr ? "\t; " : "", comment != nullptr ? comment : "");
+        CodeLog("      str\t%s, [%s, #%d]%s%s", ArmRegName(DestReg), ArmRegName(RegPointer), (uint32_t)Offset, comment != nullptr ? "\t; " : "", comment != nullptr ? comment : "");
         Arm32Opcode op = { 0 };
         op.imm12.rt = DestReg;
         op.imm12.rn = RegPointer;
@@ -1147,7 +1152,7 @@ void CArmOps::StoreArmRegToArmRegPointer(ArmReg DestReg, ArmReg RegPointer, uint
     }
     else
     {
-        CPU_Message("      str\t%s, [%s, #%d]%s%s", ArmRegName(DestReg), ArmRegName(RegPointer), (uint32_t)Offset, comment != nullptr ? "\t; " : "", comment != nullptr ? comment : "");
+        CodeLog("      str\t%s, [%s, #%d]%s%s", ArmRegName(DestReg), ArmRegName(RegPointer), (uint32_t)Offset, comment != nullptr ? "\t; " : "", comment != nullptr ? comment : "");
         ArmThumbOpcode op = { 0 };
         op.Imm5.rt = DestReg;
         op.Imm5.rn = RegPointer;
@@ -1164,7 +1169,7 @@ void CArmOps::StoreArmRegToArmRegPointer(ArmReg DestReg, ArmReg RegPointer, ArmR
 
     if (DestReg > 0x7 || RegPointer > 0x7 || RegPointer2 > 0x7 || shift != 0)
     {
-        CPU_Message("      str.w\t%s, [%s, %s%s]", ArmRegName(DestReg), ArmRegName(RegPointer), ArmRegName(RegPointer2), shift != 0 ? stdstr_f(", lsl #%d", shift).c_str() : "");
+        CodeLog("      str.w\t%s, [%s, %s%s]", ArmRegName(DestReg), ArmRegName(RegPointer), ArmRegName(RegPointer2), shift != 0 ? stdstr_f(", lsl #%d", shift).c_str() : "");
         Arm32Opcode op = { 0 };
         op.imm2.rm = RegPointer2;
         op.imm2.imm = shift;
@@ -1176,7 +1181,7 @@ void CArmOps::StoreArmRegToArmRegPointer(ArmReg DestReg, ArmReg RegPointer, ArmR
     }
     else
     {
-        CPU_Message("      str\t%s, [%s, %s]", ArmRegName(DestReg), ArmRegName(RegPointer), ArmRegName(RegPointer2));
+        CodeLog("      str\t%s, [%s, %s]", ArmRegName(DestReg), ArmRegName(RegPointer), ArmRegName(RegPointer2));
         ArmThumbOpcode op = { 0 };
         op.Reg.rt = DestReg;
         op.Reg.rn = RegPointer;
@@ -1190,7 +1195,7 @@ void CArmOps::StoreFloatingPointControlReg(ArmReg SourceReg)
 {
     PreOpCheck(Arm_Unknown, false, __FILE__, __LINE__);
 
-    CPU_Message("      vmsr\tfpscr, %s", ArmRegName(SourceReg));
+    CodeLog("      vmsr\tfpscr, %s", ArmRegName(SourceReg));
     Arm32Opcode op = { 0 };
     op.fpscr.opcode2 = 0xA10;
     op.fpscr.rt = SourceReg;
@@ -1204,11 +1209,11 @@ void CArmOps::StoreFloatRegToArmRegPointer(ArmFpuSingle Reg, ArmReg RegPointer, 
 
     if (Offset != 0)
     {
-        CPU_Message("      vstr\t%s, [%s, #%d]", ArmFpuSingleName(Reg), ArmRegName(RegPointer), (uint32_t)Offset);
+        CodeLog("      vstr\t%s, [%s, #%d]", ArmFpuSingleName(Reg), ArmRegName(RegPointer), (uint32_t)Offset);
     }
     else
     {
-        CPU_Message("      vstr\t%s, [%s]", ArmFpuSingleName(Reg), ArmRegName(RegPointer));
+        CodeLog("      vstr\t%s, [%s]", ArmFpuSingleName(Reg), ArmRegName(RegPointer));
     }
     Arm32Opcode op = { 0 };
     op.RnVdImm8.Rn = RegPointer;
@@ -1229,7 +1234,7 @@ void CArmOps::SubArmRegFromArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg Sour
 
     if (DestReg <= 7 && SourceReg1 <= 7 && SourceReg2 <= 7)
     {
-        CPU_Message("      subs\t%s,%s,%s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
+        CodeLog("      subs\t%s,%s,%s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
         ArmThumbOpcode op = { 0 };
         op.Reg.rt = DestReg;
         op.Reg.rn = SourceReg1;
@@ -1239,7 +1244,7 @@ void CArmOps::SubArmRegFromArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg Sour
     }
     else
     {
-        CPU_Message("      sub.w\t%s, %s, %s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
+        CodeLog("      sub.w\t%s, %s, %s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
         Arm32Opcode op = { 0 };
         op.imm5.rn = SourceReg1;
         op.imm5.s = 0;
@@ -1261,7 +1266,7 @@ void CArmOps::SubConstFromArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Cons
 
     if (DestReg <= 7 && DestReg == SourceReg && (Const & (~0xFF)) == 0)
     {
-        CPU_Message("      subs\t%s, #0x%X", ArmRegName(DestReg), Const);
+        CodeLog("      subs\t%s, #0x%X", ArmRegName(DestReg), Const);
         ArmThumbOpcode op = { 0 };
         op.Imm8.imm8 = (uint8_t)Const;
         op.Imm8.rdn = DestReg;
@@ -1270,7 +1275,7 @@ void CArmOps::SubConstFromArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Cons
     }
     else if ((Const & (~0x7FF)) == 0)
     {
-        CPU_Message("      sub.w\t%s, %s, #0x%X", ArmRegName(DestReg), ArmRegName(SourceReg), Const);
+        CodeLog("      sub.w\t%s, %s, #0x%X", ArmRegName(DestReg), ArmRegName(SourceReg), Const);
         Arm32Opcode op = { 0 };
         op.RnRdImm12.Rn = SourceReg;
         op.RnRdImm12.s = 0;
@@ -1334,7 +1339,7 @@ void CArmOps::XorArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg)
 
     if (SourceReg <= 7 && DestReg <= 7)
     {
-        CPU_Message("      eors\t%s, %s", ArmRegName(DestReg), ArmRegName(SourceReg));
+        CodeLog("      eors\t%s, %s", ArmRegName(DestReg), ArmRegName(SourceReg));
         ArmThumbOpcode op = { 0 };
         op.Reg2.rn = DestReg;
         op.Reg2.rm = SourceReg;
@@ -1351,7 +1356,7 @@ void CArmOps::XorArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg Source
 {
     PreOpCheck(DestReg, false, __FILE__, __LINE__);
 
-    CPU_Message("      eor.w\t%s, %s, %s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
+    CodeLog("      eor.w\t%s, %s, %s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
     Arm32Opcode op = { 0 };
     op.imm5.rn = SourceReg1;
     op.imm5.s = 0;
@@ -1377,7 +1382,7 @@ void CArmOps::XorConstToArmReg(ArmReg DestReg, uint32_t value)
     else if (CanThumbCompressConst(value))
     {
         uint16_t CompressedValue = ThumbCompressConst(value);
-        CPU_Message("      eor\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(DestReg), value);
+        CodeLog("      eor\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(DestReg), value);
         Arm32Opcode op = { 0 };
         op.imm8_3_1.rn = DestReg;
         op.imm8_3_1.s = 0;
@@ -1465,8 +1470,8 @@ uint16_t CArmOps::ThumbCompressConst(uint32_t value)
         return (uint16_t)(0x300 | (value & 0xFF));
     }
 
-    CPU_Message("%s: value >> 24 = %X value >> 16 = %X value >> 8 = %X value = %X", __FUNCTION__, (value >> 24), (value >> 16), (value >> 8), value);
-    CPU_Message("%s: value = %X", __FUNCTION__, value);
+    CodeLog("%s: value >> 24 = %X value >> 16 = %X value >> 8 = %X value = %X", __FUNCTION__, (value >> 24), (value >> 16), (value >> 8), value);
+    CodeLog("%s: value = %X", __FUNCTION__, value);
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
@@ -1497,8 +1502,8 @@ void CArmOps::SetJump8(uint8_t * Loc, uint8_t * JumpLoc)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-    CPU_Message("%s: pc: %X target: %X Loc: %X  JumpLoc: %X immediate: %X", __FUNCTION__, pc, target, (uint32_t)Loc, (uint32_t)JumpLoc, immediate);
-    CPU_Message("%s: writing %d to %X", __FUNCTION__, immediate, Loc);
+    CodeLog("%s: pc: %X target: %X Loc: %X  JumpLoc: %X immediate: %X", __FUNCTION__, pc, target, (uint32_t)Loc, (uint32_t)JumpLoc, immediate);
+    CodeLog("%s: writing %d to %X", __FUNCTION__, immediate, Loc);
     if (op->BranchImm.opcode == 0x1C)
     {
         op->BranchImm.imm = immediate;
@@ -1526,7 +1531,7 @@ void CArmOps::SetJump20(uint32_t * Loc, uint32_t * JumpLoc)
     int32_t immediate_check = immediate & ~0xFFFFF;
     if (immediate_check != 0 && immediate_check != ~0xFFFFF)
     {
-        CPU_Message("%s: target %X pc %X immediate: %X", __FUNCTION__, target, pc, immediate);
+        CodeLog("%s: target %X pc %X immediate: %X", __FUNCTION__, target, pc, immediate);
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     Arm32Opcode op = { 0 };
@@ -1558,7 +1563,7 @@ void CArmOps::SetJump20(uint32_t * Loc, uint32_t * JumpLoc)
 
     uint32_t OriginalValue = *Loc;
     *Loc = op.Hex;
-    CPU_Message("%s: OriginalValue %X New Value %X JumpLoc: %X Loc: %X immediate: %X immediate_check = %X", __FUNCTION__, OriginalValue, *Loc, JumpLoc, Loc, immediate, immediate_check);
+    CodeLog("%s: OriginalValue %X New Value %X JumpLoc: %X Loc: %X immediate: %X immediate_check = %X", __FUNCTION__, OriginalValue, *Loc, JumpLoc, Loc, immediate, immediate_check);
 }
 
 void * CArmOps::GetAddressOf(int value, ...)

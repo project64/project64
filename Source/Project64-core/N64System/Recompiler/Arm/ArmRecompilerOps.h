@@ -1,27 +1,38 @@
 #pragma once
 #if defined(__arm__) || defined(_M_ARM)
+
 #include <Project64-core/N64System/Mips/Register.h>
+#include <Project64-core/N64System/Mips/R4300iOpcode.h>
+#include <Project64-core/N64System/Recompiler/ExitInfo.h>
+#include <Project64-core/N64System/Recompiler/RegInfo.h>
 #include <Project64-core/N64System/Recompiler/RecompilerOps.h>
 #include <Project64-core/N64System/Recompiler/Arm/ArmOps.h>
-#include <Project64-core\Settings\GameSettings.h>
+#include <Project64-core/N64System/Recompiler/JumpInfo.h>
+#include <Project64-core/N64System/Interpreter/InterpreterOps.h>
+#include <Project64-core/Settings/N64SystemSettings.h>
+#include <Project64-core/Settings/RecompilerSettings.h>
+#include <Project64-core/Settings/GameSettings.h>
+
+class CCodeBlock;
+class CCodeSection;
 
 class CArmRecompilerOps :
-    public CRecompilerOps,
-    private CArmOps,
-    protected CSystemRegisters,
+    protected R4300iOp,
+    protected CN64SystemSettings,
+    protected CRecompilerSettings,
     private CGameSettings
 {
 public:
-    CArmRecompilerOps(CMipsMemoryVM & MMU);
+    CArmRecompilerOps(CMipsMemoryVM & MMU, CCodeBlock & CodeBlock);
     ~CArmRecompilerOps();
 
     // Trap functions
-    void Compile_TrapCompare(TRAP_COMPARE CompareType);
+    void Compile_TrapCompare(RecompilerTrapCompare CompareType);
 
     // Branch functions
-    void Compile_BranchCompare(BRANCH_COMPARE CompareType);
-    void Compile_Branch(BRANCH_COMPARE CompareType, bool Link);
-    void Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Link);
+    void Compile_BranchCompare(RecompilerBranchCompare CompareType);
+    void Compile_Branch(RecompilerBranchCompare CompareType, bool Link);
+    void Compile_BranchLikely(RecompilerBranchCompare CompareType, bool Link);
     void BNE_Compare();
     void BEQ_Compare();
     void BGTZ_Compare();
@@ -191,7 +202,6 @@ public:
     // Other functions
     void UnknownOpcode();
 
-private:
     void EnterCodeBlock();
     void ExitCodeBlock();
     void CompileExitCode();
@@ -199,83 +209,90 @@ private:
     void CompileInPermLoop(CRegInfo & RegSet, uint32_t ProgramCounter);
     void OutputRegisterState(const CRegInfo & SyncTo, const CRegInfo & CurrentSet) const;
     void SyncRegState(const CRegInfo & SyncTo);
-    bool SetupRegisterForLoop(CCodeBlock * BlockInfo, const CRegInfo & RegSet);
+    bool SetupRegisterForLoop(CCodeBlock & BlockInfo, const CRegInfo & RegSet);
     CRegInfo & GetRegWorkingSet(void);
     void SetRegWorkingSet(const CRegInfo & RegInfo);
     bool InheritParentInfo();
     void LinkJump(CJumpInfo & JumpInfo, uint32_t SectionID = -1, uint32_t FromSectionID = -1);
-    void JumpToSection( CCodeSection * Section);
+    void JumpToSection(CCodeSection * Section);
     void JumpToUnknown(CJumpInfo * JumpInfo);
     void SetCurrentPC(uint32_t ProgramCounter);
     uint32_t GetCurrentPC(void);
     void SetCurrentSection(CCodeSection * section);
     void SetNextStepType(PIPELINE_STAGE StepType);
-    PIPELINE_STAGE GetNextStepType( void );
-    const R4300iOpcode & GetOpcode ( void ) const;
+    PIPELINE_STAGE GetNextStepType(void);
+    const R4300iOpcode & GetOpcode(void) const;
     void PreCompileOpcode(void);
-    void PostCompileOpcode ( void );
-    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, ExitReason reason);
+    void PostCompileOpcode(void);
+    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, ExitReason Reason);
     void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, ExitReason reason, CArmOps::ArmCompareType CompareType);
-    static void UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles);
+
+    void CompileReadTLBMiss(CArmOps::ArmReg AddressReg, CArmOps::ArmReg LookUpReg);
+    void CompileWriteTLBMiss(CArmOps::ArmReg AddressReg, CArmOps::ArmReg LookUpReg);
+    void UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles);
     void UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false, bool UpdateTimer = true);
     void CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegSet);
-    void CompileReadTLBMiss(ArmReg AddressReg, ArmReg LookUpReg);
-    void CompileWriteTLBMiss(ArmReg AddressReg, ArmReg LookUpReg);
     void CompileExecuteBP(void);
     void CompileExecuteDelaySlotBP(void);
+
+    CArmOps & Assembler() { return m_Assembler; }
 
     // Helper functions
     typedef CRegInfo::REG_STATE REG_STATE;
 
-    static inline REG_STATE GetMipsRegState(int32_t Reg) { return m_RegWorkingSet.GetMipsRegState(Reg); }
-    static inline uint64_t GetMipsReg(int32_t Reg) { return m_RegWorkingSet.GetMipsReg(Reg); }
-    static inline uint32_t GetMipsRegLo(int32_t Reg) { return m_RegWorkingSet.GetMipsRegLo(Reg); }
-    static inline int32_t GetMipsRegLo_S(int32_t Reg) { return m_RegWorkingSet.GetMipsRegLo_S(Reg); }
-    static inline uint32_t GetMipsRegHi(int32_t Reg) { return m_RegWorkingSet.GetMipsRegHi(Reg); }
-    static inline int32_t GetMipsRegHi_S(int32_t Reg) { return m_RegWorkingSet.GetMipsRegHi_S(Reg); }
-    static inline ArmReg GetMipsRegMapLo(int32_t Reg) { return m_RegWorkingSet.GetMipsRegMapLo(Reg); }
-    static inline ArmReg GetMipsRegMapHi(int32_t Reg) { return m_RegWorkingSet.GetMipsRegMapHi(Reg); }
+    REG_STATE GetMipsRegState(int32_t Reg) { return m_RegWorkingSet.GetMipsRegState(Reg); }
+    uint64_t GetMipsReg(int32_t Reg) { return m_RegWorkingSet.GetMipsReg(Reg); }
+    uint32_t GetMipsRegLo(int32_t Reg) { return m_RegWorkingSet.GetMipsRegLo(Reg); }
+    int32_t GetMipsRegLo_S(int32_t Reg) { return m_RegWorkingSet.GetMipsRegLo_S(Reg); }
+    uint32_t GetMipsRegHi(int32_t Reg) { return m_RegWorkingSet.GetMipsRegHi(Reg); }
+    int32_t GetMipsRegHi_S(int32_t Reg) { return m_RegWorkingSet.GetMipsRegHi_S(Reg); }
+    CArmOps::ArmReg GetMipsRegMapLo(int32_t Reg) { return m_RegWorkingSet.GetMipsRegMapLo(Reg); }
+    CArmOps::ArmReg GetMipsRegMapHi(int32_t Reg) { return m_RegWorkingSet.GetMipsRegMapHi(Reg); }
 
-    static inline bool IsKnown(int32_t Reg) { return m_RegWorkingSet.IsKnown(Reg); }
-    static inline bool IsUnknown(int32_t Reg) { return m_RegWorkingSet.IsUnknown(Reg); }
-    static inline bool IsMapped(int32_t Reg) { return m_RegWorkingSet.IsMapped(Reg); }
-    static inline bool IsConst(int32_t Reg) { return m_RegWorkingSet.IsConst(Reg); }
-    static inline bool IsSigned(int32_t Reg) { return m_RegWorkingSet.IsSigned(Reg); }
-    static inline bool IsUnsigned(int32_t Reg) { return m_RegWorkingSet.IsUnsigned(Reg); }
-    static inline bool Is32Bit(int32_t Reg) { return m_RegWorkingSet.Is32Bit(Reg); }
-    static inline bool Is64Bit(int32_t Reg) { return m_RegWorkingSet.Is64Bit(Reg); }
-    static inline bool Is32BitMapped(int32_t Reg) { return m_RegWorkingSet.Is32BitMapped(Reg); }
-    static inline bool Is64BitMapped(int32_t Reg) { return m_RegWorkingSet.Is64BitMapped(Reg); }
-    static inline void Map_GPR_32bit(int32_t Reg, bool SignValue, int32_t MipsRegToLoad) { m_RegWorkingSet.Map_GPR_32bit(Reg, SignValue, MipsRegToLoad); }
-    static inline void Map_GPR_64bit(int32_t Reg, int32_t MipsRegToLoad) { m_RegWorkingSet.Map_GPR_64bit(Reg, MipsRegToLoad); }
-    static inline void UnMap_GPR(uint32_t Reg, bool WriteBackValue){ m_RegWorkingSet.UnMap_GPR(Reg, WriteBackValue); }
-    static inline void WriteBack_GPR(uint32_t Reg, bool Unmapping){ m_RegWorkingSet.WriteBack_GPR(Reg, Unmapping); }
-    static inline ArmReg Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadHiWord) { return m_RegWorkingSet.Map_TempReg(Reg, MipsReg, LoadHiWord); }
-    static inline ArmReg Map_Variable(CArmRegInfo::VARIABLE_MAPPED variable, ArmReg Reg = Arm_Any) { return m_RegWorkingSet.Map_Variable(variable, Reg); }
+    bool IsKnown(int32_t Reg) { return m_RegWorkingSet.IsKnown(Reg); }
+    bool IsUnknown(int32_t Reg) { return m_RegWorkingSet.IsUnknown(Reg); }
+    bool IsMapped(int32_t Reg) { return m_RegWorkingSet.IsMapped(Reg); }
+    bool IsConst(int32_t Reg) { return m_RegWorkingSet.IsConst(Reg); }
+    bool IsSigned(int32_t Reg) { return m_RegWorkingSet.IsSigned(Reg); }
+    bool IsUnsigned(int32_t Reg) { return m_RegWorkingSet.IsUnsigned(Reg); }
+    bool Is32Bit(int32_t Reg) { return m_RegWorkingSet.Is32Bit(Reg); }
+    bool Is64Bit(int32_t Reg) { return m_RegWorkingSet.Is64Bit(Reg); }
+    bool Is32BitMapped(int32_t Reg) { return m_RegWorkingSet.Is32BitMapped(Reg); }
+    bool Is64BitMapped(int32_t Reg) { return m_RegWorkingSet.Is64BitMapped(Reg); }
+    void Map_GPR_32bit(int32_t Reg, bool SignValue, int32_t MipsRegToLoad) { m_RegWorkingSet.Map_GPR_32bit(Reg, SignValue, MipsRegToLoad); }
+    void Map_GPR_64bit(int32_t Reg, int32_t MipsRegToLoad) { m_RegWorkingSet.Map_GPR_64bit(Reg, MipsRegToLoad); }
+    void UnMap_GPR(uint32_t Reg, bool WriteBackValue){ m_RegWorkingSet.UnMap_GPR(Reg, WriteBackValue); }
+    void WriteBack_GPR(uint32_t Reg, bool Unmapping){ m_RegWorkingSet.WriteBack_GPR(Reg, Unmapping); }
+    CArmOps::ArmReg Map_TempReg(CArmOps::ArmReg Reg, int32_t MipsReg, bool LoadHiWord) { return m_RegWorkingSet.Map_TempReg(Reg, MipsReg, LoadHiWord); }
+    CArmOps::ArmReg Map_Variable(CArmRegInfo::VARIABLE_MAPPED variable, CArmOps::ArmReg Reg = CArmOps::Arm_Any) { return m_RegWorkingSet.Map_Variable(variable, Reg); }
 
-    static inline void ResetRegProtection() { m_RegWorkingSet.ResetRegProtection(); }
-    static inline void FixRoundModel(CRegInfo::FPU_ROUND RoundMethod) { m_RegWorkingSet.FixRoundModel(RoundMethod); }
+    void ResetRegProtection() { m_RegWorkingSet.ResetRegProtection(); }
+    void FixRoundModel(CRegInfo::FPU_ROUND RoundMethod) { m_RegWorkingSet.FixRoundModel(RoundMethod); }
 
-    static inline void ProtectGPR(uint32_t Reg) { m_RegWorkingSet.ProtectGPR(Reg); }
-    static inline void UnProtectGPR(uint32_t Reg) { m_RegWorkingSet.UnProtectGPR(Reg); }
-    static inline bool UnMap_ArmReg(ArmReg Reg) { return m_RegWorkingSet.UnMap_ArmReg(Reg); }
+    void ProtectGPR(uint32_t Reg) { m_RegWorkingSet.ProtectGPR(Reg); }
+    void UnProtectGPR(uint32_t Reg) { m_RegWorkingSet.UnProtectGPR(Reg); }
+    bool UnMap_ArmReg(CArmOps::ArmReg Reg) { return m_RegWorkingSet.UnMap_ArmReg(Reg); }
 
     void SW(bool bCheckLLbit);
     void SW_Const(uint32_t Value, uint32_t VAddr);
-    void SW_Register(ArmReg Reg, uint32_t VAddr);
+    void SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr);
     void LW(bool ResultSigned, bool bRecordLLBit);
-    void LB_KnownAddress(ArmReg Reg, uint32_t VAddr, bool SignExtend);
-    void LW_KnownAddress(ArmReg Reg, uint32_t VAddr);
+    void LB_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr, bool SignExtend);
+    void LW_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr);
     void CompileInterpterCall (void * Function, const char * FunctionName);
     void OverflowDelaySlot(bool TestTimer);
 
     EXIT_LIST m_ExitInfo;
     CMipsMemoryVM & m_MMU;
+    CCodeBlock & m_CodeBlock;
+    CArmOps m_Assembler;
     PIPELINE_STAGE m_PipelineStage;
     uint32_t m_CompilePC;
     R4300iOpcode m_Opcode;
+    CArmRegInfo m_RegWorkingSet;
     CCodeSection * m_Section;
-
+    CRegInfo m_RegBeforeDelay;
+    bool m_EffectDelaySlot;
     static uint32_t m_TempValue;
 };
 

@@ -46,6 +46,6 @@ typedef CX86RecompilerOps CRecompilerOps;
 #elif defined(__arm__) || defined(_M_ARM)
 #include <Project64-core/N64System/Recompiler/Arm/ArmRecompilerOps.h>
 
-typedef CX86RecompilerOps CArmRecompilerOps;
+typedef CArmRecompilerOps CRecompilerOps;
 
 #endif

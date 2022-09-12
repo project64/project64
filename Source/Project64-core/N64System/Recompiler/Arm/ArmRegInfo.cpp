@@ -3,16 +3,18 @@
 #if defined(__arm__) || defined(_M_ARM)
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64System.h>
-#include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
+#include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/N64System/Recompiler/Arm/ArmRegInfo.h>
 
-CArmRegInfo::CArmRegInfo() :
+CArmRegInfo::CArmRegInfo(CCodeBlock & CodeBlock, CArmOps & Assembler) :
+    m_CodeBlock(CodeBlock),
+    m_Assembler(Assembler),
     m_InCallDirect(false)
 {
     for (int32_t i = 0; i < 32; i++)
     {
-        m_RegMapLo[i] = Arm_Unknown;
-        m_RegMapHi[i] = Arm_Unknown;
+        m_RegMapLo[i] = CArmOps::Arm_Unknown;
+        m_RegMapHi[i] = CArmOps::Arm_Unknown;
     }
 
     for (int32_t i = 0, n = sizeof(m_ArmReg_MappedTo) / sizeof(m_ArmReg_MappedTo[0]); i < n; i++)
@@ -24,7 +26,9 @@ CArmRegInfo::CArmRegInfo() :
     }
 }
 
-CArmRegInfo::CArmRegInfo(const CArmRegInfo& rhs)
+CArmRegInfo::CArmRegInfo(const CArmRegInfo& rhs) :
+    m_CodeBlock(rhs.m_CodeBlock),
+    m_Assembler(rhs.m_CodeBlock.RecompilerOps()->Assembler())
 {
     *this = rhs;
 }
@@ -76,7 +80,7 @@ bool CArmRegInfo::operator==(const CArmRegInfo& right) const
     return true;
 }
 
-bool CArmRegInfo::ShouldPushPopReg(ArmReg Reg)
+bool CArmRegInfo::ShouldPushPopReg(CArmOps::ArmReg Reg)
 {
     if (m_ArmReg_MappedTo[Reg] == NotMapped)
     {
@@ -93,21 +97,21 @@ void CArmRegInfo::BeforeCallDirect(void)
 {
     static uint32_t PushPopRegisterList[] =
     {
-        ArmPushPop_R0, ArmPushPop_R1, ArmPushPop_R2, ArmPushPop_R3, ArmPushPop_R4,
-        ArmPushPop_R5, ArmPushPop_R6, ArmPushPop_R7, ArmPushPop_R8, ArmPushPop_R9,
-        ArmPushPop_R10, ArmPushPop_R11, ArmPushPop_R12
+        CArmOps::ArmPushPop_R0, CArmOps::ArmPushPop_R1, CArmOps::ArmPushPop_R2, CArmOps::ArmPushPop_R3, CArmOps::ArmPushPop_R4,
+        CArmOps::ArmPushPop_R5, CArmOps::ArmPushPop_R6, CArmOps::ArmPushPop_R7, CArmOps::ArmPushPop_R8, CArmOps::ArmPushPop_R9,
+        CArmOps::ArmPushPop_R10, CArmOps::ArmPushPop_R11, CArmOps::ArmPushPop_R12
     };
 
-    static ArmReg RegisterList[] =
+    static CArmOps::ArmReg RegisterList[] =
     {
-        Arm_R0, Arm_R1, Arm_R2, Arm_R3, Arm_R4,
-        Arm_R5, Arm_R6, Arm_R7, Arm_R8, Arm_R9,
-        Arm_R10, Arm_R11, Arm_R12
+         CArmOps::Arm_R0,  CArmOps::Arm_R1,  CArmOps::Arm_R2,  CArmOps::Arm_R3,  CArmOps::Arm_R4,
+         CArmOps::Arm_R5,  CArmOps::Arm_R6,  CArmOps::Arm_R7,  CArmOps::Arm_R8,  CArmOps::Arm_R9,
+         CArmOps::Arm_R10,  CArmOps::Arm_R11,  CArmOps::Arm_R12
     };
 
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect", __FUNCTION__);
+        m_CodeBlock.Log("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
@@ -124,7 +128,7 @@ void CArmRegInfo::BeforeCallDirect(void)
         return;
     }
 
-    if ((PushPopRegisterSize(PushPopRegisters) % 8) != 0)
+    if ((m_Assembler.PushPopRegisterSize(PushPopRegisters) % 8) != 0)
     {
         bool Added = false;
         for (int i = 0; i < (sizeof(RegisterList) / sizeof(RegisterList[0])); i++)
@@ -139,42 +143,42 @@ void CArmRegInfo::BeforeCallDirect(void)
         }
         if (!Added)
         {
-            ArmReg reg = FreeArmReg(false);
-            CPU_Message("    Freed %s", ArmRegName(reg));
+            CArmOps::ArmReg reg = FreeArmReg(false);
+            m_CodeBlock.Log("    Freed %s", m_Assembler.ArmRegName(reg));
             PushPopRegisters = 0;
             for (int i = 0; i < (sizeof(RegisterList) / sizeof(RegisterList[0])); i++)
             {
                 if (ShouldPushPopReg(RegisterList[i])) { PushPopRegisters |= PushPopRegisterList[i]; }
             }
         }
-        if ((PushPopRegisterSize(PushPopRegisters) % 8) != 0)
+        if ((m_Assembler.PushPopRegisterSize(PushPopRegisters) % 8) != 0)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }
     m_InCallDirect = true;
-    PushArmReg(PushPopRegisters);
+    m_Assembler.PushArmReg(PushPopRegisters);
 }
 
 void CArmRegInfo::AfterCallDirect(void)
 {
     static uint32_t PushPopRegisterList[] =
     {
-        ArmPushPop_R0, ArmPushPop_R1, ArmPushPop_R2, ArmPushPop_R3, ArmPushPop_R4,
-        ArmPushPop_R5, ArmPushPop_R6, ArmPushPop_R7, ArmPushPop_R8, ArmPushPop_R9,
-        ArmPushPop_R10, ArmPushPop_R11, ArmPushPop_R12, ArmPushPop_LR, ArmPushPop_PC
+        CArmOps::ArmPushPop_R0, CArmOps::ArmPushPop_R1, CArmOps::ArmPushPop_R2, CArmOps::ArmPushPop_R3, CArmOps::ArmPushPop_R4,
+        CArmOps::ArmPushPop_R5, CArmOps::ArmPushPop_R6, CArmOps::ArmPushPop_R7, CArmOps::ArmPushPop_R8, CArmOps::ArmPushPop_R9,
+        CArmOps::ArmPushPop_R10, CArmOps::ArmPushPop_R11, CArmOps::ArmPushPop_R12, CArmOps::ArmPushPop_LR, CArmOps::ArmPushPop_PC
     };
 
-    static ArmReg RegisterList[] =
+    static CArmOps::ArmReg RegisterList[] =
     {
-        Arm_R0, Arm_R1, Arm_R2, Arm_R3, Arm_R4,
-        Arm_R5, Arm_R6, Arm_R7, Arm_R8, Arm_R9,
-        Arm_R10, Arm_R11, Arm_R12, ArmRegLR, ArmRegPC,
+         CArmOps::Arm_R0, CArmOps::Arm_R1, CArmOps::Arm_R2, CArmOps::Arm_R3, CArmOps::Arm_R4,
+         CArmOps::Arm_R5, CArmOps::Arm_R6, CArmOps::Arm_R7, CArmOps::Arm_R8, CArmOps::Arm_R9,
+         CArmOps::Arm_R10, CArmOps::Arm_R11, CArmOps::Arm_R12, CArmOps::ArmRegLR, CArmOps::ArmRegPC,
     };
 
     if (!m_InCallDirect)
     {
-        CPU_Message("%s: Not in CallDirect", __FUNCTION__);
+        m_CodeBlock.Log("%s: Not in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
@@ -187,7 +191,7 @@ void CArmRegInfo::AfterCallDirect(void)
 
     if (PushPopRegisters != 0)
     {
-        if ((PushPopRegisterSize(PushPopRegisters) % 8) != 0)
+        if ((m_Assembler.PushPopRegisterSize(PushPopRegisters) % 8) != 0)
         {
             for (int i = 0; i < (sizeof(RegisterList) / sizeof(RegisterList[0])); i++)
             {
@@ -199,7 +203,7 @@ void CArmRegInfo::AfterCallDirect(void)
                 break;
             }
         }
-        PopArmReg(PushPopRegisters);
+        m_Assembler.PopArmReg(PushPopRegisters);
     }
 
     SetRoundingModel(CRegInfo::RoundUnknown);
@@ -210,7 +214,7 @@ void CArmRegInfo::FixRoundModel(FPU_ROUND RoundMethod)
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect", __FUNCTION__);
+        m_CodeBlock.Log("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
@@ -219,13 +223,13 @@ void CArmRegInfo::FixRoundModel(FPU_ROUND RoundMethod)
     {
         return;
     }
-    CPU_Message("    FixRoundModel: CurrentRoundingModel: %s  targetRoundModel: %s", RoundingModelName(GetRoundingModel()), RoundingModelName(RoundMethod));
+    m_CodeBlock.Log("    FixRoundModel: CurrentRoundingModel: %s  targetRoundModel: %s", RoundingModelName(GetRoundingModel()), RoundingModelName(RoundMethod));
     if (RoundMethod == RoundDefault)
     {
-        m_RegWorkingSet.BeforeCallDirect();
-        MoveVariableToArmReg(_RoundingModel, "_RoundingModel", Arm_R0);
-        CallFunction((void *)fesetround, "fesetround");
-        m_RegWorkingSet.AfterCallDirect();
+        BeforeCallDirect();
+        m_Assembler.MoveVariableToArmReg(_RoundingModel, "_RoundingModel",  CArmOps::Arm_R0);
+        m_Assembler.CallFunction((void *)fesetround, "fesetround");
+        AfterCallDirect();
     }
     else
     {
@@ -237,12 +241,12 @@ void CArmRegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsReg
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect", __FUNCTION__);
+        m_CodeBlock.Log("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
 
-    ArmReg Reg;
+    CArmOps::ArmReg Reg;
     if (MipsReg == 0)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -259,13 +263,13 @@ void CArmRegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsReg
             return;
         }
         SetArmRegProtected(Reg, true);
-        CPU_Message("    regcache: allocate %s to %s", ArmRegName(Reg), CRegName::GPR[MipsReg]);
+        m_CodeBlock.Log("    regcache: allocate %s to %s", m_Assembler.ArmRegName(Reg), CRegName::GPR[MipsReg]);
     }
     else
     {
         if (Is64Bit(MipsReg))
         {
-            CPU_Message("    regcache: unallocate %s from high 32-bit of %s", ArmRegName(GetMipsRegMapHi(MipsReg)), CRegName::GPR_Hi[MipsReg]);
+            m_CodeBlock.Log("    regcache: unallocate %s from high 32-bit of %s", m_Assembler.ArmRegName(GetMipsRegMapHi(MipsReg)), CRegName::GPR_Hi[MipsReg]);
             SetArmRegMapOrder(GetMipsRegMapHi(MipsReg), 0);
             SetArmRegMapped(GetMipsRegMapHi(MipsReg), NotMapped);
             SetArmRegProtected(GetMipsRegMapHi(MipsReg), false);
@@ -273,12 +277,12 @@ void CArmRegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsReg
         }
         Reg = GetMipsRegMapLo(MipsReg);
     }
-    for (int32_t count = 0; count <= Arm_R15; count++)
+    for (int32_t count = 0; count <=  CArmOps::Arm_R15; count++)
     {
-        uint32_t Count = GetArmRegMapOrder((ArmReg)count);
+        uint32_t Count = GetArmRegMapOrder((CArmOps::ArmReg)count);
         if (Count > 0)
         {
-            SetArmRegMapOrder((ArmReg)count, Count + 1);
+            SetArmRegMapOrder((CArmOps::ArmReg)count, Count + 1);
         }
     }
     SetArmRegMapOrder(Reg, 1);
@@ -287,25 +291,25 @@ void CArmRegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsReg
     {
         if (IsUnknown(MipsRegToLoad))
         {
-            ArmReg GprReg = Map_Variable(VARIABLE_GPR);
-            LoadArmRegPointerToArmReg(Reg, GprReg, (uint8_t)(MipsRegToLoad << 3), CRegName::GPR_Lo[MipsRegToLoad]);
+            CArmOps::ArmReg GprReg = Map_Variable(VARIABLE_GPR);
+            m_Assembler.LoadArmRegPointerToArmReg(Reg, GprReg, (uint8_t)(MipsRegToLoad << 3), CRegName::GPR_Lo[MipsRegToLoad]);
             SetArmRegProtected(GprReg, false);
         }
         else if (IsMapped(MipsRegToLoad))
         {
             if (MipsReg != MipsRegToLoad)
             {
-                AddConstToArmReg(Reg, GetMipsRegMapLo(MipsRegToLoad), 0);
+                m_Assembler.AddConstToArmReg(Reg, GetMipsRegMapLo(MipsRegToLoad), 0);
             }
         }
         else
         {
-            MoveConstToArmReg(Reg, GetMipsRegLo(MipsRegToLoad));
+            m_Assembler.MoveConstToArmReg(Reg, GetMipsRegLo(MipsRegToLoad));
         }
     }
     else if (MipsRegToLoad == 0)
     {
-        MoveConstToArmReg(Reg, (uint32_t)0);
+        m_Assembler.MoveConstToArmReg(Reg, (uint32_t)0);
     }
     SetArmRegMapped(Reg, GPR_Mapped);
     SetArmRegProtected(Reg, true);
@@ -317,12 +321,12 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect", __FUNCTION__);
+        m_CodeBlock.Log("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
 
-    ArmReg regHi, reglo;
+    CArmOps::ArmReg regHi, reglo;
     int32_t count;
 
     if (MipsReg == 0)
@@ -353,8 +357,8 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
         }
         SetArmRegProtected(reglo, true);
 
-        CPU_Message("    regcache: allocate %s to hi word of %s", ArmRegName(regHi), CRegName::GPR[MipsReg]);
-        CPU_Message("    regcache: allocate %s to low word of %s", ArmRegName(reglo), CRegName::GPR[MipsReg]);
+        m_CodeBlock.Log("    regcache: allocate %s to hi word of %s", m_Assembler.ArmRegName(regHi), CRegName::GPR[MipsReg]);
+        m_CodeBlock.Log("    regcache: allocate %s to low word of %s", m_Assembler.ArmRegName(reglo), CRegName::GPR[MipsReg]);
     }
     else
     {
@@ -371,7 +375,7 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
             }
             SetArmRegProtected(regHi, true);
 
-            CPU_Message("    regcache: allocate %s to hi word of %s", ArmRegName(regHi), CRegName::GPR[MipsReg]);
+            m_CodeBlock.Log("    regcache: allocate %s to hi word of %s", m_Assembler.ArmRegName(regHi), CRegName::GPR[MipsReg]);
         }
         else
         {
@@ -379,12 +383,12 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
         }
     }
 
-    for (int32_t count = 0; count <= Arm_R15; count++)
+    for (int32_t count = 0; count <= CArmOps::Arm_R15; count++)
     {
-        uint32_t Count = GetArmRegMapOrder((ArmReg)count);
+        uint32_t Count = GetArmRegMapOrder((CArmOps::ArmReg)count);
         if (Count > 0)
         {
-            SetArmRegMapOrder((ArmReg)count, Count + 1);
+            SetArmRegMapOrder((CArmOps::ArmReg)count, Count + 1);
         }
     }
     SetArmRegMapOrder(regHi, 1);
@@ -394,9 +398,9 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
     {
         if (IsUnknown(MipsRegToLoad))
         {
-            ArmReg GprReg = Map_Variable(VARIABLE_GPR);
-            LoadArmRegPointerToArmReg(regHi, GprReg, (uint8_t)(MipsRegToLoad << 3) + 4, CRegName::GPR_Hi[MipsRegToLoad]);
-            LoadArmRegPointerToArmReg(reglo, GprReg, (uint8_t)(MipsRegToLoad << 3), CRegName::GPR_Lo[MipsRegToLoad]);
+            CArmOps::ArmReg GprReg = Map_Variable(VARIABLE_GPR);
+            m_Assembler.LoadArmRegPointerToArmReg(regHi, GprReg, (uint8_t)(MipsRegToLoad << 3) + 4, CRegName::GPR_Hi[MipsRegToLoad]);
+            m_Assembler.LoadArmRegPointerToArmReg(reglo, GprReg, (uint8_t)(MipsRegToLoad << 3), CRegName::GPR_Lo[MipsRegToLoad]);
             SetArmRegProtected(GprReg, false);
         }
         else if (IsMapped(MipsRegToLoad))
@@ -405,40 +409,40 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
             {
                 if (IsSigned(MipsRegToLoad))
                 {
-                    ShiftRightSignImmed(regHi, GetMipsRegMapLo(MipsRegToLoad), 31);
+                    m_Assembler.ShiftRightSignImmed(regHi, GetMipsRegMapLo(MipsRegToLoad), 31);
                 }
                 else
                 {
-                    MoveConstToArmReg(regHi, (uint32_t)0);
+                    m_Assembler.MoveConstToArmReg(regHi, (uint32_t)0);
                 }
                 if (MipsReg != MipsRegToLoad)
                 {
-                    AddConstToArmReg(reglo, GetMipsRegMapLo(MipsRegToLoad), 0);
+                    m_Assembler.AddConstToArmReg(reglo, GetMipsRegMapLo(MipsRegToLoad), 0);
                 }
             }
             else if (MipsReg != MipsRegToLoad)
             {
-                AddConstToArmReg(regHi, GetMipsRegMapHi(MipsRegToLoad), 0);
-                AddConstToArmReg(reglo, GetMipsRegMapLo(MipsRegToLoad), 0);
+                m_Assembler.AddConstToArmReg(regHi, GetMipsRegMapHi(MipsRegToLoad), 0);
+                m_Assembler.AddConstToArmReg(reglo, GetMipsRegMapLo(MipsRegToLoad), 0);
             }
         }
         else
         {
             if (Is32Bit(MipsRegToLoad))
             {
-                MoveConstToArmReg(regHi, (uint32_t)(IsSigned(MipsRegToLoad) ? GetMipsRegLo_S(MipsRegToLoad) >> 31 : 0));
+                m_Assembler.MoveConstToArmReg(regHi, (uint32_t)(IsSigned(MipsRegToLoad) ? GetMipsRegLo_S(MipsRegToLoad) >> 31 : 0));
             }
             else
             {
-                MoveConstToArmReg(regHi, GetMipsRegHi(MipsRegToLoad));
+                m_Assembler.MoveConstToArmReg(regHi, GetMipsRegHi(MipsRegToLoad));
             }
-            MoveConstToArmReg(reglo, GetMipsRegLo(MipsRegToLoad));
+            m_Assembler.MoveConstToArmReg(reglo, GetMipsRegLo(MipsRegToLoad));
         }
     }
     else if (MipsRegToLoad == 0)
     {
-        MoveConstToArmReg(regHi, (uint32_t)0);
-        MoveConstToArmReg(reglo, (uint32_t)0);
+        m_Assembler.MoveConstToArmReg(regHi, (uint32_t)0);
+        m_Assembler.MoveConstToArmReg(reglo, (uint32_t)0);
     }
     SetArmRegMapped(regHi, GPR_Mapped);
     SetArmRegMapped(reglo, GPR_Mapped);
@@ -453,7 +457,7 @@ void CArmRegInfo::UnMap_GPR(uint32_t MipsReg, bool WriteBackValue)
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect", __FUNCTION__);
+        m_CodeBlock.Log("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
@@ -472,7 +476,7 @@ void CArmRegInfo::UnMap_GPR(uint32_t MipsReg, bool WriteBackValue)
     }
 
     if (IsUnknown(MipsReg)) { return; }
-    //CPU_Message("UnMap_GPR: State: %X\tReg: %s\tWriteBack: %s",State,CRegName::GPR[Reg],WriteBackValue?"true":"false");
+    //m_CodeBlock.Log("UnMap_GPR: State: %X\tReg: %s\tWriteBack: %s",State,CRegName::GPR[Reg],WriteBackValue?"true":"false");
     if (IsConst(MipsReg))
     {
         SetMipsRegState(MipsReg, STATE_UNKNOWN);
@@ -480,11 +484,11 @@ void CArmRegInfo::UnMap_GPR(uint32_t MipsReg, bool WriteBackValue)
     }
     if (Is64Bit(MipsReg))
     {
-        CPU_Message("    regcache: unallocate %s from %s", ArmRegName(GetMipsRegMapHi(MipsReg)), CRegName::GPR_Hi[MipsReg]);
+        m_CodeBlock.Log("    regcache: unallocate %s from %s", m_Assembler.ArmRegName(GetMipsRegMapHi(MipsReg)), CRegName::GPR_Hi[MipsReg]);
         SetArmRegMapped(GetMipsRegMapHi(MipsReg), NotMapped);
         SetArmRegProtected(GetMipsRegMapHi(MipsReg), false);
     }
-    CPU_Message("    regcache: unallocate %s from %s", ArmRegName(GetMipsRegMapLo(MipsReg)), CRegName::GPR_Lo[MipsReg]);
+    m_CodeBlock.Log("    regcache: unallocate %s from %s", m_Assembler.ArmRegName(GetMipsRegMapLo(MipsReg)), CRegName::GPR_Lo[MipsReg]);
     SetArmRegMapped(GetMipsRegMapLo(MipsReg), NotMapped);
     SetArmRegProtected(GetMipsRegMapLo(MipsReg), false);
     SetMipsRegState(MipsReg, STATE_UNKNOWN);
@@ -494,7 +498,7 @@ void CArmRegInfo::WriteBack_GPR(uint32_t MipsReg, bool Unmapping)
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect", __FUNCTION__);
+        m_CodeBlock.Log("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
@@ -512,31 +516,31 @@ void CArmRegInfo::WriteBack_GPR(uint32_t MipsReg, bool Unmapping)
         return;
     }
 
-    ArmReg GprReg = Map_Variable(VARIABLE_GPR);
+    CArmOps::ArmReg GprReg = Map_Variable(VARIABLE_GPR);
     if (IsConst(MipsReg))
     {
-        ArmReg TempReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+        CArmOps::ArmReg TempReg = Map_TempReg(CArmOps::Arm_Any, -1, false);
 
         if (Is64Bit(MipsReg))
         {
-            MoveConstToArmReg(TempReg, GetMipsRegHi(MipsReg));
-            StoreArmRegToArmRegPointer(TempReg, GprReg, (uint8_t)(MipsReg << 3) + 4, CRegName::GPR_Hi[MipsReg]);
+            m_Assembler.MoveConstToArmReg(TempReg, GetMipsRegHi(MipsReg));
+            m_Assembler.StoreArmRegToArmRegPointer(TempReg, GprReg, (uint8_t)(MipsReg << 3) + 4, CRegName::GPR_Hi[MipsReg]);
         }
         else if (!g_System->b32BitCore())
         {
-            MoveConstToArmReg(TempReg, (GetMipsRegLo(MipsReg) & 0x80000000) != 0 ? 0xFFFFFFFF : 0);
-            StoreArmRegToArmRegPointer(TempReg, GprReg, (uint8_t)(MipsReg << 3) + 4, CRegName::GPR_Hi[MipsReg]);
+            m_Assembler.MoveConstToArmReg(TempReg, (GetMipsRegLo(MipsReg) & 0x80000000) != 0 ? 0xFFFFFFFF : 0);
+            m_Assembler.StoreArmRegToArmRegPointer(TempReg, GprReg, (uint8_t)(MipsReg << 3) + 4, CRegName::GPR_Hi[MipsReg]);
         }
-        MoveConstToArmReg(TempReg, GetMipsRegLo(MipsReg));
-        StoreArmRegToArmRegPointer(TempReg, GprReg, (uint8_t)(MipsReg << 3), CRegName::GPR_Lo[MipsReg]);
-        m_RegWorkingSet.SetArmRegProtected(TempReg, false);
+        m_Assembler.MoveConstToArmReg(TempReg, GetMipsRegLo(MipsReg));
+        m_Assembler.StoreArmRegToArmRegPointer(TempReg, GprReg, (uint8_t)(MipsReg << 3), CRegName::GPR_Lo[MipsReg]);
+        SetArmRegProtected(TempReg, false);
     }
     else
     {
-        StoreArmRegToArmRegPointer(GetMipsRegMapLo(MipsReg), GprReg, (uint8_t)(MipsReg << 3), CRegName::GPR_Lo[MipsReg]);
+        m_Assembler.StoreArmRegToArmRegPointer(GetMipsRegMapLo(MipsReg), GprReg, (uint8_t)(MipsReg << 3), CRegName::GPR_Lo[MipsReg]);
         if (Is64Bit(MipsReg))
         {
-            StoreArmRegToArmRegPointer(GetMipsRegMapHi(MipsReg), GprReg, (uint8_t)(MipsReg << 3) + 4, CRegName::GPR_Hi[MipsReg]);
+            m_Assembler.StoreArmRegToArmRegPointer(GetMipsRegMapHi(MipsReg), GprReg, (uint8_t)(MipsReg << 3) + 4, CRegName::GPR_Hi[MipsReg]);
         }
         else if (!g_System->b32BitCore())
         {
@@ -544,24 +548,24 @@ void CArmRegInfo::WriteBack_GPR(uint32_t MipsReg, bool Unmapping)
             if (!Unmapping)
             {
                 SetArmRegProtected(GetMipsRegMapLo(MipsReg), true);
-                ArmReg TempReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+                CArmOps::ArmReg TempReg = Map_TempReg(CArmOps::Arm_Any, -1, false);
                 if (IsSigned(MipsReg))
                 {
-                    ShiftRightSignImmed(TempReg, GetMipsRegMapLo(MipsReg), 31);
+                    m_Assembler.ShiftRightSignImmed(TempReg, GetMipsRegMapLo(MipsReg), 31);
                 }
                 else
                 {
-                    MoveConstToArmReg(TempReg, (uint32_t)0);
+                    m_Assembler.MoveConstToArmReg(TempReg, (uint32_t)0);
                 }
-                StoreArmRegToArmRegPointer(TempReg, GprReg, (uint8_t)(MipsReg << 3) + 4, CRegName::GPR_Hi[MipsReg]);
-                m_RegWorkingSet.SetArmRegProtected(TempReg, false);
+                m_Assembler.StoreArmRegToArmRegPointer(TempReg, GprReg, (uint8_t)(MipsReg << 3) + 4, CRegName::GPR_Hi[MipsReg]);
+                SetArmRegProtected(TempReg, false);
             }
             else
             {
-                ShiftRightSignImmed(GetMipsRegMapLo(MipsReg), GetMipsRegMapLo(MipsReg), 31);
-                StoreArmRegToArmRegPointer(GetMipsRegMapLo(MipsReg), GprReg, (uint8_t)(MipsReg << 3) + 4, CRegName::GPR_Hi[MipsReg]);
+                m_Assembler.ShiftRightSignImmed(GetMipsRegMapLo(MipsReg), GetMipsRegMapLo(MipsReg), 31);
+                m_Assembler.StoreArmRegToArmRegPointer(GetMipsRegMapLo(MipsReg), GprReg, (uint8_t)(MipsReg << 3) + 4, CRegName::GPR_Hi[MipsReg]);
             }
-            m_RegWorkingSet.SetArmRegProtected(GetMipsRegMapLo(MipsReg), loProtected);
+            SetArmRegProtected(GetMipsRegMapLo(MipsReg), loProtected);
         }
     }
     SetArmRegProtected(GprReg, false);
@@ -571,7 +575,7 @@ void CArmRegInfo::WriteBackRegisters()
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect", __FUNCTION__);
+        m_CodeBlock.Log("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
@@ -579,8 +583,8 @@ void CArmRegInfo::WriteBackRegisters()
 
     int32_t ArmRegCount = sizeof(m_ArmReg_MappedTo) / sizeof(m_ArmReg_MappedTo[0]);
     for (int32_t i = 1; i < 32; i++) { UnMap_GPR(i, true); }
-    for (int32_t i = 0; i < ArmRegCount; i++) { UnMap_ArmReg((ArmReg)i); }
-    for (int32_t i = 0; i < ArmRegCount; i++) { SetArmRegProtected((ArmReg)i, false); }
+    for (int32_t i = 0; i < ArmRegCount; i++) { UnMap_ArmReg((CArmOps::ArmReg)i); }
+    for (int32_t i = 0; i < ArmRegCount; i++) { SetArmRegProtected((CArmOps::ArmReg)i, false); }
 
     for (int32_t count = 1; count < 32; count++)
     {
@@ -597,7 +601,7 @@ void CArmRegInfo::WriteBackRegisters()
             g_Notify->BreakPoint(__FILE__, __LINE__);
             break;
         default:
-            CPU_Message("%s: Unknown state: %d reg %d (%s)", __FUNCTION__, GetMipsRegState(count), count, CRegName::GPR[count]);
+            m_CodeBlock.Log("%s: Unknown state: %d reg %d (%s)", __FUNCTION__, GetMipsRegState(count), count, CRegName::GPR[count]);
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }
@@ -607,61 +611,61 @@ void CArmRegInfo::UnMap_AllFPRs()
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect", __FUNCTION__);
+        m_CodeBlock.Log("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
-    CPU_Message("%s", __FUNCTION__);
+    m_CodeBlock.Log("%s", __FUNCTION__);
 }
 
 CArmOps::ArmReg CArmRegInfo::UnMap_TempReg(bool TempMapping)
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect", __FUNCTION__);
+        m_CodeBlock.Log("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
-        return Arm_Unknown;
+        return CArmOps::Arm_Unknown;
     }
-    ArmReg Reg = Arm_Unknown;
+    CArmOps::ArmReg Reg = CArmOps::Arm_Unknown;
 
-    if (GetArmRegMapped(Arm_R7) == Temp_Mapped && !GetArmRegProtected(Arm_R7)) { return Arm_R7; }
-    if (GetArmRegMapped(Arm_R6) == Temp_Mapped && !GetArmRegProtected(Arm_R6)) { return Arm_R6; }
-    if (GetArmRegMapped(Arm_R5) == Temp_Mapped && !GetArmRegProtected(Arm_R5)) { return Arm_R5; }
-    if (GetArmRegMapped(Arm_R4) == Temp_Mapped && !GetArmRegProtected(Arm_R4)) { return Arm_R4; }
-    if (GetArmRegMapped(Arm_R3) == Temp_Mapped && !GetArmRegProtected(Arm_R3)) { return Arm_R3; }
-    if (GetArmRegMapped(Arm_R2) == Temp_Mapped && !GetArmRegProtected(Arm_R2)) { return Arm_R2; }
-    if (GetArmRegMapped(Arm_R1) == Temp_Mapped && !GetArmRegProtected(Arm_R1)) { return Arm_R1; }
-    if (GetArmRegMapped(Arm_R0) == Temp_Mapped && !GetArmRegProtected(Arm_R0)) { return Arm_R0; }
+    if (GetArmRegMapped( CArmOps::Arm_R7) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R7)) { return  CArmOps::Arm_R7; }
+    if (GetArmRegMapped( CArmOps::Arm_R6) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R6)) { return  CArmOps::Arm_R6; }
+    if (GetArmRegMapped( CArmOps::Arm_R5) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R5)) { return  CArmOps::Arm_R5; }
+    if (GetArmRegMapped( CArmOps::Arm_R4) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R4)) { return  CArmOps::Arm_R4; }
+    if (GetArmRegMapped( CArmOps::Arm_R3) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R3)) { return  CArmOps::Arm_R3; }
+    if (GetArmRegMapped( CArmOps::Arm_R2) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R2)) { return  CArmOps::Arm_R2; }
+    if (GetArmRegMapped( CArmOps::Arm_R1) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R1)) { return  CArmOps::Arm_R1; }
+    if (GetArmRegMapped( CArmOps::Arm_R0) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R0)) { return  CArmOps::Arm_R0; }
     if (TempMapping)
     {
-        if (GetArmRegMapped(Arm_R11) == Temp_Mapped && !GetArmRegProtected(Arm_R11)) { return Arm_R11; }
-        if (GetArmRegMapped(Arm_R10) == Temp_Mapped && !GetArmRegProtected(Arm_R10)) { return Arm_R10; }
+        if (GetArmRegMapped( CArmOps::Arm_R11) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R11)) { return  CArmOps::Arm_R11; }
+        if (GetArmRegMapped( CArmOps::Arm_R10) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R10)) { return  CArmOps::Arm_R10; }
     }
-    if (GetArmRegMapped(Arm_R9) == Temp_Mapped && !GetArmRegProtected(Arm_R9)) { return Arm_R9; }
-    if (GetArmRegMapped(Arm_R8) == Temp_Mapped && !GetArmRegProtected(Arm_R8)) { return Arm_R8; }
+    if (GetArmRegMapped( CArmOps::Arm_R9) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R9)) { return  CArmOps::Arm_R9; }
+    if (GetArmRegMapped( CArmOps::Arm_R8) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R8)) { return  CArmOps::Arm_R8; }
 
-    if (Reg != Arm_Unknown)
+    if (Reg != CArmOps::Arm_Unknown)
     {
         if (GetArmRegMapped(Reg) == Temp_Mapped)
         {
-            CPU_Message("    regcache: unallocate %s from temp storage", ArmRegName(Reg));
+            m_CodeBlock.Log("    regcache: unallocate %s from temp storage", m_Assembler.ArmRegName(Reg));
         }
         SetArmRegMapped(Reg, NotMapped);
     }
     return Reg;
 }
 
-bool CArmRegInfo::UnMap_ArmReg(ArmReg Reg)
+bool CArmRegInfo::UnMap_ArmReg(CArmOps::ArmReg Reg)
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect", __FUNCTION__);
+        m_CodeBlock.Log("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return false;
     }
     if (GetArmRegProtected(Reg))
     {
-        CPU_Message("%s: %s is protected", __FUNCTION__, ArmRegName(Reg));
+        m_CodeBlock.Log("%s: %s is protected", __FUNCTION__, m_Assembler.ArmRegName(Reg));
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return false;
     }
@@ -701,13 +705,13 @@ bool CArmRegInfo::UnMap_ArmReg(ArmReg Reg)
     }
     else if (GetArmRegMapped(Reg) == Temp_Mapped)
     {
-        CPU_Message("    regcache: unallocate %s from temporary storage", ArmRegName(Reg));
+        m_CodeBlock.Log("    regcache: unallocate %s from temporary storage", m_Assembler.ArmRegName(Reg));
         SetArmRegMapped(Reg, NotMapped);
         return true;
     }
     else if (GetArmRegMapped(Reg) == Variable_Mapped)
     {
-        CPU_Message("    regcache: unallocate %s from variable mapping (%s)", ArmRegName(Reg), VariableMapName(GetVariableMappedTo(Reg)));
+        m_CodeBlock.Log("    regcache: unallocate %s from variable mapping (%s)", m_Assembler.ArmRegName(Reg), VariableMapName(GetVariableMappedTo(Reg)));
         SetArmRegMapped(Reg, NotMapped);
         m_Variable_MappedTo[Reg] = VARIABLE_UNKNOWN;
         return true;
@@ -720,13 +724,13 @@ void CArmRegInfo::ResetRegProtection()
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect", __FUNCTION__);
+        m_CodeBlock.Log("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
     for (uint32_t i = 0, n = sizeof(m_ArmReg_Protected) / sizeof(m_ArmReg_Protected[0]); i < n; i++)
     {
-        SetArmRegProtected((ArmReg)i, false);
+        SetArmRegProtected((CArmOps::ArmReg)i, false);
     }
 }
 
@@ -734,38 +738,38 @@ CArmOps::ArmReg CArmRegInfo::FreeArmReg(bool TempMapping)
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect", __FUNCTION__);
+        m_CodeBlock.Log("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
-        return Arm_Unknown;
+        return CArmOps::Arm_Unknown;
     }
-    if ((GetArmRegMapped(Arm_R7) == NotMapped || GetArmRegMapped(Arm_R7) == Temp_Mapped) && !GetArmRegProtected(Arm_R7)) { return Arm_R7; }
-    if ((GetArmRegMapped(Arm_R6) == NotMapped || GetArmRegMapped(Arm_R6) == Temp_Mapped) && !GetArmRegProtected(Arm_R6)) { return Arm_R6; }
-    if ((GetArmRegMapped(Arm_R5) == NotMapped || GetArmRegMapped(Arm_R5) == Temp_Mapped) && !GetArmRegProtected(Arm_R5)) { return Arm_R5; }
-    if ((GetArmRegMapped(Arm_R4) == NotMapped || GetArmRegMapped(Arm_R4) == Temp_Mapped) && !GetArmRegProtected(Arm_R4)) { return Arm_R4; }
-    if ((GetArmRegMapped(Arm_R3) == NotMapped || GetArmRegMapped(Arm_R3) == Temp_Mapped) && !GetArmRegProtected(Arm_R3)) { return Arm_R3; }
-    if ((GetArmRegMapped(Arm_R2) == NotMapped || GetArmRegMapped(Arm_R2) == Temp_Mapped) && !GetArmRegProtected(Arm_R2)) { return Arm_R2; }
-    if ((GetArmRegMapped(Arm_R1) == NotMapped || GetArmRegMapped(Arm_R1) == Temp_Mapped) && !GetArmRegProtected(Arm_R1)) { return Arm_R1; }
-    if ((GetArmRegMapped(Arm_R0) == NotMapped || GetArmRegMapped(Arm_R0) == Temp_Mapped) && !GetArmRegProtected(Arm_R0)) { return Arm_R0; }
+    if ((GetArmRegMapped( CArmOps::Arm_R7) == NotMapped || GetArmRegMapped( CArmOps::Arm_R7) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R7)) { return  CArmOps::Arm_R7; }
+    if ((GetArmRegMapped( CArmOps::Arm_R6) == NotMapped || GetArmRegMapped( CArmOps::Arm_R6) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R6)) { return  CArmOps::Arm_R6; }
+    if ((GetArmRegMapped( CArmOps::Arm_R5) == NotMapped || GetArmRegMapped( CArmOps::Arm_R5) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R5)) { return  CArmOps::Arm_R5; }
+    if ((GetArmRegMapped( CArmOps::Arm_R4) == NotMapped || GetArmRegMapped( CArmOps::Arm_R4) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R4)) { return  CArmOps::Arm_R4; }
+    if ((GetArmRegMapped( CArmOps::Arm_R3) == NotMapped || GetArmRegMapped( CArmOps::Arm_R3) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R3)) { return  CArmOps::Arm_R3; }
+    if ((GetArmRegMapped( CArmOps::Arm_R2) == NotMapped || GetArmRegMapped( CArmOps::Arm_R2) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R2)) { return  CArmOps::Arm_R2; }
+    if ((GetArmRegMapped( CArmOps::Arm_R1) == NotMapped || GetArmRegMapped( CArmOps::Arm_R1) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R1)) { return  CArmOps::Arm_R1; }
+    if ((GetArmRegMapped( CArmOps::Arm_R0) == NotMapped || GetArmRegMapped( CArmOps::Arm_R0) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R0)) { return  CArmOps::Arm_R0; }
     if (TempMapping)
     {
-        if ((GetArmRegMapped(Arm_R11) == NotMapped || GetArmRegMapped(Arm_R11) == Temp_Mapped) && !GetArmRegProtected(Arm_R11)) { return Arm_R11; }
-        if ((GetArmRegMapped(Arm_R10) == NotMapped || GetArmRegMapped(Arm_R10) == Temp_Mapped) && !GetArmRegProtected(Arm_R10)) { return Arm_R10; }
+        if ((GetArmRegMapped( CArmOps::Arm_R11) == NotMapped || GetArmRegMapped( CArmOps::Arm_R11) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R11)) { return  CArmOps::Arm_R11; }
+        if ((GetArmRegMapped( CArmOps::Arm_R10) == NotMapped || GetArmRegMapped( CArmOps::Arm_R10) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R10)) { return  CArmOps::Arm_R10; }
     }
-    if ((GetArmRegMapped(Arm_R9) == NotMapped || GetArmRegMapped(Arm_R9) == Temp_Mapped) && !GetArmRegProtected(Arm_R9)) { return Arm_R9; }
-    if ((GetArmRegMapped(Arm_R8) == NotMapped || GetArmRegMapped(Arm_R8) == Temp_Mapped) && !GetArmRegProtected(Arm_R8)) { return Arm_R8; }
+    if ((GetArmRegMapped( CArmOps::Arm_R9) == NotMapped || GetArmRegMapped( CArmOps::Arm_R9) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R9)) { return  CArmOps::Arm_R9; }
+    if ((GetArmRegMapped( CArmOps::Arm_R8) == NotMapped || GetArmRegMapped( CArmOps::Arm_R8) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R8)) { return  CArmOps::Arm_R8; }
 
-    ArmReg Reg = UnMap_TempReg(TempMapping);
-    if (Reg != Arm_Unknown) { return Reg; }
+    CArmOps::ArmReg Reg = UnMap_TempReg(TempMapping);
+    if (Reg != CArmOps::Arm_Unknown) { return Reg; }
 
-    int32_t MapCount[Arm_R12];
-    ArmReg MapReg[Arm_R12];
+    int32_t MapCount[ CArmOps::Arm_R12];
+    CArmOps::ArmReg MapReg[ CArmOps::Arm_R12];
 
-    for (int32_t i = 0, n = TempMapping ? Arm_R12 : Arm_R10; i < n; i++)
+    for (int32_t i = 0, n = TempMapping ?  CArmOps::Arm_R12 :  CArmOps::Arm_R10; i < n; i++)
     {
-        MapCount[i] = GetArmRegMapOrder((ArmReg)i);
-        MapReg[i] = (ArmReg)i;
+        MapCount[i] = GetArmRegMapOrder((CArmOps::ArmReg)i);
+        MapReg[i] = (CArmOps::ArmReg)i;
     }
-    for (int32_t i = 0, n = TempMapping ? Arm_R12 : Arm_R10; i < n; i++)
+    for (int32_t i = 0, n = TempMapping ?  CArmOps::Arm_R12 :  CArmOps::Arm_R10; i < n; i++)
     {
         bool changed = false;
         for (int32_t z = 0; z < n - 1; z++)
@@ -777,7 +781,7 @@ CArmOps::ArmReg CArmRegInfo::FreeArmReg(bool TempMapping)
             uint32_t temp = MapCount[z];
             MapCount[z] = MapCount[z + 1];
             MapCount[z + 1] = temp;
-            ArmReg tempReg = MapReg[z];
+            CArmOps::ArmReg tempReg = MapReg[z];
             MapReg[z] = MapReg[z + 1];
             MapReg[z + 1] = tempReg;
             changed = true;
@@ -788,20 +792,20 @@ CArmOps::ArmReg CArmRegInfo::FreeArmReg(bool TempMapping)
         }
     }
 
-    for (int32_t i = 0, n = TempMapping ? Arm_R12 : Arm_R10; i < n; i++)
+    for (int32_t i = 0, n = TempMapping ?  CArmOps::Arm_R12 :  CArmOps::Arm_R10; i < n; i++)
     {
-        if (((MapCount[i] > 0 && GetArmRegMapped(MapReg[i]) == GPR_Mapped) || GetArmRegMapped(MapReg[i]) == Variable_Mapped) && !GetArmRegProtected((ArmReg)MapReg[i]))
+        if (((MapCount[i] > 0 && GetArmRegMapped(MapReg[i]) == GPR_Mapped) || GetArmRegMapped(MapReg[i]) == Variable_Mapped) && !GetArmRegProtected((CArmOps::ArmReg)MapReg[i]))
         {
-            if (UnMap_ArmReg((ArmReg)MapReg[i]))
+            if (UnMap_ArmReg((CArmOps::ArmReg)MapReg[i]))
             {
-                return (ArmReg)MapReg[i];
+                return (CArmOps::ArmReg)MapReg[i];
             }
         }
     }
 
     LogRegisterState();
     g_Notify->BreakPoint(__FILE__, __LINE__);
-    return Arm_Unknown;
+    return CArmOps::Arm_Unknown;
 }
 
 void CArmRegInfo::LogRegisterState(void)
@@ -815,7 +819,7 @@ void CArmRegInfo::LogRegisterState(void)
     {
         stdstr regname;
 
-        if (GetArmRegMapped((ArmReg)i) == CArmRegInfo::GPR_Mapped)
+        if (GetArmRegMapped((CArmOps::ArmReg)i) == CArmRegInfo::GPR_Mapped)
         {
             for (uint32_t count = 1; count < 32; count++)
             {
@@ -824,12 +828,12 @@ void CArmRegInfo::LogRegisterState(void)
                     continue;
                 }
 
-                if (Is64Bit(count) && GetMipsRegMapHi(count) == (ArmReg)i)
+                if (Is64Bit(count) && GetMipsRegMapHi(count) == (CArmOps::ArmReg)i)
                 {
                     regname = CRegName::GPR_Hi[count];
                     break;
                 }
-                if (GetMipsRegMapLo(count) == (ArmReg)i)
+                if (GetMipsRegMapLo(count) == (CArmOps::ArmReg)i)
                 {
                     regname = CRegName::GPR_Lo[count];
                     break;
@@ -837,50 +841,50 @@ void CArmRegInfo::LogRegisterState(void)
             }
         }
 
-        CPU_Message("GetArmRegMapped(%s) = %X%s%s Protected: %s MapOrder: %d",
-            ArmRegName((ArmReg)i),
-            GetArmRegMapped((ArmReg)i),
-            GetArmRegMapped((ArmReg)i) == CArmRegInfo::Variable_Mapped ? stdstr_f(" (%s)", CArmRegInfo::VariableMapName(GetVariableMappedTo((ArmReg)i))).c_str() : "",
+        m_CodeBlock.Log("GetArmRegMapped(%s) = %X%s%s Protected: %s MapOrder: %d",
+            m_Assembler.ArmRegName((CArmOps::ArmReg)i),
+            GetArmRegMapped((CArmOps::ArmReg)i),
+            GetArmRegMapped((CArmOps::ArmReg)i) == CArmRegInfo::Variable_Mapped ? stdstr_f(" (%s)", CArmRegInfo::VariableMapName(GetVariableMappedTo((CArmOps::ArmReg)i))).c_str() : "",
             regname.length() > 0 ? stdstr_f(" (%s)", regname.c_str()).c_str() : "",
-            GetArmRegProtected((ArmReg)i) ? "true" : "false",
-            GetArmRegMapOrder((ArmReg)i)
+            GetArmRegProtected((CArmOps::ArmReg)i) ? "true" : "false",
+            GetArmRegMapOrder((CArmOps::ArmReg)i)
         );
     }
 }
 
-CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadHiWord)
+CArmOps::ArmReg CArmRegInfo::Map_TempReg(CArmOps::ArmReg Reg, int32_t MipsReg, bool LoadHiWord)
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect", __FUNCTION__);
+        m_CodeBlock.Log("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
-        return Arm_Unknown;
+        return CArmOps::Arm_Unknown;
     }
-    ArmReg GprReg = MipsReg >= 0 ? Map_Variable(VARIABLE_GPR) : Arm_Unknown;
+    CArmOps::ArmReg GprReg = MipsReg >= 0 ? Map_Variable(VARIABLE_GPR) : CArmOps::Arm_Unknown;
 
     if (Reg == CArmOps::Arm_Any)
     {
-        if (GetArmRegMapped(Arm_R7) == Temp_Mapped && !GetArmRegProtected(Arm_R7)) { Reg = Arm_R7; }
-        else if (GetArmRegMapped(Arm_R6) == Temp_Mapped && !GetArmRegProtected(Arm_R6)) { Reg = Arm_R6; }
-        else if (GetArmRegMapped(Arm_R5) == Temp_Mapped && !GetArmRegProtected(Arm_R5)) { Reg = Arm_R5; }
-        else if (GetArmRegMapped(Arm_R4) == Temp_Mapped && !GetArmRegProtected(Arm_R4)) { Reg = Arm_R4; }
-        else if (GetArmRegMapped(Arm_R3) == Temp_Mapped && !GetArmRegProtected(Arm_R3)) { Reg = Arm_R3; }
-        else if (GetArmRegMapped(Arm_R2) == Temp_Mapped && !GetArmRegProtected(Arm_R2)) { Reg = Arm_R2; }
-        else if (GetArmRegMapped(Arm_R1) == Temp_Mapped && !GetArmRegProtected(Arm_R1)) { Reg = Arm_R1; }
-        else if (GetArmRegMapped(Arm_R0) == Temp_Mapped && !GetArmRegProtected(Arm_R0)) { Reg = Arm_R0; }
-        else if (GetArmRegMapped(Arm_R11) == Temp_Mapped && !GetArmRegProtected(Arm_R11)) { Reg = Arm_R11; }
-        else if (GetArmRegMapped(Arm_R10) == Temp_Mapped && !GetArmRegProtected(Arm_R10)) { Reg = Arm_R10; }
-        else if (GetArmRegMapped(Arm_R9) == Temp_Mapped && !GetArmRegProtected(Arm_R9)) { Reg = Arm_R9; }
-        else if (GetArmRegMapped(Arm_R8) == Temp_Mapped && !GetArmRegProtected(Arm_R8)) { Reg = Arm_R8; }
+        if (GetArmRegMapped( CArmOps::Arm_R7) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R7)) { Reg =  CArmOps::Arm_R7; }
+        else if (GetArmRegMapped( CArmOps::Arm_R6) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R6)) { Reg =  CArmOps::Arm_R6; }
+        else if (GetArmRegMapped( CArmOps::Arm_R5) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R5)) { Reg =  CArmOps::Arm_R5; }
+        else if (GetArmRegMapped( CArmOps::Arm_R4) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R4)) { Reg =  CArmOps::Arm_R4; }
+        else if (GetArmRegMapped( CArmOps::Arm_R3) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R3)) { Reg =  CArmOps::Arm_R3; }
+        else if (GetArmRegMapped( CArmOps::Arm_R2) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R2)) { Reg =  CArmOps::Arm_R2; }
+        else if (GetArmRegMapped( CArmOps::Arm_R1) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R1)) { Reg =  CArmOps::Arm_R1; }
+        else if (GetArmRegMapped( CArmOps::Arm_R0) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R0)) { Reg =  CArmOps::Arm_R0; }
+        else if (GetArmRegMapped( CArmOps::Arm_R11) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R11)) { Reg =  CArmOps::Arm_R11; }
+        else if (GetArmRegMapped( CArmOps::Arm_R10) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R10)) { Reg =  CArmOps::Arm_R10; }
+        else if (GetArmRegMapped( CArmOps::Arm_R9) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R9)) { Reg =  CArmOps::Arm_R9; }
+        else if (GetArmRegMapped( CArmOps::Arm_R8) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R8)) { Reg =  CArmOps::Arm_R8; }
 
-        if (Reg == Arm_Any)
+        if (Reg == CArmOps::Arm_Any)
         {
             Reg = FreeArmReg(true);
-            if (Reg == Arm_Unknown)
+            if (Reg == CArmOps::Arm_Unknown)
             {
                 WriteTrace(TraceRegisterCache, TraceError, "Failed to find a free register");
                 g_Notify->BreakPoint(__FILE__, __LINE__);
-                return Arm_Unknown;
+                return CArmOps::Arm_Unknown;
             }
         }
     }
@@ -901,12 +905,12 @@ CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadH
     }
     if (MipsReg < 0)
     {
-        CPU_Message("    regcache: allocate %s as temporary storage", ArmRegName(Reg));
+        m_CodeBlock.Log("    regcache: allocate %s as temporary storage", m_Assembler.ArmRegName(Reg));
     }
     else
     {
-        CPU_Message("    regcache: allocate %s as temporary storage (%s)", ArmRegName(Reg), LoadHiWord ? CRegName::GPR_Hi[MipsReg] : CRegName::GPR_Lo[MipsReg]);
-        if (GprReg == Arm_Unknown)
+        m_CodeBlock.Log("    regcache: allocate %s as temporary storage (%s)", m_Assembler.ArmRegName(Reg), LoadHiWord ? CRegName::GPR_Hi[MipsReg] : CRegName::GPR_Lo[MipsReg]);
+        if (GprReg == CArmOps::Arm_Unknown)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -914,7 +918,7 @@ CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadH
         {
             if (IsUnknown(MipsReg))
             {
-                LoadArmRegPointerToArmReg(Reg, GprReg, (uint8_t)(MipsReg << 3) + 4, CRegName::GPR_Hi[MipsReg]);
+                m_Assembler.LoadArmRegPointerToArmReg(Reg, GprReg, (uint8_t)(MipsReg << 3) + 4, CRegName::GPR_Hi[MipsReg]);
             }
             else if (IsMapped(MipsReg))
             {
@@ -925,11 +929,11 @@ CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadH
                 }
                 else if (IsSigned(MipsReg))
                 {
-                    ShiftRightSignImmed(Reg, GetMipsRegMapLo(MipsReg), 31);
+                    m_Assembler.ShiftRightSignImmed(Reg, GetMipsRegMapLo(MipsReg), 31);
                 }
                 else
                 {
-                    MoveConstToArmReg(Reg, (uint32_t)0);
+                    m_Assembler.MoveConstToArmReg(Reg, (uint32_t)0);
                 }
             }
             else
@@ -937,12 +941,12 @@ CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadH
                 if (Is64Bit(MipsReg))
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
-                    //MoveConstToArmReg(Reg, GetMipsRegHi(MipsReg));
+                    //m_Assembler.MoveConstToArmReg(Reg, GetMipsRegHi(MipsReg));
                 }
                 else
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
-                    //MoveConstToArmReg(Reg, GetMipsRegLo_S(MipsReg) >> 31);
+                    //m_Assembler.MoveConstToArmReg(Reg, GetMipsRegLo_S(MipsReg) >> 31);
                 }
             }
         }
@@ -950,15 +954,15 @@ CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadH
         {
             if (IsUnknown(MipsReg))
             {
-                LoadArmRegPointerToArmReg(Reg, GprReg, (uint8_t)(MipsReg << 3), CRegName::GPR_Lo[MipsReg]);
+                m_Assembler.LoadArmRegPointerToArmReg(Reg, GprReg, (uint8_t)(MipsReg << 3), CRegName::GPR_Lo[MipsReg]);
             }
             else if (IsMapped(MipsReg))
             {
-                AddConstToArmReg(Reg, GetMipsRegMapLo(MipsReg), 0);
+                m_Assembler.AddConstToArmReg(Reg, GetMipsRegMapLo(MipsReg), 0);
             }
             else
             {
-                MoveConstToArmReg(Reg, GetMipsRegLo(MipsReg));
+                m_Assembler.MoveConstToArmReg(Reg, GetMipsRegLo(MipsReg));
             }
         }
     }
@@ -966,10 +970,10 @@ CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadH
     SetArmRegProtected(Reg, true);
     for (int32_t i = 0, n = sizeof(m_ArmReg_MappedTo) / sizeof(m_ArmReg_MappedTo[0]); i < n; i++)
     {
-        int32_t MapOrder = GetArmRegMapOrder((ArmReg)i);
+        int32_t MapOrder = GetArmRegMapOrder((CArmOps::ArmReg)i);
         if (MapOrder > 0)
         {
-            SetArmRegMapOrder((ArmReg)i, MapOrder + 1);
+            SetArmRegMapOrder((CArmOps::ArmReg)i, MapOrder + 1);
         }
     }
     SetArmRegMapOrder(Reg, 1);
@@ -977,44 +981,44 @@ CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadH
     return Reg;
 }
 
-CArmOps::ArmReg CArmRegInfo::Map_Variable(VARIABLE_MAPPED variable, ArmReg Reg)
+CArmOps::ArmReg CArmRegInfo::Map_Variable(VARIABLE_MAPPED variable, CArmOps::ArmReg Reg)
 {
-    CPU_Message("%s: variable: %s Reg: %d", __FUNCTION__, VariableMapName(variable), Reg);
+    m_CodeBlock.Log("%s: variable: %s Reg: %d", __FUNCTION__, VariableMapName(variable), Reg);
 
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect", __FUNCTION__);
+        m_CodeBlock.Log("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
-        return Arm_Unknown;
+        return CArmOps::Arm_Unknown;
     }
 
-    if (Reg == Arm_Unknown)
+    if (Reg == CArmOps::Arm_Unknown)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
-        return Arm_Unknown;
+        return CArmOps::Arm_Unknown;
     }
 
-    if (variable == VARIABLE_GPR && Reg != Arm_Any && Reg != Arm_R12)
+    if (variable == VARIABLE_GPR && Reg != CArmOps::Arm_Any && Reg != CArmOps::Arm_R12)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
-        return Arm_Unknown;
+        return CArmOps::Arm_Unknown;
     }
 
-    if (Reg == Arm_Any)
+    if (Reg == CArmOps::Arm_Any)
     {
         Reg = GetVariableReg(variable);
-        if (Reg != Arm_Unknown)
+        if (Reg != CArmOps::Arm_Unknown)
         {
             SetArmRegProtected(Reg, true);
             return Reg;
         }
 
-        Reg = variable == VARIABLE_GPR ? Arm_R12 : FreeArmReg(false);
-        if (Reg == Arm_Unknown)
+        Reg = variable == VARIABLE_GPR ?  CArmOps::Arm_R12 : FreeArmReg(false);
+        if (Reg == CArmOps::Arm_Unknown)
         {
             WriteTrace(TraceRegisterCache, TraceError, "Failed to find a free register");
             g_Notify->BreakPoint(__FILE__, __LINE__);
-            return Arm_Unknown;
+            return CArmOps::Arm_Unknown;
         }
     }
     else if (GetArmRegMapped(Reg) == Variable_Mapped && m_Variable_MappedTo[Reg] == variable)
@@ -1029,19 +1033,19 @@ CArmOps::ArmReg CArmRegInfo::Map_Variable(VARIABLE_MAPPED variable, ArmReg Reg)
     SetArmRegMapped(Reg, Variable_Mapped);
     SetArmRegProtected(Reg, true);
 
-    CPU_Message("    regcache: allocate %s as pointer to %s", ArmRegName(Reg), VariableMapName(variable));
+    m_CodeBlock.Log("    regcache: allocate %s as pointer to %s", m_Assembler.ArmRegName(Reg), VariableMapName(variable));
     m_Variable_MappedTo[Reg] = variable;
-    if (variable == VARIABLE_GPR) { MoveConstToArmReg(Reg, (uint32_t)_GPR, "_GPR"); }
-    else if (variable == VARIABLE_FPR) { MoveConstToArmReg(Reg, (uint32_t)_FPR_S, "_FPR_S"); }
-    else if (variable == VARIABLE_TLB_READMAP) { MoveConstToArmReg(Reg, (uint32_t)(g_MMU->m_TLB_ReadMap), "MMU->TLB_ReadMap"); }
-    else if (variable == VARIABLE_TLB_WRITEMAP) { MoveConstToArmReg(Reg, (uint32_t)(g_MMU->m_TLB_WriteMap), "MMU->m_TLB_WriteMap"); }
-    else if (variable == VARIABLE_TLB_LOAD_ADDRESS) { MoveConstToArmReg(Reg, (uint32_t)(g_TLBLoadAddress), "g_TLBLoadAddress"); }
-    else if (variable == VARIABLE_TLB_STORE_ADDRESS) { MoveConstToArmReg(Reg, (uint32_t)(g_TLBStoreAddress), "g_TLBStoreAddress"); }
-    else if (variable == VARIABLE_NEXT_TIMER) { MoveConstToArmReg(Reg, (uint32_t)(g_NextTimer), "g_NextTimer"); }
+    if (variable == VARIABLE_GPR) { m_Assembler.MoveConstToArmReg(Reg, (uint32_t)_GPR, "_GPR"); }
+    else if (variable == VARIABLE_FPR) { m_Assembler.MoveConstToArmReg(Reg, (uint32_t)_FPR_S, "_FPR_S"); }
+    else if (variable == VARIABLE_TLB_READMAP) { m_Assembler.MoveConstToArmReg(Reg, (uint32_t)(g_MMU->m_TLB_ReadMap), "MMU->TLB_ReadMap"); }
+    else if (variable == VARIABLE_TLB_WRITEMAP) { m_Assembler.MoveConstToArmReg(Reg, (uint32_t)(g_MMU->m_TLB_WriteMap), "MMU->m_TLB_WriteMap"); }
+    else if (variable == VARIABLE_TLB_LOAD_ADDRESS) { m_Assembler.MoveConstToArmReg(Reg, (uint32_t)(g_TLBLoadAddress), "g_TLBLoadAddress"); }
+    else if (variable == VARIABLE_TLB_STORE_ADDRESS) { m_Assembler.MoveConstToArmReg(Reg, (uint32_t)(g_TLBStoreAddress), "g_TLBStoreAddress"); }
+    else if (variable == VARIABLE_NEXT_TIMER) { m_Assembler.MoveConstToArmReg(Reg, (uint32_t)(g_NextTimer), "g_NextTimer"); }
     else
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
-        return Arm_Unknown;
+        return CArmOps::Arm_Unknown;
     }
     return Reg;
 }
@@ -1052,17 +1056,17 @@ CArmOps::ArmReg CArmRegInfo::GetVariableReg(VARIABLE_MAPPED variable) const
     {
         if (m_ArmReg_MappedTo[i] == Variable_Mapped && m_Variable_MappedTo[i] == variable)
         {
-            return (ArmReg)i;
+            return (CArmOps::ArmReg)i;
         }
     }
-    return Arm_Unknown;
+    return CArmOps::Arm_Unknown;
 }
 
 void CArmRegInfo::ProtectGPR(uint32_t Reg)
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect", __FUNCTION__);
+        m_CodeBlock.Log("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
@@ -1081,7 +1085,7 @@ void CArmRegInfo::UnProtectGPR(uint32_t Reg)
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect", __FUNCTION__);
+        m_CodeBlock.Log("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
