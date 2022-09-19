@@ -339,7 +339,8 @@ bool CMipsMemoryVM::MemoryValue64(uint32_t VAddr, uint64_t & Value)
     {
         return false;
     }
-    Value = *(uint64_t*)(ptr);
+    *((uint32_t*)(&Value) + 1) = *(uint32_t*)(ptr);
+    *((uint32_t*)(&Value) + 0) = *(uint32_t*)(ptr + 4);
     return true;
 }
 
