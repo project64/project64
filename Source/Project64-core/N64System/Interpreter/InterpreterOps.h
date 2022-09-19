@@ -131,7 +131,9 @@ public:
 
     // COP0 functions
     static void COP0_MF();
+    static void COP0_DMF();
     static void COP0_MT();
+    static void COP0_DMT();
 
     // COP0 CO functions
     static void COP0_CO_TLBR();

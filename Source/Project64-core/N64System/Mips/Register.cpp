@@ -222,7 +222,7 @@ const char * CRegName::FPR_Ctrl[32] =
 uint32_t      * CSystemRegisters::_PROGRAM_COUNTER = nullptr;
 MIPS_DWORD    * CSystemRegisters::_GPR = nullptr;
 MIPS_DWORD    * CSystemRegisters::_FPR = nullptr;
-uint32_t      * CSystemRegisters::_CP0 = nullptr;
+uint64_t      * CSystemRegisters::_CP0 = nullptr;
 MIPS_DWORD    * CSystemRegisters::_RegHI = nullptr;
 MIPS_DWORD    * CSystemRegisters::_RegLO = nullptr;
 float        ** CSystemRegisters::_FPR_S;
@@ -231,7 +231,7 @@ uint32_t      * CSystemRegisters::_FPCR = nullptr;
 uint32_t      * CSystemRegisters::_LLBit = nullptr;
 int32_t       * CSystemRegisters::_RoundingModel = nullptr;
 
-CP0registers::CP0registers(uint32_t * _CP0) :
+CP0registers::CP0registers(uint64_t * _CP0) :
     INDEX_REGISTER(_CP0[0]),
     RANDOM_REGISTER(_CP0[1]),
     ENTRYLO0_REGISTER(_CP0[2]),
@@ -333,6 +333,109 @@ void CRegisters::SetAsCurrentSystem()
     _RoundingModel = &m_RoundingModel;
 }
 
+uint64_t CRegisters::Cop0_MF(uint32_t Reg)
+{
+    if (LogCP0reads() && Reg <= 0x1F)
+    {
+        LogMessage("%08X: R4300i read from %s (0x%08X)", (*_PROGRAM_COUNTER), CRegName::Cop0[Reg], m_CP0[Reg]);
+    }
+
+    if (Reg == 9)
+    {
+        g_SystemTimer->UpdateTimers();
+    }
+    return Reg <= 0x1F ? m_CP0[Reg] : 0;
+}
+
+void CRegisters::Cop0_MT(uint32_t Reg, uint64_t Value)
+{
+    if (LogCP0changes() && Reg <= 0x1F)
+    {
+        LogMessage("%08X: Writing 0x%I64U to %s register (originally: 0x%I64U)", (*_PROGRAM_COUNTER), Value, CRegName::Cop0[Reg], m_CP0[Reg]);
+        if (Reg == 11)  // Compare
+        {
+            LogMessage("%08X: Cause register changed from %08X to %08X", (*_PROGRAM_COUNTER), CAUSE_REGISTER, (g_Reg->CAUSE_REGISTER & ~CAUSE_IP7));
+        }
+    }
+
+    switch (Reg)
+    {
+    case 0: // Index
+    case 2: // EntryLo0
+    case 3: // EntryLo1
+    case 5: // PageMask
+    case 7: // Reg7
+    case 8: // BadVaddr
+    case 10: // Entry Hi
+    case 14: // EPC
+    case 15: // PRId
+    case 16: // Config
+    case 17: // LLAdrr
+    case 18: // WatchLo
+    case 19: // WatchHi
+    case 20: // XContext
+    case 21: // Reg21
+    case 22: // Reg22
+    case 23: // Reg23
+    case 24: // Reg24
+    case 25: // Reg25
+    case 26: // ECC
+    case 27: // CacheErr
+    case 28: // Tag lo
+    case 29: // Tag Hi
+    case 30: // ErrEPC
+    case 31: // Reg31
+        m_CP0[Reg] = Value;
+        break;
+    case 6: // Wired
+        g_SystemTimer->UpdateTimers();
+        m_CP0[Reg] = Value;
+        break;
+    case 4: // Context
+        m_CP0[Reg] = Value & 0xFF800000;
+        break;
+    case 9: // Count
+        g_SystemTimer->UpdateTimers();
+        m_CP0[Reg] = Value;
+        g_SystemTimer->UpdateCompareTimer();
+        break;
+    case 11: // Compare
+        g_SystemTimer->UpdateTimers();
+        m_CP0[Reg] = Value;
+        FAKE_CAUSE_REGISTER &= ~CAUSE_IP7;
+        g_SystemTimer->UpdateCompareTimer();
+        break;
+    case 12: // Status
+        if ((m_CP0[Reg] & STATUS_FR) != (Value & STATUS_FR))
+        {
+            m_CP0[Reg] = Value;
+            FixFpuLocations();
+        }
+        else
+        {
+            m_CP0[Reg] = Value;
+        }
+        if ((m_CP0[Reg] & 0x18) != 0 && HaveDebugger())
+        {
+            g_Notify->DisplayError("Left kernel mode ??");
+        }
+        CheckInterrupts();
+        break;
+    case 13: // Cause
+        m_CP0[Reg] &= 0xFFFFCFF;
+        if ((Value & 0x300) != 0 && HaveDebugger())
+        {
+            g_Notify->DisplayError("Set IP0 or IP1");
+        }
+        break;
+    default:
+        if (HaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+}
+
 void CRegisters::CheckInterrupts()
 {
     uint32_t mi_intr_reg = MI_INTR_REG, status_register;
@@ -352,7 +455,7 @@ void CRegisters::CheckInterrupts()
         FAKE_CAUSE_REGISTER &= ~CAUSE_IP2;
     }
     MI_INTR_REG = mi_intr_reg;
-    status_register = STATUS_REGISTER;
+    status_register = (uint32_t)STATUS_REGISTER;
 
     if ((status_register & STATUS_IE) == 0)
     {

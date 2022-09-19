@@ -160,7 +160,7 @@ duk_ret_t ScriptAPI::js_cpu_cop0_get(duk_context* ctx)
     
     if (strcmp(name, "cause") == 0)
     {
-        duk_push_uint(ctx, g_Reg->FAKE_CAUSE_REGISTER | g_Reg->CAUSE_REGISTER);
+        duk_push_uint(ctx, (uint32_t)(g_Reg->FAKE_CAUSE_REGISTER | g_Reg->CAUSE_REGISTER));
         return 1;
     }
 
@@ -414,24 +414,24 @@ static uint32_t* COP0RegPtr(const char *regName)
         const char* name;
         uint32_t *ptr;
     } names[] = {
-        { "index", &g_Reg->INDEX_REGISTER },
-        { "random", &g_Reg->RANDOM_REGISTER },
-        { "entrylo0", &g_Reg->ENTRYLO0_REGISTER },
-        { "entrylo1", &g_Reg->ENTRYLO1_REGISTER },
-        { "context", &g_Reg->CONTEXT_REGISTER },
-        { "pagemask", &g_Reg->PAGE_MASK_REGISTER },
-        { "wired", &g_Reg->WIRED_REGISTER },
-        { "badvaddr", &g_Reg->BAD_VADDR_REGISTER },
-        { "count", &g_Reg->COUNT_REGISTER },
-        { "entryhi", &g_Reg->ENTRYHI_REGISTER },
-        { "compare", &g_Reg->COMPARE_REGISTER },
-        { "status", &g_Reg->STATUS_REGISTER },
-        //{ "cause", &g_Reg->CAUSE_REGISTER },
-        { "epc", &g_Reg->EPC_REGISTER },
-        { "config", &g_Reg->CONFIG_REGISTER },
-        { "taglo", &g_Reg->TAGLO_REGISTER },
-        { "taghi", &g_Reg->TAGHI_REGISTER },
-        { "errorepc", &g_Reg->ERROREPC_REGISTER },
+        { "index", (uint32_t*)&g_Reg->INDEX_REGISTER },
+        { "random", (uint32_t*)&g_Reg->RANDOM_REGISTER },
+        { "entrylo0", (uint32_t*)&g_Reg->ENTRYLO0_REGISTER },
+        { "entrylo1", (uint32_t*)&g_Reg->ENTRYLO1_REGISTER },
+        { "context", (uint32_t*)&g_Reg->CONTEXT_REGISTER },
+        { "pagemask", (uint32_t*)&g_Reg->PAGE_MASK_REGISTER },
+        { "wired", (uint32_t*)&g_Reg->WIRED_REGISTER },
+        { "badvaddr", (uint32_t*)&g_Reg->BAD_VADDR_REGISTER },
+        { "count", (uint32_t*)&g_Reg->COUNT_REGISTER },
+        { "entryhi", (uint32_t*)&g_Reg->ENTRYHI_REGISTER },
+        { "compare", (uint32_t*)&g_Reg->COMPARE_REGISTER },
+        { "status", (uint32_t*)&g_Reg->STATUS_REGISTER },
+        //{ "cause", (uint32_t*)&g_Reg->CAUSE_REGISTER },
+        { "epc", (uint32_t*)&g_Reg->EPC_REGISTER },
+        { "config", (uint32_t*)&g_Reg->CONFIG_REGISTER },
+        { "taglo", (uint32_t*)&g_Reg->TAGLO_REGISTER },
+        { "taghi",(uint32_t*)&g_Reg->TAGHI_REGISTER },
+        { "errorepc", (uint32_t*)&g_Reg->ERROREPC_REGISTER },
         { nullptr, nullptr }
     };
     

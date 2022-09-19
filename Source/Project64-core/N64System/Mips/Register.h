@@ -20,29 +20,29 @@
 class CP0registers
 {
 protected:
-    CP0registers (uint32_t * _CP0);
+    CP0registers (uint64_t * _CP0);
 
 public:
-    uint32_t & INDEX_REGISTER;
-    uint32_t & RANDOM_REGISTER;
-    uint32_t & ENTRYLO0_REGISTER;
-    uint32_t & ENTRYLO1_REGISTER;
-    uint32_t & CONTEXT_REGISTER;
-    uint32_t & PAGE_MASK_REGISTER;
-    uint32_t & WIRED_REGISTER;
-    uint32_t & BAD_VADDR_REGISTER;
-    uint32_t & COUNT_REGISTER;
-    uint32_t & ENTRYHI_REGISTER;
-    uint32_t & COMPARE_REGISTER;
-    uint32_t & STATUS_REGISTER;
-    uint32_t & CAUSE_REGISTER;
-    uint32_t & EPC_REGISTER;
-    uint32_t & PREVID_REGISTER;
-    uint32_t & CONFIG_REGISTER;
-    uint32_t & TAGLO_REGISTER;
-    uint32_t & TAGHI_REGISTER;
-    uint32_t & ERROREPC_REGISTER;
-    uint32_t & FAKE_CAUSE_REGISTER;
+    uint64_t & INDEX_REGISTER;
+    uint64_t & RANDOM_REGISTER;
+    uint64_t & ENTRYLO0_REGISTER;
+    uint64_t & ENTRYLO1_REGISTER;
+    uint64_t & CONTEXT_REGISTER;
+    uint64_t & PAGE_MASK_REGISTER;
+    uint64_t & WIRED_REGISTER;
+    uint64_t & BAD_VADDR_REGISTER;
+    uint64_t & COUNT_REGISTER;
+    uint64_t & ENTRYHI_REGISTER;
+    uint64_t & COMPARE_REGISTER;
+    uint64_t & STATUS_REGISTER;
+    uint64_t & CAUSE_REGISTER;
+    uint64_t & EPC_REGISTER;
+    uint64_t & PREVID_REGISTER;
+    uint64_t & CONFIG_REGISTER;
+    uint64_t & TAGLO_REGISTER;
+    uint64_t & TAGHI_REGISTER;
+    uint64_t & ERROREPC_REGISTER;
+    uint64_t & FAKE_CAUSE_REGISTER;
 
 private:
     CP0registers();
@@ -230,7 +230,7 @@ protected:
     static uint32_t      * _PROGRAM_COUNTER;
     static MIPS_DWORD    * _GPR;
     static MIPS_DWORD    * _FPR;
-    static uint32_t      * _CP0;
+    static uint64_t      * _CP0;
     static MIPS_DWORD    * _RegHI;
     static MIPS_DWORD    * _RegLO;
     static float        ** _FPR_S;
@@ -278,10 +278,13 @@ public:
     void Reset();
     void SetAsCurrentSystem();
 
+    uint64_t Cop0_MF(uint32_t Reg);
+    void Cop0_MT(uint32_t Reg, uint64_t Value);
+
     // General registers
     uint32_t m_PROGRAM_COUNTER;
     MIPS_DWORD m_GPR[32];
-    uint32_t m_CP0[33];
+    uint64_t m_CP0[33];
     MIPS_DWORD m_HI;
     MIPS_DWORD m_LO;
     uint32_t m_LLBit;

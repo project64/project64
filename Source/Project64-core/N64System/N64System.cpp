@@ -935,7 +935,7 @@ void CN64System::Reset(bool bInitReg, bool ClearMenory)
     }
 
     m_SystemTimer.Reset();
-    m_SystemTimer.SetTimer(CSystemTimer::CompareTimer, m_Reg.COMPARE_REGISTER - m_Reg.COUNT_REGISTER, false);
+    m_SystemTimer.SetTimer(CSystemTimer::CompareTimer, (uint32_t)m_Reg.COMPARE_REGISTER - (uint32_t)m_Reg.COUNT_REGISTER, false);
 
     if (m_Recomp)
     {
@@ -2265,7 +2265,7 @@ bool CN64System::LoadState(const char * FileName)
         m_Reg.RANDOM_REGISTER += 32 - m_Reg.WIRED_REGISTER;
     }
     // Fix up timer
-    m_SystemTimer.SetTimer(CSystemTimer::CompareTimer, m_Reg.COMPARE_REGISTER - m_Reg.COUNT_REGISTER, false);
+    m_SystemTimer.SetTimer(CSystemTimer::CompareTimer, (uint32_t)m_Reg.COMPARE_REGISTER - (uint32_t)m_Reg.COUNT_REGISTER, false);
     m_SystemTimer.SetTimer(CSystemTimer::ViTimer, NextVITimer, false);
     m_Reg.FixFpuLocations();
     m_TLB.Reset(false);

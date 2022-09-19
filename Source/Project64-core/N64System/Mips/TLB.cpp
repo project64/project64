@@ -165,10 +165,10 @@ void CTLB::WriteEntry(int index, bool Random)
     }
 
     // Fill in m_tlb entry
-    m_tlb[index].PageMask.Value = g_Reg->PAGE_MASK_REGISTER;
-    m_tlb[index].EntryHi.Value = g_Reg->ENTRYHI_REGISTER;
-    m_tlb[index].EntryLo0.Value = g_Reg->ENTRYLO0_REGISTER;
-    m_tlb[index].EntryLo1.Value = g_Reg->ENTRYLO1_REGISTER;
+    m_tlb[index].PageMask.Value = (uint32_t)g_Reg->PAGE_MASK_REGISTER;
+    m_tlb[index].EntryHi.Value = (uint32_t)g_Reg->ENTRYHI_REGISTER;
+    m_tlb[index].EntryLo0.Value = (uint32_t)g_Reg->ENTRYLO0_REGISTER;
+    m_tlb[index].EntryLo1.Value = (uint32_t)g_Reg->ENTRYLO1_REGISTER;
     m_tlb[index].EntryDefined = true;
     SetupTLB_Entry(index, Random);
     m_CB->TLB_Changed();

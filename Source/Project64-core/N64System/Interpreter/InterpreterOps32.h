@@ -63,7 +63,6 @@ public:
 
     // COP0 functions
     static void  COP0_MF();
-    static void  COP0_MT();
 
     // COP1 functions
     static void  COP1_MF();

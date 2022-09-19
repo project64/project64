@@ -274,11 +274,11 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_Regimm[31] = UnknownOpcode;
 
     Jump_CoP0[0] = COP0_MF;
-    Jump_CoP0[1] = COP0_MF;
+    Jump_CoP0[1] = COP0_DMF;
     Jump_CoP0[2] = UnknownOpcode;
     Jump_CoP0[3] = UnknownOpcode;
     Jump_CoP0[4] = COP0_MT;
-    Jump_CoP0[5] = COP0_MT;
+    Jump_CoP0[5] = COP0_DMT;
     Jump_CoP0[6] = UnknownOpcode;
     Jump_CoP0[7] = UnknownOpcode;
     Jump_CoP0[8] = UnknownOpcode;
@@ -1935,92 +1935,23 @@ void R4300iOp::REGIMM_TNEI()
 
 void R4300iOp::COP0_MF()
 {
-    if (LogCP0reads())
-    {
-        LogMessage("%08X: R4300i read from %s (0x%08X)", (*_PROGRAM_COUNTER), CRegName::Cop0[m_Opcode.rd], _CP0[m_Opcode.rd]);
-    }
+    _GPR[m_Opcode.rt].DW = (int32_t)g_Reg->Cop0_MF(m_Opcode.rd);
+}
 
-    if (m_Opcode.rd == 9)
-    {
-        g_SystemTimer->UpdateTimers();
-    }
-    _GPR[m_Opcode.rt].DW = (int32_t)_CP0[m_Opcode.rd];
+void R4300iOp::COP0_DMF()
+{
+    _GPR[m_Opcode.rt].DW = g_Reg->Cop0_MF(m_Opcode.rd);
 }
 
 void R4300iOp::COP0_MT()
 {
-    if (LogCP0changes())
-    {
-        LogMessage("%08X: Writing 0x%X to %s register (originally: 0x%08X)", (*_PROGRAM_COUNTER), _GPR[m_Opcode.rt].UW[0], CRegName::Cop0[m_Opcode.rd], _CP0[m_Opcode.rd]);
-        if (m_Opcode.rd == 11)  // Compare
-        {
-            LogMessage("%08X: Cause register changed from %08X to %08X", (*_PROGRAM_COUNTER), g_Reg->CAUSE_REGISTER, (g_Reg->CAUSE_REGISTER & ~CAUSE_IP7));
-        }
-    }
-
-    switch (m_Opcode.rd)
-    {
-    case 0: // Index
-    case 2: // EntryLo0
-    case 3: // EntryLo1
-    case 5: // PageMask
-    case 10: // Entry Hi
-    case 14: // EPC
-    case 16: // Config
-    case 18: // WatchLo
-    case 19: // WatchHi
-    case 20: // XContext
-    case 28: // Tag lo
-    case 29: // Tag Hi
-    case 30: // ErrEPC
-        _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
-        break;
-    case 6: // Wired
-        g_SystemTimer->UpdateTimers();
-        _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
-        break;
-    case 4: // Context
-        _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0] & 0xFF800000;
-        break;
-    case 9: // Count
-        g_SystemTimer->UpdateTimers();
-        _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
-        g_SystemTimer->UpdateCompareTimer();
-        break;
-    case 11: // Compare
-        g_SystemTimer->UpdateTimers();
-        _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
-        g_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP7;
-        g_SystemTimer->UpdateCompareTimer();
-        break;
-    case 12: // Status
-        if ((_CP0[m_Opcode.rd] & STATUS_FR) != (_GPR[m_Opcode.rt].UW[0] & STATUS_FR))
-        {
-            _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
-            g_Reg->FixFpuLocations();
-        }
-        else
-        {
-            _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
-        }
-        if ((_CP0[m_Opcode.rd] & 0x18) != 0 && HaveDebugger())
-        {
-            g_Notify->DisplayError("Left kernel mode ??");
-        }
-        g_Reg->CheckInterrupts();
-        break;
-    case 13: // Cause
-        _CP0[m_Opcode.rd] &= 0xFFFFCFF;
-        if ((_GPR[m_Opcode.rt].UW[0] & 0x300) != 0 && HaveDebugger())
-        {
-            g_Notify->DisplayError("Set IP0 or IP1");
-        }
-        break;
-    default:
-        UnknownOpcode();
-    }
+    g_Reg->Cop0_MT(m_Opcode.rd, _GPR[m_Opcode.rt].UW[0]);
 }
 
+void R4300iOp::COP0_DMT()
+{
+    g_Reg->Cop0_MT(m_Opcode.rd, _GPR[m_Opcode.rt].UDW);
+}
 // COP0 CO functions
 
 void R4300iOp::COP0_CO_TLBR()
@@ -2048,12 +1979,12 @@ void R4300iOp::COP0_CO_ERET()
     g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
     if ((g_Reg->STATUS_REGISTER & STATUS_ERL) != 0)
     {
-        g_System->m_JumpToLocation = g_Reg->ERROREPC_REGISTER;
+        g_System->m_JumpToLocation = (uint32_t)g_Reg->ERROREPC_REGISTER;
         g_Reg->STATUS_REGISTER &= ~STATUS_ERL;
     }
     else
     {
-        g_System->m_JumpToLocation = g_Reg->EPC_REGISTER;
+        g_System->m_JumpToLocation = (uint32_t)g_Reg->EPC_REGISTER;
         g_Reg->STATUS_REGISTER &= ~STATUS_EXL;
     }
     (*_LLBit) = 0;

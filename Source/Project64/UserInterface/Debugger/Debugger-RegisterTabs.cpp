@@ -131,28 +131,28 @@ void CRegisterTabs::RefreshEdits()
 
     m_FCSREdit.SetValue(g_Reg->m_FPCR[31], DisplayMode::ZeroExtend);
 
-    m_COP0Edits[0].SetValue(g_Reg->INDEX_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[1].SetValue(g_Reg->RANDOM_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[2].SetValue(g_Reg->ENTRYLO0_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[3].SetValue(g_Reg->ENTRYLO1_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[4].SetValue(g_Reg->CONTEXT_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[5].SetValue(g_Reg->PAGE_MASK_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[6].SetValue(g_Reg->WIRED_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[7].SetValue(g_Reg->BAD_VADDR_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[8].SetValue(g_Reg->COUNT_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[9].SetValue(g_Reg->ENTRYHI_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[10].SetValue(g_Reg->COMPARE_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[11].SetValue(g_Reg->STATUS_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[12].SetValue(g_Reg->CAUSE_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[13].SetValue(g_Reg->EPC_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[14].SetValue(g_Reg->CONFIG_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[15].SetValue(g_Reg->TAGLO_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[16].SetValue(g_Reg->TAGHI_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[17].SetValue(g_Reg->ERROREPC_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[18].SetValue(g_Reg->FAKE_CAUSE_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[0].SetValue((uint32_t)g_Reg->INDEX_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[1].SetValue((uint32_t)g_Reg->RANDOM_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[2].SetValue((uint32_t)g_Reg->ENTRYLO0_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[3].SetValue((uint32_t)g_Reg->ENTRYLO1_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[4].SetValue((uint32_t)g_Reg->CONTEXT_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[5].SetValue((uint32_t)g_Reg->PAGE_MASK_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[6].SetValue((uint32_t)g_Reg->WIRED_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[7].SetValue((uint32_t)g_Reg->BAD_VADDR_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[8].SetValue((uint32_t)g_Reg->COUNT_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[9].SetValue((uint32_t)g_Reg->ENTRYHI_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[10].SetValue((uint32_t)g_Reg->COMPARE_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[11].SetValue((uint32_t)g_Reg->STATUS_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[12].SetValue((uint32_t)g_Reg->CAUSE_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[13].SetValue((uint32_t)g_Reg->EPC_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[14].SetValue((uint32_t)g_Reg->CONFIG_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[15].SetValue((uint32_t)g_Reg->TAGLO_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[16].SetValue((uint32_t)g_Reg->TAGHI_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[17].SetValue((uint32_t)g_Reg->ERROREPC_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[18].SetValue((uint32_t)g_Reg->FAKE_CAUSE_REGISTER, DisplayMode::ZeroExtend);
 
     CAUSE cause;
-    cause.intval = g_Reg->CAUSE_REGISTER;
+    cause.intval = (uint32_t)g_Reg->CAUSE_REGISTER;
 
     const char* szExceptionCode = ExceptionCodes[cause.exceptionCode];
     m_CauseTip.SetWindowText(stdstr(szExceptionCode).ToUTF16().c_str());

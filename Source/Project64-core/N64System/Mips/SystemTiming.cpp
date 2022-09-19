@@ -164,8 +164,8 @@ void CSystemTimer::UpdateTimers()
         int32_t random, wired;
         m_LastUpdate = m_NextTimer;
         m_Reg.COUNT_REGISTER += TimeTaken;
-        random = m_Reg.RANDOM_REGISTER - ((TimeTaken * CGameSettings::OverClockModifier()) / m_System.CountPerOp());
-        wired = m_Reg.WIRED_REGISTER;
+        random = (uint32_t)m_Reg.RANDOM_REGISTER - ((TimeTaken * CGameSettings::OverClockModifier()) / m_System.CountPerOp());
+        wired = (uint32_t)m_Reg.WIRED_REGISTER;
         if (random < wired)
         {
             if (wired == 0)
@@ -280,7 +280,7 @@ void CSystemTimer::TimerDone()
 void CSystemTimer::SetCompareTimer()
 {
     uint32_t NextCompare = 0x7FFFFFFF;
-    NextCompare = m_Reg.COMPARE_REGISTER - m_Reg.COUNT_REGISTER;
+    NextCompare = (uint32_t)m_Reg.COMPARE_REGISTER - (uint32_t)m_Reg.COUNT_REGISTER;
     if ((NextCompare & 0x80000000) != 0)
     {
         NextCompare = 0x7FFFFFFF;
