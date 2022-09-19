@@ -207,6 +207,7 @@ public:
     static void COP1_L_CVT_D();
 
     // Other functions
+    static void ReservedInstruction();
     static void UnknownOpcode();
 
     static Func* BuildInterpreter();

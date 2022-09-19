@@ -527,6 +527,10 @@ void R4300iInstruction::DecodeName(void)
         strcpy(m_Name, "LDR");
         sprintf(m_Param, "%s, 0x%04X (%s)", CRegName::GPR[m_Instruction.rt], m_Instruction.offset, CRegName::GPR[m_Instruction.base]);
         break;
+    case R4300i_RESERVED31:
+        strcpy(m_Name, "Reserved(31)");
+        sprintf(m_Param, "");
+        break;
     case R4300i_LB:
         strcpy(m_Name, "LB");
         sprintf(m_Param, "%s, 0x%04X (%s)", CRegName::GPR[m_Instruction.rt], m_Instruction.offset, CRegName::GPR[m_Instruction.base]);

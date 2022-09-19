@@ -141,7 +141,7 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_Opcode[28] = UnknownOpcode;
     Jump_Opcode[29] = UnknownOpcode;
     Jump_Opcode[30] = UnknownOpcode;
-    Jump_Opcode[31] = UnknownOpcode;
+    Jump_Opcode[31] = ReservedInstruction;
     Jump_Opcode[32] = LB;
     Jump_Opcode[33] = LH;
     Jump_Opcode[34] = LWL;
@@ -2697,6 +2697,12 @@ void R4300iOp::COP1_L_CVT_D()
 }
 
 // Other functions
+void R4300iOp::ReservedInstruction()
+{
+    g_Reg->DoIllegalInstructionException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+}
 
 void R4300iOp::UnknownOpcode()
 {

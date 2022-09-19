@@ -50,7 +50,7 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
     Jump_Opcode[28] = R4300iOp::UnknownOpcode;
     Jump_Opcode[29] = R4300iOp::UnknownOpcode;
     Jump_Opcode[30] = R4300iOp::UnknownOpcode;
-    Jump_Opcode[31] = R4300iOp::UnknownOpcode;
+    Jump_Opcode[31] = R4300iOp::ReservedInstruction;
     Jump_Opcode[32] = LB;
     Jump_Opcode[33] = LH;
     Jump_Opcode[34] = LWL;

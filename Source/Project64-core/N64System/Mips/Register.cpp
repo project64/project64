@@ -546,6 +546,22 @@ bool CRegisters::DoIntrException(bool DelaySlot)
     return true;
 }
 
+void CRegisters::DoIllegalInstructionException(bool DelaySlot)
+{
+    CAUSE_REGISTER = EXC_II;
+    if (DelaySlot)
+    {
+        CAUSE_REGISTER |= CAUSE_BD;
+        EPC_REGISTER = m_PROGRAM_COUNTER - 4;
+    }
+    else
+    {
+        EPC_REGISTER = m_PROGRAM_COUNTER;
+    }
+    m_PROGRAM_COUNTER = 0x80000180;
+    STATUS_REGISTER |= STATUS_EXL;
+}
+
 void CRegisters::DoOverflowException(bool DelaySlot)
 {
     CAUSE_REGISTER = EXC_OV;
