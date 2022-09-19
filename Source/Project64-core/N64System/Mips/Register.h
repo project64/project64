@@ -16,6 +16,37 @@
 #include <Project64-core\Settings\GameSettings.h>
 #include <Project64-core\Logging.h>
 
+#pragma warning(push)
+#pragma warning(disable : 4201) // Non-standard extension used: nameless struct/union
+
+union COP0Context
+{
+    uint64_t Value;
+
+    struct
+    {
+        unsigned : 4;
+        unsigned BadVPN2 : 19;
+        unsigned PTEBaseHi : 9;
+        unsigned PTEBaseLo : 32;
+    };
+};
+
+union COP0XContext
+{
+    uint64_t Value;
+
+    struct
+    {
+        unsigned : 4;
+        unsigned BadVPN2 : 27;
+        unsigned R : 2;
+        unsigned PTEBase : 31;
+    };
+};
+
+#pragma warning(pop)
+
 // CPO registers by name
 class CP0registers
 {
@@ -27,7 +58,7 @@ public:
     uint64_t & RANDOM_REGISTER;
     uint64_t & ENTRYLO0_REGISTER;
     uint64_t & ENTRYLO1_REGISTER;
-    uint64_t & CONTEXT_REGISTER;
+    COP0Context & CONTEXT_REGISTER;
     uint64_t & PAGE_MASK_REGISTER;
     uint64_t & WIRED_REGISTER;
     uint64_t & BAD_VADDR_REGISTER;
@@ -39,6 +70,7 @@ public:
     uint64_t & EPC_REGISTER;
     uint64_t & PREVID_REGISTER;
     uint64_t & CONFIG_REGISTER;
+    COP0XContext & XCONTEXT_REGISTER;
     uint64_t & TAGLO_REGISTER;
     uint64_t & TAGHI_REGISTER;
     uint64_t & ERROREPC_REGISTER;
@@ -264,15 +296,15 @@ public:
     CRegisters(CN64System * System, CSystemEvents * SystemEvents);
 
     void CheckInterrupts();
-    void DoAddressError( bool DelaySlot, uint32_t BadVaddr, bool FromRead );
+    void DoAddressError( bool DelaySlot, uint64_t BadVaddr, bool FromRead );
     void DoBreakException( bool DelaySlot );
     void DoTrapException( bool DelaySlot );
     void DoCopUnusableException( bool DelaySlot, int32_t Coprocessor );
     bool DoIntrException( bool DelaySlot );
     void DoIllegalInstructionException(bool DelaySlot);
     void DoOverflowException(bool DelaySlot);
-    void DoTLBReadMiss(bool DelaySlot, uint32_t BadVaddr);
-    void DoTLBWriteMiss(bool DelaySlot, uint32_t BadVaddr);
+    void DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr);
+    void DoTLBWriteMiss(bool DelaySlot, uint64_t BadVaddr);
     void DoSysCallException ( bool DelaySlot);
     void FixFpuLocations();
     void Reset();

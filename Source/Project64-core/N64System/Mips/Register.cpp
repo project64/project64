@@ -236,7 +236,7 @@ CP0registers::CP0registers(uint64_t * _CP0) :
     RANDOM_REGISTER(_CP0[1]),
     ENTRYLO0_REGISTER(_CP0[2]),
     ENTRYLO1_REGISTER(_CP0[3]),
-    CONTEXT_REGISTER(_CP0[4]),
+    CONTEXT_REGISTER((COP0Context &)_CP0[4]),
     PAGE_MASK_REGISTER(_CP0[5]),
     WIRED_REGISTER(_CP0[6]),
     BAD_VADDR_REGISTER(_CP0[8]),
@@ -248,6 +248,7 @@ CP0registers::CP0registers(uint64_t * _CP0) :
     EPC_REGISTER(_CP0[14]),
     PREVID_REGISTER(_CP0[15]),
     CONFIG_REGISTER(_CP0[16]),
+    XCONTEXT_REGISTER((COP0XContext &)_CP0[20]),
     TAGLO_REGISTER(_CP0[28]),
     TAGHI_REGISTER(_CP0[29]),
     ERROREPC_REGISTER(_CP0[30]),
@@ -392,7 +393,7 @@ void CRegisters::Cop0_MT(uint32_t Reg, uint64_t Value)
         m_CP0[Reg] = Value;
         break;
     case 4: // Context
-        m_CP0[Reg] = Value & 0xFF800000;
+        m_CP0[Reg] = Value & 0xFFFFFFFFFF800000;
         break;
     case 9: // Count
         g_SystemTimer->UpdateTimers();
@@ -484,7 +485,7 @@ void CRegisters::CheckInterrupts()
     }
 }
 
-void CRegisters::DoAddressError(bool DelaySlot, uint32_t BadVaddr, bool FromRead)
+void CRegisters::DoAddressError(bool DelaySlot, uint64_t BadVaddr, bool FromRead)
 {
     if (BreakOnAddressError())
     {
@@ -500,14 +501,18 @@ void CRegisters::DoAddressError(bool DelaySlot, uint32_t BadVaddr, bool FromRead
         CAUSE_REGISTER = EXC_WADE;
     }
     BAD_VADDR_REGISTER = BadVaddr;
+    CONTEXT_REGISTER.BadVPN2 = BadVaddr >> 13;
+    XCONTEXT_REGISTER.BadVPN2 = BadVaddr >> 13;
+    XCONTEXT_REGISTER.R = BadVaddr >> 62;
+
     if (DelaySlot)
     {
         CAUSE_REGISTER |= CAUSE_BD;
-        EPC_REGISTER = m_PROGRAM_COUNTER - 4;
+        EPC_REGISTER = (int32_t)(m_PROGRAM_COUNTER - 4);
     }
     else
     {
-        EPC_REGISTER = m_PROGRAM_COUNTER;
+        EPC_REGISTER = (int32_t)m_PROGRAM_COUNTER;
     }
     STATUS_REGISTER |= STATUS_EXL;
     m_PROGRAM_COUNTER = 0x80000180;
@@ -681,12 +686,11 @@ void CRegisters::DoOverflowException(bool DelaySlot)
     STATUS_REGISTER |= STATUS_EXL;
 }
 
-void CRegisters::DoTLBReadMiss(bool DelaySlot, uint32_t BadVaddr)
+void CRegisters::DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr)
 {
     CAUSE_REGISTER = EXC_RMISS;
     BAD_VADDR_REGISTER = BadVaddr;
-    CONTEXT_REGISTER &= 0xFF80000F;
-    CONTEXT_REGISTER |= (BadVaddr >> 9) & 0x007FFFF0;
+    CONTEXT_REGISTER.BadVPN2 = BadVaddr >> 13;
     ENTRYHI_REGISTER = (BadVaddr & 0xFFFFE000);
     if ((STATUS_REGISTER & STATUS_EXL) == 0)
     {
@@ -699,7 +703,7 @@ void CRegisters::DoTLBReadMiss(bool DelaySlot, uint32_t BadVaddr)
         {
             EPC_REGISTER = m_PROGRAM_COUNTER;
         }
-        if (g_TLB->AddressDefined(BadVaddr))
+        if (g_TLB->AddressDefined((uint32_t)BadVaddr))
         {
             m_PROGRAM_COUNTER = 0x80000180;
         }
@@ -713,18 +717,17 @@ void CRegisters::DoTLBReadMiss(bool DelaySlot, uint32_t BadVaddr)
     {
         if (HaveDebugger())
         {
-            g_Notify->DisplayError(stdstr_f("TLBMiss - EXL set\nBadVaddr = %X\nAddress defined: %s", BadVaddr, g_TLB->AddressDefined(BadVaddr) ? "true" : "false").c_str());
+            g_Notify->DisplayError(stdstr_f("TLBMiss - EXL set\nBadVaddr = %X\nAddress defined: %s", (uint32_t)BadVaddr, g_TLB->AddressDefined((uint32_t)BadVaddr) ? "true" : "false").c_str());
         }
         m_PROGRAM_COUNTER = 0x80000180;
     }
 }
 
-void CRegisters::DoTLBWriteMiss(bool DelaySlot, uint32_t BadVaddr)
+void CRegisters::DoTLBWriteMiss(bool DelaySlot, uint64_t BadVaddr)
 {
     CAUSE_REGISTER = EXC_WMISS;
     BAD_VADDR_REGISTER = BadVaddr;
-    CONTEXT_REGISTER &= 0xFF80000F;
-    CONTEXT_REGISTER |= (BadVaddr >> 9) & 0x007FFFF0;
+    CONTEXT_REGISTER.BadVPN2 = BadVaddr >> 13;
     ENTRYHI_REGISTER = (BadVaddr & 0xFFFFE000);
     if ((STATUS_REGISTER & STATUS_EXL) == 0)
     {
@@ -737,7 +740,7 @@ void CRegisters::DoTLBWriteMiss(bool DelaySlot, uint32_t BadVaddr)
         {
             EPC_REGISTER = m_PROGRAM_COUNTER;
         }
-        if (g_TLB->AddressDefined(BadVaddr))
+        if (g_TLB->AddressDefined((uint32_t)BadVaddr))
         {
             m_PROGRAM_COUNTER = 0x80000180;
         }
@@ -751,7 +754,7 @@ void CRegisters::DoTLBWriteMiss(bool DelaySlot, uint32_t BadVaddr)
     {
         if (HaveDebugger())
         {
-            g_Notify->DisplayError(stdstr_f("TLBMiss - EXL set\nBadVaddr = %X\nAddress defined: %s", BadVaddr, g_TLB->AddressDefined(BadVaddr) ? "true" : "false").c_str());
+            g_Notify->DisplayError(stdstr_f("TLBMiss - EXL set\nBadVaddr = %X\nAddress defined: %s", (uint32_t)BadVaddr, g_TLB->AddressDefined((uint32_t)BadVaddr) ? "true" : "false").c_str());
         }
         m_PROGRAM_COUNTER = 0x80000180;
     }

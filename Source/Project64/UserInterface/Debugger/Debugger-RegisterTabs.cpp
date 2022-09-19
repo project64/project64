@@ -135,7 +135,7 @@ void CRegisterTabs::RefreshEdits()
     m_COP0Edits[1].SetValue((uint32_t)g_Reg->RANDOM_REGISTER, DisplayMode::ZeroExtend);
     m_COP0Edits[2].SetValue((uint32_t)g_Reg->ENTRYLO0_REGISTER, DisplayMode::ZeroExtend);
     m_COP0Edits[3].SetValue((uint32_t)g_Reg->ENTRYLO1_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[4].SetValue((uint32_t)g_Reg->CONTEXT_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[4].SetValue((uint32_t)g_Reg->CONTEXT_REGISTER.Value, DisplayMode::ZeroExtend);
     m_COP0Edits[5].SetValue((uint32_t)g_Reg->PAGE_MASK_REGISTER, DisplayMode::ZeroExtend);
     m_COP0Edits[6].SetValue((uint32_t)g_Reg->WIRED_REGISTER, DisplayMode::ZeroExtend);
     m_COP0Edits[7].SetValue((uint32_t)g_Reg->BAD_VADDR_REGISTER, DisplayMode::ZeroExtend);
@@ -315,7 +315,7 @@ void CRegisterTabs::RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam)
     case IDC_COP0_1_EDIT:  g_Reg->RANDOM_REGISTER = value; break;
     case IDC_COP0_2_EDIT:  g_Reg->ENTRYLO0_REGISTER = value; break;
     case IDC_COP0_3_EDIT:  g_Reg->ENTRYLO1_REGISTER = value; break;
-    case IDC_COP0_4_EDIT:  g_Reg->CONTEXT_REGISTER = value; break;
+    case IDC_COP0_4_EDIT:  g_Reg->CONTEXT_REGISTER.Value = value; break;
     case IDC_COP0_5_EDIT:  g_Reg->PAGE_MASK_REGISTER = value; break;
     case IDC_COP0_6_EDIT:  g_Reg->WIRED_REGISTER = value; break;
     case IDC_COP0_7_EDIT:  g_Reg->BAD_VADDR_REGISTER = value; break;

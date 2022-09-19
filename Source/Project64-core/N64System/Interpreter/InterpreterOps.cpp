@@ -1009,7 +1009,7 @@ int32_t LDL_SHIFT[8] = { 0, 8, 16, 24, 32, 40, 48, 56 };
 
 void R4300iOp::LDL()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint64_t MemoryValue;
     if (g_MMU->LD_Memory((Address & ~7), MemoryValue))
     {
@@ -1027,7 +1027,7 @@ int32_t LDR_SHIFT[8] = { 56, 48, 40, 32, 24, 16, 8, 0 };
 
 void R4300iOp::LDR()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint64_t MemoryValue;
     if (g_MMU->LD_Memory((Address & ~7), MemoryValue))
     {
@@ -1039,7 +1039,7 @@ void R4300iOp::LDR()
 
 void R4300iOp::LB()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint8_t MemoryValue;
     if (g_MMU->LB_Memory(Address, MemoryValue))
     {
@@ -1049,7 +1049,7 @@ void R4300iOp::LB()
 
 void R4300iOp::LH()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint16_t MemoryValue;
     if (g_MMU->LH_Memory(Address, MemoryValue))
     {
@@ -1059,7 +1059,9 @@ void R4300iOp::LH()
 
 void R4300iOp::LWL()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset, MemoryValue;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint32_t MemoryValue;
+
     if (g_MMU->LW_Memory((Address & ~3), MemoryValue))
     {
         uint32_t Offset = Address & 3;
@@ -1070,7 +1072,9 @@ void R4300iOp::LWL()
 
 void R4300iOp::LW()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset, MemoryValue;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint32_t MemoryValue;
+
     if (g_MMU->LW_Memory(Address, MemoryValue))
     {
         _GPR[m_Opcode.rt].DW = (int32_t)MemoryValue;
@@ -1079,7 +1083,7 @@ void R4300iOp::LW()
 
 void R4300iOp::LBU()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint8_t MemoryValue;
     if (g_MMU->LB_Memory(Address, MemoryValue))
     {
@@ -1089,7 +1093,7 @@ void R4300iOp::LBU()
 
 void R4300iOp::LHU()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint16_t MemoryValue;
     if (g_MMU->LH_Memory(Address, MemoryValue))
     {
@@ -1099,7 +1103,9 @@ void R4300iOp::LHU()
 
 void R4300iOp::LWR()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset, MemoryValue;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint32_t MemoryValue;
+
     if (g_MMU->LW_Memory((Address & ~3), MemoryValue))
     {
         uint32_t Offset = Address & 3;
@@ -1110,7 +1116,9 @@ void R4300iOp::LWR()
 
 void R4300iOp::LWU()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset, MemoryValue;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint32_t MemoryValue;
+
     if (g_MMU->LW_Memory(Address, MemoryValue))
     {
         _GPR[m_Opcode.rt].UDW = MemoryValue;
@@ -1119,19 +1127,21 @@ void R4300iOp::LWU()
 
 void R4300iOp::SB()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     g_MMU->SB_Memory(Address, _GPR[m_Opcode.rt].UW[0]);
 }
 
 void R4300iOp::SH()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     g_MMU->SH_Memory(Address, _GPR[m_Opcode.rt].UW[0]);
 }
 
 void R4300iOp::SWL()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset, MemoryValue;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint32_t MemoryValue;
+
     if (g_MMU->MemoryValue32(Address & ~3, MemoryValue))
     {
         uint32_t Offset = Address & 3;
@@ -1147,7 +1157,7 @@ void R4300iOp::SWL()
 
 void R4300iOp::SW()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     g_MMU->SW_Memory(Address, _GPR[m_Opcode.rt].UW[0]);
 }
 
@@ -1163,7 +1173,7 @@ int32_t SDL_SHIFT[8] = { 0, 8, 16, 24, 32, 40, 48, 56 };
 
 void R4300iOp::SDL()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint64_t MemoryValue;
     if (g_MMU->MemoryValue64((Address & ~7), MemoryValue))
     {
@@ -1191,7 +1201,7 @@ int32_t SDR_SHIFT[8] = { 56, 48, 40, 32, 24, 16, 8, 0 };
 
 void R4300iOp::SDR()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint64_t MemoryValue;
     if (g_MMU->MemoryValue64((Address & ~7), MemoryValue))
     {
@@ -1208,7 +1218,9 @@ void R4300iOp::SDR()
 
 void R4300iOp::SWR()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset, MemoryValue;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint32_t MemoryValue;
+
     if (g_MMU->MemoryValue32((Address & ~3), MemoryValue))
     {
         uint32_t Offset = Address & 3;
@@ -1234,7 +1246,9 @@ void R4300iOp::CACHE()
 
 void R4300iOp::LL()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset, MemoryValue;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint32_t MemoryValue;
+
     if (g_MMU->LW_Memory(Address, MemoryValue))
     {
         _GPR[m_Opcode.rt].DW = (int32_t)MemoryValue;
@@ -1251,7 +1265,7 @@ void R4300iOp::LWC1()
 
 void R4300iOp::SC()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     if ((*_LLBit) != 1 || g_MMU->SW_Memory(Address, _GPR[m_Opcode.rt].UW[0]))
     {
         _GPR[m_Opcode.rt].UW[0] = (*_LLBit);
@@ -1260,7 +1274,7 @@ void R4300iOp::SC()
 
 void R4300iOp::LD()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     if (g_MMU->LD_Memory(Address, _GPR[m_Opcode.rt].UDW))
     {
 #ifdef Interpreter_StackTest
@@ -1275,7 +1289,7 @@ void R4300iOp::LD()
 void R4300iOp::LDC1()
 {
     TEST_COP1_USABLE_EXCEPTION();
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     g_MMU->LD_Memory(Address, *(uint64_t *)_FPR_D[m_Opcode.ft]);
 }
 
@@ -1283,20 +1297,20 @@ void R4300iOp::SWC1()
 {
     TEST_COP1_USABLE_EXCEPTION();
 
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     g_MMU->SW_Memory(Address, *(uint32_t *)_FPR_S[m_Opcode.ft]);
 }
 
 void R4300iOp::SDC1()
 {
     TEST_COP1_USABLE_EXCEPTION();
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     g_MMU->SD_Memory(Address, *((uint64_t *)_FPR_D[m_Opcode.ft]));
 }
 
 void R4300iOp::SD()
 {
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     g_MMU->SD_Memory(Address, _GPR[m_Opcode.rt].UDW);
 }
 
@@ -1945,7 +1959,7 @@ void R4300iOp::COP0_DMF()
 
 void R4300iOp::COP0_MT()
 {
-    g_Reg->Cop0_MT(m_Opcode.rd, _GPR[m_Opcode.rt].UW[0]);
+    g_Reg->Cop0_MT(m_Opcode.rd, (int64_t)_GPR[m_Opcode.rt].W[0]);
 }
 
 void R4300iOp::COP0_DMT()
@@ -2669,7 +2683,7 @@ bool R4300iOp::MemoryBreakpoint()
     return false;
 }
 
-void R4300iOp::GenerateAddressErrorException(uint32_t VAddr, bool FromRead)
+void R4300iOp::GenerateAddressErrorException(uint64_t VAddr, bool FromRead)
 {
     g_Reg->DoAddressError(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP, VAddr, FromRead);
     g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
@@ -2683,22 +2697,22 @@ void R4300iOp::GenerateOverflowException(void)
     g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
 }
 
-void R4300iOp::GenerateTLBReadException(uint32_t VAddr, const char * function)
+void R4300iOp::GenerateTLBReadException(uint64_t VAddr, const char * function)
 {
     if (bShowTLBMisses())
     {
-        g_Notify->DisplayError(stdstr_f("%s TLB: %X", function, VAddr).c_str());
+        g_Notify->DisplayError(stdstr_f("%s TLB: %X", function, (uint32_t)VAddr).c_str());
     }
     g_Reg->DoTLBReadMiss(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP, VAddr);
     g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
     g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
 }
 
-void R4300iOp::GenerateTLBWriteException(uint32_t VAddr, const char * function)
+void R4300iOp::GenerateTLBWriteException(uint64_t VAddr, const char * function)
 {
     if (bShowTLBMisses())
     {
-        g_Notify->DisplayError(stdstr_f("%s TLB: %X", function, VAddr).c_str());
+        g_Notify->DisplayError(stdstr_f("%s TLB: %X", function, (uint32_t)VAddr).c_str());
     }
     g_Reg->DoTLBWriteMiss(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP, VAddr);
     g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;

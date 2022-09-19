@@ -377,202 +377,218 @@ bool CMipsMemoryVM::UpdateMemoryValue32(uint32_t VAddr, uint32_t Value)
     return true;
 }
 
-bool CMipsMemoryVM::LB_Memory(uint32_t VAddr, uint8_t& Value)
+bool CMipsMemoryVM::LB_Memory(uint64_t VAddr, uint8_t& Value)
 {
-    if (HaveReadBP() && g_Debugger->ReadBP8(VAddr) && MemoryBreakpoint())
+    uint32_t VAddr32 = (uint32_t)VAddr;
+
+    if (HaveReadBP() && g_Debugger->ReadBP8(VAddr32) && MemoryBreakpoint())
     {
         return false;
     }
-    uint8_t * MemoryPtr = (uint8_t*)m_MemoryReadMap[VAddr >> 12];
+    uint8_t * MemoryPtr = (uint8_t*)m_MemoryReadMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t*)-1)
     {
-        Value = *(uint8_t*)(MemoryPtr + (VAddr ^ 3));
+        Value = *(uint8_t*)(MemoryPtr + (VAddr32 ^ 3));
         return true;
     }
-    uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
+    uint32_t BaseAddress = m_TLB_ReadMap[VAddr32 >> 12];
     if (BaseAddress == -1)
     {
         GenerateTLBReadException(VAddr, __FUNCTION__);
         return false;
     }
-    return LB_NonMemory(VAddr, Value);
+    return LB_NonMemory(VAddr32, Value);
 }
 
-bool CMipsMemoryVM::LH_Memory(uint32_t VAddr, uint16_t & Value)
+bool CMipsMemoryVM::LH_Memory(uint64_t VAddr, uint16_t & Value)
 {
-    if ((VAddr & 1) != 0)
+    uint32_t VAddr32 = (uint32_t)VAddr;
+
+    if ((VAddr32 & 1) != 0)
     {
         GenerateAddressErrorException(VAddr, true);
         return false;
     }
-    if (HaveReadBP() && g_Debugger->ReadBP16(VAddr) && MemoryBreakpoint())
+    if (HaveReadBP() && g_Debugger->ReadBP16(VAddr32) && MemoryBreakpoint())
     {
         return false;
     }
-    uint8_t * MemoryPtr = (uint8_t*)m_MemoryReadMap[VAddr >> 12];
+    uint8_t * MemoryPtr = (uint8_t*)m_MemoryReadMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t*)-1)
     {
-        Value = *(uint16_t*)(MemoryPtr + (VAddr ^ 2));
+        Value = *(uint16_t*)(MemoryPtr + (VAddr32 ^ 2));
         return true;
     }
-    uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
+    uint32_t BaseAddress = m_TLB_ReadMap[VAddr32 >> 12];
     if (BaseAddress == -1)
     {
         GenerateTLBReadException(VAddr, __FUNCTION__);
         return false;
     }
-    return LH_NonMemory(VAddr, Value);
+    return LH_NonMemory(VAddr32, Value);
 }
 
-bool CMipsMemoryVM::LW_Memory(uint32_t VAddr, uint32_t & Value)
+bool CMipsMemoryVM::LW_Memory(uint64_t VAddr, uint32_t & Value)
 {
-    if ((VAddr & 3) != 0)
+    uint32_t VAddr32 = (uint32_t)VAddr;
+
+    if ((VAddr32 & 3) != 0)
     {
         GenerateAddressErrorException(VAddr, true);
         return false;
     }
-    if (HaveReadBP() && g_Debugger->ReadBP32(VAddr) && MemoryBreakpoint())
+    if (HaveReadBP() && g_Debugger->ReadBP32(VAddr32) && MemoryBreakpoint())
     {
         return false;
     }
-    uint8_t * MemoryPtr = (uint8_t*)m_MemoryReadMap[VAddr >> 12];
+    uint8_t * MemoryPtr = (uint8_t*)m_MemoryReadMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
     {
-        Value = *(uint32_t*)(MemoryPtr + VAddr);
+        Value = *(uint32_t*)(MemoryPtr + VAddr32);
         return true;
     }
-    uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
+    uint32_t BaseAddress = m_TLB_ReadMap[VAddr32 >> 12];
     if (BaseAddress == -1)
     {
         GenerateTLBReadException(VAddr, __FUNCTION__);
         return false;
     }
-    return LW_NonMemory(VAddr, Value);
+    return LW_NonMemory(VAddr32, Value);
 }
 
-bool CMipsMemoryVM::LD_Memory(uint32_t VAddr, uint64_t& Value)
+bool CMipsMemoryVM::LD_Memory(uint64_t VAddr, uint64_t& Value)
 {
-    if ((VAddr & 7) != 0)
+    uint32_t VAddr32 = (uint32_t)VAddr;
+
+    if ((VAddr32 & 7) != 0)
     {
         GenerateAddressErrorException(VAddr, true);
         return false;
     }
-    if (HaveReadBP() && g_Debugger->ReadBP64(VAddr) && MemoryBreakpoint())
+    if (HaveReadBP() && g_Debugger->ReadBP64(VAddr32) && MemoryBreakpoint())
     {
         return false;
     }
-    uint8_t * MemoryPtr = (uint8_t*)m_MemoryReadMap[VAddr >> 12];
+    uint8_t * MemoryPtr = (uint8_t*)m_MemoryReadMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
     {
-        *((uint32_t*)(&Value) + 1) = *(uint32_t*)(MemoryPtr + VAddr);
-        *((uint32_t*)(&Value) + 0) = *(uint32_t*)(MemoryPtr + VAddr + 4);
+        *((uint32_t*)(&Value) + 1) = *(uint32_t*)(MemoryPtr + VAddr32);
+        *((uint32_t*)(&Value) + 0) = *(uint32_t*)(MemoryPtr + VAddr32 + 4);
         return true;
     }
-    uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
+    uint32_t BaseAddress = m_TLB_ReadMap[VAddr32 >> 12];
     if (BaseAddress == -1)
     {
         return false;
     }
-    return LD_NonMemory(VAddr, Value);
+    return LD_NonMemory(VAddr32, Value);
 }
 
-bool CMipsMemoryVM::SB_Memory(uint32_t VAddr, uint32_t Value)
+bool CMipsMemoryVM::SB_Memory(uint64_t VAddr, uint32_t Value)
 {
-    if (HaveWriteBP() && g_Debugger->WriteBP8(VAddr) && MemoryBreakpoint())
+    uint32_t VAddr32 = (uint32_t)VAddr;
+
+    if (HaveWriteBP() && g_Debugger->WriteBP8(VAddr32) && MemoryBreakpoint())
     {
         return false;
     }
-    uint8_t * MemoryPtr = (uint8_t*)m_MemoryWriteMap[VAddr >> 12];
+    uint8_t * MemoryPtr = (uint8_t*)m_MemoryWriteMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
     {
-        *(uint8_t*)(MemoryPtr + (VAddr ^ 3)) = (uint8_t)Value;
+        *(uint8_t*)(MemoryPtr + (VAddr32 ^ 3)) = (uint8_t)Value;
         return true;
     }
-    if (m_TLB_WriteMap[VAddr >> 12] == -1)
+    if (m_TLB_WriteMap[VAddr32 >> 12] == -1)
     {
         GenerateTLBWriteException(VAddr, __FUNCTION__);
         return false;
     }
-    return SB_NonMemory(VAddr, Value);
+    return SB_NonMemory(VAddr32, Value);
 }
 
-bool CMipsMemoryVM::SH_Memory(uint32_t VAddr, uint32_t Value)
+bool CMipsMemoryVM::SH_Memory(uint64_t VAddr, uint32_t Value)
 {
-    if ((VAddr & 1) != 0)
+    uint32_t VAddr32 = (uint32_t)VAddr;
+
+    if ((VAddr32 & 1) != 0)
     {
         GenerateAddressErrorException(VAddr, false);
         return false;
     }
-    if (HaveWriteBP() && g_Debugger->WriteBP16(VAddr) && MemoryBreakpoint())
+    if (HaveWriteBP() && g_Debugger->WriteBP16(VAddr32) && MemoryBreakpoint())
     {
         return false;
     }
-    uint8_t * MemoryPtr = (uint8_t*)m_MemoryWriteMap[VAddr >> 12];
+    uint8_t * MemoryPtr = (uint8_t*)m_MemoryWriteMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
     {
-        *(uint16_t*)(MemoryPtr + (VAddr ^ 2)) = (uint16_t)Value;
+        *(uint16_t*)(MemoryPtr + (VAddr32 ^ 2)) = (uint16_t)Value;
         return true;
     }
-    uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
+    uint32_t BaseAddress = m_TLB_ReadMap[VAddr32 >> 12];
     if (BaseAddress == -1)
     {
         GenerateTLBWriteException(VAddr, __FUNCTION__);
         return false;
     }
-    return SH_NonMemory(VAddr, Value);
+    return SH_NonMemory(VAddr32, Value);
 }
 
-bool CMipsMemoryVM::SW_Memory(uint32_t VAddr, uint32_t Value)
+bool CMipsMemoryVM::SW_Memory(uint64_t VAddr, uint32_t Value)
 {
-    if ((VAddr & 3) != 0)
+    uint32_t VAddr32 = (uint32_t)VAddr;
+
+    if ((VAddr32 & 3) != 0)
     {
         GenerateAddressErrorException(VAddr, false);
         return false;
     }
-    if (HaveWriteBP() && g_Debugger->WriteBP32(VAddr) && MemoryBreakpoint())
+    if (HaveWriteBP() && g_Debugger->WriteBP32(VAddr32) && MemoryBreakpoint())
     {
         return false;
     }
-    uint8_t * MemoryPtr = (uint8_t*)m_MemoryWriteMap[VAddr >> 12];
+    uint8_t * MemoryPtr = (uint8_t*)m_MemoryWriteMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
     {
-        *(uint32_t*)(MemoryPtr + VAddr) = Value;
+        *(uint32_t*)(MemoryPtr + VAddr32) = Value;
         return true;
     }
-    uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
+    uint32_t BaseAddress = m_TLB_ReadMap[VAddr32 >> 12];
     if (BaseAddress == -1)
     {
         GenerateTLBWriteException(VAddr, __FUNCTION__);
         return false;
     }
-    return SW_NonMemory(VAddr, Value);
+    return SW_NonMemory(VAddr32, Value);
 }
 
-bool CMipsMemoryVM::SD_Memory(uint32_t VAddr, uint64_t Value)
+bool CMipsMemoryVM::SD_Memory(uint64_t VAddr, uint64_t Value)
 {
+    uint32_t VAddr32 = (uint32_t)VAddr;
+
     if ((VAddr & 7) != 0)
     {
         GenerateAddressErrorException(VAddr, false);
         return false;
     }
-    if (HaveWriteBP() && g_Debugger->WriteBP64(VAddr) && MemoryBreakpoint())
+    if (HaveWriteBP() && g_Debugger->WriteBP64(VAddr32) && MemoryBreakpoint())
     {
         return false;
     }
 
-    uint8_t * MemoryPtr = (uint8_t*)m_MemoryWriteMap[VAddr >> 12];
+    uint8_t * MemoryPtr = (uint8_t*)m_MemoryWriteMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
     {
-        *(uint32_t*)(MemoryPtr + VAddr + 0) = *((uint32_t*)(&Value) + 1);
-        *(uint32_t*)(MemoryPtr + VAddr + 4) = *((uint32_t*)(&Value));
+        *(uint32_t*)(MemoryPtr + VAddr32 + 0) = *((uint32_t*)(&Value) + 1);
+        *(uint32_t*)(MemoryPtr + VAddr32 + 4) = *((uint32_t*)(&Value));
         return true;
     }
-    if (m_TLB_WriteMap[VAddr >> 12] == -1)
+    if (m_TLB_WriteMap[VAddr32 >> 12] == -1)
     {
         GenerateTLBWriteException(VAddr, __FUNCTION__);
         return false;
     }
-    return SD_NonMemory(VAddr, Value);
+    return SD_NonMemory(VAddr32, Value);
 }
 
 bool CMipsMemoryVM::ValidVaddr(uint32_t VAddr) const

@@ -83,15 +83,15 @@ public:
     bool UpdateMemoryValue16(uint32_t VAddr, uint16_t Value);
     bool UpdateMemoryValue32(uint32_t VAddr, uint32_t Value);
 
-    bool LB_Memory(uint32_t VAddr, uint8_t & Value);
-    bool LH_Memory(uint32_t VAddr, uint16_t & Value);
-    bool LW_Memory(uint32_t VAddr, uint32_t & Value);
-    bool LD_Memory(uint32_t VAddr, uint64_t & Value);
+    bool LB_Memory(uint64_t VAddr, uint8_t & Value);
+    bool LH_Memory(uint64_t VAddr, uint16_t & Value);
+    bool LW_Memory(uint64_t VAddr, uint32_t & Value);
+    bool LD_Memory(uint64_t VAddr, uint64_t & Value);
 
-    bool SB_Memory(uint32_t VAddr, uint32_t Value);
-    bool SH_Memory(uint32_t VAddr, uint32_t Value);
-    bool SW_Memory(uint32_t VAddr, uint32_t Value);
-    bool SD_Memory(uint32_t VAddr, uint64_t Value);
+    bool SB_Memory(uint64_t VAddr, uint32_t Value);
+    bool SH_Memory(uint64_t VAddr, uint32_t Value);
+    bool SW_Memory(uint64_t VAddr, uint32_t Value);
+    bool SD_Memory(uint64_t VAddr, uint64_t Value);
 
     int32_t   MemoryFilter(uint32_t dwExptCode, void * lpExceptionPointer);
 
