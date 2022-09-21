@@ -74,7 +74,10 @@ void CDiskDrivePage::ApplySettings(bool UpdateScreen)
 
 bool CDiskDrivePage::EnableReset(void)
 {
-    if (CSettingsPageImpl<CDiskDrivePage>::EnableReset()) { return true; }
+    if (CSettingsPageImpl<CDiskDrivePage>::EnableReset())
+    {
+        return true;
+    }
     return false;
 }
 
@@ -100,21 +103,30 @@ void CDiskDrivePage::SelectIplDirTl(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 
 void CDiskDrivePage::IplDirJpChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
-    if (m_InUpdateSettings) { return; }
+    if (m_InUpdateSettings)
+    {
+        return;
+    }
     m_IplDirJp.SetChanged(true);
     SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
 }
 
 void CDiskDrivePage::IplDirUsChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
-    if (m_InUpdateSettings) { return; }
+    if (m_InUpdateSettings)
+    {
+        return;
+    }
     m_IplDirUs.SetChanged(true);
     SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
 }
 
 void CDiskDrivePage::IplDirTlChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
-    if (m_InUpdateSettings)  { return; }
+    if (m_InUpdateSettings)
+    {
+        return;
+    }
     m_IplDirTl.SetChanged(true);
     SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
 }

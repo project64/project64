@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "GetCWindowText.h"
 #include <Common/StdString.h>
 

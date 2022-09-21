@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "SettingsPage.h"
 
 CDefaultsOptionsPage::CDefaultsOptionsPage(HWND hParent, const RECT & rcDispay)
@@ -89,7 +90,10 @@ void CDefaultsOptionsPage::ApplySettings(bool UpdateScreen)
 
 bool CDefaultsOptionsPage::EnableReset(void)
 {
-    if (CSettingsPageImpl<CDefaultsOptionsPage>::EnableReset()) { return true; }
+    if (CSettingsPageImpl<CDefaultsOptionsPage>::EnableReset())
+    {
+        return true;
+    }
     return false;
 }
 

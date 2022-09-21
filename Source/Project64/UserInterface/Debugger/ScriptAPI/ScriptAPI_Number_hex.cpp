@@ -1,7 +1,8 @@
-#include <stdafx.h>
+#include "stdafx.h"
+
 #include "ScriptAPI.h"
 
-void ScriptAPI::Define_Number_prototype_hex(duk_context *ctx)
+void ScriptAPI::Define_Number_prototype_hex(duk_context * ctx)
 {
     duk_get_global_string(ctx, "Number");
     duk_get_prop_string(ctx, -1, "prototype");
@@ -10,9 +11,9 @@ void ScriptAPI::Define_Number_prototype_hex(duk_context *ctx)
     duk_pop_n(ctx, 2);
 }
 
-duk_ret_t ScriptAPI::js_Number_prototype_hex(duk_context *ctx)
+duk_ret_t ScriptAPI::js_Number_prototype_hex(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_OptNumber });
+    CheckArgs(ctx, {Arg_OptNumber});
 
     duk_uint_t value;
     duk_uint_t length = 8;

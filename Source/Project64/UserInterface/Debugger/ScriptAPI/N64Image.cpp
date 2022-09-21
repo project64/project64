@@ -1,23 +1,25 @@
-#include <stdafx.h>
+#include "stdafx.h"
+
 #include "N64Image.h"
 
-struct ImgFormatInfo {
+struct ImgFormatInfo
+{
     int bitsPerPixel;
     int paletteColorCount;
 };
 
 static const std::map<int, ImgFormatInfo> FormatInfo = {
-    { IMG_I4,         { 4,   0 } },
-    { IMG_IA4,        { 4,   0 } },
-    { IMG_I8,         { 8,   0 } },
-    { IMG_IA8,        { 8,   0 } },
-    { IMG_IA16,       { 16,  0 } },
-    { IMG_RGBA16,     { 16,  0 } },
-    { IMG_RGBA32,     { 32,  0 } },
-    { IMG_CI4_RGBA16, { 4,  16 } },
-    { IMG_CI4_IA16,   { 4,  16 } },
-    { IMG_CI8_RGBA16, { 8,  256 } },
-    { IMG_CI8_IA16,   { 8,  256 } },
+    {IMG_I4, {4, 0}},
+    {IMG_IA4, {4, 0}},
+    {IMG_I8, {8, 0}},
+    {IMG_IA8, {8, 0}},
+    {IMG_IA16, {16, 0}},
+    {IMG_RGBA16, {16, 0}},
+    {IMG_RGBA32, {32, 0}},
+    {IMG_CI4_RGBA16, {4, 16}},
+    {IMG_CI4_IA16, {4, 16}},
+    {IMG_CI8_RGBA16, {8, 256}},
+    {IMG_CI8_IA16, {8, 256}},
 };
 
 CN64Image::CN64Image() :
@@ -31,8 +33,8 @@ CN64Image::CN64Image() :
 }
 
 int CN64Image::Init(int format, size_t width, size_t height,
-    void* pixelData, size_t pixelDataSize,
-    void* paletteData, size_t paletteDataSize)
+                    void * pixelData, size_t pixelDataSize,
+                    void * paletteData, size_t paletteDataSize)
 {
     m_Format = format;
     m_PixelSize = BitsPerPixel(format);
@@ -83,7 +85,7 @@ int CN64Image::Init(int format, size_t width, size_t height,
     return N64IMG_OK;
 }
 
-int CN64Image::Init(int format, uint8_t* pngData, size_t pngSize)
+int CN64Image::Init(int format, uint8_t * pngData, size_t pngSize)
 {
     m_Format = format;
     m_PixelSize = BitsPerPixel(format);
@@ -115,44 +117,44 @@ int CN64Image::Init(int format, uint8_t* pngData, size_t pngSize)
     return N64IMG_OK;
 }
 
-void CN64Image::ToPNG(std::vector<uint8_t>& outPngImage)
+void CN64Image::ToPNG(std::vector<uint8_t> & outPngImage)
 {
     WritePNG(m_BitmapRgba32.data(), m_Width, m_Height, outPngImage);
 }
 
-uint16_t* CN64Image::PalettePtr(size_t index)
+uint16_t * CN64Image::PalettePtr(size_t index)
 {
     size_t offset = index * sizeof(uint16_t);
     if (offset + sizeof(uint16_t) > m_PaletteData.size())
     {
         return nullptr;
     }
-    return (uint16_t*)&m_PaletteData[offset];
+    return (uint16_t *)&m_PaletteData[offset];
 }
 
-void* CN64Image::TexelPtr(size_t index)
+void * CN64Image::TexelPtr(size_t index)
 {
     size_t offset = (index * m_PixelSize) / 8;
     if (offset + max(1, (m_PixelSize / 8)) > m_PixelData.size())
     {
         return nullptr;
     }
-    return (void*)&m_PixelData[offset];
+    return (void *)&m_PixelData[offset];
 }
 
-uint32_t* CN64Image::BitmapPtr(size_t index)
+uint32_t * CN64Image::BitmapPtr(size_t index)
 {
     size_t offset = index * sizeof(uint32_t);
     if (offset + sizeof(uint32_t) > m_BitmapRgba32.size())
     {
         return nullptr;
     }
-    return (uint32_t*)&m_BitmapRgba32[offset];
+    return (uint32_t *)&m_BitmapRgba32[offset];
 }
 
 unsigned int CN64Image::GetTexel(size_t index)
 {
-    void* pTexel = TexelPtr(index);
+    void * pTexel = TexelPtr(index);
 
     if (pTexel == nullptr)
     {
@@ -164,18 +166,18 @@ unsigned int CN64Image::GetTexel(size_t index)
     case 4:
         if ((index % 2) == 0)
         {
-            return (*(uint8_t*)pTexel & 0xF0) >> 4;
+            return (*(uint8_t *)pTexel & 0xF0) >> 4;
         }
         else
         {
-            return (*(uint8_t*)pTexel & 0x0F);
+            return (*(uint8_t *)pTexel & 0x0F);
         }
     case 8:
-        return *(uint8_t*)pTexel;
+        return *(uint8_t *)pTexel;
     case 16:
-        return _byteswap_ushort(*(uint16_t*)pTexel);
+        return _byteswap_ushort(*(uint16_t *)pTexel);
     case 32:
-        return _byteswap_ulong(*(uint32_t*)pTexel);
+        return _byteswap_ulong(*(uint32_t *)pTexel);
     }
 
     return 0;
@@ -203,20 +205,20 @@ void CN64Image::SetTexel(size_t index, unsigned int value)
         }
         break;
     case 8:
-        *(uint8_t*)&m_PixelData[offset] = (uint8_t)value;
+        *(uint8_t *)&m_PixelData[offset] = (uint8_t)value;
         break;
     case 16:
-        *(uint16_t*)&m_PixelData[offset] = _byteswap_ushort((uint16_t)value);
+        *(uint16_t *)&m_PixelData[offset] = _byteswap_ushort((uint16_t)value);
         break;
     case 32:
-        *(uint32_t*)&m_PixelData[offset] = _byteswap_ulong(value);
+        *(uint32_t *)&m_PixelData[offset] = _byteswap_ulong(value);
         break;
     }
 }
 
-bool CN64Image::GetPaletteColor(size_t index, unsigned int* color)
+bool CN64Image::GetPaletteColor(size_t index, unsigned int * color)
 {
-    uint16_t* pColor = PalettePtr(index);
+    uint16_t * pColor = PalettePtr(index);
 
     if (pColor == nullptr)
     {
@@ -230,7 +232,7 @@ bool CN64Image::GetPaletteColor(size_t index, unsigned int* color)
 
 bool CN64Image::SetPaletteColor(size_t index, unsigned int color)
 {
-    uint16_t* pColor = PalettePtr(index);
+    uint16_t * pColor = PalettePtr(index);
 
     if (pColor == nullptr)
     {
@@ -241,9 +243,9 @@ bool CN64Image::SetPaletteColor(size_t index, unsigned int color)
     return true;
 }
 
-bool CN64Image::GetBitmapColor(size_t index, uint32_t* color)
+bool CN64Image::GetBitmapColor(size_t index, uint32_t * color)
 {
-    uint32_t* pColor = BitmapPtr(index);
+    uint32_t * pColor = BitmapPtr(index);
     if (pColor == nullptr)
     {
         *color = 0;
@@ -255,7 +257,7 @@ bool CN64Image::GetBitmapColor(size_t index, uint32_t* color)
 
 bool CN64Image::SetBitmapColor(size_t index, unsigned int color)
 {
-    uint32_t* pColor = BitmapPtr(index);
+    uint32_t * pColor = BitmapPtr(index);
     if (pColor == nullptr)
     {
         return false;
@@ -350,17 +352,17 @@ int CN64Image::UpdatePixelsAndPaletteFromBitmap()
     return N64IMG_OK;
 }
 
-std::vector<uint8_t>& CN64Image::PaletteData()
+std::vector<uint8_t> & CN64Image::PaletteData()
 {
     return m_PaletteData;
 }
 
-std::vector<uint8_t>& CN64Image::PixelData()
+std::vector<uint8_t> & CN64Image::PixelData()
 {
     return m_PixelData;
 }
 
-std::vector<uint8_t>& CN64Image::Bitmap()
+std::vector<uint8_t> & CN64Image::Bitmap()
 {
     return m_BitmapRgba32;
 }
@@ -394,8 +396,8 @@ unsigned int CN64Image::ColorFromRgba32(int dstFormat, uint32_t rgba32)
 
     uint8_t r = ((rgba32 >> 24) & 0xFF);
     uint8_t g = ((rgba32 >> 16) & 0xFF);
-    uint8_t b = ((rgba32 >>  8) & 0xFF);
-    uint8_t a = ((rgba32 >>  0) & 0xFF);
+    uint8_t b = ((rgba32 >> 8) & 0xFF);
+    uint8_t a = ((rgba32 >> 0) & 0xFF);
 
     uint8_t i;
 
@@ -404,7 +406,7 @@ unsigned int CN64Image::ColorFromRgba32(int dstFormat, uint32_t rgba32)
     case IMG_RGBA16:
     case IMG_CI8_RGBA16:
     case IMG_CI4_RGBA16:
-        return ((r / 8) << 11) | ((g / 8) <<  6) | ((b / 8) <<  1) | (a / 128);
+        return ((r / 8) << 11) | ((g / 8) << 6) | ((b / 8) << 1) | (a / 128);
     case IMG_IA16:
     case IMG_CI8_IA16:
     case IMG_CI4_IA16:
@@ -439,8 +441,8 @@ uint32_t CN64Image::ColorToRgba32(int srcFormat, unsigned int color)
     case IMG_CI8_RGBA16:
     case IMG_CI4_RGBA16:
         r = (((color >> 11) & 0x1F) * 255) / 31;
-        g = (((color >>  6) & 0x1F) * 255) / 31;
-        b = (((color >>  1) & 0x1F) * 255) / 31;
+        g = (((color >> 6) & 0x1F) * 255) / 31;
+        b = (((color >> 1) & 0x1F) * 255) / 31;
         a = (color & 1) * 255;
         break;
     case IMG_IA16:
@@ -467,7 +469,7 @@ uint32_t CN64Image::ColorToRgba32(int srcFormat, unsigned int color)
         break;
     }
 
-    return (r << 24) | (g << 16) | (b <<  8) | a;
+    return (r << 24) | (g << 16) | (b << 8) | a;
 }
 
 int CN64Image::BitsPerPixel(int format)
@@ -497,17 +499,17 @@ bool CN64Image::UsesPalette(int format)
     return false;
 }
 
-const char* CN64Image::ResultCodeName(int resultCode)
+const char * CN64Image::ResultCodeName(int resultCode)
 {
-    static const std::map<int, const char*> names = {
-        { N64IMG_OK, "OK" },
-        { N64IMG_DATA_SIZE_INCORRECT, "ERR_DATA_SIZE_INCORRECT" },
-        { N64IMG_INVALID_COLOR_INDEX, "ERR_INVALID_COLOR_INDEX" },
-        { N64IMG_INCOMPATIBLE_COLOR,  "ERR_INCOMPATIBLE_COLOR" },
-        { N64IMG_TOO_MANY_COLORS,     "ERR_TOO_MANY_COLORS" },
-        { N64IMG_PNG_HEADER_MISSING,  "ERR_PNG_HEADER_MISSING" },
-        { N64IMG_PNG_OUT_OF_MEMORY,   "ERR_PNG_OUT_OF_MEMORY" },
-        { N64IMG_PNG_EXCEPTION,       "ERR_PNG_EXCEPTION" },
+    static const std::map<int, const char *> names = {
+        {N64IMG_OK, "OK"},
+        {N64IMG_DATA_SIZE_INCORRECT, "ERR_DATA_SIZE_INCORRECT"},
+        {N64IMG_INVALID_COLOR_INDEX, "ERR_INVALID_COLOR_INDEX"},
+        {N64IMG_INCOMPATIBLE_COLOR, "ERR_INCOMPATIBLE_COLOR"},
+        {N64IMG_TOO_MANY_COLORS, "ERR_TOO_MANY_COLORS"},
+        {N64IMG_PNG_HEADER_MISSING, "ERR_PNG_HEADER_MISSING"},
+        {N64IMG_PNG_OUT_OF_MEMORY, "ERR_PNG_OUT_OF_MEMORY"},
+        {N64IMG_PNG_EXCEPTION, "ERR_PNG_EXCEPTION"},
         { N64IMG_PNG_PARSER_FAILED,   "ERR_PNG_PARSER_FAILED" }
     };
 

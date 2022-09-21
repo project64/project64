@@ -3,7 +3,7 @@
 #include "SettingsPage.h"
 
 COptionsDirectoriesPage::COptionsDirectoriesPage(HWND hParent, const RECT & rcDispay) :
-m_InUpdateSettings(false)
+    m_InUpdateSettings(false)
 {
     Create(hParent);
     if (m_hWnd == nullptr)
@@ -94,35 +94,50 @@ void COptionsDirectoriesPage::SelectDirectory(LanguageStringID Title, CModifiedE
 
 void COptionsDirectoriesPage::PluginDirChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
-    if (m_InUpdateSettings)  { return; }
+    if (m_InUpdateSettings)
+    {
+        return;
+    }
     m_PluginDir.SetChanged(true);
     SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
 }
 
 void COptionsDirectoriesPage::AutoSaveDirChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
-    if (m_InUpdateSettings)  { return; }
+    if (m_InUpdateSettings)
+    {
+        return;
+    }
     m_AutoSaveDir.SetChanged(true);
     SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
 }
 
 void COptionsDirectoriesPage::InstantSaveDirChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
-    if (m_InUpdateSettings)  { return; }
+    if (m_InUpdateSettings)
+    {
+        return;
+    }
     m_InstantSaveDir.SetChanged(true);
     SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
 }
 
 void COptionsDirectoriesPage::SnapShotDirChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
-    if (m_InUpdateSettings)  { return; }
+    if (m_InUpdateSettings)
+    {
+        return;
+    }
     m_ScreenShotDir.SetChanged(true);
     SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
 }
 
 void COptionsDirectoriesPage::TextureDirChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
-    if (m_InUpdateSettings)  { return; }
+    if (m_InUpdateSettings)
+    {
+        return;
+    }
     m_TextureDir.SetChanged(true);
     SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
 }
@@ -312,16 +327,46 @@ void COptionsDirectoriesPage::ApplySettings(bool UpdateScreen)
 
 bool COptionsDirectoriesPage::EnableReset(void)
 {
-    if (m_PluginDir.IsChanged()) { return true; }
-    if (m_AutoSaveDir.IsChanged()) { return true; }
-    if (m_InstantSaveDir.IsChanged()) { return true; }
-    if (m_ScreenShotDir.IsChanged()) { return true; }
-    if (m_TextureDir.IsChanged()) { return true; }
-    if (m_PluginDefault.IsChanged()) { return true; }
-    if (m_AutoSaveDefault.IsChanged()) { return true; }
-    if (m_InstantDefault.IsChanged()) { return true; }
-    if (m_ScreenShotDefault.IsChanged()) { return true; }
-    if (m_TextureDefault.IsChanged()) { return true; }
+    if (m_PluginDir.IsChanged())
+    {
+        return true;
+    }
+    if (m_AutoSaveDir.IsChanged())
+    {
+        return true;
+    }
+    if (m_InstantSaveDir.IsChanged())
+    {
+        return true;
+    }
+    if (m_ScreenShotDir.IsChanged())
+    {
+        return true;
+    }
+    if (m_TextureDir.IsChanged())
+    {
+        return true;
+    }
+    if (m_PluginDefault.IsChanged())
+    {
+        return true;
+    }
+    if (m_AutoSaveDefault.IsChanged())
+    {
+        return true;
+    }
+    if (m_InstantDefault.IsChanged())
+    {
+        return true;
+    }
+    if (m_ScreenShotDefault.IsChanged())
+    {
+        return true;
+    }
+    if (m_TextureDefault.IsChanged())
+    {
+        return true;
+    }
     return false;
 }
 

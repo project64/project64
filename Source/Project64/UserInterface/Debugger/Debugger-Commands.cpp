@@ -1,10 +1,11 @@
 #include "stdafx.h"
+
 #include "DebuggerUI.h"
 
-#include "Symbols.h"
-#include "Breakpoints.h"
 #include "Assembler.h"
+#include "Breakpoints.h"
 #include "OpInfo.h"
+#include "Symbols.h"
 
 #include <Project64-core/N64System/Mips/R4300iInstruction.h>
 
@@ -31,10 +32,10 @@ void CCommandList::Attach(HWND hWndNew)
     SetColumnWidth(COL_SYMBOL, 180);
 }
 
-CDebugCommandsView* CDebugCommandsView::_this = nullptr;
+CDebugCommandsView * CDebugCommandsView::_this = nullptr;
 HHOOK CDebugCommandsView::hWinMessageHook = nullptr;
 
-CDebugCommandsView::CDebugCommandsView(CDebuggerUI * debugger, SyncEvent &StepEvent) :
+CDebugCommandsView::CDebugCommandsView(CDebuggerUI * debugger, SyncEvent & StepEvent) :
     CDebugDialog<CDebugCommandsView>(debugger),
     CToolTipDialog<CDebugCommandsView>(),
     m_StepEvent(StepEvent),
@@ -56,7 +57,7 @@ CDebugCommandsView::~CDebugCommandsView()
     g_Settings->UnregisterChangeCB(GameRunning_CPU_Running, this, (CSettings::SettingChangedFunc)GameCpuRunningChanged);
 }
 
-LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     m_StartAddress = g_Reg ? g_Reg->m_PROGRAM_COUNTER : 0x80000000;
 
@@ -164,11 +165,11 @@ void CDebugCommandsView::RecompilerCheck(void)
         !g_Settings->LoadBool(Setting_ForceInterpreterCPU) &&
         (CPU_TYPE)g_Settings->LoadDword(Game_CpuType) != CPU_Interpreter)
     {
-		// TODO: Remove this or fix?
+        // TODO: Remove this or fix?
         MessageBox(L"Debugger support for the recompiler core is experimental.\n\n"
-            L"For optimal experience, enable \"Always use interpreter core\" "
-            L"in advanced settings and restart the emulator.",
-            L"Warning", MB_ICONWARNING | MB_OK);
+                   L"For optimal experience, enable \"Always use interpreter core\" "
+                   L"in advanced settings and restart the emulator.",
+                   L"Warning", MB_ICONWARNING | MB_OK);
     }
 }
 
@@ -206,7 +207,7 @@ void CDebugCommandsView::InterceptKeyDown(WPARAM wParam, LPARAM /*lParam*/)
     switch (wParam)
     {
     case VK_F1: CPUSkip(); break;
-    case VK_F2: 
+    case VK_F2:
         if (WaitingForStep())
         {
             m_StepEvent.Trigger();
@@ -228,7 +229,7 @@ void CDebugCommandsView::InterceptMouseWheel(WPARAM wParam, LPARAM /*lParam*/)
 
 LRESULT CALLBACK CDebugCommandsView::HookProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
-    MSG *pMsg = (MSG*)lParam;
+    MSG * pMsg = (MSG *)lParam;
 
     if (pMsg->message == WM_KEYDOWN)
     {
@@ -294,7 +295,7 @@ void CDebugCommandsView::AddBranchArrow(int startPos, int endPos)
         }
     }
 
-    m_BranchArrows.push_back({ startPos, endPos, startMargin, endMargin, margin });
+    m_BranchArrows.push_back({startPos, endPos, startMargin, endMargin, margin});
 }
 
 void CDebugCommandsView::HistoryPushState()
@@ -304,7 +305,7 @@ void CDebugCommandsView::HistoryPushState()
     ToggleHistoryButtons();
 }
 
-const char* CDebugCommandsView::GetDataAddressNotes(uint32_t vAddr)
+const char * CDebugCommandsView::GetDataAddressNotes(uint32_t vAddr)
 {
     switch (vAddr)
     {
@@ -424,7 +425,7 @@ const char* CDebugCommandsView::GetDataAddressNotes(uint32_t vAddr)
     return nullptr;
 }
 
-const char* CDebugCommandsView::GetCodeAddressNotes(uint32_t vAddr)
+const char * CDebugCommandsView::GetCodeAddressNotes(uint32_t vAddr)
 {
     switch (vAddr)
     {
@@ -447,8 +448,8 @@ const char* CDebugCommandsView::GetCodeAddressNotes(uint32_t vAddr)
         return nullptr;
     }
 
-    uint8_t* rom = g_Rom->GetRomAddress();
-    uint32_t gameEntryPoint = *(uint32_t*)&rom[0x08];
+    uint8_t * rom = g_Rom->GetRomAddress();
+    uint32_t gameEntryPoint = *(uint32_t *)&rom[0x08];
 
     if (vAddr == gameEntryPoint)
     {
@@ -485,7 +486,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
     else
     {
         bool bOutOfView = address < m_StartAddress ||
-            address > m_StartAddress + (m_CommandListRows - 1) * 4;
+                          address > m_StartAddress + (m_CommandListRows - 1) * 4;
 
         if (bOutOfView)
         {
@@ -531,7 +532,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
         m_CommandList.AddItem(i, CCommandList::COL_ADDRESS, stdstr(addrStr).ToUTF16().c_str());
 
         COpInfo OpInfo;
-        R4300iOpcode& OpCode = OpInfo.m_OpCode;
+        R4300iOpcode & OpCode = OpInfo.m_OpCode;
 
         if (!m_Debugger->DebugLoad_VAddr(opAddr, OpCode.Value))
         {
@@ -557,7 +558,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
         }
 
         // Detect reads and writes to mapped registers, cart header data, etc.
-        const char* annotation = nullptr;
+        const char * annotation = nullptr;
         bool bLoadStoreAnnotation = false;
 
         CSymbol memSymbol;
@@ -618,7 +619,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
         }
         else if (annotation != nullptr)
         {
-            const char* annotationFormat = bLoadStoreAnnotation ? "// (%s)" : "// %s";
+            const char * annotationFormat = bLoadStoreAnnotation ? "// (%s)" : "// %s";
             m_CommandList.AddItem(i, CCommandList::COL_SYMBOL, stdstr_f(annotationFormat, annotation).ToUTF16().c_str());
             m_bvAnnotatedLines.push_back(true);
         }
@@ -661,9 +662,9 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
 }
 
 // Highlight command list items and draw branch arrows
-LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
+LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR * pNMHDR)
 {
-    NMLVCUSTOMDRAW* pLVCD = reinterpret_cast<NMLVCUSTOMDRAW*>(pNMHDR);
+    NMLVCUSTOMDRAW * pLVCD = reinterpret_cast<NMLVCUSTOMDRAW *>(pNMHDR);
     DWORD drawStage = pLVCD->nmcd.dwDrawStage;
 
     switch (drawStage)
@@ -734,49 +735,50 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
 
     // Command and arguments
     COpInfo OpInfo;
-    R4300iOpcode& OpCode = OpInfo.m_OpCode;
+    R4300iOpcode & OpCode = OpInfo.m_OpCode;
     bool bAddrOkay = m_Debugger->DebugLoad_VAddr(address, OpCode.Value);
 
-    struct {
+    struct
+    {
         COLORREF bg;
         COLORREF fg;
     } colors;
 
     if (!bAddrOkay)
     {
-        colors = { 0xFFFFFF, 0xFF0000 };
+        colors = {0xFFFFFF, 0xFF0000};
     }
     else if (address == pc && isStepping())
     {
-        colors = { 0xFFFFAA, 0x222200 };
+        colors = {0xFFFFAA, 0x222200};
     }
     else if (IsOpEdited(address))
     {
-        colors = { 0xFFEEFF, 0xFF00FF };
+        colors = {0xFFEEFF, 0xFF00FF};
     }
     else if (OpInfo.IsStackAlloc())
     {
-        colors = { 0xCCDDFF, 0x001144 };
+        colors = {0xCCDDFF, 0x001144};
     }
     else if (OpInfo.IsStackFree())
     {
-        colors = { 0xFFDDDD, 0x440000 };
+        colors = {0xFFDDDD, 0x440000};
     }
     else if (OpInfo.IsNOP())
     {
-        colors = { 0xFFFFFF, 0x888888 };
+        colors = {0xFFFFFF, 0x888888};
     }
     else if (OpInfo.IsJump())
     {
-        colors = { 0xEEFFEE, 0x006600 };
+        colors = {0xEEFFEE, 0x006600};
     }
     else if (OpInfo.IsBranch())
     {
-        colors = { 0xFFFFFF, 0x337700 };
+        colors = {0xFFFFFF, 0x337700};
     }
     else
     {
-        colors = { 0xFFFFFF, 0x0000000 };
+        colors = {0xFFFFFF, 0x0000000};
     }
 
     // Gray annotations
@@ -798,7 +800,7 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
 
     // Color register usage
     // TODO: localize to temporary register context (don't look before/after jumps and frame shifts)
-    COLORREF clrUsedRegister = RGB(0xF5, 0xF0, 0xFF); // Light purple
+    COLORREF clrUsedRegister = RGB(0xF5, 0xF0, 0xFF);     // Light purple
     COLORREF clrAffectedRegister = RGB(0xFF, 0xF0, 0xFF); // Light pink
 
     int pcUsedRegA = 0, pcUsedRegB = 0, pcChangedReg = 0;
@@ -845,7 +847,7 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
     return CDRF_DODEFAULT;
 }
 
-LRESULT CDebugCommandsView::OnMeasureItem(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnMeasureItem(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL & /*bHandled*/)
 {
     if (wParam == IDC_CMD_LIST)
     {
@@ -856,7 +858,7 @@ LRESULT CDebugCommandsView::OnMeasureItem(UINT /*uMsg*/, WPARAM wParam, LPARAM l
 
         m_RowHeight = tm.tmHeight + tm.tmExternalLeading;
 
-        MEASUREITEMSTRUCT* lpMeasureItem = (MEASUREITEMSTRUCT*)lParam;
+        MEASUREITEMSTRUCT * lpMeasureItem = (MEASUREITEMSTRUCT *)lParam;
         lpMeasureItem->itemHeight = m_RowHeight;
     }
     return FALSE;
@@ -866,18 +868,18 @@ LRESULT CDebugCommandsView::OnMeasureItem(UINT /*uMsg*/, WPARAM wParam, LPARAM l
 void CDebugCommandsView::DrawBranchArrows(HDC listDC)
 {
     COLORREF colors[] =
-    {
-        RGB(240, 240, 240), // White
-        RGB(30, 135, 255), // Blue
-        RGB(255, 0, 200), // Pink
-        RGB(215, 155, 0), // Yellow
-        RGB(100, 180, 0), // Green
-        RGB(200, 100, 255), // Purple
-        RGB(120, 120, 120), // Gray
-        RGB(0, 220, 160), // Cyan
-        RGB(255, 100, 0), // Orange
-        RGB(255, 255, 0), // Yellow
-    };
+        {
+            RGB(240, 240, 240), // White
+            RGB(30, 135, 255),  // Blue
+            RGB(255, 0, 200),   // Pink
+            RGB(215, 155, 0),   // Yellow
+            RGB(100, 180, 0),   // Green
+            RGB(200, 100, 255), // Purple
+            RGB(120, 120, 120), // Gray
+            RGB(0, 220, 160),   // Cyan
+            RGB(255, 100, 0),   // Orange
+            RGB(255, 255, 0),   // Yellow
+        };
 
     int nColors = sizeof(colors) / sizeof(COLORREF);
 
@@ -1077,7 +1079,7 @@ void CDebugCommandsView::CPUStepOver()
     }
 }
 
-LRESULT CDebugCommandsView::OnBackButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnBackButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     if (m_HistoryIndex > 0)
     {
@@ -1088,7 +1090,7 @@ LRESULT CDebugCommandsView::OnBackButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWN
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnForwardButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnForwardButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     if (m_History.size() > 0 && m_HistoryIndex < (int)m_History.size() - 1)
     {
@@ -1099,7 +1101,7 @@ LRESULT CDebugCommandsView::OnForwardButton(WORD /*wNotifyCode*/, WORD /*wID*/, 
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnViewPCButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnViewPCButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     if (g_Reg != nullptr && isStepping())
     {
@@ -1108,27 +1110,27 @@ LRESULT CDebugCommandsView::OnViewPCButton(WORD /*wNotifyCode*/, WORD /*wID*/, H
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnSymbolsButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnSymbolsButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     m_Debugger->OpenSymbolsWindow();
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnPopupmenuRunTo(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnPopupmenuRunTo(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     // Add temp breakpoints and resume
     m_Breakpoints->AddExecution(m_SelectedAddress, true);
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnGoButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnGoButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     CPUResume();
     m_AddressEdit.SetFocus();
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnStepButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnStepButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     if (WaitingForStep())
     {
@@ -1137,20 +1139,20 @@ LRESULT CDebugCommandsView::OnStepButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWN
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnStepOverButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnStepOverButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     CPUStepOver();
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnSkipButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnSkipButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     CPUSkip();
     m_AddressEdit.SetFocus();
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnClearBPButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnClearBPButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     m_Breakpoints->BPClear();
     RefreshBreakpointList();
@@ -1158,7 +1160,7 @@ LRESULT CDebugCommandsView::OnClearBPButton(WORD /*wNotifyCode*/, WORD /*wID*/, 
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnAddBPButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnAddBPButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     m_AddBreakpointDlg.DoModal(m_Debugger);
     RefreshBreakpointList();
@@ -1166,65 +1168,65 @@ LRESULT CDebugCommandsView::OnAddBPButton(WORD /*wNotifyCode*/, WORD /*wID*/, HW
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnRemoveBPButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnRemoveBPButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     RemoveSelectedBreakpoints();
     ShowAddress(m_StartAddress, TRUE);
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnCopyTabRegistersButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnCopyTabRegistersButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     m_RegisterTabs.CopyTabRegisters();
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnCopyAllRegistersButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnCopyAllRegistersButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     m_RegisterTabs.CopyAllRegisters();
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnCancel(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnCancel(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     EndDialog(0);
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnPopupmenuEdit(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnPopupmenuEdit(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     BeginOpEdit(m_SelectedAddress);
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnPopupmenuInsertNOP(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnPopupmenuInsertNOP(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     EditOp(m_SelectedAddress, 0x00000000);
     ShowAddress(m_StartAddress, TRUE);
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnPopupmenuRestore(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnPopupmenuRestore(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     RestoreOp(m_SelectedAddress);
     ShowAddress(m_StartAddress, TRUE);
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnPopupmenuRestoreAll(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnPopupmenuRestoreAll(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     RestoreAllOps();
     ShowAddress(m_StartAddress, TRUE);
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnPopupmenuAddSymbol(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnPopupmenuAddSymbol(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     m_AddSymbolDlg.DoModal(m_Debugger, m_SelectedAddress, SYM_CODE);
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnPopupmenuFollowJump(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnPopupmenuFollowJump(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     HistoryPushState();
     ShowAddress(m_FollowAddress, TRUE);
@@ -1232,13 +1234,13 @@ LRESULT CDebugCommandsView::OnPopupmenuFollowJump(WORD /*wNotifyCode*/, WORD /*w
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnPopupmenuViewMemory(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnPopupmenuViewMemory(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     m_Debugger->Debug_ShowMemoryLocation(m_FollowAddress, true);
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnPopupmenuToggleBP(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnPopupmenuToggleBP(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     if (m_Breakpoints->ExecutionBPExists(m_SelectedAddress))
     {
@@ -1252,7 +1254,7 @@ LRESULT CDebugCommandsView::OnPopupmenuToggleBP(WORD /*wNotifyCode*/, WORD /*wID
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnPopupmenuClearBP(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnPopupmenuClearBP(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     m_Breakpoints->EBPClear();
     ShowAddress(m_StartAddress, TRUE);
@@ -1280,7 +1282,7 @@ void CDebugCommandsView::BeginOpEdit(uint32_t address)
     //itemRect.bottom += 0;
     itemRect.left += listRect.left + 3;
     itemRect.right += 100;
-    
+
     m_OpEdit.ShowWindow(SW_SHOW);
     m_OpEdit.MoveWindow(&itemRect);
     m_OpEdit.BringWindowToTop();
@@ -1299,7 +1301,7 @@ void CDebugCommandsView::EndOpEdit()
     m_OpEdit.ShowWindow(SW_HIDE);
 }
 
-LRESULT CDebugCommandsView::OnAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     if (!m_Attached)
     {
@@ -1317,7 +1319,7 @@ LRESULT CDebugCommandsView::OnAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HW
     return 0;
 }
 
-LRESULT CDebugCommandsView::OnPCChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnPCChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     if (!m_Attached)
     {
@@ -1335,16 +1337,16 @@ LRESULT CDebugCommandsView::OnPCChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND
     return 0;
 }
 
-LRESULT CDebugCommandsView::OnCommandListClicked(NMHDR* /*pNMHDR*/)
+LRESULT CDebugCommandsView::OnCommandListClicked(NMHDR * /*pNMHDR*/)
 {
     EndOpEdit();
     return 0;
 }
 
-LRESULT CDebugCommandsView::OnCommandListDblClicked(NMHDR* pNMHDR)
+LRESULT CDebugCommandsView::OnCommandListDblClicked(NMHDR * pNMHDR)
 {
     // Set PC breakpoint
-    NMITEMACTIVATE* pIA = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
+    NMITEMACTIVATE * pIA = reinterpret_cast<NMITEMACTIVATE *>(pNMHDR);
     int nItem = pIA->iItem;
 
     uint32_t address = m_StartAddress + nItem * 4;
@@ -1363,11 +1365,11 @@ LRESULT CDebugCommandsView::OnCommandListDblClicked(NMHDR* pNMHDR)
     return 0;
 }
 
-LRESULT CDebugCommandsView::OnCommandListRightClicked(NMHDR* pNMHDR)
+LRESULT CDebugCommandsView::OnCommandListRightClicked(NMHDR * pNMHDR)
 {
     EndOpEdit();
 
-    NMITEMACTIVATE* pIA = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
+    NMITEMACTIVATE * pIA = reinterpret_cast<NMITEMACTIVATE *>(pNMHDR);
     int nItem = pIA->iItem;
 
     uint32_t address = m_StartAddress + nItem * 4;
@@ -1380,7 +1382,7 @@ LRESULT CDebugCommandsView::OnCommandListRightClicked(NMHDR* pNMHDR)
 
     HMENU hMenu = LoadMenu(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDR_OP_POPUP));
     HMENU hPopupMenu = GetSubMenu(hMenu, 0);
-    
+
     if (m_SelectedOpInfo.IsStaticJump())
     {
         m_FollowAddress = (m_SelectedAddress & 0xF0000000) | (m_SelectedOpCode.target * 4);
@@ -1433,7 +1435,7 @@ LRESULT CDebugCommandsView::OnCommandListRightClicked(NMHDR* pNMHDR)
     return 0;
 }
 
-LRESULT CDebugCommandsView::OnListBoxClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnListBoxClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     if (wID == IDC_BP_LIST)
     {
@@ -1456,7 +1458,7 @@ LRESULT CDebugCommandsView::OnListBoxClicked(WORD /*wNotifyCode*/, WORD wID, HWN
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnActivate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnActivate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     if (!m_Attached)
     {
@@ -1495,13 +1497,13 @@ void CDebugCommandsView::RedrawCommandsAndRegisters()
     listHead.ResizeClient(listRect.Width(), headRect.Height());
 }
 
-LRESULT CDebugCommandsView::OnSizing(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnSizing(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     RedrawCommandsAndRegisters();
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnScroll(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnScroll(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     WORD type = LOWORD(wParam);
 
@@ -1597,7 +1599,7 @@ void CDebugCommandsView::EditOp(uint32_t address, uint32_t op, bool bRefresh)
 
     if (!IsOpEdited(address))
     {
-        m_EditedOps.push_back({ address, currentOp });
+        m_EditedOps.push_back({address, currentOp});
     }
 
     if (bRefresh)
@@ -1635,7 +1637,7 @@ void CDebugCommandsView::ShowPIRegTab()
     m_RegisterTabs.ShowTab(2);
 }
 
-LRESULT CDebugCommandsView::OnRegisterTabChange(NMHDR* /*pNMHDR*/)
+LRESULT CDebugCommandsView::OnRegisterTabChange(NMHDR * /*pNMHDR*/)
 {
     int nPage = m_RegisterTabs.GetCurSel();
     m_RegisterTabs.ShowTab(nPage);
@@ -1659,7 +1661,7 @@ void CDebugCommandsView::ToggleHistoryButtons()
 
 // Opcode editor
 
-LRESULT CDebugCommandsView::OnOpEditKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
+LRESULT CDebugCommandsView::OnOpEditKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL & bHandled)
 {
     if (wParam == VK_UP)
     {
@@ -1694,7 +1696,7 @@ LRESULT CDebugCommandsView::OnOpEditKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM
     return 1;
 }
 
-LRESULT CDebugCommandsView::OnOpEditChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnOpEditChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     // Handle multiline input
     std::string text = GetCWindowText(m_OpEdit);
@@ -1705,7 +1707,7 @@ LRESULT CDebugCommandsView::OnOpEditChanged(WORD /*wNotifyCode*/, WORD /*wID*/, 
 
     EndOpEdit();
 
-    for (size_t i = 0 , n = text.size(); i < n; i++)
+    for (size_t i = 0, n = text.size(); i < n; i++)
     {
         if (text[i] == '\r')
         {
@@ -1745,7 +1747,7 @@ LRESULT CDebugCommandsView::OnOpEditChanged(WORD /*wNotifyCode*/, WORD /*wID*/, 
     return FALSE;
 }
 
-LRESULT CEditOp::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT CEditOp::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
     if (m_CommandsWindow == nullptr)
     {
@@ -1754,7 +1756,7 @@ LRESULT CEditOp::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandl
     return m_CommandsWindow->OnOpEditKeyDown(uMsg, wParam, lParam, bHandled);
 }
 
-void CEditOp::SetCommandsWindow(CDebugCommandsView* commandsWindow)
+void CEditOp::SetCommandsWindow(CDebugCommandsView * commandsWindow)
 {
     m_CommandsWindow = commandsWindow;
 }

@@ -1,61 +1,62 @@
 #include "stdafx.h"
+
 #include "DebuggerUI.h"
 
 CDebugExcBreakpoints::ExcCheckboxMeta CDebugExcBreakpoints::ExcCheckboxMap[] = {
-    { IDC_CHK_INT,      0 },
-    { IDC_CHK_MOD,      1 },
-    { IDC_CHK_RMISS,    2 },
-    { IDC_CHK_WMISS,    3 },
-    { IDC_CHK_RADE,     4 },
-    { IDC_CHK_WADE,     5 },
-    { IDC_CHK_IBE,      6 },
-    { IDC_CHK_DBE,      7 },
-    { IDC_CHK_SYSCALL,  8 },
-    { IDC_CHK_BREAK,    9 },
-    { IDC_CHK_II,      10 },
-    { IDC_CHK_CPU,     11 },
-    { IDC_CHK_OV,      12 },
-    { IDC_CHK_TRAP,    13 },
-    { IDC_CHK_VCEI,    14 },
-    { IDC_CHK_FPE,     15 },
-    { IDC_CHK_WATCH,   23 },
-    { IDC_CHK_VCED,    31 },
+    {IDC_CHK_INT, 0},
+    {IDC_CHK_MOD, 1},
+    {IDC_CHK_RMISS, 2},
+    {IDC_CHK_WMISS, 3},
+    {IDC_CHK_RADE, 4},
+    {IDC_CHK_WADE, 5},
+    {IDC_CHK_IBE, 6},
+    {IDC_CHK_DBE, 7},
+    {IDC_CHK_SYSCALL, 8},
+    {IDC_CHK_BREAK, 9},
+    {IDC_CHK_II, 10},
+    {IDC_CHK_CPU, 11},
+    {IDC_CHK_OV, 12},
+    {IDC_CHK_TRAP, 13},
+    {IDC_CHK_VCEI, 14},
+    {IDC_CHK_FPE, 15},
+    {IDC_CHK_WATCH, 23},
+    {IDC_CHK_VCED, 31},
     { 0, 0 }
 };
 
 CDebugExcBreakpoints::ExcCheckboxMeta CDebugExcBreakpoints::FpExcCheckboxMap[] = {
-    { IDC_CHK_FP_CI, (1 << 0) },
-    { IDC_CHK_FP_CU, (1 << 1) },
-    { IDC_CHK_FP_CO, (1 << 2) },
-    { IDC_CHK_FP_CZ, (1 << 3) },
-    { IDC_CHK_FP_CV, (1 << 4) },
-    { IDC_CHK_FP_CE, (1 << 5) },
+    {IDC_CHK_FP_CI, (1 << 0)},
+    {IDC_CHK_FP_CU, (1 << 1)},
+    {IDC_CHK_FP_CO, (1 << 2)},
+    {IDC_CHK_FP_CZ, (1 << 3)},
+    {IDC_CHK_FP_CV, (1 << 4)},
+    {IDC_CHK_FP_CE, (1 << 5)},
     { 0, 0 }
 };
 
 CDebugExcBreakpoints::ExcCheckboxMeta CDebugExcBreakpoints::IntrCheckboxMap[] = {
-    { IDC_CHK_INTR_IP0, (1 << 0) },
-    { IDC_CHK_INTR_IP1, (1 << 1) },
-    { IDC_CHK_INTR_IP2, (1 << 2) },
-    { IDC_CHK_INTR_IP3, (1 << 3) },
-    { IDC_CHK_INTR_IP4, (1 << 4) },
-    { IDC_CHK_INTR_IP5, (1 << 5) },
-    { IDC_CHK_INTR_IP6, (1 << 6) },
-    { IDC_CHK_INTR_IP7, (1 << 7) },
+    {IDC_CHK_INTR_IP0, (1 << 0)},
+    {IDC_CHK_INTR_IP1, (1 << 1)},
+    {IDC_CHK_INTR_IP2, (1 << 2)},
+    {IDC_CHK_INTR_IP3, (1 << 3)},
+    {IDC_CHK_INTR_IP4, (1 << 4)},
+    {IDC_CHK_INTR_IP5, (1 << 5)},
+    {IDC_CHK_INTR_IP6, (1 << 6)},
+    {IDC_CHK_INTR_IP7, (1 << 7)},
     { 0, 0 }
 };
 
 CDebugExcBreakpoints::ExcCheckboxMeta CDebugExcBreakpoints::RcpIntrCheckboxMap[] = {
-    { IDC_CHK_INTR_SP, (1 << 0) },
-    { IDC_CHK_INTR_SI, (1 << 1) },
-    { IDC_CHK_INTR_AI, (1 << 2) },
-    { IDC_CHK_INTR_VI, (1 << 3) },
-    { IDC_CHK_INTR_PI, (1 << 4) },
-    { IDC_CHK_INTR_DP, (1 << 5) },
+    {IDC_CHK_INTR_SP, (1 << 0)},
+    {IDC_CHK_INTR_SI, (1 << 1)},
+    {IDC_CHK_INTR_AI, (1 << 2)},
+    {IDC_CHK_INTR_VI, (1 << 3)},
+    {IDC_CHK_INTR_PI, (1 << 4)},
+    {IDC_CHK_INTR_DP, (1 << 5)},
     { 0, 0 }
 };
 
-CDebugExcBreakpoints::CDebugExcBreakpoints(CDebuggerUI* debugger) :
+CDebugExcBreakpoints::CDebugExcBreakpoints(CDebuggerUI * debugger) :
     CDebugDialog<CDebugExcBreakpoints>(debugger)
 {
 }
@@ -64,7 +65,7 @@ CDebugExcBreakpoints::~CDebugExcBreakpoints()
 {
 }
 
-LRESULT CDebugExcBreakpoints::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CDebugExcBreakpoints::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     DlgSavePos_Init(DebuggerUI_ExceptionBPPos);
 
@@ -94,7 +95,7 @@ LRESULT CDebugExcBreakpoints::OnDestroy(void)
     return 0;
 }
 
-LRESULT CDebugExcBreakpoints::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& /*bHandled*/)
+LRESULT CDebugExcBreakpoints::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL & /*bHandled*/)
 {
     switch (wID)
     {
@@ -112,7 +113,7 @@ LRESULT CDebugExcBreakpoints::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BO
         bool toggleRcpIntr = bChecked && (g_Settings->LoadDword(Debugger_IntrBreakpoints) & 0x04);
         EnableCheckboxes(RcpIntrCheckboxMap, toggleRcpIntr);
     }
-    
+
     if (wID == IDC_CHK_FPE)
     {
         EnableCheckboxes(FpExcCheckboxMap, bChecked);
@@ -136,7 +137,7 @@ void CDebugExcBreakpoints::OnExitSizeMove(void)
     SaveWindowPos(0);
 }
 
-void CDebugExcBreakpoints::InitCheckboxes(ExcCheckboxMeta* checkboxMap, SettingID settingID, bool bShift)
+void CDebugExcBreakpoints::InitCheckboxes(ExcCheckboxMeta * checkboxMap, SettingID settingID, bool bShift)
 {
     uint32_t excBits = g_Settings->LoadDword(settingID);
 
@@ -151,7 +152,7 @@ void CDebugExcBreakpoints::InitCheckboxes(ExcCheckboxMeta* checkboxMap, SettingI
     }
 }
 
-void CDebugExcBreakpoints::UpdateBpSetting(ExcCheckboxMeta* checkboxMap, SettingID settingID, WORD wID, bool bChecked, bool bShift)
+void CDebugExcBreakpoints::UpdateBpSetting(ExcCheckboxMeta * checkboxMap, SettingID settingID, WORD wID, bool bChecked, bool bShift)
 {
     for (int i = 0; checkboxMap[i].ctrlId != 0; i++)
     {
@@ -175,7 +176,7 @@ void CDebugExcBreakpoints::UpdateBpSetting(ExcCheckboxMeta* checkboxMap, Setting
     }
 }
 
-void CDebugExcBreakpoints::EnableCheckboxes(ExcCheckboxMeta* checkboxMap, bool bEnable)
+void CDebugExcBreakpoints::EnableCheckboxes(ExcCheckboxMeta * checkboxMap, bool bEnable)
 {
     for (int i = 0; checkboxMap[i].ctrlId != 0; i++)
     {

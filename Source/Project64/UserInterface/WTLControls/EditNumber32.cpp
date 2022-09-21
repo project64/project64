@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "EditNumber32.h"
 
 CEditNumber32::CEditNumber32(void) :
@@ -72,7 +73,7 @@ bool CEditNumber32::IsHexConvertableText(LPTSTR _text)
     for (; i < wcslen(_text); i++)
     {
         wchar_t c = _text[i];
-        if (!(c >= 48 && c <= 57 || c >= L'A'&&c <= L'F' || c >= L'a'&&c <= L'f' || c == L' '))
+        if (!(c >= 48 && c <= 57 || c >= L'A' && c <= L'F' || c >= L'a' && c <= L'f' || c == L' '))
         {
             bPaste = false;
             break;
@@ -83,7 +84,7 @@ bool CEditNumber32::IsHexConvertableText(LPTSTR _text)
 
 void CEditNumber32::FormatClipboard()
 {
-    LPTSTR  lptstr, lptstrCopy;
+    LPTSTR lptstr, lptstrCopy;
     HGLOBAL hglb;
     if (!this->OpenClipboard() || !IsClipboardFormatAvailable(CF_UNICODETEXT))
     {
@@ -95,7 +96,7 @@ void CEditNumber32::FormatClipboard()
         lptstr = (LPTSTR)GlobalLock(hglb);
         for (unsigned int i = 0; i < wcslen(lptstr); i++)
         {
-            if (lptstr[i] != L'X'&&lptstr[i] != L'x')
+            if (lptstr[i] != L'X' && lptstr[i] != L'x')
             {
                 lptstr[i] = (char)toupper(lptstr[i]);
             }
@@ -123,13 +124,13 @@ void CEditNumber32::FormatClipboard()
     }
 }
 
-LRESULT CEditNumber32::OnValidateValue(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
+LRESULT CEditNumber32::OnValidateValue(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & bHandled)
 {
     bHandled = true;
     return true;
 }
 
-LRESULT CEditNumber32::OnPaste(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
+LRESULT CEditNumber32::OnPaste(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & bHandled)
 {
     // Paste
     bHandled = false;
@@ -148,7 +149,7 @@ LRESULT CEditNumber32::OnPaste(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
     HGLOBAL hglb = GetClipboardData(CF_UNICODETEXT);
     if (hglb != nullptr)
     {
-        LPTSTR  lptstr = (LPTSTR)GlobalLock(hglb);
+        LPTSTR lptstr = (LPTSTR)GlobalLock(hglb);
         // Check invalid hex string
         if (!IsHexConvertableText(lptstr))
         {
@@ -164,7 +165,7 @@ LRESULT CEditNumber32::OnPaste(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
     return true;
 }
 
-LRESULT CEditNumber32::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT CEditNumber32::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
     int start, end;
     GetSel(start, end);
@@ -192,7 +193,8 @@ LRESULT CEditNumber32::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
                 // Does not allow to delete '0' before x
                 bHandled = true;
             }
-            else {
+            else
+            {
                 bHandled = false;
             }
             return TRUE;
@@ -214,7 +216,8 @@ LRESULT CEditNumber32::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
                 SendMessage(uMsg, L'x', lParam);
                 bHandled = true;
             }
-            else {
+            else
+            {
                 bHandled = false;
             }
             return true;
@@ -324,7 +327,7 @@ void CEditNumber32::SetValue(uint32_t Value, DisplayMode Display)
     }
     else
     {
-        text.Format("%s%0*X",(Display & DisplayMode::ShowHexIdent) == DisplayMode::ShowHexIdent ? "0x" : "", (Display & DisplayMode::ZeroExtend) == DisplayMode::ZeroExtend ? 8 : 0, Value);
+        text.Format("%s%0*X", (Display & DisplayMode::ShowHexIdent) == DisplayMode::ShowHexIdent ? "0x" : "", (Display & DisplayMode::ZeroExtend) == DisplayMode::ZeroExtend ? 8 : 0, Value);
     }
     SetWindowText(text.ToUTF16().c_str());
 }

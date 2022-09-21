@@ -1,7 +1,8 @@
 #include "stdafx.h"
+
 #include "SupportEnterCode.h"
-#include <Project64-core/Settings/SettingType/SettingsType-Application.h>
 #include "resource.h"
+#include <Project64-core/Settings/SettingType/SettingsType-Application.h>
 
 class CRequestCode :
     public CDialogImpl<CRequestCode>

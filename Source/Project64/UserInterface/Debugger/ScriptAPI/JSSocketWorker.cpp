@@ -1,8 +1,9 @@
-#include <stdafx.h>
+#include "stdafx.h"
+
 #include "JSSocketWorker.h"
 #include "ScriptAPI.h"
 
-CJSSocketWorker::CJSSocketWorker(CScriptInstance* inst, void* objectHeapPtr, bool bAllowHalfOpen) :
+CJSSocketWorker::CJSSocketWorker(CScriptInstance * inst, void * objectHeapPtr, bool bAllowHalfOpen) :
     CScriptWorker(inst, objectHeapPtr),
     m_Socket(INVALID_SOCKET),
     m_bAllowHalfOpen(bAllowHalfOpen),
@@ -43,7 +44,7 @@ bool CJSSocketWorker::Init(SOCKET sock)
     return true;
 }
 
-bool CJSSocketWorker::Init(const char* host, unsigned short port)
+bool CJSSocketWorker::Init(const char * host, unsigned short port)
 {
     if (!m_bWinsockOK)
     {
@@ -64,7 +65,7 @@ bool CJSSocketWorker::Init(const char* host, unsigned short port)
     return true;
 }
 
-bool CJSSocketWorker::Write(const char* data, size_t length, duk_int_t callbackId, bool bEnd)
+bool CJSSocketWorker::Write(const char * data, size_t length, duk_int_t callbackId, bool bEnd)
 {
     CGuard guard(m_Queue.cs);
 
@@ -75,7 +76,7 @@ bool CJSSocketWorker::Write(const char* data, size_t length, duk_int_t callbackI
         return false;
     }
 
-    if(bEnd)
+    if (bEnd)
     {
         m_Queue.bSendClosePending = true;
     }
@@ -150,8 +151,8 @@ void CJSSocketWorker::WorkerProc()
 
         int numFds;
         fd_set readFds, writeFds;
-        fd_set* pWriteFds = nullptr;
-        fd_set* pReadFds = nullptr;
+        fd_set * pWriteFds = nullptr;
+        fd_set * pReadFds = nullptr;
 
         if (!bRecvClosed)
         {
@@ -284,7 +285,7 @@ bool CJSSocketWorker::ProcConnect()
 void CJSSocketWorker::ProcSendData()
 {
     CGuard guard(m_Queue.cs);
-    BufferedWrite& bufferedWrite = m_Queue.writes.front();
+    BufferedWrite & bufferedWrite = m_Queue.writes.front();
 
     int avail = bufferedWrite.data.size() - bufferedWrite.offset;
     int numBytesSent = send(m_Socket, &bufferedWrite.data[bufferedWrite.offset], avail, 0);
@@ -297,7 +298,7 @@ void CJSSocketWorker::ProcSendData()
             if (bufferedWrite.callbackId != -1)
             {
                 m_Instance->PostCMethodCall(m_DukObjectHeapPtr, ScriptAPI::js_Socket__invokeWriteCallback,
-                    CbArgs_Write, &bufferedWrite.callbackId, sizeof(bufferedWrite.callbackId));
+                                            CbArgs_Write, &bufferedWrite.callbackId, sizeof(bufferedWrite.callbackId));
             }
             m_Queue.writes.erase(m_Queue.writes.begin());
         }
@@ -356,21 +357,23 @@ void CJSSocketWorker::UpdateAddresses()
     WSAPROTOCOL_INFO protocolInfo;
     int protocolInfoSize = sizeof(protocolInfo);
 
-    if (getsockopt(m_Socket, SOL_SOCKET, SO_PROTOCOL_INFO, (char*)&protocolInfo, &protocolInfoSize) != 0)
+    if (getsockopt(m_Socket, SOL_SOCKET, SO_PROTOCOL_INFO, (char *)&protocolInfo, &protocolInfoSize) != 0)
     {
         return;
     }
 
-    int& family = protocolInfo.iAddressFamily;
-    sockaddr* pLocalAddr = nullptr;
-    sockaddr* pRemoteAddr = nullptr;
+    int & family = protocolInfo.iAddressFamily;
+    sockaddr * pLocalAddr = nullptr;
+    sockaddr * pRemoteAddr = nullptr;
 
-    union {
+    union
+    {
         sockaddr_in ipv4;
         sockaddr_in6 ipv6;
     } localAddr;
 
-    union {
+    union
+    {
         sockaddr_in ipv4;
         sockaddr_in6 ipv6;
     } remoteAddr;
@@ -379,14 +382,14 @@ void CJSSocketWorker::UpdateAddresses()
 
     if (family == AF_INET)
     {
-        pLocalAddr = (sockaddr*)&localAddr.ipv4;
-        pRemoteAddr = (sockaddr*)&remoteAddr.ipv4;
+        pLocalAddr = (sockaddr *)&localAddr.ipv4;
+        pRemoteAddr = (sockaddr *)&remoteAddr.ipv4;
         addrSize = sizeof(sockaddr_in);
     }
     else if (family == AF_INET6)
     {
-        pLocalAddr = (sockaddr*)&localAddr.ipv6;
-        pRemoteAddr = (sockaddr*)&remoteAddr.ipv6;
+        pLocalAddr = (sockaddr *)&localAddr.ipv6;
+        pRemoteAddr = (sockaddr *)&remoteAddr.ipv6;
         addrSize = sizeof(sockaddr_in6);
     }
     else
@@ -397,14 +400,14 @@ void CJSSocketWorker::UpdateAddresses()
 
     getsockname(m_Socket, pLocalAddr, &addrSize);
     getpeername(m_Socket, pRemoteAddr, &addrSize);
-    
+
     getnameinfo(pLocalAddr, addrSize,
-        m_LocalAddress.address, sizeof(m_LocalAddress.address),
-        0, 0, NI_NUMERICHOST);
+                m_LocalAddress.address, sizeof(m_LocalAddress.address),
+                0, 0, NI_NUMERICHOST);
 
     getnameinfo(pRemoteAddr, addrSize,
-        m_RemoteAddress.address, sizeof(m_RemoteAddress.address),
-        0, 0, NI_NUMERICHOST);
+                m_RemoteAddress.address, sizeof(m_RemoteAddress.address),
+                0, 0, NI_NUMERICHOST);
 
     if (family == AF_INET)
     {
@@ -427,10 +430,10 @@ void CJSSocketWorker::UpdateAddresses()
 void CJSSocketWorker::JSEmitConnect()
 {
     m_Instance->PostCMethodCall(m_DukObjectHeapPtr,
-        ScriptAPI::js__Emitter_emit, CbArgs_EmitConnect);
+                                ScriptAPI::js__Emitter_emit, CbArgs_EmitConnect);
 }
 
-void CJSSocketWorker::JSEmitData(const char* data, size_t size)
+void CJSSocketWorker::JSEmitData(const char * data, size_t size)
 {
     JSEmitDataEnv env;
     env.data = new char[size];
@@ -439,50 +442,50 @@ void CJSSocketWorker::JSEmitData(const char* data, size_t size)
     memcpy(env.data, data, size);
 
     m_Instance->PostCMethodCall(m_DukObjectHeapPtr,
-        ScriptAPI::js__Emitter_emit, CbArgs_EmitData, (void*)&env, sizeof(env));
+                                ScriptAPI::js__Emitter_emit, CbArgs_EmitData, (void *)&env, sizeof(env));
 }
 
 void CJSSocketWorker::JSEmitEnd()
 {
     m_Instance->PostCMethodCall(m_DukObjectHeapPtr,
-        ScriptAPI::js__Emitter_emit, CbArgs_EmitEnd);
+                                ScriptAPI::js__Emitter_emit, CbArgs_EmitEnd);
 }
 
 void CJSSocketWorker::JSEmitClose()
 {
     m_Instance->PostCMethodCall(m_DukObjectHeapPtr,
-        ScriptAPI::js__Emitter_emit, CbArgs_EmitClose);
+                                ScriptAPI::js__Emitter_emit, CbArgs_EmitClose);
 }
 
 void CJSSocketWorker::JSEmitDrain()
 {
     m_Instance->PostCMethodCall(m_DukObjectHeapPtr,
-        ScriptAPI::js__Emitter_emit, CbArgs_EmitDrain);
+                                ScriptAPI::js__Emitter_emit, CbArgs_EmitDrain);
 }
 
-void CJSSocketWorker::JSEmitLookup(JSSocketAddrInfo& addr)
+void CJSSocketWorker::JSEmitLookup(JSSocketAddrInfo & addr)
 {
     m_Instance->PostCMethodCall(m_DukObjectHeapPtr,
-        ScriptAPI::js__Emitter_emit, CbArgs_EmitLookup, (void*)&addr, sizeof(addr));
+                                ScriptAPI::js__Emitter_emit, CbArgs_EmitLookup, (void *)&addr, sizeof(addr));
 }
 
-void CJSSocketWorker::JSEmitError(const char* errMessage)
+void CJSSocketWorker::JSEmitError(const char * errMessage)
 {
     m_Instance->PostCMethodCall(m_DukObjectHeapPtr,
-        ScriptAPI::js__Emitter_emit, CbArgs_EmitError, (void*)errMessage, strlen(errMessage) + 1);
+                                ScriptAPI::js__Emitter_emit, CbArgs_EmitError, (void *)errMessage, strlen(errMessage) + 1);
 }
 
-duk_idx_t CJSSocketWorker::CbArgs_EmitConnect(duk_context* ctx, void* /*_env*/)
+duk_idx_t CJSSocketWorker::CbArgs_EmitConnect(duk_context * ctx, void * /*_env*/)
 {
     duk_push_string(ctx, "connect");
     return 1;
 }
 
-duk_idx_t CJSSocketWorker::CbArgs_EmitData(duk_context* ctx, void* _env)
+duk_idx_t CJSSocketWorker::CbArgs_EmitData(duk_context * ctx, void * _env)
 {
-    JSEmitDataEnv* env = (JSEmitDataEnv*)_env;
+    JSEmitDataEnv * env = (JSEmitDataEnv *)_env;
     duk_push_string(ctx, "data");
-    char* buffer = (char*)duk_push_fixed_buffer(ctx, env->size);
+    char * buffer = (char *)duk_push_fixed_buffer(ctx, env->size);
     memcpy(buffer, env->data, env->size);
 
     delete[] env->data;
@@ -492,27 +495,27 @@ duk_idx_t CJSSocketWorker::CbArgs_EmitData(duk_context* ctx, void* _env)
     return 2;
 }
 
-duk_idx_t CJSSocketWorker::CbArgs_EmitEnd(duk_context* ctx, void* /*_env*/)
+duk_idx_t CJSSocketWorker::CbArgs_EmitEnd(duk_context * ctx, void * /*_env*/)
 {
     duk_push_string(ctx, "end");
     return 1;
 }
 
-duk_idx_t CJSSocketWorker::CbArgs_EmitClose(duk_context* ctx, void* /*_env*/)
+duk_idx_t CJSSocketWorker::CbArgs_EmitClose(duk_context * ctx, void * /*_env*/)
 {
     duk_push_string(ctx, "close");
     return 1;
 }
 
-duk_idx_t CJSSocketWorker::CbArgs_EmitDrain(duk_context* ctx, void* /*_env*/)
+duk_idx_t CJSSocketWorker::CbArgs_EmitDrain(duk_context * ctx, void * /*_env*/)
 {
     duk_push_string(ctx, "drain");
     return 1;
 }
 
-duk_idx_t CJSSocketWorker::CbArgs_EmitLookup(duk_context* ctx, void* _env)
+duk_idx_t CJSSocketWorker::CbArgs_EmitLookup(duk_context * ctx, void * _env)
 {
-    JSSocketAddrInfo* addr = (JSSocketAddrInfo*)_env;
+    JSSocketAddrInfo * addr = (JSSocketAddrInfo *)_env;
 
     duk_push_string(ctx, "lookup");
     duk_push_object(ctx);
@@ -525,7 +528,7 @@ duk_idx_t CJSSocketWorker::CbArgs_EmitLookup(duk_context* ctx, void* _env)
     {
         duk_push_error_object(ctx, DUK_ERR_ERROR, "dns lookup error");
     }
-    
+
     duk_put_prop_string(ctx, -2, "err");
     duk_push_string(ctx, addr->address);
     duk_put_prop_string(ctx, -2, "address");
@@ -536,17 +539,17 @@ duk_idx_t CJSSocketWorker::CbArgs_EmitLookup(duk_context* ctx, void* _env)
     return 2;
 }
 
-duk_idx_t CJSSocketWorker::CbArgs_EmitError(duk_context* ctx, void* _env)
+duk_idx_t CJSSocketWorker::CbArgs_EmitError(duk_context * ctx, void * _env)
 {
-    const char* errMessage = (const char*)_env;
+    const char * errMessage = (const char *)_env;
     duk_push_string(ctx, "error");
     duk_push_error_object(ctx, DUK_ERR_ERROR, errMessage);
     return 2;
 }
 
-duk_idx_t CJSSocketWorker::CbArgs_Write(duk_context* ctx, void* _env)
+duk_idx_t CJSSocketWorker::CbArgs_Write(duk_context * ctx, void * _env)
 {
-    duk_int_t callbackId = *(duk_int_t*)_env;
+    duk_int_t callbackId = *(duk_int_t *)_env;
     duk_push_int(ctx, callbackId);
     return 1;
 }
@@ -575,7 +578,7 @@ unsigned short CJSSocketWorker::GetRemotePort()
     return m_RemoteAddress.port;
 }
 
-const char* CJSSocketWorker::GetFamily()
+const char * CJSSocketWorker::GetFamily()
 {
     CGuard guard(m_CS);
     return m_LocalAddress.family;
@@ -588,7 +591,7 @@ void CJSSocketWorker::ClearAddress()
     m_LocalAddress.port = 0;
     memset(m_LocalAddress.address, 0, sizeof(m_LocalAddress.address));
     m_LocalAddress.family = "";
-    
+
     m_RemoteAddress.port = 0;
     memset(m_RemoteAddress.address, 0, sizeof(m_RemoteAddress.address));
     m_RemoteAddress.family = "";

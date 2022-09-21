@@ -218,7 +218,10 @@ void COptionsShortCutsPage::OnShortCutChanged(UINT /*Code*/, int /*id*/, HWND /*
 {
     // Get the virtual key info
     int index = m_VirtualKeyList.GetCurSel();
-    if (index < 0) { return; }
+    if (index < 0)
+    {
+        return;
+    }
     WORD key = (WORD)m_VirtualKeyList.GetItemData(index);
     bool bCtrl = (SendDlgItemMessage(IDC_CTL, BM_GETCHECK, 0, 0) == BST_CHECKED);
     bool bAlt = (SendDlgItemMessage(IDC_ALT, BM_GETCHECK, 0, 0) == BST_CHECKED);
@@ -266,7 +269,7 @@ void COptionsShortCutsPage::RefreshShortCutOptions(HTREEITEM hItem)
         }
 
         const std::wstring & Name = ShortCut_item->Name();
-        m_CurrentKeys.SetItemData(m_CurrentKeys.AddString(Name.c_str()), (DWORD_PTR)&*ShortCut_item);
+        m_CurrentKeys.SetItemData(m_CurrentKeys.AddString(Name.c_str()), (DWORD_PTR) & *ShortCut_item);
     }
 }
 
@@ -297,22 +300,39 @@ void COptionsShortCutsPage::InputGetKeys(void)
     ::EnableWindow(GetParent(), false);
     MSG msg;
 
-    for (bool fDone = false; !fDone; MsgWaitForMultipleObjects(0, nullptr, false, 45, QS_ALLINPUT)) {
-        while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
-            if (msg.message == WM_QUIT) {
+    for (bool fDone = false; !fDone; MsgWaitForMultipleObjects(0, nullptr, false, 45, QS_ALLINPUT))
+    {
+        while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+        {
+            if (msg.message == WM_QUIT)
+            {
                 fDone = true;
                 ::PostMessage(nullptr, WM_QUIT, 0, 0);
                 break;
             }
-            if (msg.message == WM_KEYDOWN || msg.message == WM_SYSKEYDOWN) {
+            if (msg.message == WM_KEYDOWN || msg.message == WM_SYSKEYDOWN)
+            {
                 int nVirtKey = (int)msg.wParam;
-                if (nVirtKey == VK_SHIFT) { continue; }
-                if (nVirtKey == VK_CONTROL) { continue; }
-                if (nVirtKey == VK_MENU) { continue; }
+                if (nVirtKey == VK_SHIFT)
+                {
+                    continue;
+                }
+                if (nVirtKey == VK_CONTROL)
+                {
+                    continue;
+                }
+                if (nVirtKey == VK_MENU)
+                {
+                    continue;
+                }
                 SendDlgItemMessage(IDC_VIRTUALKEY, CB_SETCURSEL, (WPARAM)-1, 0);
-                for (int count = 0; count < SendDlgItemMessage(IDC_VIRTUALKEY, CB_GETCOUNT, 0, 0); count++) {
+                for (int count = 0; count < SendDlgItemMessage(IDC_VIRTUALKEY, CB_GETCOUNT, 0, 0); count++)
+                {
                     int Data = (int)SendDlgItemMessage(IDC_VIRTUALKEY, CB_GETITEMDATA, count, 0);
-                    if (Data != nVirtKey) { continue; }
+                    if (Data != nVirtKey)
+                    {
+                        continue;
+                    }
                     SendDlgItemMessage(IDC_VIRTUALKEY, CB_SETCURSEL, count, 0);
                     SendDlgItemMessage(IDC_CTL, BM_SETCHECK, (GetKeyState(VK_CONTROL) & 0x80) != 0 ? BST_CHECKED : BST_UNCHECKED, 0);
                     SendDlgItemMessage(IDC_ALT, BM_SETCHECK, (GetKeyState(VK_MENU) & 0x80) != 0 ? BST_CHECKED : BST_UNCHECKED, 0);
@@ -323,13 +343,17 @@ void COptionsShortCutsPage::InputGetKeys(void)
                 }
                 continue;
             }
-            if (!::IsDialogMessage(hKeyDlg, &msg)) {
+            if (!::IsDialogMessage(hKeyDlg, &msg))
+            {
                 TranslateMessage(&msg);
                 DispatchMessage(&msg);
             }
         }
 
-        if (!::IsWindow(hKeyDlg)) { fDone = true; }
+        if (!::IsWindow(hKeyDlg))
+        {
+            fDone = true;
+        }
     }
     ::SetFocus(GetParent());
     ::EnableWindow(GetParent(), true);

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../WTLControls/ModifiedCheckBox.h"
+#include "SettingsPage.h"
+#include <Project64\UserInterface\WTLControls\ModifiedCheckBox.h>
 #include <Project64-core/N64System/N64Types.h>
 
 class CGameDiskDrivePage :

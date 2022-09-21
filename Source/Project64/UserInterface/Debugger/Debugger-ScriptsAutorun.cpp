@@ -1,4 +1,5 @@
-#include <stdafx.h>
+#include "stdafx.h"
+
 #include "DebuggerUI.h"
 #include <sstream>
 
@@ -17,7 +18,7 @@ CScriptsAutorunDlg::~CScriptsAutorunDlg()
 {
 }
 
-INT_PTR CScriptsAutorunDlg::DoModal(CDebuggerUI* debugger, stdstr selectedScriptName)
+INT_PTR CScriptsAutorunDlg::DoModal(CDebuggerUI * debugger, stdstr selectedScriptName)
 {
     m_Debugger = debugger;
     m_ScriptSystem = debugger->ScriptSystem();
@@ -25,7 +26,7 @@ INT_PTR CScriptsAutorunDlg::DoModal(CDebuggerUI* debugger, stdstr selectedScript
     return CDialogImpl<CScriptsAutorunDlg>::DoModal();
 }
 
-LRESULT CScriptsAutorunDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CScriptsAutorunDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     CenterWindow();
 
@@ -35,13 +36,13 @@ LRESULT CScriptsAutorunDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     m_ScriptListView.SetExtendedListViewStyle(LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER);
     m_ScriptListView.AddColumn(L"Script", 0);
     m_ScriptListView.SetColumnWidth(0, LVSCW_AUTOSIZE_USEHEADER);
-    
+
     m_AutorunListView.SetExtendedListViewStyle(LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER);
     m_AutorunListView.AddColumn(L"Script", 0);
     m_AutorunListView.SetColumnWidth(0, LVSCW_AUTOSIZE_USEHEADER);
 
     m_hQuitScriptDirWatchEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
-    m_hScriptDirWatchThread = CreateThread(nullptr, 0, ScriptDirWatchProc, (void*)this, 0, nullptr);
+    m_hScriptDirWatchThread = CreateThread(nullptr, 0, ScriptDirWatchProc, (void *)this, 0, nullptr);
 
     m_ScriptSystem->LoadAutorunList();
 
@@ -63,38 +64,37 @@ LRESULT CScriptsAutorunDlg::OnDestroy(void)
     return 0;
 }
 
-LRESULT CScriptsAutorunDlg::OnOKCancel(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CScriptsAutorunDlg::OnOKCancel(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     EndDialog(0);
     return 0;
 }
 
-
-LRESULT CScriptsAutorunDlg::OnAdd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CScriptsAutorunDlg::OnAdd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     m_bScriptListNeedsRefocus = true;
     AddSelected();
     return 0;
 }
 
-LRESULT CScriptsAutorunDlg::OnRemove(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+LRESULT CScriptsAutorunDlg::OnRemove(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
     m_bAutorunListNeedsRefocus = true;
     RemoveSelected();
     return 0;
 }
 
-LRESULT CScriptsAutorunDlg::OnScriptListDblClicked(NMHDR* /*pNMHDR*/)
+LRESULT CScriptsAutorunDlg::OnScriptListDblClicked(NMHDR * /*pNMHDR*/)
 {
     AddSelected();
     return 0;
 }
 
-LRESULT CScriptsAutorunDlg::OnCtrlSetFocus(NMHDR* pNMHDR)
+LRESULT CScriptsAutorunDlg::OnCtrlSetFocus(NMHDR * pNMHDR)
 {
     bool bEnableScriptButtons = false;
     bool bEnableAutorunButtons = false;
-    
+
     switch (pNMHDR->idFrom)
     {
     case IDC_SCRIPT_LIST:
@@ -108,20 +108,20 @@ LRESULT CScriptsAutorunDlg::OnCtrlSetFocus(NMHDR* pNMHDR)
         bEnableScriptButtons = false;
         break;
     }
-    
+
     ::EnableWindow(GetDlgItem(IDC_ADD_BTN), bEnableScriptButtons);
     ::EnableWindow(GetDlgItem(IDC_REMOVE_BTN), bEnableAutorunButtons);
 
     return 0;
 }
 
-LRESULT CScriptsAutorunDlg::OnAutorunListDblClicked(NMHDR* /*pNMHDR*/)
+LRESULT CScriptsAutorunDlg::OnAutorunListDblClicked(NMHDR * /*pNMHDR*/)
 {
     RemoveSelected();
     return 0;
 }
 
-LRESULT CScriptsAutorunDlg::OnRefreshScriptList(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CScriptsAutorunDlg::OnRefreshScriptList(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     int nSelectedItem = m_ScriptListView.GetSelectedIndex();
 
@@ -152,7 +152,7 @@ LRESULT CScriptsAutorunDlg::OnRefreshScriptList(UINT /*uMsg*/, WPARAM /*wParam*/
     m_ScriptListView.DeleteAllItems();
 
     int nItem = 0;
-    for (const stdstr& fileName : fileNames)
+    for (const stdstr & fileName : fileNames)
     {
         m_ScriptListView.AddItem(nItem, 0, fileName.ToUTF16().c_str());
         if (fileName == m_InitSelectedScriptName)
@@ -183,7 +183,7 @@ LRESULT CScriptsAutorunDlg::OnRefreshScriptList(UINT /*uMsg*/, WPARAM /*wParam*/
     return 0;
 }
 
-LRESULT CScriptsAutorunDlg::OnRefreshAutorunList(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CScriptsAutorunDlg::OnRefreshAutorunList(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     int nSelectedItem = m_AutorunListView.GetSelectedIndex();
 
@@ -196,7 +196,7 @@ LRESULT CScriptsAutorunDlg::OnRefreshAutorunList(UINT /*uMsg*/, WPARAM /*wParam*
     m_AutorunListView.DeleteAllItems();
 
     int nItem = 0;
-    for (const stdstr& fileName : fileNames)
+    for (const stdstr & fileName : fileNames)
     {
         m_AutorunListView.AddItem(nItem, 0, fileName.ToUTF16().c_str());
         if (fileName == m_InitSelectedScriptName)
@@ -225,9 +225,9 @@ LRESULT CScriptsAutorunDlg::OnRefreshAutorunList(UINT /*uMsg*/, WPARAM /*wParam*
     return 0;
 }
 
-DWORD WINAPI CScriptsAutorunDlg::ScriptDirWatchProc(void* ctx)
+DWORD WINAPI CScriptsAutorunDlg::ScriptDirWatchProc(void * ctx)
 {
-    CScriptsAutorunDlg* _this = (CScriptsAutorunDlg*)ctx;
+    CScriptsAutorunDlg * _this = (CScriptsAutorunDlg *)ctx;
 
     stdstr scriptsDir = _this->m_ScriptSystem->ScriptsDirPath();
 

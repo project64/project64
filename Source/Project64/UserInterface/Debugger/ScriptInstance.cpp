@@ -1,18 +1,20 @@
-#include <stdafx.h>
-#include "ScriptTypes.h"
-#include "ScriptInstance.h"
+#include "stdafx.h"
+
 #include "ScriptAPI/ScriptAPI.h"
+#include "ScriptInstance.h"
+#include "ScriptTypes.h"
 #include <sys/stat.h>
 
-extern "C" {
-    int DukTimeoutCheck(void* udata)
+extern "C"
+{
+    int DukTimeoutCheck(void * udata)
     {
-        CScriptInstance* inst = (CScriptInstance*)udata;
+        CScriptInstance * inst = (CScriptInstance *)udata;
         return (int)inst->IsTimedOut();
     }
 }
 
-CScriptInstance::CScriptInstance(CScriptSystem* sys, const char* name) :
+CScriptInstance::CScriptInstance(CScriptSystem * sys, const char * name) :
     m_System(sys),
     m_InstanceName(name),
     m_Ctx(nullptr),
@@ -31,17 +33,17 @@ CScriptInstance::~CScriptInstance()
     Cleanup();
 }
 
-std::string& CScriptInstance::Name()
+std::string & CScriptInstance::Name()
 {
     return m_InstanceName;
 }
 
-CScriptSystem* CScriptInstance::System()
+CScriptSystem * CScriptInstance::System()
 {
     return m_System;
 }
 
-CDebuggerUI* CScriptInstance::Debugger()
+CDebuggerUI * CScriptInstance::Debugger()
 {
     return m_System->Debugger();
 }
@@ -51,22 +53,22 @@ JSAppCallbackID CScriptInstance::CallbackId()
     return m_CurExecCallbackId;
 }
 
-bool CScriptInstance::Run(const char* path)
+bool CScriptInstance::Run(const char * path)
 {
-    if(m_Ctx != nullptr)
+    if (m_Ctx != nullptr)
     {
         return false;
     }
 
     m_Ctx = duk_create_heap(nullptr, nullptr, nullptr, this, nullptr);
 
-    if(m_Ctx == nullptr)
+    if (m_Ctx == nullptr)
     {
         goto error_cleanup;
     }
 
     struct stat statBuf;
-    if(stat(path, &statBuf) != 0)
+    if (stat(path, &statBuf) != 0)
     {
         m_System->ConsoleLog("[SCRIPTSYS]: error: could not stat '%s'", path);
         goto error_cleanup;
@@ -76,7 +78,7 @@ bool CScriptInstance::Run(const char* path)
     m_SourceCode[statBuf.st_size] = '\0';
 
     m_SourceFile.open(path, std::ios::in | std::ios::binary);
-    if(!m_SourceFile.is_open())
+    if (!m_SourceFile.is_open())
     {
         m_System->ConsoleLog("[SCRIPTSYS]: error: could not open '%s'", path);
         goto error_cleanup;
@@ -84,7 +86,7 @@ bool CScriptInstance::Run(const char* path)
 
     m_SourceFile.read(m_SourceCode, statBuf.st_size);
 
-    if((size_t)m_SourceFile.tellg() != (size_t)statBuf.st_size)
+    if ((size_t)m_SourceFile.tellg() != (size_t)statBuf.st_size)
     {
         m_System->ConsoleLog("[SCRIPTSYS]: error: could not read '%s'", path);
         goto error_cleanup;
@@ -108,13 +110,12 @@ bool CScriptInstance::Run(const char* path)
 
         duk_pop(m_Ctx);
     }
-    catch (std::runtime_error& exc)
+    catch (std::runtime_error & exc)
     {
         FatalHandler(exc);
     }
 
     return true;
-    
 
 error_cleanup:
     Cleanup();
@@ -128,7 +129,7 @@ void CScriptInstance::IncRefCount()
 
 void CScriptInstance::DecRefCount()
 {
-    if(m_RefCount > 0)
+    if (m_RefCount > 0)
     {
         m_RefCount--;
     }
@@ -150,7 +151,7 @@ bool CScriptInstance::PrepareAbort()
     return false;
 }
 
-void CScriptInstance::RawCMethodCall(void* dukThisHeapPtr, duk_c_function func, JSDukArgSetupFunc argSetupFunc, void *argSetupParam)
+void CScriptInstance::RawCMethodCall(void * dukThisHeapPtr, duk_c_function func, JSDukArgSetupFunc argSetupFunc, void * argSetupParam)
 {
     try
     {
@@ -168,22 +169,22 @@ void CScriptInstance::RawCMethodCall(void* dukThisHeapPtr, duk_c_function func, 
 
         duk_pop(m_Ctx);
     }
-    catch (std::runtime_error& exc)
+    catch (std::runtime_error & exc)
     {
         FatalHandler(exc);
     }
 }
 
-void CScriptInstance::PostCMethodCall(void* dukThisHeapPtr, duk_c_function func, JSDukArgSetupFunc argSetupFunc,
-    void* argSetupParam, size_t argSetupParamSize)
+void CScriptInstance::PostCMethodCall(void * dukThisHeapPtr, duk_c_function func, JSDukArgSetupFunc argSetupFunc,
+                                      void * argSetupParam, size_t argSetupParamSize)
 {
     m_System->PostCMethodCall(m_InstanceName.c_str(), dukThisHeapPtr, func, argSetupFunc, argSetupParam, argSetupParamSize);
 }
 
-void CScriptInstance::RawConsoleInput(const char* code)
+void CScriptInstance::RawConsoleInput(const char * code)
 {
     m_System->ConsoleLog("> %s", code);
-    
+
     try
     {
         duk_get_global_string(m_Ctx, HS_gInputListener);
@@ -234,8 +235,8 @@ void CScriptInstance::RawConsoleInput(const char* code)
                 duk_push_int(m_Ctx, 2);
                 duk_pcall(m_Ctx, 3);
 
-                const char* str = duk_safe_to_string(m_Ctx, -2);
-                const char* res = duk_get_string(m_Ctx, -1);
+                const char * str = duk_safe_to_string(m_Ctx, -2);
+                const char * res = duk_get_string(m_Ctx, -1);
 
                 m_System->ConsoleLog("%s %s", str, res);
                 duk_pop(m_Ctx);
@@ -247,7 +248,7 @@ void CScriptInstance::RawConsoleInput(const char* code)
         }
         duk_pop(m_Ctx);
     }
-    catch (std::runtime_error& exc)
+    catch (std::runtime_error & exc)
     {
         FatalHandler(exc);
     }
@@ -260,7 +261,7 @@ void CScriptInstance::SetExecTimeout(uint64_t timeout)
 
 bool CScriptInstance::IsTimedOut()
 {
-    if(m_ExecStartTime == 0 || m_ExecTimeout == 0)
+    if (m_ExecStartTime == 0 || m_ExecTimeout == 0)
     {
         return false;
     }
@@ -283,23 +284,23 @@ uint64_t CScriptInstance::Timestamp()
 
 void CScriptInstance::Cleanup()
 {
-    if(m_Ctx != nullptr)
+    if (m_Ctx != nullptr)
     {
         duk_destroy_heap(m_Ctx);
         m_Ctx = nullptr;
     }
-    if(m_SourceCode != nullptr)
+    if (m_SourceCode != nullptr)
     {
         delete[] m_SourceCode;
         m_SourceCode = nullptr;
     }
-    if(m_SourceFile.is_open())
+    if (m_SourceFile.is_open())
     {
         m_SourceFile.close();
     }
 }
 
-bool CScriptInstance::RegisterWorker(CScriptWorker* worker)
+bool CScriptInstance::RegisterWorker(CScriptWorker * worker)
 {
     if (IsStopping())
     {
@@ -310,9 +311,9 @@ bool CScriptInstance::RegisterWorker(CScriptWorker* worker)
     return true;
 }
 
-void CScriptInstance::UnregisterWorker(CScriptWorker* worker)
+void CScriptInstance::UnregisterWorker(CScriptWorker * worker)
 {
-    std::vector<CScriptWorker*>::iterator it;
+    std::vector<CScriptWorker *>::iterator it;
 
     for (it = m_Workers.begin(); it != m_Workers.end(); it++)
     {
@@ -326,15 +327,15 @@ void CScriptInstance::UnregisterWorker(CScriptWorker* worker)
 
 void CScriptInstance::StopRegisteredWorkers()
 {
-    std::vector<CScriptWorker*>::iterator it;
+    std::vector<CScriptWorker *>::iterator it;
     for (it = m_Workers.begin(); it != m_Workers.end(); it++)
     {
-        CScriptWorker* worker = *it;
+        CScriptWorker * worker = *it;
         worker->StopWorkerProc();
     }
 }
 
-void CScriptInstance::FatalHandler(std::runtime_error& exc)
+void CScriptInstance::FatalHandler(std::runtime_error & exc)
 {
     if (m_bAborting)
     {

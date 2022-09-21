@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
-#include "SettingsPage.h"
 #include "SettingsPage-Game-DiskDrive.h"
+#include "SettingsPage.h"
 
 CGameDiskDrivePage::CGameDiskDrivePage(HWND hParent, const RECT & rcDispay)
 {
@@ -13,7 +13,7 @@ CGameDiskDrivePage::CGameDiskDrivePage(HWND hParent, const RECT & rcDispay)
     // Set the text for all GUI items
     SetDlgItemText(IDC_DISKSEEKTIMING_TEXT2, wGS(ROM_DISK_SEEK_TIMING).c_str());
 
-    CModifiedComboBox* ComboBox;
+    CModifiedComboBox * ComboBox;
     ComboBox = AddModComboBox(GetDlgItem(IDC_DISKSEEKTIMING2), Game_DiskSeekTiming);
     if (ComboBox)
     {
@@ -42,7 +42,10 @@ void CGameDiskDrivePage::ApplySettings(bool UpdateScreen)
 
 bool CGameDiskDrivePage::EnableReset(void)
 {
-    if (CSettingsPageImpl<CGameDiskDrivePage>::EnableReset()) { return true; }
+    if (CSettingsPageImpl<CGameDiskDrivePage>::EnableReset())
+    {
+        return true;
+    }
     return false;
 }
 

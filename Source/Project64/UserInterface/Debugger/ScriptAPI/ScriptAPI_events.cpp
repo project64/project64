@@ -1,47 +1,48 @@
-#include <stdafx.h>
-#include "ScriptAPI.h"
-#include "../OpInfo.h"
+#include "stdafx.h"
 
-#pragma warning(disable: 4702) // disable unreachable code warning
+#include "../OpInfo.h"
+#include "ScriptAPI.h"
+
+#pragma warning(disable : 4702) // disable unreachable code warning
 
 using namespace ScriptAPI;
 
-static bool CbCond_PcBetween(JSAppCallback* cb, void* env);
-static bool CbCond_ReadAddrBetween(JSAppCallback* cb, void* env);
-static bool CbCond_WriteAddrBetween(JSAppCallback* cb, void* env);
-static bool CbCond_PcBetween_OpcodeEquals(JSAppCallback* cb, void* env);
-static bool CbCond_PcBetween_GprValueEquals(JSAppCallback* cb, void* env);
+static bool CbCond_PcBetween(JSAppCallback * cb, void * env);
+static bool CbCond_ReadAddrBetween(JSAppCallback * cb, void * env);
+static bool CbCond_WriteAddrBetween(JSAppCallback * cb, void * env);
+static bool CbCond_PcBetween_OpcodeEquals(JSAppCallback * cb, void * env);
+static bool CbCond_PcBetween_GprValueEquals(JSAppCallback * cb, void * env);
 
-static duk_idx_t CbArgs_GenericEventObject(duk_context* ctx, void* env);
-static duk_idx_t CbArgs_EmuStateChangeEventObject(duk_context* ctx, void* env);
-static duk_idx_t CbArgs_ExecEventObject(duk_context* ctx, void* env);
-static duk_idx_t CbArgs_ReadEventObject(duk_context* ctx, void* env);
-static duk_idx_t CbArgs_WriteEventObject(duk_context* ctx, void* env);
-static duk_idx_t CbArgs_OpcodeEventObject(duk_context* ctx, void* env);
-static duk_idx_t CbArgs_RegValueEventObject(duk_context* ctx, void* env);
-static duk_idx_t CbArgs_MouseEventObject(duk_context* ctx, void* env);
-static duk_idx_t CbArgs_SPTaskEventObject(duk_context* ctx, void* env);
-static duk_idx_t CbArgs_PIEventObject(duk_context* ctx, void* env);
+static duk_idx_t CbArgs_GenericEventObject(duk_context * ctx, void * env);
+static duk_idx_t CbArgs_EmuStateChangeEventObject(duk_context * ctx, void * env);
+static duk_idx_t CbArgs_ExecEventObject(duk_context * ctx, void * env);
+static duk_idx_t CbArgs_ReadEventObject(duk_context * ctx, void * env);
+static duk_idx_t CbArgs_WriteEventObject(duk_context * ctx, void * env);
+static duk_idx_t CbArgs_OpcodeEventObject(duk_context * ctx, void * env);
+static duk_idx_t CbArgs_RegValueEventObject(duk_context * ctx, void * env);
+static duk_idx_t CbArgs_MouseEventObject(duk_context * ctx, void * env);
+static duk_idx_t CbArgs_SPTaskEventObject(duk_context * ctx, void * env);
+static duk_idx_t CbArgs_PIEventObject(duk_context * ctx, void * env);
 
-static duk_ret_t RequireAddressOrAddressRange(duk_context* ctx, duk_idx_t idx, uint32_t* addrStart, uint32_t *addrEnd);
-static duk_ret_t RequireInterpreterCPU(duk_context* ctx);
+static duk_ret_t RequireAddressOrAddressRange(duk_context * ctx, duk_idx_t idx, uint32_t * addrStart, uint32_t * addrEnd);
+static duk_ret_t RequireInterpreterCPU(duk_context * ctx);
 
-void ScriptAPI::Define_events(duk_context* ctx)
+void ScriptAPI::Define_events(duk_context * ctx)
 {
     const DukPropListEntry props[] = {
-        { "onstatechange", DukCFunction(js_events_onstatechange) },
-        { "onexec",        DukCFunction(js_events_onexec) },
-        { "onread",        DukCFunction(js_events_onread) },
-        { "onwrite",       DukCFunction(js_events_onwrite) },
-        { "ongprvalue",    DukCFunction(js_events_ongprvalue) },
-        { "onopcode",      DukCFunction(js_events_onopcode) },
-        { "onpifread",     DukCFunction(js_events_onpifread) },
-        { "onsptask",      DukCFunction(js_events_onsptask) },
-        { "onpidma",       DukCFunction(js_events_onpidma) },
-        { "onmouseup",     DukCFunction(js_events_onmouseup) },
-        { "onmousedown",   DukCFunction(js_events_onmousedown) },
-        { "onmousemove",   DukCFunction(js_events_onmousemove) },
-        { "remove",        DukCFunction(js_events_remove) },
+        {"onstatechange", DukCFunction(js_events_onstatechange)},
+        {"onexec", DukCFunction(js_events_onexec)},
+        {"onread", DukCFunction(js_events_onread)},
+        {"onwrite", DukCFunction(js_events_onwrite)},
+        {"ongprvalue", DukCFunction(js_events_ongprvalue)},
+        {"onopcode", DukCFunction(js_events_onopcode)},
+        {"onpifread", DukCFunction(js_events_onpifread)},
+        {"onsptask", DukCFunction(js_events_onsptask)},
+        {"onpidma", DukCFunction(js_events_onpidma)},
+        {"onmouseup", DukCFunction(js_events_onmouseup)},
+        {"onmousedown", DukCFunction(js_events_onmousedown)},
+        {"onmousemove", DukCFunction(js_events_onmousemove)},
+        {"remove", DukCFunction(js_events_remove)},
         { nullptr }
     };
 
@@ -58,10 +59,10 @@ void ScriptAPI::Define_events(duk_context* ctx)
     DefineGlobalClass(ctx, "DrawEvent", js_DummyConstructor);
 
     const DukPropListEntry mouseEventStaticProps[] = {
-        { "NONE",   DukNumber(-1) },
-        { "LEFT",   DukNumber(0) },
-        { "MIDDLE", DukNumber(1) },
-        { "RIGHT",  DukNumber(2) },
+        {"NONE", DukNumber(-1)},
+        {"LEFT", DukNumber(0)},
+        {"MIDDLE", DukNumber(1)},
+        {"RIGHT", DukNumber(2)},
         {nullptr}
     };
 
@@ -70,17 +71,17 @@ void ScriptAPI::Define_events(duk_context* ctx)
 
 duk_ret_t ScriptAPI::js_events_onstatechange(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Function });
+    CheckArgs(ctx, {Arg_Function});
 
     JSAppCallbackID callbackId = AddAppCallback(ctx, 0, JS_HOOK_EMUSTATECHANGE,
-        CbArgs_EmuStateChangeEventObject);
+                                                CbArgs_EmuStateChangeEventObject);
     duk_push_uint(ctx, callbackId);
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_events_onexec(duk_context* ctx)
+duk_ret_t ScriptAPI::js_events_onexec(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Any, Arg_Function });
+    CheckArgs(ctx, {Arg_Any, Arg_Function});
 
     uint32_t addrStart, addrEnd;
     RequireAddressOrAddressRange(ctx, 0, &addrStart, &addrEnd);
@@ -88,7 +89,7 @@ duk_ret_t ScriptAPI::js_events_onexec(duk_context* ctx)
     RequireInterpreterCPU(ctx);
 
     JSAppCallback cb(GetInstance(ctx), duk_get_heapptr(ctx, 1),
-        CbCond_PcBetween, CbArgs_ExecEventObject);
+                     CbCond_PcBetween, CbArgs_ExecEventObject);
     cb.m_Params.addrStart = addrStart;
     cb.m_Params.addrEnd = addrEnd;
 
@@ -98,9 +99,9 @@ duk_ret_t ScriptAPI::js_events_onexec(duk_context* ctx)
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_events_onread(duk_context* ctx)
+duk_ret_t ScriptAPI::js_events_onread(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Any, Arg_Function });
+    CheckArgs(ctx, {Arg_Any, Arg_Function});
 
     uint32_t addrStart, addrEnd;
     RequireAddressOrAddressRange(ctx, 0, &addrStart, &addrEnd);
@@ -108,7 +109,7 @@ duk_ret_t ScriptAPI::js_events_onread(duk_context* ctx)
     RequireInterpreterCPU(ctx);
 
     JSAppCallback cb(GetInstance(ctx), duk_get_heapptr(ctx, 1),
-        CbCond_ReadAddrBetween, CbArgs_ReadEventObject);
+                     CbCond_ReadAddrBetween, CbArgs_ReadEventObject);
     cb.m_Params.addrStart = addrStart;
     cb.m_Params.addrEnd = addrEnd;
 
@@ -118,9 +119,9 @@ duk_ret_t ScriptAPI::js_events_onread(duk_context* ctx)
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_events_onwrite(duk_context* ctx)
+duk_ret_t ScriptAPI::js_events_onwrite(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Any, Arg_Function });
+    CheckArgs(ctx, {Arg_Any, Arg_Function});
 
     uint32_t addrStart, addrEnd;
     RequireAddressOrAddressRange(ctx, 0, &addrStart, &addrEnd);
@@ -128,7 +129,7 @@ duk_ret_t ScriptAPI::js_events_onwrite(duk_context* ctx)
     RequireInterpreterCPU(ctx);
 
     JSAppCallback cb(GetInstance(ctx), duk_get_heapptr(ctx, 1),
-        CbCond_WriteAddrBetween, CbArgs_WriteEventObject);
+                     CbCond_WriteAddrBetween, CbArgs_WriteEventObject);
     cb.m_Params.addrStart = addrStart;
     cb.m_Params.addrEnd = addrEnd;
 
@@ -138,9 +139,9 @@ duk_ret_t ScriptAPI::js_events_onwrite(duk_context* ctx)
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_events_onopcode(duk_context* ctx)
+duk_ret_t ScriptAPI::js_events_onopcode(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Any, Arg_Number, Arg_Number, Arg_Function });
+    CheckArgs(ctx, {Arg_Any, Arg_Number, Arg_Number, Arg_Function});
 
     uint32_t addrStart, addrEnd;
     RequireAddressOrAddressRange(ctx, 0, &addrStart, &addrEnd);
@@ -151,7 +152,7 @@ duk_ret_t ScriptAPI::js_events_onopcode(duk_context* ctx)
     uint32_t mask = duk_get_uint(ctx, 2);
 
     JSAppCallback cb(GetInstance(ctx), duk_get_heapptr(ctx, 3),
-        CbCond_PcBetween_OpcodeEquals, CbArgs_OpcodeEventObject);
+                     CbCond_PcBetween_OpcodeEquals, CbArgs_OpcodeEventObject);
     cb.m_Params.addrStart = addrStart;
     cb.m_Params.addrEnd = addrEnd;
     cb.m_Params.opcode = opcode;
@@ -163,9 +164,9 @@ duk_ret_t ScriptAPI::js_events_onopcode(duk_context* ctx)
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_events_ongprvalue(duk_context* ctx)
+duk_ret_t ScriptAPI::js_events_ongprvalue(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Any, Arg_Number, Arg_Number, Arg_Function });
+    CheckArgs(ctx, {Arg_Any, Arg_Number, Arg_Number, Arg_Function});
 
     uint32_t addrStart, addrEnd;
     RequireAddressOrAddressRange(ctx, 0, &addrStart, &addrEnd);
@@ -173,7 +174,7 @@ duk_ret_t ScriptAPI::js_events_ongprvalue(duk_context* ctx)
     RequireInterpreterCPU(ctx);
 
     JSAppCallback cb(GetInstance(ctx), duk_get_heapptr(ctx, 3),
-        CbCond_PcBetween_GprValueEquals, CbArgs_RegValueEventObject);
+                     CbCond_PcBetween_GprValueEquals, CbArgs_RegValueEventObject);
     cb.m_Params.addrStart = addrStart;
     cb.m_Params.addrEnd = addrEnd;
     cb.m_Params.regIndices = duk_get_uint(ctx, 1);
@@ -185,63 +186,63 @@ duk_ret_t ScriptAPI::js_events_ongprvalue(duk_context* ctx)
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_events_onpifread(duk_context* ctx)
+duk_ret_t ScriptAPI::js_events_onpifread(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Function });
+    CheckArgs(ctx, {Arg_Function});
 
     JSAppCallbackID callbackId = AddAppCallback(ctx, 0, JS_HOOK_PIFREAD, CbArgs_GenericEventObject);
     duk_push_uint(ctx, callbackId);
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_events_onsptask(duk_context* ctx)
+duk_ret_t ScriptAPI::js_events_onsptask(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Function });
+    CheckArgs(ctx, {Arg_Function});
 
     JSAppCallbackID callbackId = AddAppCallback(ctx, 0, JS_HOOK_RSPTASK, CbArgs_SPTaskEventObject);
     duk_push_uint(ctx, callbackId);
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_events_onpidma(duk_context* ctx)
+duk_ret_t ScriptAPI::js_events_onpidma(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Function });
+    CheckArgs(ctx, {Arg_Function});
 
     JSAppCallbackID callbackId = AddAppCallback(ctx, 0, JS_HOOK_PIDMA, CbArgs_PIEventObject);
     duk_push_uint(ctx, callbackId);
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_events_onmouseup(duk_context* ctx)
+duk_ret_t ScriptAPI::js_events_onmouseup(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Function });
+    CheckArgs(ctx, {Arg_Function});
 
     JSAppCallbackID callbackId = AddAppCallback(ctx, 0, JS_HOOK_MOUSEUP, CbArgs_MouseEventObject);
     duk_push_uint(ctx, callbackId);
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_events_onmousedown(duk_context* ctx)
+duk_ret_t ScriptAPI::js_events_onmousedown(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Function });
+    CheckArgs(ctx, {Arg_Function});
 
     JSAppCallbackID callbackId = AddAppCallback(ctx, 0, JS_HOOK_MOUSEDOWN, CbArgs_MouseEventObject);
     duk_push_uint(ctx, callbackId);
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_events_onmousemove(duk_context* ctx)
+duk_ret_t ScriptAPI::js_events_onmousemove(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Function });
+    CheckArgs(ctx, {Arg_Function});
 
     JSAppCallbackID callbackId = AddAppCallback(ctx, 0, JS_HOOK_MOUSEMOVE, CbArgs_MouseEventObject);
     duk_push_uint(ctx, callbackId);
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_events_remove(duk_context* ctx)
+duk_ret_t ScriptAPI::js_events_remove(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Number });
+    CheckArgs(ctx, {Arg_Number});
 
     JSAppCallbackID callbackId = (JSAppCallbackID)duk_get_uint(ctx, 0);
 
@@ -254,9 +255,9 @@ duk_ret_t ScriptAPI::js_events_remove(duk_context* ctx)
     return 0;
 }
 
-bool CbCond_ReadAddrBetween(JSAppCallback* cb, void* _env)
+bool CbCond_ReadAddrBetween(JSAppCallback * cb, void * _env)
 {
-    JSHookCpuStepEnv* env = (JSHookCpuStepEnv*)_env;
+    JSHookCpuStepEnv * env = (JSHookCpuStepEnv *)_env;
 
     if (!env->opInfo.IsLoadCommand())
     {
@@ -269,9 +270,9 @@ bool CbCond_ReadAddrBetween(JSAppCallback* cb, void* _env)
             addr <= cb->m_Params.addrEnd);
 }
 
-bool CbCond_WriteAddrBetween(JSAppCallback* cb, void* _env)
+bool CbCond_WriteAddrBetween(JSAppCallback * cb, void * _env)
 {
-    JSHookCpuStepEnv* env = (JSHookCpuStepEnv*)_env;
+    JSHookCpuStepEnv * env = (JSHookCpuStepEnv *)_env;
 
     if (!env->opInfo.IsStoreCommand())
     {
@@ -284,38 +285,38 @@ bool CbCond_WriteAddrBetween(JSAppCallback* cb, void* _env)
             addr <= cb->m_Params.addrEnd);
 }
 
-bool CbCond_PcBetween(JSAppCallback* cb, void* _env)
+bool CbCond_PcBetween(JSAppCallback * cb, void * _env)
 {
-    JSHookCpuStepEnv* env = (JSHookCpuStepEnv*)_env;
+    JSHookCpuStepEnv * env = (JSHookCpuStepEnv *)_env;
     return (env->pc >= cb->m_Params.addrStart &&
             env->pc <= cb->m_Params.addrEnd);
 }
 
-bool CbCond_PcBetween_OpcodeEquals(JSAppCallback* cb, void* _env)
+bool CbCond_PcBetween_OpcodeEquals(JSAppCallback * cb, void * _env)
 {
     if (!CbCond_PcBetween(cb, _env))
     {
         return false;
     }
 
-    JSHookCpuStepEnv* env = (JSHookCpuStepEnv*)_env;
+    JSHookCpuStepEnv * env = (JSHookCpuStepEnv *)_env;
     return cb->m_Params.opcode == (env->opInfo.m_OpCode.Value & cb->m_Params.opcodeMask);
 }
 
-static bool CbCond_PcBetween_GprValueEquals(JSAppCallback* cb, void* _env)
+static bool CbCond_PcBetween_GprValueEquals(JSAppCallback * cb, void * _env)
 {
     if (!CbCond_PcBetween(cb, _env))
     {
         return false;
     }
 
-    JSHookCpuStepEnv* env = (JSHookCpuStepEnv*)_env;
+    JSHookCpuStepEnv * env = (JSHookCpuStepEnv *)_env;
 
-    for(int i = 0; i < 32; i++)
+    for (int i = 0; i < 32; i++)
     {
-        if(cb->m_Params.regIndices & (1 << i))
+        if (cb->m_Params.regIndices & (1 << i))
         {
-            if(g_Reg->m_GPR[i].UW[0] == cb->m_Params.regValue)
+            if (g_Reg->m_GPR[i].UW[0] == cb->m_Params.regValue)
             {
                 env->outAffectedRegIndex = i;
                 return true;
@@ -326,16 +327,16 @@ static bool CbCond_PcBetween_GprValueEquals(JSAppCallback* cb, void* _env)
     return false;
 }
 
-duk_idx_t CbArgs_EmuStateChangeEventObject(duk_context* ctx, void* _env)
+duk_idx_t CbArgs_EmuStateChangeEventObject(duk_context * ctx, void * _env)
 {
-    CScriptInstance* inst = GetInstance(ctx);
-    JSHookEmuStateChangeEnv* env = (JSHookEmuStateChangeEnv*)_env;
+    CScriptInstance * inst = GetInstance(ctx);
+    JSHookEmuStateChangeEnv * env = (JSHookEmuStateChangeEnv *)_env;
     duk_push_object(ctx);
     SetDummyConstructor(ctx, -1, "EmuStateChangeEvent");
 
     const DukPropListEntry props[] = {
-        { "callbackId", DukUInt(inst->CallbackId()) },
-        { "state",      DukUInt(env->state) },
+        {"callbackId", DukUInt(inst->CallbackId())},
+        {"state", DukUInt(env->state)},
         { nullptr }
     };
 
@@ -344,14 +345,14 @@ duk_idx_t CbArgs_EmuStateChangeEventObject(duk_context* ctx, void* _env)
     return 1;
 }
 
-duk_idx_t CbArgs_GenericEventObject(duk_context* ctx, void* /*_env*/)
+duk_idx_t CbArgs_GenericEventObject(duk_context * ctx, void * /*_env*/)
 {
-    CScriptInstance* inst = GetInstance(ctx);
+    CScriptInstance * inst = GetInstance(ctx);
     duk_push_object(ctx);
     SetDummyConstructor(ctx, -1, "GenericEvent");
-    
+
     const DukPropListEntry props[] = {
-        { "callbackId", DukUInt(inst->CallbackId()) },
+        {"callbackId", DukUInt(inst->CallbackId())},
         { nullptr }
     };
 
@@ -360,16 +361,16 @@ duk_idx_t CbArgs_GenericEventObject(duk_context* ctx, void* /*_env*/)
     return 1;
 }
 
-duk_idx_t CbArgs_ExecEventObject(duk_context* ctx, void* _env)
+duk_idx_t CbArgs_ExecEventObject(duk_context * ctx, void * _env)
 {
-    CScriptInstance* inst = GetInstance(ctx);
-    JSHookCpuStepEnv* env = (JSHookCpuStepEnv*)_env;
+    CScriptInstance * inst = GetInstance(ctx);
+    JSHookCpuStepEnv * env = (JSHookCpuStepEnv *)_env;
     duk_push_object(ctx);
     SetDummyConstructor(ctx, -1, "CPUExecEvent");
-    
+
     const DukPropListEntry props[] = {
-        { "callbackId", DukUInt(inst->CallbackId()) },
-        { "pc", DukUInt(env->pc) },
+        {"callbackId", DukUInt(inst->CallbackId())},
+        {"pc", DukUInt(env->pc)},
         { nullptr }
     };
 
@@ -378,12 +379,12 @@ duk_idx_t CbArgs_ExecEventObject(duk_context* ctx, void* _env)
     return 1;
 }
 
-duk_idx_t CbArgs_ReadEventObject(duk_context* ctx, void* _env)
+duk_idx_t CbArgs_ReadEventObject(duk_context * ctx, void * _env)
 {
-    CScriptInstance* inst = GetInstance(ctx);
-    CDebuggerUI* debugger = inst->Debugger();
-    JSHookCpuStepEnv* env = (JSHookCpuStepEnv*)_env;
-    
+    CScriptInstance * inst = GetInstance(ctx);
+    CDebuggerUI * debugger = inst->Debugger();
+    JSHookCpuStepEnv * env = (JSHookCpuStepEnv *)_env;
+
     uint32_t address = env->opInfo.GetLoadStoreAddress();
 
     uint8_t op = env->opInfo.m_OpCode.op;
@@ -394,17 +395,18 @@ duk_idx_t CbArgs_ReadEventObject(duk_context* ctx, void* _env)
     SetDummyConstructor(ctx, -1, "CPUReadWriteEvent");
 
     const DukPropListEntry props[] = {
-        { "callbackId", DukUInt(inst->CallbackId()) },
-        { "pc", DukUInt(env->pc) },
-        { "address", DukUInt(address) },
-        { "reg", DukUInt(rt) },
-        { "fpu", DukBoolean(bFPU) },
+        {"callbackId", DukUInt(inst->CallbackId())},
+        {"pc", DukUInt(env->pc)},
+        {"address", DukUInt(address)},
+        {"reg", DukUInt(rt)},
+        {"fpu", DukBoolean(bFPU)},
         { nullptr }
     };
 
     DukPutPropList(ctx, -1, props);
 
-    union {
+    union
+    {
         uint8_t u8;
         int8_t s8;
         uint16_t u16;
@@ -415,9 +417,9 @@ duk_idx_t CbArgs_ReadEventObject(duk_context* ctx, void* _env)
         double f64;
         uint64_t u64;
     } value = {0};
-    
+
     bool bNeedUpper32 = false;
-    
+
     switch (env->opInfo.m_OpCode.op)
     {
     case R4300i_LB:
@@ -528,11 +530,11 @@ duk_idx_t CbArgs_ReadEventObject(duk_context* ctx, void* _env)
     return 1;
 }
 
-duk_idx_t CbArgs_WriteEventObject(duk_context* ctx, void* _env)
+duk_idx_t CbArgs_WriteEventObject(duk_context * ctx, void * _env)
 {
-    CScriptInstance* inst = GetInstance(ctx);
-    CDebuggerUI* debugger = inst->Debugger();
-    JSHookCpuStepEnv* env = (JSHookCpuStepEnv*)_env;
+    CScriptInstance * inst = GetInstance(ctx);
+    CDebuggerUI * debugger = inst->Debugger();
+    JSHookCpuStepEnv * env = (JSHookCpuStepEnv *)_env;
 
     uint32_t address = env->opInfo.GetLoadStoreAddress();
 
@@ -544,11 +546,11 @@ duk_idx_t CbArgs_WriteEventObject(duk_context* ctx, void* _env)
     SetDummyConstructor(ctx, -1, "CPUReadWriteEvent");
 
     const DukPropListEntry props[] = {
-        { "callbackId", DukUInt(inst->CallbackId()) },
-        { "pc", DukUInt(env->pc) },
-        { "address", DukUInt(address) },
-        { "reg", DukUInt(rt) },
-        { "fpu", DukBoolean(bFPU) },
+        {"callbackId", DukUInt(inst->CallbackId())},
+        {"pc", DukUInt(env->pc)},
+        {"address", DukUInt(address)},
+        {"reg", DukUInt(rt)},
+        {"fpu", DukBoolean(bFPU)},
         { nullptr }
     };
 
@@ -640,21 +642,21 @@ duk_idx_t CbArgs_WriteEventObject(duk_context* ctx, void* _env)
     }
 
     duk_freeze(ctx, -1);
-    
+
     return 1;
 }
 
-duk_idx_t CbArgs_OpcodeEventObject(duk_context* ctx, void* _env)
+duk_idx_t CbArgs_OpcodeEventObject(duk_context * ctx, void * _env)
 {
-    CScriptInstance* inst = GetInstance(ctx);
-    JSHookCpuStepEnv* env = (JSHookCpuStepEnv*)_env;
+    CScriptInstance * inst = GetInstance(ctx);
+    JSHookCpuStepEnv * env = (JSHookCpuStepEnv *)_env;
     duk_push_object(ctx);
     SetDummyConstructor(ctx, -1, "CPUOpcodeEvent");
 
     const DukPropListEntry props[] = {
-        { "callbackId", DukUInt(inst->CallbackId()) },
-        { "pc", DukUInt(env->pc) },
-        { "opcode", DukUInt(env->opInfo.m_OpCode.Value) },
+        {"callbackId", DukUInt(inst->CallbackId())},
+        {"pc", DukUInt(env->pc)},
+        {"opcode", DukUInt(env->opInfo.m_OpCode.Value)},
         { nullptr }
     };
 
@@ -663,18 +665,18 @@ duk_idx_t CbArgs_OpcodeEventObject(duk_context* ctx, void* _env)
     return 1;
 }
 
-duk_idx_t CbArgs_RegValueEventObject(duk_context* ctx, void* _env)
+duk_idx_t CbArgs_RegValueEventObject(duk_context * ctx, void * _env)
 {
-    CScriptInstance* inst = GetInstance(ctx);
-    JSHookCpuStepEnv* env = (JSHookCpuStepEnv*)_env;
+    CScriptInstance * inst = GetInstance(ctx);
+    JSHookCpuStepEnv * env = (JSHookCpuStepEnv *)_env;
     duk_push_object(ctx);
     SetDummyConstructor(ctx, -1, "CPURegValueEvent");
 
     const DukPropListEntry props[] = {
-        { "callbackId", DukUInt(inst->CallbackId()) },
-        { "pc", DukUInt(env->pc) },
-        { "value", DukUInt(g_Reg->m_GPR[env->outAffectedRegIndex].UW[0]) },
-        { "reg", DukUInt(env->outAffectedRegIndex) },
+        {"callbackId", DukUInt(inst->CallbackId())},
+        {"pc", DukUInt(env->pc)},
+        {"value", DukUInt(g_Reg->m_GPR[env->outAffectedRegIndex].UW[0])},
+        {"reg", DukUInt(env->outAffectedRegIndex)},
         { nullptr }
     };
 
@@ -683,18 +685,18 @@ duk_idx_t CbArgs_RegValueEventObject(duk_context* ctx, void* _env)
     return 1;
 }
 
-static duk_idx_t CbArgs_MouseEventObject(duk_context* ctx, void* _env)
+static duk_idx_t CbArgs_MouseEventObject(duk_context * ctx, void * _env)
 {
-    CScriptInstance* inst = GetInstance(ctx);
-    JSHookMouseEnv* env = (JSHookMouseEnv*)_env;
+    CScriptInstance * inst = GetInstance(ctx);
+    JSHookMouseEnv * env = (JSHookMouseEnv *)_env;
     duk_push_object(ctx);
     SetDummyConstructor(ctx, -1, "MouseEvent");
 
     const DukPropListEntry props[] = {
-        { "callbackId", DukUInt(inst->CallbackId()) },
-        { "button", DukInt(env->button) },
-        { "x", DukInt(env->x) },
-        { "y", DukInt(env->y) },
+        {"callbackId", DukUInt(inst->CallbackId())},
+        {"button", DukInt(env->button)},
+        {"x", DukInt(env->x)},
+        {"y", DukInt(env->y)},
         { nullptr }
     };
     
@@ -703,31 +705,31 @@ static duk_idx_t CbArgs_MouseEventObject(duk_context* ctx, void* _env)
     return 1;
 }
 
-static duk_idx_t CbArgs_SPTaskEventObject(duk_context* ctx, void* _env)
+static duk_idx_t CbArgs_SPTaskEventObject(duk_context * ctx, void * _env)
 {
-    CScriptInstance* inst = GetInstance(ctx);
-    JSHookSpTaskEnv* env = (JSHookSpTaskEnv*)_env;
+    CScriptInstance * inst = GetInstance(ctx);
+    JSHookSpTaskEnv * env = (JSHookSpTaskEnv *)_env;
     duk_push_object(ctx);
     SetDummyConstructor(ctx, -1, "SPTaskEvent");
 
     const DukPropListEntry props[] = {
-        { "callbackId",        DukUInt(inst->CallbackId()) },
-        { "taskType",          DukUInt(env->taskType) },
-        { "taskFlags",         DukUInt(env->taskFlags) },
-        { "ucodeBootAddress",  DukUInt(env->ucodeBootAddress | 0x80000000) },
-        { "ucodeBootSize",     DukUInt(env->ucodeBootSize) },
-        { "ucodeAddress",      DukUInt(env->ucodeAddress | 0x80000000) },
-        { "ucodeSize",         DukUInt(env->ucodeSize) },
-        { "ucodeDataAddress",  DukUInt(env->ucodeDataAddress | 0x80000000) },
-        { "ucodeDataSize",     DukUInt(env->ucodeDataSize) },
-        { "dramStackAddress",  DukUInt(env->dramStackAddress | 0x80000000) },
-        { "dramStackSize",     DukUInt(env->dramStackSize) },
-        { "outputBuffAddress", DukUInt(env->outputBuffAddress | 0x80000000) },
-        { "outputBuffSize",    DukUInt(env->outputBuffSize) },
-        { "dataAddress",       DukUInt(env->dataAddress | 0x80000000) },
-        { "dataSize",          DukUInt(env->dataSize) },
-        { "yieldDataAddress",  DukUInt(env->yieldDataAddress | 0x80000000) },
-        { "yieldDataSize",     DukUInt(env->yieldDataSize) },
+        {"callbackId", DukUInt(inst->CallbackId())},
+        {"taskType", DukUInt(env->taskType)},
+        {"taskFlags", DukUInt(env->taskFlags)},
+        {"ucodeBootAddress", DukUInt(env->ucodeBootAddress | 0x80000000)},
+        {"ucodeBootSize", DukUInt(env->ucodeBootSize)},
+        {"ucodeAddress", DukUInt(env->ucodeAddress | 0x80000000)},
+        {"ucodeSize", DukUInt(env->ucodeSize)},
+        {"ucodeDataAddress", DukUInt(env->ucodeDataAddress | 0x80000000)},
+        {"ucodeDataSize", DukUInt(env->ucodeDataSize)},
+        {"dramStackAddress", DukUInt(env->dramStackAddress | 0x80000000)},
+        {"dramStackSize", DukUInt(env->dramStackSize)},
+        {"outputBuffAddress", DukUInt(env->outputBuffAddress | 0x80000000)},
+        {"outputBuffSize", DukUInt(env->outputBuffSize)},
+        {"dataAddress", DukUInt(env->dataAddress | 0x80000000)},
+        {"dataSize", DukUInt(env->dataSize)},
+        {"yieldDataAddress", DukUInt(env->yieldDataAddress | 0x80000000)},
+        {"yieldDataSize", DukUInt(env->yieldDataSize)},
         { nullptr }
     };
 
@@ -736,19 +738,19 @@ static duk_idx_t CbArgs_SPTaskEventObject(duk_context* ctx, void* _env)
     return 1;
 }
 
-static duk_idx_t CbArgs_PIEventObject(duk_context* ctx, void* _env)
+static duk_idx_t CbArgs_PIEventObject(duk_context * ctx, void * _env)
 {
-    CScriptInstance* inst = GetInstance(ctx);
-    JSHookPiDmaEnv* env = (JSHookPiDmaEnv*)_env;
+    CScriptInstance * inst = GetInstance(ctx);
+    JSHookPiDmaEnv * env = (JSHookPiDmaEnv *)_env;
     duk_push_object(ctx);
     SetDummyConstructor(ctx, -1, "PIEvent");
 
     const DukPropListEntry props[] = {
-        { "callbackId",  DukUInt(inst->CallbackId()) },
-        { "direction",   DukUInt(env->direction) },
-        { "dramAddress", DukUInt(env->dramAddress | 0x80000000) },
-        { "cartAddress", DukUInt(env->cartAddress | 0xA0000000) },
-        { "length",      DukUInt(env->length + 1) },
+        {"callbackId", DukUInt(inst->CallbackId())},
+        {"direction", DukUInt(env->direction)},
+        {"dramAddress", DukUInt(env->dramAddress | 0x80000000)},
+        {"cartAddress", DukUInt(env->cartAddress | 0xA0000000)},
+        {"length", DukUInt(env->length + 1)},
         { nullptr }
     };
 
@@ -757,14 +759,14 @@ static duk_idx_t CbArgs_PIEventObject(duk_context* ctx, void* _env)
     return 1;
 }
 
-duk_ret_t RequireAddressOrAddressRange(duk_context* ctx, duk_idx_t idx, uint32_t* addrStart, uint32_t* addrEnd)
+duk_ret_t RequireAddressOrAddressRange(duk_context * ctx, duk_idx_t idx, uint32_t * addrStart, uint32_t * addrEnd)
 {
-    if(duk_is_number(ctx, idx))
+    if (duk_is_number(ctx, idx))
     {
         if (abs(duk_get_number(ctx, idx)) > 0xFFFFFFFF)
         {
             duk_push_error_object(ctx, DUK_ERR_RANGE_ERROR,
-                "address is out of range");
+                                  "address is out of range");
             return duk_throw(ctx);
         }
 
@@ -774,25 +776,25 @@ duk_ret_t RequireAddressOrAddressRange(duk_context* ctx, duk_idx_t idx, uint32_t
         return 0;
     }
 
-    if(duk_is_object(ctx, idx))
+    if (duk_is_object(ctx, idx))
     {
-        if(!duk_has_prop_string(ctx, idx, "start") ||
-           !duk_has_prop_string(ctx, idx, "end"))
+        if (!duk_has_prop_string(ctx, idx, "start") ||
+            !duk_has_prop_string(ctx, idx, "end"))
         {
             duk_push_error_object(ctx, DUK_ERR_REFERENCE_ERROR,
-                "object is missing 'start' or 'end' property");
+                                  "object is missing 'start' or 'end' property");
             return duk_throw(ctx);
         }
 
         duk_get_prop_string(ctx, idx, "start");
         duk_get_prop_string(ctx, idx, "end");
 
-        if(!duk_is_number(ctx, -2) ||
-           !duk_is_number(ctx, -1))
+        if (!duk_is_number(ctx, -2) ||
+            !duk_is_number(ctx, -1))
         {
             duk_pop_n(ctx, 2);
             duk_push_error_object(ctx, DUK_ERR_REFERENCE_ERROR,
-                "'start' and 'end' properties must be numbers");
+                                  "'start' and 'end' properties must be numbers");
             return duk_throw(ctx);
         }
 
@@ -800,7 +802,7 @@ duk_ret_t RequireAddressOrAddressRange(duk_context* ctx, duk_idx_t idx, uint32_t
             abs(duk_get_number(ctx, -1)) > 0xFFFFFFFF)
         {
             duk_push_error_object(ctx, DUK_ERR_RANGE_ERROR,
-                "'start' or 'end' property out of range");
+                                  "'start' or 'end' property out of range");
             return duk_throw(ctx);
         }
 
@@ -811,17 +813,17 @@ duk_ret_t RequireAddressOrAddressRange(duk_context* ctx, duk_idx_t idx, uint32_t
     }
 
     duk_push_error_object(ctx, DUK_ERR_TYPE_ERROR,
-        "argument %d invalid; expected number or object", idx);
+                          "argument %d invalid; expected number or object", idx);
     return duk_throw(ctx);
 }
 
-duk_ret_t RequireInterpreterCPU(duk_context* ctx)
+duk_ret_t RequireInterpreterCPU(duk_context * ctx)
 {
     if (!g_Settings->LoadBool(Setting_ForceInterpreterCPU) &&
         (CPU_TYPE)g_Settings->LoadDword(Game_CpuType) != CPU_Interpreter)
     {
         duk_push_error_object(ctx, DUK_ERR_ERROR,
-            "this feature requires the interpreter core");
+                              "this feature requires the interpreter core");
         return duk_throw(ctx);
     }
 

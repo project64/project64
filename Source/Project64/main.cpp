@@ -1,7 +1,8 @@
 #include "stdafx.h"
-#include <Project64-core/AppInit.h>
-#include "UserInterface/WelcomeScreen.h"
+
 #include "Settings/UISettings.h"
+#include "UserInterface/WelcomeScreen.h"
+#include <Project64-core/AppInit.h>
 
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
@@ -15,7 +16,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         }
 
         // Create the main window with menu
-		
+
         WriteTrace(TraceUserInterface, TraceDebug, "Create main window");
         CMainGui MainWindow(true, stdstr_f("Project64 %s", VER_FILE_VERSION_STR).c_str()), HiddenWindow(false);
         CMainMenu MainMenu(&MainWindow);
@@ -34,13 +35,12 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         {
             // Handle combo loading (N64 ROM and 64DD Disk)
 
-            MainWindow.Show(true);	// Show the main window
+            MainWindow.Show(true);
 
             stdstr extcombo = CPath(g_Settings->LoadStringVal(Cmd_ComboDiskFile)).GetExtension();
             stdstr ext = CPath(g_Settings->LoadStringVal(Cmd_RomFile)).GetExtension();
 
-            if (g_Settings->LoadStringVal(Cmd_ComboDiskFile).length() > 0
-                && ((_stricmp(extcombo.c_str(), "ndd") == 0) || (_stricmp(extcombo.c_str(), "d64") == 0)))
+            if (g_Settings->LoadStringVal(Cmd_ComboDiskFile).length() > 0 && ((_stricmp(extcombo.c_str(), "ndd") == 0) || (_stricmp(extcombo.c_str(), "d64") == 0)))
             {
                 if ((!(_stricmp(ext.c_str(), "ndd") == 0)) && (!(_stricmp(ext.c_str(), "d64") == 0)))
                 {
@@ -54,7 +54,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         {
             // Handle single game (N64 ROM or 64DD Disk)
 
-            MainWindow.Show(true);	// Show the main window
+            MainWindow.Show(true);
 
             stdstr ext = CPath(g_Settings->LoadStringVal(Cmd_RomFile)).GetExtension();
             if ((!(_stricmp(ext.c_str(), "ndd") == 0)) && (!(_stricmp(ext.c_str(), "d64") == 0)))

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include <Project64/Settings/UISettings.h>
 
 #include <commctrl.h>

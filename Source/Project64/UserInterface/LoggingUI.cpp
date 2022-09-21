@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include <Project64-core/Logging.h>
 #include <Project64-core/Settings/LoggingSettings.h>
 #include <prsht.h>
@@ -102,7 +103,7 @@ LRESULT CALLBACK LogPifProc(HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM lPar
     }
     break;
     case WM_NOTIFY:
-        if (((NMHDR FAR *) lParam)->code != PSN_APPLY)
+        if (((NMHDR FAR *)lParam)->code != PSN_APPLY)
         {
             break;
         }
@@ -138,7 +139,7 @@ LRESULT CALLBACK LogRegProc(HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM lPar
     }
     break;
     case WM_NOTIFY:
-        if (((NMHDR FAR *) lParam)->code != PSN_APPLY)
+        if (((NMHDR FAR *)lParam)->code != PSN_APPLY)
         {
             break;
         }

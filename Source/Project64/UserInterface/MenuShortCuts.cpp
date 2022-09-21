@@ -192,7 +192,7 @@ CMenuShortCutKey::CMenuShortCutKey(WORD key, bool bCtrl, bool bAlt, bool bShift,
     m_ShortCutName = ShortCutName.ToUTF16();
 }
 
-VIRTUAL_KEY * CMenuShortCutKey::VirtualKeyList(int &Size)
+VIRTUAL_KEY * CMenuShortCutKey::VirtualKeyList(int & Size)
 {
     Size = sizeof(m_VirtualKeyList) / sizeof(m_VirtualKeyList[0]);
     return (VIRTUAL_KEY *)m_VirtualKeyList;
@@ -479,7 +479,7 @@ void CShortCuts::Load(bool InitialValues)
         CMenuShortCutKey::ACCESS_MODE AccessMode;
         int ID, key, bCtrl, bAlt, bShift, bUserAdded, bInactive;
 
-        FILE *file = fopen(ShortCutFile, "r");
+        FILE * file = fopen(ShortCutFile, "r");
         if (file)
         {
             do
@@ -488,7 +488,7 @@ void CShortCuts::Load(bool InitialValues)
                 if (fgets(Line, sizeof(Line), file) != nullptr)
                 {
                     sscanf(Line, "%d,%d,%d,%d,%d,%d,%d,%d", &ID, &key, &bCtrl, &bAlt, &bShift, &AccessMode,
-                        &bUserAdded, &bInactive);
+                           &bUserAdded, &bInactive);
 
                     MSC_MAP::iterator item = m_ShortCuts.find(ID);
                     if (item == m_ShortCuts.end()) { continue; }
@@ -505,7 +505,7 @@ void CShortCuts::Save(void)
     CGuard CS(m_CS);
 
     stdstr FileName = UISettingsLoadStringVal(SupportFile_ShortCuts);
-    FILE *file = fopen(FileName.c_str(), "w");
+    FILE * file = fopen(FileName.c_str(), "w");
     if (file == nullptr)
     {
         return;
@@ -516,14 +516,14 @@ void CShortCuts::Save(void)
         for (SHORTCUT_KEY_LIST::const_iterator ShortCut = Item->second.GetAccelItems().begin(); ShortCut != Item->second.GetAccelItems().end(); ShortCut++)
         {
             fprintf(file, "%d,%d,%d,%d,%d,%d,%d,%d\n",
-                Item->first,
-                ShortCut->Key(),
-                ShortCut->Ctrl(),
-                ShortCut->Alt(),
-                ShortCut->Shift(),
-                ShortCut->AccessMode(),
-                ShortCut->UserAdded(),
-                ShortCut->Inactive());
+                    Item->first,
+                    ShortCut->Key(),
+                    ShortCut->Ctrl(),
+                    ShortCut->Alt(),
+                    ShortCut->Shift(),
+                    ShortCut->AccessMode(),
+                    ShortCut->UserAdded(),
+                    ShortCut->Inactive());
         }
     }
     fclose(file);

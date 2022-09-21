@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "UISettings.h"
 #include <Project64-core/Settings/SettingType/SettingsType-Application.h>
 #include <Project64-core/Settings/SettingType/SettingsType-ApplicationIndex.h>
@@ -13,7 +14,7 @@ void AddUISetting(UISettingID TypeID, CSettingType * Handler)
     g_Settings->AddHandler((SettingID)TypeID, Handler);
 }
 
-void RegisterUISettings (void)
+void RegisterUISettings(void)
 {
     // Information - temporary keys
     AddUISetting(Info_ShortCutsChanged, new CSettingTypeTempBool(false));
@@ -24,10 +25,10 @@ void RegisterUISettings (void)
 
     // Settings location
     AddUISetting(Setting_PluginPageFirst, new CSettingTypeApplication("Settings", "Plugin Page First", false));
-    AddUISetting(Setting_DisableScrSaver, new CSettingTypeApplication("Settings", "Disable Screen Saver", (uint32_t)true));
+    AddUISetting(Setting_DisableScrSaver, new CSettingTypeApplication("Settings", "Disable Screen Saver", (uint32_t) true));
     AddUISetting(Setting_EnableDiscordRPC, new CSettingTypeApplication("Settings", "Enable Discord RPC", true));
-    AddUISetting(Setting_AutoSleep, new CSettingTypeApplication("Settings", "Auto Sleep", (uint32_t)true));
-    AddUISetting(Setting_AutoFullscreen, new CSettingTypeApplication("Settings", "Auto Full Screen", (uint32_t)false));
+    AddUISetting(Setting_AutoSleep, new CSettingTypeApplication("Settings", "Auto Sleep", (uint32_t) true));
+    AddUISetting(Setting_AutoFullscreen, new CSettingTypeApplication("Settings", "Auto Full Screen", (uint32_t) false));
 
     // RDB settings
     AddUISetting(Rdb_Status, new CSettingTypeRomDatabase("Status", "Unknown"));
@@ -38,7 +39,7 @@ void RegisterUISettings (void)
     AddUISetting(UserInterface_InFullScreen, new CSettingTypeTempBool(false));
     AddUISetting(UserInterface_MainWindowTop, new CSettingTypeApplication("Main Window", "Top", Default_None));
     AddUISetting(UserInterface_MainWindowLeft, new CSettingTypeApplication("Main Window", "Left", Default_None));
-    AddUISetting(UserInterface_AlwaysOnTop, new CSettingTypeApplication("Settings", "Always on top", (uint32_t)false));
+    AddUISetting(UserInterface_AlwaysOnTop, new CSettingTypeApplication("Settings", "Always on top", (uint32_t) false));
     AddUISetting(UserInterface_ShowStatusBar, new CSettingTypeApplication("Settings", "Show Status Bar", true));
     AddUISetting(UserInterface_ExitFullscreenOnLoseFocus, new CSettingTypeApplication("Settings", "Exit Full Screen On Lose Focus", false));
     AddUISetting(UserInterface_ShowingNagWindow, new CSettingTypeTempBool(false));
@@ -77,7 +78,7 @@ void RegisterUISettings (void)
     AddUISetting(DebuggerUI_ExceptionBPPos, new CSettingTypeApplication("Debugger UI", "Exception BP Pos", Default_None));
 }
 
-float DPIScale(void) 
+float DPIScale(void)
 {
     return CClientDC(0).GetDeviceCaps(LOGPIXELSX) / 96.0f;
 }
@@ -124,7 +125,7 @@ bool UISettingsLoadBool(UISettingID Type)
 
 bool UISettingsLoadBoolIndex(UISettingID Type, int32_t index)
 {
-    return g_Settings->LoadBoolIndex((SettingID)Type,index);
+    return g_Settings->LoadBoolIndex((SettingID)Type, index);
 }
 
 uint32_t UISettingsLoadDword(UISettingID Type)
@@ -162,5 +163,5 @@ std::string UISettingsLoadStringVal(UISettingID Type)
 
 bool UISettingsLoadStringVal(UISettingID Type, char * Buffer, int32_t BufferSize)
 {
-    return g_Settings->LoadStringVal((SettingID)Type,Buffer,BufferSize);
+    return g_Settings->LoadStringVal((SettingID)Type, Buffer, BufferSize);
 }

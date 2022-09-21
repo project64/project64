@@ -1,10 +1,11 @@
 #include "stdafx.h"
-#include "DebuggerUI.h"
+
 #include "DMALog.h"
+#include "DebuggerUI.h"
 #include <fstream>
 
-CDebugDMALogView::CDebugDMALogView(CDebuggerUI* debugger) :
-CDebugDialog<CDebugDMALogView>(debugger)
+CDebugDMALogView::CDebugDMALogView(CDebuggerUI * debugger) :
+    CDebugDialog<CDebugDMALogView>(debugger)
 {
     m_DMALog = debugger->DMALog();
     m_bFilterChanged = false;
@@ -42,9 +43,9 @@ void CDebugDMALogView::RefreshList()
     {
         return;
     }
-    
-    uint8_t* rom = g_Rom->GetRomAddress();
-    
+
+    uint8_t * rom = g_Rom->GetRomAddress();
+
     // Get scrollbar state
     SCROLLINFO scroll;
     scroll.cbSize = sizeof(SCROLLINFO);
@@ -60,7 +61,7 @@ void CDebugDMALogView::RefreshList()
 
     int startIndex;
     int dmaLogSize = m_Debugger->DMALog()->GetNumEntries();
-    
+
     HWND hWndExportBtn = GetDlgItem(IDC_EXPORT_BTN);
 
     if (dmaLogSize == 0)
@@ -77,51 +78,51 @@ void CDebugDMALogView::RefreshList()
         startIndex = m_nLastStartIndex;
         ::EnableWindow(hWndExportBtn, TRUE);
     }
-    
+
     m_DMAList.SetRedraw(FALSE);
 
     int itemIndex = m_DMAList.GetItemCount();
-    
+
     for (int i = startIndex; i < dmaLogSize; i++)
     {
-        DMALOGENTRY* lpEntry = m_DMALog->GetEntryByIndex(i);
+        DMALOGENTRY * lpEntry = m_DMALog->GetEntryByIndex(i);
 
         //if (!FilterEntry(i))
         //{
         //    continue;
         //}
-        
+
         m_DMAList.AddItem(itemIndex, 0, stdstr_f("%08X", lpEntry->romAddr).ToUTF16().c_str());
         m_DMAList.AddItem(itemIndex, 1, stdstr_f("%08X", lpEntry->ramAddr).ToUTF16().c_str());
         m_DMAList.AddItem(itemIndex, 2, stdstr_f("%08X (%d)", lpEntry->length, lpEntry->length).ToUTF16().c_str());
-        
+
         union
         {
             uint32_t u32;
             uint8_t sz[5];
-        } sig = { 0 };
+        } sig = {0};
 
         if (lpEntry->romAddr < g_Rom->GetRomSize())
         {
-            sig.u32 = _byteswap_ulong(*(uint32_t*)&rom[lpEntry->romAddr]);
+            sig.u32 = _byteswap_ulong(*(uint32_t *)&rom[lpEntry->romAddr]);
         }
 
         // TODO: checkbox to display all in hex
         if (isalnum(sig.sz[0]) && isalnum(sig.sz[1]) && isalnum(sig.sz[2]) && isalnum(sig.sz[3]))
         {
-            m_DMAList.AddItem(itemIndex, 4, stdstr((char*)sig.sz).ToUTF16().c_str());
+            m_DMAList.AddItem(itemIndex, 4, stdstr((char *)sig.sz).ToUTF16().c_str());
         }
 
         itemIndex++;
     }
-    
+
     if (bScrolledDown)
     {
         m_DMAList.EnsureVisible(m_DMAList.GetItemCount() - 1, FALSE);
     }
 
     m_DMAList.SetRedraw(TRUE);
-    
+
     m_nLastStartIndex = dmaLogSize;
 }
 
@@ -132,15 +133,15 @@ void CDebugDMALogView::Export(void)
 
     memset(&filePath, 0, sizeof(filePath));
     memset(&openfilename, 0, sizeof(openfilename));
-    
+
     wsprintf(filePath, L"*.csv");
 
-    const TCHAR* filters = (
+    const TCHAR * filters = (
         /*1*/ L"Comma separated values (*.csv)\0*.csv;\0"
         /*2*/ L"Plain text (*.txt)\0*.txt;\0"
     );
 
-    const char *extensions[] = { "", ".csv", ".txt" };
+    const char * extensions[] = {"", ".csv", ".txt"};
 
     openfilename.lStructSize = sizeof(openfilename);
     openfilename.hwndOwner = (HWND)m_hWnd;
@@ -174,23 +175,23 @@ void CDebugDMALogView::Export(void)
 
         for (size_t nEntry = 0; nEntry < numEntries; nEntry++)
         {
-            DMALOGENTRY* entry = m_DMALog->GetEntryByIndex(nEntry);
+            DMALOGENTRY * entry = m_DMALog->GetEntryByIndex(nEntry);
 
             file << stdstr_f("0x%08X,0x%08X,0x%08X\r\n",
-                entry->romAddr, entry->ramAddr, entry->length);
+                             entry->romAddr, entry->ramAddr, entry->length);
         }
 
         file.close();
     }
 }
 
-LRESULT CDebugDMALogView::OnActivate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CDebugDMALogView::OnActivate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     //RefreshList();
     return FALSE;
 }
 
-LRESULT CDebugDMALogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CDebugDMALogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     DlgResize_Init(false, true);
     DlgSavePos_Init(DebuggerUI_DMALogPos);
@@ -219,7 +220,7 @@ LRESULT CDebugDMALogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
     //m_DMAList.SetColumnWidth(3, 50);
     //m_DMAList.SetColumnWidth(4, 50);
     //m_DMAList.SetColumnWidth(5, 50);
-    
+
     m_DMARamEdit.SetLimitText(8);
     m_DMARomEdit.SetLimitText(8);
 
@@ -245,7 +246,7 @@ void CDebugDMALogView::RefreshDMALogWindow(bool bReset)
     PostMessage(WM_REFRESH, bReset);
 }
 
-LRESULT CDebugDMALogView::OnRefresh(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CDebugDMALogView::OnRefresh(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     bool bReset = (wParam != 0);
 
@@ -273,7 +274,7 @@ LRESULT CDebugDMALogView::OnDestroy(void)
     return 0;
 }
 
-LRESULT CDebugDMALogView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& /*bHandled*/)
+LRESULT CDebugDMALogView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL & /*bHandled*/)
 {
     switch (wID)
     {
@@ -294,7 +295,7 @@ LRESULT CDebugDMALogView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& 
     return FALSE;
 }
 
-LRESULT CDebugDMALogView::OnRamAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CDebugDMALogView::OnRamAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     if (m_bConvertingAddress)
     {
@@ -317,14 +318,14 @@ LRESULT CDebugDMALogView::OnRamAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, H
         szRomAddr = "????????";
         m_BlockInfo.SetWindowText(L"Block: ?");
     }
-    
+
     m_bConvertingAddress = true;
     m_DMARomEdit.SetWindowText(szRomAddr.ToUTF16().c_str());
     m_bConvertingAddress = false;
     return FALSE;
 }
 
-LRESULT CDebugDMALogView::OnRomAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CDebugDMALogView::OnRomAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     if (m_bConvertingAddress)
     {
@@ -334,7 +335,7 @@ LRESULT CDebugDMALogView::OnRomAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, H
     stdstr szRamAddr = GetCWindowText(m_DMARomEdit);
     uint32_t romAddr = strtoul(szRamAddr.c_str(), nullptr, 16);
     uint32_t ramAddr, offset;
-    DMALOGENTRY* lpEntry = m_DMALog->GetEntryByRomAddress(romAddr, &ramAddr, &offset);
+    DMALOGENTRY * lpEntry = m_DMALog->GetEntryByRomAddress(romAddr, &ramAddr, &offset);
 
     if (lpEntry != nullptr)
     {
@@ -354,10 +355,9 @@ LRESULT CDebugDMALogView::OnRomAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, H
     return FALSE;
 }
 
-
-LRESULT CDebugDMALogView::OnCustomDrawList(NMHDR* pNMHDR)
+LRESULT CDebugDMALogView::OnCustomDrawList(NMHDR * pNMHDR)
 {
-    NMLVCUSTOMDRAW* pLVCD = reinterpret_cast<NMLVCUSTOMDRAW*>(pNMHDR);
+    NMLVCUSTOMDRAW * pLVCD = reinterpret_cast<NMLVCUSTOMDRAW *>(pNMHDR);
     DWORD drawStage = pLVCD->nmcd.dwDrawStage;
 
     switch (drawStage)
@@ -367,7 +367,7 @@ LRESULT CDebugDMALogView::OnCustomDrawList(NMHDR* pNMHDR)
     case (CDDS_ITEMPREPAINT | CDDS_SUBITEM): break;
     default: return CDRF_DODEFAULT;
     }
-    
+
     DWORD nItem = pLVCD->nmcd.dwItemSpec;
     DWORD nSubItem = pLVCD->iSubItem;
 
@@ -375,19 +375,19 @@ LRESULT CDebugDMALogView::OnCustomDrawList(NMHDR* pNMHDR)
     {
         return CDRF_DODEFAULT;
     }
-    
+
     size_t nEntries = m_DMALog->GetNumEntries();
 
     if (nEntries == 0)
     {
         return CDRF_DODEFAULT;
     }
-    
-    DMALOGENTRY* lpEntry = m_DMALog->GetEntryByIndex(nItem);
-    
+
+    DMALOGENTRY * lpEntry = m_DMALog->GetEntryByIndex(nItem);
+
     if (nItem >= 1) // Continuation
     {
-        DMALOGENTRY* lpPrevEntry = m_DMALog->GetEntryByIndex(nItem - 1);
+        DMALOGENTRY * lpPrevEntry = m_DMALog->GetEntryByIndex(nItem - 1);
 
         if (lpEntry->romAddr == lpPrevEntry->romAddr + lpPrevEntry->length)
         {
@@ -398,7 +398,7 @@ LRESULT CDebugDMALogView::OnCustomDrawList(NMHDR* pNMHDR)
 
     if (nEntries >= 2 && nItem <= nEntries - 2) // Head
     {
-        DMALOGENTRY* lpNextEntry = m_DMALog->GetEntryByIndex(nItem + 1);
+        DMALOGENTRY * lpNextEntry = m_DMALog->GetEntryByIndex(nItem + 1);
 
         if (lpNextEntry->romAddr == lpEntry->romAddr + lpEntry->length)
         {
@@ -406,6 +406,6 @@ LRESULT CDebugDMALogView::OnCustomDrawList(NMHDR* pNMHDR)
             return CDRF_DODEFAULT;
         }
     }
-    
+
     return CDRF_DODEFAULT;
 }

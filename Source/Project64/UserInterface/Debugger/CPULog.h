@@ -1,7 +1,5 @@
 #pragma once
 
-#include <stdafx.h>
-
 typedef struct
 {
     uint32_t pc;

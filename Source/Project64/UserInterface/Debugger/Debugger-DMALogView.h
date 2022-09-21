@@ -1,6 +1,4 @@
 #pragma once
-
-#include <stdafx.h>
 #include "DebuggerUI.h"
 
 class CDebugDMALogView :

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "WelcomeScreen.h"
 #include "resource.h"
 
@@ -35,11 +36,11 @@ void WelcomeScreen::SelectGameDir(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
     }
 }
 
-LRESULT WelcomeScreen::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT WelcomeScreen::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     m_Logo.SubclassWindow(GetDlgItem(IDC_BMP_LOGO));
     m_Logo.SetBitmap(MAKEINTRESOURCE(IDB_ABOUT_LOGO));
- 
+
     LanguageList LangList = g_Lang->GetLangList();
     CComboBox LangCB(GetDlgItem(IDC_LANG_SEL));
     for (LanguageList::iterator Language = LangList.begin(); Language != LangList.end(); Language++)
@@ -58,7 +59,7 @@ LRESULT WelcomeScreen::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     return TRUE;
 }
 
-LRESULT WelcomeScreen::OnCtlColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT WelcomeScreen::OnCtlColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     HDC hdcStatic = (HDC)wParam;
     SetTextColor(hdcStatic, RGB(0, 0, 0));
@@ -105,7 +106,8 @@ LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
     }
 
     string Project64VideoPluginPath = g_Settings->LoadStringVal(Plugin_GFX_Default);
-    if (Project64VideoPluginPath.find("Project64-Video") == string::npos) {
+    if (Project64VideoPluginPath.find("Project64-Video") == string::npos)
+    {
         Project64VideoPluginPath = "GFX\\Project64-Video.dll";
     }
     g_Settings->SaveString(Plugin_GFX_Default, CButton(GetDlgItem(IDC_RADIO_GLIDEN64)).GetCheck() == BST_CHECKED ? "GFX\\GLideN64\\GLideN64.dll" : Project64VideoPluginPath);

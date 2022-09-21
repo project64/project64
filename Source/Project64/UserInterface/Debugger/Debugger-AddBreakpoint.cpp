@@ -2,7 +2,7 @@
 
 #include "DebuggerUI.h"
 
-LRESULT CAddBreakpointDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CAddBreakpointDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     CenterWindow();
     m_AddressEdit.Attach(GetDlgItem(IDC_ADDR_EDIT));
@@ -12,7 +12,7 @@ LRESULT CAddBreakpointDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM
     return FALSE;
 }
 
-LRESULT CAddBreakpointDlg::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& /*bHandled*/)
+LRESULT CAddBreakpointDlg::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL & /*bHandled*/)
 {
     switch (wID)
     {
@@ -21,7 +21,7 @@ LRESULT CAddBreakpointDlg::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL&
         std::string addrStr = GetCWindowText(m_AddressEdit);
         uint32_t address = stoul(addrStr.c_str(), nullptr, 16);
 
-        CBreakpoints* breakpoints = m_Debugger->Breakpoints();
+        CBreakpoints * breakpoints = m_Debugger->Breakpoints();
 
         if (m_ReadCheck.GetCheck())
         {

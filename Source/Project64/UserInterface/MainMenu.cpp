@@ -1,12 +1,13 @@
 #include "stdafx.h"
-#include "RomInformation.h"
+
 #include "Debugger/Breakpoints.h"
 #include "Debugger/ScriptSystem.h"
 #include "DiscordRPC.h"
+#include "RomInformation.h"
 #include <Project64-core/N64System/N64Disk.h>
 #include <Project64\UserInterface\About.h>
-#include <windows.h>
 #include <commdlg.h>
+#include <windows.h>
 
 CMainMenu::CMainMenu(CMainGui * hMainWindow) :
     CBaseMenu(),
@@ -150,7 +151,7 @@ void CMainMenu::OnOpenRom(HWND hWnd)
     {
         return;
     }
-    
+
     stdstr ext = CPath(File).GetExtension();
     if ((_stricmp(ext.c_str(), "ndd") != 0) && (_stricmp(ext.c_str(), "d64") != 0))
     {
@@ -203,10 +204,10 @@ void CMainMenu::OnEndEmulation(void)
     }
     m_Gui->SaveWindowLoc();
 
-	if (UISettingsLoadBool(Setting_EnableDiscordRPC))
-	{
-		CDiscord::Update(false);
-	}
+    if (UISettingsLoadBool(Setting_EnableDiscordRPC))
+    {
+        CDiscord::Update(false);
+    }
 }
 
 void CMainMenu::OnScreenShot(void)
@@ -333,7 +334,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ROMDIRECTORY 3");
         break;
     case ID_FILE_REFRESHROMLIST: m_Gui->RefreshRomList(); break;
-    case ID_FILE_EXIT:           DestroyWindow((HWND)hWnd); break;
+    case ID_FILE_EXIT: DestroyWindow((HWND)hWnd); break;
     case ID_SYSTEM_RESET_SOFT:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_RESET_SOFT");
         g_BaseSystem->ExternalEvent(SysEvent_ResetCPU_Soft);
@@ -348,7 +349,9 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         g_BaseSystem->ExternalEvent(g_Settings->LoadBool(GameRunning_CPU_Paused) ? SysEvent_ResumeCPU_FromMenu : SysEvent_PauseCPU_FromMenu);
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_PAUSE 1");
         break;
-    case ID_SYSTEM_BITMAP: OnScreenShot(); break;
+    case ID_SYSTEM_BITMAP:
+        OnScreenShot();
+        break;
         break;
     case ID_SYSTEM_LIMITFPS:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_LIMITFPS");
@@ -419,7 +422,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             ShowCursor(true);
             m_Gui->ShowStatusBar(g_Settings->LoadBool((SettingID)UserInterface_ShowStatusBar));
             m_Gui->MakeWindowOnTop(UISettingsLoadBool(UserInterface_AlwaysOnTop));
-            UISettingsSaveBool(UserInterface_InFullScreen, (DWORD)false);
+            UISettingsSaveBool(UserInterface_InFullScreen, (DWORD) false);
         }
         else
         {
@@ -491,7 +494,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             g_Settings->SaveBool(UserInterface_ShowCPUPer, true);
         }
         break;
-    case ID_OPTIONS_SETTINGS: OnSettings(hWnd);  break;
+    case ID_OPTIONS_SETTINGS: OnSettings(hWnd); break;
     case ID_PROFILE_PROFILE:
         g_Settings->SaveBool(Debugger_RecordExecutionTimes, !g_Settings->LoadBool(Debugger_RecordExecutionTimes));
         g_BaseSystem->ExternalEvent(SysEvent_ResetFunctionTimes);
@@ -649,7 +652,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 stdstr CMainMenu::GetFileLastMod(const CPath & FileName)
 {
     HANDLE hFile = CreateFileA(FileName, GENERIC_READ, FILE_SHARE_READ, nullptr,
-        OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, nullptr);
+                               OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, nullptr);
     if (hFile == INVALID_HANDLE_VALUE)
     {
         return "";

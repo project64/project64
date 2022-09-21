@@ -1,4 +1,5 @@
 #pragma once
+#include "SettingsPage.h"
 
 class CGameRecompilePage :
     public CSettingsPageImpl<CGameRecompilePage>,

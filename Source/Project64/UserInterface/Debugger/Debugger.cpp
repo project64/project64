@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "DebuggerUI.h"
 
 #include "CPULog.h"
@@ -112,7 +113,7 @@ void CDebuggerUI::GamePausedChanged(CDebuggerUI * _this)
     _this->m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_EMUSTATECHANGE, &env);
 }
 
-void CDebuggerUI::WaitingForStepChanged(CDebuggerUI* _this)
+void CDebuggerUI::WaitingForStepChanged(CDebuggerUI * _this)
 {
     if (g_Settings->LoadBool(Debugger_WaitingForStep))
     {
@@ -360,7 +361,7 @@ void CDebuggerUI::Debug_RefreshScriptsWindow()
     }
 }
 
-void CDebuggerUI::Debug_LogScriptsWindow(const char* text)
+void CDebuggerUI::Debug_LogScriptsWindow(const char * text)
 {
     if (m_Scripts != nullptr)
     {
@@ -462,37 +463,37 @@ void CDebuggerUI::Debug_RefreshCPULogWindow(void)
     }
 }
 
-CBreakpoints* CDebuggerUI::Breakpoints()
+CBreakpoints * CDebuggerUI::Breakpoints()
 {
     return m_Breakpoints;
 }
 
-CScriptSystem* CDebuggerUI::ScriptSystem()
+CScriptSystem * CDebuggerUI::ScriptSystem()
 {
     return m_ScriptSystem;
 }
 
-CDebugScripts* CDebuggerUI::ScriptConsole()
+CDebugScripts * CDebuggerUI::ScriptConsole()
 {
     return m_Scripts;
 }
 
-CDMALog* CDebuggerUI::DMALog()
+CDMALog * CDebuggerUI::DMALog()
 {
     return m_DMALog;
 }
 
-CCPULog* CDebuggerUI::CPULog()
+CCPULog * CDebuggerUI::CPULog()
 {
     return m_CPULog;
 }
 
-CSymbolTable* CDebuggerUI::SymbolTable()
+CSymbolTable * CDebuggerUI::SymbolTable()
 {
     return m_SymbolTable;
 }
 
-SyncEvent& CDebuggerUI::StepEvent()
+SyncEvent & CDebuggerUI::StepEvent()
 {
     return m_StepEvent;
 }
@@ -511,7 +512,7 @@ void CDebuggerUI::HandleCPUException(void)
     int intr = (g_Reg->CAUSE_REGISTER >> 8) & 0xFF;
     int fpExc = (g_Reg->m_FPCR[31] >> 12) & 0x3F;
     int rcpIntr = g_Reg->MI_INTR_REG & 0x2F;
-    
+
     if ((ExceptionBreakpoints() & (1 << exc)))
     {
         if (exc == 15) // Floating-point exception
@@ -568,7 +569,7 @@ void CDebuggerUI::HandleCartToRamDMA(void)
 
     m_DMALog->AddEntry(dmaRomAddr, dmaRamAddr, dmaLen);
     Debug_RefreshDMALogWindow();
-    
+
     // Break if write breakpoint exists anywhere in target buffer
     if (m_Breakpoints->WriteBPExistsInChunk(dmaRamAddr, dmaLen))
     {
@@ -584,7 +585,7 @@ void CDebuggerUI::CPUStepStarted()
         Debug_RefreshCPULogWindow();
     }
 
-    if(m_Breakpoints->NumMemLocks() > 0)
+    if (m_Breakpoints->NumMemLocks() > 0)
     {
         COpInfo opInfo(R4300iOp::m_Opcode);
         bool bStoreOp = opInfo.IsStoreCommand();
@@ -607,20 +608,20 @@ void CDebuggerUI::CPUStepStarted()
         hookEnv.pc = g_Reg->m_PROGRAM_COUNTER;
         hookEnv.opInfo = COpInfo(R4300iOp::m_Opcode);
 
-        if(m_ScriptSystem->HaveCpuExecCallbacks(hookEnv.pc))
+        if (m_ScriptSystem->HaveCpuExecCallbacks(hookEnv.pc))
         {
-            m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_CPU_EXEC, (void*)&hookEnv);
+            m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_CPU_EXEC, (void *)&hookEnv);
         }
 
         if (hookEnv.opInfo.IsLoadCommand() &&
             m_ScriptSystem->HaveCpuReadCallbacks(hookEnv.opInfo.GetLoadStoreAddress()))
         {
-            m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_CPU_READ, (void*)&hookEnv);
+            m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_CPU_READ, (void *)&hookEnv);
         }
         else if (hookEnv.opInfo.IsStoreCommand() &&
-            m_ScriptSystem->HaveCpuWriteCallbacks(hookEnv.opInfo.GetLoadStoreAddress()))
+                 m_ScriptSystem->HaveCpuWriteCallbacks(hookEnv.opInfo.GetLoadStoreAddress()))
         {
-            m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_CPU_WRITE, (void*)&hookEnv);
+            m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_CPU_WRITE, (void *)&hookEnv);
         }
     }
 
@@ -691,7 +692,7 @@ void CDebuggerUI::CPUStepEnded()
     {
         return;
     }
-    
+
     R4300iOpcode Opcode = R4300iOp::m_Opcode;
     uint32_t op = Opcode.op;
     uint32_t funct = Opcode.funct;

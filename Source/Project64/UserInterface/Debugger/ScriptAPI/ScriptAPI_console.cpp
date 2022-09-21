@@ -1,24 +1,25 @@
-#include <stdafx.h>
-#include <windows.h>
+#include "stdafx.h"
+
 #include "ScriptAPI.h"
+#include <windows.h>
 
-static void ConcatArgs(duk_context* ctx, stdstr& out);
+static void ConcatArgs(duk_context * ctx, stdstr & out);
 
-void ScriptAPI::Define_console(duk_context* ctx)
+void ScriptAPI::Define_console(duk_context * ctx)
 {
     const DukPropListEntry props[] = {
-        { "print",  DukCFunction(js_console_print) },
-        { "log",    DukCFunction(js_console_log) },
-        { "error",  DukCFunction(js_console_error) },
-        { "clear",  DukCFunction(js_console_clear) },
-        { "listen", DukCFunction(js_console_listen) },
+        {"print", DukCFunction(js_console_print)},
+        {"log", DukCFunction(js_console_log)},
+        {"error", DukCFunction(js_console_error)},
+        {"clear", DukCFunction(js_console_clear)},
+        {"listen", DukCFunction(js_console_listen)},
         { nullptr }
     };
 
     DefineGlobalInterface(ctx, "console", props);
 }
 
-duk_ret_t ScriptAPI::js_console_print(duk_context* ctx)
+duk_ret_t ScriptAPI::js_console_print(duk_context * ctx)
 {
     stdstr out;
     ConcatArgs(ctx, out);
@@ -26,7 +27,7 @@ duk_ret_t ScriptAPI::js_console_print(duk_context* ctx)
     return 0;
 }
 
-duk_ret_t ScriptAPI::js_console_log(duk_context* ctx)
+duk_ret_t ScriptAPI::js_console_log(duk_context * ctx)
 {
     stdstr out;
     ConcatArgs(ctx, out);
@@ -34,14 +35,14 @@ duk_ret_t ScriptAPI::js_console_log(duk_context* ctx)
     return 0;
 }
 
-duk_ret_t ScriptAPI::js_console_error(duk_context* ctx)
+duk_ret_t ScriptAPI::js_console_error(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_OptAny });
+    CheckArgs(ctx, {Arg_OptAny});
 
     if (duk_is_error(ctx, 0))
     {
         duk_get_prop_string(ctx, 0, "stack");
-        const char* message = duk_get_string(ctx, -1);
+        const char * message = duk_get_string(ctx, -1);
         GetInstance(ctx)->System()->ConsoleLog("%s", message);
         return 0;
     }
@@ -50,16 +51,16 @@ duk_ret_t ScriptAPI::js_console_error(duk_context* ctx)
     return 0;
 }
 
-duk_ret_t ScriptAPI::js_console_clear(duk_context* ctx)
+duk_ret_t ScriptAPI::js_console_clear(duk_context * ctx)
 {
     CheckArgs(ctx, {});
     GetInstance(ctx)->System()->ConsoleClear();
     return 0;
 }
 
-duk_ret_t ScriptAPI::js_console_listen(duk_context* ctx)
+duk_ret_t ScriptAPI::js_console_listen(duk_context * ctx)
 {
-    CScriptInstance* inst = GetInstance(ctx);
+    CScriptInstance * inst = GetInstance(ctx);
 
     duk_push_global_object(ctx);
     duk_bool_t haveListener = duk_has_prop_string(ctx, -1, HS_gInputListener);
@@ -87,11 +88,11 @@ duk_ret_t ScriptAPI::js_console_listen(duk_context* ctx)
     return ThrowInvalidArgsError(ctx);
 }
 
-void ConcatArgs(duk_context* ctx, stdstr& out)
+void ConcatArgs(duk_context * ctx, stdstr & out)
 {
     out = "";
     duk_idx_t nargs = duk_get_top(ctx);
-    
+
     // note: global JSON.stringify must be intact
 
     duk_get_global_string(ctx, "JSON");

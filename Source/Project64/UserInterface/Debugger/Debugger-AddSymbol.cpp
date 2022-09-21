@@ -3,7 +3,7 @@
 #include "DebuggerUI.h"
 #include "Symbols.h"
 
-LRESULT CAddSymbolDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CAddSymbolDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     CenterWindow();
 
@@ -15,14 +15,14 @@ LRESULT CAddSymbolDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
 
     for (int i = 0;; i++)
     {
-        const char* typeName = CSymbolTable::m_SymbolTypes[i].name;
+        const char * typeName = CSymbolTable::m_SymbolTypes[i].name;
         if (typeName == nullptr)
         {
             break;
         }
         m_TypeComboBox.AddString(stdstr(typeName).ToUTF16().c_str());
     }
-    
+
     m_AddressEdit.SetWindowText(L"");
     m_AddressEdit.SetFocus();
 
@@ -32,7 +32,7 @@ LRESULT CAddSymbolDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
         m_TypeComboBox.SetFocus();
     }
 
-    if(m_bHaveType)
+    if (m_bHaveType)
     {
         m_TypeComboBox.SetCurSel(m_InitType);
         m_NameEdit.SetFocus();
@@ -41,11 +41,11 @@ LRESULT CAddSymbolDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     {
         m_TypeComboBox.SetCurSel(SYM_DATA);
     }
-    
+
     return FALSE;
 }
 
-LRESULT CAddSymbolDlg::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CAddSymbolDlg::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     switch (wID)
     {
@@ -66,13 +66,13 @@ LRESULT CAddSymbolDlg::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*
 
         int nameLen = m_NameEdit.GetWindowTextLength();
         int descLen = m_DescriptionEdit.GetWindowTextLength();
-        
+
         if (!nameLen && !descLen)
         {
             MessageBox(L"Name and/or description required", L"Error", MB_OK);
             return 0;
         }
-        
+
         m_Debugger->SymbolTable()->AddSymbol(type, address, GetCWindowText(m_NameEdit).c_str(), GetCWindowText(m_DescriptionEdit).c_str());
         m_Debugger->SymbolTable()->Save();
 
@@ -84,7 +84,7 @@ LRESULT CAddSymbolDlg::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*
     return 0;
 }
 
-INT_PTR CAddSymbolDlg::DoModal(CDebuggerUI* debugger)
+INT_PTR CAddSymbolDlg::DoModal(CDebuggerUI * debugger)
 {
     m_Debugger = debugger;
     m_bHaveAddress = false;
@@ -92,7 +92,7 @@ INT_PTR CAddSymbolDlg::DoModal(CDebuggerUI* debugger)
     return CDialogImpl<CAddSymbolDlg>::DoModal();
 }
 
-INT_PTR CAddSymbolDlg::DoModal(CDebuggerUI* debugger, uint32_t initAddress)
+INT_PTR CAddSymbolDlg::DoModal(CDebuggerUI * debugger, uint32_t initAddress)
 {
     m_Debugger = debugger;
     m_bHaveAddress = true;
@@ -101,7 +101,7 @@ INT_PTR CAddSymbolDlg::DoModal(CDebuggerUI* debugger, uint32_t initAddress)
     return CDialogImpl<CAddSymbolDlg>::DoModal();
 }
 
-INT_PTR CAddSymbolDlg::DoModal(CDebuggerUI* debugger, uint32_t initAddress, int initType)
+INT_PTR CAddSymbolDlg::DoModal(CDebuggerUI * debugger, uint32_t initAddress, int initType)
 {
     m_Debugger = debugger;
     m_bHaveAddress = true;

@@ -2,6 +2,7 @@
 
 #include <Project64-core/Plugin.h>
 #include <Project64/Plugins/PluginList.h>
+#include "SettingsPage.h"
 
 class CGamePluginPage :
     public CSettingsPageImpl<CGamePluginPage>,

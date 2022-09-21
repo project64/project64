@@ -1,7 +1,5 @@
 #pragma once
 
-#include <stdafx.h>
-
 struct DMALOGENTRY
 {
     uint32_t romAddr;

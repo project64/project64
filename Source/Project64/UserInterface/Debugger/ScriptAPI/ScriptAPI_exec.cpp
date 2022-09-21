@@ -1,20 +1,21 @@
-#include <stdafx.h>
-#include <windows.h>
-#include "ScriptAPI.h"
+#include "stdafx.h"
 
-void ScriptAPI::Define_exec(duk_context* ctx)
+#include "ScriptAPI.h"
+#include <windows.h>
+
+void ScriptAPI::Define_exec(duk_context * ctx)
 {
     DefineGlobalFunction(ctx, "exec", js_exec);
 }
 
-duk_ret_t ScriptAPI::js_exec(duk_context* ctx)
+duk_ret_t ScriptAPI::js_exec(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_String, Arg_OptObject });
+    CheckArgs(ctx, {Arg_String, Arg_OptObject});
 
-    CScriptInstance* inst = GetInstance(ctx);
-    CScriptSystem* sys = inst->System();
+    CScriptInstance * inst = GetInstance(ctx);
+    CScriptSystem * sys = inst->System();
 
-    const char* command = duk_get_string(ctx, 0);
+    const char * command = duk_get_string(ctx, 0);
 
     struct
     {
@@ -45,7 +46,7 @@ duk_ret_t ScriptAPI::js_exec(duk_context* ctx)
 
     stdstr resultStdOut;
     stdstr resultStdErr;
-    DWORD  resultExitCode = EXIT_FAILURE;
+    DWORD resultExitCode = EXIT_FAILURE;
 
     SECURITY_ATTRIBUTES secAttr;
     secAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
@@ -76,7 +77,7 @@ duk_ret_t ScriptAPI::js_exec(duk_context* ctx)
     PROCESS_INFORMATION processInfo;
 
     BOOL bSuccess = CreateProcessA(nullptr, (LPSTR)stdstr_f("cmd /c %s", command).c_str(), nullptr, nullptr, TRUE,
-        0, nullptr, options.cwd.c_str(), &startupInfo, &processInfo);
+                                   0, nullptr, options.cwd.c_str(), &startupInfo, &processInfo);
 
     if (bSuccess)
     {
@@ -130,10 +131,10 @@ duk_ret_t ScriptAPI::js_exec(duk_context* ctx)
     if (!bSuccess || resultExitCode != 0)
     {
         const DukPropListEntry props[] = {
-            { "status", DukInt(resultExitCode) },
-            { "stdout", DukString(resultStdOut.c_str()) },
-            { "stderr", DukString(resultStdErr.c_str()) },
-            { "pid",    DukUInt(processInfo.dwProcessId) },
+            {"status", DukInt(resultExitCode)},
+            {"stdout", DukString(resultStdOut.c_str())},
+            {"stderr", DukString(resultStdErr.c_str())},
+            {"pid", DukUInt(processInfo.dwProcessId)},
             { nullptr }
         };
 

@@ -1,13 +1,14 @@
-#include <stdafx.h>
-#include "ScriptAPI.h"
+#include "stdafx.h"
+
 #include "JSIntervalWorker.h"
+#include "ScriptAPI.h"
 
 using namespace ScriptAPI;
 
-static int AddIntervalContext(duk_context* ctx, duk_idx_t func_idx, int delayMS, bool bOnce);
-static void RemoveIntervalContext(duk_context* ctx, int intervalId);
+static int AddIntervalContext(duk_context * ctx, duk_idx_t func_idx, int delayMS, bool bOnce);
+static void RemoveIntervalContext(duk_context * ctx, int intervalId);
 
-void ScriptAPI::Define_interval(duk_context* ctx)
+void ScriptAPI::Define_interval(duk_context * ctx)
 {
     DefineGlobalFunction(ctx, "setInterval", js_setInterval);
     DefineGlobalFunction(ctx, "clearInterval", js_clearInterval);
@@ -15,41 +16,41 @@ void ScriptAPI::Define_interval(duk_context* ctx)
     DefineGlobalFunction(ctx, "clearTimeout", js_clearTimeout);
 }
 
-duk_ret_t ScriptAPI::js_setInterval(duk_context* ctx)
+duk_ret_t ScriptAPI::js_setInterval(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Function, Arg_Number });
+    CheckArgs(ctx, {Arg_Function, Arg_Number});
     int delayMS = duk_get_int(ctx, 1);
     int intervalId = AddIntervalContext(ctx, 0, delayMS, false);
     duk_push_int(ctx, intervalId);
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_clearInterval(duk_context* ctx)
+duk_ret_t ScriptAPI::js_clearInterval(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Number });
+    CheckArgs(ctx, {Arg_Number});
     int intervalId = duk_get_int(ctx, 0);
     RemoveIntervalContext(ctx, intervalId);
     return 0;
 }
 
-duk_ret_t ScriptAPI::js_setTimeout(duk_context* ctx)
+duk_ret_t ScriptAPI::js_setTimeout(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Function, Arg_Number });
+    CheckArgs(ctx, {Arg_Function, Arg_Number});
     int delayMS = duk_get_int(ctx, 1);
     int intervalId = AddIntervalContext(ctx, 0, delayMS, true);
     duk_push_int(ctx, intervalId);
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_clearTimeout(duk_context* ctx)
+duk_ret_t ScriptAPI::js_clearTimeout(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Number });
+    CheckArgs(ctx, {Arg_Number});
     int intervalId = duk_get_int(ctx, 0);
     RemoveIntervalContext(ctx, intervalId);
     return 0;
 }
 
-duk_ret_t ScriptAPI::js__IntervalContext_invokeFunc(duk_context* ctx)
+duk_ret_t ScriptAPI::js__IntervalContext_invokeFunc(duk_context * ctx)
 {
     duk_push_this(ctx);
     duk_get_prop_string(ctx, -1, "func");
@@ -57,7 +58,7 @@ duk_ret_t ScriptAPI::js__IntervalContext_invokeFunc(duk_context* ctx)
     return 0;
 }
 
-duk_ret_t ScriptAPI::js__IntervalContext_remove(duk_context* ctx)
+duk_ret_t ScriptAPI::js__IntervalContext_remove(duk_context * ctx)
 {
     duk_push_this(ctx);
     duk_get_prop_string(ctx, -1, "id");
@@ -66,11 +67,11 @@ duk_ret_t ScriptAPI::js__IntervalContext_remove(duk_context* ctx)
     return 0;
 }
 
-duk_ret_t ScriptAPI::js__IntervalContext_finalizer(duk_context* ctx)
+duk_ret_t ScriptAPI::js__IntervalContext_finalizer(duk_context * ctx)
 {
     duk_get_prop_string(ctx, 0, "worker");
-    CJSIntervalWorker* intervalWorker = (CJSIntervalWorker*)duk_get_pointer(ctx, -1);
-    
+    CJSIntervalWorker * intervalWorker = (CJSIntervalWorker *)duk_get_pointer(ctx, -1);
+
     if (intervalWorker != nullptr)
     {
         delete intervalWorker;
@@ -79,11 +80,11 @@ duk_ret_t ScriptAPI::js__IntervalContext_finalizer(duk_context* ctx)
     return 0;
 }
 
-int AddIntervalContext(duk_context* ctx, duk_idx_t func_idx, int delayMS, bool bOnce)
+int AddIntervalContext(duk_context * ctx, duk_idx_t func_idx, int delayMS, bool bOnce)
 {
     func_idx = duk_normalize_index(ctx, func_idx);
 
-    CScriptInstance* inst = GetInstance(ctx);
+    CScriptInstance * inst = GetInstance(ctx);
 
     duk_push_global_object(ctx);
     duk_get_prop_string(ctx, -1, HS_gNextInvervalId);
@@ -97,8 +98,8 @@ int AddIntervalContext(duk_context* ctx, duk_idx_t func_idx, int delayMS, bool b
     duk_push_object(ctx);
     RefObject(ctx, -1);
 
-    void* objectHeapPtr = duk_get_heapptr(ctx, -1);
-    CJSIntervalWorker* intervalWorker = new CJSIntervalWorker(inst, objectHeapPtr, delayMS, bOnce);
+    void * objectHeapPtr = duk_get_heapptr(ctx, -1);
+    CJSIntervalWorker * intervalWorker = new CJSIntervalWorker(inst, objectHeapPtr, delayMS, bOnce);
 
     duk_dup(ctx, func_idx);
     duk_put_prop_string(ctx, -2, "func");
@@ -120,7 +121,7 @@ int AddIntervalContext(duk_context* ctx, duk_idx_t func_idx, int delayMS, bool b
     return intervalId;
 }
 
-void RemoveIntervalContext(duk_context* ctx, int intervalId)
+void RemoveIntervalContext(duk_context * ctx, int intervalId)
 {
     duk_push_global_object(ctx);
     duk_get_prop_string(ctx, -1, HS_gIntervals);
@@ -135,7 +136,7 @@ void RemoveIntervalContext(duk_context* ctx, int intervalId)
 
     duk_get_prop_string(ctx, -1, "worker");
 
-    CJSIntervalWorker* intervalWorker = (CJSIntervalWorker*)duk_get_pointer(ctx, -1);
+    CJSIntervalWorker * intervalWorker = (CJSIntervalWorker *)duk_get_pointer(ctx, -1);
     intervalWorker->StopWorkerProc();
     delete intervalWorker;
 

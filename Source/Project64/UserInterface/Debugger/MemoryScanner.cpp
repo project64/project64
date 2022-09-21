@@ -1,36 +1,37 @@
 #include "stdafx.h"
+
 #include "MemoryScanner.h"
 
 CMixed::TypeNameEntry CMixed::TypeNames[] = {
-    { "uint8",   ValueType_uint8 },
-    { "int8",    ValueType_int8 },
-    { "uint16",  ValueType_uint16 },
-    { "int16",   ValueType_int16 },
-    { "uint32",  ValueType_uint32 },
-    { "int32",   ValueType_int32 },
-    { "uint64",  ValueType_uint64 },
-    { "int64",   ValueType_int64 },
-    { "float",   ValueType_float },
-    { "double",  ValueType_double },
-    { "char",    ValueType_string },
-    { "char",    ValueType_unkstring },
-    { "char",    ValueType_unkstring },
+    {"uint8", ValueType_uint8},
+    {"int8", ValueType_int8},
+    {"uint16", ValueType_uint16},
+    {"int16", ValueType_int16},
+    {"uint32", ValueType_uint32},
+    {"int32", ValueType_int32},
+    {"uint64", ValueType_uint64},
+    {"int64", ValueType_int64},
+    {"float", ValueType_float},
+    {"double", ValueType_double},
+    {"char", ValueType_string},
+    {"char", ValueType_unkstring},
+    {"char", ValueType_unkstring},
     { nullptr,      ValueType_invalid}
 };
 
-const char* CMixed::GetTypeName(void)
+const char * CMixed::GetTypeName(void)
 {
     switch (m_Type)
     {
-    case ValueType_uint8:  return "uint8";
-    case ValueType_int8:   return "int8";
+    case ValueType_uint8: return "uint8";
+    case ValueType_int8: return "int8";
     case ValueType_uint16: return "uint16";
-    case ValueType_int16:  return "int16";
+    case ValueType_int16: return "int16";
     case ValueType_uint32: return "uint32";
-    case ValueType_int32:  return "int32";
+    case ValueType_int32: return "int32";
     case ValueType_uint64: return "uint64";
-    case ValueType_int64:  return "int64";
-    case ValueType_float:  return "float";
+    case ValueType_int64: return "int64";
+    case ValueType_float: return "float";
     case ValueType_double: return "double";
     case ValueType_string:
     case ValueType_istring:
@@ -41,7 +42,7 @@ const char* CMixed::GetTypeName(void)
     return nullptr;
 }
 
-ValueType CMixed::GetTypeFromString(const char* name, int* charArrayLength)
+ValueType CMixed::GetTypeFromString(const char * name, int * charArrayLength)
 {
     for (int i = 0; TypeNames[i].name != nullptr; i++)
     {
@@ -64,15 +65,15 @@ int CMixed::GetTypeSize(void)
 {
     switch (m_Type)
     {
-    case ValueType_uint8:  return sizeof(uint8_t);
-    case ValueType_int8:   return sizeof(int8_t);
+    case ValueType_uint8: return sizeof(uint8_t);
+    case ValueType_int8: return sizeof(int8_t);
     case ValueType_uint16: return sizeof(uint16_t);
-    case ValueType_int16:  return sizeof(int16_t);
+    case ValueType_int16: return sizeof(int16_t);
     case ValueType_uint32: return sizeof(uint32_t);
-    case ValueType_int32:  return sizeof(int32_t);
+    case ValueType_int32: return sizeof(int32_t);
     case ValueType_uint64: return sizeof(uint64_t);
-    case ValueType_int64:  return sizeof(int64_t);
-    case ValueType_float:  return sizeof(float);
+    case ValueType_int64: return sizeof(int64_t);
+    case ValueType_float: return sizeof(float);
     case ValueType_double: return sizeof(double);
     case ValueType_string:
     case ValueType_istring:
@@ -96,7 +97,7 @@ bool CMixed::IsStringType(void)
     return false;
 }
 
-int CMixed::ToString(char* buffer, bool bHex, size_t size)
+int CMixed::ToString(char * buffer, bool bHex, size_t size)
 {
     if (bHex)
     {
@@ -123,15 +124,15 @@ int CMixed::ToString(char* buffer, bool bHex, size_t size)
 
     switch (m_Type)
     {
-    case ValueType_uint8:  return snprintf(buffer, size, "%d", m_Value._uint8);
-    case ValueType_int8:   return snprintf(buffer, size, "%d", m_Value._sint8);
+    case ValueType_uint8: return snprintf(buffer, size, "%d", m_Value._uint8);
+    case ValueType_int8: return snprintf(buffer, size, "%d", m_Value._sint8);
     case ValueType_uint16: return snprintf(buffer, size, "%d", m_Value._uint16);
-    case ValueType_int16:  return snprintf(buffer, size, "%d", m_Value._sint16);
+    case ValueType_int16: return snprintf(buffer, size, "%d", m_Value._sint16);
     case ValueType_uint32: return snprintf(buffer, size, "%lu", m_Value._uint32);
-    case ValueType_int32:  return snprintf(buffer, size, "%d", m_Value._sint32);
+    case ValueType_int32: return snprintf(buffer, size, "%d", m_Value._sint32);
     case ValueType_uint64: return snprintf(buffer, size, "%llu", m_Value._uint64);
-    case ValueType_int64:  return snprintf(buffer, size, "%lld", m_Value._sint64);
-    case ValueType_float:  return snprintf(buffer, size, "%f", m_Value._float);
+    case ValueType_int64: return snprintf(buffer, size, "%lld", m_Value._sint64);
+    case ValueType_float: return snprintf(buffer, size, "%f", m_Value._float);
     case ValueType_double: return snprintf(buffer, size, "%f", m_Value._double);
     default: return snprintf(buffer, size, "?");
     }
@@ -149,7 +150,7 @@ CScanResult::~CScanResult(void)
 {
 }
 
-void CScanResult::SetDescription(const char* str)
+void CScanResult::SetDescription(const char * str)
 {
     m_Description = str;
 }
@@ -159,18 +160,18 @@ void CScanResult::DeleteDescription(void)
     m_Description.clear();
 }
 
-const char* CScanResult::GetDescription(void)
+const char * CScanResult::GetDescription(void)
 {
     return m_Description.c_str();
 }
 
-int CScanResult::GetValueString(char *buffer, size_t size)
+int CScanResult::GetValueString(char * buffer, size_t size)
 {
     bool bHex = (m_DisplayFormat == DisplayHex);
     return ToString(buffer, bHex, size);
 }
 
-bool CScanResult::GetMemoryValue(CMixed* v)
+bool CScanResult::GetMemoryValue(CMixed * v)
 {
     if (g_MMU == nullptr)
     {
@@ -184,41 +185,41 @@ bool CScanResult::GetMemoryValue(CMixed* v)
         return false;
     }
 
-    uint8_t* mem = CMemoryScanner::GetMemoryPool(paddr);
+    uint8_t * mem = CMemoryScanner::GetMemoryPool(paddr);
 
     uint64_t raw64 = 0;
 
     if (GetTypeSize() == 8)
     {
-        raw64 = ((uint64_t)*(uint32_t*)&mem[paddr] << 32) | *(uint32_t*)&mem[paddr + 4];
+        raw64 = ((uint64_t) * (uint32_t *)&mem[paddr] << 32) | *(uint32_t *)&mem[paddr + 4];
     }
 
     switch (m_Type)
     {
-    case ValueType_uint8:  v->Set(*(uint8_t*) &mem[paddr ^ 3]); break;
-    case ValueType_int8:   v->Set(*(int8_t*)  &mem[paddr ^ 3]); break;
-    case ValueType_uint16: v->Set(*(uint16_t*)&mem[paddr ^ 2]); break;
-    case ValueType_int16:  v->Set(*(int16_t*) &mem[paddr ^ 2]); break;
-    case ValueType_uint32: v->Set(*(uint32_t*)&mem[paddr]); break;
-    case ValueType_int32:  v->Set(*(int32_t*)&mem[paddr]); break;
-    case ValueType_uint64: v->Set(*(uint64_t*)&raw64); break;
-    case ValueType_int64:  v->Set(*(int64_t*)&raw64); break;
-    case ValueType_float:  v->Set(*(float*)&mem[paddr]); break;
-    case ValueType_double: v->Set(*(double*)&raw64); break;
+    case ValueType_uint8: v->Set(*(uint8_t *)&mem[paddr ^ 3]); break;
+    case ValueType_int8: v->Set(*(int8_t *)&mem[paddr ^ 3]); break;
+    case ValueType_uint16: v->Set(*(uint16_t *)&mem[paddr ^ 2]); break;
+    case ValueType_int16: v->Set(*(int16_t *)&mem[paddr ^ 2]); break;
+    case ValueType_uint32: v->Set(*(uint32_t *)&mem[paddr]); break;
+    case ValueType_int32: v->Set(*(int32_t *)&mem[paddr]); break;
+    case ValueType_uint64: v->Set(*(uint64_t *)&raw64); break;
+    case ValueType_int64: v->Set(*(int64_t *)&raw64); break;
+    case ValueType_float: v->Set(*(float *)&mem[paddr]); break;
+    case ValueType_double: v->Set(*(double *)&raw64); break;
     default: return false; // (primitives only)
     }
 
     return true;
 }
 
-int CScanResult::GetMemoryValueString(char* buffer, size_t size, bool bIgnoreHex)
+int CScanResult::GetMemoryValueString(char * buffer, size_t size, bool bIgnoreHex)
 {
     if (g_MMU == nullptr)
     {
         sprintf(buffer, "?");
         return 1;
     }
-    
+
     bool bHex = (m_DisplayFormat == DisplayHex) && !bIgnoreHex;
 
     uint32_t paddr = m_Address & 0x1FFFFFFF;
@@ -228,15 +229,15 @@ int CScanResult::GetMemoryValueString(char* buffer, size_t size, bool bIgnoreHex
         return sprintf(buffer, "?");
     }
 
-    uint8_t* mem = CMemoryScanner::GetMemoryPool(paddr);
+    uint8_t * mem = CMemoryScanner::GetMemoryPool(paddr);
 
     if (m_Type == ValueType_istring ||
-        m_Type == ValueType_string  ||
+        m_Type == ValueType_string ||
         m_Type == ValueType_unkstring)
     {
         if (bHex)
         {
-            char* out = buffer;
+            char * out = buffer;
 
             for (int i = 0; i < m_StrLength; i++)
             {
@@ -268,7 +269,7 @@ int CScanResult::GetMemoryValueString(char* buffer, size_t size, bool bIgnoreHex
     return memVal.ToString(buffer, bHex, size);
 }
 
-int CScanResult::GetAddressString(char *buffer)
+int CScanResult::GetAddressString(char * buffer)
 {
     return sprintf(buffer, "0x%08X", m_Address);
 }
@@ -286,7 +287,7 @@ uint32_t CScanResult::GetVirtualAddress(void)
     }
 }
 
-bool CScanResult::SetMemoryValueFromString(const char* str)
+bool CScanResult::SetMemoryValueFromString(const char * str)
 {
     if (g_MMU == nullptr)
     {
@@ -303,9 +304,9 @@ bool CScanResult::SetMemoryValueFromString(const char* str)
         return false;
     }
 
-    uint8_t* mem = CMemoryScanner::GetMemoryPool(m_Address & 0x1FFFFFFF);
+    uint8_t * mem = CMemoryScanner::GetMemoryPool(m_Address & 0x1FFFFFFF);
 
-    char* endptr;
+    char * endptr;
     uint64_t intVal = strtoull(str, &endptr, 0);
     double doubleVal = strtod(str, &endptr);
 
@@ -317,32 +318,32 @@ bool CScanResult::SetMemoryValueFromString(const char* str)
         break;
     case ValueType_uint16:
     case ValueType_int16:
-        *(uint16_t*)&mem[paddr ^ 2] = intVal & 0xFFFF;
+        *(uint16_t *)&mem[paddr ^ 2] = intVal & 0xFFFF;
         break;
     case ValueType_uint32:
     case ValueType_int32:
-        *(uint32_t*)&mem[paddr] = intVal & 0xFFFFFFFF;
+        *(uint32_t *)&mem[paddr] = intVal & 0xFFFFFFFF;
         break;
     case ValueType_uint64:
     case ValueType_int64:
-        *(uint64_t*)&mem[paddr] = (intVal << 32) | (intVal >> 32);
+        *(uint64_t *)&mem[paddr] = (intVal << 32) | (intVal >> 32);
         break;
     case ValueType_float:
         if (bHex)
         {
-            *(uint32_t*)&mem[paddr] = intVal & 0xFFFFFFFF;
+            *(uint32_t *)&mem[paddr] = intVal & 0xFFFFFFFF;
             break;
         }
-        *(float*)&mem[paddr] = (float)doubleVal;
+        *(float *)&mem[paddr] = (float)doubleVal;
         break;
     case ValueType_double:
         if (bHex)
         {
-            *(uint64_t*)&mem[paddr] = (intVal << 32) | (intVal >> 32);
+            *(uint64_t *)&mem[paddr] = (intVal << 32) | (intVal >> 32);
             break;
         }
-        intVal = *(uint64_t*)&doubleVal;
-        *(uint64_t*)&mem[paddr] = (intVal << 32) | (intVal >> 32);
+        intVal = *(uint64_t *)&doubleVal;
+        *(uint64_t *)&mem[paddr] = (intVal << 32) | (intVal >> 32);
         break;
     case ValueType_string:
     case ValueType_istring:
@@ -355,7 +356,7 @@ bool CScanResult::SetMemoryValueFromString(const char* str)
                 return false;
             }
 
-            char* buff = new char[size];
+            char * buff = new char[size];
             CMemoryScanner::ParseHexString(buff, str);
 
             for (int i = 0; i < m_StrLength; i++)
@@ -488,15 +489,15 @@ bool CMemoryScanner::PAddrValid(uint32_t physAddr)
     uint32_t romSize = g_Rom->GetRomSize();
 
     return (AddrCheck(physAddr, 0x00000000, 0x00000000 + ramSize - 1) ||
-        AddrCheck(physAddr, 0x10000000, 0x10000000 + romSize - 1) ||
-        AddrCheck(physAddr, 0x04000000, 0x04001FFF));
+            AddrCheck(physAddr, 0x10000000, 0x10000000 + romSize - 1) ||
+            AddrCheck(physAddr, 0x04000000, 0x04001FFF));
 }
 
 bool CMemoryScanner::PAddrRangeValid(uint32_t physAddrStart, uint32_t physAddrEnd)
 {
     return (RangeCheck(physAddrStart, physAddrEnd, 0x00000000, g_MMU->RdramSize()) ||
-        RangeCheck(physAddrStart, physAddrEnd, 0x04000000, 0x04001FFF) ||
-        RangeCheck(physAddrStart, physAddrEnd, 0x10000000, 0x15FFFFFF));
+            RangeCheck(physAddrStart, physAddrEnd, 0x04000000, 0x04001FFF) ||
+            RangeCheck(physAddrStart, physAddrEnd, 0x10000000, 0x15FFFFFF));
 }
 
 void CMemoryScanner::SetAddressType(AddressType addressType)
@@ -510,7 +511,7 @@ void CMemoryScanner::Reset(void)
 
     m_ValueType = ValueType_uint8;
     m_SearchType = SearchType_ExactValue;
-    
+
     m_Results.clear();
 }
 
@@ -521,7 +522,7 @@ bool CMemoryScanner::SetAddressRange(uint32_t startAddress, uint32_t endAddress)
         return false;
     }
 
-    if(m_DidFirstScan)
+    if (m_DidFirstScan)
     {
         return false;
     }
@@ -571,7 +572,7 @@ bool CMemoryScanner::SetAddressRange(uint32_t startAddress, uint32_t endAddress)
     {
         return false; // Invalid range
     }
-    
+
     m_Memory = GetMemoryPool(startAddress);
 
     m_RangeStartAddress = startAddress;
@@ -579,7 +580,7 @@ bool CMemoryScanner::SetAddressRange(uint32_t startAddress, uint32_t endAddress)
     return true;
 }
 
-uint8_t* CMemoryScanner::GetMemoryPool(uint32_t physAddr)
+uint8_t * CMemoryScanner::GetMemoryPool(uint32_t physAddr)
 {
     if (!g_MMU || !g_Rom)
     {
@@ -599,17 +600,16 @@ uint8_t* CMemoryScanner::GetMemoryPool(uint32_t physAddr)
     {
         return nullptr;
     }
-
 }
 
 bool CMemoryScanner::SetValueType(ValueType type)
 {
-    if(m_DidFirstScan)
+    if (m_DidFirstScan)
     {
         return false;
     }
-    
-    switch(type)
+
+    switch (type)
     {
     case ValueType_string:
     case ValueType_istring:
@@ -620,7 +620,7 @@ bool CMemoryScanner::SetValueType(ValueType type)
         m_bDataTypePrimitive = true;
         break;
     }
-    
+
     m_ValueType = type;
     return true;
 }
@@ -632,12 +632,12 @@ void CMemoryScanner::SetStringValueLength(int length)
 
 bool CMemoryScanner::SetSearchType(SearchType searchType)
 {
-    if(!m_bDataTypePrimitive)
+    if (!m_bDataTypePrimitive)
     {
         return false;
     }
-    
-    switch(searchType)
+
+    switch (searchType)
     {
     case SearchType_UnknownValue:
     case SearchType_JalTo:
@@ -650,13 +650,13 @@ bool CMemoryScanner::SetSearchType(SearchType searchType)
     case SearchType_UnchangedValue:
     case SearchType_IncreasedValue:
     case SearchType_DecreasedValue:
-        if(!m_DidFirstScan)
+        if (!m_DidFirstScan)
         {
             return false;
         }
         break;
     }
-    
+
     m_SearchType = searchType;
     return true;
 }
@@ -671,7 +671,7 @@ size_t CMemoryScanner::GetNumResults(void)
     return m_Results.size();
 }
 
-CScanResult* CMemoryScanner::GetResult(size_t index)
+CScanResult * CMemoryScanner::GetResult(size_t index)
 {
     if (index >= m_Results.size())
     {
@@ -679,7 +679,7 @@ CScanResult* CMemoryScanner::GetResult(size_t index)
     }
 
     return &m_Results[index];
-}    
+}
 
 void CMemoryScanner::RemoveResult(size_t index)
 {
@@ -714,7 +714,7 @@ void CMemoryScanner::FirstScanLoopString(DisplayFormat resultDisplayFormat)
         }
 
         result.m_Address = addr | m_VAddrBits;
-        result.Set((const wchar_t*)nullptr);
+        result.Set((const wchar_t *)nullptr);
         m_Results.push_back(result);
     next_addr:;
     }
@@ -743,7 +743,7 @@ void CMemoryScanner::FirstScanLoopIString(DisplayFormat resultDisplayFormat)
         }
 
         result.m_Address = addr | m_VAddrBits;
-        result.Set((const wchar_t*)nullptr);
+        result.Set((const wchar_t *)nullptr);
         m_Results.push_back(result);
     next_addr:;
     }
@@ -752,9 +752,9 @@ void CMemoryScanner::FirstScanLoopIString(DisplayFormat resultDisplayFormat)
 // Scan for text of unknown single-byte encoding
 void CMemoryScanner::FirstScanLoopUnkString(void)
 {
-    const char* str = stdstr().FromUTF16(m_Value._string).c_str();
+    const char * str = stdstr().FromUTF16(m_Value._string).c_str();
     int length = m_StringValueLength;
-    
+
     uint32_t startAddr = m_RangeStartAddress;
     uint32_t endAddr = m_RangeEndAddress - length;
 
@@ -816,7 +816,7 @@ void CMemoryScanner::FirstScanLoopUnkString(void)
         }
 
         result.m_Address = addr | m_VAddrBits;
-        result.Set((const wchar_t*)nullptr);
+        result.Set((const wchar_t *)nullptr);
         m_Results.push_back(result);
 
     next_addr:;
@@ -826,19 +826,19 @@ void CMemoryScanner::FirstScanLoopUnkString(void)
 #define _FirstScanLoopPrimitive(T, Compare, resDisplayFormat) FirstScanLoopPrimitive<T>(Compare<T>, resDisplayFormat)
 #define _FirstScanLoopPrimitive64(T, Compare, resDisplayFormat) FirstScanLoopPrimitive64<T>(Compare<T>, resDisplayFormat)
 
-#define FIRST_SCAN_PRIMITIVES(CompareFunc) \
-    switch(m_ValueType)                    \
-    {                                      \
-    case ValueType_uint8:  _FirstScanLoopPrimitive(uint8_t,  CompareFunc, resDisplayFormat); break; \
-    case ValueType_int8:   _FirstScanLoopPrimitive(int8_t,   CompareFunc, resDisplayFormat); break; \
-    case ValueType_uint16: _FirstScanLoopPrimitive(uint16_t, CompareFunc, resDisplayFormat); break; \
-    case ValueType_int16:  _FirstScanLoopPrimitive(int16_t,  CompareFunc, resDisplayFormat); break; \
-    case ValueType_uint32: _FirstScanLoopPrimitive(uint32_t, CompareFunc, resDisplayFormat); break; \
-    case ValueType_int32:  _FirstScanLoopPrimitive(int32_t,  CompareFunc, resDisplayFormat); break; \
+#define FIRST_SCAN_PRIMITIVES(CompareFunc)                                                            \
+    switch (m_ValueType)                                                                              \
+    {                                                                                                 \
+    case ValueType_uint8: _FirstScanLoopPrimitive(uint8_t, CompareFunc, resDisplayFormat); break;     \
+    case ValueType_int8: _FirstScanLoopPrimitive(int8_t, CompareFunc, resDisplayFormat); break;       \
+    case ValueType_uint16: _FirstScanLoopPrimitive(uint16_t, CompareFunc, resDisplayFormat); break;   \
+    case ValueType_int16: _FirstScanLoopPrimitive(int16_t, CompareFunc, resDisplayFormat); break;     \
+    case ValueType_uint32: _FirstScanLoopPrimitive(uint32_t, CompareFunc, resDisplayFormat); break;   \
+    case ValueType_int32: _FirstScanLoopPrimitive(int32_t, CompareFunc, resDisplayFormat); break;     \
     case ValueType_uint64: _FirstScanLoopPrimitive64(uint64_t, CompareFunc, resDisplayFormat); break; \
-    case ValueType_int64:  _FirstScanLoopPrimitive64(int64_t,  CompareFunc, resDisplayFormat); break; \
-    case ValueType_float:  _FirstScanLoopPrimitive(float,    CompareFunc, resDisplayFormat); break; \
-    case ValueType_double: _FirstScanLoopPrimitive64(double,   CompareFunc, resDisplayFormat); break; \
+    case ValueType_int64: _FirstScanLoopPrimitive64(int64_t, CompareFunc, resDisplayFormat); break;   \
+    case ValueType_float: _FirstScanLoopPrimitive(float, CompareFunc, resDisplayFormat); break;       \
+    case ValueType_double: _FirstScanLoopPrimitive64(double, CompareFunc, resDisplayFormat); break;   \
     }
 
 bool CMemoryScanner::FirstScan(DisplayFormat resDisplayFormat)
@@ -902,35 +902,35 @@ bool CMemoryScanner::FirstScan(DisplayFormat resDisplayFormat)
 #define _NextScanLoopPrimitiveResults64(T, Compare) NextScanLoopPrimitiveResults64<T>(Compare<T>)
 
 // Compare result's current value in memory against m_Value
-#define NEXT_SCAN_PRIMITIVES_AGAINST_VALUE(CompareFunc) \
-    switch(m_ValueType)                                 \
-    {                                                   \
-    case ValueType_uint8:  _NextScanLoopPrimitive(uint8_t,  CompareFunc); break; \
-    case ValueType_int8:   _NextScanLoopPrimitive(int8_t,   CompareFunc); break; \
-    case ValueType_uint16: _NextScanLoopPrimitive(uint16_t, CompareFunc); break; \
-    case ValueType_int16:  _NextScanLoopPrimitive(int16_t,  CompareFunc); break; \
-    case ValueType_uint32: _NextScanLoopPrimitive(uint32_t, CompareFunc); break; \
-    case ValueType_int32:  _NextScanLoopPrimitive(int32_t,  CompareFunc); break; \
+#define NEXT_SCAN_PRIMITIVES_AGAINST_VALUE(CompareFunc)                            \
+    switch (m_ValueType)                                                           \
+    {                                                                              \
+    case ValueType_uint8: _NextScanLoopPrimitive(uint8_t, CompareFunc); break;     \
+    case ValueType_int8: _NextScanLoopPrimitive(int8_t, CompareFunc); break;       \
+    case ValueType_uint16: _NextScanLoopPrimitive(uint16_t, CompareFunc); break;   \
+    case ValueType_int16: _NextScanLoopPrimitive(int16_t, CompareFunc); break;     \
+    case ValueType_uint32: _NextScanLoopPrimitive(uint32_t, CompareFunc); break;   \
+    case ValueType_int32: _NextScanLoopPrimitive(int32_t, CompareFunc); break;     \
     case ValueType_uint64: _NextScanLoopPrimitive64(uint64_t, CompareFunc); break; \
-    case ValueType_int64:  _NextScanLoopPrimitive64(int64_t,  CompareFunc); break; \
-    case ValueType_float:  _NextScanLoopPrimitive(float,    CompareFunc); break; \
-    case ValueType_double: _NextScanLoopPrimitive64(double,   CompareFunc); break; \
+    case ValueType_int64: _NextScanLoopPrimitive64(int64_t, CompareFunc); break;   \
+    case ValueType_float: _NextScanLoopPrimitive(float, CompareFunc); break;       \
+    case ValueType_double: _NextScanLoopPrimitive64(double, CompareFunc); break;   \
     }
 
 // Compare result's current value in memory against result's old value
-#define NEXT_SCAN_PRIMITIVES_AGAINST_RESULTS(CompareFunc) \
-    switch(m_ValueType)                                   \
-    {                                                     \
-    case ValueType_uint8:  _NextScanLoopPrimitiveResults(uint8_t,  CompareFunc); break; \
-    case ValueType_int8:   _NextScanLoopPrimitiveResults(int8_t,   CompareFunc); break; \
-    case ValueType_uint16: _NextScanLoopPrimitiveResults(uint16_t, CompareFunc); break; \
-    case ValueType_int16:  _NextScanLoopPrimitiveResults(int16_t,  CompareFunc); break; \
-    case ValueType_uint32: _NextScanLoopPrimitiveResults(uint32_t, CompareFunc); break; \
-    case ValueType_int32:  _NextScanLoopPrimitiveResults(int32_t,  CompareFunc); break; \
+#define NEXT_SCAN_PRIMITIVES_AGAINST_RESULTS(CompareFunc)                                 \
+    switch (m_ValueType)                                                                  \
+    {                                                                                     \
+    case ValueType_uint8: _NextScanLoopPrimitiveResults(uint8_t, CompareFunc); break;     \
+    case ValueType_int8: _NextScanLoopPrimitiveResults(int8_t, CompareFunc); break;       \
+    case ValueType_uint16: _NextScanLoopPrimitiveResults(uint16_t, CompareFunc); break;   \
+    case ValueType_int16: _NextScanLoopPrimitiveResults(int16_t, CompareFunc); break;     \
+    case ValueType_uint32: _NextScanLoopPrimitiveResults(uint32_t, CompareFunc); break;   \
+    case ValueType_int32: _NextScanLoopPrimitiveResults(int32_t, CompareFunc); break;     \
     case ValueType_uint64: _NextScanLoopPrimitiveResults64(uint64_t, CompareFunc); break; \
-    case ValueType_int64:  _NextScanLoopPrimitiveResults64(int64_t,  CompareFunc); break; \
-    case ValueType_float:  _NextScanLoopPrimitiveResults(float,    CompareFunc); break; \
-    case ValueType_double: _NextScanLoopPrimitiveResults64(double,   CompareFunc); break; \
+    case ValueType_int64: _NextScanLoopPrimitiveResults64(int64_t, CompareFunc); break;   \
+    case ValueType_float: _NextScanLoopPrimitiveResults(float, CompareFunc); break;       \
+    case ValueType_double: _NextScanLoopPrimitiveResults64(double, CompareFunc); break;   \
     }
 
 bool CMemoryScanner::NextScan()
@@ -940,8 +940,8 @@ bool CMemoryScanner::NextScan()
         // NextScan does not support complex data
         return false;
     }
-    
-    switch(m_SearchType)
+
+    switch (m_SearchType)
     {
     case SearchType_ExactValue:
         NEXT_SCAN_PRIMITIVES_AGAINST_VALUE(CompareEqual);
@@ -972,10 +972,9 @@ bool CMemoryScanner::NextScan()
         NEXT_SCAN_PRIMITIVES_AGAINST_RESULTS(CompareLessThan);
         break;
     }
-    
+
     return true;
 }
-
 
 int CMemoryScanner::HexDigitVal(char c)
 {
@@ -985,7 +984,7 @@ int CMemoryScanner::HexDigitVal(char c)
     return 0;
 }
 
-int CMemoryScanner::ParseHexString(char *dst, const char* src)
+int CMemoryScanner::ParseHexString(char * dst, const char * src)
 {
     bool bHiNibble = true;
     uint8_t curByte = 0;

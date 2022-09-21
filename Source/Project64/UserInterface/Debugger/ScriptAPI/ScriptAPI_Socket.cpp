@@ -1,37 +1,38 @@
-#include <stdafx.h>
-#include "ScriptAPI.h"
+#include "stdafx.h"
+
 #include "JSSocketWorker.h"
+#include "ScriptAPI.h"
 
-#pragma warning(disable: 4702) // disable unreachable code warning
+#pragma warning(disable : 4702) // disable unreachable code warning
 
-static CJSSocketWorker* GetThisSocket(duk_context* ctx);
-static duk_ret_t RequireBufferDataOrString(duk_context* ctx, duk_idx_t idx, const char** data, duk_size_t* size);
-static duk_int_t RegisterWriteCallback(duk_context* ctx, duk_idx_t idx);
-static void RegisterWriteEndCallback(duk_context* ctx, duk_idx_t idx);
+static CJSSocketWorker * GetThisSocket(duk_context * ctx);
+static duk_ret_t RequireBufferDataOrString(duk_context * ctx, duk_idx_t idx, const char ** data, duk_size_t * size);
+static duk_int_t RegisterWriteCallback(duk_context * ctx, duk_idx_t idx);
+static void RegisterWriteEndCallback(duk_context * ctx, duk_idx_t idx);
 
-void ScriptAPI::Define_Socket(duk_context* ctx)
+void ScriptAPI::Define_Socket(duk_context * ctx)
 {
     const DukPropListEntry prototype[] = {
-        { "connect",       DukCFunction(js_Socket_connect) },
-        { "write",         DukCFunction(js_Socket_write) },
-        { "end",           DukCFunction(js_Socket_end) },
-        { "close",         DukCFunction(js_Socket_close) },
-        { "on",            DukCFunction(js__Emitter_on) },
-        { "off",           DukCFunction(js__Emitter_off) },
-        { "localAddress",  DukGetter(js_Socket__get_localAddress) },
-        { "localPort",     DukGetter(js_Socket__get_localPort) },
-        { "remoteAddress", DukGetter(js_Socket__get_remoteAddress) },
-        { "remotePort",    DukGetter(js_Socket__get_remotePort) },
-        { "addressFamily", DukGetter(js_Socket__get_addressFamily) },
+        {"connect", DukCFunction(js_Socket_connect)},
+        {"write", DukCFunction(js_Socket_write)},
+        {"end", DukCFunction(js_Socket_end)},
+        {"close", DukCFunction(js_Socket_close)},
+        {"on", DukCFunction(js__Emitter_on)},
+        {"off", DukCFunction(js__Emitter_off)},
+        {"localAddress", DukGetter(js_Socket__get_localAddress)},
+        {"localPort", DukGetter(js_Socket__get_localPort)},
+        {"remoteAddress", DukGetter(js_Socket__get_remoteAddress)},
+        {"remotePort", DukGetter(js_Socket__get_remotePort)},
+        {"addressFamily", DukGetter(js_Socket__get_addressFamily)},
         { nullptr }
     };
 
     DefineGlobalClass(ctx, "Socket", js_Socket__constructor, prototype, nullptr);
 }
 
-duk_ret_t ScriptAPI::js_Socket__constructor(duk_context* ctx)
+duk_ret_t ScriptAPI::js_Socket__constructor(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_OptObject });
+    CheckArgs(ctx, {Arg_OptObject});
 
     if (!duk_is_constructor_call(ctx))
     {
@@ -40,7 +41,7 @@ duk_ret_t ScriptAPI::js_Socket__constructor(duk_context* ctx)
 
     bool bAllowHalfOpen = false;
 
-    CScriptInstance* inst = GetInstance(ctx);
+    CScriptInstance * inst = GetInstance(ctx);
 
     if (duk_is_object(ctx, 0))
     {
@@ -53,17 +54,9 @@ duk_ret_t ScriptAPI::js_Socket__constructor(duk_context* ctx)
     }
 
     duk_push_this(ctx);
-    void* objectHeapPtr = duk_get_heapptr(ctx, -1);
-    
-    InitEmitter(ctx, -1, {
-        "data",
-        "end",
-        "connect",
-        "error",
-        "close",
-        "drain",
-        "lookup"
-    });
+    void * objectHeapPtr = duk_get_heapptr(ctx, -1);
+
+    InitEmitter(ctx, -1, {"data", "end", "connect", "error", "close", "drain", "lookup"});
 
     duk_push_uint(ctx, 0);
     duk_put_prop_string(ctx, -2, HS_socketNextWriteCallbackId);
@@ -74,9 +67,9 @@ duk_ret_t ScriptAPI::js_Socket__constructor(duk_context* ctx)
     duk_push_array(ctx);
     duk_put_prop_string(ctx, -2, HS_socketWriteEndCallbacks);
 
-    CJSSocketWorker* socketWorker = new CJSSocketWorker(inst, objectHeapPtr, bAllowHalfOpen);
+    CJSSocketWorker * socketWorker = new CJSSocketWorker(inst, objectHeapPtr, bAllowHalfOpen);
 
-    duk_push_pointer(ctx, (void*)socketWorker);
+    duk_push_pointer(ctx, (void *)socketWorker);
     duk_put_prop_string(ctx, -2, HS_socketWorkerPtr);
 
     duk_push_c_function(ctx, js_Socket__finalizer, 1);
@@ -85,10 +78,10 @@ duk_ret_t ScriptAPI::js_Socket__constructor(duk_context* ctx)
     return 0;
 }
 
-duk_ret_t ScriptAPI::js_Socket__finalizer(duk_context* ctx)
+duk_ret_t ScriptAPI::js_Socket__finalizer(duk_context * ctx)
 {
     duk_get_prop_string(ctx, 0, HS_socketWorkerPtr);
-    CJSSocketWorker* socketWorker = (CJSSocketWorker*)duk_get_pointer(ctx, -1);
+    CJSSocketWorker * socketWorker = (CJSSocketWorker *)duk_get_pointer(ctx, -1);
 
     if (socketWorker == nullptr)
     {
@@ -101,15 +94,15 @@ duk_ret_t ScriptAPI::js_Socket__finalizer(duk_context* ctx)
     return 0;
 }
 
-duk_ret_t ScriptAPI::js_Socket_connect(duk_context* ctx)
+duk_ret_t ScriptAPI::js_Socket_connect(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Number, Arg_String, Arg_OptFunction });
+    CheckArgs(ctx, {Arg_Number, Arg_String, Arg_OptFunction});
 
-    CJSSocketWorker* socketWorker = GetThisSocket(ctx);
-    
+    CJSSocketWorker * socketWorker = GetThisSocket(ctx);
+
     duk_idx_t nargs = duk_get_top(ctx);
     unsigned short port = (unsigned short)duk_get_uint(ctx, 0);
-    const char* host = duk_get_string(ctx, 1);
+    const char * host = duk_get_string(ctx, 1);
 
     if (nargs == 3)
     {
@@ -131,14 +124,14 @@ duk_ret_t ScriptAPI::js_Socket_connect(duk_context* ctx)
     return 0;
 }
 
-duk_ret_t ScriptAPI::js_Socket_write(duk_context* ctx)
+duk_ret_t ScriptAPI::js_Socket_write(duk_context * ctx)
 {
-    CJSSocketWorker* socketWorker = GetThisSocket(ctx);
+    CJSSocketWorker * socketWorker = GetThisSocket(ctx);
 
-    const char* data;
+    const char * data;
     duk_size_t size;
     duk_int_t callbackId = -1;
-    
+
     duk_idx_t nargs = duk_get_top(ctx);
     RequireBufferDataOrString(ctx, 0, &data, &size);
 
@@ -147,15 +140,15 @@ duk_ret_t ScriptAPI::js_Socket_write(duk_context* ctx)
         callbackId = RegisterWriteCallback(ctx, 1);
     }
 
-    socketWorker->Write((char*)data, size, callbackId, false);
+    socketWorker->Write((char *)data, size, callbackId, false);
     return 0;
 }
 
-duk_ret_t ScriptAPI::js_Socket_end(duk_context* ctx)
+duk_ret_t ScriptAPI::js_Socket_end(duk_context * ctx)
 {
-    CJSSocketWorker* socketWorker = GetThisSocket(ctx);
+    CJSSocketWorker * socketWorker = GetThisSocket(ctx);
 
-    const char* data;
+    const char * data;
     duk_size_t size;
     duk_int_t callbackId = -1;
 
@@ -167,11 +160,11 @@ duk_ret_t ScriptAPI::js_Socket_end(duk_context* ctx)
         RegisterWriteEndCallback(ctx, 1);
     }
 
-    socketWorker->Write((char*)data, size, callbackId, true);
+    socketWorker->Write((char *)data, size, callbackId, true);
     return 0;
 }
 
-duk_ret_t ScriptAPI::js_Socket__invokeWriteCallback(duk_context* ctx)
+duk_ret_t ScriptAPI::js_Socket__invokeWriteCallback(duk_context * ctx)
 {
     duk_int_t callbackId = duk_get_int(ctx, 0);
 
@@ -191,7 +184,7 @@ duk_ret_t ScriptAPI::js_Socket__invokeWriteCallback(duk_context* ctx)
     return 0;
 }
 
-duk_ret_t ScriptAPI::js_Socket__invokeWriteEndCallbacks(duk_context* ctx)
+duk_ret_t ScriptAPI::js_Socket__invokeWriteEndCallbacks(duk_context * ctx)
 {
     duk_push_this(ctx);
     duk_get_prop_string(ctx, -1, HS_socketWriteEndCallbacks);
@@ -212,59 +205,59 @@ duk_ret_t ScriptAPI::js_Socket__invokeWriteEndCallbacks(duk_context* ctx)
     duk_pop(ctx);
 
     // reset array
-    duk_push_array(ctx); 
+    duk_push_array(ctx);
     duk_put_prop_string(ctx, -2, HS_socketWriteEndCallbacks);
 
     return 0;
 }
 
-duk_ret_t ScriptAPI::js_Socket_close(duk_context* ctx)
+duk_ret_t ScriptAPI::js_Socket_close(duk_context * ctx)
 {
-    CJSSocketWorker* socketWorker = GetThisSocket(ctx);
+    CJSSocketWorker * socketWorker = GetThisSocket(ctx);
     socketWorker->StopWorkerProc();
     return 0;
 }
 
-duk_ret_t ScriptAPI::js_Socket__get_localAddress(duk_context* ctx)
+duk_ret_t ScriptAPI::js_Socket__get_localAddress(duk_context * ctx)
 {
-    CJSSocketWorker* socketWorker = GetThisSocket(ctx);
+    CJSSocketWorker * socketWorker = GetThisSocket(ctx);
     duk_push_string(ctx, socketWorker->GetLocalAddress().c_str());
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_Socket__get_localPort(duk_context* ctx)
+duk_ret_t ScriptAPI::js_Socket__get_localPort(duk_context * ctx)
 {
-    CJSSocketWorker* socketWorker = GetThisSocket(ctx);
+    CJSSocketWorker * socketWorker = GetThisSocket(ctx);
     duk_push_uint(ctx, socketWorker->GetLocalPort());
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_Socket__get_remoteAddress(duk_context* ctx)
+duk_ret_t ScriptAPI::js_Socket__get_remoteAddress(duk_context * ctx)
 {
-    CJSSocketWorker* socketWorker = GetThisSocket(ctx);
+    CJSSocketWorker * socketWorker = GetThisSocket(ctx);
     duk_push_string(ctx, socketWorker->GetRemoteAddress().c_str());
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_Socket__get_remotePort(duk_context* ctx)
+duk_ret_t ScriptAPI::js_Socket__get_remotePort(duk_context * ctx)
 {
-    CJSSocketWorker* socketWorker = GetThisSocket(ctx);
+    CJSSocketWorker * socketWorker = GetThisSocket(ctx);
     duk_push_uint(ctx, socketWorker->GetRemotePort());
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_Socket__get_addressFamily(duk_context* ctx)
+duk_ret_t ScriptAPI::js_Socket__get_addressFamily(duk_context * ctx)
 {
-    CJSSocketWorker* socketWorker = GetThisSocket(ctx);
+    CJSSocketWorker * socketWorker = GetThisSocket(ctx);
     duk_push_string(ctx, socketWorker->GetFamily());
     return 1;
 }
 
-CJSSocketWorker* GetThisSocket(duk_context* ctx)
+CJSSocketWorker * GetThisSocket(duk_context * ctx)
 {
     duk_push_this(ctx);
     duk_get_prop_string(ctx, -1, HS_socketWorkerPtr);
-    CJSSocketWorker* socketWorker = (CJSSocketWorker*)duk_get_pointer(ctx, -1);
+    CJSSocketWorker * socketWorker = (CJSSocketWorker *)duk_get_pointer(ctx, -1);
     duk_pop_n(ctx, 2);
 
     if (socketWorker == nullptr)
@@ -276,11 +269,11 @@ CJSSocketWorker* GetThisSocket(duk_context* ctx)
     return socketWorker;
 }
 
-duk_ret_t RequireBufferDataOrString(duk_context* ctx, duk_idx_t idx, const char** data, duk_size_t* size)
+duk_ret_t RequireBufferDataOrString(duk_context * ctx, duk_idx_t idx, const char ** data, duk_size_t * size)
 {
     if (duk_is_buffer_data(ctx, idx))
     {
-        *data = (const char*)duk_get_buffer_data(ctx, idx, size);
+        *data = (const char *)duk_get_buffer_data(ctx, idx, size);
         return 0;
     }
     else if (duk_is_string(ctx, idx))
@@ -293,7 +286,7 @@ duk_ret_t RequireBufferDataOrString(duk_context* ctx, duk_idx_t idx, const char*
     return duk_throw(ctx);
 }
 
-duk_int_t RegisterWriteCallback(duk_context* ctx, duk_idx_t idx)
+duk_int_t RegisterWriteCallback(duk_context * ctx, duk_idx_t idx)
 {
     idx = duk_normalize_index(ctx, idx);
 
@@ -313,7 +306,7 @@ duk_int_t RegisterWriteCallback(duk_context* ctx, duk_idx_t idx)
     return callbackId;
 }
 
-void RegisterWriteEndCallback(duk_context* ctx, duk_idx_t idx)
+void RegisterWriteEndCallback(duk_context * ctx, duk_idx_t idx)
 {
     idx = duk_normalize_index(ctx, idx);
 

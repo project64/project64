@@ -1,8 +1,9 @@
 #include "stdafx.h"
+
 #include <Common/md5.h>
+#include <Wininet.h>
 #include <time.h>
 #include <windows.h>
-#include <Wininet.h>
 
 #pragma comment(lib, "Wininet.lib")
 
@@ -78,7 +79,7 @@ bool CProjectSupport::ValidateCode(const char * Code)
             m_SupportInfo.Validated = true;
             SaveSupportInfo();
         }
-    } 
+    }
     return m_SupportInfo.Validated;
 }
 
@@ -88,7 +89,7 @@ std::string CProjectSupport::GenerateMachineID(void)
     DWORD Length = sizeof(ComputerName) / sizeof(ComputerName[0]);
     GetComputerName(ComputerName, &Length);
 
-    wchar_t SysPath[MAX_PATH] = { 0 }, VolumePath[MAX_PATH] = { 0 };
+    wchar_t SysPath[MAX_PATH] = {0}, VolumePath[MAX_PATH] = {0};
     GetSystemDirectory(SysPath, sizeof(SysPath) / sizeof(SysPath[0]));
 
     GetVolumePathName(SysPath, VolumePath, sizeof(VolumePath) / sizeof(VolumePath[0]));
@@ -96,7 +97,7 @@ std::string CProjectSupport::GenerateMachineID(void)
     DWORD SerialNumber = 0;
     GetVolumeInformation(VolumePath, nullptr, NULL, &SerialNumber, nullptr, nullptr, nullptr, NULL);
 
-    wchar_t MachineGuid[200] = { 0 };
+    wchar_t MachineGuid[200] = {0};
     HKEY hKey;
     if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Cryptography", 0, KEY_QUERY_VALUE | KEY_WOW64_64KEY, &hKey) == ERROR_SUCCESS)
     {

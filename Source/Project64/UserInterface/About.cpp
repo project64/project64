@@ -1,4 +1,5 @@
-#include <stdafx.h>
+#include "stdafx.h"
+
 #include <Project64\UserInterface\About.h>
 
 CAboutDlg::CAboutDlg(CProjectSupport & Support) :
@@ -20,7 +21,7 @@ LRESULT CAboutDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPara
 
     CDC hDC = GetDC();
     float DPIScale = hDC.GetDeviceCaps(LOGPIXELSX) / 96.0f;
-    LOGFONT lf = { 0 };
+    LOGFONT lf = {0};
     CFontHandle(GetDlgItem(IDC_VERSION).GetFont()).GetLogFont(&lf);
     lf.lfHeight = (int)(16 * DPIScale);
     m_TextFont.CreateFontIndirect(&lf);
@@ -38,7 +39,7 @@ LRESULT CAboutDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPara
     return TRUE;
 }
 
-void CAboutDlg::SetWindowDetais(int nIDDlgItem, int nAboveIDDlgItem, const wchar_t * Text, const HFONT &font)
+void CAboutDlg::SetWindowDetais(int nIDDlgItem, int nAboveIDDlgItem, const wchar_t * Text, const HFONT & font)
 {
     CWindow Wnd = GetDlgItem(nIDDlgItem);
     Wnd.SetWindowText(Text);
@@ -55,7 +56,7 @@ void CAboutDlg::SetWindowDetais(int nIDDlgItem, int nAboveIDDlgItem, const wchar
     {
         Wnd.SetWindowPos(nullptr, 0, 0, rcWin.Width(), rcWin.Height(), SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOOWNERZORDER);
     }
-    
+
     CWindow AboveWnd = GetDlgItem(nAboveIDDlgItem);
     AboveWnd.GetWindowRect(&rcWin);
     ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&rcWin, 2);
@@ -66,8 +67,7 @@ void CAboutDlg::SetWindowDetais(int nIDDlgItem, int nAboveIDDlgItem, const wchar
     Wnd.SetWindowPos(nullptr, rcWin.left, Top, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
 }
 
-
-LRESULT CAboutDlg::OnColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CAboutDlg::OnColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     HDC hdcStatic = (HDC)wParam;
     SetTextColor(hdcStatic, RGB(0, 0, 0));
@@ -75,7 +75,7 @@ LRESULT CAboutDlg::OnColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/
     return (LONG)(LRESULT)((HBRUSH)GetStockObject(NULL_BRUSH));
 }
 
-LRESULT CAboutDlg::OnEraseBackground(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CAboutDlg::OnEraseBackground(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     static HPEN outline = CreatePen(PS_SOLID, 1, 0x00FFFFFF);
     static HBRUSH fill = CreateSolidBrush(0x00FFFFFF);

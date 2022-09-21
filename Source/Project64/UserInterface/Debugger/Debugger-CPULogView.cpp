@@ -1,14 +1,15 @@
 #include "stdafx.h"
-#include "DebuggerUI.h"
+
 #include "CPULog.h"
+#include "DebuggerUI.h"
 
 #include "Debugger-CPULogView.h"
 #include <Project64-core/N64System/Mips/R4300iInstruction.h>
 
-CDebugCPULogView* CDebugCPULogView::_this = nullptr;
+CDebugCPULogView * CDebugCPULogView::_this = nullptr;
 HHOOK CDebugCPULogView::hWinMessageHook = nullptr;
 
-CDebugCPULogView::CDebugCPULogView(CDebuggerUI* debugger) :
+CDebugCPULogView::CDebugCPULogView(CDebuggerUI * debugger) :
     CDebugDialog<CDebugCPULogView>(debugger),
     m_CPULogCopy(nullptr),
     m_LogStartIndex(0),
@@ -24,7 +25,7 @@ CDebugCPULogView::~CDebugCPULogView()
     }
 }
 
-LRESULT CDebugCPULogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CDebugCPULogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     DlgResize_Init(false, true);
     DlgToolTip_Init();
@@ -45,7 +46,7 @@ LRESULT CDebugCPULogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
     m_CPUListView.SetColumnWidth(0, 65);
     m_CPUListView.SetColumnWidth(1, 60);
     m_CPUListView.SetColumnWidth(2, 120);
-    
+
     bool bLoggingEnabled = g_Settings->LoadBool(Debugger_CPULoggingEnabled);
     uint32_t bufferSize = g_Settings->LoadDword(Debugger_CPULogBufferSize);
 
@@ -54,7 +55,7 @@ LRESULT CDebugCPULogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
     m_BuffSizeEdit.SetDisplayType(CEditNumber32::DisplayDec);
     m_BuffSizeEdit.SetValue(bufferSize);
     m_BuffSizeEdit.EnableWindow(!bLoggingEnabled);
-    
+
     RefreshList(true);
 
     m_ExportBtn.EnableWindow(false);
@@ -94,7 +95,7 @@ LRESULT CDebugCPULogView::OnDestroy(void)
 
 LRESULT CALLBACK CDebugCPULogView::HookProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
-    MSG *pMsg = (MSG*)lParam;
+    MSG * pMsg = (MSG *)lParam;
 
     switch (pMsg->message)
     {
@@ -111,7 +112,7 @@ LRESULT CALLBACK CDebugCPULogView::HookProc(int nCode, WPARAM wParam, LPARAM lPa
     return 0;
 }
 
-LRESULT CDebugCPULogView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& /*bHandled*/)
+LRESULT CDebugCPULogView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL & /*bHandled*/)
 {
     switch (wID)
     {
@@ -128,18 +129,18 @@ LRESULT CDebugCPULogView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& 
         Export();
         break;
     }
-    
+
     return FALSE;
 }
 
-LRESULT CDebugCPULogView::OnActivate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CDebugCPULogView::OnActivate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     return FALSE;
 }
 
-LRESULT CDebugCPULogView::OnListItemChanged(NMHDR* pNMHDR)
+LRESULT CDebugCPULogView::OnListItemChanged(NMHDR * pNMHDR)
 {
-    NMITEMACTIVATE* pIA = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
+    NMITEMACTIVATE * pIA = reinterpret_cast<NMITEMACTIVATE *>(pNMHDR);
     int nItem = pIA->iItem;
 
     ShowRegStates(m_LogStartIndex + nItem);
@@ -147,12 +148,12 @@ LRESULT CDebugCPULogView::OnListItemChanged(NMHDR* pNMHDR)
     return FALSE;
 }
 
-LRESULT CDebugCPULogView::OnListDblClicked(NMHDR* pNMHDR)
+LRESULT CDebugCPULogView::OnListDblClicked(NMHDR * pNMHDR)
 {
-    NMITEMACTIVATE* pIA = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
+    NMITEMACTIVATE * pIA = reinterpret_cast<NMITEMACTIVATE *>(pNMHDR);
     int nItem = pIA->iItem;
 
-    CPUState* state = m_CPULogCopy->GetEntry(m_LogStartIndex + nItem);
+    CPUState * state = m_CPULogCopy->GetEntry(m_LogStartIndex + nItem);
 
     if (state == nullptr)
     {
@@ -164,7 +165,7 @@ LRESULT CDebugCPULogView::OnListDblClicked(NMHDR* pNMHDR)
     return FALSE;
 }
 
-LRESULT CDebugCPULogView::OnMeasureItem(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+LRESULT CDebugCPULogView::OnMeasureItem(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL & /*bHandled*/)
 {
     if (wParam == IDC_CPU_LIST)
     {
@@ -175,13 +176,13 @@ LRESULT CDebugCPULogView::OnMeasureItem(UINT /*uMsg*/, WPARAM wParam, LPARAM lPa
 
         m_RowHeight = tm.tmHeight + tm.tmExternalLeading;
 
-        MEASUREITEMSTRUCT* lpMeasureItem = (MEASUREITEMSTRUCT*)lParam;
+        MEASUREITEMSTRUCT * lpMeasureItem = (MEASUREITEMSTRUCT *)lParam;
         lpMeasureItem->itemHeight = m_RowHeight;
     }
     return FALSE;
 }
 
-LRESULT CDebugCPULogView::OnScroll(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+LRESULT CDebugCPULogView::OnScroll(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL & /*bHandled*/)
 {
     WORD type = LOWORD(wParam);
     HWND hScrollbar = (HWND)lParam;
@@ -318,7 +319,7 @@ void CDebugCPULogView::RefreshList(bool bUpdateBuffer)
 
     for (size_t i = start; i < end; i++)
     {
-        CPUState* state = m_CPULogCopy->GetEntry(i);
+        CPUState * state = m_CPULogCopy->GetEntry(i);
 
         if (state == nullptr)
         {
@@ -340,7 +341,7 @@ void CDebugCPULogView::RefreshList(bool bUpdateBuffer)
 
 void CDebugCPULogView::ShowRegStates(size_t stateIndex)
 {
-    CPUState* state = m_CPULogCopy->GetEntry(stateIndex);
+    CPUState * state = m_CPULogCopy->GetEntry(stateIndex);
 
     if (state == nullptr)
     {
@@ -348,7 +349,7 @@ void CDebugCPULogView::ShowRegStates(size_t stateIndex)
     }
 
     char szRegStates[2048];
-    char* out = szRegStates;
+    char * out = szRegStates;
 
     out += sprintf(out, "PC: %08X\r\n\r\n", state->pc);
 
@@ -368,8 +369,8 @@ void CDebugCPULogView::ShowRegStates(size_t stateIndex)
     {
         int regl = i, regr = i + 16;
         out += sprintf(out, "%-3s: %08X  %-3s: %08X\r\n",
-                       CRegName::FPR[regl], *(uint32_t*)&state->fpr[regl],
-                       CRegName::FPR[regr], *(uint32_t*)&state->fpr[regr]);
+                       CRegName::FPR[regl], *(uint32_t *)&state->fpr[regl],
+                       CRegName::FPR[regr], *(uint32_t *)&state->fpr[regr]);
     }
 
     out += sprintf(out, "FPCR: %08X\r\n", state->fpcr);
@@ -386,7 +387,7 @@ void CDebugCPULogView::Export(void)
 
     OPENFILENAMEA openfilename;
     char filePath[255];
-    
+
     memset(&filePath, 0, sizeof(filePath));
     memset(&openfilename, 0, sizeof(openfilename));
 
@@ -408,7 +409,7 @@ void CDebugCPULogView::Export(void)
 
 // Utility
 
-int CDebugCPULogView::GetNumVisibleRows(CListViewCtrl& list)
+int CDebugCPULogView::GetNumVisibleRows(CListViewCtrl & list)
 {
     CHeaderCtrl header = list.GetHeader();
     CRect listRect, headRect;

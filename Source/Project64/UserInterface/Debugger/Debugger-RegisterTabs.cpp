@@ -4,7 +4,7 @@
 #include "OpInfo.h"
 
 bool CRegisterTabs::m_bColorsEnabled = false;
-CDebuggerUI* CRegisterTabs::m_Debugger = nullptr;
+CDebuggerUI * CRegisterTabs::m_Debugger = nullptr;
 
 CRegisterTabs::CRegisterTabs() :
     m_attached(false)
@@ -15,7 +15,7 @@ CRegisterTabs::~CRegisterTabs()
 {
 }
 
-void CRegisterTabs::Attach(HWND hWndNew, CDebuggerUI* debugger)
+void CRegisterTabs::Attach(HWND hWndNew, CDebuggerUI * debugger)
 {
     m_Debugger = debugger;
     CTabCtrl::Attach(hWndNew);
@@ -154,7 +154,7 @@ void CRegisterTabs::RefreshEdits()
     CAUSE cause;
     cause.intval = (uint32_t)g_Reg->CAUSE_REGISTER;
 
-    const char* szExceptionCode = ExceptionCodes[cause.exceptionCode];
+    const char * szExceptionCode = ExceptionCodes[cause.exceptionCode];
     m_CauseTip.SetWindowText(stdstr(szExceptionCode).ToUTF16().c_str());
 
     m_RDRAMEdits[0].SetValue(g_Reg->RDRAM_CONFIG_REG, DisplayMode::ZeroExtend); // or device type
@@ -305,22 +305,22 @@ void CRegisterTabs::RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam)
         }
 
         int nReg = TabData::FPR.GetEditIndex(ctrlId);
-        *(uint32_t*)g_Reg->m_FPR_S[nReg] = value;
+        *(uint32_t *)g_Reg->m_FPR_S[nReg] = value;
         return;
     }
 
     switch (ctrlId)
     {
-    case IDC_COP0_0_EDIT:  g_Reg->INDEX_REGISTER = value; break;
-    case IDC_COP0_1_EDIT:  g_Reg->RANDOM_REGISTER = value; break;
-    case IDC_COP0_2_EDIT:  g_Reg->ENTRYLO0_REGISTER = value; break;
-    case IDC_COP0_3_EDIT:  g_Reg->ENTRYLO1_REGISTER = value; break;
-    case IDC_COP0_4_EDIT:  g_Reg->CONTEXT_REGISTER.Value = value; break;
-    case IDC_COP0_5_EDIT:  g_Reg->PAGE_MASK_REGISTER = value; break;
-    case IDC_COP0_6_EDIT:  g_Reg->WIRED_REGISTER = value; break;
-    case IDC_COP0_7_EDIT:  g_Reg->BAD_VADDR_REGISTER = value; break;
-    case IDC_COP0_8_EDIT:  g_Reg->COUNT_REGISTER = value; break;
-    case IDC_COP0_9_EDIT:  g_Reg->ENTRYHI_REGISTER = value; break;
+    case IDC_COP0_0_EDIT: g_Reg->INDEX_REGISTER = value; break;
+    case IDC_COP0_1_EDIT: g_Reg->RANDOM_REGISTER = value; break;
+    case IDC_COP0_2_EDIT: g_Reg->ENTRYLO0_REGISTER = value; break;
+    case IDC_COP0_3_EDIT: g_Reg->ENTRYLO1_REGISTER = value; break;
+    case IDC_COP0_4_EDIT: g_Reg->CONTEXT_REGISTER.Value = value; break;
+    case IDC_COP0_5_EDIT: g_Reg->PAGE_MASK_REGISTER = value; break;
+    case IDC_COP0_6_EDIT: g_Reg->WIRED_REGISTER = value; break;
+    case IDC_COP0_7_EDIT: g_Reg->BAD_VADDR_REGISTER = value; break;
+    case IDC_COP0_8_EDIT: g_Reg->COUNT_REGISTER = value; break;
+    case IDC_COP0_9_EDIT: g_Reg->ENTRYHI_REGISTER = value; break;
     case IDC_COP0_10_EDIT: g_Reg->COMPARE_REGISTER = value; break;
     case IDC_COP0_11_EDIT: g_Reg->STATUS_REGISTER = value; break;
     case IDC_COP0_12_EDIT: g_Reg->CAUSE_REGISTER = value; break;
@@ -342,14 +342,14 @@ void CRegisterTabs::RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam)
     case IDC_RDRAM20_EDIT: g_Reg->RDRAM_ADDR_SELECT_REG = value; break;
     case IDC_RDRAM24_EDIT: g_Reg->RDRAM_DEVICE_MANUF_REG = value; break;
 
-    case IDC_SP00_EDIT:  g_Reg->SP_MEM_ADDR_REG = value; break;
-    case IDC_SP04_EDIT:  g_Reg->SP_DRAM_ADDR_REG = value; break;
-    case IDC_SP08_EDIT:  g_Reg->SP_RD_LEN_REG = value; break;
-    case IDC_SP0C_EDIT:  g_Reg->SP_WR_LEN_REG = value; break;
-    case IDC_SP10_EDIT:  g_Reg->SP_STATUS_REG = value; break;
-    case IDC_SP14_EDIT:  g_Reg->SP_DMA_FULL_REG = value; break;
-    case IDC_SP18_EDIT:  g_Reg->SP_DMA_BUSY_REG = value; break;
-    case IDC_SP1C_EDIT:  g_Reg->SP_SEMAPHORE_REG = value; break;
+    case IDC_SP00_EDIT: g_Reg->SP_MEM_ADDR_REG = value; break;
+    case IDC_SP04_EDIT: g_Reg->SP_DRAM_ADDR_REG = value; break;
+    case IDC_SP08_EDIT: g_Reg->SP_RD_LEN_REG = value; break;
+    case IDC_SP0C_EDIT: g_Reg->SP_WR_LEN_REG = value; break;
+    case IDC_SP10_EDIT: g_Reg->SP_STATUS_REG = value; break;
+    case IDC_SP14_EDIT: g_Reg->SP_DMA_FULL_REG = value; break;
+    case IDC_SP18_EDIT: g_Reg->SP_DMA_BUSY_REG = value; break;
+    case IDC_SP1C_EDIT: g_Reg->SP_SEMAPHORE_REG = value; break;
     case IDC_SP_PC_EDIT: g_Reg->SP_PC_REG = value; break;
 
     case IDC_DPC00_EDIT: g_Reg->DPC_START_REG = value; break;
@@ -362,8 +362,8 @@ void CRegisterTabs::RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam)
     case IDC_DPC1C_EDIT: g_Reg->DPC_TMEM_REG = value; break;
 
     case IDC_MI00_EDIT: g_Reg->MI_INIT_MODE_REG = value; break; // or MI_MODE ?
-    case IDC_MI04_EDIT: g_Reg->MI_VERSION_REG = value; break; // or MI_NOOP ?
-    case IDC_MI08_EDIT: g_Reg->MI_INTR_REG = value; break; // or MI_INTR ?
+    case IDC_MI04_EDIT: g_Reg->MI_VERSION_REG = value; break;   // or MI_NOOP ?
+    case IDC_MI08_EDIT: g_Reg->MI_INTR_REG = value; break;      // or MI_INTR ?
     case IDC_MI0C_EDIT: g_Reg->MI_INTR_MASK_REG = value; break; // or MI_INTR_MASK ?
 
     case IDC_VI00_EDIT: g_Reg->VI_STATUS_REG = value; break;
@@ -481,7 +481,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         }
 
         HWND hWnd = (HWND)lParam;
-        WORD ctrlId = (WORD) ::GetWindowLong(hWnd, GWL_ID);
+        WORD ctrlId = (WORD)::GetWindowLong(hWnd, GWL_ID);
 
         COpInfo opInfo;
         m_Debugger->DebugLoad_VAddr(g_Reg->m_PROGRAM_COUNTER, opInfo.m_OpCode.Value);
@@ -555,9 +555,9 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         }
 
         HWND hWnd = (HWND)wParam;
-        WORD ctrlId = (WORD) ::GetWindowLong(hWnd, GWL_ID);
+        WORD ctrlId = (WORD)::GetWindowLong(hWnd, GWL_ID);
 
-        CBreakpoints* breakpoints = m_Debugger->Breakpoints();
+        CBreakpoints * breakpoints = m_Debugger->Breakpoints();
 
         if (ctrlId == IDC_HI_LBL)
         {
@@ -594,7 +594,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         HWND hWnd = (HWND)lParam;
         WORD ctrlId = LOWORD(wParam);
 
-        CBreakpoints* breakpoints = m_Debugger->Breakpoints();
+        CBreakpoints * breakpoints = m_Debugger->Breakpoints();
 
         if (ctrlId == IDC_HI_LBL)
         {
@@ -629,8 +629,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         }
 
         HWND hWnd = (HWND)lParam;
-        WORD ctrlId = (WORD) ::GetWindowLong(hWnd, GWL_ID);
-        
+        WORD ctrlId = (WORD)::GetWindowLong(hWnd, GWL_ID);
 
         HDC hdc = (HDC)wParam;
 
@@ -638,8 +637,8 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         COLORREF colorWrite = RGB(255, 200, 200);
         COLORREF colorBoth = RGB(220, 170, 255);
 
-        CBreakpoints* breakpoints = m_Debugger->Breakpoints();
-        
+        CBreakpoints * breakpoints = m_Debugger->Breakpoints();
+
         bool haveRead, haveWrite;
 
         if (ctrlId == IDC_HI_LBL)
@@ -669,11 +668,11 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         {
             SetBkColor(hdc, colorBoth);
         }
-        else if(haveRead)
+        else if (haveRead)
         {
             SetBkColor(hdc, colorRead);
         }
-        else if(haveWrite)
+        else if (haveWrite)
         {
             SetBkColor(hdc, colorWrite);
         }
@@ -684,7 +683,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
 
         return (LRESULT)GetStockObject(DC_BRUSH);
     }
-    
+
     return FALSE;
 }
 
@@ -716,7 +715,7 @@ CRect CRegisterTabs::GetPageRect()
     return pageRect;
 }
 
-CWindow CRegisterTabs::AddTab(char* caption, int dialogId, DLGPROC dlgProc)
+CWindow CRegisterTabs::AddTab(char * caption, int dialogId, DLGPROC dlgProc)
 {
     AddItem(stdstr(caption).ToUTF16().c_str());
 
@@ -774,13 +773,13 @@ void CRegisterTabs::SetColorsEnabled(bool bColorsEnabled)
     m_bColorsEnabled = bColorsEnabled;
 }
 
-void CRegisterTabs::InitRegisterEdit(CWindow& tab, CEditNumber32& edit, FieldPair ctrl)
+void CRegisterTabs::InitRegisterEdit(CWindow & tab, CEditNumber32 & edit, FieldPair ctrl)
 {
     edit.Attach(tab.GetDlgItem(ctrl.EditId));
     edit.SetDisplayType(CEditNumber32::DisplayHex);
 }
 
-void CRegisterTabs::InitRegisterEdits(CWindow& tab, CEditNumber32* edits, const TabRecord* ctrlIds)
+void CRegisterTabs::InitRegisterEdits(CWindow & tab, CEditNumber32 * edits, const TabRecord * ctrlIds)
 {
     for (int i = 0, n = ctrlIds->FieldCount; i < n; i++)
     {
@@ -788,12 +787,12 @@ void CRegisterTabs::InitRegisterEdits(CWindow& tab, CEditNumber32* edits, const 
     }
 }
 
-void CRegisterTabs::InitRegisterEdit64(CWindow& tab, CEditReg64& edit, FieldPair ctrl)
+void CRegisterTabs::InitRegisterEdit64(CWindow & tab, CEditReg64 & edit, FieldPair ctrl)
 {
     edit.Attach(tab.GetDlgItem(ctrl.EditId));
 }
 
-void CRegisterTabs::InitRegisterEdits64(CWindow& tab, CEditReg64* edits, const TabRecord* ctrlIds)
+void CRegisterTabs::InitRegisterEdits64(CWindow & tab, CEditReg64 * edits, const TabRecord * ctrlIds)
 {
     for (int i = 0, n = ctrlIds->FieldCount; i < n; i++)
     {
@@ -801,12 +800,12 @@ void CRegisterTabs::InitRegisterEdits64(CWindow& tab, CEditReg64* edits, const T
     }
 }
 
-void CRegisterTabs::ZeroRegisterEdit(CEditNumber32& edit)
+void CRegisterTabs::ZeroRegisterEdit(CEditNumber32 & edit)
 {
     edit.SetValue(0, DisplayMode::ZeroExtend);
 }
 
-void CRegisterTabs::ZeroRegisterEdits(CEditNumber32* edits, uint32_t ctrlIdsCount)
+void CRegisterTabs::ZeroRegisterEdits(CEditNumber32 * edits, uint32_t ctrlIdsCount)
 {
     for (int i = 0, n = ctrlIdsCount; i < n; i++)
     {
@@ -814,12 +813,12 @@ void CRegisterTabs::ZeroRegisterEdits(CEditNumber32* edits, uint32_t ctrlIdsCoun
     }
 }
 
-void CRegisterTabs::ZeroRegisterEdit64(CEditReg64& edit)
+void CRegisterTabs::ZeroRegisterEdit64(CEditReg64 & edit)
 {
     edit.SetValue(0);
 }
 
-void CRegisterTabs::ZeroRegisterEdits64(CEditReg64* edits, uint32_t ctrlIdsCount)
+void CRegisterTabs::ZeroRegisterEdits64(CEditReg64 * edits, uint32_t ctrlIdsCount)
 {
     for (uint32_t i = 0, n = ctrlIdsCount; i < n; i++)
     {
@@ -827,12 +826,13 @@ void CRegisterTabs::ZeroRegisterEdits64(CEditReg64* edits, uint32_t ctrlIdsCount
     }
 }
 
-void CRegisterTabs::CopyTabRegisters() {
+void CRegisterTabs::CopyTabRegisters()
+{
     int nPage = GetCurSel();
     stdstr str = CopyTabRegisters(nPage);
 
     HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, str.length() + 1);
-    strncpy((char*)GlobalLock(hMem), str.c_str(), str.length());
+    strncpy((char *)GlobalLock(hMem), str.c_str(), str.length());
     GlobalUnlock(hMem);
     OpenClipboard();
     EmptyClipboard();
@@ -840,15 +840,17 @@ void CRegisterTabs::CopyTabRegisters() {
     CloseClipboard();
 }
 
-void CRegisterTabs::CopyAllRegisters() {
+void CRegisterTabs::CopyAllRegisters()
+{
     stdstr str;
-    for (int i = 0; i <= 12; i++) {
+    for (int i = 0; i <= 12; i++)
+    {
         if (!str.empty()) str += "\r\n";
         str += CopyTabRegisters(i);
     }
 
     HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, str.length() + 1);
-    strncpy((char*)GlobalLock(hMem), str.c_str(), str.length());
+    strncpy((char *)GlobalLock(hMem), str.c_str(), str.length());
     GlobalUnlock(hMem);
     OpenClipboard();
     EmptyClipboard();
@@ -870,52 +872,52 @@ stdstr CRegisterTabs::CopyTabRegisters(int id)
 
     str += stdstr().FromUTF16(item.pszText);
 
-    const TabRecord *record = nullptr;
+    const TabRecord * record = nullptr;
     switch (id)
     {
-        case 0: record = &TabData::GPR; break;
-        case 1: record = &TabData::FPR; break;
-        case 2: record = &TabData::COP0; break;
-        case 3:
-            record = &TabData::RDRAM;
-            str += " (A3F00000)";
-            break;
-        case 4:
-            record = &TabData::SP;
-            str += " (A4040000)";
-            break;
-        case 5:
-            record = &TabData::DPC;
-            str += " (A4100000)";
-            break;
-        case 6:
-            record = &TabData::MI;
-            str += " (A4300000)";
-            break;
-        case 7:
-            record = &TabData::VI;
-            str += " (A4400000)";
-            break;
-        case 8:
-            record = &TabData::AI;
-            str += " (A4500000)";
-            break;
-        case 9:
-            record = &TabData::PI;
-            str += " (A4600000)";
-            break;
-        case 10:
-            record = &TabData::RI;
-            str += " (A4700000)";
-            break;
-        case 11:
-            record = &TabData::SI;
-            str += " (A4800000)";
-            break;
-        case 12:
-            record = &TabData::DD;
-            str += " (A5000500)";
-            break;
+    case 0: record = &TabData::GPR; break;
+    case 1: record = &TabData::FPR; break;
+    case 2: record = &TabData::COP0; break;
+    case 3:
+        record = &TabData::RDRAM;
+        str += " (A3F00000)";
+        break;
+    case 4:
+        record = &TabData::SP;
+        str += " (A4040000)";
+        break;
+    case 5:
+        record = &TabData::DPC;
+        str += " (A4100000)";
+        break;
+    case 6:
+        record = &TabData::MI;
+        str += " (A4300000)";
+        break;
+    case 7:
+        record = &TabData::VI;
+        str += " (A4400000)";
+        break;
+    case 8:
+        record = &TabData::AI;
+        str += " (A4500000)";
+        break;
+    case 9:
+        record = &TabData::PI;
+        str += " (A4600000)";
+        break;
+    case 10:
+        record = &TabData::RI;
+        str += " (A4700000)";
+        break;
+    case 11:
+        record = &TabData::SI;
+        str += " (A4800000)";
+        break;
+    case 12:
+        record = &TabData::DD;
+        str += " (A5000500)";
+        break;
     }
 
     record->Iterate(tab, [&str](const CWindow & label, const CWindow & edit)
@@ -925,16 +927,16 @@ stdstr CRegisterTabs::CopyTabRegisters(int id)
 
     switch (id)
     {
-        case 0:
-            str += stdstr_f("\r\nHI %s", GetCWindowText(m_HIEdit).c_str());
-            str += stdstr_f("\r\nLO %s", GetCWindowText(m_LOEdit).c_str());
-            break;
-        case 1:
-            str += stdstr_f("\r\nFCSR %s", GetCWindowText(m_FCSREdit).c_str());
-            break;
-        case 4:
-            str += stdstr_f("\r\nSP (A4080000)\r\n00 SP_PC %s", GetCWindowText(m_SPPCEdit).c_str());
-            break;
+    case 0:
+        str += stdstr_f("\r\nHI %s", GetCWindowText(m_HIEdit).c_str());
+        str += stdstr_f("\r\nLO %s", GetCWindowText(m_LOEdit).c_str());
+        break;
+    case 1:
+        str += stdstr_f("\r\nFCSR %s", GetCWindowText(m_FCSREdit).c_str());
+        break;
+    case 4:
+        str += stdstr_f("\r\nSP (A4080000)\r\n00 SP_PC %s", GetCWindowText(m_SPPCEdit).c_str());
+        break;
     }
 
     str += "\r\n";
@@ -942,7 +944,7 @@ stdstr CRegisterTabs::CopyTabRegisters(int id)
 }
 
 // CEditReg64 for GPR
-uint64_t CEditReg64::ParseValue(const char* wordPair)
+uint64_t CEditReg64::ParseValue(const char * wordPair)
 {
     uint32_t a, b;
     uint64_t ret;
@@ -964,7 +966,7 @@ BOOL CEditReg64::Attach(HWND hWndNew)
     return SubclassWindow(hWndNew);
 }
 
-LRESULT CEditReg64::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT CEditReg64::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
     bHandled = TRUE;
     if (!isStepping())
@@ -1015,7 +1017,7 @@ uint64_t CEditReg64::GetValue()
     return ParseValue(GetCWindowText(*this).c_str());
 }
 
-LRESULT CEditReg64::OnLostFocus(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
+LRESULT CEditReg64::OnLostFocus(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & bHandled)
 {
     SetValue(GetValue());
     bHandled = FALSE;

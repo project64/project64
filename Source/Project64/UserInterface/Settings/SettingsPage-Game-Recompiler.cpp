@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
-#include "SettingsPage.h"
 #include "SettingsPage-Game-Recompiler.h"
+#include "SettingsPage.h"
 
 CGameRecompilePage::CGameRecompilePage(HWND hParent, const RECT & rcDispay)
 {
@@ -76,7 +76,10 @@ void CGameRecompilePage::ApplySettings(bool UpdateScreen)
 
 bool CGameRecompilePage::EnableReset(void)
 {
-    if (CSettingsPageImpl<CGameRecompilePage>::EnableReset()) { return true; }
+    if (CSettingsPageImpl<CGameRecompilePage>::EnableReset())
+    {
+        return true;
+    }
     return false;
 }
 

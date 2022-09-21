@@ -3,7 +3,7 @@
 #include "SettingsPage.h"
 
 CGeneralOptionsPage::CGeneralOptionsPage(CSettingConfig * SettingsConfig, HWND hParent, const RECT & rcDispay) :
-m_SettingsConfig(SettingsConfig)
+    m_SettingsConfig(SettingsConfig)
 {
     if (!Create(hParent, rcDispay))
     {
@@ -25,7 +25,7 @@ m_SettingsConfig(SettingsConfig)
     AddModCheckBox(GetDlgItem(IDC_AUTOSLEEP), (SettingID)Setting_AutoSleep);
     AddModCheckBox(GetDlgItem(IDC_LOAD_FULLSCREEN), (SettingID)Setting_AutoFullscreen);
     AddModCheckBox(GetDlgItem(IDC_SCREEN_SAVER), (SettingID)Setting_DisableScrSaver);
-	AddModCheckBox(GetDlgItem(IDC_DISCORD_RPC), (SettingID)Setting_EnableDiscordRPC);
+    AddModCheckBox(GetDlgItem(IDC_DISCORD_RPC), (SettingID)Setting_EnableDiscordRPC);
     AddModCheckBox(GetDlgItem(IDC_BASIC_MODE), UserInterface_BasicMode);
 
     CModifiedEditBox * TxtBox = AddModTextBox(GetDlgItem(IDC_REMEMBER), (SettingID)File_RecentGameFileCount, false);
@@ -54,7 +54,10 @@ void CGeneralOptionsPage::ApplySettings(bool UpdateScreen)
 
 bool CGeneralOptionsPage::EnableReset(void)
 {
-    if (CSettingsPageImpl<CGeneralOptionsPage>::EnableReset()) { return true; }
+    if (CSettingsPageImpl<CGeneralOptionsPage>::EnableReset())
+    {
+        return true;
+    }
     return false;
 }
 

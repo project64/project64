@@ -5,7 +5,7 @@
 #include <Project64-core/N64System/Mips/R4300iInstruction.h>
 
 CDumpMemory::CDumpMemory(CDebuggerUI * debugger) :
-CDebugDialog<CDumpMemory>(debugger)
+    CDebugDialog<CDumpMemory>(debugger)
 {
 }
 
@@ -13,7 +13,7 @@ CDumpMemory::~CDumpMemory()
 {
 }
 
-LRESULT CDumpMemory::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CDumpMemory::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     DlgSavePos_Init(DebuggerUI_MemoryDumpPos);
 
@@ -33,7 +33,7 @@ LRESULT CDumpMemory::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPa
     m_StartAddress.SetValue(startAddress, DisplayMode::AllHex);
     m_EndAddress.SetValue(endAddress, DisplayMode::AllHex);
     m_PC.SetValue(startAddress);
-    
+
     int nIndex = m_FormatList.AddString(L"TEXT - Disassembly + PC");
     m_FormatList.SetItemData(nIndex, (DWORD_PTR)DisassemblyWithPC);
 
@@ -52,7 +52,7 @@ void CDumpMemory::OnExitSizeMove(void)
     SaveWindowPos(0);
 }
 
-LRESULT CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     switch (wID)
     {
@@ -66,7 +66,7 @@ LRESULT CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
         int CurrentFormatSel = m_FormatList.GetCurSel();
         DumpFormat Format = (DumpFormat)m_FormatList.GetItemData(CurrentFormatSel);
 
-        const char* FileFilter = "All files (*.*)\0*.*\0";
+        const char * FileFilter = "All files (*.*)\0*.*\0";
 
         if (Format == RawBigEndian)
         {
@@ -78,7 +78,7 @@ LRESULT CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
         }
 
         CPath FileName;
-        
+
         if (FileName.SelectFile(m_hWnd, CPath(CPath::MODULE_DIRECTORY), FileFilter, false))
         {
             if (FileName.GetExtension().length() == 0)
@@ -94,8 +94,8 @@ LRESULT CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
     {
         TCHAR FileName[MAX_PATH];
         int CurrentFormatSel = m_FormatList.GetCurSel();
-        DumpFormat Format = (DumpFormat) m_FormatList.GetItemData(CurrentFormatSel);
-        
+        DumpFormat Format = (DumpFormat)m_FormatList.GetItemData(CurrentFormatSel);
+
         DWORD StartPC = m_StartAddress.GetValue();
         DWORD EndPC = m_EndAddress.GetValue();
         DWORD DumpPC = m_PC.GetValue();
@@ -129,8 +129,8 @@ LRESULT CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
         }
         g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_DumpMemory);
     }
-    EndDialog(0);
-    break;
+        EndDialog(0);
+        break;
     }
     return FALSE;
 }

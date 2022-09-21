@@ -1,9 +1,10 @@
-#include <stdafx.h>
-#include "JSIntervalWorker.h"
+#include "stdafx.h"
+
 #include "../ScriptInstance.h"
+#include "JSIntervalWorker.h"
 #include "ScriptAPI.h"
 
-CJSIntervalWorker::CJSIntervalWorker(CScriptInstance* inst, void* dukObjectHeapPtr, int delayMS, bool bOnce) :
+CJSIntervalWorker::CJSIntervalWorker(CScriptInstance * inst, void * dukObjectHeapPtr, int delayMS, bool bOnce) :
     CScriptWorker(inst, dukObjectHeapPtr),
     m_DelayMS(delayMS),
     m_bOnce(bOnce)
@@ -25,7 +26,7 @@ void CJSIntervalWorker::WorkerProc()
     liTime.QuadPart = -m_DelayMS * 10000;
     SetWaitableTimer(hTimer, &liTime, m_DelayMS, nullptr, nullptr, true);
 
-    HANDLE hWaitHandles[] = { hTimer, m_hTimerQuitEvent };
+    HANDLE hWaitHandles[] = {hTimer, m_hTimerQuitEvent};
 
     while (true)
     {

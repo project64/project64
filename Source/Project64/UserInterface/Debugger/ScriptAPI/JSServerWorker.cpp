@@ -1,4 +1,5 @@
-#include <stdafx.h>
+#include "stdafx.h"
+
 #include "JSServerWorker.h"
 #include "JSSocketWorker.h"
 
@@ -171,7 +172,7 @@ unsigned short CJSServerWorker::GetPort()
     return m_Address.port;
 }
 
-const char* CJSServerWorker::GetFamily()
+const char * CJSServerWorker::GetFamily()
 {
     CGuard guard(m_CS);
     return m_Address.family;
@@ -180,32 +181,32 @@ const char* CJSServerWorker::GetFamily()
 void CJSServerWorker::JSEmitConnection(SOCKET c)
 {
     m_Instance->PostCMethodCall(m_DukObjectHeapPtr, ScriptAPI::js__Emitter_emit,
-        CbArgs_EmitConnection, (void*)&c, sizeof(c));
+                                CbArgs_EmitConnection, (void *)&c, sizeof(c));
 }
 
 void CJSServerWorker::JSEmitClose()
 {
     m_Instance->PostCMethodCall(m_DukObjectHeapPtr, ScriptAPI::js__Emitter_emit,
-        CbArgs_EmitClose);
+                                CbArgs_EmitClose);
 }
 
 void CJSServerWorker::JSEmitListening()
 {
     m_Instance->PostCMethodCall(m_DukObjectHeapPtr, ScriptAPI::js__Emitter_emit,
-        CbArgs_EmitListening);
+                                CbArgs_EmitListening);
 }
 
-void CJSServerWorker::JSEmitError(const char* errMessage)
+void CJSServerWorker::JSEmitError(const char * errMessage)
 {
     m_Instance->PostCMethodCall(m_DukObjectHeapPtr, ScriptAPI::js__Emitter_emit,
-        CbArgs_EmitError, (void*)errMessage, strlen(errMessage) + 1);
+                                CbArgs_EmitError, (void *)errMessage, strlen(errMessage) + 1);
 }
 
-duk_idx_t CJSServerWorker::CbArgs_EmitConnection(duk_context* ctx, void* _env)
+duk_idx_t CJSServerWorker::CbArgs_EmitConnection(duk_context * ctx, void * _env)
 {
     duk_push_string(ctx, "connection");
 
-    SOCKET client = *(SOCKET*)_env;
+    SOCKET client = *(SOCKET *)_env;
     duk_push_global_object(ctx);
     duk_get_prop_string(ctx, -1, "Socket");
     duk_remove(ctx, -2);
@@ -214,7 +215,7 @@ duk_idx_t CJSServerWorker::CbArgs_EmitConnection(duk_context* ctx, void* _env)
     ScriptAPI::RefObject(ctx, -1);
 
     duk_get_prop_string(ctx, -1, HS_socketWorkerPtr);
-    CJSSocketWorker* socketWorker = (CJSSocketWorker*)duk_get_pointer(ctx, -1);
+    CJSSocketWorker * socketWorker = (CJSSocketWorker *)duk_get_pointer(ctx, -1);
     duk_pop(ctx);
 
     socketWorker->Init(client);
@@ -223,21 +224,21 @@ duk_idx_t CJSServerWorker::CbArgs_EmitConnection(duk_context* ctx, void* _env)
     return 2;
 }
 
-duk_idx_t CJSServerWorker::CbArgs_EmitClose(duk_context* ctx, void* /*_env*/)
+duk_idx_t CJSServerWorker::CbArgs_EmitClose(duk_context * ctx, void * /*_env*/)
 {
     duk_push_string(ctx, "close");
     return 1;
 }
 
-duk_idx_t CJSServerWorker::CbArgs_EmitListening(duk_context* ctx, void* /*_env*/)
+duk_idx_t CJSServerWorker::CbArgs_EmitListening(duk_context * ctx, void * /*_env*/)
 {
     duk_push_string(ctx, "listening");
     return 1;
 }
 
-duk_idx_t CJSServerWorker::CbArgs_EmitError(duk_context* ctx, void* _env)
+duk_idx_t CJSServerWorker::CbArgs_EmitError(duk_context * ctx, void * _env)
 {
-    const char* errMessage = (const char*)_env;
+    const char * errMessage = (const char *)_env;
     duk_push_string(ctx, "error");
     duk_push_error_object(ctx, DUK_ERR_ERROR, errMessage);
     return 2;

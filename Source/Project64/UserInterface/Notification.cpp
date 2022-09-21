@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include <time.h>
 
 CNotificationImp & Notify(void)

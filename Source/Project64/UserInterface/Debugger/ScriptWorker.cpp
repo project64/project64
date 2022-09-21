@@ -1,8 +1,9 @@
-#include <stdafx.h>
-#include "ScriptWorker.h"
-#include "ScriptInstance.h"
+#include "stdafx.h"
 
-CScriptWorker::CScriptWorker(CScriptInstance* instance, void* dukObjectHeapPtr) :
+#include "ScriptInstance.h"
+#include "ScriptWorker.h"
+
+CScriptWorker::CScriptWorker(CScriptInstance * instance, void * dukObjectHeapPtr) :
     m_bStopping(false),
     m_bRegistered(false),
     m_hThread(nullptr),
@@ -21,8 +22,9 @@ CScriptWorker::~CScriptWorker()
     }
 }
 
-DWORD WINAPI CScriptWorker::ThreadProc(void* _this) {
-    ((CScriptWorker*)_this)->WorkerProc();
+DWORD WINAPI CScriptWorker::ThreadProc(void * _this)
+{
+    ((CScriptWorker *)_this)->WorkerProc();
     return 0;
 }
 
@@ -38,7 +40,7 @@ void CScriptWorker::StartWorkerProc()
         return;
     }
 
-    m_hThread = CreateThread(0, 0, ThreadProc, (void*)this, 0, nullptr);
+    m_hThread = CreateThread(0, 0, ThreadProc, (void *)this, 0, nullptr);
 }
 
 void CScriptWorker::StopWorkerProc()

@@ -11,7 +11,7 @@ CDebugTlb::~CDebugTlb()
 {
 }
 
-LRESULT CDebugTlb::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CDebugTlb::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     DlgSavePos_Init(DebuggerUI_TLBPos);
 
@@ -79,7 +79,7 @@ void CDebugTlb::OnExitSizeMove(void)
     SaveWindowPos(0);
 }
 
-LRESULT CDebugTlb::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& /*bHandled*/)
+LRESULT CDebugTlb::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL & /*bHandled*/)
 {
     switch (wID)
     {
@@ -202,7 +202,7 @@ void CDebugTlb::RefreshTLBWindow(void)
         }
     }
 
-    CTLB::FASTTLB   * FastTlb = g_TLB->m_FastTlb;
+    CTLB::FASTTLB * FastTlb = g_TLB->m_FastTlb;
     hList = GetDlgItem(IDC_LIST2);
     for (count = 0; count < 64; count++)
     {
@@ -266,7 +266,7 @@ void CDebugTlb::RefreshTLBWindow(void)
         if (FastTlb[count].ValidEntry && FastTlb[count].VALID)
         {
             swprintf(Output, sizeof(Output), L"%08X:%08X -> %08X:%08X", FastTlb[count].VSTART, FastTlb[count].VEND,
-                FastTlb[count].PHYSSTART, FastTlb[count].PHYSEND);
+                     FastTlb[count].PHYSSTART, FastTlb[count].PHYSEND);
         }
         else
         {

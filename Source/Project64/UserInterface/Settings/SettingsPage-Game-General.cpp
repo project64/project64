@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
-#include "SettingsPage.h"
 #include "SettingsPage-Game-General.h"
+#include "SettingsPage.h"
 
 CGameGeneralPage::CGameGeneralPage(HWND hParent, const RECT & rcDispay)
 {
@@ -81,10 +81,10 @@ CGameGeneralPage::CGameGeneralPage(HWND hParent, const RECT & rcDispay)
     TxtBox = AddModTextBox(GetDlgItem(IDC_OVER_CLOCK_MODIFIER), Game_OverClockModifier, false);
     TxtBox->SetTextField(GetDlgItem(IDC_OVER_CLOCK_MODIFIER_TEXT));
 
-	if (!g_Settings->LoadBool(Setting_SyncViaAudioEnabled))
-	{
-		GetDlgItem(IDC_SYNC_AUDIO).EnableWindow(false);
-	}
+    if (!g_Settings->LoadBool(Setting_SyncViaAudioEnabled))
+    {
+        GetDlgItem(IDC_SYNC_AUDIO).EnableWindow(false);
+    }
 
     UpdatePageSettings();
 }
@@ -106,7 +106,10 @@ void CGameGeneralPage::ApplySettings(bool UpdateScreen)
 
 bool CGameGeneralPage::EnableReset(void)
 {
-    if (CSettingsPageImpl<CGameGeneralPage>::EnableReset()) { return true; }
+    if (CSettingsPageImpl<CGameGeneralPage>::EnableReset())
+    {
+        return true;
+    }
     return false;
 }
 

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
-#include "SettingsPage.h"
 #include "SettingsPage-Game-Plugin.h"
+#include "SettingsPage.h"
 
 CGamePluginPage::CGamePluginPage(HWND hParent, const RECT & rcDispay)
 {
@@ -116,7 +116,7 @@ void CGamePluginPage::ShowAboutButton(int id)
     }
 
     // Get DLL about
-    void(CALL *DllAbout) (HWND hWnd);
+    void(CALL * DllAbout)(HWND hWnd);
     DllAbout = (void(CALL *)(HWND))GetProcAddress(hLib, "DllAbout");
 
     // Call the function from the DLL
@@ -190,7 +190,8 @@ void CGamePluginPage::UpdatePageSettings(void)
                 ComboBox->SetDefault((WPARAM)Plugin);
             }
         }
-        else {
+        else
+        {
             ComboBox->SetDefault(NULL);
         }
     }
@@ -217,7 +218,10 @@ void CGamePluginPage::ApplySettings(bool UpdateScreen)
 
 bool CGamePluginPage::EnableReset(void)
 {
-    if (CSettingsPageImpl<CGamePluginPage>::EnableReset()) { return true; }
+    if (CSettingsPageImpl<CGamePluginPage>::EnableReset())
+    {
+        return true;
+    }
     return false;
 }
 
@@ -254,7 +258,8 @@ void CGamePluginPage::ApplyComboBoxes(void)
                     g_Settings->SaveString(cb_iter->first, Plugin->FileName.c_str());
                 }
             }
-            else {
+            else
+            {
                 g_Settings->DeleteSetting(cb_iter->first);
             }
         }
@@ -324,7 +329,7 @@ void CGamePluginPage::HleAudioChanged(UINT /*Code*/, int id, HWND /*ctl*/)
             continue;
         }
         if ((Button->GetCheck() & BST_CHECKED) != 0)
-        {          
+        {
             if (!g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SET_HLE_AUD_MSG).c_str()))
             {
                 Button->SetCheck(BST_UNCHECKED);

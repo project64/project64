@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
-#include "SettingsPage.h"
 #include "SettingsPage-Game-Status.h"
+#include "SettingsPage.h"
 
 CGameStatusPage::CGameStatusPage(HWND hParent, const RECT & rcDispay)
 {
@@ -11,7 +11,7 @@ CGameStatusPage::CGameStatusPage(HWND hParent, const RECT & rcDispay)
     }
 
     CIniFile RomIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
-	CIniFile::strlist Keys;
+    CIniFile::strlist Keys;
     RomIniFile.GetKeyList("ROM Status", Keys);
     stdstr Status = UISettingsLoadStringVal(Rdb_Status);
 
@@ -21,8 +21,14 @@ CGameStatusPage::CGameStatusPage(HWND hParent, const RECT & rcDispay)
     {
         for (CIniFile::strlist::iterator item = Keys.begin(); item != Keys.end(); item++)
         {
-            if (strstr(item->c_str(), ".Sel") != nullptr) { continue; }
-            if (strstr(item->c_str(), ".Auto") != nullptr) { continue; }
+            if (strstr(item->c_str(), ".Sel") != nullptr)
+            {
+                continue;
+            }
+            if (strstr(item->c_str(), ".Auto") != nullptr)
+            {
+                continue;
+            }
             ComboBox->AddItem(stdstr(*item).ToUTF16().c_str(), item->c_str());
         }
         ComboBox->SetTextField(GetDlgItem(IDC_STATUS_TEXT));
@@ -53,7 +59,10 @@ void CGameStatusPage::ApplySettings(bool UpdateScreen)
 
 bool CGameStatusPage::EnableReset(void)
 {
-    if (CSettingsPageImpl<CGameStatusPage>::EnableReset()) { return true; }
+    if (CSettingsPageImpl<CGameStatusPage>::EnableReset())
+    {
+        return true;
+    }
     return false;
 }
 

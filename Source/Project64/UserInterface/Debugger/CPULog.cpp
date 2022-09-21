@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CPULog.h"
 #include <Project64-core/N64System/Mips/R4300iInstruction.h>
 
@@ -24,7 +25,7 @@ CCPULog::CCPULog(size_t size) :
         m_Array = nullptr;
         return;
     }
-    
+
     m_Array = new CPUState[m_Size];
 }
 
@@ -50,7 +51,7 @@ void CCPULog::PushState()
         m_bMaxed = true;
     }
 
-    CPUState* state = &m_Array[m_Index++];
+    CPUState * state = &m_Array[m_Index++];
 
     state->pc = g_Reg->m_PROGRAM_COUNTER;
     state->opcode = R4300iOp::m_Opcode;
@@ -81,7 +82,7 @@ size_t CCPULog::GetSize(void)
     return m_Size;
 }
 
-CPUState* CCPULog::GetEntry(size_t index)
+CPUState * CCPULog::GetEntry(size_t index)
 {
     if (m_Array == nullptr)
     {
@@ -108,7 +109,7 @@ CPUState* CCPULog::GetEntry(size_t index)
 void CCPULog::Reset()
 {
     size_t newSize;
-    
+
     if (!g_Settings->LoadBool(Debugger_CPULoggingEnabled))
     {
         newSize = 0;
@@ -130,7 +131,7 @@ void CCPULog::Reset()
             delete[] m_Array;
             m_Array = nullptr;
         }
-        
+
         if (m_Size != 0)
         {
             m_Array = new CPUState[m_Size];
@@ -138,23 +139,23 @@ void CCPULog::Reset()
     }
 }
 
-CCPULog* CCPULog::Clone(void)
+CCPULog * CCPULog::Clone(void)
 {
     if (m_Array == nullptr)
     {
         return nullptr;
     }
 
-    CCPULog *clone = new CCPULog(m_Size);
+    CCPULog * clone = new CCPULog(m_Size);
     clone->m_bMaxed = m_bMaxed;
     clone->m_Index = m_Index;
     memcpy(clone->m_Array, m_Array, sizeof(CPUState) * m_Size);
     return clone;
 }
 
-void CCPULog::DumpToFile(const char* path)
+void CCPULog::DumpToFile(const char * path)
 {
-    FILE* fp = fopen(path, "wb");
+    FILE * fp = fopen(path, "wb");
 
     if (fp == nullptr)
     {
@@ -165,7 +166,7 @@ void CCPULog::DumpToFile(const char* path)
 
     for (size_t i = 0; i < count; i++)
     {
-        CPUState* state = GetEntry(i);
+        CPUState * state = GetEntry(i);
         R4300iInstruction Instruction(state->pc, state->opcode.Value);
         fprintf(fp, "%08X: %08X %s %s\n", state->pc, state->opcode.Value, Instruction.Name(), Instruction.Param());
     }

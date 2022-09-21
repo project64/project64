@@ -1,9 +1,9 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <ctype.h>
-
 #include "stdafx.h"
+
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "Assembler.h"
 #include "Project64-core/N64System/Mips/R4300iOpcode.h"
@@ -11,29 +11,29 @@
 ASM_PARSE_ERROR CAssembler::m_ParseError = ERR_NONE;
 uint32_t CAssembler::m_Address = 0;
 
-char* CAssembler::m_TokContext = nullptr;
+char * CAssembler::m_TokContext = nullptr;
 
-const ASM_SYNTAX_FN CAssembler::syn_jump[] = { arg_jump, nullptr };
-const ASM_SYNTAX_FN CAssembler::syn_loadstore[] = { arg_reg_t, arg_imm16, arg_reg_s, nullptr };
-const ASM_SYNTAX_FN CAssembler::syn_arith[] = { arg_reg_d, arg_reg_s, arg_reg_t, nullptr };
-const ASM_SYNTAX_FN CAssembler::syn_arith2[] = { arg_reg_s, arg_reg_t, nullptr };
-const ASM_SYNTAX_FN CAssembler::syn_shiftv[] = { arg_reg_d, arg_reg_t, arg_reg_s, nullptr };
-const ASM_SYNTAX_FN CAssembler::syn_arith_i[] = { arg_reg_t, arg_reg_s, arg_imm16, nullptr };
-const ASM_SYNTAX_FN CAssembler::syn_load_i[] = { arg_reg_t, arg_imm16, nullptr };
-const ASM_SYNTAX_FN CAssembler::syn_branch_z[] = { arg_reg_s, arg_bra_target, nullptr };
-const ASM_SYNTAX_FN CAssembler::syn_branch[] = { arg_reg_s, arg_reg_t, arg_bra_target, nullptr };
-const ASM_SYNTAX_FN CAssembler::syn_branch_unc[] = { arg_bra_target, nullptr };
-const ASM_SYNTAX_FN CAssembler::syn_trap_i[] = { arg_reg_s, arg_imm16, nullptr };
-const ASM_SYNTAX_FN CAssembler::syn_shift[] = { arg_reg_d, arg_reg_t, arg_shamt, nullptr };
-const ASM_SYNTAX_FN CAssembler::syn_mf[] = { arg_reg_d, nullptr };
-const ASM_SYNTAX_FN CAssembler::syn_jr[] = { arg_reg_s, nullptr };
-const ASM_SYNTAX_FN CAssembler::syn_jalr[] = { arg_reg_d, arg_reg_s, nullptr };
-const ASM_SYNTAX_FN CAssembler::syn_cop1_arith[] = { arg_reg_fd, arg_reg_fs, arg_reg_ft, nullptr };
-const ASM_SYNTAX_FN CAssembler::syn_cop1[] = { arg_reg_fd, arg_reg_fs, nullptr };
-const ASM_SYNTAX_FN CAssembler::syn_cop1_cmp[] = { arg_reg_fs, arg_reg_ft, nullptr };
-const ASM_SYNTAX_FN CAssembler::syn_cop_mv[] = { arg_reg_t, arg_reg_d, nullptr };
-const ASM_SYNTAX_FN CAssembler::syn_cache[] = { arg_cache_op, arg_imm16, arg_reg_s, nullptr };
-const ASM_SYNTAX_FN CAssembler::syn_syscall[] = { arg_syscall_code, nullptr };
+const ASM_SYNTAX_FN CAssembler::syn_jump[] = {arg_jump, nullptr};
+const ASM_SYNTAX_FN CAssembler::syn_loadstore[] = {arg_reg_t, arg_imm16, arg_reg_s, nullptr};
+const ASM_SYNTAX_FN CAssembler::syn_arith[] = {arg_reg_d, arg_reg_s, arg_reg_t, nullptr};
+const ASM_SYNTAX_FN CAssembler::syn_arith2[] = {arg_reg_s, arg_reg_t, nullptr};
+const ASM_SYNTAX_FN CAssembler::syn_shiftv[] = {arg_reg_d, arg_reg_t, arg_reg_s, nullptr};
+const ASM_SYNTAX_FN CAssembler::syn_arith_i[] = {arg_reg_t, arg_reg_s, arg_imm16, nullptr};
+const ASM_SYNTAX_FN CAssembler::syn_load_i[] = {arg_reg_t, arg_imm16, nullptr};
+const ASM_SYNTAX_FN CAssembler::syn_branch_z[] = {arg_reg_s, arg_bra_target, nullptr};
+const ASM_SYNTAX_FN CAssembler::syn_branch[] = {arg_reg_s, arg_reg_t, arg_bra_target, nullptr};
+const ASM_SYNTAX_FN CAssembler::syn_branch_unc[] = {arg_bra_target, nullptr};
+const ASM_SYNTAX_FN CAssembler::syn_trap_i[] = {arg_reg_s, arg_imm16, nullptr};
+const ASM_SYNTAX_FN CAssembler::syn_shift[] = {arg_reg_d, arg_reg_t, arg_shamt, nullptr};
+const ASM_SYNTAX_FN CAssembler::syn_mf[] = {arg_reg_d, nullptr};
+const ASM_SYNTAX_FN CAssembler::syn_jr[] = {arg_reg_s, nullptr};
+const ASM_SYNTAX_FN CAssembler::syn_jalr[] = {arg_reg_d, arg_reg_s, nullptr};
+const ASM_SYNTAX_FN CAssembler::syn_cop1_arith[] = {arg_reg_fd, arg_reg_fs, arg_reg_ft, nullptr};
+const ASM_SYNTAX_FN CAssembler::syn_cop1[] = {arg_reg_fd, arg_reg_fs, nullptr};
+const ASM_SYNTAX_FN CAssembler::syn_cop1_cmp[] = {arg_reg_fs, arg_reg_ft, nullptr};
+const ASM_SYNTAX_FN CAssembler::syn_cop_mv[] = {arg_reg_t, arg_reg_d, nullptr};
+const ASM_SYNTAX_FN CAssembler::syn_cache[] = {arg_cache_op, arg_imm16, arg_reg_s, nullptr};
+const ASM_SYNTAX_FN CAssembler::syn_syscall[] = {arg_syscall_code, nullptr};
 
 const ASM_INSTRUCTION CAssembler::m_Instructions[] =
 {
@@ -293,7 +293,7 @@ const ASM_REGISTER CAssembler::m_Registers[] =
     { nullptr }
 };
 
-bool CAssembler::AssembleLine(const char* line, uint32_t* opcode, uint32_t address)
+bool CAssembler::AssembleLine(const char * line, uint32_t * opcode, uint32_t address)
 {
     m_ParseError = ERR_NONE;
     m_Address = address;
@@ -308,21 +308,21 @@ bool CAssembler::AssembleLine(const char* line, uint32_t* opcode, uint32_t addre
         return true;
     }
 
-    char* name = strtok_s(line_c, " \t", &m_TokContext);
-    
+    char * name = strtok_s(line_c, " \t", &m_TokContext);
+
     // Attempt to assemble the line
     // If a syntax error occurs, check if the command has alternative syntax forms and retry
 
-    for(int nFallback = 0;; nFallback++)
+    for (int nFallback = 0;; nFallback++)
     {
-        const ASM_INSTRUCTION* instruction = LookupInstruction(name, nFallback);
+        const ASM_INSTRUCTION * instruction = LookupInstruction(name, nFallback);
 
         if (instruction == nullptr)
         {
             m_ParseError = ERR_UNKNOWN_CMD;
             return false;
         }
-        
+
         m_ParseError = ERR_NONE;
 
         if (nFallback > 0)
@@ -358,7 +358,7 @@ bool CAssembler::AssembleLine(const char* line, uint32_t* opcode, uint32_t addre
     }
 }
 
-const ASM_INSTRUCTION* CAssembler::LookupInstruction(char* name, int nFallback)
+const ASM_INSTRUCTION * CAssembler::LookupInstruction(char * name, int nFallback)
 {
     for (int i = 0; m_Instructions[i].name != nullptr; i++)
     {
@@ -375,7 +375,7 @@ const ASM_INSTRUCTION* CAssembler::LookupInstruction(char* name, int nFallback)
     return nullptr;
 }
 
-const ASM_REGISTER* CAssembler::LookupRegister(char* name)
+const ASM_REGISTER * CAssembler::LookupRegister(char * name)
 {
     for (int i = 0; m_Registers[i].name != nullptr; i++)
     {
@@ -387,7 +387,7 @@ const ASM_REGISTER* CAssembler::LookupRegister(char* name)
     return nullptr;
 }
 
-void CAssembler::StrToLower(char* str)
+void CAssembler::StrToLower(char * str)
 {
     while (*str)
     {
@@ -401,7 +401,7 @@ void CAssembler::StrToLower(char* str)
 
 uint32_t CAssembler::pop_reg()
 {
-    char* r = strtok_s(nullptr, " \t,()", &m_TokContext);
+    char * r = strtok_s(nullptr, " \t,()", &m_TokContext);
 
     if (r == nullptr)
     {
@@ -409,7 +409,7 @@ uint32_t CAssembler::pop_reg()
         return 0;
     }
 
-    const ASM_REGISTER* reg = LookupRegister(r);
+    const ASM_REGISTER * reg = LookupRegister(r);
 
     if (reg == nullptr)
     {
@@ -422,7 +422,7 @@ uint32_t CAssembler::pop_reg()
 
 uint32_t CAssembler::pop_val()
 {
-    char* v = strtok_s(nullptr, " \t,()", &m_TokContext);
+    char * v = strtok_s(nullptr, " \t,()", &m_TokContext);
 
     if (v == nullptr)
     {
@@ -444,7 +444,7 @@ uint32_t CAssembler::pop_val()
         v++;
     }
 
-    char* endptr;
+    char * endptr;
 
     uint32_t val = strtoul(v, &endptr, base);
 
@@ -517,63 +517,63 @@ uint32_t CAssembler::base_cop1_bc(uint32_t val)
     return (R4300i_CP1 << 26) | (R4300i_COP1_BC << 21) | (val << 16);
 }
 
-void CAssembler::arg_reg_t(uint32_t* opcode)
+void CAssembler::arg_reg_t(uint32_t * opcode)
 {
     *opcode |= pop_reg() << 16;
 }
 
-void CAssembler::arg_reg_s(uint32_t* opcode)
+void CAssembler::arg_reg_s(uint32_t * opcode)
 {
     *opcode |= pop_reg() << 21;
 }
 
-void CAssembler::arg_reg_d(uint32_t* opcode)
+void CAssembler::arg_reg_d(uint32_t * opcode)
 {
     *opcode |= pop_reg() << 11;
 }
 
-void CAssembler::arg_reg_ft(uint32_t* opcode)
+void CAssembler::arg_reg_ft(uint32_t * opcode)
 {
     *opcode |= pop_reg() << 16;
 }
 
-void CAssembler::arg_reg_fs(uint32_t* opcode)
+void CAssembler::arg_reg_fs(uint32_t * opcode)
 {
     *opcode |= pop_reg() << 11;
 }
 
-void CAssembler::arg_reg_fd(uint32_t* opcode)
+void CAssembler::arg_reg_fd(uint32_t * opcode)
 {
     *opcode |= pop_reg() << 6;
 }
 
-void CAssembler::arg_jump(uint32_t* opcode)
+void CAssembler::arg_jump(uint32_t * opcode)
 {
     *opcode |= (pop_val() / 4) & 0x3FFFFFF;
 }
 
-void CAssembler::arg_imm16(uint32_t* opcode)
+void CAssembler::arg_imm16(uint32_t * opcode)
 {
     *opcode |= (pop_val() & 0xFFFF);
 }
 
-void CAssembler::arg_bra_target(uint32_t* opcode)
+void CAssembler::arg_bra_target(uint32_t * opcode)
 {
     uint16_t relTarget = (((pop_val() - m_Address) / 4) & 0xFFFF) - 1;
     *opcode |= relTarget;
 }
 
-void CAssembler::arg_shamt(uint32_t* opcode)
+void CAssembler::arg_shamt(uint32_t * opcode)
 {
     *opcode |= (pop_val() & 0x1F) << 6;
 }
 
-void CAssembler::arg_cache_op(uint32_t* opcode)
+void CAssembler::arg_cache_op(uint32_t * opcode)
 {
     *opcode |= (pop_val() & 0x1F) << 16;
 }
 
-void CAssembler::arg_syscall_code(uint32_t* opcode)
+void CAssembler::arg_syscall_code(uint32_t * opcode)
 {
     *opcode |= (pop_val() & 0xFFFFF) << 6;
 }

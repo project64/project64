@@ -1,7 +1,8 @@
 #include "stdafx.h"
+
 #include "Symbols.h"
 
-CSymbolTable::CSymbolTable(CDebuggerUI* debugger) :
+CSymbolTable::CSymbolTable(CDebuggerUI * debugger) :
     m_Debugger(debugger),
     m_NextSymbolId(0),
     m_SymFileBuffer(nullptr),
@@ -22,27 +23,27 @@ CSymbolTable::~CSymbolTable()
 }
 
 symbol_type_info_t CSymbolTable::m_SymbolTypes[] = {
-    { SYM_CODE,   "code",   1 },
-    { SYM_DATA,   "data",   1 },
-    { SYM_U8,     "u8",     1 },
-    { SYM_U16,    "u16",    2 },
-    { SYM_U32,    "u32",    4 },
-    { SYM_U64,    "u64",    8 },
-    { SYM_S8,     "s8",     1 },
-    { SYM_S16,    "s16",    2 },
-    { SYM_S32,    "s32",    4 },
-    { SYM_S64,    "s64",    8 },
-    { SYM_FLOAT,  "float",  4 },
-    { SYM_DOUBLE, "double", 8 },
-    { SYM_VECTOR2, "v2", 8 },
-    { SYM_VECTOR3, "v3", 12 },
-    { SYM_VECTOR4, "v4", 16 },
+    {SYM_CODE, "code", 1},
+    {SYM_DATA, "data", 1},
+    {SYM_U8, "u8", 1},
+    {SYM_U16, "u16", 2},
+    {SYM_U32, "u32", 4},
+    {SYM_U64, "u64", 8},
+    {SYM_S8, "s8", 1},
+    {SYM_S16, "s16", 2},
+    {SYM_S32, "s32", 4},
+    {SYM_S64, "s64", 8},
+    {SYM_FLOAT, "float", 4},
+    {SYM_DOUBLE, "double", 8},
+    {SYM_VECTOR2, "v2", 8},
+    {SYM_VECTOR3, "v3", 12},
+    {SYM_VECTOR4, "v4", 16},
     { SYM_INVALID, nullptr,    0 }
 };
 
-symbol_type_id_t CSymbolTable::GetTypeId(char* typeName)
+symbol_type_id_t CSymbolTable::GetTypeId(char * typeName)
 {
-    const char* name;
+    const char * name;
     for (int i = 0; (name = m_SymbolTypes[i].name) != nullptr; i++)
     {
         if (strcmp(typeName, name) == 0)
@@ -53,7 +54,7 @@ symbol_type_id_t CSymbolTable::GetTypeId(char* typeName)
     return SYM_INVALID;
 }
 
-const char* CSymbolTable::GetTypeName(int typeId)
+const char * CSymbolTable::GetTypeName(int typeId)
 {
     if (typeId >= NUM_SYM_TYPES)
     {
@@ -94,7 +95,7 @@ CPath CSymbolTable::GetSymFilePath()
     return symFilePath;
 }
 
-void CSymbolTable::ParserFetchToken(const char* delim)
+void CSymbolTable::ParserFetchToken(const char * delim)
 {
     if (!m_bHaveFirstToken)
     {
@@ -106,7 +107,7 @@ void CSymbolTable::ParserFetchToken(const char* delim)
     {
         m_ParserToken = strtok_s(nullptr, delim, &m_TokPos);
     }
-    
+
     if (m_ParserToken != nullptr)
     {
         m_ParserTokenLength = strlen(m_ParserToken);
@@ -133,16 +134,16 @@ void CSymbolTable::Load()
         MessageBox(nullptr, L"Game must be loaded", L"Symbols", MB_ICONWARNING | MB_OK);
         return;
     }
-    
+
     CPath symFilePath = GetSymFilePath();
-    
+
     bool bOpened = m_SymFileHandle.Open(symFilePath, CFileBase::modeRead);
-    
+
     if (!bOpened)
     {
         return;
     }
-    
+
     if (m_SymFileBuffer != nullptr)
     {
         delete[] m_SymFileBuffer;
@@ -159,7 +160,7 @@ void CSymbolTable::Load()
     m_SymFileHandle.Read(m_SymFileBuffer, m_SymFileSize);
     m_SymFileHandle.Close();
     m_SymFileBuffer[m_SymFileSize] = '\0';
-    
+
     strcpy(m_SymFileParseBuffer, m_SymFileBuffer);
     m_bHaveFirstToken = false;
 
@@ -170,9 +171,9 @@ void CSymbolTable::Load()
     {
         uint32_t address = 0;
         int type = 0;
-        char* name = nullptr;
-        char* description = nullptr;
-        
+        char * name = nullptr;
+        char * description = nullptr;
+
         // Address
         ParserFetchToken(",\n\0");
 
@@ -183,22 +184,22 @@ void CSymbolTable::Load()
             break;
         }
 
-        char* endptr;
+        char * endptr;
         address = (uint32_t)strtoull(m_ParserToken, &endptr, 16);
-        
+
         if (endptr == m_ParserToken)
         {
             errorCode = ERR_INVALID_ADDR;
             break;
         }
-        
+
         // Type
         if (m_ParserDelimeter != ',')
         {
             errorCode = ERR_MISSING_FIELDS;
             break;
         }
-        
+
         ParserFetchToken(",\n\0");
         type = GetTypeId(m_ParserToken);
 
@@ -207,7 +208,7 @@ void CSymbolTable::Load()
             errorCode = ERR_INVALID_TYPE;
             break;
         }
-        
+
         // Name
         if (m_ParserDelimeter != ',')
         {
@@ -224,7 +225,7 @@ void CSymbolTable::Load()
             ParserFetchToken("\n\0");
             description = m_ParserToken;
         }
-        
+
         // Add symbol object to the vector
         AddSymbol(type, address, name, description, false);
 
@@ -239,7 +240,7 @@ void CSymbolTable::Load()
 
     sort(m_Symbols.begin(), m_Symbols.end(), CmpSymbolAddresses);
     UpdateAddressMap();
-    
+
     delete[] m_SymFileParseBuffer;
     m_SymFileParseBuffer = nullptr;
 
@@ -274,9 +275,9 @@ void CSymbolTable::Save()
 
     for (size_t i = 0; i < m_Symbols.size(); i++)
     {
-        CSymbol& symbol = m_Symbols[i];
+        CSymbol & symbol = m_Symbols[i];
         stdstr strLine = stdstr_f("%08X,%s,%s", symbol.m_Address, symbol.TypeName(), symbol.m_Name);
-        
+
         if (symbol.m_Description != nullptr)
         {
             strLine += stdstr_f(",%s", symbol.m_Description);
@@ -290,20 +291,20 @@ void CSymbolTable::Save()
     m_SymFileHandle.Close();
 }
 
-void CSymbolTable::GetValueString(char* dst, CSymbol* symbol)
+void CSymbolTable::GetValueString(char * dst, CSymbol * symbol)
 {
     union
     {
-        uint8_t   u8;
-        int8_t    s8;
+        uint8_t u8;
+        int8_t s8;
         uint16_t u16;
-        int16_t  s16;
+        int16_t s16;
         uint32_t u32;
-        int32_t  s32;
+        int32_t s32;
         uint64_t u64;
-        int64_t  s64;
-        float    f32;
-        double   f64;
+        int64_t s64;
+        float f32;
+        double f64;
     } value;
 
     uint32_t address = symbol->m_Address;
@@ -356,21 +357,24 @@ void CSymbolTable::GetValueString(char* dst, CSymbol* symbol)
         sprintf(dst, "%f", value.f64);
         break;
     case SYM_VECTOR2:
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++)
+        {
             m_Debugger->DebugLoad_VAddr(address + (i * sizeof(float)), value.f32);
             xyzw[i] = value.f32;
         }
         sprintf(dst, "%f, %f", xyzw[0], xyzw[1]);
         break;
     case SYM_VECTOR3:
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++)
+        {
             m_Debugger->DebugLoad_VAddr(address + (i * sizeof(float)), value.f32);
             xyzw[i] = value.f32;
         }
         sprintf(dst, "%f, %f, %f", xyzw[0], xyzw[1], xyzw[2]);
         break;
     case SYM_VECTOR4:
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++)
+        {
             m_Debugger->DebugLoad_VAddr(address + (i * sizeof(float)), value.f32);
             xyzw[i] = value.f32;
         }
@@ -382,7 +386,7 @@ void CSymbolTable::GetValueString(char* dst, CSymbol* symbol)
     }
 }
 
-void CSymbolTable::ParseErrorAlert(char* message, int lineNumber)
+void CSymbolTable::ParseErrorAlert(char * message, int lineNumber)
 {
     stdstr messageFormatted = stdstr_f("%s\nLine %d", message, lineNumber);
     MessageBox(nullptr, messageFormatted.ToUTF16().c_str(), L"Symbol parse error", MB_OK | MB_ICONWARNING);
@@ -394,12 +398,12 @@ void CSymbolTable::Reset()
     m_Symbols.clear();
 }
 
-bool CSymbolTable::CmpSymbolAddresses(CSymbol& a, CSymbol& b)
+bool CSymbolTable::CmpSymbolAddresses(CSymbol & a, CSymbol & b)
 {
     return (a.m_Address < b.m_Address);
 }
 
-void CSymbolTable::AddSymbol(int type, uint32_t address, const char* name, const char* description, bool bSortAfter)
+void CSymbolTable::AddSymbol(int type, uint32_t address, const char * name, const char * description, bool bSortAfter)
 {
     CGuard guard(m_CS);
 
@@ -441,7 +445,7 @@ int CSymbolTable::GetCount()
     return m_Symbols.size();
 }
 
-bool CSymbolTable::GetSymbolByIndex(size_t index, CSymbol* symbol)
+bool CSymbolTable::GetSymbolByIndex(size_t index, CSymbol * symbol)
 {
     CGuard guard(m_CS);
     if (index < 0 || index >= m_Symbols.size())
@@ -452,7 +456,7 @@ bool CSymbolTable::GetSymbolByIndex(size_t index, CSymbol* symbol)
     return true;
 }
 
-bool CSymbolTable::GetSymbolByAddress(uint32_t address, CSymbol* symbol)
+bool CSymbolTable::GetSymbolByAddress(uint32_t address, CSymbol * symbol)
 {
     CGuard guard(m_CS);
 
@@ -466,7 +470,7 @@ bool CSymbolTable::GetSymbolByAddress(uint32_t address, CSymbol* symbol)
     return true;
 }
 
-bool CSymbolTable::GetSymbolById(int id, CSymbol* symbol)
+bool CSymbolTable::GetSymbolById(int id, CSymbol * symbol)
 {
     CGuard guard(m_CS);
     for (size_t i = 0; i < m_Symbols.size(); i++)

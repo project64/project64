@@ -25,7 +25,7 @@ CAdvancedOptionsPage::CAdvancedOptionsPage(HWND hParent, const RECT & rcDispay)
     AddModCheckBox(GetDlgItem(IDC_START_ON_ROM_OPEN), Setting_AutoStart);
     AddModCheckBox(GetDlgItem(IDC_ZIP), Setting_AutoZipInstantSave);
     AddModCheckBox(GetDlgItem(IDC_DEBUGGER), Debugger_Enabled);
-	AddModCheckBox(GetDlgItem(IDC_INTERPRETER), Setting_ForceInterpreterCPU);
+    AddModCheckBox(GetDlgItem(IDC_INTERPRETER), Setting_ForceInterpreterCPU);
     AddModCheckBox(GetDlgItem(IDC_REMEMBER_CHEAT), Setting_RememberCheats);
     AddModCheckBox(GetDlgItem(IDC_UNIQUE_SAVE_DIR), Setting_UniqueSaveDir);
     AddModCheckBox(GetDlgItem(IDC_CHECK_RUNNING), Setting_CheckEmuRunning);
@@ -64,7 +64,10 @@ void CAdvancedOptionsPage::ApplySettings(bool UpdateScreen)
 
 bool CAdvancedOptionsPage::EnableReset(void)
 {
-    if (CSettingsPageImpl<CAdvancedOptionsPage>::EnableReset()) { return true; }
+    if (CSettingsPageImpl<CAdvancedOptionsPage>::EnableReset())
+    {
+        return true;
+    }
     return false;
 }
 

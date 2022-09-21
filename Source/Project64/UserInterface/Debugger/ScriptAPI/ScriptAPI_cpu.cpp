@@ -1,24 +1,25 @@
 #include "stdafx.h"
+
 #include "ScriptAPI.h"
 #include <Project64-core/N64System/Mips/Register.h>
 
-#pragma warning(disable: 4702) // disable unreachable code warning
+#pragma warning(disable : 4702) // disable unreachable code warning
 
-static duk_ret_t GPRGetImpl(duk_context* ctx, bool bUpper);
-static duk_ret_t GPRSetImpl(duk_context* ctx, bool bUpper);
-static duk_ret_t FPRGetImpl(duk_context* ctx, bool bDouble);
-static duk_ret_t FPRSetImpl(duk_context* ctx, bool bDouble);
+static duk_ret_t GPRGetImpl(duk_context * ctx, bool bUpper);
+static duk_ret_t GPRSetImpl(duk_context * ctx, bool bUpper);
+static duk_ret_t FPRGetImpl(duk_context * ctx, bool bDouble);
+static duk_ret_t FPRSetImpl(duk_context * ctx, bool bDouble);
 
-static int FPRIndex(const char* regName);
-static int GPRIndex(const char* regName);
-static uint32_t* COP0RegPtr(const char* regName);
-static uint32_t* CPURegPtr(const char *regName);
+static int FPRIndex(const char * regName);
+static int GPRIndex(const char * regName);
+static uint32_t * COP0RegPtr(const char * regName);
+static uint32_t * CPURegPtr(const char * regName);
 
-static duk_ret_t ThrowRegInvalidError(duk_context* ctx);
-static duk_ret_t ThrowRegContextUnavailableError(duk_context* ctx);
-static duk_ret_t ThrowRegAssignmentTypeError(duk_context* ctx);
+static duk_ret_t ThrowRegInvalidError(duk_context * ctx);
+static duk_ret_t ThrowRegContextUnavailableError(duk_context * ctx);
+static duk_ret_t ThrowRegAssignmentTypeError(duk_context * ctx);
 
-void ScriptAPI::Define_cpu(duk_context* ctx)
+void ScriptAPI::Define_cpu(duk_context * ctx)
 {
     // todo cleanup
 
@@ -28,15 +29,16 @@ void ScriptAPI::Define_cpu(duk_context* ctx)
         { nullptr, nullptr, 0 } \
     }
 
-    const struct {
-        const char *key;
+    const struct
+    {
+        const char * key;
         const duk_function_list_entry functions[3];
     } proxies[] = {
-        { "gpr", REG_PROXY_FUNCTIONS(js_cpu_gpr_get, js_cpu_gpr_set) },
-        { "ugpr", REG_PROXY_FUNCTIONS(js_cpu_ugpr_get, js_cpu_ugpr_set) },
-        { "fpr", REG_PROXY_FUNCTIONS(js_cpu_fpr_get, js_cpu_fpr_set) },
-        { "dfpr", REG_PROXY_FUNCTIONS(js_cpu_dfpr_get, js_cpu_dfpr_set) },
-        { "cop0", REG_PROXY_FUNCTIONS(js_cpu_cop0_get, js_cpu_cop0_set) },
+        {"gpr", REG_PROXY_FUNCTIONS(js_cpu_gpr_get, js_cpu_gpr_set)},
+        {"ugpr", REG_PROXY_FUNCTIONS(js_cpu_ugpr_get, js_cpu_ugpr_set)},
+        {"fpr", REG_PROXY_FUNCTIONS(js_cpu_fpr_get, js_cpu_fpr_set)},
+        {"dfpr", REG_PROXY_FUNCTIONS(js_cpu_dfpr_get, js_cpu_dfpr_set)},
+        {"cop0", REG_PROXY_FUNCTIONS(js_cpu_cop0_get, js_cpu_cop0_set)},
         { nullptr, nullptr }
     };
 
@@ -65,15 +67,15 @@ void ScriptAPI::Define_cpu(duk_context* ctx)
     duk_pop(ctx);
 }
 
-duk_ret_t ScriptAPI::js_cpu_get(duk_context* ctx)
+duk_ret_t ScriptAPI::js_cpu_get(duk_context * ctx)
 {
     if (g_Reg == nullptr)
     {
         return ThrowRegContextUnavailableError(ctx);
     }
 
-    const char* key = duk_get_string(ctx, 1);
-    uint32_t* pReg = CPURegPtr(key);
+    const char * key = duk_get_string(ctx, 1);
+    uint32_t * pReg = CPURegPtr(key);
 
     if (pReg == nullptr)
     {
@@ -85,14 +87,14 @@ duk_ret_t ScriptAPI::js_cpu_get(duk_context* ctx)
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_cpu_set(duk_context* ctx)
+duk_ret_t ScriptAPI::js_cpu_set(duk_context * ctx)
 {
     if (g_Reg == nullptr)
     {
         return ThrowRegContextUnavailableError(ctx);
     }
 
-    uint32_t* pReg = CPURegPtr(duk_get_string(ctx, 1));
+    uint32_t * pReg = CPURegPtr(duk_get_string(ctx, 1));
 
     if (!duk_is_number(ctx, 2) || pReg == nullptr)
     {
@@ -104,47 +106,47 @@ duk_ret_t ScriptAPI::js_cpu_set(duk_context* ctx)
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_cpu_gpr_get(duk_context* ctx)
+duk_ret_t ScriptAPI::js_cpu_gpr_get(duk_context * ctx)
 {
     return GPRGetImpl(ctx, false);
 }
 
-duk_ret_t ScriptAPI::js_cpu_gpr_set(duk_context* ctx)
+duk_ret_t ScriptAPI::js_cpu_gpr_set(duk_context * ctx)
 {
     return GPRSetImpl(ctx, false);
 }
 
-duk_ret_t ScriptAPI::js_cpu_ugpr_get(duk_context* ctx)
+duk_ret_t ScriptAPI::js_cpu_ugpr_get(duk_context * ctx)
 {
     return GPRGetImpl(ctx, true);
 }
 
-duk_ret_t ScriptAPI::js_cpu_ugpr_set(duk_context* ctx)
+duk_ret_t ScriptAPI::js_cpu_ugpr_set(duk_context * ctx)
 {
     return GPRSetImpl(ctx, true);
 }
 
-duk_ret_t ScriptAPI::js_cpu_fpr_get(duk_context* ctx)
+duk_ret_t ScriptAPI::js_cpu_fpr_get(duk_context * ctx)
 {
     return FPRGetImpl(ctx, false);
 }
 
-duk_ret_t ScriptAPI::js_cpu_fpr_set(duk_context* ctx)
+duk_ret_t ScriptAPI::js_cpu_fpr_set(duk_context * ctx)
 {
     return FPRSetImpl(ctx, false);
 }
 
-duk_ret_t ScriptAPI::js_cpu_dfpr_get(duk_context* ctx)
+duk_ret_t ScriptAPI::js_cpu_dfpr_get(duk_context * ctx)
 {
     return FPRGetImpl(ctx, true);
 }
 
-duk_ret_t ScriptAPI::js_cpu_dfpr_set(duk_context* ctx)
+duk_ret_t ScriptAPI::js_cpu_dfpr_set(duk_context * ctx)
 {
     return FPRSetImpl(ctx, true);
 }
 
-duk_ret_t ScriptAPI::js_cpu_cop0_get(duk_context* ctx)
+duk_ret_t ScriptAPI::js_cpu_cop0_get(duk_context * ctx)
 {
     if (g_Reg == nullptr)
     {
@@ -156,15 +158,15 @@ duk_ret_t ScriptAPI::js_cpu_cop0_get(duk_context* ctx)
         return ThrowRegInvalidError(ctx);
     }
 
-    const char* name = duk_get_string(ctx, 1);
-    
+    const char * name = duk_get_string(ctx, 1);
+
     if (strcmp(name, "cause") == 0)
     {
         duk_push_uint(ctx, (uint32_t)(g_Reg->FAKE_CAUSE_REGISTER | g_Reg->CAUSE_REGISTER));
         return 1;
     }
 
-    uint32_t* reg = COP0RegPtr(name);
+    uint32_t * reg = COP0RegPtr(name);
 
     if (reg == nullptr)
     {
@@ -175,7 +177,7 @@ duk_ret_t ScriptAPI::js_cpu_cop0_get(duk_context* ctx)
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_cpu_cop0_set(duk_context* ctx)
+duk_ret_t ScriptAPI::js_cpu_cop0_set(duk_context * ctx)
 {
     if (g_Reg == nullptr)
     {
@@ -187,8 +189,8 @@ duk_ret_t ScriptAPI::js_cpu_cop0_set(duk_context* ctx)
         return ThrowRegInvalidError(ctx);
     }
 
-    const char* name = duk_get_string(ctx, 1);
-    
+    const char * name = duk_get_string(ctx, 1);
+
     if (!duk_is_number(ctx, 2))
     {
         return ThrowRegAssignmentTypeError(ctx);
@@ -205,7 +207,7 @@ duk_ret_t ScriptAPI::js_cpu_cop0_set(duk_context* ctx)
         return 1;
     }
 
-    uint32_t* reg = COP0RegPtr(name);
+    uint32_t * reg = COP0RegPtr(name);
 
     if (reg == nullptr)
     {
@@ -217,7 +219,7 @@ duk_ret_t ScriptAPI::js_cpu_cop0_set(duk_context* ctx)
     return 1;
 }
 
-static duk_ret_t GPRGetImpl(duk_context* ctx, bool bUpper)
+static duk_ret_t GPRGetImpl(duk_context * ctx, bool bUpper)
 {
     int regIndex = -1;
 
@@ -239,12 +241,12 @@ static duk_ret_t GPRGetImpl(duk_context* ctx, bool bUpper)
     {
         return ThrowRegInvalidError(ctx);
     }
-    
-    duk_push_uint(ctx, g_Reg->m_GPR[regIndex].UW[bUpper ? 1: 0]);
+
+    duk_push_uint(ctx, g_Reg->m_GPR[regIndex].UW[bUpper ? 1 : 0]);
     return 1;
 }
 
-static duk_ret_t GPRSetImpl(duk_context* ctx, bool bUpper)
+static duk_ret_t GPRSetImpl(duk_context * ctx, bool bUpper)
 {
     int regIndex = -1;
 
@@ -285,7 +287,7 @@ static duk_ret_t GPRSetImpl(duk_context* ctx, bool bUpper)
     return 1;
 }
 
-static duk_ret_t FPRGetImpl(duk_context* ctx, bool bDouble)
+static duk_ret_t FPRGetImpl(duk_context * ctx, bool bDouble)
 {
     int regIndex = -1;
 
@@ -320,7 +322,7 @@ static duk_ret_t FPRGetImpl(duk_context* ctx, bool bDouble)
     return 1;
 }
 
-static duk_ret_t FPRSetImpl(duk_context* ctx, bool bDouble)
+static duk_ret_t FPRSetImpl(duk_context * ctx, bool bDouble)
 {
     int regIndex = -1;
 
@@ -363,9 +365,9 @@ static duk_ret_t FPRSetImpl(duk_context* ctx, bool bDouble)
     return 1;
 }
 
-static int GPRIndex(const char* regName)
+static int GPRIndex(const char * regName)
 {
-    const char* names[] = {
+    const char * names[] = {
         "r0", "at", "v0", "v1", "a0", "a1", "a2", "a3",
         "t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7",
         "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7",
@@ -383,10 +385,10 @@ static int GPRIndex(const char* regName)
     return -1;
 }
 
-static int FPRIndex(const char* regName)
+static int FPRIndex(const char * regName)
 {
-    const char* names[32] = {
-        "f0", "f1", "f2", "f3", "f4","f5", "f6", "f7", "f8",
+    const char * names[32] = {
+        "f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8",
         "f9", "f10", "f11", "f12", "f13", "f14", "f15", "f16",
         "f17", "f18", "f19", "f20", "f21", "f22", "f23", "f24",
         "f25", "f26", "f27", "f28", "f29", "f30", "f31"
@@ -403,35 +405,36 @@ static int FPRIndex(const char* regName)
     return -1;
 }
 
-static uint32_t* COP0RegPtr(const char *regName)
+static uint32_t * COP0RegPtr(const char * regName)
 {
     if (g_Reg == nullptr)
     {
         return nullptr;
     }
 
-    struct {
-        const char* name;
-        uint32_t *ptr;
+    struct
+    {
+        const char * name;
+        uint32_t * ptr;
     } names[] = {
-        { "index", (uint32_t*)&g_Reg->INDEX_REGISTER },
-        { "random", (uint32_t*)&g_Reg->RANDOM_REGISTER },
-        { "entrylo0", (uint32_t*)&g_Reg->ENTRYLO0_REGISTER },
-        { "entrylo1", (uint32_t*)&g_Reg->ENTRYLO1_REGISTER },
-        { "context", (uint32_t*)&g_Reg->CONTEXT_REGISTER },
-        { "pagemask", (uint32_t*)&g_Reg->PAGE_MASK_REGISTER },
-        { "wired", (uint32_t*)&g_Reg->WIRED_REGISTER },
-        { "badvaddr", (uint32_t*)&g_Reg->BAD_VADDR_REGISTER },
-        { "count", (uint32_t*)&g_Reg->COUNT_REGISTER },
-        { "entryhi", (uint32_t*)&g_Reg->ENTRYHI_REGISTER },
-        { "compare", (uint32_t*)&g_Reg->COMPARE_REGISTER },
-        { "status", (uint32_t*)&g_Reg->STATUS_REGISTER },
+        {"index", (uint32_t *)&g_Reg->INDEX_REGISTER},
+        {"random", (uint32_t *)&g_Reg->RANDOM_REGISTER},
+        {"entrylo0", (uint32_t *)&g_Reg->ENTRYLO0_REGISTER},
+        {"entrylo1", (uint32_t *)&g_Reg->ENTRYLO1_REGISTER},
+        {"context", (uint32_t *)&g_Reg->CONTEXT_REGISTER},
+        {"pagemask", (uint32_t *)&g_Reg->PAGE_MASK_REGISTER},
+        {"wired", (uint32_t *)&g_Reg->WIRED_REGISTER},
+        {"badvaddr", (uint32_t *)&g_Reg->BAD_VADDR_REGISTER},
+        {"count", (uint32_t *)&g_Reg->COUNT_REGISTER},
+        {"entryhi", (uint32_t *)&g_Reg->ENTRYHI_REGISTER},
+        {"compare", (uint32_t *)&g_Reg->COMPARE_REGISTER},
+        {"status", (uint32_t *)&g_Reg->STATUS_REGISTER},
         //{ "cause", (uint32_t*)&g_Reg->CAUSE_REGISTER },
-        { "epc", (uint32_t*)&g_Reg->EPC_REGISTER },
-        { "config", (uint32_t*)&g_Reg->CONFIG_REGISTER },
-        { "taglo", (uint32_t*)&g_Reg->TAGLO_REGISTER },
-        { "taghi",(uint32_t*)&g_Reg->TAGHI_REGISTER },
-        { "errorepc", (uint32_t*)&g_Reg->ERROREPC_REGISTER },
+        {"epc", (uint32_t *)&g_Reg->EPC_REGISTER},
+        {"config", (uint32_t *)&g_Reg->CONFIG_REGISTER},
+        {"taglo", (uint32_t *)&g_Reg->TAGLO_REGISTER},
+        {"taghi", (uint32_t *)&g_Reg->TAGHI_REGISTER},
+        {"errorepc", (uint32_t *)&g_Reg->ERROREPC_REGISTER},
         { nullptr, nullptr }
     };
     
@@ -446,7 +449,7 @@ static uint32_t* COP0RegPtr(const char *regName)
     return nullptr;
 }
 
-static uint32_t* CPURegPtr(const char* key)
+static uint32_t * CPURegPtr(const char * key)
 {
     if (g_Reg == nullptr)
     {
@@ -481,19 +484,19 @@ static uint32_t* CPURegPtr(const char* key)
     return nullptr;
 }
 
-static duk_ret_t ThrowRegInvalidError(duk_context* ctx)
+static duk_ret_t ThrowRegInvalidError(duk_context * ctx)
 {
     duk_push_error_object(ctx, DUK_ERR_REFERENCE_ERROR, "invalid register name or number");
     return duk_throw(ctx);
 }
 
-static duk_ret_t ThrowRegContextUnavailableError(duk_context* ctx)
+static duk_ret_t ThrowRegContextUnavailableError(duk_context * ctx)
 {
     duk_push_error_object(ctx, DUK_ERR_ERROR, "CPU register context is unavailable");
     return duk_throw(ctx);
 }
 
-static duk_ret_t ThrowRegAssignmentTypeError(duk_context* ctx)
+static duk_ret_t ThrowRegAssignmentTypeError(duk_context * ctx)
 {
     duk_push_error_object(ctx, DUK_ERR_TYPE_ERROR, "invalid register value assignment");
     return duk_throw(ctx);

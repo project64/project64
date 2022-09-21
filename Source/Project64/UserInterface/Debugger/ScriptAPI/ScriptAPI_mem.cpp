@@ -1,41 +1,42 @@
-#include <stdafx.h>
+#include "stdafx.h"
+
 #include "ScriptAPI.h"
-#include <Project64/UserInterface/Debugger/debugger.h>
 #include <Project64/UserInterface/Debugger/DebugMMU.h>
+#include <Project64/UserInterface/Debugger/debugger.h>
 #include <stdio.h>
 #include <string>
 
-#pragma warning(disable: 4702) // disable unreachable code warning
+#pragma warning(disable : 4702) // disable unreachable code warning
 
 using namespace ScriptAPI;
 
 static size_t MemTypeSize(MemType t);
-static duk_ret_t ThrowMemoryError(duk_context* ctx, uint32_t address);
+static duk_ret_t ThrowMemoryError(duk_context * ctx, uint32_t address);
 
-void ScriptAPI::Define_mem(duk_context *ctx)
+void ScriptAPI::Define_mem(duk_context * ctx)
 {
-    #define MEM_PROXY_FUNCS(T) js_mem__get<T>, js_mem__set<T>
+#define MEM_PROXY_FUNCS(T) js_mem__get<T>, js_mem__set<T>
 
     const DukPropListEntry props[] = {
-        { "getblock",   DukCFunction(js_mem_getblock) },
-        { "setblock",   DukCFunction(js_mem_setblock) },
-        { "getstring",  DukCFunction(js_mem_getstring) },
-        { "setstring",  DukCFunction(js_mem_setblock) },
-        { "bindvar",    DukCFunction(js_mem_bindvar) },
-        { "bindvars",   DukCFunction(js_mem_bindvars) },
-        { "bindstruct", DukCFunction(js_mem_bindstruct) },
-        { "typedef",    DukCFunction(js_mem_typedef) },
-        { "ramSize",    DukGetter(js_mem__get_ramsize) },
-        { "romSize",    DukGetter(js_mem__get_romsize) },
-        { "ptr",        DukGetter(js_mem__get_ptr) },
-        { "u32",        DukProxy(MEM_PROXY_FUNCS(uint32_t)) },
-        { "u16",        DukProxy(MEM_PROXY_FUNCS(uint16_t)) },
-        { "u8",         DukProxy(MEM_PROXY_FUNCS(uint8_t)) },
-        { "s32",        DukProxy(MEM_PROXY_FUNCS(int32_t)) },
-        { "s16",        DukProxy(MEM_PROXY_FUNCS(int16_t)) },
-        { "s8",         DukProxy(MEM_PROXY_FUNCS(int8_t)) },
-        { "f64",        DukProxy(MEM_PROXY_FUNCS(double)) },
-        { "f32",        DukProxy(MEM_PROXY_FUNCS(float)) },
+        {"getblock", DukCFunction(js_mem_getblock)},
+        {"setblock", DukCFunction(js_mem_setblock)},
+        {"getstring", DukCFunction(js_mem_getstring)},
+        {"setstring", DukCFunction(js_mem_setblock)},
+        {"bindvar", DukCFunction(js_mem_bindvar)},
+        {"bindvars", DukCFunction(js_mem_bindvars)},
+        {"bindstruct", DukCFunction(js_mem_bindstruct)},
+        {"typedef", DukCFunction(js_mem_typedef)},
+        {"ramSize", DukGetter(js_mem__get_ramsize)},
+        {"romSize", DukGetter(js_mem__get_romsize)},
+        {"ptr", DukGetter(js_mem__get_ptr)},
+        {"u32", DukProxy(MEM_PROXY_FUNCS(uint32_t))},
+        {"u16", DukProxy(MEM_PROXY_FUNCS(uint16_t))},
+        {"u8", DukProxy(MEM_PROXY_FUNCS(uint8_t))},
+        {"s32", DukProxy(MEM_PROXY_FUNCS(int32_t))},
+        {"s16", DukProxy(MEM_PROXY_FUNCS(int16_t))},
+        {"s8", DukProxy(MEM_PROXY_FUNCS(int8_t))},
+        {"f64", DukProxy(MEM_PROXY_FUNCS(double))},
+        {"f32", DukProxy(MEM_PROXY_FUNCS(float))},
         { nullptr }
     };
 
@@ -43,14 +44,14 @@ void ScriptAPI::Define_mem(duk_context *ctx)
 }
 
 template <class T>
-duk_ret_t ScriptAPI::js_mem__get(duk_context *ctx)
+duk_ret_t ScriptAPI::js_mem__get(duk_context * ctx)
 {
-    CScriptInstance *inst = GetInstance(ctx);
+    CScriptInstance * inst = GetInstance(ctx);
 
     uint32_t addr = (uint32_t)duk_to_number(ctx, 1);
-    
+
     T value;
-    if(inst->Debugger()->DebugLoad_VAddr<T>(addr, value))
+    if (inst->Debugger()->DebugLoad_VAddr<T>(addr, value))
     {
         duk_push_number(ctx, value);
         return 1;
@@ -60,14 +61,14 @@ duk_ret_t ScriptAPI::js_mem__get(duk_context *ctx)
 }
 
 template <class T>
-duk_ret_t ScriptAPI::js_mem__set(duk_context *ctx)
+duk_ret_t ScriptAPI::js_mem__set(duk_context * ctx)
 {
-    CScriptInstance *inst = GetInstance(ctx);
+    CScriptInstance * inst = GetInstance(ctx);
 
     uint32_t addr = (uint32_t)duk_to_number(ctx, 1);
     T value = (T)duk_to_number(ctx, 2);
 
-    if(inst->Debugger()->DebugStore_VAddr<T>(addr, value))
+    if (inst->Debugger()->DebugStore_VAddr<T>(addr, value))
     {
         duk_push_true(ctx);
         return 1;
@@ -76,19 +77,19 @@ duk_ret_t ScriptAPI::js_mem__set(duk_context *ctx)
     return ThrowMemoryError(ctx, addr);
 }
 
-duk_ret_t ScriptAPI::js_mem_getblock(duk_context *ctx)
+duk_ret_t ScriptAPI::js_mem_getblock(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Number, Arg_Number });
-    CScriptInstance *inst = GetInstance(ctx);
+    CheckArgs(ctx, {Arg_Number, Arg_Number});
+    CScriptInstance * inst = GetInstance(ctx);
 
     duk_uint_t addr = duk_to_uint(ctx, 0);
     duk_uint_t length = duk_to_uint(ctx, 1);
 
-    uint8_t *data = (uint8_t*)duk_push_fixed_buffer(ctx, length);
+    uint8_t * data = (uint8_t *)duk_push_fixed_buffer(ctx, length);
     duk_push_buffer_object(ctx, -1, 0, length, DUK_BUFOBJ_NODEJS_BUFFER);
 
     uint32_t paddr;
-    uint8_t* memsrc = nullptr;
+    uint8_t * memsrc = nullptr;
     uint32_t offsetStart = 0;
 
     if (addr < 0x80000000 || addr >= 0xC0000000)
@@ -124,9 +125,9 @@ duk_ret_t ScriptAPI::js_mem_getblock(duk_context *ctx)
         uint32_t middleLen = alignedOffsetEnd - alignedOffsetStart;
         uint32_t suffixLen = offsetEnd - alignedOffsetEnd;
 
-        uint32_t* middleDst = (uint32_t*)&data[0 + prefixLen];
-        uint32_t* middleDstEnd = (uint32_t*)&data[0 + prefixLen + middleLen];
-        uint32_t* middleSrc = (uint32_t*)&memsrc[alignedOffsetStart];
+        uint32_t * middleDst = (uint32_t *)&data[0 + prefixLen];
+        uint32_t * middleDstEnd = (uint32_t *)&data[0 + prefixLen + middleLen];
+        uint32_t * middleSrc = (uint32_t *)&memsrc[alignedOffsetStart];
 
         for (size_t i = 0; i < prefixLen; i++)
         {
@@ -165,10 +166,10 @@ duk_ret_t ScriptAPI::js_mem_getblock(duk_context *ctx)
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_mem_getstring(duk_context *ctx)
+duk_ret_t ScriptAPI::js_mem_getstring(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Number, Arg_OptNumber });
-    CScriptInstance *inst = GetInstance(ctx);
+    CheckArgs(ctx, {Arg_Number, Arg_OptNumber});
+    CScriptInstance * inst = GetInstance(ctx);
 
     duk_idx_t nargs = duk_get_top(ctx);
 
@@ -176,15 +177,15 @@ duk_ret_t ScriptAPI::js_mem_getstring(duk_context *ctx)
     duk_uint_t maxLength = nargs > 1 ? duk_to_uint(ctx, 1) : 0xFFFFFFFF;
     size_t length = 0;
 
-    for(size_t i = 0; i < maxLength; i++)
+    for (size_t i = 0; i < maxLength; i++)
     {
         char c;
-        if(!inst->Debugger()->DebugLoad_VAddr<char>(addr + i, c))
+        if (!inst->Debugger()->DebugLoad_VAddr<char>(addr + i, c))
         {
             return ThrowMemoryError(ctx, addr);
         }
 
-        if(c == 0)
+        if (c == 0)
         {
             break;
         }
@@ -192,12 +193,12 @@ duk_ret_t ScriptAPI::js_mem_getstring(duk_context *ctx)
         length++;
     }
 
-    char *str = new char[length + 1];
+    char * str = new char[length + 1];
     str[length] = '\0';
 
-    for(size_t i = 0; i < length; i++)
+    for (size_t i = 0; i < length; i++)
     {
-        if(!inst->Debugger()->DebugLoad_VAddr<char>(addr + i, str[i]))
+        if (!inst->Debugger()->DebugLoad_VAddr<char>(addr + i, str[i]))
         {
             delete[] str;
             return ThrowMemoryError(ctx, addr);
@@ -209,26 +210,26 @@ duk_ret_t ScriptAPI::js_mem_getstring(duk_context *ctx)
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_mem_setblock(duk_context *ctx)
+duk_ret_t ScriptAPI::js_mem_setblock(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Number, Arg_Any, Arg_OptNumber });
-    CScriptInstance *inst = GetInstance(ctx);
-    CDebuggerUI *debugger = inst->Debugger();
+    CheckArgs(ctx, {Arg_Number, Arg_Any, Arg_OptNumber});
+    CScriptInstance * inst = GetInstance(ctx);
+    CDebuggerUI * debugger = inst->Debugger();
 
     duk_idx_t nargs = duk_get_top(ctx);
 
-    char* data;
+    char * data;
     duk_size_t dataSize, length;
 
     uint32_t address = duk_get_uint(ctx, 0);
 
     if (duk_is_buffer_data(ctx, 1))
     {
-        data = (char*)duk_get_buffer_data(ctx, 1, &dataSize);
+        data = (char *)duk_get_buffer_data(ctx, 1, &dataSize);
     }
-    else if(duk_is_string(ctx, 1))
+    else if (duk_is_string(ctx, 1))
     {
-        data = (char*)duk_get_lstring(ctx, 1, &dataSize);
+        data = (char *)duk_get_lstring(ctx, 1, &dataSize);
     }
     else
     {
@@ -262,14 +263,15 @@ duk_ret_t ScriptAPI::js_mem_setblock(duk_context *ctx)
     return 0;
 }
 
-duk_ret_t ScriptAPI::js_mem__boundget(duk_context *ctx)
+duk_ret_t ScriptAPI::js_mem__boundget(duk_context * ctx)
 {
-    CDebuggerUI *debugger = GetInstance(ctx)->Debugger();
+    CDebuggerUI * debugger = GetInstance(ctx)->Debugger();
 
     uint32_t addr = duk_get_uint(ctx, 0);
     duk_int_t type = duk_get_int(ctx, 1);
 
-    union {
+    union
+    {
         uint8_t u8;
         uint16_t u16;
         uint32_t u32;
@@ -283,8 +285,8 @@ duk_ret_t ScriptAPI::js_mem__boundget(duk_context *ctx)
     #define MEM_BOUNDGET_TRY(addr, T, result, dukpush) \
         if(debugger->DebugLoad_VAddr<T>(addr, result)) { dukpush(ctx, result); } \
         else { goto memory_error; }
-    
-    switch(type)
+
+    switch (type)
     {
     case U8:
         MEM_BOUNDGET_TRY(addr, uint8_t, retval.u8, duk_push_uint);
@@ -316,9 +318,9 @@ memory_error:
     return ThrowMemoryError(ctx, addr);
 }
 
-duk_ret_t ScriptAPI::js_mem__boundset(duk_context *ctx)
+duk_ret_t ScriptAPI::js_mem__boundset(duk_context * ctx)
 {
-    CDebuggerUI *debugger = GetInstance(ctx)->Debugger();
+    CDebuggerUI * debugger = GetInstance(ctx)->Debugger();
 
     uint32_t addr = duk_get_uint(ctx, 0);
     duk_int_t type = duk_get_int(ctx, 1);
@@ -327,7 +329,7 @@ duk_ret_t ScriptAPI::js_mem__boundset(duk_context *ctx)
         if(debugger->DebugStore_VAddr<T>(addr, value)) { return 1; } \
         else { goto memory_error; }
 
-    switch(type)
+    switch (type)
     {
     case U8:
         MEM_BOUNDSET_TRY(addr, uint8_t, duk_get_uint(ctx, 2) & 0xFF);
@@ -361,12 +363,12 @@ memory_error:
     return ThrowMemoryError(ctx, addr);
 }
 
-duk_ret_t ScriptAPI::js_mem_bindvar(duk_context *ctx)
+duk_ret_t ScriptAPI::js_mem_bindvar(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Object, Arg_Number, Arg_String, Arg_Number });
+    CheckArgs(ctx, {Arg_Object, Arg_Number, Arg_String, Arg_Number});
 
     duk_uint_t addr = duk_get_uint(ctx, 1);
-    const char* key = duk_get_string(ctx, 2);
+    const char * key = duk_get_string(ctx, 2);
     duk_int_t type = duk_get_int(ctx, 3);
 
     duk_push_string(ctx, key);
@@ -393,17 +395,17 @@ duk_ret_t ScriptAPI::js_mem_bindvar(duk_context *ctx)
     return 0;
 }
 
-duk_ret_t ScriptAPI::js_mem_bindvars(duk_context *ctx)
+duk_ret_t ScriptAPI::js_mem_bindvars(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Object, Arg_Array });
+    CheckArgs(ctx, {Arg_Object, Arg_Array});
 
     duk_size_t length = duk_get_length(ctx, 1);
 
-    for(duk_uarridx_t i = 0; i < length; i++)
+    for (duk_uarridx_t i = 0; i < length; i++)
     {
         duk_get_prop_index(ctx, 1, i);
-        if(!duk_is_array(ctx, -1) ||
-           duk_get_length(ctx, -1) != 3)
+        if (!duk_is_array(ctx, -1) ||
+            duk_get_length(ctx, -1) != 3)
         {
             return DUK_RET_TYPE_ERROR;
         }
@@ -414,7 +416,7 @@ duk_ret_t ScriptAPI::js_mem_bindvars(duk_context *ctx)
         duk_get_prop_index(ctx, -4, 1);
         duk_get_prop_index(ctx, -5, 2);
 
-        if(duk_pcall(ctx, 4) != DUK_EXEC_SUCCESS)
+        if (duk_pcall(ctx, 4) != DUK_EXEC_SUCCESS)
         {
             return duk_throw(ctx);
         }
@@ -426,15 +428,15 @@ duk_ret_t ScriptAPI::js_mem_bindvars(duk_context *ctx)
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_mem_bindstruct(duk_context *ctx)
+duk_ret_t ScriptAPI::js_mem_bindstruct(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Object, Arg_Number, Arg_Object });
+    CheckArgs(ctx, {Arg_Object, Arg_Number, Arg_Object});
 
     uint32_t curAddr = duk_get_uint(ctx, 1);
 
     duk_enum(ctx, 2, DUK_ENUM_OWN_PROPERTIES_ONLY);
 
-    while(duk_next(ctx, -1, 1))
+    while (duk_next(ctx, -1, 1))
     {
         MemType type = (MemType)duk_get_int(ctx, -1);
 
@@ -444,7 +446,7 @@ duk_ret_t ScriptAPI::js_mem_bindstruct(duk_context *ctx)
         duk_pull(ctx, -5);
         duk_pull(ctx, -5);
 
-        if(duk_pcall(ctx, 4) != DUK_EXEC_SUCCESS)
+        if (duk_pcall(ctx, 4) != DUK_EXEC_SUCCESS)
         {
             return duk_throw(ctx);
         }
@@ -459,16 +461,16 @@ duk_ret_t ScriptAPI::js_mem_bindstruct(duk_context *ctx)
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_mem__type_constructor(duk_context* ctx)
+duk_ret_t ScriptAPI::js_mem__type_constructor(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Object, Arg_Number });
+    CheckArgs(ctx, {Arg_Object, Arg_Number});
 
     duk_push_c_function(ctx, js_mem_bindstruct, 3);
     duk_push_this(ctx);
     duk_pull(ctx, 1);
     duk_pull(ctx, 0);
 
-    if(duk_pcall(ctx, 3) != DUK_EXEC_SUCCESS)
+    if (duk_pcall(ctx, 3) != DUK_EXEC_SUCCESS)
     {
         return duk_throw(ctx);
     }
@@ -476,9 +478,9 @@ duk_ret_t ScriptAPI::js_mem__type_constructor(duk_context* ctx)
     return 0;
 }
 
-duk_ret_t ScriptAPI::js_mem_typedef(duk_context* ctx)
+duk_ret_t ScriptAPI::js_mem_typedef(duk_context * ctx)
 {
-    CheckArgs(ctx, { Arg_Object });
+    CheckArgs(ctx, {Arg_Object});
 
     duk_push_c_function(ctx, js_mem__type_constructor, DUK_VARARGS);
     duk_push_string(ctx, "bind");
@@ -488,19 +490,19 @@ duk_ret_t ScriptAPI::js_mem_typedef(duk_context* ctx)
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_mem__get_ramsize(duk_context* ctx)
+duk_ret_t ScriptAPI::js_mem__get_ramsize(duk_context * ctx)
 {
     duk_push_number(ctx, g_MMU ? g_MMU->RdramSize() : 0);
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_mem__get_romsize(duk_context* ctx)
+duk_ret_t ScriptAPI::js_mem__get_romsize(duk_context * ctx)
 {
     duk_push_number(ctx, g_Rom ? g_Rom->GetRomSize() : 0);
     return 1;
 }
 
-duk_ret_t ScriptAPI::js_mem__get_ptr(duk_context* ctx)
+duk_ret_t ScriptAPI::js_mem__get_ptr(duk_context * ctx)
 {
     duk_push_pointer(ctx, g_MMU ? g_MMU->Rdram() : nullptr);
     return 1;
@@ -508,7 +510,7 @@ duk_ret_t ScriptAPI::js_mem__get_ptr(duk_context* ctx)
 
 size_t MemTypeSize(MemType t)
 {
-    switch(t)
+    switch (t)
     {
     case U8:
     case S8:
@@ -526,7 +528,7 @@ size_t MemTypeSize(MemType t)
     return 0;
 }
 
-duk_ret_t ThrowMemoryError(duk_context* ctx, uint32_t address)
+duk_ret_t ThrowMemoryError(duk_context * ctx, uint32_t address)
 {
     duk_push_error_object(ctx, DUK_ERR_ERROR, "memory error (can't access 0x%08X)", address);
     return duk_throw(ctx);

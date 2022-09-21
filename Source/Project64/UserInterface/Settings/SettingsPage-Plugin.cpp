@@ -108,7 +108,7 @@ void COptionPluginPage::ShowAboutButton(int id)
     }
 
     // Get DLL about
-    void(CALL *DllAbout) (HWND hWnd);
+    void(CALL * DllAbout)(HWND hWnd);
     DllAbout = (void(CALL *)(HWND))GetProcAddress(hLib, "DllAbout");
 
     // Call the function from the DLL
@@ -207,7 +207,10 @@ void COptionPluginPage::ApplySettings(bool UpdateScreen)
 
 bool COptionPluginPage::EnableReset(void)
 {
-    if (CSettingsPageImpl<COptionPluginPage>::EnableReset()) { return true; }
+    if (CSettingsPageImpl<COptionPluginPage>::EnableReset())
+    {
+        return true;
+    }
     return false;
 }
 

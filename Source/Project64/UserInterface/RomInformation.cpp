@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "RomInformation.h"
 #include <Project64-core/N64System/N64Disk.h>
 

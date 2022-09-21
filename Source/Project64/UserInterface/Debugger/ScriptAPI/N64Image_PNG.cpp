@@ -1,21 +1,23 @@
-#include <stdafx.h>
-#include <3rdParty/png/png.h>
+#include "stdafx.h"
+
 #include "N64Image.h"
+#include <3rdParty/png/png.h>
 
-#pragma warning (disable:4611) // disable setjmp/c++ deconstruction warning
+#pragma warning(disable : 4611) // disable setjmp/c++ deconstruction warning
 
-struct PNGReadState {
-    uint8_t*   pngData;
-    size_t     pngSize;
+struct PNGReadState
+{
+    uint8_t * pngData;
+    size_t pngSize;
     png_size_t offset;
 };
 
 static void PNGReadCallback(png_structp png_ptr, png_bytep data, png_size_t length);
 static void PNGWriteCallback(png_structp png_ptr, png_bytep data, png_size_t length);
 static void PNGFlushCallback(png_structp png_ptr);
-static bool ParsePNGRow(png_byte* row, png_size_t rowSize, int bitDepth, int colorType, std::vector<uint8_t>& outRGBA32);
+static bool ParsePNGRow(png_byte * row, png_size_t rowSize, int bitDepth, int colorType, std::vector<uint8_t> & outRGBA32);
 
-int CN64Image::ReadPNG(uint8_t* pngData, size_t pngSize, size_t* outWidth, size_t* outHeight, std::vector<uint8_t>& outRGBA32)
+int CN64Image::ReadPNG(uint8_t * pngData, size_t pngSize, size_t * outWidth, size_t * outHeight, std::vector<uint8_t> & outRGBA32)
 {
     if (!png_check_sig(pngData, 8))
     {
@@ -57,7 +59,7 @@ int CN64Image::ReadPNG(uint8_t* pngData, size_t pngSize, size_t* outWidth, size_
     png_uint_32 width, height;
     int bitDepth, colorType;
     png_get_IHDR(png_ptr, info_ptr, &width, &height, &bitDepth,
-        &colorType, nullptr, nullptr, nullptr);
+                 &colorType, nullptr, nullptr, nullptr);
 
     png_size_t rowSize = png_get_rowbytes(png_ptr, info_ptr);
     std::vector<png_bytep> rowPointers(height);
@@ -86,7 +88,7 @@ int CN64Image::ReadPNG(uint8_t* pngData, size_t pngSize, size_t* outWidth, size_
     return N64IMG_OK;
 }
 
-void CN64Image::WritePNG(uint8_t* rgba32, size_t width, size_t height, std::vector<uint8_t>& buffer)
+void CN64Image::WritePNG(uint8_t * rgba32, size_t width, size_t height, std::vector<uint8_t> & buffer)
 {
     png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
 
@@ -111,8 +113,8 @@ void CN64Image::WritePNG(uint8_t* rgba32, size_t width, size_t height, std::vect
     }
 
     png_set_IHDR(png_ptr, info_ptr, width, height,
-        8, PNG_COLOR_TYPE_RGBA, PNG_INTERLACE_NONE,
-        PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
+                 8, PNG_COLOR_TYPE_RGBA, PNG_INTERLACE_NONE,
+                 PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
 
     png_set_write_fn(png_ptr, &buffer, PNGWriteCallback, PNGFlushCallback);
     png_write_info(png_ptr, info_ptr);
@@ -132,7 +134,7 @@ void CN64Image::WritePNG(uint8_t* rgba32, size_t width, size_t height, std::vect
 
 static void PNGReadCallback(png_structp png_ptr, png_bytep data, png_size_t length)
 {
-    PNGReadState* state = (PNGReadState*)png_get_io_ptr(png_ptr);
+    PNGReadState * state = (PNGReadState *)png_get_io_ptr(png_ptr);
     if (state->offset + length > state->pngSize)
     {
         return;
@@ -143,7 +145,7 @@ static void PNGReadCallback(png_structp png_ptr, png_bytep data, png_size_t leng
 
 static void PNGWriteCallback(png_structp png_ptr, png_bytep data, png_size_t length)
 {
-    std::vector<uint8_t>* buffer = (std::vector<uint8_t>*)png_get_io_ptr(png_ptr);
+    std::vector<uint8_t> * buffer = (std::vector<uint8_t> *)png_get_io_ptr(png_ptr);
     buffer->insert(buffer->end(), &data[0], &data[length]);
 }
 
@@ -151,7 +153,7 @@ static void PNGFlushCallback(png_structp /*png_ptr*/)
 {
 }
 
-static bool ParsePNGRow(png_byte* row, png_size_t rowSize, int bitDepth, int colorType, std::vector<uint8_t>& outRGBA32)
+static bool ParsePNGRow(png_byte * row, png_size_t rowSize, int bitDepth, int colorType, std::vector<uint8_t> & outRGBA32)
 {
     if (colorType == PNG_COLOR_TYPE_RGBA)
     {

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "DebuggerUI.h"
 #include "Symbols.h"
 
@@ -11,7 +12,7 @@ CDebugStackView::~CDebugStackView(void)
 {
 }
 
-LRESULT CDebugStackView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CDebugStackView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     DlgResize_Init(false, true);
     DlgSavePos_Init(DebuggerUI_StackPos);
@@ -32,8 +33,8 @@ LRESULT CDebugStackView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /
 
     m_SPStatic.Attach(GetDlgItem(IDC_SP_STATIC));
 
-	LoadWindowPos();
-	WindowCreated();
+    LoadWindowPos();
+    WindowCreated();
 
     return 0;
 }
@@ -50,7 +51,7 @@ LRESULT CDebugStackView::OnDestroy(void)
     return 0;
 }
 
-LRESULT CDebugStackView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CDebugStackView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     switch (wID)
     {

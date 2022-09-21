@@ -1,10 +1,10 @@
 #include "stdafx.h"
-#include "Breakpoints.h"
 
-#include <Project64-core/N64System/Mips/Register.h>
-#include <Project64-core/N64System/SystemGlobals.h>
+#include "Breakpoints.h"
 #include <Project64-core/N64System/Mips/R4300iInstruction.h>
+#include <Project64-core/N64System/Mips/Register.h>
 #include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/SystemGlobals.h>
 
 CBreakpoints::CBreakpoints() :
     m_bHaveRegBP(false),
@@ -259,7 +259,7 @@ CBreakpoints::BPSTATE CBreakpoints::WriteBPExists64(uint32_t address)
 CBreakpoints::BPSTATE CBreakpoints::WriteBPExistsInChunk(uint32_t address, uint32_t nBytes)
 {
     uint32_t endAddr = address + nBytes;
-    
+
     for (breakpoints_t::iterator breakpoint = m_WriteMem.begin(); breakpoint != m_WriteMem.end(); breakpoint++)
     {
         uint32_t wbpAddr = breakpoint->first;

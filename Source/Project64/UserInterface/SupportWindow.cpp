@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "SupportEnterCode.h"
 #include <time.h>
 
@@ -56,7 +57,7 @@ void CSupportWindow::EnableContinue()
     ::EnableWindow(GetDlgItem(IDCANCEL), true);
 }
 
-LRESULT CSupportWindow::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CSupportWindow::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     m_Logo.SubclassWindow(GetDlgItem(IDC_BMP_LOGO));
     m_Logo.SetBitmap(MAKEINTRESOURCE(IDB_ABOUT_LOGO));
@@ -72,37 +73,37 @@ LRESULT CSupportWindow::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
     m_EnterLink.EnableWindow(!m_Support.Validated());
 
     CWindow hInfo = GetDlgItem(IDC_INFO);
-    CRect rcWin = { 0 };
+    CRect rcWin = {0};
     hInfo.GetClientRect(&rcWin);
 
     CDC hDC = hInfo.GetDC();
     HFONT hFont = hInfo.GetFont();
-    if(hFont == nullptr)
+    if (hFont == nullptr)
     {
         hFont = (HFONT)::GetStockObject(SYSTEM_FONT);
     }
     hDC.SelectFont(hFont);
-    if (hDC.DrawText(InfoText.c_str(),InfoText.length(),&rcWin,DT_LEFT | DT_CALCRECT | DT_WORDBREAK | DT_NOCLIP) > 0)
+    if (hDC.DrawText(InfoText.c_str(), InfoText.length(), &rcWin, DT_LEFT | DT_CALCRECT | DT_WORDBREAK | DT_NOCLIP) > 0)
     {
-        hInfo.SetWindowPos(nullptr,0,0,rcWin.right, rcWin.bottom,SWP_NOACTIVATE|SWP_NOMOVE|SWP_NOOWNERZORDER);
+        hInfo.SetWindowPos(nullptr, 0, 0, rcWin.right, rcWin.bottom, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOOWNERZORDER);
     }
     hInfo.SetWindowText(InfoText.c_str());
     hInfo.GetWindowRect(&rcWin);
     ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&rcWin, 2);
-    
+
     CWindow EnterCode = GetDlgItem(IDC_ENTER_CODE);
-    EnterCode.SetWindowPos(nullptr,rcWin.left,rcWin.bottom + 4,0,0,SWP_NOACTIVATE|SWP_NOSIZE|SWP_NOOWNERZORDER);
+    EnterCode.SetWindowPos(nullptr, rcWin.left, rcWin.bottom + 4, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
     EnterCode.GetWindowRect(&rcWin);
     ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&rcWin, 2);
 
     CWindow SupportBtn = GetDlgItem(ID_SUPPORT_PJ64);
-    RECT SupportBtnWin = { 0 };
+    RECT SupportBtnWin = {0};
     SupportBtn.GetWindowRect(&SupportBtnWin);
     ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&SupportBtnWin, 2);
     SupportBtn.SetWindowPos(nullptr, SupportBtnWin.left, rcWin.bottom + 40, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
 
     CWindow CancelBtn = GetDlgItem(IDCANCEL);
-    RECT CancelBtnWin = { 0 };
+    RECT CancelBtnWin = {0};
     CancelBtn.GetWindowRect(&CancelBtnWin);
     ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&CancelBtnWin, 2);
     CancelBtn.SetWindowPos(nullptr, CancelBtnWin.left, rcWin.bottom + 40, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
@@ -114,7 +115,7 @@ LRESULT CSupportWindow::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
     AdjustWindowRectEx(&rcWin, GetStyle(), GetMenu() != nullptr, GetExStyle());
 
     int32_t Left = (GetSystemMetrics(SM_CXSCREEN) - rcWin.Width()) / 2;
-    int32_t	Top = (GetSystemMetrics(SM_CYSCREEN) - rcWin.Height()) / 2;
+    int32_t Top = (GetSystemMetrics(SM_CYSCREEN) - rcWin.Height()) / 2;
 
     MoveWindow(Left, Top, rcWin.Width(), rcWin.Height(), TRUE);
 
@@ -127,13 +128,13 @@ LRESULT CSupportWindow::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
         SetWindowLong(GWL_STYLE, dwStyle);
 
         GetDlgItem(IDCANCEL).EnableWindow(false);
-        srand ((uint32_t)time(nullptr));
+        srand((uint32_t)time(nullptr));
         SetTimer(0, 1000, nullptr);
     }
     return TRUE;
 }
 
-LRESULT CSupportWindow::OnColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CSupportWindow::OnColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     CDCHandle hdcStatic = (HDC)wParam;
     hdcStatic.SetTextColor(RGB(0, 0, 0));
@@ -141,7 +142,7 @@ LRESULT CSupportWindow::OnColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPa
     return (LONG)(LRESULT)((HBRUSH)GetStockObject(NULL_BRUSH));
 }
 
-LRESULT CSupportWindow::OnEraseBackground(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CSupportWindow::OnEraseBackground(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     static HPEN Outline = CreatePen(PS_SOLID, 1, 0x00FFFFFF);
     static HBRUSH Fill = CreateSolidBrush(0x00FFFFFF);
@@ -156,7 +157,7 @@ LRESULT CSupportWindow::OnEraseBackground(UINT /*uMsg*/, WPARAM wParam, LPARAM /
     return TRUE;
 }
 
-LRESULT CSupportWindow::OnTimer(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CSupportWindow::OnTimer(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     m_TimeOutTime -= 1;
     if (m_TimeOutTime == 0)
@@ -169,21 +170,21 @@ LRESULT CSupportWindow::OnTimer(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/,
     return true;
 }
 
-LRESULT CSupportWindow::OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CSupportWindow::OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     UISettingsSaveBool(UserInterface_ShowingNagWindow, false);
     EndDialog(wID);
     return TRUE;
 }
 
-LRESULT CSupportWindow::OnSupportProject64(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CSupportWindow::OnSupportProject64(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     stdstr SupportURL = stdstr_f("https://www.pj64-emu.com/support-project64.html?ver=%s&machine=%s", VER_FILE_VERSION_STR, m_Support.MachineID());
     ShellExecute(nullptr, L"open", SupportURL.ToUTF16().c_str(), nullptr, nullptr, SW_SHOWMAXIMIZED);
     return TRUE;
 }
 
-LRESULT CSupportWindow::OnEnterCode(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CSupportWindow::OnEnterCode(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     CSupportEnterCode EnterCodeWindow(m_Support);
     EnterCodeWindow.DoModal(m_hWnd);

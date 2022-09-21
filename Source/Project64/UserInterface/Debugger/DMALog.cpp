@@ -1,9 +1,10 @@
 #include "stdafx.h"
+
 #include "DMALog.h"
 
 void CDMALog::AddEntry(uint32_t romAddr, uint32_t ramAddr, uint32_t length)
 {
-    DMALOGENTRY entry = { romAddr, ramAddr, length };
+    DMALOGENTRY entry = {romAddr, ramAddr, length};
     m_Log.push_back(entry);
 }
 
@@ -17,7 +18,7 @@ size_t CDMALog::GetNumEntries()
     return m_Log.size();
 }
 
-DMALOGENTRY* CDMALog::GetEntryByIndex(uint32_t index)
+DMALOGENTRY * CDMALog::GetEntryByIndex(uint32_t index)
 {
     if (index < m_Log.size())
     {
@@ -26,7 +27,7 @@ DMALOGENTRY* CDMALog::GetEntryByIndex(uint32_t index)
     return nullptr;
 }
 
-DMALOGENTRY* CDMALog::GetEntryByRamAddress(uint32_t ramAddr)
+DMALOGENTRY * CDMALog::GetEntryByRamAddress(uint32_t ramAddr)
 {
     uint32_t nEntries = GetNumEntries();
 
@@ -48,9 +49,9 @@ DMALOGENTRY* CDMALog::GetEntryByRamAddress(uint32_t ramAddr)
     return nullptr;
 }
 
-DMALOGENTRY* CDMALog::GetEntryByRamAddress(uint32_t ramAddr, uint32_t* lpRomAddr, uint32_t* lpOffset)
+DMALOGENTRY * CDMALog::GetEntryByRamAddress(uint32_t ramAddr, uint32_t * lpRomAddr, uint32_t * lpOffset)
 {
-    DMALOGENTRY* lpEntry = GetEntryByRamAddress(ramAddr);
+    DMALOGENTRY * lpEntry = GetEntryByRamAddress(ramAddr);
 
     if (lpEntry == nullptr)
     {
@@ -63,7 +64,7 @@ DMALOGENTRY* CDMALog::GetEntryByRamAddress(uint32_t ramAddr, uint32_t* lpRomAddr
     return lpEntry;
 }
 
-DMALOGENTRY* CDMALog::GetEntryByRomAddress(uint32_t romAddr)
+DMALOGENTRY * CDMALog::GetEntryByRomAddress(uint32_t romAddr)
 {
     uint32_t nEntries = GetNumEntries();
 
@@ -72,7 +73,7 @@ DMALOGENTRY* CDMALog::GetEntryByRomAddress(uint32_t romAddr)
         return nullptr;
     }
 
-    for (uint32_t i = nEntries - 1; i-- > 0; )
+    for (uint32_t i = nEntries - 1; i-- > 0;)
     {
         uint32_t min = m_Log[i].romAddr;
         uint32_t max = min + m_Log[i].length - 1;
@@ -85,9 +86,9 @@ DMALOGENTRY* CDMALog::GetEntryByRomAddress(uint32_t romAddr)
     return nullptr;
 }
 
-DMALOGENTRY* CDMALog::GetEntryByRomAddress(uint32_t romAddr, uint32_t* lpRamAddr, uint32_t* lpOffset)
+DMALOGENTRY * CDMALog::GetEntryByRomAddress(uint32_t romAddr, uint32_t * lpRamAddr, uint32_t * lpOffset)
 {
-    DMALOGENTRY* lpEntry = GetEntryByRomAddress(romAddr);
+    DMALOGENTRY * lpEntry = GetEntryByRomAddress(romAddr);
 
     if (lpEntry == nullptr)
     {

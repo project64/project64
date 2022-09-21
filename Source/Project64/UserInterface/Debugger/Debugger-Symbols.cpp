@@ -1,27 +1,28 @@
 #include "stdafx.h"
+
 #include "DebuggerUI.h"
 
-#include <stdio.h>
 #include <Common/path.h>
+#include <stdio.h>
 
 #include "Symbols.h"
 
 const CSetValueDlg::ComboItem CDebugSymbols::ModalChangeTypeItems[] = {
-    { "code",   SYM_CODE },
-    { "data",   SYM_DATA },
-    { "uint8",  SYM_U8 },
-    { "int8",   SYM_S8 },
-    { "uint16", SYM_U16 },
-    { "int16",  SYM_S16 },
-    { "uint32", SYM_U32 },
-    { "int32",  SYM_S32 },
-    { "uint64", SYM_U64 },
-    { "int64",  SYM_S64 },
-    { "float",  SYM_FLOAT },
-    { "double", SYM_DOUBLE },
-    { "v2", SYM_VECTOR2 },
-    { "v3", SYM_VECTOR3 },
-    { "v4", SYM_VECTOR4 },
+    {"code", SYM_CODE},
+    {"data", SYM_DATA},
+    {"uint8", SYM_U8},
+    {"int8", SYM_S8},
+    {"uint16", SYM_U16},
+    {"int16", SYM_S16},
+    {"uint32", SYM_U32},
+    {"int32", SYM_S32},
+    {"uint64", SYM_U64},
+    {"int64", SYM_S64},
+    {"float", SYM_FLOAT},
+    {"double", SYM_DOUBLE},
+    {"v2", SYM_VECTOR2},
+    {"v3", SYM_VECTOR3},
+    {"v4", SYM_VECTOR4},
     { nullptr, 0 }
 };
 
@@ -34,7 +35,7 @@ CDebugSymbols::CDebugSymbols(CDebuggerUI * debugger) :
     memset(m_FilterText, 0, sizeof(m_FilterText));
 }
 
-LRESULT CDebugSymbols::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CDebugSymbols::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     DlgResize_Init(false, true);
     DlgSavePos_Init(DebuggerUI_SymbolsPos);
@@ -85,7 +86,7 @@ void CDebugSymbols::OnTimer(UINT_PTR nIDEvent)
     }
 }
 
-LRESULT CDebugSymbols::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CDebugSymbols::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     switch (wID)
     {
@@ -96,35 +97,35 @@ LRESULT CDebugSymbols::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*
         m_AddSymbolDlg.DoModal(m_Debugger);
         break;
     case IDC_REMOVESYMBOL_BTN:
+    {
+        int nItem = m_SymbolsListView.GetSelectedIndex();
+        int id = -1;
+        if (m_bFiltering)
         {
-            int nItem = m_SymbolsListView.GetSelectedIndex();
-            int id = -1;
-            if (m_bFiltering)
-            {
-                id = m_FilteredSymbols[nItem].m_Id;
-            }
-            else
-            {
-                CSymbol symbol;
-                m_SymbolTable->GetSymbolByIndex(nItem, &symbol);
-                id = symbol.m_Id;
-            }
-
-            if (id != -1)
-            {
-                m_SymbolTable->RemoveSymbolById(id);
-                m_SymbolTable->Save();
-                Refresh();
-            }
+            id = m_FilteredSymbols[nItem].m_Id;
         }
-        break;
+        else
+        {
+            CSymbol symbol;
+            m_SymbolTable->GetSymbolByIndex(nItem, &symbol);
+            id = symbol.m_Id;
+        }
+
+        if (id != -1)
+        {
+            m_SymbolTable->RemoveSymbolById(id);
+            m_SymbolTable->Save();
+            Refresh();
+        }
+    }
+    break;
     }
     return FALSE;
 }
 
-LRESULT CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
+LRESULT CDebugSymbols::OnListDblClicked(NMHDR * pNMHDR)
 {
-    NMITEMACTIVATE* pIA = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
+    NMITEMACTIVATE * pIA = reinterpret_cast<NMITEMACTIVATE *>(pNMHDR);
 
     if (pIA->iItem == -1)
     {
@@ -175,8 +176,8 @@ LRESULT CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
         break;
     case SymbolsListView_Col_Value:
         char szValue[256];
-        const char* x;
-        const char* y;
+        const char * x;
+        const char * y;
         m_SymbolTable->GetValueString(szValue, &symbol);
         if (m_SetValueDlg.DoModal("Change value", "New value:", szValue))
         {
@@ -269,7 +270,7 @@ LRESULT CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
             m_SymbolTable->AddSymbol(symbol.m_Type, symbol.m_Address, symbol.m_Name, m_SetValueDlg.GetEnteredString().c_str());
         }
         break;
-    } 
+    }
 
     m_SymbolTable->Save();
     Refresh();
@@ -277,10 +278,10 @@ LRESULT CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
     return 0;
 }
 
-LRESULT CDebugSymbols::OnListGetDispInfo(NMHDR* pNMHDR)
+LRESULT CDebugSymbols::OnListGetDispInfo(NMHDR * pNMHDR)
 {
-    NMLVDISPINFO* plvdi = (NMLVDISPINFO*)pNMHDR;
-    
+    NMLVDISPINFO * plvdi = (NMLVDISPINFO *)pNMHDR;
+
     int index = plvdi->item.iItem;
 
     if (index == -1)
@@ -288,7 +289,7 @@ LRESULT CDebugSymbols::OnListGetDispInfo(NMHDR* pNMHDR)
         return TRUE;
     }
 
-    std::vector<SymbolCacheItem>& cache = m_bFiltering ? m_FilteredSymbols : m_SymbolCache;
+    std::vector<SymbolCacheItem> & cache = m_bFiltering ? m_FilteredSymbols : m_SymbolCache;
 
     if (!m_bFiltering)
     {
@@ -319,8 +320,8 @@ LRESULT CDebugSymbols::OnListGetDispInfo(NMHDR* pNMHDR)
 
 LRESULT CDebugSymbols::OnListCacheHint(NMHDR * pNMHDR)
 {
-    NMLVCACHEHINT* plvch = (NMLVCACHEHINT*)pNMHDR;
-    
+    NMLVCACHEHINT * plvch = (NMLVCACHEHINT *)pNMHDR;
+
     if (m_bFiltering)
     {
         return 0;
@@ -344,7 +345,7 @@ LRESULT CDebugSymbols::OnListCacheHint(NMHDR * pNMHDR)
     return 0;
 }
 
-LRESULT CDebugSymbols::OnFilterChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CDebugSymbols::OnFilterChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     if (::GetWindowTextLength(GetDlgItem(IDC_FILTER_EDIT)) == 0)
     {
@@ -352,17 +353,17 @@ LRESULT CDebugSymbols::OnFilterChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND 
         Refresh();
         return FALSE;
     }
-    
+
     m_bFiltering = true;
     ::GetWindowText(GetDlgItem(IDC_FILTER_EDIT), m_FilterText, sizeof(m_FilterText) / sizeof(wchar_t));
-    
+
     UpdateFilteredSymbols();
-    
+
     m_SymbolsListView.SetItemCount(m_FilteredSymbols.size());
     return FALSE;
 }
 
-int CDebugSymbols::ColumnHitTest(POINT& pt)
+int CDebugSymbols::ColumnHitTest(POINT & pt)
 {
     int nHitCol = -1;
     RECT listRect;

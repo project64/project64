@@ -54,7 +54,10 @@ void COptionsGameBrowserPage::UpdateFieldList(const ROMBROWSER_FIELDS_LIST & Fie
             continue;
         }
         int listCount = m_Using.GetCount();
-        if (Pos > listCount) { Pos = listCount; }
+        if (Pos > listCount)
+        {
+            Pos = listCount;
+        }
         m_Using.SetItemData(m_Using.InsertString(Pos, wGS(Fields[i].LangID()).c_str()), i);
     }
 }
@@ -66,13 +69,13 @@ void COptionsGameBrowserPage::UpdatePageSettings(void)
     FixCtrlState();
 }
 
-void  COptionsGameBrowserPage::UseRomBrowserChanged(UINT Code, int id, HWND ctl)
+void COptionsGameBrowserPage::UseRomBrowserChanged(UINT Code, int id, HWND ctl)
 {
     CheckBoxChanged(Code, id, ctl);
     FixCtrlState();
 }
 
-void  COptionsGameBrowserPage::FixCtrlState(void)
+void COptionsGameBrowserPage::FixCtrlState(void)
 {
     bool bEnabled = (SendDlgItemMessage(IDC_USE_ROMBROWSER, BM_GETCHECK, 0, 0) == BST_CHECKED);
     ::EnableWindow(GetDlgItem(IDC_ROMSEL_TEXT5), bEnabled);
@@ -99,7 +102,10 @@ void COptionsGameBrowserPage::AddFieldClicked(UINT /*Code*/, int /*id*/, HWND /*
 
     // Select next in list
     int listCount = m_Avaliable.GetCount();
-    if (index >= listCount) { index -= 1; }
+    if (index >= listCount)
+    {
+        index -= 1;
+    }
     m_Avaliable.SetCurSel(index);
 
     // Add to list
@@ -125,7 +131,10 @@ void COptionsGameBrowserPage::RemoveFieldClicked(UINT /*Code*/, int /*id*/, HWND
 
     // Select next in list
     int listCount = m_Using.GetCount();
-    if (index >= listCount) { index -= 1; }
+    if (index >= listCount)
+    {
+        index -= 1;
+    }
     m_Using.SetCurSel(index);
 
     // Add to list
@@ -231,7 +240,10 @@ void COptionsGameBrowserPage::ApplySettings(bool UpdateScreen)
 
 bool COptionsGameBrowserPage::EnableReset(void)
 {
-    if (m_OrderChanged) { return true; }
+    if (m_OrderChanged)
+    {
+        return true;
+    }
     return CSettingsPageImpl<COptionsGameBrowserPage>::EnableReset();
 }
 
