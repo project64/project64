@@ -48,4 +48,8 @@ typedef CX86RecompilerOps CRecompilerOps;
 
 typedef CArmRecompilerOps CRecompilerOps;
 
+#elif defined(__aarch64__)
+
+#include <Project64-core/N64System/Recompiler/Aarch64/Aarch64RecompilerOps.h>
+
 #endif

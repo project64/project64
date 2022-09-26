@@ -206,7 +206,6 @@ public:
     void XorArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg);
     void XorArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2);
 
-    void * GetAddressOf(int32_t value, ...);
     void SetJump8(uint8_t * Loc, uint8_t * JumpLoc);
     void SetJump20(uint32_t * Loc, uint32_t * JumpLoc);
     void FlushPopArmReg(void);
@@ -214,6 +213,8 @@ public:
     const char * ArmRegName(ArmReg Reg);
     uint32_t PushPopRegisterSize(uint16_t Registers);
     std::string PushPopRegisterList(uint16_t Registers);
+
+    static void * GetAddressOf(int32_t value, ...);
 
 private:
     CArmOps(void);

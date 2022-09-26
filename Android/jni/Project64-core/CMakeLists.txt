@@ -57,10 +57,15 @@ add_library(Project64-core STATIC
     N64System/Recompiler/Recompiler.cpp
     N64System/Recompiler/RecompilerMemory.cpp
     N64System/Recompiler/RegBase.cpp
+    N64System/Recompiler/Aarch64/Aarch64ops.cpp
+    N64System/Recompiler/Aarch64/Aarch64RecompilerOps.cpp
     N64System/Recompiler/Aarch64/Aarch64RegInfo.cpp
     N64System/Recompiler/Arm/ArmOps.cpp
     N64System/Recompiler/Arm/ArmRecompilerOps.cpp
     N64System/Recompiler/Arm/ArmRegInfo.cpp
+    N64System/Recompiler/x64-86/x64ops.cpp
+    N64System/Recompiler/x64-86/x64RecompilerOps.cpp
+    N64System/Recompiler/x64-86/x64RegInfo.cpp
     N64System/Recompiler/x86/x86ops.cpp
     N64System/Recompiler/x86/x86RecompilerOps.cpp
     N64System/Recompiler/x86/x86RegInfo.cpp

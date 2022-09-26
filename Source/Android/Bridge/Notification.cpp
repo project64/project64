@@ -1,4 +1,4 @@
-#include <common/StdString.h>
+#include <Common/StdString.h>
 #include <Common/Trace.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Settings.h>

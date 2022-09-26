@@ -209,9 +209,9 @@ void CX86Ops::CallThis(uint32_t ThisPtr, uint32_t FunctPtr, char * FunctName, ui
 #else
 void CX86Ops::CallThis(uint32_t ThisPtr, uint32_t FunctPtr, char * FunctName, uint32_t StackSize)
 {
-    m_Assembler.PushImm32(ThisPtr);
+    PushImm32(ThisPtr);
     CallFunc(FunctPtr, FunctName);
-    m_Assembler.AddConstToX86Reg(CX86Ops::x86_ESP, StackSize);
+    AddConstToX86Reg(CX86Ops::x86_ESP, StackSize);
 }
 #endif
 

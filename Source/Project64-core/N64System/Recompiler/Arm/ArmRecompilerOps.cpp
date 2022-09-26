@@ -58,7 +58,7 @@ void CArmRecompilerOps::PreCompileOpcode(void)
     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R1,m_CompilePC);
     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R2,(uint32_t)&TestValue, "TestValue");
     m_Assembler.StoreArmRegToArmRegPointer(CArmOps::Arm_R1,CArmOps::Arm_R2,0);
-    CallFunction(AddressOf(&TestFunc), "TestFunc");
+    m_Assembler.CallFunction(AddressOf(&TestFunc), "TestFunc");
     m_RegWorkingSet.AfterCallDirect();*/
 
     /*if ((m_CompilePC == 0x8027F564 || m_CompilePC == 0x8027F574) && m_PipelineStage == PIPELINE_STAGE_NORMAL)
@@ -66,7 +66,7 @@ void CArmRecompilerOps::PreCompileOpcode(void)
     m_RegWorkingSet.BeforeCallDirect();
     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0,(uint32_t)&TestValue, "TestValue");
     m_Assembler.StoreArmRegToArmRegPointer(CArmOps::Arm_R1,CArmOps::Arm_R0,0);
-    CallFunction(AddressOf(&TestFunc), "TestFunc");
+    m_Assembler.CallFunction(AddressOf(&TestFunc), "TestFunc");
     m_RegWorkingSet.AfterCallDirect();
 
     for (int32_t i = 1; i < 32; i++)
@@ -81,7 +81,7 @@ void CArmRecompilerOps::PreCompileOpcode(void)
     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R2, (uint32_t)&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER");
     m_Assembler.StoreArmRegToArmRegPointer(CArmOps::Arm_R1, CArmOps::Arm_R2, 0);
     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_BaseSystem, "g_BaseSystem");
-    CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+    m_Assembler.CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
     m_RegWorkingSet.AfterCallDirect();
     }
     }*/
@@ -94,7 +94,7 @@ void CArmRecompilerOps::PreCompileOpcode(void)
     if (g_SyncSystem)
     {
     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_BaseSystem, "g_BaseSystem");
-    CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+    m_Assembler.CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
     }
     }*/
     m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
@@ -563,7 +563,10 @@ void CArmRecompilerOps::Compile_BranchLikely(RecompilerBranchCompare CompareType
             }
 
             LinkJump(m_Section->m_Cont);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+#ifdef tofix
             CompileExit(m_CompilePC, m_CompilePC + 8, m_Section->m_Cont.RegSet, ExitReason_Normal, true, nullptr);
+#endif
             return;
         }
         else
@@ -1846,7 +1849,7 @@ void CArmRecompilerOps::J()
         m_Section->m_Jump.JumpPC = m_CompilePC;
         if (m_Section->m_JumpSection != nullptr)
         {
-            m_Section->m_Jump.BranchLabel.Format("Section_%d", ((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
+            m_Section->m_Jump.BranchLabel = stdstr_f("Section_%d", ((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
         }
         else
         {
@@ -1892,7 +1895,7 @@ void CArmRecompilerOps::JAL()
         m_Section->m_Jump.JumpPC = m_CompilePC;
         if (m_Section->m_JumpSection != nullptr)
         {
-            m_Section->m_Jump.BranchLabel.Format("Section_%d", ((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
+            m_Section->m_Jump.BranchLabel = stdstr_f("Section_%d", ((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
         }
         else
         {
@@ -2554,7 +2557,7 @@ void CArmRecompilerOps::CACHE()
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)((int16_t)m_Opcode.offset));
         m_Assembler.AddArmRegToArmReg(CArmOps::Arm_R1, CArmOps::Arm_R0, CArmOps::Arm_R1);
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Recompiler, "g_Recompiler");
-        CallFunction((void *)AddressOf(&CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
+        m_Assembler.CallFunction((void *)AddressOf(&CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
         m_RegWorkingSet.AfterCallDirect();
         break;
     case 1:
@@ -3991,13 +3994,13 @@ void CArmRecompilerOps::COP0_CO_TLBWR()
     m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
     m_RegWorkingSet.BeforeCallDirect();
     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_SystemTimer, "g_SystemTimer");
-    CallFunction((void *)AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
+    m_Assembler.CallFunction((void *)AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
 
     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R2, (uint32_t)true, "true");
     m_Assembler.MoveVariableToArmReg(&g_Reg->RANDOM_REGISTER, "RANDOM_REGISTER", CArmOps::Arm_R1);
     m_Assembler.AndConstToArmReg(CArmOps::Arm_R1, CArmOps::Arm_R1, 0x1F);
     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_TLB, "g_TLB");
-    CallFunction((void *)AddressOf(&CTLB::WriteEntry), "CTLB::WriteEntry");
+    m_Assembler.CallFunction((void *)AddressOf(&CTLB::WriteEntry), "CTLB::WriteEntry");
     m_RegWorkingSet.AfterCallDirect();
 }
 
@@ -4032,7 +4035,7 @@ void arm_compiler_COP0_CO_ERET()
 void CArmRecompilerOps::COP0_CO_ERET()
 {
     m_RegWorkingSet.WriteBackRegisters();
-    CallFunction((void *)arm_compiler_COP0_CO_ERET, "arm_compiler_COP0_CO_ERET");
+    m_Assembler.CallFunction((void *)arm_compiler_COP0_CO_ERET, "arm_compiler_COP0_CO_ERET");
 
     UpdateCounters(m_RegWorkingSet, true, true);
     CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, ExitReason_Normal);
@@ -4173,12 +4176,12 @@ void CArmRecompilerOps::COP1_S_MUL()
     CArmOps::ArmReg FprReg = Map_Variable(CArmRegInfo::VARIABLE_FPR);
     CArmOps::ArmReg TempReg = m_RegWorkingSet.Map_TempReg(CArmOps::Arm_Any, -1, false);
     m_Assembler.LoadArmRegPointerToArmReg(TempReg, FprReg, (uint8_t)(m_Opcode.fs << 2));
-    LoadArmRegPointerToFloatReg(TempReg, CArmOps::Arm_S14, 0);
+    m_Assembler.LoadArmRegPointerToFloatReg(TempReg, CArmOps::Arm_S14, 0);
     m_Assembler.LoadArmRegPointerToArmReg(TempReg, FprReg, (uint8_t)(m_Opcode.ft << 2));
-    LoadArmRegPointerToFloatReg(TempReg, CArmOps::Arm_S15, 0);
-    MulF32(CArmOps::Arm_S0, CArmOps::Arm_S14, CArmOps::Arm_S15);
+    m_Assembler.LoadArmRegPointerToFloatReg(TempReg, CArmOps::Arm_S15, 0);
+    m_Assembler.MulF32(CArmOps::Arm_S0, CArmOps::Arm_S14, CArmOps::Arm_S15);
     m_Assembler.LoadArmRegPointerToArmReg(TempReg, FprReg, (uint8_t)(m_Opcode.fd << 2));
-    StoreFloatRegToArmRegPointer(CArmOps::Arm_S0, TempReg, 0);
+    m_Assembler.StoreFloatRegToArmRegPointer(CArmOps::Arm_S0, TempReg, 0);
 }
 
 void CArmRecompilerOps::COP1_S_DIV()
@@ -4723,11 +4726,11 @@ void CArmRecompilerOps::UnknownOpcode()
     if (g_SyncSystem)
     {
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_BaseSystem, "g_BaseSystem");
-        CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+        m_Assembler.CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
     }
 
     m_Assembler.MoveConstToVariable(m_Opcode.Value, &R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value");
-    CallFunction((void *)R4300iOp::UnknownOpcode, "R4300iOp::UnknownOpcode");
+    m_Assembler.CallFunction((void *)R4300iOp::UnknownOpcode, "R4300iOp::UnknownOpcode");
     ExitCodeBlock();
     if (m_PipelineStage == PIPELINE_STAGE_NORMAL) { m_PipelineStage = PIPELINE_STAGE_END_BLOCK; }
 }
@@ -4742,7 +4745,7 @@ void CArmRecompilerOps::ExitCodeBlock()
     if (g_SyncSystem)
     {
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_BaseSystem, "g_BaseSystem");
-        CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+        m_Assembler.CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
     }
     PopArmReg(ArmPushPop_R2 | ArmPushPop_R3 | ArmPushPop_R4 | ArmPushPop_R5 | ArmPushPop_R6 | ArmPushPop_R7 | ArmPushPop_R8 | ArmPushPop_R9 | ArmPushPop_R10 | ArmPushPop_R11 | ArmPushPop_R12 | ArmPushPop_PC);
 }
@@ -4781,15 +4784,15 @@ void CArmRecompilerOps::CompileInPermLoop(CRegInfo & RegSet, uint32_t ProgramCou
     m_Assembler.MoveConstToVariable(ProgramCounter, _PROGRAM_COUNTER, "PROGRAM_COUNTER");
     RegSet.WriteBackRegisters();
     UpdateCounters(RegSet, false, true);
-    CallFunction(AddressOf(CInterpreterCPU::InPermLoop), "CInterpreterCPU::InPermLoop");
+    m_Assembler.CallFunction(AddressOf(CInterpreterCPU::InPermLoop), "CInterpreterCPU::InPermLoop");
     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_SystemTimer);
-    CallFunction(AddressOf(&CSystemTimer::TimerDone), "CSystemTimer::TimerDone");
+    m_Assembler.CallFunction(AddressOf(&CSystemTimer::TimerDone), "CSystemTimer::TimerDone");
     m_CodeBlock.Log("CompileSystemCheck 3");
     CompileSystemCheck((uint32_t)-1, RegSet);
     if (g_SyncSystem)
     {
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_BaseSystem);
-        CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+        m_Assembler.CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
     }
 }
 
@@ -5315,7 +5318,7 @@ void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         bDelay = m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT;
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R1, (uint32_t)bDelay, bDelay ? "true" : "false");
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Reg);
-        CallFunction(AddressOf(&CRegisters::DoSysCallException), "CRegisters::DoSysCallException");
+        m_Assembler.CallFunction(AddressOf(&CRegisters::DoSysCallException), "CRegisters::DoSysCallException");
         ExitCodeBlock();
         break;
     case ExitReason_COP1Unuseable:
@@ -5323,7 +5326,7 @@ void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R2, (uint32_t)1, "1");
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R1, (uint32_t)bDelay, bDelay ? "true" : "false");
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Reg);
-        CallFunction(AddressOf(&CRegisters::DoCopUnusableException), "CRegisters::DoCopUnusableException");
+        m_Assembler.CallFunction(AddressOf(&CRegisters::DoCopUnusableException), "CRegisters::DoCopUnusableException");
         ExitCodeBlock();
         break;
     case ExitReason_TLBReadMiss:
@@ -5331,7 +5334,7 @@ void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         m_Assembler.MoveVariableToArmReg(g_TLBLoadAddress, "g_TLBLoadAddress", CArmOps::Arm_R2);
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R1, (uint32_t)bDelay, bDelay ? "true" : "false");
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Reg);
-        CallFunction(AddressOf(&CRegisters::DoTLBReadMiss), "CRegisters::DoTLBReadMiss");
+        m_Assembler.CallFunction(AddressOf(&CRegisters::DoTLBReadMiss), "CRegisters::DoTLBReadMiss");
         ExitCodeBlock();
         break;
     case ExitReason_TLBWriteMiss:
@@ -5376,7 +5379,7 @@ void CArmRecompilerOps::CompileSystemCheck(uint32_t TargetPC, const CRegInfo & R
     m_RegWorkingSet.WriteBackRegisters();
 
     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_SystemEvents, "g_SystemEvents");
-    CallFunction(AddressOf(&CSystemEvents::ExecuteEvents), "CSystemEvents::ExecuteEvents");
+    m_Assembler.CallFunction(AddressOf(&CSystemEvents::ExecuteEvents), "CSystemEvents::ExecuteEvents");
 
     ExitCodeBlock();
     m_CodeBlock.Log("");
@@ -5930,7 +5933,7 @@ void CArmRecompilerOps::UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles)
     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R2, Cycles);
     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R1, (uint32_t)g_SyncSystem, "g_SyncSystem");
     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_System);
-    CallFunction((void *)AddressOf(&CN64System::UpdateSyncCPU), "CN64System::UpdateSyncCPU");
+    m_Assembler.CallFunction((void *)AddressOf(&CN64System::UpdateSyncCPU), "CN64System::UpdateSyncCPU");
     RegSet.AfterCallDirect();
 }
 
@@ -5973,7 +5976,7 @@ void CArmRecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool 
         m_Assembler.BranchLabel8(CArmOps::ArmBranch_GreaterThanOrEqual, "Continue_From_Timer_Test");
         RegSet.BeforeCallDirect();
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_SystemTimer, "g_SystemTimer");
-        CallFunction(AddressOf(&CSystemTimer::TimerDone), "CSystemTimer::TimerDone");
+        m_Assembler.CallFunction(AddressOf(&CSystemTimer::TimerDone), "CSystemTimer::TimerDone");
         RegSet.AfterCallDirect();
         FlushPopArmReg();
 
@@ -5989,7 +5992,7 @@ void CArmRecompilerOps::CompileInterpterCall(void * Function, const char * Funct
     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R1, m_Opcode.Value);
     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R2, (uint32_t)(void *)&R4300iOp::m_Opcode.Value, "&R4300iOp::m_Opcode.Value");
     m_Assembler.StoreArmRegToArmRegPointer(CArmOps::Arm_R1, CArmOps::Arm_R2, 0);
-    m_Assembler.CallFunction(Function, FunctionName);
+    m_Assembler.m_Assembler.CallFunction(Function, FunctionName);
     m_RegWorkingSet.AfterCallDirect();
 }
 
@@ -6002,7 +6005,7 @@ void CArmRecompilerOps::OverflowDelaySlot(bool TestTimer)
     if (g_SyncSystem)
     {
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_BaseSystem, "g_BaseSystem");
-        CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+        m_Assembler.CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
     }
 
     m_Assembler.MoveConstToVariable(PIPELINE_STAGE_JUMP, &g_System->m_PipelineStage, "g_System->m_PipelineStage");
@@ -6013,12 +6016,12 @@ void CArmRecompilerOps::OverflowDelaySlot(bool TestTimer)
     }
 
     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, g_System->CountPerOp());
-    CallFunction((void *)CInterpreterCPU::ExecuteOps, "CInterpreterCPU::ExecuteOps");
+    m_Assembler.CallFunction((void *)CInterpreterCPU::ExecuteOps, "CInterpreterCPU::ExecuteOps");
 
     if (g_System->bFastSP() && g_Recompiler)
     {
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Recompiler);
-        CallFunction(AddressOf(&CRecompiler::ResetMemoryStackPos), "CRecompiler::ResetMemoryStackPos");
+        m_Assembler.CallFunction(AddressOf(&CRecompiler::ResetMemoryStackPos), "CRecompiler::ResetMemoryStackPos");
     }
     if (g_SyncSystem)
     {
@@ -6113,7 +6116,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             PushImm32(Value);
             PushImm32(PAddr & 0x1FFFFFFF);*/
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)(MemoryHandler *)&g_MMU->m_SPRegistersHandler, "(MemoryHandler *)g_MMU->m_SPRegistersHandler");
-            CallFunction((void *)((long**)(MemoryHandler *)&g_MMU->m_SPRegistersHandler)[0][1], "SPRegistersHandler::Write32");
+            m_Assembler.CallFunction((void *)((long**)(MemoryHandler *)&g_MMU->m_SPRegistersHandler)[0][1], "SPRegistersHandler::Write32");
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04040010:
@@ -6125,7 +6128,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R2, Value);
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R1, PAddr | 0xA0000000);
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)(g_MMU), "g_MMU");
-            CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+            m_Assembler.CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x0404001C: m_Assembler.MoveConstToVariable(0, &g_Reg->SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG"); break;
@@ -6147,7 +6150,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R2, Value);
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R1, PAddr | 0xA0000000);
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)(g_MMU), "g_MMU");
-            CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+            m_Assembler.CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
             m_RegWorkingSet.AfterCallDirect();
             break;
         default:
@@ -6292,7 +6295,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
                 CArmOps::ArmReg VariableReg = TempValueReg != CArmOps::Arm_R1 ? CArmOps::Arm_R1 : CArmOps::Arm_R2;
                 m_Assembler.MoveConstToArmReg(VariableReg, (uint32_t)&g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
                 m_Assembler.StoreArmRegToArmRegPointer(TempValueReg, VariableReg, 0);
-                CallFunction((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
+                m_Assembler.CallFunction((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
                 m_RegWorkingSet.AfterCallDirect();
                 FlushPopArmReg();
                 m_CodeBlock.Log("");
@@ -6315,7 +6318,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
 
                 m_Assembler.MoveArmRegToVariable(TempValueReg, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
                 m_RegWorkingSet.BeforeCallDirect();
-                CallFunction((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
+                m_Assembler.CallFunction((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
                 m_RegWorkingSet.AfterCallDirect();
                 FlushPopArmReg();
                 m_CodeBlock.Log("");
@@ -6328,7 +6331,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             AndConstToVariable(&g_Reg->MI_INTR_REG, "MI_INTR_REG", (uint32_t)~MI_INTR_VI);
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Reg, "g_Reg");
-            CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+            m_Assembler.CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04400014: m_Assembler.MoveConstToVariable(Value, &g_Reg->VI_BURST_REG, "VI_BURST_REG"); break;
@@ -6360,11 +6363,11 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             {
                 ArmBreakPoint(__FILE__, __LINE__);
                 //m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Audio, "g_Audio");
-                //CallFunction(AddressOf(&CAudio::LenChanged), "LenChanged");
+                //m_Assembler.CallFunction(AddressOf(&CAudio::LenChanged), "LenChanged");
             }
             else
             {
-                CallFunction((void *)g_Plugins->Audio()->AiLenChanged, "AiLenChanged");
+                m_Assembler.CallFunction((void *)g_Plugins->Audio()->AiLenChanged, "AiLenChanged");
             }
             m_RegWorkingSet.AfterCallDirect();
             break;
@@ -6375,7 +6378,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             AndConstToVariable(&g_Reg->m_AudioIntrReg, "m_AudioIntrReg", (uint32_t)~MI_INTR_AI);
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Reg, "g_Reg");
-            CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+            m_Assembler.CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04500010:
@@ -6383,7 +6386,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R2, Value);
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R1, PAddr | 0xA0000000);
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)(g_MMU), "g_MMU");
-            CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+            m_Assembler.CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04500014: m_Assembler.MoveConstToVariable(Value, &g_Reg->AI_BITRATE_REG, "AI_BITRATE_REG"); break;
@@ -6406,7 +6409,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             /*m_Assembler.MoveConstToVariable(Value, &g_Reg->PI_RD_LEN_REG, "PI_RD_LEN_REG");
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)((CDMA *)g_MMU), "(CDMA *)g_MMU");
-            CallFunction(AddressOf(&CDMA::PI_DMA_READ), "CDMA::PI_DMA_READ");
+            m_Assembler.CallFunction(AddressOf(&CDMA::PI_DMA_READ), "CDMA::PI_DMA_READ");
             m_RegWorkingSet.AfterCallDirect();*/
             break;
         case 0x0460000C:
@@ -6417,7 +6420,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             m_Assembler.MoveConstToVariable(Value, &g_Reg->PI_WR_LEN_REG, "PI_WR_LEN_REG");
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)((CDMA *)g_MMU), "(CDMA *)g_MMU");
-            CallFunction(AddressOf(&CDMA::PI_DMA_WRITE), "CDMA::PI_DMA_WRITE");
+            m_Assembler.CallFunction(AddressOf(&CDMA::PI_DMA_WRITE), "CDMA::PI_DMA_WRITE");
             m_RegWorkingSet.AfterCallDirect();*/
             break;
         case 0x04600010:
@@ -6426,7 +6429,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
                 AndConstToVariable(&g_Reg->MI_INTR_REG, "MI_INTR_REG", (uint32_t)~MI_INTR_PI);
                 m_RegWorkingSet.BeforeCallDirect();
                 m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Reg, "g_Reg");
-                CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+                m_Assembler.CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
                 m_RegWorkingSet.AfterCallDirect();
             }
             break;
@@ -6474,7 +6477,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             m_Assembler.MoveConstToVariable(Value, &g_Reg->SI_PIF_ADDR_RD64B_REG, "SI_PIF_ADDR_RD64B_REG");
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)((CPifRam *)g_MMU), "CPifRam *)g_MMU");
-            CallFunction(AddressOf(&CPifRam::SI_DMA_READ), "CPifRam::SI_DMA_READ");
+            m_Assembler.CallFunction(AddressOf(&CPifRam::SI_DMA_READ), "CPifRam::SI_DMA_READ");
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04800010:
@@ -6484,7 +6487,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             m_Assembler.MoveConstToVariable(Value, &g_Reg->SI_PIF_ADDR_WR64B_REG, "SI_PIF_ADDR_WR64B_REG");
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)((CPifRam *)g_MMU), "CPifRam *)g_MMU");
-            CallFunction(AddressOf(&CPifRam::SI_DMA_WRITE), "CPifRam::SI_DMA_WRITE");
+            m_Assembler.CallFunction(AddressOf(&CPifRam::SI_DMA_WRITE), "CPifRam::SI_DMA_WRITE");
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04800018:
@@ -6492,7 +6495,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             AndConstToVariable(&g_Reg->SI_STATUS_REG, "SI_STATUS_REG", (uint32_t)~SI_STATUS_INTERRUPT);
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Reg, "g_Reg");
-            CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+            m_Assembler.CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
             m_RegWorkingSet.AfterCallDirect();
             break;
         default:
@@ -6511,7 +6514,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             {
             case 0x05000520:
                 m_RegWorkingSet.BeforeCallDirect();
-                CallFunction(AddressOf(&DiskReset), "DiskReset");
+                m_Assembler.CallFunction(AddressOf(&DiskReset), "DiskReset");
                 m_RegWorkingSet.AfterCallDirect();
                 break;
             default:
@@ -6532,7 +6535,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R2, Value);
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R1, PAddr | 0xA0000000);
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)(g_MMU), "g_MMU");
-        CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+        m_Assembler.CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
         m_RegWorkingSet.AfterCallDirect();
         break;
     default:
@@ -6615,7 +6618,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
             Push(Reg);
             PushImm32(PAddr & 0x1FFFFFFF);*/
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)(MemoryHandler *)&g_MMU->m_SPRegistersHandler, "(MemoryHandler *)g_MMU->m_SPRegistersHandler");
-            CallFunction((void *)((long**)(MemoryHandler *)&g_MMU->m_SPRegistersHandler)[0][1], "SPRegistersHandler::Write32");
+            m_Assembler.CallFunction((void *)((long**)(MemoryHandler *)&g_MMU->m_SPRegistersHandler)[0][1], "SPRegistersHandler::Write32");
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x0404000C:
@@ -6623,7 +6626,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
             /*m_Assembler.MoveArmRegToVariable(Reg, &g_Reg->SP_WR_LEN_REG, "SP_WR_LEN_REG");
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)((CDMA *)g_MMU), "(CDMA *)g_MMU");
-            CallFunction(AddressOf(&CDMA::SP_DMA_WRITE), "CDMA::SP_DMA_WRITE");
+            m_Assembler.CallFunction(AddressOf(&CDMA::SP_DMA_WRITE), "CDMA::SP_DMA_WRITE");
             m_RegWorkingSet.AfterCallDirect();*/
             break;
         case 0x04040010:
@@ -6632,7 +6635,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
             m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
             m_Assembler.MoveArmRegToVariable(Reg, &CMipsMemoryVM::RegModValue, "CMipsMemoryVM::RegModValue");
             m_RegWorkingSet.BeforeCallDirect();
-            CallFunction(AddressOf(&CMipsMemoryVM::ChangeSpStatus), "CMipsMemoryVM::ChangeSpStatus");
+            m_Assembler.CallFunction(AddressOf(&CMipsMemoryVM::ChangeSpStatus), "CMipsMemoryVM::ChangeSpStatus");
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x0404001C: m_Assembler.MoveConstToVariable(0, &g_Reg->SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG"); break;
@@ -6669,7 +6672,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
         }
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R1, PAddr | 0xA0000000);
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)(g_MMU), "g_MMU");
-        CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+        m_Assembler.CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
         m_RegWorkingSet.AfterCallDirect();
         break;
     case 0x04300000:
@@ -6680,13 +6683,13 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
             /*m_Assembler.MoveArmRegToVariable(Reg, &CMipsMemoryVM::m_MemLookupValue.UW[0], "CMipsMemoryVM::m_MemLookupValue.UW[0]");
             m_Assembler.MoveConstToVariable(PAddr, &CMipsMemoryVM::m_MemLookupAddress, "m_MemLookupAddress");
             m_RegWorkingSet.BeforeCallDirect();
-            CallFunction((void *)CMipsMemoryVM::Write32MIPSInterface, "CMipsMemoryVM::Write32MIPSInterface");
+            m_Assembler.CallFunction((void *)CMipsMemoryVM::Write32MIPSInterface, "CMipsMemoryVM::Write32MIPSInterface");
             m_RegWorkingSet.AfterCallDirect();*/
             break;
         case 0x0430000C:
             m_Assembler.MoveArmRegToVariable(Reg, &CMipsMemoryVM::RegModValue, "CMipsMemoryVM::RegModValue");
             m_RegWorkingSet.BeforeCallDirect();
-            CallFunction((void *)CMipsMemoryVM::ChangeMiIntrMask, "CMipsMemoryVM::ChangeMiIntrMask");
+            m_Assembler.CallFunction((void *)CMipsMemoryVM::ChangeMiIntrMask, "CMipsMemoryVM::ChangeMiIntrMask");
             m_RegWorkingSet.AfterCallDirect();
             break;
         default:
@@ -6711,7 +6714,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
 
                 m_Assembler.MoveArmRegToVariable(Reg, &g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
                 m_RegWorkingSet.BeforeCallDirect();
-                CallFunction((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
+                m_Assembler.CallFunction((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
                 m_RegWorkingSet.AfterCallDirect();
                 FlushPopArmReg();
                 m_CodeBlock.Log("");
@@ -6735,7 +6738,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
 
                 m_Assembler.MoveArmRegToVariable(Reg, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
                 m_RegWorkingSet.BeforeCallDirect();
-                CallFunction((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
+                m_Assembler.CallFunction((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
                 m_RegWorkingSet.AfterCallDirect();
                 FlushPopArmReg();
                 m_CodeBlock.Log("");
@@ -6748,7 +6751,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
             AndConstToVariable(&g_Reg->MI_INTR_REG, "MI_INTR_REG", (uint32_t)~MI_INTR_VI);
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Reg, "g_Reg");
-            CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+            m_Assembler.CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04400014: m_Assembler.MoveArmRegToVariable(Reg, &g_Reg->VI_BURST_REG, "VI_BURST_REG"); break;
@@ -6781,11 +6784,11 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
             {
                 ArmBreakPoint(__FILE__, __LINE__);
                 //m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Audio, "g_Audio");
-                //CallFunction(AddressOf(&CAudio::LenChanged), "LenChanged");
+                //m_Assembler.CallFunction(AddressOf(&CAudio::LenChanged), "LenChanged");
             }
             else
             {
-                CallFunction((void *)g_Plugins->Audio()->AiLenChanged, "g_Plugins->Audio()->LenChanged");
+                m_Assembler.CallFunction((void *)g_Plugins->Audio()->AiLenChanged, "g_Plugins->Audio()->LenChanged");
             }
             m_RegWorkingSet.AfterCallDirect();
             break;
@@ -6798,7 +6801,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
             AndConstToVariable(&g_Reg->m_AudioIntrReg, "m_AudioIntrReg", (uint32_t)~MI_INTR_AI);
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Reg, "g_Reg");
-            CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+            m_Assembler.CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04500010:
@@ -6809,7 +6812,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
             }
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R1, PAddr | 0xA0000000);
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)(g_MMU), "g_MMU");
-            CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+            m_Assembler.CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04500014: m_Assembler.MoveArmRegToVariable(Reg, &g_Reg->AI_BITRATE_REG, "AI_BITRATE_REG"); break;
@@ -6830,7 +6833,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
             if (EnableDisk())
             {
                 m_RegWorkingSet.BeforeCallDirect();
-                CallFunction(AddressOf(&DiskDMACheck), "DiskDMACheck");
+                m_Assembler.CallFunction(AddressOf(&DiskDMACheck), "DiskDMACheck");
                 m_RegWorkingSet.AfterCallDirect();
             }
             break;
@@ -6839,7 +6842,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
             /*m_Assembler.MoveArmRegToVariable(Reg, &g_Reg->PI_RD_LEN_REG, "PI_RD_LEN_REG");
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)((CDMA *)g_MMU), "(CDMA *)g_MMU");
-            CallFunction(AddressOf(&CDMA::PI_DMA_READ), "CDMA::PI_DMA_READ");
+            m_Assembler.CallFunction(AddressOf(&CDMA::PI_DMA_READ), "CDMA::PI_DMA_READ");
             m_RegWorkingSet.AfterCallDirect();*/
             break;
         case 0x0460000C:
@@ -6850,7 +6853,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
             m_Assembler.MoveArmRegToVariable(Reg, &g_Reg->PI_WR_LEN_REG, "PI_WR_LEN_REG");
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)((CDMA *)g_MMU), "(CDMA *)g_MMU");
-            CallFunction(AddressOf(&CDMA::PI_DMA_WRITE), "CDMA::PI_DMA_WRITE");
+            m_Assembler.CallFunction(AddressOf(&CDMA::PI_DMA_WRITE), "CDMA::PI_DMA_WRITE");
             m_RegWorkingSet.AfterCallDirect();*/
             break;
         case 0x04600010:
@@ -6861,7 +6864,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
             AndConstToVariable(&g_Reg->MI_INTR_REG, "MI_INTR_REG", (uint32_t)~MI_INTR_PI);
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Reg, "g_Reg");
-            CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+            m_Assembler.CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04600014:
@@ -6927,14 +6930,14 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
             m_Assembler.MoveArmRegToVariable(Reg, &g_Reg->SI_PIF_ADDR_RD64B_REG, "SI_PIF_ADDR_RD64B_REG");
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)((CPifRam *)g_MMU), "CPifRam *)g_MMU");
-            CallFunction(AddressOf(&CPifRam::SI_DMA_READ), "CPifRam::SI_DMA_READ");
+            m_Assembler.CallFunction(AddressOf(&CPifRam::SI_DMA_READ), "CPifRam::SI_DMA_READ");
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04800010:
             m_Assembler.MoveArmRegToVariable(Reg, &g_Reg->SI_PIF_ADDR_WR64B_REG, "SI_PIF_ADDR_WR64B_REG");
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)((CPifRam *)g_MMU), "CPifRam *)g_MMU");
-            CallFunction(AddressOf(&CPifRam::SI_DMA_WRITE), "CPifRam::SI_DMA_WRITE");
+            m_Assembler.CallFunction(AddressOf(&CPifRam::SI_DMA_WRITE), "CPifRam::SI_DMA_WRITE");
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04800018:
@@ -6942,7 +6945,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
             AndConstToVariable(&g_Reg->SI_STATUS_REG, "SI_STATUS_REG", (uint32_t)~SI_STATUS_INTERRUPT);
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Reg, "g_Reg");
-            CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+            m_Assembler.CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
             m_RegWorkingSet.AfterCallDirect();
             break;
         default:
@@ -6964,27 +6967,27 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
                 // ASIC_CMD
                 m_Assembler.MoveArmRegToVariable(Reg, &g_Reg->ASIC_CMD, "ASIC_CMD");
                 m_RegWorkingSet.BeforeCallDirect();
-                CallFunction(AddressOf(&DiskCommand), "DiskCommand");
+                m_Assembler.CallFunction(AddressOf(&DiskCommand), "DiskCommand");
                 m_RegWorkingSet.AfterCallDirect();
                 OrConstToVariable(&g_Reg->ASIC_STATUS, "ASIC_STATUS", (uint32_t)DD_STATUS_MECHA_INT);
                 OrConstToVariable(&g_Reg->FAKE_CAUSE_REGISTER, "FAKE_CAUSE_REGISTER", (uint32_t)CAUSE_IP3);
                 m_RegWorkingSet.BeforeCallDirect();
                 m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Reg, "g_Reg");
-                CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+                m_Assembler.CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
                 m_RegWorkingSet.AfterCallDirect();
                 break;
             case 0x05000510:
                 // ASIC_BM_CTL
                 m_Assembler.MoveArmRegToVariable(Reg, &g_Reg->ASIC_BM_CTL, "ASIC_BM_CTL");
                 m_RegWorkingSet.BeforeCallDirect();
-                CallFunction(AddressOf(&DiskBMControl), "DiskBMControl");
+                m_Assembler.CallFunction(AddressOf(&DiskBMControl), "DiskBMControl");
                 m_RegWorkingSet.AfterCallDirect();
                 break;
             case 0x05000518:
                 break;
             case 0x05000520:
                 m_RegWorkingSet.BeforeCallDirect();
-                CallFunction(AddressOf(&DiskReset), "DiskReset");
+                m_Assembler.CallFunction(AddressOf(&DiskReset), "DiskReset");
                 m_RegWorkingSet.AfterCallDirect();
                 break;
             case 0x05000528: m_Assembler.MoveArmRegToVariable(Reg, &g_Reg->ASIC_HOST_SECBYTE, "ASIC_HOST_SECBYTE"); break;
@@ -7116,7 +7119,7 @@ void CArmRecompilerOps::LW_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr)
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R1, PAddr);
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R2, (uint32_t)&CMipsMemoryVM::m_MemLookupAddress, "m_MemLookupAddress");
             m_Assembler.StoreArmRegToArmRegPointer(CArmOps::Arm_R1, CArmOps::Arm_R2, 0);
-            CallFunction((void *)CMipsMemoryVM::Load32DPCommand, "CMipsMemoryVM::Load32DPCommand");
+            m_Assembler.CallFunction((void *)CMipsMemoryVM::Load32DPCommand, "CMipsMemoryVM::Load32DPCommand");
             m_RegWorkingSet.AfterCallDirect();
             m_Assembler.MoveVariableToArmReg(&CMipsMemoryVM::m_MemLookupValue.UW[0], "CMipsMemoryVM::m_MemLookupValue.UW[0]", Reg);*/
             break;
@@ -7146,7 +7149,7 @@ void CArmRecompilerOps::LW_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr)
                 m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
                 m_RegWorkingSet.BeforeCallDirect();
                 m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_MMU);
-                CallFunction(AddressOf(&CMipsMemoryVM::UpdateHalfLine), "CMipsMemoryVM::UpdateHalfLine");
+                m_Assembler.CallFunction(AddressOf(&CMipsMemoryVM::UpdateHalfLine), "CMipsMemoryVM::UpdateHalfLine");
                 m_RegWorkingSet.AfterCallDirect();
                 m_Assembler.MoveVariableToArmReg((void *)&g_MMU->m_HalfLine, "MMU->m_HalfLine", Reg);*/
                 break;
@@ -7171,7 +7174,7 @@ void CArmRecompilerOps::LW_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr)
                     m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
                     m_RegWorkingSet.BeforeCallDirect();
                     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Audio, "g_Audio");
-                    CallFunction(AddressOf(&CAudio::GetLength), "CAudio::GetLength");
+                    m_Assembler.CallFunction(AddressOf(&CAudio::GetLength), "CAudio::GetLength");
                     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R1, (uint32_t)&m_TempValue, "m_TempValue");
                     m_Assembler.StoreArmRegToArmRegPointer(CArmOps::Arm_R0, CArmOps::Arm_R1, 0);
                     m_RegWorkingSet.AfterCallDirect();
@@ -7182,7 +7185,7 @@ void CArmRecompilerOps::LW_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr)
                     if (g_Plugins->Audio()->AiReadLength != nullptr)
                     {
                         m_RegWorkingSet.BeforeCallDirect();
-                        CallFunction((void *)g_Plugins->Audio()->AiReadLength, "AiReadLength");
+                        m_Assembler.CallFunction((void *)g_Plugins->Audio()->AiReadLength, "AiReadLength");
                         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R1, (uint32_t)&m_TempValue, "m_TempValue");
                         m_Assembler.StoreArmRegToArmRegPointer(CArmOps::Arm_R0, CArmOps::Arm_R1, 0);
                         m_RegWorkingSet.AfterCallDirect();
@@ -7200,7 +7203,7 @@ void CArmRecompilerOps::LW_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr)
                     ArmBreakPoint(__FILE__, __LINE__);
                     /*m_RegWorkingSet.BeforeCallDirect();
                     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Audio, "g_Audio");
-                    CallFunction(AddressOf(&CAudio::GetStatus), "CAudio::GetStatus");
+                    m_Assembler.CallFunction(AddressOf(&CAudio::GetStatus), "CAudio::GetStatus");
                     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R1, (uint32_t)&m_TempValue, "m_TempValue");
                     m_Assembler.StoreArmRegToArmRegPointer(CArmOps::Arm_R0, CArmOps::Arm_R1, 0);
                     m_RegWorkingSet.AfterCallDirect();
@@ -7284,7 +7287,7 @@ void CArmRecompilerOps::LW_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr)
                 case 0x05000508:
                     m_Assembler.MoveVariableToArmReg(&g_Reg->ASIC_STATUS, "ASIC_STATUS", Reg);
                     m_RegWorkingSet.BeforeCallDirect();
-                    CallFunction(AddressOf(&DiskGapSectorCheck), "DiskGapSectorCheck");
+                    m_Assembler.CallFunction(AddressOf(&DiskGapSectorCheck), "DiskGapSectorCheck");
                     m_RegWorkingSet.AfterCallDirect();
                     break;
                 case 0x0500050C: m_Assembler.MoveVariableToArmReg(&g_Reg->ASIC_CUR_TK, "ASIC_CUR_TK", Reg); break;
@@ -7323,7 +7326,7 @@ void CArmRecompilerOps::LW_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr)
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R1, PAddr);
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R2, (uint32_t)&CMipsMemoryVM::m_MemLookupAddress, "m_MemLookupAddress");
             m_Assembler.StoreArmRegToArmRegPointer(CArmOps::Arm_R1, CArmOps::Arm_R2, 0);
-            CallFunction((void *)CMipsMemoryVM::Load32CartridgeDomain1Address1, "CMipsMemoryVM::Load32CartridgeDomain1Address1");
+            m_Assembler.CallFunction((void *)CMipsMemoryVM::Load32CartridgeDomain1Address1, "CMipsMemoryVM::Load32CartridgeDomain1Address1");
             m_RegWorkingSet.AfterCallDirect();
             m_Assembler.MoveVariableToArmReg(&CMipsMemoryVM::m_MemLookupValue.UW[0], "CMipsMemoryVM::m_MemLookupValue.UW[0]", Reg);*/
             break;

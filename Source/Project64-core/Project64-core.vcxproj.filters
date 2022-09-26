@@ -118,6 +118,9 @@
     <Filter Include="Source Files\N64 System\Recompiler\x64-86">
       <UniqueIdentifier>{56644680-2b82-4343-8619-660b68685cba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\N64 System\Recompiler\Aarch64">
+      <UniqueIdentifier>{bdaed3ea-5ef7-4bd9-814c-566a672c8140}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -425,6 +428,15 @@
     </ClCompile>
     <ClCompile Include="N64System\Recompiler\x64-86\x64RegInfo.cpp">
       <Filter>Source Files\N64 System\Recompiler\x64-86</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\Aarch64\Aarch64ops.cpp">
+      <Filter>Source Files\N64 System\Recompiler\Aarch64</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\Aarch64\Aarch64RecompilerOps.cpp">
+      <Filter>Source Files\N64 System\Recompiler\Aarch64</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\Aarch64\Aarch64RegInfo.cpp">
+      <Filter>Source Files\N64 System\Recompiler\Aarch64</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -820,6 +832,12 @@
     </ClInclude>
     <ClInclude Include="N64System\Recompiler\x64-86\x64ops.h">
       <Filter>Header Files\N64 System\Recompiler\x64-86</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\Aarch64\Aarch64ops.h">
+      <Filter>Header Files\N64 System\Recompiler\Aarch64</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\Aarch64\Aarch64RecompilerOps.h">
+      <Filter>Header Files\N64 System\Recompiler\Aarch64</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

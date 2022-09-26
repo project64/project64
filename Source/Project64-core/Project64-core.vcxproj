@@ -88,6 +88,9 @@
     <ClCompile Include="N64System\N64Rom.cpp" />
     <ClCompile Include="N64System\N64System.cpp" />
     <ClCompile Include="N64System\Profiling.cpp" />
+    <ClCompile Include="N64System\Recompiler\Aarch64\Aarch64ops.cpp" />
+    <ClCompile Include="N64System\Recompiler\Aarch64\Aarch64RecompilerOps.cpp" />
+    <ClCompile Include="N64System\Recompiler\Aarch64\Aarch64RegInfo.cpp" />
     <ClCompile Include="N64System\Recompiler\Arm\ArmOps.cpp" />
     <ClCompile Include="N64System\Recompiler\Arm\ArmRecompilerOps.cpp" />
     <ClCompile Include="N64System\Recompiler\Arm\ArmRegInfo.cpp" />
@@ -212,6 +215,8 @@
     <ClInclude Include="N64System\N64System.h" />
     <ClInclude Include="N64System\N64Types.h" />
     <ClInclude Include="N64System\Profiling.h" />
+    <ClInclude Include="N64System\Recompiler\Aarch64\Aarch64ops.h" />
+    <ClInclude Include="N64System\Recompiler\Aarch64\Aarch64RecompilerOps.h" />
     <ClInclude Include="N64System\Recompiler\Aarch64\Aarch64RegInfo.h" />
     <ClInclude Include="N64System\Recompiler\Arm\ArmOpCode.h" />
     <ClInclude Include="N64System\Recompiler\Arm\ArmOps.h" />

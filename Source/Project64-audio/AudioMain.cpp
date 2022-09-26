@@ -122,7 +122,7 @@ EXPORT void CALL AiDacrateChanged(int SystemType)
 
         BufferSize = (Frequency / divider) + 3 & ~0x3;
 
-        if (hack == 'BH' && SystemType != SYSTEM_PAL) BufferSize -= 16;
+        if (hack == 0x4248 /*BH*/ && SystemType != SYSTEM_PAL) BufferSize -= 16;
 
         g_SoundDriver->AI_SetFrequency(Frequency, BufferSize);
     }
