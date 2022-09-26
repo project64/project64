@@ -11,19 +11,19 @@
 #pragma warning(disable : 4838) // warning C4838: conversion from 'int' to 'UINT' requires a narrowing conversion
 #pragma warning(disable : 4996) // warning C4996: 'GetVersionExA': was declared deprecated
 #define _ATL_DISABLE_NOTHROW_NEW
-#include <shellapi.h>
 #include <atlbase.h>
+#include <shellapi.h>
 
 #include <wtl/atlapp.h>
+#include <wtl/atlctrls.h>
 #include <wtl/atldlgs.h>
 #include <wtl/atlframe.h>
-#include <wtl/atlctrls.h>
 
 #define _WTL_NO_CSTRING
 
 #include <atlwin.h>
-#include <wtl/atlmisc.h>
 #include <wtl/atlcrack.h>
+#include <wtl/atlmisc.h>
 
 #pragma warning(pop)
 
@@ -45,11 +45,11 @@ extern CPj64Module _Module;
 
 #include <Common/StdString.h>
 
-#include "UserInterface/resource.h"
-#include "UserInterface/WTLControls/GetCWindowText.h"
-#include "UserInterface/WTLControls/EditNumber32.h"
 #include "UserInterface/WTLControls/ClistCtrl/ListCtrl.h"
-#include "UserInterface/WTLControls/ModifiedComboBox.h"
-#include "UserInterface/WTLControls/PartialGroupBox.h"
-#include "UserInterface/WTLControls/ModifiedEditBox.h"
+#include "UserInterface/WTLControls/EditNumber32.h"
+#include "UserInterface/WTLControls/GetCWindowText.h"
 #include "UserInterface/WTLControls/ModifiedCheckBox.h"
+#include "UserInterface/WTLControls/ModifiedComboBox.h"
+#include "UserInterface/WTLControls/ModifiedEditBox.h"
+#include "UserInterface/WTLControls/PartialGroupBox.h"
+#include "UserInterface/resource.h"
