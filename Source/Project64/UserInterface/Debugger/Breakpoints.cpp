@@ -354,12 +354,41 @@ void CBreakpoints::UpdateHaveRegBP(void)
     m_bHaveRegBP = HaveAnyGPRWriteBP() || HaveAnyGPRReadBP() || HaveHIWriteBP() || HaveHIReadBP() || HaveLOWriteBP() || HaveLOReadBP();
 }
 
-void CBreakpoints::ToggleGPRWriteBP(int nReg) { m_GPRWriteBP ^= (1 << nReg); UpdateHaveRegBP(); }
-void CBreakpoints::ToggleGPRReadBP(int nReg)  { m_GPRReadBP  ^= (1 << nReg); UpdateHaveRegBP(); }
-void CBreakpoints::ToggleHIWriteBP(void) { m_HIWriteBP = !m_HIWriteBP; UpdateHaveRegBP(); }
-void CBreakpoints::ToggleHIReadBP(void)  { m_HIReadBP  = !m_HIReadBP; UpdateHaveRegBP(); }
-void CBreakpoints::ToggleLOWriteBP(void) { m_LOWriteBP = !m_LOWriteBP; UpdateHaveRegBP(); }
-void CBreakpoints::ToggleLOReadBP(void)  { m_LOReadBP  = !m_LOReadBP; UpdateHaveRegBP(); }
+void CBreakpoints::ToggleGPRWriteBP(int nReg)
+{
+    m_GPRWriteBP ^= (1 << nReg);
+    UpdateHaveRegBP();
+}
+
+void CBreakpoints::ToggleGPRReadBP(int nReg)
+{
+    m_GPRReadBP ^= (1 << nReg);
+    UpdateHaveRegBP();
+}
+
+void CBreakpoints::ToggleHIWriteBP(void)
+{
+    m_HIWriteBP = !m_HIWriteBP;
+    UpdateHaveRegBP();
+}
+
+void CBreakpoints::ToggleHIReadBP(void)
+{
+    m_HIReadBP = !m_HIReadBP;
+    UpdateHaveRegBP();
+}
+
+void CBreakpoints::ToggleLOWriteBP(void)
+{
+    m_LOWriteBP = !m_LOWriteBP;
+    UpdateHaveRegBP();
+}
+
+void CBreakpoints::ToggleLOReadBP(void)
+{
+    m_LOReadBP = !m_LOReadBP;
+    UpdateHaveRegBP();
+}
 
 void CBreakpoints::PreUpdateBP()
 {

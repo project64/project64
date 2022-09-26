@@ -24,7 +24,7 @@ void ScriptAPI::Define_Socket(duk_context * ctx)
         {"remoteAddress", DukGetter(js_Socket__get_remoteAddress)},
         {"remotePort", DukGetter(js_Socket__get_remotePort)},
         {"addressFamily", DukGetter(js_Socket__get_addressFamily)},
-        { nullptr }
+        {nullptr},
     };
 
     DefineGlobalClass(ctx, "Socket", js_Socket__constructor, prototype, nullptr);

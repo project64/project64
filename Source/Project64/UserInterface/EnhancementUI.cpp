@@ -1,36 +1,41 @@
 #include "stdafx.h"
 
-#include <Project64\UserInterface\EnhancementUI.h>
 #include <Project64-core/N64System/Enhancement/Enhancements.h>
+#include <Project64\UserInterface\EnhancementUI.h>
 
 class CEditEnhancement :
-    public CDialogImpl < CEditEnhancement >
+    public CDialogImpl<CEditEnhancement>
 {
 public:
     BEGIN_MSG_MAP_EX(CEditEnhancement)
-        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
-        COMMAND_HANDLER_EX(IDC_GAMESHARK, BN_CLICKED, OnGamesharkBtn)
-        COMMAND_HANDLER_EX(IDC_OVERCLOCK, BN_CLICKED, OnOverClockBtn)
-        COMMAND_ID_HANDLER(IDC_BTN_GAMESHARK, OnEditGameshark)
-        COMMAND_ID_HANDLER(IDOK, OnOkCmd)
-        COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
+    {
+        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog);
+        COMMAND_HANDLER_EX(IDC_GAMESHARK, BN_CLICKED, OnGamesharkBtn);
+        COMMAND_HANDLER_EX(IDC_OVERCLOCK, BN_CLICKED, OnOverClockBtn);
+        COMMAND_ID_HANDLER(IDC_BTN_GAMESHARK, OnEditGameshark);
+        COMMAND_ID_HANDLER(IDOK, OnOkCmd);
+        COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd);
+    }
     END_MSG_MAP()
 
-    enum { IDD = IDD_Enhancement_Edit };
+    enum
+    {
+        IDD = IDD_Enhancement_Edit
+    };
 
     CEditEnhancement(CEnhancementUI & EnhancementUI, CEnhancement * Enhancement);
 
 private:
     CEditEnhancement(void);
-    CEditEnhancement(const CEditEnhancement&);
-    CEditEnhancement& operator=(const CEditEnhancement&);
+    CEditEnhancement(const CEditEnhancement &);
+    CEditEnhancement & operator=(const CEditEnhancement &);
 
-    LRESULT	OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
     LRESULT OnGamesharkBtn(UINT Code, int id, HWND ctl);
     LRESULT OnOverClockBtn(UINT Code, int id, HWND ctl);
-    LRESULT OnEditGameshark(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-    LRESULT OnOkCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-    LRESULT OnCloseCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+    LRESULT OnEditGameshark(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    LRESULT OnOkCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    LRESULT OnCloseCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 
     CEnhancementUI & m_EnhancementUI;
     CEnhancement::CodeEntries m_Entries;
@@ -43,26 +48,31 @@ class CEditGS :
 {
 public:
     BEGIN_MSG_MAP_EX(CEditGS)
-        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
-        COMMAND_HANDLER(IDC_CHEAT_CODES, EN_CHANGE, OnCheatChanged)
-        COMMAND_HANDLER_EX(IDC_CHK_LIMIT_PLUGINS, BN_CLICKED, OnPluginBtn)
-        COMMAND_ID_HANDLER(IDC_BTN_PLUGIN, OnEditPlugins)
-        COMMAND_ID_HANDLER(IDOK, OnOkCmd)
-        COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
+    {
+        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog);
+        COMMAND_HANDLER(IDC_CHEAT_CODES, EN_CHANGE, OnCheatChanged);
+        COMMAND_HANDLER_EX(IDC_CHK_LIMIT_PLUGINS, BN_CLICKED, OnPluginBtn);
+        COMMAND_ID_HANDLER(IDC_BTN_PLUGIN, OnEditPlugins);
+        COMMAND_ID_HANDLER(IDOK, OnOkCmd);
+        COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd);
+    }
     END_MSG_MAP()
 
-    enum { IDD = IDD_Enhancement_GS };
+    enum
+    {
+        IDD = IDD_Enhancement_GS
+    };
 
     CEditGS(CEnhancement::CodeEntries & Entries, CEnhancement::PluginList & PluginList);
 
 private:
     CEditGS();
-    CEditGS(const CEditGS&);
-    CEditGS& operator=(const CEditGS&);
+    CEditGS(const CEditGS &);
+    CEditGS & operator=(const CEditGS &);
 
-    LRESULT	OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
     LRESULT OnPluginBtn(UINT Code, int id, HWND ctl);
-    LRESULT OnEditPlugins(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+    LRESULT OnEditPlugins(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
     LRESULT OnCloseCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
     LRESULT OnOkCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
     LRESULT OnCheatChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
@@ -78,28 +88,33 @@ class CEditPluginList :
 {
 public:
     BEGIN_MSG_MAP_EX(CEditPluginList)
-        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
-        COMMAND_ID_HANDLER(IDC_ADD, OnAddBtn)
-        COMMAND_ID_HANDLER(IDC_REMOVE, OnRemoveBtn)
-        COMMAND_ID_HANDLER(IDOK, OnOkCmd)
-        COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
+    {
+        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog);
+        COMMAND_ID_HANDLER(IDC_ADD, OnAddBtn);
+        COMMAND_ID_HANDLER(IDC_REMOVE, OnRemoveBtn);
+        COMMAND_ID_HANDLER(IDOK, OnOkCmd);
+        COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd);
+    }
     END_MSG_MAP()
 
-    enum { IDD = IDD_Enhancement_Plugins };
+    enum
+    {
+        IDD = IDD_Enhancement_Plugins
+    };
 
     CEditPluginList(CEnhancement::PluginList & List);
 
 private:
     CEditPluginList();
-    CEditPluginList(const CEditPluginList&);
-    CEditPluginList& operator=(const CEditPluginList&);
+    CEditPluginList(const CEditPluginList &);
+    CEditPluginList & operator=(const CEditPluginList &);
 
-    LRESULT	OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
-    LRESULT OnAddBtn(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-    LRESULT OnRemoveBtn(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+    LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnAddBtn(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    LRESULT OnRemoveBtn(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
     LRESULT OnCloseCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
     LRESULT OnOkCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
-    
+
     CListBox m_PluginListBox;
     CEnhancement::PluginList & m_PluginList;
 };
@@ -132,7 +147,7 @@ void CEnhancementUI::Display(HWND hParent, bool BlockExecution)
     }
 }
 
-LRESULT	CEnhancementUI::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CEnhancementUI::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     SetWindowText(wGS(ENHANCEMENT_TITLE).c_str());
 
@@ -157,7 +172,7 @@ LRESULT	CEnhancementUI::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
     int32_t X = (((rcParent.Width()) - DlgWidth) / 2) + rcParent.left;
     int32_t Y = (((rcParent.Height()) - DlgHeight) / 2) + rcParent.top;
     SetWindowPos(nullptr, X, Y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
-    
+
     RefreshList();
     ShowWindow(SW_SHOW);
     return TRUE;
@@ -169,7 +184,7 @@ LRESULT CEnhancementUI::OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPa
     return 0;
 }
 
-LRESULT CEnhancementUI::OnCloseCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CEnhancementUI::OnCloseCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     if (g_BaseSystem)
     {
@@ -186,9 +201,9 @@ LRESULT CEnhancementUI::OnCloseCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hW
     return TRUE;
 }
 
-LRESULT CEnhancementUI::OnEditEnhancement(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CEnhancementUI::OnEditEnhancement(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
-    TVITEM item = { 0 };
+    TVITEM item = {0};
     item.mask = TVIF_PARAM;
     item.hItem = m_hSelectedItem;
     if (!m_TreeList.GetItem(&item) || item.lParam == NULL)
@@ -200,17 +215,17 @@ LRESULT CEnhancementUI::OnEditEnhancement(WORD /*wNotifyCode*/, WORD /*wID*/, HW
     return TRUE;
 }
 
-LRESULT CEnhancementUI::OnAddEnhancement(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CEnhancementUI::OnAddEnhancement(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     CEditEnhancement(*this, nullptr).DoModal(m_hWnd);
     RefreshList();
     return TRUE;
 }
 
-LRESULT CEnhancementUI::OnEnhancementListClicked(NMHDR* lpnmh)
+LRESULT CEnhancementUI::OnEnhancementListClicked(NMHDR * lpnmh)
 {
     uint32_t dwpos = GetMessagePos();
-    TVHITTESTINFO ht = { 0 };
+    TVHITTESTINFO ht = {0};
     ht.pt.x = GET_X_LPARAM(dwpos);
     ht.pt.y = GET_Y_LPARAM(dwpos);
     ::MapWindowPoints(HWND_DESKTOP, lpnmh->hwndFrom, &ht.pt, 1);
@@ -248,7 +263,7 @@ LRESULT CEnhancementUI::OnEnhancementListClicked(NMHDR* lpnmh)
     return 0;
 }
 
-LRESULT CEnhancementUI::OnPopupDelete(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
+LRESULT CEnhancementUI::OnPopupDelete(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
     int Response = MessageBox(wGS(MSG_DEL_SURE).c_str(), wGS(MSG_DEL_TITLE).c_str(), MB_YESNO | MB_ICONQUESTION);
     if (Response != IDYES)
@@ -256,7 +271,7 @@ LRESULT CEnhancementUI::OnPopupDelete(WORD wNotifyCode, WORD wID, HWND hWndCtl, 
         return 0;
     }
 
-    TVITEM item = { 0 };
+    TVITEM item = {0};
     item.hItem = m_hSelectedItem;
     item.mask = TVIF_PARAM;
     m_TreeList.GetItem(&item);
@@ -276,9 +291,9 @@ LRESULT CEnhancementUI::OnPopupDelete(WORD wNotifyCode, WORD wID, HWND hWndCtl, 
     return 0;
 }
 
-LRESULT CEnhancementUI::OnEnhancementListRClicked(NMHDR* pNMHDR)
+LRESULT CEnhancementUI::OnEnhancementListRClicked(NMHDR * pNMHDR)
 {
-    TVHITTESTINFO ht = { 0 };
+    TVHITTESTINFO ht = {0};
     uint32_t dwpos = GetMessagePos();
     ht.pt.x = GET_X_LPARAM(dwpos);
     ht.pt.y = GET_Y_LPARAM(dwpos);
@@ -307,7 +322,7 @@ LRESULT CEnhancementUI::OnEnhancementListRClicked(NMHDR* pNMHDR)
 LRESULT CEnhancementUI::OnEnhancementListDClicked(NMHDR * lpnmh)
 {
     uint32_t dwpos = GetMessagePos();
-    TVHITTESTINFO ht = { 0 };
+    TVHITTESTINFO ht = {0};
     ht.pt.x = GET_X_LPARAM(dwpos);
     ht.pt.y = GET_Y_LPARAM(dwpos);
     ::MapWindowPoints(HWND_DESKTOP, lpnmh->hwndFrom, &ht.pt, 1);
@@ -318,7 +333,7 @@ LRESULT CEnhancementUI::OnEnhancementListDClicked(NMHDR * lpnmh)
     {
         return 0;
     }
-    TVITEM item = { 0 };
+    TVITEM item = {0};
     item.mask = TVIF_PARAM;
     item.hItem = (HTREEITEM)ht.hItem;
     if (!m_TreeList.GetItem(&item) || item.lParam == NULL)
@@ -337,7 +352,7 @@ LRESULT CEnhancementUI::OnEnhancementListSelChanged(NMHDR * /*lpnmh*/)
     GetDlgItem(IDC_NOTES).SetWindowText(L"");
     if (m_TreeList.GetChildItem(hItem) == nullptr)
     {
-        TVITEM item = { 0 };
+        TVITEM item = {0};
         item.mask = TVIF_PARAM;
         item.hItem = hItem;
         m_TreeList.GetItem(&item);
@@ -355,9 +370,15 @@ void CEnhancementUI::AddCodeLayers(LPARAM Enhancement, const std::wstring & Name
     TV_INSERTSTRUCT tv;
 
     wchar_t Text[500], Item[500];
-    if (Name.length() > ((sizeof(Text) / sizeof(Text[0])) - 5)) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+    if (Name.length() > ((sizeof(Text) / sizeof(Text[0])) - 5))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
     wcscpy(Text, Name.c_str());
-    if (wcschr(Text, L'\\') > 0) { *wcschr(Text, L'\\') = 0; }
+    if (wcschr(Text, L'\\') > 0)
+    {
+        *wcschr(Text, L'\\') = 0;
+    }
 
     tv.item.mask = TVIF_TEXT;
     tv.item.pszText = Item;
@@ -393,18 +414,25 @@ void CEnhancementUI::AddCodeLayers(LPARAM Enhancement, const std::wstring & Name
     hParent = m_TreeList.InsertItem(&tv);
     TV_SetCheckState(hParent, Active ? TV_STATE_CHECKED : TV_STATE_CLEAR);
 
-    if (wcscmp(Text, Name.c_str()) == 0) { return; }
+    if (wcscmp(Text, Name.c_str()) == 0)
+    {
+        return;
+    }
     AddCodeLayers(Enhancement, Name.substr(wcslen(Text) + 1), hParent, Active);
 }
 
 void CEnhancementUI::ChangeChildrenStatus(HTREEITEM hParent, bool Checked)
 {
-    HTREEITEM hItem = m_TreeList.GetChildItem(hParent);;
+    HTREEITEM hItem = m_TreeList.GetChildItem(hParent);
+    ;
     if (hItem == nullptr)
     {
-        if (hParent == TVI_ROOT) { return; }
+        if (hParent == TVI_ROOT)
+        {
+            return;
+        }
 
-        TVITEM item = { 0 };
+        TVITEM item = {0};
         item.mask = TVIF_PARAM;
         item.hItem = hParent;
         m_TreeList.GetItem(&item);
@@ -430,14 +458,19 @@ void CEnhancementUI::ChangeChildrenStatus(HTREEITEM hParent, bool Checked)
     while (hItem != nullptr)
     {
         TV_CHECK_STATE ChildState = TV_GetCheckState(hItem);
-        if ((ChildState != TV_STATE_CHECKED || !Checked) &&
-            (ChildState != TV_STATE_CLEAR || Checked))
+        if ((ChildState != TV_STATE_CHECKED || !Checked) && (ChildState != TV_STATE_CLEAR || Checked))
         {
             ChangeChildrenStatus(hItem, Checked);
         }
         ChildState = TV_GetCheckState(hItem);
-        if (state == TV_STATE_UNKNOWN) { state = ChildState; }
-        if (state != ChildState) { state = TV_STATE_INDETERMINATE; }
+        if (state == TV_STATE_UNKNOWN)
+        {
+            state = ChildState;
+        }
+        if (state != ChildState)
+        {
+            state = TV_STATE_INDETERMINATE;
+        }
         hItem = m_TreeList.GetNextSiblingItem(hItem);
     }
     if (state != TV_STATE_UNKNOWN)
@@ -487,7 +520,7 @@ void CEnhancementUI::RefreshList()
 
 CEnhancementUI::TV_CHECK_STATE CEnhancementUI::TV_GetCheckState(HTREEITEM hItem)
 {
-    TVITEM tvItem = { 0 };
+    TVITEM tvItem = {0};
     tvItem.mask = TVIF_HANDLE | TVIF_STATE;
     tvItem.hItem = hItem;
     tvItem.stateMask = TVIS_STATEIMAGEMASK;
@@ -505,7 +538,7 @@ CEnhancementUI::TV_CHECK_STATE CEnhancementUI::TV_GetCheckState(HTREEITEM hItem)
 
 bool CEnhancementUI::TV_SetCheckState(HTREEITEM hItem, TV_CHECK_STATE state)
 {
-    TVITEM tvItem = { 0 };
+    TVITEM tvItem = {0};
     tvItem.mask = TVIF_HANDLE | TVIF_STATE;
     tvItem.hItem = (HTREEITEM)hItem;
     tvItem.stateMask = TVIS_STATEIMAGEMASK;
@@ -526,7 +559,7 @@ CEditEnhancement::CEditEnhancement(CEnhancementUI & EnhancementUI, CEnhancement 
 {
 }
 
-LRESULT	CEditEnhancement::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CEditEnhancement::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     m_Entries = m_EditEnhancement != nullptr ? m_EditEnhancement->GetEntries() : CEnhancement::CodeEntries();
     m_PluginList = m_EditEnhancement != nullptr ? m_EditEnhancement->GetPluginList() : CEnhancement::PluginList();
@@ -536,7 +569,7 @@ LRESULT	CEditEnhancement::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
     CButton(GetDlgItem(IDC_AUTOON)).SetCheck(m_EditEnhancement != nullptr ? (m_EditEnhancement->GetOnByDefault() ? BST_CHECKED : BST_UNCHECKED) : BST_UNCHECKED);
     CButton(GetDlgItem(IDC_GAMESHARK)).SetCheck(m_Entries.size() > 0 ? BST_CHECKED : BST_UNCHECKED);
     CButton(GetDlgItem(IDC_OVERCLOCK)).SetCheck(m_EditEnhancement != nullptr ? (m_EditEnhancement->OverClock() ? BST_CHECKED : BST_UNCHECKED) : BST_UNCHECKED);
-    GetDlgItem(IDC_OVER_CLOCK_MODIFIER).SetWindowText(m_EditEnhancement != nullptr ? stdstr_f("%d",m_EditEnhancement->OverClockModifier()).ToUTF16().c_str() : L"1");
+    GetDlgItem(IDC_OVER_CLOCK_MODIFIER).SetWindowText(m_EditEnhancement != nullptr ? stdstr_f("%d", m_EditEnhancement->OverClockModifier()).ToUTF16().c_str() : L"1");
     GetDlgItem(IDC_OVER_CLOCK_MODIFIER).EnableWindow(m_EditEnhancement != nullptr ? m_EditEnhancement->OverClock() : false);
 
     return TRUE;
@@ -556,19 +589,19 @@ LRESULT CEditEnhancement::OnOverClockBtn(UINT /*Code*/, int /*id*/, HWND /*ctl*/
     return 0;
 }
 
-LRESULT CEditEnhancement::OnEditGameshark(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CEditEnhancement::OnEditGameshark(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     OnGamesharkBtn(0, 0, 0);
     return TRUE;
 }
 
-LRESULT CEditEnhancement::OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CEditEnhancement::OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     EndDialog(wID);
     return TRUE;
 }
 
-LRESULT CEditEnhancement::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CEditEnhancement::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     CEnhancement TempEnhancement(CEnhancement::EnhancementIdent);
     CEnhancement & Enhancement = m_EditEnhancement != nullptr ? *m_EditEnhancement : TempEnhancement;
@@ -597,7 +630,7 @@ CEditGS::CEditGS(CEnhancement::CodeEntries & Entries, CEnhancement::PluginList &
 {
 }
 
-LRESULT	CEditGS::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CEditGS::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     stdstr Buffer;
     for (size_t i = 0, n = m_Entries.size(); i < n; i++)
@@ -623,20 +656,20 @@ LRESULT CEditGS::OnPluginBtn(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
     return 0;
 }
 
-LRESULT CEditGS::OnEditPlugins(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CEditGS::OnEditPlugins(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     OnPluginBtn(0, 0, 0);
     return 0;
 }
 
-LRESULT CEditGS::OnCheatChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CEditGS::OnCheatChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     CEnhancement::CodeEntries Entries;
     GetDlgItem(IDOK).EnableWindow(CheatCode(Entries));
     return true;
 }
 
-LRESULT CEditGS::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CEditGS::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     CEnhancement::CodeEntries Entries;
     if (CheatCode(Entries))
@@ -647,7 +680,7 @@ LRESULT CEditGS::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL&
     return TRUE;
 }
 
-LRESULT CEditGS::OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CEditGS::OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     EndDialog(wID);
     return TRUE;
@@ -665,15 +698,18 @@ bool CEditGS::CheatCode(CEnhancement::CodeEntries & Entries)
     {
         const char * formatnormal = "XXXXXXXX XXXX";
 
-        wchar_t wstr[128] = { 0 };
+        wchar_t wstr[128] = {0};
         *(LPWORD)wstr = sizeof(wstr) / sizeof(wstr[0]);
         uint32_t len = CheatCodes.GetLine(line, wstr);
         wstr[len] = 0;
 
-        if (len <= 0) { continue; }
+        if (len <= 0)
+        {
+            continue;
+        }
 
         std::string str = stdstr().FromUTF16(wstr);
-        char tempformat[128] = { 0 };
+        char tempformat[128] = {0};
         for (uint32_t i = 0; i < sizeof(tempformat); i++)
         {
             if (isxdigit(str[i]))
@@ -684,7 +720,10 @@ bool CEditGS::CheatCode(CEnhancement::CodeEntries & Entries)
             {
                 tempformat[i] = str[i];
             }
-            if (str[i] == 0) { break; }
+            if (str[i] == 0)
+            {
+                break;
+            }
         }
 
         if (strcmp(tempformat, formatnormal) == 0)
@@ -728,7 +767,7 @@ CEditPluginList::CEditPluginList(CEnhancement::PluginList & List) :
 {
 }
 
-LRESULT	CEditPluginList::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
+LRESULT CEditPluginList::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     m_PluginListBox.Attach(GetDlgItem(IDC_PLUGIN_LIST));
     for (size_t i = 0, n = m_PluginList.size(); i < n; i++)
@@ -740,7 +779,7 @@ LRESULT	CEditPluginList::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /
 
 LRESULT CEditPluginList::OnAddBtn(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
-    CWindow hEdit = GetDlgItem(IDC_ADD_EDIT); 
+    CWindow hEdit = GetDlgItem(IDC_ADD_EDIT);
     stdstr PluginName = stdstr(GetCWindowText(hEdit)).Trim();
     std::wstring wPluginName = PluginName.ToUTF16();
     if (PluginName.empty())

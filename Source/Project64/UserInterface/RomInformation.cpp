@@ -10,7 +10,10 @@ RomInformation::RomInformation(const char * RomFile) :
     m_pRomInfo(nullptr),
     m_pDiskInfo(nullptr)
 {
-    if (m_FileName.length() == 0)  { return; }
+    if (m_FileName.length() == 0)
+    {
+        return;
+    }
     if ((CPath(m_FileName).GetExtension() != "ndd") && (CPath(m_FileName).GetExtension() != "d64"))
     {
         m_pRomInfo = new CN64Rom;
@@ -62,7 +65,10 @@ RomInformation::~RomInformation()
 #include <windows.h>
 void RomInformation::DisplayInformation(HWND hParent) const
 {
-    if (m_FileName.length() == 0) { return; }
+    if (m_FileName.length() == 0)
+    {
+        return;
+    }
 
     DialogBoxParam(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDD_Rom_Information), hParent, (DLGPROC)RomInfoProc, (DWORD)this);
 }
@@ -111,8 +117,8 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
             case 'M': SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"N64 Development Cartridge"); break;
             case 'N': SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"N64 Cartridge"); break;
             case 'Z': SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"Aleck64"); break;
-            case 0:   SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"None"); break;
-            default:  SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"(Unknown)"); break;
+            case 0: SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"None"); break;
+            default: SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"(Unknown)"); break;
             }
 
             switch (RomHeader[0x3D])
@@ -121,7 +127,7 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
             case Country_Asian_NTSC: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"NTSC"); break;
             case Country_Germany: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"Germany"); break;
             case Country_NorthAmerica: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"America"); break;
-            case Country_French:  SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"France"); break;
+            case Country_French: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"France"); break;
             case Country_Italian: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"Italy"); break;
             case Country_Japan: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"Japan"); break;
             case Country_Europe: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, L"Europe"); break;
@@ -193,8 +199,8 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
             {
             case 'D': SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"64DD Disk"); break;
             case 'E': SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"64DD Disk (Expansion)"); break;
-            case 0:   SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"None"); break;
-            default:  SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"(Unknown)"); break;
+            case 0: SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"None"); break;
+            default: SetDlgItemText(hDlg, IDC_INFO_MEDIA, L"(Unknown)"); break;
             }
 
             switch (DiskHeader[0x00])

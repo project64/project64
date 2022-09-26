@@ -2,7 +2,8 @@
 
 class CSymbol;
 
-typedef enum {
+typedef enum
+{
     SYM_INVALID = -1,
     SYM_CODE,
     SYM_DATA,
@@ -24,12 +25,13 @@ typedef enum {
 
 typedef struct
 {
-    symbol_type_id_t    id;
-    const char*       name;
-    int               size;
+    symbol_type_id_t id;
+    const char * name;
+    int size;
 } symbol_type_info_t;
 
-typedef enum {
+typedef enum
+{
     ERR_SUCCESS,
     ERR_INVALID_TYPE,
     ERR_INVALID_ADDR,
@@ -40,62 +42,63 @@ typedef enum {
 class CSymbolTable
 {
 public:
-    CSymbolTable(CDebuggerUI* debugger);
+    CSymbolTable(CDebuggerUI * debugger);
     ~CSymbolTable();
 
 private:
     CSymbolTable();
-    CDebuggerUI* m_Debugger;
+    CDebuggerUI * m_Debugger;
     CriticalSection m_CS;
     std::vector<CSymbol> m_Symbols;
     std::map<uint32_t, size_t> m_AddressMap; // address -> symbol index
 
-    int    m_NextSymbolId;
+    int m_NextSymbolId;
 
-    CFile  m_SymFileHandle;
-    char*  m_SymFileBuffer;
+    CFile m_SymFileHandle;
+    char * m_SymFileBuffer;
     size_t m_SymFileSize;
-    char*  m_ParserToken;
+    char * m_ParserToken;
     size_t m_ParserTokenLength;
-    char*  m_TokPos;
-    char   m_ParserDelimeter;
-    char*  m_SymFileParseBuffer;
-    bool   m_bHaveFirstToken;
+    char * m_TokPos;
+    char m_ParserDelimeter;
+    char * m_SymFileParseBuffer;
+    bool m_bHaveFirstToken;
 
-    void ParserFetchToken(const char* delim);
+    void ParserFetchToken(const char * delim);
 
     void UpdateAddressMap();
 
 public:
     static symbol_type_info_t m_SymbolTypes[];
-    static const char* GetTypeName(int typeId);
+    static const char * GetTypeName(int typeId);
     static int GetTypeSize(int typeId);
-    static symbol_type_id_t GetTypeId(char* typeName);
-    static bool CmpSymbolAddresses(CSymbol& a, CSymbol& b);
+    static symbol_type_id_t GetTypeId(char * typeName);
+    static bool CmpSymbolAddresses(CSymbol & a, CSymbol & b);
 
-    void GetValueString(char* dst, CSymbol* symbol);
+    void GetValueString(char * dst, CSymbol * symbol);
 
     CPath GetSymFilePath();
     void Load();
     void Save();
-    void ParseErrorAlert(char* message, int lineNumber);
+    void ParseErrorAlert(char * message, int lineNumber);
 
-    void AddSymbol(int type, uint32_t address, const char* name, const char* description = nullptr, bool bSortAfter = true);
+    void AddSymbol(int type, uint32_t address, const char * name, const char * description = nullptr, bool bSortAfter = true);
     void Reset();
-    int  GetCount();
-    bool GetSymbolById(int id, CSymbol* symbol);
-    bool GetSymbolByIndex(size_t index, CSymbol* symbol);
-    bool GetSymbolByAddress(uint32_t address, CSymbol* symbol);
+    int GetCount();
+    bool GetSymbolById(int id, CSymbol * symbol);
+    bool GetSymbolByIndex(size_t index, CSymbol * symbol);
+    bool GetSymbolByAddress(uint32_t address, CSymbol * symbol);
     bool RemoveSymbolById(int id);
 };
 
-class CSymbol {
+class CSymbol
+{
 public:
-    int      m_Id;
-    int      m_Type;
+    int m_Id;
+    int m_Type;
     uint32_t m_Address;
-    char*    m_Name;
-    char*    m_Description;
+    char * m_Name;
+    char * m_Description;
 
     CSymbol() :
         m_Id(0),
@@ -106,7 +109,7 @@ public:
     {
     }
 
-    CSymbol(int id, int type, uint32_t address, const char* name, const char* description) :
+    CSymbol(int id, int type, uint32_t address, const char * name, const char * description) :
         m_Id(id),
         m_Type(type),
         m_Address(address),
@@ -124,7 +127,7 @@ public:
         }
     }
 
-    CSymbol(const CSymbol& symbol):
+    CSymbol(const CSymbol & symbol) :
         m_Id(symbol.m_Id),
         m_Type(symbol.m_Type),
         m_Address(symbol.m_Address),
@@ -135,7 +138,7 @@ public:
         m_Description = symbol.m_Description ? _strdup(symbol.m_Description) : nullptr;
     }
 
-    CSymbol& operator= (const CSymbol& symbol)
+    CSymbol & operator=(const CSymbol & symbol)
     {
         if (m_Name != nullptr)
         {
@@ -168,7 +171,7 @@ public:
         }
     }
 
-    const char* TypeName()
+    const char * TypeName()
     {
         return CSymbolTable::GetTypeName(m_Type);
     }

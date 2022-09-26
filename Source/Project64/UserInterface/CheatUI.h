@@ -1,7 +1,7 @@
 #pragma once
-#include <Project64\WTLApp.h>
 #include <Project64-core/N64System/Enhancement/Enhancement.h>
 #include <Project64-core/N64System/Enhancement/EnhancementList.h>
+#include <Project64\WTLApp.h>
 
 class CEditCheat;
 class CCheatsUI;
@@ -16,18 +16,23 @@ class CCheatList :
 
 public:
     BEGIN_MSG_MAP_EX(CCheatList)
-        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
-        MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
-        MESSAGE_HANDLER(UM_CHANGECODEEXTENSION, OnChangeCodeExtension)
-        COMMAND_ID_HANDLER(IDC_UNMARK, OnUnmark)
-        COMMAND_ID_HANDLER(ID_POPUP_DELETE, OnPopupDelete)
-        NOTIFY_HANDLER_EX(IDC_MYTREE, NM_CLICK, OnTreeClicked)
-        NOTIFY_HANDLER_EX(IDC_MYTREE, NM_RCLICK, OnTreeRClicked)
-        NOTIFY_HANDLER_EX(IDC_MYTREE, NM_DBLCLK, OnTreeDClicked)
-        NOTIFY_HANDLER_EX(IDC_MYTREE, TVN_SELCHANGED, OnTreeSelChanged)
+    {
+        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog);
+        MESSAGE_HANDLER(WM_DESTROY, OnDestroy);
+        MESSAGE_HANDLER(UM_CHANGECODEEXTENSION, OnChangeCodeExtension);
+        COMMAND_ID_HANDLER(IDC_UNMARK, OnUnmark);
+        COMMAND_ID_HANDLER(ID_POPUP_DELETE, OnPopupDelete);
+        NOTIFY_HANDLER_EX(IDC_MYTREE, NM_CLICK, OnTreeClicked);
+        NOTIFY_HANDLER_EX(IDC_MYTREE, NM_RCLICK, OnTreeRClicked);
+        NOTIFY_HANDLER_EX(IDC_MYTREE, NM_DBLCLK, OnTreeDClicked);
+        NOTIFY_HANDLER_EX(IDC_MYTREE, TVN_SELCHANGED, OnTreeSelChanged);
+    }
     END_MSG_MAP()
 
-    enum { IDD = IDD_Cheats_List };
+    enum
+    {
+        IDD = IDD_Cheats_List
+    };
 
     CCheatList(CEnhancementList & Cheats, CEditCheat & EditCheat);
     ~CCheatList();
@@ -36,21 +41,27 @@ public:
 
 private:
     CCheatList(void);
-    CCheatList(const CCheatList&);
-    CCheatList& operator=(const CCheatList&);
+    CCheatList(const CCheatList &);
+    CCheatList & operator=(const CCheatList &);
 
-    enum TV_CHECK_STATE { TV_STATE_UNKNOWN, TV_STATE_CLEAR, TV_STATE_CHECKED, TV_STATE_INDETERMINATE };
+    enum TV_CHECK_STATE
+    {
+        TV_STATE_UNKNOWN,
+        TV_STATE_CLEAR,
+        TV_STATE_CHECKED,
+        TV_STATE_INDETERMINATE
+    };
 
-    LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT OnChangeCodeExtension(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT OnUnmark(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-    LRESULT OnPopupDelete(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-    LRESULT OnTreeClicked(NMHDR* lpnmh);
-    LRESULT OnTreeRClicked(NMHDR* lpnmh);
-    LRESULT OnTreeDClicked(NMHDR* lpnmh);
-    LRESULT OnTreeSelChanged(NMHDR* lpnmh);
-    void AddCodeLayers(LPARAM ListID, const std::wstring &Name, HTREEITEM hParent, bool CheatActive);
+    LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnChangeCodeExtension(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnUnmark(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    LRESULT OnPopupDelete(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    LRESULT OnTreeClicked(NMHDR * lpnmh);
+    LRESULT OnTreeRClicked(NMHDR * lpnmh);
+    LRESULT OnTreeDClicked(NMHDR * lpnmh);
+    LRESULT OnTreeSelChanged(NMHDR * lpnmh);
+    void AddCodeLayers(LPARAM ListID, const std::wstring & Name, HTREEITEM hParent, bool CheatActive);
     void ChangeChildrenStatus(HTREEITEM hParent, bool Checked);
     void CheckParentStatus(HTREEITEM hParent);
     void DeleteCheat(LPARAM Enhancement);
@@ -58,7 +69,10 @@ private:
     bool TV_SetCheckState(HTREEITEM hItem, TV_CHECK_STATE state);
     static void MenuSetText(HMENU hMenu, int MenuPos, const wchar_t * Title, const wchar_t * ShortCut);
 
-    enum { IDC_MYTREE = 0x500 };
+    enum
+    {
+        IDC_MYTREE = 0x500
+    };
 
     CEnhancementList & m_Cheats;
     CEditCheat & m_EditCheat;
@@ -79,32 +93,35 @@ public:
     };
 
     BEGIN_MSG_MAP_EX(CEditCheat)
-        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
-        MESSAGE_HANDLER(WM_EDITCHEAT, OnEditCheat)
-        COMMAND_ID_HANDLER(IDC_ADD, OnAddCheat)
-        COMMAND_ID_HANDLER(IDC_NEWCHEAT, OnNewCheat)
-        COMMAND_HANDLER(IDC_CODE_NAME, EN_CHANGE, OnCodeNameChanged)
-        COMMAND_HANDLER(IDC_CHEAT_CODES, EN_CHANGE, OnCheatCodeChanged)
-        COMMAND_HANDLER(IDC_CHEAT_OPTIONS, EN_CHANGE, OnCheatOptionsChanged)
+    MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
+    MESSAGE_HANDLER(WM_EDITCHEAT, OnEditCheat)
+    COMMAND_ID_HANDLER(IDC_ADD, OnAddCheat)
+    COMMAND_ID_HANDLER(IDC_NEWCHEAT, OnNewCheat)
+    COMMAND_HANDLER(IDC_CODE_NAME, EN_CHANGE, OnCodeNameChanged)
+    COMMAND_HANDLER(IDC_CHEAT_CODES, EN_CHANGE, OnCheatCodeChanged)
+    COMMAND_HANDLER(IDC_CHEAT_OPTIONS, EN_CHANGE, OnCheatOptionsChanged)
     END_MSG_MAP()
 
-    enum { IDD = IDD_Cheats_Add };
+    enum
+    {
+        IDD = IDD_Cheats_Add
+    };
 
     CEditCheat(CEnhancementList & Cheats, CCheatList & CheatList);
     ~CEditCheat();
 
 private:
     CEditCheat();
-    CEditCheat(const CEditCheat&);
-    CEditCheat& operator=(const CEditCheat&);
+    CEditCheat(const CEditCheat &);
+    CEditCheat & operator=(const CEditCheat &);
 
-    LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT OnEditCheat(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT OnAddCheat(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-    LRESULT OnNewCheat(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-    LRESULT OnCodeNameChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-    LRESULT OnCheatCodeChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-    LRESULT OnCheatOptionsChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+    LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnEditCheat(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnAddCheat(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    LRESULT OnNewCheat(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    LRESULT OnCodeNameChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    LRESULT OnCheatCodeChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    LRESULT OnCheatOptionsChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 
     bool ReadEnhancement(CEnhancement & Enhancement);
 
@@ -126,25 +143,28 @@ class CEnhancementCodeEx :
 {
 public:
     BEGIN_MSG_MAP_EX(CEnhancementCodeEx)
-        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
-        COMMAND_HANDLER(IDC_CHEAT_LIST, LBN_DBLCLK, OnListDblClick)
-        COMMAND_ID_HANDLER(IDOK, OnOkCmd)
-        COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
+    MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
+    COMMAND_HANDLER(IDC_CHEAT_LIST, LBN_DBLCLK, OnListDblClick)
+    COMMAND_ID_HANDLER(IDOK, OnOkCmd)
+    COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
     END_MSG_MAP()
 
-    enum { IDD = IDD_Cheats_CodeEx };
+    enum
+    {
+        IDD = IDD_Cheats_CodeEx
+    };
 
     CEnhancementCodeEx(CEnhancement * Enhancement);
 
 private:
     CEnhancementCodeEx();
-    CEnhancementCodeEx(const CEnhancementCodeEx&);
-    CEnhancementCodeEx& operator=(const CEnhancementCodeEx&);
+    CEnhancementCodeEx(const CEnhancementCodeEx &);
+    CEnhancementCodeEx & operator=(const CEnhancementCodeEx &);
 
-    LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT OnListDblClick(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-    LRESULT OnOkCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-    LRESULT OnCloseCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+    LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnListDblClick(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    LRESULT OnOkCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    LRESULT OnCloseCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 
     CEnhancement * m_Enhancement;
 };
@@ -158,13 +178,18 @@ class CCheatsUI :
 
 public:
     BEGIN_MSG_MAP_EX(CCheatsUI)
-        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
-        MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
-        COMMAND_ID_HANDLER(IDC_STATE, OnStateChange)
-        COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
+    {
+        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog);
+        MESSAGE_HANDLER(WM_DESTROY, OnDestroy);
+        COMMAND_ID_HANDLER(IDC_STATE, OnStateChange);
+        COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd);
+    }
     END_MSG_MAP()
 
-    enum { IDD = IDD_Cheats_Select };
+    enum
+    {
+        IDD = IDD_Cheats_Select
+    };
 
     CCheatsUI(void);
     ~CCheatsUI(void);
@@ -172,17 +197,21 @@ public:
     void Display(HWND hParent, bool BlockExecution);
 
 private:
-    LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT OnCloseCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-    LRESULT OnStateChange(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+    LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnCloseCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    LRESULT OnStateChange(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 
     CEnhancementList m_Cheats;
     CEditCheat m_EditCheat;
     CCheatList m_SelectCheat;
     CButton m_StateBtn;
-    int  m_MinSizeDlg, m_MaxSizeDlg;
+    int m_MinSizeDlg, m_MaxSizeDlg;
     bool m_bModal;
 
-    enum Dialog_State { CONTRACTED, EXPANDED } m_DialogState;
+    enum Dialog_State
+    {
+        CONTRACTED,
+        EXPANDED
+    } m_DialogState;
 };

@@ -17,7 +17,7 @@ void ScriptAPI::Define_pj64(duk_context * ctx)
         {"id", DukGetter(js_pj64_romInfo__get_headerId)},
         {"countryCode", DukGetter(js_pj64_romInfo__get_headerCountryCode)},
         {"version", DukGetter(js_pj64_romInfo__get_headerVersion)},
-        { nullptr }
+        {nullptr},
     };
 
     const DukPropListEntry props[] = {
@@ -35,7 +35,7 @@ void ScriptAPI::Define_pj64(duk_context * ctx)
         {"romDirectory", DukGetter(js_pj64__get_romDirectory)},
         {DUK_HIDDEN_SYMBOL("romInfo"), DukObject(romInfoProps)},
         {"romInfo", DukGetter(js_pj64__get_romInfo)},
-        { nullptr }
+        {nullptr},
     };
 
     DefineGlobalInterface(ctx, "pj64", props);

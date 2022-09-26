@@ -2,26 +2,28 @@
 #include "Breakpoints.h"
 #include "Debugger-RegisterTabData.h"
 
-class CEditReg64 : 
+class CEditReg64 :
     public CWindowImpl<CEditReg64, CEdit>,
     private CDebugSettings
 {
 public:
-    static uint64_t ParseValue(const char* wordPair);
+    static uint64_t ParseValue(const char * wordPair);
     BOOL Attach(HWND hWndNew);
-    LRESULT OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT OnLostFocus(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnLostFocus(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
     uint64_t GetValue();
     void SetValue(uint32_t h, uint32_t l);
     void SetValue(uint64_t value);
 
     BEGIN_MSG_MAP_EX(CRegEdit64)
-        MESSAGE_HANDLER(WM_CHAR, OnChar)
-        MESSAGE_HANDLER(WM_KILLFOCUS, OnLostFocus)
+    {
+        MESSAGE_HANDLER(WM_CHAR, OnChar);
+        MESSAGE_HANDLER(WM_KILLFOCUS, OnLostFocus);
+    }
     END_MSG_MAP()
 };
 
-class CRegisterTabs : 
+class CRegisterTabs :
     public CTabCtrl,
     public CDebugSettings
 {
@@ -36,10 +38,10 @@ public:
     CRegisterTabs(void);
     ~CRegisterTabs();
 
-    void Attach(HWND hWndNew, CDebuggerUI* debugger);
+    void Attach(HWND hWndNew, CDebuggerUI * debugger);
     HWND Detach();
 
-    CWindow AddTab(char* caption, int dialogId, DLGPROC dlgProc);
+    CWindow AddTab(char * caption, int dialogId, DLGPROC dlgProc);
     void ShowTab(int nPage);
     CRect GetPageRect();
     void RedrawCurrentTab();
@@ -49,8 +51,8 @@ public:
     void CopyAllRegisters();
 
 private:
-    CRegisterTabs(const CRegisterTabs&);
-    CRegisterTabs& operator=(const CRegisterTabs&);
+    CRegisterTabs(const CRegisterTabs &);
+    CRegisterTabs & operator=(const CRegisterTabs &);
 
     stdstr CopyTabRegisters(int id);
 
@@ -60,16 +62,15 @@ private:
     static INT_PTR CALLBACK TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
     static INT_PTR CALLBACK TabProcFPR(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 
+    static void InitRegisterEdit(CWindow & tab, CEditNumber32 & edit, FieldPair ctrl);
+    static void InitRegisterEdits(CWindow & tab, CEditNumber32 * edits, const TabRecord * ctrlIds);
+    static void InitRegisterEdit64(CWindow & tab, CEditReg64 & edit, FieldPair ctrl);
+    static void InitRegisterEdits64(CWindow & tab, CEditReg64 * edits, const TabRecord * ctrlIds);
 
-    static void InitRegisterEdit(CWindow& tab, CEditNumber32& edit, FieldPair ctrl);
-    static void InitRegisterEdits(CWindow& tab, CEditNumber32* edits, const TabRecord* ctrlIds);
-    static void InitRegisterEdit64(CWindow& tab, CEditReg64& edit, FieldPair ctrl);
-    static void InitRegisterEdits64(CWindow& tab, CEditReg64* edits, const TabRecord* ctrlIds);
-
-    static void ZeroRegisterEdit(CEditNumber32& edit);
-    static void ZeroRegisterEdits(CEditNumber32* edits, uint32_t ctrlIdsCount);
-    static void ZeroRegisterEdit64(CEditReg64& edit);
-    static void ZeroRegisterEdits64(CEditReg64* edits, uint32_t ctrlIdsCount);
+    static void ZeroRegisterEdit(CEditNumber32 & edit);
+    static void ZeroRegisterEdits(CEditNumber32 * edits, uint32_t ctrlIdsCount);
+    static void ZeroRegisterEdit64(CEditReg64 & edit);
+    static void ZeroRegisterEdits64(CEditReg64 * edits, uint32_t ctrlIdsCount);
 
     typedef union
     {
@@ -128,12 +129,12 @@ private:
         "? 28",
         "? 29",
         "? 30",
-        "Virtual coherency (data)"
+        "Virtual coherency (data)",
     };
 
     // For static dlgprocs, assumes single instance
     static bool m_bColorsEnabled;
-    static CDebuggerUI* m_Debugger;
+    static CDebuggerUI * m_Debugger;
 
     vector<CWindow> m_TabWindows;
     bool m_attached;

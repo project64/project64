@@ -1,13 +1,16 @@
 #include "stdafx.h"
 
 CBaseMenu::CBaseMenu() :
-m_MenuHandle((HMENU)CreateMenu())
+    m_MenuHandle((HMENU)CreateMenu())
 {
 }
 
 bool CBaseMenu::AddMenu(HMENU hMenu, MenuItemList Items)
 {
-    if (Items.begin() == Items.end()) { return false; }
+    if (Items.begin() == Items.end())
+    {
+        return false;
+    }
 
     UINT ItemID, uFlags;
     std::wstring Text, String;

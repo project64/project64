@@ -34,19 +34,46 @@ public:
     bool Match(WORD key, bool bCtrl, bool bAlt, bool bShift, RUNNING_STATE RunningState) const;
     bool Active(RUNNING_STATE RunningState) const;
 
-    static VIRTUAL_KEY * VirtualKeyList(int &Size);
+    static VIRTUAL_KEY * VirtualKeyList(int & Size);
     static RUNNING_STATE RunningState(void);
 
-    inline const std::wstring & Name(void) const { return m_ShortCutName; }
-    inline WORD Key(void) const { return m_key; }
-    inline bool Ctrl(void) const { return m_bCtrl; }
-    inline bool Alt(void) const { return m_bAlt; }
-    inline bool Shift(void) const { return m_bShift; }
-    inline bool UserAdded(void) const { return m_bUserAdded; }
-    inline bool Inactive(void) const { return m_bInactive; }
-    inline ACCESS_MODE AccessMode(void) const { return m_AccessMode; }
+    inline const std::wstring & Name(void) const
+    {
+        return m_ShortCutName;
+    }
+    inline WORD Key(void) const
+    {
+        return m_key;
+    }
+    inline bool Ctrl(void) const
+    {
+        return m_bCtrl;
+    }
+    inline bool Alt(void) const
+    {
+        return m_bAlt;
+    }
+    inline bool Shift(void) const
+    {
+        return m_bShift;
+    }
+    inline bool UserAdded(void) const
+    {
+        return m_bUserAdded;
+    }
+    inline bool Inactive(void) const
+    {
+        return m_bInactive;
+    }
+    inline ACCESS_MODE AccessMode(void) const
+    {
+        return m_AccessMode;
+    }
 
-    inline void SetInactive(bool Inactive) { m_bInactive = Inactive; }
+    inline void SetInactive(bool Inactive)
+    {
+        m_bInactive = Inactive;
+    }
 
 private:
     static VIRTUAL_KEY m_VirtualKeyList[];
@@ -64,16 +91,16 @@ private:
 class CShortCutItem
 {
 public:
-    typedef std::list<CMenuShortCutKey>   SHORTCUT_KEY_LIST;
+    typedef std::list<CMenuShortCutKey> SHORTCUT_KEY_LIST;
 
 private:
     typedef CMenuShortCutKey::ACCESS_MODE ACCESS_MODE;
     typedef CMenuShortCutKey::RUNNING_STATE RUNNING_STATE;
 
-    ACCESS_MODE        m_Access;
-    LanguageStringID   m_Section;
-    LanguageStringID   m_Title;
-    SHORTCUT_KEY_LIST  m_AccelList;
+    ACCESS_MODE m_Access;
+    LanguageStringID m_Section;
+    LanguageStringID m_Title;
+    SHORTCUT_KEY_LIST m_AccelList;
 
 public:
     CShortCutItem(LanguageStringID Section, LanguageStringID Title, ACCESS_MODE Access);
@@ -82,13 +109,25 @@ public:
     void RemoveItem(CMenuShortCutKey * ShortCut);
     bool Avaliable(RUNNING_STATE RunningState) const;
 
-    inline const SHORTCUT_KEY_LIST & GetAccelItems(void) const { return m_AccelList; }
-    inline LanguageStringID Section(void) const { return m_Section; }
-    inline LanguageStringID Title(void) const { return m_Title; }
-    inline ACCESS_MODE AccessMode(void) const { return m_Access; }
+    inline const SHORTCUT_KEY_LIST & GetAccelItems(void) const
+    {
+        return m_AccelList;
+    }
+    inline LanguageStringID Section(void) const
+    {
+        return m_Section;
+    }
+    inline LanguageStringID Title(void) const
+    {
+        return m_Title;
+    }
+    inline ACCESS_MODE AccessMode(void) const
+    {
+        return m_Access;
+    }
 };
 
-typedef std::map<int, CShortCutItem>   MSC_MAP;
+typedef std::map<int, CShortCutItem> MSC_MAP;
 
 class CShortCuts
 {
@@ -96,6 +135,7 @@ class CShortCuts
     typedef CMenuShortCutKey::ACCESS_MODE ACCESS_MODE;
     typedef CMenuShortCutKey::RUNNING_STATE RUNNING_STATE;
     typedef LanguageStringID LangStr;
+
 public:
     CShortCuts(void);
     ~CShortCuts(void);
@@ -103,7 +143,10 @@ public:
     std::wstring ShortCutString(int MenuID, RUNNING_STATE RunningState);
     LangStr GetMenuItemName(WORD key, bool bCtrl, bool bAlt, bool bShift, RUNNING_STATE RunningState);
     HACCEL GetAcceleratorTable(void);
-    const MSC_MAP & GetShortCuts(void) const { return m_ShortCuts; }
+    const MSC_MAP & GetShortCuts(void) const
+    {
+        return m_ShortCuts;
+    }
 
     void Load(bool InitialValues = false);
     void Save(void);

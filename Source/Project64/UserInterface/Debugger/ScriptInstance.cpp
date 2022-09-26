@@ -99,8 +99,7 @@ bool CScriptInstance::Run(const char * path)
     try
     {
         duk_push_string(m_Ctx, m_InstanceName.c_str());
-        if (duk_pcompile_string_filename(m_Ctx, DUK_COMPILE_STRICT, m_SourceCode) != 0 ||
-            duk_pcall(m_Ctx, 0) == DUK_EXEC_ERROR)
+        if (duk_pcompile_string_filename(m_Ctx, DUK_COMPILE_STRICT, m_SourceCode) != 0 || duk_pcall(m_Ctx, 0) == DUK_EXEC_ERROR)
         {
             duk_get_prop_string(m_Ctx, -1, "stack");
             m_System->ConsoleLog("%s", duk_safe_to_string(m_Ctx, -1));
@@ -211,8 +210,7 @@ void CScriptInstance::RawConsoleInput(const char * code)
         m_ExecStartTime = Timestamp();
 
         duk_push_string(m_Ctx, stdstr_f("<input:%s>", m_InstanceName.c_str()).c_str());
-        if (duk_pcompile_string_filename(m_Ctx, DUK_COMPILE_STRICT, code) != 0 ||
-            duk_pcall(m_Ctx, 0) == DUK_EXEC_ERROR)
+        if (duk_pcompile_string_filename(m_Ctx, DUK_COMPILE_STRICT, code) != 0 || duk_pcall(m_Ctx, 0) == DUK_EXEC_ERROR)
         {
             duk_get_prop_string(m_Ctx, -1, "stack");
             m_System->ConsoleLog("%s", duk_safe_to_string(m_Ctx, -1));

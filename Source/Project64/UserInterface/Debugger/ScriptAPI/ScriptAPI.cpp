@@ -841,8 +841,7 @@ void ScriptAPI::DukPutPropList(duk_context * ctx, duk_idx_t obj_idx, const DukPr
         }
         else
         {
-            if (prop.typeId == Type_DukGetter ||
-                prop.typeId == Type_DukGetterSetter)
+            if (prop.typeId == Type_DukGetter || prop.typeId == Type_DukGetterSetter)
             {
                 // not compatible
                 g_Notify->BreakPoint(__FILE__, __LINE__);

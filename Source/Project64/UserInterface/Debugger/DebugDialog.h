@@ -3,14 +3,14 @@
 #include <Project64-core/Settings/SettingType/SettingsType-Application.h>
 template <class T>
 class CDebugDialog :
-    public CDialogImpl < T >
+    public CDialogImpl<T>
 {
 protected:
     CDebuggerUI * m_Debugger;
-    HANDLE        m_CreatedEvent;
-    HANDLE        m_DialogThread;
-    UISettingID   m_UISettingID;
-    bool          m_bInitialized;
+    HANDLE m_CreatedEvent;
+    HANDLE m_DialogThread;
+    UISettingID m_UISettingID;
+    bool m_bInitialized;
 
     static DWORD CreateDebuggerWindow(CDebugDialog<T> * pThis)
     {
@@ -38,7 +38,7 @@ protected:
             return;
         }
 
-        T* pT = static_cast<T*>(this);
+        T * pT = static_cast<T *>(this);
         std::string str = UISettingsLoadStringVal(m_UISettingID);
         int left, top, width, height;
         int nParams = sscanf(str.c_str(), "%d,%d,%d,%d", &left, &top, &width, &height);
@@ -47,7 +47,8 @@ protected:
             pT->SetWindowPos(nullptr, left, top, width, height, 0);
             pT->RedrawWindow();
         }
-        if (nParams == 2) {
+        if (nParams == 2)
+        {
             pT->SetWindowPos(nullptr, left, top, width, height, 1);
             pT->RedrawWindow();
         }
@@ -60,13 +61,15 @@ protected:
             return;
         }
 
-        T* pT = static_cast<T*>(this);
+        T * pT = static_cast<T *>(this);
         CRect rect;
         pT->GetWindowRect(&rect);
-        if (!bSaveSize) {
+        if (!bSaveSize)
+        {
             UISettingsSaveString(m_UISettingID, stdstr_f("%d,%d", rect.left, rect.top).c_str());
         }
-        else {
+        else
+        {
             UISettingsSaveString(m_UISettingID, stdstr_f("%d,%d,%d,%d", rect.left, rect.top, rect.Width(), rect.Height()).c_str());
         }
     }
@@ -122,15 +125,16 @@ public:
         }
         if (m_hWnd)
         {
-            if (::IsIconic((HWND)m_hWnd)) 
+            if (::IsIconic((HWND)m_hWnd))
             {
                 SendMessage(m_hWnd, WM_SYSCOMMAND, SC_RESTORE, NULL);
             }
             SetForegroundWindow((HWND)m_hWnd);
         }
     }
+
 private:
-    bool        m_SaveWnd;
-    LONG        m_SaveWndTop;
-    LONG        m_SaveWndLeft;
+    bool m_SaveWnd;
+    LONG m_SaveWndTop;
+    LONG m_SaveWndLeft;
 };

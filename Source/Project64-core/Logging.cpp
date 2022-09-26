@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include <Project64-core/Logging.h>
 
-#include <stdio.h>
-#include <stdarg.h>
 #include <Common/path.h>
-#include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/N64Rom.h>
+#include <Project64-core/N64System/SystemGlobals.h>
+#include <stdarg.h>
+#include <stdio.h>
 
 CFile * CLogging::m_hLogFile = nullptr;
 

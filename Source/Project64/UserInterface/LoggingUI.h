@@ -1,3 +1,3 @@
 #pragma once
 
-void EnterLogOptions ( HWND hwndOwner );
+void EnterLogOptions(HWND hwndOwner);

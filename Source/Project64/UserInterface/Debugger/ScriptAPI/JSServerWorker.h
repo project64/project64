@@ -1,27 +1,34 @@
 #pragma once
 
+#include "ScriptAPI.h"
+#include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <windows.h>
-#include "ScriptAPI.h"
 
 class CJSServerWorker : public CScriptWorker
 {
 private:
-    enum { TIMEOUT_MS = 1 };
+    enum
+    {
+        TIMEOUT_MS = 1
+    };
 
-    struct ServerQueue {
+    struct ServerQueue
+    {
         CriticalSection cs;
         std::string listenAddress;
         unsigned short listenPort;
         bool bClosePending;
-        ServerQueue() : listenAddress(""), listenPort(0), bClosePending(false) {}
+        ServerQueue() :
+            listenAddress(""), listenPort(0), bClosePending(false)
+        {
+        }
     } m_Queue;
 
     struct JSServerAddrInfo
     {
         char address[INET6_ADDRSTRLEN];
-        const char* family;
+        const char * family;
         unsigned short port;
 
         JSServerAddrInfo() :
@@ -37,24 +44,24 @@ private:
     JSServerAddrInfo m_Address;
 
 public:
-    CJSServerWorker(CScriptInstance* instance, void* dukObjectHeapPtr);
+    CJSServerWorker(CScriptInstance * instance, void * dukObjectHeapPtr);
     virtual ~CJSServerWorker();
 
-    void Init(const char* address, unsigned short port);
+    void Init(const char * address, unsigned short port);
     void WorkerProc();
 
     std::string GetAddress();
     unsigned short GetPort();
-    const char* GetFamily();
+    const char * GetFamily();
 
 private:
     void JSEmitConnection(SOCKET c);
     void JSEmitClose();
     void JSEmitListening();
-    void JSEmitError(const char* errMessage);
+    void JSEmitError(const char * errMessage);
 
-    static duk_idx_t CbArgs_EmitConnection(duk_context* ctx, void* _env);
-    static duk_idx_t CbArgs_EmitClose(duk_context* ctx, void* _env);
-    static duk_idx_t CbArgs_EmitListening(duk_context* ctx, void* _env);
-    static duk_idx_t CbArgs_EmitError(duk_context* ctx, void* _env);
+    static duk_idx_t CbArgs_EmitConnection(duk_context * ctx, void * _env);
+    static duk_idx_t CbArgs_EmitClose(duk_context * ctx, void * _env);
+    static duk_idx_t CbArgs_EmitListening(duk_context * ctx, void * _env);
+    static duk_idx_t CbArgs_EmitError(duk_context * ctx, void * _env);
 };

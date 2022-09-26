@@ -61,18 +61,45 @@ LRESULT CALLBACK LogGeneralProc(HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM 
     {
     case WM_INITDIALOG:
     {
-        if (CLogSettings::LogCP0changes())   { CheckDlgButton(hDlg, IDC_CP0_WRITE, BST_CHECKED); }
-        if (CLogSettings::LogCP0reads())     { CheckDlgButton(hDlg, IDC_CP0_READ, BST_CHECKED); }
-        if (CLogSettings::LogCache())        { CheckDlgButton(hDlg, IDC_CACHE, BST_CHECKED); }
-        if (CLogSettings::LogExceptions())   { CheckDlgButton(hDlg, IDC_EXCEPTIONS, BST_CHECKED); }
-        if (CLogSettings::LogNoInterrupts()) { CheckDlgButton(hDlg, IDC_INTERRUPTS, BST_CHECKED); }
-        if (CLogSettings::LogTLB())          { CheckDlgButton(hDlg, IDC_TLB, BST_CHECKED); }
-        if (CLogSettings::LogRomHeader())    { CheckDlgButton(hDlg, IDC_ROM_HEADER, BST_CHECKED); }
-        if (CLogSettings::LogUnknown())      { CheckDlgButton(hDlg, IDC_UNKOWN, BST_CHECKED); }
+        if (CLogSettings::LogCP0changes())
+        {
+            CheckDlgButton(hDlg, IDC_CP0_WRITE, BST_CHECKED);
+        }
+        if (CLogSettings::LogCP0reads())
+        {
+            CheckDlgButton(hDlg, IDC_CP0_READ, BST_CHECKED);
+        }
+        if (CLogSettings::LogCache())
+        {
+            CheckDlgButton(hDlg, IDC_CACHE, BST_CHECKED);
+        }
+        if (CLogSettings::LogExceptions())
+        {
+            CheckDlgButton(hDlg, IDC_EXCEPTIONS, BST_CHECKED);
+        }
+        if (CLogSettings::LogNoInterrupts())
+        {
+            CheckDlgButton(hDlg, IDC_INTERRUPTS, BST_CHECKED);
+        }
+        if (CLogSettings::LogTLB())
+        {
+            CheckDlgButton(hDlg, IDC_TLB, BST_CHECKED);
+        }
+        if (CLogSettings::LogRomHeader())
+        {
+            CheckDlgButton(hDlg, IDC_ROM_HEADER, BST_CHECKED);
+        }
+        if (CLogSettings::LogUnknown())
+        {
+            CheckDlgButton(hDlg, IDC_UNKOWN, BST_CHECKED);
+        }
     }
     break;
     case WM_NOTIFY:
-        if (((NMHDR FAR *) lParam)->code != PSN_APPLY) { break; }
+        if (((NMHDR FAR *)lParam)->code != PSN_APPLY)
+        {
+            break;
+        }
         g_Settings->SaveBool(Logging_LogCP0changes, IsDlgButtonChecked(hDlg, IDC_CP0_WRITE) == BST_CHECKED ? true : false);
         g_Settings->SaveBool(Logging_LogCP0reads, IsDlgButtonChecked(hDlg, IDC_CP0_READ) == BST_CHECKED ? true : false);
         g_Settings->SaveBool(Logging_LogCache, IsDlgButtonChecked(hDlg, IDC_CACHE) == BST_CHECKED ? true : false);
@@ -94,12 +121,30 @@ LRESULT CALLBACK LogPifProc(HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM lPar
     {
     case WM_INITDIALOG:
     {
-        if (CLogSettings::LogPRDMAOperations())   { CheckDlgButton(hDlg, IDC_SI_DMA, BST_CHECKED); }
-        if (CLogSettings::LogPRDirectMemLoads())  { CheckDlgButton(hDlg, IDC_DIRECT_WRITE, BST_CHECKED); }
-        if (CLogSettings::LogPRDMAMemLoads())     { CheckDlgButton(hDlg, IDC_DMA_WRITE, BST_CHECKED); }
-        if (CLogSettings::LogPRDirectMemStores()) { CheckDlgButton(hDlg, IDC_DIRECT_READ, BST_CHECKED); }
-        if (CLogSettings::LogPRDMAMemStores())    { CheckDlgButton(hDlg, IDC_DMA_READ, BST_CHECKED); }
-        if (CLogSettings::LogControllerPak())     { CheckDlgButton(hDlg, IDC_CONT_PAK, BST_CHECKED); }
+        if (CLogSettings::LogPRDMAOperations())
+        {
+            CheckDlgButton(hDlg, IDC_SI_DMA, BST_CHECKED);
+        }
+        if (CLogSettings::LogPRDirectMemLoads())
+        {
+            CheckDlgButton(hDlg, IDC_DIRECT_WRITE, BST_CHECKED);
+        }
+        if (CLogSettings::LogPRDMAMemLoads())
+        {
+            CheckDlgButton(hDlg, IDC_DMA_WRITE, BST_CHECKED);
+        }
+        if (CLogSettings::LogPRDirectMemStores())
+        {
+            CheckDlgButton(hDlg, IDC_DIRECT_READ, BST_CHECKED);
+        }
+        if (CLogSettings::LogPRDMAMemStores())
+        {
+            CheckDlgButton(hDlg, IDC_DMA_READ, BST_CHECKED);
+        }
+        if (CLogSettings::LogControllerPak())
+        {
+            CheckDlgButton(hDlg, IDC_CONT_PAK, BST_CHECKED);
+        }
     }
     break;
     case WM_NOTIFY:
@@ -126,16 +171,46 @@ LRESULT CALLBACK LogRegProc(HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM lPar
     {
     case WM_INITDIALOG:
     {
-        if (CLogSettings::LogRDRamRegisters())  { CheckDlgButton(hDlg, IDC_RDRAM, BST_CHECKED); }
-        if (CLogSettings::LogSPRegisters())     { CheckDlgButton(hDlg, IDC_SP_REG, BST_CHECKED); }
-        if (CLogSettings::LogDPCRegisters())    { CheckDlgButton(hDlg, IDC_DPC_REG, BST_CHECKED); }
-        if (CLogSettings::LogDPSRegisters())    { CheckDlgButton(hDlg, IDC_DPS_REG, BST_CHECKED); }
-        if (CLogSettings::LogMIPSInterface())   { CheckDlgButton(hDlg, IDC_MI_REG, BST_CHECKED); }
-        if (CLogSettings::LogVideoInterface())  { CheckDlgButton(hDlg, IDC_VI_REG, BST_CHECKED); }
-        if (CLogSettings::LogAudioInterface())  { CheckDlgButton(hDlg, IDC_AI_REG, BST_CHECKED); }
-        if (CLogSettings::LogPerInterface())    { CheckDlgButton(hDlg, IDC_PI_REG, BST_CHECKED); }
-        if (CLogSettings::LogRDRAMInterface())  { CheckDlgButton(hDlg, IDC_RI_REG, BST_CHECKED); }
-        if (CLogSettings::LogSerialInterface()) { CheckDlgButton(hDlg, IDC_SI_REG, BST_CHECKED); }
+        if (CLogSettings::LogRDRamRegisters())
+        {
+            CheckDlgButton(hDlg, IDC_RDRAM, BST_CHECKED);
+        }
+        if (CLogSettings::LogSPRegisters())
+        {
+            CheckDlgButton(hDlg, IDC_SP_REG, BST_CHECKED);
+        }
+        if (CLogSettings::LogDPCRegisters())
+        {
+            CheckDlgButton(hDlg, IDC_DPC_REG, BST_CHECKED);
+        }
+        if (CLogSettings::LogDPSRegisters())
+        {
+            CheckDlgButton(hDlg, IDC_DPS_REG, BST_CHECKED);
+        }
+        if (CLogSettings::LogMIPSInterface())
+        {
+            CheckDlgButton(hDlg, IDC_MI_REG, BST_CHECKED);
+        }
+        if (CLogSettings::LogVideoInterface())
+        {
+            CheckDlgButton(hDlg, IDC_VI_REG, BST_CHECKED);
+        }
+        if (CLogSettings::LogAudioInterface())
+        {
+            CheckDlgButton(hDlg, IDC_AI_REG, BST_CHECKED);
+        }
+        if (CLogSettings::LogPerInterface())
+        {
+            CheckDlgButton(hDlg, IDC_PI_REG, BST_CHECKED);
+        }
+        if (CLogSettings::LogRDRAMInterface())
+        {
+            CheckDlgButton(hDlg, IDC_RI_REG, BST_CHECKED);
+        }
+        if (CLogSettings::LogSerialInterface())
+        {
+            CheckDlgButton(hDlg, IDC_SI_REG, BST_CHECKED);
+        }
     }
     break;
     case WM_NOTIFY:

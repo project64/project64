@@ -38,7 +38,7 @@ symbol_type_info_t CSymbolTable::m_SymbolTypes[] = {
     {SYM_VECTOR2, "v2", 8},
     {SYM_VECTOR3, "v3", 12},
     {SYM_VECTOR4, "v4", 16},
-    { SYM_INVALID, nullptr,    0 }
+    {SYM_INVALID, nullptr, 0},
 };
 
 symbol_type_id_t CSymbolTable::GetTypeId(char * typeName)

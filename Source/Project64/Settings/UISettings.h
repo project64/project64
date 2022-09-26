@@ -1,6 +1,6 @@
 #pragma once
-#include <string>
 #include <stdint.h>
+#include <string>
 
 enum UISettingID
 {
@@ -16,7 +16,7 @@ enum UISettingID
     // Settings location
     Setting_PluginPageFirst,
     Setting_DisableScrSaver,
-	Setting_EnableDiscordRPC,
+    Setting_EnableDiscordRPC,
     Setting_AutoSleep,
     Setting_AutoFullscreen,
 
@@ -71,7 +71,7 @@ enum UISettingID
 };
 
 float DPIScale(void);
-void RegisterUISettings (void);
+void RegisterUISettings(void);
 void UISettingsSaveBool(UISettingID Type, bool Value);
 void UISettingsSaveBoolIndex(UISettingID Type, int32_t index, bool Value);
 void UISettingsSaveDword(UISettingID Type, uint32_t Value);

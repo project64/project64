@@ -1,5 +1,5 @@
-#include <3rdparty/duktape/duktape.h>
 #include <3rdparty/duktape/duk_module_duktape.h>
+#include <3rdparty/duktape/duktape.h>
 #include <cstdint>
 #include <string>
 
@@ -66,9 +66,9 @@ class CScriptInstance;
 typedef std::string JSInstanceName;
 
 struct JSAppCallback;
-typedef duk_idx_t (*JSDukArgSetupFunc)(duk_context *ctx, void *argSetupParam);
-typedef bool (*JSAppCallbackCondFunc)(JSAppCallback* cb, void* hookEnv);
-typedef void (*JSAppCallbackCleanupFunc)(duk_context* ctx, void *hookEnv);
+typedef duk_idx_t (*JSDukArgSetupFunc)(duk_context * ctx, void * argSetupParam);
+typedef bool (*JSAppCallbackCondFunc)(JSAppCallback * cb, void * hookEnv);
+typedef void (*JSAppCallbackCleanupFunc)(duk_context * ctx, void * hookEnv);
 
 typedef size_t JSAppCallbackID;
 #define JS_INVALID_CALLBACK ((JSAppCallbackID)(-1))
@@ -76,26 +76,37 @@ typedef size_t JSAppCallbackID;
 struct JSAppCallback
 {
     // assigned by scriptsys when this is added to a callback map
-    JSAppCallbackID          m_CallbackId;
-    bool                     m_bDisabled;
+    JSAppCallbackID m_CallbackId;
+    bool m_bDisabled;
 
-    CScriptInstance         *m_Instance;
-    void                    *m_DukFuncHeapPtr;
-    JSAppCallbackCondFunc    m_ConditionFunc;
-    JSDukArgSetupFunc        m_DukArgSetupFunc;
+    CScriptInstance * m_Instance;
+    void * m_DukFuncHeapPtr;
+    JSAppCallbackCondFunc m_ConditionFunc;
+    JSDukArgSetupFunc m_DukArgSetupFunc;
     JSAppCallbackCleanupFunc m_CleanupFunc;
 
-    struct {
+    struct
+    {
         uint32_t addrStart, addrEnd;
-        union {
-            struct { uint32_t opcode, opcodeMask; };
-            struct { uint32_t regIndices, regValue; };
+        union
+        {
+            struct
+            {
+                uint32_t opcode, opcodeMask;
+            };
+            struct
+            {
+                uint32_t regIndices, regValue;
+            };
         };
     } m_Params;
 
-    static bool CbCondTrue(JSAppCallback*, void*) { return true; }
+    static bool CbCondTrue(JSAppCallback *, void *)
+    {
+        return true;
+    }
 
-    JSAppCallback(CScriptInstance* instance, void* dukFuncHeapPtr,
+    JSAppCallback(CScriptInstance * instance, void * dukFuncHeapPtr,
                   JSAppCallbackCondFunc condFunc = nullptr,
                   JSDukArgSetupFunc argSetupFunc = nullptr,
                   JSAppCallbackCleanupFunc cleanupFunc = nullptr) :
@@ -135,9 +146,9 @@ struct JSAppCallback
 
 struct JSHookCpuStepEnv
 {
-    uint32_t  pc;
-    COpInfo   opInfo;
-    int       outAffectedRegIndex; // set by the condition function
+    uint32_t pc;
+    COpInfo opInfo;
+    int outAffectedRegIndex; // set by the condition function
 };
 
 struct JSHookMouseEnv
@@ -168,7 +179,7 @@ struct JSHookSpTaskEnv
 
 struct JSHookPiDmaEnv
 {
-    int      direction;
+    int direction;
     uint32_t dramAddress;
     uint32_t cartAddress;
     uint32_t length;
@@ -182,21 +193,21 @@ struct JSHookEmuStateChangeEnv
 struct JSSysCommand
 {
     JSSysCommandID id;
-    stdstr         paramA;
-    stdstr         paramB;
-    void*          paramC;
+    stdstr paramA;
+    stdstr paramB;
+    void * paramC;
 };
 
 struct JSSysCMethodCall
 {
-    void*                 m_DukThisHeapPtr;
-    duk_c_function        m_Func;
-    JSDukArgSetupFunc     m_ArgSetupFunc;
-    void*                 m_ArgSetupParam;
+    void * m_DukThisHeapPtr;
+    duk_c_function m_Func;
+    JSDukArgSetupFunc m_ArgSetupFunc;
+    void * m_ArgSetupParam;
 
-    JSSysCMethodCall(void* dukThisHeapPtr, duk_c_function func,
+    JSSysCMethodCall(void * dukThisHeapPtr, duk_c_function func,
                      JSDukArgSetupFunc argSetupFunc = nullptr,
-                     void* argSetupParam = nullptr,
+                     void * argSetupParam = nullptr,
                      size_t argSetupParamSize = 0) :
         m_DukThisHeapPtr(dukThisHeapPtr),
         m_Func(func),
@@ -205,7 +216,7 @@ struct JSSysCMethodCall
     {
         if (argSetupParam != nullptr && argSetupParamSize != 0)
         {
-            m_ArgSetupParam = (void*)(new char[argSetupParamSize]);
+            m_ArgSetupParam = (void *)(new char[argSetupParamSize]);
             memcpy(m_ArgSetupParam, argSetupParam, argSetupParamSize);
         }
     }
@@ -214,7 +225,7 @@ struct JSSysCMethodCall
     {
         if (m_ArgSetupParam != nullptr)
         {
-            delete[](char*)m_ArgSetupParam;
+            delete[](char *) m_ArgSetupParam;
         }
     }
 };

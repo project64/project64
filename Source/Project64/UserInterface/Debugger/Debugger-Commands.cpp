@@ -161,9 +161,7 @@ void CDebugCommandsView::RecompilerCheck(void)
         return;
     }
 
-    if (g_Settings->LoadBool(Debugger_Enabled) &&
-        !g_Settings->LoadBool(Setting_ForceInterpreterCPU) &&
-        (CPU_TYPE)g_Settings->LoadDword(Game_CpuType) != CPU_Interpreter)
+    if (g_Settings->LoadBool(Debugger_Enabled) && !g_Settings->LoadBool(Setting_ForceInterpreterCPU) && (CPU_TYPE)g_Settings->LoadDword(Game_CpuType) != CPU_Interpreter)
     {
         // TODO: Remove this or fix?
         MessageBox(L"Debugger support for the recompiler core is experimental.\n\n"
@@ -264,9 +262,7 @@ void CDebugCommandsView::AddBranchArrow(int startPos, int endPos)
         BRANCHARROW arrow = m_BranchArrows[j];
 
         // Arrow's start or end position within another arrow's stride
-        if ((startPos >= arrow.startPos && startPos <= arrow.endPos) ||
-            (endPos >= arrow.startPos && endPos <= arrow.endPos) ||
-            (arrow.startPos <= startPos && arrow.startPos >= endPos))
+        if ((startPos >= arrow.startPos && startPos <= arrow.endPos) || (endPos >= arrow.startPos && endPos <= arrow.endPos) || (arrow.startPos <= startPos && arrow.startPos >= endPos))
         {
             if (margin <= arrow.margin)
             {
@@ -485,8 +481,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
     }
     else
     {
-        bool bOutOfView = address < m_StartAddress ||
-                          address > m_StartAddress + (m_CommandListRows - 1) * 4;
+        bool bOutOfView = address < m_StartAddress || address > m_StartAddress + (m_CommandListRows - 1) * 4;
 
         if (bOutOfView)
         {
@@ -704,17 +699,13 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR * pNMHDR)
         {
             // Breakpoint
             pLVCD->clrTextBk = RGB(0x44, 0x00, 0x00);
-            pLVCD->clrText = (address == pc && isDebugging()) ?
-                RGB(0xFF, 0xFF, 0x00) : // Breakpoint and current PC
-                RGB(0xFF, 0xCC, 0xCC);
+            pLVCD->clrText = (address == pc && isDebugging()) ? RGB(0xFF, 0xFF, 0x00) : RGB(0xFF, 0xCC, 0xCC);
         }
         else if (bpState == CBreakpoints::BP_SET_TEMP)
         {
             // Breakpoint
             pLVCD->clrTextBk = RGB(0x66, 0x44, 0x00);
-            pLVCD->clrText = (address == pc && isDebugging()) ?
-                RGB(0xFF, 0xFF, 0x00) : // Breakpoint and current PC
-                RGB(0xFF, 0xEE, 0xCC);
+            pLVCD->clrText = (address == pc && isDebugging()) ? RGB(0xFF, 0xFF, 0x00) : RGB(0xFF, 0xEE, 0xCC);
         }
         else if (address == pc && isStepping())
         {
@@ -867,19 +858,18 @@ LRESULT CDebugCommandsView::OnMeasureItem(UINT /*uMsg*/, WPARAM wParam, LPARAM l
 // Draw branch arrows
 void CDebugCommandsView::DrawBranchArrows(HDC listDC)
 {
-    COLORREF colors[] =
-        {
-            RGB(240, 240, 240), // White
-            RGB(30, 135, 255),  // Blue
-            RGB(255, 0, 200),   // Pink
-            RGB(215, 155, 0),   // Yellow
-            RGB(100, 180, 0),   // Green
-            RGB(200, 100, 255), // Purple
-            RGB(120, 120, 120), // Gray
-            RGB(0, 220, 160),   // Cyan
-            RGB(255, 100, 0),   // Orange
-            RGB(255, 255, 0),   // Yellow
-        };
+    COLORREF colors[] = {
+        RGB(240, 240, 240), // White
+        RGB(30, 135, 255),  // Blue
+        RGB(255, 0, 200),   // Pink
+        RGB(215, 155, 0),   // Yellow
+        RGB(100, 180, 0),   // Green
+        RGB(200, 100, 255), // Purple
+        RGB(120, 120, 120), // Gray
+        RGB(0, 220, 160),   // Cyan
+        RGB(255, 100, 0),   // Orange
+        RGB(255, 255, 0),   // Yellow
+    };
 
     int nColors = sizeof(colors) / sizeof(COLORREF);
 

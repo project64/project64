@@ -1,75 +1,76 @@
 #pragma once
 
-class CModifiedButton : 
-	public CButton
+class CModifiedButton :
+    public CButton
 {
-	bool   m_Changed;
-	bool   m_Reset;
-	HFONT  m_BoldFont;
-	HFONT  m_OriginalFont;
-
+    bool m_Changed;
+    bool m_Reset;
+    HFONT m_BoldFont;
+    HFONT m_OriginalFont;
 
 public:
-	// Constructors
-	CModifiedButton(HWND hWnd = nullptr) : 
-	    CButton(hWnd),
-		m_Changed(false),
-		m_Reset(false),
-		m_BoldFont(nullptr),
-		m_OriginalFont(nullptr)
-	{ 		
-	}
-	
-	~CModifiedButton()
-	{
-		if (m_BoldFont)
-		{
-			DeleteObject(m_BoldFont);
-		}
-	}
+    // Constructors
+    CModifiedButton(HWND hWnd = nullptr) :
+        CButton(hWnd),
+        m_Changed(false),
+        m_Reset(false),
+        m_BoldFont(nullptr),
+        m_OriginalFont(nullptr)
+    {
+    }
 
-	void SetReset (bool Reset)
-	{
-		m_Reset = Reset;
-		if (m_Reset)
-		{
-			SetChanged(false);
-		}
-	}
+    ~CModifiedButton()
+    {
+        if (m_BoldFont)
+        {
+            DeleteObject(m_BoldFont);
+        }
+    }
 
-	void SetChanged (bool Changed)
-	{
-		m_Changed = Changed;
-		if (m_Changed)
-		{
-			SetReset(false);
-			if (m_BoldFont == nullptr)
-			{
-				m_OriginalFont = (HFONT)SendMessage(WM_GETFONT); 
+    void SetReset(bool Reset)
+    {
+        m_Reset = Reset;
+        if (m_Reset)
+        {
+            SetChanged(false);
+        }
+    }
 
-				LOGFONT lfSystemVariableFont;
-				GetObject ( m_OriginalFont, sizeof(LOGFONT), &lfSystemVariableFont );
-				lfSystemVariableFont.lfWeight = FW_BOLD;
+    void SetChanged(bool Changed)
+    {
+        m_Changed = Changed;
+        if (m_Changed)
+        {
+            SetReset(false);
+            if (m_BoldFont == nullptr)
+            {
+                m_OriginalFont = (HFONT)SendMessage(WM_GETFONT);
 
-				m_BoldFont = CreateFontIndirect ( &lfSystemVariableFont );
-			}
-			SendMessage(WM_SETFONT,(WPARAM)m_BoldFont);
-			InvalidateRect(nullptr);
-		} else {
-			if (m_OriginalFont)
-			{
-				SendMessage(WM_SETFONT,(WPARAM)m_OriginalFont);
-				InvalidateRect(nullptr);
-			}
-		}
-	}
+                LOGFONT lfSystemVariableFont;
+                GetObject(m_OriginalFont, sizeof(LOGFONT), &lfSystemVariableFont);
+                lfSystemVariableFont.lfWeight = FW_BOLD;
 
-	inline bool IsChanged ( void ) const 
-	{
-		return m_Changed;
-	}
-	inline bool IsReset ( void ) const 
-	{
-		return m_Reset;
-	}
+                m_BoldFont = CreateFontIndirect(&lfSystemVariableFont);
+            }
+            SendMessage(WM_SETFONT, (WPARAM)m_BoldFont);
+            InvalidateRect(nullptr);
+        }
+        else
+        {
+            if (m_OriginalFont)
+            {
+                SendMessage(WM_SETFONT, (WPARAM)m_OriginalFont);
+                InvalidateRect(nullptr);
+            }
+        }
+    }
+
+    inline bool IsChanged(void) const
+    {
+        return m_Changed;
+    }
+    inline bool IsReset(void) const
+    {
+        return m_Reset;
+    }
 };

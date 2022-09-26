@@ -136,11 +136,7 @@ void CDebugDMALogView::Export(void)
 
     wsprintf(filePath, L"*.csv");
 
-    const TCHAR * filters = (
-        /*1*/ L"Comma separated values (*.csv)\0*.csv;\0"
-        /*2*/ L"Plain text (*.txt)\0*.txt;\0"
-    );
-
+    const TCHAR * filters = L"Comma separated values (*.csv)\0*.csv;\0Plain text (*.txt)\0*.txt;\0";
     const char * extensions[] = {"", ".csv", ".txt"};
 
     openfilename.lStructSize = sizeof(openfilename);

@@ -733,8 +733,7 @@ CWindow CRegisterTabs::AddTab(char * caption, int dialogId, DLGPROC dlgProc)
         pageRect.top,
         pageRect.Width(),
         pageRect.Height(),
-        SWP_HIDEWINDOW
-    );
+        SWP_HIDEWINDOW);
 
     m_TabWindows.push_back(tabWin);
 
@@ -920,9 +919,8 @@ stdstr CRegisterTabs::CopyTabRegisters(int id)
         break;
     }
 
-    record->Iterate(tab, [&str](const CWindow & label, const CWindow & edit)
-    {
-        str += stdstr_f( "\r\n%s %s", GetCWindowText(label).c_str(), GetCWindowText(edit).c_str());
+    record->Iterate(tab, [&str](const CWindow & label, const CWindow & edit) {
+        str += stdstr_f("\r\n%s %s", GetCWindowText(label).c_str(), GetCWindowText(edit).c_str());
     });
 
     switch (id)

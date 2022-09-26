@@ -1,15 +1,16 @@
 #include "stdafx.h"
+
 #include "InterpreterCPU.h"
 
-#include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/N64System.h>
-#include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
-#include <Project64-core/N64System/Interpreter/InterpreterOps32.h>
-#include <Project64-core/N64System/Mips/R4300iInstruction.h>
-#include <Project64-core/Plugins/Plugin.h>
-#include <Project64-core/Plugins/GFXPlugin.h>
-#include <Project64-core/ExceptionHandler.h>
 #include <Project64-core/Debugger.h>
+#include <Project64-core/ExceptionHandler.h>
+#include <Project64-core/N64System/Interpreter/InterpreterOps32.h>
+#include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
+#include <Project64-core/N64System/Mips/R4300iInstruction.h>
+#include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/SystemGlobals.h>
+#include <Project64-core/Plugins/GFXPlugin.h>
+#include <Project64-core/Plugins/Plugin.h>
 
 R4300iOp::Func * CInterpreterCPU::m_R4300i_Opcode = nullptr;
 
@@ -36,9 +37,9 @@ void CInterpreterCPU::InPermLoop()
 {
     if (EndOnPermLoop() &&
         ((g_Reg->STATUS_REGISTER & STATUS_IE) == 0 ||
-        (g_Reg->STATUS_REGISTER & STATUS_EXL) != 0 ||
-        (g_Reg->STATUS_REGISTER & STATUS_ERL) != 0 ||
-        (g_Reg->STATUS_REGISTER & 0xFF00) == 0))
+         (g_Reg->STATUS_REGISTER & STATUS_EXL) != 0 ||
+         (g_Reg->STATUS_REGISTER & STATUS_ERL) != 0 ||
+         (g_Reg->STATUS_REGISTER & 0xFF00) == 0))
     {
         if (g_Plugins->Gfx()->UpdateScreen != nullptr)
         {
@@ -117,7 +118,10 @@ void CInterpreterCPU::ExecuteCPU()
             _GPR[0].DW = 0; // MIPS $zero hard-wired to 0
             NextTimer -= CountPerOp;
 
-            if (CDebugSettings::HaveDebugger()) { g_Debugger->CPUStepEnded(); }
+            if (CDebugSettings::HaveDebugger())
+            {
+                g_Debugger->CPUStepEnded();
+            }
 
             PROGRAM_COUNTER += 4;
             switch (PipelineStage)
@@ -127,10 +131,10 @@ void CInterpreterCPU::ExecuteCPU()
             case PIPELINE_STAGE_DELAY_SLOT:
                 PipelineStage = PIPELINE_STAGE_JUMP;
                 break;
-            case  PIPELINE_STAGE_PERMLOOP_DO_DELAY:
+            case PIPELINE_STAGE_PERMLOOP_DO_DELAY:
                 PipelineStage = PIPELINE_STAGE_PERMLOOP_DELAY_DONE;
                 break;
-            case  PIPELINE_STAGE_JUMP:
+            case PIPELINE_STAGE_JUMP:
                 CheckTimer = (JumpToLocation < PROGRAM_COUNTER - 4 || TestTimer);
                 PROGRAM_COUNTER = JumpToLocation;
                 PipelineStage = PIPELINE_STAGE_NORMAL;
@@ -172,11 +176,11 @@ void CInterpreterCPU::ExecuteCPU()
 void CInterpreterCPU::ExecuteOps(int32_t Cycles)
 {
     bool & Done = g_System->m_EndEmulation;
-    uint32_t  & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
+    uint32_t & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
     R4300iOpcode & Opcode = R4300iOp::m_Opcode;
     PIPELINE_STAGE & PipelineStage = g_System->m_PipelineStage;
     uint32_t & JumpToLocation = g_System->m_JumpToLocation;
-    bool   & TestTimer = R4300iOp::m_TestTimer;
+    bool & TestTimer = R4300iOp::m_TestTimer;
     const int32_t & DoSomething = g_SystemEvents->DoSomething();
     uint32_t CountPerOp = g_System->CountPerOp();
     bool CheckTimer = false;

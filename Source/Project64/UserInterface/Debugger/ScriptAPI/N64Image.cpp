@@ -510,7 +510,7 @@ const char * CN64Image::ResultCodeName(int resultCode)
         {N64IMG_PNG_HEADER_MISSING, "ERR_PNG_HEADER_MISSING"},
         {N64IMG_PNG_OUT_OF_MEMORY, "ERR_PNG_OUT_OF_MEMORY"},
         {N64IMG_PNG_EXCEPTION, "ERR_PNG_EXCEPTION"},
-        { N64IMG_PNG_PARSER_FAILED,   "ERR_PNG_PARSER_FAILED" }
+        {N64IMG_PNG_PARSER_FAILED, "ERR_PNG_PARSER_FAILED"},
     };
 
     if (names.count(resultCode) != 0)

@@ -10,7 +10,7 @@ void ScriptAPI::Define_asm(duk_context * ctx)
         {"gprname", DukCFunction(js_asm_gprname)},
         {"encode", DukCFunction(js_asm_encode)},
         {"decode", DukCFunction(js_asm_decode)},
-        { nullptr }
+        {nullptr},
     };
 
     DefineGlobalInterface(ctx, "asm", props);
@@ -19,10 +19,38 @@ void ScriptAPI::Define_asm(duk_context * ctx)
 duk_ret_t ScriptAPI::js_asm_gprname(duk_context * ctx)
 {
     const char * names[32] = {
-        "r0", "at", "v0", "v1", "a0", "a1", "a2", "a3",
-        "t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7",
-        "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7",
-        "t8", "t9", "k0", "k1", "gp", "sp", "fp", "ra"
+        "r0",
+        "at",
+        "v0",
+        "v1",
+        "a0",
+        "a1",
+        "a2",
+        "a3",
+        "t0",
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5",
+        "t6",
+        "t7",
+        "s0",
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5",
+        "s6",
+        "s7",
+        "t8",
+        "t9",
+        "k0",
+        "k1",
+        "gp",
+        "sp",
+        "fp",
+        "ra",
     };
 
     CheckArgs(ctx, {Arg_Number});

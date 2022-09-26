@@ -94,7 +94,10 @@ int CMainMenu::ProcessAccelerator(HWND hWnd, void * lpMsg)
         m_ResetAccelerators = false;
         RebuildAccelerators();
     }
-    if (!m_AccelTable) { return false; }
+    if (!m_AccelTable)
+    {
+        return false;
+    }
     return TranslateAccelerator((HWND)hWnd, (HACCEL)m_AccelTable, (LPMSG)lpMsg);
 }
 
@@ -604,8 +607,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         if (MenuID >= ID_RECENT_ROM_START && MenuID < ID_RECENT_ROM_END)
         {
             stdstr FileName;
-            if (UISettingsLoadStringIndex(File_RecentGameFileIndex, MenuID - ID_RECENT_ROM_START, FileName) &&
-                FileName.length() > 0)
+            if (UISettingsLoadStringIndex(File_RecentGameFileIndex, MenuID - ID_RECENT_ROM_START, FileName) && FileName.length() > 0)
             {
                 if ((CPath(FileName).GetExtension() != "ndd") && (CPath(FileName).GetExtension() != "d64"))
                     g_BaseSystem->RunFileImage(FileName.c_str());
@@ -692,7 +694,10 @@ std::wstring CMainMenu::GetSaveSlotString(int Slot)
     case 10: SlotName = GS(MENU_SLOT_10); break;
     }
 
-    if (!g_Settings->LoadBool(GameRunning_CPU_Running)) { return SlotName.ToUTF16(); }
+    if (!g_Settings->LoadBool(GameRunning_CPU_Running))
+    {
+        return SlotName.ToUTF16();
+    }
 
     stdstr LastSaveTime;
 
@@ -880,38 +885,71 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     MenuItemList CurrentSaveMenu;
     DWORD _CurrentSaveState = g_Settings->LoadDword(Game_CurrentSaveState);
     Item.Reset(ID_CURRENT_SAVE_DEFAULT, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_DEFAULT, RunningState), nullptr, GetSaveSlotString(0));
-    if (_CurrentSaveState == 0) { Item.SetItemTicked(true); }
+    if (_CurrentSaveState == 0)
+    {
+        Item.SetItemTicked(true);
+    }
     CurrentSaveMenu.push_back(Item);
     CurrentSaveMenu.push_back(MENU_ITEM(SPLITER));
     Item.Reset(ID_CURRENT_SAVE_1, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_1, RunningState), nullptr, GetSaveSlotString(1));
-    if (_CurrentSaveState == 1) { Item.SetItemTicked(true); }
+    if (_CurrentSaveState == 1)
+    {
+        Item.SetItemTicked(true);
+    }
     CurrentSaveMenu.push_back(Item);
     Item.Reset(ID_CURRENT_SAVE_2, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_2, RunningState), nullptr, GetSaveSlotString(2));
-    if (_CurrentSaveState == 2) { Item.SetItemTicked(true); }
+    if (_CurrentSaveState == 2)
+    {
+        Item.SetItemTicked(true);
+    }
     CurrentSaveMenu.push_back(Item);
     Item.Reset(ID_CURRENT_SAVE_3, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_3, RunningState), nullptr, GetSaveSlotString(3));
-    if (_CurrentSaveState == 3) { Item.SetItemTicked(true); }
+    if (_CurrentSaveState == 3)
+    {
+        Item.SetItemTicked(true);
+    }
     CurrentSaveMenu.push_back(Item);
     Item.Reset(ID_CURRENT_SAVE_4, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_4, RunningState), nullptr, GetSaveSlotString(4));
-    if (_CurrentSaveState == 4) { Item.SetItemTicked(true); }
+    if (_CurrentSaveState == 4)
+    {
+        Item.SetItemTicked(true);
+    }
     CurrentSaveMenu.push_back(Item);
     Item.Reset(ID_CURRENT_SAVE_5, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_5, RunningState), nullptr, GetSaveSlotString(5));
-    if (_CurrentSaveState == 5) { Item.SetItemTicked(true); }
+    if (_CurrentSaveState == 5)
+    {
+        Item.SetItemTicked(true);
+    }
     CurrentSaveMenu.push_back(Item);
     Item.Reset(ID_CURRENT_SAVE_6, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_6, RunningState), nullptr, GetSaveSlotString(6));
-    if (_CurrentSaveState == 6) { Item.SetItemTicked(true); }
+    if (_CurrentSaveState == 6)
+    {
+        Item.SetItemTicked(true);
+    }
     CurrentSaveMenu.push_back(Item);
     Item.Reset(ID_CURRENT_SAVE_7, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_7, RunningState), nullptr, GetSaveSlotString(7));
-    if (_CurrentSaveState == 7) { Item.SetItemTicked(true); }
+    if (_CurrentSaveState == 7)
+    {
+        Item.SetItemTicked(true);
+    }
     CurrentSaveMenu.push_back(Item);
     Item.Reset(ID_CURRENT_SAVE_8, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_8, RunningState), nullptr, GetSaveSlotString(8));
-    if (_CurrentSaveState == 8) { Item.SetItemTicked(true); }
+    if (_CurrentSaveState == 8)
+    {
+        Item.SetItemTicked(true);
+    }
     CurrentSaveMenu.push_back(Item);
     Item.Reset(ID_CURRENT_SAVE_9, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_9, RunningState), nullptr, GetSaveSlotString(9));
-    if (_CurrentSaveState == 9) { Item.SetItemTicked(true); }
+    if (_CurrentSaveState == 9)
+    {
+        Item.SetItemTicked(true);
+    }
     CurrentSaveMenu.push_back(Item);
     Item.Reset(ID_CURRENT_SAVE_10, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_10, RunningState), nullptr, GetSaveSlotString(10));
-    if (_CurrentSaveState == 10) { Item.SetItemTicked(true); }
+    if (_CurrentSaveState == 10)
+    {
+        Item.SetItemTicked(true);
+    }
     CurrentSaveMenu.push_back(Item);
 
     // System menu
@@ -940,12 +978,18 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     if (!inBasicMode)
     {
         Item.Reset(ID_SYSTEM_LIMITFPS, MENU_LIMIT_FPS, m_ShortCuts.ShortCutString(ID_SYSTEM_LIMITFPS, RunningState));
-        if (g_Settings->LoadBool(GameRunning_LimitFPS)) { Item.SetItemTicked(true); }
+        if (g_Settings->LoadBool(GameRunning_LimitFPS))
+        {
+            Item.SetItemTicked(true);
+        }
         SystemMenu.push_back(Item);
         SystemMenu.push_back(MENU_ITEM(SPLITER));
     }
     Item.Reset(ID_SYSTEM_SWAPDISK, MENU_SWAPDISK, m_ShortCuts.ShortCutString(ID_SYSTEM_SWAPDISK, RunningState));
-    if (g_Disk == nullptr) { Item.SetItemEnabled(false); }
+    if (g_Disk == nullptr)
+    {
+        Item.SetItemEnabled(false);
+    }
     SystemMenu.push_back(Item);
     SystemMenu.push_back(MENU_ITEM(SPLITER));
     SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_SAVE, MENU_SAVE, m_ShortCuts.ShortCutString(ID_SYSTEM_SAVE, RunningState)));
@@ -980,7 +1024,10 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     if (!inBasicMode)
     {
         Item.Reset(ID_OPTIONS_ALWAYSONTOP, MENU_ON_TOP, m_ShortCuts.ShortCutString(ID_OPTIONS_ALWAYSONTOP, RunningState));
-        if (UISettingsLoadDword(UserInterface_AlwaysOnTop)) { Item.SetItemTicked(true); }
+        if (UISettingsLoadDword(UserInterface_AlwaysOnTop))
+        {
+            Item.SetItemTicked(true);
+        }
         Item.SetItemEnabled(CPURunning);
         OptionMenu.push_back(Item);
     }
@@ -1018,7 +1065,10 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     if (!inBasicMode)
     {
         Item.Reset(ID_OPTIONS_CPU_USAGE, MENU_SHOW_CPU, m_ShortCuts.ShortCutString(ID_OPTIONS_CPU_USAGE, RunningState));
-        if (g_Settings->LoadDword(UserInterface_ShowCPUPer)) { Item.SetItemTicked(true); }
+        if (g_Settings->LoadDword(UserInterface_ShowCPUPer))
+        {
+            Item.SetItemTicked(true);
+        }
         OptionMenu.push_back(Item);
     }
     OptionMenu.push_back(MENU_ITEM(ID_OPTIONS_SETTINGS, MENU_SETTINGS, m_ShortCuts.ShortCutString(ID_OPTIONS_SETTINGS, RunningState)));
@@ -1028,13 +1078,22 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     if (HaveDebugger())
     {
         Item.Reset(ID_PROFILE_PROFILE, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Record Execution Times");
-        if (g_Settings->LoadBool(Debugger_RecordExecutionTimes)) { Item.SetItemTicked(true); }
+        if (g_Settings->LoadBool(Debugger_RecordExecutionTimes))
+        {
+            Item.SetItemTicked(true);
+        }
         DebugProfileMenu.push_back(Item);
         Item.Reset(ID_PROFILE_RESETCOUNTER, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Reset Counters");
-        if (!CPURunning) { Item.SetItemEnabled(false); }
+        if (!CPURunning)
+        {
+            Item.SetItemEnabled(false);
+        }
         DebugProfileMenu.push_back(Item);
         Item.Reset(ID_PROFILE_GENERATELOG, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Generate Log File");
-        if (!CPURunning) { Item.SetItemEnabled(false); }
+        if (!CPURunning)
+        {
+            Item.SetItemEnabled(false);
+        }
         DebugProfileMenu.push_back(Item);
     }
 
@@ -1156,7 +1215,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         DebugAppLoggingMenu.push_back(Item);
 
         Item.Reset(ID_DEBUGGER_TRACE_PLUGINS, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Plugins");
-        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TracePlugins) == TraceVerbose);;
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TracePlugins) == TraceVerbose);
         DebugAppLoggingMenu.push_back(Item);
 
         Item.Reset(ID_DEBUGGER_TRACE_GFXPLUGIN, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"GFX plugin");
@@ -1172,7 +1231,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         DebugAppLoggingMenu.push_back(Item);
 
         Item.Reset(ID_DEBUGGER_TRACE_RSPPLUGIN, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"RSP plugin");
-        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceRSPPlugin) == TraceVerbose);;
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceRSPPlugin) == TraceVerbose);
         DebugAppLoggingMenu.push_back(Item);
 
         Item.Reset(ID_DEBUGGER_TRACE_RSP, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"RSP");
@@ -1206,7 +1265,10 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         DebugAppLoggingMenu.push_back(MENU_ITEM(SPLITER));
 
         Item.Reset(ID_DEBUGGER_APPLOG_FLUSH, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Auto flush file");
-        if (g_Settings->LoadBool(Debugger_AppLogFlush)) { Item.SetItemTicked(true); }
+        if (g_Settings->LoadBool(Debugger_AppLogFlush))
+        {
+            Item.SetItemTicked(true);
+        }
         DebugAppLoggingMenu.push_back(Item);
 
         // Debug - logging
@@ -1214,7 +1276,10 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         DebugLoggingMenu.push_back(Item);
 
         Item.Reset(ID_DEBUGGER_GENERATELOG, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Generate log");
-        if (g_Settings->LoadBool(Logging_GenerateLog)) { Item.SetItemTicked(true); }
+        if (g_Settings->LoadBool(Logging_GenerateLog))
+        {
+            Item.SetItemTicked(true);
+        }
         DebugLoggingMenu.push_back(Item);
 
         // Debugger main menu
@@ -1305,28 +1370,43 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     // Main title bar Menu
     MenuItemList MainTitleMenu;
     Item.Reset(SUB_MENU, MENU_FILE, EMPTY_STDSTR, &FileMenu);
-    if (RomLoading) { Item.SetItemEnabled(false); }
+    if (RomLoading)
+    {
+        Item.SetItemEnabled(false);
+    }
     MainTitleMenu.push_back(Item);
     if (CPURunning)
     {
         Item.Reset(SUB_MENU, MENU_SYSTEM, EMPTY_STDSTR, &SystemMenu);
-        if (RomLoading) { Item.SetItemEnabled(false); }
+        if (RomLoading)
+        {
+            Item.SetItemEnabled(false);
+        }
         MainTitleMenu.push_back(Item);
     }
     Item.Reset(SUB_MENU, MENU_OPTIONS, EMPTY_STDSTR, &OptionMenu);
-    if (RomLoading) { Item.SetItemEnabled(false); }
+    if (RomLoading)
+    {
+        Item.SetItemEnabled(false);
+    }
     MainTitleMenu.push_back(Item);
     if (!inBasicMode)
     {
         if (HaveDebugger())
         {
             Item.Reset(SUB_MENU, MENU_DEBUGGER, EMPTY_STDSTR, &DebugMenu);
-            if (RomLoading) { Item.SetItemEnabled(false); }
+            if (RomLoading)
+            {
+                Item.SetItemEnabled(false);
+            }
             MainTitleMenu.push_back(Item);
         }
     }
     Item.Reset(SUB_MENU, MENU_HELP, EMPTY_STDSTR, &HelpMenu);
-    if (RomLoading) { Item.SetItemEnabled(false); }
+    if (RomLoading)
+    {
+        Item.SetItemEnabled(false);
+    }
     MainTitleMenu.push_back(Item);
 
     if (UISettingsLoadBool(UserInterface_ShowingNagWindow))

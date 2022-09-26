@@ -37,7 +37,7 @@ void ScriptAPI::Define_mem(duk_context * ctx)
         {"s8", DukProxy(MEM_PROXY_FUNCS(int8_t))},
         {"f64", DukProxy(MEM_PROXY_FUNCS(double))},
         {"f32", DukProxy(MEM_PROXY_FUNCS(float))},
-        { nullptr }
+        {nullptr},
     };
 
     DefineGlobalInterface(ctx, "mem", props);
@@ -109,8 +109,7 @@ duk_ret_t ScriptAPI::js_mem_getblock(duk_context * ctx)
         memsrc = g_MMU->Rdram();
         offsetStart = paddr;
     }
-    else if (g_Rom && paddr >= 0x10000000 &&
-             ((paddr - 0x10000000) + length) <= g_Rom->GetRomSize())
+    else if (g_Rom && paddr >= 0x10000000 && ((paddr - 0x10000000) + length) <= g_Rom->GetRomSize())
     {
         memsrc = g_Rom->GetRomAddress();
         offsetStart = paddr - 0x10000000;
@@ -282,9 +281,15 @@ duk_ret_t ScriptAPI::js_mem__boundget(duk_context * ctx)
         double f64;
     } retval;
 
-    #define MEM_BOUNDGET_TRY(addr, T, result, dukpush) \
-        if(debugger->DebugLoad_VAddr<T>(addr, result)) { dukpush(ctx, result); } \
-        else { goto memory_error; }
+#define MEM_BOUNDGET_TRY(addr, T, result, dukpush)  \
+    if (debugger->DebugLoad_VAddr<T>(addr, result)) \
+    {                                               \
+        dukpush(ctx, result);                       \
+    }                                               \
+    else                                            \
+    {                                               \
+        goto memory_error;                          \
+    }
 
     switch (type)
     {
@@ -325,9 +330,15 @@ duk_ret_t ScriptAPI::js_mem__boundset(duk_context * ctx)
     uint32_t addr = duk_get_uint(ctx, 0);
     duk_int_t type = duk_get_int(ctx, 1);
 
-    #define MEM_BOUNDSET_TRY(addr, T, value) \
-        if(debugger->DebugStore_VAddr<T>(addr, value)) { return 1; } \
-        else { goto memory_error; }
+#define MEM_BOUNDSET_TRY(addr, T, value)            \
+    if (debugger->DebugStore_VAddr<T>(addr, value)) \
+    {                                               \
+        return 1;                                   \
+    }                                               \
+    else                                            \
+    {                                               \
+        goto memory_error;                          \
+    }
 
     switch (type)
     {
@@ -404,8 +415,7 @@ duk_ret_t ScriptAPI::js_mem_bindvars(duk_context * ctx)
     for (duk_uarridx_t i = 0; i < length; i++)
     {
         duk_get_prop_index(ctx, 1, i);
-        if (!duk_is_array(ctx, -1) ||
-            duk_get_length(ctx, -1) != 3)
+        if (!duk_is_array(ctx, -1) || duk_get_length(ctx, -1) != 3)
         {
             return DUK_RET_TYPE_ERROR;
         }

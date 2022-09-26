@@ -39,7 +39,7 @@ void ScriptAPI::Define_cpu(duk_context * ctx)
         {"fpr", REG_PROXY_FUNCTIONS(js_cpu_fpr_get, js_cpu_fpr_set)},
         {"dfpr", REG_PROXY_FUNCTIONS(js_cpu_dfpr_get, js_cpu_dfpr_set)},
         {"cop0", REG_PROXY_FUNCTIONS(js_cpu_cop0_get, js_cpu_cop0_set)},
-        { nullptr, nullptr }
+        {nullptr, nullptr},
     };
 
     const duk_function_list_entry cpufuncs[] = REG_PROXY_FUNCTIONS(js_cpu_get, js_cpu_set);
@@ -368,10 +368,38 @@ static duk_ret_t FPRSetImpl(duk_context * ctx, bool bDouble)
 static int GPRIndex(const char * regName)
 {
     const char * names[] = {
-        "r0", "at", "v0", "v1", "a0", "a1", "a2", "a3",
-        "t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7",
-        "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7",
-        "t8", "t9", "k0", "k1", "gp", "sp", "fp", "ra"
+        "r0",
+        "at",
+        "v0",
+        "v1",
+        "a0",
+        "a1",
+        "a2",
+        "a3",
+        "t0",
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5",
+        "t6",
+        "t7",
+        "s0",
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5",
+        "s6",
+        "s7",
+        "t8",
+        "t9",
+        "k0",
+        "k1",
+        "gp",
+        "sp",
+        "fp",
+        "ra",
     };
 
     for (int i = 0; i < 32; i++)
@@ -388,10 +416,38 @@ static int GPRIndex(const char * regName)
 static int FPRIndex(const char * regName)
 {
     const char * names[32] = {
-        "f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8",
-        "f9", "f10", "f11", "f12", "f13", "f14", "f15", "f16",
-        "f17", "f18", "f19", "f20", "f21", "f22", "f23", "f24",
-        "f25", "f26", "f27", "f28", "f29", "f30", "f31"
+        "f0",
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "f5",
+        "f6",
+        "f7",
+        "f8",
+        "f9",
+        "f10",
+        "f11",
+        "f12",
+        "f13",
+        "f14",
+        "f15",
+        "f16",
+        "f17",
+        "f18",
+        "f19",
+        "f20",
+        "f21",
+        "f22",
+        "f23",
+        "f24",
+        "f25",
+        "f26",
+        "f27",
+        "f28",
+        "f29",
+        "f30",
+        "f31",
     };
 
     for (int i = 0; i < 32; i++)
@@ -435,9 +491,9 @@ static uint32_t * COP0RegPtr(const char * regName)
         {"taglo", (uint32_t *)&g_Reg->TAGLO_REGISTER},
         {"taghi", (uint32_t *)&g_Reg->TAGHI_REGISTER},
         {"errorepc", (uint32_t *)&g_Reg->ERROREPC_REGISTER},
-        { nullptr, nullptr }
+        {nullptr, nullptr},
     };
-    
+
     for (int i = 0; names[i].name != nullptr; i++)
     {
         if (strcmp(regName, names[i].name) == 0)

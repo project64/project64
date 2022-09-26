@@ -12,9 +12,9 @@ using FieldPairCallback = std::function<void(const CWindow & Label, const CWindo
 struct TabRecord
 {
     const size_t FieldCount = 0;
-    const FieldPair* Fields = nullptr;
+    const FieldPair * Fields = nullptr;
 
-    constexpr TabRecord(size_t arraySize, const FieldPair *pairs) :
+    constexpr TabRecord(size_t arraySize, const FieldPair * pairs) :
         FieldCount{arraySize / sizeof(*pairs)},
         Fields{pairs}
     {
@@ -24,7 +24,7 @@ struct TabRecord
     {
         for (int i = 0, end = FieldCount; i < end; i++)
         {
-            const FieldPair *pair = (Fields + i);
+            const FieldPair * pair = (Fields + i);
             if (pair->LabelId == ctrl)
             {
                 return i;
@@ -37,7 +37,7 @@ struct TabRecord
     {
         for (int i = 0, end = FieldCount; i < end; i++)
         {
-            const FieldPair *pair = (Fields + i);
+            const FieldPair * pair = (Fields + i);
             if (pair->EditId == ctrl)
             {
                 return i;
@@ -50,7 +50,7 @@ struct TabRecord
     {
         for (size_t i = 0, end = FieldCount; i < end; i++)
         {
-            const FieldPair *pair = (Fields + i);
+            const FieldPair * pair = (Fields + i);
             if (callback(parent.GetDescendantWindow(pair->LabelId), parent.GetDescendantWindow(pair->EditId)))
             {
                 break;
@@ -62,7 +62,7 @@ struct TabRecord
     {
         for (size_t i = 0, end = FieldCount; i < end; i++)
         {
-            const FieldPair *pair = (Fields + i);
+            const FieldPair * pair = (Fields + i);
             callback(parent.GetDescendantWindow(pair->LabelId), parent.GetDescendantWindow(pair->EditId));
         }
     }

@@ -28,7 +28,7 @@ CDebugMemoryView::jump_item_t CDebugMemoryView::JumpItems[] = {
     {0xB0000000, 0x10000000, 0xFC00000, "Cartridge ROM"},
     {0xBFC00000, 0x1FC00000, 0x00007C0, "PIF ROM"},
     {0xBFC007C0, 0x1FC007C0, 0x0000040, "PIF RAM"},
-    { 0, NULL}
+    {0, NULL},
 };
 
 CDebugMemoryView::CDebugMemoryView(CDebuggerUI * debugger) :
@@ -117,9 +117,7 @@ void CDebugMemoryView::CopyBytesToClipboard(uint32_t startAddress, uint32_t endA
 
         if (bIncludeAddresses)
         {
-            if ((bRowAddresses && offsetFromBase % rowSize == 0) ||
-                (!bRowAddresses && offsetFromBase % groupSize == 0) ||
-                (offsetFromSelStart == 0))
+            if ((bRowAddresses && offsetFromBase % rowSize == 0) || (!bRowAddresses && offsetFromBase % groupSize == 0) || (offsetFromSelStart == 0))
             {
                 str += stdstr_f("%08X: ", address);
             }
@@ -341,7 +339,7 @@ LRESULT CDebugMemoryView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
         (int)(MEMSB_BLOCK_W * dpiScale),
         (int)(MEMSB_BLOCKLEN_W * dpiScale),
         (int)(MEMSB_DMAINFO_W * dpiScale),
-        (int)(MEMSB_SAFEMODE_W * dpiScale)
+        (int)(MEMSB_SAFEMODE_W * dpiScale),
     };
 
     m_StatusBar.SetParts(MEMSB_NUM_PANES, statusPaneWidths);
@@ -371,7 +369,7 @@ LRESULT CDebugMemoryView::OnDestroy(void)
     return 0;
 }
 
-LRESULT CDebugMemoryView::OnShowAddress(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+LRESULT CDebugMemoryView::OnShowAddress(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL & /*bHandled*/)
 {
     uint32_t address = (uint32_t)wParam;
     bool bVirtual = (lParam != 0);
@@ -385,7 +383,7 @@ void CDebugMemoryView::OnExitSizeMove()
     SaveWindowPos(true);
 }
 
-LRESULT CDebugMemoryView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& /*bHandled*/)
+LRESULT CDebugMemoryView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL & /*bHandled*/)
 {
     switch (wID)
     {
@@ -432,26 +430,26 @@ LRESULT CDebugMemoryView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& 
         m_HexEditCtrl.Copy();
         break;
     case ID_POPUPMENU_COPYGAMESHARKCODE:
-        {
+    {
         uint32_t startAddress, endAddress;
         m_HexEditCtrl.GetSelectionRange(&startAddress, &endAddress);
         CopyGameSharkCodeToClipboard(startAddress, endAddress);
-        }
         break;
+    }
     case ID_POPUPMENU_COPYDATAWITHGROUPADDRESSES:
-        {
+    {
         uint32_t startAddress, endAddress;
         m_HexEditCtrl.GetSelectionRange(&startAddress, &endAddress);
         CopyBytesToClipboard(startAddress, endAddress, m_HexEditCtrl.GetFocusedColumn() == HX_COL_HEXDATA, true, false);
-        }
         break;
+    }
     case ID_POPUPMENU_COPYDATAWITHROWADDRESSES:
-        {
+    {
         uint32_t startAddress, endAddress;
         m_HexEditCtrl.GetSelectionRange(&startAddress, &endAddress);
         CopyBytesToClipboard(startAddress, endAddress, m_HexEditCtrl.GetFocusedColumn() == HX_COL_HEXDATA, true, true);
-        }
         break;
+    }
     case ID_POPUPMENU_PASTE:
         m_HexEditCtrl.Paste();
         break;
@@ -590,15 +588,15 @@ LRESULT CDebugMemoryView::OnHxCtrlKeyPressed(LPNMHDR lpNMHDR)
         FollowPointer(false);
         break;
     case VK_TAB:
+    {
+        int curSel = m_TabCtrl.GetCurSel();
+        if (m_TabCtrl.SetCurSel(curSel + 1) == -1)
         {
-            int curSel = m_TabCtrl.GetCurSel();
-            if (m_TabCtrl.SetCurSel(curSel + 1) == -1)
-            {
-                m_TabCtrl.SetCurSel(0);
-            }
-            TabSelChanged();
+            m_TabCtrl.SetCurSel(0);
         }
+        TabSelChanged();
         break;
+    }
     }
 
     return FALSE;

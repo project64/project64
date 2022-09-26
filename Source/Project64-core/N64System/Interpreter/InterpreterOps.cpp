@@ -1,14 +1,15 @@
 #include "stdafx.h"
+
+#include <Project64-core/Debugger.h>
+#include <Project64-core/Logging.h>
+#include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/N64System/Interpreter/InterpreterOps.h>
-#include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
+#include <Project64-core/N64System/Mips/R4300iInstruction.h>
 #include <Project64-core/N64System/Mips/SystemTiming.h>
 #include <Project64-core/N64System/Mips/TLB.h>
-#include <Project64-core/N64System/Mips/R4300iInstruction.h>
-#include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
-#include <Project64-core/Logging.h>
-#include <Project64-core/Debugger.h>
+#include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/SystemGlobals.h>
 #include <float.h>
 #include <math.h>
 
@@ -39,22 +40,24 @@ R4300iOp::Func R4300iOp::Jump_CoP1_D[64];
 R4300iOp::Func R4300iOp::Jump_CoP1_W[64];
 R4300iOp::Func R4300iOp::Jump_CoP1_L[64];
 
-const uint32_t R4300iOp::SWL_MASK[4] = { 0x00000000, 0xFF000000, 0xFFFF0000, 0xFFFFFF00 };
-const uint32_t R4300iOp::SWR_MASK[4] = { 0x00FFFFFF, 0x0000FFFF, 0x000000FF, 0x00000000 };
-const uint32_t R4300iOp::LWL_MASK[4] = { 0x00000000, 0x000000FF, 0x0000FFFF, 0x00FFFFFF };
-const uint32_t R4300iOp::LWR_MASK[4] = { 0xFFFFFF00, 0xFFFF0000, 0xFF000000, 0x0000000 };
+const uint32_t R4300iOp::SWL_MASK[4] = {0x00000000, 0xFF000000, 0xFFFF0000, 0xFFFFFF00};
+const uint32_t R4300iOp::SWR_MASK[4] = {0x00FFFFFF, 0x0000FFFF, 0x000000FF, 0x00000000};
+const uint32_t R4300iOp::LWL_MASK[4] = {0x00000000, 0x000000FF, 0x0000FFFF, 0x00FFFFFF};
+const uint32_t R4300iOp::LWR_MASK[4] = {0xFFFFFF00, 0xFFFF0000, 0xFF000000, 0x0000000};
 
-const int32_t R4300iOp::SWL_SHIFT[4] = { 0, 8, 16, 24 };
-const int32_t R4300iOp::SWR_SHIFT[4] = { 24, 16, 8, 0 };
-const int32_t R4300iOp::LWL_SHIFT[4] = { 0, 8, 16, 24 };
-const int32_t R4300iOp::LWR_SHIFT[4] = { 24, 16, 8, 0 };
+const int32_t R4300iOp::SWL_SHIFT[4] = {0, 8, 16, 24};
+const int32_t R4300iOp::SWR_SHIFT[4] = {24, 16, 8, 0};
+const int32_t R4300iOp::LWL_SHIFT[4] = {0, 8, 16, 24};
+const int32_t R4300iOp::LWR_SHIFT[4] = {24, 16, 8, 0};
 
-#define TEST_COP1_USABLE_EXCEPTION() \
-    if ((g_Reg->STATUS_REGISTER & STATUS_CU1) == 0) {\
-    g_Reg->DoCopUnusableException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP,1);\
-    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;\
-    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);\
-    return;}\
+#define TEST_COP1_USABLE_EXCEPTION()                                                        \
+    if ((g_Reg->STATUS_REGISTER & STATUS_CU1) == 0)                                         \
+    {                                                                                       \
+        g_Reg->DoCopUnusableException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP, 1); \
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;                                    \
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);                                   \
+        return;                                                                             \
+    }
 
 void R4300iOp::SPECIAL()
 {
@@ -996,7 +999,6 @@ void R4300iOp::DADDI()
         return;
     }
     _GPR[m_Opcode.rt].DW = sum;
-
 }
 
 void R4300iOp::DADDIU()
@@ -1004,8 +1006,8 @@ void R4300iOp::DADDIU()
     _GPR[m_Opcode.rt].DW = _GPR[m_Opcode.rs].DW + (int64_t)((int16_t)m_Opcode.immediate);
 }
 
-uint64_t LDL_MASK[8] = { 0, 0xFF, 0xFFFF, 0xFFFFFF, 0xFFFFFFFF, 0xFFFFFFFFFF, 0xFFFFFFFFFFFF, 0xFFFFFFFFFFFFFF };
-int32_t LDL_SHIFT[8] = { 0, 8, 16, 24, 32, 40, 48, 56 };
+uint64_t LDL_MASK[8] = {0, 0xFF, 0xFFFF, 0xFFFFFF, 0xFFFFFFFF, 0xFFFFFFFFFF, 0xFFFFFFFFFFFF, 0xFFFFFFFFFFFFFF};
+int32_t LDL_SHIFT[8] = {0, 8, 16, 24, 32, 40, 48, 56};
 
 void R4300iOp::LDL()
 {
@@ -1019,11 +1021,11 @@ void R4300iOp::LDL()
     }
 }
 
-uint64_t LDR_MASK[8] = { 0xFFFFFFFFFFFFFF00, 0xFFFFFFFFFFFF0000,
-    0xFFFFFFFFFF000000, 0xFFFFFFFF00000000,
-    0xFFFFFF0000000000, 0xFFFF000000000000,
-    0xFF00000000000000, 0 };
-int32_t LDR_SHIFT[8] = { 56, 48, 40, 32, 24, 16, 8, 0 };
+uint64_t LDR_MASK[8] = {0xFFFFFFFFFFFFFF00, 0xFFFFFFFFFFFF0000,
+                        0xFFFFFFFFFF000000, 0xFFFFFFFF00000000,
+                        0xFFFFFF0000000000, 0xFFFF000000000000,
+                        0xFF00000000000000, 0};
+int32_t LDR_SHIFT[8] = {56, 48, 40, 32, 24, 16, 8, 0};
 
 void R4300iOp::LDR()
 {
@@ -1161,15 +1163,15 @@ void R4300iOp::SW()
     g_MMU->SW_Memory(Address, _GPR[m_Opcode.rt].UW[0]);
 }
 
-uint64_t SDL_MASK[8] = { 0, 0xFF00000000000000,
-    0xFFFF000000000000,
-    0xFFFFFF0000000000,
-    0xFFFFFFFF00000000,
-    0xFFFFFFFFFF000000,
-    0xFFFFFFFFFFFF0000,
-    0xFFFFFFFFFFFFFF00 };
+uint64_t SDL_MASK[8] = {0, 0xFF00000000000000,
+                        0xFFFF000000000000,
+                        0xFFFFFF0000000000,
+                        0xFFFFFFFF00000000,
+                        0xFFFFFFFFFF000000,
+                        0xFFFFFFFFFFFF0000,
+                        0xFFFFFFFFFFFFFF00};
 
-int32_t SDL_SHIFT[8] = { 0, 8, 16, 24, 32, 40, 48, 56 };
+int32_t SDL_SHIFT[8] = {0, 8, 16, 24, 32, 40, 48, 56};
 
 void R4300iOp::SDL()
 {
@@ -1188,16 +1190,16 @@ void R4300iOp::SDL()
     }
 }
 
-uint64_t SDR_MASK[8] = { 0x00FFFFFFFFFFFFFF,
-    0x0000FFFFFFFFFFFF,
-    0x000000FFFFFFFFFF,
-    0x00000000FFFFFFFF,
-    0x0000000000FFFFFF,
-    0x000000000000FFFF,
-    0x00000000000000FF,
-    0x0000000000000000 };
+uint64_t SDR_MASK[8] = {0x00FFFFFFFFFFFFFF,
+                        0x0000FFFFFFFFFFFF,
+                        0x000000FFFFFFFFFF,
+                        0x00000000FFFFFFFF,
+                        0x0000000000FFFFFF,
+                        0x000000000000FFFF,
+                        0x00000000000000FF,
+                        0x0000000000000000};
 
-int32_t SDR_SHIFT[8] = { 56, 48, 40, 32, 24, 16, 8, 0 };
+int32_t SDR_SHIFT[8] = {56, 48, 40, 32, 24, 16, 8, 0};
 
 void R4300iOp::SDR()
 {
@@ -1232,7 +1234,6 @@ void R4300iOp::SWR()
     {
         GenerateTLBWriteException(Address, __FUNCTION__);
     }
-
 }
 
 void R4300iOp::CACHE()

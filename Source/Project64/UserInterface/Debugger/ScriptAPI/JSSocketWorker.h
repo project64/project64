@@ -1,20 +1,23 @@
+#include "../ScriptWorker.h"
+#include "ScriptAPI.h"
+#include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <windows.h>
-#include "ScriptAPI.h"
-#include "../ScriptWorker.h"
-#pragma comment (lib, "Ws2_32.lib")
+#pragma comment(lib, "Ws2_32.lib")
 #pragma once
 
 class CJSSocketWorker : public CScriptWorker
 {
 private:
-    enum { TIMEOUT_MS = 1 };
+    enum
+    {
+        TIMEOUT_MS = 1
+    };
 
     struct JSSocketAddrInfo
     {
         char address[INET6_ADDRSTRLEN];
-        const char* family;
+        const char * family;
         unsigned short port;
 
         JSSocketAddrInfo() :
@@ -32,8 +35,9 @@ private:
         duk_int_t callbackId;
     };
 
-    struct JSEmitDataEnv {
-        char* data;
+    struct JSEmitDataEnv
+    {
+        char * data;
         size_t size;
     };
 
@@ -63,29 +67,29 @@ private:
         }
     };
 
-    SOCKET           m_Socket;
-    bool             m_bWinsockOK;
-    bool             m_bAllowHalfOpen;
+    SOCKET m_Socket;
+    bool m_bWinsockOK;
+    bool m_bAllowHalfOpen;
     JSSocketAddrInfo m_LocalAddress;
     JSSocketAddrInfo m_RemoteAddress;
-    JSSocketQueue    m_Queue;
-    
+    JSSocketQueue m_Queue;
+
 public:
-    CJSSocketWorker(CScriptInstance* inst, void* objectHeapPtr, bool bAllowHalfOpen);
+    CJSSocketWorker(CScriptInstance * inst, void * objectHeapPtr, bool bAllowHalfOpen);
     virtual ~CJSSocketWorker();
 
     bool Init(SOCKET sock);
-    bool Init(const char* host, unsigned short port);
+    bool Init(const char * host, unsigned short port);
 
     void WorkerProc();
 
-    bool Write(const char* data, size_t length, duk_int_t callbackId, bool bEnd = false);
+    bool Write(const char * data, size_t length, duk_int_t callbackId, bool bEnd = false);
     //bool GetAddress(JSSocketAddrInfo& address);
     std::string GetLocalAddress();
     unsigned short GetLocalPort();
     std::string GetRemoteAddress();
     unsigned short GetRemotePort();
-    const char* GetFamily();
+    const char * GetFamily();
 
 private:
     bool ProcConnect();
@@ -97,19 +101,19 @@ private:
     void ClearQueue();
 
     void JSEmitConnect();
-    void JSEmitData(const char* data, size_t size);
+    void JSEmitData(const char * data, size_t size);
     void JSEmitEnd();
     void JSEmitClose();
     void JSEmitDrain();
-    void JSEmitLookup(JSSocketAddrInfo& addr);
-    void JSEmitError(const char* errMessage);
+    void JSEmitLookup(JSSocketAddrInfo & addr);
+    void JSEmitError(const char * errMessage);
 
-    static duk_idx_t CbArgs_EmitConnect(duk_context* ctx, void* _env);
-    static duk_idx_t CbArgs_EmitData(duk_context* ctx, void* _env);
-    static duk_idx_t CbArgs_EmitEnd(duk_context* ctx, void* _env);
-    static duk_idx_t CbArgs_EmitClose(duk_context* ctx, void* _env);
-    static duk_idx_t CbArgs_EmitDrain(duk_context* ctx, void* _env);
-    static duk_idx_t CbArgs_EmitLookup(duk_context* ctx, void* _env);
-    static duk_idx_t CbArgs_EmitError(duk_context* ctx, void* _env);
-    static duk_idx_t CbArgs_Write(duk_context* ctx, void* _env);
+    static duk_idx_t CbArgs_EmitConnect(duk_context * ctx, void * _env);
+    static duk_idx_t CbArgs_EmitData(duk_context * ctx, void * _env);
+    static duk_idx_t CbArgs_EmitEnd(duk_context * ctx, void * _env);
+    static duk_idx_t CbArgs_EmitClose(duk_context * ctx, void * _env);
+    static duk_idx_t CbArgs_EmitDrain(duk_context * ctx, void * _env);
+    static duk_idx_t CbArgs_EmitLookup(duk_context * ctx, void * _env);
+    static duk_idx_t CbArgs_EmitError(duk_context * ctx, void * _env);
+    static duk_idx_t CbArgs_Write(duk_context * ctx, void * _env);
 };

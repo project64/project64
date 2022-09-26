@@ -1,6 +1,6 @@
 #pragma once
-#include <stdint.h>
 #include <map>
+#include <stdint.h>
 
 class CBreakpoints :
     private CDebugSettings
@@ -20,9 +20,18 @@ public:
 
     CBreakpoints();
 
-    const breakpoints_t & ReadMem(void) const { return m_ReadMem; }
-    const breakpoints_t & WriteMem(void) const { return m_WriteMem; }
-    const breakpoints_t & Execution(void) const { return m_Execution; }
+    const breakpoints_t & ReadMem(void) const
+    {
+        return m_ReadMem;
+    }
+    const breakpoints_t & WriteMem(void) const
+    {
+        return m_WriteMem;
+    }
+    const breakpoints_t & Execution(void) const
+    {
+        return m_Execution;
+    }
 
     BPSTATE ReadBPExists8(uint32_t address);
     BPSTATE ReadBPExists16(uint32_t address);
@@ -57,15 +66,42 @@ public:
     void ClearMemLocks(void);
     size_t NumMemLocks(void);
 
-    inline bool HaveRegBP(void) { return m_bHaveRegBP; }
-    inline bool HaveAnyGPRWriteBP(void) { return m_GPRWriteBP != 0; }
-    inline bool HaveAnyGPRReadBP(void) { return m_GPRReadBP != 0; }
-    inline bool HaveGPRWriteBP(int nReg) { return (m_GPRWriteBP & (1 << nReg)) != 0; }
-    inline bool HaveGPRReadBP(int nReg) { return (m_GPRReadBP  & (1 << nReg)) != 0; }
-    inline bool HaveHIWriteBP(void) { return m_HIWriteBP; }
-    inline bool HaveHIReadBP(void) { return m_HIReadBP; }
-    inline bool HaveLOWriteBP(void) { return m_LOWriteBP; }
-    inline bool HaveLOReadBP(void) { return m_LOReadBP; }
+    inline bool HaveRegBP(void)
+    {
+        return m_bHaveRegBP;
+    }
+    inline bool HaveAnyGPRWriteBP(void)
+    {
+        return m_GPRWriteBP != 0;
+    }
+    inline bool HaveAnyGPRReadBP(void)
+    {
+        return m_GPRReadBP != 0;
+    }
+    inline bool HaveGPRWriteBP(int nReg)
+    {
+        return (m_GPRWriteBP & (1 << nReg)) != 0;
+    }
+    inline bool HaveGPRReadBP(int nReg)
+    {
+        return (m_GPRReadBP & (1 << nReg)) != 0;
+    }
+    inline bool HaveHIWriteBP(void)
+    {
+        return m_HIWriteBP;
+    }
+    inline bool HaveHIReadBP(void)
+    {
+        return m_HIReadBP;
+    }
+    inline bool HaveLOWriteBP(void)
+    {
+        return m_LOWriteBP;
+    }
+    inline bool HaveLOReadBP(void)
+    {
+        return m_LOReadBP;
+    }
 
     void UpdateHaveRegBP(void);
     void ToggleGPRWriteBP(int nReg);
@@ -74,7 +110,7 @@ public:
     void ToggleHIReadBP(void);
     void ToggleLOWriteBP(void);
     void ToggleLOReadBP(void);
-   
+
 private:
     void PreUpdateBP();
     void PostUpdateBP();

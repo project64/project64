@@ -1,7 +1,8 @@
 #pragma once
 #include "ScriptAPI.h"
 
-enum {
+enum
+{
     G_IM_FMT_RGBA,
     G_IM_FMT_YUV,
     G_IM_FMT_CI,
@@ -9,20 +10,23 @@ enum {
     G_IM_FMT_I
 };
 
-enum {
+enum
+{
     G_IM_SIZ_4b,
     G_IM_SIZ_8b,
     G_IM_SIZ_16b,
     G_IM_SIZ_32b
 };
 
-enum {
+enum
+{
     G_TT_NONE = 0x0000,
     G_TT_RGBA16 = 0x8000,
     G_TT_IA16 = 0xC000,
 };
 
-enum {
+enum
+{
     IMG_RGBA16 = (G_IM_FMT_RGBA << 3 | G_IM_SIZ_16b),
     IMG_RGBA32 = (G_IM_FMT_RGBA << 3 | G_IM_SIZ_32b),
     IMG_CI4_RGBA16 = (G_IM_FMT_CI << 3 | G_IM_SIZ_4b) | G_TT_RGBA16,
@@ -36,7 +40,8 @@ enum {
     IMG_I8 = (G_IM_FMT_I << 3 | G_IM_SIZ_8b),
 };
 
-enum N64ImageResult {
+enum N64ImageResult
+{
     N64IMG_OK,
     N64IMG_DATA_SIZE_INCORRECT,
     N64IMG_INVALID_COLOR_INDEX,
@@ -67,40 +72,40 @@ public:
     CN64Image();
 
     int Init(int format, size_t width, size_t height,
-        void* pixelData = nullptr, size_t pixelDataSize = 0,
-        void* paletteData = nullptr, size_t paletteDataSize = 0);
+             void * pixelData = nullptr, size_t pixelDataSize = 0,
+             void * paletteData = nullptr, size_t paletteDataSize = 0);
 
-    int Init(int format, uint8_t* pngData, size_t pngSize);
-    void ToPNG(std::vector<uint8_t>& outPngImage);
+    int Init(int format, uint8_t * pngData, size_t pngSize);
+    void ToPNG(std::vector<uint8_t> & outPngImage);
 
     int UpdateBitmap();
-    std::vector<uint8_t>& PaletteData();
-    std::vector<uint8_t>& PixelData();
-    std::vector<uint8_t>& Bitmap();
+    std::vector<uint8_t> & PaletteData();
+    std::vector<uint8_t> & PixelData();
+    std::vector<uint8_t> & Bitmap();
     size_t Width();
     size_t Height();
     int Format();
     bool UsesPalette();
 
-    static int ReadPNG(uint8_t* pngData, size_t pngSize, size_t* width, size_t* height, std::vector<uint8_t>& outRGBA32);
-    static void WritePNG(uint8_t* rgba32, size_t width, size_t height, std::vector<uint8_t>& buffer);
+    static int ReadPNG(uint8_t * pngData, size_t pngSize, size_t * width, size_t * height, std::vector<uint8_t> & outRGBA32);
+    static void WritePNG(uint8_t * rgba32, size_t width, size_t height, std::vector<uint8_t> & buffer);
 
     static unsigned int ColorFromRgba32(int dstFormat, uint32_t rgba32);
     static uint32_t ColorToRgba32(int srcFormat, unsigned int color);
     static int BitsPerPixel(int format);
     static int PaletteColorCount(int format);
     static bool UsesPalette(int format);
-    static const char* ResultCodeName(int resultCode);
+    static const char * ResultCodeName(int resultCode);
 
 private:
-    uint16_t* PalettePtr(size_t index);
-    void* TexelPtr(size_t index);
-    uint32_t* BitmapPtr(size_t index);
+    uint16_t * PalettePtr(size_t index);
+    void * TexelPtr(size_t index);
+    uint32_t * BitmapPtr(size_t index);
     unsigned int GetTexel(size_t index);
     void SetTexel(size_t index, unsigned int value);
-    bool GetPaletteColor(size_t index, unsigned int* color);
+    bool GetPaletteColor(size_t index, unsigned int * color);
     bool SetPaletteColor(size_t index, unsigned int color);
-    bool GetBitmapColor(size_t index, uint32_t* color);
+    bool GetBitmapColor(size_t index, uint32_t * color);
     bool SetBitmapColor(size_t index, unsigned int color);
     int UpdatePixelsAndPaletteFromBitmap();
 };

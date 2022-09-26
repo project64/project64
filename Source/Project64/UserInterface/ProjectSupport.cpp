@@ -51,11 +51,9 @@ bool CProjectSupport::ValidateCode(const char * Code)
         {
             const char * Key;
             std::string & Value;
-        }
-        Test[] =
-        {
-            { "SupporterName: ", Name },
-            { "SupporterEmail: ", Email },
+        } Test[] = {
+            {"SupporterName: ", Name},
+            {"SupporterEmail: ", Email},
         };
 
         for (size_t i = 0, n = Headers.size(); i < n; i++)
@@ -150,10 +148,9 @@ bool CProjectSupport::PerformRequest(const wchar_t * Url, const std::string & Po
     {
         return false;
     }
-    LPCWSTR lpszAcceptTypes[] =
-    {
+    LPCWSTR lpszAcceptTypes[] = {
         L"text/*",
-        nullptr
+        nullptr,
     };
     HINTERNET hRequest = HttpOpenRequest(hConnect, L"POST", Url, nullptr, nullptr, lpszAcceptTypes, INTERNET_FLAG_SECURE | INTERNET_FLAG_NO_AUTO_REDIRECT | INTERNET_FLAG_PRAGMA_NOCACHE | INTERNET_FLAG_NO_CACHE_WRITE, (LPARAM)0);
     if (hRequest == nullptr)

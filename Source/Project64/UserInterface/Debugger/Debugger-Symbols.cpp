@@ -23,7 +23,7 @@ const CSetValueDlg::ComboItem CDebugSymbols::ModalChangeTypeItems[] = {
     {"v2", SYM_VECTOR2},
     {"v3", SYM_VECTOR3},
     {"v4", SYM_VECTOR4},
-    { nullptr, 0 }
+    {nullptr, 0},
 };
 
 CDebugSymbols::CDebugSymbols(CDebuggerUI * debugger) :
@@ -396,8 +396,7 @@ void CDebugSymbols::UpdateFilteredSymbols()
         std::wstring strName = stdstr(symbol.m_Name).ToUTF16();
         std::wstring strDesc = stdstr(symbol.m_Description).ToUTF16();
 
-        if (strName.find(m_FilterText) != std::wstring::npos ||
-            strDesc.find(m_FilterText) != std::wstring::npos)
+        if (strName.find(m_FilterText) != std::wstring::npos || strDesc.find(m_FilterText) != std::wstring::npos)
         {
             SymbolCacheItem item(symbol, m_SymbolTable);
             m_FilteredSymbols.push_back(item);

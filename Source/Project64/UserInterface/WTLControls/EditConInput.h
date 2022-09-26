@@ -1,13 +1,14 @@
 #pragma once
 
-enum {
+enum
+{
     CIN_SPECIALKEY
 };
 
 typedef struct
 {
     NMHDR nmh;
-    int   vkey;
+    int vkey;
 } NMCISPECIALKEY;
 
 class CEditConInput : public CWindowImpl<CEditConInput, CEdit>
@@ -17,7 +18,7 @@ public:
     {
     }
 
-    LRESULT OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
+    LRESULT OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL & bHandled)
     {
         NMCISPECIALKEY nmsk;
 
@@ -26,7 +27,7 @@ public:
         case VK_UP:
         case VK_DOWN:
         case VK_RETURN:
-            nmsk = { { m_hWnd, (UINT_PTR)GetDlgCtrlID(), CIN_SPECIALKEY }, (int)wParam };
+            nmsk = {{m_hWnd, (UINT_PTR)GetDlgCtrlID(), CIN_SPECIALKEY}, (int)wParam};
             SendMessage(GetParent(), WM_NOTIFY, nmsk.nmh.idFrom, (LPARAM)&nmsk);
             break;
         }
@@ -42,14 +43,16 @@ public:
     }
 
     BEGIN_MSG_MAP_EX(CEditEval)
-        MESSAGE_HANDLER(WM_KEYDOWN, OnKeyDown)
+    {
+        MESSAGE_HANDLER(WM_KEYDOWN, OnKeyDown);
+    }
     END_MSG_MAP()
 };
 
 class CEditConOutput : public CWindowImpl<CEditConOutput, CEdit>
 {
 private:
-    LRESULT OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+    LRESULT OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL & /*bHandled*/)
     {
         if (GetKeyState(VK_CONTROL) < 0)
         {
@@ -60,6 +63,7 @@ private:
         }
         return FALSE;
     }
+
 public:
     BOOL Attach(HWND hWndNew)
     {
@@ -67,6 +71,8 @@ public:
     }
 
     BEGIN_MSG_MAP_EX(CEditEval)
-        MESSAGE_HANDLER(WM_KEYDOWN, OnKeyDown)
-        END_MSG_MAP()
+    {
+        MESSAGE_HANDLER(WM_KEYDOWN, OnKeyDown);
+    }
+    END_MSG_MAP()
 };

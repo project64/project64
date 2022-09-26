@@ -3,7 +3,7 @@
 #include "JSServerWorker.h"
 #include "JSSocketWorker.h"
 
-CJSServerWorker::CJSServerWorker(CScriptInstance* instance, void* dukObjectHeapPtr) :
+CJSServerWorker::CJSServerWorker(CScriptInstance * instance, void * dukObjectHeapPtr) :
     CScriptWorker(instance, dukObjectHeapPtr),
     m_bWinsockOK(false),
     m_ServerSocket(INVALID_SOCKET)
@@ -22,7 +22,7 @@ CJSServerWorker::~CJSServerWorker()
     }
 }
 
-void CJSServerWorker::Init(const char* address, unsigned short port)
+void CJSServerWorker::Init(const char * address, unsigned short port)
 {
     m_Queue.listenAddress = address;
     m_Queue.listenPort = port;
@@ -32,9 +32,10 @@ void CJSServerWorker::WorkerProc()
 {
     int rc;
 
-    union {
-        SOCKADDR     service;
-        SOCKADDR_IN  service_ipv4;
+    union
+    {
+        SOCKADDR service;
+        SOCKADDR_IN service_ipv4;
         SOCKADDR_IN6 service_ipv6;
     };
 
@@ -74,8 +75,8 @@ void CJSServerWorker::WorkerProc()
         goto stop_cleanup;
     }
 
-    rc = ::bind(m_ServerSocket, (const SOCKADDR*)&service,
-        service.sa_family == AF_INET ? sizeof(service_ipv4) : sizeof(service_ipv6));
+    rc = ::bind(m_ServerSocket, (const SOCKADDR *)&service,
+                service.sa_family == AF_INET ? sizeof(service_ipv4) : sizeof(service_ipv6));
 
     if (rc == SOCKET_ERROR)
     {
@@ -143,12 +144,12 @@ void CJSServerWorker::WorkerProc()
     }
 
 stop_cleanup:
-    {
-        CGuard guard(m_CS);
-        strncpy(m_Address.address, "", sizeof(m_Address.address));
-        m_Address.port = 0;
-        m_Address.family = "";
-    }
+{
+    CGuard guard(m_CS);
+    strncpy(m_Address.address, "", sizeof(m_Address.address));
+    m_Address.port = 0;
+    m_Address.family = "";
+}
 
     if (m_ServerSocket != INVALID_SOCKET)
     {

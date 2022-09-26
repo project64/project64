@@ -137,8 +137,7 @@ LRESULT CScriptsAutorunDlg::OnRefreshScriptList(UINT /*uMsg*/, WPARAM /*wParam*/
     do
     {
         stdstr fileName = searchPath.GetNameExtension();
-        if (searchPath.GetExtension() == "js" &&
-            m_ScriptSystem->AutorunList().count(fileName) == 0)
+        if (searchPath.GetExtension() == "js" && m_ScriptSystem->AutorunList().count(fileName) == 0)
         {
             fileNames.push_back(searchPath.GetNameExtension());
         }

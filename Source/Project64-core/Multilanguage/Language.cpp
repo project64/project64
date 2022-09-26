@@ -1,13 +1,14 @@
 #include "stdafx.h"
-#include <stdio.h>
-#include <stdint.h>
+
 #include <Common/path.h>
+#include <stdint.h>
+#include <stdio.h>
 
 CLanguage * g_Lang = nullptr;
 
 void CLanguage::LoadDefaultStrings(void)
 {
-#define DEF_STR(ID,str) m_DefaultStrings.insert(LANG_STRINGS::value_type(ID,str))
+#define DEF_STR(ID, str) m_DefaultStrings.insert(LANG_STRINGS::value_type(ID, str))
 
     DEF_STR(EMPTY_STRING, "");
 
@@ -105,7 +106,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(POPUP_CHEATS, "Edit Cheats");
     DEF_STR(POPUP_GFX_PLUGIN, "Graphics Plugin");
     DEF_STR(POPUP_PLAYDISK, "Play Game with Disk");
-    DEF_STR(POPUP_ENHANCEMENTS, "Pick Enhancements");	
+    DEF_STR(POPUP_ENHANCEMENTS, "Pick Enhancements");
 
     // Alternate name to save slot
     DEF_STR(SAVE_SLOT_DEFAULT, "Save Slot - Default");
@@ -610,7 +611,7 @@ bool CLanguage::LoadCurrentStrings(void)
     }
 
     // Process the file
-    FILE *file = fopen(Filename.c_str(), "rb");
+    FILE * file = fopen(Filename.c_str(), "rb");
     if (file == nullptr)
     {
         return false;
@@ -696,7 +697,7 @@ const std::string & CLanguage::GetString(LanguageStringID StringID)
 
 std::string CLanguage::GetLangString(const char * FileName, LanguageStringID ID)
 {
-    FILE *file = fopen(FileName, "rb");
+    FILE * file = fopen(FileName, "rb");
     if (file == nullptr)
     {
         return "";
@@ -729,9 +730,12 @@ std::string CLanguage::GetLangString(const char * FileName, LanguageStringID ID)
 
 LANG_STR CLanguage::GetNextLangString(void * OpenFile)
 {
-    enum { MAX_STRING_LEN = 800 };
-    int32_t  StringID;
-    char szString[MAX_STRING_LEN];  // Temporarily store the string from the file
+    enum
+    {
+        MAX_STRING_LEN = 800
+    };
+    int32_t StringID;
+    char szString[MAX_STRING_LEN]; // Temporarily store the string from the file
 
     FILE * file = (FILE *)OpenFile;
 
@@ -762,7 +766,8 @@ LANG_STR CLanguage::GetNextLangString(void * OpenFile)
     }
     if (feof(file))
     {
-        StringID = EMPTY_STRING; return LANG_STR(0, "");
+        StringID = EMPTY_STRING;
+        return LANG_STR(0, "");
     }
 
     // Search for start of string '"'
@@ -772,7 +777,8 @@ LANG_STR CLanguage::GetNextLangString(void * OpenFile)
     }
     if (feof(file))
     {
-        StringID = EMPTY_STRING; return LANG_STR(0, "");
+        StringID = EMPTY_STRING;
+        return LANG_STR(0, "");
     }
 
     int32_t pos = 0;

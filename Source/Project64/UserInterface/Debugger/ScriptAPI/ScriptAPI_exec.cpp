@@ -135,7 +135,7 @@ duk_ret_t ScriptAPI::js_exec(duk_context * ctx)
             {"stdout", DukString(resultStdOut.c_str())},
             {"stderr", DukString(resultStdErr.c_str())},
             {"pid", DukUInt(processInfo.dwProcessId)},
-            { nullptr }
+            {nullptr},
         };
 
         duk_push_error_object(ctx, resultExitCode, "exec(): process returned %d", resultExitCode);

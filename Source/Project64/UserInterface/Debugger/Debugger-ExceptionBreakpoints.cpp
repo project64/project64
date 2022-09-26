@@ -21,7 +21,7 @@ CDebugExcBreakpoints::ExcCheckboxMeta CDebugExcBreakpoints::ExcCheckboxMap[] = {
     {IDC_CHK_FPE, 15},
     {IDC_CHK_WATCH, 23},
     {IDC_CHK_VCED, 31},
-    { 0, 0 }
+    {0, 0},
 };
 
 CDebugExcBreakpoints::ExcCheckboxMeta CDebugExcBreakpoints::FpExcCheckboxMap[] = {
@@ -31,7 +31,7 @@ CDebugExcBreakpoints::ExcCheckboxMeta CDebugExcBreakpoints::FpExcCheckboxMap[] =
     {IDC_CHK_FP_CZ, (1 << 3)},
     {IDC_CHK_FP_CV, (1 << 4)},
     {IDC_CHK_FP_CE, (1 << 5)},
-    { 0, 0 }
+    {0, 0},
 };
 
 CDebugExcBreakpoints::ExcCheckboxMeta CDebugExcBreakpoints::IntrCheckboxMap[] = {
@@ -43,7 +43,7 @@ CDebugExcBreakpoints::ExcCheckboxMeta CDebugExcBreakpoints::IntrCheckboxMap[] = 
     {IDC_CHK_INTR_IP5, (1 << 5)},
     {IDC_CHK_INTR_IP6, (1 << 6)},
     {IDC_CHK_INTR_IP7, (1 << 7)},
-    { 0, 0 }
+    {0, 0},
 };
 
 CDebugExcBreakpoints::ExcCheckboxMeta CDebugExcBreakpoints::RcpIntrCheckboxMap[] = {
@@ -53,7 +53,7 @@ CDebugExcBreakpoints::ExcCheckboxMeta CDebugExcBreakpoints::RcpIntrCheckboxMap[]
     {IDC_CHK_INTR_VI, (1 << 3)},
     {IDC_CHK_INTR_PI, (1 << 4)},
     {IDC_CHK_INTR_DP, (1 << 5)},
-    { 0, 0 }
+    {0, 0},
 };
 
 CDebugExcBreakpoints::CDebugExcBreakpoints(CDebuggerUI * debugger) :

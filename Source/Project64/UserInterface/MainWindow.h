@@ -1,16 +1,17 @@
 #pragma once
 
 #include "../Settings/GuiSettings.h"
-#include <Project64/UserInterface/Debugger/debugger.h>
 #include <Project64-core/Plugins/Plugin.h>
-#include <Project64\UserInterface\CheatUI.h>
-#include <Project64\UserInterface\EnhancementUI.h>
-#include <Project64\UserInterface\ProjectSupport.h>
+#include <Project64/UserInterface/CheatUI.h>
+#include <Project64/UserInterface/Debugger/debugger.h>
+#include <Project64/UserInterface/EnhancementUI.h>
+#include <Project64/UserInterface/ProjectSupport.h>
+#include <Project64/UserInterface/RomBrowser.h>
 
 class CGfxPlugin;      // Plugin that controls the rendering
 class CAudioPlugin;    // Plugin for audio, need the hwnd
 class CControl_Plugin; // Controller needs hwnd to see if it is the focused window
-class CBaseMenu;           // Menu for the GUI
+class CBaseMenu;       // Menu for the GUI
 class CN64System;
 class CriticalSection;
 
@@ -38,9 +39,15 @@ class CMainGui :
     public CRomBrowser,
     private CGuiSettings
 {
-    enum { StatusBarID = 400 };
+    enum
+    {
+        StatusBarID = 400
+    };
 
-    enum { Timer_SetWindowPos = 1 };
+    enum
+    {
+        Timer_SetWindowPos = 1
+    };
 
     struct RESET_PLUGIN
     {
@@ -49,6 +56,7 @@ class CMainGui :
         HANDLE hEvent;
         bool res;
     };
+
 public:
     CMainGui(bool bMainWindow, const char * WindowTitle = "");
     ~CMainGui(void);
@@ -56,7 +64,7 @@ public:
     WPARAM ProcessAllMessages(void);
     bool ProcessGuiMessages(void);
     void EnterLogOptions(void);
-    int Height(void); 
+    int Height(void);
     int Width(void);
     float DPIScale(HWND hWnd);
 
@@ -69,7 +77,10 @@ public:
 
     void SetWindowMenu(CBaseMenu * Menu);
     void RefreshMenu(void);
-    CBaseMenu * GetMenuClass(void) { return m_Menu; }
+    CBaseMenu * GetMenuClass(void)
+    {
+        return m_Menu;
+    }
 
     void SetStatusText(int Panel, const wchar_t * Text);
     void ShowStatusBar(bool ShowBar);
@@ -79,16 +90,22 @@ public:
     void DisplayCheatsUI(bool BlockExecution);
     void DisplayEnhancements(bool BlockExecution);
 
-    void * GetWindowHandle(void) const { return m_hMainWindow; }
+    void * GetWindowHandle(void) const
+    {
+        return m_hMainWindow;
+    }
     void * GetStatusBar(void) const;
     void * GetModuleInstance(void) const;
 
-    inline CProjectSupport & Support(void) { return m_Support; }
+    inline CProjectSupport & Support(void)
+    {
+        return m_Support;
+    }
 
 private:
     CMainGui(void);
-    CMainGui(const CMainGui&);
-    CMainGui& operator=(const CMainGui&);
+    CMainGui(const CMainGui &);
+    CMainGui & operator=(const CMainGui &);
 
     friend class CGfxPlugin;
     friend class CAudioPlugin;
@@ -108,13 +125,13 @@ private:
     friend void RomBowserEnabledChanged(CMainGui * Gui);
     friend void RomBowserColoumnsChanged(CMainGui * Gui);
     friend void RomBrowserListChanged(CMainGui * Gui);
-	friend void DiscordRPCChanged(CMainGui * Gui);
+    friend void DiscordRPCChanged(CMainGui * Gui);
     static void LoadingInProgressChanged(CMainGui * Gui);
     static void GameLoaded(CMainGui * Gui);
     static void GamePaused(CMainGui * Gui);
     static void GameCpuRunning(CMainGui * Gui);
     static void ShowStatusBarChanged(CMainGui * Gui);
-    
+
     CBaseMenu * m_Menu;
 
     HWND m_hMainWindow, m_hStatusWnd;

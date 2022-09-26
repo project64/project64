@@ -24,14 +24,26 @@ public:
     void IncrementRunCount();
     bool ShowSuppotWindow();
 
-    inline uint32_t RunCount() const { return m_SupportInfo.RunCount; }
-    inline const char * Name(void) const { return m_SupportInfo.Name; }
-    inline const char * MachineID(void) const { return m_SupportInfo.MachineID; }
-    inline bool Validated(void) const { return m_SupportInfo.Validated; }
+    inline uint32_t RunCount() const
+    {
+        return m_SupportInfo.RunCount;
+    }
+    inline const char * Name(void) const
+    {
+        return m_SupportInfo.Name;
+    }
+    inline const char * MachineID(void) const
+    {
+        return m_SupportInfo.MachineID;
+    }
+    inline bool Validated(void) const
+    {
+        return m_SupportInfo.Validated;
+    }
 
 private:
-    CProjectSupport(const CProjectSupport&);
-    CProjectSupport& operator=(const CProjectSupport&);
+    CProjectSupport(const CProjectSupport &);
+    CProjectSupport & operator=(const CProjectSupport &);
 
     std::string GenerateMachineID();
     bool PerformRequest(const wchar_t * Url, const std::string & PostData, DWORD & StatusCode, std::vector<std::string> & Headers);

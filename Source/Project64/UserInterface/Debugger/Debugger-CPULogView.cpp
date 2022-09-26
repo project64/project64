@@ -428,8 +428,5 @@ bool CDebugCPULogView::MouseHovering(WORD ctrlId, int xMargin, int yMargin)
     ::GetCursorPos(&pointerPos);
 
     return (
-        pointerPos.x >= rect.left - xMargin &&
-        pointerPos.x <= rect.right + xMargin &&
-        pointerPos.y >= rect.top - yMargin &&
-        pointerPos.y <= rect.bottom + yMargin);
+        pointerPos.x >= rect.left - xMargin && pointerPos.x <= rect.right + xMargin && pointerPos.y >= rect.top - yMargin && pointerPos.y <= rect.bottom + yMargin);
 }

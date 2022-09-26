@@ -1,18 +1,19 @@
 #include "stdafx.h"
-#include <Project64-core/N64System/Enhancement/Enhancements.h>
+
+#include <Common/Util.h>
+#include <Common/path.h>
 #include <Project64-core/N64System/Enhancement/EnhancementFile.h>
+#include <Project64-core/N64System/Enhancement/Enhancements.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/Plugins/Plugin.h>
-#include <Project64-core/Plugins/GFXPlugin.h>
 #include <Project64-core/Plugins/AudioPlugin.h>
-#include <Project64-core/Plugins/RSPPlugin.h>
 #include <Project64-core/Plugins/ControllerPlugin.h>
-#include <Common/path.h>
-#include <Common/Util.h>
+#include <Project64-core/Plugins/GFXPlugin.h>
+#include <Project64-core/Plugins/Plugin.h>
+#include <Project64-core/Plugins/RSPPlugin.h>
 
-CEnhancements::GAMESHARK_CODE::GAMESHARK_CODE(const GAMESHARK_CODE&rhs)
+CEnhancements::GAMESHARK_CODE::GAMESHARK_CODE(const GAMESHARK_CODE & rhs)
 {
     m_Command = rhs.m_Command;
     m_Value = rhs.m_Value;
@@ -72,7 +73,8 @@ void CEnhancements::ApplyGSButton(CMipsMemoryVM & MMU, bool /*UpdateChanges*/)
         for (size_t CurrentEntry = 0; CurrentEntry < CodeEntry.size(); CurrentEntry++)
         {
             const GAMESHARK_CODE & Code = CodeEntry[CurrentEntry];
-            switch (Code.Command() & 0xFF000000) {
+            switch (Code.Command() & 0xFF000000)
+            {
             case 0x88000000:
                 ModifyMemory8(MMU, 0x80000000 | (Code.Command() & 0xFFFFFF), (uint8_t)Code.Value(), Code.HasDisableValue(), (uint8_t)Code.DisableValue());
                 break;
@@ -147,7 +149,7 @@ void CEnhancements::UpdateEnhancements(const CEnhancementList & Enhancements)
 #endif
 
     CGuard Guard(m_CS);
-    if (m_EnhancementFile.get() == nullptr ||strcmp(m_EnhancementFile->FileName(), OutFile) != 0)
+    if (m_EnhancementFile.get() == nullptr || strcmp(m_EnhancementFile->FileName(), OutFile) != 0)
     {
         if (!OutFile.DirectoryExists())
         {
@@ -426,7 +428,8 @@ void CEnhancements::ApplyGameSharkCodes(CMipsMemoryVM & MMU, CODES & CodeEntry, 
             int incr = Code.Value();
             int i;
 
-            switch (NextCodeEntry.Command() & 0xFF000000) {
+            switch (NextCodeEntry.Command() & 0xFF000000)
+            {
             case 0x10000000: // Xplorer64
             case 0x80000000:
                 Address = 0x80000000 | (NextCodeEntry.Command() & 0xFFFFFF);
@@ -619,7 +622,6 @@ void CEnhancements::ModifyMemory16(CMipsMemoryVM & MMU, uint32_t Address, uint16
         g_Recompiler->ClearRecompCode_Virt(Address & ~0xFFF, 0x1000, CRecompiler::Remove_Cheats);
     }
 }
-
 
 void CEnhancements::ScanFileThread(void)
 {

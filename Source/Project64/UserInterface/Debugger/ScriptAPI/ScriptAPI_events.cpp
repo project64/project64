@@ -43,7 +43,7 @@ void ScriptAPI::Define_events(duk_context * ctx)
         {"onmousedown", DukCFunction(js_events_onmousedown)},
         {"onmousemove", DukCFunction(js_events_onmousemove)},
         {"remove", DukCFunction(js_events_remove)},
-        { nullptr }
+        {nullptr},
     };
 
     DefineGlobalInterface(ctx, "events", props);
@@ -63,7 +63,7 @@ void ScriptAPI::Define_events(duk_context * ctx)
         {"LEFT", DukNumber(0)},
         {"MIDDLE", DukNumber(1)},
         {"RIGHT", DukNumber(2)},
-        {nullptr}
+        {nullptr},
     };
 
     DefineGlobalClass(ctx, "MouseEvent", js_DummyConstructor, nullptr, mouseEventStaticProps);
@@ -266,8 +266,7 @@ bool CbCond_ReadAddrBetween(JSAppCallback * cb, void * _env)
 
     uint32_t addr = env->opInfo.GetLoadStoreAddress();
 
-    return (addr >= cb->m_Params.addrStart &&
-            addr <= cb->m_Params.addrEnd);
+    return (addr >= cb->m_Params.addrStart && addr <= cb->m_Params.addrEnd);
 }
 
 bool CbCond_WriteAddrBetween(JSAppCallback * cb, void * _env)
@@ -281,15 +280,13 @@ bool CbCond_WriteAddrBetween(JSAppCallback * cb, void * _env)
 
     uint32_t addr = env->opInfo.GetLoadStoreAddress();
 
-    return (addr >= cb->m_Params.addrStart &&
-            addr <= cb->m_Params.addrEnd);
+    return (addr >= cb->m_Params.addrStart && addr <= cb->m_Params.addrEnd);
 }
 
 bool CbCond_PcBetween(JSAppCallback * cb, void * _env)
 {
     JSHookCpuStepEnv * env = (JSHookCpuStepEnv *)_env;
-    return (env->pc >= cb->m_Params.addrStart &&
-            env->pc <= cb->m_Params.addrEnd);
+    return (env->pc >= cb->m_Params.addrStart && env->pc <= cb->m_Params.addrEnd);
 }
 
 bool CbCond_PcBetween_OpcodeEquals(JSAppCallback * cb, void * _env)
@@ -337,7 +334,7 @@ duk_idx_t CbArgs_EmuStateChangeEventObject(duk_context * ctx, void * _env)
     const DukPropListEntry props[] = {
         {"callbackId", DukUInt(inst->CallbackId())},
         {"state", DukUInt(env->state)},
-        { nullptr }
+        {nullptr},
     };
 
     DukPutPropList(ctx, -1, props);
@@ -353,7 +350,7 @@ duk_idx_t CbArgs_GenericEventObject(duk_context * ctx, void * /*_env*/)
 
     const DukPropListEntry props[] = {
         {"callbackId", DukUInt(inst->CallbackId())},
-        { nullptr }
+        {nullptr},
     };
 
     DukPutPropList(ctx, -1, props);
@@ -371,7 +368,7 @@ duk_idx_t CbArgs_ExecEventObject(duk_context * ctx, void * _env)
     const DukPropListEntry props[] = {
         {"callbackId", DukUInt(inst->CallbackId())},
         {"pc", DukUInt(env->pc)},
-        { nullptr }
+        {nullptr},
     };
 
     DukPutPropList(ctx, -1, props);
@@ -400,7 +397,7 @@ duk_idx_t CbArgs_ReadEventObject(duk_context * ctx, void * _env)
         {"address", DukUInt(address)},
         {"reg", DukUInt(rt)},
         {"fpu", DukBoolean(bFPU)},
-        { nullptr }
+        {nullptr},
     };
 
     DukPutPropList(ctx, -1, props);
@@ -470,7 +467,7 @@ duk_idx_t CbArgs_ReadEventObject(duk_context * ctx, void * _env)
         bNeedUpper32 = true;
         break;
     case R4300i_LDL:
-        {
+    {
         int shift = (address & 7) * 8;
         uint64_t mask = ~(((uint64_t)-1) << shift);
         debugger->DebugLoad_VAddr(address & ~7, value.u64);
@@ -478,10 +475,10 @@ duk_idx_t CbArgs_ReadEventObject(duk_context * ctx, void * _env)
         duk_push_number(ctx, (duk_double_t)(value.u64 & 0xFFFFFFFF));
         duk_push_int(ctx, U64);
         bNeedUpper32 = true;
-        }
         break;
+    }
     case R4300i_LDR:
-        {
+    {
         int shift = 56 - ((address & 7) * 8);
         uint64_t mask = ~(((uint64_t)-1) >> shift);
         debugger->DebugLoad_VAddr(address & ~7, value.u64);
@@ -489,28 +486,28 @@ duk_idx_t CbArgs_ReadEventObject(duk_context * ctx, void * _env)
         duk_push_number(ctx, (duk_double_t)(value.u64 & 0xFFFFFFFF));
         duk_push_int(ctx, U64);
         bNeedUpper32 = true;
-        }
         break;
+    }
     case R4300i_LWL:
-        {
+    {
         int shift = (address & 3) * 8;
         uint32_t mask = ~(((uint32_t)-1) << shift);
         debugger->DebugLoad_VAddr(address & ~3, value.s32);
         value.s32 = (g_Reg->m_GPR[rt].W[0] & mask) + (value.s32 << shift);
         duk_push_number(ctx, value.s32);
         duk_push_int(ctx, S32);
-        }
         break;
+    }
     case R4300i_LWR:
-        {
+    {
         int shift = 24 - ((address & 3) * 8);
         uint32_t mask = ~(((uint32_t)-1) >> shift);
         debugger->DebugLoad_VAddr(address & ~3, value.s32);
         value.s32 = (g_Reg->m_GPR[rt].W[0] & mask) + (value.s32 >> shift);
         duk_push_number(ctx, value.s32);
         duk_push_int(ctx, S32);
-        }
         break;
+    }
     default:
         duk_push_number(ctx, 0);
         duk_push_number(ctx, 0);
@@ -551,7 +548,7 @@ duk_idx_t CbArgs_WriteEventObject(duk_context * ctx, void * _env)
         {"address", DukUInt(address)},
         {"reg", DukUInt(rt)},
         {"fpu", DukBoolean(bFPU)},
-        { nullptr }
+        {nullptr},
     };
 
     DukPutPropList(ctx, -1, props);
@@ -587,7 +584,7 @@ duk_idx_t CbArgs_WriteEventObject(duk_context * ctx, void * _env)
         bNeedUpper32 = true;
         break;
     case R4300i_SWL:
-        {
+    {
         int shift = (address & 3) * 8;
         uint32_t mask = ~(((uint32_t)-1) >> shift);
         uint32_t value;
@@ -595,10 +592,10 @@ duk_idx_t CbArgs_WriteEventObject(duk_context * ctx, void * _env)
         value = (value & mask) + (g_Reg->m_GPR[rt].UW[0] >> shift);
         duk_push_number(ctx, value);
         duk_push_int(ctx, S32);
-        }
         break;
+    }
     case R4300i_SWR:
-        {
+    {
         int shift = 24 - ((address & 3) * 8);
         uint32_t mask = ~(((uint32_t)-1) << shift);
         uint32_t value;
@@ -606,17 +603,18 @@ duk_idx_t CbArgs_WriteEventObject(duk_context * ctx, void * _env)
         value = (value & mask) + (g_Reg->m_GPR[rt].UW[0] >> shift);
         duk_push_number(ctx, value);
         duk_push_int(ctx, S32);
-        }
         break;
+    }
     case R4300i_SDL:
-        {
+    {
         int shift = (address & 7) * 8;
         uint64_t mask = ~(((uint64_t)-1) >> shift);
         debugger->DebugLoad_VAddr(address & ~7, value64);
         value64 = (value64 & mask) + (g_Reg->m_GPR[rt].UDW >> shift);
         duk_push_number(ctx, (duk_double_t)(value64 & 0xFFFFFFFF));
         duk_push_int(ctx, U64);
-        }
+        break;
+    }
     case R4300i_SDR:
     {
         int shift = 56 - ((address & 7) * 8);
@@ -625,6 +623,7 @@ duk_idx_t CbArgs_WriteEventObject(duk_context * ctx, void * _env)
         value64 = (value64 & mask) + (g_Reg->m_GPR[rt].UDW >> shift);
         duk_push_number(ctx, (duk_double_t)(value64 & 0xFFFFFFFF));
         duk_push_int(ctx, U64);
+        break;
     }
     default:
         duk_push_number(ctx, 0);
@@ -657,7 +656,7 @@ duk_idx_t CbArgs_OpcodeEventObject(duk_context * ctx, void * _env)
         {"callbackId", DukUInt(inst->CallbackId())},
         {"pc", DukUInt(env->pc)},
         {"opcode", DukUInt(env->opInfo.m_OpCode.Value)},
-        { nullptr }
+        {nullptr},
     };
 
     DukPutPropList(ctx, -1, props);
@@ -677,7 +676,7 @@ duk_idx_t CbArgs_RegValueEventObject(duk_context * ctx, void * _env)
         {"pc", DukUInt(env->pc)},
         {"value", DukUInt(g_Reg->m_GPR[env->outAffectedRegIndex].UW[0])},
         {"reg", DukUInt(env->outAffectedRegIndex)},
-        { nullptr }
+        {nullptr},
     };
 
     DukPutPropList(ctx, -1, props);
@@ -697,9 +696,9 @@ static duk_idx_t CbArgs_MouseEventObject(duk_context * ctx, void * _env)
         {"button", DukInt(env->button)},
         {"x", DukInt(env->x)},
         {"y", DukInt(env->y)},
-        { nullptr }
+        {nullptr},
     };
-    
+
     DukPutPropList(ctx, -1, props);
     duk_freeze(ctx, -1);
     return 1;
@@ -730,7 +729,7 @@ static duk_idx_t CbArgs_SPTaskEventObject(duk_context * ctx, void * _env)
         {"dataSize", DukUInt(env->dataSize)},
         {"yieldDataAddress", DukUInt(env->yieldDataAddress | 0x80000000)},
         {"yieldDataSize", DukUInt(env->yieldDataSize)},
-        { nullptr }
+        {nullptr},
     };
 
     DukPutPropList(ctx, -1, props);
@@ -751,7 +750,7 @@ static duk_idx_t CbArgs_PIEventObject(duk_context * ctx, void * _env)
         {"dramAddress", DukUInt(env->dramAddress | 0x80000000)},
         {"cartAddress", DukUInt(env->cartAddress | 0xA0000000)},
         {"length", DukUInt(env->length + 1)},
-        { nullptr }
+        {nullptr},
     };
 
     DukPutPropList(ctx, -1, props);
@@ -778,8 +777,7 @@ duk_ret_t RequireAddressOrAddressRange(duk_context * ctx, duk_idx_t idx, uint32_
 
     if (duk_is_object(ctx, idx))
     {
-        if (!duk_has_prop_string(ctx, idx, "start") ||
-            !duk_has_prop_string(ctx, idx, "end"))
+        if (!duk_has_prop_string(ctx, idx, "start") || !duk_has_prop_string(ctx, idx, "end"))
         {
             duk_push_error_object(ctx, DUK_ERR_REFERENCE_ERROR,
                                   "object is missing 'start' or 'end' property");
@@ -789,8 +787,7 @@ duk_ret_t RequireAddressOrAddressRange(duk_context * ctx, duk_idx_t idx, uint32_
         duk_get_prop_string(ctx, idx, "start");
         duk_get_prop_string(ctx, idx, "end");
 
-        if (!duk_is_number(ctx, -2) ||
-            !duk_is_number(ctx, -1))
+        if (!duk_is_number(ctx, -2) || !duk_is_number(ctx, -1))
         {
             duk_pop_n(ctx, 2);
             duk_push_error_object(ctx, DUK_ERR_REFERENCE_ERROR,
@@ -798,8 +795,7 @@ duk_ret_t RequireAddressOrAddressRange(duk_context * ctx, duk_idx_t idx, uint32_
             return duk_throw(ctx);
         }
 
-        if (abs(duk_get_number(ctx, -2)) > 0xFFFFFFFF ||
-            abs(duk_get_number(ctx, -1)) > 0xFFFFFFFF)
+        if (abs(duk_get_number(ctx, -2)) > 0xFFFFFFFF || abs(duk_get_number(ctx, -1)) > 0xFFFFFFFF)
         {
             duk_push_error_object(ctx, DUK_ERR_RANGE_ERROR,
                                   "'start' or 'end' property out of range");
@@ -819,8 +815,7 @@ duk_ret_t RequireAddressOrAddressRange(duk_context * ctx, duk_idx_t idx, uint32_
 
 duk_ret_t RequireInterpreterCPU(duk_context * ctx)
 {
-    if (!g_Settings->LoadBool(Setting_ForceInterpreterCPU) &&
-        (CPU_TYPE)g_Settings->LoadDword(Game_CpuType) != CPU_Interpreter)
+    if (!g_Settings->LoadBool(Setting_ForceInterpreterCPU) && (CPU_TYPE)g_Settings->LoadDword(Game_CpuType) != CPU_Interpreter)
     {
         duk_push_error_object(ctx, DUK_ERR_ERROR,
                               "this feature requires the interpreter core");

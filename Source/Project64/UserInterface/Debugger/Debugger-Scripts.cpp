@@ -441,8 +441,7 @@ LRESULT CDebugScripts::OnRefreshList(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
         }
     } while (searchPath.FindNext());
 
-    fileNames.sort([](stdstr a, stdstr b)
-                   { return a.ToLower() < b.ToLower(); });
+    fileNames.sort([](stdstr a, stdstr b) { return a.ToLower() < b.ToLower(); });
 
     m_ScriptList.SetRedraw(false);
     m_ScriptList.DeleteAllItems();

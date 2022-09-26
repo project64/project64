@@ -15,9 +15,9 @@ void ScriptAPI::Define_Server(duk_context * ctx)
         {"port", DukGetter(js_Server__get_port)},
         {"address", DukGetter(js_Server__get_address)},
         {"addressFamily", DukGetter(js_Server__get_addressFamily)},
-        { nullptr }
+        {nullptr},
     };
-    
+
     DefineGlobalClass(ctx, "Server", js_Server__constructor, prototype);
 }
 

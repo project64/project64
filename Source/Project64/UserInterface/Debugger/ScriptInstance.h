@@ -1,5 +1,5 @@
-#include "ScriptTypes.h"
 #include "ScriptSystem.h"
+#include "ScriptTypes.h"
 #include "ScriptWorker.h"
 
 #pragma once
@@ -7,44 +7,50 @@
 class CScriptInstance
 {
 private:
-    JSInstanceName  m_InstanceName;
-    CScriptSystem*  m_System;
-    duk_context*    m_Ctx;
-    size_t          m_RefCount;
-    uint64_t        m_ExecTimeout;
-    uint64_t        m_ExecStartTime;
-    std::ifstream   m_SourceFile;
-    char*           m_SourceCode;
+    JSInstanceName m_InstanceName;
+    CScriptSystem * m_System;
+    duk_context * m_Ctx;
+    size_t m_RefCount;
+    uint64_t m_ExecTimeout;
+    uint64_t m_ExecStartTime;
+    std::ifstream m_SourceFile;
+    char * m_SourceCode;
     JSAppCallbackID m_CurExecCallbackId;
-    std::vector<CScriptWorker*> m_Workers;
-    bool            m_bStopping;
-    bool            m_bAborting;
+    std::vector<CScriptWorker *> m_Workers;
+    bool m_bStopping;
+    bool m_bAborting;
 
 public:
-    CScriptInstance(CScriptSystem* sys, const char* name);
+    CScriptInstance(CScriptSystem * sys, const char * name);
     ~CScriptInstance();
 
-    JSInstanceName& Name();
-    CScriptSystem*  System();
-    CDebuggerUI*    Debugger();
+    JSInstanceName & Name();
+    CScriptSystem * System();
+    CDebuggerUI * Debugger();
     JSAppCallbackID CallbackId();
 
-    bool   Run(const char* path);
-    void   SetExecTimeout(uint64_t timeout);
-    bool   IsTimedOut();
+    bool Run(const char * path);
+    void SetExecTimeout(uint64_t timeout);
+    bool IsTimedOut();
 
-    inline size_t GetRefCount() { return m_RefCount; }
-    void   IncRefCount();
-    void   DecRefCount();
-    void   SetStopping(bool bStopping);
-    inline bool IsStopping() { return m_bStopping; }
-    bool   PrepareAbort();
+    inline size_t GetRefCount()
+    {
+        return m_RefCount;
+    }
+    void IncRefCount();
+    void DecRefCount();
+    void SetStopping(bool bStopping);
+    inline bool IsStopping()
+    {
+        return m_bStopping;
+    }
+    bool PrepareAbort();
 
-    bool RegisterWorker(CScriptWorker* worker);
-    void UnregisterWorker(CScriptWorker* worker);
+    bool RegisterWorker(CScriptWorker * worker);
+    void UnregisterWorker(CScriptWorker * worker);
     void StopRegisteredWorkers();
 
-    inline void RawInvokeAppCallback(JSAppCallback& cb, void* _hookEnv)
+    inline void RawInvokeAppCallback(JSAppCallback & cb, void * _hookEnv)
     {
         m_CurExecCallbackId = cb.m_CallbackId;
 
@@ -58,7 +64,7 @@ public:
         m_CurExecCallbackId = JS_INVALID_CALLBACK;
     }
 
-    inline void RawCall(void *dukFuncHeapPtr, JSDukArgSetupFunc argSetupFunc, void *param = nullptr)
+    inline void RawCall(void * dukFuncHeapPtr, JSDukArgSetupFunc argSetupFunc, void * param = nullptr)
     {
         m_ExecStartTime = Timestamp();
         duk_push_heapptr(m_Ctx, dukFuncHeapPtr);
@@ -75,24 +81,24 @@ public:
 
             duk_pop(m_Ctx);
         }
-        catch (std::runtime_error& exc)
+        catch (std::runtime_error & exc)
         {
             FatalHandler(exc);
         }
     }
 
-    void   RawCMethodCall(void* dukThisHeapPtr, duk_c_function func,
-                          JSDukArgSetupFunc argSetupFunc = nullptr,
-                          void* argSetupParam = nullptr);
+    void RawCMethodCall(void * dukThisHeapPtr, duk_c_function func,
+                        JSDukArgSetupFunc argSetupFunc = nullptr,
+                        void * argSetupParam = nullptr);
 
-    void   PostCMethodCall(void* dukThisHeapPtr, duk_c_function func,
-                           JSDukArgSetupFunc argSetupFunc = nullptr,
-                           void* argSetupParam = nullptr, size_t argSetupParamSize = 0);
+    void PostCMethodCall(void * dukThisHeapPtr, duk_c_function func,
+                         JSDukArgSetupFunc argSetupFunc = nullptr,
+                         void * argSetupParam = nullptr, size_t argSetupParamSize = 0);
 
-    void   RawConsoleInput(const char* code);
+    void RawConsoleInput(const char * code);
 
 private:
-    void FatalHandler(std::runtime_error& exc);
+    void FatalHandler(std::runtime_error & exc);
     static uint64_t Timestamp();
     void Cleanup();
 };

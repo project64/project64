@@ -59,9 +59,9 @@ void CSettingConfig::UpdateAdvanced(bool AdvancedMode, HTREEITEM hItem)
         CSettingsPage * Page = (CSettingsPage *)m_PagesTreeList.GetItemData(hItem);
         if (!AdvancedMode && (Page == m_AdvancedPage || Page == m_DefaultsPage))
         {
-			HTREEITEM hPage = hItem;
-			hItem = m_PagesTreeList.GetNextSiblingItem(hItem);
-			m_PagesTreeList.DeleteItem(hPage);
+            HTREEITEM hPage = hItem;
+            hItem = m_PagesTreeList.GetNextSiblingItem(hItem);
+            m_PagesTreeList.DeleteItem(hPage);
         }
         else if (AdvancedMode && Page == m_GeneralOptionsPage)
         {
@@ -69,15 +69,15 @@ void CSettingConfig::UpdateAdvanced(bool AdvancedMode, HTREEITEM hItem)
             m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM, wGS(m_DefaultsPage->PageTitle()).c_str(), 0, 0, 0, 0, (ULONG)m_DefaultsPage, hItem, TVI_FIRST);
             break;
         }
-		else
-		{
-			UpdateAdvanced(AdvancedMode, m_PagesTreeList.GetChildItem(hItem));
-			hItem = m_PagesTreeList.GetNextSiblingItem(hItem);
-		}
+        else
+        {
+            UpdateAdvanced(AdvancedMode, m_PagesTreeList.GetChildItem(hItem));
+            hItem = m_PagesTreeList.GetNextSiblingItem(hItem);
+        }
     }
 }
 
-LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     stdstr ConfigRomTitle, GameIni(g_Settings->LoadStringVal(Game_IniKey));
 
@@ -212,7 +212,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
     return TRUE;
 }
 
-LRESULT CSettingConfig::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& /*bHandled*/)
+LRESULT CSettingConfig::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL & /*bHandled*/)
 {
     switch (wID)
     {
@@ -294,7 +294,7 @@ void CSettingConfig::ApplySettings(bool UpdateScreen)
     CSettingTypeApplication::Flush();
 }
 
-LRESULT CSettingConfig::OnPageListItemChanged(NMHDR* /*phdr*/)
+LRESULT CSettingConfig::OnPageListItemChanged(NMHDR * /*phdr*/)
 {
     m_bTVNSelChangedSupported = true;
 
@@ -312,48 +312,48 @@ LRESULT CSettingConfig::OnPageListItemChanged(NMHDR* /*phdr*/)
         ::EnableWindow(GetDlgItem(IDC_RESET_PAGE), m_CurrentPage->EnableReset());
     }
 
-    return 0;   // Return value ignored
+    return 0; // Return value ignored
 }
 
 // Fallback to using HitTest if TVN_SELCHANGED isn't working
-LRESULT CSettingConfig::OnPageListClicked(NMHDR*)
+LRESULT CSettingConfig::OnPageListClicked(NMHDR *)
 {
-	if (m_bTVNSelChangedSupported)
-	{
-		return 0;
-	}
+    if (m_bTVNSelChangedSupported)
+    {
+        return 0;
+    }
 
-	DWORD dwClickPos = GetMessagePos();
-	CPoint clickPt = CPoint(dwClickPos);
-	ScreenToClient(&clickPt);
+    DWORD dwClickPos = GetMessagePos();
+    CPoint clickPt = CPoint(dwClickPos);
+    ScreenToClient(&clickPt);
 
-	CRect treeRect;
-	m_PagesTreeList.GetWindowRect(treeRect);
-	ScreenToClient(&treeRect);
+    CRect treeRect;
+    m_PagesTreeList.GetWindowRect(treeRect);
+    ScreenToClient(&treeRect);
 
-	clickPt.x -= treeRect.left;
-	clickPt.y -= treeRect.top;
-	clickPt.y -= 2;
+    clickPt.x -= treeRect.left;
+    clickPt.y -= treeRect.top;
+    clickPt.y -= 2;
 
-	UINT uFlags;
-	HTREEITEM hItem = m_PagesTreeList.HitTest(clickPt, &uFlags);
+    UINT uFlags;
+    HTREEITEM hItem = m_PagesTreeList.HitTest(clickPt, &uFlags);
 
-	CSettingsPage * Page = (CSettingsPage *)m_PagesTreeList.GetItemData(hItem);
+    CSettingsPage * Page = (CSettingsPage *)m_PagesTreeList.GetItemData(hItem);
 
-	if (Page)
-	{
-		if (m_CurrentPage)
-		{
-			m_CurrentPage->HidePage();
-		}
-		m_CurrentPage = Page;
-		m_CurrentPage->ShowPage();
-		::EnableWindow(GetDlgItem(IDC_RESET_PAGE), m_CurrentPage->EnableReset());
-	}
-	return 0;
+    if (Page)
+    {
+        if (m_CurrentPage)
+        {
+            m_CurrentPage->HidePage();
+        }
+        m_CurrentPage = Page;
+        m_CurrentPage->ShowPage();
+        ::EnableWindow(GetDlgItem(IDC_RESET_PAGE), m_CurrentPage->EnableReset());
+    }
+    return 0;
 }
 
-LRESULT	CSettingConfig::OnSettingPageChanged(UINT /*uMsg*/, WPARAM /*wPage*/, LPARAM /*lParam*/)
+LRESULT CSettingConfig::OnSettingPageChanged(UINT /*uMsg*/, WPARAM /*wPage*/, LPARAM /*lParam*/)
 {
     ::EnableWindow(GetDlgItem(IDC_APPLY), true);
     ::EnableWindow(GetDlgItem(IDC_RESET_PAGE), m_CurrentPage->EnableReset());

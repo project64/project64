@@ -113,7 +113,10 @@ bool CMainGui::RegisterWinClass(void)
 
 void CMainGui::AddRecentRom(const char * ImagePath)
 {
-    if (HIWORD(ImagePath) == NULL) { return; }
+    if (HIWORD(ImagePath) == NULL)
+    {
+        return;
+    }
 
     // Get information about the stored ROM list
     size_t MaxRememberedFiles = UISettingsLoadDword(File_RecentGameFileCount);
@@ -413,12 +416,14 @@ WPARAM CMainGui::ProcessAllMessages(void)
             SetEvent(m_ResetInfo->hEvent);
             m_ResetInfo = nullptr;
         }
-        if ((m_CheatsUI.m_hWnd != nullptr && IsDialogMessage(m_CheatsUI.m_hWnd, &msg)) ||
-            (m_EnhancementUI.m_hWnd != nullptr && IsDialogMessage(m_EnhancementUI.m_hWnd, &msg)))
+        if ((m_CheatsUI.m_hWnd != nullptr && IsDialogMessage(m_CheatsUI.m_hWnd, &msg)) || (m_EnhancementUI.m_hWnd != nullptr && IsDialogMessage(m_EnhancementUI.m_hWnd, &msg)))
         {
             continue;
         }
-        if (m_Menu->ProcessAccelerator(m_hMainWindow, &msg)) { continue; }
+        if (m_Menu->ProcessAccelerator(m_hMainWindow, &msg))
+        {
+            continue;
+        }
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
@@ -440,7 +445,10 @@ bool CMainGui::ProcessGuiMessages(void)
             return true;
         }
         PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE);
-        if (m_Menu->ProcessAccelerator(m_hMainWindow, &msg)) { continue; }
+        if (m_Menu->ProcessAccelerator(m_hMainWindow, &msg))
+        {
+            continue;
+        }
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
@@ -485,7 +493,10 @@ void CMainGui::EnterLogOptions(void)
 
 int CMainGui::Height(void)
 {
-    if (!m_hMainWindow) { return 0; }
+    if (!m_hMainWindow)
+    {
+        return 0;
+    }
 
     RECT rect;
     GetWindowRect(m_hMainWindow, &rect);
@@ -494,7 +505,10 @@ int CMainGui::Height(void)
 
 int CMainGui::Width(void)
 {
-    if (!m_hMainWindow) { return 0; }
+    if (!m_hMainWindow)
+    {
+        return 0;
+    }
 
     RECT rect;
     GetWindowRect(m_hMainWindow, &rect);
@@ -532,7 +546,10 @@ void CMainGui::SetWindowMenu(CBaseMenu * Menu)
 
 void CMainGui::RefreshMenu(void)
 {
-    if (!m_Menu) { return; }
+    if (!m_Menu)
+    {
+        return;
+    }
     m_Menu->ResetMenu();
 }
 
@@ -622,10 +639,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
         case SC_MONITORPOWER:
         {
             CMainGui * _this = (CMainGui *)GetProp(hWnd, L"Class");
-            if (_this &&
-                _this->bCPURunning() &&
-                !g_Settings->LoadBool(GameRunning_CPU_Paused) &&
-                UISettingsLoadBool(Setting_DisableScrSaver))
+            if (_this && _this->bCPURunning() && !g_Settings->LoadBool(GameRunning_CPU_Paused) && UISettingsLoadBool(Setting_DisableScrSaver))
             {
                 return 0;
             }
@@ -650,12 +664,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
     {
         CMainGui * _this = (CMainGui *)GetProp(hWnd, L"Class");
 
-        if (!_this->m_bMainWindow ||
-            !_this->m_Created ||
-            _this->m_AttachingMenu ||
-            _this->m_MakingVisible ||
-            IsIconic(hWnd) ||
-            _this->ShowingRomBrowser())
+        if (!_this->m_bMainWindow || !_this->m_Created || _this->m_AttachingMenu || _this->m_MakingVisible || IsIconic(hWnd) || _this->ShowingRomBrowser())
         {
             break;
         }
@@ -711,7 +720,10 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
     case WM_SIZE:
     {
         CMainGui * _this = (CMainGui *)GetProp(hWnd, L"Class");
-            if (_this) { _this->Resize(wParam, LOWORD(lParam), HIWORD(lParam)); }
+        if (_this)
+        {
+            _this->Resize(wParam, LOWORD(lParam), HIWORD(lParam));
+        }
         if (_this)
         {
             if (wParam == SIZE_MAXIMIZED)
@@ -875,11 +887,17 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
     case WM_HIDE_CUROSR:
         if (!wParam)
         {
-            while (ShowCursor(FALSE) >= 0) { Sleep(0); }
+            while (ShowCursor(FALSE) >= 0)
+            {
+                Sleep(0);
+            }
         }
         else
         {
-            while (ShowCursor(TRUE) < 0) { Sleep(0); }
+            while (ShowCursor(TRUE) < 0)
+            {
+                Sleep(0);
+            }
         }
         break;
     case WM_MAKE_FOCUS:
@@ -927,8 +945,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
         {
             char * romPath = (char *)lParam;
             stdstr ext = CPath(romPath).GetExtension();
-            if ((_stricmp(ext.c_str(), "ndd") != 0) &&
-                (_stricmp(ext.c_str(), "d64") != 0))
+            if ((_stricmp(ext.c_str(), "ndd") != 0) && (_stricmp(ext.c_str(), "d64") != 0))
             {
                 g_BaseSystem->RunFileImage(romPath);
             }
@@ -1006,7 +1023,10 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
     case WM_COMMAND:
     {
         CMainGui * _this = (CMainGui *)GetProp(hWnd, L"Class");
-            if (_this == nullptr) { break; }
+        if (_this == nullptr)
+        {
+            break;
+        }
 
         switch (LOWORD(wParam))
         {

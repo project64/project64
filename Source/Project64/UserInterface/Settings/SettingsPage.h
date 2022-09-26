@@ -8,11 +8,11 @@ public:
     virtual ~CSettingsPage(void) = 0 {};
 
     virtual LanguageStringID PageTitle(void) = 0;
-    virtual void             HidePage(void) = 0;
-    virtual void             ShowPage(void) = 0;
-    virtual void             ApplySettings(bool UpdateScreen) = 0;
-    virtual bool             EnableReset(void) = 0;
-    virtual void             ResetPage(void) = 0;
+    virtual void HidePage(void) = 0;
+    virtual void ShowPage(void) = 0;
+    virtual void ApplySettings(bool UpdateScreen) = 0;
+    virtual bool EnableReset(void) = 0;
+    virtual void ResetPage(void) = 0;
 };
 
 template <class T>
@@ -20,9 +20,9 @@ class CSettingsPageImpl :
     public CDialogImpl<T>
 {
 protected:
-    typedef std::map<SettingID, CModifiedEditBox *>     TextBoxList;
-    typedef std::map<SettingID, CModifiedButton *>      ButtonList;
-    typedef std::map<SettingID, CModifiedComboBox *>    ComboBoxList;
+    typedef std::map<SettingID, CModifiedEditBox *> TextBoxList;
+    typedef std::map<SettingID, CModifiedButton *> ButtonList;
+    typedef std::map<SettingID, CModifiedComboBox *> ComboBoxList;
     typedef std::map<SettingID, CModifiedComboBoxTxt *> ComboBoxTxtList;
 
     virtual ~CSettingsPageImpl()
@@ -57,7 +57,7 @@ protected:
 #ifdef _DEBUG
         m_bModal = false;
 #endif //_DEBUG
-        m_hWnd = ::CreateDialogParam(_AtlBaseModule.GetResourceInstance(), MAKEINTRESOURCE(static_cast<T*>(this)->IDD), hParent, T::StartDialogProc, NULL);
+        m_hWnd = ::CreateDialogParam(_AtlBaseModule.GetResourceInstance(), MAKEINTRESOURCE(static_cast<T *>(this)->IDD), hParent, T::StartDialogProc, NULL);
         if (m_hWnd == nullptr)
         {
             return false;
@@ -412,6 +412,7 @@ protected:
             ComboBox.SetReset(false);
         }
     }
+
 public:
     virtual void ApplyEditBoxes(void)
     {
@@ -531,12 +532,13 @@ public:
             SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
         }
     }
+
 protected:
-    TextBoxList     m_TxtBoxList;
-    ButtonList      m_ButtonList;
-    ComboBoxList    m_ComboBoxList;
+    TextBoxList m_TxtBoxList;
+    ButtonList m_ButtonList;
+    ComboBoxList m_ComboBoxList;
     ComboBoxTxtList m_ComboBoxTxtList;
-    bool            m_UpdatingTxt;
+    bool m_UpdatingTxt;
 };
 
 typedef std::vector<CSettingsPage *> SETTING_PAGES;
@@ -544,28 +546,34 @@ typedef std::vector<CSettingsPage *> SETTING_PAGES;
 class CConfigSettingSection
 {
     SETTING_PAGES m_Pages;
-    std::wstring  m_PageTitle;
+    std::wstring m_PageTitle;
 
 public:
     CConfigSettingSection(LPCWSTR PageTitle);
     ~CConfigSettingSection();
 
-    LPCWSTR GetPageTitle(void) const { return m_PageTitle.c_str(); }
-    void    AddPage(CSettingsPage * Page);
-    size_t  GetPageCount(void) const { return m_Pages.size(); }
+    LPCWSTR GetPageTitle(void) const
+    {
+        return m_PageTitle.c_str();
+    }
+    void AddPage(CSettingsPage * Page);
+    size_t GetPageCount(void) const
+    {
+        return m_Pages.size();
+    }
     CSettingsPage * GetPage(int PageNo);
 };
 
 #include "SettingsPage-AdvancedOptions.h"
 #include "SettingsPage-Defaults.h"
 #include "SettingsPage-Directories.h"
+#include "SettingsPage-DiskDrive.h"
+#include "SettingsPage-Game-DiskDrive.h"
 #include "SettingsPage-Game-General.h"
 #include "SettingsPage-Game-Plugin.h"
 #include "SettingsPage-Game-Recompiler.h"
-#include "SettingsPage-Game-DiskDrive.h"
 #include "SettingsPage-Game-Status.h"
 #include "SettingsPage-GameBrowser.h"
 #include "SettingsPage-KeyboardShortcuts.h"
 #include "SettingsPage-Options.h"
 #include "SettingsPage-Plugin.h"
-#include "SettingsPage-DiskDrive.h"

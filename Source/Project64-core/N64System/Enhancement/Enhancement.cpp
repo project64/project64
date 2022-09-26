@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/Enhancement/Enhancement.h>
-#include <Project64-core/Settings/SettingType/SettingsType-GameSetting.h>
-#include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/SystemGlobals.h>
+#include <Project64-core/Settings/SettingType/SettingsType-GameSetting.h>
 
 const char * CEnhancement::CheatIdent = "Cheat";
 const char * CEnhancement::EnhancementIdent = "Enhancement";
 
-#pragma warning(disable:4996)
+#pragma warning(disable : 4996)
 
 static std::string GenerateKeyName(const char * Name, const char * Ident, const char * PostIdent)
 {
@@ -26,7 +26,7 @@ class CSettingEnhancementActive :
 {
 public:
     CSettingEnhancementActive(const char * Name, const char * Ident, bool Default) :
-        CSettingTypeGame("",false),
+        CSettingTypeGame("", false),
         m_Default(Default)
     {
         m_KeyNameIdex = GenerateKeyName(Name, Ident, "Active");
@@ -90,7 +90,7 @@ public:
         Flush();
     }
 
-    bool SelectedValue(uint16_t &Value)
+    bool SelectedValue(uint16_t & Value)
     {
         uint32_t StoredValue = 0;
         if (!Load(0, StoredValue))
@@ -281,8 +281,14 @@ void CEnhancement::SetName(const char * Name)
     CSettingEnhancementSelectedOption(m_Name.c_str(), m_Ident.c_str()).Delete();
     m_Name = stdstr(Name != nullptr ? Name : "").Trim("\t ,");
     m_NameAndExtension = m_Name;
-    if (m_Active != m_OnByDefault) { CSettingEnhancementActive(m_Name.c_str(), m_Ident.c_str(), m_OnByDefault).SetActive(m_OnByDefault); }
-    if (OptionSelected()) { CSettingEnhancementSelectedOption(m_Name.c_str(), m_Ident.c_str()).SetOption(SelectedOption()); }
+    if (m_Active != m_OnByDefault)
+    {
+        CSettingEnhancementActive(m_Name.c_str(), m_Ident.c_str(), m_OnByDefault).SetActive(m_OnByDefault);
+    }
+    if (OptionSelected())
+    {
+        CSettingEnhancementSelectedOption(m_Name.c_str(), m_Ident.c_str()).SetOption(SelectedOption());
+    }
     CheckValid();
 }
 

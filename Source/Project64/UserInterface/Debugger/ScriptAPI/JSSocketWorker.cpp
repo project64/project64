@@ -69,9 +69,7 @@ bool CJSSocketWorker::Write(const char * data, size_t length, duk_int_t callback
 {
     CGuard guard(m_Queue.cs);
 
-    if (m_Queue.bFullClosePending ||
-        m_Queue.bSendClosePending ||
-        m_Queue.bSendClosed)
+    if (m_Queue.bFullClosePending || m_Queue.bSendClosePending || m_Queue.bSendClosed)
     {
         return false;
     }
@@ -313,8 +311,7 @@ void CJSSocketWorker::ProcSendData()
         JSEmitError("send() error");
     }
 
-    if (m_Queue.writes.size() == 0 &&
-        m_Queue.bSendClosePending)
+    if (m_Queue.writes.size() == 0 && m_Queue.bSendClosePending)
     {
         shutdown(m_Socket, SD_SEND);
         m_Queue.bSendClosePending = false;

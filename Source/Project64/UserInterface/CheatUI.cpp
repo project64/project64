@@ -322,7 +322,10 @@ LRESULT CCheatList::OnTreeClicked(NMHDR * lpnmh)
 
 LRESULT CCheatList::OnTreeRClicked(NMHDR * lpnmh)
 {
-    if (g_Settings->LoadBool(UserInterface_BasicMode)) { return true; }
+    if (g_Settings->LoadBool(UserInterface_BasicMode))
+    {
+        return true;
+    }
 
     // Work out what item is selected
     TVHITTESTINFO ht = {0};
@@ -397,7 +400,10 @@ LRESULT CCheatList::OnTreeSelChanged(NMHDR * /*lpnmh*/)
 
 void CCheatList::RefreshItems()
 {
-    if (m_hWnd == nullptr) { return; }
+    if (m_hWnd == nullptr)
+    {
+        return;
+    }
 
     m_DeleteingEntries = true;
     m_hCheatTree.DeleteAllItems();
@@ -419,9 +425,15 @@ void CCheatList::AddCodeLayers(LPARAM Enhancement, const std::wstring & Name, HT
     TV_INSERTSTRUCT tv;
 
     wchar_t Text[500], Item[500];
-    if (Name.length() > ((sizeof(Text) / sizeof(Text[0])) - 5)) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+    if (Name.length() > ((sizeof(Text) / sizeof(Text[0])) - 5))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
     wcscpy(Text, Name.c_str());
-    if (wcschr(Text, L'\\') > 0) { *wcschr(Text, L'\\') = 0; }
+    if (wcschr(Text, L'\\') > 0)
+    {
+        *wcschr(Text, L'\\') = 0;
+    }
 
     tv.item.mask = TVIF_TEXT;
     tv.item.pszText = Item;
@@ -457,7 +469,10 @@ void CCheatList::AddCodeLayers(LPARAM Enhancement, const std::wstring & Name, HT
     hParent = TreeView_InsertItem(m_hCheatTree, &tv);
     TV_SetCheckState(hParent, CheatActive ? TV_STATE_CHECKED : TV_STATE_CLEAR);
 
-    if (wcscmp(Text, Name.c_str()) == 0) { return; }
+    if (wcscmp(Text, Name.c_str()) == 0)
+    {
+        return;
+    }
     AddCodeLayers(Enhancement, Name.substr(wcslen(Text) + 1), hParent, CheatActive);
 }
 
@@ -466,9 +481,12 @@ void CCheatList::ChangeChildrenStatus(HTREEITEM hParent, bool Checked)
     HTREEITEM hItem = m_hCheatTree.GetChildItem(hParent);
     if (hItem == nullptr)
     {
-        if (hParent == TVI_ROOT) { return; }
+        if (hParent == TVI_ROOT)
+        {
+            return;
+        }
 
-        TVITEM item = { 0 };
+        TVITEM item = {0};
         item.mask = TVIF_PARAM;
         item.hItem = hParent;
         m_hCheatTree.GetItem(&item);
@@ -494,14 +512,19 @@ void CCheatList::ChangeChildrenStatus(HTREEITEM hParent, bool Checked)
     while (hItem != nullptr)
     {
         TV_CHECK_STATE ChildState = TV_GetCheckState(hItem);
-        if ((ChildState != TV_STATE_CHECKED || !Checked) &&
-            (ChildState != TV_STATE_CLEAR || Checked))
+        if ((ChildState != TV_STATE_CHECKED || !Checked) && (ChildState != TV_STATE_CLEAR || Checked))
         {
             ChangeChildrenStatus(hItem, Checked);
         }
         ChildState = TV_GetCheckState(hItem);
-        if (state == TV_STATE_UNKNOWN) { state = ChildState; }
-        if (state != ChildState) { state = TV_STATE_INDETERMINATE; }
+        if (state == TV_STATE_UNKNOWN)
+        {
+            state = ChildState;
+        }
+        if (state != ChildState)
+        {
+            state = TV_STATE_INDETERMINATE;
+        }
         hItem = m_hCheatTree.GetNextSiblingItem(hItem);
     }
     if (state != TV_STATE_UNKNOWN)
@@ -603,8 +626,14 @@ void CCheatList::MenuSetText(HMENU hMenu, int MenuPos, const wchar_t * Title, co
 
     GetMenuItemInfo(hMenu, MenuPos, true, &MenuInfo);
     wcscpy(String, Title);
-    if (wcschr(String, '\t') != nullptr) { *(wcschr(String, '\t')) = '\0'; }
-    if (ShortCut) { _swprintf(String, L"%s\t%s", String, ShortCut); }
+    if (wcschr(String, '\t') != nullptr)
+    {
+        *(wcschr(String, '\t')) = '\0';
+    }
+    if (ShortCut)
+    {
+        _swprintf(String, L"%s\t%s", String, ShortCut);
+    }
     SetMenuItemInfo(hMenu, MenuPos, true, &MenuInfo);
 }
 
@@ -865,10 +894,7 @@ bool CEditCheat::ValuesChanged(void)
     bool Changed = false;
     if (m_hWnd != nullptr)
     {
-        if (m_EditName != GetCWindowText(GetDlgItem(IDC_CODE_NAME)) ||
-            m_EditCode != GetCWindowText(GetDlgItem(IDC_CHEAT_CODES)) ||
-            m_EditOptions != GetCWindowText(GetDlgItem(IDC_CHEAT_OPTIONS)) ||
-            m_EditNotes != GetCWindowText(GetDlgItem(IDC_NOTES)))
+        if (m_EditName != GetCWindowText(GetDlgItem(IDC_CODE_NAME)) || m_EditCode != GetCWindowText(GetDlgItem(IDC_CHEAT_CODES)) || m_EditOptions != GetCWindowText(GetDlgItem(IDC_CHEAT_OPTIONS)) || m_EditNotes != GetCWindowText(GetDlgItem(IDC_NOTES)))
         {
             Changed = true;
         }

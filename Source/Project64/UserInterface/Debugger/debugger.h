@@ -1,8 +1,8 @@
 #pragma once
-#include <Project64-core/Debugger.h>
-#include <Common/SyncEvent.h>
-#include <Project64-core/Settings/DebugSettings.h>
 #include "DebugMMU.h"
+#include <Common/SyncEvent.h>
+#include <Project64-core/Debugger.h>
+#include <Project64-core/Settings/DebugSettings.h>
 
 class CDumpMemory;
 class CDebugMemoryView;
@@ -43,7 +43,7 @@ public:
     void OpenCommandWindow(void);
     void Debug_ShowCommandsLocation(uint32_t address, bool top);
     void OpenScriptsWindow(void);
-    void Debug_LogScriptsWindow(const char* text);
+    void Debug_LogScriptsWindow(const char * text);
     void Debug_ClearScriptsWindow(void);
     void Debug_RefreshScriptsWindow(void);
     void Debug_RefreshSymbolsWindow(void);
@@ -71,14 +71,14 @@ public:
     bool WriteBP64(uint32_t address);
     void WaitForStep(void);
 
-    CBreakpoints* Breakpoints();
-    CDebugSymbols* Symbols();
-    CScriptSystem* ScriptSystem();
-    CDebugScripts* ScriptConsole();
-    CDMALog* DMALog();
-    CCPULog* CPULog();
-    CSymbolTable* SymbolTable();
-    SyncEvent& StepEvent();
+    CBreakpoints * Breakpoints();
+    CDebugSymbols * Symbols();
+    CScriptSystem * ScriptSystem();
+    CDebugScripts * ScriptConsole();
+    CDMALog * DMALog();
+    CCPULog * CPULog();
+    CSymbolTable * SymbolTable();
+    SyncEvent & StepEvent();
 
     static void GameReset(CDebuggerUI * _this);
     static void GameCpuRunningChanged(CDebuggerUI * _this);
@@ -101,27 +101,27 @@ protected:
     void EmulationStopped(void);
 
 private:
-    CDebuggerUI(const CDebuggerUI&);
-    CDebuggerUI& operator=(const CDebuggerUI&);
+    CDebuggerUI(const CDebuggerUI &);
+    CDebuggerUI & operator=(const CDebuggerUI &);
 
-    CDumpMemory          * m_MemoryDump;
-    CDebugMemoryView     * m_MemoryView;
-    CDebugMemorySearch   * m_MemorySearch;
-    CDebugTlb            * m_DebugTLB;
-    CDebugCommandsView   * m_CommandsView;
-    CDebugScripts        * m_Scripts;
-    CDebugSymbols        * m_Symbols;
-    CDebugDMALogView     * m_DMALogView;
-    CDebugCPULogView     * m_CPULogView;
-    CDebugStackTrace     * m_StackTrace;
-    CDebugStackView      * m_StackView;
+    CDumpMemory * m_MemoryDump;
+    CDebugMemoryView * m_MemoryView;
+    CDebugMemorySearch * m_MemorySearch;
+    CDebugTlb * m_DebugTLB;
+    CDebugCommandsView * m_CommandsView;
+    CDebugScripts * m_Scripts;
+    CDebugSymbols * m_Symbols;
+    CDebugDMALogView * m_DMALogView;
+    CDebugCPULogView * m_CPULogView;
+    CDebugStackTrace * m_StackTrace;
+    CDebugStackView * m_StackView;
     CDebugExcBreakpoints * m_ExcBreakpoints;
 
-    CBreakpoints        * m_Breakpoints;
-    CScriptSystem       * m_ScriptSystem;
-    CSymbolTable        * m_SymbolTable;
-    CDMALog             * m_DMALog;
-    CCPULog             * m_CPULog;
+    CBreakpoints * m_Breakpoints;
+    CScriptSystem * m_ScriptSystem;
+    CSymbolTable * m_SymbolTable;
+    CDMALog * m_DMALog;
+    CCPULog * m_CPULog;
 
     SyncEvent m_StepEvent;
 

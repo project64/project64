@@ -16,19 +16,24 @@ class CEnhancementUI :
 
 public:
     BEGIN_MSG_MAP_EX(CEnhancementUI)
-        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
-        MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
-        COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
-        COMMAND_ID_HANDLER(ID_POPUP_EDIT, OnEditEnhancement)
-        COMMAND_ID_HANDLER(ID_POPUP_ADDENHANCEMENT, OnAddEnhancement)
-        COMMAND_ID_HANDLER(ID_POPUP_DELETE, OnPopupDelete)
-        NOTIFY_HANDLER_EX(IDC_ENHANCEMENTLIST, NM_CLICK, OnEnhancementListClicked)
-        NOTIFY_HANDLER_EX(IDC_ENHANCEMENTLIST, NM_RCLICK, OnEnhancementListRClicked)
-        NOTIFY_HANDLER_EX(IDC_ENHANCEMENTLIST, NM_DBLCLK, OnEnhancementListDClicked)
-        NOTIFY_HANDLER_EX(IDC_ENHANCEMENTLIST, TVN_SELCHANGED, OnEnhancementListSelChanged)
+    {
+        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog);
+        MESSAGE_HANDLER(WM_DESTROY, OnDestroy);
+        COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd);
+        COMMAND_ID_HANDLER(ID_POPUP_EDIT, OnEditEnhancement);
+        COMMAND_ID_HANDLER(ID_POPUP_ADDENHANCEMENT, OnAddEnhancement);
+        COMMAND_ID_HANDLER(ID_POPUP_DELETE, OnPopupDelete);
+        NOTIFY_HANDLER_EX(IDC_ENHANCEMENTLIST, NM_CLICK, OnEnhancementListClicked);
+        NOTIFY_HANDLER_EX(IDC_ENHANCEMENTLIST, NM_RCLICK, OnEnhancementListRClicked);
+        NOTIFY_HANDLER_EX(IDC_ENHANCEMENTLIST, NM_DBLCLK, OnEnhancementListDClicked);
+        NOTIFY_HANDLER_EX(IDC_ENHANCEMENTLIST, TVN_SELCHANGED, OnEnhancementListSelChanged);
+    }
     END_MSG_MAP()
 
-    enum { IDD = IDD_Enhancement_Config };
+    enum
+    {
+        IDD = IDD_Enhancement_Config
+    };
 
     CEnhancementUI();
 
@@ -37,15 +42,15 @@ public:
 private:
     friend CEditEnhancement;
 
-    CEnhancementUI(const CEnhancementUI&);
-    CEnhancementUI& operator=(const CEnhancementUI&);
+    CEnhancementUI(const CEnhancementUI &);
+    CEnhancementUI & operator=(const CEnhancementUI &);
 
     LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
     LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
     LRESULT OnEditEnhancement(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
-    LRESULT OnAddEnhancement(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled );
+    LRESULT OnAddEnhancement(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
     LRESULT OnCloseCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
-    LRESULT OnPopupDelete(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+    LRESULT OnPopupDelete(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
     LRESULT OnEnhancementListClicked(NMHDR * lpnmh);
     LRESULT OnEnhancementListRClicked(NMHDR * lpnmh);
     LRESULT OnEnhancementListDClicked(NMHDR * lpnmh);

@@ -90,7 +90,10 @@ void CNotificationImp::DisplayMessage(int DisplayTime, LanguageStringID StringID
 
 void CNotificationImp::DisplayMessage(int DisplayTime, const char * Message) const
 {
-    if (!m_hWnd) { return; }
+    if (!m_hWnd)
+    {
+        return;
+    }
 
     if (m_NextMsg > 0 || DisplayTime > 0)
     {
@@ -126,7 +129,10 @@ void CNotificationImp::DisplayMessage(int DisplayTime, const char * Message) con
 
 void CNotificationImp::DisplayMessage2(const char * Message) const
 {
-    if (!m_hWnd) { return; }
+    if (!m_hWnd)
+    {
+        return;
+    }
 
     m_hWnd->SetStatusText(1, stdstr(Message).ToUTF16().c_str());
 }
@@ -155,13 +161,16 @@ void CNotificationImp::FatalError(LanguageStringID StringID) const
     FatalError(g_Lang->GetString(StringID).c_str());
 }
 
-void CNotificationImp::FatalError(const char  * Message) const
+void CNotificationImp::FatalError(const char * Message) const
 {
     WriteTrace(TraceUserInterface, TraceError, Message);
     WindowMode();
 
     HWND Parent = nullptr;
-    if (m_hWnd) { Parent = reinterpret_cast<HWND>(m_hWnd->GetWindowHandle()); }
+    if (m_hWnd)
+    {
+        Parent = reinterpret_cast<HWND>(m_hWnd->GetWindowHandle());
+    }
     MessageBox(Parent, stdstr(Message).ToUTF16().c_str(), L"Error", MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
     ExitThread(0);
 }
@@ -169,7 +178,10 @@ void CNotificationImp::FatalError(const char  * Message) const
 void CNotificationImp::AddRecentDir(const char * RomDir)
 {
     // Validate the passed string
-    if (HIWORD(RomDir) == NULL) { return; }
+    if (HIWORD(RomDir) == NULL)
+    {
+        return;
+    }
 
     // Get information about the stored ROM list
     size_t MaxRememberedDirs = UISettingsLoadDword(Directory_RecentGameDirCount);
@@ -210,20 +222,29 @@ void CNotificationImp::AddRecentDir(const char * RomDir)
 
 void CNotificationImp::RefreshMenu(void)
 {
-    if (m_hWnd == nullptr) { return; }
+    if (m_hWnd == nullptr)
+    {
+        return;
+    }
 
     m_hWnd->RefreshMenu();
 }
 
 void CNotificationImp::HideRomBrowser(void)
 {
-    if (m_hWnd == nullptr) { return; }
+    if (m_hWnd == nullptr)
+    {
+        return;
+    }
     m_hWnd->HideRomList();
 }
 
 void CNotificationImp::ShowRomBrowser(void)
 {
-    if (m_hWnd == nullptr) { return; }
+    if (m_hWnd == nullptr)
+    {
+        return;
+    }
     if (UISettingsLoadBool(RomBrowser_Enabled))
     {
         // Display the ROM browser
@@ -234,20 +255,29 @@ void CNotificationImp::ShowRomBrowser(void)
 
 void CNotificationImp::BringToTop(void)
 {
-    if (m_hWnd == nullptr) { return; }
+    if (m_hWnd == nullptr)
+    {
+        return;
+    }
 
     m_hWnd->BringToTop();
 }
 
 void CNotificationImp::ChangeFullScreen(void) const
 {
-    if (m_hWnd == nullptr) { return; }
+    if (m_hWnd == nullptr)
+    {
+        return;
+    }
     SendMessage((HWND)(m_hWnd->GetWindowHandle()), WM_COMMAND, MAKELPARAM(ID_OPTIONS_FULLSCREEN2, false), 0);
 }
 
 bool CNotificationImp::ProcessGuiMessages(void) const
 {
-    if (m_hWnd == nullptr) { return false; }
+    if (m_hWnd == nullptr)
+    {
+        return false;
+    }
 
     return m_hWnd->ProcessGuiMessages();
 }

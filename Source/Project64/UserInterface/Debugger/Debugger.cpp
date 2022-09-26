@@ -613,13 +613,11 @@ void CDebuggerUI::CPUStepStarted()
             m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_CPU_EXEC, (void *)&hookEnv);
         }
 
-        if (hookEnv.opInfo.IsLoadCommand() &&
-            m_ScriptSystem->HaveCpuReadCallbacks(hookEnv.opInfo.GetLoadStoreAddress()))
+        if (hookEnv.opInfo.IsLoadCommand() && m_ScriptSystem->HaveCpuReadCallbacks(hookEnv.opInfo.GetLoadStoreAddress()))
         {
             m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_CPU_READ, (void *)&hookEnv);
         }
-        else if (hookEnv.opInfo.IsStoreCommand() &&
-                 m_ScriptSystem->HaveCpuWriteCallbacks(hookEnv.opInfo.GetLoadStoreAddress()))
+        else if (hookEnv.opInfo.IsStoreCommand() && m_ScriptSystem->HaveCpuWriteCallbacks(hookEnv.opInfo.GetLoadStoreAddress()))
         {
             m_ScriptSystem->InvokeAppCallbacks(JS_HOOK_CPU_WRITE, (void *)&hookEnv);
         }
@@ -629,8 +627,7 @@ void CDebuggerUI::CPUStepStarted()
     {
         uint32_t pc = g_Reg->m_PROGRAM_COUNTER;
 
-        if (pc == 0x80000000 || pc == 0x80000080 ||
-            pc == 0xA0000100 || pc == 0x80000180)
+        if (pc == 0x80000000 || pc == 0x80000080 || pc == 0xA0000100 || pc == 0x80000180)
         {
             if ((g_Reg->STATUS_REGISTER >> 1) & 3) // If EXL/ERL bits are set
             {
@@ -659,17 +656,13 @@ void CDebuggerUI::CPUStepStarted()
             int nReg1 = 0, nReg2 = 0;
             opInfo.ReadsGPR(&nReg1, &nReg2);
 
-            if ((nReg1 != 0 && m_Breakpoints->HaveGPRReadBP(nReg1)) ||
-                (nReg2 != 0 && m_Breakpoints->HaveGPRReadBP(nReg2)))
+            if ((nReg1 != 0 && m_Breakpoints->HaveGPRReadBP(nReg1)) || (nReg2 != 0 && m_Breakpoints->HaveGPRReadBP(nReg2)))
             {
                 g_Settings->SaveBool(Debugger_SteppingOps, true);
             }
         }
 
-        if (m_Breakpoints->HaveHIWriteBP() && opInfo.WritesHI() ||
-            m_Breakpoints->HaveLOWriteBP() && opInfo.WritesLO() ||
-            m_Breakpoints->HaveHIReadBP() && opInfo.ReadsHI() ||
-            m_Breakpoints->HaveLOReadBP() && opInfo.ReadsLO())
+        if (m_Breakpoints->HaveHIWriteBP() && opInfo.WritesHI() || m_Breakpoints->HaveLOWriteBP() && opInfo.WritesLO() || m_Breakpoints->HaveHIReadBP() && opInfo.ReadsHI() || m_Breakpoints->HaveLOReadBP() && opInfo.ReadsLO())
         {
             g_Settings->SaveBool(Debugger_SteppingOps, true);
         }

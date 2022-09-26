@@ -1,16 +1,16 @@
 #include "stdafx.h"
 
-#include <Common/path.h>
 #include <Common/Trace.h>
 #include <Common/Util.h>
+#include <Common/path.h>
 
+#include "Settings/SettingType/SettingsType-Application.h"
+#include <Project64-core/N64System/Enhancement/Enhancements.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
+#include <Project64-core/N64System/N64Disk.h>
+#include <Project64-core/N64System/N64Rom.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Plugins/Plugin.h>
-#include <Project64-core/N64System/N64Rom.h>
-#include <Project64-core/N64System/N64Disk.h>
-#include <Project64-core/N64System/Enhancement/Enhancements.h>
-#include "Settings/SettingType/SettingsType-Application.h"
 
 static void FixDirectories(void);
 void SetTraceModuleNames(void);
@@ -164,7 +164,11 @@ void CleanupTrace(void)
 void TraceDone(void)
 {
     CloseTrace();
-    if (g_LogFile) { delete g_LogFile; g_LogFile = nullptr; }
+    if (g_LogFile)
+    {
+        delete g_LogFile;
+        g_LogFile = nullptr;
+    }
 }
 
 const char * AppName(void)
@@ -173,7 +177,7 @@ const char * AppName(void)
     return ApplicationName.c_str();
 }
 
-static bool ParseCommand(int32_t argc, char **argv)
+static bool ParseCommand(int32_t argc, char ** argv)
 {
     if (argc <= 1)
     {
@@ -213,7 +217,7 @@ static bool ParseCommand(int32_t argc, char **argv)
     return false;
 }
 
-bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char **argv)
+bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char ** argv)
 {
     try
     {
@@ -283,13 +287,41 @@ void AppCleanup(void)
     WriteTrace(TraceAppCleanup, TraceDebug, "Cleaning up global objects");
     CleanupTrace();
 
-    if (g_Enhancements) { delete g_Enhancements; g_Enhancements = nullptr; }
-    if (g_Rom) { delete g_Rom; g_Rom = nullptr; }
-    if (g_DDRom) { delete g_DDRom; g_DDRom = nullptr; }
-    if (g_Disk) { delete g_Disk; g_Disk = nullptr; }
-    if (g_Plugins) { delete g_Plugins; g_Plugins = nullptr; }
-    if (g_Settings) { delete g_Settings; g_Settings = nullptr; }
-    if (g_Lang) { delete g_Lang; g_Lang = nullptr; }
+    if (g_Enhancements)
+    {
+        delete g_Enhancements;
+        g_Enhancements = nullptr;
+    }
+    if (g_Rom)
+    {
+        delete g_Rom;
+        g_Rom = nullptr;
+    }
+    if (g_DDRom)
+    {
+        delete g_DDRom;
+        g_DDRom = nullptr;
+    }
+    if (g_Disk)
+    {
+        delete g_Disk;
+        g_Disk = nullptr;
+    }
+    if (g_Plugins)
+    {
+        delete g_Plugins;
+        g_Plugins = nullptr;
+    }
+    if (g_Settings)
+    {
+        delete g_Settings;
+        g_Settings = nullptr;
+    }
+    if (g_Lang)
+    {
+        delete g_Lang;
+        g_Lang = nullptr;
+    }
 
     CMipsMemoryVM::FreeReservedMemory();
     TraceDone();

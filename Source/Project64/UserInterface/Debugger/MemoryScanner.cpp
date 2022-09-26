@@ -16,7 +16,7 @@ CMixed::TypeNameEntry CMixed::TypeNames[] = {
     {"char", ValueType_string},
     {"char", ValueType_unkstring},
     {"char", ValueType_unkstring},
-    { nullptr,      ValueType_invalid}
+    {nullptr, ValueType_invalid},
 };
 
 const char * CMixed::GetTypeName(void)
@@ -231,9 +231,7 @@ int CScanResult::GetMemoryValueString(char * buffer, size_t size, bool bIgnoreHe
 
     uint8_t * mem = CMemoryScanner::GetMemoryPool(paddr);
 
-    if (m_Type == ValueType_istring ||
-        m_Type == ValueType_string ||
-        m_Type == ValueType_unkstring)
+    if (m_Type == ValueType_istring || m_Type == ValueType_string || m_Type == ValueType_unkstring)
     {
         if (bHex)
         {
@@ -407,9 +405,7 @@ bool CScanResult::SetAddressSafe(uint32_t address)
         return false;
     }
 
-    if (!CMemoryScanner::RangeCheck(paddrStart, paddrEnd, 0x00000000, ramSize - 1) &&
-        !CMemoryScanner::RangeCheck(paddrStart, paddrEnd, 0x10000000, 0x10000000 + romSize - 1) &&
-        !CMemoryScanner::RangeCheck(paddrStart, paddrEnd, 0x04000000, 0x04001FFF))
+    if (!CMemoryScanner::RangeCheck(paddrStart, paddrEnd, 0x00000000, ramSize - 1) && !CMemoryScanner::RangeCheck(paddrStart, paddrEnd, 0x10000000, 0x10000000 + romSize - 1) && !CMemoryScanner::RangeCheck(paddrStart, paddrEnd, 0x04000000, 0x04001FFF))
     {
         return false;
     }
@@ -432,9 +428,7 @@ bool CScanResult::SetStrLengthSafe(int length)
     uint32_t paddrStart = m_Address & 0x1FFFFFFF;
     uint32_t paddrEnd = (paddrStart + length) - 1;
 
-    if (!CMemoryScanner::RangeCheck(paddrStart, paddrEnd, 0x00000000, ramSize - 1) &&
-        !CMemoryScanner::RangeCheck(paddrStart, paddrEnd, 0x10000000, 0x10000000 + romSize - 1) &&
-        !CMemoryScanner::RangeCheck(paddrStart, paddrEnd, 0x04000000, 0x04001FFF))
+    if (!CMemoryScanner::RangeCheck(paddrStart, paddrEnd, 0x00000000, ramSize - 1) && !CMemoryScanner::RangeCheck(paddrStart, paddrEnd, 0x10000000, 0x10000000 + romSize - 1) && !CMemoryScanner::RangeCheck(paddrStart, paddrEnd, 0x04000000, 0x04001FFF))
     {
         return false;
     }
@@ -488,16 +482,12 @@ bool CMemoryScanner::PAddrValid(uint32_t physAddr)
     uint32_t ramSize = g_MMU->RdramSize();
     uint32_t romSize = g_Rom->GetRomSize();
 
-    return (AddrCheck(physAddr, 0x00000000, 0x00000000 + ramSize - 1) ||
-            AddrCheck(physAddr, 0x10000000, 0x10000000 + romSize - 1) ||
-            AddrCheck(physAddr, 0x04000000, 0x04001FFF));
+    return (AddrCheck(physAddr, 0x00000000, 0x00000000 + ramSize - 1) || AddrCheck(physAddr, 0x10000000, 0x10000000 + romSize - 1) || AddrCheck(physAddr, 0x04000000, 0x04001FFF));
 }
 
 bool CMemoryScanner::PAddrRangeValid(uint32_t physAddrStart, uint32_t physAddrEnd)
 {
-    return (RangeCheck(physAddrStart, physAddrEnd, 0x00000000, g_MMU->RdramSize()) ||
-            RangeCheck(physAddrStart, physAddrEnd, 0x04000000, 0x04001FFF) ||
-            RangeCheck(physAddrStart, physAddrEnd, 0x10000000, 0x15FFFFFF));
+    return (RangeCheck(physAddrStart, physAddrEnd, 0x00000000, g_MMU->RdramSize()) || RangeCheck(physAddrStart, physAddrEnd, 0x04000000, 0x04001FFF) || RangeCheck(physAddrStart, physAddrEnd, 0x10000000, 0x15FFFFFF));
 }
 
 void CMemoryScanner::SetAddressType(AddressType addressType)
@@ -587,8 +577,7 @@ uint8_t * CMemoryScanner::GetMemoryPool(uint32_t physAddr)
         return nullptr;
     }
 
-    if ((physAddr >= 0x00000000 && physAddr < g_MMU->RdramSize()) ||
-        (physAddr >= 0x04000000 && physAddr <= 0x04001FFF))
+    if ((physAddr >= 0x00000000 && physAddr < g_MMU->RdramSize()) || (physAddr >= 0x04000000 && physAddr <= 0x04001FFF))
     {
         return g_MMU->Rdram();
     }

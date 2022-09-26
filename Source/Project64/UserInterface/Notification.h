@@ -54,10 +54,10 @@ public:
     void SetGfxPlugin(CGfxPlugin * Plugin);
 
 private:
-    CNotificationImp(const CNotificationImp&);
-    CNotificationImp& operator=(const CNotificationImp&);
+    CNotificationImp(const CNotificationImp &);
+    CNotificationImp & operator=(const CNotificationImp &);
 
-    CMainGui   * m_hWnd;
+    CMainGui * m_hWnd;
     CGfxPlugin * m_gfxPlugin;
 
     mutable time_t m_NextMsg;

@@ -28,14 +28,14 @@ void ScriptAPI::Define_N64Image(duk_context * ctx)
     const DukPropListEntry prototype[] = {
         {"toPNG", DukCFunction(js_N64Image_toPNG)},
         {"update", DukCFunction(js_N64Image_update)},
-        { nullptr}
+        {nullptr},
     };
-    
+
     const DukPropListEntry staticProps[] = {
         {"fromPNG", DukCFunction(js_N64Image_static_fromPNG)},
         {"format", DukCFunction(js_N64Image_static_format)},
         {"bpp", DukCFunction(js_N64Image_static_bpp)},
-        { nullptr }
+        {nullptr},
     };
 
     DefineGlobalClass(ctx, "N64Image", js_N64Image__constructor, prototype, staticProps);
@@ -72,7 +72,7 @@ static void InitImageObjectProps(duk_context * ctx, duk_idx_t idx, CN64Image * i
         {"palette", DukDupIndex(palette_idx)},
         {"width", DukUInt(image->Width())},
         {"height", DukUInt(image->Height())},
-        { nullptr }
+        {nullptr},
     };
 
     DukPutPropList(ctx, idx, props);

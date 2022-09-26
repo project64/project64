@@ -1,9 +1,9 @@
 #pragma once
 
-#include "OpInfo.h"
 #include "Breakpoints.h"
 #include "Debugger-AddBreakpoint.h"
 #include "Debugger-RegisterTabs.h"
+#include "OpInfo.h"
 
 #include <Project64/UserInterface/WTLControls/TooltipDialog.h>
 
@@ -32,10 +32,10 @@ class CDebugCommandsView;
 class CEditOp : public CWindowImpl<CEditOp, CEdit>
 {
 private:
-    CDebugCommandsView* m_CommandsWindow;
+    CDebugCommandsView * m_CommandsWindow;
 
-    LRESULT OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT OnKeyUp(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
+    LRESULT OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnKeyUp(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL & bHandled)
     {
         if (wParam == VK_RETURN || wParam == VK_ESCAPE)
         {
@@ -47,13 +47,15 @@ private:
     }
 
     BEGIN_MSG_MAP_EX(CEditOp)
-        MESSAGE_HANDLER(WM_KEYDOWN, OnKeyDown)
-        MESSAGE_HANDLER(WM_KEYUP, OnKeyUp)
-        MESSAGE_HANDLER(WM_CHAR, OnKeyUp)
+    {
+        MESSAGE_HANDLER(WM_KEYDOWN, OnKeyDown);
+        MESSAGE_HANDLER(WM_KEYUP, OnKeyUp);
+        MESSAGE_HANDLER(WM_CHAR, OnKeyUp);
+    }
     END_MSG_MAP()
 
 public:
-    void SetCommandsWindow(CDebugCommandsView* commandsWindow);
+    void SetCommandsWindow(CDebugCommandsView * commandsWindow);
     BOOL Attach(HWND hWndNew);
 };
 
@@ -66,9 +68,12 @@ class CDebugCommandsView :
     friend class CEditOp;
 
 public:
-    enum { IDD = IDD_Debugger_Commands };
+    enum
+    {
+        IDD = IDD_Debugger_Commands
+    };
 
-    CDebugCommandsView(CDebuggerUI * debugger, SyncEvent &StepEvent);
+    CDebugCommandsView(CDebuggerUI * debugger, SyncEvent & StepEvent);
     virtual ~CDebugCommandsView(void);
 
     void ShowAddress(uint32_t address, bool top, bool bUserInput = false);
@@ -78,136 +83,144 @@ public:
 
 private:
     BEGIN_MSG_MAP_EX(CDebugCommandsView)
-        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
-        MESSAGE_HANDLER(WM_ACTIVATE, OnActivate)
-        MESSAGE_HANDLER(WM_SIZING, OnSizing)
-        MESSAGE_HANDLER(WM_GETMINMAXINFO, OnGetMinMaxInfo)
-        MESSAGE_HANDLER(WM_VSCROLL, OnScroll)
-        MESSAGE_HANDLER(WM_MEASUREITEM, OnMeasureItem)
-        COMMAND_HANDLER(IDC_ADDR_EDIT, EN_CHANGE, OnAddrChanged)
-        COMMAND_HANDLER(IDC_PC_EDIT, EN_CHANGE, OnPCChanged)
-        COMMAND_CODE_HANDLER(LBN_DBLCLK, OnListBoxClicked)
-        COMMAND_HANDLER(IDC_BACK_BTN, BN_CLICKED, OnBackButton)
-        COMMAND_HANDLER(IDC_FORWARD_BTN, BN_CLICKED, OnForwardButton)
-        COMMAND_HANDLER(IDC_VIEWPC_BTN, BN_CLICKED, OnViewPCButton)
-        COMMAND_HANDLER(IDC_SYMBOLS_BTN, BN_CLICKED, OnSymbolsButton)
-        COMMAND_HANDLER(ID_POPUPMENU_RUNTO, BN_CLICKED, OnPopupmenuRunTo)
-        COMMAND_HANDLER(IDC_GO_BTN, BN_CLICKED, OnGoButton)
-        COMMAND_HANDLER(IDC_STEP_BTN, BN_CLICKED, OnStepButton)
-        COMMAND_HANDLER(IDC_STEPOVER_BTN, BN_CLICKED, OnStepOverButton)
-        COMMAND_HANDLER(IDC_SKIP_BTN, BN_CLICKED, OnSkipButton)
-        COMMAND_HANDLER(IDC_CLEARBP_BTN, BN_CLICKED, OnClearBPButton)
-        COMMAND_HANDLER(IDC_ADDBP_BTN, BN_CLICKED, OnAddBPButton)
-        COMMAND_HANDLER(IDC_RMBP_BTN, BN_CLICKED, OnRemoveBPButton)
-        COMMAND_HANDLER(IDC_COPYTABREGISTERS_BTN, BN_CLICKED, OnCopyTabRegistersButton)
-        COMMAND_HANDLER(IDC_COPYALLREGISTERS_BTN, BN_CLICKED, OnCopyAllRegistersButton)
-        COMMAND_HANDLER(IDCANCEL, BN_CLICKED, OnCancel)
-        COMMAND_HANDLER(ID_POPUPMENU_EDIT, BN_CLICKED, OnPopupmenuEdit)
-        COMMAND_HANDLER(ID_POPUPMENU_INSERTNOP, BN_CLICKED, OnPopupmenuInsertNOP)
-        COMMAND_HANDLER(ID_POPUPMENU_RESTORE, BN_CLICKED, OnPopupmenuRestore)
-        COMMAND_HANDLER(ID_POPUPMENU_RESTOREALL, BN_CLICKED, OnPopupmenuRestoreAll)
-        COMMAND_HANDLER(ID_POPUPMENU_ADDSYMBOL, BN_CLICKED, OnPopupmenuAddSymbol)
-        COMMAND_HANDLER(ID_POPUPMENU_FOLLOWJUMP, BN_CLICKED, OnPopupmenuFollowJump)
-        COMMAND_HANDLER(ID_POPUPMENU_VIEWMEMORY, BN_CLICKED, OnPopupmenuViewMemory)
-        COMMAND_HANDLER(ID_POPUPMENU_TOGGLEBP, BN_CLICKED, OnPopupmenuToggleBP)
-        COMMAND_HANDLER(ID_POPUPMENU_CLEARBPS, BN_CLICKED, OnPopupmenuClearBP)
-        COMMAND_HANDLER(IDC_OP_EDIT, EN_CHANGE, OnOpEditChanged)
+    {
+        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog);
+        MESSAGE_HANDLER(WM_ACTIVATE, OnActivate);
+        MESSAGE_HANDLER(WM_SIZING, OnSizing);
+        MESSAGE_HANDLER(WM_GETMINMAXINFO, OnGetMinMaxInfo);
+        MESSAGE_HANDLER(WM_VSCROLL, OnScroll);
+        MESSAGE_HANDLER(WM_MEASUREITEM, OnMeasureItem);
+        COMMAND_HANDLER(IDC_ADDR_EDIT, EN_CHANGE, OnAddrChanged);
+        COMMAND_HANDLER(IDC_PC_EDIT, EN_CHANGE, OnPCChanged);
+        COMMAND_CODE_HANDLER(LBN_DBLCLK, OnListBoxClicked);
+        COMMAND_HANDLER(IDC_BACK_BTN, BN_CLICKED, OnBackButton);
+        COMMAND_HANDLER(IDC_FORWARD_BTN, BN_CLICKED, OnForwardButton);
+        COMMAND_HANDLER(IDC_VIEWPC_BTN, BN_CLICKED, OnViewPCButton);
+        COMMAND_HANDLER(IDC_SYMBOLS_BTN, BN_CLICKED, OnSymbolsButton);
+        COMMAND_HANDLER(ID_POPUPMENU_RUNTO, BN_CLICKED, OnPopupmenuRunTo);
+        COMMAND_HANDLER(IDC_GO_BTN, BN_CLICKED, OnGoButton);
+        COMMAND_HANDLER(IDC_STEP_BTN, BN_CLICKED, OnStepButton);
+        COMMAND_HANDLER(IDC_STEPOVER_BTN, BN_CLICKED, OnStepOverButton);
+        COMMAND_HANDLER(IDC_SKIP_BTN, BN_CLICKED, OnSkipButton);
+        COMMAND_HANDLER(IDC_CLEARBP_BTN, BN_CLICKED, OnClearBPButton);
+        COMMAND_HANDLER(IDC_ADDBP_BTN, BN_CLICKED, OnAddBPButton);
+        COMMAND_HANDLER(IDC_RMBP_BTN, BN_CLICKED, OnRemoveBPButton);
+        COMMAND_HANDLER(IDC_COPYTABREGISTERS_BTN, BN_CLICKED, OnCopyTabRegistersButton);
+        COMMAND_HANDLER(IDC_COPYALLREGISTERS_BTN, BN_CLICKED, OnCopyAllRegistersButton);
+        COMMAND_HANDLER(IDCANCEL, BN_CLICKED, OnCancel);
+        COMMAND_HANDLER(ID_POPUPMENU_EDIT, BN_CLICKED, OnPopupmenuEdit);
+        COMMAND_HANDLER(ID_POPUPMENU_INSERTNOP, BN_CLICKED, OnPopupmenuInsertNOP);
+        COMMAND_HANDLER(ID_POPUPMENU_RESTORE, BN_CLICKED, OnPopupmenuRestore);
+        COMMAND_HANDLER(ID_POPUPMENU_RESTOREALL, BN_CLICKED, OnPopupmenuRestoreAll);
+        COMMAND_HANDLER(ID_POPUPMENU_ADDSYMBOL, BN_CLICKED, OnPopupmenuAddSymbol);
+        COMMAND_HANDLER(ID_POPUPMENU_FOLLOWJUMP, BN_CLICKED, OnPopupmenuFollowJump);
+        COMMAND_HANDLER(ID_POPUPMENU_VIEWMEMORY, BN_CLICKED, OnPopupmenuViewMemory);
+        COMMAND_HANDLER(ID_POPUPMENU_TOGGLEBP, BN_CLICKED, OnPopupmenuToggleBP);
+        COMMAND_HANDLER(ID_POPUPMENU_CLEARBPS, BN_CLICKED, OnPopupmenuClearBP);
+        COMMAND_HANDLER(IDC_OP_EDIT, EN_CHANGE, OnOpEditChanged);
 
-        NOTIFY_HANDLER_EX(IDC_CMD_LIST, NM_CLICK, OnCommandListClicked)
-        NOTIFY_HANDLER_EX(IDC_CMD_LIST, NM_DBLCLK, OnCommandListDblClicked)
-        NOTIFY_HANDLER_EX(IDC_CMD_LIST, NM_RCLICK, OnCommandListRightClicked)
-        NOTIFY_HANDLER_EX(IDC_REG_TABS, TCN_SELCHANGE, OnRegisterTabChange)
-        NOTIFY_HANDLER_EX(IDC_CMD_LIST, NM_CUSTOMDRAW, OnCustomDrawList)
-        
-        MSG_WM_DESTROY(OnDestroy)
-        CHAIN_MSG_MAP(CDialogResize<CDebugCommandsView>)
-        MSG_WM_EXITSIZEMOVE(OnExitSizeMove)
+        NOTIFY_HANDLER_EX(IDC_CMD_LIST, NM_CLICK, OnCommandListClicked);
+        NOTIFY_HANDLER_EX(IDC_CMD_LIST, NM_DBLCLK, OnCommandListDblClicked);
+        NOTIFY_HANDLER_EX(IDC_CMD_LIST, NM_RCLICK, OnCommandListRightClicked);
+        NOTIFY_HANDLER_EX(IDC_REG_TABS, TCN_SELCHANGE, OnRegisterTabChange);
+        NOTIFY_HANDLER_EX(IDC_CMD_LIST, NM_CUSTOMDRAW, OnCustomDrawList);
+
+        MSG_WM_DESTROY(OnDestroy);
+        CHAIN_MSG_MAP(CDialogResize<CDebugCommandsView>);
+        MSG_WM_EXITSIZEMOVE(OnExitSizeMove);
+    }
     END_MSG_MAP()
 
     BEGIN_DLGRESIZE_MAP(CDebugCommandsView)
-        DLGRESIZE_CONTROL(IDC_GO_BTN, DLSZ_MOVE_X)
-        DLGRESIZE_CONTROL(IDC_STEP_BTN, DLSZ_MOVE_X)
-        DLGRESIZE_CONTROL(IDC_STEPOVER_BTN, DLSZ_MOVE_X)
-        DLGRESIZE_CONTROL(IDC_SKIP_BTN, DLSZ_MOVE_X)
-        DLGRESIZE_CONTROL(IDC_ADDR_EDIT, DLSZ_MOVE_X)
-        DLGRESIZE_CONTROL(IDC_SYMBOLS_BTN, DLSZ_MOVE_X)
-        DLGRESIZE_CONTROL(IDC_OPCODE_BOX, DLSZ_MOVE_X)
-        DLGRESIZE_CONTROL(IDC_BP_LIST, DLSZ_MOVE_X)
-        DLGRESIZE_CONTROL(IDC_ADDBP_BTN, DLSZ_MOVE_X)
-        DLGRESIZE_CONTROL(IDC_RMBP_BTN, DLSZ_MOVE_X)
-        DLGRESIZE_CONTROL(IDC_CLEARBP_BTN, DLSZ_MOVE_X)
-        DLGRESIZE_CONTROL(IDC_COPYTABREGISTERS_BTN, DLSZ_MOVE_X)
-        DLGRESIZE_CONTROL(IDC_COPYALLREGISTERS_BTN, DLSZ_MOVE_X)
-        DLGRESIZE_CONTROL(IDC_REG_TABS, DLSZ_MOVE_X)
-        DLGRESIZE_CONTROL(IDC_BACK_BTN, DLSZ_MOVE_X)
-        DLGRESIZE_CONTROL(IDC_FORWARD_BTN, DLSZ_MOVE_X)
-        DLGRESIZE_CONTROL(IDC_PC_STATIC, DLSZ_MOVE_X)
-        DLGRESIZE_CONTROL(IDC_PC_EDIT, DLSZ_MOVE_X)
-        DLGRESIZE_CONTROL(IDC_VIEWPC_BTN, DLSZ_MOVE_X)
-        DLGRESIZE_CONTROL(IDC_CMD_LIST, DLSZ_SIZE_X | DLSZ_SIZE_Y)
-        DLGRESIZE_CONTROL(IDC_SCRL_BAR, DLSZ_MOVE_X | DLSZ_SIZE_Y)
+    DLGRESIZE_CONTROL(IDC_GO_BTN, DLSZ_MOVE_X)
+    DLGRESIZE_CONTROL(IDC_STEP_BTN, DLSZ_MOVE_X)
+    DLGRESIZE_CONTROL(IDC_STEPOVER_BTN, DLSZ_MOVE_X)
+    DLGRESIZE_CONTROL(IDC_SKIP_BTN, DLSZ_MOVE_X)
+    DLGRESIZE_CONTROL(IDC_ADDR_EDIT, DLSZ_MOVE_X)
+    DLGRESIZE_CONTROL(IDC_SYMBOLS_BTN, DLSZ_MOVE_X)
+    DLGRESIZE_CONTROL(IDC_OPCODE_BOX, DLSZ_MOVE_X)
+    DLGRESIZE_CONTROL(IDC_BP_LIST, DLSZ_MOVE_X)
+    DLGRESIZE_CONTROL(IDC_ADDBP_BTN, DLSZ_MOVE_X)
+    DLGRESIZE_CONTROL(IDC_RMBP_BTN, DLSZ_MOVE_X)
+    DLGRESIZE_CONTROL(IDC_CLEARBP_BTN, DLSZ_MOVE_X)
+    DLGRESIZE_CONTROL(IDC_COPYTABREGISTERS_BTN, DLSZ_MOVE_X)
+    DLGRESIZE_CONTROL(IDC_COPYALLREGISTERS_BTN, DLSZ_MOVE_X)
+    DLGRESIZE_CONTROL(IDC_REG_TABS, DLSZ_MOVE_X)
+    DLGRESIZE_CONTROL(IDC_BACK_BTN, DLSZ_MOVE_X)
+    DLGRESIZE_CONTROL(IDC_FORWARD_BTN, DLSZ_MOVE_X)
+    DLGRESIZE_CONTROL(IDC_PC_STATIC, DLSZ_MOVE_X)
+    DLGRESIZE_CONTROL(IDC_PC_EDIT, DLSZ_MOVE_X)
+    DLGRESIZE_CONTROL(IDC_VIEWPC_BTN, DLSZ_MOVE_X)
+    DLGRESIZE_CONTROL(IDC_CMD_LIST, DLSZ_SIZE_X | DLSZ_SIZE_Y)
+    DLGRESIZE_CONTROL(IDC_SCRL_BAR, DLSZ_MOVE_X | DLSZ_SIZE_Y)
     END_DLGRESIZE_MAP()
 
     BEGIN_TOOLTIP_MAP()
-        TOOLTIP(IDC_SKIP_BTN, "Skip (F1)")
-        TOOLTIP(IDC_STEP_BTN, "Step (F2)")
-        TOOLTIP(IDC_STEPOVER_BTN, "Step Over (F3)")
-        TOOLTIP(IDC_GO_BTN, "Go (F4)")
-        TOOLTIP(IDC_ADDBP_BTN, "Add breakpoint...")
-        TOOLTIP(IDC_RMBP_BTN, "Remove selected breakpoint")
-        TOOLTIP(IDC_CLEARBP_BTN, "Remove all breakpoints")
-        TOOLTIP(IDC_VIEWPC_BTN, "Jump to program counter")
-        TOOLTIP(IDC_BP_LIST, "Active breakpoints")
-        TOOLTIP(IDC_SYMBOLS_BTN, "Symbols...")
+    TOOLTIP(IDC_SKIP_BTN, "Skip (F1)")
+    TOOLTIP(IDC_STEP_BTN, "Step (F2)")
+    TOOLTIP(IDC_STEPOVER_BTN, "Step Over (F3)")
+    TOOLTIP(IDC_GO_BTN, "Go (F4)")
+    TOOLTIP(IDC_ADDBP_BTN, "Add breakpoint...")
+    TOOLTIP(IDC_RMBP_BTN, "Remove selected breakpoint")
+    TOOLTIP(IDC_CLEARBP_BTN, "Remove all breakpoints")
+    TOOLTIP(IDC_VIEWPC_BTN, "Jump to program counter")
+    TOOLTIP(IDC_BP_LIST, "Active breakpoints")
+    TOOLTIP(IDC_SYMBOLS_BTN, "Symbols...")
     END_TOOLTIP_MAP()
 
-    static void StaticSteppingOpsChanged(CDebugCommandsView * __this) { __this->SteppingOpsChanged(); }
-    static void StaticWaitingForStepChanged(CDebugCommandsView * __this) { __this->WaitingForStepChanged(); }
-    static void GameCpuRunningChanged(CDebugCommandsView* _this);
+    static void StaticSteppingOpsChanged(CDebugCommandsView * __this)
+    {
+        __this->SteppingOpsChanged();
+    }
+    static void StaticWaitingForStepChanged(CDebugCommandsView * __this)
+    {
+        __this->WaitingForStepChanged();
+    }
+    static void GameCpuRunningChanged(CDebugCommandsView * _this);
 
     void RecompilerCheck(void);
 
-    LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT OnActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT OnSizing(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT OnScroll(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT OnMeasureItem(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT OnAddrChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-    LRESULT OnPCChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-    LRESULT OnListBoxClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-    LRESULT OnBackButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnForwardButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnViewPCButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnSymbolsButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnPopupmenuRunTo(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnGoButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnStepButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnStepOverButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnSkipButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnClearBPButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnAddBPButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnRemoveBPButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnCopyTabRegistersButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnCopyAllRegistersButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnCancel(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnPopupmenuEdit(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnPopupmenuInsertNOP(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnPopupmenuRestore(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnPopupmenuRestoreAll(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnPopupmenuAddSymbol(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnPopupmenuFollowJump(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnPopupmenuViewMemory(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnPopupmenuToggleBP(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnPopupmenuClearBP(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-    LRESULT OnOpEditChanged(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
-    LRESULT OnOpEditKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnSizing(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnScroll(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnMeasureItem(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnAddrChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    LRESULT OnPCChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    LRESULT OnListBoxClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    LRESULT OnBackButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnForwardButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnViewPCButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnSymbolsButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnPopupmenuRunTo(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnGoButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnStepButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnStepOverButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnSkipButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnClearBPButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnAddBPButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnRemoveBPButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnCopyTabRegistersButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnCopyAllRegistersButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnCancel(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnPopupmenuEdit(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnPopupmenuInsertNOP(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnPopupmenuRestore(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnPopupmenuRestoreAll(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnPopupmenuAddSymbol(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnPopupmenuFollowJump(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnPopupmenuViewMemory(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnPopupmenuToggleBP(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnPopupmenuClearBP(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    LRESULT OnOpEditChanged(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnOpEditKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
 
-    LRESULT OnCommandListClicked(NMHDR* pNMHDR);
-    LRESULT OnCommandListDblClicked(NMHDR* pNMHDR);
-    LRESULT OnCommandListRightClicked(NMHDR* pNMHDR);
-    LRESULT OnRegisterTabChange(NMHDR* pNMHDR);
-    LRESULT OnCustomDrawList(NMHDR* pNMHDR);
+    LRESULT OnCommandListClicked(NMHDR * pNMHDR);
+    LRESULT OnCommandListDblClicked(NMHDR * pNMHDR);
+    LRESULT OnCommandListRightClicked(NMHDR * pNMHDR);
+    LRESULT OnRegisterTabChange(NMHDR * pNMHDR);
+    LRESULT OnCustomDrawList(NMHDR * pNMHDR);
     LRESULT OnDestroy(void);
     void OnExitSizeMove(void);
 
@@ -225,14 +238,14 @@ private:
     void HistoryPushState();
     void ToggleHistoryButtons();
 
-    static CDebugCommandsView* _this;
+    static CDebugCommandsView * _this;
     static HHOOK hWinMessageHook;
     static LRESULT CALLBACK HookProc(int nCode, WPARAM wParam, LPARAM lParam);
     void InterceptKeyDown(WPARAM wParam, LPARAM lParam);
     void InterceptMouseWheel(WPARAM wParam, LPARAM lParam);
 
-    static const char* GetCodeAddressNotes(uint32_t vAddr);
-    static const char* GetDataAddressNotes(uint32_t vAddr);
+    static const char * GetCodeAddressNotes(uint32_t vAddr);
+    static const char * GetDataAddressNotes(uint32_t vAddr);
 
     void CPUSkip();
     void CPUResume();
@@ -246,7 +259,7 @@ private:
 
     void RedrawCommandsAndRegisters();
 
-    CBreakpoints* m_Breakpoints;
+    CBreakpoints * m_Breakpoints;
     vector<uint32_t> m_History;
     int m_HistoryIndex;
 
@@ -278,11 +291,11 @@ private:
     CButton m_GoButton;
 
     bool m_bEditing;
-    CEditOp  m_OpEdit;
+    CEditOp m_OpEdit;
 
     uint32_t m_SelectedAddress;
-    COpInfo  m_SelectedOpInfo;
-    R4300iOpcode&  m_SelectedOpCode = m_SelectedOpInfo.m_OpCode;
+    COpInfo m_SelectedOpInfo;
+    R4300iOpcode & m_SelectedOpCode = m_SelectedOpInfo.m_OpCode;
 
     uint32_t m_FollowAddress;
     uint32_t m_RowHeight;

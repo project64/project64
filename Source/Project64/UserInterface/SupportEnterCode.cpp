@@ -9,28 +9,33 @@ class CRequestCode :
 {
 public:
     BEGIN_MSG_MAP_EX(CRequestCode)
-        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
-        MESSAGE_HANDLER(WM_CTLCOLORSTATIC, OnColorStatic)
-        MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBackground)
-        COMMAND_ID_HANDLER(IDOK, OnOkCmd)
-        COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
+    {
+        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog);
+        MESSAGE_HANDLER(WM_CTLCOLORSTATIC, OnColorStatic);
+        MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBackground);
+        COMMAND_ID_HANDLER(IDOK, OnOkCmd);
+        COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd);
+    }
     END_MSG_MAP()
 
-    enum { IDD = IDD_Support_RequestCode };
+    enum
+    {
+        IDD = IDD_Support_RequestCode
+    };
 
     CRequestCode(CProjectSupport & Support);
     void ShowOldCodeMsg();
 
 private:
     CRequestCode(void);
-    CRequestCode(const CRequestCode&);
-    CRequestCode& operator=(const CRequestCode&);
+    CRequestCode(const CRequestCode &);
+    CRequestCode & operator=(const CRequestCode &);
 
-    LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-    LRESULT OnColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT OnEraseBackground(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled);
-    LRESULT OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
-    LRESULT OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+    LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/);
+    LRESULT OnColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+    LRESULT OnEraseBackground(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL & bHandled);
+    LRESULT OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL & /*bHandled*/);
+    LRESULT OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL & /*bHandled*/);
 
     CProjectSupport & m_Support;
     bool m_ShowOldCodeMsg;
@@ -41,7 +46,7 @@ CSupportEnterCode::CSupportEnterCode(CProjectSupport & Support) :
 {
 }
 
-LRESULT CSupportEnterCode::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CSupportEnterCode::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     SetWindowText(wGS(MSG_SUPPORT_ENTER_CODE_TITLE).c_str());
     CWindow hDescription = GetDlgItem(IDC_DESCRIPTION);
@@ -58,7 +63,7 @@ LRESULT CSupportEnterCode::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM
     m_RequestLink.SubclassWindow(GetDlgItem(IDC_REQUEST_LINK));
     m_RequestLink.SetHyperLinkExtendedStyle(HLINK_COMMANDBUTTON, HLINK_COMMANDBUTTON);
 
-    CRect rcWin = { 0 };
+    CRect rcWin = {0};
     hDescription.GetClientRect(&rcWin);
 
     CDC hDC = hDescription.GetDC();
@@ -96,12 +101,12 @@ LRESULT CSupportEnterCode::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM
     RequestLink.GetWindowRect(&rcWin);
     ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&rcWin, 2);
 
-    RECT CancelBtnWin = { 0 };
+    RECT CancelBtnWin = {0};
     CancelBtn.GetWindowRect(&CancelBtnWin);
     ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&CancelBtnWin, 2);
     CancelBtn.SetWindowPos(nullptr, CancelBtnWin.left, rcWin.bottom + 40, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
 
-    RECT OkBtnWin = { 0 };
+    RECT OkBtnWin = {0};
     OkBtn.GetWindowRect(&OkBtnWin);
     ::MapWindowPoints(nullptr, m_hWnd, (LPPOINT)&OkBtnWin, 2);
     OkBtn.SetWindowPos(nullptr, OkBtnWin.left, rcWin.bottom + 40, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
@@ -112,12 +117,12 @@ LRESULT CSupportEnterCode::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM
     SetRect(&rcWin, 0, 0, rcWin.Width(), OkBtnWin.bottom + 30);
     AdjustWindowRectEx(&rcWin, GetStyle(), GetMenu() != nullptr, GetExStyle());
     int32_t Left = (GetSystemMetrics(SM_CXSCREEN) - rcWin.Width()) / 2;
-    int32_t	Top = (GetSystemMetrics(SM_CYSCREEN) - rcWin.Height()) / 2;
+    int32_t Top = (GetSystemMetrics(SM_CYSCREEN) - rcWin.Height()) / 2;
     MoveWindow(Left, Top, rcWin.Width(), rcWin.Height(), TRUE);
     return TRUE;
 }
 
-LRESULT CSupportEnterCode::OnColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CSupportEnterCode::OnColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     CDCHandle hdcStatic = (HDC)wParam;
     hdcStatic.SetTextColor(RGB(0, 0, 0));
@@ -125,7 +130,7 @@ LRESULT CSupportEnterCode::OnColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM /*
     return (LONG)(LRESULT)((HBRUSH)GetStockObject(NULL_BRUSH));
 }
 
-LRESULT CSupportEnterCode::OnEraseBackground(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CSupportEnterCode::OnEraseBackground(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     static HPEN Outline = CreatePen(PS_SOLID, 1, 0x00FFFFFF);
     static HBRUSH Fill = CreateSolidBrush(0x00FFFFFF);
@@ -140,16 +145,16 @@ LRESULT CSupportEnterCode::OnEraseBackground(UINT /*uMsg*/, WPARAM wParam, LPARA
     return TRUE;
 }
 
-LRESULT CSupportEnterCode::OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CSupportEnterCode::OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     EndDialog(wID);
     return TRUE;
 }
 
-LRESULT CSupportEnterCode::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CSupportEnterCode::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     wchar_t code[50];
-    if (!GetDlgItemText(IDC_CODE,code,sizeof(code) /sizeof(code[0])))
+    if (!GetDlgItemText(IDC_CODE, code, sizeof(code) / sizeof(code[0])))
     {
         MessageBox(wGS(MSG_SUPPORT_ENTER_SUPPORT_CODE).c_str(), wGS(MSG_SUPPORT_PROJECT64).c_str(), MB_OK);
         return false;
@@ -158,7 +163,7 @@ LRESULT CSupportEnterCode::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCt
     GetDlgItem(IDCANCEL).EnableWindow(false);
 
     bool ValidCode = false;
-    if (_wcsicmp(code,L"thank you from project64") == 0)
+    if (_wcsicmp(code, L"thank you from project64") == 0)
     {
         SetDlgItemText(IDC_CODE, L"");
         CRequestCode RequestWindow(m_Support);
@@ -197,14 +202,14 @@ void CRequestCode::ShowOldCodeMsg()
     m_ShowOldCodeMsg = true;
 }
 
-LRESULT CSupportEnterCode::OnRequestCode(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CSupportEnterCode::OnRequestCode(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     CRequestCode RequestWindow(m_Support);
     RequestWindow.DoModal(m_hWnd);
     return 0;
 }
 
-LRESULT CRequestCode::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CRequestCode::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     if (m_ShowOldCodeMsg)
     {
@@ -213,7 +218,7 @@ LRESULT CRequestCode::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lP
     return TRUE;
 }
 
-LRESULT CRequestCode::OnColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CRequestCode::OnColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     CDCHandle hdcStatic = (HDC)wParam;
     hdcStatic.SetTextColor(RGB(0, 0, 0));
@@ -221,7 +226,7 @@ LRESULT CRequestCode::OnColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPara
     return (LONG)(LRESULT)((HBRUSH)GetStockObject(NULL_BRUSH));
 }
 
-LRESULT CRequestCode::OnEraseBackground(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CRequestCode::OnEraseBackground(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
     static HPEN Outline = CreatePen(PS_SOLID, 1, 0x00FFFFFF);
     static HBRUSH Fill = CreateSolidBrush(0x00FFFFFF);
@@ -236,7 +241,7 @@ LRESULT CRequestCode::OnEraseBackground(UINT /*uMsg*/, WPARAM wParam, LPARAM /*l
     return TRUE;
 }
 
-LRESULT CRequestCode::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CRequestCode::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     GetDlgItem(IDOK).EnableWindow(false);
     GetDlgItem(IDCANCEL).EnableWindow(false);
@@ -254,7 +259,7 @@ LRESULT CRequestCode::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, 
     return TRUE;
 }
 
-LRESULT CRequestCode::OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CRequestCode::OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     EndDialog(wID);
     return TRUE;

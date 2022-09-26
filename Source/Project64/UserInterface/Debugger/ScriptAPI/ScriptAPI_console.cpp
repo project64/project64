@@ -13,7 +13,7 @@ void ScriptAPI::Define_console(duk_context * ctx)
         {"error", DukCFunction(js_console_error)},
         {"clear", DukCFunction(js_console_clear)},
         {"listen", DukCFunction(js_console_listen)},
-        { nullptr }
+        {nullptr},
     };
 
     DefineGlobalInterface(ctx, "console", props);

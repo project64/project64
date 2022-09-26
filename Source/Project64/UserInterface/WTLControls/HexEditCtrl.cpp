@@ -560,9 +560,7 @@ void CHexEditCtrl::UpdateRealSelection(void)
         }
     }
 
-    if (m_RealSelStartAddress != start ||
-        m_RealSelEndAddress != end ||
-        m_bHaveRealSel != bHaveSel)
+    if (m_RealSelStartAddress != start || m_RealSelEndAddress != end || m_bHaveRealSel != bHaveSel)
     {
         m_bHaveRealSel = bHaveSel;
         m_RealSelStartAddress = start;
@@ -984,9 +982,7 @@ void CHexEditCtrl::OnMouseMove(UINT /*nFlags*/, CPoint point)
         m_SelEndCellSide = ht.hexCellSide;
         m_bCaretLoNibble = (ht.hexCellSide == HX_RIGHT);
 
-        if (m_SelEndAddress - m_SelStartAddress == 1 &&
-            m_SelStartCellSide == HX_RIGHT &&
-            m_SelEndCellSide == HX_LEFT)
+        if (m_SelEndAddress - m_SelStartAddress == 1 && m_SelStartCellSide == HX_RIGHT && m_SelEndCellSide == HX_LEFT)
         {
             m_SelStartCellSide = HX_LEFT;
         }
@@ -1259,9 +1255,7 @@ void CHexEditCtrl::OnKeyDown(UINT nChar, UINT /*nRepCnt*/, UINT /*nFlags*/)
         {
             if (GetKeyState(VK_SHIFT) & 0x8000)
             {
-                if (m_SelStartAddress == m_SelEndAddress &&
-                    m_SelStartCellSide == HX_RIGHT &&
-                    m_SelEndCellSide == HX_RIGHT)
+                if (m_SelStartAddress == m_SelEndAddress && m_SelStartCellSide == HX_RIGHT && m_SelEndCellSide == HX_RIGHT)
                 {
                     m_SelStartCellSide = HX_LEFT;
                     m_SelEndCellSide = HX_RIGHT;

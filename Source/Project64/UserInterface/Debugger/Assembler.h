@@ -2,17 +2,19 @@
 
 #include <stdint.h>
 
-typedef void(*ASM_SYNTAX_FN)(uint32_t* opcode);
+typedef void (*ASM_SYNTAX_FN)(uint32_t * opcode);
 
-typedef struct {
-    const char* name;
+typedef struct
+{
+    const char * name;
     uint32_t val;
-    uint32_t(*base)(uint32_t val); // Value shift
-    const ASM_SYNTAX_FN* syntax; // Arguments
+    uint32_t (*base)(uint32_t val); // Value shift
+    const ASM_SYNTAX_FN * syntax;   // Arguments
 } ASM_INSTRUCTION;
 
-typedef struct {
-    const char* name;
+typedef struct
+{
+    const char * name;
     uint32_t val;
 } ASM_REGISTER;
 
@@ -32,7 +34,7 @@ private:
     static ASM_PARSE_ERROR m_ParseError;
 
 public:
-    static bool AssembleLine(const char* line, uint32_t* opcode, uint32_t address = 0x00000000);
+    static bool AssembleLine(const char * line, uint32_t * opcode, uint32_t address = 0x00000000);
 
 private:
     static const ASM_SYNTAX_FN syn_jump[];
@@ -60,16 +62,16 @@ private:
     static const ASM_INSTRUCTION m_Instructions[];
     static const ASM_REGISTER m_Registers[];
 
-    static char* m_TokContext;
+    static char * m_TokContext;
 
-    static const ASM_REGISTER* LookupRegister(char* name);
-    static const ASM_INSTRUCTION* LookupInstruction(char* name, int nFallback);
-    
-    static void StrToLower(char* str);
+    static const ASM_REGISTER * LookupRegister(char * name);
+    static const ASM_INSTRUCTION * LookupInstruction(char * name, int nFallback);
+
+    static void StrToLower(char * str);
 
     static uint32_t pop_reg();
     static uint32_t pop_val();
-    
+
     static uint32_t base_op(uint32_t val);
     static uint32_t base_spec(uint32_t val);
     static uint32_t base_spec_jalr_ra(uint32_t val);
@@ -83,16 +85,16 @@ private:
     static uint32_t base_cop0_mv(uint32_t val);
     static uint32_t base_cop1_mv(uint32_t val);
 
-    static void arg_reg_t(uint32_t* opcode);
-    static void arg_reg_s(uint32_t* opcode);
-    static void arg_reg_d(uint32_t* opcode);
-    static void arg_reg_ft(uint32_t* opcode);
-    static void arg_reg_fs(uint32_t* opcode);
-    static void arg_reg_fd(uint32_t* opcode);
-    static void arg_jump(uint32_t* opcode);
-    static void arg_imm16(uint32_t* opcode);
-    static void arg_bra_target(uint32_t* opcode);
-    static void arg_shamt(uint32_t* opcode);
-    static void arg_cache_op(uint32_t* opcode);
-    static void arg_syscall_code(uint32_t* opcode);
+    static void arg_reg_t(uint32_t * opcode);
+    static void arg_reg_s(uint32_t * opcode);
+    static void arg_reg_d(uint32_t * opcode);
+    static void arg_reg_ft(uint32_t * opcode);
+    static void arg_reg_fs(uint32_t * opcode);
+    static void arg_reg_fd(uint32_t * opcode);
+    static void arg_jump(uint32_t * opcode);
+    static void arg_imm16(uint32_t * opcode);
+    static void arg_bra_target(uint32_t * opcode);
+    static void arg_shamt(uint32_t * opcode);
+    static void arg_cache_op(uint32_t * opcode);
+    static void arg_syscall_code(uint32_t * opcode);
 };

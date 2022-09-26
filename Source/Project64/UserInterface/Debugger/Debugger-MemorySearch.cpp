@@ -18,7 +18,7 @@ const CSetValueDlg::ComboItem CDebugMemorySearch::ModalChangeTypeItems[] = {
     {"float", ValueType_float},
     {"double", ValueType_double},
     {"string", ValueType_string},
-    { nullptr, 0 }
+    {nullptr, 0},
 };
 
 CDebugMemorySearch::CDebugMemorySearch(CDebuggerUI * debugger) :
@@ -1448,10 +1448,7 @@ bool CDebugMemorySearch::MouseHovering(WORD ctrlId, int hMargin, int vMargin)
     ::GetWindowRect(GetDlgItem(ctrlId), &ctrlRect);
 
     return (
-        pointerPos.x >= ctrlRect.left - hMargin &&
-        pointerPos.x <= ctrlRect.right + hMargin &&
-        pointerPos.y >= ctrlRect.top - vMargin &&
-        pointerPos.y <= ctrlRect.bottom + vMargin);
+        pointerPos.x >= ctrlRect.left - hMargin && pointerPos.x <= ctrlRect.right + hMargin && pointerPos.y >= ctrlRect.top - vMargin && pointerPos.y <= ctrlRect.bottom + vMargin);
 }
 
 void CDebugMemorySearch::SeparatorMoveCtrl(WORD ctrlId, int yChange, bool bResize)
@@ -1757,10 +1754,7 @@ void CDebugMemorySearch::UpdateOptions(void)
 
         m_SearchValue.EnableWindow(TRUE);
 
-        if (searchType == SearchType_JalTo ||
-            valueType == ValueType_string ||
-            valueType == ValueType_istring ||
-            valueType == ValueType_unkstring)
+        if (searchType == SearchType_JalTo || valueType == ValueType_string || valueType == ValueType_istring || valueType == ValueType_unkstring)
         {
             // Complex search types, disable next search
             ::EnableWindow(GetDlgItem(IDC_BTN_SEARCH), false);

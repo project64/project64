@@ -16,7 +16,7 @@ class CCPULog
     size_t m_Size;
     bool m_bMaxed;
     size_t m_Index;
-    CPUState* m_Array;
+    CPUState * m_Array;
 
 public:
     CCPULog(size_t size = 0);
@@ -24,8 +24,8 @@ public:
     void PushState(void);
     size_t GetCount(void);
     size_t GetSize(void);
-    CPUState* GetEntry(size_t index);
+    CPUState * GetEntry(size_t index);
     void Reset(void);
-    CCPULog* Clone(void);
-    void DumpToFile(const char* path);
+    CCPULog * Clone(void);
+    void DumpToFile(const char * path);
 };

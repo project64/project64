@@ -162,8 +162,7 @@ bool CScriptSystem::HaveAppCallbacks(JSAppHookID hookId)
 {
     CGuard guard(m_InstancesCS);
 
-    return (hookId < JS_NUM_APP_HOOKS &&
-            m_AppCallbackHooks[hookId].size() > 0);
+    return (hookId < JS_NUM_APP_HOOKS && m_AppCallbackHooks[hookId].size() > 0);
 }
 
 void CScriptSystem::InvokeAppCallbacks(JSAppHookID hookId, void * env)
@@ -180,10 +179,7 @@ void CScriptSystem::InvokeAppCallbacks(JSAppHookID hookId, void * env)
         JSAppCallback & callback = callbacks[i];
         CScriptInstance * instance = callback.m_Instance;
 
-        if (callback.m_bDisabled ||
-            instance->IsStopping() ||
-            m_StopsIssued.count(instance->Name()) != 0 ||
-            !callback.m_ConditionFunc(&callback, env))
+        if (callback.m_bDisabled || instance->IsStopping() || m_StopsIssued.count(instance->Name()) != 0 || !callback.m_ConditionFunc(&callback, env))
         {
             continue;
         }
@@ -215,10 +211,7 @@ void CScriptSystem::UpdateCpuCbListInfo(volatile JSCpuCbListInfo & info, JSAppCa
         for (i = 0; i < numCacheEntries; i++)
         {
             // combine adjacent/overlapping ranges
-            if ((callback.m_Params.addrStart >= info.rangeCache[i].addrStart &&
-                 callback.m_Params.addrStart <= info.rangeCache[i].addrEnd + 1) ||
-                (callback.m_Params.addrEnd >= info.rangeCache[i].addrStart - 1 &&
-                 callback.m_Params.addrEnd <= info.rangeCache[i].addrEnd))
+            if ((callback.m_Params.addrStart >= info.rangeCache[i].addrStart && callback.m_Params.addrStart <= info.rangeCache[i].addrEnd + 1) || (callback.m_Params.addrEnd >= info.rangeCache[i].addrStart - 1 && callback.m_Params.addrEnd <= info.rangeCache[i].addrEnd))
             {
                 info.rangeCache[i].addrStart = min(info.rangeCache[i].addrStart, callback.m_Params.addrStart);
                 info.rangeCache[i].addrEnd = max(info.rangeCache[i].addrEnd, callback.m_Params.addrEnd);

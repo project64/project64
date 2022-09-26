@@ -5,14 +5,13 @@
 class COpInfo
 {
 public:
-
     R4300iOpcode m_OpCode;
 
     COpInfo()
     {
     }
 
-    inline COpInfo(R4300iOpcode opcode):
+    inline COpInfo(R4300iOpcode opcode) :
         m_OpCode(opcode)
     {
     }
@@ -135,14 +134,12 @@ public:
 
     inline bool IsLoadCommand()
     {
-        return (m_OpCode.op >= R4300i_LDL && m_OpCode.op <= R4300i_LWU ||
-                m_OpCode.op >= R4300i_LL && m_OpCode.op <= R4300i_LD);
+        return (m_OpCode.op >= R4300i_LDL && m_OpCode.op <= R4300i_LWU || m_OpCode.op >= R4300i_LL && m_OpCode.op <= R4300i_LD);
     }
 
     inline bool IsStoreCommand()
     {
-        return (m_OpCode.op >= R4300i_SB && m_OpCode.op <= R4300i_SWR ||
-                m_OpCode.op >= R4300i_SC && m_OpCode.op <= R4300i_SD);
+        return (m_OpCode.op >= R4300i_SB && m_OpCode.op <= R4300i_SWR || m_OpCode.op >= R4300i_SC && m_OpCode.op <= R4300i_SD);
     }
 
     // ADDIU SP, SP, X
@@ -152,7 +149,7 @@ public:
     }
 
     // ADDIU SP, SP, <negative value>
-    bool IsStackAlloc() 
+    bool IsStackAlloc()
     {
         if (!IsStackShift())
         {
@@ -163,7 +160,7 @@ public:
     }
 
     // ADDIU SP, SP, <positive value>
-    bool IsStackFree() 
+    bool IsStackFree()
     {
         if (!IsStackShift())
         {
@@ -173,7 +170,7 @@ public:
         return (short)m_OpCode.immediate > 0;
     }
 
-    void ReadsGPR(int* nReg1, int* nReg2)
+    void ReadsGPR(int * nReg1, int * nReg2)
     {
         uint32_t op = m_OpCode.op;
 
@@ -181,25 +178,21 @@ public:
         {
             uint32_t fn = m_OpCode.funct;
 
-            if (fn >= R4300i_SPECIAL_SLLV && fn <= R4300i_SPECIAL_SRAV ||
-                fn >= R4300i_SPECIAL_DSLLV && fn <= R4300i_SPECIAL_DSRAV ||
-                fn >= R4300i_SPECIAL_MULT && fn <= R4300i_SPECIAL_TNE)
+            if (fn >= R4300i_SPECIAL_SLLV && fn <= R4300i_SPECIAL_SRAV || fn >= R4300i_SPECIAL_DSLLV && fn <= R4300i_SPECIAL_DSRAV || fn >= R4300i_SPECIAL_MULT && fn <= R4300i_SPECIAL_TNE)
             {
                 *nReg1 = m_OpCode.rs;
                 *nReg2 = m_OpCode.rt;
                 return;
             }
 
-            if (fn == R4300i_SPECIAL_MTLO || fn == R4300i_SPECIAL_MTHI ||
-                fn == R4300i_SPECIAL_JR || fn == R4300i_SPECIAL_JALR)
+            if (fn == R4300i_SPECIAL_MTLO || fn == R4300i_SPECIAL_MTHI || fn == R4300i_SPECIAL_JR || fn == R4300i_SPECIAL_JALR)
             {
                 *nReg1 = m_OpCode.rs;
                 *nReg2 = 0;
                 return;
             }
 
-            if (fn >= R4300i_SPECIAL_SLL && fn <= R4300i_SPECIAL_SRA ||
-                fn >= R4300i_SPECIAL_DSLL && fn <= R4300i_SPECIAL_DSRA32)
+            if (fn >= R4300i_SPECIAL_SLL && fn <= R4300i_SPECIAL_SRA || fn >= R4300i_SPECIAL_DSLL && fn <= R4300i_SPECIAL_DSRA32)
             {
                 *nReg1 = m_OpCode.rt;
                 *nReg2 = 0;
@@ -211,21 +204,14 @@ public:
             return;
         }
 
-        if (op >= R4300i_SB && op <= R4300i_SWR ||
-            op == R4300i_SC || op == R4300i_SD ||
-            op == R4300i_BEQ || op == R4300i_BEQL ||
-            op == R4300i_BNE || op == R4300i_BNEL)
+        if (op >= R4300i_SB && op <= R4300i_SWR || op == R4300i_SC || op == R4300i_SD || op == R4300i_BEQ || op == R4300i_BEQL || op == R4300i_BNE || op == R4300i_BNEL)
         {
             *nReg1 = m_OpCode.rs;
             *nReg2 = m_OpCode.rt;
             return;
         }
 
-        if (op >= R4300i_BLEZL && op <= R4300i_LWU ||
-            op >= R4300i_BLEZ && op <= R4300i_XORI ||
-            op >= R4300i_CACHE && op <= R4300i_LD ||
-            op >= R4300i_SWC1 && op <= R4300i_SDC2 ||
-            op == R4300i_REGIMM)
+        if (op >= R4300i_BLEZL && op <= R4300i_LWU || op >= R4300i_BLEZ && op <= R4300i_XORI || op >= R4300i_CACHE && op <= R4300i_LD || op >= R4300i_SWC1 && op <= R4300i_SDC2 || op == R4300i_REGIMM)
         {
             *nReg1 = m_OpCode.rs;
             *nReg2 = 0;
@@ -241,9 +227,7 @@ public:
 
         if (op == R4300i_CP1)
         {
-            if (m_OpCode.fmt == R4300i_COP1_MT ||
-                m_OpCode.fmt == R4300i_COP1_DMT ||
-                m_OpCode.fmt == R4300i_COP1_CT)
+            if (m_OpCode.fmt == R4300i_COP1_MT || m_OpCode.fmt == R4300i_COP1_DMT || m_OpCode.fmt == R4300i_COP1_CT)
             {
                 *nReg1 = m_OpCode.rt;
                 *nReg2 = 0;
@@ -255,7 +239,7 @@ public:
         *nReg2 = 0;
     }
 
-    inline void WritesGPR(int* nReg)
+    inline void WritesGPR(int * nReg)
     {
         uint32_t op = m_OpCode.op;
 
@@ -263,12 +247,7 @@ public:
         {
             uint32_t fn = m_OpCode.funct;
 
-            if (fn >= R4300i_SPECIAL_SLL && fn <= R4300i_SPECIAL_SRAV ||
-                fn >= R4300i_SPECIAL_DSLLV && fn <= R4300i_SPECIAL_DSRAV ||
-                fn >= R4300i_SPECIAL_DIVU && fn <= R4300i_SPECIAL_DSUBU ||
-                fn >= R4300i_SPECIAL_DSLL && fn <= R4300i_SPECIAL_DSRA32 ||
-                fn == R4300i_SPECIAL_JALR || fn == R4300i_SPECIAL_MFLO ||
-                fn == R4300i_SPECIAL_MFHI)
+            if (fn >= R4300i_SPECIAL_SLL && fn <= R4300i_SPECIAL_SRAV || fn >= R4300i_SPECIAL_DSLLV && fn <= R4300i_SPECIAL_DSRAV || fn >= R4300i_SPECIAL_DIVU && fn <= R4300i_SPECIAL_DSUBU || fn >= R4300i_SPECIAL_DSLL && fn <= R4300i_SPECIAL_DSRA32 || fn == R4300i_SPECIAL_JALR || fn == R4300i_SPECIAL_MFLO || fn == R4300i_SPECIAL_MFHI)
             {
                 *nReg = m_OpCode.rd;
                 return;
@@ -278,12 +257,7 @@ public:
             return;
         }
 
-        if (op >= R4300i_DADDI && op <= R4300i_LWU ||
-            op >= R4300i_ADDI && op <= R4300i_LUI ||
-            op == R4300i_LL || op == R4300i_LD ||
-            (op == R4300i_CP0 && m_OpCode.fmt == R4300i_COP0_MF) ||
-            (op == R4300i_CP1 && m_OpCode.fmt == R4300i_COP1_MF) ||
-            (op == R4300i_CP1 && m_OpCode.fmt == R4300i_COP1_CF))
+        if (op >= R4300i_DADDI && op <= R4300i_LWU || op >= R4300i_ADDI && op <= R4300i_LUI || op == R4300i_LL || op == R4300i_LD || (op == R4300i_CP0 && m_OpCode.fmt == R4300i_COP0_MF) || (op == R4300i_CP1 && m_OpCode.fmt == R4300i_COP1_MF) || (op == R4300i_CP1 && m_OpCode.fmt == R4300i_COP1_CF))
         {
             *nReg = m_OpCode.rt;
             return;
@@ -312,8 +286,7 @@ public:
     {
         if (m_OpCode.op == R4300i_SPECIAL)
         {
-            if (m_OpCode.funct == R4300i_SPECIAL_MTHI ||
-                m_OpCode.funct >= R4300i_SPECIAL_MULT && m_OpCode.funct <= R4300i_SPECIAL_DDIVU)
+            if (m_OpCode.funct == R4300i_SPECIAL_MTHI || m_OpCode.funct >= R4300i_SPECIAL_MULT && m_OpCode.funct <= R4300i_SPECIAL_DDIVU)
             {
                 return true;
             }
@@ -325,8 +298,7 @@ public:
     {
         if (m_OpCode.op == R4300i_SPECIAL)
         {
-            if (m_OpCode.funct == R4300i_SPECIAL_MTLO ||
-                m_OpCode.funct >= R4300i_SPECIAL_MULT && m_OpCode.funct <= R4300i_SPECIAL_DDIVU)
+            if (m_OpCode.funct == R4300i_SPECIAL_MTLO || m_OpCode.funct >= R4300i_SPECIAL_MULT && m_OpCode.funct <= R4300i_SPECIAL_DDIVU)
             {
                 return true;
             }
