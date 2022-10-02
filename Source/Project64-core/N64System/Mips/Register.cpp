@@ -556,11 +556,11 @@ void CRegisters::DoBreakException(bool DelaySlot)
     if (DelaySlot)
     {
         CAUSE_REGISTER |= CAUSE_BD;
-        EPC_REGISTER = m_PROGRAM_COUNTER - 4;
+        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
     }
     else
     {
-        EPC_REGISTER = m_PROGRAM_COUNTER;
+        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
     }
     STATUS_REGISTER |= STATUS_EXL;
     m_PROGRAM_COUNTER = 0x80000180;
@@ -571,12 +571,12 @@ void CRegisters::DoTrapException(bool DelaySlot)
     CAUSE_REGISTER = EXC_TRAP;
     if (DelaySlot)
     {
-        EPC_REGISTER = m_PROGRAM_COUNTER - 4;
+        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
         CAUSE_REGISTER |= CAUSE_BD;
     }
     else
     {
-        EPC_REGISTER = m_PROGRAM_COUNTER;
+        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
     }
     m_PROGRAM_COUNTER = 0x80000180;
 
@@ -604,11 +604,11 @@ void CRegisters::DoCopUnusableException(bool DelaySlot, int32_t Coprocessor)
     if (DelaySlot)
     {
         CAUSE_REGISTER |= CAUSE_BD;
-        EPC_REGISTER = m_PROGRAM_COUNTER - 4;
+        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
     }
     else
     {
-        EPC_REGISTER = m_PROGRAM_COUNTER;
+        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
     }
     STATUS_REGISTER |= STATUS_EXL;
     m_PROGRAM_COUNTER = 0x80000180;
@@ -642,11 +642,11 @@ bool CRegisters::DoIntrException(bool DelaySlot)
     if (DelaySlot)
     {
         CAUSE_REGISTER |= CAUSE_BD;
-        EPC_REGISTER = m_PROGRAM_COUNTER - 4;
+        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
     }
     else
     {
-        EPC_REGISTER = m_PROGRAM_COUNTER;
+        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
     }
 
     STATUS_REGISTER |= STATUS_EXL;
@@ -660,11 +660,11 @@ void CRegisters::DoIllegalInstructionException(bool DelaySlot)
     if (DelaySlot)
     {
         CAUSE_REGISTER |= CAUSE_BD;
-        EPC_REGISTER = m_PROGRAM_COUNTER - 4;
+        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
     }
     else
     {
-        EPC_REGISTER = m_PROGRAM_COUNTER;
+        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
     }
     m_PROGRAM_COUNTER = 0x80000180;
     STATUS_REGISTER |= STATUS_EXL;
@@ -676,11 +676,11 @@ void CRegisters::DoOverflowException(bool DelaySlot)
     if (DelaySlot)
     {
         CAUSE_REGISTER |= CAUSE_BD;
-        EPC_REGISTER = m_PROGRAM_COUNTER - 4;
+        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
     }
     else
     {
-        EPC_REGISTER = m_PROGRAM_COUNTER;
+        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
     }
     m_PROGRAM_COUNTER = 0x80000180;
     STATUS_REGISTER |= STATUS_EXL;
@@ -697,11 +697,11 @@ void CRegisters::DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr)
         if (DelaySlot)
         {
             CAUSE_REGISTER |= CAUSE_BD;
-            EPC_REGISTER = m_PROGRAM_COUNTER - 4;
+            EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
         }
         else
         {
-            EPC_REGISTER = m_PROGRAM_COUNTER;
+            EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
         }
         if (g_TLB->AddressDefined((uint32_t)BadVaddr))
         {
@@ -734,11 +734,11 @@ void CRegisters::DoTLBWriteMiss(bool DelaySlot, uint64_t BadVaddr)
         if (DelaySlot)
         {
             CAUSE_REGISTER |= CAUSE_BD;
-            EPC_REGISTER = m_PROGRAM_COUNTER - 4;
+            EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
         }
         else
         {
-            EPC_REGISTER = m_PROGRAM_COUNTER;
+            EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
         }
         if (g_TLB->AddressDefined((uint32_t)BadVaddr))
         {
@@ -778,11 +778,11 @@ void CRegisters::DoSysCallException(bool DelaySlot)
     if (DelaySlot)
     {
         CAUSE_REGISTER |= CAUSE_BD;
-        EPC_REGISTER = m_PROGRAM_COUNTER - 4;
+        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
     }
     else
     {
-        EPC_REGISTER = m_PROGRAM_COUNTER;
+        EPC_REGISTER = (int64_t)(int32_t)m_PROGRAM_COUNTER;
     }
     STATUS_REGISTER |= STATUS_EXL;
     m_PROGRAM_COUNTER = 0x80000180;

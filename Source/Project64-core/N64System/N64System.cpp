@@ -1568,8 +1568,8 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
         {
             if (m_Reg.m_CP0[count] != SecondCPU->m_Reg.m_CP0[count])
             {
-                Error.LogF("CP0[%s] 0x%08X, 0x%08X\r\n", CRegName::Cop0[count],
-                    m_Reg.m_CP0[count], SecondCPU->m_Reg.m_CP0[count]);
+                Error.LogF("CP0[%s] 0x%08X%08X, 0x%08X%08X\r\n", CRegName::Cop0[count],
+                    (uint32_t)(m_Reg.m_CP0[count] >> 32), (uint32_t)m_Reg.m_CP0[count], (uint32_t)(SecondCPU->m_Reg.m_CP0[count] >> 32), (uint32_t)(SecondCPU->m_Reg.m_CP0[count]));
             }
         }
         if (m_Reg.m_HI.DW != SecondCPU->m_Reg.m_HI.DW)
