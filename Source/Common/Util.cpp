@@ -3,6 +3,7 @@
 #include "path.h"
 #ifdef _WIN32
 #include <windows.h>
+
 #include <Tlhelp32.h>
 #else
 #include <time.h>
@@ -17,7 +18,8 @@ void pjutil::Sleep(uint32_t timeout)
     struct timespec elapsed, tv;
     elapsed.tv_sec = timeout / 1000;
     elapsed.tv_nsec = (timeout % 1000) * 1000000;
-    do {
+    do
+    {
         errno = 0;
         tv.tv_sec = elapsed.tv_sec;
         tv.tv_nsec = elapsed.tv_nsec;
@@ -63,7 +65,7 @@ bool pjutil::TerminatedExistingExe()
                         break;
                     }
                 }
-                HANDLE hHandle = OpenProcess(SYNCHRONIZE|PROCESS_TERMINATE, FALSE, lppe.th32ProcessID);
+                HANDLE hHandle = OpenProcess(SYNCHRONIZE | PROCESS_TERMINATE, FALSE, lppe.th32ProcessID);
                 if (hHandle != nullptr)
                 {
                     if (TerminateProcess(hHandle, 0))

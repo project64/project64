@@ -10,13 +10,19 @@
 #define _snprintf snprintf
 #define _isnan isnan
 
-int _vscprintf (const char * format, va_list pargs);
+int _vscprintf(const char * format, va_list pargs);
 
 #endif
 
 // FPU rounding code
 #ifdef _WIN32
-typedef enum { FE_TONEAREST = 0, FE_TOWARDZERO, FE_UPWARD, FE_DOWNWARD } eRoundType;
+typedef enum
+{
+    FE_TONEAREST = 0,
+    FE_TOWARDZERO,
+    FE_UPWARD,
+    FE_DOWNWARD,
+} eRoundType;
 int fesetround(int RoundType);
 #else
 #include <fenv.h>

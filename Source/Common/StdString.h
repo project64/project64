@@ -2,10 +2,10 @@
 
 class stdstr;
 
-#include <stdarg.h>
-#include <vector>
-#include <string>
 #include <list>
+#include <stdarg.h>
+#include <string>
+#include <vector>
 
 typedef std::vector<stdstr> strvector;
 
@@ -24,22 +24,22 @@ public:
     stdstr(const stdstr & str);
     stdstr(const char * str);
 
-    strvector  Tokenize(char delimiter) const;
-    strvector  Tokenize(const char * delimiter) const;
-    void       Format(const char * strFormat, ...);
-    stdstr&    ToLower(void);
-    stdstr&    ToUpper(void);
+    strvector Tokenize(char delimiter) const;
+    strvector Tokenize(const char * delimiter) const;
+    void Format(const char * strFormat, ...);
+    stdstr & ToLower(void);
+    stdstr & ToUpper(void);
 
-    void       Replace(const char search, const char replace);
-    void       Replace(const char * search, const char replace);
-    void       Replace(const std::string & search, const std::string & replace);
+    void Replace(const char search, const char replace);
+    void Replace(const char * search, const char replace);
+    void Replace(const std::string & search, const std::string & replace);
 
-    stdstr   & Trim(const char * chars2remove = "\t ");
-    stdstr   & TrimLeft(const char * chars2remove = "\t ");
-    stdstr   & TrimRight(const char * chars2remove = "\t ");
+    stdstr & Trim(const char * chars2remove = "\t ");
+    stdstr & TrimLeft(const char * chars2remove = "\t ");
+    stdstr & TrimRight(const char * chars2remove = "\t ");
 
 #ifdef _WIN32
-	stdstr   & FromUTF16(const wchar_t * UTF16Source, bool * bSuccess = nullptr);
+    stdstr & FromUTF16(const wchar_t * UTF16Source, bool * bSuccess = nullptr);
     std::wstring ToUTF16(unsigned int CodePage = CODEPAGE_UTF8, bool * bSuccess = nullptr) const;
 #endif
 
@@ -49,14 +49,14 @@ public:
 class stdstr_f : public stdstr
 {
 public:
-	stdstr_f(const char * strFormat, ...);
+    stdstr_f(const char * strFormat, ...);
 };
 
 #ifdef _WIN32
 class stdwstr_f : public std::wstring
 {
 public:
-	stdwstr_f(const wchar_t * strFormat, ... );
+    stdwstr_f(const wchar_t * strFormat, ...);
 };
 #endif
 

@@ -1,7 +1,7 @@
 #include "StdString.h"
 #include "Platform.h"
-#include <malloc.h>
 #include <algorithm>
+#include <malloc.h>
 #ifdef _WIN32
 #include <Windows.h>
 #endif
@@ -67,7 +67,7 @@ strvector stdstr::Tokenize(char delimiter) const
 void stdstr::ArgFormat(const char * strFormat, va_list & args)
 {
 #pragma warning(push)
-#pragma warning(disable:4996)
+#pragma warning(disable : 4996)
 
     size_t nlen = _vscprintf(strFormat, args) + 1;
     char * buffer = (char *)alloca(nlen * sizeof(char));
@@ -88,21 +88,21 @@ void stdstr::Format(const char * strFormat, ...)
     va_end(args);
 }
 
-stdstr& stdstr::ToLower(void)
+stdstr & stdstr::ToLower(void)
 {
-    std::transform(begin(), end(), begin(), (char(*)(int)) tolower);
+    std::transform(begin(), end(), begin(), (char (*)(int))tolower);
     return *this;
 }
 
-stdstr& stdstr::ToUpper(void)
+stdstr & stdstr::ToUpper(void)
 {
-    std::transform(begin(), end(), begin(), (char(*)(int)) toupper);
+    std::transform(begin(), end(), begin(), (char (*)(int))toupper);
     return *this;
 }
 
 void stdstr::Replace(const char search, const char replace)
 {
-    std::string& str = *this;
+    std::string & str = *this;
     std::string::size_type pos = str.find(search);
     while (pos != std::string::npos)
     {
@@ -113,7 +113,7 @@ void stdstr::Replace(const char search, const char replace)
 
 void stdstr::Replace(const char * search, const char replace)
 {
-    std::string& str = *this;
+    std::string & str = *this;
     std::string::size_type pos = str.find(search);
     size_t SearchSize = strlen(search);
     while (pos != std::string::npos)
@@ -123,9 +123,9 @@ void stdstr::Replace(const char * search, const char replace)
     }
 }
 
-void stdstr::Replace(const std::string& search, const std::string& replace)
+void stdstr::Replace(const std::string & search, const std::string & replace)
 {
-    std::string& str = *this;
+    std::string & str = *this;
     std::string::size_type pos = str.find(search);
     size_t SearchSize = search.size();
     while (pos != std::string::npos)

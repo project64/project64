@@ -2,12 +2,12 @@
 #ifdef _WIN32
 #include <windows.h>
 #else
-#include <unistd.h>
 #include <dlfcn.h>
 #include <errno.h>
+#include <unistd.h>
 #endif
 
-DynLibHandle DynamicLibraryOpen(const char *pccLibraryPath, bool ShowErrors)
+DynLibHandle DynamicLibraryOpen(const char * pccLibraryPath, bool ShowErrors)
 {
     if (pccLibraryPath == nullptr)
     {
@@ -48,4 +48,3 @@ void * DynamicLibraryGetProc(DynLibHandle Lib, const char * ProcedureName)
     return dlsym(Lib, ProcedureName);
 #endif
 }
-

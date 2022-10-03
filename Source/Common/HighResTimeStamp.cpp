@@ -1,7 +1,7 @@
 #include "HighResTimeStamp.h"
-#include <time.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #ifdef _WIN32
 #include <Windows.h>
 #else
@@ -10,7 +10,7 @@
 
 #ifdef _WIN32
 bool HighResTimeStamp::m_GotFreq = false;
-uint64_t HighResTimeStamp::m_Freq = { 0 };
+uint64_t HighResTimeStamp::m_Freq = {0};
 #endif
 
 HighResTimeStamp::HighResTimeStamp()

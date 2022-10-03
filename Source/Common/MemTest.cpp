@@ -10,9 +10,9 @@
 
 static bool InInit = false;
 
-class CMemList 
+class CMemList
 {
-    typedef struct 
+    typedef struct
     {
         char File[300];
         int line;
@@ -26,7 +26,7 @@ class CMemList
 public:
     CMemList();
     ~CMemList();
-    
+
     void removeItem(void * ptr);
     void RecordAddItem(void * ptr, size_t size, const char * filename, int line);
     void DumpItems(void);
@@ -38,7 +38,7 @@ private:
     uint32_t m_NextOrder;
 };
 
-CMemList *MemList(void)
+CMemList * MemList(void)
 {
     static CMemList m_MemList;
 
@@ -118,8 +118,8 @@ void CMemList::removeItem(void * ptr)
 
 void CMemList::DumpItems(void)
 {
-    char path_buffer[_MAX_PATH] = { 0 }, drive[_MAX_DRIVE] = { 0 }, dir[_MAX_DIR] = { 0 };
-    char fname[_MAX_FNAME] = { 0 }, ext[_MAX_EXT] = { 0 }, LogFileName[_MAX_PATH] = { 0 };
+    char path_buffer[_MAX_PATH] = {0}, drive[_MAX_DRIVE] = {0}, dir[_MAX_DIR] = {0};
+    char fname[_MAX_FNAME] = {0}, ext[_MAX_EXT] = {0}, LogFileName[_MAX_PATH] = {0};
 
     GetModuleFileNameA(m_hModule, path_buffer, sizeof(path_buffer));
     _splitpath(path_buffer, drive, dir, fname, ext);
@@ -128,7 +128,7 @@ void CMemList::DumpItems(void)
     HANDLE hLogFile = INVALID_HANDLE_VALUE;
     do
     {
-        hLogFile = CreateFileA( LogFileName, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, nullptr );
+        hLogFile = CreateFileA(LogFileName, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
         if (hLogFile == INVALID_HANDLE_VALUE)
         {
             if (GetLastError() == ERROR_SHARING_VIOLATION)
@@ -149,7 +149,7 @@ void CMemList::DumpItems(void)
         SetFilePointer(hLogFile, 0, nullptr, FILE_BEGIN);
 
         DWORD dwWritten = 0;
-        char  Msg[800];
+        char Msg[800];
         _snprintf(Msg, sizeof(Msg), "Order, Source File, Line Number, Mem Size\r\n");
         WriteFile(hLogFile, Msg, (DWORD)strlen(Msg), &dwWritten, nullptr);
 
@@ -169,7 +169,7 @@ void CMemList::DumpItems(void)
     }
 }
 
-void* AllocateMemory(size_t size, const char* filename, unsigned int line)
+void * AllocateMemory(size_t size, const char * filename, unsigned int line)
 {
     void * res = malloc(size);
     if (res == nullptr)
@@ -183,22 +183,22 @@ void* AllocateMemory(size_t size, const char* filename, unsigned int line)
     return res;
 }
 
-void* operator new (size_t size, const char* filename, unsigned int line)
+void * operator new(size_t size, const char * filename, unsigned int line)
 {
     return AllocateMemory(size, filename, line);
 }
 
-void* operator new[] (size_t size, const char* filename, unsigned int line)
+void * operator new[](size_t size, const char * filename, unsigned int line)
 {
     return AllocateMemory(size, filename, line);
 }
 
-void* operator new (size_t size)
+void * operator new(size_t size)
 {
     return AllocateMemory(size, "Unknown", 0);
 }
 
-void operator delete (void* ptr)
+void operator delete(void * ptr)
 {
     free(ptr);
     if (!InInit)
@@ -207,17 +207,17 @@ void operator delete (void* ptr)
     }
 }
 
-void operator delete[](void* ptr)
+void operator delete[](void * ptr)
 {
     delete ptr;
 }
 
-void operator delete (void* ptr, const char* /*filename*/, unsigned int /*line*/)
+void operator delete(void * ptr, const char * /*filename*/, unsigned int /*line*/)
 {
     delete ptr;
 }
 
-void operator delete[](void* ptr, const char* /*filename*/, unsigned int /*line*/)
+void operator delete[](void * ptr, const char * /*filename*/, unsigned int /*line*/)
 {
     delete ptr;
 }

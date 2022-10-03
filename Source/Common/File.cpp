@@ -13,7 +13,7 @@
 #if defined(_MSC_VER)
 #include <crtdbg.h>
 #else
-#define _ASSERTE(expr)          ((void)0)
+#define _ASSERTE(expr) ((void)0)
 #endif
 
 CFile::CFile() :
@@ -95,9 +95,18 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
     ULONG dwShareMode = 0;
 
     dwShareMode = FILE_SHARE_READ | FILE_SHARE_WRITE;
-    if ((nOpenFlags & shareDenyWrite) == shareDenyWrite) { dwShareMode &= ~FILE_SHARE_WRITE; }
-    if ((nOpenFlags & shareDenyRead) == shareDenyRead)   { dwShareMode &= ~FILE_SHARE_READ; }
-    if ((nOpenFlags & shareExclusive) == shareExclusive) { dwShareMode = 0; }
+    if ((nOpenFlags & shareDenyWrite) == shareDenyWrite)
+    {
+        dwShareMode &= ~FILE_SHARE_WRITE;
+    }
+    if ((nOpenFlags & shareDenyRead) == shareDenyRead)
+    {
+        dwShareMode &= ~FILE_SHARE_READ;
+    }
+    if ((nOpenFlags & shareExclusive) == shareExclusive)
+    {
+        dwShareMode = 0;
+    }
 
     // Map modeNoInherit flag
     SECURITY_ATTRIBUTES sa;
@@ -138,7 +147,7 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
         CPath file(lpszFileName);
         if (!file.Exists())
         {
-            FILE * fp = fopen(lpszFileName,"wb");
+            FILE * fp = fopen(lpszFileName, "wb");
             if (fp)
             {
                 fclose(fp);
@@ -231,11 +240,11 @@ bool CFile::Flush()
 #endif
 }
 
-bool CFile::Write(const void* lpBuf, uint32_t nCount)
+bool CFile::Write(const void * lpBuf, uint32_t nCount)
 {
     if (nCount == 0)
     {
-        return true;     // Avoid Win32 "null-write" option
+        return true; // Avoid Win32 "null-write" option
     }
 
 #ifdef USE_WINDOWS_API
@@ -259,11 +268,11 @@ bool CFile::Write(const void* lpBuf, uint32_t nCount)
     return true;
 }
 
-uint32_t CFile::Read(void* lpBuf, uint32_t nCount)
+uint32_t CFile::Read(void * lpBuf, uint32_t nCount)
 {
     if (nCount == 0)
     {
-        return 0;   // Avoid Win32 "null-read"
+        return 0; // Avoid Win32 "null-read"
     }
 
 #ifdef USE_WINDOWS_API
@@ -345,9 +354,9 @@ bool CFile::SetEndOfFile()
 #else
     Flush();
 #ifdef _WIN32
-    return _chsize(_fileno((FILE *)m_hFile),GetPosition()) == 0;
+    return _chsize(_fileno((FILE *)m_hFile), GetPosition()) == 0;
 #else
-    return ftruncate(fileno((FILE *)m_hFile),GetPosition()) == 0;
+    return ftruncate(fileno((FILE *)m_hFile), GetPosition()) == 0;
 #endif
 #endif
 }

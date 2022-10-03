@@ -1,8 +1,8 @@
 #include "Trace.h"
-#include "StdString.h"
 #include "CriticalSection.h"
-#include "Thread.h"
 #include "Platform.h"
+#include "StdString.h"
+#include "Thread.h"
 #include <map>
 #include <vector>
 #ifdef _WIN32
@@ -26,7 +26,10 @@ public:
     CTraceLog()
     {
     }
-    ~CTraceLog() { CloseTrace(); }
+    ~CTraceLog()
+    {
+        CloseTrace();
+    }
 
     void TraceMessage(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char * Message);
 
@@ -47,7 +50,7 @@ void TraceSetModuleName(uint8_t module, const char * Name)
     g_ModuleNames.insert(ModuleNameMap::value_type(module, Name));
 }
 
-void WriteTraceFull(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char *format, ...)
+void WriteTraceFull(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char * format, ...)
 {
     va_list args;
     va_start(args, format);
@@ -142,7 +145,6 @@ void CTraceLog::FlushTrace(void)
     {
         m_Modules[i]->FlushTrace();
     }
-
 }
 
 void CTraceLog::TraceMessage(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char * Message)
@@ -202,7 +204,10 @@ const char * TraceModule(uint32_t module)
 CTraceFileLog::CTraceFileLog(const char * FileName, bool FlushFile, CLog::LOG_OPEN_MODE eMode, size_t dwMaxFileSize) :
     m_FlushFile(FlushFile)
 {
-    enum { MB = 1024 * 1024 };
+    enum
+    {
+        MB = 1024 * 1024
+    };
 
     m_hLogFile.SetFlush(false);
     m_hLogFile.SetTruncateFile(true);
@@ -222,7 +227,10 @@ CTraceFileLog::~CTraceFileLog()
 
 void CTraceFileLog::Write(uint32_t module, uint8_t severity, const char * /*file*/, int /*line*/, const char * function, const char * Message)
 {
-    if (!m_hLogFile.IsOpen()) { return; }
+    if (!m_hLogFile.IsOpen())
+    {
+        return;
+    }
 
 #ifdef _WIN32
     SYSTEMTIME sysTime;
@@ -230,16 +238,16 @@ void CTraceFileLog::Write(uint32_t module, uint8_t severity, const char * /*file
     stdstr_f timestamp("%04d/%02d/%02d %02d:%02d:%02d.%03d %05d,", sysTime.wYear, sysTime.wMonth, sysTime.wDay, sysTime.wHour, sysTime.wMinute, sysTime.wSecond, sysTime.wMilliseconds, CThread::GetCurrentThreadId());
 #else
     time_t ltime;
-    ltime=time(&ltime);
+    ltime = time(&ltime);
 
-    struct tm result={0};
+    struct tm result = {0};
     localtime_r(&ltime, &result);
 
     struct timeval curTime;
     gettimeofday(&curTime, nullptr);
     int milliseconds = curTime.tv_usec / 1000;
 
-    stdstr_f timestamp("%04d/%02d/%02d %02d:%02d:%02d.%03d %05d,", result.tm_year+1900, result.tm_mon+1, result.tm_mday, result.tm_hour, result.tm_min, result.tm_sec, milliseconds, CThread::GetCurrentThreadId());
+    stdstr_f timestamp("%04d/%02d/%02d %02d:%02d:%02d.%03d %05d,", result.tm_year + 1900, result.tm_mon + 1, result.tm_mday, result.tm_hour, result.tm_min, result.tm_sec, milliseconds, CThread::GetCurrentThreadId());
 #endif
 
     m_hLogFile.Log(timestamp.c_str());

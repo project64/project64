@@ -29,7 +29,7 @@ public:
 
     void SetFlushFile(bool bFlushFile);
     void Write(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char * Message);
-    void FlushTrace (void);
+    void FlushTrace(void);
 
 private:
     CLog m_hLogFile;
@@ -37,9 +37,17 @@ private:
 };
 
 #ifdef _WIN32
-#define WriteTrace(m, s, format, ...) if(g_ModuleLogLevel[(m)] >= (s)) { WriteTraceFull((m), (s), __FILE__, __LINE__, __FUNCTION__, (format), ## __VA_ARGS__); }
+#define WriteTrace(m, s, format, ...)                                                        \
+    if (g_ModuleLogLevel[(m)] >= (s))                                                        \
+    {                                                                                        \
+        WriteTraceFull((m), (s), __FILE__, __LINE__, __FUNCTION__, (format), ##__VA_ARGS__); \
+    }
 #else
-#define WriteTrace(m, s, format, ...) if(g_ModuleLogLevel[(m)] >= (s)) { WriteTraceFull((m), (s), __FILE__, __LINE__, __PRETTY_FUNCTION__, (format), ## __VA_ARGS__); }
+#define WriteTrace(m, s, format, ...)                                                               \
+    if (g_ModuleLogLevel[(m)] >= (s))                                                               \
+    {                                                                                               \
+        WriteTraceFull((m), (s), __FILE__, __LINE__, __PRETTY_FUNCTION__, (format), ##__VA_ARGS__); \
+    }
 #endif
 
 CTraceModule * TraceAddModule(CTraceModule * TraceModule);
@@ -49,7 +57,7 @@ const char * TraceModule(uint32_t module);
 void TraceSetModuleName(uint8_t module, const char * Name);
 void CloseTrace(void);
 
-void WriteTraceFull(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char *format, ...);
+void WriteTraceFull(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char * format, ...);
 void TraceFlushLog(void);
 void TraceSetMaxModule(uint32_t MaxModule, uint8_t DefaultSeverity);
 

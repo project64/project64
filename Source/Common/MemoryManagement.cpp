@@ -48,12 +48,12 @@ static bool TranslateToMemProtect(int OsMemProtection, MEM_PROTECTION & memProte
 }
 #endif
 
-void* AllocateAddressSpace(size_t size, void * base_address)
+void * AllocateAddressSpace(size_t size, void * base_address)
 {
 #ifdef _WIN32
     return VirtualAlloc(base_address, size, MEM_RESERVE | MEM_TOP_DOWN, PAGE_NOACCESS);
 #else
-    void * ptr = mmap((void*)0, size, PROT_NONE, MAP_PRIVATE | MAP_ANON, -1, 0);
+    void * ptr = mmap((void *)0, size, PROT_NONE, MAP_PRIVATE | MAP_ANON, -1, 0);
     if (ptr == MAP_FAILED)
     {
         return nullptr;
@@ -63,7 +63,7 @@ void* AllocateAddressSpace(size_t size, void * base_address)
 #endif
 }
 
-bool FreeAddressSpace(void* addr, size_t size)
+bool FreeAddressSpace(void * addr, size_t size)
 {
 #ifdef _WIN32
     size = 0; // Unused
@@ -75,7 +75,7 @@ bool FreeAddressSpace(void* addr, size_t size)
 #endif
 }
 
-void* CommitMemory(void* addr, size_t size, MEM_PROTECTION memProtection)
+void * CommitMemory(void * addr, size_t size, MEM_PROTECTION memProtection)
 {
     int OsMemProtection;
     if (!TranslateFromMemProtect(memProtection, OsMemProtection))
@@ -91,10 +91,10 @@ void* CommitMemory(void* addr, size_t size, MEM_PROTECTION memProtection)
 #endif
 }
 
-bool DecommitMemory(void* addr, size_t size)
+bool DecommitMemory(void * addr, size_t size)
 {
 #ifdef _WIN32
-    return VirtualFree((void*)addr, size, MEM_DECOMMIT) != 0;
+    return VirtualFree((void *)addr, size, MEM_DECOMMIT) != 0;
 #else
     // Instead of unmapping the address, we're just gonna trick
     // the TLB to mark this as a new mapped area which, due to
@@ -107,7 +107,7 @@ bool DecommitMemory(void* addr, size_t size)
 #endif
 }
 
-bool ProtectMemory(void* addr, size_t size, MEM_PROTECTION memProtection, MEM_PROTECTION * OldProtect)
+bool ProtectMemory(void * addr, size_t size, MEM_PROTECTION memProtection, MEM_PROTECTION * OldProtect)
 {
     int OsMemProtection;
     if (!TranslateFromMemProtect(memProtection, OsMemProtection))

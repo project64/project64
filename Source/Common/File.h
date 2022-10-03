@@ -20,21 +20,21 @@ public:
     };
 
     enum SeekPosition
-	{
-		begin = 0x0,
-		current = 0x1,
-		end = 0x2
-	};
+    {
+        begin = 0x0,
+        current = 0x1,
+        end = 0x2
+    };
 
-    virtual bool Open(const char * lpszFileName, uint32_t nOpenFlags ) = 0;
+    virtual bool Open(const char * lpszFileName, uint32_t nOpenFlags) = 0;
 
     virtual uint32_t GetPosition() const = 0;
     virtual int32_t Seek(int32_t lOff, SeekPosition nFrom) = 0;
     virtual bool SetLength(uint32_t dwNewLen) = 0;
     virtual uint32_t GetLength() const = 0;
 
-    virtual uint32_t Read(void* lpBuf, uint32_t nCount) = 0;
-    virtual bool Write(const void* lpBuf, uint32_t nCount) = 0;
+    virtual uint32_t Read(void * lpBuf, uint32_t nCount) = 0;
+    virtual bool Write(const void * lpBuf, uint32_t nCount) = 0;
 
     virtual bool Flush() = 0;
     virtual bool Close() = 0;
@@ -51,18 +51,18 @@ public:
 
     virtual ~CFile();
 
-    virtual bool Open(const char * lpszFileName, uint32_t nOpenFlags );
+    virtual bool Open(const char * lpszFileName, uint32_t nOpenFlags);
 
-    uint32_t SeekToEnd ( void );
-    void SeekToBegin ( void );
+    uint32_t SeekToEnd(void);
+    void SeekToBegin(void);
 
     virtual uint32_t GetPosition() const;
     virtual int32_t Seek(int32_t lOff, SeekPosition nFrom);
     virtual bool SetLength(uint32_t dwNewLen);
     virtual uint32_t GetLength() const;
 
-    virtual uint32_t Read(void* lpBuf, uint32_t nCount);
-    virtual bool Write(const void* lpBuf, uint32_t nCount);
+    virtual uint32_t Read(void * lpBuf, uint32_t nCount);
+    virtual bool Write(const void * lpBuf, uint32_t nCount);
 
     virtual bool Flush();
     virtual bool Close();
@@ -70,8 +70,8 @@ public:
     virtual bool SetEndOfFile();
 
 private:
-    CFile(const CFile&);
-    CFile& operator=(const CFile&);
+    CFile(const CFile &);
+    CFile & operator=(const CFile &);
 
     void * m_hFile;
     bool m_bCloseOnDelete;

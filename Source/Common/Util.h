@@ -9,6 +9,6 @@ public:
 
 private:
     pjutil(void);
-    pjutil(const pjutil&);
-    pjutil& operator=(const pjutil&);
+    pjutil(const pjutil &);
+    pjutil & operator=(const pjutil &);
 };

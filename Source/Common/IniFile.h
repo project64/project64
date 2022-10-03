@@ -4,15 +4,15 @@
 #include <strings.h>
 #endif
 
-#include "Platform.h"
-#include "File.h"
 #include "CriticalSection.h"
-#include <string>
-#include <map>
-#include <vector>
+#include "File.h"
+#include "Platform.h"
 #include <list>
-#include <set>
+#include <map>
 #include <memory>
+#include <set>
+#include <string>
+#include <vector>
 
 class CIniFileBase
 {
@@ -22,7 +22,7 @@ public:
     typedef std::list<std::string> strlist;
     typedef std::pair<const std::string *, const std::string *> KeyValueItem;
     typedef std::vector<KeyValueItem> KeyValueVector;
-    typedef void(*SortData)(KeyValueVector &);
+    typedef void (*SortData)(KeyValueVector &);
 
     CIniFileBase(CFileBase & FileObject, const char * FileName);
     virtual ~CIniFileBase(void);
@@ -42,12 +42,15 @@ public:
     void SetAutoFlush(bool AutoFlush);
     void FlushChanges(void);
     bool EntryExists(const char * lpSectionName, const char * lpKeyName);
-    void GetKeyList(const char * lpSectionName, strlist &List);
+    void GetKeyList(const char * lpSectionName, strlist & List);
     void GetKeyValueData(const char * lpSectionName, KeyValueData & List);
     void SetCustomSort(SortData SortFunction);
 
     void GetVectorOfSections(SectionList & sections);
-    const std::string &GetFileName() { return m_FileName; }
+    const std::string & GetFileName()
+    {
+        return m_FileName;
+    }
 
 protected:
     void OpenIniFileReadOnly();
@@ -62,7 +65,7 @@ protected:
 private:
     struct insensitive_compare
     {
-        bool operator() (const std::string & a, const std::string & b) const
+        bool operator()(const std::string & a, const std::string & b) const
         {
             return _stricmp(a.c_str(), b.c_str()) < 0;
         }
@@ -88,7 +91,7 @@ private:
     SortData m_SortFunction;
 
     void fInsertSpaces(int Pos, int NoOfSpaces);
-    int GetStringFromFile(char * & String, std::unique_ptr<char> &Data, int & MaxDataSize, int & DataSize, int & ReadPos);
+    int GetStringFromFile(char *& String, std::unique_ptr<char> & Data, int & MaxDataSize, int & DataSize, int & ReadPos);
     bool MoveToSectionNameData(const char * lpSectionName, bool ChangeCurrentSection);
     const char * CleanLine(char * Line);
     void ClearSectionPosList(long FilePos);
@@ -125,7 +128,7 @@ public:
     }
 
 protected:
-    CFileStorage  m_FileObject;
+    CFileStorage m_FileObject;
 };
 
 typedef CIniFileT<CFile> CIniFile;

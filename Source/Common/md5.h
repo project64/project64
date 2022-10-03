@@ -41,19 +41,25 @@ documentation and/or software.
 
 #pragma once
 
-#include <string.h>
-#include <stdio.h>
-#include <string>
-#include <functional>
-#include "path.h"
 #include "StdString.h"
+#include "path.h"
+#include <functional>
+#include <stdio.h>
+#include <string.h>
+#include <string>
 
 struct MD5Digest
 {
-    MD5Digest() { Reset(); }
+    MD5Digest()
+    {
+        Reset();
+    }
     unsigned char digest[16];
 
-    void Reset() { ::memset(digest, 0, sizeof(digest)); }
+    void Reset()
+    {
+        ::memset(digest, 0, sizeof(digest));
+    }
     bool IsClear()
     {
         int isClear = 0;
@@ -79,9 +85,9 @@ struct MD5Digest
     }
 };
 
-struct MD5Digest_less : std::binary_function < MD5Digest, MD5Digest, bool >
+struct MD5Digest_less : std::binary_function<MD5Digest, MD5Digest, bool>
 {
-    bool operator()(const MD5Digest& x, const MD5Digest& y) const
+    bool operator()(const MD5Digest & x, const MD5Digest & y) const
     {
         return (memcmp(x.digest, y.digest, sizeof(x.digest)) < 0);
     }
@@ -91,59 +97,58 @@ class MD5
 {
 public:
     // Methods for controlled operation:
-    MD5();  // Simple initializer
+    MD5(); // Simple initializer
     ~MD5();
-    void  update(const unsigned char *input, unsigned int input_length);
-    void  update(FILE *file);
-    void  finalize();
+    void update(const unsigned char * input, unsigned int input_length);
+    void update(FILE * file);
+    void finalize();
 
     // Constructors for special circumstances.  All these constructors finalize the MD5 context.
-    MD5(CPath File);            // Digest file, finalize
-    MD5(const unsigned char *string); // Digest string, finalize
-    MD5(FILE *file);            // Digest file, close, finalize
-    MD5(const unsigned char *input, unsigned int input_length);
+    MD5(CPath File);                   // Digest file, finalize
+    MD5(const unsigned char * string); // Digest string, finalize
+    MD5(FILE * file);                  // Digest file, close, finalize
+    MD5(const unsigned char * input, unsigned int input_length);
     MD5(const stdstr & string);
 
     // Methods to acquire finalized result
-    void				get_digest(MD5Digest& extdigest); // Digest into a digest structure
-    const unsigned char *raw_digest();  // Digest as a 16-byte binary array
-    const char *      hex_digest();  // Digest as a 33-byte ascii-hex string
+    void get_digest(MD5Digest & extdigest); // Digest into a digest structure
+    const unsigned char * raw_digest();     // Digest as a 16-byte binary array
+    const char * hex_digest();              // Digest as a 33-byte ascii-hex string
 
 private:
-
     // First, some types:
-    typedef unsigned       int uint4; // Assumes integer is 4 words long
+    typedef unsigned int uint4;       // Assumes integer is 4 words long
     typedef unsigned short int uint2; // Assumes short integer is 2 words long
-    typedef unsigned      char uint1; // Assumes char is 1 word long
+    typedef unsigned char uint1;      // Assumes char is 1 word long
 
     // Next, the private data:
     uint4 state[4];
-    uint4 count[2];     // Number of *bits*, mod 2^64
-    uint1 buffer[64];   // Input buffer
+    uint4 count[2];   // Number of *bits*, mod 2^64
+    uint1 buffer[64]; // Input buffer
     uint1 digest[16];
     uint1 finalized;
     stdstr m_hex_digest;
 
     // Last, the private methods, mostly static:
-    void init();               // Called by all constructors
-    void transform(uint1 *buffer);  // Does the real update work. Note that length is implied to be 64.
+    void init();                    // Called by all constructors
+    void transform(uint1 * buffer); // Does the real update work. Note that length is implied to be 64.
 
-    static void encode(uint1 *dest, uint4 *src, uint4 length);
-    static void decode(uint4 *dest, uint1 *src, uint4 length);
-    static void memcpy(uint1 *dest, uint1 *src, uint4 length);
-    static void memset(uint1 *start, uint1 val, uint4 length);
+    static void encode(uint1 * dest, uint4 * src, uint4 length);
+    static void decode(uint4 * dest, uint1 * src, uint4 length);
+    static void memcpy(uint1 * dest, uint1 * src, uint4 length);
+    static void memset(uint1 * start, uint1 val, uint4 length);
 
-    static inline uint4  rotate_left(uint4 x, uint4 n);
-    static inline uint4  F(uint4 x, uint4 y, uint4 z);
-    static inline uint4  G(uint4 x, uint4 y, uint4 z);
-    static inline uint4  H(uint4 x, uint4 y, uint4 z);
-    static inline uint4  I(uint4 x, uint4 y, uint4 z);
-    static inline void   FF(uint4& a, uint4 b, uint4 c, uint4 d, uint4 x,
-        uint4 s, uint4 ac);
-    static inline void   GG(uint4& a, uint4 b, uint4 c, uint4 d, uint4 x,
-        uint4 s, uint4 ac);
-    static inline void   HH(uint4& a, uint4 b, uint4 c, uint4 d, uint4 x,
-        uint4 s, uint4 ac);
-    static inline void   II(uint4& a, uint4 b, uint4 c, uint4 d, uint4 x,
-        uint4 s, uint4 ac);
+    static inline uint4 rotate_left(uint4 x, uint4 n);
+    static inline uint4 F(uint4 x, uint4 y, uint4 z);
+    static inline uint4 G(uint4 x, uint4 y, uint4 z);
+    static inline uint4 H(uint4 x, uint4 y, uint4 z);
+    static inline uint4 I(uint4 x, uint4 y, uint4 z);
+    static inline void FF(uint4 & a, uint4 b, uint4 c, uint4 d, uint4 x,
+                          uint4 s, uint4 ac);
+    static inline void GG(uint4 & a, uint4 b, uint4 c, uint4 d, uint4 x,
+                          uint4 s, uint4 ac);
+    static inline void HH(uint4 & a, uint4 b, uint4 c, uint4 d, uint4 x,
+                          uint4 s, uint4 ac);
+    static inline void II(uint4 & a, uint4 b, uint4 c, uint4 d, uint4 x,
+                          uint4 s, uint4 ac);
 };

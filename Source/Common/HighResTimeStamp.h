@@ -5,7 +5,7 @@ class HighResTimeStamp
 {
 public:
     HighResTimeStamp();
-    HighResTimeStamp & SetToNow (void);
+    HighResTimeStamp & SetToNow(void);
     uint64_t GetMicroSeconds(void);
     void SetMicroSeconds(uint64_t MicroSeconds);
 

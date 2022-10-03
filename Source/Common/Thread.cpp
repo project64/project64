@@ -4,9 +4,9 @@
 #ifdef _WIN32
 #include <Windows.h>
 #else
-#include <unistd.h>
 #include <pthread.h>
 #include <sys/syscall.h>
+#include <unistd.h>
 #endif
 
 CThread::CThread(CTHREAD_START_ROUTINE lpStartAddress) :
@@ -48,15 +48,15 @@ bool CThread::Start(void * lpThreadParameter)
 #else
     pthread_t * thread_id = new pthread_t;
 
-    m_thread = (void*)thread_id;
+    m_thread = (void *)thread_id;
 
-    int res = pthread_create(thread_id, nullptr, (void *(*)(void *))ThreadWrapper, this);
+    int res = pthread_create(thread_id, nullptr, (void * (*)(void *))ThreadWrapper, this);
 #endif
     WriteTrace(TraceThread, TraceDebug, "Done");
     return true;
 }
 
-void * CThread::ThreadWrapper (CThread * _this)
+void * CThread::ThreadWrapper(CThread * _this)
 {
     WriteTrace(TraceThread, TraceDebug, "Start");
     _this->m_threadID = CThread::GetCurrentThreadId();
