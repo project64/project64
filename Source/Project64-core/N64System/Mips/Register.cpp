@@ -503,7 +503,7 @@ void CRegisters::DoAddressError(bool DelaySlot, uint64_t BadVaddr, bool FromRead
     BAD_VADDR_REGISTER = BadVaddr;
     CONTEXT_REGISTER.BadVPN2 = BadVaddr >> 13;
     XCONTEXT_REGISTER.BadVPN2 = BadVaddr >> 13;
-    XCONTEXT_REGISTER.R = BadVaddr >> 62;
+    XCONTEXT_REGISTER.R = BadVaddr >> 61;
 
     if (DelaySlot)
     {

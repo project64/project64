@@ -38,10 +38,10 @@ union COP0XContext
 
     struct
     {
-        unsigned : 4;
-        unsigned BadVPN2 : 27;
-        unsigned R : 2;
-        unsigned PTEBase : 31;
+        uint64_t : 4;
+        uint64_t BadVPN2 : 27;
+        uint64_t R : 2;
+        uint64_t PTEBase : 31;
     };
 };
 
