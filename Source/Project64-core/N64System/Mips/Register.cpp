@@ -393,7 +393,7 @@ void CRegisters::Cop0_MT(uint32_t Reg, uint64_t Value)
         m_CP0[Reg] = Value;
         break;
     case 4: // Context
-        m_CP0[Reg] = Value & 0xFFFFFFFFFF800000;
+        m_CP0[Reg] = (Value & 0xFFFFFFFFFF800000) | (m_CP0[Reg] & 0x7FFFF0);
         break;
     case 9: // Count
         g_SystemTimer->UpdateTimers();
