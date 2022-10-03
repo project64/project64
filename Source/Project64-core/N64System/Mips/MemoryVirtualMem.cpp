@@ -379,7 +379,7 @@ bool CMipsMemoryVM::UpdateMemoryValue32(uint32_t VAddr, uint32_t Value)
 
 bool CMipsMemoryVM::LB_Memory(uint64_t VAddr, uint8_t& Value)
 {
-    if ((uint64_t)((int32_t)VAddr) != VAddr)
+    if (!b32BitCore() && (uint64_t)((int32_t)VAddr) != VAddr)
     {
         GenerateAddressErrorException(VAddr, true);
         return false;
@@ -407,7 +407,7 @@ bool CMipsMemoryVM::LB_Memory(uint64_t VAddr, uint8_t& Value)
 
 bool CMipsMemoryVM::LH_Memory(uint64_t VAddr, uint16_t & Value)
 {
-    if ((uint64_t)((int32_t)VAddr) != VAddr)
+    if (!b32BitCore() && (uint64_t)((int32_t)VAddr) != VAddr)
     {
         GenerateAddressErrorException(VAddr, true);
         return false;
@@ -440,7 +440,7 @@ bool CMipsMemoryVM::LH_Memory(uint64_t VAddr, uint16_t & Value)
 
 bool CMipsMemoryVM::LW_Memory(uint64_t VAddr, uint32_t & Value)
 {
-    if ((uint64_t)((int32_t)VAddr) != VAddr)
+    if (!b32BitCore() && (uint64_t)((int32_t)VAddr) != VAddr)
     {
         GenerateAddressErrorException(VAddr, true);
         return false;
@@ -472,7 +472,7 @@ bool CMipsMemoryVM::LW_Memory(uint64_t VAddr, uint32_t & Value)
 
 bool CMipsMemoryVM::LD_Memory(uint64_t VAddr, uint64_t& Value)
 {
-    if ((uint64_t)((int32_t)VAddr) != VAddr)
+    if (!b32BitCore() && (uint64_t)((int32_t)VAddr) != VAddr)
     {
         GenerateAddressErrorException(VAddr, true);
         return false;
@@ -505,7 +505,7 @@ bool CMipsMemoryVM::LD_Memory(uint64_t VAddr, uint64_t& Value)
 
 bool CMipsMemoryVM::SB_Memory(uint64_t VAddr, uint32_t Value)
 {
-    if ((uint64_t)((int32_t)VAddr) != VAddr)
+    if (!b32BitCore() && (uint64_t)((int32_t)VAddr) != VAddr)
     {
         GenerateAddressErrorException(VAddr, false);
         return false;
@@ -532,7 +532,7 @@ bool CMipsMemoryVM::SB_Memory(uint64_t VAddr, uint32_t Value)
 
 bool CMipsMemoryVM::SH_Memory(uint64_t VAddr, uint32_t Value)
 {
-    if ((uint64_t)((int32_t)VAddr) != VAddr)
+    if (!b32BitCore() && (uint64_t)((int32_t)VAddr) != VAddr)
     {
         GenerateAddressErrorException(VAddr, false);
         return false;
@@ -565,7 +565,7 @@ bool CMipsMemoryVM::SH_Memory(uint64_t VAddr, uint32_t Value)
 
 bool CMipsMemoryVM::SW_Memory(uint64_t VAddr, uint32_t Value)
 {
-    if ((uint64_t)((int32_t)VAddr) != VAddr)
+    if (!b32BitCore() && (uint64_t)((int32_t)VAddr) != VAddr)
     {
         GenerateAddressErrorException(VAddr, false);
         return false;
@@ -598,7 +598,7 @@ bool CMipsMemoryVM::SW_Memory(uint64_t VAddr, uint32_t Value)
 
 bool CMipsMemoryVM::SD_Memory(uint64_t VAddr, uint64_t Value)
 {
-    if ((uint64_t)((int32_t)VAddr) != VAddr)
+    if (!b32BitCore() && (uint64_t)((int32_t)VAddr) != VAddr)
     {
         GenerateAddressErrorException(VAddr, false);
         return false;
