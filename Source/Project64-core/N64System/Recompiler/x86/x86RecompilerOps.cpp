@@ -4002,11 +4002,7 @@ void CX86RecompilerOps::LD()
             ProtectGPR(m_Opcode.rt);
         }
 
-        Map_GPR_64bit(m_Opcode.rt, -1);
-        if (m_Opcode.rt == m_Opcode.base)
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
+        Map_GPR_64bit(m_Opcode.rt, m_Opcode.rt == m_Opcode.base ? m_Opcode.base : -1);
         CompileLoadMemoryValue(CX86Ops::x86_Unknown, GetMipsRegMapLo(m_Opcode.rt), GetMipsRegMapHi(m_Opcode.rt), 64, false);
     }
     if (g_System->bFastSP() && m_Opcode.rt == 29)
