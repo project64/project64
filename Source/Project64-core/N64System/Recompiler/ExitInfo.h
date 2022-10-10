@@ -12,6 +12,7 @@ enum ExitReason
     ExitReason_DoCPUAction,
     ExitReason_COP1Unuseable,
     ExitReason_DoSysCall,
+    ExitReason_Break,
     ExitReason_TLBReadMiss,
     ExitReason_TLBWriteMiss,
     ExitReason_ResetRecompCode,

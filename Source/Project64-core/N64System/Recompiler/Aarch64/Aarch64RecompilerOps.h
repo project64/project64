@@ -85,6 +85,7 @@ public:
     void SPECIAL_JR();
     void SPECIAL_JALR();
     void SPECIAL_SYSCALL();
+    void SPECIAL_BREAK();
     void SPECIAL_MFLO();
     void SPECIAL_MTLO();
     void SPECIAL_MFHI();
