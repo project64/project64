@@ -4515,6 +4515,13 @@ void CX86RecompilerOps::SPECIAL_SYSCALL()
     m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
 }
 
+void CX86RecompilerOps::SPECIAL_BREAK()
+{
+    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_Break, true, nullptr);
+    m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
+}
+
 void CX86RecompilerOps::SPECIAL_MFLO()
 {
     if (m_Opcode.rd == 0)
@@ -9492,6 +9499,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         UpdateCounters(ExitRegSet, false, reason == ExitReason_Normal);
     }
 
+    bool InDelaySlot = m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT;
     switch (reason)
     {
     case ExitReason_Normal:
@@ -9616,22 +9624,21 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         ExitCodeBlock();
         break;
     case ExitReason_DoSysCall:
-    {
-        bool bDelay = m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT;
-        m_Assembler.PushImm32(bDelay ? "true" : "false", bDelay);
-        m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::DoSysCallException), "CRegisters::DoSysCallException", 4);
+        m_Assembler.PushImm32(InDelaySlot ? "true" : "false", InDelaySlot);
+        m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::DoSysCallException), "CRegisters::DoSysCallException", 8);
         ExitCodeBlock();
         break;
-    }
+    case ExitReason_Break:
+        m_Assembler.PushImm32(InDelaySlot ? "true" : "false", InDelaySlot);
+        m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::DoBreakException), "CRegisters::DoBreakException", 8);
+        ExitCodeBlock();
+        break;
     case ExitReason_COP1Unuseable:
-    {
-        bool bDelay = m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT;
         m_Assembler.PushImm32("1", 1);
-        m_Assembler.PushImm32(bDelay ? "true" : "false", bDelay);
+        m_Assembler.PushImm32(InDelaySlot ? "true" : "false", InDelaySlot);
         m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::DoCopUnusableException), "CRegisters::DoCopUnusableException", 12);
         ExitCodeBlock();
         break;
-    }
     case ExitReason_ResetRecompCode:
         g_Notify->BreakPoint(__FILE__, __LINE__);
         ExitCodeBlock();
@@ -9639,7 +9646,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
     case ExitReason_TLBReadMiss:
         m_Assembler.MoveVariableToX86reg(g_TLBLoadAddress, "g_TLBLoadAddress", CX86Ops::x86_EDX);
         m_Assembler.Push(CX86Ops::x86_EDX);
-        m_Assembler.PushImm32(m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT);
+        m_Assembler.PushImm32(InDelaySlot ? "true" : "false", InDelaySlot);
         m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::DoTLBReadMiss), "CRegisters::DoTLBReadMiss", 12);
         ExitCodeBlock();
         break;
@@ -9648,7 +9655,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         ExitCodeBlock();
         break;
     case ExitReason_ExceptionOverflow:
-        m_Assembler.PushImm32(m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT);
+        m_Assembler.PushImm32(InDelaySlot ? "true" : "false", InDelaySlot);
         m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::DoOverflowException), "CRegisters::DoOverflowException", 12);
         ExitCodeBlock();
         break;

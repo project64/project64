@@ -3170,6 +3170,11 @@ void CArmRecompilerOps::SPECIAL_SYSCALL()
     m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
 }
 
+void CArmRecompilerOps::SPECIAL_BREAK()
+{
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+}
+
 void CArmRecompilerOps::SPECIAL_MFLO()
 {
     UnMap_GPR(m_Opcode.rd, true);
