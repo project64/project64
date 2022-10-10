@@ -80,16 +80,16 @@ void CX86Ops::AddConstToVariable(uint32_t Const, void * Variable, const char * V
     AddCode32(Const);
 }
 
-void CX86Ops::AddConstToX86Reg(x86Reg reg, uint32_t Const)
+void CX86Ops::AddConstToX86Reg(x86Reg reg, uint32_t Const, bool NeedCarry)
 {
     if (Const == 0)
     {
     }
-    else if (Const == 1)
+    else if (Const == 1 && !NeedCarry)
     {
         IncX86reg(reg);
     }
-    else if (Const == 0xFFFFFFFF)
+    else if (Const == 0xFFFFFFFF && !NeedCarry)
     {
         DecX86reg(reg);
     }
