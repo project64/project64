@@ -1,20 +1,22 @@
 #include "stdafx.h"
-#include "InterpreterOps32.h"
-#include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/N64System.h>
-#include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
-#include <Project64-core/N64System/Mips/SystemTiming.h>
-#include <Project64-core/N64System/Mips/R4300iInstruction.h>
-#include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
-#include <Project64-core/Logging.h>
-#include <Project64-core/Debugger.h>
 
-#define TEST_COP1_USABLE_EXCEPTION \
-    if ((g_Reg->STATUS_REGISTER & STATUS_CU1) == 0) {\
-    g_Reg->DoCopUnusableException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP,1);\
-    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;\
-    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);\
-    return;\
+#include "InterpreterOps32.h"
+#include <Project64-core/Debugger.h>
+#include <Project64-core/Logging.h>
+#include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
+#include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
+#include <Project64-core/N64System/Mips/R4300iInstruction.h>
+#include <Project64-core/N64System/Mips/SystemTiming.h>
+#include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/SystemGlobals.h>
+
+#define TEST_COP1_USABLE_EXCEPTION                                                          \
+    if ((g_Reg->STATUS_REGISTER & STATUS_CU1) == 0)                                         \
+    {                                                                                       \
+        g_Reg->DoCopUnusableException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP, 1); \
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;                                    \
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);                                   \
+        return;                                                                             \
     }
 
 R4300iOp32::Func * R4300iOp32::BuildInterpreter()
@@ -1261,7 +1263,10 @@ void R4300iOp32::COP1_CF()
     TEST_COP1_USABLE_EXCEPTION
     if (m_Opcode.fs != 31 && m_Opcode.fs != 0)
     {
-        if (CDebugSettings::HaveDebugger()) { g_Notify->DisplayError("CFC1: what register are you writing to?"); }
+        if (CDebugSettings::HaveDebugger())
+        {
+            g_Notify->DisplayError("CFC1: what register are you writing to?");
+        }
         return;
     }
     _GPR[m_Opcode.rt].W[0] = (int32_t)_FPCR[m_Opcode.fs];

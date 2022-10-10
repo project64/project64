@@ -1,15 +1,15 @@
 #include "stdafx.h"
+
 #include "RomList.h"
 #include <Project64-core/3rdParty/zip.h>
-#include <Project64-core/N64System/N64Rom.h>
 #include <Project64-core/N64System/N64Disk.h>
+#include <Project64-core/N64System/N64Rom.h>
 
 #ifdef _WIN32
 #include <Project64-core/3rdParty/7zip.h>
 #endif
 
-static const char* ROM_extensions[] =
-{
+static const char * ROM_extensions[] = {
 #ifdef _WIN32
     "7z",
 #endif
@@ -123,7 +123,7 @@ void CRomList::RefreshRomListThread(void)
 void CRomList::AddRomToList(const char * RomLocation)
 {
     WriteTrace(TraceRomList, TraceVerbose, "Start (RomLocation: \"%s\")", RomLocation);
-    ROM_INFO RomInfo = { 0 };
+    ROM_INFO RomInfo = {0};
 
     strncpy(RomInfo.szFullFileName, RomLocation, (sizeof(RomInfo.szFullFileName) / sizeof(RomInfo.szFullFileName[0])) - 1);
     if (FillRomInfo(&RomInfo))
@@ -249,7 +249,10 @@ void CRomList::FillRomList(strlist & FileList, const char * Directory)
                                 continue;
                             }
                             WriteTrace(TraceUserInterface, TraceDebug, "9");
-                            if (!CN64Rom::IsValidRomImage(RomData)) { continue; }
+                            if (!CN64Rom::IsValidRomImage(RomData))
+                            {
+                                continue;
+                            }
                             WriteTrace(TraceUserInterface, TraceDebug, "10");
                             ByteSwapRomData(RomData, sizeof(RomData));
                             WriteTrace(TraceUserInterface, TraceDebug, "11");
@@ -344,7 +347,10 @@ bool CRomList::LoadDataFromRomFile(const char * FileName, uint8_t * Data, int32_
         char zname[132];
         unzFile file;
         file = unzOpen(FileName);
-        if (file == nullptr) { return false; }
+        if (file == nullptr)
+        {
+            return false;
+        }
 
         port = unzGoToFirstFile(file);
         FoundRom = false;
@@ -424,7 +430,7 @@ bool CRomList::LoadDataFromRomFile(const char * FileName, uint8_t * Data, int32_
             // Could still be a disk image
 
             // System data
-            const uint8_t blocks[7] = { 2, 3, 10, 11, 1, 8, 9 };
+            const uint8_t blocks[7] = {2, 3, 10, 11, 1, 8, 9};
             for (int i = 0; i < 7; i++)
             {
                 sysdataoffset = 0x4D08 * blocks[i];

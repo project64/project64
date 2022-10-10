@@ -248,7 +248,7 @@ void CX64RecompilerOps::SC()
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CX64RecompilerOps::SWC1() 
+void CX64RecompilerOps::SWC1()
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }

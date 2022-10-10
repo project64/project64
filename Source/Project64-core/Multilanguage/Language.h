@@ -1,12 +1,12 @@
 #pragma once
 
-#pragma warning(disable:4786)
-#include <string>
-#include <map>
+#pragma warning(disable : 4786)
 #include <list>
+#include <map>
 #include <stdint.h>
+#include <string>
 
-typedef std::map<int32_t, std::string, std::less<int32_t> > LANG_STRINGS;
+typedef std::map<int32_t, std::string, std::less<int32_t>> LANG_STRINGS;
 typedef LANG_STRINGS::value_type LANG_STR;
 
 struct LanguageFile
@@ -28,11 +28,14 @@ public:
     void SetLanguage(const char * LanguageName);
     bool LoadCurrentStrings(void);
     bool IsCurrentLang(LanguageFile & File);
-    bool IsLanguageLoaded(void) const { return m_LanguageLoaded; }
+    bool IsLanguageLoaded(void) const
+    {
+        return m_LanguageLoaded;
+    }
 
 private:
-    CLanguage(const CLanguage&);
-    CLanguage& operator=(const CLanguage&);
+    CLanguage(const CLanguage &);
+    CLanguage & operator=(const CLanguage &);
 
     static void StaticResetStrings(CLanguage * _this)
     {

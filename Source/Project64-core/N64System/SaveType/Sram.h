@@ -11,8 +11,8 @@ public:
 
 private:
     CSram(void);
-    CSram(const CSram&);
-    CSram& operator=(const CSram&);
+    CSram(const CSram &);
+    CSram & operator=(const CSram &);
 
     bool LoadSram();
 

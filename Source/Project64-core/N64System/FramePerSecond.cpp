@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "FramePerSecond.h"
 #include <Project64-core/N64System/N64Types.h>
 
@@ -86,7 +87,10 @@ void CFramePerSecond::UpdateDisplay(void)
     }
     if (m_iFrameRateType == FR_DLs || m_iFrameRateType == FR_VIs_DLs)
     {
-        if (DisplayString.length() > 0) { DisplayString += " "; }
+        if (DisplayString.length() > 0)
+        {
+            DisplayString += " ";
+        }
         DisplayString += stdstr_f(m_DlistFrameRate >= 0 ? "DL/s: %.1f" : "DL/s: -.--", m_DlistFrameRate);
     }
     g_Notify->DisplayMessage2(DisplayString.c_str());

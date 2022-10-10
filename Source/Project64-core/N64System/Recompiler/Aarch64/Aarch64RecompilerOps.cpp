@@ -249,7 +249,7 @@ void CAarch64RecompilerOps::SC()
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CAarch64RecompilerOps::SWC1() 
+void CAarch64RecompilerOps::SWC1()
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }

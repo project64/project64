@@ -1,11 +1,12 @@
 #pragma once
 
 #include <Common/Log.h>
-#include <Project64-core/N64System/N64Types.h>
-#include <Project64-core/N64System/Mips/Register.h>
 #include <Project64-core/3rdParty/zip.h>
+#include <Project64-core/N64System/Mips/Register.h>
+#include <Project64-core/N64System/N64Types.h>
 
 class AudioInterfaceHandler;
+class RomMemoryHandler;
 
 class CSystemTimer
 {
@@ -32,7 +33,7 @@ public:
 
     struct TIMER_DETAILS
     {
-        union 
+        union
         {
             int64_t reserved;
             bool Active;
@@ -42,7 +43,7 @@ public:
 
     CSystemTimer(CN64System & System);
     void SetTimer(TimerType Type, uint32_t Cycles, bool bRelative);
-    uint32_t  GetTimer(TimerType Type);
+    uint32_t GetTimer(TimerType Type);
     void StopTimer(TimerType Type);
     void UpdateTimers();
     void TimerDone();
@@ -55,21 +56,24 @@ public:
     void LoadData(zipFile & file);
     void LoadData(CFile & file);
 
-    void RecordDifference(CLog &LogFile, const CSystemTimer& rSystemTimer);
+    void RecordDifference(CLog & LogFile, const CSystemTimer & rSystemTimer);
 
-    TimerType CurrentType() const { return m_Current; }
+    TimerType CurrentType() const
+    {
+        return m_Current;
+    }
 
-    bool operator == (const CSystemTimer& rSystemTimer) const;
-    bool operator != (const CSystemTimer& rSystemTimer) const;
+    bool operator==(const CSystemTimer & rSystemTimer) const;
+    bool operator!=(const CSystemTimer & rSystemTimer) const;
 
 private:
     CSystemTimer(void);
-    CSystemTimer(const CSystemTimer&);
-    CSystemTimer& operator=(const CSystemTimer&);
+    CSystemTimer(const CSystemTimer &);
+    CSystemTimer & operator=(const CSystemTimer &);
 
     void SetCompareTimer();
     void FixTimers();
-    
+
     CN64System & m_System;
     TIMER_DETAILS m_TimerDetatils[MaxTimer];
     int32_t m_LastUpdate;

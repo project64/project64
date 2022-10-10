@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "N64SystemSettings.h"
 #include <Project64-core/N64System/N64Types.h>
 

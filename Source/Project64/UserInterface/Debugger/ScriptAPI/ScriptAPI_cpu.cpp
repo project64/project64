@@ -19,15 +19,17 @@ static duk_ret_t ThrowRegInvalidError(duk_context * ctx);
 static duk_ret_t ThrowRegContextUnavailableError(duk_context * ctx);
 static duk_ret_t ThrowRegAssignmentTypeError(duk_context * ctx);
 
+// clang-format off
+#define REG_PROXY_FUNCTIONS(getter, setter) { \
+    { "get", getter, 2 }, \
+    { "set", setter, 3 }, \
+    { nullptr, nullptr, 0 } \
+}
+// clang-format on
+
 void ScriptAPI::Define_cpu(duk_context * ctx)
 {
     // todo cleanup
-
-    #define REG_PROXY_FUNCTIONS(getter, setter) { \
-        { "get", getter, 2 }, \
-        { "set", setter, 3 }, \
-        { nullptr, nullptr, 0 } \
-    }
 
     const struct
     {

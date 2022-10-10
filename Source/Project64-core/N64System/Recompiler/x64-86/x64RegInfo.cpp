@@ -7,7 +7,7 @@ CX64RegInfo::CX64RegInfo(CCodeBlock & /*CodeBlock*/, CX64Ops & /*Assembler*/)
 {
 }
 
-CX64RegInfo::CX64RegInfo(const CX64RegInfo&)
+CX64RegInfo::CX64RegInfo(const CX64RegInfo &)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
@@ -16,7 +16,7 @@ CX64RegInfo::~CX64RegInfo()
 {
 }
 
-CX64RegInfo& CX64RegInfo::operator=(const CX64RegInfo & right)
+CX64RegInfo & CX64RegInfo::operator=(const CX64RegInfo & right)
 {
     CRegBase::operator=(right);
     g_Notify->BreakPoint(__FILE__, __LINE__);

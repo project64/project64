@@ -1,7 +1,8 @@
 #include "stdafx.h"
+
 #include "AudioInterfaceHandler.h"
-#include <Project64-core\N64System\N64System.h>
 #include <Project64-core\N64System\Mips\Register.h>
+#include <Project64-core\N64System\N64System.h>
 #include <Project64-core\N64System\SystemGlobals.h>
 
 AudioInterfaceReg::AudioInterfaceReg(uint32_t * _AudioInterface) :
@@ -199,9 +200,9 @@ void AudioInterfaceHandler::SetFrequency(uint32_t Dacrate, uint32_t System)
 
     switch (System)
     {
-    case SYSTEM_PAL:  Frequency = 49656530 / (Dacrate + 1); break;
+    case SYSTEM_PAL: Frequency = 49656530 / (Dacrate + 1); break;
     case SYSTEM_MPAL: Frequency = 48628316 / (Dacrate + 1); break;
-    default:          Frequency = 48681812 / (Dacrate + 1); break;
+    default: Frequency = 48681812 / (Dacrate + 1); break;
     }
 
     //nBlockAlign = 16 / 8 * 2;
@@ -239,7 +240,7 @@ uint32_t AudioInterfaceHandler::GetLength(void)
     uint32_t TimeLeft = g_SystemTimer->GetTimer(CSystemTimer::AiTimerInterrupt), Res = 0;
     if (TimeLeft > 0)
     {
-        Res = (TimeLeft / m_CountsPerByte)&~7;
+        Res = (TimeLeft / m_CountsPerByte) & ~7;
     }
     WriteTrace(TraceAudio, TraceDebug, "Done (res = %d, TimeLeft = %d)", Res, TimeLeft);
     return Res;
@@ -301,4 +302,3 @@ void AudioInterfaceHandler::LenChanged()
     }
     WriteTrace(TraceAudio, TraceDebug, "Done");
 }
-

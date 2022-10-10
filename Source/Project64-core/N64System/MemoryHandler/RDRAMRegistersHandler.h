@@ -1,7 +1,7 @@
 #pragma once
 #include "MemoryHandler.h"
-#include <Project64-core\Settings\DebugSettings.h>
 #include <Project64-core\Logging.h>
+#include <Project64-core\Settings\DebugSettings.h>
 #include <stdint.h>
 
 class RDRAMRegistersReg
@@ -24,8 +24,8 @@ public:
 
 private:
     RDRAMRegistersReg();
-    RDRAMRegistersReg(const RDRAMRegistersReg&);
-    RDRAMRegistersReg& operator=(const RDRAMRegistersReg&);
+    RDRAMRegistersReg(const RDRAMRegistersReg &);
+    RDRAMRegistersReg & operator=(const RDRAMRegistersReg &);
 };
 
 class CRegisters;

@@ -3,22 +3,22 @@
 #include <Common/Random.h>
 #include <Common/SyncEvent.h>
 #include <Common/Thread.h>
-#include <Project64-core/Settings/N64SystemSettings.h>
-#include <Project64-core/N64System/Profiling.h>
-#include <Project64-core/N64System/Recompiler/Recompiler.h>
+#include <Project64-core/Logging.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
+#include <Project64-core/N64System/Mips/Mempak.h>
 #include <Project64-core/N64System/Mips/SystemEvents.h>
 #include <Project64-core/N64System/Mips/SystemTiming.h>
-#include <Project64-core/N64System/Mips/Mempak.h>
-#include <Project64-core/Settings/DebugSettings.h>
+#include <Project64-core/N64System/Profiling.h>
+#include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/Plugin.h>
-#include <Project64-core/Logging.h>
+#include <Project64-core/Settings/DebugSettings.h>
+#include <Project64-core/Settings/N64SystemSettings.h>
 
-#include "Mips/TLB.h"
 #include "FramePerSecond.h"
+#include "Mips/TLB.h"
 #include "SpeedLimiter.h"
 
-typedef std::list<SystemEvent>   EVENT_LIST;
+typedef std::list<SystemEvent> EVENT_LIST;
 
 typedef std::map<uint32_t, uint32_t> FUNC_CALLS;
 
@@ -44,12 +44,12 @@ class CN64System :
     protected CDebugSettings
 {
 public:
-    typedef void(*CallBackFunction)(void *);
+    typedef void (*CallBackFunction)(void *);
 
     CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesReadOnly, bool SyncSystem);
     virtual ~CN64System(void);
 
-    bool  m_EndEmulation;
+    bool m_EndEmulation;
     SAVE_CHIP_TYPE m_SaveUsing;
 
     // Methods
@@ -70,10 +70,22 @@ public:
     void ExternalEvent(SystemEvent action); // Covers GUI interactions and timers etc.
     void StartEmulation(bool NewThread);
     void EndEmulation();
-    void AlterSpeed(const CSpeedLimiter::ESpeedChange SpeedChange) { m_Limiter.AlterSpeed(SpeedChange); }
-    void SetSpeed(int Speed) { m_Limiter.SetSpeed(Speed); }
-    int GetSpeed(void) const { return m_Limiter.GetSpeed(); }
-    int GetBaseSpeed(void) const { return m_Limiter.GetBaseSpeed(); }
+    void AlterSpeed(const CSpeedLimiter::ESpeedChange SpeedChange)
+    {
+        m_Limiter.AlterSpeed(SpeedChange);
+    }
+    void SetSpeed(int Speed)
+    {
+        m_Limiter.SetSpeed(Speed);
+    }
+    int GetSpeed(void) const
+    {
+        return m_Limiter.GetSpeed();
+    }
+    int GetBaseSpeed(void) const
+    {
+        return m_Limiter.GetBaseSpeed();
+    }
     void Reset(bool bInitReg, bool ClearMenory);
     void GameReset();
     void PluginReset();
@@ -97,9 +109,18 @@ public:
     void SyncSystem();
     void SyncSystemPC();
 
-    CPlugins * GetPlugins() { return m_Plugins; }
-    PIPELINE_STAGE PipelineStage() const { return m_PipelineStage; }
-    uint32_t JumpToLocation() const { return m_JumpToLocation; }
+    CPlugins * GetPlugins()
+    {
+        return m_Plugins;
+    }
+    PIPELINE_STAGE PipelineStage() const
+    {
+        return m_PipelineStage;
+    }
+    uint32_t JumpToLocation() const
+    {
+        return m_JumpToLocation;
+    }
 
 private:
     struct SETTING_CHANGED_CB
@@ -156,7 +177,7 @@ private:
     void TLB_Changed();
 
     SETTING_CALLBACK m_Callback;
-    CPlugins * const m_Plugins;  // The plugin container
+    CPlugins * const m_Plugins; // The plugin container
     CPlugins * m_SyncPlugins;
     CN64System * m_SyncCPU;
     CMipsMemoryVM m_MMU_VM;
@@ -199,7 +220,7 @@ private:
     FUNC_CALLS m_FunctionCalls;
 
     // List of save state file IDs
-    const uint32_t SaveID_0 = 0x23D8A6C8;   // Main save state info (*.pj)
-    const uint32_t SaveID_1 = 0x56D2CD23;   // Extra data v1 (system timing) info (*.dat)
-    const uint32_t SaveID_2 = 0x750A6BEB;   // Extra data v2 (timing + disk registers) (*.dat)
+    const uint32_t SaveID_0 = 0x23D8A6C8; // Main save state info (*.pj)
+    const uint32_t SaveID_1 = 0x56D2CD23; // Extra data v1 (system timing) info (*.dat)
+    const uint32_t SaveID_2 = 0x750A6BEB; // Extra data v2 (timing + disk registers) (*.dat)
 };

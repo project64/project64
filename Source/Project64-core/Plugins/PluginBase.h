@@ -1,10 +1,10 @@
 #pragma once
 
+#include <Common/DynamicLibrary.h>
+#include <Project64-core/Plugins/Plugin.h>
 #include <Project64-core/Settings/DebugSettings.h>
 #include <Project64-core/TraceModulesProject64.h>
-#include <Project64-core/Plugins/Plugin.h>
 #include <Project64-plugin-spec\Base.h>
-#include <Common/DynamicLibrary.h>
 
 class CPlugin :
     private CDebugSettings
@@ -12,8 +12,14 @@ class CPlugin :
 public:
     CPlugin();
     virtual ~CPlugin();
-    inline const char * PluginName() const { return m_PluginInfo.Name; }
-    inline bool Initialized() { return m_Initialized; }
+    inline const char * PluginName() const
+    {
+        return m_PluginInfo.Name;
+    }
+    inline bool Initialized()
+    {
+        return m_Initialized;
+    }
 
     virtual int32_t GetDefaultSettingStartRange() const = 0;
     virtual int32_t GetSettingStartRange() const = 0;
@@ -25,8 +31,8 @@ public:
     void GameReset(RenderWindow * Render);
     void Close(RenderWindow * Render);
 
-    void(CALL *DllAbout)  (void * hWnd);
-    void(CALL *DllConfig) (void * hParent);
+    void(CALL * DllAbout)(void * hWnd);
+    void(CALL * DllConfig)(void * hParent);
 
     static bool ValidPluginVersion(PLUGIN_INFO & PluginInfo);
 
@@ -38,11 +44,11 @@ protected:
     virtual PLUGIN_TYPE type() = 0;
     virtual bool LoadFunctions(void) = 0;
 
-    void(CALL * CloseDLL)            (void);
-    void(CALL * RomOpen)             (void);
-    void(CALL * RomClosed)           (void);
+    void(CALL * CloseDLL)(void);
+    void(CALL * RomOpen)(void);
+    void(CALL * RomClosed)(void);
     void(CALL * PluginOpened)(void);
-    void(CALL * SetSettingInfo)(PLUGIN_SETTINGS  *);
+    void(CALL * SetSettingInfo)(PLUGIN_SETTINGS *);
     void(CALL * SetSettingInfo2)(PLUGIN_SETTINGS2 *);
     void(CALL * SetSettingInfo3)(PLUGIN_SETTINGS3 *);
     void(CALL * SetSettingNotificationInfo)(PLUGIN_SETTINGS_NOTIFICATION *);
@@ -61,7 +67,7 @@ protected:
     // Simple wrapper around _LoadFunction() to avoid having to specify the same two arguments
     // i.e. _LoadFunction("CloseDLL", CloseDLL);
 #define LoadFunction(functionName) _LoadFunctionVoid(#functionName, (void **)&functionName)
-#define _LoadFunction(functionName,function) _LoadFunctionVoid(functionName, (void **)&function)
+#define _LoadFunction(functionName, function) _LoadFunctionVoid(functionName, (void **)&function)
 
 private:
     static void DisplayError(const char * Message);

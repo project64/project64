@@ -1,8 +1,9 @@
 #include "stdafx.h"
+
 #include "ISViewerHandler.h"
-#include <Project64-core\N64System\N64System.h>
-#include <Common/path.h>
 #include <Common/File.h>
+#include <Common/path.h>
+#include <Project64-core\N64System\N64System.h>
 
 ISViewerHandler::ISViewerHandler(CN64System & System) :
     m_hLogFile(nullptr),
@@ -70,10 +71,7 @@ uint32_t ISViewerHandler::Swap32by8(uint32_t Value)
 #elif defined(__GNUC__)
         __builtin_bswap32(Value)
 #else
-        (Value & 0x000000FFul) << 24
-        | (Value & 0x0000FF00ul) << 8
-        | (Value & 0x00FF0000ul) >> 8
-        | (Value & 0xFF000000ul) >> 24
+        (Value & 0x000000FFul) << 24 | (Value & 0x0000FF00ul) << 8 | (Value & 0x00FF0000ul) >> 8 | (Value & 0xFF000000ul) >> 24
 #endif
         ;
     return (Swapped & 0xFFFFFFFFul);

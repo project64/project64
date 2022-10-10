@@ -1,12 +1,12 @@
 #pragma once
-#include <vector>
-#include <string>
-#include <Project64-core/N64System/Enhancement/Enhancement.h>
 #include <Common/Platform.h>
+#include <Project64-core/N64System/Enhancement/Enhancement.h>
+#include <string>
+#include <vector>
 
 struct EnhancementItemList_compare
 {
-    bool operator() (const std::string & a, const std::string & b) const
+    bool operator()(const std::string & a, const std::string & b) const
     {
         return _stricmp(a.c_str(), b.c_str()) < 0;
     }

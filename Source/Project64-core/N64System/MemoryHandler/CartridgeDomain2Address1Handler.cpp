@@ -1,7 +1,8 @@
 #include "stdafx.h"
+
 #include "CartridgeDomain2Address1Handler.h"
-#include <Project64-core\N64System\Mips\Register.h>
 #include <Project64-core\N64System\Mips\Disk.h>
+#include <Project64-core\N64System\Mips\Register.h>
 
 DiskInterfaceReg::DiskInterfaceReg(uint32_t * DiskInterface) :
     ASIC_DATA(DiskInterface[0]),

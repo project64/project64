@@ -1,8 +1,8 @@
 #pragma once
-#include <Project64-core\N64System\SaveType\Sram.h>
-#include <Project64-core\N64System\SaveType\FlashRam.h>
-#include <Project64-core\Settings\DebugSettings.h>
 #include "MemoryHandler.h"
+#include <Project64-core\N64System\SaveType\FlashRam.h>
+#include <Project64-core\N64System\SaveType\Sram.h>
+#include <Project64-core\Settings\DebugSettings.h>
 
 class CN64System;
 class CMipsMemoryVM;
@@ -21,8 +21,14 @@ public:
     bool DMARead();
     void DMAWrite();
 
-    CSram & Sram(void) { return m_Sram; }
-    CFlashRam & FlashRam (void) { return m_FlashRam; }
+    CSram & Sram(void)
+    {
+        return m_Sram;
+    }
+    CFlashRam & FlashRam(void)
+    {
+        return m_FlashRam;
+    }
 
 private:
     CartridgeDomain2Address2Handler(void);

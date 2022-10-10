@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "SettingsType-TempNumber.h"
 
 CSettingTypeTempNumber::CSettingTypeTempNumber(uint32_t initialValue) :
@@ -7,65 +8,65 @@ CSettingTypeTempNumber::CSettingTypeTempNumber(uint32_t initialValue) :
 {
 }
 
-CSettingTypeTempNumber::~CSettingTypeTempNumber ( void )
+CSettingTypeTempNumber::~CSettingTypeTempNumber(void)
 {
 }
 
-bool CSettingTypeTempNumber::Load (uint32_t /*Index*/, bool & /*Value*/ ) const
+bool CSettingTypeTempNumber::Load(uint32_t /*Index*/, bool & /*Value*/) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return true;
 }
 
-bool CSettingTypeTempNumber::Load (uint32_t /*Index*/, uint32_t & Value ) const
+bool CSettingTypeTempNumber::Load(uint32_t /*Index*/, uint32_t & Value) const
 {
     Value = m_value;
     return false;
 }
 
-bool CSettingTypeTempNumber::Load (uint32_t /*Index*/, std::string & /*Value*/ ) const
+bool CSettingTypeTempNumber::Load(uint32_t /*Index*/, std::string & /*Value*/) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
 // Return the default values
-void CSettingTypeTempNumber::LoadDefault (uint32_t /*Index*/, bool & /*Value*/ ) const
+void CSettingTypeTempNumber::LoadDefault(uint32_t /*Index*/, bool & /*Value*/) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeTempNumber::LoadDefault (uint32_t /*Index*/, uint32_t & Value ) const
+void CSettingTypeTempNumber::LoadDefault(uint32_t /*Index*/, uint32_t & Value) const
 {
-   Value = m_initialValue;
+    Value = m_initialValue;
 }
 
-void CSettingTypeTempNumber::LoadDefault (uint32_t /*Index*/, std::string & /*Value*/ ) const
-{
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-}
-
-void CSettingTypeTempNumber::Save (uint32_t /*Index*/, bool /*Value*/ )
+void CSettingTypeTempNumber::LoadDefault(uint32_t /*Index*/, std::string & /*Value*/) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeTempNumber::Save (uint32_t /*Index*/, uint32_t Value )
+void CSettingTypeTempNumber::Save(uint32_t /*Index*/, bool /*Value*/)
+{
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+}
+
+void CSettingTypeTempNumber::Save(uint32_t /*Index*/, uint32_t Value)
 {
     m_value = Value;
 }
 
-void CSettingTypeTempNumber::Save (uint32_t /*Index*/, const std::string & /*Value*/ )
+void CSettingTypeTempNumber::Save(uint32_t /*Index*/, const std::string & /*Value*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeTempNumber::Save (uint32_t /*Index*/, const char * /*Value*/ )
+void CSettingTypeTempNumber::Save(uint32_t /*Index*/, const char * /*Value*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeTempNumber::Delete(uint32_t /*Index*/ )
+void CSettingTypeTempNumber::Delete(uint32_t /*Index*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }

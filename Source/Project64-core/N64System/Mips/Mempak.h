@@ -11,8 +11,8 @@ public:
     static uint8_t CalculateCrc(uint8_t * DataToCrc);
 
 private:
-    CMempak(const CMempak&);
-    CMempak& operator=(const CMempak&);
+    CMempak(const CMempak &);
+    CMempak & operator=(const CMempak &);
 
     void LoadMempak(int32_t Control, bool Create);
     void Format(int32_t Control);

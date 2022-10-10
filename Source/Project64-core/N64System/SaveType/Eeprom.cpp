@@ -1,11 +1,12 @@
 #include "stdafx.h"
+
+#include <Project64-core\N64System\N64System.h>
 #include <Project64-core\N64System\SaveType\Eeprom.h>
 #include <Project64-core\N64System\SystemGlobals.h>
-#include <Project64-core\N64System\N64System.h>
 #include <time.h>
 
 CEeprom::CEeprom(bool ReadOnly) :
-m_ReadOnly(ReadOnly)
+    m_ReadOnly(ReadOnly)
 {
     memset(m_EEPROM, 0xFF, sizeof(m_EEPROM));
 }
@@ -33,7 +34,7 @@ void CEeprom::EepromCommand(uint8_t * Command)
     switch (Command[2])
     {
     case 0: // Check
-        if (g_System->m_SaveUsing != SaveChip_Eeprom_4K &&  g_System->m_SaveUsing != SaveChip_Eeprom_16K)
+        if (g_System->m_SaveUsing != SaveChip_Eeprom_4K && g_System->m_SaveUsing != SaveChip_Eeprom_16K)
         {
             Command[1] |= 0x80;
             break;
@@ -110,7 +111,7 @@ void CEeprom::EepromCommand(uint8_t * Command)
             Command[9] = byte2bcd(curtime.tm_mon + 1);
             Command[10] = byte2bcd(curtime.tm_year);
             Command[11] = byte2bcd(curtime.tm_year / 100);
-            Command[12] = 0x00;	// Status
+            Command[12] = 0x00; // Status
             break;
         }
         break;

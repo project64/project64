@@ -5,6 +5,7 @@
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 
 #include "stdafx.h"
+
 #include "GBCart.h"
 #include "Transferpak.h"
 
@@ -36,42 +37,41 @@ void Transferpak::Release()
 
 void Transferpak::ReadFrom(uint16_t address, uint8_t * data)
 {
-	if ((address >= 0x8000) && (address <= 0x8FFF))
-	{
+    if ((address >= 0x8000) && (address <= 0x8FFF))
+    {
         // Ensure we actually have a ROM loaded in first
         if (tpak.gb_cart.rom == nullptr)
         {
             Init();
         }
 
-		// Get whether the Game Boy cart is enabled or disabled
-		uint8_t value = (tpak.enabled) ? 0x84 : 0x00;
+        // Get whether the Game Boy cart is enabled or disabled
+        uint8_t value = (tpak.enabled) ? 0x84 : 0x00;
 
-		memset(data, value, 0x20);
-	}
-	else if ((address >= 0xB000) && (address <= 0xBFFF))
-	{
-		// Get the Game Boy cart access mode
-		if (tpak.enabled)
-		{
-			memset(data, tpak.access_mode, 0x20);
-			if (tpak.access_mode != CART_NOT_INSERTED)
-			{
-				data[0] |= tpak.access_mode_changed;
-			}
-   
+        memset(data, value, 0x20);
+    }
+    else if ((address >= 0xB000) && (address <= 0xBFFF))
+    {
+        // Get the Game Boy cart access mode
+        if (tpak.enabled)
+        {
+            memset(data, tpak.access_mode, 0x20);
+            if (tpak.access_mode != CART_NOT_INSERTED)
+            {
+                data[0] |= tpak.access_mode_changed;
+            }
+
             tpak.access_mode_changed = 0;
-		}
-	}
-	else if (address >= 0xC000)
-	{
-		// Read the Game Boy cart
-		if (tpak.enabled)
-		{
+        }
+    }
+    else if (address >= 0xC000)
+    {
+        // Read the Game Boy cart
+        if (tpak.enabled)
+        {
             GBCart::read_gb_cart(&tpak.gb_cart, gb_cart_address(tpak.bank, address), data);
-		}
-	}
-
+        }
+    }
 }
 
 void Transferpak::WriteTo(uint16_t address, uint8_t * data)
@@ -99,7 +99,7 @@ void Transferpak::WriteTo(uint16_t address, uint8_t * data)
             break;
         }
     }
-     else if ((address >= 0xA000) && (address <= 0xAFFF))
+    else if ((address >= 0xA000) && (address <= 0xAFFF))
     {
         // Set the bank for the Game Boy cart
         if (tpak.enabled)

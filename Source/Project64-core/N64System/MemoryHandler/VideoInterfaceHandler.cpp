@@ -1,11 +1,12 @@
 #include "stdafx.h"
+
 #include "VideoInterfaceHandler.h"
-#include <Project64-core\N64System\N64System.h>
 #include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
-#include <Project64-core\N64System\Mips\SystemTiming.h>
 #include <Project64-core\N64System\Mips\Register.h>
-#include <Project64-core\Plugin.h>
+#include <Project64-core\N64System\Mips\SystemTiming.h>
+#include <Project64-core\N64System\N64System.h>
 #include <Project64-core\N64System\SystemGlobals.h>
+#include <Project64-core\Plugin.h>
 
 VideoInterfaceReg::VideoInterfaceReg(uint32_t * VideoInterface) :
     VI_STATUS_REG(VideoInterface[0]),

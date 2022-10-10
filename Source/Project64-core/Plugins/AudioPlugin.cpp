@@ -1,10 +1,11 @@
 #include "stdafx.h"
-#include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/N64Rom.h>
-#include <Project64-core/N64System/N64Disk.h>
+
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/Register.h>
+#include <Project64-core/N64System/N64Disk.h>
+#include <Project64-core/N64System/N64Rom.h>
 #include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Plugins/AudioPlugin.h>
 #include <Project64-plugin-spec/Audio.h>
 #ifdef _WIN32
@@ -32,7 +33,7 @@ bool CAudioPlugin::LoadFunctions(void)
     g_Settings->SaveBool(Setting_SyncViaAudioEnabled, false);
 
     // Find entries for functions in DLL
-    void(CALL *InitiateAudio)(void);
+    void(CALL * InitiateAudio)(void);
     LoadFunction(InitiateAudio);
     LoadFunction(AiDacrateChanged);
     LoadFunction(AiLenChanged);
@@ -41,15 +42,39 @@ bool CAudioPlugin::LoadFunctions(void)
     LoadFunction(ProcessAList);
 
     // Make sure DLL has all needed functions
-    if (AiDacrateChanged == nullptr) { UnloadPlugin(); return false; }
-    if (AiLenChanged == nullptr) { UnloadPlugin(); return false; }
-    if (AiReadLength == nullptr) { UnloadPlugin(); return false; }
-    if (InitiateAudio == nullptr) { UnloadPlugin(); return false; }
-    if (ProcessAList == nullptr) { UnloadPlugin(); return false; }
+    if (AiDacrateChanged == nullptr)
+    {
+        UnloadPlugin();
+        return false;
+    }
+    if (AiLenChanged == nullptr)
+    {
+        UnloadPlugin();
+        return false;
+    }
+    if (AiReadLength == nullptr)
+    {
+        UnloadPlugin();
+        return false;
+    }
+    if (InitiateAudio == nullptr)
+    {
+        UnloadPlugin();
+        return false;
+    }
+    if (ProcessAList == nullptr)
+    {
+        UnloadPlugin();
+        return false;
+    }
 
     if (m_PluginInfo.Version >= 0x0102)
     {
-        if (PluginOpened == nullptr) { UnloadPlugin(); return false; }
+        if (PluginOpened == nullptr)
+        {
+            UnloadPlugin();
+            return false;
+        }
     }
     return true;
 }
@@ -57,11 +82,14 @@ bool CAudioPlugin::LoadFunctions(void)
 bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
 {
     // Get function from DLL
-    int32_t(CALL *InitiateAudio)(AUDIO_INFO Audio_Info);
+    int32_t(CALL * InitiateAudio)(AUDIO_INFO Audio_Info);
     LoadFunction(InitiateAudio);
-    if (InitiateAudio == nullptr) { return false; }
+    if (InitiateAudio == nullptr)
+    {
+        return false;
+    }
 
-    AUDIO_INFO Info = { 0 };
+    AUDIO_INFO Info = {0};
 
 #ifdef _WIN32
     Info.hWnd = Window ? Window->GetWindowHandle() : nullptr;
@@ -157,7 +185,10 @@ void CAudioPlugin::UnloadPluginDetails(void)
 
 void CAudioPlugin::DacrateChanged(SYSTEM_TYPE Type)
 {
-    if (!Initialized()) { return; }
+    if (!Initialized())
+    {
+        return;
+    }
     WriteTrace(TraceAudioPlugin, TraceDebug, "SystemType: %s", Type == SYSTEM_NTSC ? "SYSTEM_NTSC" : "SYSTEM_PAL");
 
     //uint32_t Frequency = g_Reg->AI_DACRATE_REG * 30;

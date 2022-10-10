@@ -2,8 +2,8 @@
 #include "MemoryHandler.h"
 #include <Common/File.h>
 #include <memory>
-#include <vector>
 #include <stdint.h>
+#include <vector>
 
 class CN64System;
 
@@ -21,7 +21,10 @@ private:
     ISViewerHandler(const ISViewerHandler &);
     ISViewerHandler & operator=(const ISViewerHandler &);
 
-    static void stSystemReset(ISViewerHandler * _this) { _this->SystemReset(); }
+    static void stSystemReset(ISViewerHandler * _this)
+    {
+        _this->SystemReset();
+    }
     static uint32_t Swap32by8(uint32_t Value);
 
     void SystemReset(void);

@@ -36,21 +36,66 @@ public:
     void SetOnByDefault(bool OnByDefault);
     void SetOverClock(bool OverClock, uint32_t OverClockModifier);
 
-    inline const std::string & GetName(void) const { return m_Name; }
-    inline const std::string & GetNameAndExtension(void) const { return m_NameAndExtension; }
-    inline const std::string & GetAuthor(void) const { return m_Author; }
-    inline const std::string & GetNote(void) const { return m_Note; }
-    inline const CodeEntries & GetEntries(void) const { return m_Entries; }
-    inline const CodeOptions & GetOptions(void) const { return m_Options; }
-    inline const PluginList & GetPluginList(void) const { return m_PluginList; }
-    inline uint32_t CodeOptionSize(void) const { return m_CodeOptionSize; }
-    inline bool Valid(void) const { return m_Valid; }
-    inline bool Active(void) const { return m_Active; }
-    inline bool GetOnByDefault(void) const { return m_OnByDefault; }
-    inline bool OverClock(void) const { return m_OverClock; }
-    inline uint32_t OverClockModifier(void) const { return m_OverClockModifier; }
-    bool OptionSelected() const { return (m_SelectedOption & 0xFFFF0000) == 0; }
-    uint16_t SelectedOption() const { return (uint16_t)(m_SelectedOption & 0xFFFF); }
+    inline const std::string & GetName(void) const
+    {
+        return m_Name;
+    }
+    inline const std::string & GetNameAndExtension(void) const
+    {
+        return m_NameAndExtension;
+    }
+    inline const std::string & GetAuthor(void) const
+    {
+        return m_Author;
+    }
+    inline const std::string & GetNote(void) const
+    {
+        return m_Note;
+    }
+    inline const CodeEntries & GetEntries(void) const
+    {
+        return m_Entries;
+    }
+    inline const CodeOptions & GetOptions(void) const
+    {
+        return m_Options;
+    }
+    inline const PluginList & GetPluginList(void) const
+    {
+        return m_PluginList;
+    }
+    inline uint32_t CodeOptionSize(void) const
+    {
+        return m_CodeOptionSize;
+    }
+    inline bool Valid(void) const
+    {
+        return m_Valid;
+    }
+    inline bool Active(void) const
+    {
+        return m_Active;
+    }
+    inline bool GetOnByDefault(void) const
+    {
+        return m_OnByDefault;
+    }
+    inline bool OverClock(void) const
+    {
+        return m_OverClock;
+    }
+    inline uint32_t OverClockModifier(void) const
+    {
+        return m_OverClockModifier;
+    }
+    bool OptionSelected() const
+    {
+        return (m_SelectedOption & 0xFFFF0000) == 0;
+    }
+    uint16_t SelectedOption() const
+    {
+        return (uint16_t)(m_SelectedOption & 0xFFFF);
+    }
 
 private:
     CEnhancement();

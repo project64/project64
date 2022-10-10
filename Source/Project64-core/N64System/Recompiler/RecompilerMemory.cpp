@@ -1,12 +1,13 @@
 #include "stdafx.h"
+
+#include <Common/MemoryManagement.h>
+#include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/N64System/Recompiler/RecompilerMemory.h>
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/Recompiler/Recompiler.h>
-#include <Common/MemoryManagement.h>
 
 CRecompMemory::CRecompMemory() :
-m_RecompCode(nullptr),
-m_RecompSize(0)
+    m_RecompCode(nullptr),
+    m_RecompSize(0)
 {
     m_RecompPos = nullptr;
 }
@@ -15,7 +16,7 @@ CRecompMemory::~CRecompMemory()
 {
     if (m_RecompCode)
     {
-		FreeAddressSpace(m_RecompCode,MaxCompileBufferSize + 4);
+        FreeAddressSpace(m_RecompCode, MaxCompileBufferSize + 4);
         m_RecompCode = nullptr;
     }
     m_RecompPos = nullptr;
@@ -37,7 +38,7 @@ bool CRecompMemory::AllocateMemory()
     if (m_RecompCode == nullptr)
     {
         WriteTrace(TraceRecompiler, TraceError, "Failed to commit initial buffer");
-		FreeAddressSpace(RecompCodeBase,MaxCompileBufferSize + 4);
+        FreeAddressSpace(RecompCodeBase, MaxCompileBufferSize + 4);
         g_Notify->DisplayError(MSG_MEM_ALLOC_ERROR);
         return false;
     }

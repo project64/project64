@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CartridgeDomain1Address1Handler.h"
 #include <Project64-core\N64System\Mips\Register.h>
 #include <Project64-core\N64System\N64Rom.h>

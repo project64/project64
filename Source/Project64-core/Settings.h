@@ -18,7 +18,7 @@ enum SettingDataType
 class CSettings
 {
 public:
-    typedef void(*SettingChangedFunc)(void *);
+    typedef void (*SettingChangedFunc)(void *);
 
     CSettings(void);
     ~CSettings(void);
@@ -82,12 +82,12 @@ public:
     bool IsSettingSet(SettingID Type);
 
     // Static functions for plugins
-    static uint32_t  GetSetting(CSettings * _this, SettingID Type);
+    static uint32_t GetSetting(CSettings * _this, SettingID Type);
     static const char * GetSettingSz(CSettings * _this, SettingID Type, char * Buffer, uint32_t BufferSize);
     static void SetSetting(CSettings * _this, SettingID ID, uint32_t Value);
     static void SetSettingSz(CSettings * _this, SettingID ID, const char * Value);
     static void RegisterSetting(CSettings * _this, SettingID ID, SettingID DefaultID, SettingDataType DataType,
-        SettingType Type, const char * Category, const char * DefaultStr, uint32_t Value);
+                                SettingType Type, const char * Category, const char * DefaultStr, uint32_t Value);
     static uint32_t FindSetting(CSettings * _this, const char * Name);
     static void FlushSettings(CSettings * _this);
     static void sRegisterChangeCB(CSettings * _this, SettingID Type, void * Data, SettingChangedFunc Func);

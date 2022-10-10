@@ -10,7 +10,10 @@ public:
     CSettingTypeApplicationIndex(const char * Section, const char * Name, SettingID DefaultSetting);
     ~CSettingTypeApplicationIndex();
 
-    virtual bool IndexBasedSetting(void) const { return true; }
+    virtual bool IndexBasedSetting(void) const
+    {
+        return true;
+    }
 
     // Return the values
     virtual bool Load(uint32_t Index, bool & Value) const;
@@ -33,6 +36,6 @@ public:
 
 private:
     CSettingTypeApplicationIndex(void);
-    CSettingTypeApplicationIndex(const CSettingTypeApplicationIndex&);
-    CSettingTypeApplicationIndex& operator=(const CSettingTypeApplicationIndex&);
+    CSettingTypeApplicationIndex(const CSettingTypeApplicationIndex &);
+    CSettingTypeApplicationIndex & operator=(const CSettingTypeApplicationIndex &);
 };

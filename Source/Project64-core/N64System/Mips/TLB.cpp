@@ -1,10 +1,11 @@
 #include "stdafx.h"
+
 #include "TLB.h"
-#include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/Register.h>
+#include <Project64-core/N64System/SystemGlobals.h>
 
 CTLB::CTLB(CTLB_CB * CallBack) :
-m_CB(CallBack)
+    m_CB(CallBack)
 {
     WriteTrace(TraceTLB, TraceDebug, "Start");
     memset(m_tlb, 0, sizeof(m_tlb));
@@ -85,7 +86,7 @@ void CTLB::Probe()
 
         if (TlbValueMasked == EntryHiMasked)
         {
-            if ((TlbEntryHiValue & 0x100) != 0 || // Global
+            if ((TlbEntryHiValue & 0x100) != 0 ||                               // Global
                 ((TlbEntryHiValue & 0xFF) == (g_Reg->ENTRYHI_REGISTER & 0xFF))) // SameAsid
             {
                 g_Reg->INDEX_REGISTER = Counter;
@@ -262,7 +263,7 @@ bool CTLB::PAddrToVAddr(uint32_t PAddr, uint32_t & VAddr, uint32_t & Index)
     return false;
 }
 
-void CTLB::RecordDifference(CLog &LogFile, const CTLB& rTLB)
+void CTLB::RecordDifference(CLog & LogFile, const CTLB & rTLB)
 {
     for (int i = 0, n = sizeof(m_tlb) / sizeof(m_tlb[0]); i < n; i++)
     {
@@ -294,7 +295,7 @@ void CTLB::RecordDifference(CLog &LogFile, const CTLB& rTLB)
     }
 }
 
-bool CTLB::operator == (const CTLB& rTLB) const
+bool CTLB::operator==(const CTLB & rTLB) const
 {
     const size_t n = sizeof(m_tlb) / sizeof(m_tlb[0]);
     for (size_t i = 0; i < n; i++)
@@ -318,7 +319,7 @@ bool CTLB::operator == (const CTLB& rTLB) const
     return true;
 }
 
-bool CTLB::operator != (const CTLB& rTLB) const
+bool CTLB::operator!=(const CTLB & rTLB) const
 {
     return !(*this == rTLB);
 }

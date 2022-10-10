@@ -72,14 +72,14 @@ public:
 
 private:
     CSystemEvents();
-    CSystemEvents(const CSystemEvents&);
-    CSystemEvents& operator=(const CSystemEvents&);
+    CSystemEvents(const CSystemEvents &);
+    CSystemEvents & operator=(const CSystemEvents &);
 
     void ChangePluginFunc();
 
-    CN64System    * m_System;
-    CPlugins      * m_Plugins;
-    EventList       m_Events;
-    int32_t         m_bDoSomething;
+    CN64System * m_System;
+    CPlugins * m_Plugins;
+    EventList m_Events;
+    int32_t m_bDoSomething;
     CriticalSection m_CS;
 };

@@ -8,29 +8,33 @@ class CSpeedLimiter :
     private CGameSettings
 {
 public:
-	enum ESpeedChange { INCREASE_SPEED, DECREASE_SPEED };
+    enum ESpeedChange
+    {
+        INCREASE_SPEED,
+        DECREASE_SPEED
+    };
 
     CSpeedLimiter();
     ~CSpeedLimiter();
 
     void SetHertz(const uint32_t Hertz);
-    bool Timer_Process(uint32_t* const FrameRate);
+    bool Timer_Process(uint32_t * const FrameRate);
 
-	void AlterSpeed(const ESpeedChange SpeedChange);
+    void AlterSpeed(const ESpeedChange SpeedChange);
 
     void SetSpeed(int Speed);
     int GetSpeed(void) const;
     int GetBaseSpeed(void) const;
 
 private:
-    CSpeedLimiter(const CSpeedLimiter&);
-    CSpeedLimiter& operator=(const CSpeedLimiter&);
+    CSpeedLimiter(const CSpeedLimiter &);
+    CSpeedLimiter & operator=(const CSpeedLimiter &);
 
     void FixSpeedRatio();
 
-	HighResTimeStamp m_LastTime;
+    HighResTimeStamp m_LastTime;
 
     uint32_t m_Speed, m_BaseSpeed, m_Frames, m_MicroSecondsPerFrame;
 
-	static const uint32_t m_DefaultSpeed;
+    static const uint32_t m_DefaultSpeed;
 };

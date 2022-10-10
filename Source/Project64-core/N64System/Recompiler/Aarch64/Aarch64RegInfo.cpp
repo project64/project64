@@ -7,7 +7,7 @@ CAarch64RegInfo::CAarch64RegInfo(CCodeBlock & /*CodeBlock*/, CAarch64Ops & /*Ass
 {
 }
 
-CAarch64RegInfo::CAarch64RegInfo(const CAarch64RegInfo&)
+CAarch64RegInfo::CAarch64RegInfo(const CAarch64RegInfo &)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
@@ -16,7 +16,7 @@ CAarch64RegInfo::~CAarch64RegInfo()
 {
 }
 
-CAarch64RegInfo& CAarch64RegInfo::operator=(const CAarch64RegInfo & right)
+CAarch64RegInfo & CAarch64RegInfo::operator=(const CAarch64RegInfo & right)
 {
     CRegBase::operator=(right);
     g_Notify->BreakPoint(__FILE__, __LINE__);

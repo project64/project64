@@ -9,11 +9,20 @@ public:
     CSettingTypeSelectedDirectory(const char * Name, SettingID InitialDir, SettingID SelectedDir, SettingID UseSelected, SettingID NotifyChangeId);
     ~CSettingTypeSelectedDirectory();
 
-    virtual bool IndexBasedSetting(void) const { return false; }
-    virtual SettingType GetSettingType(void) const { return SettingType_SelectedDirectory; }
+    virtual bool IndexBasedSetting(void) const
+    {
+        return false;
+    }
+    virtual SettingType GetSettingType(void) const
+    {
+        return SettingType_SelectedDirectory;
+    }
     virtual bool IsSettingSet(void) const;
 
-    const char * GetName(void) const { return m_Name.c_str(); }
+    const char * GetName(void) const
+    {
+        return m_Name.c_str();
+    }
 
     // Return the values
     virtual bool Load(uint32_t Index, bool & Value) const;
@@ -36,8 +45,8 @@ public:
 
 private:
     CSettingTypeSelectedDirectory(void);
-    CSettingTypeSelectedDirectory(const CSettingTypeSelectedDirectory&);
-    CSettingTypeSelectedDirectory& operator=(const CSettingTypeSelectedDirectory&);
+    CSettingTypeSelectedDirectory(const CSettingTypeSelectedDirectory &);
+    CSettingTypeSelectedDirectory & operator=(const CSettingTypeSelectedDirectory &);
 
     static void DirectoryChanged(CSettingTypeSelectedDirectory * _this);
 

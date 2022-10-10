@@ -2133,7 +2133,7 @@ void R4300iOp::COP1_BCTL()
 __inline void Float_RoundToInteger32(int32_t * Dest, const float * Source, int RoundType)
 {
 #pragma warning(push)
-#pragma warning(disable:4244) // warning C4244: disable conversion from 'float' to 'int32_t', possible loss of data
+#pragma warning(disable : 4244) // warning C4244: disable conversion from 'float' to 'int32_t', possible loss of data
 
     if (RoundType == FE_TONEAREST)
     {
@@ -2155,9 +2155,18 @@ __inline void Float_RoundToInteger32(int32_t * Dest, const float * Source, int R
             *Dest = roundf(*Source);
         }
     }
-    else if (RoundType == FE_TOWARDZERO) { *Dest = truncf(*Source); }
-    else if (RoundType == FE_UPWARD) { *Dest = ceilf(*Source); }
-    else if (RoundType == FE_DOWNWARD) { *Dest = floorf(*Source); }
+    else if (RoundType == FE_TOWARDZERO)
+    {
+        *Dest = truncf(*Source);
+    }
+    else if (RoundType == FE_UPWARD)
+    {
+        *Dest = ceilf(*Source);
+    }
+    else if (RoundType == FE_DOWNWARD)
+    {
+        *Dest = floorf(*Source);
+    }
 
 #pragma warning(pop)
 }
@@ -2165,7 +2174,7 @@ __inline void Float_RoundToInteger32(int32_t * Dest, const float * Source, int R
 __inline void Float_RoundToInteger64(int64_t * Dest, const float * Source, int RoundType)
 {
 #pragma warning(push)
-#pragma warning(disable:4244) // warning C4244: disable conversion from 'float' to 'int64_t', possible loss of data
+#pragma warning(disable : 4244) // warning C4244: disable conversion from 'float' to 'int64_t', possible loss of data
 
     if (RoundType == FE_TONEAREST)
     {
@@ -2187,9 +2196,18 @@ __inline void Float_RoundToInteger64(int64_t * Dest, const float * Source, int R
             *Dest = roundf(*Source);
         }
     }
-    else if (RoundType == FE_TOWARDZERO) { *Dest = truncf(*Source); }
-    else if (RoundType == FE_UPWARD) { *Dest = ceilf(*Source); }
-    else if (RoundType == FE_DOWNWARD) { *Dest = floorf(*Source); }
+    else if (RoundType == FE_TOWARDZERO)
+    {
+        *Dest = truncf(*Source);
+    }
+    else if (RoundType == FE_UPWARD)
+    {
+        *Dest = ceilf(*Source);
+    }
+    else if (RoundType == FE_DOWNWARD)
+    {
+        *Dest = floorf(*Source);
+    }
 
 #pragma warning(pop)
 }
@@ -2353,7 +2371,7 @@ void R4300iOp::COP1_S_CMP()
     }
 
     condition = ((m_Opcode.funct & 4) && less) | ((m_Opcode.funct & 2) && equal) |
-        ((m_Opcode.funct & 1) && unorded);
+                ((m_Opcode.funct & 1) && unorded);
 
     if (condition)
     {
@@ -2370,7 +2388,7 @@ void R4300iOp::COP1_S_CMP()
 __inline void Double_RoundToInteger32(int32_t * Dest, const double * Source, int RoundType)
 {
 #pragma warning(push)
-#pragma warning(disable:4244) // warning C4244: disable conversion from 'double' to 'uint32_t', possible loss of data
+#pragma warning(disable : 4244) // warning C4244: disable conversion from 'double' to 'uint32_t', possible loss of data
 
     if (RoundType == FE_TONEAREST)
     {
@@ -2392,9 +2410,18 @@ __inline void Double_RoundToInteger32(int32_t * Dest, const double * Source, int
             *Dest = round(*Source);
         }
     }
-    else if (RoundType == FE_TOWARDZERO) { *Dest = trunc(*Source); }
-    else if (RoundType == FE_UPWARD) { *Dest = ceil(*Source); }
-    else if (RoundType == FE_DOWNWARD) { *Dest = floor(*Source); }
+    else if (RoundType == FE_TOWARDZERO)
+    {
+        *Dest = trunc(*Source);
+    }
+    else if (RoundType == FE_UPWARD)
+    {
+        *Dest = ceil(*Source);
+    }
+    else if (RoundType == FE_DOWNWARD)
+    {
+        *Dest = floor(*Source);
+    }
     else
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -2406,7 +2433,7 @@ __inline void Double_RoundToInteger32(int32_t * Dest, const double * Source, int
 __inline void Double_RoundToInteger64(int64_t * Dest, const double * Source, int RoundType)
 {
 #pragma warning(push)
-#pragma warning(disable:4244) // warning C4244: disable conversion from 'double' to 'uint64_t', possible loss of data
+#pragma warning(disable : 4244) // warning C4244: disable conversion from 'double' to 'uint64_t', possible loss of data
 
     if (RoundType == FE_TONEAREST)
     {
@@ -2428,9 +2455,18 @@ __inline void Double_RoundToInteger64(int64_t * Dest, const double * Source, int
             *Dest = round(*Source);
         }
     }
-    else if (RoundType == FE_TOWARDZERO) { *Dest = trunc(*Source); }
-    else if (RoundType == FE_UPWARD) { *Dest = ceil(*Source); }
-    else if (RoundType == FE_DOWNWARD) { *Dest = floor(*Source); }
+    else if (RoundType == FE_TOWARDZERO)
+    {
+        *Dest = trunc(*Source);
+    }
+    else if (RoundType == FE_UPWARD)
+    {
+        *Dest = ceil(*Source);
+    }
+    else if (RoundType == FE_DOWNWARD)
+    {
+        *Dest = floor(*Source);
+    }
     else
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -2598,7 +2634,7 @@ void R4300iOp::COP1_D_CMP()
     }
 
     condition = ((m_Opcode.funct & 4) && less) | ((m_Opcode.funct & 2) && equal) |
-        ((m_Opcode.funct & 1) && unorded);
+                ((m_Opcode.funct & 1) && unorded);
 
     if (condition)
     {

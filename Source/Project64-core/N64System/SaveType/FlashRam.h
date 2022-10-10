@@ -24,8 +24,8 @@ public:
 
 private:
     CFlashRam(void);
-    CFlashRam(const CFlashRam&);
-    CFlashRam& operator=(const CFlashRam&);
+    CFlashRam(const CFlashRam &);
+    CFlashRam & operator=(const CFlashRam &);
 
     bool LoadFlashram();
 

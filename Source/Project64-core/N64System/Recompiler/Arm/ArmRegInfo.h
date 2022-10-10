@@ -1,8 +1,8 @@
 #pragma once
 #if defined(__arm__) || defined(_M_ARM)
-#include <Project64-core/N64System/Recompiler/RegBase.h>
-#include <Project64-core/N64System/Recompiler/Arm/ArmOps.h>
 #include <Project64-core/N64System/Mips/Register.h>
+#include <Project64-core/N64System/Recompiler/Arm/ArmOps.h>
+#include <Project64-core/N64System/Recompiler/RegBase.h>
 
 class CArmRegInfo :
     public CRegBase,
@@ -32,13 +32,13 @@ public:
     };
 
     CArmRegInfo(CCodeBlock & CodeBlock, CArmOps & Assembler);
-    CArmRegInfo(const CArmRegInfo&);
+    CArmRegInfo(const CArmRegInfo &);
     ~CArmRegInfo();
 
-    CArmRegInfo& operator=(const CArmRegInfo&);
+    CArmRegInfo & operator=(const CArmRegInfo &);
 
-    bool operator==(const CArmRegInfo& right) const;
-    bool operator!=(const CArmRegInfo& right) const;
+    bool operator==(const CArmRegInfo & right) const;
+    bool operator!=(const CArmRegInfo & right) const;
 
     void BeforeCallDirect(void);
     void AfterCallDirect(void);
@@ -61,21 +61,57 @@ public:
     bool UnMap_ArmReg(CArmOps::ArmReg Reg);
     void ResetRegProtection();
 
-    inline CArmOps::ArmReg GetMipsRegMapLo(int32_t Reg) const { return m_RegMapLo[Reg]; }
-    inline CArmOps::ArmReg GetMipsRegMapHi(int32_t Reg) const { return m_RegMapHi[Reg]; }
-    inline void SetMipsRegMapLo(int32_t GetMipsReg, CArmOps::ArmReg Reg) { m_RegMapLo[GetMipsReg] = Reg; }
-    inline void SetMipsRegMapHi(int32_t GetMipsReg, CArmOps::ArmReg Reg) { m_RegMapHi[GetMipsReg] = Reg; }
+    inline CArmOps::ArmReg GetMipsRegMapLo(int32_t Reg) const
+    {
+        return m_RegMapLo[Reg];
+    }
+    inline CArmOps::ArmReg GetMipsRegMapHi(int32_t Reg) const
+    {
+        return m_RegMapHi[Reg];
+    }
+    inline void SetMipsRegMapLo(int32_t GetMipsReg, CArmOps::ArmReg Reg)
+    {
+        m_RegMapLo[GetMipsReg] = Reg;
+    }
+    inline void SetMipsRegMapHi(int32_t GetMipsReg, CArmOps::ArmReg Reg)
+    {
+        m_RegMapHi[GetMipsReg] = Reg;
+    }
 
-    inline uint32_t GetArmRegMapOrder(CArmOps::ArmReg Reg) const { return m_ArmReg_MapOrder[Reg]; }
-    inline bool GetArmRegProtected(CArmOps::ArmReg Reg) const { return m_ArmReg_Protected[Reg]; }
-    inline REG_MAPPED GetArmRegMapped(CArmOps::ArmReg Reg) const { return m_ArmReg_MappedTo[Reg]; }
+    inline uint32_t GetArmRegMapOrder(CArmOps::ArmReg Reg) const
+    {
+        return m_ArmReg_MapOrder[Reg];
+    }
+    inline bool GetArmRegProtected(CArmOps::ArmReg Reg) const
+    {
+        return m_ArmReg_Protected[Reg];
+    }
+    inline REG_MAPPED GetArmRegMapped(CArmOps::ArmReg Reg) const
+    {
+        return m_ArmReg_MappedTo[Reg];
+    }
 
-    inline void SetArmRegMapOrder(CArmOps::ArmReg Reg, uint32_t Order) { m_ArmReg_MapOrder[Reg] = Order; }
-    inline void SetArmRegProtected(CArmOps::ArmReg Reg, bool Protected) { m_ArmReg_Protected[Reg] = Protected; }
-    inline void SetArmRegMapped(CArmOps::ArmReg Reg, REG_MAPPED Mapping) { m_ArmReg_MappedTo[Reg] = Mapping; }
+    inline void SetArmRegMapOrder(CArmOps::ArmReg Reg, uint32_t Order)
+    {
+        m_ArmReg_MapOrder[Reg] = Order;
+    }
+    inline void SetArmRegProtected(CArmOps::ArmReg Reg, bool Protected)
+    {
+        m_ArmReg_Protected[Reg] = Protected;
+    }
+    inline void SetArmRegMapped(CArmOps::ArmReg Reg, REG_MAPPED Mapping)
+    {
+        m_ArmReg_MappedTo[Reg] = Mapping;
+    }
 
-    inline VARIABLE_MAPPED GetVariableMappedTo(CArmOps::ArmReg Reg) const { return m_Variable_MappedTo[Reg]; }
-    inline void SetVariableMappedTo(CArmOps::ArmReg Reg, VARIABLE_MAPPED variable) { m_Variable_MappedTo[Reg] = variable; }
+    inline VARIABLE_MAPPED GetVariableMappedTo(CArmOps::ArmReg Reg) const
+    {
+        return m_Variable_MappedTo[Reg];
+    }
+    inline void SetVariableMappedTo(CArmOps::ArmReg Reg, VARIABLE_MAPPED variable)
+    {
+        m_Variable_MappedTo[Reg] = variable;
+    }
     static const char * VariableMapName(VARIABLE_MAPPED variable);
 
     void LogRegisterState(void);
@@ -86,7 +122,7 @@ private:
     CCodeBlock & m_CodeBlock;
     CArmOps & m_Assembler;
 
-    bool ShouldPushPopReg (CArmOps::ArmReg Reg);
+    bool ShouldPushPopReg(CArmOps::ArmReg Reg);
 
     CArmOps::ArmReg m_RegMapHi[32];
     CArmOps::ArmReg m_RegMapLo[32];

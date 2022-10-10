@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/Recompiler/FunctionInfo.h>
 
-CCompiledFunc::CCompiledFunc( const CCodeBlock & CodeBlock ) :
+CCompiledFunc::CCompiledFunc(const CCodeBlock & CodeBlock) :
     m_EnterPC(CodeBlock.VAddrEnter()),
     m_MinPC(CodeBlock.VAddrFirst()),
     m_MaxPC(CodeBlock.VAddrLast()),

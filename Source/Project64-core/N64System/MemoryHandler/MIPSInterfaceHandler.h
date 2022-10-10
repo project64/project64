@@ -1,7 +1,7 @@
 #pragma once
 #include "MemoryHandler.h"
-#include <Project64-core\Settings\DebugSettings.h>
 #include <Project64-core\Logging.h>
+#include <Project64-core\Settings\DebugSettings.h>
 #include <stdint.h>
 
 class MIPSInterfaceReg
@@ -19,8 +19,8 @@ public:
 
 private:
     MIPSInterfaceReg();
-    MIPSInterfaceReg(const MIPSInterfaceReg&);
-    MIPSInterfaceReg& operator=(const MIPSInterfaceReg&);
+    MIPSInterfaceReg(const MIPSInterfaceReg &);
+    MIPSInterfaceReg & operator=(const MIPSInterfaceReg &);
 };
 
 class CRegisters;

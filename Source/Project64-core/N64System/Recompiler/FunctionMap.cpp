@@ -1,7 +1,8 @@
 #include "stdafx.h"
+
+#include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/Recompiler/FunctionMap.h>
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/N64System.h>
 
 CFunctionMap::CFunctionMap() :
     m_JumpTable(nullptr),

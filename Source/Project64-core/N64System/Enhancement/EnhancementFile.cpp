@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/Enhancement/EnhancementFile.h>
 
-#pragma warning(disable:4996)
+#pragma warning(disable : 4996)
 
 CEnhancmentFile::CEnhancmentFile(const char * FileName, const char * Ident) :
     m_Ident(Ident),
@@ -106,7 +106,7 @@ bool CEnhancmentFile::RemoveEnhancements(const char * Section)
     return true;
 }
 
-bool CEnhancmentFile::GetName(const char * Section, std::string &Name)
+bool CEnhancmentFile::GetName(const char * Section, std::string & Name)
 {
     CGuard Guard(m_CS);
     if (!m_File.IsOpen())
@@ -192,8 +192,14 @@ bool CEnhancmentFile::MoveToSection(const char * Section, bool ChangeCurrentSect
         do
         {
             result = GetStringFromFile(Input, Data, MaxDataSize, DataSize, ReadPos);
-            if (result <= 1) { continue; }
-            if (strlen(CleanLine(Input)) <= 1) { continue; }
+            if (result <= 1)
+            {
+                continue;
+            }
+            if (strlen(CleanLine(Input)) <= 1)
+            {
+                continue;
+            }
 
             // We only care about sections
             char * CurrentSection = Input;
@@ -203,9 +209,15 @@ bool CEnhancmentFile::MoveToSection(const char * Section, bool ChangeCurrentSect
                 CurrentSection += 3;
             }
 
-            if (CurrentSection[0] != '[') { continue; }
+            if (CurrentSection[0] != '[')
+            {
+                continue;
+            }
             int lineEndPos = (int)strlen(CurrentSection) - 1;
-            if (CurrentSection[lineEndPos] != ']') { continue; }
+            if (CurrentSection[lineEndPos] != ']')
+            {
+                continue;
+            }
             // Take off the ']' from the end of the string
             CurrentSection[lineEndPos] = 0;
             CurrentSection += 1;
@@ -236,9 +248,18 @@ bool CEnhancmentFile::MoveToSection(const char * Section, bool ChangeCurrentSect
         do
         {
             result = GetStringFromFile(Input, Data, MaxDataSize, DataSize, ReadPos);
-            if (result <= 1) { continue; }
-            if (strlen(CleanLine(Input)) <= 1) { continue; }
-            if (Input[0] == '[') { break; }
+            if (result <= 1)
+            {
+                continue;
+            }
+            if (strlen(CleanLine(Input)) <= 1)
+            {
+                continue;
+            }
+            if (Input[0] == '[')
+            {
+                break;
+            }
             char * Pos = strchr(Input, '=');
             if (Input[0] == '$')
             {
@@ -246,7 +267,7 @@ bool CEnhancmentFile::MoveToSection(const char * Section, bool ChangeCurrentSect
                 do
                 {
                     result = GetStringFromFile(Input, Data, MaxDataSize, DataSize, ReadPos);
-                    if (result <= 1 || strlen(CleanLine(Input)) <= 1) 
+                    if (result <= 1 || strlen(CleanLine(Input)) <= 1)
                     {
                         break;
                     }
@@ -264,7 +285,7 @@ bool CEnhancmentFile::MoveToSection(const char * Section, bool ChangeCurrentSect
                 }
             }
             else if (Pos != nullptr)
-            { 
+            {
                 char * Value = &Pos[1];
 
                 char * Pos1 = Pos - 1;
@@ -323,7 +344,7 @@ void CEnhancmentFile::SaveCurrentSection(void)
                 }
                 PluginList += List[i].c_str();
             }
-            Section += stdstr_f("Plugin List=%s%s", PluginList.c_str() , m_LineFeed);
+            Section += stdstr_f("Plugin List=%s%s", PluginList.c_str(), m_LineFeed);
         }
         if (Enhancement.GetOnByDefault())
         {
@@ -352,7 +373,7 @@ void CEnhancmentFile::SaveCurrentSection(void)
             if (Enhancement.CodeOptionSize() == 4)
             {
                 Section += stdstr_f("%04X %s%s", Options[i].Value, Options[i].Name.c_str(), m_LineFeed);
-            } 
+            }
             else if (Enhancement.CodeOptionSize() == 2)
             {
                 Section += stdstr_f("%02X %s%s", Options[i].Value, Options[i].Name.c_str(), m_LineFeed);
@@ -379,7 +400,7 @@ void CEnhancmentFile::SaveCurrentSection(void)
         m_File.Write(SectionName.get(), (int)strlen(SectionName.get()));
         m_CurrentSectionFilePos = m_File.GetPosition();
         m_SectionsPos.insert(FILELOC::value_type(m_CurrentSection, m_CurrentSectionFilePos));
-    } 
+    }
     else
     {
         int NeededBufferLen = (int)Section.length();
@@ -397,7 +418,10 @@ void CEnhancmentFile::SaveCurrentSection(void)
         do
         {
             result = GetStringFromFile(Input, Data, MaxDataSize, DataSize, ReadPos);
-            if (result <= 1) { continue; }
+            if (result <= 1)
+            {
+                continue;
+            }
             if (strlen(CleanLine(Input)) <= 1 || Input[0] != '[')
             {
                 EndPos = ((m_File.GetPosition() - DataSize) + ReadPos);
@@ -423,9 +447,12 @@ void CEnhancmentFile::SaveCurrentSection(void)
     m_File.Write(Section.data(), (uint32_t)Section.length());
 }
 
-int CEnhancmentFile::GetStringFromFile(char * & String, std::unique_ptr<char> & Data, int & MaxDataSize, int & DataSize, int & ReadPos)
+int CEnhancmentFile::GetStringFromFile(char *& String, std::unique_ptr<char> & Data, int & MaxDataSize, int & DataSize, int & ReadPos)
 {
-    enum { BufferIncrease = 0x2000 };
+    enum
+    {
+        BufferIncrease = 0x2000
+    };
     if (MaxDataSize == 0)
     {
         ReadPos = 0;
@@ -531,9 +558,9 @@ const char * CEnhancmentFile::CleanLine(char * Line)
     // Strip any spaces or line feeds from the end of the line
     for (int32_t i = (int32_t)strlen(&Line[0]) - 1; i >= 0; i--)
     {
-        if (Line[i] != ' ' && Line[i] != '\r') 
-        { 
-            break; 
+        if (Line[i] != ' ' && Line[i] != '\r')
+        {
+            break;
         }
         Line[i] = 0;
     }
@@ -542,7 +569,10 @@ const char * CEnhancmentFile::CleanLine(char * Line)
 
 void CEnhancmentFile::fInsertSpaces(int Pos, int NoOfSpaces)
 {
-    enum { fIS_MvSize = 0x2000 };
+    enum
+    {
+        fIS_MvSize = 0x2000
+    };
 
     unsigned char Data[fIS_MvSize + 1];
     int SizeToRead, result;
@@ -558,7 +588,10 @@ void CEnhancmentFile::fInsertSpaces(int Pos, int NoOfSpaces)
         do
         {
             SizeToRead = end - Pos;
-            if (SizeToRead > fIS_MvSize) { SizeToRead = fIS_MvSize; }
+            if (SizeToRead > fIS_MvSize)
+            {
+                SizeToRead = fIS_MvSize;
+            }
             if (SizeToRead > 0)
             {
                 m_File.Seek(SizeToRead * -1, CFileBase::current);
@@ -582,7 +615,10 @@ void CEnhancmentFile::fInsertSpaces(int Pos, int NoOfSpaces)
         do
         {
             SizeToRead = end - ReadPos;
-            if (SizeToRead > fIS_MvSize) { SizeToRead = fIS_MvSize; }
+            if (SizeToRead > fIS_MvSize)
+            {
+                SizeToRead = fIS_MvSize;
+            }
             m_File.Seek(ReadPos, CFileBase::begin);
             m_File.Read(Data, SizeToRead);
             m_File.Seek(WritePos, CFileBase::begin);

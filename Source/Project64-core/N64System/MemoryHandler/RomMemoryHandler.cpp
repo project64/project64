@@ -1,8 +1,9 @@
 #include "stdafx.h"
+
 #include "RomMemoryHandler.h"
-#include <Project64-core\N64System\N64System.h>
 #include <Project64-core\N64System\Mips\Register.h>
 #include <Project64-core\N64System\N64Rom.h>
+#include <Project64-core\N64System\N64System.h>
 #include <Project64-core\N64System\SystemGlobals.h>
 
 RomMemoryHandler::RomMemoryHandler(CN64System & System, CRegisters & Reg, CN64Rom & Rom) :
@@ -41,7 +42,7 @@ bool RomMemoryHandler::Read32(uint32_t Address, uint32_t & Value)
             case 0x1000000C: LogMessage("%08X: read from ROM release offset (%08X)", m_PC, Value); break;
             case 0x10000010: LogMessage("%08X: read from ROM CRC1 (%08X)", m_PC, Value); break;
             case 0x10000014: LogMessage("%08X: read from ROM CRC2 (%08X)", m_PC, Value); break;
-            default: LogMessage("%08X: read from ROM header 0x%X (%08X)", m_PC, ReadAddr & 0xFF, Value);  break;
+            default: LogMessage("%08X: read from ROM header 0x%X (%08X)", m_PC, ReadAddr & 0xFF, Value); break;
             }
         }
     }

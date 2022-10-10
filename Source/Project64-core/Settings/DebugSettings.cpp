@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "DebugSettings.h"
 
 int CDebugSettings::m_RefCount = 0;

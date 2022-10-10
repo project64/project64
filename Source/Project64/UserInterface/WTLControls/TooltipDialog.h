@@ -51,6 +51,18 @@ public:
     }
 };
 
-#define BEGIN_TOOLTIP_MAP() static const _ToolTipMap* _GetToolTipMap() { static const _ToolTipMap map[] = {
-#define TOOLTIP(ctrlId, text) { ctrlId, text },
-#define END_TOOLTIP_MAP() { 0 } }; return map; }
+#define BEGIN_TOOLTIP_MAP()                     \
+    static const _ToolTipMap * _GetToolTipMap() \
+    {                                           \
+        static const _ToolTipMap map[] = {
+
+#define END_TOOLTIP_MAP() \
+    {                     \
+        0                 \
+    }                     \
+    }                     \
+    ;                     \
+    return map;           \
+    }
+
+#define TOOLTIP(ctrlId, text) {ctrlId, text},

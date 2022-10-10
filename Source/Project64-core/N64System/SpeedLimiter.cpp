@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "Project64-core/N64System/SpeedLimiter.h"
 
 #include <Common/Util.h>
@@ -6,9 +7,9 @@
 const uint32_t CSpeedLimiter::m_DefaultSpeed = 60;
 
 CSpeedLimiter::CSpeedLimiter() :
-m_Frames(0),
-m_Speed(m_DefaultSpeed),
-m_BaseSpeed(m_DefaultSpeed)
+    m_Frames(0),
+    m_Speed(m_DefaultSpeed),
+    m_BaseSpeed(m_DefaultSpeed)
 {
 }
 
@@ -58,7 +59,10 @@ bool CSpeedLimiter::Timer_Process(uint32_t * FrameRate)
     if (CurrentTimeValue - LastTime >= 1000000)
     {
         // Output FPS
-        if (FrameRate != nullptr) { *FrameRate = m_Frames; }
+        if (FrameRate != nullptr)
+        {
+            *FrameRate = m_Frames;
+        }
         m_Frames = 0;
         m_LastTime = CurrentTime;
         return true;
@@ -66,26 +70,29 @@ bool CSpeedLimiter::Timer_Process(uint32_t * FrameRate)
     return false;
 }
 
-void CSpeedLimiter::AlterSpeed( const ESpeedChange SpeedChange )
+void CSpeedLimiter::AlterSpeed(const ESpeedChange SpeedChange)
 {
-	int32_t SpeedFactor = 1;
-	if (SpeedChange == DECREASE_SPEED) { SpeedFactor = -1; }
+    int32_t SpeedFactor = 1;
+    if (SpeedChange == DECREASE_SPEED)
+    {
+        SpeedFactor = -1;
+    }
 
-	if (m_Speed >= m_DefaultSpeed)
-	{
-		m_Speed += 10 * SpeedFactor;
-	}
-	else if (m_Speed >= 15)
-	{
-		m_Speed += 5 * SpeedFactor;
-	}
-	else if ((m_Speed > 1 && SpeedChange == DECREASE_SPEED) || SpeedChange == INCREASE_SPEED)
-	{
-		m_Speed += 1 * SpeedFactor;
-	}
+    if (m_Speed >= m_DefaultSpeed)
+    {
+        m_Speed += 10 * SpeedFactor;
+    }
+    else if (m_Speed >= 15)
+    {
+        m_Speed += 5 * SpeedFactor;
+    }
+    else if ((m_Speed > 1 && SpeedChange == DECREASE_SPEED) || SpeedChange == INCREASE_SPEED)
+    {
+        m_Speed += 1 * SpeedFactor;
+    }
 
-	SpeedChanged(m_Speed);
-	FixSpeedRatio();
+    SpeedChanged(m_Speed);
+    FixSpeedRatio();
 }
 
 void CSpeedLimiter::SetSpeed(int Speed)

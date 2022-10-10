@@ -168,37 +168,37 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
         switch (*(TypePos + 1))
         {
         case 0xB6:
-            {
-                uint8_t Value = 0;
-                g_MMU->LB_NonMemory((MemAddress | 0x80000000) ^ 3, Value);
-                *(uint32_t *)Reg = Value;
-            }
+        {
+            uint8_t Value = 0;
+            g_MMU->LB_NonMemory((MemAddress | 0x80000000) ^ 3, Value);
+            *(uint32_t *)Reg = Value;
             *context.Eip = (uint32_t)ReadPos;
             return true;
+        }
         case 0xB7:
-            {
-                uint16_t Value = 0;
-                g_MMU->LH_NonMemory((MemAddress | 0x80000000) ^ 2, Value);
-                *(uint32_t *)Reg = Value;
-            }
+        {
+            uint16_t Value = 0;
+            g_MMU->LH_NonMemory((MemAddress | 0x80000000) ^ 2, Value);
+            *(uint32_t *)Reg = Value;
             *context.Eip = (uint32_t)ReadPos;
             return true;
+        }
         case 0xBE:
-            {
-                uint8_t Value = 0;
-                g_MMU->LB_NonMemory((MemAddress | 0x80000000) ^ 3, Value);
-                *(int32_t *)Reg = (int8_t)Value;
-            }
+        {
+            uint8_t Value = 0;
+            g_MMU->LB_NonMemory((MemAddress | 0x80000000) ^ 3, Value);
+            *(int32_t *)Reg = (int8_t)Value;
             *context.Eip = (uint32_t)ReadPos;
             return true;
+        }
         case 0xBF:
-            {
-                uint16_t Value = 0;
-                g_MMU->LH_NonMemory((MemAddress | 0x80000000) ^ 2, Value);
-                *(int32_t *)Reg = (int16_t)Value;
-            }
+        {
+            uint16_t Value = 0;
+            g_MMU->LH_NonMemory((MemAddress | 0x80000000) ^ 2, Value);
+            *(int32_t *)Reg = (int16_t)Value;
             *context.Eip = (uint32_t)ReadPos;
             return true;
+        }
         default:
             if (HaveDebugger())
             {
@@ -211,13 +211,13 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
         switch (*(TypePos + 1))
         {
         case 0x8B:
-            {
-                uint16_t Value = 0;
-                g_MMU->LH_NonMemory((MemAddress | 0x80000000) ^ 2, Value);
-                *(uint32_t *)Reg = Value;
-            }
+        {
+            uint16_t Value = 0;
+            g_MMU->LH_NonMemory((MemAddress | 0x80000000) ^ 2, Value);
+            *(uint32_t *)Reg = Value;
             *context.Eip = (uint32_t)ReadPos;
             return true;
+        }
         case 0x89:
             g_MMU->SH_NonMemory((MemAddress | 0x80000000) ^ 2, *(uint16_t *)Reg);
             *context.Eip = (uint32_t)ReadPos;
@@ -247,13 +247,13 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
         *context.Eip = (uint32_t)ReadPos;
         return true;
     case 0x8A:
-        {
-            uint8_t Value = 0;
-            g_MMU->LB_NonMemory((MemAddress | 0x80000000) ^ 3, Value);
-            *(uint32_t *)Reg = Value;
-        }
+    {
+        uint8_t Value = 0;
+        g_MMU->LB_NonMemory((MemAddress | 0x80000000) ^ 3, Value);
+        *(uint32_t *)Reg = Value;
         *context.Eip = (uint32_t)ReadPos;
         return true;
+    }
     case 0x8B:
         g_MMU->LW_NonMemory(MemAddress | 0x80000000, *((uint32_t *)Reg));
         *context.Eip = (uint32_t)ReadPos;
@@ -379,12 +379,23 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         return false;
     }
 
-    uint32_t * ArmRegisters[16] =
-    {
-        (uint32_t*)&context.arm_r0, (uint32_t*)&context.arm_r1, (uint32_t*)&context.arm_r2, (uint32_t*)&context.arm_r3,
-        (uint32_t*)&context.arm_r4, (uint32_t*)&context.arm_r5, (uint32_t*)&context.arm_r6, (uint32_t*)&context.arm_r7,
-        (uint32_t*)&context.arm_r8, (uint32_t*)&context.arm_r9, (uint32_t*)&context.arm_r10,(uint32_t*)&context.arm_fp,
-        (uint32_t*)&context.arm_ip, (uint32_t*)&context.arm_sp, (uint32_t*)&context.arm_lr, (uint32_t*)&context.arm_pc,
+    uint32_t * ArmRegisters[16] = {
+        (uint32_t *)&context.arm_r0,
+        (uint32_t *)&context.arm_r1,
+        (uint32_t *)&context.arm_r2,
+        (uint32_t *)&context.arm_r3,
+        (uint32_t *)&context.arm_r4,
+        (uint32_t *)&context.arm_r5,
+        (uint32_t *)&context.arm_r6,
+        (uint32_t *)&context.arm_r7,
+        (uint32_t *)&context.arm_r8,
+        (uint32_t *)&context.arm_r9,
+        (uint32_t *)&context.arm_r10,
+        (uint32_t *)&context.arm_fp,
+        (uint32_t *)&context.arm_ip,
+        (uint32_t *)&context.arm_sp,
+        (uint32_t *)&context.arm_lr,
+        (uint32_t *)&context.arm_pc,
     };
 
     ArmThumbOpcode * OpCode = (ArmThumbOpcode *)context.arm_pc;
@@ -569,9 +580,9 @@ bool CMipsMemoryVM::SetupSegvHandler(void)
     return sigaction(SIGSEGV, &sig_act, nullptr) == 0;
 }
 
-void CMipsMemoryVM::segv_handler(int signal, siginfo_t *siginfo, void *sigcontext)
+void CMipsMemoryVM::segv_handler(int signal, siginfo_t * siginfo, void * sigcontext)
 {
-    ucontext_t *ucontext = (ucontext_t*)sigcontext;
+    ucontext_t * ucontext = (ucontext_t *)sigcontext;
 
     WriteTrace(TraceExceptionHandler, TraceNotice, "Segmentation fault!");
     WriteTrace(TraceExceptionHandler, TraceNotice, "info.si_signo = %d", signal);
@@ -597,15 +608,15 @@ void CMipsMemoryVM::segv_handler(int signal, siginfo_t *siginfo, void *sigcontex
     }
 
     X86_CONTEXT context;
-    context.Edi = (uint32_t*)&ucontext->uc_mcontext.gregs[REG_EDI];
-    context.Esi = (uint32_t*)&ucontext->uc_mcontext.gregs[REG_ESI];
-    context.Ebx = (uint32_t*)&ucontext->uc_mcontext.gregs[REG_EBX];
-    context.Edx = (uint32_t*)&ucontext->uc_mcontext.gregs[REG_EDX];
-    context.Ecx = (uint32_t*)&ucontext->uc_mcontext.gregs[REG_ECX];
-    context.Eax = (uint32_t*)&ucontext->uc_mcontext.gregs[REG_EAX];
-    context.Eip = (uint32_t*)&ucontext->uc_mcontext.gregs[REG_EIP];
-    context.Esp = (uint32_t*)&ucontext->uc_mcontext.gregs[REG_ESP];
-    context.Ebp = (uint32_t*)&ucontext->uc_mcontext.gregs[REG_EBP];
+    context.Edi = (uint32_t *)&ucontext->uc_mcontext.gregs[REG_EDI];
+    context.Esi = (uint32_t *)&ucontext->uc_mcontext.gregs[REG_ESI];
+    context.Ebx = (uint32_t *)&ucontext->uc_mcontext.gregs[REG_EBX];
+    context.Edx = (uint32_t *)&ucontext->uc_mcontext.gregs[REG_EDX];
+    context.Ecx = (uint32_t *)&ucontext->uc_mcontext.gregs[REG_ECX];
+    context.Eax = (uint32_t *)&ucontext->uc_mcontext.gregs[REG_EAX];
+    context.Eip = (uint32_t *)&ucontext->uc_mcontext.gregs[REG_EIP];
+    context.Esp = (uint32_t *)&ucontext->uc_mcontext.gregs[REG_ESP];
+    context.Ebp = (uint32_t *)&ucontext->uc_mcontext.gregs[REG_EBP];
 
     if (FilterX86Exception(MemAddress, context))
     {
@@ -641,15 +652,15 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
     uint32_t MemAddress = (char *)lpEP->ExceptionRecord->ExceptionInformation[1] - (char *)g_MMU->Rdram();
 
     X86_CONTEXT context;
-    context.Edi = (uint32_t*)&lpEP->ContextRecord->Edi;
-    context.Esi = (uint32_t*)&lpEP->ContextRecord->Esi;
-    context.Ebx = (uint32_t*)&lpEP->ContextRecord->Ebx;
-    context.Edx = (uint32_t*)&lpEP->ContextRecord->Edx;
-    context.Ecx = (uint32_t*)&lpEP->ContextRecord->Ecx;
-    context.Eax = (uint32_t*)&lpEP->ContextRecord->Eax;
-    context.Eip = (uint32_t*)&lpEP->ContextRecord->Eip;
-    context.Esp = (uint32_t*)&lpEP->ContextRecord->Esp;
-    context.Ebp = (uint32_t*)&lpEP->ContextRecord->Ebp;
+    context.Edi = (uint32_t *)&lpEP->ContextRecord->Edi;
+    context.Esi = (uint32_t *)&lpEP->ContextRecord->Esi;
+    context.Ebx = (uint32_t *)&lpEP->ContextRecord->Ebx;
+    context.Edx = (uint32_t *)&lpEP->ContextRecord->Edx;
+    context.Ecx = (uint32_t *)&lpEP->ContextRecord->Ecx;
+    context.Eax = (uint32_t *)&lpEP->ContextRecord->Eax;
+    context.Eip = (uint32_t *)&lpEP->ContextRecord->Eip;
+    context.Esp = (uint32_t *)&lpEP->ContextRecord->Esp;
+    context.Ebp = (uint32_t *)&lpEP->ContextRecord->Ebp;
 
     if (FilterX86Exception(MemAddress, context))
     {
@@ -658,7 +669,7 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
     }
     return EXCEPTION_EXECUTE_HANDLER;
 #else
-    dwExptCode = dwExptCode; //unreferenced formal parameter
+    dwExptCode = dwExptCode;                 //unreferenced formal parameter
     lpExceptionPointer = lpExceptionPointer; // unreferenced formal parameter
     return EXCEPTION_EXECUTE_HANDLER;
 #endif

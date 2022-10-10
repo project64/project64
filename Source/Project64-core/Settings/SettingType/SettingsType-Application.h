@@ -13,8 +13,14 @@ public:
     CSettingTypeApplication(const char * Section, const char * Name, SettingID DefaultSetting);
     virtual ~CSettingTypeApplication();
 
-    virtual bool IndexBasedSetting(void) const { return false; }
-    virtual SettingType GetSettingType(void) const { return SettingType_CfgFile; }
+    virtual bool IndexBasedSetting(void) const
+    {
+        return false;
+    }
+    virtual SettingType GetSettingType(void) const
+    {
+        return SettingType_CfgFile;
+    }
     virtual bool IsSettingSet(void) const;
 
     // Return the values
@@ -42,7 +48,10 @@ public:
     static void Flush(void);
     static void ResetAll(void);
 
-    const char * GetKeyName(void) const { return m_KeyName.c_str(); }
+    const char * GetKeyName(void) const
+    {
+        return m_KeyName.c_str();
+    }
 
 protected:
     const char * m_DefaultStr;
@@ -59,6 +68,6 @@ protected:
     virtual const char * SectionName(void) const;
 
 private:
-    CSettingTypeApplication(const CSettingTypeApplication&);
-    CSettingTypeApplication& operator=(const CSettingTypeApplication&);
+    CSettingTypeApplication(const CSettingTypeApplication &);
+    CSettingTypeApplication & operator=(const CSettingTypeApplication &);
 };

@@ -1,11 +1,12 @@
 #include "stdafx.h"
-#include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/N64Rom.h>
-#include <Project64-core/N64System/N64Disk.h>
+
+#include "GFXPlugin.h"
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/Register.h>
+#include <Project64-core/N64System/N64Disk.h>
+#include <Project64-core/N64System/N64Rom.h>
 #include <Project64-core/N64System/N64System.h>
-#include "GFXPlugin.h"
+#include <Project64-core/N64System/SystemGlobals.h>
 
 CGfxPlugin::CGfxPlugin() :
     CaptureScreen(nullptr),
@@ -39,7 +40,7 @@ CGfxPlugin::~CGfxPlugin()
 bool CGfxPlugin::LoadFunctions(void)
 {
     // Find entries for functions in DLL
-    int32_t(CALL *InitiateGFX) (void * Gfx_Info);
+    int32_t(CALL * InitiateGFX)(void * Gfx_Info);
     LoadFunction(InitiateGFX);
     LoadFunction(ChangeWindow);
     LoadFunction(DrawScreen);
@@ -62,15 +63,46 @@ bool CGfxPlugin::LoadFunctions(void)
     LoadFunction(OnRomBrowserMenuItem);
 
     // Make sure DLL had all needed functions
-    if (ChangeWindow == nullptr)    { UnloadPlugin(); return false; }
-    if (DrawScreen == nullptr)      { DrawScreen = DummyDrawScreen; }
-    if (InitiateGFX == nullptr)     { UnloadPlugin(); return false; }
-    if (MoveScreen == nullptr)      { MoveScreen = DummyMoveScreen; }
-    if (ProcessDList == nullptr)    { UnloadPlugin(); return false; }
-    if (UpdateScreen == nullptr)    { UnloadPlugin(); return false; }
-    if (ViStatusChanged == nullptr) { ViStatusChanged = DummyViStatusChanged; }
-    if (ViWidthChanged == nullptr)  { ViWidthChanged = DummyViWidthChanged; }
-    if (SoftReset == nullptr)       { SoftReset = DummySoftReset; }
+    if (ChangeWindow == nullptr)
+    {
+        UnloadPlugin();
+        return false;
+    }
+    if (DrawScreen == nullptr)
+    {
+        DrawScreen = DummyDrawScreen;
+    }
+    if (InitiateGFX == nullptr)
+    {
+        UnloadPlugin();
+        return false;
+    }
+    if (MoveScreen == nullptr)
+    {
+        MoveScreen = DummyMoveScreen;
+    }
+    if (ProcessDList == nullptr)
+    {
+        UnloadPlugin();
+        return false;
+    }
+    if (UpdateScreen == nullptr)
+    {
+        UnloadPlugin();
+        return false;
+    }
+    if (ViStatusChanged == nullptr)
+    {
+        ViStatusChanged = DummyViStatusChanged;
+    }
+    if (ViWidthChanged == nullptr)
+    {
+        ViWidthChanged = DummyViWidthChanged;
+    }
+    if (SoftReset == nullptr)
+    {
+        SoftReset = DummySoftReset;
+    }
 
     if (m_PluginInfo.Version >= 0x0103)
     {
@@ -80,14 +112,30 @@ bool CGfxPlugin::LoadFunctions(void)
         LoadFunction(GetDebugInfo);
         _LoadFunction("InitiateGFXDebugger", InitiateDebugger);
 
-        if (ProcessRDPList == nullptr) { UnloadPlugin(); return false; }
-        if (CaptureScreen == nullptr)  { UnloadPlugin(); return false; }
-        if (ShowCFB == nullptr)        { UnloadPlugin(); return false; }
+        if (ProcessRDPList == nullptr)
+        {
+            UnloadPlugin();
+            return false;
+        }
+        if (CaptureScreen == nullptr)
+        {
+            UnloadPlugin();
+            return false;
+        }
+        if (ShowCFB == nullptr)
+        {
+            UnloadPlugin();
+            return false;
+        }
     }
 
     if (m_PluginInfo.Version >= 0x0104)
     {
-        if (PluginOpened == nullptr) { UnloadPlugin(); return false; }
+        if (PluginOpened == nullptr)
+        {
+            UnloadPlugin();
+            return false;
+        }
     }
 
     if (GetDebugInfo != nullptr)
@@ -113,14 +161,14 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
 
     typedef struct
     {
-        void * hWnd;			// Render window
-        void * hStatusBar;    // If render window does not have a status bar then this is NULL
+        void * hWnd;       // Render window
+        void * hStatusBar; // If render window does not have a status bar then this is NULL
 
-        int32_t MemoryBswaped;    // If this is set to TRUE, then the memory has been pre-bswap'd on a DWORD (32-bit) boundary
+        int32_t MemoryBswaped; // If this is set to TRUE, then the memory has been pre-bswap'd on a DWORD (32-bit) boundary
         //	eg. the first 8 bytes are stored like this:
         //  4 3 2 1   8 7 6 5
 
-        uint8_t * HEADER;	// This is the ROM header (first 40h bytes of the ROM)
+        uint8_t * HEADER; // This is the ROM header (first 40h bytes of the ROM)
         // This will be in the same memory format as the rest of the memory
         uint8_t * RDRAM;
         uint8_t * DMEM;
@@ -152,14 +200,14 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
         uint32_t * VI__X_SCALE_REG;
         uint32_t * VI__Y_SCALE_REG;
 
-        void(CALL *CheckInterrupts)(void);
+        void(CALL * CheckInterrupts)(void);
 #ifdef ANDROID
-        void(CALL *SwapBuffers)(void);
+        void(CALL * SwapBuffers)(void);
 #endif
     } GFX_INFO;
 
     // Get function from DLL
-    int32_t(CALL *InitiateGFX)(GFX_INFO Gfx_Info);
+    int32_t(CALL * InitiateGFX)(GFX_INFO Gfx_Info);
     _LoadFunction("InitiateGFX", InitiateGFX);
     if (InitiateGFX == nullptr)
     {
@@ -167,7 +215,7 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
         return false;
     }
 
-    GFX_INFO Info = { 0 };
+    GFX_INFO Info = {0};
 
     Info.MemoryBswaped = true;
 #if defined(ANDROID) || defined(__ANDROID__)
@@ -296,7 +344,7 @@ void CGfxPlugin::ProcessMenuItem(int32_t id)
 void CGfxPlugin::SwapBuffers(void)
 {
     RenderWindow * render = g_Plugins ? g_Plugins->MainWindow() : nullptr;
-    WriteTrace(TraceVideoPlugin, TraceDebug, "Start (render: %p)",render);
+    WriteTrace(TraceVideoPlugin, TraceDebug, "Start (render: %p)", render);
     if (render != nullptr)
     {
         render->SwapWindow();

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "SerialInterfaceHandler.h"
 #include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
 #include <Project64-core\N64System\Mips\Register.h>

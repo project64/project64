@@ -1,14 +1,15 @@
 #include "stdafx.h"
-#include <Project64-core\N64System\SystemGlobals.h>
-#include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
-#include <Project64-core\N64System\Mips\Register.h>
-#include <Project64-core\N64System\Mips\Disk.h>
-#include <Project64-core\N64System\N64System.h>
-#include <Project64-core\N64System\N64Rom.h>
-#include <Project64-core\N64System\N64Disk.h>
-#include <Project64-core\Debugger.h>
+
 #include "PeripheralInterfaceHandler.h"
 #include <Common\MemoryManagement.h>
+#include <Project64-core\Debugger.h>
+#include <Project64-core\N64System\Mips\Disk.h>
+#include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
+#include <Project64-core\N64System\Mips\Register.h>
+#include <Project64-core\N64System\N64Disk.h>
+#include <Project64-core\N64System\N64Rom.h>
+#include <Project64-core\N64System\N64System.h>
+#include <Project64-core\N64System\SystemGlobals.h>
 
 PeripheralInterfaceReg::PeripheralInterfaceReg(uint32_t * PeripheralInterface) :
     PI_DRAM_ADDR_REG(PeripheralInterface[0]),
@@ -216,7 +217,7 @@ void PeripheralInterfaceHandler::PI_DMA_READ()
     }
 
     // PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
-    uint32_t PI_RD_LEN = ((PI_RD_LEN_REG) & 0x00FFFFFFul) + 1;
+    uint32_t PI_RD_LEN = ((PI_RD_LEN_REG)&0x00FFFFFFul) + 1;
     if ((PI_RD_LEN & 1) != 0)
     {
         PI_RD_LEN += 1;
@@ -351,7 +352,7 @@ void PeripheralInterfaceHandler::PI_DMA_WRITE()
 
     uint32_t WritePos = PI_DRAM_ADDR_REG & 0x7FFFFE;
     uint32_t ReadPos = PI_CART_ADDR_REG;
-    
+
     if (ReadPos >= 0x05000580 && ReadPos <= 0x050005BF)
     {
         // 64DD MSEQ (don't care)
@@ -412,7 +413,7 @@ void PeripheralInterfaceHandler::PI_DMA_WRITE()
             TransferLen += (BlockLen + 7) & ~7;
             FirstBlock = false;
         }
-        
+
         if (ReadPos >= 0x05000000 && ReadPos <= 0x050004FF)
         {
             // 64DD buffers read and 64DD user sector

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "SettingsType-Application.h"
 #include "SettingsType-ApplicationIndex.h"
 

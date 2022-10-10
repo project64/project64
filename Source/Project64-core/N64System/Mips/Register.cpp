@@ -1,8 +1,9 @@
 #include "stdafx.h"
+
+#include <Project64-core/Logging.h>
 #include <Project64-core/N64System/Mips/Register.h>
 #include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/Logging.h>
 
 const char * CRegName::GPR[32] = {
     "R0",
@@ -36,11 +37,10 @@ const char * CRegName::GPR[32] = {
     "GP",
     "SP",
     "FP",
-    "RA"
+    "RA",
 };
 
-const char *CRegName::GPR_Hi[32] =
-{
+const char * CRegName::GPR_Hi[32] = {
     "r0.HI",
     "at.HI",
     "v0.HI",
@@ -72,11 +72,10 @@ const char *CRegName::GPR_Hi[32] =
     "gp.HI",
     "sp.HI",
     "fp.HI",
-    "ra.HI"
+    "ra.HI",
 };
 
-const char *CRegName::GPR_Lo[32] =
-{
+const char * CRegName::GPR_Lo[32] = {
     "r0.LO",
     "at.LO",
     "v0.LO",
@@ -108,11 +107,10 @@ const char *CRegName::GPR_Lo[32] =
     "gp.LO",
     "sp.LO",
     "fp.LO",
-    "ra.LO"
+    "ra.LO",
 };
 
-const char * CRegName::Cop0[32] =
-{
+const char * CRegName::Cop0[32] = {
     "Index",
     "Random",
     "EntryLo0",
@@ -144,11 +142,10 @@ const char * CRegName::Cop0[32] =
     "TagLo",
     "TagHi",
     "ErrEPC",
-    "Reg31"
+    "Reg31",
 };
 
-const char * CRegName::FPR[32] =
-{
+const char * CRegName::FPR[32] = {
     "F0",
     "F1",
     "F2",
@@ -180,11 +177,10 @@ const char * CRegName::FPR[32] =
     "F28",
     "F29",
     "F30",
-    "F31"
+    "F31",
 };
 
-const char * CRegName::FPR_Ctrl[32] =
-{
+const char * CRegName::FPR_Ctrl[32] = {
     "Revision",
     "Unknown",
     "Unknown",
@@ -216,20 +212,20 @@ const char * CRegName::FPR_Ctrl[32] =
     "Unknown",
     "Unknown",
     "Unknown",
-    "FCSR"
+    "FCSR",
 };
 
-uint32_t      * CSystemRegisters::_PROGRAM_COUNTER = nullptr;
-MIPS_DWORD    * CSystemRegisters::_GPR = nullptr;
-MIPS_DWORD    * CSystemRegisters::_FPR = nullptr;
-uint64_t      * CSystemRegisters::_CP0 = nullptr;
-MIPS_DWORD    * CSystemRegisters::_RegHI = nullptr;
-MIPS_DWORD    * CSystemRegisters::_RegLO = nullptr;
-float        ** CSystemRegisters::_FPR_S;
-double       ** CSystemRegisters::_FPR_D;
-uint32_t      * CSystemRegisters::_FPCR = nullptr;
-uint32_t      * CSystemRegisters::_LLBit = nullptr;
-int32_t       * CSystemRegisters::_RoundingModel = nullptr;
+uint32_t * CSystemRegisters::_PROGRAM_COUNTER = nullptr;
+MIPS_DWORD * CSystemRegisters::_GPR = nullptr;
+MIPS_DWORD * CSystemRegisters::_FPR = nullptr;
+uint64_t * CSystemRegisters::_CP0 = nullptr;
+MIPS_DWORD * CSystemRegisters::_RegHI = nullptr;
+MIPS_DWORD * CSystemRegisters::_RegLO = nullptr;
+float ** CSystemRegisters::_FPR_S;
+double ** CSystemRegisters::_FPR_D;
+uint32_t * CSystemRegisters::_FPCR = nullptr;
+uint32_t * CSystemRegisters::_LLBit = nullptr;
+int32_t * CSystemRegisters::_RoundingModel = nullptr;
 
 CP0registers::CP0registers(uint64_t * _CP0) :
     INDEX_REGISTER(_CP0[0]),
@@ -353,7 +349,7 @@ void CRegisters::Cop0_MT(uint32_t Reg, uint64_t Value)
     if (LogCP0changes() && Reg <= 0x1F)
     {
         LogMessage("%08X: Writing 0x%I64U to %s register (originally: 0x%I64U)", (*_PROGRAM_COUNTER), Value, CRegName::Cop0[Reg], m_CP0[Reg]);
-        if (Reg == 11)  // Compare
+        if (Reg == 11) // Compare
         {
             LogMessage("%08X: Cause register changed from %08X to %08X", (*_PROGRAM_COUNTER), CAUSE_REGISTER, (g_Reg->CAUSE_REGISTER & ~CAUSE_IP7));
         }
@@ -361,12 +357,12 @@ void CRegisters::Cop0_MT(uint32_t Reg, uint64_t Value)
 
     switch (Reg)
     {
-    case 0: // Index
-    case 2: // EntryLo0
-    case 3: // EntryLo1
-    case 5: // PageMask
-    case 7: // Reg7
-    case 8: // BadVaddr
+    case 0:  // Index
+    case 2:  // EntryLo0
+    case 3:  // EntryLo1
+    case 5:  // PageMask
+    case 7:  // Reg7
+    case 8:  // BadVaddr
     case 10: // Entry Hi
     case 14: // EPC
     case 15: // PRId
@@ -579,7 +575,6 @@ void CRegisters::DoTrapException(bool DelaySlot)
         EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
     }
     m_PROGRAM_COUNTER = 0x80000180;
-
 }
 
 void CRegisters::DoCopUnusableException(bool DelaySlot, int32_t Coprocessor)

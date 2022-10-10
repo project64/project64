@@ -1,12 +1,12 @@
 #pragma once
 
-#include <Project64-core/N64System/Mips/Register.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
+#include <Project64-core/N64System/Mips/Register.h>
+#include <Project64-core/N64System/Profiling.h>
 #include <Project64-core/N64System/Recompiler/FunctionMap.h>
 #include <Project64-core/N64System/Recompiler/RecompilerMemory.h>
-#include <Project64-core/N64System/Profiling.h>
-#include <Project64-core/Settings/RecompilerSettings.h>
 #include <Project64-core/Settings/DebugSettings.h>
+#include <Project64-core/Settings/RecompilerSettings.h>
 
 class CLog;
 
@@ -18,7 +18,6 @@ class CRecompiler :
     private CSystemRegisters
 {
 public:
-
     enum REMOVE_REASON
     {
         Remove_InitialCode,
@@ -32,7 +31,7 @@ public:
         Remove_MemViewer,
     };
 
-    typedef void(*DelayFunc)();
+    typedef void (*DelayFunc)();
 
 public:
     CRecompiler(CMipsMemoryVM & MMU, CRegisters & Registers, bool & EndEmulation);
@@ -51,12 +50,15 @@ public:
     void ResetFunctionTimes();
     void DumpFunctionTimes();
 
-    uint32_t& MemoryStackPos() { return m_MemoryStack; }
+    uint32_t & MemoryStackPos()
+    {
+        return m_MemoryStack;
+    }
 
 private:
     CRecompiler();
-    CRecompiler(const CRecompiler&);
-    CRecompiler& operator=(const CRecompiler&);
+    CRecompiler(const CRecompiler &);
+    CRecompiler & operator=(const CRecompiler &);
 
     CCompiledFunc * CompileCode();
 
@@ -66,7 +68,7 @@ private:
         uint64_t TimeTaken;
     } FUNCTION_PROFILE_DATA;
 
-    typedef std::map <CCompiledFunc::Func, FUNCTION_PROFILE_DATA> FUNCTION_PROFILE;
+    typedef std::map<CCompiledFunc::Func, FUNCTION_PROFILE_DATA> FUNCTION_PROFILE;
 
     void RecompilerMain_VirtualTable();
     void RecompilerMain_VirtualTable_validate();
@@ -78,7 +80,7 @@ private:
     void StopLog();
     void LogCodeBlock(const CCodeBlock & CodeBlock);
 
-    CCompiledFuncList  m_Functions;
+    CCompiledFuncList m_Functions;
     CMipsMemoryVM & m_MMU;
     CRegisters & m_Registers;
     bool & m_EndEmulation;

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include <Project64-core/N64System/Enhancement/Enhancement.h>
 #include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/SystemGlobals.h>
@@ -196,7 +197,7 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
     // Gameshark code
     while (CurrentLine < Lines.size())
     {
-        char TempFormat[128] = { 0 };
+        char TempFormat[128] = {0};
         const char * Line = Lines[CurrentLine].c_str();
         size_t LineLen = strlen(Line);
         if (LineLen >= (sizeof(TempFormat) / sizeof(TempFormat[0])))

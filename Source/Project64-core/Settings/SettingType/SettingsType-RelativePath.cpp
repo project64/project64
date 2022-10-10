@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "SettingsType-RelativePath.h"
 
 CSettingTypeRelativePath::CSettingTypeRelativePath(const char * Directory, const char * FileName) :
@@ -67,7 +68,7 @@ void CSettingTypeRelativePath::Delete(uint32_t /*Index*/)
 
 void CSettingTypeRelativePath::BuildPath(void)
 {
-    CPath FullPath(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str(),"");
+    CPath FullPath(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str(), "");
     FullPath.AppendDirectory(m_Directory.c_str());
     FullPath.SetNameExtension(m_FileName.c_str());
     m_FullPath = (const char *)FullPath;

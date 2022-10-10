@@ -1,22 +1,22 @@
-typedef const char *     LPCSTR;
+typedef const char * LPCSTR;
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <memory.h>
 #include "7zip.h"
 #include <Common/StdString.h>
+#include <memory.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 C7zip::C7zip(const char * FileName) :
-m_FileSize(0),
-m_CurrentFile(-1),
-m_blockIndex(0xFFFFFFFF),
-m_outBuffer(0),
-m_outBufferSize(0),
-m_NotfyCallback(NotfyCallbackDefault),
-m_NotfyCallbackInfo(nullptr),
-m_db(nullptr),
-m_Opened(false)
+    m_FileSize(0),
+    m_CurrentFile(-1),
+    m_blockIndex(0xFFFFFFFF),
+    m_outBuffer(0),
+    m_outBufferSize(0),
+    m_NotfyCallback(NotfyCallbackDefault),
+    m_NotfyCallbackInfo(nullptr),
+    m_db(nullptr),
+    m_Opened(false)
 {
     memset(&m_FileName, 0, sizeof(m_FileName));
     memset(&m_archiveLookStream, 0, sizeof(m_archiveLookStream));
@@ -78,7 +78,6 @@ void C7zip::SetNotificationCallback(LP7ZNOTIFICATION NotfyFnc, void * CBInfo)
     m_NotfyCallbackInfo = CBInfo;
 }
 
-
 bool C7zip::GetFile(int index, Byte * Data, size_t DataLen)
 {
     m_CurrentFile = -1;
@@ -101,9 +100,9 @@ bool C7zip::GetFile(int index, Byte * Data, size_t DataLen)
     m_NotfyCallback(Msg, m_NotfyCallbackInfo);
 
     SRes res = SzArEx_Extract(m_db, &m_archiveLookStream.s, index,
-        &m_blockIndex, &m_outBuffer, &m_outBufferSize,
-        &offset, &outSizeProcessed,
-        &m_allocImp, &m_allocTempImp);
+                              &m_blockIndex, &m_outBuffer, &m_outBufferSize,
+                              &offset, &outSizeProcessed,
+                              &m_allocImp, &m_allocTempImp);
     if (res != SZ_OK)
     {
         m_CurrentFile = -1;
@@ -126,7 +125,7 @@ void * C7zip::AllocAllocImp(void * /*p*/, size_t size)
     //return new BYTE[size];
 }
 
-void C7zip::AllocFreeImp(void * /*p*/, void *address)
+void C7zip::AllocFreeImp(void * /*p*/, void * address)
 {
     if (address != nullptr)
     {
@@ -134,9 +133,9 @@ void C7zip::AllocFreeImp(void * /*p*/, void *address)
     }
 }
 
-SRes C7zip::SzFileReadImp(void *object, void *buffer, size_t *processedSize)
+SRes C7zip::SzFileReadImp(void * object, void * buffer, size_t * processedSize)
 {
-    CFileInStream *p = (CFileInStream *)object;
+    CFileInStream * p = (CFileInStream *)object;
     DWORD dwRead;
     if (!ReadFile(p->file.handle, buffer, (DWORD)*processedSize, &dwRead, nullptr))
     {
@@ -147,9 +146,9 @@ SRes C7zip::SzFileReadImp(void *object, void *buffer, size_t *processedSize)
     return SZ_OK;
 }
 
-SRes C7zip::SzFileSeekImp(void *p, Int64 *pos, ESzSeek origin)
+SRes C7zip::SzFileSeekImp(void * p, Int64 * pos, ESzSeek origin)
 {
-    CFileInStream *s = (CFileInStream *)p;
+    CFileInStream * s = (CFileInStream *)p;
     DWORD dwMoveMethod;
 
     switch (origin)

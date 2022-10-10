@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CartridgeDomain2Address2Handler.h"
 #include <Project64-core\N64System\N64System.h>
 
@@ -91,7 +92,7 @@ bool CartridgeDomain2Address2Handler::DMARead()
     }
     if (m_System.m_SaveUsing == SaveChip_Sram)
     {
-        m_Sram.DmaToSram(m_MMU.Rdram() + m_Reg.PI_DRAM_ADDR_REG,m_Reg.PI_CART_ADDR_REG - 0x08000000, PI_RD_LEN_REG);
+        m_Sram.DmaToSram(m_MMU.Rdram() + m_Reg.PI_DRAM_ADDR_REG, m_Reg.PI_CART_ADDR_REG - 0x08000000, PI_RD_LEN_REG);
         m_Reg.PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
         m_Reg.PI_STATUS_REG |= PI_STATUS_INTERRUPT;
         m_Reg.MI_INTR_REG |= MI_INTR_PI;

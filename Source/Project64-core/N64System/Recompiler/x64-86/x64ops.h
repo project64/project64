@@ -10,8 +10,8 @@ public:
 
 private:
     CX64Ops(void);
-    CX64Ops(const CX64Ops&);
-    CX64Ops& operator=(const CX64Ops&);
+    CX64Ops(const CX64Ops &);
+    CX64Ops & operator=(const CX64Ops &);
 
     CCodeBlock & m_CodeBlock;
 };

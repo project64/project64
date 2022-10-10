@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "SettingsType-RomDatabaseSetting.h"
 
 CSettingTypeRomDatabaseSetting::CSettingTypeRomDatabaseSetting(const char * SectionIdent, const char * Name, uint32_t DefaultValue, bool DeleteOnDefault) :

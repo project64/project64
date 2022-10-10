@@ -1,6 +1,7 @@
 #include "stdafx.h"
-#include <Project64-core/N64System/SystemGlobals.h>
+
 #include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Settings/GameSettings.h>
 
 bool CGameSettings::m_UseHleGfx = true;
@@ -89,10 +90,16 @@ void CGameSettings::RefreshGameSettings()
     {
         m_CountPerOp = 2;
     }
-	if (m_OverClockModifier < 1) { m_OverClockModifier = 1; }
-    if (m_OverClockModifier > 20) { m_OverClockModifier = 20; }
+    if (m_OverClockModifier < 1)
+    {
+        m_OverClockModifier = 1;
+    }
+    if (m_OverClockModifier > 20)
+    {
+        m_OverClockModifier = 20;
+    }
     m_DiskSeekTimingType = (DISK_SEEK_TYPE)g_Settings->LoadDword(Game_DiskSeekTiming);
-	RefreshSyncToAudio();
+    RefreshSyncToAudio();
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
@@ -104,7 +111,7 @@ void CGameSettings::SpeedChanged(int SpeedLimit)
 
 void CGameSettings::RefreshSyncToAudio(void)
 {
-	m_bSyncToAudio = g_Settings->LoadBool(Game_SyncViaAudio) && g_Settings->LoadBool(Setting_SyncViaAudioEnabled) && g_Settings->LoadBool(Plugin_EnableAudio);
+    m_bSyncToAudio = g_Settings->LoadBool(Game_SyncViaAudio) && g_Settings->LoadBool(Setting_SyncViaAudioEnabled) && g_Settings->LoadBool(Plugin_EnableAudio);
 }
 
 void CGameSettings::SetOverClockModifier(bool EnhancmentOverClock, uint32_t EnhancmentOverClockModifier)
@@ -120,8 +127,14 @@ void CGameSettings::SetOverClockModifier(bool EnhancmentOverClock, uint32_t Enha
     {
         m_OverClockModifier = g_Settings->LoadDword(Game_OverClockModifier);
     }
-    if (m_OverClockModifier < 1) { m_OverClockModifier = 1; }
-    if (m_OverClockModifier > 20) { m_OverClockModifier = 20; }
+    if (m_OverClockModifier < 1)
+    {
+        m_OverClockModifier = 1;
+    }
+    if (m_OverClockModifier > 20)
+    {
+        m_OverClockModifier = 20;
+    }
 }
 
 void CGameSettings::EnableDiskChanged(void *)

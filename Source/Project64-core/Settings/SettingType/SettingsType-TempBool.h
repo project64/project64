@@ -9,11 +9,23 @@ public:
     CSettingTypeTempBool(bool initialValue, const char * name = nullptr);
     ~CSettingTypeTempBool();
 
-    bool IndexBasedSetting(void) const { return false; }
-    SettingType GetSettingType(void) const { return SettingType_BoolVariable; }
-    bool IsSettingSet(void) const { return m_changed; }
+    bool IndexBasedSetting(void) const
+    {
+        return false;
+    }
+    SettingType GetSettingType(void) const
+    {
+        return SettingType_BoolVariable;
+    }
+    bool IsSettingSet(void) const
+    {
+        return m_changed;
+    }
 
-    const char * GetName(void) const { return m_Name.c_str(); }
+    const char * GetName(void) const
+    {
+        return m_Name.c_str();
+    }
 
     // Return the values
     bool Load(uint32_t Index, bool & Value) const;
@@ -36,8 +48,8 @@ public:
 
 private:
     CSettingTypeTempBool(void);
-    CSettingTypeTempBool(const CSettingTypeTempBool&);
-    CSettingTypeTempBool& operator=(const CSettingTypeTempBool&);
+    CSettingTypeTempBool(const CSettingTypeTempBool &);
+    CSettingTypeTempBool & operator=(const CSettingTypeTempBool &);
 
     bool m_value;
     bool m_changed;

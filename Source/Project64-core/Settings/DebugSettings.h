@@ -8,27 +8,90 @@ public:
     CDebugSettings();
     virtual ~CDebugSettings();
 
-    static inline bool HaveDebugger(void) { return m_HaveDebugger; }
-    static inline bool isDebugging(void) { return m_Debugging; }
-    static inline bool isStepping(void) { return m_Stepping; }
-    static inline bool SkipOp(void) { return m_SkipOp; }
-    static inline bool WaitingForStep(void) { return m_WaitingForStep; }
-    static inline bool bRecordRecompilerAsm(void) { return m_bRecordRecompilerAsm; }
-    static inline bool bShowTLBMisses(void) { return m_bShowTLBMisses; }
-    static inline bool bRecordExecutionTimes(void) { return m_RecordExecutionTimes; }
-    static inline bool HaveExecutionBP(void) { return m_HaveExecutionBP; }
-    static inline bool HaveWriteBP(void) { return m_HaveWriteBP; }
-    static inline bool HaveReadBP(void) { return m_HaveReadBP; }
-    static inline bool bShowPifRamErrors(void) { return m_bShowPifRamErrors; }
-    static inline bool bCPULoggingEnabled(void) { return m_bCPULoggingEnabled;  }
-    static inline uint32_t ExceptionBreakpoints(void) { return m_ExceptionBreakpoints; }
-    static inline uint32_t FpExceptionBreakpoints(void) { return m_FpExceptionBreakpoints; }
-    static inline uint32_t IntrBreakpoints(void) { return m_IntrBreakpoints; }
-    static inline uint32_t RcpIntrBreakpoints(void) { return m_RcpIntrBreakpoints; }
-    static inline bool EndOnPermLoop(void) { return m_EndOnPermLoop; }
-    static inline bool BreakOnUnhandledMemory(void) { return m_BreakOnUnhandledMemory; }
-    static inline bool BreakOnAddressError(void) { return m_BreakOnAddressError; }
-    static inline bool StepOnBreakOpCode(void) { return m_StepOnBreakOpCode; }
+    static inline bool HaveDebugger(void)
+    {
+        return m_HaveDebugger;
+    }
+    static inline bool isDebugging(void)
+    {
+        return m_Debugging;
+    }
+    static inline bool isStepping(void)
+    {
+        return m_Stepping;
+    }
+    static inline bool SkipOp(void)
+    {
+        return m_SkipOp;
+    }
+    static inline bool WaitingForStep(void)
+    {
+        return m_WaitingForStep;
+    }
+    static inline bool bRecordRecompilerAsm(void)
+    {
+        return m_bRecordRecompilerAsm;
+    }
+    static inline bool bShowTLBMisses(void)
+    {
+        return m_bShowTLBMisses;
+    }
+    static inline bool bRecordExecutionTimes(void)
+    {
+        return m_RecordExecutionTimes;
+    }
+    static inline bool HaveExecutionBP(void)
+    {
+        return m_HaveExecutionBP;
+    }
+    static inline bool HaveWriteBP(void)
+    {
+        return m_HaveWriteBP;
+    }
+    static inline bool HaveReadBP(void)
+    {
+        return m_HaveReadBP;
+    }
+    static inline bool bShowPifRamErrors(void)
+    {
+        return m_bShowPifRamErrors;
+    }
+    static inline bool bCPULoggingEnabled(void)
+    {
+        return m_bCPULoggingEnabled;
+    }
+    static inline uint32_t ExceptionBreakpoints(void)
+    {
+        return m_ExceptionBreakpoints;
+    }
+    static inline uint32_t FpExceptionBreakpoints(void)
+    {
+        return m_FpExceptionBreakpoints;
+    }
+    static inline uint32_t IntrBreakpoints(void)
+    {
+        return m_IntrBreakpoints;
+    }
+    static inline uint32_t RcpIntrBreakpoints(void)
+    {
+        return m_RcpIntrBreakpoints;
+    }
+    static inline bool EndOnPermLoop(void)
+    {
+        return m_EndOnPermLoop;
+    }
+    static inline bool BreakOnUnhandledMemory(void)
+    {
+        return m_BreakOnUnhandledMemory;
+    }
+    static inline bool BreakOnAddressError(void)
+    {
+        return m_BreakOnAddressError;
+    }
+    static inline bool StepOnBreakOpCode(void)
+    {
+        return m_StepOnBreakOpCode;
+    }
 
 private:
     static void StaticRefreshSettings(CDebugSettings * _this)
