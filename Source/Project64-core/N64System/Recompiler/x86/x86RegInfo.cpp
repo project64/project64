@@ -290,7 +290,6 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
         FixRoundModel(RoundDefault);
     }
     m_CodeBlock.Log("CurrentRoundingModel: %s  FpuRoundingModel(StackTopPos()): %s", RoundingModelName(GetRoundingModel()), RoundingModelName(FpuRoundingModel(StackTopPos())));
-    int32_t i;
 
     if (RegToLoad < 0)
     {
@@ -312,7 +311,7 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
     {
         if ((Reg & 1) != 0)
         {
-            for (i = 0; i < 8; i++)
+            for (int32_t i = 0; i < 8; i++)
             {
                 if (m_x86fpu_MappedTo[i] == (Reg - 1))
                 {
@@ -326,7 +325,7 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
         }
         if ((RegToLoad & 1) != 0)
         {
-            for (i = 0; i < 8; i++)
+            for (int32_t i = 0; i < 8; i++)
             {
                 if (m_x86fpu_MappedTo[i] == (RegToLoad - 1))
                 {
@@ -343,7 +342,7 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
     if (Reg == RegToLoad)
     {
         // If different format then unmap original register from stack
-        for (i = 0; i < 8; i++)
+        for (int32_t i = 0; i < 8; i++)
         {
             if (m_x86fpu_MappedTo[i] != Reg)
             {
@@ -359,7 +358,7 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
     else
     {
         // If different format then unmap original register from stack
-        for (i = 0; i < 8; i++)
+        for (int32_t i = 0; i < 8; i++)
         {
             if (m_x86fpu_MappedTo[i] != Reg)
             {
@@ -395,11 +394,12 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
             CX86Ops::x86FpuValues RegPos = CX86Ops::x86_ST_Unknown;
             for (uint32_t z = 0; z < 8; z++)
             {
-                if (m_x86fpu_MappedTo[z] == Reg)
+                if (m_x86fpu_MappedTo[z] != Reg)
                 {
-                    RegPos = (CX86Ops::x86FpuValues)i;
-                    z = 8;
+                    continue;
                 }
+                RegPos = (CX86Ops::x86FpuValues)z;
+                break;
             }
 
             if (RegPos == StackTopPos())
@@ -425,11 +425,10 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
     }
     else
     {
-        char Name[50];
         CX86Ops::x86Reg TempReg;
 
         UnMap_FPR(m_x86fpu_MappedTo[(StackTopPos() - 1) & 7], true);
-        for (i = 0; i < 8; i++)
+        for (int32_t i = 0; i < 8; i++)
         {
             if (m_x86fpu_MappedTo[i] == RegToLoad)
             {
@@ -442,23 +441,19 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
         switch (Format)
         {
         case FPU_Dword:
-            sprintf(Name, "m_FPR_S[%d]", RegToLoad);
-            m_Assembler.MoveVariableToX86reg(&g_Reg->m_FPR_S[RegToLoad], Name, TempReg);
+            m_Assembler.MoveVariableToX86reg(&g_Reg->m_FPR_S[RegToLoad], stdstr_f("m_FPR_S[%d]", RegToLoad).c_str(), TempReg);
             m_Assembler.fpuLoadIntegerDwordFromX86Reg(&StackTopPos(), TempReg);
             break;
         case FPU_Qword:
-            sprintf(Name, "m_FPR_D[%d]", RegToLoad);
-            m_Assembler.MoveVariableToX86reg(&g_Reg->m_FPR_D[RegToLoad], Name, TempReg);
+            m_Assembler.MoveVariableToX86reg(&g_Reg->m_FPR_D[RegToLoad], stdstr_f("m_FPR_D[%d]", RegToLoad).c_str(), TempReg);
             m_Assembler.fpuLoadIntegerQwordFromX86Reg(&StackTopPos(), TempReg);
             break;
         case FPU_Float:
-            sprintf(Name, "m_FPR_S[%d]", RegToLoad);
-            m_Assembler.MoveVariableToX86reg(&g_Reg->m_FPR_S[RegToLoad], Name, TempReg);
+            m_Assembler.MoveVariableToX86reg(&g_Reg->m_FPR_S[RegToLoad], stdstr_f("m_FPR_S[%d]", RegToLoad).c_str(), TempReg);
             m_Assembler.fpuLoadDwordFromX86Reg(&StackTopPos(), TempReg);
             break;
         case FPU_Double:
-            sprintf(Name, "m_FPR_D[%d]", RegToLoad);
-            m_Assembler.MoveVariableToX86reg(&g_Reg->m_FPR_D[RegToLoad], Name, TempReg);
+            m_Assembler.MoveVariableToX86reg(&g_Reg->m_FPR_D[RegToLoad], stdstr_f("m_FPR_D[%d]", RegToLoad).c_str(), TempReg);
             m_Assembler.fpuLoadQwordFromX86Reg(&StackTopPos(), TempReg);
             break;
         default:
@@ -477,9 +472,7 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
 
 CX86Ops::x86FpuValues CX86RegInfo::StackPosition(int32_t Reg)
 {
-    int32_t i;
-
-    for (i = 0; i < 8; i++)
+    for (int32_t i = 0; i < 8; i++)
     {
         if (m_x86fpu_MappedTo[i] == Reg)
         {
@@ -1220,14 +1213,11 @@ void CX86RegInfo::UnMap_AllFPRs()
 
 void CX86RegInfo::UnMap_FPR(int32_t Reg, bool WriteBackValue)
 {
-    char Name[50];
-    int32_t i;
-
     if (Reg < 0)
     {
         return;
     }
-    for (i = 0; i < 8; i++)
+    for (int32_t i = 0; i < 8; i++)
     {
         if (m_x86fpu_MappedTo[i] != Reg)
         {
@@ -1269,23 +1259,19 @@ void CX86RegInfo::UnMap_FPR(int32_t Reg, bool WriteBackValue)
             switch (m_x86fpu_State[StackTopPos()])
             {
             case FPU_Dword:
-                sprintf(Name, "_FPR_S[%d]", m_x86fpu_MappedTo[StackTopPos()]);
-                m_Assembler.MoveVariableToX86reg(&_FPR_S[m_x86fpu_MappedTo[StackTopPos()]], Name, TempReg);
+                m_Assembler.MoveVariableToX86reg(&_FPR_S[m_x86fpu_MappedTo[StackTopPos()]], stdstr_f("_FPR_S[%d]", m_x86fpu_MappedTo[StackTopPos()]).c_str(), TempReg);
                 m_Assembler.fpuStoreIntegerDwordFromX86Reg(&StackTopPos(), TempReg, true);
                 break;
             case FPU_Qword:
-                sprintf(Name, "_FPR_D[%d]", m_x86fpu_MappedTo[StackTopPos()]);
-                m_Assembler.MoveVariableToX86reg(&_FPR_D[m_x86fpu_MappedTo[StackTopPos()]], Name, TempReg);
+                m_Assembler.MoveVariableToX86reg(&_FPR_D[m_x86fpu_MappedTo[StackTopPos()]], stdstr_f("_FPR_D[%d]", m_x86fpu_MappedTo[StackTopPos()]).c_str(), TempReg);
                 m_Assembler.fpuStoreIntegerQwordFromX86Reg(&StackTopPos(), TempReg, true);
                 break;
             case FPU_Float:
-                sprintf(Name, "_FPR_S[%d]", m_x86fpu_MappedTo[StackTopPos()]);
-                m_Assembler.MoveVariableToX86reg(&_FPR_S[m_x86fpu_MappedTo[StackTopPos()]], Name, TempReg);
+                m_Assembler.MoveVariableToX86reg(&_FPR_S[m_x86fpu_MappedTo[StackTopPos()]], stdstr_f("_FPR_S[%d]", m_x86fpu_MappedTo[StackTopPos()]).c_str(), TempReg);
                 m_Assembler.fpuStoreDwordFromX86Reg(&StackTopPos(), TempReg, true);
                 break;
             case FPU_Double:
-                sprintf(Name, "_FPR_D[%d]", m_x86fpu_MappedTo[StackTopPos()]);
-                m_Assembler.MoveVariableToX86reg(&_FPR_D[m_x86fpu_MappedTo[StackTopPos()]], Name, TempReg);
+                m_Assembler.MoveVariableToX86reg(&_FPR_D[m_x86fpu_MappedTo[StackTopPos()]], stdstr_f("_FPR_D[%d]", m_x86fpu_MappedTo[StackTopPos()]).c_str(), TempReg);
                 m_Assembler.fpuStoreQwordFromX86Reg(&StackTopPos(), TempReg, true);
                 break;
             default:
