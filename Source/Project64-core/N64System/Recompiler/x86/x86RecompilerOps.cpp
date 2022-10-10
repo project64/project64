@@ -20,6 +20,7 @@
 #include <stdio.h>
 
 uint32_t CX86RecompilerOps::m_TempValue32 = 0;
+uint64_t CX86RecompilerOps::m_TempValue64 = 0;
 uint32_t CX86RecompilerOps::m_BranchCompare = 0;
 
 /*int TestValue = 0;
@@ -3163,8 +3164,7 @@ void CX86RecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
     else
     {
         PreReadInstruction();
-        Map_GPR_32bit(m_Opcode.rt, ResultSigned, m_Opcode.base == m_Opcode.rt ? m_Opcode.rt : -1);
-        CompileLoadMemoryValue(CX86Ops::x86_Unknown, GetMipsRegMapLo(m_Opcode.rt), CX86Ops::x86_Unknown, 32, false);
+        CompileLoadMemoryValue(CX86Ops::x86_Unknown, CX86Ops::x86_Unknown, CX86Ops::x86_Unknown, 32, false);
         if (bRecordLLBit)
         {
             m_Assembler.MoveConstToVariable(1, _LLBit, "LLBit");
@@ -9615,11 +9615,21 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::DoOverflowException), "CRegisters::DoOverflowException", 12);
         ExitCodeBlock();
         break;
-    case ExitReason_AddressErrorExceptionRead:
+    case ExitReason_AddressErrorExceptionRead32:
         m_Assembler.PushImm32("1", 1);
         m_Assembler.MoveVariableToX86reg(&m_TempValue32, "TempValue32", CX86Ops::x86_EDX);
         m_Assembler.MoveX86RegToX86Reg(CX86Ops::x86_EDX, CX86Ops::x86_EAX);
         m_Assembler.ShiftRightSignImmed(CX86Ops::x86_EAX, 31);
+        m_Assembler.Push(CX86Ops::x86_EAX);
+        m_Assembler.Push(CX86Ops::x86_EDX);
+        m_Assembler.PushImm32(InDelaySlot ? "true" : "false", InDelaySlot);
+        m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::DoAddressError), "CRegisters::DoAddressError", 12);
+        ExitCodeBlock();
+        break;
+    case ExitReason_AddressErrorExceptionRead64:
+        m_Assembler.PushImm32("1", 1);
+        m_Assembler.MoveVariableToX86reg(&m_TempValue64, "TempValue64", CX86Ops::x86_EDX);
+        m_Assembler.MoveVariableToX86reg(&m_TempValue64 + 4, "TempValue64+4", CX86Ops::x86_EAX);
         m_Assembler.Push(CX86Ops::x86_EAX);
         m_Assembler.Push(CX86Ops::x86_EDX);
         m_Assembler.PushImm32(InDelaySlot ? "true" : "false", InDelaySlot);
@@ -9663,6 +9673,37 @@ CX86Ops::x86Reg CX86RecompilerOps::BaseOffsetAddress(bool UseBaseRegister)
         AddressReg = Map_TempReg(CX86Ops::x86_Unknown, m_Opcode.base, false, false);
         m_Assembler.AddConstToX86Reg(AddressReg, (int16_t)m_Opcode.immediate);
     }
+
+    if (!b32BitCore() && ((IsKnown(m_Opcode.base) && Is64Bit(m_Opcode.base)) || IsUnknown(m_Opcode.base)))
+    {
+        m_Assembler.MoveX86regToVariable(AddressReg, &m_TempValue64, "TempValue64");
+        CX86Ops::x86Reg AddressRegHi = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
+        m_Assembler.MoveX86RegToX86Reg(AddressReg, AddressRegHi);
+        m_Assembler.ShiftRightSignImmed(AddressRegHi, 31);
+
+        if (IsConst(m_Opcode.base))
+        {
+            m_Assembler.MoveConstToVariable(GetMipsRegHi(m_Opcode.base), &m_TempValue64 + 4, "TempValue64 + 4");
+            m_Assembler.CompConstToX86reg(AddressRegHi, GetMipsRegHi(m_Opcode.base));
+        }
+        else if (IsMapped(m_Opcode.base))
+        {
+            m_Assembler.MoveX86regToVariable(GetMipsRegMapHi(m_Opcode.base), &m_TempValue64 + 4, "TempValue64 + 4");
+            m_Assembler.CompX86RegToX86Reg(AddressRegHi, GetMipsRegMapHi(m_Opcode.base));
+        }
+        else
+        {
+            CX86Ops::x86Reg AddressMemoryHi = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
+            m_Assembler.MoveVariableToX86reg(&_GPR[m_Opcode.base].W[1], CRegName::GPR_Hi[m_Opcode.base], AddressMemoryHi);
+            m_Assembler.MoveX86regToVariable(AddressMemoryHi, &m_TempValue64 + 4, "TempValue64 + 4");
+            m_Assembler.CompX86RegToX86Reg(AddressRegHi, AddressMemoryHi);
+            m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(AddressMemoryHi), false);
+        }
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_AddressErrorExceptionRead64, false, &CX86Ops::JneLabel32);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+        m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(AddressRegHi), false);
+    }
     return AddressReg;
 }
 
@@ -9697,16 +9738,24 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
         }
     }
 
+    CX86Ops::x86Reg TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
     if (ValueSize == 16)
     {
-        m_Assembler.TestConstToX86Reg(1, AddressReg);
         m_Assembler.MoveX86regToVariable(AddressReg, &m_TempValue32, "TempValue32");        
+        m_Assembler.TestConstToX86Reg(1, AddressReg);
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_AddressErrorExceptionRead, false, &CX86Ops::JneLabel32);
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_AddressErrorExceptionRead32, false, &CX86Ops::JneLabel32);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+    }
+    else if (ValueSize == 32)
+    {
+        m_Assembler.MoveX86regToVariable(AddressReg, &m_TempValue32, "TempValue32");
+        m_Assembler.TestConstToX86Reg(3, AddressReg);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_AddressErrorExceptionRead32, false, &CX86Ops::JneLabel32);
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
     }
 
-    CX86Ops::x86Reg TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
     m_Assembler.MoveX86RegToX86Reg(AddressReg, TempReg);
     m_Assembler.ShiftRightUnsignImmed(TempReg, 12);
     m_Assembler.MoveVariableDispToX86Reg(g_MMU->m_MemoryReadMap, "MMU->m_MemoryReadMap", TempReg, TempReg, 4);
@@ -9791,7 +9840,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
         m_Assembler.XorConstToX86Reg(AddressReg, 2);
         if (ValueReg == CX86Ops::x86_Unknown)
         {
-            Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.base == m_Opcode.rt ? m_Opcode.rt : -1);
+            Map_GPR_32bit(m_Opcode.rt, SignExtend, -1);
             ValueReg = GetMipsRegMapLo(m_Opcode.rt);
         }
 
@@ -9806,6 +9855,12 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
     }
     else if (ValueSize == 32)
     {
+        if (ValueReg == CX86Ops::x86_Unknown)
+        {
+            Map_GPR_32bit(m_Opcode.rt, true, -1);
+            ValueReg = GetMipsRegMapLo(m_Opcode.rt);
+        }
+
         if (ValueReg != CX86Ops::x86_Unknown)
         {
             m_Assembler.MoveX86regPointerToX86reg(AddressReg, TempReg, ValueReg);

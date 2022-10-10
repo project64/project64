@@ -454,6 +454,7 @@ private:
     CRegInfo m_RegBeforeDelay;
     bool m_EffectDelaySlot;
     static uint32_t m_TempValue32;
+    static uint64_t m_TempValue64;
     static uint32_t m_BranchCompare;
 };
 
