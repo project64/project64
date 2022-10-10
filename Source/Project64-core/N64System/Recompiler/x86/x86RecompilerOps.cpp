@@ -2265,7 +2265,9 @@ void CX86RecompilerOps::ADDI()
         ProtectGPR(m_Opcode.rt);
         CX86Ops::x86Reg Reg = Map_TempReg(CX86Ops::x86_Unknown, m_Opcode.rs, false, false);
         m_Assembler.AddConstToX86Reg(Reg, (int16_t)m_Opcode.immediate);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
         CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_ExceptionOverflow, false, &CX86Ops::JoLabel32);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         if (m_Opcode.rt != 0)
         {
             Map_GPR_32bit(m_Opcode.rt, true, -1);
@@ -2660,7 +2662,7 @@ void CX86RecompilerOps::DADDI()
             CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_ExceptionOverflow, true, nullptr);
             m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
         }
-        else if(m_Opcode.rt != 0)
+        else if (m_Opcode.rt != 0)
         {
             if (IsMapped(m_Opcode.rt))
             {
@@ -5266,7 +5268,9 @@ void CX86RecompilerOps::SPECIAL_ADD()
     {
         ResetMemoryStack();
     }
+    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
     CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_ExceptionOverflow, false, &CX86Ops::JoLabel32);
+    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
     if (m_Opcode.rd != 0)
     {
         Map_GPR_32bit(m_Opcode.rd, true, -1);
@@ -5355,7 +5359,9 @@ void CX86RecompilerOps::SPECIAL_SUB()
         {
             m_Assembler.SubVariableFromX86reg(Reg, &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
         }
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
         CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_ExceptionOverflow, false, &CX86Ops::JoLabel32);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         if (m_Opcode.rd != 0)
         {
             Map_GPR_32bit(m_Opcode.rd, true, -1);
