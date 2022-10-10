@@ -6790,7 +6790,9 @@ void CX86RecompilerOps::SPECIAL_DADD()
             m_Assembler.AddVariableToX86reg(RegLo, &_GPR[source2].W[0], CRegName::GPR_Lo[source2]);
             m_Assembler.AdcVariableToX86reg(RegHi, &_GPR[source2].W[1], CRegName::GPR_Hi[source2]);
         }
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
         CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_ExceptionOverflow, false, &CX86Ops::JoLabel32);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         if (m_Opcode.rd != 0)
         {
             UnProtectGPR(source1);
@@ -6928,7 +6930,9 @@ void CX86RecompilerOps::SPECIAL_DSUB()
             m_Assembler.SubVariableFromX86reg(RegLo, &_GPR[source2].W[0], CRegName::GPR_Lo[source2]);
             m_Assembler.SbbVariableFromX86reg(RegHi, &_GPR[source2].W[1], CRegName::GPR_Hi[source2]);
         }
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
         CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_ExceptionOverflow, false, &CX86Ops::JoLabel32);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         if (m_Opcode.rd != 0)
         {
             UnProtectGPR(source1);
