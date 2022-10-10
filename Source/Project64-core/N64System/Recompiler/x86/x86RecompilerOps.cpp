@@ -474,7 +474,7 @@ void CX86RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
         {
             CompileCop1Test();
         }
-        if (m_CompilePC + ((int16_t)m_Opcode.offset << 2) + 4 == m_CompilePC + 8)
+        if (m_CompilePC + ((int16_t)m_Opcode.offset << 2) + 4 == m_CompilePC + 8 && (m_CompilePC & 0xFFC) != 0xFFC)
         {
             m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
             return;
