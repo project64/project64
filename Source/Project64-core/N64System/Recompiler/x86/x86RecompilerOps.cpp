@@ -3076,8 +3076,7 @@ void CX86RecompilerOps::LH()
         return;
     }
     PreReadInstruction();
-    Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.base == m_Opcode.rt ? m_Opcode.rt : -1);
-    CompileLoadMemoryValue(CX86Ops::x86_Unknown, GetMipsRegMapLo(m_Opcode.rt), CX86Ops::x86_Unknown, 16, true);
+    CompileLoadMemoryValue(CX86Ops::x86_Unknown, CX86Ops::x86_Unknown, CX86Ops::x86_Unknown, 16, true);
 }
 
 void CX86RecompilerOps::LWL()
@@ -9616,6 +9615,17 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::DoOverflowException), "CRegisters::DoOverflowException", 12);
         ExitCodeBlock();
         break;
+    case ExitReason_AddressErrorExceptionRead:
+        m_Assembler.PushImm32("1", 1);
+        m_Assembler.MoveVariableToX86reg(&m_TempValue32, "TempValue32", CX86Ops::x86_EDX);
+        m_Assembler.MoveX86RegToX86Reg(CX86Ops::x86_EDX, CX86Ops::x86_EAX);
+        m_Assembler.ShiftRightSignImmed(CX86Ops::x86_EAX, 31);
+        m_Assembler.Push(CX86Ops::x86_EAX);
+        m_Assembler.Push(CX86Ops::x86_EDX);
+        m_Assembler.PushImm32(InDelaySlot ? "true" : "false", InDelaySlot);
+        m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::DoAddressError), "CRegisters::DoAddressError", 12);
+        ExitCodeBlock();
+        break;
     default:
         WriteTrace(TraceRecompiler, TraceError, "How did you want to exit on reason (%d) ???", reason);
         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -9685,6 +9695,15 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
+    }
+
+    if (ValueSize == 16)
+    {
+        m_Assembler.TestConstToX86Reg(1, AddressReg);
+        m_Assembler.MoveX86regToVariable(AddressReg, &m_TempValue32, "TempValue32");        
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_AddressErrorExceptionRead, false, &CX86Ops::JneLabel32);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
     }
 
     CX86Ops::x86Reg TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
@@ -9772,9 +9791,11 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
         m_Assembler.XorConstToX86Reg(AddressReg, 2);
         if (ValueReg == CX86Ops::x86_Unknown)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.base == m_Opcode.rt ? m_Opcode.rt : -1);
+            ValueReg = GetMipsRegMapLo(m_Opcode.rt);
         }
-        else if (SignExtend)
+
+        if (SignExtend)
         {
             m_Assembler.MoveSxHalfX86regPointerToX86reg(AddressReg, TempReg, ValueReg);
         }

@@ -17,6 +17,7 @@ enum ExitReason
     ExitReason_TLBWriteMiss,
     ExitReason_ResetRecompCode,
     ExitReason_ExceptionOverflow,
+    ExitReason_AddressErrorExceptionRead,
 };
 
 struct CExitInfo
