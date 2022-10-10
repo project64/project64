@@ -676,7 +676,9 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
         switch (Command.rs)
         {
         case R4300i_COP0_MT:
+        case R4300i_COP0_DMT:
         case R4300i_COP0_MF:
+        case R4300i_COP0_DMF:
             break;
         default:
             if ((Command.rs & 0x10) != 0)
