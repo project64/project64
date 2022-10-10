@@ -71,8 +71,7 @@ struct TabRecord
 class TabData
 {
 public:
-    static constexpr FieldPair GPRFields[] =
-    {
+    static constexpr FieldPair GPRFields[] = {
         {IDC_R0_LBL, IDC_R0_EDIT},
         {IDC_R1_LBL, IDC_R1_EDIT},
         {IDC_R2_LBL, IDC_R2_EDIT},
@@ -109,8 +108,7 @@ public:
 
     static constexpr TabRecord GPR = TabRecord{sizeof(GPRFields), GPRFields};
 
-    static constexpr FieldPair FPRFields[] =
-    {
+    static constexpr FieldPair FPRFields[] = {
         {IDC_F0_LBL, IDC_F0_EDIT},
         {IDC_F1_LBL, IDC_F1_EDIT},
         {IDC_F2_LBL, IDC_F2_EDIT},
@@ -147,8 +145,7 @@ public:
 
     static constexpr TabRecord FPR = TabRecord{sizeof(FPRFields), FPRFields};
 
-    static constexpr FieldPair COP0Fields[] =
-    {
+    static constexpr FieldPair COP0Fields[] = {
         {IDC_COP0_0_LBL, IDC_COP0_0_EDIT},
         {IDC_COP0_1_LBL, IDC_COP0_1_EDIT},
         {IDC_COP0_2_LBL, IDC_COP0_2_EDIT},
@@ -172,8 +169,7 @@ public:
 
     static constexpr TabRecord COP0 = TabRecord{sizeof(COP0Fields), COP0Fields};
 
-    static constexpr FieldPair RDRAMFields[] =
-    {
+    static constexpr FieldPair RDRAMFields[] = {
         {IDC_RDRAM00_LBL, IDC_RDRAM00_EDIT},
         {IDC_RDRAM04_LBL, IDC_RDRAM04_EDIT},
         {IDC_RDRAM08_LBL, IDC_RDRAM08_EDIT},
@@ -188,8 +184,7 @@ public:
 
     static constexpr TabRecord RDRAM = TabRecord{sizeof(RDRAMFields), RDRAMFields};
 
-    static constexpr FieldPair SPFields[] =
-    {
+    static constexpr FieldPair SPFields[] = {
         {IDC_SP00_LBL, IDC_SP00_EDIT},
         {IDC_SP04_LBL, IDC_SP04_EDIT},
         {IDC_SP08_LBL, IDC_SP08_EDIT},
@@ -202,8 +197,7 @@ public:
 
     static constexpr TabRecord SP = TabRecord{sizeof(SPFields), SPFields};
 
-    static constexpr FieldPair DPCFields[] =
-    {
+    static constexpr FieldPair DPCFields[] = {
         {IDC_DPC00_LBL, IDC_DPC00_EDIT},
         {IDC_DPC04_LBL, IDC_DPC04_EDIT},
         {IDC_DPC08_LBL, IDC_DPC08_EDIT},
@@ -216,8 +210,7 @@ public:
 
     static constexpr TabRecord DPC = TabRecord{sizeof(DPCFields), DPCFields};
 
-    static constexpr FieldPair MIFields[] =
-    {
+    static constexpr FieldPair MIFields[] = {
         {IDC_MI00_LBL, IDC_MI00_EDIT},
         {IDC_MI04_LBL, IDC_MI04_EDIT},
         {IDC_MI08_LBL, IDC_MI08_EDIT},
@@ -226,8 +219,7 @@ public:
 
     static constexpr TabRecord MI = TabRecord{sizeof(MIFields), MIFields};
 
-    static constexpr FieldPair VIFields[] =
-    {
+    static constexpr FieldPair VIFields[] = {
         {IDC_VI00_LBL, IDC_VI00_EDIT},
         {IDC_VI04_LBL, IDC_VI04_EDIT},
         {IDC_VI08_LBL, IDC_VI08_EDIT},
@@ -246,8 +238,7 @@ public:
 
     static constexpr TabRecord VI = TabRecord{sizeof(VIFields), VIFields};
 
-    static constexpr FieldPair AIFields[] =
-    {
+    static constexpr FieldPair AIFields[] = {
         {IDC_AI00_LBL, IDC_AI00_EDIT},
         {IDC_AI04_LBL, IDC_AI04_EDIT},
         {IDC_AI08_LBL, IDC_AI08_EDIT},
@@ -258,8 +249,7 @@ public:
 
     static constexpr TabRecord AI = TabRecord{sizeof(AIFields), AIFields};
 
-    static constexpr FieldPair PIFields[] =
-    {
+    static constexpr FieldPair PIFields[] = {
         {IDC_PI00_LBL, IDC_PI00_EDIT},
         {IDC_PI04_LBL, IDC_PI04_EDIT},
         {IDC_PI08_LBL, IDC_PI08_EDIT},
@@ -277,8 +267,7 @@ public:
 
     static constexpr TabRecord PI = TabRecord{sizeof(PIFields), PIFields};
 
-    static constexpr FieldPair RIFields[] =
-    {
+    static constexpr FieldPair RIFields[] = {
         {IDC_RI00_LBL, IDC_RI00_EDIT},
         {IDC_RI04_LBL, IDC_RI04_EDIT},
         {IDC_RI08_LBL, IDC_RI08_EDIT},
@@ -291,8 +280,7 @@ public:
 
     static constexpr TabRecord RI = TabRecord{sizeof(RIFields), RIFields};
 
-    static constexpr FieldPair SIFields[] =
-    {
+    static constexpr FieldPair SIFields[] = {
         {IDC_SI00_LBL, IDC_SI00_EDIT},
         {IDC_SI04_LBL, IDC_SI04_EDIT},
         {IDC_SI08_LBL, IDC_SI08_EDIT},
@@ -301,8 +289,7 @@ public:
 
     static constexpr TabRecord SI = TabRecord{sizeof(SIFields), SIFields};
 
-    static constexpr FieldPair DDFields[] =
-    {
+    static constexpr FieldPair DDFields[] = {
         {IDC_DD00_LBL, IDC_DD00_EDIT},
         {IDC_DD04_LBL, IDC_DD04_EDIT},
         {IDC_DD08_LBL, IDC_DD08_EDIT},

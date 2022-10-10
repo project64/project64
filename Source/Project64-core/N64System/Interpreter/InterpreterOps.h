@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Project64-core/Settings/DebugSettings.h>
-#include <Project64-core/N64System/Mips/Register.h>
 #include <Project64-core/N64System/Mips/R4300iOpcode.h>
+#include <Project64-core/N64System/Mips/Register.h>
+#include <Project64-core/Settings/DebugSettings.h>
 
 class R4300iOp :
     public CLogging,
@@ -10,7 +10,7 @@ class R4300iOp :
     protected CSystemRegisters
 {
 public:
-    typedef void(*Func)();
+    typedef void (*Func)();
 
     // Opcode functions
     static void J();
@@ -101,12 +101,12 @@ public:
     static void SPECIAL_DADDU();
     static void SPECIAL_DSUB();
     static void SPECIAL_DSUBU();
-	static void SPECIAL_TGE();
-	static void SPECIAL_TGEU();
-	static void SPECIAL_TLT();
-	static void SPECIAL_TLTU();
+    static void SPECIAL_TGE();
+    static void SPECIAL_TGEU();
+    static void SPECIAL_TLT();
+    static void SPECIAL_TLTU();
     static void SPECIAL_TEQ();
-	static void SPECIAL_TNE();
+    static void SPECIAL_TNE();
     static void SPECIAL_DSLL();
     static void SPECIAL_DSRL();
     static void SPECIAL_DSRA();
@@ -167,11 +167,11 @@ public:
     static void COP1_S_NEG();
     static void COP1_S_ROUND_L();
     static void COP1_S_TRUNC_L();
-    static void COP1_S_CEIL_L();  
-    static void COP1_S_FLOOR_L(); 
+    static void COP1_S_CEIL_L();
+    static void COP1_S_FLOOR_L();
     static void COP1_S_ROUND_W();
     static void COP1_S_TRUNC_W();
-    static void COP1_S_CEIL_W();  
+    static void COP1_S_CEIL_W();
     static void COP1_S_FLOOR_W();
     static void COP1_S_CVT_D();
     static void COP1_S_CVT_W();
@@ -188,13 +188,13 @@ public:
     static void COP1_D_MOV();
     static void COP1_D_NEG();
     static void COP1_D_ROUND_L();
-    static void COP1_D_TRUNC_L(); 
-    static void COP1_D_CEIL_L();  
-    static void COP1_D_FLOOR_L(); 
+    static void COP1_D_TRUNC_L();
+    static void COP1_D_CEIL_L();
+    static void COP1_D_FLOOR_L();
     static void COP1_D_ROUND_W();
     static void COP1_D_TRUNC_W();
-    static void COP1_D_CEIL_W();  
-    static void COP1_D_FLOOR_W(); 
+    static void COP1_D_CEIL_W();
+    static void COP1_D_FLOOR_W();
     static void COP1_D_CVT_S();
     static void COP1_D_CVT_W();
     static void COP1_D_CVT_L();
@@ -212,12 +212,12 @@ public:
     static void ReservedInstruction();
     static void UnknownOpcode();
 
-    static Func* BuildInterpreter();
+    static Func * BuildInterpreter();
 
     static bool m_TestTimer;
     static R4300iOpcode m_Opcode;
 
-    static bool  MemoryBreakpoint();
+    static bool MemoryBreakpoint();
 
 protected:
     static void SPECIAL();

@@ -11,30 +11,36 @@ public:
     CSettingTypeGame(const char * Name, SettingID DefaultSetting);
     virtual ~CSettingTypeGame();
 
-    virtual bool IndexBasedSetting ( void ) const { return false; }
-    virtual SettingType GetSettingType ( void ) const { return SettingType_GameSetting; }
+    virtual bool IndexBasedSetting(void) const
+    {
+        return false;
+    }
+    virtual SettingType GetSettingType(void) const
+    {
+        return SettingType_GameSetting;
+    }
 
-    static void Initialize( void );
-    static void CleanUp ( void );
+    static void Initialize(void);
+    static void CleanUp(void);
 
     // Return the values
-    virtual bool Load (uint32_t Index, bool & Value) const;
-    virtual bool Load (uint32_t Index, uint32_t & Value) const;
-    virtual bool Load (uint32_t Index, std::string & Value) const;
+    virtual bool Load(uint32_t Index, bool & Value) const;
+    virtual bool Load(uint32_t Index, uint32_t & Value) const;
+    virtual bool Load(uint32_t Index, std::string & Value) const;
 
     // Return the default values
-    virtual void LoadDefault (uint32_t Index, bool & Value) const;
-    virtual void LoadDefault (uint32_t Index, uint32_t & Value) const;
-    virtual void LoadDefault (uint32_t Index, std::string & Value) const;
+    virtual void LoadDefault(uint32_t Index, bool & Value) const;
+    virtual void LoadDefault(uint32_t Index, uint32_t & Value) const;
+    virtual void LoadDefault(uint32_t Index, std::string & Value) const;
 
     // Update the settings
-    virtual void Save (uint32_t Index, bool Value);
-    virtual void Save (uint32_t Index, uint32_t Value);
-    virtual void Save (uint32_t Index, const std::string & Value);
-    virtual void Save (uint32_t Index, const char * Value);
+    virtual void Save(uint32_t Index, bool Value);
+    virtual void Save(uint32_t Index, uint32_t Value);
+    virtual void Save(uint32_t Index, const std::string & Value);
+    virtual void Save(uint32_t Index, const char * Value);
 
     // Delete the setting
-    virtual void Delete (uint32_t Index);
+    virtual void Delete(uint32_t Index);
 
 protected:
     static bool m_RdbEditor;
@@ -47,6 +53,6 @@ protected:
 
 private:
     CSettingTypeGame(void);
-    CSettingTypeGame(const CSettingTypeGame&);
-    CSettingTypeGame& operator=(const CSettingTypeGame&);
+    CSettingTypeGame(const CSettingTypeGame &);
+    CSettingTypeGame & operator=(const CSettingTypeGame &);
 };

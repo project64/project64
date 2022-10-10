@@ -1,10 +1,10 @@
 #include "stdafx.h"
 
 #if defined(__arm__) || defined(_M_ARM)
-#include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64System.h>
-#include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/N64System/Recompiler/Arm/ArmRegInfo.h>
+#include <Project64-core/N64System/Recompiler/Recompiler.h>
+#include <Project64-core/N64System/SystemGlobals.h>
 
 CArmRegInfo::CArmRegInfo(CCodeBlock & CodeBlock, CArmOps & Assembler) :
     m_CodeBlock(CodeBlock),
@@ -26,7 +26,7 @@ CArmRegInfo::CArmRegInfo(CCodeBlock & CodeBlock, CArmOps & Assembler) :
     }
 }
 
-CArmRegInfo::CArmRegInfo(const CArmRegInfo& rhs) :
+CArmRegInfo::CArmRegInfo(const CArmRegInfo & rhs) :
     m_CodeBlock(rhs.m_CodeBlock),
     m_Assembler(rhs.m_CodeBlock.RecompilerOps()->Assembler())
 {
@@ -37,7 +37,7 @@ CArmRegInfo::~CArmRegInfo()
 {
 }
 
-CArmRegInfo& CArmRegInfo::operator=(const CArmRegInfo& right)
+CArmRegInfo & CArmRegInfo::operator=(const CArmRegInfo & right)
 {
     CRegBase::operator=(right);
 
@@ -57,7 +57,7 @@ CArmRegInfo& CArmRegInfo::operator=(const CArmRegInfo& right)
     return *this;
 }
 
-bool CArmRegInfo::operator==(const CArmRegInfo& right) const
+bool CArmRegInfo::operator==(const CArmRegInfo & right) const
 {
     if (!CRegBase::operator==(right))
     {
@@ -66,16 +66,34 @@ bool CArmRegInfo::operator==(const CArmRegInfo& right) const
 
     for (int32_t count = 0; count < 32; count++)
     {
-        if (m_RegMapHi[count] != right.m_RegMapHi[count]) { return false; }
-        if (m_RegMapLo[count] != right.m_RegMapLo[count]) { return false; }
+        if (m_RegMapHi[count] != right.m_RegMapHi[count])
+        {
+            return false;
+        }
+        if (m_RegMapLo[count] != right.m_RegMapLo[count])
+        {
+            return false;
+        }
     }
 
     for (int32_t count = 0; count < 16; count++)
     {
-        if (m_ArmReg_MapOrder[count] != right.m_ArmReg_MapOrder[count]) { return false; }
-        if (m_ArmReg_Protected[count] != right.m_ArmReg_Protected[count]) { return false; }
-        if (m_ArmReg_MappedTo[count] != right.m_ArmReg_MappedTo[count]) { return false; }
-        if (m_Variable_MappedTo[count] != right.m_Variable_MappedTo[count]) { return false; }
+        if (m_ArmReg_MapOrder[count] != right.m_ArmReg_MapOrder[count])
+        {
+            return false;
+        }
+        if (m_ArmReg_Protected[count] != right.m_ArmReg_Protected[count])
+        {
+            return false;
+        }
+        if (m_ArmReg_MappedTo[count] != right.m_ArmReg_MappedTo[count])
+        {
+            return false;
+        }
+        if (m_Variable_MappedTo[count] != right.m_Variable_MappedTo[count])
+        {
+            return false;
+        }
     }
     return true;
 }
@@ -95,18 +113,36 @@ bool CArmRegInfo::ShouldPushPopReg(CArmOps::ArmReg Reg)
 
 void CArmRegInfo::BeforeCallDirect(void)
 {
-    static uint32_t PushPopRegisterList[] =
-    {
-        CArmOps::ArmPushPop_R0, CArmOps::ArmPushPop_R1, CArmOps::ArmPushPop_R2, CArmOps::ArmPushPop_R3, CArmOps::ArmPushPop_R4,
-        CArmOps::ArmPushPop_R5, CArmOps::ArmPushPop_R6, CArmOps::ArmPushPop_R7, CArmOps::ArmPushPop_R8, CArmOps::ArmPushPop_R9,
-        CArmOps::ArmPushPop_R10, CArmOps::ArmPushPop_R11, CArmOps::ArmPushPop_R12
+    static uint32_t PushPopRegisterList[] = {
+        CArmOps::ArmPushPop_R0,
+        CArmOps::ArmPushPop_R1,
+        CArmOps::ArmPushPop_R2,
+        CArmOps::ArmPushPop_R3,
+        CArmOps::ArmPushPop_R4,
+        CArmOps::ArmPushPop_R5,
+        CArmOps::ArmPushPop_R6,
+        CArmOps::ArmPushPop_R7,
+        CArmOps::ArmPushPop_R8,
+        CArmOps::ArmPushPop_R9,
+        CArmOps::ArmPushPop_R10,
+        CArmOps::ArmPushPop_R11,
+        CArmOps::ArmPushPop_R12,
     };
 
-    static CArmOps::ArmReg RegisterList[] =
-    {
-         CArmOps::Arm_R0,  CArmOps::Arm_R1,  CArmOps::Arm_R2,  CArmOps::Arm_R3,  CArmOps::Arm_R4,
-         CArmOps::Arm_R5,  CArmOps::Arm_R6,  CArmOps::Arm_R7,  CArmOps::Arm_R8,  CArmOps::Arm_R9,
-         CArmOps::Arm_R10,  CArmOps::Arm_R11,  CArmOps::Arm_R12
+    static CArmOps::ArmReg RegisterList[] = {
+        CArmOps::Arm_R0,
+        CArmOps::Arm_R1,
+        CArmOps::Arm_R2,
+        CArmOps::Arm_R3,
+        CArmOps::Arm_R4,
+        CArmOps::Arm_R5,
+        CArmOps::Arm_R6,
+        CArmOps::Arm_R7,
+        CArmOps::Arm_R8,
+        CArmOps::Arm_R9,
+        CArmOps::Arm_R10,
+        CArmOps::Arm_R11,
+        CArmOps::Arm_R12,
     };
 
     if (m_InCallDirect)
@@ -119,7 +155,10 @@ void CArmRegInfo::BeforeCallDirect(void)
     int PushPopRegisters = 0;
     for (int i = 0; i < (sizeof(RegisterList) / sizeof(RegisterList[0])); i++)
     {
-        if (ShouldPushPopReg(RegisterList[i])) { PushPopRegisters |= PushPopRegisterList[i]; }
+        if (ShouldPushPopReg(RegisterList[i]))
+        {
+            PushPopRegisters |= PushPopRegisterList[i];
+        }
     }
 
     if (PushPopRegisters == 0)
@@ -148,7 +187,10 @@ void CArmRegInfo::BeforeCallDirect(void)
             PushPopRegisters = 0;
             for (int i = 0; i < (sizeof(RegisterList) / sizeof(RegisterList[0])); i++)
             {
-                if (ShouldPushPopReg(RegisterList[i])) { PushPopRegisters |= PushPopRegisterList[i]; }
+                if (ShouldPushPopReg(RegisterList[i]))
+                {
+                    PushPopRegisters |= PushPopRegisterList[i];
+                }
             }
         }
         if ((m_Assembler.PushPopRegisterSize(PushPopRegisters) % 8) != 0)
@@ -162,18 +204,40 @@ void CArmRegInfo::BeforeCallDirect(void)
 
 void CArmRegInfo::AfterCallDirect(void)
 {
-    static uint32_t PushPopRegisterList[] =
-    {
-        CArmOps::ArmPushPop_R0, CArmOps::ArmPushPop_R1, CArmOps::ArmPushPop_R2, CArmOps::ArmPushPop_R3, CArmOps::ArmPushPop_R4,
-        CArmOps::ArmPushPop_R5, CArmOps::ArmPushPop_R6, CArmOps::ArmPushPop_R7, CArmOps::ArmPushPop_R8, CArmOps::ArmPushPop_R9,
-        CArmOps::ArmPushPop_R10, CArmOps::ArmPushPop_R11, CArmOps::ArmPushPop_R12, CArmOps::ArmPushPop_LR, CArmOps::ArmPushPop_PC
+    static uint32_t PushPopRegisterList[] = {
+        CArmOps::ArmPushPop_R0,
+        CArmOps::ArmPushPop_R1,
+        CArmOps::ArmPushPop_R2,
+        CArmOps::ArmPushPop_R3,
+        CArmOps::ArmPushPop_R4,
+        CArmOps::ArmPushPop_R5,
+        CArmOps::ArmPushPop_R6,
+        CArmOps::ArmPushPop_R7,
+        CArmOps::ArmPushPop_R8,
+        CArmOps::ArmPushPop_R9,
+        CArmOps::ArmPushPop_R10,
+        CArmOps::ArmPushPop_R11,
+        CArmOps::ArmPushPop_R12,
+        CArmOps::ArmPushPop_LR,
+        CArmOps::ArmPushPop_PC,
     };
 
-    static CArmOps::ArmReg RegisterList[] =
-    {
-         CArmOps::Arm_R0, CArmOps::Arm_R1, CArmOps::Arm_R2, CArmOps::Arm_R3, CArmOps::Arm_R4,
-         CArmOps::Arm_R5, CArmOps::Arm_R6, CArmOps::Arm_R7, CArmOps::Arm_R8, CArmOps::Arm_R9,
-         CArmOps::Arm_R10, CArmOps::Arm_R11, CArmOps::Arm_R12, CArmOps::ArmRegLR, CArmOps::ArmRegPC,
+    static CArmOps::ArmReg RegisterList[] = {
+        CArmOps::Arm_R0,
+        CArmOps::Arm_R1,
+        CArmOps::Arm_R2,
+        CArmOps::Arm_R3,
+        CArmOps::Arm_R4,
+        CArmOps::Arm_R5,
+        CArmOps::Arm_R6,
+        CArmOps::Arm_R7,
+        CArmOps::Arm_R8,
+        CArmOps::Arm_R9,
+        CArmOps::Arm_R10,
+        CArmOps::Arm_R11,
+        CArmOps::Arm_R12,
+        CArmOps::ArmRegLR,
+        CArmOps::ArmRegPC,
     };
 
     if (!m_InCallDirect)
@@ -186,7 +250,10 @@ void CArmRegInfo::AfterCallDirect(void)
     int PushPopRegisters = 0;
     for (int i = 0; i < (sizeof(RegisterList) / sizeof(RegisterList[0])); i++)
     {
-        if (ShouldPushPopReg(RegisterList[i])) { PushPopRegisters |= PushPopRegisterList[i]; }
+        if (ShouldPushPopReg(RegisterList[i]))
+        {
+            PushPopRegisters |= PushPopRegisterList[i];
+        }
     }
 
     if (PushPopRegisters != 0)
@@ -227,7 +294,7 @@ void CArmRegInfo::FixRoundModel(FPU_ROUND RoundMethod)
     if (RoundMethod == RoundDefault)
     {
         BeforeCallDirect();
-        m_Assembler.MoveVariableToArmReg(_RoundingModel, "_RoundingModel",  CArmOps::Arm_R0);
+        m_Assembler.MoveVariableToArmReg(_RoundingModel, "_RoundingModel", CArmOps::Arm_R0);
         m_Assembler.CallFunction((void *)fesetround, "fesetround");
         AfterCallDirect();
     }
@@ -258,7 +325,10 @@ void CArmRegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsReg
         Reg = FreeArmReg(false);
         if (Reg < 0)
         {
-            if (HaveDebugger()) { g_Notify->DisplayError("Map_GPR_32bit\n\nOut of registers"); }
+            if (HaveDebugger())
+            {
+                g_Notify->DisplayError("Map_GPR_32bit\n\nOut of registers");
+            }
             g_Notify->BreakPoint(__FILE__, __LINE__);
             return;
         }
@@ -277,7 +347,7 @@ void CArmRegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsReg
         }
         Reg = GetMipsRegMapLo(MipsReg);
     }
-    for (int32_t count = 0; count <=  CArmOps::Arm_R15; count++)
+    for (int32_t count = 0; count <= CArmOps::Arm_R15; count++)
     {
         uint32_t Count = GetArmRegMapOrder((CArmOps::ArmReg)count);
         if (Count > 0)
@@ -331,7 +401,10 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
 
     if (MipsReg == 0)
     {
-        if (HaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nWhy are you trying to map register 0?"); }
+        if (HaveDebugger())
+        {
+            g_Notify->DisplayError("Map_GPR_64bit\n\nWhy are you trying to map register 0?");
+        }
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
@@ -342,7 +415,10 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
         regHi = FreeArmReg(false);
         if (regHi < 0)
         {
-            if (HaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); }
+            if (HaveDebugger())
+            {
+                g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers");
+            }
             g_Notify->BreakPoint(__FILE__, __LINE__);
             return;
         }
@@ -351,7 +427,10 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
         reglo = FreeArmReg(false);
         if (reglo < 0)
         {
-            if (HaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); }
+            if (HaveDebugger())
+            {
+                g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers");
+            }
             g_Notify->BreakPoint(__FILE__, __LINE__);
             return;
         }
@@ -369,7 +448,10 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
             regHi = FreeArmReg(false);
             if (regHi < 0)
             {
-                if (HaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); }
+                if (HaveDebugger())
+                {
+                    g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers");
+                }
                 g_Notify->BreakPoint(__FILE__, __LINE__);
                 return;
             }
@@ -475,7 +557,10 @@ void CArmRegInfo::UnMap_GPR(uint32_t MipsReg, bool WriteBackValue)
         return;
     }
 
-    if (IsUnknown(MipsReg)) { return; }
+    if (IsUnknown(MipsReg))
+    {
+        return;
+    }
     //m_CodeBlock.Log("UnMap_GPR: State: %X\tReg: %s\tWriteBack: %s",State,CRegName::GPR[Reg],WriteBackValue?"true":"false");
     if (IsConst(MipsReg))
     {
@@ -582,9 +667,18 @@ void CArmRegInfo::WriteBackRegisters()
     UnMap_AllFPRs();
 
     int32_t ArmRegCount = sizeof(m_ArmReg_MappedTo) / sizeof(m_ArmReg_MappedTo[0]);
-    for (int32_t i = 1; i < 32; i++) { UnMap_GPR(i, true); }
-    for (int32_t i = 0; i < ArmRegCount; i++) { UnMap_ArmReg((CArmOps::ArmReg)i); }
-    for (int32_t i = 0; i < ArmRegCount; i++) { SetArmRegProtected((CArmOps::ArmReg)i, false); }
+    for (int32_t i = 1; i < 32; i++)
+    {
+        UnMap_GPR(i, true);
+    }
+    for (int32_t i = 0; i < ArmRegCount; i++)
+    {
+        UnMap_ArmReg((CArmOps::ArmReg)i);
+    }
+    for (int32_t i = 0; i < ArmRegCount; i++)
+    {
+        SetArmRegProtected((CArmOps::ArmReg)i, false);
+    }
 
     for (int32_t count = 1; count < 32; count++)
     {
@@ -628,21 +722,57 @@ CArmOps::ArmReg CArmRegInfo::UnMap_TempReg(bool TempMapping)
     }
     CArmOps::ArmReg Reg = CArmOps::Arm_Unknown;
 
-    if (GetArmRegMapped( CArmOps::Arm_R7) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R7)) { return  CArmOps::Arm_R7; }
-    if (GetArmRegMapped( CArmOps::Arm_R6) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R6)) { return  CArmOps::Arm_R6; }
-    if (GetArmRegMapped( CArmOps::Arm_R5) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R5)) { return  CArmOps::Arm_R5; }
-    if (GetArmRegMapped( CArmOps::Arm_R4) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R4)) { return  CArmOps::Arm_R4; }
-    if (GetArmRegMapped( CArmOps::Arm_R3) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R3)) { return  CArmOps::Arm_R3; }
-    if (GetArmRegMapped( CArmOps::Arm_R2) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R2)) { return  CArmOps::Arm_R2; }
-    if (GetArmRegMapped( CArmOps::Arm_R1) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R1)) { return  CArmOps::Arm_R1; }
-    if (GetArmRegMapped( CArmOps::Arm_R0) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R0)) { return  CArmOps::Arm_R0; }
+    if (GetArmRegMapped(CArmOps::Arm_R7) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R7))
+    {
+        return CArmOps::Arm_R7;
+    }
+    if (GetArmRegMapped(CArmOps::Arm_R6) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R6))
+    {
+        return CArmOps::Arm_R6;
+    }
+    if (GetArmRegMapped(CArmOps::Arm_R5) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R5))
+    {
+        return CArmOps::Arm_R5;
+    }
+    if (GetArmRegMapped(CArmOps::Arm_R4) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R4))
+    {
+        return CArmOps::Arm_R4;
+    }
+    if (GetArmRegMapped(CArmOps::Arm_R3) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R3))
+    {
+        return CArmOps::Arm_R3;
+    }
+    if (GetArmRegMapped(CArmOps::Arm_R2) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R2))
+    {
+        return CArmOps::Arm_R2;
+    }
+    if (GetArmRegMapped(CArmOps::Arm_R1) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R1))
+    {
+        return CArmOps::Arm_R1;
+    }
+    if (GetArmRegMapped(CArmOps::Arm_R0) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R0))
+    {
+        return CArmOps::Arm_R0;
+    }
     if (TempMapping)
     {
-        if (GetArmRegMapped( CArmOps::Arm_R11) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R11)) { return  CArmOps::Arm_R11; }
-        if (GetArmRegMapped( CArmOps::Arm_R10) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R10)) { return  CArmOps::Arm_R10; }
+        if (GetArmRegMapped(CArmOps::Arm_R11) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R11))
+        {
+            return CArmOps::Arm_R11;
+        }
+        if (GetArmRegMapped(CArmOps::Arm_R10) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R10))
+        {
+            return CArmOps::Arm_R10;
+        }
     }
-    if (GetArmRegMapped( CArmOps::Arm_R9) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R9)) { return  CArmOps::Arm_R9; }
-    if (GetArmRegMapped( CArmOps::Arm_R8) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R8)) { return  CArmOps::Arm_R8; }
+    if (GetArmRegMapped(CArmOps::Arm_R9) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R9))
+    {
+        return CArmOps::Arm_R9;
+    }
+    if (GetArmRegMapped(CArmOps::Arm_R8) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R8))
+    {
+        return CArmOps::Arm_R8;
+    }
 
     if (Reg != CArmOps::Arm_Unknown)
     {
@@ -742,34 +872,73 @@ CArmOps::ArmReg CArmRegInfo::FreeArmReg(bool TempMapping)
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return CArmOps::Arm_Unknown;
     }
-    if ((GetArmRegMapped( CArmOps::Arm_R7) == NotMapped || GetArmRegMapped( CArmOps::Arm_R7) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R7)) { return  CArmOps::Arm_R7; }
-    if ((GetArmRegMapped( CArmOps::Arm_R6) == NotMapped || GetArmRegMapped( CArmOps::Arm_R6) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R6)) { return  CArmOps::Arm_R6; }
-    if ((GetArmRegMapped( CArmOps::Arm_R5) == NotMapped || GetArmRegMapped( CArmOps::Arm_R5) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R5)) { return  CArmOps::Arm_R5; }
-    if ((GetArmRegMapped( CArmOps::Arm_R4) == NotMapped || GetArmRegMapped( CArmOps::Arm_R4) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R4)) { return  CArmOps::Arm_R4; }
-    if ((GetArmRegMapped( CArmOps::Arm_R3) == NotMapped || GetArmRegMapped( CArmOps::Arm_R3) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R3)) { return  CArmOps::Arm_R3; }
-    if ((GetArmRegMapped( CArmOps::Arm_R2) == NotMapped || GetArmRegMapped( CArmOps::Arm_R2) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R2)) { return  CArmOps::Arm_R2; }
-    if ((GetArmRegMapped( CArmOps::Arm_R1) == NotMapped || GetArmRegMapped( CArmOps::Arm_R1) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R1)) { return  CArmOps::Arm_R1; }
-    if ((GetArmRegMapped( CArmOps::Arm_R0) == NotMapped || GetArmRegMapped( CArmOps::Arm_R0) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R0)) { return  CArmOps::Arm_R0; }
+    if ((GetArmRegMapped(CArmOps::Arm_R7) == NotMapped || GetArmRegMapped(CArmOps::Arm_R7) == Temp_Mapped) && !GetArmRegProtected(CArmOps::Arm_R7))
+    {
+        return CArmOps::Arm_R7;
+    }
+    if ((GetArmRegMapped(CArmOps::Arm_R6) == NotMapped || GetArmRegMapped(CArmOps::Arm_R6) == Temp_Mapped) && !GetArmRegProtected(CArmOps::Arm_R6))
+    {
+        return CArmOps::Arm_R6;
+    }
+    if ((GetArmRegMapped(CArmOps::Arm_R5) == NotMapped || GetArmRegMapped(CArmOps::Arm_R5) == Temp_Mapped) && !GetArmRegProtected(CArmOps::Arm_R5))
+    {
+        return CArmOps::Arm_R5;
+    }
+    if ((GetArmRegMapped(CArmOps::Arm_R4) == NotMapped || GetArmRegMapped(CArmOps::Arm_R4) == Temp_Mapped) && !GetArmRegProtected(CArmOps::Arm_R4))
+    {
+        return CArmOps::Arm_R4;
+    }
+    if ((GetArmRegMapped(CArmOps::Arm_R3) == NotMapped || GetArmRegMapped(CArmOps::Arm_R3) == Temp_Mapped) && !GetArmRegProtected(CArmOps::Arm_R3))
+    {
+        return CArmOps::Arm_R3;
+    }
+    if ((GetArmRegMapped(CArmOps::Arm_R2) == NotMapped || GetArmRegMapped(CArmOps::Arm_R2) == Temp_Mapped) && !GetArmRegProtected(CArmOps::Arm_R2))
+    {
+        return CArmOps::Arm_R2;
+    }
+    if ((GetArmRegMapped(CArmOps::Arm_R1) == NotMapped || GetArmRegMapped(CArmOps::Arm_R1) == Temp_Mapped) && !GetArmRegProtected(CArmOps::Arm_R1))
+    {
+        return CArmOps::Arm_R1;
+    }
+    if ((GetArmRegMapped(CArmOps::Arm_R0) == NotMapped || GetArmRegMapped(CArmOps::Arm_R0) == Temp_Mapped) && !GetArmRegProtected(CArmOps::Arm_R0))
+    {
+        return CArmOps::Arm_R0;
+    }
     if (TempMapping)
     {
-        if ((GetArmRegMapped( CArmOps::Arm_R11) == NotMapped || GetArmRegMapped( CArmOps::Arm_R11) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R11)) { return  CArmOps::Arm_R11; }
-        if ((GetArmRegMapped( CArmOps::Arm_R10) == NotMapped || GetArmRegMapped( CArmOps::Arm_R10) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R10)) { return  CArmOps::Arm_R10; }
+        if ((GetArmRegMapped(CArmOps::Arm_R11) == NotMapped || GetArmRegMapped(CArmOps::Arm_R11) == Temp_Mapped) && !GetArmRegProtected(CArmOps::Arm_R11))
+        {
+            return CArmOps::Arm_R11;
+        }
+        if ((GetArmRegMapped(CArmOps::Arm_R10) == NotMapped || GetArmRegMapped(CArmOps::Arm_R10) == Temp_Mapped) && !GetArmRegProtected(CArmOps::Arm_R10))
+        {
+            return CArmOps::Arm_R10;
+        }
     }
-    if ((GetArmRegMapped( CArmOps::Arm_R9) == NotMapped || GetArmRegMapped( CArmOps::Arm_R9) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R9)) { return  CArmOps::Arm_R9; }
-    if ((GetArmRegMapped( CArmOps::Arm_R8) == NotMapped || GetArmRegMapped( CArmOps::Arm_R8) == Temp_Mapped) && !GetArmRegProtected( CArmOps::Arm_R8)) { return  CArmOps::Arm_R8; }
+    if ((GetArmRegMapped(CArmOps::Arm_R9) == NotMapped || GetArmRegMapped(CArmOps::Arm_R9) == Temp_Mapped) && !GetArmRegProtected(CArmOps::Arm_R9))
+    {
+        return CArmOps::Arm_R9;
+    }
+    if ((GetArmRegMapped(CArmOps::Arm_R8) == NotMapped || GetArmRegMapped(CArmOps::Arm_R8) == Temp_Mapped) && !GetArmRegProtected(CArmOps::Arm_R8))
+    {
+        return CArmOps::Arm_R8;
+    }
 
     CArmOps::ArmReg Reg = UnMap_TempReg(TempMapping);
-    if (Reg != CArmOps::Arm_Unknown) { return Reg; }
+    if (Reg != CArmOps::Arm_Unknown)
+    {
+        return Reg;
+    }
 
-    int32_t MapCount[ CArmOps::Arm_R12];
-    CArmOps::ArmReg MapReg[ CArmOps::Arm_R12];
+    int32_t MapCount[CArmOps::Arm_R12];
+    CArmOps::ArmReg MapReg[CArmOps::Arm_R12];
 
-    for (int32_t i = 0, n = TempMapping ?  CArmOps::Arm_R12 :  CArmOps::Arm_R10; i < n; i++)
+    for (int32_t i = 0, n = TempMapping ? CArmOps::Arm_R12 : CArmOps::Arm_R10; i < n; i++)
     {
         MapCount[i] = GetArmRegMapOrder((CArmOps::ArmReg)i);
         MapReg[i] = (CArmOps::ArmReg)i;
     }
-    for (int32_t i = 0, n = TempMapping ?  CArmOps::Arm_R12 :  CArmOps::Arm_R10; i < n; i++)
+    for (int32_t i = 0, n = TempMapping ? CArmOps::Arm_R12 : CArmOps::Arm_R10; i < n; i++)
     {
         bool changed = false;
         for (int32_t z = 0; z < n - 1; z++)
@@ -792,7 +961,7 @@ CArmOps::ArmReg CArmRegInfo::FreeArmReg(bool TempMapping)
         }
     }
 
-    for (int32_t i = 0, n = TempMapping ?  CArmOps::Arm_R12 :  CArmOps::Arm_R10; i < n; i++)
+    for (int32_t i = 0, n = TempMapping ? CArmOps::Arm_R12 : CArmOps::Arm_R10; i < n; i++)
     {
         if (((MapCount[i] > 0 && GetArmRegMapped(MapReg[i]) == GPR_Mapped) || GetArmRegMapped(MapReg[i]) == Variable_Mapped) && !GetArmRegProtected((CArmOps::ArmReg)MapReg[i]))
         {
@@ -842,13 +1011,12 @@ void CArmRegInfo::LogRegisterState(void)
         }
 
         m_CodeBlock.Log("GetArmRegMapped(%s) = %X%s%s Protected: %s MapOrder: %d",
-            m_Assembler.ArmRegName((CArmOps::ArmReg)i),
-            GetArmRegMapped((CArmOps::ArmReg)i),
-            GetArmRegMapped((CArmOps::ArmReg)i) == CArmRegInfo::Variable_Mapped ? stdstr_f(" (%s)", CArmRegInfo::VariableMapName(GetVariableMappedTo((CArmOps::ArmReg)i))).c_str() : "",
-            regname.length() > 0 ? stdstr_f(" (%s)", regname.c_str()).c_str() : "",
-            GetArmRegProtected((CArmOps::ArmReg)i) ? "true" : "false",
-            GetArmRegMapOrder((CArmOps::ArmReg)i)
-        );
+                        m_Assembler.ArmRegName((CArmOps::ArmReg)i),
+                        GetArmRegMapped((CArmOps::ArmReg)i),
+                        GetArmRegMapped((CArmOps::ArmReg)i) == CArmRegInfo::Variable_Mapped ? stdstr_f(" (%s)", CArmRegInfo::VariableMapName(GetVariableMappedTo((CArmOps::ArmReg)i))).c_str() : "",
+                        regname.length() > 0 ? stdstr_f(" (%s)", regname.c_str()).c_str() : "",
+                        GetArmRegProtected((CArmOps::ArmReg)i) ? "true" : "false",
+                        GetArmRegMapOrder((CArmOps::ArmReg)i));
     }
 }
 
@@ -864,18 +1032,54 @@ CArmOps::ArmReg CArmRegInfo::Map_TempReg(CArmOps::ArmReg Reg, int32_t MipsReg, b
 
     if (Reg == CArmOps::Arm_Any)
     {
-        if (GetArmRegMapped( CArmOps::Arm_R7) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R7)) { Reg =  CArmOps::Arm_R7; }
-        else if (GetArmRegMapped( CArmOps::Arm_R6) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R6)) { Reg =  CArmOps::Arm_R6; }
-        else if (GetArmRegMapped( CArmOps::Arm_R5) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R5)) { Reg =  CArmOps::Arm_R5; }
-        else if (GetArmRegMapped( CArmOps::Arm_R4) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R4)) { Reg =  CArmOps::Arm_R4; }
-        else if (GetArmRegMapped( CArmOps::Arm_R3) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R3)) { Reg =  CArmOps::Arm_R3; }
-        else if (GetArmRegMapped( CArmOps::Arm_R2) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R2)) { Reg =  CArmOps::Arm_R2; }
-        else if (GetArmRegMapped( CArmOps::Arm_R1) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R1)) { Reg =  CArmOps::Arm_R1; }
-        else if (GetArmRegMapped( CArmOps::Arm_R0) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R0)) { Reg =  CArmOps::Arm_R0; }
-        else if (GetArmRegMapped( CArmOps::Arm_R11) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R11)) { Reg =  CArmOps::Arm_R11; }
-        else if (GetArmRegMapped( CArmOps::Arm_R10) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R10)) { Reg =  CArmOps::Arm_R10; }
-        else if (GetArmRegMapped( CArmOps::Arm_R9) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R9)) { Reg =  CArmOps::Arm_R9; }
-        else if (GetArmRegMapped( CArmOps::Arm_R8) == Temp_Mapped && !GetArmRegProtected( CArmOps::Arm_R8)) { Reg =  CArmOps::Arm_R8; }
+        if (GetArmRegMapped(CArmOps::Arm_R7) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R7))
+        {
+            Reg = CArmOps::Arm_R7;
+        }
+        else if (GetArmRegMapped(CArmOps::Arm_R6) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R6))
+        {
+            Reg = CArmOps::Arm_R6;
+        }
+        else if (GetArmRegMapped(CArmOps::Arm_R5) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R5))
+        {
+            Reg = CArmOps::Arm_R5;
+        }
+        else if (GetArmRegMapped(CArmOps::Arm_R4) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R4))
+        {
+            Reg = CArmOps::Arm_R4;
+        }
+        else if (GetArmRegMapped(CArmOps::Arm_R3) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R3))
+        {
+            Reg = CArmOps::Arm_R3;
+        }
+        else if (GetArmRegMapped(CArmOps::Arm_R2) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R2))
+        {
+            Reg = CArmOps::Arm_R2;
+        }
+        else if (GetArmRegMapped(CArmOps::Arm_R1) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R1))
+        {
+            Reg = CArmOps::Arm_R1;
+        }
+        else if (GetArmRegMapped(CArmOps::Arm_R0) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R0))
+        {
+            Reg = CArmOps::Arm_R0;
+        }
+        else if (GetArmRegMapped(CArmOps::Arm_R11) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R11))
+        {
+            Reg = CArmOps::Arm_R11;
+        }
+        else if (GetArmRegMapped(CArmOps::Arm_R10) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R10))
+        {
+            Reg = CArmOps::Arm_R10;
+        }
+        else if (GetArmRegMapped(CArmOps::Arm_R9) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R9))
+        {
+            Reg = CArmOps::Arm_R9;
+        }
+        else if (GetArmRegMapped(CArmOps::Arm_R8) == Temp_Mapped && !GetArmRegProtected(CArmOps::Arm_R8))
+        {
+            Reg = CArmOps::Arm_R8;
+        }
 
         if (Reg == CArmOps::Arm_Any)
         {
@@ -1013,7 +1217,7 @@ CArmOps::ArmReg CArmRegInfo::Map_Variable(VARIABLE_MAPPED variable, CArmOps::Arm
             return Reg;
         }
 
-        Reg = variable == VARIABLE_GPR ?  CArmOps::Arm_R12 : FreeArmReg(false);
+        Reg = variable == VARIABLE_GPR ? CArmOps::Arm_R12 : FreeArmReg(false);
         if (Reg == CArmOps::Arm_Unknown)
         {
             WriteTrace(TraceRegisterCache, TraceError, "Failed to find a free register");
@@ -1035,13 +1239,34 @@ CArmOps::ArmReg CArmRegInfo::Map_Variable(VARIABLE_MAPPED variable, CArmOps::Arm
 
     m_CodeBlock.Log("    regcache: allocate %s as pointer to %s", m_Assembler.ArmRegName(Reg), VariableMapName(variable));
     m_Variable_MappedTo[Reg] = variable;
-    if (variable == VARIABLE_GPR) { m_Assembler.MoveConstToArmReg(Reg, (uint32_t)_GPR, "_GPR"); }
-    else if (variable == VARIABLE_FPR) { m_Assembler.MoveConstToArmReg(Reg, (uint32_t)_FPR_S, "_FPR_S"); }
-    else if (variable == VARIABLE_TLB_READMAP) { m_Assembler.MoveConstToArmReg(Reg, (uint32_t)(g_MMU->m_TLB_ReadMap), "MMU->TLB_ReadMap"); }
-    else if (variable == VARIABLE_TLB_WRITEMAP) { m_Assembler.MoveConstToArmReg(Reg, (uint32_t)(g_MMU->m_TLB_WriteMap), "MMU->m_TLB_WriteMap"); }
-    else if (variable == VARIABLE_TLB_LOAD_ADDRESS) { m_Assembler.MoveConstToArmReg(Reg, (uint32_t)(g_TLBLoadAddress), "g_TLBLoadAddress"); }
-    else if (variable == VARIABLE_TLB_STORE_ADDRESS) { m_Assembler.MoveConstToArmReg(Reg, (uint32_t)(g_TLBStoreAddress), "g_TLBStoreAddress"); }
-    else if (variable == VARIABLE_NEXT_TIMER) { m_Assembler.MoveConstToArmReg(Reg, (uint32_t)(g_NextTimer), "g_NextTimer"); }
+    if (variable == VARIABLE_GPR)
+    {
+        m_Assembler.MoveConstToArmReg(Reg, (uint32_t)_GPR, "_GPR");
+    }
+    else if (variable == VARIABLE_FPR)
+    {
+        m_Assembler.MoveConstToArmReg(Reg, (uint32_t)_FPR_S, "_FPR_S");
+    }
+    else if (variable == VARIABLE_TLB_READMAP)
+    {
+        m_Assembler.MoveConstToArmReg(Reg, (uint32_t)(g_MMU->m_TLB_ReadMap), "MMU->TLB_ReadMap");
+    }
+    else if (variable == VARIABLE_TLB_WRITEMAP)
+    {
+        m_Assembler.MoveConstToArmReg(Reg, (uint32_t)(g_MMU->m_TLB_WriteMap), "MMU->m_TLB_WriteMap");
+    }
+    else if (variable == VARIABLE_TLB_LOAD_ADDRESS)
+    {
+        m_Assembler.MoveConstToArmReg(Reg, (uint32_t)(g_TLBLoadAddress), "g_TLBLoadAddress");
+    }
+    else if (variable == VARIABLE_TLB_STORE_ADDRESS)
+    {
+        m_Assembler.MoveConstToArmReg(Reg, (uint32_t)(g_TLBStoreAddress), "g_TLBStoreAddress");
+    }
+    else if (variable == VARIABLE_NEXT_TIMER)
+    {
+        m_Assembler.MoveConstToArmReg(Reg, (uint32_t)(g_NextTimer), "g_NextTimer");
+    }
     else
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);

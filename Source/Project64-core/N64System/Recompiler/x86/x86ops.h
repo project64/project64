@@ -22,8 +22,14 @@ public:
         x86_ESP = 4,
         x86_Unknown = -1,
 
-        x86_AL = 0, x86_BL = 3, x86_CL = 1, x86_DL = 2,
-        x86_AH = 4, x86_BH = 7, x86_CH = 5, x86_DH = 6
+        x86_AL = 0,
+        x86_BL = 3,
+        x86_CL = 1,
+        x86_DL = 2,
+        x86_AH = 4,
+        x86_BH = 7,
+        x86_CH = 5,
+        x86_DH = 6
     };
 
     enum x86FpuValues
@@ -59,16 +65,16 @@ public:
     void WriteX86Label(const char * Label);
 
     void AdcX86regToVariable(x86Reg reg, void * Variable, const char * VariableName);
-    void AdcConstToVariable(void *Variable, const char * VariableName, uint8_t Constant);
+    void AdcConstToVariable(void * Variable, const char * VariableName, uint8_t Constant);
     void AdcConstToX86Reg(x86Reg Reg, uint32_t Const);
     void AdcVariableToX86reg(x86Reg reg, void * Variable, const char * VariableName);
     void AdcX86RegToX86Reg(x86Reg Destination, x86Reg Source);
-    void AddConstToVariable(uint32_t Const, void *Variable, const char * VariableName);
+    void AddConstToVariable(uint32_t Const, void * Variable, const char * VariableName);
     void AddConstToX86Reg(x86Reg Reg, uint32_t Const);
     void AddVariableToX86reg(x86Reg reg, void * Variable, const char * VariableName);
     void AddX86regToVariable(x86Reg reg, void * Variable, const char * VariableName);
     void AddX86RegToX86Reg(x86Reg Destination, x86Reg Source);
-    void AndConstToVariable(uint32_t Const, void *Variable, const char * VariableName);
+    void AndConstToVariable(uint32_t Const, void * Variable, const char * VariableName);
     void AndConstToX86Reg(x86Reg Reg, uint32_t Const);
     void AndVariableToX86Reg(void * Variable, const char * VariableName, x86Reg Reg);
     void AndVariableDispToX86Reg(void * Variable, const char * VariableName, x86Reg Reg, x86Reg AddrReg, Multipler Multiply);
@@ -295,8 +301,8 @@ public:
 
 private:
     CX86Ops(void);
-    CX86Ops(const CX86Ops&);
-    CX86Ops& operator=(const CX86Ops&);
+    CX86Ops(const CX86Ops &);
+    CX86Ops & operator=(const CX86Ops &);
 
     void CodeLog(_Printf_format_string_ const char * Text, ...);
 
@@ -309,6 +315,6 @@ private:
     CCodeBlock & m_CodeBlock;
 };
 
-#define AddressOf(Addr) CX86Ops::GetAddressOf(5,(Addr))
+#define AddressOf(Addr) CX86Ops::GetAddressOf(5, (Addr))
 
 #endif

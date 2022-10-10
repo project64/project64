@@ -1,11 +1,11 @@
 #pragma once
 #if defined(__aarch64__)
 
-#include <Project64-core/N64System/Recompiler/RegInfo.h>
-#include <Project64-core/N64System/Recompiler/ExitInfo.h>
-#include <Project64-core/N64System/Recompiler/Aarch64/Aarch64ops.h>
-#include <Project64-core/N64System/Recompiler/RecompilerOps.h>
 #include <Project64-core/N64System/Mips/R4300iOpcode.h>
+#include <Project64-core/N64System/Recompiler/Aarch64/Aarch64ops.h>
+#include <Project64-core/N64System/Recompiler/ExitInfo.h>
+#include <Project64-core/N64System/Recompiler/RecompilerOps.h>
+#include <Project64-core/N64System/Recompiler/RegInfo.h>
 
 class CMipsMemoryVM;
 class CCodeBlock;
@@ -13,7 +13,7 @@ class CCodeSection;
 class CAarch64Ops;
 struct CJumpInfo;
 
-class CAarch64RecompilerOps 
+class CAarch64RecompilerOps
 {
 public:
     CAarch64RecompilerOps(CMipsMemoryVM & MMU, CCodeBlock & CodeBlock);
@@ -213,18 +213,21 @@ public:
     const R4300iOpcode & GetOpcode(void) const;
     void PreCompileOpcode(void);
     void PostCompileOpcode(void);
-    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, ExitReason reason);
+    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo & ExitRegSet, ExitReason reason);
 
     void UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false, bool UpdateTimer = true);
     void CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegSet);
     void CompileExecuteBP(void);
     void CompileExecuteDelaySlotBP(void);
 
-    CAarch64Ops & Assembler() { return m_Assembler; }
+    CAarch64Ops & Assembler()
+    {
+        return m_Assembler;
+    }
 
 private:
-    CAarch64RecompilerOps(const CAarch64RecompilerOps&);
-    CAarch64RecompilerOps& operator=(const CAarch64RecompilerOps&);
+    CAarch64RecompilerOps(const CAarch64RecompilerOps &);
+    CAarch64RecompilerOps & operator=(const CAarch64RecompilerOps &);
 
     CAarch64RegInfo m_RegWorkingSet;
     CAarch64Ops m_Assembler;

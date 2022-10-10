@@ -24,11 +24,11 @@ class CPlugins;
 extern CPlugins * g_Plugins;
 
 class CN64Rom;
-extern CN64Rom * g_Rom;      // The current ROM that this system is executing, it can only execute one file at the time
-extern CN64Rom * g_DDRom;    // 64DD IPL ROM
+extern CN64Rom * g_Rom;   // The current ROM that this system is executing, it can only execute one file at the time
+extern CN64Rom * g_DDRom; // 64DD IPL ROM
 
 class CN64Disk;
-extern CN64Disk * g_Disk;     // 64DD disk
+extern CN64Disk * g_Disk; // 64DD disk
 
 class CSystemTimer;
 extern CSystemTimer * g_SystemTimer;

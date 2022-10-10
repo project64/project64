@@ -16,16 +16,16 @@ public:
 
 private:
     R4300iInstruction(void);
-    R4300iInstruction(const R4300iInstruction&);
-    R4300iInstruction& operator=(const R4300iInstruction&);
+    R4300iInstruction(const R4300iInstruction &);
+    R4300iInstruction & operator=(const R4300iInstruction &);
 
     static const char * FPR_Type(uint32_t COP1OpCode);
-        
+
     void DecodeName(void);
     void DecodeSpecialName(void);
     void DecodeRegImmName(void);
     void DecodeCop1Name(void);
-    
+
     uint32_t m_Address;
     R4300iOpcode m_Instruction;
     char m_Name[40];

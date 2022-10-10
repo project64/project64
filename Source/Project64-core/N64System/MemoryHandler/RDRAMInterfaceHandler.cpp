@@ -1,7 +1,8 @@
 #include "stdafx.h"
-#include <Project64-core\N64System\SystemGlobals.h>
-#include <Project64-core\N64System\Mips\Register.h>
+
 #include "RDRAMInterfaceHandler.h"
+#include <Project64-core\N64System\Mips\Register.h>
+#include <Project64-core\N64System\SystemGlobals.h>
 
 RDRAMInterfaceReg::RDRAMInterfaceReg(uint32_t * RdramInterface) :
     RI_MODE_REG(RdramInterface[0]),

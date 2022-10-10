@@ -131,12 +131,13 @@ void MD5::finalize()
 {
     unsigned char bits[8];
     unsigned int index, padLen;
-    static uint1 PADDING[64] =
-    {
+    // clang-format off
+    static uint1 PADDING[64] = {
         0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     };
+    // clang-format on
 
     if (finalized)
     {

@@ -158,7 +158,7 @@ public:
     void AddArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2);
     void AddConstToArmReg(ArmReg DestReg, uint32_t Const);
     void AddConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const);
-    void AndConstToVariable(void *Variable, const char * VariableName, uint32_t Const);
+    void AndConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
     void AndConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const);
     void AndArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2);
     void ArmBreakPoint(const char * FileName, uint32_t LineNumber);
@@ -218,8 +218,8 @@ public:
 
 private:
     CArmOps(void);
-    CArmOps(const CArmOps&);
-    CArmOps& operator=(const CArmOps&);
+    CArmOps(const CArmOps &);
+    CArmOps & operator=(const CArmOps &);
 
     void CodeLog(_Printf_format_string_ const char * Text, ...);
 
@@ -252,6 +252,6 @@ private:
     uint16_t m_PushRegisters;
 };
 
-#define AddressOf(Addr) CArmOps::GetAddressOf(5,(Addr))
+#define AddressOf(Addr) CArmOps::GetAddressOf(5, (Addr))
 
 #endif

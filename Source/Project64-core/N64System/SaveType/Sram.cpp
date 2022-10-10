@@ -1,6 +1,7 @@
 #include "stdafx.h"
-#include <Project64-core\N64System\SaveType\Sram.h>
+
 #include <Common\path.h>
+#include <Project64-core\N64System\SaveType\Sram.h>
 
 CSram::CSram(bool ReadOnly) :
     m_ReadOnly(ReadOnly)
@@ -59,7 +60,7 @@ void CSram::DmaFromSram(uint8_t * dest, int32_t StartOffset, uint32_t len)
         for (uint32_t i = 0; i < len; i++)
         {
             m_File.Seek((StartOffset + i) ^ 3, CFile::begin);
-            m_File.Read((uint8_t*)(((size_t)dest + i) ^ 3), 1);
+            m_File.Read((uint8_t *)(((size_t)dest + i) ^ 3), 1);
         }
     }
 }
@@ -92,7 +93,7 @@ void CSram::DmaToSram(uint8_t * Source, int32_t StartOffset, uint32_t len)
         for (uint32_t i = 0; i < len; i++)
         {
             m_File.Seek((StartOffset + i) ^ 3, CFile::begin);
-            m_File.Write((uint8_t*)(((size_t)Source + i) ^ 3), 1);
+            m_File.Write((uint8_t *)(((size_t)Source + i) ^ 3), 1);
         }
     }
 }

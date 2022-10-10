@@ -8,7 +8,10 @@ public:
     CRecompilerSettings();
     virtual ~CRecompilerSettings();
 
-    static inline bool bShowRecompMemSize(void) { return m_bShowRecompMemSize; }
+    static inline bool bShowRecompMemSize(void)
+    {
+        return m_bShowRecompMemSize;
+    }
 
 private:
     static void StaticRefreshSettings(CRecompilerSettings * _this)

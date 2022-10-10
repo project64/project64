@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "RDRAMRegistersHandler.h"
 #include <Project64-core\N64System\Mips\Register.h>
 #include <Project64-core\N64System\SystemGlobals.h>

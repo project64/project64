@@ -1,9 +1,9 @@
 #pragma once
-#include <Common/path.h>
 #include <Common/IniFile.h>
 #include <Common/StdString.h>
-#include <Common/md5.h>
 #include <Common/Thread.h>
+#include <Common/md5.h>
+#include <Common/path.h>
 #include <Project64-core/N64System/N64Types.h>
 
 class CRomList
@@ -54,9 +54,15 @@ public:
 protected:
     typedef std::vector<ROM_INFO> ROMINFO_LIST;
 
-    virtual void RomListReset(void) {}
-    virtual void RomAddedToList(int32_t /*ListPos*/) {}
-    virtual void RomListLoaded(void) {}
+    virtual void RomListReset(void)
+    {
+    }
+    virtual void RomAddedToList(int32_t /*ListPos*/)
+    {
+    }
+    virtual void RomListLoaded(void)
+    {
+    }
 
     MD5 RomListHash(strlist & FileList);
     void AddFileNameToList(strlist & FileList, const stdstr & Directory, CPath & File);
@@ -77,7 +83,7 @@ private:
     static void RefreshRomListStatic(CRomList * _this);
     static void ByteSwapRomData(uint8_t * Data, int32_t DataLen);
 
-    CPath  m_GameDir;
+    CPath m_GameDir;
     CIniFile * m_NotesIniFile;
     CIniFile * m_ExtIniFile;
     CIniFile * m_RomIniFile;
@@ -87,6 +93,6 @@ private:
     CThread m_RefreshThread;
     CIniFileBase::SectionList m_GameIdentifiers;
 
-    #define DISKSIZE_MAME 0x0435B0C0
-    #define DISKSIZE_SDK 0x03DEC800
+#define DISKSIZE_MAME 0x0435B0C0
+#define DISKSIZE_SDK 0x03DEC800
 };

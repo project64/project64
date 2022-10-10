@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "RecompilerSettings.h"
 
 int CRecompilerSettings::m_RefCount = 0;

@@ -6,7 +6,7 @@ class CFunctionMap :
     public CGameSettings
 {
 protected:
-    typedef CCompiledFunc *  PCCompiledFunc;
+    typedef CCompiledFunc * PCCompiledFunc;
     typedef PCCompiledFunc * PCCompiledFunc_TABLE;
 
     CFunctionMap();
@@ -16,12 +16,18 @@ protected:
     void Reset(bool bAllocate);
 
 public:
-    PCCompiledFunc_TABLE * FunctionTable() const { return m_FunctionTable; }
-    PCCompiledFunc       * JumpTable() const { return m_JumpTable; }
+    PCCompiledFunc_TABLE * FunctionTable() const
+    {
+        return m_FunctionTable;
+    }
+    PCCompiledFunc * JumpTable() const
+    {
+        return m_JumpTable;
+    }
 
 private:
     void CleanBuffers();
 
-    PCCompiledFunc       * m_JumpTable;
+    PCCompiledFunc * m_JumpTable;
     PCCompiledFunc_TABLE * m_FunctionTable;
 };

@@ -12,8 +12,8 @@ public:
 
 private:
     CEeprom(void);
-    CEeprom(const CEeprom&);
-    CEeprom& operator=(const CEeprom&);
+    CEeprom(const CEeprom &);
+    CEeprom & operator=(const CEeprom &);
 
     void ProcessingError(uint8_t * Command);
     void LoadEeprom();
@@ -21,6 +21,6 @@ private:
     void WriteTo(uint8_t * Buffer, int32_t line);
 
     uint8_t m_EEPROM[0x800];
-    bool    m_ReadOnly;
-    CFile   m_File;
+    bool m_ReadOnly;
+    CFile m_File;
 };

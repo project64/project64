@@ -1,16 +1,17 @@
 #include "stdafx.h"
-#include <Project64-core/N64System/Recompiler/CodeSection.h>
-#include <Project64-core/N64System/Mips/R4300iOpcode.h>
-#include <Project64-core/N64System/Mips/R4300iInstruction.h>
-#include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
-#include <Project64-core/N64System/Recompiler/CodeBlock.h>
-#include <Project64-core/N64System/N64System.h>
+
+#include <Project64-core/Debugger.h>
+#include <Project64-core/ExceptionHandler.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
+#include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
+#include <Project64-core/N64System/Mips/R4300iInstruction.h>
+#include <Project64-core/N64System/Mips/R4300iOpcode.h>
+#include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/Recompiler/CodeBlock.h>
+#include <Project64-core/N64System/Recompiler/CodeSection.h>
 #include <Project64-core/N64System/Recompiler/LoopAnalysis.h>
 #include <Project64-core/N64System/Recompiler/SectionInfo.h>
-#include <Project64-core/ExceptionHandler.h>
-#include <Project64-core/Debugger.h>
+#include <Project64-core/N64System/SystemGlobals.h>
 
 CCodeSection::CCodeSection(CCodeBlock & CodeBlock, uint32_t EnterPC, uint32_t ID, bool LinkAllowed) :
     m_CodeBlock(CodeBlock),
@@ -41,8 +42,8 @@ CCodeSection::~CCodeSection()
 
 void CCodeSection::GenerateSectionLinkage()
 {
-    CCodeSection * TargetSection[] = { m_ContinueSection, m_JumpSection };
-    CJumpInfo * JumpInfo[] = { &m_Cont, &m_Jump };
+    CCodeSection * TargetSection[] = {m_ContinueSection, m_JumpSection};
+    CJumpInfo * JumpInfo[] = {&m_Cont, &m_Jump};
     int i;
 
     for (i = 0; i < 2; i++)
@@ -90,8 +91,14 @@ void CCodeSection::GenerateSectionLinkage()
             }
             else if (TargetSection[i] != nullptr && JumpInfo[i] != nullptr)
             {
-                if (!JumpInfo[i]->FallThrough) { continue; }
-                if (JumpInfo[i]->TargetPC == TargetSection[i]->m_EnterPC) { continue; }
+                if (!JumpInfo[i]->FallThrough)
+                {
+                    continue;
+                }
+                if (JumpInfo[i]->TargetPC == TargetSection[i]->m_EnterPC)
+                {
+                    continue;
+                }
                 m_RecompilerOps->LinkJump(*JumpInfo[i], (uint32_t)-1);
                 m_RecompilerOps->CompileExit(JumpInfo[i]->JumpPC, JumpInfo[i]->TargetPC, JumpInfo[i]->RegSet, JumpInfo[i]->Reason);
                 //FreeSection(TargetSection[i],Section);
@@ -100,9 +107,15 @@ void CCodeSection::GenerateSectionLinkage()
     }
     else
     {
-        if (m_Cont.LinkLocation == nullptr && m_Cont.FallThrough == false) { m_ContinueSection = nullptr; }
-        if (m_Jump.LinkLocation == nullptr && m_Jump.FallThrough == false) { m_JumpSection = nullptr; }
-        if (m_JumpSection == nullptr &&  m_ContinueSection == nullptr)
+        if (m_Cont.LinkLocation == nullptr && m_Cont.FallThrough == false)
+        {
+            m_ContinueSection = nullptr;
+        }
+        if (m_Jump.LinkLocation == nullptr && m_Jump.FallThrough == false)
+        {
+            m_JumpSection = nullptr;
+        }
+        if (m_JumpSection == nullptr && m_ContinueSection == nullptr)
         {
             //FreeSection(TargetSection[0],Section);
         }
@@ -111,9 +124,16 @@ void CCodeSection::GenerateSectionLinkage()
     TargetSection[0] = m_ContinueSection;
     TargetSection[1] = m_JumpSection;
 
-    for (i = 0; i < 2; i++) {
-        if (TargetSection[i] == nullptr) { continue; }
-        if (!JumpInfo[i]->FallThrough) { continue; }
+    for (i = 0; i < 2; i++)
+    {
+        if (TargetSection[i] == nullptr)
+        {
+            continue;
+        }
+        if (!JumpInfo[i]->FallThrough)
+        {
+            continue;
+        }
 
         if (TargetSection[i]->m_CompiledLocation != nullptr)
         {
@@ -147,14 +167,26 @@ void CCodeSection::GenerateSectionLinkage()
 
     for (i = 0; i < 2; i++)
     {
-        if (TargetSection[i] == nullptr) { continue; }
-        if (TargetSection[i]->m_ParentSection.empty()) { continue; }
+        if (TargetSection[i] == nullptr)
+        {
+            continue;
+        }
+        if (TargetSection[i]->m_ParentSection.empty())
+        {
+            continue;
+        }
         for (SECTION_LIST::iterator iter = TargetSection[i]->m_ParentSection.begin(); iter != TargetSection[i]->m_ParentSection.end(); iter++)
         {
             CCodeSection * Parent = *iter;
 
-            if (Parent->m_CompiledLocation != nullptr) { continue; }
-            if (Parent->m_InLoop) { continue; }
+            if (Parent->m_CompiledLocation != nullptr)
+            {
+                continue;
+            }
+            if (Parent->m_InLoop)
+            {
+                continue;
+            }
             if (JumpInfo[i]->PermLoop)
             {
                 m_CodeBlock.Log("PermLoop *** 2");
@@ -195,7 +227,10 @@ void CCodeSection::GenerateSectionLinkage()
     //CodeLog("Section %d",m_SectionID);
     for (i = 0; i < 2; i++)
     {
-        if (JumpInfo[i]->LinkLocation == nullptr) { continue; }
+        if (JumpInfo[i]->LinkLocation == nullptr)
+        {
+            continue;
+        }
         if (TargetSection[i] == nullptr)
         {
             m_CodeBlock.Log("ExitBlock (from %d):", m_SectionID);
@@ -269,8 +304,14 @@ bool CCodeSection::ParentContinue()
         for (SECTION_LIST::iterator iter = m_ParentSection.begin(); iter != m_ParentSection.end(); iter++)
         {
             CCodeSection * Parent = *iter;
-            if (Parent->m_CompiledLocation != nullptr) { continue; }
-            if (IsAllParentLoops(Parent, true, m_CodeBlock.NextTest())) { continue; }
+            if (Parent->m_CompiledLocation != nullptr)
+            {
+                continue;
+            }
+            if (IsAllParentLoops(Parent, true, m_CodeBlock.NextTest()))
+            {
+                continue;
+            }
             return false;
         }
         m_RecompilerOps->SetCurrentSection(this);
@@ -291,8 +332,14 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             return false;
         }
         m_Test = Test;
-        if (m_ContinueSection != nullptr && m_ContinueSection->GenerateNativeCode(Test)) { return true; }
-        if (m_JumpSection != nullptr && m_JumpSection->GenerateNativeCode(Test)) { return true; }
+        if (m_ContinueSection != nullptr && m_ContinueSection->GenerateNativeCode(Test))
+        {
+            return true;
+        }
+        if (m_JumpSection != nullptr && m_JumpSection->GenerateNativeCode(Test))
+        {
+            return true;
+        }
         return false;
     }
 
@@ -389,9 +436,9 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             case R4300i_SPECIAL_TGEU: m_RecompilerOps->Compile_TrapCompare(RecompilerTrapCompare_TGEU); break;
             case R4300i_SPECIAL_TLT: m_RecompilerOps->Compile_TrapCompare(RecompilerTrapCompare_TLT); break;
             case R4300i_SPECIAL_TLTU: m_RecompilerOps->Compile_TrapCompare(RecompilerTrapCompare_TLTU); break;
-                break;
             default:
-                m_RecompilerOps->UnknownOpcode(); break;
+                m_RecompilerOps->UnknownOpcode();
+                break;
             }
             break;
         case R4300i_REGIMM:
@@ -410,7 +457,8 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             case R4300i_REGIMM_TLTI: m_RecompilerOps->Compile_TrapCompare(RecompilerTrapCompare_TLTI); break;
             case R4300i_REGIMM_TLTIU: m_RecompilerOps->Compile_TrapCompare(RecompilerTrapCompare_TLTIU); break;
             default:
-                m_RecompilerOps->UnknownOpcode(); break;
+                m_RecompilerOps->UnknownOpcode();
+                break;
             }
             break;
         case R4300i_BEQ: m_RecompilerOps->Compile_Branch(RecompilerBranchCompare_BEQ, false); break;
@@ -468,7 +516,8 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
                 case R4300i_COP1_BC_BCFL: m_RecompilerOps->Compile_BranchLikely(RecompilerBranchCompare_COP1BCF, false); break;
                 case R4300i_COP1_BC_BCTL: m_RecompilerOps->Compile_BranchLikely(RecompilerBranchCompare_COP1BCT, false); break;
                 default:
-                    m_RecompilerOps->UnknownOpcode(); break;
+                    m_RecompilerOps->UnknownOpcode();
+                    break;
                 }
                 break;
             case R4300i_COP1_S:
@@ -493,17 +542,27 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
                 case R4300i_COP1_FUNCT_CVT_D: m_RecompilerOps->COP1_S_CVT_D(); break;
                 case R4300i_COP1_FUNCT_CVT_W: m_RecompilerOps->COP1_S_CVT_W(); break;
                 case R4300i_COP1_FUNCT_CVT_L: m_RecompilerOps->COP1_S_CVT_L(); break;
-                case R4300i_COP1_FUNCT_C_F:   case R4300i_COP1_FUNCT_C_UN:
-                case R4300i_COP1_FUNCT_C_EQ:  case R4300i_COP1_FUNCT_C_UEQ:
-                case R4300i_COP1_FUNCT_C_OLT: case R4300i_COP1_FUNCT_C_ULT:
-                case R4300i_COP1_FUNCT_C_OLE: case R4300i_COP1_FUNCT_C_ULE:
-                case R4300i_COP1_FUNCT_C_SF:  case R4300i_COP1_FUNCT_C_NGLE:
-                case R4300i_COP1_FUNCT_C_SEQ: case R4300i_COP1_FUNCT_C_NGL:
-                case R4300i_COP1_FUNCT_C_LT:  case R4300i_COP1_FUNCT_C_NGE:
-                case R4300i_COP1_FUNCT_C_LE:  case R4300i_COP1_FUNCT_C_NGT:
-                    m_RecompilerOps->COP1_S_CMP(); break;
+                case R4300i_COP1_FUNCT_C_F:
+                case R4300i_COP1_FUNCT_C_UN:
+                case R4300i_COP1_FUNCT_C_EQ:
+                case R4300i_COP1_FUNCT_C_UEQ:
+                case R4300i_COP1_FUNCT_C_OLT:
+                case R4300i_COP1_FUNCT_C_ULT:
+                case R4300i_COP1_FUNCT_C_OLE:
+                case R4300i_COP1_FUNCT_C_ULE:
+                case R4300i_COP1_FUNCT_C_SF:
+                case R4300i_COP1_FUNCT_C_NGLE:
+                case R4300i_COP1_FUNCT_C_SEQ:
+                case R4300i_COP1_FUNCT_C_NGL:
+                case R4300i_COP1_FUNCT_C_LT:
+                case R4300i_COP1_FUNCT_C_NGE:
+                case R4300i_COP1_FUNCT_C_LE:
+                case R4300i_COP1_FUNCT_C_NGT:
+                    m_RecompilerOps->COP1_S_CMP();
+                    break;
                 default:
-                    m_RecompilerOps->UnknownOpcode(); break;
+                    m_RecompilerOps->UnknownOpcode();
+                    break;
                 }
                 break;
             case R4300i_COP1_D:
@@ -528,17 +587,27 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
                 case R4300i_COP1_FUNCT_CVT_S: m_RecompilerOps->COP1_D_CVT_S(); break;
                 case R4300i_COP1_FUNCT_CVT_W: m_RecompilerOps->COP1_D_CVT_W(); break;
                 case R4300i_COP1_FUNCT_CVT_L: m_RecompilerOps->COP1_D_CVT_L(); break;
-                case R4300i_COP1_FUNCT_C_F:   case R4300i_COP1_FUNCT_C_UN:
-                case R4300i_COP1_FUNCT_C_EQ:  case R4300i_COP1_FUNCT_C_UEQ:
-                case R4300i_COP1_FUNCT_C_OLT: case R4300i_COP1_FUNCT_C_ULT:
-                case R4300i_COP1_FUNCT_C_OLE: case R4300i_COP1_FUNCT_C_ULE:
-                case R4300i_COP1_FUNCT_C_SF:  case R4300i_COP1_FUNCT_C_NGLE:
-                case R4300i_COP1_FUNCT_C_SEQ: case R4300i_COP1_FUNCT_C_NGL:
-                case R4300i_COP1_FUNCT_C_LT:  case R4300i_COP1_FUNCT_C_NGE:
-                case R4300i_COP1_FUNCT_C_LE:  case R4300i_COP1_FUNCT_C_NGT:
-                    m_RecompilerOps->COP1_D_CMP(); break;
+                case R4300i_COP1_FUNCT_C_F:
+                case R4300i_COP1_FUNCT_C_UN:
+                case R4300i_COP1_FUNCT_C_EQ:
+                case R4300i_COP1_FUNCT_C_UEQ:
+                case R4300i_COP1_FUNCT_C_OLT:
+                case R4300i_COP1_FUNCT_C_ULT:
+                case R4300i_COP1_FUNCT_C_OLE:
+                case R4300i_COP1_FUNCT_C_ULE:
+                case R4300i_COP1_FUNCT_C_SF:
+                case R4300i_COP1_FUNCT_C_NGLE:
+                case R4300i_COP1_FUNCT_C_SEQ:
+                case R4300i_COP1_FUNCT_C_NGL:
+                case R4300i_COP1_FUNCT_C_LT:
+                case R4300i_COP1_FUNCT_C_NGE:
+                case R4300i_COP1_FUNCT_C_LE:
+                case R4300i_COP1_FUNCT_C_NGT:
+                    m_RecompilerOps->COP1_D_CMP();
+                    break;
                 default:
-                    m_RecompilerOps->UnknownOpcode(); break;
+                    m_RecompilerOps->UnknownOpcode();
+                    break;
                 }
                 break;
             case R4300i_COP1_W:
@@ -547,7 +616,8 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
                 case R4300i_COP1_FUNCT_CVT_S: m_RecompilerOps->COP1_W_CVT_S(); break;
                 case R4300i_COP1_FUNCT_CVT_D: m_RecompilerOps->COP1_W_CVT_D(); break;
                 default:
-                    m_RecompilerOps->UnknownOpcode(); break;
+                    m_RecompilerOps->UnknownOpcode();
+                    break;
                 }
                 break;
             case R4300i_COP1_L:
@@ -556,11 +626,13 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
                 case R4300i_COP1_FUNCT_CVT_S: m_RecompilerOps->COP1_L_CVT_S(); break;
                 case R4300i_COP1_FUNCT_CVT_D: m_RecompilerOps->COP1_L_CVT_D(); break;
                 default:
-                    m_RecompilerOps->UnknownOpcode(); break;
+                    m_RecompilerOps->UnknownOpcode();
+                    break;
                 }
                 break;
             default:
-                m_RecompilerOps->UnknownOpcode(); break;
+                m_RecompilerOps->UnknownOpcode();
+                break;
             }
             break;
         case R4300i_BEQL: m_RecompilerOps->Compile_BranchLikely(RecompilerBranchCompare_BEQ, false); break;
@@ -596,7 +668,8 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
         case R4300i_SDC1: m_RecompilerOps->SDC1(); break;
         case R4300i_SD: m_RecompilerOps->SD(); break;
         default:
-            m_RecompilerOps->UnknownOpcode(); break;
+            m_RecompilerOps->UnknownOpcode();
+            break;
         }
 
         m_RecompilerOps->PostCompileOpcode();
@@ -829,13 +902,22 @@ CCodeSection * CCodeSection::ExistingSection(uint32_t Addr, uint32_t Test)
     {
         return this;
     }
-    if (m_Test == Test) { return nullptr; }
+    if (m_Test == Test)
+    {
+        return nullptr;
+    }
     m_Test = Test;
 
     CCodeSection * Section = m_JumpSection ? m_JumpSection->ExistingSection(Addr, Test) : nullptr;
-    if (Section != nullptr) { return Section; }
+    if (Section != nullptr)
+    {
+        return Section;
+    }
     Section = m_ContinueSection ? m_ContinueSection->ExistingSection(Addr, Test) : nullptr;
-    if (Section != nullptr) { return Section; }
+    if (Section != nullptr)
+    {
+        return Section;
+    }
 
     return nullptr;
 }
@@ -847,7 +929,10 @@ bool CCodeSection::SectionAccessible(uint32_t SectionId, uint32_t Test)
         return true;
     }
 
-    if (m_Test == Test) { return false; }
+    if (m_Test == Test)
+    {
+        return false;
+    }
     m_Test = Test;
 
     if (m_ContinueSection && m_ContinueSection->SectionAccessible(SectionId, Test))
@@ -937,18 +1022,39 @@ void CCodeSection::UnlinkParent(CCodeSection * Parent, bool ContinueSection)
 
 bool CCodeSection::IsAllParentLoops(CCodeSection * Parent, bool IgnoreIfCompiled, uint32_t Test)
 {
-    if (IgnoreIfCompiled && Parent->m_CompiledLocation != nullptr) { return true; }
-    if (!m_InLoop) { return false; }
-    if (!Parent->m_InLoop) { return false; }
-    if (Parent->m_ParentSection.empty()) { return false; }
-    if (this == Parent) { return true; }
-    if (Parent->m_Test == Test) { return true; }
+    if (IgnoreIfCompiled && Parent->m_CompiledLocation != nullptr)
+    {
+        return true;
+    }
+    if (!m_InLoop)
+    {
+        return false;
+    }
+    if (!Parent->m_InLoop)
+    {
+        return false;
+    }
+    if (Parent->m_ParentSection.empty())
+    {
+        return false;
+    }
+    if (this == Parent)
+    {
+        return true;
+    }
+    if (Parent->m_Test == Test)
+    {
+        return true;
+    }
     Parent->m_Test = Test;
 
     for (SECTION_LIST::iterator iter = Parent->m_ParentSection.begin(); iter != Parent->m_ParentSection.end(); iter++)
     {
         CCodeSection * ParentSection = *iter;
-        if (!IsAllParentLoops(ParentSection, IgnoreIfCompiled, Test)) { return false; }
+        if (!IsAllParentLoops(ParentSection, IgnoreIfCompiled, Test))
+        {
+            return false;
+        }
     }
     return true;
 }
@@ -959,12 +1065,21 @@ bool CCodeSection::DisplaySectionInformation(uint32_t ID, uint32_t Test)
     {
         return false;
     }
-    if (m_Test == Test) { return false; }
+    if (m_Test == Test)
+    {
+        return false;
+    }
     m_Test = Test;
     if (m_SectionID != ID)
     {
-        if (m_ContinueSection != nullptr && m_ContinueSection->DisplaySectionInformation(ID, Test)) { return true; }
-        if (m_JumpSection != nullptr && m_JumpSection->DisplaySectionInformation(ID, Test)) { return true; }
+        if (m_ContinueSection != nullptr && m_ContinueSection->DisplaySectionInformation(ID, Test))
+        {
+            return true;
+        }
+        if (m_JumpSection != nullptr && m_JumpSection->DisplaySectionInformation(ID, Test))
+        {
+            return true;
+        }
         return false;
     }
     DisplaySectionInformation();

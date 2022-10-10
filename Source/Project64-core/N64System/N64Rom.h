@@ -1,8 +1,8 @@
 #pragma once
 
+#include <Project64-core/Multilanguage.h>
 #include <Project64-core/N64System/N64Types.h>
 #include <Project64-core/Settings/DebugSettings.h>
-#include <Project64-core/Multilanguage.h>
 
 class CN64Rom :
     protected CDebugSettings
@@ -18,17 +18,38 @@ public:
     void SaveRomSettingID(bool temp);
     void ClearRomSettingID();
     CICChip CicChipID();
-    uint8_t * GetRomAddress() const { return m_ROMImage; }
-    uint32_t GetRomSize() const { return m_RomFileSize; }
-    const std::string & GetRomMD5() const { return m_MD5; }
-    const std::string & GetRomName() const { return m_RomName; }
-    const std::string & GetFileName() const { return m_FileName; }
-    Country GetCountry() const { return m_Country; }
+    uint8_t * GetRomAddress() const
+    {
+        return m_ROMImage;
+    }
+    uint32_t GetRomSize() const
+    {
+        return m_RomFileSize;
+    }
+    const std::string & GetRomMD5() const
+    {
+        return m_MD5;
+    }
+    const std::string & GetRomName() const
+    {
+        return m_RomName;
+    }
+    const std::string & GetFileName() const
+    {
+        return m_FileName;
+    }
+    Country GetCountry() const
+    {
+        return m_Country;
+    }
     bool IsPal();
     void UnallocateRomImage();
 
     // Get a message ID for the reason that you failed to load the ROM
-    LanguageStringID GetError() const { return m_ErrorMsg; }
+    LanguageStringID GetError() const
+    {
+        return m_ErrorMsg;
+    }
     static CICChip GetCicChipID(uint8_t * RomData, uint64_t * CRC = nullptr);
     static void CleanRomName(char * RomName, bool byteswap = true);
 
@@ -44,7 +65,10 @@ private:
     static void NotificationCB(const char * Status, CN64Rom * _this);
 
     // Constant values
-    enum { ReadFromRomSection = 0x400000 };
+    enum
+    {
+        ReadFromRomSection = 0x400000
+    };
 
     // Class variables
     CFile m_RomFile;

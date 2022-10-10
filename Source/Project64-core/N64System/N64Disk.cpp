@@ -1,9 +1,10 @@
 #include "stdafx.h"
+
 #include "N64Disk.h"
 #include "SystemGlobals.h"
-#include <Common/md5.h>
-#include <Common/Platform.h>
 #include <Common/MemoryManagement.h>
+#include <Common/Platform.h>
+#include <Common/md5.h>
 #include <Project64-core/N64System/Mips/Register.h>
 #include <memory>
 
@@ -193,9 +194,18 @@ bool CN64Disk::IsValidDiskImage(uint8_t Test[0x20])
     if (ipl_load_addr < 0x80000000 && ipl_load_addr >= 0x80800000) return false;
 
     // Country code
-    if (*((uint32_t *)&Test[0]) == 0x16D348E8) { return true; }
-    else if (*((uint32_t *)&Test[0]) == 0x56EE6322) { return true; }
-    else if (*((uint32_t *)&Test[0]) == 0x00000000) { return true; }
+    if (*((uint32_t *)&Test[0]) == 0x16D348E8)
+    {
+        return true;
+    }
+    else if (*((uint32_t *)&Test[0]) == 0x56EE6322)
+    {
+        return true;
+    }
+    else if (*((uint32_t *)&Test[0]) == 0x00000000)
+    {
+        return true;
+    }
     return false;
 }
 
@@ -284,7 +294,7 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
     uint8_t Test[0x100];
     bool isValidDisk = false;
 
-    const uint8_t blocks[8] = { 0, 1, 2, 3, 8, 9, 10, 11 };
+    const uint8_t blocks[8] = {0, 1, 2, 3, 8, 9, 10, 11};
     for (int i = 0; i < 8; i++)
     {
         m_DiskFile.Seek(0x4D08 * blocks[i], CFileBase::SeekPosition::begin);
@@ -339,7 +349,10 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
         for (count = 0; count < (int)DiskFileSize; count += ReadFromRomSection)
         {
             uint32_t dwToRead = DiskFileSize - count;
-            if (dwToRead > ReadFromRomSection) { dwToRead = ReadFromRomSection; }
+            if (dwToRead > ReadFromRomSection)
+            {
+                dwToRead = ReadFromRomSection;
+            }
 
             if (m_DiskFile.Read(&m_DiskImage[count], dwToRead) != dwToRead)
             {
@@ -416,7 +429,10 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
         for (count = 0; count < (int)DiskFileSize; count += ReadFromRomSection)
         {
             uint32_t dwToRead = DiskFileSize - count;
-            if (dwToRead > ReadFromRomSection) { dwToRead = ReadFromRomSection; }
+            if (dwToRead > ReadFromRomSection)
+            {
+                dwToRead = ReadFromRomSection;
+            }
 
             if (m_DiskFile.Read(&m_DiskImage[count], dwToRead) != dwToRead)
             {
@@ -575,7 +591,7 @@ uint32_t CN64Disk::CalculateCrc()
     uint32_t crc = 0;
     for (int i = 0; i < 0x4D08; i += 4)
     {
-        crc += *(uint32_t*)(&GetDiskAddressRom()[i]);
+        crc += *(uint32_t *)(&GetDiskAddressRom()[i]);
     }
     return crc;
 }
@@ -672,9 +688,9 @@ uint32_t CN64Disk::GetDiskAddressBlock(uint16_t head, uint16_t track, uint16_t b
     else
     {
         // D64
-        uint16_t ROM_LBA_END = *(uint16_t*)(&GetDiskAddressSys()[0xE2]);
-        uint16_t RAM_LBA_START = *(uint16_t*)(&GetDiskAddressSys()[0xE0]);
-        uint16_t RAM_LBA_END = *(uint16_t*)(&GetDiskAddressSys()[0xE6]);
+        uint16_t ROM_LBA_END = *(uint16_t *)(&GetDiskAddressSys()[0xE2]);
+        uint16_t RAM_LBA_START = *(uint16_t *)(&GetDiskAddressSys()[0xE0]);
+        uint16_t RAM_LBA_END = *(uint16_t *)(&GetDiskAddressSys()[0xE6]);
         uint16_t LBA = PhysToLBA(head, track, block);
         if (LBA < DISKID_LBA)
         {
@@ -720,7 +736,7 @@ void CN64Disk::DetectSystemArea()
         m_DiskRomAddress = SYSTEM_LBAS * 0x4D08;
 
         // Handle system data
-        const uint16_t sysblocks[4] = { 9, 8, 1, 0 };
+        const uint16_t sysblocks[4] = {9, 8, 1, 0};
         // Check if disk is development disk
         bool isDevDisk = false;
 
@@ -790,12 +806,14 @@ bool CN64Disk::IsSysSectorGood(uint32_t block, uint32_t sectorsize)
             return false;
 
         // Always 0xFFFFFFFF
-        if (*(uint32_t*)&m_DiskImage[(block * 0x4D08) + 0x18] != 0xFFFFFFFF)
+        if (*(uint32_t *)&m_DiskImage[(block * 0x4D08) + 0x18] != 0xFFFFFFFF)
             return false;
 
-        uint8_t alt = 0xC;  // Retail
+        uint8_t alt = 0xC; // Retail
         if ((block & 2) != 0)
-            alt = 0xA;      // Development
+        {
+            alt = 0xA; // Development
+        }
 
         // Alternate tracks offsets (always the same)
         for (int i = 0; i < 16; i++)
@@ -810,15 +828,15 @@ bool CN64Disk::IsSysSectorGood(uint32_t block, uint32_t sectorsize)
 
 Country CN64Disk::GetDiskCountryCode()
 {
-    switch (*(uint32_t*)&GetDiskAddressSys()[0])
+    switch (*(uint32_t *)&GetDiskAddressSys()[0])
     {
-        case DISK_COUNTRY_JPN:
-            return Country_Japan;
-        case DISK_COUNTRY_USA:
-            return Country_NorthAmerica;
-        case DISK_COUNTRY_DEV:
-        default:
-            return Country_Unknown;
+    case DISK_COUNTRY_JPN:
+        return Country_Japan;
+    case DISK_COUNTRY_USA:
+        return Country_NorthAmerica;
+    case DISK_COUNTRY_DEV:
+    default:
+        return Country_Unknown;
     }
 }
 
@@ -834,13 +852,13 @@ void CN64Disk::InitSysDataD64()
     // Expand RAM area for file format consistency
     if (m_DiskType < 6)
     {
-        *(uint16_t*)&GetDiskAddressSys()[0xE2 ^ 2] = RAM_START_LBA[m_DiskType] - SYSTEM_LBAS;
-        *(uint16_t*)&GetDiskAddressSys()[0xE4 ^ 2] = MAX_LBA - SYSTEM_LBAS;
+        *(uint16_t *)&GetDiskAddressSys()[0xE2 ^ 2] = RAM_START_LBA[m_DiskType] - SYSTEM_LBAS;
+        *(uint16_t *)&GetDiskAddressSys()[0xE4 ^ 2] = MAX_LBA - SYSTEM_LBAS;
     }
     else
     {
-        *(uint16_t*)&GetDiskAddressSys()[0xE2 ^ 2] = 0xFFFF;
-        *(uint16_t*)&GetDiskAddressSys()[0xE4 ^ 2] = 0xFFFF;
+        *(uint16_t *)&GetDiskAddressSys()[0xE2 ^ 2] = 0xFFFF;
+        *(uint16_t *)&GetDiskAddressSys()[0xE4 ^ 2] = 0xFFFF;
     }
 }
 
@@ -850,8 +868,8 @@ void CN64Disk::DeinitSysDataD64()
     if (m_DiskFormat != DiskFormatD64)
         return;
 
-    GetDiskAddressSys()[4^3] = 0x00;
-    GetDiskAddressSys()[5^3] &= 0x0F;
+    GetDiskAddressSys()[4 ^ 3] = 0x00;
+    GetDiskAddressSys()[5 ^ 3] &= 0x0F;
 }
 
 void CN64Disk::GenerateLBAToPhysTable()
@@ -875,14 +893,16 @@ void CN64Disk::DetectRamAddress()
     }
     else //if (m_DiskFormat == DiskFormatD64)
     {
-        m_DiskRamAddress = m_DiskRomAddress + LBAToByte(SYSTEM_LBAS, *(uint16_t*)(&GetDiskAddressSys()[0xE0 ^ 2]) + 1);
+        m_DiskRamAddress = m_DiskRomAddress + LBAToByte(SYSTEM_LBAS, *(uint16_t *)(&GetDiskAddressSys()[0xE0 ^ 2]) + 1);
     }
 }
 
 uint32_t CN64Disk::LBAToVZone(uint32_t lba)
 {
-    for (uint32_t vzone = 0; vzone < 16; vzone++) {
-        if (lba < VZONE_LBA_TBL[m_DiskType][vzone]) {
+    for (uint32_t vzone = 0; vzone < 16; vzone++)
+    {
+        if (lba < VZONE_LBA_TBL[m_DiskType][vzone])
+        {
             return vzone;
         }
     }

@@ -1,8 +1,9 @@
 #include "stdafx.h"
+
 #include "SPRegistersHandler.h"
-#include <Project64-core\N64System\N64System.h>
 #include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
 #include <Project64-core\N64System\Mips\Register.h>
+#include <Project64-core\N64System\N64System.h>
 #include <Project64-core\N64System\SystemGlobals.h>
 
 SPRegistersReg::SPRegistersReg(uint32_t * SignalProcessorInterface) :
@@ -32,7 +33,7 @@ SPRegistersHandler::SPRegistersHandler(CN64System & System, CMipsMemoryVM & MMU,
     m_PC(Reg.m_PROGRAM_COUNTER)
 {
     System.RegisterCallBack(CN64SystemCB_Reset, this, (CN64System::CallBackFunction)stSystemReset);
-    System.RegisterCallBack(CN64SystemCB_LoadedGameState, this, (CN64System::CallBackFunction)stLoadedGameState);    
+    System.RegisterCallBack(CN64SystemCB_LoadedGameState, this, (CN64System::CallBackFunction)stLoadedGameState);
 }
 
 bool SPRegistersHandler::Read32(uint32_t Address, uint32_t & Value)
@@ -109,7 +110,7 @@ bool SPRegistersHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask
     switch (Address & 0x1FFFFFFF)
     {
     case 0x04040000: SP_MEM_ADDR_REG = (SP_MEM_ADDR_REG & ~Mask) | (MaskedValue); break;
-    case 0x04040004: SP_DRAM_ADDR_REG = (SP_DRAM_ADDR_REG & ~Mask) | (MaskedValue);  break;
+    case 0x04040004: SP_DRAM_ADDR_REG = (SP_DRAM_ADDR_REG & ~Mask) | (MaskedValue); break;
     case 0x04040008:
         SP_RD_LEN_REG = MaskedValue;
         SP_DMA_READ();
@@ -119,36 +120,111 @@ bool SPRegistersHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask
         SP_DMA_WRITE();
         break;
     case 0x04040010:
-        if ((MaskedValue & SP_CLR_HALT) != 0) { SP_STATUS_REG &= ~SP_STATUS_HALT; }
-        if ((MaskedValue & SP_SET_HALT) != 0) { SP_STATUS_REG |= SP_STATUS_HALT; }
-        if ((MaskedValue & SP_CLR_BROKE) != 0) { SP_STATUS_REG &= ~SP_STATUS_BROKE; }
+        if ((MaskedValue & SP_CLR_HALT) != 0)
+        {
+            SP_STATUS_REG &= ~SP_STATUS_HALT;
+        }
+        if ((MaskedValue & SP_SET_HALT) != 0)
+        {
+            SP_STATUS_REG |= SP_STATUS_HALT;
+        }
+        if ((MaskedValue & SP_CLR_BROKE) != 0)
+        {
+            SP_STATUS_REG &= ~SP_STATUS_BROKE;
+        }
         if ((MaskedValue & SP_CLR_INTR) != 0)
         {
             MI_INTR_REG &= ~MI_INTR_SP;
             m_RspIntrReg &= ~MI_INTR_SP;
             m_Reg.CheckInterrupts();
         }
-        if ((MaskedValue & SP_SET_INTR) != 0) { if (BreakOnUnhandledMemory()) { g_Notify->BreakPoint(__FILE__, __LINE__); } }
-        if ((MaskedValue & SP_CLR_SSTEP) != 0) { SP_STATUS_REG &= ~SP_STATUS_SSTEP; }
-        if ((MaskedValue & SP_SET_SSTEP) != 0) { SP_STATUS_REG |= SP_STATUS_SSTEP; }
-        if ((MaskedValue & SP_CLR_INTR_BREAK) != 0) { SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK; }
-        if ((MaskedValue & SP_SET_INTR_BREAK) != 0) { SP_STATUS_REG |= SP_STATUS_INTR_BREAK; }
-        if ((MaskedValue & SP_CLR_SIG0) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG0; }
-        if ((MaskedValue & SP_SET_SIG0) != 0) { SP_STATUS_REG |= SP_STATUS_SIG0; }
-        if ((MaskedValue & SP_CLR_SIG1) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG1; }
-        if ((MaskedValue & SP_SET_SIG1) != 0) { SP_STATUS_REG |= SP_STATUS_SIG1; }
-        if ((MaskedValue & SP_CLR_SIG2) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG2; }
-        if ((MaskedValue & SP_SET_SIG2) != 0) { SP_STATUS_REG |= SP_STATUS_SIG2; }
-        if ((MaskedValue & SP_CLR_SIG3) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG3; }
-        if ((MaskedValue & SP_SET_SIG3) != 0) { SP_STATUS_REG |= SP_STATUS_SIG3; }
-        if ((MaskedValue & SP_CLR_SIG4) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG4; }
-        if ((MaskedValue & SP_SET_SIG4) != 0) { SP_STATUS_REG |= SP_STATUS_SIG4; }
-        if ((MaskedValue & SP_CLR_SIG5) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG5; }
-        if ((MaskedValue & SP_SET_SIG5) != 0) { SP_STATUS_REG |= SP_STATUS_SIG5; }
-        if ((MaskedValue & SP_CLR_SIG6) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG6; }
-        if ((MaskedValue & SP_SET_SIG6) != 0) { SP_STATUS_REG |= SP_STATUS_SIG6; }
-        if ((MaskedValue & SP_CLR_SIG7) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG7; }
-        if ((MaskedValue & SP_SET_SIG7) != 0) { SP_STATUS_REG |= SP_STATUS_SIG7; }
+        if ((MaskedValue & SP_SET_INTR) != 0)
+        {
+            if (BreakOnUnhandledMemory())
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+        }
+        if ((MaskedValue & SP_CLR_SSTEP) != 0)
+        {
+            SP_STATUS_REG &= ~SP_STATUS_SSTEP;
+        }
+        if ((MaskedValue & SP_SET_SSTEP) != 0)
+        {
+            SP_STATUS_REG |= SP_STATUS_SSTEP;
+        }
+        if ((MaskedValue & SP_CLR_INTR_BREAK) != 0)
+        {
+            SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK;
+        }
+        if ((MaskedValue & SP_SET_INTR_BREAK) != 0)
+        {
+            SP_STATUS_REG |= SP_STATUS_INTR_BREAK;
+        }
+        if ((MaskedValue & SP_CLR_SIG0) != 0)
+        {
+            SP_STATUS_REG &= ~SP_STATUS_SIG0;
+        }
+        if ((MaskedValue & SP_SET_SIG0) != 0)
+        {
+            SP_STATUS_REG |= SP_STATUS_SIG0;
+        }
+        if ((MaskedValue & SP_CLR_SIG1) != 0)
+        {
+            SP_STATUS_REG &= ~SP_STATUS_SIG1;
+        }
+        if ((MaskedValue & SP_SET_SIG1) != 0)
+        {
+            SP_STATUS_REG |= SP_STATUS_SIG1;
+        }
+        if ((MaskedValue & SP_CLR_SIG2) != 0)
+        {
+            SP_STATUS_REG &= ~SP_STATUS_SIG2;
+        }
+        if ((MaskedValue & SP_SET_SIG2) != 0)
+        {
+            SP_STATUS_REG |= SP_STATUS_SIG2;
+        }
+        if ((MaskedValue & SP_CLR_SIG3) != 0)
+        {
+            SP_STATUS_REG &= ~SP_STATUS_SIG3;
+        }
+        if ((MaskedValue & SP_SET_SIG3) != 0)
+        {
+            SP_STATUS_REG |= SP_STATUS_SIG3;
+        }
+        if ((MaskedValue & SP_CLR_SIG4) != 0)
+        {
+            SP_STATUS_REG &= ~SP_STATUS_SIG4;
+        }
+        if ((MaskedValue & SP_SET_SIG4) != 0)
+        {
+            SP_STATUS_REG |= SP_STATUS_SIG4;
+        }
+        if ((MaskedValue & SP_CLR_SIG5) != 0)
+        {
+            SP_STATUS_REG &= ~SP_STATUS_SIG5;
+        }
+        if ((MaskedValue & SP_SET_SIG5) != 0)
+        {
+            SP_STATUS_REG |= SP_STATUS_SIG5;
+        }
+        if ((MaskedValue & SP_CLR_SIG6) != 0)
+        {
+            SP_STATUS_REG &= ~SP_STATUS_SIG6;
+        }
+        if ((MaskedValue & SP_SET_SIG6) != 0)
+        {
+            SP_STATUS_REG |= SP_STATUS_SIG6;
+        }
+        if ((MaskedValue & SP_CLR_SIG7) != 0)
+        {
+            SP_STATUS_REG &= ~SP_STATUS_SIG7;
+        }
+        if ((MaskedValue & SP_SET_SIG7) != 0)
+        {
+            SP_STATUS_REG |= SP_STATUS_SIG7;
+        }
         if ((MaskedValue & SP_SET_SIG0) != 0 && RspAudioSignal())
         {
             MI_INTR_REG |= MI_INTR_SP;
@@ -218,7 +294,10 @@ void SPRegistersHandler::SP_DMA_READ()
             if ((CopyLength + ReadPos) > m_MMU.RdramSize())
             {
                 int32_t CopyAmount = m_MMU.RdramSize() - ReadPos;
-                if (CopyAmount < 0) { CopyAmount = 0; }
+                if (CopyAmount < 0)
+                {
+                    CopyAmount = 0;
+                }
                 NullLen = CopyLength - CopyAmount;
 
                 if (CopyAmount > 0)

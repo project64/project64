@@ -1,14 +1,18 @@
 #include "stdafx.h"
+
 #include <stdio.h>
 
-#include <Project64-core/N64System/Profiling.h>
 #include <Common/Log.h>
+#include <Project64-core/N64System/Profiling.h>
 
-enum { MAX_FRAMES = 13 };
+enum
+{
+    MAX_FRAMES = 13
+};
 
 CProfiling::CProfiling() :
-m_CurrentDisplayCount(MAX_FRAMES),
-m_CurrentTimerType(Timer_None)
+    m_CurrentDisplayCount(MAX_FRAMES),
+    m_CurrentTimerType(Timer_None)
 {
     memset(m_Timers, 0, sizeof(m_Timers));
 }
@@ -42,7 +46,10 @@ PROFILE_TIMERS CProfiling::StartTimer(PROFILE_TIMERS TimerType)
 
 PROFILE_TIMERS CProfiling::StopTimer()
 {
-    if (m_CurrentTimerType == Timer_None) { return m_CurrentTimerType; }
+    if (m_CurrentTimerType == Timer_None)
+    {
+        return m_CurrentTimerType;
+    }
     HighResTimeStamp EndTime;
     EndTime.SetToNow();
     uint64_t TimeTaken = EndTime.GetMicroSeconds() - m_StartTime.GetMicroSeconds();
@@ -71,7 +78,8 @@ void CProfiling::ShowCPU_Usage()
 
     m_CurrentDisplayCount = MAX_FRAMES;
     g_Notify->DisplayMessage(0, stdstr_f("r4300i: %d.%02d%%   GFX: %d.%02d%%   Alist: %d.%02d%%   Idle: %d.%02d%%",
-        R4300 / 100, R4300 % 100, RSP_Dlist / 100, RSP_Dlist % 100, RSP_Alist / 100, RSP_Alist % 100, Idel / 100, Idel % 100).c_str());
+                                         R4300 / 100, R4300 % 100, RSP_Dlist / 100, RSP_Dlist % 100, RSP_Alist / 100, RSP_Alist % 100, Idel / 100, Idel % 100)
+                                    .c_str());
 
     ResetTimers();
     if (PreviousType != Timer_None)

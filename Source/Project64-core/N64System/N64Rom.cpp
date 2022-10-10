@@ -1,11 +1,12 @@
 #include "stdafx.h"
+
 #include "N64Rom.h"
 #include "SystemGlobals.h"
-#include <Project64-core/3rdParty/zip.h>
-#include <Common/md5.h>
-#include <Common/Platform.h>
-#include <Common/MemoryManagement.h>
 #include <Common/IniFile.h>
+#include <Common/MemoryManagement.h>
+#include <Common/Platform.h>
+#include <Common/md5.h>
+#include <Project64-core/3rdParty/zip.h>
 #include <memory>
 
 #ifdef _WIN32
@@ -95,7 +96,10 @@ bool CN64Rom::AllocateAndLoadN64Image(const char * FileLoc, bool LoadBootCodeOnl
     for (count = 0; count < (int)RomFileSize; count += ReadFromRomSection)
     {
         uint32_t dwToRead = RomFileSize - count;
-        if (dwToRead > ReadFromRomSection) { dwToRead = ReadFromRomSection; }
+        if (dwToRead > ReadFromRomSection)
+        {
+            dwToRead = ReadFromRomSection;
+        }
 
         if (m_RomFile.Read(&m_ROMImage[count], dwToRead) != dwToRead)
         {
@@ -181,7 +185,10 @@ bool CN64Rom::AllocateAndLoadZipImage(const char * FileLoc, bool LoadBootCodeOnl
             for (count = 4; count < (int)RomFileSize; count += ReadFromRomSection)
             {
                 uint32_t dwToRead = RomFileSize - count;
-                if (dwToRead > ReadFromRomSection) { dwToRead = ReadFromRomSection; }
+                if (dwToRead > ReadFromRomSection)
+                {
+                    dwToRead = ReadFromRomSection;
+                }
 
                 dwRead = unzReadCurrentFile(file, &m_ROMImage[count], dwToRead);
                 if (dwRead == 0)
@@ -267,10 +274,13 @@ CICChip CN64Rom::GetCicChipID(uint8_t * RomData, uint64_t * CRC)
 
     for (count = 0x40; count < 0x1000; count += 4)
     {
-        if (count == 0xC00) crcAleck64 = crc;   //From 0x40 to 0xC00 (Aleck64)
+        if (count == 0xC00) crcAleck64 = crc; //From 0x40 to 0xC00 (Aleck64)
         crc += *(uint32_t *)(RomData + count);
     }
-    if (CRC != nullptr) { *CRC = crc; }
+    if (CRC != nullptr)
+    {
+        *CRC = crc;
+    }
 
     switch (crc)
     {
@@ -289,7 +299,10 @@ CICChip CN64Rom::GetCicChipID(uint8_t * RomData, uint64_t * CRC)
         //Aleck64 CIC
         if (crcAleck64 == 0x000000A5F80BF620)
         {
-            if (CRC != nullptr) { *CRC = crcAleck64; }
+            if (CRC != nullptr)
+            {
+                *CRC = crcAleck64;
+            }
             return CIC_NUS_5101;
         }
         return CIC_UNKNOWN;
@@ -343,9 +356,18 @@ void CN64Rom::CalculateRomCrc()
     case CIC_NUS_6103: v0 = 0xA3886759; break;
     case CIC_NUS_6105: v0 = 0xDF26F436; break;
     case CIC_NUS_6106: v0 = 0x1FEA617A; break;
-    case CIC_NUS_DDUS: length = 0x000A0000; v0 = 0x861AE3A7; break;
-    case CIC_NUS_8303: length = 0x000A0000; v0 = 0x8331D4CA; break;
-    case CIC_NUS_8401: length = 0x000A0000; v0 = 0x0D8303E2; break;
+    case CIC_NUS_DDUS:
+        length = 0x000A0000;
+        v0 = 0x861AE3A7;
+        break;
+    case CIC_NUS_8303:
+        length = 0x000A0000;
+        v0 = 0x8331D4CA;
+        break;
+    case CIC_NUS_8401:
+        length = 0x000A0000;
+        v0 = 0x0D8303E2;
+        break;
     case CIC_NUS_5101: v0 = 0x95104FDD; break;
     default:
         return;
@@ -353,7 +375,7 @@ void CN64Rom::CalculateRomCrc()
 
     ProtectMemory(m_ROMImage, m_RomFileSize, MEM_READWRITE);
 
-    if (m_CicChip == CIC_NUS_5101 && (*(uint32_t*)(m_ROMImage + 0x8) == 0x80100400))
+    if (m_CicChip == CIC_NUS_5101 && (*(uint32_t *)(m_ROMImage + 0x8) == 0x80100400))
         length = 0x003FE000;
 
     v1 = 0;
@@ -374,7 +396,8 @@ void CN64Rom::CalculateRomCrc()
         v1 = a3 + v0;
         a1 = v1;
 
-        if (v1 < a3) {
+        if (v1 < a3)
+        {
             if (m_CicChip == CIC_NUS_DDUS || m_CicChip == CIC_NUS_8303)
             {
                 t2 = t2 ^ t3;
@@ -408,7 +431,8 @@ void CN64Rom::CalculateRomCrc()
         {
             t4 = (v0 ^ (*(uint32_t *)(m_ROMImage + (0xFF & t0) + 0x750))) + t4;
         }
-        else t4 = (v0 ^ s0) + t4;
+        else
+            t4 = (v0 ^ s0) + t4;
     }
     if (m_CicChip == CIC_NUS_6103)
     {
@@ -444,10 +468,22 @@ CICChip CN64Rom::CicChipID()
 
 bool CN64Rom::IsValidRomImage(uint8_t Test[4])
 {
-    if (*((uint32_t *)&Test[0]) == 0x40123780) { return true; }
-    if (*((uint32_t *)&Test[0]) == 0x12408037) { return true; }
-    if (*((uint32_t *)&Test[0]) == 0x80371240) { return true; }
-    if (*((uint32_t *)&Test[0]) == 0x40072780) { return true; } // 64DD IPL
+    if (*((uint32_t *)&Test[0]) == 0x40123780)
+    {
+        return true;
+    }
+    if (*((uint32_t *)&Test[0]) == 0x12408037)
+    {
+        return true;
+    }
+    if (*((uint32_t *)&Test[0]) == 0x80371240)
+    {
+        return true;
+    }
+    if (*((uint32_t *)&Test[0]) == 0x40072780)
+    {
+        return true;
+    } // 64DD IPL
     return false;
 }
 
@@ -501,7 +537,8 @@ void CN64Rom::CleanRomName(char * RomName, bool byteswap)
     {
         switch (RomName[count])
         {
-        case '/': case '\\': RomName[count] = '-'; break;
+        case '/':
+        case '\\': RomName[count] = '-'; break;
         case ':': RomName[count] = ';'; break;
         }
     }
@@ -528,16 +565,16 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
         stdstr FullPath = FileLoc;
 
         // This should be a 7-zip file
-        char * SubFile = strstr(const_cast<char*>(FullPath.c_str()), "?");
+        char * SubFile = strstr(const_cast<char *>(FullPath.c_str()), "?");
         if (SubFile != nullptr)
         {
             *SubFile = '\0';
             SubFile += 1;
         }
-    	//else load first found file until dialog is implemented
+        //else load first found file until dialog is implemented
         //{
-	        // Pop up a dialog and select file
-	        // Allocate memory for sub name and copy selected file name to variable
+        // Pop up a dialog and select file
+        // Allocate memory for sub name and copy selected file name to variable
         //}
 
         C7zip ZipFile(FullPath.c_str());
@@ -563,7 +600,10 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
             // Get the size of the ROM and try to allocate the memory needed
             uint32_t RomFileSize = (uint32_t)f->Size;
             // If loading boot code then just load the first 0x1000 bytes
-            if (LoadBootCodeOnly) { RomFileSize = 0x1000; }
+            if (LoadBootCodeOnly)
+            {
+                RomFileSize = 0x1000;
+            }
 
             if (!AllocateRomImage(RomFileSize))
             {
@@ -582,11 +622,11 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
 
             if (!IsValidRomImage(m_ROMImage))
             {
-            	if (i < ZipFile.NumFiles() - 1)
-            	{
+                if (i < ZipFile.NumFiles() - 1)
+                {
                     UnallocateRomImage();
                     continue;
-            	}
+                }
                 SetError(MSG_FAIL_IMAGE);
                 WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
                 return false;
@@ -674,7 +714,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
 
         if (GameIdentifiers.find(m_RomIdent.c_str()) == GameIdentifiers.end())
         {
-            char InternalName[22] = { 0 };
+            char InternalName[22] = {0};
             memcpy(InternalName, (void *)(m_ROMImage + 0x20), 20);
             CN64Rom::CleanRomName(InternalName);
 
@@ -697,7 +737,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
         }
         else if (!IsLoadedRomDDIPL())
         {
-            g_Settings->SaveString(Game_GameName, m_RomName.c_str());   // Use base games save file if loaded in combo
+            g_Settings->SaveString(Game_GameName, m_RomName.c_str()); // Use base games save file if loaded in combo
         }
     }
 
@@ -724,7 +764,7 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
         stdstr FullPath = FileLoc;
 
         // This should be a 7-zip file
-        char * SubFile = strstr(const_cast<char*>(FullPath.c_str()), "?");
+        char * SubFile = strstr(const_cast<char *>(FullPath.c_str()), "?");
         if (SubFile != nullptr)
         {
             *SubFile = '\0';
@@ -732,8 +772,8 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
         }
         //else load first found file until dialog is implemented
         //{
-            // Pop up a dialog and select file
-            // Allocate memory for sub name and copy selected file name to variable
+        // Pop up a dialog and select file
+        // Allocate memory for sub name and copy selected file name to variable
         //}
 
         C7zip ZipFile(FullPath.c_str());
@@ -759,7 +799,10 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
             // Get the size of the ROM and try to allocate the memory needed
             uint32_t RomFileSize = (uint32_t)f->Size;
             // If loading boot code then just load the first 0x1000 bytes
-            if (LoadBootCodeOnly) { RomFileSize = 0x1000; }
+            if (LoadBootCodeOnly)
+            {
+                RomFileSize = 0x1000;
+            }
 
             if (!AllocateRomImage(RomFileSize))
             {
@@ -827,7 +870,7 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
     if (strlen(RomName) == 0)
     {
         strcpy(RomName, CPath(FileLoc).GetName().c_str());
-        CN64Rom::CleanRomName(RomName,false);
+        CN64Rom::CleanRomName(RomName, false);
     }
     WriteTrace(TraceN64System, TraceDebug, "RomName %s", RomName);
 

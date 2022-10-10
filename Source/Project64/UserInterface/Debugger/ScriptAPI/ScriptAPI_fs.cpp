@@ -66,6 +66,7 @@ duk_ret_t ScriptAPI::js_fs_open(duk_context * ctx)
 
     bool bModeValid = false;
 
+    // clang-format off
     const char * validModes[] = {
         "r", "rb",
         "w", "wb",
@@ -73,8 +74,9 @@ duk_ret_t ScriptAPI::js_fs_open(duk_context * ctx)
         "r+", "rb+", "r+b",
         "w+", "wb+", "w+b",
         "a+", "ab+", "a+b",
-        nullptr
+        nullptr,
     };
+    // clang-format on
 
     for (int i = 0; validModes[i] != nullptr; i++)
     {
@@ -388,7 +390,11 @@ duk_ret_t ScriptAPI::js_fs_Stats__constructor(duk_context * ctx)
         {nullptr, 0},
     };
 
-    struct { const char *key; time_t time; } dates[3] = {
+    struct
+    {
+        const char * key;
+        time_t time;
+    } dates[3] = {
         {"atime", stats.st_atime * 1000},
         {"mtime", stats.st_mtime * 1000},
         {"ctime", stats.st_ctime * 1000},

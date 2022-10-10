@@ -5,12 +5,12 @@
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 
 #include "stdafx.h"
+
 #include "GBCart.h"
-
-#include <time.h>
 #include <memory>
+#include <time.h>
 
-static void read_gb_cart_normal(struct gb_cart* gb_cart, uint16_t address, uint8_t* data)
+static void read_gb_cart_normal(struct gb_cart * gb_cart, uint16_t address, uint8_t * data)
 {
     uint16_t offset;
 
@@ -45,7 +45,7 @@ static void read_gb_cart_normal(struct gb_cart* gb_cart, uint16_t address, uint8
     }
 }
 
-static void write_gb_cart_normal(struct gb_cart* gb_cart, uint16_t address, const uint8_t* data)
+static void write_gb_cart_normal(struct gb_cart * gb_cart, uint16_t address, const uint8_t * data)
 {
     uint16_t offset;
     if ((address >= 0xA000) && (address <= 0xBFFF))
@@ -68,7 +68,7 @@ static void write_gb_cart_normal(struct gb_cart* gb_cart, uint16_t address, cons
     }
 }
 
-static void read_gb_cart_mbc1(struct gb_cart* gb_cart, uint16_t address, uint8_t* data)
+static void read_gb_cart_mbc1(struct gb_cart * gb_cart, uint16_t address, uint8_t * data)
 {
     size_t offset;
 
@@ -97,7 +97,7 @@ static void read_gb_cart_mbc1(struct gb_cart* gb_cart, uint16_t address, uint8_t
     }
 }
 
-static void write_gb_cart_mbc1(struct gb_cart* gb_cart, uint16_t address, const uint8_t* data)
+static void write_gb_cart_mbc1(struct gb_cart * gb_cart, uint16_t address, const uint8_t * data)
 {
     size_t offset;
 
@@ -108,7 +108,7 @@ static void write_gb_cart_mbc1(struct gb_cart* gb_cart, uint16_t address, const 
     }
     else if ((address >= 0x2000) && (address <= 0x3FFF)) // ROM bank select
     {
-        gb_cart->rom_bank &= 0x60;	// Keep MSB
+        gb_cart->rom_bank &= 0x60; // Keep MSB
         gb_cart->rom_bank |= data[0] & 0x1F;
 
         // Emulate quirk: 0x00 -> 0x01, 0x20 -> 0x21, 0x40->0x41, 0x60 -> 0x61
@@ -139,14 +139,14 @@ static void write_gb_cart_mbc1(struct gb_cart* gb_cart, uint16_t address, const 
             gb_cart->ram_bank_mode = data[0] & 0x01;
             if (gb_cart->ram_bank_mode)
             {
-                gb_cart->ram_bank = gb_cart->rom_bank >> 5;	// Set the RAM bank to the "magic bits"
-                gb_cart->rom_bank &= 0x1F; // Zero out bits 5 and 6 to keep consistency
+                gb_cart->ram_bank = gb_cart->rom_bank >> 5; // Set the RAM bank to the "magic bits"
+                gb_cart->rom_bank &= 0x1F;                  // Zero out bits 5 and 6 to keep consistency
             }
             else
             {
                 gb_cart->rom_bank &= 0x1F;
                 gb_cart->rom_bank |= (gb_cart->ram_bank << 5);
-                gb_cart->ram_bank = 0x00;	// We can only reach RAM page 0
+                gb_cart->ram_bank = 0x00; // We can only reach RAM page 0
             }
         }
     }
@@ -163,7 +163,7 @@ static void write_gb_cart_mbc1(struct gb_cart* gb_cart, uint16_t address, const 
     }
 }
 
-static void read_gb_cart_mbc2(struct gb_cart* gb_cart, uint16_t address, uint8_t* data)
+static void read_gb_cart_mbc2(struct gb_cart * gb_cart, uint16_t address, uint8_t * data)
 {
     size_t offset;
 
@@ -192,7 +192,7 @@ static void read_gb_cart_mbc2(struct gb_cart* gb_cart, uint16_t address, uint8_t
     }
 }
 
-static void write_gb_cart_mbc2(struct gb_cart* gb_cart, uint16_t address, const uint8_t* data)
+static void write_gb_cart_mbc2(struct gb_cart * gb_cart, uint16_t address, const uint8_t * data)
 {
     size_t offset;
 
@@ -228,36 +228,42 @@ static void write_gb_cart_mbc2(struct gb_cart* gb_cart, uint16_t address, const 
     }
 }
 
-void memoryUpdateMBC3Clock(struct gb_cart* gb_cart)
+void memoryUpdateMBC3Clock(struct gb_cart * gb_cart)
 {
     time_t now = time(nullptr);
     time_t diff = now - gb_cart->rtc_last_time;
-    if (diff > 0) {
+    if (diff > 0)
+    {
         // Update the clock according to the last update time
         gb_cart->rtc_data[0] += (int)(diff % 60);
-        if (gb_cart->rtc_data[0] > 59) {
+        if (gb_cart->rtc_data[0] > 59)
+        {
             gb_cart->rtc_data[0] -= 60;
             gb_cart->rtc_data[1]++;
         }
         diff /= 60;
 
         gb_cart->rtc_data[1] += (int)(diff % 60);
-        if (gb_cart->rtc_data[1] > 59) {
+        if (gb_cart->rtc_data[1] > 59)
+        {
             gb_cart->rtc_data[1] -= 60;
             gb_cart->rtc_data[2]++;
         }
         diff /= 60;
 
         gb_cart->rtc_data[2] += (int)(diff % 24);
-        if (gb_cart->rtc_data[2] > 23) {
+        if (gb_cart->rtc_data[2] > 23)
+        {
             gb_cart->rtc_data[2] -= 24;
             gb_cart->rtc_data[3]++;
         }
         diff /= 24;
 
         gb_cart->rtc_data[3] += (int)(diff & 0xFFFFFFFF);
-        if (gb_cart->rtc_data[3] > 255) {
-            if (gb_cart->rtc_data[3] > 511) {
+        if (gb_cart->rtc_data[3] > 255)
+        {
+            if (gb_cart->rtc_data[3] > 511)
+            {
                 gb_cart->rtc_data[3] %= 512;
                 gb_cart->rtc_data[3] |= 0x80;
             }
@@ -267,7 +273,7 @@ void memoryUpdateMBC3Clock(struct gb_cart* gb_cart)
     gb_cart->rtc_last_time = now;
 }
 
-static void read_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, uint8_t* data)
+static void read_gb_cart_mbc3(struct gb_cart * gb_cart, uint16_t address, uint8_t * data)
 {
     size_t offset;
 
@@ -317,7 +323,7 @@ static void read_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, uint8_t
     }
 }
 
-static void write_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, const uint8_t* data)
+static void write_gb_cart_mbc3(struct gb_cart * gb_cart, uint16_t address, const uint8_t * data)
 {
     uint8_t bank;
     size_t offset;
@@ -422,11 +428,11 @@ static void read_gb_cart_mbc5(struct gb_cart * gb_cart, uint16_t address, uint8_
     }
 }
 
-static void write_gb_cart_mbc5(struct gb_cart* gb_cart, uint16_t address, const uint8_t* data)
+static void write_gb_cart_mbc5(struct gb_cart * gb_cart, uint16_t address, const uint8_t * data)
 {
     size_t offset;
 
-    if ((address >= 0x0000) && (address <= 0x1FFF))  // We shouldn't be able to read/write to RAM unless this is toggled on
+    if ((address >= 0x0000) && (address <= 0x1FFF)) // We shouldn't be able to read/write to RAM unless this is toggled on
     {
         // Enable / Disable RAM -- NOT WORKING --
         gb_cart->ram_enabled = (data[0] & 0x0F) == 0x0A;
@@ -511,11 +517,11 @@ static void read_gb_cart_pocket_cam(struct gb_cart * gb_cart, uint16_t address, 
     }
 }
 
-static void write_gb_cart_pocket_cam(struct gb_cart* gb_cart, uint16_t address, const uint8_t* data)
+static void write_gb_cart_pocket_cam(struct gb_cart * gb_cart, uint16_t address, const uint8_t * data)
 {
     size_t offset;
 
-    if ((address >= 0x0000) && (address <= 0x1FFF))  // We shouldn't be able to read/write to RAM unless this is toggled on
+    if ((address >= 0x0000) && (address <= 0x1FFF)) // We shouldn't be able to read/write to RAM unless this is toggled on
     {
         // Enable / Disable RAM
         gb_cart->ram_enabled = (data[0] & 0x0F) == 0x0A;
@@ -603,46 +609,45 @@ enum gbcart_extra_devices
 
 struct parsed_cart_type
 {
-    void(*read_gb_cart)(struct gb_cart*, uint16_t, uint8_t*);
-    void(*write_gb_cart)(struct gb_cart*, uint16_t, const uint8_t*);
+    void (*read_gb_cart)(struct gb_cart *, uint16_t, uint8_t *);
+    void (*write_gb_cart)(struct gb_cart *, uint16_t, const uint8_t *);
     unsigned int extra_devices;
 };
 
-static const struct parsed_cart_type* parse_cart_type(uint8_t cart_type)
+static const struct parsed_cart_type * parse_cart_type(uint8_t cart_type)
 {
-#define MBC(x) read_gb_cart_ ## x, write_gb_cart_ ## x
+#define MBC(x) read_gb_cart_##x, write_gb_cart_##x
     static const struct parsed_cart_type GB_CART_TYPES[] =
-    {
-        { MBC(normal), GED_NONE },
-        { MBC(mbc1), GED_NONE },
-        { MBC(mbc1), GED_RAM },
-        { MBC(mbc1), GED_RAM | GED_BATTERY },
-        { MBC(mbc2), GED_NONE },
-        { MBC(mbc2), GED_BATTERY },
-        { MBC(normal), GED_RAM },
-        { MBC(normal), GED_RAM | GED_BATTERY },
-        { MBC(mmm01), GED_NONE },
-        { MBC(mmm01), GED_RAM },
-        { MBC(mmm01), GED_RAM | GED_BATTERY },
-        { MBC(mbc3), GED_BATTERY | GED_RTC },
-        { MBC(mbc3), GED_RAM | GED_BATTERY | GED_RTC },
-        { MBC(mbc3), GED_NONE },
-        { MBC(mbc3), GED_RAM },
-        { MBC(mbc3), GED_RAM | GED_BATTERY },
-        { MBC(mbc4), GED_NONE },
-        { MBC(mbc4), GED_RAM },
-        { MBC(mbc4), GED_RAM | GED_BATTERY },
-        { MBC(mbc5), GED_NONE },
-        { MBC(mbc5), GED_RAM },
-        { MBC(mbc5), GED_RAM | GED_BATTERY },
-        { MBC(mbc5), GED_RUMBLE },
-        { MBC(mbc5), GED_RAM | GED_RUMBLE },
-        { MBC(mbc5), GED_RAM | GED_BATTERY | GED_RUMBLE },
-        { MBC(pocket_cam), GED_NONE },
-        { MBC(bandai_tama5), GED_NONE },
-        { MBC(huc3), GED_NONE },
-        { MBC(huc1), GED_RAM | GED_BATTERY }
-    };
+        {
+            {MBC(normal), GED_NONE},
+            {MBC(mbc1), GED_NONE},
+            {MBC(mbc1), GED_RAM},
+            {MBC(mbc1), GED_RAM | GED_BATTERY},
+            {MBC(mbc2), GED_NONE},
+            {MBC(mbc2), GED_BATTERY},
+            {MBC(normal), GED_RAM},
+            {MBC(normal), GED_RAM | GED_BATTERY},
+            {MBC(mmm01), GED_NONE},
+            {MBC(mmm01), GED_RAM},
+            {MBC(mmm01), GED_RAM | GED_BATTERY},
+            {MBC(mbc3), GED_BATTERY | GED_RTC},
+            {MBC(mbc3), GED_RAM | GED_BATTERY | GED_RTC},
+            {MBC(mbc3), GED_NONE},
+            {MBC(mbc3), GED_RAM},
+            {MBC(mbc3), GED_RAM | GED_BATTERY},
+            {MBC(mbc4), GED_NONE},
+            {MBC(mbc4), GED_RAM},
+            {MBC(mbc4), GED_RAM | GED_BATTERY},
+            {MBC(mbc5), GED_NONE},
+            {MBC(mbc5), GED_RAM},
+            {MBC(mbc5), GED_RAM | GED_BATTERY},
+            {MBC(mbc5), GED_RUMBLE},
+            {MBC(mbc5), GED_RAM | GED_RUMBLE},
+            {MBC(mbc5), GED_RAM | GED_BATTERY | GED_RUMBLE},
+            {MBC(pocket_cam), GED_NONE},
+            {MBC(bandai_tama5), GED_NONE},
+            {MBC(huc3), GED_NONE},
+            {MBC(huc1), GED_RAM | GED_BATTERY}};
 #undef MBC
 
     switch (cart_type)
@@ -676,13 +681,13 @@ static const struct parsed_cart_type* parse_cart_type(uint8_t cart_type)
     case 0xFD: return &GB_CART_TYPES[26];
     case 0xFE: return &GB_CART_TYPES[27];
     case 0xFF: return &GB_CART_TYPES[28];
-    default:   return nullptr;
+    default: return nullptr;
     }
 }
 
-bool GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
+bool GBCart::init_gb_cart(struct gb_cart * gb_cart, const char * gb_file)
 {
-    const struct parsed_cart_type* type;
+    const struct parsed_cart_type * type;
     std::unique_ptr<uint8_t> rom;
     size_t rom_size = 0;
     std::unique_ptr<uint8_t> ram;
@@ -777,7 +782,7 @@ bool GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
     return true;
 }
 
-void GBCart::save_gb_cart(struct gb_cart* gb_cart)
+void GBCart::save_gb_cart(struct gb_cart * gb_cart)
 {
     CFile ramFile;
     ramFile.Open(g_Settings->LoadStringVal(Game_Transferpak_Sav).c_str(), CFileBase::modeWrite | CFileBase::modeCreate);
@@ -801,7 +806,7 @@ void GBCart::save_gb_cart(struct gb_cart* gb_cart)
     ramFile.Close();
 }
 
-void GBCart::release_gb_cart(struct gb_cart* gb_cart)
+void GBCart::release_gb_cart(struct gb_cart * gb_cart)
 {
     if (gb_cart->rom != nullptr)
         delete gb_cart->rom;
@@ -812,12 +817,12 @@ void GBCart::release_gb_cart(struct gb_cart* gb_cart)
     memset(gb_cart, 0, sizeof(*gb_cart));
 }
 
-void GBCart::read_gb_cart(struct gb_cart* gb_cart, uint16_t address, uint8_t* data)
+void GBCart::read_gb_cart(struct gb_cart * gb_cart, uint16_t address, uint8_t * data)
 {
     gb_cart->read_gb_cart(gb_cart, address, data);
 }
 
-void GBCart::write_gb_cart(struct gb_cart* gb_cart, uint16_t address, const uint8_t* data)
+void GBCart::write_gb_cart(struct gb_cart * gb_cart, uint16_t address, const uint8_t * data)
 {
     gb_cart->write_gb_cart(gb_cart, address, data);
 }

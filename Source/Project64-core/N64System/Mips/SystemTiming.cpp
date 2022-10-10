@@ -1,12 +1,11 @@
 #include "stdafx.h"
-#include <Project64-core/N64System/N64System.h>
-#include <Project64-core/N64System/Mips/SystemTiming.h>
-#include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/Mips/Register.h>
-#include <Project64-core/N64System/Mips/Disk.h>
-#include <Project64-core/N64System/N64System.h>
-#include <Project64-core/N64System/MemoryHandler/AudioInterfaceHandler.h>
 #include <Project64-core/3rdParty/zip.h>
+#include <Project64-core/N64System/MemoryHandler/AudioInterfaceHandler.h>
+#include <Project64-core/N64System/Mips/Disk.h>
+#include <Project64-core/N64System/Mips/Register.h>
+#include <Project64-core/N64System/Mips/SystemTiming.h>
+#include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/SystemGlobals.h>
 
 CSystemTimer::CSystemTimer(CN64System & System) :
     m_System(System),
@@ -56,12 +55,12 @@ void CSystemTimer::SetTimer(TimerType Type, uint32_t Cycles, bool bRelative)
         }
         else
         {
-            m_TimerDetatils[Type].CyclesToTimer = (int64_t)Cycles - (int64_t)m_NextTimer;  // Replace the new cycles
+            m_TimerDetatils[Type].CyclesToTimer = (int64_t)Cycles - (int64_t)m_NextTimer; // Replace the new cycles
         }
     }
     else
     {
-        m_TimerDetatils[Type].CyclesToTimer = (int64_t)Cycles - (int64_t)m_NextTimer;  // Replace the new cycles
+        m_TimerDetatils[Type].CyclesToTimer = (int64_t)Cycles - (int64_t)m_NextTimer; // Replace the new cycles
     }
     FixTimers();
 }
@@ -400,7 +399,7 @@ void CSystemTimer::LoadData(CFile & file)
     file.Read((void *)&m_Current, sizeof(m_Current));
 }
 
-void CSystemTimer::RecordDifference(CLog &LogFile, const CSystemTimer& rSystemTimer)
+void CSystemTimer::RecordDifference(CLog & LogFile, const CSystemTimer & rSystemTimer)
 {
     if (m_LastUpdate != rSystemTimer.m_LastUpdate)
     {
@@ -432,7 +431,7 @@ void CSystemTimer::RecordDifference(CLog &LogFile, const CSystemTimer& rSystemTi
     }
 }
 
-bool CSystemTimer::operator == (const CSystemTimer& rSystemTimer) const
+bool CSystemTimer::operator==(const CSystemTimer & rSystemTimer) const
 {
     if (m_LastUpdate != rSystemTimer.m_LastUpdate)
     {
@@ -465,7 +464,7 @@ bool CSystemTimer::operator == (const CSystemTimer& rSystemTimer) const
     return true;
 }
 
-bool CSystemTimer::operator != (const CSystemTimer& rSystemTimer) const
+bool CSystemTimer::operator!=(const CSystemTimer & rSystemTimer) const
 {
     return !(*this == rSystemTimer);
 }

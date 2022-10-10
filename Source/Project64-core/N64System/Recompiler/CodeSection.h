@@ -35,14 +35,14 @@ public:
     uint32_t m_EndPC;
     CCodeSection * m_ContinueSection;
     CCodeSection * m_JumpSection;
-    bool m_EndSection;   // If this section does not link, are other sections allowed to find block to link to it?
+    bool m_EndSection; // If this section does not link, are other sections allowed to find block to link to it?
     bool m_LinkAllowed;
     uint32_t m_Test;
     uint32_t m_Test2;
     uint8_t * m_CompiledLocation;
     bool m_InLoop;
     bool m_DelaySlot;
-    CRecompilerOps * & m_RecompilerOps;
+    CRecompilerOps *& m_RecompilerOps;
 
     // Register info
     CRegInfo m_RegEnter;
@@ -53,8 +53,8 @@ public:
 
 private:
     CCodeSection(void);
-    CCodeSection(const CCodeSection&);
-    CCodeSection& operator=(const CCodeSection&);
+    CCodeSection(const CCodeSection &);
+    CCodeSection & operator=(const CCodeSection &);
 
     void UnlinkParent(CCodeSection * Parent, bool ContinueSection);
     void InheritConstants();

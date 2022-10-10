@@ -1,9 +1,10 @@
 #include "stdafx.h"
+
+#include <Project64-core/ExceptionHandler.h>
+#include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
+#include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/N64System.h>
-#include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
-#include <Project64-core/ExceptionHandler.h>
 
 CRecompiler::CRecompiler(CMipsMemoryVM & MMU, CRegisters & Registers, bool & EndEmulation) :
     m_MMU(MMU),
@@ -120,7 +121,7 @@ void CRecompiler::RecompilerMain_VirtualTable()
                 WriteTrace(TraceRecompiler, TraceError, "Failed to allocate PCCompiledFunc");
                 g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
             }
-            memset(table, 0, sizeof(PCCompiledFunc)* (0x1000 >> 2));
+            memset(table, 0, sizeof(PCCompiledFunc) * (0x1000 >> 2));
             if (g_System->bSMM_Protect())
             {
                 WriteTrace(TraceRecompiler, TraceError, "Create Table (%X): Index = %d", table, PC >> 0xC);
@@ -272,7 +273,7 @@ void CRecompiler::RecompilerMain_Lookup_validate()
                 FUNCTION_PROFILE::iterator itr = m_BlockProfile.find(info->Function());
                 if (itr == m_BlockProfile.end())
                 {
-                    FUNCTION_PROFILE_DATA data = { 0 };
+                    FUNCTION_PROFILE_DATA data = {0};
                     data.Address = info->EnterPC();
                     std::pair<FUNCTION_PROFILE::iterator, bool> res = m_BlockProfile.insert(FUNCTION_PROFILE::value_type(info->Function(), data));
                     itr = res.first;
@@ -395,7 +396,7 @@ CCompiledFunc * CRecompiler::CompileCode()
     }
 
 #if defined(__aarch64__) || defined(__amd64__) || defined(_M_X64)
-    g_Notify->BreakPoint(__FILE__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 #else
     if (g_ModuleLogLevel[TraceRecompiler] >= TraceDebug)
     {
@@ -497,14 +498,14 @@ void CRecompiler::ClearRecompCode_Virt(uint32_t Address, int length, REMOVE_REAS
         }
         break;
     case FuncFind_PhysicalLookup:
+    {
+        uint32_t pAddr = 0;
+        if (m_MMU.VAddrToPAddr(Address, pAddr))
         {
-            uint32_t pAddr = 0;
-            if (m_MMU.VAddrToPAddr(Address, pAddr))
-            {
-                ClearRecompCode_Phys(pAddr, length, Reason);
-            }
+            ClearRecompCode_Phys(pAddr, length, Reason);
         }
-        break;
+    }
+    break;
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
@@ -519,7 +520,7 @@ void CRecompiler::ResetLog()
 void CRecompiler::ResetMemoryStackPos()
 {
 #if defined(__aarch64__) || defined(__amd64__) || defined(_M_X64)
-    g_Notify->BreakPoint(__FILE__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 #else
     if (m_Registers.m_GPR[29].UW[0] == 0)
     {
@@ -543,7 +544,7 @@ void CRecompiler::ResetMemoryStackPos()
 void CRecompiler::DumpFunctionTimes()
 {
 #if defined(__aarch64__) || defined(__amd64__) || defined(_M_X64)
-	g_Notify->BreakPoint(__FILE__,__LINE__);
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 #else
     CPath LogFileName(g_Settings->LoadStringVal(Directory_Log).c_str(), "FunctionTimes.csv");
 

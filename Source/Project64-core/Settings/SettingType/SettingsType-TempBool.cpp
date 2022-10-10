@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "SettingsType-TempBool.h"
 
 CSettingTypeTempBool::CSettingTypeTempBool(bool initialValue, const char * Name) :
@@ -54,15 +55,15 @@ void CSettingTypeTempBool::Save(uint32_t /*Index*/, bool Value)
 
 void CSettingTypeTempBool::Save(uint32_t /*Index*/, uint32_t Value)
 {
-	if (Value == 0 || Value != 0)
-	{
-		m_value = Value != 0;
-		m_changed = true;
-	}
-	else
-	{
-		g_Notify->BreakPoint(__FILE__, __LINE__);
-	}
+    if (Value == 0 || Value != 0)
+    {
+        m_value = Value != 0;
+        m_changed = true;
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CSettingTypeTempBool::Save(uint32_t /*Index*/, const std::string & /*Value*/)

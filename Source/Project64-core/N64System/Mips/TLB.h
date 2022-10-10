@@ -103,10 +103,10 @@ public:
 
     bool PAddrToVAddr(uint32_t PAddr, uint32_t & VAddr, uint32_t & Index);
 
-    void RecordDifference(CLog &LogFile, const CTLB& rTLB);
+    void RecordDifference(CLog & LogFile, const CTLB & rTLB);
 
-    bool operator == (const CTLB& rTLB) const;
-    bool operator != (const CTLB& rTLB) const;
+    bool operator==(const CTLB & rTLB) const;
+    bool operator!=(const CTLB & rTLB) const;
 
 private:
     struct FASTTLB
@@ -116,12 +116,12 @@ private:
         uint32_t PHYSSTART;
         uint32_t PHYSEND;
         uint32_t Length;
-        bool  VALID;
-        bool  DIRTY;
-        bool  GLOBAL;
-        bool  ValidEntry;
-        bool  Random;
-        bool  Probed;
+        bool VALID;
+        bool DIRTY;
+        bool GLOBAL;
+        bool ValidEntry;
+        bool Random;
+        bool Probed;
     };
 
     friend class CDebugTlb; // Enable debug window to read class
@@ -129,14 +129,14 @@ private:
     CTLB_CB * const m_CB;
 
     TLB_ENTRY m_tlb[32];
-    FASTTLB   m_FastTlb[64];
+    FASTTLB m_FastTlb[64];
 
     void SetupTLB_Entry(int32_t index, bool Random);
 
 private:
     CTLB();
-    CTLB(const CTLB&);
-    CTLB& operator=(const CTLB&);
+    CTLB(const CTLB &);
+    CTLB & operator=(const CTLB &);
 };
 
 #pragma warning(pop)

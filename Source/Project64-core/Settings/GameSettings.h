@@ -11,35 +11,116 @@ public:
 
     void RefreshGameSettings(void);
 
-    inline static bool UseHleGfx(void) { return m_UseHleGfx; }
-    inline static bool bRegCaching(void) { return m_RegCaching; }
-    inline static bool bLinkBlocks(void) { return m_bLinkBlocks && !CDebugSettings::HaveWriteBP() && !CDebugSettings::HaveReadBP(); }
-    inline static FUNC_LOOKUP_METHOD LookUpMode(void) { return (FUNC_LOOKUP_METHOD)m_LookUpMode; }
-    inline static uint32_t CountPerOp(void) { return m_CountPerOp; }
-    inline static uint32_t ViRefreshRate(void) { return m_ViRefreshRate; }
-    inline static uint32_t AiCountPerBytes(void) { return m_AiCountPerBytes; }
-    inline static bool bDelayDP(void) { return m_DelayDP; }
-    inline static bool bDelaySI(void) { return m_DelaySI; }
-    inline static bool bRandomizeSIPIInterrupts(void) { return m_bRandomizeSIPIInterrupts; }
-    inline static uint32_t RdramSize(void) { return m_RdramSize; }
-    inline static bool bFixedAudio(void) { return m_bFixedAudio; }
-    inline static bool bSyncToAudio(void) { return m_bSyncToAudio; }
-    inline static bool FullSpeed(void) { return m_FullSpeed; }
-    inline static bool bFastSP(void) { return m_bFastSP; }
-    inline static bool b32BitCore(void) { return m_b32Bit; }
-    inline static bool RspAudioSignal(void) { return m_RspAudioSignal; }
-    inline static bool bSMM_StoreInstruc(void) { return m_bSMM_StoreInstruc; }
-    inline static bool bSMM_Protect(void) { return m_bSMM_Protect; }
-    inline static bool bSMM_ValidFunc(void) { return m_bSMM_ValidFunc; }
-    inline static bool bSMM_PIDMA(void) { return m_bSMM_PIDMA; }
-    inline static bool bSMM_TLB(void) { return m_bSMM_TLB; }
-    inline static SYSTEM_TYPE SystemType(void) { return m_SystemType; }
-    inline static CPU_TYPE CpuType(void) { return m_CpuType; }
-    inline static uint32_t OverClockModifier(void) { return m_OverClockModifier; }
-    inline static DISK_SEEK_TYPE DiskSeekTimingType(void) { return m_DiskSeekTimingType; };
-    inline static bool EnableDisk(void) { return m_EnableDisk; }
+    inline static bool UseHleGfx(void)
+    {
+        return m_UseHleGfx;
+    }
+    inline static bool bRegCaching(void)
+    {
+        return m_RegCaching;
+    }
+    inline static bool bLinkBlocks(void)
+    {
+        return m_bLinkBlocks && !CDebugSettings::HaveWriteBP() && !CDebugSettings::HaveReadBP();
+    }
+    inline static FUNC_LOOKUP_METHOD LookUpMode(void)
+    {
+        return (FUNC_LOOKUP_METHOD)m_LookUpMode;
+    }
+    inline static uint32_t CountPerOp(void)
+    {
+        return m_CountPerOp;
+    }
+    inline static uint32_t ViRefreshRate(void)
+    {
+        return m_ViRefreshRate;
+    }
+    inline static uint32_t AiCountPerBytes(void)
+    {
+        return m_AiCountPerBytes;
+    }
+    inline static bool bDelayDP(void)
+    {
+        return m_DelayDP;
+    }
+    inline static bool bDelaySI(void)
+    {
+        return m_DelaySI;
+    }
+    inline static bool bRandomizeSIPIInterrupts(void)
+    {
+        return m_bRandomizeSIPIInterrupts;
+    }
+    inline static uint32_t RdramSize(void)
+    {
+        return m_RdramSize;
+    }
+    inline static bool bFixedAudio(void)
+    {
+        return m_bFixedAudio;
+    }
+    inline static bool bSyncToAudio(void)
+    {
+        return m_bSyncToAudio;
+    }
+    inline static bool FullSpeed(void)
+    {
+        return m_FullSpeed;
+    }
+    inline static bool bFastSP(void)
+    {
+        return m_bFastSP;
+    }
+    inline static bool b32BitCore(void)
+    {
+        return m_b32Bit;
+    }
+    inline static bool RspAudioSignal(void)
+    {
+        return m_RspAudioSignal;
+    }
+    inline static bool bSMM_StoreInstruc(void)
+    {
+        return m_bSMM_StoreInstruc;
+    }
+    inline static bool bSMM_Protect(void)
+    {
+        return m_bSMM_Protect;
+    }
+    inline static bool bSMM_ValidFunc(void)
+    {
+        return m_bSMM_ValidFunc;
+    }
+    inline static bool bSMM_PIDMA(void)
+    {
+        return m_bSMM_PIDMA;
+    }
+    inline static bool bSMM_TLB(void)
+    {
+        return m_bSMM_TLB;
+    }
+    inline static SYSTEM_TYPE SystemType(void)
+    {
+        return m_SystemType;
+    }
+    inline static CPU_TYPE CpuType(void)
+    {
+        return m_CpuType;
+    }
+    inline static uint32_t OverClockModifier(void)
+    {
+        return m_OverClockModifier;
+    }
+    inline static DISK_SEEK_TYPE DiskSeekTimingType(void)
+    {
+        return m_DiskSeekTimingType;
+    };
+    inline static bool EnableDisk(void)
+    {
+        return m_EnableDisk;
+    }
 
-	void RefreshSyncToAudio(void);
+    void RefreshSyncToAudio(void);
     static void SetOverClockModifier(bool EnhancmentOverClock, uint32_t EnhancmentOverClockModifier);
 
 protected:
@@ -47,8 +128,8 @@ protected:
     static void EnableDiskChanged(void);
 
 private:
-    CGameSettings(const CGameSettings&);
-    CGameSettings& operator=(const CGameSettings&);
+    CGameSettings(const CGameSettings &);
+    CGameSettings & operator=(const CGameSettings &);
 
     static void EnableDiskChanged(void *);
 

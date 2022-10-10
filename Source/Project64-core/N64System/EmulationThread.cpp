@@ -1,12 +1,13 @@
 #include "stdafx.h"
+
+#include <Common/Util.h>
 #include <Project64-core/N64System/N64System.h>
 #include <Project64-core/Notification.h>
-#include <Common/Util.h>
 
-void  CN64System::StartEmulationThead()
+void CN64System::StartEmulationThead()
 {
     WriteTrace(TraceN64System, TraceDebug, "Start");
-    
+
     CThread * thread = new CThread((CThread::CTHREAD_START_ROUTINE)StartEmulationThread);
     thread->Start(thread);
     WriteTrace(TraceN64System, TraceDebug, "Done");

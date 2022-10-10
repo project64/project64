@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Project64-core/Settings.h>
 #include <Common/StdString.h>
+#include <Project64-core/Settings.h>
 #include <stdint.h>
 
 enum SettingType
@@ -20,14 +20,14 @@ enum SettingType
     SettingType_NumberVariable = 10,
     SettingType_StringVariable = 11,
     SettingType_SelectedDirectory = 12,
-	SettingType_RdbSetting = 13,
-	SettingType_Enhancement = 14,
+    SettingType_RdbSetting = 13,
+    SettingType_Enhancement = 14,
 };
 
 class CSettingType
 {
 public:
-    virtual ~CSettingType() {};
+    virtual ~CSettingType(){};
 
     virtual SettingType GetSettingType(void) const = 0;
     virtual bool IndexBasedSetting(void) const = 0;

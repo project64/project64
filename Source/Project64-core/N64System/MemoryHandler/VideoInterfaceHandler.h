@@ -1,8 +1,8 @@
 #pragma once
 #include "MemoryHandler.h"
+#include <Project64-core\Logging.h>
 #include <Project64-core\Settings\DebugSettings.h>
 #include <Project64-core\Settings\GameSettings.h>
-#include <Project64-core\Logging.h>
 #include <stdint.h>
 
 class VideoInterfaceReg
@@ -37,8 +37,8 @@ public:
 
 private:
     VideoInterfaceReg();
-    VideoInterfaceReg(const VideoInterfaceReg&);
-    VideoInterfaceReg& operator=(const VideoInterfaceReg&);
+    VideoInterfaceReg(const VideoInterfaceReg &);
+    VideoInterfaceReg & operator=(const VideoInterfaceReg &);
 };
 
 class CMipsMemoryVM;
@@ -67,8 +67,14 @@ private:
     VideoInterfaceHandler(const VideoInterfaceHandler &);
     VideoInterfaceHandler & operator=(const VideoInterfaceHandler &);
 
-    static void stSystemReset(VideoInterfaceHandler * _this) { _this->SystemReset(); }
-    static void stLoadedGameState(VideoInterfaceHandler * _this) { _this->LoadedGameState(); }
+    static void stSystemReset(VideoInterfaceHandler * _this)
+    {
+        _this->SystemReset();
+    }
+    static void stLoadedGameState(VideoInterfaceHandler * _this)
+    {
+        _this->LoadedGameState();
+    }
 
     void UpdateHalfLine();
     void LoadedGameState(void);

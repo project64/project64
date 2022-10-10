@@ -96,8 +96,7 @@ private:
 
     static constexpr FieldPair SPPC = {IDC_SP_PC_LBL, IDC_SP_PC_EDIT};
 
-    static constexpr char* ExceptionCodes[] =
-    {
+    static constexpr char * ExceptionCodes[] = {
         "Interrupt",
         "TLB mod",
         "TLB load/fetch",

@@ -1,8 +1,9 @@
 #include "stdafx.h"
-#include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/N64System.h>
-#include <Project64-core/Plugins/Plugin.h>
+
 #include <Common/path.h>
+#include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/SystemGlobals.h>
+#include <Project64-core/Plugins/Plugin.h>
 
 CPlugins::CPlugins(SettingID PluginDirSetting, bool SyncPlugins) :
     m_MainWindow(nullptr),
@@ -81,10 +82,22 @@ void CPlugins::PluginChanged(CPlugins * _this)
 
     if (bGfxChange || bAudioChange || bRspChange || bContChange)
     {
-        if (bGfxChange) { WriteTrace(TracePlugins, TraceDebug, "GFX plugin changed"); }
-        if (bAudioChange) { WriteTrace(TracePlugins, TraceDebug, "Audio plugin changed"); }
-        if (bRspChange) { WriteTrace(TracePlugins, TraceDebug, "RSP plugin changed"); }
-        if (bContChange) { WriteTrace(TracePlugins, TraceDebug, "Controller plugin changed"); }
+        if (bGfxChange)
+        {
+            WriteTrace(TracePlugins, TraceDebug, "GFX plugin changed");
+        }
+        if (bAudioChange)
+        {
+            WriteTrace(TracePlugins, TraceDebug, "Audio plugin changed");
+        }
+        if (bRspChange)
+        {
+            WriteTrace(TracePlugins, TraceDebug, "RSP plugin changed");
+        }
+        if (bContChange)
+        {
+            WriteTrace(TracePlugins, TraceDebug, "Controller plugin changed");
+        }
         if (g_Settings->LoadBool(GameRunning_CPU_Running))
         {
             // Ensure that base system actually exists before we go triggering the event
@@ -102,7 +115,7 @@ void CPlugins::PluginChanged(CPlugins * _this)
 }
 
 template <typename plugin_type>
-static void LoadPlugin(SettingID PluginSettingID, SettingID PluginVerSettingID, plugin_type * & plugin, const char * PluginDir, stdstr & FileName, TraceModuleProject64 TraceLevel, const char * type, bool IsCopy)
+static void LoadPlugin(SettingID PluginSettingID, SettingID PluginVerSettingID, plugin_type *& plugin, const char * PluginDir, stdstr & FileName, TraceModuleProject64 TraceLevel, const char * type, bool IsCopy)
 {
     if (plugin != nullptr)
     {
@@ -276,22 +289,46 @@ bool CPlugins::Initiate(CN64System * System)
 {
     WriteTrace(TracePlugins, TraceDebug, "Start");
     // Check to make sure we have the plugin available to be used
-    if (m_Gfx == nullptr) { return false; }
-    if (m_Audio == nullptr) { return false; }
-    if (m_RSP == nullptr) { return false; }
-    if (m_Control == nullptr) { return false; }
+    if (m_Gfx == nullptr)
+    {
+        return false;
+    }
+    if (m_Audio == nullptr)
+    {
+        return false;
+    }
+    if (m_RSP == nullptr)
+    {
+        return false;
+    }
+    if (m_Control == nullptr)
+    {
+        return false;
+    }
 
     WriteTrace(TraceVideoPlugin, TraceDebug, "GFX initiate starting");
-    if (!m_Gfx->Initiate(System, m_MainWindow))   { return false; }
+    if (!m_Gfx->Initiate(System, m_MainWindow))
+    {
+        return false;
+    }
     WriteTrace(TraceVideoPlugin, TraceDebug, "GFX initiate done");
     WriteTrace(TraceAudioPlugin, TraceDebug, "Audio initiate starting");
-    if (!m_Audio->Initiate(System, m_MainWindow)) { return false; }
+    if (!m_Audio->Initiate(System, m_MainWindow))
+    {
+        return false;
+    }
     WriteTrace(TraceAudioPlugin, TraceDebug, "Audio initiate done");
     WriteTrace(TraceControllerPlugin, TraceDebug, "Control initiate starting");
-    if (!m_Control->Initiate(System, m_MainWindow)) { return false; }
+    if (!m_Control->Initiate(System, m_MainWindow))
+    {
+        return false;
+    }
     WriteTrace(TraceControllerPlugin, TraceDebug, "Control initiate done");
     WriteTrace(TraceRSPPlugin, TraceDebug, "RSP initiate starting");
-    if (!m_RSP->Initiate(this, System))   { return false; }
+    if (!m_RSP->Initiate(this, System))
+    {
+        return false;
+    }
     WriteTrace(TraceRSPPlugin, TraceDebug, "RSP initiate done");
     WriteTrace(TracePlugins, TraceDebug, "Done");
     m_initilized = true;
@@ -322,47 +359,71 @@ bool CPlugins::Reset(CN64System * System)
         bRspChange = true;
     }
 
-    if (bGfxChange) { DestroyGfxPlugin(); }
-    if (bAudioChange) { DestroyAudioPlugin(); }
-    if (bRspChange) { DestroyRspPlugin(); }
-    if (bContChange) { DestroyControlPlugin(); }
+    if (bGfxChange)
+    {
+        DestroyGfxPlugin();
+    }
+    if (bAudioChange)
+    {
+        DestroyAudioPlugin();
+    }
+    if (bRspChange)
+    {
+        DestroyRspPlugin();
+    }
+    if (bContChange)
+    {
+        DestroyControlPlugin();
+    }
 
     CreatePlugins();
 
     if (m_Gfx && bGfxChange)
     {
         WriteTrace(TraceVideoPlugin, TraceDebug, "GFX initiate starting");
-        if (!m_Gfx->Initiate(System, m_MainWindow)) { return false; }
+        if (!m_Gfx->Initiate(System, m_MainWindow))
+        {
+            return false;
+        }
         WriteTrace(TraceVideoPlugin, TraceDebug, "GFX initiate done");
     }
     if (m_Audio && bAudioChange)
     {
         WriteTrace(TraceAudioPlugin, TraceDebug, "Audio initiate starting");
-        if (!m_Audio->Initiate(System, m_MainWindow)) { return false; }
+        if (!m_Audio->Initiate(System, m_MainWindow))
+        {
+            return false;
+        }
         WriteTrace(TraceAudioPlugin, TraceDebug, "Audio initiate done");
     }
     if (m_Control && bContChange)
     {
         WriteTrace(TraceControllerPlugin, TraceDebug, "Control initiate starting");
-        if (!m_Control->Initiate(System, m_MainWindow)) { return false; }
+        if (!m_Control->Initiate(System, m_MainWindow))
+        {
+            return false;
+        }
         WriteTrace(TraceControllerPlugin, TraceDebug, "Control initiate done");
     }
     if (m_RSP && bRspChange)
     {
         WriteTrace(TraceRSPPlugin, TraceDebug, "RSP initiate starting");
-        if (!m_RSP->Initiate(this, System)) { return false; }
+        if (!m_RSP->Initiate(this, System))
+        {
+            return false;
+        }
         WriteTrace(TraceRSPPlugin, TraceDebug, "RSP initiate done");
     }
 
-	if (System)
-	{
-		System->RefreshSyncToAudio();
-	}
+    if (System)
+    {
+        System->RefreshSyncToAudio();
+    }
     WriteTrace(TracePlugins, TraceDebug, "Done");
     return true;
 }
 
-void CPlugins::ConfigPlugin(void* hParent, PLUGIN_TYPE Type)
+void CPlugins::ConfigPlugin(void * hParent, PLUGIN_TYPE Type)
 {
     if (g_BaseSystem)
     {
@@ -372,7 +433,10 @@ void CPlugins::ConfigPlugin(void* hParent, PLUGIN_TYPE Type)
     switch (Type)
     {
     case PLUGIN_TYPE_RSP:
-        if (m_RSP == nullptr || m_RSP->DllConfig == nullptr) { break; }
+        if (m_RSP == nullptr || m_RSP->DllConfig == nullptr)
+        {
+            break;
+        }
         if (!m_RSP->Initialized())
         {
             if (!m_RSP->Initiate(this, nullptr))
@@ -383,7 +447,10 @@ void CPlugins::ConfigPlugin(void* hParent, PLUGIN_TYPE Type)
         m_RSP->DllConfig(hParent);
         break;
     case PLUGIN_TYPE_VIDEO:
-        if (m_Gfx == nullptr || m_Gfx->DllConfig == nullptr) { break; }
+        if (m_Gfx == nullptr || m_Gfx->DllConfig == nullptr)
+        {
+            break;
+        }
         if (!m_Gfx->Initialized())
         {
             if (!m_Gfx->Initiate(nullptr, m_MainWindow))
@@ -394,7 +461,10 @@ void CPlugins::ConfigPlugin(void* hParent, PLUGIN_TYPE Type)
         m_Gfx->DllConfig(hParent);
         break;
     case PLUGIN_TYPE_AUDIO:
-        if (m_Audio == nullptr || m_Audio->DllConfig == nullptr) { break; }
+        if (m_Audio == nullptr || m_Audio->DllConfig == nullptr)
+        {
+            break;
+        }
         if (!m_Audio->Initialized())
         {
             if (!m_Audio->Initiate(nullptr, m_MainWindow))
@@ -409,7 +479,10 @@ void CPlugins::ConfigPlugin(void* hParent, PLUGIN_TYPE Type)
         }
         break;
     case PLUGIN_TYPE_CONTROLLER:
-        if (m_Control == nullptr || m_Control->DllConfig == nullptr) { break; }
+        if (m_Control == nullptr || m_Control->DllConfig == nullptr)
+        {
+            break;
+        }
         if (!m_Control->Initialized())
         {
             if (!m_Control->Initiate(nullptr, m_MainWindow))

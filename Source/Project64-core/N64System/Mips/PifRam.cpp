@@ -1,17 +1,17 @@
 #include "stdafx.h"
 #include <stdio.h>
 
+#include <Project64-core/Debugger.h>
+#include <Project64-core/Logging.h>
+#include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
+#include <Project64-core/N64System/Mips/Mempak.h>
 #include <Project64-core/N64System/Mips/PifRam.h>
+#include <Project64-core/N64System/Mips/Register.h>
+#include <Project64-core/N64System/Mips/Rumblepak.h>
+#include <Project64-core/N64System/Mips/Transferpak.h>
+#include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Plugins/ControllerPlugin.h>
-#include <Project64-core/N64System/Mips/Register.h>
-#include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
-#include <Project64-core/N64System/N64System.h>
-#include <Project64-core/N64System/Mips/Transferpak.h>
-#include <Project64-core/N64System/Mips/Rumblepak.h>
-#include <Project64-core/N64System/Mips/Mempak.h>
-#include <Project64-core/Logging.h>
-#include <Project64-core/Debugger.h>
 #include <Project64-plugin-spec/Input.h>
 
 CPifRam::CPifRam(bool SavesReadOnly) :
@@ -32,14 +32,16 @@ void CPifRam::Reset()
 
 void CPifRam::n64_cic_nus_6105(char challenge[], char respone[], int32_t length)
 {
+    // clang-format off
     static char lut0[0x10] = {
         0x4, 0x7, 0xA, 0x7, 0xE, 0x5, 0xE, 0x1,
-        0xC, 0xF, 0x8, 0xF, 0x6, 0x3, 0x6, 0x9
+        0xC, 0xF, 0x8, 0xF, 0x6, 0x3, 0x6, 0x9,
     };
     static char lut1[0x10] = {
         0x4, 0x1, 0xA, 0x7, 0xE, 0x5, 0xE, 0x1,
-        0xC, 0x9, 0x8, 0x5, 0x6, 0x3, 0xC, 0x9
+        0xC, 0x9, 0x8, 0x5, 0x6, 0x3, 0xC, 0x9,
     };
+    // clang-format on
     char key, *lut;
     int32_t i, sgn, mag, mod;
 
@@ -85,8 +87,11 @@ void CPifRam::PifRamRead()
             break;
         case 0xFD: CurPos = 0x40; break;
         case 0xFE: CurPos = 0x40; break;
-        case 0xFF: break;
-        case 0xB4: case 0x56: case 0xB8: break;
+        case 0xFF:
+        case 0xB4:
+        case 0x56:
+        case 0xB8:
+            break;
         default:
             if ((m_PifRam[CurPos] & 0xC0) == 0)
             {
@@ -195,8 +200,11 @@ void CPifRam::PifRamWrite()
             break;
         case 0xFD: CurPos = 0x40; break;
         case 0xFE: CurPos = 0x40; break;
-        case 0xFF: break;
-        case 0xB4: case 0x56: case 0xB8: break; // ???
+        case 0xFF:
+        case 0xB4:
+        case 0x56:
+        case 0xB8:
+            break;
         default:
             if ((m_PifRam[CurPos] & 0xC0) == 0)
             {
@@ -305,8 +313,8 @@ void CPifRam::SI_DMA_READ()
                 AsciiData[0] = '\0';
             }
             sprintf(Addon, "%02X %02X %02X %02X",
-                m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1],
-                m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3]);
+                    m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1],
+                    m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3]);
             strcat(HexData, Addon);
             if (((count + 1) % 4) != 0)
             {
@@ -315,8 +323,8 @@ void CPifRam::SI_DMA_READ()
             }
 
             sprintf(Addon, "%c%c%c%c",
-                m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1],
-                m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3]);
+                    m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1],
+                    m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3]);
             strcat(AsciiData, Addon);
 
             if (((count + 1) % 4) == 0)
@@ -327,9 +335,9 @@ void CPifRam::SI_DMA_READ()
         LogMessage("");
     }
 
-    if(g_System->bRandomizeSIPIInterrupts())
+    if (g_System->bRandomizeSIPIInterrupts())
     {
-        if(g_System->bDelaySI())
+        if (g_System->bDelaySI())
         {
             g_SystemTimer->SetTimer(CSystemTimer::SiTimer, 0x900 + (g_Random->next() % 0x40), false);
         }
@@ -340,7 +348,7 @@ void CPifRam::SI_DMA_READ()
     }
     else
     {
-        if(g_System->bDelaySI())
+        if (g_System->bDelaySI())
         {
             g_SystemTimer->SetTimer(CSystemTimer::SiTimer, 0x900, false);
         }
@@ -378,7 +386,8 @@ void CPifRam::SI_DMA_WRITE()
         {
             if (RdramPos < 0)
             {
-                m_PifRam[count] = 0; continue;
+                m_PifRam[count] = 0;
+                continue;
             }
             m_PifRam[count] = RDRAM[RdramPos ^ 3];
         }
@@ -406,8 +415,8 @@ void CPifRam::SI_DMA_WRITE()
                 AsciiData[0] = '\0';
             }
             sprintf(Addon, "%02X %02X %02X %02X",
-                m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1],
-                m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3]);
+                    m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1],
+                    m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3]);
             strcat(HexData, Addon);
             if (((count + 1) % 4) != 0)
             {
@@ -416,8 +425,8 @@ void CPifRam::SI_DMA_WRITE()
             }
 
             sprintf(Addon, "%c%c%c%c",
-                m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1],
-                m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3]);
+                    m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1],
+                    m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3]);
             strcat(AsciiData, Addon);
 
             if (((count + 1) % 4) == 0)
@@ -474,7 +483,8 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
                 case PLUGIN_RUMBLE_PAK:
                 case PLUGIN_MEMPAK:
                 case PLUGIN_RAW:
-                    Command[5] = 1; break;
+                    Command[5] = 1;
+                    break;
                 default: Command[5] = 0; break;
                 }
             }
@@ -519,14 +529,19 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
         if (Controllers[Control].Present != PRESENT_NONE)
         {
             uint32_t address = (Command[3] << 8) | (Command[4] & 0xE0);
-            uint8_t* data = &Command[5];
+            uint8_t * data = &Command[5];
 
             switch (Controllers[Control].Plugin)
             {
             case PLUGIN_RUMBLE_PAK: Rumblepak::ReadFrom(address, data); break;
             case PLUGIN_MEMPAK: g_Mempak->ReadFrom(Control, address, data); break;
             case PLUGIN_TRANSFER_PAK: Transferpak::ReadFrom((uint16_t)address, data); break;
-            case PLUGIN_RAW: if (g_Plugins->Control()->ControllerCommand) { g_Plugins->Control()->ControllerCommand(Control, Command); } break;
+            case PLUGIN_RAW:
+                if (g_Plugins->Control()->ControllerCommand)
+                {
+                    g_Plugins->Control()->ControllerCommand(Control, Command);
+                }
+                break;
             default:
                 memset(&Command[5], 0, 0x20);
             }
@@ -560,14 +575,19 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
         if (Controllers[Control].Present != PRESENT_NONE)
         {
             uint32_t address = (Command[3] << 8) | (Command[4] & 0xE0);
-            uint8_t* data = &Command[5];
+            uint8_t * data = &Command[5];
 
             switch (Controllers[Control].Plugin)
             {
             case PLUGIN_MEMPAK: g_Mempak->WriteTo(Control, address, data); break;
             case PLUGIN_RUMBLE_PAK: Rumblepak::WriteTo(Control, address, data); break;
             case PLUGIN_TRANSFER_PAK: Transferpak::WriteTo((uint16_t)address, data); break;
-            case PLUGIN_RAW: if (g_Plugins->Control()->ControllerCommand) { g_Plugins->Control()->ControllerCommand(Control, Command); } break;
+            case PLUGIN_RAW:
+                if (g_Plugins->Control()->ControllerCommand)
+                {
+                    g_Plugins->Control()->ControllerCommand(Control, Command);
+                }
+                break;
             }
 
             if (Controllers[Control].Plugin != PLUGIN_RAW)
@@ -603,7 +623,10 @@ void CPifRam::ReadControllerCommand(int32_t Control, uint8_t * Command)
         {
             if (bShowPifRamErrors())
             {
-                if (Command[0] != 1 || Command[1] != 4) { g_Notify->DisplayError("What am I meant to do with this controller command?"); }
+                if (Command[0] != 1 || Command[1] != 4)
+                {
+                    g_Notify->DisplayError("What am I meant to do with this controller command?");
+                }
             }
 
             const uint32_t buttons = g_BaseSystem->GetButtons(Control);
@@ -615,7 +638,12 @@ void CPifRam::ReadControllerCommand(int32_t Control, uint8_t * Command)
         {
             switch (Controllers[Control].Plugin)
             {
-            case PLUGIN_RAW: if (g_Plugins->Control()->ReadController) { g_Plugins->Control()->ReadController(Control, Command); } break;
+            case PLUGIN_RAW:
+                if (g_Plugins->Control()->ReadController)
+                {
+                    g_Plugins->Control()->ReadController(Control, Command);
+                }
+                break;
             }
         }
         break;
@@ -624,7 +652,12 @@ void CPifRam::ReadControllerCommand(int32_t Control, uint8_t * Command)
         {
             switch (Controllers[Control].Plugin)
             {
-            case PLUGIN_RAW: if (g_Plugins->Control()->ReadController) { g_Plugins->Control()->ReadController(Control, Command); } break;
+            case PLUGIN_RAW:
+                if (g_Plugins->Control()->ReadController)
+                {
+                    g_Plugins->Control()->ReadController(Control, Command);
+                }
+                break;
             }
         }
         break;
@@ -647,8 +680,8 @@ void CPifRam::LogControllerPakData(const char * Description)
             AsciiData[0] = '\0';
         }
         sprintf(Addon, "%02X %02X %02X %02X",
-            PIF_Ram[(count << 2) + 0], PIF_Ram[(count << 2) + 1],
-            PIF_Ram[(count << 2) + 2], PIF_Ram[(count << 2) + 3]);
+                PIF_Ram[(count << 2) + 0], PIF_Ram[(count << 2) + 1],
+                PIF_Ram[(count << 2) + 2], PIF_Ram[(count << 2) + 3]);
         strcat(HexData, Addon);
         if (((count + 1) % 4) != 0)
         {

@@ -1,15 +1,16 @@
 #include "stdafx.h"
-#include <string.h>
+
+#include <Project64-core/N64System/Mips/R4300iInstruction.h>
+#include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/Recompiler/Arm/ArmRecompilerOps.h>
 #include <Project64-core/N64System/Recompiler/CodeBlock.h>
 #include <Project64-core/N64System/Recompiler/x86/x86RecompilerOps.h>
-#include <Project64-core/N64System/Recompiler/Arm/ArmRecompilerOps.h>
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/N64System.h>
-#include <Project64-core/N64System/Mips/R4300iInstruction.h>
+#include <string.h>
 
 #if defined(ANDROID) && (defined(__arm__) || defined(_M_ARM))
 /* bug-fix to implement __clear_cache (missing in Android; http://code.google.com/p/android/issues/detail?id=1803) */
-extern "C" void __clear_cache_android(uint8_t* begin, uint8_t *end);
+extern "C" void __clear_cache_android(uint8_t * begin, uint8_t * end);
 #endif
 
 CCodeBlock::CCodeBlock(CMipsMemoryVM & MMU, uint32_t VAddrEnter, uint8_t * CompiledLocation) :
@@ -26,7 +27,7 @@ CCodeBlock::CCodeBlock(CMipsMemoryVM & MMU, uint32_t VAddrEnter, uint8_t * Compi
     // Make sure function starts at an odd address so that the system knows it is in thumb mode
     if (((uint32_t)m_CompiledLocation % 2) == 0)
     {
-        m_CompiledLocation+=1;
+        m_CompiledLocation += 1;
     }
 #endif
 #if defined(__i386__) || defined(_M_IX86)
@@ -97,7 +98,7 @@ CCodeBlock::~CCodeBlock()
     }
 }
 
-bool CCodeBlock::SetSection(CCodeSection * & Section, CCodeSection * CurrentSection, uint32_t TargetPC, bool LinkAllowed, uint32_t CurrentPC)
+bool CCodeBlock::SetSection(CCodeSection *& Section, CCodeSection * CurrentSection, uint32_t TargetPC, bool LinkAllowed, uint32_t CurrentPC)
 {
     if (Section != nullptr)
     {
@@ -451,22 +452,53 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
     case R4300i_SPECIAL:
         switch (Command.funct)
         {
-        case R4300i_SPECIAL_SLL:    case R4300i_SPECIAL_SRL:    case R4300i_SPECIAL_SRA:
-        case R4300i_SPECIAL_SLLV:   case R4300i_SPECIAL_SRLV:   case R4300i_SPECIAL_SRAV:
-        case R4300i_SPECIAL_MFHI:   case R4300i_SPECIAL_MTHI:   case R4300i_SPECIAL_MFLO:
-        case R4300i_SPECIAL_MTLO:   case R4300i_SPECIAL_DSLLV:  case R4300i_SPECIAL_DSRLV:
-        case R4300i_SPECIAL_DSRAV:  case R4300i_SPECIAL_ADD:    case R4300i_SPECIAL_ADDU:
-        case R4300i_SPECIAL_SUB:    case R4300i_SPECIAL_SUBU:   case R4300i_SPECIAL_AND:
-        case R4300i_SPECIAL_OR:     case R4300i_SPECIAL_XOR:    case R4300i_SPECIAL_NOR:
-        case R4300i_SPECIAL_SLT:    case R4300i_SPECIAL_SLTU:   case R4300i_SPECIAL_DADD:
-        case R4300i_SPECIAL_DADDU:  case R4300i_SPECIAL_DSUB:   case R4300i_SPECIAL_DSUBU:
-        case R4300i_SPECIAL_DSLL:   case R4300i_SPECIAL_DSRL:   case R4300i_SPECIAL_DSRA:
-        case R4300i_SPECIAL_DSLL32: case R4300i_SPECIAL_DSRL32: case R4300i_SPECIAL_DSRA32:
-        case R4300i_SPECIAL_MULT:   case R4300i_SPECIAL_MULTU:  case R4300i_SPECIAL_DIV:
-        case R4300i_SPECIAL_DIVU:   case R4300i_SPECIAL_DMULT:  case R4300i_SPECIAL_DMULTU:
-        case R4300i_SPECIAL_DDIV:   case R4300i_SPECIAL_DDIVU:  case R4300i_SPECIAL_TEQ:
-        case R4300i_SPECIAL_TNE:    case R4300i_SPECIAL_TGE:    case R4300i_SPECIAL_TGEU:
-        case R4300i_SPECIAL_TLT:    case R4300i_SPECIAL_TLTU:
+        case R4300i_SPECIAL_SLL:
+        case R4300i_SPECIAL_SRL:
+        case R4300i_SPECIAL_SRA:
+        case R4300i_SPECIAL_SLLV:
+        case R4300i_SPECIAL_SRLV:
+        case R4300i_SPECIAL_SRAV:
+        case R4300i_SPECIAL_MFHI:
+        case R4300i_SPECIAL_MTHI:
+        case R4300i_SPECIAL_MFLO:
+        case R4300i_SPECIAL_MTLO:
+        case R4300i_SPECIAL_DSLLV:
+        case R4300i_SPECIAL_DSRLV:
+        case R4300i_SPECIAL_DSRAV:
+        case R4300i_SPECIAL_ADD:
+        case R4300i_SPECIAL_ADDU:
+        case R4300i_SPECIAL_SUB:
+        case R4300i_SPECIAL_SUBU:
+        case R4300i_SPECIAL_AND:
+        case R4300i_SPECIAL_OR:
+        case R4300i_SPECIAL_XOR:
+        case R4300i_SPECIAL_NOR:
+        case R4300i_SPECIAL_SLT:
+        case R4300i_SPECIAL_SLTU:
+        case R4300i_SPECIAL_DADD:
+        case R4300i_SPECIAL_DADDU:
+        case R4300i_SPECIAL_DSUB:
+        case R4300i_SPECIAL_DSUBU:
+        case R4300i_SPECIAL_DSLL:
+        case R4300i_SPECIAL_DSRL:
+        case R4300i_SPECIAL_DSRA:
+        case R4300i_SPECIAL_DSLL32:
+        case R4300i_SPECIAL_DSRL32:
+        case R4300i_SPECIAL_DSRA32:
+        case R4300i_SPECIAL_MULT:
+        case R4300i_SPECIAL_MULTU:
+        case R4300i_SPECIAL_DIV:
+        case R4300i_SPECIAL_DIVU:
+        case R4300i_SPECIAL_DMULT:
+        case R4300i_SPECIAL_DMULTU:
+        case R4300i_SPECIAL_DDIV:
+        case R4300i_SPECIAL_DDIVU:
+        case R4300i_SPECIAL_TEQ:
+        case R4300i_SPECIAL_TNE:
+        case R4300i_SPECIAL_TGE:
+        case R4300i_SPECIAL_TGEU:
+        case R4300i_SPECIAL_TLT:
+        case R4300i_SPECIAL_TLTU:
             break;
         case R4300i_SPECIAL_JALR:
         case R4300i_SPECIAL_JR:
@@ -563,8 +595,12 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
             LikelyBranch = true;
             IncludeDelaySlot = true;
             break;
-        case R4300i_REGIMM_TEQI:    case R4300i_REGIMM_TNEI:    case R4300i_REGIMM_TGEI:
-        case R4300i_REGIMM_TGEIU:   case R4300i_REGIMM_TLTI:    case R4300i_REGIMM_TLTIU:
+        case R4300i_REGIMM_TEQI:
+        case R4300i_REGIMM_TNEI:
+        case R4300i_REGIMM_TGEI:
+        case R4300i_REGIMM_TGEIU:
+        case R4300i_REGIMM_TLTI:
+        case R4300i_REGIMM_TLTIU:
             break;
         default:
             if (Command.Value == 0x0407000D)
@@ -601,8 +637,8 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
                 ContinuePC = PC + 8;
             }
             R4300iOpcode DelaySlot;
-            if (TargetPC == PC && 
-                g_MMU->MemoryValue32(PC + 4, DelaySlot.Value) && 
+            if (TargetPC == PC &&
+                g_MMU->MemoryValue32(PC + 4, DelaySlot.Value) &&
                 !R4300iInstruction(PC, Command.Value).DelaySlotEffectsCompare(DelaySlot.Value))
             {
                 PermLoop = true;
@@ -639,15 +675,18 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
     case R4300i_CP0:
         switch (Command.rs)
         {
-        case R4300i_COP0_MT: case R4300i_COP0_MF:
+        case R4300i_COP0_MT:
+        case R4300i_COP0_MF:
             break;
         default:
             if ((Command.rs & 0x10) != 0)
             {
                 switch (Command.funct)
                 {
-                case R4300i_COP0_CO_TLBR: case R4300i_COP0_CO_TLBWI:
-                case R4300i_COP0_CO_TLBWR: case R4300i_COP0_CO_TLBP:
+                case R4300i_COP0_CO_TLBR:
+                case R4300i_COP0_CO_TLBWI:
+                case R4300i_COP0_CO_TLBWR:
+                case R4300i_COP0_CO_TLBP:
                     break;
                 case R4300i_COP0_CO_ERET:
                     EndBlock = true;
@@ -668,12 +707,20 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
     case R4300i_CP1:
         switch (Command.fmt)
         {
-        case R4300i_COP1_MF:  case R4300i_COP1_DMF: case R4300i_COP1_CF: case R4300i_COP1_MT:
-        case R4300i_COP1_DMT: case R4300i_COP1_CT:  case R4300i_COP1_S:  case R4300i_COP1_D:
-        case R4300i_COP1_W:   case R4300i_COP1_L:
+        case R4300i_COP1_MF:
+        case R4300i_COP1_DMF:
+        case R4300i_COP1_CF:
+        case R4300i_COP1_MT:
+        case R4300i_COP1_DMT:
+        case R4300i_COP1_CT:
+        case R4300i_COP1_S:
+        case R4300i_COP1_D:
+        case R4300i_COP1_W:
+        case R4300i_COP1_L:
             break;
         case R4300i_COP1_BC:
-            switch (Command.ft) {
+            switch (Command.ft)
+            {
             case R4300i_COP1_BC_BCF:
             case R4300i_COP1_BC_BCT:
                 TargetPC = PC + ((int16_t)Command.offset << 2) + 4;
@@ -711,15 +758,42 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
             return false;
         }
         break;
-    case R4300i_ANDI:  case R4300i_ORI:    case R4300i_XORI:  case R4300i_LUI:
-    case R4300i_ADDI:  case R4300i_ADDIU:  case R4300i_SLTI:  case R4300i_SLTIU:
-    case R4300i_DADDI: case R4300i_DADDIU: case R4300i_LDL:   case R4300i_LDR:
-    case R4300i_LB:    case R4300i_LH:     case R4300i_LWL:   case R4300i_LW:
-    case R4300i_LBU:   case R4300i_LHU:    case R4300i_LWR:   case R4300i_LWU:
-    case R4300i_SB:    case R4300i_SH:     case R4300i_SWL:   case R4300i_SW:
-    case R4300i_SDL:   case R4300i_SDR:    case R4300i_SWR:   case R4300i_CACHE:
-    case R4300i_LL:    case R4300i_LWC1:   case R4300i_LDC1:  case R4300i_LD:
-    case R4300i_SC:    case R4300i_SWC1:   case R4300i_SDC1:  case R4300i_SD:
+    case R4300i_ANDI:
+    case R4300i_ORI:
+    case R4300i_XORI:
+    case R4300i_LUI:
+    case R4300i_ADDI:
+    case R4300i_ADDIU:
+    case R4300i_SLTI:
+    case R4300i_SLTIU:
+    case R4300i_DADDI:
+    case R4300i_DADDIU:
+    case R4300i_LDL:
+    case R4300i_LDR:
+    case R4300i_LB:
+    case R4300i_LH:
+    case R4300i_LWL:
+    case R4300i_LW:
+    case R4300i_LBU:
+    case R4300i_LHU:
+    case R4300i_LWR:
+    case R4300i_LWU:
+    case R4300i_SB:
+    case R4300i_SH:
+    case R4300i_SWL:
+    case R4300i_SW:
+    case R4300i_SDL:
+    case R4300i_SDR:
+    case R4300i_SWR:
+    case R4300i_CACHE:
+    case R4300i_LL:
+    case R4300i_LWC1:
+    case R4300i_LDC1:
+    case R4300i_LD:
+    case R4300i_SC:
+    case R4300i_SWC1:
+    case R4300i_SDC1:
+    case R4300i_SD:
         break;
     case R4300i_BEQL:
         TargetPC = PC + ((int16_t)Command.offset << 2) + 4;
@@ -786,7 +860,8 @@ bool CCodeBlock::Compile()
     m_RecompilerOps->EnterCodeBlock();
     if (g_System->bLinkBlocks())
     {
-        while (m_EnterSection !=nullptr && m_EnterSection->GenerateNativeCode(NextTest()));
+        while (m_EnterSection != nullptr && m_EnterSection->GenerateNativeCode(NextTest()))
+            ;
     }
     else
     {
@@ -807,7 +882,7 @@ bool CCodeBlock::Compile()
     }
     MD5(BlockPtr, BlockSize).get_digest(m_Hash);
 #if defined(ANDROID) && (defined(__arm__) || defined(_M_ARM))
-	__clear_cache((uint8_t *)((uint32_t)m_CompiledLocation & ~1), m_CompiledLocationEnd);
+    __clear_cache((uint8_t *)((uint32_t)m_CompiledLocation & ~1), m_CompiledLocationEnd);
 #endif
     return true;
 }
@@ -831,7 +906,7 @@ void CCodeBlock::Log(_Printf_format_string_ const char * Text, ...)
 #pragma warning(push)
 #pragma warning(disable : 4996)
     size_t nlen = _vscprintf(Text, args) + 1;
-    char * buffer = (char*)alloca(nlen * sizeof(char));
+    char * buffer = (char *)alloca(nlen * sizeof(char));
     buffer[nlen - 1] = 0;
     if (buffer != nullptr)
     {

@@ -1,11 +1,12 @@
 // Based on MAME's N64DD driver code by Happy_
 #include "stdafx.h"
+
 #include "Disk.h"
-#include <Project64-core/N64System/N64System.h>
-#include <Project64-core/N64System/N64Disk.h>
-#include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/Register.h>
 #include <Project64-core/N64System/Mips/SystemTiming.h>
+#include <Project64-core/N64System/N64Disk.h>
+#include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/SystemGlobals.h>
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -41,7 +42,7 @@ void DiskCommand()
     time_t ltime;
     ltime = time(&ltime);
 
-    struct tm result = { 0 };
+    struct tm result = {0};
     localtime_r(&ltime, &result);
 
     // BCD format needed for 64DD RTC
@@ -72,7 +73,8 @@ void DiskCommand()
         break;
     case 0x00080000:
         // Unset disk changed bit
-        g_Reg->ASIC_STATUS &= ~DD_STATUS_DISK_CHNG; break;
+        g_Reg->ASIC_STATUS &= ~DD_STATUS_DISK_CHNG;
+        break;
     case 0x00090000:
         // Unset reset and disk changed bit bit
         g_Reg->ASIC_STATUS &= ~DD_STATUS_RST_STATE;
@@ -84,16 +86,20 @@ void DiskCommand()
         break;
     case 0x00120000:
         // RTC get year and month
-        g_Reg->ASIC_DATA = (year << 24) | (month << 16); break;
+        g_Reg->ASIC_DATA = (year << 24) | (month << 16);
+        break;
     case 0x00130000:
         // RTC get day and hour
-        g_Reg->ASIC_DATA = (day << 24) | (hour << 16); break;
+        g_Reg->ASIC_DATA = (day << 24) | (hour << 16);
+        break;
     case 0x00140000:
         // RTC get minute and second
-        g_Reg->ASIC_DATA = (minute << 24) | (second << 16); break;
+        g_Reg->ASIC_DATA = (minute << 24) | (second << 16);
+        break;
     case 0x001B0000:
         // Disk inquiry
-        g_Reg->ASIC_DATA = 0x00000000; break;
+        g_Reg->ASIC_DATA = 0x00000000;
+        break;
     }
 
     if (isSeek)
@@ -188,7 +194,7 @@ void DiskReset(void)
 void DiskBMControl(void)
 {
     g_Reg->ASIC_CUR_SECTOR = g_Reg->ASIC_BM_CTL & 0x00FF0000;
-    
+
     if ((g_Reg->ASIC_CUR_SECTOR >> 16) == 0x00)
     {
         dd_start_block = 0;
@@ -199,7 +205,7 @@ void DiskBMControl(void)
         dd_start_block = 1;
         dd_current = 0;
     }
-    
+
     if (g_Reg->ASIC_BM_CTL & DD_BM_CTL_BLK_TRANS)
         g_Reg->ASIC_BM_STATUS |= DD_BM_STATUS_BLOCK;
 
@@ -355,7 +361,7 @@ bool DiskBMReadWrite(bool /*write*/)
     uint16_t block = (uint16_t)dd_start_block;
     uint16_t sector = (uint16_t)dd_current;
     uint16_t sectorsize = (((g_Reg->ASIC_HOST_SECBYTE & 0x00FF0000) >> 16) + 1);
-    
+
     uint32_t addr = g_Disk->GetDiskAddressBlock(head, track, block, sector, sectorsize);
 
     if (addr == 0xFFFFFFFF)

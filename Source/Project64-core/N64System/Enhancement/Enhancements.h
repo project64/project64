@@ -1,8 +1,8 @@
 #pragma once
+#include <Common/CriticalSection.h>
+#include <Common/Thread.h>
 #include <Project64-core/N64System/Enhancement/EnhancementFile.h>
 #include <Project64-core/N64System/Enhancement/EnhancementList.h>
-#include <Common/Thread.h>
-#include <Common/CriticalSection.h>
 #include <map>
 #include <string>
 
@@ -19,7 +19,7 @@ class CEnhancements
 public:
     CEnhancements();
     ~CEnhancements();
-    
+
     void ApplyActive(CMipsMemoryVM & MMU, CPlugins * Plugins, bool UpdateChanges);
     void ApplyGSButton(CMipsMemoryVM & MMU, bool UpdateChanges);
     void UpdateCheats(const CEnhancementList & Cheats);
@@ -36,17 +36,29 @@ private:
     class GAMESHARK_CODE
     {
     public:
-        GAMESHARK_CODE(const GAMESHARK_CODE&);
+        GAMESHARK_CODE(const GAMESHARK_CODE &);
         GAMESHARK_CODE(uint32_t Command, uint16_t Value, bool HasDisableValue, uint16_t DisableValue);
-    
-        uint32_t Command(void) const { return m_Command; }
-        uint16_t Value(void) const { return m_Value; }
-        bool HasDisableValue(void) const { return m_HasDisableValue; }
-        uint16_t DisableValue(void) const { return m_DisableValue; }
+
+        uint32_t Command(void) const
+        {
+            return m_Command;
+        }
+        uint16_t Value(void) const
+        {
+            return m_Value;
+        }
+        bool HasDisableValue(void) const
+        {
+            return m_HasDisableValue;
+        }
+        uint16_t DisableValue(void) const
+        {
+            return m_DisableValue;
+        }
 
     private:
         GAMESHARK_CODE();
-        GAMESHARK_CODE& operator=(const GAMESHARK_CODE&);
+        GAMESHARK_CODE & operator=(const GAMESHARK_CODE &);
 
         uint32_t m_Command;
         uint16_t m_Value;
@@ -86,7 +98,11 @@ private:
     static uint32_t ConvertXP64Address(uint32_t Address);
     static uint16_t ConvertXP64Value(uint16_t Value);
 
-    static uint32_t stScanFileThread(void * lpThreadParameter) { ((CEnhancements *)lpThreadParameter)->ScanFileThread(); return 0; }
+    static uint32_t stScanFileThread(void * lpThreadParameter)
+    {
+        ((CEnhancements *)lpThreadParameter)->ScanFileThread();
+        return 0;
+    }
 
     CriticalSection m_CS;
     SectionFiles m_CheatFiles, m_EnhancementFiles;

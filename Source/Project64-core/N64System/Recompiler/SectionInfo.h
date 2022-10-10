@@ -6,8 +6,8 @@ struct CJumpInfo;
 
 struct BLOCK_PARENT
 {
-	CCodeSection * Parent;
-	CJumpInfo    * JumpInfo;
+    CCodeSection * Parent;
+    CJumpInfo * JumpInfo;
 };
 
 typedef std::vector<BLOCK_PARENT> BLOCK_PARENT_LIST;

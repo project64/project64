@@ -14,9 +14,18 @@ public:
 
     virtual ~CSettingTypeRomDatabase();
 
-    virtual bool IndexBasedSetting(void) const { return false; }
-    virtual SettingType GetSettingType(void) const { return SettingType_RomDatabase; }
-    virtual bool IsSettingSet(void) const { return false; }
+    virtual bool IndexBasedSetting(void) const
+    {
+        return false;
+    }
+    virtual SettingType GetSettingType(void) const
+    {
+        return SettingType_RomDatabase;
+    }
+    virtual bool IsSettingSet(void) const
+    {
+        return false;
+    }
 
     // Return the values
     virtual bool Load(uint32_t Index, bool & Value) const;
@@ -47,10 +56,13 @@ protected:
     static bool IsVideoSetting(const char * Name);
     static bool IsAudioSetting(const char * Name);
     static const char * StripNameSection(const char * Name);
-    virtual const char * Section(void) const { return m_SectionIdent->c_str(); }
+    virtual const char * Section(void) const
+    {
+        return m_SectionIdent->c_str();
+    }
 
     mutable std::string m_KeyName;
-    const char *const m_DefaultStr;
+    const char * const m_DefaultStr;
     const int32_t m_DefaultValue;
     const SettingID m_DefaultSetting;
     const bool m_DeleteOnDefault;
@@ -64,8 +76,8 @@ protected:
 
 private:
     CSettingTypeRomDatabase();
-    CSettingTypeRomDatabase(const CSettingTypeRomDatabase&);
-    CSettingTypeRomDatabase& operator=(const CSettingTypeRomDatabase&);
+    CSettingTypeRomDatabase(const CSettingTypeRomDatabase &);
+    CSettingTypeRomDatabase & operator=(const CSettingTypeRomDatabase &);
 
-	bool Load(uint32_t & Value) const;
+    bool Load(uint32_t & Value) const;
 };

@@ -1,20 +1,20 @@
 #include "stdafx.h"
 
-#include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
-#include <Project64-core\N64System\SystemGlobals.h>
-#include <Project64-core\N64System\N64Rom.h>
-#include <Project64-core\N64System\N64System.h>
-#include <Project64-core\N64System\Mips\Disk.h>
+#include <Common\MemoryManagement.h>
 #include <Project64-core\Debugger.h>
 #include <Project64-core\ExceptionHandler.h>
-#include <Common\MemoryManagement.h>
+#include <Project64-core\N64System\Mips\Disk.h>
+#include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
+#include <Project64-core\N64System\N64Rom.h>
+#include <Project64-core\N64System\N64System.h>
+#include <Project64-core\N64System\SystemGlobals.h>
 #include <stdio.h>
 
 uint8_t * CMipsMemoryVM::m_Reserve1 = nullptr;
 uint8_t * CMipsMemoryVM::m_Reserve2 = nullptr;
 uint32_t CMipsMemoryVM::RegModValue;
 
-#pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
+#pragma warning(disable : 4355) // Disable 'this' : used in base member initializer list
 
 CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
     CPifRam(SavesReadOnly),
@@ -92,7 +92,7 @@ void CMipsMemoryVM::Reset(bool /*EraseMemory*/)
         if (g_Settings->LoadDword(Rdb_TLB_VAddrStart) != 0)
         {
             uint32_t Start = g_Settings->LoadDword(Rdb_TLB_VAddrStart); //0x7F000000;
-            uint32_t Len = g_Settings->LoadDword(Rdb_TLB_VAddrLen);   //0x01000000;
+            uint32_t Len = g_Settings->LoadDword(Rdb_TLB_VAddrLen);     //0x01000000;
             uint32_t PAddr = g_Settings->LoadDword(Rdb_TLB_PAddrStart); //0x10034b30;
             uint32_t End = Start + Len;
             for (uint32_t Address = Start; Address < End; Address += 0x1000)
@@ -185,14 +185,14 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
     m_IMEM = (uint8_t *)(m_RDRAM + 0x04001000);
     CPifRam::Reset();
 
-    m_MemoryReadMap = new size_t [0x100000];
+    m_MemoryReadMap = new size_t[0x100000];
     if (m_MemoryReadMap == nullptr)
     {
         WriteTrace(TraceN64System, TraceError, "Failed to allocate m_MemoryReadMap (Size: 0x%X)", 0x100000 * sizeof(size_t));
         FreeMemory();
         return false;
     }
-    m_MemoryWriteMap = new size_t [0x100000];
+    m_MemoryWriteMap = new size_t[0x100000];
     if (m_MemoryWriteMap == nullptr)
     {
         WriteTrace(TraceN64System, TraceError, "Failed to allocate m_MemoryWriteMap (Size: 0x%X)", 0x100000 * sizeof(size_t));
@@ -278,16 +278,16 @@ uint8_t * CMipsMemoryVM::MemoryPtr(uint32_t VAddr, uint32_t Size, bool Read)
     uint32_t PAddr = m_TLB_ReadMap[VAddr >> 12] + VAddr;
     if ((PAddr + Size) < m_AllocatedRdramSize)
     {
-        return (uint8_t*)(m_RDRAM + PAddr);
+        return (uint8_t *)(m_RDRAM + PAddr);
     }
 
     if (PAddr >= 0x04000000 && (PAddr + Size) < 0x04001000)
     {
-        return (uint8_t*)(m_DMEM + (PAddr - 0x04000000));
+        return (uint8_t *)(m_DMEM + (PAddr - 0x04000000));
     }
     if (PAddr >= 0x04001000 && (PAddr + Size) < 0x04002000)
     {
-        return (uint8_t*)(m_IMEM + (PAddr - 0x04001000));
+        return (uint8_t *)(m_IMEM + (PAddr - 0x04001000));
     }
     if (Read && PAddr >= 0x10000000 && (PAddr + Size) < (0x10000000 + m_Rom.GetRomSize()))
     {
@@ -296,7 +296,6 @@ uint8_t * CMipsMemoryVM::MemoryPtr(uint32_t VAddr, uint32_t Size, bool Read)
 
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return nullptr;
-
 }
 
 bool CMipsMemoryVM::MemoryValue8(uint32_t VAddr, uint8_t & Value)
@@ -317,7 +316,7 @@ bool CMipsMemoryVM::MemoryValue16(uint32_t VAddr, uint16_t & Value)
     {
         return false;
     }
-    Value = *(uint16_t*)(ptr);
+    Value = *(uint16_t *)(ptr);
     return true;
 }
 
@@ -328,7 +327,7 @@ bool CMipsMemoryVM::MemoryValue32(uint32_t VAddr, uint32_t & Value)
     {
         return false;
     }
-    Value = *(uint32_t*)(ptr);
+    Value = *(uint32_t *)(ptr);
     return true;
 }
 
@@ -339,8 +338,8 @@ bool CMipsMemoryVM::MemoryValue64(uint32_t VAddr, uint64_t & Value)
     {
         return false;
     }
-    *((uint32_t*)(&Value) + 1) = *(uint32_t*)(ptr);
-    *((uint32_t*)(&Value) + 0) = *(uint32_t*)(ptr + 4);
+    *((uint32_t *)(&Value) + 1) = *(uint32_t *)(ptr);
+    *((uint32_t *)(&Value) + 0) = *(uint32_t *)(ptr + 4);
     return true;
 }
 
@@ -362,7 +361,7 @@ bool CMipsMemoryVM::UpdateMemoryValue16(uint32_t VAddr, uint16_t Value)
     {
         return false;
     }
-    *(uint16_t*)(ptr) = Value;
+    *(uint16_t *)(ptr) = Value;
     return true;
 }
 
@@ -373,11 +372,11 @@ bool CMipsMemoryVM::UpdateMemoryValue32(uint32_t VAddr, uint32_t Value)
     {
         return false;
     }
-    *(uint32_t*)(ptr) = Value;
+    *(uint32_t *)(ptr) = Value;
     return true;
 }
 
-bool CMipsMemoryVM::LB_Memory(uint64_t VAddr, uint8_t& Value)
+bool CMipsMemoryVM::LB_Memory(uint64_t VAddr, uint8_t & Value)
 {
     if (!b32BitCore() && (uint64_t)((int32_t)VAddr) != VAddr)
     {
@@ -390,10 +389,10 @@ bool CMipsMemoryVM::LB_Memory(uint64_t VAddr, uint8_t& Value)
     {
         return false;
     }
-    uint8_t * MemoryPtr = (uint8_t*)m_MemoryReadMap[VAddr32 >> 12];
-    if (MemoryPtr != (uint8_t*)-1)
+    uint8_t * MemoryPtr = (uint8_t *)m_MemoryReadMap[VAddr32 >> 12];
+    if (MemoryPtr != (uint8_t *)-1)
     {
-        Value = *(uint8_t*)(MemoryPtr + (VAddr32 ^ 3));
+        Value = *(uint8_t *)(MemoryPtr + (VAddr32 ^ 3));
         return true;
     }
     uint32_t BaseAddress = m_TLB_ReadMap[VAddr32 >> 12];
@@ -423,10 +422,10 @@ bool CMipsMemoryVM::LH_Memory(uint64_t VAddr, uint16_t & Value)
     {
         return false;
     }
-    uint8_t * MemoryPtr = (uint8_t*)m_MemoryReadMap[VAddr32 >> 12];
-    if (MemoryPtr != (uint8_t*)-1)
+    uint8_t * MemoryPtr = (uint8_t *)m_MemoryReadMap[VAddr32 >> 12];
+    if (MemoryPtr != (uint8_t *)-1)
     {
-        Value = *(uint16_t*)(MemoryPtr + (VAddr32 ^ 2));
+        Value = *(uint16_t *)(MemoryPtr + (VAddr32 ^ 2));
         return true;
     }
     uint32_t BaseAddress = m_TLB_ReadMap[VAddr32 >> 12];
@@ -455,10 +454,10 @@ bool CMipsMemoryVM::LW_Memory(uint64_t VAddr, uint32_t & Value)
     {
         return false;
     }
-    uint8_t * MemoryPtr = (uint8_t*)m_MemoryReadMap[VAddr32 >> 12];
+    uint8_t * MemoryPtr = (uint8_t *)m_MemoryReadMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
     {
-        Value = *(uint32_t*)(MemoryPtr + VAddr32);
+        Value = *(uint32_t *)(MemoryPtr + VAddr32);
         return true;
     }
     uint32_t BaseAddress = m_TLB_ReadMap[VAddr32 >> 12];
@@ -470,7 +469,7 @@ bool CMipsMemoryVM::LW_Memory(uint64_t VAddr, uint32_t & Value)
     return LW_NonMemory(VAddr32, Value);
 }
 
-bool CMipsMemoryVM::LD_Memory(uint64_t VAddr, uint64_t& Value)
+bool CMipsMemoryVM::LD_Memory(uint64_t VAddr, uint64_t & Value)
 {
     if (!b32BitCore() && (uint64_t)((int32_t)VAddr) != VAddr)
     {
@@ -488,11 +487,11 @@ bool CMipsMemoryVM::LD_Memory(uint64_t VAddr, uint64_t& Value)
     {
         return false;
     }
-    uint8_t * MemoryPtr = (uint8_t*)m_MemoryReadMap[VAddr32 >> 12];
+    uint8_t * MemoryPtr = (uint8_t *)m_MemoryReadMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
     {
-        *((uint32_t*)(&Value) + 1) = *(uint32_t*)(MemoryPtr + VAddr32);
-        *((uint32_t*)(&Value) + 0) = *(uint32_t*)(MemoryPtr + VAddr32 + 4);
+        *((uint32_t *)(&Value) + 1) = *(uint32_t *)(MemoryPtr + VAddr32);
+        *((uint32_t *)(&Value) + 0) = *(uint32_t *)(MemoryPtr + VAddr32 + 4);
         return true;
     }
     uint32_t BaseAddress = m_TLB_ReadMap[VAddr32 >> 12];
@@ -516,10 +515,10 @@ bool CMipsMemoryVM::SB_Memory(uint64_t VAddr, uint32_t Value)
     {
         return false;
     }
-    uint8_t * MemoryPtr = (uint8_t*)m_MemoryWriteMap[VAddr32 >> 12];
+    uint8_t * MemoryPtr = (uint8_t *)m_MemoryWriteMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
     {
-        *(uint8_t*)(MemoryPtr + (VAddr32 ^ 3)) = (uint8_t)Value;
+        *(uint8_t *)(MemoryPtr + (VAddr32 ^ 3)) = (uint8_t)Value;
         return true;
     }
     if (m_TLB_WriteMap[VAddr32 >> 12] == -1)
@@ -548,10 +547,10 @@ bool CMipsMemoryVM::SH_Memory(uint64_t VAddr, uint32_t Value)
     {
         return false;
     }
-    uint8_t * MemoryPtr = (uint8_t*)m_MemoryWriteMap[VAddr32 >> 12];
+    uint8_t * MemoryPtr = (uint8_t *)m_MemoryWriteMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
     {
-        *(uint16_t*)(MemoryPtr + (VAddr32 ^ 2)) = (uint16_t)Value;
+        *(uint16_t *)(MemoryPtr + (VAddr32 ^ 2)) = (uint16_t)Value;
         return true;
     }
     uint32_t BaseAddress = m_TLB_ReadMap[VAddr32 >> 12];
@@ -581,10 +580,10 @@ bool CMipsMemoryVM::SW_Memory(uint64_t VAddr, uint32_t Value)
     {
         return false;
     }
-    uint8_t * MemoryPtr = (uint8_t*)m_MemoryWriteMap[VAddr32 >> 12];
+    uint8_t * MemoryPtr = (uint8_t *)m_MemoryWriteMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
     {
-        *(uint32_t*)(MemoryPtr + VAddr32) = Value;
+        *(uint32_t *)(MemoryPtr + VAddr32) = Value;
         return true;
     }
     uint32_t BaseAddress = m_TLB_ReadMap[VAddr32 >> 12];
@@ -615,11 +614,11 @@ bool CMipsMemoryVM::SD_Memory(uint64_t VAddr, uint64_t Value)
         return false;
     }
 
-    uint8_t * MemoryPtr = (uint8_t*)m_MemoryWriteMap[VAddr32 >> 12];
+    uint8_t * MemoryPtr = (uint8_t *)m_MemoryWriteMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
     {
-        *(uint32_t*)(MemoryPtr + VAddr32 + 0) = *((uint32_t*)(&Value) + 1);
-        *(uint32_t*)(MemoryPtr + VAddr32 + 4) = *((uint32_t*)(&Value));
+        *(uint32_t *)(MemoryPtr + VAddr32 + 0) = *((uint32_t *)(&Value) + 1);
+        *(uint32_t *)(MemoryPtr + VAddr32 + 4) = *((uint32_t *)(&Value));
         return true;
     }
     if (m_TLB_WriteMap[VAddr32 >> 12] == -1)
@@ -635,7 +634,7 @@ bool CMipsMemoryVM::ValidVaddr(uint32_t VAddr) const
     return m_TLB_ReadMap[VAddr >> 12] != -1;
 }
 
-bool CMipsMemoryVM::VAddrToPAddr(uint32_t VAddr, uint32_t &PAddr) const
+bool CMipsMemoryVM::VAddrToPAddr(uint32_t VAddr, uint32_t & PAddr) const
 {
     if (m_TLB_ReadMap[VAddr >> 12] == -1)
     {
@@ -792,7 +791,7 @@ bool CMipsMemoryVM::SB_NonMemory(uint32_t VAddr, uint32_t Value)
         {
             g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0xFFC, CRecompiler::Remove_ProtectedMem);
             ::ProtectMemory(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, MEM_READWRITE);
-            *(uint8_t *)(m_RDRAM + (PAddr  ^ 3)) = (uint8_t)Value;
+            *(uint8_t *)(m_RDRAM + (PAddr ^ 3)) = (uint8_t)Value;
         }
         break;
     default:
@@ -919,7 +918,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t VAddr, uint32_t Value)
     case 0x06000000: m_CartridgeDomain1Address1Handler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x08000000:
     case 0x0fe00000:
-        m_CartridgeDomain2Address2Handler.Write32(PAddr, Value, 0xFFFFFFFF); 
+        m_CartridgeDomain2Address2Handler.Write32(PAddr, Value, 0xFFFFFFFF);
         break;
     case 0x13F00000: m_ISViewerHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x1FC00000: m_PifRamHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;

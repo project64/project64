@@ -31,44 +31,70 @@ enum PauseType
 
 enum CPU_TYPE
 {
-    CPU_Default = -1, CPU_Interpreter = 1, CPU_Recompiler = 2, CPU_SyncCores = 3
+    CPU_Default = -1,
+    CPU_Interpreter = 1,
+    CPU_Recompiler = 2,
+    CPU_SyncCores = 3
 };
 
 enum FRAMERATE_TYPE
 {
-    FR_VIs = 0, FR_DLs = 1, FR_PERCENT = 2, FR_VIs_DLs = 3,
+    FR_VIs = 0,
+    FR_DLs = 1,
+    FR_PERCENT = 2,
+    FR_VIs_DLs = 3,
 };
 
 enum SAVE_CHIP_TYPE
 {
-    SaveChip_Auto = -1, SaveChip_Eeprom_4K, SaveChip_Eeprom_16K, SaveChip_Sram, SaveChip_FlashRam
+    SaveChip_Auto = -1,
+    SaveChip_Eeprom_4K,
+    SaveChip_Eeprom_16K,
+    SaveChip_Sram,
+    SaveChip_FlashRam
 };
 
 enum SAVE_DISK_TYPE
 {
-    SaveDisk_ShadowFile = 0, SaveDisk_RAMFile = 1,
+    SaveDisk_ShadowFile = 0,
+    SaveDisk_RAMFile = 1,
 };
 
 enum DISK_SEEK_TYPE
 {
-    DiskSeek_Turbo = 0, DiskSeek_Slow = 1,
+    DiskSeek_Turbo = 0,
+    DiskSeek_Slow = 1,
 };
 
 enum FUNC_LOOKUP_METHOD
 {
-    FuncFind_Default = -1, FuncFind_PhysicalLookup = 1, FuncFind_VirtualLookup = 2, FuncFind_ChangeMemory = 3,
+    FuncFind_Default = -1,
+    FuncFind_PhysicalLookup = 1,
+    FuncFind_VirtualLookup = 2,
+    FuncFind_ChangeMemory = 3,
 };
 
 enum SYSTEM_TYPE
 {
-    SYSTEM_NTSC = 0, SYSTEM_PAL = 1, SYSTEM_MPAL = 2
+    SYSTEM_NTSC = 0,
+    SYSTEM_PAL = 1,
+    SYSTEM_MPAL = 2
 };
 
 enum CICChip
 {
-    CIC_UNKNOWN = -1, CIC_NUS_6101 = 1, CIC_NUS_6102 = 2, CIC_NUS_6103 = 3,
-    CIC_NUS_6104 = 4, CIC_NUS_6105 = 5, CIC_NUS_6106 = 6, CIC_NUS_5167 = 7,
-    CIC_NUS_8303 = 8, CIC_NUS_DDUS = 9, CIC_NUS_8401 = 10, CIC_NUS_5101 = 11,
+    CIC_UNKNOWN = -1,
+    CIC_NUS_6101 = 1,
+    CIC_NUS_6102 = 2,
+    CIC_NUS_6103 = 3,
+    CIC_NUS_6104 = 4,
+    CIC_NUS_6105 = 5,
+    CIC_NUS_6106 = 6,
+    CIC_NUS_5167 = 7,
+    CIC_NUS_8303 = 8,
+    CIC_NUS_DDUS = 9,
+    CIC_NUS_8401 = 10,
+    CIC_NUS_5101 = 11,
     CIC_MINI_IPL3 = 12,
 };
 
@@ -129,27 +155,27 @@ enum PIPELINE_STAGE
 
 union MIPS_WORD
 {
-    int32_t  W;
+    int32_t W;
     uint32_t UW;
-    int16_t  HW[2];
+    int16_t HW[2];
     uint16_t UHW[2];
-    int8_t   B[4];
-    uint8_t  UB[4];
+    int8_t B[4];
+    uint8_t UB[4];
 
-    float    F;
+    float F;
 };
 
 union MIPS_DWORD
 {
-    int64_t  DW;
+    int64_t DW;
     uint64_t UDW;
-    int32_t  W[2];
+    int32_t W[2];
     uint32_t UW[2];
-    int16_t  HW[4];
+    int16_t HW[4];
     uint16_t UHW[4];
-    int8_t   B[8];
-    uint8_t  UB[8];
+    int8_t B[8];
+    uint8_t UB[8];
 
-    double   D;
-    float    F[2];
+    double D;
+    float F[2];
 };

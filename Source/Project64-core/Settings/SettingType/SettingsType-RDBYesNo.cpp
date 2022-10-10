@@ -1,14 +1,15 @@
 #include "stdafx.h"
-#include "SettingsType-RomDatabase.h"
+
 #include "SettingsType-RDBYesNo.h"
+#include "SettingsType-RomDatabase.h"
 
 CSettingTypeRDBYesNo::CSettingTypeRDBYesNo(const char * Name, SettingID DefaultSetting) :
-CSettingTypeRomDatabase(Name, DefaultSetting)
+    CSettingTypeRomDatabase(Name, DefaultSetting)
 {
 }
 
 CSettingTypeRDBYesNo::CSettingTypeRDBYesNo(const char * Name, uint32_t DefaultValue) :
-CSettingTypeRomDatabase(Name, DefaultValue)
+    CSettingTypeRomDatabase(Name, DefaultValue)
 {
 }
 
@@ -71,7 +72,8 @@ void CSettingTypeRDBYesNo::LoadDefault(uint32_t /*Index*/, bool & Value) const
         {
             Value = m_DefaultValue != 0;
         }
-        else {
+        else
+        {
             g_Settings->LoadBool(m_DefaultSetting, Value);
         }
     }

@@ -1,9 +1,9 @@
 #pragma once
-#include "MemoryHandler.h"
 #include "MIPSInterfaceHandler.h"
-#include <Project64-core\Settings\GameSettings.h>
-#include <Project64-core\Settings\DebugSettings.h>
+#include "MemoryHandler.h"
 #include <Project64-core\Logging.h>
+#include <Project64-core\Settings\DebugSettings.h>
+#include <Project64-core\Settings\GameSettings.h>
 #include <stdint.h>
 
 class SPRegistersReg
@@ -25,8 +25,8 @@ public:
 
 private:
     SPRegistersReg();
-    SPRegistersReg(const SPRegistersReg&);
-    SPRegistersReg& operator=(const SPRegistersReg&);
+    SPRegistersReg(const SPRegistersReg &);
+    SPRegistersReg & operator=(const SPRegistersReg &);
 };
 
 class CRegisters;
@@ -39,7 +39,7 @@ class SPRegistersHandler :
     private CGameSettings,
     private MIPSInterfaceReg,
     private CDebugSettings,
-    private CLogging 
+    private CLogging
 {
 public:
     SPRegistersHandler(CN64System & N64System, CMipsMemoryVM & MMU, CRegisters & Reg);
@@ -51,8 +51,14 @@ private:
     SPRegistersHandler(const SPRegistersHandler &);
     SPRegistersHandler & operator=(const SPRegistersHandler &);
 
-    static void stSystemReset(SPRegistersHandler * _this) { _this->SystemReset(); }
-    static void stLoadedGameState(SPRegistersHandler * _this) { _this->LoadedGameState(); }
+    static void stSystemReset(SPRegistersHandler * _this)
+    {
+        _this->SystemReset();
+    }
+    static void stLoadedGameState(SPRegistersHandler * _this)
+    {
+        _this->LoadedGameState();
+    }
 
     void SP_DMA_READ();
     void SP_DMA_WRITE();

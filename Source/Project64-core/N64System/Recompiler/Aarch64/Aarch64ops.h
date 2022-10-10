@@ -10,8 +10,8 @@ public:
 
 private:
     CAarch64Ops(void);
-    CAarch64Ops(const CAarch64Ops&);
-    CAarch64Ops& operator=(const CAarch64Ops&);
+    CAarch64Ops(const CAarch64Ops &);
+    CAarch64Ops & operator=(const CAarch64Ops &);
 
     CCodeBlock & m_CodeBlock;
 };

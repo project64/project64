@@ -1,14 +1,14 @@
 #pragma once
 #include "MemoryHandler.h"
+#include <Project64-core\Logging.h>
 #include <Project64-core\Settings\DebugSettings.h>
 #include <Project64-core\Settings\GameSettings.h>
-#include <Project64-core\Logging.h>
 #include <stdint.h>
 
 enum
 {
-    AI_STATUS_FIFO_FULL = 0x80000000,    // Bit 31: Full
-    AI_STATUS_DMA_BUSY = 0x40000000,    // Bit 30: Busy
+    AI_STATUS_FIFO_FULL = 0x80000000, // Bit 31: Full
+    AI_STATUS_DMA_BUSY = 0x40000000,  // Bit 30: Busy
 };
 
 class AudioInterfaceReg
@@ -26,8 +26,8 @@ public:
 
 private:
     AudioInterfaceReg();
-    AudioInterfaceReg(const AudioInterfaceReg&);
-    AudioInterfaceReg& operator=(const AudioInterfaceReg&);
+    AudioInterfaceReg(const AudioInterfaceReg &);
+    AudioInterfaceReg & operator=(const AudioInterfaceReg &);
 };
 
 class CRegisters;
@@ -60,8 +60,14 @@ private:
     AudioInterfaceHandler(const AudioInterfaceHandler &);
     AudioInterfaceHandler & operator=(const AudioInterfaceHandler &);
 
-    static void stSystemReset(AudioInterfaceHandler * _this) { _this->SystemReset(); }
-    static void stLoadedGameState(AudioInterfaceHandler * _this) { _this->LoadedGameState(); }
+    static void stSystemReset(AudioInterfaceHandler * _this)
+    {
+        _this->SystemReset();
+    }
+    static void stLoadedGameState(AudioInterfaceHandler * _this)
+    {
+        _this->LoadedGameState();
+    }
 
     void LoadedGameState(void);
     void SystemReset(void);

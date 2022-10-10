@@ -63,8 +63,8 @@ public:
 
 private:
     DiskInterfaceReg();
-    DiskInterfaceReg(const DiskInterfaceReg&);
-    DiskInterfaceReg& operator=(const DiskInterfaceReg&);
+    DiskInterfaceReg(const DiskInterfaceReg &);
+    DiskInterfaceReg & operator=(const DiskInterfaceReg &);
 };
 
 class CRegisters;

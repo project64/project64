@@ -1,6 +1,6 @@
 #pragma once
-#include <Project64-core/N64System/N64Types.h>
 #include <Common/HighResTimeStamp.h>
+#include <Project64-core/N64System/N64Types.h>
 
 class CProfiling
 {
@@ -20,8 +20,8 @@ public:
     void ResetTimers(void);
 
 private:
-    CProfiling(const CProfiling&);
-    CProfiling& operator=(const CProfiling&);
+    CProfiling(const CProfiling &);
+    CProfiling & operator=(const CProfiling &);
 
     uint32_t m_CurrentDisplayCount;
     PROFILE_TIMERS m_CurrentTimerType;

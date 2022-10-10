@@ -1,7 +1,7 @@
 #pragma once
-#include <Project64-core/N64System/Recompiler/RegInfo.h>
 #include <Project64-core/N64System/Mips/R4300iOpcode.h>
 #include <Project64-core/N64System/N64Types.h>
+#include <Project64-core/N64System/Recompiler/RegInfo.h>
 #include <map>
 
 class CCodeSection;
@@ -17,14 +17,14 @@ public:
 
 private:
     LoopAnalysis();
-    LoopAnalysis(const LoopAnalysis&);
-    LoopAnalysis& operator=(const LoopAnalysis&);
+    LoopAnalysis(const LoopAnalysis &);
+    LoopAnalysis & operator=(const LoopAnalysis &);
 
     bool SetupEnterSection(CCodeSection * Section, bool & bChanged, bool & bSkipedSection);
     bool CheckLoopRegisterUsage(CCodeSection * Section);
-    bool SyncRegState(CRegInfo & RegSet, const CRegInfo& SyncReg);
-    void SetJumpRegSet(CCodeSection * Section, const CRegInfo &Reg);
-    void SetContinueRegSet(CCodeSection * Section, const CRegInfo &Reg);
+    bool SyncRegState(CRegInfo & RegSet, const CRegInfo & SyncReg);
+    void SetJumpRegSet(CCodeSection * Section, const CRegInfo & Reg);
+    void SetContinueRegSet(CCodeSection * Section, const CRegInfo & Reg);
 
     // R4300i opcodes: Special
     void SPECIAL_SLL();

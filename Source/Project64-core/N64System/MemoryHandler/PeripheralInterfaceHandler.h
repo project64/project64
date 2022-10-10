@@ -1,8 +1,9 @@
 #pragma once
-#include <Project64-core\Settings\GameSettings.h>
-#include <Project64-core\Settings\DebugSettings.h>
-#include <Project64-core\Logging.h>
 #include "MemoryHandler.h"
+#include <Project64-core/Logging.h>
+#include <Project64-core/N64System/MemoryHandler/MIPSInterfaceHandler.h>
+#include <Project64-core/Settings/DebugSettings.h>
+#include <Project64-core/Settings/GameSettings.h>
 #include <stdint.h>
 
 class PeripheralInterfaceReg
@@ -29,10 +30,11 @@ public:
 
 private:
     PeripheralInterfaceReg();
-    PeripheralInterfaceReg(const PeripheralInterfaceReg&);
-    PeripheralInterfaceReg& operator=(const PeripheralInterfaceReg&);
+    PeripheralInterfaceReg(const PeripheralInterfaceReg &);
+    PeripheralInterfaceReg & operator=(const PeripheralInterfaceReg &);
 };
 
+class CN64System;
 class CRegisters;
 class CMipsMemoryVM;
 class CartridgeDomain2Address2Handler;
@@ -68,8 +70,14 @@ private:
     PeripheralInterfaceHandler(const PeripheralInterfaceHandler &);
     PeripheralInterfaceHandler & operator=(const PeripheralInterfaceHandler &);
 
-    static void stSystemReset(PeripheralInterfaceHandler * _this) { _this->SystemReset(); }
-    static void stLoadedGameState(PeripheralInterfaceHandler * _this) { _this->LoadedGameState(); }
+    static void stSystemReset(PeripheralInterfaceHandler * _this)
+    {
+        _this->SystemReset();
+    }
+    static void stLoadedGameState(PeripheralInterfaceHandler * _this)
+    {
+        _this->LoadedGameState();
+    }
 
     void PI_DMA_READ();
     void PI_DMA_WRITE();

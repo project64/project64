@@ -1,8 +1,8 @@
 #pragma once
-#include "MemoryHandler.h"
 #include "MIPSInterfaceHandler.h"
-#include <Project64-core\Settings\DebugSettings.h>
+#include "MemoryHandler.h"
 #include <Project64-core\Logging.h>
+#include <Project64-core\Settings\DebugSettings.h>
 #include <stdint.h>
 
 enum
@@ -26,8 +26,8 @@ public:
 
 private:
     SerialInterfaceReg();
-    SerialInterfaceReg(const SerialInterfaceReg&);
-    SerialInterfaceReg& operator=(const SerialInterfaceReg&);
+    SerialInterfaceReg(const SerialInterfaceReg &);
+    SerialInterfaceReg & operator=(const SerialInterfaceReg &);
 };
 
 class CMipsMemoryVM;

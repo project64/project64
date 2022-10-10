@@ -1,6 +1,7 @@
 #include "stdafx.h"
-#include <Project64-core/N64System/Mips/Register.h>
+
 #include "R4300iInstruction.h"
+#include <Project64-core/N64System/Mips/Register.h>
 
 R4300iInstruction::R4300iInstruction(uint32_t Address, uint32_t Instruction) :
     m_Address(Address)
@@ -326,10 +327,22 @@ bool R4300iInstruction::DelaySlotEffectsCompare(uint32_t DelayInstruction) const
 
 const char * R4300iInstruction::FPR_Type(uint32_t COP1OpCode)
 {
-    if (COP1OpCode == R4300i_COP1_S) { return "S"; };
-    if (COP1OpCode == R4300i_COP1_D) { return "D"; };
-    if (COP1OpCode == R4300i_COP1_W) { return "W"; };
-    if (COP1OpCode == R4300i_COP1_L) { return "L"; };
+    if (COP1OpCode == R4300i_COP1_S)
+    {
+        return "S";
+    };
+    if (COP1OpCode == R4300i_COP1_D)
+    {
+        return "D";
+    };
+    if (COP1OpCode == R4300i_COP1_W)
+    {
+        return "W";
+    };
+    if (COP1OpCode == R4300i_COP1_L)
+    {
+        return "L";
+    };
     return "?";
 }
 
@@ -1152,4 +1165,3 @@ void R4300iInstruction::DecodeCop1Name(void)
         sprintf(m_Param, "0x%08X", m_Instruction.Value);
     }
 }
-

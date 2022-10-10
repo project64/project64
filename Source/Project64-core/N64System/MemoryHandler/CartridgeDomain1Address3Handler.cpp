@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CartridgeDomain1Address3Handler.h"
 
 CartridgeDomain1Address3Handler::CartridgeDomain1Address3Handler()

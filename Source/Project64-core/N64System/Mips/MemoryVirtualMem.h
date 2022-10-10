@@ -1,9 +1,5 @@
 #pragma once
-#include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
-#include <Project64-core\N64System\Recompiler\RecompilerOps.h>
 #include <Project64-core\N64System\Interpreter\InterpreterOps.h>
-#include <Project64-core\N64System\Mips\PifRam.h>
-#include <Project64-core\N64System\SaveType\FlashRam.h>
 #include <Project64-core\N64System\MemoryHandler\AudioInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\CartridgeDomain1Address1Handler.h>
 #include <Project64-core\N64System\MemoryHandler\CartridgeDomain1Address3Handler.h>
@@ -17,9 +13,13 @@
 #include <Project64-core\N64System\MemoryHandler\RDRAMInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RDRAMRegistersHandler.h>
 #include <Project64-core\N64System\MemoryHandler\RomMemoryHandler.h>
-#include <Project64-core\N64System\MemoryHandler\SerialInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\SPRegistersHandler.h>
+#include <Project64-core\N64System\MemoryHandler\SerialInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\VideoInterfaceHandler.h>
+#include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
+#include <Project64-core\N64System\Mips\PifRam.h>
+#include <Project64-core\N64System\Recompiler\RecompilerOps.h>
+#include <Project64-core\N64System\SaveType\FlashRam.h>
 #include <Project64-core\Settings\GameSettings.h>
 
 #ifdef __arm__
@@ -63,14 +63,35 @@ public:
     bool Initialize(bool SyncSystem);
     void Reset(bool EraseMemory);
 
-    uint8_t * Rdram() const { return m_RDRAM; }
-    uint32_t RdramSize() const { return m_AllocatedRdramSize; }
-    uint8_t * Dmem() const { return m_DMEM; }
-    uint8_t * Imem() const { return m_IMEM; }
-    uint8_t * PifRam() { return &m_PifRam[0]; }
+    uint8_t * Rdram() const
+    {
+        return m_RDRAM;
+    }
+    uint32_t RdramSize() const
+    {
+        return m_AllocatedRdramSize;
+    }
+    uint8_t * Dmem() const
+    {
+        return m_DMEM;
+    }
+    uint8_t * Imem() const
+    {
+        return m_IMEM;
+    }
+    uint8_t * PifRam()
+    {
+        return &m_PifRam[0];
+    }
 
-    CSram & GetSram() { return m_CartridgeDomain2Address2Handler.Sram(); }
-    CFlashRam & GetFlashRam() { return m_CartridgeDomain2Address2Handler.FlashRam(); }
+    CSram & GetSram()
+    {
+        return m_CartridgeDomain2Address2Handler.Sram();
+    }
+    CFlashRam & GetFlashRam()
+    {
+        return m_CartridgeDomain2Address2Handler.FlashRam();
+    }
 
     uint8_t * MemoryPtr(uint32_t VAddr, uint32_t Size, bool Read);
 
@@ -93,11 +114,11 @@ public:
     bool SW_Memory(uint64_t VAddr, uint32_t Value);
     bool SD_Memory(uint64_t VAddr, uint64_t Value);
 
-    int32_t   MemoryFilter(uint32_t dwExptCode, void * lpExceptionPointer);
+    int32_t MemoryFilter(uint32_t dwExptCode, void * lpExceptionPointer);
 
 #ifndef _WIN32
     static bool SetupSegvHandler(void);
-    static void segv_handler(int signal, siginfo_t *siginfo, void *sigcontext);
+    static void segv_handler(int signal, siginfo_t * siginfo, void * sigcontext);
 #endif
 
     void ClearMemoryWriteMap(uint32_t VAddr, uint32_t Length);
@@ -116,14 +137,23 @@ public:
     // Labels
     const char * LabelName(uint32_t Address) const;
 
-    AudioInterfaceHandler & AudioInterface(void) { return m_AudioInterfaceHandler; }
-    VideoInterfaceHandler & VideoInterface(void) { return m_VideoInterfaceHandler; }
-    RomMemoryHandler & RomMemory(void) { return m_RomMemoryHandler; };
+    AudioInterfaceHandler & AudioInterface(void)
+    {
+        return m_AudioInterfaceHandler;
+    }
+    VideoInterfaceHandler & VideoInterface(void)
+    {
+        return m_VideoInterfaceHandler;
+    }
+    RomMemoryHandler & RomMemory(void)
+    {
+        return m_RomMemoryHandler;
+    };
 
 private:
     CMipsMemoryVM();
-    CMipsMemoryVM(const CMipsMemoryVM&);
-    CMipsMemoryVM& operator=(const CMipsMemoryVM&);
+    CMipsMemoryVM(const CMipsMemoryVM &);
+    CMipsMemoryVM & operator=(const CMipsMemoryVM &);
 
 #if defined(__i386__) || defined(_M_IX86)
     friend class CX86RecompilerOps;
@@ -169,7 +199,7 @@ private:
 #endif
     void FreeMemory();
 
-    static uint8_t   * m_Reserve1, *m_Reserve2;
+    static uint8_t *m_Reserve1, *m_Reserve2;
     CN64System & m_System;
     CRegisters & m_Reg;
     AudioInterfaceHandler m_AudioInterfaceHandler;
@@ -188,7 +218,7 @@ private:
     SerialInterfaceHandler m_SerialInterfaceHandler;
     SPRegistersHandler m_SPRegistersHandler;
     VideoInterfaceHandler m_VideoInterfaceHandler;
-    uint8_t * m_RDRAM, *m_DMEM, *m_IMEM;
+    uint8_t *m_RDRAM, *m_DMEM, *m_IMEM;
     uint32_t m_AllocatedRdramSize;
     CN64Rom & m_Rom;
 

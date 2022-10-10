@@ -25,10 +25,13 @@ protected:
 
 private:
     CPifRam();
-    CPifRam(const CPifRam&);
-    CPifRam& operator=(const CPifRam&);
+    CPifRam(const CPifRam &);
+    CPifRam & operator=(const CPifRam &);
 
-    enum { CHALLENGE_LENGTH = 0x20 };
+    enum
+    {
+        CHALLENGE_LENGTH = 0x20
+    };
     void ProcessControllerCommand(int32_t Control, uint8_t * Command);
     void ReadControllerCommand(int32_t Control, uint8_t * Command);
     void LogControllerPakData(const char * Description);

@@ -10,13 +10,13 @@ class CAarch64RegInfo :
 {
 public:
     CAarch64RegInfo(CCodeBlock & CodeBlock, CAarch64Ops & Assembler);
-    CAarch64RegInfo(const CAarch64RegInfo&);
+    CAarch64RegInfo(const CAarch64RegInfo &);
     ~CAarch64RegInfo();
 
-    CAarch64RegInfo& operator=(const CAarch64RegInfo&);
+    CAarch64RegInfo & operator=(const CAarch64RegInfo &);
 
-    bool operator==(const CAarch64RegInfo& right) const;
-    bool operator!=(const CAarch64RegInfo& right) const;
+    bool operator==(const CAarch64RegInfo & right) const;
+    bool operator!=(const CAarch64RegInfo & right) const;
 };
 
 #endif

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "SettingsType-SelectedDirectory.h"
 
 CSettingTypeSelectedDirectory::CSettingTypeSelectedDirectory(const char * Name, SettingID InitialDir, SettingID SelectedDir, SettingID UseSelected, SettingID NotifyChangeId) :

@@ -1,8 +1,9 @@
 #include "stdafx.h"
+
+#include <Common\path.h>
+#include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
 #include <Project64-core\N64System\SaveType\FlashRam.h>
 #include <Project64-core\N64System\SystemGlobals.h>
-#include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
-#include <Common\path.h>
 
 CFlashRam::CFlashRam(bool ReadOnly) :
     m_FlashRamPointer(nullptr),
@@ -67,8 +68,8 @@ void CFlashRam::DmaFromFlashram(uint8_t * dest, int32_t StartOffset, int32_t len
                 g_Notify->DisplayError(stdstr_f("%s: Reading m_FlashStatus not being handled correctly\nStart: %X len: %X", __FUNCTION__, StartOffset, len).c_str());
             }
         }
-        *((uint32_t *)(dest)+0) = (uint32_t)((m_FlashStatus >> 32) & 0xFFFFFFFF);
-        *((uint32_t *)(dest)+1) = (uint32_t)(m_FlashStatus & 0xFFFFFFFF);
+        *((uint32_t *)(dest) + 0) = (uint32_t)((m_FlashStatus >> 32) & 0xFFFFFFFF);
+        *((uint32_t *)(dest) + 1) = (uint32_t)(m_FlashStatus & 0xFFFFFFFF);
         break;
     default:
         if (HaveDebugger())

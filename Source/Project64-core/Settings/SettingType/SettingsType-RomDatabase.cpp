@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "SettingsType-RomDatabase.h"
 
 CIniFile * CSettingTypeRomDatabase::m_SettingsIniFile = nullptr;
@@ -127,32 +128,32 @@ void CSettingTypeRomDatabase::GameChanged(void * /*Data */)
 
 bool CSettingTypeRomDatabase::Load(uint32_t & Value) const
 {
-	bool bRes = false;
-	if (m_VideoSetting)
-	{
-		bRes = m_VideoIniFile->GetNumber(Section(), m_KeyName.c_str(), Value, Value);
-	}
-	else if (m_AudioSetting)
-	{
-		bRes = m_AudioIniFile->GetNumber(Section(), m_KeyName.c_str(), Value, Value);
-	}
-	else
-	{
-		bRes = m_SettingsIniFile->GetNumber(Section(), m_KeyName.c_str(), Value, Value);
-	}
-	return bRes;
+    bool bRes = false;
+    if (m_VideoSetting)
+    {
+        bRes = m_VideoIniFile->GetNumber(Section(), m_KeyName.c_str(), Value, Value);
+    }
+    else if (m_AudioSetting)
+    {
+        bRes = m_AudioIniFile->GetNumber(Section(), m_KeyName.c_str(), Value, Value);
+    }
+    else
+    {
+        bRes = m_SettingsIniFile->GetNumber(Section(), m_KeyName.c_str(), Value, Value);
+    }
+    return bRes;
 }
 
 bool CSettingTypeRomDatabase::Load(uint32_t Index, bool & Value) const
 {
     uint32_t temp_value = Value;
-	if (Load(temp_value))
-	{
-		Value = temp_value != 0;
-		return true;
-	}
-	LoadDefault(Index, Value);
-	return false;
+    if (Load(temp_value))
+    {
+        Value = temp_value != 0;
+        return true;
+    }
+    LoadDefault(Index, Value);
+    return false;
 }
 
 bool CSettingTypeRomDatabase::Load(uint32_t Index, uint32_t & Value) const
@@ -160,8 +161,8 @@ bool CSettingTypeRomDatabase::Load(uint32_t Index, uint32_t & Value) const
     if (!Load(Value))
     {
         LoadDefault(Index, Value);
-		return false;
-	}
+        return false;
+    }
     return true;
 }
 
@@ -201,7 +202,8 @@ void CSettingTypeRomDatabase::LoadDefault(uint32_t /*Index*/, bool & Value) cons
         {
             Value = m_DefaultValue != 0;
         }
-        else {
+        else
+        {
             g_Settings->LoadBool(m_DefaultSetting, Value);
         }
     }
@@ -223,7 +225,8 @@ void CSettingTypeRomDatabase::LoadDefault(uint32_t /*Index*/, std::string & Valu
         {
             Value = m_DefaultStr;
         }
-        else {
+        else
+        {
             g_Settings->LoadStringVal(m_DefaultSetting, Value);
         }
     }
