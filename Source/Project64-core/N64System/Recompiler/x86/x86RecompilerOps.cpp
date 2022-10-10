@@ -7293,6 +7293,10 @@ void CX86RecompilerOps::COP0_DMF()
 
 void CX86RecompilerOps::COP0_MT()
 {
+    if (m_Opcode.rd == 6)
+    {
+        UpdateCounters(m_RegWorkingSet, false, true);
+    }
     m_RegWorkingSet.BeforeCallDirect();
     if (IsConst(m_Opcode.rt))
     {
@@ -7322,6 +7326,10 @@ void CX86RecompilerOps::COP0_MT()
 
 void CX86RecompilerOps::COP0_DMT()
 {
+    if (m_Opcode.rd == 6)
+    {
+        UpdateCounters(m_RegWorkingSet, false, true);
+    }
     m_RegWorkingSet.BeforeCallDirect();
     if (IsConst(m_Opcode.rt))
     {
