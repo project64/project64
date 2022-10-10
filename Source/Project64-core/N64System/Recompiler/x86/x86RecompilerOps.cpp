@@ -7319,7 +7319,6 @@ void CX86RecompilerOps::COP0_MT()
     }
     m_Assembler.PushImm32(m_Opcode.rd);
     m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::Cop0_MT), "CRegisters::Cop0_MT", 16);
-    m_Assembler.MoveX86regToVariable(CX86Ops::x86_EAX, &_GPR[m_Opcode.rt].UW[0], CRegName::GPR_Lo[m_Opcode.rt]);
     m_RegWorkingSet.AfterCallDirect();
 }
 
@@ -7355,8 +7354,6 @@ void CX86RecompilerOps::COP0_DMT()
     }
     m_Assembler.PushImm32(m_Opcode.rd);
     m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::Cop0_MT), "CRegisters::Cop0_MT", 16);
-    m_Assembler.MoveX86regToVariable(CX86Ops::x86_EAX, &_GPR[m_Opcode.rt].UW[0], CRegName::GPR_Lo[m_Opcode.rt]);
-    m_Assembler.MoveX86regToVariable(CX86Ops::x86_EDX, &_GPR[m_Opcode.rt].UW[1], CRegName::GPR_Hi[m_Opcode.rt]);
     m_RegWorkingSet.AfterCallDirect();
 }
 
