@@ -425,8 +425,6 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
     }
     else
     {
-        CX86Ops::x86Reg TempReg;
-
         UnMap_FPR(m_x86fpu_MappedTo[(StackTopPos() - 1) & 7], true);
         for (int32_t i = 0; i < 8; i++)
         {
@@ -437,7 +435,7 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
             }
         }
         m_CodeBlock.Log("    regcache: allocate ST(0) to %s", CRegName::FPR[Reg]);
-        TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
+        CX86Ops::x86Reg TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
         switch (Format)
         {
         case FPU_Dword:
