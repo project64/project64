@@ -4232,6 +4232,11 @@ void CArmRecompilerOps::COP0_MF()
     }
 }
 
+void CArmRecompilerOps::COP0_DMF()
+{
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+}
+
 void CArmRecompilerOps::COP0_MT()
 {
     if (m_Opcode.rt != 0)
@@ -4283,6 +4288,11 @@ void CArmRecompilerOps::COP0_MT()
     default:
         UnknownOpcode();
     }
+}
+
+void CArmRecompilerOps::COP0_DMT()
+{
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CArmRecompilerOps::COP0_CO_TLBR()

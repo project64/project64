@@ -7197,166 +7197,93 @@ void CX86RecompilerOps::SPECIAL_DSRA32()
 // COP0 functions
 void CX86RecompilerOps::COP0_MF()
 {
-    switch (m_Opcode.rd)
-    {
-    case 9: // Count
-        UpdateCounters(m_RegWorkingSet, false, true);
-        m_RegWorkingSet.BeforeCallDirect();
-        m_Assembler.CallThis((uint32_t)g_SystemTimer, AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers", 4);
-        m_RegWorkingSet.AfterCallDirect();
-    }
     Map_GPR_32bit(m_Opcode.rt, true, -1);
-    m_Assembler.MoveVariableToX86reg(&_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd], GetMipsRegMapLo(m_Opcode.rt));
+    m_RegWorkingSet.BeforeCallDirect();
+    m_Assembler.PushImm32(m_Opcode.rd);
+    m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::Cop0_MF), "CRegisters::Cop0_MF", 8);
+    m_Assembler.MoveX86regToVariable(CX86Ops::x86_EAX, &_GPR[m_Opcode.rt].UW[0], CRegName::GPR_Lo[m_Opcode.rt]);
+    m_RegWorkingSet.AfterCallDirect();
+    m_Assembler.MoveVariableToX86reg(&_GPR[m_Opcode.rt].UW[0], CRegName::GPR_Lo[m_Opcode.rt], GetMipsRegMapLo(m_Opcode.rt));
+}
+
+void CX86RecompilerOps::COP0_DMF()
+{
+    Map_GPR_64bit(m_Opcode.rt, -1);
+    m_RegWorkingSet.BeforeCallDirect();
+    m_Assembler.PushImm32(m_Opcode.rd);
+    m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::Cop0_MF), "CRegisters::Cop0_MF", 8);
+    m_Assembler.MoveX86regToVariable(CX86Ops::x86_EAX, &_GPR[m_Opcode.rt].UW[0], CRegName::GPR_Lo[m_Opcode.rt]);
+    m_Assembler.MoveX86regToVariable(CX86Ops::x86_EDX, &_GPR[m_Opcode.rt].UW[1], CRegName::GPR_Hi[m_Opcode.rt]);
+    m_RegWorkingSet.AfterCallDirect();
+    m_Assembler.MoveVariableToX86reg(&_GPR[m_Opcode.rt].UW[0], CRegName::GPR_Lo[m_Opcode.rt], GetMipsRegMapLo(m_Opcode.rt));
+    m_Assembler.MoveVariableToX86reg(&_GPR[m_Opcode.rt].UW[1], CRegName::GPR_Hi[m_Opcode.rt], GetMipsRegMapHi(m_Opcode.rt));
 }
 
 void CX86RecompilerOps::COP0_MT()
 {
-    uint8_t * Jump;
-
-    switch (m_Opcode.rd)
+    m_RegWorkingSet.BeforeCallDirect();
+    if (IsConst(m_Opcode.rt))
     {
-    case 0:  // Index
-    case 2:  // EntryLo0
-    case 3:  // EntryLo1
-    case 4:  // Context
-    case 5:  // PageMask
-    case 10: // Entry Hi
-    case 14: // EPC
-    case 16: // Config
-    case 18: // WatchLo
-    case 19: // WatchHi
-    case 28: // Tag Lo
-    case 29: // Tag Hi
-    case 30: // ErrEPC
-        if (IsConst(m_Opcode.rt))
-        {
-            m_Assembler.MoveConstToVariable(GetMipsRegLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
-        }
-        else if (IsMapped(m_Opcode.rt))
-        {
-            m_Assembler.MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
-        }
-        else
-        {
-            m_Assembler.MoveX86regToVariable(Map_TempReg(CX86Ops::x86_Unknown, m_Opcode.rt, false, false), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
-        }
-        if (m_Opcode.rd == 4) // Context
-        {
-            m_Assembler.AndConstToVariable(0xFF800000, &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
-        }
-        break;
-    case 11: // Compare
-        UpdateCounters(m_RegWorkingSet, false, true);
-        m_RegWorkingSet.BeforeCallDirect();
-        m_Assembler.CallThis((uint32_t)g_SystemTimer, AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers", 4);
-        m_RegWorkingSet.AfterCallDirect();
-        if (IsConst(m_Opcode.rt))
-        {
-            m_Assembler.MoveConstToVariable(GetMipsRegLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
-        }
-        else if (IsMapped(m_Opcode.rt))
-        {
-            m_Assembler.MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
-        }
-        else
-        {
-            m_Assembler.MoveX86regToVariable(Map_TempReg(CX86Ops::x86_Unknown, m_Opcode.rt, false, false), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
-        }
-        m_Assembler.AndConstToVariable((uint32_t)~CAUSE_IP7, &g_Reg->FAKE_CAUSE_REGISTER, "FAKE_CAUSE_REGISTER");
-        m_RegWorkingSet.BeforeCallDirect();
-        m_Assembler.CallThis((uint32_t)g_SystemTimer, AddressOf(&CSystemTimer::UpdateCompareTimer), "CSystemTimer::UpdateCompareTimer", 4);
-        m_RegWorkingSet.AfterCallDirect();
-        break;
-    case 9: // Count
-        UpdateCounters(m_RegWorkingSet, false, true);
-        m_RegWorkingSet.BeforeCallDirect();
-        m_Assembler.CallThis((uint32_t)g_SystemTimer, AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers", 4);
-        m_RegWorkingSet.AfterCallDirect();
-        if (IsConst(m_Opcode.rt))
-        {
-            m_Assembler.MoveConstToVariable(GetMipsRegLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
-        }
-        else if (IsMapped(m_Opcode.rt))
-        {
-            m_Assembler.MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
-        }
-        else
-        {
-            m_Assembler.MoveX86regToVariable(Map_TempReg(CX86Ops::x86_Unknown, m_Opcode.rt, false, false), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
-        }
-        m_RegWorkingSet.BeforeCallDirect();
-        m_Assembler.CallThis((uint32_t)g_SystemTimer, AddressOf(&CSystemTimer::UpdateCompareTimer), "CSystemTimer::UpdateCompareTimer", 4);
-        m_RegWorkingSet.AfterCallDirect();
-        break;
-    case 12: // Status
+        m_Assembler.PushImm32(GetMipsRegLo_S(m_Opcode.rt) >> 31);
+        m_Assembler.PushImm32(GetMipsRegLo(m_Opcode.rt));
+    }
+    else if (IsMapped(m_Opcode.rt))
     {
-        CX86Ops::x86Reg OldStatusReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
-        m_Assembler.MoveVariableToX86reg(&_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd], OldStatusReg);
-        if (IsConst(m_Opcode.rt))
-        {
-            m_Assembler.MoveConstToVariable(GetMipsRegLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
-        }
-        else if (IsMapped(m_Opcode.rt))
-        {
-            m_Assembler.MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
-        }
-        else
-        {
-            m_Assembler.MoveX86regToVariable(Map_TempReg(CX86Ops::x86_Unknown, m_Opcode.rt, false, false), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
-        }
-        m_Assembler.XorVariableToX86reg(&_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd], OldStatusReg);
-        m_Assembler.TestConstToX86Reg(STATUS_FR, OldStatusReg);
-        m_Assembler.JeLabel8("FpuFlagFine", 0);
-        Jump = *g_RecompPos - 1;
-        m_RegWorkingSet.BeforeCallDirect();
-        m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::FixFpuLocations), "CRegisters::FixFpuLocations", 4);
-        m_RegWorkingSet.AfterCallDirect();
-        m_Assembler.SetJump8(Jump, *g_RecompPos);
+        CX86Ops::x86Reg HiReg = GetMipsRegMapLo(m_Opcode.rt) != CX86Ops::x86_EDX ? CX86Ops::x86_EDX : CX86Ops::x86_EAX;
+        m_Assembler.MoveX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rt), HiReg);
+        m_Assembler.ShiftRightSignImmed(HiReg, 0x1F);
+        m_Assembler.Push(HiReg);
+        m_Assembler.Push(GetMipsRegMapLo(m_Opcode.rt));
+    }
+    else
+    {
+        m_Assembler.MoveVariableToX86reg(&_GPR[m_Opcode.rt].UW[0], CRegName::GPR_Lo[m_Opcode.rt], CX86Ops::x86_EAX);
+        m_Assembler.MoveX86RegToX86Reg(CX86Ops::x86_EAX, CX86Ops::x86_EDX);
+        m_Assembler.ShiftRightSignImmed(CX86Ops::x86_EDX, 0x1F);
+        m_Assembler.Push(CX86Ops::x86_EDX);
+        m_Assembler.Push(CX86Ops::x86_EAX);
+    }
+    m_Assembler.PushImm32(m_Opcode.rd);
+    m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::Cop0_MT), "CRegisters::Cop0_MT", 16);
+    m_Assembler.MoveX86regToVariable(CX86Ops::x86_EAX, &_GPR[m_Opcode.rt].UW[0], CRegName::GPR_Lo[m_Opcode.rt]);
+    m_RegWorkingSet.AfterCallDirect();
+}
 
-        m_RegWorkingSet.BeforeCallDirect();
-        m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts", 4);
-        m_RegWorkingSet.AfterCallDirect();
-        break;
+void CX86RecompilerOps::COP0_DMT()
+{
+    m_RegWorkingSet.BeforeCallDirect();
+    if (IsConst(m_Opcode.rt))
+    {
+        m_Assembler.PushImm32(Is64Bit(m_Opcode.rt) ? GetMipsRegHi(m_Opcode.rt) : GetMipsRegLo_S(m_Opcode.rt) >> 31);
+        m_Assembler.PushImm32(GetMipsRegLo(m_Opcode.rt));
     }
-    case 6: // Wired
-        UpdateCounters(m_RegWorkingSet, false, true);
-        m_RegWorkingSet.BeforeCallDirect();
-        m_Assembler.CallThis((uint32_t)g_SystemTimer, AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers", 4);
-        m_RegWorkingSet.AfterCallDirect();
-        if (IsConst(m_Opcode.rt))
+    else if (IsMapped(m_Opcode.rt))
+    {
+        if (Is64Bit(m_Opcode.rt))
         {
-            m_Assembler.MoveConstToVariable(GetMipsRegLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
-        }
-        else if (IsMapped(m_Opcode.rt))
-        {
-            m_Assembler.MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
+            m_Assembler.Push(GetMipsRegMapHi(m_Opcode.rt));
         }
         else
         {
-            m_Assembler.MoveX86regToVariable(Map_TempReg(CX86Ops::x86_Unknown, m_Opcode.rt, false, false), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
+            CX86Ops::x86Reg HiReg = GetMipsRegMapLo(m_Opcode.rt) != CX86Ops::x86_EDX ? CX86Ops::x86_EDX : CX86Ops::x86_EAX;
+            m_Assembler.MoveX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rt), HiReg);
+            m_Assembler.ShiftRightSignImmed(HiReg, 0x1F);
+            m_Assembler.Push(HiReg);
         }
-        break;
-    case 13: // Cause
-        m_Assembler.AndConstToVariable(0xFFFFCFF, &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
-        if (IsConst(m_Opcode.rt))
-        {
-            if ((GetMipsRegLo(m_Opcode.rt) & 0x300) != 0 && HaveDebugger())
-            {
-                g_Notify->DisplayError("Set IP0 or IP1");
-            }
-        }
-        /*else if (HaveDebugger())
-        {
-            UnknownOpcode();
-            return;
-        }*/
-        m_RegWorkingSet.BeforeCallDirect();
-        m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts", 4);
-        m_RegWorkingSet.AfterCallDirect();
-        break;
-    default:
-        UnknownOpcode();
+        m_Assembler.Push(GetMipsRegMapLo(m_Opcode.rt));
     }
+    else
+    {
+        m_Assembler.MoveVariableToX86reg(&_GPR[m_Opcode.rt].UW[0], CRegName::GPR_Lo[m_Opcode.rt], CX86Ops::x86_EAX);
+        m_Assembler.MoveVariableToX86reg(&_GPR[m_Opcode.rt].UW[1], CRegName::GPR_Hi[m_Opcode.rt], CX86Ops::x86_EDX);
+        m_Assembler.Push(CX86Ops::x86_EDX);
+        m_Assembler.Push(CX86Ops::x86_EAX);
+    }
+    m_Assembler.PushImm32(m_Opcode.rd);
+    m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::Cop0_MT), "CRegisters::Cop0_MT", 16);
+    m_Assembler.MoveX86regToVariable(CX86Ops::x86_EAX, &_GPR[m_Opcode.rt].UW[0], CRegName::GPR_Lo[m_Opcode.rt]);
+    m_Assembler.MoveX86regToVariable(CX86Ops::x86_EDX, &_GPR[m_Opcode.rt].UW[1], CRegName::GPR_Hi[m_Opcode.rt]);
+    m_RegWorkingSet.AfterCallDirect();
 }
 
 // COP0 CO functions

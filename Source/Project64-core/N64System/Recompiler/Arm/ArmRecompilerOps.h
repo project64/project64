@@ -130,7 +130,9 @@ public:
 
     // COP0 functions
     void COP0_MF();
+    void COP0_DMF();
     void COP0_MT();
+    void COP0_DMT();
 
     // COP0 CO functions
     void COP0_CO_TLBR();

@@ -488,7 +488,17 @@ void CX64RecompilerOps::COP0_MF()
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
+void CX64RecompilerOps::COP0_DMF()
+{
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+}
+
 void CX64RecompilerOps::COP0_MT()
+{
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+}
+
+void CX64RecompilerOps::COP0_DMT()
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }

@@ -479,7 +479,9 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             switch (Opcode.rs)
             {
             case R4300i_COP0_MF: m_RecompilerOps->COP0_MF(); break;
+            case R4300i_COP0_DMF: m_RecompilerOps->COP0_DMF(); break;
             case R4300i_COP0_MT: m_RecompilerOps->COP0_MT(); break;
+            case R4300i_COP0_DMT: m_RecompilerOps->COP0_DMT(); break;
             default:
                 if ((Opcode.rs & 0x10) != 0)
                 {
