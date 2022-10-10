@@ -7447,12 +7447,11 @@ void CX86RecompilerOps::COP1_MF()
 
 void CX86RecompilerOps::COP1_DMF()
 {
-    CX86Ops::x86Reg TempReg;
     CompileCop1Test();
 
     UnMap_FPR(m_Opcode.fs, true);
     Map_GPR_64bit(m_Opcode.rt, -1);
-    TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
+    CX86Ops::x86Reg TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
     m_Assembler.MoveVariableToX86reg((uint8_t *)&_FPR_D[m_Opcode.fs], stdstr_f("_FPR_D[%d]", m_Opcode.fs).c_str(), TempReg);
     m_Assembler.AddConstToX86Reg(TempReg, 4);
     m_Assembler.MoveX86PointerToX86reg(GetMipsRegMapHi(m_Opcode.rt), TempReg);
@@ -7505,8 +7504,6 @@ void CX86RecompilerOps::COP1_MT()
 
 void CX86RecompilerOps::COP1_DMT()
 {
-    CX86Ops::x86Reg TempReg;
-
     CompileCop1Test();
 
     if ((m_Opcode.fs & 1) == 0)
@@ -7517,7 +7514,7 @@ void CX86RecompilerOps::COP1_DMT()
         }
     }
     UnMap_FPR(m_Opcode.fs, true);
-    TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
+    CX86Ops::x86Reg TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
     m_Assembler.MoveVariableToX86reg((uint8_t *)&_FPR_D[m_Opcode.fs], stdstr_f("_FPR_D[%d]", m_Opcode.fs).c_str(), TempReg);
 
     if (IsConst(m_Opcode.rt))
@@ -7599,10 +7596,8 @@ void CX86RecompilerOps::COP1_S_ADD()
     }
     else
     {
-        CX86Ops::x86Reg TempReg;
-
         UnMap_FPR(Reg2, true);
-        TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
+        CX86Ops::x86Reg TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
         m_Assembler.MoveVariableToX86reg((uint8_t *)&_FPR_S[Reg2], stdstr_f("_FPR_S[%d]", Reg2).c_str(), TempReg);
         Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fd, CRegInfo::FPU_Float);
         m_Assembler.fpuAddDwordRegPointer(TempReg);
@@ -7614,7 +7609,6 @@ void CX86RecompilerOps::COP1_S_SUB()
 {
     uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
     uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
-    CX86Ops::x86Reg TempReg;
 
     CompileCop1Test();
     FixRoundModel(CRegInfo::RoundDefault);
@@ -7624,7 +7618,7 @@ void CX86RecompilerOps::COP1_S_SUB()
         UnMap_FPR(m_Opcode.fd, true);
         Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
 
-        TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
+        CX86Ops::x86Reg TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
         m_Assembler.MoveVariableToX86reg((uint8_t *)&_FPR_S[m_Opcode.ft], stdstr_f("_FPR_S[%d]", m_Opcode.ft).c_str(), TempReg);
         m_Assembler.fpuSubDwordRegPointer(TempReg);
     }
@@ -7640,7 +7634,7 @@ void CX86RecompilerOps::COP1_S_SUB()
             UnMap_FPR(Reg2, true);
             Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fd, CRegInfo::FPU_Float);
 
-            TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
+            CX86Ops::x86Reg TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
             m_Assembler.MoveVariableToX86reg((uint8_t *)&_FPR_S[Reg2], stdstr_f("_FPR_S[%d]", Reg2).c_str(), TempReg);
             m_Assembler.fpuSubDwordRegPointer(TempReg);
         }
@@ -7942,10 +7936,8 @@ void CX86RecompilerOps::COP1_D_ADD()
     }
     else
     {
-        CX86Ops::x86Reg TempReg;
-
         UnMap_FPR(Reg2, true);
-        TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
+        CX86Ops::x86Reg TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
         m_Assembler.MoveVariableToX86reg((uint8_t *)&_FPR_D[Reg2], stdstr_f("_FPR_D[%d]", Reg2).c_str(), TempReg);
         Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fd, CRegInfo::FPU_Double);
         m_Assembler.fpuAddQwordRegPointer(TempReg);
@@ -7956,14 +7948,13 @@ void CX86RecompilerOps::COP1_D_SUB()
 {
     uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
     uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
-    CX86Ops::x86Reg TempReg;
     
     CompileCop1Test();
 
     if (m_Opcode.fd == m_Opcode.ft)
     {
         UnMap_FPR(m_Opcode.fd, true);
-        TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
+        CX86Ops::x86Reg TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
         m_Assembler.MoveVariableToX86reg((uint8_t *)&_FPR_D[m_Opcode.ft], stdstr_f("_FPR_D[%d]", m_Opcode.ft).c_str(), TempReg);
         Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
         m_Assembler.fpuSubQwordRegPointer(TempReg);
@@ -7979,7 +7970,7 @@ void CX86RecompilerOps::COP1_D_SUB()
         {
             UnMap_FPR(Reg2, true);
 
-            TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
+            CX86Ops::x86Reg TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
             m_Assembler.MoveVariableToX86reg((uint8_t *)&_FPR_D[Reg2], stdstr_f("_FPR_D[%d]", Reg2).c_str(), TempReg);
             Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fd, CRegInfo::FPU_Double);
             m_Assembler.fpuSubQwordRegPointer(TempReg);
@@ -7991,7 +7982,6 @@ void CX86RecompilerOps::COP1_D_MUL()
 {
     uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
     uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
-    CX86Ops::x86Reg TempReg;
 
     CompileCop1Test();
     FixRoundModel(CRegInfo::RoundDefault);
@@ -8005,7 +7995,7 @@ void CX86RecompilerOps::COP1_D_MUL()
     {
         UnMap_FPR(Reg2, true);
         Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fd, CRegInfo::FPU_Double);
-        TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
+        CX86Ops::x86Reg TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
         m_Assembler.MoveVariableToX86reg((uint8_t *)&_FPR_D[Reg2], stdstr_f("_FPR_D[%d]", Reg2).c_str(), TempReg);
         m_Assembler.fpuMulQwordRegPointer(TempReg);
     }
@@ -8015,14 +8005,13 @@ void CX86RecompilerOps::COP1_D_DIV()
 {
     uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
     uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
-    CX86Ops::x86Reg TempReg;
 
     CompileCop1Test();
 
     if (m_Opcode.fd == m_Opcode.ft)
     {
         UnMap_FPR(m_Opcode.fd, true);
-        TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
+        CX86Ops::x86Reg TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
         m_Assembler.MoveVariableToX86reg((uint8_t *)&_FPR_D[m_Opcode.ft], stdstr_f("_FPR_D[%d]", m_Opcode.ft).c_str(), TempReg);
         Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
         m_Assembler.fpuDivQwordRegPointer(TempReg);
@@ -8037,7 +8026,7 @@ void CX86RecompilerOps::COP1_D_DIV()
         else
         {
             UnMap_FPR(Reg2, true);
-            TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
+            CX86Ops::x86Reg TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
             m_Assembler.MoveVariableToX86reg((uint8_t *)&_FPR_D[Reg2], stdstr_f("_FPR_D[%d]").c_str(), TempReg);
             Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fd, CRegInfo::FPU_Double);
             m_Assembler.fpuDivQwordRegPointer(TempReg);
