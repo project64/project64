@@ -10472,6 +10472,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             m_Assembler.PushImm32(Value);
             m_Assembler.PushImm32(PAddr | 0xA0000000);
             m_Assembler.CallThis((uint32_t)g_MMU, AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory", 12);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         default:
             if (BreakOnUnhandledMemory())
