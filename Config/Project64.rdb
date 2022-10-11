@@ -1884,12 +1884,14 @@ RDRAM Size=4
 Good Name=Earthworm Jim 3D (E) (M6)
 Internal Name=EARTHWORM JIM 3D
 Status=Compatible
+ViRefresh=500
 Culling=1
 
 [DF574191-9EB5123D-C:45]
 Good Name=Earthworm Jim 3D (U)
 Internal Name=EARTHWORM JIM 3D
 Status=Compatible
+ViRefresh=500
 Culling=1
 
 [8C38E5DB-B37C27D7-C:50]
