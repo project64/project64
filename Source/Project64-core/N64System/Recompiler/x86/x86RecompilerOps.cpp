@@ -7955,7 +7955,7 @@ void CX86RecompilerOps::COP1_D_SUB()
 {
     uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
     uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
-    
+
     CompileCop1Test();
 
     if (m_Opcode.fd == m_Opcode.ft)
@@ -8994,6 +8994,7 @@ bool CX86RecompilerOps::InheritParentInfo()
                 {
                     switch (RegSet->GetMipsRegState(i2))
                     {
+                    case CRegInfo::STATE_CONST_64:
                     case CRegInfo::STATE_MAPPED_64:
                         Map_GPR_64bit(i2, i2);
                         break;
@@ -9741,7 +9742,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
     CX86Ops::x86Reg TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
     if (ValueSize == 16)
     {
-        m_Assembler.MoveX86regToVariable(AddressReg, &m_TempValue32, "TempValue32");        
+        m_Assembler.MoveX86regToVariable(AddressReg, &m_TempValue32, "TempValue32");
         m_Assembler.TestConstToX86Reg(1, AddressReg);
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
         CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_AddressErrorExceptionRead32, false, &CX86Ops::JneLabel32);
