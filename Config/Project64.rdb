@@ -1884,17 +1884,13 @@ RDRAM Size=4
 Good Name=Earthworm Jim 3D (E) (M6)
 Internal Name=EARTHWORM JIM 3D
 Status=Compatible
-32bit=Yes
 Culling=1
-RDRAM Size=4
 
 [DF574191-9EB5123D-C:45]
 Good Name=Earthworm Jim 3D (U)
 Internal Name=EARTHWORM JIM 3D
 Status=Compatible
-32bit=Yes
 Culling=1
-RDRAM Size=4
 
 [8C38E5DB-B37C27D7-C:50]
 Good Name=ECW Hardcore Revolution (E)
