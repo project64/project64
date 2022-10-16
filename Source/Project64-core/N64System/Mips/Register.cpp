@@ -290,6 +290,7 @@ void CRegisters::Reset()
     memset(m_CP0, 0, sizeof(m_CP0));
     memset(m_FPR, 0, sizeof(m_FPR));
     memset(m_FPCR, 0, sizeof(m_FPCR));
+    m_CP0Latch = 0;
     m_HI.DW = 0;
     m_LO.DW = 0;
     m_RoundingModel = FE_TONEAREST;
@@ -341,6 +342,11 @@ uint64_t CRegisters::Cop0_MF(uint32_t Reg)
     {
         g_SystemTimer->UpdateTimers();
     }
+    else if (Reg == 7 || Reg == 21 || Reg == 22 || Reg == 23 || Reg == 24 || Reg == 25 || Reg == 31)
+    {
+        // Unused registers
+        return m_CP0Latch;
+    }
     return Reg <= 0x1F ? m_CP0[Reg] : 0;
 }
 
@@ -354,6 +360,7 @@ void CRegisters::Cop0_MT(uint32_t Reg, uint64_t Value)
             LogMessage("%08X: Cause register changed from %08X to %08X", (*_PROGRAM_COUNTER), CAUSE_REGISTER, (g_Reg->CAUSE_REGISTER & ~CAUSE_IP7));
         }
     }
+    m_CP0Latch = Value;
 
     switch (Reg)
     {
@@ -361,35 +368,25 @@ void CRegisters::Cop0_MT(uint32_t Reg, uint64_t Value)
     case 2:  // EntryLo0
     case 3:  // EntryLo1
     case 5:  // PageMask
-    case 7:  // Reg7
-    case 8:  // BadVaddr
     case 10: // Entry Hi
     case 14: // EPC
-    case 15: // PRId
-    case 16: // Config
-    case 17: // LLAdrr
     case 18: // WatchLo
     case 19: // WatchHi
-    case 20: // XContext
-    case 21: // Reg21
-    case 22: // Reg22
-    case 23: // Reg23
-    case 24: // Reg24
-    case 25: // Reg25
-    case 26: // ECC
-    case 27: // CacheErr
     case 28: // Tag lo
     case 29: // Tag Hi
     case 30: // ErrEPC
     case 31: // Reg31
         m_CP0[Reg] = Value;
         break;
-    case 6: // Wired
-        g_SystemTimer->UpdateTimers();
-        m_CP0[Reg] = Value;
-        break;
     case 4: // Context
         m_CP0[Reg] = (Value & 0xFFFFFFFFFF800000) | (m_CP0[Reg] & 0x7FFFF0);
+        break;
+    case 6: // Wired
+        g_SystemTimer->UpdateTimers();
+        m_CP0[Reg] = Value & 0x3F;
+        break;
+    case 7: // Reg7 - Unused
+    case 8: // BadVaddr - read only
         break;
     case 9: // Count
         g_SystemTimer->UpdateTimers();
@@ -403,27 +400,44 @@ void CRegisters::Cop0_MT(uint32_t Reg, uint64_t Value)
         g_SystemTimer->UpdateCompareTimer();
         break;
     case 12: // Status
-        if ((m_CP0[Reg] & STATUS_FR) != (Value & STATUS_FR))
+    {
+        bool FRBitChanged = (m_CP0[Reg] & STATUS_FR) != (Value & STATUS_FR);
+        m_CP0[Reg] = Value & 0xFFF7FFFF;
+        if (FRBitChanged)
         {
-            m_CP0[Reg] = Value;
             FixFpuLocations();
-        }
-        else
-        {
-            m_CP0[Reg] = Value;
-        }
-        if ((m_CP0[Reg] & 0x18) != 0 && HaveDebugger())
-        {
-            g_Notify->DisplayError("Left kernel mode ??");
         }
         CheckInterrupts();
         break;
+    }
     case 13: // Cause
         m_CP0[Reg] &= 0xFFFFCFF;
         if ((Value & 0x300) != 0 && HaveDebugger())
         {
             g_Notify->DisplayError("Set IP0 or IP1");
         }
+        break;
+    case 15: // PRId - read only
+        break;
+    case 16: // Config
+        m_CP0[Reg] = (Value & 0x3F00800F) | (m_CP0[Reg] & 0xC0FF7FF0);
+        break;
+    case 17: // LLAdrr
+        m_CP0[Reg] = (Value & 0xFFFFFFFF) | (m_CP0[Reg] & 0xFFFFFFFF00000000);
+        break;
+    case 20: // XContext
+        m_CP0[Reg] = (Value & 0xFFFFFFFE00000000) | (m_CP0[Reg] & 0x00000001FFFFFFFF);
+        break;
+    case 21: // Reg21 - unused
+    case 22: // Reg22 - unused
+    case 23: // Reg23 - unused
+    case 24: // Reg24 - unused
+    case 25: // Reg25 - unused
+        break;
+    case 26: // ParityError
+        m_CP0[Reg] = Value & 0xFF;
+        break;
+    case 27: // CacheErr - read only
         break;
     default:
         if (HaveDebugger())
