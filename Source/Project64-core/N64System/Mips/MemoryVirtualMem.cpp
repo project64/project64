@@ -730,12 +730,18 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t VAddr, uint32_t & Value)
     case 0x05000000: m_CartridgeDomain2Address1Handler.Read32(PAddr, Value); break;
     case 0x06000000: m_CartridgeDomain1Address1Handler.Read32(PAddr, Value); break;
     case 0x08000000: m_CartridgeDomain2Address2Handler.Read32(PAddr, Value); break;
+    case 0x13F00000: m_ISViewerHandler.Read32(PAddr, Value); break;
     case 0x1FC00000: m_PifRamHandler.Read32(PAddr, Value); break;
     case 0x1FF00000: m_CartridgeDomain1Address3Handler.Read32(PAddr, Value); break;
     default:
         if (PAddr >= 0x10000000 && PAddr < 0x16000000)
         {
             m_RomMemoryHandler.Read32(PAddr, Value);
+        }
+        else if (BreakOnUnhandledMemory())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            Value = ((PAddr & 0xFFFF) << 16) | (PAddr & 0xFFFF);
         }
         else
         {

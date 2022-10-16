@@ -15,7 +15,14 @@ ISViewerHandler::ISViewerHandler(CN64System & System) :
 
 bool ISViewerHandler::Read32(uint32_t Address, uint32_t & Value)
 {
-    Value = ((Address & 0xFFFF) << 16) | (Address & 0xFFFF);
+    if (!m_Data.empty())
+    {
+        Value = Swap32by8(*((uint32_t *)&m_Data[Address & 0xFFFC]));
+    }
+    else
+    {
+        Value = ((Address & 0xFFFF) << 16) | (Address & 0xFFFF);
+    }
     return true;
 }
 
