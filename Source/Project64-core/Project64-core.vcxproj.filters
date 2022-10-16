@@ -267,9 +267,6 @@
     <ClCompile Include="N64System\Mips\Mempak.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\Mips\PifRam.cpp">
-      <Filter>Source Files\N64 System\Mips</Filter>
-    </ClCompile>
     <ClCompile Include="N64System\Mips\Register.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
@@ -633,9 +630,6 @@
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
     <ClInclude Include="N64System\Mips\Mempak.H">
-      <Filter>Header Files\N64 System\Mips</Filter>
-    </ClInclude>
-    <ClInclude Include="N64System\Mips\PifRam.h">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
     <ClInclude Include="N64System\Mips\Register.h">

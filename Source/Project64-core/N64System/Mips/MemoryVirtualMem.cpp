@@ -17,7 +17,6 @@ uint32_t CMipsMemoryVM::RegModValue;
 #pragma warning(disable : 4355) // Disable 'this' : used in base member initializer list
 
 CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
-    CPifRam(SavesReadOnly),
     m_System(System),
     m_Reg(System.m_Reg),
     m_AudioInterfaceHandler(System, System.m_Reg),
@@ -29,7 +28,7 @@ CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
     m_ISViewerHandler(System),
     m_MIPSInterfaceHandler(System.m_Reg),
     m_PeripheralInterfaceHandler(System, *this, System.m_Reg, m_CartridgeDomain2Address2Handler),
-    m_PifRamHandler(*this, System.m_Reg),
+    m_PifRamHandler(System, SavesReadOnly),
     m_RDRAMInterfaceHandler(System.m_Reg),
     m_RomMemoryHandler(System, System.m_Reg, *g_Rom),
     m_SerialInterfaceHandler(*this, System.m_Reg),
@@ -183,7 +182,6 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
 
     m_DMEM = (uint8_t *)(m_RDRAM + 0x04000000);
     m_IMEM = (uint8_t *)(m_RDRAM + 0x04001000);
-    CPifRam::Reset();
 
     m_MemoryReadMap = new size_t[0x100000];
     if (m_MemoryReadMap == nullptr)
@@ -266,7 +264,6 @@ void CMipsMemoryVM::FreeMemory()
         delete[] m_MemoryWriteMap;
         m_MemoryWriteMap = nullptr;
     }
-    CPifRam::Reset();
 }
 
 uint8_t * CMipsMemoryVM::MemoryPtr(uint32_t VAddr, uint32_t Size, bool Read)

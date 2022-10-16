@@ -148,6 +148,7 @@ private:
     friend class R4300iOp;
 
     friend class VideoInterfaceHandler;
+    friend class PifRamHandler;
 
     // Used for loading and potentially executing the CPU in its own thread
     static void StartEmulationThread(CThread * thread);

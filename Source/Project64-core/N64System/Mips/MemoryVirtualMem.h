@@ -17,7 +17,6 @@
 #include <Project64-core\N64System\MemoryHandler\SerialInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\VideoInterfaceHandler.h>
 #include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
-#include <Project64-core\N64System\Mips\PifRam.h>
 #include <Project64-core\N64System\Recompiler\RecompilerOps.h>
 #include <Project64-core\N64System\SaveType\FlashRam.h>
 #include <Project64-core\Settings\GameSettings.h>
@@ -50,7 +49,6 @@ class CArmRecompilerOps;
 
 class CMipsMemoryVM :
     private R4300iOp,
-    public CPifRam,
     private CGameSettings
 {
 public:
@@ -78,10 +76,6 @@ public:
     uint8_t * Imem() const
     {
         return m_IMEM;
-    }
-    uint8_t * PifRam()
-    {
-        return &m_PifRam[0];
     }
 
     CSram & GetSram()
@@ -149,6 +143,11 @@ public:
     {
         return m_RomMemoryHandler;
     };
+    PifRamHandler & PifRam(void)
+    {
+        return m_PifRamHandler;
+    };
+
 
 private:
     CMipsMemoryVM();

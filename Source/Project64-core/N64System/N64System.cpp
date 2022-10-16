@@ -1896,7 +1896,7 @@ bool CN64System::SaveState()
         zipWriteInFileInZip(file, m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8);
         zipWriteInFileInZip(file, m_Reg.m_SerialInterface, sizeof(uint32_t) * 4);
         zipWriteInFileInZip(file, (void * const)&m_TLB.TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32);
-        zipWriteInFileInZip(file, m_MMU_VM.PifRam(), 0x40);
+        zipWriteInFileInZip(file, m_MMU_VM.PifRam().PifRam(), 0x40);
         zipWriteInFileInZip(file, m_MMU_VM.Rdram(), RdramSize);
         zipWriteInFileInZip(file, m_MMU_VM.Dmem(), 0x1000);
         zipWriteInFileInZip(file, m_MMU_VM.Imem(), 0x1000);
@@ -1966,7 +1966,7 @@ bool CN64System::SaveState()
         hSaveFile.Write(m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8);
         hSaveFile.Write(m_Reg.m_SerialInterface, sizeof(uint32_t) * 4);
         hSaveFile.Write(&m_TLB.TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32);
-        hSaveFile.Write(g_MMU->PifRam(), 0x40);
+        hSaveFile.Write(g_MMU->PifRam().PifRam(), 0x40);
         hSaveFile.Write(g_MMU->Rdram(), RdramSize);
         hSaveFile.Write(g_MMU->Dmem(), 0x1000);
         hSaveFile.Write(g_MMU->Imem(), 0x1000);
@@ -2161,7 +2161,7 @@ bool CN64System::LoadState(const char * FileName)
                 unzReadCurrentFile(file, m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8);
                 unzReadCurrentFile(file, m_Reg.m_SerialInterface, sizeof(uint32_t) * 4);
                 unzReadCurrentFile(file, (void * const)&m_TLB.TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32);
-                unzReadCurrentFile(file, m_MMU_VM.PifRam(), 0x40);
+                unzReadCurrentFile(file, m_MMU_VM.PifRam().PifRam(), 0x40);
                 unzReadCurrentFile(file, m_MMU_VM.Rdram(), SaveRDRAMSize);
                 unzReadCurrentFile(file, m_MMU_VM.Dmem(), 0x1000);
                 unzReadCurrentFile(file, m_MMU_VM.Imem(), 0x1000);
@@ -2256,7 +2256,7 @@ bool CN64System::LoadState(const char * FileName)
         hSaveFile.Read(m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8);
         hSaveFile.Read(m_Reg.m_SerialInterface, sizeof(uint32_t) * 4);
         hSaveFile.Read((void * const)&m_TLB.TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32);
-        hSaveFile.Read(m_MMU_VM.PifRam(), 0x40);
+        hSaveFile.Read(m_MMU_VM.PifRam().PifRam(), 0x40);
         hSaveFile.Read(m_MMU_VM.Rdram(), SaveRDRAMSize);
         hSaveFile.Read(m_MMU_VM.Dmem(), 0x1000);
         hSaveFile.Read(m_MMU_VM.Imem(), 0x1000);
