@@ -264,6 +264,16 @@ void PeripheralInterfaceHandler::PI_DMA_READ()
         return;
     }
 
+    if (PI_CART_ADDR_REG >= 0x1F800000 && PI_CART_ADDR_REG < 0x1F810000)
+    {
+        //EverDrive - 64 X7 Serial Registers (don't care)
+        PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+        PI_STATUS_REG |= PI_STATUS_INTERRUPT;
+        MI_INTR_REG |= MI_INTR_PI;
+        m_Reg.CheckInterrupts();
+        return;
+    }
+
     // Write ROM area (for 64DD conversion)
     if (PI_CART_ADDR_REG >= 0x10000000 && PI_CART_ADDR_REG <= 0x1FBFFFFF && g_Settings->LoadBool(Game_AllowROMWrites))
     {
