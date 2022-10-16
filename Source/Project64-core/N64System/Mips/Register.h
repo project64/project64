@@ -326,6 +326,7 @@ public:
     uint32_t m_PROGRAM_COUNTER;
     MIPS_DWORD m_GPR[32];
     uint64_t m_CP0[33];
+    uint64_t m_CP0Latch;
     MIPS_DWORD m_HI;
     MIPS_DWORD m_LO;
     uint32_t m_LLBit;
