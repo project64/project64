@@ -1260,7 +1260,7 @@ void R4300iOp::LL()
 void R4300iOp::LWC1()
 {
     TEST_COP1_USABLE_EXCEPTION();
-    uint32_t Address = _GPR[m_Opcode.base].UW[0] + (uint32_t)((int16_t)m_Opcode.offset);
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     g_MMU->LW_Memory(Address, *(uint32_t *)_FPR_S[m_Opcode.ft]);
 }
 
