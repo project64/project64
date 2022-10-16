@@ -13,6 +13,8 @@ enum
     SI_STATUS_INTERRUPT = 0x1000,
 };
 
+class PifRamHandler;
+
 class SerialInterfaceReg
 {
 protected:
@@ -51,6 +53,7 @@ private:
     SerialInterfaceHandler(const SerialInterfaceHandler &);
     SerialInterfaceHandler & operator=(const SerialInterfaceHandler &);
 
+    PifRamHandler & m_PifRamHandler;
     CMipsMemoryVM & m_MMU;
     CRegisters & m_Reg;
     uint32_t & m_PC;

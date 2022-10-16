@@ -10737,14 +10737,14 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             UpdateCounters(m_RegWorkingSet, false, true, false);
             m_Assembler.MoveConstToVariable(Value, &g_Reg->SI_PIF_ADDR_RD64B_REG, "SI_PIF_ADDR_RD64B_REG");
             m_RegWorkingSet.BeforeCallDirect();
-            m_Assembler.CallThis((uint32_t)((CPifRam *)g_MMU), AddressOf(&CPifRam::SI_DMA_READ), "CPifRam::SI_DMA_READ", 4);
+            m_Assembler.CallThis((uint32_t)(&g_MMU->m_PifRamHandler), AddressOf(&PifRamHandler::DMA_READ), "PifRamHandler::DMA_READ", 4);
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04800010:
             UpdateCounters(m_RegWorkingSet, false, true, false);
             m_Assembler.MoveConstToVariable(Value, &g_Reg->SI_PIF_ADDR_WR64B_REG, "SI_PIF_ADDR_WR64B_REG");
             m_RegWorkingSet.BeforeCallDirect();
-            m_Assembler.CallThis((uint32_t)((CPifRam *)g_MMU), AddressOf(&CPifRam::SI_DMA_WRITE), "CPifRam::SI_DMA_WRITE", 4);
+            m_Assembler.CallThis((uint32_t)(&g_MMU->m_PifRamHandler), AddressOf(&PifRamHandler::DMA_WRITE), "PifRamHandler::DMA_WRITE", 4);
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04800018:
@@ -11118,13 +11118,13 @@ void CX86RecompilerOps::SW_Register(CX86Ops::x86Reg Reg, uint32_t VAddr)
         case 0x04800004:
             m_Assembler.MoveX86regToVariable(Reg, &g_Reg->SI_PIF_ADDR_RD64B_REG, "SI_PIF_ADDR_RD64B_REG");
             m_RegWorkingSet.BeforeCallDirect();
-            m_Assembler.CallThis((uint32_t)((CPifRam *)g_MMU), AddressOf(&CPifRam::SI_DMA_READ), "CPifRam::SI_DMA_READ", 4);
+            m_Assembler.CallThis((uint32_t)(&g_MMU->m_PifRamHandler), AddressOf(&PifRamHandler::DMA_READ), "PifRamHandler::DMA_READ", 4);
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04800010:
             m_Assembler.MoveX86regToVariable(Reg, &g_Reg->SI_PIF_ADDR_WR64B_REG, "SI_PIF_ADDR_WR64B_REG");
             m_RegWorkingSet.BeforeCallDirect();
-            m_Assembler.CallThis((uint32_t)((CPifRam *)g_MMU), AddressOf(&CPifRam::SI_DMA_WRITE), "CPifRam::SI_DMA_WRITE", 4);
+            m_Assembler.CallThis((uint32_t)(&g_MMU->m_PifRamHandler), AddressOf(&PifRamHandler::DMA_WRITE), "PifRamHandler::DMA_WRITE", 4);
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04800018:

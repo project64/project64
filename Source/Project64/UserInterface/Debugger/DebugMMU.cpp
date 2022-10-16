@@ -57,7 +57,7 @@ uint8_t * CDebugMMU::GetPhysicalPtr(uint32_t paddr, WORD * flags)
     else if (paddr >= 0x1FC007C0 && paddr <= 0x1FC007FF) // PIF RAM
     {
         uint32_t pifRamOffset = paddr - 0x1FC007C0;
-        ptr = (uint8_t *)(g_MMU->PifRam() + pifRamOffset);
+        ptr = (uint8_t *)(g_MMU->PifRam().PifRam() + pifRamOffset);
         bBigEndian = true;
     }
     else

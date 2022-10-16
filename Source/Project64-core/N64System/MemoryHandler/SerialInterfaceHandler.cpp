@@ -16,6 +16,7 @@ SerialInterfaceReg::SerialInterfaceReg(uint32_t * Interface) :
 SerialInterfaceHandler::SerialInterfaceHandler(CMipsMemoryVM & MMU, CRegisters & Reg) :
     SerialInterfaceReg(Reg.m_SerialInterface),
     MIPSInterfaceReg(Reg.m_Mips_Interface),
+    m_PifRamHandler(MMU.PifRam()),
     m_MMU(MMU),
     m_Reg(Reg),
     m_PC(Reg.m_PROGRAM_COUNTER)
@@ -88,11 +89,11 @@ bool SerialInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t 
     case 0x04800000: SI_DRAM_ADDR_REG = (SI_DRAM_ADDR_REG & ~Mask) | (MaskedValue); break;
     case 0x04800004:
         SI_PIF_ADDR_RD64B_REG = (SI_PIF_ADDR_RD64B_REG & ~Mask) | (MaskedValue);
-        m_MMU.SI_DMA_READ();
+        m_PifRamHandler.DMA_READ();
         break;
     case 0x04800010:
         SI_PIF_ADDR_WR64B_REG = (SI_PIF_ADDR_WR64B_REG & ~Mask) | (MaskedValue);
-        m_MMU.SI_DMA_WRITE();
+        m_PifRamHandler.DMA_WRITE();
         break;
     case 0x04800018:
         MI_INTR_REG &= ~MI_INTR_SI;
