@@ -10171,7 +10171,7 @@ void CX86RecompilerOps::SB_Const(uint32_t Value, uint32_t VAddr)
         }
         break;
     default:
-        if (PAddr >= 0x10000000 && PAddr < 0x20000000)
+        if (PAddr >= 0x10000000 && PAddr < 0x13F00000)
         {
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.PushImm32(0xFFFFFFFF);
@@ -10281,7 +10281,7 @@ void CX86RecompilerOps::SH_Const(uint32_t Value, uint32_t VAddr)
         }
         break;
     default:
-        if (PAddr >= 0x10000000 && PAddr < 0x20000000)
+        if (PAddr >= 0x10000000 && PAddr < 0x13F00000)
         {
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.PushImm32(0xFFFFFFFF);
@@ -10792,7 +10792,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         break;
     }
     default:
-        if (PAddr >= 0x10000000 && PAddr < 0x20000000)
+        if (PAddr >= 0x10000000 && PAddr < 0x13F00000)
         {
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.PushImm32(0xFFFFFFFF);
@@ -11192,7 +11192,7 @@ void CX86RecompilerOps::SW_Register(CX86Ops::x86Reg Reg, uint32_t VAddr)
         m_Assembler.MoveX86regToVariable(Reg, PAddr + g_MMU->Rdram(), VarName);
         break;
     default:
-        if (PAddr >= 0x10000000 && PAddr < 0x20000000)
+        if (PAddr >= 0x10000000 && PAddr < 0x13F00000)
         {
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.PushImm32(0xFFFFFFFF);

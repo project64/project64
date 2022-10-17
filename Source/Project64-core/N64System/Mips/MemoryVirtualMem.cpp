@@ -392,12 +392,6 @@ bool CMipsMemoryVM::LB_Memory(uint64_t VAddr, uint8_t & Value)
         Value = *(uint8_t *)(MemoryPtr + (VAddr32 ^ 3));
         return true;
     }
-    uint32_t BaseAddress = m_TLB_ReadMap[VAddr32 >> 12];
-    if (BaseAddress == -1)
-    {
-        GenerateTLBReadException(VAddr, __FUNCTION__);
-        return false;
-    }
     return LB_NonMemory(VAddr32, Value);
 }
 
@@ -424,12 +418,6 @@ bool CMipsMemoryVM::LH_Memory(uint64_t VAddr, uint16_t & Value)
     {
         Value = *(uint16_t *)(MemoryPtr + (VAddr32 ^ 2));
         return true;
-    }
-    uint32_t BaseAddress = m_TLB_ReadMap[VAddr32 >> 12];
-    if (BaseAddress == -1)
-    {
-        GenerateTLBReadException(VAddr, __FUNCTION__);
-        return false;
     }
     return LH_NonMemory(VAddr32, Value);
 }
@@ -518,11 +506,6 @@ bool CMipsMemoryVM::SB_Memory(uint64_t VAddr, uint32_t Value)
         *(uint8_t *)(MemoryPtr + (VAddr32 ^ 3)) = (uint8_t)Value;
         return true;
     }
-    if (m_TLB_WriteMap[VAddr32 >> 12] == -1)
-    {
-        GenerateTLBWriteException(VAddr, __FUNCTION__);
-        return false;
-    }
     return SB_NonMemory(VAddr32, Value);
 }
 
@@ -549,12 +532,6 @@ bool CMipsMemoryVM::SH_Memory(uint64_t VAddr, uint32_t Value)
     {
         *(uint16_t *)(MemoryPtr + (VAddr32 ^ 2)) = (uint16_t)Value;
         return true;
-    }
-    uint32_t BaseAddress = m_TLB_ReadMap[VAddr32 >> 12];
-    if (BaseAddress == -1)
-    {
-        GenerateTLBWriteException(VAddr, __FUNCTION__);
-        return false;
     }
     return SH_NonMemory(VAddr32, Value);
 }
@@ -649,28 +626,33 @@ bool CMipsMemoryVM::LB_NonMemory(uint32_t VAddr, uint8_t & Value)
         GenerateTLBReadException(VAddr, __FUNCTION__);
         return false;
     }
+
     uint32_t PAddr = BaseAddress + VAddr;
-    if (PAddr < 0x800000)
+    uint32_t ReadAddress = PAddr & ~3;
+    uint32_t Value32;
+    switch (PAddr & 0xFFF00000)
     {
-        Value = 0;
-    }
-    else if (PAddr >= 0x10000000 && PAddr < 0x16000000)
-    {
-        uint32_t Value32;
-        if (!m_RomMemoryHandler.Read32(PAddr, Value32))
+    case 0x1FC00000: m_PifRamHandler.Read32(ReadAddress, Value32); break;
+    default:
+        if (PAddr >= 0x10000000 && PAddr < 0x20000000)
         {
-            return false;
+            if (!m_RomMemoryHandler.Read32(PAddr, Value32))
+            {
+                return false;
+            }
+            Value = ((Value32 >> (((PAddr & 1) ^ 3) << 3)) & 0xff);
+            return true;
         }
-        Value = ((Value32 >> (((PAddr & 1) ^ 3) << 3)) & 0xff);
-    }
-    else
-    {
-        if (BreakOnUnhandledMemory())
+        else
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            if (BreakOnUnhandledMemory())
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            Value32 = 0;
         }
-        Value = 0;
     }
+    Value = ((Value32 >> (((PAddr & 3) ^ 3) << 3)) & 0xff);
     return true;
 }
 
@@ -682,28 +664,33 @@ bool CMipsMemoryVM::LH_NonMemory(uint32_t VAddr, uint16_t & Value)
         GenerateTLBReadException(VAddr, __FUNCTION__);
         return false;
     }
+
     uint32_t PAddr = BaseAddress + VAddr;
-    if (PAddr < 0x800000)
+    uint32_t ReadAddress = PAddr & ~1;
+    uint32_t Value32;
+    switch (PAddr & 0xFFF00000)
     {
-        Value = 0;
-    }
-    else if (PAddr >= 0x10000000 && PAddr < 0x16000000)
-    {
-        uint32_t Value32;
-        if (!m_RomMemoryHandler.Read32(PAddr, Value32))
+    case 0x1FC00000: m_PifRamHandler.Read32(ReadAddress, Value32); break;
+    default:
+        if (PAddr >= 0x10000000 && PAddr < 0x20000000)
         {
-            return false;
+            if (!m_RomMemoryHandler.Read32(PAddr, Value32))
+            {
+                return false;
+            }
+            Value = ((Value32 >> 16) & 0xffff);
+            return true;
         }
-        Value = ((Value32 >> 16) & 0xffff);
-    }
-    else
-    {
-        if (BreakOnUnhandledMemory())
+        else
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            if (BreakOnUnhandledMemory())
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            Value32 = 0;
         }
-        Value = 0;
     }
+    Value = ((Value32 >> (((PAddr ^ 1) & 1) << 4)) & 0xffff);
     return true;
 }
 
@@ -734,7 +721,7 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t VAddr, uint32_t & Value)
     case 0x1FC00000: m_PifRamHandler.Read32(PAddr, Value); break;
     case 0x1FF00000: m_CartridgeDomain1Address3Handler.Read32(PAddr, Value); break;
     default:
-        if (PAddr >= 0x10000000 && PAddr < 0x16000000)
+        if (PAddr >= 0x10000000 && PAddr < 0x20000000)
         {
             m_RomMemoryHandler.Read32(PAddr, Value);
         }
@@ -797,6 +784,7 @@ bool CMipsMemoryVM::SB_NonMemory(uint32_t VAddr, uint32_t Value)
             *(uint8_t *)(m_RDRAM + (PAddr ^ 3)) = (uint8_t)Value;
         }
         break;
+    case 0x1FC00000: m_PifRamHandler.Write32(PAddr & ~3, Value << ((3 - (PAddr & 3)) * 8), 0xFFFFFFFF); break;
     default:
         if (PAddr >= 0x10000000 && PAddr < 0x20000000)
         {
@@ -846,6 +834,7 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t VAddr, uint32_t Value)
             }
         }
         break;
+    case 0x1FC00000: m_PifRamHandler.Write32(PAddr & ~3, Value << ((2 - (PAddr & 2)) * 8), 0xFFFFFFFF); break;
     default:
         if (PAddr >= 0x10000000 && PAddr < 0x20000000)
         {
