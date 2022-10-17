@@ -61,15 +61,12 @@ bool PifRamHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask)
 
     if (Address < 0x1FC007C0)
     {
-        if (BreakOnUnhandledMemory())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
+        //Write to pif rom ignored
     }
     else if (Address < 0x1FC00800)
     {
         uint32_t SwappedMask = swap32by8(Mask);
-        Value = ((*(uint32_t *)(&m_PifRam[Address - 0x1FC007C0])) & ~SwappedMask) | (Value & SwappedMask);
+        Value = ((*(uint32_t *)(&m_PifRam[Address - 0x1FC007C0])) & ~SwappedMask) | (swap32by8(Value) & SwappedMask);
         *(uint32_t *)(&m_PifRam[Address - 0x1FC007C0]) = Value;
         if (Address == 0x1FC007FC)
         {
@@ -390,8 +387,8 @@ void PifRamHandler::ControlWrite()
         switch (m_PifRam[0x3F])
         {
         case 0x02:
-            // Format the 'challenge' message into 30 nibbles for X-Scale's CIC code
         {
+            // Format the 'challenge' message into 30 nibbles for X-Scale's CIC code
             char Challenge[30], Response[30];
             for (int32_t i = 0; i < 15; i++)
             {
@@ -412,8 +409,8 @@ void PifRamHandler::ControlWrite()
                 ResponseValue = (ResponseValue << 8) | ((Response[((z + 8) - 1) * 2] << 4) + Response[((z + 8) - 1) * 2 + 1]);
             }
             memcpy(&m_PifRam[56], &ResponseValue, sizeof(uint64_t));
+            break;
         }
-        break;
         case 0x08:
             m_PifRam[0x3F] = 0;
             g_Reg->MI_INTR_REG |= MI_INTR_SI;
