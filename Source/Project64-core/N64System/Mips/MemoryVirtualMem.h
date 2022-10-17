@@ -69,13 +69,13 @@ public:
     {
         return m_AllocatedRdramSize;
     }
-    uint8_t * Dmem() const
+    uint8_t * Dmem()
     {
-        return m_DMEM;
+        return m_SPRegistersHandler.Dmem();
     }
-    uint8_t * Imem() const
+    uint8_t * Imem()
     {
-        return m_IMEM;
+        return m_SPRegistersHandler.Imem();
     }
 
     CSram & GetSram()
@@ -217,7 +217,7 @@ private:
     SerialInterfaceHandler m_SerialInterfaceHandler;
     SPRegistersHandler m_SPRegistersHandler;
     VideoInterfaceHandler m_VideoInterfaceHandler;
-    uint8_t *m_RDRAM, *m_DMEM, *m_IMEM;
+    uint8_t * m_RDRAM;
     uint32_t m_AllocatedRdramSize;
     CN64Rom & m_Rom;
 

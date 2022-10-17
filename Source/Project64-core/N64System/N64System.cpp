@@ -906,6 +906,7 @@ void CN64System::Reset(bool bInitReg, bool ClearMenory)
 {
     WriteTrace(TraceN64System, TraceDebug, "Start (bInitReg: %s, ClearMenory: %s)", bInitReg ? "true" : "false", ClearMenory ? "true" : "false");
     g_Settings->SaveBool(GameRunning_InReset, true);
+    NotifyCallback(CN64SystemCB_Reset);
     RefreshGameSettings();
     m_MMU_VM.Reset(ClearMenory);
 
@@ -952,7 +953,6 @@ void CN64System::Reset(bool bInitReg, bool ClearMenory)
     {
         m_SyncCPU->Reset(bInitReg, ClearMenory);
     }
-    NotifyCallback(CN64SystemCB_Reset);
     g_Settings->SaveBool(GameRunning_InReset, false);
 
     WriteTrace(TraceN64System, TraceDebug, "Done");
