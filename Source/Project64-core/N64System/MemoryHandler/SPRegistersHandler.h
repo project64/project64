@@ -46,6 +46,16 @@ public:
     bool Read32(uint32_t Address, uint32_t & Value);
     bool Write32(uint32_t Address, uint32_t Value, uint32_t Mask);
 
+    uint8_t * Imem()
+    {
+        return &m_IMEM[0];
+    }
+
+    uint8_t * Dmem()
+    {
+        return &m_DMEM[0];
+    }
+
 private:
     SPRegistersHandler();
     SPRegistersHandler(const SPRegistersHandler &);
@@ -65,6 +75,8 @@ private:
     void SystemReset(void);
     void LoadedGameState(void);
 
+    uint8_t m_IMEM[0x1000];
+    uint8_t m_DMEM[0x1000];
     uint32_t m_SPMemAddrRegRead;
     uint32_t m_SPDramAddrRegRead;
     bool m_ExecutedDMARead;

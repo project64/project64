@@ -39,8 +39,6 @@ CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
     m_TLB_ReadMap(nullptr),
     m_TLB_WriteMap(nullptr),
     m_RDRAM(nullptr),
-    m_DMEM(nullptr),
-    m_IMEM(nullptr),
     m_Rom(*g_Rom)
 {
     g_Settings->RegisterChangeCB(Game_RDRamSize, this, (CSettings::SettingChangedFunc)RdramChanged);
@@ -68,13 +66,11 @@ void CMipsMemoryVM::Reset(bool /*EraseMemory*/)
             }
             for (size_t Address = BaseAddress + 0x04000000; Address < (BaseAddress + 0x04001000); Address += 0x1000)
             {
-                m_MemoryReadMap[Address >> 12] = (size_t)(m_DMEM - Address);
-                m_MemoryWriteMap[Address >> 12] = (size_t)(m_DMEM - Address);
+                m_MemoryReadMap[Address >> 12] = (size_t)(Dmem() - Address);
             }
             for (size_t Address = BaseAddress + 0x04001000; Address < (BaseAddress + 0x04002000); Address += 0x1000)
             {
-                m_MemoryReadMap[Address >> 12] = (size_t)(m_IMEM - Address);
-                m_MemoryWriteMap[Address >> 12] = (size_t)(m_IMEM - Address);
+                m_MemoryReadMap[Address >> 12] = (size_t)(Imem() - Address);
             }
         }
     }
@@ -173,16 +169,6 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
         return false;
     }
 
-    if (CommitMemory(m_RDRAM + 0x04000000, 0x2000, MEM_READWRITE) == nullptr)
-    {
-        WriteTrace(TraceN64System, TraceError, "Failed to allocate DMEM/IMEM (Size: 0x%X)", 0x2000);
-        FreeMemory();
-        return false;
-    }
-
-    m_DMEM = (uint8_t *)(m_RDRAM + 0x04000000);
-    m_IMEM = (uint8_t *)(m_RDRAM + 0x04001000);
-
     m_MemoryReadMap = new size_t[0x100000];
     if (m_MemoryReadMap == nullptr)
     {
@@ -241,8 +227,6 @@ void CMipsMemoryVM::FreeMemory()
             FreeAddressSpace(m_RDRAM, 0x20000000);
         }
         m_RDRAM = nullptr;
-        m_IMEM = nullptr;
-        m_DMEM = nullptr;
     }
     if (m_TLB_ReadMap)
     {
@@ -278,13 +262,13 @@ uint8_t * CMipsMemoryVM::MemoryPtr(uint32_t VAddr, uint32_t Size, bool Read)
         return (uint8_t *)(m_RDRAM + PAddr);
     }
 
-    if (PAddr >= 0x04000000 && (PAddr + Size) < 0x04001000)
+    if (PAddr >= 0x04000000 && (PAddr + Size) <= 0x04001000)
     {
-        return (uint8_t *)(m_DMEM + (PAddr - 0x04000000));
+        return (uint8_t *)&m_SPRegistersHandler.Dmem()[PAddr - 0x04000000];
     }
-    if (PAddr >= 0x04001000 && (PAddr + Size) < 0x04002000)
+    if (PAddr >= 0x04001000 && (PAddr + Size) <= 0x04002000)
     {
-        return (uint8_t *)(m_IMEM + (PAddr - 0x04001000));
+        return (uint8_t *)&m_SPRegistersHandler.Imem()[PAddr - 0x04001000];
     }
     if (Read && PAddr >= 0x10000000 && (PAddr + Size) < (0x10000000 + m_Rom.GetRomSize()))
     {
@@ -595,11 +579,6 @@ bool CMipsMemoryVM::SD_Memory(uint64_t VAddr, uint64_t Value)
         *(uint32_t *)(MemoryPtr + VAddr32 + 4) = *((uint32_t *)(&Value));
         return true;
     }
-    if (m_TLB_WriteMap[VAddr32 >> 12] == -1)
-    {
-        GenerateTLBWriteException(VAddr, __FUNCTION__);
-        return false;
-    }
     return SD_NonMemory(VAddr32, Value);
 }
 
@@ -784,6 +763,7 @@ bool CMipsMemoryVM::SB_NonMemory(uint32_t VAddr, uint32_t Value)
             *(uint8_t *)(m_RDRAM + (PAddr ^ 3)) = (uint8_t)Value;
         }
         break;
+    case 0x04000000: m_SPRegistersHandler.Write32(PAddr & ~3, Value << ((3 - (PAddr & 3)) * 8), 0xFFFFFFFF); break;
     case 0x1FC00000: m_PifRamHandler.Write32(PAddr & ~3, Value << ((3 - (PAddr & 3)) * 8), 0xFFFFFFFF); break;
     default:
         if (PAddr >= 0x10000000 && PAddr < 0x20000000)
@@ -834,6 +814,7 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t VAddr, uint32_t Value)
             }
         }
         break;
+    case 0x04000000: m_SPRegistersHandler.Write32(PAddr & ~3, Value << ((2 - (PAddr & 2)) * 8), 0xFFFFFFFF); break;
     case 0x1FC00000: m_PifRamHandler.Write32(PAddr & ~3, Value << ((2 - (PAddr & 2)) * 8), 0xFFFFFFFF); break;
     default:
         if (PAddr >= 0x10000000 && PAddr < 0x20000000)
@@ -888,17 +869,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t VAddr, uint32_t Value)
         }
         break;
     case 0x03F00000: m_RDRAMRegistersHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
-    case 0x04000000:
-        if (PAddr < 0x04002000)
-        {
-            g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0xFFF, CRecompiler::Remove_ProtectedMem);
-            *(uint32_t *)(m_RDRAM + PAddr) = Value;
-        }
-        else
-        {
-            m_SPRegistersHandler.Write32(PAddr, Value, 0xFFFFFFFF);
-        }
-        break;
+    case 0x04000000: m_SPRegistersHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x04100000: m_DPCommandRegistersHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x04300000: m_MIPSInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
     case 0x04400000: m_VideoInterfaceHandler.Write32(PAddr, Value, 0xFFFFFFFF); break;
@@ -955,6 +926,7 @@ bool CMipsMemoryVM::SD_NonMemory(uint32_t VAddr, uint64_t Value)
             *(uint64_t *)(m_RDRAM + PAddr) = Value;
         }
         break;
+    case 0x04000000: m_SPRegistersHandler.Write32(PAddr, (int32_t)(Value >> 32), 0xFFFFFFFF); break;
     default:
         if (PAddr >= 0x10000000 && PAddr < 0x20000000)
         {

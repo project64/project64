@@ -38,6 +38,19 @@ SPRegistersHandler::SPRegistersHandler(CN64System & System, CMipsMemoryVM & MMU,
 
 bool SPRegistersHandler::Read32(uint32_t Address, uint32_t & Value)
 {
+    if (Address < 0x04040000)
+    {
+        if ((Address & 0x1000) == 0)
+        {
+            Value = *((uint32_t *)&m_DMEM[Address & 0xFFC]);
+        }
+        else
+        {
+            Value = *((uint32_t *)&m_IMEM[Address & 0xFFC]);
+        }
+        return true;
+    }
+
     switch (Address & 0x1FFFFFFF)
     {
     case 0x04040000: Value = m_ExecutedDMARead ? m_SPMemAddrRegRead : SP_MEM_ADDR_REG; break;
@@ -85,6 +98,19 @@ bool SPRegistersHandler::Read32(uint32_t Address, uint32_t & Value)
 
 bool SPRegistersHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask)
 {
+    uint32_t MaskedValue = Value & Mask;
+    if (Address < 0x04040000)
+    {
+        if ((Address & 0x1000) == 0)
+        {
+            *((uint32_t *)&m_DMEM[Address & 0xFFC]) = MaskedValue;
+        }
+        else
+        {
+            *((uint32_t *)&m_IMEM[Address & 0xFFC]) = MaskedValue;
+        }
+        return true;
+    }
     if (GenerateLog() && LogSPRegisters())
     {
         switch (Address & 0x1FFFFFFF)
@@ -106,7 +132,6 @@ bool SPRegistersHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask
         }
     }
 
-    uint32_t MaskedValue = Value & Mask;
     switch (Address & 0x1FFFFFFF)
     {
     case 0x04040000: SP_MEM_ADDR_REG = (SP_MEM_ADDR_REG & ~Mask) | (MaskedValue); break;
@@ -245,7 +270,7 @@ bool SPRegistersHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask
 
 void SPRegistersHandler::SP_DMA_READ()
 {
-    uint8_t * Dest = ((SP_MEM_ADDR_REG & 0x1000) != 0 ? m_MMU.Imem() : m_MMU.Dmem());
+    uint8_t * Dest = ((SP_MEM_ADDR_REG & 0x1000) != 0 ? m_IMEM : m_DMEM);
     uint8_t * Source = m_MMU.Rdram();
     uint32_t ReadPos = SP_DRAM_ADDR_REG & 0x00FFFFF8;
     int32_t Length = ((SP_RD_LEN_REG & 0xFFF) | 7) + 1;
@@ -335,7 +360,7 @@ void SPRegistersHandler::SP_DMA_READ()
 
 void SPRegistersHandler::SP_DMA_WRITE()
 {
-    uint8_t * Source = ((SP_MEM_ADDR_REG & 0x1000) != 0 ? m_MMU.Imem() : m_MMU.Dmem());
+    uint8_t * Source = ((SP_MEM_ADDR_REG & 0x1000) != 0 ? m_IMEM : m_DMEM);
     uint8_t * Dest = m_MMU.Rdram();
     uint32_t WritePos = SP_DRAM_ADDR_REG & 0x00FFFFF8;
     int32_t Length = ((SP_WR_LEN_REG & 0xFFF) | 7) + 1;
@@ -407,6 +432,9 @@ void SPRegistersHandler::SystemReset(void)
 {
     SP_RD_LEN_REG = 0x00000FF8;
     SP_WR_LEN_REG = 0x00000FF8;
+
+    memset(m_IMEM, 0, sizeof(m_IMEM));
+    memset(m_DMEM, 0, sizeof(m_DMEM));
 }
 
 void SPRegistersHandler::LoadedGameState(void)
