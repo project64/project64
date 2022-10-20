@@ -3399,8 +3399,7 @@ void CX86RecompilerOps::LW_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr)
             }
             else if (g_DDRom != nullptr && ((PAddr & 0xFF000000) == 0x06000000 && (PAddr - 0x06000000) < g_DDRom->GetRomSize()))
             {
-                // Read from DDROM (TODO: Is DDROM a disk image or the IPL?)
-                m_Assembler.MoveVariableToX86reg(PAddr + g_MMU->Rdram(), stdstr_f("RDRAM + %X", PAddr).c_str(), Reg);
+                m_Assembler.MoveVariableToX86reg(g_DDRom->GetRomAddress() + (PAddr - 0x06000000), stdstr_f("DDRom + %X", (PAddr - 0x06000000)).c_str(), Reg);
             }
             else
             {
