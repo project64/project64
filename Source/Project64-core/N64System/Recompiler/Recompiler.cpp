@@ -531,7 +531,22 @@ void CRecompiler::ResetMemoryStackPos()
     uint32_t pAddr = 0;
     if (m_MMU.VAddrToPAddr(m_Registers.m_GPR[29].UW[0], pAddr))
     {
-        m_MemoryStack = (uint32_t)(m_MMU.Rdram() + pAddr);
+        if (pAddr < m_MMU.RdramSize())
+        {
+            m_MemoryStack = (uint32_t)(m_MMU.Rdram() + pAddr);
+        }
+        else if (pAddr > 0x04000000 && pAddr < 0x04001000)
+        {
+            m_MemoryStack = (uint32_t)(m_MMU.Dmem() + pAddr - 0x04000000);
+        }
+        else if (pAddr > 0x04001000 && pAddr < 0x04002000)
+        {
+            m_MemoryStack = (uint32_t)(m_MMU.Imem() + pAddr - 0x04001000);
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
     }
     else
     {

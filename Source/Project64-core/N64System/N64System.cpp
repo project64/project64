@@ -1484,7 +1484,22 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
 #if defined(__aarch64__) || defined(__amd64__) || defined(_M_X64)
         g_Notify->BreakPoint(__FILE__, __LINE__);
 #else
-        if (m_Recomp->MemoryStackPos() != (uint32_t)(m_MMU_VM.Rdram() + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)))
+        uint32_t StackPointer = (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF);
+        uint32_t TargetStackPos = 0;
+        if (StackPointer < m_MMU_VM.RdramSize())
+        {
+            TargetStackPos = (uint32_t)(m_MMU_VM.Rdram() + StackPointer);
+        }
+        else if (StackPointer > 0x04000000 && StackPointer < 0x04001000)
+        {
+            TargetStackPos = (uint32_t)(m_MMU_VM.Dmem() + StackPointer - 0x04000000);
+        }
+        else if (StackPointer > 0x04001000 && StackPointer < 0x04002000)
+        {
+            TargetStackPos = (uint32_t)(m_MMU_VM.Imem() + StackPointer - 0x04001000);
+        }
+
+        if (m_Recomp->MemoryStackPos() != TargetStackPos)
         {
             ErrorFound = true;
         }
@@ -1665,8 +1680,23 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
         {
 #if defined(__aarch64__) || defined(__amd64__) || defined(_M_X64)
             g_Notify->BreakPoint(__FILE__, __LINE__);
-#else
-            if (m_Recomp->MemoryStackPos() != (uint32_t)(m_MMU_VM.Rdram() + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)))
+#else       
+            uint32_t StackPointer = (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF);
+            uint32_t TargetStackPos = 0;
+            if (StackPointer < m_MMU_VM.RdramSize())
+            {
+                TargetStackPos = (uint32_t)(m_MMU_VM.Rdram() + StackPointer);
+            }
+            else if (StackPointer > 0x04000000 && StackPointer < 0x04001000)
+            {
+                TargetStackPos = (uint32_t)(m_MMU_VM.Dmem() + StackPointer - 0x04000000);
+            }
+            else if (StackPointer > 0x04001000 && StackPointer < 0x04002000)
+            {
+                TargetStackPos = (uint32_t)(m_MMU_VM.Imem() + StackPointer - 0x04001000);
+            }
+
+            if (m_Recomp->MemoryStackPos() != TargetStackPos)
             {
                 Error.LogF("MemoryStack = %X  should be: %X\r\n", m_Recomp->MemoryStackPos(), (uint32_t)(m_MMU_VM.Rdram() + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)));
             }
