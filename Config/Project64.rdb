@@ -162,21 +162,18 @@ Linking=Off
 Good Name=007 - The World is Not Enough (E) (M3)
 Internal Name=TWINE
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [033F4C13-319EE7A7-C:45]
 Good Name=007 - The World is Not Enough (U)
 Internal Name=TWINE
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [58FD3F25-D92EAA8D-C:50]
 Good Name=1080 Snowboarding (E) (M4)
 Internal Name=1080 SNOWBOARDING
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Linking=Off
@@ -186,7 +183,6 @@ RDRAM Size=4
 Good Name=1080 Snowboarding (JU) (M2)
 Internal Name=1080 SNOWBOARDING
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Linking=Off
@@ -205,7 +201,6 @@ Status=Compatible
 Good Name=64 de Hakken!! Tamagotchi - Minna de Tamagotchi World (J)
 Internal Name=ÐÝÅÃÞÀÏºÞ¯ÁÜ°ÙÄÞ
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -213,14 +208,12 @@ RDRAM Size=4
 Good Name=64 Hanafuda - Tenshi no Yakusoku (J)
 Internal Name=64ÊÅÌÀÞ ~ÃÝ¼ÉÔ¸¿¸~
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [9C961069-F5EA488D-C:4A]
 Good Name=64 Oozumou (J)
 Internal Name=64 OHZUMOU
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -228,14 +221,12 @@ RDRAM Size=4
 Good Name=64 Oozumou 2 (J)
 Internal Name=64 µµ½ÞÓ³ 2
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [7A6081FC-FF8F7A78-C:4A]
 Good Name=64 Trump Collection - Alice no Wakuwaku Trump World (J)
 Internal Name=64 TRUMP COLLECTION
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 //================  A  ================
@@ -283,77 +274,66 @@ ViRefresh=2200
 Good Name=AeroFighters Assault (E) (M3)
 Internal Name=AERO FIGHTERS ASSAUL
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [1B598BF1-ECA29B45-C:45]
 Good Name=AeroFighters Assault (U)
 Internal Name=AERO FIGHTERS ASSAUL
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [D83045C8-F29D3A36-C:50]
 Good Name=AeroGauge (E) (M3)
 Internal Name=AEROGAUGE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [B00903C9-3916C146-C:4A]
 Good Name=AeroGauge (J) (V1.0) (Kiosk Demo)
 Internal Name=AEROGAUGE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [80F41131-384645F6-C:4A]
 Good Name=AeroGauge (J) (V1.1)
 Internal Name=AEROGAUGE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [AEBE463E-CC71464B-C:45]
 Good Name=AeroGauge (U)
 Internal Name=AEROGAUGE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [8CC182A6-C2D0CAB0-C:4A]
 Good Name=AI Shougi 3 (J)
 Internal Name=AIｼｮｳｷﾞ3
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [2DC4FFCC-C8FF5A21-C:50]
 Good Name=Aidyn Chronicles - The First Mage (E)
 Internal Name=AIDYN_CHRONICLES
 Status=Compatible
-32bit=Yes
 Culling=1
 
 [E6A95A4F-BAD2EA23-C:45]
 Good Name=Aidyn Chronicles - The First Mage (U) [!] (V1.0)
 Internal Name=AIDYN_CHRONICLES
 Status=Compatible
-32bit=Yes
 Culling=1
 
 [112051D2-68BEF8AC-C:45]
 Good Name=Aidyn Chronicles - The First Mage (U) [!] (V1.1)
 Internal Name=AIDYN_CHRONICLES
 Status=Compatible
-32bit=Yes
 Culling=1
 
 [27C425D0-8C2D99C1-C:50]
 Good Name=Air Boarder 64 (E)
 Internal Name=AIR BOARDER 64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -361,7 +341,6 @@ RDRAM Size=4
 Good Name=Air Boarder 64 (E) (NTSC)
 Internal Name=AIR BOARDER 64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 Screenhertz=60
@@ -370,7 +349,6 @@ Screenhertz=60
 Good Name=Air Boarder 64 (J)
 Internal Name=´±°ÎÞ°ÀÞ°64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 RDRAM Size=4
@@ -379,7 +357,6 @@ RDRAM Size=4
 Good Name=Air Boarder 64 (J)
 Internal Name=´±°ÎÞ°ÀÞ°64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -387,7 +364,6 @@ RDRAM Size=4
 Good Name=Air Boarder 64 (J)
 Internal Name=Աюް^ж4
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -395,7 +371,6 @@ RDRAM Size=4
 Good Name=Akumajou Dracula Mokushiroku - Real Action Adventure (J)
 Internal Name=DRACULA MOKUSHIROKU
 Status=Compatible
-32bit=Yes
 Culling=1
 Primary Frame Buffer=1
 Save Type=16kbit Eeprom
@@ -404,7 +379,6 @@ Save Type=16kbit Eeprom
 Good Name=Akumajou Dracula Mokushiroku Gaiden - Legend of Cornell (J)
 Internal Name=DRACULA MOKUSHIROKU2
 Status=Compatible
-32bit=Yes
 Culling=1
 Primary Frame Buffer=1
 Save Type=16kbit Eeprom
@@ -413,53 +387,45 @@ Save Type=16kbit Eeprom
 Good Name=All Star Tennis '99 (E) (M5)
 Internal Name=ALL STAR TENNIS '99
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [E185E291-4E50766D-C:45]
 Good Name=All Star Tennis '99 (U)
 Internal Name=ALL STAR TENNIS '99
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [D9EDD54D-6BB8E274-C:50]
 Good Name=All-Star Baseball '99 (E)
 Internal Name=All-Star Baseball 99
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [C43E23A7-40B1681A-C:45]
 Good Name=All-Star Baseball '99 (U)
 Internal Name=All Star Baseball 99
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [A19F8089-77884B51-C:50]
 Good Name=All-Star Baseball 2000 (E)
 Internal Name=All-Star Baseball '0
 Status=Compatible
-32bit=Yes
 
 [5E547A4D-90E60795-C:45]
 Good Name=All-Star Baseball 2000 (U)
 Internal Name=All-Star Baseball '0
 Status=Compatible
-32bit=Yes
 
 [5446C6EF-E18E47BB-C:45]
 Good Name=All-Star Baseball 2001 (U)
 Internal Name=All-Star Baseball 20
 Status=Compatible
-32bit=Yes
 ViRefresh=1400
 
 [8F0CC36D-C738259E-C:45]
 Good Name=Animal Forest [T-90%]
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 Save Type=FlashRam
 SMM-Protect=1
@@ -467,7 +433,6 @@ SMM-Protect=1
 [0290AEB9-67A3B6C1-C:45]
 Good Name=Animal Forest [T-Eng-Zoinkity]
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 Save Type=FlashRam
 SMM-Protect=1
@@ -476,7 +441,6 @@ SMM-Protect=1
 Good Name=Armorines - Project S.W.A.R.M. (E)
 Internal Name=Armorines Project S.
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Culling=1
 
@@ -484,62 +448,53 @@ Culling=1
 Good Name=Armorines - Project S.W.A.R.M. (G)
 Internal Name=Armorines Project S.
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [1FB5D932-3BA9481B-C:45]
 Good Name=Armorines - Project S.W.A.R.M. (U)
 Internal Name=Armorines Project S.
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [4C52BBB2-CEAB0F6B-C:45]
 Good Name=Army Men - Air Combat (U)
 Internal Name=ARMYMENAIRCOMBAT
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [B210DF19-98B58D1A-C:50]
 Good Name=Army Men - Sarge's Heroes (E) (M3)
 Internal Name=Army Men Sarge
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [862C0657-8DFD896D-C:45]
 Good Name=Army Men - Sarge's Heroes (U)
 Internal Name=Army Men Sarge
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [B20F73B6-2975FC34-C:45]
 Good Name=Army Men - Sarge's Heroes 2 (U)
 Internal Name=ARMYMEN SARGE 2
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [D1F7D8AB-293B0446-C:45]
 Good Name=Asteroids Hyper 64 (U)
 Internal Name=Asteroids Hyper 64
 Status=Compatible
-32bit=Yes
 
 [FC7797BF-4A95E83C-C:50]
 Good Name=Automobili Lamborghini (E)
 Internal Name=LAMBORGHINI
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [41B25DC4-1B726786-C:45]
 Good Name=Automobili Lamborghini (U)
 Internal Name=LAMBORGHINI
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 //================  B  ================
@@ -547,7 +502,6 @@ RDRAM Size=4
 Good Name=Baku Bomberman (J)
 Internal Name=BAKU-BOMBERMAN
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 Culling=1
 RDRAM Size=4
@@ -556,14 +510,12 @@ RDRAM Size=4
 Good Name=Baku Bomberman 2 (J)
 Internal Name=BAKUBOMB2
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [DF98B95D-58840978-C:4A]
 Good Name=Bakuretsu Muteki Bangaioh (J)
 Internal Name=BANGAIOH
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -571,14 +523,12 @@ RDRAM Size=4
 Good Name=Bakushou Jinsei 64 - Mezase! Resort Ou (J)
 Internal Name=ÊÞ¸¼®³¼ÞÝ¾²64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [5168D520-CA5FCD0D-C:4A]
 Good Name=Banjo to Kazooie no Daibouken (J)
 Internal Name=Banjo-Kazooie
 Status=Compatible
-32bit=Yes
 Culling=1
 Self Texture=1
 
@@ -586,22 +536,18 @@ Self Texture=1
 Good Name=Banjo to Kazooie no Daibouken 2 (J)
 Internal Name=BANJO KAZOOIE 2
 Status=Compatible
-32bit=Yes
 Save Type=16kbit Eeprom
 
 [733FCCB1-444892F9-C:50]
 Good Name=Banjo-Kazooie (E) (M3)
 Internal Name=Banjo-Kazooie
 Status=Compatible
-32bit=Yes
 Culling=1
 Self Texture=1
 
 [A4BF9306-BF0CDFD1-C:45]
 Good Name=Banjo-Kazooie (U) (V1.0)
 Internal Name=Banjo-Kazooie
-Status=Compatible
-32bit=Yes
 Culling=1
 Primary Frame Buffer=1
 Self Texture=1
@@ -610,7 +556,6 @@ Self Texture=1
 Good Name=Banjo-Kazooie (U) (V1.1)
 Internal Name=Banjo-Kazooie
 Status=Compatible
-32bit=Yes
 Culling=1
 Primary Frame Buffer=1
 Self Texture=1
@@ -619,14 +564,12 @@ Self Texture=1
 Good Name=Banjo-Tooie (A)
 Internal Name=BANJO TOOIE
 Status=Compatible
-32bit=Yes
 Save Type=16kbit Eeprom
 
 [C9176D39-EA4779D1-C:50]
 Good Name=Banjo-Tooie (E) (M4)
 Internal Name=BANJO TOOIE
 Status=Compatible
-32bit=Yes
 Culling=1
 Save Type=16kbit Eeprom
 Self Texture=1
@@ -635,7 +578,6 @@ Self Texture=1
 Good Name=Banjo-Tooie (U)
 Internal Name=BANJO TOOIE
 Status=Compatible
-32bit=Yes
 Culling=1
 Save Type=16kbit Eeprom
 Self Texture=1
@@ -644,7 +586,6 @@ Self Texture=1
 Good Name=Bass Hunter 64 (E)
 Internal Name=BASS HUNTER 64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -652,7 +593,6 @@ RDRAM Size=4
 Good Name=Bass Rush - ECOGEAR PowerWorm Championship (J)
 Internal Name=Bass Rush
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -660,7 +600,6 @@ RDRAM Size=4
 Good Name=Bassmasters 2000 (U)
 Internal Name=BASSMASTERS2000
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 
@@ -668,18 +607,16 @@ Culling=1
 Good Name=Batman Beyond - Return of the Joker (U)
 Internal Name=BATMAN BEYOND RETURN
 Status=Compatible
-32bit=Yes
 
 [259F7F84-7C9EED26-C:50]
 Good Name=Batman of the Future - Return of the Joker (E) (M3)
 Internal Name=BATMAN OF THE FUTURE
-32bit=Yes
+Status=Compatible
 
 [6AA4DDE7-E3E2F4E7-C:45]
 Good Name=BattleTanx (U)
 Internal Name=BATTLETANX
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Counter Factor=3
 RDRAM Size=4
@@ -687,7 +624,7 @@ RDRAM Size=4
 [0CAD17E6-71A5B797-C:50]
 Good Name=BattleTanx - Global Assault (E) (M3)
 Internal Name=BATTLETANXGA
-32bit=Yes
+Status=Compatible
 AudioResetOnLoad=Yes
 RDRAM Size=4
 
@@ -695,7 +632,6 @@ RDRAM Size=4
 Good Name=BattleTanx - Global Assault (U)
 Internal Name=BATTLETANXGA
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Counter Factor=3
 RDRAM Size=4
@@ -704,14 +640,12 @@ RDRAM Size=4
 Good Name=Battlezone - Rise of the Black Dogs (U)
 Internal Name=BATTLEZONE
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 
 [9C7318D2-24AE0DC1-C:4A]
 Good Name=Beetle Adventure Racing (J)
 Internal Name=BEETLE ADVENTURE JP
 Status=Compatible
-32bit=Yes
 Counter Factor=3
 Culling=1
 RDRAM Size=4
@@ -721,7 +655,6 @@ ViRefresh=1400
 Good Name=Beetle Adventure Racing! (E) (M3)
 Internal Name=Beetle Adventure Rac
 Status=Compatible
-32bit=Yes
 Counter Factor=3
 RDRAM Size=4
 ViRefresh=1450
@@ -730,7 +663,6 @@ ViRefresh=1450
 Good Name=Beetle Adventure Racing! (U) (M3)
 Internal Name=Beetle Adventure Rac
 Status=Compatible
-32bit=Yes
 Counter Factor=3
 Culling=1
 RDRAM Size=4
@@ -740,21 +672,18 @@ ViRefresh=1400
 Good Name=Big Mountain 2000 (U)
 Internal Name=Big Mountain 2000
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [AB7C101D-EC58C8B0-C:50]
 Good Name=Bio F.R.E.A.K.S. (E)
 Internal Name=BIOFREAKS
 Status=Compatible
-32bit=Yes
 Culling=1
 
 [08123595-0510F1DE-C:45]
 Good Name=Bio F.R.E.A.K.S. (U)
 Internal Name=BIOFREAKS
 Status=Compatible
-32bit=Yes
 Culling=1
 
 [7EAE2488-9D40A35A-C:4A]
@@ -794,21 +723,18 @@ RDRAM Size=4
 Good Name=Blues Brothers 2000 (E) (M6)
 Internal Name=BLUES BROTHERS 2000
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [7CD08B12-1153FF89-C:45]
 Good Name=Blues Brothers 2000 (U)
 Internal Name=BLUES BROTHERS 2000
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [0B58B8CD-B7B291D2-C:50]
 Good Name=Body Harvest (E) (M3)
 Internal Name=Body Harvest
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 Counter Factor=1
 Culling=1
@@ -819,7 +745,6 @@ RDRAM Size=4
 Good Name=Body Harvest (U)
 Internal Name=BODY HARVEST
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 Counter Factor=1
 Culling=1
@@ -830,7 +755,6 @@ RDRAM Size=4
 Good Name=Bokujou Monogatari 2 (J) (V1.0)
 Internal Name=ÎÞ¸¼Þ®³ÓÉ¶ÞÀØ2
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -838,7 +762,6 @@ RDRAM Size=4
 Good Name=Bokujou Monogatari 2 (J) (V1.1)
 Internal Name=ÎÞ¸¼Þ®³ÓÉ¶ÞÀØ2
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -846,7 +769,6 @@ RDRAM Size=4
 Good Name=Bokujou Monogatari 2 (J) (V1.2)
 Internal Name=ÎÞ¸¼Þ®³ÓÉ¶ÞÀØ2
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -854,7 +776,6 @@ RDRAM Size=4
 Good Name=Bomberman 64 (E)
 Internal Name=BOMBERMAN64E
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 RDRAM Size=4
 
@@ -862,7 +783,6 @@ RDRAM Size=4
 Good Name=Bomberman 64 - Arcade Edition (J)
 Internal Name=BOMBERMAN64
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -870,7 +790,6 @@ RDRAM Size=4
 Good Name=Bomberman 64 - Arcade Edition (J) [T]
 Internal Name=BOMBERMAN64
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -878,7 +797,6 @@ RDRAM Size=4
 Good Name=Bomberman 64 (U)
 Internal Name=BOMBERMAN64U
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 Culling=1
 RDRAM Size=4
@@ -887,7 +805,6 @@ RDRAM Size=4
 Good Name=Bomberman 64 - The Second Attack! (U)
 Internal Name=BOMBERMAN64U2
 Status=Compatible
-32bit=Yes
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -897,7 +814,7 @@ SMM-TLB=0
 [D85C4E29-88E276AF-C:50]
 Good Name=Bomberman Hero (E)
 Internal Name=BOMBERMAN HERO
-32bit=Yes
+Status=Compatible
 Culling=1
 RDRAM Size=4
 
@@ -905,21 +822,18 @@ RDRAM Size=4
 Good Name=Bomberman Hero (U)
 Internal Name=BOMBERMAN HERO
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [67FF12CC-76BF0212-C:4A]
 Good Name=Bomberman Hero - Mirian Oujo wo Sukue! (J)
 Internal Name=ÎÞÝÊÞ°ÏÝ Ë°Û°
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [D72FD14D-1FED32C4-C:45]
 Good Name=Bottom of the 9th (U)
 Internal Name=Bottom of the 9th
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -927,14 +841,12 @@ RDRAM Size=4
 Good Name=Brunswick Circuit Pro Bowling (U)
 Internal Name=BRUNSWICKBOWLING
 Status=Compatible
-32bit=Yes
 Culling=1
 
 [D5B2339C-CABCCAED-C:50]
 Good Name=Buck Bumble (E) (M5)
 Internal Name=BUCK BUMBLE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [D7C762B6-F83D9642-C:4A]
@@ -953,21 +865,18 @@ RDRAM Size=4
 Good Name=Bust-A-Move '99 (U)
 Internal Name=Bust A Move '99
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [8AFB2D9A-9F186C02-C:45]
 Good Name=Bust-A-Move '99 (U)
 Internal Name=Bust-A-Move '99
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [F23CA406-EC2ACE78-C:45]
 Good Name=Bust-A-Move '99 (U) (PAL)
 Internal Name=Bust-A-Move '99
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 Screenhertz=50
 
@@ -975,28 +884,24 @@ Screenhertz=50
 Good Name=Bust-A-Move 2 - Arcade Edition (E)
 Internal Name=Bust A Move 2
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [8A86F073-CD45E54B-C:45]
 Good Name=Bust-A-Move 2 - Arcade Edition (U)
 Internal Name=Bust A Move 2
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [E328B4FA-004A28E1-C:50]
 Good Name=Bust-A-Move 3 DX (E)
 Internal Name=Bust A Move 3 DX
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [D5BDCD1D-393AFE43-C:50]
 Good Name=Bust-A-Move 3 DX (E) (NTSC)
 internal Name=Bust-A-Move 3 DX
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 Screenhertz=60
 
@@ -1004,7 +909,6 @@ Screenhertz=60
 Good Name=Bust-A-Move 3 DX (E) (NTSC100%)
 internal Name=Bust-A-Move 3 DX
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 Screenhertz=60
 
@@ -1013,7 +917,6 @@ Screenhertz=60
 Good Name=California Speed (E) (M5)
 Internal Name=CAL SPEED
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -1021,7 +924,6 @@ RDRAM Size=4
 Good Name=California Speed (U)
 Internal Name=CAL SPEED
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -1029,7 +931,6 @@ RDRAM Size=4
 Good Name=Carmageddon 64 (E) (M4) (Eng-Spa-Fre-Ger)
 Internal Name=CARMAGEDDON64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -1037,7 +938,6 @@ RDRAM Size=4
 Good Name=Carmageddon 64 (E) (M4) (Eng-Spa-Fre-Ita)
 Internal Name=CARMAGEDDON64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -1045,7 +945,6 @@ RDRAM Size=4
 Good Name=Carmageddon 64 (U)
 Internal Name=CARMAGEDDON64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -1053,7 +952,6 @@ RDRAM Size=4
 Good Name=Castlevania (E) (M3)
 Internal Name=CASTLEVANIA
 Status=Compatible
-32bit=Yes
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -1063,7 +961,6 @@ SMM-Protect=1
 Good Name=Castlevania (U) (V1.0)
 Internal Name=CASTLEVANIA
 Status=Compatible
-32bit=Yes
 Culling=1
 Primary Frame Buffer=1
 SMM-Cache=0
@@ -1076,7 +973,6 @@ SMM-TLB=0
 Good Name=Castlevania (U) (V1.1)
 Internal Name=CASTLEVANIA
 Status=Compatible
-32bit=Yes
 Culling=1
 Primary Frame Buffer=1
 SMM-Cache=0
@@ -1089,7 +985,6 @@ SMM-TLB=0
 Good Name=Castlevania (U) (V1.2)
 Internal Name=CASTLEVANIA
 Status=Compatible
-32bit=Yes
 Culling=1
 Primary Frame Buffer=1
 SMM-Cache=0
@@ -1102,7 +997,6 @@ SMM-TLB=0
 Good Name=Castlevania - Legacy of Darkness (E) (M3)
 Internal Name=CASTLEVANIA2
 Status=Compatible
-32bit=Yes
 Culling=1
 Primary Frame Buffer=1
 SMM-Cache=0
@@ -1113,7 +1007,6 @@ SMM-Protect=1
 Good Name=Castlevania - Legacy of Darkness (U)
 Internal Name=CASTLEVANIA2
 Status=Compatible
-32bit=Yes
 Culling=1
 Primary Frame Buffer=1
 SMM-Cache=0
@@ -1125,7 +1018,6 @@ SMM-Protect=1
 Good Name=Centre Court Tennis (E)
 Internal Name=CENTRE COURT TENNIS
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 Culling=1
 RDRAM Size=4
@@ -1134,42 +1026,36 @@ RDRAM Size=4
 Good Name=Chameleon Twist (E)
 Internal Name=Chameleon Twist
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [A4F2F521-F0EB168E-C:4A]
 Good Name=Chameleon Twist (J)
 Internal Name=Chameleon Twist
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [D0443A6B-C0B89972-C:41]
 Good Name=Chameleon Twist (J) [T]
 Internal Name=Chameleon Twist
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [6420535A-50028062-C:45]
 Good Name=Chameleon Twist (U) (V1.0)
 Internal Name=Chameleon Twist
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [D81963C7-4271A3AA-C:45]
 Good Name=Chameleon Twist (U) (V1.1)
 Internal Name=Chameleon Twist
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [07A69D01-9A7D41A1-C:50]
 Good Name=Chameleon Twist 2 (E)
 Internal Name=Chameleon Twist2
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 Culling=1
 RDRAM Size=4
@@ -1178,7 +1064,6 @@ RDRAM Size=4
 Good Name=Chameleon Twist 2 (J)
 Internal Name=Chameleon Twist2
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 RDRAM Size=4
 
@@ -1186,7 +1071,6 @@ RDRAM Size=4
 Good Name=Chameleon Twist 2 (U)
 Internal Name=Chameleon Twist2
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 Culling=1
 RDRAM Size=4
@@ -1195,7 +1079,6 @@ RDRAM Size=4
 Good Name=Charlie Blast's Territory (E)
 Internal Name=CHARLIE BLAST'S
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -1203,7 +1086,6 @@ RDRAM Size=4
 Good Name=Charlie Blast's Territory (U)
 Internal Name=CHARLIE BLAST'S
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -1211,56 +1093,48 @@ RDRAM Size=4
 Good Name=Chopper Attack (E)
 Internal Name=CHOPPER_ATTACK
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [214CAD94-BE1A3B24-C:45]
 Good Name=Chopper Attack (U)
 Internal Name=CHOPPER_ATTACK
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [2BCCF9C4-403D9F6F-C:4A]
 Good Name=Choro Q 64 (J)
 Internal Name=CHOROQ64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [26CD0F54-53EBEFE0-C:4A]
 Good Name=Choro Q 64 II - Hacha Mecha Grand Prix Race (J)
 Internal Name=Á®ÛQ64 2
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [8ACE6683-3FBA426E-C:4A]
 Good Name=Chou Kuukan Nighter Pro Yakyuu King (J)
 Internal Name=PROYAKYUKING
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [3A180FF4-5C8E8AF7-C:4A]
 Good Name=Chou Kuukan Nighter Pro Yakyuu King 2 (J)
 Internal Name=ÌßÛÔ·­³·Ý¸Þ2
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [A7941528-61F1199D-C:4A]
 Good Name=Chou Snobow Kids (J)
 Internal Name=Snobow Kids 2
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [F8009DB0-6B291823-C:4A]
 Good Name=City Tour Grandprix - Zennihon GT Senshuken (J)
 Internal Name=CITY TOUR GP
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Delay SI=Yes
 Save Type=16kbit Eeprom
@@ -1269,14 +1143,12 @@ Save Type=16kbit Eeprom
 Good Name=Clay Fighter - Sculptor's Cut (U)
 Internal Name=Clayfighter SC
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [8E9692B3-4264BB2A-C:50]
 Good Name=Clay Fighter 63 1-3 (E)
 Internal Name=CLAYFIGHTER 63
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 RDRAM Size=4
 
@@ -1284,7 +1156,6 @@ RDRAM Size=4
 Good Name=Clay Fighter 63 1-3 (U)
 Internal Name=CLAYFIGHTER 63
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 RDRAM Size=4
 
@@ -1292,7 +1163,6 @@ RDRAM Size=4
 Good Name=Clay Fighter 63 1-3 (U) (Beta)
 Internal Name=CLAYFIGHTER 63
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 RDRAM Size=4
 
@@ -1300,14 +1170,12 @@ RDRAM Size=4
 Good Name=Command & Conquer (E) (M2)
 Internal Name=Command&Conquer
 Status=Compatible
-32bit=Yes
 Culling=1
 
 [B5025BAD-D32675FD-C:44]
 Good Name=Command & Conquer (G)
 Internal Name=Command&Conquer
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -1315,7 +1183,6 @@ RDRAM Size=4
 Good Name=Command & Conquer (U)
 Internal Name=Command&Conquer
 Status=Compatible
-32bit=Yes
 Culling=1
 
 [373F5889-9A6CA80A-C:50]
@@ -1389,7 +1256,6 @@ Randomize SI/PI Interrupts=0
 Good Name=Cruis'n Exotica (U)
 Internal Name=CruisnExotica
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -1397,7 +1263,6 @@ RDRAM Size=4
 Good Name=Cruis'n USA (E)
 Internal Name=Cruis'n USA
 Status=Compatible
-32bit=Yes
 Delay SI=Yes
 RDRAM Size=4
 
@@ -1405,7 +1270,6 @@ RDRAM Size=4
 Good Name=Cruis'n USA (U) (V1.0)
 Internal Name=Cruis'n USA
 Status=Compatible
-32bit=Yes
 Culling=1
 Delay SI=Yes
 RDRAM Size=4
@@ -1414,7 +1278,6 @@ RDRAM Size=4
 Good Name=Cruis'n USA (U) (V1.1)
 Internal Name=Cruis'n USA
 Status=Compatible
-32bit=Yes
 Delay SI=Yes
 RDRAM Size=4
 
@@ -1422,7 +1285,6 @@ RDRAM Size=4
 Good Name=Cruis'n USA (U) (V1.2)
 Internal Name=Cruis'n USA
 Status=Compatible
-32bit=Yes
 Delay SI=Yes
 RDRAM Size=4
 
@@ -1430,7 +1292,6 @@ RDRAM Size=4
 Good Name=Cruis'n World (E)
 Internal Name=CRUIS'N WORLD
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 Save Type=16kbit Eeprom
 
@@ -1438,7 +1299,6 @@ Save Type=16kbit Eeprom
 Good Name=Cruis'n World (U)
 Internal Name=CRUIS'N WORLD
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 Save Type=16kbit Eeprom
 
@@ -1446,21 +1306,18 @@ Save Type=16kbit Eeprom
 Good Name=Custom Robo (J)
 Internal Name=custom robo
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [091CEE5E-6D6DD8D8-C:45]
 Good Name=Custom Robo (J) [T]
 Internal Name=custom robo
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [079501B9-AB0232AB-C:4A]
 Good Name=Custom Robo V2 (J)
 Internal Name=CUSTOMROBOV2
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 Save Type=16kbit Eeprom
 
@@ -1468,14 +1325,12 @@ Save Type=16kbit Eeprom
 Good Name=CyberTiger (E)
 Internal Name=CyberTiger
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [E8FC8EA1-9F738391-C:45]
 Good Name=CyberTiger (U)
 Internal Name=CyberTiger
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 //================  D  ================
@@ -1483,14 +1338,12 @@ RDRAM Size=4
 Good Name=Dance Dance Revolution - Disney Dancing Museum (J)
 Internal Name=DDR DISNEY D MUSEUM
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [7ED67CD4-B4415E6D-C:50]
 Good Name=Dark Rift (E)
 Internal Name=DARK RIFT
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -1498,7 +1351,6 @@ RDRAM Size=4
 Good Name=Dark Rift (U)
 Internal Name=DARK RIFT
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -1506,21 +1358,18 @@ RDRAM Size=4
 Good Name=Deadly Arts (U)
 Internal Name=DeadlyArts
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [3F66A9D9-9BCB5B00-C:46]
 Good Name=Defi au Tetris Magique (F)
 Internal Name=MAGICAL TETRIS
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [17C54A61-4A83F2E7-C:4A]
 Good Name=Densha de GO! 64 (J)
 Internal Name=ÃÞÝ¼¬ÃÞGO!64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 Save Type=16kbit Eeprom
@@ -1528,7 +1377,6 @@ Save Type=16kbit Eeprom
 [68D128AE-67D60F21-C:5A]
 Good Name=Densha de GO! 64 (J) [T]
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 Save Type=16kbit Eeprom
@@ -1537,7 +1385,6 @@ Save Type=16kbit Eeprom
 Good Name=Derby Stallion 64 (J)
 Internal Name=DERBYSTALLION 64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 Save Type=FlashRam
 
@@ -1545,7 +1392,6 @@ Save Type=FlashRam
 Good Name=Derby Stallion 64 (J) (Beta)
 Internal Name=
 Status=Compatible
-32bit=Yes
 CRC-Recalc=Yes
 RDRAM Size=4
 Save Type=FlashRam
@@ -1554,7 +1400,6 @@ Save Type=FlashRam
 Good Name=Destruction Derby 64 (E) (M3)
 Internal Name=DESTRUCT DERBY
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -1562,7 +1407,6 @@ RDRAM Size=4
 Good Name=Destruction Derby 64 (U)
 Internal Name=DESTRUCT DERBY
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -1575,7 +1419,6 @@ Status=Compatible
 Good Name=Dezaemon 3D (J)
 Internal Name=DEZAEMON3D
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 Save Type=Sram
 
@@ -1618,14 +1461,12 @@ Status=Compatible
 Good Name=Disney's Donald Duck - Goin' Quackers (U) (M4)
 Internal Name=Donald Duck Goin' Qu
 Status=Compatible
-32bit=Yes
 Counter Factor=3
 
 [D614E5BF-A76DBCC1-C:50]
 Good Name=Disney's Tarzan (E)
 Internal Name=TARZAN
 Status=Compatible
-32bit=Yes
 Audio Signal=Yes
 Counter Factor=1
 RDRAM Size=4
@@ -1634,7 +1475,6 @@ RDRAM Size=4
 Good Name=Disney's Tarzan (F)
 Internal Name=TARZAN
 Status=Compatible
-32bit=Yes
 Audio Signal=Yes
 Counter Factor=1
 RDRAM Size=4
@@ -1643,7 +1483,6 @@ RDRAM Size=4
 Good Name=Disney's Tarzan (G)
 Internal Name=TARZAN
 Status=Compatible
-32bit=Yes
 Audio Signal=Yes
 Counter Factor=1
 RDRAM Size=4
@@ -1652,7 +1491,6 @@ RDRAM Size=4
 Good Name=Disney's Tarzan (U)
 Internal Name=TARZAN
 Status=Compatible
-32bit=Yes
 Audio Signal=Yes
 Counter Factor=1
 RDRAM Size=4
@@ -1661,13 +1499,11 @@ RDRAM Size=4
 Good Name=Donald Duck - Quack Attack (E) (M5)
 Internal Name=Donald Duck Quack At
 Status=Compatible
-32bit=Yes
 Counter Factor=3
 
 [D52FE29D-8EA6A759-C:0]
 Good Name=Donchan Puzzle Hanabi de Doon! (J) [ALECK64]
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Save Type=4kbit Eeprom
 
@@ -1743,14 +1579,12 @@ Culling=1
 Good Name=Doraemon - Nobita to 3tsu no Seireiseki (J)
 Internal Name=ÄÞ×´ÓÝ Ð¯ÂÉ¾²Ú²¾·
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [B6306E99-B63ED2B2-C:4A]
 Good Name=Doraemon 2 - Nobita to Hikari no Shinden (J)
 Internal Name=ÄÞ×´ÓÝ2 Ë¶ØÉ¼ÝÃÞÝ
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 Save Type=16kbit Eeprom
@@ -1759,7 +1593,6 @@ Save Type=16kbit Eeprom
 Good Name=Doraemon 3 - Nobita no Machi SOS! (J)
 Internal Name=ÄÞ×´ÓÝ3 ÉËÞÀÉÏÁSOS!
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 Save Type=16kbit Eeprom
 
@@ -1773,7 +1606,6 @@ RDRAM Size=4
 Good Name=Doubutsu no Mori (J)
 Internal Name=DOUBUTSUNOMORI
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 Save Type=FlashRam
 SMM-Protect=1
@@ -1782,7 +1614,6 @@ SMM-Protect=1
 Good Name=Dr. Mario 64 (U)
 Internal Name=DR.MARIO 64
 Status=Compatible
-32bit=Yes
 Culling=1
 Primary Frame Buffer=1
 
@@ -1805,25 +1636,21 @@ Status=Compatible
 Good Name=Dual Heroes (E)
 Internal Name=Dual heroes PAL
 Status=Compatible
-32bit=Yes
 
 [056EAB63-C215FCD5-C:4A]
 Good Name=Dual Heroes (J)
 Internal Name=Dual heroes JAPAN
 Status=Compatible
-32bit=Yes
 
 [A62230C3-F0834488-C:45]
 Good Name=Dual Heroes (U)
 Internal Name=Dual heroes USA
 Status=Compatible
-32bit=Yes
 
 [FBB9F1FA-6BF88689-C:45]
 Good Name=Duck Dodgers Starring Daffy Duck (U) (M3)
 Internal Name=LT DUCK DODGERS
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -1831,28 +1658,24 @@ RDRAM Size=4
 Good Name=Duke Nukem - ZER0 H0UR (E)
 Internal Name=DUKE NUKEM ZERO HOUR
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 
 [32CA974B-B2C29C50-C:46]
 Good Name=Duke Nukem - ZER0 H0UR (F)
 Internal Name=DUKE NUKEM ZERO HOUR
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 
 [04DAF07F-0D18E688-C:45]
 Good Name=Duke Nukem - ZER0 H0UR (U)
 Internal Name=DUKE NUKEM ZERO HOUR
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 
 [57BFF74D-DE747743-C:50]
 Good Name=Duke Nukem 64 (E)
 Internal Name=DUKE NUKEM
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -1867,7 +1690,6 @@ RDRAM Size=4
 Good Name=Duke Nukem 64 (F)
 Internal Name=DUKE NUKEM
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -1875,7 +1697,6 @@ RDRAM Size=4
 Good Name=Duke Nukem 64 (U)
 Internal Name=DUKE NUKEM
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -1898,25 +1719,21 @@ Culling=1
 Good Name=ECW Hardcore Revolution (E)
 Internal Name=ECW Hardcore Revolut
 Status=Compatible
-32bit=Yes
 
 [BDF9766D-BD068D70-C:45]
 Good Name=ECW Hardcore Revolution (U)
 Internal Name=ECW Hardcore Revolut
 Status=Compatible
-32bit=Yes
 
 [0DED0568-1502515E-C:4A]
 Good Name=Eikou no Saint Andrews (J)
 Internal Name=´²º³É¾ÝÄ±ÝÄÞØ­°½
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [6D9D1FE4-84D10BEA-C:4A]
 Good Name=Eleven Beat - World Tournament (J) [ALECK64]
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Save Type=4kbit Eeprom
 
@@ -1924,21 +1741,18 @@ Save Type=4kbit Eeprom
 Good Name=Elmo's Letter Adventure (U)
 Internal Name=Elmo's Letter Advent
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [02B1538F-C94B88D0-C:45]
 Good Name=Elmo's Number Journey (U)
 Internal Name=Elmo's Number Journey
 Status=Compatible
-32bit=No
 RDRAM Size=4
 
 [E13AE2DC-4FB65CE8-C:4A]
 Good Name=Eltale Monsters (J)
 Internal Name=Eltail
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 RDRAM Size=4
 
@@ -1946,7 +1760,6 @@ RDRAM Size=4
 Good Name=Excitebike 64 (E)
 Internal Name=EXCITEBIKE64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Save Type=16kbit Eeprom
 
@@ -1954,14 +1767,12 @@ Save Type=16kbit Eeprom
 Good Name=Excitebike 64 (J)
 Internal Name=EXCITEBIKE64
 Status=Compatible
-32bit=Yes
 Save Type=16kbit Eeprom
 
 [07861842-A12EBC9F-C:45]
 Good Name=Excitebike 64 (U) (V1.0)
 Internal Name=EXCITEBIKE64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Save Type=16kbit Eeprom
 
@@ -1969,7 +1780,6 @@ Save Type=16kbit Eeprom
 Good Name=Excitebike 64 (U) (V1.1)
 Internal Name=EXCITEBIKE64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Save Type=16kbit Eeprom
 
@@ -1977,35 +1787,30 @@ Save Type=16kbit Eeprom
 Good Name=Excitebike 64 (U) (Kiosk Demo)
 Internal Name=EXCITEBIKE64
 Status=Compatible
-32bit=Yes
 Save Type=16kbit Eeprom
 
 [8E9D834E-1E8B29A9-C:50]
 Good Name=Extreme-G (E) (M5)
 Internal Name=extreme_g
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [EE802DC4-690BD57D-C:4A]
 Good Name=Extreme-G (J)
 Internal Name=EXTREME-G
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [FDA245D2-A74A3D47-C:45]
 Good Name=Extreme-G (U)
 Internal Name=extremeg
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [1185EC85-4B5A7731-C:50]
 Good Name=Extreme-G XG2 (E) (M5)
 Internal Name=Extreme G 2
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -2013,14 +1818,12 @@ RDRAM Size=4
 Good Name=Extreme-G XG2 (J)
 Internal Name=´¸½ÄØ°ÑG2
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [5CD4150B-470CC2F1-C:45]
 Good Name=Extreme-G XG2 (U)
 Internal Name=Extreme G 2
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 //================  F  ================
@@ -2043,7 +1846,6 @@ RDRAM Size=4
 Good Name=F-1 World Grand Prix (E)
 Internal Name=F1 WORLD GRAND PRIX
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 RDRAM Size=4
 
@@ -2051,7 +1853,6 @@ RDRAM Size=4
 Good Name=F-1 World Grand Prix (E) (Beta)
 Internal Name=F1 WORLD GRAND PRIX
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 RDRAM Size=4
 
@@ -2059,35 +1860,30 @@ RDRAM Size=4
 Good Name=F-1 World Grand Prix (F)
 Internal Name=F1 WORLD GRAND PRIX
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [38442634-66B3F060-C:44]
 Good Name=F-1 World Grand Prix (G)
 Internal Name=F1 WORLD GRAND PRIX
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [64BF47C4-F4BD22BA-C:4A]
 Good Name=F-1 World Grand Prix (J)
 Internal Name=F1 WORLD GRAND PRIX
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [CC3CC8B3-0EC405A4-C:45]
 Good Name=F-1 World Grand Prix (U)
 Internal Name=F1 WORLD GRAND PRIX
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [07C1866E-5775CCDE-C:50]
 Good Name=F-1 World Grand Prix II (E) (M4)
 Internal Name=F1 WORLD GRAND PRIX2
 Status=Compatible
-32bit=Yes
 
 [776646F6-06B9AC2B-C:50]
 Good Name=F-ZERO X (E)
@@ -2128,21 +1924,18 @@ Culling=1
 Good Name=F1 Racing Championship (E) (M5)
 Internal Name=F1RacingChampionship
 Status=Compatible
-32bit=Yes
 Culling=1
 
 [53CCAD28-AEA6EDA2-C:45]
 Good Name=F1 Racing Championship (U)
 Internal Name=F1RacingChampionship
 Status=Compatible
-32bit=Yes
 Culling=1
 
 [6DFF4C37-B1B763FD-C:4A]
 Good Name=Famista 64 (J)
 Internal Name=Ì§Ð½À 64
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 RDRAM Size=4
 
@@ -2196,49 +1989,42 @@ ViRefresh=2504
 Good Name=Fighter Destiny 2 (U)
 Internal Name=FIGHTER DESTINY2
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [36F1C74B-F2029939-C:50]
 Good Name=Fighter's Destiny (E)
 Internal Name=Fighter's Destiny
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [0C41F9C2-01717A0D-C:46]
 Good Name=Fighter's Destiny (F)
 Internal Name=Fighter's Destiny Fr
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [FE94E570-E4873A9C-C:44]
 Good Name=Fighter's Destiny (G)
 Internal Name=Fighter's Destiny
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [52F78805-8B8FCAB7-C:45]
 Good Name=Fighter's Destiny (U)
 Internal Name=Fighter's Destiny
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [49E46C2D-7B1A110C-C:4A]
 Good Name=Fighting Cup (J)
 Internal Name=Fighting Cup
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [66CF0FFE-AD697F9C-C:50]
 Good Name=Fighting Force 64 (E)
 Internal Name=Fighting Force
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -2246,7 +2032,6 @@ RDRAM Size=4
 Good Name=Fighting Force 64 (U)
 Internal Name=Fighting Force
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -2254,7 +2039,6 @@ RDRAM Size=4
 Good Name=Flying Dragon (E)
 Internal Name=FLYING DRAGON
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 RDRAM Size=4
@@ -2263,7 +2047,6 @@ RDRAM Size=4
 Good Name=Flying Dragon (U)
 Internal Name=FLYING DRAGON
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 RDRAM Size=4
@@ -2272,25 +2055,21 @@ RDRAM Size=4
 Good Name=Forsaken 64 (E) (M4)
 Internal Name=Forsaken
 Status=Compatible
-32bit=Yes
 
 [C3CD76FF-9B9DCBDE-C:44]
 Good Name=Forsaken 64 (G)
 Internal Name=Forsaken
 Status=Compatible
-32bit=Yes
 
 [9E330C01-8C0314BA-C:45]
 Good Name=Forsaken 64 (U)
 Internal Name=Forsaken
 Status=Compatible
-32bit=Yes
 
 [3261D479-ED0DBC25-C:45]
 Good Name=Fox Sports College Hoops '99 (U)
 Internal Name=Fox Sports Hoops 99
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -2311,7 +2090,6 @@ RDRAM Size=4
 Good Name=G.A.S.P!! Fighters' NEXTream (E)
 Internal Name=G.A.S.P!!Fighters'NE
 Status=Compatible
-32bit=Yes
 Culling=1
 SMM-Cache=0
 SMM-FUNC=0
@@ -2323,7 +2101,6 @@ SMM-TLB=0
 Good Name=G.A.S.P!! Fighters' NEXTream (J)
 Internal Name=G.A.S.P!!Fighters'NE
 Status=Compatible
-32bit=Yes
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -2334,7 +2111,6 @@ SMM-TLB=0
 Good Name=Ganbare Goemon - Derodero Douchuu Obake Tenkomori (J)
 Internal Name=GOEMON2 DERODERO
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 RDRAM Size=4
@@ -2343,7 +2119,6 @@ RDRAM Size=4
 Good Name=Ganbare Goemon - Neo Momoyama Bakufu no Odori (J)
 Internal Name=GANBAKE GOEMON
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 
@@ -2356,21 +2131,18 @@ Status=Compatible
 Good Name=Gauntlet Legends (E)
 Internal Name=GAUNTLET LEGENDS
 Status=Compatible
-32bit=Yes
 RSP-Mfc0Count=10
 
 [70B0260E-6716D04C-C:4A]
 Good Name=Gauntlet Legends (J)
 Internal Name=GAUNTLET LEGENDS
 Status=Compatible
-32bit=Yes
 RSP-Mfc0Count=10
 
 [729B5E32-B728D980-C:45]
 Good Name=Gauntlet Legends (U)
 Internal Name=GAUNTLET LEGENDS
 Status=Compatible
-32bit=Yes
 Culling=1
 RSP-Mfc0Count=10
 
@@ -2378,49 +2150,42 @@ RSP-Mfc0Count=10
 Good Name=Getter Love!! - Cho Ren-ai Party Game (J)
 Internal Name=Getter Love!!
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [874733A4-A823745A-C:58]
 Good Name=Gex 3 - Deep Cover Gecko (E) (M2) (Fre-Ger)
 Internal Name=Gex 3 Deep Cover Gec
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [99179359-2FE7EBC3-C:50]
 Good Name=Gex 3 - Deep Cover Gecko (E) (M3) (Eng-Spa-Ita)
 Internal Name=Gex 3 Deep Cover Gec
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [3EDC7E12-E26C1CC9-C:45]
 Good Name=Gex 3 - Deep Cover Gecko (U)
 Internal Name=Gex 3 Deep Cover Gec
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [E68A000E-639166DD-C:50]
 Good Name=Gex 64 - Enter the Gecko (E)
 Internal Name=GEX: ENTER THE GECKO
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [89FED774-CAAFE21B-C:45]
 Good Name=Gex 64 - Enter the Gecko (U)
 Internal Name=GEX: ENTER THE GECKO
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [F5237301-99E3EE93-C:50]
 Good Name=Glover (E) (M3)
 Internal Name=Glover
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -2435,7 +2200,6 @@ RDRAM Size=4
 Good Name=Glover (U)
 Internal Name=Glover
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -2461,7 +2225,6 @@ RDRAM Size=4
 Good Name=Goemon's Great Adventure (U)
 Internal Name=GOEMONS GREAT ADV
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 RDRAM Size=4
@@ -2470,7 +2233,6 @@ RDRAM Size=4
 Good Name=Golden Nugget 64 (U)
 Internal Name=GOLDEN NUGGET 64
 Status=Compatible
-32bit=Yes
 Linking=Off
 RDRAM Size=4
 
@@ -2542,7 +2304,6 @@ SMM-TLB=0
 Good Name=GT 64 - Championship Edition (E) (M3)
 Internal Name=GT64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Delay SI=Yes
 Save Type=16kbit Eeprom
@@ -2551,7 +2312,6 @@ Save Type=16kbit Eeprom
 Good Name=GT 64 - Championship Edition (U)
 Internal Name=GT64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Delay SI=Yes
 Save Type=16kbit Eeprom
@@ -2561,7 +2321,6 @@ Save Type=16kbit Eeprom
 Good Name=Hamster Monogatari 64 (J)
 Internal Name=ÊÑ½À°ÓÉ¶ÞÀØ64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 RDRAM Size=4
@@ -2570,14 +2329,12 @@ RDRAM Size=4
 Good Name=Harukanaru Augusta - Masters '98 (J)
 Internal Name=MASTERS'98
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [98DF9DFC-6606C189-C:45]
 Good Name=Harvest Moon 64 (U)
 Internal Name=HARVESTMOON64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -2585,13 +2342,11 @@ RDRAM Size=4
 Good Name=Heiwa Pachinko World 64 (J)
 Internal Name=HEIWA ÊßÁÝº Ü°ÙÄÞ64
 Status=Compatible
-32bit=Yes
 
 [AE90DBEB-79B89123-C:50]
 Good Name=Hercules - The Legendary Journeys (E) (M6)
 Internal Name=HERCULES
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -2599,7 +2354,6 @@ RDRAM Size=4
 Good Name=Hercules - The Legendary Journeys (U)
 Internal Name=HERCULES
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 RDRAM Size=4
@@ -2608,7 +2362,6 @@ RDRAM Size=4
 Good Name=Hexen (E)
 Internal Name=HEXEN
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -2616,7 +2369,6 @@ RDRAM Size=4
 Good Name=Hexen (F)
 Internal Name=HEXEN
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -2624,7 +2376,6 @@ RDRAM Size=4
 Good Name=Hexen (G)
 Internal Name=HEXEN
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -2632,7 +2383,6 @@ RDRAM Size=4
 Good Name=Hexen (J)
 Internal Name=HEXEN
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -2640,7 +2390,6 @@ RDRAM Size=4
 Good Name=Hexen (U)
 Internal Name=HEXEN
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -2648,14 +2397,12 @@ RDRAM Size=4
 Good Name=Hey You, Pikachu! (U)
 Internal Name=hey you, pikachu
 Status=Needs input plugin
-32bit=Yes
 RDRAM Size=4
 
 [35FF8F1A-6E79E3BE-C:4A]
 Good Name=Hiryuu no Ken Twin (J)
 Internal Name=ËØ­³É¹Ý Â²Ý
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -2663,34 +2410,29 @@ RDRAM Size=4
 Good Name=Holy Magic Century (E)
 Internal Name=Holy Magic Century
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [B35FEBB0-7427B204-C:46]
 Good Name=Holy Magic Century (F)
 Internal Name=Holy Magic Century
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [75FA0E14-C9B3D105-C:44]
 Good Name=Holy Magic Century (G)
 Internal Name=Holy Magic Century
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [C1D702BD-6D416547-C:4A]
 Good Name=Hoshi no Kirby 64 (J) (V1.0)
 Internal Name=Kirby64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [CA1BB86F-41CCA5C5-C:4A]
 Good Name=Hoshi no Kirby 64 (J) (V1.1)
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -2698,7 +2440,6 @@ RDRAM Size=4
 Good Name=Hoshi no Kirby 64 (J) (V1.2)
 Internal Name=Kirby64
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 Save Type=16kbit Eeprom
@@ -2707,7 +2448,6 @@ Save Type=16kbit Eeprom
 Good Name=Hoshi no Kirby 64 (J) (V1.3)
 Internal Name=Kirby64
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 Save Type=16kbit Eeprom
@@ -2716,7 +2456,6 @@ Save Type=16kbit Eeprom
 Good Name=Hot Wheels Turbo Racing (E) (M3)
 Internal Name=HOT WHEELS TURBO
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -2724,7 +2463,6 @@ RDRAM Size=4
 Good Name=Hot Wheels Turbo Racing (U)
 Internal Name=HOT WHEELS TURBO
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -2732,7 +2470,6 @@ RDRAM Size=4
 Good Name=HSV Adventure Racing (A)
 Internal Name=HSV ADVENTURE RACING
 Status=Compatible
-32bit=Yes
 Counter Factor=3
 RDRAM Size=4
 ViRefresh=1450
@@ -2764,7 +2501,6 @@ Status=Compatible
 Good Name=Hydro Thunder (E)
 Internal Name=Hydro Thunder
 Status=Compatible
-32bit=Yes
 Audio Signal=Yes
 Counter Factor=1
 
@@ -2772,7 +2508,6 @@ Counter Factor=1
 Good Name=Hydro Thunder (F)
 Internal Name=Hydro Thunder
 Status=Compatible
-32bit=Yes
 Audio Signal=Yes
 Counter Factor=1
 
@@ -2780,7 +2515,6 @@ Counter Factor=1
 Good Name=Hydro Thunder (U)
 Internal Name=HYDRO THUNDER
 Status=Compatible
-32bit=Yes
 Audio Signal=Yes
 Counter Factor=1
 
@@ -2788,7 +2522,6 @@ Counter Factor=1
 Good Name=Hyper Olympics in Nagano 64 (J)
 Internal Name=NAGANO OLYMPICS
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 //================  I  ================
@@ -2796,7 +2529,6 @@ RDRAM Size=4
 Good Name=Ide Yousuke no Mahjong Juku (J)
 Internal Name=²ÃÞÖ³½¹ÉÏ°¼Þ¬Ý¼Þ­¸
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 Save Type=16kbit Eeprom
 
@@ -2804,7 +2536,6 @@ Save Type=16kbit Eeprom
 Good Name=Iggy's Reckin' Balls (E)
 Internal Name=Iggy's Reckin' Balls
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 RDRAM Size=4
 
@@ -2812,7 +2543,6 @@ RDRAM Size=4
 Good Name=Iggy's Reckin' Balls (U)
 Internal Name=Iggy's Reckin' Balls
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 RDRAM Size=4
 
@@ -2820,14 +2550,12 @@ RDRAM Size=4
 Good Name=Iggy-kun no Bura Bura Poyon (J)
 Internal Name=BURABURA POYON
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [8C138BE0-95700E46-C:45]
 Good Name=In-Fisherman Bass Hunter 64 (U)
 Internal Name=BASS HUNTER 64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -2863,20 +2591,17 @@ ViRefresh=2050
 Good Name=Indy Racing 2000 (U)
 Internal Name=INDY RACING 2000
 Status=Compatible
-32bit=Yes
 
 [F41B6343-C10661E6-C:50]
 Good Name=International Superstar Soccer '98 (E)
 Internal Name=I.S.S.98
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [7F0FDA09-6061CE0B-C:45]
 Good Name=International Superstar Soccer '98 (U)
 Internal Name=I.S.S.98
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [336364A0-06C8D5BF-C:58]
@@ -2898,7 +2623,6 @@ Status=Compatible
 Good Name=International Superstar Soccer 64 (E)
 Internal Name=I S S 64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -2906,7 +2630,6 @@ RDRAM Size=4
 Good Name=International Superstar Soccer 64 (U)
 Internal Name=I S S 64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 RDRAM Size=4
@@ -2925,7 +2648,6 @@ Status=Compatible
 Good Name=Itoi Shigesato no Bass Tsuri No. 1 Kettei Ban! (J)
 Internal Name=BassFishingNo.1
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -2934,14 +2656,12 @@ RDRAM Size=4
 Good Name=J.League Dynamite Soccer 64 (J)
 Internal Name=ÀÞ²ÅÏ²Ä»¯¶°64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [4FBFA429-6920BB15-C:4A]
 Good Name=J.League Eleven Beat 1997 (J)
 Internal Name=J_league 1997
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [54554A42-E4985FFB-C:4A]
@@ -2954,21 +2674,18 @@ RDRAM Size=4
 Good Name=J.League Tactics Soccer (J) (V1.0)
 Internal Name=TACTICS SOCCER
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [C6CE0AAA-D117F019-C:4A]
 Good Name=J.League Tactics Soccer (J) (V1.1)
 Internal Name=TACTICS SOCCER
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [C73AD016-48C5537D-C:4A]
 Good Name=Jangou Simulation Mahjong Dou 64 (J)
 Internal Name=Ï°¼Þ¬ÝÄÞ³64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [C99936D1-23D1D65D-C:4A]
@@ -2981,20 +2698,17 @@ Counter Factor=1
 Good Name=Jeopardy! (U)
 Internal Name=JEOPARDY!
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [21F7ABFB-6A8AA7E8-C:50]
 Good Name=Jeremy McGrath Supercross 2000 (E)
 Internal Name=Jeremy McGrath Super
 Status=Compatible
-32bit=Yes
 
 [BB30B1A5-FCF712CE-C:45]
 Good Name=Jeremy McGrath Supercross 2000 (U)
 Internal Name=Jeremy McGrath Super
 Status=Compatible
-32bit=Yes
 
 [68D7A1DE-0079834A-C:50]
 Good Name=Jet Force Gemini (E) (M4)
@@ -3040,14 +2754,12 @@ SMM-TLB=0
 Good Name=Jikkyou G1 Stable (J) (V1.0)
 Internal Name=G1STABLE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [575F340B-9F1398B2-C:4A]
 Good Name=Jikkyou G1 Stable (J) (V1.1)
 Internal Name=G1STABLE
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -3065,56 +2777,48 @@ Status=Compatible
 Good Name=Jikkyou J.League Perfect Striker (J)
 Internal Name=PERFECT STRIKER
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [0AC244D1-1F0EC605-C:4A]
 Good Name=Jikkyou Powerful Pro Yakyuu 2000 (J) (V1.0)
 Internal Name=PAWAPURO 2000
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [4264DF23-BE28BDF7-C:4A]
 Good Name=Jikkyou Powerful Pro Yakyuu 2000 (J) (V1.1)
 Internal Name=PAWAPURO 2000
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [34495BAD-502E9D26-C:4A]
 Good Name=Jikkyou Powerful Pro Yakyuu 4 (J) (V1.0)
 Internal Name=PAWAFURU PUROYAKYU4
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [D7891F1C-C3E43788-C:4A]
 Good Name=Jikkyou Powerful Pro Yakyuu 4 (J) (V1.1)
 Internal Name=PAWAFURU PUROYAKYU4
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [D22943DA-AC2B77C0-C:4A]
 Good Name=Jikkyou Powerful Pro Yakyuu 5 (J) (V1.0)
 Internal Name=PAWAFURU PUROYAKYU5
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [1C8CDF74-F761051F-C:4A]
 Good Name=Jikkyou Powerful Pro Yakyuu 5 (J) (V1.1)
 Internal Name=PAWAFURU PUROYAKYU5
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [AC173077-5A14C012-C:4A]
 Good Name=Jikkyou Powerful Pro Yakyuu 5 (J) (V1.2)
 Internal Name=PAWAFURU PUROYAKYU5
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [B75E20B7-B3FEFDFD-C:4A]
@@ -3139,7 +2843,6 @@ RDRAM Size=4
 Good Name=Jikkyou Powerful Pro Yakyuu Basic Ban 2001 (J) (V1.0)
 Internal Name=PAWAPURO 2001B
 Status=Compatible
-32bit=Yes
 Counter Factor=3
 RDRAM Size=4
 
@@ -3147,32 +2850,27 @@ RDRAM Size=4
 Good Name=Jikkyou Powerful Pro Yakyuu Basic Ban 2001 (J) (V1.1)
 Internal Name=PAWAPURO 2001B
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [3FEA5620-7456DB40-C:4A]
 Good Name=Jikkyou World Soccer - World Cup France '98 (J) (V1.0)
 Internal Name=J.WORLD CUP 98
 Status=Compatible
-32bit=Yes
 
 [C954B38C-6F62BEB3-C:4A]
 Good Name=Jikkyou World Soccer - World Cup France '98 (J) (V1.1)
 Internal Name=J.WORLD CUP 98
 Status=Compatible
-32bit=Yes
 
 [E1C7ABD6-4E707F28-C:4A]
 Good Name=Jikkyou World Soccer - World Cup France '98 (J) (V1.2)
 Internal Name=J.WORLD CUP 98
 Status=Compatible
-32bit=Yes
 
 [E0A79F8C-32CC97FA-C:4A]
 Good Name=Jikkyou World Soccer 3 (J)
 Internal Name=J WORLD SOCCER3
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -3180,7 +2878,6 @@ RDRAM Size=4
 Good Name=Jikuu Senshi Turok (J)
 Internal Name=turok_dinosaur_hunte
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Counter Factor=1
 RDRAM Size=4
@@ -3189,14 +2886,12 @@ RDRAM Size=4
 Good Name=Jinsei Game 64 (J)
 Internal Name=JINSEI-GAME64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [0F743195-D8A6DB95-C:50]
 Good Name=John Romero's Daikatana (E) (M3)
 Internal Name=DAIKATANA
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 Linking=Off
 
@@ -3204,7 +2899,6 @@ Linking=Off
 Good Name=John Romero's Daikatana (J)
 Internal Name=DAIKATANA
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 Linking=Off
 
@@ -3212,7 +2906,6 @@ Linking=Off
 Good Name=John Romero's Daikatana (U)
 Internal Name=DAIKATANA
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 Culling=1
 Linking=Off
@@ -3222,14 +2915,12 @@ Linking=Off
 Good Name=Kakutou Denshou - F-Cup Maniax (J)
 Internal Name=KAKUTOU DENSHOU
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [36281F23-009756CF-C:45]
 Good Name=Ken Griffey Jr.'s Slugfest (U)
 Internal Name=KEN GRIFFEY SLUGFEST
 Status=Compatible
-32bit=Yes
 
 [979B263E-F8470004-C:50]
 Good Name=Killer Instinct Gold (E)
@@ -3269,14 +2960,12 @@ Culling=1
 Good Name=Kiratto Kaiketsu! 64 Tanteidan (J)
 Internal Name=·×¯Ä¶²¹Â 64ÀÝÃ²ÀÞÝ
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [0D93BA11-683868A6-C:50]
 Good Name=Kirby 64 - The Crystal Shards (E)
 Internal Name=Kirby64
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 Save Type=16kbit Eeprom
@@ -3285,7 +2974,6 @@ Save Type=16kbit Eeprom
 Good Name=Kirby 64 - The Crystal Shards (U)
 Internal Name=Kirby64
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 Save Type=16kbit Eeprom
@@ -3294,7 +2982,6 @@ Save Type=16kbit Eeprom
 Good Name=Knife Edge - Nose Gunner (E)
 Internal Name=KNIFE EDGE
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -3302,7 +2989,6 @@ RDRAM Size=4
 Good Name=Knife Edge - Nose Gunner (J)
 Internal Name=KNIFE EDGE
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -3311,7 +2997,6 @@ Good Name=Knife Edge - Nose Gunner (U)
 Internal Name=KNIFE EDGE
 Status=Compatible
 Counter Factor=1
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -3319,14 +3004,12 @@ RDRAM Size=4
 Good Name=Knockout Kings 2000 (E)
 Internal Name=Knockout Kings 2000
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [0894909C-DAD4D82D-C:45]
 Good Name=Knockout Kings 2000 (U)
 Internal Name=Knockout Kings 2000
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -3334,21 +3017,18 @@ RDRAM Size=4
 Good Name=Kobe Bryant in NBA Courtside (E)
 Internal Name=NBA COURTSIDE
 Status=Compatible
-32bit=Yes
 Save Type=16kbit Eeprom
 
 [616B8494-8A509210-C:45]
 Good Name=Kobe Bryant's NBA Courtside (U)
 Internal Name=NBA COURTSIDE
 Status=Compatible
-32bit=Yes
 Culling=1
 Save Type=16kbit Eeprom
 
 [4248BA87-99BE605D-C:0]
 Good Name=Kuru Kuru Fever (J) [ALECK64]
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Save Type=4kbit Eeprom
 
@@ -3375,19 +3055,16 @@ Counter Factor=1
 Good Name=Last Legion UX (J)
 Internal Name=LASTLEGION UX
 Status=Compatible
-32bit=Yes
 
 [0160E9E5-29A4CB68-C:45]
 Good Name=Last Legion UX (J) [T]
 Internal Name=LASTLEGION UX
 Status=Compatible
-32bit=Yes
 
 [F478D8B3-9716DD6D-C:50]
 Good Name=LEGO Racers (E) (M10)
 Internal Name=LEGORacers
 Status=Compatible
-32bit=Yes
 Counter Factor=3
 RDRAM Size=4
 
@@ -3395,7 +3072,6 @@ RDRAM Size=4
 Good Name=LEGO Racers (U) (M10)
 Internal Name=LEGORacers
 Status=Compatible
-32bit=Yes
 Counter Factor=3
 RDRAM Size=4
 
@@ -3403,21 +3079,18 @@ RDRAM Size=4
 Good Name=Les Razmoket - La Chasse Aux Tresors (F)
 Internal Name=RUGRATSTREASUREHUNT
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [3D67C62B-31D03150-C:4A]
 Good Name=Let's Smash (J)
 Internal Name=LET'S SMASH
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [60460680-305F0E72-C:50]
 Good Name=Lode Runner 3-D (E) (M5)
 Internal Name=Lode Runner 3D
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 ViRefresh=1450
 
@@ -3425,7 +3098,6 @@ ViRefresh=1450
 Good Name=Lode Runner 3-D (J)
 Internal Name=Lode Runner 3D
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 ViRefresh=1400
 
@@ -3433,7 +3105,6 @@ ViRefresh=1400
 Good Name=Lode Runner 3-D (U)
 Internal Name=Lode Runner 3D
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 ViRefresh=1400
 
@@ -3441,13 +3112,11 @@ ViRefresh=1400
 Good Name=Looney Tunes - Duck Dodgers (E) (M6)
 Internal Name=DAFFY DUCK STARRING
 Status=Compatible
-32bit=Yes
 
 [2483F22B-136E025E-C:55]
 Good Name=Lylat Wars (A) (M3)
 Internal Name=STARFOX64
 Status=Compatible
-32bit=Yes
 Culling=1
 Linking=Off
 RDRAM Size=4
@@ -3456,7 +3125,6 @@ RDRAM Size=4
 Good Name=Lylat Wars (E) (M3)
 Internal Name=STARFOX64
 Status=Compatible
-32bit=Yes
 Linking=Off
 RDRAM Size=4
 
@@ -3465,56 +3133,48 @@ RDRAM Size=4
 Good Name=Mace - The Dark Age (E)
 Internal Name=MACE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [6B700750-29D621FE-C:45]
 Good Name=Mace - The Dark Age (U)
 Internal Name=MACE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [A197CB52-7520DE0E-C:50]
 Good Name=Madden Football 64 (E)
 Internal Name=MADDEN 64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [13836389-265B3C76-C:45]
 Good Name=Madden Football 64 (U)
 Internal Name=MADDEN 64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [0CB81686-5FD85A81-C:45]
 Good Name=Madden NFL 2000 (U)
 Internal Name=Madden NFL 2000
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 
 [EB38F792-190EA246-C:45]
 Good Name=Madden NFL 2001 (U)
 Internal Name=Madden NFL 2001
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 
 [D7134F8D-C11A00B5-C:45]
 Good Name=Madden NFL 2002 (U)
 Internal Name=Madden NFL 2002
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 
 [3925D625-8C83C75E-C:50]
 Good Name=Madden NFL 99 (E)
 Internal Name=MADDEN NFL 99
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -3522,7 +3182,6 @@ RDRAM Size=4
 Good Name=Madden NFL 99 (U)
 Internal Name=MADDEN NFL 99
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -3530,34 +3189,29 @@ RDRAM Size=4
 Good Name=Magical Tetris Challenge (E)
 Internal Name=MAGICAL TETRIS
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [E1EF93F7-14908B0B-C:44]
 Good Name=Magical Tetris Challenge (G)
 Internal Name=MAGICAL TETRIS
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [75B61647-7ADABF78-C:45]
 Good Name=Magical Tetris Challenge (U)
 Internal Name=MAGICAL TETRIS
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [80C8564A-929C65AB-C:4A]
 Good Name=Magical Tetris Challenge featuring Mickey (J)
 Internal Name=MAGICAL TETRIS
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [D5356BAC-97AE69D2-C:4A]
 Good Name=Magical Tetris Challenge Featuring Mickey (J) [ALECK64]
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Save Type=4kbit Eeprom
 
@@ -3565,35 +3219,30 @@ Save Type=4kbit Eeprom
 Good Name=Mahjong 64 (J)
 Internal Name=MAHJONG64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [CCCC821E-96E88A83-C:4A]
 Good Name=Mahjong Hourouki Classic (J)
 Internal Name=Ï°¼Þ¬ÝÎ³Û³·CLASSIC
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [0FC42C70-8754F1CD-C:4A]
 Good Name=Mahjong Master (J)
 Internal Name=Ï°¼Þ¬Ý Ï½À°
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [CDB998BE-1024A5C8-C:50]
 Good Name=Major League Baseball Featuring Ken Griffey Jr. (E)
 Internal Name=MLB FEATURING K G JR
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [80C1C05C-EA065EF4-C:45]
 Good Name=Major League Baseball Featuring Ken Griffey Jr. (U)
 Internal Name=MLB FEATURING K G JR
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [AB9EB27D-5F05605F-C:4A]
@@ -3624,7 +3273,6 @@ Counter Factor=1
 Good Name=Mario Golf (E)
 Internal Name=MarioGolf64
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 Self Texture=1
@@ -3633,7 +3281,6 @@ Self Texture=1
 Good Name=Mario Golf (U)
 Internal Name=MarioGolf64
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 Self Texture=1
@@ -3642,7 +3289,6 @@ Self Texture=1
 Good Name=Mario Golf 64 (J) (V1.0)
 Internal Name=MarioGolf64
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 Self Texture=1
@@ -3651,7 +3297,6 @@ Self Texture=1
 Good Name=Mario Golf 64 (J) (V1.1)
 Internal Name=MarioGolf64
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 Self Texture=1
@@ -3660,7 +3305,6 @@ Self Texture=1
 Good Name=Mario Kart 64 (E) (V1.0)
 Internal Name=MARIOKART64
 Status=Compatible
-32bit=Yes
 Culling=1
 Primary Frame Buffer=1
 RDRAM Size=4
@@ -3669,7 +3313,6 @@ RDRAM Size=4
 Good Name=Mario Kart 64 (E) (V1.1)
 Internal Name=MARIOKART64
 Status=Compatible
-32bit=Yes
 Culling=1
 Primary Frame Buffer=1
 RDRAM Size=4
@@ -3678,7 +3321,6 @@ RDRAM Size=4
 Good Name=Mario Kart 64 (J) (V1.0)
 Internal Name=MARIOKART64
 Status=Compatible
-32bit=Yes
 Culling=1
 Primary Frame Buffer=1
 RDRAM Size=4
@@ -3687,7 +3329,6 @@ RDRAM Size=4
 Good Name=Mario Kart 64 (J) (V1.1)
 Internal Name=MARIOKART64
 Status=Compatible
-32bit=Yes
 Culling=1
 Primary Frame Buffer=1
 RDRAM Size=4
@@ -3697,7 +3338,6 @@ Good Name=Mario Kart 64 (U)
 Internal Name=MARIOKART64
 Status=Compatible
 Counter Factor=1
-32bit=Yes
 Culling=1
 Primary Frame Buffer=1
 RDRAM Size=4
@@ -3706,7 +3346,6 @@ RDRAM Size=4
 Good Name=Mario no Photopi (J)
 Internal Name=ÏØµÉÌ«ÄËß°
 Status=Issues (plugin)
-32bit=Yes
 HLE GFX=No
 RDRAM Size=4
 RSP-SemaphoreExit=1
@@ -3715,7 +3354,6 @@ RSP-SemaphoreExit=1
 Good Name=Mario Party (E) (M3)
 Internal Name=MarioParty
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -3723,7 +3361,6 @@ RDRAM Size=4
 Good Name=Mario Party (J)
 Internal Name=MarioParty
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -3731,7 +3368,6 @@ RDRAM Size=4
 Good Name=Mario Party (U)
 Internal Name=MarioParty
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -3739,7 +3375,6 @@ RDRAM Size=4
 Good Name=Mario Party 2 (E) (M5)
 Internal Name=MarioParty2
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -3747,7 +3382,6 @@ RDRAM Size=4
 Good Name=Mario Party 2 (J)
 Internal Name=MarioParty2
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -3755,7 +3389,6 @@ RDRAM Size=4
 Good Name=Mario Party 2 (U)
 Internal Name=MarioParty2
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -3763,7 +3396,6 @@ RDRAM Size=4
 Good Name=Mario Party 3 (E) (M4)
 Internal Name=MarioParty3
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 Save Type=16kbit Eeprom
@@ -3772,7 +3404,6 @@ Save Type=16kbit Eeprom
 Good Name=Mario Party 3 (J)
 Internal Name=MarioParty3
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 Save Type=16kbit Eeprom
@@ -3781,7 +3412,6 @@ Save Type=16kbit Eeprom
 Good Name=Mario Party 3 (U)
 Internal Name=MarioParty3
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 Save Type=16kbit Eeprom
@@ -3826,26 +3456,22 @@ RDRAM Size=4
 Good Name=Mega Man 64 (U)
 Internal Name=Mega Man 64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [1001F10C-3D51D8C1-C:45]
 Good Name=Mia Hamm Soccer 64 (U) (M2)
 Internal Name=Mia Hamm Soccer 64
 Status=Compatible
-32bit=Yes
 
 [E36166C2-8613A2E5-C:58]
 Good Name=Michael Owens WLS 2000 (E)
 Internal Name=MO WORLD LEAGUE SOCC
 Status=Compatible
-32bit=Yes
 
 [736AE6AF-4117E9C7-C:4A]
 Good Name=Mickey no Racing Challenge USA (J)
 Internal Name=MICKEY USA
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 SMM-Protect=1
 
@@ -3853,7 +3479,6 @@ SMM-Protect=1
 Good Name=Mickey's Speedway USA (E) (M5)
 Internal Name=MICKEY USA PAL
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 SMM-Protect=1
 
@@ -3861,7 +3486,6 @@ SMM-Protect=1
 Good Name=Mickey's Speedway USA (U)
 Internal Name=MICKEY USA
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 SMM-Protect=1
 
@@ -3869,27 +3493,23 @@ SMM-Protect=1
 Good Name=Micro Machines 64 Turbo (E) (M5)
 Internal Name=MICROMACHINES64TURBO
 Status=Compatible
-32bit=Yes
 
 [F1850C35-ACE07912-C:45]
 Good Name=Micro Machines 64 Turbo (U)
 Internal Name=MICROMACHINES64TURBO
 Status=Compatible
-32bit=Yes
 Culling=1
 
 [E4B35E4C-1AC45CC9-C:45]
 Good Name=Midway's Greatest Arcade Hits Volume 1 (U)
 Internal Name=MGAH VOL1
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [09D53E16-3AB268B9-C:45]
 Good Name=Mike Piazza's Strike Zone (U)
 Internal Name=PIAZZA STRIKEZONE
 Status=Issues (plugin)
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -3897,21 +3517,18 @@ RDRAM Size=4
 Good Name=Milo's Astro Lanes (E)
 Internal Name=Milos_Astro_Lanes
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [2E955ECD-F3000884-C:45]
 Good Name=Milo's Astro Lanes (U)
 Internal Name=Milos_Astro_Lanes
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [418BDA98-248A0F58-C:50]
 Good Name=Mischief Makers (E)
 Internal Name=MISCHIEF MAKERS
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -3919,7 +3536,6 @@ RDRAM Size=4
 Good Name=Mischief Makers (U) (V1.0)
 Internal Name=MISCHIEF MAKERS
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -3927,7 +3543,6 @@ RDRAM Size=4
 Good Name=Mischief Makers (U) (V1.1)
 Internal Name=MISCHIEF MAKERS
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -3935,56 +3550,48 @@ RDRAM Size=4
 Good Name=Mission Impossible (E)
 Internal Name=MISSION IMPOSSIBLE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [20095B34-343D9E87-C:46]
 Good Name=Mission Impossible (F)
 Internal Name=MISSION IMPOSSIBLE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [93EB3F7E-81675E44-C:44]
 Good Name=Mission Impossible (G)
 Internal Name=MISSION IMPOSSIBLE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [EBA949DC-39BAECBD-C:49]
 Good Name=Mission Impossible (I)
 Internal Name=MISSION IMPOSSIBLE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [5F6A04E2-D4FA070D-C:53]
 Good Name=Mission Impossible (S) (V1.0)
 Internal Name=MISSION IMPOSSIBLE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [5F6DDEA2-4DD9E759-C:53]
 Good Name=Mission Impossible (S) (V1.1)
 Internal Name=MISSION IMPOSSIBLE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [26035CF8-802B9135-C:45]
 Good Name=Mission Impossible (U)
 Internal Name=MISSION IMPOSSIBLE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [28768D6D-B379976C-C:45]
 Good Name=Monaco Grand Prix (U)
 Internal Name=Monaco Grand Prix
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 
@@ -3992,7 +3599,6 @@ Culling=1
 Good Name=Monaco Grand Prix - Racing Simulation 2 (E) (M4)
 Internal Name=Monaco GP Racing 2
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 Counter Factor=1
 Culling=1
@@ -4002,7 +3608,6 @@ RDRAM Size=4
 Good Name=Monopoly (U) (M2)
 Internal Name=monopoly
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -4010,7 +3615,6 @@ RDRAM Size=4
 Good Name=Monster Truck Madness 64 (E) (M5)
 Internal Name=MTM64
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 Counter Factor=3
 Culling=1
@@ -4020,7 +3624,6 @@ RDRAM Size=4
 Good Name=Monster Truck Madness 64 (U)
 Internal Name=MTM64
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 Counter Factor=3
 Culling=1
@@ -4030,14 +3633,12 @@ RDRAM Size=4
 Good Name=Morita Shougi 64 (J)
 Internal Name=ÓØÀ¼®³·Þ64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [73036F3B-CE0D69E9-C:50]
 Good Name=Mortal Kombat 4 (E)
 Internal Name=MORTAL KOMBAT 4
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -4045,28 +3646,24 @@ RDRAM Size=4
 Good Name=Mortal Kombat 4 (U)
 Internal Name=MORTAL KOMBAT 4
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [FF44EDC4-1AAE9213-C:50]
 Good Name=Mortal Kombat Mythologies - Sub-Zero (E)
 Internal Name=MK_MYTHOLOGIES
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [C34304AC-2D79C021-C:45]
 Good Name=Mortal Kombat Mythologies - Sub-Zero (U)
 Internal Name=MK_MYTHOLOGIES
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [8C3D1192-BEF172E1-C:50]
 Good Name=Mortal Kombat Trilogy (E)
 Internal Name=MortalKombatTrilogy
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -4074,7 +3671,6 @@ RDRAM Size=4
 Good Name=Mortal Kombat Trilogy (U) (V1.0)
 Internal Name=MortalKombatTrilogy
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -4082,7 +3678,6 @@ RDRAM Size=4
 Good Name=Mortal Kombat Trilogy (U) (V1.1)
 Internal Name=MortalKombatTrilogy
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -4090,7 +3685,6 @@ RDRAM Size=4
 Good Name=Mortal Kombat Trilogy (U) (V1.2)
 Internal Name=MortalKombatTrilogy
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -4098,35 +3692,30 @@ RDRAM Size=4
 Good Name=MRC - Multi Racing Championship (E) (M3)
 Internal Name=MULTI RACING
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [A6B6B413-15D113CC-C:4A]
 Good Name=MRC - Multi Racing Championship (J)
 Internal Name=MULTI RACING
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [2AF9B65C-85E2A2D7-C:45]
 Good Name=MRC - Multi Racing Championship (U)
 Internal Name=MULTI RACING
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [1938525C-586E9656-C:45]
 Good Name=Ms. Pac-Man Maze Madness (U)
 Internal Name=MS. PAC-MAN MM
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [7F9345D3-841ECADE-C:50]
 Good Name=Mystical Ninja 2 Starring Goemon (E) (M3)
 Internal Name=MYSTICAL NINJA2 SG
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 RDRAM Size=4
@@ -4135,7 +3724,6 @@ RDRAM Size=4
 Good Name=Mystical Ninja Starring Goemon (E)
 Internal Name=MYSTICAL NINJA
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 
@@ -4143,7 +3731,6 @@ Culling=1
 Good Name=Mystical Ninja Starring Goemon (U)
 Internal Name=MYSTICAL NINJA
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 SMM-Cache=0
@@ -4157,14 +3744,12 @@ SMM-TLB=0
 Good Name=Nagano Winter Olympics '98 (E)
 Internal Name=NAGANO OLYMPICS
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [8D2BAE98-D73725BF-C:45]
 Good Name=Nagano Winter Olympics '98 (U)
 Internal Name=NAGANO OLYMPICS
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [5129B6DA-9DEF3C8C-C:45]
@@ -4198,7 +3783,6 @@ Counter Factor=1
 Good Name=NBA Courtside 2 - Featuring Kobe Bryant (U)
 Internal Name=NBA Courtside 2
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 Save Type=FlashRam
@@ -4207,35 +3791,30 @@ Save Type=FlashRam
 Good Name=NBA Hangtime (E)
 Internal Name=NBA HANGTIME
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [4E69B487-FE18E290-C:45]
 Good Name=NBA Hangtime (U)
 Internal Name=NBA HANGTIME
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [36ACBA9B-F28D4D94-C:4A]
 Good Name=NBA In the Zone '98 (J)
 Internal Name=NBA IN THE ZONE '98
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [6A121930-665CC274-C:45]
 Good Name=NBA In the Zone '98 (U)
 Internal Name=NBA IN THE ZONE '98
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [A292524F-3D6C2A49-C:45]
 Good Name=NBA In the Zone '99 (U)
 Internal Name=NBA IN THE ZONE '99
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -4243,47 +3822,40 @@ RDRAM Size=4
 Good Name=NBA In the Zone 2 (J)
 Internal Name=NBA IN THE ZONE 2
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [B3054F9F-96B69EB5-C:50]
 Good Name=NBA In the Zone 2000 (E)
 Internal Name=NBA IN THE ZONE 2000
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [8DF95B18-ECDA497B-C:45]
 Good Name=NBA In the Zone 2000 (U)
 Internal Name=NBA IN THE ZONE 2000
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [B6D0CAA0-E3F493C8-C:50]
 Good Name=NBA Jam 2000 (E)
 Internal Name=NBA JAM 2000
 Status=Compatible
-32bit=Yes
 
 [EBEEA8DB-F2ECB23C-C:45]
 Good Name=NBA Jam 2000 (U)
 Internal Name=NBA JAM 2000
 Status=Compatible
-32bit=Yes
 
 [E600831E-59F422A8-C:50]
 Good Name=NBA Jam 99 (E)
 Internal Name=NBA JAM 99
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [810729F6-E03FCFC1-C:45]
 Good Name=NBA Jam 99 (U)
 Internal Name=NBA JAM 99
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [EB499C8F-CD4567B6-C:50]
@@ -4303,35 +3875,30 @@ RDRAM Size=4
 Good Name=NBA Live 99 (E) (M5)
 Internal Name=NBA Live 99
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [57F81C9B-1133FA35-C:45]
 Good Name=NBA Live 99 (U) (M5)
 Internal Name=NBA Live 99
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [ACDE962F-B2CBF87F-C:50]
 Good Name=NBA Pro 98 (E)
 Internal Name=NBA PRO 98
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [8D1780B6-57B3B976-C:50]
 Good Name=NBA Pro 99 (E)
 Internal Name=NBA PRO 99
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [3FFE80F4-A7C15F7E-C:45]
 Good Name=NBA Showtime - NBA on NBC (U)
 Internal Name=NBA SHOWTIME
 Status=Compatible
-32bit=Yes
 Audio Signal=Yes
 Counter Factor=1
 RDRAM Size=4
@@ -4341,7 +3908,6 @@ ViRefresh=500
 Good Name=Neon Genesis Evangelion (J)
 Internal Name=EVANGELION
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Clear Frame=1
 Culling=1
@@ -4352,14 +3918,12 @@ Save Type=16kbit Eeprom
 Good Name=NFL Blitz (U)
 Internal Name=NFL BLITZ
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [30EAD54F-31620BF6-C:45]
 Good Name=NFL Blitz - Special Edition (U)
 Internal Name=NFL BLITZ SPECIAL ED
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [15A00969-34E5A285-C:45]
@@ -4378,26 +3942,22 @@ RDRAM Size=4
 Good Name=NFL Blitz 2001 (U)
 Internal Name=NFL BLITZ 2001
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [88BD5A9E-E81FDFBF-C:50]
 Good Name=NFL Quarterback Club 2000 (E)
 Internal Name=NFL QBC 2000
 Status=Compatible
-32bit=Yes
 
 [E3AB4ED0-83040DD2-C:45]
 Good Name=NFL Quarterback Club 2000 (U)
 Internal Name=NFL QBC 2000
 Status=Compatible
-32bit=Yes
 
 [28784622-FFB22985-C:45]
 Good Name=NFL Quarterback Club 2001 (U)
 Internal Name=NFL Quarterback Club
 Status=Compatible
-32bit=Yes
 
 [4B629EF4-99B21D9B-C:50]
 Good Name=NFL Quarterback Club 98 (E)
@@ -4417,13 +3977,11 @@ RDRAM Size=4
 Good Name=NFL Quarterback Club 99 (E)
 Internal Name=NFL QBC '99
 Status=Compatible
-32bit=Yes
 
 [BE76EDFF-20452D09-C:45]
 Good Name=NFL Quarterback Club 99 (U)
 Internal Name=NFL QBC '99
 Status=Compatible
-32bit=Yes
 
 [287D601E-ABF4F8AE-C:50]
 Good Name=NHL 99 (E)
@@ -4439,14 +3997,12 @@ Status=Compatible
 Good Name=NHL Blades of Steel '99 (U)
 Internal Name=BLADES OF STEEL '99
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [29CE7692-71C58579-C:50]
 Good Name=NHL Breakaway 98 (E)
 Internal Name=NHL_BREAKAWAY_98
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -4454,7 +4010,6 @@ RDRAM Size=4
 Good Name=NHL Breakaway 98 (U)
 Internal Name=NHL_BREAKAWAY_98
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -4462,28 +4017,24 @@ RDRAM Size=4
 Good Name=NHL Breakaway 99 (E)
 Internal Name=NHL Breakaway '99
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [441768D0-7D73F24F-C:45]
 Good Name=NHL Breakaway 99 (U)
 Internal Name=NHL Breakaway '99
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [A9895CD9-7020016C-C:50]
 Good Name=NHL Pro 99 (E)
 Internal Name=NHL PRO 99
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [2857674D-CC4337DA-C:45]
 Good Name=Nightmare Creatures (U)
 Internal Name=NIGHTMARE CREATURES
 Status=Compatible
-32bit=Yes
 Delay SI=Yes
 RDRAM Size=4
 ViRefresh=2200
@@ -4492,7 +4043,6 @@ ViRefresh=2200
 Good Name=Nintama Rantarou 64 Game Gallery (J)
 Internal Name=NINTAMAGAMEGALLERY64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -4500,7 +4050,6 @@ RDRAM Size=4
 Good Name=Nintendo All-Star! Dairantou Smash Brothers (J)
 Internal Name=SMASH BROTHERS
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 SMM-Cache=0
 SMM-FUNC=0
@@ -4511,28 +4060,24 @@ ViRefresh=2200
 Good Name=Nuclear Strike 64 (E) (M2)
 Internal Name=NUCLEARSTRIKE64
 Status=Compatible
-32bit=Yes
 Linking=Off
 
 [8F50B845-D729D22F-C:44]
 Good Name=Nuclear Strike 64 (G)
 Internal Name=NUCLEARSTRIKE64
 Status=Compatible
-32bit=Yes
 Linking=Off
 
 [4998DDBB-F7B7AEBC-C:45]
 Good Name=Nuclear Strike 64 (U)
 Internal Name=NUCLEARSTRIKE64
 Status=Compatible
-32bit=Yes
 Linking=Off
 
 [D83BB920-CC406416-C:4A]
 Good Name=Nushi Duri 64 (J) (V1.0)
 Internal Name=Ç¼ÂÞØ64
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 Counter Factor=1
 Culling=1
@@ -4542,7 +4087,6 @@ RDRAM Size=4
 Good Name=Nushi Duri 64 (J) (V1.1)
 Internal Name=Ç¼ÂÞØ64
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 Counter Factor=1
 Culling=1
@@ -4552,7 +4096,6 @@ RDRAM Size=4
 Good Name=Nushi Duri 64 - Shiokaze ni Notte (J)
 Internal Name=Ç¼ÂÞØ64¼µ¶¾ÞÆÉ¯Ã
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 //================  O  ================
@@ -4560,14 +4103,12 @@ RDRAM Size=4
 Good Name=Off Road Challenge (E)
 Internal Name=OFFROAD
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [319093EC-0FC209EF-C:45]
 Good Name=Off Road Challenge (U)
 Internal Name=OFFROAD
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [0375CF67-56A93FAA-C:4A]
@@ -4592,35 +4133,30 @@ RDRAM Size=4
 Good Name=Olympic Hockey Nagano '98 (E) (M4)
 Internal Name=OLYMPIC HOCKEY
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [90F43037-5C5370F5-C:4A]
 Good Name=Olympic Hockey Nagano '98 (J)
 Internal Name=OLYMPIC HOCKEY
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [7EC22587-EF1AE323-C:45]
 Good Name=Olympic Hockey Nagano '98 (U)
 Internal Name=OLYMPIC HOCKEY
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [DC649466-572FF0D9-C:4A]
 Good Name=Onegai Monsters (J)
 Internal Name=ONEGAI MONSTER
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [D5898CAF-6007B65B-C:50]
 Good Name=Operation WinBack (E) (M5)
 Internal Name=OPERATION WINBACK
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [E86415A6-98395B53-C:50]
@@ -4640,7 +4176,6 @@ RDRAM Size=4
 Good Name=Pachinko 365 Nichi (J)
 Internal Name=PACHINKO365NICHI
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [19AB29AF-C71BCD28-C:50]
@@ -4667,21 +4202,18 @@ Save Type=FlashRam
 Good Name=Paperboy (E)
 Internal Name=PAPERBOY
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [3E198D9E-F2E1267E-C:45]
 Good Name=Paperboy (U)
 Internal Name=PAPERBOY
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [CFE2CB31-4D6B1E1D-C:4A]
 Good Name=Parlor! Pro 64 - Pachinko Jikki Simulation Game (J)
 Internal Name=Parlor PRO 64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 Save Type=16kbit Eeprom
 
@@ -4689,7 +4221,6 @@ Save Type=16kbit Eeprom
 Good Name=PD Ultraman Battle Collection 64 (J)
 Internal Name=Ultraman Battle JAPA
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 Save Type=16kbit Eeprom
 
@@ -4697,7 +4228,6 @@ Save Type=16kbit Eeprom
 Good Name=Penny Racers (E)
 Internal Name=PENNY RACERS
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -4705,7 +4235,6 @@ RDRAM Size=4
 Good Name=Penny Racers (U)
 Internal Name=PENNY RACERS
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -4776,28 +4305,24 @@ SMM-TLB=0
 Good Name=PGA European Tour (E) (M5)
 Internal Name=PGA European Tour Go
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [B54CE881-BCCB6126-C:45]
 Good Name=PGA European Tour (U)
 Internal Name=PGA European Tour
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [3F245305-FC0B74AA-C:4A]
 Good Name=Pikachu Genki Dechuu (J)
 Internal Name=PIKACHU GENKIDECHU
 Status=Needs input plugin
-32bit=Yes
 RDRAM Size=4
 
 [1AA05AD5-46F52D80-C:50]
 Good Name=Pilotwings 64 (E) (M3)
 Internal Name=Pilot Wings64
 Status=Compatible
-32bit=Yes
 Counter Factor=3
 Linking=Off
 RDRAM Size=4
@@ -4810,7 +4335,6 @@ SMM-TLB=0
 Good Name=Pilotwings 64 (J)
 Internal Name=Pilot Wings64
 Status=Compatible
-32bit=Yes
 Counter Factor=3
 Linking=Off
 RDRAM Size=4
@@ -4823,7 +4347,6 @@ SMM-TLB=0
 Good Name=Pilotwings 64 (U)
 Internal Name=Pilot Wings64
 Status=Compatible
-32bit=Yes
 Counter Factor=3
 Culling=1
 Linking=Off
@@ -4837,35 +4360,30 @@ SMM-TLB=0
 Good Name=Pokemon Puzzle League (E)
 Internal Name=PUZZLE LEAGUE N64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [3EB2E6F3-062F9EFE-C:46]
 Good Name=Pokemon Puzzle League (F)
 Internal Name=PUZZLE LEAGUE N64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [7A4747AC-44EEEC23-C:44]
 Good Name=Pokemon Puzzle League (G)
 Internal Name=PUZZLE LEAGUE N64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [19C553A7-A70F4B52-C:45]
 Good Name=Pokemon Puzzle League (U)
 Internal Name=PUZZLE LEAGUE N64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [7BB18D40-83138559-C:55]
 Good Name=Pokemon Snap (A)
 Internal Name=POKEMON SNAP
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -4873,7 +4391,6 @@ RDRAM Size=4
 Good Name=Pokemon Snap (E)
 Internal Name=POKEMON SNAP
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -4881,7 +4398,6 @@ RDRAM Size=4
 Good Name=Pokemon Snap (F)
 Internal Name=POKEMON SNAP
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -4889,7 +4405,6 @@ RDRAM Size=4
 Good Name=Pokemon Snap (G)
 Internal Name=POKEMON SNAP
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -4897,7 +4412,6 @@ RDRAM Size=4
 Good Name=Pokemon Snap (I)
 Internal Name=POKEMON SNAP
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -4905,7 +4419,6 @@ RDRAM Size=4
 Good Name=Pokemon Snap (J) (V1.0)
 Internal Name=POKEMON SNAP
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -4913,7 +4426,6 @@ RDRAM Size=4
 Good Name=Pokemon Snap (J) (V1.1)
 Internal Name=POKEMON SNAP
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -4921,7 +4433,6 @@ RDRAM Size=4
 Good Name=Pokemon Snap (S)
 Internal Name=POKEMON SNAP
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -4929,7 +4440,6 @@ RDRAM Size=4
 Good Name=Pokemon Snap (U)
 Internal Name=POKEMON SNAP
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -4937,7 +4447,6 @@ RDRAM Size=4
 Good Name=Pokemon Snap Station (U)
 Internal Name=POKEMON SNAP
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -4945,7 +4454,6 @@ RDRAM Size=4
 Good Name=Pokemon Stadium (E) (V1.0)
 Internal Name=POKEMON STADIUM
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Linking=Off
@@ -4955,7 +4463,6 @@ RDRAM Size=4
 Good Name=Pokemon Stadium (E) (V1.1)
 Internal Name=POKEMON STADIUM
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Linking=Off
@@ -4965,7 +4472,6 @@ RDRAM Size=4
 Good Name=Pokemon Stadium (F)
 Internal Name=POKEMON STADIUM
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Linking=Off
@@ -4975,7 +4481,6 @@ RDRAM Size=4
 Good Name=Pokemon Stadium (G)
 Internal Name=POKEMON STADIUM
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Linking=Off
@@ -4985,7 +4490,6 @@ RDRAM Size=4
 Good Name=Pokemon Stadium (I)
 Internal Name=POKEMON STADIUM
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Linking=Off
@@ -4995,7 +4499,6 @@ RDRAM Size=4
 Good Name=Pokemon Stadium (J)
 Internal Name=POKEMON STADIUM
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Linking=Off
@@ -5006,7 +4509,6 @@ Save Type=Sram
 Good Name=Pokemon Stadium (S)
 Internal Name=POKEMON STADIUM
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Linking=Off
@@ -5016,7 +4518,6 @@ RDRAM Size=4
 Good Name=Pokemon Stadium (U) (V1.0)
 Internal Name=POKEMON STADIUM
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Linking=Off
@@ -5026,7 +4527,6 @@ RDRAM Size=4
 Good Name=Pokemon Stadium - Kiosk (U) (V1.1)
 Internal Name=POKEMON STADIUM
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Linking=Off
@@ -5036,7 +4536,6 @@ RDRAM Size=4
 Good Name=Pokemon Stadium (U) (V1.2)
 Internal Name=POKEMON STADIUM
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Linking=Off
@@ -5046,7 +4545,6 @@ RDRAM Size=4
 Good Name=Pokemon Stadium 2 (E)
 Internal Name=POKEMON STADIUM 2
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Linking=Off
@@ -5056,7 +4554,6 @@ RSP-Mfc0Count=10
 Good Name=Pokemon Stadium 2 (F)
 Internal Name=POKEMON STADIUM 2
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Linking=Off
@@ -5066,7 +4563,6 @@ RSP-Mfc0Count=10
 Good Name=Pokemon Stadium 2 (G)
 Internal Name=POKEMON STADIUM 2
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Linking=Off
@@ -5076,7 +4572,6 @@ RSP-Mfc0Count=10
 Good Name=Pokemon Stadium 2 (I)
 Internal Name=POKEMON STADIUM 2
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Linking=Off
@@ -5086,7 +4581,6 @@ RSP-Mfc0Count=10
 Good Name=Pokemon Stadium 2 (J)
 Internal Name=POKEMON STADIUM 2
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Linking=Off
@@ -5095,7 +4589,6 @@ Linking=Off
 Good Name=Pokemon Stadium 2 (S)
 Internal Name=POKEMON STADIUM 2
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Linking=Off
@@ -5105,7 +4598,6 @@ RSP-Mfc0Count=10
 Good Name=Pokemon Stadium 2 (U)
 Internal Name=POKEMON STADIUM 2
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Linking=Off
@@ -5115,7 +4607,6 @@ RSP-Mfc0Count=10
 Good Name=Pokemon Stadium Kin Gin (J)
 Internal Name=POKEMON STADIUM G&S
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Linking=Off
@@ -5125,40 +4616,34 @@ RSP-Mfc0Count=10
 Good Name=Polaris SnoCross (U)
 Internal Name=POLARISSNOCROSS
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [D7A6DCFA-CCFEB6B7-C:4A]
 Good Name=Power League 64 (J)
 Internal Name=PowerLeague64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [39F60C11-AB2EBA7D-C:50]
 Good Name=Power Rangers - Lightspeed Rescue (E)
 Internal Name=POWER RANGERS
 Status=Compatible
-32bit=Yes
 
 [CF8957AD-96D57EA9-C:45]
 Good Name=Power Rangers - Lightspeed Rescue (U)
 Internal Name=POWER RANGERS
 Status=Compatible
-32bit=Yes
 
 [F3D27F54-C111ACF9-C:50]
 Good Name=Premier Manager 64 (E)
 Internal Name=Premier Manager 64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [9BA10C4E-0408ABD3-C:4A]
 Good Name=Pro Mahjong Kiwame 64 (J) (V1.0)
 Internal Name=KIWAME 64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -5166,7 +4651,6 @@ RDRAM Size=4
 Good Name=Pro Mahjong Kiwame 64 (J) (V1.1)
 Internal Name=KIWAME 64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -5174,7 +4658,6 @@ RDRAM Size=4
 Good Name=Pro Mahjong Tsuwamono 64 - Jansou Battle ni Chousen (J)
 Internal Name=TSUWAMONO64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -5182,28 +4665,24 @@ RDRAM Size=4
 Good Name=Puyo Puyo Sun 64 (J)
 Internal Name=PUYO PUYO SUN 64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [4B4672B9-2DBE5DE7-C:4A]
 Good Name=Puyo Puyon Party (J)
 Internal Name=PUYOPUYO4
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [C0DE0747-A2DF72D3-C:4A]
 Good Name=Puzzle Bobble 64 (J)
 Internal Name=PUZZLEBOBBLE64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [412E02B8-51A57E8E-C:4A]
 Good Name=Puzzle Bobble 64 (J) (PAL)
 internal Name=PUZZLEBOBBLE64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 Screenhertz=50
 
@@ -5211,7 +4690,6 @@ Screenhertz=50
 Good Name=Puzzle Bobble 64 (J) (PAL)
 internal Name=PUZZLEBOBBLE64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 Screenhertz=50
 
@@ -5219,7 +4697,6 @@ Screenhertz=50
 Good Name=Puzzle Master 64 by Michael Searl (PD)
 Internal Name=Puzzle Master 64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 //================  Q  ================
@@ -5227,14 +4704,12 @@ RDRAM Size=4
 Good Name=Quake 64 (E)
 Internal Name=Quake
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [9F5BF79C-D2FE08A0-C:45]
 Good Name=Quake 64 (U)
 Internal Name=Quake
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -5248,14 +4723,12 @@ RDRAM Size=4
 Good Name=Quake II (E)
 Internal Name=QUAKE II
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 
 [BDA8F143-B1AF2D62-C:45]
 Good Name=Quake II (U)
 Internal Name=QUAKE II
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 
@@ -5263,7 +4736,6 @@ Culling=1
 Good Name=Quest 64 (U)
 Internal Name=Quest 64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 //================  R  ================
@@ -5271,7 +4743,6 @@ RDRAM Size=4
 Good Name=Racing Simulation 2 (G)
 Internal Name=Racing Simulation 2
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -5279,28 +4750,24 @@ RDRAM Size=4
 Good Name=Rakuga Kids (E)
 Internal Name=RAKUGAKIDS
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [9F1ECAF0-EEC48A0E-C:4A]
 Good Name=Rakuga Kids (J)
 Internal Name=RAKUGAKIDS
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [35D9BA0C-DF485586-C:4A]
 Good Name=Rally '99 (J)
 Internal Name=Rally'99
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [73A88E3D-3AC5C571-C:45]
 Good Name=Rally Challenge 2000 (U)
 Internal Name=RALLY CHALLENGE
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 Culling=1
 RDRAM Size=4
@@ -5309,7 +4776,6 @@ RDRAM Size=4
 Good Name=Rampage - World Tour (E)
 Internal Name=RAMPAGE
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -5317,28 +4783,24 @@ RDRAM Size=4
 Good Name=Rampage - World Tour (U)
 Internal Name=RAMPAGE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [5DFC4249-99529C07-C:50]
 Good Name=Rampage 2 - Universal Tour (E)
 Internal Name=RAMPAGE2
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [673D099B-A4C808DE-C:45]
 Good Name=Rampage 2 - Universal Tour (U)
 Internal Name=RAMPAGE2
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [20FD0BF1-F5CF1D87-C:50]
 Good Name=Rat Attack (E) (M6)
 Internal Name=RAT ATTACK
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 SMM-FUNC=0
 
@@ -5346,7 +4808,6 @@ SMM-FUNC=0
 Good Name=Rat Attack (U) (M6)
 Internal Name=RAT ATTACK
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 SMM-FUNC=0
 
@@ -5354,14 +4815,12 @@ SMM-FUNC=0
 Good Name=Rayman 2 - The Great Escape (E) (M5)
 Internal Name=Rayman 2
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 
 [F3C5BF9B-160F33E2-C:45]
 Good Name=Rayman 2 - The Great Escape (U) (M5)
 Internal Name=Rayman 2
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 
@@ -5369,42 +4828,36 @@ Culling=1
 Good Name=Razor Freestyle Scooter (U)
 Internal Name=RAZOR FREESTYLE
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 
 [C3E7E29E-5D7251CC-C:50]
 Good Name=Re-Volt (E) (M4)
 Internal Name=Re-Volt
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 
 [0F1FA987-BFC1AFA6-C:45]
 Good Name=Re-Volt (U)
 Internal Name=Re-Volt
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 
 [8BD4A334-1E138B05-C:50]
 Good Name=Ready 2 Rumble Boxing (E) (M3)
 Internal Name=READY 2 RUMBLE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [EAB7B429-BAC92C57-C:45]
 Good Name=Ready 2 Rumble Boxing (U)
 Internal Name=READY 2 RUMBLE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [E9219533-13FBAFBD-C:45]
 Good Name=Ready 2 Rumble Boxing Round 2 (U)
 Internal Name=Ready to Rumble
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -5441,35 +4894,30 @@ RDRAM Size=4
 Good Name=Road Rash 64 (E)
 Internal Name=ROAD RASH 64
 Status=Compatible
-32bit=Yes
 Counter Factor=3
 
 [F050746C-247B820B-C:45]
 Good Name=Road Rash 64 (U)
 Internal Name=ROAD RASH 64
 Status=Compatible
-32bit=Yes
 Counter Factor=3
 
 [74E87A70-6293AED4-C:50]
 Good Name=Roadsters Trophy (E) (M6)
 Internal Name=ROADSTERS TROPHY
 Status=Compatible
-32bit=Yes
 Culling=1
 
 [0B6B4DDB-9671E682-C:45]
 Good Name=Roadsters Trophy (U) (M3)
 Internal Name=ROADSTERS TROPHY
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 
 [272B690F-AD0A7A77-C:4A]
 Good Name=Robot Ponkottsu 64 - 7tsu no Umi no Caramel (J)
 Internal Name=Robopon64
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 RDRAM Size=4
 Save Type=16kbit Eeprom
@@ -5478,21 +4926,18 @@ Save Type=16kbit Eeprom
 Good Name=Robotron 64 (E)
 Internal Name=ROBOTRON-64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [AC8E4B32-E7B47326-C:45]
 Good Name=Robotron 64 (U)
 Internal Name=ROBOTRON-64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [9FD375F8-45F32DC8-C:50]
 Good Name=Rocket - Robot on Wheels (M3)
 Internal Name=ROCKETROBOTONWHEELS
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 Culling=1
 RDRAM Size=4
@@ -5501,7 +4946,6 @@ RDRAM Size=4
 Good Name=Rocket - Robot on Wheels (U)
 Internal Name=ROCKETROBOTONWHEELS
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 Culling=1
 RDRAM Size=4
@@ -5510,14 +4954,12 @@ RDRAM Size=4
 Good Name=Rockman Dash - Hagane no Boukenshin (J)
 Internal Name=RockMan Dash
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [FEE97010-4E94A9A0-C:50]
 Good Name=RR64 - Ridge Racer 64 (E)
 Internal Name=RIDGE RACER 64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 Save Type=16kbit Eeprom
 
@@ -5525,7 +4967,6 @@ Save Type=16kbit Eeprom
 Good Name=RR64 - Ridge Racer 64 (U)
 Internal Name=RIDGE RACER 64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 Save Type=16kbit Eeprom
 
@@ -5533,34 +4974,29 @@ Save Type=16kbit Eeprom
 Good Name=RTL World League Soccer 2000 (G)
 Internal Name=RTL WLS2000
 Status=Compatible
-32bit=Yes
 
 [451ACA0F-7863BC8A-C:44]
 Good Name=Rugrats - Die grosse Schatzsuche (G)
 Internal Name=RUGRATSTREASUREHUNT
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [0C02B3C5-9E2511B8-C:45]
 Good Name=Rugrats - Scavenger Hunt (U)
 Internal Name=RUGRATSSCAVENGERHUNT
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [4D3ADFDA-7598FCAE-C:50]
 Good Name=Rugrats - Treasure Hunt (E)
 Internal Name=RUGRATSTREASUREHUNT
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [0AC61D39-ABFA03A6-C:50]
 Good Name=Rugrats in Paris - The Movie (E)
 Internal Name=RUGRATS IN PARIS
 Status=Compatible
-32bit=Yes
 Audio Signal=Yes
 RDRAM Size=4
 ViRefresh=2200
@@ -5569,7 +5005,6 @@ ViRefresh=2200
 Good Name=Rugrats in Paris - The Movie (U)
 Internal Name=RUGRATS IN PARIS
 Status=Compatible
-32bit=Yes
 Audio Signal=Yes
 RDRAM Size=4
 ViRefresh=2200
@@ -5578,7 +5013,6 @@ ViRefresh=2200
 Good Name=Rush 2 - Extreme Racing USA (E) (M6)
 Internal Name=RUSH 2
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -5586,7 +5020,6 @@ RDRAM Size=4
 Good Name=Rush 2 - Extreme Racing USA (U)
 Internal Name=RUSH 2
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -5595,166 +5028,142 @@ RDRAM Size=4
 Good Name=S.C.A.R.S. (E) (M3)
 Internal Name=SCARS
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [769147F3-2033C10E-C:45]
 Good Name=S.C.A.R.S. (U)
 Internal Name=SCARS
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [5E3E60E8-4AB5D495-C:4A]
 Good Name=Saikyou Habu Shougi (J)
 Internal Name=»²·®³ÊÌÞ¼®³·Þ
 Status=Compatible
-32bit=Yes
 
 [61D116B0-FA24D60C-C:50]
 Good Name=San Francisco Rush - Extreme Racing (E) (M3)
 Internal Name=S.F.RUSH
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [2A6B1820-6ABCF466-C:45]
 Good Name=San Francisco Rush - Extreme Racing (U) (V1.0)
 Internal Name=S.F. RUSH
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [AC9F7DA7-A8C029D8-C:45]
 Good Name=San Francisco Rush - Extreme Racing (U) (V1.1)
 Internal Name=S.F. RUSH
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [51D29418-D5B46AE3-C:50]
 Good Name=San Francisco Rush 2049 (E) (M6)
 Internal Name=RUSH 2049
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 
 [B9A9ECA2-17AAE48E-C:45]
 Good Name=San Francisco Rush 2049 (U)
 Internal Name=Rush 2049
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 
 [E3BD221D-3C0834D3-C:50]
 Good Name=Scooby-Doo - Classic Creep Capers (E)
 Internal Name=SCOOBY-DOO
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [0C814EC4-58FE5CA8-C:45]
 Good Name=Scooby-Doo - Classic Creep Capers (U) (V1.0)
 Internal Name=SCOOBY-DOO
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [569433AD-F7E13561-C:45]
 Good Name=Scooby-Doo - Classic Creep Capers (U) (V1.1)
 Internal Name=SCOOBY-DOO
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [EBF5F6B7-C956D739-C:4A]
 Good Name=SD Hiryuu no Ken Densetsu (J)
 Internal Name=SD HIRYU STADIUM
 Status=Compatible
-32bit=Yes
 
 [93A625B9-2D6022E6-C:42]
 Good Name=Shadow Man (B)
 Internal Name=Shadowman
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 
 [60C437E5-A2251EE3-C:50]
 Good Name=Shadow Man (E) (M3) [!]
 Internal Name=Shadowman
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 
 [EA06F8C3-07C2DEED-C:46]
 Good Name=Shadow Man (F)
 Internal Name=Shadowman
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 
 [84D5FD75-BBFD3CDF-C:44]
 Good Name=Shadow Man (G)
 Internal Name=Shadowman
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 
 [3A4760B5-2D74D410-C:45]
 Good Name=Shadow Man (U)
 Internal Name=Shadowman
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 
 [D84EEA84-45B2F1B4-C:50]
 Good Name=Shadowgate 64 - Trials Of The Four Towers (E)
 Internal Name=SHADOWGATE64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [02B46F55-61778D0B-C:59]
 Good Name=Shadowgate 64 - Trials Of The Four Towers (E) (M2) (Ita-Spa)
 Internal Name=SHADOWGATE64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [2BC1FCF2-7B9A0DF4-C:58]
 Good Name=Shadowgate 64 - Trials Of The Four Towers (E) (M3) (Fre-Ger-Dut)
 Internal Name=SHADOWGATE64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [CCEDB696-D3883DB4-C:4A]
 Good Name=Shadowgate 64 - Trials Of The Four Towers (J)
 Internal Name=SHADOWGATE64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [036897CE-E0D4FA54-C:45]
 Good Name=Shadowgate 64 - Trials Of The Four Towers (U) (M2)
 Internal Name=SHADOWGATE64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [EF703CA4-4D4A9AC9-C:4A]
 Good Name=Shin Nihon Pro Wrestling Toukon Road - Brave Spirits (J)
 Internal Name=TOUKON ROAD
 Status=Compatible
-32bit=Yes
 Delay SI=Yes
 
 [551C7F43-9149831C-C:4A]
 Good Name=Shin Nihon Pro Wrestling Toukon Road 2 - The Next Generation (J)
 Internal Name=TOUKON ROAD2
 Status=Compatible
-32bit=Yes
 
 [909535F8-118FEF8F-C:4A]
 Good Name=Sim City 64 (J) [CART HACK]
@@ -5767,14 +5176,12 @@ HLE GFX=No
 Good Name=Sim City 2000 (J)
 Internal Name=SIM CITY 2000
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [B73AB6F6-296267DD-C:45]
 Good Name=Sin & Punishment (J) [T]
 Internal Name=Sin and Punishment
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Clear Frame=2
 Culling=1
@@ -5784,7 +5191,6 @@ Emulate Clear=1
 Good Name=Snobow Kids (J)
 Internal Name=½ÉÎÞ·¯½Þ
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 Culling=1
 RDRAM Size=4
@@ -5793,14 +5199,12 @@ RDRAM Size=4
 Good Name=Snow Speeder (J)
 Internal Name=Snow Speeder
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [5FD7CDA0-D9BB51AD-C:50]
 Good Name=Snowboard Kids (E)
 Internal Name=SNOWBOARD KIDS
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 Culling=1
 RDRAM Size=4
@@ -5809,7 +5213,6 @@ RDRAM Size=4
 Good Name=Snowboard Kids (U)
 Internal Name=SNOWBOARD KIDS
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 Culling=1
 RDRAM Size=4
@@ -5818,75 +5221,64 @@ RDRAM Size=4
 Good Name=Snowboard Kids 2 (E)
 Internal Name=SNOWBOARD KIDS2
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [930C29EA-939245BF-C:45]
 Good Name=Snowboard Kids 2 (U)
 Internal Name=SNOWBOARD KIDS2
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [22212351-4046594B-C:4A]
 Good Name=Sonic Wings Assault (J)
 Internal Name=SONIC WINGS ASSAULT
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [D21AF769-DE1A0E3D-C:42]
 Good Name=South Park (B)
 Internal Name=South Park
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [20B53662-7B61899F-C:50]
 Good Name=South Park (E) (M3)
 Internal Name=South Park
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [91B66D42-16AC4E46-C:44]
 Good Name=South Park (G)
 Internal Name=South Park
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [7ECBE939-3C331795-C:45]
 Good Name=South Park (U)
 Internal Name=South Park
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [C00CA948-8E60D34B-C:50]
 Good Name=South Park - Chef's Luv Shack (E)
 Internal Name=South Park Chef's Lu
 Status=Compatible
-32bit=Yes
 
 [C00CA948-8E60D34B-C:45]
 Good Name=South Park - Chef's Luv Shack (U)
 Internal Name=South Park: Chef's L
 Status=Compatible
-32bit=Yes
 
 [4F8AFC3A-F7912DF2-C:50]
 Good Name=South Park Rally (E)
 Internal Name=South Park Rally
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [07F3B276-EC8F3D39-C:45]
 Good Name=South Park Rally (U)
 Internal Name=South Park Rally
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -5894,48 +5286,41 @@ RDRAM Size=4
 Good Name=Space Dynamites (J)
 Internal Name=SPACE DYNAMITES
 Status=Compatible
-32bit=Yes
 Culling=1
 
 [EBFE2397-FF74DA34-C:45]
 Good Name=Space Invaders (U)
 Internal Name=SPACE INVADERS
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [FC70E272-08FFE7AA-C:50]
 Good Name=Space Station Silicon Valley (E) (M7)
 Internal Name=Silicon Valley
 Status=Compatible
-32bit=Yes
 Culling=1
 
 [BFE23884-EF48EAAF-C:4A]
 Good Name=Space Station Silicon Valley (J)
 Internal Name=Silicon Valley
 Status=Compatible
-32bit=Yes
 
 [BFE23884-EF48EAAF-C:45]
 Good Name=Space Station Silicon Valley (U) (V1.0)
 Internal Name=Silicon Valley
 Status=Compatible
-32bit=Yes
 Culling=1
 
 [FC70E272-08FFE7AA-C:45]
 Good Name=Space Station Silicon Valley (U) (V1.1)
 Internal Name=Silicon Valley
 Status=Compatible
-32bit=Yes
 Culling=1
 
 [A60ED171-3D85D06E-C:45]
 Good Name=Spider-Man (U)
 Internal Name=SPIDERMAN
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Clear Frame=2
 Culling=1
@@ -5944,7 +5329,6 @@ Culling=1
 Good Name=Star Fox 64 (J) (V1.0)
 Internal Name=STARFOX64
 Status=Compatible
-32bit=Yes
 Linking=Off
 RDRAM Size=4
 
@@ -5952,7 +5336,6 @@ RDRAM Size=4
 Good Name=Star Fox 64 (J) (V1.1)
 Internal Name=STARFOX64
 Status=Compatible
-32bit=Yes
 Linking=Off
 RDRAM Size=4
 
@@ -5960,7 +5343,6 @@ RDRAM Size=4
 Good Name=Star Fox 64 (U) (V1.0)
 Internal Name=STARFOX64
 Status=Compatible
-32bit=Yes
 Linking=Off
 RDRAM Size=4
 
@@ -5968,7 +5350,6 @@ RDRAM Size=4
 Good Name=Star Fox 64 (U) (V1.1)
 Internal Name=STARFOX64
 Status=Compatible
-32bit=Yes
 Linking=Off
 RDRAM Size=4
 
@@ -5976,13 +5357,11 @@ RDRAM Size=4
 Good Name=Star Soldier - Vanishing Earth (J)
 Internal Name=STAR SOLDIER
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [315C7466-3A453265-C:4A]
 Good Name=Star Soldier - Vanishing Earth (J) [ALECK64]
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Save Type=4kbit Eeprom
 
@@ -5990,14 +5369,12 @@ Save Type=4kbit Eeprom
 Good Name=Star Soldier - Vanishing Earth (U)
 Internal Name=STAR SOLDIER
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [F163A242-F2449B3B-C:4A]
 Good Name=Star Twins (J)
 Internal Name=STAR TWINS
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 Emulate Clear=1
@@ -6044,14 +5421,12 @@ RSP-JumpTableSize=3584
 Good Name=Star Wars - Shadows of the Empire (E)
 Internal Name=Shadow of the Empire
 Status=Compatible
-32bit=Yes
 Linking=Off
 
 [264D7E5C-18874622-C:45]
 Good Name=Star Wars - Shadows of the Empire (U) (V1.0)
 Internal Name=Shadow of the Empire
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 Culling=1
 
@@ -6059,14 +5434,12 @@ Culling=1
 Good Name=Star Wars - Shadows of the Empire (U) (V1.1)
 Internal Name=Shadow of the Empire
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 
 [4DD7ED54-74F9287D-C:45]
 Good Name=Star Wars - Shadows of the Empire (U) (V1.2)
 Internal Name=Shadow of the Empire
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 
 [827E4890-958468DC-C:4A]
@@ -6079,7 +5452,6 @@ RSP-JumpTableSize=3584
 Good Name=Star Wars - Teikoku no Kage (J)
 Internal Name=Shadow of the Empire
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 Counter Factor=1
 
@@ -6103,7 +5475,6 @@ SMM-FUNC=0
 Good Name=Star Wars Episode I - Racer (E) (M3)
 Internal Name=STAR WARS EP1 RACER
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Counter Factor=1
 Culling=1
@@ -6114,7 +5485,6 @@ Save Type=16kbit Eeprom
 Good Name=Star Wars Episode I - Racer (J)
 Internal Name=STAR WARS EP1 RACER
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Counter Factor=1
 Culling=1
@@ -6125,7 +5495,6 @@ Save Type=16kbit Eeprom
 Good Name=Star Wars Episode I - Racer (U)
 Internal Name=STAR WARS EP1 RACER
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Counter Factor=1
 Culling=1
@@ -6136,7 +5505,6 @@ Save Type=16kbit Eeprom
 Good Name=StarCraft 64 (E)
 Internal Name=STARCRAFT 64
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Clear Frame=2
 Culling=1
@@ -6161,7 +5529,6 @@ Culling=1
 Good Name=StarCraft 64 (U)
 Internal Name=STARCRAFT 64
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Clear Frame=2
 Culling=1
@@ -6170,14 +5537,12 @@ Culling=1
 Good Name=Starshot - Space Circus Fever (E) (M3)
 Internal Name=Starshot
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [94EDA5B8-8673E903-C:45]
 Good Name=Starshot - Space Circus Fever (U) (M3)
 Internal Name=Starshot
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [9510D8D7-35100DD2-C:45]
@@ -6192,28 +5557,24 @@ RSP-Mfc0Count=10
 Good Name=Super B-Daman - Battle Phoenix 64 (J)
 Internal Name=BattlePhoenix64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [F3F2F385-6E490C7F-C:4A]
 Good Name=Super Bowling (J)
 Internal Name=SUPER BOWLING
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [AA1D215A-91CBBE9A-C:45]
 Good Name=Super Bowling 64 (U)
 Internal Name=SUPER BOWLING
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [A03CF036-BCC1C5D2-C:50]
 Good Name=Super Mario 64 (E) (M3)
 Internal Name=SUPER MARIO 64
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -6221,7 +5582,6 @@ RDRAM Size=4
 Good Name=Super Mario 64 (J)
 Internal Name=SUPER MARIO 64
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -6229,7 +5589,6 @@ RDRAM Size=4
 Good Name=Super Mario 64 (U)
 Internal Name=SUPER MARIO 64
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -6237,7 +5596,6 @@ RDRAM Size=4
 Good Name=Super Mario 64 - Shindou Edition (J)
 Internal Name=SUPERMARIO64
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -6245,7 +5603,6 @@ RDRAM Size=4
 Good Name=Super Robot Spirits (J)
 Internal Name=SUPERROBOTSPIRITS
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -6253,14 +5610,12 @@ RDRAM Size=4
 Good Name=Super Robot Taisen 64 (J)
 Internal Name=½°Êß°ÛÎÞ¯ÄÀ²¾Ý64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [DD26FDA1-CB4A6BE3-C:55]
 Good Name=Super Smash Bros. (A)
 Internal Name=SMASH BROTHERS
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 SMM-Cache=0
@@ -6272,7 +5627,6 @@ ViRefresh=2200
 Good Name=Super Smash Bros. (E) (M3)
 Internal Name=SMASH BROTHERS
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 RDRAM Size=4
@@ -6285,7 +5639,6 @@ ViRefresh=2200
 Good Name=Super Smash Bros. (U)
 Internal Name=SMASH BROTHERS
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 SMM-Cache=0
@@ -6297,7 +5650,6 @@ ViRefresh=2200
 Good Name=Super Speed Race 64 (J)
 Internal Name=SUPER SPEED RACE 64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [2CBB127F-09C2BFD8-C:50]
@@ -6314,18 +5666,17 @@ Status=Compatible
 Good Name=Superman (E) (M6)
 Internal Name=SUPERMAN
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [A2E8F35B-C9DC87D9-C:45]
 Good Name=Superman (U) (M3)
 Internal Name=SUPERMAN
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [944FAFC4-B288266A-C:0]
 Good Name=Superman (Prototype)
+Internal Name=
 Status=Compatible
 RDRAM Size=4
 
@@ -6333,7 +5684,6 @@ RDRAM Size=4
 Good Name=Susume! Taisen Puzzle Dama - Toukon! Marutama Chou (J)
 Internal Name=½½Ò!À²¾ÝÊß½ÞÙÀÞÏ
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [ECBD95DD-1FAB637D-C:0]
@@ -6349,6 +5699,7 @@ Status=Compatible
 //================  T  ================
 [37955E65-C6F2B7B3-C:0]
 Good Name=Tamiya Racing 64 (Unreleased)
+Internal Name=
 Status=Compatible
 RDRAM Size=4
 
@@ -6356,7 +5707,6 @@ RDRAM Size=4
 Good Name=Taz Express (E) (M6)
 Internal Name=Taz Express
 Status=Compatible
-32bit=Yes
 
 [6C2C6C49-9BE5CA66-C:45]
 Good Name=Taz Express (U) (Unreleased)
@@ -6367,33 +5717,28 @@ Status=Compatible
 Good Name=Telefoot Soccer 2000 (F)
 Internal Name=TELEFOOT SOCCER 2000
 Status=Compatible
-32bit=Yes
 
 [963ADBA6-F7D5C89B-C:4A]
 Good Name=Tetris 64 (J)
 Internal Name=TETRIS64
 Status=Compatible
-32bit=Yes
 
 [0FE684A9-8BB77AC4-C:50]
 Good Name=Tetrisphere (E)
 Internal Name=TETRISPHERE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [3C1FDABE-02A4E0BA-C:45]
 Good Name=Tetrisphere (U)
 Internal Name=TETRISPHERE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [F82DD377-8C3FB347-C:58]
 Good Name=TG Rally 2 (E)
 Internal Name=TG RALLY 2
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 RDRAM Size=4
 
@@ -6407,7 +5752,6 @@ RDRAM Size=4
 Good Name=The Legend of Zelda - Majora's Mask (E) (M4) (V1.0)
 Internal Name=ZELDA MAJORA'S MASK
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Self Texture=1
@@ -6416,7 +5760,6 @@ Self Texture=1
 Good Name=The Legend of Zelda - Majora's Mask (E) (M4) (V1.1)
 Internal Name=ZELDA MAJORA'S MASK
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Self Texture=1
@@ -6425,7 +5768,6 @@ Self Texture=1
 Good Name=The Legend of Zelda - Majora's Mask (U)
 Internal Name=ZELDA MAJORA'S MASK
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Self Texture=1
@@ -6434,7 +5776,6 @@ Self Texture=1
 Good Name=The Legend of Zelda - Majora's Mask - Collector's Edition (E) (M4) (GC)
 Internal Name=ZELDA MAJORA'S MASK
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Self Texture=1
@@ -6443,7 +5784,6 @@ Self Texture=1
 Good Name=The Legend of Zelda - Majora's Mask - Collector's Edition (U) (GC)
 Internal Name=ZELDA MAJORA'S MASK
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Self Texture=1
@@ -6460,7 +5800,6 @@ Self Texture=1
 Good Name=The Legend of Zelda - Ocarina of Time (E) (GC)
 Internal Name=THE LEGEND OF ZELDA
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Self Texture=1
@@ -6471,7 +5810,6 @@ SMM-TLB=0
 Good Name=The Legend of Zelda - Ocarina of Time (E) (M3) (V1.0)
 Internal Name=THE LEGEND OF ZELDA
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Self Texture=1
@@ -6482,7 +5820,6 @@ SMM-TLB=0
 Good Name=The Legend of Zelda - Ocarina of Time (E) (M3) (V1.1)
 Internal Name=THE LEGEND OF ZELDA
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Self Texture=1
@@ -6493,7 +5830,6 @@ SMM-TLB=0
 Good Name=The Legend of Zelda - Ocarina of Time (U) (GC)
 Internal Name=THE LEGEND OF ZELDA
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Self Texture=1
@@ -6501,7 +5837,6 @@ SMM-PI DMA=0
 SMM-TLB=0
 
 [THE LEGEND OF ZELDA-C:45]
-32bit=Yes
 Alt Identifier=11223344-55667788-C:45
 RDRAM Size=4
 
@@ -6565,7 +5900,6 @@ SMM-TLB=0
 Good Name=The Legend of Zelda - Ocarina of Time - Master Quest (E) (GC)
 Internal Name=THE LEGEND OF ZELDA
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 RDRAM Size=4
@@ -6575,7 +5909,6 @@ Self Texture=1
 Good Name=The Legend of Zelda - Ocarina of Time - Master Quest (E) [f1] (NTSC)
 Internal Name=ZELDA MASTER QUEST
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 RDRAM Size=4
@@ -6587,7 +5920,6 @@ SMM-TLB=0
 Good Name=The Legend of Zelda - Ocarina of Time - Master Quest (E) [h1C]
 Internal Name=ZELDA MASTER QUEST
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 RDRAM Size=4
@@ -6599,7 +5931,6 @@ SMM-TLB=0
 Good Name=The Legend of Zelda - Ocarina of Time - Master Quest (U) (Debug)
 Internal Name=THE LEGEND OF ZELDA
 Status=Compatible
-32bit=Yes
 SMM-PI DMA=0
 SMM-TLB=0
 
@@ -6607,7 +5938,6 @@ SMM-TLB=0
 Good Name=The Legend of Zelda - Ocarina of Time - Master Quest (U) (GC)
 Internal Name=THE LEGEND OF ZELDA
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 RDRAM Size=4
@@ -6619,28 +5949,24 @@ SMM-TLB=0
 Good Name=The New Tetris (E)
 Internal Name=NEWTETRIS
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [2153143F-992D6351-C:45]
 Good Name=The New Tetris (U)
 Internal Name=NEWTETRIS
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [FC74D475-9A0278AB-C:45]
 Good Name=The Powerpuff Girls - Chemical X-traction (U)
 Internal Name=PPG CHEMICAL X
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [E0C4F72F-769E1506-C:50]
 Good Name=Tigger's Honey Hunt (E) (M7)
 Internal Name=Tigger's Honey Hunt
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -6648,7 +5974,6 @@ RDRAM Size=4
 Good Name=Tigger's Honey Hunt (U)
 Internal Name=Tigger's Honey Hunt
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -6656,14 +5981,12 @@ RDRAM Size=4
 Good Name=Tom and Jerry in Fists of Furry (E) (M6)
 Internal Name=TOM AND JERRY
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [63E7391C-E6CCEA33-C:45]
 Good Name=Tom and Jerry in Fists of Furry (U)
 Internal Name=TOM AND JERRY
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [4875AF3D-9A66D3A2-C:50]
@@ -6675,7 +5998,6 @@ Status=Compatible
 Good Name=Tom Clancy's Rainbow Six (F)
 Internal Name=RAINBOW SIX
 Status=Compatible
-32bit=Yes
 
 [8D412933-588F64DB-C:44]
 Good Name=Tom Clancy's Rainbow Six (G)
@@ -6698,14 +6020,12 @@ RDRAM Size=4
 Good Name=Tonic Trouble (E) (M5)
 Internal Name=Tonic Trouble
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [EF9E9714-C03B2C7D-C:45]
 Good Name=Tonic Trouble (U) (V1.1)
 Internal Name=Tonic Trouble
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 Culling=1
 Emulate Clear=1
@@ -6717,7 +6037,6 @@ Self Texture=1
 Good Name=Tony Hawk's Pro Skater (E)
 Internal Name=TONY HAWK SKATEBOARD
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Clear Frame=2
 Culling=1
@@ -6726,21 +6045,18 @@ Culling=1
 Good Name=Tony Hawk's Pro Skater (U) (V1.0)
 Internal Name=TONY HAWK PRO SKATER
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [E0144180-650B78C9-C:45]
 Good Name=Tony Hawk's Pro Skater (U) (V1.1)
 Internal Name=TONY HAWK PRO SKATER
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [84EAB557-C88A190F-C:50]
 Good Name=Tony Hawk's Pro Skater 2 (E)
 Internal Name=THPS2
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Clear Frame=2
 Culling=1
@@ -6749,7 +6065,6 @@ Culling=1
 Good Name=Tony Hawk's Pro Skater 2 (U)
 Internal Name=THPS2
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Clear Frame=2
 Culling=1
@@ -6758,7 +6073,6 @@ Culling=1
 Good Name=Tony Hawk's Pro Skater 3 (U)
 Internal Name=THPS3
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Clear Frame=2
 Culling=1
@@ -6773,23 +6087,21 @@ RDRAM Size=4
 Good Name=Top Gear Hyper Bike (E)
 Internal Name=Top Gear Hyper Bike
 Status=Compatible
-32bit=Yes
 
 [845B0269-57DE9502-C:4A]
 Good Name=Top Gear Hyper Bike (J)
 Internal Name=Top Gear Hyper Bike
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [8ECC02F0-7F8BDE81-C:45]
 Good Name=Top Gear Hyper Bike (U)
 Internal Name=Top Gear Hyper Bike
 Status=Compatible
-32bit=Yes
 
 [75FBDE20-A3189B31-C:0]
 Good Name=Top Gear Hyper Bike (Beta)
+Internal Name=
 Status=Compatible
 RDRAM Size=4
 
@@ -6797,7 +6109,6 @@ RDRAM Size=4
 Good Name=Top Gear Overdrive (E)
 Internal Name=Top Gear Overdrive
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Direct3D8-Direct3DPipe=1
 
@@ -6805,7 +6116,6 @@ Direct3D8-Direct3DPipe=1
 Good Name=Top Gear Overdrive (J)
 Internal Name=Top Gear Overdrive
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Direct3D8-Direct3DPipe=1
 
@@ -6813,7 +6123,6 @@ Direct3D8-Direct3DPipe=1
 Good Name=Top Gear Overdrive (U)
 Internal Name=Top Gear Overdrive
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Direct3D8-Direct3DPipe=1
 
@@ -6839,7 +6148,6 @@ RDRAM Size=4
 Good Name=Top Gear Rally 2 (E)
 Internal Name=TOP GEAR RALLY 2
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 RDRAM Size=4
 
@@ -6847,14 +6155,12 @@ RDRAM Size=4
 Good Name=Top Gear Rally 2 (J)
 Internal Name=TOP GEAR RALLY 2
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [BE5973E0-89B0EDB8-C:45]
 Good Name=Top Gear Rally 2 (U)
 Internal Name=TOP GEAR RALLY 2
 Status=Compatible
-32bit=Yes
 
 [EFDF9140-A4168D6B-C:0]
 Good Name=Top Gear Rally 2 (Beta)
@@ -6864,7 +6170,6 @@ RDRAM Size=4
 [90AF8D2C-E1AC1B37-C:0]
 Good Name=Tower & Shaft (J) [ALECK64]
 Status=Unsupported
-32bit=Yes
 Counter Factor=1
 Save Type=4kbit Eeprom
 
@@ -6872,7 +6177,6 @@ Save Type=4kbit Eeprom
 Good Name=Toy Story 2 (E)
 Internal Name=Toy Story 2
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -6880,7 +6184,6 @@ RDRAM Size=4
 Good Name=Toy Story 2 (F)
 Internal Name=Toy Story 2
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -6888,7 +6191,6 @@ RDRAM Size=4
 Good Name=Toy Story 2 (G) (V1.0)
 Internal Name=Toy Story 2
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -6896,7 +6198,6 @@ RDRAM Size=4
 Good Name=Toy Story 2 (G) (V1.1)
 Internal Name=Toy Story 2
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -6904,7 +6205,6 @@ RDRAM Size=4
 Good Name=Toy Story 2 (U) (V1.0)
 Internal Name=Toy Story 2
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -6912,7 +6212,6 @@ RDRAM Size=4
 Good Name=Toy Story 2 (U) (V1.1)
 Internal Name=Toy Story 2
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -6920,14 +6219,12 @@ RDRAM Size=4
 Good Name=Transformers - Beast Wars Metals 64 (J)
 Internal Name=BEASTWARSMETALS64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [4D79D316-E8501B33-C:45]
 Good Name=Transformers - Beast Wars Transmetal (U)
 Internal Name=BEAST WARS US
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [FE4B6B43-081D29A7-C:45]
@@ -6941,7 +6238,6 @@ RDRAM Size=4
 Good Name=Tsumi to Batsu - Hoshi no Keishousha (J)
 Internal Name=TSUMI TO BATSU
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Clear Frame=2
 Culling=1
@@ -6951,7 +6247,6 @@ Emulate Clear=1
 Good Name=Turok - Dinosaur Hunter (E) (V1.0)
 Internal Name=TUROK_DINOSAUR_HUNTE
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Counter Factor=1
 RDRAM Size=4
@@ -6960,7 +6255,6 @@ RDRAM Size=4
 Good Name=Turok - Dinosaur Hunter (E) (V1.1) (V1.2)
 Internal Name=TUROK_DINOSAUR_HUNTE
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Counter Factor=1
 RDRAM Size=4
@@ -6969,7 +6263,6 @@ RDRAM Size=4
 Good Name=Turok - Dinosaur Hunter (G) (V1.0)
 Internal Name=TUROK_DINOSAUR_HUNTE
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Counter Factor=1
 RDRAM Size=4
@@ -6978,7 +6271,6 @@ RDRAM Size=4
 Good Name=Turok - Dinosaur Hunter (G) (V1.1) (V1.2)
 Internal Name=TUROK_DINOSAUR_HUNTE
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Counter Factor=1
 RDRAM Size=4
@@ -6994,7 +6286,6 @@ RDRAM Size=4
 Good Name=Turok - Dinosaur Hunter (U) (V1.0)
 Internal Name=TUROK_DINOSAUR_HUNTE
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Counter Factor=1
 RDRAM Size=4
@@ -7003,7 +6294,6 @@ RDRAM Size=4
 Good Name=Turok - Dinosaur Hunter (U) (V1.1) (V1.2)
 Internal Name=TUROK_DINOSAUR_HUNTE
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 Counter Factor=1
 RDRAM Size=4
@@ -7012,35 +6302,30 @@ RDRAM Size=4
 Good Name=Turok - Legenden des Verlorenen Landes (G)
 Internal Name=Turok: Rage Wars
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [1EA26214-E790900F-C:50]
 Good Name=Turok - Rage Wars (E)
 Internal Name=Turok: Rage Wars
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [B6BE20A5-FACAF66D-C:58]
 Good Name=Turok - Rage Wars (FI)
 Internal Name=Turok: Rage Wars
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [ADB9498B-DAF28F55-C:45]
 Good Name=Turok - Rage Wars (U) (V1.0)
 Internal Name=Turok: Rage Wars
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [2388984C-DA7B3CC5-C:45]
 Good Name=Turok - Rage Wars (U) (V1.1)
 Internal Name=Turok: Rage Wars
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [E8C95AFC-35D121DA-C:50]
@@ -7053,21 +6338,18 @@ AudioResetOnLoad=Yes
 Good Name=Turok 2 - Seeds of Evil (E) (M4)
 Internal Name=Turok 2: Seeds of Ev
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [2E0E7749-B8B49D59-C:58]
 Good Name=Turok 2 - Seeds of Evil (FIS) (M3)
 Internal Name=Turok 2: Seeds of Ev
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [FE05840B-9393320C-C:44]
 Good Name=Turok 2 - Seeds of Evil (G)
 Internal Name=Turok 2: Seeds of Ev
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [E8C95AFC-35D121DA-C:45]
@@ -7080,28 +6362,24 @@ AudioResetOnLoad=Yes
 Good Name=Turok 2 - Seeds of Evil (U) (V1.0)
 Internal Name=Turok 2: Seeds of Ev
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [E0B92B94-B9A7E025-C:45]
 Good Name=Turok 2 - Seeds of Evil (U) (V1.1)
 Internal Name=Turok 2: Seeds of Ev
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [6A162FF2-2093704C-C:50]
 Good Name=Turok 3 - Shadow of Oblivion (E)
 Internal Name=Turok 3: Shadow of O
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [89A579F1-667E97EF-C:45]
 Good Name=Turok 3 - Shadow of Oblivion (U)
 Internal Name=Turok 3: Shadow of O
 Status=Compatible
-32bit=Yes
 AudioResetOnLoad=Yes
 
 [D25C1211-13EEBF67-C:44]
@@ -7128,7 +6406,6 @@ Culling=1
 Good Name=Ucchan Nanchan no Hono no Challenger - Denryuu Ira Ira Bou (J)
 Internal Name=ÃÞÝØ­³²×²×ÎÞ³
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 Delay SI=Yes
@@ -7139,21 +6416,18 @@ RDRAM Size=4
 Good Name=V-Rally Edition 99 (E) (M3)
 Internal Name=V-RALLY
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [4D0224A5-1BEB5794-C:4A]
 Good Name=V-Rally Edition 99 (J)
 Internal Name=V-RALLY
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [3C059038-C8BF2182-C:45]
 Good Name=V-Rally Edition 99 (U)
 Internal Name=V-RALLY
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -7203,27 +6477,23 @@ Linking=Off
 Good Name=Violence Killer - Turok New Generation (J)
 Internal Name=VIOLENCEKILLER
 Status=Compatible
-32bit=Yes
 
 [2FDAA221-A588A7CE-C:50]
 Good Name=Virtual Chess 64 (E) (M6)
 Internal Name=VIRTUALCHESS
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [82B3248B-E73E244D-C:45]
 Good Name=Virtual Chess 64 (U) (M3)
 Internal Name=VIRTUALCHESS
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [98F9F2D0-03D9F09C-C:50]
 Good Name=Virtual Pool 64 (E)
 Internal Name=Virtual Pool 64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -7231,7 +6501,6 @@ RDRAM Size=4
 Good Name=Virtual Pool 64 (U)
 Internal Name=Virtual Pool 64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -7239,21 +6508,18 @@ RDRAM Size=4
 Good Name=Virtual Pro Wrestling 2 - Oudou Keishou (J)
 Internal Name=ÊÞ°Á¬Ù ÌßÛÚ½ 2
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [045C08C4-4AFD798B-C:4A]
 Good Name=Virtual Pro Wrestling 64 (J)
 Internal Name=ÊÞ°Á¬Ù ÌßÛÚ½ØÝ¸Þ 64
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 RDRAM Size=4
 
 [2F57C9F7-F1E29CA6-C:4A]
 Good Name=Vivid Dolls (J) [ALECK64]
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Save Type=4kbit Eeprom
 
@@ -7262,7 +6528,6 @@ Save Type=4kbit Eeprom
 Good Name=Waialae Country Club - True Golf Classics (E) (M4) (V1.0)
 Internal Name=Waialae Country Club
 Status=Compatible
-32bit=Yes
 Culling=1
 Primary Frame Buffer=1
 RDRAM Size=4
@@ -7272,7 +6537,6 @@ Save Type=Sram
 Good Name=Waialae Country Club - True Golf Classics (E) (M4) (V1.1)
 Internal Name=Waialae Country Club
 Status=Compatible
-32bit=Yes
 Culling=1
 Primary Frame Buffer=1
 RDRAM Size=4
@@ -7282,7 +6546,6 @@ Save Type=Sram
 Good Name=Waialae Country Club - True Golf Classics (U) (V1.0)
 Internal Name=Waialae Country Club
 Status=Compatible
-32bit=Yes
 Culling=1
 Primary Frame Buffer=1
 RDRAM Size=4
@@ -7292,7 +6555,6 @@ Save Type=Sram
 Good Name=Waialae Country Club - True Golf Classics (U) (V1.1)
 Internal Name=Waialae Country Club
 Status=Compatible
-32bit=Yes
 Culling=1
 Primary Frame Buffer=1
 RDRAM Size=4
@@ -7302,7 +6564,6 @@ Save Type=Sram
 Good Name=War Gods (E)
 Internal Name=WAR GODS
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -7310,7 +6571,6 @@ RDRAM Size=4
 Good Name=War Gods (U)
 Internal Name=WAR GODS
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -7318,7 +6578,6 @@ RDRAM Size=4
 Good Name=Wave Race 64 (E) (M2)
 Internal Name=WAVE RACE 64
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -7326,35 +6585,30 @@ RDRAM Size=4
 Good Name=Wave Race 64 (J) (V1.0)
 Internal Name=WAVE RACE 64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [44995484-20A5FC5E-C:4A]
 Good Name=Wave Race 64 (J) (V1.1)
 Internal Name=WAVE RACE 64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [7DE11F53-74872F9D-C:45]
 Good Name=Wave Race 64 (U) (V1.0)
 Internal Name=WAVE RACE 64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [492F4B61-04E5146A-C:45]
 Good Name=Wave Race 64 (U) (V1.1)
 Internal Name=WAVE RACE 64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [535DF3E2-609789F1-C:4A]
 Good Name=Wave Race 64 - Shindou Edition (J) (V1.2)
 Internal Name=WAVE RACE 64
 Status=Compatible
-32bit=Yes
 Counter Factor=3
 RDRAM Size=4
 
@@ -7362,49 +6616,42 @@ RDRAM Size=4
 Good Name=Wayne Gretzky's 3D Hockey '98 (E) (M4)
 Internal Name=W.G. 3DHockey98
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [5A9D3859-97AAE710-C:45]
 Good Name=Wayne Gretzky's 3D Hockey '98 (U)
 Internal Name=W.G. 3DHOCKEY98
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [2209094B-2C9559AF-C:50]
 Good Name=Wayne Gretzky's 3D Hockey (E) (M4)
 Internal Name=W.G. 3DHOCKEY
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [F1301043-FD80541A-C:4A]
 Good Name=Wayne Gretzky's 3D Hockey (J)
 Internal Name=WGHOCKEY
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [6B45223F-F00E5C56-C:45]
 Good Name=Wayne Gretzky's 3D Hockey (U) (V1.0)
 Internal Name=W.G. 3DHOCKEY
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [DC3BAA59-0ABB456A-C:45]
 Good Name=Wayne Gretzky's 3D Hockey (U) (V1.1)
 Internal Name=W.G. 3DHOCKEY
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [396F5ADD-6693ECA7-C:45]
 Good Name=WCW Backstage Assault (U)
 Internal Name=WCW BACKSTAGE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [AA7B0658-9C96937B-C:50]
@@ -7421,7 +6668,6 @@ Status=Compatible
 Good Name=WCW Nitro (U)
 Internal Name=NITRO64
 Status=Compatible
-32bit=Yes
 Counter Factor=3
 Culling=1
 RDRAM Size=4
@@ -7430,7 +6676,6 @@ RDRAM Size=4
 Good Name=WCW vs. nWo - World Tour (E)
 Internal Name=WCWvs.NWO:World Tour
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 RDRAM Size=4
 
@@ -7438,7 +6683,6 @@ RDRAM Size=4
 Good Name=WCW vs. nWo - World Tour (U) (V1.0)
 Internal Name=WCWvs.NWO:World Tour
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 RDRAM Size=4
 
@@ -7446,7 +6690,6 @@ RDRAM Size=4
 Good Name=WCW vs. nWo - World Tour (U) (V1.1)
 Internal Name=WCWvs.NWO:World Tour
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 RDRAM Size=4
 
@@ -7454,7 +6697,6 @@ RDRAM Size=4
 Good Name=WCW-nWo Revenge (E)
 Internal Name=WCW / nWo  REVENGE
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 Counter Factor=1
 RDRAM Size=4
@@ -7463,7 +6705,6 @@ RDRAM Size=4
 Good Name=WCW-nWo Revenge (U)
 Internal Name=WCW / nWo  REVENGE
 Status=Compatible
-32bit=Yes
 Clear Frame=1
 Counter Factor=1
 RDRAM Size=4
@@ -7472,67 +6713,59 @@ RDRAM Size=4
 Good Name=Wetrix (E) (M6)
 Internal Name=Wetrix
 Status=Compatible
-32bit=Yes
 Counter Factor=3
 
 [DCB6EAFA-C6BBCFA3-C:4A]
 Good Name=Wetrix (J)
 Internal Name=wetrix
 Status=Compatible
-32bit=Yes
 Counter Factor=3
 
 [CEA8B54F-7F21D503-C:45]
 Good Name=Wetrix (U) (M6)
 Internal Name=Wetrix
 Status=Compatible
-32bit=Yes
 Counter Factor=3
 
 [E896092B-DC244D4E-C:45]
 Good Name=Wheel of Fortune (U)
 Internal Name=WHEEL OF FORTUNE
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [0CEBC4C7-0C9CE932-C:4A]
 Good Name=Wild Choppers (J)
 Internal Name=WILD CHOPPERS
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [A04237B9-68F62C72-C:0]
 Good Name=Wildwaters (Unreleased)
+Internal Name=
 Status=Compatible
 
 [1FA056E0-A4B9946A-C:4A]
 Good Name=WinBack (J) (V1.0)
 Internal Name=WIN BACK
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [C52E0BC6-56BC6556-C:4A]
 Good Name=WinBack (J) (V1.1)
 Internal Name=WIN BACK
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [ED98957E-8242DCAC-C:45]
 Good Name=WinBack - Covert Operations (U)
 Internal Name=WIN BACK
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [54310E7D-6B5430D8-C:50]
 Good Name=Wipeout 64 (E)
 Internal Name=Wipeout 64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Direct3D8-Direct3DPipe=1
 
@@ -7540,7 +6773,6 @@ Direct3D8-Direct3DPipe=1
 Good Name=Wipeout 64 (U)
 Internal Name=Wipeout 64
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 Direct3D8-Direct3DPipe=1
@@ -7549,14 +6781,12 @@ Direct3D8-Direct3DPipe=1
 Good Name=Wonder Project J2 - Corlo no Mori no Josette (J)
 Internal Name=WONDER PROJECT J2
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
 [4F1E88F7-4A5A3F96-C:4A]
 Good Name=Wonder Project J2 [T]
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -7596,65 +6826,55 @@ RSP-Mfc0Count=10
 Good Name=Worms - Armageddon (E) (M6)
 Internal Name=WORMS N64
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [13E959A0-0E93CAB0-C:45]
 Good Name=Worms - Armageddon (U) (M3)
 Internal Name=WORMS ARMAGEDDON
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [33A275A4-B8504459-C:50]
 Good Name=WWF - War Zone (E)
 Internal Name=WWF War Zone
 Status=Compatible
-32bit=Yes
 
 [CD5BEC0F-86FD1008-C:45]
 Good Name=WWF - War Zone (U)
 Internal Name=WWF War Zone
 Status=Compatible
-32bit=Yes
 
 [5BF45B7B-596BEEE8-C:50]
 Good Name=WWF Attitude (E)
 Internal Name=WWF: Attitude
 Status=Compatible
-32bit=Yes
 
 [8F3151C8-4F3AF545-C:44]
 Good Name=WWF Attitude (G)
 Internal Name=WWF: Attitude
 Status=Compatible
-32bit=Yes
 
 [D2BE2F14-38453788-C:45]
 Good Name=WWF Attitude (U)
 Internal Name=WWF; Attitude
 Status=Compatible
-32bit=Yes
 
 [6D8DF08E-D008C3CF-C:50]
 Good Name=WWF No Mercy (E) (V1.0)
 Internal Name=WWF No Mercy
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [8CDB94C2-CB46C6F0-C:50]
 Good Name=WWF No Mercy (E) (V1.1)
 Internal Name=WWF No Mercy
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [4E4B0640-1B49BCFB-C:45]
 Good Name=WWF No Mercy (U) (V1.0)
 Internal Name=WWF No Mercy
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -7662,7 +6882,6 @@ RDRAM Size=4
 Good Name=WWF No Mercy (U) (V1.1)
 Internal Name=WWF No Mercy
 Status=Compatible
-32bit=Yes
 Culling=1
 RDRAM Size=4
 
@@ -7670,21 +6889,18 @@ RDRAM Size=4
 Good Name=WWF WrestleMania 2000 (E)
 Internal Name=WRESTLEMANIA2000
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [12737DA5-23969159-C:4A]
 Good Name=WWF WrestleMania 2000 (J)
 Internal Name=Ú¯½ÙÏÆ± 2000
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 [90A59003-31089864-C:45]
 Good Name=WWF WrestleMania 2000 (U)
 Internal Name=WRESTLEMANIA 2000
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 //================  X  ================
@@ -7692,14 +6908,12 @@ RDRAM Size=4
 Good Name=Xena Warrior Princess - Talisman of Fate (E)
 Internal Name=XENAWARRIORPRINCESS
 Status=Compatible
-32bit=Yes
 Culling=1
 
 [0553AE9D-EAD8E0C1-C:45]
 Good Name=Xena Warrior Princess - Talisman of Fate (U)
 Internal Name=XENAWARRIORPRINCESS
 Status=Compatible
-32bit=Yes
 Clear Frame=2
 Culling=1
 
@@ -7708,7 +6922,6 @@ Culling=1
 Good Name=Yakouchuu II - Satsujin Kouro (J)
 Internal Name=YAKOUTYUU2
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 Culling=1
 HLE GFX=No
@@ -7717,28 +6930,24 @@ HLE GFX=No
 Good Name=Yoshi Story (J)
 Internal Name=YOSHI STORY
 Status=Compatible
-32bit=Yes
 Save Type=16kbit Eeprom
 
 [D3F97D49-6924135B-C:50]
 Good Name=Yoshi's Story (E) (M3)
 Internal Name=YOSHI STORY
 Status=Compatible
-32bit=Yes
 Save Type=16kbit Eeprom
 
 [2337D8E8-6B8E7CEC-C:45]
 Good Name=Yoshi's Story (U) (M2)
 Internal Name=YOSHI STORY
 Status=Compatible
-32bit=Yes
 Save Type=16kbit Eeprom
 
 [9FE6162D-E97E4037-C:4A]
 Good Name=Yuke Yuke!! Trouble Makers (J)
 Internal Name=TROUBLE MAKERS
 Status=Compatible
-32bit=Yes
 Counter Factor=1
 RDRAM Size=4
 
@@ -7747,7 +6956,6 @@ RDRAM Size=4
 Good Name=Zelda no Densetsu - Mujura no Kamen (J) (V1.0)
 Internal Name=THE MASK OF MUJURA
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Self Texture=1
@@ -7756,7 +6964,6 @@ Self Texture=1
 Good Name=Zelda no Densetsu - Mujura no Kamen (J) (V1.1)
 Internal Name=THE MASK OF MUJURA
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Self Texture=1
@@ -7765,7 +6972,6 @@ Self Texture=1
 Good Name=Zelda no Densetsu - Mujura no Kamen - Zelda Collection Version (J) (GC)
 Internal Name=ZELDA MAJORA'S MASK
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 Self Texture=1
@@ -7774,7 +6980,6 @@ Self Texture=1
 Good Name=Zelda no Densetsu - Toki no Ocarina (J) (V1.0)
 Internal Name=THE LEGEND OF ZELDA
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 RDRAM Size=4
@@ -7787,7 +6992,6 @@ SMM-TLB=0
 Good Name=Zelda no Densetsu - Toki no Ocarina (J) (V1.1)
 Internal Name=THE LEGEND OF ZELDA
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 RDRAM Size=4
@@ -7800,7 +7004,6 @@ SMM-TLB=0
 Good Name=Zelda no Densetsu - Toki no Ocarina (J) (V1.2)
 Internal Name=THE LEGEND OF ZELDA
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 RDRAM Size=4
@@ -7813,7 +7016,6 @@ SMM-TLB=0
 Good Name=Zelda no Densetsu - Toki no Ocarina - Zelda Collection Version (J) (GC)
 Internal Name=THE LEGEND OF ZELDA
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 RDRAM Size=4
@@ -7825,7 +7027,6 @@ SMM-TLB=0
 Good Name=Zelda no Densetsu - Toki no Ocarina GC (J) (GC)
 Internal Name=THE LEGEND OF ZELDA
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 RDRAM Size=4
@@ -7837,7 +7038,6 @@ SMM-TLB=0
 Good Name=Zelda no Densetsu - Toki no Ocarina GC URA (J) (GC)
 Internal Name=THE LEGEND OF ZELDA
 Status=Compatible
-32bit=Yes
 Culling=1
 Emulate Clear=1
 RDRAM Size=4
@@ -7849,7 +7049,6 @@ SMM-TLB=0
 Good Name=Zool - Majuu Tsukai Densetsu (J)
 Internal Name=½Þ°Ù Ï¼Þ­³Â¶²ÃÞÝ¾Â
 Status=Compatible
-32bit=Yes
 RDRAM Size=4
 
 //================ 64DD ================
@@ -7941,13 +7140,11 @@ Fixed Audio=0
 [6E059418-91FA6BE7-C:41]
 Good Name=Dezaemon 3D Expansion Disk (J) (Proto)
 Status=Compatible
-32bit=Yes
 Save Type=Sram
 
 [BB7CD63F-448329C0-C:41]
 Good Name=Dezaemon 3D Expansion Disk (J) (Proto) [a1]
 Status=Compatible
-32bit=Yes
 Save Type=Sram
 
 [63BBA730-9C4458CF-C:54]
@@ -9417,7 +8614,6 @@ Fixed Audio=0
 Good Name=Mario no Photopi (J) [T+Eng]
 Internal Name=ÏØµÉÌ«ÄËß°
 Status=Issues (plugin)
-32bit=Yes
 HLE GFX=No
 RDRAM Size=4
 RSP-SemaphoreExit=1
