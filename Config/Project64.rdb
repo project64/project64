@@ -349,7 +349,6 @@ Internal Name=DRACULA MOKUSHIROKU
 Status=Compatible
 Culling=1
 Primary Frame Buffer=1
-Save Type=16kbit Eeprom
 
 [A5533106-B9F25E5B-C:4A]
 Good Name=Akumajou Dracula Mokushiroku Gaiden - Legend of Cornell (J)
@@ -357,7 +356,6 @@ Internal Name=DRACULA MOKUSHIROKU2
 Status=Compatible
 Culling=1
 Primary Frame Buffer=1
-Save Type=16kbit Eeprom
 
 [DFD784AD-AE426603-C:50]
 Good Name=All Star Tennis '99 (E) (M5)
@@ -500,7 +498,6 @@ Self Texture=1
 Good Name=Banjo to Kazooie no Daibouken 2 (J)
 Internal Name=BANJO KAZOOIE 2
 Status=Compatible
-Save Type=16kbit Eeprom
 
 [733FCCB1-444892F9-C:50]
 Good Name=Banjo-Kazooie (E) (M3)
@@ -528,14 +525,12 @@ Self Texture=1
 Good Name=Banjo-Tooie (A)
 Internal Name=BANJO TOOIE
 Status=Compatible
-Save Type=16kbit Eeprom
 
 [C9176D39-EA4779D1-C:50]
 Good Name=Banjo-Tooie (E) (M4)
 Internal Name=BANJO TOOIE
 Status=Compatible
 Culling=1
-Save Type=16kbit Eeprom
 Self Texture=1
 
 [C2E9AA9A-475D70AA-C:45]
@@ -543,7 +538,6 @@ Good Name=Banjo-Tooie (U)
 Internal Name=BANJO TOOIE
 Status=Compatible
 Culling=1
-Save Type=16kbit Eeprom
 Self Texture=1
 
 [B088FBB4-441E4B1D-C:50]
@@ -1038,7 +1032,6 @@ Internal Name=CITY TOUR GP
 Status=Compatible
 Counter Factor=1
 Delay SI=Yes
-Save Type=16kbit Eeprom
 
 [FA5A3DFF-B4C9CDB9-C:45]
 Good Name=Clay Fighter - Sculptor's Cut (U)
@@ -1089,7 +1082,6 @@ Clear Frame=2
 Culling=1
 Emulate Clear=1
 FuncFind=2
-Save Type=16kbit Eeprom
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -1105,7 +1097,6 @@ Clear Frame=2
 Culling=1
 Emulate Clear=1
 FuncFind=2
-Save Type=16kbit Eeprom
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -1121,7 +1112,6 @@ Clear Frame=2
 Culling=1
 Emulate Clear=1
 FuncFind=2
-Save Type=16kbit Eeprom
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -1137,7 +1127,6 @@ Clear Frame=2
 Culling=1
 Emulate Clear=1
 FuncFind=2
-Save Type=16kbit Eeprom
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -1180,13 +1169,11 @@ Delay SI=Yes
 Good Name=Cruis'n World (E)
 Internal Name=CRUIS'N WORLD
 Status=Compatible
-Save Type=16kbit Eeprom
 
 [DFE61153-D76118E6-C:45]
 Good Name=Cruis'n World (U)
 Internal Name=CRUIS'N WORLD
 Status=Compatible
-Save Type=16kbit Eeprom
 
 [83CB0B87-7E325457-C:4A]
 Good Name=Custom Robo (J)
@@ -1202,7 +1189,6 @@ Status=Compatible
 Good Name=Custom Robo V2 (J)
 Internal Name=CUSTOMROBOV2
 Status=Compatible
-Save Type=16kbit Eeprom
 
 [D1A78A07-52A3DD3E-C:50]
 Good Name=CyberTiger (E)
@@ -1247,26 +1233,22 @@ Good Name=Densha de GO! 64 (J)
 Internal Name=ÃÞÝ¼¬ÃÞGO!64
 Status=Compatible
 Counter Factor=1
-Save Type=16kbit Eeprom
 
 [68D128AE-67D60F21-C:5A]
 Good Name=Densha de GO! 64 (J) [T]
 Status=Compatible
 Counter Factor=1
-Save Type=16kbit Eeprom
 
 [A5F667E1-DA1FBD1F-C:4A]
 Good Name=Derby Stallion 64 (J)
 Internal Name=DERBYSTALLION 64
 Status=Compatible
-Save Type=FlashRam
 
 [96BA4EFB-C9988E4E-C:0]
 Good Name=Derby Stallion 64 (J) (Beta)
 Internal Name=
 Status=Compatible
 CRC-Recalc=Yes
-Save Type=FlashRam
 
 [630AA37D-896BD7DB-C:50]
 Good Name=Destruction Derby 64 (E) (M3)
@@ -1377,7 +1359,6 @@ Counter Factor=1
 Culling=1
 Emulate Clear=1
 Primary Frame Buffer=1
-Save Type=16kbit Eeprom
 Linking=Off
 
 [11936D8C-6F2C4B43-C:50]
@@ -1386,14 +1367,12 @@ Internal Name=DONKEY KONG 64
 Status=Compatible
 Counter Factor=1
 Culling=1
-Save Type=16kbit Eeprom
 
 [053C89A7-A5064302-C:4A]
 Good Name=Donkey Kong 64 (J)
 Internal Name=DONKEY KONG 64
 Status=Compatible
 Counter Factor=1
-Save Type=16kbit Eeprom
 
 [EC58EABF-AD7C7169-C:45]
 Good Name=Donkey Kong 64 (U)
@@ -1403,14 +1382,12 @@ Counter Factor=1
 Culling=1
 Emulate Clear=1
 Primary Frame Buffer=1
-Save Type=16kbit Eeprom
 
 [0DD4ABAB-B5A2A91E-C:45]
 Good Name=Donkey Kong 64 (U) (Kiosk Demo)
 Internal Name=D K DISPLAY
 Status=Compatible
 Counter Factor=1
-Save Type=16kbit Eeprom
 
 [2C739EAC-9EF77726-C:50]
 Good Name=Doom 64 (E)
@@ -1444,13 +1421,11 @@ Good Name=Doraemon 2 - Nobita to Hikari no Shinden (J)
 Internal Name=ÄÞ×´ÓÝ2 Ë¶ØÉ¼ÝÃÞÝ
 Status=Compatible
 Culling=1
-Save Type=16kbit Eeprom
 
 [A8275140-B9B056E8-C:4A]
 Good Name=Doraemon 3 - Nobita no Machi SOS! (J)
 Internal Name=ÄÞ×´ÓÝ3 ÉËÞÀÉÏÁSOS!
 Status=Compatible
-Save Type=16kbit Eeprom
 
 [EB85EBC9-596682AF-C:0]
 Good Name=Doubutsu Banchou (J) (Unreleased)
@@ -1606,33 +1581,28 @@ Good Name=Excitebike 64 (E)
 Internal Name=EXCITEBIKE64
 Status=Compatible
 Counter Factor=1
-Save Type=16kbit Eeprom
 
 [861C3519-F6091CE5-C:4A]
 Good Name=Excitebike 64 (J)
 Internal Name=EXCITEBIKE64
 Status=Compatible
-Save Type=16kbit Eeprom
 
 [07861842-A12EBC9F-C:45]
 Good Name=Excitebike 64 (U) (V1.0)
 Internal Name=EXCITEBIKE64
 Status=Compatible
 Counter Factor=1
-Save Type=16kbit Eeprom
 
 [F9D411E3-7CB29BC0-C:45]
 Good Name=Excitebike 64 (U) (V1.1)
 Internal Name=EXCITEBIKE64
 Status=Compatible
 Counter Factor=1
-Save Type=16kbit Eeprom
 
 [AF754F7B-1DD17381-C:45]
 Good Name=Excitebike 64 (U) (Kiosk Demo)
 Internal Name=EXCITEBIKE64
 Status=Compatible
-Save Type=16kbit Eeprom
 
 [8E9D834E-1E8B29A9-C:50]
 Good Name=Extreme-G (E) (M5)
@@ -2072,7 +2042,6 @@ Status=Compatible
 Clear Frame=2
 Culling=1
 FuncFind=2
-Save Type=16kbit Eeprom
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -2084,7 +2053,6 @@ Status=Compatible
 Clear Frame=2
 Culling=1
 FuncFind=2
-Save Type=16kbit Eeprom
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -2096,7 +2064,6 @@ Internal Name=GT64
 Status=Compatible
 Counter Factor=1
 Delay SI=Yes
-Save Type=16kbit Eeprom
 
 [C49ADCA2-F1501B62-C:45]
 Good Name=GT 64 - Championship Edition (U)
@@ -2104,7 +2071,6 @@ Internal Name=GT64
 Status=Compatible
 Counter Factor=1
 Delay SI=Yes
-Save Type=16kbit Eeprom
 
 //================  H  ================
 [95A80114-E0B72A7F-C:4A]
@@ -2214,14 +2180,12 @@ Good Name=Hoshi no Kirby 64 (J) (V1.2)
 Internal Name=Kirby64
 Status=Compatible
 Culling=1
-Save Type=16kbit Eeprom
 
 [BCB1F89F-060752A2-C:4A]
 Good Name=Hoshi no Kirby 64 (J) (V1.3)
 Internal Name=Kirby64
 Status=Compatible
 Culling=1
-Save Type=16kbit Eeprom
 
 [E7D20193-C1158E93-C:50]
 Good Name=Hot Wheels Turbo Racing (E) (M3)
@@ -2295,7 +2259,6 @@ Status=Compatible
 Good Name=Ide Yousuke no Mahjong Juku (J)
 Internal Name=²ÃÞÖ³½¹ÉÏ°¼Þ¬Ý¼Þ­¸
 Status=Compatible
-Save Type=16kbit Eeprom
 
 [D692CC5E-EC58D072-C:50]
 Good Name=Iggy's Reckin' Balls (E)
@@ -2692,14 +2655,12 @@ Good Name=Kirby 64 - The Crystal Shards (E)
 Internal Name=Kirby64
 Status=Compatible
 Culling=1
-Save Type=16kbit Eeprom
 
 [46039FB4-0337822C-C:45]
 Good Name=Kirby 64 - The Crystal Shards (U)
 Internal Name=Kirby64
 Status=Compatible
 Culling=1
-Save Type=16kbit Eeprom
 
 [4A997C74-E2087F99-C:50]
 Good Name=Knife Edge - Nose Gunner (E)
@@ -2735,14 +2696,12 @@ Culling=1
 Good Name=Kobe Bryant in NBA Courtside (E)
 Internal Name=NBA COURTSIDE
 Status=Compatible
-Save Type=16kbit Eeprom
 
 [616B8494-8A509210-C:45]
 Good Name=Kobe Bryant's NBA Courtside (U)
 Internal Name=NBA COURTSIDE
 Status=Compatible
 Culling=1
-Save Type=16kbit Eeprom
 
 [4248BA87-99BE605D-C:0]
 Good Name=Kuru Kuru Fever (J) [ALECK64]
@@ -3075,21 +3034,18 @@ Good Name=Mario Party 3 (E) (M4)
 Internal Name=MarioParty3
 Status=Compatible
 Counter Factor=1
-Save Type=16kbit Eeprom
 
 [0B0AB4CD-7B158937-C:4A]
 Good Name=Mario Party 3 (J)
 Internal Name=MarioParty3
 Status=Compatible
 Counter Factor=1
-Save Type=16kbit Eeprom
 
 [7C3829D9-6E8247CE-C:45]
 Good Name=Mario Party 3 (U)
 Internal Name=MarioParty3
 Status=Compatible
 Counter Factor=1
-Save Type=16kbit Eeprom
 
 [3BA7CDDC-464E52A0-C:4A]
 Good Name=Mario Story (J)
@@ -3098,27 +3054,23 @@ Status=Compatible
 Clear Frame=1
 Counter Factor=1
 Culling=1
-Save Type=FlashRam
 
 [839F3AD5-406D15FA-C:50]
 Good Name=Mario Tennis (E)
 Internal Name=MarioTennis
 Status=Compatible
 Culling=1
-Save Type=16kbit Eeprom
 
 [5001CF4F-F30CB3BD-C:45]
 Good Name=Mario Tennis (U)
 Internal Name=MarioTennis
 Status=Compatible
 Culling=1
-Save Type=16kbit Eeprom
 
 [3A6C42B5-1ACADA1B-C:4A]
 Good Name=Mario Tennis 64 (J)
 Internal Name=MarioTennis64
 Status=Compatible
-Save Type=16kbit Eeprom
 
 [27C985A8-ED7CE5C6-C:0]
 Good Name=Mega Man 64 (Proto)
@@ -3419,7 +3371,6 @@ Good Name=NBA Courtside 2 - Featuring Kobe Bryant (U)
 Internal Name=NBA Courtside 2
 Status=Compatible
 Culling=1
-Save Type=FlashRam
 
 [C788DCAE-BD03000A-C:50]
 Good Name=NBA Hangtime (E)
@@ -3528,7 +3479,6 @@ Status=Compatible
 AudioResetOnLoad=Yes
 Clear Frame=1
 Culling=1
-Save Type=16kbit Eeprom
 
 [D094B170-D7C4B5CC-C:45]
 Good Name=NFL Blitz (U)
@@ -3769,7 +3719,6 @@ Status=Compatible
 Clear Frame=1
 Counter Factor=1
 Culling=1
-Save Type=FlashRam
 
 [65EEE53A-ED7D733C-C:45]
 Good Name=Paper Mario (U)
@@ -3778,7 +3727,6 @@ Status=Compatible
 Clear Frame=1
 Counter Factor=1
 Culling=1
-Save Type=FlashRam
 
 [AC976B38-C3A9C97A-C:50]
 Good Name=Paperboy (E)
@@ -3794,13 +3742,11 @@ Status=Compatible
 Good Name=Parlor! Pro 64 - Pachinko Jikki Simulation Game (J)
 Internal Name=Parlor PRO 64
 Status=Compatible
-Save Type=16kbit Eeprom
 
 [F468118C-E32EE44E-C:4A]
 Good Name=PD Ultraman Battle Collection 64 (J)
 Internal Name=Ultraman Battle JAPA
 Status=Compatible
-Save Type=16kbit Eeprom
 
 [C83CEB83-FDC56219-C:50]
 Good Name=Penny Racers (E)
@@ -3819,7 +3765,6 @@ Good Name=Perfect Dark (E) (M5)
 Internal Name=Perfect Dark
 Status=Compatible
 Clear Frame=2
-Save Type=16kbit Eeprom
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -3831,7 +3776,6 @@ Good Name=Perfect Dark (J)
 Internal Name=PERFECT DARK
 Status=Compatible
 Clear Frame=2
-Save Type=16kbit Eeprom
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -3845,7 +3789,6 @@ Status=Compatible
 Clear Frame=2
 Culling=1
 FuncFind=2
-Save Type=16kbit Eeprom
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -3858,7 +3801,6 @@ Status=Compatible
 Clear Frame=2
 Culling=1
 FuncFind=2
-Save Type=16kbit Eeprom
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -3871,7 +3813,6 @@ Status=Compatible
 Clear Frame=2
 Culling=1
 FuncFind=2
-Save Type=16kbit Eeprom
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
@@ -4053,7 +3994,6 @@ Status=Compatible
 Culling=1
 Emulate Clear=1
 Linking=Off
-Save Type=Sram
 
 [B6E549CE-DC8134C0-C:53]
 Good Name=Pokemon Stadium (S)
@@ -4432,7 +4372,6 @@ Good Name=Robot Ponkottsu 64 - 7tsu no Umi no Caramel (J)
 Internal Name=Robopon64
 Status=Compatible
 Clear Frame=1
-Save Type=16kbit Eeprom
 
 [9FF69D4F-195F0059-C:50]
 Good Name=Robotron 64 (E)
@@ -4467,13 +4406,11 @@ Status=Compatible
 Good Name=RR64 - Ridge Racer 64 (E)
 Internal Name=RIDGE RACER 64
 Status=Compatible
-Save Type=16kbit Eeprom
 
 [2500267E-2A7EC3CE-C:45]
 Good Name=RR64 - Ridge Racer 64 (U)
 Internal Name=RIDGE RACER 64
 Status=Compatible
-Save Type=16kbit Eeprom
 
 [658F8F37-1813D28D-C:44]
 Good Name=RTL World League Soccer 2000 (G)
@@ -4949,7 +4886,6 @@ AudioResetOnLoad=Yes
 Counter Factor=1
 Culling=1
 Emulate Clear=1
-Save Type=16kbit Eeprom
 
 [61F5B152-046122AB-C:4A]
 Good Name=Star Wars Episode I - Racer (J)
@@ -4959,7 +4895,6 @@ AudioResetOnLoad=Yes
 Counter Factor=1
 Culling=1
 Emulate Clear=1
-Save Type=16kbit Eeprom
 
 [72F70398-6556A98B-C:45]
 Good Name=Star Wars Episode I - Racer (U)
@@ -4969,7 +4904,6 @@ AudioResetOnLoad=Yes
 Counter Factor=1
 Culling=1
 Emulate Clear=1
-Save Type=16kbit Eeprom
 
 [42CF5EA3-9A1334DF-C:50]
 Good Name=StarCraft 64 (E)
@@ -5922,7 +5856,6 @@ Internal Name=Waialae Country Club
 Status=Compatible
 Culling=1
 Primary Frame Buffer=1
-Save Type=Sram
 
 [0C5057AD-046E126E-C:50]
 Good Name=Waialae Country Club - True Golf Classics (E) (M4) (V1.1)
@@ -5930,7 +5863,6 @@ Internal Name=Waialae Country Club
 Status=Compatible
 Culling=1
 Primary Frame Buffer=1
-Save Type=Sram
 
 [8066D58A-C3DECAC1-C:45]
 Good Name=Waialae Country Club - True Golf Classics (U) (V1.0)
@@ -5938,7 +5870,6 @@ Internal Name=Waialae Country Club
 Status=Compatible
 Culling=1
 Primary Frame Buffer=1
-Save Type=Sram
 
 [DD318CE2-B73798BA-C:45]
 Good Name=Waialae Country Club - True Golf Classics (U) (V1.1)
@@ -5946,7 +5877,6 @@ Internal Name=Waialae Country Club
 Status=Compatible
 Culling=1
 Primary Frame Buffer=1
-Save Type=Sram
 
 [D715CC70-271CF5D6-C:50]
 Good Name=War Gods (E)
@@ -6277,19 +6207,16 @@ HLE GFX=No
 Good Name=Yoshi Story (J)
 Internal Name=YOSHI STORY
 Status=Compatible
-Save Type=16kbit Eeprom
 
 [D3F97D49-6924135B-C:50]
 Good Name=Yoshi's Story (E) (M3)
 Internal Name=YOSHI STORY
 Status=Compatible
-Save Type=16kbit Eeprom
 
 [2337D8E8-6B8E7CEC-C:45]
 Good Name=Yoshi's Story (U) (M2)
 Internal Name=YOSHI STORY
 Status=Compatible
-Save Type=16kbit Eeprom
 
 [9FE6162D-E97E4037-C:4A]
 Good Name=Yuke Yuke!! Trouble Makers (J)
