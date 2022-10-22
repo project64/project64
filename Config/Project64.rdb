@@ -8484,7 +8484,6 @@ Unaligned DMA=1
 [B12785E7-E2BD6242-C:45]
 Good Name=Waluigi's Taco Stand 64
 Status=Compatible
-Counter Factor=2
 Linking=Off
 Unaligned DMA=1
 
