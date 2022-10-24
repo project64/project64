@@ -3906,7 +3906,7 @@ void CX86RecompilerOps::LWC1()
 
         CX86Ops::x86Reg TempReg2 = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
         m_Assembler.MoveVariableToX86reg(&_FPR_S[m_Opcode.ft], stdstr_f("_FPR_S[%d]", m_Opcode.ft).c_str(), TempReg2);
-        m_Assembler.MoveX86regToX86Pointer(TempReg1, TempReg2);
+        m_Assembler.MoveX86regToX86Pointer(TempReg2, TempReg1);
         return;
     }
     PreReadInstruction();
@@ -3914,7 +3914,7 @@ void CX86RecompilerOps::LWC1()
     CompileLoadMemoryValue(CX86Ops::x86_Unknown, ValueReg, CX86Ops::x86_Unknown, 32, false);
     CX86Ops::x86Reg FPR_SPtr = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
     m_Assembler.MoveVariableToX86reg(&_FPR_S[m_Opcode.ft], stdstr_f("_FPR_S[%d]", m_Opcode.ft).c_str(), FPR_SPtr);
-    m_Assembler.MoveX86regToX86Pointer(ValueReg, FPR_SPtr);
+    m_Assembler.MoveX86regToX86Pointer(FPR_SPtr, ValueReg);
 }
 
 void CX86RecompilerOps::LDC1()
@@ -3936,11 +3936,11 @@ void CX86RecompilerOps::LDC1()
         CX86Ops::x86Reg TempReg2 = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
         m_Assembler.MoveVariableToX86reg(&_FPR_D[m_Opcode.ft], stdstr_f("_FPR_D[%d]", m_Opcode.ft).c_str(), TempReg2);
         m_Assembler.AddConstToX86Reg(TempReg2, 4);
-        m_Assembler.MoveX86regToX86Pointer(TempReg1, TempReg2);
+        m_Assembler.MoveX86regToX86Pointer(TempReg2, TempReg1);
 
         LW_KnownAddress(TempReg1, Address + 4);
         m_Assembler.MoveVariableToX86reg(&_FPR_D[m_Opcode.ft], stdstr_f("_FPR_S[%d]", m_Opcode.ft).c_str(), TempReg2);
-        m_Assembler.MoveX86regToX86Pointer(TempReg1, TempReg2);
+        m_Assembler.MoveX86regToX86Pointer(TempReg2, TempReg1);
     }
     else
     {
@@ -3952,9 +3952,9 @@ void CX86RecompilerOps::LDC1()
 
         CX86Ops::x86Reg FPR_DPtr = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
         m_Assembler.MoveVariableToX86reg(&_FPR_D[m_Opcode.ft], stdstr_f("_FPR_D[%d]", m_Opcode.ft).c_str(), FPR_DPtr);
-        m_Assembler.MoveX86regToX86Pointer(ValueRegLo, FPR_DPtr);
+        m_Assembler.MoveX86regToX86Pointer(FPR_DPtr, ValueRegLo);
         m_Assembler.AddConstToX86Reg(FPR_DPtr, 4);
-        m_Assembler.MoveX86regToX86Pointer(ValueRegHi, FPR_DPtr);
+        m_Assembler.MoveX86regToX86Pointer(FPR_DPtr, ValueRegHi);
     }
 }
 
@@ -7500,11 +7500,11 @@ void CX86RecompilerOps::COP1_MT()
     }
     else if (IsMapped(m_Opcode.rt))
     {
-        m_Assembler.MoveX86regToX86Pointer(GetMipsRegMapLo(m_Opcode.rt), TempReg);
+        m_Assembler.MoveX86regToX86Pointer(TempReg, GetMipsRegMapLo(m_Opcode.rt));
     }
     else
     {
-        m_Assembler.MoveX86regToX86Pointer(Map_TempReg(CX86Ops::x86_Unknown, m_Opcode.rt, false, false), TempReg);
+        m_Assembler.MoveX86regToX86Pointer(TempReg, Map_TempReg(CX86Ops::x86_Unknown, m_Opcode.rt, false, false));
     }
 }
 
@@ -7538,23 +7538,23 @@ void CX86RecompilerOps::COP1_DMT()
     }
     else if (IsMapped(m_Opcode.rt))
     {
-        m_Assembler.MoveX86regToX86Pointer(GetMipsRegMapLo(m_Opcode.rt), TempReg);
+        m_Assembler.MoveX86regToX86Pointer(TempReg, GetMipsRegMapLo(m_Opcode.rt));
         m_Assembler.AddConstToX86Reg(TempReg, 4);
         if (Is64Bit(m_Opcode.rt))
         {
-            m_Assembler.MoveX86regToX86Pointer(GetMipsRegMapHi(m_Opcode.rt), TempReg);
+            m_Assembler.MoveX86regToX86Pointer(TempReg, GetMipsRegMapHi(m_Opcode.rt));
         }
         else
         {
-            m_Assembler.MoveX86regToX86Pointer(Map_TempReg(CX86Ops::x86_Unknown, m_Opcode.rt, true, false), TempReg);
+            m_Assembler.MoveX86regToX86Pointer(TempReg, Map_TempReg(CX86Ops::x86_Unknown, m_Opcode.rt, true, false));
         }
     }
     else
     {
         CX86Ops::x86Reg Reg = Map_TempReg(CX86Ops::x86_Unknown, m_Opcode.rt, false, false);
-        m_Assembler.MoveX86regToX86Pointer(Reg, TempReg);
+        m_Assembler.MoveX86regToX86Pointer(TempReg, Reg);
         m_Assembler.AddConstToX86Reg(TempReg, 4);
-        m_Assembler.MoveX86regToX86Pointer(Map_TempReg(Reg, m_Opcode.rt, true, false), TempReg);
+        m_Assembler.MoveX86regToX86Pointer(TempReg, Map_TempReg(Reg, m_Opcode.rt, true, false));
     }
 }
 

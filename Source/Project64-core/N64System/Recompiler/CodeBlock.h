@@ -103,10 +103,10 @@ private:
     bool AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t & ContinuePC, bool & LikelyBranch, bool & IncludeDelaySlot, bool & EndBlock, bool & PermLoop);
 
     uint32_t m_VAddrEnter;
-    uint32_t m_VAddrFirst;           // The address of the first opcode in the block
-    uint32_t m_VAddrLast;            // The address of the first opcode in the block
-    uint8_t * m_CompiledLocation;    // What address is this compiled at?
-    uint8_t * m_CompiledLocationEnd; // What address is this compiled at?
+    uint32_t m_VAddrFirst;
+    uint32_t m_VAddrLast;
+    uint8_t * m_CompiledLocation;
+    uint8_t * m_CompiledLocationEnd;
 
     typedef std::map<uint32_t, CCodeSection *> SectionMap;
     typedef std::list<CCodeSection *> SectionList;
