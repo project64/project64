@@ -918,7 +918,7 @@ void CX86Ops::MoveConstToVariable(uint32_t Const, void * Variable, const char * 
     AddCode32(Const);
 }
 
-void CX86Ops::MoveConstToX86Pointer(uint32_t Const, x86Reg X86Pointer)
+void CX86Ops::MoveConstToX86Pointer(x86Reg X86Pointer, uint32_t Const)
 {
     CodeLog("      mov dword ptr [%s], %Xh", x86_Name(X86Pointer), Const);
     AddCode16((uint16_t)(0x00C7 + (X86Pointer * 0x100)));
