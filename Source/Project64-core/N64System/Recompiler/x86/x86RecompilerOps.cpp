@@ -3036,6 +3036,13 @@ void CX86RecompilerOps::LH_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr, boo
     }
 }
 
+void CX86RecompilerOps::RESERVED31()
+{
+    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_IllegalInstruction, true, nullptr);
+    m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
+}
+
 void CX86RecompilerOps::LB()
 {
     if (m_Opcode.rt == 0)
@@ -4499,7 +4506,7 @@ void CX86RecompilerOps::SPECIAL_JALR()
 void CX86RecompilerOps::SPECIAL_SYSCALL()
 {
     m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-    CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, ExitReason_DoSysCall, true, nullptr);
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_DoSysCall, true, nullptr);
     m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
 }
 
@@ -9634,6 +9641,11 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         m_Assembler.Push(CX86Ops::x86_EDX);
         m_Assembler.PushImm32(InDelaySlot ? "true" : "false", InDelaySlot);
         m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::DoAddressError), "CRegisters::DoAddressError", 12);
+        ExitCodeBlock();
+        break;
+    case ExitReason_IllegalInstruction:
+        m_Assembler.PushImm32(InDelaySlot ? "true" : "false", InDelaySlot);
+        m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::DoIllegalInstructionException), "CRegisters::DoIllegalInstructionException", 8);
         ExitCodeBlock();
         break;
     default:

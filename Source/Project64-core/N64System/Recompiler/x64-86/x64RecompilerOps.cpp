@@ -143,6 +143,11 @@ void CX64RecompilerOps::LDR()
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
+void CX64RecompilerOps::RESERVED31()
+{
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+}
+
 void CX64RecompilerOps::LB()
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);

@@ -50,6 +50,7 @@ public:
     void DADDIU();
     void LDL();
     void LDR();
+    void RESERVED31();
     void LB();
     void LH();
     void LWL();

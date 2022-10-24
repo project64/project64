@@ -144,6 +144,11 @@ void CAarch64RecompilerOps::LDR()
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
+void CAarch64RecompilerOps::RESERVED31()
+{
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+}
+
 void CAarch64RecompilerOps::LB()
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
