@@ -2038,13 +2038,13 @@ void CX86Ops::MoveX86regToX86Pointer(x86Reg X86Pointer, x86Reg Reg)
     AddCode16(x86Command);
 }
 
-void CX86Ops::MoveX86regToX86regPointer(x86Reg reg, x86Reg AddrReg1, x86Reg AddrReg2)
+void CX86Ops::MoveX86regToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg Reg)
 {
     uint8_t Param = 0;
 
-    CodeLog("      mov dword ptr [%s+%s],%s", x86_Name(AddrReg1), x86_Name(AddrReg2), x86_Name(reg));
+    CodeLog("      mov dword ptr [%s+%s],%s", x86_Name(AddrReg1), x86_Name(AddrReg2), x86_Name(Reg));
 
-    switch (reg)
+    switch (Reg)
     {
     case x86_EAX: AddCode16(0x0489); break;
     case x86_EBX: AddCode16(0x1C89); break;
