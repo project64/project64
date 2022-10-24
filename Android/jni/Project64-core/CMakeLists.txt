@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_C_STANDARD 99)
 
@@ -39,7 +39,6 @@ add_library(Project64-core STATIC
     N64System/Mips/GBCart.cpp
     N64System/Mips/MemoryVirtualMem.cpp
     N64System/Mips/Mempak.cpp
-    N64System/Mips/PifRam.cpp
     N64System/Mips/R4300iInstruction.cpp
     N64System/Mips/Register.cpp
     N64System/Mips/Rumblepak.cpp

@@ -458,4 +458,6 @@ private:
     static uint32_t m_BranchCompare;
 };
 
+typedef CX86RecompilerOps CRecompilerOps;
+
 #endif
