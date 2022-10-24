@@ -10079,7 +10079,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         }
         else
         {
-            m_Assembler.MoveX86regToX86regPointer(ValueReg, AddressReg, TempReg);
+            m_Assembler.MoveX86regToX86regPointer(TempReg, ValueReg, AddressReg);
         }
     }
     else if (ValueSize == 64)
@@ -10092,9 +10092,9 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         }
         else
         {
-            m_Assembler.MoveX86regToX86regPointer(ValueRegHi, AddressReg, TempReg);
+            m_Assembler.MoveX86regToX86regPointer(TempReg, ValueRegHi, AddressReg);
             m_Assembler.AddConstToX86Reg(AddressReg, 4);
-            m_Assembler.MoveX86regToX86regPointer(ValueReg, AddressReg, TempReg);
+            m_Assembler.MoveX86regToX86regPointer(TempReg, ValueReg, AddressReg);
         }
     }
     else
