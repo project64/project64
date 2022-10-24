@@ -68,6 +68,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "discord-rpc", "Source\3rdPa
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64-input", "Source\Project64-input\Project64-input.vcxproj", "{D3F979CE-8FA7-48C9-A2B3-A33594B48536}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SortRdb", "Source\SortRdb\SortRdb.vcxproj", "{5788717F-E3D4-40CF-9637-3A2AEE85BB81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -235,6 +237,12 @@ Global
 		{D3F979CE-8FA7-48C9-A2B3-A33594B48536}.Release|Win32.Build.0 = Release|Win32
 		{D3F979CE-8FA7-48C9-A2B3-A33594B48536}.Release|x64.ActiveCfg = Release|x64
 		{D3F979CE-8FA7-48C9-A2B3-A33594B48536}.Release|x64.Build.0 = Release|x64
+		{5788717F-E3D4-40CF-9637-3A2AEE85BB81}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5788717F-E3D4-40CF-9637-3A2AEE85BB81}.Debug|Win32.Build.0 = Debug|Win32
+		{5788717F-E3D4-40CF-9637-3A2AEE85BB81}.Debug|x64.ActiveCfg = Debug|Win32
+		{5788717F-E3D4-40CF-9637-3A2AEE85BB81}.Release|Win32.ActiveCfg = Release|Win32
+		{5788717F-E3D4-40CF-9637-3A2AEE85BB81}.Release|Win32.Build.0 = Release|Win32
+		{5788717F-E3D4-40CF-9637-3A2AEE85BB81}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

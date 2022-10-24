@@ -1,5 +1,6 @@
 #include <windows.h>
-#include <common/IniFileClass.h>
+#include <Common/IniFile.h>
+#include <Common/StdString.h>
 #include <set>
 
 int main (int argc, char *argv[])
@@ -232,27 +233,28 @@ int main (int argc, char *argv[])
 	PDNames.insert("Yoshi's Story BootEmu (PD)");
 
 	strmap GoodNameSections, PDNameSections;
-	for (size_t i = 0, n = Sections.size(); i < n; i++)
-	{
+    for (CIniFile::SectionList::const_iterator SectionItr = Sections.begin(); SectionItr != Sections.end(); SectionItr++)
+    {
+        const char * Section = SectionItr->c_str();
 		stdstr GoodName;
-		if (!RomIniFile.GetString(Sections[i].c_str(),"Good Name","",GoodName))
+		if (!RomIniFile.GetString(Section,"Good Name","",GoodName))
 		{
 			continue;
 		}
 		std::vector<std::string> items;
-		items.push_back(Sections[i]);
+		items.push_back(Section);
 		if (PDNames.find(GoodName) == PDNames.end())
 		{
 			strmap::_Pairib res = GoodNameSections.insert(strmap::value_type(GoodName,items));
 			if (!res.second)
 			{
-				res.first->second.push_back(Sections[i]);
+				res.first->second.push_back(Section);
 			}
 		} else {
 			strmap::_Pairib res = PDNameSections.insert(strmap::value_type(GoodName,items));
 			if (!res.second)
 			{
-				res.first->second.push_back(Sections[i]);
+				res.first->second.push_back(Section);
 			}
 		}
 	}
@@ -273,12 +275,12 @@ int main (int argc, char *argv[])
 		for (size_t i = 0, n = itr->second.size(); i < n; i++)
 		{
 			std::string & SectionName = itr->second[i];
-			strlist KeyList;
+            CIniFileBase::strlist KeyList;
 			RomIniFile.GetKeyList(SectionName.c_str(),KeyList);
 			std::set<stdstr> SortedKeyList;
-			for (strlist::iterator itr = KeyList.begin(); itr != KeyList.end(); itr++)
+			for (CIniFileBase::strlist::iterator KeyListItr = KeyList.begin(); KeyListItr != KeyList.end(); KeyListItr++)
 			{
-				SortedKeyList.insert(*itr);
+				SortedKeyList.insert(*KeyListItr);
 			}
 
 			if (LastGoodName.length() == 0 || LastGoodName[0] != GoodName[0])
@@ -297,29 +299,29 @@ int main (int argc, char *argv[])
 			}
 			LastGoodName = GoodName;
 			fprintf(fp,"[%s]\n",SectionName.c_str());
-			for (strlist::iterator itr = NonSortedArray.begin(); itr != NonSortedArray.end(); itr++)
+			for (strlist::iterator NonSortedItr = NonSortedArray.begin(); NonSortedItr != NonSortedArray.end(); NonSortedItr++)
 			{
-				std::set<stdstr>::iterator find_itr = SortedKeyList.find(itr->c_str());
+				std::set<stdstr>::iterator find_itr = SortedKeyList.find(NonSortedItr->c_str());
 				if (find_itr != SortedKeyList.end())
 				{
 					stdstr Value;
-					if (RomIniFile.GetString(SectionName.c_str(),itr->c_str(),"",Value))
+					if (RomIniFile.GetString(SectionName.c_str(), NonSortedItr->c_str(),"",Value))
 					{
-						fprintf(fp,"%s=%s\n",itr->c_str(), Value.c_str());
+						fprintf(fp,"%s=%s\n", NonSortedItr->c_str(), Value.c_str());
 					}
 					SortedKeyList.erase(find_itr);
 				}
 			}
 
-			for (std::set<stdstr>::iterator itr = SortedKeyList.begin(); itr != SortedKeyList.end(); itr++)
+			for (std::set<stdstr>::iterator SortedKeyListItr = SortedKeyList.begin(); SortedKeyListItr != SortedKeyList.end(); SortedKeyListItr++)
 			{
 				stdstr Value;
-				if (RomIniFile.GetString(SectionName.c_str(),itr->c_str(),"",Value))
+				if (RomIniFile.GetString(SectionName.c_str(), SortedKeyListItr->c_str(),"",Value))
 				{
-					fprintf(fp,"%s=%s\n",itr->c_str(), Value.c_str());
+					fprintf(fp,"%s=%s\n", SortedKeyListItr->c_str(), Value.c_str());
 				}
 			}
-			fprintf(fp,"\n",SectionName.c_str());
+			fprintf(fp,"\n");
 		}
 	}
 
@@ -333,38 +335,38 @@ int main (int argc, char *argv[])
 			for (size_t i = 0, n = itr->second.size(); i < n; i++)
 			{
 				std::string & SectionName = itr->second[i];
-				strlist KeyList;
+                CIniFileBase::strlist KeyList;
 				RomIniFile.GetKeyList(SectionName.c_str(),KeyList);
 				std::set<stdstr> SortedKeyList;
-				for (strlist::iterator itr = KeyList.begin(); itr != KeyList.end(); itr++)
+				for (CIniFileBase::strlist::iterator KeyListItr = KeyList.begin(); KeyListItr != KeyList.end(); KeyListItr++)
 				{
-					SortedKeyList.insert(*itr);
+					SortedKeyList.insert(*KeyListItr);
 				}
 
 				fprintf(fp,"[%s]\n",SectionName.c_str());
-				for (strlist::iterator itr = NonSortedArray.begin(); itr != NonSortedArray.end(); itr++)
+				for (strlist::iterator NonSortedItr = NonSortedArray.begin(); NonSortedItr != NonSortedArray.end(); NonSortedItr++)
 				{
-					std::set<stdstr>::iterator find_itr = SortedKeyList.find(itr->c_str());
+					std::set<stdstr>::iterator find_itr = SortedKeyList.find(NonSortedItr->c_str());
 					if (find_itr != SortedKeyList.end())
 					{
 						stdstr Value;
-						if (RomIniFile.GetString(SectionName.c_str(),itr->c_str(),"",Value))
+						if (RomIniFile.GetString(SectionName.c_str(), NonSortedItr->c_str(),"",Value))
 						{
-							fprintf(fp,"%s=%s\n",itr->c_str(), Value.c_str());
+							fprintf(fp,"%s=%s\n", NonSortedItr->c_str(), Value.c_str());
 						}
 						SortedKeyList.erase(find_itr);
 					}
 				}
 
-				for (std::set<stdstr>::iterator itr = SortedKeyList.begin(); itr != SortedKeyList.end(); itr++)
+				for (std::set<stdstr>::iterator SortedKeyItr = SortedKeyList.begin(); SortedKeyItr != SortedKeyList.end(); SortedKeyItr++)
 				{
 					stdstr Value;
-					if (RomIniFile.GetString(SectionName.c_str(),itr->c_str(),"",Value))
+					if (RomIniFile.GetString(SectionName.c_str(), SortedKeyItr->c_str(),"",Value))
 					{
-						fprintf(fp,"%s=%s\n",itr->c_str(), Value.c_str());
+						fprintf(fp,"%s=%s\n", SortedKeyItr->c_str(), Value.c_str());
 					}
 				}
-				fprintf(fp,"\n",SectionName.c_str());
+				fprintf(fp,"\n");
 			}
 		}
 	}
