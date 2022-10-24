@@ -772,6 +772,10 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
     case R4300i_DADDIU:
     case R4300i_LDL:
     case R4300i_LDR:
+        break;
+    case R4300i_RESERVED31:
+        EndBlock = true;
+        break;
     case R4300i_LB:
     case R4300i_LH:
     case R4300i_LWL:

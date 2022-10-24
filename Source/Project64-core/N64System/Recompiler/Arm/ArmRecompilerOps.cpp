@@ -145,6 +145,11 @@ void CArmRecompilerOps::LDR()
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
+void CArmRecompilerOps::RESERVED31()
+{
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+}
+
 void CArmRecompilerOps::LB()
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);

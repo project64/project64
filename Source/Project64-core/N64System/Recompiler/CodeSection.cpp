@@ -646,6 +646,7 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
         case R4300i_DADDIU: m_RecompilerOps->DADDIU(); break;
         case R4300i_LDL: m_RecompilerOps->LDL(); break;
         case R4300i_LDR: m_RecompilerOps->LDR(); break;
+        case R4300i_RESERVED31: m_RecompilerOps->RESERVED31(); break;
         case R4300i_LB: m_RecompilerOps->LB(); break;
         case R4300i_LH: m_RecompilerOps->LH(); break;
         case R4300i_LWL: m_RecompilerOps->LWL(); break;
