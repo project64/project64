@@ -203,7 +203,7 @@ void CX86Ops::CallFunc(uint32_t FunctPtr, const char * FunctName)
 #ifdef _MSC_VER
 void CX86Ops::CallThis(uint32_t ThisPtr, uint32_t FunctPtr, char * FunctName, uint32_t /*StackSize*/)
 {
-    MoveConstToX86reg(ThisPtr, CX86Ops::x86_ECX);
+    MoveConstToX86reg(CX86Ops::x86_ECX, ThisPtr);
     CallFunc(FunctPtr, FunctName);
 }
 #else
@@ -925,16 +925,16 @@ void CX86Ops::MoveConstToX86Pointer(uint32_t Const, x86Reg X86Pointer)
     AddCode32(Const);
 }
 
-void CX86Ops::MoveConstToX86reg(uint32_t Const, x86Reg reg)
+void CX86Ops::MoveConstToX86reg(x86Reg Reg, uint32_t Const)
 {
     if (Const == 0)
     {
-        XorX86RegToX86Reg(reg, reg);
+        XorX86RegToX86Reg(Reg, Reg);
     }
     else
     {
-        CodeLog("      mov %s, %Xh", x86_Name(reg), Const);
-        AddCode16((uint16_t)(0xC0C7 + (reg * 0x100)));
+        CodeLog("      mov %s, %Xh", x86_Name(Reg), Const);
+        AddCode16((uint16_t)(0xC0C7 + (Reg * 0x100)));
         AddCode32(Const);
     }
 }
