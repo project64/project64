@@ -139,7 +139,7 @@ public:
     void MoveConstToN64Mem(uint32_t Const, x86Reg AddrReg);
     void MoveConstToN64MemDisp(uint32_t Const, x86Reg AddrReg, uint8_t Disp);
     void MoveConstToVariable(uint32_t Const, void * Variable, const char * VariableName);
-    void MoveConstToX86Pointer(uint32_t Const, x86Reg X86Pointer);
+    void MoveConstToX86Pointer(x86Reg X86Pointer, uint32_t Const);
     void MoveConstToX86reg(x86Reg Reg, uint32_t Const);
     void MoveConstToX86regPointer(uint32_t Const, x86Reg AddrReg1, x86Reg AddrReg2);
     void MoveN64MemDispToX86reg(x86Reg reg, x86Reg AddrReg, uint8_t Disp);

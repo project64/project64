@@ -7496,7 +7496,7 @@ void CX86RecompilerOps::COP1_MT()
 
     if (IsConst(m_Opcode.rt))
     {
-        m_Assembler.MoveConstToX86Pointer(GetMipsRegLo(m_Opcode.rt), TempReg);
+        m_Assembler.MoveConstToX86Pointer(TempReg, GetMipsRegLo(m_Opcode.rt));
     }
     else if (IsMapped(m_Opcode.rt))
     {
@@ -7525,15 +7525,15 @@ void CX86RecompilerOps::COP1_DMT()
 
     if (IsConst(m_Opcode.rt))
     {
-        m_Assembler.MoveConstToX86Pointer(GetMipsRegLo(m_Opcode.rt), TempReg);
+        m_Assembler.MoveConstToX86Pointer(TempReg, GetMipsRegLo(m_Opcode.rt));
         m_Assembler.AddConstToX86Reg(TempReg, 4);
         if (Is64Bit(m_Opcode.rt))
         {
-            m_Assembler.MoveConstToX86Pointer(GetMipsRegHi(m_Opcode.rt), TempReg);
+            m_Assembler.MoveConstToX86Pointer(TempReg, GetMipsRegHi(m_Opcode.rt));
         }
         else
         {
-            m_Assembler.MoveConstToX86Pointer(GetMipsRegLo_S(m_Opcode.rt) >> 31, TempReg);
+            m_Assembler.MoveConstToX86Pointer(TempReg, GetMipsRegLo_S(m_Opcode.rt) >> 31);
         }
     }
     else if (IsMapped(m_Opcode.rt))
