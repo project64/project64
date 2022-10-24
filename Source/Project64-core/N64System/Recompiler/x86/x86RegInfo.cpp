@@ -701,7 +701,7 @@ CX86Ops::x86Reg CX86RegInfo::Map_MemoryStack(CX86Ops::x86Reg Reg, bool bMapRegis
         m_CodeBlock.Log("    regcache: change allocation of memory stack from %s to %s", CX86Ops::x86_Name(CurrentMap), CX86Ops::x86_Name(Reg));
         SetX86Mapped(GetIndexFromX86Reg(Reg), CX86RegInfo::Stack_Mapped);
         SetX86Mapped(GetIndexFromX86Reg(CurrentMap), CX86RegInfo::NotMapped);
-        m_Assembler.MoveX86RegToX86Reg(CurrentMap, Reg);
+        m_Assembler.MoveX86RegToX86Reg(Reg, CurrentMap);
     }
     else
     {
@@ -772,7 +772,7 @@ void CX86RegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsReg
         {
             if (MipsReg != MipsRegToLoad)
             {
-                m_Assembler.MoveX86RegToX86Reg(GetMipsRegMapLo(MipsRegToLoad), Reg);
+                m_Assembler.MoveX86RegToX86Reg(Reg, GetMipsRegMapLo(MipsRegToLoad));
             }
         }
         else
@@ -873,7 +873,7 @@ void CX86RegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
             {
                 if (IsSigned(MipsRegToLoad))
                 {
-                    m_Assembler.MoveX86RegToX86Reg(GetMipsRegMapLo(MipsRegToLoad), x86Hi);
+                    m_Assembler.MoveX86RegToX86Reg(x86Hi, GetMipsRegMapLo(MipsRegToLoad));
                     m_Assembler.ShiftRightSignImmed(x86Hi, 31);
                 }
                 else
@@ -882,15 +882,15 @@ void CX86RegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
                 }
                 if (MipsReg != MipsRegToLoad)
                 {
-                    m_Assembler.MoveX86RegToX86Reg(GetMipsRegMapLo(MipsRegToLoad), x86lo);
+                    m_Assembler.MoveX86RegToX86Reg(x86lo, GetMipsRegMapLo(MipsRegToLoad));
                 }
             }
             else
             {
                 if (MipsReg != MipsRegToLoad)
                 {
-                    m_Assembler.MoveX86RegToX86Reg(GetMipsRegMapHi(MipsRegToLoad), x86Hi);
-                    m_Assembler.MoveX86RegToX86Reg(GetMipsRegMapLo(MipsRegToLoad), x86lo);
+                    m_Assembler.MoveX86RegToX86Reg(x86Hi, GetMipsRegMapHi(MipsRegToLoad));
+                    m_Assembler.MoveX86RegToX86Reg(x86lo, GetMipsRegMapLo(MipsRegToLoad));
                 }
             }
         }
@@ -1033,7 +1033,7 @@ CX86Ops::x86Reg CX86RegInfo::Map_TempReg(CX86Ops::x86Reg Reg, int32_t MipsReg, b
                 SetX86Mapped(GetIndexFromX86Reg(NewReg), GPR_Mapped);
                 SetX86MapOrder(GetIndexFromX86Reg(NewReg), GetX86MapOrder(GetIndexFromX86Reg(Reg)));
                 SetMipsRegMapLo(i, NewReg);
-                m_Assembler.MoveX86RegToX86Reg(Reg, NewReg);
+                m_Assembler.MoveX86RegToX86Reg(NewReg, Reg);
                 if (MipsReg == (int32_t)i && !LoadHiWord)
                 {
                     MipsReg = -1;
@@ -1051,7 +1051,7 @@ CX86Ops::x86Reg CX86RegInfo::Map_TempReg(CX86Ops::x86Reg Reg, int32_t MipsReg, b
                 SetX86Mapped(GetIndexFromX86Reg(NewReg), GPR_Mapped);
                 SetX86MapOrder(GetIndexFromX86Reg(NewReg), GetX86MapOrder(GetIndexFromX86Reg(Reg)));
                 SetMipsRegMapHi(i, NewReg);
-                m_Assembler.MoveX86RegToX86Reg(Reg, NewReg);
+                m_Assembler.MoveX86RegToX86Reg(NewReg, Reg);
                 if (MipsReg == (int32_t)i && LoadHiWord)
                 {
                     MipsReg = -1;
@@ -1078,11 +1078,11 @@ CX86Ops::x86Reg CX86RegInfo::Map_TempReg(CX86Ops::x86Reg Reg, int32_t MipsReg, b
             {
                 if (Is64Bit(MipsReg))
                 {
-                    m_Assembler.MoveX86RegToX86Reg(GetMipsRegMapHi(MipsReg), Reg);
+                    m_Assembler.MoveX86RegToX86Reg(Reg, GetMipsRegMapHi(MipsReg));
                 }
                 else if (IsSigned(MipsReg))
                 {
-                    m_Assembler.MoveX86RegToX86Reg(GetMipsRegMapLo(MipsReg), Reg);
+                    m_Assembler.MoveX86RegToX86Reg(Reg, GetMipsRegMapLo(MipsReg));
                     m_Assembler.ShiftRightSignImmed(Reg, 31);
                 }
                 else
@@ -1110,7 +1110,7 @@ CX86Ops::x86Reg CX86RegInfo::Map_TempReg(CX86Ops::x86Reg Reg, int32_t MipsReg, b
             }
             else if (IsMapped(MipsReg))
             {
-                m_Assembler.MoveX86RegToX86Reg(GetMipsRegMapLo(MipsReg), Reg);
+                m_Assembler.MoveX86RegToX86Reg(Reg, GetMipsRegMapLo(MipsReg));
             }
             else
             {

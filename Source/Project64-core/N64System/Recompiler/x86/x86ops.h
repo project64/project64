@@ -170,7 +170,7 @@ public:
     void MoveX86regToN64Mem(x86Reg reg, x86Reg AddrReg);
     void MoveX86regToN64MemDisp(x86Reg reg, x86Reg AddrReg, uint8_t Disp);
     void MoveX86regToVariable(x86Reg reg, void * Variable, const char * VariableName);
-    void MoveX86RegToX86Reg(x86Reg Source, x86Reg Destination);
+    void MoveX86RegToX86Reg(x86Reg Destination, x86Reg Source);
     void MoveX86regToX86Pointer(x86Reg X86Pointer, x86Reg Reg);
     void MoveX86regToX86regPointer(x86Reg reg, x86Reg AddrReg1, x86Reg AddrReg2);
     void MoveZxByteX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg reg);

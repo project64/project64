@@ -1964,7 +1964,7 @@ void CX86Ops::MoveX86regToVariable(x86Reg reg, void * Variable, const char * Var
     AddCode32((uint32_t)(Variable));
 }
 
-void CX86Ops::MoveX86RegToX86Reg(x86Reg Source, x86Reg Destination)
+void CX86Ops::MoveX86RegToX86Reg(x86Reg Destination, x86Reg Source)
 {
     uint16_t x86Command = 0;
 
