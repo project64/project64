@@ -209,7 +209,7 @@ void CX86RegInfo::FixRoundModel(FPU_ROUND RoundMethod)
     m_fpuControl = 0;
     m_Assembler.fpuStoreControl(&m_fpuControl, "m_fpuControl");
     CX86Ops::x86Reg reg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
-    m_Assembler.MoveVariableToX86reg(&m_fpuControl, "m_fpuControl", reg);
+    m_Assembler.MoveVariableToX86reg(reg, &m_fpuControl, "m_fpuControl");
     m_Assembler.AndConstToX86Reg(reg, 0xF3FF);
 
     if (RoundMethod == RoundDefault)
@@ -224,14 +224,14 @@ void CX86RegInfo::FixRoundModel(FPU_ROUND RoundMethod)
             };
 
         CX86Ops::x86Reg RoundReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
-        m_Assembler.MoveVariableToX86reg(&g_Reg->m_RoundingModel, "m_RoundingModel", RoundReg);
+        m_Assembler.MoveVariableToX86reg(RoundReg, &g_Reg->m_RoundingModel, "m_RoundingModel");
         m_Assembler.MoveVariableDispToX86Reg((void *)&msRound[0], "msRound", RoundReg, RoundReg, CX86Ops::Multip_x4);
 
         m_Assembler.ShiftLeftSignImmed(RoundReg, 2);
         m_Assembler.OrX86RegToX86Reg(reg, RoundReg);
 #else
         CX86Ops::x86Reg RoundReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
-        m_Assembler.MoveVariableToX86reg(_RoundingModel, "_RoundingModel", RoundReg);
+        m_Assembler.MoveVariableToX86reg(RoundReg, _RoundingModel, "_RoundingModel");
         m_Assembler.OrX86RegToX86Reg(reg, RoundReg);
 #endif
         SetX86Protected(GetIndexFromX86Reg(RoundReg), false);
@@ -439,19 +439,19 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
         switch (Format)
         {
         case FPU_Dword:
-            m_Assembler.MoveVariableToX86reg(&g_Reg->m_FPR_S[RegToLoad], stdstr_f("m_FPR_S[%d]", RegToLoad).c_str(), TempReg);
+            m_Assembler.MoveVariableToX86reg(TempReg, &g_Reg->m_FPR_S[RegToLoad], stdstr_f("m_FPR_S[%d]", RegToLoad).c_str());
             m_Assembler.fpuLoadIntegerDwordFromX86Reg(StackTopPos(), TempReg);
             break;
         case FPU_Qword:
-            m_Assembler.MoveVariableToX86reg(&g_Reg->m_FPR_D[RegToLoad], stdstr_f("m_FPR_D[%d]", RegToLoad).c_str(), TempReg);
+            m_Assembler.MoveVariableToX86reg(TempReg, &g_Reg->m_FPR_D[RegToLoad], stdstr_f("m_FPR_D[%d]", RegToLoad).c_str());
             m_Assembler.fpuLoadIntegerQwordFromX86Reg(StackTopPos(), TempReg);
             break;
         case FPU_Float:
-            m_Assembler.MoveVariableToX86reg(&g_Reg->m_FPR_S[RegToLoad], stdstr_f("m_FPR_S[%d]", RegToLoad).c_str(), TempReg);
+            m_Assembler.MoveVariableToX86reg(TempReg, &g_Reg->m_FPR_S[RegToLoad], stdstr_f("m_FPR_S[%d]", RegToLoad).c_str());
             m_Assembler.fpuLoadDwordFromX86Reg(StackTopPos(), TempReg);
             break;
         case FPU_Double:
-            m_Assembler.MoveVariableToX86reg(&g_Reg->m_FPR_D[RegToLoad], stdstr_f("m_FPR_D[%d]", RegToLoad).c_str(), TempReg);
+            m_Assembler.MoveVariableToX86reg(TempReg, &g_Reg->m_FPR_D[RegToLoad], stdstr_f("m_FPR_D[%d]", RegToLoad).c_str());
             m_Assembler.fpuLoadQwordFromX86Reg(StackTopPos(), TempReg);
             break;
         default:
@@ -689,7 +689,7 @@ CX86Ops::x86Reg CX86RegInfo::Map_MemoryStack(CX86Ops::x86Reg Reg, bool bMapRegis
         m_CodeBlock.Log("    regcache: allocate %s as Memory Stack", CX86Ops::x86_Name(Reg));
         if (LoadValue)
         {
-            m_Assembler.MoveVariableToX86reg(&g_Recompiler->MemoryStackPos(), "MemoryStack", Reg);
+            m_Assembler.MoveVariableToX86reg(Reg, &g_Recompiler->MemoryStackPos(), "MemoryStack");
         }
         return Reg;
     }
@@ -709,7 +709,7 @@ CX86Ops::x86Reg CX86RegInfo::Map_MemoryStack(CX86Ops::x86Reg Reg, bool bMapRegis
         m_CodeBlock.Log("    regcache: allocate %s as memory stack", CX86Ops::x86_Name(Reg));
         if (LoadValue)
         {
-            m_Assembler.MoveVariableToX86reg(&g_Recompiler->MemoryStackPos(), "MemoryStack", Reg);
+            m_Assembler.MoveVariableToX86reg(Reg, &g_Recompiler->MemoryStackPos(), "MemoryStack");
         }
     }
     return Reg;
@@ -766,7 +766,7 @@ void CX86RegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsReg
     {
         if (IsUnknown(MipsRegToLoad))
         {
-            m_Assembler.MoveVariableToX86reg(&_GPR[MipsRegToLoad].UW[0], CRegName::GPR_Lo[MipsRegToLoad], Reg);
+            m_Assembler.MoveVariableToX86reg(Reg, &_GPR[MipsRegToLoad].UW[0], CRegName::GPR_Lo[MipsRegToLoad]);
         }
         else if (IsMapped(MipsRegToLoad))
         {
@@ -864,8 +864,8 @@ void CX86RegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
     {
         if (IsUnknown(MipsRegToLoad))
         {
-            m_Assembler.MoveVariableToX86reg(&_GPR[MipsRegToLoad].UW[1], CRegName::GPR_Hi[MipsRegToLoad], x86Hi);
-            m_Assembler.MoveVariableToX86reg(&_GPR[MipsRegToLoad].UW[0], CRegName::GPR_Lo[MipsRegToLoad], x86lo);
+            m_Assembler.MoveVariableToX86reg(x86Hi, &_GPR[MipsRegToLoad].UW[1], CRegName::GPR_Hi[MipsRegToLoad]);
+            m_Assembler.MoveVariableToX86reg(x86lo, &_GPR[MipsRegToLoad].UW[0], CRegName::GPR_Lo[MipsRegToLoad]);
         }
         else if (IsMapped(MipsRegToLoad))
         {
@@ -1072,7 +1072,7 @@ CX86Ops::x86Reg CX86RegInfo::Map_TempReg(CX86Ops::x86Reg Reg, int32_t MipsReg, b
         {
             if (IsUnknown(MipsReg))
             {
-                m_Assembler.MoveVariableToX86reg(&_GPR[MipsReg].UW[1], CRegName::GPR_Hi[MipsReg], Reg);
+                m_Assembler.MoveVariableToX86reg(Reg, &_GPR[MipsReg].UW[1], CRegName::GPR_Hi[MipsReg]);
             }
             else if (IsMapped(MipsReg))
             {
@@ -1106,7 +1106,7 @@ CX86Ops::x86Reg CX86RegInfo::Map_TempReg(CX86Ops::x86Reg Reg, int32_t MipsReg, b
         {
             if (IsUnknown(MipsReg))
             {
-                m_Assembler.MoveVariableToX86reg(&_GPR[MipsReg].UW[0], CRegName::GPR_Lo[MipsReg], Reg);
+                m_Assembler.MoveVariableToX86reg(Reg, &_GPR[MipsReg].UW[0], CRegName::GPR_Lo[MipsReg]);
             }
             else if (IsMapped(MipsReg))
             {
@@ -1257,19 +1257,19 @@ void CX86RegInfo::UnMap_FPR(int32_t Reg, bool WriteBackValue)
             switch (m_x86fpu_State[StackTopPos()])
             {
             case FPU_Dword:
-                m_Assembler.MoveVariableToX86reg(&_FPR_S[m_x86fpu_MappedTo[StackTopPos()]], stdstr_f("_FPR_S[%d]", m_x86fpu_MappedTo[StackTopPos()]).c_str(), TempReg);
+                m_Assembler.MoveVariableToX86reg(TempReg, &_FPR_S[m_x86fpu_MappedTo[StackTopPos()]], stdstr_f("_FPR_S[%d]", m_x86fpu_MappedTo[StackTopPos()]).c_str());
                 m_Assembler.fpuStoreIntegerDwordFromX86Reg(StackTopPos(), TempReg, true);
                 break;
             case FPU_Qword:
-                m_Assembler.MoveVariableToX86reg(&_FPR_D[m_x86fpu_MappedTo[StackTopPos()]], stdstr_f("_FPR_D[%d]", m_x86fpu_MappedTo[StackTopPos()]).c_str(), TempReg);
+                m_Assembler.MoveVariableToX86reg(TempReg, &_FPR_D[m_x86fpu_MappedTo[StackTopPos()]], stdstr_f("_FPR_D[%d]", m_x86fpu_MappedTo[StackTopPos()]).c_str());
                 m_Assembler.fpuStoreIntegerQwordFromX86Reg(StackTopPos(), TempReg, true);
                 break;
             case FPU_Float:
-                m_Assembler.MoveVariableToX86reg(&_FPR_S[m_x86fpu_MappedTo[StackTopPos()]], stdstr_f("_FPR_S[%d]", m_x86fpu_MappedTo[StackTopPos()]).c_str(), TempReg);
+                m_Assembler.MoveVariableToX86reg(TempReg, &_FPR_S[m_x86fpu_MappedTo[StackTopPos()]], stdstr_f("_FPR_S[%d]", m_x86fpu_MappedTo[StackTopPos()]).c_str());
                 m_Assembler.fpuStoreDwordFromX86Reg(StackTopPos(), TempReg, true);
                 break;
             case FPU_Double:
-                m_Assembler.MoveVariableToX86reg(&_FPR_D[m_x86fpu_MappedTo[StackTopPos()]], stdstr_f("_FPR_D[%d]", m_x86fpu_MappedTo[StackTopPos()]).c_str(), TempReg);
+                m_Assembler.MoveVariableToX86reg(TempReg, &_FPR_D[m_x86fpu_MappedTo[StackTopPos()]], stdstr_f("_FPR_D[%d]", m_x86fpu_MappedTo[StackTopPos()]).c_str());
                 m_Assembler.fpuStoreQwordFromX86Reg(StackTopPos(), TempReg, true);
                 break;
             default:

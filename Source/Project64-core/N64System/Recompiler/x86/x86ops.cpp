@@ -1367,10 +1367,10 @@ void CX86Ops::MoveSxVariableToX86regHalf(void * Variable, const char * VariableN
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::MoveVariableToX86reg(void * Variable, const char * VariableName, x86Reg reg)
+void CX86Ops::MoveVariableToX86reg(x86Reg Reg, void * Variable, const char * VariableName)
 {
-    CodeLog("      mov %s, dword ptr [%s]", x86_Name(reg), VariableName);
-    switch (reg)
+    CodeLog("      mov %s, dword ptr [%s]", x86_Name(Reg), VariableName);
+    switch (Reg)
     {
     case x86_EAX: AddCode16(0x058B); break;
     case x86_EBX: AddCode16(0x1D8B); break;
