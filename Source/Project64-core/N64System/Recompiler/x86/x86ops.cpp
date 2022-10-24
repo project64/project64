@@ -2004,11 +2004,11 @@ void CX86Ops::MoveX86RegToX86Reg(x86Reg Source, x86Reg Destination)
     AddCode16(x86Command);
 }
 
-void CX86Ops::MoveX86regToX86Pointer(x86Reg reg, x86Reg X86Pointer)
+void CX86Ops::MoveX86regToX86Pointer(x86Reg X86Pointer, x86Reg Reg)
 {
     uint16_t x86Command = 0;
 
-    CodeLog("      mov dword ptr [%s], %s", x86_Name(X86Pointer), x86_Name(reg));
+    CodeLog("      mov dword ptr [%s], %s", x86_Name(X86Pointer), x86_Name(Reg));
 
     switch (X86Pointer)
     {
@@ -2022,7 +2022,7 @@ void CX86Ops::MoveX86regToX86Pointer(x86Reg reg, x86Reg X86Pointer)
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (reg)
+    switch (Reg)
     {
     case x86_EAX: x86Command += 0x0000; break;
     case x86_EBX: x86Command += 0x1800; break;
