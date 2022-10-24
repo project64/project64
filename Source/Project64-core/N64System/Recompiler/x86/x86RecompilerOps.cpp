@@ -210,7 +210,7 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     m_Assembler.MoveConstToVariable(m_CompilePC, &g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER");
     if (g_SyncSystem) {
     #ifdef _WIN32
-    m_Assembler.MoveConstToX86reg((uint32_t)g_BaseSystem, CX86Ops::x86_ECX);
+    m_Assembler.MoveConstToX86reg(CX86Ops::x86_ECX, (uint32_t)g_BaseSystem);
     m_Assembler.CallFunc(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
     #else
     m_Assembler.PushImm32((uint32_t)g_BaseSystem);
@@ -230,7 +230,7 @@ void CX86RecompilerOps::PreCompileOpcode(void)
         if (g_SyncSystem)
         {
 #ifdef _WIN32
-            m_Assembler.MoveConstToX86reg((uint32_t)g_BaseSystem, CX86Ops::x86_ECX);
+            m_Assembler.MoveConstToX86reg(CX86Ops::x86_ECX, (uint32_t)g_BaseSystem);
             m_Assembler.CallFunc(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
 #else
             m_Assembler.PushImm32((uint32_t)g_BaseSystem);
@@ -259,7 +259,7 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     m_Assembler.MoveConstToVariable(m_CompilePC,&g_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
     if (g_SyncSystem) {
     #ifdef _WIN32
-    m_Assembler.MoveConstToX86reg((uint32_t)g_BaseSystem, CX86Ops::x86_ECX);
+    m_Assembler.MoveConstToX86reg(CX86Ops::x86_ECX, (uint32_t)g_BaseSystem);
     m_Assembler.CallFunc(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
     #else
     m_Assembler.PushImm32((uint32_t)g_BaseSystem);
@@ -280,7 +280,7 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     m_Assembler.MoveConstToVariable(m_CompilePC,&g_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
     if (g_SyncSystem) {
     #ifdef _WIN32
-    m_Assembler.MoveConstToX86reg((uint32_t)g_BaseSystem, CX86Ops::x86_ECX);
+    m_Assembler.MoveConstToX86reg(CX86Ops::x86_ECX, (uint32_t)g_BaseSystem);
     m_Assembler.CallFunc(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
     #else
     m_Assembler.PushImm32((uint32_t)g_BaseSystem);
@@ -296,7 +296,7 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     m_Assembler.MoveConstToVariable(m_CompilePC,&g_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
     if (g_SyncSystem) {
     #ifdef _WIN32
-    m_Assembler.MoveConstToX86reg((uint32_t)g_BaseSystem, CX86Ops::x86_ECX);
+    m_Assembler.MoveConstToX86reg(CX86Ops::x86_ECX, (uint32_t)g_BaseSystem);
     m_Assembler.CallFunc(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
     #else
     m_Assembler.PushImm32((uint32_t)g_BaseSystem);
@@ -341,7 +341,7 @@ void CX86RecompilerOps::PostCompileOpcode(void)
         if (g_SyncSystem)
         {
             m_RegWorkingSet.BeforeCallDirect();
-            m_Assembler.MoveConstToX86reg((uint32_t)g_BaseSystem, CX86Ops::x86_ECX);
+            m_Assembler.MoveConstToX86reg(CX86Ops::x86_ECX, (uint32_t)g_BaseSystem);
             m_Assembler.CallFunc(AddressOf(&CN64System::SyncSystemPC), "CN64System::SyncSystemPC");
             m_RegWorkingSet.AfterCallDirect();
         }
@@ -2640,7 +2640,7 @@ void CX86RecompilerOps::LUI()
         }
         else
         {
-            m_Assembler.MoveConstToX86reg((uint32_t)(Address + g_MMU->Rdram()), Reg);
+            m_Assembler.MoveConstToX86reg(Reg, (uint32_t)(Address + g_MMU->Rdram()));
         }
     }
 
@@ -2844,7 +2844,7 @@ void CX86RecompilerOps::LB_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr, boo
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
         CX86Ops::x86Reg AddressReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
-        m_Assembler.MoveConstToX86reg(VAddr, AddressReg);
+        m_Assembler.MoveConstToX86reg(AddressReg, VAddr);
         CompileLoadMemoryValue(AddressReg, Reg, CX86Ops::x86_Unknown, 8, SignExtend);
         return;
     }
@@ -2852,7 +2852,7 @@ void CX86RecompilerOps::LB_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr, boo
     uint32_t PAddr;
     if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
-        m_Assembler.MoveConstToX86reg(0, Reg);
+        m_Assembler.MoveConstToX86reg(Reg, 0);
         m_CodeBlock.Log("%s\nFailed to translate address %08X", __FUNCTION__, VAddr);
         if (BreakOnUnhandledMemory())
         {
@@ -2884,7 +2884,7 @@ void CX86RecompilerOps::LB_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr, boo
         }
         else
         {
-            m_Assembler.MoveConstToX86reg(0, Reg);
+            m_Assembler.MoveConstToX86reg(Reg, 0);
         }
         break;
     case 0x04000000:
@@ -2912,7 +2912,7 @@ void CX86RecompilerOps::LB_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr, boo
         }
         else
         {
-            m_Assembler.MoveConstToX86reg(0, Reg);
+            m_Assembler.MoveConstToX86reg(Reg, 0);
             if (BreakOnUnhandledMemory())
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -2944,11 +2944,11 @@ void CX86RecompilerOps::LB_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr, boo
         }
         else
         {
-            m_Assembler.MoveConstToX86reg(0, Reg);
+            m_Assembler.MoveConstToX86reg(Reg, 0);
         }
         break;
     default:
-        m_Assembler.MoveConstToX86reg(0, Reg);
+        m_Assembler.MoveConstToX86reg(Reg, 0);
         if (BreakOnUnhandledMemory())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -2963,13 +2963,13 @@ void CX86RecompilerOps::LH_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr, boo
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
         CX86Ops::x86Reg AddressReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
-        m_Assembler.MoveConstToX86reg(VAddr, AddressReg);
+        m_Assembler.MoveConstToX86reg(AddressReg, VAddr);
         CompileLoadMemoryValue(AddressReg, Reg, CX86Ops::x86_Unknown, 16, SignExtend);
     }
 
     if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
-        m_Assembler.MoveConstToX86reg(0, Reg);
+        m_Assembler.MoveConstToX86reg(Reg, 0);
         m_CodeBlock.Log("%s\nFailed to translate address %08X", __FUNCTION__, VAddr);
         if (BreakOnUnhandledMemory())
         {
@@ -3001,7 +3001,7 @@ void CX86RecompilerOps::LH_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr, boo
         }
         else
         {
-            m_Assembler.MoveConstToX86reg(0, Reg);
+            m_Assembler.MoveConstToX86reg(Reg, 0);
         }
         break;
     case 0x10000000:
@@ -3024,11 +3024,11 @@ void CX86RecompilerOps::LH_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr, boo
         }
         else
         {
-            m_Assembler.MoveConstToX86reg(0, Reg);
+            m_Assembler.MoveConstToX86reg(Reg, 0);
         }
         break;
     default:
-        m_Assembler.MoveConstToX86reg(0, Reg);
+        m_Assembler.MoveConstToX86reg(Reg, 0);
         if (BreakOnUnhandledMemory())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -3183,7 +3183,7 @@ void CX86RecompilerOps::LW_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr)
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
         CX86Ops::x86Reg AddressReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
-        m_Assembler.MoveConstToX86reg(VAddr, AddressReg);
+        m_Assembler.MoveConstToX86reg(AddressReg, VAddr);
         CompileLoadMemoryValue(AddressReg, Reg, CX86Ops::x86_Unknown, 32, true);
     }
     else
@@ -3210,7 +3210,7 @@ void CX86RecompilerOps::LW_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr)
             }
             else
             {
-                m_Assembler.MoveConstToX86reg(0, Reg);
+                m_Assembler.MoveConstToX86reg(Reg, 0);
             }
             break;
         case 0x04000000:
@@ -3261,7 +3261,7 @@ void CX86RecompilerOps::LW_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr)
             case 0x04300008: m_Assembler.MoveVariableToX86reg(&g_Reg->MI_INTR_REG, "MI_INTR_REG", Reg); break;
             case 0x0430000C: m_Assembler.MoveVariableToX86reg(&g_Reg->MI_INTR_MASK_REG, "MI_INTR_MASK_REG", Reg); break;
             default:
-                m_Assembler.MoveConstToX86reg(0, Reg);
+                m_Assembler.MoveConstToX86reg(Reg, 0);
                 if (BreakOnUnhandledMemory())
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -3309,7 +3309,7 @@ void CX86RecompilerOps::LW_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr)
             case 0x0460002C: m_Assembler.MoveVariableToX86reg(&g_Reg->PI_BSD_DOM2_PGS_REG, "PI_BSD_DOM2_PGS_REG", Reg); break;
             case 0x04600030: m_Assembler.MoveVariableToX86reg(&g_Reg->PI_BSD_DOM2_RLS_REG, "PI_BSD_DOM2_RLS_REG", Reg); break;
             default:
-                m_Assembler.MoveConstToX86reg(0, Reg);
+                m_Assembler.MoveConstToX86reg(Reg, 0);
                 if (BreakOnUnhandledMemory())
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -3322,7 +3322,7 @@ void CX86RecompilerOps::LW_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr)
             case 0x0470000C: m_Assembler.MoveVariableToX86reg(&g_Reg->RI_SELECT_REG, "RI_SELECT_REG", Reg); break;
             case 0x04700010: m_Assembler.MoveVariableToX86reg(&g_Reg->RI_REFRESH_REG, "RI_REFRESH_REG", Reg); break;
             default:
-                m_Assembler.MoveConstToX86reg(0, Reg);
+                m_Assembler.MoveConstToX86reg(Reg, 0);
                 if (BreakOnUnhandledMemory())
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -3334,7 +3334,7 @@ void CX86RecompilerOps::LW_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr)
             {
             case 0x04800018: m_Assembler.MoveVariableToX86reg(&g_Reg->SI_STATUS_REG, "SI_STATUS_REG", Reg); break;
             default:
-                m_Assembler.MoveConstToX86reg(0, Reg);
+                m_Assembler.MoveConstToX86reg(Reg, 0);
                 if (BreakOnUnhandledMemory())
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -3372,7 +3372,7 @@ void CX86RecompilerOps::LW_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr)
                 case 0x05000544: m_Assembler.MoveVariableToX86reg(&g_Reg->ASIC_TEST_REG, "ASIC_TEST_REG", Reg); break;
                 case 0x05000548: m_Assembler.MoveVariableToX86reg(&g_Reg->ASIC_TEST_PIN_SEL, "ASIC_TEST_PIN_SEL", Reg); break;
                 default:
-                    m_Assembler.MoveConstToX86reg(0, Reg);
+                    m_Assembler.MoveConstToX86reg(Reg, 0);
                     if (BreakOnUnhandledMemory())
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -3381,7 +3381,7 @@ void CX86RecompilerOps::LW_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr)
             }
             else
             {
-                m_Assembler.MoveConstToX86reg((uint32_t)((PAddr & 0xFFFF) << 16) | (PAddr & 0xFFFF), Reg);
+                m_Assembler.MoveConstToX86reg(Reg, (uint32_t)((PAddr & 0xFFFF) << 16) | (PAddr & 0xFFFF));
             }
             break;
         case 0x1FC00000:
@@ -3403,7 +3403,7 @@ void CX86RecompilerOps::LW_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr)
             }
             else
             {
-                m_Assembler.MoveConstToX86reg(((PAddr & 0xFFFF) << 16) | (PAddr & 0xFFFF), Reg);
+                m_Assembler.MoveConstToX86reg(Reg, ((PAddr & 0xFFFF) << 16) | (PAddr & 0xFFFF));
                 if (BreakOnUnhandledMemory())
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -3651,7 +3651,7 @@ void CX86RecompilerOps::SWL()
         m_Assembler.MoveVariableDispToX86Reg((void *)R4300iOp::SWL_SHIFT, "R4300iOp::SWL_SHIFT", shift, OffsetReg, 4);
         if (IsConst(m_Opcode.rt))
         {
-            m_Assembler.MoveConstToX86reg(GetMipsRegLo(m_Opcode.rt), OffsetReg);
+            m_Assembler.MoveConstToX86reg(OffsetReg, GetMipsRegLo(m_Opcode.rt));
         }
         else if (IsMapped(m_Opcode.rt))
         {
@@ -3817,7 +3817,7 @@ void CX86RecompilerOps::SWR()
         m_Assembler.MoveVariableDispToX86Reg((void *)R4300iOp::SWR_SHIFT, "R4300iOp::SWR_SHIFT", shift, OffsetReg, 4);
         if (IsConst(m_Opcode.rt))
         {
-            m_Assembler.MoveConstToX86reg(GetMipsRegLo(m_Opcode.rt), OffsetReg);
+            m_Assembler.MoveConstToX86reg(OffsetReg, GetMipsRegLo(m_Opcode.rt));
         }
         else if (IsMapped(m_Opcode.rt))
         {
@@ -4688,7 +4688,7 @@ void CX86RecompilerOps::SPECIAL_DSRLV()
             return;
         }
         Map_TempReg(CX86Ops::x86_ECX, -1, false, false);
-        m_Assembler.MoveConstToX86reg(Shift, CX86Ops::x86_ECX);
+        m_Assembler.MoveConstToX86reg(CX86Ops::x86_ECX, Shift);
         Map_GPR_64bit(m_Opcode.rd, m_Opcode.rt);
         if ((Shift & 0x20) == 0x20)
         {
@@ -4963,7 +4963,7 @@ void CX86RecompilerOps::SPECIAL_DIV()
 
     if (IsConst(m_Opcode.rs))
     {
-        m_Assembler.MoveConstToX86reg(GetMipsRegLo_S(m_Opcode.rs) >> 31, CX86Ops::x86_EDX);
+        m_Assembler.MoveConstToX86reg(CX86Ops::x86_EDX, GetMipsRegLo_S(m_Opcode.rs) >> 31);
     }
     else
     {
@@ -8628,12 +8628,12 @@ void CX86RecompilerOps::SyncRegState(const CRegInfo & SyncTo)
                 m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(GetMipsRegMapLo(i)), CRegInfo::NotMapped);
                 break;
             case CRegInfo::STATE_CONST_64:
-                m_Assembler.MoveConstToX86reg(GetMipsRegHi(i), x86RegHi);
-                m_Assembler.MoveConstToX86reg(GetMipsRegLo(i), Reg);
+                m_Assembler.MoveConstToX86reg(x86RegHi, GetMipsRegHi(i));
+                m_Assembler.MoveConstToX86reg(Reg, GetMipsRegLo(i));
                 break;
             case CRegInfo::STATE_CONST_32_SIGN:
-                m_Assembler.MoveConstToX86reg(GetMipsRegLo_S(i) >> 31, x86RegHi);
-                m_Assembler.MoveConstToX86reg(GetMipsRegLo(i), Reg);
+                m_Assembler.MoveConstToX86reg(x86RegHi, GetMipsRegLo_S(i) >> 31);
+                m_Assembler.MoveConstToX86reg(Reg, GetMipsRegLo(i));
                 break;
             default:
                 m_CodeBlock.Log("Do something with states in SyncRegState\nSTATE_MAPPED_64\n%d", GetMipsRegState(i));
@@ -8656,7 +8656,7 @@ void CX86RecompilerOps::SyncRegState(const CRegInfo & SyncTo)
             switch (GetMipsRegState(i))
             {
             case CRegInfo::STATE_UNKNOWN: m_Assembler.MoveVariableToX86reg(&_GPR[i].UW[0], CRegName::GPR_Lo[i], Reg); break;
-            case CRegInfo::STATE_CONST_32_SIGN: m_Assembler.MoveConstToX86reg(GetMipsRegLo(i), Reg); break;
+            case CRegInfo::STATE_CONST_32_SIGN: m_Assembler.MoveConstToX86reg(Reg, GetMipsRegLo(i)); break;
             case CRegInfo::STATE_MAPPED_32_SIGN:
                 m_Assembler.MoveX86RegToX86Reg(Reg, GetMipsRegMapLo(i));
                 m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(GetMipsRegMapLo(i)), CRegInfo::NotMapped);
@@ -8718,7 +8718,7 @@ void CX86RecompilerOps::SyncRegState(const CRegInfo & SyncTo)
                     m_CodeBlock.Log("%s: %X", CRegName::GPR[i], GetMipsRegLo_S(i));
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
-                m_Assembler.MoveConstToX86reg(GetMipsRegLo(i), Reg);
+                m_Assembler.MoveConstToX86reg(Reg, GetMipsRegLo(i));
                 break;
             default:
                 m_CodeBlock.Log("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d", GetMipsRegState(i));
@@ -9494,8 +9494,8 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
                 //                m_Assembler.MoveVariableToX86reg((uint8_t *)RDRAM + pAddr,"RDRAM + pAddr",CX86Ops::x86_EAX);
                 //                Jump2 = nullptr;
                 //            } else {
-                //                m_Assembler.MoveConstToX86reg((TargetPC >> 12),CX86Ops::x86_ECX);
-                //                m_Assembler.MoveConstToX86reg(TargetPC,CX86Ops::x86_EBX);
+                //                m_Assembler.MoveConstToX86reg(CX86Ops::x86_ECX, (TargetPC >> 12));
+                //                m_Assembler.MoveConstToX86reg(CX86Ops::x86_EBX, TargetPC);
                 //                m_Assembler.MoveVariableDispToX86Reg(TLB_ReadMap,"TLB_ReadMap",CX86Ops::x86_ECX,CX86Ops::x86_ECX,4);
                 //                TestX86RegToX86Reg(CX86Ops::x86_ECX,CX86Ops::x86_ECX);
                 //                m_Assembler.JeLabel8("NoTlbEntry",0);
@@ -9521,8 +9521,8 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
             }
             else if (LookUpMode() == FuncFind_VirtualLookup)
             {
-                m_Assembler.MoveConstToX86reg(TargetPC, CX86Ops::x86_EDX);
-                m_Assembler.MoveConstToX86reg((uint32_t)&m_Functions, CX86Ops::x86_ECX);
+                m_Assembler.MoveConstToX86reg(CX86Ops::x86_EDX, TargetPC);
+                m_Assembler.MoveConstToX86reg(CX86Ops::x86_ECX, (uint32_t)&m_Functions);
                 m_Assembler.CallFunc(AddressOf(&CFunctionMap::CompilerFindFunction), "CFunctionMap::CompilerFindFunction");
                 m_Assembler.MoveX86RegToX86Reg(CX86Ops::x86_ECX, CX86Ops::x86_EAX);
                 JecxzLabel8("NullPointer", 0);
@@ -9545,8 +9545,8 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
                 }
                 else
                 {
-                    m_Assembler.MoveConstToX86reg((TargetPC >> 12), CX86Ops::x86_ECX);
-                    m_Assembler.MoveConstToX86reg(TargetPC, CX86Ops::x86_EBX);
+                    m_Assembler.MoveConstToX86reg(CX86Ops::x86_ECX, (TargetPC >> 12));
+                    m_Assembler.MoveConstToX86reg(CX86Ops::x86_EBX, TargetPC);
                     m_Assembler.MoveVariableDispToX86Reg(TLB_ReadMap, "TLB_ReadMap", CX86Ops::x86_ECX, CX86Ops::x86_ECX, 4);
                     TestX86RegToX86Reg(CX86Ops::x86_ECX, CX86Ops::x86_ECX);
                     m_Assembler.JeLabel8("NoTlbEntry", 0);
@@ -9778,7 +9778,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
         m_Assembler.TestX86ByteRegToX86Reg(CX86Ops::x86_AL, CX86Ops::x86_AL);
         m_RegWorkingSet.AfterCallDirect();
         CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, ExitReason_NormalNoSysCheck, false, &CX86Ops::JeLabel32);
-        m_Assembler.MoveConstToX86reg((uint32_t)&m_TempValue32, TempReg);
+        m_Assembler.MoveConstToX86reg(TempReg, (uint32_t)&m_TempValue32);
         m_Assembler.SubX86RegToX86Reg(TempReg, AddressReg);
     }
     else if (ValueSize == 16)
@@ -9790,7 +9790,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
         m_Assembler.TestX86ByteRegToX86Reg(CX86Ops::x86_AL, CX86Ops::x86_AL);
         m_RegWorkingSet.AfterCallDirect();
         CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, ExitReason_NormalNoSysCheck, false, &CX86Ops::JeLabel32);
-        m_Assembler.MoveConstToX86reg((uint32_t)&m_TempValue32, TempReg);
+        m_Assembler.MoveConstToX86reg(TempReg, (uint32_t)&m_TempValue32);
         m_Assembler.SubX86RegToX86Reg(TempReg, AddressReg);
         m_Assembler.XorConstToX86Reg(AddressReg, 2);
     }
@@ -9803,7 +9803,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
         m_Assembler.TestX86ByteRegToX86Reg(CX86Ops::x86_AL, CX86Ops::x86_AL);
         m_RegWorkingSet.AfterCallDirect();
         CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, ExitReason_NormalNoSysCheck, false, &CX86Ops::JeLabel32);
-        m_Assembler.MoveConstToX86reg((uint32_t)&m_TempValue32, TempReg);
+        m_Assembler.MoveConstToX86reg(TempReg, (uint32_t)&m_TempValue32);
         m_Assembler.SubX86RegToX86Reg(TempReg, AddressReg);
         m_Assembler.XorConstToX86Reg(AddressReg, 3);
     }
@@ -10079,7 +10079,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         }
         else
         {
-            m_Assembler.MoveX86regToX86regPointer(TempReg, ValueReg, AddressReg);
+            m_Assembler.MoveX86regToX86regPointer(AddressReg, TempReg, ValueReg );
         }
     }
     else if (ValueSize == 64)
@@ -10092,9 +10092,9 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         }
         else
         {
-            m_Assembler.MoveX86regToX86regPointer(TempReg, ValueRegHi, AddressReg);
+            m_Assembler.MoveX86regToX86regPointer(AddressReg, TempReg, ValueRegHi);
             m_Assembler.AddConstToX86Reg(AddressReg, 4);
-            m_Assembler.MoveX86regToX86regPointer(TempReg, ValueReg, AddressReg);
+            m_Assembler.MoveX86regToX86regPointer(AddressReg, TempReg, ValueReg);
         }
     }
     else
@@ -10115,7 +10115,7 @@ void CX86RecompilerOps::SB_Const(uint32_t Value, uint32_t VAddr)
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
         CX86Ops::x86Reg AddressReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
-        m_Assembler.MoveConstToX86reg(VAddr, AddressReg);
+        m_Assembler.MoveConstToX86reg(AddressReg, VAddr);
         CompileStoreMemoryValue(AddressReg, CX86Ops::x86_Unknown, CX86Ops::x86_Unknown, Value, 8);
         return;
     }
@@ -10144,7 +10144,7 @@ void CX86RecompilerOps::SB_Const(uint32_t Value, uint32_t VAddr)
         if (CGameSettings::bSMM_StoreInstruc())
         {
             CX86Ops::x86Reg AddressReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
-            m_Assembler.MoveConstToX86reg(VAddr, AddressReg);
+            m_Assembler.MoveConstToX86reg(AddressReg, VAddr);
             CompileStoreMemoryValue(AddressReg, CX86Ops::x86_Unknown, CX86Ops::x86_Unknown, Value, 8);
         }
         else if (PAddr < g_MMU->RdramSize())
@@ -10192,7 +10192,7 @@ void CX86RecompilerOps::SB_Register(CX86Ops::x86Reg Reg, uint32_t VAddr)
     {
         m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(Reg), true);
         CX86Ops::x86Reg AddressReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
-        m_Assembler.MoveConstToX86reg(VAddr, AddressReg);
+        m_Assembler.MoveConstToX86reg(AddressReg, VAddr);
         CompileStoreMemoryValue(AddressReg, Reg, CX86Ops::x86_Unknown, 0, 8);
         return;
     }
@@ -10221,7 +10221,7 @@ void CX86RecompilerOps::SB_Register(CX86Ops::x86Reg Reg, uint32_t VAddr)
         if (CGameSettings::bSMM_StoreInstruc())
         {
             CX86Ops::x86Reg AddressReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
-            m_Assembler.MoveConstToX86reg(VAddr, AddressReg);
+            m_Assembler.MoveConstToX86reg(AddressReg, VAddr);
             CompileStoreMemoryValue(AddressReg, Reg, CX86Ops::x86_Unknown, 0, 8);
         }
         else if (PAddr < g_MMU->RdramSize())
@@ -10242,7 +10242,7 @@ void CX86RecompilerOps::SH_Const(uint32_t Value, uint32_t VAddr)
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
         CX86Ops::x86Reg AddressReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
-        m_Assembler.MoveConstToX86reg(VAddr, AddressReg);
+        m_Assembler.MoveConstToX86reg(AddressReg, VAddr);
         CompileStoreMemoryValue(AddressReg, CX86Ops::x86_Unknown, CX86Ops::x86_Unknown, (uint16_t)Value, 16);
         return;
     }
@@ -10271,7 +10271,7 @@ void CX86RecompilerOps::SH_Const(uint32_t Value, uint32_t VAddr)
         if (CGameSettings::bSMM_StoreInstruc())
         {
             CX86Ops::x86Reg AddressReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
-            m_Assembler.MoveConstToX86reg(VAddr, AddressReg);
+            m_Assembler.MoveConstToX86reg(AddressReg, VAddr);
             CompileStoreMemoryValue(AddressReg, CX86Ops::x86_Unknown, CX86Ops::x86_Unknown, (uint16_t)Value, 16);
         }
         else if (PAddr < g_MMU->RdramSize())
@@ -10303,7 +10303,7 @@ void CX86RecompilerOps::SH_Register(CX86Ops::x86Reg Reg, uint32_t VAddr)
         m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(Reg), true);
 
         CX86Ops::x86Reg AddressReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
-        m_Assembler.MoveConstToX86reg(VAddr, AddressReg);
+        m_Assembler.MoveConstToX86reg(AddressReg, VAddr);
         CompileStoreMemoryValue(AddressReg, Reg, CX86Ops::x86_Unknown, 0, 16);
     }
     else
@@ -10324,7 +10324,7 @@ void CX86RecompilerOps::SH_Register(CX86Ops::x86Reg Reg, uint32_t VAddr)
                 if (CGameSettings::bSMM_StoreInstruc())
                 {
                     CX86Ops::x86Reg AddressReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
-                    m_Assembler.MoveConstToX86reg(VAddr, AddressReg);
+                    m_Assembler.MoveConstToX86reg(AddressReg, VAddr);
                     CompileStoreMemoryValue(AddressReg, Reg, CX86Ops::x86_Unknown, 0, 16);
                 }
                 else if (PAddr < g_MMU->RdramSize())
@@ -10357,7 +10357,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
         CX86Ops::x86Reg AddressReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
-        m_Assembler.MoveConstToX86reg(VAddr, AddressReg);
+        m_Assembler.MoveConstToX86reg(AddressReg, VAddr);
         CompileStoreMemoryValue(AddressReg, CX86Ops::x86_Unknown, CX86Ops::x86_Unknown, Value, 32);
         return;
     }
@@ -10386,7 +10386,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         if (CGameSettings::bSMM_StoreInstruc())
         {
             CX86Ops::x86Reg AddressReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
-            m_Assembler.MoveConstToX86reg(VAddr, AddressReg);
+            m_Assembler.MoveConstToX86reg(AddressReg, VAddr);
             CompileStoreMemoryValue(AddressReg, CX86Ops::x86_Unknown, CX86Ops::x86_Unknown, Value, 32);
         }
         else if (PAddr < g_MMU->RdramSize())
@@ -10823,7 +10823,7 @@ void CX86RecompilerOps::SW_Register(CX86Ops::x86Reg Reg, uint32_t VAddr)
     {
         m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(Reg), true);
         CX86Ops::x86Reg AddressReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
-        m_Assembler.MoveConstToX86reg(VAddr, AddressReg);
+        m_Assembler.MoveConstToX86reg(AddressReg, VAddr);
         CompileStoreMemoryValue(AddressReg, Reg, CX86Ops::x86_Unknown, 0, 32);
         return;
     }
@@ -10854,7 +10854,7 @@ void CX86RecompilerOps::SW_Register(CX86Ops::x86Reg Reg, uint32_t VAddr)
         if (CGameSettings::bSMM_StoreInstruc())
         {
             CX86Ops::x86Reg AddressReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
-            m_Assembler.MoveConstToX86reg(VAddr, AddressReg);
+            m_Assembler.MoveConstToX86reg(AddressReg, VAddr);
             CompileStoreMemoryValue(AddressReg, Reg, CX86Ops::x86_Unknown, 0, 32);
         }
         else if (PAddr < g_MMU->RdramSize())
@@ -10893,7 +10893,7 @@ void CX86RecompilerOps::SW_Register(CX86Ops::x86Reg Reg, uint32_t VAddr)
             if (CGameSettings::bSMM_StoreInstruc())
             {
                 CX86Ops::x86Reg AddressReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
-                m_Assembler.MoveConstToX86reg(VAddr, AddressReg);
+                m_Assembler.MoveConstToX86reg(AddressReg, VAddr);
                 CompileStoreMemoryValue(AddressReg, Reg, CX86Ops::x86_Unknown, 0, 32);
             }
             else if (PAddr < 0x04001000)
@@ -11234,7 +11234,7 @@ void CX86RecompilerOps::ResetMemoryStack()
         }
         else
         {
-            m_Assembler.MoveConstToX86reg(GetMipsRegLo(MipsReg), Reg);
+            m_Assembler.MoveConstToX86reg(Reg, GetMipsRegLo(MipsReg));
         }
     }
 

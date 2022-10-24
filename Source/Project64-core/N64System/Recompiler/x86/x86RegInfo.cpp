@@ -777,7 +777,7 @@ void CX86RegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsReg
         }
         else
         {
-            m_Assembler.MoveConstToX86reg(GetMipsRegLo(MipsRegToLoad), Reg);
+            m_Assembler.MoveConstToX86reg(Reg, GetMipsRegLo(MipsRegToLoad));
         }
     }
     else if (MipsRegToLoad == 0)
@@ -901,18 +901,18 @@ void CX86RegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
             {
                 if (IsSigned(MipsRegToLoad))
                 {
-                    m_Assembler.MoveConstToX86reg(GetMipsRegLo_S(MipsRegToLoad) >> 31, x86Hi);
+                    m_Assembler.MoveConstToX86reg(x86Hi, GetMipsRegLo_S(MipsRegToLoad) >> 31);
                 }
                 else
                 {
-                    m_Assembler.MoveConstToX86reg(0, x86Hi);
+                    m_Assembler.MoveConstToX86reg(x86Hi, 0);
                 }
             }
             else
             {
-                m_Assembler.MoveConstToX86reg(GetMipsRegHi(MipsRegToLoad), x86Hi);
+                m_Assembler.MoveConstToX86reg(x86Hi, GetMipsRegHi(MipsRegToLoad));
             }
-            m_Assembler.MoveConstToX86reg(GetMipsRegLo(MipsRegToLoad), x86lo);
+            m_Assembler.MoveConstToX86reg(x86lo, GetMipsRegLo(MipsRegToLoad));
         }
     }
     else if (MipsRegToLoad == 0)
@@ -1087,18 +1087,18 @@ CX86Ops::x86Reg CX86RegInfo::Map_TempReg(CX86Ops::x86Reg Reg, int32_t MipsReg, b
                 }
                 else
                 {
-                    m_Assembler.MoveConstToX86reg(0, Reg);
+                    m_Assembler.MoveConstToX86reg(Reg, 0);
                 }
             }
             else
             {
                 if (Is64Bit(MipsReg))
                 {
-                    m_Assembler.MoveConstToX86reg(GetMipsRegHi(MipsReg), Reg);
+                    m_Assembler.MoveConstToX86reg(Reg, GetMipsRegHi(MipsReg));
                 }
                 else
                 {
-                    m_Assembler.MoveConstToX86reg(GetMipsRegLo_S(MipsReg) >> 31, Reg);
+                    m_Assembler.MoveConstToX86reg(Reg, GetMipsRegLo_S(MipsReg) >> 31);
                 }
             }
         }
@@ -1114,7 +1114,7 @@ CX86Ops::x86Reg CX86RegInfo::Map_TempReg(CX86Ops::x86Reg Reg, int32_t MipsReg, b
             }
             else
             {
-                m_Assembler.MoveConstToX86reg(GetMipsRegLo(MipsReg), Reg);
+                m_Assembler.MoveConstToX86reg(Reg, GetMipsRegLo(MipsReg));
             }
         }
     }
@@ -1517,7 +1517,7 @@ void CX86RegInfo::WriteBackRegisters()
                 }
                 if (!bEsiSign && (GetMipsRegLo(count) & 0x80000000))
                 {
-                    m_Assembler.MoveConstToX86reg(0xFFFFFFFF, CX86Ops::x86_ESI);
+                    m_Assembler.MoveConstToX86reg(CX86Ops::x86_ESI, 0xFFFFFFFF);
                     bEsiSign = true;
                 }
                 if ((GetMipsRegLo(count) & 0x80000000) != 0)
@@ -1548,7 +1548,7 @@ void CX86RegInfo::WriteBackRegisters()
                 {
                     if (!bEsiSign)
                     {
-                        m_Assembler.MoveConstToX86reg(0xFFFFFFFF, CX86Ops::x86_ESI);
+                        m_Assembler.MoveConstToX86reg(CX86Ops::x86_ESI, 0xFFFFFFFF);
                         bEsiSign = true;
                     }
                 }
@@ -1598,7 +1598,7 @@ void CX86RegInfo::WriteBackRegisters()
             }
             if (GetMipsRegLo(count) == 0xFFFFFFFF || GetMipsRegHi(count) == 0xFFFFFFFF)
             {
-                m_Assembler.MoveConstToX86reg(0xFFFFFFFF, CX86Ops::x86_ESI);
+                m_Assembler.MoveConstToX86reg(CX86Ops::x86_ESI, 0xFFFFFFFF);
                 bEsiSign = true;
             }
 
