@@ -7298,7 +7298,7 @@ void CX86RecompilerOps::COP0_DMF()
 
 void CX86RecompilerOps::COP0_MT()
 {
-    if (m_Opcode.rd == 6)
+    if (m_Opcode.rd == 6 || m_Opcode.rd == 11)
     {
         UpdateCounters(m_RegWorkingSet, false, true);
     }
@@ -11225,37 +11225,19 @@ void CX86RecompilerOps::SW_Register(CX86Ops::x86Reg Reg, uint32_t VAddr)
 
 void CX86RecompilerOps::ResetMemoryStack()
 {
-    CX86Ops::x86Reg Reg, TempReg;
-
     int32_t MipsReg = 29;
-    m_CodeBlock.Log("    ResetMemoryStack");
-    Reg = Get_MemoryStack();
-    if (Reg == CX86Ops::x86_Unknown)
+    if (IsConst(MipsReg))
     {
-        Reg = Map_TempReg(CX86Ops::x86_Unknown, MipsReg, false, false);
+        m_Assembler.MoveConstToVariable(GetMipsRegLo(MipsReg), &_GPR[MipsReg].UW[0], CRegName::GPR_Lo[MipsReg]);
     }
-    else
+    else if (IsMapped(MipsReg))
     {
-        if (IsUnknown(MipsReg))
-        {
-            m_Assembler.MoveVariableToX86reg(Reg, &_GPR[MipsReg].UW[0], CRegName::GPR_Lo[MipsReg]);
-        }
-        else if (IsMapped(MipsReg))
-        {
-            m_Assembler.MoveX86RegToX86Reg(GetMipsRegMapLo(MipsReg), Reg);
-        }
-        else
-        {
-            m_Assembler.MoveConstToX86reg(Reg, GetMipsRegLo(MipsReg));
-        }
+        m_Assembler.MoveX86regToVariable(GetMipsRegMapLo(MipsReg), &_GPR[MipsReg].UW[0], CRegName::GPR_Lo[MipsReg]);
     }
 
-    TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
-    m_Assembler.MoveX86RegToX86Reg(Reg, TempReg);
-    m_Assembler.ShiftRightUnsignImmed(TempReg, 12);
-    m_Assembler.MoveVariableDispToX86Reg(g_MMU->m_MemoryReadMap, "MMU->m_MemoryReadMap", TempReg, TempReg, 4);
-    m_Assembler.AddX86RegToX86Reg(Reg, TempReg);
-    m_Assembler.MoveX86regToVariable(Reg, &(g_Recompiler->MemoryStackPos()), "MemoryStack");
+    m_RegWorkingSet.BeforeCallDirect();
+    m_Assembler.CallThis((uint32_t)g_Recompiler, AddressOf(&CRecompiler::ResetMemoryStackPos), "CRecompiler::ResetMemoryStackPos", 4);
+    m_RegWorkingSet.AfterCallDirect();
 }
 
 #endif
