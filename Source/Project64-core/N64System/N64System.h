@@ -163,6 +163,8 @@ private:
     void InitRegisters(bool bPostPif, CMipsMemoryVM & MMU);
     void DisplayRSPListCount();
     void NotifyCallback(CN64SystemCB Type);
+    void DelayedJump(uint32_t JumpLocation);
+    void DelayedRelativeJump(uint32_t RelativeLocation);
 
     // CPU methods
     void ExecuteRecompiler();
@@ -198,6 +200,7 @@ private:
     bool m_TestTimer;
     PIPELINE_STAGE m_PipelineStage;
     uint32_t m_JumpToLocation;
+    uint32_t m_JumpDelayLocation;
     uint32_t m_TLBLoadAddress;
     uint32_t m_TLBStoreAddress;
     uint32_t m_SyncCount;

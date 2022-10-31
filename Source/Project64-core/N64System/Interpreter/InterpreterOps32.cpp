@@ -1,9 +1,9 @@
 #include "stdafx.h"
 
-#include "InterpreterOps32.h"
 #include <Project64-core/Debugger.h>
 #include <Project64-core/Logging.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
+#include <Project64-core/N64System/Interpreter/InterpreterOps32.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/R4300iInstruction.h>
 #include <Project64-core/N64System/Mips/SystemTiming.h>
@@ -99,7 +99,7 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
     Jump_Special[10] = R4300iOp::UnknownOpcode;
     Jump_Special[11] = R4300iOp::UnknownOpcode;
     Jump_Special[12] = R4300iOp::SPECIAL_SYSCALL;
-    Jump_Special[13] = R4300iOp::UnknownOpcode;
+    Jump_Special[13] = R4300iOp::SPECIAL_BREAK;
     Jump_Special[14] = R4300iOp::UnknownOpcode;
     Jump_Special[15] = R4300iOp::SPECIAL_SYNC;
     Jump_Special[16] = R4300iOp::SPECIAL_MFHI;
@@ -615,97 +615,56 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
 
 void R4300iOp32::JAL()
 {
-    g_System->m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
-    g_System->m_JumpToLocation = ((*_PROGRAM_COUNTER) & 0xF0000000) + (m_Opcode.target << 2);
-    _GPR[31].UW[0] = (*_PROGRAM_COUNTER) + 8;
-
-    if ((*_PROGRAM_COUNTER) == g_System->m_JumpToLocation)
-    {
-        g_System->m_PipelineStage = PIPELINE_STAGE_PERMLOOP_DO_DELAY;
-    }
+    g_System->DelayedJump((*_PROGRAM_COUNTER & 0xF0000000) + (m_Opcode.target << 2));
+    g_System->DelayedJump((*_PROGRAM_COUNTER & 0xF0000000) + (m_Opcode.target << 2));
+    _GPR[31].DW = (int32_t)(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP_DELAY_SLOT ? g_System->m_JumpToLocation + 4 : *_PROGRAM_COUNTER + 8);
 }
 
 void R4300iOp32::BEQ()
 {
-    g_System->m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
     if (_GPR[m_Opcode.rs].W[0] == _GPR[m_Opcode.rt].W[0])
     {
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
-        if ((*_PROGRAM_COUNTER) == g_System->m_JumpToLocation)
-        {
-            R4300iOpcode DelaySlot;
-            if (g_MMU->MemoryValue32(*_PROGRAM_COUNTER + 4, DelaySlot.Value) && !R4300iInstruction(*_PROGRAM_COUNTER, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
-            {
-                g_System->m_PipelineStage = PIPELINE_STAGE_PERMLOOP_DO_DELAY;
-            }
-        }
+        g_System->DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
+        g_System->DelayedJump(*_PROGRAM_COUNTER + 8);
     }
 }
 
 void R4300iOp32::BNE()
 {
-    g_System->m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
     if (_GPR[m_Opcode.rs].W[0] != _GPR[m_Opcode.rt].W[0])
     {
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
-        if ((*_PROGRAM_COUNTER) == g_System->m_JumpToLocation)
-        {
-            R4300iOpcode DelaySlot;
-            if (g_MMU->MemoryValue32(*_PROGRAM_COUNTER + 4, DelaySlot.Value) && !R4300iInstruction(*_PROGRAM_COUNTER, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
-            {
-                g_System->m_PipelineStage = PIPELINE_STAGE_PERMLOOP_DO_DELAY;
-            }
-        }
+        g_System->DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
+        g_System->DelayedJump(*_PROGRAM_COUNTER + 8);
     }
 }
 
 void R4300iOp32::BLEZ()
 {
-    g_System->m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
     if (_GPR[m_Opcode.rs].W[0] <= 0)
     {
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
-        if ((*_PROGRAM_COUNTER) == g_System->m_JumpToLocation)
-        {
-            R4300iOpcode DelaySlot;
-            if (g_MMU->MemoryValue32(*_PROGRAM_COUNTER + 4, DelaySlot.Value) && !R4300iInstruction(*_PROGRAM_COUNTER, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
-            {
-                g_System->m_PipelineStage = PIPELINE_STAGE_PERMLOOP_DO_DELAY;
-            }
-        }
+        g_System->DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
+        g_System->DelayedJump(*_PROGRAM_COUNTER + 8);
     }
 }
 
 void R4300iOp32::BGTZ()
 {
-    g_System->m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
     if (_GPR[m_Opcode.rs].W[0] > 0)
     {
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
-        if ((*_PROGRAM_COUNTER) == g_System->m_JumpToLocation)
-        {
-            R4300iOpcode DelaySlot;
-            if (g_MMU->MemoryValue32(*_PROGRAM_COUNTER + 4, DelaySlot.Value) && !R4300iInstruction(*_PROGRAM_COUNTER, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
-            {
-                g_System->m_PipelineStage = PIPELINE_STAGE_PERMLOOP_DO_DELAY;
-            }
-        }
+        g_System->DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
+        g_System->DelayedJump(*_PROGRAM_COUNTER + 8);
     }
 }
 
@@ -802,16 +761,7 @@ void R4300iOp32::BEQL()
 {
     if (_GPR[m_Opcode.rs].W[0] == _GPR[m_Opcode.rt].W[0])
     {
-        g_System->m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
-        if ((*_PROGRAM_COUNTER) == g_System->m_JumpToLocation)
-        {
-            R4300iOpcode DelaySlot;
-            if (g_MMU->MemoryValue32(*_PROGRAM_COUNTER + 4, DelaySlot.Value) && !R4300iInstruction(*_PROGRAM_COUNTER, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
-            {
-                g_System->m_PipelineStage = PIPELINE_STAGE_PERMLOOP_DO_DELAY;
-            }
-        }
+        g_System->DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
@@ -824,16 +774,7 @@ void R4300iOp32::BNEL()
 {
     if (_GPR[m_Opcode.rs].W[0] != _GPR[m_Opcode.rt].W[0])
     {
-        g_System->m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
-        if ((*_PROGRAM_COUNTER) == g_System->m_JumpToLocation)
-        {
-            R4300iOpcode DelaySlot;
-            if (g_MMU->MemoryValue32(*_PROGRAM_COUNTER + 4, DelaySlot.Value) && !R4300iInstruction(*_PROGRAM_COUNTER, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
-            {
-                g_System->m_PipelineStage = PIPELINE_STAGE_PERMLOOP_DO_DELAY;
-            }
-        }
+        g_System->DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
@@ -846,16 +787,7 @@ void R4300iOp32::BLEZL()
 {
     if (_GPR[m_Opcode.rs].W[0] <= 0)
     {
-        g_System->m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
-        if ((*_PROGRAM_COUNTER) == g_System->m_JumpToLocation)
-        {
-            R4300iOpcode DelaySlot;
-            if (g_MMU->MemoryValue32(*_PROGRAM_COUNTER + 4, DelaySlot.Value) && !R4300iInstruction(*_PROGRAM_COUNTER, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
-            {
-                g_System->m_PipelineStage = PIPELINE_STAGE_PERMLOOP_DO_DELAY;
-            }
-        }
+        g_System->DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
@@ -868,16 +800,7 @@ void R4300iOp32::BGTZL()
 {
     if (_GPR[m_Opcode.rs].W[0] > 0)
     {
-        g_System->m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
-        if ((*_PROGRAM_COUNTER) == g_System->m_JumpToLocation)
-        {
-            R4300iOpcode DelaySlot;
-            if (g_MMU->MemoryValue32(*_PROGRAM_COUNTER + 4, DelaySlot.Value) && !R4300iInstruction(*_PROGRAM_COUNTER, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
-            {
-                g_System->m_PipelineStage = PIPELINE_STAGE_PERMLOOP_DO_DELAY;
-            }
-        }
+        g_System->DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
@@ -1003,9 +926,8 @@ void R4300iOp32::SPECIAL_SRAV()
 
 void R4300iOp32::SPECIAL_JALR()
 {
-    g_System->m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
-    g_System->m_JumpToLocation = _GPR[m_Opcode.rs].UW[0];
-    _GPR[m_Opcode.rd].W[0] = (int32_t)((*_PROGRAM_COUNTER) + 8);
+    g_System->DelayedJump(_GPR[m_Opcode.rs].UW[0]);
+    _GPR[m_Opcode.rd].W[0] = g_System->m_PipelineStage == PIPELINE_STAGE_JUMP_DELAY_SLOT ? g_System->m_JumpToLocation + 4 : *_PROGRAM_COUNTER + 8;
     m_TestTimer = true;
 }
 
@@ -1103,43 +1025,25 @@ void R4300iOp32::SPECIAL_TEQ()
 
 void R4300iOp32::REGIMM_BLTZ()
 {
-    g_System->m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
     if (_GPR[m_Opcode.rs].W[0] < 0)
     {
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
-        if ((*_PROGRAM_COUNTER) == g_System->m_JumpToLocation)
-        {
-            R4300iOpcode DelaySlot;
-            if (g_MMU->MemoryValue32(*_PROGRAM_COUNTER + 4, DelaySlot.Value) && !R4300iInstruction(*_PROGRAM_COUNTER, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
-            {
-                g_System->m_PipelineStage = PIPELINE_STAGE_PERMLOOP_DO_DELAY;
-            }
-        }
+        g_System->DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
+        g_System->DelayedJump(*_PROGRAM_COUNTER + 8);
     }
 }
 
 void R4300iOp32::REGIMM_BGEZ()
 {
-    g_System->m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
     if (_GPR[m_Opcode.rs].W[0] >= 0)
     {
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
-        if ((*_PROGRAM_COUNTER) == g_System->m_JumpToLocation)
-        {
-            R4300iOpcode DelaySlot;
-            if (g_MMU->MemoryValue32(*_PROGRAM_COUNTER + 4, DelaySlot.Value) && !R4300iInstruction(*_PROGRAM_COUNTER, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
-            {
-                g_System->m_PipelineStage = PIPELINE_STAGE_PERMLOOP_DO_DELAY;
-            }
-        }
+        g_System->DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
+        g_System->DelayedJump(*_PROGRAM_COUNTER + 8);
     }
 }
 
@@ -1147,16 +1051,7 @@ void R4300iOp32::REGIMM_BLTZL()
 {
     if (_GPR[m_Opcode.rs].W[0] < 0)
     {
-        g_System->m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
-        if ((*_PROGRAM_COUNTER) == g_System->m_JumpToLocation)
-        {
-            R4300iOpcode DelaySlot;
-            if (g_MMU->MemoryValue32(*_PROGRAM_COUNTER + 4, DelaySlot.Value) && !R4300iInstruction(*_PROGRAM_COUNTER, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
-            {
-                g_System->m_PipelineStage = PIPELINE_STAGE_PERMLOOP_DO_DELAY;
-            }
-        }
+        g_System->DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
@@ -1169,16 +1064,7 @@ void R4300iOp32::REGIMM_BGEZL()
 {
     if (_GPR[m_Opcode.rs].W[0] >= 0)
     {
-        g_System->m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
-        if ((*_PROGRAM_COUNTER) == g_System->m_JumpToLocation)
-        {
-            R4300iOpcode DelaySlot;
-            if (g_MMU->MemoryValue32(*_PROGRAM_COUNTER + 4, DelaySlot.Value) && !R4300iInstruction(*_PROGRAM_COUNTER, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
-            {
-                g_System->m_PipelineStage = PIPELINE_STAGE_PERMLOOP_DO_DELAY;
-            }
-        }
+        g_System->DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
@@ -1189,52 +1075,22 @@ void R4300iOp32::REGIMM_BGEZL()
 
 void R4300iOp32::REGIMM_BLTZAL()
 {
-    g_System->m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
     if (_GPR[m_Opcode.rs].W[0] < 0)
     {
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
-        if ((*_PROGRAM_COUNTER) == g_System->m_JumpToLocation)
-        {
-            R4300iOpcode DelaySlot;
-            if (g_MMU->MemoryValue32(*_PROGRAM_COUNTER + 4, DelaySlot.Value) && !R4300iInstruction(*_PROGRAM_COUNTER, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
-            {
-                g_System->m_PipelineStage = PIPELINE_STAGE_PERMLOOP_DO_DELAY;
-            }
-        }
+        g_System->DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
+        g_System->DelayedJump(*_PROGRAM_COUNTER + 8);
     }
-    _GPR[31].W[0] = (int32_t)((*_PROGRAM_COUNTER) + 8);
+    _GPR[31].W[0] = g_System->m_PipelineStage == PIPELINE_STAGE_JUMP_DELAY_SLOT ? g_System->m_JumpToLocation + 4 : *_PROGRAM_COUNTER + 8;
 }
 
 void R4300iOp32::REGIMM_BGEZAL()
 {
-    g_System->m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
     if (_GPR[m_Opcode.rs].W[0] >= 0)
     {
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
-        if ((*_PROGRAM_COUNTER) == g_System->m_JumpToLocation)
-        {
-            if (CDebugSettings::HaveDebugger())
-            {
-                if (g_Reg->m_PROGRAM_COUNTER < 0x80000400)
-                {
-                    // Break out of possible checksum halt
-                    g_Notify->DisplayMessage(5, "Broke out of permanent loop! Invalid checksum?");
-                    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
-                    _GPR[31].DW = (int32_t)((*_PROGRAM_COUNTER) + 8);
-                    g_System->m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
-                    return;
-                }
-            }
-            R4300iOpcode DelaySlot;
-            if (g_MMU->MemoryValue32(*_PROGRAM_COUNTER + 4, DelaySlot.Value) && !R4300iInstruction(*_PROGRAM_COUNTER, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
-            {
-                g_System->m_PipelineStage = PIPELINE_STAGE_PERMLOOP_DO_DELAY;
-            }
-        }
+        g_System->DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
