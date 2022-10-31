@@ -65,6 +65,7 @@ void CInterpreterCPU::ExecuteCPU()
     uint32_t & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
     R4300iOpcode & Opcode = R4300iOp::m_Opcode;
     uint32_t & JumpToLocation = g_System->m_JumpToLocation;
+    uint32_t & JumpDelayLocation = g_System->m_JumpDelayLocation;
     bool & TestTimer = R4300iOp::m_TestTimer;
     const int32_t & bDoSomething = g_SystemEvents->DoSomething();
     uint32_t CountPerOp = g_System->CountPerOp();
@@ -151,6 +152,11 @@ void CInterpreterCPU::ExecuteCPU()
                     }
                 }
                 break;
+            case PIPELINE_STAGE_JUMP_DELAY_SLOT:
+                PipelineStage = PIPELINE_STAGE_JUMP;
+                PROGRAM_COUNTER = JumpToLocation;
+                JumpToLocation = JumpDelayLocation;
+                break;
             case PIPELINE_STAGE_PERMLOOP_DELAY_DONE:
                 PROGRAM_COUNTER = JumpToLocation;
                 PipelineStage = PIPELINE_STAGE_NORMAL;
@@ -179,6 +185,7 @@ void CInterpreterCPU::ExecuteOps(int32_t Cycles)
     uint32_t & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
     R4300iOpcode & Opcode = R4300iOp::m_Opcode;
     PIPELINE_STAGE & PipelineStage = g_System->m_PipelineStage;
+    uint32_t & JumpDelayLocation = g_System->m_JumpDelayLocation;
     uint32_t & JumpToLocation = g_System->m_JumpToLocation;
     bool & TestTimer = R4300iOp::m_TestTimer;
     const int32_t & DoSomething = g_SystemEvents->DoSomething();
@@ -254,6 +261,11 @@ void CInterpreterCPU::ExecuteOps(int32_t Cycles)
                             g_SystemEvents->ExecuteEvents();
                         }
                     }
+                    break;
+                case PIPELINE_STAGE_JUMP_DELAY_SLOT:
+                    PipelineStage = PIPELINE_STAGE_JUMP;
+                    PROGRAM_COUNTER = JumpToLocation;
+                    JumpToLocation = JumpDelayLocation;
                     break;
                 case PIPELINE_STAGE_PERMLOOP_DELAY_DONE:
                     PROGRAM_COUNTER = JumpToLocation;

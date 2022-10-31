@@ -43,6 +43,7 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     m_TestTimer(false),
     m_PipelineStage(PIPELINE_STAGE_NORMAL),
     m_JumpToLocation(0),
+    m_JumpDelayLocation(0),
     m_TLBLoadAddress(0),
     m_TLBStoreAddress(0),
     m_SyncCount(0),
@@ -2416,6 +2417,46 @@ void CN64System::NotifyCallback(CN64SystemCB Type)
         for (SETTING_CHANGED_CB_LIST::const_iterator itr = List.begin(); itr != List.end(); itr++)
         {
             itr->Func(itr->Data);
+        }
+    }
+}
+
+void CN64System::DelayedJump(uint32_t JumpLocation)
+{
+    if (m_PipelineStage == PIPELINE_STAGE_JUMP)
+    {
+        m_PipelineStage = PIPELINE_STAGE_JUMP_DELAY_SLOT;
+        m_JumpDelayLocation = JumpLocation;
+    }
+    else
+    {
+        m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
+        m_JumpToLocation = JumpLocation;
+    }
+    if ((m_Reg.m_PROGRAM_COUNTER) == m_JumpToLocation)
+    {
+        m_PipelineStage = PIPELINE_STAGE_PERMLOOP_DO_DELAY;
+    }
+}
+
+void CN64System::DelayedRelativeJump(uint32_t RelativeLocation)
+{
+    if (m_PipelineStage == PIPELINE_STAGE_JUMP)
+    {
+        m_PipelineStage = PIPELINE_STAGE_JUMP_DELAY_SLOT;
+        m_JumpDelayLocation = m_Reg.m_PROGRAM_COUNTER + RelativeLocation + 4;
+    }
+    else
+    {
+        m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
+        m_JumpToLocation = m_Reg.m_PROGRAM_COUNTER + RelativeLocation;
+    }
+    if (m_Reg.m_PROGRAM_COUNTER == m_JumpToLocation)
+    {
+        R4300iOpcode DelaySlot;
+        if (m_MMU_VM.MemoryValue32(m_Reg.m_PROGRAM_COUNTER + 4, DelaySlot.Value) && !R4300iInstruction(m_Reg.m_PROGRAM_COUNTER, R4300iOp::m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
+        {
+            m_PipelineStage = PIPELINE_STAGE_PERMLOOP_DO_DELAY;
         }
     }
 }
