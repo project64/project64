@@ -143,7 +143,7 @@ void CX86Ops::AndConstToX86Reg(x86Reg Reg, uint32_t Const)
     }
 }
 
-void CX86Ops::AndVariableDispToX86Reg(void * Variable, const char * VariableName, x86Reg Reg, x86Reg AddrReg, Multipler Multiply)
+void CX86Ops::AndVariableDispToX86Reg(x86Reg Reg, void * Variable, const char * VariableName, x86Reg AddrReg, Multipler Multiply)
 {
     CodeLog("      and %s, dword ptr [%s+%s*%i]", x86_Name(Reg), VariableName, x86_Name(AddrReg), Multiply);
 
