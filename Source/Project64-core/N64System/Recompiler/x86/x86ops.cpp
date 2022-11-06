@@ -152,7 +152,7 @@ void CX86Ops::AndVariableDispToX86Reg(x86Reg Reg, void * Variable, const char * 
     AddCode32((uint32_t)(Variable));
 }
 
-void CX86Ops::AndVariableToX86Reg(void * Variable, const char * VariableName, x86Reg Reg)
+void CX86Ops::AndVariableToX86Reg(x86Reg Reg, void * Variable, const char * VariableName)
 {
     CodeLog("      and %s, dword ptr [%s]", x86_Name(Reg), VariableName);
     AddCode16((uint16_t)(0x0523 + (Reg * 0x800)));
