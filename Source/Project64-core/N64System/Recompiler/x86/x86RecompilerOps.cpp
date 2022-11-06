@@ -3127,7 +3127,7 @@ void CX86RecompilerOps::LWL()
         TestReadBreakpoint(AddressReg, (uint32_t)x86TestReadBreakpoint32, "x86TestReadBreakpoint32");
         CompileLoadMemoryValue(AddressReg, AddressReg, CX86Ops::x86_Unknown, 32, false);
         Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.rt);
-        m_Assembler.AndVariableDispToX86Reg((void *)R4300iOp::LWL_MASK, "LWL_MASK", GetMipsRegMapLo(m_Opcode.rt), OffsetReg, CX86Ops::Multip_x4);
+        m_Assembler.AndVariableDispToX86Reg(GetMipsRegMapLo(m_Opcode.rt), (void *)R4300iOp::LWL_MASK, "LWL_MASK", OffsetReg, CX86Ops::Multip_x4);
         m_Assembler.MoveVariableDispToX86Reg((void *)R4300iOp::LWL_SHIFT, "LWL_SHIFT", shift, OffsetReg, 4);
         m_Assembler.ShiftLeftSign(AddressReg);
         m_Assembler.AddX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rt), AddressReg);
@@ -3507,7 +3507,7 @@ void CX86RecompilerOps::LWR()
         TestReadBreakpoint(AddressReg, (uint32_t)x86TestReadBreakpoint32, "x86TestReadBreakpoint32");
         CompileLoadMemoryValue(AddressReg, AddressReg, CX86Ops::x86_Unknown, 32, false);
         Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.rt);
-        m_Assembler.AndVariableDispToX86Reg((void *)R4300iOp::LWR_MASK, "LWR_MASK", GetMipsRegMapLo(m_Opcode.rt), OffsetReg, CX86Ops::Multip_x4);
+        m_Assembler.AndVariableDispToX86Reg(GetMipsRegMapLo(m_Opcode.rt), (void *)R4300iOp::LWR_MASK, "LWR_MASK", OffsetReg, CX86Ops::Multip_x4);
         m_Assembler.MoveVariableDispToX86Reg((void *)R4300iOp::LWR_SHIFT, "LWR_SHIFT", shift, OffsetReg, 4);
         m_Assembler.ShiftRightUnsign(AddressReg);
         m_Assembler.AddX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rt), AddressReg);
@@ -3652,7 +3652,7 @@ void CX86RecompilerOps::SWL()
     m_Assembler.AndConstToX86Reg(AddressReg, (uint32_t)~3);
     m_Assembler.MoveX86regPointerToX86reg(AddressReg, TempReg2, ValueReg);
 
-    m_Assembler.AndVariableDispToX86Reg((void *)R4300iOp::SWL_MASK, "R4300iOp::SWL_MASK", ValueReg, OffsetReg, CX86Ops::Multip_x4);
+    m_Assembler.AndVariableDispToX86Reg(ValueReg, (void *)R4300iOp::SWL_MASK, "R4300iOp::SWL_MASK", OffsetReg, CX86Ops::Multip_x4);
     if (!IsConst(m_Opcode.rt) || GetMipsRegLo(m_Opcode.rt) != 0)
     {
         m_Assembler.MoveVariableDispToX86Reg((void *)R4300iOp::SWL_SHIFT, "R4300iOp::SWL_SHIFT", shift, OffsetReg, 4);
@@ -3818,7 +3818,7 @@ void CX86RecompilerOps::SWR()
 
     m_Assembler.MoveX86regPointerToX86reg(AddressReg, TempReg2, ValueReg);
 
-    m_Assembler.AndVariableDispToX86Reg((void *)R4300iOp::SWR_MASK, "R4300iOp::SWR_MASK", ValueReg, OffsetReg, CX86Ops::Multip_x4);
+    m_Assembler.AndVariableDispToX86Reg(ValueReg, (void *)R4300iOp::SWR_MASK, "R4300iOp::SWR_MASK", OffsetReg, CX86Ops::Multip_x4);
     if (!IsConst(m_Opcode.rt) || GetMipsRegLo(m_Opcode.rt) != 0)
     {
         m_Assembler.MoveVariableDispToX86Reg((void *)R4300iOp::SWR_SHIFT, "R4300iOp::SWR_SHIFT", shift, OffsetReg, 4);
