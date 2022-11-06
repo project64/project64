@@ -740,53 +740,12 @@ void CX86Ops::LeaSourceAndOffset(x86Reg x86DestReg, x86Reg x86SourceReg, int32_t
     }
 }
 
-void CX86Ops::MoveConstByteToN64Mem(uint8_t Const, x86Reg AddrReg)
-{
-    CodeLog("      mov byte ptr [%s+N64mem], %Xh", x86_Name(AddrReg), Const);
-    switch (AddrReg)
-    {
-    case x86_EAX: AddCode16(0x80C6); break;
-    case x86_EBX: AddCode16(0x83C6); break;
-    case x86_ECX: AddCode16(0x81C6); break;
-    case x86_EDX: AddCode16(0x82C6); break;
-    case x86_ESI: AddCode16(0x86C6); break;
-    case x86_EDI: AddCode16(0x87C6); break;
-    case x86_ESP: AddCode16(0x84C6); break;
-    case x86_EBP: AddCode16(0x85C6); break;
-    default:
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-    AddCode32((uint32_t)g_MMU->Rdram());
-    AddCode8(Const);
-}
-
 void CX86Ops::MoveConstByteToVariable(uint8_t Const, void * Variable, const char * VariableName)
 {
     CodeLog("      mov byte ptr [%s], %Xh", VariableName, Const);
     AddCode16(0x05C6);
     AddCode32((uint32_t)Variable);
     AddCode8(Const);
-}
-
-void CX86Ops::MoveConstHalfToN64Mem(uint16_t Const, x86Reg AddrReg)
-{
-    CodeLog("      mov word ptr [%s+N64mem], %Xh", x86_Name(AddrReg), Const);
-    AddCode8(0x66);
-    switch (AddrReg)
-    {
-    case x86_EAX: AddCode16(0x80C7); break;
-    case x86_EBX: AddCode16(0x83C7); break;
-    case x86_ECX: AddCode16(0x81C7); break;
-    case x86_EDX: AddCode16(0x82C7); break;
-    case x86_ESI: AddCode16(0x86C7); break;
-    case x86_EDI: AddCode16(0x87C7); break;
-    case x86_ESP: AddCode16(0x84C7); break;
-    case x86_EBP: AddCode16(0x85C7); break;
-    default:
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-    AddCode32((uint32_t)g_MMU->Rdram());
-    AddCode16(Const);
 }
 
 void CX86Ops::MoveConstHalfToVariable(uint16_t Const, void * Variable, const char * VariableName)
@@ -853,46 +812,6 @@ void CX86Ops::MoveConstToMemoryDisp(uint32_t Const, x86Reg AddrReg, uint32_t Dis
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     AddCode32(Disp);
-    AddCode32(Const);
-}
-
-void CX86Ops::MoveConstToN64Mem(uint32_t Const, x86Reg AddrReg)
-{
-    CodeLog("      mov dword ptr [%s+N64mem], %Xh", x86_Name(AddrReg), Const);
-    switch (AddrReg)
-    {
-    case x86_EAX: AddCode16(0x80C7); break;
-    case x86_EBX: AddCode16(0x83C7); break;
-    case x86_ECX: AddCode16(0x81C7); break;
-    case x86_EDX: AddCode16(0x82C7); break;
-    case x86_ESI: AddCode16(0x86C7); break;
-    case x86_EDI: AddCode16(0x87C7); break;
-    case x86_ESP: AddCode16(0x84C7); break;
-    case x86_EBP: AddCode16(0x85C7); break;
-    default:
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-    AddCode32((uint32_t)g_MMU->Rdram());
-    AddCode32(Const);
-}
-
-void CX86Ops::MoveConstToN64MemDisp(uint32_t Const, x86Reg AddrReg, uint8_t Disp)
-{
-    CodeLog("      mov dword ptr [%s+N64mem+%Xh], %Xh", x86_Name(AddrReg), Const, Disp);
-    switch (AddrReg)
-    {
-    case x86_EAX: AddCode16(0x80C7); break;
-    case x86_EBX: AddCode16(0x83C7); break;
-    case x86_ECX: AddCode16(0x81C7); break;
-    case x86_EDX: AddCode16(0x82C7); break;
-    case x86_ESI: AddCode16(0x86C7); break;
-    case x86_EDI: AddCode16(0x87C7); break;
-    case x86_ESP: AddCode16(0x84C7); break;
-    case x86_EBP: AddCode16(0x85C7); break;
-    default:
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-    AddCode32((uint32_t)g_MMU->Rdram() + Disp);
     AddCode32(Const);
 }
 

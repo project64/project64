@@ -6629,7 +6629,7 @@ void CX86RecompilerOps::SPECIAL_SLTU()
                 }
                 else
                 {
-                    m_Assembler.CompConstToVariable((GetMipsRegLo_S(KnownReg) >> 31), &_GPR[UnknownReg].W[1], CRegName::GPR_Hi[UnknownReg]);
+                    m_Assembler.CompConstToVariable(&_GPR[UnknownReg].W[1], CRegName::GPR_Hi[UnknownReg], (GetMipsRegLo_S(KnownReg) >> 31));
                 }
             }
             else
