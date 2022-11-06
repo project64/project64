@@ -302,6 +302,41 @@ class CRegisters :
     public DiskInterfaceReg
 {
 public:
+    enum COP0Reg : uint32_t
+    {
+        COP0Reg_Index = 0,
+        COP0Reg_Random = 1,
+        COP0Reg_EntryLo0 = 2,
+        COP0Reg_EntryLo1 = 3,
+        COP0Reg_Context = 4,
+        COP0Reg_PageMask = 5,
+        COP0Reg_Wired = 6,
+        COP0Reg_7 = 7,
+        COP0Reg_BadVAddr = 8,
+        COP0Reg_Count = 9,
+        COP0Reg_EntryHi = 10,
+        COP0Reg_Compare = 11,
+        COP0Reg_Status = 12,
+        COP0Reg_Cause = 13,
+        COP0Reg_EPC = 14,
+        COP0Reg_PRId = 15,
+        COP0Reg_Config = 16,
+        COP0Reg_LLAddr = 17,
+        COP0Reg_WatchLo = 18,
+        COP0Reg_WatchHi = 19,
+        COP0Reg_XContext = 20,
+        COP0Reg_21 = 21,
+        COP0Reg_22 = 22,
+        COP0Reg_23 = 23,
+        COP0Reg_24 = 24,
+        COP0Reg_25 = 25,
+        COP0Reg_ParityError = 26,
+        COP0Reg_CacheErr = 27,
+        COP0Reg_TagLo = 28,
+        COP0Reg_TagHi = 29,
+        COP0Reg_ErrEPC = 30,
+        COP0Reg_31 = 31,
+    };
     CRegisters(CN64System * System, CSystemEvents * SystemEvents);
 
     void CheckInterrupts();
@@ -319,8 +354,8 @@ public:
     void Reset();
     void SetAsCurrentSystem();
 
-    uint64_t Cop0_MF(uint32_t Reg);
-    void Cop0_MT(uint32_t Reg, uint64_t Value);
+    uint64_t Cop0_MF(COP0Reg Reg);
+    void Cop0_MT(COP0Reg Reg, uint64_t Value);
 
     // General registers
     uint32_t m_PROGRAM_COUNTER;

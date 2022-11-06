@@ -1798,22 +1798,22 @@ void R4300iOp::REGIMM_TNEI()
 
 void R4300iOp::COP0_MF()
 {
-    _GPR[m_Opcode.rt].DW = (int32_t)g_Reg->Cop0_MF(m_Opcode.rd);
+    _GPR[m_Opcode.rt].DW = (int32_t)g_Reg->Cop0_MF((CRegisters::COP0Reg)m_Opcode.rd);
 }
 
 void R4300iOp::COP0_DMF()
 {
-    _GPR[m_Opcode.rt].DW = g_Reg->Cop0_MF(m_Opcode.rd);
+    _GPR[m_Opcode.rt].DW = g_Reg->Cop0_MF((CRegisters::COP0Reg)m_Opcode.rd);
 }
 
 void R4300iOp::COP0_MT()
 {
-    g_Reg->Cop0_MT(m_Opcode.rd, (int64_t)_GPR[m_Opcode.rt].W[0]);
+    g_Reg->Cop0_MT((CRegisters::COP0Reg)m_Opcode.rd, (int64_t)_GPR[m_Opcode.rt].W[0]);
 }
 
 void R4300iOp::COP0_DMT()
 {
-    g_Reg->Cop0_MT(m_Opcode.rd, _GPR[m_Opcode.rt].UDW);
+    g_Reg->Cop0_MT((CRegisters::COP0Reg)m_Opcode.rd, _GPR[m_Opcode.rt].UDW);
 }
 // COP0 CO functions
 

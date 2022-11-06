@@ -1103,7 +1103,7 @@ void R4300iOp32::REGIMM_BGEZAL()
 
 void R4300iOp32::COP0_MF()
 {
-    _GPR[m_Opcode.rt].W[0] = (int32_t)g_Reg->Cop0_MF(m_Opcode.rd);
+    _GPR[m_Opcode.rt].W[0] = (int32_t)g_Reg->Cop0_MF((CRegisters::COP0Reg)m_Opcode.rd);
 }
 
 // COP1 functions
