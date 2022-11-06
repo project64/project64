@@ -29,13 +29,6 @@ void CX86Ops::WriteX86Label(const char * Label)
     CodeLog("      %s:", Label);
 }
 
-void CX86Ops::AdcX86regToVariable(x86Reg reg, void * Variable, const char * VariableName)
-{
-    CodeLog("      adc dword ptr [%s], %s", VariableName, x86_Name(reg));
-    AddCode16((uint16_t)(0x0511 + (reg * 0x100)));
-    AddCode32((uint32_t)Variable);
-}
-
 void CX86Ops::AdcConstToVariable(void * Variable, const char * VariableName, uint8_t Constant)
 {
     CodeLog("      adc dword ptr [%s], %Xh", VariableName, Constant);
