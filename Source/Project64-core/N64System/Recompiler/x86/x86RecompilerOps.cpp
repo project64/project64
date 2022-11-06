@@ -7903,7 +7903,7 @@ void CX86RecompilerOps::COP1_S_CMP()
         m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&_FPR_S[Reg2], stdstr_f("_FPR_S[%d]", Reg2).c_str());
         m_Assembler.fpuComDwordRegPointer(TempReg, false);
     }
-    m_Assembler.AndConstToVariable((uint32_t)~FPCSR_C, &_FPCR[31], "_FPCR[31]");
+    m_Assembler.AndConstToVariable(&_FPCR[31], "_FPCR[31]", (uint32_t)~FPCSR_C);
     m_Assembler.fpuStoreStatus();
     CX86Ops::x86Reg Reg = Map_TempReg(CX86Ops::x86_Unknown, 0, false, true);
     m_Assembler.TestConstToX86Reg(cmp, CX86Ops::x86_EAX);
@@ -8268,7 +8268,7 @@ void CX86RecompilerOps::COP1_D_CMP()
         Load_FPR_ToTop(Reg1, Reg1, CRegInfo::FPU_Double);
         m_Assembler.fpuComQwordRegPointer(TempReg, false);
     }
-    m_Assembler.AndConstToVariable((uint32_t)~FPCSR_C, &_FPCR[31], "_FPCR[31]");
+    m_Assembler.AndConstToVariable(&_FPCR[31], "_FPCR[31]", (uint32_t)~FPCSR_C);
     m_Assembler.fpuStoreStatus();
     CX86Ops::x86Reg Reg = Map_TempReg(CX86Ops::x86_Unknown, 0, false, true);
     m_Assembler.TestConstToX86Reg(cmp, CX86Ops::x86_EAX);
@@ -10513,7 +10513,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             }
             if (ModValue != 0)
             {
-                m_Assembler.AndConstToVariable(~ModValue, &g_Reg->MI_MODE_REG, "MI_MODE_REG");
+                m_Assembler.AndConstToVariable(&g_Reg->MI_MODE_REG, "MI_MODE_REG", ~ModValue);
             }
 
             ModValue = (Value & 0x7F);
@@ -10535,8 +10535,8 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             }
             if ((Value & MI_CLR_DP_INTR) != 0)
             {
-                m_Assembler.AndConstToVariable((uint32_t)~MI_INTR_DP, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
-                m_Assembler.AndConstToVariable((uint32_t)~MI_INTR_DP, &g_Reg->m_GfxIntrReg, "m_GfxIntrReg");
+                m_Assembler.AndConstToVariable(&g_Reg->MI_INTR_REG, "MI_INTR_REG", (uint32_t)~MI_INTR_DP);
+                m_Assembler.AndConstToVariable(&g_Reg->m_GfxIntrReg, "m_GfxIntrReg", (uint32_t)~MI_INTR_DP);
             }
             break;
         }
@@ -10570,7 +10570,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             }
             if (ModValue != 0)
             {
-                m_Assembler.AndConstToVariable(~ModValue, &g_Reg->MI_INTR_MASK_REG, "MI_INTR_MASK_REG");
+                m_Assembler.AndConstToVariable(&g_Reg->MI_INTR_MASK_REG, "MI_INTR_MASK_REG", ~ModValue);
             }
 
             ModValue = 0;
@@ -10660,7 +10660,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
                 break;
             case 0x0440000C: m_Assembler.MoveConstToVariable(Value, &g_Reg->VI_INTR_REG, "VI_INTR_REG"); break;
             case 0x04400010:
-                m_Assembler.AndConstToVariable((uint32_t)~MI_INTR_VI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
+                m_Assembler.AndConstToVariable(&g_Reg->MI_INTR_REG, "MI_INTR_REG", (uint32_t)~MI_INTR_VI);
                 m_RegWorkingSet.BeforeCallDirect();
                 m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts", 4);
                 m_RegWorkingSet.AfterCallDirect();
@@ -10759,8 +10759,8 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04800018:
-            m_Assembler.AndConstToVariable((uint32_t)~MI_INTR_SI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
-            m_Assembler.AndConstToVariable((uint32_t)~SI_STATUS_INTERRUPT, &g_Reg->SI_STATUS_REG, "SI_STATUS_REG");
+            m_Assembler.AndConstToVariable(&g_Reg->MI_INTR_REG, "MI_INTR_REG", (uint32_t)~MI_INTR_SI);
+            m_Assembler.AndConstToVariable(&g_Reg->SI_STATUS_REG, "SI_STATUS_REG", (uint32_t)~SI_STATUS_INTERRUPT);
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts", 4);
             m_RegWorkingSet.AfterCallDirect();
@@ -10899,7 +10899,7 @@ void CX86RecompilerOps::SW_Register(CX86Ops::x86Reg Reg, uint32_t VAddr)
         case 0x0404001C: m_Assembler.MoveConstToVariable(0, &g_Reg->SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG"); break;
         case 0x04080000:
             m_Assembler.MoveX86regToVariable(Reg, &g_Reg->SP_PC_REG, "SP_PC_REG");
-            m_Assembler.AndConstToVariable(0xFFC, &g_Reg->SP_PC_REG, "SP_PC_REG");
+            m_Assembler.AndConstToVariable(&g_Reg->SP_PC_REG, "SP_PC_REG", 0xFFC);
             break;
         default:
             if (CGameSettings::bSMM_StoreInstruc())
@@ -10996,7 +10996,7 @@ void CX86RecompilerOps::SW_Register(CX86Ops::x86Reg Reg, uint32_t VAddr)
                 break;
             case 0x04400004:
                 m_Assembler.MoveX86regToVariable(Reg, &g_Reg->VI_ORIGIN_REG, "VI_ORIGIN_REG");
-                m_Assembler.AndConstToVariable(0xFFFFFF, &g_Reg->VI_ORIGIN_REG, "VI_ORIGIN_REG");
+                m_Assembler.AndConstToVariable(&g_Reg->VI_ORIGIN_REG, "VI_ORIGIN_REG", 0xFFFFFF);
                 break;
             case 0x04400008:
                 if (g_Plugins->Gfx()->ViWidthChanged != nullptr)
@@ -11016,7 +11016,7 @@ void CX86RecompilerOps::SW_Register(CX86Ops::x86Reg Reg, uint32_t VAddr)
                 break;
             case 0x0440000C: m_Assembler.MoveX86regToVariable(Reg, &g_Reg->VI_INTR_REG, "VI_INTR_REG"); break;
             case 0x04400010:
-                m_Assembler.AndConstToVariable((uint32_t)~MI_INTR_VI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
+                m_Assembler.AndConstToVariable(&g_Reg->MI_INTR_REG, "MI_INTR_REG", (uint32_t)~MI_INTR_VI);
                 m_RegWorkingSet.BeforeCallDirect();
                 m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts", 4);
                 m_RegWorkingSet.AfterCallDirect();
@@ -11070,35 +11070,35 @@ void CX86RecompilerOps::SW_Register(CX86Ops::x86Reg Reg, uint32_t VAddr)
             break;
         case 0x04600014:
             m_Assembler.MoveX86regToVariable(Reg, &g_Reg->PI_DOMAIN1_REG, "PI_DOMAIN1_REG");
-            m_Assembler.AndConstToVariable(0xFF, &g_Reg->PI_DOMAIN1_REG, "PI_DOMAIN1_REG");
+            m_Assembler.AndConstToVariable(&g_Reg->PI_DOMAIN1_REG, "PI_DOMAIN1_REG", 0xFF);
             break;
         case 0x04600018:
             m_Assembler.MoveX86regToVariable(Reg, &g_Reg->PI_BSD_DOM1_PWD_REG, "PI_BSD_DOM1_PWD_REG");
-            m_Assembler.AndConstToVariable(0xFF, &g_Reg->PI_BSD_DOM1_PWD_REG, "PI_BSD_DOM1_PWD_REG");
+            m_Assembler.AndConstToVariable(&g_Reg->PI_BSD_DOM1_PWD_REG, "PI_BSD_DOM1_PWD_REG", 0xFF);
             break;
         case 0x0460001C:
             m_Assembler.MoveX86regToVariable(Reg, &g_Reg->PI_BSD_DOM1_PGS_REG, "PI_BSD_DOM1_PGS_REG");
-            m_Assembler.AndConstToVariable(0xFF, &g_Reg->PI_BSD_DOM1_PGS_REG, "PI_BSD_DOM1_PGS_REG");
+            m_Assembler.AndConstToVariable(&g_Reg->PI_BSD_DOM1_PGS_REG, "PI_BSD_DOM1_PGS_REG", 0xFF);
             break;
         case 0x04600020:
             m_Assembler.MoveX86regToVariable(Reg, &g_Reg->PI_BSD_DOM1_RLS_REG, "PI_BSD_DOM1_RLS_REG");
-            m_Assembler.AndConstToVariable(0xFF, &g_Reg->PI_BSD_DOM1_RLS_REG, "PI_BSD_DOM1_RLS_REG");
+            m_Assembler.AndConstToVariable(&g_Reg->PI_BSD_DOM1_RLS_REG, "PI_BSD_DOM1_RLS_REG", 0xFF);
             break;
         case 0x04600024:
             m_Assembler.MoveX86regToVariable(Reg, &g_Reg->PI_DOMAIN2_REG, "PI_DOMAIN2_REG");
-            m_Assembler.AndConstToVariable(0xFF, &g_Reg->PI_DOMAIN2_REG, "PI_DOMAIN2_REG");
+            m_Assembler.AndConstToVariable(&g_Reg->PI_DOMAIN2_REG, "PI_DOMAIN2_REG", 0xFF);
             break;
         case 0x04600028:
             m_Assembler.MoveX86regToVariable(Reg, &g_Reg->PI_BSD_DOM2_PWD_REG, "PI_BSD_DOM2_PWD_REG");
-            m_Assembler.AndConstToVariable(0xFF, &g_Reg->PI_BSD_DOM2_PWD_REG, "PI_BSD_DOM2_PWD_REG");
+            m_Assembler.AndConstToVariable(&g_Reg->PI_BSD_DOM2_PWD_REG, "PI_BSD_DOM2_PWD_REG", 0xFF);
             break;
         case 0x0460002C:
             m_Assembler.MoveX86regToVariable(Reg, &g_Reg->PI_BSD_DOM2_PGS_REG, "PI_BSD_DOM2_PGS_REG");
-            m_Assembler.AndConstToVariable(0xFF, &g_Reg->PI_BSD_DOM2_PGS_REG, "PI_BSD_DOM2_PGS_REG");
+            m_Assembler.AndConstToVariable(&g_Reg->PI_BSD_DOM2_PGS_REG, "PI_BSD_DOM2_PGS_REG", 0xFF);
             break;
         case 0x04600030:
             m_Assembler.MoveX86regToVariable(Reg, &g_Reg->PI_BSD_DOM2_RLS_REG, "PI_BSD_DOM2_RLS_REG");
-            m_Assembler.AndConstToVariable(0xFF, &g_Reg->PI_BSD_DOM2_RLS_REG, "PI_BSD_DOM2_RLS_REG");
+            m_Assembler.AndConstToVariable(&g_Reg->PI_BSD_DOM2_RLS_REG, "PI_BSD_DOM2_RLS_REG", 0xFF);
             break;
         default:
             m_CodeBlock.Log("    should be moving %s in to %08X ?", CX86Ops::x86_Name(Reg), VAddr);
@@ -11139,8 +11139,8 @@ void CX86RecompilerOps::SW_Register(CX86Ops::x86Reg Reg, uint32_t VAddr)
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04800018:
-            m_Assembler.AndConstToVariable((uint32_t)~MI_INTR_SI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
-            m_Assembler.AndConstToVariable((uint32_t)~SI_STATUS_INTERRUPT, &g_Reg->SI_STATUS_REG, "SI_STATUS_REG");
+            m_Assembler.AndConstToVariable(&g_Reg->MI_INTR_REG, "MI_INTR_REG", (uint32_t)~MI_INTR_SI);
+            m_Assembler.AndConstToVariable(&g_Reg->SI_STATUS_REG, "SI_STATUS_REG", (uint32_t)~SI_STATUS_INTERRUPT);
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts", 4);
             m_RegWorkingSet.AfterCallDirect();
