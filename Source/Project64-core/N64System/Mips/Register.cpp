@@ -331,28 +331,28 @@ void CRegisters::SetAsCurrentSystem()
     _RoundingModel = &m_RoundingModel;
 }
 
-uint64_t CRegisters::Cop0_MF(uint32_t Reg)
+uint64_t CRegisters::Cop0_MF(COP0Reg Reg)
 {
-    if (LogCP0reads() && Reg <= 0x1F)
+    if (LogCP0reads() && Reg <= COP0Reg_31)
     {
         LogMessage("%08X: R4300i read from %s (0x%08X)", (*_PROGRAM_COUNTER), CRegName::Cop0[Reg], m_CP0[Reg]);
     }
 
-    if (Reg == 9)
+    if (Reg == COP0Reg_Count || Reg == COP0Reg_Wired || Reg == COP0Reg_Random)
     {
         g_SystemTimer->UpdateTimers();
     }
-    else if (Reg == 7 || Reg == 21 || Reg == 22 || Reg == 23 || Reg == 24 || Reg == 25 || Reg == 31)
+    else if (Reg == COP0Reg_7 || Reg == COP0Reg_21 || Reg == COP0Reg_22 || Reg == COP0Reg_23 || Reg == COP0Reg_24 || Reg == COP0Reg_25 || Reg == COP0Reg_31)
     {
         // Unused registers
         return m_CP0Latch;
     }
-    return Reg <= 0x1F ? m_CP0[Reg] : 0;
+    return Reg <= COP0Reg_31 ? m_CP0[Reg] : 0;
 }
 
-void CRegisters::Cop0_MT(uint32_t Reg, uint64_t Value)
+void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
 {
-    if (LogCP0changes() && Reg <= 0x1F)
+    if (LogCP0changes() && Reg <= COP0Reg_31)
     {
         LogMessage("%08X: Writing 0x%I64U to %s register (originally: 0x%I64U)", (*_PROGRAM_COUNTER), Value, CRegName::Cop0[Reg], m_CP0[Reg]);
         if (Reg == 11) // Compare
@@ -364,42 +364,43 @@ void CRegisters::Cop0_MT(uint32_t Reg, uint64_t Value)
 
     switch (Reg)
     {
-    case 0:  // Index
-    case 2:  // EntryLo0
-    case 3:  // EntryLo1
-    case 5:  // PageMask
-    case 10: // Entry Hi
-    case 14: // EPC
-    case 18: // WatchLo
-    case 19: // WatchHi
-    case 28: // Tag lo
-    case 29: // Tag Hi
-    case 30: // ErrEPC
-    case 31: // Reg31
+    case COP0Reg_Index:
+    case COP0Reg_EntryLo0:
+    case COP0Reg_EntryLo1:
+    case COP0Reg_PageMask:
+    case COP0Reg_EntryHi:
+    case COP0Reg_EPC:
+    case COP0Reg_WatchLo:
+    case COP0Reg_WatchHi:
+    case COP0Reg_TagLo:
+    case COP0Reg_TagHi:
+    case COP0Reg_ErrEPC:
+    case COP0Reg_31:
         m_CP0[Reg] = Value;
         break;
-    case 4: // Context
+    case COP0Reg_Context:
         m_CP0[Reg] = (Value & 0xFFFFFFFFFF800000) | (m_CP0[Reg] & 0x7FFFF0);
         break;
-    case 6: // Wired
+    case COP0Reg_Wired:
         g_SystemTimer->UpdateTimers();
         m_CP0[Reg] = Value & 0x3F;
         break;
-    case 7: // Reg7 - Unused
-    case 8: // BadVaddr - read only
+    case COP0Reg_7:
+    case COP0Reg_BadVAddr:
+        // Read only
         break;
-    case 9: // Count
+    case COP0Reg_Count:
         g_SystemTimer->UpdateTimers();
         m_CP0[Reg] = Value;
         g_SystemTimer->UpdateCompareTimer();
         break;
-    case 11: // Compare
+    case COP0Reg_Compare:
         g_SystemTimer->UpdateTimers();
         m_CP0[Reg] = Value;
         FAKE_CAUSE_REGISTER &= ~CAUSE_IP7;
         g_SystemTimer->UpdateCompareTimer();
         break;
-    case 12: // Status
+    case COP0Reg_Status:
     {
         bool FRBitChanged = (m_CP0[Reg] & STATUS_FR) != (Value & STATUS_FR);
         m_CP0[Reg] = Value & 0xFFF7FFFF;
@@ -410,34 +411,36 @@ void CRegisters::Cop0_MT(uint32_t Reg, uint64_t Value)
         CheckInterrupts();
         break;
     }
-    case 13: // Cause
+    case COP0Reg_Cause:
         m_CP0[Reg] &= 0xFFFFCFF;
         if ((Value & 0x300) != 0 && HaveDebugger())
         {
             g_Notify->DisplayError("Set IP0 or IP1");
         }
         break;
-    case 15: // PRId - read only
+    case COP0Reg_PRId:
+        // Read only
         break;
-    case 16: // Config
+    case COP0Reg_Config:
         m_CP0[Reg] = (Value & 0x3F00800F) | (m_CP0[Reg] & 0xC0FF7FF0);
         break;
-    case 17: // LLAdrr
+    case COP0Reg_LLAddr:
         m_CP0[Reg] = (Value & 0xFFFFFFFF) | (m_CP0[Reg] & 0xFFFFFFFF00000000);
         break;
-    case 20: // XContext
+    case COP0Reg_XContext:
         m_CP0[Reg] = (Value & 0xFFFFFFFE00000000) | (m_CP0[Reg] & 0x00000001FFFFFFFF);
         break;
-    case 21: // Reg21 - unused
-    case 22: // Reg22 - unused
-    case 23: // Reg23 - unused
-    case 24: // Reg24 - unused
-    case 25: // Reg25 - unused
+    case COP0Reg_21:
+    case COP0Reg_22:
+    case COP0Reg_23:
+    case COP0Reg_24:
+    case COP0Reg_25:
+        // Unused
         break;
-    case 26: // ParityError
+    case COP0Reg_ParityError:
         m_CP0[Reg] = Value & 0xFF;
         break;
-    case 27: // CacheErr - read only
+    case COP0Reg_CacheErr:
         break;
     default:
         if (HaveDebugger())

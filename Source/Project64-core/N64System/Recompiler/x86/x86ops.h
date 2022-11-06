@@ -64,7 +64,6 @@ public:
     void WriteX86Comment(const char * Comment);
     void WriteX86Label(const char * Label);
 
-    void AdcX86regToVariable(x86Reg reg, void * Variable, const char * VariableName);
     void AdcConstToVariable(void * Variable, const char * VariableName, uint8_t Constant);
     void AdcConstToX86Reg(x86Reg Reg, uint32_t Const);
     void AdcVariableToX86reg(x86Reg reg, void * Variable, const char * VariableName);
