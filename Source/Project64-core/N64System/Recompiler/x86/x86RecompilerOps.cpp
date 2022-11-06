@@ -5580,13 +5580,13 @@ void CX86RecompilerOps::SPECIAL_AND()
                 if (Is64Bit(KnownReg) || !g_System->b32BitCore())
                 {
                     Map_GPR_64bit(m_Opcode.rd, KnownReg);
-                    m_Assembler.AndVariableToX86Reg(&_GPR[UnknownReg].W[1], CRegName::GPR_Hi[UnknownReg], GetMipsRegMapHi(m_Opcode.rd));
-                    m_Assembler.AndVariableToX86Reg(&_GPR[UnknownReg].W[0], CRegName::GPR_Lo[UnknownReg], GetMipsRegMapLo(m_Opcode.rd));
+                    m_Assembler.AndVariableToX86Reg(GetMipsRegMapHi(m_Opcode.rd), &_GPR[UnknownReg].W[1], CRegName::GPR_Hi[UnknownReg]);
+                    m_Assembler.AndVariableToX86Reg(GetMipsRegMapLo(m_Opcode.rd), &_GPR[UnknownReg].W[0], CRegName::GPR_Lo[UnknownReg]);
                 }
                 else
                 {
                     Map_GPR_32bit(m_Opcode.rd, IsSigned(KnownReg), KnownReg);
-                    m_Assembler.AndVariableToX86Reg(&_GPR[UnknownReg].W[0], CRegName::GPR_Lo[UnknownReg], GetMipsRegMapLo(m_Opcode.rd));
+                    m_Assembler.AndVariableToX86Reg(GetMipsRegMapLo(m_Opcode.rd), &_GPR[UnknownReg].W[0], CRegName::GPR_Lo[UnknownReg]);
                 }
             }
             else
@@ -5614,9 +5614,9 @@ void CX86RecompilerOps::SPECIAL_AND()
         else
         {
             Map_GPR_64bit(m_Opcode.rd, m_Opcode.rt);
-            m_Assembler.AndVariableToX86Reg(&_GPR[m_Opcode.rs].W[1], CRegName::GPR_Hi[m_Opcode.rs], GetMipsRegMapHi(m_Opcode.rd));
+            m_Assembler.AndVariableToX86Reg(GetMipsRegMapHi(m_Opcode.rd), &_GPR[m_Opcode.rs].W[1], CRegName::GPR_Hi[m_Opcode.rs]);
         }
-        m_Assembler.AndVariableToX86Reg(&_GPR[m_Opcode.rs].W[0], CRegName::GPR_Lo[m_Opcode.rs], GetMipsRegMapLo(m_Opcode.rd));
+        m_Assembler.AndVariableToX86Reg(GetMipsRegMapLo(m_Opcode.rd), &_GPR[m_Opcode.rs].W[0], CRegName::GPR_Lo[m_Opcode.rs]);
     }
 }
 

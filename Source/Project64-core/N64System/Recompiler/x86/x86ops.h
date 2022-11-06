@@ -75,7 +75,7 @@ public:
     void AddX86RegToX86Reg(x86Reg Destination, x86Reg Source);
     void AndConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
     void AndConstToX86Reg(x86Reg Reg, uint32_t Const);
-    void AndVariableToX86Reg(void * Variable, const char * VariableName, x86Reg Reg);
+    void AndVariableToX86Reg(x86Reg Reg, void * Variable, const char * VariableName);
     void AndVariableDispToX86Reg(x86Reg Reg, void * Variable, const char * VariableName, x86Reg AddrReg, Multipler Multiply);
     void AndX86RegToX86Reg(x86Reg Destination, x86Reg Source);
     void X86HardBreakPoint();
