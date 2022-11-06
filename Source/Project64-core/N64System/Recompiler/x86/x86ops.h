@@ -82,7 +82,7 @@ public:
     void X86BreakPoint(const char * FileName, int32_t LineNumber);
     void CallFunc(uint32_t FunctPtr, const char * FunctName);
     void CallThis(uint32_t ThisPtr, uint32_t FunctPtr, char * FunctName, uint32_t StackSize);
-    void CompConstToVariable(uint32_t Const, void * Variable, const char * VariableName);
+    void CompConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
     void CompConstToX86reg(x86Reg Reg, uint32_t Const);
     void CompConstToX86regPointer(x86Reg Reg, uint32_t Const);
     void CompX86regToVariable(x86Reg Reg, void * Variable, const char * VariableName);

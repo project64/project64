@@ -208,7 +208,7 @@ void CX86Ops::CallThis(uint32_t ThisPtr, uint32_t FunctPtr, char * FunctName, ui
 }
 #endif
 
-void CX86Ops::CompConstToVariable(uint32_t Const, void * Variable, const char * VariableName)
+void CX86Ops::CompConstToVariable(void * Variable, const char * VariableName, uint32_t Const)
 {
     CodeLog("      cmp dword ptr [%s], 0x%X", VariableName, Const);
     AddCode16(0x3D81);
