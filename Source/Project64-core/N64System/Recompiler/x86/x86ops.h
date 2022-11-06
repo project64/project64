@@ -86,7 +86,6 @@ public:
     void CompConstToX86reg(x86Reg Reg, uint32_t Const);
     void CompConstToX86regPointer(x86Reg Reg, uint32_t Const);
     void CompX86regToVariable(x86Reg Reg, void * Variable, const char * VariableName);
-    void CompVariableToX86reg(x86Reg Reg, void * Variable, const char * VariableName);
     void CompX86RegToX86Reg(x86Reg Destination, x86Reg Source);
     void DecX86reg(x86Reg Reg);
     void DivX86reg(x86Reg Reg);

@@ -261,13 +261,6 @@ void CX86Ops::CompX86regToVariable(x86Reg Reg, void * Variable, const char * Var
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::CompVariableToX86reg(x86Reg Reg, void * Variable, const char * VariableName)
-{
-    CodeLog("      cmp dword ptr [%s], %s", VariableName, x86_Name(Reg));
-    AddCode16((uint16_t)(0x0539 + (Reg * 0x800)));
-    AddCode32((uint32_t)Variable);
-}
-
 void CX86Ops::CompX86RegToX86Reg(x86Reg Destination, x86Reg Source)
 {
     uint16_t x86Command = 0;
