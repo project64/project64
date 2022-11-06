@@ -65,7 +65,7 @@ void CX86Ops::AdcX86RegToX86Reg(x86Reg Destination, x86Reg Source)
     AddCode16((uint16_t)(0xC013 + (Source * 0x100) + (Destination * 0x800)));
 }
 
-void CX86Ops::AddConstToVariable(uint32_t Const, void * Variable, const char * VariableName)
+void CX86Ops::AddConstToVariable(void * Variable, const char * VariableName, uint32_t Const)
 {
     CodeLog("      add dword ptr [%s], 0x%X", VariableName, Const);
     AddCode16(0x0581);

@@ -9825,7 +9825,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
     }
     if (OpsExecuted != 0)
     {
-        m_Assembler.AddConstToVariable(OpsExecuted, g_NextTimer, "g_NextTimer");
+        m_Assembler.AddConstToVariable(g_NextTimer, "g_NextTimer", OpsExecuted);
     }
     m_CodeBlock.Log("");
     m_CodeBlock.Log(stdstr_f("      MemoryReadMap_%X_Found:", m_CompilePC).c_str());
@@ -9963,7 +9963,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         m_Assembler.CallThis((uint32_t)&m_MMU, AddressOf(&CMipsMemoryVM::SB_NonMemory), "CMipsMemoryVM::SB_NonMemory", 12);
         if (OpsExecuted != 0)
         {
-            m_Assembler.AddConstToVariable(OpsExecuted, g_NextTimer, "g_NextTimer");
+            m_Assembler.AddConstToVariable(g_NextTimer, "g_NextTimer", OpsExecuted);
         }
         m_Assembler.TestX86ByteRegToX86Reg(CX86Ops::x86_AL, CX86Ops::x86_AL);
         m_RegWorkingSet.AfterCallDirect();
@@ -9986,7 +9986,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         m_Assembler.CallThis((uint32_t)&m_MMU, AddressOf(&CMipsMemoryVM::SH_NonMemory), "CMipsMemoryVM::SH_NonMemory", 12);
         if (OpsExecuted != 0)
         {
-            m_Assembler.AddConstToVariable(OpsExecuted, g_NextTimer, "g_NextTimer");
+            m_Assembler.AddConstToVariable(g_NextTimer, "g_NextTimer", OpsExecuted);
         }
         m_Assembler.TestX86ByteRegToX86Reg(CX86Ops::x86_AL, CX86Ops::x86_AL);
         m_RegWorkingSet.AfterCallDirect();
@@ -10009,7 +10009,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         m_Assembler.CallThis((uint32_t)&m_MMU, AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory", 12);
         if (OpsExecuted != 0)
         {
-            m_Assembler.AddConstToVariable(OpsExecuted, g_NextTimer, "g_NextTimer");
+            m_Assembler.AddConstToVariable(g_NextTimer, "g_NextTimer", OpsExecuted);
         }
         m_Assembler.TestX86ByteRegToX86Reg(CX86Ops::x86_AL, CX86Ops::x86_AL);
         m_RegWorkingSet.AfterCallDirect();
@@ -10034,7 +10034,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         m_Assembler.CallThis((uint32_t)&m_MMU, AddressOf(&CMipsMemoryVM::SD_NonMemory), "CMipsMemoryVM::SD_NonMemory", 12);
         if (OpsExecuted != 0)
         {
-            m_Assembler.AddConstToVariable(OpsExecuted, g_NextTimer, "g_NextTimer");
+            m_Assembler.AddConstToVariable(g_NextTimer, "g_NextTimer", OpsExecuted);
         }
         m_Assembler.TestX86ByteRegToX86Reg(CX86Ops::x86_AL, CX86Ops::x86_AL);
         m_RegWorkingSet.AfterCallDirect();
