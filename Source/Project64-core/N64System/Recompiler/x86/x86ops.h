@@ -71,7 +71,7 @@ public:
     void AddConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
     void AddConstToX86Reg(x86Reg Reg, uint32_t Const, bool NeedCarry = false);
     void AddVariableToX86reg(x86Reg Reg, void * Variable, const char * VariableName);
-    void AddX86regToVariable(x86Reg Reg, void * Variable, const char * VariableName);
+    void AddX86regToVariable(void * Variable, const char * VariableName, x86Reg Reg);
     void AddX86RegToX86Reg(x86Reg Destination, x86Reg Source);
     void AndConstToVariable(uint32_t Const, void * Variable, const char * VariableName);
     void AndConstToX86Reg(x86Reg Reg, uint32_t Const);
