@@ -5178,19 +5178,19 @@ void CX86RecompilerOps::SPECIAL_DMULTU()
     /* _RegLO->UDW += ((uint64)Tmp[0].UW[0] + (uint64)Tmp[1].UW[0]) << 32; */
     /* [low+4] += ebx + esi */
 
-    AddX86regToVariable(CX86Ops::x86_EBX, &_RegLO->UW[1], "_RegLO->UW[1]");
-    AddX86regToVariable(CX86Ops::x86_ESI, &_RegLO->UW[1], "_RegLO->UW[1]");
+    AddX86regToVariable(&_RegLO->UW[1], "_RegLO->UW[1]", CX86Ops::x86_EBX);
+    AddX86regToVariable(&_RegLO->UW[1], "_RegLO->UW[1]", CX86Ops::x86_ESI);
 
     /* _RegHI->UDW += (uint64)Tmp[0].UW[1] + (uint64)Tmp[1].UW[1] + Tmp[2].UW[1]; */
     /* [hi] += ecx + edi + edx */
 
-    AddX86regToVariable(CX86Ops::x86_ECX, &_RegHI->UW[0], "_RegHI->UW[0]");
+    AddX86regToVariable(&_RegHI->UW[0], "_RegHI->UW[0]", CX86Ops::x86_ECX);
     AdcConstToVariable(&_RegHI->UW[1], "_RegHI->UW[1]", 0);
 
-    AddX86regToVariable(CX86Ops::x86_EDI, &_RegHI->UW[0], "_RegHI->UW[0]");
+    AddX86regToVariable(&_RegHI->UW[0], "_RegHI->UW[0]", CX86Ops::x86_EDI);
     AdcConstToVariable(&_RegHI->UW[1], "_RegHI->UW[1]", 0);
 
-    AddX86regToVariable(CX86Ops::x86_EDX, &_RegHI->UW[0], "_RegHI->UW[0]");
+    AddX86regToVariable(&_RegHI->UW[0], "_RegHI->UW[0]", CX86Ops::x86_EDX);
     AdcConstToVariable(&_RegHI->UW[1], "_RegHI->UW[1]", 0);
 #endif
 }
