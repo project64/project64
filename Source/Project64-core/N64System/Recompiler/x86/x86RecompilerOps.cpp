@@ -2092,7 +2092,7 @@ void CX86RecompilerOps::BGEZ_Compare()
 
 void CX86RecompilerOps::COP1_BCF_Compare()
 {
-    m_Assembler.TestVariable(FPCSR_C, &_FPCR[31], "_FPCR[31]");
+    m_Assembler.TestVariable(&_FPCR[31], "_FPCR[31]", FPCSR_C);
     if (m_Section->m_Cont.FallThrough)
     {
         m_Assembler.JeLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
@@ -2114,7 +2114,7 @@ void CX86RecompilerOps::COP1_BCF_Compare()
 
 void CX86RecompilerOps::COP1_BCT_Compare()
 {
-    m_Assembler.TestVariable(FPCSR_C, &_FPCR[31], "_FPCR[31]");
+    m_Assembler.TestVariable(&_FPCR[31], "_FPCR[31]", FPCSR_C);
     if (m_Section->m_Cont.FallThrough)
     {
         m_Assembler.JneLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
@@ -8483,7 +8483,7 @@ void CX86RecompilerOps::CompileCop1Test()
         return;
     }
 
-    m_Assembler.TestVariable(STATUS_CU1, &g_Reg->STATUS_REGISTER, "STATUS_REGISTER");
+    m_Assembler.TestVariable(&g_Reg->STATUS_REGISTER, "STATUS_REGISTER", STATUS_CU1);
     CRegInfo ExitRegSet = m_RegWorkingSet;
     ExitRegSet.SetBlockCycleCount(ExitRegSet.GetBlockCycleCount() + g_System->CountPerOp());
     CompileExit(m_CompilePC, m_CompilePC, ExitRegSet, ExitReason_COP1Unuseable, false, &CX86Ops::JeLabel32);
