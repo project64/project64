@@ -1370,7 +1370,7 @@ void CX86Ops::MoveX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Reg Addr
     AddCode8(Param);
 }
 
-void CX86Ops::MoveX86regPointerToX86regDisp8(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg Reg, uint8_t offset)
+void CX86Ops::MoveX86regPointerToX86regDisp8(x86Reg Reg, x86Reg AddrReg1, x86Reg AddrReg2, uint8_t offset)
 {
     uint8_t Param = 0;
 
