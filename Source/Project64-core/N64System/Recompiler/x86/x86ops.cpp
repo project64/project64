@@ -1120,7 +1120,7 @@ void CX86Ops::MoveVariableDispToX86Reg(x86Reg Reg, void * Variable, const char *
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::MoveX86regByteToVariable(x86Reg Reg, void * Variable, const char * VariableName)
+void CX86Ops::MoveX86regByteToVariable(void * Variable, const char * VariableName, x86Reg Reg)
 {
     CodeLog("      mov byte ptr [%s], %s", VariableName, x86_ByteName(Reg));
 
