@@ -2727,7 +2727,7 @@ void CX86Ops::XorX86RegToX86Reg(x86Reg Source, x86Reg Destination)
     AddCode16(x86Command);
 }
 
-void CX86Ops::XorVariableToX86reg(void * Variable, const char * VariableName, x86Reg Reg)
+void CX86Ops::XorVariableToX86reg(x86Reg Reg, void * Variable, const char * VariableName)
 {
     CodeLog("      Xor %s, dword ptr [%s]", x86_Name(Reg), VariableName);
 

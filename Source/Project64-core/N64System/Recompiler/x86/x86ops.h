@@ -207,7 +207,7 @@ public:
     void TestX86ByteRegToX86Reg(x86Reg Destination, x86Reg Source);
     void XorConstToX86Reg(x86Reg Reg, uint32_t Const);
     void XorX86RegToX86Reg(x86Reg Source, x86Reg Destination);
-    void XorVariableToX86reg(void * Variable, const char * VariableName, x86Reg Reg);
+    void XorVariableToX86reg(x86Reg Reg, void * Variable, const char * VariableName);
 
     void fpuAbs();
     void fpuAddDword(void * Variable, const char * VariableName);
