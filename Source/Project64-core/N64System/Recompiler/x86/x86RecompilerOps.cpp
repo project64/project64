@@ -5935,26 +5935,26 @@ void CX86RecompilerOps::SPECIAL_XOR()
             if (g_System->b32BitCore())
             {
                 Map_GPR_32bit(m_Opcode.rd, true, KnownReg);
-                m_Assembler.XorVariableToX86reg(&_GPR[UnknownReg].W[0], CRegName::GPR_Lo[UnknownReg], GetMipsRegMapLo(m_Opcode.rd));
+                m_Assembler.XorVariableToX86reg(GetMipsRegMapLo(m_Opcode.rd), &_GPR[UnknownReg].W[0], CRegName::GPR_Lo[UnknownReg]);
             }
             else
             {
                 Map_GPR_64bit(m_Opcode.rd, KnownReg);
-                m_Assembler.XorVariableToX86reg(&_GPR[UnknownReg].W[1], CRegName::GPR_Hi[UnknownReg], GetMipsRegMapHi(m_Opcode.rd));
-                m_Assembler.XorVariableToX86reg(&_GPR[UnknownReg].W[0], CRegName::GPR_Lo[UnknownReg], GetMipsRegMapLo(m_Opcode.rd));
+                m_Assembler.XorVariableToX86reg(GetMipsRegMapHi(m_Opcode.rd), &_GPR[UnknownReg].W[1], CRegName::GPR_Hi[UnknownReg]);
+                m_Assembler.XorVariableToX86reg(GetMipsRegMapLo(m_Opcode.rd), &_GPR[UnknownReg].W[0], CRegName::GPR_Lo[UnknownReg]);
             }
         }
     }
     else if (g_System->b32BitCore())
     {
         Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
-        m_Assembler.XorVariableToX86reg(&_GPR[m_Opcode.rs].W[0], CRegName::GPR_Lo[m_Opcode.rs], GetMipsRegMapLo(m_Opcode.rd));
+        m_Assembler.XorVariableToX86reg(GetMipsRegMapLo(m_Opcode.rd), &_GPR[m_Opcode.rs].W[0], CRegName::GPR_Lo[m_Opcode.rs]);
     }
     else
     {
         Map_GPR_64bit(m_Opcode.rd, m_Opcode.rt);
-        m_Assembler.XorVariableToX86reg(&_GPR[m_Opcode.rs].W[1], CRegName::GPR_Hi[m_Opcode.rs], GetMipsRegMapHi(m_Opcode.rd));
-        m_Assembler.XorVariableToX86reg(&_GPR[m_Opcode.rs].W[0], CRegName::GPR_Lo[m_Opcode.rs], GetMipsRegMapLo(m_Opcode.rd));
+        m_Assembler.XorVariableToX86reg(GetMipsRegMapHi(m_Opcode.rd), &_GPR[m_Opcode.rs].W[1], CRegName::GPR_Hi[m_Opcode.rs]);
+        m_Assembler.XorVariableToX86reg(GetMipsRegMapLo(m_Opcode.rd), &_GPR[m_Opcode.rs].W[0], CRegName::GPR_Lo[m_Opcode.rs]);
     }
 }
 
