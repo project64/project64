@@ -10064,7 +10064,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         }
         else if (m_Assembler.Is8BitReg(ValueReg))
         {
-            m_Assembler.MoveX86regByteToX86regPointer(ValueReg, AddressReg, TempReg);
+            m_Assembler.MoveX86regByteToX86regPointer(AddressReg, TempReg, ValueReg);
         }
         else
         {
