@@ -2992,7 +2992,7 @@ void CX86RecompilerOps::LH_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr, boo
         {
             if (SignExtend)
             {
-                m_Assembler.MoveSxVariableToX86regHalf((PAddr ^ 2) + g_MMU->Rdram(), stdstr_f("RDRAM + (%X ^ 2)", PAddr).c_str(), Reg);
+                m_Assembler.MoveSxVariableToX86regHalf(Reg, (PAddr ^ 2) + g_MMU->Rdram(), stdstr_f("RDRAM + (%X ^ 2)", PAddr).c_str());
             }
             else
             {
