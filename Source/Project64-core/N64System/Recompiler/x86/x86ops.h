@@ -137,7 +137,7 @@ public:
     void MoveConstToX86reg(x86Reg Reg, uint32_t Const);
     void MoveConstToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, uint32_t Const);
     void MoveSxByteX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Reg AddrReg2);
-    void MoveSxHalfX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg Reg);
+    void MoveSxHalfX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Reg AddrReg2);
     void MoveSxVariableToX86regByte(void * Variable, const char * VariableName, x86Reg Reg);
     void MoveSxVariableToX86regHalf(void * Variable, const char * VariableName, x86Reg Reg);
     void MoveVariableDispToX86Reg(void * Variable, const char * VariableName, x86Reg Reg, x86Reg AddrReg, int32_t Multiplier);
