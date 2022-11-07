@@ -1016,7 +1016,7 @@ void CX86Ops::MoveSxHalfX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Re
     AddCode8(Param);
 }
 
-void CX86Ops::MoveSxVariableToX86regByte(void * Variable, const char * VariableName, x86Reg Reg)
+void CX86Ops::MoveSxVariableToX86regByte(x86Reg Reg, void * Variable, const char * VariableName)
 {
     CodeLog("      movsx %s, byte ptr [%s]", x86_Name(Reg), VariableName);
 
