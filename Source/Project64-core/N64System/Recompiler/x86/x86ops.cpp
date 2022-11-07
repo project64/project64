@@ -815,7 +815,7 @@ void CX86Ops::MoveConstToMemoryDisp(x86Reg AddrReg, uint32_t Disp, uint32_t Cons
     AddCode32(Const);
 }
 
-void CX86Ops::MoveConstToVariable(uint32_t Const, void * Variable, const char * VariableName)
+void CX86Ops::MoveConstToVariable(void * Variable, const char * VariableName, uint32_t Const)
 {
     CodeLog("      mov dword ptr [%s], %Xh", VariableName, Const);
     AddCode16(0x05C7);

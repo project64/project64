@@ -1321,20 +1321,20 @@ void CX86RegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
         }
         if (Is64Bit(Reg))
         {
-            m_Assembler.MoveConstToVariable(GetMipsRegHi(Reg), &_GPR[Reg].UW[1], CRegName::GPR_Hi[Reg]);
-            m_Assembler.MoveConstToVariable(GetMipsRegLo(Reg), &_GPR[Reg].UW[0], CRegName::GPR_Lo[Reg]);
+            m_Assembler.MoveConstToVariable(&_GPR[Reg].UW[1], CRegName::GPR_Hi[Reg], GetMipsRegHi(Reg));
+            m_Assembler.MoveConstToVariable(&_GPR[Reg].UW[0], CRegName::GPR_Lo[Reg], GetMipsRegLo(Reg));
             SetMipsRegState(Reg, STATE_UNKNOWN);
             return;
         }
         if ((GetMipsRegLo(Reg) & 0x80000000) != 0)
         {
-            m_Assembler.MoveConstToVariable(0xFFFFFFFF, &_GPR[Reg].UW[1], CRegName::GPR_Hi[Reg]);
+            m_Assembler.MoveConstToVariable(&_GPR[Reg].UW[1], CRegName::GPR_Hi[Reg], 0xFFFFFFFF);
         }
         else
         {
-            m_Assembler.MoveConstToVariable(0, &_GPR[Reg].UW[1], CRegName::GPR_Hi[Reg]);
+            m_Assembler.MoveConstToVariable(&_GPR[Reg].UW[1], CRegName::GPR_Hi[Reg], 0);
         }
-        m_Assembler.MoveConstToVariable(GetMipsRegLo(Reg), &_GPR[Reg].UW[0], CRegName::GPR_Lo[Reg]);
+        m_Assembler.MoveConstToVariable(&_GPR[Reg].UW[0], CRegName::GPR_Lo[Reg], GetMipsRegLo(Reg));
         SetMipsRegState(Reg, STATE_UNKNOWN);
         return;
     }
@@ -1371,7 +1371,7 @@ void CX86RegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
             }
             else
             {
-                m_Assembler.MoveConstToVariable(0, &_GPR[Reg].UW[1], CRegName::GPR_Hi[Reg]);
+                m_Assembler.MoveConstToVariable(&_GPR[Reg].UW[1], CRegName::GPR_Hi[Reg], 0);
             }
         }
         SetMipsRegMapLo(Reg, CX86Ops::x86_Unknown);
@@ -1556,7 +1556,7 @@ void CX86RegInfo::WriteBackRegisters()
             }
             else
             {
-                m_Assembler.MoveConstToVariable(GetMipsRegLo(count), &_GPR[count].UW[0], CRegName::GPR_Lo[count]);
+                m_Assembler.MoveConstToVariable(&_GPR[count].UW[0], CRegName::GPR_Lo[count], GetMipsRegLo(count));
             }
 
             SetMipsRegState(count, CX86RegInfo::STATE_UNKNOWN);
@@ -1586,7 +1586,7 @@ void CX86RegInfo::WriteBackRegisters()
             }
             else
             {
-                m_Assembler.MoveConstToVariable(GetMipsRegLo(count), &_GPR[count].UW[0], CRegName::GPR_Lo[count]);
+                m_Assembler.MoveConstToVariable(&_GPR[count].UW[0], CRegName::GPR_Lo[count], GetMipsRegLo(count));
             }
             SetMipsRegState(count, CX86RegInfo::STATE_UNKNOWN);
             break;
@@ -1612,7 +1612,7 @@ void CX86RegInfo::WriteBackRegisters()
             }
             else
             {
-                m_Assembler.MoveConstToVariable(GetMipsRegHi(count), &_GPR[count].UW[1], CRegName::GPR_Hi[count]);
+                m_Assembler.MoveConstToVariable(&_GPR[count].UW[1], CRegName::GPR_Hi[count], GetMipsRegHi(count));
             }
 
             if (GetMipsRegLo(count) == 0)
@@ -1625,7 +1625,7 @@ void CX86RegInfo::WriteBackRegisters()
             }
             else
             {
-                m_Assembler.MoveConstToVariable(GetMipsRegLo(count), &_GPR[count].UW[0], CRegName::GPR_Lo[count]);
+                m_Assembler.MoveConstToVariable(&_GPR[count].UW[0], CRegName::GPR_Lo[count], GetMipsRegLo(count));
             }
             SetMipsRegState(count, CX86RegInfo::STATE_UNKNOWN);
             break;
