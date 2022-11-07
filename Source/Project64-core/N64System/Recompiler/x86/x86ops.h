@@ -150,7 +150,7 @@ public:
     void MoveX86regHalfToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg Reg);
     void MoveX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Reg AddrReg2);
     void MoveX86regPointerToX86regDisp8(x86Reg Reg, x86Reg AddrReg1, x86Reg AddrReg2, uint8_t offset);
-    void MoveX86regToMemory(x86Reg Reg, x86Reg AddrReg, uint32_t Disp);
+    void MoveX86regToMemory(x86Reg AddrReg, uint32_t Disp, x86Reg Reg);
     void MoveX86regToVariable(x86Reg Reg, void * Variable, const char * VariableName);
     void MoveX86RegToX86Reg(x86Reg Destination, x86Reg Source);
     void MoveX86regToX86Pointer(x86Reg X86Pointer, x86Reg Reg);

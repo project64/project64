@@ -1419,7 +1419,7 @@ void CX86Ops::MoveX86regPointerToX86regDisp8(x86Reg Reg, x86Reg AddrReg1, x86Reg
     AddCode8(offset);
 }
 
-void CX86Ops::MoveX86regToMemory(x86Reg Reg, x86Reg AddrReg, uint32_t Disp)
+void CX86Ops::MoveX86regToMemory(x86Reg AddrReg, uint32_t Disp, x86Reg Reg)
 {
     uint16_t x86Command = 0;
 

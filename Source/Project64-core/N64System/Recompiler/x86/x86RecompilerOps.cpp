@@ -3700,12 +3700,12 @@ void CX86RecompilerOps::SW(bool bCheckLLbit)
         }
         else if (IsMapped(m_Opcode.rt))
         {
-            m_Assembler.MoveX86regToMemory(GetMipsRegMapLo(m_Opcode.rt), TempReg1, (uint32_t)((int16_t)m_Opcode.offset));
+            m_Assembler.MoveX86regToMemory(TempReg1, (uint32_t)((int16_t)m_Opcode.offset), GetMipsRegMapLo(m_Opcode.rt));
         }
         else
         {
             CX86Ops::x86Reg TempReg2 = Map_TempReg(CX86Ops::x86_Unknown, m_Opcode.rt, false, false);
-            m_Assembler.MoveX86regToMemory(TempReg2, TempReg1, (uint32_t)((int16_t)m_Opcode.offset));
+            m_Assembler.MoveX86regToMemory(TempReg1, (uint32_t)((int16_t)m_Opcode.offset), TempReg2);
         }
     }
     else
