@@ -248,7 +248,7 @@ void CX86RegInfo::FixRoundModel(FPU_ROUND RoundMethod)
             g_Notify->DisplayError("Unknown rounding model");
         }
     }
-    m_Assembler.MoveX86regToVariable(reg, &m_fpuControl, "m_fpuControl");
+    m_Assembler.MoveX86regToVariable(&m_fpuControl, "m_fpuControl", reg);
     SetX86Protected(GetIndexFromX86Reg(reg), false);
     m_Assembler.fpuLoadControl(&m_fpuControl, "m_fpuControl");
     SetRoundingModel(RoundMethod);
@@ -1353,11 +1353,11 @@ void CX86RegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
         SetMipsRegState(Reg, STATE_UNKNOWN);
         return;
     }
-    m_Assembler.MoveX86regToVariable(GetMipsRegMapLo(Reg), &_GPR[Reg].UW[0], CRegName::GPR_Lo[Reg]);
+    m_Assembler.MoveX86regToVariable(&_GPR[Reg].UW[0], CRegName::GPR_Lo[Reg], GetMipsRegMapLo(Reg));
     if (Is64Bit(Reg))
     {
         SetMipsRegMapLo(Reg, CX86Ops::x86_Unknown);
-        m_Assembler.MoveX86regToVariable(GetMipsRegMapHi(Reg), &_GPR[Reg].UW[1], CRegName::GPR_Hi[Reg]);
+        m_Assembler.MoveX86regToVariable(&_GPR[Reg].UW[1], CRegName::GPR_Hi[Reg], GetMipsRegMapHi(Reg));
         SetMipsRegMapHi(Reg, CX86Ops::x86_Unknown);
     }
     else
@@ -1367,7 +1367,7 @@ void CX86RegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
             if (IsSigned(Reg))
             {
                 m_Assembler.ShiftRightSignImmed(GetMipsRegMapLo(Reg), 31);
-                m_Assembler.MoveX86regToVariable(GetMipsRegMapLo(Reg), &_GPR[Reg].UW[1], CRegName::GPR_Hi[Reg]);
+                m_Assembler.MoveX86regToVariable(&_GPR[Reg].UW[1], CRegName::GPR_Hi[Reg], GetMipsRegMapLo(Reg));
             }
             else
             {
@@ -1478,7 +1478,7 @@ bool CX86RegInfo::UnMap_X86reg(CX86Ops::x86Reg Reg)
     else if (GetX86Mapped(RegIndex) == CX86RegInfo::Stack_Mapped)
     {
         m_CodeBlock.Log("    regcache: unallocate %s from memory stack", CX86Ops::x86_Name(Reg));
-        m_Assembler.MoveX86regToVariable(Reg, &(g_Recompiler->MemoryStackPos()), "MemoryStack");
+        m_Assembler.MoveX86regToVariable(&(g_Recompiler->MemoryStackPos()), "MemoryStack", Reg);
         SetX86Mapped(RegIndex, NotMapped);
         return true;
     }
@@ -1522,11 +1522,11 @@ void CX86RegInfo::WriteBackRegisters()
                 }
                 if ((GetMipsRegLo(count) & 0x80000000) != 0)
                 {
-                    m_Assembler.MoveX86regToVariable(CX86Ops::x86_ESI, &_GPR[count].UW[1], CRegName::GPR_Hi[count]);
+                    m_Assembler.MoveX86regToVariable(&_GPR[count].UW[1], CRegName::GPR_Hi[count], CX86Ops::x86_ESI);
                 }
                 else
                 {
-                    m_Assembler.MoveX86regToVariable(CX86Ops::x86_EDI, &_GPR[count].UW[1], CRegName::GPR_Hi[count]);
+                    m_Assembler.MoveX86regToVariable(&_GPR[count].UW[1], CRegName::GPR_Hi[count], CX86Ops::x86_EDI);
                 }
             }
 
@@ -1540,7 +1540,7 @@ void CX86RegInfo::WriteBackRegisters()
                         bEdiZero = true;
                     }
                 }
-                m_Assembler.MoveX86regToVariable(CX86Ops::x86_EDI, &_GPR[count].UW[0], CRegName::GPR_Lo[count]);
+                m_Assembler.MoveX86regToVariable(&_GPR[count].UW[0], CRegName::GPR_Lo[count], CX86Ops::x86_EDI);
             }
             else if (GetMipsRegLo(count) == 0xFFFFFFFF)
             {
@@ -1552,7 +1552,7 @@ void CX86RegInfo::WriteBackRegisters()
                         bEsiSign = true;
                     }
                 }
-                m_Assembler.MoveX86regToVariable(CX86Ops::x86_ESI, &_GPR[count].UW[0], CRegName::GPR_Lo[count]);
+                m_Assembler.MoveX86regToVariable(&_GPR[count].UW[0], CRegName::GPR_Lo[count], CX86Ops::x86_ESI);
             }
             else
             {
@@ -1569,7 +1569,7 @@ void CX86RegInfo::WriteBackRegisters()
                     m_Assembler.XorX86RegToX86Reg(CX86Ops::x86_EDI, CX86Ops::x86_EDI);
                     bEdiZero = true;
                 }
-                m_Assembler.MoveX86regToVariable(CX86Ops::x86_EDI, &_GPR[count].UW[1], CRegName::GPR_Hi[count]);
+                m_Assembler.MoveX86regToVariable(&_GPR[count].UW[1], CRegName::GPR_Hi[count], CX86Ops::x86_EDI);
             }
 
             if (GetMipsRegLo(count) == 0)
@@ -1582,7 +1582,7 @@ void CX86RegInfo::WriteBackRegisters()
                         bEdiZero = true;
                     }
                 }
-                m_Assembler.MoveX86regToVariable(CX86Ops::x86_EDI, &_GPR[count].UW[0], CRegName::GPR_Lo[count]);
+                m_Assembler.MoveX86regToVariable(&_GPR[count].UW[0], CRegName::GPR_Lo[count], CX86Ops::x86_EDI);
             }
             else
             {
@@ -1604,11 +1604,11 @@ void CX86RegInfo::WriteBackRegisters()
 
             if (GetMipsRegHi(count) == 0)
             {
-                m_Assembler.MoveX86regToVariable(CX86Ops::x86_EDI, &_GPR[count].UW[1], CRegName::GPR_Hi[count]);
+                m_Assembler.MoveX86regToVariable(&_GPR[count].UW[1], CRegName::GPR_Hi[count], CX86Ops::x86_EDI);
             }
             else if (GetMipsRegLo(count) == 0xFFFFFFFF)
             {
-                m_Assembler.MoveX86regToVariable(CX86Ops::x86_ESI, &_GPR[count].UW[1], CRegName::GPR_Hi[count]);
+                m_Assembler.MoveX86regToVariable(&_GPR[count].UW[1], CRegName::GPR_Hi[count], CX86Ops::x86_ESI);
             }
             else
             {
@@ -1617,11 +1617,11 @@ void CX86RegInfo::WriteBackRegisters()
 
             if (GetMipsRegLo(count) == 0)
             {
-                m_Assembler.MoveX86regToVariable(CX86Ops::x86_EDI, &_GPR[count].UW[0], CRegName::GPR_Lo[count]);
+                m_Assembler.MoveX86regToVariable(&_GPR[count].UW[0], CRegName::GPR_Lo[count], CX86Ops::x86_EDI);
             }
             else if (GetMipsRegLo(count) == 0xFFFFFFFF)
             {
-                m_Assembler.MoveX86regToVariable(CX86Ops::x86_ESI, &_GPR[count].UW[0], CRegName::GPR_Lo[count]);
+                m_Assembler.MoveX86regToVariable(&_GPR[count].UW[0], CRegName::GPR_Lo[count], CX86Ops::x86_ESI);
             }
             else
             {
