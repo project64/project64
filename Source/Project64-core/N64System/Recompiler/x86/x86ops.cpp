@@ -2587,7 +2587,7 @@ void CX86Ops::TestConstToX86Reg(x86Reg Reg, uint32_t Const)
     AddCode32(Const);
 }
 
-void CX86Ops::TestVariable(uint32_t Const, void * Variable, const char * VariableName)
+void CX86Ops::TestVariable(void * Variable, const char * VariableName, uint32_t Const)
 {
     CodeLog("      test dword ptr ds:[%s], 0x%X", VariableName, Const);
     AddCode16(0x05F7);
