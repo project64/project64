@@ -10161,17 +10161,17 @@ void CX86RecompilerOps::SB_Const(uint32_t Value, uint32_t VAddr)
         }
         else if (PAddr < g_MMU->RdramSize())
         {
-            m_Assembler.MoveConstByteToVariable((uint8_t)Value, (PAddr ^ 3) + g_MMU->Rdram(), stdstr_f("RDRAM + (%X ^ 3)", PAddr).c_str());
+            m_Assembler.MoveConstByteToVariable((PAddr ^ 3) + g_MMU->Rdram(), stdstr_f("RDRAM + (%X ^ 3)", PAddr).c_str(), (uint8_t)Value);
         }
         break;
     case 0x04000000:
         if (PAddr < 0x04001000)
         {
-            m_Assembler.MoveConstByteToVariable((uint8_t)Value, ((PAddr - 0x04000000) ^ 3) + g_MMU->Dmem(), stdstr_f("DMem + (%X ^ 3)", (PAddr - 0x04000000)).c_str());
+            m_Assembler.MoveConstByteToVariable(((PAddr - 0x04000000) ^ 3) + g_MMU->Dmem(), stdstr_f("DMem + (%X ^ 3)", (PAddr - 0x04000000)).c_str(), (uint8_t)Value);
         }
         else if (PAddr < 0x04002000)
         {
-            m_Assembler.MoveConstByteToVariable((uint8_t)Value, ((PAddr - 0x04001000) ^ 3) + g_MMU->Imem(), stdstr_f("Imem + (%X ^ 3)", (PAddr - 0x04001000)).c_str());
+            m_Assembler.MoveConstByteToVariable(((PAddr - 0x04001000) ^ 3) + g_MMU->Imem(), stdstr_f("Imem + (%X ^ 3)", (PAddr - 0x04001000)).c_str(), (uint8_t)Value);
         }
         else
         {
