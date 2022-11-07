@@ -9858,7 +9858,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
 
         if (SignExtend)
         {
-            m_Assembler.MoveSxHalfX86regPointerToX86reg(AddressReg, TempReg, ValueReg);
+            m_Assembler.MoveSxHalfX86regPointerToX86reg(ValueReg, AddressReg, TempReg);
         }
         else
         {
