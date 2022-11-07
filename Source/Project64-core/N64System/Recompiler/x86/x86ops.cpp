@@ -748,7 +748,7 @@ void CX86Ops::MoveConstByteToVariable(void * Variable, const char * VariableName
     AddCode8(Const);
 }
 
-void CX86Ops::MoveConstHalfToVariable(uint16_t Const, void * Variable, const char * VariableName)
+void CX86Ops::MoveConstHalfToVariable(void * Variable, const char * VariableName, uint16_t Const)
 {
     CodeLog("      mov word ptr [%s], %Xh", VariableName, Const);
     AddCode8(0x66);
