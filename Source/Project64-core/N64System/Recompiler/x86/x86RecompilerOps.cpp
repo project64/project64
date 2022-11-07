@@ -3650,7 +3650,7 @@ void CX86RecompilerOps::SWL()
     m_Assembler.MoveX86RegToX86Reg(OffsetReg, AddressReg);
     m_Assembler.AndConstToX86Reg(OffsetReg, 3);
     m_Assembler.AndConstToX86Reg(AddressReg, (uint32_t)~3);
-    m_Assembler.MoveX86regPointerToX86reg(AddressReg, TempReg2, ValueReg);
+    m_Assembler.MoveX86regPointerToX86reg(ValueReg, AddressReg, TempReg2);
 
     m_Assembler.AndVariableDispToX86Reg(ValueReg, (void *)R4300iOp::SWL_MASK, "R4300iOp::SWL_MASK", OffsetReg, CX86Ops::Multip_x4);
     if (!IsConst(m_Opcode.rt) || GetMipsRegLo(m_Opcode.rt) != 0)
@@ -3816,7 +3816,7 @@ void CX86RecompilerOps::SWR()
     m_Assembler.AndConstToX86Reg(OffsetReg, 3);
     m_Assembler.AndConstToX86Reg(AddressReg, (uint32_t)~3);
 
-    m_Assembler.MoveX86regPointerToX86reg(AddressReg, TempReg2, ValueReg);
+    m_Assembler.MoveX86regPointerToX86reg(ValueReg, AddressReg, TempReg2);
 
     m_Assembler.AndVariableDispToX86Reg(ValueReg, (void *)R4300iOp::SWR_MASK, "R4300iOp::SWR_MASK", OffsetReg, CX86Ops::Multip_x4);
     if (!IsConst(m_Opcode.rt) || GetMipsRegLo(m_Opcode.rt) != 0)
@@ -9507,7 +9507,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
                 //                TestX86RegToX86Reg(CX86Ops::x86_ECX,CX86Ops::x86_ECX);
                 //                m_Assembler.JeLabel8("NoTlbEntry",0);
                 //                Jump2 = *g_RecompPos - 1;
-                //                m_Assembler.MoveX86regPointerToX86reg(CX86Ops::x86_ECX, CX86Ops::x86_EBX,CX86Ops::x86_EAX);
+                //                m_Assembler.MoveX86regPointerToX86reg(CX86Ops::x86_EAX,CX86Ops::x86_ECX, CX86Ops::x86_EBX);
                 //            }
                 //            m_Assembler.MoveX86RegToX86Reg(CX86Ops::x86_ECX, CX86Ops::x86_EAX);
                 //            m_Assembler.AndConstToX86Reg(CX86Ops::x86_ECX,0xFFFF0000);
@@ -9559,7 +9559,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
                     m_Assembler.JeLabel8("NoTlbEntry", 0);
                     Jump2 = *g_RecompPos - 1;
                     m_Assembler.AddConstToX86Reg(CX86Ops::x86_ECX, (uint32_t)JumpTable - (uint32_t)RDRAM);
-                    m_Assembler.MoveX86regPointerToX86reg(CX86Ops::x86_ECX, CX86Ops::x86_EBX, CX86Ops::x86_ECX);
+                    m_Assembler.MoveX86regPointerToX86reg(CX86Ops::x86_ECX, CX86Ops::x86_ECX, CX86Ops::x86_EBX);
                 }
                 if (TargetPC < 0x90000000 || TargetPC >= 0xC0000000)
                 {
@@ -9875,7 +9875,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
 
         if (ValueReg != CX86Ops::x86_Unknown)
         {
-            m_Assembler.MoveX86regPointerToX86reg(AddressReg, TempReg, ValueReg);
+            m_Assembler.MoveX86regPointerToX86reg(ValueReg, AddressReg, TempReg);
         }
         else
         {
@@ -9886,7 +9886,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
     {
         if (ValueReg != CX86Ops::x86_Unknown)
         {
-            m_Assembler.MoveX86regPointerToX86reg(AddressReg, TempReg, ValueRegHi);
+            m_Assembler.MoveX86regPointerToX86reg(ValueRegHi, AddressReg, TempReg);
             m_Assembler.MoveX86regPointerToX86regDisp8(AddressReg, TempReg, ValueReg, 4);
         }
         else
