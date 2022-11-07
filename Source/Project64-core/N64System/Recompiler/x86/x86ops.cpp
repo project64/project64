@@ -1038,7 +1038,7 @@ void CX86Ops::MoveSxVariableToX86regByte(x86Reg Reg, void * Variable, const char
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::MoveSxVariableToX86regHalf(void * Variable, const char * VariableName, x86Reg Reg)
+void CX86Ops::MoveSxVariableToX86regHalf(x86Reg Reg, void * Variable, const char * VariableName)
 {
     CodeLog("      movsx %s, word ptr [%s]", x86_Name(Reg), VariableName);
 
