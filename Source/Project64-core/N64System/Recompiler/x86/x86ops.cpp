@@ -1184,44 +1184,7 @@ void CX86Ops::MoveX86regByteToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, x8
     AddCode8(Param);
 }
 
-void CX86Ops::MoveX86regHalfToN64Mem(x86Reg Reg, x86Reg AddrReg)
-{
-    uint16_t x86Command = 0;
-
-    CodeLog("      mov word ptr [%s+N64mem], %s", x86_Name(AddrReg), x86_HalfName(Reg));
-
-    AddCode8(0x66);
-    switch (AddrReg)
-    {
-    case x86_EAX: x86Command = 0x0089; break;
-    case x86_EBX: x86Command = 0x0389; break;
-    case x86_ECX: x86Command = 0x0189; break;
-    case x86_EDX: x86Command = 0x0289; break;
-    case x86_ESI: x86Command = 0x0689; break;
-    case x86_EDI: x86Command = 0x0789; break;
-    case x86_ESP: x86Command = 0x0489; break;
-    case x86_EBP: x86Command = 0x0589; break;
-    default:
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-    switch (Reg)
-    {
-    case x86_EAX: x86Command += 0x8000; break;
-    case x86_EBX: x86Command += 0x9800; break;
-    case x86_ECX: x86Command += 0x8800; break;
-    case x86_EDX: x86Command += 0x9000; break;
-    case x86_ESI: x86Command += 0xB000; break;
-    case x86_EDI: x86Command += 0xB800; break;
-    case x86_ESP: x86Command += 0xA000; break;
-    case x86_EBP: x86Command += 0xA800; break;
-    default:
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-    AddCode16(x86Command);
-    AddCode32((uint32_t)g_MMU->Rdram());
-}
-
-void CX86Ops::MoveX86regHalfToVariable(x86Reg Reg, void * Variable, const char * VariableName)
+void CX86Ops::MoveX86regHalfToVariable(void * Variable, const char * VariableName, x86Reg Reg)
 {
     CodeLog("      mov word ptr [%s], %s", VariableName, x86_HalfName(Reg));
     AddCode8(0x66);

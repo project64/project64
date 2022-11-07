@@ -10341,7 +10341,7 @@ void CX86RecompilerOps::SH_Register(CX86Ops::x86Reg Reg, uint32_t VAddr)
                 }
                 else if (PAddr < g_MMU->RdramSize())
                 {
-                    m_Assembler.MoveX86regHalfToVariable(Reg, (PAddr ^ 2) + g_MMU->Rdram(), stdstr_f("RDRAM + (%X ^ 2)", PAddr).c_str());
+                    m_Assembler.MoveX86regHalfToVariable((PAddr ^ 2) + g_MMU->Rdram(), stdstr_f("RDRAM + (%X ^ 2)", PAddr).c_str(), Reg);
                 }
                 break;
             default:

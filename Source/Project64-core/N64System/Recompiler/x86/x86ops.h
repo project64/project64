@@ -146,8 +146,7 @@ public:
     void MoveX86PointerToX86regDisp(x86Reg Reg, x86Reg X86Pointer, uint8_t Disp);
     void MoveX86regByteToVariable(void * Variable, const char * VariableName, x86Reg Reg);
     void MoveX86regByteToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg Reg);
-    void MoveX86regHalfToN64Mem(x86Reg Reg, x86Reg AddrReg);
-    void MoveX86regHalfToVariable(x86Reg Reg, void * Variable, const char * VariableName);
+    void MoveX86regHalfToVariable(void * Variable, const char * VariableName, x86Reg Reg);
     void MoveX86regHalfToX86regPointer(x86Reg Reg, x86Reg AddrReg1, x86Reg AddrReg2);
     void MoveX86regPointerToX86reg(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg Reg);
     void MoveX86regPointerToX86regDisp8(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg Reg, uint8_t offset);
