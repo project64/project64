@@ -10087,7 +10087,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
     {
         if (ValueReg == CX86Ops::x86_Unknown)
         {
-            m_Assembler.MoveConstToX86regPointer((uint32_t)(Value & 0xFFFFFFFF), AddressReg, TempReg);
+            m_Assembler.MoveConstToX86regPointer(AddressReg, TempReg, (uint32_t)(Value & 0xFFFFFFFF));
         }
         else
         {
@@ -10098,9 +10098,9 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
     {
         if (ValueReg == CX86Ops::x86_Unknown)
         {
-            m_Assembler.MoveConstToX86regPointer((uint32_t)(Value >> 32), AddressReg, TempReg);
+            m_Assembler.MoveConstToX86regPointer(AddressReg, TempReg, (uint32_t)(Value >> 32));
             m_Assembler.AddConstToX86Reg(AddressReg, 4);
-            m_Assembler.MoveConstToX86regPointer((uint32_t)(Value & 0xFFFFFFFF), AddressReg, TempReg);
+            m_Assembler.MoveConstToX86regPointer(AddressReg, TempReg, (uint32_t)(Value & 0xFFFFFFFF));
         }
         else
         {
