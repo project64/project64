@@ -201,7 +201,7 @@ public:
     void SubConstFromX86Reg(x86Reg Reg, uint32_t Const);
     void SubVariableFromX86reg(x86Reg Reg, void * Variable, const char * VariableName);
     void SubX86RegToX86Reg(x86Reg Destination, x86Reg Source);
-    void TestConstToX86Reg(uint32_t Const, x86Reg Reg);
+    void TestConstToX86Reg(x86Reg Reg, uint32_t Const);
     void TestVariable(uint32_t Const, void * Variable, const char * VariableName);
     void TestX86RegToX86Reg(x86Reg Destination, x86Reg Source);
     void TestX86ByteRegToX86Reg(x86Reg Destination, x86Reg Source);
