@@ -1204,7 +1204,7 @@ void CX86Ops::MoveX86regHalfToVariable(void * Variable, const char * VariableNam
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::MoveX86regHalfToX86regPointer(x86Reg Reg, x86Reg AddrReg1, x86Reg AddrReg2)
+void CX86Ops::MoveX86regHalfToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg Reg)
 {
     uint8_t Param = 0;
 
