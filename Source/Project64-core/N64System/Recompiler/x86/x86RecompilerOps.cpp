@@ -10076,7 +10076,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         m_Assembler.XorConstToX86Reg(AddressReg, 2);
         if (ValueReg == CX86Ops::x86_Unknown)
         {
-            m_Assembler.MoveConstHalfToX86regPointer((uint16_t)(Value & 0xFFFF), AddressReg, TempReg);
+            m_Assembler.MoveConstHalfToX86regPointer(AddressReg, TempReg, (uint16_t)(Value & 0xFFFF));
         }
         else
         {

@@ -757,7 +757,7 @@ void CX86Ops::MoveConstHalfToVariable(void * Variable, const char * VariableName
     AddCode16(Const);
 }
 
-void CX86Ops::MoveConstHalfToX86regPointer(uint16_t Const, x86Reg AddrReg1, x86Reg AddrReg2)
+void CX86Ops::MoveConstHalfToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, uint16_t Const)
 {
     uint8_t Param = 0;
 
