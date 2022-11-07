@@ -7906,12 +7906,12 @@ void CX86RecompilerOps::COP1_S_CMP()
     m_Assembler.AndConstToVariable(&_FPCR[31], "_FPCR[31]", (uint32_t)~FPCSR_C);
     m_Assembler.fpuStoreStatus();
     CX86Ops::x86Reg Reg = Map_TempReg(CX86Ops::x86_Unknown, 0, false, true);
-    m_Assembler.TestConstToX86Reg(cmp, CX86Ops::x86_EAX);
+    m_Assembler.TestConstToX86Reg(CX86Ops::x86_EAX, cmp);
     m_Assembler.Setnz(Reg);
 
     if (cmp != 0)
     {
-        m_Assembler.TestConstToX86Reg(cmp, CX86Ops::x86_EAX);
+        m_Assembler.TestConstToX86Reg(CX86Ops::x86_EAX, cmp);
         m_Assembler.Setnz(Reg);
 
         if ((m_Opcode.funct & 1) != 0)
@@ -8271,11 +8271,11 @@ void CX86RecompilerOps::COP1_D_CMP()
     m_Assembler.AndConstToVariable(&_FPCR[31], "_FPCR[31]", (uint32_t)~FPCSR_C);
     m_Assembler.fpuStoreStatus();
     CX86Ops::x86Reg Reg = Map_TempReg(CX86Ops::x86_Unknown, 0, false, true);
-    m_Assembler.TestConstToX86Reg(cmp, CX86Ops::x86_EAX);
+    m_Assembler.TestConstToX86Reg(CX86Ops::x86_EAX, cmp);
     m_Assembler.Setnz(Reg);
     if (cmp != 0)
     {
-        m_Assembler.TestConstToX86Reg(cmp, CX86Ops::x86_EAX);
+        m_Assembler.TestConstToX86Reg(CX86Ops::x86_EAX, cmp);
         m_Assembler.Setnz(Reg);
 
         if ((m_Opcode.funct & 1) != 0)
@@ -9754,7 +9754,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
     if (ValueSize == 16)
     {
         m_Assembler.MoveX86regToVariable(&m_TempValue32, "TempValue32", AddressReg);
-        m_Assembler.TestConstToX86Reg(1, AddressReg);
+        m_Assembler.TestConstToX86Reg(AddressReg, 1);
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
         CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_AddressErrorExceptionRead32, false, &CX86Ops::JneLabel32);
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
@@ -9762,7 +9762,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
     else if (ValueSize == 32)
     {
         m_Assembler.MoveX86regToVariable(&m_TempValue32, "TempValue32", AddressReg);
-        m_Assembler.TestConstToX86Reg(3, AddressReg);
+        m_Assembler.TestConstToX86Reg(AddressReg, 3);
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
         CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_AddressErrorExceptionRead32, false, &CX86Ops::JneLabel32);
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());

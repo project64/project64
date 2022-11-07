@@ -2567,7 +2567,7 @@ void CX86Ops::SubX86RegToX86Reg(x86Reg Destination, x86Reg Source)
     AddCode16(x86Command);
 }
 
-void CX86Ops::TestConstToX86Reg(uint32_t Const, x86Reg Reg)
+void CX86Ops::TestConstToX86Reg(x86Reg Reg, uint32_t Const)
 {
     CodeLog("      test %s, 0x%X", x86_Name(Reg), Const);
 
