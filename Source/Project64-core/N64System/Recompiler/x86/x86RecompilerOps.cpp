@@ -10531,7 +10531,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             }
             if (ModValue != 0)
             {
-                m_Assembler.OrConstToVariable(ModValue, &g_Reg->MI_MODE_REG, "MI_MODE_REG");
+                m_Assembler.OrConstToVariable(&g_Reg->MI_MODE_REG, "MI_MODE_REG", ModValue);
             }
             if ((Value & MI_CLR_DP_INTR) != 0)
             {
@@ -10600,7 +10600,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             }
             if (ModValue != 0)
             {
-                m_Assembler.OrConstToVariable(ModValue, &g_Reg->MI_INTR_MASK_REG, "MI_INTR_MASK_REG");
+                m_Assembler.OrConstToVariable(&g_Reg->MI_INTR_MASK_REG, "MI_INTR_MASK_REG", ModValue);
             }
             break;
         }

@@ -1773,7 +1773,7 @@ void CX86Ops::NotX86Reg(x86Reg Reg)
     }
 }
 
-void CX86Ops::OrConstToVariable(uint32_t Const, void * Variable, const char * VariableName)
+void CX86Ops::OrConstToVariable(void * Variable, const char * VariableName, uint32_t Const)
 {
     CodeLog("      or dword ptr [%s], 0x%X", VariableName, Const);
     AddCode16(0x0D81);
