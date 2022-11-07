@@ -10060,7 +10060,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         m_Assembler.XorConstToX86Reg(AddressReg, 3);
         if (ValueReg == CX86Ops::x86_Unknown)
         {
-            m_Assembler.MoveConstByteToX86regPointer((uint8_t)(Value & 0xFF), AddressReg, TempReg);
+            m_Assembler.MoveConstByteToX86regPointer(AddressReg, TempReg, (uint8_t)(Value & 0xFF));
         }
         else if (m_Assembler.Is8BitReg(ValueReg))
         {

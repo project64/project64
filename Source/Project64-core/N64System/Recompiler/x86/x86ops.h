@@ -128,7 +128,7 @@ public:
     void LeaRegReg2(x86Reg RegDest, x86Reg RegSrc, x86Reg RegSrc2, Multipler multiplier);
     void LeaSourceAndOffset(x86Reg x86DestReg, x86Reg x86SourceReg, int32_t offset);
     void MoveConstByteToVariable(void * Variable, const char * VariableName, uint8_t Const);
-    void MoveConstByteToX86regPointer(uint8_t Const, x86Reg AddrReg1, x86Reg AddrReg2);
+    void MoveConstByteToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, uint8_t Const);
     void MoveConstHalfToVariable(void * Variable, const char * VariableName, uint16_t Const);
     void MoveConstHalfToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, uint16_t Const);
     void MoveConstToMemoryDisp(x86Reg AddrReg, uint32_t Disp, uint32_t Const);
