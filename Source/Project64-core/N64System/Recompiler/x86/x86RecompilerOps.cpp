@@ -2529,7 +2529,7 @@ void CX86RecompilerOps::ORI()
 
     if (g_System->bFastSP() && m_Opcode.rs == 29 && m_Opcode.rt == 29)
     {
-        m_Assembler.OrConstToX86Reg(m_Opcode.immediate, Map_MemoryStack(CX86Ops::x86_Unknown, true));
+        m_Assembler.OrConstToX86Reg(Map_MemoryStack(CX86Ops::x86_Unknown, true), m_Opcode.immediate);
     }
 
     if (IsConst(m_Opcode.rs))
@@ -2560,7 +2560,7 @@ void CX86RecompilerOps::ORI()
                 Map_GPR_32bit(m_Opcode.rt, IsSigned(m_Opcode.rs), m_Opcode.rs);
             }
         }
-        m_Assembler.OrConstToX86Reg(m_Opcode.immediate, GetMipsRegMapLo(m_Opcode.rt));
+        m_Assembler.OrConstToX86Reg(GetMipsRegMapLo(m_Opcode.rt), m_Opcode.immediate);
     }
     else
     {
@@ -2572,7 +2572,7 @@ void CX86RecompilerOps::ORI()
         {
             Map_GPR_64bit(m_Opcode.rt, m_Opcode.rs);
         }
-        m_Assembler.OrConstToX86Reg(m_Opcode.immediate, GetMipsRegMapLo(m_Opcode.rt));
+        m_Assembler.OrConstToX86Reg(GetMipsRegMapLo(m_Opcode.rt), m_Opcode.immediate);
     }
 
     if (g_System->bFastSP() && m_Opcode.rt == 29 && m_Opcode.rs != 29)
@@ -5701,12 +5701,12 @@ void CX86RecompilerOps::SPECIAL_OR()
                 Map_GPR_64bit(m_Opcode.rd, MappedReg);
                 if ((Value >> 32) != 0)
                 {
-                    m_Assembler.OrConstToX86Reg((uint32_t)(Value >> 32), GetMipsRegMapHi(m_Opcode.rd));
+                    m_Assembler.OrConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd), (uint32_t)(Value >> 32));
                 }
                 uint32_t dwValue = (uint32_t)(Value & 0xFFFFFFFF);
                 if (dwValue != 0)
                 {
-                    m_Assembler.OrConstToX86Reg(dwValue, GetMipsRegMapLo(m_Opcode.rd));
+                    m_Assembler.OrConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), dwValue);
                 }
             }
             else
@@ -5715,7 +5715,7 @@ void CX86RecompilerOps::SPECIAL_OR()
                 Map_GPR_32bit(m_Opcode.rd, true, MappedReg);
                 if (Value != 0)
                 {
-                    m_Assembler.OrConstToX86Reg(Value, GetMipsRegMapLo(m_Opcode.rd));
+                    m_Assembler.OrConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), Value);
                 }
             }
         }
@@ -5735,7 +5735,7 @@ void CX86RecompilerOps::SPECIAL_OR()
                 Map_GPR_32bit(m_Opcode.rd, true, UnknownReg);
                 if (dwValue != 0)
                 {
-                    m_Assembler.OrConstToX86Reg(dwValue, GetMipsRegMapLo(m_Opcode.rd));
+                    m_Assembler.OrConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), dwValue);
                 }
             }
             else
@@ -5743,11 +5743,11 @@ void CX86RecompilerOps::SPECIAL_OR()
                 Map_GPR_64bit(m_Opcode.rd, UnknownReg);
                 if ((Value >> 32) != 0)
                 {
-                    m_Assembler.OrConstToX86Reg((uint32_t)(Value >> 32), GetMipsRegMapHi(m_Opcode.rd));
+                    m_Assembler.OrConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd), (uint32_t)(Value >> 32));
                 }
                 if (dwValue != 0)
                 {
-                    m_Assembler.OrConstToX86Reg(dwValue, GetMipsRegMapLo(m_Opcode.rd));
+                    m_Assembler.OrConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), dwValue);
                 }
             }
         }
@@ -6037,12 +6037,12 @@ void CX86RecompilerOps::SPECIAL_NOR()
                 Map_GPR_64bit(m_Opcode.rd, MappedReg);
                 if ((Value >> 32) != 0)
                 {
-                    m_Assembler.OrConstToX86Reg((uint32_t)(Value >> 32), GetMipsRegMapHi(m_Opcode.rd));
+                    m_Assembler.OrConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd), (uint32_t)(Value >> 32));
                 }
                 uint32_t dwValue = (uint32_t)(Value & 0xFFFFFFFF);
                 if (dwValue != 0)
                 {
-                    m_Assembler.OrConstToX86Reg(dwValue, GetMipsRegMapLo(m_Opcode.rd));
+                    m_Assembler.OrConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), dwValue);
                 }
             }
             else
@@ -6051,7 +6051,7 @@ void CX86RecompilerOps::SPECIAL_NOR()
                 Map_GPR_32bit(m_Opcode.rd, true, MappedReg);
                 if (Value != 0)
                 {
-                    m_Assembler.OrConstToX86Reg(Value, GetMipsRegMapLo(m_Opcode.rd));
+                    m_Assembler.OrConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), Value);
                 }
             }
         }
@@ -6071,7 +6071,7 @@ void CX86RecompilerOps::SPECIAL_NOR()
                 Map_GPR_32bit(m_Opcode.rd, true, UnknownReg);
                 if (dwValue != 0)
                 {
-                    m_Assembler.OrConstToX86Reg(dwValue, GetMipsRegMapLo(m_Opcode.rd));
+                    m_Assembler.OrConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), dwValue);
                 }
             }
             else
@@ -6079,11 +6079,11 @@ void CX86RecompilerOps::SPECIAL_NOR()
                 Map_GPR_64bit(m_Opcode.rd, UnknownReg);
                 if ((Value >> 32) != 0)
                 {
-                    m_Assembler.OrConstToX86Reg((uint32_t)(Value >> 32), GetMipsRegMapHi(m_Opcode.rd));
+                    m_Assembler.OrConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd), (uint32_t)(Value >> 32));
                 }
                 if (dwValue != 0)
                 {
-                    m_Assembler.OrConstToX86Reg(dwValue, GetMipsRegMapLo(m_Opcode.rd));
+                    m_Assembler.OrConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), dwValue);
                 }
             }
         }

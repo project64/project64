@@ -1781,7 +1781,7 @@ void CX86Ops::OrConstToVariable(void * Variable, const char * VariableName, uint
     AddCode32(Const);
 }
 
-void CX86Ops::OrConstToX86Reg(uint32_t Const, x86Reg Reg)
+void CX86Ops::OrConstToX86Reg(x86Reg Reg, uint32_t Const)
 {
     if (Const == 0)
     {
