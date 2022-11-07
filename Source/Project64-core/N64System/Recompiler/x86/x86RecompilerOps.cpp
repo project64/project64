@@ -9887,7 +9887,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
         if (ValueReg != CX86Ops::x86_Unknown)
         {
             m_Assembler.MoveX86regPointerToX86reg(ValueRegHi, AddressReg, TempReg);
-            m_Assembler.MoveX86regPointerToX86regDisp8(AddressReg, TempReg, ValueReg, 4);
+            m_Assembler.MoveX86regPointerToX86regDisp8(ValueReg, AddressReg, TempReg, 4);
         }
         else
         {
