@@ -740,7 +740,7 @@ void CX86Ops::LeaSourceAndOffset(x86Reg x86DestReg, x86Reg x86SourceReg, int32_t
     }
 }
 
-void CX86Ops::MoveConstByteToVariable(uint8_t Const, void * Variable, const char * VariableName)
+void CX86Ops::MoveConstByteToVariable(void * Variable, const char * VariableName, uint8_t Const)
 {
     CodeLog("      mov byte ptr [%s], %Xh", VariableName, Const);
     AddCode16(0x05C6);
