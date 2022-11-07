@@ -3696,7 +3696,7 @@ void CX86RecompilerOps::SW(bool bCheckLLbit)
 
         if (IsConst(m_Opcode.rt))
         {
-            m_Assembler.MoveConstToMemoryDisp(GetMipsRegLo(m_Opcode.rt), TempReg1, (uint32_t)((int16_t)m_Opcode.offset));
+            m_Assembler.MoveConstToMemoryDisp(TempReg1, (uint32_t)((int16_t)m_Opcode.offset), GetMipsRegLo(m_Opcode.rt));
         }
         else if (IsMapped(m_Opcode.rt))
         {

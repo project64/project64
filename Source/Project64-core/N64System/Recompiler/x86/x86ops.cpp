@@ -795,7 +795,7 @@ void CX86Ops::MoveConstHalfToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, uin
     AddCode16(Const);
 }
 
-void CX86Ops::MoveConstToMemoryDisp(uint32_t Const, x86Reg AddrReg, uint32_t Disp)
+void CX86Ops::MoveConstToMemoryDisp(x86Reg AddrReg, uint32_t Disp, uint32_t Const)
 {
     CodeLog("      mov dword ptr [%s+%Xh], %Xh", x86_Name(AddrReg), Disp, Const);
     switch (AddrReg)
