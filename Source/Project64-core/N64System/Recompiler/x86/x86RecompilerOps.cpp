@@ -3128,7 +3128,7 @@ void CX86RecompilerOps::LWL()
         CompileLoadMemoryValue(AddressReg, AddressReg, CX86Ops::x86_Unknown, 32, false);
         Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.rt);
         m_Assembler.AndVariableDispToX86Reg(GetMipsRegMapLo(m_Opcode.rt), (void *)R4300iOp::LWL_MASK, "LWL_MASK", OffsetReg, CX86Ops::Multip_x4);
-        m_Assembler.MoveVariableDispToX86Reg((void *)R4300iOp::LWL_SHIFT, "LWL_SHIFT", shift, OffsetReg, 4);
+        m_Assembler.MoveVariableDispToX86Reg(shift, (void *)R4300iOp::LWL_SHIFT, "LWL_SHIFT", OffsetReg, CX86Ops::Multip_x4);
         m_Assembler.ShiftLeftSign(AddressReg);
         m_Assembler.AddX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rt), AddressReg);
     }
@@ -3147,7 +3147,7 @@ void CX86RecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
     {
         Map_GPR_32bit(m_Opcode.rt, ResultSigned, -1);
         CX86Ops::x86Reg TempReg1 = Map_MemoryStack(CX86Ops::x86_Unknown, true);
-        m_Assembler.MoveVariableDispToX86Reg((void *)((uint32_t)(int16_t)m_Opcode.offset), stdstr_f("%Xh", (int16_t)m_Opcode.offset).c_str(), GetMipsRegMapLo(m_Opcode.rt), TempReg1, 1);
+        m_Assembler.MoveVariableDispToX86Reg(GetMipsRegMapLo(m_Opcode.rt), (void *)((uint32_t)(int16_t)m_Opcode.offset), stdstr_f("%Xh", (int16_t)m_Opcode.offset).c_str(), TempReg1, CX86Ops::Multip_x1);
         if (bRecordLLBit)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -3508,7 +3508,7 @@ void CX86RecompilerOps::LWR()
         CompileLoadMemoryValue(AddressReg, AddressReg, CX86Ops::x86_Unknown, 32, false);
         Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.rt);
         m_Assembler.AndVariableDispToX86Reg(GetMipsRegMapLo(m_Opcode.rt), (void *)R4300iOp::LWR_MASK, "LWR_MASK", OffsetReg, CX86Ops::Multip_x4);
-        m_Assembler.MoveVariableDispToX86Reg((void *)R4300iOp::LWR_SHIFT, "LWR_SHIFT", shift, OffsetReg, 4);
+        m_Assembler.MoveVariableDispToX86Reg(shift, (void *)R4300iOp::LWR_SHIFT, "LWR_SHIFT", OffsetReg, CX86Ops::Multip_x4);
         m_Assembler.ShiftRightUnsign(AddressReg);
         m_Assembler.AddX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rt), AddressReg);
     }
@@ -3635,13 +3635,13 @@ void CX86RecompilerOps::SWL()
     CX86Ops::x86Reg ValueReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
     m_Assembler.MoveX86RegToX86Reg(TempReg2, AddressReg);
     m_Assembler.ShiftRightUnsignImmed(TempReg2, 12);
-    m_Assembler.MoveVariableDispToX86Reg(g_MMU->m_MemoryReadMap, "MMU->m_MemoryReadMap", TempReg2, TempReg2, 4);
+    m_Assembler.MoveVariableDispToX86Reg(TempReg2, g_MMU->m_MemoryReadMap, "MMU->m_MemoryReadMap", TempReg2, CX86Ops::Multip_x4);
     m_Assembler.CompConstToX86reg(TempReg2, (uint32_t)-1);
     m_Assembler.JneLabel8(stdstr_f("MemoryReadMap_%X_Found", m_CompilePC).c_str(), 0);
     uint8_t * JumpFound = (uint8_t *)(*g_RecompPos - 1);
     m_Assembler.MoveX86RegToX86Reg(TempReg2, AddressReg);
     m_Assembler.ShiftRightUnsignImmed(TempReg2, 12);
-    m_Assembler.MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
+    m_Assembler.MoveVariableDispToX86Reg(TempReg2, g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, CX86Ops::Multip_x4);
     CompileReadTLBMiss(AddressReg, TempReg2);
     m_Assembler.AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     m_CodeBlock.Log("");
@@ -3655,7 +3655,7 @@ void CX86RecompilerOps::SWL()
     m_Assembler.AndVariableDispToX86Reg(ValueReg, (void *)R4300iOp::SWL_MASK, "R4300iOp::SWL_MASK", OffsetReg, CX86Ops::Multip_x4);
     if (!IsConst(m_Opcode.rt) || GetMipsRegLo(m_Opcode.rt) != 0)
     {
-        m_Assembler.MoveVariableDispToX86Reg((void *)R4300iOp::SWL_SHIFT, "R4300iOp::SWL_SHIFT", shift, OffsetReg, 4);
+        m_Assembler.MoveVariableDispToX86Reg(shift, (void *)R4300iOp::SWL_SHIFT, "R4300iOp::SWL_SHIFT", OffsetReg, CX86Ops::Multip_x4);
         if (IsConst(m_Opcode.rt))
         {
             m_Assembler.MoveConstToX86reg(OffsetReg, GetMipsRegLo(m_Opcode.rt));
@@ -3799,13 +3799,13 @@ void CX86RecompilerOps::SWR()
     CX86Ops::x86Reg ValueReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
     m_Assembler.MoveX86RegToX86Reg(TempReg2, AddressReg);
     m_Assembler.ShiftRightUnsignImmed(TempReg2, 12);
-    m_Assembler.MoveVariableDispToX86Reg(g_MMU->m_MemoryReadMap, "MMU->m_MemoryReadMap", TempReg2, TempReg2, 4);
+    m_Assembler.MoveVariableDispToX86Reg(TempReg2, g_MMU->m_MemoryReadMap, "MMU->m_MemoryReadMap", TempReg2, CX86Ops::Multip_x4);
     m_Assembler.CompConstToX86reg(TempReg2, (uint32_t)-1);
     m_Assembler.JneLabel8(stdstr_f("MemoryReadMap_%X_Found", m_CompilePC).c_str(), 0);
     uint8_t * JumpFound = (uint8_t *)(*g_RecompPos - 1);
     m_Assembler.MoveX86RegToX86Reg(TempReg2, AddressReg);
     m_Assembler.ShiftRightUnsignImmed(TempReg2, 12);
-    m_Assembler.MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
+    m_Assembler.MoveVariableDispToX86Reg(TempReg2, g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, CX86Ops::Multip_x4);
     CompileReadTLBMiss(AddressReg, TempReg2);
     m_Assembler.AddConstToX86Reg(TempReg2, (uint32_t)m_MMU.Rdram());
     m_CodeBlock.Log("");
@@ -3821,7 +3821,7 @@ void CX86RecompilerOps::SWR()
     m_Assembler.AndVariableDispToX86Reg(ValueReg, (void *)R4300iOp::SWR_MASK, "R4300iOp::SWR_MASK", OffsetReg, CX86Ops::Multip_x4);
     if (!IsConst(m_Opcode.rt) || GetMipsRegLo(m_Opcode.rt) != 0)
     {
-        m_Assembler.MoveVariableDispToX86Reg((void *)R4300iOp::SWR_SHIFT, "R4300iOp::SWR_SHIFT", shift, OffsetReg, 4);
+        m_Assembler.MoveVariableDispToX86Reg(shift, (void *)R4300iOp::SWR_SHIFT, "R4300iOp::SWR_SHIFT", OffsetReg, CX86Ops::Multip_x4);
         if (IsConst(m_Opcode.rt))
         {
             m_Assembler.MoveConstToX86reg(OffsetReg, GetMipsRegLo(m_Opcode.rt));
@@ -3976,8 +3976,8 @@ void CX86RecompilerOps::LD()
     {
         Map_GPR_64bit(m_Opcode.rt, -1);
         CX86Ops::x86Reg StackReg = Map_MemoryStack(CX86Ops::x86_Unknown, true);
-        m_Assembler.MoveVariableDispToX86Reg((void *)((uint32_t)(int16_t)m_Opcode.offset), stdstr_f("%Xh", (int16_t)m_Opcode.offset).c_str(), GetMipsRegMapHi(m_Opcode.rt), StackReg, 1);
-        m_Assembler.MoveVariableDispToX86Reg((void *)((uint32_t)(int16_t)m_Opcode.offset + 4), stdstr_f("%Xh", (int16_t)m_Opcode.offset + 4).c_str(), GetMipsRegMapLo(m_Opcode.rt), StackReg, 1);
+        m_Assembler.MoveVariableDispToX86Reg(GetMipsRegMapHi(m_Opcode.rt), (void *)((uint32_t)(int16_t)m_Opcode.offset), stdstr_f("%Xh", (int16_t)m_Opcode.offset).c_str(), StackReg, CX86Ops::Multip_x1);
+        m_Assembler.MoveVariableDispToX86Reg(GetMipsRegMapLo(m_Opcode.rt), (void *)((uint32_t)(int16_t)m_Opcode.offset + 4), stdstr_f("%Xh", (int16_t)m_Opcode.offset + 4).c_str(), StackReg, CX86Ops::Multip_x1);
     }
     else if (IsConst(m_Opcode.base))
     {
@@ -9503,7 +9503,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
                 //            } else {
                 //                m_Assembler.MoveConstToX86reg(CX86Ops::x86_ECX, (TargetPC >> 12));
                 //                m_Assembler.MoveConstToX86reg(CX86Ops::x86_EBX, TargetPC);
-                //                m_Assembler.MoveVariableDispToX86Reg(TLB_ReadMap,"TLB_ReadMap",CX86Ops::x86_ECX,CX86Ops::x86_ECX,4);
+                //                m_Assembler.MoveVariableDispToX86Reg(CX86Ops::x86_ECX,TLB_ReadMap,"TLB_ReadMap",CX86Ops::x86_ECX,4);
                 //                TestX86RegToX86Reg(CX86Ops::x86_ECX,CX86Ops::x86_ECX);
                 //                m_Assembler.JeLabel8("NoTlbEntry",0);
                 //                Jump2 = *g_RecompPos - 1;
@@ -9517,7 +9517,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
                 //            m_Assembler.AndConstToX86Reg(CX86Ops::x86_EAX,0xFFFF);
                 //            m_Assembler.ShiftLeftSignImmed(CX86Ops::x86_EAX,4);
                 //            m_Assembler.AddConstToX86Reg(CX86Ops::x86_EAX,0xC);
-                //            m_Assembler.MoveVariableDispToX86Reg(OrigMem,"OrigMem",CX86Ops::x86_ECX,CX86Ops::x86_EAX,1);
+                //            m_Assembler.MoveVariableDispToX86Reg(CX86Ops::x86_ECX,OrigMem,"OrigMem",CX86Ops::x86_EAX,1);
                 //            JmpDirectReg(CX86Ops::x86_ECX);
                 //            m_CodeBlock.Log("      NoCode:");
                 //            *((uint8_t *)(Jump))=(uint8_t)(*g_RecompPos - Jump - 1);
@@ -9554,7 +9554,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
                 {
                     m_Assembler.MoveConstToX86reg(CX86Ops::x86_ECX, (TargetPC >> 12));
                     m_Assembler.MoveConstToX86reg(CX86Ops::x86_EBX, TargetPC);
-                    m_Assembler.MoveVariableDispToX86Reg(TLB_ReadMap, "TLB_ReadMap", CX86Ops::x86_ECX, CX86Ops::x86_ECX, 4);
+                    m_Assembler.MoveVariableDispToX86Reg(CX86Ops::x86_ECX, TLB_ReadMap, "TLB_ReadMap", CX86Ops::x86_ECX, 4);
                     TestX86RegToX86Reg(CX86Ops::x86_ECX, CX86Ops::x86_ECX);
                     m_Assembler.JeLabel8("NoTlbEntry", 0);
                     Jump2 = *g_RecompPos - 1;
@@ -9770,7 +9770,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86O
 
     m_Assembler.MoveX86RegToX86Reg(TempReg, AddressReg);
     m_Assembler.ShiftRightUnsignImmed(TempReg, 12);
-    m_Assembler.MoveVariableDispToX86Reg(g_MMU->m_MemoryReadMap, "MMU->m_MemoryReadMap", TempReg, TempReg, 4);
+    m_Assembler.MoveVariableDispToX86Reg(TempReg, g_MMU->m_MemoryReadMap, "MMU->m_MemoryReadMap", TempReg, CX86Ops::Multip_x4);
     m_Assembler.CompConstToX86reg(TempReg, (uint32_t)-1);
     m_Assembler.JneLabel8(stdstr_f("MemoryReadMap_%X_Found", m_CompilePC).c_str(), 0);
     uint8_t * JumpFound = (uint8_t *)(*g_RecompPos - 1);
@@ -9936,7 +9936,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
     CX86Ops::x86Reg TempReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
     m_Assembler.MoveX86RegToX86Reg(TempReg, AddressReg);
     m_Assembler.ShiftRightUnsignImmed(TempReg, 12);
-    m_Assembler.MoveVariableDispToX86Reg(g_MMU->m_MemoryWriteMap, "MMU->m_MemoryWriteMap", TempReg, TempReg, 4);
+    m_Assembler.MoveVariableDispToX86Reg(TempReg, g_MMU->m_MemoryWriteMap, "MMU->m_MemoryWriteMap", TempReg, CX86Ops::Multip_x4);
     m_Assembler.CompConstToX86reg(TempReg, (uint32_t)-1);
     m_Assembler.JneLabel8(stdstr_f("MemoryWriteMap_%X_Found", m_CompilePC).c_str(), 0);
     uint8_t * JumpFound = (uint8_t *)(*g_RecompPos - 1);
@@ -10047,7 +10047,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         m_Assembler.X86BreakPoint(__FILE__, __LINE__);
         m_Assembler.MoveX86RegToX86Reg(TempReg, AddressReg);
         m_Assembler.ShiftRightUnsignImmed(TempReg, 12);
-        m_Assembler.MoveVariableDispToX86Reg(g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg, TempReg, 4);
+        m_Assembler.MoveVariableDispToX86Reg(TempReg, g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg, CX86Ops::Multip_x4);
         CompileWriteTLBMiss(AddressReg, TempReg);
         m_Assembler.AddConstToX86Reg(TempReg, (uint32_t)m_MMU.Rdram());
     }

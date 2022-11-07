@@ -225,7 +225,7 @@ void CX86RegInfo::FixRoundModel(FPU_ROUND RoundMethod)
 
         CX86Ops::x86Reg RoundReg = Map_TempReg(CX86Ops::x86_Unknown, -1, false, false);
         m_Assembler.MoveVariableToX86reg(RoundReg, &g_Reg->m_RoundingModel, "m_RoundingModel");
-        m_Assembler.MoveVariableDispToX86Reg((void *)&msRound[0], "msRound", RoundReg, RoundReg, CX86Ops::Multip_x4);
+        m_Assembler.MoveVariableDispToX86Reg(RoundReg, (void *)&msRound[0], "msRound", RoundReg, CX86Ops::Multip_x4);
 
         m_Assembler.ShiftLeftSignImmed(RoundReg, 2);
         m_Assembler.OrX86RegToX86Reg(reg, RoundReg);
