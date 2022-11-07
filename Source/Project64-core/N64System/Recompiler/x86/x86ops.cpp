@@ -1079,9 +1079,8 @@ void CX86Ops::MoveVariableToX86reg(x86Reg Reg, void * Variable, const char * Var
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::MoveVariableDispToX86Reg(void * Variable, const char * VariableName, x86Reg Reg, x86Reg AddrReg, int32_t Multiplier)
+void CX86Ops::MoveVariableDispToX86Reg(x86Reg Reg, void * Variable, const char * VariableName, x86Reg AddrReg, Multipler Multiplier)
 {
-    int x = 0;
     CodeLog("      mov %s, dword ptr [%s+%s*%i]", x86_Name(Reg), VariableName, x86_Name(AddrReg), Multiplier);
 
     AddCode8(0x8B);
@@ -1101,15 +1100,7 @@ void CX86Ops::MoveVariableDispToX86Reg(void * Variable, const char * VariableNam
     }
 
     // Put in shifter 2(01), 4(10), 8(11)
-    switch (Multiplier)
-    {
-    case 1: x = 0; break;
-    case 2: x = 0x40; break;
-    case 4: x = 0x80; break;
-    case 8: x = 0xC0; break;
-    default:
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
+    uint8_t x = CalcMultiplyCode(Multiplier);
 
     // Format xx|000000
     switch (AddrReg)
