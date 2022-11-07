@@ -162,7 +162,7 @@ public:
     void MulX86reg(x86Reg Reg);
     void NotX86Reg(x86Reg Reg);
     void OrConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
-    void OrConstToX86Reg(uint32_t Const, x86Reg Reg);
+    void OrConstToX86Reg(x86Reg Reg, uint32_t Const);
     void OrVariableToX86Reg(void * Variable, const char * VariableName, x86Reg Reg);
     void OrX86RegToVariable(void * Variable, const char * VariableName, x86Reg Reg);
     void OrX86RegToX86Reg(x86Reg Destination, x86Reg Source);

@@ -240,10 +240,10 @@ void CX86RegInfo::FixRoundModel(FPU_ROUND RoundMethod)
     {
         switch (RoundMethod)
         {
-        case RoundTruncate: m_Assembler.OrConstToX86Reg(0x0C00, reg); break;
-        case RoundNearest: m_Assembler.OrConstToX86Reg(0x0000, reg); break;
-        case RoundDown: m_Assembler.OrConstToX86Reg(0x0400, reg); break;
-        case RoundUp: m_Assembler.OrConstToX86Reg(0x0800, reg); break;
+        case RoundTruncate: m_Assembler.OrConstToX86Reg(reg, 0x0C00); break;
+        case RoundNearest: m_Assembler.OrConstToX86Reg(reg, 0x0000); break;
+        case RoundDown: m_Assembler.OrConstToX86Reg(reg, 0x0400); break;
+        case RoundUp: m_Assembler.OrConstToX86Reg(reg, 0x0800); break;
         default:
             g_Notify->DisplayError("Unknown rounding model");
         }
