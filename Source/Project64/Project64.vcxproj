@@ -49,6 +49,9 @@
     <PreBuildEvent>
       <Command>IF NOT EXIST "$(SolutionDir)Config\Project64.cfg" (copy  "$(SolutionDir)Config\Project64.cfg.development" "$(SolutionDir)Config\Project64.cfg")</Command>
     </PreBuildEvent>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)Source\3rdParty\asmjit\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="UserInterface\About.cpp" />

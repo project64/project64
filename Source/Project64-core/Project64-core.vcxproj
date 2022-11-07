@@ -38,6 +38,9 @@
     <Lib>
       <AdditionalOptions>/ignore:4221%(AdditionalOptions)</AdditionalOptions>
     </Lib>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)Source\3rdParty\asmjit\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="3rdParty\7zip.cpp">
@@ -220,6 +223,7 @@
     <ClInclude Include="N64System\Recompiler\Arm\ArmOps.h" />
     <ClInclude Include="N64System\Recompiler\Arm\ArmRecompilerOps.h" />
     <ClInclude Include="N64System\Recompiler\Arm\ArmRegInfo.h" />
+    <ClInclude Include="N64System\Recompiler\asmjit.h" />
     <ClInclude Include="N64System\Recompiler\CodeBlock.h" />
     <ClInclude Include="N64System\Recompiler\CodeSection.h" />
     <ClInclude Include="N64System\Recompiler\ExitInfo.h" />

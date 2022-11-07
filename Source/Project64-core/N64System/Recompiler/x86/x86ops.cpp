@@ -37,32 +37,32 @@ void CX86Ops::AdcConstToVariable(void * Variable, const char * VariableName, uin
     AddCode8(Constant);
 }
 
-void CX86Ops::AdcConstToX86Reg(x86Reg Reg, uint32_t Const)
+void CX86Ops::AdcConstToX86Reg(const asmjit::x86::Gp & Reg, uint32_t Const)
 {
     CodeLog("      adc %s, %Xh", x86_Name(Reg), Const);
     if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
     {
-        AddCode16((uint16_t)(0xD081 + (Reg * 0x100)));
+        AddCode16((uint16_t)(0xD081 + (RegValue(Reg) * 0x100)));
         AddCode32(Const);
     }
     else
     {
-        AddCode16((uint16_t)(0xD083 + (Reg * 0x100)));
+        AddCode16((uint16_t)(0xD083 + (RegValue(Reg) * 0x100)));
         AddCode8((uint8_t)Const);
     }
 }
 
-void CX86Ops::AdcVariableToX86reg(x86Reg Reg, void * Variable, const char * VariableName)
+void CX86Ops::AdcVariableToX86reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
     CodeLog("      adc %s, dword ptr [%s]", x86_Name(Reg), VariableName);
-    AddCode16((uint16_t)(0x0513 + (Reg * 0x800)));
+    AddCode16((uint16_t)(0x0513 + (RegValue(Reg) * 0x800)));
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::AdcX86RegToX86Reg(x86Reg Destination, x86Reg Source)
+void CX86Ops::AdcX86RegToX86Reg(const asmjit::x86::Gp & Destination, const asmjit::x86::Gp & Source)
 {
     CodeLog("      adc %s, %s", x86_Name(Destination), x86_Name(Source));
-    AddCode16((uint16_t)(0xC013 + (Source * 0x100) + (Destination * 0x800)));
+    AddCode16((uint16_t)(0xC013 + (RegValue(Source) * 0x100) + (RegValue(Destination) * 0x800)));
 }
 
 void CX86Ops::AddConstToVariable(void * Variable, const char * VariableName, uint32_t Const)
@@ -73,7 +73,7 @@ void CX86Ops::AddConstToVariable(void * Variable, const char * VariableName, uin
     AddCode32(Const);
 }
 
-void CX86Ops::AddConstToX86Reg(x86Reg Reg, uint32_t Const, bool NeedCarry)
+void CX86Ops::AddConstToX86Reg(const asmjit::x86::Gp & Reg, uint32_t Const, bool NeedCarry)
 {
     if (Const == 0)
     {
@@ -89,35 +89,35 @@ void CX86Ops::AddConstToX86Reg(x86Reg Reg, uint32_t Const, bool NeedCarry)
     else if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
     {
         CodeLog("      add %s, %Xh", x86_Name(Reg), Const);
-        AddCode16((uint16_t)(0xC081 + (Reg * 0x100)));
+        AddCode16((uint16_t)(0xC081 + (RegValue(Reg) * 0x100)));
         AddCode32(Const);
     }
     else
     {
         CodeLog("      add %s, %Xh", x86_Name(Reg), Const);
-        AddCode16((uint16_t)(0xC083 + (Reg * 0x100)));
+        AddCode16((uint16_t)(0xC083 + (RegValue(Reg) * 0x100)));
         AddCode8((uint8_t)Const);
     }
 }
 
-void CX86Ops::AddVariableToX86reg(x86Reg Reg, void * Variable, const char * VariableName)
+void CX86Ops::AddVariableToX86reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
     CodeLog("      add %s, dword ptr [%s]", x86_Name(Reg), VariableName);
-    AddCode16((uint16_t)(0x0503 + (Reg * 0x800)));
+    AddCode16((uint16_t)(0x0503 + (RegValue(Reg) * 0x800)));
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::AddX86regToVariable(void * Variable, const char * VariableName, x86Reg Reg)
+void CX86Ops::AddX86regToVariable(void * Variable, const char * VariableName, const asmjit::x86::Gp & Reg)
 {
     CodeLog("      add dword ptr [%s], %s", VariableName, x86_Name(Reg));
-    AddCode16((uint16_t)(0x0501 + (Reg * 0x800)));
+    AddCode16((uint16_t)(0x0501 + (RegValue(Reg) * 0x800)));
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::AddX86RegToX86Reg(x86Reg Destination, x86Reg Source)
+void CX86Ops::AddX86RegToX86Reg(const asmjit::x86::Gp & Destination, const asmjit::x86::Gp & Source)
 {
     CodeLog("      add %s, %s", x86_Name(Destination), x86_Name(Source));
-    AddCode16((uint16_t)(0xC003 + (Source * 0x100) + (Destination * 0x800)));
+    AddCode16((uint16_t)(0xC003 + (RegValue(Source) * 0x100) + (RegValue(Destination) * 0x800)));
 }
 
 void CX86Ops::AndConstToVariable(void * Variable, const char * VariableName, uint32_t Const)
@@ -128,41 +128,41 @@ void CX86Ops::AndConstToVariable(void * Variable, const char * VariableName, uin
     AddCode32(Const);
 }
 
-void CX86Ops::AndConstToX86Reg(x86Reg Reg, uint32_t Const)
+void CX86Ops::AndConstToX86Reg(const asmjit::x86::Gp & Reg, uint32_t Const)
 {
     CodeLog("      and %s, %Xh", x86_Name(Reg), Const);
     if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
     {
-        AddCode16((uint16_t)(0xE081 + (Reg * 0x100)));
+        AddCode16((uint16_t)(0xE081 + (RegValue(Reg) * 0x100)));
         AddCode32(Const);
     }
     else
     {
-        AddCode16((uint16_t)(0xE083 + (Reg * 0x100)));
+        AddCode16((uint16_t)(0xE083 + (RegValue(Reg) * 0x100)));
         AddCode8((uint8_t)Const);
     }
 }
 
-void CX86Ops::AndVariableDispToX86Reg(x86Reg Reg, void * Variable, const char * VariableName, x86Reg AddrReg, Multipler Multiply)
+void CX86Ops::AndVariableDispToX86Reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName, const asmjit::x86::Gp & AddrReg, Multipler Multiply)
 {
     CodeLog("      and %s, dword ptr [%s+%s*%i]", x86_Name(Reg), VariableName, x86_Name(AddrReg), Multiply);
 
-    AddCode16((uint16_t)(0x0423 + (Reg * 0x800)));
-    AddCode8((uint8_t)(0x05 + CalcMultiplyCode(Multiply) + (AddrReg * 0x8)));
+    AddCode16((uint16_t)(0x0423 + (RegValue(Reg) * 0x800)));
+    AddCode8((uint8_t)(0x05 + CalcMultiplyCode(Multiply) + (RegValue(AddrReg) * 0x8)));
     AddCode32((uint32_t)(Variable));
 }
 
-void CX86Ops::AndVariableToX86Reg(x86Reg Reg, void * Variable, const char * VariableName)
+void CX86Ops::AndVariableToX86Reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
     CodeLog("      and %s, dword ptr [%s]", x86_Name(Reg), VariableName);
-    AddCode16((uint16_t)(0x0523 + (Reg * 0x800)));
+    AddCode16((uint16_t)(0x0523 + (RegValue(Reg) * 0x800)));
     AddCode32((uint32_t)(Variable));
 }
 
-void CX86Ops::AndX86RegToX86Reg(x86Reg Destination, x86Reg Source)
+void CX86Ops::AndX86RegToX86Reg(const asmjit::x86::Gp & Destination, const asmjit::x86::Gp & Source)
 {
     CodeLog("      and %s, %s", x86_Name(Destination), x86_Name(Source));
-    AddCode16((uint16_t)(0xC021 + (Destination * 0x100) + (Source * 0x800)));
+    AddCode16((uint16_t)(0xC021 + (RegValue(Destination) * 0x100) + (RegValue(Source) * 0x800)));
 }
 
 void CX86Ops::BreakPointNotification(const char * FileName, int32_t LineNumber)
@@ -182,7 +182,7 @@ void CX86Ops::X86BreakPoint(const char * FileName, int32_t LineNumber)
     PushImm32(stdstr_f("%d", LineNumber).c_str(), LineNumber);
     PushImm32(FileName, (uint32_t)FileName);
     CallFunc((uint32_t)BreakPointNotification, "BreakPointNotification");
-    AddConstToX86Reg(x86_ESP, 8);
+    AddConstToX86Reg(asmjit::x86::esp, 8);
     Popad();
 }
 
@@ -196,7 +196,7 @@ void CX86Ops::CallFunc(uint32_t FunctPtr, const char * FunctName)
 #ifdef _MSC_VER
 void CX86Ops::CallThis(uint32_t ThisPtr, uint32_t FunctPtr, char * FunctName, uint32_t /*StackSize*/)
 {
-    MoveConstToX86reg(CX86Ops::x86_ECX, ThisPtr);
+    MoveConstToX86reg(asmjit::x86::ecx, ThisPtr);
     CallFunc(FunctPtr, FunctName);
 }
 #else
@@ -204,7 +204,7 @@ void CX86Ops::CallThis(uint32_t ThisPtr, uint32_t FunctPtr, char * FunctName, ui
 {
     PushImm32(ThisPtr);
     CallFunc(FunctPtr, FunctName);
-    AddConstToX86Reg(CX86Ops::x86_ESP, StackSize);
+    AddConstToX86Reg(CX86Ops::asmjit::x86::esp, StackSize);
 }
 #endif
 
@@ -216,7 +216,7 @@ void CX86Ops::CompConstToVariable(void * Variable, const char * VariableName, ui
     AddCode32(Const);
 }
 
-void CX86Ops::CompConstToX86reg(x86Reg Reg, uint32_t Const)
+void CX86Ops::CompConstToX86reg(const asmjit::x86::Gp & Reg, uint32_t Const)
 {
     if (Const == 0)
     {
@@ -227,47 +227,47 @@ void CX86Ops::CompConstToX86reg(x86Reg Reg, uint32_t Const)
         CodeLog("      cmp %s, %Xh", x86_Name(Reg), Const);
         if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
         {
-            AddCode16((uint16_t)(0xF881 + (Reg * 0x100)));
+            AddCode16((uint16_t)(0xF881 + (RegValue(Reg) * 0x100)));
             AddCode32(Const);
         }
         else
         {
-            AddCode16((uint16_t)(0xF883 + (Reg * 0x100)));
+            AddCode16((uint16_t)(0xF883 + (RegValue(Reg) * 0x100)));
             AddCode8((uint8_t)Const);
         }
     }
 }
 
-void CX86Ops::CompConstToX86regPointer(x86Reg Reg, uint32_t Const)
+void CX86Ops::CompConstToX86regPointer(const asmjit::x86::Gp & Reg, uint32_t Const)
 {
     if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
     {
         CodeLog("      cmp dword ptr [%s], %Xh", x86_Name(Reg), Const);
-        AddCode16((uint16_t)(0x3881 + (Reg * 0x100)));
+        AddCode16((uint16_t)(0x3881 + (RegValue(Reg) * 0x100)));
         AddCode32(Const);
     }
     else
     {
         CodeLog("      cmp byte ptr [%s], %Xh", x86_Name(Reg), Const);
-        AddCode16((uint16_t)(0x3883 + (Reg * 0x100)));
+        AddCode16((uint16_t)(0x3883 + (RegValue(Reg) * 0x100)));
         AddCode8((uint8_t)Const);
     }
 }
 
-void CX86Ops::CompX86regToVariable(x86Reg Reg, void * Variable, const char * VariableName)
+void CX86Ops::CompX86regToVariable(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
     CodeLog("      cmp %s, dword ptr [%s]", x86_Name(Reg), VariableName);
-    AddCode16((uint16_t)(0x053B + (Reg * 0x800)));
+    AddCode16((uint16_t)(0x053B + (RegValue(Reg) * 0x800)));
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::CompX86RegToX86Reg(x86Reg Destination, x86Reg Source)
+void CX86Ops::CompX86RegToX86Reg(const asmjit::x86::Gp & Destination, const asmjit::x86::Gp & Source)
 {
     uint16_t x86Command = 0;
 
     CodeLog("      cmp %s, %s", x86_Name(Destination), x86_Name(Source));
 
-    switch (Source)
+    switch (RegValue(Source))
     {
     case x86_EAX: x86Command = 0x003B; break;
     case x86_EBX: x86Command = 0x033B; break;
@@ -280,7 +280,7 @@ void CX86Ops::CompX86RegToX86Reg(x86Reg Destination, x86Reg Source)
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-    switch (Destination)
+    switch (RegValue(Destination))
     {
     case x86_EAX: x86Command += 0xC000; break;
     case x86_EBX: x86Command += 0xD800; break;
@@ -294,11 +294,11 @@ void CX86Ops::CompX86RegToX86Reg(x86Reg Destination, x86Reg Source)
     AddCode16(x86Command);
 }
 
-void CX86Ops::DecX86reg(x86Reg Reg)
+void CX86Ops::DecX86reg(const asmjit::x86::Gp & Reg)
 {
     CodeLog("      dec %s", x86_Name(Reg));
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0xC8FF); break;
     case x86_EBX: AddCode16(0xCBFF); break;
@@ -313,10 +313,10 @@ void CX86Ops::DecX86reg(x86Reg Reg)
     }
 }
 
-void CX86Ops::DivX86reg(x86Reg Reg)
+void CX86Ops::DivX86reg(const asmjit::x86::Gp & Reg)
 {
     CodeLog("      div %s", x86_Name(Reg));
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EBX: AddCode16(0xf3F7); break;
     case x86_ECX: AddCode16(0xf1F7); break;
@@ -330,11 +330,11 @@ void CX86Ops::DivX86reg(x86Reg Reg)
     }
 }
 
-void CX86Ops::idivX86reg(x86Reg Reg)
+void CX86Ops::idivX86reg(const asmjit::x86::Gp & Reg)
 {
     CodeLog("      idiv %s", x86_Name(Reg));
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EBX: AddCode16(0xfbF7); break;
     case x86_ECX: AddCode16(0xf9F7); break;
@@ -348,11 +348,11 @@ void CX86Ops::idivX86reg(x86Reg Reg)
     }
 }
 
-void CX86Ops::imulX86reg(x86Reg Reg)
+void CX86Ops::imulX86reg(const asmjit::x86::Gp & Reg)
 {
     CodeLog("      imul %s", x86_Name(Reg));
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0xE8F7); break;
     case x86_EBX: AddCode16(0xEBF7); break;
@@ -367,11 +367,11 @@ void CX86Ops::imulX86reg(x86Reg Reg)
     }
 }
 
-void CX86Ops::IncX86reg(x86Reg Reg)
+void CX86Ops::IncX86reg(const asmjit::x86::Gp & Reg)
 {
     CodeLog("      inc %s", x86_Name(Reg));
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0xC0FF); break;
     case x86_EBX: AddCode16(0xC3FF); break;
@@ -505,11 +505,11 @@ void CX86Ops::JlLabel32(const char * Label, uint32_t Value)
     AddCode32(Value);
 }
 
-void CX86Ops::JmpDirectReg(x86Reg Reg)
+void CX86Ops::JmpDirectReg(const asmjit::x86::Gp & Reg)
 {
     CodeLog("      jmp %s", x86_Name(Reg));
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0xE0ff); break;
     case x86_EBX: AddCode16(0xE3ff); break;
@@ -529,11 +529,11 @@ void CX86Ops::JmpIndirectLabel32(const char * Label, uint32_t location)
     AddCode32(location);
 }
 
-void CX86Ops::JmpIndirectReg(x86Reg Reg)
+void CX86Ops::JmpIndirectReg(const asmjit::x86::Gp & Reg)
 {
     CodeLog("      jmp dword ptr [%s]", x86_Name(Reg));
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0x20ff); break;
     case x86_EBX: AddCode16(0x23ff); break;
@@ -638,7 +638,7 @@ void CX86Ops::JzLabel32(const char * Label, uint32_t Value)
     AddCode32(Value);
 }
 
-void CX86Ops::LeaRegReg(x86Reg RegDest, x86Reg RegSrc, uint32_t Const, Multipler multiplier)
+void CX86Ops::LeaRegReg(const asmjit::x86::Gp & RegDest, const asmjit::x86::Gp & RegSrc, uint32_t Const, Multipler multiplier)
 {
     if (Const != 0)
     {
@@ -650,26 +650,26 @@ void CX86Ops::LeaRegReg(x86Reg RegDest, x86Reg RegSrc, uint32_t Const, Multipler
     }
 
     AddCode8(0x8D);
-    AddCode8((uint8_t)(0x04 + (RegDest * 8)));
-    AddCode8((uint8_t)(0x05 + (RegSrc * 8) + CalcMultiplyCode(multiplier)));
+    AddCode8((uint8_t)(0x04 + (RegValue(RegDest) * 8)));
+    AddCode8((uint8_t)(0x05 + (RegValue(RegSrc) * 8) + CalcMultiplyCode(multiplier)));
     AddCode32(Const);
 }
 
-void CX86Ops::LeaRegReg2(x86Reg RegDest, x86Reg RegSrc, x86Reg RegSrc2, Multipler multiplier)
+void CX86Ops::LeaRegReg2(const asmjit::x86::Gp & RegDest, const asmjit::x86::Gp & RegSrc, const asmjit::x86::Gp & RegSrc2, Multipler multiplier)
 {
     CodeLog("      lea %s, [%s+%s*%i]", x86_Name(RegDest), x86_Name(RegSrc), x86_Name(RegSrc2), multiplier);
 
-    if (RegSrc2 == x86_ESP || RegSrc2 == x86_EBP)
+    if (RegSrc2 == asmjit::x86::esp || RegSrc2 == asmjit::x86::ebp)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
     AddCode8(0x8D);
-    AddCode8((uint8_t)(0x04 + (RegDest * 0x8)));
-    AddCode8((uint8_t)(0x05 + (RegSrc * 0x8) + RegSrc2 + CalcMultiplyCode(multiplier)));
+    AddCode8((uint8_t)(0x04 + (RegValue(RegDest) * 0x8)));
+    AddCode8((uint8_t)(0x05 + (RegValue(RegSrc) * 0x8) + RegValue(RegSrc2) + CalcMultiplyCode(multiplier)));
 }
 
-void CX86Ops::LeaSourceAndOffset(x86Reg x86DestReg, x86Reg x86SourceReg, int32_t offset)
+void CX86Ops::LeaSourceAndOffset(const asmjit::x86::Gp & x86DestReg, const asmjit::x86::Gp & x86SourceReg, int32_t offset)
 {
     uint16_t x86Command = 0;
 
@@ -678,7 +678,7 @@ void CX86Ops::LeaSourceAndOffset(x86Reg x86DestReg, x86Reg x86SourceReg, int32_t
     //	if ((offset & 0xFFFFFF80) != 0 && (offset & 0xFFFFFF80) != 0xFFFFFF80) {
     if (1)
     {
-        switch (x86DestReg)
+        switch (RegValue(x86DestReg))
         {
         case x86_EAX: x86Command = 0x808D; break;
         case x86_EBX: x86Command = 0x988D; break;
@@ -691,7 +691,7 @@ void CX86Ops::LeaSourceAndOffset(x86Reg x86DestReg, x86Reg x86SourceReg, int32_t
         default:
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
-        switch (x86SourceReg)
+        switch (RegValue(x86SourceReg))
         {
         case x86_EAX: x86Command += 0x0000; break;
         case x86_EBX: x86Command += 0x0300; break;
@@ -709,7 +709,7 @@ void CX86Ops::LeaSourceAndOffset(x86Reg x86DestReg, x86Reg x86SourceReg, int32_t
     }
     else
     {
-        switch (x86DestReg)
+        switch (RegValue(x86DestReg))
         {
         case x86_EAX: x86Command = 0x408D; break;
         case x86_EBX: x86Command = 0x588D; break;
@@ -722,7 +722,7 @@ void CX86Ops::LeaSourceAndOffset(x86Reg x86DestReg, x86Reg x86SourceReg, int32_t
         default:
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
-        switch (x86SourceReg)
+        switch (RegValue(x86SourceReg))
         {
         case x86_EAX: x86Command += 0x0000; break;
         case x86_EBX: x86Command += 0x0300; break;
@@ -757,7 +757,7 @@ void CX86Ops::MoveConstHalfToVariable(void * Variable, const char * VariableName
     AddCode16(Const);
 }
 
-void CX86Ops::MoveConstHalfToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, uint16_t Const)
+void CX86Ops::MoveConstHalfToX86regPointer(const asmjit::x86::Gp & AddrReg1, const asmjit::x86::Gp & AddrReg2, uint16_t Const)
 {
     uint8_t Param = 0;
 
@@ -766,7 +766,7 @@ void CX86Ops::MoveConstHalfToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, uin
     AddCode8(0x66);
     AddCode16(0x04C7);
 
-    switch (AddrReg1)
+    switch (RegValue(AddrReg1))
     {
     case x86_EAX: Param = 0x00; break;
     case x86_EBX: Param = 0x03; break;
@@ -778,7 +778,7 @@ void CX86Ops::MoveConstHalfToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, uin
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (AddrReg2)
+    switch (RegValue(AddrReg2))
     {
     case x86_EAX: Param += 0x00; break;
     case x86_EBX: Param += 0x18; break;
@@ -795,10 +795,10 @@ void CX86Ops::MoveConstHalfToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, uin
     AddCode16(Const);
 }
 
-void CX86Ops::MoveConstToMemoryDisp(x86Reg AddrReg, uint32_t Disp, uint32_t Const)
+void CX86Ops::MoveConstToMemoryDisp(const asmjit::x86::Gp & AddrReg, uint32_t Disp, uint32_t Const)
 {
     CodeLog("      mov dword ptr [%s+%Xh], %Xh", x86_Name(AddrReg), Disp, Const);
-    switch (AddrReg)
+    switch (RegValue(AddrReg))
     {
     case x86_EAX: AddCode16(0x80C7); break;
     case x86_EBX: AddCode16(0x83C7); break;
@@ -823,14 +823,14 @@ void CX86Ops::MoveConstToVariable(void * Variable, const char * VariableName, ui
     AddCode32(Const);
 }
 
-void CX86Ops::MoveConstToX86Pointer(x86Reg X86Pointer, uint32_t Const)
+void CX86Ops::MoveConstToX86Pointer(const asmjit::x86::Gp & X86Pointer, uint32_t Const)
 {
     CodeLog("      mov dword ptr [%s], %Xh", x86_Name(X86Pointer), Const);
-    AddCode16((uint16_t)(0x00C7 + (X86Pointer * 0x100)));
+    AddCode16((uint16_t)(0x00C7 + (RegValue(X86Pointer) * 0x100)));
     AddCode32(Const);
 }
 
-void CX86Ops::MoveConstToX86reg(x86Reg Reg, uint32_t Const)
+void CX86Ops::MoveConstToX86reg(const asmjit::x86::Gp & Reg, uint32_t Const)
 {
     if (Const == 0)
     {
@@ -839,12 +839,12 @@ void CX86Ops::MoveConstToX86reg(x86Reg Reg, uint32_t Const)
     else
     {
         CodeLog("      mov %s, %Xh", x86_Name(Reg), Const);
-        AddCode16((uint16_t)(0xC0C7 + (Reg * 0x100)));
+        AddCode16((uint16_t)(0xC0C7 + (RegValue(Reg) * 0x100)));
         AddCode32(Const);
     }
 }
 
-void CX86Ops::MoveConstByteToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, uint8_t Const)
+void CX86Ops::MoveConstByteToX86regPointer(const asmjit::x86::Gp & AddrReg1, const asmjit::x86::Gp & AddrReg2, uint8_t Const)
 {
     uint8_t Param = 0;
 
@@ -852,7 +852,7 @@ void CX86Ops::MoveConstByteToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, uin
 
     AddCode16(0x04C6);
 
-    switch (AddrReg1)
+    switch (RegValue(AddrReg1))
     {
     case x86_EAX: Param = 0x00; break;
     case x86_EBX: Param = 0x03; break;
@@ -864,7 +864,7 @@ void CX86Ops::MoveConstByteToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, uin
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (AddrReg2)
+    switch (RegValue(AddrReg2))
     {
     case x86_EAX: Param += 0x00; break;
     case x86_EBX: Param += 0x18; break;
@@ -881,7 +881,7 @@ void CX86Ops::MoveConstByteToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, uin
     AddCode8(Const);
 }
 
-void CX86Ops::MoveConstToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, uint32_t Const)
+void CX86Ops::MoveConstToX86regPointer(const asmjit::x86::Gp & AddrReg1, const asmjit::x86::Gp & AddrReg2, uint32_t Const)
 {
     uint8_t Param = 0;
 
@@ -889,7 +889,7 @@ void CX86Ops::MoveConstToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, uint32_
 
     AddCode16(0x04C7);
 
-    switch (AddrReg1)
+    switch (RegValue(AddrReg1))
     {
     case x86_EAX: Param = 0x00; break;
     case x86_EBX: Param = 0x03; break;
@@ -901,7 +901,7 @@ void CX86Ops::MoveConstToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, uint32_
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (AddrReg2)
+    switch (RegValue(AddrReg2))
     {
     case x86_EAX: Param += 0x00; break;
     case x86_EBX: Param += 0x18; break;
@@ -918,14 +918,14 @@ void CX86Ops::MoveConstToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, uint32_
     AddCode32(Const);
 }
 
-void CX86Ops::MoveSxByteX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Reg AddrReg2)
+void CX86Ops::MoveSxByteX86regPointerToX86reg(const asmjit::x86::Gp & Reg, const asmjit::x86::Gp & AddrReg1, const asmjit::x86::Gp & AddrReg2)
 {
     uint8_t Param = 0;
 
     CodeLog("      movsx %s, byte ptr [%s+%s]", x86_Name(Reg), x86_Name(AddrReg1), x86_Name(AddrReg2));
 
     AddCode16(0xBE0F);
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode8(0x04); break;
     case x86_EBX: AddCode8(0x1C); break;
@@ -939,7 +939,7 @@ void CX86Ops::MoveSxByteX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Re
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (AddrReg1)
+    switch (RegValue(AddrReg1))
     {
     case x86_EAX: Param = 0x00; break;
     case x86_EBX: Param = 0x03; break;
@@ -951,7 +951,7 @@ void CX86Ops::MoveSxByteX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Re
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (AddrReg2)
+    switch (RegValue(AddrReg2))
     {
     case x86_EAX: Param += 0x00; break;
     case x86_EBX: Param += 0x18; break;
@@ -967,14 +967,14 @@ void CX86Ops::MoveSxByteX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Re
     AddCode8(Param);
 }
 
-void CX86Ops::MoveSxHalfX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Reg AddrReg2)
+void CX86Ops::MoveSxHalfX86regPointerToX86reg(const asmjit::x86::Gp & Reg, const asmjit::x86::Gp & AddrReg1, const asmjit::x86::Gp & AddrReg2)
 {
     uint8_t Param = 0;
 
     CodeLog("      movsx %s, word ptr [%s+%s]", x86_Name(Reg), x86_Name(AddrReg1), x86_Name(AddrReg2));
 
     AddCode16(0xBF0F);
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode8(0x04); break;
     case x86_EBX: AddCode8(0x1C); break;
@@ -988,7 +988,7 @@ void CX86Ops::MoveSxHalfX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Re
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (AddrReg1)
+    switch (RegValue(AddrReg1))
     {
     case x86_EAX: Param = 0x00; break;
     case x86_EBX: Param = 0x03; break;
@@ -1000,7 +1000,7 @@ void CX86Ops::MoveSxHalfX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Re
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (AddrReg2)
+    switch (RegValue(AddrReg2))
     {
     case x86_EAX: Param += 0x00; break;
     case x86_EBX: Param += 0x18; break;
@@ -1016,13 +1016,13 @@ void CX86Ops::MoveSxHalfX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Re
     AddCode8(Param);
 }
 
-void CX86Ops::MoveSxVariableToX86regByte(x86Reg Reg, void * Variable, const char * VariableName)
+void CX86Ops::MoveSxVariableToX86regByte(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
     CodeLog("      movsx %s, byte ptr [%s]", x86_Name(Reg), VariableName);
 
     AddCode16(0xbe0f);
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode8(0x05); break;
     case x86_EBX: AddCode8(0x1D); break;
@@ -1038,13 +1038,13 @@ void CX86Ops::MoveSxVariableToX86regByte(x86Reg Reg, void * Variable, const char
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::MoveSxVariableToX86regHalf(x86Reg Reg, void * Variable, const char * VariableName)
+void CX86Ops::MoveSxVariableToX86regHalf(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
     CodeLog("      movsx %s, word ptr [%s]", x86_Name(Reg), VariableName);
 
     AddCode16(0xbf0f);
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode8(0x05); break;
     case x86_EBX: AddCode8(0x1D); break;
@@ -1060,10 +1060,10 @@ void CX86Ops::MoveSxVariableToX86regHalf(x86Reg Reg, void * Variable, const char
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::MoveVariableToX86reg(x86Reg Reg, void * Variable, const char * VariableName)
+void CX86Ops::MoveVariableToX86reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
     CodeLog("      mov %s, dword ptr [%s]", x86_Name(Reg), VariableName);
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0x058B); break;
     case x86_EBX: AddCode16(0x1D8B); break;
@@ -1079,13 +1079,13 @@ void CX86Ops::MoveVariableToX86reg(x86Reg Reg, void * Variable, const char * Var
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::MoveVariableDispToX86Reg(x86Reg Reg, void * Variable, const char * VariableName, x86Reg AddrReg, Multipler Multiplier)
+void CX86Ops::MoveVariableDispToX86Reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName, const asmjit::x86::Gp & AddrReg, Multipler Multiplier)
 {
     CodeLog("      mov %s, dword ptr [%s+%s*%i]", x86_Name(Reg), VariableName, x86_Name(AddrReg), Multiplier);
 
     AddCode8(0x8B);
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode8(0x04); break;
     case x86_EBX: AddCode8(0x1C); break;
@@ -1103,7 +1103,7 @@ void CX86Ops::MoveVariableDispToX86Reg(x86Reg Reg, void * Variable, const char *
     uint8_t x = CalcMultiplyCode(Multiplier);
 
     // Format xx|000000
-    switch (AddrReg)
+    switch (RegValue(AddrReg))
     {
     case x86_EAX: AddCode8((uint8_t)(0x05 | x)); break;
     case x86_EBX: AddCode8((uint8_t)(0x1D | x)); break;
@@ -1120,11 +1120,11 @@ void CX86Ops::MoveVariableDispToX86Reg(x86Reg Reg, void * Variable, const char *
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::MoveX86regByteToVariable(void * Variable, const char * VariableName, x86Reg Reg)
+void CX86Ops::MoveX86regByteToVariable(void * Variable, const char * VariableName, const asmjit::x86::Gp & Reg)
 {
     CodeLog("      mov byte ptr [%s], %s", VariableName, x86_ByteName(Reg));
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0x0588); break;
     case x86_EBX: AddCode16(0x1D88); break;
@@ -1136,13 +1136,13 @@ void CX86Ops::MoveX86regByteToVariable(void * Variable, const char * VariableNam
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::MoveX86regByteToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg Reg)
+void CX86Ops::MoveX86regByteToX86regPointer(const asmjit::x86::Gp & AddrReg1, const asmjit::x86::Gp & AddrReg2, const asmjit::x86::Gp & Reg)
 {
     uint8_t Param = 0;
 
     CodeLog("      mov byte ptr [%s+%s],%s", x86_Name(AddrReg1), x86_Name(AddrReg2), x86_ByteName(Reg));
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0x0488); break;
     case x86_EBX: AddCode16(0x1C88); break;
@@ -1156,7 +1156,7 @@ void CX86Ops::MoveX86regByteToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, x8
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (AddrReg1)
+    switch (RegValue(AddrReg1))
     {
     case x86_EAX: Param = 0x00; break;
     case x86_EBX: Param = 0x03; break;
@@ -1168,7 +1168,7 @@ void CX86Ops::MoveX86regByteToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, x8
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (AddrReg2)
+    switch (RegValue(AddrReg2))
     {
     case x86_EAX: Param += 0x00; break;
     case x86_EBX: Param += 0x18; break;
@@ -1184,11 +1184,11 @@ void CX86Ops::MoveX86regByteToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, x8
     AddCode8(Param);
 }
 
-void CX86Ops::MoveX86regHalfToVariable(void * Variable, const char * VariableName, x86Reg Reg)
+void CX86Ops::MoveX86regHalfToVariable(void * Variable, const char * VariableName, const asmjit::x86::Gp & Reg)
 {
     CodeLog("      mov word ptr [%s], %s", VariableName, x86_HalfName(Reg));
     AddCode8(0x66);
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0x0589); break;
     case x86_EBX: AddCode16(0x1D89); break;
@@ -1204,14 +1204,14 @@ void CX86Ops::MoveX86regHalfToVariable(void * Variable, const char * VariableNam
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::MoveX86regHalfToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg Reg)
+void CX86Ops::MoveX86regHalfToX86regPointer(const asmjit::x86::Gp & AddrReg1, const asmjit::x86::Gp & AddrReg2, const asmjit::x86::Gp & Reg)
 {
     uint8_t Param = 0;
 
     CodeLog("      mov word ptr [%s+%s],%s", x86_Name(AddrReg1), x86_Name(AddrReg2), x86_HalfName(Reg));
 
     AddCode8(0x66);
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0x0489); break;
     case x86_EBX: AddCode16(0x1C89); break;
@@ -1225,7 +1225,7 @@ void CX86Ops::MoveX86regHalfToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, x8
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (AddrReg1)
+    switch (RegValue(AddrReg1))
     {
     case x86_EAX: Param = 0x00; break;
     case x86_EBX: Param = 0x03; break;
@@ -1237,7 +1237,7 @@ void CX86Ops::MoveX86regHalfToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, x8
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (AddrReg2)
+    switch (RegValue(AddrReg2))
     {
     case x86_EAX: Param += 0x00; break;
     case x86_EBX: Param += 0x18; break;
@@ -1253,13 +1253,13 @@ void CX86Ops::MoveX86regHalfToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, x8
     AddCode8(Param);
 }
 
-void CX86Ops::MoveX86PointerToX86reg(x86Reg Reg, x86Reg X86Pointer)
+void CX86Ops::MoveX86PointerToX86reg(const asmjit::x86::Gp & Reg, const asmjit::x86::Gp & X86Pointer)
 {
     uint16_t x86Command = 0;
 
     CodeLog("      mov %s, dword ptr [%s]", x86_Name(Reg), x86_Name(X86Pointer));
 
-    switch (X86Pointer)
+    switch (RegValue(X86Pointer))
     {
     case x86_EAX: x86Command = 0x008B; break;
     case x86_EBX: x86Command = 0x038B; break;
@@ -1271,7 +1271,7 @@ void CX86Ops::MoveX86PointerToX86reg(x86Reg Reg, x86Reg X86Pointer)
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: x86Command += 0x0000; break;
     case x86_EBX: x86Command += 0x1800; break;
@@ -1287,13 +1287,13 @@ void CX86Ops::MoveX86PointerToX86reg(x86Reg Reg, x86Reg X86Pointer)
     AddCode16(x86Command);
 }
 
-void CX86Ops::MoveX86PointerToX86regDisp(x86Reg Reg, x86Reg X86Pointer, uint8_t Disp)
+void CX86Ops::MoveX86PointerToX86regDisp(const asmjit::x86::Gp & Reg, const asmjit::x86::Gp & X86Pointer, uint8_t Disp)
 {
     uint16_t x86Command = 0;
 
     CodeLog("      mov %s, dword ptr [%s] + %d", x86_Name(Reg), x86_Name(X86Pointer), Disp);
 
-    switch (X86Pointer)
+    switch (RegValue(X86Pointer))
     {
     case x86_EAX: x86Command = 0x408B; break;
     case x86_EBX: x86Command = 0x438B; break;
@@ -1305,7 +1305,7 @@ void CX86Ops::MoveX86PointerToX86regDisp(x86Reg Reg, x86Reg X86Pointer, uint8_t 
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: x86Command += 0x0000; break;
     case x86_EBX: x86Command += 0x1800; break;
@@ -1322,13 +1322,13 @@ void CX86Ops::MoveX86PointerToX86regDisp(x86Reg Reg, x86Reg X86Pointer, uint8_t 
     AddCode8(Disp);
 }
 
-void CX86Ops::MoveX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Reg AddrReg2)
+void CX86Ops::MoveX86regPointerToX86reg(const asmjit::x86::Gp & Reg, const asmjit::x86::Gp & AddrReg1, const asmjit::x86::Gp & AddrReg2)
 {
     uint8_t Param = 0;
 
     CodeLog("      mov %s, dword ptr [%s+%s]", x86_Name(Reg), x86_Name(AddrReg1), x86_Name(AddrReg2));
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0x048B); break;
     case x86_EBX: AddCode16(0x1C8B); break;
@@ -1342,7 +1342,7 @@ void CX86Ops::MoveX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Reg Addr
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (AddrReg1)
+    switch (RegValue(AddrReg1))
     {
     case x86_EAX: Param = 0x00; break;
     case x86_EBX: Param = 0x03; break;
@@ -1354,7 +1354,7 @@ void CX86Ops::MoveX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Reg Addr
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (AddrReg2)
+    switch (RegValue(AddrReg2))
     {
     case x86_EAX: Param += 0x00; break;
     case x86_EBX: Param += 0x18; break;
@@ -1370,13 +1370,13 @@ void CX86Ops::MoveX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Reg Addr
     AddCode8(Param);
 }
 
-void CX86Ops::MoveX86regPointerToX86regDisp8(x86Reg Reg, x86Reg AddrReg1, x86Reg AddrReg2, uint8_t offset)
+void CX86Ops::MoveX86regPointerToX86regDisp8(const asmjit::x86::Gp & Reg, const asmjit::x86::Gp & AddrReg1, const asmjit::x86::Gp & AddrReg2, uint8_t offset)
 {
     uint8_t Param = 0;
 
     CodeLog("      mov %s, dword ptr [%s+%s]", x86_Name(Reg), x86_Name(AddrReg1), x86_Name(AddrReg2));
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0x448B); break;
     case x86_EBX: AddCode16(0x5C8B); break;
@@ -1390,7 +1390,7 @@ void CX86Ops::MoveX86regPointerToX86regDisp8(x86Reg Reg, x86Reg AddrReg1, x86Reg
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (AddrReg1)
+    switch (RegValue(AddrReg1))
     {
     case x86_EAX: Param = 0x00; break;
     case x86_EBX: Param = 0x03; break;
@@ -1402,7 +1402,7 @@ void CX86Ops::MoveX86regPointerToX86regDisp8(x86Reg Reg, x86Reg AddrReg1, x86Reg
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (AddrReg2)
+    switch (RegValue(AddrReg2))
     {
     case x86_EAX: Param += 0x00; break;
     case x86_EBX: Param += 0x18; break;
@@ -1419,12 +1419,12 @@ void CX86Ops::MoveX86regPointerToX86regDisp8(x86Reg Reg, x86Reg AddrReg1, x86Reg
     AddCode8(offset);
 }
 
-void CX86Ops::MoveX86regToMemory(x86Reg AddrReg, uint32_t Disp, x86Reg Reg)
+void CX86Ops::MoveX86regToMemory(const asmjit::x86::Gp & AddrReg, uint32_t Disp, const asmjit::x86::Gp & Reg)
 {
     uint16_t x86Command = 0;
 
     CodeLog("      mov dword ptr [%s+%X], %s", x86_Name(AddrReg), Disp, x86_Name(Reg));
-    switch (AddrReg)
+    switch (RegValue(AddrReg))
     {
     case x86_EAX: x86Command = 0x0089; break;
     case x86_EBX: x86Command = 0x0389; break;
@@ -1437,7 +1437,7 @@ void CX86Ops::MoveX86regToMemory(x86Reg AddrReg, uint32_t Disp, x86Reg Reg)
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: x86Command += 0x8000; break;
     case x86_EBX: x86Command += 0x9800; break;
@@ -1454,10 +1454,10 @@ void CX86Ops::MoveX86regToMemory(x86Reg AddrReg, uint32_t Disp, x86Reg Reg)
     AddCode32(Disp);
 }
 
-void CX86Ops::MoveX86regToVariable(void * Variable, const char * VariableName, x86Reg Reg)
+void CX86Ops::MoveX86regToVariable(void * Variable, const char * VariableName, const asmjit::x86::Gp & Reg)
 {
     CodeLog("      mov dword ptr [%s], %s", VariableName, x86_Name(Reg));
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0x0589); break;
     case x86_EBX: AddCode16(0x1D89); break;
@@ -1473,7 +1473,7 @@ void CX86Ops::MoveX86regToVariable(void * Variable, const char * VariableName, x
     AddCode32((uint32_t)(Variable));
 }
 
-void CX86Ops::MoveX86RegToX86Reg(x86Reg Destination, x86Reg Source)
+void CX86Ops::MoveX86RegToX86Reg(const asmjit::x86::Gp & Destination, const asmjit::x86::Gp & Source)
 {
     uint16_t x86Command = 0;
 
@@ -1483,7 +1483,7 @@ void CX86Ops::MoveX86RegToX86Reg(x86Reg Destination, x86Reg Source)
     }
     CodeLog("      mov %s, %s", x86_Name(Destination), x86_Name(Source));
 
-    switch (Destination)
+    switch (RegValue(Destination))
     {
     case x86_EAX: x86Command = 0x0089; break;
     case x86_EBX: x86Command = 0x0389; break;
@@ -1497,7 +1497,7 @@ void CX86Ops::MoveX86RegToX86Reg(x86Reg Destination, x86Reg Source)
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (Source)
+    switch (RegValue(Source))
     {
     case x86_EAX: x86Command += 0xC000; break;
     case x86_EBX: x86Command += 0xD800; break;
@@ -1513,13 +1513,13 @@ void CX86Ops::MoveX86RegToX86Reg(x86Reg Destination, x86Reg Source)
     AddCode16(x86Command);
 }
 
-void CX86Ops::MoveX86regToX86Pointer(x86Reg X86Pointer, x86Reg Reg)
+void CX86Ops::MoveX86regToX86Pointer(const asmjit::x86::Gp & X86Pointer, const asmjit::x86::Gp & Reg)
 {
     uint16_t x86Command = 0;
 
     CodeLog("      mov dword ptr [%s], %s", x86_Name(X86Pointer), x86_Name(Reg));
 
-    switch (X86Pointer)
+    switch (RegValue(X86Pointer))
     {
     case x86_EAX: x86Command = 0x0089; break;
     case x86_EBX: x86Command = 0x0389; break;
@@ -1531,7 +1531,7 @@ void CX86Ops::MoveX86regToX86Pointer(x86Reg X86Pointer, x86Reg Reg)
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: x86Command += 0x0000; break;
     case x86_EBX: x86Command += 0x1800; break;
@@ -1547,13 +1547,13 @@ void CX86Ops::MoveX86regToX86Pointer(x86Reg X86Pointer, x86Reg Reg)
     AddCode16(x86Command);
 }
 
-void CX86Ops::MoveX86regToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg Reg)
+void CX86Ops::MoveX86regToX86regPointer(const asmjit::x86::Gp & AddrReg1, const asmjit::x86::Gp & AddrReg2, const asmjit::x86::Gp & Reg)
 {
     uint8_t Param = 0;
 
     CodeLog("      mov dword ptr [%s+%s],%s", x86_Name(AddrReg1), x86_Name(AddrReg2), x86_Name(Reg));
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0x0489); break;
     case x86_EBX: AddCode16(0x1C89); break;
@@ -1567,7 +1567,7 @@ void CX86Ops::MoveX86regToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (AddrReg1)
+    switch (RegValue(AddrReg1))
     {
     case x86_EAX: Param = 0x00; break;
     case x86_EBX: Param = 0x03; break;
@@ -1579,7 +1579,7 @@ void CX86Ops::MoveX86regToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (AddrReg2)
+    switch (RegValue(AddrReg2))
     {
     case x86_EAX: Param += 0x00; break;
     case x86_EBX: Param += 0x18; break;
@@ -1595,14 +1595,14 @@ void CX86Ops::MoveX86regToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, x86Reg
     AddCode8(Param);
 }
 
-void CX86Ops::MoveZxByteX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Reg AddrReg2)
+void CX86Ops::MoveZxByteX86regPointerToX86reg(const asmjit::x86::Gp & Reg, const asmjit::x86::Gp & AddrReg1, const asmjit::x86::Gp & AddrReg2)
 {
     uint8_t Param = 0;
 
     CodeLog("      movzx %s, byte ptr [%s+%s]", x86_Name(Reg), x86_Name(AddrReg1), x86_Name(AddrReg2));
 
     AddCode16(0xB60F);
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode8(0x04); break;
     case x86_EBX: AddCode8(0x1C); break;
@@ -1616,7 +1616,7 @@ void CX86Ops::MoveZxByteX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Re
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (AddrReg1)
+    switch (RegValue(AddrReg1))
     {
     case x86_EAX: Param = 0x00; break;
     case x86_EBX: Param = 0x03; break;
@@ -1628,7 +1628,7 @@ void CX86Ops::MoveZxByteX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Re
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (AddrReg2)
+    switch (RegValue(AddrReg2))
     {
     case x86_EAX: Param += 0x00; break;
     case x86_EBX: Param += 0x18; break;
@@ -1644,14 +1644,14 @@ void CX86Ops::MoveZxByteX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Re
     AddCode8(Param);
 }
 
-void CX86Ops::MoveZxHalfX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Reg AddrReg2)
+void CX86Ops::MoveZxHalfX86regPointerToX86reg(const asmjit::x86::Gp & Reg, const asmjit::x86::Gp & AddrReg1, const asmjit::x86::Gp & AddrReg2)
 {
     uint8_t Param = 0;
 
     CodeLog("      movzx %s, word ptr [%s+%s]", x86_Name(Reg), x86_Name(AddrReg1), x86_Name(AddrReg2));
 
     AddCode16(0xB70F);
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode8(0x04); break;
     case x86_EBX: AddCode8(0x1C); break;
@@ -1665,7 +1665,7 @@ void CX86Ops::MoveZxHalfX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Re
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (AddrReg1)
+    switch (RegValue(AddrReg1))
     {
     case x86_EAX: Param = 0x00; break;
     case x86_EBX: Param = 0x03; break;
@@ -1677,7 +1677,7 @@ void CX86Ops::MoveZxHalfX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Re
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (AddrReg2)
+    switch (RegValue(AddrReg2))
     {
     case x86_EAX: Param += 0x00; break;
     case x86_EBX: Param += 0x18; break;
@@ -1693,13 +1693,13 @@ void CX86Ops::MoveZxHalfX86regPointerToX86reg(x86Reg Reg, x86Reg AddrReg1, x86Re
     AddCode8(Param);
 }
 
-void CX86Ops::MoveZxVariableToX86regByte(x86Reg Reg, void * Variable, const char * VariableName)
+void CX86Ops::MoveZxVariableToX86regByte(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
     CodeLog("      movzx %s, byte ptr [%s]", x86_Name(Reg), VariableName);
 
     AddCode16(0xb60f);
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode8(0x05); break;
     case x86_EBX: AddCode8(0x1D); break;
@@ -1715,13 +1715,13 @@ void CX86Ops::MoveZxVariableToX86regByte(x86Reg Reg, void * Variable, const char
     AddCode32((uint32_t)(Variable));
 }
 
-void CX86Ops::MoveZxVariableToX86regHalf(x86Reg Reg, void * Variable, const char * VariableName)
+void CX86Ops::MoveZxVariableToX86regHalf(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
     CodeLog("      movzx %s, word ptr [%s]", x86_Name(Reg), VariableName);
 
     AddCode16(0xb70f);
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode8(0x05); break;
     case x86_EBX: AddCode8(0x1D); break;
@@ -1737,10 +1737,10 @@ void CX86Ops::MoveZxVariableToX86regHalf(x86Reg Reg, void * Variable, const char
     AddCode32((uint32_t)(Variable));
 }
 
-void CX86Ops::MulX86reg(x86Reg Reg)
+void CX86Ops::MulX86reg(const asmjit::x86::Gp & Reg)
 {
     CodeLog("      mul %s", x86_Name(Reg));
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0xE0F7); break;
     case x86_EBX: AddCode16(0xE3F7); break;
@@ -1755,10 +1755,10 @@ void CX86Ops::MulX86reg(x86Reg Reg)
     }
 }
 
-void CX86Ops::NotX86Reg(x86Reg Reg)
+void CX86Ops::NotX86Reg(const asmjit::x86::Gp & Reg)
 {
     CodeLog("      not %s", x86_Name(Reg));
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0xD0F7); break;
     case x86_EBX: AddCode16(0xD3F7); break;
@@ -1781,7 +1781,7 @@ void CX86Ops::OrConstToVariable(void * Variable, const char * VariableName, uint
     AddCode32(Const);
 }
 
-void CX86Ops::OrConstToX86Reg(x86Reg Reg, uint32_t Const)
+void CX86Ops::OrConstToX86Reg(const asmjit::x86::Gp & Reg, uint32_t Const)
 {
     if (Const == 0)
     {
@@ -1790,7 +1790,7 @@ void CX86Ops::OrConstToX86Reg(x86Reg Reg, uint32_t Const)
     CodeLog("      or %s, %Xh", x86_Name(Reg), Const);
     if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
     {
-        switch (Reg)
+        switch (RegValue(Reg))
         {
         case x86_EAX: AddCode16(0xC881); break;
         case x86_EBX: AddCode16(0xCB81); break;
@@ -1807,7 +1807,7 @@ void CX86Ops::OrConstToX86Reg(x86Reg Reg, uint32_t Const)
     }
     else
     {
-        switch (Reg)
+        switch (RegValue(Reg))
         {
         case x86_EAX: AddCode16(0xC883); break;
         case x86_EBX: AddCode16(0xCB83); break;
@@ -1824,10 +1824,10 @@ void CX86Ops::OrConstToX86Reg(x86Reg Reg, uint32_t Const)
     }
 }
 
-void CX86Ops::OrVariableToX86Reg(x86Reg Reg, void * Variable, const char * VariableName)
+void CX86Ops::OrVariableToX86Reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
     CodeLog("      or %s, dword ptr [%s]", x86_Name(Reg), VariableName);
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0x050B); break;
     case x86_EBX: AddCode16(0x1D0B); break;
@@ -1843,10 +1843,10 @@ void CX86Ops::OrVariableToX86Reg(x86Reg Reg, void * Variable, const char * Varia
     AddCode32((uint32_t)(Variable));
 }
 
-void CX86Ops::OrX86RegToVariable(void * Variable, const char * VariableName, x86Reg Reg)
+void CX86Ops::OrX86RegToVariable(void * Variable, const char * VariableName, const asmjit::x86::Gp & Reg)
 {
     CodeLog("      or dword ptr [%s], %s", VariableName, x86_Name(Reg));
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0x0509); break;
     case x86_EBX: AddCode16(0x1D09); break;
@@ -1862,12 +1862,12 @@ void CX86Ops::OrX86RegToVariable(void * Variable, const char * VariableName, x86
     AddCode32((uint32_t)(Variable));
 }
 
-void CX86Ops::OrX86RegToX86Reg(x86Reg Destination, x86Reg Source)
+void CX86Ops::OrX86RegToX86Reg(const asmjit::x86::Gp & Destination, const asmjit::x86::Gp & Source)
 {
     uint16_t x86Command = 0;
 
     CodeLog("      or %s, %s", x86_Name(Destination), x86_Name(Source));
-    switch (Source)
+    switch (RegValue(Source))
     {
     case x86_EAX: x86Command = 0x000B; break;
     case x86_EBX: x86Command = 0x030B; break;
@@ -1880,7 +1880,7 @@ void CX86Ops::OrX86RegToX86Reg(x86Reg Destination, x86Reg Source)
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-    switch (Destination)
+    switch (RegValue(Destination))
     {
     case x86_EAX: x86Command += 0xC000; break;
     case x86_EBX: x86Command += 0xD800; break;
@@ -1908,11 +1908,11 @@ void CX86Ops::Pushad(void)
     AddCode8(0x60);
 }
 
-void CX86Ops::Push(x86Reg Reg)
+void CX86Ops::Push(const asmjit::x86::Gp & Reg)
 {
     CodeLog("      push %s", x86_Name(Reg));
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode8(0x50); break;
     case x86_EBX: AddCode8(0x53); break;
@@ -1927,11 +1927,11 @@ void CX86Ops::Push(x86Reg Reg)
     }
 }
 
-void CX86Ops::Pop(x86Reg Reg)
+void CX86Ops::Pop(const asmjit::x86::Gp & Reg)
 {
     CodeLog("      pop %s", x86_Name(Reg));
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode8(0x58); break;
     case x86_EBX: AddCode8(0x5B); break;
@@ -1971,11 +1971,11 @@ void CX86Ops::Ret(void)
     AddCode8(0xC3);
 }
 
-void CX86Ops::Seta(x86Reg Reg)
+void CX86Ops::Seta(const asmjit::x86::Gp & Reg)
 {
     CodeLog("      seta %s", x86_ByteName(Reg));
     AddCode16(0x970F);
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode8(0xC0); break;
     case x86_EBX: AddCode8(0xC3); break;
@@ -1994,11 +1994,11 @@ void CX86Ops::SetaVariable(void * Variable, const char * VariableName)
     AddCode32((uint32_t)(Variable));
 }
 
-void CX86Ops::Setae(x86Reg Reg)
+void CX86Ops::Setae(const asmjit::x86::Gp & Reg)
 {
     CodeLog("      setae %s", x86_ByteName(Reg));
     AddCode16(0x930F);
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode8(0xC0); break;
     case x86_EBX: AddCode8(0xC3); break;
@@ -2009,11 +2009,11 @@ void CX86Ops::Setae(x86Reg Reg)
     }
 }
 
-void CX86Ops::Setb(x86Reg Reg)
+void CX86Ops::Setb(const asmjit::x86::Gp & Reg)
 {
     CodeLog("      setb %s", x86_ByteName(Reg));
     AddCode16(0x920F);
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode8(0xC0); break;
     case x86_EBX: AddCode8(0xC3); break;
@@ -2032,11 +2032,11 @@ void CX86Ops::SetbVariable(void * Variable, const char * VariableName)
     AddCode32((uint32_t)(Variable));
 }
 
-void CX86Ops::Setg(x86Reg Reg)
+void CX86Ops::Setg(const asmjit::x86::Gp & Reg)
 {
     CodeLog("      setg %s", x86_ByteName(Reg));
     AddCode16(0x9F0F);
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode8(0xC0); break;
     case x86_EBX: AddCode8(0xC3); break;
@@ -2055,11 +2055,11 @@ void CX86Ops::SetgVariable(void * Variable, const char * VariableName)
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::Setl(x86Reg Reg)
+void CX86Ops::Setl(const asmjit::x86::Gp & Reg)
 {
     CodeLog("      setl %s", x86_ByteName(Reg));
     AddCode16(0x9C0F);
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode8(0xC0); break;
     case x86_EBX: AddCode8(0xC3); break;
@@ -2078,11 +2078,11 @@ void CX86Ops::SetlVariable(void * Variable, const char * VariableName)
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::Setz(x86Reg Reg)
+void CX86Ops::Setz(const asmjit::x86::Gp & Reg)
 {
     CodeLog("      setz %s", x86_ByteName(Reg));
     AddCode16(0x940F);
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode8(0xC0); break;
     case x86_EBX: AddCode8(0xC3); break;
@@ -2093,11 +2093,11 @@ void CX86Ops::Setz(x86Reg Reg)
     }
 }
 
-void CX86Ops::Setnz(x86Reg Reg)
+void CX86Ops::Setnz(const asmjit::x86::Gp & Reg)
 {
     CodeLog("      setnz %s", x86_ByteName(Reg));
     AddCode16(0x950F);
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode8(0xC0); break;
     case x86_EBX: AddCode8(0xC3); break;
@@ -2108,14 +2108,14 @@ void CX86Ops::Setnz(x86Reg Reg)
     }
 }
 
-void CX86Ops::ShiftLeftDouble(x86Reg Destination, x86Reg Source)
+void CX86Ops::ShiftLeftDouble(const asmjit::x86::Gp & Destination, const asmjit::x86::Gp & Source)
 {
     uint8_t s = 0xC0;
 
     CodeLog("      shld %s, %s, cl", x86_Name(Destination), x86_Name(Source));
     AddCode16(0xA50F);
 
-    switch (Destination)
+    switch (RegValue(Destination))
     {
     case x86_EAX: s |= 0x00; break;
     case x86_EBX: s |= 0x03; break;
@@ -2129,7 +2129,7 @@ void CX86Ops::ShiftLeftDouble(x86Reg Destination, x86Reg Source)
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (Source)
+    switch (RegValue(Source))
     {
     case x86_EAX: s |= 0x00 << 3; break;
     case x86_EBX: s |= 0x03 << 3; break;
@@ -2146,14 +2146,14 @@ void CX86Ops::ShiftLeftDouble(x86Reg Destination, x86Reg Source)
     AddCode8(s);
 }
 
-void CX86Ops::ShiftLeftDoubleImmed(x86Reg Destination, x86Reg Source, uint8_t Immediate)
+void CX86Ops::ShiftLeftDoubleImmed(const asmjit::x86::Gp & Destination, const asmjit::x86::Gp & Source, uint8_t Immediate)
 {
     uint8_t s = 0xC0;
 
     CodeLog("      shld %s, %s, %Xh", x86_Name(Destination), x86_Name(Source), Immediate);
     AddCode16(0xA40F);
 
-    switch (Destination)
+    switch (RegValue(Destination))
     {
     case x86_EAX: s |= 0x00; break;
     case x86_EBX: s |= 0x03; break;
@@ -2167,7 +2167,7 @@ void CX86Ops::ShiftLeftDoubleImmed(x86Reg Destination, x86Reg Source, uint8_t Im
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (Source)
+    switch (RegValue(Source))
     {
     case x86_EAX: s |= 0x00 << 3; break;
     case x86_EBX: s |= 0x03 << 3; break;
@@ -2185,10 +2185,10 @@ void CX86Ops::ShiftLeftDoubleImmed(x86Reg Destination, x86Reg Source, uint8_t Im
     AddCode8(Immediate);
 }
 
-void CX86Ops::ShiftLeftSign(x86Reg Reg)
+void CX86Ops::ShiftLeftSign(const asmjit::x86::Gp & Reg)
 {
     CodeLog("      shl %s, cl", x86_Name(Reg));
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0xE0D3); break;
     case x86_EBX: AddCode16(0xE3D3); break;
@@ -2203,10 +2203,10 @@ void CX86Ops::ShiftLeftSign(x86Reg Reg)
     }
 }
 
-void CX86Ops::ShiftLeftSignImmed(x86Reg Reg, uint8_t Immediate)
+void CX86Ops::ShiftLeftSignImmed(const asmjit::x86::Gp & Reg, uint8_t Immediate)
 {
     CodeLog("      shl %s, %Xh", x86_Name(Reg), Immediate);
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0xE0C1); break;
     case x86_EBX: AddCode16(0xE3C1); break;
@@ -2222,10 +2222,10 @@ void CX86Ops::ShiftLeftSignImmed(x86Reg Reg, uint8_t Immediate)
     AddCode8(Immediate);
 }
 
-void CX86Ops::ShiftRightSign(x86Reg Reg)
+void CX86Ops::ShiftRightSign(const asmjit::x86::Gp & Reg)
 {
     CodeLog("      sar %s, cl", x86_Name(Reg));
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0xF8D3); break;
     case x86_EBX: AddCode16(0xFBD3); break;
@@ -2240,10 +2240,10 @@ void CX86Ops::ShiftRightSign(x86Reg Reg)
     }
 }
 
-void CX86Ops::ShiftRightSignImmed(x86Reg Reg, uint8_t Immediate)
+void CX86Ops::ShiftRightSignImmed(const asmjit::x86::Gp & Reg, uint8_t Immediate)
 {
     CodeLog("      sar %s, %Xh", x86_Name(Reg), Immediate);
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0xF8C1); break;
     case x86_EBX: AddCode16(0xFBC1); break;
@@ -2259,10 +2259,10 @@ void CX86Ops::ShiftRightSignImmed(x86Reg Reg, uint8_t Immediate)
     AddCode8(Immediate);
 }
 
-void CX86Ops::ShiftRightUnsign(x86Reg Reg)
+void CX86Ops::ShiftRightUnsign(const asmjit::x86::Gp & Reg)
 {
     CodeLog("      shr %s, cl", x86_Name(Reg));
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0xE8D3); break;
     case x86_EBX: AddCode16(0xEBD3); break;
@@ -2277,14 +2277,14 @@ void CX86Ops::ShiftRightUnsign(x86Reg Reg)
     }
 }
 
-void CX86Ops::ShiftRightDouble(x86Reg Destination, x86Reg Source)
+void CX86Ops::ShiftRightDouble(const asmjit::x86::Gp & Destination, const asmjit::x86::Gp & Source)
 {
     uint8_t s = 0xC0;
 
     CodeLog("      shrd %s, %s, cl", x86_Name(Destination), x86_Name(Source));
     AddCode16(0xAD0F);
 
-    switch (Destination)
+    switch (RegValue(Destination))
     {
     case x86_EAX: s |= 0x00; break;
     case x86_EBX: s |= 0x03; break;
@@ -2298,7 +2298,7 @@ void CX86Ops::ShiftRightDouble(x86Reg Destination, x86Reg Source)
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (Source)
+    switch (RegValue(Source))
     {
     case x86_EAX: s |= 0x00 << 3; break;
     case x86_EBX: s |= 0x03 << 3; break;
@@ -2315,14 +2315,14 @@ void CX86Ops::ShiftRightDouble(x86Reg Destination, x86Reg Source)
     AddCode8(s);
 }
 
-void CX86Ops::ShiftRightDoubleImmed(x86Reg Destination, x86Reg Source, uint8_t Immediate)
+void CX86Ops::ShiftRightDoubleImmed(const asmjit::x86::Gp & Destination, const asmjit::x86::Gp & Source, uint8_t Immediate)
 {
     uint8_t s = 0xC0;
 
     CodeLog("      shrd %s, %s, %Xh", x86_Name(Destination), x86_Name(Source), Immediate);
     AddCode16(0xAC0F);
 
-    switch (Destination)
+    switch (RegValue(Destination))
     {
     case x86_EAX: s |= 0x00; break;
     case x86_EBX: s |= 0x03; break;
@@ -2336,7 +2336,7 @@ void CX86Ops::ShiftRightDoubleImmed(x86Reg Destination, x86Reg Source, uint8_t I
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (Source)
+    switch (RegValue(Source))
     {
     case x86_EAX: s |= 0x00 << 3; break;
     case x86_EBX: s |= 0x03 << 3; break;
@@ -2354,10 +2354,10 @@ void CX86Ops::ShiftRightDoubleImmed(x86Reg Destination, x86Reg Source, uint8_t I
     AddCode8(Immediate);
 }
 
-void CX86Ops::ShiftRightUnsignImmed(x86Reg Reg, uint8_t Immediate)
+void CX86Ops::ShiftRightUnsignImmed(const asmjit::x86::Gp & Reg, uint8_t Immediate)
 {
     CodeLog("      shr %s, %Xh", x86_Name(Reg), Immediate);
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0xE8C1); break;
     case x86_EBX: AddCode16(0xEBC1); break;
@@ -2373,12 +2373,12 @@ void CX86Ops::ShiftRightUnsignImmed(x86Reg Reg, uint8_t Immediate)
     AddCode8(Immediate);
 }
 
-void CX86Ops::SbbConstFromX86Reg(x86Reg Reg, uint32_t Const)
+void CX86Ops::SbbConstFromX86Reg(const asmjit::x86::Gp & Reg, uint32_t Const)
 {
     CodeLog("      sbb %s, %Xh", x86_Name(Reg), Const);
     if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
     {
-        switch (Reg)
+        switch (RegValue(Reg))
         {
         case x86_EAX: AddCode16(0xD881); break;
         case x86_EBX: AddCode16(0xDB81); break;
@@ -2395,7 +2395,7 @@ void CX86Ops::SbbConstFromX86Reg(x86Reg Reg, uint32_t Const)
     }
     else
     {
-        switch (Reg)
+        switch (RegValue(Reg))
         {
         case x86_EAX: AddCode16(0xD883); break;
         case x86_EBX: AddCode16(0xDB83); break;
@@ -2412,10 +2412,10 @@ void CX86Ops::SbbConstFromX86Reg(x86Reg Reg, uint32_t Const)
     }
 }
 
-void CX86Ops::SbbVariableFromX86reg(x86Reg Reg, void * Variable, const char * VariableName)
+void CX86Ops::SbbVariableFromX86reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
     CodeLog("      sbb %s, dword ptr [%s]", x86_Name(Reg), VariableName);
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0x051B); break;
     case x86_EBX: AddCode16(0x1D1B); break;
@@ -2431,11 +2431,11 @@ void CX86Ops::SbbVariableFromX86reg(x86Reg Reg, void * Variable, const char * Va
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::SbbX86RegToX86Reg(x86Reg Destination, x86Reg Source)
+void CX86Ops::SbbX86RegToX86Reg(const asmjit::x86::Gp & Destination, const asmjit::x86::Gp & Source)
 {
     uint16_t x86Command = 0;
     CodeLog("      sbb %s, %s", x86_Name(Destination), x86_Name(Source));
-    switch (Source)
+    switch (RegValue(Source))
     {
     case x86_EAX: x86Command = 0x001B; break;
     case x86_EBX: x86Command = 0x031B; break;
@@ -2448,7 +2448,7 @@ void CX86Ops::SbbX86RegToX86Reg(x86Reg Destination, x86Reg Source)
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-    switch (Destination)
+    switch (RegValue(Destination))
     {
     case x86_EAX: x86Command += 0xC000; break;
     case x86_EBX: x86Command += 0xD800; break;
@@ -2473,12 +2473,12 @@ void CX86Ops::SubConstFromVariable(uint32_t Const, void * Variable, const char *
     AddCode32(Const);
 }
 
-void CX86Ops::SubConstFromX86Reg(x86Reg Reg, uint32_t Const)
+void CX86Ops::SubConstFromX86Reg(const asmjit::x86::Gp & Reg, uint32_t Const)
 {
     CodeLog("      sub %s, %Xh", x86_Name(Reg), Const);
     if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
     {
-        switch (Reg)
+        switch (RegValue(Reg))
         {
         case x86_EAX: AddCode16(0xE881); break;
         case x86_EBX: AddCode16(0xEB81); break;
@@ -2495,7 +2495,7 @@ void CX86Ops::SubConstFromX86Reg(x86Reg Reg, uint32_t Const)
     }
     else
     {
-        switch (Reg)
+        switch (RegValue(Reg))
         {
         case x86_EAX: AddCode16(0xE883); break;
         case x86_EBX: AddCode16(0xEB83); break;
@@ -2512,11 +2512,11 @@ void CX86Ops::SubConstFromX86Reg(x86Reg Reg, uint32_t Const)
     }
 }
 
-void CX86Ops::SubVariableFromX86reg(x86Reg Reg, void * Variable, const char * VariableName)
+void CX86Ops::SubVariableFromX86reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
     CodeLog("      sub %s, dword ptr [%s]", x86_Name(Reg), VariableName);
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0x052B); break;
     case x86_EBX: AddCode16(0x1D2B); break;
@@ -2532,12 +2532,12 @@ void CX86Ops::SubVariableFromX86reg(x86Reg Reg, void * Variable, const char * Va
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::SubX86RegToX86Reg(x86Reg Destination, x86Reg Source)
+void CX86Ops::SubX86RegToX86Reg(const asmjit::x86::Gp & Destination, const asmjit::x86::Gp & Source)
 {
     uint16_t x86Command = 0;
     CodeLog("      sub %s, %s", x86_Name(Destination), x86_Name(Source));
 
-    switch (Source)
+    switch (RegValue(Source))
     {
     case x86_EAX: x86Command = 0x002B; break;
     case x86_EBX: x86Command = 0x032B; break;
@@ -2551,7 +2551,7 @@ void CX86Ops::SubX86RegToX86Reg(x86Reg Destination, x86Reg Source)
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    switch (Destination)
+    switch (RegValue(Destination))
     {
     case x86_EAX: x86Command += 0xC000; break;
     case x86_EBX: x86Command += 0xD800; break;
@@ -2567,11 +2567,11 @@ void CX86Ops::SubX86RegToX86Reg(x86Reg Destination, x86Reg Source)
     AddCode16(x86Command);
 }
 
-void CX86Ops::TestConstToX86Reg(x86Reg Reg, uint32_t Const)
+void CX86Ops::TestConstToX86Reg(const asmjit::x86::Gp & Reg, uint32_t Const)
 {
     CodeLog("      test %s, 0x%X", x86_Name(Reg), Const);
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode8(0xA9); break;
     case x86_EBX: AddCode16(0xC3F7); break;
@@ -2595,11 +2595,11 @@ void CX86Ops::TestVariable(void * Variable, const char * VariableName, uint32_t 
     AddCode32(Const);
 }
 
-void CX86Ops::TestX86RegToX86Reg(x86Reg Destination, x86Reg Source)
+void CX86Ops::TestX86RegToX86Reg(const asmjit::x86::Gp & Destination, const asmjit::x86::Gp & Source)
 {
     uint16_t x86Command = 0;
     CodeLog("      test %s, %s", x86_Name(Destination), x86_Name(Source));
-    switch (Source)
+    switch (RegValue(Source))
     {
     case x86_EAX: x86Command = 0x0085; break;
     case x86_EBX: x86Command = 0x0385; break;
@@ -2612,7 +2612,7 @@ void CX86Ops::TestX86RegToX86Reg(x86Reg Destination, x86Reg Source)
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-    switch (Destination)
+    switch (RegValue(Destination))
     {
     case x86_EAX: x86Command += 0xC000; break;
     case x86_EBX: x86Command += 0xD800; break;
@@ -2628,11 +2628,11 @@ void CX86Ops::TestX86RegToX86Reg(x86Reg Destination, x86Reg Source)
     AddCode16(x86Command);
 }
 
-void CX86Ops::TestX86ByteRegToX86Reg(x86Reg Destination, x86Reg Source)
+void CX86Ops::TestX86ByteRegToX86Reg(const asmjit::x86::Gp & Destination, const asmjit::x86::Gp & Source)
 {
     uint16_t x86Command = 0;
     CodeLog("      test %s, %s", x86_ByteName(Destination), x86_ByteName(Source));
-    switch (Source)
+    switch (RegValue(Source))
     {
     case x86_AL: x86Command = 0x0084; break;
     case x86_BL: x86Command = 0x0384; break;
@@ -2641,7 +2641,7 @@ void CX86Ops::TestX86ByteRegToX86Reg(x86Reg Destination, x86Reg Source)
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-    switch (Destination)
+    switch (RegValue(Destination))
     {
     case x86_AL: x86Command += 0xC000; break;
     case x86_BL: x86Command += 0xD800; break;
@@ -2653,12 +2653,12 @@ void CX86Ops::TestX86ByteRegToX86Reg(x86Reg Destination, x86Reg Source)
     AddCode16(x86Command);
 }
 
-void CX86Ops::XorConstToX86Reg(x86Reg Reg, uint32_t Const)
+void CX86Ops::XorConstToX86Reg(const asmjit::x86::Gp & Reg, uint32_t Const)
 {
     CodeLog("      xor %s, %Xh", x86_Name(Reg), Const);
     if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
     {
-        switch (Reg)
+        switch (RegValue(Reg))
         {
         case x86_EAX: AddCode16(0xF081); break;
         case x86_EBX: AddCode16(0xF381); break;
@@ -2675,7 +2675,7 @@ void CX86Ops::XorConstToX86Reg(x86Reg Reg, uint32_t Const)
     }
     else
     {
-        switch (Reg)
+        switch (RegValue(Reg))
         {
         case x86_EAX: AddCode16(0xF083); break;
         case x86_EBX: AddCode16(0xF383); break;
@@ -2692,13 +2692,13 @@ void CX86Ops::XorConstToX86Reg(x86Reg Reg, uint32_t Const)
     }
 }
 
-void CX86Ops::XorX86RegToX86Reg(x86Reg Source, x86Reg Destination)
+void CX86Ops::XorX86RegToX86Reg(const asmjit::x86::Gp & Source, const asmjit::x86::Gp & Destination)
 {
     uint16_t x86Command = 0;
 
     CodeLog("      xor %s, %s", x86_Name(Source), x86_Name(Destination));
 
-    switch (Source)
+    switch (RegValue(Source))
     {
     case x86_EAX: x86Command = 0x0031; break;
     case x86_EBX: x86Command = 0x0331; break;
@@ -2711,7 +2711,7 @@ void CX86Ops::XorX86RegToX86Reg(x86Reg Source, x86Reg Destination)
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-    switch (Destination)
+    switch (RegValue(Destination))
     {
     case x86_EAX: x86Command += 0xC000; break;
     case x86_EBX: x86Command += 0xD800; break;
@@ -2727,11 +2727,11 @@ void CX86Ops::XorX86RegToX86Reg(x86Reg Source, x86Reg Destination)
     AddCode16(x86Command);
 }
 
-void CX86Ops::XorVariableToX86reg(x86Reg Reg, void * Variable, const char * VariableName)
+void CX86Ops::XorVariableToX86reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
     CodeLog("      Xor %s, dword ptr [%s]", x86_Name(Reg), VariableName);
 
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: AddCode16(0x0533); break;
     case x86_EBX: AddCode16(0x1D33); break;
@@ -2760,10 +2760,10 @@ void CX86Ops::fpuAddDword(void * Variable, const char * VariableName)
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuAddDwordRegPointer(x86Reg x86Pointer)
+void CX86Ops::fpuAddDwordRegPointer(const asmjit::x86::Gp & x86Pointer)
 {
     CodeLog("      fadd ST(0), dword ptr [%s]", x86_Name(x86Pointer));
-    switch (x86Pointer)
+    switch (RegValue(x86Pointer))
     {
     case x86_EAX: AddCode16(0x00D8); break;
     case x86_EBX: AddCode16(0x03D8); break;
@@ -2784,10 +2784,10 @@ void CX86Ops::fpuAddQword(void * Variable, const char * VariableName)
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuAddQwordRegPointer(x86Reg x86Pointer)
+void CX86Ops::fpuAddQwordRegPointer(const asmjit::x86::Gp & x86Pointer)
 {
     CodeLog("      fadd ST(0), qword ptr [%s]", x86_Name(x86Pointer));
-    switch (x86Pointer)
+    switch (RegValue(x86Pointer))
     {
     case x86_EAX: AddCode16(0x00DC); break;
     case x86_EBX: AddCode16(0x03DC); break;
@@ -2847,12 +2847,12 @@ void CX86Ops::fpuComDword(void * Variable, const char * VariableName, bool Pop)
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuComDwordRegPointer(x86Reg x86Pointer, bool Pop)
+void CX86Ops::fpuComDwordRegPointer(const asmjit::x86::Gp & x86Pointer, bool Pop)
 {
     uint16_t x86Command;
 
     CodeLog("      fcom%s ST(0), dword ptr [%s]", m_fpupop[Pop], x86_Name(x86Pointer));
-    switch (x86Pointer)
+    switch (RegValue(x86Pointer))
     {
     case x86_EAX: x86Command = 0x10D8; break;
     case x86_EBX: x86Command = 0x13D8; break;
@@ -2879,12 +2879,12 @@ void CX86Ops::fpuComQword(void * Variable, const char * VariableName, bool Pop)
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuComQwordRegPointer(x86Reg x86Pointer, bool Pop)
+void CX86Ops::fpuComQwordRegPointer(const asmjit::x86::Gp & x86Pointer, bool Pop)
 {
     uint16_t x86Command;
 
     CodeLog("      fcom%s ST(0), qword ptr [%s]", m_fpupop[Pop], x86_Name(x86Pointer));
-    switch (x86Pointer)
+    switch (RegValue(x86Pointer))
     {
     case x86_EAX: x86Command = 0x10DC; break;
     case x86_EBX: x86Command = 0x13DC; break;
@@ -2932,10 +2932,10 @@ void CX86Ops::fpuDivDword(void * Variable, const char * VariableName)
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuDivDwordRegPointer(x86Reg x86Pointer)
+void CX86Ops::fpuDivDwordRegPointer(const asmjit::x86::Gp & x86Pointer)
 {
     CodeLog("      fdiv ST(0), dword ptr [%s]", x86_Name(x86Pointer));
-    switch (x86Pointer)
+    switch (RegValue(x86Pointer))
     {
     case x86_EAX: AddCode16(0x30D8); break;
     case x86_EBX: AddCode16(0x33D8); break;
@@ -2956,10 +2956,10 @@ void CX86Ops::fpuDivQword(void * Variable, const char * VariableName)
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuDivQwordRegPointer(x86Reg x86Pointer)
+void CX86Ops::fpuDivQwordRegPointer(const asmjit::x86::Gp & x86Pointer)
 {
     CodeLog("      fdiv ST(0), qword ptr [%s]", x86_Name(x86Pointer));
-    switch (x86Pointer)
+    switch (RegValue(x86Pointer))
     {
     case x86_EAX: AddCode16(0x30DC); break;
     case x86_EBX: AddCode16(0x33DC); break;
@@ -3078,12 +3078,12 @@ void CX86Ops::fpuLoadDword(int32_t & StackPos, void * Variable, const char * Var
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuLoadDwordFromX86Reg(int32_t & StackPos, x86Reg x86reg)
+void CX86Ops::fpuLoadDwordFromX86Reg(int32_t & StackPos, const asmjit::x86::Gp & x86reg)
 {
     CodeLog("      fld dword ptr [%s]", x86_Name(x86reg));
     StackPos = (StackPos - 1) & 7;
     AddCode8(0xD9);
-    switch (x86reg)
+    switch (RegValue(x86reg))
     {
     case x86_EAX: AddCode8(0x00); break;
     case x86_EBX: AddCode8(0x03); break;
@@ -3096,11 +3096,11 @@ void CX86Ops::fpuLoadDwordFromX86Reg(int32_t & StackPos, x86Reg x86reg)
     }
 }
 
-void CX86Ops::fpuLoadDwordFromN64Mem(int32_t & StackPos, x86Reg x86reg)
+void CX86Ops::fpuLoadDwordFromN64Mem(int32_t & StackPos, const asmjit::x86::Gp & x86reg)
 {
     CodeLog("      fld dword ptr [%s+N64mem]", x86_Name(x86reg));
     StackPos = (StackPos - 1) & 7;
-    switch (x86reg)
+    switch (RegValue(x86reg))
     {
     case x86_EAX: AddCode16(0x80D9); break;
     case x86_EBX: AddCode16(0x83D9); break;
@@ -3115,11 +3115,11 @@ void CX86Ops::fpuLoadDwordFromN64Mem(int32_t & StackPos, x86Reg x86reg)
     AddCode32((uint32_t)g_MMU->Rdram());
 }
 
-void CX86Ops::fpuLoadInt32bFromN64Mem(int32_t & StackPos, x86Reg x86reg)
+void CX86Ops::fpuLoadInt32bFromN64Mem(int32_t & StackPos, const asmjit::x86::Gp & x86reg)
 {
     CodeLog("      fild dword ptr [%s+N64mem]", x86_Name(x86reg));
     StackPos = (StackPos - 1) & 7;
-    switch (x86reg)
+    switch (RegValue(x86reg))
     {
     case x86_EAX: AddCode16(0x80DB); break;
     case x86_EBX: AddCode16(0x83DB); break;
@@ -3142,12 +3142,12 @@ void CX86Ops::fpuLoadIntegerDword(int32_t & StackPos, void * Variable, const cha
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuLoadIntegerDwordFromX86Reg(int32_t & StackPos, x86Reg x86reg)
+void CX86Ops::fpuLoadIntegerDwordFromX86Reg(int32_t & StackPos, const asmjit::x86::Gp & x86reg)
 {
     CodeLog("      fild dword ptr [%s]", x86_Name(x86reg));
     StackPos = (StackPos - 1) & 7;
     AddCode8(0xDB);
-    switch (x86reg)
+    switch (RegValue(x86reg))
     {
     case x86_EAX: AddCode8(0x00); break;
     case x86_EBX: AddCode8(0x03); break;
@@ -3168,12 +3168,12 @@ void CX86Ops::fpuLoadIntegerQword(int32_t & StackPos, void * Variable, const cha
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuLoadIntegerQwordFromX86Reg(int32_t & StackPos, x86Reg x86reg)
+void CX86Ops::fpuLoadIntegerQwordFromX86Reg(int32_t & StackPos, const asmjit::x86::Gp & x86reg)
 {
     CodeLog("      fild qword ptr [%s]", x86_Name(x86reg));
     StackPos = (StackPos - 1) & 7;
     AddCode8(0xDF);
-    switch (x86reg)
+    switch (RegValue(x86reg))
     {
     case x86_EAX: AddCode8(0x28); break;
     case x86_EBX: AddCode8(0x2B); break;
@@ -3194,12 +3194,12 @@ void CX86Ops::fpuLoadQword(int32_t & StackPos, void * Variable, const char * Var
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuLoadQwordFromX86Reg(int32_t & StackPos, x86Reg x86reg)
+void CX86Ops::fpuLoadQwordFromX86Reg(int32_t & StackPos, const asmjit::x86::Gp & x86reg)
 {
     CodeLog("      fld qword ptr [%s]", x86_Name(x86reg));
     StackPos = (StackPos - 1) & 7;
     AddCode8(0xDD);
-    switch (x86reg)
+    switch (RegValue(x86reg))
     {
     case x86_EAX: AddCode8(0x00); break;
     case x86_EBX: AddCode8(0x03); break;
@@ -3212,11 +3212,11 @@ void CX86Ops::fpuLoadQwordFromX86Reg(int32_t & StackPos, x86Reg x86reg)
     }
 }
 
-void CX86Ops::fpuLoadQwordFromN64Mem(int32_t & StackPos, x86Reg x86reg)
+void CX86Ops::fpuLoadQwordFromN64Mem(int32_t & StackPos, const asmjit::x86::Gp & x86reg)
 {
     CodeLog("      fld qword ptr [%s+N64mem]", x86_Name(x86reg));
     StackPos = (StackPos - 1) & 7;
-    switch (x86reg)
+    switch (RegValue(x86reg))
     {
     case x86_EAX: AddCode16(0x80DD); break;
     case x86_EBX: AddCode16(0x83DD); break;
@@ -3258,10 +3258,10 @@ void CX86Ops::fpuMulDword(void * Variable, const char * VariableName)
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuMulDwordRegPointer(x86Reg x86Pointer)
+void CX86Ops::fpuMulDwordRegPointer(const asmjit::x86::Gp & x86Pointer)
 {
     CodeLog("      fmul ST(0), dword ptr [%s]", x86_Name(x86Pointer));
-    switch (x86Pointer)
+    switch (RegValue(x86Pointer))
     {
     case x86_EAX: AddCode16(0x08D8); break;
     case x86_EBX: AddCode16(0x0BD8); break;
@@ -3282,10 +3282,10 @@ void CX86Ops::fpuMulQword(void * Variable, const char * VariableName)
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuMulQwordRegPointer(x86Reg x86Pointer)
+void CX86Ops::fpuMulQwordRegPointer(const asmjit::x86::Gp & x86Pointer)
 {
     CodeLog("      fmul ST(0), qword ptr [%s]", x86_Name(x86Pointer));
-    switch (x86Pointer)
+    switch (RegValue(x86Pointer))
     {
     case x86_EAX: AddCode16(0x08DC); break;
     case x86_EBX: AddCode16(0x0BDC); break;
@@ -3375,7 +3375,7 @@ void CX86Ops::fpuStoreDword(int32_t & StackPos, void * Variable, const char * Va
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuStoreDwordFromX86Reg(int32_t & StackPos, x86Reg x86reg, bool pop)
+void CX86Ops::fpuStoreDwordFromX86Reg(int32_t & StackPos, const asmjit::x86::Gp & x86reg, bool pop)
 {
     uint8_t Command = 0;
 
@@ -3388,7 +3388,7 @@ void CX86Ops::fpuStoreDwordFromX86Reg(int32_t & StackPos, x86Reg x86reg, bool po
 
     AddCode8(0xD9);
 
-    switch (x86reg)
+    switch (RegValue(x86reg))
     {
     case x86_EAX: Command = 0x10; break;
     case x86_EBX: Command = 0x13; break;
@@ -3403,7 +3403,7 @@ void CX86Ops::fpuStoreDwordFromX86Reg(int32_t & StackPos, x86Reg x86reg, bool po
     AddCode8(pop ? (Command + 0x8) : Command);
 }
 
-void CX86Ops::fpuStoreDwordToN64Mem(int32_t & StackPos, x86Reg x86reg, bool Pop)
+void CX86Ops::fpuStoreDwordToN64Mem(int32_t & StackPos, const asmjit::x86::Gp & x86reg, bool Pop)
 {
     int s = Pop ? 0x0800 : 0;
 
@@ -3414,7 +3414,7 @@ void CX86Ops::fpuStoreDwordToN64Mem(int32_t & StackPos, x86Reg x86reg, bool Pop)
         StackPos = (StackPos + 1) & 7;
     }
 
-    switch (x86reg)
+    switch (RegValue(x86reg))
     {
     case x86_EAX: AddCode16((uint16_t)(0x90D9 | s)); break;
     case x86_EBX: AddCode16((uint16_t)(0x93D9 | s)); break;
@@ -3442,7 +3442,7 @@ void CX86Ops::fpuStoreIntegerDword(int32_t & StackPos, void * Variable, const ch
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuStoreIntegerDwordFromX86Reg(int32_t & StackPos, x86Reg x86reg, bool pop)
+void CX86Ops::fpuStoreIntegerDwordFromX86Reg(int32_t & StackPos, const asmjit::x86::Gp & x86reg, bool pop)
 {
     uint8_t Command = 0;
 
@@ -3455,7 +3455,7 @@ void CX86Ops::fpuStoreIntegerDwordFromX86Reg(int32_t & StackPos, x86Reg x86reg, 
 
     AddCode8(0xDB);
 
-    switch (x86reg)
+    switch (RegValue(x86reg))
     {
     case x86_EAX: Command = 0x10; break;
     case x86_EBX: Command = 0x13; break;
@@ -3488,7 +3488,7 @@ void CX86Ops::fpuStoreIntegerQword(int32_t & StackPos, void * Variable, const ch
     }
 }
 
-void CX86Ops::fpuStoreIntegerQwordFromX86Reg(int32_t & StackPos, x86Reg x86reg, bool pop)
+void CX86Ops::fpuStoreIntegerQwordFromX86Reg(int32_t & StackPos, const asmjit::x86::Gp & x86reg, bool pop)
 {
     uint8_t Command = 0;
 
@@ -3501,7 +3501,7 @@ void CX86Ops::fpuStoreIntegerQwordFromX86Reg(int32_t & StackPos, x86Reg x86reg, 
 
     AddCode8(0xDF);
 
-    switch (x86reg)
+    switch (RegValue(x86reg))
     {
     case x86_EAX: Command = 0x30; break;
     case x86_EBX: Command = 0x33; break;
@@ -3516,7 +3516,7 @@ void CX86Ops::fpuStoreIntegerQwordFromX86Reg(int32_t & StackPos, x86Reg x86reg, 
     AddCode8(pop ? (Command + 0x8) : Command);
 }
 
-void CX86Ops::fpuStoreQwordFromX86Reg(int32_t & StackPos, x86Reg x86reg, bool pop)
+void CX86Ops::fpuStoreQwordFromX86Reg(int32_t & StackPos, const asmjit::x86::Gp & x86reg, bool pop)
 {
     uint8_t Command = 0;
 
@@ -3529,7 +3529,7 @@ void CX86Ops::fpuStoreQwordFromX86Reg(int32_t & StackPos, x86Reg x86reg, bool po
 
     AddCode8(0xDD);
 
-    switch (x86reg)
+    switch (RegValue(x86reg))
     {
     case x86_EAX: Command = 0x10; break;
     case x86_EBX: Command = 0x13; break;
@@ -3557,10 +3557,10 @@ void CX86Ops::fpuSubDword(void * Variable, const char * VariableName)
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuSubDwordRegPointer(x86Reg x86Pointer)
+void CX86Ops::fpuSubDwordRegPointer(const asmjit::x86::Gp & x86Pointer)
 {
     CodeLog("      fsub ST(0), dword ptr [%s]", x86_Name(x86Pointer));
-    switch (x86Pointer)
+    switch (RegValue(x86Pointer))
     {
     case x86_EAX: AddCode16(0x20D8); break;
     case x86_EBX: AddCode16(0x23D8); break;
@@ -3588,10 +3588,10 @@ void CX86Ops::fpuSubQword(void * Variable, const char * VariableName)
     AddCode32((uint32_t)Variable);
 }
 
-void CX86Ops::fpuSubQwordRegPointer(x86Reg x86Pointer)
+void CX86Ops::fpuSubQwordRegPointer(const asmjit::x86::Gp & x86Pointer)
 {
     CodeLog("      fsub ST(0), qword ptr [%s]", x86_Name(x86Pointer));
-    switch (x86Pointer)
+    switch (RegValue(x86Pointer))
     {
     case x86_EAX: AddCode16(0x20DC); break;
     case x86_EBX: AddCode16(0x23DC); break;
@@ -3650,9 +3650,9 @@ void CX86Ops::fpuSubRegPop(x86FpuValues x86reg)
     }
 }
 
-const char * CX86Ops::x86_Name(x86Reg Reg)
+const char * CX86Ops::x86_Name(const asmjit::x86::Gp & Reg)
 {
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: return "eax";
     case x86_EBX: return "ebx";
@@ -3668,9 +3668,9 @@ const char * CX86Ops::x86_Name(x86Reg Reg)
     return "???";
 }
 
-const char * CX86Ops::x86_ByteName(x86Reg Reg)
+const char * CX86Ops::x86_ByteName(const asmjit::x86::Gp & Reg)
 {
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_AL: return "al";
     case x86_BL: return "bl";
@@ -3686,9 +3686,9 @@ const char * CX86Ops::x86_ByteName(x86Reg Reg)
     return "???";
 }
 
-const char * CX86Ops::x86_HalfName(x86Reg Reg)
+const char * CX86Ops::x86_HalfName(const asmjit::x86::Gp & Reg)
 {
-    switch (Reg)
+    switch (RegValue(Reg))
     {
     case x86_EAX: return "ax";
     case x86_EBX: return "bx";
@@ -3722,12 +3722,12 @@ const char * CX86Ops::fpu_Name(x86FpuValues Reg)
     return "???";
 }
 
-bool CX86Ops::Is8BitReg(x86Reg Reg)
+bool CX86Ops::Is8BitReg(const asmjit::x86::Gp & Reg)
 {
-    return (Reg == x86_EAX) ||
-           (Reg == x86_EBX) ||
-           (Reg == x86_ECX) ||
-           (Reg == x86_EDX);
+    return (Reg == asmjit::x86::eax) ||
+           (Reg == asmjit::x86::ebx) ||
+           (Reg == asmjit::x86::ecx) ||
+           (Reg == asmjit::x86::edx);
 }
 
 uint8_t CX86Ops::CalcMultiplyCode(Multipler Multiply)
@@ -3807,6 +3807,76 @@ void CX86Ops::AddCode32(uint32_t value)
 #endif
     (*((uint32_t *)(*g_RecompPos)) = (uint32_t)(value));
     *g_RecompPos += 4;
+}
+
+CX86Ops::x86Reg CX86Ops::RegValue(const asmjit::x86::Gp & Reg)
+{
+    if (Reg == asmjit::x86::eax)
+    {
+        return x86_EAX;
+    }
+    else if (Reg == asmjit::x86::ebx)
+    {
+        return x86_EBX;
+    }
+    else if (Reg == asmjit::x86::ecx)
+    {
+        return x86_ECX;
+    }
+    else if (Reg == asmjit::x86::edx)
+    {
+        return x86_EDX;
+    }
+    else if (Reg == asmjit::x86::esi)
+    {
+        return x86_ESI;
+    }
+    else if (Reg == asmjit::x86::edi)
+    {
+        return x86_EDI;
+    }
+    else if (Reg == asmjit::x86::esp)
+    {
+        return x86_ESP;
+    }
+    else if (Reg == asmjit::x86::ebp)
+    {
+        return x86_EBP;
+    }
+    else if (Reg == asmjit::x86::al)
+    {
+        return x86_AL;
+    }
+    else if (Reg == asmjit::x86::bl)
+    {
+        return x86_BL;
+    }
+    else if (Reg == asmjit::x86::cl)
+    {
+        return x86_CL;
+    }
+    else if (Reg == asmjit::x86::dl)
+    {
+        return x86_DL;
+    }
+    else if (Reg == asmjit::x86::ah)
+    {
+        return x86_AH;
+    }
+    else if (Reg == asmjit::x86::bh)
+    {
+        return x86_BH;
+    }
+    else if (Reg == asmjit::x86::ch)
+    {
+        return x86_CH;
+    }
+    else if (Reg == asmjit::x86::dh)
+    {
+        return x86_DH;
+    } 
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+    return x86_EAX;
 }
 
 void CX86Ops::CodeLog(_Printf_format_string_ const char * Text, ...)
