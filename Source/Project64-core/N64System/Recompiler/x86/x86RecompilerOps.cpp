@@ -10288,7 +10288,7 @@ void CX86RecompilerOps::SH_Const(uint32_t Value, uint32_t VAddr)
         }
         else if (PAddr < g_MMU->RdramSize())
         {
-            m_Assembler.MoveConstHalfToVariable((uint16_t)Value, (PAddr ^ 2) + g_MMU->Rdram(), stdstr_f("RDRAM + (%X ^ 2)", PAddr).c_str());
+            m_Assembler.MoveConstHalfToVariable((PAddr ^ 2) + g_MMU->Rdram(), stdstr_f("RDRAM + (%X ^ 2)", PAddr).c_str(), (uint16_t)Value);
         }
         break;
     default:
