@@ -4,6 +4,7 @@
 #include <Project64-core/N64System/Interpreter/InterpreterOps.h>
 #include <Project64-core/N64System/Mips/R4300iOpcode.h>
 #include <Project64-core/N64System/Mips/Register.h>
+#include <Project64-core/N64System/Recompiler/asmjit.h>
 #include <Project64-core/N64System/Recompiler/ExitInfo.h>
 #include <Project64-core/N64System/Recompiler/JumpInfo.h>
 #include <Project64-core/N64System/Recompiler/RecompilerOps.h>
@@ -210,9 +211,9 @@ public:
     void FoundMemoryBreakpoint();
     void PreReadInstruction();
     void PreWriteInstruction();
-    void TestWriteBreakpoint(CX86Ops::x86Reg AddressReg, uint32_t FunctAddress, const char * FunctName);
-    void TestReadBreakpoint(CX86Ops::x86Reg AddressReg, uint32_t FunctAddress, const char * FunctName);
-    void TestBreakpoint(CX86Ops::x86Reg AddressReg, uint32_t FunctAddress, const char * FunctName);
+    void TestWriteBreakpoint(const asmjit::x86::Gp & AddressReg, uint32_t FunctAddress, const char * FunctName);
+    void TestReadBreakpoint(const asmjit::x86::Gp & AddressReg, uint32_t FunctAddress, const char * FunctName);
+    void TestBreakpoint(const asmjit::x86::Gp & AddressReg, uint32_t FunctAddress, const char * FunctName);
     void EnterCodeBlock();
     void ExitCodeBlock();
     void CompileExitCode();
@@ -236,9 +237,9 @@ public:
     void PostCompileOpcode(void);
     void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo & ExitRegSet, ExitReason Reason);
 
-    void CompileReadTLBMiss(uint32_t VirtualAddress, CX86Ops::x86Reg LookUpReg);
-    void CompileReadTLBMiss(CX86Ops::x86Reg AddressReg, CX86Ops::x86Reg LookUpReg);
-    void CompileWriteTLBMiss(CX86Ops::x86Reg AddressReg, CX86Ops::x86Reg LookUpReg);
+    void CompileReadTLBMiss(uint32_t VirtualAddress, const asmjit::x86::Gp & LookUpReg);
+    void CompileReadTLBMiss(const asmjit::x86::Gp & AddressReg, const asmjit::x86::Gp & LookUpReg);
+    void CompileWriteTLBMiss(const asmjit::x86::Gp & AddressReg, const asmjit::x86::Gp & LookUpReg);
     void UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles);
     void UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false, bool UpdateTimer = true);
     void CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegSet);
@@ -283,11 +284,11 @@ public:
     {
         return m_RegWorkingSet.GetMipsRegHi_S(Reg);
     }
-    CX86Ops::x86Reg GetMipsRegMapLo(int32_t Reg)
+    asmjit::x86::Gp GetMipsRegMapLo(int32_t Reg)
     {
         return m_RegWorkingSet.GetMipsRegMapLo(Reg);
     }
-    CX86Ops::x86Reg GetMipsRegMapHi(int32_t Reg)
+    asmjit::x86::Gp GetMipsRegMapHi(int32_t Reg)
     {
         return m_RegWorkingSet.GetMipsRegMapHi(Reg);
     }
@@ -362,11 +363,11 @@ public:
         m_RegWorkingSet.UnMap_FPR(Reg, WriteBackValue);
     }
 
-    CX86Ops::x86Reg FreeX86Reg()
+    const asmjit::x86::Gp & FreeX86Reg()
     {
         return m_RegWorkingSet.FreeX86Reg();
     }
-    CX86Ops::x86Reg Free8BitX86Reg()
+    const asmjit::x86::Gp & Free8BitX86Reg()
     {
         return m_RegWorkingSet.Free8BitX86Reg();
     }
@@ -378,15 +379,15 @@ public:
     {
         m_RegWorkingSet.Map_GPR_64bit(Reg, MipsRegToLoad);
     }
-    CX86Ops::x86Reg Get_MemoryStack()
+    asmjit::x86::Gp Get_MemoryStack()
     {
         return m_RegWorkingSet.Get_MemoryStack();
     }
-    CX86Ops::x86Reg Map_MemoryStack(CX86Ops::x86Reg Reg, bool bMapRegister, bool LoadValue = true)
+    asmjit::x86::Gp Map_MemoryStack(const asmjit::x86::Gp & Reg, bool bMapRegister, bool LoadValue = true)
     {
         return m_RegWorkingSet.Map_MemoryStack(Reg, bMapRegister, LoadValue);
     }
-    CX86Ops::x86Reg Map_TempReg(CX86Ops::x86Reg Reg, int32_t MipsReg, bool LoadHiWord, bool Reg8Bit)
+    asmjit::x86::Gp Map_TempReg(const asmjit::x86::Gp & Reg, int32_t MipsReg, bool LoadHiWord, bool Reg8Bit)
     {
         return m_RegWorkingSet.Map_TempReg(Reg, MipsReg, LoadHiWord, Reg8Bit);
     }
@@ -402,7 +403,7 @@ public:
     {
         m_RegWorkingSet.ResetX86Protection();
     }
-    CX86Ops::x86Reg UnMap_TempReg()
+    const asmjit::x86::Gp & UnMap_TempReg()
     {
         return m_RegWorkingSet.UnMap_TempReg();
     }
@@ -410,7 +411,7 @@ public:
     {
         m_RegWorkingSet.UnMap_GPR(Reg, WriteBackValue);
     }
-    bool UnMap_X86reg(CX86Ops::x86Reg Reg)
+    bool UnMap_X86reg(const asmjit::x86::Gp & Reg)
     {
         return m_RegWorkingSet.UnMap_X86reg(Reg);
     }
@@ -425,19 +426,19 @@ private:
     CX86RecompilerOps(const CX86RecompilerOps &);
     CX86RecompilerOps & operator=(const CX86RecompilerOps &);
 
-    CX86Ops::x86Reg BaseOffsetAddress(bool UseBaseRegister);
-    void CompileLoadMemoryValue(CX86Ops::x86Reg AddressReg, CX86Ops::x86Reg ValueReg, CX86Ops::x86Reg ValueRegHi, uint8_t ValueSize, bool SignExtend);
-    void CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86Ops::x86Reg ValueReg, CX86Ops::x86Reg ValueRegHi, uint64_t Value, uint8_t ValueSize);
+    asmjit::x86::Gp BaseOffsetAddress(bool UseBaseRegister);
+    void CompileLoadMemoryValue(asmjit::x86::Gp AddressReg, asmjit::x86::Gp ValueReg, const asmjit::x86::Gp & ValueRegHi, uint8_t ValueSize, bool SignExtend);
+    void CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, asmjit::x86::Gp ValueReg, const asmjit::x86::Gp & ValueRegHi, uint64_t Value, uint8_t ValueSize);
 
     void SB_Const(uint32_t Value, uint32_t Addr);
-    void SB_Register(CX86Ops::x86Reg Reg, uint32_t Addr);
+    void SB_Register(const asmjit::x86::Gp & Reg, uint32_t Addr);
     void SH_Const(uint32_t Value, uint32_t Addr);
-    void SH_Register(CX86Ops::x86Reg Reg, uint32_t Addr);
+    void SH_Register(const asmjit::x86::Gp & Reg, uint32_t Addr);
     void SW_Const(uint32_t Value, uint32_t Addr);
-    void SW_Register(CX86Ops::x86Reg Reg, uint32_t Addr);
-    void LB_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr, bool SignExtend);
-    void LH_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr, bool SignExtend);
-    void LW_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr);
+    void SW_Register(const asmjit::x86::Gp & Reg, uint32_t Addr);
+    void LB_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VAddr, bool SignExtend);
+    void LH_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VAddr, bool SignExtend);
+    void LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VAddr);
     void LW(bool ResultSigned, bool bRecordLLBit);
     void SW(bool bCheckLLbit);
     void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo & ExitRegSet, ExitReason Reason, bool CompileNow, void (CX86Ops::*x86Jmp)(const char * Label, uint32_t Value));

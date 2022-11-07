@@ -2,6 +2,7 @@
 
 #if defined(__i386__) || defined(_M_IX86)
 #include <Project64-core/N64System/Mips/Register.h>
+#include <Project64-core/N64System/Recompiler/asmjit.h>
 #include <Project64-core/N64System/Recompiler/RegBase.h>
 #include <Project64-core/N64System/Recompiler/x86/x86ops.h>
 #include <Project64-core/Settings/DebugSettings.h>
@@ -19,8 +20,8 @@ enum x86RegIndex
     x86RegIndex_Size,
 };
 
-x86RegIndex GetIndexFromX86Reg(const CX86Ops::x86Reg & Reg);
-CX86Ops::x86Reg GetX86RegFromIndex(x86RegIndex Index);
+x86RegIndex GetIndexFromX86Reg(const asmjit::x86::Gp & Reg);
+asmjit::x86::Gp GetX86RegFromIndex(x86RegIndex Index);
 
 class CX86RegInfo :
     public CRegBase,
@@ -69,26 +70,26 @@ public:
     void UnMap_FPR(int32_t Reg, bool WriteBackValue);
     CX86Ops::x86FpuValues StackPosition(int32_t Reg);
 
-    CX86Ops::x86Reg FreeX86Reg();
-    CX86Ops::x86Reg Free8BitX86Reg();
+    asmjit::x86::Gp FreeX86Reg();
+    asmjit::x86::Gp Free8BitX86Reg();
     void Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsRegToLoad);
     void Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad);
-    CX86Ops::x86Reg Get_MemoryStack() const;
-    CX86Ops::x86Reg Map_MemoryStack(CX86Ops::x86Reg Reg, bool bMapRegister, bool LoadValue = true);
-    CX86Ops::x86Reg Map_TempReg(CX86Ops::x86Reg Reg, int32_t MipsReg, bool LoadHiWord, bool Reg8Bit);
+    asmjit::x86::Gp Get_MemoryStack() const;
+    asmjit::x86::Gp Map_MemoryStack(asmjit::x86::Gp Reg, bool bMapRegister, bool LoadValue = true);
+    asmjit::x86::Gp Map_TempReg(asmjit::x86::Gp Reg, int32_t MipsReg, bool LoadHiWord, bool Reg8Bit);
     void ProtectGPR(uint32_t MipsReg);
     void UnProtectGPR(uint32_t MipsReg);
     void ResetX86Protection();
-    CX86Ops::x86Reg UnMap_TempReg();
+    asmjit::x86::Gp UnMap_TempReg();
     void UnMap_GPR(uint32_t Reg, bool WriteBackValue);
-    bool UnMap_X86reg(CX86Ops::x86Reg Reg);
+    bool UnMap_X86reg(const asmjit::x86::Gp & Reg);
     void WriteBackRegisters();
 
-    CX86Ops::x86Reg GetMipsRegMapLo(int32_t Reg) const
+    asmjit::x86::Gp GetMipsRegMapLo(int32_t Reg) const
     {
         return m_RegMapLo[Reg];
     }
-    CX86Ops::x86Reg GetMipsRegMapHi(int32_t Reg) const
+    asmjit::x86::Gp GetMipsRegMapHi(int32_t Reg) const
     {
         return m_RegMapHi[Reg];
     }
@@ -106,11 +107,11 @@ public:
         return m_x86reg_MappedTo[Reg];
     }
 
-    void SetMipsRegMapLo(int32_t GetMipsReg, CX86Ops::x86Reg Reg)
+    void SetMipsRegMapLo(int32_t GetMipsReg, const asmjit::x86::Gp & Reg)
     {
         m_RegMapLo[GetMipsReg] = Reg;
     }
-    void SetMipsRegMapHi(int32_t GetMipsReg, CX86Ops::x86Reg Reg)
+    void SetMipsRegMapHi(int32_t GetMipsReg, const asmjit::x86::Gp & Reg)
     {
         m_RegMapHi[GetMipsReg] = Reg;
     }
@@ -150,11 +151,11 @@ private:
 
     CCodeBlock & m_CodeBlock;
     CX86Ops & m_Assembler;
-    CX86Ops::x86Reg UnMap_8BitTempReg();
+    asmjit::x86::Gp UnMap_8BitTempReg();
 
     // r4k
-    CX86Ops::x86Reg m_RegMapHi[32];
-    CX86Ops::x86Reg m_RegMapLo[32];
+    asmjit::x86::Gp m_RegMapHi[32];
+    asmjit::x86::Gp m_RegMapLo[32];
 
     REG_MAPPED m_x86reg_MappedTo[x86RegIndex_Size];
     uint32_t m_x86reg_MapOrder[x86RegIndex_Size];

@@ -833,6 +833,9 @@
     <ClInclude Include="N64System\Recompiler\Aarch64\Aarch64RecompilerOps.h">
       <Filter>Header Files\N64 System\Recompiler\Aarch64</Filter>
     </ClInclude>
+    <ClInclude Include="N64System\Recompiler\asmjit.h">
+      <Filter>Header Files\N64 System\Recompiler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Version.h.in">
