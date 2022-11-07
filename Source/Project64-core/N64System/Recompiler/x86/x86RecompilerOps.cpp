@@ -2875,7 +2875,7 @@ void CX86RecompilerOps::LB_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr, boo
         {
             if (SignExtend)
             {
-                m_Assembler.MoveSxVariableToX86regByte((PAddr ^ 3) + g_MMU->Rdram(), stdstr_f("RDRAM + (%X ^ 3)", PAddr).c_str(), Reg);
+                m_Assembler.MoveSxVariableToX86regByte(Reg, (PAddr ^ 3) + g_MMU->Rdram(), stdstr_f("RDRAM + (%X ^ 3)", PAddr).c_str());
             }
             else
             {
@@ -2892,7 +2892,7 @@ void CX86RecompilerOps::LB_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr, boo
         {
             if (SignExtend)
             {
-                m_Assembler.MoveSxVariableToX86regByte(((PAddr ^ 3) - 0x04000000) + g_MMU->Dmem(), stdstr_f("Dmem + (%X ^ 3)", (PAddr - 0x04000000)).c_str(), Reg);
+                m_Assembler.MoveSxVariableToX86regByte(Reg, ((PAddr ^ 3) - 0x04000000) + g_MMU->Dmem(), stdstr_f("Dmem + (%X ^ 3)", (PAddr - 0x04000000)).c_str());
             }
             else
             {
@@ -2903,7 +2903,7 @@ void CX86RecompilerOps::LB_KnownAddress(CX86Ops::x86Reg Reg, uint32_t VAddr, boo
         {
             if (SignExtend)
             {
-                m_Assembler.MoveSxVariableToX86regByte(((PAddr ^ 3) - 0x04001000) + g_MMU->Imem(), stdstr_f("Imem + (%X ^ 3)", (PAddr - 0x04001000)).c_str(), Reg);
+                m_Assembler.MoveSxVariableToX86regByte(Reg, ((PAddr ^ 3) - 0x04001000) + g_MMU->Imem(), stdstr_f("Imem + (%X ^ 3)", (PAddr - 0x04001000)).c_str());
             }
             else
             {
