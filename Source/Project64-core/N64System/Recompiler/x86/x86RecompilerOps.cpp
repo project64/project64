@@ -10080,7 +10080,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(CX86Ops::x86Reg AddressReg, CX86
         }
         else
         {
-            m_Assembler.MoveX86regHalfToX86regPointer(ValueReg, AddressReg, TempReg);
+            m_Assembler.MoveX86regHalfToX86regPointer(AddressReg, TempReg, ValueReg);
         }
     }
     else if (ValueSize == 32)
