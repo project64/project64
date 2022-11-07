@@ -1824,7 +1824,7 @@ void CX86Ops::OrConstToX86Reg(x86Reg Reg, uint32_t Const)
     }
 }
 
-void CX86Ops::OrVariableToX86Reg(void * Variable, const char * VariableName, x86Reg Reg)
+void CX86Ops::OrVariableToX86Reg(x86Reg Reg, void * Variable, const char * VariableName)
 {
     CodeLog("      or %s, dword ptr [%s]", x86_Name(Reg), VariableName);
     switch (Reg)
