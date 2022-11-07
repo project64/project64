@@ -161,7 +161,7 @@ public:
     void MoveZxVariableToX86regHalf(x86Reg Reg, void * Variable, const char * VariableName);
     void MulX86reg(x86Reg Reg);
     void NotX86Reg(x86Reg Reg);
-    void OrConstToVariable(uint32_t Const, void * Variable, const char * VariableName);
+    void OrConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
     void OrConstToX86Reg(uint32_t Const, x86Reg Reg);
     void OrVariableToX86Reg(void * Variable, const char * VariableName, x86Reg Reg);
     void OrX86RegToVariable(void * Variable, const char * VariableName, x86Reg Reg);
