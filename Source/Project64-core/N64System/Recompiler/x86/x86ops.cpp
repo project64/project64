@@ -1454,7 +1454,7 @@ void CX86Ops::MoveX86regToMemory(x86Reg AddrReg, uint32_t Disp, x86Reg Reg)
     AddCode32(Disp);
 }
 
-void CX86Ops::MoveX86regToVariable(x86Reg Reg, void * Variable, const char * VariableName)
+void CX86Ops::MoveX86regToVariable(void * Variable, const char * VariableName, x86Reg Reg)
 {
     CodeLog("      mov dword ptr [%s], %s", VariableName, x86_Name(Reg));
     switch (Reg)
