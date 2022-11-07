@@ -844,7 +844,7 @@ void CX86Ops::MoveConstToX86reg(x86Reg Reg, uint32_t Const)
     }
 }
 
-void CX86Ops::MoveConstByteToX86regPointer(uint8_t Const, x86Reg AddrReg1, x86Reg AddrReg2)
+void CX86Ops::MoveConstByteToX86regPointer(x86Reg AddrReg1, x86Reg AddrReg2, uint8_t Const)
 {
     uint8_t Param = 0;
 
