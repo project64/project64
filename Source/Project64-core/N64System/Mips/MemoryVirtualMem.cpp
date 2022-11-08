@@ -25,7 +25,7 @@ CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
     m_CartridgeDomain2Address2Handler(System, System.m_Reg, *this, SavesReadOnly),
     m_RDRAMRegistersHandler(System.m_Reg),
     m_DPCommandRegistersHandler(System, System.GetPlugins(), System.m_Reg),
-    m_ISViewerHandler(System),
+    m_ISViewerHandler(System, m_RomMemoryHandler, *g_Rom),
     m_MIPSInterfaceHandler(System.m_Reg),
     m_PeripheralInterfaceHandler(System, *this, System.m_Reg, m_CartridgeDomain2Address2Handler),
     m_PifRamHandler(System, SavesReadOnly),
