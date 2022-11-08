@@ -3,9 +3,12 @@
 #include "ISViewerHandler.h"
 #include <Common/File.h>
 #include <Common/path.h>
+#include <Project64-core\N64System\N64Rom.h>
 #include <Project64-core\N64System\N64System.h>
 
-ISViewerHandler::ISViewerHandler(CN64System & System) :
+ISViewerHandler::ISViewerHandler(CN64System & System, RomMemoryHandler & RomHandler, CN64Rom & Rom) :
+    m_RomMemoryHandler(RomHandler),
+    m_Rom(Rom),
     m_hLogFile(nullptr),
     m_BufferPos(0)
 {
@@ -15,6 +18,10 @@ ISViewerHandler::ISViewerHandler(CN64System & System) :
 
 bool ISViewerHandler::Read32(uint32_t Address, uint32_t & Value)
 {
+    if ((Address & 0xFFFFFFF) < m_Rom.GetRomSize())
+    {
+        return m_RomMemoryHandler.Read32(Address, Value);
+    }
     if (!m_Data.empty())
     {
         Value = Swap32by8(*((uint32_t *)&m_Data[Address & 0xFFFC]));

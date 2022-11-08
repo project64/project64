@@ -6,12 +6,14 @@
 #include <vector>
 
 class CN64System;
+class RomMemoryHandler;
+class CN64Rom;
 
 class ISViewerHandler :
     public MemoryHandler
 {
 public:
-    ISViewerHandler(CN64System & System);
+    ISViewerHandler(CN64System & System, RomMemoryHandler & RomHandler, CN64Rom & Rom);
 
     bool Read32(uint32_t Address, uint32_t & Value);
     bool Write32(uint32_t Address, uint32_t Value, uint32_t Mask);
@@ -29,6 +31,8 @@ private:
 
     void SystemReset(void);
 
+    RomMemoryHandler & m_RomMemoryHandler;
+    CN64Rom & m_Rom;
     std::unique_ptr<CFile> m_hLogFile;
     std::vector<uint8_t> m_Data;
     char m_Buffer[0x1000];
