@@ -31,15 +31,7 @@ void SP_DMA_READ (void)
 	Skip = (*RSPInfo.SP_RD_LEN_REG >> 20) + Length;
 	Count = ((*RSPInfo.SP_RD_LEN_REG >> 12) & 0xFF)  + 1;
 	End = ((*RSPInfo.SP_MEM_ADDR_REG & 0x0FFF) & ~7) + (((Count - 1) * Skip) + Length);
-
-	if ((*RSPInfo.SP_MEM_ADDR_REG & 0x1000) != 0)
-	{
-		Dest = RSPInfo.IMEM + ((*RSPInfo.SP_MEM_ADDR_REG & 0x0FFF) & ~7);
-	}
-	else
-	{
-		Dest = RSPInfo.DMEM + ((*RSPInfo.SP_MEM_ADDR_REG & 0x0FFF) & ~7);
-	}
+	Dest = ((*RSPInfo.SP_MEM_ADDR_REG & 0x1000) != 0 ? RSPInfo.IMEM : RSPInfo.DMEM) + ((*RSPInfo.SP_MEM_ADDR_REG & 0x0FFF) & ~7);
 	Source = RSPInfo.RDRAM + (addr & ~7);
 
 #if defined(RSP_SAFE_DMA)
@@ -107,7 +99,7 @@ void SP_DMA_WRITE (void)
 	Skip = (*RSPInfo.SP_WR_LEN_REG >> 20) + Length;
 	Count = ((*RSPInfo.SP_WR_LEN_REG >> 12) & 0xFF)  + 1;
 	Dest = RSPInfo.RDRAM + (addr & ~7);
-	Source = RSPInfo.DMEM + ((*RSPInfo.SP_MEM_ADDR_REG & 0x1FFF) & ~7);
+	Source = ((*RSPInfo.SP_MEM_ADDR_REG & 0x1000) != 0 ? RSPInfo.IMEM : RSPInfo.DMEM) + ((*RSPInfo.SP_MEM_ADDR_REG & 0xFFF) & ~7);
 
 #if defined(RSP_SAFE_DMA)
 	for (j = 0 ; j < Count; j++)
