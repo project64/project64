@@ -165,19 +165,24 @@ void CSystemTimer::UpdateTimers()
         m_Reg.COUNT_REGISTER += TimeTaken;
         random = (uint32_t)m_Reg.RANDOM_REGISTER - ((TimeTaken * CGameSettings::OverClockModifier()) / m_System.CountPerOp());
         wired = (uint32_t)m_Reg.WIRED_REGISTER;
-        if (random < wired)
+        if (wired > 31)
         {
-            if (wired == 0)
+            if (random <= wired)
             {
-                random &= 31;
-            }
-            else
-            {
-                uint32_t increment = 32 - wired;
+                uint32_t increment = 64;
                 random += ((wired - random + increment - 1) / increment) * increment;
             }
+            m_Reg.RANDOM_REGISTER = random & 0x3F;
         }
-        m_Reg.RANDOM_REGISTER = random;
+        else
+        {
+            if (random <= wired)
+            {
+                uint32_t increment = wired != 32 ? (32 - wired) : 1;
+                random += ((wired - random + increment - 1) / increment) * increment;
+            }
+            m_Reg.RANDOM_REGISTER = random & 0x1F;
+        }
     }
 }
 
