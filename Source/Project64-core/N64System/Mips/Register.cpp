@@ -364,11 +364,6 @@ void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
 
     switch (Reg)
     {
-    case COP0Reg_Index:
-    case COP0Reg_EntryLo0:
-    case COP0Reg_EntryLo1:
-    case COP0Reg_PageMask:
-    case COP0Reg_EntryHi:
     case COP0Reg_EPC:
     case COP0Reg_WatchLo:
     case COP0Reg_WatchHi:
@@ -378,8 +373,21 @@ void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
     case COP0Reg_31:
         m_CP0[Reg] = Value;
         break;
+    case COP0Reg_Index:
+        m_CP0[Reg] = Value & 0x8000003F;
+        break;
+    case COP0Reg_Random:
+        // Ignore - Read only
+        break;
+    case COP0Reg_EntryLo0:
+    case COP0Reg_EntryLo1:
+        m_CP0[Reg] = Value & 0x3FFFFFFF;
+        break;
     case COP0Reg_Context:
         m_CP0[Reg] = (Value & 0xFFFFFFFFFF800000) | (m_CP0[Reg] & 0x7FFFF0);
+        break;
+    case COP0Reg_PageMask:
+        m_CP0[Reg] = Value & 0x1FFE000;
         break;
     case COP0Reg_Wired:
         g_SystemTimer->UpdateTimers();
@@ -387,12 +395,15 @@ void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
         break;
     case COP0Reg_7:
     case COP0Reg_BadVAddr:
-        // Read only
+        // Ignore - Read only
         break;
     case COP0Reg_Count:
         g_SystemTimer->UpdateTimers();
         m_CP0[Reg] = Value;
         g_SystemTimer->UpdateCompareTimer();
+        break;
+    case COP0Reg_EntryHi:
+        m_CP0[Reg] = Value & 0xC00000FFFFFFE0FF;
         break;
     case COP0Reg_Compare:
         g_SystemTimer->UpdateTimers();
@@ -422,7 +433,7 @@ void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
         // Read only
         break;
     case COP0Reg_Config:
-        m_CP0[Reg] = (Value & 0x3F00800F) | (m_CP0[Reg] & 0xC0FF7FF0);
+        m_CP0[Reg] = (Value & 0x0F00800F) | (m_CP0[Reg] & 0xF0FF7FF0);
         break;
     case COP0Reg_LLAddr:
         m_CP0[Reg] = (Value & 0xFFFFFFFF) | (m_CP0[Reg] & 0xFFFFFFFF00000000);
