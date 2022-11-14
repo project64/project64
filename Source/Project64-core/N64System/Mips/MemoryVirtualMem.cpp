@@ -1019,11 +1019,17 @@ void CMipsMemoryVM::TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, boo
     for (uint32_t Address = VAddr; Address < VEnd; Address += 0x1000)
     {
         size_t Index = Address >> 12;
-        m_MemoryReadMap[Index] = (size_t)((m_RDRAM + (Address - VAddr + PAddr)) - Address);
+        if ((Address - VAddr + PAddr) < m_AllocatedRdramSize)
+        {
+            m_MemoryReadMap[Index] = (size_t)((m_RDRAM + (Address - VAddr + PAddr)) - Address);
+        }
         m_TLB_ReadMap[Index] = ((size_t)(Address - VAddr + PAddr)) - Address;
         if (!bReadOnly)
         {
-            m_MemoryWriteMap[Index] = (size_t)((m_RDRAM + (Address - VAddr + PAddr)) - Address);
+            if ((Address - VAddr + PAddr) < m_AllocatedRdramSize)
+            {
+                m_MemoryWriteMap[Index] = (size_t)((m_RDRAM + (Address - VAddr + PAddr)) - Address);
+            }
             m_TLB_WriteMap[Index] = ((size_t)(Address - VAddr + PAddr)) - Address;
         }
     }
