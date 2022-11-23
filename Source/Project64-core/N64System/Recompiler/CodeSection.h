@@ -39,7 +39,7 @@ public:
     bool m_LinkAllowed;
     uint32_t m_Test;
     uint32_t m_Test2;
-    uint8_t * m_CompiledLocation;
+    asmjit::Label m_EnterLabel;
     bool m_InLoop;
     bool m_DelaySlot;
     CRecompilerOps *& m_RecompilerOps;

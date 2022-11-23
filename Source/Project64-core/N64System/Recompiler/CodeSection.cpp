@@ -24,7 +24,6 @@ CCodeSection::CCodeSection(CCodeBlock & CodeBlock, uint32_t EnterPC, uint32_t ID
     m_LinkAllowed(LinkAllowed),
     m_Test(0),
     m_Test2(0),
-    m_CompiledLocation(nullptr),
     m_InLoop(false),
     m_DelaySlot(false),
     m_RecompilerOps(CodeBlock.RecompilerOps()),
@@ -48,7 +47,7 @@ void CCodeSection::GenerateSectionLinkage()
 
     for (i = 0; i < 2; i++)
     {
-        if (JumpInfo[i]->LinkLocation == nullptr &&
+        if (!JumpInfo[i]->LinkLocation.isValid() &&
             JumpInfo[i]->FallThrough == false)
         {
             JumpInfo[i]->TargetPC = (uint32_t)-1;
@@ -75,7 +74,7 @@ void CCodeSection::GenerateSectionLinkage()
     {
         for (i = 0; i < 2; i++)
         {
-            if (JumpInfo[i]->LinkLocation == nullptr && JumpInfo[i]->FallThrough == false)
+            if (!JumpInfo[i]->LinkLocation.isValid() && JumpInfo[i]->FallThrough == false)
             {
                 if (TargetSection[i])
                 {
@@ -107,11 +106,11 @@ void CCodeSection::GenerateSectionLinkage()
     }
     else
     {
-        if (m_Cont.LinkLocation == nullptr && m_Cont.FallThrough == false)
+        if (!m_Cont.LinkLocation.isValid() && m_Cont.FallThrough == false)
         {
             m_ContinueSection = nullptr;
         }
-        if (m_Jump.LinkLocation == nullptr && m_Jump.FallThrough == false)
+        if (!m_Jump.LinkLocation.isValid() && m_Jump.FallThrough == false)
         {
             m_JumpSection = nullptr;
         }
@@ -135,7 +134,7 @@ void CCodeSection::GenerateSectionLinkage()
             continue;
         }
 
-        if (TargetSection[i]->m_CompiledLocation != nullptr)
+        if (TargetSection[i]->m_EnterLabel.isValid())
         {
             JumpInfo[i]->FallThrough = false;
             m_RecompilerOps->LinkJump(*JumpInfo[i], TargetSection[i]->m_SectionID);
@@ -178,8 +177,7 @@ void CCodeSection::GenerateSectionLinkage()
         for (SECTION_LIST::iterator iter = TargetSection[i]->m_ParentSection.begin(); iter != TargetSection[i]->m_ParentSection.end(); iter++)
         {
             CCodeSection * Parent = *iter;
-
-            if (Parent->m_CompiledLocation != nullptr)
+            if (Parent->m_EnterLabel.isValid())
             {
                 continue;
             }
@@ -224,10 +222,9 @@ void CCodeSection::GenerateSectionLinkage()
         }
     }
 
-    //CodeLog("Section %d",m_SectionID);
     for (i = 0; i < 2; i++)
     {
-        if (JumpInfo[i]->LinkLocation == nullptr)
+        if (!JumpInfo[i]->LinkLocation.isValid())
         {
             continue;
         }
@@ -242,7 +239,7 @@ void CCodeSection::GenerateSectionLinkage()
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
-        if (TargetSection[i]->m_CompiledLocation == nullptr)
+        if (!TargetSection[i]->m_EnterLabel.isValid())
         {
             TargetSection[i]->GenerateNativeCode(m_CodeBlock.NextTest());
         }
@@ -304,7 +301,7 @@ bool CCodeSection::ParentContinue()
         for (SECTION_LIST::iterator iter = m_ParentSection.begin(); iter != m_ParentSection.end(); iter++)
         {
             CCodeSection * Parent = *iter;
-            if (Parent->m_CompiledLocation != nullptr)
+            if (Parent->m_EnterLabel.isValid())
             {
                 continue;
             }
@@ -325,7 +322,7 @@ bool CCodeSection::ParentContinue()
 
 bool CCodeSection::GenerateNativeCode(uint32_t Test)
 {
-    if (m_CompiledLocation != nullptr)
+    if (m_EnterLabel.isValid())
     {
         if (m_Test == Test)
         {
@@ -347,7 +344,8 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
     {
         return false;
     }
-    m_CompiledLocation = *g_RecompPos;
+    m_EnterLabel = m_RecompilerOps->Assembler().newLabel();
+    m_RecompilerOps->Assembler().bind(m_EnterLabel);
     m_RecompilerOps->SetRegWorkingSet(m_RegEnter);
     m_RecompilerOps->SetCurrentPC(m_EnterPC);
     m_RecompilerOps->SetNextStepType(m_DelaySlot ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
@@ -988,19 +986,11 @@ void CCodeSection::UnlinkParent(CCodeSection * Parent, bool ContinueSection)
                 CCodeSection * CodeSection = *iter;
                 if (CodeSection->m_ContinueSection == this)
                 {
-                    if (CodeSection->m_CompiledLocation)
-                    {
-                        g_Notify->BreakPoint(__FILE__, __LINE__);
-                    }
                     CodeSection->m_ContinueSection = nullptr;
                 }
 
                 if (CodeSection->m_JumpSection == this)
                 {
-                    if (CodeSection->m_CompiledLocation)
-                    {
-                        g_Notify->BreakPoint(__FILE__, __LINE__);
-                    }
                     CodeSection->m_JumpSection = nullptr;
                 }
             }
@@ -1026,7 +1016,7 @@ void CCodeSection::UnlinkParent(CCodeSection * Parent, bool ContinueSection)
 
 bool CCodeSection::IsAllParentLoops(CCodeSection * Parent, bool IgnoreIfCompiled, uint32_t Test)
 {
-    if (IgnoreIfCompiled && Parent->m_CompiledLocation != nullptr)
+    if (IgnoreIfCompiled && Parent->m_EnterLabel.isValid())
     {
         return true;
     }
@@ -1103,7 +1093,6 @@ void CCodeSection::DisplaySectionInformation()
     {
         m_CodeBlock.Log("End PC: 0x%X", m_EndPC);
     }
-    m_CodeBlock.Log("CompiledLocation: 0x%X", m_CompiledLocation);
     if (g_System->bLinkBlocks() && !m_ParentSection.empty())
     {
         stdstr ParentList;

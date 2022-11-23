@@ -13,16 +13,19 @@
 extern "C" void __clear_cache_android(uint8_t * begin, uint8_t * end);
 #endif
 
-CCodeBlock::CCodeBlock(CMipsMemoryVM & MMU, uint32_t VAddrEnter, uint8_t * CompiledLocation) :
+CCodeBlock::CCodeBlock(CMipsMemoryVM & MMU, uint32_t VAddrEnter) :
     m_MMU(MMU),
     m_VAddrEnter(VAddrEnter),
     m_VAddrFirst(VAddrEnter),
     m_VAddrLast(VAddrEnter),
-    m_CompiledLocation(CompiledLocation),
+    m_CompiledLocation(nullptr),
     m_EnterSection(nullptr),
     m_RecompilerOps(nullptr),
     m_Test(1)
 {
+    m_Environment = asmjit::Environment::host();
+    m_CodeHolder.init(m_Environment);
+    m_CodeHolder.setErrorHandler(this);
 #if defined(__arm__) || defined(_M_ARM)
     // Make sure function starts at an odd address so that the system knows it is in thumb mode
     if (((uint32_t)m_CompiledLocation % 2) == 0)
@@ -50,7 +53,7 @@ CCodeBlock::CCodeBlock(CMipsMemoryVM & MMU, uint32_t VAddrEnter, uint8_t * Compi
 
     m_Sections.push_back(baseSection);
     baseSection->AddParent(nullptr);
-    baseSection->m_CompiledLocation = (uint8_t *)-1;
+    baseSection->m_EnterLabel = asmjit::Label(1);
     baseSection->m_Cont.JumpPC = VAddrEnter;
     baseSection->m_Cont.FallThrough = true;
     baseSection->m_Cont.RegSet = baseSection->m_RegEnter;
@@ -857,12 +860,6 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
 
 bool CCodeBlock::Compile()
 {
-    Log("====== Code block ======");
-    Log("Native entry point: %X", CompiledLocation());
-    Log("Start of block: %X", VAddrEnter());
-    Log("Number of sections: %d", NoOfSections());
-    Log("====== Recompiled code ======");
-
     m_RecompilerOps->EnterCodeBlock();
     if (g_System->bLinkBlocks())
     {
@@ -877,7 +874,6 @@ bool CCodeBlock::Compile()
         }
     }
     m_RecompilerOps->CompileExitCode();
-    m_CompiledLocationEnd = *g_RecompPos;
 
     uint32_t BlockSize = (VAddrLast() - VAddrFirst()) + 4;
     uint8_t * BlockPtr = m_MMU.MemoryPtr(VAddrFirst(), BlockSize, true);
@@ -887,10 +883,33 @@ bool CCodeBlock::Compile()
         return false;
     }
     MD5(BlockPtr, BlockSize).get_digest(m_Hash);
-#if defined(ANDROID) && (defined(__arm__) || defined(_M_ARM))
-    __clear_cache((uint8_t *)((uint32_t)m_CompiledLocation & ~1), m_CompiledLocationEnd);
-#endif
     return true;
+}
+
+uint32_t CCodeBlock::Finilize(uint8_t * CompiledLocation)
+{
+    if (CDebugSettings::bRecordRecompilerAsm())
+    {
+        std::string CodeLog = m_CodeLog;
+        m_CodeLog.clear();
+        Log("====== Code block ======");
+        Log("Native entry point: %X", CompiledLocation);
+        Log("Start of block: %X", VAddrEnter());
+        Log("Number of sections: %d", NoOfSections());
+        Log("====== Recompiled code ======");
+        m_CodeLog += CodeLog;
+    }
+
+    m_CompiledLocation = CompiledLocation;
+    m_CodeHolder.relocateToBase((uint64_t)m_CompiledLocation);
+    size_t codeSize = m_CodeHolder.codeSize();
+    m_CodeHolder.copyFlattenedData(m_CompiledLocation, codeSize, asmjit::CopySectionFlags::kPadSectionBuffer);
+    *g_RecompPos += codeSize;
+
+#if defined(ANDROID) && (defined(__arm__) || defined(_M_ARM))
+    __clear_cache((uint8_t *)((uint32_t)m_CompiledLocation & ~1), m_CompiledLocation + codeSize);
+#endif
+    return codeSize;
 }
 
 uint32_t CCodeBlock::NextTest()
@@ -922,4 +941,9 @@ void CCodeBlock::Log(_Printf_format_string_ const char * Text, ...)
     }
 #pragma warning(pop)
     va_end(args);
+}
+
+void CCodeBlock::handleError(asmjit::Error /*err*/, const char * /*message*/, asmjit::BaseEmitter * /*origin*/)
+{
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 }

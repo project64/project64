@@ -9,14 +9,20 @@
 
 class CMipsMemoryVM;
 
-class CCodeBlock
+class CCodeBlock :
+    public asmjit::ErrorHandler
 {
 public:
-    CCodeBlock(CMipsMemoryVM & MMU, uint32_t VAddrEnter, uint8_t * CompiledLocation);
+    CCodeBlock(CMipsMemoryVM & MMU, uint32_t VAddrEnter);
     ~CCodeBlock();
 
     bool Compile();
+    uint32_t Finilize(uint8_t * CompiledLocation);
 
+    asmjit::CodeHolder & CodeHolder(void)
+    {
+        return m_CodeHolder; 
+    }
     uint32_t VAddrEnter() const
     {
         return m_VAddrEnter;
@@ -32,10 +38,6 @@ public:
     uint8_t * CompiledLocation() const
     {
         return m_CompiledLocation;
-    }
-    uint8_t * CompiledLocationEnd() const
-    {
-        return m_CompiledLocationEnd;
     }
     int32_t NoOfSections() const
     {
@@ -101,12 +103,14 @@ private:
     void LogSectionInfo();
     bool SetSection(CCodeSection *& Section, CCodeSection * CurrentSection, uint32_t TargetPC, bool LinkAllowed, uint32_t CurrentPC);
     bool AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t & ContinuePC, bool & LikelyBranch, bool & IncludeDelaySlot, bool & EndBlock, bool & PermLoop);
+    void handleError(asmjit::Error err, const char* message, asmjit::BaseEmitter* origin);
 
+    asmjit::Environment m_Environment;
+    asmjit::CodeHolder m_CodeHolder;
     uint32_t m_VAddrEnter;
     uint32_t m_VAddrFirst;
     uint32_t m_VAddrLast;
     uint8_t * m_CompiledLocation;
-    uint8_t * m_CompiledLocationEnd;
 
     typedef std::map<uint32_t, CCodeSection *> SectionMap;
     typedef std::list<CCodeSection *> SectionList;

@@ -23,6 +23,22 @@ enum x86RegIndex
 x86RegIndex GetIndexFromX86Reg(const asmjit::x86::Gp & Reg);
 asmjit::x86::Gp GetX86RegFromIndex(x86RegIndex Index);
 
+enum x86RegFpuIndex
+{
+    x86RegFpuIndex_ST0,
+    x86RegFpuIndex_ST1,
+    x86RegFpuIndex_ST2,
+    x86RegFpuIndex_ST3,
+    x86RegFpuIndex_ST4,
+    x86RegFpuIndex_ST5,
+    x86RegFpuIndex_ST6,
+    x86RegFpuIndex_ST7,
+    x86RegFpuIndex_Size,
+};
+
+x86RegFpuIndex GetIndexFromX86FpuReg(const asmjit::x86::St & Reg);
+asmjit::x86::St GetX86FpuRegFromIndex(x86RegFpuIndex Index);
+
 class CX86RegInfo :
     public CRegBase,
     private CDebugSettings,
@@ -68,7 +84,7 @@ public:
     bool RegInStack(int32_t Reg, FPU_STATE Format);
     void UnMap_AllFPRs();
     void UnMap_FPR(int32_t Reg, bool WriteBackValue);
-    CX86Ops::x86FpuValues StackPosition(int32_t Reg);
+    const asmjit::x86::St & StackPosition(int32_t Reg);
 
     asmjit::x86::Gp FreeX86Reg();
     asmjit::x86::Gp Free8BitX86Reg();
@@ -163,10 +179,10 @@ private:
 
     // FPU
     int32_t m_Stack_TopPos;
-    int32_t m_x86fpu_MappedTo[8];
-    FPU_STATE m_x86fpu_State[8];
-    bool m_x86fpu_StateChanged[8];
-    FPU_ROUND m_x86fpu_RoundingModel[8];
+    int32_t m_x86fpu_MappedTo[x86RegFpuIndex_Size];
+    FPU_STATE m_x86fpu_State[x86RegFpuIndex_Size];
+    bool m_x86fpu_StateChanged[x86RegFpuIndex_Size];
+    FPU_ROUND m_x86fpu_RoundingModel[x86RegFpuIndex_Size];
 
     static uint32_t m_fpuControl;
     bool m_InBeforeCallDirect;

@@ -38,6 +38,24 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\asmjit\arm\a64archtraits_p.h" />
+    <ClInclude Include="src\asmjit\arm\a64assembler.h" />
+    <ClInclude Include="src\asmjit\arm\a64builder.h" />
+    <ClInclude Include="src\asmjit\arm\a64compiler.h" />
+    <ClInclude Include="src\asmjit\arm\a64emithelper_p.h" />
+    <ClInclude Include="src\asmjit\arm\a64emitter.h" />
+    <ClInclude Include="src\asmjit\arm\a64formatter_p.h" />
+    <ClInclude Include="src\asmjit\arm\a64func_p.h" />
+    <ClInclude Include="src\asmjit\arm\a64globals.h" />
+    <ClInclude Include="src\asmjit\arm\a64instapi_p.h" />
+    <ClInclude Include="src\asmjit\arm\a64instdb.h" />
+    <ClInclude Include="src\asmjit\arm\a64instdb_p.h" />
+    <ClInclude Include="src\asmjit\arm\a64operand.h" />
+    <ClInclude Include="src\asmjit\arm\a64rapass_p.h" />
+    <ClInclude Include="src\asmjit\arm\a64utils.h" />
+    <ClInclude Include="src\asmjit\arm\armformatter_p.h" />
+    <ClInclude Include="src\asmjit\arm\armglobals.h" />
+    <ClInclude Include="src\asmjit\arm\armoperand.h" />
     <ClInclude Include="src\asmjit\asmjit-scope-begin.h" />
     <ClInclude Include="src\asmjit\asmjit-scope-end.h" />
     <ClInclude Include="src\asmjit\asmjit.h" />
@@ -63,6 +81,7 @@
     <ClInclude Include="src\asmjit\core\errorhandler.h" />
     <ClInclude Include="src\asmjit\core\features.h" />
     <ClInclude Include="src\asmjit\core\formatter.h" />
+    <ClInclude Include="src\asmjit\core\formatter_p.h" />
     <ClInclude Include="src\asmjit\core\func.h" />
     <ClInclude Include="src\asmjit\core\funcargscontext_p.h" />
     <ClInclude Include="src\asmjit\core\globals.h" />
@@ -99,7 +118,6 @@
     <ClInclude Include="src\asmjit\x86\x86compiler.h" />
     <ClInclude Include="src\asmjit\x86\x86emithelper_p.h" />
     <ClInclude Include="src\asmjit\x86\x86emitter.h" />
-    <ClInclude Include="src\asmjit\x86\x86features.h" />
     <ClInclude Include="src\asmjit\x86\x86formatter_p.h" />
     <ClInclude Include="src\asmjit\x86\x86func_p.h" />
     <ClInclude Include="src\asmjit\x86\x86globals.h" />
@@ -111,6 +129,17 @@
     <ClInclude Include="src\asmjit\x86\x86rapass_p.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\asmjit\arm\a64assembler.cpp" />
+    <ClCompile Include="src\asmjit\arm\a64builder.cpp" />
+    <ClCompile Include="src\asmjit\arm\a64compiler.cpp" />
+    <ClCompile Include="src\asmjit\arm\a64emithelper.cpp" />
+    <ClCompile Include="src\asmjit\arm\a64formatter.cpp" />
+    <ClCompile Include="src\asmjit\arm\a64func.cpp" />
+    <ClCompile Include="src\asmjit\arm\a64instapi.cpp" />
+    <ClCompile Include="src\asmjit\arm\a64instdb.cpp" />
+    <ClCompile Include="src\asmjit\arm\a64operand.cpp" />
+    <ClCompile Include="src\asmjit\arm\a64rapass.cpp" />
+    <ClCompile Include="src\asmjit\arm\armformatter.cpp" />
     <ClCompile Include="src\asmjit\core\archtraits.cpp" />
     <ClCompile Include="src\asmjit\core\assembler.cpp" />
     <ClCompile Include="src\asmjit\core\builder.cpp" />

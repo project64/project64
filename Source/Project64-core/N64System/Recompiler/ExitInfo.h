@@ -32,7 +32,7 @@ struct CExitInfo
     CRegInfo ExitRegSet;
     ExitReason Reason;
     PIPELINE_STAGE PipelineStage;
-    uint32_t * JumpLoc; // 32-bit jump
+    asmjit::Label JumpLabel;
 };
 
 typedef std::list<CExitInfo> EXIT_LIST;

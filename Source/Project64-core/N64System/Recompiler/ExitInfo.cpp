@@ -6,7 +6,7 @@
 CExitInfo::CExitInfo(CCodeBlock & CodeBlock) :
     ID(0),
     TargetPC(0),
-    JumpLoc(nullptr),
     ExitRegSet(CodeBlock, CodeBlock.RecompilerOps()->Assembler())
 {
+    JumpLabel = CodeBlock.RecompilerOps()->Assembler().newLabel();
 }
