@@ -1,8 +1,8 @@
 ﻿// Meta information
-#1  #  "Português"      // Language ID
-#2  #  "Tiago Gomes"  // Author
-#3  #  "3.0"            // Version
-#4  #  "Março, 2022"	// Date
+#1  #  "Português"		// Language ID
+#2  #  "Hugo Carvalho"	// Author
+#3  #  "3.0"			// Version
+#4  #  "Novembro, 2022"	// Date
 
 /*** Menu ***/
 
@@ -171,9 +171,9 @@
 /*** Options ***/
 
 // Options title
-#400#  "Definições"
+#400#  "Configuração"
 
-//Tabs
+// Tabs
 #401#  "Plugins"
 #402#  "Directórios"
 #403#  "Definições gerais"
@@ -286,6 +286,12 @@
 #537#  "Contagem de AIs por byte:"
 #538#  "Engine de 32 bits"
 #539#  "Atrasar a interrupção do DP"
+#5400# "Modificador overclock:"
+#5410# "DMA desalinhado"
+#5420# "Aleatorizar as interrupções SI/PI"
+#5440# "Tempo de busca em disco:"
+#5441# "Turbo"
+#5442# "Lento"
 
 // Core styles
 #540#  "Interpretador"
@@ -566,7 +572,3 @@
 
 // Video plugin
 #3200#  "Nativo"
-
-#5410#  "DMA desalinhado"
-#5420#  "Randomizar interrupções SI/PI"
-#5440#  "Tempo de busca em disco"
