@@ -25,6 +25,12 @@
     <Filter Include="Source Files\x86">
       <UniqueIdentifier>{6b84aaac-0a23-40c3-a433-b295187c29f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\arm">
+      <UniqueIdentifier>{c917aef2-cca5-40a8-96ce-44c52b0be104}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\arm">
+      <UniqueIdentifier>{1887f342-a4a7-4afc-a943-f43721792e81}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\asmjit\asmjit.h">
@@ -210,9 +216,6 @@
     <ClInclude Include="src\asmjit\x86\x86emitter.h">
       <Filter>Header Files\x86</Filter>
     </ClInclude>
-    <ClInclude Include="src\asmjit\x86\x86features.h">
-      <Filter>Header Files\x86</Filter>
-    </ClInclude>
     <ClInclude Include="src\asmjit\x86\x86formatter_p.h">
       <Filter>Header Files\x86</Filter>
     </ClInclude>
@@ -239,6 +242,63 @@
     </ClInclude>
     <ClInclude Include="src\asmjit\x86\x86rapass_p.h">
       <Filter>Header Files\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asmjit\core\formatter_p.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asmjit\arm\a64archtraits_p.h">
+      <Filter>Header Files\arm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asmjit\arm\a64assembler.h">
+      <Filter>Header Files\arm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asmjit\arm\a64builder.h">
+      <Filter>Header Files\arm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asmjit\arm\a64compiler.h">
+      <Filter>Header Files\arm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asmjit\arm\a64emithelper_p.h">
+      <Filter>Header Files\arm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asmjit\arm\a64emitter.h">
+      <Filter>Header Files\arm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asmjit\arm\a64formatter_p.h">
+      <Filter>Header Files\arm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asmjit\arm\a64func_p.h">
+      <Filter>Header Files\arm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asmjit\arm\a64globals.h">
+      <Filter>Header Files\arm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asmjit\arm\a64instapi_p.h">
+      <Filter>Header Files\arm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asmjit\arm\a64instdb.h">
+      <Filter>Header Files\arm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asmjit\arm\a64instdb_p.h">
+      <Filter>Header Files\arm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asmjit\arm\a64operand.h">
+      <Filter>Header Files\arm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asmjit\arm\a64rapass_p.h">
+      <Filter>Header Files\arm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asmjit\arm\a64utils.h">
+      <Filter>Header Files\arm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asmjit\arm\armformatter_p.h">
+      <Filter>Header Files\arm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asmjit\arm\armglobals.h">
+      <Filter>Header Files\arm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asmjit\arm\armoperand.h">
+      <Filter>Header Files\arm</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -382,6 +442,39 @@
     </ClCompile>
     <ClCompile Include="src\asmjit\x86\x86rapass.cpp">
       <Filter>Source Files\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\asmjit\arm\a64assembler.cpp">
+      <Filter>Source Files\arm</Filter>
+    </ClCompile>
+    <ClCompile Include="src\asmjit\arm\a64builder.cpp">
+      <Filter>Source Files\arm</Filter>
+    </ClCompile>
+    <ClCompile Include="src\asmjit\arm\a64compiler.cpp">
+      <Filter>Source Files\arm</Filter>
+    </ClCompile>
+    <ClCompile Include="src\asmjit\arm\a64emithelper.cpp">
+      <Filter>Source Files\arm</Filter>
+    </ClCompile>
+    <ClCompile Include="src\asmjit\arm\a64formatter.cpp">
+      <Filter>Source Files\arm</Filter>
+    </ClCompile>
+    <ClCompile Include="src\asmjit\arm\a64func.cpp">
+      <Filter>Source Files\arm</Filter>
+    </ClCompile>
+    <ClCompile Include="src\asmjit\arm\a64instapi.cpp">
+      <Filter>Source Files\arm</Filter>
+    </ClCompile>
+    <ClCompile Include="src\asmjit\arm\a64instdb.cpp">
+      <Filter>Source Files\arm</Filter>
+    </ClCompile>
+    <ClCompile Include="src\asmjit\arm\a64operand.cpp">
+      <Filter>Source Files\arm</Filter>
+    </ClCompile>
+    <ClCompile Include="src\asmjit\arm\a64rapass.cpp">
+      <Filter>Source Files\arm</Filter>
+    </ClCompile>
+    <ClCompile Include="src\asmjit\arm\armformatter.cpp">
+      <Filter>Source Files\arm</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

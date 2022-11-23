@@ -24,10 +24,6 @@ public:
     {
         return m_Function;
     }
-    const uint8_t * FunctionEnd() const
-    {
-        return m_FunctionEnd;
-    }
     const MD5Digest & Hash() const
     {
         return m_Hash;
@@ -59,7 +55,6 @@ private:
     uint32_t m_EnterPC;
     uint32_t m_MinPC;
     uint32_t m_MaxPC;
-    uint8_t * m_FunctionEnd;
 
     MD5Digest m_Hash;
     Func m_Function;

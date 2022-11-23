@@ -76,7 +76,7 @@ bool LoopAnalysis::SetupEnterSection(CCodeSection * Section, bool & bChanged, bo
         return true;
     }
 
-    m_CodeBlock.Log("%s: Block EnterPC: %X Section ID %d Test: %X Section Test: %X CompiledLocation: %X", __FUNCTION__, m_CodeBlock.VAddrEnter(), Section->m_SectionID, m_Test, Section->m_Test, Section->m_CompiledLocation);
+    m_CodeBlock.Log("%s: Block EnterPC: %X Section ID %d Test: %X Section Test: %X ", __FUNCTION__, m_CodeBlock.VAddrEnter(), Section->m_SectionID, m_Test, Section->m_Test);
 
     bool bFirstParent = true;
     CRegInfo RegEnter(m_CodeBlock, m_CodeBlock.RecompilerOps()->Assembler());
@@ -84,10 +84,10 @@ bool LoopAnalysis::SetupEnterSection(CCodeSection * Section, bool & bChanged, bo
     {
         CCodeSection * Parent = *iter;
 
-        m_CodeBlock.Log("%s: Parent Section ID %d Test: %X Section Test: %X CompiledLocation: %X", __FUNCTION__, Parent->m_SectionID, m_Test, Parent->m_Test, Parent->m_CompiledLocation);
-        if (Parent->m_Test != m_Test && (m_EnterSection != Section || Parent->m_CompiledLocation == nullptr) && Parent->m_InLoop)
+        m_CodeBlock.Log("%s: Parent Section ID %d Test: %X Section Test: %X", __FUNCTION__, Parent->m_SectionID, m_Test, Parent->m_Test);
+        if (Parent->m_Test != m_Test && (m_EnterSection != Section || !Parent->m_EnterLabel.isValid()) && Parent->m_InLoop)
         {
-            m_CodeBlock.Log("%s: Ignore Parent Section ID %d Test: %X  Section Test: %X CompiledLocation: %X", __FUNCTION__, Parent->m_SectionID, m_Test, Parent->m_Test, Parent->m_CompiledLocation);
+            m_CodeBlock.Log("%s: Ignore Parent Section ID %d Test: %X  Section Test: %X", __FUNCTION__, Parent->m_SectionID, m_Test, Parent->m_Test);
             bSkipedSection = true;
             continue;
         }

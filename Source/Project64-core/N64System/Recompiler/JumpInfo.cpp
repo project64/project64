@@ -10,8 +10,6 @@ CJumpInfo::CJumpInfo(CCodeBlock & CodeBlock) :
     TargetPC = (uint32_t)-1;
     JumpPC = (uint32_t)-1;
     BranchLabel = "";
-    LinkLocation = nullptr;
-    LinkLocation2 = nullptr;
     FallThrough = false;
     PermLoop = false;
     DoneDelaySlot = false;

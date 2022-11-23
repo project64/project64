@@ -350,7 +350,7 @@ public:
     {
         return m_RegWorkingSet.RegInStack(Reg, Format);
     }
-    CX86Ops::x86FpuValues StackPosition(int32_t Reg)
+    const asmjit::x86::St & StackPosition(int32_t Reg)
     {
         return m_RegWorkingSet.StackPosition(Reg);
     }
@@ -441,7 +441,7 @@ private:
     void LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VAddr);
     void LW(bool ResultSigned, bool bRecordLLBit);
     void SW(bool bCheckLLbit);
-    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo & ExitRegSet, ExitReason Reason, bool CompileNow, void (CX86Ops::*x86Jmp)(const char * Label, uint32_t Value));
+    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo & ExitRegSet, ExitReason Reason, bool CompileNow, void (CX86Ops::*x86Jmp)(const char * LabelName, asmjit::Label & JumpLabel));
     void ResetMemoryStack();
 
     EXIT_LIST m_ExitInfo;
