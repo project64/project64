@@ -4893,14 +4893,7 @@ void CX86RecompilerOps::SPECIAL_DIV()
 
             m_CodeBlock.Log("");
             m_Assembler.bind(JumpNotDiv0);
-            if (IsMapped(m_Opcode.rt))
-            {
-                m_Assembler.CompConstToX86reg(GetMipsRegMapLo(m_Opcode.rt), (uint32_t)-1);
-            }
-            else
-            {
-                m_Assembler.CompConstToVariable(&_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt], (uint32_t)-1);
-            }
+            m_Assembler.CompConstToX86reg(DivReg, (uint32_t)-1);
             asmjit::Label JumpValidDiv0 = m_Assembler.newLabel();
             m_Assembler.JneLabel(stdstr_f("ValidDiv0_%08X", m_CompilePC).c_str(), JumpValidDiv0);
 
