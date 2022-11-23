@@ -157,7 +157,7 @@ void CX86Ops::CallFunc(uint32_t FunctPtr, const char * FunctName)
     }
     else
     {
-        call(asmjit::x86::dword_ptr((uint64_t)FunctPtr));
+        call((uint64_t)FunctPtr);
     }
 }
 
