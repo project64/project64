@@ -10964,6 +10964,12 @@ void CX86RecompilerOps::ResetMemoryStack()
         m_Assembler.MoveX86regToVariable(&_GPR[MipsReg].UW[0], CRegName::GPR_Lo[MipsReg], GetMipsRegMapLo(MipsReg));
     }
 
+    asmjit::x86::Gp MemoryStackReg = Get_MemoryStack();
+    if (MemoryStackReg.isValid())
+    {
+        m_CodeBlock.Log("    regcache: unallocate %s from memory stack", CX86Ops::x86_Name(MemoryStackReg));
+        m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(MemoryStackReg), CRegInfo::NotMapped);
+    }
     m_RegWorkingSet.BeforeCallDirect();
     m_Assembler.CallThis((uint32_t)g_Recompiler, AddressOf(&CRecompiler::ResetMemoryStackPos), "CRecompiler::ResetMemoryStackPos", 4);
     m_RegWorkingSet.AfterCallDirect();
