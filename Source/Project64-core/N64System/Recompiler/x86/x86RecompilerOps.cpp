@@ -3254,9 +3254,7 @@ void CX86RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
             }
             break;
         case 0x04400000:
-        {
             UpdateCounters(m_RegWorkingSet, false, true);
-
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
             m_Assembler.push(PAddr & 0x1FFFFFFF);
@@ -3264,11 +3262,8 @@ void CX86RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
             m_RegWorkingSet.AfterCallDirect();
             m_Assembler.MoveVariableToX86reg(Reg, &m_TempValue32, "m_TempValue32");
             break;
-        }
         case 0x04500000:
-        {
             UpdateCounters(m_RegWorkingSet, false, true, false);
-
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
             m_Assembler.push(PAddr & 0x1FFFFFFF);
@@ -3276,7 +3271,6 @@ void CX86RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
             m_RegWorkingSet.AfterCallDirect();
             m_Assembler.MoveVariableToX86reg(Reg, &m_TempValue32, "m_TempValue32");
             break;
-        }
         case 0x04600000:
             switch (PAddr)
             {
@@ -3370,7 +3364,13 @@ void CX86RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
             }
             break;
         case 0x1FC00000:
-            m_Assembler.MoveVariableToX86reg(Reg, PAddr + g_MMU->Rdram(), stdstr_f("RDRAM + %X").c_str());
+            UpdateCounters(m_RegWorkingSet, false, true, false);
+            m_RegWorkingSet.BeforeCallDirect();
+            m_Assembler.PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
+            m_Assembler.push(PAddr & 0x1FFFFFFF);
+            m_Assembler.CallThis((uint32_t)(MemoryHandler *)&g_MMU->m_PifRamHandler, (uint32_t)((long **)(MemoryHandler *)&g_MMU->m_PifRamHandler)[0][0], "PifRamHandler::Read32", 16);
+            m_RegWorkingSet.AfterCallDirect();
+            m_Assembler.MoveVariableToX86reg(Reg, &m_TempValue32, "m_TempValue32");
             break;
         default:
             if ((PAddr & 0xF0000000) == 0x10000000 && (PAddr - 0x10000000) < g_Rom->GetRomSize())
@@ -10523,16 +10523,14 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             break;
         }
     case 0x1fc00000:
-    {
         UpdateCounters(m_RegWorkingSet, false, true, false);
-
         m_RegWorkingSet.BeforeCallDirect();
+        m_Assembler.push(0xFFFFFFFF);
         m_Assembler.push(Value);
-        m_Assembler.push(PAddr | 0xA0000000);
-        m_Assembler.CallThis((uint32_t)g_MMU, AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory", 4);
+        m_Assembler.push(PAddr & 0x1FFFFFFF);
+        m_Assembler.CallThis((uint32_t)(MemoryHandler *)&g_MMU->m_PifRamHandler, (uint32_t)((long **)(MemoryHandler *)&g_MMU->m_PifRamHandler)[0][1], "PifRamHandler::Write32", 16);
         m_RegWorkingSet.AfterCallDirect();
         break;
-    }
     default:
         if (PAddr >= 0x10000000 && PAddr < 0x13F00000)
         {
@@ -10571,9 +10569,7 @@ void CX86RecompilerOps::SW_Register(const asmjit::x86::Gp & Reg, uint32_t VAddr)
         return;
     }
 
-    char VarName[100];
     uint32_t PAddr;
-
     if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
         m_CodeBlock.Log("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
@@ -10602,8 +10598,7 @@ void CX86RecompilerOps::SW_Register(const asmjit::x86::Gp & Reg, uint32_t VAddr)
         }
         else if (PAddr < g_MMU->RdramSize())
         {
-            sprintf(VarName, "RDRAM + %X", PAddr);
-            m_Assembler.MoveX86regToVariable(PAddr + g_MMU->Rdram(), VarName, Reg);
+            m_Assembler.MoveX86regToVariable(PAddr + g_MMU->Rdram(), stdstr_f("RDRAM + %X", PAddr).c_str(), Reg);
         }
         break;
     case 0x04000000:
@@ -10928,8 +10923,13 @@ void CX86RecompilerOps::SW_Register(const asmjit::x86::Gp & Reg, uint32_t VAddr)
         m_RegWorkingSet.AfterCallDirect();
         break;
     case 0x1FC00000:
-        sprintf(VarName, "RDRAM + %X", PAddr);
-        m_Assembler.MoveX86regToVariable(PAddr + g_MMU->Rdram(), VarName, Reg);
+        UpdateCounters(m_RegWorkingSet, false, true, false);
+        m_RegWorkingSet.BeforeCallDirect();
+        m_Assembler.push(0xFFFFFFFF);
+        m_Assembler.push(Reg);
+        m_Assembler.push(PAddr & 0x1FFFFFFF);
+        m_Assembler.CallThis((uint32_t)(MemoryHandler *)&g_MMU->m_PifRamHandler, (uint32_t)((long **)(MemoryHandler *)&g_MMU->m_PifRamHandler)[0][1], "PifRamHandler::Write32", 16);
+        m_RegWorkingSet.AfterCallDirect();
         break;
     default:
         if (PAddr >= 0x10000000 && PAddr < 0x13F00000)
