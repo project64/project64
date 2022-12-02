@@ -322,6 +322,7 @@ bool CCodeSection::ParentContinue()
 
 bool CCodeSection::GenerateNativeCode(uint32_t Test)
 {
+#if defined(__i386__) || defined(_M_IX86)
     if (m_EnterLabel.isValid())
     {
         if (m_Test == Test)
@@ -748,6 +749,9 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             m_RecompilerOps->SetNextStepType(PIPELINE_STAGE_END_BLOCK);
         }
     } while (m_RecompilerOps->GetNextStepType() != PIPELINE_STAGE_END_BLOCK);
+#else
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+#endif
     return true;
 }
 

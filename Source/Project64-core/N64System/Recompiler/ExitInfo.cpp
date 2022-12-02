@@ -8,5 +8,9 @@ CExitInfo::CExitInfo(CCodeBlock & CodeBlock) :
     TargetPC(0),
     ExitRegSet(CodeBlock, CodeBlock.RecompilerOps()->Assembler())
 {
+#if defined(__i386__) || defined(_M_IX86)
     JumpLabel = CodeBlock.RecompilerOps()->Assembler().newLabel();
+#else
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+#endif
 }
