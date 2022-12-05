@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include <Project64-core\N64System\Mips\R4300iInstruction.h>
 #include "DebuggerUI.h"
 
 #include "CPULog.h"
@@ -638,12 +639,12 @@ void CDebuggerUI::CPUStepStarted()
 
     if (m_Breakpoints->HaveRegBP())
     {
-        COpInfo opInfo(R4300iOp::m_Opcode);
+        R4300iInstruction opInfo(g_Reg->m_PROGRAM_COUNTER, R4300iOp::m_Opcode.Value);
 
         if (m_Breakpoints->HaveAnyGPRWriteBP())
         {
-            int nReg = 0;
-            opInfo.WritesGPR(&nReg);
+            uint32_t nReg = 0;
+            opInfo.WritesGPR(nReg);
 
             if (nReg != 0 && m_Breakpoints->HaveGPRWriteBP(nReg))
             {
@@ -653,8 +654,8 @@ void CDebuggerUI::CPUStepStarted()
 
         if (m_Breakpoints->HaveAnyGPRReadBP())
         {
-            int nReg1 = 0, nReg2 = 0;
-            opInfo.ReadsGPR(&nReg1, &nReg2);
+            uint32_t nReg1 = 0, nReg2 = 0;
+            opInfo.ReadsGPR(nReg1, nReg2);
 
             if ((nReg1 != 0 && m_Breakpoints->HaveGPRReadBP(nReg1)) || (nReg2 != 0 && m_Breakpoints->HaveGPRReadBP(nReg2)))
             {

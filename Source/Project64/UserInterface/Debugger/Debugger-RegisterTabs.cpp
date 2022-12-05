@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include <Project64-core\N64System\Mips\R4300iInstruction.h>
 #include "Debugger-RegisterTabs.h"
 #include "OpInfo.h"
 
@@ -483,8 +484,9 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         HWND hWnd = (HWND)lParam;
         WORD ctrlId = (WORD)::GetWindowLong(hWnd, GWL_ID);
 
-        COpInfo opInfo;
-        m_Debugger->DebugLoad_VAddr(g_Reg->m_PROGRAM_COUNTER, opInfo.m_OpCode.Value);
+        uint32_t Instruction;
+        m_Debugger->DebugLoad_VAddr(g_Reg->m_PROGRAM_COUNTER, Instruction);
+        R4300iInstruction opInfo(g_Reg->m_PROGRAM_COUNTER, Instruction);
 
         bool bOpReads = false;
         bool bOpWrites = false;
@@ -508,13 +510,13 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
                 return (LRESULT)GetStockObject(DC_BRUSH);
             }
 
-            int nRegRead1, nRegRead2, nRegWrite;
+            uint32_t nRegRead1, nRegRead2, nRegWrite;
 
-            opInfo.ReadsGPR(&nRegRead1, &nRegRead2);
-            opInfo.WritesGPR(&nRegWrite);
+            opInfo.ReadsGPR(nRegRead1, nRegRead2);
+            opInfo.WritesGPR(nRegWrite);
 
-            bOpReads = (nReg == nRegRead1) || (nReg == nRegRead2);
-            bOpWrites = (nReg == nRegWrite);
+            bOpReads = ((uint32_t)nReg == nRegRead1) || ((uint32_t)nReg == nRegRead2);
+            bOpWrites = ((uint32_t)nReg == nRegWrite);
         }
 
         if (bOpReads && bOpWrites)

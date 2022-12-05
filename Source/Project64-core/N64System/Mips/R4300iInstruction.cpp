@@ -82,49 +82,8 @@ bool R4300iInstruction::DelaySlotEffectsCompare(uint32_t DelayInstruction) const
 {
     R4300iInstruction DelaySlot(m_Address + 4, DelayInstruction);
 
-    uint32_t Reg1 = 0, Reg2 = 0;
-    switch (m_Instruction.op)
+    if (m_Instruction.op == R4300i_CP1)
     {
-    case R4300i_SPECIAL:
-        switch (m_Instruction.funct)
-        {
-        case R4300i_SPECIAL_JR:
-        case R4300i_SPECIAL_JALR:
-            Reg1 = m_Instruction.rs;
-            break;
-        default:
-            return false;
-        }
-        break;
-    case R4300i_REGIMM:
-        switch (m_Instruction.rt)
-        {
-        case R4300i_REGIMM_BLTZ:
-        case R4300i_REGIMM_BGEZ:
-        case R4300i_REGIMM_BLTZL:
-        case R4300i_REGIMM_BGEZL:
-        case R4300i_REGIMM_BLTZAL:
-        case R4300i_REGIMM_BGEZAL:
-            Reg1 = m_Instruction.rs;
-            break;
-        default:
-            return false;
-        }
-        break;
-    case R4300i_BEQ:
-    case R4300i_BNE:
-    case R4300i_BEQL:
-    case R4300i_BNEL:
-        Reg1 = m_Instruction.rs;
-        Reg2 = m_Instruction.rt;
-        break;
-    case R4300i_BLEZ:
-    case R4300i_BGTZ:
-    case R4300i_BLEZL:
-    case R4300i_BGTZL:
-        Reg1 = m_Instruction.rs;
-        break;
-    case R4300i_CP1:
         if (m_Instruction.fmt == R4300i_COP1_BC)
         {
             if (DelaySlot.m_Instruction.op == R4300i_CP1)
@@ -137,190 +96,151 @@ bool R4300iInstruction::DelaySlotEffectsCompare(uint32_t DelayInstruction) const
             }
         }
         return false;
-        break;
-    default:
-        return false;
+    }
+    uint32_t WriteReg = 0, ReadReg1 = 0, ReadReg2 = 0;
+    ReadsGPR(ReadReg1, ReadReg2);
+    DelaySlot.WritesGPR(WriteReg);
+    if (WriteReg != 0 && (WriteReg == ReadReg1 || WriteReg == ReadReg2))
+    {
+        return true;
+    }
+    return false;
+}
+
+
+void R4300iInstruction::ReadsGPR(uint32_t & Reg1, uint32_t & Reg2) const
+{
+    uint32_t op = m_Instruction.op;
+
+    if (op == R4300i_SPECIAL)
+    {
+        uint32_t fn = m_Instruction.funct;
+
+        if (fn >= R4300i_SPECIAL_SLLV && fn <= R4300i_SPECIAL_SRAV || fn >= R4300i_SPECIAL_DSLLV && fn <= R4300i_SPECIAL_DSRAV || fn >= R4300i_SPECIAL_MULT && fn <= R4300i_SPECIAL_TNE)
+        {
+            Reg1 = m_Instruction.rs;
+            Reg2 = m_Instruction.rt;
+            return;
+        }
+
+        if (fn == R4300i_SPECIAL_MTLO || fn == R4300i_SPECIAL_MTHI || fn == R4300i_SPECIAL_JR || fn == R4300i_SPECIAL_JALR)
+        {
+            Reg1 = m_Instruction.rs;
+            Reg2 = 0;
+            return;
+        }
+
+        if (fn >= R4300i_SPECIAL_SLL && fn <= R4300i_SPECIAL_SRA || fn >= R4300i_SPECIAL_DSLL && fn <= R4300i_SPECIAL_DSRA32)
+        {
+            Reg1 = m_Instruction.rt;
+            Reg2 = 0;
+            return;
+        }
+
+        Reg1 = 0;
+        Reg2 = 0;
+        return;
     }
 
-    switch (DelaySlot.m_Instruction.op)
+    if (op >= R4300i_SB && op <= R4300i_SWR || op == R4300i_SC || op == R4300i_SD || op == R4300i_BEQ || op == R4300i_BEQL || op == R4300i_BNE || op == R4300i_BNEL)
     {
-    case R4300i_SPECIAL:
-        switch (DelaySlot.m_Instruction.funct)
+        Reg1 = m_Instruction.rs;
+        Reg2 = m_Instruction.rt;
+        return;
+    }
+
+    if (op >= R4300i_BLEZL && op <= R4300i_LWU || op >= R4300i_BLEZ && op <= R4300i_XORI || op >= R4300i_CACHE && op <= R4300i_LD || op >= R4300i_SWC1 && op <= R4300i_SDC2 || op == R4300i_REGIMM)
+    {
+        Reg1 = m_Instruction.rs;
+        Reg2 = 0;
+        return;
+    }
+
+    if (op == R4300i_CP0 && m_Instruction.fmt == R4300i_COP0_MT)
+    {
+        Reg1 = m_Instruction.rt;
+        Reg2 = 0;
+        return;
+    }
+
+    if (op == R4300i_CP1)
+    {
+        if (m_Instruction.fmt == R4300i_COP1_MT || m_Instruction.fmt == R4300i_COP1_DMT || m_Instruction.fmt == R4300i_COP1_CT)
         {
-        case R4300i_SPECIAL_SLL:
-        case R4300i_SPECIAL_SRL:
-        case R4300i_SPECIAL_SRA:
-        case R4300i_SPECIAL_SLLV:
-        case R4300i_SPECIAL_SRLV:
-        case R4300i_SPECIAL_SRAV:
-        case R4300i_SPECIAL_MFHI:
-        case R4300i_SPECIAL_MTHI:
-        case R4300i_SPECIAL_MFLO:
-        case R4300i_SPECIAL_MTLO:
-        case R4300i_SPECIAL_DSLLV:
-        case R4300i_SPECIAL_DSRLV:
-        case R4300i_SPECIAL_DSRAV:
-        case R4300i_SPECIAL_ADD:
-        case R4300i_SPECIAL_ADDU:
-        case R4300i_SPECIAL_SUB:
-        case R4300i_SPECIAL_SUBU:
-        case R4300i_SPECIAL_AND:
-        case R4300i_SPECIAL_OR:
-        case R4300i_SPECIAL_XOR:
-        case R4300i_SPECIAL_NOR:
-        case R4300i_SPECIAL_SLT:
-        case R4300i_SPECIAL_SLTU:
-        case R4300i_SPECIAL_DADD:
-        case R4300i_SPECIAL_DADDU:
-        case R4300i_SPECIAL_DSUB:
-        case R4300i_SPECIAL_DSUBU:
-        case R4300i_SPECIAL_DSLL:
-        case R4300i_SPECIAL_DSRL:
-        case R4300i_SPECIAL_DSRA:
-        case R4300i_SPECIAL_DSLL32:
-        case R4300i_SPECIAL_DSRL32:
-        case R4300i_SPECIAL_DSRA32:
-            if (DelaySlot.m_Instruction.rd == 0)
-            {
-                return false;
-            }
-            if (DelaySlot.m_Instruction.rd == Reg1 || DelaySlot.m_Instruction.rd == Reg2)
-            {
-                return true;
-            }
-            break;
-        case R4300i_SPECIAL_MULT:
-        case R4300i_SPECIAL_MULTU:
-        case R4300i_SPECIAL_DIV:
-        case R4300i_SPECIAL_DIVU:
-        case R4300i_SPECIAL_DMULT:
-        case R4300i_SPECIAL_DMULTU:
-        case R4300i_SPECIAL_DDIV:
-        case R4300i_SPECIAL_DDIVU:
-            break;
-        default:
-            if (CDebugSettings::HaveDebugger())
-            {
-                g_Notify->DisplayError(stdstr_f("Does %s effect delay slot at %X?", DelaySlot.Name(), m_Address).c_str());
-            }
-            return true;
+            Reg1 = m_Instruction.rt;
+            Reg2 = 0;
+            return;
         }
-        break;
-    case R4300i_CP0:
-        switch (DelaySlot.m_Instruction.rs)
+    }
+
+    Reg1 = 0;
+    Reg2 = 0;
+}
+
+void R4300iInstruction::WritesGPR(uint32_t & nReg) const
+{
+    uint32_t op = m_Instruction.op;
+    if (op == R4300i_SPECIAL)
+    {
+        uint32_t fn = m_Instruction.funct;
+        if (fn >= R4300i_SPECIAL_SLL && fn <= R4300i_SPECIAL_SRAV || fn >= R4300i_SPECIAL_DSLLV && fn <= R4300i_SPECIAL_DSRAV || fn >= R4300i_SPECIAL_DIVU && fn <= R4300i_SPECIAL_DSUBU || fn >= R4300i_SPECIAL_DSLL && fn <= R4300i_SPECIAL_DSRA32 || fn == R4300i_SPECIAL_JALR || fn == R4300i_SPECIAL_MFLO || fn == R4300i_SPECIAL_MFHI)
         {
-        case R4300i_COP0_MT: break;
-        case R4300i_COP0_MF:
-            if (DelaySlot.m_Instruction.rt == 0)
-            {
-                return false;
-            }
-            if (DelaySlot.m_Instruction.rt == Reg1 || DelaySlot.m_Instruction.rt == Reg2)
-            {
-                return true;
-            }
-            break;
-        default:
-            if ((DelaySlot.m_Instruction.rs & 0x10) != 0)
-            {
-                switch (DelaySlot.m_Instruction.funct)
-                {
-                case R4300i_COP0_CO_TLBR: break;
-                case R4300i_COP0_CO_TLBWI: break;
-                case R4300i_COP0_CO_TLBWR: break;
-                case R4300i_COP0_CO_TLBP: break;
-                default:
-                    if (CDebugSettings::HaveDebugger())
-                    {
-                        g_Notify->DisplayError(stdstr_f("Does %s effect delay slot at %X?\n6", DelaySlot.Name(), m_Address).c_str());
-                    }
-                    return true;
-                }
-            }
-            else
-            {
-                if (CDebugSettings::HaveDebugger())
-                {
-                    g_Notify->DisplayError(stdstr_f("Does %s effect delay slot at %X?\n7", DelaySlot.Name(), m_Address).c_str());
-                }
-                return true;
-            }
+            nReg = m_Instruction.rd;
+            return;
         }
-        break;
-    case R4300i_CP1:
-        switch (DelaySlot.m_Instruction.fmt)
+    }
+    else if (op == R4300i_REGIMM)
+    {
+        if (op >= R4300i_REGIMM_BLTZAL && op <= R4300i_REGIMM_BGEZALL)
         {
-        case R4300i_COP1_MF:
-            if (DelaySlot.m_Instruction.rt == 0)
-            {
-                return false;
-            }
-            if (DelaySlot.m_Instruction.rt == Reg1 || DelaySlot.m_Instruction.rt == Reg2)
-            {
-                return true;
-            }
-            break;
-        case R4300i_COP1_CF: break;
-        case R4300i_COP1_MT: break;
-        case R4300i_COP1_CT: break;
-        case R4300i_COP1_S: break;
-        case R4300i_COP1_D: break;
-        case R4300i_COP1_W: break;
-        case R4300i_COP1_L: break;
-        default:
-            if (CDebugSettings::HaveDebugger())
-            {
-                g_Notify->DisplayError(stdstr_f("Does %s effect delay slot at %X?", DelaySlot.Name(), m_Address).c_str());
-            }
-            return true;
+            nReg = 31; // RA
+            return;
         }
-        break;
-    case R4300i_ANDI:
-    case R4300i_ORI:
-    case R4300i_XORI:
-    case R4300i_LUI:
-    case R4300i_ADDI:
-    case R4300i_ADDIU:
-    case R4300i_SLTI:
-    case R4300i_SLTIU:
-    case R4300i_DADDI:
-    case R4300i_DADDIU:
-    case R4300i_LB:
-    case R4300i_LH:
-    case R4300i_LW:
-    case R4300i_LWL:
-    case R4300i_LWR:
-    case R4300i_LDL:
-    case R4300i_LDR:
-    case R4300i_LBU:
-    case R4300i_LHU:
-    case R4300i_LD:
-    case R4300i_LWC1:
-    case R4300i_LDC1:
-        if (DelaySlot.m_Instruction.rt == 0)
-        {
-            return false;
-        }
-        if (DelaySlot.m_Instruction.rt == Reg1 || DelaySlot.m_Instruction.rt == Reg2)
+    }
+    else if (op >= R4300i_DADDI && op <= R4300i_LWU || op >= R4300i_ADDI && op <= R4300i_LUI || op == R4300i_LL || op == R4300i_LD || (op == R4300i_CP0 && m_Instruction.fmt == R4300i_COP0_MF) || (op == R4300i_CP1 && m_Instruction.fmt == R4300i_COP1_MF) || (op == R4300i_CP1 && m_Instruction.fmt == R4300i_COP1_CF))
+    {
+        nReg = m_Instruction.rt;
+        return;
+    }
+
+    if (op == R4300i_JAL)
+    {
+        nReg = 31; // RA
+        return;
+    }
+    nReg = 0;
+}
+
+bool R4300iInstruction::ReadsHI() const
+{
+    return (m_Instruction.op == R4300i_SPECIAL && m_Instruction.funct == R4300i_SPECIAL_MFHI);
+}
+
+bool R4300iInstruction::ReadsLO() const
+{
+    return (m_Instruction.op == R4300i_SPECIAL && m_Instruction.funct == R4300i_SPECIAL_MFLO);
+}
+
+bool R4300iInstruction::WritesHI() const
+{
+    if (m_Instruction.op == R4300i_SPECIAL)
+    {
+        if (m_Instruction.funct == R4300i_SPECIAL_MTHI || m_Instruction.funct >= R4300i_SPECIAL_MULT && m_Instruction.funct <= R4300i_SPECIAL_DDIVU)
         {
             return true;
         }
-        break;
-    case R4300i_CACHE: break;
-    case R4300i_SB: break;
-    case R4300i_SH: break;
-    case R4300i_SW: break;
-    case R4300i_SWR: break;
-    case R4300i_SWL: break;
-    case R4300i_SWC1: break;
-    case R4300i_SDC1: break;
-    case R4300i_SD: break;
-    default:
-        if (CDebugSettings::HaveDebugger())
+    }
+    return false;
+}
+
+bool R4300iInstruction::WritesLO() const 
+{
+    if (m_Instruction.op == R4300i_SPECIAL)
+    {
+        if (m_Instruction.funct == R4300i_SPECIAL_MTLO || m_Instruction.funct >= R4300i_SPECIAL_MULT && m_Instruction.funct <= R4300i_SPECIAL_DDIVU)
         {
-            g_Notify->DisplayError(stdstr_f("Does %s effect delay slot at %X?", DelaySlot.Name(), m_Address).c_str());
+            return true;
         }
-        return true;
     }
     return false;
 }
