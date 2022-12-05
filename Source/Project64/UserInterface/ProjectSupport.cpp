@@ -258,7 +258,7 @@ void CProjectSupport::LoadSupportInfo(void)
     if (hKeyResults != nullptr)
     {
         RegCloseKey(hKeyResults);
-        nullptr;
+        hKeyResults = nullptr;
     }
 
     std::vector<uint8_t> OutData;
