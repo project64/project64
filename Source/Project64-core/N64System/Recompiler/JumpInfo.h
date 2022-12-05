@@ -8,6 +8,7 @@ struct CJumpInfo
 
     uint32_t TargetPC;
     uint32_t JumpPC;
+    uint32_t LinkAddress;
     std::string BranchLabel;
     asmjit::Label LinkLocation;
     asmjit::Label LinkLocation2;
