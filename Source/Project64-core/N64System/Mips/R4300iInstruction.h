@@ -13,6 +13,12 @@ public:
 
     bool HasDelaySlot(void) const;
     bool DelaySlotEffectsCompare(uint32_t DelayInstruction) const;
+    void ReadsGPR(uint32_t & Reg1, uint32_t & Reg2) const;
+    void WritesGPR(uint32_t & nReg) const;
+    bool ReadsHI() const;
+    bool ReadsLO() const;
+    bool WritesHI() const;
+    bool WritesLO() const;
 
 private:
     R4300iInstruction(void);
