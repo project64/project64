@@ -85,6 +85,13 @@ void CCodeSection::GenerateSectionLinkage()
             else if (TargetSection[i] == nullptr && JumpInfo[i]->FallThrough)
             {
                 m_RecompilerOps->LinkJump(*JumpInfo[i], (uint32_t)-1);
+                if (JumpInfo[i]->LinkAddress != (uint32_t)-1)
+                {
+                    JumpInfo[i]->RegSet.UnMap_GPR(31, false);
+                    JumpInfo[i]->RegSet.SetMipsRegLo(31, JumpInfo[i]->LinkAddress);
+                    JumpInfo[i]->RegSet.SetMipsRegState(31, CRegInfo::STATE_CONST_32_SIGN);
+                    JumpInfo[i]->LinkAddress = (uint32_t)-1;
+                }
                 m_RecompilerOps->CompileExit(JumpInfo[i]->JumpPC, JumpInfo[i]->TargetPC, JumpInfo[i]->RegSet, JumpInfo[i]->Reason);
                 JumpInfo[i]->FallThrough = false;
             }
@@ -99,6 +106,13 @@ void CCodeSection::GenerateSectionLinkage()
                     continue;
                 }
                 m_RecompilerOps->LinkJump(*JumpInfo[i], (uint32_t)-1);
+                if (JumpInfo[i]->LinkAddress != (uint32_t)-1)
+                {
+                    JumpInfo[i]->RegSet.UnMap_GPR(31, false);
+                    JumpInfo[i]->RegSet.SetMipsRegLo(31, JumpInfo[i]->LinkAddress);
+                    JumpInfo[i]->RegSet.SetMipsRegState(31, CRegInfo::STATE_CONST_32_SIGN);
+                    JumpInfo[i]->LinkAddress = (uint32_t)-1;
+                }
                 m_RecompilerOps->CompileExit(JumpInfo[i]->JumpPC, JumpInfo[i]->TargetPC, JumpInfo[i]->RegSet, JumpInfo[i]->Reason);
                 //FreeSection(TargetSection[i],Section);
             }
@@ -138,6 +152,13 @@ void CCodeSection::GenerateSectionLinkage()
         {
             JumpInfo[i]->FallThrough = false;
             m_RecompilerOps->LinkJump(*JumpInfo[i], TargetSection[i]->m_SectionID);
+            if (JumpInfo[i]->LinkAddress != (uint32_t)-1)
+            {
+                JumpInfo[i]->RegSet.UnMap_GPR(31, false);
+                JumpInfo[i]->RegSet.SetMipsRegLo(31, JumpInfo[i]->LinkAddress);
+                JumpInfo[i]->RegSet.SetMipsRegState(31, CRegInfo::STATE_CONST_32_SIGN);
+                JumpInfo[i]->LinkAddress = (uint32_t)-1;
+            }
             if (JumpInfo[i]->TargetPC <= m_RecompilerOps->GetCurrentPC())
             {
                 if (JumpInfo[i]->PermLoop)
@@ -232,6 +253,13 @@ void CCodeSection::GenerateSectionLinkage()
         {
             m_CodeBlock.Log("ExitBlock (from %d):", m_SectionID);
             m_RecompilerOps->LinkJump(*JumpInfo[i], (uint32_t)-1);
+            if (JumpInfo[i]->LinkAddress != (uint32_t)-1)
+            {
+                JumpInfo[i]->RegSet.UnMap_GPR(31, false);
+                JumpInfo[i]->RegSet.SetMipsRegLo(31, JumpInfo[i]->LinkAddress);
+                JumpInfo[i]->RegSet.SetMipsRegState(31, CRegInfo::STATE_CONST_32_SIGN);
+                JumpInfo[i]->LinkAddress = (uint32_t)-1;
+            }
             m_RecompilerOps->CompileExit(JumpInfo[i]->JumpPC, JumpInfo[i]->TargetPC, JumpInfo[i]->RegSet, JumpInfo[i]->Reason);
             continue;
         }
@@ -249,6 +277,13 @@ void CCodeSection::GenerateSectionLinkage()
 
             m_CodeBlock.Log(Label.c_str());
             m_RecompilerOps->LinkJump(*JumpInfo[i], (uint32_t)-1);
+            if (JumpInfo[i]->LinkAddress != (uint32_t)-1)
+            {
+                JumpInfo[i]->RegSet.UnMap_GPR(31, false);
+                JumpInfo[i]->RegSet.SetMipsRegLo(31, JumpInfo[i]->LinkAddress);
+                JumpInfo[i]->RegSet.SetMipsRegState(31, CRegInfo::STATE_CONST_32_SIGN);
+                JumpInfo[i]->LinkAddress = (uint32_t)-1;
+            }
             m_RecompilerOps->SetRegWorkingSet(JumpInfo[i]->RegSet);
             if (JumpInfo[i]->TargetPC <= JumpInfo[i]->JumpPC)
             {
