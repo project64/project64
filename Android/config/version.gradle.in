@@ -3,7 +3,7 @@ android {
     compileSdkVersion 30
     ndkVersion "22.1.7171670"
     defaultConfig {
-        minSdkVersion 17
+        minSdkVersion 18
         targetSdkVersion 30
         VersionMajor = 4
         VersionMinor = 0

@@ -11,6 +11,10 @@ echo copy 3rdParty/7zip
 xcopy "%base_dir%/Source/3rdParty/7zip" "%base_dir%/Android/jni/3rdParty/7zip/" /D /I /F /Y /E
 IF %ERRORLEVEL% NEQ 0 (exit /B 1)
 
+echo copy 3rdParty/asmjit
+xcopy "%base_dir%/Source/3rdParty/asmjit" "%base_dir%/Android/jni/3rdParty/asmjit/" /D /I /F /Y /E
+IF %ERRORLEVEL% NEQ 0 (exit /B 1)
+
 echo copy 3rdParty/png
 xcopy "%base_dir%/Source/3rdParty/png" "%base_dir%/Android/jni/3rdParty/png/" /D /I /F /Y /E
 IF %ERRORLEVEL% NEQ 0 (exit /B 1)
