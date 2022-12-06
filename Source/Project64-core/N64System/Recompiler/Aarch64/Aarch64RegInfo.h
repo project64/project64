@@ -17,6 +17,8 @@ public:
 
     bool operator==(const CAarch64RegInfo & right) const;
     bool operator!=(const CAarch64RegInfo & right) const;
+
+    void UnMap_GPR(uint32_t Reg, bool WriteBackValue);
 };
 
 #endif

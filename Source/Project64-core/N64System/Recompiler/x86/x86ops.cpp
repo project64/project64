@@ -170,9 +170,9 @@ void CX86Ops::CallThis(uint32_t ThisPtr, uint32_t FunctPtr, char * FunctName, ui
 #else
 void CX86Ops::CallThis(uint32_t ThisPtr, uint32_t FunctPtr, char * FunctName, uint32_t StackSize)
 {
-    PushImm32(ThisPtr);
+    push(ThisPtr);
     CallFunc(FunctPtr, FunctName);
-    AddConstToX86Reg(CX86Ops::asmjit::x86::esp, StackSize);
+    AddConstToX86Reg(asmjit::x86::esp, StackSize);
 }
 #endif
 

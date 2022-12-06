@@ -35,4 +35,9 @@ bool CArmRegInfo::operator!=(const CArmRegInfo & /*right*/) const
     return false;
 }
 
+void CArmRegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
+{
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+}
+
 #endif

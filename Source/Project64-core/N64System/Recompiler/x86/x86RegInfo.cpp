@@ -440,7 +440,7 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
             m_x86fpu_MappedTo[RegPos] = m_x86fpu_MappedTo[StackTopPos()];
             m_x86fpu_State[RegPos] = m_x86fpu_State[StackTopPos()];
             m_x86fpu_StateChanged[RegPos] = m_x86fpu_StateChanged[StackTopPos()];
-            m_CodeBlock.Log("    regcache: allocate ST(%d) to %s", StackPos, CRegName::FPR[m_x86fpu_MappedTo[RegPos]]);
+            //m_CodeBlock.Log("    regcache: allocate ST(%d) to %s", StackPos, CRegName::FPR[m_x86fpu_MappedTo[RegPos]]);
             m_CodeBlock.Log("    regcache: allocate ST(0) to %s", CRegName::FPR[Reg]);
 
             m_Assembler.fxch(StackPos);
