@@ -1,2 +1,2 @@
 rootProject.name = 'Project64'
-include ':app', ':jni:3rdParty:png', ':jni:3rdParty:zlib', ':jni:Common', ':jni:Settings', ':jni:Project64-core', ':jni:Project64-bridge', ':jni:Project64-video', ':jni:Project64-audio', ':jni:Plugin-input', ':jni:Plugin-RspHle'
+include ':app', ':jni:3rdParty:asmjit', ':jni:3rdParty:png', ':jni:3rdParty:zlib', ':jni:Common', ':jni:Settings', ':jni:Project64-core', ':jni:Project64-bridge', ':jni:Project64-video', ':jni:Project64-audio', ':jni:Plugin-input', ':jni:Plugin-RspHle'
