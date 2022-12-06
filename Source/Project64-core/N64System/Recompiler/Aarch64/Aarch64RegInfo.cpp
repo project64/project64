@@ -35,4 +35,9 @@ bool CAarch64RegInfo::operator!=(const CAarch64RegInfo & /*right*/) const
     return false;
 }
 
+void CAarch64RegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
+{
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+}
+
 #endif

@@ -17,6 +17,8 @@ public:
 
     bool operator==(const CArmRegInfo & right) const;
     bool operator!=(const CArmRegInfo & right) const;
+
+    void UnMap_GPR(uint32_t Reg, bool WriteBackValue);
 };
 
 #endif
