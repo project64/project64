@@ -290,6 +290,7 @@ void CRegisters::Reset()
     memset(m_CP0, 0, sizeof(m_CP0));
     memset(m_FPR, 0, sizeof(m_FPR));
     memset(m_FPCR, 0, sizeof(m_FPCR));
+    m_FPCR[0] = 0xA00;
     m_CP0Latch = 0;
     m_HI.DW = 0;
     m_LO.DW = 0;
