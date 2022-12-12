@@ -1900,7 +1900,7 @@ void R4300iOp::COP1_CT()
     TEST_COP1_USABLE_EXCEPTION();
     if (m_Opcode.fs == 31)
     {
-        _FPCR[m_Opcode.fs] = _GPR[m_Opcode.rt].W[0];
+        _FPCR[m_Opcode.fs] = (_GPR[m_Opcode.rt].W[0] & 0x183FFFF);
         switch ((_FPCR[m_Opcode.fs] & 3))
         {
         case 0: *_RoundingModel = FE_TONEAREST; break;
@@ -1909,10 +1909,6 @@ void R4300iOp::COP1_CT()
         case 3: *_RoundingModel = FE_DOWNWARD; break;
         }
         return;
-    }
-    if (HaveDebugger())
-    {
-        g_Notify->DisplayError("CTC1: what register are you writing to?");
     }
 }
 
