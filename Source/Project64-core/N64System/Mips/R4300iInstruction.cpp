@@ -407,6 +407,14 @@ void R4300iInstruction::DecodeName(void)
     case R4300i_CP1:
         DecodeCop1Name();
         break;
+    case R4300i_CP2:
+        strcpy(m_Name, "Reserved(CP2)");
+        sprintf(m_Param, "");
+        break;
+    case R4300i_CP3:
+        strcpy(m_Name, "Reserved(CP3)");
+        sprintf(m_Param, "");
+        break;
     case R4300i_BEQL:
         if (m_Instruction.rs == m_Instruction.rt)
         {

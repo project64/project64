@@ -625,6 +625,14 @@ void CRegisters::DoCopUnusableException(bool DelaySlot, int32_t Coprocessor)
     {
         CAUSE_REGISTER |= 0x10000000;
     }
+    else if (Coprocessor == 2)
+    {
+        CAUSE_REGISTER |= 0x20000000;
+    }
+    else if (Coprocessor == 3)
+    {
+        CAUSE_REGISTER |= 0x30000000;
+    }
     if (DelaySlot)
     {
         CAUSE_REGISTER |= CAUSE_BD;

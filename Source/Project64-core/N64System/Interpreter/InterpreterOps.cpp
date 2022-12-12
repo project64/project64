@@ -84,6 +84,34 @@ void R4300iOp::COP1()
     Jump_CoP1[m_Opcode.fmt]();
 }
 
+void R4300iOp::COP2()
+{
+    if ((g_Reg->STATUS_REGISTER & STATUS_CU2) == 0)
+    {
+        g_Reg->DoCopUnusableException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP, 2);
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+    }
+    else
+    {
+        UnknownOpcode();
+    }
+}
+
+void R4300iOp::COP3()
+{
+    if ((g_Reg->STATUS_REGISTER & STATUS_CU3) == 0)
+    {
+        g_Reg->DoCopUnusableException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP, 3);
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+    }
+    else
+    {
+        UnknownOpcode();
+    }
+}
+
 void R4300iOp::COP1_BC()
 {
     Jump_CoP1_BC[m_Opcode.ft]();
@@ -131,8 +159,8 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_Opcode[15] = LUI;
     Jump_Opcode[16] = COP0;
     Jump_Opcode[17] = COP1;
-    Jump_Opcode[18] = UnknownOpcode;
-    Jump_Opcode[19] = UnknownOpcode;
+    Jump_Opcode[18] = COP2;
+    Jump_Opcode[19] = COP3;
     Jump_Opcode[20] = BEQL;
     Jump_Opcode[21] = BNEL;
     Jump_Opcode[22] = BLEZL;
@@ -1908,7 +1936,6 @@ void R4300iOp::COP1_CT()
         case 2: *_RoundingModel = FE_UPWARD; break;
         case 3: *_RoundingModel = FE_DOWNWARD; break;
         }
-        return;
     }
 }
 

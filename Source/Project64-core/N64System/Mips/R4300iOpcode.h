@@ -79,6 +79,8 @@ enum R4300iOpCodes
     R4300i_LUI = 15,
     R4300i_CP0 = 16,
     R4300i_CP1 = 17,
+    R4300i_CP2 = 18,
+    R4300i_CP3 = 19,
     R4300i_BEQL = 20,
     R4300i_BNEL = 21,
     R4300i_BLEZL = 22,

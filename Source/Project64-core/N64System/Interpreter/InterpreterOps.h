@@ -225,6 +225,8 @@ protected:
     static void COP0();
     static void COP0_CO();
     static void COP1();
+    static void COP2();
+    static void COP3();
     static void COP1_BC();
     static void COP1_S();
     static void COP1_D();
