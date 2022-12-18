@@ -79,7 +79,6 @@ CJniBridegSettings::CJniBridegSettings()
     ADD_SETTING(Default_CounterFactor);
     ADD_SETTING(Default_SyncViaAudio);
     ADD_SETTING(Default_FixedAudio);
-    ADD_SETTING(Default_UnalignedDMA);
     ADD_SETTING(Default_RandomizeSIPIInterrupts);
     ADD_SETTING(Default_SMM_Protect_Memory);
     ADD_SETTING(Default_DiskSeekTiming);
@@ -117,7 +116,6 @@ CJniBridegSettings::CJniBridegSettings()
     ADD_SETTING(Rdb_AudioResetOnLoad);
     ADD_SETTING(Rdb_AllowROMWrites);
     ADD_SETTING(Rdb_CRC_Recalc);
-    ADD_SETTING(Rdb_UnalignedDMA);
     ADD_SETTING(Rdb_RandomizeSIPIInterrupts);
     ADD_SETTING(Rdb_RPCKey);
     ADD_SETTING(Rdb_DiskSeekTiming);
@@ -174,7 +172,6 @@ CJniBridegSettings::CJniBridegSettings()
     ADD_SETTING(Game_LoadSaveAtStart);
     ADD_SETTING(Game_OverClockModifier);
     ADD_SETTING(Game_FullSpeed);
-    ADD_SETTING(Game_UnalignedDMA);
     ADD_SETTING(Game_RandomizeSIPIInterrupts);
     ADD_SETTING(Game_RPCKey);
     ADD_SETTING(Game_DiskSeekTiming);
