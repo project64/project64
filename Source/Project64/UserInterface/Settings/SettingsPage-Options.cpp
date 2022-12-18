@@ -20,7 +20,6 @@ CGeneralOptionsPage::CGeneralOptionsPage(CSettingConfig * SettingsConfig, HWND h
     SetDlgItemText(IDC_ROMSEL_TEXT2, wGS(RB_ROMS).c_str());
     SetDlgItemText(IDC_MAXROMDIR_TXT, wGS(RB_MAX_DIRS).c_str());
     SetDlgItemText(IDC_ROMSEL_TEXT4, wGS(RB_DIRS).c_str());
-    SetDlgItemText(IDC_IPLDIR_TXT, wGS(OPTION_IPL_ROM_PATH).c_str());
 
     AddModCheckBox(GetDlgItem(IDC_AUTOSLEEP), (SettingID)Setting_AutoSleep);
     AddModCheckBox(GetDlgItem(IDC_LOAD_FULLSCREEN), (SettingID)Setting_AutoFullscreen);

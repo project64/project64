@@ -68,7 +68,6 @@ enum SettingID
     Default_ViRefreshRate,
     Default_AiCountPerBytes,
     Default_CounterFactor,
-    Default_32Bit,
     Default_SyncViaAudio,
     Default_FixedAudio,
     Default_UnalignedDMA,

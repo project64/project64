@@ -4,7 +4,6 @@
 
 #include <Project64-core/Debugger.h>
 #include <Project64-core/ExceptionHandler.h>
-#include <Project64-core/N64System/Interpreter/InterpreterOps32.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/R4300iInstruction.h>
 #include <Project64-core/N64System/N64System.h>
@@ -22,15 +21,7 @@ void ExecuteInterpreterOps(uint32_t /*Cycles*/)
 void CInterpreterCPU::BuildCPU()
 {
     R4300iOp::m_TestTimer = false;
-
-    if (g_Settings->LoadBool(Game_32Bit))
-    {
-        m_R4300i_Opcode = R4300iOp32::BuildInterpreter();
-    }
-    else
-    {
-        m_R4300i_Opcode = R4300iOp::BuildInterpreter();
-    }
+    m_R4300i_Opcode = R4300iOp::BuildInterpreter();
 }
 
 void CInterpreterCPU::InPermLoop()

@@ -288,9 +288,6 @@
     <ClCompile Include="N64System\Interpreter\InterpreterOps.cpp">
       <Filter>Source Files\N64 System\Interpreter</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\Interpreter\InterpreterOps32.cpp">
-      <Filter>Source Files\N64 System\Interpreter</Filter>
-    </ClCompile>
     <ClCompile Include="Multilanguage\Language.cpp">
       <Filter>Source Files\Multilanguage</Filter>
     </ClCompile>
@@ -654,9 +651,6 @@
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
     <ClInclude Include="N64System\Interpreter\InterpreterCPU.h">
-      <Filter>Header Files\N64 System\Interpreter</Filter>
-    </ClInclude>
-    <ClInclude Include="N64System\Interpreter\InterpreterOps32.h">
       <Filter>Header Files\N64 System\Interpreter</Filter>
     </ClInclude>
     <ClInclude Include="N64System\Interpreter\InterpreterOps.h">
