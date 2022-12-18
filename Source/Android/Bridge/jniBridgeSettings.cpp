@@ -77,7 +77,6 @@ CJniBridegSettings::CJniBridegSettings()
     ADD_SETTING(Default_ViRefreshRate);
     ADD_SETTING(Default_AiCountPerBytes);
     ADD_SETTING(Default_CounterFactor);
-    ADD_SETTING(Default_32Bit);
     ADD_SETTING(Default_SyncViaAudio);
     ADD_SETTING(Default_FixedAudio);
     ADD_SETTING(Default_UnalignedDMA);

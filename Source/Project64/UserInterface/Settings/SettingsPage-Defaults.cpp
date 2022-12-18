@@ -15,7 +15,6 @@ CDefaultsOptionsPage::CDefaultsOptionsPage(HWND hParent, const RECT & rcDispay)
     SetDlgItemText(IDC_VIREFESH_TEXT, wGS(ROM_VIREFRESH).c_str());
     SetDlgItemText(IDC_COUNTPERBYTE_TEXT, wGS(ROM_COUNTPERBYTE).c_str());
     SetDlgItemText(IDC_COUNTFACT_TEXT, wGS(ROM_COUNTER_FACTOR).c_str());
-    SetDlgItemText(IDC_ROM_32BIT, wGS(ROM_32BIT).c_str());
     SetDlgItemText(IDC_ROM_FIXEDAUDIO, wGS(ROM_FIXED_AUDIO).c_str());
     SetDlgItemText(IDC_SYNC_AUDIO, wGS(ROM_SYNC_AUDIO).c_str());
     SetDlgItemText(IDC_UNALIGNED_DMA, wGS(ROM_UNALIGNED_DMA).c_str());
@@ -50,7 +49,6 @@ CDefaultsOptionsPage::CDefaultsOptionsPage(HWND hParent, const RECT & rcDispay)
     TxtBox->SetTextField(GetDlgItem(IDC_COUNTPERBYTE_TEXT));
 
     AddModCheckBox(GetDlgItem(IDC_HLE_GFX), Default_UseHleGfx);
-    AddModCheckBox(GetDlgItem(IDC_ROM_32BIT), Default_32Bit);
     AddModCheckBox(GetDlgItem(IDC_SYNC_AUDIO), Default_SyncViaAudio);
     AddModCheckBox(GetDlgItem(IDC_ROM_FIXEDAUDIO), Default_FixedAudio);
     AddModCheckBox(GetDlgItem(IDC_UNALIGNED_DMA), Default_UnalignedDMA);

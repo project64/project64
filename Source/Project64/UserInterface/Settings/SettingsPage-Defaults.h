@@ -7,7 +7,6 @@ class CDefaultsOptionsPage :
     BEGIN_MSG_MAP_EX(CDefaultsOptionsPage)
     {
         COMMAND_ID_HANDLER_EX(IDC_HLE_GFX, CheckBoxChanged);
-        COMMAND_ID_HANDLER_EX(IDC_ROM_32BIT, CheckBoxChanged);
         COMMAND_ID_HANDLER_EX(IDC_SYNC_AUDIO, CheckBoxChanged);
         COMMAND_ID_HANDLER_EX(IDC_ROM_FIXEDAUDIO, CheckBoxChanged);
         COMMAND_ID_HANDLER_EX(IDC_UNALIGNED_DMA, CheckBoxChanged);

@@ -20,7 +20,6 @@ CGameGeneralPage::CGameGeneralPage(HWND hParent, const RECT & rcDispay)
     SetDlgItemText(IDC_COUNTPERBYTE_TEXT, wGS(ROM_COUNTPERBYTE).c_str());
     SetDlgItemText(IDC_OVER_CLOCK_MODIFIER_TEXT, wGS(ROM_OVER_CLOCK_MODIFIER).c_str());
 
-    SetDlgItemText(IDC_ROM_32BIT, wGS(ROM_32BIT).c_str());
     SetDlgItemText(IDC_ROM_FIXEDAUDIO, wGS(ROM_FIXED_AUDIO).c_str());
     SetDlgItemText(IDC_DELAY_DP, wGS(ROM_DELAY_DP).c_str());
     SetDlgItemText(IDC_SYNC_AUDIO, wGS(ROM_SYNC_AUDIO).c_str());
@@ -29,7 +28,6 @@ CGameGeneralPage::CGameGeneralPage(HWND hParent, const RECT & rcDispay)
     SetDlgItemText(IDC_UNALIGNED_DMA, wGS(ROM_UNALIGNED_DMA).c_str());
     SetDlgItemText(IDC_RANDOMIZE_SIPI_INTERRUPTS, wGS(ROM_RANDOMIZE_SIPI_INTERRUPTS).c_str());
 
-    AddModCheckBox(GetDlgItem(IDC_ROM_32BIT), Game_32Bit);
     AddModCheckBox(GetDlgItem(IDC_SYNC_AUDIO), Game_SyncViaAudio);
     AddModCheckBox(GetDlgItem(IDC_ROM_FIXEDAUDIO), Game_FixedAudio);
     AddModCheckBox(GetDlgItem(IDC_DELAY_DP), Game_DelayDP);
