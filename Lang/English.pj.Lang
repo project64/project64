@@ -287,7 +287,6 @@
 #538#  "32-bit engine"
 #539#  "Delay DP interrupt"
 #5400# "Overclock modifier:"
-#5410# "Unaligned DMA"
 #5420# "Randomize SI/PI interrupts"
 #5440# "Disk seek timing:"
 #5441# "Turbo"

@@ -290,10 +290,6 @@
 #5441# "Turbo"
 #5442# "Lento"
 
-#5410# "Interrupciones aleatorias SI/PI"
-
-#5420# "DMA desalineado"
-
 // Core styles
 #540#  "Interpretador"
 #541#  "Recompilador"

@@ -126,7 +126,7 @@ bool PeripheralInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint3
     {
     case 0x04600000: PI_DRAM_ADDR_REG = ((PI_DRAM_ADDR_REG & ~Mask) | (Value & Mask)) & 0x00FFFFFE; break;
     case 0x04600004:
-        PI_CART_ADDR_REG = ((PI_CART_ADDR_REG & ~Mask) | (Value & Mask)) & (g_Settings->LoadBool(Game_UnalignedDMA) ? 0xFFFFFFFF : 0xFFFFFFFE);
+        PI_CART_ADDR_REG = ((PI_CART_ADDR_REG & ~Mask) | (Value & Mask)) & 0xFFFFFFFE;
         if (EnableDisk())
         {
             DiskDMACheck();
