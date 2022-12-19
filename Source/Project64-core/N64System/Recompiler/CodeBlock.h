@@ -21,7 +21,7 @@ public:
 
     asmjit::CodeHolder & CodeHolder(void)
     {
-        return m_CodeHolder; 
+        return m_CodeHolder;
     }
     uint32_t VAddrEnter() const
     {
@@ -103,7 +103,7 @@ private:
     void LogSectionInfo();
     bool SetSection(CCodeSection *& Section, CCodeSection * CurrentSection, uint32_t TargetPC, bool LinkAllowed, uint32_t CurrentPC);
     bool AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t & ContinuePC, bool & LikelyBranch, bool & IncludeDelaySlot, bool & EndBlock, bool & PermLoop);
-    void handleError(asmjit::Error err, const char* message, asmjit::BaseEmitter* origin);
+    void handleError(asmjit::Error err, const char * message, asmjit::BaseEmitter * origin);
 
     asmjit::Environment m_Environment;
     asmjit::CodeHolder m_CodeHolder;

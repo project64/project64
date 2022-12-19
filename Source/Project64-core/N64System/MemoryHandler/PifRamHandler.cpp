@@ -5,8 +5,8 @@
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/Rumblepak.h>
 #include <Project64-core/N64System/Mips/Transferpak.h>
-#include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/SystemGlobals.h>
 
 PifRamHandler::PifRamHandler(CN64System & System, bool SavesReadOnly) :
     m_MMU(System.m_MMU_VM),
@@ -134,9 +134,7 @@ void PifRamHandler::DMA_READ()
                 HexData[0] = '\0';
                 AsciiData[0] = '\0';
             }
-            sprintf(Addon, "%02X %02X %02X %02X",
-                m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1],
-                m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3]);
+            sprintf(Addon, "%02X %02X %02X %02X", m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1], m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3]);
             strcat(HexData, Addon);
             if (((count + 1) % 4) != 0)
             {
@@ -144,9 +142,7 @@ void PifRamHandler::DMA_READ()
                 strcat(HexData, Addon);
             }
 
-            sprintf(Addon, "%c%c%c%c",
-                m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1],
-                m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3]);
+            sprintf(Addon, "%c%c%c%c", m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1], m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3]);
             strcat(AsciiData, Addon);
 
             if (((count + 1) % 4) == 0)
@@ -236,9 +232,7 @@ void PifRamHandler::DMA_WRITE()
                 HexData[0] = '\0';
                 AsciiData[0] = '\0';
             }
-            sprintf(Addon, "%02X %02X %02X %02X",
-                m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1],
-                m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3]);
+            sprintf(Addon, "%02X %02X %02X %02X", m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1], m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3]);
             strcat(HexData, Addon);
             if (((count + 1) % 4) != 0)
             {
@@ -246,9 +240,7 @@ void PifRamHandler::DMA_WRITE()
                 strcat(HexData, Addon);
             }
 
-            sprintf(Addon, "%c%c%c%c",
-                m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1],
-                m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3]);
+            sprintf(Addon, "%c%c%c%c", m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1], m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3]);
             strcat(AsciiData, Addon);
 
             if (((count + 1) % 4) == 0)
@@ -515,9 +507,7 @@ void PifRamHandler::LogControllerPakData(const char * Description)
             HexData[0] = '\0';
             AsciiData[0] = '\0';
         }
-        sprintf(Addon, "%02X %02X %02X %02X",
-            m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1],
-            m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3]);
+        sprintf(Addon, "%02X %02X %02X %02X", m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1], m_PifRam[(count << 2) + 2], m_PifRam[(count << 2) + 3]);
         strcat(HexData, Addon);
         if (((count + 1) % 4) != 0)
         {

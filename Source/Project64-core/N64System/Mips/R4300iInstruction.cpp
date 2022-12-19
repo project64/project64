@@ -107,7 +107,6 @@ bool R4300iInstruction::DelaySlotEffectsCompare(uint32_t DelayInstruction) const
     return false;
 }
 
-
 void R4300iInstruction::ReadsGPR(uint32_t & Reg1, uint32_t & Reg2) const
 {
     uint32_t op = m_Instruction.op;
@@ -233,7 +232,7 @@ bool R4300iInstruction::WritesHI() const
     return false;
 }
 
-bool R4300iInstruction::WritesLO() const 
+bool R4300iInstruction::WritesLO() const
 {
     if (m_Instruction.op == R4300i_SPECIAL)
     {

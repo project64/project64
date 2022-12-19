@@ -9837,7 +9837,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, asmj
         }
         else
         {
-            m_Assembler.mov(asmjit::x86::dword_ptr(AddressReg, TempReg), ValueReg );
+            m_Assembler.mov(asmjit::x86::dword_ptr(AddressReg, TempReg), ValueReg);
         }
     }
     else if (ValueSize == 64)

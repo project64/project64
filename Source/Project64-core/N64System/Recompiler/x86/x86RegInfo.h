@@ -2,8 +2,8 @@
 
 #if defined(__i386__) || defined(_M_IX86)
 #include <Project64-core/N64System/Mips/Register.h>
-#include <Project64-core/N64System/Recompiler/asmjit.h>
 #include <Project64-core/N64System/Recompiler/RegBase.h>
+#include <Project64-core/N64System/Recompiler/asmjit.h>
 #include <Project64-core/N64System/Recompiler/x86/x86ops.h>
 #include <Project64-core/Settings/DebugSettings.h>
 

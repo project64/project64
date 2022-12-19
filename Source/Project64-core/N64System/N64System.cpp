@@ -1681,7 +1681,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
         {
 #if defined(__aarch64__) || defined(__amd64__) || defined(_M_X64)
             g_Notify->BreakPoint(__FILE__, __LINE__);
-#else       
+#else
             uint32_t StackPointer = (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF);
             uint32_t TargetStackPos = 0;
             if (StackPointer < m_MMU_VM.RdramSize())

@@ -405,7 +405,7 @@ CCompiledFunc * CRecompiler::CompileCode()
         WriteTrace(TraceRecompiler, TraceDebug, "Info->Function() = %X", Func->Function());
         std::string dumpline;
         uint32_t start_address = (uint32_t)(Func->Function()) & ~1;
-        for (uint8_t * ptr = (uint8_t *)start_address, * ptr_end = ((uint8_t *)start_address) + CodeLen; ptr < ptr_end; ptr++)
+        for (uint8_t *ptr = (uint8_t *)start_address, *ptr_end = ((uint8_t *)start_address) + CodeLen; ptr < ptr_end; ptr++)
         {
             if (dumpline.empty())
             {

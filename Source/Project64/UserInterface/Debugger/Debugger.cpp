@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
-#include <Project64-core\N64System\Mips\R4300iInstruction.h>
 #include "DebuggerUI.h"
+#include <Project64-core\N64System\Mips\R4300iInstruction.h>
 
 #include "CPULog.h"
 #include "DMALog.h"

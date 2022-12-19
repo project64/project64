@@ -148,7 +148,6 @@ public:
         return m_PifRamHandler;
     };
 
-
 private:
     CMipsMemoryVM();
     CMipsMemoryVM(const CMipsMemoryVM &);
