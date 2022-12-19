@@ -17,7 +17,6 @@ class CX86Ops :
     public asmjit::Logger
 {
 public:
-
     enum Multipler
     {
         Multip_x1 = 1,
@@ -130,7 +129,7 @@ private:
     };
 
     static x86Reg RegValue(const asmjit::x86::Gp & Reg);
-    asmjit::Error _log(const char* data, size_t size) noexcept;
+    asmjit::Error _log(const char * data, size_t size) noexcept;
     void AddSymbol(const char * SymbolKey, const char * SymbolValue);
     void RemoveSymbol(const char * SymbolKey);
     std::string VariableSymbol(void * Variable) const;
@@ -138,7 +137,7 @@ private:
     static void BreakPointNotification(const char * FileName, int32_t LineNumber);
 
     typedef std::map<std::string, std::string> SymbolMap;
-    
+
     SymbolMap m_Symbols;
     CCodeBlock & m_CodeBlock;
 };
