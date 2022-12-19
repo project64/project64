@@ -16,14 +16,38 @@ const char * Format_Name[] = {"Unknown", "dword", "qword", "float", "double"};
 
 x86RegIndex GetIndexFromX86Reg(const asmjit::x86::Gp & Reg)
 {
-    if (Reg == asmjit::x86::eax) { return x86RegIndex_EAX; }
-    if (Reg == asmjit::x86::ebx) { return x86RegIndex_EBX; }
-    if (Reg == asmjit::x86::ecx) { return x86RegIndex_ECX; }
-    if (Reg == asmjit::x86::edx) { return x86RegIndex_EDX; }
-    if (Reg == asmjit::x86::esi) { return x86RegIndex_ESI; }
-    if (Reg == asmjit::x86::edi) { return x86RegIndex_EDI; }
-    if (Reg == asmjit::x86::ebp) { return x86RegIndex_EBP; }
-    if (Reg == asmjit::x86::esp) { return x86RegIndex_ESP; }
+    if (Reg == asmjit::x86::eax)
+    {
+        return x86RegIndex_EAX;
+    }
+    if (Reg == asmjit::x86::ebx)
+    {
+        return x86RegIndex_EBX;
+    }
+    if (Reg == asmjit::x86::ecx)
+    {
+        return x86RegIndex_ECX;
+    }
+    if (Reg == asmjit::x86::edx)
+    {
+        return x86RegIndex_EDX;
+    }
+    if (Reg == asmjit::x86::esi)
+    {
+        return x86RegIndex_ESI;
+    }
+    if (Reg == asmjit::x86::edi)
+    {
+        return x86RegIndex_EDI;
+    }
+    if (Reg == asmjit::x86::ebp)
+    {
+        return x86RegIndex_EBP;
+    }
+    if (Reg == asmjit::x86::esp)
+    {
+        return x86RegIndex_ESP;
+    }
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return x86RegIndex_EAX;
 }
@@ -47,14 +71,38 @@ asmjit::x86::Gp GetX86RegFromIndex(x86RegIndex Index)
 
 x86RegFpuIndex GetIndexFromX86FpuReg(const asmjit::x86::St & Reg)
 {
-    if (Reg == asmjit::x86::st0) { return x86RegFpuIndex_ST0; }
-    if (Reg == asmjit::x86::st1) { return x86RegFpuIndex_ST1; }
-    if (Reg == asmjit::x86::st2) { return x86RegFpuIndex_ST2; }
-    if (Reg == asmjit::x86::st3) { return x86RegFpuIndex_ST3; }
-    if (Reg == asmjit::x86::st4) { return x86RegFpuIndex_ST4; }
-    if (Reg == asmjit::x86::st5) { return x86RegFpuIndex_ST5; }
-    if (Reg == asmjit::x86::st6) { return x86RegFpuIndex_ST6; }
-    if (Reg == asmjit::x86::st7) { return x86RegFpuIndex_ST7; }
+    if (Reg == asmjit::x86::st0)
+    {
+        return x86RegFpuIndex_ST0;
+    }
+    if (Reg == asmjit::x86::st1)
+    {
+        return x86RegFpuIndex_ST1;
+    }
+    if (Reg == asmjit::x86::st2)
+    {
+        return x86RegFpuIndex_ST2;
+    }
+    if (Reg == asmjit::x86::st3)
+    {
+        return x86RegFpuIndex_ST3;
+    }
+    if (Reg == asmjit::x86::st4)
+    {
+        return x86RegFpuIndex_ST4;
+    }
+    if (Reg == asmjit::x86::st5)
+    {
+        return x86RegFpuIndex_ST5;
+    }
+    if (Reg == asmjit::x86::st6)
+    {
+        return x86RegFpuIndex_ST6;
+    }
+    if (Reg == asmjit::x86::st7)
+    {
+        return x86RegFpuIndex_ST7;
+    }
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return x86RegFpuIndex_ST0;
 }
@@ -498,8 +546,7 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
 
 const asmjit::x86::St & CX86RegInfo::StackPosition(int32_t Reg)
 {
-    static const asmjit::x86::St StRegs[] = 
-    {
+    static const asmjit::x86::St StRegs[] = {
         asmjit::x86::st0,
         asmjit::x86::st1,
         asmjit::x86::st2,
