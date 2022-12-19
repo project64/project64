@@ -4,11 +4,11 @@
 #include <Project64-core/N64System/Interpreter/InterpreterOps.h>
 #include <Project64-core/N64System/Mips/R4300iOpcode.h>
 #include <Project64-core/N64System/Mips/Register.h>
-#include <Project64-core/N64System/Recompiler/asmjit.h>
 #include <Project64-core/N64System/Recompiler/ExitInfo.h>
 #include <Project64-core/N64System/Recompiler/JumpInfo.h>
 #include <Project64-core/N64System/Recompiler/RecompilerOps.h>
 #include <Project64-core/N64System/Recompiler/RegInfo.h>
+#include <Project64-core/N64System/Recompiler/asmjit.h>
 #include <Project64-core/N64System/Recompiler/x86/x86ops.h>
 #include <Project64-core/Settings/GameSettings.h>
 #include <Project64-core/Settings/N64SystemSettings.h>

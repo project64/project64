@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
-#include <Project64-core\N64System\Mips\R4300iInstruction.h>
 #include "Debugger-RegisterTabs.h"
 #include "OpInfo.h"
+#include <Project64-core\N64System\Mips\R4300iInstruction.h>
 
 bool CRegisterTabs::m_bColorsEnabled = false;
 CDebuggerUI * CRegisterTabs::m_Debugger = nullptr;

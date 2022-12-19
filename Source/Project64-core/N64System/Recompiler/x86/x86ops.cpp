@@ -452,7 +452,7 @@ void CX86Ops::MoveX86regHalfToVariable(void * Variable, const char * VariableNam
     if (CDebugSettings::bRecordRecompilerAsm())
     {
         std::string SymbolKey = VariableSymbol(Variable);
-        
+
         AddSymbol(SymbolKey.c_str(), VariableName);
         mov(asmjit::x86::word_ptr((uint64_t)(Variable)), Reg.r16());
         RemoveSymbol(SymbolKey.c_str());
@@ -944,12 +944,12 @@ CX86Ops::x86Reg CX86Ops::RegValue(const asmjit::x86::Gp & Reg)
     else if (Reg == asmjit::x86::dh)
     {
         return x86_DH;
-    } 
+    }
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return x86_EAX;
 }
 
-asmjit::Error CX86Ops::_log(const char* data, size_t size) noexcept
+asmjit::Error CX86Ops::_log(const char * data, size_t size) noexcept
 {
     stdstr AsmjitLog(std::string(data, size));
     AsmjitLog.Trim("\n");

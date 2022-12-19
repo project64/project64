@@ -1,8 +1,8 @@
 #pragma once
 
 #include <Project64-core/N64System/N64Types.h>
-#include <Project64-core/N64System/Recompiler/asmjit.h>
 #include <Project64-core/N64System/Recompiler/RegInfo.h>
+#include <Project64-core/N64System/Recompiler/asmjit.h>
 
 class CCodeBlock;
 
