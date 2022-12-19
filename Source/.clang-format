@@ -1,0 +1,37 @@
+---
+BasedOnStyle: Microsoft
+Language: Cpp
+Standard: Cpp11
+AccessModifierOffset: -4
+AllowShortEnumsOnASingleLine: true
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortIfStatementsOnASingleLine: WithoutElse
+BraceWrapping:
+  AfterCaseLabel:  true
+  AfterClass:      true
+  AfterControlStatement: true
+  AfterEnum:       true
+  AfterFunction:   true
+  AfterNamespace:  true
+  AfterStruct:     true
+  AfterUnion:      true
+  BeforeCatch:     true
+  BeforeElse:      true
+  SplitEmptyFunction: true
+  SplitEmptyRecord: true
+  SplitEmptyNamespace: true
+BreakBeforeBraces: Custom
+BreakInheritanceList: AfterColon
+BreakConstructorInitializers: AfterColon
+BreakStringLiterals: false
+ColumnLimit:     0
+IndentCaseLabels: false
+IndentWidth:     4
+PointerAlignment: Middle
+SortIncludes:    true
+SpaceAfterTemplateKeyword: true
+SpaceBeforeParens: ControlStatements
+SpacesInSquareBrackets: false
+TabWidth:        4
+UseTab:          Never
+...
