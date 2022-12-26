@@ -4314,8 +4314,9 @@ void CX86RecompilerOps::SPECIAL_SRA()
         m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
         return;
     }
+    asmjit::x86::Gp reg = Map_TempReg(x86Reg_Unknown, m_Opcode.rt, true, false);
     Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
-    m_Assembler.sar(GetMipsRegMapLo(m_Opcode.rd), (uint8_t)m_Opcode.sa);
+    m_Assembler.shrd(GetMipsRegMapLo(m_Opcode.rd), reg, (uint8_t)m_Opcode.sa);
 }
 
 void CX86RecompilerOps::SPECIAL_SLLV()
