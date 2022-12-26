@@ -224,7 +224,7 @@ public:
     CRegInfo & GetRegWorkingSet(void);
     void SetRegWorkingSet(const CRegInfo & RegInfo);
     bool InheritParentInfo();
-    void LinkJump(CJumpInfo & JumpInfo, uint32_t SectionID = -1, uint32_t FromSectionID = -1);
+    void LinkJump(CJumpInfo & JumpInfo);
     void JumpToSection(CCodeSection * Section);
     void JumpToUnknown(CJumpInfo * JumpInfo);
     void SetCurrentPC(uint32_t ProgramCounter);
