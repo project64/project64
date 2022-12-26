@@ -759,6 +759,20 @@ void CX86RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
                 ResetX86Protection();
                 m_Section->m_Cont.RegSet = m_RegWorkingSet;
                 m_Section->m_Jump.RegSet = m_RegWorkingSet;
+                if (m_Section->m_Cont.LinkAddress != (uint32_t)-1)
+                {
+                    m_Section->m_Cont.RegSet.UnMap_GPR(31, false);
+                    m_Section->m_Cont.RegSet.SetMipsRegLo(31, m_Section->m_Cont.LinkAddress);
+                    m_Section->m_Cont.RegSet.SetMipsRegState(31, CRegInfo::STATE_CONST_32_SIGN);
+                    m_Section->m_Cont.LinkAddress = (uint32_t)-1;
+                }
+                if (m_Section->m_Jump.LinkAddress != (uint32_t)-1)
+                {
+                    m_Section->m_Jump.RegSet.UnMap_GPR(31, false);
+                    m_Section->m_Jump.RegSet.SetMipsRegLo(31, m_Section->m_Jump.LinkAddress);
+                    m_Section->m_Jump.RegSet.SetMipsRegState(31, CRegInfo::STATE_CONST_32_SIGN);
+                    m_Section->m_Jump.LinkAddress = (uint32_t)-1;
+                }
             }
             else
             {
@@ -9304,7 +9318,6 @@ void CX86RecompilerOps::OverflowDelaySlot(bool TestTimer)
         m_Assembler.CallThis((uint32_t)g_BaseSystem, AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem", 4);
     }
     m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", PIPELINE_STAGE_JUMP);
-
 
     if (TestTimer)
     {
