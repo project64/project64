@@ -469,7 +469,44 @@ void CX86RecompilerOps::Compile_BranchCompare(RecompilerBranchCompare CompareTyp
 
 void CX86RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool Link)
 {
-    if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
+    if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT)
+    {
+        Compile_BranchCompare(CompareType);
+        if (m_Section->m_Jump.FallThrough || (!m_Section->m_Cont.FallThrough && m_Section->m_Jump.LinkLocation.isValid()))
+        {
+            LinkJump(m_Section->m_Jump);
+            m_Assembler.MoveConstToVariable(&g_System->m_JumpDelayLocation, "System::m_JumpDelayLocation", m_CompilePC + ((int16_t)m_Opcode.offset << 2) + 8);
+            if (m_Section->m_Cont.LinkLocation.isValid())
+            {
+                // jump to link
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+        }
+
+        if (m_Section->m_Cont.FallThrough)
+        {
+            LinkJump(m_Section->m_Cont);
+            m_Assembler.MoveConstToVariable(&g_System->m_JumpDelayLocation, "System::m_JumpDelayLocation", m_CompilePC + 8);
+            if (m_Section->m_Jump.LinkLocation.isValid())
+            {
+                // jump to link
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+        }
+
+        if (m_Section->m_Jump.LinkLocation.isValid() || m_Section->m_Cont.LinkLocation.isValid())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        if (Link)
+        {
+            Map_GPR_32bit(31, true, -1);
+            m_Assembler.MoveVariableToX86reg(GetMipsRegMapLo(31), &g_System->m_JumpToLocation, "System::m_JumpToLocation");
+            m_Assembler.add(GetMipsRegMapLo(31), 4);
+        }
+        OverflowDelaySlot(false);
+    }
+    else if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
         if (CompareType == RecompilerBranchCompare_COP1BCF || CompareType == RecompilerBranchCompare_COP1BCT)
         {
@@ -492,6 +529,11 @@ void CX86RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
         }
         m_Section->m_Jump.JumpPC = m_CompilePC;
         m_Section->m_Jump.TargetPC = m_CompilePC + ((int16_t)m_Opcode.offset << 2) + 4;
+        if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT)
+        {
+            m_Section->m_Jump.TargetPC += 4;
+            m_EffectDelaySlot = true;
+        }
         if (m_Section->m_JumpSection != nullptr)
         {
             m_Section->m_Jump.BranchLabel = stdstr_f("Section_%d", m_Section->m_JumpSection->m_SectionID);
@@ -565,15 +607,11 @@ void CX86RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
             {
                 if (m_Section->m_Jump.LinkLocation.isValid())
                 {
-                    m_CodeBlock.Log("");
-                    m_CodeBlock.Log("      %s:", m_Section->m_Jump.BranchLabel.c_str());
                     LinkJump(m_Section->m_Jump);
                     m_Section->m_Jump.FallThrough = true;
                 }
                 else if (m_Section->m_Cont.LinkLocation.isValid())
                 {
-                    m_CodeBlock.Log("");
-                    m_CodeBlock.Log("      %s:", m_Section->m_Cont.BranchLabel.c_str());
                     LinkJump(m_Section->m_Cont);
                     m_Section->m_Cont.FallThrough = true;
                 }
@@ -607,8 +645,6 @@ void CX86RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
                     DelayLinkLocation = m_Assembler.newLabel();
                     m_Assembler.JmpLabel("DoDelaySlot", DelayLinkLocation);
 
-                    m_CodeBlock.Log("      ");
-                    m_CodeBlock.Log("      %s:", m_Section->m_Jump.BranchLabel.c_str());
                     LinkJump(m_Section->m_Jump);
                     m_Assembler.MoveConstToVariable(&g_System->m_JumpToLocation, "System::m_JumpToLocation", m_Section->m_Jump.TargetPC);
                 }
@@ -621,8 +657,6 @@ void CX86RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
                     DelayLinkLocation = m_Assembler.newLabel();
                     m_Assembler.JmpLabel("DoDelaySlot", DelayLinkLocation);
 
-                    m_CodeBlock.Log("      ");
-                    m_CodeBlock.Log("      %s:", m_Section->m_Cont.BranchLabel.c_str());
                     LinkJump(m_Section->m_Cont);
                     m_Assembler.MoveConstToVariable(&g_System->m_JumpToLocation, "System::m_JumpToLocation", m_Section->m_Cont.TargetPC);
                 }
@@ -637,7 +671,18 @@ void CX86RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
             ResetX86Protection();
             m_RegBeforeDelay = m_RegWorkingSet;
         }
-        m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
+        if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
+        {
+            m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
+        }
+        else
+        {
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+            m_Section->m_Jump.RegSet = m_RegWorkingSet;
+            m_Section->m_Cont.RegSet = m_RegWorkingSet;
+            m_Section->GenerateSectionLinkage();
+            m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
+        }
     }
     else if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT_DONE)
     {
@@ -697,7 +742,6 @@ void CX86RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
 
                     if (JumpInfo->LinkLocation.isValid())
                     {
-                        m_CodeBlock.Log("      %s:", JumpInfo->BranchLabel.c_str());
                         LinkJump(*JumpInfo);
                         JumpInfo->FallThrough = true;
                         m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
@@ -2147,6 +2191,14 @@ void CX86RecompilerOps::J()
         {
             m_Assembler.MoveConstToVariable(&g_System->m_JumpToLocation, "System::m_JumpToLocation", (m_CompilePC & 0xF0000000) + (m_Opcode.target << 2));
             OverflowDelaySlot(false);
+            return;
+        }
+        R4300iOpcode DelaySlot;
+        g_MMU->MemoryValue32(m_CompilePC + 4, DelaySlot.Value);
+        if (R4300iInstruction(m_CompilePC + 4, DelaySlot.Value).HasDelaySlot())
+        {
+            m_Assembler.MoveConstToVariable(&g_System->m_JumpToLocation, "System::m_JumpToLocation", (m_CompilePC & 0xF0000000) + (m_Opcode.target << 2));
+            m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
             return;
         }
 
@@ -8644,7 +8696,7 @@ bool CX86RecompilerOps::InheritParentInfo()
         CJumpInfo * JumpInfo = m_Section == Parent->m_ContinueSection ? &Parent->m_Cont : &Parent->m_Jump;
 
         m_Section->m_RegEnter = JumpInfo->RegSet;
-        LinkJump(*JumpInfo, m_Section->m_SectionID);
+        LinkJump(*JumpInfo);
         SetRegWorkingSet(m_Section->m_RegEnter);
         return true;
     }
@@ -8734,7 +8786,7 @@ bool CX86RecompilerOps::InheritParentInfo()
 
     SetRegWorkingSet(JumpInfo->RegSet);
     m_RegWorkingSet.ResetX86Protection();
-    LinkJump(*JumpInfo, m_Section->m_SectionID, Parent->m_SectionID);
+    LinkJump(*JumpInfo);
 
     if (JumpInfo->Reason == ExitReason_NormalNoSysCheck)
     {
@@ -9052,10 +9104,11 @@ bool CX86RecompilerOps::InheritParentInfo()
     return true;
 }
 
-void CX86RecompilerOps::LinkJump(CJumpInfo & JumpInfo, uint32_t SectionID, uint32_t FromSectionID)
+void CX86RecompilerOps::LinkJump(CJumpInfo & JumpInfo)
 {
     if (JumpInfo.LinkLocation.isValid())
     {
+        m_CodeBlock.Log("");
         m_Assembler.bind(JumpInfo.LinkLocation);
         JumpInfo.LinkLocation = asmjit::Label();
         if (JumpInfo.LinkLocation2.isValid())
@@ -9235,14 +9288,23 @@ void CX86RecompilerOps::OverflowDelaySlot(bool TestTimer)
     m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
     m_RegWorkingSet.WriteBackRegisters();
     UpdateCounters(m_RegWorkingSet, false, true);
-    m_Assembler.MoveConstToVariable(_PROGRAM_COUNTER, "PROGRAM_COUNTER", CompilePC() + 4);
-
+    if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT)
+    {
+        m_Assembler.MoveVariableToX86reg(asmjit::x86::ecx, &g_System->m_JumpToLocation, "System::m_JumpToLocation");
+        m_Assembler.MoveX86regToVariable(_PROGRAM_COUNTER, "PROGRAM_COUNTER", asmjit::x86::ecx);
+        m_Assembler.MoveVariableToX86reg(asmjit::x86::ecx, &g_System->m_JumpDelayLocation, "System::JumpDelayLocation");
+        m_Assembler.MoveX86regToVariable(&g_System->m_JumpToLocation, "System::m_JumpToLocation", asmjit::x86::ecx);
+    }
+    else
+    {
+        m_Assembler.MoveConstToVariable(_PROGRAM_COUNTER, "PROGRAM_COUNTER", CompilePC() + 4);
+    }
     if (g_SyncSystem)
     {
         m_Assembler.CallThis((uint32_t)g_BaseSystem, AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem", 4);
     }
-
     m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", PIPELINE_STAGE_JUMP);
+
 
     if (TestTimer)
     {

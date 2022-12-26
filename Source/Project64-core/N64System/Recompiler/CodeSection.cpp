@@ -84,7 +84,7 @@ void CCodeSection::GenerateSectionLinkage()
             }
             else if (TargetSection[i] == nullptr && JumpInfo[i]->FallThrough)
             {
-                m_RecompilerOps->LinkJump(*JumpInfo[i], (uint32_t)-1);
+                m_RecompilerOps->LinkJump(*JumpInfo[i]);
                 if (JumpInfo[i]->LinkAddress != (uint32_t)-1)
                 {
                     JumpInfo[i]->RegSet.UnMap_GPR(31, false);
@@ -105,7 +105,7 @@ void CCodeSection::GenerateSectionLinkage()
                 {
                     continue;
                 }
-                m_RecompilerOps->LinkJump(*JumpInfo[i], (uint32_t)-1);
+                m_RecompilerOps->LinkJump(*JumpInfo[i]);
                 if (JumpInfo[i]->LinkAddress != (uint32_t)-1)
                 {
                     JumpInfo[i]->RegSet.UnMap_GPR(31, false);
@@ -151,7 +151,7 @@ void CCodeSection::GenerateSectionLinkage()
         if (TargetSection[i]->m_EnterLabel.isValid())
         {
             JumpInfo[i]->FallThrough = false;
-            m_RecompilerOps->LinkJump(*JumpInfo[i], TargetSection[i]->m_SectionID);
+            m_RecompilerOps->LinkJump(*JumpInfo[i]);
             if (JumpInfo[i]->LinkAddress != (uint32_t)-1)
             {
                 JumpInfo[i]->RegSet.UnMap_GPR(31, false);
@@ -252,7 +252,7 @@ void CCodeSection::GenerateSectionLinkage()
         if (TargetSection[i] == nullptr)
         {
             m_CodeBlock.Log("ExitBlock (from %d):", m_SectionID);
-            m_RecompilerOps->LinkJump(*JumpInfo[i], (uint32_t)-1);
+            m_RecompilerOps->LinkJump(*JumpInfo[i]);
             if (JumpInfo[i]->LinkAddress != (uint32_t)-1)
             {
                 JumpInfo[i]->RegSet.UnMap_GPR(31, false);
@@ -276,7 +276,7 @@ void CCodeSection::GenerateSectionLinkage()
             stdstr_f Label("Section_%d (from %d):", TargetSection[i]->m_SectionID, m_SectionID);
 
             m_CodeBlock.Log(Label.c_str());
-            m_RecompilerOps->LinkJump(*JumpInfo[i], (uint32_t)-1);
+            m_RecompilerOps->LinkJump(*JumpInfo[i]);
             if (JumpInfo[i]->LinkAddress != (uint32_t)-1)
             {
                 JumpInfo[i]->RegSet.UnMap_GPR(31, false);
