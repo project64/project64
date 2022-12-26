@@ -7547,15 +7547,13 @@ void CX86RecompilerOps::COP1_CT()
 
     if (IsConst(m_Opcode.rt))
     {
-        m_Assembler.MoveConstToVariable(&_FPCR[m_Opcode.fs], CRegName::FPR_Ctrl[m_Opcode.fs], GetMipsRegLo(m_Opcode.rt));
-    }
-    else if (IsMapped(m_Opcode.rt))
-    {
-        m_Assembler.MoveX86regToVariable(&_FPCR[m_Opcode.fs], CRegName::FPR_Ctrl[m_Opcode.fs], GetMipsRegMapLo(m_Opcode.rt));
+        m_Assembler.MoveConstToVariable(&_FPCR[m_Opcode.fs], CRegName::FPR_Ctrl[m_Opcode.fs], GetMipsRegLo(m_Opcode.rt) & 0x183FFFF);
     }
     else
     {
-        m_Assembler.MoveX86regToVariable(&_FPCR[m_Opcode.fs], CRegName::FPR_Ctrl[m_Opcode.fs], Map_TempReg(x86Reg_Unknown, m_Opcode.rt, false, false));
+        asmjit::x86::Gp TempReg = Map_TempReg(x86Reg_Unknown, m_Opcode.rt, false, false);
+        m_Assembler.and_(TempReg, 0x183FFFF);
+        m_Assembler.MoveX86regToVariable(&_FPCR[m_Opcode.fs], CRegName::FPR_Ctrl[m_Opcode.fs], TempReg);
     }
     m_RegWorkingSet.BeforeCallDirect();
     m_Assembler.CallFunc((uint32_t)ChangeDefaultRoundingModel, "ChangeDefaultRoundingModel");
