@@ -863,9 +863,21 @@ void CX86RecompilerOps::Compile_BranchLikely(RecompilerBranchCompare CompareType
         m_Section->m_Cont.LinkLocation2 = asmjit::Label();
         if (Link)
         {
-            UnMap_GPR(31, false);
-            m_RegWorkingSet.SetMipsRegLo(31, m_CompilePC + 8);
-            m_RegWorkingSet.SetMipsRegState(31, CRegInfo::STATE_CONST_32_SIGN);
+            R4300iInstruction Instruction(m_CompilePC, m_Opcode.Value);
+            uint32_t ReadReg1, ReadReg2;
+            Instruction.ReadsGPR(ReadReg1, ReadReg2);
+
+            if (ReadReg1 != 31 && ReadReg2 != 31)
+            {
+                UnMap_GPR(31, false);
+                m_RegWorkingSet.SetMipsRegLo(31, m_CompilePC + 8);
+                m_RegWorkingSet.SetMipsRegState(31, CRegInfo::STATE_CONST_32_SIGN);
+            }
+            else
+            {
+                m_Section->m_Cont.LinkAddress = m_CompilePC + 8;
+                m_Section->m_Jump.LinkAddress = m_CompilePC + 8;
+            }
         }
 
         Compile_BranchCompare(CompareType);
@@ -873,6 +885,13 @@ void CX86RecompilerOps::Compile_BranchLikely(RecompilerBranchCompare CompareType
 
         m_Section->m_Cont.RegSet = m_RegWorkingSet;
         m_Section->m_Cont.RegSet.SetBlockCycleCount(m_Section->m_Cont.RegSet.GetBlockCycleCount() + g_System->CountPerOp());
+        if (m_Section->m_Cont.LinkAddress != (uint32_t)-1)
+        {
+            m_Section->m_Cont.RegSet.UnMap_GPR(31, false);
+            m_Section->m_Cont.RegSet.SetMipsRegLo(31, m_Section->m_Cont.LinkAddress);
+            m_Section->m_Cont.RegSet.SetMipsRegState(31, CRegInfo::STATE_CONST_32_SIGN);
+            m_Section->m_Cont.LinkAddress = (uint32_t)-1;
+        }
         if ((m_CompilePC & 0xFFC) == 0xFFC)
         {
             if (m_Section->m_Cont.FallThrough)
@@ -910,6 +929,13 @@ void CX86RecompilerOps::Compile_BranchLikely(RecompilerBranchCompare CompareType
         {
             m_Section->m_Jump.RegSet = m_RegWorkingSet;
             m_Section->m_Jump.RegSet.SetBlockCycleCount(m_Section->m_Jump.RegSet.GetBlockCycleCount() + g_System->CountPerOp());
+            if (m_Section->m_Jump.LinkAddress != (uint32_t)-1)
+            {
+                m_Section->m_Jump.RegSet.UnMap_GPR(31, false);
+                m_Section->m_Jump.RegSet.SetMipsRegLo(31, m_Section->m_Jump.LinkAddress);
+                m_Section->m_Jump.RegSet.SetMipsRegState(31, CRegInfo::STATE_CONST_32_SIGN);
+                m_Section->m_Jump.LinkAddress = (uint32_t)-1;
+            }
             m_Section->GenerateSectionLinkage();
             m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
         }
@@ -931,6 +957,13 @@ void CX86RecompilerOps::Compile_BranchLikely(RecompilerBranchCompare CompareType
         ResetX86Protection();
         m_Section->m_Jump.RegSet = m_RegWorkingSet;
         m_Section->m_Jump.RegSet.SetBlockCycleCount(m_Section->m_Jump.RegSet.GetBlockCycleCount());
+        if (m_Section->m_Jump.LinkAddress != (uint32_t)-1)
+        {
+            m_Section->m_Jump.RegSet.UnMap_GPR(31, false);
+            m_Section->m_Jump.RegSet.SetMipsRegLo(31, m_Section->m_Jump.LinkAddress);
+            m_Section->m_Jump.RegSet.SetMipsRegState(31, CRegInfo::STATE_CONST_32_SIGN);
+            m_Section->m_Jump.LinkAddress = (uint32_t)-1;
+        }
         m_Section->GenerateSectionLinkage();
         m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
     }

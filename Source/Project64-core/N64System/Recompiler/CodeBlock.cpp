@@ -581,6 +581,7 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
             break;
         case R4300i_REGIMM_BLTZL:
         case R4300i_REGIMM_BGEZL:
+        case R4300i_REGIMM_BGEZALL:
             TargetPC = PC + ((int16_t)Command.offset << 2) + 4;
             if (TargetPC == PC)
             {
