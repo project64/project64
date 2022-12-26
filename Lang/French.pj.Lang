@@ -309,6 +309,8 @@
 #5441# "Rapide"
 #5442# "Lente"
 
+#5410# "DMA non alignée"
+
 //Core Styles
 #540#  "Interpréteur"
 #541#  "Recompilateur"

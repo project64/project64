@@ -33,6 +33,7 @@ DISK_SEEK_TYPE CGameSettings::m_DiskSeekTimingType = DiskSeek_Turbo;
 bool CGameSettings::m_EnhancmentOverClock = false;
 uint32_t CGameSettings::m_EnhancmentOverClockModifier = 1;
 bool CGameSettings::m_EnableDisk = false;
+bool CGameSettings::m_UnalignedDMA = false;
 
 int32_t CGameSettings::m_RefCount = 0;
 
@@ -99,6 +100,7 @@ void CGameSettings::RefreshGameSettings()
         m_OverClockModifier = 20;
     }
     m_DiskSeekTimingType = (DISK_SEEK_TYPE)g_Settings->LoadDword(Game_DiskSeekTiming);
+    m_UnalignedDMA = g_Settings->LoadBool(Game_UnalignedDMA);
     RefreshSyncToAudio();
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }

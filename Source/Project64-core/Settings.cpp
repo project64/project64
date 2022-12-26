@@ -175,6 +175,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_AudioResetOnLoad, new CSettingTypeRDBYesNo("AudioResetOnLoad", false));
     AddHandler(Rdb_AllowROMWrites, new CSettingTypeRDBYesNo("AllowROMWrites", false));
     AddHandler(Rdb_CRC_Recalc, new CSettingTypeRDBYesNo("CRC-Recalc", false));
+    AddHandler(Rdb_UnalignedDMA, new CSettingTypeRomDatabase("Unaligned DMA", false));
     AddHandler(Rdb_RandomizeSIPIInterrupts, new CSettingTypeRomDatabase("Randomize SI/PI Interrupts", Default_RandomizeSIPIInterrupts));
     AddHandler(Rdb_DiskSeekTiming, new CSettingTypeRomDatabase("DiskSeekTiming", Default_DiskSeekTiming));
 
@@ -233,6 +234,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Game_LoadSaveAtStart, new CSettingTypeTempBool(false));
     AddHandler(Game_OverClockModifier, new CSettingTypeGame("OverClockModifier", (uint32_t)1));
     AddHandler(Game_FullSpeed, new CSettingTypeTempBool(true, "Full Speed"));
+    AddHandler(Game_UnalignedDMA, new CSettingTypeGame("Unaligned DMA", Rdb_UnalignedDMA));
     AddHandler(Game_RandomizeSIPIInterrupts, new CSettingTypeGame("Randomize SI/PI Interrupts", Rdb_RandomizeSIPIInterrupts));
     AddHandler(Game_RPCKey, new CSettingTypeTempString(""));
     AddHandler(Game_DiskSeekTiming, new CSettingTypeGame("DiskSeekTiming", Rdb_DiskSeekTiming));
