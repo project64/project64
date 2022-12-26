@@ -119,6 +119,10 @@ public:
     {
         return m_EnableDisk;
     }
+    inline static bool UnalignedDMA(void)
+    {
+        return m_UnalignedDMA;
+    }
 
     void RefreshSyncToAudio(void);
     static void SetOverClockModifier(bool EnhancmentOverClock, uint32_t EnhancmentOverClockModifier);
@@ -163,5 +167,6 @@ private:
     static bool m_EnhancmentOverClock;
     static uint32_t m_EnhancmentOverClockModifier;
     static bool m_EnableDisk;
+    static bool m_UnalignedDMA;
     static int32_t m_RefCount;
 };

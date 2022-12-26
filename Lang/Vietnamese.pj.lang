@@ -287,6 +287,7 @@
 # 538 # "Động cơ 32-bit"
 # 539 # "Trì hoãn ngắt DP"
 # 5400 # "Công cụ sửa đổi ép xung:"
+# 5410 # "DMA không dấu"
 # 5420 # "Ngẫu nhiên ngắt SI / PI"
 # 5440 # "Thời gian tìm kiếm đĩa:"
 # 5441 # "Turbo"

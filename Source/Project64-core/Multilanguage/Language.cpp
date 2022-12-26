@@ -271,6 +271,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ROM_32BIT, "32-bit engine:");
     DEF_STR(ROM_DELAY_DP, "Delay DP interrupt:");
     DEF_STR(ROM_OVER_CLOCK_MODIFIER, "Overclock modifier:");
+    DEF_STR(ROM_UNALIGNED_DMA, "Unaligned DMA");
     DEF_STR(ROM_RANDOMIZE_SIPI_INTERRUPTS, "Randomize SI/PI interrupts");
     DEF_STR(ROM_DISK_SEEK_TIMING, "Disk seek timing:");
     DEF_STR(ROM_DISK_SEEK_TIMING_TURBO, "Turbo");
