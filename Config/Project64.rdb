@@ -897,6 +897,7 @@ SMM-TLB=0
 [D85C4E29-88E276AF-C:50]
 Good Name=Bomberman Hero (E)
 Internal Name=BOMBERMAN HERO
+Status=Compatible
 32bit=Yes
 Culling=1
 RDRAM Size=4
@@ -5910,12 +5911,14 @@ Internal Name=Silicon Valley
 Status=Compatible
 32bit=Yes
 Culling=1
+RDRAM Size=4
 
 [BFE23884-EF48EAAF-C:4A]
 Good Name=Space Station Silicon Valley (J)
 Internal Name=Silicon Valley
 Status=Compatible
 32bit=Yes
+RDRAM Size=4
 
 [BFE23884-EF48EAAF-C:45]
 Good Name=Space Station Silicon Valley (U) (V1.0)
@@ -5923,6 +5926,7 @@ Internal Name=Silicon Valley
 Status=Compatible
 32bit=Yes
 Culling=1
+RDRAM Size=4
 
 [FC70E272-08FFE7AA-C:45]
 Good Name=Space Station Silicon Valley (U) (V1.1)
@@ -6326,6 +6330,7 @@ RDRAM Size=4
 
 [944FAFC4-B288266A-C:0]
 Good Name=Superman (Prototype)
+Internal Name=
 Status=Compatible
 RDRAM Size=4
 
@@ -6349,6 +6354,7 @@ Status=Compatible
 //================  T  ================
 [37955E65-C6F2B7B3-C:0]
 Good Name=Tamiya Racing 64 (Unreleased)
+Internal Name=
 Status=Compatible
 RDRAM Size=4
 
@@ -6790,6 +6796,7 @@ Status=Compatible
 
 [75FBDE20-A3189B31-C:0]
 Good Name=Top Gear Hyper Bike (Beta)
+Internal Name=
 Status=Compatible
 RDRAM Size=4
 
@@ -7505,6 +7512,7 @@ RDRAM Size=4
 
 [A04237B9-68F62C72-C:0]
 Good Name=Wildwaters (Unreleased)
+Internal Name=
 Status=Compatible
 
 [1FA056E0-A4B9946A-C:4A]
@@ -8826,6 +8834,7 @@ Status=Compatible
 [1077590A-B537FDA2-C:0]
 Good Name=Planet Console Intro (PD)
 Internal Name=planet console ftp!
+Status=Compatible
 RDRAM Size=4
 
 [E9F52336-6BEFAA5F-C:45]
@@ -9021,6 +9030,7 @@ Status=Compatible
 [1FBD27A9-6CC3EB42-C:0]
 Good Name=SPLiT's Nacho64 by SPLiT (PD)
 Internal Name= NACHO64
+Status=Compatible
 RDRAM Size=4
 
 [E584FE34-9D91B1E2-C:0]
