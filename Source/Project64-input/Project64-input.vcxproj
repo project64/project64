@@ -72,7 +72,6 @@
     <ClInclude Include="N64Controller.h" />
     <ClInclude Include="DirectInput.h" />
     <ClInclude Include="InputConfigUI.h" />
-    <ClInclude Include="ControllerSpec1.1.h" />
     <ClInclude Include="CProject64Input.h" />
     <ClInclude Include="OptionsUI.h" />
     <ClInclude Include="resource.h" />
@@ -81,9 +80,6 @@
     <ClInclude Include="wtl-BitmapPicture.h" />
     <ClInclude Include="wtl-ScanButton.h" />
     <ClInclude Include="wtl.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Version.h.in" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project64-input.rc" />
