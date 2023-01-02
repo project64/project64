@@ -194,8 +194,6 @@
     <ClInclude Include="N64System\MemoryHandler\SPRegistersHandler.h" />
     <ClInclude Include="N64System\MemoryHandler\VideoInterfaceHandler.h" />
     <ClInclude Include="N64System\Mips\Disk.h" />
-    <ClInclude Include="N64System\Mips\Eeprom.h" />
-    <ClInclude Include="N64System\Mips\FlashRam.h" />
     <ClInclude Include="N64System\Mips\GBCart.h" />
     <ClInclude Include="N64System\Mips\MemoryVirtualMem.h" />
     <ClInclude Include="N64System\Mips\Mempak.h" />
@@ -203,12 +201,10 @@
     <ClInclude Include="N64System\Mips\R4300iOpcode.h" />
     <ClInclude Include="N64System\Mips\Register.h" />
     <ClInclude Include="N64System\Mips\Rumblepak.h" />
-    <ClInclude Include="N64System\Mips\Sram.h" />
     <ClInclude Include="N64System\Mips\SystemEvents.h" />
     <ClInclude Include="N64System\Mips\SystemTiming.h" />
     <ClInclude Include="N64System\Mips\TLB.h" />
     <ClInclude Include="N64System\Mips\Transferpak.h" />
-    <ClInclude Include="N64System\Mips\TranslateVaddr.h" />
     <ClInclude Include="N64System\N64Disk.h" />
     <ClInclude Include="N64System\N64Rom.h" />
     <ClInclude Include="N64System\N64System.h" />

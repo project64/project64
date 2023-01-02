@@ -73,13 +73,11 @@
     <ClInclude Include="src\asmjit\core\compilerdefs.h" />
     <ClInclude Include="src\asmjit\core\constpool.h" />
     <ClInclude Include="src\asmjit\core\cpuinfo.h" />
-    <ClInclude Include="src\asmjit\core\datatypes.h" />
     <ClInclude Include="src\asmjit\core\emithelper_p.h" />
     <ClInclude Include="src\asmjit\core\emitter.h" />
     <ClInclude Include="src\asmjit\core\emitterutils_p.h" />
     <ClInclude Include="src\asmjit\core\environment.h" />
     <ClInclude Include="src\asmjit\core\errorhandler.h" />
-    <ClInclude Include="src\asmjit\core\features.h" />
     <ClInclude Include="src\asmjit\core\formatter.h" />
     <ClInclude Include="src\asmjit\core\formatter_p.h" />
     <ClInclude Include="src\asmjit\core\func.h" />

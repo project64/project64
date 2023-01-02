@@ -87,9 +87,6 @@
     <ClInclude Include="src\asmjit\core\cpuinfo.h">
       <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="src\asmjit\core\datatypes.h">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
     <ClInclude Include="src\asmjit\core\emithelper_p.h">
       <Filter>Header Files\core</Filter>
     </ClInclude>
@@ -103,9 +100,6 @@
       <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="src\asmjit\core\errorhandler.h">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\asmjit\core\features.h">
       <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="src\asmjit\core\formatter.h">

@@ -617,12 +617,6 @@
     <ClInclude Include="N64System\Recompiler\SectionInfo.h">
       <Filter>Header Files\N64 System\Recompiler</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\Mips\Eeprom.h">
-      <Filter>Header Files\N64 System\Mips</Filter>
-    </ClInclude>
-    <ClInclude Include="N64System\Mips\FlashRam.h">
-      <Filter>Header Files\N64 System\Mips</Filter>
-    </ClInclude>
     <ClInclude Include="N64System\Mips\MemoryVirtualMem.h">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
@@ -635,9 +629,6 @@
     <ClInclude Include="N64System\Mips\Rumblepak.h">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\Mips\Sram.h">
-      <Filter>Header Files\N64 System\Mips</Filter>
-    </ClInclude>
     <ClInclude Include="N64System\Mips\SystemEvents.h">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
@@ -645,9 +636,6 @@
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
     <ClInclude Include="N64System\Mips\TLB.h">
-      <Filter>Header Files\N64 System\Mips</Filter>
-    </ClInclude>
-    <ClInclude Include="N64System\Mips\TranslateVaddr.h">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
     <ClInclude Include="N64System\Interpreter\InterpreterCPU.h">
