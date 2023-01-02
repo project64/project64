@@ -149,6 +149,7 @@ private:
 
     friend class VideoInterfaceHandler;
     friend class PifRamHandler;
+    friend class CRegisters;
 
     // Used for loading and potentially executing the CPU in its own thread
     static void StartEmulationThread(CThread * thread);

@@ -45,6 +45,51 @@ union COP0XContext
     };
 };
 
+union FPStatusReg
+{
+    uint32_t Value;
+
+    struct
+    {
+        unsigned RoundingMode : 2;
+        unsigned : 30;
+    };
+
+    struct
+    {
+        unsigned : 2;
+        unsigned Inexact : 1;
+        unsigned Underflow : 1;
+        unsigned Overflow : 1;
+        unsigned DivisionByZero : 1;
+        unsigned InvalidOperation : 1;
+        unsigned : 25;
+    } Flags;
+
+    struct
+    {
+        unsigned : 7;
+        unsigned Inexact : 1;
+        unsigned Underflow : 1;
+        unsigned Overflow : 1;
+        unsigned DivisionByZero : 1;
+        unsigned InvalidOperation : 1;
+        unsigned : 20;
+    } Enable;
+
+    struct
+    {
+        unsigned : 12;
+        unsigned Inexact : 1;
+        unsigned Underflow : 1;
+        unsigned Overflow : 1;
+        unsigned DivisionByZero : 1;
+        unsigned InvalidOperation : 1;
+        unsigned UnimplementedOperation : 1;
+        unsigned : 14;
+    } Cause;
+};
+
 #pragma warning(pop)
 
 // CPO registers by name
@@ -344,6 +389,7 @@ public:
     void CheckInterrupts();
     void DoAddressError(bool DelaySlot, uint64_t BadVaddr, bool FromRead);
     void DoBreakException(bool DelaySlot);
+    void DoFloatingPointException(bool DelaySlot);
     void DoTrapException(bool DelaySlot);
     void DoCopUnusableException(bool DelaySlot, int32_t Coprocessor);
     bool DoIntrException(bool DelaySlot);
@@ -358,6 +404,7 @@ public:
 
     uint64_t Cop0_MF(COP0Reg Reg);
     void Cop0_MT(COP0Reg Reg, uint64_t Value);
+    void Cop1_CT(uint32_t Reg, uint32_t Value);
 
     // General registers
     uint32_t m_PROGRAM_COUNTER;

@@ -462,6 +462,34 @@ void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
     }
 }
 
+void CRegisters::Cop1_CT(uint32_t Reg, uint32_t Value)
+{
+    if (Reg == 31)
+    {
+        FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+        StatusReg.Value = (Value & 0x183FFFF);
+        switch (StatusReg.RoundingMode)
+        {
+        case 0: *_RoundingModel = FE_TONEAREST; break;
+        case 1: *_RoundingModel = FE_TOWARDZERO; break;
+        case 2: *_RoundingModel = FE_UPWARD; break;
+        case 3: *_RoundingModel = FE_DOWNWARD; break;
+        }
+
+        if (((StatusReg.Cause.Inexact & StatusReg.Enable.Inexact) != 0) ||
+            ((StatusReg.Cause.Underflow & StatusReg.Enable.Underflow) != 0) ||
+            ((StatusReg.Cause.Overflow & StatusReg.Enable.Overflow) != 0) ||
+            ((StatusReg.Cause.DivisionByZero & StatusReg.Enable.DivisionByZero) != 0) ||
+            ((StatusReg.Cause.InvalidOperation & StatusReg.Enable.InvalidOperation) != 0) ||
+            (StatusReg.Cause.UnimplementedOperation != 0))
+        {
+            DoFloatingPointException(m_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+            m_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+            m_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        }
+    }
+}
+
 void CRegisters::CheckInterrupts()
 {
     uint32_t mi_intr_reg = MI_INTR_REG, status_register;
@@ -582,6 +610,22 @@ void CRegisters::DoBreakException(bool DelaySlot)
     {
         CAUSE_REGISTER |= CAUSE_BD;
         EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
+    }
+    else
+    {
+        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
+    }
+    STATUS_REGISTER |= STATUS_EXL;
+    m_PROGRAM_COUNTER = 0x80000180;
+}
+
+void CRegisters::DoFloatingPointException(bool DelaySlot)
+{
+    CAUSE_REGISTER = EXC_FPE;
+    if (DelaySlot)
+    {
+        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
+        CAUSE_REGISTER |= CAUSE_BD;
     }
     else
     {
