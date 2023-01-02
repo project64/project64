@@ -1900,14 +1900,6 @@ void R4300iOp::COP1_DMF()
 void R4300iOp::COP1_CF()
 {
     TEST_COP1_USABLE_EXCEPTION();
-    if (m_Opcode.fs != 31 && m_Opcode.fs != 0)
-    {
-        if (HaveDebugger())
-        {
-            g_Notify->DisplayError("CFC1: what register are you writing to?");
-        }
-        return;
-    }
     _GPR[m_Opcode.rt].DW = (int32_t)_FPCR[m_Opcode.fs];
 }
 
@@ -1926,17 +1918,7 @@ void R4300iOp::COP1_DMT()
 void R4300iOp::COP1_CT()
 {
     TEST_COP1_USABLE_EXCEPTION();
-    if (m_Opcode.fs == 31)
-    {
-        _FPCR[m_Opcode.fs] = (_GPR[m_Opcode.rt].W[0] & 0x183FFFF);
-        switch ((_FPCR[m_Opcode.fs] & 3))
-        {
-        case 0: *_RoundingModel = FE_TONEAREST; break;
-        case 1: *_RoundingModel = FE_TOWARDZERO; break;
-        case 2: *_RoundingModel = FE_UPWARD; break;
-        case 3: *_RoundingModel = FE_DOWNWARD; break;
-        }
-    }
+    g_Reg->Cop1_CT(m_Opcode.fs, _GPR[m_Opcode.rt].W[0]);
 }
 
 // COP1: BC1 functions
