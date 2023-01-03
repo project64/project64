@@ -8833,6 +8833,7 @@ Status=Compatible
 [1077590A-B537FDA2-C:0]
 Good Name=Planet Console Intro (PD)
 Internal Name=planet console ftp!
+Status=Compatible
 RDRAM Size=4
 
 [E9F52336-6BEFAA5F-C:45]
