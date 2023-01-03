@@ -688,6 +688,7 @@ RDRAM Size=4
 [0CAD17E6-71A5B797-C:50]
 Good Name=BattleTanx - Global Assault (E) (M3)
 Internal Name=BATTLETANXGA
+Status=Compatible
 32bit=Yes
 AudioResetOnLoad=Yes
 RDRAM Size=4
