@@ -18,6 +18,7 @@ enum SettingID
     Cmd_ShowHelp,
 
     // Support files
+    SupportFile_SettingsDirectory,
     SupportFile_Settings,
     SupportFile_SettingsDefault,
     SupportFile_RomDatabase,
