@@ -899,6 +899,7 @@ SMM-TLB=0
 [D85C4E29-88E276AF-C:50]
 Good Name=Bomberman Hero (E)
 Internal Name=BOMBERMAN HERO
+Status=Compatible
 32bit=Yes
 Culling=1
 RDRAM Size=4
