@@ -5680,6 +5680,9 @@ Status=Compatible
 Good Name=SGB Emulator v1.2
 Status=Compatible
 Core Note=Requires Parallel-RSP.
+Counter Factor=1
+Linking=Off
+ViRefresh=3000
 
 [93A625B9-2D6022E6-C:42]
 Good Name=Shadow Man (B)
