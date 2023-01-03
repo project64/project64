@@ -1,12 +1,13 @@
 #include "stdafx.h"
 
-#include "SettingsType-Application.h"
+#include "SettingsType-RDBUser.h"
 #include <Common/path.h>
 #include <algorithm>
 
-CIniFile * CSettingTypeApplication::m_SettingsIniFile = nullptr;
+CPath CSettingTypeRDBUser::m_IniFilePath;
+CIniFile * CSettingTypeRDBUser::m_IniFile = nullptr;
 
-CSettingTypeApplication::CSettingTypeApplication(const char * Section, const char * Name, uint32_t DefaultValue) :
+CSettingTypeRDBUser::CSettingTypeRDBUser(const char * Section, const char * Name, uint32_t DefaultValue) :
     m_DefaultStr(""),
     m_DefaultValue(DefaultValue),
     m_DefaultSetting(Default_Constant),
@@ -16,7 +17,7 @@ CSettingTypeApplication::CSettingTypeApplication(const char * Section, const cha
 {
 }
 
-CSettingTypeApplication::CSettingTypeApplication(const char * Section, const char * Name, bool DefaultValue) :
+CSettingTypeRDBUser::CSettingTypeRDBUser(const char * Section, const char * Name, bool DefaultValue) :
     m_DefaultStr(""),
     m_DefaultValue(DefaultValue),
     m_DefaultSetting(Default_Constant),
@@ -26,7 +27,7 @@ CSettingTypeApplication::CSettingTypeApplication(const char * Section, const cha
 {
 }
 
-CSettingTypeApplication::CSettingTypeApplication(const char * Section, const char * Name, const char * DefaultValue) :
+CSettingTypeRDBUser::CSettingTypeRDBUser(const char * Section, const char * Name, const char * DefaultValue) :
     m_DefaultStr(DefaultValue),
     m_DefaultValue(0),
     m_DefaultSetting(Default_Constant),
@@ -36,7 +37,7 @@ CSettingTypeApplication::CSettingTypeApplication(const char * Section, const cha
 {
 }
 
-CSettingTypeApplication::CSettingTypeApplication(const char * Section, const char * Name, SettingID DefaultSetting) :
+CSettingTypeRDBUser::CSettingTypeRDBUser(const char * Section, const char * Name, SettingID DefaultSetting) :
     m_DefaultStr(""),
     m_DefaultValue(0),
     m_DefaultSetting(DefaultSetting),
@@ -46,98 +47,64 @@ CSettingTypeApplication::CSettingTypeApplication(const char * Section, const cha
 {
 }
 
-CSettingTypeApplication::~CSettingTypeApplication()
+CSettingTypeRDBUser::~CSettingTypeRDBUser()
 {
 }
 
-bool CSettingTypeApplication::IsSettingSet(void) const
+bool CSettingTypeRDBUser::IsSettingSet(void) const
 {
-    return m_SettingsIniFile ? m_SettingsIniFile->EntryExists(SectionName(), m_KeyNameIdex.c_str()) : false;
+    return m_IniFile != nullptr ? m_IniFile->EntryExists(SectionName(), m_KeyNameIdex.c_str()) : false;
 }
 
-void CSettingTypeApplication::Initialize(void)
+void CSettingTypeRDBUser::Initialize(void)
 {
     WriteTrace(TraceAppInit, TraceDebug, "Start");
-    CPath BaseDir(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str(), "");
-    if (!BaseDir.DirectoryExists())
+    m_IniFilePath = CPath(g_Settings->LoadStringVal(SupportFile_SettingsDirectory).c_str(), "Project64.rdb.user");
+    if (m_IniFilePath.Exists())
     {
-        WriteTrace(TraceAppInit, TraceDebug, "BaseDir does not exist.  Doing nothing...");
-        WriteTrace(TraceAppInit, TraceDebug, "Done");
-        return;
+        CreateIniFile();
     }
-
-    stdstr SettingsFile, OrigSettingsFile;
-
-    for (int i = 0; i < 100; i++)
-    {
-        OrigSettingsFile = SettingsFile;
-        if (!g_Settings->LoadStringVal(SupportFile_Settings, SettingsFile) && i > 0)
-        {
-            break;
-        }
-        if (SettingsFile == OrigSettingsFile)
-        {
-            break;
-        }
-        if (m_SettingsIniFile)
-        {
-            delete m_SettingsIniFile;
-        }
-        CPath SettingPath(SettingsFile.c_str());
-        SettingPath.NormalizePath(BaseDir);
-        if (!SettingPath.DirectoryExists())
-        {
-            SettingPath.DirectoryCreate();
-        }
-        CPath SettingDir(SettingPath);
-        SettingDir.SetNameExtension("");
-        g_Settings->SaveString(SupportFile_SettingsDirectory, (const char *)SettingDir);
-        m_SettingsIniFile = new CIniFile(SettingPath);
-        m_SettingsIniFile->SetCustomSort(CustomSortData);
-    }
-
-    m_SettingsIniFile->SetAutoFlush(false);
     WriteTrace(TraceAppInit, TraceDebug, "Done");
 }
 
-void CSettingTypeApplication::Flush()
+void CSettingTypeRDBUser::Flush()
 {
-    if (m_SettingsIniFile)
+    if (m_IniFile != nullptr)
     {
-        m_SettingsIniFile->FlushChanges();
+        m_IniFile->FlushChanges();
     }
 }
 
-void CSettingTypeApplication::ResetAll()
+void CSettingTypeRDBUser::ResetAll()
 {
-    if (m_SettingsIniFile == nullptr)
+    if (m_IniFile == nullptr)
     {
         return;
     }
     CIniFile::SectionList sections;
-    m_SettingsIniFile->GetVectorOfSections(sections);
+    m_IniFile->GetVectorOfSections(sections);
     for (CIniFile::SectionList::const_iterator itr = sections.begin(); itr != sections.end(); itr++)
     {
-        m_SettingsIniFile->DeleteSection(itr->c_str());
+        m_IniFile->DeleteSection(itr->c_str());
     }
 }
 
-void CSettingTypeApplication::CleanUp()
+void CSettingTypeRDBUser::CleanUp()
 {
-    if (m_SettingsIniFile)
+    if (m_IniFile)
     {
-        m_SettingsIniFile->SetAutoFlush(true);
-        delete m_SettingsIniFile;
-        m_SettingsIniFile = nullptr;
+        m_IniFile->SetAutoFlush(true);
+        delete m_IniFile;
+        m_IniFile = nullptr;
     }
 }
 
-bool CSettingTypeApplication::Load(uint32_t Index, bool & Value) const
+bool CSettingTypeRDBUser::Load(uint32_t Index, bool & Value) const
 {
     bool bRes = false;
 
     uint32_t dwValue = 0;
-    bRes = m_SettingsIniFile ? m_SettingsIniFile->GetNumber(SectionName(), m_KeyNameIdex.c_str(), Value, dwValue) : false;
+    bRes = m_IniFile ? m_IniFile->GetNumber(SectionName(), m_KeyNameIdex.c_str(), Value, dwValue) : false;
     if (bRes)
     {
         Value = dwValue != 0;
@@ -164,9 +131,9 @@ bool CSettingTypeApplication::Load(uint32_t Index, bool & Value) const
     return bRes;
 }
 
-bool CSettingTypeApplication::Load(uint32_t /*Index*/, uint32_t & Value) const
+bool CSettingTypeRDBUser::Load(uint32_t /*Index*/, uint32_t & Value) const
 {
-    bool bRes = m_SettingsIniFile->GetNumber(SectionName(), m_KeyNameIdex.c_str(), Value, Value);
+    bool bRes = m_IniFile != nullptr ? m_IniFile->GetNumber(SectionName(), m_KeyNameIdex.c_str(), Value, Value) : false;
     if (!bRes && m_DefaultSetting != Default_None)
     {
         Value = m_DefaultSetting == Default_Constant ? m_DefaultValue : g_Settings->LoadDword(m_DefaultSetting);
@@ -174,23 +141,23 @@ bool CSettingTypeApplication::Load(uint32_t /*Index*/, uint32_t & Value) const
     return bRes;
 }
 
-const char * CSettingTypeApplication::SectionName(void) const
+const char * CSettingTypeRDBUser::SectionName(void) const
 {
     return m_Section.c_str();
 }
 
-bool CSettingTypeApplication::Load(uint32_t Index, std::string & Value) const
+bool CSettingTypeRDBUser::Load(uint32_t Index, std::string & Value) const
 {
-    bool bRes = m_SettingsIniFile ? m_SettingsIniFile->GetString(SectionName(), m_KeyNameIdex.c_str(), m_DefaultStr, Value) : false;
+    bool bRes = m_IniFile != nullptr ? m_IniFile->GetString(SectionName(), m_KeyNameIdex.c_str(), m_DefaultStr, Value) : false;
     if (!bRes)
     {
-        CSettingTypeApplication::LoadDefault(Index, Value);
+        CSettingTypeRDBUser::LoadDefault(Index, Value);
     }
     return bRes;
 }
 
 // Return the default values
-void CSettingTypeApplication::LoadDefault(uint32_t Index, bool & Value) const
+void CSettingTypeRDBUser::LoadDefault(uint32_t Index, bool & Value) const
 {
     if (m_DefaultSetting != Default_None)
     {
@@ -209,7 +176,7 @@ void CSettingTypeApplication::LoadDefault(uint32_t Index, bool & Value) const
     }
 }
 
-void CSettingTypeApplication::LoadDefault(uint32_t /*Index*/, uint32_t & Value) const
+void CSettingTypeRDBUser::LoadDefault(uint32_t /*Index*/, uint32_t & Value) const
 {
     if (m_DefaultSetting != Default_None)
     {
@@ -217,7 +184,7 @@ void CSettingTypeApplication::LoadDefault(uint32_t /*Index*/, uint32_t & Value) 
     }
 }
 
-void CSettingTypeApplication::LoadDefault(uint32_t /*Index*/, std::string & Value) const
+void CSettingTypeRDBUser::LoadDefault(uint32_t /*Index*/, std::string & Value) const
 {
     if (m_DefaultSetting != Default_None)
     {
@@ -226,7 +193,7 @@ void CSettingTypeApplication::LoadDefault(uint32_t /*Index*/, std::string & Valu
 }
 
 // Update the settings
-void CSettingTypeApplication::Save(uint32_t Index, bool Value)
+void CSettingTypeRDBUser::Save(uint32_t Index, bool Value)
 {
     bool indexed = g_Settings->IndexBasedSetting(m_DefaultSetting);
 
@@ -234,48 +201,60 @@ void CSettingTypeApplication::Save(uint32_t Index, bool Value)
         ((m_DefaultSetting == Default_Constant && m_DefaultValue == (uint32_t)Value) ||
          (m_DefaultSetting != Default_Constant && (indexed ? g_Settings->LoadBoolIndex(m_DefaultSetting, Index) : g_Settings->LoadBool(m_DefaultSetting)) == Value)))
     {
-        m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), nullptr);
+        if (m_IniFile != nullptr)
+        {
+            m_IniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), nullptr);
+        }
     }
     else
     {
-        m_SettingsIniFile->SaveNumber(SectionName(), m_KeyNameIdex.c_str(), Value);
+        CreateIniFile();
+        m_IniFile->SaveNumber(SectionName(), m_KeyNameIdex.c_str(), Value);
     }
 }
 
-void CSettingTypeApplication::Save(uint32_t /*Index*/, uint32_t Value)
+void CSettingTypeRDBUser::Save(uint32_t /*Index*/, uint32_t Value)
 {
     if (m_DefaultSetting != Default_None &&
         ((m_DefaultSetting == Default_Constant && m_DefaultValue == Value) ||
          (m_DefaultSetting != Default_Constant && g_Settings->LoadDword(m_DefaultSetting) == Value)))
     {
-        m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), nullptr);
+        if (m_IniFile != nullptr)
+        {
+            m_IniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), nullptr);
+        }
     }
     else
     {
-        m_SettingsIniFile->SaveNumber(SectionName(), m_KeyNameIdex.c_str(), Value);
+        CreateIniFile();
+        m_IniFile->SaveNumber(SectionName(), m_KeyNameIdex.c_str(), Value);
     }
 }
 
-void CSettingTypeApplication::Save(uint32_t Index, const std::string & Value)
+void CSettingTypeRDBUser::Save(uint32_t Index, const std::string & Value)
 {
     Save(Index, Value.c_str());
 }
 
-void CSettingTypeApplication::Save(uint32_t /*Index*/, const char * Value)
+void CSettingTypeRDBUser::Save(uint32_t /*Index*/, const char * Value)
 {
     if (m_DefaultSetting != Default_None && Value != nullptr &&
         ((m_DefaultSetting == Default_Constant && strcmp(m_DefaultStr, Value) == 0) ||
          (m_DefaultSetting != Default_Constant && strcmp(g_Settings->LoadStringVal(m_DefaultSetting).c_str(), Value) == 0)))
     {
-        m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), nullptr);
+        if (m_IniFile != nullptr)
+        {
+            m_IniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), nullptr);
+        }
     }
     else
     {
-        m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), Value);
+        CreateIniFile();
+        m_IniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), Value);
     }
 }
 
-std::string CSettingTypeApplication::FixSectionName(const char * Section)
+std::string CSettingTypeRDBUser::FixSectionName(const char * Section)
 {
     stdstr SectionName(Section);
 
@@ -285,6 +264,16 @@ std::string CSettingTypeApplication::FixSectionName(const char * Section)
     }
     SectionName.Replace("\\", "-");
     return SectionName;
+}
+
+void CSettingTypeRDBUser::CreateIniFile(void)
+{
+    if (m_IniFile != nullptr)
+    {
+        return;
+    }
+    m_IniFile = new CIniFile(m_IniFilePath);
+    m_IniFile->SetCustomSort(CustomSortData);
 }
 
 struct compareKeyValueItem
@@ -305,12 +294,15 @@ struct compareKeyValueItem
     }
 };
 
-void CSettingTypeApplication::CustomSortData(CIniFileBase::KeyValueVector & data)
+void CSettingTypeRDBUser::CustomSortData(CIniFileBase::KeyValueVector & data)
 {
     std::sort(data.begin(), data.end(), compareKeyValueItem());
 }
 
-void CSettingTypeApplication::Delete(uint32_t /*Index*/)
+void CSettingTypeRDBUser::Delete(uint32_t /*Index*/)
 {
-    m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), nullptr);
+    if (m_IniFile != nullptr)
+    {
+        m_IniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), nullptr);
+    }
 }

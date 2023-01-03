@@ -3,7 +3,7 @@
 #include <Project64-core/N64System/Enhancement/Enhancement.h>
 #include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/Settings/SettingType/SettingsType-GameSetting.h>
+#include <Project64-core/Settings/SettingType/SettingsType-Application.h>
 
 const char * CEnhancement::CheatIdent = "Cheat";
 const char * CEnhancement::EnhancementIdent = "Enhancement";
@@ -23,14 +23,13 @@ static std::string GenerateKeyName(const char * Name, const char * Ident, const 
 }
 
 class CSettingEnhancementActive :
-    public CSettingTypeGame
+    public CSettingTypeApplication
 {
 public:
     CSettingEnhancementActive(const char * Name, const char * Ident, bool Default) :
-        CSettingTypeGame("", false),
+        CSettingTypeApplication(g_Settings->LoadStringVal(Game_IniKey).c_str(), GenerateKeyName(Name, Ident, "Active").c_str(), ""),
         m_Default(Default)
     {
-        m_KeyNameIdex = GenerateKeyName(Name, Ident, "Active");
     }
 
     bool Active()
@@ -53,6 +52,11 @@ public:
         {
             return;
         }
+        stdstr GoodName;
+        if (g_Settings->LoadStringVal(Rdb_GoodName, GoodName))
+        {
+            m_SettingsIniFile->SaveString(SectionName(), "Good Name", GoodName.c_str());
+        }
         m_SettingsIniFile->SaveNumber(SectionName(), m_KeyNameIdex.c_str(), Active ? 1 : 0);
         Flush();
     }
@@ -72,13 +76,12 @@ private:
 };
 
 class CSettingEnhancementSelectedOption :
-    public CSettingTypeGame
+    public CSettingTypeApplication
 {
 public:
     CSettingEnhancementSelectedOption(const char * Name, const char * Ident) :
-        CSettingTypeGame("", false)
+        CSettingTypeApplication(g_Settings->LoadStringVal(Game_IniKey).c_str(), GenerateKeyName(Name, Ident, "Option").c_str(), "")
     {
-        m_KeyNameIdex = GenerateKeyName(Name, Ident, "Option");
     }
 
     void SetOption(uint16_t Value)
@@ -86,6 +89,11 @@ public:
         if (m_KeyNameIdex.empty())
         {
             return;
+        }
+        stdstr GoodName;
+        if (g_Settings->LoadStringVal(Rdb_GoodName, GoodName))
+        {
+            m_SettingsIniFile->SaveString(SectionName(), "Good Name", GoodName.c_str());
         }
         Save(0, (uint32_t)Value);
         Flush();
@@ -108,7 +116,7 @@ public:
         {
             return;
         }
-        CSettingTypeGame::Delete(0);
+        CSettingTypeApplication::Delete(0);
         Flush();
     }
 };

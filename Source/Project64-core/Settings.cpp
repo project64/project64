@@ -34,6 +34,7 @@ CSettings::~CSettings()
 {
     CSettingTypeApplication::CleanUp();
     CSettingTypeRomDatabase::CleanUp();
+    CSettingTypeRDBUser::CleanUp();
     CSettingTypeGame::CleanUp();
 
     for (SETTING_MAP::iterator iter = m_SettingInfo.begin(); iter != m_SettingInfo.end(); iter++)
@@ -79,6 +80,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Cmd_ComboDiskFile, new CSettingTypeTempString(""));
 
     // Support files
+    AddHandler(SupportFile_SettingsDirectory, new CSettingTypeTempString(""));
     AddHandler(SupportFile_Settings, new CSettingTypeApplicationPath("Settings", "ConfigFile", SupportFile_SettingsDefault));
     AddHandler(SupportFile_SettingsDefault, new CSettingTypeRelativePath("Config", "Project64.cfg"));
     AddHandler(SupportFile_RomDatabase, new CSettingTypeApplicationPath("Settings", "RomDatabase", SupportFile_RomDatabaseDefault));
@@ -676,6 +678,7 @@ bool CSettings::Initialize(const char * BaseDirectory, const char * AppName)
     AddHowToHandleSetting(BaseDirectory);
     CSettingTypeApplication::Initialize();
     CSettingTypeRomDatabase::Initialize();
+    CSettingTypeRDBUser::Initialize();
     CSettingTypeGame::Initialize();
 
     g_Settings->SaveString(Setting_ApplicationName, AppName);

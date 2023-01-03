@@ -1,8 +1,8 @@
 #pragma once
-#include <Project64-core/Settings/SettingType/SettingsType-Application.h>
+#include <Project64-core/Settings/SettingType/SettingsType-RDBUser.h>
 
 class CSettingTypeGame :
-    public CSettingTypeApplication
+    public CSettingTypeRDBUser
 {
 public:
     CSettingTypeGame(const char * Name, bool DefaultValue);

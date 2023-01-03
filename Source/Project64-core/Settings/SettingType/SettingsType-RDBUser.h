@@ -1,17 +1,18 @@
 #pragma once
 
 #include <Common/IniFile.h>
+#include <Common/path.h>
 #include <Project64-core/Settings/SettingType/SettingsType-Base.h>
 
-class CSettingTypeApplication :
+class CSettingTypeRDBUser :
     public CSettingType
 {
 public:
-    CSettingTypeApplication(const char * Section, const char * Name, const char * DefaultValue);
-    CSettingTypeApplication(const char * Section, const char * Name, bool DefaultValue);
-    CSettingTypeApplication(const char * Section, const char * Name, uint32_t DefaultValue);
-    CSettingTypeApplication(const char * Section, const char * Name, SettingID DefaultSetting);
-    virtual ~CSettingTypeApplication();
+    CSettingTypeRDBUser(const char * Section, const char * Name, const char * DefaultValue);
+    CSettingTypeRDBUser(const char * Section, const char * Name, bool DefaultValue);
+    CSettingTypeRDBUser(const char * Section, const char * Name, uint32_t DefaultValue);
+    CSettingTypeRDBUser(const char * Section, const char * Name, SettingID DefaultSetting);
+    virtual ~CSettingTypeRDBUser();
 
     virtual bool IndexBasedSetting(void) const
     {
@@ -59,9 +60,12 @@ protected:
     const SettingID m_DefaultSetting;
 
     std::string FixSectionName(const char * Section);
+
+    static void CreateIniFile(void);
     static void CustomSortData(CIniFileBase::KeyValueVector & data);
 
-    static CIniFile * m_SettingsIniFile;
+    static CPath m_IniFilePath;
+    static CIniFile * m_IniFile;
     const std::string m_Section;
     const std::string m_KeyName;
     mutable std::string m_KeyNameIdex;
@@ -69,6 +73,6 @@ protected:
     virtual const char * SectionName(void) const;
 
 private:
-    CSettingTypeApplication(const CSettingTypeApplication &);
-    CSettingTypeApplication & operator=(const CSettingTypeApplication &);
+    CSettingTypeRDBUser(const CSettingTypeRDBUser &);
+    CSettingTypeRDBUser & operator=(const CSettingTypeRDBUser &);
 };

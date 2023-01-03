@@ -1,29 +1,29 @@
 #include "stdafx.h"
 
-#include "SettingsType-Application.h"
 #include "SettingsType-GameSetting.h"
+#include "SettingsType-RDBUser.h"
 
 bool CSettingTypeGame::m_RdbEditor = false;
 bool CSettingTypeGame::m_EraseDefaults = true;
 std::string * CSettingTypeGame::m_SectionIdent = nullptr;
 
 CSettingTypeGame::CSettingTypeGame(const char * Name, bool DefaultValue) :
-    CSettingTypeApplication("", Name, DefaultValue)
+    CSettingTypeRDBUser("", Name, DefaultValue)
 {
 }
 
 CSettingTypeGame::CSettingTypeGame(const char * Name, const char * DefaultValue) :
-    CSettingTypeApplication("", Name, DefaultValue)
+    CSettingTypeRDBUser("", Name, DefaultValue)
 {
 }
 
 CSettingTypeGame::CSettingTypeGame(const char * Name, uint32_t DefaultValue) :
-    CSettingTypeApplication("", Name, DefaultValue)
+    CSettingTypeRDBUser("", Name, DefaultValue)
 {
 }
 
 CSettingTypeGame::CSettingTypeGame(const char * Name, SettingID DefaultSetting) :
-    CSettingTypeApplication("", Name, DefaultSetting)
+    CSettingTypeRDBUser("", Name, DefaultSetting)
 {
 }
 
@@ -85,7 +85,7 @@ bool CSettingTypeGame::Load(uint32_t Index, bool & Value) const
             return g_Settings->LoadBool(m_DefaultSetting, Value);
         }
     }
-    return CSettingTypeApplication::Load(Index, Value);
+    return CSettingTypeRDBUser::Load(Index, Value);
 }
 
 bool CSettingTypeGame::Load(uint32_t Index, uint32_t & Value) const
@@ -101,7 +101,7 @@ bool CSettingTypeGame::Load(uint32_t Index, uint32_t & Value) const
             return g_Settings->LoadDword(m_DefaultSetting, Value);
         }
     }
-    return CSettingTypeApplication::Load(Index, Value);
+    return CSettingTypeRDBUser::Load(Index, Value);
 }
 
 bool CSettingTypeGame::Load(uint32_t Index, std::string & Value) const
@@ -117,7 +117,7 @@ bool CSettingTypeGame::Load(uint32_t Index, std::string & Value) const
             return g_Settings->LoadStringVal(m_DefaultSetting, Value);
         }
     }
-    return CSettingTypeApplication::Load(Index, Value);
+    return CSettingTypeRDBUser::Load(Index, Value);
 }
 
 // Return the default values
@@ -136,7 +136,7 @@ void CSettingTypeGame::LoadDefault(uint32_t Index, bool & Value) const
     }
     else
     {
-        CSettingTypeApplication::LoadDefault(Index, Value);
+        CSettingTypeRDBUser::LoadDefault(Index, Value);
     }
 }
 
@@ -155,7 +155,7 @@ void CSettingTypeGame::LoadDefault(uint32_t Index, uint32_t & Value) const
     }
     else
     {
-        CSettingTypeApplication::LoadDefault(Index, Value);
+        CSettingTypeRDBUser::LoadDefault(Index, Value);
     }
 }
 
@@ -174,7 +174,7 @@ void CSettingTypeGame::LoadDefault(uint32_t Index, std::string & Value) const
     }
     else
     {
-        CSettingTypeApplication::LoadDefault(Index, Value);
+        CSettingTypeRDBUser::LoadDefault(Index, Value);
     }
 }
 
@@ -204,7 +204,7 @@ void CSettingTypeGame::Save(uint32_t Index, bool Value)
     }
     else
     {
-        CSettingTypeApplication::Save(Index, Value);
+        CSettingTypeRDBUser::Save(Index, Value);
     }
 }
 
@@ -233,7 +233,7 @@ void CSettingTypeGame::Save(uint32_t Index, uint32_t Value)
     }
     else
     {
-        CSettingTypeApplication::Save(Index, Value);
+        CSettingTypeRDBUser::Save(Index, Value);
     }
 }
 
@@ -267,7 +267,7 @@ void CSettingTypeGame::Save(uint32_t Index, const char * Value)
     }
     else
     {
-        CSettingTypeApplication::Save(Index, Value);
+        CSettingTypeRDBUser::Save(Index, Value);
     }
 }
 
@@ -286,6 +286,6 @@ void CSettingTypeGame::Delete(uint32_t Index)
     }
     else
     {
-        CSettingTypeApplication::Delete(Index);
+        CSettingTypeRDBUser::Delete(Index);
     }
 }
