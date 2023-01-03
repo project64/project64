@@ -5925,6 +5925,7 @@ Good Name=Space Station Silicon Valley (U) (V1.0)
 Internal Name=Silicon Valley
 Status=Compatible
 32bit=Yes
+RDRAM Size=4
 Culling=1
 
 [FC70E272-08FFE7AA-C:45]
