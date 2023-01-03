@@ -18,7 +18,6 @@ add_library(Project64-core STATIC
     N64System/Enhancement/EnhancementList.cpp
     N64System/Interpreter/InterpreterCPU.cpp
     N64System/Interpreter/InterpreterOps.cpp
-    N64System/Interpreter/InterpreterOps32.cpp
     N64System/MemoryHandler/AudioInterfaceHandler.cpp
     N64System/MemoryHandler/CartridgeDomain1Address1Handler.cpp
     N64System/MemoryHandler/CartridgeDomain1Address3Handler.cpp
@@ -96,6 +95,7 @@ add_library(Project64-core STATIC
     Settings/SettingType/SettingsType-RDBOnOff.cpp
     Settings/SettingType/SettingsType-RDBRamSize.cpp
     Settings/SettingType/SettingsType-RDBSaveChip.cpp
+    Settings/SettingType/SettingsType-RDBUser.cpp
     Settings/SettingType/SettingsType-RDBYesNo.cpp
     Settings/SettingType/SettingsType-RomDatabase.cpp
     Settings/SettingType/SettingsType-RomDatabaseIndex.cpp
