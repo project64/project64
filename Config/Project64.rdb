@@ -5676,6 +5676,11 @@ Internal Name=SD HIRYU STADIUM
 Status=Compatible
 32bit=Yes
 
+[27BC81C2-49AFB311-C:45]
+Good Name=SGB Emulator v1.2
+Status=Compatible
+Core Note=Requires Parallel-RSP.
+
 [93A625B9-2D6022E6-C:42]
 Good Name=Shadow Man (B)
 Internal Name=Shadowman
