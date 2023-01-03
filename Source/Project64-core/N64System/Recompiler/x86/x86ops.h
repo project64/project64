@@ -39,7 +39,7 @@ public:
     void X86HardBreakPoint();
     void X86BreakPoint(const char * FileName, int32_t LineNumber);
     void CallFunc(uint32_t FunctPtr, const char * FunctName);
-    void CallThis(uint32_t ThisPtr, uint32_t FunctPtr, char * FunctName, uint32_t StackSize);
+    void CallThis(uint32_t ThisPtr, uint32_t FunctPtr, const char * FunctName, uint32_t StackSize);
     void CompConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
     void CompConstToX86reg(const asmjit::x86::Gp & Reg, uint32_t Const);
     void CompX86regToVariable(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
