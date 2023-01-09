@@ -122,6 +122,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
         case 1: ReadPos += 1; break;
         case 2: ReadPos += 1; break;
         case 3: ReadPos += 1; break;
+        case 5: ReadPos += 5; break;
         case 6: ReadPos += 1; break;
         case 7: ReadPos += 1; break;
         case 0x80: ReadPos += 1; break;
@@ -221,6 +222,10 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
         case 0x89:
             g_MMU->SH_NonMemory((MemAddress | 0x80000000) ^ 2, *(uint16_t *)Reg);
             *context.Eip = (uint32_t)ReadPos;
+            return true;
+        case 0xA3:
+            g_MMU->SH_NonMemory((MemAddress | 0x80000000) ^ 2, *(uint16_t *)context.Eax);
+            *context.Eip += 6;
             return true;
         case 0xC7:
             if (Reg != context.Eax)
