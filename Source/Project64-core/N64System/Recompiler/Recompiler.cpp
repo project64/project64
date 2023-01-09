@@ -389,6 +389,11 @@ CCompiledFunc * CRecompiler::CompileCode()
     *g_RecompPos += CodeLen;
     LogCodeBlock(CodeBlock);
 
+    if (bSMM_StoreInstruc())
+    {
+        m_MMU.ClearMemoryWriteMap(CodeBlock.VAddrEnter() & ~0xFFF, 0xFFF);
+    }
+
     CCompiledFunc * Func = new CCompiledFunc(CodeBlock);
     std::pair<CCompiledFuncList::iterator, bool> ret = m_Functions.insert(CCompiledFuncList::value_type(Func->EnterPC(), Func));
     if (ret.second == false)

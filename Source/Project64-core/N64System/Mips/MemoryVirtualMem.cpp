@@ -862,7 +862,8 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t VAddr, uint32_t Value)
                 }
                 if (CGameSettings::bSMM_StoreInstruc())
                 {
-                    m_TLB_WriteMap[VAddr >> 12] = PAddr - VAddr;
+                    m_TLB_WriteMap[(0x80000000 + PAddr) >> 12] = PAddr - VAddr;
+                    m_TLB_WriteMap[(0xA0000000 + PAddr) >> 12] = PAddr - VAddr;
                 }
                 *(uint32_t *)(m_RDRAM + PAddr) = Value;
             }
@@ -950,7 +951,7 @@ void CMipsMemoryVM::ClearMemoryWriteMap(uint32_t VAddr, uint32_t Length)
         return;
     }
     uint32_t PAddr = m_TLB_ReadMap[VAddr >> 12] + VAddr;
-    for (uint32_t i = PAddr, n = (PAddr + Length) + 0x1000; i < n; i += 0x1000)
+    for (uint32_t i = PAddr, n = (PAddr + (Length & ~0xFFF)) + 0x1000; i < n; i += 0x1000)
     {
         m_MemoryWriteMap[(i + 0x80000000) >> 12] = (size_t)-1;
         m_MemoryWriteMap[(i + 0xA0000000) >> 12] = (size_t)-1;

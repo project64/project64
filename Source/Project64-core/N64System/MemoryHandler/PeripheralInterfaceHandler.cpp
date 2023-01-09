@@ -206,7 +206,8 @@ void PeripheralInterfaceHandler::OnFirstDMA()
         g_Notify->DisplayError(stdstr_f("Unhandled CicChip(%d) in first DMA", g_Rom->CicChipID()).c_str());
         return;
     }
-    m_MMU.UpdateMemoryValue32(0x80000000 + offset, m_MMU.RdramSize());
+
+    m_MMU.SW_Memory(0xFFFFFFFF80000000 + offset, m_MMU.RdramSize());
 }
 
 void PeripheralInterfaceHandler::PI_DMA_READ()
@@ -377,6 +378,11 @@ void PeripheralInterfaceHandler::PI_DMA_WRITE()
     else
     {
         int32_t Length = PI_WR_LEN_REG + 1;
+        if (g_Recompiler && bSMM_PIDMA())
+        {
+            g_Recompiler->ClearRecompCode_Phys(WritePos & ~0xFFF, Length, CRecompiler::Remove_DMA);
+        }
+
         PI_WR_LEN_REG = Length <= 8 ? 0x7F - (PI_DRAM_ADDR_REG & 7) : 0x7F;
 
         uint8_t Block[128];
@@ -467,10 +473,6 @@ void PeripheralInterfaceHandler::PI_DMA_WRITE()
             PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
             MI_INTR_REG |= MI_INTR_PI;
             m_Reg.CheckInterrupts();
-        }
-        if (g_Recompiler && g_System->bSMM_PIDMA())
-        {
-            g_Recompiler->ClearRecompCode_Phys(WritePos, Length, CRecompiler::Remove_DMA);
         }
     }
 }
