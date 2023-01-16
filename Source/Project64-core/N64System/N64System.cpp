@@ -1889,7 +1889,7 @@ bool CN64System::SaveState()
         }
     }
 
-    uint32_t RdramSize = g_Settings->LoadDword(Game_RDRamSize);
+    uint32_t RdramSize = m_MMU_VM.RdramSize();
     uint32_t MiInterReg = g_Reg->MI_INTR_REG;
     uint32_t NextViTimer = m_SystemTimer.GetTimer(CSystemTimer::ViTimer);
     if (g_Settings->LoadDword(Setting_AutoZipInstantSave))
@@ -2170,7 +2170,7 @@ bool CN64System::LoadState(const char * FileName)
                 }
                 Reset(false, true);
 
-                m_MMU_VM.UnProtectMemory(0x80000000, 0x80000000 + g_Settings->LoadDword(Game_RDRamSize) - 4);
+                m_MMU_VM.UnProtectMemory(0x80000000, 0x80000000 + m_MMU_VM.RdramSize() - 4);
                 m_MMU_VM.UnProtectMemory(0xA4000000, 0xA4000FFC);
                 m_MMU_VM.UnProtectMemory(0xA4001000, 0xA4001FFC);
                 g_Settings->SaveDword(Game_RDRamSize, SaveRDRAMSize);
@@ -2265,7 +2265,7 @@ bool CN64System::LoadState(const char * FileName)
             }
         }
         Reset(false, true);
-        m_MMU_VM.UnProtectMemory(0x80000000, 0x80000000 + g_Settings->LoadDword(Game_RDRamSize) - 4);
+        m_MMU_VM.UnProtectMemory(0x80000000, 0x80000000 + m_MMU_VM.RdramSize() - 4);
         m_MMU_VM.UnProtectMemory(0xA4000000, 0xA4001FFC);
         g_Settings->SaveDword(Game_RDRamSize, SaveRDRAMSize);
 

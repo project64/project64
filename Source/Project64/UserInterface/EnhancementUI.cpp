@@ -263,7 +263,7 @@ LRESULT CEnhancementUI::OnEnhancementListClicked(NMHDR * lpnmh)
     return 0;
 }
 
-LRESULT CEnhancementUI::OnPopupDelete(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
+LRESULT CEnhancementUI::OnPopupDelete(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/)
 {
     int Response = MessageBox(wGS(MSG_DEL_SURE).c_str(), wGS(MSG_DEL_TITLE).c_str(), MB_YESNO | MB_ICONQUESTION);
     if (Response != IDYES)

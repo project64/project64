@@ -72,7 +72,8 @@ CJniBridegSettings::CJniBridegSettings()
     ADD_SETTING(Setting_DiskSaveType);
 
     // Default settings
-    ADD_SETTING(Default_RDRamSize);
+    ADD_SETTING(Default_RDRamSizeUnknown);
+    ADD_SETTING(Default_RDRamSizeKnown);
     ADD_SETTING(Default_UseHleGfx);
     ADD_SETTING(Default_ViRefreshRate);
     ADD_SETTING(Default_AiCountPerBytes);

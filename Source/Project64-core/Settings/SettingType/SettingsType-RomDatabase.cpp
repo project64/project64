@@ -118,11 +118,15 @@ void CSettingTypeRomDatabase::BaseDirChanged(void * /*Data */)
     m_AudioIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_AudioRDB).c_str());
 }
 
-void CSettingTypeRomDatabase::GameChanged(void * /*Data */)
+void CSettingTypeRomDatabase::GameChanged(void * Data)
 {
     if (m_SectionIdent)
     {
         *m_SectionIdent = g_Settings->LoadStringVal(Game_IniKey);
+
+        CIniFileBase::strlist KeyList;
+        m_SettingsIniFile->GetKeyList(m_SectionIdent->c_str(), KeyList);
+        g_Settings->SaveBool(Game_Known, KeyList.size() > 0);
     }
 }
 

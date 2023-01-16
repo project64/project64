@@ -227,6 +227,7 @@
 #define IDC_VERSION                     1087
 #define IDC_CPU_TYPE                    1088
 #define IDC_SELECT_LANG                 1088
+#define IDC_RDRAM_SIZE_UNKNOWN          1088
 #define IDC_SAVE_TYPE                   1089
 #define IDC_MENU_ITEMS                  1089
 #define IDC_PAGELIST                    1090
@@ -857,6 +858,9 @@
 #define IDC_REMOVE_BTN                  1734
 #define IDC_ADD_BTN                     1735
 #define IDC_AUTORUN_LIST                1737
+#define IDC_RDRAM_SIZE_KNOWN            1738
+#define IDC_MEMORY_SIZE_UNKOWN_TEXT     1739
+#define IDC_MEMORY_SIZE_KNOWN_TEXT      1740
 #define ID_POPUPMENU_PLAYGAMEWITHDISK   40008
 #define ID_POPUPMENU_ADDSYMBOL          40013
 #define ID_POPUPMENU_VIEWDISASM         40017
@@ -931,7 +935,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        228
 #define _APS_NEXT_COMMAND_VALUE         40122
-#define _APS_NEXT_CONTROL_VALUE         1738
+#define _APS_NEXT_CONTROL_VALUE         1741
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

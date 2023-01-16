@@ -64,7 +64,8 @@ enum SettingID
     Setting_UpdateControllerOnRefresh,
 
     // Default settings
-    Default_RDRamSize,
+    Default_RDRamSizeUnknown,
+    Default_RDRamSizeKnown,
     Default_UseHleGfx,
     Default_ViRefreshRate,
     Default_AiCountPerBytes,
@@ -120,6 +121,7 @@ enum SettingID
     Game_GameName,
     Cfg_GoodName,
     Game_TempLoaded,
+    Game_Known,
     Game_SystemType,
     Game_EditPlugin_Gfx,
     Game_EditPlugin_Audio,

@@ -276,6 +276,8 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ROM_DISK_SEEK_TIMING, "Disk seek timing:");
     DEF_STR(ROM_DISK_SEEK_TIMING_TURBO, "Turbo");
     DEF_STR(ROM_DISK_SEEK_TIMING_SLOW, "Slow");
+    DEF_STR(ROM_MEM_SIZE_KNOWN, "Memory size (Known):");
+    DEF_STR(ROM_MEM_SIZE_UNKNOWN, "Memory size (Unknown):");
 
     // Core styles
     DEF_STR(CORE_INTERPTER, "Interpreter");

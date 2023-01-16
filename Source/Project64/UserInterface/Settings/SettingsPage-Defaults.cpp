@@ -10,7 +10,8 @@ CDefaultsOptionsPage::CDefaultsOptionsPage(HWND hParent, const RECT & rcDispay)
     }
     UpdatePageSettings();
 
-    SetDlgItemText(IDC_MEMORY_SIZE_TEXT, wGS(ROM_MEM_SIZE).c_str());
+    SetDlgItemText(IDC_MEMORY_SIZE_KNOWN_TEXT, wGS(ROM_MEM_SIZE_KNOWN).c_str());
+    SetDlgItemText(IDC_MEMORY_SIZE_UNKOWN_TEXT, wGS(ROM_MEM_SIZE_UNKNOWN).c_str());
     SetDlgItemText(IDC_HLE_GFX, wGS(PLUG_HLE_GFX).c_str());
     SetDlgItemText(IDC_VIREFESH_TEXT, wGS(ROM_VIREFRESH).c_str());
     SetDlgItemText(IDC_COUNTPERBYTE_TEXT, wGS(ROM_COUNTPERBYTE).c_str());
@@ -22,7 +23,15 @@ CDefaultsOptionsPage::CDefaultsOptionsPage(HWND hParent, const RECT & rcDispay)
     SetDlgItemText(IDC_DISKSEEKTIMING_TEXT1, wGS(ROM_DISK_SEEK_TIMING).c_str());
 
     CModifiedComboBox * ComboBox;
-    ComboBox = AddModComboBox(GetDlgItem(IDC_RDRAM_SIZE), Default_RDRamSize);
+    ComboBox = AddModComboBox(GetDlgItem(IDC_RDRAM_SIZE_KNOWN), Default_RDRamSizeUnknown);
+    if (ComboBox)
+    {
+        ComboBox->SetTextField(GetDlgItem(IDC_MEMORY_SIZE_TEXT));
+        ComboBox->AddItem(wGS(RDRAM_4MB).c_str(), 0x400000);
+        ComboBox->AddItem(wGS(RDRAM_8MB).c_str(), 0x800000);
+    }
+
+    ComboBox = AddModComboBox(GetDlgItem(IDC_RDRAM_SIZE_UNKNOWN), Default_RDRamSizeKnown);
     if (ComboBox)
     {
         ComboBox->SetTextField(GetDlgItem(IDC_MEMORY_SIZE_TEXT));

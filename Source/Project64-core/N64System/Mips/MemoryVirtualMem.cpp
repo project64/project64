@@ -161,7 +161,10 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
         return false;
     }
 
-    m_AllocatedRdramSize = g_Settings->LoadDword(Game_RDRamSize);
+    if (!g_Settings->LoadDword(Game_RDRamSize, m_AllocatedRdramSize))
+    {
+        m_AllocatedRdramSize = g_Settings->LoadDword(g_Settings->LoadBool(Game_Known) ? Default_RDRamSizeKnown : Default_RDRamSizeUnknown);
+    }
     if (CommitMemory(m_RDRAM, m_AllocatedRdramSize, MEM_READWRITE) == nullptr)
     {
         WriteTrace(TraceN64System, TraceError, "Failed to allocate RDRAM (Size: 0x%X)", m_AllocatedRdramSize);

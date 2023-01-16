@@ -129,7 +129,8 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Setting_DiskSaveType, new CSettingTypeApplication("Settings", "Disk Save Type", (uint32_t)1));
     AddHandler(Setting_UpdateControllerOnRefresh, new CSettingTypeTempBool(false));
 
-    AddHandler(Default_RDRamSize, new CSettingTypeApplication("Defaults", "RDRAM Size", 0x800000u));
+    AddHandler(Default_RDRamSizeUnknown, new CSettingTypeApplication("Defaults", "Unknown RDRAM Size", 0x800000u));
+    AddHandler(Default_RDRamSizeKnown, new CSettingTypeApplication("Defaults", "Known RDRAM Size", 0x400000u));
     AddHandler(Default_UseHleGfx, new CSettingTypeApplication("Defaults", "HLE GFX Default", true));
     AddHandler(Default_ViRefreshRate, new CSettingTypeApplication("Defaults", "ViRefresh", 1500u));
     AddHandler(Default_AiCountPerBytes, new CSettingTypeApplication("Defaults", "AiCountPerBytes", 0u));
@@ -144,7 +145,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_RPCKey, new CSettingTypeRomDatabase("RPC Key", Game_RPCKey));
     AddHandler(Rdb_SaveChip, new CSettingTypeRDBSaveChip("Save Type", (uint32_t)SaveChip_Auto));
     AddHandler(Rdb_CpuType, new CSettingTypeRDBCpuType("CPU Type", CPU_Recompiler));
-    AddHandler(Rdb_RDRamSize, new CSettingTypeRDBRDRamSize("RDRAM Size", Default_RDRamSize));
+    AddHandler(Rdb_RDRamSize, new CSettingTypeRDBRDRamSize("RDRAM Size", Default_RDRamSizeKnown));
     AddHandler(Rdb_CounterFactor, new CSettingTypeRomDatabase("Counter Factor", Default_CounterFactor));
     AddHandler(Rdb_DelayDP, new CSettingTypeRDBYesNo("Delay DP", true));
     AddHandler(Rdb_DelaySi, new CSettingTypeRDBYesNo("Delay SI", false));
@@ -187,6 +188,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Game_GameName, new CSettingTypeTempString(""));
     AddHandler(Cfg_GoodName, new CSettingTypeGame("Good Name", ""));
     AddHandler(Game_TempLoaded, new CSettingTypeTempBool(false));
+    AddHandler(Game_Known, new CSettingTypeTempBool(false));
     AddHandler(Game_SystemType, new CSettingTypeTempNumber(SYSTEM_NTSC));
     AddHandler(Game_EditPlugin_Gfx, new CSettingTypeGame("Plugin-Gfx", Default_None));
     AddHandler(Game_EditPlugin_Audio, new CSettingTypeGame("Plugin-Audio", Default_None));

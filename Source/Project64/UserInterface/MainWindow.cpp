@@ -970,7 +970,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
         case JSAPI_ACT_RESET:
             if (g_BaseSystem)
             {
-                g_BaseSystem->ExternalEvent((bool)lParam ? SysEvent_ResetCPU_Soft : SysEvent_ResetCPU_Hard);
+                g_BaseSystem->ExternalEvent(lParam != 0 ? SysEvent_ResetCPU_Soft : SysEvent_ResetCPU_Hard);
             }
             break;
         case JSAPI_ACT_PAUSE:
