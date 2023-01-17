@@ -139,8 +139,7 @@ body:
     id: RecompilerorInterpreter
     attributes: 
       label: Does the issue manifest with the Interpreter core?
-      description: You can change this setting in the Rom Configuration 
-      (Requires "hide advanced settings" unchechecked)
+      description: You can change this setting in the Rom Configuration (Requires "hide advanced settings" unchechecked)
       value: |
         Recompiler: Y/N
         Interpreter Y/N
