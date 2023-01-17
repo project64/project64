@@ -141,7 +141,7 @@ body:
       label: Does the issue manifest with the Interpreter core?
       description: You can change this setting in the Rom Configuration (Requires "hide advanced settings" unchechecked)
       value: |
-        You can also specify here if certain Recompiler setting combinations allows the game to boot.
+        You can also specify here if certain Recompiler setting combinations allows the game to work as intended.
     validations: 
       required: true      
   - type: checkboxes
