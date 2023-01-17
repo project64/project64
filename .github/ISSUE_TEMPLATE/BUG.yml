@@ -34,6 +34,10 @@ body:
 
         Please avoid opening issues if you do not meet the minimum requirements
         for Project64. These are outlined in the README for this repository.
+        
+        **Issues must be reproduced on the current nightly to be accepted, 
+        users indicating an old version in use will have their bug marked 
+        Out of Date and closed.**
   - type: textarea
     id: what-should-happen
     attributes: 
@@ -144,4 +148,13 @@ body:
         party.
       options:
         - label: There are no infringing files attached to this bug report.
+          required: true
+  - type: checkboxes
+    id: Latest_Nightly
+    attributes: 
+      label: Using Latest Nightly
+      description: >-
+        Are you using the [latest nightly build](https://www.pj64-emu.com/nightly-builds)?
+      options:
+        - label: I am using the latest nightly build.
           required: true
