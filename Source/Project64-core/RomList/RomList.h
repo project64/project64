@@ -1,10 +1,13 @@
 #pragma once
+
 #include <Common/IniFile.h>
 #include <Common/StdString.h>
 #include <Common/Thread.h>
 #include <Common/md5.h>
 #include <Common/path.h>
 #include <Project64-core/N64System/N64Types.h>
+#include <memory>
+#include <string>
 
 class CRomList
 {
@@ -51,6 +54,9 @@ public:
     void RefreshRomList(void);
     void LoadRomList(void);
 
+    uint32_t LoadPlaytime(const std::string & ApplicationName);
+    void SavePlaytime(const std::string & ApplicationName, uint32_t Playtime);
+
 protected:
     typedef std::vector<ROM_INFO> ROMINFO_LIST;
 
@@ -87,6 +93,7 @@ private:
     CIniFile * m_NotesIniFile;
     CIniFile * m_ExtIniFile;
     CIniFile * m_RomIniFile;
+    std::unique_ptr<CIniFile> m_PlaytimeFile;
 #ifdef _WIN32
     CIniFile * m_ZipIniFile;
 #endif

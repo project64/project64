@@ -7,6 +7,7 @@
 #include <Project64/UserInterface/EnhancementUI.h>
 #include <Project64/UserInterface/ProjectSupport.h>
 #include <Project64/UserInterface/RomBrowser.h>
+#include <chrono>
 
 class CGfxPlugin;      // Plugin that controls the rendering
 class CAudioPlugin;    // Plugin for audio, need the hwnd
@@ -119,6 +120,7 @@ private:
     void AddRecentRom(const char * ImagePath);
     void SetWindowCaption(const wchar_t * Caption);
     void ShowRomBrowser(void);
+    void SavePlaytime(void);
 
     static LRESULT CALLBACK MainGui_Proc(HWND, DWORD, DWORD, DWORD);
 
@@ -156,4 +158,6 @@ private:
     bool m_SaveRomBrowserPos;
     LONG m_SaveRomBrowserTop;
     LONG m_SaveRomBrowserLeft;
+
+    std::chrono::steady_clock::time_point m_CurrentPlaytime;
 };

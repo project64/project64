@@ -59,6 +59,7 @@ void CRomBrowser::GetFieldInfo(ROMBROWSER_FIELDS_LIST & Fields, bool UseDefault 
     AddField(Fields, "Players", -1, RB_Players, 100, RB_PLAYERS, UseDefault);
     AddField(Fields, "Force Feedback", -1, RB_ForceFeedback, 100, RB_FORCE_FEEDBACK, UseDefault);
     AddField(Fields, "File Format", -1, RB_FileFormat, 100, RB_FILE_FORMAT, UseDefault);
+    AddField(Fields, "Playtime", -1, RB_Playtime, 200, RB_PLAYTIME, UseDefault);
 }
 
 int32_t CRomBrowser::CalcSortPosition(uint32_t lParam)
@@ -845,6 +846,12 @@ void CRomBrowser::RomList_GetDispInfo(uint32_t pnmh)
         default: swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"Unknown (%X)", pRomInfo->FileFormat); break;
         }
         break;
+    case RB_Playtime:
+    {
+        auto Playtime = LoadPlaytime(stdstr(pRomInfo->GoodName));
+        swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"%02d:%02d:%02d", Playtime / 3600, (Playtime / 60) % 60, Playtime % 60);
+        break;
+    }
     default: wcsncpy(lpdi->item.pszText, L" ", lpdi->item.cchTextMax);
     }
     if (lpdi->item.pszText == nullptr || wcslen(lpdi->item.pszText) == 0)
