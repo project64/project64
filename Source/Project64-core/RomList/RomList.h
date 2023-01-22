@@ -54,8 +54,8 @@ public:
     void RefreshRomList(void);
     void LoadRomList(void);
 
-    uint32_t LoadPlaytime(const std::string & ApplicationName);
-    void SavePlaytime(const std::string & ApplicationName, uint32_t Playtime);
+    uint32_t LoadPlaytime(const std::string & RomIniKey);
+    void SavePlaytime(uint32_t ElapsedPlaytime);
 
 protected:
     typedef std::vector<ROM_INFO> ROMINFO_LIST;

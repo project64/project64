@@ -848,7 +848,8 @@ void CRomBrowser::RomList_GetDispInfo(uint32_t pnmh)
         break;
     case RB_Playtime:
     {
-        auto Playtime = LoadPlaytime(stdstr(pRomInfo->GoodName));
+        auto RomIdent = stdstr_f("%08X-%08X-C:%X", pRomInfo->CRC1, pRomInfo->CRC2, pRomInfo->Country);
+        auto Playtime = LoadPlaytime(RomIdent);
         swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"%02d:%02d:%02d", Playtime / 3600, (Playtime / 60) % 60, Playtime % 60);
         break;
     }

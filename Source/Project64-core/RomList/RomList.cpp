@@ -90,14 +90,18 @@ CRomList::~CRomList()
     WriteTrace(TraceRomList, TraceVerbose, "Done");
 }
 
-uint32_t CRomList::LoadPlaytime(const std::string & ApplicationName)
+uint32_t CRomList::LoadPlaytime(const std::string & RomIniKey)
 {
-    return m_PlaytimeFile->GetNumber(ApplicationName.c_str(), "Playtime", 0);
+    return m_PlaytimeFile->GetNumber(RomIniKey.c_str(), "Playtime", 0);
 }
 
-void CRomList::SavePlaytime(const std::string & ApplicationName, uint32_t Playtime)
+void CRomList::SavePlaytime(uint32_t ElapsedPlaytime)
 {
-    m_PlaytimeFile->SaveNumber(ApplicationName.c_str(), "Playtime", Playtime);
+    auto RomIniKey = g_Settings->LoadStringVal(Game_IniKey);
+    auto CurrentPlaytime = LoadPlaytime(RomIniKey);
+    auto RomGoodName = g_Settings->LoadStringVal(Rdb_GoodName);
+    m_PlaytimeFile->SaveString(RomIniKey.c_str(), "Name", RomGoodName.c_str());
+    m_PlaytimeFile->SaveNumber(RomIniKey.c_str(), "Playtime", CurrentPlaytime + ElapsedPlaytime);
 }
 
 void CRomList::RefreshRomList(void)

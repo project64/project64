@@ -159,5 +159,5 @@ private:
     LONG m_SaveRomBrowserTop;
     LONG m_SaveRomBrowserLeft;
 
-    std::chrono::steady_clock::time_point m_CurrentPlaytime;
+    std::pair<std::chrono::steady_clock::time_point, bool> m_CurrentPlaytime;
 };
