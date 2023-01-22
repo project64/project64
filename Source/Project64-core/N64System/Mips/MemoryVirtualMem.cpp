@@ -161,7 +161,8 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
         return false;
     }
 
-    if (!g_Settings->LoadDword(Game_RDRamSize, m_AllocatedRdramSize))
+    bool RdbRamSet = g_Settings->LoadDword(Rdb_RDRamSize, m_AllocatedRdramSize);
+    if (!g_Settings->LoadDword(Game_RDRamSize, m_AllocatedRdramSize) && !RdbRamSet)
     {
         m_AllocatedRdramSize = g_Settings->LoadDword(g_Settings->LoadBool(Game_Known) ? Default_RDRamSizeKnown : Default_RDRamSizeUnknown);
     }
