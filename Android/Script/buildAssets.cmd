@@ -8,29 +8,29 @@ set base_dir=%cd%
 cd /d %origdir%
 
 echo Building Lang files
-xcopy "%base_dir%/Lang" "%base_dir%/Android/app/src/main/assets/project64_data/Lang/" /D /I /F /Y /E
+xcopy "%base_dir%/Lang" "%base_dir%/Android/assets/project64_data/Lang/" /D /I /F /Y /E
 IF %ERRORLEVEL% NEQ 0 (exit /B 1)
 
 echo Copy config files
-IF NOT EXIST "%base_dir%/Android/app/src/main/assets/project64_data/Config/" mkdir "%base_dir%/Android/app/src/main/assets/project64_data/Config/"
-copy "%base_dir%\Config\Audio.rdb" "%base_dir%\Android\app\src\main\assets\project64_data\Config\"
+IF NOT EXIST "%base_dir%/Android/assets/project64_data/Config/" mkdir "%base_dir%/Android/assets/project64_data/Config/"
+copy "%base_dir%\Config\Audio.rdb" "%base_dir%\Android\assets\project64_data\Config\"
 IF %ERRORLEVEL% NEQ 0 (exit /B 1)
 
-copy "%base_dir%\Config\Video.rdb" "%base_dir%\Android\app\src\main\assets\project64_data\Config\"
+copy "%base_dir%\Config\Video.rdb" "%base_dir%\Android\assets\project64_data\Config\"
 IF %ERRORLEVEL% NEQ 0 (exit /B 1)
 
-copy "%base_dir%\Config\Project64.rdb" "%base_dir%\Android\app\src\main\assets\project64_data\Config\"
+copy "%base_dir%\Config\Project64.rdb" "%base_dir%\Android\assets\project64_data\Config\"
 IF %ERRORLEVEL% NEQ 0 (exit /B 1)
 
-copy "%base_dir%\Config\Project64.rdx" "%base_dir%\Android\app\src\main\assets\project64_data\Config\"
+copy "%base_dir%\Config\Project64.rdx" "%base_dir%\Android\assets\project64_data\Config\"
 IF %ERRORLEVEL% NEQ 0 (exit /B 1)
 
-IF NOT EXIST "%base_dir%/Android/app/src/main/assets/project64_data/Config/Cheats/" mkdir "%base_dir%/Android/app/src/main/assets/project64_data/Config/Cheats/"
-xcopy "%base_dir%/Config/Cheats" "%base_dir%/Android/app/src/main/assets/project64_data/Config/Cheats/" /D /I /F /Y /E
+IF NOT EXIST "%base_dir%/Android/assets/project64_data/Config/Cheats/" mkdir "%base_dir%/Android/assets/project64_data/Config/Cheats/"
+xcopy "%base_dir%/Config/Cheats" "%base_dir%/Android/assets/project64_data/Config/Cheats/" /D /I /F /Y /E
 IF %ERRORLEVEL% NEQ 0 (exit /B 1)
 
-IF NOT EXIST "%base_dir%/Android/app/src/main/assets/project64_data/Config/Enhancements/" mkdir "%base_dir%/Android/app/src/main/assets/project64_data/Config/Enhancements/"
-xcopy "%base_dir%/Config/Enhancements" "%base_dir%/Android/app/src/main/assets/project64_data/Config/Enhancements/" /D /I /F /Y /E
+IF NOT EXIST "%base_dir%/Android/assets/project64_data/Config/Enhancements/" mkdir "%base_dir%/Android/assets/project64_data/Config/Enhancements/"
+xcopy "%base_dir%/Config/Enhancements" "%base_dir%/Android/assets/project64_data/Config/Enhancements/" /D /I /F /Y /E
 IF %ERRORLEVEL% NEQ 0 (exit /B 1)
 
 goto :end
