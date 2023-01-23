@@ -292,6 +292,8 @@
 #5440# "Disk seek timing:"
 #5441# "Turbo"
 #5442# "Slow"
+#5443# "Memory size (Known):"
+#5443# "Memory size (Unknown):"
 
 // Core styles
 #540#  "Interpreter"

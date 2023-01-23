@@ -10079,9 +10079,10 @@ void CX86RecompilerOps::SB_Const(uint32_t Value, uint32_t VAddr)
 
 void CX86RecompilerOps::SB_Register(const asmjit::x86::Gp & Reg, uint32_t VAddr)
 {
+    m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(Reg), true);
+
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
-        m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(Reg), true);
         asmjit::x86::Gp AddressReg = Map_TempReg(x86Reg_Unknown, -1, false, false);
         m_Assembler.MoveConstToX86reg(AddressReg, VAddr);
         CompileStoreMemoryValue(AddressReg, Reg, x86Reg_Unknown, 0, 8);
@@ -10189,10 +10190,10 @@ void CX86RecompilerOps::SH_Const(uint32_t Value, uint32_t VAddr)
 
 void CX86RecompilerOps::SH_Register(const asmjit::x86::Gp & Reg, uint32_t VAddr)
 {
+    m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(Reg), true);
+
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
-        m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(Reg), true);
-
         asmjit::x86::Gp AddressReg = Map_TempReg(x86Reg_Unknown, -1, false, false);
         m_Assembler.MoveConstToX86reg(AddressReg, VAddr);
         CompileStoreMemoryValue(AddressReg, Reg, x86Reg_Unknown, 0, 16);
@@ -10706,9 +10707,10 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
 
 void CX86RecompilerOps::SW_Register(const asmjit::x86::Gp & Reg, uint32_t VAddr)
 {
+    m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(Reg), true);
+
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
-        m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(Reg), true);
         asmjit::x86::Gp AddressReg = Map_TempReg(x86Reg_Unknown, -1, false, false);
         m_Assembler.MoveConstToX86reg(AddressReg, VAddr);
         CompileStoreMemoryValue(AddressReg, Reg, x86Reg_Unknown, 0, 32);
