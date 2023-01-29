@@ -4,6 +4,7 @@
 #include <Project64-core/N64System/Mips/Register.h>
 #include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/SystemGlobals.h>
+#include <fenv.h>
 
 const char * CRegName::GPR[32] = {
     "R0",

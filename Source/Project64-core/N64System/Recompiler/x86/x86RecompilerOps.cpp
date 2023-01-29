@@ -17,6 +17,7 @@
 #include <Project64-core/N64System/Recompiler/SectionInfo.h>
 #include <Project64-core/N64System/Recompiler/x86/x86RecompilerOps.h>
 #include <Project64-core/N64System/SystemGlobals.h>
+#include <fenv.h>
 #include <stdio.h>
 
 uint32_t CX86RecompilerOps::m_TempValue32 = 0;

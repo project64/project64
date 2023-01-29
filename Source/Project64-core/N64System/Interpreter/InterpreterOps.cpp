@@ -10,6 +10,7 @@
 #include <Project64-core/N64System/Mips/TLB.h>
 #include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/SystemGlobals.h>
+#include <fenv.h>
 #include <float.h>
 #include <math.h>
 
