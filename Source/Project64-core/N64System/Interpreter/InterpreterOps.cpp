@@ -2105,8 +2105,15 @@ void R4300iOp::COP1_S_ADD()
     {
         return;
     }
+    _FPCR[31] &= ~0x0003F000;
     fesetround(*_RoundingModel);
-    *(float *)_FPR_S[m_Opcode.fd] = (*(float *)_FPR_S[m_Opcode.fs] + *(float *)_FPR_S[m_Opcode.ft]);
+    feclearexcept(FE_ALL_EXCEPT);
+    float Result = (*(float *)_FPR_S[m_Opcode.fs] + *(float *)_FPR_S[m_Opcode.ft]);
+    if (CheckFPUException() || CheckFPUResult32(Result))
+    {
+        return;
+    }
+    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_SUB()
@@ -2785,4 +2792,94 @@ bool R4300iOp::TestCop1UsableException(void)
         return true;
     }
     return false;
+}
+
+bool R4300iOp::CheckFPUResult32(float & Result)
+{
+    int fptype = fpclassify(Result);
+    if (fptype == FP_NAN)
+    {
+        *((uint32_t *)&Result) = 0x7fbfffff;
+    }
+    return false;
+
+}
+
+bool R4300iOp::CheckFPUException(void)
+{
+    int Except = fetestexcept(FE_ALL_EXCEPT);
+    if (Except == 0)
+    {
+        return false;
+    }
+
+    bool Res = false;
+    FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+    if ((Except & FE_INEXACT) != 0)
+    {
+        StatusReg.Cause.Inexact = 1;
+        if (StatusReg.Enable.Inexact)
+        {
+            Res = true;
+        }
+        else
+        {
+            StatusReg.Flags.Inexact = 1;
+        }
+    }
+    if ((Except & FE_UNDERFLOW) != 0)
+    {
+        StatusReg.Cause.Underflow = 1;
+        if (StatusReg.Enable.Underflow)
+        {
+            Res = true;
+        }
+        else
+        {
+            StatusReg.Flags.Underflow = 1;
+        }
+    }
+    if ((Except & FE_OVERFLOW) != 0)
+    {
+        StatusReg.Cause.Overflow = 1;
+        if (StatusReg.Enable.Overflow)
+        {
+            Res = true;
+        }
+        else
+        {
+            StatusReg.Flags.Overflow = 1;
+        }
+    }
+    if ((Except & FE_DIVBYZERO) != 0)
+    {
+        StatusReg.Cause.DivisionByZero = 1;
+        if (StatusReg.Enable.DivisionByZero)
+        {
+            Res = true;
+        }
+        else
+        {
+            StatusReg.Flags.DivisionByZero = 1;
+        }
+    }
+    if ((Except & FE_INVALID) != 0)
+    {
+        StatusReg.Cause.InvalidOperation = 1;
+        if (StatusReg.Enable.InvalidOperation)
+        {
+            Res = true;
+        }
+        else
+        {
+            StatusReg.Flags.InvalidOperation = 1;
+        }
+    }
+    if (Res)
+    {
+        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+    }
+    return Res;
 }

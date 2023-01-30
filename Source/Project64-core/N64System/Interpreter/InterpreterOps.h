@@ -251,6 +251,8 @@ protected:
     static void GenerateTLBReadException(uint64_t VAddr, const char * function);
     static void GenerateTLBWriteException(uint64_t VAddr, const char * function);
     static bool TestCop1UsableException(void);
+    static bool CheckFPUResult32(float & Result);
+    static bool CheckFPUException(void);
 
     static const uint32_t SWL_MASK[4], SWR_MASK[4], LWL_MASK[4], LWR_MASK[4];
     static const int32_t SWL_SHIFT[4], SWR_SHIFT[4], LWL_SHIFT[4], LWR_SHIFT[4];
