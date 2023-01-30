@@ -2802,7 +2802,6 @@ bool R4300iOp::CheckFPUResult32(float & Result)
         *((uint32_t *)&Result) = 0x7fbfffff;
     }
     return false;
-
 }
 
 bool R4300iOp::CheckFPUException(void)
