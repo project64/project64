@@ -8,7 +8,6 @@ import emu.project64.jni.SettingsID;
 import emu.project64.jni.UISettingID;
 import emu.project64.task.ExtractAssetZipTask;
 import emu.project64.task.ExtractAssetZipTask.ExtractAssetZipListener;
-import emu.project64.task.ExtractAssetsTask.Failure;
 import android.Manifest;
 import android.content.Intent;
 import android.content.DialogInterface;
