@@ -33,6 +33,10 @@ IF NOT EXIST "%base_dir%/Android/assets/project64_data/Config/Enhancements/" mkd
 xcopy "%base_dir%/Config/Enhancements" "%base_dir%/Android/assets/project64_data/Config/Enhancements/" /D /I /F /Y /E
 IF %ERRORLEVEL% NEQ 0 (exit /B 1)
 
+IF NOT EXIST "%base_dir%/Android/app/src/main/assets/" mkdir "%base_dir%/Android/app/src/main/assets/"
+IF EXIST "%base_dir%/Android/app/src/main/assets/assets.zip" del "%base_dir%\Android\app\src\main\assets\assets.zip"
+powershell Compress-Archive "%base_dir%/Android/assets/*" "%base_dir%/Android/app/src/main/assets/assets.zip"
+
 goto :end
 
 :End

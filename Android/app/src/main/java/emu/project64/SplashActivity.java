@@ -1,17 +1,15 @@
 package emu.project64;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import emu.project64.R;
 import emu.project64.jni.NativeExports;
 import emu.project64.jni.SettingsID;
 import emu.project64.jni.UISettingID;
-import emu.project64.task.ExtractAssetsTask;
-import emu.project64.task.ExtractAssetsTask.ExtractAssetsListener;
+import emu.project64.task.ExtractAssetZipTask;
+import emu.project64.task.ExtractAssetZipTask.ExtractAssetZipListener;
 import emu.project64.task.ExtractAssetsTask.Failure;
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -19,7 +17,6 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import androidx.core.content.ContextCompat;
@@ -30,7 +27,7 @@ import android.util.Log;
 import android.view.WindowManager.LayoutParams;
 import android.widget.TextView;
 
-public class SplashActivity extends AppCompatActivity implements ExtractAssetsListener, OnRequestPermissionsResultCallback
+public class SplashActivity extends AppCompatActivity implements ExtractAssetZipListener, OnRequestPermissionsResultCallback
 {
     static final int PERMISSION_REQUEST = 177;
     static final int NUM_PERMISSIONS = 2;
@@ -251,58 +248,29 @@ public class SplashActivity extends AppCompatActivity implements ExtractAssetsLi
         }
     };
 
-    private boolean CountTotalAssetFiles(String path)
-    {
-        String [] list;
-        try
-        {
-            list = getAssets().list(path);
-            if (list.length > 0)
-            {
-                for (String file : list)
-                {
-                    if (!CountTotalAssetFiles(path + "/" + file))
-                    {
-                        return false;
-                    }
-                    else
-                    {
-                        TOTAL_ASSETS += 1;
-                    }
-                }
-            }
-        }
-        catch (IOException e)
-        {
-            return false;
-        }
-        return true;
-    }
-
     private final Runnable extractAssetsTaskLauncher = new Runnable()
     {
         @Override
         public void run()
         {
             Log.i( "Splash", "extractAssetsTaskLauncher - start");
-            TOTAL_ASSETS = 0;
-            CountTotalAssetFiles(SOURCE_DIR);
-            mAssetsExtracted = 0;
-            new ExtractAssetsTask( getAssets(), SOURCE_DIR, AndroidDevice.PACKAGE_DIRECTORY, SplashActivity.this ).execute();
+            new ExtractAssetZipTask( getAssets(), AndroidDevice.PACKAGE_DIRECTORY, SplashActivity.this ).execute();
         }
     };
 
     @Override
-    public void onExtractAssetsProgress( String nextFileToExtract )
+    public void onExtractAssetsProgress( String text )
     {
-        final float percent = ( 100f * mAssetsExtracted ) / (float) TOTAL_ASSETS;
-        final String text = getString( R.string.assetExtractor_progress, percent, nextFileToExtract );
-        mTextView.setText(text);
-        mAssetsExtracted++;
-    }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mTextView.setText(text);
+            }
+        });
+    };
 
     @Override
-    public void onExtractAssetsFinished( List<Failure> failures )
+    public void onExtractAssetsFinished( List<ExtractAssetZipTask.Failure> failures )
     {
         if( failures.size() == 0 )
         {
@@ -322,12 +290,12 @@ public class SplashActivity extends AppCompatActivity implements ExtractAssetsLi
             String weblink = getResources().getString( R.string.assetExtractor_uriHelp );
             String message = getString( R.string.assetExtractor_failed, weblink );
             String textHtml = message.replace( "\n", "<br/>" ) + "<p><small>";
-            for( Failure failure : failures )
+            for( ExtractAssetZipTask.Failure failure : failures )
             {
                 textHtml += failure.toString() + "<br/>";
             }
             textHtml += "</small>";
             mTextView.setText( Html.fromHtml( textHtml ) );
         }
-    }
+    };
 }
