@@ -245,13 +245,21 @@ int main (int argc, char *argv[])
 		items.push_back(Section);
 		if (PDNames.find(GoodName) == PDNames.end())
 		{
+		#if _MSC_VER >= 1920 // Visual Studio 2019 deprecates _Pairib
+			auto res = GoodNameSections.insert(strmap::value_type(GoodName,items));
+		#else
 			strmap::_Pairib res = GoodNameSections.insert(strmap::value_type(GoodName,items));
+		#endif
 			if (!res.second)
 			{
 				res.first->second.push_back(Section);
 			}
 		} else {
+		#if _MSC_VER >= 1920 // Visual Studio 2019 deprecates _Pairib
+			auto res = PDNameSections.insert(strmap::value_type(GoodName,items));
+		#else
 			strmap::_Pairib res = PDNameSections.insert(strmap::value_type(GoodName,items));
+		#endif
 			if (!res.second)
 			{
 				res.first->second.push_back(Section);
