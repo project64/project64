@@ -1101,7 +1101,7 @@ void CRomBrowser::SelectRomDir(void)
     bi.pidlRoot = nullptr;
     bi.pszDisplayName = SelectedDir;
     bi.lpszTitle = title.c_str();
-    bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS;
+    bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS | BIF_USENEWUI;
     bi.lpfn = (BFFCALLBACK)SelectRomDirCallBack;
     bi.lParam = (uint32_t)RomDir.c_str();
     WriteTrace(TraceUserInterface, TraceDebug, "2");
