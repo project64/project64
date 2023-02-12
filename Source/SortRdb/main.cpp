@@ -245,13 +245,13 @@ int main (int argc, char *argv[])
 		items.push_back(Section);
 		if (PDNames.find(GoodName) == PDNames.end())
 		{
-			strmap::_Pairib res = GoodNameSections.insert(strmap::value_type(GoodName,items));
+            std::pair<strmap::iterator, bool> res = GoodNameSections.insert(strmap::value_type(GoodName,items));
 			if (!res.second)
 			{
 				res.first->second.push_back(Section);
 			}
 		} else {
-			strmap::_Pairib res = PDNameSections.insert(strmap::value_type(GoodName,items));
+            std::pair<strmap::iterator, bool> res = PDNameSections.insert(strmap::value_type(GoodName,items));
 			if (!res.second)
 			{
 				res.first->second.push_back(Section);
