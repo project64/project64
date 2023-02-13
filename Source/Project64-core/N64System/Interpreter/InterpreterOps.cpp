@@ -2328,7 +2328,7 @@ void R4300iOp::COP1_S_CMP()
     }
 
     int32_t condition = ((m_Opcode.funct & 4) && less) | ((m_Opcode.funct & 2) && equal) |
-                ((m_Opcode.funct & 1) && unorded);
+                        ((m_Opcode.funct & 1) && unorded);
 
     if (condition != 0)
     {
@@ -2654,7 +2654,7 @@ void R4300iOp::COP1_D_CMP()
     }
 
     int32_t condition = ((m_Opcode.funct & 4) && less) | ((m_Opcode.funct & 2) && equal) |
-                ((m_Opcode.funct & 1) && unorded);
+                        ((m_Opcode.funct & 1) && unorded);
 
     if (condition != 0)
     {
