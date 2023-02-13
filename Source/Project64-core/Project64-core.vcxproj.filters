@@ -156,9 +156,6 @@
     <ClCompile Include="Settings\SettingType\SettingsType-RDBSaveChip.cpp">
       <Filter>Source Files\Settings\SettingType</Filter>
     </ClCompile>
-    <ClCompile Include="Settings\SettingType\SettingsType-RDBYesNo.cpp">
-      <Filter>Source Files\Settings\SettingType</Filter>
-    </ClCompile>
     <ClCompile Include="Settings\SettingType\SettingsType-RelativePath.cpp">
       <Filter>Source Files\Settings\SettingType</Filter>
     </ClCompile>
@@ -435,6 +432,9 @@
     <ClCompile Include="Settings\SettingType\SettingsType-RDBUser.cpp">
       <Filter>Source Files\Settings\SettingType</Filter>
     </ClCompile>
+    <ClCompile Include="Settings\SettingType\SettingsType-RDB.cpp">
+      <Filter>Source Files\Settings\SettingType</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -474,9 +474,6 @@
       <Filter>Header Files\Settings\SettingType</Filter>
     </ClInclude>
     <ClInclude Include="Settings\SettingType\SettingsType-RDBSaveChip.h">
-      <Filter>Header Files\Settings\SettingType</Filter>
-    </ClInclude>
-    <ClInclude Include="Settings\SettingType\SettingsType-RDBYesNo.h">
       <Filter>Header Files\Settings\SettingType</Filter>
     </ClInclude>
     <ClInclude Include="Settings\SettingType\SettingsType-RelativePath.h">
@@ -822,6 +819,9 @@
       <Filter>Header Files\N64 System\Recompiler</Filter>
     </ClInclude>
     <ClInclude Include="Settings\SettingType\SettingsType-RDBUser.h">
+      <Filter>Header Files\Settings\SettingType</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings\SettingType\SettingsType-RDB.h">
       <Filter>Header Files\Settings\SettingType</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,13 +1,13 @@
 #pragma once
 #include <Project64-core/Settings/SettingType/SettingsType-RomDatabase.h>
 
-class CSettingTypeRDBYesNo :
+class CSettingTypeRDB :
     public CSettingTypeRomDatabase
 {
 public:
-    CSettingTypeRDBYesNo(const char * Name, SettingID DefaultSetting);
-    CSettingTypeRDBYesNo(const char * Name, uint32_t DefaultValue);
-    ~CSettingTypeRDBYesNo();
+    CSettingTypeRDB(const char * Name, SettingID DefaultSetting);
+    CSettingTypeRDB(const char * Name, uint32_t DefaultValue);
+    ~CSettingTypeRDB();
 
     //return the values
     virtual bool Load(uint32_t Index, bool & Value) const;
@@ -29,7 +29,7 @@ public:
     virtual void Delete(uint32_t Index);
 
 private:
-    CSettingTypeRDBYesNo(void);
-    CSettingTypeRDBYesNo(const CSettingTypeRDBYesNo &);
-    CSettingTypeRDBYesNo & operator=(const CSettingTypeRDBYesNo &);
+    CSettingTypeRDB(void);
+    CSettingTypeRDB(const CSettingTypeRDB &);
+    CSettingTypeRDB & operator=(const CSettingTypeRDB &);
 };

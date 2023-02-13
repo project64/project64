@@ -134,12 +134,12 @@
     <ClCompile Include="Settings\SettingType\SettingsType-ApplicationPath.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-GameSetting.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-GameSettingIndex.cpp" />
+    <ClCompile Include="Settings\SettingType\SettingsType-RDB.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-RDBCpuType.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-RDBOnOff.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-RDBRamSize.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-RDBSaveChip.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-RDBUser.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-RDBYesNo.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-RelativePath.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-RomDatabase.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-RomDatabaseIndex.cpp" />
@@ -265,11 +265,11 @@
     <ClInclude Include="Settings\SettingType\SettingsType-Base.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-GameSetting.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-GameSettingIndex.h" />
+    <ClInclude Include="Settings\SettingType\SettingsType-RDB.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-RDBCpuType.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-RDBOnOff.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-RDBRamSize.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-RDBSaveChip.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-RDBYesNo.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-RelativePath.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-RomDatabase.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-RomDatabaseIndex.h" />

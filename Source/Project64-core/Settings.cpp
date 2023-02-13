@@ -9,7 +9,7 @@
 #include "Settings/SettingType/SettingsType-RDBOnOff.h"
 #include "Settings/SettingType/SettingsType-RDBRamSize.h"
 #include "Settings/SettingType/SettingsType-RDBSaveChip.h"
-#include "Settings/SettingType/SettingsType-RDBYesNo.h"
+#include "Settings/SettingType/SettingsType-RDB.h"
 #include "Settings/SettingType/SettingsType-RelativePath.h"
 #include "Settings/SettingType/SettingsType-RomDatabase.h"
 #include "Settings/SettingType/SettingsType-RomDatabaseIndex.h"
@@ -147,13 +147,13 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_CpuType, new CSettingTypeRDBCpuType("CPU Type", CPU_Recompiler));
     AddHandler(Rdb_RDRamSize, new CSettingTypeRDBRDRamSize("RDRAM Size", Default_RDRamSizeKnown));
     AddHandler(Rdb_CounterFactor, new CSettingTypeRomDatabase("Counter Factor", Default_CounterFactor));
-    AddHandler(Rdb_DelayDP, new CSettingTypeRDBYesNo("Delay DP", true));
-    AddHandler(Rdb_DelaySi, new CSettingTypeRDBYesNo("Delay SI", false));
-    AddHandler(Rdb_32Bit, new CSettingTypeRDBYesNo("32bit", false));
-    AddHandler(Rdb_FastSP, new CSettingTypeRDBYesNo("Fast SP", true));
+    AddHandler(Rdb_DelayDP, new CSettingTypeRDB("Delay DP", true));
+    AddHandler(Rdb_DelaySi, new CSettingTypeRDB("Delay SI", false));
+    AddHandler(Rdb_32Bit, new CSettingTypeRDB("32bit", false));
+    AddHandler(Rdb_FastSP, new CSettingTypeRDB("Fast SP", true));
     AddHandler(Rdb_FixedAudio, new CSettingTypeRomDatabase("Fixed Audio", Default_FixedAudio));
     AddHandler(Rdb_SyncViaAudio, new CSettingTypeRomDatabase("Audio-Sync Audio", Default_SyncViaAudio));
-    AddHandler(Rdb_RspAudioSignal, new CSettingTypeRDBYesNo("Audio Signal", false));
+    AddHandler(Rdb_RspAudioSignal, new CSettingTypeRDB("Audio Signal", false));
     AddHandler(Rdb_TLB_VAddrStart, new CSettingTypeRomDatabase("TLB: Vaddr Start", (uint32_t)0));
     AddHandler(Rdb_TLB_VAddrLen, new CSettingTypeRomDatabase("TLB: Vaddr Len", (uint32_t)0));
     AddHandler(Rdb_TLB_PAddrStart, new CSettingTypeRomDatabase("TLB: PAddr Start", (uint32_t)0));
@@ -161,7 +161,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_UseHleAudio, new CSettingTypeRomDatabase("HLE Audio RDB", Plugin_UseHleAudio));
     AddHandler(Rdb_ScreenHertz, new CSettingTypeRomDatabase("ScreenHertz", (uint32_t)0));
     AddHandler(Rdb_FuncLookupMode, new CSettingTypeRomDatabase("FuncFind", (uint32_t)FuncFind_PhysicalLookup));
-    AddHandler(Rdb_RegCache, new CSettingTypeRDBYesNo("Reg Cache", true));
+    AddHandler(Rdb_RegCache, new CSettingTypeRDB("Reg Cache", true));
 #ifdef ANDROID
     AddHandler(Rdb_BlockLinking, new CSettingTypeRDBOnOff("Linking", false));
 #else
@@ -175,9 +175,9 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_SMM_ValidFunc, new CSettingTypeRomDatabase("SMM-FUNC", true));
     AddHandler(Rdb_ViRefreshRate, new CSettingTypeRomDatabase("ViRefresh", Default_ViRefreshRate));
     AddHandler(Rdb_AiCountPerBytes, new CSettingTypeRomDatabase("AiCountPerBytes", Default_AiCountPerBytes));
-    AddHandler(Rdb_AudioResetOnLoad, new CSettingTypeRDBYesNo("AudioResetOnLoad", false));
-    AddHandler(Rdb_AllowROMWrites, new CSettingTypeRDBYesNo("AllowROMWrites", false));
-    AddHandler(Rdb_CRC_Recalc, new CSettingTypeRDBYesNo("CRC-Recalc", false));
+    AddHandler(Rdb_AudioResetOnLoad, new CSettingTypeRDB("AudioResetOnLoad", false));
+    AddHandler(Rdb_AllowROMWrites, new CSettingTypeRDB("AllowROMWrites", false));
+    AddHandler(Rdb_CRC_Recalc, new CSettingTypeRDB("CRC-Recalc", false));
     AddHandler(Rdb_UnalignedDMA, new CSettingTypeRomDatabase("Unaligned DMA", false));
     AddHandler(Rdb_RandomizeSIPIInterrupts, new CSettingTypeRomDatabase("Randomize SI/PI Interrupts", Default_RandomizeSIPIInterrupts));
     AddHandler(Rdb_DiskSeekTiming, new CSettingTypeRomDatabase("DiskSeekTiming", Default_DiskSeekTiming));
