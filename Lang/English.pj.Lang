@@ -530,6 +530,10 @@
 #2062#  "Nintendo 64DD Development IPL ROM not found.\nIt is required to play development 64DD disk images.\n\nPlease select the required ROM in the Settings."
 #2063#  "Failed to update cheat, it is invalid"
 #2064#  "Invalid Cheat"
+#2065#  "Failed to read ident bytes"
+#2066#  "Invalid image file"
+#2067#  "Failed to allocate for rom"
+#2068#  "Failed to open rom"
 
 /*** Android ***/
 

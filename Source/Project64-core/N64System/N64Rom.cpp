@@ -53,6 +53,7 @@ bool CN64Rom::AllocateAndLoadN64Image(const char * FileLoc, bool LoadBootCodeOnl
     WriteTrace(TraceN64System, TraceDebug, "Trying to open %s", FileLoc);
     if (!m_RomFile.Open(FileLoc, CFileBase::modeRead))
     {
+        SetError(MSG_ROM_FAILED_TO_OPEN);
         WriteTrace(TraceN64System, TraceError, "Failed to open %s", FileLoc);
         return false;
     }
@@ -63,12 +64,14 @@ bool CN64Rom::AllocateAndLoadN64Image(const char * FileLoc, bool LoadBootCodeOnl
     if (m_RomFile.Read(Test, sizeof(Test)) != sizeof(Test))
     {
         m_RomFile.Close();
+        SetError(MSG_ROM_FAILED_READ_IDENT);
         WriteTrace(TraceN64System, TraceError, "Failed to read ident bytes");
         return false;
     }
     if (!IsValidRomImage(Test))
     {
         m_RomFile.Close();
+        SetError(MSG_ROM_INVALID_IMAGE_FILE);
         WriteTrace(TraceN64System, TraceError, "Invalid image file %X %X %X %X", Test[0], Test[1], Test[2], Test[3]);
         return false;
     }
@@ -85,6 +88,7 @@ bool CN64Rom::AllocateAndLoadN64Image(const char * FileLoc, bool LoadBootCodeOnl
     if (!AllocateRomImage(RomFileSize))
     {
         m_RomFile.Close();
+        SetError(MSG_ROM_FAILED_ROM_ALLOCATE);
         return false;
     }
 
