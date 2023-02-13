@@ -2289,9 +2289,6 @@ void R4300iOp::COP1_S_CVT_L()
 
 void R4300iOp::COP1_S_CMP()
 {
-    bool less, equal, unorded;
-    int32_t condition;
-
     if (TestCop1UsableException())
     {
         return;
@@ -2300,20 +2297,26 @@ void R4300iOp::COP1_S_CMP()
     float Temp0 = *(float *)_FPR_S[m_Opcode.fs];
     float Temp1 = *(float *)_FPR_S[m_Opcode.ft];
 
+    bool less, equal, unorded;
     if (_isnan(Temp0) || _isnan(Temp1))
     {
-        if (HaveDebugger())
-        {
-            g_Notify->DisplayError(stdstr_f("%s: Nan ?", __FUNCTION__).c_str());
-        }
         less = false;
         equal = false;
         unorded = true;
         if ((m_Opcode.funct & 8) != 0)
         {
-            if (HaveDebugger())
+            FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+            StatusReg.Cause.InvalidOperation = 1;
+            if (StatusReg.Enable.InvalidOperation)
             {
-                g_Notify->DisplayError(stdstr_f("Signal InvalidOperationException\nin r4300i_COP1_S_CMP\n%X  %ff\n%X  %ff", Temp0, Temp0, Temp1, Temp1).c_str());
+                g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+                g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+                g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+                return;
+            }
+            else
+            {
+                StatusReg.Flags.InvalidOperation = 1;
             }
         }
     }
@@ -2324,10 +2327,10 @@ void R4300iOp::COP1_S_CMP()
         unorded = false;
     }
 
-    condition = ((m_Opcode.funct & 4) && less) | ((m_Opcode.funct & 2) && equal) |
+    int32_t condition = ((m_Opcode.funct & 4) && less) | ((m_Opcode.funct & 2) && equal) |
                 ((m_Opcode.funct & 1) && unorded);
 
-    if (condition)
+    if (condition != 0)
     {
         _FPCR[31] |= FPCSR_C;
     }
@@ -2611,32 +2614,35 @@ void R4300iOp::COP1_D_CVT_L()
 
 void R4300iOp::COP1_D_CMP()
 {
-    bool less, equal, unorded;
-    int32_t condition;
-    MIPS_DWORD Temp0, Temp1;
-
     if (TestCop1UsableException())
     {
         return;
     }
 
+    MIPS_DWORD Temp0, Temp1;
     Temp0.DW = *(int64_t *)_FPR_D[m_Opcode.fs];
     Temp1.DW = *(int64_t *)_FPR_D[m_Opcode.ft];
 
+    bool less, equal, unorded;
     if (_isnan(Temp0.D) || _isnan(Temp1.D))
     {
-        if (HaveDebugger())
-        {
-            g_Notify->DisplayError(stdstr_f("%s: Nan ?", __FUNCTION__).c_str());
-        }
         less = false;
         equal = false;
         unorded = true;
         if ((m_Opcode.funct & 8) != 0)
         {
-            if (HaveDebugger())
+            FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+            StatusReg.Cause.InvalidOperation = 1;
+            if (StatusReg.Enable.InvalidOperation)
             {
-                g_Notify->DisplayError(stdstr_f("Signal InvalidOperationException\nin %s", __FUNCTION__).c_str());
+                g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+                g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+                g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+                return;
+            }
+            else
+            {
+                StatusReg.Flags.InvalidOperation = 1;
             }
         }
     }
@@ -2647,10 +2653,10 @@ void R4300iOp::COP1_D_CMP()
         unorded = false;
     }
 
-    condition = ((m_Opcode.funct & 4) && less) | ((m_Opcode.funct & 2) && equal) |
+    int32_t condition = ((m_Opcode.funct & 4) && less) | ((m_Opcode.funct & 2) && equal) |
                 ((m_Opcode.funct & 1) && unorded);
 
-    if (condition)
+    if (condition != 0)
     {
         _FPCR[31] |= FPCSR_C;
     }
