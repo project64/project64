@@ -91,12 +91,12 @@ add_library(Project64-core STATIC
     Settings/SettingType/SettingsType-GameSetting.cpp
     Settings/SettingType/SettingsType-GameSettingIndex.cpp
     Settings/SettingType/SettingsType-RelativePath.cpp
+    Settings/SettingType/SettingsType-RDB.cpp
     Settings/SettingType/SettingsType-RDBCpuType.cpp
     Settings/SettingType/SettingsType-RDBOnOff.cpp
     Settings/SettingType/SettingsType-RDBRamSize.cpp
     Settings/SettingType/SettingsType-RDBSaveChip.cpp
     Settings/SettingType/SettingsType-RDBUser.cpp
-    Settings/SettingType/SettingsType-RDBYesNo.cpp
     Settings/SettingType/SettingsType-RomDatabase.cpp
     Settings/SettingType/SettingsType-RomDatabaseIndex.cpp
     Settings/SettingType/SettingsType-RomDatabaseSetting.cpp
