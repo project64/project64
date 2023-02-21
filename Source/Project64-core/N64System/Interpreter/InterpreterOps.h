@@ -251,6 +251,7 @@ protected:
     static void GenerateTLBReadException(uint64_t VAddr, const char * function);
     static void GenerateTLBWriteException(uint64_t VAddr, const char * function);
     static bool TestCop1UsableException(void);
+    static bool CheckFPUInput32(const float & Value);
     static bool CheckFPUResult32(float & Result);
     static bool CheckFPUException(void);
 

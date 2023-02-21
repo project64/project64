@@ -52,7 +52,9 @@ union FPStatusReg
     struct
     {
         unsigned RoundingMode : 2;
-        unsigned : 30;
+        unsigned : 22;
+        unsigned FlushSubnormals : 1;
+        unsigned : 7;
     };
 
     struct
