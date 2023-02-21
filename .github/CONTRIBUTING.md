@@ -12,7 +12,7 @@ Save states and game saves do not fall under this category, so please post them 
 
 # Github Contribution Guide
 
-1. Create a frok of the repository on your own account.
+1. Create a fork of the repository on your own account.
 2. Create a new branch from the `develop` branch.
   * Use helpful naming convention for the branch. (i.e. `fix`, `documentation`, etc.)
 3. Commit the changes made on your new branch
