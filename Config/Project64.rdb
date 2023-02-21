@@ -11733,3 +11733,20 @@ Status=Compatible
 Counter Factor=1
 RDRAM Size=8
 Unaligned DMA=1
+
+[OOT+MM COMBO-C:45]
+Alt Identifier=44332211-44332211-C:45
+RDRAM Size=8
+
+[44332211-44332211-C:45]
+Good Name=Ocarina of Time + Majora's Mask Randomizer
+Status=Compatible
+RDRAM Size=8
+Culling=1
+Emulate Clear=1
+Self Texture=1
+SMM-Cache=0
+SMM-FUNC=0
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
