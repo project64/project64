@@ -44,22 +44,22 @@ bool CBaseMenu::AddMenu(HMENU hMenu, MenuItemList Items)
         MenuItemList * SubMenu = (MenuItemList *)MenuItem->SubMenu();
         if (ItemID == SUB_MENU && HIWORD(SubMenu) != 0 && (SubMenu->begin() != SubMenu->end()))
         {
-            ItemID = (UINT)CreatePopupMenu();
+            ItemID = (UINT)((LONG_PTR)CreatePopupMenu());
             uFlags |= MF_POPUP;
 
-            AddMenu((HMENU)ItemID, *SubMenu);
+            AddMenu((HMENU)((LONG_PTR)ItemID), *SubMenu);
         }
 
         if (ItemID == ID_PLUGIN_MENU)
         {
-            ItemID = (UINT)MenuItem->SubMenu();
+            ItemID = (UINT)((LONG_PTR)MenuItem->SubMenu());
             uFlags |= MF_POPUP;
             MENUITEMINFO lpmii;
 
             lpmii.cbSize = sizeof(MENUITEMINFO);
             lpmii.fMask = MIIM_STATE;
             lpmii.fState = 0;
-            SetMenuItemInfo((HMENU)ItemID, (DWORD)MenuItem->SubMenu(), FALSE, &lpmii);
+            SetMenuItemInfo((HMENU)((LONG_PTR)ItemID), (DWORD)((LONG_PTR)MenuItem->SubMenu()), FALSE, &lpmii);
         }
 
         if (MenuItem->ShortCut().empty() == false)

@@ -105,7 +105,7 @@ std::string CProjectSupport::GenerateMachineID(void)
     }
 
     stdstr_f Machine("%s.%ud.%s", stdstr().FromUTF16(ComputerName).c_str(), SerialNumber, stdstr().FromUTF16(MachineGuid).c_str());
-    return std::string(MD5((const unsigned char *)Machine.c_str(), Machine.size()).hex_digest());
+    return std::string(MD5((const unsigned char *)Machine.c_str(), (uint32_t)((UINT_PTR)Machine.size())).hex_digest());
 }
 
 void CProjectSupport::IncrementRunCount()
@@ -159,7 +159,7 @@ bool CProjectSupport::PerformRequest(const wchar_t * Url, const std::string & Po
         return false;
     }
     wchar_t hdheaders[] = _T("Content-Type: application/x-www-form-urlencoded\r\n");
-    BOOL Success = HttpSendRequest(hRequest, hdheaders, _tcslen(hdheaders), (LPVOID)PostData.c_str(), PostData.length());
+    BOOL Success = HttpSendRequest(hRequest, hdheaders, (uint32_t)((UINT_PTR)_tcslen(hdheaders)), (LPVOID)PostData.c_str(), (uint32_t)((UINT_PTR)PostData.length()));
     if (!Success)
     {
         InternetCloseHandle(hRequest);
@@ -230,7 +230,7 @@ void CProjectSupport::SaveSupportInfo(void)
     long lResult = RegCreateKeyEx(HKEY_CURRENT_USER, L"SOFTWARE\\Project64", 0, L"", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, nullptr, &hKeyResults, &Disposition);
     if (lResult == ERROR_SUCCESS)
     {
-        RegSetValueEx(hKeyResults, L"user", 0, REG_BINARY, (BYTE *)OutData.data(), OutData.size());
+        RegSetValueEx(hKeyResults, L"user", 0, REG_BINARY, (BYTE *)OutData.data(), (uint32_t)((UINT_PTR)OutData.size()));
         RegCloseKey(hKeyResults);
     }
 }
@@ -269,8 +269,8 @@ void CProjectSupport::LoadSupportInfo(void)
             InData[i] ^= 0xAA;
         }
         OutData.resize(sizeof(m_SupportInfo) + 100);
-        uLongf DestLen = OutData.size();
-        if (uncompress(OutData.data(), &DestLen, InData.data(), InData.size()) >= 0)
+        uLongf DestLen = (uLongf)((UINT_PTR)OutData.size());
+        if (uncompress(OutData.data(), &DestLen, InData.data(), (uint32_t)((UINT_PTR)InData.size())) >= 0)
         {
             OutData.resize(DestLen);
         }

@@ -102,23 +102,23 @@ void CRegisterTabs::RefreshEdits()
 {
     if (g_Reg == nullptr)
     {
-        ZeroRegisterEdits64(m_GPREdits, TabData::GPR.FieldCount);
+        ZeroRegisterEdits64(m_GPREdits, (int)((INT_PTR)(TabData::GPR.FieldCount)));
         ZeroRegisterEdit64(m_HIEdit);
         ZeroRegisterEdit64(m_LOEdit);
-        ZeroRegisterEdits(m_FPREdits, TabData::FPR.FieldCount);
+        ZeroRegisterEdits(m_FPREdits, (int)((INT_PTR)(TabData::FPR.FieldCount)));
         ZeroRegisterEdit(m_FCSREdit);
-        ZeroRegisterEdits(m_COP0Edits, TabData::COP0.FieldCount);
-        ZeroRegisterEdits(m_RDRAMEdits, TabData::RDRAM.FieldCount);
-        ZeroRegisterEdits(m_SPEdits, TabData::SP.FieldCount);
+        ZeroRegisterEdits(m_COP0Edits, (int)((INT_PTR)(TabData::COP0.FieldCount)));
+        ZeroRegisterEdits(m_RDRAMEdits, (int)((INT_PTR)(TabData::RDRAM.FieldCount)));
+        ZeroRegisterEdits(m_SPEdits, (int)((INT_PTR)(TabData::SP.FieldCount)));
         ZeroRegisterEdit(m_SPPCEdit);
-        ZeroRegisterEdits(m_DPCEdits, TabData::DPC.FieldCount);
-        ZeroRegisterEdits(m_MIEdits, TabData::MI.FieldCount);
-        ZeroRegisterEdits(m_VIEdits, TabData::VI.FieldCount);
-        ZeroRegisterEdits(m_AIEdits, TabData::AI.FieldCount);
-        ZeroRegisterEdits(m_PIEdits, TabData::PI.FieldCount);
-        ZeroRegisterEdits(m_RIEdits, TabData::RI.FieldCount);
-        ZeroRegisterEdits(m_SIEdits, TabData::SI.FieldCount);
-        ZeroRegisterEdits(m_DDEdits, TabData::DD.FieldCount);
+        ZeroRegisterEdits(m_DPCEdits, (int)((INT_PTR)(TabData::DPC.FieldCount)));
+        ZeroRegisterEdits(m_MIEdits, (int)((INT_PTR)(TabData::MI.FieldCount)));
+        ZeroRegisterEdits(m_VIEdits, (int)((INT_PTR)(TabData::VI.FieldCount)));
+        ZeroRegisterEdits(m_AIEdits, (int)((INT_PTR)(TabData::AI.FieldCount)));
+        ZeroRegisterEdits(m_PIEdits, (int)((INT_PTR)(TabData::PI.FieldCount)));
+        ZeroRegisterEdits(m_RIEdits, (int)((INT_PTR)(TabData::RI.FieldCount)));
+        ZeroRegisterEdits(m_SIEdits, (int)((INT_PTR)(TabData::SI.FieldCount)));
+        ZeroRegisterEdits(m_DDEdits, (int)((INT_PTR)(TabData::DD.FieldCount)));
         return;
     }
 
@@ -739,7 +739,7 @@ CWindow CRegisterTabs::AddTab(char * caption, int dialogId, DLGPROC dlgProc)
 
     m_TabWindows.push_back(tabWin);
 
-    int index = m_TabWindows.size() - 1;
+    int index = (int)((INT_PTR)(m_TabWindows.size() - 1));
 
     if (index == 0)
     {
@@ -782,7 +782,7 @@ void CRegisterTabs::InitRegisterEdit(CWindow & tab, CEditNumber32 & edit, FieldP
 
 void CRegisterTabs::InitRegisterEdits(CWindow & tab, CEditNumber32 * edits, const TabRecord * ctrlIds)
 {
-    for (int i = 0, n = ctrlIds->FieldCount; i < n; i++)
+    for (size_t i = 0, n = ctrlIds->FieldCount; i < n; i++)
     {
         InitRegisterEdit(tab, edits[i], ctrlIds->Fields[i]);
     }
@@ -795,7 +795,7 @@ void CRegisterTabs::InitRegisterEdit64(CWindow & tab, CEditReg64 & edit, FieldPa
 
 void CRegisterTabs::InitRegisterEdits64(CWindow & tab, CEditReg64 * edits, const TabRecord * ctrlIds)
 {
-    for (int i = 0, n = ctrlIds->FieldCount; i < n; i++)
+    for (size_t i = 0, n = ctrlIds->FieldCount; i < n; i++)
     {
         InitRegisterEdit64(tab, edits[i], ctrlIds->Fields[i]);
     }
@@ -987,12 +987,12 @@ LRESULT CEditReg64::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHand
 
     if (isalpha(charCode) && !isupper(charCode))
     {
-        SendMessage(uMsg, toupper(wParam), lParam);
+        SendMessage(uMsg, toupper((int)(UINT_PTR)(wParam)), lParam);
         return 0;
     }
 
     std::string text = GetCWindowText(*this);
-    int textLen = text.size();
+    size_t textLen = text.size();
 
     if (textLen >= 17)
     {

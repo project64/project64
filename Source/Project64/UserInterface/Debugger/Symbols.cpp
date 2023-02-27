@@ -157,7 +157,7 @@ void CSymbolTable::Load()
     m_SymFileSize = m_SymFileHandle.GetLength();
     m_SymFileBuffer = new char[m_SymFileSize + 1];
     m_SymFileParseBuffer = new char[m_SymFileSize + 1];
-    m_SymFileHandle.Read(m_SymFileBuffer, m_SymFileSize);
+    m_SymFileHandle.Read(m_SymFileBuffer, (uint32_t)((UINT_PTR)m_SymFileSize));
     m_SymFileHandle.Close();
     m_SymFileBuffer[m_SymFileSize] = '\0';
 
@@ -284,7 +284,7 @@ void CSymbolTable::Save()
         }
 
         strLine += "\n";
-        m_SymFileHandle.Write(strLine.c_str(), strLine.length());
+        m_SymFileHandle.Write(strLine.c_str(), (uint32_t)((UINT_PTR)strLine.length()));
     }
 
     m_SymFileHandle.SetEndOfFile();
@@ -442,7 +442,7 @@ void CSymbolTable::UpdateAddressMap()
 int CSymbolTable::GetCount()
 {
     CGuard guard(m_CS);
-    return m_Symbols.size();
+    return (int)((UINT_PTR)m_Symbols.size());
 }
 
 bool CSymbolTable::GetSymbolByIndex(size_t index, CSymbol * symbol)

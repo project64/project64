@@ -65,8 +65,8 @@ void CSettingConfig::UpdateAdvanced(bool AdvancedMode, HTREEITEM hItem)
         }
         else if (AdvancedMode && Page == m_GeneralOptionsPage)
         {
-            m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM, wGS(m_AdvancedPage->PageTitle()).c_str(), 0, 0, 0, 0, (ULONG)m_AdvancedPage, hItem, TVI_FIRST);
-            m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM, wGS(m_DefaultsPage->PageTitle()).c_str(), 0, 0, 0, 0, (ULONG)m_DefaultsPage, hItem, TVI_FIRST);
+            m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM, wGS(m_AdvancedPage->PageTitle()).c_str(), 0, 0, 0, 0, (LPARAM)m_AdvancedPage, hItem, TVI_FIRST);
+            m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM, wGS(m_DefaultsPage->PageTitle()).c_str(), 0, 0, 0, 0, (LPARAM)m_DefaultsPage, hItem, TVI_FIRST);
             break;
         }
         else
@@ -184,21 +184,21 @@ LRESULT CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 
         for (size_t i = 0; i < Section->GetPageCount(); i++)
         {
-            CSettingsPage * Page = Section->GetPage(i);
+            CSettingsPage * Page = Section->GetPage((int32_t)((UINT_PTR)i));
             if (HideAdvanced && (Page == m_AdvancedPage || Page == m_DefaultsPage))
             {
                 continue;
             }
             if (i == 0)
             {
-                hSectionItem = m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM, Section->GetPageTitle(), 0, 0, 0, 0, (ULONG)Page, TVI_ROOT, TVI_LAST);
+                hSectionItem = m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM, Section->GetPageTitle(), 0, 0, 0, 0, (LPARAM)Page, TVI_ROOT, TVI_LAST);
                 continue;
             }
             if (hSectionItem == nullptr)
             {
                 continue;
             }
-            m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM, wGS(Page->PageTitle()).c_str(), 0, 0, 0, 0, (ULONG)Page, hSectionItem, TVI_LAST);
+            m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM, wGS(Page->PageTitle()).c_str(), 0, 0, 0, 0, (LPARAM)Page, hSectionItem, TVI_LAST);
         }
         if (bFirstItem && hSectionItem != nullptr)
         {
@@ -240,7 +240,7 @@ LRESULT CSettingConfig::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL & /
 
             for (size_t i = 0; i < Section->GetPageCount(); i++)
             {
-                CSettingsPage * Page = Section->GetPage(i);
+                CSettingsPage * Page = Section->GetPage((int32_t)((UINT_PTR)i));
                 if (Page->EnableReset())
                 {
                     Page->ResetPage();
@@ -272,7 +272,7 @@ void CSettingConfig::ApplySettings(bool UpdateScreen)
 
         for (size_t i = 0; i < Section->GetPageCount(); i++)
         {
-            CSettingsPage * Page = Section->GetPage(i);
+            CSettingsPage * Page = Section->GetPage((int32_t)((UINT_PTR)i));
             Page->ApplySettings(UpdateScreen);
         }
     }

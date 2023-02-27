@@ -60,7 +60,7 @@ void CDebugDMALogView::RefreshList()
     }
 
     int startIndex;
-    int dmaLogSize = m_Debugger->DMALog()->GetNumEntries();
+    int dmaLogSize = (int)((INT_PTR)(m_Debugger->DMALog()->GetNumEntries()));
 
     HWND hWndExportBtn = GetDlgItem(IDC_EXPORT_BTN);
 
@@ -171,7 +171,7 @@ void CDebugDMALogView::Export(void)
 
         for (size_t nEntry = 0; nEntry < numEntries; nEntry++)
         {
-            DMALOGENTRY * entry = m_DMALog->GetEntryByIndex(nEntry);
+            DMALOGENTRY * entry = m_DMALog->GetEntryByIndex((uint32_t)((INT_PTR)nEntry));
 
             file << stdstr_f("0x%08X,0x%08X,0x%08X\r\n",
                              entry->romAddr, entry->ramAddr, entry->length);
@@ -364,7 +364,7 @@ LRESULT CDebugDMALogView::OnCustomDrawList(NMHDR * pNMHDR)
     default: return CDRF_DODEFAULT;
     }
 
-    DWORD nItem = pLVCD->nmcd.dwItemSpec;
+    DWORD nItem = (DWORD)pLVCD->nmcd.dwItemSpec;
     DWORD nSubItem = pLVCD->iSubItem;
 
     if (nSubItem != 0)

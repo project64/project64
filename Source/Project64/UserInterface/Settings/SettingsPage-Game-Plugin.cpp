@@ -77,7 +77,7 @@ void CGamePluginPage::ShowAboutButton(int id)
     CModifiedComboBox * ComboBox = nullptr;
     for (ComboBoxList::iterator cb_iter = m_ComboBoxList.begin(); cb_iter != m_ComboBoxList.end(); cb_iter++)
     {
-        if ((int)(cb_iter->second->GetMenu()) != id)
+        if ((INT_PTR)(cb_iter->second->GetMenu()) != id)
         {
             continue;
         }
@@ -130,7 +130,7 @@ void CGamePluginPage::PluginItemChanged(int id, int AboutID, bool bSetChanged)
     CModifiedComboBox * ComboBox = nullptr;
     for (ComboBoxList::iterator cb_iter = m_ComboBoxList.begin(); cb_iter != m_ComboBoxList.end(); cb_iter++)
     {
-        if ((int)(cb_iter->second->GetMenu()) != id)
+        if ((INT_PTR)(cb_iter->second->GetMenu()) != id)
         {
             continue;
         }
@@ -301,7 +301,7 @@ void CGamePluginPage::HleGfxChanged(UINT /*Code*/, int id, HWND /*ctl*/)
     for (ButtonList::iterator iter = m_ButtonList.begin(); iter != m_ButtonList.end(); iter++)
     {
         CModifiedButton * Button = iter->second;
-        if ((int)Button->GetMenu() != id)
+        if ((INT_PTR)Button->GetMenu() != id)
         {
             continue;
         }
@@ -324,7 +324,7 @@ void CGamePluginPage::HleAudioChanged(UINT /*Code*/, int id, HWND /*ctl*/)
     for (ButtonList::iterator iter = m_ButtonList.begin(); iter != m_ButtonList.end(); iter++)
     {
         CModifiedButton * Button = iter->second;
-        if ((int)Button->GetMenu() != id)
+        if ((INT_PTR)Button->GetMenu() != id)
         {
             continue;
         }

@@ -66,7 +66,7 @@ public:
     void SetColPos(int Pos)
     {
         m_Pos = Pos;
-        UISettingsSaveDwordIndex(RomBrowser_PosIndex, m_ID, m_Pos);
+        UISettingsSaveDwordIndex(RomBrowser_PosIndex, m_ID, (int)((UINT_PTR)m_Pos));
         m_PosChanged = true;
     }
     void ResetPos(void)
@@ -102,8 +102,8 @@ public:
     void RomBrowserToTop(void);
     void RomBrowserMaximize(bool Mazimize);
     bool RomBrowserVisible(void);
-    bool RomListDrawItem(int idCtrl, uint32_t lParam);
-    bool RomListNotify(int idCtrl, uint32_t pnmh);
+    bool RomListDrawItem(WPARAM idCtrl, LPARAM lParam);
+    bool RomListNotify(WPARAM idCtrl, LPARAM pnmh);
     void SaveRomListColoumnInfo(void);
     void SelectRomDir(void);
     void ShowRomList(void);
@@ -163,10 +163,10 @@ private:
     void DeallocateBrushs(void);
     void FixRomListWindow(void);
     void MenuSetText(HMENU hMenu, int32_t MenuPos, const wchar_t * Title, char * ShortCut);
-    void RomList_ColoumnSortList(uint32_t pnmh);
-    void RomList_GetDispInfo(uint32_t pnmh);
-    void RomList_OpenRom(uint32_t pnmh);
-    void RomList_PopupMenu(uint32_t pnmh);
+    void RomList_ColoumnSortList(LPARAM pnmh);
+    void RomList_GetDispInfo(LPARAM pnmh);
+    void RomList_OpenRom(LPARAM pnmh);
+    void RomList_PopupMenu(LPARAM pnmh);
     void RomList_SortList(void);
 
     bool RomDirNeedsRefresh(void); // Called from watch thread
@@ -180,7 +180,7 @@ private:
 
     // Callback
     static int CALLBACK SelectRomDirCallBack(HWND hwnd, uint32_t uMsg, uint32_t lp, uint32_t lpData);
-    static int CALLBACK RomList_CompareItems(uint32_t lParam1, uint32_t lParam2, uint32_t lParamSort);
+    static int CALLBACK RomList_CompareItems(LPARAM lParam1, LPARAM lParam2, void * lParamSort);
 
     // Watch directory changed function
     HANDLE m_WatchThread, m_WatchStopEvent;

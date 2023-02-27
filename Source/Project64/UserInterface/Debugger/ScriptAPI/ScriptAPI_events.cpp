@@ -75,7 +75,7 @@ duk_ret_t ScriptAPI::js_events_onstatechange(duk_context * ctx)
 
     JSAppCallbackID callbackId = AddAppCallback(ctx, 0, JS_HOOK_EMUSTATECHANGE,
                                                 CbArgs_EmuStateChangeEventObject);
-    duk_push_uint(ctx, callbackId);
+    duk_push_uint(ctx, (int)((UINT_PTR)callbackId));
     return 1;
 }
 
@@ -95,7 +95,7 @@ duk_ret_t ScriptAPI::js_events_onexec(duk_context * ctx)
 
     JSAppCallbackID callbackId = AddAppCallback(ctx, JS_HOOK_CPU_EXEC, cb);
 
-    duk_push_uint(ctx, callbackId);
+    duk_push_uint(ctx, (int)((UINT_PTR)callbackId));
     return 1;
 }
 
@@ -115,7 +115,7 @@ duk_ret_t ScriptAPI::js_events_onread(duk_context * ctx)
 
     JSAppCallbackID callbackId = AddAppCallback(ctx, JS_HOOK_CPU_READ, cb);
 
-    duk_push_uint(ctx, callbackId);
+    duk_push_uint(ctx, (int)((UINT_PTR)callbackId));
     return 1;
 }
 
@@ -135,7 +135,7 @@ duk_ret_t ScriptAPI::js_events_onwrite(duk_context * ctx)
 
     JSAppCallbackID callbackId = AddAppCallback(ctx, JS_HOOK_CPU_WRITE, cb);
 
-    duk_push_uint(ctx, callbackId);
+    duk_push_uint(ctx, (int)((UINT_PTR)callbackId));
     return 1;
 }
 
@@ -160,7 +160,7 @@ duk_ret_t ScriptAPI::js_events_onopcode(duk_context * ctx)
 
     JSAppCallbackID callbackId = AddAppCallback(ctx, JS_HOOK_CPU_EXEC, cb);
 
-    duk_push_uint(ctx, callbackId);
+    duk_push_uint(ctx, (int)((UINT_PTR)callbackId));
     return 1;
 }
 
@@ -182,7 +182,7 @@ duk_ret_t ScriptAPI::js_events_ongprvalue(duk_context * ctx)
 
     JSAppCallbackID callbackId = AddAppCallback(ctx, JS_HOOK_CPU_EXEC, cb);
 
-    duk_push_uint(ctx, callbackId);
+    duk_push_uint(ctx, (int)((UINT_PTR)callbackId));
     return 1;
 }
 
@@ -191,7 +191,7 @@ duk_ret_t ScriptAPI::js_events_onpifread(duk_context * ctx)
     CheckArgs(ctx, {Arg_Function});
 
     JSAppCallbackID callbackId = AddAppCallback(ctx, 0, JS_HOOK_PIFREAD, CbArgs_GenericEventObject);
-    duk_push_uint(ctx, callbackId);
+    duk_push_uint(ctx, (int)((UINT_PTR)callbackId));
     return 1;
 }
 
@@ -200,7 +200,7 @@ duk_ret_t ScriptAPI::js_events_onsptask(duk_context * ctx)
     CheckArgs(ctx, {Arg_Function});
 
     JSAppCallbackID callbackId = AddAppCallback(ctx, 0, JS_HOOK_RSPTASK, CbArgs_SPTaskEventObject);
-    duk_push_uint(ctx, callbackId);
+    duk_push_uint(ctx, (int)((UINT_PTR)callbackId));
     return 1;
 }
 
@@ -209,7 +209,7 @@ duk_ret_t ScriptAPI::js_events_onpidma(duk_context * ctx)
     CheckArgs(ctx, {Arg_Function});
 
     JSAppCallbackID callbackId = AddAppCallback(ctx, 0, JS_HOOK_PIDMA, CbArgs_PIEventObject);
-    duk_push_uint(ctx, callbackId);
+    duk_push_uint(ctx, (int)((UINT_PTR)callbackId));
     return 1;
 }
 
@@ -218,7 +218,7 @@ duk_ret_t ScriptAPI::js_events_onmouseup(duk_context * ctx)
     CheckArgs(ctx, {Arg_Function});
 
     JSAppCallbackID callbackId = AddAppCallback(ctx, 0, JS_HOOK_MOUSEUP, CbArgs_MouseEventObject);
-    duk_push_uint(ctx, callbackId);
+    duk_push_uint(ctx, (int)((UINT_PTR)callbackId));
     return 1;
 }
 
@@ -227,7 +227,7 @@ duk_ret_t ScriptAPI::js_events_onmousedown(duk_context * ctx)
     CheckArgs(ctx, {Arg_Function});
 
     JSAppCallbackID callbackId = AddAppCallback(ctx, 0, JS_HOOK_MOUSEDOWN, CbArgs_MouseEventObject);
-    duk_push_uint(ctx, callbackId);
+    duk_push_uint(ctx, (int)((UINT_PTR)callbackId));
     return 1;
 }
 
@@ -236,7 +236,7 @@ duk_ret_t ScriptAPI::js_events_onmousemove(duk_context * ctx)
     CheckArgs(ctx, {Arg_Function});
 
     JSAppCallbackID callbackId = AddAppCallback(ctx, 0, JS_HOOK_MOUSEMOVE, CbArgs_MouseEventObject);
-    duk_push_uint(ctx, callbackId);
+    duk_push_uint(ctx, (int)((UINT_PTR)callbackId));
     return 1;
 }
 
@@ -332,7 +332,7 @@ duk_idx_t CbArgs_EmuStateChangeEventObject(duk_context * ctx, void * _env)
     SetDummyConstructor(ctx, -1, "EmuStateChangeEvent");
 
     const DukPropListEntry props[] = {
-        {"callbackId", DukUInt(inst->CallbackId())},
+        {"callbackId", DukUInt((int)((UINT_PTR)inst->CallbackId()))},
         {"state", DukUInt(env->state)},
         {nullptr},
     };
@@ -349,7 +349,7 @@ duk_idx_t CbArgs_GenericEventObject(duk_context * ctx, void * /*_env*/)
     SetDummyConstructor(ctx, -1, "GenericEvent");
 
     const DukPropListEntry props[] = {
-        {"callbackId", DukUInt(inst->CallbackId())},
+        {"callbackId", DukUInt((int)((UINT_PTR)inst->CallbackId()))},
         {nullptr},
     };
 
@@ -366,7 +366,7 @@ duk_idx_t CbArgs_ExecEventObject(duk_context * ctx, void * _env)
     SetDummyConstructor(ctx, -1, "CPUExecEvent");
 
     const DukPropListEntry props[] = {
-        {"callbackId", DukUInt(inst->CallbackId())},
+        {"callbackId", DukUInt((int)((UINT_PTR)inst->CallbackId()))},
         {"pc", DukUInt(env->pc)},
         {nullptr},
     };
@@ -392,7 +392,7 @@ duk_idx_t CbArgs_ReadEventObject(duk_context * ctx, void * _env)
     SetDummyConstructor(ctx, -1, "CPUReadWriteEvent");
 
     const DukPropListEntry props[] = {
-        {"callbackId", DukUInt(inst->CallbackId())},
+        {"callbackId", DukUInt((int)((UINT_PTR)inst->CallbackId()))},
         {"pc", DukUInt(env->pc)},
         {"address", DukUInt(address)},
         {"reg", DukUInt(rt)},
@@ -543,7 +543,7 @@ duk_idx_t CbArgs_WriteEventObject(duk_context * ctx, void * _env)
     SetDummyConstructor(ctx, -1, "CPUReadWriteEvent");
 
     const DukPropListEntry props[] = {
-        {"callbackId", DukUInt(inst->CallbackId())},
+        {"callbackId", DukUInt((int)((UINT_PTR)inst->CallbackId()))},
         {"pc", DukUInt(env->pc)},
         {"address", DukUInt(address)},
         {"reg", DukUInt(rt)},
@@ -653,7 +653,7 @@ duk_idx_t CbArgs_OpcodeEventObject(duk_context * ctx, void * _env)
     SetDummyConstructor(ctx, -1, "CPUOpcodeEvent");
 
     const DukPropListEntry props[] = {
-        {"callbackId", DukUInt(inst->CallbackId())},
+        {"callbackId", DukUInt((int)((UINT_PTR)inst->CallbackId()))},
         {"pc", DukUInt(env->pc)},
         {"opcode", DukUInt(env->opInfo.m_OpCode.Value)},
         {nullptr},
@@ -672,7 +672,7 @@ duk_idx_t CbArgs_RegValueEventObject(duk_context * ctx, void * _env)
     SetDummyConstructor(ctx, -1, "CPURegValueEvent");
 
     const DukPropListEntry props[] = {
-        {"callbackId", DukUInt(inst->CallbackId())},
+        {"callbackId", DukUInt((int)((UINT_PTR)inst->CallbackId()))},
         {"pc", DukUInt(env->pc)},
         {"value", DukUInt(g_Reg->m_GPR[env->outAffectedRegIndex].UW[0])},
         {"reg", DukUInt(env->outAffectedRegIndex)},
@@ -692,7 +692,7 @@ static duk_idx_t CbArgs_MouseEventObject(duk_context * ctx, void * _env)
     SetDummyConstructor(ctx, -1, "MouseEvent");
 
     const DukPropListEntry props[] = {
-        {"callbackId", DukUInt(inst->CallbackId())},
+        {"callbackId", DukUInt((int)((UINT_PTR)inst->CallbackId()))},
         {"button", DukInt(env->button)},
         {"x", DukInt(env->x)},
         {"y", DukInt(env->y)},
@@ -712,7 +712,7 @@ static duk_idx_t CbArgs_SPTaskEventObject(duk_context * ctx, void * _env)
     SetDummyConstructor(ctx, -1, "SPTaskEvent");
 
     const DukPropListEntry props[] = {
-        {"callbackId", DukUInt(inst->CallbackId())},
+        {"callbackId", DukUInt((int)((UINT_PTR)inst->CallbackId()))},
         {"taskType", DukUInt(env->taskType)},
         {"taskFlags", DukUInt(env->taskFlags)},
         {"ucodeBootAddress", DukUInt(env->ucodeBootAddress | 0x80000000)},
@@ -745,7 +745,7 @@ static duk_idx_t CbArgs_PIEventObject(duk_context * ctx, void * _env)
     SetDummyConstructor(ctx, -1, "PIEvent");
 
     const DukPropListEntry props[] = {
-        {"callbackId", DukUInt(inst->CallbackId())},
+        {"callbackId", DukUInt((int)((UINT_PTR)inst->CallbackId()))},
         {"direction", DukUInt(env->direction)},
         {"dramAddress", DukUInt(env->dramAddress | 0x80000000)},
         {"cartAddress", DukUInt(env->cartAddress | 0xA0000000)},

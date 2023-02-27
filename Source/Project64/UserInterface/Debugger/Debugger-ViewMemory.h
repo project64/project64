@@ -42,7 +42,7 @@ private:
     void OnRButtonDown(UINT /*nFlags*/, CPoint point)
     {
         TCHITTESTINFO ht = {point, 0};
-        int nItem = ::SendMessage(m_hWnd, TCM_HITTEST, 0, (LPARAM)&ht);
+        int nItem = (int)((INT_PTR)::SendMessage(m_hWnd, TCM_HITTEST, 0, (LPARAM)&ht));
         if (nItem != -1)
         {
             m_nItemRClick = nItem;
@@ -52,7 +52,7 @@ private:
     void OnRButtonUp(UINT /*nFlags*/, CPoint point)
     {
         TCHITTESTINFO ht = {point, 0};
-        int nItem = ::SendMessage(m_hWnd, TCM_HITTEST, 0, (LPARAM)&ht);
+        int nItem = (int)((INT_PTR)::SendMessage(m_hWnd, TCM_HITTEST, 0, (LPARAM)&ht));
         if (nItem != -1 && nItem == m_nItemRClick)
         {
             NMMTRCLICK nmrc = {{m_hWnd, (UINT_PTR)::GetDlgCtrlID(m_hWnd), MTCN_RCLICK}, nItem};

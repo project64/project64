@@ -293,7 +293,7 @@ LRESULT CDebugSymbols::OnListGetDispInfo(NMHDR * pNMHDR)
 
     if (!m_bFiltering)
     {
-        index -= m_SymbolCacheStartIndex;
+        index -= (int)((INT_PTR)m_SymbolCacheStartIndex);
     }
 
     switch (plvdi->item.iSubItem)
@@ -359,7 +359,7 @@ LRESULT CDebugSymbols::OnFilterChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND 
 
     UpdateFilteredSymbols();
 
-    m_SymbolsListView.SetItemCount(m_FilteredSymbols.size());
+    m_SymbolsListView.SetItemCount((int)((INT_PTR)m_FilteredSymbols.size()));
     return FALSE;
 }
 
@@ -426,7 +426,7 @@ void CDebugSymbols::Refresh()
     if (m_bFiltering)
     {
         UpdateFilteredSymbols();
-        numSymbols = m_FilteredSymbols.size();
+        numSymbols = (int)((INT_PTR)m_FilteredSymbols.size());
     }
     else
     {
@@ -440,7 +440,7 @@ int CDebugSymbols::GetListItemSymbolId(int nItem)
 {
     if (m_bFiltering)
     {
-        if (nItem >= m_FilteredSymbols.size())
+        if (nItem >= (int)m_FilteredSymbols.size())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }

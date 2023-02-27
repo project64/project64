@@ -70,10 +70,10 @@ void RomInformation::DisplayInformation(HWND hParent) const
         return;
     }
 
-    DialogBoxParam(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDD_Rom_Information), hParent, (DLGPROC)RomInfoProc, (DWORD)this);
+    DialogBoxParam(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDD_Rom_Information), hParent, (DLGPROC)RomInfoProc, (LPARAM)this);
 }
 
-DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
+DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)
     {

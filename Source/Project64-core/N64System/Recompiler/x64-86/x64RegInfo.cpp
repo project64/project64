@@ -35,7 +35,7 @@ bool CX64RegInfo::operator!=(const CX64RegInfo & /*right*/) const
     return false;
 }
 
-void CX64RegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
+void CX64RegInfo::UnMap_GPR(uint32_t /*Reg*/, bool /*WriteBackValue*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }

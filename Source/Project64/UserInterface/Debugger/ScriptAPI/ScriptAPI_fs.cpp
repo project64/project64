@@ -533,7 +533,7 @@ static duk_ret_t ReadWriteImpl(duk_context * ctx, fsop op)
 
     if (bHavePos)
     {
-        fseek(fp, position, SEEK_SET);
+        fseek(fp, (long)((UINT_PTR)position), SEEK_SET);
     }
 
     switch (op)
@@ -548,7 +548,7 @@ static duk_ret_t ReadWriteImpl(duk_context * ctx, fsop op)
         return DUK_RET_ERROR;
     }
 
-    duk_push_number(ctx, rc);
+    duk_push_number(ctx, (duk_double_t)((UINT_PTR)rc));
     return 1;
 
 err_invalid_args:

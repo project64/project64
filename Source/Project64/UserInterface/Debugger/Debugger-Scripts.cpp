@@ -199,7 +199,7 @@ void CDebugScripts::ConsoleCopy()
         return;
     }
 
-    m_ConOutputEdit.GetWindowText(memBuf, nChars);
+    m_ConOutputEdit.GetWindowText(memBuf, (int)((INT_PTR)(nChars)));
 
     GlobalUnlock(hMem);
     SetClipboardData(CF_UNICODETEXT, hMem);
@@ -358,7 +358,7 @@ LRESULT CDebugScripts::OnScriptListCustomDraw(NMHDR * pNMHDR)
         return CDRF_DODEFAULT;
     }
 
-    DWORD nItem = pLVCD->nmcd.dwItemSpec;
+    DWORD nItem = (DWORD)pLVCD->nmcd.dwItemSpec;
 
     wchar_t scriptName[MAX_PATH];
     m_ScriptList.GetItemText(nItem, 1, scriptName, MAX_PATH);
@@ -533,7 +533,7 @@ LRESULT CDebugScripts::OnInputSpecialKey(NMHDR * pNMHDR)
         {
             wchar_t * code = m_InputHistory[--m_InputHistoryIndex];
             m_ConInputEdit.SetWindowText(code);
-            int selEnd = wcslen(code);
+            int selEnd = (int)((INT_PTR)wcslen(code));
             m_ConInputEdit.SetSel(selEnd, selEnd);
         }
 
@@ -553,7 +553,7 @@ LRESULT CDebugScripts::OnInputSpecialKey(NMHDR * pNMHDR)
         {
             wchar_t * code = m_InputHistory[m_InputHistoryIndex];
             m_ConInputEdit.SetWindowText(code);
-            int selEnd = wcslen(code);
+            int selEnd = (int)((INT_PTR)(wcslen(code)));
             m_ConInputEdit.SetSel(selEnd, selEnd);
         }
         else
@@ -574,7 +574,7 @@ LRESULT CDebugScripts::OnInputSpecialKey(NMHDR * pNMHDR)
         }
 
         wchar_t * code = new wchar_t[codeLength + 1];
-        m_ConInputEdit.GetWindowText(code, codeLength + 1);
+        m_ConInputEdit.GetWindowText(code, (int)((INT_PTR)(codeLength + 1)));
         m_ConInputEdit.SetWindowText(L"");
 
         SendInput(m_SelectedScriptName.c_str(), stdstr().FromUTF16(code).c_str());

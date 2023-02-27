@@ -67,7 +67,7 @@ LRESULT CDebugStackTrace::OnListDblClicked(NMHDR * pNMHDR)
     NMITEMACTIVATE * pIA = reinterpret_cast<NMITEMACTIVATE *>(pNMHDR);
     int nItem = pIA->iItem;
 
-    uint32_t address = m_List.GetItemData(nItem);
+    uint32_t address = (uint32_t)((INT_PTR)(m_List.GetItemData(nItem)));
 
     m_Debugger->Debug_ShowCommandsLocation(address, true);
 

@@ -112,7 +112,7 @@ void CN64Image::WritePNG(uint8_t * rgba32, size_t width, size_t height, std::vec
         return;
     }
 
-    png_set_IHDR(png_ptr, info_ptr, width, height,
+    png_set_IHDR(png_ptr, info_ptr, (int)((UINT_PTR)width), (int)((UINT_PTR)height),
                  8, PNG_COLOR_TYPE_RGBA, PNG_INTERLACE_NONE,
                  PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
 

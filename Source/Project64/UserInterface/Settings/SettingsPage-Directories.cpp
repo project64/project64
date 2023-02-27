@@ -75,7 +75,7 @@ void COptionsDirectoriesPage::SelectDirectory(LanguageStringID Title, CModifiedE
     bi.lpszTitle = wTitle.c_str();
     bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS | BIF_USENEWUI;
     bi.lpfn = (BFFCALLBACK)SelectDirCallBack;
-    bi.lParam = (DWORD)InitialDir.c_str();
+    bi.lParam = (INT_PTR)InitialDir.c_str();
     if ((pidl = SHBrowseForFolder(&bi)) != nullptr)
     {
         if (SHGetPathFromIDList(pidl, Directory))
@@ -231,7 +231,7 @@ void COptionsDirectoriesPage::UseSelectedClicked(UINT /*Code*/, int id, HWND /*c
 
     if (!Button->IsChanged() || Button->IsReset())
     {
-        if ((int)Button->GetMenu() == id)
+        if ((int)(INT_PTR)Button->GetMenu() == id)
         {
             return;
         }

@@ -278,7 +278,7 @@ size_t CDebugMMU::ReadPhysical(uint32_t paddr, size_t length, uint8_t * buffer)
     size_t nByte;
     for (nByte = 0; nByte < length; nByte++)
     {
-        if (!GetPhysicalByte(paddr + nByte, &buffer[nByte]))
+        if (!GetPhysicalByte((uint32_t)((INT_PTR)(paddr + nByte)), &buffer[nByte]))
         {
             return nByte;
         }
@@ -292,7 +292,7 @@ size_t CDebugMMU::ReadVirtual(uint32_t vaddr, size_t length, uint8_t * buffer)
     for (nByte = 0; nByte < length; nByte++)
     {
         uint32_t paddr;
-        if (!g_MMU || !g_MMU->VAddrToPAddr(vaddr + nByte, paddr))
+        if (!g_MMU || !g_MMU->VAddrToPAddr((uint32_t)((UINT_PTR)(vaddr + nByte)), paddr))
         {
             return nByte;
         }
@@ -309,7 +309,7 @@ size_t CDebugMMU::WritePhysical(uint32_t paddr, size_t length, uint8_t * buffer)
     size_t nByte;
     for (nByte = 0; nByte < length; nByte++)
     {
-        if (!SetPhysicalByte(paddr + nByte, buffer[nByte]))
+        if (!SetPhysicalByte((uint32_t)((UINT_PTR)(paddr + nByte)), buffer[nByte]))
         {
             return nByte;
         }
@@ -323,7 +323,7 @@ size_t CDebugMMU::WriteVirtual(uint32_t vaddr, size_t length, uint8_t * buffer)
     for (nByte = 0; nByte < length; nByte++)
     {
         uint32_t paddr;
-        if (!g_MMU || !g_MMU->VAddrToPAddr(vaddr + nByte, paddr))
+        if (!g_MMU || !g_MMU->VAddrToPAddr((uint32_t)((UINT_PTR)(vaddr + nByte)), paddr))
         {
             return nByte;
         }

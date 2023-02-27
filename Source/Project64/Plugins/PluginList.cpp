@@ -19,7 +19,7 @@ CPluginList::~CPluginList()
 
 int CPluginList::GetPluginCount() const
 {
-    return m_PluginList.size();
+    return (int)((INT_PTR)m_PluginList.size());
 }
 
 const CPluginList::PLUGIN * CPluginList::GetPluginInfo(int indx) const

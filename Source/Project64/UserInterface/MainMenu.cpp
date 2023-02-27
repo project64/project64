@@ -1461,11 +1461,11 @@ void CMainMenu::ResetMenu(void)
         WriteTrace(TraceUserInterface, TraceDebug, "Remove plugin menu");
         if (g_Plugins->Gfx() != nullptr && IsMenu((HMENU)g_Plugins->Gfx()->GetDebugMenu()))
         {
-            RemoveMenu((HMENU)OldMenuHandle, (DWORD)g_Plugins->Gfx()->GetDebugMenu(), MF_BYCOMMAND);
+            RemoveMenu((HMENU)OldMenuHandle, (UINT)((UINT_PTR)g_Plugins->Gfx()->GetDebugMenu()), MF_BYCOMMAND);
         }
         if (g_Plugins->RSP() != nullptr && IsMenu((HMENU)g_Plugins->RSP()->GetDebugMenu()))
         {
-            RemoveMenu((HMENU)OldMenuHandle, (DWORD)g_Plugins->RSP()->GetDebugMenu(), MF_BYCOMMAND);
+            RemoveMenu((HMENU)OldMenuHandle, (UINT)((UINT_PTR)g_Plugins->RSP()->GetDebugMenu()), MF_BYCOMMAND);
         }
         WriteTrace(TraceUserInterface, TraceDebug, "Destroy old menu");
 

@@ -124,7 +124,7 @@ void CMainGui::AddRecentRom(const char * ImagePath)
     size_t i;
     for (i = 0; i < MaxRememberedFiles; i++)
     {
-        stdstr RecentGame = UISettingsLoadStringIndex(File_RecentGameFileIndex, i);
+        stdstr RecentGame = UISettingsLoadStringIndex(File_RecentGameFileIndex, (int32_t)((UINT_PTR)i));
         if (RecentGame.empty())
         {
             break;
@@ -151,7 +151,7 @@ void CMainGui::AddRecentRom(const char * ImagePath)
 
     for (i = 0, iter = RecentGames.begin(); iter != RecentGames.end(); iter++, i++)
     {
-        UISettingsSaveStringIndex(File_RecentGameFileIndex, i, *iter);
+        UISettingsSaveStringIndex(File_RecentGameFileIndex, (int32_t)((UINT_PTR)i), *iter);
     }
 }
 
@@ -455,7 +455,7 @@ bool CMainGui::ProcessGuiMessages(void)
     return false;
 }
 
-void CMainGui::Resize(DWORD /*fwSizeType*/, WORD nWidth, WORD nHeight)
+void CMainGui::Resize(WPARAM /*fwSizeType*/, WORD nWidth, WORD nHeight)
 {
     RECT clrect, swrect;
     GetClientRect(m_hMainWindow, &clrect);
@@ -606,7 +606,7 @@ void CMainGui::SaveWindowLoc(void)
     }
 }
 
-LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
+LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)
     {
@@ -789,7 +789,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             {
                 if (g_Plugins && g_Plugins->Control()->WM_KeyUp)
                 {
-                    g_Plugins->Control()->WM_KeyUp(wParam, lParam);
+                    g_Plugins->Control()->WM_KeyUp((uint32_t)((UINT_PTR)wParam), (uint32_t)((UINT_PTR)lParam));
                 }
             }
         }
@@ -805,7 +805,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             {
                 if (g_Plugins && g_Plugins->Control()->WM_KeyDown)
                 {
-                    g_Plugins->Control()->WM_KeyDown(wParam, lParam);
+                    g_Plugins->Control()->WM_KeyDown((uint32_t)((UINT_PTR)wParam), (uint32_t)((UINT_PTR)lParam));
                 }
             }
         }
@@ -848,7 +848,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
 
                 if (g_Plugins && g_Plugins->Control()->WM_KillFocus)
                 {
-                    g_Plugins->Control()->WM_KillFocus(wParam, lParam);
+                    g_Plugins->Control()->WM_KillFocus((uint32_t)((UINT_PTR)wParam), (uint32_t)((UINT_PTR)lParam));
                 }
             }
         }

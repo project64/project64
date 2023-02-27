@@ -228,7 +228,7 @@ LRESULT CCheatList::OnChangeCodeExtension(UINT /*uMsg*/, WPARAM /*wParam*/, LPAR
     std::wstring wName = Name.ToUTF16();
     item.mask = TVIF_TEXT;
     item.pszText = (LPWSTR)wName.c_str();
-    item.cchTextMax = wName.length();
+    item.cchTextMax = (int)((INT_PTR)wName.length());
     m_hCheatTree.SetItem(&item);
     return 0;
 }

@@ -22,12 +22,12 @@ struct TabRecord
 
     int GetLabelIndex(WORD ctrl) const
     {
-        for (int i = 0, end = FieldCount; i < end; i++)
+        for (size_t i = 0, end = FieldCount; i < end; i++)
         {
             const FieldPair * pair = (Fields + i);
             if (pair->LabelId == ctrl)
             {
-                return i;
+                return (int)((INT_PTR)i);
             }
         }
         return -1;
@@ -35,12 +35,12 @@ struct TabRecord
 
     int GetEditIndex(WORD ctrl) const
     {
-        for (int i = 0, end = FieldCount; i < end; i++)
+        for (size_t i = 0, end = FieldCount; i < end; i++)
         {
             const FieldPair * pair = (Fields + i);
             if (pair->EditId == ctrl)
             {
-                return i;
+                return (int)((INT_PTR)i);
             }
         }
         return -1;

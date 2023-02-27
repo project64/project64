@@ -118,7 +118,7 @@ void CSettingTypeRomDatabase::BaseDirChanged(void * /*Data */)
     m_AudioIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_AudioRDB).c_str());
 }
 
-void CSettingTypeRomDatabase::GameChanged(void * Data)
+void CSettingTypeRomDatabase::GameChanged(void * /*Data*/)
 {
     if (m_SectionIdent)
     {

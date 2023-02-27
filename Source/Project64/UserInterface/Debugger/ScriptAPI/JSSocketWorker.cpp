@@ -285,7 +285,7 @@ void CJSSocketWorker::ProcSendData()
     CGuard guard(m_Queue.cs);
     BufferedWrite & bufferedWrite = m_Queue.writes.front();
 
-    int avail = bufferedWrite.data.size() - bufferedWrite.offset;
+    int avail = (int)((UINT_PTR)(bufferedWrite.data.size() - bufferedWrite.offset));
     int numBytesSent = send(m_Socket, &bufferedWrite.data[bufferedWrite.offset], avail, 0);
 
     if (numBytesSent >= 0)

@@ -151,13 +151,13 @@ duk_ret_t ScriptAPI::js_mem_getblock(duk_context * ctx)
         for (size_t i = 0; i < length; i++)
         {
             uint8_t byte;
-            if (inst->Debugger()->DebugLoad_VAddr<uint8_t>(addr + i, byte))
+            if (inst->Debugger()->DebugLoad_VAddr<uint8_t>((uint32_t)((UINT_PTR)addr + i), byte))
             {
                 data[i] = byte;
             }
             else
             {
-                return ThrowMemoryError(ctx, addr + i);
+                return ThrowMemoryError(ctx, (uint32_t)((UINT_PTR)addr + i));
             }
         }
     }
@@ -179,7 +179,7 @@ duk_ret_t ScriptAPI::js_mem_getstring(duk_context * ctx)
     for (size_t i = 0; i < maxLength; i++)
     {
         char c;
-        if (!inst->Debugger()->DebugLoad_VAddr<char>(addr + i, c))
+        if (!inst->Debugger()->DebugLoad_VAddr<char>((uint32_t)((UINT_PTR)addr + i), c))
         {
             return ThrowMemoryError(ctx, addr);
         }
@@ -197,7 +197,7 @@ duk_ret_t ScriptAPI::js_mem_getstring(duk_context * ctx)
 
     for (size_t i = 0; i < length; i++)
     {
-        if (!inst->Debugger()->DebugLoad_VAddr<char>(addr + i, str[i]))
+        if (!inst->Debugger()->DebugLoad_VAddr<char>((uint32_t)((UINT_PTR)addr + i), str[i]))
         {
             delete[] str;
             return ThrowMemoryError(ctx, addr);
@@ -253,9 +253,9 @@ duk_ret_t ScriptAPI::js_mem_setblock(duk_context * ctx)
 
     for (size_t i = 0; i < length; i++)
     {
-        if (!debugger->DebugStore_VAddr(address + i, data[i]))
+        if (!debugger->DebugStore_VAddr((uint32_t)((UINT_PTR)address + i), data[i]))
         {
-            return ThrowMemoryError(ctx, address + i);
+            return ThrowMemoryError(ctx, (uint32_t)((UINT_PTR)address + i));
         }
     }
 
@@ -463,7 +463,7 @@ duk_ret_t ScriptAPI::js_mem_bindstruct(duk_context * ctx)
 
         duk_pop(ctx);
 
-        curAddr += MemTypeSize(type);
+        curAddr += (uint32_t)((UINT_PTR)MemTypeSize(type));
     }
 
     duk_dup(ctx, 0);

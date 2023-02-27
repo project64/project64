@@ -69,7 +69,7 @@ void COptionPluginPage::ShowAboutButton(int id)
     CModifiedComboBox * ComboBox = nullptr;
     for (ComboBoxList::iterator cb_iter = m_ComboBoxList.begin(); cb_iter != m_ComboBoxList.end(); cb_iter++)
     {
-        if ((int)(cb_iter->second->GetMenu()) != id)
+        if ((int)((INT_PTR)cb_iter->second->GetMenu()) != id)
         {
             continue;
         }
@@ -122,7 +122,7 @@ void COptionPluginPage::PluginItemChanged(int id, int AboutID, bool bSetChanged)
     CModifiedComboBox * ComboBox = nullptr;
     for (ComboBoxList::iterator cb_iter = m_ComboBoxList.begin(); cb_iter != m_ComboBoxList.end(); cb_iter++)
     {
-        if ((int)(cb_iter->second->GetMenu()) != id)
+        if ((int)((INT_PTR)cb_iter->second->GetMenu()) != id)
         {
             continue;
         }
@@ -283,7 +283,7 @@ void COptionPluginPage::HleGfxChanged(UINT /*Code*/, int id, HWND /*ctl*/)
     for (ButtonList::iterator iter = m_ButtonList.begin(); iter != m_ButtonList.end(); iter++)
     {
         CModifiedButton * Button = iter->second;
-        if ((int)Button->GetMenu() != id)
+        if ((int)(INT_PTR)Button->GetMenu() != id)
         {
             continue;
         }
@@ -306,7 +306,7 @@ void COptionPluginPage::HleAudioChanged(UINT /*Code*/, int id, HWND /*ctl*/)
     for (ButtonList::iterator iter = m_ButtonList.begin(); iter != m_ButtonList.end(); iter++)
     {
         CModifiedButton * Button = iter->second;
-        if ((int)Button->GetMenu() != id)
+        if ((int)(INT_PTR)Button->GetMenu() != id)
         {
             continue;
         }

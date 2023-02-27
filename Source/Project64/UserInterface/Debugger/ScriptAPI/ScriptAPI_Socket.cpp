@@ -48,7 +48,7 @@ duk_ret_t ScriptAPI::js_Socket__constructor(duk_context * ctx)
         if (duk_has_prop_string(ctx, 0, "allowHalfOpen"))
         {
             duk_get_prop_string(ctx, 0, "allowHalfOpen");
-            bAllowHalfOpen = (bool)duk_get_boolean_default(ctx, -1, 0);
+            bAllowHalfOpen = duk_get_boolean_default(ctx, -1, 0) != 0;
             duk_pop(ctx);
         }
     }
@@ -191,7 +191,7 @@ duk_ret_t ScriptAPI::js_Socket__invokeWriteEndCallbacks(duk_context * ctx)
     duk_size_t numCallbacks = duk_get_length(ctx, -1);
     for (duk_size_t i = 0; i < numCallbacks; i++)
     {
-        duk_get_prop_index(ctx, -1, i);
+        duk_get_prop_index(ctx, -1, (int)((UINT_PTR)i));
         duk_dup(ctx, -3);
 
         if (duk_pcall_method(ctx, 0) != 0)
@@ -315,6 +315,6 @@ void RegisterWriteEndCallback(duk_context * ctx, duk_idx_t idx)
     duk_get_prop_string(ctx, -1, HS_socketWriteEndCallbacks);
     duk_size_t callbackIdx = duk_get_length(ctx, -1);
     duk_dup(ctx, idx);
-    duk_put_prop_index(ctx, -2, callbackIdx);
+    duk_put_prop_index(ctx, -2, (int)((UINT_PTR)callbackIdx));
     duk_pop(ctx);
 }

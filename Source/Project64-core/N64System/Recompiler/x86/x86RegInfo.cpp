@@ -563,7 +563,8 @@ const asmjit::x86::St & CX86RegInfo::StackPosition(int32_t Reg)
             return StRegs[((i - StackTopPos()) & 7)];
         }
     }
-    return asmjit::x86::St();
+    static asmjit::x86::St Unknown;
+    return Unknown;
 }
 
 asmjit::x86::Gp CX86RegInfo::FreeX86Reg()

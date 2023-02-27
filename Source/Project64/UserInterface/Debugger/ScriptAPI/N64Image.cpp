@@ -297,7 +297,7 @@ int CN64Image::UpdatePixelsAndPaletteFromBitmap()
 {
     if (m_bUsePalette)
     {
-        m_PaletteData.resize(1 << m_PixelSize);
+        m_PaletteData.resize(((ULONG_PTR)1) << m_PixelSize);
 
         std::vector<uint16_t> newPalette;
         std::map<uint16_t, size_t> colorIndexMap;
@@ -316,7 +316,7 @@ int CN64Image::UpdatePixelsAndPaletteFromBitmap()
             }
             else
             {
-                if (newPalette.size() > (size_t)(1 << m_PixelSize))
+                if (newPalette.size() > (size_t)((ULONG_PTR)(1) << m_PixelSize))
                 {
                     return N64IMG_TOO_MANY_COLORS;
                 }
@@ -329,7 +329,7 @@ int CN64Image::UpdatePixelsAndPaletteFromBitmap()
 
         for (size_t nPixel = 0; nPixel < indices.size(); nPixel++)
         {
-            SetTexel(nPixel, indices[nPixel]);
+            SetTexel(nPixel, (int)((ULONG_PTR)(indices[nPixel])));
         }
 
         m_PaletteData.resize(newPalette.size());

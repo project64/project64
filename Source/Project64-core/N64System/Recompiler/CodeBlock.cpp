@@ -910,7 +910,7 @@ uint32_t CCodeBlock::Finilize(uint8_t * CompiledLocation)
 #if defined(ANDROID) && (defined(__arm__) || defined(_M_ARM))
     __clear_cache((uint8_t *)((uint32_t)m_CompiledLocation & ~1), m_CompiledLocation + codeSize);
 #endif
-    return codeSize;
+    return (uint32_t)codeSize;
 }
 
 uint32_t CCodeBlock::NextTest()

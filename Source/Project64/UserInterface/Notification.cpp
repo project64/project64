@@ -189,7 +189,7 @@ void CNotificationImp::AddRecentDir(const char * RomDir)
     size_t i;
     for (i = 0; i < MaxRememberedDirs; i++)
     {
-        stdstr RecentDir = UISettingsLoadStringIndex(Directory_RecentGameDirIndex, i);
+        stdstr RecentDir = UISettingsLoadStringIndex(Directory_RecentGameDirIndex, (int32_t)((UINT_PTR)i));
         if (RecentDir.empty())
         {
             break;
@@ -216,7 +216,7 @@ void CNotificationImp::AddRecentDir(const char * RomDir)
 
     for (i = 0, iter = RecentDirs.begin(); iter != RecentDirs.end(); iter++, i++)
     {
-        UISettingsSaveStringIndex(Directory_RecentGameDirIndex, i, *iter);
+        UISettingsSaveStringIndex(Directory_RecentGameDirIndex, (int32_t)((UINT_PTR)i), *iter);
     }
 }
 

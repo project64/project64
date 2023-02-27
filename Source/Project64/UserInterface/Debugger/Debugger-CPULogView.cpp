@@ -292,7 +292,7 @@ void CDebugCPULogView::RefreshList(bool bUpdateBuffer)
     size_t numVisibleRows = GetNumVisibleRows(m_CPUListView);
 
     bool bCanDisplayAll = (numVisibleRows >= count);
-    int scrollRangeMax = bCanDisplayAll ? 0 : count - numVisibleRows;
+    int scrollRangeMax = bCanDisplayAll ? 0 : (int)((INT_PTR)(count - numVisibleRows));
 
     m_Scrollbar.SetScrollRange(0, scrollRangeMax, false);
     m_Scrollbar.EnableWindow(!bCanDisplayAll);

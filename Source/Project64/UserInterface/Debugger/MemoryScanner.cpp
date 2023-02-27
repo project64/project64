@@ -244,7 +244,7 @@ int CScanResult::GetMemoryValueString(char * buffer, size_t size, bool bIgnoreHe
                 out += sprintf(out, "%02X", mem[ipaddr]);
             }
             *out = '\0';
-            return out - buffer;
+            return (int)((INT_PTR)(out - buffer));
         }
         else
         {

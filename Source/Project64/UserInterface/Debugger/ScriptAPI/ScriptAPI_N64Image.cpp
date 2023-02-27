@@ -70,8 +70,8 @@ static void InitImageObjectProps(duk_context * ctx, duk_idx_t idx, CN64Image * i
         {HS_n64ImagePtr, DukPointer(image)},
         {"pixels", DukDupIndex(pixels_idx)},
         {"palette", DukDupIndex(palette_idx)},
-        {"width", DukUInt(image->Width())},
-        {"height", DukUInt(image->Height())},
+        {"width", DukUInt((int)((UINT_PTR)image->Width()))},
+        {"height", DukUInt((int)((UINT_PTR)image->Height()))},
         {nullptr},
     };
 

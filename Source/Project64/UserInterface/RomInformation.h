@@ -8,7 +8,7 @@ class RomInformation
     CN64Rom * m_pRomInfo;
     CN64Disk * m_pDiskInfo;
 
-    friend DWORD CALLBACK RomInfoProc(HWND, DWORD, DWORD, DWORD);
+    friend DWORD CALLBACK RomInfoProc(HWND, DWORD, WPARAM, LPARAM);
 
 public:
     RomInformation(const char * RomFile);

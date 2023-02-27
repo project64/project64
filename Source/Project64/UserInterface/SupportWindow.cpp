@@ -83,7 +83,7 @@ LRESULT CSupportWindow::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
         hFont = (HFONT)::GetStockObject(SYSTEM_FONT);
     }
     hDC.SelectFont(hFont);
-    if (hDC.DrawText(InfoText.c_str(), InfoText.length(), &rcWin, DT_LEFT | DT_CALCRECT | DT_WORDBREAK | DT_NOCLIP) > 0)
+    if (hDC.DrawText(InfoText.c_str(), (int)((INT_PTR)InfoText.length()), &rcWin, DT_LEFT | DT_CALCRECT | DT_WORDBREAK | DT_NOCLIP) > 0)
     {
         hInfo.SetWindowPos(nullptr, 0, 0, rcWin.right, rcWin.bottom, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOOWNERZORDER);
     }

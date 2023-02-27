@@ -297,7 +297,7 @@ void CDebugCommandsView::AddBranchArrow(int startPos, int endPos)
 void CDebugCommandsView::HistoryPushState()
 {
     m_History.push_back(m_StartAddress);
-    m_HistoryIndex = m_History.size() - 1;
+    m_HistoryIndex = (int)((INT_PTR)(m_History.size() - 1));
     ToggleHistoryButtons();
 }
 
@@ -1009,7 +1009,7 @@ void CDebugCommandsView::RemoveSelectedBreakpoints()
     wchar_t itemText[32];
     m_BreakpointList.GetText(nItem, itemText);
 
-    uint32_t address = m_BreakpointList.GetItemData(nItem);
+    uint32_t address = (uint32_t)(m_BreakpointList.GetItemData(nItem));
 
     switch (itemText[0])
     {
@@ -1430,7 +1430,7 @@ LRESULT CDebugCommandsView::OnListBoxClicked(WORD /*wNotifyCode*/, WORD wID, HWN
     if (wID == IDC_BP_LIST)
     {
         int index = m_BreakpointList.GetCaretIndex();
-        uint32_t address = m_BreakpointList.GetItemData(index);
+        uint32_t address = (uint32_t)m_BreakpointList.GetItemData(index);
         int len = m_BreakpointList.GetTextLen(index);
         std::wstring rowText;
         rowText.resize(len);
@@ -1613,7 +1613,7 @@ void CDebugCommandsView::RestoreOp(uint32_t address)
 
 void CDebugCommandsView::RestoreAllOps()
 {
-    int lastIndex = m_EditedOps.size() - 1;
+    int lastIndex = (int)((INT_PTR)(m_EditedOps.size() - 1));
     for (int i = lastIndex; i >= 0; i--)
     {
         m_Debugger->DebugStore_VAddr(m_EditedOps[i].address, m_EditedOps[i].originalOp);

@@ -786,6 +786,7 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
         }
     } while (m_RecompilerOps->GetNextStepType() != PIPELINE_STAGE_END_BLOCK);
 #else
+    Test = Test;
     g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
     return true;

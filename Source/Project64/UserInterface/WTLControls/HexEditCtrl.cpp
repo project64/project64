@@ -511,7 +511,7 @@ void CHexEditCtrl::Text(int x, int y, const char * text, COLORREF bg, COLORREF f
 {
     std::wstring textOuput = stdstr(text).ToUTF16(CP_ACP);
     size_t length = textOuput.length();
-    int calcWidth = length * m_CharWidth;
+    int calcWidth = (int)((INT_PTR)length) * m_CharWidth;
 
     CRect rc(x, y, 0, 0);
     COLORREF orgBg = ::SetBkColor(m_BackDC, bg);
@@ -1093,7 +1093,7 @@ void CHexEditCtrl::OnChar(UINT nChar, UINT /*nRepCnt*/, UINT /*nFlags*/)
 void CHexEditCtrl::Paste(bool bAdvanceCaret)
 {
     uint32_t targetAddress = m_bHaveRealSel ? m_RealSelStartAddress : m_CaretAddress;
-    int retLength = NotifyPaste(targetAddress);
+    int retLength = (int)((INT_PTR)NotifyPaste(targetAddress));
 
     if (retLength != 0)
     {

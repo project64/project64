@@ -72,7 +72,7 @@ protected:
         for (ButtonList::iterator iter = m_ButtonList.begin(); iter != m_ButtonList.end(); iter++)
         {
             CModifiedButton * Button = iter->second;
-            if ((int)Button->GetMenu() != id)
+            if ((INT_PTR)Button->GetMenu() != id)
             {
                 continue;
             }
@@ -294,7 +294,7 @@ protected:
         for (ComboBoxTxtList::iterator cbtxt_iter = m_ComboBoxTxtList.begin(); cbtxt_iter != m_ComboBoxTxtList.end(); cbtxt_iter++)
         {
             CModifiedComboBoxTxt * ComboBox = cbtxt_iter->second;
-            if ((int)ComboBox->GetMenu() != id)
+            if ((INT_PTR)ComboBox->GetMenu() != id)
             {
                 continue;
             }
@@ -305,7 +305,7 @@ protected:
         for (ComboBoxList::iterator cb_iter = m_ComboBoxList.begin(); cb_iter != m_ComboBoxList.end(); cb_iter++)
         {
             CModifiedComboBox * ComboBox = cb_iter->second;
-            if ((int)ComboBox->GetMenu() != id)
+            if ((INT_PTR)ComboBox->GetMenu() != id)
             {
                 continue;
             }
@@ -325,7 +325,7 @@ protected:
         for (TextBoxList::iterator eb_iter = m_TxtBoxList.begin(); eb_iter != m_TxtBoxList.end(); eb_iter++)
         {
             CModifiedEditBox * EditBox = eb_iter->second;
-            if ((int)EditBox->GetMenu() != id)
+            if ((INT_PTR)EditBox->GetMenu() != id)
             {
                 continue;
             }

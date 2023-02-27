@@ -389,7 +389,7 @@ JSAppCallbackID ScriptAPI::AddAppCallback(duk_context * ctx, JSAppHookID hookId,
     duk_push_object(ctx);
     duk_push_number(ctx, hookId);
     duk_put_prop_string(ctx, -2, "hookId");
-    duk_push_number(ctx, callbackId);
+    duk_push_number(ctx, (int)((UINT_PTR)callbackId));
     duk_put_prop_string(ctx, -2, "callbackId");
     duk_push_heapptr(ctx, callback.m_DukFuncHeapPtr);
     duk_put_prop_string(ctx, -2, "func");
@@ -397,7 +397,7 @@ JSAppCallbackID ScriptAPI::AddAppCallback(duk_context * ctx, JSAppHookID hookId,
     duk_push_c_function(ctx, js__AppCallbackFinalizer, 1);
     duk_set_finalizer(ctx, -2);
 
-    duk_put_prop_index(ctx, -2, callbackId);
+    duk_put_prop_index(ctx, -2, (int)((UINT_PTR)callbackId));
 
     duk_pop(ctx);
 
@@ -407,12 +407,12 @@ JSAppCallbackID ScriptAPI::AddAppCallback(duk_context * ctx, JSAppHookID hookId,
 bool ScriptAPI::RemoveAppCallback(duk_context * ctx, JSAppCallbackID callbackId)
 {
     duk_get_global_string(ctx, HS_gAppCallbacks);
-    duk_bool_t bExists = duk_has_prop_index(ctx, -1, callbackId);
+    duk_bool_t bExists = duk_has_prop_index(ctx, -1, (int)((UINT_PTR)callbackId));
 
     if (bExists)
     {
         // will invoke CallbackFinalizer
-        duk_del_prop_index(ctx, -1, callbackId);
+        duk_del_prop_index(ctx, -1, (int)((UINT_PTR)callbackId));
     }
 
     duk_pop(ctx);
@@ -580,13 +580,13 @@ duk_ret_t ScriptAPI::js__Emitter_on(duk_context * ctx)
     duk_get_prop_string(ctx, -2, HS_emitterNextListenerId);
     duk_size_t nextIdx = duk_get_int(ctx, -1);
     duk_pop(ctx);
-    duk_push_int(ctx, nextIdx + 1);
+    duk_push_int(ctx, (int)((UINT_PTR)nextIdx + 1));
     duk_put_prop_string(ctx, -3, HS_emitterNextListenerId);
 
     duk_get_prop_string(ctx, -1, eventName);
 
     duk_pull(ctx, 1);
-    duk_put_prop_index(ctx, -2, nextIdx);
+    duk_put_prop_index(ctx, -2, (int)((UINT_PTR)nextIdx));
 
     duk_push_this(ctx);
     return 1;
@@ -706,7 +706,7 @@ void ScriptAPI::RegisterNativeModule(duk_context * ctx, HMODULE hModule)
     duk_put_prop_string(ctx, -2, "modPtr");
     duk_push_c_function(ctx, js__NativeModuleFinalizer, 1);
     duk_set_finalizer(ctx, -2);
-    duk_put_prop_index(ctx, -2, index);
+    duk_put_prop_index(ctx, -2, (int)((UINT_PTR)index));
     duk_pop(ctx);
 }
 
@@ -769,7 +769,7 @@ bool ScriptAPI::PrivateCallAllowed(duk_context * ctx)
         return false;
     }
 
-    bool bAllowed = duk_get_boolean(ctx, -1);
+    bool bAllowed = duk_get_boolean(ctx, -1) != 0;
     duk_pop(ctx);
     return bAllowed;
 }

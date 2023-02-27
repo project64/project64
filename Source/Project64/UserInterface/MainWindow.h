@@ -115,12 +115,12 @@ private:
     void ChangeWinSize(long width, long height);
     void Create(const char * WindowTitle);
     void CreateStatusBar(void);
-    void Resize(DWORD fwSizeType, WORD nWidth, WORD nHeight); // Responding to WM_SIZE
+    void Resize(WPARAM fwSizeType, WORD nWidth, WORD nHeight); // Responding to WM_SIZE
     void AddRecentRom(const char * ImagePath);
     void SetWindowCaption(const wchar_t * Caption);
     void ShowRomBrowser(void);
 
-    static LRESULT CALLBACK MainGui_Proc(HWND, DWORD, DWORD, DWORD);
+    static LRESULT CALLBACK MainGui_Proc(HWND, DWORD, WPARAM, LPARAM);
 
     friend void RomBowserEnabledChanged(CMainGui * Gui);
     friend void RomBowserColoumnsChanged(CMainGui * Gui);
