@@ -106,7 +106,7 @@ void stdstr::Replace(const char search, const char replace)
     std::string::size_type pos = str.find(search);
     while (pos != std::string::npos)
     {
-        str.replace(pos, 1, &replace);
+        str.replace(pos, 1, &replace, 1);
         pos = str.find(search, pos + 1);
     }
 }
