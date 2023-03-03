@@ -10,7 +10,7 @@ class CPlugins;
 class ROMBROWSER_FIELDS
 {
     stdstr m_Name;
-    size_t m_Pos, m_DefaultPos;
+    uint32_t m_Pos, m_DefaultPos;
     int m_ID;
     uint32_t m_ColWidth;
     LanguageStringID m_LangID;
