@@ -252,7 +252,9 @@ protected:
     static void GenerateTLBWriteException(uint64_t VAddr, const char * function);
     static bool TestCop1UsableException(void);
     static bool CheckFPUInput32(const float & Value);
+    static bool CheckFPUInput64(const double & Value);
     static bool CheckFPUResult32(float & Result);
+    static bool CheckFPUResult64(double & Result);
     static bool CheckFPUException(void);
 
     static const uint32_t SWL_MASK[4], SWR_MASK[4], LWL_MASK[4], LWR_MASK[4];

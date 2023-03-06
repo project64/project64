@@ -2443,8 +2443,20 @@ void R4300iOp::COP1_D_ADD()
     {
         return;
     }
+    _FPCR[31] &= ~0x0003F000;
     fesetround(*_RoundingModel);
-    *(double *)_FPR_D[m_Opcode.fd] = *(double *)_FPR_D[m_Opcode.fs] + *(double *)_FPR_D[m_Opcode.ft];
+    feclearexcept(FE_ALL_EXCEPT);
+
+    if (!CheckFPUInput64(*(double *)_FPR_S[m_Opcode.fs]) || !CheckFPUInput64(*(double *)_FPR_S[m_Opcode.ft]))
+    {
+        return;
+    }
+    double Result = (*(double *)_FPR_D[m_Opcode.fs] + *(double *)_FPR_D[m_Opcode.ft]);
+    if (CheckFPUException() || CheckFPUResult64(Result))
+    {
+        return;
+    }
+    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_D_SUB()
@@ -2848,6 +2860,49 @@ bool R4300iOp::CheckFPUInput32(const float & Value)
     return true;
 }
 
+bool R4300iOp::CheckFPUInput64(const double & Value)
+{
+    int Type = fpclassify(Value);
+    bool Exception = false;
+    if (Type == FP_SUBNORMAL)
+    {
+        FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+        StatusReg.Cause.UnimplementedOperation = 1;
+        Exception = true;
+    }
+    else if (Type == FP_NAN)
+    {
+        uint64_t Value64 = *(uint64_t *)&Value;
+        FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+        if ((Value64 >= 0x7FF0000000000001 && Value64 <= 0x7FF7FFFFFFFFFFFF) ||
+            (Value64 >= 0xFFF0000000000001 && Value64 <= 0xFFF7FFFFFFFFFFFF))
+        {
+            StatusReg.Cause.UnimplementedOperation = 1;
+            Exception = true;
+        }
+        else
+        {
+            StatusReg.Cause.InvalidOperation = 1;
+            if (StatusReg.Enable.InvalidOperation)
+            {
+                Exception = true;
+            }
+            else
+            {
+                StatusReg.Flags.InvalidOperation = 1;
+            }
+        }
+    }
+    if (Exception)
+    {
+        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        return false;
+    }
+    return true;
+}
+
 bool R4300iOp::CheckFPUResult32(float & Result)
 {
     int fptype = fpclassify(Result);
@@ -2891,6 +2946,56 @@ bool R4300iOp::CheckFPUResult32(float & Result)
                 break;
             case FE_DOWNWARD:
                 Result = Result >= 0.0f ? 0.0f : -1.175494351e-38F;
+                break;
+            }
+        }
+    }
+    return false;
+}
+
+bool R4300iOp::CheckFPUResult64(double & Result)
+{
+    int fptype = fpclassify(Result);
+    if (fptype == FP_NAN)
+    {
+        *((uint64_t *)&Result) = 0x7FF7FFFFFFFFFFFF;
+    }
+    else if (fptype == FP_SUBNORMAL)
+    {
+        FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+        if (!StatusReg.FlushSubnormals || StatusReg.Enable.Underflow || StatusReg.Enable.Inexact)
+        {
+            StatusReg.Cause.UnimplementedOperation = 1;
+            g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+            g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+            g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+            return true;
+        }
+        else
+        {
+            StatusReg.Cause.Underflow = 1;
+            if (!StatusReg.Enable.Underflow)
+            {
+                StatusReg.Flags.Underflow = 1;
+            }
+
+            StatusReg.Cause.Inexact = 1;
+            if (!StatusReg.Enable.Inexact)
+            {
+                StatusReg.Flags.Inexact = 1;
+            }
+
+            switch (*_RoundingModel)
+            {
+            case FE_TONEAREST:
+            case FE_TOWARDZERO:
+                Result = Result >= 0.0 ? 0.0 : -0.0;
+                break;
+            case FE_UPWARD:
+                Result = Result >= 0.0 ? 2.2250738585072014e-308 : -0.0;
+                break;
+            case FE_DOWNWARD:
+                Result = Result >= 0.0 ? 0.0 : -2.2250738585072014e-308;
                 break;
             }
         }
