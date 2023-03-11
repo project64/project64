@@ -28,12 +28,15 @@ LRESULT CDebugScripts::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     DlgSavePos_Init(DebuggerUI_ScriptsPos);
     DlgToolTip_Init();
 
-    m_MonoFont = CreateFont(-12, 0, 0, 0,
+    CDC hDC = GetDC();
+    float DPIScale = hDC.GetDeviceCaps(LOGPIXELSX) / 96.0f;
+
+    m_MonoFont = CreateFont((int)(-12 * DPIScale), 0, 0, 0,
                             FW_DONTCARE, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
                             OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
                             CLEARTYPE_QUALITY, FF_DONTCARE, L"Consolas");
 
-    m_MonoBoldFont = CreateFont(-13, 0, 0, 0,
+    m_MonoBoldFont = CreateFont((int)(-13 * DPIScale), 0, 0, 0,
                                 FW_BOLD, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
                                 OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
                                 CLEARTYPE_QUALITY, FF_DONTCARE, L"Consolas");
@@ -41,7 +44,7 @@ LRESULT CDebugScripts::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     m_ScriptList.Attach(GetDlgItem(IDC_SCRIPT_LIST));
     m_ScriptList.AddColumn(L"Status", 0);
     m_ScriptList.AddColumn(L"Script", 1);
-    m_ScriptList.SetColumnWidth(0, 16);
+    m_ScriptList.SetColumnWidth(0, (int)(16 * DPIScale));
     m_ScriptList.SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER);
     m_ScriptList.SetExtendedListViewStyle(LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER);
     m_ScriptList.ModifyStyle(LVS_OWNERDRAWFIXED, 0, 0);
