@@ -16,20 +16,23 @@ void CCommandList::Attach(HWND hWndNew)
     ModifyStyle(LVS_OWNERDRAWFIXED, 0, 0);
     SetExtendedListViewStyle(LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER | LVS_EX_LABELTIP);
 
+    CDC hDC = GetDC();
+    float DPIScale = hDC.GetDeviceCaps(LOGPIXELSX) / 96.0f;
+
     AddColumn(L"", COL_ARROWS);
-    SetColumnWidth(COL_ARROWS, 30);
+    SetColumnWidth(COL_ARROWS, (int)(30 * DPIScale));
 
     AddColumn(L"Address", COL_ADDRESS);
-    SetColumnWidth(COL_ADDRESS, 70);
+    SetColumnWidth(COL_ADDRESS, (int)(70 * DPIScale));
 
     AddColumn(L"Command", COL_COMMAND);
-    SetColumnWidth(COL_COMMAND, 65);
+    SetColumnWidth(COL_COMMAND, (int)(65 * DPIScale));
 
     AddColumn(L"Parameters", COL_PARAMETERS);
-    SetColumnWidth(COL_PARAMETERS, 130);
+    SetColumnWidth(COL_PARAMETERS, (int)(130 * DPIScale));
 
     AddColumn(L"Symbol", COL_SYMBOL);
-    SetColumnWidth(COL_SYMBOL, 180);
+    SetColumnWidth(COL_SYMBOL, (int)(180 * DPIScale));
 }
 
 CDebugCommandsView * CDebugCommandsView::_this = nullptr;
