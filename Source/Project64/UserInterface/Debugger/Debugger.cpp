@@ -509,8 +509,8 @@ void CDebuggerUI::TLBChanged()
 // Exception handling - break on exception vector if exception breakpoint is set
 void CDebuggerUI::HandleCPUException(void)
 {
-    int exc = (g_Reg->CAUSE_REGISTER >> 2) & 0x1F;
-    int intr = (g_Reg->CAUSE_REGISTER >> 8) & 0xFF;
+    int exc = (g_Reg->CAUSE_REGISTER.Value >> 2) & 0x1F;
+    int intr = (g_Reg->CAUSE_REGISTER.Value >> 8) & 0xFF;
     int fpExc = (g_Reg->m_FPCR[31] >> 12) & 0x3F;
     int rcpIntr = g_Reg->MI_INTR_REG & 0x2F;
 

@@ -164,7 +164,7 @@ duk_ret_t ScriptAPI::js_cpu_cop0_get(duk_context * ctx)
 
     if (strcmp(name, "cause") == 0)
     {
-        duk_push_uint(ctx, (uint32_t)(g_Reg->FAKE_CAUSE_REGISTER | g_Reg->CAUSE_REGISTER));
+        duk_push_uint(ctx, (uint32_t)(g_Reg->CAUSE_REGISTER.Value));
         return 1;
     }
 
@@ -201,8 +201,7 @@ duk_ret_t ScriptAPI::js_cpu_cop0_set(duk_context * ctx)
     if (strcmp(name, "cause") == 0)
     {
         uint32_t value = duk_get_uint(ctx, 2);
-        g_Reg->FAKE_CAUSE_REGISTER = value;
-        g_Reg->CAUSE_REGISTER = value;
+        g_Reg->CAUSE_REGISTER.Value = value;
         g_Reg->CheckInterrupts();
 
         duk_push_true(ctx);

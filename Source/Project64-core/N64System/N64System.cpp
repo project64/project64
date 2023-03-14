@@ -852,7 +852,7 @@ void CN64System::GameReset()
 {
     m_SystemTimer.SetTimer(CSystemTimer::SoftResetTimer, 0x3000000, false);
     m_Plugins->Gfx()->ShowCFB();
-    m_Reg.FAKE_CAUSE_REGISTER |= CAUSE_IP4;
+    m_Reg.CAUSE_REGISTER.PendingInterrupts |= CAUSE_IP4;
     m_Plugins->Gfx()->SoftReset();
     if (m_SyncCPU)
     {
@@ -1030,7 +1030,7 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
     m_Reg.COUNT_REGISTER = 0x5000;
     m_Reg.MI_VERSION_REG = 0x02020102;
     m_Reg.SP_STATUS_REG = 0x00000001;
-    m_Reg.CAUSE_REGISTER = 0x0000005C;
+    m_Reg.CAUSE_REGISTER.Value = 0x0000005C;
     m_Reg.CONTEXT_REGISTER.Value = 0x007FFFF0;
     m_Reg.EPC_REGISTER = 0xFFFFFFFFFFFFFFFF;
     m_Reg.BAD_VADDR_REGISTER = 0xFFFFFFFFFFFFFFFF;

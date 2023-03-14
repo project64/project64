@@ -19,6 +19,21 @@
 #pragma warning(push)
 #pragma warning(disable : 4201) // Non-standard extension used: nameless struct/union
 
+union COP0Cause
+{
+    uint64_t Value;
+
+    struct
+    {
+        unsigned : 2;
+        unsigned ExceptionCode : 5;
+        unsigned : 1;
+        unsigned PendingInterrupts : 8;
+        unsigned : 15;
+        unsigned BranchDelay : 1;
+    };
+};
+
 union COP0Context
 {
     uint64_t Value;
@@ -113,7 +128,7 @@ public:
     uint64_t & ENTRYHI_REGISTER;
     uint64_t & COMPARE_REGISTER;
     uint64_t & STATUS_REGISTER;
-    uint64_t & CAUSE_REGISTER;
+    COP0Cause & CAUSE_REGISTER;
     uint64_t & EPC_REGISTER;
     uint64_t & PREVID_REGISTER;
     uint64_t & CONFIG_REGISTER;
@@ -121,7 +136,6 @@ public:
     uint64_t & TAGLO_REGISTER;
     uint64_t & TAGHI_REGISTER;
     uint64_t & ERROREPC_REGISTER;
-    uint64_t & FAKE_CAUSE_REGISTER;
 
 private:
     CP0registers();
@@ -152,36 +166,34 @@ enum
     STATUS_CU3 = 0x80000000,
 
     // Cause flags
-    CAUSE_EXC_CODE = 0xFF,
-    CAUSE_IP0 = 0x100,
-    CAUSE_IP1 = 0x200,
-    CAUSE_IP2 = 0x400,
-    CAUSE_IP3 = 0x800,
-    CAUSE_IP4 = 0x1000,
-    CAUSE_IP5 = 0x2000,
-    CAUSE_IP6 = 0x4000,
-    CAUSE_IP7 = 0x8000,
-    CAUSE_BD = 0x80000000,
+    CAUSE_IP0 = 0x1,
+    CAUSE_IP1 = 0x2,
+    CAUSE_IP2 = 0x4,
+    CAUSE_IP3 = 0x8,
+    CAUSE_IP4 = 0x10,
+    CAUSE_IP5 = 0x20,
+    CAUSE_IP6 = 0x40,
+    CAUSE_IP7 = 0x80,
 
     // Cause exception ID's
-    EXC_INT = 0,      // Interrupt
-    EXC_MOD = 4,      // TLB mod
-    EXC_RMISS = 8,    // Read TLB miss
-    EXC_WMISS = 12,   // Write TLB miss
-    EXC_RADE = 16,    // Read address error
-    EXC_WADE = 20,    // Write address error
-    EXC_IBE = 24,     // Instruction bus error
-    EXC_DBE = 28,     // Data bus error
-    EXC_SYSCALL = 32, // Syscall
-    EXC_BREAK = 36,   // Breakpoint
-    EXC_II = 40,      // Illegal instruction
-    EXC_CPU = 44,     // Co-processor unusable
-    EXC_OV = 48,      // Overflow
-    EXC_TRAP = 52,    // Trap exception
-    EXC_VCEI = 56,    // Virtual coherency on instruction fetch
-    EXC_FPE = 60,     // Floating point exception
-    EXC_WATCH = 92,   // Watchpoint reference
-    EXC_VCED = 124,   // Virtual coherency on data read
+    EXC_INT = 0,     // Interrupt
+    EXC_MOD = 1,     // TLB mod
+    EXC_RMISS = 2,   // Read TLB miss
+    EXC_WMISS = 3,   // Write TLB miss
+    EXC_RADE = 4,    // Read address error
+    EXC_WADE = 5,    // Write address error
+    EXC_IBE = 6,     // Instruction bus error
+    EXC_DBE = 7,     // Data bus error
+    EXC_SYSCALL = 8, // Syscall
+    EXC_BREAK = 9,   // Breakpoint
+    EXC_II = 10,     // Illegal instruction
+    EXC_CPU = 11,    // Co-processor unusable
+    EXC_OV = 12,     // Overflow
+    EXC_TRAP = 13,   // Trap exception
+    EXC_VCEI = 14,   // Virtual coherency on instruction fetch
+    EXC_FPE = 15,    // Floating point exception
+    EXC_WATCH = 23,  // Watchpoint reference
+    EXC_VCED = 31,   // Virtual coherency on data read
 };
 
 // Float point control status register flags
@@ -411,7 +423,7 @@ public:
     // General registers
     uint32_t m_PROGRAM_COUNTER;
     MIPS_DWORD m_GPR[32];
-    uint64_t m_CP0[33];
+    uint64_t m_CP0[32];
     uint64_t m_CP0Latch;
     MIPS_DWORD m_HI;
     MIPS_DWORD m_LO;

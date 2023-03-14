@@ -164,7 +164,6 @@ public:
         {IDC_COP0_15_LBL, IDC_COP0_15_EDIT},
         {IDC_COP0_16_LBL, IDC_COP0_16_EDIT},
         {IDC_COP0_17_LBL, IDC_COP0_17_EDIT},
-        {IDC_COP0_18_LBL, IDC_COP0_18_EDIT},
     };
 
     static constexpr TabRecord COP0 = TabRecord{sizeof(COP0Fields), COP0Fields};

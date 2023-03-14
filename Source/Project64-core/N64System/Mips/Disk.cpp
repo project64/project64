@@ -176,7 +176,7 @@ void DiskCommand()
     {
         // Other commands are basically instant
         g_Reg->ASIC_STATUS |= DD_STATUS_MECHA_INT;
-        g_Reg->FAKE_CAUSE_REGISTER |= CAUSE_IP3;
+        g_Reg->CAUSE_REGISTER.PendingInterrupts |= CAUSE_IP3;
         g_Reg->CheckInterrupts();
     }
 }
@@ -226,7 +226,9 @@ void DiskBMControl(void)
     }
 
     if (!(g_Reg->ASIC_STATUS & DD_STATUS_MECHA_INT) && !(g_Reg->ASIC_STATUS & DD_STATUS_BM_INT))
-        g_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP3;
+    {
+        g_Reg->CAUSE_REGISTER.PendingInterrupts &= ~CAUSE_IP3;
+    }
 
     if (g_Reg->ASIC_BM_CTL & DD_BM_CTL_START)
     {
@@ -245,7 +247,7 @@ void DiskGapSectorCheck()
         if (SECTORS_PER_BLOCK < dd_current)
         {
             g_Reg->ASIC_STATUS &= ~DD_STATUS_BM_INT;
-            g_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP3;
+            g_Reg->CAUSE_REGISTER.PendingInterrupts &= ~CAUSE_IP3;
             g_Reg->CheckInterrupts();
             DiskBMUpdate();
         }
@@ -303,7 +305,7 @@ void DiskBMUpdate()
         }
 
         g_Reg->ASIC_STATUS |= DD_STATUS_BM_INT;
-        g_Reg->FAKE_CAUSE_REGISTER |= CAUSE_IP3;
+        g_Reg->CAUSE_REGISTER.PendingInterrupts |= CAUSE_IP3;
         g_Reg->CheckInterrupts();
         return;
     }
@@ -348,7 +350,7 @@ void DiskBMUpdate()
         }
 
         g_Reg->ASIC_STATUS |= DD_STATUS_BM_INT;
-        g_Reg->FAKE_CAUSE_REGISTER |= CAUSE_IP3;
+        g_Reg->CAUSE_REGISTER.PendingInterrupts |= CAUSE_IP3;
         g_Reg->CheckInterrupts();
     }
 }
@@ -381,13 +383,13 @@ void DiskDMACheck(void)
     if (g_Reg->PI_CART_ADDR_REG == 0x05000000)
     {
         g_Reg->ASIC_STATUS &= ~(DD_STATUS_BM_INT | DD_STATUS_BM_ERR | DD_STATUS_C2_XFER);
-        g_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP3;
+        g_Reg->CAUSE_REGISTER.PendingInterrupts &= ~CAUSE_IP3;
         g_Reg->CheckInterrupts();
     }
     else if (g_Reg->PI_CART_ADDR_REG == 0x05000400)
     {
         g_Reg->ASIC_STATUS &= ~(DD_STATUS_BM_INT | DD_STATUS_BM_ERR | DD_STATUS_DATA_RQ);
-        g_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP3;
+        g_Reg->CAUSE_REGISTER.PendingInterrupts &= ~CAUSE_IP3;
         g_Reg->CheckInterrupts();
     }
 }

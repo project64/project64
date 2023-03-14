@@ -241,15 +241,14 @@ CP0registers::CP0registers(uint64_t * _CP0) :
     ENTRYHI_REGISTER(_CP0[10]),
     COMPARE_REGISTER(_CP0[11]),
     STATUS_REGISTER(_CP0[12]),
-    CAUSE_REGISTER(_CP0[13]),
+    CAUSE_REGISTER((COP0Cause &)_CP0[13]),
     EPC_REGISTER(_CP0[14]),
     PREVID_REGISTER(_CP0[15]),
     CONFIG_REGISTER(_CP0[16]),
     XCONTEXT_REGISTER((COP0XContext &)_CP0[20]),
     TAGLO_REGISTER(_CP0[28]),
     TAGHI_REGISTER(_CP0[29]),
-    ERROREPC_REGISTER(_CP0[30]),
-    FAKE_CAUSE_REGISTER(_CP0[32])
+    ERROREPC_REGISTER(_CP0[30])
 {
 }
 
@@ -359,7 +358,7 @@ void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
         LogMessage("%08X: Writing 0x%I64U to %s register (originally: 0x%I64U)", (*_PROGRAM_COUNTER), Value, CRegName::Cop0[Reg], m_CP0[Reg]);
         if (Reg == 11) // Compare
         {
-            LogMessage("%08X: Cause register changed from %08X to %08X", (*_PROGRAM_COUNTER), CAUSE_REGISTER, (g_Reg->CAUSE_REGISTER & ~CAUSE_IP7));
+            LogMessage("%08X: Cause register changed from %08X to %08X", (*_PROGRAM_COUNTER), (uint32_t)CAUSE_REGISTER.Value, (uint32_t)(g_Reg->CAUSE_REGISTER.Value & ~CAUSE_IP7));
         }
     }
     m_CP0Latch = Value;
@@ -410,7 +409,7 @@ void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
     case COP0Reg_Compare:
         g_SystemTimer->UpdateTimers();
         m_CP0[Reg] = Value;
-        FAKE_CAUSE_REGISTER &= ~CAUSE_IP7;
+        CAUSE_REGISTER.PendingInterrupts &= ~CAUSE_IP7;
         g_SystemTimer->UpdateCompareTimer();
         break;
     case COP0Reg_Status:
@@ -503,11 +502,11 @@ void CRegisters::CheckInterrupts()
     mi_intr_reg |= (m_GfxIntrReg & MI_INTR_DP);
     if ((MI_INTR_MASK_REG & mi_intr_reg) != 0)
     {
-        FAKE_CAUSE_REGISTER |= CAUSE_IP2;
+        CAUSE_REGISTER.PendingInterrupts |= CAUSE_IP2;
     }
     else
     {
-        FAKE_CAUSE_REGISTER &= ~CAUSE_IP2;
+        CAUSE_REGISTER.PendingInterrupts &= ~CAUSE_IP2;
     }
     MI_INTR_REG = mi_intr_reg;
     status_register = (uint32_t)STATUS_REGISTER;
@@ -525,7 +524,7 @@ void CRegisters::CheckInterrupts()
         return;
     }
 
-    if ((status_register & FAKE_CAUSE_REGISTER & 0xFF00) != 0)
+    if ((status_register & CAUSE_REGISTER.Value & 0xFF00) != 0)
     {
         if (m_FirstInterupt)
         {
@@ -548,11 +547,11 @@ void CRegisters::DoAddressError(bool DelaySlot, uint64_t BadVaddr, bool FromRead
 
     if (FromRead)
     {
-        CAUSE_REGISTER = EXC_RADE;
+        CAUSE_REGISTER.ExceptionCode = EXC_RADE;
     }
     else
     {
-        CAUSE_REGISTER = EXC_WADE;
+        CAUSE_REGISTER.ExceptionCode = EXC_WADE;
     }
     BAD_VADDR_REGISTER = BadVaddr;
     CONTEXT_REGISTER.BadVPN2 = BadVaddr >> 13;
@@ -561,11 +560,12 @@ void CRegisters::DoAddressError(bool DelaySlot, uint64_t BadVaddr, bool FromRead
 
     if (DelaySlot)
     {
-        CAUSE_REGISTER |= CAUSE_BD;
+        CAUSE_REGISTER.BranchDelay = 1;
         EPC_REGISTER = (int32_t)(m_PROGRAM_COUNTER - 4);
     }
     else
     {
+        CAUSE_REGISTER.BranchDelay = 0;
         EPC_REGISTER = (int32_t)m_PROGRAM_COUNTER;
     }
     STATUS_REGISTER |= STATUS_EXL;
@@ -606,14 +606,15 @@ void CRegisters::DoBreakException(bool DelaySlot)
         }
     }
 
-    CAUSE_REGISTER = EXC_BREAK;
+    CAUSE_REGISTER.ExceptionCode = EXC_BREAK;
     if (DelaySlot)
     {
-        CAUSE_REGISTER |= CAUSE_BD;
+        CAUSE_REGISTER.BranchDelay = 1;
         EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
     }
     else
     {
+        CAUSE_REGISTER.BranchDelay = 0;
         EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
     }
     STATUS_REGISTER |= STATUS_EXL;
@@ -622,15 +623,16 @@ void CRegisters::DoBreakException(bool DelaySlot)
 
 void CRegisters::DoFloatingPointException(bool DelaySlot)
 {
-    CAUSE_REGISTER = EXC_FPE;
+    CAUSE_REGISTER.ExceptionCode = EXC_FPE;
     if (DelaySlot)
     {
         EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
-        CAUSE_REGISTER |= CAUSE_BD;
+        CAUSE_REGISTER.BranchDelay = 1;
     }
     else
     {
         EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
+        CAUSE_REGISTER.BranchDelay = 0;
     }
     STATUS_REGISTER |= STATUS_EXL;
     m_PROGRAM_COUNTER = 0x80000180;
@@ -638,15 +640,16 @@ void CRegisters::DoFloatingPointException(bool DelaySlot)
 
 void CRegisters::DoTrapException(bool DelaySlot)
 {
-    CAUSE_REGISTER = EXC_TRAP;
+    CAUSE_REGISTER.ExceptionCode = EXC_TRAP;
     if (DelaySlot)
     {
         EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
-        CAUSE_REGISTER |= CAUSE_BD;
+        CAUSE_REGISTER.BranchDelay = 1;
     }
     else
     {
         EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
+        CAUSE_REGISTER.BranchDelay = 0;
     }
     m_PROGRAM_COUNTER = 0x80000180;
 }
@@ -665,26 +668,27 @@ void CRegisters::DoCopUnusableException(bool DelaySlot, int32_t Coprocessor)
         }
     }
 
-    CAUSE_REGISTER = EXC_CPU;
+    CAUSE_REGISTER.ExceptionCode = EXC_CPU;
     if (Coprocessor == 1)
     {
-        CAUSE_REGISTER |= 0x10000000;
+        CAUSE_REGISTER.Value |= 0x10000000;
     }
     else if (Coprocessor == 2)
     {
-        CAUSE_REGISTER |= 0x20000000;
+        CAUSE_REGISTER.Value |= 0x20000000;
     }
     else if (Coprocessor == 3)
     {
-        CAUSE_REGISTER |= 0x30000000;
+        CAUSE_REGISTER.Value |= 0x30000000;
     }
     if (DelaySlot)
     {
-        CAUSE_REGISTER |= CAUSE_BD;
+        CAUSE_REGISTER.BranchDelay = 1;
         EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
     }
     else
     {
+        CAUSE_REGISTER.BranchDelay = 0;
         EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
     }
     STATUS_REGISTER |= STATUS_EXL;
@@ -713,16 +717,16 @@ bool CRegisters::DoIntrException(bool DelaySlot)
         LogMessage("%08X: Interrupt generated", m_PROGRAM_COUNTER);
     }
 
-    CAUSE_REGISTER = FAKE_CAUSE_REGISTER;
-    CAUSE_REGISTER |= EXC_INT;
+    CAUSE_REGISTER.ExceptionCode = EXC_INT;
 
     if (DelaySlot)
     {
-        CAUSE_REGISTER |= CAUSE_BD;
+        CAUSE_REGISTER.BranchDelay = 1;
         EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
     }
     else
     {
+        CAUSE_REGISTER.BranchDelay = 0;
         EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
     }
 
@@ -733,14 +737,15 @@ bool CRegisters::DoIntrException(bool DelaySlot)
 
 void CRegisters::DoIllegalInstructionException(bool DelaySlot)
 {
-    CAUSE_REGISTER = EXC_II;
+    CAUSE_REGISTER.ExceptionCode = EXC_II;
     if (DelaySlot)
     {
-        CAUSE_REGISTER |= CAUSE_BD;
+        CAUSE_REGISTER.BranchDelay = 1;
         EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
     }
     else
     {
+        CAUSE_REGISTER.BranchDelay = 0;
         EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
     }
     m_PROGRAM_COUNTER = 0x80000180;
@@ -749,14 +754,15 @@ void CRegisters::DoIllegalInstructionException(bool DelaySlot)
 
 void CRegisters::DoOverflowException(bool DelaySlot)
 {
-    CAUSE_REGISTER = EXC_OV;
+    CAUSE_REGISTER.ExceptionCode = EXC_OV;
     if (DelaySlot)
     {
-        CAUSE_REGISTER |= CAUSE_BD;
+        CAUSE_REGISTER.BranchDelay = 1;
         EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
     }
     else
     {
+        CAUSE_REGISTER.BranchDelay = 0;
         EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
     }
     m_PROGRAM_COUNTER = 0x80000180;
@@ -765,7 +771,7 @@ void CRegisters::DoOverflowException(bool DelaySlot)
 
 void CRegisters::DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr)
 {
-    CAUSE_REGISTER = EXC_RMISS;
+    CAUSE_REGISTER.ExceptionCode = EXC_RMISS;
     BAD_VADDR_REGISTER = BadVaddr;
     CONTEXT_REGISTER.BadVPN2 = BadVaddr >> 13;
     ENTRYHI_REGISTER = (BadVaddr & 0xFFFFE000);
@@ -773,11 +779,12 @@ void CRegisters::DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr)
     {
         if (DelaySlot)
         {
-            CAUSE_REGISTER |= CAUSE_BD;
+            CAUSE_REGISTER.BranchDelay = 1;
             EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
         }
         else
         {
+            CAUSE_REGISTER.BranchDelay = 0;
             EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
         }
         if (g_TLB->AddressDefined((uint32_t)BadVaddr))
@@ -802,7 +809,7 @@ void CRegisters::DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr)
 
 void CRegisters::DoTLBWriteMiss(bool DelaySlot, uint64_t BadVaddr)
 {
-    CAUSE_REGISTER = EXC_WMISS;
+    CAUSE_REGISTER.ExceptionCode = EXC_WMISS;
     BAD_VADDR_REGISTER = BadVaddr;
     CONTEXT_REGISTER.BadVPN2 = BadVaddr >> 13;
     ENTRYHI_REGISTER = (BadVaddr & 0xFFFFE000);
@@ -810,11 +817,12 @@ void CRegisters::DoTLBWriteMiss(bool DelaySlot, uint64_t BadVaddr)
     {
         if (DelaySlot)
         {
-            CAUSE_REGISTER |= CAUSE_BD;
+            CAUSE_REGISTER.BranchDelay = 1;
             EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
         }
         else
         {
+            CAUSE_REGISTER.BranchDelay = 0;
             EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
         }
         if (g_TLB->AddressDefined((uint32_t)BadVaddr))
@@ -851,14 +859,15 @@ void CRegisters::DoSysCallException(bool DelaySlot)
         }
     }
 
-    CAUSE_REGISTER = EXC_SYSCALL;
+    CAUSE_REGISTER.ExceptionCode = EXC_SYSCALL;
     if (DelaySlot)
     {
-        CAUSE_REGISTER |= CAUSE_BD;
+        CAUSE_REGISTER.BranchDelay = 1;
         EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
     }
     else
     {
+        CAUSE_REGISTER.BranchDelay = 0;
         EPC_REGISTER = (int64_t)(int32_t)m_PROGRAM_COUNTER;
     }
     STATUS_REGISTER |= STATUS_EXL;

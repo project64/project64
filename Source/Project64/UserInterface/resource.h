@@ -474,7 +474,6 @@
 #define IDC_COP0_15_EDIT                1330
 #define IDC_COP0_16_EDIT                1331
 #define IDC_COP0_17_EDIT                1332
-#define IDC_COP0_18_EDIT                1333
 #define IDC_FILTER_STATIC               1339
 #define IDC_BLOCK_INFO                  1350
 #define IDC_BACK_BTN                    1352

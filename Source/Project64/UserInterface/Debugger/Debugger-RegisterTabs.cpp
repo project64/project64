@@ -144,16 +144,15 @@ void CRegisterTabs::RefreshEdits()
     m_COP0Edits[9].SetValue((uint32_t)g_Reg->ENTRYHI_REGISTER, DisplayMode::ZeroExtend);
     m_COP0Edits[10].SetValue((uint32_t)g_Reg->COMPARE_REGISTER, DisplayMode::ZeroExtend);
     m_COP0Edits[11].SetValue((uint32_t)g_Reg->STATUS_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[12].SetValue((uint32_t)g_Reg->CAUSE_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[12].SetValue((uint32_t)g_Reg->CAUSE_REGISTER.Value, DisplayMode::ZeroExtend);
     m_COP0Edits[13].SetValue((uint32_t)g_Reg->EPC_REGISTER, DisplayMode::ZeroExtend);
     m_COP0Edits[14].SetValue((uint32_t)g_Reg->CONFIG_REGISTER, DisplayMode::ZeroExtend);
     m_COP0Edits[15].SetValue((uint32_t)g_Reg->TAGLO_REGISTER, DisplayMode::ZeroExtend);
     m_COP0Edits[16].SetValue((uint32_t)g_Reg->TAGHI_REGISTER, DisplayMode::ZeroExtend);
     m_COP0Edits[17].SetValue((uint32_t)g_Reg->ERROREPC_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[18].SetValue((uint32_t)g_Reg->FAKE_CAUSE_REGISTER, DisplayMode::ZeroExtend);
 
     CAUSE cause;
-    cause.intval = (uint32_t)g_Reg->CAUSE_REGISTER;
+    cause.intval = (uint32_t)g_Reg->CAUSE_REGISTER.Value;
 
     const char * szExceptionCode = ExceptionCodes[cause.exceptionCode];
     m_CauseTip.SetWindowText(stdstr(szExceptionCode).ToUTF16().c_str());
@@ -324,13 +323,12 @@ void CRegisterTabs::RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam)
     case IDC_COP0_9_EDIT: g_Reg->ENTRYHI_REGISTER = value; break;
     case IDC_COP0_10_EDIT: g_Reg->COMPARE_REGISTER = value; break;
     case IDC_COP0_11_EDIT: g_Reg->STATUS_REGISTER = value; break;
-    case IDC_COP0_12_EDIT: g_Reg->CAUSE_REGISTER = value; break;
+    case IDC_COP0_12_EDIT: g_Reg->CAUSE_REGISTER.Value = value; break;
     case IDC_COP0_13_EDIT: g_Reg->EPC_REGISTER = value; break;
     case IDC_COP0_14_EDIT: g_Reg->CONFIG_REGISTER = value; break;
     case IDC_COP0_15_EDIT: g_Reg->TAGLO_REGISTER = value; break;
     case IDC_COP0_16_EDIT: g_Reg->TAGHI_REGISTER = value; break;
     case IDC_COP0_17_EDIT: g_Reg->ERROREPC_REGISTER = value; break;
-    case IDC_COP0_18_EDIT: g_Reg->FAKE_CAUSE_REGISTER = value; break;
 
     case IDC_RDRAM00_EDIT: g_Reg->RDRAM_CONFIG_REG = value; break; // or device_type
     case IDC_RDRAM04_EDIT: g_Reg->RDRAM_DEVICE_ID_REG = value; break;
