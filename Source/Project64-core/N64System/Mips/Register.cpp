@@ -553,6 +553,7 @@ void CRegisters::DoAddressError(bool DelaySlot, uint64_t BadVaddr, bool FromRead
     {
         CAUSE_REGISTER.ExceptionCode = EXC_WADE;
     }
+    CAUSE_REGISTER.CoprocessorUnitNumber = 0;
     BAD_VADDR_REGISTER = BadVaddr;
     CONTEXT_REGISTER.BadVPN2 = BadVaddr >> 13;
     XCONTEXT_REGISTER.BadVPN2 = BadVaddr >> 13;
@@ -607,6 +608,7 @@ void CRegisters::DoBreakException(bool DelaySlot)
     }
 
     CAUSE_REGISTER.ExceptionCode = EXC_BREAK;
+    CAUSE_REGISTER.CoprocessorUnitNumber = 0;
     if (DelaySlot)
     {
         CAUSE_REGISTER.BranchDelay = 1;
@@ -624,6 +626,7 @@ void CRegisters::DoBreakException(bool DelaySlot)
 void CRegisters::DoFloatingPointException(bool DelaySlot)
 {
     CAUSE_REGISTER.ExceptionCode = EXC_FPE;
+    CAUSE_REGISTER.CoprocessorUnitNumber = 0;
     if (DelaySlot)
     {
         EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
@@ -641,6 +644,7 @@ void CRegisters::DoFloatingPointException(bool DelaySlot)
 void CRegisters::DoTrapException(bool DelaySlot)
 {
     CAUSE_REGISTER.ExceptionCode = EXC_TRAP;
+    CAUSE_REGISTER.CoprocessorUnitNumber = 0;
     if (DelaySlot)
     {
         EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
@@ -669,18 +673,7 @@ void CRegisters::DoCopUnusableException(bool DelaySlot, int32_t Coprocessor)
     }
 
     CAUSE_REGISTER.ExceptionCode = EXC_CPU;
-    if (Coprocessor == 1)
-    {
-        CAUSE_REGISTER.Value |= 0x10000000;
-    }
-    else if (Coprocessor == 2)
-    {
-        CAUSE_REGISTER.Value |= 0x20000000;
-    }
-    else if (Coprocessor == 3)
-    {
-        CAUSE_REGISTER.Value |= 0x30000000;
-    }
+    CAUSE_REGISTER.CoprocessorUnitNumber = Coprocessor;
     if (DelaySlot)
     {
         CAUSE_REGISTER.BranchDelay = 1;
@@ -718,6 +711,7 @@ bool CRegisters::DoIntrException(bool DelaySlot)
     }
 
     CAUSE_REGISTER.ExceptionCode = EXC_INT;
+    CAUSE_REGISTER.CoprocessorUnitNumber = 0;
 
     if (DelaySlot)
     {
@@ -738,6 +732,7 @@ bool CRegisters::DoIntrException(bool DelaySlot)
 void CRegisters::DoIllegalInstructionException(bool DelaySlot)
 {
     CAUSE_REGISTER.ExceptionCode = EXC_II;
+    CAUSE_REGISTER.CoprocessorUnitNumber = 0;
     if (DelaySlot)
     {
         CAUSE_REGISTER.BranchDelay = 1;
@@ -755,6 +750,7 @@ void CRegisters::DoIllegalInstructionException(bool DelaySlot)
 void CRegisters::DoOverflowException(bool DelaySlot)
 {
     CAUSE_REGISTER.ExceptionCode = EXC_OV;
+    CAUSE_REGISTER.CoprocessorUnitNumber = 0;
     if (DelaySlot)
     {
         CAUSE_REGISTER.BranchDelay = 1;
@@ -772,6 +768,7 @@ void CRegisters::DoOverflowException(bool DelaySlot)
 void CRegisters::DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr)
 {
     CAUSE_REGISTER.ExceptionCode = EXC_RMISS;
+    CAUSE_REGISTER.CoprocessorUnitNumber = 0;
     BAD_VADDR_REGISTER = BadVaddr;
     CONTEXT_REGISTER.BadVPN2 = BadVaddr >> 13;
     ENTRYHI_REGISTER = (BadVaddr & 0xFFFFE000);
@@ -810,6 +807,7 @@ void CRegisters::DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr)
 void CRegisters::DoTLBWriteMiss(bool DelaySlot, uint64_t BadVaddr)
 {
     CAUSE_REGISTER.ExceptionCode = EXC_WMISS;
+    CAUSE_REGISTER.CoprocessorUnitNumber = 0;
     BAD_VADDR_REGISTER = BadVaddr;
     CONTEXT_REGISTER.BadVPN2 = BadVaddr >> 13;
     ENTRYHI_REGISTER = (BadVaddr & 0xFFFFE000);
@@ -860,6 +858,7 @@ void CRegisters::DoSysCallException(bool DelaySlot)
     }
 
     CAUSE_REGISTER.ExceptionCode = EXC_SYSCALL;
+    CAUSE_REGISTER.CoprocessorUnitNumber = 0;
     if (DelaySlot)
     {
         CAUSE_REGISTER.BranchDelay = 1;
