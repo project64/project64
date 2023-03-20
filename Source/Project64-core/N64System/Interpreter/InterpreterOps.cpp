@@ -2479,8 +2479,21 @@ void R4300iOp::COP1_D_SUB()
     {
         return;
     }
+    _FPCR[31] &= ~0x0003F000;
     fesetround(*_RoundingModel);
-    *(double *)_FPR_D[m_Opcode.fd] = *(double *)_FPR_D[m_Opcode.fs] - *(double *)_FPR_D[m_Opcode.ft];
+    feclearexcept(FE_ALL_EXCEPT);
+
+    if (!CheckFPUInput64(*(double *)_FPR_S[m_Opcode.fs]) || !CheckFPUInput64(*(double *)_FPR_S[m_Opcode.ft]))
+    {
+        return;
+    }
+    double Result = (*(double *)_FPR_D[m_Opcode.fs] - *(double *)_FPR_D[m_Opcode.ft]);
+    if (CheckFPUException() || CheckFPUResult64(Result))
+    {
+        return;
+    }
+    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
+
 }
 
 void R4300iOp::COP1_D_MUL()
