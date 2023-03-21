@@ -29,7 +29,7 @@ union COP0Cause
         unsigned ExceptionCode : 5;
         unsigned : 1;
         unsigned PendingInterrupts : 8;
-        unsigned : 12;        
+        unsigned : 12;
         unsigned CoprocessorUnitNumber : 2;
         unsigned : 1;
         unsigned BranchDelay : 1;

@@ -2151,8 +2151,20 @@ void R4300iOp::COP1_S_MUL()
     {
         return;
     }
+    _FPCR[31] &= ~0x0003F000;
     fesetround(*_RoundingModel);
-    *(float *)_FPR_S[m_Opcode.fd] = (*(float *)_FPR_S[m_Opcode.fs] * *(float *)_FPR_S[m_Opcode.ft]);
+    feclearexcept(FE_ALL_EXCEPT);
+
+    if (!CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || !CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
+    {
+        return;
+    }
+    float Result = (*(float *)_FPR_S[m_Opcode.fs] * *(float *)_FPR_S[m_Opcode.ft]);
+    if (CheckFPUException() || CheckFPUResult32(Result))
+    {
+        return;
+    }
+    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_DIV()
@@ -2493,7 +2505,6 @@ void R4300iOp::COP1_D_SUB()
         return;
     }
     *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
-
 }
 
 void R4300iOp::COP1_D_MUL()
@@ -3040,64 +3051,76 @@ bool R4300iOp::CheckFPUException(void)
 
     bool Res = false;
     FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
-    if ((Except & FE_INEXACT) != 0)
-    {
-        StatusReg.Cause.Inexact = 1;
-        if (StatusReg.Enable.Inexact)
-        {
-            Res = true;
-        }
-        else
-        {
-            StatusReg.Flags.Inexact = 1;
-        }
-    }
     if ((Except & FE_UNDERFLOW) != 0)
     {
-        StatusReg.Cause.Underflow = 1;
-        if (StatusReg.Enable.Underflow)
+        if (StatusReg.FlushSubnormals == 0 || StatusReg.Enable.Underflow || StatusReg.Enable.Inexact)
         {
+            StatusReg.Cause.UnimplementedOperation = 1;
             Res = true;
-        }
-        else
-        {
-            StatusReg.Flags.Underflow = 1;
         }
     }
-    if ((Except & FE_OVERFLOW) != 0)
+
+    if (!Res)
     {
-        StatusReg.Cause.Overflow = 1;
-        if (StatusReg.Enable.Overflow)
+        if ((Except & FE_INEXACT) != 0)
         {
-            Res = true;
+            StatusReg.Cause.Inexact = 1;
+            if (StatusReg.Enable.Inexact)
+            {
+                Res = true;
+            }
+            else
+            {
+                StatusReg.Flags.Inexact = 1;
+            }
         }
-        else
+        if ((Except & FE_UNDERFLOW) != 0)
         {
-            StatusReg.Flags.Overflow = 1;
+            StatusReg.Cause.Underflow = 1;
+            if (StatusReg.Enable.Underflow)
+            {
+                Res = true;
+            }
+            else
+            {
+                StatusReg.Flags.Underflow = 1;
+            }
         }
-    }
-    if ((Except & FE_DIVBYZERO) != 0)
-    {
-        StatusReg.Cause.DivisionByZero = 1;
-        if (StatusReg.Enable.DivisionByZero)
+        if ((Except & FE_OVERFLOW) != 0)
         {
-            Res = true;
+            StatusReg.Cause.Overflow = 1;
+            if (StatusReg.Enable.Overflow)
+            {
+                Res = true;
+            }
+            else
+            {
+                StatusReg.Flags.Overflow = 1;
+            }
         }
-        else
+        if ((Except & FE_DIVBYZERO) != 0)
         {
-            StatusReg.Flags.DivisionByZero = 1;
+            StatusReg.Cause.DivisionByZero = 1;
+            if (StatusReg.Enable.DivisionByZero)
+            {
+                Res = true;
+            }
+            else
+            {
+                StatusReg.Flags.DivisionByZero = 1;
+            }
         }
-    }
-    if ((Except & FE_INVALID) != 0)
-    {
-        StatusReg.Cause.InvalidOperation = 1;
-        if (StatusReg.Enable.InvalidOperation)
+        if ((Except & FE_INVALID) != 0)
         {
-            Res = true;
-        }
-        else
-        {
-            StatusReg.Flags.InvalidOperation = 1;
+            StatusReg.Cause.InvalidOperation = 1;
+            if (StatusReg.Enable.InvalidOperation)
+            {
+                Res = true;
+            }
+            else
+            {
+                StatusReg.Flags.InvalidOperation = 1;
+            }
         }
     }
     if (Res)
