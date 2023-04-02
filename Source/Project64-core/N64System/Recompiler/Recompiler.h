@@ -50,7 +50,7 @@ public:
     void ResetFunctionTimes();
     void DumpFunctionTimes();
 
-    uint32_t & MemoryStackPos()
+    uint8_t *& MemoryStackPos()
     {
         return m_MemoryStack;
     }
@@ -84,7 +84,7 @@ private:
     CMipsMemoryVM & m_MMU;
     CRegisters & m_Registers;
     bool & m_EndEmulation;
-    uint32_t m_MemoryStack;
+    uint8_t * m_MemoryStack;
     FUNCTION_PROFILE m_BlockProfile;
     uint32_t & PROGRAM_COUNTER;
     CLog * m_LogFile;

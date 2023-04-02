@@ -526,9 +526,6 @@ void CRecompiler::ResetLog()
 
 void CRecompiler::ResetMemoryStackPos()
 {
-#if defined(__aarch64__) || defined(__amd64__) || defined(_M_X64)
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-#else
     if (m_Registers.m_GPR[29].UW[0] == 0)
     {
         m_MemoryStack = 0;
@@ -540,15 +537,15 @@ void CRecompiler::ResetMemoryStackPos()
     {
         if (pAddr < m_MMU.RdramSize())
         {
-            m_MemoryStack = (uint32_t)(m_MMU.Rdram() + pAddr);
+            m_MemoryStack = m_MMU.Rdram() + pAddr;
         }
         else if (pAddr > 0x04000000 && pAddr < 0x04001000)
         {
-            m_MemoryStack = (uint32_t)(m_MMU.Dmem() + pAddr - 0x04000000);
+            m_MemoryStack = m_MMU.Dmem() + (pAddr - 0x04000000);
         }
         else if (pAddr > 0x04001000 && pAddr < 0x04002000)
         {
-            m_MemoryStack = (uint32_t)(m_MMU.Imem() + pAddr - 0x04001000);
+            m_MemoryStack = m_MMU.Imem() + (pAddr - 0x04001000);
         }
         else
         {
@@ -560,7 +557,6 @@ void CRecompiler::ResetMemoryStackPos()
         WriteTrace(TraceRecompiler, TraceError, "Failed to translate SP address (%s)", m_Registers.m_GPR[29].UW[0]);
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-#endif
 }
 
 void CRecompiler::DumpFunctionTimes()
