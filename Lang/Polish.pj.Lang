@@ -28,7 +28,7 @@
 #101#  "&Otwórz ROM"
 #102#  "&Informacje o romie...."
 #103#  "Rozpocznij emulację"
-#104#  "&Zakoñcz emulację"
+#104#  "&Zakończ emulację"
 #105#  "Wybierz folder docelowy romów..."
 #106#  "Odśwież listę romów"
 #107#  "Ostatnio otwierane romy"
@@ -97,28 +97,28 @@
 #250#  "Otwórz plik obrazu N64"
 #251#  "Wyświetl informacje o załadowanym obrazie gry"
 #252#  "Rozpocznij emulację załadowanego obrazu gry"
-#253#  "Zakoñcz emulację załadowanego obrazu gry"
+#253#  "Zakończ emulację załadowanego obrazu gry"
 #254#  "Wybierz folder docelowy romów"
-#255#  "Odśwież listę w przegl¹darce romów"
+#255#  "Odśwież listę w przeglądarce romów"
 #256#  "Zamknij Project64"
 #257#  "Przeładuj aktualny plik romu (przeładuj wszystkie ustawienia)"
 #258#  "Zatrzymaj/ponów emulację aktualnie wybranego romu"
 #259#  "Generuj zrzut ekranowy wyświetlanego obrazu"
-#260#  "Ograniczenie FPS do prędkości skorygowanej z n64"
+#260#  "Ograniczenie FPS do prędkości skorygowanej z N64"
 #261#  "Stwórz szybki zapis aktualnego stanu gry"
 #262#  "Stwórz szybki zapis aktualnego stanu gry (wybór lokalizacji pliku)"
 #263#  "Załaduj szybki zapis aktualnego stanu gry"
 #264#  "Wybierz szybki zapis do załadowania"
-#265#  "Włącz/wyłącz kody Game shark"
-#266#  "Przycisk Game shark użyje specyficznych kodów GS"
-#267#  "Przejdź do trybu pełnśkranowego"
+#265#  "Włącz/wyłącz kody Game Shark"
+#266#  "Przycisk Game Shark użyje specyficznych kodów GS"
+#267#  "Przejdź do trybu pełnokranowego"
 #268#  "Dostosuj okno tak aby było zawsze na wierzchu (powyżej innych okien)"
-#269#  "Zmieñ ustawienia wewnętrzne pluginu graficznego"
-#270#  "Zmieñ ustawienia wewnętrzne pluginu dźwiękowego"
-#271#  "Zmieñ ustawienia wewnętrzne pluginu kontrolera (n.p. konfiguracja sterowania)"
-#272#  "Zmieñ ustawienia wewnętrzne pluginu RSP"
+#269#  "Zmień ustawienia wewnętrzne pluginu graficznego"
+#270#  "Zmień ustawienia wewnętrzne pluginu dźwiękowego"
+#271#  "Zmień ustawienia wewnętrzne pluginu kontrolera (n.p. konfiguracja sterowania)"
+#272#  "Zmień ustawienia wewnętrzne pluginu RSP"
 #273#  "Pokaż zużycie CPU przez emulator (z pominięciem innych zasobów)"
-#274#  "Pokaż/zmieñ ustawienia Project64"
+#274#  "Pokaż/zmień ustawienia Project64"
 #275#  "Pokaż podręcznik użytkownika Project64"
 #276#  "Pokaż FAQ Project64"
 #278#  "O Project64 i jego autorach"
@@ -206,21 +206,21 @@
 
 //ROM Browser Tab
 #480#  "Max. zapamiętaj # romów (Max 10):"
-#481#  "romy"
+#481#  "ROMy"
 #482#  "Max. zapamiętaj # folderów romów (Max 10):"
-#483#  "foldery"
+#483#  "Foldery"
 #484#  "Użyj przeglądarki romów"
 #485#  "Użyj rekursji folderów"
 #486#  "Dostępne informacje:"
 #487#  "Pokaż wybrane:"
 #488#  "Dodaj ->"
-#489#  "<- Usuñ"
+#489#  "<- Usuń"
 #490#  "Góra"
 #491#  "Dół"
 
 //Advanced Options
-#500#  "Wszystkie zmiany zostaną zaakceptowane po ponownym uruchomieniu romu."
-#501#  "Domyślny rdzeñ"
+#500#  "Wszystkie zmiany zostaną zaakceptowane po ponownym uruchomieniu ROMu."
+#501#  "Domyślny rdzeń"
 #502#  "Rodzaj rdzenia CPU:"
 #503#  "Metoda auto-mod kodu:"
 #504#  "Domyślny rozmiar pamięci:"
@@ -254,7 +254,7 @@
 #561#  "Cache"
 #562#  "Ochrona pamięci"
 #563#  "Sprawdź pamięć & cache"
-#564#  "Zmieñ pamięć & cache"
+#564#  "Zmień pamięć & cache"
 #565#  "Sprawdź zaawansowaną pamięć"
 
 //RDRAM Size
@@ -277,7 +277,7 @@
 
 //ROM Notes
 #660#  "Status romu:"
-#661#  "Notatki - rdzeñ:"
+#661#  "Notatki - rdzeń:"
 #662#  "Notatki - pluginy:"
 
 /*********************************************************************************
@@ -343,7 +343,7 @@
 //Cheat Popup Menu
 #1040#  "Dodaj nowy kod..."
 #1041#  "Edytuj"
-#1042#  "Usuñ"
+#1042#  "Usuń"
 
 /*********************************************************************************
 * Messages                                                                       *
@@ -375,7 +375,7 @@ Sprawdź ROM oraz ustawienia."
 #2011#  "Niepowodzenie przy otwieraniu EEPROM"
 #2012#  "Niepowodzenie przy otwieraniu flash RAM"
 #2013#  "Niepowodzenie przy otwieraniu mempak'u"
-#2014#  "Próba otwarcia pliku zip zakoñczona niepowodzeniem.
+#2014#  "Próba otwarcia pliku zip zakończona niepowodzeniem.
 Brakujący lub uszkodzony plik zip - sprawdź lokalizację i plik.
 
 Wymagany jest restart aplikacji."
