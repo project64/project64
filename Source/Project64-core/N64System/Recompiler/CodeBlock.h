@@ -13,7 +13,7 @@ class CCodeBlock :
     public asmjit::ErrorHandler
 {
 public:
-    CCodeBlock(CMipsMemoryVM & MMU, uint32_t VAddrEnter);
+    CCodeBlock(CMipsMemoryVM & MMU, CRegisters & Reg, uint32_t VAddrEnter);
     ~CCodeBlock();
 
     bool Compile();

@@ -1,4 +1,6 @@
 #pragma once
+#include <Project64-core\N64System\Mips\R4300iOpcode.h>
+#include <Project64-core\Settings\DebugSettings.h>
 
 enum RecompilerBranchType
 {
@@ -33,6 +35,29 @@ enum RecompilerTrapCompare
     RecompilerTrapCompare_TGEIU,
     RecompilerTrapCompare_TLTI,
     RecompilerTrapCompare_TLTIU,
+};
+
+class CCodeBlock;
+class CCodeSection;
+class CMipsMemoryVM;
+class CRegisters;
+
+class CRecompilerOpsBase :
+    protected CDebugSettings
+{
+protected:
+    CRecompilerOpsBase(CMipsMemoryVM & MMU, CRegisters & Reg, CCodeBlock & CodeBlock);
+    ~CRecompilerOpsBase();
+
+    CMipsMemoryVM & m_MMU;
+    CRegisters & m_Reg;
+    CCodeBlock & m_CodeBlock;
+    R4300iOpcode m_Opcode;
+    CCodeSection * m_Section;
+
+private:
+    CRecompilerOpsBase(const CRecompilerOpsBase &);
+    CRecompilerOpsBase & operator=(const CRecompilerOpsBase &);
 };
 
 #if defined(__i386__) || defined(_M_IX86)

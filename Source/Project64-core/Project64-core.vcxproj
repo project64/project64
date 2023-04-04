@@ -104,6 +104,7 @@
     <ClCompile Include="N64System\Recompiler\LoopAnalysis.cpp" />
     <ClCompile Include="N64System\Recompiler\Recompiler.cpp" />
     <ClCompile Include="N64System\Recompiler\RecompilerMemory.cpp" />
+    <ClCompile Include="N64System\Recompiler\RecompilerOps.cpp" />
     <ClCompile Include="N64System\Recompiler\RegBase.cpp" />
     <ClCompile Include="N64System\Recompiler\x64-86\x64ops.cpp" />
     <ClCompile Include="N64System\Recompiler\x64-86\x64RecompilerOps.cpp" />

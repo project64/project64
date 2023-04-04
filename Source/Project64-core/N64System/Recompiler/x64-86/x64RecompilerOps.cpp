@@ -1,9 +1,12 @@
 #include "stdafx.h"
 #if defined(__amd64__) || defined(_M_X64)
 
-#include <Project64-core/N64System/Recompiler/x64-86/x64RecompilerOps.h>
+#include <Project64-core\N64System\Recompiler\CodeBlock.h>
+#include <Project64-core\N64System\Recompiler\CodeSection.h>
+#include <Project64-core\N64System\Recompiler\x64-86\x64RecompilerOps.h>
 
-CX64RecompilerOps::CX64RecompilerOps(CMipsMemoryVM & /*MMU*/, CCodeBlock & CodeBlock) :
+CX64RecompilerOps::CX64RecompilerOps(CMipsMemoryVM & MMU, CRegisters & Reg, CCodeBlock & CodeBlock) :
+    CRecompilerOpsBase(MMU, Reg, CodeBlock),
     m_Assembler(CodeBlock),
     m_RegWorkingSet(CodeBlock, m_Assembler)
 {
@@ -795,12 +798,10 @@ void CX64RecompilerOps::UnknownOpcode()
 
 void CX64RecompilerOps::EnterCodeBlock()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CX64RecompilerOps::CompileExitCode()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CX64RecompilerOps::CompileInPermLoop(CRegInfo & /*RegSet*/, uint32_t /*ProgramCounter*/)
@@ -813,14 +814,14 @@ void CX64RecompilerOps::SyncRegState(const CRegInfo & /*SyncTo*/)
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-CRegInfo & CX64RecompilerOps::GetRegWorkingSet(void)
+CX64RegInfo & CX64RecompilerOps::GetRegWorkingSet(void)
 {
     return m_RegWorkingSet;
 }
 
-void CX64RecompilerOps::SetRegWorkingSet(const CRegInfo & /*RegInfo*/)
+void CX64RecompilerOps::SetRegWorkingSet(const CX64RegInfo & RegInfo)
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    m_RegWorkingSet = RegInfo;
 }
 
 bool CX64RecompilerOps::InheritParentInfo()

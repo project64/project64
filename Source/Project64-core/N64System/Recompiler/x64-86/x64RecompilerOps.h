@@ -1,22 +1,19 @@
 #pragma once
 #if defined(__amd64__) || defined(_M_X64)
 
-#include <Project64-core/N64System/Mips/R4300iOpcode.h>
 #include <Project64-core/N64System/Recompiler/ExitInfo.h>
 #include <Project64-core/N64System/Recompiler/RecompilerOps.h>
 #include <Project64-core/N64System/Recompiler/RegInfo.h>
 #include <Project64-core/N64System/Recompiler/x64-86/x64ops.h>
 
-class CMipsMemoryVM;
-class CCodeBlock;
-class CCodeSection;
 class CX64Ops;
 struct CJumpInfo;
 
-class CX64RecompilerOps
+class CX64RecompilerOps :
+    public CRecompilerOpsBase
 {
 public:
-    CX64RecompilerOps(CMipsMemoryVM & MMU, CCodeBlock & CodeBlock);
+    CX64RecompilerOps(CMipsMemoryVM & MMU, CRegisters & Reg, CCodeBlock & CodeBlock);
     ~CX64RecompilerOps();
 
     // Trap functions
@@ -203,8 +200,8 @@ public:
     void CompileExitCode();
     void CompileInPermLoop(CRegInfo & RegSet, uint32_t ProgramCounter);
     void SyncRegState(const CRegInfo & SyncTo);
-    CRegInfo & GetRegWorkingSet(void);
-    void SetRegWorkingSet(const CRegInfo & RegInfo);
+    CX64RegInfo & GetRegWorkingSet(void);
+    void SetRegWorkingSet(const CX64RegInfo & RegInfo);
     bool InheritParentInfo();
     void LinkJump(CJumpInfo & JumpInfo, uint32_t SectionID = -1, uint32_t FromSectionID = -1);
     void JumpToSection(CCodeSection * Section);
@@ -235,7 +232,6 @@ private:
 
     CX64RegInfo m_RegWorkingSet;
     CX64Ops m_Assembler;
-    R4300iOpcode m_Opcode;
 };
 
 typedef CX64RecompilerOps CRecompilerOps;

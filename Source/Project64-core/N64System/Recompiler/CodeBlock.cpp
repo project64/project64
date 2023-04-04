@@ -13,7 +13,7 @@
 extern "C" void __clear_cache_android(uint8_t * begin, uint8_t * end);
 #endif
 
-CCodeBlock::CCodeBlock(CMipsMemoryVM & MMU, uint32_t VAddrEnter) :
+CCodeBlock::CCodeBlock(CMipsMemoryVM & MMU, CRegisters & Reg, uint32_t VAddrEnter) :
     m_MMU(MMU),
     m_VAddrEnter(VAddrEnter),
     m_VAddrFirst(VAddrEnter),
@@ -34,7 +34,9 @@ CCodeBlock::CCodeBlock(CMipsMemoryVM & MMU, uint32_t VAddrEnter) :
     }
 #endif
 #if defined(__i386__) || defined(_M_IX86)
-    m_RecompilerOps = new CX86RecompilerOps(MMU, *this);
+    m_RecompilerOps = new CX86RecompilerOps(MMU, Reg, *this);
+#elif defined(__amd64__) || defined(_M_X64)
+    m_RecompilerOps = new CX64RecompilerOps(MMU, Reg, *this);
 #elif defined(__arm__) || defined(_M_ARM)
     m_RecompilerOps = new CArmRecompilerOps(MMU, *this);
 #else

@@ -53,6 +53,7 @@ add_library(Project64-core STATIC
     N64System/Recompiler/JumpInfo.cpp
     N64System/Recompiler/LoopAnalysis.cpp
     N64System/Recompiler/Recompiler.cpp
+    N64System/Recompiler/RecompilerOps.cpp
     N64System/Recompiler/RecompilerMemory.cpp
     N64System/Recompiler/RegBase.cpp
     N64System/Recompiler/Aarch64/Aarch64ops.cpp

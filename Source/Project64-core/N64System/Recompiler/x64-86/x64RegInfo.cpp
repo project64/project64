@@ -19,20 +19,28 @@ CX64RegInfo::~CX64RegInfo()
 CX64RegInfo & CX64RegInfo::operator=(const CX64RegInfo & right)
 {
     CRegBase::operator=(right);
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+#ifdef _DEBUG
+    if (*this != right)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+#endif
     return *this;
 }
 
-bool CX64RegInfo::operator==(const CX64RegInfo & /*right*/) const
+bool CX64RegInfo::operator==(const CX64RegInfo & Right) const
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    return false;
+    if (!CRegBase::operator==(Right))
+    {
+        return false;
+    }
+
+    return true;
 }
 
-bool CX64RegInfo::operator!=(const CX64RegInfo & /*right*/) const
+bool CX64RegInfo::operator!=(const CX64RegInfo & Right) const
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    return false;
+    return !(Right == *this);
 }
 
 void CX64RegInfo::UnMap_GPR(uint32_t /*Reg*/, bool /*WriteBackValue*/)

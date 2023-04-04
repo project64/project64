@@ -2,7 +2,6 @@
 #if defined(__i386__) || defined(_M_IX86)
 
 #include <Project64-core/N64System/Interpreter/InterpreterOps.h>
-#include <Project64-core/N64System/Mips/R4300iOpcode.h>
 #include <Project64-core/N64System/Mips/Register.h>
 #include <Project64-core/N64System/Recompiler/ExitInfo.h>
 #include <Project64-core/N64System/Recompiler/JumpInfo.h>
@@ -18,13 +17,14 @@ class CCodeBlock;
 class CCodeSection;
 
 class CX86RecompilerOps :
-    protected R4300iOp,
+    public CRecompilerOpsBase,
     protected CN64SystemSettings,
     protected CRecompilerSettings,
+    protected CLogSettings,
     private CGameSettings
 {
 public:
-    CX86RecompilerOps(CMipsMemoryVM & MMU, CCodeBlock & CodeBlock);
+    CX86RecompilerOps(CMipsMemoryVM & MMU, CRegisters & Reg, CCodeBlock & CodeBlock);
     ~CX86RecompilerOps();
 
     // Trap functions
@@ -445,14 +445,10 @@ private:
     void ResetMemoryStack();
 
     EXIT_LIST m_ExitInfo;
-    CMipsMemoryVM & m_MMU;
-    CCodeBlock & m_CodeBlock;
     CX86Ops m_Assembler;
     PIPELINE_STAGE m_PipelineStage;
     uint32_t m_CompilePC;
-    R4300iOpcode m_Opcode;
     CX86RegInfo m_RegWorkingSet;
-    CCodeSection * m_Section;
     CRegInfo m_RegBeforeDelay;
     bool m_EffectDelaySlot;
     static uint32_t m_TempValue32;

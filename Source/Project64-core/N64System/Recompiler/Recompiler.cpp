@@ -374,7 +374,7 @@ CCompiledFunc * CRecompiler::CompileCode()
     CheckRecompMem();
     WriteTrace(TraceRecompiler, TraceDebug, "Compile Block-Start: Program Counter: %X pAddr: %X", PROGRAM_COUNTER, pAddr);
 
-    CCodeBlock CodeBlock(m_MMU, PROGRAM_COUNTER);
+    CCodeBlock CodeBlock(m_MMU, m_Registers, PROGRAM_COUNTER);
     if (!CodeBlock.Compile())
     {
         return nullptr;
