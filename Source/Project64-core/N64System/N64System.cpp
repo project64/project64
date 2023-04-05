@@ -1692,7 +1692,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
 
             if (m_Recomp->MemoryStackPos() != TargetStackPos)
             {
-                Error.LogF("MemoryStack = %p should be: %p\r\n", m_Recomp->MemoryStackPos(), (uint32_t)(m_MMU_VM.Rdram() + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)));
+                Error.LogF("MemoryStack = %p should be: %p\r\n", m_Recomp->MemoryStackPos(), (m_MMU_VM.Rdram() + (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF)));
             }
         }
 

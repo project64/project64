@@ -10,3 +10,6 @@
 #else
 #include <asmjit\asmjit.h>
 #endif
+#include <asmjit\a64.h>
+#include <asmjit\arm.h>
+#include <asmjit\arm\a64assembler.h>

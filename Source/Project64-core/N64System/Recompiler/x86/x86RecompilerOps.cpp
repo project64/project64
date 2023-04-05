@@ -200,7 +200,7 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     /*if (m_CompilePC == 0x803275F4 && m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
         m_Assembler.X86BreakPoint(__FILE__, __LINE__);
-    }
+    }*/
 
     /*if (m_CompilePC >= 0x80000000 && m_CompilePC <= 0x80400000 && m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {

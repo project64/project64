@@ -4,11 +4,15 @@
 #include <Project64-core/N64System/Mips/Register.h>
 #include <Project64-core/Settings/DebugSettings.h>
 
+class CX86RecompilerOps;
+
 class R4300iOp :
     public CLogging,
     protected CDebugSettings,
     protected CSystemRegisters
 {
+    friend CX86RecompilerOps;
+
 public:
     typedef void (*Func)();
 
