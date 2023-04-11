@@ -492,7 +492,7 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_CoP1_S[29] = UnknownOpcode;
     Jump_CoP1_S[30] = UnknownOpcode;
     Jump_CoP1_S[31] = UnknownOpcode;
-    Jump_CoP1_S[32] = UnknownOpcode;
+    Jump_CoP1_S[32] = COP1_S_CVT_S;
     Jump_CoP1_S[33] = COP1_S_CVT_D;
     Jump_CoP1_S[34] = UnknownOpcode;
     Jump_CoP1_S[35] = UnknownOpcode;
@@ -558,7 +558,7 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_CoP1_D[30] = UnknownOpcode;
     Jump_CoP1_D[31] = UnknownOpcode;
     Jump_CoP1_D[32] = COP1_D_CVT_S;
-    Jump_CoP1_D[33] = UnknownOpcode;
+    Jump_CoP1_D[33] = COP1_D_CVT_D;
     Jump_CoP1_D[34] = UnknownOpcode;
     Jump_CoP1_D[35] = UnknownOpcode;
     Jump_CoP1_D[36] = COP1_D_CVT_W;
@@ -2337,14 +2337,38 @@ void R4300iOp::COP1_S_FLOOR_W()
     Float_RoundToInteger32(&*(int32_t *)_FPR_S[m_Opcode.fd], &*(float *)_FPR_S[m_Opcode.fs], FE_DOWNWARD);
 }
 
+void R4300iOp::COP1_S_CVT_S()
+{
+    if (TestCop1UsableException())
+    {
+        return;
+    }
+    FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+    StatusReg.Cause.UnimplementedOperation = 1;
+    g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+}
+
 void R4300iOp::COP1_S_CVT_D()
 {
     if (TestCop1UsableException())
     {
         return;
     }
+    _FPCR[31] &= ~0x0003F000;
     fesetround(*_RoundingModel);
-    *(double *)_FPR_D[m_Opcode.fd] = (double)(*(float *)_FPR_S[m_Opcode.fs]);
+    feclearexcept(FE_ALL_EXCEPT);
+    if (!CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
+    {
+        return;
+    }
+    double Result = (double)(*(float *)_FPR_S[m_Opcode.fs]);
+    if (CheckFPUException() || CheckFPUResult64(Result))
+    {
+        return;
+    }
+    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_S_CVT_W()
@@ -2752,8 +2776,32 @@ void R4300iOp::COP1_D_CVT_S()
     {
         return;
     }
+    _FPCR[31] &= ~0x0003F000;
     fesetround(*_RoundingModel);
-    *(float *)_FPR_S[m_Opcode.fd] = (float)*(double *)_FPR_D[m_Opcode.fs];
+    feclearexcept(FE_ALL_EXCEPT);
+    if (!CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]))
+    {
+        return;
+    }
+    float Result = (float)*(double *)_FPR_D[m_Opcode.fs];
+    if (CheckFPUException() || CheckFPUResult32(Result))
+    {
+        return;
+    }
+    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
+}
+
+void R4300iOp::COP1_D_CVT_D()
+{
+    if (TestCop1UsableException())
+    {
+        return;
+    }
+    FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+    StatusReg.Cause.UnimplementedOperation = 1;
+    g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
 }
 
 void R4300iOp::COP1_D_CVT_W()
@@ -2836,8 +2884,15 @@ void R4300iOp::COP1_W_CVT_S()
     {
         return;
     }
+    _FPCR[31] &= ~0x0003F000;
     fesetround(*_RoundingModel);
-    *(float *)_FPR_S[m_Opcode.fd] = (float)*(int32_t *)_FPR_S[m_Opcode.fs];
+    feclearexcept(FE_ALL_EXCEPT);
+    float Result = (float)*(int32_t *)_FPR_S[m_Opcode.fs];
+    if (CheckFPUException() || CheckFPUResult32(Result))
+    {
+        return;
+    }
+    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_W_CVT_D()
@@ -2846,8 +2901,15 @@ void R4300iOp::COP1_W_CVT_D()
     {
         return;
     }
+    _FPCR[31] &= ~0x0003F000;
     fesetround(*_RoundingModel);
-    *(double *)_FPR_D[m_Opcode.fd] = (double)*(int32_t *)_FPR_S[m_Opcode.fs];
+    feclearexcept(FE_ALL_EXCEPT);
+    double Result = (double)*(int32_t *)_FPR_S[m_Opcode.fs];
+    if (CheckFPUException() || CheckFPUResult64(Result))
+    {
+        return;
+    }
+    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 // COP1: L functions
@@ -2858,8 +2920,25 @@ void R4300iOp::COP1_L_CVT_S()
     {
         return;
     }
+    _FPCR[31] &= ~0x0003F000;
     fesetround(*_RoundingModel);
-    *(float *)_FPR_S[m_Opcode.fd] = (float)*(int64_t *)_FPR_D[m_Opcode.fs];
+    feclearexcept(FE_ALL_EXCEPT);
+    int64_t fs = *(int64_t *)_FPR_D[m_Opcode.fs];
+    if (fs >= (int64_t)0x0080000000000000ull || fs < (int64_t)0xff80000000000000ull)
+    {
+        FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+        StatusReg.Cause.UnimplementedOperation = 1;
+        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        return;
+    }
+    float Result = (float)fs;
+    if (CheckFPUException() || CheckFPUResult32(Result))
+    {
+        return;
+    }
+    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_L_CVT_D()

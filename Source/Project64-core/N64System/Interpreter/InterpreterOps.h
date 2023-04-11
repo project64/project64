@@ -177,6 +177,7 @@ public:
     static void COP1_S_TRUNC_W();
     static void COP1_S_CEIL_W();
     static void COP1_S_FLOOR_W();
+    static void COP1_S_CVT_S();
     static void COP1_S_CVT_D();
     static void COP1_S_CVT_W();
     static void COP1_S_CVT_L();
@@ -200,6 +201,7 @@ public:
     static void COP1_D_CEIL_W();
     static void COP1_D_FLOOR_W();
     static void COP1_D_CVT_S();
+    static void COP1_D_CVT_D();
     static void COP1_D_CVT_W();
     static void COP1_D_CVT_L();
     static void COP1_D_CMP();
