@@ -680,6 +680,7 @@ RDRAM Size=8
 [259F7F84-7C9EED26-C:50]
 Good Name=Batman of the Future - Return of the Joker (E) (M3)
 Internal Name=BATMAN OF THE FUTURE
+Status=Compatible
 32bit=1
 RDRAM Size=8
 
@@ -695,6 +696,7 @@ RDRAM Size=8
 [0CAD17E6-71A5B797-C:50]
 Good Name=BattleTanx - Global Assault (E) (M3)
 Internal Name=BATTLETANXGA
+Status=Compatible
 32bit=1
 AudioResetOnLoad=1
 RDRAM Size=8
@@ -901,6 +903,7 @@ SMM-TLB=0
 [D85C4E29-88E276AF-C:50]
 Good Name=Bomberman Hero (E)
 Internal Name=BOMBERMAN HERO
+Status=Compatible
 32bit=1
 Culling=1
 
@@ -5618,6 +5621,14 @@ Status=Compatible
 32bit=1
 RDRAM Size=8
 
+[27BC81C2-49AFB311-C:45]
+Good Name=SGB Emulator v1.2
+Status=Compatible
+Counter Factor=1
+Linking=Off
+ViRefresh=3000
+Core Note=Requires Parallel-RSP.
+
 [93A625B9-2D6022E6-C:42]
 Good Name=Shadow Man (B)
 Internal Name=Shadowman
@@ -5879,7 +5890,7 @@ Internal Name=Silicon Valley
 Status=Compatible
 32bit=1
 Culling=1
-RDRAM Size=8
+RDRAM Size=4
 
 [FC70E272-08FFE7AA-C:45]
 Good Name=Space Station Silicon Valley (U) (V1.1)
@@ -6289,6 +6300,7 @@ Status=Compatible
 
 [944FAFC4-B288266A-C:0]
 Good Name=Superman (Prototype)
+Internal Name=
 Status=Compatible
 
 [35E811F3-99792724-C:4A]
@@ -6313,6 +6325,7 @@ RDRAM Size=8
 //================  T  ================
 [37955E65-C6F2B7B3-C:0]
 Good Name=Tamiya Racing 64 (Unreleased)
+Internal Name=
 Status=Compatible
 RDRAM Size=8
 
@@ -6771,6 +6784,7 @@ RDRAM Size=8
 
 [75FBDE20-A3189B31-C:0]
 Good Name=Top Gear Hyper Bike (Beta)
+Internal Name=
 Status=Compatible
 RDRAM Size=8
 
@@ -7497,6 +7511,7 @@ RDRAM Size=8
 
 [A04237B9-68F62C72-C:0]
 Good Name=Wildwaters (Unreleased)
+Internal Name=
 Status=Compatible
 RDRAM Size=8
 
@@ -8838,6 +8853,7 @@ RDRAM Size=8
 [1077590A-B537FDA2-C:0]
 Good Name=Planet Console Intro (PD)
 Internal Name=planet console ftp!
+Status=Compatible
 RDRAM Size=8
 
 [E9F52336-6BEFAA5F-C:45]
@@ -9029,6 +9045,7 @@ RDRAM Size=8
 [1FBD27A9-6CC3EB42-C:0]
 Good Name=SPLiT's Nacho64 by SPLiT (PD)
 Internal Name= NACHO64
+Status=Compatible
 RDRAM Size=8
 
 [E584FE34-9D91B1E2-C:0]
