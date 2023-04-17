@@ -2841,6 +2841,7 @@ void R4300iOp::COP1_D_CMP()
     {
         return;
     }
+    _FPCR[31] &= ~0x0003F000;
 
     MIPS_DWORD Temp0, Temp1;
     Temp0.DW = *(int64_t *)_FPR_D[m_Opcode.fs];
@@ -2852,7 +2853,20 @@ void R4300iOp::COP1_D_CMP()
         less = false;
         equal = false;
         unorded = true;
-        if ((m_Opcode.funct & 8) != 0)
+
+        bool QuietNan = false;
+        if ((*(uint64_t *)_FPR_D[m_Opcode.fs] >= 0x7FF8000000000000 && *(uint64_t *)_FPR_D[m_Opcode.fs] <= 0x7FFFFFFFFFFFFFFF) ||
+            (*(uint64_t *)_FPR_D[m_Opcode.fs] >= 0xFFF8000000000000 && *(uint64_t *)_FPR_D[m_Opcode.fs] <= 0xFFFFFFFFFFFFFFFF))
+        {
+            QuietNan = true;
+        }
+        else if ((*(uint64_t *)_FPR_D[m_Opcode.ft] >= 0x7FF8000000000000 && *(uint64_t *)_FPR_D[m_Opcode.ft] <= 0x7FFFFFFFFFFFFFFF) ||
+            (*(uint64_t *)_FPR_D[m_Opcode.ft] >= 0xFFF8000000000000 && *(uint64_t *)_FPR_D[m_Opcode.ft] <= 0xFFFFFFFFFFFFFFFF))
+        {
+            QuietNan = true;
+        }
+
+        if ((m_Opcode.funct & 8) != 0 || QuietNan)
         {
             FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
             StatusReg.Cause.InvalidOperation = 1;
