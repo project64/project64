@@ -2396,6 +2396,7 @@ void R4300iOp::COP1_S_CMP()
         return;
     }
 
+    _FPCR[31] &= ~0x0003F000;
     float Temp0 = *(float *)_FPR_S[m_Opcode.fs];
     float Temp1 = *(float *)_FPR_S[m_Opcode.ft];
 
@@ -2405,7 +2406,19 @@ void R4300iOp::COP1_S_CMP()
         less = false;
         equal = false;
         unorded = true;
-        if ((m_Opcode.funct & 8) != 0)
+
+        bool QuietNan = false;
+        if ((*(uint32_t *)_FPR_S[m_Opcode.fs] >= 0x7FC00000 && *(uint32_t *)_FPR_S[m_Opcode.fs] <= 0x7FFFFFFF) ||
+            (*(uint32_t *)_FPR_S[m_Opcode.fs] >= 0xFFC00000 && *(uint32_t *)_FPR_S[m_Opcode.fs] <= 0xFFFFFFFF))
+        {
+            QuietNan = true;
+        }
+        else if ((*(uint32_t *)_FPR_S[m_Opcode.ft] >= 0x7FC00000 && *(uint32_t *)_FPR_S[m_Opcode.ft] <= 0x7FFFFFFF) ||
+            (*(uint32_t *)_FPR_S[m_Opcode.ft] >= 0xFFC00000 && *(uint32_t *)_FPR_S[m_Opcode.ft] <= 0xFFFFFFFF))
+        {
+            QuietNan = true;
+        }
+        if ((m_Opcode.funct & 8) != 0 || QuietNan)
         {
             FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
             StatusReg.Cause.InvalidOperation = 1;
