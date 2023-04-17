@@ -2974,8 +2974,25 @@ void R4300iOp::COP1_L_CVT_D()
     {
         return;
     }
+    _FPCR[31] &= ~0x0003F000;
     fesetround(*_RoundingModel);
-    *(double *)_FPR_D[m_Opcode.fd] = (double)*(int64_t *)_FPR_D[m_Opcode.fs];
+    feclearexcept(FE_ALL_EXCEPT);
+    int64_t fs = *(int64_t *)_FPR_D[m_Opcode.fs];
+    if (fs >= (int64_t)0x0080000000000000ull || fs < (int64_t)0xff80000000000000ull)
+    {
+        FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+        StatusReg.Cause.UnimplementedOperation = 1;
+        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        return;
+    }
+    double Result = (double)fs;
+    if (CheckFPUException() || CheckFPUResult64(Result))
+    {
+        return;
+    }
+    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 // Other functions
