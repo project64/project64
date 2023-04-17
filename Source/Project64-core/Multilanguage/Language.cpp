@@ -278,6 +278,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ROM_DISK_SEEK_TIMING_SLOW, "Slow");
     DEF_STR(ROM_MEM_SIZE_KNOWN, "Memory size (Known):");
     DEF_STR(ROM_MEM_SIZE_UNKNOWN, "Memory size (Unknown):");
+    DEF_STR(ROM_FPU_REG_CACHE, "FPU register caching");
 
     // Core styles
     DEF_STR(CORE_INTERPTER, "Interpreter");

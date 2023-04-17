@@ -15,6 +15,7 @@ CGameRecompilePage::CGameRecompilePage(HWND hParent, const RECT & rcDispay)
     SetDlgItemText(IDC_FUNCFIND_TEXT, wGS(ROM_FUNC_FIND).c_str());
 
     SetDlgItemText(IDC_ROM_REGCACHE, wGS(ROM_REG_CACHE).c_str());
+    SetDlgItemText(IDC_ROM_FPUREGCACHE, wGS(ROM_FPU_REG_CACHE).c_str());
     SetDlgItemText(IDC_BLOCK_LINKING, wGS(ADVANCE_ABL).c_str());
     SetDlgItemText(IDC_ROM_FASTSP, wGS(ROM_FAST_SP).c_str());
     SetDlgItemText(IDC_ROM_32BIT, wGS(ROM_32BIT).c_str());
@@ -29,6 +30,7 @@ CGameRecompilePage::CGameRecompilePage(HWND hParent, const RECT & rcDispay)
     m_SelfModGroup.Attach(GetDlgItem(IDC_SMM_FRAME));
 
     AddModCheckBox(GetDlgItem(IDC_ROM_REGCACHE), Game_RegCache);
+    AddModCheckBox(GetDlgItem(IDC_ROM_FPUREGCACHE), Game_RegCache);
     AddModCheckBox(GetDlgItem(IDC_BLOCK_LINKING), Game_BlockLinking);
     AddModCheckBox(GetDlgItem(IDC_SMM_CACHE), Game_SMM_Cache);
     AddModCheckBox(GetDlgItem(IDC_SMM_DMA), Game_SMM_PIDMA);

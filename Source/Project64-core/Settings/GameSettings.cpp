@@ -24,6 +24,7 @@ bool CGameSettings::m_bFastSP = true;
 bool CGameSettings::m_b32Bit = true;
 bool CGameSettings::m_RspAudioSignal;
 bool CGameSettings::m_RegCaching;
+bool CGameSettings::m_FPURegCaching;
 bool CGameSettings::m_bLinkBlocks;
 uint32_t CGameSettings::m_LookUpMode; //FUNC_LOOKUP_METHOD
 SYSTEM_TYPE CGameSettings::m_SystemType = SYSTEM_NTSC;
@@ -82,6 +83,7 @@ void CGameSettings::RefreshGameSettings()
 #endif
     m_RspAudioSignal = g_Settings->LoadBool(Game_RspAudioSignal);
     m_RegCaching = g_Settings->LoadBool(Game_RegCache);
+    m_FPURegCaching = g_Settings->LoadBool(Game_FPURegCache);
     m_bLinkBlocks = g_Settings->LoadBool(Game_BlockLinking);
     m_LookUpMode = g_Settings->LoadDword(Game_FuncLookupMode);
     m_SystemType = (SYSTEM_TYPE)g_Settings->LoadDword(Game_SystemType);

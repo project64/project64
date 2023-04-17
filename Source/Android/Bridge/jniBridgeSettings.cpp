@@ -158,6 +158,7 @@ CJniBridegSettings::CJniBridegSettings()
     ADD_SETTING(Game_FastSP);
     ADD_SETTING(Game_FuncLookupMode);
     ADD_SETTING(Game_RegCache);
+    ADD_SETTING(Game_FPURegCache);
     ADD_SETTING(Game_BlockLinking);
     ADD_SETTING(Game_ScreenHertz);
     ADD_SETTING(Game_RspAudioSignal);

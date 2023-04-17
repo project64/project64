@@ -15,6 +15,10 @@ public:
     {
         return m_UseHleGfx;
     }
+    inline static bool bFPURegCaching(void)
+    {
+        return m_FPURegCaching;
+    }
     inline static bool bRegCaching(void)
     {
         return m_RegCaching;
@@ -140,6 +144,7 @@ private:
     // Settings that can be changed on the fly
     static bool m_UseHleGfx;
     static bool m_RegCaching;
+    static bool m_FPURegCaching;
     static bool m_bLinkBlocks;
     static uint32_t m_LookUpMode; //FUNC_LOOKUP_METHOD
     static uint32_t m_CountPerOp;

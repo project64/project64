@@ -162,6 +162,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_ScreenHertz, new CSettingTypeRomDatabase("ScreenHertz", (uint32_t)0));
     AddHandler(Rdb_FuncLookupMode, new CSettingTypeRomDatabase("FuncFind", (uint32_t)FuncFind_PhysicalLookup));
     AddHandler(Rdb_RegCache, new CSettingTypeRDB("Reg Cache", true));
+    AddHandler(Rdb_FpuRegCache, new CSettingTypeRDB("FPU Reg Cache", false));
 #ifdef ANDROID
     AddHandler(Rdb_BlockLinking, new CSettingTypeRDBOnOff("Linking", false));
 #else
@@ -221,6 +222,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Game_ScreenHertz, new CSettingTypeGame("ScreenHertz", Rdb_ScreenHertz));
     AddHandler(Game_FuncLookupMode, new CSettingTypeGame("FuncFind", Rdb_FuncLookupMode));
     AddHandler(Game_RegCache, new CSettingTypeGame("Reg Cache", Rdb_RegCache));
+    AddHandler(Game_FPURegCache, new CSettingTypeGame("FPU Reg Cache", Rdb_FpuRegCache));
     AddHandler(Game_BlockLinking, new CSettingTypeGame("Linking", Rdb_BlockLinking));
     AddHandler(Game_SMM_StoreInstruc, new CSettingTypeGame("SMM-StoreInst", Rdb_SMM_StoreInstruc));
     AddHandler(Game_SMM_Cache, new CSettingTypeGame("SMM-Cache", Rdb_SMM_Cache));

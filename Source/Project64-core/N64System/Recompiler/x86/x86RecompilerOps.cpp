@@ -327,8 +327,10 @@ void CX86RecompilerOps::PostCompileOpcode(void)
     {
         m_RegWorkingSet.WriteBackRegisters();
     }
-    m_RegWorkingSet.UnMap_AllFPRs();
-
+    if (!g_System->bFPURegCaching())
+    {
+        m_RegWorkingSet.UnMap_AllFPRs();
+    }
     /*if (m_CompilePC >= 0x800933B4 && m_CompilePC <= 0x80093414 && (m_PipelineStage == PIPELINE_STAGE_NORMAL || m_PipelineStage == PIPELINE_STAGE_DO_DELAY_SLOT))
     {
         m_Assembler.MoveConstToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", m_CompilePC + 4);

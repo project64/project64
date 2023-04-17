@@ -293,7 +293,8 @@
 #5441# "Turbo"
 #5442# "Slow"
 #5443# "Memory size (Known):"
-#5443# "Memory size (Unknown):"
+#5444# "Memory size (Unknown):"
+#5445# "FPU register caching:"
 
 // Core styles
 #540#  "Interpreter"

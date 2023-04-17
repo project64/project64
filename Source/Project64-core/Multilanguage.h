@@ -330,6 +330,7 @@ enum LanguageStringID
     ROM_DISK_SEEK_TIMING_SLOW = 5442,
     ROM_MEM_SIZE_KNOWN = 5443,
     ROM_MEM_SIZE_UNKNOWN = 5444,
+    ROM_FPU_REG_CACHE = 5445,
 
     // Core styles
     CORE_INTERPTER = 540,

@@ -2414,7 +2414,7 @@ void R4300iOp::COP1_S_CMP()
             QuietNan = true;
         }
         else if ((*(uint32_t *)_FPR_S[m_Opcode.ft] >= 0x7FC00000 && *(uint32_t *)_FPR_S[m_Opcode.ft] <= 0x7FFFFFFF) ||
-            (*(uint32_t *)_FPR_S[m_Opcode.ft] >= 0xFFC00000 && *(uint32_t *)_FPR_S[m_Opcode.ft] <= 0xFFFFFFFF))
+                 (*(uint32_t *)_FPR_S[m_Opcode.ft] >= 0xFFC00000 && *(uint32_t *)_FPR_S[m_Opcode.ft] <= 0xFFFFFFFF))
         {
             QuietNan = true;
         }
@@ -2861,7 +2861,7 @@ void R4300iOp::COP1_D_CMP()
             QuietNan = true;
         }
         else if ((*(uint64_t *)_FPR_D[m_Opcode.ft] >= 0x7FF8000000000000 && *(uint64_t *)_FPR_D[m_Opcode.ft] <= 0x7FFFFFFFFFFFFFFF) ||
-            (*(uint64_t *)_FPR_D[m_Opcode.ft] >= 0xFFF8000000000000 && *(uint64_t *)_FPR_D[m_Opcode.ft] <= 0xFFFFFFFFFFFFFFFF))
+                 (*(uint64_t *)_FPR_D[m_Opcode.ft] >= 0xFFF8000000000000 && *(uint64_t *)_FPR_D[m_Opcode.ft] <= 0xFFFFFFFFFFFFFFFF))
         {
             QuietNan = true;
         }
