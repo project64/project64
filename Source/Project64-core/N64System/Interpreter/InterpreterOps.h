@@ -209,6 +209,7 @@ public:
     // COP1: W functions
     static void COP1_W_CVT_S();
     static void COP1_W_CVT_D();
+    static void COP1_W_CVT_W();
 
     // COP1: L functions
     static void COP1_L_CVT_S();

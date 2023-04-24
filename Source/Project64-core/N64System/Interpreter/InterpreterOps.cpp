@@ -626,7 +626,7 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_CoP1_W[33] = COP1_W_CVT_D;
     Jump_CoP1_W[34] = UnknownOpcode;
     Jump_CoP1_W[35] = UnknownOpcode;
-    Jump_CoP1_W[36] = UnknownOpcode;
+    Jump_CoP1_W[36] = COP1_W_CVT_W;
     Jump_CoP1_W[37] = UnknownOpcode;
     Jump_CoP1_W[38] = UnknownOpcode;
     Jump_CoP1_W[39] = UnknownOpcode;
@@ -2937,6 +2937,19 @@ void R4300iOp::COP1_W_CVT_D()
         return;
     }
     *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
+}
+
+void R4300iOp::COP1_W_CVT_W()
+{
+    if (TestCop1UsableException())
+    {
+        return;
+    }
+    FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+    StatusReg.Cause.UnimplementedOperation = 1;
+    g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
 }
 
 // COP1: L functions
