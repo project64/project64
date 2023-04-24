@@ -2377,7 +2377,19 @@ void R4300iOp::COP1_S_CVT_W()
     {
         return;
     }
-    Float_RoundToInteger32(&*(int32_t *)_FPR_S[m_Opcode.fd], &*(float *)_FPR_S[m_Opcode.fs], *_RoundingModel);
+    _FPCR[31] &= ~0x0003F000;
+    fesetround(*_RoundingModel);
+    feclearexcept(FE_ALL_EXCEPT);
+    if (!CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
+    {
+        return;
+    }
+    int32_t Result = (int32_t)rint(*(float *)_FPR_S[m_Opcode.fs]);
+    if (CheckFPUInvalidException())
+    {
+        return;
+    }
+    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_CVT_L()
@@ -3141,6 +3153,26 @@ bool R4300iOp::CheckFPUInput32(const float & Value)
     return true;
 }
 
+bool R4300iOp::CheckFPUInput32Conv(const float & Value)
+{
+    int Type = fpclassify(Value);
+    bool Exception = false;
+    if (Type == FP_SUBNORMAL || Type == FP_INFINITE || Type == FP_NAN)
+    {
+        FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+        StatusReg.Cause.UnimplementedOperation = 1;
+        Exception = true;
+    }
+    if (Exception)
+    {
+        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        return false;
+    }
+    return true;
+}
+
 bool R4300iOp::CheckFPUInput64(const double & Value)
 {
     int Type = fpclassify(Value);
@@ -3373,4 +3405,42 @@ bool R4300iOp::CheckFPUException(void)
         g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
     }
     return Res;
+}
+
+bool R4300iOp::CheckFPUInvalidException(void)
+{
+    int Except = fetestexcept(FE_ALL_EXCEPT);
+    if (Except == 0)
+    {
+        return false;
+    }
+
+    FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+    bool Res = false;
+    if ((Except & FE_INVALID) != 0)
+    {
+        StatusReg.Cause.UnimplementedOperation = 1;
+        Res = true;
+    }
+    else if ((Except & FE_INEXACT) != 0)
+    {
+        StatusReg.Cause.Inexact = 1;
+        if (StatusReg.Enable.Inexact)
+        {
+            Res = true;
+        }
+        else
+        {
+            StatusReg.Flags.Inexact = 1;
+        }
+    }
+
+    if (Res)
+    {
+        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        return true;
+    }
+    return false;
 }
