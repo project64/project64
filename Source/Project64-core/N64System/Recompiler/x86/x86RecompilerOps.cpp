@@ -2434,7 +2434,7 @@ void CX86RecompilerOps::SLTIU()
     if (m_RegWorkingSet.IsConst(m_Opcode.rs))
     {
         uint32_t Result = m_RegWorkingSet.Is64Bit(m_Opcode.rs) ? m_RegWorkingSet.GetMipsReg(m_Opcode.rs) < ((unsigned)((int64_t)((int16_t)m_Opcode.immediate))) ? 1 : 0 : m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs) < ((unsigned)((int16_t)m_Opcode.immediate)) ? 1
-                                                                                                                                                                                                                : 0;
+                                                                                                                                                                                                                                                                : 0;
         m_RegWorkingSet.UnMap_GPR(m_Opcode.rt, false);
         m_RegWorkingSet.SetMipsRegState(m_Opcode.rt, CRegInfo::STATE_CONST_32_SIGN);
         m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt, Result);
@@ -6952,7 +6952,7 @@ void CX86RecompilerOps::SPECIAL_DSUBU()
 
         m_RegWorkingSet.SetMipsReg(m_Opcode.rd,
                                    m_RegWorkingSet.Is64Bit(m_Opcode.rs) ? m_RegWorkingSet.GetMipsReg(m_Opcode.rs) : (int64_t)m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rs) - m_RegWorkingSet.Is64Bit(m_Opcode.rt) ? m_RegWorkingSet.GetMipsReg(m_Opcode.rt)
-                                                                                                                                                : (int64_t)m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rt));
+                                                                                                                                                                                                                : (int64_t)m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rt));
         if (m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rd) < 0 && m_RegWorkingSet.GetMipsRegHi_S(m_Opcode.rd) == -1)
         {
             m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
@@ -7599,6 +7599,8 @@ void CX86RecompilerOps::COP1_S_ADD()
     CompileCop1Test();
     m_RegWorkingSet.FixRoundModel(CRegInfo::RoundDefault);
 
+    asmjit::x86::Gp StatusReg = m_RegWorkingSet.Map_FPStatusReg();
+    m_Assembler.and_(StatusReg, (uint32_t)(~0x0003F000));
     m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, Reg1, CRegInfo::FPU_Float);
     if (m_RegWorkingSet.RegInStack(Reg2, CRegInfo::FPU_Float))
     {
@@ -7612,7 +7614,7 @@ void CX86RecompilerOps::COP1_S_ADD()
         m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fd, CRegInfo::FPU_Float);
         m_Assembler.fadd(asmjit::x86::dword_ptr(TempReg));
     }
-    m_RegWorkingSet.UnMap_FPR(m_Opcode.fd, true);
+    m_RegWorkingSet.UnMap_X86reg(StatusReg);
 }
 
 void CX86RecompilerOps::COP1_S_SUB()

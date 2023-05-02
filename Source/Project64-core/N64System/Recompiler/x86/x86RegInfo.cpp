@@ -734,6 +734,29 @@ asmjit::x86::Gp CX86RegInfo::UnMap_8BitTempReg()
     return x86Reg_Unknown;
 }
 
+asmjit::x86::Gp CX86RegInfo::Map_FPStatusReg()
+{
+    for (int32_t i = 0, n = x86RegIndex_Size; i < n; i++)
+    {
+        if (GetX86Mapped((x86RegIndex)i) == FPStatusReg_Mapped)
+        {
+            return GetX86RegFromIndex((x86RegIndex)i);
+        }
+    }
+
+    asmjit::x86::Gp Reg = FreeX86Reg();
+    if (!Reg.isValid())
+    {
+        g_Notify->DisplayError("Map_MemoryStack\n\nOut of registers");
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return Reg;
+    }
+    SetX86Mapped(GetIndexFromX86Reg(Reg), CX86RegInfo::FPStatusReg_Mapped);
+    m_CodeBlock.Log("    regcache: allocate %s as FP Status Reg", CX86Ops::x86_Name(Reg));
+    m_Assembler.MoveVariableToX86reg(Reg, &g_Reg->m_FPCR[31], "FPCR[31]");
+    return Reg;
+}
+
 asmjit::x86::Gp CX86RegInfo::Get_MemoryStack() const
 {
     for (int32_t i = 0, n = x86RegIndex_Size; i < n; i++)
@@ -1569,6 +1592,17 @@ bool CX86RegInfo::UnMap_X86reg(const asmjit::x86::Gp & Reg)
         m_Assembler.MoveX86regToVariable(&(g_Recompiler->MemoryStackPos()), "MemoryStack", Reg);
         SetX86Mapped(RegIndex, NotMapped);
         return true;
+    }
+    else if (GetX86Mapped(RegIndex) == CX86RegInfo::FPStatusReg_Mapped)
+    {
+        m_CodeBlock.Log("    regcache: unallocate %s from FP Status Reg", CX86Ops::x86_Name(Reg));
+        m_Assembler.MoveX86regToVariable(&g_Reg->m_FPCR[31], "FPCR[31]", Reg);
+        SetX86Mapped(RegIndex, NotMapped);
+        return true;
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     return false;
 }

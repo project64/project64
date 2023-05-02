@@ -52,6 +52,7 @@ public:
         GPR_Mapped = 1,
         Temp_Mapped = 2,
         Stack_Mapped = 3,
+        FPStatusReg_Mapped = 4,
     };
 
     enum FPU_STATE
@@ -90,6 +91,7 @@ public:
     asmjit::x86::Gp Free8BitX86Reg();
     void Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsRegToLoad);
     void Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad);
+    asmjit::x86::Gp Map_FPStatusReg();
     asmjit::x86::Gp Get_MemoryStack() const;
     asmjit::x86::Gp Map_MemoryStack(asmjit::x86::Gp Reg, bool bMapRegister, bool LoadValue = true);
     asmjit::x86::Gp Map_TempReg(asmjit::x86::Gp Reg, int32_t MipsReg, bool LoadHiWord, bool Reg8Bit);
