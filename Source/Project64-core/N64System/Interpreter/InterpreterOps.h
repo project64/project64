@@ -264,6 +264,7 @@ protected:
     static bool CheckFPUResult64(double & Result);
     static bool CheckFPUException(void);
     static bool CheckFPUInvalidException(void);
+    static bool SetFPUException(void);
 
     static const uint32_t SWL_MASK[4], SWR_MASK[4], LWL_MASK[4], LWR_MASK[4];
     static const int32_t SWL_SHIFT[4], SWR_SHIFT[4], LWL_SHIFT[4], LWR_SHIFT[4];
