@@ -2026,47 +2026,6 @@ void R4300iOp::COP1_BCTL()
 }
 
 // COP1: S functions
-__inline void Float_RoundToInteger64(int64_t * Dest, const float * Source, int RoundType)
-{
-#pragma warning(push)
-#pragma warning(disable : 4244) // warning C4244: disable conversion from 'float' to 'int64_t', possible loss of data
-
-    if (RoundType == FE_TONEAREST)
-    {
-        float reminder = *Source - floorf(*Source);
-        if (reminder == 0.5)
-        {
-            // Make any decimal point that is even odd, and any decimal point that is odd stay odd
-            if (*Source < 0)
-            {
-                *Dest = (int)truncf(*Source) % 2 != 0 ? floorf(*Source) : ceilf(*Source);
-            }
-            else
-            {
-                *Dest = (int)truncf(*Source) % 2 != 0 ? ceilf(*Source) : floorf(*Source);
-            }
-        }
-        else
-        {
-            *Dest = roundf(*Source);
-        }
-    }
-    else if (RoundType == FE_TOWARDZERO)
-    {
-        *Dest = truncf(*Source);
-    }
-    else if (RoundType == FE_UPWARD)
-    {
-        *Dest = ceilf(*Source);
-    }
-    else if (RoundType == FE_DOWNWARD)
-    {
-        *Dest = floorf(*Source);
-    }
-
-#pragma warning(pop)
-}
-
 void R4300iOp::COP1_S_ADD()
 {
     if (TestCop1UsableException())
@@ -2239,7 +2198,19 @@ void R4300iOp::COP1_S_ROUND_L()
     {
         return;
     }
-    Float_RoundToInteger64(&*(int64_t *)_FPR_D[m_Opcode.fd], &*(float *)_FPR_S[m_Opcode.fs], FE_TONEAREST);
+    _FPCR[31] &= ~0x0003F000;
+    fesetround(FE_TONEAREST);
+    feclearexcept(FE_ALL_EXCEPT);
+    if (!CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
+    {
+        return;
+    }
+    int64_t Result = (int64_t)rint(*(float *)_FPR_S[m_Opcode.fs]);
+    if (CheckFPUInvalidException())
+    {
+        return;
+    }
+    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_S_TRUNC_L()
@@ -2248,7 +2219,19 @@ void R4300iOp::COP1_S_TRUNC_L()
     {
         return;
     }
-    Float_RoundToInteger64(&*(int64_t *)_FPR_D[m_Opcode.fd], &*(float *)_FPR_S[m_Opcode.fs], FE_TOWARDZERO);
+    _FPCR[31] &= ~0x0003F000;
+    fesetround(FE_TOWARDZERO);
+    feclearexcept(FE_ALL_EXCEPT);
+    if (!CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
+    {
+        return;
+    }
+    int64_t Result = (int64_t)rint(*(float *)_FPR_S[m_Opcode.fs]);
+    if (CheckFPUInvalidException())
+    {
+        return;
+    }
+    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_S_CEIL_L()
@@ -2257,7 +2240,19 @@ void R4300iOp::COP1_S_CEIL_L()
     {
         return;
     }
-    Float_RoundToInteger64(&*(int64_t *)_FPR_D[m_Opcode.fd], &*(float *)_FPR_S[m_Opcode.fs], FE_UPWARD);
+    _FPCR[31] &= ~0x0003F000;
+    fesetround(FE_UPWARD);
+    feclearexcept(FE_ALL_EXCEPT);
+    if (!CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
+    {
+        return;
+    }
+    int64_t Result = (int64_t)rint(*(float *)_FPR_S[m_Opcode.fs]);
+    if (CheckFPUInvalidException())
+    {
+        return;
+    }
+    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_S_FLOOR_L()
@@ -2266,7 +2261,19 @@ void R4300iOp::COP1_S_FLOOR_L()
     {
         return;
     }
-    Float_RoundToInteger64(&*(int64_t *)_FPR_D[m_Opcode.fd], &*(float *)_FPR_S[m_Opcode.fs], FE_DOWNWARD);
+    _FPCR[31] &= ~0x0003F000;
+    fesetround(FE_DOWNWARD);
+    feclearexcept(FE_ALL_EXCEPT);
+    if (!CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
+    {
+        return;
+    }
+    int64_t Result = (int64_t)rint(*(float *)_FPR_S[m_Opcode.fs]);
+    if (CheckFPUInvalidException())
+    {
+        return;
+    }
+    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_S_ROUND_W()
@@ -2401,7 +2408,19 @@ void R4300iOp::COP1_S_CVT_L()
     {
         return;
     }
-    Float_RoundToInteger64(&*(int64_t *)_FPR_D[m_Opcode.fd], &*(float *)_FPR_S[m_Opcode.fs], *_RoundingModel);
+    _FPCR[31] &= ~0x0003F000;
+    fesetround(*_RoundingModel);
+    feclearexcept(FE_ALL_EXCEPT);
+    if (!CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
+    {
+        return;
+    }
+    int64_t Result = (int64_t)rint(*(float *)_FPR_S[m_Opcode.fs]);
+    if (CheckFPUInvalidException())
+    {
+        return;
+    }
+    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_S_CMP()
