@@ -258,6 +258,7 @@ protected:
     static bool CheckFPUInput32(const float & Value);
     static bool CheckFPUInput32Conv(const float & Value);
     static bool CheckFPUInput64(const double & Value);
+    static bool CheckFPUInput64Conv(const double & Value);
     static bool CheckFPUResult32(float & Result);
     static bool CheckFPUResult64(double & Result);
     static bool CheckFPUException(void);

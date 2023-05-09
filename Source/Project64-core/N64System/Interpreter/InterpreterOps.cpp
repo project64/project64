@@ -2490,52 +2490,6 @@ void R4300iOp::COP1_S_CMP()
 }
 
 // COP1: D functions
-
-__inline void Double_RoundToInteger32(int32_t * Dest, const double * Source, int RoundType)
-{
-#pragma warning(push)
-#pragma warning(disable : 4244) // warning C4244: disable conversion from 'double' to 'uint32_t', possible loss of data
-
-    if (RoundType == FE_TONEAREST)
-    {
-        double reminder = *Source - floor(*Source);
-        if (reminder == 0.5)
-        {
-            // Make any decimal point that is even odd, and any decimal point that is odd stay odd
-            if (*Source < 0)
-            {
-                *Dest = (int)truncf(*Source) % 2 != 0 ? floor(*Source) : ceil(*Source);
-            }
-            else
-            {
-                *Dest = (int)truncf(*Source) % 2 != 0 ? ceil(*Source) : floor(*Source);
-            }
-        }
-        else
-        {
-            *Dest = round(*Source);
-        }
-    }
-    else if (RoundType == FE_TOWARDZERO)
-    {
-        *Dest = trunc(*Source);
-    }
-    else if (RoundType == FE_UPWARD)
-    {
-        *Dest = ceil(*Source);
-    }
-    else if (RoundType == FE_DOWNWARD)
-    {
-        *Dest = floor(*Source);
-    }
-    else
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-
-#pragma warning(pop)
-}
-
 __inline void Double_RoundToInteger64(int64_t * Dest, const double * Source, int RoundType)
 {
 #pragma warning(push)
@@ -2787,7 +2741,19 @@ void R4300iOp::COP1_D_ROUND_W()
     {
         return;
     }
-    Double_RoundToInteger32(&*(int32_t *)_FPR_S[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], FE_TONEAREST);
+    _FPCR[31] &= ~0x0003F000;
+    fesetround(FE_TONEAREST);
+    feclearexcept(FE_ALL_EXCEPT);
+    if (!CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
+    {
+        return;
+    }
+    int32_t Result = (int32_t)rint(*(double *)_FPR_D[m_Opcode.fs]);
+    if (CheckFPUInvalidException())
+    {
+        return;
+    }
+    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_D_TRUNC_W()
@@ -2796,7 +2762,19 @@ void R4300iOp::COP1_D_TRUNC_W()
     {
         return;
     }
-    Double_RoundToInteger32(&*(int32_t *)_FPR_S[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], FE_TOWARDZERO);
+    _FPCR[31] &= ~0x0003F000;
+    fesetround(FE_TOWARDZERO);
+    feclearexcept(FE_ALL_EXCEPT);
+    if (!CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
+    {
+        return;
+    }
+    int32_t Result = (int32_t)rint(*(double *)_FPR_D[m_Opcode.fs]);
+    if (CheckFPUInvalidException())
+    {
+        return;
+    }
+    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_D_CEIL_W()
@@ -2805,7 +2783,19 @@ void R4300iOp::COP1_D_CEIL_W()
     {
         return;
     }
-    Double_RoundToInteger32(&*(int32_t *)_FPR_S[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], FE_UPWARD);
+    _FPCR[31] &= ~0x0003F000;
+    fesetround(FE_UPWARD);
+    feclearexcept(FE_ALL_EXCEPT);
+    if (!CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
+    {
+        return;
+    }
+    int32_t Result = (int32_t)rint(*(double *)_FPR_D[m_Opcode.fs]);
+    if (CheckFPUInvalidException())
+    {
+        return;
+    }
+    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_D_FLOOR_W()
@@ -2814,7 +2804,19 @@ void R4300iOp::COP1_D_FLOOR_W()
     {
         return;
     }
-    Double_RoundToInteger32(&*(int32_t *)_FPR_D[m_Opcode.fd], &*(double *)_FPR_S[m_Opcode.fs], FE_DOWNWARD);
+    _FPCR[31] &= ~0x0003F000;
+    fesetround(FE_DOWNWARD);
+    feclearexcept(FE_ALL_EXCEPT);
+    if (!CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
+    {
+        return;
+    }
+    int32_t Result = (int32_t)rint(*(double *)_FPR_D[m_Opcode.fs]);
+    if (CheckFPUInvalidException())
+    {
+        return;
+    }
+    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_D_CVT_S()
@@ -2844,7 +2846,19 @@ void R4300iOp::COP1_D_CVT_W()
     {
         return;
     }
-    Double_RoundToInteger32(&*(int32_t *)_FPR_S[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], *_RoundingModel);
+    _FPCR[31] &= ~0x0003F000;
+    fesetround(*_RoundingModel);
+    feclearexcept(FE_ALL_EXCEPT);
+    if (!CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
+    {
+        return;
+    }
+    int32_t Result = (int32_t)rint(*(double *)_FPR_D[m_Opcode.fs]);
+    if (CheckFPUInvalidException())
+    {
+        return;
+    }
+    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_D_CVT_L()
@@ -3150,9 +3164,11 @@ bool R4300iOp::CheckFPUInput32(const float & Value)
 
 bool R4300iOp::CheckFPUInput32Conv(const float & Value)
 {
+    uint32_t InvalidValueMax = 0x5a000000, InvalidMinValue = 0xda000000;
+
     int Type = fpclassify(Value);
-    bool Exception = false;
-    if (Type == FP_SUBNORMAL || Type == FP_INFINITE || Type == FP_NAN)
+    if (Type == FP_SUBNORMAL || Type == FP_INFINITE || Type == FP_NAN ||
+        Value >= *(float *)&InvalidValueMax || Value <= *(float *)&InvalidMinValue)
     {
         FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
         StatusReg.Cause.UnimplementedOperation = 1;
@@ -3199,6 +3215,24 @@ bool R4300iOp::CheckFPUInput64(const double & Value)
     }
     if (Exception)
     {
+        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        return false;
+    }
+    return true;
+}
+
+bool R4300iOp::CheckFPUInput64Conv(const double & Value)
+{
+    uint64_t InvalidValueMax = 0x4340000000000000, InvalidMinValue = 0xc340000000000000;
+
+    int Type = fpclassify(Value);
+    if (Type == FP_SUBNORMAL || Type == FP_INFINITE || Type == FP_NAN ||
+        Value >= *(double *)&InvalidValueMax || Value <= *(double *)&InvalidMinValue)
+    {
+        FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+        StatusReg.Cause.UnimplementedOperation = 1;
         g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
         g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
         g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
