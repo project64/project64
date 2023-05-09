@@ -2490,51 +2490,6 @@ void R4300iOp::COP1_S_CMP()
 }
 
 // COP1: D functions
-__inline void Double_RoundToInteger64(int64_t * Dest, const double * Source, int RoundType)
-{
-#pragma warning(push)
-#pragma warning(disable : 4244) // warning C4244: disable conversion from 'double' to 'uint64_t', possible loss of data
-
-    if (RoundType == FE_TONEAREST)
-    {
-        double reminder = *Source - floor(*Source);
-        if (reminder == 0.5)
-        {
-            // Make any decimal point that is even odd, and any decimal point that is odd stay odd
-            if (*Source < 0)
-            {
-                *Dest = (int)truncf(*Source) % 2 != 0 ? floor(*Source) : ceil(*Source);
-            }
-            else
-            {
-                *Dest = (int)truncf(*Source) % 2 != 0 ? ceil(*Source) : floor(*Source);
-            }
-        }
-        else
-        {
-            *Dest = round(*Source);
-        }
-    }
-    else if (RoundType == FE_TOWARDZERO)
-    {
-        *Dest = trunc(*Source);
-    }
-    else if (RoundType == FE_UPWARD)
-    {
-        *Dest = ceil(*Source);
-    }
-    else if (RoundType == FE_DOWNWARD)
-    {
-        *Dest = floor(*Source);
-    }
-    else
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-
-#pragma warning(pop)
-}
-
 void R4300iOp::COP1_D_ADD()
 {
     if (TestCop1UsableException())
@@ -2705,7 +2660,20 @@ void R4300iOp::COP1_D_ROUND_L()
     {
         return;
     }
-    Double_RoundToInteger64(&*(int64_t *)_FPR_D[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], FE_TONEAREST);
+    _FPCR[31] &= ~0x0003F000;
+    fesetround(FE_TONEAREST);
+    feclearexcept(FE_ALL_EXCEPT);
+    const double & fs = *(double *)_FPR_D[m_Opcode.fs];
+    if (!CheckFPUInput64Conv(fs))
+    {
+        return;
+    }
+    double Result = rint(fs);
+    if (CheckFPUInvalidException())
+    {
+        return;
+    }
+    *(uint64_t *)_FPR_D[m_Opcode.fd] = (uint64_t)Result;
 }
 
 void R4300iOp::COP1_D_TRUNC_L()
@@ -2714,7 +2682,20 @@ void R4300iOp::COP1_D_TRUNC_L()
     {
         return;
     }
-    Double_RoundToInteger64(&*(int64_t *)_FPR_D[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], FE_TOWARDZERO);
+    _FPCR[31] &= ~0x0003F000;
+    fesetround(FE_TOWARDZERO);
+    feclearexcept(FE_ALL_EXCEPT);
+    const double & fs = *(double *)_FPR_D[m_Opcode.fs];
+    if (!CheckFPUInput64Conv(fs))
+    {
+        return;
+    }
+    double Result = rint(fs);
+    if (CheckFPUInvalidException())
+    {
+        return;
+    }
+    *(uint64_t *)_FPR_D[m_Opcode.fd] = (uint64_t)Result;
 }
 
 void R4300iOp::COP1_D_CEIL_L()
@@ -2723,7 +2704,20 @@ void R4300iOp::COP1_D_CEIL_L()
     {
         return;
     }
-    Double_RoundToInteger64(&*(int64_t *)_FPR_D[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], FE_UPWARD);
+    _FPCR[31] &= ~0x0003F000;
+    fesetround(FE_UPWARD);
+    feclearexcept(FE_ALL_EXCEPT);
+    const double & fs = *(double *)_FPR_D[m_Opcode.fs];
+    if (!CheckFPUInput64Conv(fs))
+    {
+        return;
+    }
+    double Result = rint(fs);
+    if (CheckFPUInvalidException())
+    {
+        return;
+    }
+    *(uint64_t *)_FPR_D[m_Opcode.fd] = (uint64_t)Result;
 }
 
 void R4300iOp::COP1_D_FLOOR_L()
@@ -2732,7 +2726,20 @@ void R4300iOp::COP1_D_FLOOR_L()
     {
         return;
     }
-    Double_RoundToInteger64(&*(int64_t *)_FPR_D[m_Opcode.fd], &*(double *)_FPR_S[m_Opcode.fs], FE_DOWNWARD);
+    _FPCR[31] &= ~0x0003F000;
+    fesetround(FE_DOWNWARD);
+    feclearexcept(FE_ALL_EXCEPT);
+    const double & fs = *(double *)_FPR_D[m_Opcode.fs];
+    if (!CheckFPUInput64Conv(fs))
+    {
+        return;
+    }
+    double Result = rint(fs);
+    if (CheckFPUInvalidException())
+    {
+        return;
+    }
+    *(uint64_t *)_FPR_D[m_Opcode.fd] = (uint64_t)Result;
 }
 
 void R4300iOp::COP1_D_ROUND_W()
@@ -2867,7 +2874,20 @@ void R4300iOp::COP1_D_CVT_L()
     {
         return;
     }
-    Double_RoundToInteger64(&*(int64_t *)_FPR_D[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], *_RoundingModel);
+    _FPCR[31] &= ~0x0003F000;
+    fesetround(*_RoundingModel);
+    feclearexcept(FE_ALL_EXCEPT);
+    const double & fs = *(double *)_FPR_D[m_Opcode.fs];
+    if (!CheckFPUInput64Conv(fs))
+    {
+        return;
+    }
+    double Result = rint(fs);
+    if (CheckFPUInvalidException())
+    {
+        return;
+    }
+    *(uint64_t *)_FPR_D[m_Opcode.fd] = (uint64_t)Result;
 }
 
 void R4300iOp::COP1_D_CMP()
