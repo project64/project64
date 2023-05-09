@@ -147,6 +147,7 @@ public:
     static void COP0_CO_ERET();
 
     // COP1 functions
+    static void CPO1_UNIMPLEMENTED_OP(void);
     static void COP1_MF();
     static void COP1_DMF();
     static void COP1_CF();
@@ -177,7 +178,6 @@ public:
     static void COP1_S_TRUNC_W();
     static void COP1_S_CEIL_W();
     static void COP1_S_FLOOR_W();
-    static void COP1_S_CVT_S();
     static void COP1_S_CVT_D();
     static void COP1_S_CVT_W();
     static void COP1_S_CVT_L();
@@ -201,7 +201,6 @@ public:
     static void COP1_D_CEIL_W();
     static void COP1_D_FLOOR_W();
     static void COP1_D_CVT_S();
-    static void COP1_D_CVT_D();
     static void COP1_D_CVT_W();
     static void COP1_D_CVT_L();
     static void COP1_D_CMP();
@@ -209,7 +208,6 @@ public:
     // COP1: W functions
     static void COP1_W_CVT_S();
     static void COP1_W_CVT_D();
-    static void COP1_W_CVT_W();
 
     // COP1: L functions
     static void COP1_L_CVT_S();

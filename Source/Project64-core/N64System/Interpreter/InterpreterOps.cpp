@@ -395,11 +395,11 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_CoP1[0] = COP1_MF;
     Jump_CoP1[1] = COP1_DMF;
     Jump_CoP1[2] = COP1_CF;
-    Jump_CoP1[3] = UnknownOpcode;
+    Jump_CoP1[3] = CPO1_UNIMPLEMENTED_OP;
     Jump_CoP1[4] = COP1_MT;
     Jump_CoP1[5] = COP1_DMT;
     Jump_CoP1[6] = COP1_CT;
-    Jump_CoP1[7] = UnknownOpcode;
+    Jump_CoP1[7] = CPO1_UNIMPLEMENTED_OP;
     Jump_CoP1[8] = COP1_BC;
     Jump_CoP1[9] = UnknownOpcode;
     Jump_CoP1[10] = UnknownOpcode;
@@ -490,7 +490,7 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_CoP1_S[29] = UnknownOpcode;
     Jump_CoP1_S[30] = UnknownOpcode;
     Jump_CoP1_S[31] = UnknownOpcode;
-    Jump_CoP1_S[32] = COP1_S_CVT_S;
+    Jump_CoP1_S[32] = CPO1_UNIMPLEMENTED_OP;
     Jump_CoP1_S[33] = COP1_S_CVT_D;
     Jump_CoP1_S[34] = UnknownOpcode;
     Jump_CoP1_S[35] = UnknownOpcode;
@@ -556,7 +556,7 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_CoP1_D[30] = UnknownOpcode;
     Jump_CoP1_D[31] = UnknownOpcode;
     Jump_CoP1_D[32] = COP1_D_CVT_S;
-    Jump_CoP1_D[33] = COP1_D_CVT_D;
+    Jump_CoP1_D[33] = CPO1_UNIMPLEMENTED_OP;
     Jump_CoP1_D[34] = UnknownOpcode;
     Jump_CoP1_D[35] = UnknownOpcode;
     Jump_CoP1_D[36] = COP1_D_CVT_W;
@@ -600,10 +600,10 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_CoP1_W[9] = UnknownOpcode;
     Jump_CoP1_W[10] = UnknownOpcode;
     Jump_CoP1_W[11] = UnknownOpcode;
-    Jump_CoP1_W[12] = UnknownOpcode;
-    Jump_CoP1_W[13] = UnknownOpcode;
-    Jump_CoP1_W[14] = UnknownOpcode;
-    Jump_CoP1_W[15] = UnknownOpcode;
+    Jump_CoP1_W[12] = CPO1_UNIMPLEMENTED_OP;
+    Jump_CoP1_W[13] = CPO1_UNIMPLEMENTED_OP;
+    Jump_CoP1_W[14] = CPO1_UNIMPLEMENTED_OP;
+    Jump_CoP1_W[15] = CPO1_UNIMPLEMENTED_OP;
     Jump_CoP1_W[16] = UnknownOpcode;
     Jump_CoP1_W[17] = UnknownOpcode;
     Jump_CoP1_W[18] = UnknownOpcode;
@@ -624,7 +624,7 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_CoP1_W[33] = COP1_W_CVT_D;
     Jump_CoP1_W[34] = UnknownOpcode;
     Jump_CoP1_W[35] = UnknownOpcode;
-    Jump_CoP1_W[36] = COP1_W_CVT_W;
+    Jump_CoP1_W[36] = CPO1_UNIMPLEMENTED_OP;
     Jump_CoP1_W[37] = UnknownOpcode;
     Jump_CoP1_W[38] = UnknownOpcode;
     Jump_CoP1_W[39] = UnknownOpcode;
@@ -661,14 +661,14 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_CoP1_L[5] = UnknownOpcode;
     Jump_CoP1_L[6] = UnknownOpcode;
     Jump_CoP1_L[7] = UnknownOpcode;
-    Jump_CoP1_L[8] = UnknownOpcode;
-    Jump_CoP1_L[9] = UnknownOpcode;
-    Jump_CoP1_L[10] = UnknownOpcode;
-    Jump_CoP1_L[11] = UnknownOpcode;
-    Jump_CoP1_L[12] = UnknownOpcode;
-    Jump_CoP1_L[13] = UnknownOpcode;
-    Jump_CoP1_L[14] = UnknownOpcode;
-    Jump_CoP1_L[15] = UnknownOpcode;
+    Jump_CoP1_L[8] = CPO1_UNIMPLEMENTED_OP;
+    Jump_CoP1_L[9] = CPO1_UNIMPLEMENTED_OP;
+    Jump_CoP1_L[10] = CPO1_UNIMPLEMENTED_OP;
+    Jump_CoP1_L[11] = CPO1_UNIMPLEMENTED_OP;
+    Jump_CoP1_L[12] = CPO1_UNIMPLEMENTED_OP;
+    Jump_CoP1_L[13] = CPO1_UNIMPLEMENTED_OP;
+    Jump_CoP1_L[14] = CPO1_UNIMPLEMENTED_OP;
+    Jump_CoP1_L[15] = CPO1_UNIMPLEMENTED_OP;
     Jump_CoP1_L[16] = UnknownOpcode;
     Jump_CoP1_L[17] = UnknownOpcode;
     Jump_CoP1_L[18] = UnknownOpcode;
@@ -689,8 +689,8 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_CoP1_L[33] = COP1_L_CVT_D;
     Jump_CoP1_L[34] = UnknownOpcode;
     Jump_CoP1_L[35] = UnknownOpcode;
-    Jump_CoP1_L[36] = UnknownOpcode;
-    Jump_CoP1_L[37] = UnknownOpcode;
+    Jump_CoP1_L[36] = CPO1_UNIMPLEMENTED_OP;
+    Jump_CoP1_L[37] = CPO1_UNIMPLEMENTED_OP;
     Jump_CoP1_L[38] = UnknownOpcode;
     Jump_CoP1_L[39] = UnknownOpcode;
     Jump_CoP1_L[40] = UnknownOpcode;
@@ -1886,6 +1886,18 @@ void R4300iOp::COP0_CO_ERET()
 }
 
 // COP1 functions
+void R4300iOp::CPO1_UNIMPLEMENTED_OP()
+{
+    if (TestCop1UsableException())
+    {
+        return;
+    }
+    FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+    StatusReg.Cause.UnimplementedOperation = 1;
+    g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+}
 
 void R4300iOp::COP1_MF()
 {
@@ -2339,19 +2351,6 @@ void R4300iOp::COP1_S_FLOOR_W()
         return;
     }
     *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
-}
-
-void R4300iOp::COP1_S_CVT_S()
-{
-    if (TestCop1UsableException())
-    {
-        return;
-    }
-    FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
-    StatusReg.Cause.UnimplementedOperation = 1;
-    g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
 }
 
 void R4300iOp::COP1_S_CVT_D()
@@ -2820,19 +2819,6 @@ void R4300iOp::COP1_D_CVT_S()
     *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
-void R4300iOp::COP1_D_CVT_D()
-{
-    if (TestCop1UsableException())
-    {
-        return;
-    }
-    FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
-    StatusReg.Cause.UnimplementedOperation = 1;
-    g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
-}
-
 void R4300iOp::COP1_D_CVT_W()
 {
     if (TestCop1UsableException())
@@ -2920,7 +2906,6 @@ void R4300iOp::COP1_D_CMP()
 }
 
 // COP1: W functions
-
 void R4300iOp::COP1_W_CVT_S()
 {
     if (TestCop1UsableException())
@@ -2953,19 +2938,6 @@ void R4300iOp::COP1_W_CVT_D()
         return;
     }
     *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
-}
-
-void R4300iOp::COP1_W_CVT_W()
-{
-    if (TestCop1UsableException())
-    {
-        return;
-    }
-    FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
-    StatusReg.Cause.UnimplementedOperation = 1;
-    g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
 }
 
 // COP1: L functions
