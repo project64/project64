@@ -2036,8 +2036,11 @@ void R4300iOp::COP1_S_ADD()
     fesetround(*_RoundingModel);
     feclearexcept(FE_ALL_EXCEPT);
 
-    if (!CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || !CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
+    if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
     {
+        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
         return;
     }
     float Result = (*(float *)_FPR_S[m_Opcode.fs] + *(float *)_FPR_S[m_Opcode.ft]);
@@ -2058,8 +2061,11 @@ void R4300iOp::COP1_S_SUB()
     fesetround(*_RoundingModel);
     feclearexcept(FE_ALL_EXCEPT);
 
-    if (!CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || !CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
+    if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
     {
+        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
         return;
     }
     float Result = (*(float *)_FPR_S[m_Opcode.fs] - *(float *)_FPR_S[m_Opcode.ft]);
@@ -2082,8 +2088,11 @@ void R4300iOp::COP1_S_MUL()
     fesetround(*_RoundingModel);
     feclearexcept(FE_ALL_EXCEPT);
 
-    if (!CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || !CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
+    if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
     {
+        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
         return;
     }
     float Result = (*(float *)_FPR_S[m_Opcode.fs] * *(float *)_FPR_S[m_Opcode.ft]);
@@ -2104,8 +2113,11 @@ void R4300iOp::COP1_S_DIV()
     fesetround(*_RoundingModel);
     feclearexcept(FE_ALL_EXCEPT);
 
-    if (!CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || !CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
+    if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
     {
+        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
         return;
     }
     float Result = (*(float *)_FPR_S[m_Opcode.fs] / *(float *)_FPR_S[m_Opcode.ft]);
@@ -2126,8 +2138,11 @@ void R4300iOp::COP1_S_SQRT()
     fesetround(*_RoundingModel);
     feclearexcept(FE_ALL_EXCEPT);
 
-    if (!CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
+    if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
     {
+        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
         return;
     }
     float Result = sqrtf(*(float *)(_FPR_S[m_Opcode.fs]));
@@ -2148,8 +2163,11 @@ void R4300iOp::COP1_S_ABS()
     fesetround(*_RoundingModel);
     feclearexcept(FE_ALL_EXCEPT);
 
-    if (!CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
+    if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
     {
+        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
         return;
     }
     float Result = (float)fabs(*(float *)_FPR_S[m_Opcode.fs]);
@@ -2180,8 +2198,11 @@ void R4300iOp::COP1_S_NEG()
     fesetround(*_RoundingModel);
     feclearexcept(FE_ALL_EXCEPT);
 
-    if (!CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
+    if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
     {
+        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
         return;
     }
     float Result = (*(float *)_FPR_S[m_Opcode.fs] * -1.0f);
@@ -2369,8 +2390,11 @@ void R4300iOp::COP1_S_CVT_D()
     _FPCR[31] &= ~0x0003F000;
     fesetround(*_RoundingModel);
     feclearexcept(FE_ALL_EXCEPT);
-    if (!CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
+    if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
     {
+        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
         return;
     }
     double Result = (double)(*(float *)_FPR_S[m_Opcode.fs]);
@@ -3142,12 +3166,11 @@ bool R4300iOp::TestCop1UsableException(void)
 bool R4300iOp::CheckFPUInput32(const float & Value)
 {
     int Type = fpclassify(Value);
-    bool Exception = false;
     if (Type == FP_SUBNORMAL)
     {
         FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
         StatusReg.Cause.UnimplementedOperation = 1;
-        Exception = true;
+        return true;
     }
     else if (Type == FP_NAN)
     {
@@ -3157,14 +3180,14 @@ bool R4300iOp::CheckFPUInput32(const float & Value)
             (Value32 >= 0xFF800001 && Value32 < 0xFFC00000))
         {
             StatusReg.Cause.UnimplementedOperation = 1;
-            Exception = true;
+            return true;
         }
         else
         {
             StatusReg.Cause.InvalidOperation = 1;
             if (StatusReg.Enable.InvalidOperation)
             {
-                Exception = true;
+                return true;
             }
             else
             {
@@ -3172,14 +3195,7 @@ bool R4300iOp::CheckFPUInput32(const float & Value)
             }
         }
     }
-    if (Exception)
-    {
-        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
-        return false;
-    }
-    return true;
+    return false;
 }
 
 bool R4300iOp::CheckFPUInput32Conv(const float & Value)
