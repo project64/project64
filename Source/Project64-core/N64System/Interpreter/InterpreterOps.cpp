@@ -2044,7 +2044,7 @@ void R4300iOp::COP1_S_ADD()
         return;
     }
     float Result = (*(float *)_FPR_S[m_Opcode.fs] + *(float *)_FPR_S[m_Opcode.ft]);
-    if (CheckFPUException() || CheckFPUResult32(Result))
+    if (CheckFPUResult32(Result))
     {
         return;
     }
@@ -2069,13 +2069,11 @@ void R4300iOp::COP1_S_SUB()
         return;
     }
     float Result = (*(float *)_FPR_S[m_Opcode.fs] - *(float *)_FPR_S[m_Opcode.ft]);
-    if (CheckFPUException() || CheckFPUResult32(Result))
+    if (CheckFPUResult32(Result))
     {
         return;
     }
     *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
-
-    fesetround(*_RoundingModel);
 }
 
 void R4300iOp::COP1_S_MUL()
@@ -2096,7 +2094,7 @@ void R4300iOp::COP1_S_MUL()
         return;
     }
     float Result = (*(float *)_FPR_S[m_Opcode.fs] * *(float *)_FPR_S[m_Opcode.ft]);
-    if (CheckFPUException() || CheckFPUResult32(Result))
+    if (CheckFPUResult32(Result))
     {
         return;
     }
@@ -2121,7 +2119,7 @@ void R4300iOp::COP1_S_DIV()
         return;
     }
     float Result = (*(float *)_FPR_S[m_Opcode.fs] / *(float *)_FPR_S[m_Opcode.ft]);
-    if (CheckFPUException() || CheckFPUResult32(Result))
+    if (CheckFPUResult32(Result))
     {
         return;
     }
@@ -2146,7 +2144,7 @@ void R4300iOp::COP1_S_SQRT()
         return;
     }
     float Result = sqrtf(*(float *)(_FPR_S[m_Opcode.fs]));
-    if (CheckFPUException() || CheckFPUResult32(Result))
+    if (CheckFPUResult32(Result))
     {
         return;
     }
@@ -2171,7 +2169,7 @@ void R4300iOp::COP1_S_ABS()
         return;
     }
     float Result = (float)fabs(*(float *)_FPR_S[m_Opcode.fs]);
-    if (CheckFPUException() || CheckFPUResult32(Result))
+    if (CheckFPUResult32(Result))
     {
         return;
     }
@@ -2206,7 +2204,7 @@ void R4300iOp::COP1_S_NEG()
         return;
     }
     float Result = (*(float *)_FPR_S[m_Opcode.fs] * -1.0f);
-    if (CheckFPUException() || CheckFPUResult32(Result))
+    if (CheckFPUResult32(Result))
     {
         return;
     }
@@ -2864,7 +2862,7 @@ void R4300iOp::COP1_D_CVT_S()
         return;
     }
     float Result = (float)*(double *)_FPR_D[m_Opcode.fs];
-    if (CheckFPUException() || CheckFPUResult32(Result))
+    if (CheckFPUResult32(Result))
     {
         return;
     }
@@ -2993,7 +2991,7 @@ void R4300iOp::COP1_W_CVT_S()
     fesetround(*_RoundingModel);
     feclearexcept(FE_ALL_EXCEPT);
     float Result = (float)*(int32_t *)_FPR_S[m_Opcode.fs];
-    if (CheckFPUException() || CheckFPUResult32(Result))
+    if (CheckFPUResult32(Result))
     {
         return;
     }
@@ -3039,7 +3037,7 @@ void R4300iOp::COP1_L_CVT_S()
         return;
     }
     float Result = (float)fs;
-    if (CheckFPUException() || CheckFPUResult32(Result))
+    if (CheckFPUResult32(Result))
     {
         return;
     }
@@ -3278,49 +3276,77 @@ bool R4300iOp::CheckFPUInput64Conv(const double & Value)
 
 bool R4300iOp::CheckFPUResult32(float & Result)
 {
+    int Except = fetestexcept(FE_ALL_EXCEPT);
+    bool DoException = false;
+
     if ((*((uint32_t *)&Result) & 0x7F800000) == 0x7F800000 && (*((uint32_t *)&Result) & 0x007FFFFF) != 0x00000000) // Nan
     {
-        *((uint32_t *)&Result) = 0x7fbfffff;
-    }
-    else if ((*((uint32_t *)&Result) & 0x7F800000) == 0x00000000 && (*((uint32_t *)&Result) & 0x007FFFFF) != 0x00000000) // Sub Normal
-    {
-        FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
-        if (!StatusReg.FlushSubnormals || StatusReg.Enable.Underflow || StatusReg.Enable.Inexact)
+        if (Except == 0 || !SetFPUException())
         {
-            StatusReg.Cause.UnimplementedOperation = 1;
-            g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-            g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-            g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
-            return true;
+            *((uint32_t *)&Result) = 0x7fbfffff;
         }
         else
         {
-            StatusReg.Cause.Underflow = 1;
-            if (!StatusReg.Enable.Underflow)
+            DoException = true;
+        }
+    }
+    else if ((*((uint32_t *)&Result) & 0x7F800000) == 0x00000000 && (*((uint32_t *)&Result) & 0x007FFFFF) != 0x00000000) // Sub Normal
+    {
+        if (Except == 0 || !SetFPUException())
+        {
+            FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+            if (!StatusReg.FlushSubnormals || StatusReg.Enable.Underflow || StatusReg.Enable.Inexact)
             {
-                StatusReg.Flags.Underflow = 1;
+                StatusReg.Cause.UnimplementedOperation = 1;
+                g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+                g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+                g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+                return true;
             }
-
-            StatusReg.Cause.Inexact = 1;
-            if (!StatusReg.Enable.Inexact)
+            else
             {
-                StatusReg.Flags.Inexact = 1;
-            }
+                StatusReg.Cause.Underflow = 1;
+                if (!StatusReg.Enable.Underflow)
+                {
+                    StatusReg.Flags.Underflow = 1;
+                }
 
-            switch (*_RoundingModel)
-            {
-            case FE_TONEAREST:
-            case FE_TOWARDZERO:
-                Result = Result >= 0.0f ? 0.0f : -0.0f;
-                break;
-            case FE_UPWARD:
-                Result = Result >= 0.0f ? 1.175494351e-38F : -0.0f;
-                break;
-            case FE_DOWNWARD:
-                Result = Result >= 0.0f ? 0.0f : -1.175494351e-38F;
-                break;
+                StatusReg.Cause.Inexact = 1;
+                if (!StatusReg.Enable.Inexact)
+                {
+                    StatusReg.Flags.Inexact = 1;
+                }
+
+                switch (*_RoundingModel)
+                {
+                case FE_TONEAREST:
+                case FE_TOWARDZERO:
+                    Result = Result >= 0.0f ? 0.0f : -0.0f;
+                    break;
+                case FE_UPWARD:
+                    Result = Result >= 0.0f ? 1.175494351e-38F : -0.0f;
+                    break;
+                case FE_DOWNWARD:
+                    Result = Result >= 0.0f ? 0.0f : -1.175494351e-38F;
+                    break;
+                }
             }
         }
+        else
+        {
+            DoException = true;
+        }
+    }
+    else if (Except != 0 && SetFPUException())
+    {
+        DoException = true;
+    }
+    if (DoException)
+    {
+        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        return true;
     }
     return false;
 }
