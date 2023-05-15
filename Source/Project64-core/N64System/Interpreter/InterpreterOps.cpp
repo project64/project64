@@ -3165,14 +3165,13 @@ bool R4300iOp::TestCop1UsableException(void)
 
 bool R4300iOp::CheckFPUInput32(const float & Value)
 {
-    int Type = fpclassify(Value);
-    if (Type == FP_SUBNORMAL)
+    if ((*((uint32_t *)&Value) & 0x7F800000) == 0x00000000 && (*((uint32_t *)&Value) & 0x007FFFFF) != 0x00000000) // Sub Normal
     {
         FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
         StatusReg.Cause.UnimplementedOperation = 1;
         return true;
     }
-    else if (Type == FP_NAN)
+    if ((*((uint32_t *)&Value) & 0x7F800000) == 0x7F800000 && (*((uint32_t *)&Value) & 0x007FFFFF) != 0x00000000) // Nan
     {
         uint32_t Value32 = *(uint32_t *)&Value;
         FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
@@ -3279,12 +3278,11 @@ bool R4300iOp::CheckFPUInput64Conv(const double & Value)
 
 bool R4300iOp::CheckFPUResult32(float & Result)
 {
-    int fptype = fpclassify(Result);
-    if (fptype == FP_NAN)
+    if ((*((uint32_t *)&Result) & 0x7F800000) == 0x7F800000 && (*((uint32_t *)&Result) & 0x007FFFFF) != 0x00000000) // Nan
     {
         *((uint32_t *)&Result) = 0x7fbfffff;
     }
-    else if (fptype == FP_SUBNORMAL)
+    else if ((*((uint32_t *)&Result) & 0x7F800000) == 0x00000000 && (*((uint32_t *)&Result) & 0x007FFFFF) != 0x00000000) // Sub Normal
     {
         FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
         if (!StatusReg.FlushSubnormals || StatusReg.Enable.Underflow || StatusReg.Enable.Inexact)
