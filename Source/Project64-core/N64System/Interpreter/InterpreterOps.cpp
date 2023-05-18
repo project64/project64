@@ -80,9 +80,7 @@ void R4300iOp::COP2()
 {
     if ((g_Reg->STATUS_REGISTER & STATUS_CU2) == 0)
     {
-        g_Reg->DoCopUnusableException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP, 2);
-        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        g_Reg->TriggerException(EXC_CPU, 2);
     }
     else
     {
@@ -92,16 +90,7 @@ void R4300iOp::COP2()
 
 void R4300iOp::COP3()
 {
-    if ((g_Reg->STATUS_REGISTER & STATUS_CU3) == 0)
-    {
-        g_Reg->DoCopUnusableException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP, 3);
-        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
-    }
-    else
-    {
-        UnknownOpcode();
-    }
+    g_Reg->TriggerException(EXC_II);
 }
 
 void R4300iOp::COP1_BC()
@@ -3142,9 +3131,7 @@ bool R4300iOp::TestCop1UsableException(void)
 {
     if ((g_Reg->STATUS_REGISTER & STATUS_CU1) == 0)
     {
-        g_Reg->DoCopUnusableException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP, 1);
-        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        g_Reg->TriggerException(EXC_CPU, 1);
         return true;
     }
     return false;

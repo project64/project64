@@ -641,36 +641,6 @@ void CRegisters::DoFloatingPointException(bool DelaySlot)
     m_PROGRAM_COUNTER = 0x80000180;
 }
 
-void CRegisters::DoCopUnusableException(bool DelaySlot, int32_t Coprocessor)
-{
-    if (HaveDebugger())
-    {
-        if ((STATUS_REGISTER & STATUS_EXL) != 0)
-        {
-            g_Notify->DisplayError("EXL set in break exception");
-        }
-        if ((STATUS_REGISTER & STATUS_ERL) != 0)
-        {
-            g_Notify->DisplayError("ERL set in break exception");
-        }
-    }
-
-    CAUSE_REGISTER.ExceptionCode = EXC_CPU;
-    CAUSE_REGISTER.CoprocessorUnitNumber = Coprocessor;
-    if (DelaySlot)
-    {
-        CAUSE_REGISTER.BranchDelay = 1;
-        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
-    }
-    else
-    {
-        CAUSE_REGISTER.BranchDelay = 0;
-        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
-    }
-    STATUS_REGISTER |= STATUS_EXL;
-    m_PROGRAM_COUNTER = 0x80000180;
-}
-
 bool CRegisters::DoIntrException(bool DelaySlot)
 {
     if ((STATUS_REGISTER & STATUS_IE) == 0 || (STATUS_REGISTER & STATUS_EXL) != 0 || (STATUS_REGISTER & STATUS_ERL) != 0)

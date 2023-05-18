@@ -406,7 +406,6 @@ public:
     void DoAddressError(bool DelaySlot, uint64_t BadVaddr, bool FromRead);
     void DoBreakException(bool DelaySlot);
     void DoFloatingPointException(bool DelaySlot);
-    void DoCopUnusableException(bool DelaySlot, int32_t Coprocessor);
     bool DoIntrException(bool DelaySlot);
     void DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr);
     void DoTLBWriteMiss(bool DelaySlot, uint64_t BadVaddr);
