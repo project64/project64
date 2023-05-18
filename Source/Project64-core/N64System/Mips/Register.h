@@ -417,6 +417,7 @@ public:
     void FixFpuLocations();
     void Reset();
     void SetAsCurrentSystem();
+    void TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor = 0);
 
     uint64_t Cop0_MF(COP0Reg Reg);
     void Cop0_MT(COP0Reg Reg, uint64_t Value);

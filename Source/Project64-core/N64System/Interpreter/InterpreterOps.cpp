@@ -1602,7 +1602,7 @@ void R4300iOp::SPECIAL_TEQ()
 {
     if (_GPR[m_Opcode.rs].DW == _GPR[m_Opcode.rt].DW)
     {
-        g_Reg->DoTrapException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_Reg->TriggerException(EXC_TRAP);
     }
 }
 
@@ -1610,7 +1610,7 @@ void R4300iOp::SPECIAL_TGE()
 {
     if (_GPR[m_Opcode.rs].DW >= _GPR[m_Opcode.rt].DW)
     {
-        g_Reg->DoTrapException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_Reg->TriggerException(EXC_TRAP);
     }
 }
 
@@ -1618,7 +1618,7 @@ void R4300iOp::SPECIAL_TGEU()
 {
     if (_GPR[m_Opcode.rs].UDW >= _GPR[m_Opcode.rt].UDW)
     {
-        g_Reg->DoTrapException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_Reg->TriggerException(EXC_TRAP);
     }
 }
 
@@ -1626,7 +1626,7 @@ void R4300iOp::SPECIAL_TLT()
 {
     if (_GPR[m_Opcode.rs].DW < _GPR[m_Opcode.rt].DW)
     {
-        g_Reg->DoTrapException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_Reg->TriggerException(EXC_TRAP);
     }
 }
 
@@ -1634,7 +1634,7 @@ void R4300iOp::SPECIAL_TLTU()
 {
     if (_GPR[m_Opcode.rs].UDW < _GPR[m_Opcode.rt].UDW)
     {
-        g_Reg->DoTrapException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_Reg->TriggerException(EXC_TRAP);
     }
 }
 
@@ -1642,7 +1642,7 @@ void R4300iOp::SPECIAL_TNE()
 {
     if (_GPR[m_Opcode.rs].DW != _GPR[m_Opcode.rt].DW)
     {
-        g_Reg->DoTrapException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_Reg->TriggerException(EXC_TRAP);
     }
 }
 
@@ -1772,7 +1772,7 @@ void R4300iOp::REGIMM_TEQI()
 {
     if (_GPR[m_Opcode.rs].DW == (int64_t)((int16_t)m_Opcode.immediate))
     {
-        g_Reg->DoTrapException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_Reg->TriggerException(EXC_TRAP);
     }
 }
 
@@ -1780,7 +1780,7 @@ void R4300iOp::REGIMM_TGEI()
 {
     if (_GPR[m_Opcode.rs].DW >= (int64_t)((int16_t)m_Opcode.immediate))
     {
-        g_Reg->DoTrapException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_Reg->TriggerException(EXC_TRAP);
     }
 }
 
@@ -1792,7 +1792,7 @@ void R4300iOp::REGIMM_TGEIU()
     imm64 = imm32;
     if (_GPR[m_Opcode.rs].UDW >= (uint64_t)imm64)
     {
-        g_Reg->DoTrapException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_Reg->TriggerException(EXC_TRAP);
     }
 }
 
@@ -1800,7 +1800,7 @@ void R4300iOp::REGIMM_TLTI()
 {
     if (_GPR[m_Opcode.rs].DW < (int64_t)((int16_t)m_Opcode.immediate))
     {
-        g_Reg->DoTrapException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_Reg->TriggerException(EXC_TRAP);
     }
 }
 
@@ -1812,7 +1812,7 @@ void R4300iOp::REGIMM_TLTIU()
     imm64 = imm32;
     if (_GPR[m_Opcode.rs].UDW < (uint64_t)imm64)
     {
-        g_Reg->DoTrapException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_Reg->TriggerException(EXC_TRAP);
     }
 }
 
@@ -1820,7 +1820,7 @@ void R4300iOp::REGIMM_TNEI()
 {
     if (_GPR[m_Opcode.rs].DW != (int64_t)((int16_t)m_Opcode.immediate))
     {
-        g_Reg->DoTrapException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
+        g_Reg->TriggerException(EXC_TRAP);
     }
 }
 

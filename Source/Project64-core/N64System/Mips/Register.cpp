@@ -641,23 +641,6 @@ void CRegisters::DoFloatingPointException(bool DelaySlot)
     m_PROGRAM_COUNTER = 0x80000180;
 }
 
-void CRegisters::DoTrapException(bool DelaySlot)
-{
-    CAUSE_REGISTER.ExceptionCode = EXC_TRAP;
-    CAUSE_REGISTER.CoprocessorUnitNumber = 0;
-    if (DelaySlot)
-    {
-        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
-        CAUSE_REGISTER.BranchDelay = 1;
-    }
-    else
-    {
-        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
-        CAUSE_REGISTER.BranchDelay = 0;
-    }
-    m_PROGRAM_COUNTER = 0x80000180;
-}
-
 void CRegisters::DoCopUnusableException(bool DelaySlot, int32_t Coprocessor)
 {
     if (HaveDebugger())
@@ -871,4 +854,28 @@ void CRegisters::DoSysCallException(bool DelaySlot)
     }
     STATUS_REGISTER |= STATUS_EXL;
     m_PROGRAM_COUNTER = 0x80000180;
+}
+
+void CRegisters::TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor)
+{
+    if (GenerateLog() && LogExceptions())
+    {
+        if (ExceptionCode != EXC_INT)
+        {
+            LogMessage("%08X: Exception %d", m_PROGRAM_COUNTER, ExceptionCode);
+        }
+        else if (!LogNoInterrupts())
+        {
+            LogMessage("%08X: Interrupt generated", m_PROGRAM_COUNTER);
+        }
+    }
+
+    CAUSE_REGISTER.ExceptionCode = ExceptionCode;
+    CAUSE_REGISTER.CoprocessorUnitNumber = Coprocessor;
+    CAUSE_REGISTER.BranchDelay = m_System->m_PipelineStage == PIPELINE_STAGE_JUMP;
+    EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - (CAUSE_REGISTER.BranchDelay ? 4 : 0));
+    STATUS_REGISTER |= STATUS_EXL;
+    m_PROGRAM_COUNTER = 0x80000180;
+    m_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
+    m_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
 }
