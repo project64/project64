@@ -413,7 +413,6 @@ public:
     void DoOverflowException(bool DelaySlot);
     void DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr);
     void DoTLBWriteMiss(bool DelaySlot, uint64_t BadVaddr);
-    void DoSysCallException(bool DelaySlot);
     void FixFpuLocations();
     void Reset();
     void SetAsCurrentSystem();

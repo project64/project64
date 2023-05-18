@@ -826,36 +826,6 @@ void CRegisters::DoTLBWriteMiss(bool DelaySlot, uint64_t BadVaddr)
     }
 }
 
-void CRegisters::DoSysCallException(bool DelaySlot)
-{
-    if (HaveDebugger())
-    {
-        if ((STATUS_REGISTER & STATUS_EXL) != 0)
-        {
-            g_Notify->DisplayError("EXL set in syscall exception");
-        }
-        if ((STATUS_REGISTER & STATUS_ERL) != 0)
-        {
-            g_Notify->DisplayError("ERL set in syscall exception");
-        }
-    }
-
-    CAUSE_REGISTER.ExceptionCode = EXC_SYSCALL;
-    CAUSE_REGISTER.CoprocessorUnitNumber = 0;
-    if (DelaySlot)
-    {
-        CAUSE_REGISTER.BranchDelay = 1;
-        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
-    }
-    else
-    {
-        CAUSE_REGISTER.BranchDelay = 0;
-        EPC_REGISTER = (int64_t)(int32_t)m_PROGRAM_COUNTER;
-    }
-    STATUS_REGISTER |= STATUS_EXL;
-    m_PROGRAM_COUNTER = 0x80000180;
-}
-
 void CRegisters::TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor)
 {
     if (GenerateLog() && LogExceptions())

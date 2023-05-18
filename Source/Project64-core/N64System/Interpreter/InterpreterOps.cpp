@@ -1309,9 +1309,7 @@ void R4300iOp::SPECIAL_JALR()
 
 void R4300iOp::SPECIAL_SYSCALL()
 {
-    g_Reg->DoSysCallException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+    g_Reg->TriggerException(EXC_SYSCALL);
 }
 
 void R4300iOp::SPECIAL_BREAK()
