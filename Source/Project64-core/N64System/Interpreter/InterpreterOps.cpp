@@ -1881,9 +1881,7 @@ void R4300iOp::CPO1_UNIMPLEMENTED_OP()
     }
     FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
     StatusReg.Cause.UnimplementedOperation = 1;
-    g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+    g_Reg->TriggerException(EXC_FPE);
 }
 
 void R4300iOp::COP1_MF()
@@ -2025,9 +2023,7 @@ void R4300iOp::COP1_S_ADD()
 
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
     {
-        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        g_Reg->TriggerException(EXC_FPE);
         return;
     }
     float Result = (*(float *)_FPR_S[m_Opcode.fs] + *(float *)_FPR_S[m_Opcode.ft]);
@@ -2050,9 +2046,7 @@ void R4300iOp::COP1_S_SUB()
 
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
     {
-        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        g_Reg->TriggerException(EXC_FPE);
         return;
     }
     float Result = (*(float *)_FPR_S[m_Opcode.fs] - *(float *)_FPR_S[m_Opcode.ft]);
@@ -2075,9 +2069,7 @@ void R4300iOp::COP1_S_MUL()
 
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
     {
-        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        g_Reg->TriggerException(EXC_FPE);
         return;
     }
     float Result = (*(float *)_FPR_S[m_Opcode.fs] * *(float *)_FPR_S[m_Opcode.ft]);
@@ -2100,9 +2092,7 @@ void R4300iOp::COP1_S_DIV()
 
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
     {
-        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        g_Reg->TriggerException(EXC_FPE);
         return;
     }
     float Result = (*(float *)_FPR_S[m_Opcode.fs] / *(float *)_FPR_S[m_Opcode.ft]);
@@ -2125,9 +2115,7 @@ void R4300iOp::COP1_S_SQRT()
 
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
     {
-        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        g_Reg->TriggerException(EXC_FPE);
         return;
     }
     float Result = sqrtf(*(float *)(_FPR_S[m_Opcode.fs]));
@@ -2150,9 +2138,7 @@ void R4300iOp::COP1_S_ABS()
 
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
     {
-        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        g_Reg->TriggerException(EXC_FPE);
         return;
     }
     float Result = (float)fabs(*(float *)_FPR_S[m_Opcode.fs]);
@@ -2185,9 +2171,7 @@ void R4300iOp::COP1_S_NEG()
 
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
     {
-        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        g_Reg->TriggerException(EXC_FPE);
         return;
     }
     float Result = (*(float *)_FPR_S[m_Opcode.fs] * -1.0f);
@@ -2377,9 +2361,7 @@ void R4300iOp::COP1_S_CVT_D()
     feclearexcept(FE_ALL_EXCEPT);
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
     {
-        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        g_Reg->TriggerException(EXC_FPE);
         return;
     }
     double Result = (double)(*(float *)_FPR_S[m_Opcode.fs]);
@@ -2467,9 +2449,7 @@ void R4300iOp::COP1_S_CMP()
             StatusReg.Cause.InvalidOperation = 1;
             if (StatusReg.Enable.InvalidOperation)
             {
-                g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-                g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-                g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+                g_Reg->TriggerException(EXC_FPE);
                 return;
             }
             else
@@ -2936,9 +2916,7 @@ void R4300iOp::COP1_D_CMP()
             StatusReg.Cause.InvalidOperation = 1;
             if (StatusReg.Enable.InvalidOperation)
             {
-                g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-                g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-                g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+                g_Reg->TriggerException(EXC_FPE);
                 return;
             }
             else
@@ -3018,9 +2996,7 @@ void R4300iOp::COP1_L_CVT_S()
     {
         FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
         StatusReg.Cause.UnimplementedOperation = 1;
-        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        g_Reg->TriggerException(EXC_FPE);
         return;
     }
     float Result = (float)fs;
@@ -3045,9 +3021,7 @@ void R4300iOp::COP1_L_CVT_D()
     {
         FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
         StatusReg.Cause.UnimplementedOperation = 1;
-        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        g_Reg->TriggerException(EXC_FPE);
         return;
     }
     double Result = (double)fs;
@@ -3181,9 +3155,7 @@ bool R4300iOp::CheckFPUInput32Conv(const float & Value)
     {
         FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
         StatusReg.Cause.UnimplementedOperation = 1;
-        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        g_Reg->TriggerException(EXC_FPE);
         return false;
     }
     return true;
@@ -3224,9 +3196,7 @@ bool R4300iOp::CheckFPUInput64(const double & Value)
     }
     if (Exception)
     {
-        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        g_Reg->TriggerException(EXC_FPE);
         return false;
     }
     return true;
@@ -3242,9 +3212,7 @@ bool R4300iOp::CheckFPUInput64Conv(const double & Value)
     {
         FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
         StatusReg.Cause.UnimplementedOperation = 1;
-        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        g_Reg->TriggerException(EXC_FPE);
         return false;
     }
     return true;
@@ -3274,9 +3242,7 @@ bool R4300iOp::CheckFPUResult32(float & Result)
             if (!StatusReg.FlushSubnormals || StatusReg.Enable.Underflow || StatusReg.Enable.Inexact)
             {
                 StatusReg.Cause.UnimplementedOperation = 1;
-                g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-                g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-                g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+                g_Reg->TriggerException(EXC_FPE);
                 return true;
             }
             else
@@ -3319,9 +3285,7 @@ bool R4300iOp::CheckFPUResult32(float & Result)
     }
     if (DoException)
     {
-        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        g_Reg->TriggerException(EXC_FPE);
         return true;
     }
     return false;
@@ -3340,9 +3304,7 @@ bool R4300iOp::CheckFPUResult64(double & Result)
         if (!StatusReg.FlushSubnormals || StatusReg.Enable.Underflow || StatusReg.Enable.Inexact)
         {
             StatusReg.Cause.UnimplementedOperation = 1;
-            g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-            g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-            g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+            g_Reg->TriggerException(EXC_FPE);
             return true;
         }
         else
@@ -3384,9 +3346,7 @@ bool R4300iOp::CheckFPUException(void)
     {
         return false;
     }
-    g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+    g_Reg->TriggerException(EXC_FPE);
     return true;
 }
 
@@ -3420,9 +3380,7 @@ bool R4300iOp::CheckFPUInvalidException(void)
 
     if (Res)
     {
-        g_Reg->DoFloatingPointException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        g_Reg->TriggerException(EXC_FPE);
         return true;
     }
     return false;

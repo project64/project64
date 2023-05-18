@@ -483,9 +483,7 @@ void CRegisters::Cop1_CT(uint32_t Reg, uint32_t Value)
             ((StatusReg.Cause.InvalidOperation & StatusReg.Enable.InvalidOperation) != 0) ||
             (StatusReg.Cause.UnimplementedOperation != 0))
         {
-            DoFloatingPointException(m_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-            m_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-            m_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+            g_Reg->TriggerException(EXC_FPE);
         }
     }
 }
@@ -618,24 +616,6 @@ void CRegisters::DoBreakException(bool DelaySlot)
     {
         CAUSE_REGISTER.BranchDelay = 0;
         EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
-    }
-    STATUS_REGISTER |= STATUS_EXL;
-    m_PROGRAM_COUNTER = 0x80000180;
-}
-
-void CRegisters::DoFloatingPointException(bool DelaySlot)
-{
-    CAUSE_REGISTER.ExceptionCode = EXC_FPE;
-    CAUSE_REGISTER.CoprocessorUnitNumber = 0;
-    if (DelaySlot)
-    {
-        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
-        CAUSE_REGISTER.BranchDelay = 1;
-    }
-    else
-    {
-        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
-        CAUSE_REGISTER.BranchDelay = 0;
     }
     STATUS_REGISTER |= STATUS_EXL;
     m_PROGRAM_COUNTER = 0x80000180;
