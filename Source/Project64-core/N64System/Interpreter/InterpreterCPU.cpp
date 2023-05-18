@@ -130,7 +130,11 @@ void CInterpreterCPU::ExecuteCPU()
                 CheckTimer = (JumpToLocation < PROGRAM_COUNTER - 4 || TestTimer);
                 PROGRAM_COUNTER = JumpToLocation;
                 PipelineStage = PIPELINE_STAGE_NORMAL;
-                if (CheckTimer)
+                if ((PROGRAM_COUNTER & 0x3) != 0)
+                {
+                    GenerateAddressErrorException((int32_t)JumpToLocation, true);
+                }
+                else if (CheckTimer)
                 {
                     TestTimer = false;
                     if (NextTimer < 0)
