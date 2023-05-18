@@ -673,42 +673,11 @@ void CRegisters::DoCopUnusableException(bool DelaySlot, int32_t Coprocessor)
 
 bool CRegisters::DoIntrException(bool DelaySlot)
 {
-    if ((STATUS_REGISTER & STATUS_IE) == 0)
+    if ((STATUS_REGISTER & STATUS_IE) == 0 || (STATUS_REGISTER & STATUS_EXL) != 0 || (STATUS_REGISTER & STATUS_ERL) != 0)
     {
         return false;
     }
-
-    if ((STATUS_REGISTER & STATUS_EXL) != 0)
-    {
-        return false;
-    }
-
-    if ((STATUS_REGISTER & STATUS_ERL) != 0)
-    {
-        return false;
-    }
-
-    if (GenerateLog() && LogExceptions() && !LogNoInterrupts())
-    {
-        LogMessage("%08X: Interrupt generated", m_PROGRAM_COUNTER);
-    }
-
-    CAUSE_REGISTER.ExceptionCode = EXC_INT;
-    CAUSE_REGISTER.CoprocessorUnitNumber = 0;
-
-    if (DelaySlot)
-    {
-        CAUSE_REGISTER.BranchDelay = 1;
-        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
-    }
-    else
-    {
-        CAUSE_REGISTER.BranchDelay = 0;
-        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
-    }
-
-    STATUS_REGISTER |= STATUS_EXL;
-    m_PROGRAM_COUNTER = 0x80000180;
+    TriggerException(EXC_INT, 0);
     return true;
 }
 
