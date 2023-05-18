@@ -1310,9 +1310,7 @@ void R4300iOp::SPECIAL_BREAK()
     }
     else
     {
-        g_Reg->DoBreakException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-        g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-        g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+        g_Reg->TriggerException(EXC_BREAK);
     }
 }
 
