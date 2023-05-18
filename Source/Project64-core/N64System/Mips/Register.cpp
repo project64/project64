@@ -292,6 +292,7 @@ void CRegisters::Reset()
     memset(m_FPCR, 0, sizeof(m_FPCR));
     m_FPCR[0] = 0xA00;
     m_CP0Latch = 0;
+    m_CP2Latch = 0;
     m_HI.DW = 0;
     m_LO.DW = 0;
     m_RoundingModel = FE_TONEAREST;
@@ -488,6 +489,16 @@ void CRegisters::Cop1_CT(uint32_t Reg, uint32_t Value)
     }
 }
 
+uint64_t CRegisters::Cop2_MF(uint32_t /*Reg*/)
+{
+    return m_CP2Latch;
+}
+
+void CRegisters::Cop2_MT(uint32_t /*Reg*/, uint64_t Value)
+{
+    m_CP2Latch = Value;
+}
+
 void CRegisters::CheckInterrupts()
 {
     uint32_t mi_intr_reg = MI_INTR_REG, status_register;
@@ -591,7 +602,7 @@ void CRegisters::FixFpuLocations()
     }
 }
 
-bool CRegisters::DoIntrException(bool DelaySlot)
+bool CRegisters::DoIntrException()
 {
     if ((STATUS_REGISTER & STATUS_IE) == 0 || (STATUS_REGISTER & STATUS_EXL) != 0 || (STATUS_REGISTER & STATUS_ERL) != 0)
     {

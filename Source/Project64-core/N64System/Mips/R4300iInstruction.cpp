@@ -407,8 +407,7 @@ void R4300iInstruction::DecodeName(void)
         DecodeCop1Name();
         break;
     case R4300i_CP2:
-        strcpy(m_Name, "Reserved(CP2)");
-        sprintf(m_Param, "");
+        DecodeCop2Name();
         break;
     case R4300i_CP3:
         strcpy(m_Name, "Reserved(CP3)");
@@ -1090,5 +1089,39 @@ void R4300iInstruction::DecodeCop1Name(void)
     default:
         strcpy(m_Name, "UNKNOWN COP1");
         sprintf(m_Param, "0x%08X", m_Instruction.Value);
+    }
+}
+
+void R4300iInstruction::DecodeCop2Name(void)
+{
+    switch (m_Instruction.fmt)
+    {
+    case R4300i_COP2_MF:
+        strcpy(m_Name, "MFC2");
+        sprintf(m_Param, "%s, R%d", CRegName::GPR[m_Instruction.rt], m_Instruction.fs);
+        break;
+    case R4300i_COP2_DMF:
+        strcpy(m_Name, "DMFC2");
+        sprintf(m_Param, "%s, R%d", CRegName::GPR[m_Instruction.rt], m_Instruction.fs);
+        break;
+    case R4300i_COP2_CF:
+        strcpy(m_Name, "CFC2");
+        sprintf(m_Param, "%s, R%d", CRegName::GPR[m_Instruction.rt], m_Instruction.fs);
+        break;
+    case R4300i_COP2_MT:
+        strcpy(m_Name, "MTC2");
+        sprintf(m_Param, "%s, R%d", CRegName::GPR[m_Instruction.rt], m_Instruction.fs);
+        break;
+    case R4300i_COP2_DMT:
+        strcpy(m_Name, "DMTC2");
+        sprintf(m_Param, "%s, R%d", CRegName::GPR[m_Instruction.rt], m_Instruction.fs);
+        break;
+    case R4300i_COP2_CT:
+        strcpy(m_Name, "CTC2");
+        sprintf(m_Param, "%s, R%d", CRegName::GPR[m_Instruction.rt], m_Instruction.fs);
+        break;
+    default:
+        strcpy(m_Name, "Reserved(CP2)");
+        strcpy(m_Param, "");
     }
 }

@@ -31,6 +31,7 @@ private:
     void DecodeSpecialName(void);
     void DecodeRegImmName(void);
     void DecodeCop1Name(void);
+    void DecodeCop2Name(void);
 
     uint32_t m_Address;
     R4300iOpcode m_Instruction;

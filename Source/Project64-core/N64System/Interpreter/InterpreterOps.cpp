@@ -40,6 +40,7 @@ R4300iOp::Func R4300iOp::Jump_CoP1_S[64];
 R4300iOp::Func R4300iOp::Jump_CoP1_D[64];
 R4300iOp::Func R4300iOp::Jump_CoP1_W[64];
 R4300iOp::Func R4300iOp::Jump_CoP1_L[64];
+R4300iOp::Func R4300iOp::Jump_CoP2[32];
 
 const uint32_t R4300iOp::SWL_MASK[4] = {0x00000000, 0xFF000000, 0xFFFF0000, 0xFFFFFF00};
 const uint32_t R4300iOp::SWR_MASK[4] = {0x00FFFFFF, 0x0000FFFF, 0x000000FF, 0x00000000};
@@ -78,14 +79,7 @@ void R4300iOp::COP1()
 
 void R4300iOp::COP2()
 {
-    if ((g_Reg->STATUS_REGISTER & STATUS_CU2) == 0)
-    {
-        g_Reg->TriggerException(EXC_CPU, 2);
-    }
-    else
-    {
-        UnknownOpcode();
-    }
+    Jump_CoP2[m_Opcode.fmt]();
 }
 
 void R4300iOp::COP3()
@@ -706,6 +700,38 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_CoP1_L[61] = UnknownOpcode;
     Jump_CoP1_L[62] = UnknownOpcode;
     Jump_CoP1_L[63] = UnknownOpcode;
+
+    Jump_CoP2[0] = COP2_MF;
+    Jump_CoP2[1] = COP2_DMF;
+    Jump_CoP2[2] = COP2_CF;
+    Jump_CoP2[3] = CPO2_INVALID_OP;
+    Jump_CoP2[4] = COP2_MT;
+    Jump_CoP2[5] = COP2_DMT;
+    Jump_CoP2[6] = COP2_CT;
+    Jump_CoP2[7] = CPO2_INVALID_OP;
+    Jump_CoP2[8] = CPO2_INVALID_OP;
+    Jump_CoP2[10] = CPO2_INVALID_OP;
+    Jump_CoP2[11] = CPO2_INVALID_OP;
+    Jump_CoP2[12] = CPO2_INVALID_OP;
+    Jump_CoP2[13] = CPO2_INVALID_OP;
+    Jump_CoP2[14] = CPO2_INVALID_OP;
+    Jump_CoP2[15] = CPO2_INVALID_OP;
+    Jump_CoP2[16] = CPO2_INVALID_OP;
+    Jump_CoP2[17] = CPO2_INVALID_OP;
+    Jump_CoP2[18] = CPO2_INVALID_OP;
+    Jump_CoP2[19] = CPO2_INVALID_OP;
+    Jump_CoP2[20] = CPO2_INVALID_OP;
+    Jump_CoP2[21] = CPO2_INVALID_OP;
+    Jump_CoP2[22] = CPO2_INVALID_OP;
+    Jump_CoP2[23] = CPO2_INVALID_OP;
+    Jump_CoP2[24] = CPO2_INVALID_OP;
+    Jump_CoP2[25] = CPO2_INVALID_OP;
+    Jump_CoP2[26] = CPO2_INVALID_OP;
+    Jump_CoP2[27] = CPO2_INVALID_OP;
+    Jump_CoP2[28] = CPO2_INVALID_OP;
+    Jump_CoP2[29] = CPO2_INVALID_OP;
+    Jump_CoP2[30] = CPO2_INVALID_OP;
+    Jump_CoP2[31] = CPO2_INVALID_OP;
 
     return Jump_Opcode;
 }
@@ -3028,6 +3054,84 @@ void R4300iOp::COP1_L_CVT_D()
         return;
     }
     *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
+}
+
+// COP2 functions
+void R4300iOp::CPO2_INVALID_OP(void)
+{
+    g_Reg->TriggerException((g_Reg->STATUS_REGISTER & STATUS_CU2) == 0 ? EXC_CPU : EXC_II, 2);
+}
+
+void R4300iOp::COP2_MF()
+{
+    if ((g_Reg->STATUS_REGISTER & STATUS_CU2) == 0)
+    {
+        g_Reg->TriggerException(EXC_CPU, 2);
+    }
+    else
+    {
+        _GPR[m_Opcode.rt].DW = (int32_t)g_Reg->Cop2_MF(m_Opcode.rd);
+    }
+}
+
+void R4300iOp::COP2_DMF()
+{
+    if ((g_Reg->STATUS_REGISTER & STATUS_CU2) == 0)
+    {
+        g_Reg->TriggerException(EXC_CPU, 2);
+    }
+    else
+    {
+        _GPR[m_Opcode.rt].DW = g_Reg->Cop2_MF(m_Opcode.rd);
+    }
+}
+
+void R4300iOp::COP2_CF()
+{
+    if ((g_Reg->STATUS_REGISTER & STATUS_CU2) == 0)
+    {
+        g_Reg->TriggerException(EXC_CPU, 2);
+    }
+    else
+    {
+        _GPR[m_Opcode.rt].DW = (int32_t)g_Reg->Cop2_MF(m_Opcode.rd);
+    }
+}
+
+void R4300iOp::COP2_MT()
+{
+    if ((g_Reg->STATUS_REGISTER & STATUS_CU2) == 0)
+    {
+        g_Reg->TriggerException(EXC_CPU, 2);
+    }
+    else
+    {
+        g_Reg->Cop2_MT((CRegisters::COP0Reg)m_Opcode.rd, _GPR[m_Opcode.rt].DW);
+    }
+}
+
+void R4300iOp::COP2_DMT()
+{
+    if ((g_Reg->STATUS_REGISTER & STATUS_CU2) == 0)
+    {
+        g_Reg->TriggerException(EXC_CPU, 2);
+    }
+    else
+    {
+        g_Reg->Cop2_MT((CRegisters::COP0Reg)m_Opcode.rd, _GPR[m_Opcode.rt].DW);
+    }
+}
+
+void R4300iOp::COP2_CT()
+{
+    if ((g_Reg->STATUS_REGISTER & STATUS_CU2) == 0)
+    {
+        g_Reg->TriggerException(EXC_CPU, 2);
+    }
+    else
+    {
+        g_Reg->Cop2_MT((CRegisters::COP0Reg)m_Opcode.rd, _GPR[m_Opcode.rt].DW);
+    }
 }
 
 // Other functions

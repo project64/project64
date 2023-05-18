@@ -404,7 +404,7 @@ public:
 
     void CheckInterrupts();
     void DoAddressError(bool DelaySlot, uint64_t BadVaddr, bool FromRead);
-    bool DoIntrException(bool DelaySlot);
+    bool DoIntrException();
     void DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr);
     void DoTLBWriteMiss(bool DelaySlot, uint64_t BadVaddr);
     void FixFpuLocations();
@@ -415,12 +415,15 @@ public:
     uint64_t Cop0_MF(COP0Reg Reg);
     void Cop0_MT(COP0Reg Reg, uint64_t Value);
     void Cop1_CT(uint32_t Reg, uint32_t Value);
+    uint64_t Cop2_MF(uint32_t Reg);
+    void Cop2_MT(uint32_t Reg, uint64_t Value);
 
     // General registers
     uint32_t m_PROGRAM_COUNTER;
     MIPS_DWORD m_GPR[32];
     uint64_t m_CP0[32];
     uint64_t m_CP0Latch;
+    uint64_t m_CP2Latch;
     MIPS_DWORD m_HI;
     MIPS_DWORD m_LO;
     uint32_t m_LLBit;

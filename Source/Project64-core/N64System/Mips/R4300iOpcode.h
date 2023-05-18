@@ -270,3 +270,13 @@ enum R4300iCOP1FuntOpCodes
     R4300i_COP1_FUNCT_C_LE = 62,
     R4300i_COP1_FUNCT_C_NGT = 63,
 };
+
+enum R4300iCOP2OpCodes
+{
+    R4300i_COP2_MF = 0,
+    R4300i_COP2_DMF = 1,
+    R4300i_COP2_CF = 2,
+    R4300i_COP2_MT = 4,
+    R4300i_COP2_DMT = 5,
+    R4300i_COP2_CT = 6,
+};

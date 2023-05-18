@@ -213,6 +213,15 @@ public:
     static void COP1_L_CVT_S();
     static void COP1_L_CVT_D();
 
+    // COP2 functions
+    static void CPO2_INVALID_OP(void);
+    static void COP2_MF();
+    static void COP2_DMF();
+    static void COP2_CF();
+    static void COP2_MT();
+    static void COP2_DMT();
+    static void COP2_CT();
+
     // Other functions
     static void ReservedInstruction();
     static void UnknownOpcode();
@@ -249,6 +258,7 @@ protected:
     static Func Jump_CoP1_D[64];
     static Func Jump_CoP1_W[64];
     static Func Jump_CoP1_L[64];
+    static Func Jump_CoP2[32];
 
     static void GenerateAddressErrorException(uint64_t VAddr, bool FromRead);
     static void GenerateTLBReadException(uint64_t VAddr, const char * function);

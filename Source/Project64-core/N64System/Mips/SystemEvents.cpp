@@ -114,32 +114,32 @@ void CSystemEvents::ExecuteEvents()
             m_System->Reset(true, true);
             break;
         case SysEvent_ExecuteInterrupt:
-            g_Reg->DoIntrException(false);
+            g_Reg->DoIntrException();
             break;
         case SysEvent_Interrupt_SP:
             g_Reg->MI_INTR_REG |= MI_INTR_SP;
-            g_Reg->DoIntrException(false);
+            g_Reg->DoIntrException();
             break;
         case SysEvent_Interrupt_SI:
             g_Reg->MI_INTR_REG |= MI_INTR_SI;
-            g_Reg->DoIntrException(false);
+            g_Reg->DoIntrException();
             break;
         case SysEvent_Interrupt_AI:
             g_Reg->MI_INTR_REG |= MI_INTR_AI;
-            g_Reg->DoIntrException(false);
+            g_Reg->DoIntrException();
             break;
         case SysEvent_Interrupt_VI:
             g_Reg->MI_INTR_REG |= MI_INTR_VI;
-            g_Reg->DoIntrException(false);
+            g_Reg->DoIntrException();
             break;
         case SysEvent_Interrupt_PI:
             g_Reg->PI_STATUS_REG |= PI_STATUS_INTERRUPT;
             g_Reg->MI_INTR_REG |= MI_INTR_PI;
-            g_Reg->DoIntrException(false);
+            g_Reg->DoIntrException();
             break;
         case SysEvent_Interrupt_DP:
             g_Reg->MI_INTR_REG |= MI_INTR_DP;
-            g_Reg->DoIntrException(false);
+            g_Reg->DoIntrException();
             break;
         case SysEvent_SaveMachineState:
             if (!m_System->SaveState())
