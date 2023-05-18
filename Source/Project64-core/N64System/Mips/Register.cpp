@@ -730,24 +730,6 @@ void CRegisters::DoIllegalInstructionException(bool DelaySlot)
     STATUS_REGISTER |= STATUS_EXL;
 }
 
-void CRegisters::DoOverflowException(bool DelaySlot)
-{
-    CAUSE_REGISTER.ExceptionCode = EXC_OV;
-    CAUSE_REGISTER.CoprocessorUnitNumber = 0;
-    if (DelaySlot)
-    {
-        CAUSE_REGISTER.BranchDelay = 1;
-        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
-    }
-    else
-    {
-        CAUSE_REGISTER.BranchDelay = 0;
-        EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER);
-    }
-    m_PROGRAM_COUNTER = 0x80000180;
-    STATUS_REGISTER |= STATUS_EXL;
-}
-
 void CRegisters::DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr)
 {
     CAUSE_REGISTER.ExceptionCode = EXC_RMISS;

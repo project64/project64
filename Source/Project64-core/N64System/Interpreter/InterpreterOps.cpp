@@ -795,7 +795,7 @@ void R4300iOp::ADDI()
     int32_t sum = rs + imm;
     if ((~(rs ^ imm) & (rs ^ sum)) & 0x80000000)
     {
-        GenerateOverflowException();
+        g_Reg->TriggerException(EXC_OV);
         return;
     }
     _GPR[m_Opcode.rt].DW = sum;
@@ -930,7 +930,7 @@ void R4300iOp::DADDI()
     int64_t sum = rs + imm;
     if ((~(rs ^ imm) & (rs ^ sum)) & 0x8000000000000000)
     {
-        GenerateOverflowException();
+        g_Reg->TriggerException(EXC_OV);
         return;
     }
     _GPR[m_Opcode.rt].DW = sum;
@@ -1479,7 +1479,7 @@ void R4300iOp::SPECIAL_ADD()
     int32_t sum = rs + rt;
     if ((~(rs ^ rt) & (rs ^ sum)) & 0x80000000)
     {
-        GenerateOverflowException();
+        g_Reg->TriggerException(EXC_OV);
         return;
     }
     _GPR[m_Opcode.rd].DW = sum;
@@ -1498,7 +1498,7 @@ void R4300iOp::SPECIAL_SUB()
 
     if (((rs ^ rt) & (rs ^ sub)) & 0x80000000)
     {
-        GenerateOverflowException();
+        g_Reg->TriggerException(EXC_OV);
         return;
     }
     _GPR[m_Opcode.rd].DW = sub;
@@ -1566,7 +1566,7 @@ void R4300iOp::SPECIAL_DADD()
     int64_t sum = rs + rt;
     if ((~(rs ^ rt) & (rs ^ sum)) & 0x8000000000000000)
     {
-        GenerateOverflowException();
+        g_Reg->TriggerException(EXC_OV);
         return;
     }
     _GPR[m_Opcode.rd].DW = sum;
@@ -1585,7 +1585,7 @@ void R4300iOp::SPECIAL_DSUB()
 
     if (((rs ^ rt) & (rs ^ sub)) & 0x8000000000000000)
     {
-        GenerateOverflowException();
+        g_Reg->TriggerException(EXC_OV);
         return;
     }
     _GPR[m_Opcode.rd].DW = sub;
@@ -3114,13 +3114,6 @@ bool R4300iOp::MemoryBreakpoint()
 void R4300iOp::GenerateAddressErrorException(uint64_t VAddr, bool FromRead)
 {
     g_Reg->DoAddressError(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP, VAddr, FromRead);
-    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
-}
-
-void R4300iOp::GenerateOverflowException(void)
-{
-    g_Reg->DoOverflowException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
     g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
     g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
 }
