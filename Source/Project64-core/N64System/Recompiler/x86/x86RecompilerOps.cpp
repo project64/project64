@@ -9533,8 +9533,10 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         ExitCodeBlock();
         break;
     case ExitReason_IllegalInstruction:
-        m_Assembler.PushImm32(InDelaySlot ? "true" : "false", InDelaySlot);
-        m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::DoIllegalInstructionException), "CRegisters::DoIllegalInstructionException", 8);
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
+        m_Assembler.push(0);
+        m_Assembler.PushImm32("EXC_II", EXC_II);
+        m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::TriggerException), "CRegisters::TriggerException", 12);
         ExitCodeBlock();
         break;
     default:

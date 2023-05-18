@@ -3072,9 +3072,7 @@ void R4300iOp::COP1_L_CVT_D()
 // Other functions
 void R4300iOp::ReservedInstruction()
 {
-    g_Reg->DoIllegalInstructionException(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP);
-    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+    g_Reg->TriggerException(EXC_II);
 }
 
 void R4300iOp::UnknownOpcode()

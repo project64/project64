@@ -408,7 +408,6 @@ public:
     void DoFloatingPointException(bool DelaySlot);
     void DoCopUnusableException(bool DelaySlot, int32_t Coprocessor);
     bool DoIntrException(bool DelaySlot);
-    void DoIllegalInstructionException(bool DelaySlot);
     void DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr);
     void DoTLBWriteMiss(bool DelaySlot, uint64_t BadVaddr);
     void FixFpuLocations();
