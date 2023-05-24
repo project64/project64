@@ -882,27 +882,22 @@ void RSP_Vector_VADD(void)
 
 void RSP_Vector_VSUB (void) {
 	int el, del;
-	UWORD32 temp;
+    int32_t temp;
 	VECTOR result = {0};
 
 	for ( el = 0; el < 8; el++ ) {
 		del = EleSpec[RSPOpC.rs].B[el];
-        
-		temp.W = (int)RSP_Vect[RSPOpC.rd].HW[el] - (int)RSP_Vect[RSPOpC.rt].HW[del] -
+
+		temp = (int)RSP_Vect[RSPOpC.rd].HW[el] - (int)RSP_Vect[RSPOpC.rt].HW[del] -
 			 ((RSP_Flags[0].UW >> (7 - el)) & 0x1);
-		RSP_ACCUM[el].HW[1] = temp.HW[0];
-		if ((temp.HW[0] & 0x8000) == 0) {
-			if (temp.HW[1] != 0) {
-				result.HW[el] = 0x8000;
-			} else {
-				result.HW[el] = temp.HW[0];
-			}
+		RSP_ACCUM[el].HW[1] = ((int16_t)temp);
+		// Clamp signed
+		if (temp < ((int16_t)-32768)) {
+			result.HW[el] = ((int16_t)-32768);
+		} else if (temp > ((int16_t)32767)) {
+			result.HW[el] = ((int16_t)32767); 
 		} else {
-			if (temp.HW[1] != -1 ) {
-				result.HW[el] = 0x7FFF;
-			} else {
-				result.HW[el] = temp.HW[0];
-			}
+			result.HW[el] = ((int16_t)temp);
 		}
 	}
 	RSP_Flags[0].UW = 0;
