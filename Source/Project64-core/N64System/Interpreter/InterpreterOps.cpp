@@ -1899,7 +1899,7 @@ void R4300iOp::COP0_CO_ERET()
 // COP1 functions
 void R4300iOp::CPO1_UNIMPLEMENTED_OP()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
@@ -1966,7 +1966,7 @@ void R4300iOp::COP1_CT()
 
 void R4300iOp::COP1_BCF()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
@@ -1983,7 +1983,7 @@ void R4300iOp::COP1_BCF()
 
 void R4300iOp::COP1_BCT()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
@@ -2000,7 +2000,7 @@ void R4300iOp::COP1_BCT()
 
 void R4300iOp::COP1_BCFL()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
@@ -2018,7 +2018,7 @@ void R4300iOp::COP1_BCFL()
 
 void R4300iOp::COP1_BCTL()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
@@ -2037,13 +2037,10 @@ void R4300iOp::COP1_BCTL()
 // COP1: S functions
 void R4300iOp::COP1_S_ADD()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
 
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
     {
@@ -2060,14 +2057,10 @@ void R4300iOp::COP1_S_ADD()
 
 void R4300iOp::COP1_S_SUB()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
-
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
     {
         g_Reg->TriggerException(EXC_FPE);
@@ -2083,13 +2076,10 @@ void R4300iOp::COP1_S_SUB()
 
 void R4300iOp::COP1_S_MUL()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
 
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
     {
@@ -2106,13 +2096,10 @@ void R4300iOp::COP1_S_MUL()
 
 void R4300iOp::COP1_S_DIV()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
 
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
     {
@@ -2129,13 +2116,10 @@ void R4300iOp::COP1_S_DIV()
 
 void R4300iOp::COP1_S_SQRT()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
 
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
     {
@@ -2152,13 +2136,10 @@ void R4300iOp::COP1_S_SQRT()
 
 void R4300iOp::COP1_S_ABS()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
 
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
     {
@@ -2185,13 +2166,10 @@ void R4300iOp::COP1_S_MOV()
 
 void R4300iOp::COP1_S_NEG()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
 
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
     {
@@ -2208,13 +2186,11 @@ void R4300iOp::COP1_S_NEG()
 
 void R4300iOp::COP1_S_ROUND_L()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(FE_TONEAREST))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(FE_TONEAREST);
-    feclearexcept(FE_ALL_EXCEPT);
+
     if (!CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
     {
         return;
@@ -2229,13 +2205,10 @@ void R4300iOp::COP1_S_ROUND_L()
 
 void R4300iOp::COP1_S_TRUNC_L()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(FE_TOWARDZERO))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(FE_TOWARDZERO);
-    feclearexcept(FE_ALL_EXCEPT);
     if (!CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
     {
         return;
@@ -2250,13 +2223,10 @@ void R4300iOp::COP1_S_TRUNC_L()
 
 void R4300iOp::COP1_S_CEIL_L()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(FE_UPWARD))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(FE_UPWARD);
-    feclearexcept(FE_ALL_EXCEPT);
     if (!CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
     {
         return;
@@ -2271,13 +2241,10 @@ void R4300iOp::COP1_S_CEIL_L()
 
 void R4300iOp::COP1_S_FLOOR_L()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(FE_DOWNWARD))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(FE_DOWNWARD);
-    feclearexcept(FE_ALL_EXCEPT);
     if (!CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
     {
         return;
@@ -2292,13 +2259,10 @@ void R4300iOp::COP1_S_FLOOR_L()
 
 void R4300iOp::COP1_S_ROUND_W()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(FE_TONEAREST))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(FE_TONEAREST);
-    feclearexcept(FE_ALL_EXCEPT);
     if (!CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
     {
         return;
@@ -2313,13 +2277,10 @@ void R4300iOp::COP1_S_ROUND_W()
 
 void R4300iOp::COP1_S_TRUNC_W()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(FE_TOWARDZERO))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(FE_TOWARDZERO);
-    feclearexcept(FE_ALL_EXCEPT);
     if (!CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
     {
         return;
@@ -2334,13 +2295,10 @@ void R4300iOp::COP1_S_TRUNC_W()
 
 void R4300iOp::COP1_S_CEIL_W()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(FE_UPWARD))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(FE_UPWARD);
-    feclearexcept(FE_ALL_EXCEPT);
     if (!CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
     {
         return;
@@ -2355,13 +2313,10 @@ void R4300iOp::COP1_S_CEIL_W()
 
 void R4300iOp::COP1_S_FLOOR_W()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(FE_DOWNWARD))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(FE_DOWNWARD);
-    feclearexcept(FE_ALL_EXCEPT);
     if (!CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
     {
         return;
@@ -2376,13 +2331,10 @@ void R4300iOp::COP1_S_FLOOR_W()
 
 void R4300iOp::COP1_S_CVT_D()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
     {
         g_Reg->TriggerException(EXC_FPE);
@@ -2398,13 +2350,10 @@ void R4300iOp::COP1_S_CVT_D()
 
 void R4300iOp::COP1_S_CVT_W()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
     if (!CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
     {
         return;
@@ -2419,13 +2368,10 @@ void R4300iOp::COP1_S_CVT_W()
 
 void R4300iOp::COP1_S_CVT_L()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
     if (!CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
     {
         return;
@@ -2440,12 +2386,10 @@ void R4300iOp::COP1_S_CVT_L()
 
 void R4300iOp::COP1_S_CMP()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-
-    _FPCR[31] &= ~0x0003F000;
     float Temp0 = *(float *)_FPR_S[m_Opcode.fs];
     float Temp1 = *(float *)_FPR_S[m_Opcode.ft];
 
@@ -2505,13 +2449,10 @@ void R4300iOp::COP1_S_CMP()
 // COP1: D functions
 void R4300iOp::COP1_D_ADD()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
 
     if (!CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]) || !CheckFPUInput64(*(double *)_FPR_D[m_Opcode.ft]))
     {
@@ -2527,13 +2468,10 @@ void R4300iOp::COP1_D_ADD()
 
 void R4300iOp::COP1_D_SUB()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
 
     if (!CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]) || !CheckFPUInput64(*(double *)_FPR_D[m_Opcode.ft]))
     {
@@ -2549,13 +2487,10 @@ void R4300iOp::COP1_D_SUB()
 
 void R4300iOp::COP1_D_MUL()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
 
     if (!CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]) || !CheckFPUInput64(*(double *)_FPR_D[m_Opcode.ft]))
     {
@@ -2571,13 +2506,10 @@ void R4300iOp::COP1_D_MUL()
 
 void R4300iOp::COP1_D_DIV()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
 
     if (!CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]) || !CheckFPUInput64(*(double *)_FPR_D[m_Opcode.ft]))
     {
@@ -2593,13 +2525,10 @@ void R4300iOp::COP1_D_DIV()
 
 void R4300iOp::COP1_D_SQRT()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
 
     if (!CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]))
     {
@@ -2615,13 +2544,10 @@ void R4300iOp::COP1_D_SQRT()
 
 void R4300iOp::COP1_D_ABS()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
 
     if (!CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]))
     {
@@ -2647,13 +2573,10 @@ void R4300iOp::COP1_D_MOV()
 
 void R4300iOp::COP1_D_NEG()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
 
     if (!CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]))
     {
@@ -2669,13 +2592,10 @@ void R4300iOp::COP1_D_NEG()
 
 void R4300iOp::COP1_D_ROUND_L()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(FE_TONEAREST))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(FE_TONEAREST);
-    feclearexcept(FE_ALL_EXCEPT);
     const double & fs = *(double *)_FPR_D[m_Opcode.fs];
     if (!CheckFPUInput64Conv(fs))
     {
@@ -2691,13 +2611,10 @@ void R4300iOp::COP1_D_ROUND_L()
 
 void R4300iOp::COP1_D_TRUNC_L()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(FE_TOWARDZERO))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(FE_TOWARDZERO);
-    feclearexcept(FE_ALL_EXCEPT);
     const double & fs = *(double *)_FPR_D[m_Opcode.fs];
     if (!CheckFPUInput64Conv(fs))
     {
@@ -2713,13 +2630,10 @@ void R4300iOp::COP1_D_TRUNC_L()
 
 void R4300iOp::COP1_D_CEIL_L()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(FE_UPWARD))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(FE_UPWARD);
-    feclearexcept(FE_ALL_EXCEPT);
     const double & fs = *(double *)_FPR_D[m_Opcode.fs];
     if (!CheckFPUInput64Conv(fs))
     {
@@ -2735,13 +2649,10 @@ void R4300iOp::COP1_D_CEIL_L()
 
 void R4300iOp::COP1_D_FLOOR_L()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(FE_DOWNWARD))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(FE_DOWNWARD);
-    feclearexcept(FE_ALL_EXCEPT);
     const double & fs = *(double *)_FPR_D[m_Opcode.fs];
     if (!CheckFPUInput64Conv(fs))
     {
@@ -2757,13 +2668,10 @@ void R4300iOp::COP1_D_FLOOR_L()
 
 void R4300iOp::COP1_D_ROUND_W()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(FE_TONEAREST))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(FE_TONEAREST);
-    feclearexcept(FE_ALL_EXCEPT);
     if (!CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
     {
         return;
@@ -2778,13 +2686,10 @@ void R4300iOp::COP1_D_ROUND_W()
 
 void R4300iOp::COP1_D_TRUNC_W()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(FE_TOWARDZERO))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(FE_TOWARDZERO);
-    feclearexcept(FE_ALL_EXCEPT);
     if (!CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
     {
         return;
@@ -2799,13 +2704,10 @@ void R4300iOp::COP1_D_TRUNC_W()
 
 void R4300iOp::COP1_D_CEIL_W()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(FE_UPWARD))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(FE_UPWARD);
-    feclearexcept(FE_ALL_EXCEPT);
     if (!CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
     {
         return;
@@ -2820,13 +2722,10 @@ void R4300iOp::COP1_D_CEIL_W()
 
 void R4300iOp::COP1_D_FLOOR_W()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(FE_DOWNWARD))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(FE_DOWNWARD);
-    feclearexcept(FE_ALL_EXCEPT);
     if (!CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
     {
         return;
@@ -2841,13 +2740,10 @@ void R4300iOp::COP1_D_FLOOR_W()
 
 void R4300iOp::COP1_D_CVT_S()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
     if (!CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]))
     {
         return;
@@ -2862,13 +2758,10 @@ void R4300iOp::COP1_D_CVT_S()
 
 void R4300iOp::COP1_D_CVT_W()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
     if (!CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
     {
         return;
@@ -2883,13 +2776,10 @@ void R4300iOp::COP1_D_CVT_W()
 
 void R4300iOp::COP1_D_CVT_L()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
     const double & fs = *(double *)_FPR_D[m_Opcode.fs];
     if (!CheckFPUInput64Conv(fs))
     {
@@ -2905,11 +2795,10 @@ void R4300iOp::COP1_D_CVT_L()
 
 void R4300iOp::COP1_D_CMP()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
 
     MIPS_DWORD Temp0, Temp1;
     Temp0.DW = *(int64_t *)_FPR_D[m_Opcode.fs];
@@ -2972,13 +2861,10 @@ void R4300iOp::COP1_D_CMP()
 // COP1: W functions
 void R4300iOp::COP1_W_CVT_S()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
     float Result = (float)*(int32_t *)_FPR_S[m_Opcode.fs];
     if (CheckFPUResult32(Result))
     {
@@ -2989,13 +2875,10 @@ void R4300iOp::COP1_W_CVT_S()
 
 void R4300iOp::COP1_W_CVT_D()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
     double Result = (double)*(int32_t *)_FPR_S[m_Opcode.fs];
     if (CheckFPUException() || CheckFPUResult64(Result))
     {
@@ -3008,13 +2891,10 @@ void R4300iOp::COP1_W_CVT_D()
 
 void R4300iOp::COP1_L_CVT_S()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
     int64_t fs = *(int64_t *)_FPR_D[m_Opcode.fs];
     if (fs >= (int64_t)0x0080000000000000ull || fs < (int64_t)0xff80000000000000ull)
     {
@@ -3033,13 +2913,10 @@ void R4300iOp::COP1_L_CVT_S()
 
 void R4300iOp::COP1_L_CVT_D()
 {
-    if (TestCop1UsableException())
+    if (InitFpuOperation(*_RoundingModel))
     {
         return;
     }
-    _FPCR[31] &= ~0x0003F000;
-    fesetround(*_RoundingModel);
-    feclearexcept(FE_ALL_EXCEPT);
     int64_t fs = *(int64_t *)_FPR_D[m_Opcode.fs];
     if (fs >= (int64_t)0x0080000000000000ull || fs < (int64_t)0xff80000000000000ull)
     {
@@ -3350,16 +3227,10 @@ bool R4300iOp::CheckFPUResult32(float & Result)
             else
             {
                 StatusReg.Cause.Underflow = 1;
-                if (!StatusReg.Enable.Underflow)
-                {
-                    StatusReg.Flags.Underflow = 1;
-                }
+                StatusReg.Flags.Underflow = 1;
 
                 StatusReg.Cause.Inexact = 1;
-                if (!StatusReg.Enable.Inexact)
-                {
-                    StatusReg.Flags.Inexact = 1;
-                }
+                StatusReg.Flags.Inexact = 1;
 
                 switch (*_RoundingModel)
                 {
@@ -3412,16 +3283,10 @@ bool R4300iOp::CheckFPUResult64(double & Result)
         else
         {
             StatusReg.Cause.Underflow = 1;
-            if (!StatusReg.Enable.Underflow)
-            {
-                StatusReg.Flags.Underflow = 1;
-            }
+            StatusReg.Flags.Underflow = 1;
 
             StatusReg.Cause.Inexact = 1;
-            if (!StatusReg.Enable.Inexact)
-            {
-                StatusReg.Flags.Inexact = 1;
-            }
+            StatusReg.Flags.Inexact = 1;
 
             switch (*_RoundingModel)
             {
@@ -3485,6 +3350,18 @@ bool R4300iOp::CheckFPUInvalidException(void)
         g_Reg->TriggerException(EXC_FPE);
         return true;
     }
+    return false;
+}
+
+bool R4300iOp::InitFpuOperation(int RoundingModel)
+{
+    if (TestCop1UsableException())
+    {
+        return true;
+    }
+    _FPCR[31] &= ~0x0003F000;
+    fesetround(RoundingModel);
+    feclearexcept(FE_ALL_EXCEPT);
     return false;
 }
 

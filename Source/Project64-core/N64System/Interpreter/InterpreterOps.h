@@ -272,6 +272,7 @@ protected:
     static bool CheckFPUResult64(double & Result);
     static bool CheckFPUException(void);
     static bool CheckFPUInvalidException(void);
+    static bool InitFpuOperation(int RoundingModel);
     static bool SetFPUException(void);
 
     static const uint32_t SWL_MASK[4], SWR_MASK[4], LWL_MASK[4], LWR_MASK[4];
