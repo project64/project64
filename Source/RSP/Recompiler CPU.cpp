@@ -1,21 +1,21 @@
-#include <windows.h>
-#include <stdio.h>
 #include <float.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <windows.h>
 
-#include "Rsp.h"
 #include "Cpu.h"
 #include "Interpreter CPU.h"
+#include "Profiling.h"
+#include "RSP Command.h"
+#include "RSP registers.h"
 #include "Recompiler CPU.h"
 #include "Recompiler Ops.h"
-#include "RSP registers.h"
-#include "RSP Command.h"
+#include "Rsp.h"
+#include "Types.h"
+#include "log.h"
 #include "memory.h"
 #include "opcode.h"
-#include "log.h"
-#include "Profiling.h"
 #include "x86.h"
-#include "Types.h"
 
 #pragma warning(disable : 4152) // Non-standard extension, function/data pointer conversion in expression
 
@@ -31,374 +31,375 @@ Boolean ChangedPC;
 RSP_BLOCK CurrentBlock;
 RSP_CODE RspCode;
 
-BYTE * pLastSecondary = NULL, * pLastPrimary = NULL;
+BYTE *pLastSecondary = NULL, *pLastPrimary = NULL;
 
-void BuildRecompilerCPU ( void ) {
-	RSP_Opcode[ 0] = Compile_SPECIAL;
-	RSP_Opcode[ 1] = Compile_REGIMM;
-	RSP_Opcode[ 2] = Compile_J;
-	RSP_Opcode[ 3] = Compile_JAL;
-	RSP_Opcode[ 4] = Compile_BEQ;
-	RSP_Opcode[ 5] = Compile_BNE;
-	RSP_Opcode[ 6] = Compile_BLEZ;
-	RSP_Opcode[ 7] = Compile_BGTZ;
-	RSP_Opcode[ 8] = Compile_ADDI;
-	RSP_Opcode[ 9] = Compile_ADDIU;
-	RSP_Opcode[10] = Compile_SLTI;
-	RSP_Opcode[11] = Compile_SLTIU;
-	RSP_Opcode[12] = Compile_ANDI;
-	RSP_Opcode[13] = Compile_ORI;
-	RSP_Opcode[14] = Compile_XORI;
-	RSP_Opcode[15] = Compile_LUI;
-	RSP_Opcode[16] = Compile_COP0;
-	RSP_Opcode[17] = Compile_UnknownOpcode;
-	RSP_Opcode[18] = Compile_COP2;
-	RSP_Opcode[19] = Compile_UnknownOpcode;
-	RSP_Opcode[20] = Compile_UnknownOpcode;
-	RSP_Opcode[21] = Compile_UnknownOpcode;
-	RSP_Opcode[22] = Compile_UnknownOpcode;
-	RSP_Opcode[23] = Compile_UnknownOpcode;
-	RSP_Opcode[24] = Compile_UnknownOpcode;
-	RSP_Opcode[25] = Compile_UnknownOpcode;
-	RSP_Opcode[26] = Compile_UnknownOpcode;
-	RSP_Opcode[27] = Compile_UnknownOpcode;
-	RSP_Opcode[28] = Compile_UnknownOpcode;
-	RSP_Opcode[29] = Compile_UnknownOpcode;
-	RSP_Opcode[30] = Compile_UnknownOpcode;
-	RSP_Opcode[31] = Compile_UnknownOpcode;
-	RSP_Opcode[32] = Compile_LB;
-	RSP_Opcode[33] = Compile_LH;
-	RSP_Opcode[34] = Compile_UnknownOpcode;
-	RSP_Opcode[35] = Compile_LW;
-	RSP_Opcode[36] = Compile_LBU;
-	RSP_Opcode[37] = Compile_LHU;
-	RSP_Opcode[38] = Compile_UnknownOpcode;
-	RSP_Opcode[39] = Compile_UnknownOpcode;
-	RSP_Opcode[40] = Compile_SB;
-	RSP_Opcode[41] = Compile_SH;
-	RSP_Opcode[42] = Compile_UnknownOpcode;
-	RSP_Opcode[43] = Compile_SW;
-	RSP_Opcode[44] = Compile_UnknownOpcode;
-	RSP_Opcode[45] = Compile_UnknownOpcode;
-	RSP_Opcode[46] = Compile_UnknownOpcode;
-	RSP_Opcode[47] = Compile_UnknownOpcode;
-	RSP_Opcode[48] = Compile_UnknownOpcode;
-	RSP_Opcode[49] = Compile_UnknownOpcode;
-	RSP_Opcode[50] = Compile_LC2;
-	RSP_Opcode[51] = Compile_UnknownOpcode;
-	RSP_Opcode[52] = Compile_UnknownOpcode;
-	RSP_Opcode[53] = Compile_UnknownOpcode;
-	RSP_Opcode[54] = Compile_UnknownOpcode;
-	RSP_Opcode[55] = Compile_UnknownOpcode;
-	RSP_Opcode[56] = Compile_UnknownOpcode;
-	RSP_Opcode[57] = Compile_UnknownOpcode;
-	RSP_Opcode[58] = Compile_SC2;
-	RSP_Opcode[59] = Compile_UnknownOpcode;
-	RSP_Opcode[60] = Compile_UnknownOpcode;
-	RSP_Opcode[61] = Compile_UnknownOpcode;
-	RSP_Opcode[62] = Compile_UnknownOpcode;
-	RSP_Opcode[63] = Compile_UnknownOpcode;
+void BuildRecompilerCPU(void)
+{
+    RSP_Opcode[0] = Compile_SPECIAL;
+    RSP_Opcode[1] = Compile_REGIMM;
+    RSP_Opcode[2] = Compile_J;
+    RSP_Opcode[3] = Compile_JAL;
+    RSP_Opcode[4] = Compile_BEQ;
+    RSP_Opcode[5] = Compile_BNE;
+    RSP_Opcode[6] = Compile_BLEZ;
+    RSP_Opcode[7] = Compile_BGTZ;
+    RSP_Opcode[8] = Compile_ADDI;
+    RSP_Opcode[9] = Compile_ADDIU;
+    RSP_Opcode[10] = Compile_SLTI;
+    RSP_Opcode[11] = Compile_SLTIU;
+    RSP_Opcode[12] = Compile_ANDI;
+    RSP_Opcode[13] = Compile_ORI;
+    RSP_Opcode[14] = Compile_XORI;
+    RSP_Opcode[15] = Compile_LUI;
+    RSP_Opcode[16] = Compile_COP0;
+    RSP_Opcode[17] = Compile_UnknownOpcode;
+    RSP_Opcode[18] = Compile_COP2;
+    RSP_Opcode[19] = Compile_UnknownOpcode;
+    RSP_Opcode[20] = Compile_UnknownOpcode;
+    RSP_Opcode[21] = Compile_UnknownOpcode;
+    RSP_Opcode[22] = Compile_UnknownOpcode;
+    RSP_Opcode[23] = Compile_UnknownOpcode;
+    RSP_Opcode[24] = Compile_UnknownOpcode;
+    RSP_Opcode[25] = Compile_UnknownOpcode;
+    RSP_Opcode[26] = Compile_UnknownOpcode;
+    RSP_Opcode[27] = Compile_UnknownOpcode;
+    RSP_Opcode[28] = Compile_UnknownOpcode;
+    RSP_Opcode[29] = Compile_UnknownOpcode;
+    RSP_Opcode[30] = Compile_UnknownOpcode;
+    RSP_Opcode[31] = Compile_UnknownOpcode;
+    RSP_Opcode[32] = Compile_LB;
+    RSP_Opcode[33] = Compile_LH;
+    RSP_Opcode[34] = Compile_UnknownOpcode;
+    RSP_Opcode[35] = Compile_LW;
+    RSP_Opcode[36] = Compile_LBU;
+    RSP_Opcode[37] = Compile_LHU;
+    RSP_Opcode[38] = Compile_UnknownOpcode;
+    RSP_Opcode[39] = Compile_UnknownOpcode;
+    RSP_Opcode[40] = Compile_SB;
+    RSP_Opcode[41] = Compile_SH;
+    RSP_Opcode[42] = Compile_UnknownOpcode;
+    RSP_Opcode[43] = Compile_SW;
+    RSP_Opcode[44] = Compile_UnknownOpcode;
+    RSP_Opcode[45] = Compile_UnknownOpcode;
+    RSP_Opcode[46] = Compile_UnknownOpcode;
+    RSP_Opcode[47] = Compile_UnknownOpcode;
+    RSP_Opcode[48] = Compile_UnknownOpcode;
+    RSP_Opcode[49] = Compile_UnknownOpcode;
+    RSP_Opcode[50] = Compile_LC2;
+    RSP_Opcode[51] = Compile_UnknownOpcode;
+    RSP_Opcode[52] = Compile_UnknownOpcode;
+    RSP_Opcode[53] = Compile_UnknownOpcode;
+    RSP_Opcode[54] = Compile_UnknownOpcode;
+    RSP_Opcode[55] = Compile_UnknownOpcode;
+    RSP_Opcode[56] = Compile_UnknownOpcode;
+    RSP_Opcode[57] = Compile_UnknownOpcode;
+    RSP_Opcode[58] = Compile_SC2;
+    RSP_Opcode[59] = Compile_UnknownOpcode;
+    RSP_Opcode[60] = Compile_UnknownOpcode;
+    RSP_Opcode[61] = Compile_UnknownOpcode;
+    RSP_Opcode[62] = Compile_UnknownOpcode;
+    RSP_Opcode[63] = Compile_UnknownOpcode;
 
-	RSP_Special[ 0] = Compile_Special_SLL;
-	RSP_Special[ 1] = Compile_UnknownOpcode;
-	RSP_Special[ 2] = Compile_Special_SRL;
-	RSP_Special[ 3] = Compile_Special_SRA;
-	RSP_Special[ 4] = Compile_Special_SLLV;
-	RSP_Special[ 5] = Compile_UnknownOpcode;
-	RSP_Special[ 6] = Compile_Special_SRLV;
-	RSP_Special[ 7] = Compile_Special_SRAV;
-	RSP_Special[ 8] = Compile_Special_JR;
-	RSP_Special[ 9] = Compile_Special_JALR;
-	RSP_Special[10] = Compile_UnknownOpcode;
-	RSP_Special[11] = Compile_UnknownOpcode;
-	RSP_Special[12] = Compile_UnknownOpcode;
-	RSP_Special[13] = Compile_Special_BREAK;
-	RSP_Special[14] = Compile_UnknownOpcode;
-	RSP_Special[15] = Compile_UnknownOpcode;
-	RSP_Special[16] = Compile_UnknownOpcode;
-	RSP_Special[17] = Compile_UnknownOpcode;
-	RSP_Special[18] = Compile_UnknownOpcode;
-	RSP_Special[19] = Compile_UnknownOpcode;
-	RSP_Special[20] = Compile_UnknownOpcode;
-	RSP_Special[21] = Compile_UnknownOpcode;
-	RSP_Special[22] = Compile_UnknownOpcode;
-	RSP_Special[23] = Compile_UnknownOpcode;
-	RSP_Special[24] = Compile_UnknownOpcode;
-	RSP_Special[25] = Compile_UnknownOpcode;
-	RSP_Special[26] = Compile_UnknownOpcode;
-	RSP_Special[27] = Compile_UnknownOpcode;
-	RSP_Special[28] = Compile_UnknownOpcode;
-	RSP_Special[29] = Compile_UnknownOpcode;
-	RSP_Special[30] = Compile_UnknownOpcode;
-	RSP_Special[31] = Compile_UnknownOpcode;
-	RSP_Special[32] = Compile_Special_ADD;
-	RSP_Special[33] = Compile_Special_ADDU;
-	RSP_Special[34] = Compile_Special_SUB;
-	RSP_Special[35] = Compile_Special_SUBU;
-	RSP_Special[36] = Compile_Special_AND;
-	RSP_Special[37] = Compile_Special_OR;
-	RSP_Special[38] = Compile_Special_XOR;
-	RSP_Special[39] = Compile_Special_NOR;
-	RSP_Special[40] = Compile_UnknownOpcode;
-	RSP_Special[41] = Compile_UnknownOpcode;
-	RSP_Special[42] = Compile_Special_SLT;
-	RSP_Special[43] = Compile_Special_SLTU;
-	RSP_Special[44] = Compile_UnknownOpcode;
-	RSP_Special[45] = Compile_UnknownOpcode;
-	RSP_Special[46] = Compile_UnknownOpcode;
-	RSP_Special[47] = Compile_UnknownOpcode;
-	RSP_Special[48] = Compile_UnknownOpcode;
-	RSP_Special[49] = Compile_UnknownOpcode;
-	RSP_Special[50] = Compile_UnknownOpcode;
-	RSP_Special[51] = Compile_UnknownOpcode;
-	RSP_Special[52] = Compile_UnknownOpcode;
-	RSP_Special[53] = Compile_UnknownOpcode;
-	RSP_Special[54] = Compile_UnknownOpcode;
-	RSP_Special[55] = Compile_UnknownOpcode;
-	RSP_Special[56] = Compile_UnknownOpcode;
-	RSP_Special[57] = Compile_UnknownOpcode;
-	RSP_Special[58] = Compile_UnknownOpcode;
-	RSP_Special[59] = Compile_UnknownOpcode;
-	RSP_Special[60] = Compile_UnknownOpcode;
-	RSP_Special[61] = Compile_UnknownOpcode;
-	RSP_Special[62] = Compile_UnknownOpcode;
-	RSP_Special[63] = Compile_UnknownOpcode;
+    RSP_Special[0] = Compile_Special_SLL;
+    RSP_Special[1] = Compile_UnknownOpcode;
+    RSP_Special[2] = Compile_Special_SRL;
+    RSP_Special[3] = Compile_Special_SRA;
+    RSP_Special[4] = Compile_Special_SLLV;
+    RSP_Special[5] = Compile_UnknownOpcode;
+    RSP_Special[6] = Compile_Special_SRLV;
+    RSP_Special[7] = Compile_Special_SRAV;
+    RSP_Special[8] = Compile_Special_JR;
+    RSP_Special[9] = Compile_Special_JALR;
+    RSP_Special[10] = Compile_UnknownOpcode;
+    RSP_Special[11] = Compile_UnknownOpcode;
+    RSP_Special[12] = Compile_UnknownOpcode;
+    RSP_Special[13] = Compile_Special_BREAK;
+    RSP_Special[14] = Compile_UnknownOpcode;
+    RSP_Special[15] = Compile_UnknownOpcode;
+    RSP_Special[16] = Compile_UnknownOpcode;
+    RSP_Special[17] = Compile_UnknownOpcode;
+    RSP_Special[18] = Compile_UnknownOpcode;
+    RSP_Special[19] = Compile_UnknownOpcode;
+    RSP_Special[20] = Compile_UnknownOpcode;
+    RSP_Special[21] = Compile_UnknownOpcode;
+    RSP_Special[22] = Compile_UnknownOpcode;
+    RSP_Special[23] = Compile_UnknownOpcode;
+    RSP_Special[24] = Compile_UnknownOpcode;
+    RSP_Special[25] = Compile_UnknownOpcode;
+    RSP_Special[26] = Compile_UnknownOpcode;
+    RSP_Special[27] = Compile_UnknownOpcode;
+    RSP_Special[28] = Compile_UnknownOpcode;
+    RSP_Special[29] = Compile_UnknownOpcode;
+    RSP_Special[30] = Compile_UnknownOpcode;
+    RSP_Special[31] = Compile_UnknownOpcode;
+    RSP_Special[32] = Compile_Special_ADD;
+    RSP_Special[33] = Compile_Special_ADDU;
+    RSP_Special[34] = Compile_Special_SUB;
+    RSP_Special[35] = Compile_Special_SUBU;
+    RSP_Special[36] = Compile_Special_AND;
+    RSP_Special[37] = Compile_Special_OR;
+    RSP_Special[38] = Compile_Special_XOR;
+    RSP_Special[39] = Compile_Special_NOR;
+    RSP_Special[40] = Compile_UnknownOpcode;
+    RSP_Special[41] = Compile_UnknownOpcode;
+    RSP_Special[42] = Compile_Special_SLT;
+    RSP_Special[43] = Compile_Special_SLTU;
+    RSP_Special[44] = Compile_UnknownOpcode;
+    RSP_Special[45] = Compile_UnknownOpcode;
+    RSP_Special[46] = Compile_UnknownOpcode;
+    RSP_Special[47] = Compile_UnknownOpcode;
+    RSP_Special[48] = Compile_UnknownOpcode;
+    RSP_Special[49] = Compile_UnknownOpcode;
+    RSP_Special[50] = Compile_UnknownOpcode;
+    RSP_Special[51] = Compile_UnknownOpcode;
+    RSP_Special[52] = Compile_UnknownOpcode;
+    RSP_Special[53] = Compile_UnknownOpcode;
+    RSP_Special[54] = Compile_UnknownOpcode;
+    RSP_Special[55] = Compile_UnknownOpcode;
+    RSP_Special[56] = Compile_UnknownOpcode;
+    RSP_Special[57] = Compile_UnknownOpcode;
+    RSP_Special[58] = Compile_UnknownOpcode;
+    RSP_Special[59] = Compile_UnknownOpcode;
+    RSP_Special[60] = Compile_UnknownOpcode;
+    RSP_Special[61] = Compile_UnknownOpcode;
+    RSP_Special[62] = Compile_UnknownOpcode;
+    RSP_Special[63] = Compile_UnknownOpcode;
 
-	RSP_RegImm[ 0] = Compile_RegImm_BLTZ;
-	RSP_RegImm[ 1] = Compile_RegImm_BGEZ;
-	RSP_RegImm[ 2] = Compile_UnknownOpcode;
-	RSP_RegImm[ 3] = Compile_UnknownOpcode;
-	RSP_RegImm[ 4] = Compile_UnknownOpcode;
-	RSP_RegImm[ 5] = Compile_UnknownOpcode;
-	RSP_RegImm[ 6] = Compile_UnknownOpcode;
-	RSP_RegImm[ 7] = Compile_UnknownOpcode;
-	RSP_RegImm[ 8] = Compile_UnknownOpcode;
-	RSP_RegImm[ 9] = Compile_UnknownOpcode;
-	RSP_RegImm[10] = Compile_UnknownOpcode;
-	RSP_RegImm[11] = Compile_UnknownOpcode;
-	RSP_RegImm[12] = Compile_UnknownOpcode;
-	RSP_RegImm[13] = Compile_UnknownOpcode;
-	RSP_RegImm[14] = Compile_UnknownOpcode;
-	RSP_RegImm[15] = Compile_UnknownOpcode;
-	RSP_RegImm[16] = Compile_RegImm_BLTZAL;
-	RSP_RegImm[17] = Compile_RegImm_BGEZAL;
-	RSP_RegImm[18] = Compile_UnknownOpcode;
-	RSP_RegImm[19] = Compile_UnknownOpcode;
-	RSP_RegImm[20] = Compile_UnknownOpcode;
-	RSP_RegImm[21] = Compile_UnknownOpcode;
-	RSP_RegImm[22] = Compile_UnknownOpcode;
-	RSP_RegImm[23] = Compile_UnknownOpcode;
-	RSP_RegImm[24] = Compile_UnknownOpcode;
-	RSP_RegImm[25] = Compile_UnknownOpcode;
-	RSP_RegImm[26] = Compile_UnknownOpcode;
-	RSP_RegImm[27] = Compile_UnknownOpcode;
-	RSP_RegImm[28] = Compile_UnknownOpcode;
-	RSP_RegImm[29] = Compile_UnknownOpcode;
-	RSP_RegImm[30] = Compile_UnknownOpcode;
-	RSP_RegImm[31] = Compile_UnknownOpcode;
+    RSP_RegImm[0] = Compile_RegImm_BLTZ;
+    RSP_RegImm[1] = Compile_RegImm_BGEZ;
+    RSP_RegImm[2] = Compile_UnknownOpcode;
+    RSP_RegImm[3] = Compile_UnknownOpcode;
+    RSP_RegImm[4] = Compile_UnknownOpcode;
+    RSP_RegImm[5] = Compile_UnknownOpcode;
+    RSP_RegImm[6] = Compile_UnknownOpcode;
+    RSP_RegImm[7] = Compile_UnknownOpcode;
+    RSP_RegImm[8] = Compile_UnknownOpcode;
+    RSP_RegImm[9] = Compile_UnknownOpcode;
+    RSP_RegImm[10] = Compile_UnknownOpcode;
+    RSP_RegImm[11] = Compile_UnknownOpcode;
+    RSP_RegImm[12] = Compile_UnknownOpcode;
+    RSP_RegImm[13] = Compile_UnknownOpcode;
+    RSP_RegImm[14] = Compile_UnknownOpcode;
+    RSP_RegImm[15] = Compile_UnknownOpcode;
+    RSP_RegImm[16] = Compile_RegImm_BLTZAL;
+    RSP_RegImm[17] = Compile_RegImm_BGEZAL;
+    RSP_RegImm[18] = Compile_UnknownOpcode;
+    RSP_RegImm[19] = Compile_UnknownOpcode;
+    RSP_RegImm[20] = Compile_UnknownOpcode;
+    RSP_RegImm[21] = Compile_UnknownOpcode;
+    RSP_RegImm[22] = Compile_UnknownOpcode;
+    RSP_RegImm[23] = Compile_UnknownOpcode;
+    RSP_RegImm[24] = Compile_UnknownOpcode;
+    RSP_RegImm[25] = Compile_UnknownOpcode;
+    RSP_RegImm[26] = Compile_UnknownOpcode;
+    RSP_RegImm[27] = Compile_UnknownOpcode;
+    RSP_RegImm[28] = Compile_UnknownOpcode;
+    RSP_RegImm[29] = Compile_UnknownOpcode;
+    RSP_RegImm[30] = Compile_UnknownOpcode;
+    RSP_RegImm[31] = Compile_UnknownOpcode;
 
-	RSP_Cop0[ 0] = Compile_Cop0_MF;
-	RSP_Cop0[ 1] = Compile_UnknownOpcode;
-	RSP_Cop0[ 2] = Compile_UnknownOpcode;
-	RSP_Cop0[ 3] = Compile_UnknownOpcode;
-	RSP_Cop0[ 4] = Compile_Cop0_MT;
-	RSP_Cop0[ 5] = Compile_UnknownOpcode;
-	RSP_Cop0[ 6] = Compile_UnknownOpcode;
-	RSP_Cop0[ 7] = Compile_UnknownOpcode;
-	RSP_Cop0[ 8] = Compile_UnknownOpcode;
-	RSP_Cop0[ 9] = Compile_UnknownOpcode;
-	RSP_Cop0[10] = Compile_UnknownOpcode;
-	RSP_Cop0[11] = Compile_UnknownOpcode;
-	RSP_Cop0[12] = Compile_UnknownOpcode;
-	RSP_Cop0[13] = Compile_UnknownOpcode;
-	RSP_Cop0[14] = Compile_UnknownOpcode;
-	RSP_Cop0[15] = Compile_UnknownOpcode;
-	RSP_Cop0[16] = Compile_UnknownOpcode;
-	RSP_Cop0[17] = Compile_UnknownOpcode;
-	RSP_Cop0[18] = Compile_UnknownOpcode;
-	RSP_Cop0[19] = Compile_UnknownOpcode;
-	RSP_Cop0[20] = Compile_UnknownOpcode;
-	RSP_Cop0[21] = Compile_UnknownOpcode;
-	RSP_Cop0[22] = Compile_UnknownOpcode;
-	RSP_Cop0[23] = Compile_UnknownOpcode;
-	RSP_Cop0[24] = Compile_UnknownOpcode;
-	RSP_Cop0[25] = Compile_UnknownOpcode;
-	RSP_Cop0[26] = Compile_UnknownOpcode;
-	RSP_Cop0[27] = Compile_UnknownOpcode;
-	RSP_Cop0[28] = Compile_UnknownOpcode;
-	RSP_Cop0[29] = Compile_UnknownOpcode;
-	RSP_Cop0[30] = Compile_UnknownOpcode;
-	RSP_Cop0[31] = Compile_UnknownOpcode;
-	
-	RSP_Cop2[ 0] = Compile_Cop2_MF;
-	RSP_Cop2[ 1] = Compile_UnknownOpcode;
-	RSP_Cop2[ 2] = Compile_Cop2_CF;
-	RSP_Cop2[ 3] = Compile_UnknownOpcode;
-	RSP_Cop2[ 4] = Compile_Cop2_MT;
-	RSP_Cop2[ 5] = Compile_UnknownOpcode;
-	RSP_Cop2[ 6] = Compile_Cop2_CT;
-	RSP_Cop2[ 7] = Compile_UnknownOpcode;
-	RSP_Cop2[ 8] = Compile_UnknownOpcode;
-	RSP_Cop2[ 9] = Compile_UnknownOpcode;
-	RSP_Cop2[10] = Compile_UnknownOpcode;
-	RSP_Cop2[11] = Compile_UnknownOpcode;
-	RSP_Cop2[12] = Compile_UnknownOpcode;
-	RSP_Cop2[13] = Compile_UnknownOpcode;
-	RSP_Cop2[14] = Compile_UnknownOpcode;
-	RSP_Cop2[15] = Compile_UnknownOpcode;
-	RSP_Cop2[16] = Compile_COP2_VECTOR;
-	RSP_Cop2[17] = Compile_COP2_VECTOR;
-	RSP_Cop2[18] = Compile_COP2_VECTOR;
-	RSP_Cop2[19] = Compile_COP2_VECTOR;
-	RSP_Cop2[20] = Compile_COP2_VECTOR;
-	RSP_Cop2[21] = Compile_COP2_VECTOR;
-	RSP_Cop2[22] = Compile_COP2_VECTOR;
-	RSP_Cop2[23] = Compile_COP2_VECTOR;
-	RSP_Cop2[24] = Compile_COP2_VECTOR;
-	RSP_Cop2[25] = Compile_COP2_VECTOR;
-	RSP_Cop2[26] = Compile_COP2_VECTOR;
-	RSP_Cop2[27] = Compile_COP2_VECTOR;
-	RSP_Cop2[28] = Compile_COP2_VECTOR;
-	RSP_Cop2[29] = Compile_COP2_VECTOR;
-	RSP_Cop2[30] = Compile_COP2_VECTOR;
-	RSP_Cop2[31] = Compile_COP2_VECTOR;
+    RSP_Cop0[0] = Compile_Cop0_MF;
+    RSP_Cop0[1] = Compile_UnknownOpcode;
+    RSP_Cop0[2] = Compile_UnknownOpcode;
+    RSP_Cop0[3] = Compile_UnknownOpcode;
+    RSP_Cop0[4] = Compile_Cop0_MT;
+    RSP_Cop0[5] = Compile_UnknownOpcode;
+    RSP_Cop0[6] = Compile_UnknownOpcode;
+    RSP_Cop0[7] = Compile_UnknownOpcode;
+    RSP_Cop0[8] = Compile_UnknownOpcode;
+    RSP_Cop0[9] = Compile_UnknownOpcode;
+    RSP_Cop0[10] = Compile_UnknownOpcode;
+    RSP_Cop0[11] = Compile_UnknownOpcode;
+    RSP_Cop0[12] = Compile_UnknownOpcode;
+    RSP_Cop0[13] = Compile_UnknownOpcode;
+    RSP_Cop0[14] = Compile_UnknownOpcode;
+    RSP_Cop0[15] = Compile_UnknownOpcode;
+    RSP_Cop0[16] = Compile_UnknownOpcode;
+    RSP_Cop0[17] = Compile_UnknownOpcode;
+    RSP_Cop0[18] = Compile_UnknownOpcode;
+    RSP_Cop0[19] = Compile_UnknownOpcode;
+    RSP_Cop0[20] = Compile_UnknownOpcode;
+    RSP_Cop0[21] = Compile_UnknownOpcode;
+    RSP_Cop0[22] = Compile_UnknownOpcode;
+    RSP_Cop0[23] = Compile_UnknownOpcode;
+    RSP_Cop0[24] = Compile_UnknownOpcode;
+    RSP_Cop0[25] = Compile_UnknownOpcode;
+    RSP_Cop0[26] = Compile_UnknownOpcode;
+    RSP_Cop0[27] = Compile_UnknownOpcode;
+    RSP_Cop0[28] = Compile_UnknownOpcode;
+    RSP_Cop0[29] = Compile_UnknownOpcode;
+    RSP_Cop0[30] = Compile_UnknownOpcode;
+    RSP_Cop0[31] = Compile_UnknownOpcode;
 
-	RSP_Vector[ 0] = Compile_Vector_VMULF;
-	RSP_Vector[ 1] = Compile_Vector_VMULU;
-	RSP_Vector[ 2] = Compile_UnknownOpcode;
-	RSP_Vector[ 3] = Compile_UnknownOpcode;
-	RSP_Vector[ 4] = Compile_Vector_VMUDL;
-	RSP_Vector[ 5] = Compile_Vector_VMUDM;
-	RSP_Vector[ 6] = Compile_Vector_VMUDN;
-	RSP_Vector[ 7] = Compile_Vector_VMUDH;
-	RSP_Vector[ 8] = Compile_Vector_VMACF;
-	RSP_Vector[ 9] = Compile_Vector_VMACU;
-	RSP_Vector[10] = Compile_UnknownOpcode;
-	RSP_Vector[11] = Compile_Vector_VMACQ;
-	RSP_Vector[12] = Compile_Vector_VMADL;
-	RSP_Vector[13] = Compile_Vector_VMADM;
-	RSP_Vector[14] = Compile_Vector_VMADN;
-	RSP_Vector[15] = Compile_Vector_VMADH;
-	RSP_Vector[16] = Compile_Vector_VADD;
-	RSP_Vector[17] = Compile_Vector_VSUB;
-	RSP_Vector[18] = Compile_UnknownOpcode;
-	RSP_Vector[19] = Compile_Vector_VABS;
-	RSP_Vector[20] = Compile_Vector_VADDC;
-	RSP_Vector[21] = Compile_Vector_VSUBC;
-	RSP_Vector[22] = Compile_UnknownOpcode;
-	RSP_Vector[23] = Compile_UnknownOpcode;
-	RSP_Vector[24] = Compile_UnknownOpcode;
-	RSP_Vector[25] = Compile_UnknownOpcode;
-	RSP_Vector[26] = Compile_UnknownOpcode;
-	RSP_Vector[27] = Compile_UnknownOpcode;
-	RSP_Vector[28] = Compile_UnknownOpcode;
-	RSP_Vector[29] = Compile_Vector_VSAW;
-	RSP_Vector[30] = Compile_UnknownOpcode;
-	RSP_Vector[31] = Compile_UnknownOpcode;
-	RSP_Vector[32] = Compile_Vector_VLT;
-	RSP_Vector[33] = Compile_Vector_VEQ;
-	RSP_Vector[34] = Compile_Vector_VNE;
-	RSP_Vector[35] = Compile_Vector_VGE;
-	RSP_Vector[36] = Compile_Vector_VCL;
-	RSP_Vector[37] = Compile_Vector_VCH;
-	RSP_Vector[38] = Compile_Vector_VCR;
-	RSP_Vector[39] = Compile_Vector_VMRG;
-	RSP_Vector[40] = Compile_Vector_VAND;
-	RSP_Vector[41] = Compile_Vector_VNAND;
-	RSP_Vector[42] = Compile_Vector_VOR;
-	RSP_Vector[43] = Compile_Vector_VNOR;
-	RSP_Vector[44] = Compile_Vector_VXOR;
-	RSP_Vector[45] = Compile_Vector_VNXOR;
-	RSP_Vector[46] = Compile_UnknownOpcode;
-	RSP_Vector[47] = Compile_UnknownOpcode;
-	RSP_Vector[48] = Compile_Vector_VRCP;
-	RSP_Vector[49] = Compile_Vector_VRCPL;
-	RSP_Vector[50] = Compile_Vector_VRCPH;
-	RSP_Vector[51] = Compile_Vector_VMOV;
-	RSP_Vector[52] = Compile_Vector_VRSQ;
-	RSP_Vector[53] = Compile_Vector_VRSQL;
-	RSP_Vector[54] = Compile_Vector_VRSQH;
-	RSP_Vector[55] = Compile_Vector_VNOOP;
-	RSP_Vector[56] = Compile_UnknownOpcode;
-	RSP_Vector[57] = Compile_UnknownOpcode;
-	RSP_Vector[58] = Compile_UnknownOpcode;
-	RSP_Vector[59] = Compile_UnknownOpcode;
-	RSP_Vector[60] = Compile_UnknownOpcode;
-	RSP_Vector[61] = Compile_UnknownOpcode;
-	RSP_Vector[62] = Compile_UnknownOpcode;
-	RSP_Vector[63] = Compile_UnknownOpcode;
+    RSP_Cop2[0] = Compile_Cop2_MF;
+    RSP_Cop2[1] = Compile_UnknownOpcode;
+    RSP_Cop2[2] = Compile_Cop2_CF;
+    RSP_Cop2[3] = Compile_UnknownOpcode;
+    RSP_Cop2[4] = Compile_Cop2_MT;
+    RSP_Cop2[5] = Compile_UnknownOpcode;
+    RSP_Cop2[6] = Compile_Cop2_CT;
+    RSP_Cop2[7] = Compile_UnknownOpcode;
+    RSP_Cop2[8] = Compile_UnknownOpcode;
+    RSP_Cop2[9] = Compile_UnknownOpcode;
+    RSP_Cop2[10] = Compile_UnknownOpcode;
+    RSP_Cop2[11] = Compile_UnknownOpcode;
+    RSP_Cop2[12] = Compile_UnknownOpcode;
+    RSP_Cop2[13] = Compile_UnknownOpcode;
+    RSP_Cop2[14] = Compile_UnknownOpcode;
+    RSP_Cop2[15] = Compile_UnknownOpcode;
+    RSP_Cop2[16] = Compile_COP2_VECTOR;
+    RSP_Cop2[17] = Compile_COP2_VECTOR;
+    RSP_Cop2[18] = Compile_COP2_VECTOR;
+    RSP_Cop2[19] = Compile_COP2_VECTOR;
+    RSP_Cop2[20] = Compile_COP2_VECTOR;
+    RSP_Cop2[21] = Compile_COP2_VECTOR;
+    RSP_Cop2[22] = Compile_COP2_VECTOR;
+    RSP_Cop2[23] = Compile_COP2_VECTOR;
+    RSP_Cop2[24] = Compile_COP2_VECTOR;
+    RSP_Cop2[25] = Compile_COP2_VECTOR;
+    RSP_Cop2[26] = Compile_COP2_VECTOR;
+    RSP_Cop2[27] = Compile_COP2_VECTOR;
+    RSP_Cop2[28] = Compile_COP2_VECTOR;
+    RSP_Cop2[29] = Compile_COP2_VECTOR;
+    RSP_Cop2[30] = Compile_COP2_VECTOR;
+    RSP_Cop2[31] = Compile_COP2_VECTOR;
 
-	RSP_Lc2[ 0] = Compile_Opcode_LBV;
-	RSP_Lc2[ 1] = Compile_Opcode_LSV;
-	RSP_Lc2[ 2] = Compile_Opcode_LLV;
-	RSP_Lc2[ 3] = Compile_Opcode_LDV;
-	RSP_Lc2[ 4] = Compile_Opcode_LQV;
-	RSP_Lc2[ 5] = Compile_Opcode_LRV;
-	RSP_Lc2[ 6] = Compile_Opcode_LPV;
-	RSP_Lc2[ 7] = Compile_Opcode_LUV;
-	RSP_Lc2[ 8] = Compile_Opcode_LHV;
-	RSP_Lc2[ 9] = Compile_Opcode_LFV;
-	RSP_Lc2[10] = Compile_UnknownOpcode;
-	RSP_Lc2[11] = Compile_Opcode_LTV;
-	RSP_Lc2[12] = Compile_UnknownOpcode;
-	RSP_Lc2[13] = Compile_UnknownOpcode;
-	RSP_Lc2[14] = Compile_UnknownOpcode;
-	RSP_Lc2[15] = Compile_UnknownOpcode;
-	RSP_Lc2[16] = Compile_UnknownOpcode;
-	RSP_Lc2[17] = Compile_UnknownOpcode;
-	RSP_Lc2[18] = Compile_UnknownOpcode;
-	RSP_Lc2[19] = Compile_UnknownOpcode;
-	RSP_Lc2[20] = Compile_UnknownOpcode;
-	RSP_Lc2[21] = Compile_UnknownOpcode;
-	RSP_Lc2[22] = Compile_UnknownOpcode;
-	RSP_Lc2[23] = Compile_UnknownOpcode;
-	RSP_Lc2[24] = Compile_UnknownOpcode;
-	RSP_Lc2[25] = Compile_UnknownOpcode;
-	RSP_Lc2[26] = Compile_UnknownOpcode;
-	RSP_Lc2[27] = Compile_UnknownOpcode;
-	RSP_Lc2[28] = Compile_UnknownOpcode;
-	RSP_Lc2[29] = Compile_UnknownOpcode;
-	RSP_Lc2[30] = Compile_UnknownOpcode;
-	RSP_Lc2[31] = Compile_UnknownOpcode;
+    RSP_Vector[0] = Compile_Vector_VMULF;
+    RSP_Vector[1] = Compile_Vector_VMULU;
+    RSP_Vector[2] = Compile_UnknownOpcode;
+    RSP_Vector[3] = Compile_UnknownOpcode;
+    RSP_Vector[4] = Compile_Vector_VMUDL;
+    RSP_Vector[5] = Compile_Vector_VMUDM;
+    RSP_Vector[6] = Compile_Vector_VMUDN;
+    RSP_Vector[7] = Compile_Vector_VMUDH;
+    RSP_Vector[8] = Compile_Vector_VMACF;
+    RSP_Vector[9] = Compile_Vector_VMACU;
+    RSP_Vector[10] = Compile_UnknownOpcode;
+    RSP_Vector[11] = Compile_Vector_VMACQ;
+    RSP_Vector[12] = Compile_Vector_VMADL;
+    RSP_Vector[13] = Compile_Vector_VMADM;
+    RSP_Vector[14] = Compile_Vector_VMADN;
+    RSP_Vector[15] = Compile_Vector_VMADH;
+    RSP_Vector[16] = Compile_Vector_VADD;
+    RSP_Vector[17] = Compile_Vector_VSUB;
+    RSP_Vector[18] = Compile_UnknownOpcode;
+    RSP_Vector[19] = Compile_Vector_VABS;
+    RSP_Vector[20] = Compile_Vector_VADDC;
+    RSP_Vector[21] = Compile_Vector_VSUBC;
+    RSP_Vector[22] = Compile_UnknownOpcode;
+    RSP_Vector[23] = Compile_UnknownOpcode;
+    RSP_Vector[24] = Compile_UnknownOpcode;
+    RSP_Vector[25] = Compile_UnknownOpcode;
+    RSP_Vector[26] = Compile_UnknownOpcode;
+    RSP_Vector[27] = Compile_UnknownOpcode;
+    RSP_Vector[28] = Compile_UnknownOpcode;
+    RSP_Vector[29] = Compile_Vector_VSAW;
+    RSP_Vector[30] = Compile_UnknownOpcode;
+    RSP_Vector[31] = Compile_UnknownOpcode;
+    RSP_Vector[32] = Compile_Vector_VLT;
+    RSP_Vector[33] = Compile_Vector_VEQ;
+    RSP_Vector[34] = Compile_Vector_VNE;
+    RSP_Vector[35] = Compile_Vector_VGE;
+    RSP_Vector[36] = Compile_Vector_VCL;
+    RSP_Vector[37] = Compile_Vector_VCH;
+    RSP_Vector[38] = Compile_Vector_VCR;
+    RSP_Vector[39] = Compile_Vector_VMRG;
+    RSP_Vector[40] = Compile_Vector_VAND;
+    RSP_Vector[41] = Compile_Vector_VNAND;
+    RSP_Vector[42] = Compile_Vector_VOR;
+    RSP_Vector[43] = Compile_Vector_VNOR;
+    RSP_Vector[44] = Compile_Vector_VXOR;
+    RSP_Vector[45] = Compile_Vector_VNXOR;
+    RSP_Vector[46] = Compile_UnknownOpcode;
+    RSP_Vector[47] = Compile_UnknownOpcode;
+    RSP_Vector[48] = Compile_Vector_VRCP;
+    RSP_Vector[49] = Compile_Vector_VRCPL;
+    RSP_Vector[50] = Compile_Vector_VRCPH;
+    RSP_Vector[51] = Compile_Vector_VMOV;
+    RSP_Vector[52] = Compile_Vector_VRSQ;
+    RSP_Vector[53] = Compile_Vector_VRSQL;
+    RSP_Vector[54] = Compile_Vector_VRSQH;
+    RSP_Vector[55] = Compile_Vector_VNOOP;
+    RSP_Vector[56] = Compile_UnknownOpcode;
+    RSP_Vector[57] = Compile_UnknownOpcode;
+    RSP_Vector[58] = Compile_UnknownOpcode;
+    RSP_Vector[59] = Compile_UnknownOpcode;
+    RSP_Vector[60] = Compile_UnknownOpcode;
+    RSP_Vector[61] = Compile_UnknownOpcode;
+    RSP_Vector[62] = Compile_UnknownOpcode;
+    RSP_Vector[63] = Compile_UnknownOpcode;
 
-	RSP_Sc2[ 0] = Compile_Opcode_SBV;
-	RSP_Sc2[ 1] = Compile_Opcode_SSV;
-	RSP_Sc2[ 2] = Compile_Opcode_SLV;
-	RSP_Sc2[ 3] = Compile_Opcode_SDV;
-	RSP_Sc2[ 4] = Compile_Opcode_SQV;
-	RSP_Sc2[ 5] = Compile_Opcode_SRV;
-	RSP_Sc2[ 6] = Compile_Opcode_SPV;
-	RSP_Sc2[ 7] = Compile_Opcode_SUV;
-	RSP_Sc2[ 8] = Compile_Opcode_SHV;
-	RSP_Sc2[ 9] = Compile_Opcode_SFV;
-	RSP_Sc2[10] = Compile_Opcode_SWV;
-	RSP_Sc2[11] = Compile_Opcode_STV;
-	RSP_Sc2[12] = Compile_UnknownOpcode;
-	RSP_Sc2[13] = Compile_UnknownOpcode;
-	RSP_Sc2[14] = Compile_UnknownOpcode;
-	RSP_Sc2[15] = Compile_UnknownOpcode;
-	RSP_Sc2[16] = Compile_UnknownOpcode;
-	RSP_Sc2[17] = Compile_UnknownOpcode;
-	RSP_Sc2[18] = Compile_UnknownOpcode;
-	RSP_Sc2[19] = Compile_UnknownOpcode;
-	RSP_Sc2[20] = Compile_UnknownOpcode;
-	RSP_Sc2[21] = Compile_UnknownOpcode;
-	RSP_Sc2[22] = Compile_UnknownOpcode;
-	RSP_Sc2[23] = Compile_UnknownOpcode;
-	RSP_Sc2[24] = Compile_UnknownOpcode;
-	RSP_Sc2[25] = Compile_UnknownOpcode;
-	RSP_Sc2[26] = Compile_UnknownOpcode;
-	RSP_Sc2[27] = Compile_UnknownOpcode;
-	RSP_Sc2[28] = Compile_UnknownOpcode;
-	RSP_Sc2[29] = Compile_UnknownOpcode;
-	RSP_Sc2[30] = Compile_UnknownOpcode;
-	RSP_Sc2[31] = Compile_UnknownOpcode;
-	
-	BlockID = 0;
-	ChangedPC = FALSE;
-	#ifdef Log_x86Code
-	Start_x86_Log();
-	#endif
+    RSP_Lc2[0] = Compile_Opcode_LBV;
+    RSP_Lc2[1] = Compile_Opcode_LSV;
+    RSP_Lc2[2] = Compile_Opcode_LLV;
+    RSP_Lc2[3] = Compile_Opcode_LDV;
+    RSP_Lc2[4] = Compile_Opcode_LQV;
+    RSP_Lc2[5] = Compile_Opcode_LRV;
+    RSP_Lc2[6] = Compile_Opcode_LPV;
+    RSP_Lc2[7] = Compile_Opcode_LUV;
+    RSP_Lc2[8] = Compile_Opcode_LHV;
+    RSP_Lc2[9] = Compile_Opcode_LFV;
+    RSP_Lc2[10] = Compile_UnknownOpcode;
+    RSP_Lc2[11] = Compile_Opcode_LTV;
+    RSP_Lc2[12] = Compile_UnknownOpcode;
+    RSP_Lc2[13] = Compile_UnknownOpcode;
+    RSP_Lc2[14] = Compile_UnknownOpcode;
+    RSP_Lc2[15] = Compile_UnknownOpcode;
+    RSP_Lc2[16] = Compile_UnknownOpcode;
+    RSP_Lc2[17] = Compile_UnknownOpcode;
+    RSP_Lc2[18] = Compile_UnknownOpcode;
+    RSP_Lc2[19] = Compile_UnknownOpcode;
+    RSP_Lc2[20] = Compile_UnknownOpcode;
+    RSP_Lc2[21] = Compile_UnknownOpcode;
+    RSP_Lc2[22] = Compile_UnknownOpcode;
+    RSP_Lc2[23] = Compile_UnknownOpcode;
+    RSP_Lc2[24] = Compile_UnknownOpcode;
+    RSP_Lc2[25] = Compile_UnknownOpcode;
+    RSP_Lc2[26] = Compile_UnknownOpcode;
+    RSP_Lc2[27] = Compile_UnknownOpcode;
+    RSP_Lc2[28] = Compile_UnknownOpcode;
+    RSP_Lc2[29] = Compile_UnknownOpcode;
+    RSP_Lc2[30] = Compile_UnknownOpcode;
+    RSP_Lc2[31] = Compile_UnknownOpcode;
+
+    RSP_Sc2[0] = Compile_Opcode_SBV;
+    RSP_Sc2[1] = Compile_Opcode_SSV;
+    RSP_Sc2[2] = Compile_Opcode_SLV;
+    RSP_Sc2[3] = Compile_Opcode_SDV;
+    RSP_Sc2[4] = Compile_Opcode_SQV;
+    RSP_Sc2[5] = Compile_Opcode_SRV;
+    RSP_Sc2[6] = Compile_Opcode_SPV;
+    RSP_Sc2[7] = Compile_Opcode_SUV;
+    RSP_Sc2[8] = Compile_Opcode_SHV;
+    RSP_Sc2[9] = Compile_Opcode_SFV;
+    RSP_Sc2[10] = Compile_Opcode_SWV;
+    RSP_Sc2[11] = Compile_Opcode_STV;
+    RSP_Sc2[12] = Compile_UnknownOpcode;
+    RSP_Sc2[13] = Compile_UnknownOpcode;
+    RSP_Sc2[14] = Compile_UnknownOpcode;
+    RSP_Sc2[15] = Compile_UnknownOpcode;
+    RSP_Sc2[16] = Compile_UnknownOpcode;
+    RSP_Sc2[17] = Compile_UnknownOpcode;
+    RSP_Sc2[18] = Compile_UnknownOpcode;
+    RSP_Sc2[19] = Compile_UnknownOpcode;
+    RSP_Sc2[20] = Compile_UnknownOpcode;
+    RSP_Sc2[21] = Compile_UnknownOpcode;
+    RSP_Sc2[22] = Compile_UnknownOpcode;
+    RSP_Sc2[23] = Compile_UnknownOpcode;
+    RSP_Sc2[24] = Compile_UnknownOpcode;
+    RSP_Sc2[25] = Compile_UnknownOpcode;
+    RSP_Sc2[26] = Compile_UnknownOpcode;
+    RSP_Sc2[27] = Compile_UnknownOpcode;
+    RSP_Sc2[28] = Compile_UnknownOpcode;
+    RSP_Sc2[29] = Compile_UnknownOpcode;
+    RSP_Sc2[30] = Compile_UnknownOpcode;
+    RSP_Sc2[31] = Compile_UnknownOpcode;
+
+    BlockID = 0;
+    ChangedPC = FALSE;
+#ifdef Log_x86Code
+    Start_x86_Log();
+#endif
 }
 
 /*
@@ -409,103 +410,131 @@ between branches labels, and actual branches, whichever
 occurs first in code
 */
 
-void ReOrderInstructions(DWORD StartPC, DWORD EndPC) {
-	DWORD InstructionCount = EndPC - StartPC;
-	DWORD Count, ReorderedOps, CurrentPC;
-	OPCODE PreviousOp, CurrentOp, RspOp;
+void ReOrderInstructions(DWORD StartPC, DWORD EndPC)
+{
+    DWORD InstructionCount = EndPC - StartPC;
+    DWORD Count, ReorderedOps, CurrentPC;
+    OPCODE PreviousOp, CurrentOp, RspOp;
 
-	PreviousOp.Hex = *(DWORD*)(RSPInfo.IMEM + StartPC);
+    PreviousOp.Hex = *(DWORD *)(RSPInfo.IMEM + StartPC);
 
-	if (TRUE == IsOpcodeBranch(StartPC, PreviousOp)) {
-		// The sub block ends here anyway
-		return;
-	} 
-	
-	if (IsOpcodeNop(StartPC) && IsOpcodeNop(StartPC + 4) && IsOpcodeNop(StartPC + 8)) {
-		// Don't even bother
-		return;
-	}
+    if (TRUE == IsOpcodeBranch(StartPC, PreviousOp))
+    {
+        // The sub block ends here anyway
+        return;
+    }
 
-	CPU_Message("***** Doing reorder (%X to %X) *****", StartPC, EndPC);
+    if (IsOpcodeNop(StartPC) && IsOpcodeNop(StartPC + 4) && IsOpcodeNop(StartPC + 8))
+    {
+        // Don't even bother
+        return;
+    }
 
-	if (InstructionCount < 0x0010) { return; }
-	if (InstructionCount > 0x0A00) { return; }
-	
-	CPU_Message(" Before:");
-	for (Count = StartPC; Count < EndPC; Count += 4) {
-		RSP_LW_IMEM(Count, &RspOp.Hex);
-		CPU_Message("  %X %s",Count,RSPOpcodeName(RspOp.Hex,Count));
-	}
+    CPU_Message("***** Doing reorder (%X to %X) *****", StartPC, EndPC);
 
-	for (Count = 0; Count < InstructionCount; Count += 4) {
-		CurrentPC = StartPC;
-		PreviousOp.Hex = *(DWORD*)(RSPInfo.IMEM + CurrentPC);
-		ReorderedOps = 0;
+    if (InstructionCount < 0x0010)
+    {
+        return;
+    }
+    if (InstructionCount > 0x0A00)
+    {
+        return;
+    }
 
-		for (;;) {
-			CurrentPC += 4;
-			if (CurrentPC >= EndPC) { break; }
-			CurrentOp.Hex = *(DWORD*)(RSPInfo.IMEM + CurrentPC);
+    CPU_Message(" Before:");
+    for (Count = StartPC; Count < EndPC; Count += 4)
+    {
+        RSP_LW_IMEM(Count, &RspOp.Hex);
+        CPU_Message("  %X %s", Count, RSPOpcodeName(RspOp.Hex, Count));
+    }
 
-			if (TRUE == CompareInstructions(CurrentPC, &PreviousOp, &CurrentOp)) {
-				// Move current opcode up
-				*(DWORD*)(RSPInfo.IMEM + CurrentPC - 4) = CurrentOp.Hex;
-			 	*(DWORD*)(RSPInfo.IMEM + CurrentPC) = PreviousOp.Hex;
+    for (Count = 0; Count < InstructionCount; Count += 4)
+    {
+        CurrentPC = StartPC;
+        PreviousOp.Hex = *(DWORD *)(RSPInfo.IMEM + CurrentPC);
+        ReorderedOps = 0;
 
-				ReorderedOps++;
+        for (;;)
+        {
+            CurrentPC += 4;
+            if (CurrentPC >= EndPC)
+            {
+                break;
+            }
+            CurrentOp.Hex = *(DWORD *)(RSPInfo.IMEM + CurrentPC);
+
+            if (TRUE == CompareInstructions(CurrentPC, &PreviousOp, &CurrentOp))
+            {
+                // Move current opcode up
+                *(DWORD *)(RSPInfo.IMEM + CurrentPC - 4) = CurrentOp.Hex;
+                *(DWORD *)(RSPInfo.IMEM + CurrentPC) = PreviousOp.Hex;
+
+                ReorderedOps++;
 
 #ifdef REORDER_BLOCK_VERBOSE
-				CPU_Message("Swapped %X and %X", CurrentPC - 4, CurrentPC);
+                CPU_Message("Swapped %X and %X", CurrentPC - 4, CurrentPC);
 #endif
-			}
-			PreviousOp.Hex = *(DWORD*)(RSPInfo.IMEM + CurrentPC);
+            }
+            PreviousOp.Hex = *(DWORD *)(RSPInfo.IMEM + CurrentPC);
 
-			if (IsOpcodeNop(CurrentPC) && IsOpcodeNop(CurrentPC + 4) && IsOpcodeNop(CurrentPC + 8)) {
-				CurrentPC = EndPC;
-			}
-		}
+            if (IsOpcodeNop(CurrentPC) && IsOpcodeNop(CurrentPC + 4) && IsOpcodeNop(CurrentPC + 8))
+            {
+                CurrentPC = EndPC;
+            }
+        }
 
-		if (ReorderedOps == 0) {
-			Count = InstructionCount;
-		}
-	}
+        if (ReorderedOps == 0)
+        {
+            Count = InstructionCount;
+        }
+    }
 
-	CPU_Message(" After:");
-	for (Count = StartPC; Count < EndPC; Count += 4) {
-		RSP_LW_IMEM(Count, &RspOp.Hex);
-		CPU_Message("  %X %s",Count,RSPOpcodeName(RspOp.Hex,Count));
-	}
-	CPU_Message("");
+    CPU_Message(" After:");
+    for (Count = StartPC; Count < EndPC; Count += 4)
+    {
+        RSP_LW_IMEM(Count, &RspOp.Hex);
+        CPU_Message("  %X %s", Count, RSPOpcodeName(RspOp.Hex, Count));
+    }
+    CPU_Message("");
 }
 
-void ReOrderSubBlock(RSP_BLOCK * Block) {
-	DWORD end = 0x0ffc;
-	DWORD count;
+void ReOrderSubBlock(RSP_BLOCK * Block)
+{
+    DWORD end = 0x0ffc;
+    DWORD count;
 
-	if (!Compiler.bReOrdering) { 
-		return;
-	}
-	if (Block->CurrPC > 0xFF0) { 
-		return;
-	}
+    if (!Compiler.bReOrdering)
+    {
+        return;
+    }
+    if (Block->CurrPC > 0xFF0)
+    {
+        return;
+    }
 
-	// Find the label or jump closest to us
-	if (RspCode.LabelCount) {
-		for (count = 0; count < RspCode.LabelCount; count++) {
-			if (RspCode.BranchLabels[count] < end && RspCode.BranchLabels[count] > Block->CurrPC) { 
-				end = RspCode.BranchLabels[count];
-			}
-		}
-	}
-	if (RspCode.BranchCount) {
-		for (count = 0; count < RspCode.BranchCount; count++) {
-			if (RspCode.BranchLocations[count] < end && RspCode.BranchLocations[count] > Block->CurrPC) { 
-				end = RspCode.BranchLocations[count];
-			}
-		}
-	}
-	// It wont actually re-order the op at the end
-	ReOrderInstructions(Block->CurrPC, end);
+    // Find the label or jump closest to us
+    if (RspCode.LabelCount)
+    {
+        for (count = 0; count < RspCode.LabelCount; count++)
+        {
+            if (RspCode.BranchLabels[count] < end && RspCode.BranchLabels[count] > Block->CurrPC)
+            {
+                end = RspCode.BranchLabels[count];
+            }
+        }
+    }
+    if (RspCode.BranchCount)
+    {
+        for (count = 0; count < RspCode.BranchCount; count++)
+        {
+            if (RspCode.BranchLocations[count] < end && RspCode.BranchLocations[count] > Block->CurrPC)
+            {
+                end = RspCode.BranchLocations[count];
+            }
+        }
+    }
+    // It wont actually re-order the op at the end
+    ReOrderInstructions(Block->CurrPC, end);
 }
 
 /*
@@ -515,30 +544,34 @@ This needs to be called on a sub-block basis, like
 after every time we hit a branch and delay slot
 */
 
-void DetectGPRConstants(RSP_CODE * code) {
-	DWORD Count, Constant = 0;
+void DetectGPRConstants(RSP_CODE * code)
+{
+    DWORD Count, Constant = 0;
 
-	memset(&code->bIsRegConst, 0, sizeof(Boolean) * 0x20);
-	memset(&code->MipsRegConst, 0, sizeof(DWORD) * 0x20);
-	
-	if (!Compiler.bGPRConstants) { 
-		return;
-	}
-	CPU_Message("***** Detecting constants *****");
+    memset(&code->bIsRegConst, 0, sizeof(Boolean) * 0x20);
+    memset(&code->MipsRegConst, 0, sizeof(DWORD) * 0x20);
 
-	// R0 is constant zero, R31 or RA is not constant
-	code->bIsRegConst[0] = TRUE;
-	code->MipsRegConst[0] = 0;
+    if (!Compiler.bGPRConstants)
+    {
+        return;
+    }
+    CPU_Message("***** Detecting constants *****");
 
-	// Do your global search for them
-	for (Count = 1; Count < 31; Count++) {
-		if (IsRegisterConstant(Count, &Constant) == TRUE) {
-			CPU_Message("Global: %s is a constant of: %08X", GPR_Name(Count), Constant);
-			code->bIsRegConst[Count] = TRUE;
-			code->MipsRegConst[Count] = Constant;
-		}
-	}
-	CPU_Message("");
+    // R0 is constant zero, R31 or RA is not constant
+    code->bIsRegConst[0] = TRUE;
+    code->MipsRegConst[0] = 0;
+
+    // Do your global search for them
+    for (Count = 1; Count < 31; Count++)
+    {
+        if (IsRegisterConstant(Count, &Constant) == TRUE)
+        {
+            CPU_Message("Global: %s is a constant of: %08X", GPR_Name(Count), Constant);
+            code->bIsRegConst[Count] = TRUE;
+            code->MipsRegConst[Count] = Constant;
+        }
+    }
+    CPU_Message("");
 }
 
 /*
@@ -549,42 +582,49 @@ taken branches like alignment
 2: Clears all the x86 code, jump tables etc.
 */
 
-void CompilerToggleBuffer(void) {
-	if (dwBuffer == MainBuffer) {
-		dwBuffer = SecondaryBuffer;
-		pLastPrimary = RecompPos;
+void CompilerToggleBuffer(void)
+{
+    if (dwBuffer == MainBuffer)
+    {
+        dwBuffer = SecondaryBuffer;
+        pLastPrimary = RecompPos;
 
-		if (pLastSecondary == NULL) {
-			pLastSecondary = RecompCodeSecondary;
-		}
+        if (pLastSecondary == NULL)
+        {
+            pLastSecondary = RecompCodeSecondary;
+        }
 
-		RecompPos = pLastSecondary;
-		CPU_Message("   (Secondary buffer active 0x%08X)", pLastSecondary);
-	} else {
-		dwBuffer = MainBuffer;
-		pLastSecondary = RecompPos;
+        RecompPos = pLastSecondary;
+        CPU_Message("   (Secondary buffer active 0x%08X)", pLastSecondary);
+    }
+    else
+    {
+        dwBuffer = MainBuffer;
+        pLastSecondary = RecompPos;
 
-		if (pLastPrimary == NULL) {
-			pLastPrimary = RecompCode;
-		}
-	
-		RecompPos = pLastPrimary;
-		CPU_Message("   (Primary buffer active 0x%08X)", pLastPrimary);
-	}
+        if (pLastPrimary == NULL)
+        {
+            pLastPrimary = RecompCode;
+        }
+
+        RecompPos = pLastPrimary;
+        CPU_Message("   (Primary buffer active 0x%08X)", pLastPrimary);
+    }
 }
 
-void ClearAllx86Code (void) {
-	extern DWORD NoOfMaps, MapsCRC[32];
-	extern BYTE *JumpTables;
+void ClearAllx86Code(void)
+{
+    extern DWORD NoOfMaps, MapsCRC[32];
+    extern BYTE * JumpTables;
 
-	memset(&MapsCRC, 0, sizeof(DWORD) * 0x20);
-	NoOfMaps = 0;
-	memset(JumpTables,0,0x1000*32);
+    memset(&MapsCRC, 0, sizeof(DWORD) * 0x20);
+    NoOfMaps = 0;
+    memset(JumpTables, 0, 0x1000 * 32);
 
-	RecompPos = RecompCode;
+    RecompPos = RecompCode;
 
-	pLastPrimary = NULL;
-	pLastSecondary = NULL;
+    pLastPrimary = NULL;
+    pLastSecondary = NULL;
 }
 
 /*
@@ -593,47 +633,51 @@ Description:
 Resolves all the collected branches, x86 style
 */
 
-void LinkBranches(RSP_BLOCK * Block) {
-	DWORD OrigPrgCount = *PrgCount;
-	DWORD Count, Target;
-	DWORD * JumpWord;
-	BYTE * X86Code;
-	RSP_BLOCK Save;
+void LinkBranches(RSP_BLOCK * Block)
+{
+    DWORD OrigPrgCount = *PrgCount;
+    DWORD Count, Target;
+    DWORD * JumpWord;
+    BYTE * X86Code;
+    RSP_BLOCK Save;
 
-	if (!CurrentBlock.ResolveCount) { 
-		return;
-	}
-	CPU_Message("***** Linking branches (%i) *****", CurrentBlock.ResolveCount);
+    if (!CurrentBlock.ResolveCount)
+    {
+        return;
+    }
+    CPU_Message("***** Linking branches (%i) *****", CurrentBlock.ResolveCount);
 
-	for (Count = 0; Count < CurrentBlock.ResolveCount; Count++) {
-		Target = CurrentBlock.BranchesToResolve[Count].TargetPC;
-		X86Code = (BYTE *)*(JumpTable + (Target >> 2));
+    for (Count = 0; Count < CurrentBlock.ResolveCount; Count++)
+    {
+        Target = CurrentBlock.BranchesToResolve[Count].TargetPC;
+        X86Code = (BYTE *)*(JumpTable + (Target >> 2));
 
-		if (!X86Code) {
-			*PrgCount = Target;
-			CPU_Message("");
-			CPU_Message("===== (Generate code: %04X) =====", Target);
-			Save = *Block;
+        if (!X86Code)
+        {
+            *PrgCount = Target;
+            CPU_Message("");
+            CPU_Message("===== (Generate code: %04X) =====", Target);
+            Save = *Block;
 
-			// Compile this block and link
-			CompilerRSPBlock();
-			LinkBranches(Block);
+            // Compile this block and link
+            CompilerRSPBlock();
+            LinkBranches(Block);
 
-			*Block = Save;
-			CPU_Message("===== (End generate code: %04X) =====", Target);
-			CPU_Message("");
-			X86Code = (BYTE *)*(JumpTable + (Target >> 2));
-		}
+            *Block = Save;
+            CPU_Message("===== (End generate code: %04X) =====", Target);
+            CPU_Message("");
+            X86Code = (BYTE *)*(JumpTable + (Target >> 2));
+        }
 
-		JumpWord = CurrentBlock.BranchesToResolve[Count].X86JumpLoc;
-		x86_SetBranch32b(JumpWord, (DWORD*)X86Code);
+        JumpWord = CurrentBlock.BranchesToResolve[Count].X86JumpLoc;
+        x86_SetBranch32b(JumpWord, (DWORD *)X86Code);
 
-		CPU_Message("Linked RSP branch from x86: %08X, to RSP: %X / x86: %08X",
-			JumpWord, Target, X86Code);
-	}
-	*PrgCount = OrigPrgCount;
-	CPU_Message("***** Done linking branches *****");
-	CPU_Message("");
+        CPU_Message("Linked RSP branch from x86: %08X, to RSP: %X / x86: %08X",
+                    JumpWord, Target, X86Code);
+    }
+    *PrgCount = OrigPrgCount;
+    CPU_Message("***** Done linking branches *****");
+    CPU_Message("");
 }
 
 /*
@@ -644,292 +688,336 @@ sections as well as set the jump table to points
 within a block that are safe.
 */
 
-void BuildBranchLabels(void) {
-	OPCODE RspOp;
-	DWORD i, Dest;
+void BuildBranchLabels(void)
+{
+    OPCODE RspOp;
+    DWORD i, Dest;
 
 #ifdef BUILD_BRANCHLABELS_VERBOSE
-	CPU_Message("***** Building branch labels *****");
+    CPU_Message("***** Building branch labels *****");
 #endif
 
-	for (i = 0; i < 0x1000; i += 4) {
-		RspOp.Hex = *(DWORD*)(RSPInfo.IMEM + i);
+    for (i = 0; i < 0x1000; i += 4)
+    {
+        RspOp.Hex = *(DWORD *)(RSPInfo.IMEM + i);
 
-		if (TRUE == IsOpcodeBranch(i, RspOp)) {
-			if (RspCode.LabelCount >= (sizeof(RspCode.BranchLabels) / sizeof(RspCode.BranchLabels[0])) - 1) {
-				CompilerWarning("Out of space for branch labels");
-				return;
-			}
+        if (TRUE == IsOpcodeBranch(i, RspOp))
+        {
+            if (RspCode.LabelCount >= (sizeof(RspCode.BranchLabels) / sizeof(RspCode.BranchLabels[0])) - 1)
+            {
+                CompilerWarning("Out of space for branch labels");
+                return;
+            }
 
-			if (RspCode.BranchCount >= (sizeof(RspCode.BranchLocations) / sizeof(RspCode.BranchLocations[0])) - 1) {
-				CompilerWarning("Out of space for branch locations");
-				return;
-			}
-			RspCode.BranchLocations[RspCode.BranchCount++] = i;
-			if (RspOp.op == RSP_SPECIAL) {
-				// Register jump not predictable
-			} else if (RspOp.op == RSP_J || RspOp.op == RSP_JAL) {
-				// For JAL its a sub-block for returns
-				Dest = (RspOp.target << 2) & 0xFFC;
-				RspCode.BranchLabels[RspCode.LabelCount] = Dest;
-				RspCode.LabelCount += 1;
+            if (RspCode.BranchCount >= (sizeof(RspCode.BranchLocations) / sizeof(RspCode.BranchLocations[0])) - 1)
+            {
+                CompilerWarning("Out of space for branch locations");
+                return;
+            }
+            RspCode.BranchLocations[RspCode.BranchCount++] = i;
+            if (RspOp.op == RSP_SPECIAL)
+            {
+                // Register jump not predictable
+            }
+            else if (RspOp.op == RSP_J || RspOp.op == RSP_JAL)
+            {
+                // For JAL its a sub-block for returns
+                Dest = (RspOp.target << 2) & 0xFFC;
+                RspCode.BranchLabels[RspCode.LabelCount] = Dest;
+                RspCode.LabelCount += 1;
 #ifdef BUILD_BRANCHLABELS_VERBOSE
-				CPU_Message("[%02i] Added branch at %X to %X", RspCode.LabelCount, i, Dest);
+                CPU_Message("[%02i] Added branch at %X to %X", RspCode.LabelCount, i, Dest);
 #endif
-			} else {
-				Dest = (i + ((short)RspOp.offset << 2) + 4) & 0xFFC;
-				RspCode.BranchLabels[RspCode.LabelCount] = Dest;
-				RspCode.LabelCount += 1;
+            }
+            else
+            {
+                Dest = (i + ((short)RspOp.offset << 2) + 4) & 0xFFC;
+                RspCode.BranchLabels[RspCode.LabelCount] = Dest;
+                RspCode.LabelCount += 1;
 #ifdef BUILD_BRANCHLABELS_VERBOSE
-				CPU_Message("[%02i] Added branch at %X to %X", RspCode.LabelCount, i, Dest);
+                CPU_Message("[%02i] Added branch at %X to %X", RspCode.LabelCount, i, Dest);
 #endif
-			}
-		}
-	}
+            }
+        }
+    }
 
 #ifdef BUILD_BRANCHLABELS_VERBOSE
-	CPU_Message("***** End branch labels *****");
-	CPU_Message("");
+    CPU_Message("***** End branch labels *****");
+    CPU_Message("");
 #endif
 }
 
 Boolean IsJumpLabel(DWORD PC)
 {
-	DWORD Count;
-	
-	if (!RspCode.LabelCount) {
-		return FALSE;
-	}
+    DWORD Count;
 
-	for (Count = 0; Count < RspCode.LabelCount; Count++) {
-		if (PC == RspCode.BranchLabels[Count]) {
-			return TRUE;
-		}
-	}
-	return FALSE;
+    if (!RspCode.LabelCount)
+    {
+        return FALSE;
+    }
+
+    for (Count = 0; Count < RspCode.LabelCount; Count++)
+    {
+        if (PC == RspCode.BranchLabels[Count])
+        {
+            return TRUE;
+        }
+    }
+    return FALSE;
 }
 
-void CompilerLinkBlocks(void) {
-	BYTE * KnownCode = (BYTE *)*(JumpTable + (CompilePC >> 2));
+void CompilerLinkBlocks(void)
+{
+    BYTE * KnownCode = (BYTE *)*(JumpTable + (CompilePC >> 2));
 
-	CPU_Message("***** Linking block to X86: %08X *****", KnownCode);
-	NextInstruction = FINISH_BLOCK;
+    CPU_Message("***** Linking block to X86: %08X *****", KnownCode);
+    NextInstruction = FINISH_BLOCK;
 
-	// Block linking scenario			
-	JmpLabel32("Linked block", 0);
-	x86_SetBranch32b(RecompPos - 4, KnownCode);
+    // Block linking scenario
+    JmpLabel32("Linked block", 0);
+    x86_SetBranch32b(RecompPos - 4, KnownCode);
 }
 
 void CompilerRSPBlock(void)
 {
-	BYTE * IMEM_SAVE = (BYTE *)malloc(0x1000);
-	const size_t X86BaseAddress = (size_t)RecompPos;
+    BYTE * IMEM_SAVE = (BYTE *)malloc(0x1000);
+    const size_t X86BaseAddress = (size_t)RecompPos;
 
-	NextInstruction = NORMAL;
-	CompilePC = *PrgCount;
-	
-	memset(&CurrentBlock, 0, sizeof(CurrentBlock));
-	CurrentBlock.StartPC = CompilePC;
-	CurrentBlock.CurrPC = CompilePC;
+    NextInstruction = NORMAL;
+    CompilePC = *PrgCount;
 
-	// Align the block to a boundary	
-	if (X86BaseAddress & 7)
-	{
-		register size_t Count;
-		const size_t Padding = (8 - (X86BaseAddress & 7)) & 7;
+    memset(&CurrentBlock, 0, sizeof(CurrentBlock));
+    CurrentBlock.StartPC = CompilePC;
+    CurrentBlock.CurrPC = CompilePC;
 
-		for (Count = 0; Count < Padding; Count++) {
-			CPU_Message("%08X: nop", RecompPos);
-			*(RecompPos++) = 0x90;
-		}
-	}
+    // Align the block to a boundary
+    if (X86BaseAddress & 7)
+    {
+        register size_t Count;
+        const size_t Padding = (8 - (X86BaseAddress & 7)) & 7;
 
-	CPU_Message("====== Block %d ======", BlockID++);
-	CPU_Message("x86 code at: %X",RecompPos);
-	CPU_Message("Jump table: %X",Table );
-	CPU_Message("Start of block: %X",CurrentBlock.StartPC );
-	CPU_Message("====== Recompiled code ======");
+        for (Count = 0; Count < Padding; Count++)
+        {
+            CPU_Message("%08X: nop", RecompPos);
+            *(RecompPos++) = 0x90;
+        }
+    }
 
-	if (Compiler.bReOrdering == TRUE) {
-		memcpy(IMEM_SAVE, RSPInfo.IMEM, 0x1000);
-		ReOrderSubBlock(&CurrentBlock);
-	}
+    CPU_Message("====== Block %d ======", BlockID++);
+    CPU_Message("x86 code at: %X", RecompPos);
+    CPU_Message("Jump table: %X", Table);
+    CPU_Message("Start of block: %X", CurrentBlock.StartPC);
+    CPU_Message("====== Recompiled code ======");
 
-	// This is for the block about to be compiled
-	*(JumpTable + (CompilePC >> 2)) = RecompPos;
+    if (Compiler.bReOrdering == TRUE)
+    {
+        memcpy(IMEM_SAVE, RSPInfo.IMEM, 0x1000);
+        ReOrderSubBlock(&CurrentBlock);
+    }
 
-	do {
-		
-		// Reordering is setup to allow us to have loop labels
-		// so here we see if this is one and put it in the jump table
-		
-		if (NextInstruction == NORMAL && IsJumpLabel(CompilePC)) {
-			// Jumps come around twice
-			if (NULL == *(JumpTable + (CompilePC >> 2))) {
-				CPU_Message("***** Adding jump table entry for PC: %04X at X86: %08X *****", CompilePC, RecompPos);
-				CPU_Message("");
-				*(JumpTable + (CompilePC >> 2)) = RecompPos;
+    // This is for the block about to be compiled
+    *(JumpTable + (CompilePC >> 2)) = RecompPos;
 
-				// Reorder from here to next label or branch
-				CurrentBlock.CurrPC = CompilePC;
-				ReOrderSubBlock(&CurrentBlock);
-			} else if (NextInstruction != DELAY_SLOT_DONE) {
+    do
+    {
 
-				 // We could link the blocks here, but performance-wise it might be better to just let it run
+        // Reordering is setup to allow us to have loop labels
+        // so here we see if this is one and put it in the jump table
 
-			}
-		}
+        if (NextInstruction == NORMAL && IsJumpLabel(CompilePC))
+        {
+            // Jumps come around twice
+            if (NULL == *(JumpTable + (CompilePC >> 2)))
+            {
+                CPU_Message("***** Adding jump table entry for PC: %04X at X86: %08X *****", CompilePC, RecompPos);
+                CPU_Message("");
+                *(JumpTable + (CompilePC >> 2)) = RecompPos;
 
-		if (Compiler.bSections == TRUE) {
-			if (TRUE == RSP_DoSections()) {
-				continue;
-			}
-		}
+                // Reorder from here to next label or branch
+                CurrentBlock.CurrPC = CompilePC;
+                ReOrderSubBlock(&CurrentBlock);
+            }
+            else if (NextInstruction != DELAY_SLOT_DONE)
+            {
+
+                // We could link the blocks here, but performance-wise it might be better to just let it run
+            }
+        }
+
+        if (Compiler.bSections == TRUE)
+        {
+            if (TRUE == RSP_DoSections())
+            {
+                continue;
+            }
+        }
 
 #ifdef X86_RECOMP_VERBOSE
-		if (FALSE == IsOpcodeNop(CompilePC)) {
-			CPU_Message("X86 Address: %08X", RecompPos);
-		}
+        if (FALSE == IsOpcodeNop(CompilePC))
+        {
+            CPU_Message("X86 Address: %08X", RecompPos);
+        }
 #endif
 
-		RSP_LW_IMEM(CompilePC, &RSPOpC.Hex);
+        RSP_LW_IMEM(CompilePC, &RSPOpC.Hex);
 
-		if (LogRDP && NextInstruction != DELAY_SLOT_DONE){
-			char str[40];
-			sprintf(str,"%X",CompilePC);
-			PushImm32(str,CompilePC);
-			Call_Direct(RDP_LogLoc,"RDP_LogLoc");
-			AddConstToX86Reg(x86_ESP, 4);
-		}
+        if (LogRDP && NextInstruction != DELAY_SLOT_DONE)
+        {
+            char str[40];
+            sprintf(str, "%X", CompilePC);
+            PushImm32(str, CompilePC);
+            Call_Direct(RDP_LogLoc, "RDP_LogLoc");
+            AddConstToX86Reg(x86_ESP, 4);
+        }
 
-		if (RSPOpC.Hex == 0xFFFFFFFF) {
-			// I think this pops up an unknown OP dialog
-			// NextInstruction = FINISH_BLOCK;
-		} else {
-			RSP_Opcode[ RSPOpC.op ]();
-		}
+        if (RSPOpC.Hex == 0xFFFFFFFF)
+        {
+            // I think this pops up an unknown OP dialog
+            // NextInstruction = FINISH_BLOCK;
+        }
+        else
+        {
+            RSP_Opcode[RSPOpC.op]();
+        }
 
-		switch (NextInstruction) {
-		case NORMAL: 
-			CompilePC += 4;
-			break;
-		case DO_DELAY_SLOT:
-			NextInstruction = DELAY_SLOT;
-			CompilePC += 4;
-			break;
-		case DELAY_SLOT:
-			NextInstruction = DELAY_SLOT_DONE;
-			CompilePC -= 4;
-			break;
-		case DELAY_SLOT_EXIT:
-			NextInstruction = DELAY_SLOT_EXIT_DONE;
-			CompilePC -= 4;
-			break;
-		case FINISH_SUB_BLOCK:
-			NextInstruction = NORMAL;
-			CompilePC += 8;
-			if (CompilePC >= 0x1000) {
-				NextInstruction = FINISH_BLOCK;
-			} else if (NULL == *(JumpTable + (CompilePC >> 2))) {
-				// This is for the new block being compiled now
-				CPU_Message("***** Continuing static SubBlock (jump table entry added for PC: %04X at X86: %08X) *****", CompilePC, RecompPos);
-				*(JumpTable + (CompilePC >> 2)) = RecompPos;
+        switch (NextInstruction)
+        {
+        case NORMAL:
+            CompilePC += 4;
+            break;
+        case DO_DELAY_SLOT:
+            NextInstruction = DELAY_SLOT;
+            CompilePC += 4;
+            break;
+        case DELAY_SLOT:
+            NextInstruction = DELAY_SLOT_DONE;
+            CompilePC -= 4;
+            break;
+        case DELAY_SLOT_EXIT:
+            NextInstruction = DELAY_SLOT_EXIT_DONE;
+            CompilePC -= 4;
+            break;
+        case FINISH_SUB_BLOCK:
+            NextInstruction = NORMAL;
+            CompilePC += 8;
+            if (CompilePC >= 0x1000)
+            {
+                NextInstruction = FINISH_BLOCK;
+            }
+            else if (NULL == *(JumpTable + (CompilePC >> 2)))
+            {
+                // This is for the new block being compiled now
+                CPU_Message("***** Continuing static SubBlock (jump table entry added for PC: %04X at X86: %08X) *****", CompilePC, RecompPos);
+                *(JumpTable + (CompilePC >> 2)) = RecompPos;
 
-				CurrentBlock.CurrPC = CompilePC;
-				// Reorder from after delay to next label or branch
-				ReOrderSubBlock(&CurrentBlock);
-			} else {
-				CompilerLinkBlocks();
-			}
-			break;
+                CurrentBlock.CurrPC = CompilePC;
+                // Reorder from after delay to next label or branch
+                ReOrderSubBlock(&CurrentBlock);
+            }
+            else
+            {
+                CompilerLinkBlocks();
+            }
+            break;
 
-		case FINISH_BLOCK: break;
-		default:
-			DisplayError("RSP main loop\n\nWTF NextInstruction = %d",NextInstruction);
-			CompilePC += 4;
-			break;
-		}
-	} while (NextInstruction != FINISH_BLOCK && (CompilePC < 0x1000 || NextInstruction == DELAY_SLOT));
-	CPU_Message("===== End of recompiled code =====");
+        case FINISH_BLOCK: break;
+        default:
+            DisplayError("RSP main loop\n\nWTF NextInstruction = %d", NextInstruction);
+            CompilePC += 4;
+            break;
+        }
+    } while (NextInstruction != FINISH_BLOCK && (CompilePC < 0x1000 || NextInstruction == DELAY_SLOT));
+    CPU_Message("===== End of recompiled code =====");
 
-	if (Compiler.bReOrdering == TRUE) {
-		memcpy(RSPInfo.IMEM, IMEM_SAVE, 0x1000);
-	}
-	free(IMEM_SAVE);
+    if (Compiler.bReOrdering == TRUE)
+    {
+        memcpy(RSPInfo.IMEM, IMEM_SAVE, 0x1000);
+    }
+    free(IMEM_SAVE);
 }
 
-DWORD RunRecompilerCPU ( DWORD Cycles ) {
-	BYTE * Block;
+DWORD RunRecompilerCPU(DWORD Cycles)
+{
+    BYTE * Block;
 
-	RSP_Running = TRUE;
-	SetJumpTable(JumpTableSize);
+    RSP_Running = TRUE;
+    SetJumpTable(JumpTableSize);
 
-	while (RSP_Running) 
-	{
-		Block = (BYTE *)*(JumpTable + (*PrgCount >> 2));
+    while (RSP_Running)
+    {
+        Block = (BYTE *)*(JumpTable + (*PrgCount >> 2));
 
-		if (Block == NULL) {
-			if (Profiling && !IndvidualBlock) {
-				StartTimer((DWORD)Timer_Compiling);
-			}
+        if (Block == NULL)
+        {
+            if (Profiling && !IndvidualBlock)
+            {
+                StartTimer((DWORD)Timer_Compiling);
+            }
 
-			memset(&RspCode, 0, sizeof(RspCode));
+            memset(&RspCode, 0, sizeof(RspCode));
 #if defined(_MSC_VER)
-			__try {
-				BuildBranchLabels();
-				DetectGPRConstants(&RspCode);
-				CompilerRSPBlock();
-			} __except(EXCEPTION_EXECUTE_HANDLER) {
-				DisplayError("Error CompilePC = %08X", CompilePC);
-				ClearAllx86Code();
-				continue;
-			}
+            __try
+            {
+                BuildBranchLabels();
+                DetectGPRConstants(&RspCode);
+                CompilerRSPBlock();
+            }
+            __except (EXCEPTION_EXECUTE_HANDLER)
+            {
+                DisplayError("Error CompilePC = %08X", CompilePC);
+                ClearAllx86Code();
+                continue;
+            }
 #else
-			BuildBranchLabels();
-			DetectGPRConstants(&RspCode);
-			CompilerRSPBlock();
+            BuildBranchLabels();
+            DetectGPRConstants(&RspCode);
+            CompilerRSPBlock();
 #endif
-			
-			Block = (BYTE *)*(JumpTable + (*PrgCount >> 2));
 
-			// We are done compiling, but we may have references
-			// to fill in still either from this block, or jumps
-			// that go out of it, let's rock
+            Block = (BYTE *)*(JumpTable + (*PrgCount >> 2));
 
-			LinkBranches(&CurrentBlock);
-			if (Profiling && !IndvidualBlock) {
-				StopTimer();
-			}
-		}
+            // We are done compiling, but we may have references
+            // to fill in still either from this block, or jumps
+            // that go out of it, let's rock
 
-		if (Profiling && IndvidualBlock) {
-			StartTimer(*PrgCount);
-		}
+            LinkBranches(&CurrentBlock);
+            if (Profiling && !IndvidualBlock)
+            {
+                StopTimer();
+            }
+        }
+
+        if (Profiling && IndvidualBlock)
+        {
+            StartTimer(*PrgCount);
+        }
 
 #if defined(_M_IX86) && defined(_MSC_VER)
-		_asm {
+        _asm {
 			pushad
 			call Block
 			popad
-		}		
+        }
 #else
-		DebugBreak();
+        DebugBreak();
 #endif
-		if (Profiling && IndvidualBlock) {
-			StopTimer();
-		}
-		if (RSP_NextInstruction == SINGLE_STEP)
-		{
-			RSP_Running = FALSE;
-		}
-	}
+        if (Profiling && IndvidualBlock)
+        {
+            StopTimer();
+        }
+        if (RSP_NextInstruction == SINGLE_STEP)
+        {
+            RSP_Running = FALSE;
+        }
+    }
 
-	if (IsMmxEnabled == TRUE) {
+    if (IsMmxEnabled == TRUE)
+    {
 #if defined(_M_IX86) && defined(_MSC_VER)
-		_asm emms
+        _asm emms
 #else
-		DebugBreak();
+        DebugBreak();
 #endif
-	}
-	return Cycles;
+    }
+    return Cycles;
 }

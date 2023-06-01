@@ -9,12 +9,15 @@ cd /d %origdir%
 set ScanDir[0]="%base_dir%\Source\Common"
 set ScanDir[1]="%base_dir%\Source\Project64"
 set ScanDir[2]="%base_dir%\Source\Project64-core"
+set ScanDir[3]="%base_dir%\Source\RSP"
 
 set ScanFiles[0]="*.cpp"
 set ScanFiles[1]="*.h"
 
 set Exclude[0]="%base_dir%\Source\Project64-core\Version.h"
 set Exclude[1]="%base_dir%\Source\Project64\UserInterface\resource.h"
+set Exclude[2]="%base_dir%\Source\RSP\Version.h"
+set Exclude[3]="%base_dir%\Source\RSP\resource.h"
 
 set ValidParam=0
 if "%1" == "check" set ValidParam=1
