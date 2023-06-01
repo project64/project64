@@ -56,7 +56,7 @@ void Create_RSP_Commands_Window ( int Child )
 	if ( Child )
 	{
 		InRSPCommandsWindow = TRUE;
-		DialogBox( hinstDLL, "RSPCOMMAND", NULL,(DLGPROC)RSP_Commands_Proc );
+		DialogBoxA( (HINSTANCE)hinstDLL, "RSPCOMMAND", NULL,(DLGPROC)RSP_Commands_Proc );
 
 		InRSPCommandsWindow = FALSE;
 		memset(RSPCommandLine,0,sizeof(RSPCommandLine));
@@ -147,7 +147,7 @@ void DumpRSPCode (void)
 	DWORD location, dwWritten;
 	HANDLE hLogFile = NULL;
 
-	strcpy(LogFileName,GetCommandLine() + 1);
+	strcpy(LogFileName,GetCommandLineA() + 1);
 	
 	if (strchr(LogFileName,'\"'))
 	{
@@ -169,7 +169,7 @@ void DumpRSPCode (void)
 
 	strcat(LogFileName,"\\RSP code.txt");
 
-	hLogFile = CreateFile(LogFileName,GENERIC_WRITE, FILE_SHARE_READ,NULL,CREATE_ALWAYS,
+	hLogFile = CreateFileA(LogFileName,GENERIC_WRITE, FILE_SHARE_READ,NULL,CREATE_ALWAYS,
 		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 	SetFilePointer(hLogFile,0,NULL,FILE_BEGIN);
 
@@ -202,7 +202,7 @@ void DumpRSPData (void)
 	DWORD location, dwWritten;
 	HANDLE hLogFile = NULL;
 
-	strcpy(LogFileName,GetCommandLine() + 1);
+	strcpy(LogFileName,GetCommandLineA() + 1);
 
 	if (strchr(LogFileName,'\"'))
 	{
@@ -223,7 +223,7 @@ void DumpRSPData (void)
 
 	strcat(LogFileName,"\\RSP data.txt");
 
-	hLogFile = CreateFile(LogFileName,GENERIC_WRITE, FILE_SHARE_READ,NULL,CREATE_ALWAYS,
+	hLogFile = CreateFileA(LogFileName,GENERIC_WRITE, FILE_SHARE_READ,NULL,CREATE_ALWAYS,
 		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 	SetFilePointer(hLogFile,0,NULL,FILE_BEGIN);
 
@@ -326,7 +326,7 @@ void DrawRSPCommand ( LPARAM lParam )
 	{
 		SetRect(&TextRect,ditem->rcItem.left,ditem->rcItem.top, ditem->rcItem.left + 83,
 			ditem->rcItem.bottom);
-		DrawText(
+		DrawTextA(
 			ditem->hDC,
 			&Offset[0], printed_offset,
 			&TextRect,
@@ -335,7 +335,7 @@ void DrawRSPCommand ( LPARAM lParam )
 
 		SetRect(&TextRect,ditem->rcItem.left + 83,ditem->rcItem.top, ditem->rcItem.left + 165,
 			ditem->rcItem.bottom);
-		DrawText(
+		DrawTextA(
 			ditem->hDC,
 			&Instruction[0], printed_instruction,
 			&TextRect,
@@ -344,7 +344,7 @@ void DrawRSPCommand ( LPARAM lParam )
 
 		SetRect(&TextRect,ditem->rcItem.left + 165,ditem->rcItem.top, ditem->rcItem.right,
 			ditem->rcItem.bottom);
-		DrawText(
+		DrawTextA(
 			ditem->hDC,
 			&Arguments[0], printed_arguments,
 			&TextRect,
@@ -353,7 +353,7 @@ void DrawRSPCommand ( LPARAM lParam )
 	}
 	else
 	{
-		DrawText(
+		DrawTextA(
 			ditem->hDC,
 			&Command[0], (signed int)strlen(Command),
 			&ditem->rcItem,
@@ -444,11 +444,11 @@ void Paint_RSP_Commands (HWND hDlg)
 	hOldFont = (HFONT)SelectObject( ps.hdc,GetStockObject(DEFAULT_GUI_FONT ) );
 	OldBkMode = SetBkMode( ps.hdc, TRANSPARENT );
 		
-	TextOut( ps.hdc, 23,16,"Offset",6);
-	TextOut( ps.hdc, 97,16,"Instruction",11);
-	TextOut( ps.hdc, 180,16,"Arguments",9);
-	TextOut( ps.hdc, 354,2," Address ",9);
-	TextOut( ps.hdc, 358,19,"0x1",3);
+	TextOutA( ps.hdc, 23,16,"Offset",6);
+	TextOutA( ps.hdc, 97,16,"Instruction",11);
+	TextOutA( ps.hdc, 180,16,"Arguments",9);
+	TextOutA( ps.hdc, 354,2," Address ",9);
+	TextOutA( ps.hdc, 358,19,"0x1",3);
 	
 	SelectObject( ps.hdc,hOldFont );
 	SetBkMode( ps.hdc, OldBkMode );
@@ -464,7 +464,7 @@ void RefreshRSPCommands ( void )
 
 	if (InRSPCommandsWindow == FALSE) { return; }
 
-	GetWindowText(hAddress,AsciiAddress,sizeof(AsciiAddress));
+	GetWindowTextA(hAddress,AsciiAddress,sizeof(AsciiAddress));
 	location = AsciiToHex(AsciiAddress) & ~3;
 
 	if (location > 0xF88) { location = 0xF88; }
@@ -579,14 +579,14 @@ LRESULT CALLBACK RSP_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 			char Value[20];
 			SCROLLINFO si;
 
-			GetWindowText(hAddress,Value,sizeof(Value));
+			GetWindowTextA(hAddress,Value,sizeof(Value));
 			location = AsciiToHex(Value) & ~3;
 
 			switch (LOWORD(wParam))
 			{
 			case SB_THUMBTRACK:
 				sprintf(Value,"%03X",((short int)HIWORD(wParam) << 2 ));
-				SetWindowText(hAddress,Value);
+				SetWindowTextA(hAddress,Value);
 				si.cbSize = sizeof(si);
 				si.fMask  = SIF_POS;
 				si.nPos   = (short int)HIWORD(wParam);
@@ -596,7 +596,7 @@ LRESULT CALLBACK RSP_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 				if (location < 0xF88)
 				{
 					sprintf(Value,"%03X",location + 0x4);
-					SetWindowText(hAddress,Value);
+					SetWindowTextA(hAddress,Value);
 					si.cbSize = sizeof(si);
 					si.fMask  = SIF_POS;
 					si.nPos   = ((location + 0x4) >> 2);
@@ -605,7 +605,7 @@ LRESULT CALLBACK RSP_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 				else
 				{
 					sprintf(Value,"%03X",0xF88);
-					SetWindowText(hAddress,Value);
+					SetWindowTextA(hAddress,Value);
 					si.cbSize = sizeof(si);
 					si.fMask  = SIF_POS;
 					si.nPos   = (0xFFC >> 2);
@@ -616,7 +616,7 @@ LRESULT CALLBACK RSP_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 				if (location > 0x4 )
 				{
 					sprintf(Value,"%03X",location - 0x4);
-					SetWindowText(hAddress,Value);
+					SetWindowTextA(hAddress,Value);
 					si.cbSize = sizeof(si);
 					si.fMask  = SIF_POS;
 					si.nPos   = ((location - 0x4) >> 2);
@@ -625,7 +625,7 @@ LRESULT CALLBACK RSP_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 				else
 				{
 					sprintf(Value,"%03X",0);
-					SetWindowText(hAddress,Value);
+					SetWindowTextA(hAddress,Value);
 					si.cbSize = sizeof(si);
 					si.fMask  = SIF_POS;
 					si.nPos   = 0;
@@ -636,7 +636,7 @@ LRESULT CALLBACK RSP_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 				if ((location + 0x74)< 0xF88)
 				{
 					sprintf(Value,"%03X",location + 0x74);
-					SetWindowText(hAddress,Value);
+					SetWindowTextA(hAddress,Value);
 					si.cbSize = sizeof(si);
 					si.fMask  = SIF_POS;
 					si.nPos   = ((location + 0x74) >> 2);
@@ -645,7 +645,7 @@ LRESULT CALLBACK RSP_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 				else
 				{
 					sprintf(Value,"%03X",0xF88);
-					SetWindowText(hAddress,Value);
+					SetWindowTextA(hAddress,Value);
 					si.cbSize = sizeof(si);
 					si.fMask  = SIF_POS;
 					si.nPos   = (0xF8F >> 2);
@@ -656,7 +656,7 @@ LRESULT CALLBACK RSP_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 				if ((location - 0x74) > 0x74 )
 				{
 					sprintf(Value,"%03X",location - 0x74);
-					SetWindowText(hAddress,Value);
+					SetWindowTextA(hAddress,Value);
 					si.cbSize = sizeof(si);
 					si.fMask  = SIF_POS;
 					si.nPos   = ((location - 0x74) >> 2);
@@ -665,7 +665,7 @@ LRESULT CALLBACK RSP_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 				else
 				{
 					sprintf(Value,"%03X",0);
-					SetWindowText(hAddress,Value);
+					SetWindowTextA(hAddress,Value);
 					si.cbSize = sizeof(si);
 					si.fMask  = SIF_POS;
 					si.nPos   = 0;
@@ -688,9 +688,9 @@ void RSP_Commands_Setup ( HWND hDlg )
 	char Location[10];
 	DWORD X, Y, WndPos;
 	
-	hList = CreateWindowEx(WS_EX_STATICEDGE, "LISTBOX","", WS_CHILD | WS_VISIBLE | 
+	hList = CreateWindowExA(WS_EX_STATICEDGE, "LISTBOX","", WS_CHILD | WS_VISIBLE | 
 		LBS_OWNERDRAWFIXED | LBS_NOTIFY,14,30,303,445, hDlg, 
-		(HMENU)IDC_LIST, hinstDLL,NULL );
+		(HMENU)IDC_LIST, (HINSTANCE)hinstDLL,NULL );
 	if ( hList)
 	{
 		SendMessage(hList,WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
@@ -698,49 +698,49 @@ void RSP_Commands_Setup ( HWND hDlg )
 	}
 
 	sprintf(Location, "%03X", PrgCount ? *PrgCount : 0);
-	hAddress = CreateWindowEx(0,"EDIT",Location, WS_CHILD | ES_UPPERCASE | WS_VISIBLE | 
-		WS_BORDER | WS_TABSTOP,375,17,36,18, hDlg,(HMENU)IDC_ADDRESS,hinstDLL, NULL );
+	hAddress = CreateWindowExA(0,"EDIT",Location, WS_CHILD | ES_UPPERCASE | WS_VISIBLE | 
+		WS_BORDER | WS_TABSTOP,375,17,36,18, hDlg,(HMENU)IDC_ADDRESS, (HINSTANCE)hinstDLL, NULL );
 	if (hAddress)
 	{
 		SendMessage(hAddress,WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 		SendMessage(hAddress,EM_SETLIMITTEXT, (WPARAM)3,(LPARAM)0);
 	}
 
-	hFunctionlist = CreateWindowEx(0,"COMBOBOX","", WS_CHILD | WS_VSCROLL |
+	hFunctionlist = CreateWindowExA(0,"COMBOBOX","", WS_CHILD | WS_VSCROLL |
 		CBS_DROPDOWNLIST | CBS_SORT | WS_TABSTOP,352,56,89,150,hDlg,
-		(HMENU)IDC_FUNCTION_COMBO,hinstDLL,NULL);
+		(HMENU)IDC_FUNCTION_COMBO, (HINSTANCE)hinstDLL,NULL);
 	if (hFunctionlist)
 	{
 		SendMessage(hFunctionlist,WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	} 
 
-	hGoButton = CreateWindowEx(WS_EX_STATICEDGE, "BUTTON","&Go", WS_CHILD | 
+	hGoButton = CreateWindowExA(WS_EX_STATICEDGE, "BUTTON","&Go", WS_CHILD | 
 		BS_DEFPUSHBUTTON | WS_VISIBLE | WS_TABSTOP, 347,56,100,24, hDlg,(HMENU)IDC_GO_BUTTON,
-		hinstDLL,NULL );
+        (HINSTANCE)hinstDLL,NULL );
 	if (hGoButton)
 	{
 		SendMessage(hGoButton,WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	} 
 
-	hBreakButton = CreateWindowEx(WS_EX_STATICEDGE, "BUTTON","&Break", WS_DISABLED | 
+	hBreakButton = CreateWindowExA(WS_EX_STATICEDGE, "BUTTON","&Break", WS_DISABLED | 
 		WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 347,85,100,24,hDlg,
-		(HMENU)IDC_BREAK_BUTTON,hinstDLL,NULL );
+		(HMENU)IDC_BREAK_BUTTON, (HINSTANCE)hinstDLL,NULL );
 	if (hBreakButton)
 	{
 		SendMessage(hBreakButton,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 
-	hStepButton = CreateWindowEx(WS_EX_STATICEDGE, "BUTTON","&Step", WS_CHILD | 
+	hStepButton = CreateWindowExA(WS_EX_STATICEDGE, "BUTTON","&Step", WS_CHILD | 
 		BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 347,114,100,24,hDlg,
-		(HMENU)IDC_STEP_BUTTON,hinstDLL,NULL );
+		(HMENU)IDC_STEP_BUTTON, (HINSTANCE)hinstDLL,NULL );
 	if (hStepButton)
 	{
 		SendMessage(hStepButton,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 
-	hSkipButton = CreateWindowEx(WS_EX_STATICEDGE, "BUTTON","&Skip", WS_CHILD | 
+	hSkipButton = CreateWindowExA(WS_EX_STATICEDGE, "BUTTON","&Skip", WS_CHILD | 
 		BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 347,143,100,24,hDlg,
-		(HMENU)IDC_SKIP_BUTTON,hinstDLL,NULL );
+		(HMENU)IDC_SKIP_BUTTON, (HINSTANCE)hinstDLL,NULL );
 	if (hSkipButton)
 	{
 		SendMessage(hSkipButton,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
@@ -754,9 +754,9 @@ void RSP_Commands_Setup ( HWND hDlg )
 
 	if (DebugInfo.Enter_BPoint_Window != NULL)
 	{
-		hBPButton = CreateWindowEx(WS_EX_STATICEDGE, "BUTTON","&Break Points", WS_CHILD | 
+		hBPButton = CreateWindowExA(WS_EX_STATICEDGE, "BUTTON","&Break Points", WS_CHILD | 
 			BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 347,WndPos,100,24,hDlg,
-			(HMENU)IDC_BP_BUTTON,hinstDLL,NULL );
+			(HMENU)IDC_BP_BUTTON,(HINSTANCE)hinstDLL,NULL );
 		if (hBPButton)
 		{
 			SendMessage(hBPButton,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
@@ -764,9 +764,9 @@ void RSP_Commands_Setup ( HWND hDlg )
 	}
 
 	WndPos += 29;
-	hRSPRegisters = CreateWindowEx(WS_EX_STATICEDGE,"BUTTON", "RSP &Registers...",
+	hRSPRegisters = CreateWindowExA(WS_EX_STATICEDGE,"BUTTON", "RSP &Registers...",
 		WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 347,WndPos,100,24,hDlg,
-		(HMENU)IDC_RSP_REGISTERS_BUTTON,hinstDLL,NULL );
+		(HMENU)IDC_RSP_REGISTERS_BUTTON, (HINSTANCE)hinstDLL,NULL );
 	if (hRSPRegisters)
 	{
 		SendMessage(hRSPRegisters,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
@@ -775,9 +775,9 @@ void RSP_Commands_Setup ( HWND hDlg )
 	WndPos += 29;
 	if (DebugInfo.Enter_R4300i_Commands_Window != NULL)
 	{
-		hR4300iDebugger = CreateWindowEx(WS_EX_STATICEDGE,"BUTTON", "R4300i &Debugger...", 
+		hR4300iDebugger = CreateWindowExA(WS_EX_STATICEDGE,"BUTTON", "R4300i &Debugger...", 
 			WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 347,WndPos,100,24,hDlg,
-			(HMENU)IDC_R4300I_DEBUGGER_BUTTON,hinstDLL,NULL );
+			(HMENU)IDC_R4300I_DEBUGGER_BUTTON, (HINSTANCE)hinstDLL,NULL );
 		if (hR4300iDebugger)
 		{
 			SendMessage(hR4300iDebugger,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
@@ -787,9 +787,9 @@ void RSP_Commands_Setup ( HWND hDlg )
 	WndPos += 29;
 	if (DebugInfo.Enter_R4300i_Register_Window != NULL)
 	{
-		hR4300iRegisters = CreateWindowEx(WS_EX_STATICEDGE,"BUTTON","R4300i R&egisters...",
+		hR4300iRegisters = CreateWindowExA(WS_EX_STATICEDGE,"BUTTON","R4300i R&egisters...",
 			WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 347,WndPos,100,24,hDlg,
-			(HMENU)IDC_R4300I_REGISTERS_BUTTON,hinstDLL,NULL );
+			(HMENU)IDC_R4300I_REGISTERS_BUTTON, (HINSTANCE)hinstDLL,NULL );
 		if (hR4300iRegisters)
 		{
 			SendMessage(hR4300iRegisters,WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
@@ -799,17 +799,17 @@ void RSP_Commands_Setup ( HWND hDlg )
 	WndPos += 29;
 	if (DebugInfo.Enter_Memory_Window != NULL)
 	{
-		hMemory = CreateWindowEx(WS_EX_STATICEDGE,"BUTTON", "&Memory...", WS_CHILD | 
+		hMemory = CreateWindowExA(WS_EX_STATICEDGE,"BUTTON", "&Memory...", WS_CHILD | 
 			BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 347,WndPos,100,24,hDlg,
-			(HMENU)IDC_MEMORY_BUTTON,hinstDLL,NULL );
+			(HMENU)IDC_MEMORY_BUTTON, (HINSTANCE)hinstDLL,NULL );
 		if (hMemory)
 		{
 			SendMessage(hMemory,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 		}
 	}
 
-	hScrlBar = CreateWindowEx(WS_EX_STATICEDGE, "SCROLLBAR","", WS_CHILD | WS_VISIBLE | 
-		WS_TABSTOP | SBS_VERT, 318,14,18,439, hDlg, (HMENU)IDC_SCRL_BAR, hinstDLL, NULL );
+	hScrlBar = CreateWindowExA(WS_EX_STATICEDGE, "SCROLLBAR","", WS_CHILD | WS_VISIBLE | 
+		WS_TABSTOP | SBS_VERT, 318,14,18,439, hDlg, (HMENU)IDC_SCRL_BAR, (HINSTANCE)hinstDLL, NULL );
 
 	if ( RSP_Running )
 	{
@@ -824,7 +824,7 @@ void RSP_Commands_Setup ( HWND hDlg )
 		X = (GetSystemMetrics( SM_CXSCREEN ) - WindowWidth) / 2;
 		Y = (GetSystemMetrics( SM_CYSCREEN ) - WindowHeight) / 2;
 	//}
-	SetWindowText(hDlg,"RSP Commands");
+	SetWindowTextA(hDlg,"RSP Commands");
 
 	SetWindowPos(hDlg,NULL,X,Y,WindowWidth,WindowHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
 }
@@ -1323,13 +1323,13 @@ void SetRSPCommandViewto ( UINT NewLocation )
 
 	if (InRSPCommandsWindow == FALSE) { return; }
 
-	GetWindowText(hAddress,Value,sizeof(Value));
+	GetWindowTextA(hAddress,Value,sizeof(Value));
 	location = AsciiToHex(Value) & ~3;
 
 	if ( NewLocation < location || NewLocation >= location + 120 )
 	{
 		sprintf(Value,"%03X",NewLocation);
-		SetWindowText(hAddress,Value);
+		SetWindowTextA(hAddress,Value);
 	}
 	else
 	{

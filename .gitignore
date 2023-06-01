@@ -57,6 +57,8 @@ Thumbs.db
 /Plugin/RSP/lib
 /Plugin/RSP/map
 /Plugin/RSP/pdb
+/Plugin/RSP/Project64-RSP_d.dll
+/Plugin/RSP/Project64-RSP.dll
 /Plugin/RSP/RSP 1.7.dll
 /Plugin/RSP/RSP_d 1.7.dll
 /Plugin/RSP/RSP-HLE_d.dll

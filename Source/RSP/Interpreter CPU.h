@@ -10,7 +10,8 @@
 #define FINISH_BLOCK			9
 #define FINISH_SUB_BLOCK		10
 
-extern DWORD RSP_NextInstruction, RSP_JumpTo, RSP_MfStatusCount;
+extern DWORD RSP_NextInstruction, RSP_JumpTo;
+extern uint32_t RSP_MfStatusCount;
 
 // Standard MIPS PC-relative branch
 // Returns the new PC, based on whether the condition passes

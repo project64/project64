@@ -1,10 +1,6 @@
 #pragma once
 #include <Project64-plugin-spec/Rsp.h>
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
 #include <stdint.h>
 #include "Types.h"
 
@@ -25,7 +21,3 @@ extern uint32_t CPUCore;
 extern DEBUG_INFO DebugInfo;
 extern RSP_INFO RSPInfo;
 extern void * hinstDLL;
-
-#if defined(__cplusplus)
-}
-#endif

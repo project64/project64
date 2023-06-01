@@ -14,7 +14,6 @@
 #include <stdint.h>
 #include "../Settings/Settings.h"
 
-extern "C" {
 #include "Rsp.h"
 #include "Cpu.h"
 #include "Recompiler CPU.h"
@@ -52,7 +51,6 @@ RSP_INFO RSPInfo;
 void * hinstDLL;
 
 extern uint8_t * pLastSecondary;
-}
 
 enum {
 	Set_BreakOnStart, Set_CPUCore, Set_LogRDP, Set_LogX86Code, Set_Profiling, Set_IndvidualBlock,
@@ -134,7 +132,7 @@ void DisplayError(char* Message, ...)
 	vsprintf( Msg, Message, ap );
 	va_end( ap );
 #ifdef _WIN32
-    MessageBox(NULL, Msg, "Error", MB_OK | MB_ICONERROR);
+    MessageBoxA(NULL, Msg, "Error", MB_OK | MB_ICONERROR);
 #else
     fputs(&Msg[0], stderr);
 #endif
@@ -230,7 +228,7 @@ filled by the function. (see def above)
 Output: None
 */
 
-EXPORT void GetRspDebugInfo(RSPDEBUG_INFO * DebugInfo)
+EXPORT void GetRspDebugInfo(RSPDEBUG_INFO * _DebugInfo)
 {
 #ifdef _WIN32
 	if (hRSPMenu == NULL)
@@ -238,22 +236,22 @@ EXPORT void GetRspDebugInfo(RSPDEBUG_INFO * DebugInfo)
 		hRSPMenu = LoadMenu((HINSTANCE)hinstDLL,MAKEINTRESOURCE(RspMenu));
 		FixMenuState();
 	}
-	DebugInfo->hRSPMenu = hRSPMenu;
+    _DebugInfo->hRSPMenu = hRSPMenu;
 #endif
-	DebugInfo->ProcessMenuItem = ProcessMenuItem;
+    _DebugInfo->ProcessMenuItem = ProcessMenuItem;
 
-	DebugInfo->UseBPoints = TRUE;
-	sprintf(DebugInfo->BPPanelName," RSP ");
-	DebugInfo->Add_BPoint = Add_BPoint;
-	DebugInfo->CreateBPPanel = CreateBPPanel;
-	DebugInfo->HideBPPanel = HideBPPanel;
-	DebugInfo->PaintBPPanel = PaintBPPanel;
-	DebugInfo->RefreshBpoints = RefreshBpoints;
-	DebugInfo->RemoveAllBpoint = RemoveAllBpoint;
-	DebugInfo->RemoveBpoint = RemoveBpoint;
-	DebugInfo->ShowBPPanel = ShowBPPanel;
+    _DebugInfo->UseBPoints = TRUE;
+	sprintf(_DebugInfo->BPPanelName," RSP ");
+    _DebugInfo->Add_BPoint = Add_BPoint;
+    _DebugInfo->CreateBPPanel = CreateBPPanel;
+    _DebugInfo->HideBPPanel = HideBPPanel;
+    _DebugInfo->PaintBPPanel = PaintBPPanel;
+    _DebugInfo->RefreshBpoints = RefreshBpoints;
+    _DebugInfo->RemoveAllBpoint = RemoveAllBpoint;
+    _DebugInfo->RemoveBpoint = RemoveBpoint;
+    _DebugInfo->ShowBPPanel = ShowBPPanel;
 
-	DebugInfo->Enter_RSP_Commands_Window = Enter_RSP_Commands_Window;
+    _DebugInfo->Enter_RSP_Commands_Window = Enter_RSP_Commands_Window;
 }
 
 /*

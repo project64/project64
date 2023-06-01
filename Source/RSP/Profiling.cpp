@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include <shellapi.h>
-extern "C" {
 #include "profiling.h"
-}
 #pragma warning(disable:4786)
 #include <Common/StdString.h>
 #include <Common/File.h>
@@ -158,7 +156,7 @@ public:
 			}
 		}
 
-		ShellExecute(NULL,"open",LogFileName.c_str(),NULL,NULL,SW_SHOW);
+		ShellExecuteA(NULL,"open",LogFileName.c_str(),NULL,NULL,SW_SHOW);
 		ResetCounters();
 	}
 };

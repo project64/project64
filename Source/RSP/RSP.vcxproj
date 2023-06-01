@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A7ED562C-63F3-4B7E-B6B3-2CF7848752E1}</ProjectGuid>
-    <RootNamespace>RSP</RootNamespace>
+    <RootNamespace>Project64-RSP</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -32,43 +32,38 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <PropertyGroup>
-    <TargetName>RSP 1.7</TargetName>
-    <TargetName Condition="'$(Configuration)'=='Debug'">RSP_d 1.7</TargetName>
+    <TargetName>Project64-RSP</TargetName>
+    <TargetName Condition="'$(Configuration)'=='Debug'">Project64-RSP_d</TargetName>
     <OutDir>$(SolutionDir)Plugin\RSP\</OutDir>
     <OutDir Condition="'$(Platform)'=='x64'">$(SolutionDir)Plugin64\RSP\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <PrecompiledHeader />
-      <UndefinePreprocessorDefinitions>UNICODE;_UNICODE</UndefinePreprocessorDefinitions>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
-    <Link />
-    <Bscmake>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-    </Bscmake>
     <PreBuildEvent>
       <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(Platform)" "$(SolutionDir)Source\RSP\Version.h.in" "$(SolutionDir)Source\RSP\Version.h"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="breakpoint.c" />
-    <ClCompile Include="Cpu.c" />
-    <ClCompile Include="dma.c" />
-    <ClCompile Include="Interpreter CPU.c" />
-    <ClCompile Include="Interpreter Ops.c" />
+    <ClCompile Include="breakpoint.cpp" />
+    <ClCompile Include="Cpu.cpp" />
+    <ClCompile Include="dma.cpp" />
+    <ClCompile Include="Interpreter CPU.cpp" />
+    <ClCompile Include="Interpreter Ops.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="memory.c" />
-    <ClCompile Include="Mmx.c" />
+    <ClCompile Include="memory.cpp" />
+    <ClCompile Include="Mmx.cpp" />
     <ClCompile Include="Profiling.cpp" />
-    <ClCompile Include="Recompiler Analysis.c" />
-    <ClCompile Include="Recompiler CPU.c" />
-    <ClCompile Include="Recompiler Ops.c" />
-    <ClCompile Include="Recompiler Sections.c" />
-    <ClCompile Include="RSP Command.c" />
-    <ClCompile Include="RSP Register.c" />
-    <ClCompile Include="Sse.c" />
-    <ClCompile Include="X86.c" />
+    <ClCompile Include="Recompiler Analysis.cpp" />
+    <ClCompile Include="Recompiler CPU.cpp" />
+    <ClCompile Include="Recompiler Ops.cpp" />
+    <ClCompile Include="Recompiler Sections.cpp" />
+    <ClCompile Include="RSP Command.cpp" />
+    <ClCompile Include="RSP Register.cpp" />
+    <ClCompile Include="Sse.cpp" />
+    <ClCompile Include="X86.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="breakpoint.h" />
@@ -96,11 +91,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.vcxproj">
       <Project>{b4a4b994-9111-42b1-93c2-6f1ca8bc4421}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\Settings\Settings.vcxproj">
       <Project>{8b9961b1-88d9-4ea3-a752-507a00dd9f3d}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\UpdateVersion\UpdateVersion.vcxproj">
       <Project>{1968162c-0793-491d-91a1-81645a24d399}</Project>

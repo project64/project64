@@ -7,11 +7,14 @@
 #define IDC_LOCATION_EDIT		105
 HWND BPoint_Win_hDlg, hRSPLocation = NULL;
 
+BPOINT BPoint[MaxBPoints];
+int	NoOfBpoints;
+
 void Add_BPoint ( void )
 {
 	char Title[10];
 
-	GetWindowText(hRSPLocation,Title,sizeof(Title));
+	GetWindowTextA(hRSPLocation,Title,sizeof(Title));
 	if (!AddRSP_BPoint(AsciiToHex(Title),TRUE )) {
 		SendMessage(hRSPLocation,EM_SETSEL,(WPARAM)0,(LPARAM)-1);
 		SetFocus(hRSPLocation);
@@ -44,7 +47,7 @@ int AddRSP_BPoint( DWORD Location, int Confirm )
 
 		sprintf(Message,"Break when:\n\nRSP's program counter = 0x%03X\n\nIs this correct?",
 			Location);
-		Response = MessageBox(BPoint_Win_hDlg, Message, "Breakpoint", MB_YESNO | MB_ICONINFORMATION);
+		Response = MessageBoxA(BPoint_Win_hDlg, Message, "Breakpoint", MB_YESNO | MB_ICONINFORMATION);
 		if (Response == IDNO)
 		{
 			return FALSE;
@@ -79,17 +82,17 @@ void CreateBPPanel ( void * hDlg, rectangle rcBox )
 
 	rcBox = rcBox; // Remove warning of unused
 
-	BPoint_Win_hDlg = hDlg;
+	BPoint_Win_hDlg = (HWND)hDlg;
 	
-	hRSPLocation = CreateWindowEx(0,"EDIT","", WS_CHILD | WS_BORDER | ES_UPPERCASE | WS_TABSTOP,
-		83,90,100,17,hDlg,(HMENU)IDC_LOCATION_EDIT,RSPInfo.hInst,NULL);
+	hRSPLocation = CreateWindowExA(0,"EDIT","", WS_CHILD | WS_BORDER | ES_UPPERCASE | WS_TABSTOP,
+		83,90,100,17, (HWND)hDlg,(HMENU)IDC_LOCATION_EDIT,(HINSTANCE)RSPInfo.hInst,NULL);
 	if (hRSPLocation)
 	{
 		char Title[20];
 		SendMessage(hRSPLocation,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 		SendMessage(hRSPLocation,EM_SETLIMITTEXT,(WPARAM)3,(LPARAM)0);
 		sprintf(Title,"%03X",*PrgCount);
-		SetWindowText(hRSPLocation,Title);
+		SetWindowTextA(hRSPLocation,Title);
 	}
 }
 
@@ -100,8 +103,8 @@ void HideBPPanel ( void )
 
 void PaintBPPanel ( window_paint ps )
 {
-	TextOut( ps.hdc, 29,60,"Break when the program counter equals",37);
-	TextOut( ps.hdc, 59,85,"0x",2);
+	TextOutA((HDC)ps.hdc, 29,60,"Break when the program counter equals",37);
+	TextOutA((HDC)ps.hdc, 59,85,"0x",2);
 }
 
 void ShowBPPanel ( void )
@@ -117,9 +120,9 @@ void RefreshBpoints ( void * hList )
 
 	for (count = 0; count < NoOfBpoints; count ++ ) {
 		sprintf(Message," at 0x%03X (RSP)", BPoint[count].Location);
-		location = SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)Message);
-		SendMessage(
-			hList,
+		location = SendMessageA((HWND)hList, LB_ADDSTRING, 0, (LPARAM)Message);
+		SendMessageA(
+            (HWND)hList,
 			LB_SETITEMDATA,
 			(WPARAM)location,
 			(LPARAM)BPoint[count].Location
@@ -132,12 +135,12 @@ void RemoveAllBpoint ( void )
 	NoOfBpoints = 0;
 }
 
-void RemoveBpoint ( HWND hList, int index )
+void RemoveBpoint (void * hList, int index )
 {
 	LRESULT response;
 	uint32_t location;
 
-	response = SendMessage(hList, LB_GETITEMDATA, (WPARAM)index, 0);
+	response = SendMessage((HWND)hList, LB_GETITEMDATA, (WPARAM)index, 0);
 	if (response < 0 || response > 0x7FFFFFFFL)
 	{
 		DisplayError(

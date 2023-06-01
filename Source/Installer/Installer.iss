@@ -38,7 +38,7 @@ Source: "{#BaseDir}\Plugin\GFX\Project64-Video.dll"; DestDir: "{app}\Plugin\GFX"
 Source: "{#BaseDir}\Plugin\GFX\GLideN64\*"; DestDir: "{app}\Plugin\GFX\GLideN64"; Flags: recursesubdirs skipifsourcedoesntexist
 Source: "{#BaseDir}\Plugin\Input\PJ64_NRage.dll"; DestDir: "{app}\Plugin\Input"
 Source: "{#BaseDir}\Plugin\Input\Project64-Input.dll"; DestDir: "{app}\Plugin\Input"
-Source: "{#BaseDir}\Plugin\RSP\RSP 1.7.dll"; DestDir: "{app}\Plugin\RSP"
+Source: "{#BaseDir}\Plugin\RSP\Project64-RSP.dll"; DestDir: "{app}\Plugin\RSP"
 Source: "{#BaseDir}\Scripts\example.js"; DestDir: "{app}\Scripts"
 Source: "{#BaseDir}\Scripts\api_documentation.js"; DestDir: "{app}\Scripts"
 Source: "{#BaseDir}\JS-API-Documentation.html"; DestDir: "{app}"

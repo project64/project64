@@ -607,7 +607,7 @@ void LinkBranches(RSP_BLOCK * Block) {
 
 	for (Count = 0; Count < CurrentBlock.ResolveCount; Count++) {
 		Target = CurrentBlock.BranchesToResolve[Count].TargetPC;
-		X86Code = *(JumpTable + (Target >> 2));
+		X86Code = (BYTE *)*(JumpTable + (Target >> 2));
 
 		if (!X86Code) {
 			*PrgCount = Target;
@@ -622,7 +622,7 @@ void LinkBranches(RSP_BLOCK * Block) {
 			*Block = Save;
 			CPU_Message("===== (End generate code: %04X) =====", Target);
 			CPU_Message("");
-			X86Code = *(JumpTable + (Target >> 2));
+			X86Code = (BYTE *)*(JumpTable + (Target >> 2));
 		}
 
 		JumpWord = CurrentBlock.BranchesToResolve[Count].X86JumpLoc;
@@ -710,7 +710,7 @@ Boolean IsJumpLabel(DWORD PC)
 }
 
 void CompilerLinkBlocks(void) {
-	BYTE * KnownCode = *(JumpTable + (CompilePC >> 2));
+	BYTE * KnownCode = (BYTE *)*(JumpTable + (CompilePC >> 2));
 
 	CPU_Message("***** Linking block to X86: %08X *****", KnownCode);
 	NextInstruction = FINISH_BLOCK;
@@ -866,7 +866,7 @@ DWORD RunRecompilerCPU ( DWORD Cycles ) {
 
 	while (RSP_Running) 
 	{
-		Block = *(JumpTable + (*PrgCount >> 2));
+		Block = (BYTE *)*(JumpTable + (*PrgCount >> 2));
 
 		if (Block == NULL) {
 			if (Profiling && !IndvidualBlock) {
@@ -890,7 +890,7 @@ DWORD RunRecompilerCPU ( DWORD Cycles ) {
 			CompilerRSPBlock();
 #endif
 			
-			Block = *(JumpTable + (*PrgCount >> 2));
+			Block = (BYTE *)*(JumpTable + (*PrgCount >> 2));
 
 			// We are done compiling, but we may have references
 			// to fill in still either from this block, or jumps

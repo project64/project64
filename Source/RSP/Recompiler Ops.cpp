@@ -92,7 +92,7 @@ void Branch_AddRef(DWORD Target, DWORD * X86Loc) {
 	if (CurrentBlock.ResolveCount >= 150) {
 		CompilerWarning("Out of branch reference space");
 	} else {
-		BYTE * KnownCode = *(JumpTable + (Target >> 2));
+		BYTE * KnownCode = (BYTE *)(*(JumpTable + (Target >> 2)));
 
 		if (KnownCode == NULL) {
 			DWORD i = CurrentBlock.ResolveCount;

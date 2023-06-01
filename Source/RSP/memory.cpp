@@ -4,7 +4,8 @@ enum { MaxMaps	= 32 };
 #include "Rsp.h"
 #include "RSP Registers.h"
 
-DWORD NoOfMaps, MapsCRC[MaxMaps], Table;
+DWORD NoOfMaps, MapsCRC[MaxMaps];
+uint32_t Table;
 BYTE * RecompCode, * RecompCodeSecondary, * RecompPos, *JumpTables;
 void ** JumpTable;
 
@@ -58,7 +59,7 @@ void ResetJumpTables ( void )
 	NoOfMaps = 0;
 }
 
-void SetJumpTable (DWORD End) {
+void SetJumpTable (uint32_t End) {
 	DWORD CRC, count;
 
 	CRC = 0;

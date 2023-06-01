@@ -5,11 +5,10 @@
 #include <Common/Log.h>
 #include <Common/path.h>
 
-extern "C" {
 #include "Log.h"
 #include "Rsp.h"
 #include "Rsp Registers.h"
-}
+
 
 CLog * RDPLog = NULL;
 CLog * CPULog = NULL;

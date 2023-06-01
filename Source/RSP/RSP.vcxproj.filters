@@ -18,62 +18,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="breakpoint.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Cpu.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="dma.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Interpreter CPU.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Interpreter Ops.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="log.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="memory.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Mmx.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Profiling.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Recompiler Analysis.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Recompiler CPU.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Recompiler Ops.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Recompiler Sections.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RSP Command.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RSP Register.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Sse.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="X86.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="breakpoint.h">
       <Filter>Header Files\RSP Header Files</Filter>
     </ClInclude>
@@ -133,5 +77,61 @@
     <ResourceCompile Include="RSP.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="breakpoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Cpu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dma.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Interpreter CPU.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Interpreter Ops.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="memory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Mmx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Profiling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Recompiler Analysis.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Recompiler CPU.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Recompiler Ops.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Recompiler Sections.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RSP Command.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RSP Register.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="X86.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
