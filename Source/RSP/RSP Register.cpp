@@ -466,20 +466,20 @@ void SetupRSP_RegistersMain (HWND hDlg) {
 		item.mask    = TCIF_TEXT | TCIF_PARAM;
 		item.pszText = " General Purpose ";
 		item.lParam  = GeneralPurpose;
-		TabCtrl_InsertItem( hTab,0, &item);
+        (int)::SendMessageA(hTab, TCM_INSERTITEMA, (WPARAM)(int)(0), (LPARAM)(const TC_ITEMA *)(&item));
 		item.lParam  = ControlProcessor0;
 		item.pszText = " Control Processor 0 ";
-		TabCtrl_InsertItem( hTab,1, &item);
+        (int)::SendMessageA(hTab, TCM_INSERTITEMA, (WPARAM)(int)(1), (LPARAM)(const TC_ITEMA *)(&item));
 		item.lParam  = HiddenRegisters;
 		item.pszText = " Hidden Registers ";
-		TabCtrl_InsertItem( hTab,2, &item);
+        (int)::SendMessageA(hTab, TCM_INSERTITEMA, (WPARAM)(int)(2), (LPARAM)(const TC_ITEMA *)(&item));
 		item.lParam  = Vector1;
 		item.pszText = " RSP Vectors $v0 - $v15 ";
-		TabCtrl_InsertItem( hTab,3, &item);
+        (int)::SendMessageA(hTab, TCM_INSERTITEMA, (WPARAM)(int)(3), (LPARAM)(const TC_ITEMA *)(&item));
 		item.lParam  = Vector2;
 		item.pszText = " RSP Vectors $v16 - $v31 ";
-        SendMessageA(hTab, TCM_INSERTITEMA, (WPARAM)(int)(4), (LPARAM)(const TC_ITEM *)(&item));
-	}
+        (int)::SendMessageA(hTab, TCM_INSERTITEMA, (WPARAM)(int)(4), (LPARAM)(const TC_ITEMA *)(&item));
+    }
 	
     SetupRSP_HiddenPanel ( hDlg );
 	SetupRSP_CP0Panel   ( hDlg );
