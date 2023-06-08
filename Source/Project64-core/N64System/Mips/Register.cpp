@@ -709,7 +709,6 @@ void CRegisters::TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor)
     CAUSE_REGISTER.BranchDelay = m_System->m_PipelineStage == PIPELINE_STAGE_JUMP;
     EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - (CAUSE_REGISTER.BranchDelay ? 4 : 0));
     STATUS_REGISTER |= STATUS_EXL;
-    m_PROGRAM_COUNTER = 0x80000180;
     m_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-    m_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+    m_System->m_JumpToLocation = 0x80000180;
 }

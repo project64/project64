@@ -146,6 +146,7 @@ private:
     friend class CInterpreterCPU;
     friend class R4300iOp32;
     friend class R4300iOp;
+    friend class CSystemEvents;
 
     friend class VideoInterfaceHandler;
     friend class PifRamHandler;

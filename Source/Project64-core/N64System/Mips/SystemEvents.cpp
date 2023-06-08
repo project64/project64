@@ -114,7 +114,11 @@ void CSystemEvents::ExecuteEvents()
             m_System->Reset(true, true);
             break;
         case SysEvent_ExecuteInterrupt:
-            g_Reg->DoIntrException();
+            if (g_Reg->DoIntrException())
+            {
+                g_Reg->m_PROGRAM_COUNTER = m_System->JumpToLocation();
+                m_System->m_PipelineStage = PIPELINE_STAGE_NORMAL;
+            }
             break;
         case SysEvent_Interrupt_SP:
             g_Reg->MI_INTR_REG |= MI_INTR_SP;

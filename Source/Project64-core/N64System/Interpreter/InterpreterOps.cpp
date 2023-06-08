@@ -14,18 +14,6 @@
 #include <float.h>
 #include <math.h>
 
-#if (defined(_MSC_VER) && (_MSC_VER < 1800))
-double trunc(double num)
-{
-    return (num < 0) ? ceil(num) : floor(num);
-}
-
-float truncf(float num)
-{
-    return (num < 0) ? ceilf(num) : floorf(num);
-}
-#endif
-
 bool R4300iOp::m_TestTimer = false;
 R4300iOpcode R4300iOp::m_Opcode;
 
