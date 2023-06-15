@@ -273,11 +273,11 @@
     <ProjectReference Include="..\Project64-core\Project64-core.vcxproj">
       <Project>{00c7b43a-ded7-4df0-b072-9a5783ef866d}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Project64-rsp\Project64-rsp.vcxproj">
+      <Project>{a7ed562c-63f3-4b7e-b6b3-2cf7848752e1}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Project64-video\Project64-video.vcxproj">
       <Project>{a4d13408-a794-4199-8fc7-4a9a32505005}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\RSP\RSP.vcxproj">
-      <Project>{a7ed562c-63f3-4b7e-b6b3-2cf7848752e1}</Project>
     </ProjectReference>
     <ProjectReference Include="..\UpdateVersion\UpdateVersion.vcxproj">
       <Project>{1968162c-0793-491d-91a1-81645a24d399}</Project>
