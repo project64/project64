@@ -14,7 +14,8 @@
 #include "Types.h"
 #include "log.h"
 #include "memory.h"
-#include "opcode.h"
+#include "cpu/RSPOpcode.h"
+#include "cpu/RSPInstruction.h"
 #include "x86.h"
 
 #pragma warning(disable : 4152) // Non-standard extension, function/data pointer conversion in expression
@@ -414,9 +415,9 @@ void ReOrderInstructions(DWORD StartPC, DWORD EndPC)
 {
     DWORD InstructionCount = EndPC - StartPC;
     DWORD Count, ReorderedOps, CurrentPC;
-    OPCODE PreviousOp, CurrentOp, RspOp;
+    RSPOpcode PreviousOp, CurrentOp, RspOp;
 
-    PreviousOp.Hex = *(DWORD *)(RSPInfo.IMEM + StartPC);
+    PreviousOp.Value = *(DWORD *)(RSPInfo.IMEM + StartPC);
 
     if (TRUE == IsOpcodeBranch(StartPC, PreviousOp))
     {
@@ -444,14 +445,14 @@ void ReOrderInstructions(DWORD StartPC, DWORD EndPC)
     CPU_Message(" Before:");
     for (Count = StartPC; Count < EndPC; Count += 4)
     {
-        RSP_LW_IMEM(Count, &RspOp.Hex);
-        CPU_Message("  %X %s", Count, RSPOpcodeName(RspOp.Hex, Count));
+        RSP_LW_IMEM(Count, &RspOp.Value);
+        CPU_Message("  %X %s", Count, RSPInstruction(Count, RspOp.Value).NameAndParam().c_str());
     }
 
     for (Count = 0; Count < InstructionCount; Count += 4)
     {
         CurrentPC = StartPC;
-        PreviousOp.Hex = *(DWORD *)(RSPInfo.IMEM + CurrentPC);
+        PreviousOp.Value = *(DWORD *)(RSPInfo.IMEM + CurrentPC);
         ReorderedOps = 0;
 
         for (;;)
@@ -461,13 +462,13 @@ void ReOrderInstructions(DWORD StartPC, DWORD EndPC)
             {
                 break;
             }
-            CurrentOp.Hex = *(DWORD *)(RSPInfo.IMEM + CurrentPC);
+            CurrentOp.Value = *(DWORD *)(RSPInfo.IMEM + CurrentPC);
 
             if (TRUE == CompareInstructions(CurrentPC, &PreviousOp, &CurrentOp))
             {
                 // Move current opcode up
-                *(DWORD *)(RSPInfo.IMEM + CurrentPC - 4) = CurrentOp.Hex;
-                *(DWORD *)(RSPInfo.IMEM + CurrentPC) = PreviousOp.Hex;
+                *(DWORD *)(RSPInfo.IMEM + CurrentPC - 4) = CurrentOp.Value;
+                *(DWORD *)(RSPInfo.IMEM + CurrentPC) = PreviousOp.Value;
 
                 ReorderedOps++;
 
@@ -475,7 +476,7 @@ void ReOrderInstructions(DWORD StartPC, DWORD EndPC)
                 CPU_Message("Swapped %X and %X", CurrentPC - 4, CurrentPC);
 #endif
             }
-            PreviousOp.Hex = *(DWORD *)(RSPInfo.IMEM + CurrentPC);
+            PreviousOp.Value = *(DWORD *)(RSPInfo.IMEM + CurrentPC);
 
             if (IsOpcodeNop(CurrentPC) && IsOpcodeNop(CurrentPC + 4) && IsOpcodeNop(CurrentPC + 8))
             {
@@ -492,8 +493,8 @@ void ReOrderInstructions(DWORD StartPC, DWORD EndPC)
     CPU_Message(" After:");
     for (Count = StartPC; Count < EndPC; Count += 4)
     {
-        RSP_LW_IMEM(Count, &RspOp.Hex);
-        CPU_Message("  %X %s", Count, RSPOpcodeName(RspOp.Hex, Count));
+        RSP_LW_IMEM(Count, &RspOp.Value);
+        CPU_Message("  %X %s", Count, RSPInstruction(Count, RspOp.Value).NameAndParam().c_str());
     }
     CPU_Message("");
 }
@@ -690,7 +691,7 @@ within a block that are safe.
 
 void BuildBranchLabels(void)
 {
-    OPCODE RspOp;
+    RSPOpcode RspOp;
     DWORD i, Dest;
 
 #ifdef BUILD_BRANCHLABELS_VERBOSE
@@ -699,7 +700,7 @@ void BuildBranchLabels(void)
 
     for (i = 0; i < 0x1000; i += 4)
     {
-        RspOp.Hex = *(DWORD *)(RSPInfo.IMEM + i);
+        RspOp.Value = *(DWORD *)(RSPInfo.IMEM + i);
 
         if (TRUE == IsOpcodeBranch(i, RspOp))
         {
@@ -859,7 +860,7 @@ void CompilerRSPBlock(void)
         }
 #endif
 
-        RSP_LW_IMEM(CompilePC, &RSPOpC.Hex);
+        RSP_LW_IMEM(CompilePC, &RSPOpC.Value);
 
         if (LogRDP && NextInstruction != DELAY_SLOT_DONE)
         {
@@ -870,7 +871,7 @@ void CompilerRSPBlock(void)
             AddConstToX86Reg(x86_ESP, 4);
         }
 
-        if (RSPOpC.Hex == 0xFFFFFFFF)
+        if (RSPOpC.Value == 0xFFFFFFFF)
         {
             // I think this pops up an unknown OP dialog
             // NextInstruction = FINISH_BLOCK;

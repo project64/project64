@@ -1,5 +1,5 @@
 #include "Cpu.h"
-#include "OpCode.h"
+#include "cpu/RSPOpcode.h"
 #include "Profiling.h"
 #include "RSP Command.h"
 #include "RSP registers.h"
@@ -15,7 +15,7 @@
 #include <windows.h>
 
 UDWORD EleSpec[32], Indx[32];
-OPCODE RSPOpC;
+RSPOpcode RSPOpC;
 uint32_t *PrgCount, NextInstruction, RSP_Running, RSP_MfStatusCount;
 
 p_func RSP_Opcode[64];

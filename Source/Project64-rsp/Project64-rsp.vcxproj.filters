@@ -16,6 +16,12 @@
       <UniqueIdentifier>{53b9495d-f564-4b1d-968c-42c816ca2d41}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
+    <Filter Include="Source Files\cpu">
+      <UniqueIdentifier>{150686bc-00e7-44b5-bfee-3228ba09841f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\cpu">
+      <UniqueIdentifier>{3054cc35-3f98-4464-9642-ad02eaed525f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="breakpoint.h">
@@ -37,9 +43,6 @@
       <Filter>Header Files\RSP Header Files</Filter>
     </ClInclude>
     <ClInclude Include="memory.h">
-      <Filter>Header Files\RSP Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OpCode.h">
       <Filter>Header Files\RSP Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Profiling.h">
@@ -72,10 +75,16 @@
     <ClInclude Include="Version.h">
       <Filter>Header Files\RSP Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cpu\RSPInstruction.h">
+      <Filter>Header Files\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu\RSPOpcode.h">
+      <Filter>Header Files\cpu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="RSP.rc">
-      <Filter>Resource Files</Filter>
+    <ResourceCompile Include="Project64-rsp.rc">
+      <Filter>Source Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
@@ -132,6 +141,9 @@
     </ClCompile>
     <ClCompile Include="X86.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\RSPiInstruction.cpp">
+      <Filter>Source Files\cpu</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

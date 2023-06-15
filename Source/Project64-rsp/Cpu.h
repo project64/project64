@@ -1,4 +1,5 @@
-#include "OpCode.h"
+#include "cpu\RSPOpcode.h"
+#include "Types.h"
 #include <Windows.h>
 
 extern UDWORD EleSpec[32], Indx[32];
@@ -12,7 +13,7 @@ extern p_func RSP_Vector[64];
 extern p_func RSP_Lc2[32];
 extern p_func RSP_Sc2[32];
 extern uint32_t *PrgCount, RSP_Running;
-extern OPCODE RSPOpC;
+extern RSPOpcode RSPOpC;
 
 void SetCPU(DWORD core);
 void Build_RSP(void);

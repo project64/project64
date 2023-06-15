@@ -1,4 +1,4 @@
-#include "OpCode.h"
+#include "cpu/RSPOpcode.h"
 #include "Types.h"
 
 extern uint32_t CompilePC, NextInstruction, JumpTableSize;
@@ -17,8 +17,8 @@ Boolean WriteToVectorDest(DWORD DestReg, int PC);
 Boolean UseRspFlags(int PC);
 
 Boolean DelaySlotAffectBranch(DWORD PC);
-Boolean CompareInstructions(DWORD PC, OPCODE * Top, OPCODE * Bottom);
-Boolean IsOpcodeBranch(DWORD PC, OPCODE RspOp);
+Boolean CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom);
+Boolean IsOpcodeBranch(DWORD PC, RSPOpcode RspOp);
 Boolean IsOpcodeNop(DWORD PC);
 
 Boolean IsNextInstructionMmx(DWORD PC);

@@ -11,6 +11,7 @@
 #include "log.h"
 #include "memory.h"
 #include "x86.h"
+#include "cpu\RSPInstruction.h"
 #include <stdio.h>
 #include <windows.h>
 
@@ -115,14 +116,14 @@ void Branch_AddRef(DWORD Target, DWORD * X86Loc)
 
 void Cheat_r4300iOpcode(p_func FunctAddress, char * FunctName)
 {
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
-    MoveConstToVariable(RSPOpC.Hex, &RSPOpC.Hex, "RSPOpC.Hex");
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
+    MoveConstToVariable(RSPOpC.Value, &RSPOpC.Value, "RSPOpC.Value");
     Call_Direct(FunctAddress, FunctName);
 }
 
 void Cheat_r4300iOpcodeNoMessage(p_func FunctAddress, char * FunctName)
 {
-    MoveConstToVariable(RSPOpC.Hex, &RSPOpC.Hex, "RSPOpC.Hex");
+    MoveConstToVariable(RSPOpC.Value, &RSPOpC.Value, "RSPOpC.Value");
     Call_Direct(FunctAddress, FunctName);
 }
 
@@ -188,7 +189,7 @@ void Compile_J(void)
 {
     if (NextInstruction == NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         NextInstruction = DO_DELAY_SLOT;
     }
     else if (NextInstruction == DELAY_SLOT_DONE)
@@ -214,7 +215,7 @@ void Compile_JAL(void)
 {
     if (NextInstruction == NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         MoveConstToVariable(CompilePC + 8, &RSP_GPR[31].UW, "RA.W");
         NextInstruction = DO_DELAY_SLOT;
     }
@@ -254,7 +255,7 @@ void Compile_BEQ(void)
 
     if (NextInstruction == NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         if (RSPOpC.rs == 0 && RSPOpC.rt == 0)
         {
             NextInstruction = DO_DELAY_SLOT;
@@ -337,7 +338,7 @@ void Compile_BNE(void)
 
     if (NextInstruction == NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         if (RSPOpC.rs == 0 && RSPOpC.rt == 0)
         {
             NextInstruction = DO_DELAY_SLOT;
@@ -420,7 +421,7 @@ void Compile_BLEZ(void)
 
     if (NextInstruction == NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         if (RSPOpC.rs == 0)
         {
             NextInstruction = DO_DELAY_SLOT;
@@ -480,7 +481,7 @@ void Compile_BGTZ(void)
 
     if (NextInstruction == NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         if (RSPOpC.rs == 0)
         {
             NextInstruction = DO_DELAY_SLOT;
@@ -540,7 +541,7 @@ void Compile_ADDI(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (RSPOpC.rt == 0) return;
 
@@ -579,7 +580,7 @@ void Compile_ADDIU(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (RSPOpC.rt == 0) return;
 
@@ -612,7 +613,7 @@ void Compile_SLTI(void)
 #endif
     int Immediate;
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (RSPOpC.rt == 0) return;
 
@@ -638,7 +639,7 @@ void Compile_SLTIU(void)
 #endif
     int Immediate;
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (RSPOpC.rt == 0) return;
 
@@ -658,7 +659,7 @@ void Compile_ANDI(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (RSPOpC.rt == 0) return;
 
@@ -692,7 +693,7 @@ void Compile_ORI(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (RSPOpC.rt == 0) return;
 
@@ -724,7 +725,7 @@ void Compile_XORI(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (RSPOpC.rt == 0) return;
 
@@ -756,7 +757,7 @@ void Compile_LUI(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (RSPOpC.rt == 0) return;
     MoveConstToVariable(constant, &RSP_GPR[RSPOpC.rt].W, GPR_Name(RSPOpC.rt));
@@ -783,7 +784,7 @@ void Compile_LB(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (IsRegConst(RSPOpC.base) == TRUE)
     {
@@ -818,7 +819,7 @@ void Compile_LH(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (IsRegConst(RSPOpC.base) == TRUE)
     {
@@ -891,7 +892,7 @@ void Compile_LW(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (IsRegConst(RSPOpC.base) == TRUE)
     {
@@ -976,7 +977,7 @@ void Compile_LBU(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (IsRegConst(RSPOpC.base) == TRUE)
     {
@@ -1013,7 +1014,7 @@ void Compile_LHU(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (IsRegConst(RSPOpC.base) == TRUE)
     {
@@ -1083,7 +1084,7 @@ void Compile_SB(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (IsRegConst(RSPOpC.base) == TRUE)
     {
@@ -1138,7 +1139,7 @@ void Compile_SH(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (IsRegConst(RSPOpC.base) == TRUE)
     {
@@ -1213,7 +1214,7 @@ void Compile_SW(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (IsRegConst(RSPOpC.base) == TRUE)
     {
@@ -1338,7 +1339,7 @@ void Compile_Special_SLL(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
     if (RSPOpC.rd == 0) return;
 
     if (RSPOpC.rd == RSPOpC.rt)
@@ -1360,7 +1361,7 @@ void Compile_Special_SRL(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
     if (RSPOpC.rd == 0) return;
 
     if (RSPOpC.rd == RSPOpC.rt)
@@ -1382,7 +1383,7 @@ void Compile_Special_SRA(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
     if (RSPOpC.rd == 0) return;
 
     if (RSPOpC.rd == RSPOpC.rt)
@@ -1409,7 +1410,7 @@ void Compile_Special_SRLV(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
     if (RSPOpC.rd == 0) return;
 
     MoveVariableToX86reg(&RSP_GPR[RSPOpC.rt].W, GPR_Name(RSPOpC.rt), x86_EAX);
@@ -1437,7 +1438,7 @@ void Compile_Special_JR(void)
 
     if (NextInstruction == NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         // Transfer destination to location pointed to by PrgCount
         MoveVariableToX86reg(&RSP_GPR[RSPOpC.rs].W, GPR_Name(RSPOpC.rs), x86_EAX);
         AndConstToX86Reg(x86_EAX, 0xFFC);
@@ -1496,7 +1497,7 @@ void Compile_Special_JALR(void)
 
     if (NextInstruction == NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         MoveConstToVariable(Const, &RSP_GPR[RSPOpC.rd].W, GPR_Name(RSPOpC.rd));
         MoveVariableToX86reg(&RSP_GPR[RSPOpC.rs].W, GPR_Name(RSPOpC.rs), x86_EAX);
         AndConstToX86Reg(x86_EAX, 0xFFC);
@@ -1554,7 +1555,7 @@ void Compile_Special_ADD(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (RSPOpC.rd == 0) return;
 
@@ -1599,7 +1600,7 @@ void Compile_Special_ADDU(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (RSPOpC.rd == 0) return;
 
@@ -1644,7 +1645,7 @@ void Compile_Special_SUB(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (RSPOpC.rd == 0) return;
 
@@ -1672,7 +1673,7 @@ void Compile_Special_SUBU(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (RSPOpC.rd == 0) return;
 
@@ -1700,7 +1701,7 @@ void Compile_Special_AND(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (RSPOpC.rd == 0) return;
 
@@ -1734,7 +1735,7 @@ void Compile_Special_OR(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (RSPOpC.rd == 0) return;
 
@@ -1773,7 +1774,7 @@ void Compile_Special_XOR(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (RSPOpC.rd == 0) return;
 
@@ -1811,7 +1812,7 @@ void Compile_Special_SLT(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
     if (RSPOpC.rd == 0)
     {
         return;
@@ -1859,7 +1860,7 @@ void Compile_RegImm_BLTZ(void)
 
     if (NextInstruction == NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         if (RSPOpC.rs == 0)
         {
             NextInstruction = DO_DELAY_SLOT;
@@ -1916,7 +1917,7 @@ void Compile_RegImm_BGEZ(void)
 
     if (NextInstruction == NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         if (RSPOpC.rs == 0)
         {
             NextInstruction = DO_DELAY_SLOT;
@@ -1973,7 +1974,7 @@ void Compile_RegImm_BLTZAL(void)
 {
     if (NextInstruction == NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         MoveConstToVariable(CompilePC + 8, &RSP_GPR[31].UW, "RA.W");
         if (RSPOpC.rs == 0)
         {
@@ -2018,7 +2019,7 @@ void Compile_RegImm_BGEZAL(void)
 
     if (NextInstruction == NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         MoveConstToVariable(CompilePC + 8, &RSP_GPR[31].UW, "RA.W");
         if (RSPOpC.rs == 0)
         {
@@ -2076,7 +2077,7 @@ void Compile_RegImm_BGEZAL(void)
 
 void Compile_Cop0_MF(void)
 {
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
     if (LogRDP)
     {
         char str[40];
@@ -2211,7 +2212,7 @@ void Compile_Cop0_MF(void)
 
 void Compile_Cop0_MT(void)
 {
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (LogRDP)
     {
@@ -2344,7 +2345,7 @@ void Compile_Cop2_MF(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (element2 != (element1 - 1))
     {
@@ -2379,7 +2380,7 @@ void Compile_Cop2_CF(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     switch ((RSPOpC.rd & 0x03))
     {
@@ -2409,7 +2410,7 @@ void Compile_Cop2_MT(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (element == 0)
     {
@@ -2436,7 +2437,7 @@ void Compile_Cop2_CT(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (RSPOpC.rt == 0)
     {
@@ -2686,7 +2687,7 @@ void Compile_Vector_VMULF(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (bWriteToAccum == FALSE)
     {
@@ -2837,7 +2838,7 @@ void Compile_Vector_VMUDL(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (bWriteToAccum == FALSE)
     {
@@ -2991,7 +2992,7 @@ void Compile_Vector_VMUDM(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (bWriteToAccum == FALSE)
     {
@@ -3138,7 +3139,7 @@ void Compile_Vector_VMUDN(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (bWriteToAccum == FALSE)
     {
@@ -3293,7 +3294,7 @@ void Compile_Vector_VMUDH(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (bWriteToAccum == FALSE)
     {
@@ -3433,7 +3434,7 @@ void Compile_Vector_VMACF(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (bWriteToDest == TRUE)
     {
@@ -3513,7 +3514,7 @@ void Compile_Vector_VMADL(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (bOptimize == TRUE)
     {
@@ -3590,7 +3591,7 @@ void Compile_Vector_VMADM(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (bOptimize == TRUE)
     {
@@ -3686,7 +3687,7 @@ void Compile_Vector_VMADN(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (bOptimize == TRUE)
     {
@@ -3767,7 +3768,7 @@ void Compile_Vector_VMADH(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (bOptimize == TRUE)
     {
@@ -3968,7 +3969,7 @@ void Compile_Vector_VADD(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (bWriteToAccum == FALSE && bFlagUseage == FALSE)
     {
@@ -4107,7 +4108,7 @@ void Compile_Vector_VSUB(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (bWriteToAccum == FALSE && bFlagUseage == FALSE)
     {
@@ -4280,7 +4281,7 @@ void Compile_Vector_VABS(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (bWriteToAccum == FALSE)
     {
@@ -4382,7 +4383,7 @@ void Compile_Vector_VADDC(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (bElement == TRUE)
     {
@@ -4455,7 +4456,7 @@ void Compile_Vector_VSUBC(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (bElement == TRUE)
     {
@@ -4520,7 +4521,7 @@ void Compile_Vector_VSAW(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     switch ((RSPOpC.rs & 0xF))
     {
@@ -4580,7 +4581,7 @@ void Compile_Vector_VLT(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
     last = -1;
     XorX86RegToX86Reg(x86_EBX, x86_EBX);
     MoveVariableToX86reg(&RSP_Flags[0].UW, "&RSP_Flags[0].UW", x86_ESI);
@@ -4681,7 +4682,7 @@ void Compile_Vector_VEQ(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     MoveZxVariableToX86regHalf(&RSP_Flags[0].UHW[1], "&RSP_Flags[0].UHW[1]", x86_EBX);
     XorConstToX86Reg(x86_EBX, 0xFFFF);
@@ -4758,7 +4759,7 @@ void Compile_Vector_VNE(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     MoveZxVariableToX86regHalf(&RSP_Flags[0].UHW[1], "&RSP_Flags[0].UHW[1]", x86_EBX);
 
@@ -4822,7 +4823,7 @@ Boolean Compile_Vector_VGE_MMX(void)
     if ((RSPOpC.rs & 0xF) >= 2 && !(RSPOpC.rs & 8) && IsMmx2Enabled == FALSE)
         return FALSE;
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
     MoveConstToVariable(0, &RSP_Flags[1].UW, "RSP_Flags[1].UW");
 
     sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rd);
@@ -4885,7 +4886,7 @@ void Compile_Vector_VGE(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     XorX86RegToX86Reg(x86_EBX, x86_EBX);
     MoveVariableToX86reg(&RSP_Flags[0].UW, "&RSP_Flags[0].UW", x86_ESI);
@@ -5002,7 +5003,7 @@ void Compile_Vector_VMRG(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
     MoveVariableToX86reg(&RSP_Flags[1].UW, "RSP_Flags[1].UW", x86_EDX);
 
     for (count = 0; count < 8; count++)
@@ -5089,7 +5090,7 @@ void Compile_Vector_VAND(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (bWriteToAccum == FALSE)
     {
@@ -5200,7 +5201,7 @@ void Compile_Vector_VNAND(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (bWriteToAccum == FALSE)
     {
@@ -5312,7 +5313,7 @@ void Compile_Vector_VOR(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (bWriteToAccum == FALSE)
     {
@@ -5418,7 +5419,7 @@ void Compile_Vector_VNOR(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (bWriteToAccum == FALSE)
     {
@@ -5535,7 +5536,7 @@ void Compile_Vector_VXOR(void)
     DWORD count;
     Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (!bWriteToAccum || ((RSPOpC.rs & 0xF) < 2 && RSPOpC.rd == RSPOpC.rt))
     {
@@ -5631,7 +5632,7 @@ void Compile_Vector_VNXOR(void)
     DWORD count;
     Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (!bWriteToAccum || ((RSPOpC.rs & 0xF) < 2 && RSPOpC.rd == RSPOpC.rt))
     {
@@ -5666,7 +5667,7 @@ void Compile_Vector_VRCP(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     el = EleSpec[RSPOpC.rs].B[(RSPOpC.rd & 0x7)];
     sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
@@ -5736,7 +5737,7 @@ void Compile_Vector_VRCPL(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     el = EleSpec[RSPOpC.rs].B[(RSPOpC.rd & 0x7)];
     sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
@@ -5812,7 +5813,7 @@ void Compile_Vector_VRCPH(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     el = EleSpec[RSPOpC.rs].B[(RSPOpC.rd & 0x7)];
     sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
@@ -5855,7 +5856,7 @@ void Compile_Vector_VMOV(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (bWriteToAccum)
     {
@@ -5881,13 +5882,13 @@ void Compile_Vector_VMOV(void)
 
 void Compile_Vector_VRSQ(void)
 {
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
     Cheat_r4300iOpcodeNoMessage(RSP_Vector_VRSQ, "RSP_Vector_VRSQ");
 }
 
 void Compile_Vector_VRSQL(void)
 {
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
     Cheat_r4300iOpcodeNoMessage(RSP_Vector_VRSQL, "RSP_Vector_VRSQL");
 }
 
@@ -5902,7 +5903,7 @@ void Compile_Vector_VRSQH(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     el = EleSpec[RSPOpC.rs].B[(RSPOpC.rd & 0x7)];
     sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
@@ -5951,7 +5952,7 @@ void Compile_Opcode_LBV(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     MoveVariableToX86reg(&RSP_GPR[RSPOpC.base].UW, GPR_Name(RSPOpC.base), x86_EBX);
     if (offset != 0)
@@ -5980,7 +5981,7 @@ void Compile_Opcode_LSV(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (IsRegConst(RSPOpC.base) == TRUE)
     {
@@ -6047,7 +6048,7 @@ void Compile_Opcode_LLV(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if ((RSPOpC.del & 0x3) != 0)
     {
@@ -6116,7 +6117,7 @@ void Compile_Opcode_LDV(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     //if ((RSPOpC.del & 0x7) != 0) {
     //	rsp_UnknownOpcode();
@@ -6228,7 +6229,7 @@ void Compile_Opcode_LQV(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (RSPOpC.del != 0)
     {
@@ -6337,7 +6338,7 @@ void Compile_Opcode_LRV(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (RSPOpC.del != 0)
     {
@@ -6417,7 +6418,7 @@ void Compile_Opcode_LPV(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     MoveVariableToX86reg(&RSP_GPR[RSPOpC.base].UW, GPR_Name(RSPOpC.base), x86_EBX);
     if (offset != 0)
@@ -6526,7 +6527,7 @@ void Compile_Opcode_LUV(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     MoveVariableToX86reg(&RSP_GPR[RSPOpC.base].UW, GPR_Name(RSPOpC.base), x86_EBX);
     if (offset != 0)
@@ -6635,7 +6636,7 @@ void Compile_Opcode_LHV(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     MoveVariableToX86reg(&RSP_GPR[RSPOpC.base].UW, GPR_Name(RSPOpC.base), x86_EBX);
     if (offset != 0)
@@ -6767,7 +6768,7 @@ void Compile_Opcode_SSV(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (IsRegConst(RSPOpC.base) == TRUE)
     {
@@ -6833,7 +6834,7 @@ void Compile_Opcode_SLV(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     //	if ((RSPOpC.del & 0x3) != 0) {
     //		rsp_UnknownOpcode();
@@ -6906,7 +6907,7 @@ void Compile_Opcode_SDV(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (IsRegConst(RSPOpC.base) == TRUE)
     {
@@ -6987,7 +6988,7 @@ void Compile_Opcode_SQV(void)
     return;
 #endif
 
-    CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     if (RSPOpC.del != 0 && RSPOpC.del != 12)
     {
@@ -7165,10 +7166,10 @@ void Compile_Opcode_SWV(void)
 
 void Compile_UnknownOpcode(void)
 {
-    CPU_Message("  %X Unhandled Opcode: %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
+    CPU_Message("  %X Unhandled Opcode: %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
     NextInstruction = FINISH_BLOCK;
     MoveConstToVariable(CompilePC, PrgCount, "RSP PC");
-    MoveConstToVariable(RSPOpC.Hex, &RSPOpC.Hex, "RSPOpC.Hex");
+    MoveConstToVariable(RSPOpC.Value, &RSPOpC.Value, "RSPOpC.Value");
     Call_Direct(rsp_UnknownOpcode, "rsp_UnknownOpcode");
     Ret();
 }

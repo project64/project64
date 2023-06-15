@@ -6,7 +6,8 @@
 #include "Types.h"
 #include "log.h"
 #include "memory.h"
-#include "opcode.h"
+#include "cpu/RSPOpcode.h"
+#include "cpu/RSPInstruction.h"
 #include <windows.h>
 
 //#define COMPARE_INSTRUCTIONS_VERBOSE
@@ -19,8 +20,8 @@ Input: PC
 
 Boolean IsOpcodeNop(DWORD PC)
 {
-    OPCODE RspOp;
-    RSP_LW_IMEM(PC, &RspOp.Hex);
+    RSPOpcode RspOp;
+    RSP_LW_IMEM(PC, &RspOp.Value);
 
     if (RspOp.op == RSP_SPECIAL && RspOp.funct == RSP_SPECIAL_SLL)
     {
@@ -38,14 +39,14 @@ Input: PC
 
 Boolean IsNextInstructionMmx(DWORD PC)
 {
-    OPCODE RspOp;
+    RSPOpcode RspOp;
 
     if (IsMmxEnabled == FALSE)
         return FALSE;
 
     PC += 4;
     if (PC >= 0x1000) return FALSE;
-    RSP_LW_IMEM(PC, &RspOp.Hex);
+    RSP_LW_IMEM(PC, &RspOp.Value);
 
     if (RspOp.op != RSP_CP2)
         return FALSE;
@@ -126,7 +127,7 @@ Input: PC, location in accumulator
 
 DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
 {
-    OPCODE RspOp;
+    RSPOpcode RspOp;
     DWORD BranchTarget = 0;
     signed int BranchImmed = 0;
     int Instruction_State = NextInstruction;
@@ -145,7 +146,7 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
         {
             return TRUE;
         }
-        RSP_LW_IMEM(PC, &RspOp.Hex);
+        RSP_LW_IMEM(PC, &RspOp.Value);
 
         switch (RspOp.op)
         {
@@ -159,7 +160,7 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
                 Instruction_State = DO_DELAY_SLOT;
                 break;
             default:
-                CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPOpcodeName(RspOp.Hex, PC));
+                CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
                 return TRUE;
             }
             break;
@@ -193,7 +194,7 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
                 break;
 
             default:
-                CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPOpcodeName(RspOp.Hex, PC));
+                CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
                 return TRUE;
             }
             break;
@@ -230,7 +231,7 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
             BranchImmed = (short)RspOp.offset;
             if (Compiler.bAudioUcode)
             {
-                OPCODE NextOp;
+                RSPOpcode NextOp;
 
                 // Ignore backward branches and pretend it's a NOP
                 if (BranchImmed <= 0)
@@ -239,7 +240,7 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
                 }
                 // If the opcode (which is 8 bytes before the destination and also a J backward) then ignore this
                 BranchImmed = (PC + ((short)RspOp.offset << 2) + 4) & 0xFFC;
-                RSP_LW_IMEM(BranchImmed - 8, &NextOp.Hex);
+                RSP_LW_IMEM(BranchImmed - 8, &NextOp.Value);
                 if (RspOp.op == RSP_J && (int)(RspOp.target << 2) < PC)
                 {
                     break;
@@ -321,7 +322,7 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
                 case RSP_VECTOR_VSAW:
                     return TRUE;
                 default:
-                    CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPOpcodeName(RspOp.Hex, PC));
+                    CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
                     return TRUE;
                 }
             }
@@ -335,7 +336,7 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
                 case RSP_COP2_MF:
                     break;
                 default:
-                    CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPOpcodeName(RspOp.Hex, PC));
+                    CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
                     return TRUE;
                 }
             }
@@ -364,7 +365,7 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
             case RSP_LSC2_HV:
                 break;
             default:
-                CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPOpcodeName(RspOp.Hex, PC));
+                CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
                 return TRUE;
             }
             break;
@@ -385,12 +386,12 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
             case RSP_LSC2_TV:
                 break;
             default:
-                CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPOpcodeName(RspOp.Hex, PC));
+                CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
                 return TRUE;
             }
             break;
         default:
-            CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPOpcodeName(RspOp.Hex, PC));
+            CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
             return TRUE;
         }
         switch (Instruction_State)
@@ -480,7 +481,7 @@ Input: PC, Register
 
 Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
 {
-    OPCODE RspOp;
+    RSPOpcode RspOp;
     DWORD BranchTarget = 0;
     signed int BranchImmed = 0;
 
@@ -500,7 +501,7 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
         {
             return TRUE;
         }
-        RSP_LW_IMEM(PC, &RspOp.Hex);
+        RSP_LW_IMEM(PC, &RspOp.Value);
 
         switch (RspOp.op)
         {
@@ -515,7 +516,7 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
                 Instruction_State = DO_DELAY_SLOT;
                 break;
             default:
-                CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPOpcodeName(RspOp.Hex, PC));
+                CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
                 return TRUE;
             }
             break;
@@ -549,7 +550,7 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
                 break;
 
             default:
-                CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPOpcodeName(RspOp.Hex, PC));
+                CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
                 return TRUE;
             }
             break;
@@ -573,7 +574,7 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
             BranchImmed = (short)RspOp.offset;
             if (Compiler.bAudioUcode)
             {
-                OPCODE NextOp;
+                RSPOpcode NextOp;
 
                 // Ignore backward branches and pretend it's a NOP
                 if (BranchImmed <= 0)
@@ -582,7 +583,7 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
                 }
                 // If the opcode (which is 8 bytes before the destination and also a J backward) then ignore this
                 BranchImmed = (PC + ((short)RspOp.offset << 2) + 4) & 0xFFC;
-                RSP_LW_IMEM(BranchImmed - 8, &NextOp.Hex);
+                RSP_LW_IMEM(BranchImmed - 8, &NextOp.Value);
                 if (RspOp.op == RSP_J && (int)(RspOp.target << 2) < PC)
                 {
                     break;
@@ -684,7 +685,7 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
                     }
                     break;
                 default:
-                    CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPOpcodeName(RspOp.Hex, PC));
+                    CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
                     return TRUE;
                 }
             }
@@ -705,7 +706,7 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
                     }
                     break;
                 default:
-                    CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPOpcodeName(RspOp.Hex, PC));
+                    CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
                     return TRUE;
                 }
             }
@@ -732,7 +733,6 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
             case RSP_LSC2_LV:
             case RSP_LSC2_TV:
                 break;
-
             case RSP_LSC2_PV:
             case RSP_LSC2_UV:
             case RSP_LSC2_HV:
@@ -741,9 +741,8 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
                     return FALSE;
                 }
                 break;
-
             default:
-                CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPOpcodeName(RspOp.Hex, PC));
+                CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
                 return TRUE;
             }
             break;
@@ -790,12 +789,12 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
                 break;
 
             default:
-                CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPOpcodeName(RspOp.Hex, PC));
+                CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
                 return TRUE;
             }
             break;
         default:
-            CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPOpcodeName(RspOp.Hex, PC));
+            CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
             return TRUE;
         }
         switch (Instruction_State)
@@ -888,7 +887,7 @@ Input: PC
 // TODO: Consider delay slots and such in a branch?
 Boolean UseRspFlags(int PC)
 {
-    OPCODE RspOp;
+    RSPOpcode RspOp;
     int Instruction_State = NextInstruction;
 
     if (Compiler.bFlags == FALSE) return TRUE;
@@ -905,7 +904,7 @@ Boolean UseRspFlags(int PC)
         {
             return TRUE;
         }
-        RSP_LW_IMEM(PC, &RspOp.Hex);
+        RSP_LW_IMEM(PC, &RspOp.Value);
 
         switch (RspOp.op)
         {
@@ -920,7 +919,7 @@ Boolean UseRspFlags(int PC)
                 Instruction_State = DO_DELAY_SLOT;
                 break;
             default:
-                CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPOpcodeName(RspOp.Hex, PC));
+                CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
                 return TRUE;
             }
             break;
@@ -951,7 +950,7 @@ Boolean UseRspFlags(int PC)
                 break;
 
             default:
-                CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPOpcodeName(RspOp.Hex, PC));
+                CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
                 return TRUE;
             }
             break;
@@ -1030,7 +1029,7 @@ Boolean UseRspFlags(int PC)
                     break;
 
                 default:
-                    CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPOpcodeName(RspOp.Hex, PC));
+                    CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
                     return TRUE;
                 }
             }
@@ -1046,7 +1045,7 @@ Boolean UseRspFlags(int PC)
                 case RSP_COP2_MF:
                     break;
                 default:
-                    CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPOpcodeName(RspOp.Hex, PC));
+                    CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
                     return TRUE;
                 }
             }
@@ -1075,7 +1074,7 @@ Boolean UseRspFlags(int PC)
             case RSP_LSC2_HV:
                 break;
             default:
-                CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPOpcodeName(RspOp.Hex, PC));
+                CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
                 return TRUE;
             }
             break;
@@ -1096,12 +1095,12 @@ Boolean UseRspFlags(int PC)
             case RSP_LSC2_TV:
                 break;
             default:
-                CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPOpcodeName(RspOp.Hex, PC));
+                CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
                 return TRUE;
             }
             break;
         default:
-            CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPOpcodeName(RspOp.Hex, PC));
+            CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
             return TRUE;
         }
         switch (Instruction_State)
@@ -1131,7 +1130,7 @@ Boolean IsRegisterConstant(DWORD Reg, DWORD * Constant)
     DWORD PC = 0;
     DWORD References = 0;
     DWORD Const = 0;
-    OPCODE RspOp;
+    RSPOpcode RspOp;
 
     if (Compiler.bGPRConstants == FALSE)
         return FALSE;
@@ -1139,7 +1138,7 @@ Boolean IsRegisterConstant(DWORD Reg, DWORD * Constant)
     while (PC < 0x1000)
     {
 
-        RSP_LW_IMEM(PC, &RspOp.Hex);
+        RSP_LW_IMEM(PC, &RspOp.Value);
 
         // Resample command in microcode likes S7
         /*	if (PC == 0xFBC) {
@@ -1340,7 +1339,7 @@ False: Opcode is not a branch
 Input: PC
 */
 
-Boolean IsOpcodeBranch(DWORD PC, OPCODE RspOp)
+Boolean IsOpcodeBranch(DWORD PC, RSPOpcode RspOp)
 {
     PC = PC; // Unused
 
@@ -1484,7 +1483,7 @@ typedef struct
 
 #pragma warning(pop)
 
-void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info)
+void GetInstructionInfo(DWORD PC, RSPOpcode * RspOp, OPCODE_INFO * info)
 {
     switch (RspOp->op)
     {
@@ -1501,7 +1500,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info)
             break;
 
         default:
-            CompilerWarning("Unknown opcode in GetInstructionInfo\n%s", RSPOpcodeName(RspOp->Hex, PC));
+            CompilerWarning("Unknown opcode in GetInstructionInfo\n%s", RSPInstruction(PC, RspOp->Value).NameAndParam().c_str());
             info->flags = InvalidOpcode;
             break;
         }
@@ -1550,7 +1549,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info)
             break;
 
         default:
-            CompilerWarning("Unknown opcode in GetInstructionInfo\n%s", RSPOpcodeName(RspOp->Hex, PC));
+            CompilerWarning("Unknown opcode in GetInstructionInfo\n%s", RSPInstruction(PC, RspOp->Value).NameAndParam().c_str());
             info->flags = InvalidOpcode;
             break;
         }
@@ -1625,7 +1624,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info)
         {
             switch (RspOp->funct)
             {
-            case RSP_VECTOR_VNOOP:
+            case RSP_VECTOR_VNOP:
                 info->DestReg = UNUSED_OPERAND;
                 info->SourceReg0 = UNUSED_OPERAND;
                 info->SourceReg1 = UNUSED_OPERAND;
@@ -1706,7 +1705,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info)
                 break;
 
             default:
-                CompilerWarning("Unknown opcode in GetInstructionInfo\n%s", RSPOpcodeName(RspOp->Hex, PC));
+                CompilerWarning("Unknown opcode in GetInstructionInfo\n%s", RSPInstruction(PC, RspOp->Value).NameAndParam().c_str());
                 info->flags = InvalidOpcode;
                 break;
             }
@@ -1742,7 +1741,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info)
                 info->flags = VEC_Instruction | GPR_Instruction | Store_Operation;
                 break;
             default:
-                CompilerWarning("Unknown opcode in GetInstructionInfo\n%s", RSPOpcodeName(RspOp->Hex, PC));
+                CompilerWarning("Unknown opcode in GetInstructionInfo\n%s", RSPInstruction(PC, RspOp->Value).NameAndParam().c_str());
                 info->flags = InvalidOpcode;
                 break;
             }
@@ -1787,7 +1786,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info)
             info->flags = InvalidOpcode;
             break;
         default:
-            CompilerWarning("Unknown opcode in GetInstructionInfo\n%s", RSPOpcodeName(RspOp->Hex, PC));
+            CompilerWarning("Unknown opcode in GetInstructionInfo\n%s", RSPInstruction(PC, RspOp->Value).NameAndParam().c_str());
             info->flags = InvalidOpcode;
             break;
         }
@@ -1815,7 +1814,7 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info)
             info->flags = InvalidOpcode;
             break;
         default:
-            CompilerWarning("Unknown opcode in GetInstructionInfo\n%s", RSPOpcodeName(RspOp->Hex, PC));
+            CompilerWarning("Unknown opcode in GetInstructionInfo\n%s", RSPInstruction(PC, RspOp->Value).NameAndParam().c_str());
             info->flags = InvalidOpcode;
             break;
         }
@@ -1838,7 +1837,7 @@ Input: PC
 
 Boolean DelaySlotAffectBranch(DWORD PC)
 {
-    OPCODE Branch, Delay;
+    RSPOpcode Branch, Delay;
     OPCODE_INFO infoBranch, infoDelay;
 
     if (IsOpcodeNop(PC + 4) == TRUE)
@@ -1846,8 +1845,8 @@ Boolean DelaySlotAffectBranch(DWORD PC)
         return FALSE;
     }
 
-    RSP_LW_IMEM(PC, &Branch.Hex);
-    RSP_LW_IMEM(PC + 4, &Delay.Hex);
+    RSP_LW_IMEM(PC, &Branch.Value);
+    RSP_LW_IMEM(PC + 4, &Delay.Value);
 
     memset(&infoDelay, 0, sizeof(infoDelay));
     memset(&infoBranch, 0, sizeof(infoBranch));
@@ -1886,7 +1885,7 @@ Input: Top, not the current operation, the one above
 Bottom: The current opcode for re-ordering bubble style
 */
 
-Boolean CompareInstructions(DWORD PC, OPCODE * Top, OPCODE * Bottom)
+Boolean CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom)
 {
     OPCODE_INFO info0, info1;
     DWORD InstructionType;

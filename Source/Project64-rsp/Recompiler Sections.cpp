@@ -11,10 +11,11 @@
 #include "log.h"
 #include "memory.h"
 #include "x86.h"
+#include "cpu/RSPInstruction.h"
 
 #pragma warning(disable : 4152) // Non-standard extension, function/data pointer conversion in expression
 
-void RSP_Sections_VMUDH(OPCODE RspOp, DWORD AccumStyle)
+void RSP_Sections_VMUDH(RSPOpcode RspOp, DWORD AccumStyle)
 {
     char Reg[256];
 
@@ -84,7 +85,7 @@ void RSP_Sections_VMUDH(OPCODE RspOp, DWORD AccumStyle)
     }
 }
 
-void RSP_Sections_VMADH(OPCODE RspOp, DWORD AccumStyle)
+void RSP_Sections_VMADH(RSPOpcode RspOp, DWORD AccumStyle)
 {
     char Reg[256];
 
@@ -155,7 +156,7 @@ void RSP_Sections_VMADH(OPCODE RspOp, DWORD AccumStyle)
     MmxPaddswRegToReg(x86_MM1, x86_MM1 + 2);
 }
 
-void RSP_Sections_VMUDL(OPCODE RspOp, DWORD AccumStyle)
+void RSP_Sections_VMUDL(RSPOpcode RspOp, DWORD AccumStyle)
 {
     char Reg[256];
 
@@ -201,7 +202,7 @@ void RSP_Sections_VMUDL(OPCODE RspOp, DWORD AccumStyle)
     }
 }
 
-void RSP_Sections_VMADL(OPCODE RspOp, DWORD AccumStyle)
+void RSP_Sections_VMADL(RSPOpcode RspOp, DWORD AccumStyle)
 {
     char Reg[256];
 
@@ -248,7 +249,7 @@ void RSP_Sections_VMADL(OPCODE RspOp, DWORD AccumStyle)
     MmxPaddswRegToReg(x86_MM1, x86_MM1 + 2);
 }
 
-void RSP_Sections_VMUDM(OPCODE RspOp, DWORD AccumStyle)
+void RSP_Sections_VMUDM(RSPOpcode RspOp, DWORD AccumStyle)
 {
     char Reg[256];
 
@@ -361,7 +362,7 @@ void RSP_Sections_VMUDM(OPCODE RspOp, DWORD AccumStyle)
     }
 }
 
-void RSP_Sections_VMADM(OPCODE RspOp, DWORD AccumStyle)
+void RSP_Sections_VMADM(RSPOpcode RspOp, DWORD AccumStyle)
 {
     char Reg[256];
 
@@ -477,7 +478,7 @@ void RSP_Sections_VMADM(OPCODE RspOp, DWORD AccumStyle)
     MmxPaddswRegToReg(x86_MM1, x86_MM1 + 2);
 }
 
-void RSP_Sections_VMUDN(OPCODE RspOp, DWORD AccumStyle)
+void RSP_Sections_VMUDN(RSPOpcode RspOp, DWORD AccumStyle)
 {
     char Reg[256];
 
@@ -576,7 +577,7 @@ void RSP_Sections_VMUDN(OPCODE RspOp, DWORD AccumStyle)
     }
 }
 
-void RSP_Sections_VMADN(OPCODE RspOp, DWORD AccumStyle)
+void RSP_Sections_VMADN(RSPOpcode RspOp, DWORD AccumStyle)
 {
     char Reg[256];
 
@@ -678,7 +679,7 @@ void RSP_Sections_VMADN(OPCODE RspOp, DWORD AccumStyle)
     MmxPaddswRegToReg(x86_MM1, x86_MM1 + 2);
 }
 
-void RSP_Sections_VMULF(OPCODE RspOp, DWORD AccumStyle)
+void RSP_Sections_VMULF(RSPOpcode RspOp, DWORD AccumStyle)
 {
     char Reg[256];
 
@@ -751,7 +752,7 @@ void RSP_Sections_VMULF(OPCODE RspOp, DWORD AccumStyle)
     MmxPsllwImmed(x86_MM1, 1);
 }
 
-void RSP_Sections_VMACF(OPCODE RspOp, DWORD AccumStyle)
+void RSP_Sections_VMACF(RSPOpcode RspOp, DWORD AccumStyle)
 {
     char Reg[256];
 
@@ -831,9 +832,9 @@ static DWORD Section_000_VMADN; // Yeah I know, but leave it
 Boolean Check_Section_000(void)
 {
     DWORD i;
-    OPCODE op0, op1;
+    RSPOpcode op0, op1;
 
-    RSP_LW_IMEM(CompilePC + 0x00, &op0.Hex);
+    RSP_LW_IMEM(CompilePC + 0x00, &op0.Value);
 
     // Example: (Mario audio microcode)
     // 0x574 VMUDN	$v30, $v3, $v23
@@ -847,7 +848,7 @@ Boolean Check_Section_000(void)
 
     for (i = 0; i < 0x20; i++)
     {
-        RSP_LW_IMEM(CompilePC + 0x04 + (i * 4), &op1.Hex);
+        RSP_LW_IMEM(CompilePC + 0x04 + (i * 4), &op1.Value);
 
         if (!(op1.op == RSP_CP2 && (op1.rs & 0x10) != 0 && op1.funct == RSP_VECTOR_VMADN))
         {
@@ -885,13 +886,13 @@ Boolean Check_Section_000(void)
 void Compile_Section_000(void)
 {
     char Reg[256];
-    OPCODE vmudn, vmadn = {0};
+    RSPOpcode vmudn, vmadn = {0};
     DWORD i;
 
-    RSP_LW_IMEM(CompilePC + 0x00, &vmudn.Hex);
+    RSP_LW_IMEM(CompilePC + 0x00, &vmudn.Value);
 
     CPU_Message("Compiling: %X to ..., RSP optimization $000", CompilePC);
-    CPU_Message("  %X %s", CompilePC + 0x00, RSPOpcodeName(vmudn.Hex, CompilePC + 0x00));
+    CPU_Message("  %X %s", CompilePC + 0x00, RSPInstruction(CompilePC + 0x00, vmudn.Value).NameAndParam().c_str());
     if (LogRDP)
     {
         char str[40];
@@ -903,8 +904,8 @@ void Compile_Section_000(void)
 
     for (i = 0; i < Section_000_VMADN; i++)
     {
-        RSP_LW_IMEM(CompilePC + 0x04 + (i * 4), &vmadn.Hex);
-        CPU_Message("  %X %s", CompilePC + 0x04 + (i * 4), RSPOpcodeName(vmadn.Hex, CompilePC + 0x04 + (i * 4)));
+        RSP_LW_IMEM(CompilePC + 0x04 + (i * 4), &vmadn.Value);
+        CPU_Message("  %X %s", CompilePC + 0x04 + (i * 4), RSPInstruction(CompilePC + 0x04 + (i * 4), vmadn.Value).NameAndParam().c_str());
 
         if (LogRDP)
         {
@@ -921,7 +922,7 @@ void Compile_Section_000(void)
 
     for (i = 0; i < Section_000_VMADN; i++)
     {
-        RSP_LW_IMEM(CompilePC, &vmadn.Hex);
+        RSP_LW_IMEM(CompilePC, &vmadn.Value);
         CompilePC += 4;
         RSP_Sections_VMADN(vmadn, Low16BitAccum);
         if (WriteToVectorDest(vmadn.sa, CompilePC - 4) == TRUE)
@@ -946,9 +947,9 @@ static DWORD Section_001_VMACF;
 Boolean Check_Section_001(void)
 {
     DWORD i;
-    OPCODE op0, op1;
+    RSPOpcode op0, op1;
 
-    RSP_LW_IMEM(CompilePC + 0x00, &op0.Hex);
+    RSP_LW_IMEM(CompilePC + 0x00, &op0.Value);
 
     // Example: (Mario audio microcode)
     // 0xCC0	VMULF	$v28, $v28, $v10 [6]
@@ -962,7 +963,7 @@ Boolean Check_Section_001(void)
 
     for (i = 0; i < 0x20; i++)
     {
-        RSP_LW_IMEM(CompilePC + 0x04 + (i * 4), &op1.Hex);
+        RSP_LW_IMEM(CompilePC + 0x04 + (i * 4), &op1.Value);
 
         if (!(op1.op == RSP_CP2 && (op1.rs & 0x10) != 0 && op1.funct == RSP_VECTOR_VMACF))
         {
@@ -1003,17 +1004,17 @@ void Compile_Section_001(void)
 {
     DWORD i;
     char Reg[256];
-    OPCODE vmulf, vmacf;
+    RSPOpcode vmulf, vmacf;
 
-    RSP_LW_IMEM(CompilePC + 0x00, &vmulf.Hex);
+    RSP_LW_IMEM(CompilePC + 0x00, &vmulf.Value);
 
     CPU_Message("Compiling: %X to ..., RSP optimization $001", CompilePC);
-    CPU_Message("  %X %s", CompilePC + 0x00, RSPOpcodeName(vmulf.Hex, CompilePC + 0x00));
+    CPU_Message("  %X %s", CompilePC + 0x00, RSPInstruction(CompilePC + 0x00, vmulf.Value).NameAndParam().c_str());
 
     for (i = 0; i < Section_001_VMACF; i++)
     {
-        RSP_LW_IMEM(CompilePC + 0x04 + (i * 4), &vmacf.Hex);
-        CPU_Message("  %X %s", CompilePC + 0x04 + (i * 4), RSPOpcodeName(vmacf.Hex, CompilePC + 0x04 + (i * 4)));
+        RSP_LW_IMEM(CompilePC + 0x04 + (i * 4), &vmacf.Value);
+        CPU_Message("  %X %s", CompilePC + 0x04 + (i * 4), RSPInstruction(CompilePC + 0x04 + (i * 4), vmacf.Value).NameAndParam().c_str());
     }
 
     RSP_Sections_VMULF(vmulf, Middle16BitAccum);
@@ -1029,7 +1030,7 @@ void Compile_Section_001(void)
 
     for (i = 0; i < Section_001_VMACF; i++)
     {
-        RSP_LW_IMEM(CompilePC, &vmacf.Hex);
+        RSP_LW_IMEM(CompilePC, &vmacf.Value);
         CompilePC += 4;
 
         RSP_Sections_VMACF(vmacf, Middle16BitAccum);
@@ -1048,11 +1049,11 @@ void Compile_Section_001(void)
 Boolean Check_Section_002(void)
 {
     DWORD Count;
-    OPCODE op[0x0C];
+    RSPOpcode op[0x0C];
 
     for (Count = 0; Count < 0x0C; Count++)
     {
-        RSP_LW_IMEM(CompilePC + (Count * 0x04), &op[Count].Hex);
+        RSP_LW_IMEM(CompilePC + (Count * 0x04), &op[Count].Value);
     }
 
     /*
@@ -1120,15 +1121,15 @@ void Compile_Section_002(void)
     char Reg[256];
 
     DWORD Count;
-    OPCODE op[0x0C];
+    RSPOpcode op[0x0C];
 
-    OPCODE vmudh, vsaw;
+    RSPOpcode vmudh, vsaw;
 
     CPU_Message("Compiling: %X to ..., RSP optimization $002", CompilePC);
     for (Count = 0; Count < 0xC; Count++)
     {
-        RSP_LW_IMEM(CompilePC + (Count * 0x04), &op[Count].Hex);
-        CPU_Message("  %X %s", CompilePC + (Count * 0x04), RSPOpcodeName(op[Count].Hex, CompilePC + (Count * 0x04)));
+        RSP_LW_IMEM(CompilePC + (Count * 0x04), &op[Count].Value);
+        CPU_Message("  %X %s", CompilePC + (Count * 0x04), RSPInstruction(CompilePC + (Count * 0x04), op[Count].Value).NameAndParam().c_str());
         if (LogRDP)
         {
             char str[40];
@@ -1164,17 +1165,17 @@ void Compile_Section_002(void)
 
     MmxEmptyMultimediaState();
 
-    CompilePC += 12 * sizeof(OPCODE);
+    CompilePC += 12 * sizeof(RSPOpcode);
 }
 
 Boolean Check_Section_003(void)
 {
     DWORD Count;
-    OPCODE op[4];
+    RSPOpcode op[4];
 
     for (Count = 0; Count < 4; Count++)
     {
-        RSP_LW_IMEM(CompilePC + (Count * 0x04), &op[Count].Hex);
+        RSP_LW_IMEM(CompilePC + (Count * 0x04), &op[Count].Value);
     }
 
     // Example: (Zelda audio microcode)
@@ -1183,7 +1184,7 @@ Boolean Check_Section_003(void)
     // VMADM $v22, $v25, $v18 [4]
     // VMADN $v23, $v31, $v30 [0]
 
-    if (op[0].Hex == 0x4BF7FDC5 && op[1].Hex == 0x4BF6FDCF && op[2].Hex == 0x4B92CD8D && op[3].Hex == 0x4B1EFDCE)
+    if (op[0].Value == 0x4BF7FDC5 && op[1].Value == 0x4BF6FDCF && op[2].Value == 0x4B92CD8D && op[3].Value == 0x4B1EFDCE)
     {
         if (TRUE == WriteToAccum(7, CompilePC + 0xc))
             return FALSE;
@@ -1245,7 +1246,7 @@ void Compile_Section_003(void)
 {
     CPU_Message("Compiling: %X to ..., RSP optimization $003", CompilePC);
     Call_Direct(resampler_hle, "Resampler_HLE");
-    CompilePC += 4 * sizeof(OPCODE);
+    CompilePC += 4 * sizeof(RSPOpcode);
 }
 
 Boolean RSP_DoSections(void)

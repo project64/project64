@@ -8,6 +8,7 @@
 #include "log.h"
 #include "memory.h"
 #include "x86.h"
+#include "cpu/RSPInstruction.h"
 #include <math.h>
 #include <stdio.h>
 #include <windows.h>
@@ -2250,12 +2251,12 @@ void rsp_UnknownOpcode(void)
     if (InRSPCommandsWindow)
     {
         SetRSPCommandViewto(*PrgCount);
-        DisplayError("Unhandled Opcode\n%s\n\nStopping emulation", RSPOpcodeName(RSPOpC.Hex, *PrgCount));
+        DisplayError("Unhandled Opcode\n%s\n\nStopping emulation", RSPInstruction(*PrgCount, RSPOpC.Value).NameAndParam().c_str());
     }
     else
     {
         sprintf(Message, "Unhandled Opcode\n%s\n\nStopping emulation.\n\nWOuld you like to open the debugger?",
-                RSPOpcodeName(RSPOpC.Hex, *PrgCount));
+            RSPInstruction(*PrgCount, RSPOpC.Value).NameAndParam().c_str());
         response = MessageBoxA(NULL, Message, "Error", MB_YESNO | MB_ICONERROR);
         if (response == IDYES)
         {

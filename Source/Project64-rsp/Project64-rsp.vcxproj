@@ -48,6 +48,7 @@
   <ItemGroup>
     <ClCompile Include="breakpoint.cpp" />
     <ClCompile Include="Cpu.cpp" />
+    <ClCompile Include="cpu\RSPiInstruction.cpp" />
     <ClCompile Include="dma.cpp" />
     <ClCompile Include="Interpreter CPU.cpp" />
     <ClCompile Include="Interpreter Ops.cpp" />
@@ -68,12 +69,13 @@
   <ItemGroup>
     <ClInclude Include="breakpoint.h" />
     <ClInclude Include="Cpu.h" />
+    <ClInclude Include="cpu\RSPInstruction.h" />
+    <ClInclude Include="cpu\RSPOpcode.h" />
     <ClInclude Include="dma.h" />
     <ClInclude Include="Interpreter CPU.h" />
     <ClInclude Include="Interpreter Ops.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="memory.h" />
-    <ClInclude Include="OpCode.h" />
     <ClInclude Include="Profiling.h" />
     <ClInclude Include="Recompiler CPU.h" />
     <ClInclude Include="Recompiler Ops.h" />

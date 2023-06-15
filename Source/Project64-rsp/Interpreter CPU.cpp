@@ -7,7 +7,7 @@
 #include "breakpoint.h"
 #include "log.h"
 #include "memory.h"
-#include "opcode.h"
+#include "cpu/RSPOpcode.h"
 #include <float.h>
 #include <stdio.h>
 #include <windows.h>
@@ -429,7 +429,7 @@ DWORD RunInterpreterCPU(DWORD Cycles)
 
         RDP_LogLoc(*PrgCount);
 
-        RSP_LW_IMEM(*PrgCount, &RSPOpC.Hex);
+        RSP_LW_IMEM(*PrgCount, &RSPOpC.Value);
         RSP_Opcode[RSPOpC.op]();
         RSP_GPR[0].W = 0x00000000; // MIPS $zero hard-wired to 0
 
