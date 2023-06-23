@@ -40,6 +40,7 @@ public:
 
 private:
     void UpdateAdvanced(bool AdvancedMode, HTREEITEM hItem);
+    void DisplayAccessibleSections(bool AdvancedMode, bool UpdateSections);
     void ApplySettings(bool UpdateScreen);
     void BoldChangedPages(HTREEITEM hItem);
 
@@ -47,7 +48,7 @@ private:
 
     CTreeViewCtrl m_PagesTreeList;
     SETTING_SECTIONS m_Sections;
-    CSettingsPage *m_CurrentPage, *m_GeneralOptionsPage, *m_AdvancedPage, *m_DefaultsPage, *m_DiskDrivePage;
+    CSettingsPage *m_CurrentPage, *m_GeneralOptionsPage;
     bool m_GameConfig;
     bool m_bTVNSelChangedSupported;
 };
