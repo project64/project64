@@ -4,6 +4,8 @@
 
 extern UDWORD EleSpec[32], Indx[32];
 
+typedef void(*p_func)(void);
+
 extern p_func RSP_Opcode[64];
 extern p_func RSP_RegImm[32];
 extern p_func RSP_Special[64];
