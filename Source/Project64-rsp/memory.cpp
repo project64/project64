@@ -166,14 +166,8 @@ void RSP_LH_DMEM(uint32_t Addr, uint16_t * Value)
 {
     if ((Addr & 0x1) != 0)
     {
-        if (Addr > 0xFFE)
-        {
-            DisplayError("There is a problem with:\nRSP_LH_DMEM");
-            return;
-        }
-        Addr &= 0xFFF;
-        *Value = *(uint8_t *)(RSPInfo.DMEM + ((Addr + 0) ^ 3)) << 8;
-        *Value += *(uint8_t *)(RSPInfo.DMEM + ((Addr + 1) ^ 3)) << 0;
+        *Value = *(uint8_t *)(RSPInfo.DMEM + (((Addr + 0) & 0xFFF) ^ 3)) << 8;
+        *Value += *(uint8_t *)(RSPInfo.DMEM + (((Addr + 1) & 0xFFF) ^ 3)) << 0;
         return;
     }
     *Value = *(uint16_t *)(RSPInfo.DMEM + ((Addr ^ 2) & 0xFFF));
@@ -301,16 +295,10 @@ void RSP_LW_DMEM(uint32_t Addr, uint32_t * Value)
 {
     if ((Addr & 0x3) != 0)
     {
-        Addr &= 0xFFF;
-        if (Addr > 0xFFC)
-        {
-            DisplayError("There is a problem with:\nRSP_LW_DMEM");
-            return;
-        }
-        *Value = *(uint8_t *)(RSPInfo.DMEM + ((Addr + 0) ^ 3)) << 24;
-        *Value += *(uint8_t *)(RSPInfo.DMEM + ((Addr + 1) ^ 3)) << 16;
-        *Value += *(uint8_t *)(RSPInfo.DMEM + ((Addr + 2) ^ 3)) << 8;
-        *Value += *(uint8_t *)(RSPInfo.DMEM + ((Addr + 3) ^ 3)) << 0;
+        *Value = *(uint8_t *)(RSPInfo.DMEM + (((Addr + 0) & 0xFFF) ^ 3)) << 24;
+        *Value += *(uint8_t *)(RSPInfo.DMEM + (((Addr + 1) & 0xFFF) ^ 3)) << 16;
+        *Value += *(uint8_t *)(RSPInfo.DMEM + (((Addr + 2) & 0xFFF) ^ 3)) << 8;
+        *Value += *(uint8_t *)(RSPInfo.DMEM + (((Addr + 3) & 0xFFF) ^ 3)) << 0;
         return;
     }
     *Value = *(uint32_t *)(RSPInfo.DMEM + (Addr & 0xFFF));
