@@ -25,6 +25,8 @@ private:
     void DecodeLC2Name(void);
     void DecodeSC2Name(void);
 
+    static const char * ElementSpecifier(uint32_t Element);
+
     uint32_t m_Address;
     RSPOpcode m_Instruction;
     char m_Name[40];

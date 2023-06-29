@@ -104,24 +104,6 @@ extern char * GPR_Strings[32];
                                    : (Reg) == 15  ? "DP TMEM load counter"   \
                                                   : "Unknown Register"
 
-#define ElementSpecifier(Elem)               \
-    (Elem) == 0 ? "" : (Elem) == 1 ? ""      \
-                   : (Elem) == 2   ? " [0q]" \
-                   : (Elem) == 3   ? " [1q]" \
-                   : (Elem) == 4   ? " [0h]" \
-                   : (Elem) == 5   ? " [1h]" \
-                   : (Elem) == 6   ? " [2h]" \
-                   : (Elem) == 7   ? " [3h]" \
-                   : (Elem) == 8   ? " [0]"  \
-                   : (Elem) == 9   ? " [1]"  \
-                   : (Elem) == 10  ? " [2]"  \
-                   : (Elem) == 11  ? " [3]"  \
-                   : (Elem) == 12  ? " [4]"  \
-                   : (Elem) == 13  ? " [5]"  \
-                   : (Elem) == 14  ? " [6]"  \
-                   : (Elem) == 15  ? " [7]"  \
-                                   : "Unknown Element"
-
 void Enter_RSP_Register_Window(void);
 void InitilizeRSPRegisters(void);
 void UpdateRSPRegistersScreen(void);

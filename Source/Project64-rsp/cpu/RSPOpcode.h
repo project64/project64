@@ -49,6 +49,22 @@ union RSPOpcode
         unsigned : 5;
         unsigned : 6;
     };
+
+    struct
+    {
+        unsigned  : 6;
+        unsigned vd : 5;
+        unsigned vs : 5;
+        unsigned vt : 5;
+        unsigned e : 4;
+        unsigned : 7;
+    };
+    struct
+    {
+        unsigned : 11;
+        unsigned de : 5;
+        unsigned : 16;
+    };
 };
 
 #pragma warning(pop)
