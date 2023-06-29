@@ -1,7 +1,7 @@
 #pragma once
 #include <Project64-plugin-spec/Rsp.h>
 
-#include "Types.h"
+#include "RspTypes.h"
 #include <stdint.h>
 
 // Profiling

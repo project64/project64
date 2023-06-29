@@ -6,7 +6,7 @@
 #include "RSP Command.h"
 #include "RSP Registers.h"
 #include "Rsp.h"
-#include "Types.h"
+#include "RspTypes.h"
 #include "breakpoint.h"
 #include "memory.h"
 #include "cpu/RSPOpcode.h"

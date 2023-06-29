@@ -1,4 +1,4 @@
-#include "Types.h"
+#include "RspTypes.h"
 
 #define SP_STATUS_HALT 0x001       // Bit  0: Halt
 #define SP_STATUS_BROKE 0x002      // Bit  1: Broke

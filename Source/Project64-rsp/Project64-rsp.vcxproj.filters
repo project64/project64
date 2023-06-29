@@ -66,9 +66,6 @@
     <ClInclude Include="Rsp.h">
       <Filter>Header Files\RSP Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Types.h">
-      <Filter>Header Files\RSP Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="X86.h">
       <Filter>Header Files\RSP Header Files</Filter>
     </ClInclude>
@@ -80,6 +77,9 @@
     </ClInclude>
     <ClInclude Include="cpu\RSPOpcode.h">
       <Filter>Header Files\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="RspTypes.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

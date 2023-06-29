@@ -1,7 +1,7 @@
 #include <windows.h>
 
 #include "Rsp.h"
-#include "Types.h"
+#include "RspTypes.h"
 #include <commctrl.h>
 #include <stdio.h>
 

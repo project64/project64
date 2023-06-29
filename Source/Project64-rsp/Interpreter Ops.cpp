@@ -3,7 +3,7 @@
 #include "RSP Command.h"
 #include "RSP Registers.h"
 #include "Rsp.h"
-#include "Types.h"
+#include "RspTypes.h"
 #include "dma.h"
 #include "log.h"
 #include "memory.h"

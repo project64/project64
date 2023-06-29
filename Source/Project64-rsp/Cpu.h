@@ -1,5 +1,5 @@
 #include "cpu\RSPOpcode.h"
-#include "Types.h"
+#include "RspTypes.h"
 #include <Windows.h>
 
 extern UDWORD EleSpec[32], Indx[32];

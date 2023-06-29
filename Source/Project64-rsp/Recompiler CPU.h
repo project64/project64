@@ -1,5 +1,5 @@
 #include "cpu/RSPOpcode.h"
-#include "Types.h"
+#include "RspTypes.h"
 
 extern uint32_t CompilePC, NextInstruction, JumpTableSize;
 extern Boolean ChangedPC;

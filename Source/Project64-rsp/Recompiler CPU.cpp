@@ -11,7 +11,7 @@
 #include "Recompiler CPU.h"
 #include "Recompiler Ops.h"
 #include "Rsp.h"
-#include "Types.h"
+#include "RspTypes.h"
 #include "log.h"
 #include "memory.h"
 #include "cpu/RSPOpcode.h"
