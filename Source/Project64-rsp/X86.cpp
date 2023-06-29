@@ -35,7 +35,7 @@ char * x86_HalfStrings[8] = {
     "ax", "bx", "cx", "dx",
     "si", "di", "bp", "sp"};
 
-extern Boolean ConditionalMove;
+extern bool ConditionalMove;
 
 #define x86Byte_Name(Reg) (x86_ByteStrings[(Reg)])
 #define x86Half_Name(Reg) (x86_HalfStrings[(Reg)])
@@ -515,7 +515,7 @@ void Call_Indirect(void * FunctAddress, char * FunctName)
 
 void CondMoveEqual(int Destination, int Source)
 {
-    if (ConditionalMove == FALSE)
+    if (ConditionalMove == false)
     {
         BYTE * Jump;
         CPU_Message("   [*]cmove %s, %s", x86_Name(Destination), x86_Name(Source));
@@ -563,7 +563,7 @@ void CondMoveEqual(int Destination, int Source)
 
 void CondMoveNotEqual(int Destination, int Source)
 {
-    if (ConditionalMove == FALSE)
+    if (ConditionalMove == false)
     {
         BYTE * Jump;
         CPU_Message("   [*]cmovne %s, %s", x86_Name(Destination), x86_Name(Source));
@@ -611,7 +611,7 @@ void CondMoveNotEqual(int Destination, int Source)
 
 void CondMoveGreater(int Destination, int Source)
 {
-    if (ConditionalMove == FALSE)
+    if (ConditionalMove == false)
     {
         BYTE * Jump;
         CPU_Message("    [*]cmovg %s, %s", x86_Name(Destination), x86_Name(Source));
@@ -659,7 +659,7 @@ void CondMoveGreater(int Destination, int Source)
 
 void CondMoveGreaterEqual(int Destination, int Source)
 {
-    if (ConditionalMove == FALSE)
+    if (ConditionalMove == false)
     {
         BYTE * Jump;
         CPU_Message("   [*]cmovge %s, %s", x86_Name(Destination), x86_Name(Source));
@@ -707,7 +707,7 @@ void CondMoveGreaterEqual(int Destination, int Source)
 
 void CondMoveLess(int Destination, int Source)
 {
-    if (ConditionalMove == FALSE)
+    if (ConditionalMove == false)
     {
         BYTE * Jump;
         CPU_Message("   [*]cmovl %s, %s", x86_Name(Destination), x86_Name(Source));
@@ -755,7 +755,7 @@ void CondMoveLess(int Destination, int Source)
 
 void CondMoveLessEqual(int Destination, int Source)
 {
-    if (ConditionalMove == FALSE)
+    if (ConditionalMove == false)
     {
         BYTE * Jump;
         CPU_Message("   [*]cmovle %s, %s", x86_Name(Destination), x86_Name(Source));

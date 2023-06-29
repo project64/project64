@@ -47,7 +47,7 @@ RSPCOMMANDLINE RSPCommandLine[30];
 HWND RSPCommandshWnd, hList, hAddress, hFunctionlist, hGoButton, hBreakButton,
     hStepButton, hSkipButton, hBPButton, hR4300iRegisters, hR4300iDebugger, hRSPRegisters,
     hMemory, hScrlBar;
-Boolean InRSPCommandsWindow;
+bool InRSPCommandsWindow;
 char CommandName[100];
 DWORD Stepping_Commands, WaitingForStep;
 
@@ -57,10 +57,10 @@ void Create_RSP_Commands_Window(int Child)
 
     if (Child)
     {
-        InRSPCommandsWindow = TRUE;
+        InRSPCommandsWindow = true;
         DialogBoxA((HINSTANCE)hinstDLL, "RSPCOMMAND", NULL, (DLGPROC)RSP_Commands_Proc);
 
-        InRSPCommandsWindow = FALSE;
+        InRSPCommandsWindow = false;
         memset(RSPCommandLine, 0, sizeof(RSPCommandLine));
         SetRSPCommandToRunning();
     }
@@ -68,9 +68,9 @@ void Create_RSP_Commands_Window(int Child)
     {
         if (!InRSPCommandsWindow)
         {
-            Stepping_Commands = TRUE;
+            Stepping_Commands = true;
             CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Create_RSP_Commands_Window,
-                         (LPVOID)TRUE, 0, &ThreadID);
+                         (LPVOID)true, 0, &ThreadID);
         }
         else
         {
@@ -91,16 +91,16 @@ void Disable_RSP_Commands_Window(void)
     {
         return;
     }
-    EnableWindow(hList, FALSE);
-    EnableWindow(hAddress, FALSE);
-    EnableWindow(hScrlBar, FALSE);
-    EnableWindow(hGoButton, FALSE);
-    EnableWindow(hStepButton, FALSE);
-    EnableWindow(hSkipButton, FALSE);
-    EnableWindow(hR4300iRegisters, FALSE);
-    EnableWindow(hRSPRegisters, FALSE);
-    EnableWindow(hR4300iDebugger, FALSE);
-    EnableWindow(hMemory, FALSE);
+    EnableWindow(hList, false);
+    EnableWindow(hAddress, false);
+    EnableWindow(hScrlBar, false);
+    EnableWindow(hGoButton, false);
+    EnableWindow(hStepButton, false);
+    EnableWindow(hSkipButton, false);
+    EnableWindow(hR4300iRegisters, false);
+    EnableWindow(hRSPRegisters, false);
+    EnableWindow(hR4300iDebugger, false);
+    EnableWindow(hMemory, false);
 
     si.cbSize = sizeof(si);
     si.fMask = SIF_RANGE | SIF_POS | SIF_PAGE;
@@ -108,14 +108,14 @@ void Disable_RSP_Commands_Window(void)
     si.nMax = 0;
     si.nPos = 1;
     si.nPage = 1;
-    SetScrollInfo(hScrlBar, SB_CTL, &si, TRUE);
+    SetScrollInfo(hScrlBar, SB_CTL, &si, true);
 }
 
 int DisplayRSPCommand(DWORD location, int InsertPos)
 {
     uint32_t OpCode;
     DWORD LinesUsed = 1, status;
-    Boolean Redraw = FALSE;
+    bool Redraw = false;
 
     RSP_LW_IMEM(location, &OpCode);
 
@@ -130,15 +130,15 @@ int DisplayRSPCommand(DWORD location, int InsertPos)
     }
     if (RSPCommandLine[InsertPos].opcode != OpCode)
     {
-        Redraw = TRUE;
+        Redraw = true;
     }
     if (RSPCommandLine[InsertPos].Location != location)
     {
-        Redraw = TRUE;
+        Redraw = true;
     }
     if (RSPCommandLine[InsertPos].status != status)
     {
-        Redraw = TRUE;
+        Redraw = true;
     }
     if (Redraw)
     {
@@ -320,19 +320,19 @@ void DrawRSPCommand(LPARAM lParam)
 
     if (*PrgCount == RSPCommandLine[ditem->itemID].Location)
     {
-        ResetColor = TRUE;
+        ResetColor = true;
         hBrush = (HBRUSH)(COLOR_HIGHLIGHT + 1);
         oldColor = SetTextColor(ditem->hDC, RGB(255, 255, 255));
     }
     else
     {
-        ResetColor = FALSE;
+        ResetColor = false;
         hBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
     }
 
     if (CheckForRSPBPoint(RSPCommandLine[ditem->itemID].Location))
     {
-        ResetColor = TRUE;
+        ResetColor = true;
         if (*PrgCount == RSPCommandLine[ditem->itemID].Location)
         {
             SetTextColor(ditem->hDC, RGB(255, 0, 0));
@@ -381,7 +381,7 @@ void DrawRSPCommand(LPARAM lParam)
             DT_SINGLELINE | DT_VCENTER);
     }
 
-    if (ResetColor == TRUE)
+    if (ResetColor == true)
     {
         SetTextColor(ditem->hDC, oldColor);
     }
@@ -395,18 +395,18 @@ void Enable_RSP_Commands_Window(void)
     {
         return;
     }
-    EnableWindow(hList, TRUE);
-    EnableWindow(hAddress, TRUE);
-    EnableWindow(hScrlBar, TRUE);
-    EnableWindow(hGoButton, TRUE);
-    EnableWindow(hStepButton, TRUE);
-    EnableWindow(hSkipButton, FALSE);
-    EnableWindow(hR4300iRegisters, TRUE);
-    EnableWindow(hRSPRegisters, TRUE);
-    EnableWindow(hR4300iDebugger, TRUE);
-    EnableWindow(hMemory, TRUE);
-    SendMessage(hBPButton, BM_SETSTYLE, BS_PUSHBUTTON, TRUE);
-    SendMessage(hStepButton, BM_SETSTYLE, BS_DEFPUSHBUTTON, TRUE);
+    EnableWindow(hList, true);
+    EnableWindow(hAddress, true);
+    EnableWindow(hScrlBar, true);
+    EnableWindow(hGoButton, true);
+    EnableWindow(hStepButton, true);
+    EnableWindow(hSkipButton, false);
+    EnableWindow(hR4300iRegisters, true);
+    EnableWindow(hRSPRegisters, true);
+    EnableWindow(hR4300iDebugger, true);
+    EnableWindow(hMemory, true);
+    SendMessage(hBPButton, BM_SETSTYLE, BS_PUSHBUTTON, true);
+    SendMessage(hStepButton, BM_SETSTYLE, BS_DEFPUSHBUTTON, true);
     SendMessage(RSPCommandshWnd, DM_SETDEFID, IDC_STEP_BUTTON, 0);
 
     if (Stepping_Commands)
@@ -417,7 +417,7 @@ void Enable_RSP_Commands_Window(void)
         si.nMax = (0x1000 >> 2) - 1;
         si.nPos = (*PrgCount >> 2);
         si.nPage = 30;
-        SetScrollInfo(hScrlBar, SB_CTL, &si, TRUE);
+        SetScrollInfo(hScrlBar, SB_CTL, &si, true);
 
         SetRSPCommandViewto(*PrgCount);
         SetForegroundWindow(RSPCommandshWnd);
@@ -426,7 +426,7 @@ void Enable_RSP_Commands_Window(void)
 
 void Enter_RSP_Commands_Window(void)
 {
-    Create_RSP_Commands_Window(FALSE);
+    Create_RSP_Commands_Window(false);
 }
 
 void Paint_RSP_Commands(HWND hDlg)
@@ -501,7 +501,7 @@ void RefreshRSPCommands(void)
     char AsciiAddress[20];
     int count;
 
-    if (InRSPCommandsWindow == FALSE)
+    if (InRSPCommandsWindow == false)
     {
         return;
     }
@@ -540,7 +540,7 @@ LRESULT CALLBACK RSP_Commands_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM l
     case WM_PAINT:
         Paint_RSP_Commands(hDlg);
         RedrawWindow(hScrlBar, NULL, NULL, RDW_INVALIDATE | RDW_ERASE);
-        return TRUE;
+        return true;
     case WM_COMMAND:
         switch (LOWORD(wParam))
         {
@@ -560,7 +560,7 @@ LRESULT CALLBACK RSP_Commands_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM l
                     }
                     else
                     {
-                        AddRSP_BPoint(Location, FALSE);
+                        AddRSP_BPoint(Location, false);
                     }
                     RefreshRSPCommands();
                 }
@@ -579,11 +579,11 @@ LRESULT CALLBACK RSP_Commands_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM l
             SetRSPCommandToStepping();
             break;
         case IDC_STEP_BUTTON:
-            WaitingForStep = FALSE;
+            WaitingForStep = false;
             break;
         /*case IDC_SKIP_BUTTON:
-			SkipNextRSPOpCode = TRUE;
-			WaitingFor_RSPStep   = FALSE;
+			SkipNextRSPOpCode = true;
+			WaitingFor_RSPStep   = false;
 			break;*/
         case IDC_BP_BUTTON:
             if (DebugInfo.Enter_BPoint_Window != NULL)
@@ -635,7 +635,7 @@ LRESULT CALLBACK RSP_Commands_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM l
                 si.cbSize = sizeof(si);
                 si.fMask = SIF_POS;
                 si.nPos = (short int)HIWORD(wParam);
-                SetScrollInfo(hScrlBar, SB_CTL, &si, TRUE);
+                SetScrollInfo(hScrlBar, SB_CTL, &si, true);
                 break;
             case SB_LINEDOWN:
                 if (location < 0xF88)
@@ -645,7 +645,7 @@ LRESULT CALLBACK RSP_Commands_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM l
                     si.cbSize = sizeof(si);
                     si.fMask = SIF_POS;
                     si.nPos = ((location + 0x4) >> 2);
-                    SetScrollInfo(hScrlBar, SB_CTL, &si, TRUE);
+                    SetScrollInfo(hScrlBar, SB_CTL, &si, true);
                 }
                 else
                 {
@@ -654,7 +654,7 @@ LRESULT CALLBACK RSP_Commands_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM l
                     si.cbSize = sizeof(si);
                     si.fMask = SIF_POS;
                     si.nPos = (0xFFC >> 2);
-                    SetScrollInfo(hScrlBar, SB_CTL, &si, TRUE);
+                    SetScrollInfo(hScrlBar, SB_CTL, &si, true);
                 }
                 break;
             case SB_LINEUP:
@@ -665,7 +665,7 @@ LRESULT CALLBACK RSP_Commands_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM l
                     si.cbSize = sizeof(si);
                     si.fMask = SIF_POS;
                     si.nPos = ((location - 0x4) >> 2);
-                    SetScrollInfo(hScrlBar, SB_CTL, &si, TRUE);
+                    SetScrollInfo(hScrlBar, SB_CTL, &si, true);
                 }
                 else
                 {
@@ -674,7 +674,7 @@ LRESULT CALLBACK RSP_Commands_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM l
                     si.cbSize = sizeof(si);
                     si.fMask = SIF_POS;
                     si.nPos = 0;
-                    SetScrollInfo(hScrlBar, SB_CTL, &si, TRUE);
+                    SetScrollInfo(hScrlBar, SB_CTL, &si, true);
                 }
                 break;
             case SB_PAGEDOWN:
@@ -685,7 +685,7 @@ LRESULT CALLBACK RSP_Commands_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM l
                     si.cbSize = sizeof(si);
                     si.fMask = SIF_POS;
                     si.nPos = ((location + 0x74) >> 2);
-                    SetScrollInfo(hScrlBar, SB_CTL, &si, TRUE);
+                    SetScrollInfo(hScrlBar, SB_CTL, &si, true);
                 }
                 else
                 {
@@ -694,7 +694,7 @@ LRESULT CALLBACK RSP_Commands_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM l
                     si.cbSize = sizeof(si);
                     si.fMask = SIF_POS;
                     si.nPos = (0xF8F >> 2);
-                    SetScrollInfo(hScrlBar, SB_CTL, &si, TRUE);
+                    SetScrollInfo(hScrlBar, SB_CTL, &si, true);
                 }
                 break;
             case SB_PAGEUP:
@@ -705,7 +705,7 @@ LRESULT CALLBACK RSP_Commands_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM l
                     si.cbSize = sizeof(si);
                     si.fMask = SIF_POS;
                     si.nPos = ((location - 0x74) >> 2);
-                    SetScrollInfo(hScrlBar, SB_CTL, &si, TRUE);
+                    SetScrollInfo(hScrlBar, SB_CTL, &si, true);
                 }
                 else
                 {
@@ -714,16 +714,16 @@ LRESULT CALLBACK RSP_Commands_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM l
                     si.cbSize = sizeof(si);
                     si.fMask = SIF_POS;
                     si.nPos = 0;
-                    SetScrollInfo(hScrlBar, SB_CTL, &si, TRUE);
+                    SetScrollInfo(hScrlBar, SB_CTL, &si, true);
                 }
                 break;
             }
         }
         break;
     default:
-        return FALSE;
+        return false;
     }
-    return TRUE;
+    return true;
 }
 
 void RSP_Commands_Setup(HWND hDlg)
@@ -878,36 +878,36 @@ void RSP_Commands_Setup(HWND hDlg)
 
 void SetRSPCommandToRunning(void)
 {
-    Stepping_Commands = FALSE;
-    if (InRSPCommandsWindow == FALSE)
+    Stepping_Commands = false;
+    if (InRSPCommandsWindow == false)
     {
         return;
     }
-    EnableWindow(hGoButton, FALSE);
-    EnableWindow(hBreakButton, TRUE);
-    EnableWindow(hStepButton, FALSE);
-    EnableWindow(hSkipButton, FALSE);
+    EnableWindow(hGoButton, false);
+    EnableWindow(hBreakButton, true);
+    EnableWindow(hStepButton, false);
+    EnableWindow(hSkipButton, false);
     SendMessage(RSPCommandshWnd, DM_SETDEFID, IDC_BREAK_BUTTON, 0);
-    SendMessage(hGoButton, BM_SETSTYLE, BS_PUSHBUTTON, TRUE);
-    SendMessage(hBreakButton, BM_SETSTYLE, BS_DEFPUSHBUTTON, TRUE);
+    SendMessage(hGoButton, BM_SETSTYLE, BS_PUSHBUTTON, true);
+    SendMessage(hBreakButton, BM_SETSTYLE, BS_DEFPUSHBUTTON, true);
     SetFocus(hBreakButton);
 }
 
 void SetRSPCommandToStepping(void)
 {
-    if (InRSPCommandsWindow == FALSE)
+    if (InRSPCommandsWindow == false)
     {
         return;
     }
-    EnableWindow(hGoButton, TRUE);
-    EnableWindow(hBreakButton, FALSE);
-    EnableWindow(hStepButton, TRUE);
-    EnableWindow(hSkipButton, TRUE);
-    SendMessage(hBreakButton, BM_SETSTYLE, BS_PUSHBUTTON, TRUE);
-    SendMessage(hStepButton, BM_SETSTYLE, BS_DEFPUSHBUTTON, TRUE);
+    EnableWindow(hGoButton, true);
+    EnableWindow(hBreakButton, false);
+    EnableWindow(hStepButton, true);
+    EnableWindow(hSkipButton, true);
+    SendMessage(hBreakButton, BM_SETSTYLE, BS_PUSHBUTTON, true);
+    SendMessage(hStepButton, BM_SETSTYLE, BS_DEFPUSHBUTTON, true);
     SendMessage(RSPCommandshWnd, DM_SETDEFID, IDC_STEP_BUTTON, 0);
     SetFocus(hStepButton);
-    Stepping_Commands = TRUE;
+    Stepping_Commands = true;
 }
 
 void SetRSPCommandViewto(UINT NewLocation)
@@ -915,7 +915,7 @@ void SetRSPCommandViewto(UINT NewLocation)
     unsigned int location;
     char Value[20];
 
-    if (InRSPCommandsWindow == FALSE)
+    if (InRSPCommandsWindow == false)
     {
         return;
     }

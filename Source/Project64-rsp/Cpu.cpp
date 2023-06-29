@@ -35,7 +35,7 @@ DWORD Mfc0Count, SemaphoreExit = 0;
 
 void SetCPU(DWORD core)
 {
-    WaitForSingleObjectEx(hMutex, 1000 * 100, FALSE);
+    WaitForSingleObjectEx(hMutex, 1000 * 100, false);
     CPUCore = core;
     switch (core)
     {
@@ -169,7 +169,7 @@ DWORD RunRecompilerCPU(DWORD Cycles);
 
 uint32_t DoRspCycles(uint32_t Cycles)
 {
-    extern Boolean AudioHle, GraphicsHle;
+    extern bool AudioHle, GraphicsHle;
     DWORD TaskType = *(DWORD *)(RSPInfo.DMEM + 0xFC0);
 
     /*	if (*RSPInfo.SP_STATUS_REG & SP_STATUS_SIG0)
@@ -215,7 +215,7 @@ uint32_t DoRspCycles(uint32_t Cycles)
         RSPInfo.ShowCFB();
     }
 
-    Compiler.bAudioUcode = (TaskType == 2) ? TRUE : FALSE;
+    Compiler.bAudioUcode = (TaskType == 2) ? true : false;
 
     /*
 	*RSPInfo.SP_STATUS_REG |= (0x0203 );
@@ -232,7 +232,7 @@ uint32_t DoRspCycles(uint32_t Cycles)
         StartTimer((DWORD)Timer_RSP_Running);
     }
 
-    WaitForSingleObjectEx(hMutex, 1000 * 100, FALSE);
+    WaitForSingleObjectEx(hMutex, 1000 * 100, false);
 
     if (BreakOnStart)
     {

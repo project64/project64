@@ -34,7 +34,7 @@ LRESULT CALLBACK RSP_Registers_Proc(HWND, UINT, WPARAM, LPARAM);
 
 HWND RSP_Registers_hDlg, hTab, hStatic, hGPR[32], hCP0[16], hHIDDEN[12],
     hVECT1[16], hVECT2[16];
-int InRSPRegisterWindow = FALSE;
+int InRSPRegisterWindow = false;
 WNDPROC RefreshProc;
 
 // RSP registers
@@ -53,16 +53,16 @@ void Create_RSP_Register_Window(int Child)
     DWORD ThreadID;
     if (Child)
     {
-        InRSPRegisterWindow = TRUE;
+        InRSPRegisterWindow = true;
         DialogBoxA((HINSTANCE)hinstDLL, "RSPREGISTERS", NULL, (DLGPROC)RSP_Registers_Proc);
-        InRSPRegisterWindow = FALSE;
+        InRSPRegisterWindow = false;
     }
     else
     {
         if (!InRSPRegisterWindow)
         {
             CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Create_RSP_Register_Window,
-                         (LPVOID)TRUE, 0, &ThreadID);
+                         (LPVOID)true, 0, &ThreadID);
         }
         else
         {
@@ -77,7 +77,7 @@ void Create_RSP_Register_Window(int Child)
 
 void Enter_RSP_Register_Window(void)
 {
-    Create_RSP_Register_Window(FALSE);
+    Create_RSP_Register_Window(false);
 }
 
 void HideRSP_RegisterPanel(int Panel)
@@ -89,31 +89,31 @@ void HideRSP_RegisterPanel(int Panel)
     case GeneralPurpose:
         for (count = 0; count < 32; count++)
         {
-            ShowWindow(hGPR[count], FALSE);
+            ShowWindow(hGPR[count], false);
         }
         break;
     case ControlProcessor0:
         for (count = 0; count < 16; count++)
         {
-            ShowWindow(hCP0[count], FALSE);
+            ShowWindow(hCP0[count], false);
         }
         break;
     case HiddenRegisters:
         for (count = 0; count < 12; count++)
         {
-            ShowWindow(hHIDDEN[count], FALSE);
+            ShowWindow(hHIDDEN[count], false);
         }
         break;
     case Vector1:
         for (count = 0; count < 16; count++)
         {
-            ShowWindow(hVECT1[count], FALSE);
+            ShowWindow(hVECT1[count], false);
         }
         break;
     case Vector2:
         for (count = 0; count < 16; count++)
         {
-            ShowWindow(hVECT2[count], FALSE);
+            ShowWindow(hVECT2[count], false);
         }
         break;
     }
@@ -413,18 +413,18 @@ LRESULT CALLBACK RSP_Registers_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
         break;
     case WM_SIZE:
         GetClientRect(hDlg, &rcDisp);
-        TabCtrl_AdjustRect(hTab, FALSE, &rcDisp);
+        TabCtrl_AdjustRect(hTab, false, &rcDisp);
         break;
     case WM_NOTIFY:
         switch (((NMHDR *)lParam)->code)
         {
         case TCN_SELCHANGE:
-            InvalidateRect(hTab, &rcDisp, TRUE);
+            InvalidateRect(hTab, &rcDisp, true);
             HideRSP_RegisterPanel(CurrentPanel);
             item.mask = TCIF_PARAM;
             TabCtrl_GetItem(hTab, TabCtrl_GetCurSel(hTab), &item);
             CurrentPanel = (int)item.lParam;
-            InvalidateRect(hStatic, NULL, FALSE);
+            InvalidateRect(hStatic, NULL, false);
             UpdateRSPRegistersScreen();
             ShowRSP_RegisterPanel(CurrentPanel);
             break;
@@ -439,9 +439,9 @@ LRESULT CALLBACK RSP_Registers_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
             break;
         }
     default:
-        return FALSE;
+        return false;
     }
-    return TRUE;
+    return true;
 }
 
 void SetupRSP_HiddenPanel(HWND hDlg)
@@ -603,31 +603,31 @@ void ShowRSP_RegisterPanel(int Panel)
     case GeneralPurpose:
         for (count = 0; count < 32; count++)
         {
-            ShowWindow(hGPR[count], TRUE);
+            ShowWindow(hGPR[count], true);
         }
         break;
     case ControlProcessor0:
         for (count = 0; count < 16; count++)
         {
-            ShowWindow(hCP0[count], TRUE);
+            ShowWindow(hCP0[count], true);
         }
         break;
     case HiddenRegisters:
         for (count = 0; count < 12; count++)
         {
-            ShowWindow(hHIDDEN[count], TRUE);
+            ShowWindow(hHIDDEN[count], true);
         }
         break;
     case Vector1:
         for (count = 0; count < 16; count++)
         {
-            ShowWindow(hVECT1[count], TRUE);
+            ShowWindow(hVECT1[count], true);
         }
         break;
     case Vector2:
         for (count = 0; count < 16; count++)
         {
-            ShowWindow(hVECT2[count], TRUE);
+            ShowWindow(hVECT2[count], true);
         }
         break;
     }

@@ -9,4 +9,4 @@ void SetRSPCommandToStepping(void);
 void SetRSPCommandViewto(unsigned int NewLocation);
 
 extern DWORD Stepping_Commands, WaitingForStep;
-extern Boolean InRSPCommandsWindow;
+extern bool InRSPCommandsWindow;

@@ -27,7 +27,7 @@
 
 uint32_t CompilePC, JumpTableSize, BlockID = 0;
 DWORD dwBuffer = MainBuffer;
-Boolean ChangedPC;
+bool ChangedPC;
 
 RSP_BLOCK CurrentBlock;
 RSP_CODE RspCode;
@@ -397,7 +397,7 @@ void BuildRecompilerCPU(void)
     RSP_Sc2[31] = Compile_UnknownOpcode;
 
     BlockID = 0;
-    ChangedPC = FALSE;
+    ChangedPC = false;
 #ifdef Log_x86Code
     Start_x86_Log();
 #endif
@@ -419,7 +419,7 @@ void ReOrderInstructions(DWORD StartPC, DWORD EndPC)
 
     PreviousOp.Value = *(DWORD *)(RSPInfo.IMEM + StartPC);
 
-    if (TRUE == IsOpcodeBranch(StartPC, PreviousOp))
+    if (IsOpcodeBranch(StartPC, PreviousOp))
     {
         // The sub block ends here anyway
         return;
@@ -464,7 +464,7 @@ void ReOrderInstructions(DWORD StartPC, DWORD EndPC)
             }
             CurrentOp.Value = *(DWORD *)(RSPInfo.IMEM + CurrentPC);
 
-            if (TRUE == CompareInstructions(CurrentPC, &PreviousOp, &CurrentOp))
+            if (CompareInstructions(CurrentPC, &PreviousOp, &CurrentOp))
             {
                 // Move current opcode up
                 *(DWORD *)(RSPInfo.IMEM + CurrentPC - 4) = CurrentOp.Value;
@@ -549,7 +549,7 @@ void DetectGPRConstants(RSP_CODE * code)
 {
     DWORD Count, Constant = 0;
 
-    memset(&code->bIsRegConst, 0, sizeof(Boolean) * 0x20);
+    memset(&code->bIsRegConst, 0, sizeof(bool) * 0x20);
     memset(&code->MipsRegConst, 0, sizeof(DWORD) * 0x20);
 
     if (!Compiler.bGPRConstants)
@@ -559,16 +559,16 @@ void DetectGPRConstants(RSP_CODE * code)
     CPU_Message("***** Detecting constants *****");
 
     // R0 is constant zero, R31 or RA is not constant
-    code->bIsRegConst[0] = TRUE;
+    code->bIsRegConst[0] = true;
     code->MipsRegConst[0] = 0;
 
     // Do your global search for them
     for (Count = 1; Count < 31; Count++)
     {
-        if (IsRegisterConstant(Count, &Constant) == TRUE)
+        if (IsRegisterConstant(Count, &Constant))
         {
             CPU_Message("Global: %s is a constant of: %08X", GPR_Name(Count), Constant);
-            code->bIsRegConst[Count] = TRUE;
+            code->bIsRegConst[Count] = true;
             code->MipsRegConst[Count] = Constant;
         }
     }
@@ -702,7 +702,7 @@ void BuildBranchLabels(void)
     {
         RspOp.Value = *(DWORD *)(RSPInfo.IMEM + i);
 
-        if (TRUE == IsOpcodeBranch(i, RspOp))
+        if (IsOpcodeBranch(i, RspOp))
         {
             if (RspCode.LabelCount >= (sizeof(RspCode.BranchLabels) / sizeof(RspCode.BranchLabels[0])) - 1)
             {
@@ -748,23 +748,23 @@ void BuildBranchLabels(void)
 #endif
 }
 
-Boolean IsJumpLabel(DWORD PC)
+bool IsJumpLabel(DWORD PC)
 {
     DWORD Count;
 
     if (!RspCode.LabelCount)
     {
-        return FALSE;
+        return false;
     }
 
     for (Count = 0; Count < RspCode.LabelCount; Count++)
     {
         if (PC == RspCode.BranchLabels[Count])
         {
-            return TRUE;
+            return true;
         }
     }
-    return FALSE;
+    return false;
 }
 
 void CompilerLinkBlocks(void)
@@ -810,7 +810,7 @@ void CompilerRSPBlock(void)
     CPU_Message("Start of block: %X", CurrentBlock.StartPC);
     CPU_Message("====== Recompiled code ======");
 
-    if (Compiler.bReOrdering == TRUE)
+    if (Compiler.bReOrdering)
     {
         memcpy(IMEM_SAVE, RSPInfo.IMEM, 0x1000);
         ReOrderSubBlock(&CurrentBlock);
@@ -845,16 +845,16 @@ void CompilerRSPBlock(void)
             }
         }
 
-        if (Compiler.bSections == TRUE)
+        if (Compiler.bSections)
         {
-            if (TRUE == RSP_DoSections())
+            if (RSP_DoSections())
             {
                 continue;
             }
         }
 
 #ifdef X86_RECOMP_VERBOSE
-        if (FALSE == IsOpcodeNop(CompilePC))
+        if (!IsOpcodeNop(CompilePC))
         {
             CPU_Message("X86 Address: %08X", RecompPos);
         }
@@ -930,7 +930,7 @@ void CompilerRSPBlock(void)
     } while (NextInstruction != FINISH_BLOCK && (CompilePC < 0x1000 || NextInstruction == DELAY_SLOT));
     CPU_Message("===== End of recompiled code =====");
 
-    if (Compiler.bReOrdering == TRUE)
+    if (Compiler.bReOrdering)
     {
         memcpy(RSPInfo.IMEM, IMEM_SAVE, 0x1000);
     }
@@ -941,7 +941,7 @@ DWORD RunRecompilerCPU(DWORD Cycles)
 {
     BYTE * Block;
 
-    RSP_Running = TRUE;
+    RSP_Running = true;
     SetJumpTable(JumpTableSize);
 
     while (RSP_Running)
@@ -1008,11 +1008,11 @@ DWORD RunRecompilerCPU(DWORD Cycles)
         }
         if (RSP_NextInstruction == SINGLE_STEP)
         {
-            RSP_Running = FALSE;
+            RSP_Running = false;
         }
     }
 
-    if (IsMmxEnabled == TRUE)
+    if (IsMmxEnabled)
     {
 #if defined(_M_IX86) && defined(_MSC_VER)
         _asm emms

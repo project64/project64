@@ -22,7 +22,7 @@ int AllocateMemory(void)
         if (RecompCode == NULL)
         {
             DisplayError("Not enough memory for RSP RecompCode!");
-            return FALSE;
+            return false;
         }
     }
 
@@ -32,7 +32,7 @@ int AllocateMemory(void)
         if (RecompCodeSecondary == NULL)
         {
             DisplayError("Not enough memory for RSP RecompCode Secondary!");
-            return FALSE;
+            return false;
         }
     }
 
@@ -42,14 +42,14 @@ int AllocateMemory(void)
         if (JumpTables == NULL)
         {
             DisplayError("Not enough memory for jump table!");
-            return FALSE;
+            return false;
         }
     }
 
     JumpTable = (void **)JumpTables;
     RecompPos = RecompCode;
     NoOfMaps = 0;
-    return TRUE;
+    return true;
 }
 
 void FreeMemory(void)

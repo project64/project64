@@ -829,7 +829,7 @@ void RSP_Sections_VMACF(RSPOpcode RspOp, DWORD AccumStyle)
 
 static DWORD Section_000_VMADN; // Yeah I know, but leave it
 
-Boolean Check_Section_000(void)
+bool Check_Section_000(void)
 {
     DWORD i;
     RSPOpcode op0, op1;
@@ -842,7 +842,7 @@ Boolean Check_Section_000(void)
 
     if (!(op0.op == RSP_CP2 && (op0.rs & 0x10) != 0 && op0.funct == RSP_VECTOR_VMUDN))
     {
-        return FALSE;
+        return false;
     }
     Section_000_VMADN = 0;
 
@@ -859,28 +859,28 @@ Boolean Check_Section_000(void)
             Section_000_VMADN++;
         }
 
-        if ((op1.rs & 0xF) >= 2 && (op1.rs & 0xF) <= 7 && IsMmx2Enabled == FALSE)
+        if ((op1.rs & 0xF) >= 2 && (op1.rs & 0xF) <= 7 && IsMmx2Enabled == false)
         {
-            return FALSE;
+            return false;
         }
     }
 
     // We need at least 1 VMADN
     if (Section_000_VMADN == 0)
     {
-        return FALSE;
+        return false;
     }
 
     // TODO: check destination and flushes
-    if (TRUE == WriteToAccum(7, CompilePC + 0x4 + (Section_000_VMADN * 4) - 0x4))
+    if (true == WriteToAccum(7, CompilePC + 0x4 + (Section_000_VMADN * 4) - 0x4))
     {
-        return FALSE;
+        return false;
     }
-    if (IsMmxEnabled == FALSE)
+    if (!IsMmxEnabled)
     {
-        return FALSE;
+        return false;
     }
-    return TRUE;
+    return true;
 }
 
 void Compile_Section_000(void)
@@ -925,7 +925,7 @@ void Compile_Section_000(void)
         RSP_LW_IMEM(CompilePC, &vmadn.Value);
         CompilePC += 4;
         RSP_Sections_VMADN(vmadn, Low16BitAccum);
-        if (WriteToVectorDest(vmadn.sa, CompilePC - 4) == TRUE)
+        if (WriteToVectorDest(vmadn.sa, CompilePC - 4) == true)
         {
             sprintf(Reg, "RSP_Vect[%i].HW[0]", vmadn.sa);
             MmxMoveQwordRegToVariable(x86_MM0, &RSP_Vect[vmadn.sa].HW[0], Reg);
@@ -944,7 +944,7 @@ void Compile_Section_000(void)
 
 static DWORD Section_001_VMACF;
 
-Boolean Check_Section_001(void)
+bool Check_Section_001(void)
 {
     DWORD i;
     RSPOpcode op0, op1;
@@ -957,7 +957,7 @@ Boolean Check_Section_001(void)
 
     if (!(op0.op == RSP_CP2 && (op0.rs & 0x10) != 0 && op0.funct == RSP_VECTOR_VMULF))
     {
-        return FALSE;
+        return false;
     }
     Section_001_VMACF = 0;
 
@@ -974,30 +974,30 @@ Boolean Check_Section_001(void)
             Section_001_VMACF++;
         }
 
-        if ((op1.rs & 0xF) >= 2 && (op1.rs & 0xF) <= 7 && IsMmx2Enabled == FALSE)
+        if ((op1.rs & 0xF) >= 2 && (op1.rs & 0xF) <= 7 && IsMmx2Enabled == false)
         {
-            return FALSE;
+            return false;
         }
     }
 
     // We need at least 1 VMACF
     if (Section_001_VMACF == 0)
     {
-        return FALSE;
+        return false;
     }
 
-    if (IsMmxEnabled == FALSE)
+    if (!IsMmxEnabled)
     {
-        return FALSE;
+        return false;
     }
 
     // Destinations are checked elsewhere, this is fine
-    if (TRUE == WriteToAccum(7, CompilePC + 0x4 + (Section_001_VMACF * 4) - 0x4))
+    if (true == WriteToAccum(7, CompilePC + 0x4 + (Section_001_VMACF * 4) - 0x4))
     {
-        return FALSE;
+        return false;
     }
 
-    return TRUE;
+    return true;
 }
 
 void Compile_Section_001(void)
@@ -1019,7 +1019,7 @@ void Compile_Section_001(void)
 
     RSP_Sections_VMULF(vmulf, Middle16BitAccum);
 
-    if (WriteToVectorDest(vmulf.sa, CompilePC) == TRUE)
+    if (WriteToVectorDest(vmulf.sa, CompilePC) == true)
     {
         sprintf(Reg, "RSP_Vect[%i].HW[0]", vmulf.sa);
         MmxMoveQwordRegToVariable(x86_MM0, &RSP_Vect[vmulf.sa].HW[0], Reg);
@@ -1034,7 +1034,7 @@ void Compile_Section_001(void)
         CompilePC += 4;
 
         RSP_Sections_VMACF(vmacf, Middle16BitAccum);
-        if (WriteToVectorDest(vmacf.sa, CompilePC - 4) == TRUE)
+        if (WriteToVectorDest(vmacf.sa, CompilePC - 4) == true)
         {
             sprintf(Reg, "RSP_Vect[%i].HW[0]", vmacf.sa);
             MmxMoveQwordRegToVariable(x86_MM0, &RSP_Vect[vmacf.sa].HW[0], Reg);
@@ -1046,7 +1046,7 @@ void Compile_Section_001(void)
     MmxEmptyMultimediaState();
 }
 
-Boolean Check_Section_002(void)
+bool Check_Section_002(void)
 {
     DWORD Count;
     RSPOpcode op[0x0C];
@@ -1072,48 +1072,48 @@ Boolean Check_Section_002(void)
 	** 620 VSAW	$v28 [8], $v7, $v28
 	*/
 
-    if (IsMmxEnabled == FALSE)
+    if (!IsMmxEnabled)
     {
-        return FALSE;
+        return false;
     }
 
     if (!(op[0].op == RSP_CP2 && (op[0].rs & 0x10) != 0 && op[0].funct == RSP_VECTOR_VMUDH))
     {
-        return FALSE;
+        return false;
     }
     if ((op[0].rs & 0xF) < 8)
     {
-        return FALSE;
+        return false;
     }
 
     for (Count = 1; Count < 10; Count++)
     {
         if (!(op[Count].op == RSP_CP2 && (op[Count].rs & 0x10) != 0 && op[Count].funct == RSP_VECTOR_VMADH))
         {
-            return FALSE;
+            return false;
         }
         if ((op[Count].rs & 0xF) < 8)
         {
-            return FALSE;
+            return false;
         }
     }
 
-    if (!(op[10].op == RSP_CP2 && (op[10].rs & 0x10) != 0 && op[10].funct == RSP_VECTOR_VSAW)) return FALSE;
-    if (!(op[11].op == RSP_CP2 && (op[11].rs & 0x10) != 0 && op[11].funct == RSP_VECTOR_VSAW)) return FALSE;
+    if (!(op[10].op == RSP_CP2 && (op[10].rs & 0x10) != 0 && op[10].funct == RSP_VECTOR_VSAW)) return false;
+    if (!(op[11].op == RSP_CP2 && (op[11].rs & 0x10) != 0 && op[11].funct == RSP_VECTOR_VSAW)) return false;
 
     if ((op[10].rs & 0xF) != 9)
     {
-        return FALSE;
+        return false;
     }
     if ((op[11].rs & 0xF) != 8)
     {
-        return FALSE;
+        return false;
     }
 
-    if (TRUE == WriteToAccum(7, CompilePC + 0x2C))
-        return FALSE;
+    if (true == WriteToAccum(7, CompilePC + 0x2C))
+        return false;
 
-    return TRUE;
+    return true;
 }
 
 void Compile_Section_002(void)
@@ -1168,7 +1168,7 @@ void Compile_Section_002(void)
     CompilePC += 12 * sizeof(RSPOpcode);
 }
 
-Boolean Check_Section_003(void)
+bool Check_Section_003(void)
 {
     DWORD Count;
     RSPOpcode op[4];
@@ -1186,12 +1186,12 @@ Boolean Check_Section_003(void)
 
     if (op[0].Value == 0x4BF7FDC5 && op[1].Value == 0x4BF6FDCF && op[2].Value == 0x4B92CD8D && op[3].Value == 0x4B1EFDCE)
     {
-        if (TRUE == WriteToAccum(7, CompilePC + 0xc))
-            return FALSE;
+        if (true == WriteToAccum(7, CompilePC + 0xc))
+            return false;
 
-        return TRUE;
+        return true;
     }
-    return FALSE;
+    return false;
 }
 
 static void resampler_hle()
@@ -1249,27 +1249,27 @@ void Compile_Section_003(void)
     CompilePC += 4 * sizeof(RSPOpcode);
 }
 
-Boolean RSP_DoSections(void)
+bool RSP_DoSections(void)
 {
-    if (TRUE == Check_Section_000())
+    if (true == Check_Section_000())
     {
         Compile_Section_000();
-        return TRUE;
+        return true;
     }
-    if (TRUE == Check_Section_001())
+    if (true == Check_Section_001())
     {
         Compile_Section_001();
-        return TRUE;
+        return true;
     }
-    if (TRUE == Check_Section_002())
+    if (true == Check_Section_002())
     {
         Compile_Section_002();
-        return TRUE;
+        return true;
     }
-    if (TRUE == Check_Section_003())
+    if (true == Check_Section_003())
     {
         Compile_Section_003();
-        return TRUE;
+        return true;
     }
-    return FALSE;
+    return false;
 }

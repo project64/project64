@@ -15,7 +15,7 @@ void Add_BPoint(void)
     char Title[10];
 
     GetWindowTextA(hRSPLocation, Title, sizeof(Title));
-    if (!AddRSP_BPoint(AsciiToHex(Title), TRUE))
+    if (!AddRSP_BPoint(AsciiToHex(Title), true))
     {
         SendMessage(hRSPLocation, EM_SETSEL, (WPARAM)0, (LPARAM)-1);
         SetFocus(hRSPLocation);
@@ -29,7 +29,7 @@ int AddRSP_BPoint(DWORD Location, int Confirm)
     if (NoOfBpoints == MaxBPoints)
     {
         DisplayError("Max amount of breakpoints set");
-        return FALSE;
+        return false;
     }
 
     for (count = 0; count < NoOfBpoints; count++)
@@ -37,7 +37,7 @@ int AddRSP_BPoint(DWORD Location, int Confirm)
         if (BPoint[count].Location == Location)
         {
             DisplayError("You already have this breakpoint");
-            return FALSE;
+            return false;
         }
     }
 
@@ -51,7 +51,7 @@ int AddRSP_BPoint(DWORD Location, int Confirm)
         Response = MessageBoxA(BPoint_Win_hDlg, Message, "Breakpoint", MB_YESNO | MB_ICONINFORMATION);
         if (Response == IDNO)
         {
-            return FALSE;
+            return false;
         }
     }
     BPoint[NoOfBpoints].Location = Location;
@@ -60,7 +60,7 @@ int AddRSP_BPoint(DWORD Location, int Confirm)
     {
         DebugInfo.UpdateBreakPoints();
     }
-    return TRUE;
+    return true;
 }
 
 int CheckForRSPBPoint(DWORD Location)
@@ -71,10 +71,10 @@ int CheckForRSPBPoint(DWORD Location)
     {
         if (BPoint[count].Location == Location)
         {
-            return TRUE;
+            return true;
         }
     }
-    return FALSE;
+    return false;
 }
 
 void CreateBPPanel(void * hDlg, rectangle rcBox)
@@ -102,7 +102,7 @@ void CreateBPPanel(void * hDlg, rectangle rcBox)
 
 void HideBPPanel(void)
 {
-    ShowWindow(hRSPLocation, FALSE);
+    ShowWindow(hRSPLocation, false);
 }
 
 void PaintBPPanel(window_paint ps)
@@ -113,7 +113,7 @@ void PaintBPPanel(window_paint ps)
 
 void ShowBPPanel(void)
 {
-    ShowWindow(hRSPLocation, TRUE);
+    ShowWindow(hRSPLocation, true);
 }
 
 void RefreshBpoints(void * hList)

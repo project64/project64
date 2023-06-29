@@ -2,7 +2,7 @@
 #include "RspTypes.h"
 
 extern uint32_t CompilePC, NextInstruction, JumpTableSize;
-extern Boolean ChangedPC;
+extern bool ChangedPC;
 
 #define CompilerWarning \
     if (ShowErrors) DisplayError
@@ -12,17 +12,17 @@ extern Boolean ChangedPC;
 #define Low16BitAccum 4
 #define EntireAccum (Low16BitAccum | Middle16BitAccum | High16BitAccum)
 
-Boolean WriteToAccum(int Location, int PC);
-Boolean WriteToVectorDest(DWORD DestReg, int PC);
-Boolean UseRspFlags(int PC);
+bool WriteToAccum(int Location, int PC);
+bool WriteToVectorDest(DWORD DestReg, int PC);
+bool UseRspFlags(int PC);
 
-Boolean DelaySlotAffectBranch(DWORD PC);
-Boolean CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom);
-Boolean IsOpcodeBranch(DWORD PC, RSPOpcode RspOp);
-Boolean IsOpcodeNop(DWORD PC);
+bool DelaySlotAffectBranch(DWORD PC);
+bool CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom);
+bool IsOpcodeBranch(DWORD PC, RSPOpcode RspOp);
+bool IsOpcodeNop(DWORD PC);
 
-Boolean IsNextInstructionMmx(DWORD PC);
-Boolean IsRegisterConstant(DWORD Reg, DWORD * Constant);
+bool IsNextInstructionMmx(DWORD PC);
+bool IsRegisterConstant(DWORD Reg, DWORD * Constant);
 
 void RSP_Element2Mmx(int MmxReg);
 void RSP_MultiElement2Mmx(int MmxReg1, int MmxReg2);
@@ -35,7 +35,7 @@ void BuildRecompilerCPU(void);
 
 void CompilerRSPBlock(void);
 void CompilerToggleBuffer(void);
-Boolean RSP_DoSections(void);
+bool RSP_DoSections(void);
 
 typedef struct
 {
@@ -54,7 +54,7 @@ extern RSP_BLOCK CurrentBlock;
 
 typedef struct
 {
-    Boolean bIsRegConst[32]; // Boolean toggle for constant
+    bool bIsRegConst[32]; // bool toggle for constant
     DWORD MipsRegConst[32];  // Value of register 32-bit
     DWORD BranchLabels[250];
     DWORD LabelCount;
@@ -69,15 +69,15 @@ extern RSP_CODE RspCode;
 
 typedef struct
 {
-    Boolean mmx, mmx2, sse; // CPU specs and compiling
-    Boolean bFlags;         // RSP flag analysis
-    Boolean bReOrdering;    // Instruction reordering
-    Boolean bSections;      // Microcode sections
-    Boolean bDest;          // Vector destination toggle
-    Boolean bAccum;         // Accumulator toggle
-    Boolean bGPRConstants;  // Analyze GPR constants
-    Boolean bAlignVector;   // Align known vector loads
-    Boolean bAudioUcode;    // Audio microcode analysis
+    bool mmx, mmx2, sse; // CPU specs and compiling
+    bool bFlags;         // RSP flag analysis
+    bool bReOrdering;    // Instruction reordering
+    bool bSections;      // Microcode sections
+    bool bDest;          // Vector destination toggle
+    bool bAccum;         // Accumulator toggle
+    bool bGPRConstants;  // Analyze GPR constants
+    bool bAlignVector;   // Align known vector loads
+    bool bAudioUcode;    // Audio microcode analysis
 } RSP_COMPILER;
 
 extern RSP_COMPILER Compiler;

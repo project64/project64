@@ -34,7 +34,7 @@
 #endif
 
 extern UWORD32 Recp, RecpResult, SQroot, SQrootResult;
-extern Boolean AudioHle, GraphicsHle;
+extern bool AudioHle, GraphicsHle;
 
 // Opcode functions
 
@@ -244,7 +244,7 @@ void RSP_Special_JALR(void)
 
 void RSP_Special_BREAK(void)
 {
-    RSP_Running = FALSE;
+    RSP_Running = false;
     *RSPInfo.SP_STATUS_REG |= (SP_STATUS_HALT | SP_STATUS_BROKE);
     if ((*RSPInfo.SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0)
     {
@@ -348,7 +348,7 @@ void RSP_Cop0_MF(void)
         RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_STATUS_REG;
         if (Mfc0Count != 0 && RSP_MfStatusCount > Mfc0Count)
         {
-            RSP_Running = FALSE;
+            RSP_Running = false;
         }
         break;
     case 5: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_DMA_FULL_REG; break;
@@ -362,7 +362,7 @@ void RSP_Cop0_MF(void)
         {
             RSP_GPR[RSPOpC.rt].W = *RSPInfo.SP_SEMAPHORE_REG;
             *RSPInfo.SP_SEMAPHORE_REG = 1;
-            RSP_Running = FALSE;
+            RSP_Running = false;
         }
         break;
     case 8: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.DPC_START_REG; break;
@@ -414,7 +414,7 @@ void RSP_Cop0_MT(void)
         {
             *RSPInfo.MI_INTR_REG |= R4300i_SP_Intr;
             RSPInfo.CheckInterrupts();
-            RSP_Running = FALSE;
+            RSP_Running = false;
         }
         if ((RSP_GPR[RSPOpC.rt].W & SP_CLR_SSTEP) != 0)
         {
@@ -1824,8 +1824,6 @@ void RSP_Vector_VNXOR(void)
 
 void RSP_Vector_VRCP(void)
 {
-    int count, neg;
-
     RecpResult.W = RSP_Vect[RSPOpC.rt].HW[EleSpec[RSPOpC.rs].B[(RSPOpC.rd & 0x7)]];
     if (RecpResult.UW == 0)
     {
@@ -1833,16 +1831,12 @@ void RSP_Vector_VRCP(void)
     }
     else
     {
-        if (RecpResult.W < 0)
+        bool neg = RecpResult.W < 0;
+        if (neg)
         {
-            neg = TRUE;
             RecpResult.W = ~RecpResult.W + 1;
         }
-        else
-        {
-            neg = FALSE;
-        }
-        for (count = 15; count > 0; count--)
+        for (int count = 15; count > 0; count--)
         {
             if ((RecpResult.W & (1 << count)))
             {
@@ -1856,7 +1850,7 @@ void RSP_Vector_VRCP(void)
             RecpResult.W = (long)((0x7FFFFFFF / (double)RecpResult.W));
             OldModel = _controlfp(OldModel, _MCW_RC);
         }
-        for (count = 31; count > 0; count--)
+        for (int count = 31; count > 0; count--)
         {
             if ((RecpResult.W & (1 << count)))
             {
@@ -1864,12 +1858,12 @@ void RSP_Vector_VRCP(void)
                 count = 0;
             }
         }
-        if (neg == TRUE)
+        if (neg == true)
         {
             RecpResult.W = ~RecpResult.W;
         }
     }
-    for (count = 0; count < 8; count++)
+    for (int count = 0; count < 8; count++)
     {
         RSP_ACCUM[count].HW[1] = RSP_Vect[RSPOpC.rt].UHW[EleSpec[RSPOpC.rs].B[count]];
     }
@@ -1889,7 +1883,7 @@ void RSP_Vector_VRCPL(void)
     {
         if (RecpResult.W < 0)
         {
-            neg = TRUE;
+            neg = true;
             if (RecpResult.UHW[1] == 0xFFFF && RecpResult.HW[0] < 0)
             {
                 RecpResult.W = ~RecpResult.W + 1;
@@ -1901,7 +1895,7 @@ void RSP_Vector_VRCPL(void)
         }
         else
         {
-            neg = FALSE;
+            neg = false;
         }
         for (count = 31; count > 0; count--)
         {
@@ -1925,7 +1919,7 @@ void RSP_Vector_VRCPL(void)
                 count = 0;
             }
         }
-        if (neg == TRUE)
+        if (neg == true)
         {
             RecpResult.W = ~RecpResult.W;
         }
@@ -1978,12 +1972,12 @@ void RSP_Vector_VRSQ(void)
     {
         if (SQrootResult.W < 0)
         {
-            neg = TRUE;
+            neg = true;
             SQrootResult.W = ~SQrootResult.W + 1;
         }
         else
         {
-            neg = FALSE;
+            neg = false;
         }
         for (count = 15; count > 0; count--)
         {
@@ -2007,7 +2001,7 @@ void RSP_Vector_VRSQ(void)
                 count = 0;
             }
         }
-        if (neg == TRUE)
+        if (neg == true)
         {
             SQrootResult.W = ~SQrootResult.W;
         }
@@ -2036,7 +2030,7 @@ void RSP_Vector_VRSQL(void)
     {
         if (SQrootResult.W < 0)
         {
-            neg = TRUE;
+            neg = true;
             if (SQrootResult.UHW[1] == 0xFFFF && SQrootResult.HW[0] < 0)
             {
                 SQrootResult.W = ~SQrootResult.W + 1;
@@ -2048,7 +2042,7 @@ void RSP_Vector_VRSQL(void)
         }
         else
         {
-            neg = FALSE;
+            neg = false;
         }
         for (count = 31; count > 0; count--)
         {
@@ -2071,7 +2065,7 @@ void RSP_Vector_VRSQL(void)
                 count = 0;
             }
         }
-        if (neg == TRUE)
+        if (neg == true)
         {
             SQrootResult.W = ~SQrootResult.W;
         }

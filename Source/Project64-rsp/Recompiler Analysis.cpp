@@ -14,21 +14,21 @@
 
 /*
 IsOpcodeNop
-Output: Boolean whether opcode at PC is a NOP
+Output: bool whether opcode at PC is a NOP
 Input: PC
 */
 
-Boolean IsOpcodeNop(DWORD PC)
+bool IsOpcodeNop(DWORD PC)
 {
     RSPOpcode RspOp;
     RSP_LW_IMEM(PC, &RspOp.Value);
 
     if (RspOp.op == RSP_SPECIAL && RspOp.funct == RSP_SPECIAL_SLL)
     {
-        return (RspOp.rd == 0) ? TRUE : FALSE;
+        return (RspOp.rd == 0) ? true : false;
     }
 
-    return FALSE;
+    return false;
 }
 
 /*
@@ -37,19 +37,19 @@ Output: Determines EMMS status
 Input: PC
 */
 
-Boolean IsNextInstructionMmx(DWORD PC)
+bool IsNextInstructionMmx(DWORD PC)
 {
     RSPOpcode RspOp;
 
-    if (IsMmxEnabled == FALSE)
-        return FALSE;
+    if (!IsMmxEnabled)
+        return false;
 
     PC += 4;
-    if (PC >= 0x1000) return FALSE;
+    if (PC >= 0x1000) return false;
     RSP_LW_IMEM(PC, &RspOp.Value);
 
     if (RspOp.op != RSP_CP2)
-        return FALSE;
+        return false;
 
     if ((RspOp.rs & 0x10) != 0)
     {
@@ -60,16 +60,16 @@ Boolean IsNextInstructionMmx(DWORD PC)
         case RSP_VECTOR_VMUDM:
         case RSP_VECTOR_VMUDN:
         case RSP_VECTOR_VMUDH:
-            if (TRUE == WriteToAccum(7, PC))
+            if (true == WriteToAccum(7, PC))
             {
-                return FALSE;
+                return false;
             }
-            else if ((RspOp.rs & 0x0f) >= 2 && (RspOp.rs & 0x0f) <= 7 && IsMmx2Enabled == FALSE)
+            else if ((RspOp.rs & 0x0f) >= 2 && (RspOp.rs & 0x0f) <= 7 && IsMmx2Enabled == false)
             {
-                return FALSE;
+                return false;
             }
             else
-                return TRUE;
+                return true;
 
         case RSP_VECTOR_VABS:
         case RSP_VECTOR_VAND:
@@ -78,41 +78,41 @@ Boolean IsNextInstructionMmx(DWORD PC)
         case RSP_VECTOR_VNAND:
         case RSP_VECTOR_VNOR:
         case RSP_VECTOR_VNXOR:
-            if (TRUE == WriteToAccum(Low16BitAccum, PC))
+            if (true == WriteToAccum(Low16BitAccum, PC))
             {
-                return FALSE;
+                return false;
             }
-            else if ((RspOp.rs & 0x0f) >= 2 && (RspOp.rs & 0x0f) <= 7 && IsMmx2Enabled == FALSE)
+            else if ((RspOp.rs & 0x0f) >= 2 && (RspOp.rs & 0x0f) <= 7 && IsMmx2Enabled == false)
             {
-                return FALSE;
+                return false;
             }
             else
-                return TRUE;
+                return true;
 
         case RSP_VECTOR_VADD:
         case RSP_VECTOR_VSUB:
             // Requires no accumulator write, and no flags!
-            if (WriteToAccum(Low16BitAccum, PC) == TRUE)
+            if (WriteToAccum(Low16BitAccum, PC) == true)
             {
-                return FALSE;
+                return false;
             }
-            else if (UseRspFlags(PC) == TRUE)
+            else if (UseRspFlags(PC) == true)
             {
-                return FALSE;
+                return false;
             }
-            else if ((RspOp.rs & 0x0f) >= 2 && (RspOp.rs & 0x0f) <= 7 && IsMmx2Enabled == FALSE)
+            else if ((RspOp.rs & 0x0f) >= 2 && (RspOp.rs & 0x0f) <= 7 && IsMmx2Enabled == false)
             {
-                return FALSE;
+                return false;
             }
             else
-                return TRUE;
+                return true;
 
         default:
-            return FALSE;
+            return false;
         }
     }
     else
-        return FALSE;
+        return false;
 }
 
 /*
@@ -125,18 +125,18 @@ Input: PC, location in accumulator
 
 #define HIT_BRANCH 0x2
 
-DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
+DWORD WriteToAccum2(int Location, int PC, bool RecursiveCall)
 {
     RSPOpcode RspOp;
     DWORD BranchTarget = 0;
     signed int BranchImmed = 0;
     int Instruction_State = NextInstruction;
 
-    if (Compiler.bAccum == FALSE) return TRUE;
+    if (Compiler.bAccum == false) return true;
 
     if (Instruction_State == DELAY_SLOT)
     {
-        return TRUE;
+        return true;
     }
 
     do
@@ -144,7 +144,7 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
         PC += 4;
         if (PC >= 0x1000)
         {
-            return TRUE;
+            return true;
         }
         RSP_LW_IMEM(PC, &RspOp.Value);
 
@@ -161,7 +161,7 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
                 break;
             default:
                 CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
-                return TRUE;
+                return true;
             }
             break;
         case RSP_SPECIAL:
@@ -187,7 +187,7 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
                 break;
 
             case RSP_SPECIAL_JALR:
-                return TRUE;
+                return true;
 
             case RSP_SPECIAL_JR:
                 Instruction_State = DO_DELAY_SLOT;
@@ -195,14 +195,14 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
 
             default:
                 CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
-                return TRUE;
+                return true;
             }
             break;
         case RSP_J:
             // There is no way a loopback is going to use accumulator
             if (Compiler.bAudioUcode && (((int)(RspOp.target << 2) & 0xFFC) < PC))
             {
-                return FALSE;
+                return false;
             }
             // Rarely occurs, so we let them have their way
             else
@@ -271,19 +271,19 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
                 case RSP_VECTOR_VMUDM:
                 case RSP_VECTOR_VMUDN:
                 case RSP_VECTOR_VMUDH:
-                    return FALSE;
+                    return false;
                 case RSP_VECTOR_VMACF:
                 case RSP_VECTOR_VMACU:
                 case RSP_VECTOR_VMADL:
                 case RSP_VECTOR_VMADM:
                 case RSP_VECTOR_VMADN:
-                    return TRUE;
+                    return true;
                 case RSP_VECTOR_VMADH:
                     if (Location == Low16BitAccum)
                     {
                         break;
                     }
-                    return TRUE;
+                    return true;
 
                 case RSP_VECTOR_VABS:
                 case RSP_VECTOR_VADD:
@@ -298,7 +298,7 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
                 case RSP_VECTOR_VNXOR:
                     // Since these modify the accumulator lower-16 bits we can
                     // safely assume these 'reset' the accumulator no matter what
-                    //			return FALSE;
+                    //			return false;
                 case RSP_VECTOR_VCR:
                 case RSP_VECTOR_VCH:
                 case RSP_VECTOR_VCL:
@@ -315,15 +315,15 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
                 case RSP_VECTOR_VMOV:
                     if (Location == Low16BitAccum)
                     {
-                        return FALSE;
+                        return false;
                     }
                     break;
 
                 case RSP_VECTOR_VSAW:
-                    return TRUE;
+                    return true;
                 default:
                     CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
-                    return TRUE;
+                    return true;
                 }
             }
             else
@@ -337,7 +337,7 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
                     break;
                 default:
                     CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
-                    return TRUE;
+                    return true;
                 }
             }
             break;
@@ -366,7 +366,7 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
                 break;
             default:
                 CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
-                return TRUE;
+                return true;
             }
             break;
         case RSP_SC2:
@@ -387,12 +387,12 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
                 break;
             default:
                 CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
-                return TRUE;
+                return true;
             }
             break;
         default:
             CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
-            return TRUE;
+            return true;
         }
         switch (Instruction_State)
         {
@@ -412,63 +412,63 @@ DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
 	can prove effective, but it's still a branch...
 	*/
 
-    if (BranchTarget != 0 && RecursiveCall == FALSE)
+    if (BranchTarget != 0 && RecursiveCall == false)
     {
         DWORD BranchTaken, BranchFall;
 
         // Analysis of branch taken
-        BranchTaken = WriteToAccum2(Location, BranchTarget - 4, TRUE);
+        BranchTaken = WriteToAccum2(Location, BranchTarget - 4, true);
         // Analysis of branch as NOP
-        BranchFall = WriteToAccum2(Location, PC, TRUE);
+        BranchFall = WriteToAccum2(Location, PC, true);
 
         if (BranchImmed < 0)
         {
-            if (BranchTaken != FALSE)
+            if (BranchTaken != false)
             {
 
                 // Took this back branch and found a place
                 // that needs this vector as a source
 
-                return TRUE;
+                return true;
             }
             else if (BranchFall == HIT_BRANCH)
             {
-                return TRUE;
+                return true;
             }
             // Otherwise this is completely valid
             return BranchFall;
         }
         else
         {
-            if (BranchFall != FALSE)
+            if (BranchFall != false)
             {
 
                 // Took this forward branch and found a place
                 // that needs this vector as a source
 
-                return TRUE;
+                return true;
             }
             else if (BranchTaken == HIT_BRANCH)
             {
-                return TRUE;
+                return true;
             }
             // Otherwise this is completely valid
             return BranchTaken;
         }
     }
-    return TRUE;
+    return true;
 }
 
-Boolean WriteToAccum(int Location, int PC)
+bool WriteToAccum(int Location, int PC)
 {
-    DWORD value = WriteToAccum2(Location, PC, FALSE);
+    DWORD value = WriteToAccum2(Location, PC, false);
 
     if (value == HIT_BRANCH)
     {
-        return TRUE; /* ??? */
+        return true; /* ??? */
     }
     else
-        return value;
+        return value != 0;
 }
 
 /*
@@ -479,7 +479,7 @@ False: Destination is overwritten later
 Input: PC, Register
 */
 
-Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
+bool WriteToVectorDest2(DWORD DestReg, int PC, bool RecursiveCall)
 {
     RSPOpcode RspOp;
     DWORD BranchTarget = 0;
@@ -487,11 +487,11 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
 
     int Instruction_State = NextInstruction;
 
-    if (Compiler.bDest == FALSE) return TRUE;
+    if (Compiler.bDest == false) return true;
 
     if (Instruction_State == DELAY_SLOT)
     {
-        return TRUE;
+        return true;
     }
 
     do
@@ -499,7 +499,7 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
         PC += 4;
         if (PC >= 0x1000)
         {
-            return TRUE;
+            return true;
         }
         RSP_LW_IMEM(PC, &RspOp.Value);
 
@@ -517,7 +517,7 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
                 break;
             default:
                 CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
-                return TRUE;
+                return true;
             }
             break;
         case RSP_SPECIAL:
@@ -543,7 +543,7 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
                 break;
 
             case RSP_SPECIAL_JALR:
-                return TRUE;
+                return true;
 
             case RSP_SPECIAL_JR:
                 Instruction_State = DO_DELAY_SLOT;
@@ -551,21 +551,21 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
 
             default:
                 CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
-                return TRUE;
+                return true;
             }
             break;
         case RSP_J:
             // There is no way a loopback is going to use accumulator
             if (Compiler.bAudioUcode && (int)(RspOp.target << 2) < PC)
             {
-                return FALSE;
+                return false;
             }
             // Rarely occurs, so we let them have their way
-            return TRUE;
+            return true;
 
         case RSP_JAL:
             // Assume register is being passed to function or used after the function call
-            return TRUE;
+            return true;
 
         case RSP_BEQ:
         case RSP_BNE:
@@ -633,15 +633,15 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
                 case RSP_VECTOR_VABS:
                     if (DestReg == RspOp.rd)
                     {
-                        return TRUE;
+                        return true;
                     }
                     if (DestReg == RspOp.rt)
                     {
-                        return TRUE;
+                        return true;
                     }
                     if (DestReg == RspOp.sa)
                     {
-                        return FALSE;
+                        return false;
                     }
                     break;
 
@@ -653,7 +653,7 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
                 case RSP_VECTOR_VRSQH:
                     if (DestReg == RspOp.rt)
                     {
-                        return TRUE;
+                        return true;
                     }
                     break;
 
@@ -667,26 +667,26 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
                 case RSP_VECTOR_VNE:
                     if (DestReg == RspOp.rd)
                     {
-                        return TRUE;
+                        return true;
                     }
                     if (DestReg == RspOp.rt)
                     {
-                        return TRUE;
+                        return true;
                     }
                     if (DestReg == RspOp.sa)
                     {
-                        return FALSE;
+                        return false;
                     }
                     break;
                 case RSP_VECTOR_VSAW:
                     if (DestReg == RspOp.sa)
                     {
-                        return FALSE;
+                        return false;
                     }
                     break;
                 default:
                     CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
-                    return TRUE;
+                    return true;
                 }
             }
             else
@@ -697,17 +697,17 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
                 case RSP_COP2_CT:
                     break;
                 case RSP_COP2_MT:
-                    /*	if (DestReg == RspOp.rd) { return FALSE; } */
+                    /*	if (DestReg == RspOp.rd) { return false; } */
                     break;
                 case RSP_COP2_MF:
                     if (DestReg == RspOp.rd)
                     {
-                        return TRUE;
+                        return true;
                     }
                     break;
                 default:
                     CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
-                    return TRUE;
+                    return true;
                 }
             }
             break;
@@ -738,12 +738,12 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
             case RSP_LSC2_HV:
                 if (DestReg == RspOp.rt)
                 {
-                    return FALSE;
+                    return false;
                 }
                 break;
             default:
                 CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
-                return TRUE;
+                return true;
             }
             break;
         case RSP_SC2:
@@ -762,7 +762,7 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
             case RSP_LSC2_WV:
                 if (DestReg == RspOp.rt)
                 {
-                    return TRUE;
+                    return true;
                 }
                 break;
 
@@ -771,7 +771,7 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
                 {
                     if (DestReg >= RspOp.rt && DestReg <= RspOp.rt + 7)
                     {
-                        return TRUE;
+                        return true;
                     }
                 }
                 else
@@ -781,7 +781,7 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
                     {
                         if (DestReg == vect + del)
                         {
-                            return TRUE;
+                            return true;
                         }
                         del = (del + 1) & 7;
                     }
@@ -790,12 +790,12 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
 
             default:
                 CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
-                return TRUE;
+                return true;
             }
             break;
         default:
             CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
-            return TRUE;
+            return true;
         }
         switch (Instruction_State)
         {
@@ -815,65 +815,65 @@ Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
 	can prove effective, but it's still a branch...
 	*/
 
-    if (BranchTarget != 0 && RecursiveCall == FALSE)
+    if (BranchTarget != 0 && RecursiveCall == false)
     {
         DWORD BranchTaken, BranchFall;
 
         // Analysis of branch taken
-        BranchTaken = WriteToVectorDest2(DestReg, BranchTarget - 4, TRUE);
+        BranchTaken = WriteToVectorDest2(DestReg, BranchTarget - 4, true);
         // Analysis of branch as NOP
-        BranchFall = WriteToVectorDest2(DestReg, PC, TRUE);
+        BranchFall = WriteToVectorDest2(DestReg, PC, true);
 
         if (BranchImmed < 0)
         {
-            if (BranchTaken != FALSE)
+            if (BranchTaken != false)
             {
                 /*
 				 * Took this back branch and found a place
 				 * that needs this vector as a source
 				 */
-                return TRUE;
+                return true;
             }
             else if (BranchFall == HIT_BRANCH)
             {
-                return TRUE;
+                return true;
             }
             // Otherwise this is completely valid
-            return BranchFall;
+            return BranchFall != 0;
         }
         else
         {
-            if (BranchFall != FALSE)
+            if (BranchFall != false)
             {
                 /*
 				 * Took this forward branch and found a place
 				 * that needs this vector as a source
 				 */
-                return TRUE;
+                return true;
             }
             else if (BranchTaken == HIT_BRANCH)
             {
-                return TRUE;
+                return true;
             }
             // Otherwise this is completely valid
-            return BranchTaken;
+            return BranchTaken != 0;
         }
     }
 
-    return TRUE;
+    return true;
 }
 
-Boolean WriteToVectorDest(DWORD DestReg, int PC)
+bool WriteToVectorDest(DWORD DestReg, int PC)
 {
     DWORD value;
-    value = WriteToVectorDest2(DestReg, PC, FALSE);
+    value = WriteToVectorDest2(DestReg, PC, false);
 
     if (value == HIT_BRANCH)
     {
-        return TRUE; // TODO: ???
+        return true; // TODO: ???
     }
     else
-        return value;
+        return value != 0;
 }
 
 /*
@@ -885,16 +885,16 @@ Input: PC
 */
 
 // TODO: Consider delay slots and such in a branch?
-Boolean UseRspFlags(int PC)
+bool UseRspFlags(int PC)
 {
     RSPOpcode RspOp;
     int Instruction_State = NextInstruction;
 
-    if (Compiler.bFlags == FALSE) return TRUE;
+    if (Compiler.bFlags == false) return true;
 
     if (Instruction_State == DELAY_SLOT)
     {
-        return TRUE;
+        return true;
     }
 
     do
@@ -902,7 +902,7 @@ Boolean UseRspFlags(int PC)
         PC -= 4;
         if (PC < 0)
         {
-            return TRUE;
+            return true;
         }
         RSP_LW_IMEM(PC, &RspOp.Value);
 
@@ -920,7 +920,7 @@ Boolean UseRspFlags(int PC)
                 break;
             default:
                 CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
-                return TRUE;
+                return true;
             }
             break;
         case RSP_SPECIAL:
@@ -951,7 +951,7 @@ Boolean UseRspFlags(int PC)
 
             default:
                 CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
-                return TRUE;
+                return true;
             }
             break;
         case RSP_J:
@@ -995,10 +995,10 @@ Boolean UseRspFlags(int PC)
 
                 case RSP_VECTOR_VSUB:
                 case RSP_VECTOR_VADD:
-                    return FALSE;
+                    return false;
                 case RSP_VECTOR_VSUBC:
                 case RSP_VECTOR_VADDC:
-                    return TRUE;
+                    return true;
 
                 case RSP_VECTOR_VABS:
                 case RSP_VECTOR_VAND:
@@ -1022,7 +1022,7 @@ Boolean UseRspFlags(int PC)
                 case RSP_VECTOR_VGE:
                 case RSP_VECTOR_VNE:
                 case RSP_VECTOR_VMRG:
-                    return TRUE;
+                    return true;
 
                 case RSP_VECTOR_VSAW:
                 case RSP_VECTOR_VMOV:
@@ -1030,7 +1030,7 @@ Boolean UseRspFlags(int PC)
 
                 default:
                     CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
-                    return TRUE;
+                    return true;
                 }
             }
             else
@@ -1038,7 +1038,7 @@ Boolean UseRspFlags(int PC)
                 switch (RspOp.rs)
                 {
                 case RSP_COP2_CT:
-                    return TRUE;
+                    return true;
 
                 case RSP_COP2_CF:
                 case RSP_COP2_MT:
@@ -1046,7 +1046,7 @@ Boolean UseRspFlags(int PC)
                     break;
                 default:
                     CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
-                    return TRUE;
+                    return true;
                 }
             }
             break;
@@ -1075,7 +1075,7 @@ Boolean UseRspFlags(int PC)
                 break;
             default:
                 CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
-                return TRUE;
+                return true;
             }
             break;
         case RSP_SC2:
@@ -1096,12 +1096,12 @@ Boolean UseRspFlags(int PC)
                 break;
             default:
                 CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
-                return TRUE;
+                return true;
             }
             break;
         default:
             CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
-            return TRUE;
+            return true;
         }
         switch (Instruction_State)
         {
@@ -1114,7 +1114,7 @@ Boolean UseRspFlags(int PC)
             break;
         }
     } while (Instruction_State != FINISH_BLOCK);
-    return TRUE;
+    return true;
 }
 
 /*
@@ -1125,15 +1125,15 @@ False: Register is not constant at all
 Input: PC, Pointer to constant to fill
 */
 
-Boolean IsRegisterConstant(DWORD Reg, DWORD * Constant)
+bool IsRegisterConstant(DWORD Reg, DWORD * Constant)
 {
     DWORD PC = 0;
     DWORD References = 0;
     DWORD Const = 0;
     RSPOpcode RspOp;
 
-    if (Compiler.bGPRConstants == FALSE)
-        return FALSE;
+    if (Compiler.bGPRConstants == false)
+        return false;
 
     while (PC < 0x1000)
     {
@@ -1174,7 +1174,7 @@ Boolean IsRegisterConstant(DWORD Reg, DWORD * Constant)
             case RSP_SPECIAL_SLTU:
                 if (RspOp.rd == Reg)
                 {
-                    return FALSE;
+                    return false;
                 }
                 break;
 
@@ -1184,7 +1184,7 @@ Boolean IsRegisterConstant(DWORD Reg, DWORD * Constant)
 
             default:
                 //	CompilerWarning("Unknown opcode in IsRegisterConstant\n%s",RSPOpcodeName(RspOp.Hex,PC));
-                //	return FALSE;
+                //	return false;
                 break;
             }
             break;
@@ -1205,14 +1205,14 @@ Boolean IsRegisterConstant(DWORD Reg, DWORD * Constant)
                 {
                     if (References > 0)
                     {
-                        return FALSE;
+                        return false;
                     }
                     Const = (short)RspOp.immediate;
                     References++;
                 }
                 else
                 {
-                    return FALSE;
+                    return false;
                 }
             }
             break;
@@ -1223,13 +1223,13 @@ Boolean IsRegisterConstant(DWORD Reg, DWORD * Constant)
                 {
                     if (References > 0)
                     {
-                        return FALSE;
+                        return false;
                     }
                     Const = (WORD)RspOp.immediate;
                     References++;
                 }
                 else
-                    return FALSE;
+                    return false;
             }
             break;
 
@@ -1238,7 +1238,7 @@ Boolean IsRegisterConstant(DWORD Reg, DWORD * Constant)
             {
                 if (References > 0)
                 {
-                    return FALSE;
+                    return false;
                 }
                 Const = (short)RspOp.offset << 16;
                 References++;
@@ -1251,7 +1251,7 @@ Boolean IsRegisterConstant(DWORD Reg, DWORD * Constant)
         case RSP_SLTIU:
             if (RspOp.rt == Reg)
             {
-                return FALSE;
+                return false;
             }
             break;
 
@@ -1261,7 +1261,7 @@ Boolean IsRegisterConstant(DWORD Reg, DWORD * Constant)
             case RSP_COP0_MF:
                 if (RspOp.rt == Reg)
                 {
-                    return FALSE;
+                    return false;
                 }
             case RSP_COP0_MT:
                 break;
@@ -1281,13 +1281,13 @@ Boolean IsRegisterConstant(DWORD Reg, DWORD * Constant)
                 case RSP_COP2_MF:
                     if (RspOp.rt == Reg)
                     {
-                        return FALSE;
+                        return false;
                     }
                     break;
 
                 default:
                     //	CompilerWarning("Unknown opcode in IsRegisterConstant\n%s",RSPOpcodeName(RspOp.Hex,PC));
-                    //	return FALSE;
+                    //	return false;
                     break;
                 }
             }
@@ -1300,7 +1300,7 @@ Boolean IsRegisterConstant(DWORD Reg, DWORD * Constant)
         case RSP_LHU:
             if (RspOp.rt == Reg)
             {
-                return FALSE;
+                return false;
             }
             break;
 
@@ -1314,7 +1314,7 @@ Boolean IsRegisterConstant(DWORD Reg, DWORD * Constant)
             break;
         default:
             //	CompilerWarning("Unknown opcode in IsRegisterConstant\n%s",RSPOpcodeName(RspOp.Hex,PC));
-            //	return FALSE;
+            //	return false;
             break;
         }
     }
@@ -1322,12 +1322,12 @@ Boolean IsRegisterConstant(DWORD Reg, DWORD * Constant)
     if (References > 0)
     {
         *Constant = Const;
-        return TRUE;
+        return true;
     }
     else
     {
         *Constant = 0;
-        return FALSE;
+        return false;
     }
 }
 
@@ -1339,7 +1339,7 @@ False: Opcode is not a branch
 Input: PC
 */
 
-Boolean IsOpcodeBranch(DWORD PC, RSPOpcode RspOp)
+bool IsOpcodeBranch(DWORD PC, RSPOpcode RspOp)
 {
     PC = PC; // Unused
 
@@ -1352,7 +1352,7 @@ Boolean IsOpcodeBranch(DWORD PC, RSPOpcode RspOp)
         case RSP_REGIMM_BGEZ:
         case RSP_REGIMM_BLTZAL:
         case RSP_REGIMM_BGEZAL:
-            return TRUE;
+            return true;
         default:
             //CompilerWarning("Unknown opcode in IsOpcodeBranch\n%s",RSPOpcodeName(RspOp.Hex,PC));
             break;
@@ -1382,7 +1382,7 @@ Boolean IsOpcodeBranch(DWORD PC, RSPOpcode RspOp)
 
         case RSP_SPECIAL_JALR:
         case RSP_SPECIAL_JR:
-            return TRUE;
+            return true;
 
         default:
             //CompilerWarning("Unknown opcode in IsOpcodeBranch\n%s",RSPOpcodeName(RspOp.Hex,PC));
@@ -1395,7 +1395,7 @@ Boolean IsOpcodeBranch(DWORD PC, RSPOpcode RspOp)
     case RSP_BNE:
     case RSP_BLEZ:
     case RSP_BGTZ:
-        return TRUE;
+        return true;
 
     case RSP_ADDI:
     case RSP_ADDIU:
@@ -1429,7 +1429,7 @@ Boolean IsOpcodeBranch(DWORD PC, RSPOpcode RspOp)
         break;
     }
 
-    return FALSE;
+    return false;
 }
 
 /*
@@ -1835,14 +1835,14 @@ False: Registers do not affect each other
 Input: PC
 */
 
-Boolean DelaySlotAffectBranch(DWORD PC)
+bool DelaySlotAffectBranch(DWORD PC)
 {
     RSPOpcode Branch, Delay;
     OPCODE_INFO infoBranch, infoDelay;
 
-    if (IsOpcodeNop(PC + 4) == TRUE)
+    if (IsOpcodeNop(PC + 4) == true)
     {
-        return FALSE;
+        return false;
     }
 
     RSP_LW_IMEM(PC, &Branch.Value);
@@ -1856,36 +1856,36 @@ Boolean DelaySlotAffectBranch(DWORD PC)
 
     if ((infoDelay.flags & COPO_MF_Instruction) == COPO_MF_Instruction)
     {
-        return TRUE;
+        return true;
     }
 
     if ((infoDelay.flags & Instruction_Mask) == VEC_Instruction)
     {
-        return FALSE;
+        return false;
     }
 
     if (infoBranch.SourceReg0 == infoDelay.DestReg)
     {
-        return TRUE;
+        return true;
     }
     if (infoBranch.SourceReg1 == infoDelay.DestReg)
     {
-        return TRUE;
+        return true;
     }
 
-    return FALSE;
+    return false;
 }
 
 /*
 CompareInstructions
 Output:
-TRUE: The opcodes are fine, no dependency
-FALSE: Watch it, these ops cant be touched
+true: The opcodes are fine, no dependency
+false: Watch it, these ops cant be touched
 Input: Top, not the current operation, the one above
 Bottom: The current opcode for re-ordering bubble style
 */
 
-Boolean CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom)
+bool CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom)
 {
     OPCODE_INFO info0, info1;
     DWORD InstructionType;
@@ -1899,10 +1899,10 @@ Boolean CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom)
 #endif
 
     // Usually branches and such
-    if ((info0.flags & InvalidOpcode) != 0) return FALSE;
-    if ((info1.flags & InvalidOpcode) != 0) return FALSE;
+    if ((info0.flags & InvalidOpcode) != 0) return false;
+    if ((info1.flags & InvalidOpcode) != 0) return false;
 
-    if ((info0.flags & Flag_Instruction) != 0 && (info1.flags & Flag_Instruction) != 0) return FALSE;
+    if ((info0.flags & Flag_Instruction) != 0 && (info1.flags & Flag_Instruction) != 0) return false;
 
     InstructionType = (info0.flags & Instruction_Mask) << 2;
     InstructionType |= info1.flags & Instruction_Mask;
@@ -1916,29 +1916,29 @@ Boolean CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom)
     case 0x01:
     case 0x02:
     case 0x03: // First is a NOOP
-        return TRUE;
+        return true;
     case 0x00: // Both?
     case 0x10:
     case 0x20:
     case 0x30: // Second is a NOOP
-        return FALSE;
+        return false;
 
     case 0x06: // GPR then Vector - 01,10
         if ((info0.flags & MemOperation_Mask) != 0 && (info1.flags & MemOperation_Mask) != 0)
         {
             // TODO: We have a vector and GPR memory operation
-            return FALSE;
+            return false;
         }
         else if ((info1.flags & MemOperation_Mask) != 0)
         {
             // We have a vector memory operation
-            return (info1.IndexReg == info0.DestReg) ? FALSE : TRUE;
+            return (info1.IndexReg == info0.DestReg) ? false : true;
         }
 
         // We could have memory or normal GPR instruction here
         // paired with some kind of vector operation
 
-        return TRUE;
+        return true;
     case 0x0A: // Vector then Vector - 10,10
 
         /*
@@ -1949,7 +1949,7 @@ Boolean CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom)
 
         if ((info0.flags & Store_Operation) != 0 && (info1.flags & Accum_Operation) != 0 && !(info1.flags & VEC_Accumulate))
         {
-            return FALSE;
+            return false;
         }
 
         // Look for loads and than some kind of vector operation
@@ -1957,7 +1957,7 @@ Boolean CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom)
 
         if ((info0.flags & Load_Operation) != 0 && (info1.flags & Accum_Operation) != 0 && !(info1.flags & VEC_Accumulate))
         {
-            return FALSE;
+            return false;
         }
 
         if ((info0.flags & MemOperation_Mask) != 0 && (info1.flags & MemOperation_Mask) != 0)
@@ -1965,61 +1965,61 @@ Boolean CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom)
 
             // TODO: This is a pain, it's best to leave it alone
 
-            return FALSE;
+            return false;
         }
         else if ((info1.flags & MemOperation_Mask) != 0)
         {
             // Remember stored REG and loaded REG are the same
             if (info0.DestReg == info1.DestReg)
             {
-                return FALSE;
+                return false;
             }
 
             if (info1.flags & Load_Operation)
             {
                 if (info0.SourceReg0 == info1.DestReg)
                 {
-                    return FALSE;
+                    return false;
                 }
                 if (info0.SourceReg1 == info1.DestReg)
                 {
-                    return FALSE;
+                    return false;
                 }
             }
             else if (info1.flags & Store_Operation)
             {
                 // It can store source REGS
-                return TRUE;
+                return true;
             }
 
-            return TRUE;
+            return true;
         }
         else if ((info0.flags & MemOperation_Mask) != 0)
         {
             // Remember stored REG and loaded REG are the same
             if (info0.DestReg == info1.DestReg)
             {
-                return FALSE;
+                return false;
             }
 
             if (info0.flags & Load_Operation)
             {
                 if (info1.SourceReg0 == info0.DestReg)
                 {
-                    return FALSE;
+                    return false;
                 }
                 if (info1.SourceReg1 == info0.DestReg)
                 {
-                    return FALSE;
+                    return false;
                 }
             }
             else if (info0.flags & Store_Operation)
             {
                 // It can store source REGS
-                return TRUE;
+                return true;
             }
 
-            return TRUE;
+            return true;
         }
         else if ((info0.flags & VEC_Accumulate) != 0)
         {
@@ -2030,7 +2030,7 @@ Boolean CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom)
 			VMUDH or VMADH or VADD
 			*/
 
-            return FALSE;
+            return false;
         }
         else if ((info1.flags & VEC_Accumulate) != 0)
         {
@@ -2041,7 +2041,7 @@ Boolean CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom)
 			VMADH
 			*/
 
-            return FALSE;
+            return false;
         }
         else
         {
@@ -2052,7 +2052,7 @@ Boolean CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom)
 			VADD or VMUDH
 			*/
 
-            return FALSE;
+            return false;
         }
         break;
 
@@ -2063,13 +2063,13 @@ Boolean CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom)
 		we can sit here all day swapping these 2 types
 		*/
 
-        return FALSE;
+        return false;
 
     case 0x05: // GPR then GPR - 01,01
     case 0x07: // GPR then COP2 - 01, 11
     case 0x0D: // COP2 then GPR - 11, 01
     case 0x0F: // COP2 then COP2 - 11, 11
-        return FALSE;
+        return false;
 
     case 0x0B: // Vector then COP2 - 10, 11
         if (info1.flags & Load_Operation)
@@ -2077,15 +2077,15 @@ Boolean CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom)
             // Move to COP2 (destination) from GPR (source)
             if (info1.DestReg == info0.DestReg)
             {
-                return FALSE;
+                return false;
             }
             if (info1.DestReg == info0.SourceReg0)
             {
-                return FALSE;
+                return false;
             }
             if (info1.DestReg == info0.SourceReg1)
             {
-                return FALSE;
+                return false;
             }
         }
         else if (info1.flags & Store_Operation)
@@ -2093,15 +2093,15 @@ Boolean CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom)
             // Move from COP2 (source) to GPR (destination)
             if (info1.SourceReg0 == info0.DestReg)
             {
-                return FALSE;
+                return false;
             }
             if (info1.SourceReg0 == info0.SourceReg0)
             {
-                return FALSE;
+                return false;
             }
             if (info1.SourceReg0 == info0.SourceReg1)
             {
-                return FALSE;
+                return false;
             }
         }
         else
@@ -2109,7 +2109,7 @@ Boolean CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom)
             CompilerWarning("Reorder: unhandled vector than COP2");
         }
         // We want vectors on top
-        return FALSE;
+        return false;
 
     case 0x0E: // COP2 then Vector - 11, 10
         if (info0.flags & Load_Operation)
@@ -2117,15 +2117,15 @@ Boolean CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom)
             // Move to COP2 (destination) from GPR (source)
             if (info0.DestReg == info1.DestReg)
             {
-                return FALSE;
+                return false;
             }
             if (info0.DestReg == info1.SourceReg0)
             {
-                return FALSE;
+                return false;
             }
             if (info0.DestReg == info1.SourceReg1)
             {
-                return FALSE;
+                return false;
             }
         }
         else if (info0.flags & Store_Operation)
@@ -2133,19 +2133,19 @@ Boolean CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom)
             // Move from COP2 (source) to GPR (destination)
             if (info0.SourceReg0 == info1.DestReg)
             {
-                return FALSE;
+                return false;
             }
             if (info0.SourceReg0 == info1.SourceReg0)
             {
-                return FALSE;
+                return false;
             }
             if (info0.SourceReg0 == info1.SourceReg1)
             {
-                return FALSE;
+                return false;
             }
             if (info0.DestReg == info1.SourceReg0)
             {
-                return FALSE;
+                return false;
             }
         }
         else
@@ -2153,11 +2153,11 @@ Boolean CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom)
             CompilerWarning("Reorder: unhandled COP2 than vector");
         }
         // We want this at the top
-        return TRUE;
+        return true;
 
     default:
         CompilerWarning("Reorder: Unhandled instruction type: %i", InstructionType);
     }
 
-    return FALSE;
+    return false;
 }

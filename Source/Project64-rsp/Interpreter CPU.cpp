@@ -380,7 +380,7 @@ void BuildInterpreterCPU(void)
 DWORD RunInterpreterCPU(DWORD Cycles)
 {
     DWORD CycleCount;
-    RSP_Running = TRUE;
+    RSP_Running = true;
     Enable_RSP_Commands_Window();
     CycleCount = 0;
 
@@ -414,15 +414,15 @@ DWORD RunInterpreterCPU(DWORD Cycles)
 
         if (Stepping_Commands)
         {
-            WaitingForStep = TRUE;
+            WaitingForStep = true;
             SetRSPCommandViewto(*PrgCount);
             UpdateRSPRegistersScreen();
-            while (WaitingForStep == TRUE)
+            while (WaitingForStep == true)
             {
                 Sleep(20);
                 if (!Stepping_Commands)
                 {
-                    WaitingForStep = FALSE;
+                    WaitingForStep = false;
                 }
             }
         }
@@ -453,7 +453,7 @@ DWORD RunInterpreterCPU(DWORD Cycles)
         case SINGLE_STEP_DONE:
             *PrgCount = (*PrgCount + 4) & 0xFFC;
             *RSPInfo.SP_STATUS_REG |= SP_STATUS_HALT;
-            RSP_Running = FALSE;
+            RSP_Running = false;
             break;
         }
     }
