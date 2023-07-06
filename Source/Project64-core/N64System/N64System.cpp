@@ -2461,97 +2461,94 @@ void CN64System::RunRSP()
 
     if ((m_Reg.SP_STATUS_REG & SP_STATUS_HALT) == 0)
     {
-        if ((m_Reg.SP_STATUS_REG & SP_STATUS_BROKE) == 0)
+        HighResTimeStamp StartTime;
+
+        uint32_t Task = 0;
+        if (m_RspBroke)
         {
-            HighResTimeStamp StartTime;
-
-            uint32_t Task = 0;
-            if (m_RspBroke)
+            g_MMU->MemoryValue32(0xA4000FC0, Task);
+            if (Task == 1 && UseHleGfx() && (m_Reg.DPC_STATUS_REG & DPC_STATUS_FREEZE) != 0)
             {
-                g_MMU->MemoryValue32(0xA4000FC0, Task);
-                if (Task == 1 && UseHleGfx() && (m_Reg.DPC_STATUS_REG & DPC_STATUS_FREEZE) != 0)
-                {
-                    WriteTrace(TraceRSP, TraceDebug, "Dlist that is frozen");
-                    return;
-                }
-
-                if (g_Debugger != NULL && HaveDebugger())
-                {
-                    g_Debugger->RSPReceivedTask();
-                }
-
-                switch (Task)
-                {
-                case 1:
-                    WriteTrace(TraceRSP, TraceDebug, "*** Display list ***");
-                    m_DlistCount += 1;
-                    m_FPS.UpdateDlCounter();
-                    break;
-                case 2:
-                    WriteTrace(TraceRSP, TraceDebug, "*** Audio list ***");
-                    m_AlistCount += 1;
-                    break;
-                default:
-                    WriteTrace(TraceRSP, TraceDebug, "*** Unknown list ***");
-                    m_UnknownCount += 1;
-                    break;
-                }
-
-                if (bShowDListAListCount())
-                {
-                    DisplayRSPListCount();
-                }
-                if (bRecordExecutionTimes() || bShowCPUPer())
-                {
-                    StartTime.SetToNow();
-                }
+                WriteTrace(TraceRSP, TraceDebug, "Dlist that is frozen");
+                return;
             }
 
-            __except_try()
+            if (g_Debugger != NULL && HaveDebugger())
             {
-                WriteTrace(TraceRSP, TraceDebug, "Do cycles - starting");
-                m_Plugins->RSP()->DoRspCycles(100);
-                WriteTrace(TraceRSP, TraceDebug, "Do cycles - done");
-            }
-            __except_catch()
-            {
-                WriteTrace(TraceRSP, TraceError, "Exception generated");
-                g_Notify->FatalError("CN64System::RunRSP()\nUnknown memory action\n\nEmulation stopping");
+                g_Debugger->RSPReceivedTask();
             }
 
-            if (Task == 1 && bDelayDP() && ((m_Reg.m_GfxIntrReg & MI_INTR_DP) != 0))
+            switch (Task)
             {
-                g_SystemTimer->SetTimer(CSystemTimer::RSPTimerDlist, 0x1000, false);
-                m_Reg.m_GfxIntrReg &= ~MI_INTR_DP;
+            case 1:
+                WriteTrace(TraceRSP, TraceDebug, "*** Display list ***");
+                m_DlistCount += 1;
+                m_FPS.UpdateDlCounter();
+                break;
+            case 2:
+                WriteTrace(TraceRSP, TraceDebug, "*** Audio list ***");
+                m_AlistCount += 1;
+                break;
+            default:
+                WriteTrace(TraceRSP, TraceDebug, "*** Unknown list ***");
+                m_UnknownCount += 1;
+                break;
+            }
+
+            if (bShowDListAListCount())
+            {
+                DisplayRSPListCount();
             }
             if (bRecordExecutionTimes() || bShowCPUPer())
             {
-                HighResTimeStamp EndTime;
-                EndTime.SetToNow();
-                uint32_t TimeTaken = (uint32_t)(EndTime.GetMicroSeconds() - StartTime.GetMicroSeconds());
-
-                switch (Task)
-                {
-                case 1: m_CPU_Usage.RecordTime(Timer_RSP_Dlist, TimeTaken); break;
-                case 2: m_CPU_Usage.RecordTime(Timer_RSP_Alist, TimeTaken); break;
-                default: m_CPU_Usage.RecordTime(Timer_RSP_Unknown, TimeTaken); break;
-                }
+                StartTime.SetToNow();
             }
-
-            if ((m_Reg.SP_STATUS_REG & SP_STATUS_HALT) == 0 &&
-                (m_Reg.SP_STATUS_REG & SP_STATUS_BROKE) == 0 &&
-                m_Reg.m_RspIntrReg == 0)
-            {
-                g_SystemTimer->SetTimer(CSystemTimer::RspTimer, 0x200, false);
-                m_RspBroke = false;
-            }
-            else
-            {
-                m_RspBroke = true;
-            }
-            WriteTrace(TraceRSP, TraceDebug, "Check interrupts");
-            g_Reg->CheckInterrupts();
         }
+
+        __except_try()
+        {
+            WriteTrace(TraceRSP, TraceDebug, "Do cycles - starting");
+            m_Plugins->RSP()->DoRspCycles(100);
+            WriteTrace(TraceRSP, TraceDebug, "Do cycles - done");
+        }
+        __except_catch()
+        {
+            WriteTrace(TraceRSP, TraceError, "Exception generated");
+            g_Notify->FatalError("CN64System::RunRSP()\nUnknown memory action\n\nEmulation stopping");
+        }
+
+        if (Task == 1 && bDelayDP() && ((m_Reg.m_GfxIntrReg & MI_INTR_DP) != 0))
+        {
+            g_SystemTimer->SetTimer(CSystemTimer::RSPTimerDlist, 0x1000, false);
+            m_Reg.m_GfxIntrReg &= ~MI_INTR_DP;
+        }
+        if (bRecordExecutionTimes() || bShowCPUPer())
+        {
+            HighResTimeStamp EndTime;
+            EndTime.SetToNow();
+            uint32_t TimeTaken = (uint32_t)(EndTime.GetMicroSeconds() - StartTime.GetMicroSeconds());
+
+            switch (Task)
+            {
+            case 1: m_CPU_Usage.RecordTime(Timer_RSP_Dlist, TimeTaken); break;
+            case 2: m_CPU_Usage.RecordTime(Timer_RSP_Alist, TimeTaken); break;
+            default: m_CPU_Usage.RecordTime(Timer_RSP_Unknown, TimeTaken); break;
+            }
+        }
+
+        if ((m_Reg.SP_STATUS_REG & SP_STATUS_HALT) == 0 &&
+            (m_Reg.SP_STATUS_REG & SP_STATUS_BROKE) == 0 &&
+            m_Reg.m_RspIntrReg == 0)
+        {
+            g_SystemTimer->SetTimer(CSystemTimer::RspTimer, 0x200, false);
+            m_RspBroke = false;
+        }
+        else
+        {
+            m_RspBroke = true;
+        }
+        WriteTrace(TraceRSP, TraceDebug, "Check interrupts");
+        g_Reg->CheckInterrupts();
     }
     if (bShowCPUPer())
     {
