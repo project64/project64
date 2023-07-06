@@ -444,10 +444,13 @@ void RSP_SH_DMEM(uint32_t Addr, uint16_t Value)
 {
     if ((Addr & 0x1) != 0)
     {
-        DisplayError("Unaligned RSP_SH_DMEM");
-        return;
+        *(uint8_t *)(RSPInfo.DMEM + ((Addr ^ 3) & 0xFFF)) = (Value >> 8);
+        *(uint8_t *)(RSPInfo.DMEM + (((Addr + 1) ^ 3) & 0xFFF)) = (Value & 0xFF);
     }
-    *(uint16_t *)(RSPInfo.DMEM + ((Addr ^ 2) & 0xFFF)) = Value;
+    else
+    {
+        *(uint16_t *)(RSPInfo.DMEM + ((Addr ^ 2) & 0xFFF)) = Value;
+    }
 }
 
 void RSP_SHV_DMEM(uint32_t Addr, int vect, int element)
@@ -579,21 +582,17 @@ void RSP_SUV_DMEM(uint32_t Addr, int vect, int element)
 
 void RSP_SW_DMEM(uint32_t Addr, uint32_t Value)
 {
-    Addr &= 0xFFF;
     if ((Addr & 0x3) != 0)
     {
-        if (Addr > 0xFFC)
-        {
-            DisplayError("There is a problem with:\nRSP_SW_DMEM");
-            return;
-        }
-        *(uint8_t *)(RSPInfo.DMEM + ((Addr + 0) ^ 3)) = (Value >> 24) & 0xFF;
-        *(uint8_t *)(RSPInfo.DMEM + ((Addr + 1) ^ 3)) = (Value >> 16) & 0xFF;
-        *(uint8_t *)(RSPInfo.DMEM + ((Addr + 2) ^ 3)) = (Value >> 8) & 0xFF;
-        *(uint8_t *)(RSPInfo.DMEM + ((Addr + 3) ^ 3)) = (Value >> 0) & 0xFF;
-        return;
+        *(uint8_t *)(RSPInfo.DMEM + (((Addr + 0) ^ 3) & 0xFFF)) = (Value >> 24) & 0xFF;
+        *(uint8_t *)(RSPInfo.DMEM + (((Addr + 1) ^ 3) & 0xFFF)) = (Value >> 16) & 0xFF;
+        *(uint8_t *)(RSPInfo.DMEM + (((Addr + 2) ^ 3) & 0xFFF)) = (Value >> 8) & 0xFF;
+        *(uint8_t *)(RSPInfo.DMEM + (((Addr + 3) ^ 3) & 0xFFF)) = (Value >> 0) & 0xFF;
     }
-    *(uint32_t *)(RSPInfo.DMEM + Addr) = Value;
+    else
+    {
+        *(uint32_t *)(RSPInfo.DMEM + (Addr & 0xFFF)) = Value;
+    }
 }
 
 void RSP_SWV_DMEM(uint32_t Addr, int vect, int element)
