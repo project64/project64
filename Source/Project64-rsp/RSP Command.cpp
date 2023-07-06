@@ -66,9 +66,9 @@ void Create_RSP_Commands_Window(int Child)
     }
     else
     {
+        Stepping_Commands = true;
         if (!InRSPCommandsWindow)
         {
-            Stepping_Commands = true;
             CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Create_RSP_Commands_Window,
                          (LPVOID)true, 0, &ThreadID);
         }
