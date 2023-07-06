@@ -159,10 +159,10 @@ void RSPInstruction::DecodeName(void)
         sprintf(m_Param, "%s, 0x%04X (%s)", GPR_Name(m_Instruction.rt), m_Instruction.offset, GPR_Name(m_Instruction.base));
         break;
     case RSP_LC2:
-        DecodeLC2Name();
+        DecodeLSC2Name('L');
         break;
     case RSP_SC2:
-        DecodeSC2Name();
+        DecodeLSC2Name('S');
         break;
     default:
         strcpy(m_Name, "UNKNOWN");
@@ -523,107 +523,57 @@ void RSPInstruction::DecodeCop2Name(void)
     }
 }
 
-void RSPInstruction::DecodeLC2Name(void)
+void RSPInstruction::DecodeLSC2Name(const char LoadStoreIdent)
 {
     switch (m_Instruction.rd)
     {
     case RSP_LSC2_BV:
-        strcpy(m_Name, "LBV");
+        sprintf(m_Name, "%cBV", LoadStoreIdent);
         sprintf(m_Param, "$v%d[%d], %s0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? "-" : "", abs(m_Instruction.voffset << 0), GPR_Name(m_Instruction.base));
         break;
     case RSP_LSC2_SV:
-        strcpy(m_Name, "LSV");
+        sprintf(m_Name, "%cSV", LoadStoreIdent);
         sprintf(m_Param, "$v%d[%d], %s0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? "-" : "", abs(m_Instruction.voffset << 1), GPR_Name(m_Instruction.base));
         break;
     case RSP_LSC2_LV:
-        strcpy(m_Name, "LLV");
+        sprintf(m_Name, "%cLV", LoadStoreIdent);
         sprintf(m_Param, "$v%d[%d], %s0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? "-" : "", abs(m_Instruction.voffset << 2), GPR_Name(m_Instruction.base));
         break;
     case RSP_LSC2_DV:
-        strcpy(m_Name, "LDV");
+        sprintf(m_Name, "%cDV", LoadStoreIdent);
         sprintf(m_Param, "$v%d[%d], %s0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? "-" : "", abs(m_Instruction.voffset << 3), GPR_Name(m_Instruction.base));
         break;
     case RSP_LSC2_QV:
-        strcpy(m_Name, "LQV");
+        sprintf(m_Name, "%cQV", LoadStoreIdent);
         sprintf(m_Param, "$v%d[%d], %s0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? "-" : "", abs(m_Instruction.voffset << 4), GPR_Name(m_Instruction.base));
         break;
     case RSP_LSC2_RV:
-        strcpy(m_Name, "LRV");
+        sprintf(m_Name, "%cRV", LoadStoreIdent);
         sprintf(m_Param, "$v%d[%d], %s0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? "-" : "", abs(m_Instruction.voffset << 4), GPR_Name(m_Instruction.base));
         break;
     case RSP_LSC2_PV:
-        strcpy(m_Name, "LPV");
+        sprintf(m_Name, "%cPV", LoadStoreIdent);
         sprintf(m_Param, "$v%d[%d], %s0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? "-" : "", abs(m_Instruction.voffset << 3), GPR_Name(m_Instruction.base));
         break;
     case RSP_LSC2_UV:
-        strcpy(m_Name, "LUV");
+        sprintf(m_Name, "%cUV", LoadStoreIdent);
         sprintf(m_Param, "$v%d[%d], %s0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? "-" : "", abs(m_Instruction.voffset << 3), GPR_Name(m_Instruction.base));
         break;
     case RSP_LSC2_HV:
-        strcpy(m_Name, "LHV");
+        sprintf(m_Name, "%cHV", LoadStoreIdent);
         sprintf(m_Param, "$v%d[%d], %s0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? "-" : "", abs(m_Instruction.voffset << 4), GPR_Name(m_Instruction.base));
         break;
     case RSP_LSC2_FV:
-        strcpy(m_Name, "LFV");
+        sprintf(m_Name, "%cFV", LoadStoreIdent);
+        sprintf(m_Param, "$v%d[%d], %s0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? "-" : "", abs(m_Instruction.voffset << 4), GPR_Name(m_Instruction.base));
+        break;
+    case RSP_LSC2_WV:
+        sprintf(m_Name, "%cWV", LoadStoreIdent);
         sprintf(m_Param, "$v%d[%d], %s0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? "-" : "", abs(m_Instruction.voffset << 4), GPR_Name(m_Instruction.base));
         break;
     case RSP_LSC2_TV:
-        strcpy(m_Name, "LTV");
+        sprintf(m_Name, "%cTV", LoadStoreIdent);
         sprintf(m_Param, "$v%d[%d], %s0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? "-" : "", abs(m_Instruction.voffset << 4), GPR_Name(m_Instruction.base));
-        break;
-    default:
-        strcpy(m_Name, "UNKNOWN");
-        sprintf(m_Param, "0x%08X", m_Instruction.Value);
-    }
-}
-
-void RSPInstruction::DecodeSC2Name(void)
-{
-    switch (m_Instruction.rd)
-    {
-    case RSP_LSC2_BV:
-        strcpy(m_Name, "SBV");
-        sprintf(m_Param, "$v%d[%d], %c0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? '-' : '+', abs(m_Instruction.voffset), GPR_Name(m_Instruction.base));
-        break;
-    case RSP_LSC2_SV:
-        strcpy(m_Name, "SSV");
-        sprintf(m_Param, "$v%d[%d], %c0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? '-' : '+', abs(m_Instruction.voffset), GPR_Name(m_Instruction.base));
-        break;
-    case RSP_LSC2_LV:
-        strcpy(m_Name, "SLV");
-        sprintf(m_Param, "$v%d[%d], %c0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? '-' : '+', abs(m_Instruction.voffset), GPR_Name(m_Instruction.base));
-        break;
-    case RSP_LSC2_DV:
-        strcpy(m_Name, "SDV");
-        sprintf(m_Param, "$v%d[%d], %c0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? '-' : '+', abs(m_Instruction.voffset), GPR_Name(m_Instruction.base));
-        break;
-    case RSP_LSC2_QV:
-        strcpy(m_Name, "SQV");
-        sprintf(m_Param, "$v%d[%d], %c0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? '-' : '+', abs(m_Instruction.voffset), GPR_Name(m_Instruction.base));
-        break;
-    case RSP_LSC2_RV:
-        strcpy(m_Name, "SRV");
-        sprintf(m_Param, "$v%d[%d], %c0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? '-' : '+', abs(m_Instruction.voffset), GPR_Name(m_Instruction.base));
-        break;
-    case RSP_LSC2_PV:
-        strcpy(m_Name, "SPV");
-        sprintf(m_Param, "$v%d[%d], %c0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? '-' : '+', abs(m_Instruction.voffset), GPR_Name(m_Instruction.base));
-        break;
-    case RSP_LSC2_UV:
-        strcpy(m_Name, "SUV");
-        sprintf(m_Param, "$v%d[%d], %c0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? '-' : '+', abs(m_Instruction.voffset), GPR_Name(m_Instruction.base));
-        break;
-    case RSP_LSC2_HV:
-        strcpy(m_Name, "SHV");
-        sprintf(m_Param, "$v%d[%d], %c0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? '-' : '+', abs(m_Instruction.voffset), GPR_Name(m_Instruction.base));
-        break;
-    case RSP_LSC2_FV:
-        strcpy(m_Name, "SFV");
-        sprintf(m_Param, "$v%d[%d], %c0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? '-' : '+', abs(m_Instruction.voffset), GPR_Name(m_Instruction.base));
-        break;
-    case RSP_LSC2_TV:
-        strcpy(m_Name, "STV");
-        sprintf(m_Param, "$v%d[%d], %c0x%03X(%s)", m_Instruction.rt, m_Instruction.del, (m_Instruction.voffset < 0) ? '-' : '+', abs(m_Instruction.voffset), GPR_Name(m_Instruction.base));
         break;
     default:
         strcpy(m_Name, "UNKNOWN");

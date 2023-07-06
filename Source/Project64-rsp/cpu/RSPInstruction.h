@@ -22,8 +22,7 @@ private:
     void DecodeRegImmName(void);
     void DecodeCop0Name(void);
     void DecodeCop2Name(void);
-    void DecodeLC2Name(void);
-    void DecodeSC2Name(void);
+    void DecodeLSC2Name(const char LoadStoreIdent);
 
     static const char * ElementSpecifier(uint32_t Element);
 
