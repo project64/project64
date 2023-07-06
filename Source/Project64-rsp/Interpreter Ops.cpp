@@ -2249,7 +2249,7 @@ void rsp_UnknownOpcode(void)
     }
     else
     {
-        sprintf(Message, "Unhandled Opcode\n%s\n\nStopping emulation.\n\nWOuld you like to open the debugger?",
+        sprintf(Message, "Unhandled Opcode\n%s\n\nStopping emulation.\n\nWould you like to open the debugger?",
             RSPInstruction(*PrgCount, RSPOpC.Value).NameAndParam().c_str());
         response = MessageBoxA(NULL, Message, "Error", MB_YESNO | MB_ICONERROR);
         if (response == IDYES)
