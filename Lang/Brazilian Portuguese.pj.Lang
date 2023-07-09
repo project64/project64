@@ -29,7 +29,7 @@
 #126#  "Salvar como..."
 #127#  "&Carregar estado"
 #128#  "Carregar..."
-#129#  "Salve estado a&tual"
+#129#  "Salvar estado a&tual"
 #130#  "&Trapaças..."
 #131#  "Botão GS"
 #132#  "R&etomar"
@@ -58,7 +58,7 @@
 //Help menu
 #180#  "&Ajuda"
 #182#  "&Sobre o Project 64"
-#184# "&Site da Web"
+#184# "&Página da Web"
 #185#  "&Apoiar o Project64"
 #186#  "&Discord"
 
@@ -74,7 +74,7 @@
 #198#  "Compartimento 8"
 #199#  "Compartimento 9"
 #200#  "Compartimento 10"
-#201#  "Compartimento de salvamento (%ws) selecionado"
+#201#  "Compartimento (%ws) selecionado"
 
 // Pop-up menu
 #210#  "Jogar o jogo"
@@ -105,7 +105,7 @@
 #253#  "Parar emulação da imagem ROM carregada"
 #254#  "Selecionar o diretório das ROMs"
 #255#  "Atualizar a lista atual das ROMs no explorador de ROMs"
-#256#  "Sair deste aplicativo"
+#256#  "Sair do aplicativo"
 #257#  "Reiniciar imagem da ROM atual (recarregar quaisquer mudanças nas configurações)"
 #258#  "Interromper/retomar a emulação da ROM atual em execução"
 #259#  "Gerar uma imagem bitmap da tela atual"
@@ -117,7 +117,7 @@
 #265#  "Ativar/desativar as trapaças do Gameshark"
 #266#  "O botão do Gameshark é usado com trapaças específicas."
 #267#  "Mudar a emulação do modo janela para tela inteira."
-#268#  "Fazer a janela ficar na frente de todas as outras janelas"
+#268#  "Fazer a janela ficar por cima das demais janelas"
 #269#  "Alterar as configurações dentro do plugin de gráficos"
 #270#  "Alterar as configurações dentro do plugin de áudio"
 #271#  "Alterar as configurações dentro do plugin do controle (ex.: definir as teclas)"
@@ -128,7 +128,7 @@
 #276#  "Visualizar perguntas frequentes do aplicativo"
 #278#  "Sobre o aplicativo e os autores"
 #277#  "Sobre os autores dos arquivos de suporte"
-#279#  "Abrir esta imagem ROM anteriormente aberta"
+#279#  "Abrir esta imagem ROM anteriormente carregada"
 #280#  "Escolher este diretório como diretório das ROMs"
 #281#  "Alterar o aplicativo para usar este idioma"
 #282#  "Escolher este local de salvamento para o estado salvo"
@@ -166,7 +166,7 @@
 #320#  "Selecionar o diretório atual das ROMs"
 
 //Messages
-#340#  "ROM danificada? Use o GoodN64 e verifique se o RDB está atualizado"
+#340#  "ROM corrompida? Use o GoodN64 e verifique se o RDB está atualizado"
 
 /*** Options ***/
 
@@ -190,7 +190,7 @@
 
 // Plugin dialog
 #420#  "Sobre"
-#421#  " Plugin RSP (Processador do Sinal da Realidade): "
+#421#  " Plugin RSP (Reality Signal Processor): "
 #422#  " Plugin de vídeo (gráficos): "
 #423#  " Plugin de áudio (som): "
 #424#  " Plugin de entrada (controle): "
@@ -286,14 +286,14 @@
 #537#  "Contagem de AIs por byte:"
 #538#  "Motor de 32 bits"
 #539#  "Atrasar a interrupção do DP"
-#5400# "Modificador overclock:"
+#5400# "Modificador de overclock:"
 #5410# "DMA desalinhado"
 #5420# "Aleatorizar as interrupções SI/PI"
 #5440# "Tempo de busca no disco:"
 #5441# "Turbo"
 #5442# "Lento"
-#5443# "Tamanho de memória (conhecido):"
-#5444# "Tamanho de memória (desconhecido):"
+#5443# "Tamanho da memória (conhecido):"
+#5444# "Tamanho da memória (desconhecido):"
 #5445# "Cache do registro do FPU:"
 
 //Core styles
@@ -469,11 +469,11 @@
 
 #2000#  "*** CPU PAUSADA ***"
 #2001#  "CPU retomada"
-#2002#  "Num ciclo permanente do qual não se pode sair.\nA emulação parará agora.\n\nVerifique a ROM e as suas configurações."
+#2002#  "Num ciclo permanente que não pode ser abandonado.\nA emulação será interrompida agora.\n\nVerifique a ROM e as suas configurações."
 #2003#  "Falha ao atribuir a memória"
 #2004#  "O plugin de vídeo padrão ou selecionado está ausente ou é inválido.\n\nÉ necessário ir às Configurações e selecionar um plugin de vídeo (gráficos).\nVerifique se você tem pelo menos um arquivo de plugin compatível na sua pasta de plugins."
 #2005#  "O plugin de áudio padrão ou selecionado está ausente ou é inválido.\n\nÉ necessário ir às Configurações e selecionar um plugin de áudio (som).\nVerifique se você tem pelo menos um arquivo de plugin compatível na sua pasta de plugins."
-#2006#  "O plugin RSP padrão ou selecionado está ausente ou é inválido.\n\nÉ necessário ir às Configurações e selecionar um plugin RSP (Processador do Sinal de Realidade).\nVerifique se você tem pelo menos um arquivo de plugin compatível na sua pasta de plugins."
+#2006#  "O plugin RSP padrão ou selecionado está ausente ou é inválido.\n\nÉ necessário ir às Configurações e selecionar um plugin RSP (Reality Signal Processor).\nVerifique se você tem pelo menos um arquivo de plugin compatível na sua pasta de plugins."
 #2007#  "O plugin de controle padrão ou selecionado está ausente ou é inválido.\n\nÉ necessário ir às Configurações e selecionar um plugin de entrada (controle).\nVerifique se você tem pelo menos um arquivo de plugin compatível na sua pasta de plugins."
 #2008#  "Falha ao carregar o plugin:"
 #2009#  "Falha ao carregar a palavra.\n\Verifique a ROM e as suas configurações."
@@ -491,12 +491,12 @@
 #2021#  "Ação desconhecida da memória\n\nEmulação interrompida"
 #2022#  "Opcode R4300i não tratado em"
 #2023#  "Executar a partir do espaço não mapeado.\n\nVerifique a ROM e as suas configurações."
-#2024#  "Este estado salvo não parece corresponder com a ROM em execução.\n\nOs estados devem ser salvos e carregados entre ROMs 100% idênticas.\nEm particular a REGIÃO e VERSÃO devem ser as mesmas.\nCarregar este estado é capaz de travar o jogo e/ou o emulador.\nDeseja mesmo continuar carregando?"
+#2024#  "Este estado salvo não parece corresponder com a ROM em execução.\n\nOs estados devem ser salvos e carregados entre ROMs 100% idênticas.\nEm particular, a REGIÃO e a VERSÃO devem ser as mesmas.\nCarregar este estado é capaz de travar o jogo e/ou o emulador.\nDeseja mesmo continuar?"
 #2025#  "Erro"
 #2026#  "Sequência de direitos autorais não encontrada no LUT. O jogo deixará de funcionar."
 #2027#  "Falha na proteção contra cópia"
-#2028#  "Mudar um plugin exige que o Project64 reinicie uma ROM em execução.\nSe você não quer perder o local, responda "Não" e salve primeiro o estado atual.\n\nMudar os plugins e reiniciar a ROM agora?"
-#2029#  "Mudar plugins"
+#2028#  "Alterar um plugin exige que o Project64 reinicie uma ROM em execução.\nCaso não queira perder a sua posição, responda "Não" e salve o estado atual primeiro.\n\nAlterar os plugins e reiniciar a ROM agora?"
+#2029#  "Alterar plugins"
 #2030#  "Emulação encerrada"
 #2031#  "Emulação iniciada"
 #2032#  "Não foi possível carregar o estado"
@@ -522,9 +522,9 @@
 #2052#  "Erro do programa"
 #2053#  "Falha ao localizar o nome do arquivo no arquivo 7z"
 #2054#  "Emulação gráfica de baixo nível"
-#2055#  "Os gráficos LLE não são para o uso geral!!!\nÉ aconselhável que você só o utilize para testes e não para jogar jogos.\n\nMudar para gráficos LLE?"
+#2055#  "Os gráficos LLE não são para o uso geral!!!\nÉ aconselhável que você só o utilize para testes e não para jogar jogos.\n\nAlterar para gráficos LLE?"
 #2056#  "Emulação sonora de alto nível"
-#2057#  "O áudio HLE requer um plugin de terceiros!!!\nSe você não tem um plugin de áudio de terceiros que suporta HLE, não poderá ouvir o som.\n\nMudar para áudio HLE?"
+#2057#  "O áudio HLE requer um plugin de terceiros!!!\nSe você não tem um plugin de áudio de terceiros que suporta HLE, não poderá ouvir o som.\n\nAlterar para áudio HLE?"
 #2058#  "O arquivo carregado não parece ser uma ROM IPL válida do 64DD.\n\nVerifique as ROMs com o GoodN64."
 #2059#  "Não foi possível localizar o caminho da ROM IPL de varejo do 64DD japonês.\nÉ necessário para jogar imagens de disco da região japonesa do 64DD.\n\nSelecione a ROM exigida nas Configurações."
 #2061#  "Não foi possível localizar o caminho da ROM IPL de varejo do 64DD americano.\nÉ necessário para jogar imagens de disco da região americana do 64DD.\n\nSelecione a ROM exigida nas Configurações."
@@ -540,7 +540,7 @@
 
 #3000#  "Configurações"
 #3001#  "Ajuda/Fórum"
-#3002#  "Relatar problema"
+#3002#  "Comunicar problema"
 #3003#  "Sobre"
 #3004#  "Jogou recentemente"
 #3005#  "Jogos"
@@ -557,7 +557,7 @@
 #3016#  "Project64 para Android"
 #3017#  "Licença"
 #3018#  "Revisão"
-#3019#  "O Project64 para Android\u2122 é um transporte da versão de Windows do Project64. A versão de Android\u2122 consegue executar a maioria dos jogos do N64."
+#3019#  "O Project64 para Android\u2122 é uma portabilidade da versão para Windows do Project64. A versão para Android\u2122 pode executar a maioria dos jogos do N64."
 #3020#  "Autores do Project64."
 #3021#  "Discord"
 
