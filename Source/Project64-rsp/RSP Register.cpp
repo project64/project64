@@ -1,7 +1,7 @@
 #include <windows.h>
 
 #include "Rsp.h"
-#include "RspTypes.h"
+#include "cpu/RspTypes.h"
 #include <commctrl.h>
 #include <stdio.h>
 
@@ -40,7 +40,7 @@ WNDPROC RefreshProc;
 // RSP registers
 UWORD32 RSP_GPR[32], RSP_Flags[4];
 UDWORD RSP_ACCUM[8];
-VECTOR RSP_Vect[32] alignas(16);
+RSPVector RSP_Vect[32];
 
 char * GPR_Strings[32] = {
     "R0", "AT", "V0", "V1", "A0", "A1", "A2", "A3",
@@ -122,7 +122,10 @@ void HideRSP_RegisterPanel(int Panel)
 void InitilizeRSPRegisters(void)
 {
     memset(RSP_GPR, 0, sizeof(RSP_GPR));
-    memset(RSP_Vect, 0, sizeof(RSP_Vect));
+    for (size_t i = 0, n = sizeof(RSP_Vect) / sizeof(RSP_Vect[0]); i < n; i++)
+    {
+        RSP_Vect[i] = RSPVector();
+    }
 }
 
 void PaintRSP_HiddenPanel(HWND hWnd)
@@ -711,16 +714,16 @@ void UpdateRSPRegistersScreen(void)
         case Vector1:
             for (count = 0; count < 16; count++)
             {
-                sprintf(RegisterValue, " 0x%08X - %08X - %08X - %08X", RSP_Vect[count].W[3],
-                        RSP_Vect[count].W[2], RSP_Vect[count].W[1], RSP_Vect[count].W[0]);
+                sprintf(RegisterValue, " 0x%08X - %08X - %08X - %08X", RSP_Vect[count].s32(3),
+                        RSP_Vect[count].s32(2), RSP_Vect[count].s32(1), RSP_Vect[count].s32(0));
                 SetWindowTextA(hVECT1[count], RegisterValue);
             }
             break;
         case Vector2:
             for (count = 0; count < 16; count++)
             {
-                sprintf(RegisterValue, " 0x%08X - %08X - %08X - %08X", RSP_Vect[count + 16].W[3],
-                        RSP_Vect[count + 16].W[2], RSP_Vect[count + 16].W[1], RSP_Vect[count + 16].W[0]);
+                sprintf(RegisterValue, " 0x%08X - %08X - %08X - %08X", RSP_Vect[count + 16].s32(3),
+                        RSP_Vect[count + 16].s32(2), RSP_Vect[count + 16].s32(1), RSP_Vect[count + 16].s32(0));
                 SetWindowTextA(hVECT2[count], RegisterValue);
             }
             break;

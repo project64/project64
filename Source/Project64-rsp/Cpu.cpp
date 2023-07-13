@@ -5,7 +5,7 @@
 #include "RSP registers.h"
 #include "Recompiler CPU.h"
 #include "Rsp.h"
-#include "RspTypes.h"
+#include "cpu/RspTypes.h"
 #include "breakpoint.h"
 #include "log.h"
 #include "memory.h"

@@ -1,4 +1,4 @@
-#include "RspTypes.h"
+#include "cpu/RspTypes.h"
 
 #define SP_STATUS_HALT 0x001       // Bit  0: Halt
 #define SP_STATUS_BROKE 0x002      // Bit  1: Broke
@@ -111,4 +111,4 @@ void UpdateRSPRegistersScreen(void);
 // RSP registers
 extern UWORD32 RSP_GPR[32], RSP_Flags[4];
 extern UDWORD RSP_ACCUM[8];
-extern VECTOR RSP_Vect[32];
+extern RSPVector RSP_Vect[32];

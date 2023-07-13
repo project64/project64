@@ -1,5 +1,4 @@
-#ifndef __Types_h
-#define __Types_h
+#pragma once
 
 #include <stdint.h>
 
@@ -25,16 +24,18 @@ typedef union tagUDWORD
     uint8_t UB[8];
 } UDWORD;
 
-typedef union tagVect
+class RSPVector
 {
-    int64_t DW[2];
-    uint64_t UDW[2];
-    int32_t W[4];
-    uint32_t UW[4];
-    int16_t HW[8];
-    uint16_t UHW[8];
-    int8_t B[16];
-    uint8_t UB[16];
-} VECTOR;
+public:
+    RSPVector();
 
-#endif
+    int8_t & s8(uint8_t Index);
+    uint8_t & u8(uint8_t Index);
+    int16_t & s16(uint8_t Index);
+    uint16_t & u16(uint8_t Index);
+    int32_t & s32(uint8_t Index);
+    uint64_t & u64(uint8_t Index);
+
+private:
+    uint64_t m_Reg[2] alignas(16);
+};

@@ -20,7 +20,7 @@
 #include "RSP Registers.h"
 #include "Recompiler CPU.h"
 #include "Rsp.h"
-#include "RspTypes.h"
+#include "cpu/RspTypes.h"
 #include "Version.h"
 #include "breakpoint.h"
 #include "log.h"

@@ -49,6 +49,7 @@
     <ClCompile Include="breakpoint.cpp" />
     <ClCompile Include="Cpu.cpp" />
     <ClCompile Include="cpu\RSPiInstruction.cpp" />
+    <ClCompile Include="cpu\RspTypes.cpp" />
     <ClCompile Include="dma.cpp" />
     <ClCompile Include="Interpreter CPU.cpp" />
     <ClCompile Include="Interpreter Ops.cpp" />
@@ -84,7 +85,6 @@
     <ClInclude Include="RSP Registers.h" />
     <ClInclude Include="Rsp.h" />
     <ClInclude Include="RspTypes.h" />
-    <ClInclude Include="Version.h" />
     <ClInclude Include="X86.h" />
   </ItemGroup>
   <ItemGroup>
