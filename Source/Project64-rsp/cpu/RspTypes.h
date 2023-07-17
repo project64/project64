@@ -29,6 +29,9 @@ class RSPVector
 public:
     RSPVector();
 
+    uint16_t & ue(uint8_t Index, uint8_t Element);
+    int16_t & se(uint8_t Index, uint8_t Element);
+
     int8_t & s8(uint8_t Index);
     uint8_t & u8(uint8_t Index);
     int16_t & s16(uint8_t Index);

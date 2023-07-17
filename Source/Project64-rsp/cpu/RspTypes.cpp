@@ -1,9 +1,23 @@
 #include "RspTypes.h"
 
+extern UDWORD EleSpec[16];
+
 RSPVector::RSPVector()
 {
     m_Reg[0] = 0;
     m_Reg[1] = 0;
+}
+
+uint16_t & RSPVector::ue(uint8_t Index, uint8_t Element)
+{
+    Index = EleSpec[Element].B[Index];
+    return ((uint16_t*)&m_Reg)[7 - Index];
+}
+
+int16_t & RSPVector::se(uint8_t Index, uint8_t Element)
+{
+    Index = EleSpec[Element].B[Index];
+    return ((int16_t*)&m_Reg)[7 - Index];
 }
 
 int8_t & RSPVector::s8(uint8_t Index)
