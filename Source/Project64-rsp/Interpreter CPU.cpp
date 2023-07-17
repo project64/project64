@@ -417,7 +417,7 @@ DWORD RunInterpreterCPU(DWORD Cycles)
             WaitingForStep = true;
             SetRSPCommandViewto(*PrgCount);
             UpdateRSPRegistersScreen();
-            while (WaitingForStep == true)
+            while (WaitingForStep != 0)
             {
                 Sleep(20);
                 if (!Stepping_Commands)

@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <windows.h>
 
-UDWORD EleSpec[32], Indx[32];
+UDWORD EleSpec[16], Indx[16];
 RSPOpcode RSPOpC;
 uint32_t *PrgCount, NextInstruction, RSP_Running, RSP_MfStatusCount;
 
@@ -51,7 +51,6 @@ void SetCPU(DWORD core)
 
 void Build_RSP(void)
 {
-    int i;
     extern UWORD32 Recp, RecpResult, SQroot, SQrootResult;
 
     Recp.UW = 0;
@@ -62,92 +61,54 @@ void Build_RSP(void)
     SetCPU(CPUCore);
     ResetTimerList();
 
-    EleSpec[0].DW = 0;
-    EleSpec[1].DW = 0;
-    EleSpec[2].DW = 0;
-    EleSpec[3].DW = 0;
-    EleSpec[4].DW = 0;
-    EleSpec[5].DW = 0;
-    EleSpec[6].DW = 0;
-    EleSpec[7].DW = 0;
-    EleSpec[8].DW = 0;
-    EleSpec[9].DW = 0;
-    EleSpec[10].DW = 0;
-    EleSpec[11].DW = 0;
-    EleSpec[12].DW = 0;
-    EleSpec[13].DW = 0;
-    EleSpec[14].DW = 0;
-    EleSpec[15].DW = 0;
-    EleSpec[16].DW = 0x0001020304050607; // None
-    EleSpec[17].DW = 0x0001020304050607; // None
-    EleSpec[18].DW = 0x0000020204040606; // 0q
-    EleSpec[19].DW = 0x0101030305050707; // 1q
-    EleSpec[20].DW = 0x0000000004040404; // 0h
-    EleSpec[21].DW = 0x0101010105050505; // 1h
-    EleSpec[22].DW = 0x0202020206060606; // 2h
-    EleSpec[23].DW = 0x0303030307070707; // 3h
-    EleSpec[24].DW = 0x0000000000000000; // 0
-    EleSpec[25].DW = 0x0101010101010101; // 1
-    EleSpec[26].DW = 0x0202020202020202; // 2
-    EleSpec[27].DW = 0x0303030303030303; // 3
-    EleSpec[28].DW = 0x0404040404040404; // 4
-    EleSpec[29].DW = 0x0505050505050505; // 5
-    EleSpec[30].DW = 0x0606060606060606; // 6
-    EleSpec[31].DW = 0x0707070707070707; // 7
+    EleSpec[0].DW = 0x0001020304050607; // None
+    EleSpec[1].DW = 0x0001020304050607; // None
+    EleSpec[2].DW = 0x0000020204040606; // 0q
+    EleSpec[3].DW = 0x0101030305050707; // 1q
+    EleSpec[4].DW = 0x0000000004040404; // 0h
+    EleSpec[5].DW = 0x0101010105050505; // 1h
+    EleSpec[6].DW = 0x0202020206060606; // 2h
+    EleSpec[7].DW = 0x0303030307070707; // 3h
+    EleSpec[8].DW = 0x0000000000000000; // 0
+    EleSpec[9].DW = 0x0101010101010101; // 1
+    EleSpec[10].DW = 0x0202020202020202; // 2
+    EleSpec[11].DW = 0x0303030303030303; // 3
+    EleSpec[12].DW = 0x0404040404040404; // 4
+    EleSpec[13].DW = 0x0505050505050505; // 5
+    EleSpec[14].DW = 0x0606060606060606; // 6
+    EleSpec[15].DW = 0x0707070707070707; // 7
 
-    Indx[0].DW = 0;
-    Indx[1].DW = 0;
-    Indx[2].DW = 0;
-    Indx[3].DW = 0;
-    Indx[4].DW = 0;
-    Indx[5].DW = 0;
-    Indx[6].DW = 0;
-    Indx[7].DW = 0;
-    Indx[8].DW = 0;
-    Indx[9].DW = 0;
-    Indx[10].DW = 0;
-    Indx[11].DW = 0;
-    Indx[12].DW = 0;
-    Indx[13].DW = 0;
-    Indx[14].DW = 0;
-    Indx[15].DW = 0;
+    Indx[0].DW = 0x0001020304050607; // None
+    Indx[1].DW = 0x0001020304050607; // None
+    Indx[2].DW = 0x0103050700020406; // 0q
+    Indx[3].DW = 0x0002040601030507; // 1q
+    Indx[4].DW = 0x0102030506070004; // 0h
+    Indx[5].DW = 0x0002030406070105; // 1h
+    Indx[6].DW = 0x0001030405070206; // 2h
+    Indx[7].DW = 0x0001020405060307; // 3h
+    Indx[8].DW = 0x0102030405060700; // 0
+    Indx[9].DW = 0x0002030405060701; // 1
+    Indx[10].DW = 0x0001030405060702; // 2
+    Indx[11].DW = 0x0001020405060703; // 3
+    Indx[12].DW = 0x0001020305060704; // 4
+    Indx[13].DW = 0x0001020304060705; // 5
+    Indx[14].DW = 0x0001020304050706; // 6
+    Indx[15].DW = 0x0001020304050607; // 7
 
-    Indx[16].DW = 0x0001020304050607; // None
-    Indx[17].DW = 0x0001020304050607; // None
-    Indx[18].DW = 0x0103050700020406; // 0q
-    Indx[19].DW = 0x0002040601030507; // 1q
-    Indx[20].DW = 0x0102030506070004; // 0h
-    Indx[21].DW = 0x0002030406070105; // 1h
-    Indx[22].DW = 0x0001030405070206; // 2h
-    Indx[23].DW = 0x0001020405060307; // 3h
-    Indx[24].DW = 0x0102030405060700; // 0
-    Indx[25].DW = 0x0002030405060701; // 1
-    Indx[26].DW = 0x0001030405060702; // 2
-    Indx[27].DW = 0x0001020405060703; // 3
-    Indx[28].DW = 0x0001020305060704; // 4
-    Indx[29].DW = 0x0001020304060705; // 5
-    Indx[30].DW = 0x0001020304050706; // 6
-    Indx[31].DW = 0x0001020304050607; // 7
-
-    for (i = 16; i < 32; i++)
+    for (uint8_t i = 0, n = sizeof(EleSpec) / sizeof(EleSpec[0]); i < n; i++)
     {
-        int count;
-
-        for (count = 0; count < 8; count++)
+        for (uint8_t z = 0; z < 8; z++)
         {
-            Indx[i].B[count] = 7 - Indx[i].B[count];
-            EleSpec[i].B[count] = 7 - EleSpec[i].B[count];
+            Indx[i].B[z] = 7 - Indx[i].B[z];
+            EleSpec[i].B[z] = 7 - EleSpec[i].B[z];
         }
-        for (count = 0; count < 4; count++)
+        for (uint8_t z = 0; z < 4; z++)
         {
-            BYTE Temp;
-
-            Temp = Indx[i].B[count];
-            Indx[i].B[count] = Indx[i].B[7 - count];
-            Indx[i].B[7 - count] = Temp;
+            uint8_t Temp = Indx[i].B[z];
+            Indx[i].B[z] = Indx[i].B[7 - z];
+            Indx[i].B[7 - z] = Temp;
         }
     }
-
     PrgCount = RSPInfo.SP_PC_REG;
 }
 

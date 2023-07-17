@@ -1228,7 +1228,7 @@ static void resampler_hle()
         accum.DW += const3;
         if (accum.W[1] > 0x7FFF)
         {
-            RSP_Vect[23].s16(i) = 0xFFFF;
+            RSP_Vect[23].u16(i) = 0xFFFF;
         }
         else if (accum.W[1] < -0x8000)
         {

@@ -2713,7 +2713,7 @@ void Compile_Vector_VMULF(void)
         CPU_Message("     Iteration: %i", count);
 
         el = Indx[RSPOpC.rs].B[count];
-        del = EleSpec[RSPOpC.rs].B[el];
+        del = EleSpec[RSPOpC.e].B[el];
 
         sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
         MoveSxVariableToX86regHalf(&RSP_Vect[RSPOpC.vs].s16(el), Reg, x86_EAX);
@@ -2857,7 +2857,7 @@ void Compile_Vector_VMUDL(void)
     {
         CPU_Message("     Iteration: %i", count);
         el = Indx[RSPOpC.rs].B[count];
-        del = EleSpec[RSPOpC.rs].B[el];
+        del = EleSpec[RSPOpC.e].B[el];
 
         sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rd, el);
         MoveZxVariableToX86regHalf(&RSP_Vect[RSPOpC.vs].u16(el), Reg, x86_EAX);
@@ -3023,7 +3023,7 @@ void Compile_Vector_VMUDM(void)
     {
         CPU_Message("     Iteration: %i", count);
         el = Indx[RSPOpC.rs].B[count];
-        del = EleSpec[RSPOpC.rs].B[el];
+        del = EleSpec[RSPOpC.e].B[el];
 
         /*sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
 		MoveSxVariableToX86regHalf(&RSP_Vect[RSPOpC.vs].s16(el), Reg, x86_EAX);*/
@@ -3159,7 +3159,7 @@ void Compile_Vector_VMUDN(void)
     {
         CPU_Message("     Iteration: %i", count);
         el = Indx[RSPOpC.rs].B[count];
-        del = EleSpec[RSPOpC.rs].B[el];
+        del = EleSpec[RSPOpC.e].B[el];
 
         /*sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rd, el);
 		MoveZxVariableToX86regHalf(&RSP_Vect[RSPOpC.vs].u16(el), Reg, x86_EAX);*/
@@ -3386,7 +3386,7 @@ void Compile_Vector_VMUDH(void)
         {
             CPU_Message("     Iteration: %i", count);
             el = Indx[RSPOpC.rs].B[count];
-            del = EleSpec[RSPOpC.rs].B[el];
+            del = EleSpec[RSPOpC.e].B[el];
 
             sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
             MoveSxVariableToX86regHalf(&RSP_Vect[RSPOpC.vs].s16(el), Reg, x86_EAX);
@@ -3451,7 +3451,7 @@ void Compile_Vector_VMACF(void)
     for (count = 0; count < 8; count++)
     {
         el = Indx[RSPOpC.rs].B[count];
-        del = EleSpec[RSPOpC.rs].B[el];
+        del = EleSpec[RSPOpC.e].B[el];
 
         CPU_Message("     Iteration: %i", count);
 
@@ -3536,7 +3536,7 @@ void Compile_Vector_VMADL(void)
     {
         CPU_Message("     Iteration: %i", count);
         el = Indx[RSPOpC.rs].B[count];
-        del = EleSpec[RSPOpC.rs].B[el];
+        del = EleSpec[RSPOpC.e].B[el];
 
         sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
         MoveZxVariableToX86regHalf(&RSP_Vect[RSPOpC.vs].s16(el), Reg, x86_EAX);
@@ -3624,7 +3624,7 @@ void Compile_Vector_VMADM(void)
     {
         CPU_Message("     Iteration: %i", count);
         el = Indx[RSPOpC.rs].B[count];
-        del = EleSpec[RSPOpC.rs].B[el];
+        del = EleSpec[RSPOpC.e].B[el];
 
         /*sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
 		MoveSxVariableToX86regHalf(&RSP_Vect[RSPOpC.vs].s16(el), Reg, x86_EAX);*/
@@ -3709,7 +3709,7 @@ void Compile_Vector_VMADN(void)
     {
         CPU_Message("     Iteration: %i", count);
         el = Indx[RSPOpC.rs].B[count];
-        del = EleSpec[RSPOpC.rs].B[el];
+        del = EleSpec[RSPOpC.e].B[el];
 
         /*sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rd, el);
 		MoveZxVariableToX86regHalf(&RSP_Vect[RSPOpC.vs].u16(el), Reg, x86_EAX);*/
@@ -3854,7 +3854,7 @@ void Compile_Vector_VMADH(void)
         {
             CPU_Message("     Iteration: %i", count);
             el = Indx[RSPOpC.rs].B[count];
-            del = EleSpec[RSPOpC.rs].B[el];
+            del = EleSpec[RSPOpC.e].B[el];
 
             /*sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
 			MoveSxVariableToX86regHalf(&RSP_Vect[RSPOpC.vs].s16(el), Reg, x86_EAX);*/
@@ -3998,7 +3998,7 @@ void Compile_Vector_VADD(void)
     {
         CPU_Message("     Iteration: %i", count);
         el = Indx[RSPOpC.rs].B[count];
-        del = EleSpec[RSPOpC.rs].B[el];
+        del = EleSpec[RSPOpC.e].B[el];
 
         sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
         MoveSxVariableToX86regHalf(&RSP_Vect[RSPOpC.vs].s16(el), Reg, x86_EAX);
@@ -4139,7 +4139,7 @@ void Compile_Vector_VSUB(void)
     {
         CPU_Message("     Iteration: %i", count);
         el = Indx[RSPOpC.rs].B[count];
-        del = EleSpec[RSPOpC.rs].B[el];
+        del = EleSpec[RSPOpC.e].B[el];
 
         MoveSxVariableToX86regHalf(&RSP_Vect[RSPOpC.vs].s16(el), "RSP_Vect[RSPOpC.vs].s16(el)", x86_EAX);
         if (!bOptimize)
@@ -4290,7 +4290,7 @@ void Compile_Vector_VABS(void)
     {
         CPU_Message("     Iteration: %i", count);
         el = Indx[RSPOpC.rs].B[count];
-        del = EleSpec[RSPOpC.rs].B[el];
+        del = EleSpec[RSPOpC.e].B[el];
 
         if (RSPOpC.rd == RSPOpC.rt && (RSPOpC.rs & 0xF) < 2)
         {
@@ -4400,7 +4400,7 @@ void Compile_Vector_VADDC(void)
     {
         CPU_Message("     Iteration: %i", count);
         el = Indx[RSPOpC.rs].B[count];
-        del = EleSpec[RSPOpC.rs].B[el];
+        del = EleSpec[RSPOpC.e].B[el];
 
         /*sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
 		MoveZxVariableToX86regHalf(&RSP_Vect[RSPOpC.vs].s16(el), Reg, x86_EAX);*/
@@ -4469,7 +4469,7 @@ void Compile_Vector_VSUBC(void)
     {
         CPU_Message("     Iteration: %i", count);
         el = Indx[RSPOpC.rs].B[count];
-        del = EleSpec[RSPOpC.rs].B[el];
+        del = EleSpec[RSPOpC.e].B[el];
 
         sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
         MoveZxVariableToX86regHalf(&RSP_Vect[RSPOpC.vs].s16(el), Reg, x86_EAX);
@@ -4584,7 +4584,7 @@ void Compile_Vector_VLT(void)
     MoveVariableToX86reg(&RSP_Flags[0].UW, "&RSP_Flags[0].UW", x86_ESI);
     for (el = 0; el < 8; el++)
     {
-        del = EleSpec[RSPOpC.rs].B[el];
+        del = EleSpec[RSPOpC.e].B[el];
         flag = 0x101 << (7 - el);
         if (del != el || RSPOpC.rt != RSPOpC.rd)
         {
@@ -4685,7 +4685,7 @@ void Compile_Vector_VEQ(void)
     XorConstToX86Reg(x86_EBX, 0xFFFF);
     for (el = 0; el < 8; el++)
     {
-        del = EleSpec[RSPOpC.rs].B[el];
+        del = EleSpec[RSPOpC.e].B[el];
         flag = (0x101 << (7 - el)) ^ 0xFFFF;
         if (del != el || RSPOpC.rt != RSPOpC.rd)
         {
@@ -4728,7 +4728,7 @@ void Compile_Vector_VEQ(void)
     {
         for (count = 0; count < 8; count++)
         {
-            el = EleSpec[RSPOpC.rs].B[count];
+            el = EleSpec[RSPOpC.e].B[count];
 
             if (el != last)
             {
@@ -4762,7 +4762,7 @@ void Compile_Vector_VNE(void)
 
     for (el = 0; el < 8; el++)
     {
-        del = EleSpec[RSPOpC.rs].B[el];
+        del = EleSpec[RSPOpC.e].B[el];
         flag = 0x101 << (7 - el);
         if (del != el || RSPOpC.rt != RSPOpC.rd)
         {
@@ -4889,7 +4889,7 @@ void Compile_Vector_VGE(void)
     MoveVariableToX86reg(&RSP_Flags[0].UW, "&RSP_Flags[0].UW", x86_ESI);
     for (el = 0; el < 8; el++)
     {
-        del = EleSpec[RSPOpC.rs].B[el];
+        del = EleSpec[RSPOpC.e].B[el];
         flag = 0x101 << (7 - el);
         if (del != el || RSPOpC.rt != RSPOpC.rd)
         {
@@ -5006,7 +5006,7 @@ void Compile_Vector_VMRG(void)
     for (count = 0; count < 8; count++)
     {
         el = Indx[RSPOpC.rs].UB[count];
-        del = EleSpec[RSPOpC.rs].UB[el];
+        del = EleSpec[RSPOpC.e].UB[el];
         CPU_Message("     Iteration: %i", count);
 
         sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
@@ -5105,7 +5105,7 @@ void Compile_Vector_VAND(void)
     for (count = 0; count < 8; count++)
     {
         el = Indx[RSPOpC.rs].B[count];
-        del = EleSpec[RSPOpC.rs].B[el];
+        del = EleSpec[RSPOpC.e].B[el];
 
         CPU_Message("     Iteration: %i", count);
 
@@ -5216,7 +5216,7 @@ void Compile_Vector_VNAND(void)
     for (count = 0; count < 8; count++)
     {
         el = Indx[RSPOpC.rs].B[count];
-        del = EleSpec[RSPOpC.rs].B[el];
+        del = EleSpec[RSPOpC.e].B[el];
 
         CPU_Message("     Iteration: %i", count);
 
@@ -5328,7 +5328,7 @@ void Compile_Vector_VOR(void)
     for (count = 0; count < 8; count++)
     {
         el = Indx[RSPOpC.rs].B[count];
-        del = EleSpec[RSPOpC.rs].B[el];
+        del = EleSpec[RSPOpC.e].B[el];
 
         CPU_Message("     Iteration: %i", count);
 
@@ -5434,7 +5434,7 @@ void Compile_Vector_VNOR(void)
     for (count = 0; count < 8; count++)
     {
         el = Indx[RSPOpC.rs].B[count];
-        del = EleSpec[RSPOpC.rs].B[el];
+        del = EleSpec[RSPOpC.e].B[el];
 
         CPU_Message("     Iteration: %i", count);
 
@@ -5666,7 +5666,7 @@ void Compile_Vector_VRCP(void)
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
-    el = EleSpec[RSPOpC.rs].B[(RSPOpC.rd & 0x7)];
+    el = EleSpec[RSPOpC.e].B[(RSPOpC.rd & 0x7)];
     sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
     MoveSxVariableToX86regHalf(&RSP_Vect[RSPOpC.vt].s16(el), Reg, x86_ESI);
     MoveConstToX86reg(0x7FFFFFFF, x86_EAX);
@@ -5702,7 +5702,7 @@ void Compile_Vector_VRCP(void)
         last = (uint8_t)-1;
         for (count = 0; count < 8; count++)
         {
-            el = EleSpec[RSPOpC.rs].B[count];
+            el = EleSpec[RSPOpC.e].B[count];
 
             if (el != last)
             {
@@ -5736,7 +5736,7 @@ void Compile_Vector_VRCPL(void)
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
-    el = EleSpec[RSPOpC.rs].B[(RSPOpC.rd & 0x7)];
+    el = EleSpec[RSPOpC.e].B[(RSPOpC.rd & 0x7)];
     sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
     MoveVariableToX86reg(&Recp.W, "Recp.W", x86_ESI);
     OrVariableToX86regHalf(&RSP_Vect[RSPOpC.vt].s16(el), Reg, x86_ESI);
@@ -5779,7 +5779,7 @@ void Compile_Vector_VRCPL(void)
         last = (uint8_t)-1;
         for (count = 0; count < 8; count++)
         {
-            el = EleSpec[RSPOpC.rs].B[count];
+            el = EleSpec[RSPOpC.e].B[count];
 
             if (el != last)
             {
@@ -5812,7 +5812,7 @@ void Compile_Vector_VRCPH(void)
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
-    el = EleSpec[RSPOpC.rs].B[(RSPOpC.rd & 0x7)];
+    el = EleSpec[RSPOpC.e].B[(RSPOpC.rd & 0x7)];
     sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
     MoveVariableToX86regHalf(&RSP_Vect[RSPOpC.vt].u16(el), Reg, x86_EDX);
     MoveX86regHalfToVariable(x86_EDX, &Recp.UHW[1], "Recp.UHW[1]");
@@ -5824,7 +5824,7 @@ void Compile_Vector_VRCPH(void)
         last = (uint8_t)-1;
         for (count = 0; count < 8; count++)
         {
-            el = EleSpec[RSPOpC.rs].B[count];
+            el = EleSpec[RSPOpC.e].B[count];
 
             if (el != last)
             {
@@ -5859,14 +5859,14 @@ void Compile_Vector_VMOV(void)
     {
         for (count = 0; count < 8; count++)
         {
-            sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, EleSpec[RSPOpC.rs].B[count]);
-            MoveVariableToX86regHalf(&RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.rs].B[count]), Reg, x86_EAX);
+            sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, EleSpec[RSPOpC.e].B[count]);
+            MoveVariableToX86regHalf(&RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[count]), Reg, x86_EAX);
             sprintf(Reg, "RSP_ACCUM[%i].HW[1]", count);
             MoveX86regHalfToVariable(x86_EAX, &RSP_ACCUM[count].HW[1], Reg);
         }
     }
 
-    el = EleSpec[RSPOpC.rs].B[(RSPOpC.rd & 0x7)];
+    el = EleSpec[RSPOpC.e].B[(RSPOpC.rd & 0x7)];
     sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
 
     MoveVariableToX86regHalf(&RSP_Vect[RSPOpC.vt].u16(el), Reg, x86_ECX);
@@ -5902,7 +5902,7 @@ void Compile_Vector_VRSQH(void)
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
-    el = EleSpec[RSPOpC.rs].B[(RSPOpC.rd & 0x7)];
+    el = EleSpec[RSPOpC.e].B[(RSPOpC.rd & 0x7)];
     sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rt, el);
     MoveVariableToX86regHalf(&RSP_Vect[RSPOpC.vt].u16(el), Reg, x86_EDX);
     MoveX86regHalfToVariable(x86_EDX, &SQroot.UHW[1], "SQroot.UHW[1]");
@@ -5914,7 +5914,7 @@ void Compile_Vector_VRSQH(void)
         last = (uint8_t)-1;
         for (count = 0; count < 8; count++)
         {
-            el = EleSpec[RSPOpC.rs].B[count];
+            el = EleSpec[RSPOpC.e].B[count];
 
             if (el != last)
             {

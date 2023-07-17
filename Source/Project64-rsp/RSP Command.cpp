@@ -381,7 +381,7 @@ void DrawRSPCommand(LPARAM lParam)
             DT_SINGLELINE | DT_VCENTER);
     }
 
-    if (ResetColor == true)
+    if (ResetColor != 0)
     {
         SetTextColor(ditem->hDC, oldColor);
     }

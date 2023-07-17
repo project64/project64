@@ -2,7 +2,7 @@
 #include "cpu/RspTypes.h"
 #include <Windows.h>
 
-extern UDWORD EleSpec[32], Indx[32];
+extern UDWORD EleSpec[16], Indx[16];
 
 typedef void(*p_func)(void);
 
