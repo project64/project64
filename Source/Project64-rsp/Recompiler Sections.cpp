@@ -301,9 +301,9 @@ void RSP_Sections_VMUDM(RSPOpcode RspOp, DWORD AccumStyle)
         if ((RSPOpC.rs & 0xF) < 2)
         {
             sprintf(Reg, "RSP_Vect[%i].UHW[0]", RSPOpC.rt);
-            MmxMoveQwordVariableToReg(x86_MM4, &RSP_Vect[RSPOpC.rt].u16(0), Reg);
+            MmxMoveQwordVariableToReg(x86_MM4, &RSP_Vect[RSPOpC.vt].u16(0), Reg);
             sprintf(Reg, "RSP_Vect[%i].UHW[4]", RSPOpC.rt);
-            MmxMoveQwordVariableToReg(x86_MM5, &RSP_Vect[RSPOpC.rt].u16(4), Reg);
+            MmxMoveQwordVariableToReg(x86_MM5, &RSP_Vect[RSPOpC.vt].u16(4), Reg);
 
             // Copy the signed portion
             MmxMoveRegToReg(x86_MM2, x86_MM0);
@@ -414,9 +414,9 @@ void RSP_Sections_VMADM(RSPOpcode RspOp, DWORD AccumStyle)
         if ((RSPOpC.rs & 0xF) < 2)
         {
             sprintf(Reg, "RSP_Vect[%i].UHW[0]", RSPOpC.rt);
-            MmxMoveQwordVariableToReg(x86_MM4 + 2, &RSP_Vect[RSPOpC.rt].u16(0), Reg);
+            MmxMoveQwordVariableToReg(x86_MM4 + 2, &RSP_Vect[RSPOpC.vt].u16(0), Reg);
             sprintf(Reg, "RSP_Vect[%i].UHW[4]", RSPOpC.rt);
-            MmxMoveQwordVariableToReg(x86_MM5 + 2, &RSP_Vect[RSPOpC.rt].u16(4), Reg);
+            MmxMoveQwordVariableToReg(x86_MM5 + 2, &RSP_Vect[RSPOpC.vt].u16(4), Reg);
 
             // Copy the signed portion
             MmxMoveRegToReg(x86_MM2 + 2, x86_MM0 + 2);
@@ -543,9 +543,9 @@ void RSP_Sections_VMUDN(RSPOpcode RspOp, DWORD AccumStyle)
         if ((RSPOpC.rs & 0xF) < 2)
         {
             sprintf(Reg, "RSP_Vect[%i].UHW[0]", RSPOpC.rt);
-            MmxMoveQwordVariableToReg(x86_MM0, &RSP_Vect[RSPOpC.rt].u16(0), Reg);
+            MmxMoveQwordVariableToReg(x86_MM0, &RSP_Vect[RSPOpC.vt].u16(0), Reg);
             sprintf(Reg, "RSP_Vect[%i].UHW[4]", RSPOpC.rt);
-            MmxMoveQwordVariableToReg(x86_MM1, &RSP_Vect[RSPOpC.rt].u16(4), Reg);
+            MmxMoveQwordVariableToReg(x86_MM1, &RSP_Vect[RSPOpC.vt].u16(4), Reg);
         }
         else if ((RSPOpC.rs & 0xF) >= 8)
         {
@@ -639,9 +639,9 @@ void RSP_Sections_VMADN(RSPOpcode RspOp, DWORD AccumStyle)
         if ((RSPOpC.rs & 0xF) < 2)
         {
             sprintf(Reg, "RSP_Vect[%i].UHW[0]", RSPOpC.rt);
-            MmxMoveQwordVariableToReg(x86_MM0 + 2, &RSP_Vect[RSPOpC.rt].u16(0), Reg);
+            MmxMoveQwordVariableToReg(x86_MM0 + 2, &RSP_Vect[RSPOpC.vt].u16(0), Reg);
             sprintf(Reg, "RSP_Vect[%i].UHW[4]", RSPOpC.rt);
-            MmxMoveQwordVariableToReg(x86_MM1 + 2, &RSP_Vect[RSPOpC.rt].u16(4), Reg);
+            MmxMoveQwordVariableToReg(x86_MM1 + 2, &RSP_Vect[RSPOpC.vt].u16(4), Reg);
         }
         else if ((RSPOpC.rs & 0xF) >= 8)
         {
