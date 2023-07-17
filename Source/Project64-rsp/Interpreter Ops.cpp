@@ -1262,10 +1262,9 @@ void RSP_Vector_VSUB(void)
 
 void RSP_Vector_VABS(void)
 {
-    uint8_t el, del;
+    uint8_t del;
     RSPVector Result;
-
-    for (el = 0; el < 8; el++)
+    for (uint8_t el = 0; el < 8; el++)
     {
         del = EleSpec[RSPOpC.rs].B[el];
 
@@ -1275,14 +1274,7 @@ void RSP_Vector_VABS(void)
         }
         else if (RSP_Vect[RSPOpC.vs].s16(el) < 0)
         {
-            if (RSP_Vect[RSPOpC.vt].u16(del) == 0x8000)
-            {
-                Result.u16(el) = 0x7FFF;
-            }
-            else
-            {
-                Result.u16(el) = RSP_Vect[RSPOpC.vt].s16(del) * -1;
-            }
+            Result.u16(el) = RSP_Vect[RSPOpC.vt].u16(del) == 0x8000 ? 0x7FFF : RSP_Vect[RSPOpC.vt].s16(del) * -1;
         }
         else
         {
