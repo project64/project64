@@ -55,7 +55,7 @@ void BuildInterpreterCPU(void)
     RSP_Opcode[36] = RSP_Opcode_LBU;
     RSP_Opcode[37] = RSP_Opcode_LHU;
     RSP_Opcode[38] = rsp_UnknownOpcode;
-    RSP_Opcode[39] = rsp_UnknownOpcode;
+    RSP_Opcode[39] = RSP_Opcode_LWU;
     RSP_Opcode[40] = RSP_Opcode_SB;
     RSP_Opcode[41] = RSP_Opcode_SH;
     RSP_Opcode[42] = rsp_UnknownOpcode;

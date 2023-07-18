@@ -94,6 +94,7 @@ enum RSPOpCodes
     RSP_LW = 35,
     RSP_LBU = 36,
     RSP_LHU = 37,
+    RSP_LWU = 39,
     RSP_SB = 40,
     RSP_SH = 41,
     RSP_SW = 43,

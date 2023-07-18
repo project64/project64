@@ -146,6 +146,10 @@ void RSPInstruction::DecodeName(void)
         strcpy(m_Name, "LHU");
         sprintf(m_Param, "%s, 0x%04X (%s)", GPR_Name(m_Instruction.rt), m_Instruction.offset, GPR_Name(m_Instruction.base));
         break;
+    case RSP_LWU:
+        strcpy(m_Name, "LWU");
+        sprintf(m_Param, "%s, 0x%04X (%s)", GPR_Name(m_Instruction.rt), m_Instruction.offset, GPR_Name(m_Instruction.base));
+        break;
     case RSP_SB:
         strcpy(m_Name, "SB");
         sprintf(m_Param, "%s, 0x%04X (%s)", GPR_Name(m_Instruction.rt), m_Instruction.offset, GPR_Name(m_Instruction.base));

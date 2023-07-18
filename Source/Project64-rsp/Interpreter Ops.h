@@ -23,6 +23,7 @@ void RSP_Opcode_LH(void);
 void RSP_Opcode_LW(void);
 void RSP_Opcode_LBU(void);
 void RSP_Opcode_LHU(void);
+void RSP_Opcode_LWU(void);
 void RSP_Opcode_SB(void);
 void RSP_Opcode_SH(void);
 void RSP_Opcode_SW(void);

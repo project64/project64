@@ -169,6 +169,12 @@ void RSP_Opcode_LHU(void)
     RSP_GPR[RSPOpC.rt].UW = RSP_GPR[RSPOpC.rt].UHW[0];
 }
 
+void RSP_Opcode_LWU(void)
+{
+    uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
+    RSP_LW_DMEM(Address, &RSP_GPR[RSPOpC.rt].UW);
+}
+
 void RSP_Opcode_SB(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
