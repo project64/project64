@@ -215,14 +215,12 @@ void RSP_LPV_DMEM(uint32_t Addr, uint8_t vect, uint8_t element)
 
 void RSP_LRV_DMEM(uint32_t Addr, uint8_t vect, uint8_t element)
 {
-    uint8_t length, Count, offset;
-
-    offset = (Addr & 0xF) - 1;
-    length = (Addr & 0xF) - element;
+    uint8_t offset = (Addr & 0xF) - 1;
+    uint8_t length = (Addr & 0xF) - element;
     Addr &= 0xFF0;
-    for (Count = element; Count < (length + element); Count++)
+    for (uint32_t i = element; i < (length + element); i++)
     {
-        RSP_Vect[vect].s8(offset - Count) = *(RSPInfo.DMEM + ((Addr ^ 3) & 0xFFF));
+        RSP_Vect[vect].s8(offset - i) = *(RSPInfo.DMEM + ((Addr ^ 3) & 0xFFF));
         Addr += 1;
     }
 }
