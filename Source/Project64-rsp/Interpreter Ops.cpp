@@ -1935,14 +1935,12 @@ void RSP_Vector_VRCPH(void)
 
 void RSP_Vector_VMOV(void)
 {
-    int count;
-
-    for (count = 0; count < 8; count++)
+    for (uint8_t i = 0; i < 8; i++)
     {
-        RSP_ACCUM[count].HW[1] = RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[count]);
+        RSP_ACCUM[i].HW[1] = RSP_Vect[RSPOpC.vt].ue(i, RSPOpC.e);
     }
-    RSP_Vect[RSPOpC.vd].u16(7 - (RSPOpC.rd & 0x7)) =
-        RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[(RSPOpC.rd & 0x7)]);
+    uint8_t Index = 7 - (RSPOpC.de & 0x7);
+    RSP_Vect[RSPOpC.vd].u16(Index) = RSP_Vect[RSPOpC.vt].ue(Index, RSPOpC.e);
 }
 
 void RSP_Vector_VRSQ(void)
