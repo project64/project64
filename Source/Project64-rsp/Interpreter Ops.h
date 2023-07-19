@@ -128,6 +128,7 @@ void RSP_Opcode_LPV(void);
 void RSP_Opcode_LUV(void);
 void RSP_Opcode_LHV(void);
 void RSP_Opcode_LFV(void);
+void RSP_Opcode_LWV(void);
 void RSP_Opcode_LTV(void);
 
 // LC2 functions

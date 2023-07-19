@@ -2151,6 +2151,10 @@ void RSP_Opcode_LFV(void)
     RSP_LFV_DMEM(Address, RSPOpC.rt, RSPOpC.del);
 }
 
+void RSP_Opcode_LWV(void)
+{
+}
+
 void RSP_Opcode_LTV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;

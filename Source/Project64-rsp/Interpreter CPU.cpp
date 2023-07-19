@@ -320,7 +320,7 @@ void BuildInterpreterCPU(void)
     RSP_Lc2[7] = RSP_Opcode_LUV;
     RSP_Lc2[8] = RSP_Opcode_LHV;
     RSP_Lc2[9] = RSP_Opcode_LFV;
-    RSP_Lc2[10] = rsp_UnknownOpcode;
+    RSP_Lc2[10] = RSP_Opcode_LWV;
     RSP_Lc2[11] = RSP_Opcode_LTV;
     RSP_Lc2[12] = rsp_UnknownOpcode;
     RSP_Lc2[13] = rsp_UnknownOpcode;
