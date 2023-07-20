@@ -1266,6 +1266,10 @@ void RSP_Vector_VSUB(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
+void RSP_Vector_VSUT(void)
+{
+}
+
 void RSP_Vector_VABS(void)
 {
     RSPVector Result;

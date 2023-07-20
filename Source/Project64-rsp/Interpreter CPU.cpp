@@ -263,7 +263,7 @@ void BuildInterpreterCPU(void)
     RSP_Vector[15] = RSP_Vector_VMADH;
     RSP_Vector[16] = RSP_Vector_VADD;
     RSP_Vector[17] = RSP_Vector_VSUB;
-    RSP_Vector[18] = rsp_UnknownOpcode;
+    RSP_Vector[18] = RSP_Vector_VSUT;
     RSP_Vector[19] = RSP_Vector_VABS;
     RSP_Vector[20] = RSP_Vector_VADDC;
     RSP_Vector[21] = RSP_Vector_VSUBC;

@@ -421,6 +421,10 @@ void RSPInstruction::DecodeCop2Name(void)
             strcpy(m_Name, "VABS");
             sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, m_Instruction.vs, m_Instruction.vt, ElementSpecifier(m_Instruction.e));
             break;
+        case RSP_VECTOR_VSUT:
+            strcpy(m_Name, "VSUT");
+            strcpy(m_Param, "");
+            break;
         case RSP_VECTOR_VADDC:
             strcpy(m_Name, "VADDC");
             sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, m_Instruction.vs, m_Instruction.vt, ElementSpecifier(m_Instruction.e));

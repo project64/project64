@@ -89,6 +89,7 @@ void RSP_Vector_VMADN(void);
 void RSP_Vector_VMADH(void);
 void RSP_Vector_VADD(void);
 void RSP_Vector_VSUB(void);
+void RSP_Vector_VSUT(void);
 void RSP_Vector_VABS(void);
 void RSP_Vector_VADDC(void);
 void RSP_Vector_VSUBC(void);
