@@ -1188,38 +1188,20 @@ void RSP_Vector_VMADH(void)
 
 void RSP_Vector_VADD(void)
 {
-    uint8_t el, del;
     UWORD32 temp;
     RSPVector Result;
 
-    for (el = 0; el < 8; el++)
-    {
-        del = EleSpec[RSPOpC.e].B[el];
-
-        temp.W = (int)RSP_Vect[RSPOpC.vs].s16(el) + (int)RSP_Vect[RSPOpC.vt].s16(del) +
-                 ((RSP_Flags[0].UW >> (7 - el)) & 0x1);
+    for (uint8_t el = 0; el < 8; el++)
+    {        
+        temp.W = (int32_t)RSP_Vect[RSPOpC.vs].s16(el) + (int32_t)RSP_Vect[RSPOpC.vt].se(el, RSPOpC.e) + ((RSP_Flags[0].UW >> (7 - el)) & 0x1);
         RSP_ACCUM[el].HW[1] = temp.HW[0];
         if ((temp.HW[0] & 0x8000) == 0)
         {
-            if (temp.HW[1] != 0)
-            {
-                Result.u16(el) = 0x8000;
-            }
-            else
-            {
-                Result.u16(el) = temp.HW[0];
-            }
+            Result.u16(el) = temp.HW[1] != 0 ? 0x8000 : temp.UHW[0];
         }
         else
         {
-            if (temp.HW[1] != -1)
-            {
-                Result.u16(el) = 0x7FFF;
-            }
-            else
-            {
-                Result.u16(el) = temp.UHW[0];
-            }
+            Result.u16(el) = temp.HW[1] != -1 ? 0x7FFF : temp.UHW[0];
         }
     }
     RSP_Vect[RSPOpC.vd] = Result;

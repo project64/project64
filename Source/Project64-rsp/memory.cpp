@@ -232,9 +232,9 @@ void RSP_LQV_DMEM(uint32_t Addr, uint8_t vect, uint8_t element)
     {
         length = 16 - element;
     }
-    for (uint8_t Count = element; Count < (length + element); Count++)
+    for (uint8_t i = element; i < (length + element); i++)
     {
-        RSP_Vect[vect].s8(15 - Count) = *(RSPInfo.DMEM + ((Addr ^ 3) & 0xFFF));
+        RSP_Vect[vect].s8(i) = *(RSPInfo.DMEM + ((Addr ^ 3) & 0xFFF));
         Addr += 1;
     }
 }
@@ -501,12 +501,10 @@ void RSP_SPV_DMEM(uint32_t Addr, uint8_t vect, uint8_t element)
 
 void RSP_SQV_DMEM(uint32_t Addr, uint8_t vect, uint8_t element)
 {
-    int length, Count;
-
-    length = ((Addr + 0x10) & ~0xF) - Addr;
-    for (Count = element; Count < (length + element); Count++)
+    uint8_t length = ((Addr + 0x10) & ~0xF) - Addr;
+    for (uint8_t i = element; i < (length + element); i++)
     {
-        *(RSPInfo.DMEM + ((Addr ^ 3) & 0xFFF)) = RSP_Vect[vect].s8(15 - (Count & 0xF));
+        *(RSPInfo.DMEM + ((Addr ^ 3) & 0xFFF)) = RSP_Vect[vect].s8(i & 0xF);
         Addr += 1;
     }
 }

@@ -714,16 +714,16 @@ void UpdateRSPRegistersScreen(void)
         case Vector1:
             for (count = 0; count < 16; count++)
             {
-                sprintf(RegisterValue, " 0x%08X - %08X - %08X - %08X", RSP_Vect[count].s32(3),
-                        RSP_Vect[count].s32(2), RSP_Vect[count].s32(1), RSP_Vect[count].s32(0));
+                sprintf(RegisterValue, " 0x%08X - %08X - %08X - %08X", RSP_Vect[count].s32(0),
+                        RSP_Vect[count].s32(1), RSP_Vect[count].s32(2), RSP_Vect[count].s32(3));
                 SetWindowTextA(hVECT1[count], RegisterValue);
             }
             break;
         case Vector2:
             for (count = 0; count < 16; count++)
             {
-                sprintf(RegisterValue, " 0x%08X - %08X - %08X - %08X", RSP_Vect[count + 16].s32(3),
-                        RSP_Vect[count + 16].s32(2), RSP_Vect[count + 16].s32(1), RSP_Vect[count + 16].s32(0));
+                sprintf(RegisterValue, " 0x%08X - %08X - %08X - %08X", RSP_Vect[count + 16].s32(0),
+                        RSP_Vect[count + 16].s32(1), RSP_Vect[count + 16].s32(2), RSP_Vect[count + 16].s32(3));
                 SetWindowTextA(hVECT2[count], RegisterValue);
             }
             break;
