@@ -30,7 +30,7 @@ CGameRecompilePage::CGameRecompilePage(HWND hParent, const RECT & rcDispay)
     m_SelfModGroup.Attach(GetDlgItem(IDC_SMM_FRAME));
 
     AddModCheckBox(GetDlgItem(IDC_ROM_REGCACHE), Game_RegCache);
-    AddModCheckBox(GetDlgItem(IDC_ROM_FPUREGCACHE), Game_RegCache);
+    AddModCheckBox(GetDlgItem(IDC_ROM_FPUREGCACHE), Game_FPURegCache);
     AddModCheckBox(GetDlgItem(IDC_BLOCK_LINKING), Game_BlockLinking);
     AddModCheckBox(GetDlgItem(IDC_SMM_CACHE), Game_SMM_Cache);
     AddModCheckBox(GetDlgItem(IDC_SMM_DMA), Game_SMM_PIDMA);
