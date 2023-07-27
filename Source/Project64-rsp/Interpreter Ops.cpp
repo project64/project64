@@ -2132,7 +2132,7 @@ void RSP_Vector_VNOOP(void)
 void RSP_Opcode_LBV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 0)) & 0xFFF;
-    RSP_Vect[RSPOpC.rt].s8((uint8_t)(15 - RSPOpC.del)) = *(RSPInfo.DMEM + (Address ^ 3));
+    RSP_Vect[RSPOpC.rt].s8(RSPOpC.del) = *(RSPInfo.DMEM + (Address ^ 3));
 }
 
 void RSP_Opcode_LSV(void)
