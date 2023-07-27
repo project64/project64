@@ -417,7 +417,7 @@ void ReOrderInstructions(DWORD StartPC, DWORD EndPC)
     DWORD Count, ReorderedOps, CurrentPC;
     RSPOpcode PreviousOp, CurrentOp, RspOp;
 
-    PreviousOp.Value = *(DWORD *)(RSPInfo.IMEM + StartPC);
+    PreviousOp.Value = *(DWORD *)(RSPInfo.IMEM + (StartPC & 0xFFC));
 
     if (IsOpcodeBranch(StartPC, PreviousOp))
     {
@@ -452,7 +452,7 @@ void ReOrderInstructions(DWORD StartPC, DWORD EndPC)
     for (Count = 0; Count < InstructionCount; Count += 4)
     {
         CurrentPC = StartPC;
-        PreviousOp.Value = *(DWORD *)(RSPInfo.IMEM + CurrentPC);
+        PreviousOp.Value = *(DWORD *)(RSPInfo.IMEM + (CurrentPC & 0xFFC));
         ReorderedOps = 0;
 
         for (;;)
@@ -476,7 +476,7 @@ void ReOrderInstructions(DWORD StartPC, DWORD EndPC)
                 CPU_Message("Swapped %X and %X", CurrentPC - 4, CurrentPC);
 #endif
             }
-            PreviousOp.Value = *(DWORD *)(RSPInfo.IMEM + CurrentPC);
+            PreviousOp.Value = *(DWORD *)(RSPInfo.IMEM + (CurrentPC & 0xFFC));
 
             if (IsOpcodeNop(CurrentPC) && IsOpcodeNop(CurrentPC + 4) && IsOpcodeNop(CurrentPC + 8))
             {

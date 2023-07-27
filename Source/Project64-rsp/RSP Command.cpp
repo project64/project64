@@ -221,7 +221,6 @@ void DumpRSPCode(void)
 void DumpRSPData(void)
 {
     char string[100], LogFileName[255], *p;
-    uint32_t value;
     DWORD location, dwWritten;
     HANDLE hLogFile = NULL;
 
@@ -256,12 +255,12 @@ void DumpRSPData(void)
         unsigned int characters_to_write;
         int characters_converted;
 
-        RSP_LW_DMEM(location, &value);
+        uint32_t Value = *(uint32_t *)(RSPInfo.DMEM + location);
         characters_converted = sprintf(
             &string[0],
             " 0x%03X\t0x%08X\r\n",
             location,
-            value);
+            Value);
 
         if (characters_converted < 0)
         {

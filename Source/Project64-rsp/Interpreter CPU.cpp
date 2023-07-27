@@ -429,7 +429,7 @@ DWORD RunInterpreterCPU(DWORD Cycles)
 
         RDP_LogLoc(*PrgCount);
 
-        RSP_LW_IMEM(*PrgCount, &RSPOpC.Value);
+        RSPOpC.Value = *(uint32_t *)(RSPInfo.IMEM + (*PrgCount & 0xFFC));
         RSP_Opcode[RSPOpC.op]();
         RSP_GPR[0].W = 0x00000000; // MIPS $zero hard-wired to 0
 

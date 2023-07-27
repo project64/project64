@@ -21,8 +21,7 @@ Input: PC
 bool IsOpcodeNop(DWORD PC)
 {
     RSPOpcode RspOp;
-    RSP_LW_IMEM(PC, &RspOp.Value);
-
+    RspOp.Value = *(uint32_t *)(RSPInfo.IMEM + (PC & 0xFFC));
     if (RspOp.op == RSP_SPECIAL && RspOp.funct == RSP_SPECIAL_SLL)
     {
         return (RspOp.rd == 0) ? true : false;
@@ -46,7 +45,7 @@ bool IsNextInstructionMmx(DWORD PC)
 
     PC += 4;
     if (PC >= 0x1000) return false;
-    RSP_LW_IMEM(PC, &RspOp.Value);
+    RspOp.Value = *(uint32_t *)(RSPInfo.IMEM + (PC & 0xFFC));
 
     if (RspOp.op != RSP_CP2)
         return false;
@@ -146,7 +145,7 @@ DWORD WriteToAccum2(int Location, int PC, bool RecursiveCall)
         {
             return true;
         }
-        RSP_LW_IMEM(PC, &RspOp.Value);
+        RspOp.Value = *(uint32_t *)(RSPInfo.IMEM + (PC & 0xFFC));
 
         switch (RspOp.op)
         {
@@ -240,7 +239,8 @@ DWORD WriteToAccum2(int Location, int PC, bool RecursiveCall)
                 }
                 // If the opcode (which is 8 bytes before the destination and also a J backward) then ignore this
                 BranchImmed = (PC + ((short)RspOp.offset << 2) + 4) & 0xFFC;
-                RSP_LW_IMEM(BranchImmed - 8, &NextOp.Value);
+                NextOp.Value = *(uint32_t *)(RSPInfo.IMEM + ((BranchImmed - 8) & 0xFFC));
+
                 if (RspOp.op == RSP_J && (int)(RspOp.target << 2) < PC)
                 {
                     break;
@@ -501,7 +501,7 @@ bool WriteToVectorDest2(DWORD DestReg, int PC, bool RecursiveCall)
         {
             return true;
         }
-        RSP_LW_IMEM(PC, &RspOp.Value);
+        RspOp.Value = *(uint32_t *)(RSPInfo.IMEM + (PC & 0xFFC));
 
         switch (RspOp.op)
         {
@@ -904,7 +904,7 @@ bool UseRspFlags(int PC)
         {
             return true;
         }
-        RSP_LW_IMEM(PC, &RspOp.Value);
+        RspOp.Value = *(uint32_t *)(RSPInfo.IMEM + (PC & 0xFFC));
 
         switch (RspOp.op)
         {
@@ -1137,8 +1137,7 @@ bool IsRegisterConstant(DWORD Reg, DWORD * Constant)
 
     while (PC < 0x1000)
     {
-
-        RSP_LW_IMEM(PC, &RspOp.Value);
+        RspOp.Value = *(uint32_t *)(RSPInfo.IMEM + (PC & 0xFFC));
 
         // Resample command in microcode likes S7
         /*	if (PC == 0xFBC) {
