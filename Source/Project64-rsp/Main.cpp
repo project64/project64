@@ -30,7 +30,7 @@
 void ClearAllx86Code(void);
 void ProcessMenuItem(int ID);
 #ifdef _WIN32
-bool CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+BOOL CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 HMENU hRSPMenu = NULL;
 #endif
 
@@ -617,7 +617,7 @@ static bool GetBooleanCheck(HWND hDlg, DWORD DialogID)
     return (IsDlgButtonChecked(hDlg, DialogID) == BST_CHECKED) ? true : false;
 }
 
-bool CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam*/)
+BOOL CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam*/)
 {
     char Buffer[256];
 
