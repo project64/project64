@@ -2143,10 +2143,9 @@ void RSP_Opcode_LSV(void)
     {
         length = (uint8_t)(16 - RSPOpC.del);
     }
-    for (uint8_t i = RSPOpC.del, n = (uint8_t)(length + RSPOpC.del); i < n; i++)
+    for (uint8_t i = RSPOpC.del, n = (uint8_t)(length + RSPOpC.del); i < n; i++, Address++)
     {
-        RSP_Vect[RSPOpC.rt].s8(15 - i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
-        Address += 1;
+        RSP_Vect[RSPOpC.rt].s8(i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
     }
 }
 
@@ -2158,10 +2157,9 @@ void RSP_Opcode_LLV(void)
     {
         length = (uint8_t)(16 - RSPOpC.del);
     }
-    for (uint8_t i = RSPOpC.del, n = (uint8_t)(length + RSPOpC.del); i < n; i++)
+    for (uint8_t i = RSPOpC.del, n = (uint8_t)(length + RSPOpC.del); i < n; i++, Address++)
     {
-        RSP_Vect[RSPOpC.rt].s8(15 - i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
-        Address += 1;
+        RSP_Vect[RSPOpC.rt].s8(i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
     }
 }
 
@@ -2197,13 +2195,11 @@ void RSP_Opcode_LQV(void)
 void RSP_Opcode_LRV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
-    uint8_t offset = (Address & 0xF) - 1;
-    uint8_t length = (uint8_t)((Address & 0xF) - RSPOpC.del);
+    uint8_t Offset = (0x10 - (Address & 0xF)) + RSPOpC.del;
     Address &= 0xFF0;
-    for (uint8_t i = RSPOpC.del; i < (length + RSPOpC.del); i++)
+    for (uint8_t i = Offset; i < 16; i++, Address ++)
     {
-        RSP_Vect[RSPOpC.rt].s8(offset - i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
-        Address += 1;
+        RSP_Vect[RSPOpC.rt].s8(i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
     }
 }
 
