@@ -2577,7 +2577,7 @@ void R4300iOp::COP1_D_ROUND_L()
         return;
     }
     const double & fs = *(double *)_FPR_D[m_Opcode.fs];
-    if (!CheckFPUInput64Conv(fs))
+    if (CheckFPUInput64Conv(fs))
     {
         return;
     }
@@ -2596,7 +2596,7 @@ void R4300iOp::COP1_D_TRUNC_L()
         return;
     }
     const double & fs = *(double *)_FPR_D[m_Opcode.fs];
-    if (!CheckFPUInput64Conv(fs))
+    if (CheckFPUInput64Conv(fs))
     {
         return;
     }
@@ -2615,7 +2615,7 @@ void R4300iOp::COP1_D_CEIL_L()
         return;
     }
     const double & fs = *(double *)_FPR_D[m_Opcode.fs];
-    if (!CheckFPUInput64Conv(fs))
+    if (CheckFPUInput64Conv(fs))
     {
         return;
     }
@@ -2634,7 +2634,7 @@ void R4300iOp::COP1_D_FLOOR_L()
         return;
     }
     const double & fs = *(double *)_FPR_D[m_Opcode.fs];
-    if (!CheckFPUInput64Conv(fs))
+    if (CheckFPUInput64Conv(fs))
     {
         return;
     }
@@ -2652,7 +2652,7 @@ void R4300iOp::COP1_D_ROUND_W()
     {
         return;
     }
-    if (!CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
+    if (CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
     {
         return;
     }
@@ -2670,7 +2670,7 @@ void R4300iOp::COP1_D_TRUNC_W()
     {
         return;
     }
-    if (!CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
+    if (CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
     {
         return;
     }
@@ -2688,7 +2688,7 @@ void R4300iOp::COP1_D_CEIL_W()
     {
         return;
     }
-    if (!CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
+    if (CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
     {
         return;
     }
@@ -2706,7 +2706,7 @@ void R4300iOp::COP1_D_FLOOR_W()
     {
         return;
     }
-    if (!CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
+    if (CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
     {
         return;
     }
@@ -2742,7 +2742,7 @@ void R4300iOp::COP1_D_CVT_W()
     {
         return;
     }
-    if (!CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
+    if (CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
     {
         return;
     }
@@ -2761,7 +2761,7 @@ void R4300iOp::COP1_D_CVT_L()
         return;
     }
     const double & fs = *(double *)_FPR_D[m_Opcode.fs];
-    if (!CheckFPUInput64Conv(fs))
+    if (CheckFPUInput64Conv(fs))
     {
         return;
     }
@@ -3178,9 +3178,9 @@ bool R4300iOp::CheckFPUInput64Conv(const double & Value)
         FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
         StatusReg.Cause.UnimplementedOperation = 1;
         g_Reg->TriggerException(EXC_FPE);
-        return false;
+        return true;
     }
-    return true;
+    return false;
 }
 
 bool R4300iOp::CheckFPUResult32(float & Result)
