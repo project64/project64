@@ -61,14 +61,14 @@ void Build_RSP(void)
     SetCPU(CPUCore);
     ResetTimerList();
 
-    EleSpec[0].DW = 0x0001020304050607; // None
-    EleSpec[1].DW = 0x0001020304050607; // None
-    EleSpec[2].DW = 0x0000020204040606; // 0q
-    EleSpec[3].DW = 0x0101030305050707; // 1q
-    EleSpec[4].DW = 0x0000000004040404; // 0h
-    EleSpec[5].DW = 0x0101010105050505; // 1h
-    EleSpec[6].DW = 0x0202020206060606; // 2h
-    EleSpec[7].DW = 0x0303030307070707; // 3h
+    EleSpec[0].DW = 0x0706050403020100; // None
+    EleSpec[1].DW = 0x0706050403020100; // None
+    EleSpec[2].DW = 0x0606040402020000; // 0q
+    EleSpec[3].DW = 0x0707050503030101; // 1q
+    EleSpec[4].DW = 0x0404040400000000; // 0h
+    EleSpec[5].DW = 0x0505050501010101; // 1h
+    EleSpec[6].DW = 0x0606060602020202; // 2h
+    EleSpec[7].DW = 0x0707070703030303; // 3h
     EleSpec[8].DW = 0x0000000000000000; // 0
     EleSpec[9].DW = 0x0101010101010101; // 1
     EleSpec[10].DW = 0x0202020202020202; // 2
@@ -100,7 +100,6 @@ void Build_RSP(void)
         for (uint8_t z = 0; z < 8; z++)
         {
             Indx[i].B[z] = 7 - Indx[i].B[z];
-            EleSpec[i].B[z] = 7 - EleSpec[i].B[z];
         }
         for (uint8_t z = 0; z < 4; z++)
         {
