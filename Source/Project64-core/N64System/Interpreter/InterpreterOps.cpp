@@ -2032,7 +2032,6 @@ void R4300iOp::COP1_S_ADD()
 
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
     {
-        g_Reg->TriggerException(EXC_FPE);
         return;
     }
     float Result = (*(float *)_FPR_S[m_Opcode.fs] + *(float *)_FPR_S[m_Opcode.ft]);
@@ -2051,7 +2050,6 @@ void R4300iOp::COP1_S_SUB()
     }
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
     {
-        g_Reg->TriggerException(EXC_FPE);
         return;
     }
     float Result = (*(float *)_FPR_S[m_Opcode.fs] - *(float *)_FPR_S[m_Opcode.ft]);
@@ -2071,7 +2069,6 @@ void R4300iOp::COP1_S_MUL()
 
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
     {
-        g_Reg->TriggerException(EXC_FPE);
         return;
     }
     float Result = (*(float *)_FPR_S[m_Opcode.fs] * *(float *)_FPR_S[m_Opcode.ft]);
@@ -2091,7 +2088,6 @@ void R4300iOp::COP1_S_DIV()
 
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
     {
-        g_Reg->TriggerException(EXC_FPE);
         return;
     }
     float Result = (*(float *)_FPR_S[m_Opcode.fs] / *(float *)_FPR_S[m_Opcode.ft]);
@@ -2111,7 +2107,6 @@ void R4300iOp::COP1_S_SQRT()
 
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
     {
-        g_Reg->TriggerException(EXC_FPE);
         return;
     }
     float Result = sqrtf(*(float *)(_FPR_S[m_Opcode.fs]));
@@ -2131,7 +2126,6 @@ void R4300iOp::COP1_S_ABS()
 
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
     {
-        g_Reg->TriggerException(EXC_FPE);
         return;
     }
     float Result = (float)fabs(*(float *)_FPR_S[m_Opcode.fs]);
@@ -2161,7 +2155,6 @@ void R4300iOp::COP1_S_NEG()
 
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
     {
-        g_Reg->TriggerException(EXC_FPE);
         return;
     }
     float Result = (*(float *)_FPR_S[m_Opcode.fs] * -1.0f);
@@ -2325,7 +2318,6 @@ void R4300iOp::COP1_S_CVT_D()
     }
     if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
     {
-        g_Reg->TriggerException(EXC_FPE);
         return;
     }
     double Result = (double)(*(float *)_FPR_S[m_Opcode.fs]);
@@ -3080,13 +3072,14 @@ bool R4300iOp::TestCop1UsableException(void)
 
 bool R4300iOp::CheckFPUInput32(const float & Value)
 {
+    bool Exception = false;
     if ((*((uint32_t *)&Value) & 0x7F800000) == 0x00000000 && (*((uint32_t *)&Value) & 0x007FFFFF) != 0x00000000) // Sub Normal
     {
         FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
         StatusReg.Cause.UnimplementedOperation = 1;
-        return true;
+        Exception = true;
     }
-    if ((*((uint32_t *)&Value) & 0x7F800000) == 0x7F800000 && (*((uint32_t *)&Value) & 0x007FFFFF) != 0x00000000) // Nan
+    else if ((*((uint32_t *)&Value) & 0x7F800000) == 0x7F800000 && (*((uint32_t *)&Value) & 0x007FFFFF) != 0x00000000) // Nan
     {
         uint32_t Value32 = *(uint32_t *)&Value;
         FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
@@ -3094,20 +3087,25 @@ bool R4300iOp::CheckFPUInput32(const float & Value)
             (Value32 >= 0xFF800001 && Value32 < 0xFFC00000))
         {
             StatusReg.Cause.UnimplementedOperation = 1;
-            return true;
+            Exception = true;
         }
         else
         {
             StatusReg.Cause.InvalidOperation = 1;
             if (StatusReg.Enable.InvalidOperation)
             {
-                return true;
+                Exception = true;
             }
             else
             {
                 StatusReg.Flags.InvalidOperation = 1;
             }
         }
+    }
+    if (Exception)
+    {
+        g_Reg->TriggerException(EXC_FPE);
+        return false;
     }
     return false;
 }
