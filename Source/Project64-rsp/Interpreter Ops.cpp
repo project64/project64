@@ -1983,7 +1983,7 @@ void RSP_Vector_VMOV(void)
     {
         RSP_ACCUM[i].HW[1] = RSP_Vect[RSPOpC.vt].ue(i, RSPOpC.e);
     }
-    uint8_t Index = 7 - (RSPOpC.de & 0x7);
+    uint8_t Index = (RSPOpC.de & 0x7);
     RSP_Vect[RSPOpC.vd].u16(Index) = RSP_Vect[RSPOpC.vt].ue(Index, RSPOpC.e);
 }
 
