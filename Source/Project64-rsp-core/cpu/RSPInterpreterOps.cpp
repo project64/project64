@@ -5,9 +5,9 @@
 #include <Project64-rsp-core\RSPDebugger.h>
 #include <Project64-rsp-core\RSPInfo.h>
 #include <Settings/Settings.h>
+#include <algorithm>
 #include <float.h>
 #include <math.h>
-#include <algorithm>
 
 extern UWORD32 Recp, RecpResult, SQroot, SQrootResult;
 extern bool AudioHle, GraphicsHle;
