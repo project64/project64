@@ -306,7 +306,7 @@ void RSP_Special_BREAK(void)
     *RSPInfo.SP_STATUS_REG |= (SP_STATUS_HALT | SP_STATUS_BROKE);
     if ((*RSPInfo.SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0)
     {
-        *RSPInfo.MI_INTR_REG |= R4300i_SP_Intr;
+        *RSPInfo.MI_INTR_REG |= MI_INTR_SP;
         RSPInfo.CheckInterrupts();
     }
 }
@@ -466,11 +466,11 @@ void RSP_Cop0_MT(void)
         }
         if ((RSP_GPR[RSPOpC.rt].W & SP_CLR_INTR) != 0)
         {
-            *RSPInfo.MI_INTR_REG &= ~R4300i_SP_Intr;
+            *RSPInfo.MI_INTR_REG &= ~MI_INTR_SP;
         }
         if ((RSP_GPR[RSPOpC.rt].W & SP_SET_INTR) != 0)
         {
-            *RSPInfo.MI_INTR_REG |= R4300i_SP_Intr;
+            *RSPInfo.MI_INTR_REG |= MI_INTR_SP;
             RSPInfo.CheckInterrupts();
             RSP_Running = false;
         }

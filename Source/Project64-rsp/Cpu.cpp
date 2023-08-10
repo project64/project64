@@ -149,7 +149,7 @@ uint32_t DoRspCycles(uint32_t Cycles)
         *RSPInfo.SP_STATUS_REG |= (0x0203);
         if ((*RSPInfo.SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0)
         {
-            *RSPInfo.MI_INTR_REG |= R4300i_SP_Intr;
+            *RSPInfo.MI_INTR_REG |= MI_INTR_SP;
             RSPInfo.CheckInterrupts();
         }
 
@@ -165,7 +165,7 @@ uint32_t DoRspCycles(uint32_t Cycles)
         *RSPInfo.SP_STATUS_REG |= (0x0203);
         if ((*RSPInfo.SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0)
         {
-            *RSPInfo.MI_INTR_REG |= R4300i_SP_Intr;
+            *RSPInfo.MI_INTR_REG |= MI_INTR_SP;
             RSPInfo.CheckInterrupts();
         }
         return Cycles;
@@ -181,7 +181,7 @@ uint32_t DoRspCycles(uint32_t Cycles)
 	*RSPInfo.SP_STATUS_REG |= (0x0203 );
 	if ((*RSPInfo.SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0 )
 	{
-		*RSPInfo.MI_INTR_REG |= R4300i_SP_Intr;
+		*RSPInfo.MI_INTR_REG |= MI_INTR_SP;
 		RSPInfo.CheckInterrupts();
 	}
 	//return Cycles;
