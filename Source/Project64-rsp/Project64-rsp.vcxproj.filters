@@ -27,9 +27,6 @@
     <ClInclude Include="breakpoint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Cpu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="dma.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -72,6 +69,9 @@
     <ClInclude Include="Debugger\RSPRegistersUI.h">
       <Filter>Header Files\Debugger</Filter>
     </ClInclude>
+    <ClInclude Include="Debugger\RSPDebuggerUI.h">
+      <Filter>Header Files\Debugger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project64-rsp.rc">
@@ -82,16 +82,7 @@
     <ClCompile Include="breakpoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Cpu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="dma.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Interpreter CPU.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Interpreter Ops.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="log.cpp">
@@ -131,6 +122,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Debugger\RSPRegistersUI.cpp">
+      <Filter>Source Files\Debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="Debugger\RSPDebuggerUI.cpp">
       <Filter>Source Files\Debugger</Filter>
     </ClCompile>
   </ItemGroup>

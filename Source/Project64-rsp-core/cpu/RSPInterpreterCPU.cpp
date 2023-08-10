@@ -1,18 +1,12 @@
-#include "Interpreter CPU.h"
-#include "Cpu.h"
-#include "Interpreter Ops.h"
-#include "RSP Command.h"
-#include "Rsp.h"
-#include "breakpoint.h"
-#include "log.h"
-#include "memory.h"
-#include <Project64-rsp-core/cpu/RSPOpcode.h>
-#include <Project64-rsp-core/cpu/RSPRegisters.h>
-#include <float.h>
-#include <stdio.h>
-#include <windows.h>
+#include "RSPInterpreterCPU.h"
+#include "RSPCpu.h"
+#include "RSPInterpreterOps.h"
+#include "RSPRegisters.h"
+#include <Project64-rsp-core\RSPDebugger.h>
+#include <Project64-rsp-core\RSPInfo.h>
 
-DWORD RSP_NextInstruction, RSP_JumpTo;
+RSPPIPELINE_STAGE RSP_NextInstruction;
+uint32_t RSP_JumpTo;
 
 void BuildInterpreterCPU(void)
 {
@@ -377,55 +371,16 @@ void BuildInterpreterCPU(void)
     RSP_Sc2[31] = rsp_UnknownOpcode;
 }
 
-DWORD RunInterpreterCPU(DWORD Cycles)
+uint32_t RunInterpreterCPU(uint32_t Cycles)
 {
-    DWORD CycleCount;
+    uint32_t CycleCount;
     RSP_Running = true;
-    Enable_RSP_Commands_Window();
+    g_RSPDebugger->StartingCPU();
     CycleCount = 0;
 
     while (RSP_Running)
     {
-        if (NoOfBpoints != 0)
-        {
-            if (CheckForRSPBPoint(*PrgCount))
-            {
-                if (InRSPCommandsWindow)
-                {
-                    Enter_RSP_Commands_Window();
-                    if (Stepping_Commands)
-                    {
-                        DisplayError("Encountered an R4300i breakpoint");
-                    }
-                    else
-                    {
-                        DisplayError("Encountered an R4300i breakpoint\n\nNow stepping");
-                        SetRSPCommandViewto(*PrgCount);
-                        SetRSPCommandToStepping();
-                    }
-                }
-                else
-                {
-                    DisplayError("Encountered an RSP breakpoint\n\nEntering command window");
-                    Enter_RSP_Commands_Window();
-                }
-            }
-        }
-
-        if (Stepping_Commands)
-        {
-            WaitingForStep = true;
-            SetRSPCommandViewto(*PrgCount);
-            UpdateRSPRegistersScreen();
-            while (WaitingForStep != 0)
-            {
-                Sleep(20);
-                if (!Stepping_Commands)
-                {
-                    WaitingForStep = false;
-                }
-            }
-        }
+        g_RSPDebugger->BeforeExecuteOp();
 
         RSPOpC.Value = *(uint32_t *)(RSPInfo.IMEM + (*PrgCount & 0xFFC));
         RSP_Opcode[RSPOpC.op]();
@@ -433,22 +388,22 @@ DWORD RunInterpreterCPU(DWORD Cycles)
 
         switch (RSP_NextInstruction)
         {
-        case NORMAL:
+        case RSPPIPELINE_NORMAL:
             *PrgCount = (*PrgCount + 4) & 0xFFC;
             break;
-        case DELAY_SLOT:
-            RSP_NextInstruction = JUMP;
+        case RSPPIPELINE_DELAY_SLOT:
+            RSP_NextInstruction = RSPPIPELINE_JUMP;
             *PrgCount = (*PrgCount + 4) & 0xFFC;
             break;
-        case JUMP:
-            RSP_NextInstruction = NORMAL;
+        case RSPPIPELINE_JUMP:
+            RSP_NextInstruction = RSPPIPELINE_NORMAL;
             *PrgCount = RSP_JumpTo;
             break;
-        case SINGLE_STEP:
+        case RSPPIPELINE_SINGLE_STEP:
             *PrgCount = (*PrgCount + 4) & 0xFFC;
-            RSP_NextInstruction = SINGLE_STEP_DONE;
+            RSP_NextInstruction = RSPPIPELINE_SINGLE_STEP_DONE;
             break;
-        case SINGLE_STEP_DONE:
+        case RSPPIPELINE_SINGLE_STEP_DONE:
             *PrgCount = (*PrgCount + 4) & 0xFFC;
             *RSPInfo.SP_STATUS_REG |= SP_STATUS_HALT;
             RSP_Running = false;

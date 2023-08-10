@@ -4,6 +4,8 @@
 
 #include "Rsp.h"
 #include "memory.h"
+#include <Project64-rsp-core/RSPInfo.h>
+#include <Project64-rsp-core/cpu/RSPCpu.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
 
 // #define RSP_SAFE_DMA // Unoptimized DMA transfers
@@ -67,7 +69,7 @@ void SP_DMA_READ(void)
 #endif
 
     // TODO: Could this be a problem DMEM to IMEM?
-    if (CPUCore == RecompilerCPU && (*RSPInfo.SP_MEM_ADDR_REG & 0x1000) != 0)
+    if (g_CPUCore == RecompilerCPU && (*RSPInfo.SP_MEM_ADDR_REG & 0x1000) != 0)
     {
         SetJumpTable(End);
     }

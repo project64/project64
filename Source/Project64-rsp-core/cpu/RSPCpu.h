@@ -1,6 +1,11 @@
-#include <Project64-rsp-core/cpu/RSPOpcode.h>
-#include <Project64-rsp-core/cpu/RspTypes.h>
-#include <Windows.h>
+#include "RSPOpcode.h"
+#include "RspTypes.h"
+
+enum RSPCpuType
+{
+    InterpreterCPU = 0,
+    RecompilerCPU = 1,
+};
 
 extern UDWORD EleSpec[16], Indx[16];
 
@@ -17,7 +22,8 @@ extern p_func RSP_Sc2[32];
 extern uint32_t *PrgCount, RSP_Running;
 extern RSPOpcode RSPOpC;
 
-void SetCPU(DWORD core);
+void SetCPU(RSPCpuType core);
 void Build_RSP(void);
 
-extern DWORD Mfc0Count, SemaphoreExit;
+extern uint32_t Mfc0Count, SemaphoreExit;
+extern RSPCpuType g_CPUCore;

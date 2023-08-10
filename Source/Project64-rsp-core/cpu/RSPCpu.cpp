@@ -1,18 +1,8 @@
-#include "Cpu.h"
-#include "Profiling.h"
-#include "RSP Command.h"
-#include "Recompiler CPU.h"
-#include "Rsp.h"
-#include "breakpoint.h"
-#include "log.h"
-#include "memory.h"
-#include "x86.h"
-#include <Project64-rsp-core/cpu/RSPOpcode.h>
+#include "RSPCpu.h"
+#include <Common/CriticalSection.h>
+#include <Project64-rsp-core/RSPDebugger.h>
+#include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
-#include <Project64-rsp-core/cpu/RspTypes.h>
-#include <float.h>
-#include <stdio.h>
-#include <windows.h>
 
 UDWORD EleSpec[16], Indx[16];
 RSPOpcode RSPOpC;
@@ -30,13 +20,14 @@ p_func RSP_Sc2[32];
 void BuildInterpreterCPU(void);
 void BuildRecompilerCPU(void);
 
-extern HANDLE hMutex;
-DWORD Mfc0Count, SemaphoreExit = 0;
+CriticalSection g_CPUCriticalSection;
+uint32_t Mfc0Count, SemaphoreExit = 0;
+RSPCpuType g_CPUCore = InterpreterCPU;
 
-void SetCPU(DWORD core)
+void SetCPU(RSPCpuType core)
 {
-    WaitForSingleObjectEx(hMutex, 1000 * 100, false);
-    CPUCore = core;
+    CGuard Guard(g_CPUCriticalSection);
+    g_CPUCore = core;
     switch (core)
     {
     case RecompilerCPU:
@@ -46,7 +37,6 @@ void SetCPU(DWORD core)
         BuildInterpreterCPU();
         break;
     }
-    ReleaseMutex(hMutex);
 }
 
 void Build_RSP(void)
@@ -58,8 +48,8 @@ void Build_RSP(void)
     SQroot.UW = 0;
     SQrootResult.UW = 0;
 
-    SetCPU(CPUCore);
-    ResetTimerList();
+    SetCPU(g_CPUCore);
+    g_RSPDebugger->ResetTimerList();
 
     EleSpec[0].DW = 0x0706050403020100;  // None
     EleSpec[1].DW = 0x0706050403020100;  // None
@@ -122,25 +112,17 @@ be greater than the number of cycles that the RSP should have performed.
 (this value is ignored if the RSP has been stopped)
 */
 
-DWORD RunInterpreterCPU(DWORD Cycles);
-DWORD RunRecompilerCPU(DWORD Cycles);
+uint32_t RunInterpreterCPU(uint32_t Cycles);
+uint32_t RunRecompilerCPU(uint32_t Cycles);
 
 #define MI_INTR_SP 0x01 /* Bit 0: SP intr */
 
 uint32_t DoRspCycles(uint32_t Cycles)
 {
     extern bool AudioHle, GraphicsHle;
-    DWORD TaskType = *(DWORD *)(RSPInfo.DMEM + 0xFC0);
+    uint32_t TaskType = *(uint32_t *)(RSPInfo.DMEM + 0xFC0);
 
-    /*	if (*RSPInfo.SP_STATUS_REG & SP_STATUS_SIG0)
-	{
-		*RSPInfo.SP_STATUS_REG &= ~SP_STATUS_SIG0;
-		*RSPInfo.MI_INTR_REG |= MI_INTR_SP;
-		RSPInfo.CheckInterrupts();
-		return Cycles;
-	}
-*/
-    if (TaskType == 1 && GraphicsHle && *(DWORD *)(RSPInfo.DMEM + 0x0ff0) != 0)
+    if (TaskType == 1 && GraphicsHle && *(uint32_t *)(RSPInfo.DMEM + 0x0ff0) != 0)
     {
         if (RSPInfo.ProcessDList != NULL)
         {
@@ -175,8 +157,6 @@ uint32_t DoRspCycles(uint32_t Cycles)
         RSPInfo.ShowCFB();
     }
 
-    Compiler.bAudioUcode = (TaskType == 2) ? true : false;
-
     /*
 	*RSPInfo.SP_STATUS_REG |= (0x0203 );
 	if ((*RSPInfo.SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0 )
@@ -187,20 +167,11 @@ uint32_t DoRspCycles(uint32_t Cycles)
 	//return Cycles;
 */
 
-    if (Profiling && !IndvidualBlock)
-    {
-        StartTimer((DWORD)Timer_RSP_Running);
-    }
-
-    WaitForSingleObjectEx(hMutex, 1000 * 100, false);
-
-    if (BreakOnStart)
-    {
-        Enter_RSP_Commands_Window();
-    }
+    g_RSPDebugger->RspCyclesStart();
+    CGuard Guard(g_CPUCriticalSection);
     RSP_MfStatusCount = 0;
 
-    switch (CPUCore)
+    switch (g_CPUCore)
     {
     case RecompilerCPU:
         RunRecompilerCPU(Cycles);
@@ -209,12 +180,6 @@ uint32_t DoRspCycles(uint32_t Cycles)
         RunInterpreterCPU(Cycles);
         break;
     }
-    ReleaseMutex(hMutex);
-
-    if (Profiling && !IndvidualBlock)
-    {
-        StartTimer((DWORD)Timer_R4300_Running);
-    }
-
+    g_RSPDebugger->RspCyclesStop();
     return Cycles;
 }

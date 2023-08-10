@@ -1,3 +1,6 @@
+#pragma once
+#include <stdint.h>
+
 enum SPECIAL_TIMERS
 {
     Timer_None = 0,
@@ -14,6 +17,6 @@ enum SPECIAL_TIMERS
 };
 
 void ResetTimerList(void);
-DWORD StartTimer(DWORD Address);
+uint32_t StartTimer(uint32_t Address);
 void StopTimer(void);
 void GenerateTimerResults(void);

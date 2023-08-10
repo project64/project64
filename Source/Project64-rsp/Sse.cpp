@@ -2,6 +2,7 @@
 #include "log.h"
 #include "memory.h"
 #include "x86.h"
+#include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
 #include <stdio.h>
 #include <windows.h>

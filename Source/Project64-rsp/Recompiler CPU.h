@@ -13,16 +13,16 @@ extern bool ChangedPC;
 #define EntireAccum (Low16BitAccum | Middle16BitAccum | High16BitAccum)
 
 bool WriteToAccum(int Location, int PC);
-bool WriteToVectorDest(DWORD DestReg, int PC);
+bool WriteToVectorDest(uint32_t DestReg, int PC);
 bool UseRspFlags(int PC);
 
-bool DelaySlotAffectBranch(DWORD PC);
-bool CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom);
-bool IsOpcodeBranch(DWORD PC, RSPOpcode RspOp);
-bool IsOpcodeNop(DWORD PC);
+bool DelaySlotAffectBranch(uint32_t PC);
+bool CompareInstructions(uint32_t PC, RSPOpcode * Top, RSPOpcode * Bottom);
+bool IsOpcodeBranch(uint32_t PC, RSPOpcode RspOp);
+bool IsOpcodeNop(uint32_t PC);
 
-bool IsNextInstructionMmx(DWORD PC);
-bool IsRegisterConstant(DWORD Reg, DWORD * Constant);
+bool IsNextInstructionMmx(uint32_t PC);
+bool IsRegisterConstant(uint32_t Reg, uint32_t * Constant);
 
 void RSP_Element2Mmx(int MmxReg);
 void RSP_MultiElement2Mmx(int MmxReg1, int MmxReg2);
@@ -30,7 +30,7 @@ void RSP_MultiElement2Mmx(int MmxReg1, int MmxReg2);
 #define MainBuffer 0
 #define SecondaryBuffer 1
 
-DWORD RunRecompilerCPU(DWORD Cycles);
+uint32_t RunRecompilerCPU(uint32_t Cycles);
 void BuildRecompilerCPU(void);
 
 void CompilerRSPBlock(void);
@@ -39,27 +39,27 @@ bool RSP_DoSections(void);
 
 typedef struct
 {
-    DWORD StartPC, CurrPC; // Block start
+    uint32_t StartPC, CurrPC; // Block start
 
     struct
     {
-        DWORD TargetPC;       // Target for this unknown branch
-        DWORD * X86JumpLoc;   // Our x86 DWORD to fill
-    } BranchesToResolve[200]; // Branches inside or outside block
+        uint32_t TargetPC;     // Target for this unknown branch
+        uint32_t * X86JumpLoc; // Our x86 uint32_t to fill
+    } BranchesToResolve[200];  // Branches inside or outside block
 
-    DWORD ResolveCount; // Branches with NULL jump table
+    uint32_t ResolveCount; // Branches with NULL jump table
 } RSP_BLOCK;
 
 extern RSP_BLOCK CurrentBlock;
 
 typedef struct
 {
-    bool bIsRegConst[32];   // bool toggle for constant
-    DWORD MipsRegConst[32]; // Value of register 32-bit
-    DWORD BranchLabels[250];
-    DWORD LabelCount;
-    DWORD BranchLocations[250];
-    DWORD BranchCount;
+    bool bIsRegConst[32];      // bool toggle for constant
+    uint32_t MipsRegConst[32]; // Value of register 32-bit
+    uint32_t BranchLabels[250];
+    uint32_t LabelCount;
+    uint32_t BranchLocations[250];
+    uint32_t BranchCount;
 } RSP_CODE;
 
 extern RSP_CODE RspCode;

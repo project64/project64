@@ -40,14 +40,24 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cpu\RSPCpu.cpp" />
     <ClCompile Include="cpu\RSPiInstruction.cpp" />
+    <ClCompile Include="cpu\RSPInterpreterCPU.cpp" />
+    <ClCompile Include="cpu\RSPInterpreterOps.cpp" />
     <ClCompile Include="cpu\RSPRegister.cpp" />
     <ClCompile Include="cpu\RspTypes.cpp" />
+    <ClCompile Include="RSPDebugger.cpp" />
+    <ClCompile Include="RSPInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cpu\RSPCpu.h" />
     <ClInclude Include="cpu\RSPInstruction.h" />
+    <ClInclude Include="cpu\RSPInterpreterCPU.h" />
+    <ClInclude Include="cpu\RSPInterpreterOps.h" />
     <ClInclude Include="cpu\RSPOpcode.h" />
     <ClInclude Include="cpu\RSPRegisters.h" />
     <ClInclude Include="cpu\RspTypes.h" />
+    <ClInclude Include="RSPDebugger.h" />
+    <ClInclude Include="RSPInfo.h" />
   </ItemGroup>
 </Project>

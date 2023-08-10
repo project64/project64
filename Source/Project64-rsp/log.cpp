@@ -7,6 +7,7 @@
 
 #include "Log.h"
 #include "Rsp.h"
+#include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
 
 CLog * RDPLog = NULL;

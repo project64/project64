@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include <windows.h>
 
-#include "CPU.h"
 #include "RSP Command.h"
 #include "Rsp.h"
 #include "breakpoint.h"
 #include "memory.h"
+#include <Project64-rsp-core/RSPInfo.h>
+#include <Project64-rsp-core/cpu/RSPCpu.h>
 #include <Project64-rsp-core/cpu/RSPInstruction.h>
 #include <Project64-rsp-core/cpu/RSPOpcode.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
@@ -49,7 +50,7 @@ HWND RSPCommandshWnd, hList, hAddress, hFunctionlist, hGoButton, hBreakButton,
     hMemory, hScrlBar;
 bool InRSPCommandsWindow;
 char CommandName[100];
-DWORD Stepping_Commands, WaitingForStep;
+bool Stepping_Commands, WaitingForStep;
 
 void Create_RSP_Commands_Window(int Child)
 {

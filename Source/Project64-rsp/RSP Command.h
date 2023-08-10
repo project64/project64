@@ -8,5 +8,5 @@ void SetRSPCommandToRunning(void);
 void SetRSPCommandToStepping(void);
 void SetRSPCommandViewto(unsigned int NewLocation);
 
-extern DWORD Stepping_Commands, WaitingForStep;
+extern bool Stepping_Commands, WaitingForStep;
 extern bool InRSPCommandsWindow;

@@ -1,5 +1,6 @@
 #include <windows.h>
 
+#include <Project64-rsp-core\RSPInfo.h>
 #include <Project64-rsp-core\cpu\RSPRegisters.h>
 #include <Project64-rsp\Rsp.h>
 #include <commctrl.h>

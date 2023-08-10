@@ -1,6 +1,7 @@
 #ifdef _WIN32
 #include <Windows.h>
 #include <commctrl.h>
+#include <memory>
 #include <windowsx.h>
 #endif
 #if defined(_MSC_VER) && _MSC_VER >= 1910
@@ -14,7 +15,7 @@
 #include <Common/StdString.h>
 #include <stdint.h>
 
-#include "Cpu.h"
+#include "Debugger/RSPDebuggerUI.h"
 #include "Profiling.h"
 #include "RSP Command.h"
 #include "Recompiler CPU.h"
@@ -23,7 +24,9 @@
 #include "log.h"
 #include "memory.h"
 #include "resource.h"
+#include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/Version.h>
+#include <Project64-rsp-core/cpu/RSPCpu.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
 #include <Project64-rsp-core/cpu/RspTypes.h>
 
@@ -42,13 +45,10 @@ bool DebuggingEnabled = false,
      BreakOnStart = false,
      LogRDP = false,
      LogX86Code = false;
-uint32_t CPUCore = RecompilerCPU;
-
-void * hMutex = NULL;
 
 DEBUG_INFO DebugInfo;
-RSP_INFO RSPInfo;
 void * hinstDLL;
+std::unique_ptr<RSPDebuggerUI> g_RSPDebuggerUI;
 
 extern uint8_t * pLastSecondary;
 
@@ -203,8 +203,8 @@ void FixMenuState(void)
     EnableMenuItem(hRSPMenu, ID_DUMP_RSPCODE, MF_BYCOMMAND | (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
     EnableMenuItem(hRSPMenu, ID_DUMP_DMEM, MF_BYCOMMAND | (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
 
-    CheckMenuItem(hRSPMenu, ID_CPUMETHOD_RECOMPILER, MF_BYCOMMAND | (CPUCore == RecompilerCPU ? MFS_CHECKED : MF_UNCHECKED));
-    CheckMenuItem(hRSPMenu, ID_CPUMETHOD_INTERPT, MF_BYCOMMAND | (CPUCore == InterpreterCPU ? MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_CPUMETHOD_RECOMPILER, MF_BYCOMMAND | (g_CPUCore == RecompilerCPU ? MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_CPUMETHOD_INTERPT, MF_BYCOMMAND | (g_CPUCore == InterpreterCPU ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_BREAKONSTARTOFTASK, MF_BYCOMMAND | (BreakOnStart ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_LOGRDPCOMMANDS, MF_BYCOMMAND | (LogRDP ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_SETTINGS_LOGX86CODE, MF_BYCOMMAND | (LogX86Code ? MFS_CHECKED : MF_UNCHECKED));
@@ -353,6 +353,8 @@ needs five arguments, not two.  Also, GCC lacks SEH.
 
 EXPORT void InitiateRSP(RSP_INFO Rsp_Info, uint32_t * CycleCount)
 {
+    g_RSPDebuggerUI.reset(new RSPDebuggerUI);
+    g_RSPDebugger = g_RSPDebuggerUI.get();
     RSPInfo = Rsp_Info;
     AudioHle = GetSystemSetting(Set_AudioHle) != 0;
     GraphicsHle = GetSystemSetting(Set_GraphicsHle) != 0;
@@ -552,19 +554,19 @@ void ProcessMenuItem(int ID)
     case ID_CPUMETHOD_RECOMPILER:
     {
         SetSetting(Set_CPUCore, RecompilerCPU);
-        CPUCore = RecompilerCPU;
+        g_CPUCore = RecompilerCPU;
         FixMenuState();
         SetCPU(RecompilerCPU);
+        break;
     }
-    break;
     case ID_CPUMETHOD_INTERPT:
     {
         SetSetting(Set_CPUCore, InterpreterCPU);
-        CPUCore = InterpreterCPU;
+        g_CPUCore = InterpreterCPU;
         FixMenuState();
         SetCPU(InterpreterCPU);
+        break;
     }
-    break;
     }
 }
 #endif
@@ -715,7 +717,7 @@ BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam
         hWndItem = GetDlgItem(hDlg, IDC_COMPILER_SELECT);
         ComboBox_AddString(hWndItem, "Interpreter");
         ComboBox_AddString(hWndItem, "Recompiler");
-        ComboBox_SetCurSel(hWndItem, CPUCore);
+        ComboBox_SetCurSel(hWndItem, g_CPUCore);
         break;
     case WM_COMMAND:
         switch (GET_WM_COMMAND_ID(wParam, lParam))
@@ -723,7 +725,7 @@ BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam
         case IDOK:
             hWndItem = GetDlgItem(hDlg, IDC_COMPILER_SELECT);
             value = ComboBox_GetCurSel(hWndItem);
-            SetCPU(value);
+            SetCPU((RSPCpuType)value);
 
             AudioHle = GetBooleanCheck(hDlg, IDC_AUDIOHLE);
             GraphicsHle = GetBooleanCheck(hDlg, IDC_GRAPHICSHLE);
@@ -754,7 +756,7 @@ EXPORT void EnableDebugging(int Enabled)
     if (DebuggingEnabled)
     {
         BreakOnStart = GetSetting(Set_BreakOnStart) != 0;
-        CPUCore = GetSetting(Set_CPUCore) != 0;
+        g_CPUCore = (RSPCpuType)GetSetting(Set_CPUCore);
         LogRDP = GetSetting(Set_LogRDP) != 0;
         LogX86Code = GetSetting(Set_LogX86Code) != 0;
         Profiling = GetSetting(Set_Profiling) != 0;
@@ -771,7 +773,7 @@ EXPORT void EnableDebugging(int Enabled)
         Compiler.bGPRConstants = GetSetting(Set_GPRConstants) != 0;
         Compiler.bFlags = GetSetting(Set_Flags) != 0;
         Compiler.bAlignVector = GetSetting(Set_AlignVector) != 0;
-        SetCPU(CPUCore);
+        SetCPU(g_CPUCore);
     }
 #ifdef _WIN32
     FixMenuState();
@@ -792,9 +794,9 @@ EXPORT void PluginLoaded(void)
 {
     BreakOnStart = false;
 #ifndef _M_X64
-    CPUCore = RecompilerCPU;
+    g_CPUCore = RecompilerCPU;
 #else
-    CPUCore = InterpreterCPU;
+    g_CPUCore = InterpreterCPU;
 #endif
     LogRDP = false;
     LogX86Code = false;
@@ -818,7 +820,7 @@ EXPORT void PluginLoaded(void)
     Set_AudioHle = FindSystemSettingId("HLE Audio");
 
     RegisterSetting(Set_BreakOnStart, Data_DWORD_General, "Break on Start", NULL, BreakOnStart, NULL);
-    RegisterSetting(Set_CPUCore, Data_DWORD_General, "CPU Method", NULL, CPUCore, NULL);
+    RegisterSetting(Set_CPUCore, Data_DWORD_General, "CPU Method", NULL, g_CPUCore, NULL);
     RegisterSetting(Set_LogRDP, Data_DWORD_General, "Log RDP", NULL, LogRDP, NULL);
     RegisterSetting(Set_LogX86Code, Data_DWORD_General, "Log X86 Code", NULL, LogX86Code, NULL);
     RegisterSetting(Set_Profiling, Data_DWORD_General, "Profiling", NULL, Profiling, NULL);
@@ -843,10 +845,7 @@ EXPORT void PluginLoaded(void)
 
     AudioHle = Set_AudioHle != 0 ? GetSystemSetting(Set_AudioHle) != 0 : false;
     GraphicsHle = Set_GraphicsHle != 0 ? GetSystemSetting(Set_GraphicsHle) != 0 : true;
-#ifdef _WIN32
-    hMutex = (HANDLE)CreateMutex(NULL, false, NULL);
-#endif
-    SetCPU(CPUCore);
+    SetCPU(g_CPUCore);
 }
 
 #ifdef _WIN32

@@ -1,37 +1,12 @@
-#include "CPU.h"
-#include "Interpreter CPU.h"
-#include "RSP Command.h"
-#include "Rsp.h"
-#include "dma.h"
-#include "log.h"
-#include "memory.h"
-#include "x86.h"
-#include <Project64-rsp-core/cpu/RSPInstruction.h>
-#include <Project64-rsp-core/cpu/RSPRegisters.h>
-#include <Project64-rsp-core/cpu/RspTypes.h>
-#include <math.h>
-#include <stdio.h>
-#include <windows.h>
-
+#include "RSPCpu.h"
+#include "RSPInterpreterCPU.h"
+#include "RSPRegisters.h"
+#include <Common/StdString.h>
+#include <Project64-rsp-core\RSPDebugger.h>
+#include <Project64-rsp-core\RSPInfo.h>
+#include <Settings/Settings.h>
 #include <float.h>
-
-// TODO: Is this still an issue? If so, investigate, and if not, remove this!
-/*
- * Unfortunately, GCC 4.8.2 stable still has a bug with their <float.h> that
- * includes a different copy of <float.h> from a different directory.
- *
- * Until that bug is fixed, the below macro definitions can be forced.
- *
- * It also is possible to emulate the RSP divide op-codes using a hardware-
- * accurate LUT instead of any floating-point functions, so that works, too.
- */
-
-#ifndef _MCW_RC
-#define _MCW_RC 0x00000300
-#endif
-#ifndef _RC_CHOP
-#define _RC_CHOP 0x00000300
-#endif
+#include <math.h>
 
 extern UWORD32 Recp, RecpResult, SQroot, SQrootResult;
 extern bool AudioHle, GraphicsHle;
@@ -50,38 +25,38 @@ void RSP_Opcode_REGIMM(void)
 
 void RSP_Opcode_J(void)
 {
-    RSP_NextInstruction = DELAY_SLOT;
+    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = (RSPOpC.target << 2) & 0xFFC;
 }
 
 void RSP_Opcode_JAL(void)
 {
-    RSP_NextInstruction = DELAY_SLOT;
+    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_GPR[31].UW = (*PrgCount + 8) & 0xFFC;
     RSP_JumpTo = (RSPOpC.target << 2) & 0xFFC;
 }
 
 void RSP_Opcode_BEQ(void)
 {
-    RSP_NextInstruction = DELAY_SLOT;
+    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W == RSP_GPR[RSPOpC.rt].W);
 }
 
 void RSP_Opcode_BNE(void)
 {
-    RSP_NextInstruction = DELAY_SLOT;
+    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W != RSP_GPR[RSPOpC.rt].W);
 }
 
 void RSP_Opcode_BLEZ(void)
 {
-    RSP_NextInstruction = DELAY_SLOT;
+    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W <= 0);
 }
 
 void RSP_Opcode_BGTZ(void)
 {
-    RSP_NextInstruction = DELAY_SLOT;
+    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W > 0);
 }
 
@@ -289,13 +264,13 @@ void RSP_Special_SRAV(void)
 
 void RSP_Special_JR(void)
 {
-    RSP_NextInstruction = DELAY_SLOT;
+    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = (RSP_GPR[RSPOpC.rs].W & 0xFFC);
 }
 
 void RSP_Special_JALR(void)
 {
-    RSP_NextInstruction = DELAY_SLOT;
+    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_GPR[RSPOpC.rd].W = (*PrgCount + 8) & 0xFFC;
     RSP_JumpTo = (RSP_GPR[RSPOpC.rs].W & 0xFFC);
 }
@@ -365,26 +340,26 @@ void RSP_Special_SLTU(void)
 
 void RSP_Opcode_BLTZ(void)
 {
-    RSP_NextInstruction = DELAY_SLOT;
+    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W < 0);
 }
 
 void RSP_Opcode_BGEZ(void)
 {
-    RSP_NextInstruction = DELAY_SLOT;
+    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W >= 0);
 }
 
 void RSP_Opcode_BLTZAL(void)
 {
-    RSP_NextInstruction = DELAY_SLOT;
+    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_GPR[31].UW = (*PrgCount + 8) & 0xFFC;
     RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W < 0);
 }
 
 void RSP_Opcode_BGEZAL(void)
 {
-    RSP_NextInstruction = DELAY_SLOT;
+    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_GPR[31].UW = (*PrgCount + 8) & 0xFFC;
     RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W >= 0);
 }
@@ -393,10 +368,7 @@ void RSP_Opcode_BGEZAL(void)
 
 void RSP_Cop0_MF(void)
 {
-    if (LogRDP && CPUCore == InterpreterCPU)
-    {
-        RDP_LogMF0(*PrgCount, RSPOpC.rd);
-    }
+    g_RSPDebugger->RDP_LogMF0(*PrgCount, RSPOpC.rd);
     switch (RSPOpC.rd)
     {
     case 0: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_MEM_ADDR_REG; break;
@@ -429,13 +401,15 @@ void RSP_Cop0_MF(void)
     case 11: RSP_GPR[RSPOpC.rt].W = *RSPInfo.DPC_STATUS_REG; break;
     case 12: RSP_GPR[RSPOpC.rt].W = *RSPInfo.DPC_CLOCK_REG; break;
     default:
-        DisplayError("We have not implemented RSP MF CP0 reg %s (%d)", COP0_Name(RSPOpC.rd), RSPOpC.rd);
+        g_Notify->DisplayError(stdstr_f("We have not implemented RSP MF CP0 reg %s (%d)", COP0_Name(RSPOpC.rd), RSPOpC.rd).c_str());
     }
 }
 
 void RSP_Cop0_MT(void)
 {
-    if (LogRDP && CPUCore == InterpreterCPU)
+    __debugbreak();
+#ifdef tofix
+    if (LogRDP && g_CPUCore == InterpreterCPU)
     {
         RDP_LogMT0(*PrgCount, RSPOpC.rd, RSP_GPR[RSPOpC.rt].UW);
     }
@@ -481,7 +455,7 @@ void RSP_Cop0_MT(void)
         if ((RSP_GPR[RSPOpC.rt].W & SP_SET_SSTEP) != 0)
         {
             *RSPInfo.SP_STATUS_REG |= SP_STATUS_SSTEP;
-            RSP_NextInstruction = SINGLE_STEP;
+            RSP_NextInstruction = RSPPIPELINE_SINGLE_STEP;
         }
         if ((RSP_GPR[RSPOpC.rt].W & SP_CLR_INTR_BREAK) != 0)
         {
@@ -613,6 +587,7 @@ void RSP_Cop0_MT(void)
     default:
         DisplayError("We have not implemented RSP MT CP0 reg %s (%d)", COP0_Name(RSPOpC.rd), RSPOpC.rd);
     }
+#endif
 }
 
 // COP2 functions
@@ -913,7 +888,7 @@ void RSP_Vector_VMACU(void)
         del = EleSpec[RSPOpC.e].B[el];
 
         temp.W = (int32_t)RSP_Vect[RSPOpC.vs].s16(el) * (int32_t)(uint32_t)RSP_Vect[RSPOpC.vt].s16(del);
-        RSP_ACCUM[el].UHW[3] = (RSP_ACCUM[el].UHW[3] + (WORD)(temp.W >> 31)) & 0xFFFF;
+        RSP_ACCUM[el].UHW[3] = (RSP_ACCUM[el].UHW[3] + (uint16_t)(temp.W >> 31)) & 0xFFFF;
         temp.UW = temp.UW << 1;
         temp2.UW = temp.UHW[0] + RSP_ACCUM[el].UHW[1];
         RSP_ACCUM[el].HW[1] = temp2.HW[0];
@@ -1440,7 +1415,7 @@ void RSP_Vector_VLT(void)
         else
         {
             Result.u16(el) = RSP_Vect[RSPOpC.vs].u16(el);
-            if ((RSP_Flags[0].UW & (0x101 << (7 - el))) == (WORD)(0x101 << (7 - el)))
+            if ((RSP_Flags[0].UW & (0x101 << (7 - el))) == (uint16_t)(0x101 << (7 - el)))
             {
                 RSP_Flags[1].UW |= (1 << (7 - el));
             }
@@ -1520,7 +1495,7 @@ void RSP_Vector_VGE(void)
         if (RSP_Vect[RSPOpC.vs].s16(el) == RSP_Vect[RSPOpC.vt].s16(del))
         {
             Result.u16(el) = RSP_Vect[RSPOpC.vs].u16(el);
-            if ((RSP_Flags[0].UW & (0x101 << (7 - el))) == (WORD)(0x101 << (7 - el)))
+            if ((RSP_Flags[0].UW & (0x101 << (7 - el))) == (uint16_t)(0x101 << (7 - el)))
             {
                 RSP_Flags[1].UW &= ~(1 << (7 - el));
             }
@@ -1878,8 +1853,8 @@ void RSP_Vector_VRCP(void)
             }
         }
         {
-            DWORD RoundMethod = _RC_CHOP;
-            DWORD OldModel = _controlfp(RoundMethod, _MCW_RC);
+            uint32_t RoundMethod = _RC_CHOP;
+            uint32_t OldModel = _controlfp(RoundMethod, _MCW_RC);
             RecpResult.W = (long)((0x7FFFFFFF / (double)RecpResult.W));
             OldModel = _controlfp(OldModel, _MCW_RC);
         }
@@ -1940,7 +1915,7 @@ void RSP_Vector_VRCPL(void)
             }
         }
         {
-            DWORD OldModel = _controlfp(_RC_CHOP, _MCW_RC);
+            uint32_t OldModel = _controlfp(_RC_CHOP, _MCW_RC);
             //RecpResult.W = 0x7FFFFFFF / RecpResult.W;
             RecpResult.W = (long)((0x7FFFFFFF / (double)RecpResult.W));
             OldModel = _controlfp(OldModel, _MCW_RC);
@@ -2021,8 +1996,8 @@ void RSP_Vector_VRSQ(void)
             }
         }
         {
-            DWORD RoundMethod = _RC_CHOP;
-            DWORD OldModel = _controlfp(RoundMethod, _MCW_RC);
+            uint32_t RoundMethod = _RC_CHOP;
+            uint32_t OldModel = _controlfp(RoundMethod, _MCW_RC);
             SQrootResult.W = (long)(0x7FFFFFFF / sqrt(SQrootResult.W));
             OldModel = _controlfp(OldModel, _MCW_RC);
         }
@@ -2087,7 +2062,7 @@ void RSP_Vector_VRSQL(void)
             }
         }
         {
-            DWORD OldModel = _controlfp(_RC_CHOP, _MCW_RC);
+            uint32_t OldModel = _controlfp(_RC_CHOP, _MCW_RC);
             SQrootResult.W = (long)(0x7FFFFFFF / sqrt(SQrootResult.W));
             OldModel = _controlfp(OldModel, _MCW_RC);
         }
@@ -2541,23 +2516,5 @@ void RSP_Opcode_SWV(void)
 
 void rsp_UnknownOpcode(void)
 {
-    char Message[200];
-    int response;
-
-    if (InRSPCommandsWindow)
-    {
-        SetRSPCommandViewto(*PrgCount);
-        DisplayError("Unhandled Opcode\n%s\n\nStopping emulation", RSPInstruction(*PrgCount, RSPOpC.Value).NameAndParam().c_str());
-    }
-    else
-    {
-        sprintf(Message, "Unhandled Opcode\n%s\n\nStopping emulation.\n\nWould you like to open the debugger?",
-                RSPInstruction(*PrgCount, RSPOpC.Value).NameAndParam().c_str());
-        response = MessageBoxA(NULL, Message, "Error", MB_YESNO | MB_ICONERROR);
-        if (response == IDYES)
-        {
-            Enter_RSP_Commands_Window();
-        }
-    }
-    ExitThread(0);
+    g_RSPDebugger->UnknownOpcode();
 }

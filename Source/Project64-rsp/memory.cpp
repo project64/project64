@@ -4,10 +4,11 @@ enum
 };
 
 #include "Rsp.h"
+#include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
 #include <windows.h>
 
-DWORD NoOfMaps, MapsCRC[MaxMaps];
+uint32_t NoOfMaps, MapsCRC[MaxMaps];
 uint32_t Table;
 BYTE *RecompCode, *RecompCodeSecondary, *RecompPos, *JumpTables;
 void ** JumpTable;
@@ -72,7 +73,7 @@ void ResetJumpTables(void)
 
 void SetJumpTable(uint32_t End)
 {
-    DWORD CRC, count;
+    uint32_t CRC, count;
 
     CRC = 0;
     if (End < 0x800)
@@ -87,7 +88,7 @@ void SetJumpTable(uint32_t End)
 
     for (count = 0; count < End; count += 0x40)
     {
-        CRC += *(DWORD *)(RSPInfo.IMEM + count);
+        CRC += *(uint32_t *)(RSPInfo.IMEM + count);
     }
 
     for (count = 0; count < NoOfMaps; count++)

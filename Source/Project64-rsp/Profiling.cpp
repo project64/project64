@@ -13,7 +13,7 @@
 
 class CProfiling
 {
-    typedef std::map<DWORD, __int64> PROFILE_ENRTIES;
+    typedef std::map<uint32_t, __int64> PROFILE_ENRTIES;
     typedef PROFILE_ENRTIES::iterator PROFILE_ENRTY;
     typedef PROFILE_ENRTIES::value_type PROFILE_VALUE;
     typedef struct
@@ -22,8 +22,8 @@ class CProfiling
         char * Name;
     } TIMER_NAME;
 
-    DWORD m_CurrentTimerAddr, CurrentDisplayCount;
-    DWORD m_StartTimeHi, m_StartTimeLo; // The current timer start time
+    uint32_t m_CurrentTimerAddr, CurrentDisplayCount;
+    uint32_t m_StartTimeHi, m_StartTimeLo; // The current timer start time
     PROFILE_ENRTIES m_Entries;
 
 public:
@@ -33,13 +33,13 @@ public:
     }
 
     // Recording timing against current timer, returns the address of the timer stopped
-    DWORD StartTimer(DWORD Address)
+    uint32_t StartTimer(uint32_t Address)
     {
-        DWORD OldTimerAddr = StopTimer();
+        uint32_t OldTimerAddr = StopTimer();
         m_CurrentTimerAddr = Address;
 
 #if defined(_M_IX86) && defined(_MSC_VER)
-        DWORD HiValue, LoValue;
+        uint32_t HiValue, LoValue;
         _asm {
 			pushad
 			rdtsc
@@ -54,7 +54,7 @@ public:
 #endif
         return OldTimerAddr;
     }
-    DWORD StopTimer(void)
+    uint32_t StopTimer(void)
     {
         if (m_CurrentTimerAddr == Timer_None)
         {
@@ -62,7 +62,7 @@ public:
         }
 
 #if defined(_M_IX86) && defined(_MSC_VER)
-        DWORD HiValue, LoValue;
+        uint32_t HiValue, LoValue;
         _asm {
 			pushad
 			rdtsc
@@ -88,7 +88,7 @@ public:
         DebugBreak();
 #endif
 
-        DWORD OldTimerAddr = m_CurrentTimerAddr;
+        uint32_t OldTimerAddr = m_CurrentTimerAddr;
         m_CurrentTimerAddr = Timer_None;
         return OldTimerAddr;
     }
@@ -158,7 +158,7 @@ public:
                 sprintf(Buffer, "Function 0x%08X", ItemList[count]->first);
                 for (int NameID = 0; NameID < (sizeof(TimerNames) / sizeof(TIMER_NAME)); NameID++)
                 {
-                    if (ItemList[count]->first == (DWORD)TimerNames[NameID].Timer)
+                    if (ItemList[count]->first == (uint32_t)TimerNames[NameID].Timer)
                     {
                         strcpy(Buffer, TimerNames[NameID].Name);
                         break;
@@ -184,7 +184,7 @@ void ResetTimerList(void)
     GetProfiler().ResetCounters();
 }
 
-DWORD StartTimer(DWORD Address)
+uint32_t StartTimer(uint32_t Address)
 {
     return GetProfiler().StartTimer(Address);
 }
@@ -209,7 +209,7 @@ typedef struct
     __int64 TimeTotal;
 } TIME_STAMP_ENTRY;
 
-DWORD StartTimeHi, StartTimeLo, StopTimeHi, StopTimeLo, TSE_Count, TSE_Max;
+uint32_t StartTimeHi, StartTimeLo, StopTimeHi, StopTimeLo, TSE_Count, TSE_Max;
 TIME_STAMP_ENTRY * TS_Entries = NULL;
 char LastLabel[100];
 
@@ -250,7 +250,7 @@ void StopTimer(void)
         return;
     }
     {
-        DWORD count;
+        uint32_t count;
 
         for (count = 0; count < TSE_Count; count++)
         {
@@ -291,7 +291,7 @@ void GenerateTimerResults(void)
 {
     char buffer[_MAX_PATH], drive[_MAX_DRIVE], dir[_MAX_DIR];
     char fname[_MAX_FNAME], ext[_MAX_EXT], LogFileName[_MAX_PATH];
-    DWORD dwWritten, count, count2;
+    uint32_t dwWritten, count, count2;
     HANDLE hLogFile = NULL;
     __int64 TotalTime;
 

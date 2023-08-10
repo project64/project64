@@ -1,6 +1,6 @@
 #include "breakpoint.h"
-#include "CPU.h"
 #include "Rsp.h"
+#include <Project64-rsp-core\RSPInfo.h>
 #include <stdio.h>
 #include <windows.h>
 
@@ -95,7 +95,7 @@ void CreateBPPanel(void * hDlg, rectangle rcBox)
         char Title[20];
         SendMessage(hRSPLocation, WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
         SendMessage(hRSPLocation, EM_SETLIMITTEXT, (WPARAM)3, (LPARAM)0);
-        sprintf(Title, "%03X", *PrgCount);
+        sprintf(Title, "%03X", *RSPInfo.SP_PC_REG);
         SetWindowTextA(hRSPLocation, Title);
     }
 }

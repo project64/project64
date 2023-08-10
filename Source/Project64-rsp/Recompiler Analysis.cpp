@@ -1,11 +1,12 @@
-#include "CPU.h"
-#include "Interpreter CPU.h"
 #include "RSP Command.h"
 #include "Recompiler CPU.h"
 #include "Rsp.h"
 #include "log.h"
 #include "memory.h"
+#include <Project64-rsp-core/RSPInfo.h>
+#include <Project64-rsp-core/cpu/RSPCpu.h>
 #include <Project64-rsp-core/cpu/RSPInstruction.h>
+#include <Project64-rsp-core/cpu/RSPInterpreterCPU.h>
 #include <Project64-rsp-core/cpu/RSPOpcode.h>
 #include <Project64-rsp-core/cpu/RspTypes.h>
 #include <windows.h>
@@ -18,7 +19,7 @@ Output: bool whether opcode at PC is a NOP
 Input: PC
 */
 
-bool IsOpcodeNop(DWORD PC)
+bool IsOpcodeNop(uint32_t PC)
 {
     RSPOpcode RspOp;
     RspOp.Value = *(uint32_t *)(RSPInfo.IMEM + (PC & 0xFFC));
@@ -36,7 +37,7 @@ Output: Determines EMMS status
 Input: PC
 */
 
-bool IsNextInstructionMmx(DWORD PC)
+bool IsNextInstructionMmx(uint32_t PC)
 {
     RSPOpcode RspOp;
 
@@ -124,16 +125,16 @@ Input: PC, location in accumulator
 
 #define HIT_BRANCH 0x2
 
-DWORD WriteToAccum2(int Location, int PC, bool RecursiveCall)
+uint32_t WriteToAccum2(int Location, int PC, bool RecursiveCall)
 {
     RSPOpcode RspOp;
-    DWORD BranchTarget = 0;
+    uint32_t BranchTarget = 0;
     signed int BranchImmed = 0;
     int Instruction_State = NextInstruction;
 
     if (Compiler.bAccum == false) return true;
 
-    if (Instruction_State == DELAY_SLOT)
+    if (Instruction_State == RSPPIPELINE_DELAY_SLOT)
     {
         return true;
     }
@@ -156,7 +157,7 @@ DWORD WriteToAccum2(int Location, int PC, bool RecursiveCall)
             case RSP_REGIMM_BGEZ:
             case RSP_REGIMM_BLTZAL:
             case RSP_REGIMM_BGEZAL:
-                Instruction_State = DO_DELAY_SLOT;
+                Instruction_State = RSPPIPELINE_DO_DELAY_SLOT;
                 break;
             default:
                 CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
@@ -189,7 +190,7 @@ DWORD WriteToAccum2(int Location, int PC, bool RecursiveCall)
                 return true;
 
             case RSP_SPECIAL_JR:
-                Instruction_State = DO_DELAY_SLOT;
+                Instruction_State = RSPPIPELINE_DO_DELAY_SLOT;
                 break;
 
             default:
@@ -206,7 +207,7 @@ DWORD WriteToAccum2(int Location, int PC, bool RecursiveCall)
             // Rarely occurs, so we let them have their way
             else
             {
-                Instruction_State = DO_DELAY_SLOT;
+                Instruction_State = RSPPIPELINE_DO_DELAY_SLOT;
                 break;
             }
 
@@ -219,7 +220,7 @@ DWORD WriteToAccum2(int Location, int PC, bool RecursiveCall)
             }
             else
             {
-                Instruction_State = DO_DELAY_SLOT;
+                Instruction_State = RSPPIPELINE_DO_DELAY_SLOT;
                 break;
             }
 
@@ -247,7 +248,7 @@ DWORD WriteToAccum2(int Location, int PC, bool RecursiveCall)
                 }
             }
             BranchTarget = (PC + ((short)RspOp.offset << 2) + 4) & 0xFFC;
-            Instruction_State = DO_DELAY_SLOT;
+            Instruction_State = RSPPIPELINE_DO_DELAY_SLOT;
             break;
         case RSP_ADDI:
         case RSP_ADDIU:
@@ -396,15 +397,15 @@ DWORD WriteToAccum2(int Location, int PC, bool RecursiveCall)
         }
         switch (Instruction_State)
         {
-        case NORMAL: break;
-        case DO_DELAY_SLOT:
-            Instruction_State = DELAY_SLOT;
+        case RSPPIPELINE_NORMAL: break;
+        case RSPPIPELINE_DO_DELAY_SLOT:
+            Instruction_State = RSPPIPELINE_DELAY_SLOT;
             break;
-        case DELAY_SLOT:
-            Instruction_State = FINISH_BLOCK;
+        case RSPPIPELINE_DELAY_SLOT:
+            Instruction_State = RSPPIPELINE_FINISH_BLOCK;
             break;
         }
-    } while (Instruction_State != FINISH_BLOCK);
+    } while (Instruction_State != RSPPIPELINE_FINISH_BLOCK);
 
     /*
 	This is a tricky situation because most of the 
@@ -414,7 +415,7 @@ DWORD WriteToAccum2(int Location, int PC, bool RecursiveCall)
 
     if (BranchTarget != 0 && RecursiveCall == false)
     {
-        DWORD BranchTaken, BranchFall;
+        uint32_t BranchTaken, BranchFall;
 
         // Analysis of branch taken
         BranchTaken = WriteToAccum2(Location, BranchTarget - 4, true);
@@ -461,7 +462,7 @@ DWORD WriteToAccum2(int Location, int PC, bool RecursiveCall)
 
 bool WriteToAccum(int Location, int PC)
 {
-    DWORD value = WriteToAccum2(Location, PC, false);
+    uint32_t value = WriteToAccum2(Location, PC, false);
 
     if (value == HIT_BRANCH)
     {
@@ -479,17 +480,17 @@ False: Destination is overwritten later
 Input: PC, Register
 */
 
-bool WriteToVectorDest2(DWORD DestReg, int PC, bool RecursiveCall)
+bool WriteToVectorDest2(uint32_t DestReg, int PC, bool RecursiveCall)
 {
     RSPOpcode RspOp;
-    DWORD BranchTarget = 0;
+    uint32_t BranchTarget = 0;
     signed int BranchImmed = 0;
 
     int Instruction_State = NextInstruction;
 
     if (Compiler.bDest == false) return true;
 
-    if (Instruction_State == DELAY_SLOT)
+    if (Instruction_State == RSPPIPELINE_DELAY_SLOT)
     {
         return true;
     }
@@ -513,7 +514,7 @@ bool WriteToVectorDest2(DWORD DestReg, int PC, bool RecursiveCall)
             case RSP_REGIMM_BGEZ:
             case RSP_REGIMM_BLTZAL:
             case RSP_REGIMM_BGEZAL:
-                Instruction_State = DO_DELAY_SLOT;
+                Instruction_State = RSPPIPELINE_DO_DELAY_SLOT;
                 break;
             default:
                 CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
@@ -546,7 +547,7 @@ bool WriteToVectorDest2(DWORD DestReg, int PC, bool RecursiveCall)
                 return true;
 
             case RSP_SPECIAL_JR:
-                Instruction_State = DO_DELAY_SLOT;
+                Instruction_State = RSPPIPELINE_DO_DELAY_SLOT;
                 break;
 
             default:
@@ -590,7 +591,7 @@ bool WriteToVectorDest2(DWORD DestReg, int PC, bool RecursiveCall)
                 }
             }
             BranchTarget = (PC + ((short)RspOp.offset << 2) + 4) & 0xFFC;
-            Instruction_State = DO_DELAY_SLOT;
+            Instruction_State = RSPPIPELINE_DO_DELAY_SLOT;
             break;
         case RSP_ADDI:
         case RSP_ADDIU:
@@ -799,15 +800,15 @@ bool WriteToVectorDest2(DWORD DestReg, int PC, bool RecursiveCall)
         }
         switch (Instruction_State)
         {
-        case NORMAL: break;
-        case DO_DELAY_SLOT:
-            Instruction_State = DELAY_SLOT;
+        case RSPPIPELINE_NORMAL: break;
+        case RSPPIPELINE_DO_DELAY_SLOT:
+            Instruction_State = RSPPIPELINE_DELAY_SLOT;
             break;
-        case DELAY_SLOT:
-            Instruction_State = FINISH_BLOCK;
+        case RSPPIPELINE_DELAY_SLOT:
+            Instruction_State = RSPPIPELINE_FINISH_BLOCK;
             break;
         }
-    } while (Instruction_State != FINISH_BLOCK);
+    } while (Instruction_State != RSPPIPELINE_FINISH_BLOCK);
 
     /*
 	This is a tricky situation because most of the 
@@ -817,7 +818,7 @@ bool WriteToVectorDest2(DWORD DestReg, int PC, bool RecursiveCall)
 
     if (BranchTarget != 0 && RecursiveCall == false)
     {
-        DWORD BranchTaken, BranchFall;
+        uint32_t BranchTaken, BranchFall;
 
         // Analysis of branch taken
         BranchTaken = WriteToVectorDest2(DestReg, BranchTarget - 4, true);
@@ -863,9 +864,9 @@ bool WriteToVectorDest2(DWORD DestReg, int PC, bool RecursiveCall)
     return true;
 }
 
-bool WriteToVectorDest(DWORD DestReg, int PC)
+bool WriteToVectorDest(uint32_t DestReg, int PC)
 {
-    DWORD value;
+    uint32_t value;
     value = WriteToVectorDest2(DestReg, PC, false);
 
     if (value == HIT_BRANCH)
@@ -892,7 +893,7 @@ bool UseRspFlags(int PC)
 
     if (Compiler.bFlags == false) return true;
 
-    if (Instruction_State == DELAY_SLOT)
+    if (Instruction_State == RSPPIPELINE_DELAY_SLOT)
     {
         return true;
     }
@@ -916,7 +917,7 @@ bool UseRspFlags(int PC)
             case RSP_REGIMM_BGEZ:
             case RSP_REGIMM_BLTZAL:
             case RSP_REGIMM_BGEZAL:
-                Instruction_State = DO_DELAY_SLOT;
+                Instruction_State = RSPPIPELINE_DO_DELAY_SLOT;
                 break;
             default:
                 CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
@@ -946,7 +947,7 @@ bool UseRspFlags(int PC)
                 break;
 
             case RSP_SPECIAL_JR:
-                Instruction_State = DO_DELAY_SLOT;
+                Instruction_State = RSPPIPELINE_DO_DELAY_SLOT;
                 break;
 
             default:
@@ -960,7 +961,7 @@ bool UseRspFlags(int PC)
         case RSP_BNE:
         case RSP_BLEZ:
         case RSP_BGTZ:
-            Instruction_State = DO_DELAY_SLOT;
+            Instruction_State = RSPPIPELINE_DO_DELAY_SLOT;
             break;
         case RSP_ADDI:
         case RSP_ADDIU:
@@ -1105,15 +1106,15 @@ bool UseRspFlags(int PC)
         }
         switch (Instruction_State)
         {
-        case NORMAL: break;
-        case DO_DELAY_SLOT:
-            Instruction_State = DELAY_SLOT;
+        case RSPPIPELINE_NORMAL: break;
+        case RSPPIPELINE_DO_DELAY_SLOT:
+            Instruction_State = RSPPIPELINE_DELAY_SLOT;
             break;
-        case DELAY_SLOT:
-            Instruction_State = FINISH_BLOCK;
+        case RSPPIPELINE_DELAY_SLOT:
+            Instruction_State = RSPPIPELINE_FINISH_BLOCK;
             break;
         }
-    } while (Instruction_State != FINISH_BLOCK);
+    } while (Instruction_State != RSPPIPELINE_FINISH_BLOCK);
     return true;
 }
 
@@ -1125,11 +1126,11 @@ False: Register is not constant at all
 Input: PC, Pointer to constant to fill
 */
 
-bool IsRegisterConstant(DWORD Reg, DWORD * Constant)
+bool IsRegisterConstant(uint32_t Reg, uint32_t * Constant)
 {
-    DWORD PC = 0;
-    DWORD References = 0;
-    DWORD Const = 0;
+    uint32_t PC = 0;
+    uint32_t References = 0;
+    uint32_t Const = 0;
     RSPOpcode RspOp;
 
     if (Compiler.bGPRConstants == false)
@@ -1338,7 +1339,7 @@ False: Opcode is not a branch
 Input: PC
 */
 
-bool IsOpcodeBranch(DWORD PC, RSPOpcode RspOp)
+bool IsOpcodeBranch(uint32_t PC, RSPOpcode RspOp)
 {
     PC = PC; // Unused
 
@@ -1468,21 +1469,21 @@ typedef struct
 {
     union
     {
-        DWORD DestReg;
-        DWORD StoredReg;
+        uint32_t DestReg;
+        uint32_t StoredReg;
     };
     union
     {
-        DWORD SourceReg0;
-        DWORD IndexReg;
+        uint32_t SourceReg0;
+        uint32_t IndexReg;
     };
-    DWORD SourceReg1;
-    DWORD flags;
+    uint32_t SourceReg1;
+    uint32_t flags;
 } OPCODE_INFO;
 
 #pragma warning(pop)
 
-void GetInstructionInfo(DWORD PC, RSPOpcode * RspOp, OPCODE_INFO * info)
+void GetInstructionInfo(uint32_t PC, RSPOpcode * RspOp, OPCODE_INFO * info)
 {
     switch (RspOp->op)
     {
@@ -1834,7 +1835,7 @@ False: Registers do not affect each other
 Input: PC
 */
 
-bool DelaySlotAffectBranch(DWORD PC)
+bool DelaySlotAffectBranch(uint32_t PC)
 {
     RSPOpcode Branch, Delay;
     OPCODE_INFO infoBranch, infoDelay;
@@ -1884,10 +1885,10 @@ Input: Top, not the current operation, the one above
 Bottom: The current opcode for re-ordering bubble style
 */
 
-bool CompareInstructions(DWORD PC, RSPOpcode * Top, RSPOpcode * Bottom)
+bool CompareInstructions(uint32_t PC, RSPOpcode * Top, RSPOpcode * Bottom)
 {
     OPCODE_INFO info0, info1;
-    DWORD InstructionType;
+    uint32_t InstructionType;
 
     GetInstructionInfo(PC - 4, Top, &info0);
     GetInstructionInfo(PC, Bottom, &info1);

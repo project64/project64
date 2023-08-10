@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <windows.h>
 
-#include "Cpu.h"
-#include "Interpreter CPU.h"
 #include "Profiling.h"
 #include "RSP Command.h"
 #include "Recompiler CPU.h"
@@ -13,7 +11,10 @@
 #include "log.h"
 #include "memory.h"
 #include "x86.h"
+#include <Project64-rsp-core/RSPInfo.h>
+#include <Project64-rsp-core/cpu/RSPCpu.h>
 #include <Project64-rsp-core/cpu/RSPInstruction.h>
+#include <Project64-rsp-core/cpu/RSPInterpreterCPU.h>
 #include <Project64-rsp-core/cpu/RSPOpcode.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
 #include <Project64-rsp-core/cpu/RspTypes.h>
@@ -26,7 +27,7 @@
 #define BUILD_BRANCHLABELS_VERBOSE
 
 uint32_t CompilePC, JumpTableSize, BlockID = 0;
-DWORD dwBuffer = MainBuffer;
+uint32_t dwBuffer = MainBuffer;
 bool ChangedPC;
 
 RSP_BLOCK CurrentBlock;
@@ -411,13 +412,13 @@ between branches labels, and actual branches, whichever
 occurs first in code
 */
 
-void ReOrderInstructions(DWORD StartPC, DWORD EndPC)
+void ReOrderInstructions(uint32_t StartPC, uint32_t EndPC)
 {
-    DWORD InstructionCount = EndPC - StartPC;
-    DWORD Count, ReorderedOps, CurrentPC;
+    uint32_t InstructionCount = EndPC - StartPC;
+    uint32_t Count, ReorderedOps, CurrentPC;
     RSPOpcode PreviousOp, CurrentOp, RspOp;
 
-    PreviousOp.Value = *(DWORD *)(RSPInfo.IMEM + (StartPC & 0xFFC));
+    PreviousOp.Value = *(uint32_t *)(RSPInfo.IMEM + (StartPC & 0xFFC));
 
     if (IsOpcodeBranch(StartPC, PreviousOp))
     {
@@ -452,7 +453,7 @@ void ReOrderInstructions(DWORD StartPC, DWORD EndPC)
     for (Count = 0; Count < InstructionCount; Count += 4)
     {
         CurrentPC = StartPC;
-        PreviousOp.Value = *(DWORD *)(RSPInfo.IMEM + (CurrentPC & 0xFFC));
+        PreviousOp.Value = *(uint32_t *)(RSPInfo.IMEM + (CurrentPC & 0xFFC));
         ReorderedOps = 0;
 
         for (;;)
@@ -462,13 +463,13 @@ void ReOrderInstructions(DWORD StartPC, DWORD EndPC)
             {
                 break;
             }
-            CurrentOp.Value = *(DWORD *)(RSPInfo.IMEM + CurrentPC);
+            CurrentOp.Value = *(uint32_t *)(RSPInfo.IMEM + CurrentPC);
 
             if (CompareInstructions(CurrentPC, &PreviousOp, &CurrentOp))
             {
                 // Move current opcode up
-                *(DWORD *)(RSPInfo.IMEM + CurrentPC - 4) = CurrentOp.Value;
-                *(DWORD *)(RSPInfo.IMEM + CurrentPC) = PreviousOp.Value;
+                *(uint32_t *)(RSPInfo.IMEM + CurrentPC - 4) = CurrentOp.Value;
+                *(uint32_t *)(RSPInfo.IMEM + CurrentPC) = PreviousOp.Value;
 
                 ReorderedOps++;
 
@@ -476,7 +477,7 @@ void ReOrderInstructions(DWORD StartPC, DWORD EndPC)
                 CPU_Message("Swapped %X and %X", CurrentPC - 4, CurrentPC);
 #endif
             }
-            PreviousOp.Value = *(DWORD *)(RSPInfo.IMEM + (CurrentPC & 0xFFC));
+            PreviousOp.Value = *(uint32_t *)(RSPInfo.IMEM + (CurrentPC & 0xFFC));
 
             if (IsOpcodeNop(CurrentPC) && IsOpcodeNop(CurrentPC + 4) && IsOpcodeNop(CurrentPC + 8))
             {
@@ -501,8 +502,8 @@ void ReOrderInstructions(DWORD StartPC, DWORD EndPC)
 
 void ReOrderSubBlock(RSP_BLOCK * Block)
 {
-    DWORD end = 0x0ffc;
-    DWORD count;
+    uint32_t end = 0x0ffc;
+    uint32_t count;
 
     if (!Compiler.bReOrdering)
     {
@@ -547,10 +548,10 @@ after every time we hit a branch and delay slot
 
 void DetectGPRConstants(RSP_CODE * code)
 {
-    DWORD Count, Constant = 0;
+    uint32_t Count, Constant = 0;
 
     memset(&code->bIsRegConst, 0, sizeof(bool) * 0x20);
-    memset(&code->MipsRegConst, 0, sizeof(DWORD) * 0x20);
+    memset(&code->MipsRegConst, 0, sizeof(uint32_t) * 0x20);
 
     if (!Compiler.bGPRConstants)
     {
@@ -615,10 +616,10 @@ void CompilerToggleBuffer(void)
 
 void ClearAllx86Code(void)
 {
-    extern DWORD NoOfMaps, MapsCRC[32];
+    extern uint32_t NoOfMaps, MapsCRC[32];
     extern BYTE * JumpTables;
 
-    memset(&MapsCRC, 0, sizeof(DWORD) * 0x20);
+    memset(&MapsCRC, 0, sizeof(uint32_t) * 0x20);
     NoOfMaps = 0;
     memset(JumpTables, 0, 0x1000 * 32);
 
@@ -636,9 +637,9 @@ Resolves all the collected branches, x86 style
 
 void LinkBranches(RSP_BLOCK * Block)
 {
-    DWORD OrigPrgCount = *PrgCount;
-    DWORD Count, Target;
-    DWORD * JumpWord;
+    uint32_t OrigPrgCount = *PrgCount;
+    uint32_t Count, Target;
+    uint32_t * JumpWord;
     BYTE * X86Code;
     RSP_BLOCK Save;
 
@@ -671,7 +672,7 @@ void LinkBranches(RSP_BLOCK * Block)
         }
 
         JumpWord = CurrentBlock.BranchesToResolve[Count].X86JumpLoc;
-        x86_SetBranch32b(JumpWord, (DWORD *)X86Code);
+        x86_SetBranch32b(JumpWord, (uint32_t *)X86Code);
 
         CPU_Message("Linked RSP branch from x86: %08X, to RSP: %X / x86: %08X",
                     JumpWord, Target, X86Code);
@@ -692,7 +693,7 @@ within a block that are safe.
 void BuildBranchLabels(void)
 {
     RSPOpcode RspOp;
-    DWORD i, Dest;
+    uint32_t i, Dest;
 
 #ifdef BUILD_BRANCHLABELS_VERBOSE
     CPU_Message("***** Building branch labels *****");
@@ -700,7 +701,7 @@ void BuildBranchLabels(void)
 
     for (i = 0; i < 0x1000; i += 4)
     {
-        RspOp.Value = *(DWORD *)(RSPInfo.IMEM + i);
+        RspOp.Value = *(uint32_t *)(RSPInfo.IMEM + i);
 
         if (IsOpcodeBranch(i, RspOp))
         {
@@ -748,9 +749,9 @@ void BuildBranchLabels(void)
 #endif
 }
 
-bool IsJumpLabel(DWORD PC)
+bool IsJumpLabel(uint32_t PC)
 {
-    DWORD Count;
+    uint32_t Count;
 
     if (!RspCode.LabelCount)
     {
@@ -772,7 +773,7 @@ void CompilerLinkBlocks(void)
     BYTE * KnownCode = (BYTE *)*(JumpTable + (CompilePC >> 2));
 
     CPU_Message("***** Linking block to X86: %08X *****", KnownCode);
-    NextInstruction = FINISH_BLOCK;
+    NextInstruction = RSPPIPELINE_FINISH_BLOCK;
 
     // Block linking scenario
     JmpLabel32("Linked block", 0);
@@ -784,7 +785,7 @@ void CompilerRSPBlock(void)
     BYTE * IMEM_SAVE = (BYTE *)malloc(0x1000);
     const size_t X86BaseAddress = (size_t)RecompPos;
 
-    NextInstruction = NORMAL;
+    NextInstruction = RSPPIPELINE_NORMAL;
     CompilePC = *PrgCount;
 
     memset(&CurrentBlock, 0, sizeof(CurrentBlock));
@@ -825,7 +826,7 @@ void CompilerRSPBlock(void)
         // Reordering is setup to allow us to have loop labels
         // so here we see if this is one and put it in the jump table
 
-        if (NextInstruction == NORMAL && IsJumpLabel(CompilePC))
+        if (NextInstruction == RSPPIPELINE_NORMAL && IsJumpLabel(CompilePC))
         {
             // Jumps come around twice
             if (NULL == *(JumpTable + (CompilePC >> 2)))
@@ -838,7 +839,7 @@ void CompilerRSPBlock(void)
                 CurrentBlock.CurrPC = CompilePC;
                 ReOrderSubBlock(&CurrentBlock);
             }
-            else if (NextInstruction != DELAY_SLOT_DONE)
+            else if (NextInstruction != RSPPIPELINE_DELAY_SLOT_DONE)
             {
 
                 // We could link the blocks here, but performance-wise it might be better to just let it run
@@ -862,7 +863,7 @@ void CompilerRSPBlock(void)
 
         RSP_LW_IMEM(CompilePC, &RSPOpC.Value);
 
-        if (LogRDP && NextInstruction != DELAY_SLOT_DONE)
+        if (LogRDP && NextInstruction != RSPPIPELINE_DELAY_SLOT_DONE)
         {
             char str[40];
             sprintf(str, "%X", CompilePC);
@@ -874,7 +875,7 @@ void CompilerRSPBlock(void)
         if (RSPOpC.Value == 0xFFFFFFFF)
         {
             // I think this pops up an unknown OP dialog
-            // NextInstruction = FINISH_BLOCK;
+            // NextInstruction = RSPPIPELINE_FINISH_BLOCK;
         }
         else
         {
@@ -883,27 +884,27 @@ void CompilerRSPBlock(void)
 
         switch (NextInstruction)
         {
-        case NORMAL:
+        case RSPPIPELINE_NORMAL:
             CompilePC += 4;
             break;
-        case DO_DELAY_SLOT:
-            NextInstruction = DELAY_SLOT;
+        case RSPPIPELINE_DO_DELAY_SLOT:
+            NextInstruction = RSPPIPELINE_DELAY_SLOT;
             CompilePC += 4;
             break;
-        case DELAY_SLOT:
-            NextInstruction = DELAY_SLOT_DONE;
+        case RSPPIPELINE_DELAY_SLOT:
+            NextInstruction = RSPPIPELINE_DELAY_SLOT_DONE;
             CompilePC -= 4;
             break;
-        case DELAY_SLOT_EXIT:
-            NextInstruction = DELAY_SLOT_EXIT_DONE;
+        case RSPPIPELINE_DELAY_SLOT_EXIT:
+            NextInstruction = RSPPIPELINE_DELAY_SLOT_EXIT_DONE;
             CompilePC -= 4;
             break;
-        case FINISH_SUB_BLOCK:
-            NextInstruction = NORMAL;
+        case RSPPIPELINE_FINISH_SUB_BLOCK:
+            NextInstruction = RSPPIPELINE_NORMAL;
             CompilePC += 8;
             if (CompilePC >= 0x1000)
             {
-                NextInstruction = FINISH_BLOCK;
+                NextInstruction = RSPPIPELINE_FINISH_BLOCK;
             }
             else if (NULL == *(JumpTable + (CompilePC >> 2)))
             {
@@ -921,13 +922,13 @@ void CompilerRSPBlock(void)
             }
             break;
 
-        case FINISH_BLOCK: break;
+        case RSPPIPELINE_FINISH_BLOCK: break;
         default:
             DisplayError("RSP main loop\n\nWTF NextInstruction = %d", NextInstruction);
             CompilePC += 4;
             break;
         }
-    } while (NextInstruction != FINISH_BLOCK && (CompilePC < 0x1000 || NextInstruction == DELAY_SLOT));
+    } while (NextInstruction != RSPPIPELINE_FINISH_BLOCK && (CompilePC < 0x1000 || NextInstruction == RSPPIPELINE_DELAY_SLOT));
     CPU_Message("===== End of recompiled code =====");
 
     if (Compiler.bReOrdering)
@@ -937,7 +938,7 @@ void CompilerRSPBlock(void)
     free(IMEM_SAVE);
 }
 
-DWORD RunRecompilerCPU(DWORD Cycles)
+uint32_t RunRecompilerCPU(uint32_t Cycles)
 {
     BYTE * Block;
 
@@ -952,7 +953,7 @@ DWORD RunRecompilerCPU(DWORD Cycles)
         {
             if (Profiling && !IndvidualBlock)
             {
-                StartTimer((DWORD)Timer_Compiling);
+                StartTimer((uint32_t)Timer_Compiling);
             }
 
             memset(&RspCode, 0, sizeof(RspCode));
@@ -1006,7 +1007,7 @@ DWORD RunRecompilerCPU(DWORD Cycles)
         {
             StopTimer();
         }
-        if (RSP_NextInstruction == SINGLE_STEP)
+        if (RSP_NextInstruction == RSPPIPELINE_SINGLE_STEP)
         {
             RSP_Running = false;
         }

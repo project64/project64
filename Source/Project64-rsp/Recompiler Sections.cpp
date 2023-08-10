@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <windows.h>
 
-#include "CPU.h"
 #include "RSP Command.h"
 #include "Recompiler CPU.h"
 #include "Rsp.h"
@@ -9,6 +8,7 @@
 #include "log.h"
 #include "memory.h"
 #include "x86.h"
+#include <Project64-rsp-core/cpu/RSPCpu.h>
 #include <Project64-rsp-core/cpu/RSPInstruction.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
 #include <Project64-rsp-core/cpu/RspTypes.h>

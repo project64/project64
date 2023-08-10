@@ -44,11 +44,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="breakpoint.cpp" />
-    <ClCompile Include="Cpu.cpp" />
+    <ClCompile Include="Debugger\RSPDebuggerUI.cpp" />
     <ClCompile Include="Debugger\RSPRegistersUI.cpp" />
     <ClCompile Include="dma.cpp" />
-    <ClCompile Include="Interpreter CPU.cpp" />
-    <ClCompile Include="Interpreter Ops.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="memory.cpp" />
@@ -64,7 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="breakpoint.h" />
-    <ClInclude Include="Cpu.h" />
+    <ClInclude Include="Debugger\RSPDebuggerUI.h" />
     <ClInclude Include="Debugger\RSPRegistersUI.h" />
     <ClInclude Include="dma.h" />
     <ClInclude Include="Interpreter CPU.h" />
