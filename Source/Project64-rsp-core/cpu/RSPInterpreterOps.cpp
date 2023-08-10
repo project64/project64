@@ -7,6 +7,7 @@
 #include <Settings/Settings.h>
 #include <float.h>
 #include <math.h>
+#include <algorithm>
 
 extern UWORD32 Recp, RecpResult, SQroot, SQrootResult;
 extern bool AudioHle, GraphicsHle;
@@ -2113,12 +2114,8 @@ void RSP_Opcode_LBV(void)
 void RSP_Opcode_LSV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 1)) & 0xFFF;
-    uint8_t length = 2;
-    if (length > 16 - RSPOpC.del)
-    {
-        length = (uint8_t)(16 - RSPOpC.del);
-    }
-    for (uint8_t i = RSPOpC.del, n = (uint8_t)(length + RSPOpC.del); i < n; i++, Address++)
+    uint8_t Length = std::min((uint8_t)2, (uint8_t)(16 - RSPOpC.del));
+    for (uint8_t i = RSPOpC.del, n = (uint8_t)(Length + RSPOpC.del); i < n; i++, Address++)
     {
         RSP_Vect[RSPOpC.rt].s8(i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
     }
@@ -2127,12 +2124,8 @@ void RSP_Opcode_LSV(void)
 void RSP_Opcode_LLV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 2)) & 0xFFF;
-    uint8_t length = 4;
-    if (length > 16 - RSPOpC.del)
-    {
-        length = (uint8_t)(16 - RSPOpC.del);
-    }
-    for (uint8_t i = RSPOpC.del, n = (uint8_t)(length + RSPOpC.del); i < n; i++, Address++)
+    uint8_t Length = std::min((uint8_t)4, (uint8_t)(16 - RSPOpC.del));
+    for (uint8_t i = RSPOpC.del, n = (uint8_t)(Length + RSPOpC.del); i < n; i++, Address++)
     {
         RSP_Vect[RSPOpC.rt].s8(i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
     }
@@ -2141,12 +2134,8 @@ void RSP_Opcode_LLV(void)
 void RSP_Opcode_LDV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3)) & 0xFFF;
-    uint8_t length = 8;
-    if (length > 16 - RSPOpC.del)
-    {
-        length = (uint8_t)(16 - RSPOpC.del);
-    }
-    for (uint8_t i = RSPOpC.del, n = (uint8_t)(length + RSPOpC.del); i < n; i++)
+    uint8_t Length = std::min((uint8_t)8, (uint8_t)(16 - RSPOpC.del));
+    for (uint8_t i = RSPOpC.del, n = (uint8_t)(Length + RSPOpC.del); i < n; i++)
     {
         RSP_Vect[RSPOpC.rt].s8(15 - i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
         Address += 1;
@@ -2156,11 +2145,7 @@ void RSP_Opcode_LDV(void)
 void RSP_Opcode_LQV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
-    uint8_t Length = (uint8_t)(((Address + 0x10) & ~0xF) - Address);
-    if (Length > 16 - RSPOpC.del)
-    {
-        Length = (uint8_t)(16 - RSPOpC.del);
-    }
+    uint8_t Length = std::min((uint8_t)(((Address + 0x10) & ~0xF) - Address), (uint8_t)(16 - RSPOpC.del));
     for (uint8_t i = RSPOpC.del, n = (uint8_t)(Length + RSPOpC.del); i < n; i++, Address++)
     {
         RSP_Vect[RSPOpC.rt].s8(i) = *(RSPInfo.DMEM + (Address ^ 3));
@@ -2220,11 +2205,7 @@ void RSP_Opcode_LHV(void)
 void RSP_Opcode_LFV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
-    uint8_t length = 8;
-    if (length > 16 - RSPOpC.del)
-    {
-        length = (uint8_t)(16 - RSPOpC.del);
-    }
+    uint8_t Length = std::min((uint8_t)8, (uint8_t)(16 - RSPOpC.del));
 
     RSPVector Temp;
     Temp.s16(7) = *(RSPInfo.DMEM + (((Address + RSPOpC.del) ^ 3) & 0xFFF)) << 7;
@@ -2236,7 +2217,7 @@ void RSP_Opcode_LFV(void)
     Temp.s16(1) = *(RSPInfo.DMEM + (((Address + ((0x10 - RSPOpC.del) ^ 3) & 0xf)) & 0xFFF)) << 7;
     Temp.s16(0) = *(RSPInfo.DMEM + (((Address + ((0x4 - RSPOpC.del) ^ 3) & 0xf)) & 0xFFF)) << 7;
 
-    for (uint8_t i = RSPOpC.del, n = (uint8_t)(length + RSPOpC.del); i < n; i++)
+    for (uint8_t i = RSPOpC.del, n = (uint8_t)(Length + RSPOpC.del); i < n; i++)
     {
         RSP_Vect[RSPOpC.rt].s8(15 - i) = Temp.s8(15 - i);
     }
@@ -2249,13 +2230,8 @@ void RSP_Opcode_LWV(void)
 void RSP_Opcode_LTV(void)
 {
     uint32_t Address = ((((uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF) + 8) & 0xFF0) + (RSPOpC.del & 0x1);
-    uint8_t length = 8;
-    if (length > 32 - RSPOpC.rt)
-    {
-        length = (uint8_t)(32 - RSPOpC.rt);
-    }
-
-    for (uint8_t i = 0; i < length; i++)
+    uint8_t Length = std::min((uint8_t)8, (uint8_t)(32 - RSPOpC.rt));
+    for (uint8_t i = 0; i < Length; i++)
     {
         uint8_t del = ((8 - (RSPOpC.del >> 1) + i) << 1) & 0xF;
         RSP_Vect[RSPOpC.rt + i].s8(15 - del) = *(RSPInfo.DMEM + (Address ^ 3));
@@ -2484,11 +2460,7 @@ void RSP_Opcode_SFV(void)
 void RSP_Opcode_STV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
-    uint8_t Length = 8;
-    if (Length > 32 - RSPOpC.rt)
-    {
-        Length = (uint8_t)(32 - RSPOpC.rt);
-    }
+    uint8_t Length = std::min((uint8_t)8, (uint8_t)(32 - RSPOpC.rt));
     Length = Length << 1;
     uint8_t Del = (uint8_t)(RSPOpC.del >> 1);
     for (uint8_t i = 0; i < Length; i += 2)
