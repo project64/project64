@@ -2137,7 +2137,7 @@ void RSP_Opcode_LDV(void)
     uint8_t Length = std::min((uint8_t)8, (uint8_t)(16 - RSPOpC.del));
     for (uint8_t i = RSPOpC.del, n = (uint8_t)(Length + RSPOpC.del); i < n; i++)
     {
-        RSP_Vect[RSPOpC.rt].s8(15 - i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
+        RSP_Vect[RSPOpC.rt].s8(i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
         Address += 1;
     }
 }
