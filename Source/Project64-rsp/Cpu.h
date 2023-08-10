@@ -1,10 +1,10 @@
-#include "cpu/RSPOpcode.h"
-#include "cpu/RspTypes.h"
+#include <Project64-rsp-core/cpu/RSPOpcode.h>
+#include <Project64-rsp-core/cpu/RspTypes.h>
 #include <Windows.h>
 
 extern UDWORD EleSpec[16], Indx[16];
 
-typedef void(*p_func)(void);
+typedef void (*p_func)(void);
 
 extern p_func RSP_Opcode[64];
 extern p_func RSP_RegImm[32];

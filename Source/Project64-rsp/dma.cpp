@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "RSP Registers.h"
 #include "Rsp.h"
 #include "memory.h"
+#include <Project64-rsp-core/cpu/RSPRegisters.h>
 
 // #define RSP_SAFE_DMA // Unoptimized DMA transfers
 

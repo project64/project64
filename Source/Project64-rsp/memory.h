@@ -1,4 +1,4 @@
-#include "cpu/RspTypes.h"
+#include <Project64-rsp-core/cpu/RspTypes.h>
 
 int AllocateMemory(void);
 void FreeMemory(void);

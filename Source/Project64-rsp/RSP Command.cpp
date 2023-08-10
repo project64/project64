@@ -4,13 +4,13 @@
 
 #include "CPU.h"
 #include "RSP Command.h"
-#include "RSP Registers.h"
 #include "Rsp.h"
-#include "cpu/RspTypes.h"
 #include "breakpoint.h"
 #include "memory.h"
-#include "cpu/RSPOpcode.h"
-#include "cpu/RSPInstruction.h"
+#include <Project64-rsp-core/cpu/RSPInstruction.h>
+#include <Project64-rsp-core/cpu/RSPOpcode.h>
+#include <Project64-rsp-core/cpu/RSPRegisters.h>
+#include <Project64-rsp-core/cpu/RspTypes.h>
 
 #define RSP_MaxCommandLines 30
 
@@ -70,7 +70,7 @@ void Create_RSP_Commands_Window(int Child)
         if (!InRSPCommandsWindow)
         {
             CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Create_RSP_Commands_Window,
-                         (LPVOID)true, 0, &ThreadID);
+                         (LPVOID) true, 0, &ThreadID);
         }
         else
         {

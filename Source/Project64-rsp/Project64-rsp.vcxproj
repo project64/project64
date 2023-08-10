@@ -41,15 +41,11 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
-    <PreBuildEvent>
-      <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(Platform)" "$(SolutionDir)Source\Project64-rsp\Version.h.in" "$(SolutionDir)Source\Project64-rsp\Version.h"</Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="breakpoint.cpp" />
     <ClCompile Include="Cpu.cpp" />
-    <ClCompile Include="cpu\RSPiInstruction.cpp" />
-    <ClCompile Include="cpu\RspTypes.cpp" />
+    <ClCompile Include="Debugger\RSPRegistersUI.cpp" />
     <ClCompile Include="dma.cpp" />
     <ClCompile Include="Interpreter CPU.cpp" />
     <ClCompile Include="Interpreter Ops.cpp" />
@@ -63,15 +59,13 @@
     <ClCompile Include="Recompiler Ops.cpp" />
     <ClCompile Include="Recompiler Sections.cpp" />
     <ClCompile Include="RSP Command.cpp" />
-    <ClCompile Include="RSP Register.cpp" />
     <ClCompile Include="Sse.cpp" />
     <ClCompile Include="X86.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="breakpoint.h" />
     <ClInclude Include="Cpu.h" />
-    <ClInclude Include="cpu\RSPInstruction.h" />
-    <ClInclude Include="cpu\RSPOpcode.h" />
+    <ClInclude Include="Debugger\RSPRegistersUI.h" />
     <ClInclude Include="dma.h" />
     <ClInclude Include="Interpreter CPU.h" />
     <ClInclude Include="Interpreter Ops.h" />
@@ -90,6 +84,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.vcxproj">
       <Project>{b4a4b994-9111-42b1-93c2-6f1ca8bc4421}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Project64-rsp-core\Project64-rsp-core.vcxproj">
+      <Project>{7598f6b8-9da6-4897-b26f-f6865f824bf4}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Settings\Settings.vcxproj">
       <Project>{8b9961b1-88d9-4ea3-a752-507a00dd9f3d}</Project>

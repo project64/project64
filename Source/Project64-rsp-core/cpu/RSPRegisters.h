@@ -1,8 +1,8 @@
-#include "cpu/RspTypes.h"
+#include "RspTypes.h"
 
 enum
 {
-    SP_STATUS_HALT =  0x001,      // Bit  0: Halt
+    SP_STATUS_HALT = 0x001,       // Bit  0: Halt
     SP_STATUS_BROKE = 0x002,      // Bit  1: Broke
     SP_STATUS_DMA_BUSY = 0x004,   // Bit  2: DMA busy
     SP_STATUS_DMA_FULL = 0x008,   // Bit  3: DMA full

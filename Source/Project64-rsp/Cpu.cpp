@@ -1,15 +1,15 @@
 #include "Cpu.h"
-#include "cpu/RSPOpcode.h"
 #include "Profiling.h"
 #include "RSP Command.h"
-#include "RSP registers.h"
 #include "Recompiler CPU.h"
 #include "Rsp.h"
-#include "cpu/RspTypes.h"
 #include "breakpoint.h"
 #include "log.h"
 #include "memory.h"
 #include "x86.h"
+#include <Project64-rsp-core/cpu/RSPOpcode.h>
+#include <Project64-rsp-core/cpu/RSPRegisters.h>
+#include <Project64-rsp-core/cpu/RspTypes.h>
 #include <float.h>
 #include <stdio.h>
 #include <windows.h>
@@ -61,16 +61,16 @@ void Build_RSP(void)
     SetCPU(CPUCore);
     ResetTimerList();
 
-    EleSpec[0].DW = 0x0706050403020100; // None
-    EleSpec[1].DW = 0x0706050403020100; // None
-    EleSpec[2].DW = 0x0606040402020000; // 0q
-    EleSpec[3].DW = 0x0707050503030101; // 1q
-    EleSpec[4].DW = 0x0404040400000000; // 0h
-    EleSpec[5].DW = 0x0505050501010101; // 1h
-    EleSpec[6].DW = 0x0606060602020202; // 2h
-    EleSpec[7].DW = 0x0707070703030303; // 3h
-    EleSpec[8].DW = 0x0000000000000000; // 0
-    EleSpec[9].DW = 0x0101010101010101; // 1
+    EleSpec[0].DW = 0x0706050403020100;  // None
+    EleSpec[1].DW = 0x0706050403020100;  // None
+    EleSpec[2].DW = 0x0606040402020000;  // 0q
+    EleSpec[3].DW = 0x0707050503030101;  // 1q
+    EleSpec[4].DW = 0x0404040400000000;  // 0h
+    EleSpec[5].DW = 0x0505050501010101;  // 1h
+    EleSpec[6].DW = 0x0606060602020202;  // 2h
+    EleSpec[7].DW = 0x0707070703030303;  // 3h
+    EleSpec[8].DW = 0x0000000000000000;  // 0
+    EleSpec[9].DW = 0x0101010101010101;  // 1
     EleSpec[10].DW = 0x0202020202020202; // 2
     EleSpec[11].DW = 0x0303030303030303; // 3
     EleSpec[12].DW = 0x0404040404040404; // 4
@@ -78,16 +78,16 @@ void Build_RSP(void)
     EleSpec[14].DW = 0x0606060606060606; // 6
     EleSpec[15].DW = 0x0707070707070707; // 7
 
-    Indx[0].DW = 0x0001020304050607; // None
-    Indx[1].DW = 0x0001020304050607; // None
-    Indx[2].DW = 0x0103050700020406; // 0q
-    Indx[3].DW = 0x0002040601030507; // 1q
-    Indx[4].DW = 0x0102030506070004; // 0h
-    Indx[5].DW = 0x0002030406070105; // 1h
-    Indx[6].DW = 0x0001030405070206; // 2h
-    Indx[7].DW = 0x0001020405060307; // 3h
-    Indx[8].DW = 0x0102030405060700; // 0
-    Indx[9].DW = 0x0002030405060701; // 1
+    Indx[0].DW = 0x0001020304050607;  // None
+    Indx[1].DW = 0x0001020304050607;  // None
+    Indx[2].DW = 0x0103050700020406;  // 0q
+    Indx[3].DW = 0x0002040601030507;  // 1q
+    Indx[4].DW = 0x0102030506070004;  // 0h
+    Indx[5].DW = 0x0002030406070105;  // 1h
+    Indx[6].DW = 0x0001030405070206;  // 2h
+    Indx[7].DW = 0x0001020405060307;  // 3h
+    Indx[8].DW = 0x0102030405060700;  // 0
+    Indx[9].DW = 0x0002030405060701;  // 1
     Indx[10].DW = 0x0001030405060702; // 2
     Indx[11].DW = 0x0001020405060703; // 3
     Indx[12].DW = 0x0001020305060704; // 4

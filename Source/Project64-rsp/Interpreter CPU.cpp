@@ -2,12 +2,12 @@
 #include "Cpu.h"
 #include "Interpreter Ops.h"
 #include "RSP Command.h"
-#include "RSP registers.h"
 #include "Rsp.h"
 #include "breakpoint.h"
 #include "log.h"
 #include "memory.h"
-#include "cpu/RSPOpcode.h"
+#include <Project64-rsp-core/cpu/RSPOpcode.h>
+#include <Project64-rsp-core/cpu/RSPRegisters.h>
 #include <float.h>
 #include <stdio.h>
 #include <windows.h>

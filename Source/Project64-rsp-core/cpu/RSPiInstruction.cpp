@@ -1,5 +1,5 @@
 #include "RSPInstruction.h"
-#include "../RSP Registers.h"
+#include "RSPRegisters.h"
 #include <Common/StdString.h>
 
 RSPInstruction::RSPInstruction(uint32_t Address, uint32_t Instruction) :
@@ -199,7 +199,7 @@ void RSPInstruction::DecodeSpecialName(void)
         break;
     case RSP_SPECIAL_SLLV:
         strcpy(m_Name, "SLLV");
-        sprintf(m_Param, "%s, %s, %s", GPR_Name(m_Instruction.rd),GPR_Name(m_Instruction.rt), GPR_Name(m_Instruction.rs));
+        sprintf(m_Param, "%s, %s, %s", GPR_Name(m_Instruction.rd), GPR_Name(m_Instruction.rt), GPR_Name(m_Instruction.rs));
         break;
     case RSP_SPECIAL_SRLV:
         strcpy(m_Name, "SRLV");

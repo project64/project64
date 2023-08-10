@@ -3,15 +3,15 @@
 
 #include "CPU.h"
 #include "RSP Command.h"
-#include "RSP Registers.h"
 #include "Recompiler CPU.h"
 #include "Rsp.h"
-#include "cpu/RspTypes.h"
 #include "dma.h"
 #include "log.h"
 #include "memory.h"
 #include "x86.h"
-#include "cpu/RSPInstruction.h"
+#include <Project64-rsp-core/cpu/RSPInstruction.h>
+#include <Project64-rsp-core/cpu/RSPRegisters.h>
+#include <Project64-rsp-core/cpu/RspTypes.h>
 
 #pragma warning(disable : 4152) // Non-standard extension, function/data pointer conversion in expression
 

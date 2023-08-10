@@ -3,11 +3,11 @@
 #include "RSP Command.h"
 #include "Recompiler CPU.h"
 #include "Rsp.h"
-#include "cpu/RspTypes.h"
 #include "log.h"
 #include "memory.h"
-#include "cpu/RSPOpcode.h"
-#include "cpu/RSPInstruction.h"
+#include <Project64-rsp-core/cpu/RSPInstruction.h>
+#include <Project64-rsp-core/cpu/RSPOpcode.h>
+#include <Project64-rsp-core/cpu/RspTypes.h>
 #include <windows.h>
 
 //#define COMPARE_INSTRUCTIONS_VERBOSE

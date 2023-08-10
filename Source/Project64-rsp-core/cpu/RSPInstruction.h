@@ -1,7 +1,7 @@
 #pragma once
-#include <string>
-#include <stdint.h>
 #include "RSPOpcode.h"
+#include <stdint.h>
+#include <string>
 
 class RSPInstruction
 {

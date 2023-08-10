@@ -74,6 +74,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "asmjit", "Source\3rdParty\a
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64-rsp", "Source\Project64-rsp\Project64-rsp.vcxproj", "{A7ED562C-63F3-4B7E-B6B3-2CF7848752E1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64-rsp-core", "Source\Project64-rsp-core\Project64-rsp-core.vcxproj", "{7598F6B8-9DA6-4897-B26F-F6865F824BF4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -256,6 +258,14 @@ Global
 		{A7ED562C-63F3-4B7E-B6B3-2CF7848752E1}.Release|Win32.Build.0 = Release|Win32
 		{A7ED562C-63F3-4B7E-B6B3-2CF7848752E1}.Release|x64.ActiveCfg = Release|x64
 		{A7ED562C-63F3-4B7E-B6B3-2CF7848752E1}.Release|x64.Build.0 = Release|x64
+		{7598F6B8-9DA6-4897-B26F-F6865F824BF4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7598F6B8-9DA6-4897-B26F-F6865F824BF4}.Debug|Win32.Build.0 = Debug|Win32
+		{7598F6B8-9DA6-4897-B26F-F6865F824BF4}.Debug|x64.ActiveCfg = Debug|x64
+		{7598F6B8-9DA6-4897-B26F-F6865F824BF4}.Debug|x64.Build.0 = Debug|x64
+		{7598F6B8-9DA6-4897-B26F-F6865F824BF4}.Release|Win32.ActiveCfg = Release|Win32
+		{7598F6B8-9DA6-4897-B26F-F6865F824BF4}.Release|Win32.Build.0 = Release|Win32
+		{7598F6B8-9DA6-4897-B26F-F6865F824BF4}.Release|x64.ActiveCfg = Release|x64
+		{7598F6B8-9DA6-4897-B26F-F6865F824BF4}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

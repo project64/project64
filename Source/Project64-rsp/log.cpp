@@ -6,8 +6,8 @@
 #include <windows.h>
 
 #include "Log.h"
-#include "Rsp Registers.h"
 #include "Rsp.h"
+#include <Project64-rsp-core/cpu/RSPRegisters.h>
 
 CLog * RDPLog = NULL;
 CLog * CPULog = NULL;

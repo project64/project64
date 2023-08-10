@@ -13,20 +13,14 @@
       <UniqueIdentifier>{53b9495d-f564-4b1d-968c-42c816ca2d41}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
-    <Filter Include="Source Files\cpu">
-      <UniqueIdentifier>{150686bc-00e7-44b5-bfee-3228ba09841f}</UniqueIdentifier>
+    <Filter Include="Source Files\Debugger">
+      <UniqueIdentifier>{d41d8d15-77d5-4506-b6b3-31065749d140}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\cpu">
-      <UniqueIdentifier>{3054cc35-3f98-4464-9642-ad02eaed525f}</UniqueIdentifier>
+    <Filter Include="Header Files\Debugger">
+      <UniqueIdentifier>{2ed17e69-00cd-4d09-9087-ed76cba770f8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cpu\RSPInstruction.h">
-      <Filter>Header Files\cpu</Filter>
-    </ClInclude>
-    <ClInclude Include="cpu\RSPOpcode.h">
-      <Filter>Header Files\cpu</Filter>
-    </ClInclude>
     <ClInclude Include="RspTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -74,6 +68,9 @@
     </ClInclude>
     <ClInclude Include="X86.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Debugger\RSPRegistersUI.h">
+      <Filter>Header Files\Debugger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -127,20 +124,14 @@
     <ClCompile Include="RSP Command.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RSP Register.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Sse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="X86.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cpu\RSPiInstruction.cpp">
-      <Filter>Source Files\cpu</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\RspTypes.cpp">
-      <Filter>Source Files\cpu</Filter>
+    <ClCompile Include="Debugger\RSPRegistersUI.cpp">
+      <Filter>Source Files\Debugger</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

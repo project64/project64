@@ -7,16 +7,16 @@
 #include "Interpreter CPU.h"
 #include "Profiling.h"
 #include "RSP Command.h"
-#include "RSP registers.h"
 #include "Recompiler CPU.h"
 #include "Recompiler Ops.h"
 #include "Rsp.h"
-#include "cpu/RspTypes.h"
 #include "log.h"
 #include "memory.h"
-#include "cpu/RSPOpcode.h"
-#include "cpu/RSPInstruction.h"
 #include "x86.h"
+#include <Project64-rsp-core/cpu/RSPInstruction.h>
+#include <Project64-rsp-core/cpu/RSPOpcode.h>
+#include <Project64-rsp-core/cpu/RSPRegisters.h>
+#include <Project64-rsp-core/cpu/RspTypes.h>
 
 #pragma warning(disable : 4152) // Non-standard extension, function/data pointer conversion in expression
 

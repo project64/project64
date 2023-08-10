@@ -3,15 +3,15 @@
 #include "Interpreter Ops.h"
 #include "Profiling.h"
 #include "RSP Command.h"
-#include "RSP Registers.h"
 #include "Recompiler CPU.h"
 #include "Rsp.h"
-#include "cpu/RspTypes.h"
 #include "dma.h"
 #include "log.h"
 #include "memory.h"
 #include "x86.h"
-#include "cpu/RSPInstruction.h"
+#include <Project64-rsp-core/cpu/RSPInstruction.h>
+#include <Project64-rsp-core/cpu/RSPRegisters.h>
+#include <Project64-rsp-core/cpu/RspTypes.h>
 #include <stdio.h>
 #include <windows.h>
 

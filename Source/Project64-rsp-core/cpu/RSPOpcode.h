@@ -52,7 +52,7 @@ union RSPOpcode
 
     struct
     {
-        unsigned  : 6;
+        unsigned : 6;
         unsigned vd : 5;
         unsigned vs : 5;
         unsigned vt : 5;

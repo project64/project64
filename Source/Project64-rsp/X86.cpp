@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <windows.h>
 
-#include "RSP registers.h"
 #include "Rsp.h"
-#include "cpu/RspTypes.h"
 #include "log.h"
 #include "memory.h"
 #include "x86.h"
+#include <Project64-rsp-core/cpu/RSPRegisters.h>
+#include <Project64-rsp-core/cpu/RspTypes.h>
 
 #pragma warning(disable : 4152) // Non-standard extension, function/data pointer conversion in expression
 

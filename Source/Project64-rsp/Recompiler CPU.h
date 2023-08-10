@@ -1,5 +1,5 @@
-#include "cpu/RSPOpcode.h"
-#include "cpu/RspTypes.h"
+#include <Project64-rsp-core/cpu/RSPOpcode.h>
+#include <Project64-rsp-core/cpu/RspTypes.h>
 
 extern uint32_t CompilePC, NextInstruction, JumpTableSize;
 extern bool ChangedPC;
@@ -54,8 +54,8 @@ extern RSP_BLOCK CurrentBlock;
 
 typedef struct
 {
-    bool bIsRegConst[32]; // bool toggle for constant
-    DWORD MipsRegConst[32];  // Value of register 32-bit
+    bool bIsRegConst[32];   // bool toggle for constant
+    DWORD MipsRegConst[32]; // Value of register 32-bit
     DWORD BranchLabels[250];
     DWORD LabelCount;
     DWORD BranchLocations[250];

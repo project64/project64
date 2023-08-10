@@ -17,15 +17,15 @@
 #include "Cpu.h"
 #include "Profiling.h"
 #include "RSP Command.h"
-#include "RSP Registers.h"
 #include "Recompiler CPU.h"
 #include "Rsp.h"
-#include "cpu/RspTypes.h"
-#include "Version.h"
 #include "breakpoint.h"
 #include "log.h"
 #include "memory.h"
 #include "resource.h"
+#include <Project64-rsp-core/Version.h>
+#include <Project64-rsp-core/cpu/RSPRegisters.h>
+#include <Project64-rsp-core/cpu/RspTypes.h>
 
 void ClearAllx86Code(void);
 void ProcessMenuItem(int ID);
@@ -36,12 +36,12 @@ HMENU hRSPMenu = NULL;
 
 bool GraphicsHle = true, AudioHle, ConditionalMove;
 bool DebuggingEnabled = false,
-        Profiling,
-        IndvidualBlock,
-        ShowErrors,
-        BreakOnStart = false,
-        LogRDP = false,
-        LogX86Code = false;
+     Profiling,
+     IndvidualBlock,
+     ShowErrors,
+     BreakOnStart = false,
+     LogRDP = false,
+     LogX86Code = false;
 uint32_t CPUCore = RecompilerCPU;
 
 void * hMutex = NULL;

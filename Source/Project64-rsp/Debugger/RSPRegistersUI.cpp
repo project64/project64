@@ -1,17 +1,20 @@
 #include <windows.h>
 
-#include "Rsp.h"
-#include "cpu/RspTypes.h"
+#include <Project64-rsp-core\cpu\RSPRegisters.h>
+#include <Project64-rsp\Rsp.h>
 #include <commctrl.h>
 #include <stdio.h>
 
-#define GeneralPurpose 1
-#define ControlProcessor0 2
-#define HiddenRegisters 3
-#define Vector1 4
-#define Vector2 5
+enum
+{
+    GeneralPurpose = 1,
+    ControlProcessor0 = 2,
+    HiddenRegisters = 3,
+    Vector1 = 4,
+    Vector2 = 5,
 
-#define IDC_TAB_CONTROL 1000
+    IDC_TAB_CONTROL = 1000,
+};
 
 void Create_RSP_Register_Window(int);
 void HideRSP_RegisterPanel(int);
@@ -32,21 +35,9 @@ void UpdateRSPRegistersScreen(void);
 LRESULT CALLBACK RefreshRSP_RegProc(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK RSP_Registers_Proc(HWND, UINT, WPARAM, LPARAM);
 
-HWND RSP_Registers_hDlg, hTab, hStatic, hGPR[32], hCP0[16], hHIDDEN[12],
-    hVECT1[16], hVECT2[16];
+HWND RSP_Registers_hDlg, hTab, hStatic, hGPR[32], hCP0[16], hHIDDEN[12], hVECT1[16], hVECT2[16];
 int InRSPRegisterWindow = false;
 WNDPROC RefreshProc;
-
-// RSP registers
-UWORD32 RSP_GPR[32], RSP_Flags[4];
-UDWORD RSP_ACCUM[8];
-RSPVector RSP_Vect[32];
-
-char * GPR_Strings[32] = {
-    "R0", "AT", "V0", "V1", "A0", "A1", "A2", "A3",
-    "T0", "T1", "T2", "T3", "T4", "T5", "T6", "T7",
-    "S0", "S1", "S2", "S3", "S4", "S5", "S6", "S7",
-    "T8", "T9", "K0", "K1", "GP", "SP", "S8", "RA"};
 
 void Create_RSP_Register_Window(int Child)
 {
@@ -62,7 +53,7 @@ void Create_RSP_Register_Window(int Child)
         if (!InRSPRegisterWindow)
         {
             CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Create_RSP_Register_Window,
-                         (LPVOID)true, 0, &ThreadID);
+                         (LPVOID) true, 0, &ThreadID);
         }
         else
         {

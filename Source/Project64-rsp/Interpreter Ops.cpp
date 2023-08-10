@@ -1,14 +1,14 @@
 #include "CPU.h"
 #include "Interpreter CPU.h"
 #include "RSP Command.h"
-#include "RSP Registers.h"
 #include "Rsp.h"
-#include "cpu/RspTypes.h"
 #include "dma.h"
 #include "log.h"
 #include "memory.h"
 #include "x86.h"
-#include "cpu/RSPInstruction.h"
+#include <Project64-rsp-core/cpu/RSPInstruction.h>
+#include <Project64-rsp-core/cpu/RSPRegisters.h>
+#include <Project64-rsp-core/cpu/RspTypes.h>
 #include <math.h>
 #include <stdio.h>
 #include <windows.h>
@@ -1244,7 +1244,7 @@ void RSP_Vector_VADD(void)
     RSPVector Result;
 
     for (uint8_t el = 0; el < 8; el++)
-    {        
+    {
         temp.W = (int32_t)RSP_Vect[RSPOpC.vs].s16(el) + (int32_t)RSP_Vect[RSPOpC.vt].se(el, RSPOpC.e) + ((RSP_Flags[0].UW >> (7 - el)) & 0x1);
         RSP_ACCUM[el].HW[1] = temp.HW[0];
         if ((temp.HW[0] & 0x8000) == 0)
@@ -2195,9 +2195,9 @@ void RSP_Opcode_LQV(void)
 void RSP_Opcode_LRV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
-    uint8_t Offset = (0x10 - (Address & 0xF)) + RSPOpC.del;
+    uint8_t Offset = (uint8_t)((0x10 - (Address & 0xF)) + RSPOpC.del);
     Address &= 0xFF0;
-    for (uint8_t i = Offset; i < 16; i++, Address ++)
+    for (uint8_t i = Offset; i < 16; i++, Address++)
     {
         RSP_Vect[RSPOpC.rt].s8(i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
     }
@@ -2356,7 +2356,7 @@ void RSP_Opcode_SPV(void)
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3)) & 0xFFF;
     for (uint8_t i = RSPOpC.del, n = (uint8_t)(8 + RSPOpC.del); i < n; i++)
     {
-        if (((i) & 0xF) < 8)
+        if (((i)&0xF) < 8)
         {
             *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF)) = RSP_Vect[RSPOpC.rt].u8(15 - ((i & 0xF) << 1));
         }
@@ -2373,7 +2373,7 @@ void RSP_Opcode_SUV(void)
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3)) & 0xFFF;
     for (uint8_t Count = RSPOpC.del; Count < (8 + RSPOpC.del); Count++)
     {
-        if (((Count) & 0xF) < 8)
+        if (((Count)&0xF) < 8)
         {
             *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF)) = ((RSP_Vect[RSPOpC.rt].u8(15 - ((Count & 0x7) << 1)) << 1) + (RSP_Vect[RSPOpC.rt].u8(14 - ((Count & 0x7) << 1)) >> 7)) & 0xFF;
         }
@@ -2552,7 +2552,7 @@ void rsp_UnknownOpcode(void)
     else
     {
         sprintf(Message, "Unhandled Opcode\n%s\n\nStopping emulation.\n\nWould you like to open the debugger?",
-            RSPInstruction(*PrgCount, RSPOpC.Value).NameAndParam().c_str());
+                RSPInstruction(*PrgCount, RSPOpC.Value).NameAndParam().c_str());
         response = MessageBoxA(NULL, Message, "Error", MB_YESNO | MB_ICONERROR);
         if (response == IDYES)
         {

@@ -1,8 +1,6 @@
 #pragma once
 #include <Project64-plugin-spec/Rsp.h>
-
-#include "cpu/RspTypes.h"
-#include <stdint.h>
+#include <Project64-rsp-core/cpu/RspTypes.h>
 
 // Profiling
 #define Default_ProfilingOn false
