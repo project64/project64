@@ -1,34 +1,38 @@
-#include "Rsp.h"
-#include "log.h"
-#include "memory.h"
 #include "x86.h"
 #include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
-#include <stdio.h>
-#include <windows.h>
+#include <Project64-rsp-core/cpu/RspLog.h>
+#include <Project64-rsp-core/cpu/RspMemory.h>
 
-#define PUTDST8(dest, value)             \
-    (*((BYTE *)(dest)) = (BYTE)(value)); \
+#define PUTDST8(dest, value)                   \
+    (*((uint8_t *)(dest)) = (uint8_t)(value)); \
     dest += 1;
-#define PUTDST16(dest, value)            \
-    (*((WORD *)(dest)) = (WORD)(value)); \
+#define PUTDST16(dest, value)                    \
+    (*((uint16_t *)(dest)) = (uint16_t)(value)); \
     dest += 2;
-#define PUTDST32(dest, value)              \
-    (*((DWORD *)(dest)) = (DWORD)(value)); \
+#define PUTDST32(dest, value)                    \
+    (*((uint32_t *)(dest)) = (uint32_t)(value)); \
     dest += 4;
 #define PUTDSTPTR(dest, value)          \
     *(void **)(dest) = (void *)(value); \
     dest += sizeof(void *);
 
 char * sse_Strings[8] = {
-    "xmm0", "xmm1", "xmm2", "xmm3",
-    "xmm4", "xmm5", "xmm6", "xmm7"};
+    "xmm0",
+    "xmm1",
+    "xmm2",
+    "xmm3",
+    "xmm4",
+    "xmm5",
+    "xmm6",
+    "xmm7",
+};
 
 #define sse_Name(Reg) (sse_Strings[(Reg)])
 
 void SseMoveAlignedVariableToReg(void * Variable, char * VariableName, int sseReg)
 {
-    BYTE x86Command = 0;
+    uint8_t x86Command = 0;
 
     CPU_Message("      movaps %s, xmmword ptr [%s]", sse_Name(sseReg), VariableName);
 
@@ -51,7 +55,7 @@ void SseMoveAlignedVariableToReg(void * Variable, char * VariableName, int sseRe
 
 void SseMoveAlignedN64MemToReg(int sseReg, int AddrReg)
 {
-    BYTE x86Command = 0;
+    uint8_t x86Command = 0;
 
     CPU_Message("      movaps %s, xmmword ptr [Dmem+%s]", sse_Name(sseReg), x86_Name(AddrReg));
 
@@ -85,7 +89,7 @@ void SseMoveAlignedN64MemToReg(int sseReg, int AddrReg)
 
 void SseMoveAlignedRegToVariable(int sseReg, void * Variable, char * VariableName)
 {
-    BYTE x86Command = 0;
+    uint8_t x86Command = 0;
 
     CPU_Message("      movaps xmmword ptr [%s], %s", VariableName, sse_Name(sseReg));
 
@@ -108,7 +112,7 @@ void SseMoveAlignedRegToVariable(int sseReg, void * Variable, char * VariableNam
 
 void SseMoveAlignedRegToN64Mem(int sseReg, int AddrReg)
 {
-    BYTE x86Command = 0;
+    uint8_t x86Command = 0;
 
     CPU_Message("      movaps xmmword ptr [Dmem+%s], %s", x86_Name(AddrReg), sse_Name(sseReg));
 
@@ -142,7 +146,7 @@ void SseMoveAlignedRegToN64Mem(int sseReg, int AddrReg)
 
 void SseMoveUnalignedVariableToReg(void * Variable, char * VariableName, int sseReg)
 {
-    BYTE x86Command = 0;
+    uint8_t x86Command = 0;
 
     CPU_Message("      movups %s, xmmword ptr [%s]", sse_Name(sseReg), VariableName);
 
@@ -165,7 +169,7 @@ void SseMoveUnalignedVariableToReg(void * Variable, char * VariableName, int sse
 
 void SseMoveUnalignedN64MemToReg(int sseReg, int AddrReg)
 {
-    BYTE x86Command = 0;
+    uint8_t x86Command = 0;
 
     CPU_Message("      movups %s, xmmword ptr [Dmem+%s]", sse_Name(sseReg), x86_Name(AddrReg));
 
@@ -199,7 +203,7 @@ void SseMoveUnalignedN64MemToReg(int sseReg, int AddrReg)
 
 void SseMoveUnalignedRegToVariable(int sseReg, void * Variable, char * VariableName)
 {
-    BYTE x86Command = 0;
+    uint8_t x86Command = 0;
 
     CPU_Message("      movups xmmword ptr [%s], %s", VariableName, sse_Name(sseReg));
 
@@ -222,7 +226,7 @@ void SseMoveUnalignedRegToVariable(int sseReg, void * Variable, char * VariableN
 
 void SseMoveUnalignedRegToN64Mem(int sseReg, int AddrReg)
 {
-    BYTE x86Command = 0;
+    uint8_t x86Command = 0;
 
     CPU_Message("      movups xmmword ptr [Dmem+%s], %s", x86_Name(AddrReg), sse_Name(sseReg));
 
@@ -256,7 +260,7 @@ void SseMoveUnalignedRegToN64Mem(int sseReg, int AddrReg)
 
 void SseMoveRegToReg(int Dest, int Source)
 {
-    BYTE x86Command = 0;
+    uint8_t x86Command = 0;
 
     CPU_Message("      movaps %s, %s", sse_Name(Dest), sse_Name(Source));
 
@@ -289,7 +293,7 @@ void SseMoveRegToReg(int Dest, int Source)
 
 void SseXorRegToReg(int Dest, int Source)
 {
-    BYTE x86Command = 0;
+    uint8_t x86Command = 0;
 
     CPU_Message("      xorps %s, %s", sse_Name(Dest), sse_Name(Source));
 
@@ -319,9 +323,9 @@ void SseXorRegToReg(int Dest, int Source)
     PUTDST8(RecompPos, 0xC0 | x86Command);
 }
 
-void SseShuffleReg(int Dest, int Source, BYTE Immed)
+void SseShuffleReg(int Dest, int Source, uint8_t Immed)
 {
-    BYTE x86Command = 0;
+    uint8_t x86Command = 0;
 
     CPU_Message("      shufps %s, %s, %02X", sse_Name(Dest), sse_Name(Source), Immed);
 

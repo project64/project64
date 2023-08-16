@@ -1,11 +1,15 @@
+#pragma once
+
+#include <Project64-rsp-core/Settings/RspSettings.h>
 #include <Project64-rsp-core/cpu/RSPOpcode.h>
 #include <Project64-rsp-core/cpu/RspTypes.h>
+#include <Settings/Settings.h>
 
 extern uint32_t CompilePC, NextInstruction, JumpTableSize;
 extern bool ChangedPC;
 
 #define CompilerWarning \
-    if (ShowErrors) DisplayError
+    if (ShowErrors) g_Notify->DisplayError
 
 #define High16BitAccum 1
 #define Middle16BitAccum 2

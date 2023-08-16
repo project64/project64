@@ -46,38 +46,16 @@
     <ClCompile Include="breakpoint.cpp" />
     <ClCompile Include="Debugger\RSPDebuggerUI.cpp" />
     <ClCompile Include="Debugger\RSPRegistersUI.cpp" />
-    <ClCompile Include="dma.cpp" />
-    <ClCompile Include="log.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="memory.cpp" />
-    <ClCompile Include="Mmx.cpp" />
-    <ClCompile Include="Profiling.cpp" />
-    <ClCompile Include="Recompiler Analysis.cpp" />
-    <ClCompile Include="Recompiler CPU.cpp" />
-    <ClCompile Include="Recompiler Ops.cpp" />
-    <ClCompile Include="Recompiler Sections.cpp" />
     <ClCompile Include="RSP Command.cpp" />
-    <ClCompile Include="Sse.cpp" />
-    <ClCompile Include="X86.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="breakpoint.h" />
     <ClInclude Include="Debugger\RSPDebuggerUI.h" />
     <ClInclude Include="Debugger\RSPRegistersUI.h" />
-    <ClInclude Include="dma.h" />
-    <ClInclude Include="Interpreter CPU.h" />
-    <ClInclude Include="Interpreter Ops.h" />
-    <ClInclude Include="log.h" />
-    <ClInclude Include="memory.h" />
-    <ClInclude Include="Profiling.h" />
-    <ClInclude Include="Recompiler CPU.h" />
-    <ClInclude Include="Recompiler Ops.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="RSP Command.h" />
-    <ClInclude Include="RSP Registers.h" />
     <ClInclude Include="Rsp.h" />
-    <ClInclude Include="RspTypes.h" />
-    <ClInclude Include="X86.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.vcxproj">

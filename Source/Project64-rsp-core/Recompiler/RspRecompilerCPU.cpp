@@ -1,23 +1,18 @@
-#include <float.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <windows.h>
-
-#include "Profiling.h"
-#include "RSP Command.h"
-#include "Recompiler CPU.h"
-#include "Recompiler Ops.h"
-#include "Rsp.h"
-#include "log.h"
-#include "memory.h"
+#include "RspRecompilerCPU.h"
+#include "RspProfiling.h"
+#include "RspRecompilerOps.h"
 #include "x86.h"
+#include <Common/StdString.h>
 #include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/cpu/RSPCpu.h>
 #include <Project64-rsp-core/cpu/RSPInstruction.h>
 #include <Project64-rsp-core/cpu/RSPInterpreterCPU.h>
 #include <Project64-rsp-core/cpu/RSPOpcode.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
+#include <Project64-rsp-core/cpu/RspLog.h>
+#include <Project64-rsp-core/cpu/RspMemory.h>
 #include <Project64-rsp-core/cpu/RspTypes.h>
+#include <float.h>
 
 #pragma warning(disable : 4152) // Non-standard extension, function/data pointer conversion in expression
 
@@ -33,7 +28,7 @@ bool ChangedPC;
 RSP_BLOCK CurrentBlock;
 RSP_CODE RspCode;
 
-BYTE *pLastSecondary = NULL, *pLastPrimary = NULL;
+uint8_t *pLastSecondary = NULL, *pLastPrimary = NULL;
 
 void BuildRecompilerCPU(void)
 {
@@ -617,7 +612,7 @@ void CompilerToggleBuffer(void)
 void ClearAllx86Code(void)
 {
     extern uint32_t NoOfMaps, MapsCRC[32];
-    extern BYTE * JumpTables;
+    extern uint8_t * JumpTables;
 
     memset(&MapsCRC, 0, sizeof(uint32_t) * 0x20);
     NoOfMaps = 0;
@@ -640,7 +635,7 @@ void LinkBranches(RSP_BLOCK * Block)
     uint32_t OrigPrgCount = *PrgCount;
     uint32_t Count, Target;
     uint32_t * JumpWord;
-    BYTE * X86Code;
+    uint8_t * X86Code;
     RSP_BLOCK Save;
 
     if (!CurrentBlock.ResolveCount)
@@ -652,7 +647,7 @@ void LinkBranches(RSP_BLOCK * Block)
     for (Count = 0; Count < CurrentBlock.ResolveCount; Count++)
     {
         Target = CurrentBlock.BranchesToResolve[Count].TargetPC;
-        X86Code = (BYTE *)*(JumpTable + (Target >> 2));
+        X86Code = (uint8_t *)*(JumpTable + (Target >> 2));
 
         if (!X86Code)
         {
@@ -668,7 +663,7 @@ void LinkBranches(RSP_BLOCK * Block)
             *Block = Save;
             CPU_Message("===== (End generate code: %04X) =====", Target);
             CPU_Message("");
-            X86Code = (BYTE *)*(JumpTable + (Target >> 2));
+            X86Code = (uint8_t *)*(JumpTable + (Target >> 2));
         }
 
         JumpWord = CurrentBlock.BranchesToResolve[Count].X86JumpLoc;
@@ -770,7 +765,7 @@ bool IsJumpLabel(uint32_t PC)
 
 void CompilerLinkBlocks(void)
 {
-    BYTE * KnownCode = (BYTE *)*(JumpTable + (CompilePC >> 2));
+    uint8_t * KnownCode = (uint8_t *)*(JumpTable + (CompilePC >> 2));
 
     CPU_Message("***** Linking block to X86: %08X *****", KnownCode);
     NextInstruction = RSPPIPELINE_FINISH_BLOCK;
@@ -782,7 +777,7 @@ void CompilerLinkBlocks(void)
 
 void CompilerRSPBlock(void)
 {
-    BYTE * IMEM_SAVE = (BYTE *)malloc(0x1000);
+    uint8_t * IMEM_SAVE = (uint8_t *)malloc(0x1000);
     const size_t X86BaseAddress = (size_t)RecompPos;
 
     NextInstruction = RSPPIPELINE_NORMAL;
@@ -924,7 +919,7 @@ void CompilerRSPBlock(void)
 
         case RSPPIPELINE_FINISH_BLOCK: break;
         default:
-            DisplayError("RSP main loop\n\nWTF NextInstruction = %d", NextInstruction);
+            g_Notify->DisplayError(stdstr_f("RSP main loop\n\nWTF NextInstruction = %d", NextInstruction).c_str());
             CompilePC += 4;
             break;
         }
@@ -940,14 +935,18 @@ void CompilerRSPBlock(void)
 
 uint32_t RunRecompilerCPU(uint32_t Cycles)
 {
-    BYTE * Block;
+#ifndef EXCEPTION_EXECUTE_HANDLER
+#define EXCEPTION_EXECUTE_HANDLER 1
+#endif
+
+    uint8_t * Block;
 
     RSP_Running = true;
     SetJumpTable(JumpTableSize);
 
     while (RSP_Running)
     {
-        Block = (BYTE *)*(JumpTable + (*PrgCount >> 2));
+        Block = (uint8_t *)*(JumpTable + (*PrgCount >> 2));
 
         if (Block == NULL)
         {
@@ -966,7 +965,9 @@ uint32_t RunRecompilerCPU(uint32_t Cycles)
             }
             __except (EXCEPTION_EXECUTE_HANDLER)
             {
-                DisplayError("Error CompilePC = %08X", CompilePC);
+                char ErrorMessage[400];
+                sprintf(ErrorMessage, "Error CompilePC = %08X", CompilePC);
+                g_Notify->DisplayError(ErrorMessage);
                 ClearAllx86Code();
                 continue;
             }
@@ -976,7 +977,7 @@ uint32_t RunRecompilerCPU(uint32_t Cycles)
             CompilerRSPBlock();
 #endif
 
-            Block = (BYTE *)*(JumpTable + (*PrgCount >> 2));
+            Block = (uint8_t *)*(JumpTable + (*PrgCount >> 2));
 
             // We are done compiling, but we may have references
             // to fill in still either from this block, or jumps

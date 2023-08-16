@@ -1,12 +1,13 @@
 #include "RSPDebuggerUI.h"
-#include "Profiling.h"
-#include "Recompiler CPU.h"
-#include <Project64-rsp-core\RSPInfo.h>
-#include <Project64-rsp-core\cpu\RSPCpu.h>
-#include <Project64-rsp-core\cpu\RSPInstruction.h>
-#include <Project64-rsp\RSP Command.h>
-#include <Project64-rsp\breakpoint.h>
-#include <Project64-rsp\log.h>
+#include <Project64-rsp-core/RSPInfo.h>
+#include <Project64-rsp-core/Recompiler/RspProfiling.h>
+#include <Project64-rsp-core/Recompiler/RspRecompilerCPU.h>
+#include <Project64-rsp-core/Settings/RspSettings.h>
+#include <Project64-rsp-core/cpu/RSPCpu.h>
+#include <Project64-rsp-core/cpu/RSPInstruction.h>
+#include <Project64-rsp-core/cpu/RspLog.h>
+#include <Project64-rsp/RSP Command.h>
+#include <Project64-rsp/breakpoint.h>
 
 void UpdateRSPRegistersScreen(void);
 void RDP_LogLoc(DWORD /*PC*/);

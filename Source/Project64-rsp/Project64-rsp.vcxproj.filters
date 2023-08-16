@@ -21,34 +21,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="RspTypes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="breakpoint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="dma.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Interpreter CPU.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Interpreter Ops.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="log.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="memory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Profiling.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Recompiler CPU.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Recompiler Ops.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
@@ -57,13 +30,7 @@
     <ClInclude Include="RSP Command.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RSP Registers.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Rsp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="X86.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Debugger\RSPRegistersUI.h">
@@ -82,49 +49,16 @@
     <ClCompile Include="breakpoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dma.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="log.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="memory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Mmx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Profiling.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Recompiler Analysis.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Recompiler CPU.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Recompiler Ops.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Recompiler Sections.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RSP Command.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Sse.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="X86.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Debugger\RSPRegistersUI.cpp">
       <Filter>Source Files\Debugger</Filter>
     </ClCompile>
     <ClCompile Include="Debugger\RSPDebuggerUI.cpp">
+      <Filter>Source Files\Debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="RSP Command.cpp">
       <Filter>Source Files\Debugger</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,15 +1,13 @@
-#include "RSP Command.h"
-#include "Recompiler CPU.h"
-#include "Rsp.h"
-#include "log.h"
-#include "memory.h"
+#include "RspRecompilerCPU.h"
+#include <Common/StdString.h>
 #include <Project64-rsp-core/RSPInfo.h>
+#include <Project64-rsp-core/Settings/RspSettings.h>
 #include <Project64-rsp-core/cpu/RSPCpu.h>
 #include <Project64-rsp-core/cpu/RSPInstruction.h>
 #include <Project64-rsp-core/cpu/RSPInterpreterCPU.h>
 #include <Project64-rsp-core/cpu/RSPOpcode.h>
+#include <Project64-rsp-core/cpu/RspMemory.h>
 #include <Project64-rsp-core/cpu/RspTypes.h>
-#include <windows.h>
 
 //#define COMPARE_INSTRUCTIONS_VERBOSE
 
@@ -160,7 +158,7 @@ uint32_t WriteToAccum2(int Location, int PC, bool RecursiveCall)
                 Instruction_State = RSPPIPELINE_DO_DELAY_SLOT;
                 break;
             default:
-                CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
+                CompilerWarning(stdstr_f("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str()).c_str());
                 return true;
             }
             break;
@@ -194,7 +192,7 @@ uint32_t WriteToAccum2(int Location, int PC, bool RecursiveCall)
                 break;
 
             default:
-                CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
+                CompilerWarning(stdstr_f("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str()).c_str());
                 return true;
             }
             break;
@@ -323,7 +321,7 @@ uint32_t WriteToAccum2(int Location, int PC, bool RecursiveCall)
                 case RSP_VECTOR_VSAW:
                     return true;
                 default:
-                    CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
+                    CompilerWarning(stdstr_f("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str()).c_str());
                     return true;
                 }
             }
@@ -337,7 +335,7 @@ uint32_t WriteToAccum2(int Location, int PC, bool RecursiveCall)
                 case RSP_COP2_MF:
                     break;
                 default:
-                    CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
+                    CompilerWarning(stdstr_f("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str()).c_str());
                     return true;
                 }
             }
@@ -366,7 +364,7 @@ uint32_t WriteToAccum2(int Location, int PC, bool RecursiveCall)
             case RSP_LSC2_HV:
                 break;
             default:
-                CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
+                CompilerWarning(stdstr_f("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str()).c_str());
                 return true;
             }
             break;
@@ -387,12 +385,12 @@ uint32_t WriteToAccum2(int Location, int PC, bool RecursiveCall)
             case RSP_LSC2_TV:
                 break;
             default:
-                CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
+                CompilerWarning(stdstr_f("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str()).c_str());
                 return true;
             }
             break;
         default:
-            CompilerWarning("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
+            CompilerWarning(stdstr_f("Unknown opcode in WriteToAccum\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str()).c_str());
             return true;
         }
         switch (Instruction_State)
@@ -517,7 +515,7 @@ bool WriteToVectorDest2(uint32_t DestReg, int PC, bool RecursiveCall)
                 Instruction_State = RSPPIPELINE_DO_DELAY_SLOT;
                 break;
             default:
-                CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
+                CompilerWarning(stdstr_f("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str()).c_str());
                 return true;
             }
             break;
@@ -551,7 +549,7 @@ bool WriteToVectorDest2(uint32_t DestReg, int PC, bool RecursiveCall)
                 break;
 
             default:
-                CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
+                CompilerWarning(stdstr_f("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str()).c_str());
                 return true;
             }
             break;
@@ -686,7 +684,7 @@ bool WriteToVectorDest2(uint32_t DestReg, int PC, bool RecursiveCall)
                     }
                     break;
                 default:
-                    CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
+                    CompilerWarning(stdstr_f("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str()).c_str());
                     return true;
                 }
             }
@@ -707,7 +705,7 @@ bool WriteToVectorDest2(uint32_t DestReg, int PC, bool RecursiveCall)
                     }
                     break;
                 default:
-                    CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
+                    CompilerWarning(stdstr_f("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str()).c_str());
                     return true;
                 }
             }
@@ -743,7 +741,7 @@ bool WriteToVectorDest2(uint32_t DestReg, int PC, bool RecursiveCall)
                 }
                 break;
             default:
-                CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
+                CompilerWarning(stdstr_f("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str()).c_str());
                 return true;
             }
             break;
@@ -780,7 +778,7 @@ bool WriteToVectorDest2(uint32_t DestReg, int PC, bool RecursiveCall)
                     int length = 32 - RspOp.rt, count, del = RspOp.del >> 1, vect = RspOp.rt;
                     for (count = 0; count < length; count++)
                     {
-                        if (DestReg == vect + del)
+                        if (DestReg == (uint32_t)(vect + del))
                         {
                             return true;
                         }
@@ -790,12 +788,12 @@ bool WriteToVectorDest2(uint32_t DestReg, int PC, bool RecursiveCall)
                 break;
 
             default:
-                CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
+                CompilerWarning(stdstr_f("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str()).c_str());
                 return true;
             }
             break;
         default:
-            CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
+            CompilerWarning(stdstr_f("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str()).c_str());
             return true;
         }
         switch (Instruction_State)
@@ -920,7 +918,7 @@ bool UseRspFlags(int PC)
                 Instruction_State = RSPPIPELINE_DO_DELAY_SLOT;
                 break;
             default:
-                CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
+                CompilerWarning(stdstr_f("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str()).c_str());
                 return true;
             }
             break;
@@ -951,7 +949,7 @@ bool UseRspFlags(int PC)
                 break;
 
             default:
-                CompilerWarning("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
+                CompilerWarning(stdstr_f("Unknown opcode in WriteToVectorDest\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str()).c_str());
                 return true;
             }
             break;
@@ -1030,7 +1028,7 @@ bool UseRspFlags(int PC)
                     break;
 
                 default:
-                    CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
+                    CompilerWarning(stdstr_f("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str()).c_str());
                     return true;
                 }
             }
@@ -1046,7 +1044,7 @@ bool UseRspFlags(int PC)
                 case RSP_COP2_MF:
                     break;
                 default:
-                    CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
+                    CompilerWarning(stdstr_f("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str()).c_str());
                     return true;
                 }
             }
@@ -1075,7 +1073,7 @@ bool UseRspFlags(int PC)
             case RSP_LSC2_HV:
                 break;
             default:
-                CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
+                CompilerWarning(stdstr_f("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str()).c_str());
                 return true;
             }
             break;
@@ -1096,12 +1094,12 @@ bool UseRspFlags(int PC)
             case RSP_LSC2_TV:
                 break;
             default:
-                CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
+                CompilerWarning(stdstr_f("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str()).c_str());
                 return true;
             }
             break;
         default:
-            CompilerWarning("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str());
+            CompilerWarning(stdstr_f("Unknown opcode in UseRspFlags\n%s", RSPInstruction(PC, RspOp.Value).NameAndParam().c_str()).c_str());
             return true;
         }
         switch (Instruction_State)
@@ -1183,7 +1181,7 @@ bool IsRegisterConstant(uint32_t Reg, uint32_t * Constant)
                 break;
 
             default:
-                //	CompilerWarning("Unknown opcode in IsRegisterConstant\n%s",RSPOpcodeName(RspOp.Hex,PC));
+                //	CompilerWarning(stdstr_f("Unknown opcode in IsRegisterConstant\n%s",RSPOpcodeName(RspOp.Hex,PC)).c_str());
                 //	return false;
                 break;
             }
@@ -1225,7 +1223,7 @@ bool IsRegisterConstant(uint32_t Reg, uint32_t * Constant)
                     {
                         return false;
                     }
-                    Const = (WORD)RspOp.immediate;
+                    Const = (uint16_t)RspOp.immediate;
                     References++;
                 }
                 else
@@ -1286,7 +1284,7 @@ bool IsRegisterConstant(uint32_t Reg, uint32_t * Constant)
                     break;
 
                 default:
-                    //	CompilerWarning("Unknown opcode in IsRegisterConstant\n%s",RSPOpcodeName(RspOp.Hex,PC));
+                    //	CompilerWarning(stdstr_f("Unknown opcode in IsRegisterConstant\n%s",RSPOpcodeName(RspOp.Hex,PC)).c_str());
                     //	return false;
                     break;
                 }
@@ -1313,7 +1311,7 @@ bool IsRegisterConstant(uint32_t Reg, uint32_t * Constant)
         case RSP_SC2:
             break;
         default:
-            //	CompilerWarning("Unknown opcode in IsRegisterConstant\n%s",RSPOpcodeName(RspOp.Hex,PC));
+            //	CompilerWarning(stdstr_f("Unknown opcode in IsRegisterConstant\n%s",RSPOpcodeName(RspOp.Hex,PC)).c_str());
             //	return false;
             break;
         }
@@ -1354,7 +1352,7 @@ bool IsOpcodeBranch(uint32_t PC, RSPOpcode RspOp)
         case RSP_REGIMM_BGEZAL:
             return true;
         default:
-            //CompilerWarning("Unknown opcode in IsOpcodeBranch\n%s",RSPOpcodeName(RspOp.Hex,PC));
+            //CompilerWarning(stdstr_f(stdstr_f("Unknown opcode in IsOpcodeBranch\n%s",RSPOpcodeName(RspOp.Hex,PC)).c_str());
             break;
         }
         break;
@@ -1385,7 +1383,7 @@ bool IsOpcodeBranch(uint32_t PC, RSPOpcode RspOp)
             return true;
 
         default:
-            //CompilerWarning("Unknown opcode in IsOpcodeBranch\n%s",RSPOpcodeName(RspOp.Hex,PC));
+            //CompilerWarning(stdstr_f("Unknown opcode in IsOpcodeBranch\n%s",RSPOpcodeName(RspOp.Hex,PC)).c_str());
             break;
         }
         break;
@@ -1425,7 +1423,7 @@ bool IsOpcodeBranch(uint32_t PC, RSPOpcode RspOp)
         break;
 
     default:
-        //CompilerWarning("Unknown opcode in IsOpcodeBranch\n%s",RSPOpcodeName(RspOp.Hex,PC));
+        //CompilerWarning(stdstr_f("Unknown opcode in IsOpcodeBranch\n%s",RSPOpcodeName(RspOp.Hex,PC)).c_str());
         break;
     }
 
@@ -1500,7 +1498,7 @@ void GetInstructionInfo(uint32_t PC, RSPOpcode * RspOp, OPCODE_INFO * info)
             break;
 
         default:
-            CompilerWarning("Unknown opcode in GetInstructionInfo\n%s", RSPInstruction(PC, RspOp->Value).NameAndParam().c_str());
+            CompilerWarning(stdstr_f("Unknown opcode in GetInstructionInfo\n%s", RSPInstruction(PC, RspOp->Value).NameAndParam().c_str()).c_str());
             info->flags = InvalidOpcode;
             break;
         }
@@ -1549,7 +1547,7 @@ void GetInstructionInfo(uint32_t PC, RSPOpcode * RspOp, OPCODE_INFO * info)
             break;
 
         default:
-            CompilerWarning("Unknown opcode in GetInstructionInfo\n%s", RSPInstruction(PC, RspOp->Value).NameAndParam().c_str());
+            CompilerWarning(stdstr_f("Unknown opcode in GetInstructionInfo\n%s", RSPInstruction(PC, RspOp->Value).NameAndParam().c_str()).c_str());
             info->flags = InvalidOpcode;
             break;
         }
@@ -1705,7 +1703,7 @@ void GetInstructionInfo(uint32_t PC, RSPOpcode * RspOp, OPCODE_INFO * info)
                 break;
 
             default:
-                CompilerWarning("Unknown opcode in GetInstructionInfo\n%s", RSPInstruction(PC, RspOp->Value).NameAndParam().c_str());
+                CompilerWarning(stdstr_f("Unknown opcode in GetInstructionInfo\n%s", RSPInstruction(PC, RspOp->Value).NameAndParam().c_str()).c_str());
                 info->flags = InvalidOpcode;
                 break;
             }
@@ -1741,7 +1739,7 @@ void GetInstructionInfo(uint32_t PC, RSPOpcode * RspOp, OPCODE_INFO * info)
                 info->flags = VEC_Instruction | GPR_Instruction | Store_Operation;
                 break;
             default:
-                CompilerWarning("Unknown opcode in GetInstructionInfo\n%s", RSPInstruction(PC, RspOp->Value).NameAndParam().c_str());
+                CompilerWarning(stdstr_f("Unknown opcode in GetInstructionInfo\n%s", RSPInstruction(PC, RspOp->Value).NameAndParam().c_str()).c_str());
                 info->flags = InvalidOpcode;
                 break;
             }
@@ -1786,7 +1784,7 @@ void GetInstructionInfo(uint32_t PC, RSPOpcode * RspOp, OPCODE_INFO * info)
             info->flags = InvalidOpcode;
             break;
         default:
-            CompilerWarning("Unknown opcode in GetInstructionInfo\n%s", RSPInstruction(PC, RspOp->Value).NameAndParam().c_str());
+            CompilerWarning(stdstr_f("Unknown opcode in GetInstructionInfo\n%s", RSPInstruction(PC, RspOp->Value).NameAndParam().c_str()).c_str());
             info->flags = InvalidOpcode;
             break;
         }
@@ -1814,13 +1812,13 @@ void GetInstructionInfo(uint32_t PC, RSPOpcode * RspOp, OPCODE_INFO * info)
             info->flags = InvalidOpcode;
             break;
         default:
-            CompilerWarning("Unknown opcode in GetInstructionInfo\n%s", RSPInstruction(PC, RspOp->Value).NameAndParam().c_str());
+            CompilerWarning(stdstr_f("Unknown opcode in GetInstructionInfo\n%s", RSPInstruction(PC, RspOp->Value).NameAndParam().c_str()).c_str());
             info->flags = InvalidOpcode;
             break;
         }
         break;
     default:
-        /*	CompilerWarning("Unknown opcode in GetInstructionInfo\n%s",RSPOpcodeName(RspOp->Hex,PC));
+        /*	CompilerWarning(stdstr_f("Unknown opcode in GetInstructionInfo\n%s",RSPOpcodeName(RspOp->Hex,PC)).c_str());
 	*/
         info->flags = InvalidOpcode;
         break;
@@ -2156,7 +2154,7 @@ bool CompareInstructions(uint32_t PC, RSPOpcode * Top, RSPOpcode * Bottom)
         return true;
 
     default:
-        CompilerWarning("Reorder: Unhandled instruction type: %i", InstructionType);
+        CompilerWarning(stdstr_f("Reorder: Unhandled instruction type: %i", InstructionType).c_str());
     }
 
     return false;

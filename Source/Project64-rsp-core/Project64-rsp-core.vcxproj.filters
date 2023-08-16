@@ -19,6 +19,18 @@
     <Filter Include="Header Files\cpu">
       <UniqueIdentifier>{68f5d9a3-7e1b-4209-95c4-7daf0d469394}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Settings">
+      <UniqueIdentifier>{77da0581-67c2-4483-9b3d-7a92f0e99d39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Settings">
+      <UniqueIdentifier>{0868624c-a8c2-4e74-b90b-d0b3bc5e0938}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Recompiler">
+      <UniqueIdentifier>{2bca7ea6-354a-456b-976d-dc015b9a110f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Recompiler">
+      <UniqueIdentifier>{bb961984-d173-4bd2-8a8b-f9a0416188f4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpu\RSPiInstruction.cpp">
@@ -44,6 +56,42 @@
     </ClCompile>
     <ClCompile Include="RSPDebugger.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings\RspSettings.cpp">
+      <Filter>Source Files\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="Recompiler\RspRecompilerAnalysis.cpp">
+      <Filter>Source Files\Recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Recompiler\RspRecompilerCPU.cpp">
+      <Filter>Source Files\Recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Recompiler\RspRecompilerOps.cpp">
+      <Filter>Source Files\Recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Recompiler\RspRecompilerSections.cpp">
+      <Filter>Source Files\Recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\RspMemory.cpp">
+      <Filter>Source Files\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\RspLog.cpp">
+      <Filter>Source Files\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="Recompiler\Mmx.cpp">
+      <Filter>Source Files\Recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Recompiler\Sse.cpp">
+      <Filter>Source Files\Recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Recompiler\X86.cpp">
+      <Filter>Source Files\Recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Recompiler\RspProfiling.cpp">
+      <Filter>Source Files\Recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\RspDma.cpp">
+      <Filter>Source Files\cpu</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +121,33 @@
     </ClInclude>
     <ClInclude Include="RSPInfo.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings\RspSettingsID.h">
+      <Filter>Header Files\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings\RspSettings.h">
+      <Filter>Header Files\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Recompiler\RspRecompilerCPU.h">
+      <Filter>Header Files\Recompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Recompiler\RspRecompilerOps.h">
+      <Filter>Header Files\Recompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu\RspMemory.h">
+      <Filter>Header Files\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu\RspLog.h">
+      <Filter>Header Files\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="Recompiler\X86.h">
+      <Filter>Header Files\Recompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Recompiler\RspProfiling.h">
+      <Filter>Header Files\Recompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu\RspDma.h">
+      <Filter>Header Files\cpu</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

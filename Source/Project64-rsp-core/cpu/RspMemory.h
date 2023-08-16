@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Project64-rsp-core/cpu/RspTypes.h>
 
 int AllocateMemory(void);

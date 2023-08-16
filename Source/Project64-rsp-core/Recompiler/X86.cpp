@@ -1,24 +1,24 @@
 #include <stdio.h>
-#include <windows.h>
 
-#include "Rsp.h"
-#include "log.h"
-#include "memory.h"
 #include "x86.h"
+#include <Common/StdString.h>
 #include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
+#include <Project64-rsp-core/cpu/RspLog.h>
+#include <Project64-rsp-core/cpu/RspMemory.h>
 #include <Project64-rsp-core/cpu/RspTypes.h>
+#include <Settings/Settings.h>
 
 #pragma warning(disable : 4152) // Non-standard extension, function/data pointer conversion in expression
 
-#define PUTDST8(dest, value)             \
-    (*((BYTE *)(dest)) = (BYTE)(value)); \
+#define PUTDST8(dest, value)                   \
+    (*((uint8_t *)(dest)) = (uint8_t)(value)); \
     dest += 1;
-#define PUTDST16(dest, value)            \
-    (*((WORD *)(dest)) = (WORD)(value)); \
+#define PUTDST16(dest, value)                    \
+    (*((uint16_t *)(dest)) = (uint16_t)(value)); \
     dest += 2;
-#define PUTDST32(dest, value)              \
-    (*((DWORD *)(dest)) = (DWORD)(value)); \
+#define PUTDST32(dest, value)                    \
+    (*((uint32_t *)(dest)) = (uint32_t)(value)); \
     dest += 4;
 #define PUTDSTPTR(dest, value)          \
     *(void **)(dest) = (void *)(value); \
@@ -43,7 +43,7 @@ extern bool ConditionalMove;
 
 void AdcX86RegToX86Reg(int Destination, int Source)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      adc %s, %s", x86_Name(Destination), x86_Name(Source));
     switch (Source)
@@ -85,7 +85,7 @@ void AdcX86regToVariable(int x86reg, void * Variable, char * VariableName)
     case x86_ESP: PUTDST16(RecompPos, 0x2511); break;
     case x86_EBP: PUTDST16(RecompPos, 0x2D11); break;
     default:
-        DisplayError("AddVariableToX86reg\nUnknown x86 register");
+        g_Notify->DisplayError("AddVariableToX86reg\nUnknown x86 register");
     }
     PUTDSTPTR(RecompPos, Variable);
 }
@@ -106,12 +106,12 @@ void AdcX86regHalfToVariable(int x86reg, void * Variable, char * VariableName)
     case x86_ESP: PUTDST16(RecompPos, 0x2511); break;
     case x86_EBP: PUTDST16(RecompPos, 0x2D11); break;
     default:
-        DisplayError("AdcX86regHalfToVariable\nUnknown x86 register");
+        g_Notify->DisplayError("AdcX86regHalfToVariable\nUnknown x86 register");
     }
     PUTDSTPTR(RecompPos, Variable);
 }
 
-void AdcConstToVariable(void * Variable, char * VariableName, BYTE Constant)
+void AdcConstToVariable(void * Variable, char * VariableName, uint8_t Constant)
 {
     CPU_Message("      adc dword ptr [%s], %Xh", VariableName, Constant);
     PUTDST16(RecompPos, 0x1583);
@@ -119,7 +119,7 @@ void AdcConstToVariable(void * Variable, char * VariableName, BYTE Constant)
     PUTDST8(RecompPos, Constant);
 }
 
-void AdcConstToX86reg(BYTE Constant, int x86reg)
+void AdcConstToX86reg(uint8_t Constant, int x86reg)
 {
     CPU_Message("      adc %s, %Xh", x86_Name(x86reg), Constant);
     switch (x86reg)
@@ -133,12 +133,12 @@ void AdcConstToX86reg(BYTE Constant, int x86reg)
     case x86_ESP: PUTDST16(RecompPos, 0xD483); break;
     case x86_EBP: PUTDST16(RecompPos, 0xD583); break;
     default:
-        DisplayError("AdcConstantToX86reg\nUnknown x86 register");
+        g_Notify->DisplayError("AdcConstantToX86reg\nUnknown x86 register");
     }
     PUTDST8(RecompPos, Constant);
 }
 
-void AddConstToVariable(DWORD Const, void * Variable, char * VariableName)
+void AddConstToVariable(uint32_t Const, void * Variable, char * VariableName)
 {
     CPU_Message("      add dword ptr [%s], 0x%X", VariableName, Const);
     PUTDST16(RecompPos, 0x0581);
@@ -152,7 +152,7 @@ void AddConstToX86Reg(int x86Reg, size_t Const)
     const size_t sign_extension_mask = ~(zero_extension_mask);
     const size_t extension_from_8bit = Const & sign_extension_mask;
 
-    // TODO:  If 64-bit x86, then what if `Const' upper DWORD set?
+    // TODO:  If 64-bit x86, then what if `Const' upper uint32_t set?
     CPU_Message("      add %s, %Xh", x86_Name(x86Reg), Const);
     if (extension_from_8bit != 0 && extension_from_8bit != sign_extension_mask)
     {
@@ -186,7 +186,7 @@ void AddConstToX86Reg(int x86Reg, size_t Const)
     }
 }
 
-void AdcConstHalfToVariable(void * Variable, char * VariableName, BYTE Constant)
+void AdcConstHalfToVariable(void * Variable, char * VariableName, uint8_t Constant)
 {
     CPU_Message("      adc word ptr [%s], %Xh", VariableName, Constant);
 
@@ -213,7 +213,7 @@ void AddVariableToX86reg(int x86reg, void * Variable, char * VariableName)
     case x86_ESP: PUTDST16(RecompPos, 0x2503); break;
     case x86_EBP: PUTDST16(RecompPos, 0x2D03); break;
     default:
-        DisplayError("AddVariableToX86reg\nUnknown x86 register");
+        g_Notify->DisplayError("AddVariableToX86reg\nUnknown x86 register");
     }
     PUTDSTPTR(RecompPos, Variable);
 }
@@ -232,7 +232,7 @@ void AddX86regToVariable(int x86reg, void * Variable, char * VariableName)
     case x86_ESP: PUTDST16(RecompPos, 0x2501); break;
     case x86_EBP: PUTDST16(RecompPos, 0x2D01); break;
     default:
-        DisplayError("AddVariableToX86reg\nUnknown x86 register");
+        g_Notify->DisplayError("AddVariableToX86reg\nUnknown x86 register");
     }
     PUTDSTPTR(RecompPos, Variable);
 }
@@ -254,14 +254,14 @@ void AddX86regHalfToVariable(int x86reg, void * Variable, char * VariableName)
     case x86_ESP: PUTDST16(RecompPos, 0x2501); break;
     case x86_EBP: PUTDST16(RecompPos, 0x2D01); break;
     default:
-        DisplayError("AddVariableToX86reg\nUnknown x86 register");
+        g_Notify->DisplayError("AddVariableToX86reg\nUnknown x86 register");
     }
     PUTDSTPTR(RecompPos, Variable);
 }
 
 void AddX86RegToX86Reg(int Destination, int Source)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      add %s, %s", x86_Name(Destination), x86_Name(Source));
     switch (Source)
@@ -289,7 +289,7 @@ void AddX86RegToX86Reg(int Destination, int Source)
     PUTDST16(RecompPos, x86Command);
 }
 
-void AndConstToVariable(DWORD Const, void * Variable, char * VariableName)
+void AndConstToVariable(uint32_t Const, void * Variable, char * VariableName)
 {
     CPU_Message("      and dword ptr [%s], 0x%X", VariableName, Const);
     PUTDST16(RecompPos, 0x2581);
@@ -297,7 +297,7 @@ void AndConstToVariable(DWORD Const, void * Variable, char * VariableName)
     PUTDST32(RecompPos, Const);
 }
 
-void AndConstToX86Reg(int x86Reg, DWORD Const)
+void AndConstToX86Reg(int x86Reg, uint32_t Const)
 {
     CPU_Message("      and %s, %Xh", x86_Name(x86Reg), Const);
     if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
@@ -386,7 +386,7 @@ void AndX86RegToVariable(void * Variable, char * VariableName, int x86Reg)
 
 void AndX86RegToX86Reg(int Destination, int Source)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      and %s, %s", x86_Name(Destination), x86_Name(Source));
     switch (Destination)
@@ -416,7 +416,7 @@ void AndX86RegToX86Reg(int Destination, int Source)
 
 void AndX86RegHalfToX86RegHalf(int Destination, int Source)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      and %s, %s", x86Half_Name(Destination), x86Half_Name(Source));
     PUTDST8(RecompPos, 0x66);
@@ -448,17 +448,17 @@ void AndX86RegHalfToX86RegHalf(int Destination, int Source)
 
 void BreakPointNotification(const char * const FileName, const int LineNumber)
 {
-    DisplayError("Break point found\nFile: %s\nLine: %d", FileName, LineNumber);
+    g_Notify->DisplayError(stdstr_f("Break point found\nFile: %s\nLine: %d", FileName, LineNumber).c_str());
 }
 
-void X86BreakPoint(LPCSTR FileName, int LineNumber)
+void X86BreakPoint(const char * FileName, int LineNumber)
 {
     Pushad();
     PushImm32("LineNumber", LineNumber);
 #if defined(_M_IX86)
-    PushImm32("FileName", (DWORD)FileName);
+    PushImm32("FileName", (uint32_t)FileName);
 #else
-    DisplayError("PushImm64\nUnimplemented.");
+    g_Notify->DisplayError("PushImm64\nUnimplemented.");
 #endif
     Call_Direct(BreakPointNotification, "BreakPointNotification");
     AddConstToX86Reg(x86_ESP, 8);
@@ -469,7 +469,7 @@ void X86BreakPoint(LPCSTR FileName, int LineNumber)
 
 void BsrX86RegToX86Reg(int Destination, int Source)
 {
-    BYTE x86Command = 0;
+    uint8_t x86Command = 0;
 
     CPU_Message("      bsr %s, %s", x86_Name(Destination), x86_Name(Source));
 
@@ -518,7 +518,7 @@ void CondMoveEqual(int Destination, int Source)
 {
     if (ConditionalMove == false)
     {
-        BYTE * Jump;
+        uint8_t * Jump;
         CPU_Message("   [*]cmove %s, %s", x86_Name(Destination), x86_Name(Source));
 
         JneLabel8("label", 0);
@@ -529,7 +529,7 @@ void CondMoveEqual(int Destination, int Source)
     }
     else
     {
-        BYTE x86Command = 0;
+        uint8_t x86Command = 0;
         CPU_Message("      cmove %s, %s", x86_Name(Destination), x86_Name(Source));
 
         PUTDST16(RecompPos, 0x440F);
@@ -566,7 +566,7 @@ void CondMoveNotEqual(int Destination, int Source)
 {
     if (ConditionalMove == false)
     {
-        BYTE * Jump;
+        uint8_t * Jump;
         CPU_Message("   [*]cmovne %s, %s", x86_Name(Destination), x86_Name(Source));
 
         JeLabel8("label", 0);
@@ -577,7 +577,7 @@ void CondMoveNotEqual(int Destination, int Source)
     }
     else
     {
-        BYTE x86Command = 0;
+        uint8_t x86Command = 0;
         CPU_Message("      cmovne %s, %s", x86_Name(Destination), x86_Name(Source));
 
         PUTDST16(RecompPos, 0x450F);
@@ -614,7 +614,7 @@ void CondMoveGreater(int Destination, int Source)
 {
     if (ConditionalMove == false)
     {
-        BYTE * Jump;
+        uint8_t * Jump;
         CPU_Message("    [*]cmovg %s, %s", x86_Name(Destination), x86_Name(Source));
 
         JleLabel8("label", 0);
@@ -625,7 +625,7 @@ void CondMoveGreater(int Destination, int Source)
     }
     else
     {
-        BYTE x86Command = 0;
+        uint8_t x86Command = 0;
         CPU_Message("      cmovg %s, %s", x86_Name(Destination), x86_Name(Source));
 
         PUTDST16(RecompPos, 0x4F0F);
@@ -662,7 +662,7 @@ void CondMoveGreaterEqual(int Destination, int Source)
 {
     if (ConditionalMove == false)
     {
-        BYTE * Jump;
+        uint8_t * Jump;
         CPU_Message("   [*]cmovge %s, %s", x86_Name(Destination), x86_Name(Source));
 
         JlLabel8("label", 0);
@@ -673,7 +673,7 @@ void CondMoveGreaterEqual(int Destination, int Source)
     }
     else
     {
-        BYTE x86Command = 0;
+        uint8_t x86Command = 0;
         CPU_Message("      cmovge %s, %s", x86_Name(Destination), x86_Name(Source));
 
         PUTDST16(RecompPos, 0x4D0F);
@@ -710,7 +710,7 @@ void CondMoveLess(int Destination, int Source)
 {
     if (ConditionalMove == false)
     {
-        BYTE * Jump;
+        uint8_t * Jump;
         CPU_Message("   [*]cmovl %s, %s", x86_Name(Destination), x86_Name(Source));
 
         JgeLabel8("label", 0);
@@ -721,7 +721,7 @@ void CondMoveLess(int Destination, int Source)
     }
     else
     {
-        BYTE x86Command = 0;
+        uint8_t x86Command = 0;
         CPU_Message("      cmovl %s, %s", x86_Name(Destination), x86_Name(Source));
 
         PUTDST16(RecompPos, 0x4C0F);
@@ -758,7 +758,7 @@ void CondMoveLessEqual(int Destination, int Source)
 {
     if (ConditionalMove == false)
     {
-        BYTE * Jump;
+        uint8_t * Jump;
         CPU_Message("   [*]cmovle %s, %s", x86_Name(Destination), x86_Name(Source));
 
         JgLabel8("label", 0);
@@ -769,7 +769,7 @@ void CondMoveLessEqual(int Destination, int Source)
     }
     else
     {
-        BYTE x86Command = 0;
+        uint8_t x86Command = 0;
         CPU_Message("      cmovle %s, %s", x86_Name(Destination), x86_Name(Source));
 
         PUTDST16(RecompPos, 0x4E0F);
@@ -802,7 +802,7 @@ void CondMoveLessEqual(int Destination, int Source)
     }
 }
 
-void CompConstToVariable(DWORD Const, void * Variable, char * VariableName)
+void CompConstToVariable(uint32_t Const, void * Variable, char * VariableName)
 {
     CPU_Message("      cmp dword ptr [%s], 0x%X", VariableName, Const);
     PUTDST16(RecompPos, 0x3D81);
@@ -810,7 +810,7 @@ void CompConstToVariable(DWORD Const, void * Variable, char * VariableName)
     PUTDST32(RecompPos, Const);
 }
 
-void CompConstHalfToVariable(WORD Const, void * Variable, char * VariableName)
+void CompConstHalfToVariable(uint16_t Const, void * Variable, char * VariableName)
 {
     CPU_Message("      cmp word ptr [%s], 0x%X", VariableName, Const);
     PUTDST8(RecompPos, 0x66);
@@ -821,7 +821,7 @@ void CompConstHalfToVariable(WORD Const, void * Variable, char * VariableName)
     PUTDST16(RecompPos, Const);
 }
 
-void CompConstToX86reg(int x86Reg, DWORD Const)
+void CompConstToX86reg(int x86Reg, uint32_t Const)
 {
     CPU_Message("      cmp %s, %Xh", x86_Name(x86Reg), Const);
     if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
@@ -837,7 +837,7 @@ void CompConstToX86reg(int x86Reg, DWORD Const)
         case x86_ESP: PUTDST16(RecompPos, 0xFC81); break;
         case x86_EBP: PUTDST16(RecompPos, 0xFD81); break;
         default:
-            DisplayError("CompConstToX86reg\nUnknown x86 register");
+            g_Notify->DisplayError("CompConstToX86reg\nUnknown x86 register");
         }
         PUTDST32(RecompPos, Const);
     }
@@ -872,7 +872,7 @@ void CompX86regToVariable(int x86Reg, void * Variable, char * VariableName)
     case x86_ESP: PUTDST16(RecompPos, 0x253B); break;
     case x86_EBP: PUTDST16(RecompPos, 0x2D3B); break;
     default:
-        DisplayError("Unknown x86 register");
+        g_Notify->DisplayError("Unknown x86 register");
     }
     PUTDSTPTR(RecompPos, Variable);
 }
@@ -891,14 +891,14 @@ void CompVariableToX86reg(int x86Reg, void * Variable, char * VariableName)
     case x86_ESP: PUTDST16(RecompPos, 0x2539); break;
     case x86_EBP: PUTDST16(RecompPos, 0x2D39); break;
     default:
-        DisplayError("Unknown x86 register");
+        g_Notify->DisplayError("Unknown x86 register");
     }
     PUTDSTPTR(RecompPos, Variable);
 }
 
 void CompX86RegToX86Reg(int Destination, int Source)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      cmp %s, %s", x86_Name(Destination), x86_Name(Source));
 
@@ -953,7 +953,7 @@ void DecX86reg(int x86reg)
     case x86_ESP: PUTDST8(RecompPos, 0x4C); break;
     case x86_EBP: PUTDST8(RecompPos, 0x4D); break;
     default:
-        DisplayError("DecX86reg\nUnknown x86 register");
+        g_Notify->DisplayError("DecX86reg\nUnknown x86 register");
     }
 }
 
@@ -970,7 +970,7 @@ void DivX86reg(int x86reg)
     case x86_ESP: PUTDST16(RecompPos, 0xf4F7); break;
     case x86_EBP: PUTDST16(RecompPos, 0xf5F7); break;
     default:
-        DisplayError("divX86reg\nUnknown x86 register");
+        g_Notify->DisplayError("divX86reg\nUnknown x86 register");
     }
 }
 
@@ -987,7 +987,7 @@ void idivX86reg(int x86reg)
     case x86_ESP: PUTDST16(RecompPos, 0xfcF7); break;
     case x86_EBP: PUTDST16(RecompPos, 0xfdF7); break;
     default:
-        DisplayError("idivX86reg\nUnknown x86 register");
+        g_Notify->DisplayError("idivX86reg\nUnknown x86 register");
     }
 }
 
@@ -1005,13 +1005,13 @@ void imulX86reg(int x86reg)
     case x86_ESP: PUTDST16(RecompPos, 0xECF7); break;
     case x86_EBP: PUTDST16(RecompPos, 0xEDF7); break;
     default:
-        DisplayError("imulX86reg\nUnknown x86 register");
+        g_Notify->DisplayError("imulX86reg\nUnknown x86 register");
     }
 }
 
 void ImulX86RegToX86Reg(int Destination, int Source)
 {
-    BYTE x86Command = 0;
+    uint8_t x86Command = 0;
 
     CPU_Message("      imul %s, %s", x86_Name(Destination), x86_Name(Source));
 
@@ -1057,109 +1057,109 @@ void IncX86reg(int x86Reg)
     case x86_ESP: PUTDST8(RecompPos, 0x44); break;
     case x86_EBP: PUTDST8(RecompPos, 0x45); break;
     default:
-        DisplayError("IncX86reg\nUnknown x86 register");
+        g_Notify->DisplayError("IncX86reg\nUnknown x86 register");
     }
 }
 
-void JaeLabel32(char * Label, DWORD Value)
+void JaeLabel32(char * Label, uint32_t Value)
 {
     CPU_Message("      jae $%s", Label);
     PUTDST16(RecompPos, 0x830F);
     PUTDST32(RecompPos, Value);
 }
 
-void JaLabel8(char * Label, BYTE Value)
+void JaLabel8(char * Label, uint8_t Value)
 {
     CPU_Message("      ja $%s", Label);
     PUTDST8(RecompPos, 0x77);
     PUTDST8(RecompPos, Value);
 }
 
-void JaLabel32(char * Label, DWORD Value)
+void JaLabel32(char * Label, uint32_t Value)
 {
     CPU_Message("      ja $%s", Label);
     PUTDST16(RecompPos, 0x870F);
     PUTDST32(RecompPos, Value);
 }
 
-void JbLabel8(char * Label, BYTE Value)
+void JbLabel8(char * Label, uint8_t Value)
 {
     CPU_Message("      jb $%s", Label);
     PUTDST8(RecompPos, 0x72);
     PUTDST8(RecompPos, Value);
 }
 
-void JbLabel32(char * Label, DWORD Value)
+void JbLabel32(char * Label, uint32_t Value)
 {
     CPU_Message("      jb $%s", Label);
     PUTDST16(RecompPos, 0x820F);
     PUTDST32(RecompPos, Value);
 }
 
-void JeLabel8(char * Label, BYTE Value)
+void JeLabel8(char * Label, uint8_t Value)
 {
     CPU_Message("      je $%s", Label);
     PUTDST8(RecompPos, 0x74);
     PUTDST8(RecompPos, Value);
 }
 
-void JeLabel32(char * Label, DWORD Value)
+void JeLabel32(char * Label, uint32_t Value)
 {
     CPU_Message("      je $%s", Label);
     PUTDST16(RecompPos, 0x840F);
     PUTDST32(RecompPos, Value);
 }
 
-void JgeLabel8(char * Label, BYTE Value)
+void JgeLabel8(char * Label, uint8_t Value)
 {
     CPU_Message("      jge $%s", Label);
     PUTDST8(RecompPos, 0x7D);
     PUTDST8(RecompPos, Value);
 }
 
-void JgeLabel32(char * Label, DWORD Value)
+void JgeLabel32(char * Label, uint32_t Value)
 {
     CPU_Message("      jge $%s", Label);
     PUTDST16(RecompPos, 0x8D0F);
     PUTDST32(RecompPos, Value);
 }
 
-void JgLabel8(char * Label, BYTE Value)
+void JgLabel8(char * Label, uint8_t Value)
 {
     CPU_Message("      jg $%s", Label);
     PUTDST8(RecompPos, 0x7F);
     PUTDST8(RecompPos, Value);
 }
 
-void JgLabel32(char * Label, DWORD Value)
+void JgLabel32(char * Label, uint32_t Value)
 {
     CPU_Message("      jg $%s", Label);
     PUTDST16(RecompPos, 0x8F0F);
     PUTDST32(RecompPos, Value);
 }
 
-void JleLabel8(char * Label, BYTE Value)
+void JleLabel8(char * Label, uint8_t Value)
 {
     CPU_Message("      jle $%s", Label);
     PUTDST8(RecompPos, 0x7E);
     PUTDST8(RecompPos, Value);
 }
 
-void JleLabel32(char * Label, DWORD Value)
+void JleLabel32(char * Label, uint32_t Value)
 {
     CPU_Message("      jle $%s", Label);
     PUTDST16(RecompPos, 0x8E0F);
     PUTDST32(RecompPos, Value);
 }
 
-void JlLabel8(char * Label, BYTE Value)
+void JlLabel8(char * Label, uint8_t Value)
 {
     CPU_Message("      jl $%s", Label);
     PUTDST8(RecompPos, 0x7C);
     PUTDST8(RecompPos, Value);
 }
 
-void JlLabel32(char * Label, DWORD Value)
+void JlLabel32(char * Label, uint32_t Value)
 {
     CPU_Message("      jl $%s", Label);
     PUTDST16(RecompPos, 0x8C0F);
@@ -1178,53 +1178,53 @@ void JumpX86Reg(int x86reg)
     case x86_EDX: PUTDST16(RecompPos, 0xe2ff); break;
     case x86_ESI: PUTDST16(RecompPos, 0xe6ff); break;
     case x86_EDI: PUTDST16(RecompPos, 0xe7ff); break;
-    default: DisplayError("JumpX86Reg: Unknown register");
+    default: g_Notify->DisplayError("JumpX86Reg: Unknown register");
     }
 }
 
-void JmpLabel8(char * Label, BYTE Value)
+void JmpLabel8(char * Label, uint8_t Value)
 {
     CPU_Message("      jmp $%s", Label);
     PUTDST8(RecompPos, 0xEB);
     PUTDST8(RecompPos, Value);
 }
 
-void JmpLabel32(char * Label, DWORD Value)
+void JmpLabel32(char * Label, uint32_t Value)
 {
     CPU_Message("      jmp $%s", Label);
     PUTDST8(RecompPos, 0xE9);
     PUTDST32(RecompPos, Value);
 }
 
-void JneLabel8(char * Label, BYTE Value)
+void JneLabel8(char * Label, uint8_t Value)
 {
     CPU_Message("      jne $%s", Label);
     PUTDST8(RecompPos, 0x75);
     PUTDST8(RecompPos, Value);
 }
 
-void JneLabel32(char * Label, DWORD Value)
+void JneLabel32(char * Label, uint32_t Value)
 {
     CPU_Message("      jne $%s", Label);
     PUTDST16(RecompPos, 0x850F);
     PUTDST32(RecompPos, Value);
 }
 
-void JnsLabel8(char * Label, BYTE Value)
+void JnsLabel8(char * Label, uint8_t Value)
 {
     CPU_Message("      jns $%s", Label);
     PUTDST8(RecompPos, 0x79);
     PUTDST8(RecompPos, Value);
 }
 
-void JnsLabel32(char * Label, DWORD Value)
+void JnsLabel32(char * Label, uint32_t Value)
 {
     CPU_Message("      jns $%s", Label);
     PUTDST16(RecompPos, 0x890F);
     PUTDST32(RecompPos, Value);
 }
 
-void JsLabel32(char * Label, DWORD Value)
+void JsLabel32(char * Label, uint32_t Value)
 {
     CPU_Message("      js $%s", Label);
     PUTDST16(RecompPos, 0x880F);
@@ -1237,7 +1237,7 @@ void JsLabel32(char * Label, DWORD Value)
 
 void LeaSourceAndOffset(int x86DestReg, int x86SourceReg, size_t offset)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      lea %s, [%s + %0Xh]", x86_Name(x86DestReg), x86_Name(x86SourceReg), offset);
     switch (x86DestReg)
@@ -1251,7 +1251,7 @@ void LeaSourceAndOffset(int x86DestReg, int x86SourceReg, size_t offset)
     case x86_ESP: x86Command = 0xA08D; break;
     case x86_EBP: x86Command = 0xA88D; break;
     default:
-        DisplayError("LeaSourceAndOffset\nUnknown x86 register");
+        g_Notify->DisplayError("LeaSourceAndOffset\nUnknown x86 register");
     }
     switch (x86SourceReg)
     {
@@ -1264,10 +1264,10 @@ void LeaSourceAndOffset(int x86DestReg, int x86SourceReg, size_t offset)
     case x86_ESP: x86Command += 0x0400; break;
     case x86_EBP: x86Command += 0x0500; break;
     default:
-        DisplayError("LeaSourceAndOffset\nUnknown x86 register");
+        g_Notify->DisplayError("LeaSourceAndOffset\nUnknown x86 register");
     }
 
-    // TODO: Check high DWORD of offset for 64-bit x86
+    // TODO: Check high uint32_t of offset for 64-bit x86
     if ((offset & 0x00000000FFFFFF80) != 0 && (offset & ~0x7F) != ~0x7F)
     {
         PUTDST16(RecompPos, x86Command);
@@ -1280,9 +1280,9 @@ void LeaSourceAndOffset(int x86DestReg, int x86SourceReg, size_t offset)
     }
 }
 
-void MoveConstByteToN64Mem(BYTE Const, int AddrReg)
+void MoveConstByteToN64Mem(uint8_t Const, int AddrReg)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      mov byte ptr [%s+Dmem], %Xh", x86_Name(AddrReg), Const);
     switch (AddrReg)
@@ -1296,7 +1296,7 @@ void MoveConstByteToN64Mem(BYTE Const, int AddrReg)
     case x86_ESP: x86Command = 0x84C6; break;
     case x86_EBP: x86Command = 0x85C6; break;
     default:
-        DisplayError("MoveConstByteToN64Mem\nUnknown x86 register");
+        g_Notify->DisplayError("MoveConstByteToN64Mem\nUnknown x86 register");
     }
 
     PUTDST16(RecompPos, x86Command);
@@ -1304,9 +1304,9 @@ void MoveConstByteToN64Mem(BYTE Const, int AddrReg)
     PUTDST8(RecompPos, Const);
 }
 
-void MoveConstHalfToN64Mem(WORD Const, int AddrReg)
+void MoveConstHalfToN64Mem(uint16_t Const, int AddrReg)
 {
-    BYTE x86Command = 0;
+    uint8_t x86Command = 0;
 
     CPU_Message("      mov word ptr [%s+Dmem], %Xh", x86_Name(AddrReg), Const);
     PUTDST16(RecompPos, 0xC766);
@@ -1321,7 +1321,7 @@ void MoveConstHalfToN64Mem(WORD Const, int AddrReg)
     case x86_ESP: x86Command = 0x84; break;
     case x86_EBP: x86Command = 0x85; break;
     default:
-        DisplayError("MoveConstHalfToN64Mem\nUnknown x86 register");
+        g_Notify->DisplayError("MoveConstHalfToN64Mem\nUnknown x86 register");
     }
 
     PUTDST8(RecompPos, x86Command);
@@ -1329,7 +1329,7 @@ void MoveConstHalfToN64Mem(WORD Const, int AddrReg)
     PUTDST16(RecompPos, Const);
 }
 
-void MoveConstByteToVariable(BYTE Const, void * Variable, char * VariableName)
+void MoveConstByteToVariable(uint8_t Const, void * Variable, char * VariableName)
 {
     CPU_Message("      mov byte ptr [%s], %Xh", VariableName, Const);
     PUTDST16(RecompPos, 0x05C6);
@@ -1337,7 +1337,7 @@ void MoveConstByteToVariable(BYTE Const, void * Variable, char * VariableName)
     PUTDST8(RecompPos, Const);
 }
 
-void MoveConstHalfToVariable(WORD Const, void * Variable, char * VariableName)
+void MoveConstHalfToVariable(uint16_t Const, void * Variable, char * VariableName)
 {
     CPU_Message("      mov word ptr [%s], %Xh", VariableName, Const);
     PUTDST8(RecompPos, 0x66);
@@ -1346,9 +1346,9 @@ void MoveConstHalfToVariable(WORD Const, void * Variable, char * VariableName)
     PUTDST16(RecompPos, Const);
 }
 
-void MoveConstToN64Mem(DWORD Const, int AddrReg)
+void MoveConstToN64Mem(uint32_t Const, int AddrReg)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      mov dword ptr [%s+Dmem], %Xh", x86_Name(AddrReg), Const);
     switch (AddrReg)
@@ -1362,7 +1362,7 @@ void MoveConstToN64Mem(DWORD Const, int AddrReg)
     case x86_ESP: x86Command = 0x84C7; break;
     case x86_EBP: x86Command = 0x85C7; break;
     default:
-        DisplayError("MoveConstToN64Mem\nUnknown x86 register");
+        g_Notify->DisplayError("MoveConstToN64Mem\nUnknown x86 register");
     }
 
     PUTDST16(RecompPos, x86Command);
@@ -1370,7 +1370,7 @@ void MoveConstToN64Mem(DWORD Const, int AddrReg)
     PUTDST32(RecompPos, Const);
 }
 
-void MoveConstToVariable(DWORD Const, void * Variable, char * VariableName)
+void MoveConstToVariable(uint32_t Const, void * Variable, char * VariableName)
 {
     CPU_Message("      mov dword ptr [%s], %Xh", VariableName, Const);
     PUTDST16(RecompPos, 0x05C7);
@@ -1378,7 +1378,7 @@ void MoveConstToVariable(DWORD Const, void * Variable, char * VariableName)
     PUTDST32(RecompPos, Const);
 }
 
-void MoveConstToX86reg(DWORD Const, int x86reg)
+void MoveConstToX86reg(uint32_t Const, int x86reg)
 {
     CPU_Message("      mov %s, %Xh", x86_Name(x86reg), Const);
     switch (x86reg)
@@ -1392,7 +1392,7 @@ void MoveConstToX86reg(DWORD Const, int x86reg)
     case x86_ESP: PUTDST16(RecompPos, 0xC4C7); break;
     case x86_EBP: PUTDST16(RecompPos, 0xC5C7); break;
     default:
-        DisplayError("MoveConstToX86reg\nUnknown x86 register");
+        g_Notify->DisplayError("MoveConstToX86reg\nUnknown x86 register");
     }
     PUTDST32(RecompPos, Const);
 }
@@ -1411,14 +1411,14 @@ void MoveOffsetToX86reg(size_t Const, char * VariableName, int x86reg)
     case x86_ESP: PUTDST16(RecompPos, 0xC4C7); break;
     case x86_EBP: PUTDST16(RecompPos, 0xC5C7); break;
     default:
-        DisplayError("MoveOffsetToX86reg\nUnknown x86 register");
+        g_Notify->DisplayError("MoveOffsetToX86reg\nUnknown x86 register");
     }
     PUTDST32(RecompPos, Const);
 }
 
 void MoveX86regPointerToX86regByte(int Destination, int AddrReg)
 {
-    BYTE x86Command = 0;
+    uint8_t x86Command = 0;
 
     CPU_Message("      mov %s, byte ptr [%s]", x86Byte_Name(Destination), x86_Name(AddrReg));
 
@@ -1430,7 +1430,7 @@ void MoveX86regPointerToX86regByte(int Destination, int AddrReg)
     case x86_EDX: x86Command = 0x02; break;
     case x86_ESI: x86Command = 0x06; break;
     case x86_EDI: x86Command = 0x07; break;
-    default: DisplayError("MoveX86regPointerToX86regByte\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveX86regPointerToX86regByte\nUnknown x86 register");
     }
 
     switch (Destination)
@@ -1439,7 +1439,7 @@ void MoveX86regPointerToX86regByte(int Destination, int AddrReg)
     case x86_EBX: x86Command += 0x18; break;
     case x86_ECX: x86Command += 0x08; break;
     case x86_EDX: x86Command += 0x10; break;
-    default: DisplayError("MoveX86regPointerToX86regByte\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveX86regPointerToX86regByte\nUnknown x86 register");
     }
 
     PUTDST8(RecompPos, 0x8A);
@@ -1460,7 +1460,7 @@ void MoveX86regPointerToX86regHalf(int Destination, int AddrReg)
     case x86_EDX: x86Amb = 0x02; break;
     case x86_ESI: x86Amb = 0x06; break;
     case x86_EDI: x86Amb = 0x07; break;
-    default: DisplayError("MoveX86regPointerToX86regHalf\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveX86regPointerToX86regHalf\nUnknown x86 register");
     }
 
     switch (Destination)
@@ -1473,7 +1473,7 @@ void MoveX86regPointerToX86regHalf(int Destination, int AddrReg)
     case x86_EDI: x86Amb += 0x38; break;
     case x86_ESP: x86Amb += 0x20; break;
     case x86_EBP: x86Amb += 0x28; break;
-    default: DisplayError("MoveX86regPointerToX86regHalf\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveX86regPointerToX86regHalf\nUnknown x86 register");
     }
 
     PUTDST16(RecompPos, 0x8B66);
@@ -1482,7 +1482,7 @@ void MoveX86regPointerToX86regHalf(int Destination, int AddrReg)
 
 void MoveX86regPointerToX86reg(int Destination, int AddrReg)
 {
-    BYTE x86Amb = 0;
+    uint8_t x86Amb = 0;
     CPU_Message("      mov %s, dword ptr [%s]", x86_Name(Destination), x86_Name(AddrReg));
 
     switch (AddrReg)
@@ -1495,7 +1495,7 @@ void MoveX86regPointerToX86reg(int Destination, int AddrReg)
     case x86_EDI: x86Amb = 0x07; break;
     case x86_ESP: x86Amb = 0x04; break;
     case x86_EBP: x86Amb = 0x05; break;
-    default: DisplayError("MoveX86regPointerToX86reg\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveX86regPointerToX86reg\nUnknown x86 register");
     }
 
     switch (Destination)
@@ -1508,7 +1508,7 @@ void MoveX86regPointerToX86reg(int Destination, int AddrReg)
     case x86_EDI: x86Amb += 0x38; break;
     case x86_ESP: x86Amb += 0x20; break;
     case x86_EBP: x86Amb += 0x28; break;
-    default: DisplayError("MoveX86regPointerToX86reg\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveX86regPointerToX86reg\nUnknown x86 register");
     }
 
     PUTDST8(RecompPos, 0x8B);
@@ -1517,7 +1517,7 @@ void MoveX86regPointerToX86reg(int Destination, int AddrReg)
 
 void MoveX86regByteToX86regPointer(int Source, int AddrReg)
 {
-    BYTE x86Amb = 0;
+    uint8_t x86Amb = 0;
     CPU_Message("      mov byte ptr [%s], %s", x86_Name(AddrReg), x86Byte_Name(Source));
 
     switch (AddrReg)
@@ -1530,7 +1530,7 @@ void MoveX86regByteToX86regPointer(int Source, int AddrReg)
     case x86_EDI: x86Amb = 0x07; break;
     case x86_ESP: x86Amb = 0x04; break;
     case x86_EBP: x86Amb = 0x05; break;
-    default: DisplayError("MoveX86regBytePointer\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveX86regBytePointer\nUnknown x86 register");
     }
 
     switch (Source)
@@ -1543,7 +1543,7 @@ void MoveX86regByteToX86regPointer(int Source, int AddrReg)
     case x86_EDI: x86Amb += 0x38; break;
     case x86_ESP: x86Amb += 0x20; break;
     case x86_EBP: x86Amb += 0x28; break;
-    default: DisplayError("MoveX86regBytePointer\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveX86regBytePointer\nUnknown x86 register");
     }
 
     PUTDST8(RecompPos, 0x88);
@@ -1552,7 +1552,7 @@ void MoveX86regByteToX86regPointer(int Source, int AddrReg)
 
 void MoveX86regHalfToX86regPointer(int Source, int AddrReg)
 {
-    BYTE x86Amb = 0;
+    uint8_t x86Amb = 0;
 
     CPU_Message("      mov word ptr [%s], %s", x86_Name(AddrReg), x86Half_Name(Source));
 
@@ -1566,7 +1566,7 @@ void MoveX86regHalfToX86regPointer(int Source, int AddrReg)
     case x86_EDI: x86Amb = 0x07; break;
     case x86_ESP: x86Amb = 0x04; break;
     case x86_EBP: x86Amb = 0x05; break;
-    default: DisplayError("MoveX86regBytePointer\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveX86regBytePointer\nUnknown x86 register");
     }
 
     switch (Source)
@@ -1579,16 +1579,16 @@ void MoveX86regHalfToX86regPointer(int Source, int AddrReg)
     case x86_EDI: x86Amb += 0x38; break;
     case x86_ESP: x86Amb += 0x20; break;
     case x86_EBP: x86Amb += 0x28; break;
-    default: DisplayError("MoveX86regBytePointer\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveX86regBytePointer\nUnknown x86 register");
     }
 
     PUTDST16(RecompPos, 0x8966);
     PUTDST8(RecompPos, x86Amb);
 }
 
-void MoveX86regHalfToX86regPointerDisp(int Source, int AddrReg, BYTE Disp)
+void MoveX86regHalfToX86regPointerDisp(int Source, int AddrReg, uint8_t Disp)
 {
-    BYTE x86Amb = 0;
+    uint8_t x86Amb = 0;
 
     CPU_Message("      mov word ptr [%s+%X], %s", x86_Name(AddrReg), Disp, x86Half_Name(Source));
 
@@ -1602,7 +1602,7 @@ void MoveX86regHalfToX86regPointerDisp(int Source, int AddrReg, BYTE Disp)
     case x86_EDI: x86Amb = 0x07; break;
     case x86_ESP: x86Amb = 0x04; break;
     case x86_EBP: x86Amb = 0x05; break;
-    default: DisplayError("MoveX86regBytePointer\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveX86regBytePointer\nUnknown x86 register");
     }
 
     switch (Source)
@@ -1615,7 +1615,7 @@ void MoveX86regHalfToX86regPointerDisp(int Source, int AddrReg, BYTE Disp)
     case x86_EDI: x86Amb += 0x38; break;
     case x86_ESP: x86Amb += 0x20; break;
     case x86_EBP: x86Amb += 0x28; break;
-    default: DisplayError("MoveX86regBytePointer\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveX86regBytePointer\nUnknown x86 register");
     }
 
     PUTDST16(RecompPos, 0x8966);
@@ -1625,7 +1625,7 @@ void MoveX86regHalfToX86regPointerDisp(int Source, int AddrReg, BYTE Disp)
 
 void MoveX86regToX86regPointer(int Source, int AddrReg)
 {
-    BYTE x86Amb = 0;
+    uint8_t x86Amb = 0;
     CPU_Message("      mov dword ptr [%s], %s", x86_Name(AddrReg), x86_Name(Source));
 
     switch (AddrReg)
@@ -1638,7 +1638,7 @@ void MoveX86regToX86regPointer(int Source, int AddrReg)
     case x86_EDI: x86Amb = 0x07; break;
     case x86_ESP: x86Amb = 0x04; break;
     case x86_EBP: x86Amb = 0x05; break;
-    default: DisplayError("MoveX86regToX86regPointer\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveX86regToX86regPointer\nUnknown x86 register");
     }
 
     switch (Source)
@@ -1651,16 +1651,16 @@ void MoveX86regToX86regPointer(int Source, int AddrReg)
     case x86_EDI: x86Amb += 0x38; break;
     case x86_ESP: x86Amb += 0x20; break;
     case x86_EBP: x86Amb += 0x28; break;
-    default: DisplayError("MoveX86regToX86regPointer\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveX86regToX86regPointer\nUnknown x86 register");
     }
 
     PUTDST8(RecompPos, 0x89);
     PUTDST8(RecompPos, x86Amb);
 }
 
-void MoveX86RegToX86regPointerDisp(int Source, int AddrReg, BYTE Disp)
+void MoveX86RegToX86regPointerDisp(int Source, int AddrReg, uint8_t Disp)
 {
-    BYTE x86Amb = 0;
+    uint8_t x86Amb = 0;
     CPU_Message("      mov dword ptr [%s+%X], %s", x86_Name(AddrReg), Disp, x86_Name(Source));
 
     switch (AddrReg)
@@ -1671,9 +1671,9 @@ void MoveX86RegToX86regPointerDisp(int Source, int AddrReg, BYTE Disp)
     case x86_EDX: x86Amb = 0x02; break;
     case x86_ESI: x86Amb = 0x06; break;
     case x86_EDI: x86Amb = 0x07; break;
-    case x86_ESP: DisplayError("MoveX86RegToX86regPointerDisp: ESP is invalid"); break;
+    case x86_ESP: g_Notify->DisplayError("MoveX86RegToX86regPointerDisp: ESP is invalid"); break;
     case x86_EBP: x86Amb = 0x05; break;
-    default: DisplayError("MoveX86regToX86regPointer\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveX86regToX86regPointer\nUnknown x86 register");
     }
 
     switch (Source)
@@ -1686,7 +1686,7 @@ void MoveX86RegToX86regPointerDisp(int Source, int AddrReg, BYTE Disp)
     case x86_EDI: x86Amb += 0x38; break;
     case x86_ESP: x86Amb += 0x20; break;
     case x86_EBP: x86Amb += 0x28; break;
-    default: DisplayError("MoveX86regToX86regPointer\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveX86regToX86regPointer\nUnknown x86 register");
     }
 
     PUTDST8(RecompPos, 0x89);
@@ -1694,9 +1694,9 @@ void MoveX86RegToX86regPointerDisp(int Source, int AddrReg, BYTE Disp)
     PUTDST8(RecompPos, Disp);
 }
 
-void MoveN64MemDispToX86reg(int x86reg, int AddrReg, BYTE Disp)
+void MoveN64MemDispToX86reg(int x86reg, int AddrReg, uint8_t Disp)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      mov %s, dword ptr [%s+Dmem+%Xh]", x86_Name(x86reg), x86_Name(AddrReg), Disp);
     switch (AddrReg)
@@ -1727,7 +1727,7 @@ void MoveN64MemDispToX86reg(int x86reg, int AddrReg, BYTE Disp)
 
 void MoveN64MemToX86reg(int x86reg, int AddrReg)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      mov %s, dword ptr [%s+Dmem]", x86_Name(x86reg), x86_Name(AddrReg));
 
@@ -1759,7 +1759,7 @@ void MoveN64MemToX86reg(int x86reg, int AddrReg)
 
 void MoveN64MemToX86regByte(int x86reg, int AddrReg)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      mov %s, byte ptr [%s+Dmem]", x86Byte_Name(x86reg), x86_Name(AddrReg));
     switch (AddrReg)
@@ -1780,7 +1780,7 @@ void MoveN64MemToX86regByte(int x86reg, int AddrReg)
     case x86_ECX: x86Command += 0x8800; break;
     case x86_EDX: x86Command += 0x9000; break;
     default:
-        DisplayError("MoveN64MemToX86regByte\nInvalid x86 register");
+        g_Notify->DisplayError("MoveN64MemToX86regByte\nInvalid x86 register");
         break;
     }
     PUTDST16(RecompPos, x86Command);
@@ -1789,7 +1789,7 @@ void MoveN64MemToX86regByte(int x86reg, int AddrReg)
 
 void MoveN64MemToX86regHalf(int x86reg, int AddrReg)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      mov %s, word ptr [%s+Dmem]", x86Half_Name(x86reg), x86_Name(AddrReg));
 
@@ -1822,7 +1822,7 @@ void MoveN64MemToX86regHalf(int x86reg, int AddrReg)
 
 void MoveX86regByteToN64Mem(int x86reg, int AddrReg)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      mov byte ptr [%s+Dmem], %s", x86_Name(AddrReg), x86Byte_Name(x86reg));
 
@@ -1848,7 +1848,7 @@ void MoveX86regByteToN64Mem(int x86reg, int AddrReg)
 
 void MoveX86regHalfToN64Mem(int x86reg, int AddrReg)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      mov word ptr [%s+Dmem], %s", x86_Name(AddrReg), x86Half_Name(x86reg));
     PUTDST8(RecompPos, 0x66);
@@ -1880,7 +1880,7 @@ void MoveX86regHalfToN64Mem(int x86reg, int AddrReg)
 
 void MoveX86regToN64Mem(int x86reg, int AddrReg)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      mov dword ptr [%s+N64mem], %s", x86_Name(AddrReg), x86_Name(x86reg));
     switch (AddrReg)
@@ -1909,9 +1909,9 @@ void MoveX86regToN64Mem(int x86reg, int AddrReg)
     PUTDSTPTR(RecompPos, RSPInfo.DMEM);
 }
 
-void MoveX86regToN64MemDisp(int x86reg, int AddrReg, BYTE Disp)
+void MoveX86regToN64MemDisp(int x86reg, int AddrReg, uint8_t Disp)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      mov dword ptr [%s+N64mem+%d], %s", x86_Name(AddrReg), Disp, x86_Name(x86reg));
     switch (AddrReg)
@@ -1953,7 +1953,7 @@ void MoveVariableToX86reg(void * Variable, char * VariableName, int x86reg)
     case x86_EDI: PUTDST16(RecompPos, 0x3D8B); break;
     case x86_ESP: PUTDST16(RecompPos, 0x258B); break;
     case x86_EBP: PUTDST16(RecompPos, 0x2D8B); break;
-    default: DisplayError("MoveVariableToX86reg\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveVariableToX86reg\nUnknown x86 register");
     }
     PUTDSTPTR(RecompPos, Variable);
 }
@@ -1967,7 +1967,7 @@ void MoveVariableToX86regByte(void * Variable, char * VariableName, int x86reg)
     case x86_EBX: PUTDST16(RecompPos, 0x1D8A); break;
     case x86_ECX: PUTDST16(RecompPos, 0x0D8A); break;
     case x86_EDX: PUTDST16(RecompPos, 0x158A); break;
-    default: DisplayError("MoveVariableToX86regByte\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveVariableToX86regByte\nUnknown x86 register");
     }
     PUTDSTPTR(RecompPos, Variable);
 }
@@ -1986,7 +1986,7 @@ void MoveVariableToX86regHalf(void * Variable, char * VariableName, int x86reg)
     case x86_EDI: PUTDST16(RecompPos, 0x3D8B); break;
     case x86_ESP: PUTDST16(RecompPos, 0x258B); break;
     case x86_EBP: PUTDST16(RecompPos, 0x2D8B); break;
-    default: DisplayError("MoveVariableToX86reg\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveVariableToX86reg\nUnknown x86 register");
     }
     PUTDSTPTR(RecompPos, Variable);
 }
@@ -2001,7 +2001,7 @@ void MoveX86regByteToVariable(int x86reg, void * Variable, char * VariableName)
     case x86_ECX: PUTDST16(RecompPos, 0x0D88); break;
     case x86_EDX: PUTDST16(RecompPos, 0x1588); break;
     default:
-        DisplayError("MoveX86regByteToVariable\nUnknown x86 register");
+        g_Notify->DisplayError("MoveX86regByteToVariable\nUnknown x86 register");
     }
     PUTDSTPTR(RecompPos, Variable);
 }
@@ -2021,7 +2021,7 @@ void MoveX86regHalfToVariable(int x86reg, void * Variable, char * VariableName)
     case x86_ESP: PUTDST16(RecompPos, 0x2589); break;
     case x86_EBP: PUTDST16(RecompPos, 0x2D89); break;
     default:
-        DisplayError("MoveX86regHalfToVariable\nUnknown x86 register");
+        g_Notify->DisplayError("MoveX86regHalfToVariable\nUnknown x86 register");
     }
     PUTDSTPTR(RecompPos, Variable);
 }
@@ -2040,14 +2040,14 @@ void MoveX86regToVariable(int x86reg, void * Variable, char * VariableName)
     case x86_ESP: PUTDST16(RecompPos, 0x2589); break;
     case x86_EBP: PUTDST16(RecompPos, 0x2D89); break;
     default:
-        DisplayError("MoveX86regToVariable\nUnknown x86 register");
+        g_Notify->DisplayError("MoveX86regToVariable\nUnknown x86 register");
     }
     PUTDSTPTR(RecompPos, Variable);
 }
 
 void MoveX86RegToX86Reg(int Source, int Destination)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      mov %s, %s", x86_Name(Destination), x86_Name(Source));
 
@@ -2079,7 +2079,7 @@ void MoveX86RegToX86Reg(int Source, int Destination)
 
 void MoveSxX86RegHalfToX86Reg(int Source, int Destination)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      movsx %s, %s", x86_Name(Destination), x86Half_Name(Source));
 
@@ -2110,9 +2110,9 @@ void MoveSxX86RegHalfToX86Reg(int Source, int Destination)
     PUTDST16(RecompPos, x86Command);
 }
 
-void MoveSxX86RegPtrDispToX86RegHalf(int AddrReg, BYTE Disp, int Destination)
+void MoveSxX86RegPtrDispToX86RegHalf(int AddrReg, uint8_t Disp, int Destination)
 {
-    BYTE x86Command = 0;
+    uint8_t x86Command = 0;
 
     CPU_Message("      movsx %s, [%s+%X]", x86_Name(Destination), x86_Name(AddrReg), Disp);
 
@@ -2160,7 +2160,7 @@ void MoveSxVariableToX86regByte(void * Variable, char * VariableName, int x86reg
     case x86_EDI: PUTDST8(RecompPos, 0x3D); break;
     case x86_ESP: PUTDST8(RecompPos, 0x25); break;
     case x86_EBP: PUTDST8(RecompPos, 0x2D); break;
-    default: DisplayError("MoveSxVariableToX86regByte\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveSxVariableToX86regByte\nUnknown x86 register");
     }
     PUTDSTPTR(RecompPos, Variable);
 }
@@ -2181,14 +2181,14 @@ void MoveSxVariableToX86regHalf(void * Variable, char * VariableName, int x86reg
     case x86_EDI: PUTDST8(RecompPos, 0x3D); break;
     case x86_ESP: PUTDST8(RecompPos, 0x25); break;
     case x86_EBP: PUTDST8(RecompPos, 0x2D); break;
-    default: DisplayError("MoveSxVariableToX86regHalf\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveSxVariableToX86regHalf\nUnknown x86 register");
     }
     PUTDSTPTR(RecompPos, Variable);
 }
 
 void MoveSxN64MemToX86regByte(int x86reg, int AddrReg)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      movsx %s, byte ptr [%s+Dmem]", x86_Name(x86reg), x86_Name(AddrReg));
     switch (AddrReg)
@@ -2209,7 +2209,7 @@ void MoveSxN64MemToX86regByte(int x86reg, int AddrReg)
     case x86_ECX: x86Command += 0x8800; break;
     case x86_EDX: x86Command += 0x9000; break;
     default:
-        DisplayError("MoveSxN64MemToX86regByte\nInvalid x86 register");
+        g_Notify->DisplayError("MoveSxN64MemToX86regByte\nInvalid x86 register");
         break;
     }
     PUTDST8(RecompPos, 0x0f);
@@ -2219,7 +2219,7 @@ void MoveSxN64MemToX86regByte(int x86reg, int AddrReg)
 
 void MoveSxN64MemToX86regHalf(int x86reg, int AddrReg)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      movsx %s, word ptr [%s+Dmem]", x86_Name(x86reg), x86_Name(AddrReg));
 
@@ -2253,7 +2253,7 @@ void MoveSxN64MemToX86regHalf(int x86reg, int AddrReg)
 
 void MoveZxX86RegHalfToX86Reg(int Source, int Destination)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      movzx %s, %s", x86_Name(Destination), x86Half_Name(Source));
 
@@ -2284,9 +2284,9 @@ void MoveZxX86RegHalfToX86Reg(int Source, int Destination)
     PUTDST16(RecompPos, x86Command);
 }
 
-void MoveZxX86RegPtrDispToX86RegHalf(int AddrReg, BYTE Disp, int Destination)
+void MoveZxX86RegPtrDispToX86RegHalf(int AddrReg, uint8_t Disp, int Destination)
 {
-    BYTE x86Command = 0;
+    uint8_t x86Command = 0;
 
     CPU_Message("      movzx %s, [%s+%X]", x86_Name(Destination), x86_Name(AddrReg), Disp);
 
@@ -2334,7 +2334,7 @@ void MoveZxVariableToX86regByte(void * Variable, char * VariableName, int x86reg
     case x86_EDI: PUTDST8(RecompPos, 0x3D); break;
     case x86_ESP: PUTDST8(RecompPos, 0x25); break;
     case x86_EBP: PUTDST8(RecompPos, 0x2D); break;
-    default: DisplayError("MoveZxVariableToX86regByte\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveZxVariableToX86regByte\nUnknown x86 register");
     }
     PUTDSTPTR(RecompPos, Variable);
 }
@@ -2355,14 +2355,14 @@ void MoveZxVariableToX86regHalf(void * Variable, char * VariableName, int x86reg
     case x86_EDI: PUTDST8(RecompPos, 0x3D); break;
     case x86_ESP: PUTDST8(RecompPos, 0x25); break;
     case x86_EBP: PUTDST8(RecompPos, 0x2D); break;
-    default: DisplayError("MoveZxVariableToX86regHalf\nUnknown x86 register");
+    default: g_Notify->DisplayError("MoveZxVariableToX86regHalf\nUnknown x86 register");
     }
     PUTDSTPTR(RecompPos, Variable);
 }
 
 void MoveZxN64MemToX86regByte(int x86reg, int AddrReg)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      movzx %s, byte ptr [%s+Dmem]", x86_Name(x86reg), x86_Name(AddrReg));
     switch (AddrReg)
@@ -2383,7 +2383,7 @@ void MoveZxN64MemToX86regByte(int x86reg, int AddrReg)
     case x86_ECX: x86Command += 0x8800; break;
     case x86_EDX: x86Command += 0x9000; break;
     default:
-        DisplayError("MoveZxN64MemToX86regByte\nInvalid x86 register");
+        g_Notify->DisplayError("MoveZxN64MemToX86regByte\nInvalid x86 register");
         break;
     }
     PUTDST8(RecompPos, 0x0f);
@@ -2393,7 +2393,7 @@ void MoveZxN64MemToX86regByte(int x86reg, int AddrReg)
 
 void MoveZxN64MemToX86regHalf(int x86reg, int AddrReg)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      movzx %s, word ptr [%s+Dmem]", x86_Name(x86reg), x86_Name(AddrReg));
 
@@ -2439,7 +2439,7 @@ void MulX86reg(int x86reg)
     case x86_ESP: PUTDST16(RecompPos, 0xE4F7); break;
     case x86_EBP: PUTDST16(RecompPos, 0xE5F7); break;
     default:
-        DisplayError("MulX86reg\nUnknown x86 register");
+        g_Notify->DisplayError("MulX86reg\nUnknown x86 register");
     }
 }
 
@@ -2457,7 +2457,7 @@ void NegateX86reg(int x86reg)
     case x86_ESP: PUTDST16(RecompPos, 0xdcf7); break;
     case x86_EBP: PUTDST16(RecompPos, 0xddf7); break;
     default:
-        DisplayError("NegateX86reg\nUnknown x86 register");
+        g_Notify->DisplayError("NegateX86reg\nUnknown x86 register");
     }
 }
 
@@ -2475,11 +2475,11 @@ void NotX86reg(int x86reg)
     case x86_ESP: PUTDST16(RecompPos, 0xd4f7); break;
     case x86_EBP: PUTDST16(RecompPos, 0xd5f7); break;
     default:
-        DisplayError("NotX86reg\nUnknown x86 register");
+        g_Notify->DisplayError("NotX86reg\nUnknown x86 register");
     }
 }
 
-void OrConstToVariable(DWORD Const, void * Variable, char * VariableName)
+void OrConstToVariable(uint32_t Const, void * Variable, char * VariableName)
 {
     CPU_Message("      or dword ptr [%s], 0x%X", VariableName, Const);
     PUTDST16(RecompPos, 0x0D81);
@@ -2487,7 +2487,7 @@ void OrConstToVariable(DWORD Const, void * Variable, char * VariableName)
     PUTDST32(RecompPos, Const);
 }
 
-void OrConstToX86Reg(DWORD Const, int x86Reg)
+void OrConstToX86Reg(uint32_t Const, int x86Reg)
 {
     CPU_Message("      or %s, %Xh", x86_Name(x86Reg), Const);
     if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
@@ -2576,7 +2576,7 @@ void OrX86RegToVariable(void * Variable, char * VariableName, int x86Reg)
 
 void OrX86RegToX86Reg(int Destination, int Source)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      or %s, %s", x86_Name(Destination), x86_Name(Source));
     switch (Source)
@@ -2650,7 +2650,7 @@ void Pop(int x86reg)
     }
 }
 
-void PushImm32(char * String, DWORD Value)
+void PushImm32(char * String, uint32_t Value)
 {
     CPU_Message("      push %s", String);
     PUTDST8(RecompPos, 0x68);
@@ -2674,7 +2674,7 @@ void Setl(int x86reg)
     case x86_ECX: PUTDST8(RecompPos, 0xC1); break;
     case x86_EDX: PUTDST8(RecompPos, 0xC2); break;
     default:
-        DisplayError("Setl\nUnknown x86 register");
+        g_Notify->DisplayError("Setl\nUnknown x86 register");
     }
 }
 
@@ -2705,7 +2705,7 @@ void Setb(int x86reg)
     case x86_ECX: PUTDST8(RecompPos, 0xC1); break;
     case x86_EDX: PUTDST8(RecompPos, 0xC2); break;
     default:
-        DisplayError("Setb\nUnknown x86 register");
+        g_Notify->DisplayError("Setb\nUnknown x86 register");
     }
 }
 
@@ -2728,7 +2728,7 @@ void Setg(int x86reg)
     case x86_ECX: PUTDST8(RecompPos, 0xC1); break;
     case x86_EDX: PUTDST8(RecompPos, 0xC2); break;
     default:
-        DisplayError("Setg\nUnknown x86 register");
+        g_Notify->DisplayError("Setg\nUnknown x86 register");
     }
 }
 
@@ -2759,7 +2759,7 @@ void Seta(int x86reg)
     case x86_ECX: PUTDST8(RecompPos, 0xC1); break;
     case x86_EDX: PUTDST8(RecompPos, 0xC2); break;
     default:
-        DisplayError("Seta\nUnknown x86 register");
+        g_Notify->DisplayError("Seta\nUnknown x86 register");
     }
 }
 
@@ -2782,7 +2782,7 @@ void Setae(int x86reg)
     case x86_ECX: PUTDST8(RecompPos, 0xC1); break;
     case x86_EDX: PUTDST8(RecompPos, 0xC2); break;
     default:
-        DisplayError("Seta\nUnknown x86 register");
+        g_Notify->DisplayError("Seta\nUnknown x86 register");
     }
 }
 
@@ -2797,7 +2797,7 @@ void Setz(int x86reg)
     case x86_ECX: PUTDST8(RecompPos, 0xC1); break;
     case x86_EDX: PUTDST8(RecompPos, 0xC2); break;
     default:
-        DisplayError("Setz\nUnknown x86 register");
+        g_Notify->DisplayError("Setz\nUnknown x86 register");
     }
 }
 
@@ -2820,7 +2820,7 @@ void Setnz(int x86reg)
     case x86_ECX: PUTDST8(RecompPos, 0xC1); break;
     case x86_EDX: PUTDST8(RecompPos, 0xC2); break;
     default:
-        DisplayError("Setnz\nUnknown x86 register");
+        g_Notify->DisplayError("Setnz\nUnknown x86 register");
     }
 }
 
@@ -2832,9 +2832,9 @@ void SetnzVariable(void * Variable, char * VariableName)
     PUTDSTPTR(RecompPos, Variable);
 }
 
-void ShiftLeftDoubleImmed(int Destination, int Source, BYTE Immediate)
+void ShiftLeftDoubleImmed(int Destination, int Source, uint8_t Immediate)
 {
-    BYTE x86Amb = 0xC0;
+    uint8_t x86Amb = 0xC0;
 
     CPU_Message("      shld %s, %s, %Xh", x86_Name(Destination), x86_Name(Source), Immediate);
     PUTDST16(RecompPos, 0xA40F);
@@ -2867,9 +2867,9 @@ void ShiftLeftDoubleImmed(int Destination, int Source, BYTE Immediate)
     PUTDST8(RecompPos, Immediate);
 }
 
-void ShiftRightDoubleImmed(int Destination, int Source, BYTE Immediate)
+void ShiftRightDoubleImmed(int Destination, int Source, uint8_t Immediate)
 {
-    BYTE x86Amb = 0xC0;
+    uint8_t x86Amb = 0xC0;
 
     CPU_Message("      shrd %s, %s, %Xh", x86_Name(Destination), x86_Name(Source), Immediate);
     PUTDST16(RecompPos, 0xAC0F);
@@ -2918,7 +2918,7 @@ void ShiftLeftSign(int x86reg)
     }
 }
 
-void ShiftLeftSignImmed(int x86reg, BYTE Immediate)
+void ShiftLeftSignImmed(int x86reg, uint8_t Immediate)
 {
     CPU_Message("      shl %s, %Xh", x86_Name(x86reg), Immediate);
     switch (x86reg)
@@ -2935,7 +2935,7 @@ void ShiftLeftSignImmed(int x86reg, BYTE Immediate)
     PUTDST8(RecompPos, Immediate);
 }
 
-void ShiftLeftSignVariableImmed(void * Variable, char * VariableName, BYTE Immediate)
+void ShiftLeftSignVariableImmed(void * Variable, char * VariableName, uint8_t Immediate)
 {
     CPU_Message("      shl dword ptr [%s], %Xh", VariableName, Immediate);
 
@@ -2944,7 +2944,7 @@ void ShiftLeftSignVariableImmed(void * Variable, char * VariableName, BYTE Immed
     PUTDST8(RecompPos, Immediate);
 }
 
-void ShiftRightSignImmed(int x86reg, BYTE Immediate)
+void ShiftRightSignImmed(int x86reg, uint8_t Immediate)
 {
     CPU_Message("      sar %s, %Xh", x86_Name(x86reg), Immediate);
     switch (x86reg)
@@ -2958,12 +2958,12 @@ void ShiftRightSignImmed(int x86reg, BYTE Immediate)
     case x86_ESP: PUTDST16(RecompPos, 0xFCC1); break;
     case x86_EBP: PUTDST16(RecompPos, 0xFDC1); break;
     default:
-        DisplayError("ShiftRightSignImmed\nUnknown x86 register");
+        g_Notify->DisplayError("ShiftRightSignImmed\nUnknown x86 register");
     }
     PUTDST8(RecompPos, Immediate);
 }
 
-void ShiftRightSignVariableImmed(void * Variable, char * VariableName, BYTE Immediate)
+void ShiftRightSignVariableImmed(void * Variable, char * VariableName, uint8_t Immediate)
 {
     CPU_Message("      sar dword ptr [%s], %Xh", VariableName, Immediate);
 
@@ -2988,7 +2988,7 @@ void ShiftRightUnsign(int x86reg)
     }
 }
 
-void ShiftRightUnsignImmed(int x86reg, BYTE Immediate)
+void ShiftRightUnsignImmed(int x86reg, uint8_t Immediate)
 {
     CPU_Message("      shr %s, %Xh", x86_Name(x86reg), Immediate);
     switch (x86reg)
@@ -3005,7 +3005,7 @@ void ShiftRightUnsignImmed(int x86reg, BYTE Immediate)
     PUTDST8(RecompPos, Immediate);
 }
 
-void ShiftRightUnsignVariableImmed(void * Variable, char * VariableName, BYTE Immediate)
+void ShiftRightUnsignVariableImmed(void * Variable, char * VariableName, uint8_t Immediate)
 {
     CPU_Message("      shr dword ptr [%s], %Xh", VariableName, Immediate);
 
@@ -3014,7 +3014,7 @@ void ShiftRightUnsignVariableImmed(void * Variable, char * VariableName, BYTE Im
     PUTDST8(RecompPos, Immediate);
 }
 
-void SubConstFromVariable(DWORD Const, void * Variable, char * VariableName)
+void SubConstFromVariable(uint32_t Const, void * Variable, char * VariableName)
 {
     CPU_Message("      sub dword ptr [%s], 0x%X", VariableName, Const);
     PUTDST16(RecompPos, 0x2D81);
@@ -3022,7 +3022,7 @@ void SubConstFromVariable(DWORD Const, void * Variable, char * VariableName)
     PUTDST32(RecompPos, Const);
 }
 
-void SubConstFromX86Reg(int x86Reg, DWORD Const)
+void SubConstFromX86Reg(int x86Reg, uint32_t Const)
 {
     CPU_Message("      sub %s, %Xh", x86_Name(x86Reg), Const);
     if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
@@ -3071,7 +3071,7 @@ void SubVariableFromX86reg(int x86reg, void * Variable, char * VariableName)
     case x86_ESP: PUTDST16(RecompPos, 0x252B); break;
     case x86_EBP: PUTDST16(RecompPos, 0x2D2B); break;
     default:
-        DisplayError("SubVariableFromX86reg\nUnknown x86 register");
+        g_Notify->DisplayError("SubVariableFromX86reg\nUnknown x86 register");
     }
     PUTDSTPTR(RecompPos, Variable);
 }
@@ -3090,14 +3090,14 @@ void SubX86regFromVariable(int x86reg, void * Variable, char * VariableName)
     case x86_ESP: PUTDST16(RecompPos, 0x2529); break;
     case x86_EBP: PUTDST16(RecompPos, 0x2D29); break;
     default:
-        DisplayError("SubX86regFromVariable\nUnknown x86 register");
+        g_Notify->DisplayError("SubX86regFromVariable\nUnknown x86 register");
     }
     PUTDSTPTR(RecompPos, Variable);
 }
 
 void SubX86RegToX86Reg(int Destination, int Source)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
     CPU_Message("      sub %s, %s", x86_Name(Destination), x86_Name(Source));
     switch (Source)
     {
@@ -3126,7 +3126,7 @@ void SubX86RegToX86Reg(int Destination, int Source)
 
 void SbbX86RegToX86Reg(int Destination, int Source)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
     CPU_Message("      sbb %s, %s", x86_Name(Destination), x86_Name(Source));
     switch (Source)
     {
@@ -3153,7 +3153,7 @@ void SbbX86RegToX86Reg(int Destination, int Source)
     PUTDST16(RecompPos, x86Command);
 }
 
-void TestConstToVariable(DWORD Const, void * Variable, char * VariableName)
+void TestConstToVariable(uint32_t Const, void * Variable, char * VariableName)
 {
     CPU_Message("      test dword ptr [%s], 0x%X", VariableName, Const);
     PUTDST16(RecompPos, 0x05F7);
@@ -3161,7 +3161,7 @@ void TestConstToVariable(DWORD Const, void * Variable, char * VariableName)
     PUTDST32(RecompPos, Const);
 }
 
-void TestConstToX86Reg(DWORD Const, int x86reg)
+void TestConstToX86Reg(uint32_t Const, int x86reg)
 {
     CPU_Message("      test %s, 0x%X", x86_Name(x86reg), Const);
 
@@ -3181,7 +3181,7 @@ void TestConstToX86Reg(DWORD Const, int x86reg)
 
 void TestX86RegToX86Reg(int Destination, int Source)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      test %s, %s", x86_Name(Destination), x86_Name(Source));
     switch (Source)
@@ -3209,7 +3209,7 @@ void TestX86RegToX86Reg(int Destination, int Source)
     PUTDST16(RecompPos, x86Command);
 }
 
-void XorConstToX86Reg(int x86Reg, DWORD Const)
+void XorConstToX86Reg(int x86Reg, uint32_t Const)
 {
     CPU_Message("      xor %s, %Xh", x86_Name(x86Reg), Const);
     if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
@@ -3244,7 +3244,7 @@ void XorConstToX86Reg(int x86Reg, DWORD Const)
     }
 }
 
-void XorConstToVariable(void * Variable, char * VariableName, DWORD Const)
+void XorConstToVariable(void * Variable, char * VariableName, uint32_t Const)
 {
 
     CPU_Message("      xor dword ptr [%s], 0x%X", VariableName, Const);
@@ -3256,7 +3256,7 @@ void XorConstToVariable(void * Variable, char * VariableName, DWORD Const)
 
 void XorX86RegToX86Reg(int Source, int Destination)
 {
-    WORD x86Command = 0;
+    uint16_t x86Command = 0;
 
     CPU_Message("      xor %s, %s", x86_Name(Source), x86_Name(Destination));
 
@@ -3298,7 +3298,7 @@ void XorVariableToX86reg(void * Variable, char * VariableName, int x86reg)
     case x86_EDI: PUTDST16(RecompPos, 0x3D33); break;
     case x86_ESP: PUTDST16(RecompPos, 0x2533); break;
     case x86_EBP: PUTDST16(RecompPos, 0x2D33); break;
-    default: DisplayError("XorVariableToX86reg\nUnknown x86 register");
+    default: g_Notify->DisplayError("XorVariableToX86reg\nUnknown x86 register");
     }
     PUTDSTPTR(RecompPos, Variable);
 }
@@ -3316,7 +3316,7 @@ void XorX86RegToVariable(void * Variable, char * VariableName, int x86reg)
     case x86_EDI: PUTDST16(RecompPos, 0x3D31); break;
     case x86_ESP: PUTDST16(RecompPos, 0x2531); break;
     case x86_EBP: PUTDST16(RecompPos, 0x2D31); break;
-    default: DisplayError("XorX86RegToVariable\nUnknown x86 register");
+    default: g_Notify->DisplayError("XorX86RegToVariable\nUnknown x86 register");
     }
     PUTDSTPTR(RecompPos, Variable);
 }

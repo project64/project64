@@ -1,14 +1,10 @@
+#include "RspLog.h"
+#include "RSPRegisters.h"
 #include <Common/File.h>
 #include <Common/Log.h>
 #include <Common/StdString.h>
 #include <Common/path.h>
-#include <stdio.h>
-#include <windows.h>
-
-#include "Log.h"
-#include "Rsp.h"
 #include <Project64-rsp-core/RSPInfo.h>
-#include <Project64-rsp-core/cpu/RSPRegisters.h>
 
 CLog * RDPLog = NULL;
 CLog * CPULog = NULL;
@@ -95,7 +91,7 @@ void RDP_Message(const char * Message, ...)
     RDPLog->Log(Msg.c_str());
 }
 
-void RDP_LogMT0(DWORD PC, int Reg, DWORD Value)
+void RDP_LogMT0(uint32_t PC, int Reg, uint32_t Value)
 {
     if (RDPLog == NULL)
     {
@@ -119,7 +115,7 @@ void RDP_LogMT0(DWORD PC, int Reg, DWORD Value)
     }
 }
 
-void RDP_LogMF0(DWORD PC, int Reg)
+void RDP_LogMF0(uint32_t PC, int Reg)
 {
     switch (Reg)
     {
@@ -137,19 +133,19 @@ void RDP_LogDlist(void)
     {
         return;
     }
-    DWORD Length = *RSPInfo.DPC_END_REG - *RSPInfo.DPC_CURRENT_REG;
+    uint32_t Length = *RSPInfo.DPC_END_REG - *RSPInfo.DPC_CURRENT_REG;
     RDP_Message("    Dlist length = %d bytes", Length);
 
-    DWORD Pos = *RSPInfo.DPC_CURRENT_REG;
+    uint32_t Pos = *RSPInfo.DPC_CURRENT_REG;
     while (Pos < *RSPInfo.DPC_END_REG)
     {
         char Hex[100], Ascii[30];
-        DWORD count;
+        uint32_t count;
 
         memset(&Hex, 0, sizeof(Hex));
         memset(&Ascii, 0, sizeof(Ascii));
 
-        BYTE * Mem = RSPInfo.DMEM;
+        uint8_t * Mem = RSPInfo.DMEM;
         if ((*RSPInfo.DPC_STATUS_REG & DPC_STATUS_XBUS_DMEM_DMA) == 0)
         {
             Mem = RSPInfo.RDRAM;
@@ -185,142 +181,9 @@ void RDP_LogDlist(void)
     }
 }
 
-void RDP_LogLoc(DWORD /*PC*/)
+void RDP_LogLoc(uint32_t /*PC*/)
 {
-    //	RDP_Message("%03X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X",PC, RSP_GPR[26].UW, *(DWORD *)&RSPInfo.IMEM[0xDBC],
+    //	RDP_Message("%03X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X",PC, RSP_GPR[26].UW, *(uint32_t *)&RSPInfo.IMEM[0xDBC],
     //		RSP_Flags[0].UW, RSP_Vect[0].UW[0],RSP_Vect[0].UW[1],RSP_Vect[0].UW[2],RSP_Vect[0].UW[3],
     //		RSP_Vect[28].UW[0],RSP_Vect[28].UW[1],RSP_Vect[28].UW[2],RSP_Vect[28].UW[3],RSP_Vect[31].UW[0]);
 }
-
-#ifdef old
-
-#include "RSP Registers.h"
-#include "log.h"
-#include <windows.h>
-
-#ifdef Log_x86Code
-static HANDLE hCPULogFile = NULL;
-#endif
-
-#ifdef GenerateLog
-static HANDLE hLogFile = NULL;
-#endif
-
-#ifdef Log_x86Code
-void CPU_Message(char * Message, ...)
-{
-    DWORD dwWritten;
-    char Msg[400];
-    va_list ap;
-
-    va_start(ap, Message);
-    vsprintf(Msg, Message, ap);
-    va_end(ap);
-
-    strcat(Msg, "\r\n");
-    WriteFile(hCPULogFile, Msg, strlen(Msg), &dwWritten, NULL);
-}
-#endif
-
-#ifdef GenerateLog
-void Log_Message(char * Message, ...)
-{
-    DWORD dwWritten;
-    char Msg[400];
-    va_list ap;
-
-    va_start(ap, Message);
-    vsprintf(Msg, Message, ap);
-    va_end(ap);
-
-    strcat(Msg, "\r\n");
-
-    WriteFile(hLogFile, Msg, strlen(Msg), &dwWritten, NULL);
-}
-#endif
-
-#ifdef Log_x86Code
-void Start_x86_Log(void)
-{
-    char path_buffer[_MAX_PATH], drive[_MAX_DRIVE], dir[_MAX_DIR];
-    char File[_MAX_PATH];
-
-    GetModuleFileName(NULL, path_buffer, _MAX_PATH);
-    _splitpath(path_buffer, drive, dir, NULL, NULL);
-
-    sprintf(File, "%s%s\\RSPx86Log.log", drive, dir);
-
-    hCPULogFile = CreateFile(File, GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS,
-                             FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
-    SetFilePointer(hCPULogFile, 0, NULL, FILE_BEGIN);
-}
-#endif
-
-#ifdef GenerateLog
-void Log_MT_CP0(unsigned int PC, int CP0Reg, int Value)
-{
-    switch (CP0Reg)
-    {
-    //case 0: Log_Message("%03X: Stored 0x%08X in SP_MEM_ADDR_REG",PC,Value); break;
-    //case 1: Log_Message("%03X: Stored 0x%08X in SP_DRAM_ADDR_REG",PC,Value); break;
-    //case 2: Log_Message("%03X: Stored 0x%08X in SP_RD_LEN_REG",PC,Value); break;
-    case 3:
-        //Log_Message("%03X: Stored 0x%08X in SP_WR_LEN_REG",PC,Value);
-        Log_Message("Instruction: %08X%08X", RSP_GPR[25].UW, RSP_GPR[24].UW);
-        //Log_Message("");
-        break;
-        /*case 4: Log_Message("%03X: Stored 0x%08X in SP_STATUS_REG",PC,Value); break;
-	case 5: Log_Message("%03X: Stored 0x%08X in SP_DMA_FULL_REG",PC,Value); break;
-	case 6: Log_Message("%03X: Stored 0x%08X in SP_DMA_BUSY_REG",PC,Value); break;
-	case 7: Log_Message("%03X: Stored 0x%08X in SP_SEMAPHORE_REG",PC,Value); break;
-	case 8: Log_Message("%03X: Stored 0x%08X in DPC_START_REG",PC,Value); break;
-	case 9: Log_Message("%03X: Stored 0x%08X in DPC_END_REG",PC,Value); break;
-	case 10: Log_Message("%03X: Stored 0x%08X in DPC_CURRENT_REG",PC,Value); break;
-	case 11: Log_Message("%03X: Stored 0x%08X in DPC_STATUS_REG",PC,Value); break;
-	case 12: Log_Message("%03X: Stored 0x%08X in DPC_CLOCK_REG",PC,Value); break;
-	case 13: Log_Message("%03X: Stored 0x%08X in DPC_BUFBUSY_REG",PC,Value); break;
-	case 14: Log_Message("%03X: Stored 0x%08X in DPC_PIPEBUSY_REG",PC,Value); break;
-	case 15: Log_Message("%03X: Stored 0x%08X in DPC_TMEM_REG",PC,Value); break;
-	default:
-		Log_Message("%03X: Unknown RSP CP0 register %d",PC,CP0Reg);
-		break;*/
-    }
-}
-
-void Start_Log(void)
-{
-    char path_buffer[_MAX_PATH], drive[_MAX_DRIVE], dir[_MAX_DIR];
-    char File[_MAX_PATH];
-
-    GetModuleFileName(NULL, path_buffer, _MAX_PATH);
-    _splitpath(path_buffer, drive, dir, NULL, NULL);
-
-    sprintf(File, "%s%s\\RSP.log", drive, dir);
-
-    hLogFile = CreateFile(File, GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS,
-                          FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
-    SetFilePointer(hLogFile, 0, NULL, FILE_BEGIN);
-}
-
-void Stop_Log(void)
-{
-    if (hLogFile)
-    {
-        CloseHandle(hLogFile);
-        hLogFile = NULL;
-    }
-}
-#endif
-
-#ifdef Log_x86Code
-void Stop_x86_Log(void)
-{
-    if (hCPULogFile)
-    {
-        CloseHandle(hCPULogFile);
-        hCPULogFile = NULL;
-    }
-}
-#endif
-
-#endif

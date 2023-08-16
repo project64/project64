@@ -1,9 +1,6 @@
 #include <stdio.h>
-#include <windows.h>
 
-#include <shellapi.h>
-
-#include "profiling.h"
+#include "RspProfiling.h"
 #pragma warning(disable : 4786)
 #include <Common/File.h>
 #include <Common/Log.h>
@@ -167,8 +164,6 @@ public:
                 Log.LogF("%s\t%2.2f", Buffer, CpuUsage);
             }
         }
-
-        ShellExecuteA(NULL, "open", LogFileName.c_str(), NULL, NULL, SW_SHOW);
         ResetCounters();
     }
 };
@@ -198,140 +193,3 @@ void GenerateTimerResults(void)
 {
     GetProfiler().GenerateLog();
 }
-
-#ifdef todelete
-#include <stdio.h>
-#include <windows.h>
-
-typedef struct
-{
-    char Label[100];
-    __int64 TimeTotal;
-} TIME_STAMP_ENTRY;
-
-uint32_t StartTimeHi, StartTimeLo, StopTimeHi, StopTimeLo, TSE_Count, TSE_Max;
-TIME_STAMP_ENTRY * TS_Entries = NULL;
-char LastLabel[100];
-
-void ResetTimerList(void)
-{
-    if (TS_Entries)
-    {
-        free(TS_Entries);
-    }
-    TS_Entries = NULL;
-    TSE_Count = 0;
-    TSE_Max = 0;
-}
-
-void StartTimer(char * Label)
-{
-    strcpy(LastLabel, Label);
-    _asm {
-		pushad
-		rdtsc
-		mov StartTimeHi, edx
-		mov StartTimeLo, eax
-		popad
-    }
-}
-
-void StopTimer(void)
-{
-    _asm {
-		pushad
-		rdtsc
-		mov StopTimeHi, edx
-		mov StopTimeLo, eax
-		popad
-    }
-    if (strlen(LastLabel) == 0)
-    {
-        return;
-    }
-    {
-        uint32_t count;
-
-        for (count = 0; count < TSE_Count; count++)
-        {
-            if (strcmp(LastLabel, TS_Entries[count].Label) == 0)
-            {
-                __int64 Time = ((unsigned __int64)StopTimeHi << 32) + (unsigned __int64)StopTimeLo;
-                Time -= ((unsigned __int64)StartTimeHi << 32) + (unsigned __int64)StartTimeLo;
-                TS_Entries[count].TimeTotal += Time;
-                return;
-            }
-        }
-    }
-    if (TSE_Count == 0)
-    {
-        TS_Entries = (TIME_STAMP_ENTRY *)malloc(sizeof(TIME_STAMP_ENTRY) * 100);
-        if (TS_Entries == NULL)
-        {
-            MessageBox(NULL, "TIME_STAMP_ENTRY == NULL ??", "ERROR", MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
-        }
-        TSE_Max = 100;
-    }
-    else if (TSE_Count == TSE_Max)
-    {
-        TSE_Max += 100;
-        TS_Entries = (TIME_STAMP_ENTRY *)realloc(TS_Entries, sizeof(TIME_STAMP_ENTRY) * TSE_Max);
-        if (TS_Entries == NULL)
-        {
-            MessageBox(NULL, "TIME_STAMP_ENTRY == NULL ??", "ERROR", MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
-        }
-    }
-    strcpy(TS_Entries[TSE_Count].Label, LastLabel);
-    TS_Entries[TSE_Count].TimeTotal = ((unsigned __int64)StopTimeHi << 32) + (unsigned __int64)StopTimeLo;
-    TS_Entries[TSE_Count].TimeTotal -= ((unsigned __int64)StartTimeHi << 32) + (unsigned __int64)StartTimeLo;
-    TSE_Count += 1;
-}
-
-void GenerateTimerResults(void)
-{
-    char buffer[_MAX_PATH], drive[_MAX_DRIVE], dir[_MAX_DIR];
-    char fname[_MAX_FNAME], ext[_MAX_EXT], LogFileName[_MAX_PATH];
-    uint32_t dwWritten, count, count2;
-    HANDLE hLogFile = NULL;
-    __int64 TotalTime;
-
-    StopTimer();
-
-    GetModuleFileName(NULL, buffer, sizeof(buffer));
-    _splitpath(buffer, drive, dir, fname, ext);
-    _makepath(LogFileName, drive, dir, "RSP Profiling", "log");
-
-    hLogFile = CreateFile(LogFileName, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
-                          CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
-    SetFilePointer(hLogFile, 0, NULL, FILE_BEGIN);
-
-    for (count = 0; count < TSE_Count; count++)
-    {
-        for (count2 = 0; count2 < (TSE_Count - 1); count2++)
-        {
-            if (TS_Entries[count2].TimeTotal < TS_Entries[count2 + 1].TimeTotal)
-            {
-                TIME_STAMP_ENTRY Temp;
-                memcpy(&Temp, &TS_Entries[count2], sizeof(TIME_STAMP_ENTRY));
-                memcpy(&TS_Entries[count2], &TS_Entries[count2 + 1], sizeof(TIME_STAMP_ENTRY));
-                memcpy(&TS_Entries[count2 + 1], &Temp, sizeof(TIME_STAMP_ENTRY));
-            }
-        }
-    }
-    TotalTime = 0;
-    for (count = 0; count < TSE_Count; count++)
-    {
-        TotalTime += TS_Entries[count].TimeTotal;
-    }
-    for (count = 0; count < (TSE_Count < 50 ? TSE_Count : 50); count++)
-    {
-        sprintf(buffer, "%s - %0.2f%c\r\n",
-                TS_Entries[count].Label,
-                (((double)TS_Entries[count].TimeTotal / (double)TotalTime) * 100), '%');
-        WriteFile(hLogFile, buffer, strlen(buffer), &dwWritten, NULL);
-    }
-    CloseHandle(hLogFile);
-    ResetTimerList();
-}
-
-#endif

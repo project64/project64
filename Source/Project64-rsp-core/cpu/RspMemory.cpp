@@ -1,48 +1,52 @@
+#include <Common/MemoryManagement.h>
+#include <Project64-rsp-core/RSPInfo.h>
+#include <Project64-rsp-core/cpu/RSPRegisters.h>
+#include <Settings/Settings.h>
+#include <stdio.h>
+#include <string.h>
+
 enum
 {
     MaxMaps = 32
 };
 
-#include "Rsp.h"
-#include <Project64-rsp-core/RSPInfo.h>
-#include <Project64-rsp-core/cpu/RSPRegisters.h>
-#include <windows.h>
-
 uint32_t NoOfMaps, MapsCRC[MaxMaps];
 uint32_t Table;
-BYTE *RecompCode, *RecompCodeSecondary, *RecompPos, *JumpTables;
+uint8_t *RecompCode, *RecompCodeSecondary, *RecompPos, *JumpTables;
 void ** JumpTable;
 
 int AllocateMemory(void)
 {
-    if (RecompCode == NULL)
+    if (RecompCode == nullptr)
     {
-        RecompCode = (BYTE *)VirtualAlloc(NULL, 0x00400004, MEM_RESERVE, PAGE_EXECUTE_READWRITE);
-        RecompCode = (BYTE *)VirtualAlloc(RecompCode, 0x00400000, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+        RecompCode = (uint8_t *)AllocateAddressSpace(0x00400004);
+        RecompCode = (uint8_t *)CommitMemory(RecompCode, 0x00400000, MEM_EXECUTE_READWRITE);
 
-        if (RecompCode == NULL)
+        if (RecompCode == nullptr)
         {
-            DisplayError("Not enough memory for RSP RecompCode!");
+            g_Notify->DisplayError("Not enough memory for RSP RecompCode!");
             return false;
         }
     }
 
-    if (RecompCodeSecondary == NULL)
+    if (RecompCodeSecondary == nullptr)
     {
-        RecompCodeSecondary = (BYTE *)VirtualAlloc(NULL, 0x00200000, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-        if (RecompCodeSecondary == NULL)
+        RecompCodeSecondary = (uint8_t *)AllocateAddressSpace(0x00200004);
+        RecompCodeSecondary = (uint8_t *)CommitMemory(RecompCode, 0x00200000, MEM_EXECUTE_READWRITE);
+        if (RecompCodeSecondary == nullptr)
         {
-            DisplayError("Not enough memory for RSP RecompCode Secondary!");
+            g_Notify->DisplayError("Not enough memory for RSP RecompCode Secondary!");
             return false;
         }
     }
 
-    if (JumpTables == NULL)
+    if (JumpTables == nullptr)
     {
-        JumpTables = (BYTE *)VirtualAlloc(NULL, 0x1000 * MaxMaps, MEM_COMMIT, PAGE_READWRITE);
-        if (JumpTables == NULL)
+        JumpTables = (uint8_t *)AllocateAddressSpace(0x1000 * MaxMaps);
+        JumpTables = (uint8_t *)CommitMemory(RecompCode, 0x1000 * MaxMaps, MEM_READWRITE);
+        if (JumpTables == nullptr)
         {
-            DisplayError("Not enough memory for jump table!");
+            g_Notify->DisplayError("Not enough memory for jump table!");
             return false;
         }
     }
@@ -55,13 +59,13 @@ int AllocateMemory(void)
 
 void FreeMemory(void)
 {
-    VirtualFree(RecompCode, 0, MEM_RELEASE);
-    VirtualFree(JumpTable, 0, MEM_RELEASE);
-    VirtualFree(RecompCodeSecondary, 0, MEM_RELEASE);
+    FreeAddressSpace(RecompCode, 0x00400004);
+    FreeAddressSpace(JumpTable, 0x1000 * MaxMaps);
+    FreeAddressSpace(RecompCodeSecondary, 0x00200004);
 
-    RecompCode = NULL;
-    JumpTables = NULL;
-    RecompCodeSecondary = NULL;
+    RecompCode = nullptr;
+    JumpTables = nullptr;
+    RecompCodeSecondary = nullptr;
 }
 
 void ResetJumpTables(void)
@@ -115,7 +119,7 @@ void RSP_LW_IMEM(uint32_t Addr, uint32_t * Value)
 {
     if ((Addr & 0x3) != 0)
     {
-        DisplayError("Unaligned RSP_LW_IMEM");
+        g_Notify->DisplayError("Unaligned RSP_LW_IMEM");
     }
     *Value = *(uint32_t *)(RSPInfo.IMEM + (Addr & 0xFFF));
 }

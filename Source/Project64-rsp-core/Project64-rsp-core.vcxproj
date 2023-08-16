@@ -41,23 +41,44 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cpu\RSPCpu.cpp" />
+    <ClCompile Include="cpu\RspDma.cpp" />
     <ClCompile Include="cpu\RSPiInstruction.cpp" />
     <ClCompile Include="cpu\RSPInterpreterCPU.cpp" />
     <ClCompile Include="cpu\RSPInterpreterOps.cpp" />
+    <ClCompile Include="cpu\RspLog.cpp" />
+    <ClCompile Include="cpu\RspMemory.cpp" />
     <ClCompile Include="cpu\RSPRegister.cpp" />
     <ClCompile Include="cpu\RspTypes.cpp" />
+    <ClCompile Include="Recompiler\Mmx.cpp" />
+    <ClCompile Include="Recompiler\RspProfiling.cpp" />
+    <ClCompile Include="Recompiler\RspRecompilerAnalysis.cpp" />
+    <ClCompile Include="Recompiler\RspRecompilerCPU.cpp" />
+    <ClCompile Include="Recompiler\RspRecompilerOps.cpp" />
+    <ClCompile Include="Recompiler\RspRecompilerSections.cpp" />
+    <ClCompile Include="Recompiler\Sse.cpp" />
+    <ClCompile Include="Recompiler\X86.cpp" />
     <ClCompile Include="RSPDebugger.cpp" />
     <ClCompile Include="RSPInfo.cpp" />
+    <ClCompile Include="Settings\RspSettings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cpu\RSPCpu.h" />
+    <ClInclude Include="cpu\RspDma.h" />
     <ClInclude Include="cpu\RSPInstruction.h" />
     <ClInclude Include="cpu\RSPInterpreterCPU.h" />
     <ClInclude Include="cpu\RSPInterpreterOps.h" />
+    <ClInclude Include="cpu\RspLog.h" />
+    <ClInclude Include="cpu\RspMemory.h" />
     <ClInclude Include="cpu\RSPOpcode.h" />
     <ClInclude Include="cpu\RSPRegisters.h" />
     <ClInclude Include="cpu\RspTypes.h" />
+    <ClInclude Include="Recompiler\RspProfiling.h" />
+    <ClInclude Include="Recompiler\RspRecompilerCPU.h" />
+    <ClInclude Include="Recompiler\RspRecompilerOps.h" />
+    <ClInclude Include="Recompiler\X86.h" />
     <ClInclude Include="RSPDebugger.h" />
     <ClInclude Include="RSPInfo.h" />
+    <ClInclude Include="Settings\RspSettings.h" />
+    <ClInclude Include="Settings\RspSettingsID.h" />
   </ItemGroup>
 </Project>

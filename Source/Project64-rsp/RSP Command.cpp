@@ -11,6 +11,7 @@
 #include <Project64-rsp-core/cpu/RSPInstruction.h>
 #include <Project64-rsp-core/cpu/RSPOpcode.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
+#include <Project64-rsp-core/cpu/RspMemory.h>
 #include <Project64-rsp-core/cpu/RspTypes.h>
 
 #define RSP_MaxCommandLines 30
@@ -910,7 +911,7 @@ void SetRSPCommandToStepping(void)
     Stepping_Commands = true;
 }
 
-void SetRSPCommandViewto(UINT NewLocation)
+void SetRSPCommandViewto(uint32_t NewLocation)
 {
     unsigned int location;
     char Value[20];

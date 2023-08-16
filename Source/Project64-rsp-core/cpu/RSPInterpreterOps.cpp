@@ -1,9 +1,12 @@
 #include "RSPCpu.h"
 #include "RSPInterpreterCPU.h"
 #include "RSPRegisters.h"
+#include "RspLog.h"
 #include <Common/StdString.h>
-#include <Project64-rsp-core\RSPDebugger.h>
-#include <Project64-rsp-core\RSPInfo.h>
+#include <Project64-rsp-core/RSPDebugger.h>
+#include <Project64-rsp-core/RSPInfo.h>
+#include <Project64-rsp-core/Settings/RspSettings.h>
+#include <Project64-rsp-core/cpu/RspDma.h>
 #include <Settings/Settings.h>
 #include <algorithm>
 #include <float.h>
@@ -408,8 +411,6 @@ void RSP_Cop0_MF(void)
 
 void RSP_Cop0_MT(void)
 {
-    __debugbreak();
-#ifdef tofix
     if (LogRDP && g_CPUCore == InterpreterCPU)
     {
         RDP_LogMT0(*PrgCount, RSPOpC.rd, RSP_GPR[RSPOpC.rt].UW);
@@ -575,20 +576,19 @@ void RSP_Cop0_MT(void)
         }
         if ((RSP_GPR[RSPOpC.rt].W & DPC_CLR_PIPE_CTR) != 0)
         {
-            DisplayError("RSP: DPC_STATUS_REG: DPC_CLR_PIPE_CTR");
+            g_Notify->DisplayError("RSP: DPC_STATUS_REG: DPC_CLR_PIPE_CTR");
         }
         if ((RSP_GPR[RSPOpC.rt].W & DPC_CLR_CMD_CTR) != 0)
         {
-            DisplayError("RSP: DPC_STATUS_REG: DPC_CLR_CMD_CTR");
+            g_Notify->DisplayError("RSP: DPC_STATUS_REG: DPC_CLR_CMD_CTR");
         }
         if ((RSP_GPR[RSPOpC.rt].W & DPC_CLR_CLOCK_CTR) != 0)
         { /* DisplayError("RSP: DPC_STATUS_REG: DPC_CLR_CLOCK_CTR"); */
         }
         break;
     default:
-        DisplayError("We have not implemented RSP MT CP0 reg %s (%d)", COP0_Name(RSPOpC.rd), RSPOpC.rd);
+        g_Notify->DisplayError(stdstr_f("We have not implemented RSP MT CP0 reg %s (%d)", COP0_Name(RSPOpC.rd), RSPOpC.rd).c_str());
     }
-#endif
 }
 
 // COP2 functions

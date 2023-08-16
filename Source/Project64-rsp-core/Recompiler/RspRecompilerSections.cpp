@@ -1,21 +1,15 @@
-#include <stdio.h>
-#include <windows.h>
-
-#include "RSP Command.h"
-#include "Recompiler CPU.h"
-#include "Rsp.h"
-#include "dma.h"
-#include "log.h"
-#include "memory.h"
+#include "RspRecompilerCPU.h"
 #include "x86.h"
 #include <Project64-rsp-core/cpu/RSPCpu.h>
 #include <Project64-rsp-core/cpu/RSPInstruction.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
+#include <Project64-rsp-core/cpu/RspLog.h>
+#include <Project64-rsp-core/cpu/RspMemory.h>
 #include <Project64-rsp-core/cpu/RspTypes.h>
 
 #pragma warning(disable : 4152) // Non-standard extension, function/data pointer conversion in expression
 
-void RSP_Sections_VMUDH(RSPOpcode RspOp, DWORD AccumStyle)
+void RSP_Sections_VMUDH(RSPOpcode RspOp, uint32_t AccumStyle)
 {
     char Reg[256];
 
@@ -85,7 +79,7 @@ void RSP_Sections_VMUDH(RSPOpcode RspOp, DWORD AccumStyle)
     }
 }
 
-void RSP_Sections_VMADH(RSPOpcode RspOp, DWORD AccumStyle)
+void RSP_Sections_VMADH(RSPOpcode RspOp, uint32_t AccumStyle)
 {
     char Reg[256];
 
@@ -156,7 +150,7 @@ void RSP_Sections_VMADH(RSPOpcode RspOp, DWORD AccumStyle)
     MmxPaddswRegToReg(x86_MM1, x86_MM1 + 2);
 }
 
-void RSP_Sections_VMUDL(RSPOpcode RspOp, DWORD AccumStyle)
+void RSP_Sections_VMUDL(RSPOpcode RspOp, uint32_t AccumStyle)
 {
     char Reg[256];
 
@@ -202,7 +196,7 @@ void RSP_Sections_VMUDL(RSPOpcode RspOp, DWORD AccumStyle)
     }
 }
 
-void RSP_Sections_VMADL(RSPOpcode RspOp, DWORD AccumStyle)
+void RSP_Sections_VMADL(RSPOpcode RspOp, uint32_t AccumStyle)
 {
     char Reg[256];
 
@@ -249,7 +243,7 @@ void RSP_Sections_VMADL(RSPOpcode RspOp, DWORD AccumStyle)
     MmxPaddswRegToReg(x86_MM1, x86_MM1 + 2);
 }
 
-void RSP_Sections_VMUDM(RSPOpcode RspOp, DWORD AccumStyle)
+void RSP_Sections_VMUDM(RSPOpcode RspOp, uint32_t AccumStyle)
 {
     char Reg[256];
 
@@ -362,7 +356,7 @@ void RSP_Sections_VMUDM(RSPOpcode RspOp, DWORD AccumStyle)
     }
 }
 
-void RSP_Sections_VMADM(RSPOpcode RspOp, DWORD AccumStyle)
+void RSP_Sections_VMADM(RSPOpcode RspOp, uint32_t AccumStyle)
 {
     char Reg[256];
 
@@ -478,7 +472,7 @@ void RSP_Sections_VMADM(RSPOpcode RspOp, DWORD AccumStyle)
     MmxPaddswRegToReg(x86_MM1, x86_MM1 + 2);
 }
 
-void RSP_Sections_VMUDN(RSPOpcode RspOp, DWORD AccumStyle)
+void RSP_Sections_VMUDN(RSPOpcode RspOp, uint32_t AccumStyle)
 {
     char Reg[256];
 
@@ -577,7 +571,7 @@ void RSP_Sections_VMUDN(RSPOpcode RspOp, DWORD AccumStyle)
     }
 }
 
-void RSP_Sections_VMADN(RSPOpcode RspOp, DWORD AccumStyle)
+void RSP_Sections_VMADN(RSPOpcode RspOp, uint32_t AccumStyle)
 {
     char Reg[256];
 
@@ -679,7 +673,7 @@ void RSP_Sections_VMADN(RSPOpcode RspOp, DWORD AccumStyle)
     MmxPaddswRegToReg(x86_MM1, x86_MM1 + 2);
 }
 
-void RSP_Sections_VMULF(RSPOpcode RspOp, DWORD AccumStyle)
+void RSP_Sections_VMULF(RSPOpcode RspOp, uint32_t AccumStyle)
 {
     char Reg[256];
 
@@ -752,7 +746,7 @@ void RSP_Sections_VMULF(RSPOpcode RspOp, DWORD AccumStyle)
     MmxPsllwImmed(x86_MM1, 1);
 }
 
-void RSP_Sections_VMACF(RSPOpcode RspOp, DWORD AccumStyle)
+void RSP_Sections_VMACF(RSPOpcode RspOp, uint32_t AccumStyle)
 {
     char Reg[256];
 
@@ -827,11 +821,11 @@ void RSP_Sections_VMACF(RSPOpcode RspOp, DWORD AccumStyle)
 
 // Microcode sections
 
-static DWORD Section_000_VMADN; // Yeah I know, but leave it
+static uint32_t Section_000_VMADN; // Yeah I know, but leave it
 
 bool Check_Section_000(void)
 {
-    DWORD i;
+    uint32_t i;
     RSPOpcode op0, op1;
 
     RSP_LW_IMEM(CompilePC + 0x00, &op0.Value);
@@ -887,7 +881,7 @@ void Compile_Section_000(void)
 {
     char Reg[256];
     RSPOpcode vmudn, vmadn = {0};
-    DWORD i;
+    uint32_t i;
 
     RSP_LW_IMEM(CompilePC + 0x00, &vmudn.Value);
 
@@ -942,11 +936,11 @@ void Compile_Section_000(void)
     MmxEmptyMultimediaState();
 }
 
-static DWORD Section_001_VMACF;
+static uint32_t Section_001_VMACF;
 
 bool Check_Section_001(void)
 {
-    DWORD i;
+    uint32_t i;
     RSPOpcode op0, op1;
 
     RSP_LW_IMEM(CompilePC + 0x00, &op0.Value);
@@ -1002,7 +996,7 @@ bool Check_Section_001(void)
 
 void Compile_Section_001(void)
 {
-    DWORD i;
+    uint32_t i;
     char Reg[256];
     RSPOpcode vmulf, vmacf;
 
@@ -1048,7 +1042,7 @@ void Compile_Section_001(void)
 
 bool Check_Section_002(void)
 {
-    DWORD Count;
+    uint32_t Count;
     RSPOpcode op[0x0C];
 
     for (Count = 0; Count < 0x0C; Count++)
@@ -1120,7 +1114,7 @@ void Compile_Section_002(void)
 {
     char Reg[256];
 
-    DWORD Count;
+    uint32_t Count;
     RSPOpcode op[0x0C];
 
     RSPOpcode vmudh, vsaw;
@@ -1170,7 +1164,7 @@ void Compile_Section_002(void)
 
 bool Check_Section_003(void)
 {
-    DWORD Count;
+    uint32_t Count;
     RSPOpcode op[4];
 
     for (Count = 0; Count < 4; Count++)
@@ -1197,11 +1191,11 @@ bool Check_Section_003(void)
 static void resampler_hle()
 {
     UDWORD accum, initial;
-    DWORD const2 = (DWORD)RSP_Vect[18].u16(4 ^ 7);
+    uint32_t const2 = (uint32_t)RSP_Vect[18].u16(4 ^ 7);
     __int64 const3 = (__int64)((int)RSP_Vect[30].s16(0 ^ 7)) << 16;
 
     // VMUDM $v23, $v31, $v23 [7]
-    initial.DW = (__int64)((DWORD)RSP_Vect[23].u16(7 ^ 7)) << 16;
+    initial.DW = (__int64)((uint32_t)RSP_Vect[23].u16(7 ^ 7)) << 16;
     // VMADH $v23, $v31, $v22 [7]
     initial.W[1] += (int)RSP_Vect[22].s16(7 ^ 7);
 
