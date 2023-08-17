@@ -226,7 +226,6 @@ float ** CSystemRegisters::_FPR_S;
 double ** CSystemRegisters::_FPR_D;
 uint32_t * CSystemRegisters::_FPCR = nullptr;
 uint32_t * CSystemRegisters::_LLBit = nullptr;
-int32_t * CSystemRegisters::_RoundingModel = nullptr;
 
 CP0registers::CP0registers(uint64_t * _CP0) :
     INDEX_REGISTER(_CP0[0]),
@@ -295,8 +294,6 @@ void CRegisters::Reset()
     m_CP2Latch = 0;
     m_HI.DW = 0;
     m_LO.DW = 0;
-    m_RoundingModel = FE_TONEAREST;
-
     m_LLBit = 0;
 
     // Reset system registers
@@ -330,7 +327,6 @@ void CRegisters::SetAsCurrentSystem()
     _FPR_D = m_FPR_D;
     _FPCR = m_FPCR;
     _LLBit = &m_LLBit;
-    _RoundingModel = &m_RoundingModel;
 }
 
 uint64_t CRegisters::Cop0_MF(COP0Reg Reg)
@@ -469,13 +465,6 @@ void CRegisters::Cop1_CT(uint32_t Reg, uint32_t Value)
     {
         FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
         StatusReg.Value = (Value & 0x183FFFF);
-        switch (StatusReg.RoundingMode)
-        {
-        case 0: *_RoundingModel = FE_TONEAREST; break;
-        case 1: *_RoundingModel = FE_TOWARDZERO; break;
-        case 2: *_RoundingModel = FE_UPWARD; break;
-        case 3: *_RoundingModel = FE_DOWNWARD; break;
-        }
 
         if (((StatusReg.Cause.Inexact & StatusReg.Enable.Inexact) != 0) ||
             ((StatusReg.Cause.Underflow & StatusReg.Enable.Underflow) != 0) ||

@@ -290,26 +290,8 @@ void CX86RegInfo::FixRoundModel(FPU_ROUND RoundMethod)
 
     if (RoundMethod == RoundDefault)
     {
-#ifdef _WIN32
-        static const unsigned int msRound[4] =
-            {
-                0x00000000, //_RC_NEAR
-                0x00000300, //_RC_CHOP
-                0x00000200, //_RC_UP
-                0x00000100, //_RC_DOWN
-            };
-
         asmjit::x86::Gp RoundReg = Map_TempReg(x86Reg_Unknown, -1, false, false);
-        m_Assembler.MoveVariableToX86reg(RoundReg, &g_Reg->m_RoundingModel, "m_RoundingModel");
-        m_Assembler.MoveVariableDispToX86Reg(RoundReg, (void *)&msRound[0], "msRound", RoundReg, CX86Ops::Multip_x4);
-
-        m_Assembler.shl(RoundReg, 2);
-        m_Assembler.or_(reg, RoundReg);
-#else
-        asmjit::x86::Gp RoundReg = Map_TempReg(x86Reg_Unknown, -1, false, false);
-        m_Assembler.MoveVariableToX86reg(RoundReg, _RoundingModel, "_RoundingModel");
-        m_Assembler.or_(reg, RoundReg);
-#endif
+        m_Assembler.OrVariableToX86Reg(reg, &CX86RecompilerOps::m_RoundingModeValue, "m_RoundingModeValue");
         SetX86Protected(GetIndexFromX86Reg(RoundReg), false);
     }
     else

@@ -20,6 +20,7 @@
 #include <fenv.h>
 #include <stdio.h>
 
+uint32_t CX86RecompilerOps::m_RoundingModeValue = 0;
 uint32_t CX86RecompilerOps::m_TempValue32 = 0;
 uint64_t CX86RecompilerOps::m_TempValue64 = 0;
 uint32_t CX86RecompilerOps::m_BranchCompare = 0;
@@ -7438,10 +7439,10 @@ void CX86RecompilerOps::ChangeDefaultRoundingModel()
 {
     switch ((g_Reg->m_FPCR[31] & 3))
     {
-    case 0: g_Reg->m_RoundingModel = FE_TONEAREST; break;
-    case 1: g_Reg->m_RoundingModel = FE_TOWARDZERO; break;
-    case 2: g_Reg->m_RoundingModel = FE_UPWARD; break;
-    case 3: g_Reg->m_RoundingModel = FE_DOWNWARD; break;
+    case 0: m_RoundingModeValue = 0x0000; break;
+    case 1: m_RoundingModeValue = 0x0C00; break;
+    case 2: m_RoundingModeValue = 0x0800; break;
+    case 3: m_RoundingModeValue = 0x0400; break;
     }
 }
 
@@ -8480,6 +8481,7 @@ void CX86RecompilerOps::CompileCop1Test()
         return;
     }
 
+    m_Assembler.finit();
     m_Assembler.TestVariable(&g_Reg->STATUS_REGISTER, "STATUS_REGISTER", STATUS_CU1);
     CRegInfo ExitRegSet = m_RegWorkingSet;
     ExitRegSet.SetBlockCycleCount(ExitRegSet.GetBlockCycleCount() + g_System->CountPerOp());

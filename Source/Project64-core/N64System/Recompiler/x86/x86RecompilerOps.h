@@ -23,6 +23,8 @@ class CX86RecompilerOps :
     protected CLogSettings,
     private CGameSettings
 {
+    friend CX86RegInfo;
+
 public:
     CX86RecompilerOps(CMipsMemoryVM & MMU, CRegisters & Reg, CCodeBlock & CodeBlock);
     ~CX86RecompilerOps();
@@ -288,6 +290,7 @@ private:
     CX86RegInfo m_RegWorkingSet;
     CRegInfo m_RegBeforeDelay;
     bool m_EffectDelaySlot;
+    static uint32_t m_RoundingModeValue;
     static uint32_t m_TempValue32;
     static uint64_t m_TempValue64;
     static uint32_t m_BranchCompare;

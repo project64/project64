@@ -1887,7 +1887,7 @@ void R4300iOp::COP0_CO_ERET()
 // COP1 functions
 void R4300iOp::CPO1_UNIMPLEMENTED_OP()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -1954,7 +1954,7 @@ void R4300iOp::COP1_CT()
 
 void R4300iOp::COP1_BCF()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -1971,7 +1971,7 @@ void R4300iOp::COP1_BCF()
 
 void R4300iOp::COP1_BCT()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -1988,7 +1988,7 @@ void R4300iOp::COP1_BCT()
 
 void R4300iOp::COP1_BCFL()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2006,7 +2006,7 @@ void R4300iOp::COP1_BCFL()
 
 void R4300iOp::COP1_BCTL()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2025,7 +2025,7 @@ void R4300iOp::COP1_BCTL()
 // COP1: S functions
 void R4300iOp::COP1_S_ADD()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2044,7 +2044,7 @@ void R4300iOp::COP1_S_ADD()
 
 void R4300iOp::COP1_S_SUB()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2062,7 +2062,7 @@ void R4300iOp::COP1_S_SUB()
 
 void R4300iOp::COP1_S_MUL()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2081,7 +2081,7 @@ void R4300iOp::COP1_S_MUL()
 
 void R4300iOp::COP1_S_DIV()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2100,7 +2100,7 @@ void R4300iOp::COP1_S_DIV()
 
 void R4300iOp::COP1_S_SQRT()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2119,7 +2119,7 @@ void R4300iOp::COP1_S_SQRT()
 
 void R4300iOp::COP1_S_ABS()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2142,13 +2142,19 @@ void R4300iOp::COP1_S_MOV()
     {
         return;
     }
-    fesetround(*_RoundingModel);
+    switch (((FPStatusReg &)_FPCR[31]).RoundingMode)
+    {
+    case FPRoundingMode_RoundToNearest: fesetround(FE_TONEAREST); break;
+    case FPRoundingMode_RoundTowardZero: fesetround(FE_TOWARDZERO); break;
+    case FPRoundingMode_RoundTowardPlusInfinity: fesetround(FE_UPWARD); break;
+    case FPRoundingMode_RoundTowardMinusInfinity: fesetround(FE_DOWNWARD); break;
+    }
     *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)_FPR_S[m_Opcode.fs];
 }
 
 void R4300iOp::COP1_S_NEG()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2167,7 +2173,7 @@ void R4300iOp::COP1_S_NEG()
 
 void R4300iOp::COP1_S_ROUND_L()
 {
-    if (InitFpuOperation(FE_TONEAREST))
+    if (InitFpuOperation(FPRoundingMode_RoundToNearest))
     {
         return;
     }
@@ -2186,7 +2192,7 @@ void R4300iOp::COP1_S_ROUND_L()
 
 void R4300iOp::COP1_S_TRUNC_L()
 {
-    if (InitFpuOperation(FE_TOWARDZERO))
+    if (InitFpuOperation(FPRoundingMode_RoundTowardZero))
     {
         return;
     }
@@ -2204,7 +2210,7 @@ void R4300iOp::COP1_S_TRUNC_L()
 
 void R4300iOp::COP1_S_CEIL_L()
 {
-    if (InitFpuOperation(FE_UPWARD))
+    if (InitFpuOperation(FPRoundingMode_RoundTowardPlusInfinity))
     {
         return;
     }
@@ -2222,7 +2228,7 @@ void R4300iOp::COP1_S_CEIL_L()
 
 void R4300iOp::COP1_S_FLOOR_L()
 {
-    if (InitFpuOperation(FE_DOWNWARD))
+    if (InitFpuOperation(FPRoundingMode_RoundTowardMinusInfinity))
     {
         return;
     }
@@ -2240,7 +2246,7 @@ void R4300iOp::COP1_S_FLOOR_L()
 
 void R4300iOp::COP1_S_ROUND_W()
 {
-    if (InitFpuOperation(FE_TONEAREST))
+    if (InitFpuOperation(FPRoundingMode_RoundToNearest))
     {
         return;
     }
@@ -2258,7 +2264,7 @@ void R4300iOp::COP1_S_ROUND_W()
 
 void R4300iOp::COP1_S_TRUNC_W()
 {
-    if (InitFpuOperation(FE_TOWARDZERO))
+    if (InitFpuOperation(FPRoundingMode_RoundTowardZero))
     {
         return;
     }
@@ -2276,7 +2282,7 @@ void R4300iOp::COP1_S_TRUNC_W()
 
 void R4300iOp::COP1_S_CEIL_W()
 {
-    if (InitFpuOperation(FE_UPWARD))
+    if (InitFpuOperation(FPRoundingMode_RoundTowardPlusInfinity))
     {
         return;
     }
@@ -2294,7 +2300,7 @@ void R4300iOp::COP1_S_CEIL_W()
 
 void R4300iOp::COP1_S_FLOOR_W()
 {
-    if (InitFpuOperation(FE_DOWNWARD))
+    if (InitFpuOperation(FPRoundingMode_RoundTowardMinusInfinity))
     {
         return;
     }
@@ -2312,7 +2318,7 @@ void R4300iOp::COP1_S_FLOOR_W()
 
 void R4300iOp::COP1_S_CVT_D()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2330,7 +2336,7 @@ void R4300iOp::COP1_S_CVT_D()
 
 void R4300iOp::COP1_S_CVT_W()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2348,7 +2354,7 @@ void R4300iOp::COP1_S_CVT_W()
 
 void R4300iOp::COP1_S_CVT_L()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2366,7 +2372,7 @@ void R4300iOp::COP1_S_CVT_L()
 
 void R4300iOp::COP1_S_CMP()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2429,7 +2435,7 @@ void R4300iOp::COP1_S_CMP()
 // COP1: D functions
 void R4300iOp::COP1_D_ADD()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2448,7 +2454,7 @@ void R4300iOp::COP1_D_ADD()
 
 void R4300iOp::COP1_D_SUB()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2467,7 +2473,7 @@ void R4300iOp::COP1_D_SUB()
 
 void R4300iOp::COP1_D_MUL()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2486,7 +2492,7 @@ void R4300iOp::COP1_D_MUL()
 
 void R4300iOp::COP1_D_DIV()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2505,7 +2511,7 @@ void R4300iOp::COP1_D_DIV()
 
 void R4300iOp::COP1_D_SQRT()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2524,7 +2530,7 @@ void R4300iOp::COP1_D_SQRT()
 
 void R4300iOp::COP1_D_ABS()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2547,13 +2553,19 @@ void R4300iOp::COP1_D_MOV()
     {
         return;
     }
-    fesetround(*_RoundingModel);
+    switch (((FPStatusReg &)_FPCR[31]).RoundingMode)
+    {
+    case FPRoundingMode_RoundToNearest: fesetround(FE_TONEAREST); break;
+    case FPRoundingMode_RoundTowardZero: fesetround(FE_TOWARDZERO); break;
+    case FPRoundingMode_RoundTowardPlusInfinity: fesetround(FE_UPWARD); break;
+    case FPRoundingMode_RoundTowardMinusInfinity: fesetround(FE_DOWNWARD); break;
+    }
     *(int64_t *)_FPR_D[m_Opcode.fd] = *(int64_t *)_FPR_D[m_Opcode.fs];
 }
 
 void R4300iOp::COP1_D_NEG()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2572,7 +2584,7 @@ void R4300iOp::COP1_D_NEG()
 
 void R4300iOp::COP1_D_ROUND_L()
 {
-    if (InitFpuOperation(FE_TONEAREST))
+    if (InitFpuOperation(FPRoundingMode_RoundToNearest))
     {
         return;
     }
@@ -2591,7 +2603,7 @@ void R4300iOp::COP1_D_ROUND_L()
 
 void R4300iOp::COP1_D_TRUNC_L()
 {
-    if (InitFpuOperation(FE_TOWARDZERO))
+    if (InitFpuOperation(FPRoundingMode_RoundTowardZero))
     {
         return;
     }
@@ -2610,7 +2622,7 @@ void R4300iOp::COP1_D_TRUNC_L()
 
 void R4300iOp::COP1_D_CEIL_L()
 {
-    if (InitFpuOperation(FE_UPWARD))
+    if (InitFpuOperation(FPRoundingMode_RoundTowardPlusInfinity))
     {
         return;
     }
@@ -2629,7 +2641,7 @@ void R4300iOp::COP1_D_CEIL_L()
 
 void R4300iOp::COP1_D_FLOOR_L()
 {
-    if (InitFpuOperation(FE_DOWNWARD))
+    if (InitFpuOperation(FPRoundingMode_RoundTowardMinusInfinity))
     {
         return;
     }
@@ -2648,7 +2660,7 @@ void R4300iOp::COP1_D_FLOOR_L()
 
 void R4300iOp::COP1_D_ROUND_W()
 {
-    if (InitFpuOperation(FE_TONEAREST))
+    if (InitFpuOperation(FPRoundingMode_RoundToNearest))
     {
         return;
     }
@@ -2666,7 +2678,7 @@ void R4300iOp::COP1_D_ROUND_W()
 
 void R4300iOp::COP1_D_TRUNC_W()
 {
-    if (InitFpuOperation(FE_TOWARDZERO))
+    if (InitFpuOperation(FPRoundingMode_RoundTowardZero))
     {
         return;
     }
@@ -2684,7 +2696,7 @@ void R4300iOp::COP1_D_TRUNC_W()
 
 void R4300iOp::COP1_D_CEIL_W()
 {
-    if (InitFpuOperation(FE_UPWARD))
+    if (InitFpuOperation(FPRoundingMode_RoundTowardPlusInfinity))
     {
         return;
     }
@@ -2702,7 +2714,7 @@ void R4300iOp::COP1_D_CEIL_W()
 
 void R4300iOp::COP1_D_FLOOR_W()
 {
-    if (InitFpuOperation(FE_DOWNWARD))
+    if (InitFpuOperation(FPRoundingMode_RoundTowardMinusInfinity))
     {
         return;
     }
@@ -2720,7 +2732,7 @@ void R4300iOp::COP1_D_FLOOR_W()
 
 void R4300iOp::COP1_D_CVT_S()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2738,7 +2750,7 @@ void R4300iOp::COP1_D_CVT_S()
 
 void R4300iOp::COP1_D_CVT_W()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2756,7 +2768,7 @@ void R4300iOp::COP1_D_CVT_W()
 
 void R4300iOp::COP1_D_CVT_L()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2775,7 +2787,7 @@ void R4300iOp::COP1_D_CVT_L()
 
 void R4300iOp::COP1_D_CMP()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2841,7 +2853,7 @@ void R4300iOp::COP1_D_CMP()
 // COP1: W functions
 void R4300iOp::COP1_W_CVT_S()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2855,7 +2867,7 @@ void R4300iOp::COP1_W_CVT_S()
 
 void R4300iOp::COP1_W_CVT_D()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2871,7 +2883,7 @@ void R4300iOp::COP1_W_CVT_D()
 
 void R4300iOp::COP1_L_CVT_S()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -2893,7 +2905,7 @@ void R4300iOp::COP1_L_CVT_S()
 
 void R4300iOp::COP1_L_CVT_D()
 {
-    if (InitFpuOperation(*_RoundingModel))
+    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
     }
@@ -3218,16 +3230,16 @@ bool R4300iOp::CheckFPUResult32(float & Result)
                 StatusReg.Cause.Inexact = 1;
                 StatusReg.Flags.Inexact = 1;
 
-                switch (*_RoundingModel)
+                switch (StatusReg.RoundingMode)
                 {
-                case FE_TONEAREST:
-                case FE_TOWARDZERO:
+                case FPRoundingMode_RoundToNearest:
+                case FPRoundingMode_RoundTowardZero:
                     Result = Result >= 0.0f ? 0.0f : -0.0f;
                     break;
-                case FE_UPWARD:
+                case FPRoundingMode_RoundTowardPlusInfinity:
                     Result = Result >= 0.0f ? 1.175494351e-38F : -0.0f;
                     break;
-                case FE_DOWNWARD:
+                case FPRoundingMode_RoundTowardMinusInfinity:
                     Result = Result >= 0.0f ? 0.0f : -1.175494351e-38F;
                     break;
                 }
@@ -3274,16 +3286,16 @@ bool R4300iOp::CheckFPUResult64(double & Result)
             StatusReg.Cause.Inexact = 1;
             StatusReg.Flags.Inexact = 1;
 
-            switch (*_RoundingModel)
+            switch (StatusReg.RoundingMode)
             {
-            case FE_TONEAREST:
-            case FE_TOWARDZERO:
+            case FPRoundingMode_RoundToNearest:
+            case FPRoundingMode_RoundTowardZero:
                 Result = Result >= 0.0 ? 0.0 : -0.0;
                 break;
-            case FE_UPWARD:
+            case FPRoundingMode_RoundTowardPlusInfinity:
                 Result = Result >= 0.0 ? 2.2250738585072014e-308 : -0.0;
                 break;
-            case FE_DOWNWARD:
+            case FPRoundingMode_RoundTowardMinusInfinity:
                 Result = Result >= 0.0 ? 0.0 : -2.2250738585072014e-308;
                 break;
             }
@@ -3339,13 +3351,20 @@ bool R4300iOp::CheckFPUInvalidException(void)
     return false;
 }
 
-bool R4300iOp::InitFpuOperation(int RoundingModel)
+bool R4300iOp::InitFpuOperation(FPRoundingMode RoundingModel)
 {
     if (TestCop1UsableException())
     {
         return true;
     }
     _FPCR[31] &= ~0x0003F000;
+    switch (RoundingModel)
+    {
+    case FPRoundingMode_RoundToNearest: fesetround(FE_TONEAREST); break;
+    case FPRoundingMode_RoundTowardZero: fesetround(FE_TOWARDZERO); break;
+    case FPRoundingMode_RoundTowardPlusInfinity: fesetround(FE_UPWARD); break;
+    case FPRoundingMode_RoundTowardMinusInfinity: fesetround(FE_DOWNWARD); break;
+    }
     fesetround(RoundingModel);
     feclearexcept(FE_ALL_EXCEPT);
     return false;

@@ -62,13 +62,21 @@ union COP0XContext
     };
 };
 
+enum FPRoundingMode : unsigned
+{
+    FPRoundingMode_RoundToNearest = 0,
+    FPRoundingMode_RoundTowardZero = 1,
+    FPRoundingMode_RoundTowardPlusInfinity = 2,
+    FPRoundingMode_RoundTowardMinusInfinity = 3,
+};
+
 union FPStatusReg
 {
     uint32_t Value;
 
     struct
     {
-        unsigned RoundingMode : 2;
+        FPRoundingMode RoundingMode : 2;
         unsigned : 22;
         unsigned FlushSubnormals : 1;
         unsigned : 7;
@@ -341,7 +349,6 @@ protected:
     static double ** _FPR_D;
     static uint32_t * _FPCR;
     static uint32_t * _LLBit;
-    static int32_t * _RoundingModel;
 };
 
 class CN64System;
@@ -430,7 +437,6 @@ public:
 
     // Floating point registers/information
     uint32_t m_FPCR[32];
-    int32_t m_RoundingModel;
     MIPS_DWORD m_FPR[32];
     float * m_FPR_S[32];
     double * m_FPR_D[32];

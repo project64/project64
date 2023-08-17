@@ -1511,10 +1511,6 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
     {
         ErrorFound = true;
     }
-    if (m_Reg.m_RoundingModel != SecondCPU->m_Reg.m_RoundingModel)
-    {
-        ErrorFound = true;
-    }
 
     for (int i = 0, n = sizeof(m_Reg.m_Mips_Interface) / sizeof(m_Reg.m_Mips_Interface[0]); i < n; i++)
     {
@@ -1669,10 +1665,6 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
         }
         m_TLB.RecordDifference(Error, SecondCPU->m_TLB);
         m_SystemTimer.RecordDifference(Error, SecondCPU->m_SystemTimer);
-        if (m_Reg.m_RoundingModel != SecondCPU->m_Reg.m_RoundingModel)
-        {
-            Error.LogF("RoundingModel: %X %X\r\n", m_Reg.m_RoundingModel, SecondCPU->m_Reg.m_RoundingModel);
-        }
         if (bFastSP() && m_Recomp)
         {
             uint32_t StackPointer = (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF);
@@ -1758,8 +1750,6 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
             Error.LogF("FPR_D[%s],%*s%f, %f\r\n", CRegName::FPR[count],
                        count < 10 ? 7 : 6, " ", *(m_Reg.m_FPR_D[count]), *(SecondCPU->m_Reg.m_FPR_D[count]));
         }
-        Error.Log("\r\n");
-        Error.LogF("Rounding model,   0x%08X, 0x%08X\r\n", m_Reg.m_RoundingModel, SecondCPU->m_Reg.m_RoundingModel);
         Error.Log("\r\n");
         for (count = 0; count < 32; count++)
         {
