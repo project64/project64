@@ -32,7 +32,7 @@ int AllocateMemory(void)
     if (RecompCodeSecondary == nullptr)
     {
         RecompCodeSecondary = (uint8_t *)AllocateAddressSpace(0x00200004);
-        RecompCodeSecondary = (uint8_t *)CommitMemory(RecompCode, 0x00200000, MEM_EXECUTE_READWRITE);
+        RecompCodeSecondary = (uint8_t *)CommitMemory(RecompCodeSecondary, 0x00200000, MEM_EXECUTE_READWRITE);
         if (RecompCodeSecondary == nullptr)
         {
             g_Notify->DisplayError("Not enough memory for RSP RecompCode Secondary!");
@@ -43,7 +43,7 @@ int AllocateMemory(void)
     if (JumpTables == nullptr)
     {
         JumpTables = (uint8_t *)AllocateAddressSpace(0x1000 * MaxMaps);
-        JumpTables = (uint8_t *)CommitMemory(RecompCode, 0x1000 * MaxMaps, MEM_READWRITE);
+        JumpTables = (uint8_t *)CommitMemory(JumpTables, 0x1000 * MaxMaps, MEM_READWRITE);
         if (JumpTables == nullptr)
         {
             g_Notify->DisplayError("Not enough memory for jump table!");
