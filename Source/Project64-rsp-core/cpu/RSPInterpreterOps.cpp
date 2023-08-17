@@ -1966,8 +1966,8 @@ void RSP_Vector_VMOV(void)
     }
     else
     {
-        uint8_t del = EleSpec[RSPOpC.e].B[Index];
-        RSP_Vect[RSPOpC.vd].u16(7 - Index) = RSP_Vect[RSPOpC.vt].s16(7 - del);
+        uint8_t del = EleSpec[RSPOpC.e].B[7 - Index];
+        RSP_Vect[RSPOpC.vd].u16(7 - Index) = RSP_Vect[RSPOpC.vt].s16(del);
     }
 }
 

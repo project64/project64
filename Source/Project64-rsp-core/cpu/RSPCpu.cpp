@@ -112,6 +112,10 @@ void Build_RSP(void)
         for (uint8_t z = 0; z < 8; z++)
         {
             Indx[i].B[z] = 7 - Indx[i].B[z];
+            if (!AccurateEmulation)
+            {
+                EleSpec[i].B[z] = 7 - EleSpec[i].B[z];
+            }
         }
         for (uint8_t z = 0; z < 4; z++)
         {
