@@ -417,7 +417,6 @@ unsigned int RSP_branch_if(int condition)
 {
     unsigned int new_PC;
 
-    /* RSP_NextInstruction = DELAY_SLOT; */
     if (condition)
     {
         new_PC = *PrgCount + 4 + ((short)RSPOpC.offset << 2);

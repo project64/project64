@@ -192,6 +192,7 @@ BEGIN
     BEGIN
         MENUITEM "Show Compiler Errors",        ID_SHOWCOMPILERERRORS
         MENUITEM "Break on start of task",      ID_BREAKONSTARTOFTASK
+        MENUITEM "Accurate Emulation",          ID_ACCURATEEMULATION
         MENUITEM "Log RDP Commands",            ID_LOGRDPCOMMANDS
         MENUITEM "Log X86 code",                ID_SETTINGS_LOGX86CODE
     END

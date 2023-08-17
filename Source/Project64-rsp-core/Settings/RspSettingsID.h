@@ -3,12 +3,12 @@
 enum
 {
     Set_BreakOnStart,
+    Set_AccurateEmulation,
     Set_CPUCore,
     Set_LogRDP,
     Set_LogX86Code,
     Set_Profiling,
     Set_IndvidualBlock,
-    Set_AccurateEmulation,
     Set_ShowErrors,
 
     // Compiler settings

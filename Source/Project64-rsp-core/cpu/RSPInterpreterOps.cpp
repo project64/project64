@@ -1960,7 +1960,15 @@ void RSP_Vector_VMOV(void)
         RSP_ACCUM[i].HW[1] = RSP_Vect[RSPOpC.vt].ue(i, RSPOpC.e);
     }
     uint8_t Index = (RSPOpC.de & 0x7);
-    RSP_Vect[RSPOpC.vd].u16(Index) = RSP_Vect[RSPOpC.vt].ue(Index, RSPOpC.e);
+    if (AccurateEmulation)
+    {
+        RSP_Vect[RSPOpC.vd].u16(Index) = RSP_Vect[RSPOpC.vt].ue(Index, RSPOpC.e);
+    }
+    else
+    {
+        uint8_t del = EleSpec[RSPOpC.e].B[Index];
+        RSP_Vect[RSPOpC.vd].u16(7 - Index) = RSP_Vect[RSPOpC.vt].s16(7 - del);
+    }
 }
 
 void RSP_Vector_VRSQ(void)
@@ -2108,7 +2116,14 @@ void RSP_Vector_VNOOP(void)
 void RSP_Opcode_LBV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 0)) & 0xFFF;
-    RSP_Vect[RSPOpC.rt].s8(RSPOpC.del) = *(RSPInfo.DMEM + (Address ^ 3));
+    if (AccurateEmulation)
+    {
+        RSP_Vect[RSPOpC.rt].s8(RSPOpC.del) = *(RSPInfo.DMEM + (Address ^ 3));
+    }
+    else
+    {
+        RSP_Vect[RSPOpC.rt].s8(15 - RSPOpC.del) = *(RSPInfo.DMEM + (Address ^ 3));
+    }
 }
 
 void RSP_Opcode_LSV(void)
@@ -2117,7 +2132,14 @@ void RSP_Opcode_LSV(void)
     uint8_t Length = std::min((uint8_t)2, (uint8_t)(16 - RSPOpC.del));
     for (uint8_t i = RSPOpC.del, n = (uint8_t)(Length + RSPOpC.del); i < n; i++, Address++)
     {
-        RSP_Vect[RSPOpC.rt].s8(i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
+        if (AccurateEmulation)
+        {
+            RSP_Vect[RSPOpC.rt].s8(i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
+        }
+        else
+        {
+            RSP_Vect[RSPOpC.rt].s8(15 - i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
+        }
     }
 }
 
@@ -2127,7 +2149,14 @@ void RSP_Opcode_LLV(void)
     uint8_t Length = std::min((uint8_t)4, (uint8_t)(16 - RSPOpC.del));
     for (uint8_t i = RSPOpC.del, n = (uint8_t)(Length + RSPOpC.del); i < n; i++, Address++)
     {
-        RSP_Vect[RSPOpC.rt].s8(i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
+        if (AccurateEmulation)
+        {
+            RSP_Vect[RSPOpC.rt].s8(i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
+        }
+        else
+        {
+            RSP_Vect[RSPOpC.rt].s8(15 - i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
+        }
     }
 }
 
@@ -2135,10 +2164,16 @@ void RSP_Opcode_LDV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3)) & 0xFFF;
     uint8_t Length = std::min((uint8_t)8, (uint8_t)(16 - RSPOpC.del));
-    for (uint8_t i = RSPOpC.del, n = (uint8_t)(Length + RSPOpC.del); i < n; i++)
+    for (uint8_t i = RSPOpC.del, n = (uint8_t)(Length + RSPOpC.del); i < n; i++, Address++)
     {
-        RSP_Vect[RSPOpC.rt].s8(i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
-        Address += 1;
+        if (AccurateEmulation)
+        {
+            RSP_Vect[RSPOpC.rt].s8(i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
+        }
+        else
+        {
+            RSP_Vect[RSPOpC.rt].s8(15 - i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
+        }
     }
 }
 
@@ -2148,7 +2183,14 @@ void RSP_Opcode_LQV(void)
     uint8_t Length = std::min((uint8_t)(((Address + 0x10) & ~0xF) - Address), (uint8_t)(16 - RSPOpC.del));
     for (uint8_t i = RSPOpC.del, n = (uint8_t)(Length + RSPOpC.del); i < n; i++, Address++)
     {
-        RSP_Vect[RSPOpC.rt].s8(i) = *(RSPInfo.DMEM + (Address ^ 3));
+        if (AccurateEmulation)
+        {
+            RSP_Vect[RSPOpC.rt].s8(i) = *(RSPInfo.DMEM + (Address ^ 3));
+        }
+        else
+        {
+            RSP_Vect[RSPOpC.rt].s8(15 - i) = *(RSPInfo.DMEM + (Address ^ 3));
+        }
     }
 }
 
@@ -2159,7 +2201,14 @@ void RSP_Opcode_LRV(void)
     Address &= 0xFF0;
     for (uint8_t i = Offset; i < 16; i++, Address++)
     {
-        RSP_Vect[RSPOpC.rt].s8(i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
+        if (AccurateEmulation)
+        {
+            RSP_Vect[RSPOpC.rt].s8(i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
+        }
+        else
+        {
+            RSP_Vect[RSPOpC.rt].s8(15 - i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
+        }
     }
 }
 
@@ -2171,7 +2220,14 @@ void RSP_Opcode_LPV(void)
 
     for (uint8_t i = 0; i < 8; i++)
     {
-        RSP_Vect[RSPOpC.rt].s16(i) = *(RSPInfo.DMEM + ((Address + ((Offset + i) & 0xF) ^ 3) & 0xFFF)) << 8;
+        if (AccurateEmulation)
+        {
+            RSP_Vect[RSPOpC.rt].s16(i) = *(RSPInfo.DMEM + ((Address + ((Offset + i) & 0xF) ^ 3) & 0xFFF)) << 8;
+        }
+        else
+        {
+            RSP_Vect[RSPOpC.rt].s16(7 - i) = *(RSPInfo.DMEM + ((Address + ((Offset + i) & 0xF) ^ 3) & 0xFFF)) << 8;
+        }
     }
 }
 
@@ -2283,7 +2339,14 @@ void RSP_Opcode_SQV(void)
     uint8_t Length = (uint8_t)(((Address + 0x10) & ~0xF) - Address);
     for (uint8_t i = RSPOpC.del; i < (Length + RSPOpC.del); i++)
     {
-        *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF)) = RSP_Vect[RSPOpC.rt].s8(i & 0xF);
+        if (AccurateEmulation)
+        {
+            *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF)) = RSP_Vect[RSPOpC.rt].s8(i & 0xF);
+        }
+        else
+        {
+            *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF)) = RSP_Vect[RSPOpC.rt].s8(15 - (i & 0xF));
+        }
         Address += 1;
     }
 }

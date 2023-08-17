@@ -6,7 +6,7 @@
 
 uint16_t Set_AudioHle = 0, Set_GraphicsHle = 0;
 bool GraphicsHle = true, AudioHle, ConditionalMove;
-bool DebuggingEnabled = false, Profiling, IndvidualBlock, ShowErrors, BreakOnStart = false, LogRDP = false, LogX86Code = false;
+bool DebuggingEnabled = false, Profiling, IndvidualBlock, ShowErrors, AccurateEmulation = false, BreakOnStart = false, LogRDP = false, LogX86Code = false;
 
 void InitializeRspSetting(void)
 {
@@ -15,6 +15,7 @@ void InitializeRspSetting(void)
     Set_AudioHle = FindSystemSettingId("HLE Audio");
 
     RegisterSetting(Set_BreakOnStart, Data_DWORD_General, "Break on Start", NULL, BreakOnStart, NULL);
+    RegisterSetting(Set_AccurateEmulation, Data_DWORD_General, "Accurate Emulation", NULL, AccurateEmulation, NULL);
     RegisterSetting(Set_CPUCore, Data_DWORD_General, "CPU Method", NULL, g_CPUCore, NULL);
     RegisterSetting(Set_LogRDP, Data_DWORD_General, "Log RDP", NULL, LogRDP, NULL);
     RegisterSetting(Set_LogX86Code, Data_DWORD_General, "Log X86 Code", NULL, LogX86Code, NULL);

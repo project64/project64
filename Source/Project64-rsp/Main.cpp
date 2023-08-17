@@ -169,6 +169,7 @@ void FixMenuState(void)
     CheckMenuItem(hRSPMenu, ID_CPUMETHOD_RECOMPILER, MF_BYCOMMAND | (g_CPUCore == RecompilerCPU ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_CPUMETHOD_INTERPT, MF_BYCOMMAND | (g_CPUCore == InterpreterCPU ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_BREAKONSTARTOFTASK, MF_BYCOMMAND | (BreakOnStart ? MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_ACCURATEEMULATION, MF_BYCOMMAND | (AccurateEmulation ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_LOGRDPCOMMANDS, MF_BYCOMMAND | (LogRDP ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_SETTINGS_LOGX86CODE, MF_BYCOMMAND | (LogX86Code ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_PROFILING_ON, MF_BYCOMMAND | (Profiling ? MFS_CHECKED : MF_UNCHECKED));
@@ -350,8 +351,6 @@ EXPORT void InitiateRSPDebugger(DEBUG_INFO Debug_Info)
 #ifdef _WIN32
 void ProcessMenuItem(int ID)
 {
-    UINT uState;
-
     switch (ID)
     {
     case ID_RSPCOMMANDS: Enter_RSP_Commands_Window(); break;
@@ -361,78 +360,39 @@ void ProcessMenuItem(int ID)
     case ID_PROFILING_ON:
     case ID_PROFILING_OFF:
     {
-        uState = GetMenuState(hRSPMenu, ID_PROFILING_ON, MF_BYCOMMAND);
-
-        if (uState & MFS_CHECKED)
+        bool ProfilingOn = ID == ID_PROFILING_ON;
+        CheckMenuItem(hRSPMenu, ID_PROFILING_ON, MF_BYCOMMAND | (ProfilingOn ? MFS_CHECKED : MFS_UNCHECKED));
+        CheckMenuItem(hRSPMenu, ID_PROFILING_OFF, MF_BYCOMMAND | (ProfilingOn ? MFS_UNCHECKED : MFS_CHECKED));
+        SetSetting(Set_Profiling, ProfilingOn);
+        if (DebuggingEnabled)
         {
-            CheckMenuItem(hRSPMenu, ID_PROFILING_ON, MF_BYCOMMAND | MFS_UNCHECKED);
-            CheckMenuItem(hRSPMenu, ID_PROFILING_OFF, MF_BYCOMMAND | MFS_CHECKED);
-            SetSetting(Set_Profiling, false);
-            if (DebuggingEnabled)
-            {
-                Profiling = false;
-            }
+            Profiling = ProfilingOn;
         }
-        else
-        {
-            CheckMenuItem(hRSPMenu, ID_PROFILING_ON, MF_BYCOMMAND | MFS_CHECKED);
-            CheckMenuItem(hRSPMenu, ID_PROFILING_OFF, MF_BYCOMMAND | MFS_UNCHECKED);
-            SetSetting(Set_Profiling, true);
-            if (DebuggingEnabled)
-            {
-                Profiling = true;
-            }
-        }
+        break;
     }
-    break;
     case ID_PROFILING_RESETSTATS: ResetTimerList(); break;
     case ID_PROFILING_GENERATELOG: GenerateTimerResults(); break;
     case ID_PROFILING_LOGINDIVIDUALBLOCKS:
     {
-        uState = GetMenuState(hRSPMenu, ID_PROFILING_LOGINDIVIDUALBLOCKS, MF_BYCOMMAND);
-
-        if (uState & MFS_CHECKED)
+        bool Checked = (GetMenuState(hRSPMenu, ID_PROFILING_LOGINDIVIDUALBLOCKS, MF_BYCOMMAND) & MFS_CHECKED) != 0;
+        CheckMenuItem(hRSPMenu, ID_PROFILING_LOGINDIVIDUALBLOCKS, MF_BYCOMMAND | (Checked ? MFS_UNCHECKED : MFS_CHECKED));
+        SetSetting(Set_IndvidualBlock, !Checked);
+        if (DebuggingEnabled)
         {
-            CheckMenuItem(hRSPMenu, ID_PROFILING_LOGINDIVIDUALBLOCKS, MF_BYCOMMAND | MFS_UNCHECKED);
-            SetSetting(Set_IndvidualBlock, false);
-            if (DebuggingEnabled)
-            {
-                IndvidualBlock = false;
-            }
-        }
-        else
-        {
-            CheckMenuItem(hRSPMenu, ID_PROFILING_LOGINDIVIDUALBLOCKS, MF_BYCOMMAND | MFS_CHECKED);
-            SetSetting(Set_IndvidualBlock, true);
-            if (DebuggingEnabled)
-            {
-                IndvidualBlock = true;
-            }
+            IndvidualBlock = !Checked;
         }
         break;
     }
     case ID_SHOWCOMPILERERRORS:
     {
-        uState = GetMenuState(hRSPMenu, ID_SHOWCOMPILERERRORS, MF_BYCOMMAND);
-
-        if (uState & MFS_CHECKED)
+        bool Checked = (GetMenuState(hRSPMenu, ID_SHOWCOMPILERERRORS, MF_BYCOMMAND) & MFS_CHECKED) != 0;
+        CheckMenuItem(hRSPMenu, ID_SHOWCOMPILERERRORS, MF_BYCOMMAND | (Checked ? MFS_UNCHECKED : MFS_CHECKED));
+        SetSetting(Set_ShowErrors, !Checked);
+        if (DebuggingEnabled)
         {
-            CheckMenuItem(hRSPMenu, ID_SHOWCOMPILERERRORS, MF_BYCOMMAND | MFS_UNCHECKED);
-            SetSetting(Set_ShowErrors, false);
-            if (DebuggingEnabled)
-            {
-                ShowErrors = false;
-            }
+            ShowErrors = !Checked;
         }
-        else
-        {
-            CheckMenuItem(hRSPMenu, ID_SHOWCOMPILERERRORS, MF_BYCOMMAND | MFS_CHECKED);
-            SetSetting(Set_ShowErrors, true);
-            if (DebuggingEnabled)
-            {
-                ShowErrors = true;
-            }
-        }
+        break;
     }
     break;
     case ID_COMPILER:
@@ -440,96 +400,76 @@ void ProcessMenuItem(int ID)
         break;
     case ID_BREAKONSTARTOFTASK:
     {
-        uState = GetMenuState(hRSPMenu, ID_BREAKONSTARTOFTASK, MF_BYCOMMAND);
-
-        if (uState & MFS_CHECKED)
+        bool Checked = (GetMenuState(hRSPMenu, ID_BREAKONSTARTOFTASK, MF_BYCOMMAND) & MFS_CHECKED) != 0;
+        CheckMenuItem(hRSPMenu, ID_BREAKONSTARTOFTASK, MF_BYCOMMAND | (Checked ? MFS_UNCHECKED : MFS_CHECKED));
+        SetSetting(Set_BreakOnStart, !Checked);
+        if (DebuggingEnabled)
         {
-            CheckMenuItem(hRSPMenu, ID_BREAKONSTARTOFTASK, MF_BYCOMMAND | MFS_UNCHECKED);
-            SetSetting(Set_BreakOnStart, false);
-            if (DebuggingEnabled)
-            {
-                BreakOnStart = false;
-            }
+            BreakOnStart = !Checked;
         }
-        else
-        {
-            CheckMenuItem(hRSPMenu, ID_BREAKONSTARTOFTASK, MF_BYCOMMAND | MFS_CHECKED);
-            SetSetting(Set_BreakOnStart, true);
-            if (DebuggingEnabled)
-            {
-                BreakOnStart = true;
-            }
-        }
+        break;
     }
-    break;
+    case ID_ACCURATEEMULATION:
+    {
+        bool Checked = (GetMenuState(hRSPMenu, ID_ACCURATEEMULATION, MF_BYCOMMAND) & MFS_CHECKED) != 0;
+        CheckMenuItem(hRSPMenu, ID_ACCURATEEMULATION, MF_BYCOMMAND | (Checked ? MFS_UNCHECKED : MFS_CHECKED));
+        SetSetting(Set_AccurateEmulation, !Checked);
+        if (DebuggingEnabled)
+        {
+            AccurateEmulation = !Checked;
+        }
+        break;
+    }
     case ID_LOGRDPCOMMANDS:
     {
-        uState = GetMenuState(hRSPMenu, ID_LOGRDPCOMMANDS, MF_BYCOMMAND);
-
-        if (uState & MFS_CHECKED)
+        bool Checked = (GetMenuState(hRSPMenu, ID_LOGRDPCOMMANDS, MF_BYCOMMAND) & MFS_CHECKED) != 0;
+        CheckMenuItem(hRSPMenu, ID_LOGRDPCOMMANDS, MF_BYCOMMAND | (Checked ? MFS_UNCHECKED : MFS_CHECKED));
+        SetSetting(Set_LogRDP, !Checked);
+        if (DebuggingEnabled)
         {
-            CheckMenuItem(hRSPMenu, ID_LOGRDPCOMMANDS, MF_BYCOMMAND | MFS_UNCHECKED);
-            SetSetting(Set_LogRDP, false);
-            if (DebuggingEnabled)
+            LogRDP = !Checked;
+            if (LogRDP)
             {
-                LogRDP = false;
+                StartRDPLog();
+            }
+            else
+            {
                 StopRDPLog();
             }
         }
-        else
-        {
-            CheckMenuItem(hRSPMenu, ID_LOGRDPCOMMANDS, MF_BYCOMMAND | MFS_CHECKED);
-            SetSetting(Set_LogRDP, true);
-            if (DebuggingEnabled)
-            {
-                LogRDP = true;
-                StartRDPLog();
-            }
-        }
+        break;
     }
-    break;
     case ID_SETTINGS_LOGX86CODE:
     {
-        uState = GetMenuState(hRSPMenu, ID_SETTINGS_LOGX86CODE, MF_BYCOMMAND);
-
-        if (uState & MFS_CHECKED)
+        bool Checked = (GetMenuState(hRSPMenu, ID_SETTINGS_LOGX86CODE, MF_BYCOMMAND) & MFS_CHECKED) != 0;
+        CheckMenuItem(hRSPMenu, ID_SETTINGS_LOGX86CODE, MF_BYCOMMAND | (Checked ? MFS_UNCHECKED : MFS_CHECKED));
+        SetSetting(Set_LogX86Code, !Checked);
+        if (DebuggingEnabled)
         {
-            CheckMenuItem(hRSPMenu, ID_SETTINGS_LOGX86CODE, MF_BYCOMMAND | MFS_UNCHECKED);
-            SetSetting(Set_LogX86Code, false);
-            if (DebuggingEnabled)
+            LogX86Code = !Checked;
+            if (LogX86Code)
             {
-                LogX86Code = false;
+                StartCPULog();
+            }
+            else
+            {
                 StopCPULog();
             }
         }
-        else
-        {
-            CheckMenuItem(hRSPMenu, ID_SETTINGS_LOGX86CODE, MF_BYCOMMAND | MFS_CHECKED);
-            SetSetting(Set_LogX86Code, true);
-            if (DebuggingEnabled)
-            {
-                LogX86Code = true;
-                StartCPULog();
-            }
-        }
+        break;
     }
-    break;
     case ID_CPUMETHOD_RECOMPILER:
-    {
         SetSetting(Set_CPUCore, RecompilerCPU);
         g_CPUCore = RecompilerCPU;
         FixMenuState();
         SetCPU(RecompilerCPU);
         break;
-    }
     case ID_CPUMETHOD_INTERPT:
-    {
         SetSetting(Set_CPUCore, InterpreterCPU);
         g_CPUCore = InterpreterCPU;
         FixMenuState();
         SetCPU(InterpreterCPU);
         break;
-    }
     }
 }
 #endif
@@ -719,6 +659,7 @@ EXPORT void EnableDebugging(int Enabled)
     if (DebuggingEnabled)
     {
         BreakOnStart = GetSetting(Set_BreakOnStart) != 0;
+        AccurateEmulation = GetSetting(Set_AccurateEmulation) != 0;
         g_CPUCore = (RSPCpuType)GetSetting(Set_CPUCore);
         LogRDP = GetSetting(Set_LogRDP) != 0;
         LogX86Code = GetSetting(Set_LogX86Code) != 0;
