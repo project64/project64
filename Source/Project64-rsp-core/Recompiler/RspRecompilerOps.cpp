@@ -2710,7 +2710,7 @@ void Compile_Vector_VMULF(void)
     {
         CPU_Message("     Iteration: %i", count);
 
-        el = Indx[RSPOpC.rs].B[count];
+        el = Indx[RSPOpC.e].B[count];
         del = EleSpec[RSPOpC.e].B[el];
 
         sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
@@ -2854,7 +2854,7 @@ void Compile_Vector_VMUDL(void)
     for (count = 0; count < 8; count++)
     {
         CPU_Message("     Iteration: %i", count);
-        el = Indx[RSPOpC.rs].B[count];
+        el = Indx[RSPOpC.e].B[count];
         del = EleSpec[RSPOpC.e].B[el];
 
         sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rd, el);
@@ -3020,7 +3020,7 @@ void Compile_Vector_VMUDM(void)
     for (count = 0; count < 8; count++)
     {
         CPU_Message("     Iteration: %i", count);
-        el = Indx[RSPOpC.rs].B[count];
+        el = Indx[RSPOpC.e].B[count];
         del = EleSpec[RSPOpC.e].B[el];
 
         /*sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
@@ -3156,7 +3156,7 @@ void Compile_Vector_VMUDN(void)
     for (count = 0; count < 8; count++)
     {
         CPU_Message("     Iteration: %i", count);
-        el = Indx[RSPOpC.rs].B[count];
+        el = Indx[RSPOpC.e].B[count];
         del = EleSpec[RSPOpC.e].B[el];
 
         /*sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rd, el);
@@ -3383,7 +3383,7 @@ void Compile_Vector_VMUDH(void)
         for (count = 0; count < 8; count++)
         {
             CPU_Message("     Iteration: %i", count);
-            el = Indx[RSPOpC.rs].B[count];
+            el = Indx[RSPOpC.e].B[count];
             del = EleSpec[RSPOpC.e].B[el];
 
             sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
@@ -3448,7 +3448,7 @@ void Compile_Vector_VMACF(void)
 
     for (count = 0; count < 8; count++)
     {
-        el = Indx[RSPOpC.rs].B[count];
+        el = Indx[RSPOpC.e].B[count];
         del = EleSpec[RSPOpC.e].B[el];
 
         CPU_Message("     Iteration: %i", count);
@@ -3533,7 +3533,7 @@ void Compile_Vector_VMADL(void)
     for (count = 0; count < 8; count++)
     {
         CPU_Message("     Iteration: %i", count);
-        el = Indx[RSPOpC.rs].B[count];
+        el = Indx[RSPOpC.e].B[count];
         del = EleSpec[RSPOpC.e].B[el];
 
         sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
@@ -3621,7 +3621,7 @@ void Compile_Vector_VMADM(void)
     for (count = 0; count < 8; count++)
     {
         CPU_Message("     Iteration: %i", count);
-        el = Indx[RSPOpC.rs].B[count];
+        el = Indx[RSPOpC.e].B[count];
         del = EleSpec[RSPOpC.e].B[el];
 
         /*sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
@@ -3706,7 +3706,7 @@ void Compile_Vector_VMADN(void)
     for (count = 0; count < 8; count++)
     {
         CPU_Message("     Iteration: %i", count);
-        el = Indx[RSPOpC.rs].B[count];
+        el = Indx[RSPOpC.e].B[count];
         del = EleSpec[RSPOpC.e].B[el];
 
         /*sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.rd, el);
@@ -3851,7 +3851,7 @@ void Compile_Vector_VMADH(void)
         for (count = 0; count < 8; count++)
         {
             CPU_Message("     Iteration: %i", count);
-            el = Indx[RSPOpC.rs].B[count];
+            el = Indx[RSPOpC.e].B[count];
             del = EleSpec[RSPOpC.e].B[el];
 
             /*sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
@@ -3995,7 +3995,7 @@ void Compile_Vector_VADD(void)
     for (count = 0; count < 8; count++)
     {
         CPU_Message("     Iteration: %i", count);
-        el = Indx[RSPOpC.rs].B[count];
+        el = Indx[RSPOpC.e].B[count];
         del = EleSpec[RSPOpC.e].B[el];
 
         sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
@@ -4136,7 +4136,7 @@ void Compile_Vector_VSUB(void)
     for (count = 0; count < 8; count++)
     {
         CPU_Message("     Iteration: %i", count);
-        el = Indx[RSPOpC.rs].B[count];
+        el = Indx[RSPOpC.e].B[count];
         del = EleSpec[RSPOpC.e].B[el];
 
         MoveSxVariableToX86regHalf(&RSP_Vect[RSPOpC.vs].s16(el), "RSP_Vect[RSPOpC.vs].s16(el)", x86_EAX);
@@ -4287,7 +4287,7 @@ void Compile_Vector_VABS(void)
     for (count = 0; count < 8; count++)
     {
         CPU_Message("     Iteration: %i", count);
-        el = Indx[RSPOpC.rs].B[count];
+        el = Indx[RSPOpC.e].B[count];
         del = EleSpec[RSPOpC.e].B[el];
 
         if (RSPOpC.rd == RSPOpC.rt && (RSPOpC.rs & 0xF) < 2)
@@ -4397,7 +4397,7 @@ void Compile_Vector_VADDC(void)
     for (count = 0; count < 8; count++)
     {
         CPU_Message("     Iteration: %i", count);
-        el = Indx[RSPOpC.rs].B[count];
+        el = Indx[RSPOpC.e].B[count];
         del = EleSpec[RSPOpC.e].B[el];
 
         /*sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
@@ -4466,7 +4466,7 @@ void Compile_Vector_VSUBC(void)
     for (count = 0; count < 8; count++)
     {
         CPU_Message("     Iteration: %i", count);
-        el = Indx[RSPOpC.rs].B[count];
+        el = Indx[RSPOpC.e].B[count];
         del = EleSpec[RSPOpC.e].B[el];
 
         sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.rd, el);
@@ -5003,7 +5003,7 @@ void Compile_Vector_VMRG(void)
 
     for (count = 0; count < 8; count++)
     {
-        el = Indx[RSPOpC.rs].UB[count];
+        el = Indx[RSPOpC.e].UB[count];
         del = EleSpec[RSPOpC.e].UB[el];
         CPU_Message("     Iteration: %i", count);
 
@@ -5102,7 +5102,7 @@ void Compile_Vector_VAND(void)
 
     for (count = 0; count < 8; count++)
     {
-        el = Indx[RSPOpC.rs].B[count];
+        el = Indx[RSPOpC.e].B[count];
         del = EleSpec[RSPOpC.e].B[el];
 
         CPU_Message("     Iteration: %i", count);
@@ -5213,7 +5213,7 @@ void Compile_Vector_VNAND(void)
 
     for (count = 0; count < 8; count++)
     {
-        el = Indx[RSPOpC.rs].B[count];
+        el = Indx[RSPOpC.e].B[count];
         del = EleSpec[RSPOpC.e].B[el];
 
         CPU_Message("     Iteration: %i", count);
@@ -5325,7 +5325,7 @@ void Compile_Vector_VOR(void)
 
     for (count = 0; count < 8; count++)
     {
-        el = Indx[RSPOpC.rs].B[count];
+        el = Indx[RSPOpC.e].B[count];
         del = EleSpec[RSPOpC.e].B[el];
 
         CPU_Message("     Iteration: %i", count);
@@ -5431,7 +5431,7 @@ void Compile_Vector_VNOR(void)
 
     for (count = 0; count < 8; count++)
     {
-        el = Indx[RSPOpC.rs].B[count];
+        el = Indx[RSPOpC.e].B[count];
         del = EleSpec[RSPOpC.e].B[el];
 
         CPU_Message("     Iteration: %i", count);
