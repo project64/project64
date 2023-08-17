@@ -2495,17 +2495,9 @@ void CN64System::RunRSP()
             }
         }
 
-        __except_try()
-        {
-            WriteTrace(TraceRSP, TraceDebug, "Do cycles - starting");
-            m_Plugins->RSP()->DoRspCycles(100);
-            WriteTrace(TraceRSP, TraceDebug, "Do cycles - done");
-        }
-        __except_catch()
-        {
-            WriteTrace(TraceRSP, TraceError, "Exception generated");
-            g_Notify->FatalError("CN64System::RunRSP()\nUnknown memory action\n\nEmulation stopping");
-        }
+        WriteTrace(TraceRSP, TraceDebug, "Do cycles - starting");
+        m_Plugins->RSP()->DoRspCycles(100);
+        WriteTrace(TraceRSP, TraceDebug, "Do cycles - done");
 
         if (Task == 1 && bDelayDP() && ((m_Reg.m_GfxIntrReg & MI_INTR_DP) != 0))
         {
