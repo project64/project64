@@ -1,4 +1,4 @@
-﻿// ============ Project64 v4.0 official RDB =================================
+// ============ Project64 v4.0 official RDB =================================
 
 // Not for use with previous versions of Project64
 
@@ -207,14 +207,14 @@ RDRAM Size=8
 
 [B98BA456-5B2B76AF-C:4A]
 Good Name=64 de Hakken!! Tamagotchi - Minna de Tamagotchi World (J)
-Internal Name=ÐÝÅÃÞÀÏºÞ¯ÁÜ°ÙÄÞ
+Internal Name=ﾐﾝﾅﾃﾞﾀﾏｺﾞｯﾁﾜｰﾙﾄﾞ
 Status=Compatible
 32bit=1
 Counter Factor=1
 
 [36F22FBF-318912F2-C:4A]
 Good Name=64 Hanafuda - Tenshi no Yakusoku (J)
-Internal Name=64ÊÅÌÀÞ ~ÃÝ¼ÉÔ¸¿¸~
+Internal Name=64ﾊﾅﾌﾀﾞ ~ﾃﾝｼﾉﾔｸｿｸ~
 Status=Compatible
 32bit=1
 RDRAM Size=8
@@ -228,7 +228,7 @@ Counter Factor=1
 
 [85C18B16-DF9622AF-C:4A]
 Good Name=64 Oozumou 2 (J)
-Internal Name=64 µµ½ÞÓ³ 2
+Internal Name=64 ｵｵｽﾞﾓｳ 2
 Status=Compatible
 32bit=1
 RDRAM Size=8
@@ -365,7 +365,7 @@ Screenhertz=60
 
 [6C45B60C-DCE50E30-C:4A]
 Good Name=Air Boarder 64 (J)
-Internal Name=´±°ÎÞ°ÀÞ°64
+Internal Name=ｴｱｰﾎﾞｰﾀﾞｰ64
 Status=Compatible
 32bit=1
 Counter Factor=1
@@ -374,7 +374,7 @@ RDRAM Size=8
 
 [26809B20-39A516A4-C:4A]
 Good Name=Air Boarder 64 (J)
-Internal Name=´±°ÎÞ°ÀÞ°64
+Internal Name=ｴｱｰﾎﾞｰﾀﾞｰ64
 Status=Compatible
 32bit=1
 Counter Factor=1
@@ -382,7 +382,7 @@ RDRAM Size=8
 
 [F255D6F1-B65D6728-C:4A]
 Good Name=Air Boarder 64 (J)
-Internal Name=Աюް^ж4
+Internal Name=ｴｱｰﾎﾞｰﾀﾞｰ64
 Status=Compatible
 32bit=1
 Counter Factor=1
@@ -568,7 +568,7 @@ Culling=1
 
 [88CF980A-8ED52EB5-C:4A]
 Good Name=Bakushou Jinsei 64 - Mezase! Resort Ou (J)
-Internal Name=ÊÞ¸¼®³¼ÞÝ¾²64
+Internal Name=ﾊﾞｸｼｮｳｼﾞﾝｾｲ64
 Status=Compatible
 32bit=1
 RDRAM Size=8
@@ -837,14 +837,14 @@ RDRAM Size=8
 
 [B3D451C6-E1CB58E2-C:4A]
 Good Name=Bokujou Monogatari 2 (J) (V1.0)
-Internal Name=ÎÞ¸¼Þ®³ÓÉ¶ÞÀØ2
+Internal Name=ﾎﾞｸｼﾞｮｳﾓﾉｶﾞﾀﾘ2
 Status=Compatible
 32bit=1
 Counter Factor=1
 
 [7365D8F8-9ED9326F-C:4A]
 Good Name=Bokujou Monogatari 2 (J) (V1.1)
-Internal Name=ÎÞ¸¼Þ®³ÓÉ¶ÞÀØ2
+Internal Name=ﾎﾞｸｼﾞｮｳﾓﾉｶﾞﾀﾘ2
 Status=Compatible
 32bit=1
 Counter Factor=1
@@ -852,7 +852,7 @@ RDRAM Size=8
 
 [736657F6-3C88A702-C:4A]
 Good Name=Bokujou Monogatari 2 (J) (V1.2)
-Internal Name=ÎÞ¸¼Þ®³ÓÉ¶ÞÀØ2
+Internal Name=ﾎﾞｸｼﾞｮｳﾓﾉｶﾞﾀﾘ2
 Status=Compatible
 32bit=1
 Counter Factor=1
@@ -916,7 +916,7 @@ RDRAM Size=8
 
 [67FF12CC-76BF0212-C:4A]
 Good Name=Bomberman Hero - Mirian Oujo wo Sukue! (J)
-Internal Name=ÎÞÝÊÞ°ÏÝ Ë°Û°
+Internal Name=ﾎﾞﾝﾊﾞｰﾏﾝ ﾋｰﾛｰ
 Status=Compatible
 32bit=1
 RDRAM Size=8
@@ -1222,7 +1222,7 @@ RDRAM Size=8
 
 [26CD0F54-53EBEFE0-C:4A]
 Good Name=Choro Q 64 II - Hacha Mecha Grand Prix Race (J)
-Internal Name=Á®ÛQ64 2
+Internal Name=ﾁｮﾛQ64 2
 Status=Compatible
 32bit=1
 RDRAM Size=8
@@ -1235,7 +1235,7 @@ Status=Compatible
 
 [3A180FF4-5C8E8AF7-C:4A]
 Good Name=Chou Kuukan Nighter Pro Yakyuu King 2 (J)
-Internal Name=ÌßÛÔ·­³·Ý¸Þ2
+Internal Name=ﾌﾟﾛﾔｷｭｳｷﾝｸﾞ2
 Status=Compatible
 32bit=1
 RDRAM Size=8
@@ -1500,7 +1500,7 @@ RDRAM Size=8
 
 [17C54A61-4A83F2E7-C:4A]
 Good Name=Densha de GO! 64 (J)
-Internal Name=ÃÞÝ¼¬ÃÞGO!64
+Internal Name=ﾃﾞﾝｼｬﾃﾞGO!64
 Status=Compatible
 32bit=1
 Counter Factor=1
@@ -1730,13 +1730,13 @@ RDRAM Size=8
 
 [BFF7B1C2-AEBF148E-C:4A]
 Good Name=Doraemon - Nobita to 3tsu no Seireiseki (J)
-Internal Name=ÄÞ×´ÓÝ Ð¯ÂÉ¾²Ú²¾·
+Internal Name=ﾄﾞﾗｴﾓﾝ ﾐｯﾂﾉｾｲﾚｲｾｷ
 Status=Compatible
 32bit=1
 
 [B6306E99-B63ED2B2-C:4A]
 Good Name=Doraemon 2 - Nobita to Hikari no Shinden (J)
-Internal Name=ÄÞ×´ÓÝ2 Ë¶ØÉ¼ÝÃÞÝ
+Internal Name=ﾄﾞﾗｴﾓﾝ2 ﾋｶﾘﾉｼﾝﾃﾞﾝ
 Status=Compatible
 32bit=1
 Culling=1
@@ -1744,7 +1744,7 @@ Save Type=16kbit Eeprom
 
 [A8275140-B9B056E8-C:4A]
 Good Name=Doraemon 3 - Nobita no Machi SOS! (J)
-Internal Name=ÄÞ×´ÓÝ3 ÉËÞÀÉÏÁSOS!
+Internal Name=ﾄﾞﾗｴﾓﾝ3 ﾉﾋﾞﾀﾉﾏﾁSOS!
 Status=Compatible
 32bit=1
 Save Type=16kbit Eeprom
@@ -1903,7 +1903,7 @@ RDRAM Size=8
 
 [0DED0568-1502515E-C:4A]
 Good Name=Eikou no Saint Andrews (J)
-Internal Name=´²º³É¾ÝÄ±ÝÄÞØ­°½
+Internal Name=ｴｲｺｳﾉｾﾝﾄｱﾝﾄﾞﾘｭｰｽ
 Status=Compatible
 32bit=1
 RDRAM Size=8
@@ -2007,7 +2007,7 @@ RDRAM Size=8
 
 [399B9B81-D533AD11-C:4A]
 Good Name=Extreme-G XG2 (J)
-Internal Name=´¸½ÄØ°ÑG2
+Internal Name=ｴｸｽﾄﾘｰﾑG2
 Status=Compatible
 32bit=1
 RDRAM Size=8
@@ -2133,7 +2133,7 @@ RDRAM Size=8
 
 [6DFF4C37-B1B763FD-C:4A]
 Good Name=Famista 64 (J)
-Internal Name=Ì§Ð½À 64
+Internal Name=ﾌｧﾐｽﾀ 64
 Status=Compatible
 32bit=1
 Clear Frame=1
@@ -2443,7 +2443,7 @@ Status=Compatible
 
 [B2C6D27F-2DA48CFD-C:4A]
 Good Name=Goemon - Mononoke Sugoroku (J)
-Internal Name=ºÞ´ÓÝÓÉÉ¹½ºÞÛ¸
+Internal Name=ｺﾞｴﾓﾝﾓﾉﾉｹｽｺﾞﾛｸ
 Status=Compatible
 
 [4252A5AD-AE6FBF4E-C:45]
@@ -2550,7 +2550,7 @@ Save Type=16kbit Eeprom
 //================  H  ================
 [95A80114-E0B72A7F-C:4A]
 Good Name=Hamster Monogatari 64 (J)
-Internal Name=ÊÑ½À°ÓÉ¶ÞÀØ64
+Internal Name=ﾊﾑｽﾀｰﾓﾉｶﾞﾀﾘ64
 Status=Compatible
 32bit=1
 Counter Factor=1
@@ -2572,7 +2572,7 @@ Counter Factor=1
 
 [3E70E866-4438BAE8-C:4A]
 Good Name=Heiwa Pachinko World 64 (J)
-Internal Name=HEIWA ÊßÁÝº Ü°ÙÄÞ64
+Internal Name=HEIWA ﾊﾟﾁﾝｺ ﾜｰﾙﾄﾞ64
 Status=Compatible
 32bit=1
 RDRAM Size=8
@@ -2638,7 +2638,7 @@ Status=Needs input plugin
 
 [35FF8F1A-6E79E3BE-C:4A]
 Good Name=Hiryuu no Ken Twin (J)
-Internal Name=ËØ­³É¹Ý Â²Ý
+Internal Name=˘ﾋﾘｭｳﾉｹﾝ ﾂｲﾝ
 Status=Compatible
 32bit=1
 Counter Factor=1
@@ -2778,7 +2778,7 @@ RDRAM Size=8
 
 [77DA3B8D-162B0D7C-C:4A]
 Good Name=Ide Yousuke no Mahjong Juku (J)
-Internal Name=²ÃÞÖ³½¹ÉÏ°¼Þ¬Ý¼Þ­¸
+Internal Name=ｲﾃﾞﾖｳｽｹﾉﾏｰｼﾞｬﾝｼﾞｭｸ
 Status=Compatible
 32bit=1
 RDRAM Size=8
@@ -2918,7 +2918,7 @@ Counter Factor=1
 //================  J  ================
 [87766747-91C27165-C:4A]
 Good Name=J.League Dynamite Soccer 64 (J)
-Internal Name=ÀÞ²ÅÏ²Ä»¯¶°64
+Internal Name=ﾀﾞｲﾅﾏｲﾄｻｯｶｰ64
 Status=Compatible
 32bit=1
 RDRAM Size=8
@@ -2950,7 +2950,7 @@ Status=Compatible
 
 [C73AD016-48C5537D-C:4A]
 Good Name=Jangou Simulation Mahjong Dou 64 (J)
-Internal Name=Ï°¼Þ¬ÝÄÞ³64
+Internal Name=ﾏｰｼﾞｬﾝﾄﾞｳ64
 Status=Compatible
 32bit=1
 
@@ -3249,7 +3249,7 @@ RDRAM Size=8
 
 [75BC6AD6-78552BC9-C:4A]
 Good Name=Kiratto Kaiketsu! 64 Tanteidan (J)
-Internal Name=·×¯Ä¶²¹Â 64ÀÝÃ²ÀÞÝ
+Internal Name=ｷﾗｯﾄｶｲｹﾂ 64ﾀﾝﾃｲﾀﾞﾝ
 Status=Compatible
 32bit=1
 RDRAM Size=8
@@ -3554,13 +3554,13 @@ Status=Compatible
 
 [CCCC821E-96E88A83-C:4A]
 Good Name=Mahjong Hourouki Classic (J)
-Internal Name=Ï°¼Þ¬ÝÎ³Û³·CLASSIC
+Internal Name=ﾏｰｼﾞｬﾝﾎｳﾛｳｷCLASSIC
 Status=Compatible
 32bit=1
 
 [0FC42C70-8754F1CD-C:4A]
 Good Name=Mahjong Master (J)
-Internal Name=Ï°¼Þ¬Ý Ï½À°
+Internal Name=ﾏｰｼﾞｬﾝ ﾏｽﾀｰ
 Status=Compatible
 32bit=1
 RDRAM Size=8
@@ -3687,7 +3687,7 @@ RDRAM Size=8
 
 [9A9890AC-F0C313DF-C:4A]
 Good Name=Mario no Photopi (J)
-Internal Name=ÏØµÉÌ«ÄËß°
+Internal Name=ﾏﾘｵﾉﾌｫﾄﾋﾟｰ
 Status=Issues (plugin)
 32bit=1
 HLE GFX=0
@@ -4004,7 +4004,7 @@ Culling=1
 
 [E8E8DD70-415DD198-C:4A]
 Good Name=Morita Shougi 64 (J)
-Internal Name=ÓØÀ¼®³·Þ64
+Internal Name=ﾓﾘﾀｼｮｳｷﾞ64
 Status=Compatible
 32bit=1
 
@@ -4500,8 +4500,8 @@ Linking=Off
 RDRAM Size=8
 
 [D83BB920-CC406416-C:4A]
-Good Name=Nushi Duri 64 (J) (V1.0)
-Internal Name=Ç¼ÂÞØ64
+Good Name=Nushi Tsuri 64 (J) (V1.0)
+Internal Name=ﾇｼﾂﾞﾘ64
 Status=Compatible
 32bit=1
 Clear Frame=1
@@ -4509,8 +4509,8 @@ Counter Factor=1
 Culling=1
 
 [C5F1DE79-5D4BEB6E-C:4A]
-Good Name=Nushi Duri 64 (J) (V1.1)
-Internal Name=Ç¼ÂÞØ64
+Good Name=Nushi Tsuri 64 (J) (V1.1)
+Internal Name=ﾇｼﾂﾞﾘ64
 Status=Compatible
 32bit=1
 Clear Frame=1
@@ -4518,8 +4518,8 @@ Counter Factor=1
 Culling=1
 
 [5B9B1618-1B43C649-C:4A]
-Good Name=Nushi Duri 64 - Shiokaze ni Notte (J)
-Internal Name=Ç¼ÂÞØ64¼µ¶¾ÞÆÉ¯Ã
+Good Name=Nushi Tsuri 64 - Shiokaze ni Notte (J)
+Internal Name=ﾇｼﾂﾞﾘ64ｼｵｶｾﾞﾆﾉｯﾃ
 Status=Compatible
 32bit=1
 RDRAM Size=8
@@ -5553,7 +5553,7 @@ RDRAM Size=8
 
 [5E3E60E8-4AB5D495-C:4A]
 Good Name=Saikyou Habu Shougi (J)
-Internal Name=»²·®³ÊÌÞ¼®³·Þ
+Internal Name=ｻｲｷｮｳﾊﾌﾞｼｮｳｷﾞ
 Status=Compatible
 32bit=1
 RDRAM Size=8
@@ -5744,7 +5744,7 @@ RDRAM Size=8
 
 [84FC04FF-B1253CE9-C:4A]
 Good Name=Snobow Kids (J)
-Internal Name=½ÉÎÞ·¯½Þ
+Internal Name=ｽﾉﾎﾞｷｯｽﾞ
 Status=Compatible
 32bit=1
 Clear Frame=1
@@ -6133,7 +6133,7 @@ RDRAM Size=8
 
 [BC9B2CC3-4ED04DA5-C:37]
 Good Name=StarCraft 64 (U) (Beta)
-Internal Name=Á2ÙE8y)±tU…y7àÕ]¹9
+Internal Name=ﾁ2ﾙ・8y)ｱtU水y7獨]ｹ9
 Status=Compatible
 AudioResetOnLoad=1
 Clear Frame=2
@@ -6229,7 +6229,7 @@ RDRAM Size=8
 
 [1649D810-F73AD6D2-C:4A]
 Good Name=Super Robot Taisen 64 (J)
-Internal Name=½°Êß°ÛÎÞ¯ÄÀ²¾Ý64
+Internal Name=ｽｰﾊﾟｰﾛﾎﾞｯﾄﾀｲｾﾝ64
 Status=Compatible
 32bit=1
 RDRAM Size=8
@@ -6305,7 +6305,7 @@ Status=Compatible
 
 [35E811F3-99792724-C:4A]
 Good Name=Susume! Taisen Puzzle Dama - Toukon! Marutama Chou (J)
-Internal Name=½½Ò!À²¾ÝÊß½ÞÙÀÞÏ
+Internal Name=ｽｽﾒ!ﾀｲｾﾝﾊﾟｽﾞﾙﾀﾞﾏ
 Status=Compatible
 32bit=1
 RDRAM Size=8
@@ -6381,6 +6381,10 @@ Clear Frame=2
 Good Name=The Legend of Zelda - Majora's Mask (E) (M4) (Debug)
 Internal Name=ZELDA MAJORA'S MASK
 Status=Compatible
+32bit=1
+Culling=1
+Emulate Clear=1
+Self Texture=1
 
 [E97955C6-BC338D38-C:50]
 Good Name=The Legend of Zelda - Majora's Mask (E) (M4) (V1.0)
@@ -7131,8 +7135,8 @@ RDRAM Size=8
 
 //================  U  ================
 [28D5562D-E4D5AE50-C:4A]
-Good Name=Ucchan Nanchan no Hono no Challenger - Denryuu Ira Ira Bou (J)
-Internal Name=ÃÞÝØ­³²×²×ÎÞ³
+Good Name=Uchhannanchan no Hono no Challenger - Denryu IraIra Bou (J)
+Internal Name=ﾃﾞﾝﾘｭｳｲﾗｲﾗﾎﾞｳ
 Status=Compatible
 32bit=1
 Counter Factor=1
@@ -7248,13 +7252,13 @@ RDRAM Size=8
 
 [CD094235-88074B62-C:4A]
 Good Name=Virtual Pro Wrestling 2 - Oudou Keishou (J)
-Internal Name=ÊÞ°Á¬Ù ÌßÛÚ½ 2
+Internal Name=ﾊﾞｰﾁｬﾙ ﾌﾟﾛﾚｽ 2
 Status=Compatible
 32bit=1
 
 [045C08C4-4AFD798B-C:4A]
 Good Name=Virtual Pro Wrestling 64 (J)
-Internal Name=ÊÞ°Á¬Ù ÌßÛÚ½ØÝ¸Þ 64
+Internal Name=ﾊﾞｰﾁｬﾙ ﾌﾟﾛﾚｽﾘﾝｸﾞ 64
 Status=Compatible
 32bit=1
 Clear Frame=1
@@ -7682,7 +7686,7 @@ Status=Compatible
 
 [12737DA5-23969159-C:4A]
 Good Name=WWF WrestleMania 2000 (J)
-Internal Name=Ú¯½ÙÏÆ± 2000
+Internal Name=ﾚｯｽﾙﾏﾆｱ 2000
 Status=Compatible
 32bit=1
 RDRAM Size=8
@@ -7856,7 +7860,7 @@ SMM-TLB=0
 
 [1C010CCD-22D3B7FA-C:4A]
 Good Name=Zool - Majuu Tsukai Densetsu (J)
-Internal Name=½Þ°Ù Ï¼Þ­³Â¶²ÃÞÝ¾Â
+Internal Name=ｽﾞｰﾙ ﾏｼﾞｭｳﾂｶｲﾃﾞﾝｾﾂ
 Status=Compatible
 32bit=1
 RDRAM Size=8
@@ -8021,7 +8025,7 @@ Status=Compatible
 
 [2E7E893C-4E68B642-C:0]
 Good Name=Absolute Crap Intro 2 by Lem (PD)
-Internal Name=Ð*E
+Internal Name=Absolute Crap II
 Status=Compatible
 RDRAM Size=8
 
@@ -8108,7 +8112,7 @@ Status=Compatible
 
 [EDA1A0C7-58EE0464-C:0]
 Good Name=Chaos 89 Demo (PD)
-Internal Name=Ð*E
+Internal Name=Chaos 89 Demo
 Status=Compatible
 
 [B484EB31-D44B1928-C:0]
@@ -9444,7 +9448,7 @@ RDRAM Size=8
 
 [5BA2BBC0-4C9C0D28-C:45]
 Good Name=Mario no Photopi (J) [T+Eng]
-Internal Name=ÏØµÉÌ«ÄËß°
+Internal Name=ﾏﾘｵﾉﾌｫﾄﾋﾟｰ
 Status=Issues (plugin)
 32bit=1
 HLE GFX=0
