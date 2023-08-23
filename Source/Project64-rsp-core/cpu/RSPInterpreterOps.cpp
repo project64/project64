@@ -1304,22 +1304,14 @@ void RSP_Vector_VABS(void)
 
 void RSP_Vector_VADDC(void)
 {
-    uint8_t el, del;
-    UWORD32 temp;
     RSPVector Result;
-
-    RSP_Flags[0].UW = 0;
-    for (el = 0; el < 8; el++)
+    VCOH.Clear();
+    for (uint8_t el = 0; el < 8; el++)
     {
-        del = EleSpec[RSPOpC.e].B[el];
-
-        temp.UW = (int)RSP_Vect[RSPOpC.vs].u16(el) + (int)RSP_Vect[RSPOpC.vt].u16(del);
-        RSP_ACCUM[el].HW[1] = temp.HW[0];
-        Result.u16(el) = temp.UHW[0];
-        if (temp.UW & 0xffff0000)
-        {
-            RSP_Flags[0].UW |= (1 << (7 - el));
-        }
+        int32_t Temp = (int32_t)RSP_Vect[RSPOpC.vs].u16(el) + (int32_t)RSP_Vect[RSPOpC.vt].ue(el, RSPOpC.e);
+        RSP_ACCUM[el].HW[1] = (int16_t)Temp;
+        Result.u16(el) = RSP_ACCUM[el].HW[1];
+        VCOL.Set(el, (Temp >> 16) != 0);
     }
     RSP_Vect[RSPOpC.vd] = Result;
 }

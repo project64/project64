@@ -50,3 +50,31 @@ uint64_t & RSPVector::u64(uint8_t Index)
 {
     return m_Reg[Index];
 }
+
+RSPFlag::RSPFlag(uint16_t & Flag) :
+    m_Flag(Flag)
+{
+}
+
+void RSPFlag::Clear(void)
+{
+    m_Flag = 0;
+}
+
+void RSPFlag::Set(uint8_t Index, bool Value)
+{
+    if (Value)
+    {
+        m_Flag |= (1 << (7 - Index));
+    }
+    else
+    {
+        m_Flag &= ~(1 << (7 - Index));
+    }
+}
+
+bool RSPFlag::Get(uint8_t Index) const
+{
+    return (m_Flag & (1 << (7 - Index))) != 0;
+}
+

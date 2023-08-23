@@ -5,6 +5,8 @@ UWORD32 RSP_GPR[32], RSP_Flags[4];
 UDWORD RSP_ACCUM[8];
 RSPVector RSP_Vect[32];
 
+RSPFlag VCOL(RSP_Flags[0].UHW[0]), VCOH(RSP_Flags[0].UHW[1]);
+
 char * GPR_Strings[32] = {
     "R0",
     "AT",
