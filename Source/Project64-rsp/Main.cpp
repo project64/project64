@@ -169,7 +169,6 @@ void FixMenuState(void)
     CheckMenuItem(hRSPMenu, ID_CPUMETHOD_RECOMPILER, MF_BYCOMMAND | (g_CPUCore == RecompilerCPU ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_CPUMETHOD_INTERPT, MF_BYCOMMAND | (g_CPUCore == InterpreterCPU ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_BREAKONSTARTOFTASK, MF_BYCOMMAND | (BreakOnStart ? MFS_CHECKED : MF_UNCHECKED));
-    CheckMenuItem(hRSPMenu, ID_ACCURATEEMULATION, MF_BYCOMMAND | (AccurateEmulation ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_LOGRDPCOMMANDS, MF_BYCOMMAND | (LogRDP ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_SETTINGS_LOGX86CODE, MF_BYCOMMAND | (LogX86Code ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_PROFILING_ON, MF_BYCOMMAND | (Profiling ? MFS_CHECKED : MF_UNCHECKED));
@@ -406,17 +405,6 @@ void ProcessMenuItem(int ID)
         if (DebuggingEnabled)
         {
             BreakOnStart = !Checked;
-        }
-        break;
-    }
-    case ID_ACCURATEEMULATION:
-    {
-        bool Checked = (GetMenuState(hRSPMenu, ID_ACCURATEEMULATION, MF_BYCOMMAND) & MFS_CHECKED) != 0;
-        CheckMenuItem(hRSPMenu, ID_ACCURATEEMULATION, MF_BYCOMMAND | (Checked ? MFS_UNCHECKED : MFS_CHECKED));
-        SetSetting(Set_AccurateEmulation, !Checked);
-        if (DebuggingEnabled)
-        {
-            AccurateEmulation = !Checked;
         }
         break;
     }
@@ -659,7 +647,6 @@ EXPORT void EnableDebugging(int Enabled)
     if (DebuggingEnabled)
     {
         BreakOnStart = GetSetting(Set_BreakOnStart) != 0;
-        AccurateEmulation = GetSetting(Set_AccurateEmulation) != 0;
         g_CPUCore = (RSPCpuType)GetSetting(Set_CPUCore);
         LogRDP = GetSetting(Set_LogRDP) != 0;
         LogX86Code = GetSetting(Set_LogX86Code) != 0;
