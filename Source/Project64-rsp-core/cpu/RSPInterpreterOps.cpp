@@ -1621,51 +1621,25 @@ void RSP_Vector_VCH(void)
 
 void RSP_Vector_VCR(void)
 {
-    uint8_t el, del;
     RSPVector Result;
-
-    RSP_Flags[0].UW = 0;
-    RSP_Flags[1].UW = 0;
-    RSP_Flags[2].UW = 0;
-    for (el = 0; el < 8; el++)
+    for (uint8_t el = 0; el < 8; el++)
     {
-        del = EleSpec[RSPOpC.e].B[el];
-
-        if ((RSP_Vect[RSPOpC.vs].s16(el) ^ RSP_Vect[RSPOpC.vt].s16(del)) < 0)
+        if ((RSP_Vect[RSPOpC.vs].s16(el) ^ RSP_Vect[RSPOpC.vt].se(el, RSPOpC.e)) < 0)
         {
-            if (RSP_Vect[RSPOpC.vt].s16(del) < 0)
-            {
-                RSP_Flags[1].UW |= (1 << (15 - el));
-            }
-            if (RSP_Vect[RSPOpC.vs].s16(el) + RSP_Vect[RSPOpC.vt].s16(del) <= 0)
-            {
-                RSP_ACCUM[el].HW[1] = ~RSP_Vect[RSPOpC.vt].u16(del);
-                RSP_Flags[1].UW |= (1 << (7 - el));
-            }
-            else
-            {
-                RSP_ACCUM[el].HW[1] = RSP_Vect[RSPOpC.vs].s16(el);
-            }
+            VCCH.Set(el, RSP_Vect[RSPOpC.vt].se(el, RSPOpC.e) < 0);
+            RSP_ACCUM[el].HW[1] = VCCL.Set(el, RSP_Vect[RSPOpC.vs].s16(el) + RSP_Vect[RSPOpC.vt].se(el, RSPOpC.e) + 1 <= 0) ? ~RSP_Vect[RSPOpC.vt].ue(el, RSPOpC.e) : RSP_Vect[RSPOpC.vs].u16(el);
         }
         else
         {
-            if (RSP_Vect[RSPOpC.vt].s16(del) < 0)
-            {
-                RSP_Flags[1].UW |= (1 << (7 - el));
-            }
-            if (RSP_Vect[RSPOpC.vs].s16(el) - RSP_Vect[RSPOpC.vt].s16(del) >= 0)
-            {
-                RSP_ACCUM[el].HW[1] = RSP_Vect[RSPOpC.vt].u16(del);
-                RSP_Flags[1].UW |= (1 << (15 - el));
-            }
-            else
-            {
-                RSP_ACCUM[el].HW[1] = RSP_Vect[RSPOpC.vs].s16(el);
-            }
+            VCCL.Set(el, RSP_Vect[RSPOpC.vt].se(el, RSPOpC.e) < 0);
+            RSP_ACCUM[el].HW[1] = VCCH.Set(el, RSP_Vect[RSPOpC.vs].s16(el) - RSP_Vect[RSPOpC.vt].se(el, RSPOpC.e) >= 0) ? RSP_Vect[RSPOpC.vt].ue(el, RSPOpC.e) : RSP_Vect[RSPOpC.vs].u16(el);
         }
         Result.s16(el) = RSP_ACCUM[el].HW[1];
     }
     RSP_Vect[RSPOpC.vd] = Result;
+    VCOL.Clear();
+    VCOH.Clear();
+    VCE.Clear();
 }
 
 void RSP_Vector_VMRG(void)
