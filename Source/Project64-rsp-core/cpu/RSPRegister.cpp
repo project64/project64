@@ -5,7 +5,9 @@ UWORD32 RSP_GPR[32], RSP_Flags[4];
 UDWORD RSP_ACCUM[8];
 RSPVector RSP_Vect[32];
 
-RSPFlag VCOL(RSP_Flags[0].UHW[0]), VCOH(RSP_Flags[0].UHW[1]);
+RSPFlag VCOL(RSP_Flags[0].UB[0]), VCOH(RSP_Flags[0].UB[1]);
+RSPFlag VCCL(RSP_Flags[1].UB[0]), VCCH(RSP_Flags[1].UB[1]);
+RSPFlag VCE(RSP_Flags[2].UB[0]);
 
 char * GPR_Strings[32] = {
     "R0",

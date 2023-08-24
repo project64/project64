@@ -105,3 +105,5 @@ extern UDWORD RSP_ACCUM[8];
 extern RSPVector RSP_Vect[32];
 
 extern RSPFlag VCOL, VCOH;
+extern RSPFlag VCCL, VCCH;
+extern RSPFlag VCE;

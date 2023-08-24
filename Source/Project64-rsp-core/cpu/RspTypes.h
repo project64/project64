@@ -39,17 +39,17 @@ public:
     int32_t & s32(uint8_t Index);
     uint64_t & u64(uint8_t Index);
 
-private:   
+private:
     uint64_t m_Reg[2] alignas(16);
 };
 
 class RSPFlag
 {
 public:
-    RSPFlag(uint16_t & Flag);
+    RSPFlag(uint8_t & Flag);
 
     void Clear(void);
-    void Set(uint8_t Index, bool Value);
+    bool Set(uint8_t Index, bool Value);
     bool Get(uint8_t Index) const;
 
 private:
@@ -57,5 +57,5 @@ private:
     RSPFlag(const RSPFlag &);
     RSPFlag & operator=(const RSPFlag &);
 
-    uint16_t & m_Flag;
+    uint8_t & m_Flag;
 };
