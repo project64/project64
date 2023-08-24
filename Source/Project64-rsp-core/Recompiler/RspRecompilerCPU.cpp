@@ -1002,7 +1002,7 @@ uint32_t RunRecompilerCPU(uint32_t Cycles)
 			popad
         }
 #else
-        DebugBreak();
+        __debugbreak();
 #endif
         if (Profiling && IndvidualBlock)
         {
@@ -1019,7 +1019,7 @@ uint32_t RunRecompilerCPU(uint32_t Cycles)
 #if defined(_M_IX86) && defined(_MSC_VER)
         _asm emms
 #else
-        DebugBreak();
+        __debugbreak();
 #endif
     }
     return Cycles;

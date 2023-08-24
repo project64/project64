@@ -75,6 +75,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64-rsp", "Source\Project64-rsp\Project64-rsp.vcxproj", "{A7ED562C-63F3-4B7E-B6B3-2CF7848752E1}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64-rsp-core", "Source\Project64-rsp-core\Project64-rsp-core.vcxproj", "{7598F6B8-9DA6-4897-B26F-F6865F824BF4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1968162C-0793-491D-91A1-81645A24D399} = {1968162C-0793-491D-91A1-81645A24D399}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
