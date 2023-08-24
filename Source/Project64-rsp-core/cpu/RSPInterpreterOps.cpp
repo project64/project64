@@ -275,8 +275,8 @@ void RSP_Special_JR(void)
 void RSP_Special_JALR(void)
 {
     RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
-    RSP_GPR[RSPOpC.rd].W = (*PrgCount + 8) & 0xFFC;
     RSP_JumpTo = (RSP_GPR[RSPOpC.rs].W & 0xFFC);
+    RSP_GPR[RSPOpC.rd].W = (*PrgCount + 8) & 0xFFC;
 }
 
 void RSP_Special_BREAK(void)
@@ -357,15 +357,15 @@ void RSP_Opcode_BGEZ(void)
 void RSP_Opcode_BLTZAL(void)
 {
     RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
-    RSP_GPR[31].UW = (*PrgCount + 8) & 0xFFC;
     RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W < 0);
+    RSP_GPR[31].UW = (*PrgCount + 8) & 0xFFC;
 }
 
 void RSP_Opcode_BGEZAL(void)
 {
     RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
-    RSP_GPR[31].UW = (*PrgCount + 8) & 0xFFC;
     RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W >= 0);
+    RSP_GPR[31].UW = (*PrgCount + 8) & 0xFFC;
 }
 
 // COP0 functions
