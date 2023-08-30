@@ -548,12 +548,6 @@ bool CMipsMemoryVM::SW_Memory(uint64_t VAddr, uint32_t Value)
         *(uint32_t *)(MemoryPtr + VAddr32) = Value;
         return true;
     }
-    uint32_t BaseAddress = m_TLB_ReadMap[VAddr32 >> 12];
-    if (BaseAddress == -1)
-    {
-        GenerateTLBWriteException(VAddr, __FUNCTION__);
-        return false;
-    }
     return SW_NonMemory(VAddr32, Value);
 }
 
@@ -743,7 +737,7 @@ bool CMipsMemoryVM::LD_NonMemory(uint32_t VAddr, uint64_t & Value)
 
 bool CMipsMemoryVM::SB_NonMemory(uint32_t VAddr, uint32_t Value)
 {
-    uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
+    uint32_t BaseAddress = m_TLB_WriteMap[VAddr >> 12];
     if (BaseAddress == -1)
     {
         GenerateTLBWriteException(VAddr, __FUNCTION__);
@@ -784,7 +778,7 @@ bool CMipsMemoryVM::SB_NonMemory(uint32_t VAddr, uint32_t Value)
 
 bool CMipsMemoryVM::SH_NonMemory(uint32_t VAddr, uint32_t Value)
 {
-    uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
+    uint32_t BaseAddress = m_TLB_WriteMap[VAddr >> 12];
     if (BaseAddress == -1)
     {
         GenerateTLBWriteException(VAddr, __FUNCTION__);
@@ -837,10 +831,10 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t VAddr, uint32_t Value)
 
 bool CMipsMemoryVM::SW_NonMemory(uint32_t VAddr, uint32_t Value)
 {
-    uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
+    uint32_t BaseAddress = m_TLB_WriteMap[VAddr >> 12];
     if (BaseAddress == -1)
     {
-        GenerateTLBWriteException(VAddr, __FUNCTION__);
+        GenerateTLBWriteException((int64_t)((int32_t)VAddr), __FUNCTION__);
         return false;
     }
     uint32_t PAddr = BaseAddress + VAddr;
@@ -907,7 +901,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t VAddr, uint32_t Value)
 
 bool CMipsMemoryVM::SD_NonMemory(uint32_t VAddr, uint64_t Value)
 {
-    uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
+    uint32_t BaseAddress = m_TLB_WriteMap[VAddr >> 12];
     if (BaseAddress == -1)
     {
         GenerateTLBWriteException(VAddr, __FUNCTION__);
@@ -949,12 +943,12 @@ bool CMipsMemoryVM::SD_NonMemory(uint32_t VAddr, uint64_t Value)
 
 void CMipsMemoryVM::ClearMemoryWriteMap(uint32_t VAddr, uint32_t Length)
 {
-    uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
+    uint32_t BaseAddress = m_TLB_WriteMap[VAddr >> 12];
     if (BaseAddress == -1)
     {
         return;
     }
-    uint32_t PAddr = m_TLB_ReadMap[VAddr >> 12] + VAddr;
+    uint32_t PAddr = m_TLB_WriteMap[VAddr >> 12] + VAddr;
     for (uint32_t i = PAddr, n = (PAddr + (Length & ~0xFFF)) + 0x1000; i < n; i += 0x1000)
     {
         m_MemoryWriteMap[(i + 0x80000000) >> 12] = (size_t)-1;

@@ -274,11 +274,6 @@ void CSystemTimer::TimerDone()
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-    //CheckTimer();
-    /*if (Profiling)
-    {
-    StartTimer(LastTimer);
-    }*/
 }
 
 void CSystemTimer::SetCompareTimer()
