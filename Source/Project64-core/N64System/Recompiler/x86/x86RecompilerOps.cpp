@@ -9559,6 +9559,17 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
         ExitCodeBlock();
         break;
+    case ExitReason_Exception:
+        m_Assembler.MoveVariableToX86reg(asmjit::x86::edx, &g_System->m_JumpToLocation, "System->m_JumpToLocation");
+        m_Assembler.MoveX86regToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", asmjit::x86::edx);
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
+        if (TargetPC == (uint32_t)-1)
+        {
+            ExitRegSet.SetBlockCycleCount(0);
+            UpdateCounters(ExitRegSet, true, false, false);
+        }
+        ExitCodeBlock();
+        break;
     default:
         WriteTrace(TraceRecompiler, TraceError, "How did you want to exit on reason (%d) ???", reason);
         g_Notify->BreakPoint(__FILE__, __LINE__);

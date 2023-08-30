@@ -21,6 +21,7 @@ enum ExitReason
     ExitReason_AddressErrorExceptionRead32,
     ExitReason_AddressErrorExceptionRead64,
     ExitReason_IllegalInstruction,
+    ExitReason_Exception,
 };
 
 struct CExitInfo
