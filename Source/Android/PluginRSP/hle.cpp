@@ -7,6 +7,9 @@
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 
 #include "stdafx.h"
+#if defined (_WIN32) && defined(_DEBUG)
+#include <Windows.h>
+#endif
 #include "mem.h"
 #include "ucodes.h"
 #include <memory.h>
@@ -316,10 +319,6 @@ void CHle::non_task_dispatching(void)
     dump_unknown_non_task(hle, sum);
 #endif
 }
-
-#if defined(_WIN32) && defined(_DEBUG)
-#include <Windows.h>
-#endif
 
 void CHle::VerboseMessage(const char *message, ...)
 {
