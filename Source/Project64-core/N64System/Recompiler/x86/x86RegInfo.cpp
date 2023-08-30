@@ -259,7 +259,6 @@ void CX86RegInfo::BeforeCallDirect(void)
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     m_InBeforeCallDirect = true;
-    UnMap_AllFPRs();
     m_Assembler.pushad();
 }
 
