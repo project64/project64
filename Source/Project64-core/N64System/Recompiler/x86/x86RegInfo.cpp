@@ -370,28 +370,30 @@ void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Forma
         {
             for (int32_t i = 0; i < x86RegFpuIndex_Size; i++)
             {
-                if (m_x86fpu_MappedTo[i] == (Reg - 1))
+                if (m_x86fpu_MappedTo[i] != (Reg - 1))
                 {
-                    if (m_x86fpu_State[i] == FPU_Double || m_x86fpu_State[i] == FPU_Qword)
-                    {
-                        UnMap_FPR(Reg, true);
-                    }
-                    i = 8;
+                    continue;
                 }
+                if (m_x86fpu_State[i] == FPU_Double || m_x86fpu_State[i] == FPU_Qword)
+                {
+                    UnMap_FPR(Reg, true);
+                }
+                break;
             }
         }
         if ((RegToLoad & 1) != 0)
         {
             for (int32_t i = 0; i < x86RegFpuIndex_Size; i++)
             {
-                if (m_x86fpu_MappedTo[i] == (RegToLoad - 1))
+                if (m_x86fpu_MappedTo[i] != (RegToLoad - 1))
                 {
-                    if (m_x86fpu_State[i] == FPU_Double || m_x86fpu_State[i] == FPU_Qword)
-                    {
-                        UnMap_FPR(RegToLoad, true);
-                    }
-                    i = 8;
+                    continue;
                 }
+                if (m_x86fpu_State[i] == FPU_Double || m_x86fpu_State[i] == FPU_Qword)
+                {
+                    UnMap_FPR(RegToLoad, true);
+                }
+                break;
             }
         }
     }
@@ -1297,7 +1299,7 @@ void CX86RegInfo::UnMap_AllFPRs()
         {
             continue;
         }
-        return;
+        break;
     }
 }
 
