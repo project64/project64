@@ -240,6 +240,7 @@ enum SettingID
     // Debugger
     Debugger_Enabled,
     Debugger_EndOnPermLoop,
+    Debugger_FpuExceptionInRecompiler,
     Debugger_BreakOnUnhandledMemory,
     Debugger_BreakOnAddressError,
     Debugger_StepOnBreakOpCode,

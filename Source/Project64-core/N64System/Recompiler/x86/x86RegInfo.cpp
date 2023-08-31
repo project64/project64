@@ -340,6 +340,44 @@ void CX86RegInfo::ChangeFPURegFormat(int32_t Reg, FPU_STATE OldFormat, FPU_STATE
     }
 }
 
+asmjit::x86::Gp CX86RegInfo::FPRValuePointer(int32_t Reg, FPU_STATE Format)
+{
+    if (Reg < 0)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return x86Reg_Unknown;
+    }
+    if (RegInStack(Reg, Format))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return x86Reg_Unknown;
+    }
+
+    asmjit::x86::Gp TempReg = Map_TempReg(x86Reg_Unknown, -1, false, false);
+    if (!TempReg.isValid())
+    {
+        return TempReg;
+    }
+    switch (Format)
+    {
+    case FPU_Dword:
+        m_Assembler.MoveVariableToX86reg(TempReg, &g_Reg->m_FPR_S[Reg], stdstr_f("m_FPR_S[%d]", Reg).c_str());
+        break;
+    case FPU_Qword:
+        m_Assembler.MoveVariableToX86reg(TempReg, &g_Reg->m_FPR_D[Reg], stdstr_f("m_FPR_D[%d]", Reg).c_str());
+        break;
+    case FPU_Float:
+        m_Assembler.MoveVariableToX86reg(TempReg, &g_Reg->m_FPR_S[Reg], stdstr_f("m_FPR_S[%d]", Reg).c_str());
+        break;
+    case FPU_Double:
+        m_Assembler.MoveVariableToX86reg(TempReg, &g_Reg->m_FPR_D[Reg], stdstr_f("m_FPR_D[%d]", Reg).c_str());
+        break;
+    default:
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    return TempReg;
+}
+
 void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Format)
 {
     if (GetRoundingModel() != RoundDefault)
@@ -1260,6 +1298,148 @@ void CX86RegInfo::ResetX86Protection()
     }
 }
 
+void CX86RegInfo::PrepareFPTopToBe(int32_t Reg, int32_t RegToLoad, FPU_STATE Format)
+{
+    if (RegToLoad < 0)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+    if (Reg < 0)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+
+    if (Format == FPU_Double || Format == FPU_Qword)
+    {
+        UnMap_FPR(Reg + 1, true);
+        UnMap_FPR(RegToLoad + 1, true);
+    }
+    else
+    {
+        if ((Reg & 1) != 0)
+        {
+            for (int32_t i = 0; i < x86RegFpuIndex_Size; i++)
+            {
+                if (m_x86fpu_MappedTo[i] != (Reg - 1))
+                {
+                    continue;
+                }
+                if (m_x86fpu_State[i] == FPU_Double || m_x86fpu_State[i] == FPU_Qword)
+                {
+                    UnMap_FPR(Reg, true);
+                }
+                break;
+            }
+        }
+        if ((RegToLoad & 1) != 0)
+        {
+            for (int32_t i = 0; i < x86RegFpuIndex_Size; i++)
+            {
+                if (m_x86fpu_MappedTo[i] != (RegToLoad - 1))
+                {
+                    continue;
+                }
+                if (m_x86fpu_State[i] == FPU_Double || m_x86fpu_State[i] == FPU_Qword)
+                {
+                    UnMap_FPR(RegToLoad, true);
+                }
+                break;
+            }
+        }
+    }
+
+    if (Reg == RegToLoad)
+    {
+        // If different format then unmap original register from stack
+        for (int32_t i = 0; i < x86RegFpuIndex_Size; i++)
+        {
+            if (m_x86fpu_MappedTo[i] != Reg)
+            {
+                continue;
+            }
+            if (m_x86fpu_State[i] != Format)
+            {
+                UnMap_FPR(Reg, true);
+            }
+            break;
+        }
+    }
+    else
+    {
+        // If different format then unmap original register from stack
+        for (int32_t i = 0; i < x86RegFpuIndex_Size; i++)
+        {
+            if (m_x86fpu_MappedTo[i] != Reg)
+            {
+                continue;
+            }
+            UnMap_FPR(Reg, m_x86fpu_State[i] != Format);
+            break;
+        }
+    }
+
+    if (RegInStack(RegToLoad, Format))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else
+    {
+        UnMap_FPR(m_x86fpu_MappedTo[(StackTopPos() - 1) & 7], true);
+        for (int32_t i = 0; i < x86RegFpuIndex_Size; i++)
+        {
+            if (m_x86fpu_MappedTo[i] == RegToLoad)
+            {
+                UnMap_FPR(RegToLoad, true);
+                i = 8;
+            }
+        }
+        m_CodeBlock.Log("    regcache: setup ST(0) to be %s", CRegName::FPR[Reg]);
+        asmjit::x86::Gp TempReg = Map_TempReg(x86Reg_Unknown, -1, false, false);
+        switch (Format)
+        {
+        case FPU_Dword:
+            m_Assembler.MoveVariableToX86reg(TempReg, &g_Reg->m_FPR_S[RegToLoad], stdstr_f("m_FPR_S[%d]", RegToLoad).c_str());
+            m_Assembler.fpuLoadIntegerDwordFromX86Reg(StackTopPos(), TempReg);
+            break;
+        case FPU_Qword:
+            m_Assembler.MoveVariableToX86reg(TempReg, &g_Reg->m_FPR_D[RegToLoad], stdstr_f("m_FPR_D[%d]", RegToLoad).c_str());
+            m_Assembler.fpuLoadIntegerQwordFromX86Reg(StackTopPos(), TempReg);
+            break;
+        case FPU_Float:
+            m_Assembler.MoveVariableToX86reg(TempReg, &g_Reg->m_FPR_S[RegToLoad], stdstr_f("m_FPR_S[%d]", RegToLoad).c_str());
+            //CompileCheckFPUInput32(TempReg);
+            m_Assembler.fpuLoadDwordFromX86Reg(StackTopPos(), TempReg);
+            break;
+        case FPU_Double:
+            m_Assembler.MoveVariableToX86reg(TempReg, &g_Reg->m_FPR_D[RegToLoad], stdstr_f("m_FPR_D[%d]", RegToLoad).c_str());
+            m_Assembler.fpuLoadQwordFromX86Reg(StackTopPos(), TempReg);
+            break;
+        default:
+            if (HaveDebugger())
+            {
+                g_Notify->DisplayError(stdstr_f("Load_FPR_ToTop\nUnkown format to load %d", Format).c_str());
+            }
+        }
+        SetX86Protected(GetIndexFromX86Reg(TempReg), false);
+        FpuRoundingModel(StackTopPos()) = RoundDefault;
+        m_x86fpu_MappedTo[StackTopPos()] = -1;
+        m_x86fpu_State[StackTopPos()] = Format;
+        m_x86fpu_StateChanged[StackTopPos()] = false;
+    }
+}
+
+void CX86RegInfo::SetFPTopAs(int32_t Reg)
+{
+    if (m_x86fpu_State[StackTopPos()] == FPU_Unknown || m_x86fpu_MappedTo[StackTopPos()] != -1)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+    m_x86fpu_MappedTo[StackTopPos()] = Reg;
+}
+
 bool CX86RegInfo::RegInStack(int32_t Reg, FPU_STATE Format)
 {
     for (int32_t i = 0; i < x86RegFpuIndex_Size; i++)
@@ -1387,6 +1567,19 @@ void CX86RegInfo::UnMap_FPR(int32_t Reg, bool WriteBackValue)
             m_x86fpu_StateChanged[i] = false;
         }
         return;
+    }
+}
+
+void CX86RegInfo::UnMap_FPStatusReg()
+{
+    for (int32_t i = 0, n = x86RegIndex_Size; i < n; i++)
+    {
+        if (GetX86Mapped((x86RegIndex)i) != CX86RegInfo::FPStatusReg_Mapped)
+        {
+            continue;
+        }
+        UnMap_X86reg(GetX86RegFromIndex((x86RegIndex)i));
+        break;
     }
 }
 

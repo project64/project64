@@ -7597,25 +7597,50 @@ void CX86RecompilerOps::COP1_S_ADD()
     uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
     uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
 
-    CompileCop1Test();
-    m_RegWorkingSet.FixRoundModel(CRegInfo::RoundDefault);
-
-    asmjit::x86::Gp StatusReg = m_RegWorkingSet.Map_FPStatusReg();
-    m_Assembler.and_(StatusReg, (uint32_t)(~0x0003F000));
-    m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, Reg1, CRegInfo::FPU_Float);
-    if (m_RegWorkingSet.RegInStack(Reg2, CRegInfo::FPU_Float))
+    if (FpuExceptionInRecompiler())
     {
-        m_Assembler.fadd(asmjit::x86::st0, m_RegWorkingSet.StackPosition(Reg2));
+        CompileInitFpuOperation(CRegInfo::RoundDefault);
+        if (m_RegWorkingSet.RegInStack(Reg2, CRegInfo::FPU_Float))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+        else
+        {
+            asmjit::x86::Gp TempReg = m_RegWorkingSet.FPRValuePointer(Reg1, CRegInfo::FPU_Float);
+            CompileCheckFPUInput32(TempReg);
+            m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(TempReg), false);
+            TempReg = m_RegWorkingSet.FPRValuePointer(Reg2, CRegInfo::FPU_Float);
+            CompileCheckFPUInput32(TempReg);
+            m_RegWorkingSet.PrepareFPTopToBe(m_Opcode.fd, Reg1, CRegInfo::FPU_Float);
+            m_Assembler.fadd(asmjit::x86::dword_ptr(TempReg));
+            m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(TempReg), false);
+        }
+        CompileCheckFPUResult32(m_Opcode.fd);
+        m_RegWorkingSet.SetFPTopAs(m_Opcode.fd);
     }
     else
     {
-        m_RegWorkingSet.UnMap_FPR(Reg2, true);
-        asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
-        m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[Reg2], stdstr_f("_FPR_S[%d]", Reg2).c_str());
-        m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fd, CRegInfo::FPU_Float);
-        m_Assembler.fadd(asmjit::x86::dword_ptr(TempReg));
+        CompileCop1Test();
+        m_RegWorkingSet.FixRoundModel(CRegInfo::RoundDefault);
+
+        asmjit::x86::Gp StatusReg = m_RegWorkingSet.Map_FPStatusReg();
+        m_Assembler.and_(StatusReg, (uint32_t)(~0x0003F000));
+        m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, Reg1, CRegInfo::FPU_Float);
+        if (m_RegWorkingSet.RegInStack(Reg2, CRegInfo::FPU_Float))
+        {
+            m_Assembler.fadd(asmjit::x86::st0, m_RegWorkingSet.StackPosition(Reg2));
+        }
+        else
+        {
+            m_RegWorkingSet.UnMap_FPR(Reg2, true);
+            asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
+            m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[Reg2], stdstr_f("_FPR_S[%d]", Reg2).c_str());
+            m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fd, CRegInfo::FPU_Float);
+            m_Assembler.fadd(asmjit::x86::dword_ptr(TempReg));
+        }
+        m_RegWorkingSet.UnMap_X86reg(StatusReg);
     }
-    m_RegWorkingSet.UnMap_X86reg(StatusReg);
 }
 
 void CX86RecompilerOps::COP1_S_SUB()
@@ -8474,6 +8499,100 @@ void CX86RecompilerOps::CompileExitCode()
     }
 }
 
+void CX86RecompilerOps::CompileCheckFPUInput32(asmjit::x86::Gp RegPointer)
+{
+    m_RegWorkingSet.UnMap_FPStatusReg();
+    asmjit::x86::Gp TempPointerValue = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
+    m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(TempPointerValue), false);
+    m_Assembler.mov(TempPointerValue, asmjit::x86::dword_ptr(RegPointer));
+    m_Assembler.and_(TempPointerValue, 0x7F800000);
+    asmjit::Label PossiblySubNormal = m_Assembler.newLabel();
+    m_Assembler.JzLabel("PossiblySubNormal", PossiblySubNormal);
+    m_Assembler.cmp(TempPointerValue, 0x7F800000);
+    asmjit::Label PossiblyNanJump = m_Assembler.newLabel();
+    asmjit::Label ValidFpu32Value = m_Assembler.newLabel();
+    m_Assembler.JeLabel("PossiblyNan", PossiblyNanJump);
+    m_Assembler.JmpLabel("ValidFpu32Value", ValidFpu32Value);
+    m_Assembler.bind(PossiblySubNormal);
+    m_Assembler.bind(PossiblyNanJump);
+    m_Assembler.mov(TempPointerValue, asmjit::x86::dword_ptr(RegPointer));
+    m_Assembler.MoveX86regToVariable(&m_TempValue32, "TempValue32", TempPointerValue);
+    m_RegWorkingSet.BeforeCallDirect();
+    m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
+    m_Assembler.MoveConstToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", m_CompilePC);
+    m_Assembler.PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
+    m_Assembler.CallFunc((uint32_t)R4300iOp::CheckFPUInput32, "R4300iOp::CheckFPUInput32");
+    m_Assembler.add(asmjit::x86::esp, 4);
+    m_Assembler.test(asmjit::x86::al, asmjit::x86::al);
+    m_RegWorkingSet.AfterCallDirect();
+    CRegInfo ExitRegSet = m_RegWorkingSet;
+    ExitRegSet.SetBlockCycleCount(ExitRegSet.GetBlockCycleCount() + g_System->CountPerOp());
+    CompileExit((uint32_t)-1, (uint32_t)-1, ExitRegSet, ExitReason_Exception, false, &CX86Ops::JnzLabel);
+    m_Assembler.bind(ValidFpu32Value);
+}
+
+void CX86RecompilerOps::CompileCheckFPUResult32(int32_t DestReg)
+{
+    m_RegWorkingSet.UnMap_FPStatusReg();
+    m_Assembler.fst(asmjit::x86::dword_ptr((uint64_t)&m_TempValue32));
+    asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::eax, -1, false, false);
+    m_Assembler.fnstsw(asmjit::x86::ax);
+    m_Assembler.and_(asmjit::x86::ax, 0x3D);
+    m_Assembler.cmp(asmjit::x86::ax, 0);
+    asmjit::Label FpuExceptionJump = m_Assembler.newLabel();
+    m_Assembler.JnzLabel("FpuException", FpuExceptionJump);
+    m_Assembler.AndConstToVariable(&m_TempValue32, "TempValue32", 0x7F800000);
+    asmjit::Label PossiblySubNormal = m_Assembler.newLabel();
+    m_Assembler.JzLabel("PossiblySubNormal", PossiblySubNormal);
+    m_Assembler.CompConstToVariable(&m_TempValue32, "TempValue32", 0x7F800000);
+    asmjit::Label PossiblyNanJump = m_Assembler.newLabel();
+    asmjit::Label DoNoModify = m_Assembler.newLabel();
+    m_Assembler.JeLabel("PossiblyNan", PossiblyNanJump);
+    m_Assembler.JmpLabel("DoNotModify", DoNoModify);
+    m_Assembler.bind(PossiblySubNormal);
+    m_Assembler.bind(PossiblyNanJump);
+    m_Assembler.bind(FpuExceptionJump);
+    m_Assembler.fst(asmjit::x86::dword_ptr((uint64_t)&m_TempValue32));
+    m_Assembler.MoveVariableToX86reg(TempReg, &m_TempValue32, "TempValue32");
+    m_RegWorkingSet.BeforeCallDirect();
+    m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
+    m_Assembler.MoveConstToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", m_CompilePC);
+    m_Assembler.PushImm32("Result", (uint32_t)&m_TempValue32);
+    m_Assembler.CallFunc((uint32_t)R4300iOp::CheckFPUResult32, "R4300iOp::CheckFPUResult32");
+    m_Assembler.add(asmjit::x86::esp, 4);
+    m_Assembler.test(asmjit::x86::al, asmjit::x86::al);
+    m_RegWorkingSet.AfterCallDirect();
+    CRegInfo ExitRegSet = m_RegWorkingSet;
+    ExitRegSet.SetBlockCycleCount(ExitRegSet.GetBlockCycleCount() + g_System->CountPerOp());
+    CompileExit((uint32_t)-1, (uint32_t)-1, ExitRegSet, ExitReason_Exception, false, &CX86Ops::JneLabel);
+    m_Assembler.cmp(TempReg, asmjit::x86::dword_ptr((uint64_t)&m_TempValue32));
+    asmjit::Label ValueSame = m_Assembler.newLabel();
+    m_Assembler.je(ValueSame);
+    ExitRegSet = m_RegWorkingSet;
+    for (int32_t i = 0; i < x86RegFpuIndex_Size; i++)
+    {
+        if (ExitRegSet.FpuMappedTo(i) != DestReg)
+        {
+            continue;
+        }
+        m_CodeBlock.Log("    regcache: unallocate %s from ST(%d)", CRegName::FPR[DestReg], (i - ExitRegSet.StackTopPos() + 8) & 7);
+        ExitRegSet.FpuRoundingModel(i) = CRegBase::RoundDefault;
+        ExitRegSet.FpuMappedTo(i) = -1;
+        ExitRegSet.FpuState(i) = CX86RegInfo::FPU_Unknown;
+        ExitRegSet.FpuStateChanged(i) = false;
+        break;
+    }
+    m_Assembler.MoveVariableToX86reg(TempReg, &m_TempValue32, "TempValue32");
+    asmjit::x86::Gp TempRegFPR_S = ExitRegSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
+    m_Assembler.MoveVariableToX86reg(TempRegFPR_S, &m_Reg.m_FPR_S[DestReg], stdstr_f("_FPR_S[%d]", DestReg).c_str());
+    m_Assembler.mov(asmjit::x86::dword_ptr(TempRegFPR_S), TempReg);
+    ExitRegSet.SetBlockCycleCount(ExitRegSet.GetBlockCycleCount() + g_System->CountPerOp());
+    CompileExit(m_CompilePC + 4, m_CompilePC + 4, ExitRegSet, ExitReason_Normal, false, &CX86Ops::JmpLabel);
+
+    m_Assembler.bind(ValueSame);
+    m_Assembler.bind(DoNoModify);
+}
+
 void CX86RecompilerOps::CompileCop1Test()
 {
     if (m_RegWorkingSet.GetFpuBeenUsed())
@@ -8487,6 +8606,20 @@ void CX86RecompilerOps::CompileCop1Test()
     ExitRegSet.SetBlockCycleCount(ExitRegSet.GetBlockCycleCount() + g_System->CountPerOp());
     CompileExit(m_CompilePC, m_CompilePC, ExitRegSet, ExitReason_COP1Unuseable, false, &CX86Ops::JeLabel);
     m_RegWorkingSet.SetFpuBeenUsed(true);
+}
+
+void CX86RecompilerOps::CompileInitFpuOperation(CRegBase::FPU_ROUND RoundMethod)
+{
+    static uint32_t StatusRegister = 0;
+
+    CompileCop1Test();
+    asmjit::x86::Gp StatusReg = m_RegWorkingSet.Map_FPStatusReg();
+    m_Assembler.and_(StatusReg, (uint32_t)(~0x0003F000));
+    m_RegWorkingSet.FixRoundModel(RoundMethod);
+    m_Assembler.stmxcsr(asmjit::x86::dword_ptr((uint64_t)&StatusRegister));
+    m_Assembler.and_(asmjit::x86::dword_ptr((uint64_t)&StatusRegister), ~0x20);
+    m_Assembler.ldmxcsr(asmjit::x86::dword_ptr((uint64_t)&StatusRegister));
+    m_Assembler.fclex();
 }
 
 void CX86RecompilerOps::CompileInPermLoop(CRegInfo & RegSet, uint32_t ProgramCounter)

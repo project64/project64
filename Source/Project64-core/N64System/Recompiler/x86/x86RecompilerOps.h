@@ -219,7 +219,10 @@ public:
     void EnterCodeBlock();
     void ExitCodeBlock();
     void CompileExitCode();
+    void CompileCheckFPUInput32(asmjit::x86::Gp RegPointer);
+    void CompileCheckFPUResult32(int32_t DestReg);
     void CompileCop1Test();
+    void CompileInitFpuOperation(CRegBase::FPU_ROUND RoundMethod);
     void CompileInPermLoop(CRegInfo & RegSet, uint32_t ProgramCounter);
     void SyncRegState(const CRegInfo & SyncTo);
     bool SetupRegisterForLoop(CCodeBlock & BlockInfo, const CRegInfo & RegSet);

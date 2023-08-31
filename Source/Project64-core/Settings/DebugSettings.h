@@ -80,6 +80,10 @@ public:
     {
         return m_EndOnPermLoop;
     }
+    static inline bool FpuExceptionInRecompiler(void)
+    {
+        return m_FpuExceptionInRecompiler;
+    }
     static inline bool BreakOnUnhandledMemory(void)
     {
         return m_BreakOnUnhandledMemory;
@@ -119,6 +123,7 @@ private:
     static uint32_t m_IntrBreakpoints;
     static uint32_t m_RcpIntrBreakpoints;
     static bool m_EndOnPermLoop;
+    static bool m_FpuExceptionInRecompiler;
     static bool m_BreakOnUnhandledMemory;
     static bool m_BreakOnAddressError;
     static bool m_StepOnBreakOpCode;

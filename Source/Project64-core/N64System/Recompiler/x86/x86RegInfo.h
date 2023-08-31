@@ -81,7 +81,10 @@ public:
 
     void FixRoundModel(FPU_ROUND RoundMethod);
     void ChangeFPURegFormat(int32_t Reg, FPU_STATE OldFormat, FPU_STATE NewFormat, FPU_ROUND RoundingModel);
+    asmjit::x86::Gp FPRValuePointer(int32_t Reg, FPU_STATE Format);
     void Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Format);
+    void PrepareFPTopToBe(int32_t Reg, int32_t RegToLoad, FPU_STATE Format);
+    void SetFPTopAs(int32_t Reg);
     bool RegInStack(int32_t Reg, FPU_STATE Format);
     void UnMap_AllFPRs();
     void UnMap_FPR(int32_t Reg, bool WriteBackValue);
@@ -99,6 +102,7 @@ public:
     void UnProtectGPR(uint32_t MipsReg);
     void ResetX86Protection();
     asmjit::x86::Gp UnMap_TempReg();
+    void UnMap_FPStatusReg();
     void UnMap_GPR(uint32_t Reg, bool WriteBackValue);
     bool UnMap_X86reg(const asmjit::x86::Gp & Reg);
     void WriteBackRegisters();
@@ -158,6 +162,10 @@ public:
     FPU_STATE & FpuState(int32_t Reg)
     {
         return m_x86fpu_State[Reg];
+    }
+    bool & FpuStateChanged(int32_t Reg)
+    {
+        return m_x86fpu_StateChanged[Reg];
     }
     FPU_ROUND & FpuRoundingModel(int32_t Reg)
     {
