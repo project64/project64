@@ -270,7 +270,6 @@ protected:
     static bool CheckFPUInput64Conv(const double & Value);
     static bool CheckFPUResult32(float & Result);
     static bool CheckFPUResult64(double & Result);
-    static bool CheckFPUException(void);
     static bool CheckFPUInvalidException(void);
     static bool InitFpuOperation(FPRoundingMode RoundingModel);
     static bool SetFPUException(void);
