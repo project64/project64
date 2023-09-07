@@ -55,3 +55,23 @@ void AccumulatorSet(uint8_t el, int64_t Accumulator)
     RSP_ACCUM[el].HW[2] = (int16_t)(Accumulator >> 16);
     RSP_ACCUM[el].HW[1] = (int16_t)(Accumulator);
 }
+
+uint16_t AccumulatorSaturate(uint8_t el, bool High)
+{
+    if (RSP_ACCUM[el].HW[3] < 0)
+    {
+        if (RSP_ACCUM[el].UHW[3] != 0xFFFF || RSP_ACCUM[el].HW[2] >= 0)
+        {
+            return High ? 0x8000 : 0x0000;
+        }
+        else
+        {
+            return RSP_ACCUM[el].UHW[High ? 2 : 1];
+        }
+    }
+    if (RSP_ACCUM[el].UHW[3] != 0 || RSP_ACCUM[el].HW[2] < 0)
+    {
+        return High ? 0x7fff : 0xffff;
+    }
+    return RSP_ACCUM[el].UHW[High ? 2 : 1];
+}

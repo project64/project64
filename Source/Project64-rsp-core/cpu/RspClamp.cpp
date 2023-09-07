@@ -18,7 +18,7 @@ int64_t clip48(uint64_t Value)
     enum : uint64_t
     {
         b = 1ull << (48 - 1),
-        m = b * 2 - 1 
+        m = b * 2 - 1
     };
     return ((Value & m) ^ b) - b;
 }

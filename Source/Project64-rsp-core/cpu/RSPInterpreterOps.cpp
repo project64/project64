@@ -643,50 +643,26 @@ void RSP_COP2_VECTOR(void)
 
 void RSP_Vector_VMULF(void)
 {
-    uint8_t el, del;
-    UWORD32 temp;
     RSPVector Result;
-
-    for (el = 0; el < 8; el++)
+    for (uint8_t el = 0; el < 8; el++)
     {
-        del = EleSpec[RSPOpC.e].B[el];
-
-        if (RSP_Vect[RSPOpC.vs].u16(el) != 0x8000 || RSP_Vect[RSPOpC.vt].u16(del) != 0x8000)
-        {
-            temp.W = ((int32_t)RSP_Vect[RSPOpC.vs].s16(el) * (int32_t)RSP_Vect[RSPOpC.vt].s16(del)) << 1;
-            temp.UW += 0x8000;
-            RSP_ACCUM[el].HW[2] = temp.HW[1];
-            RSP_ACCUM[el].HW[1] = temp.HW[0];
-            RSP_ACCUM[el].HW[3] = (RSP_ACCUM[el].HW[2] < 0) ? -1 : 0;
-            Result.s16(el) = RSP_ACCUM[el].HW[2];
-        }
-        else
-        {
-            temp.W = 0x80000000;
-            RSP_ACCUM[el].UHW[3] = 0;
-            RSP_ACCUM[el].UHW[2] = 0x8000;
-            RSP_ACCUM[el].UHW[1] = 0x8000;
-            Result.s16(el) = 0x7FFF;
-        }
+        AccumulatorSet(el, ((int64_t)RSP_Vect[RSPOpC.vs].s16(el) * (int64_t)RSP_Vect[RSPOpC.vt].se(el, RSPOpC.e) * 2) + 0x8000);
+        Result.s16(el) = AccumulatorSaturate(el, true);
     }
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
 void RSP_Vector_VMULU(void)
 {
-    uint8_t el, del;
     RSPVector Result;
-
-    for (el = 0; el < 8; el++)
+    for (uint8_t el = 0; el < 8; el++)
     {
-        del = EleSpec[RSPOpC.e].B[el];
-        RSP_ACCUM[el].DW = (int64_t)(RSP_Vect[RSPOpC.vs].s16(el) * RSP_Vect[RSPOpC.vt].s16(del)) << 17;
-        RSP_ACCUM[el].DW += 0x80000000;
-        if (RSP_ACCUM[el].DW < 0)
+        AccumulatorSet(el, ((int64_t)RSP_Vect[RSPOpC.vs].s16(el) * (int64_t)RSP_Vect[RSPOpC.vt].se(el, RSPOpC.e) * 2) + 0x8000);
+        if (RSP_ACCUM[el].HW[3] < 0)
         {
             Result.s16(el) = 0;
         }
-        else if ((int16_t)(RSP_ACCUM[el].UHW[3] ^ RSP_ACCUM[el].UHW[2]) < 0)
+        else if ((RSP_ACCUM[el].HW[3] ^ RSP_ACCUM[el].HW[2]) < 0)
         {
             Result.s16(el) = -1;
         }
@@ -721,17 +697,10 @@ void RSP_Vector_VRNDP(void)
 
 void RSP_Vector_VMUDL(void)
 {
-    uint8_t el, del;
-    UWORD32 temp;
     RSPVector Result;
-
-    for (el = 0; el < 8; el++)
+    for (uint8_t el = 0; el < 8; el++)
     {
-        del = EleSpec[RSPOpC.e].B[el];
-
-        temp.UW = (uint32_t)RSP_Vect[RSPOpC.vs].u16(el) * (uint32_t)RSP_Vect[RSPOpC.vt].u16(del);
-        RSP_ACCUM[el].W[1] = 0;
-        RSP_ACCUM[el].HW[1] = temp.HW[1];
+        AccumulatorSet(el, (uint16_t)((uint32_t)RSP_Vect[RSPOpC.vs].u16(el) * (uint32_t)RSP_Vect[RSPOpC.vt].ue(el, RSPOpC.e) >> 16));
         Result.s16(el) = RSP_ACCUM[el].HW[1];
     }
     RSP_Vect[RSPOpC.vd] = Result;
@@ -739,25 +708,10 @@ void RSP_Vector_VMUDL(void)
 
 void RSP_Vector_VMUDM(void)
 {
-    uint8_t el, del;
-    UWORD32 temp;
     RSPVector Result;
-
-    for (el = 0; el < 8; el++)
+    for (uint8_t el = 0; el < 8; el++)
     {
-        del = EleSpec[RSPOpC.e].B[el];
-
-        temp.UW = (uint32_t)((int32_t)RSP_Vect[RSPOpC.vs].s16(el)) * (uint32_t)RSP_Vect[RSPOpC.vt].u16(del);
-        if (temp.W < 0)
-        {
-            RSP_ACCUM[el].HW[3] = -1;
-        }
-        else
-        {
-            RSP_ACCUM[el].HW[3] = 0;
-        }
-        RSP_ACCUM[el].HW[2] = temp.HW[1];
-        RSP_ACCUM[el].HW[1] = temp.HW[0];
+        AccumulatorSet(el, (int32_t)((int32_t)RSP_Vect[RSPOpC.vs].s16(el) * (uint32_t)RSP_Vect[RSPOpC.vt].ue(el, RSPOpC.e)));
         Result.s16(el) = RSP_ACCUM[el].HW[2];
     }
     RSP_Vect[RSPOpC.vd] = Result;
@@ -784,25 +738,10 @@ void RSP_Vector_VMULQ(void)
 
 void RSP_Vector_VMUDN(void)
 {
-    uint8_t el, del;
-    UWORD32 temp;
     RSPVector Result;
-
-    for (el = 0; el < 8; el++)
+    for (uint8_t el = 0; el < 8; el++)
     {
-        del = EleSpec[RSPOpC.e].B[el];
-
-        temp.UW = (uint32_t)RSP_Vect[RSPOpC.vs].u16(el) * (uint32_t)((int32_t)RSP_Vect[RSPOpC.vt].s16(del));
-        if (temp.W < 0)
-        {
-            RSP_ACCUM[el].HW[3] = -1;
-        }
-        else
-        {
-            RSP_ACCUM[el].HW[3] = 0;
-        }
-        RSP_ACCUM[el].HW[2] = temp.HW[1];
-        RSP_ACCUM[el].HW[1] = temp.HW[0];
+        AccumulatorSet(el, (int32_t)((uint32_t)RSP_Vect[RSPOpC.vs].u16(el) * (uint32_t)((int32_t)RSP_Vect[RSPOpC.vt].se(el, RSPOpC.e))));
         Result.s16(el) = RSP_ACCUM[el].HW[1];
     }
     RSP_Vect[RSPOpC.vd] = Result;
@@ -810,154 +749,44 @@ void RSP_Vector_VMUDN(void)
 
 void RSP_Vector_VMUDH(void)
 {
-    uint8_t el, del;
     RSPVector Result;
-
-    for (el = 0; el < 8; el++)
+    for (uint8_t el = 0; el < 8; el++)
     {
-        del = EleSpec[RSPOpC.e].B[el];
-
-        RSP_ACCUM[el].W[1] = (int32_t)RSP_Vect[RSPOpC.vs].s16(el) * (int32_t)RSP_Vect[RSPOpC.vt].s16(del);
+        RSP_ACCUM[el].W[1] = (int32_t)RSP_Vect[RSPOpC.vs].s16(el) * (int32_t)RSP_Vect[RSPOpC.vt].se(el, RSPOpC.e);
         RSP_ACCUM[el].HW[1] = 0;
-        if (RSP_ACCUM[el].HW[3] < 0)
-        {
-            if (RSP_ACCUM[el].UHW[3] != 0xFFFF)
-            {
-                Result.u16(el) = 0x8000;
-            }
-            else
-            {
-                if (RSP_ACCUM[el].HW[2] >= 0)
-                {
-                    Result.u16(el) = 0x8000;
-                }
-                else
-                {
-                    Result.s16(el) = RSP_ACCUM[el].HW[2];
-                }
-            }
-        }
-        else
-        {
-            if (RSP_ACCUM[el].UHW[3] != 0)
-            {
-                Result.u16(el) = 0x7FFF;
-            }
-            else
-            {
-                if (RSP_ACCUM[el].HW[2] < 0)
-                {
-                    Result.s16(el) = 0x7FFF;
-                }
-                else
-                {
-                    Result.s16(el) = RSP_ACCUM[el].HW[2];
-                }
-            }
-        }
+        Result.u16(el) = AccumulatorSaturate(el, true);
     }
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
 void RSP_Vector_VMACF(void)
 {
-    uint8_t el, del;
-    UWORD32 temp;
     RSPVector Result;
-
-    for (el = 0; el < 8; el++)
+    for (uint8_t el = 0; el < 8; el++)
     {
-        del = EleSpec[RSPOpC.e].B[el];
-
-        /*temp.W = (long)RSP_Vect[RSPOpC.vs].s16(el) * (long)(DWORD)RSP_Vect[RSPOpC.vt].s16(del);
-		RSP_ACCUM[el].UHW[3] += (WORD)(temp.W >> 31);
-		temp.UW = temp.UW << 1;
-		temp2.UW = temp.UHW[0] + RSP_ACCUM[el].UHW[1];
-		RSP_ACCUM[el].HW[1] = temp2.HW[0];
-		temp2.UW = temp.UHW[1] + RSP_ACCUM[el].UHW[2] + temp2.UHW[1];
-		RSP_ACCUM[el].HW[2] = temp2.HW[0];
-		RSP_ACCUM[el].HW[3] += temp2.HW[1];*/
-        temp.W = (int32_t)RSP_Vect[RSPOpC.vs].s16(el) * (int32_t)(uint32_t)RSP_Vect[RSPOpC.vt].s16(del);
-        RSP_ACCUM[el].DW += ((int64_t)temp.W) << 17;
-        if (RSP_ACCUM[el].HW[3] < 0)
-        {
-            if (RSP_ACCUM[el].UHW[3] != 0xFFFF)
-            {
-                Result.u16(el) = 0x8000;
-            }
-            else
-            {
-                if (RSP_ACCUM[el].HW[2] >= 0)
-                {
-                    Result.u16(el) = 0x8000;
-                }
-                else
-                {
-                    Result.s16(el) = RSP_ACCUM[el].HW[2];
-                }
-            }
-        }
-        else
-        {
-            if (RSP_ACCUM[el].UHW[3] != 0)
-            {
-                Result.s16(el) = 0x7FFF;
-            }
-            else
-            {
-                if (RSP_ACCUM[el].HW[2] < 0)
-                {
-                    Result.s16(el) = 0x7FFF;
-                }
-                else
-                {
-                    Result.s16(el) = RSP_ACCUM[el].HW[2];
-                }
-            }
-        }
+        AccumulatorSet(el, AccumulatorGet(el) + (((int64_t)RSP_Vect[RSPOpC.vs].s16(el) * (int64_t)RSP_Vect[RSPOpC.vt].se(el, RSPOpC.e)) << 1));
+        Result.u16(el) = AccumulatorSaturate(el, true);
     }
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
 void RSP_Vector_VMACU(void)
 {
-    uint8_t el, del;
-    UWORD32 temp, temp2;
     RSPVector Result;
-
-    for (el = 0; el < 8; el++)
+    for (uint8_t el = 0; el < 8; el++)
     {
-        del = EleSpec[RSPOpC.e].B[el];
-
-        temp.W = (int32_t)RSP_Vect[RSPOpC.vs].s16(el) * (int32_t)(uint32_t)RSP_Vect[RSPOpC.vt].s16(del);
-        RSP_ACCUM[el].UHW[3] = (RSP_ACCUM[el].UHW[3] + (uint16_t)(temp.W >> 31)) & 0xFFFF;
-        temp.UW = temp.UW << 1;
-        temp2.UW = temp.UHW[0] + RSP_ACCUM[el].UHW[1];
-        RSP_ACCUM[el].HW[1] = temp2.HW[0];
-        temp2.UW = temp.UHW[1] + RSP_ACCUM[el].UHW[2] + temp2.UHW[1];
-        RSP_ACCUM[el].HW[2] = temp2.HW[0];
-        RSP_ACCUM[el].HW[3] += temp2.HW[1];
+        AccumulatorSet(el, AccumulatorGet(el) + (((int64_t)RSP_Vect[RSPOpC.vs].s16(el) * (int64_t)RSP_Vect[RSPOpC.vt].se(el, RSPOpC.e)) << 1));
         if (RSP_ACCUM[el].HW[3] < 0)
         {
             Result.s16(el) = 0;
         }
+        else if (RSP_ACCUM[el].UHW[3] != 0 || RSP_ACCUM[el].HW[2] < 0)
+        {
+            Result.u16(el) = 0xFFFF;
+        }
         else
         {
-            if (RSP_ACCUM[el].UHW[3] != 0)
-            {
-                Result.u16(el) = 0xFFFF;
-            }
-            else
-            {
-                if (RSP_ACCUM[el].HW[2] < 0)
-                {
-                    Result.u16(el) = 0xFFFF;
-                }
-                else
-                {
-                    Result.s16(el) = RSP_ACCUM[el].HW[2];
-                }
-            }
+            Result.s16(el) = RSP_ACCUM[el].HW[2];
         }
     }
     RSP_Vect[RSPOpC.vd] = Result;
@@ -965,65 +794,21 @@ void RSP_Vector_VMACU(void)
 
 void RSP_Vector_VMACQ(void)
 {
-    uint8_t el, del;
-    UWORD32 temp;
     RSPVector Result;
-
-    for (el = 0; el < 8; el++)
+    for (uint8_t el = 0; el < 8; el++)
     {
-        del = EleSpec[RSPOpC.e].B[el];
-
-        if (RSP_ACCUM[el].W[1] > 0x20)
+        int32_t Accum = (RSP_ACCUM[el].UHW[3] << 16) | RSP_ACCUM[el].UHW[2];
+        if (Accum < -0x20 && ((Accum & 0x20) == 0))
         {
-            if ((RSP_ACCUM[el].W[1] & 0x20) == 0)
-            {
-                RSP_ACCUM[el].W[1] -= 0x20;
-            }
+            Accum += 0x20;
         }
-        else if (RSP_ACCUM[el].W[1] < -0x20)
+        else if (Accum > 0x20 && (Accum & 0x20) == 0)
         {
-            if ((RSP_ACCUM[el].W[1] & 0x20) == 0)
-            {
-                RSP_ACCUM[el].W[1] += 0x20;
-            }
+            Accum -= 0x20;
         }
-        temp.W = RSP_ACCUM[el].W[1] >> 1;
-        if (temp.HW[1] < 0)
-        {
-            if (temp.UHW[1] != 0xFFFF)
-            {
-                Result.u16(el) = 0x8000;
-            }
-            else
-            {
-                if (temp.HW[0] >= 0)
-                {
-                    Result.u16(el) = 0x8000;
-                }
-                else
-                {
-                    Result.u16(el) = (uint16_t)(temp.UW & 0xFFF0);
-                }
-            }
-        }
-        else
-        {
-            if (temp.UHW[1] != 0)
-            {
-                Result.u16(el) = 0x7FF0;
-            }
-            else
-            {
-                if (temp.HW[0] < 0)
-                {
-                    Result.u16(el) = 0x7FF0;
-                }
-                else
-                {
-                    Result.u16(el) = (uint16_t)(temp.UW & 0xFFF0);
-                }
-            }
-        }
+        Result.u16(el) = clamp16(Accum >> 1) & 0xFFF0;
+        RSP_ACCUM[el].UHW[3] = (uint16_t)(Accum >> 16);
+        RSP_ACCUM[el].UHW[2] = (uint16_t)Accum;
     }
     RSP_Vect[RSPOpC.vd] = Result;
 }
@@ -1051,227 +836,46 @@ void RSP_Vector_VRNDN(void)
 
 void RSP_Vector_VMADL(void)
 {
-    uint8_t el, del;
-    UWORD32 temp, temp2;
     RSPVector Result;
-
-    for (el = 0; el < 8; el++)
+    for (uint8_t el = 0; el < 8; el++)
     {
-        del = EleSpec[RSPOpC.e].B[el];
-
-        temp.UW = (uint32_t)RSP_Vect[RSPOpC.vs].u16(el) * (uint32_t)RSP_Vect[RSPOpC.vt].u16(del);
-        temp2.UW = temp.UHW[1] + RSP_ACCUM[el].UHW[1];
-        RSP_ACCUM[el].HW[1] = temp2.HW[0];
-        temp2.UW = RSP_ACCUM[el].UHW[2] + temp2.UHW[1];
-        RSP_ACCUM[el].HW[2] = temp2.HW[0];
-        RSP_ACCUM[el].HW[3] += temp2.HW[1];
-        if (RSP_ACCUM[el].HW[3] < 0)
-        {
-            if (RSP_ACCUM[el].UHW[3] != 0xFFFF)
-            {
-                Result.u16(el) = 0;
-            }
-            else
-            {
-                if (RSP_ACCUM[el].HW[2] >= 0)
-                {
-                    Result.u16(el) = 0;
-                }
-                else
-                {
-                    Result.u16(el) = RSP_ACCUM[el].UHW[1];
-                }
-            }
-        }
-        else
-        {
-            if (RSP_ACCUM[el].UHW[3] != 0)
-            {
-                Result.u16(el) = 0xFFFF;
-            }
-            else
-            {
-                if (RSP_ACCUM[el].HW[2] < 0)
-                {
-                    Result.u16(el) = 0xFFFF;
-                }
-                else
-                {
-                    Result.u16(el) = RSP_ACCUM[el].UHW[1];
-                }
-            }
-        }
+        AccumulatorSet(el, AccumulatorGet(el) + (((uint32_t)(RSP_Vect[RSPOpC.vs].u16(el)) * (uint32_t)RSP_Vect[RSPOpC.vt].ue(el, RSPOpC.e)) >> 16));
+        Result.u16(el) = AccumulatorSaturate(el, false);
     }
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
 void RSP_Vector_VMADM(void)
 {
-    uint8_t el, del;
-    UWORD32 temp, temp2;
     RSPVector Result;
-
-    for (el = 0; el < 8; el++)
+    for (uint8_t el = 0; el < 8; el++)
     {
-        del = EleSpec[RSPOpC.e].B[el];
-
-        temp.UW = (uint32_t)((int32_t)RSP_Vect[RSPOpC.vs].s16(el)) * (uint32_t)RSP_Vect[RSPOpC.vt].u16(del);
-        temp2.UW = temp.UHW[0] + RSP_ACCUM[el].UHW[1];
-        RSP_ACCUM[el].HW[1] = temp2.HW[0];
-        temp2.UW = temp.UHW[1] + RSP_ACCUM[el].UHW[2] + temp2.UHW[1];
-        RSP_ACCUM[el].HW[2] = temp2.HW[0];
-        RSP_ACCUM[el].HW[3] += temp2.HW[1];
-        if (temp.W < 0)
-        {
-            RSP_ACCUM[el].HW[3] -= 1;
-        }
-        if (RSP_ACCUM[el].HW[3] < 0)
-        {
-            if (RSP_ACCUM[el].UHW[3] != 0xFFFF)
-            {
-                Result.u16(el) = 0x8000;
-            }
-            else
-            {
-                if (RSP_ACCUM[el].HW[2] >= 0)
-                {
-                    Result.u16(el) = 0x8000;
-                }
-                else
-                {
-                    Result.s16(el) = RSP_ACCUM[el].HW[2];
-                }
-            }
-        }
-        else
-        {
-            if (RSP_ACCUM[el].UHW[3] != 0)
-            {
-                Result.u16(el) = 0x7FFF;
-            }
-            else
-            {
-                if (RSP_ACCUM[el].HW[2] < 0)
-                {
-                    Result.u16(el) = 0x7FFF;
-                }
-                else
-                {
-                    Result.u16(el) = RSP_ACCUM[el].UHW[2];
-                }
-            }
-        }
-        //Result.s16(el) = RSP_ACCUM[el].HW[2];
+        AccumulatorSet(el, AccumulatorGet(el) + (RSP_Vect[RSPOpC.vs].s16(el) * RSP_Vect[RSPOpC.vt].ue(el, RSPOpC.e)));
+        Result.u16(el) = AccumulatorSaturate(el, true);
     }
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
 void RSP_Vector_VMADN(void)
 {
-    uint8_t el, del;
-    UWORD32 temp, temp2;
     RSPVector Result;
-
-    for (el = 0; el < 8; el++)
+    for (uint8_t el = 0; el < 8; el++)
     {
-        del = EleSpec[RSPOpC.e].B[el];
-
-        temp.UW = (uint32_t)RSP_Vect[RSPOpC.vs].u16(el) * (uint32_t)((int32_t)RSP_Vect[RSPOpC.vt].s16(del));
-        temp2.UW = temp.UHW[0] + RSP_ACCUM[el].UHW[1];
-        RSP_ACCUM[el].HW[1] = temp2.HW[0];
-        temp2.UW = temp.UHW[1] + RSP_ACCUM[el].UHW[2] + temp2.UHW[1];
-        RSP_ACCUM[el].HW[2] = temp2.HW[0];
-        RSP_ACCUM[el].HW[3] += temp2.HW[1];
-        if (temp.W < 0)
-        {
-            RSP_ACCUM[el].HW[3] -= 1;
-        }
-        if (RSP_ACCUM[el].HW[3] < 0)
-        {
-            if (RSP_ACCUM[el].UHW[3] != 0xFFFF)
-            {
-                Result.u16(el) = 0;
-            }
-            else
-            {
-                if (RSP_ACCUM[el].HW[2] >= 0)
-                {
-                    Result.u16(el) = 0;
-                }
-                else
-                {
-                    Result.u16(el) = RSP_ACCUM[el].UHW[1];
-                }
-            }
-        }
-        else
-        {
-            if (RSP_ACCUM[el].UHW[3] != 0)
-            {
-                Result.u16(el) = 0xFFFF;
-            }
-            else
-            {
-                if (RSP_ACCUM[el].HW[2] < 0)
-                {
-                    Result.u16(el) = 0xFFFF;
-                }
-                else
-                {
-                    Result.u16(el) = RSP_ACCUM[el].UHW[1];
-                }
-            }
-        }
+        AccumulatorSet(el, AccumulatorGet(el) + (int64_t)(RSP_Vect[RSPOpC.vs].u16(el) * RSP_Vect[RSPOpC.vt].se(el, RSPOpC.e)));
+        Result.u16(el) = AccumulatorSaturate(el, false);
     }
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
 void RSP_Vector_VMADH(void)
 {
-    uint8_t el, del;
     RSPVector Result;
-
-    for (el = 0; el < 8; el++)
+    for (uint8_t el = 0; el < 8; el++)
     {
-        del = EleSpec[RSPOpC.e].B[el];
-
-        RSP_ACCUM[el].W[1] += (int32_t)RSP_Vect[RSPOpC.vs].s16(el) * (int32_t)RSP_Vect[RSPOpC.vt].s16(del);
-        if (RSP_ACCUM[el].HW[3] < 0)
-        {
-            if (RSP_ACCUM[el].UHW[3] != 0xFFFF)
-            {
-                Result.u16(el) = 0x8000;
-            }
-            else
-            {
-                if (RSP_ACCUM[el].HW[2] >= 0)
-                {
-                    Result.u16(el) = 0x8000;
-                }
-                else
-                {
-                    Result.u16(el) = RSP_ACCUM[el].HW[2];
-                }
-            }
-        }
-        else
-        {
-            if (RSP_ACCUM[el].UHW[3] != 0)
-            {
-                Result.u16(el) = 0x7FFF;
-            }
-            else
-            {
-                if (RSP_ACCUM[el].HW[2] < 0)
-                {
-                    Result.u16(el) = 0x7FFF;
-                }
-                else
-                {
-                    Result.u16(el) = RSP_ACCUM[el].UHW[2];
-                }
-            }
-        }
+        int32_t Value = (int32_t)((AccumulatorGet(el) >> 16) + (int32_t)RSP_Vect[RSPOpC.vs].s16(el) * (int32_t)RSP_Vect[RSPOpC.vt].se(el, RSPOpC.e));
+        RSP_ACCUM[el].HW[3] = (int16_t)(Value >> 16);
+        RSP_ACCUM[el].HW[2] = (int16_t)(Value >> 0);
+        Result.u16(el) = AccumulatorSaturate(el, true);
     }
     RSP_Vect[RSPOpC.vd] = Result;
 }

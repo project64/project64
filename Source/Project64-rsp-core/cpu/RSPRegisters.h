@@ -101,6 +101,8 @@ void UpdateRSPRegistersScreen(void);
 
 int64_t AccumulatorGet(uint8_t el);
 void AccumulatorSet(uint8_t el, int64_t Accumulator);
+uint16_t AccumulatorSaturate(uint8_t el, bool High);
+
 // RSP registers
 extern UWORD32 RSP_GPR[32], RSP_Flags[4];
 extern UDWORD RSP_ACCUM[8];
