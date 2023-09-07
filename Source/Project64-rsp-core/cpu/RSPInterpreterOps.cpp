@@ -698,6 +698,27 @@ void RSP_Vector_VMULU(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
+void RSP_Vector_VRNDP(void)
+{
+    RSPVector Result;
+    for (uint8_t el = 0; el < 8; el++)
+    {
+        int32_t Value = RSP_Vect[RSPOpC.vt].se(el, RSPOpC.e);
+        if (RSPOpC.vs & 1)
+        {
+            Value <<= 16;
+        }
+        int64_t Accum = AccumulatorGet(el);
+        if (Accum >= 0)
+        {
+            Accum = clip48(Accum + Value);
+        }
+        AccumulatorSet(el, Accum);
+        Result.s16(el) = clamp16((int32_t)(Accum >> 16));
+    }
+    RSP_Vect[RSPOpC.vd] = Result;
+}
+
 void RSP_Vector_VMUDL(void)
 {
     uint8_t el, del;
@@ -1003,6 +1024,27 @@ void RSP_Vector_VMACQ(void)
                 }
             }
         }
+    }
+    RSP_Vect[RSPOpC.vd] = Result;
+}
+
+void RSP_Vector_VRNDN(void)
+{
+    RSPVector Result;
+    for (uint8_t el = 0; el < 8; el++)
+    {
+        int32_t Value = RSP_Vect[RSPOpC.vt].se(el, RSPOpC.e);
+        if (RSPOpC.vs & 1)
+        {
+            Value <<= 16;
+        }
+        int64_t Accum = AccumulatorGet(el);
+        if (Accum < 0)
+        {
+            Accum = clip48(Accum + Value);
+        }
+        AccumulatorSet(el, Accum);
+        Result.s16(el) = clamp16((int32_t)(Accum >> 16));
     }
     RSP_Vect[RSPOpC.vd] = Result;
 }

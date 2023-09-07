@@ -43,3 +43,15 @@ char * GPR_Strings[32] = {
     "S8",
     "RA",
 };
+
+int64_t AccumulatorGet(uint8_t el)
+{
+    return (((int64_t)RSP_ACCUM[el].HW[3]) << 32) | (((int64_t)RSP_ACCUM[el].UHW[2]) << 16) | RSP_ACCUM[el].UHW[1];
+}
+
+void AccumulatorSet(uint8_t el, int64_t Accumulator)
+{
+    RSP_ACCUM[el].HW[3] = (int16_t)(Accumulator >> 32);
+    RSP_ACCUM[el].HW[2] = (int16_t)(Accumulator >> 16);
+    RSP_ACCUM[el].HW[1] = (int16_t)(Accumulator);
+}
