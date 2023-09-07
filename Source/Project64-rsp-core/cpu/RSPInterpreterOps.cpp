@@ -1276,10 +1276,6 @@ void RSP_Vector_VSUB(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VSUT(void)
-{
-}
-
 void RSP_Vector_VABS(void)
 {
     RSPVector Result;
@@ -1340,6 +1336,15 @@ void RSP_Vector_VSUBC(void)
         }
     }
     RSP_Vect[RSPOpC.vd] = Result;
+}
+
+void RSP_Vector_Reserved(void)
+{
+    for (uint8_t el = 0; el < 8; el++)
+    {
+        RSP_ACCUM[el].HW[1] = RSP_Vect[RSPOpC.vs].s16(el) + RSP_Vect[RSPOpC.vt].se(el, RSPOpC.e);
+    }
+    RSP_Vect[RSPOpC.vd] = RSPVector();
 }
 
 void RSP_Vector_VSAW(void)
