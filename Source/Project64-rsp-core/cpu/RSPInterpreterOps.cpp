@@ -6,6 +6,7 @@
 #include <Project64-rsp-core/RSPDebugger.h>
 #include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/Settings/RspSettings.h>
+#include <Project64-rsp-core/cpu/RspClamp.h>
 #include <Project64-rsp-core/cpu/RspDma.h>
 #include <Settings/Settings.h>
 #include <algorithm>

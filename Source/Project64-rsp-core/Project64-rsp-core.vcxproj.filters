@@ -93,6 +93,9 @@
     <ClCompile Include="cpu\RspDma.cpp">
       <Filter>Source Files\cpu</Filter>
     </ClCompile>
+    <ClCompile Include="cpu\RspClamp.cpp">
+      <Filter>Source Files\cpu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cpu\RSPInstruction.h">
@@ -147,6 +150,9 @@
       <Filter>Header Files\Recompiler</Filter>
     </ClInclude>
     <ClInclude Include="cpu\RspDma.h">
+      <Filter>Header Files\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu\RspClamp.h">
       <Filter>Header Files\cpu</Filter>
     </ClInclude>
   </ItemGroup>
