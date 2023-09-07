@@ -741,6 +741,25 @@ void RSP_Vector_VMUDM(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
+void RSP_Vector_VMULQ(void)
+{
+    RSPVector Result;
+    for (uint8_t el = 0; el < 8; el++)
+    {
+        int32_t Temp = RSP_Vect[RSPOpC.vs].s16(el) * RSP_Vect[RSPOpC.vt].se(el, RSPOpC.e);
+        if (Temp < 0)
+        {
+            Temp += 31;
+        }
+        RSP_ACCUM[el].HW[3] = (int16_t)(Temp >> 16);
+        RSP_ACCUM[el].HW[2] = (int16_t)Temp;
+        RSP_ACCUM[el].HW[1] = 0;
+
+        Result.s16(el) = clamp16(Temp >> 1) & ~15;
+    }
+    RSP_Vect[RSPOpC.vd] = Result;
+}
+
 void RSP_Vector_VMUDN(void)
 {
     uint8_t el, del;

@@ -76,6 +76,7 @@ void RSP_COP2_VECTOR(void);
 
 void RSP_Vector_VMULF(void);
 void RSP_Vector_VMULU(void);
+void RSP_Vector_VMULQ(void);
 void RSP_Vector_VMUDL(void);
 void RSP_Vector_VMUDM(void);
 void RSP_Vector_VMUDN(void);
