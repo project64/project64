@@ -363,6 +363,14 @@ void RSPInstruction::DecodeCop2Name(void)
             break;
         case RSP_VECTOR_VMULU:
             strcpy(m_Name, "VMULU");
+            sprintf(m_Param, "$v%d, %d, $v%d%s", m_Instruction.vd, m_Instruction.vs, m_Instruction.vt, ElementSpecifier(m_Instruction.e));
+            break;
+        case RSP_VECTOR_VRNDP:
+            strcpy(m_Name, "VRNDP");
+            sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, (m_Instruction.vs & 1), m_Instruction.vt, ElementSpecifier(m_Instruction.e));
+            break;
+        case RSP_VECTOR_VMULQ:
+            strcpy(m_Name, "VMULQ");
             sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, m_Instruction.vs, m_Instruction.vt, ElementSpecifier(m_Instruction.e));
             break;
         case RSP_VECTOR_VMUDL:
@@ -388,6 +396,10 @@ void RSPInstruction::DecodeCop2Name(void)
         case RSP_VECTOR_VMACU:
             strcpy(m_Name, "VMACU");
             sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, m_Instruction.vs, m_Instruction.vt, ElementSpecifier(m_Instruction.e));
+            break;
+        case RSP_VECTOR_VRNDN:
+            strcpy(m_Name, "VRNDN");
+            sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, (m_Instruction.vs & 1), m_Instruction.vt, ElementSpecifier(m_Instruction.e));
             break;
         case RSP_VECTOR_VMACQ:
             strcpy(m_Name, "VMACQ");
@@ -417,13 +429,13 @@ void RSPInstruction::DecodeCop2Name(void)
             strcpy(m_Name, "VSUB");
             sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, m_Instruction.vs, m_Instruction.vt, ElementSpecifier(m_Instruction.e));
             break;
+        case RSP_VECTOR_VSUT:
+            strcpy(m_Name, "Reserved (VSUT)");
+            strcpy(m_Param, "");
+            break;
         case RSP_VECTOR_VABS:
             strcpy(m_Name, "VABS");
             sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, m_Instruction.vs, m_Instruction.vt, ElementSpecifier(m_Instruction.e));
-            break;
-        case RSP_VECTOR_VSUT:
-            strcpy(m_Name, "VSUT");
-            strcpy(m_Param, "");
             break;
         case RSP_VECTOR_VADDC:
             strcpy(m_Name, "VADDC");
@@ -433,8 +445,44 @@ void RSPInstruction::DecodeCop2Name(void)
             strcpy(m_Name, "VSUBC");
             sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, m_Instruction.vs, m_Instruction.vt, ElementSpecifier(m_Instruction.e));
             break;
+        case RSP_VECTOR_VADDB:
+            strcpy(m_Name, "Reserved (VADDB)");
+            sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, m_Instruction.vs, m_Instruction.vt, ElementSpecifier(m_Instruction.e));
+            break;
+        case RSP_VECTOR_VSUBB:
+            strcpy(m_Name, "Reserved (VSUBB)");
+            sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, m_Instruction.vs, m_Instruction.vt, ElementSpecifier(m_Instruction.e));
+            break;
+        case RSP_VECTOR_VACCB:
+            strcpy(m_Name, "Reserved (VACCB)");
+            sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, m_Instruction.vs, m_Instruction.vt, ElementSpecifier(m_Instruction.e));
+            break;
+        case RSP_VECTOR_VSUCB:
+            strcpy(m_Name, "Reserved (VSUCB)");
+            sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, m_Instruction.vs, m_Instruction.vt, ElementSpecifier(m_Instruction.e));
+            break;
+        case RSP_VECTOR_VSAD:
+            strcpy(m_Name, "Reserved (VSAD)");
+            sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, m_Instruction.vs, m_Instruction.vt, ElementSpecifier(m_Instruction.e));
+            break;
+        case RSP_VECTOR_VSAC:
+            strcpy(m_Name, "Reserved (VSAC)");
+            sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, m_Instruction.vs, m_Instruction.vt, ElementSpecifier(m_Instruction.e));
+            break;
+        case RSP_VECTOR_VSUM:
+            strcpy(m_Name, "Reserved (VSUM)");
+            sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, m_Instruction.vs, m_Instruction.vt, ElementSpecifier(m_Instruction.e));
+            break;
         case RSP_VECTOR_VSAW:
             strcpy(m_Name, "VSAW");
+            sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, m_Instruction.vs, m_Instruction.vt, ElementSpecifier(m_Instruction.e));
+            break;
+        case RSP_VECTOR_VACC:
+            strcpy(m_Name, "Reserved (VACC)");
+            sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, m_Instruction.vs, m_Instruction.vt, ElementSpecifier(m_Instruction.e));
+            break;
+        case RSP_VECTOR_VSUC:
+            strcpy(m_Name, "Reserved (VSUC)");
             sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, m_Instruction.vs, m_Instruction.vt, ElementSpecifier(m_Instruction.e));
             break;
         case RSP_VECTOR_VLT:
@@ -493,6 +541,14 @@ void RSPInstruction::DecodeCop2Name(void)
             strcpy(m_Name, "VNXOR");
             sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, m_Instruction.vs, m_Instruction.vt, ElementSpecifier(m_Instruction.e));
             break;
+        case RSP_VECTOR_V056:
+            strcpy(m_Name, "Reserved (V056)");
+            sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, m_Instruction.vs, m_Instruction.vt, ElementSpecifier(m_Instruction.e));
+            break;
+        case RSP_VECTOR_V057:
+            strcpy(m_Name, "Reserved (V057)");
+            sprintf(m_Param, "$v%d, $v%d, $v%d%s", m_Instruction.vd, m_Instruction.vs, m_Instruction.vt, ElementSpecifier(m_Instruction.e));
+            break;
         case RSP_VECTOR_VRCP:
             strcpy(m_Name, "VRCP");
             sprintf(m_Param, "$v%d[%d], $v%d%s", m_Instruction.sa, m_Instruction.rd & 0x7, m_Instruction.rt, ElementSpecifier(m_Instruction.e));
@@ -522,6 +578,34 @@ void RSPInstruction::DecodeCop2Name(void)
             break;
         case RSP_VECTOR_VNOP:
             strcpy(m_Name, "VNOP");
+            strcpy(m_Param, "");
+            break;
+        case RSP_VECTOR_VEXTT:
+            strcpy(m_Name, "Reserved (VEXTT)");
+            strcpy(m_Param, "");
+            break;
+        case RSP_VECTOR_VEXTQ:
+            strcpy(m_Name, "Reserved (VEXTQ)");
+            strcpy(m_Param, "");
+            break;
+        case RSP_VECTOR_VEXTN:
+            strcpy(m_Name, "Reserved (VEXTN)");
+            strcpy(m_Param, "");
+            break;
+        case RSP_VECTOR_V073:
+            strcpy(m_Name, "Reserved (V073)");
+            strcpy(m_Param, "");
+            break;
+        case RSP_VECTOR_VINST:
+            strcpy(m_Name, "Reserved (VINST)");
+            strcpy(m_Param, "");
+            break;
+        case RSP_VECTOR_VINSQ:
+            strcpy(m_Name, "Reserved (VINSQ)");
+            strcpy(m_Param, "");
+            break;
+        case RSP_VECTOR_VINSN:
+            strcpy(m_Name, "Reserved (VINSN)");
             strcpy(m_Param, "");
             break;
         default:
