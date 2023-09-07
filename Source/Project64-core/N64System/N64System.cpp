@@ -1484,7 +1484,7 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
     {
         uint32_t StackPointer = (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF);
         uint8_t * TargetStackPos = nullptr;
-        if (StackPointer < m_MMU_VM.RdramSize())
+        if (StackPointer <= m_MMU_VM.RdramSize())
         {
             TargetStackPos = m_MMU_VM.Rdram() + StackPointer;
         }
@@ -1669,7 +1669,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
         {
             uint32_t StackPointer = (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF);
             uint8_t * TargetStackPos = nullptr;
-            if (StackPointer < m_MMU_VM.RdramSize())
+            if (StackPointer <= m_MMU_VM.RdramSize())
             {
                 TargetStackPos = m_MMU_VM.Rdram() + StackPointer;
             }

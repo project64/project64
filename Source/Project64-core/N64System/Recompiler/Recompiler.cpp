@@ -535,7 +535,7 @@ void CRecompiler::ResetMemoryStackPos()
     uint32_t pAddr = 0;
     if (m_MMU.VAddrToPAddr(m_Registers.m_GPR[29].UW[0], pAddr))
     {
-        if (pAddr < m_MMU.RdramSize())
+        if (pAddr <= m_MMU.RdramSize())
         {
             m_MemoryStack = m_MMU.Rdram() + pAddr;
         }
