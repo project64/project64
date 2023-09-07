@@ -608,6 +608,10 @@ void RSPInstruction::DecodeCop2Name(void)
             strcpy(m_Name, "Reserved (VINSN)");
             strcpy(m_Param, "");
             break;
+        case RSP_VECTOR_VNULL:
+            strcpy(m_Name, "VNULL");
+            strcpy(m_Param, "");
+            break;
         default:
             strcpy(m_Name, "UNKNOWN");
             sprintf(m_Param, "0x%08X", m_Instruction.Value);

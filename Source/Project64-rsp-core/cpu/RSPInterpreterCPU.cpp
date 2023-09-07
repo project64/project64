@@ -302,7 +302,7 @@ void BuildInterpreterCPU(void)
     RSP_Vector[60] = RSP_Vector_Reserved;
     RSP_Vector[61] = RSP_Vector_Reserved;
     RSP_Vector[62] = RSP_Vector_Reserved;
-    RSP_Vector[63] = rsp_UnknownOpcode;
+    RSP_Vector[63] = RSP_Vector_VNOOP;
 
     RSP_Lc2[0] = RSP_Opcode_LBV;
     RSP_Lc2[1] = RSP_Opcode_LSV;
