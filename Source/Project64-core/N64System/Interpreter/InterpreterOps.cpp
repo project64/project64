@@ -154,7 +154,7 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_Opcode[49] = LWC1;
     Jump_Opcode[50] = UnknownOpcode;
     Jump_Opcode[51] = UnknownOpcode;
-    Jump_Opcode[52] = UnknownOpcode;
+    Jump_Opcode[52] = LLD;
     Jump_Opcode[53] = LDC1;
     Jump_Opcode[54] = UnknownOpcode;
     Jump_Opcode[55] = LD;
@@ -1225,6 +1225,15 @@ void R4300iOp::LD()
             StackValue = _GPR[m_Opcode.rt].W[0];
         }
 #endif
+    }
+}
+
+void R4300iOp::LLD()
+{
+    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    if (g_MMU->LD_Memory(Address, _GPR[m_Opcode.rt].UDW))
+    {        
+        (*_LLBit) = 1;
     }
 }
 

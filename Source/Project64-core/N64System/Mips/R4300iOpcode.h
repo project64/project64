@@ -108,6 +108,7 @@ enum R4300iOpCodes
     R4300i_CACHE = 47,
     R4300i_LL = 48,
     R4300i_LWC1 = 49,
+    R4300i_LLD = 52,
     R4300i_LDC1 = 53,
     R4300i_LD = 55,
     R4300i_SC = 56,

@@ -542,6 +542,10 @@ void R4300iInstruction::DecodeName(void)
         strcpy(m_Name, "LWC1");
         sprintf(m_Param, "%s, 0x%04X (%s)", CRegName::FPR[m_Instruction.rt], m_Instruction.offset, CRegName::GPR[m_Instruction.base]);
         break;
+    case R4300i_LLD:
+        strcpy(m_Name, "LLD");
+        sprintf(m_Param, "%s, 0x%04X (%s)", CRegName::FPR[m_Instruction.rt], m_Instruction.offset, CRegName::GPR[m_Instruction.base]);
+        break;
     case R4300i_LDC1:
         strcpy(m_Name, "LDC1");
         sprintf(m_Param, "%s, 0x%04X (%s)", CRegName::FPR[m_Instruction.rt], m_Instruction.offset, CRegName::GPR[m_Instruction.base]);

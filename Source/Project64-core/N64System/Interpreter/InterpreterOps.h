@@ -57,6 +57,7 @@ public:
     static void CACHE();
     static void LL();
     static void LWC1();
+    static void LLD();
     static void LDC1();
     static void LD();
     static void SC();
