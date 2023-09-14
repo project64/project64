@@ -447,15 +447,16 @@ public:
         COP0Reg_ErrEPC = 30,
         COP0Reg_31 = 31,
     };
-    CRegisters(CN64System * System, CSystemEvents * SystemEvents);
+    CRegisters(CN64System & System, CSystemEvents & SystemEvents);
 
+    void Init(void);
     void CheckInterrupts();
     void DoAddressError(uint64_t BadVaddr, bool FromRead);
     bool DoIntrException();
     void DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr);
     void DoTLBWriteMiss(bool DelaySlot, uint64_t BadVaddr);
     void FixFpuLocations();
-    void Reset();
+    void Reset(bool bPostPif, CMipsMemoryVM & MMU);
     void SetAsCurrentSystem();
     void TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor = 0);
 
@@ -502,6 +503,7 @@ private:
     CRegisters & operator=(const CRegisters &);
 
     bool m_FirstInterupt;
-    CN64System * m_System;
-    CSystemEvents * m_SystemEvents;
+    CN64System & m_System;
+    CSystemEvents & m_SystemEvents;
+    CSystemTimer & m_SystemTimer;
 };

@@ -162,7 +162,6 @@ private:
     void DumpSyncErrors(CN64System * SecondCPU);
     void StartEmulation2(bool NewThread);
     bool SetActiveSystem(bool bActive = true);
-    void InitRegisters(bool bPostPif, CMipsMemoryVM & MMU);
     void DisplayRSPListCount();
     void NotifyCallback(CN64SystemCB Type);
     void DelayedJump(uint32_t JumpLocation);
@@ -186,8 +185,8 @@ private:
     CPlugins * m_SyncPlugins;
     CN64System * m_SyncCPU;
     CMipsMemoryVM m_MMU_VM;
-    CTLB m_TLB;
     CRegisters m_Reg;
+    CTLB m_TLB;
     CMempak m_Mempak;
     CFramePerSecond m_FPS;
     CProfiling m_CPU_Usage; // Used to track the CPU usage

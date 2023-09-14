@@ -32,8 +32,8 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     m_SyncPlugins(nullptr),
     m_MMU_VM(*this, SavesReadOnly),
     //m_Cheats(m_MMU_VM),
+    m_Reg(*this, *this),
     m_TLB(this),
-    m_Reg(this, this),
     m_Recomp(nullptr),
     m_InReset(false),
     m_NextTimer(0),
@@ -927,7 +927,7 @@ void CN64System::Reset(bool bInitReg, bool ClearMenory)
     {
         bool PostPif = true;
 
-        InitRegisters(PostPif, m_MMU_VM);
+        m_Reg.Reset(PostPif, m_MMU_VM);
         if (PostPif)
         {
             memcpy((m_MMU_VM.Dmem() + 0x40), (g_Rom->GetRomAddress() + 0x040), 0xFBC);
@@ -935,7 +935,7 @@ void CN64System::Reset(bool bInitReg, bool ClearMenory)
     }
     else
     {
-        m_Reg.Reset();
+        m_Reg.Init();
     }
 
     m_SystemTimer.Reset();
@@ -1019,215 +1019,6 @@ bool CN64System::SetActiveSystem(bool bActive)
     }
 
     return bRes;
-}
-
-void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
-{
-    m_Reg.Reset();
-
-    // COP0 registers
-    m_Reg.RANDOM_REGISTER = 0x1F;
-    m_Reg.COUNT_REGISTER = 0x5000;
-    m_Reg.MI_VERSION_REG = 0x02020102;
-    m_Reg.SP_STATUS_REG = 0x00000001;
-    m_Reg.CAUSE_REGISTER.Value = 0x0000005C;
-    m_Reg.CONTEXT_REGISTER.Value = 0x007FFFF0;
-    m_Reg.EPC_REGISTER = 0xFFFFFFFFFFFFFFFF;
-    m_Reg.BAD_VADDR_REGISTER = 0xFFFFFFFFFFFFFFFF;
-    m_Reg.ERROREPC_REGISTER = 0xFFFFFFFFFFFFFFFF;
-    m_Reg.PREVID_REGISTER = 0x00000B22;
-    m_Reg.CONFIG_REGISTER = 0x7006E463;
-    m_Reg.STATUS_REGISTER.Value = 0x34000000;
-
-    // N64DD registers
-
-    // Start N64DD in reset state and motor not spinning
-    m_Reg.ASIC_STATUS = DD_STATUS_RST_STATE | DD_STATUS_MTR_N_SPIN;
-    m_Reg.ASIC_ID_REG = 0x00030000;
-    if (g_DDRom && (g_DDRom->CicChipID() == CIC_NUS_8401 || (g_Disk && g_Disk->GetCountry() == Country_Unknown)))
-        m_Reg.ASIC_ID_REG = 0x00040000;
-
-    //m_Reg.REVISION_REGISTER   = 0x00000511;
-    m_Reg.FixFpuLocations();
-
-    if (bPostPif)
-    {
-        m_Reg.m_PROGRAM_COUNTER = 0xA4000040;
-
-        m_Reg.m_GPR[0].DW = 0x0000000000000000;
-        m_Reg.m_GPR[6].DW = 0xFFFFFFFFA4001F0C;
-        m_Reg.m_GPR[7].DW = 0xFFFFFFFFA4001F08;
-        m_Reg.m_GPR[8].DW = 0x00000000000000C0;
-        m_Reg.m_GPR[9].DW = 0x0000000000000000;
-        m_Reg.m_GPR[10].DW = 0x0000000000000040;
-        m_Reg.m_GPR[11].DW = 0xFFFFFFFFA4000040;
-        m_Reg.m_GPR[16].DW = 0x0000000000000000;
-        m_Reg.m_GPR[17].DW = 0x0000000000000000;
-        m_Reg.m_GPR[18].DW = 0x0000000000000000;
-        m_Reg.m_GPR[19].DW = 0x0000000000000000;
-        m_Reg.m_GPR[21].DW = 0x0000000000000000;
-        m_Reg.m_GPR[26].DW = 0x0000000000000000;
-        m_Reg.m_GPR[27].DW = 0x0000000000000000;
-        m_Reg.m_GPR[28].DW = 0x0000000000000000;
-        m_Reg.m_GPR[29].DW = 0xFFFFFFFFA4001FF0;
-        m_Reg.m_GPR[30].DW = 0x0000000000000000;
-
-        if (g_Rom->IsPal())
-        {
-            switch (g_Rom->CicChipID())
-            {
-            case CIC_UNKNOWN:
-            case CIC_NUS_6102:
-            case CIC_MINI_IPL3:
-                m_Reg.m_GPR[5].DW = 0xFFFFFFFFC0F1D859;
-                m_Reg.m_GPR[14].DW = 0x000000002DE108EA;
-                m_Reg.m_GPR[24].DW = 0x0000000000000000;
-                break;
-            case CIC_NUS_6103:
-                m_Reg.m_GPR[5].DW = 0xFFFFFFFFD4646273;
-                m_Reg.m_GPR[14].DW = 0x000000001AF99984;
-                m_Reg.m_GPR[24].DW = 0x0000000000000000;
-                break;
-            case CIC_NUS_6105:
-                MMU.UpdateMemoryValue32(0xA4001004, 0xBDA807FC);
-                m_Reg.m_GPR[5].DW = 0xFFFFFFFFDECAAAD1;
-                m_Reg.m_GPR[14].DW = 0x000000000CF85C13;
-                m_Reg.m_GPR[24].DW = 0x0000000000000002;
-                break;
-            case CIC_NUS_6106:
-                m_Reg.m_GPR[5].DW = 0xFFFFFFFFB04DC903;
-                m_Reg.m_GPR[14].DW = 0x000000001AF99984;
-                m_Reg.m_GPR[24].DW = 0x0000000000000002;
-                break;
-            }
-            m_Reg.m_GPR[20].DW = 0x0000000000000000;
-            m_Reg.m_GPR[23].DW = 0x0000000000000006;
-            m_Reg.m_GPR[31].DW = 0xFFFFFFFFA4001554;
-        }
-        else
-        {
-            switch (g_Rom->CicChipID())
-            {
-            case CIC_UNKNOWN:
-            case CIC_NUS_6102:
-            case CIC_MINI_IPL3:
-                m_Reg.m_GPR[5].DW = 0xFFFFFFFFC95973D5;
-                m_Reg.m_GPR[14].DW = 0x000000002449A366;
-                break;
-            case CIC_NUS_6103:
-                m_Reg.m_GPR[5].DW = 0xFFFFFFFF95315A28;
-                m_Reg.m_GPR[14].DW = 0x000000005BACA1DF;
-                break;
-            case CIC_NUS_6105:
-                MMU.UpdateMemoryValue32(0xA4001004, 0x8DA807FC);
-                m_Reg.m_GPR[5].DW = 0x000000005493FB9A;
-                m_Reg.m_GPR[14].DW = 0xFFFFFFFFC2C20384;
-            case CIC_NUS_6106:
-                m_Reg.m_GPR[5].DW = 0xFFFFFFFFE067221F;
-                m_Reg.m_GPR[14].DW = 0x000000005CD2B70F;
-                break;
-            case CIC_NUS_6101:
-            case CIC_NUS_6104:
-            case CIC_NUS_5167:
-            case CIC_NUS_8303:
-            case CIC_NUS_DDUS:
-            case CIC_NUS_8401:
-            case CIC_NUS_5101:
-            default:
-                // No specific values
-                break;
-            }
-            m_Reg.m_GPR[20].DW = 0x0000000000000001;
-            m_Reg.m_GPR[23].DW = 0x0000000000000000;
-            m_Reg.m_GPR[24].DW = 0x0000000000000003;
-            m_Reg.m_GPR[31].DW = 0xFFFFFFFFA4001550;
-        }
-
-        switch (g_Rom->CicChipID())
-        {
-        case CIC_NUS_6101:
-            m_Reg.m_GPR[22].DW = 0x000000000000003F;
-            break;
-        case CIC_NUS_8303: // 64DD IPL CIC
-        case CIC_NUS_8401: // 64DD IPL tool CIC
-        case CIC_NUS_5167: // 64DD conversion CIC
-            m_Reg.m_GPR[22].DW = 0x00000000000000DD;
-            break;
-        case CIC_NUS_DDUS: // 64DD US IPL CIC
-            m_Reg.m_GPR[22].DW = 0x00000000000000DE;
-            break;
-        case CIC_NUS_5101: // Aleck64 CIC
-            m_Reg.m_GPR[22].DW = 0x00000000000000AC;
-            break;
-        case CIC_UNKNOWN:
-        case CIC_NUS_6102:
-        case CIC_MINI_IPL3:
-            m_Reg.m_GPR[1].DW = 0x0000000000000001;
-            m_Reg.m_GPR[2].DW = 0x000000000EBDA536;
-            m_Reg.m_GPR[3].DW = 0x000000000EBDA536;
-            m_Reg.m_GPR[4].DW = 0x000000000000A536;
-            m_Reg.m_GPR[12].DW = 0xFFFFFFFFED10D0B3;
-            m_Reg.m_GPR[13].DW = 0x000000001402A4CC;
-            m_Reg.m_GPR[15].DW = 0x000000003103E121;
-            m_Reg.m_GPR[22].DW = 0x000000000000003F;
-            m_Reg.m_GPR[25].DW = 0xFFFFFFFF9DEBB54F;
-            break;
-        case CIC_NUS_6103:
-            m_Reg.m_GPR[1].DW = 0x0000000000000001;
-            m_Reg.m_GPR[2].DW = 0x0000000049A5EE96;
-            m_Reg.m_GPR[3].DW = 0x0000000049A5EE96;
-            m_Reg.m_GPR[4].DW = 0x000000000000EE96;
-            m_Reg.m_GPR[12].DW = 0xFFFFFFFFCE9DFBF7;
-            m_Reg.m_GPR[13].DW = 0xFFFFFFFFCE9DFBF7;
-            m_Reg.m_GPR[15].DW = 0x0000000018B63D28;
-            m_Reg.m_GPR[22].DW = 0x0000000000000078;
-            m_Reg.m_GPR[25].DW = 0xFFFFFFFF825B21C9;
-            break;
-        case CIC_NUS_6105:
-            MMU.UpdateMemoryValue32(0xA4001000, 0x3C0DBFC0);
-            MMU.UpdateMemoryValue32(0xA4001008, 0x25AD07C0);
-            MMU.UpdateMemoryValue32(0xA400100C, 0x31080080);
-            MMU.UpdateMemoryValue32(0xA4001010, 0x5500FFFC);
-            MMU.UpdateMemoryValue32(0xA4001014, 0x3C0DBFC0);
-            MMU.UpdateMemoryValue32(0xA4001018, 0x8DA80024);
-            MMU.UpdateMemoryValue32(0xA400101C, 0x3C0BB000);
-            m_Reg.m_GPR[1].DW = 0x0000000000000000;
-            m_Reg.m_GPR[2].DW = 0xFFFFFFFFF58B0FBF;
-            m_Reg.m_GPR[3].DW = 0xFFFFFFFFF58B0FBF;
-            m_Reg.m_GPR[4].DW = 0x0000000000000FBF;
-            m_Reg.m_GPR[12].DW = 0xFFFFFFFF9651F81E;
-            m_Reg.m_GPR[13].DW = 0x000000002D42AAC5;
-            m_Reg.m_GPR[15].DW = 0x0000000056584D60;
-            m_Reg.m_GPR[22].DW = 0x0000000000000091;
-            m_Reg.m_GPR[25].DW = 0xFFFFFFFFCDCE565F;
-            break;
-        case CIC_NUS_6106:
-            m_Reg.m_GPR[1].DW = 0x0000000000000000;
-            m_Reg.m_GPR[2].DW = 0xFFFFFFFFA95930A4;
-            m_Reg.m_GPR[3].DW = 0xFFFFFFFFA95930A4;
-            m_Reg.m_GPR[4].DW = 0x00000000000030A4;
-            m_Reg.m_GPR[12].DW = 0xFFFFFFFFBCB59510;
-            m_Reg.m_GPR[13].DW = 0xFFFFFFFFBCB59510;
-            m_Reg.m_GPR[15].DW = 0x000000007A3C07F4;
-            m_Reg.m_GPR[22].DW = 0x0000000000000085;
-            m_Reg.m_GPR[25].DW = 0x00000000465E3F72;
-            break;
-        }
-    }
-    else
-    {
-        m_Reg.m_PROGRAM_COUNTER = 0xBFC00000;
-        /*        PIF_Ram[36] = 0x00; PIF_Ram[39] = 0x3F; // Common PIF RAM start values
-
-        switch (g_Rom->CicChipID()) {
-        case CIC_NUS_6101: PIF_Ram[37] = 0x06; PIF_Ram[38] = 0x3F; break;
-        case CIC_UNKNOWN:
-        case CIC_NUS_6102: PIF_Ram[37] = 0x02; PIF_Ram[38] = 0x3F; break;
-        case CIC_NUS_6103:    PIF_Ram[37] = 0x02; PIF_Ram[38] = 0x78; break;
-        case CIC_NUS_6105:    PIF_Ram[37] = 0x02; PIF_Ram[38] = 0x91; break;
-        case CIC_NUS_6106:    PIF_Ram[37] = 0x02; PIF_Ram[38] = 0x85; break;
-        }*/
-    }
 }
 
 void CN64System::ExecuteCPU()
