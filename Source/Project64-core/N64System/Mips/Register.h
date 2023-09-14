@@ -453,12 +453,12 @@ public:
     void CheckInterrupts();
     void DoAddressError(uint64_t BadVaddr, bool FromRead);
     bool DoIntrException();
-    void DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr);
-    void DoTLBWriteMiss(bool DelaySlot, uint64_t BadVaddr);
+    void DoTLBReadMiss(uint64_t BadVaddr);
+    void DoTLBWriteMiss(uint64_t BadVaddr);
     void FixFpuLocations();
     void Reset(bool bPostPif, CMipsMemoryVM & MMU);
     void SetAsCurrentSystem();
-    void TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor = 0);
+    void TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor = 0, bool SpecialOffset = false);
 
     uint64_t Cop0_MF(COP0Reg Reg);
     void Cop0_MT(COP0Reg Reg, uint64_t Value);

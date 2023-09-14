@@ -260,9 +260,6 @@ protected:
     static Func Jump_CoP1_L[64];
     static Func Jump_CoP2[32];
 
-    static void GenerateAddressErrorException(uint64_t VAddr, bool FromRead);
-    static void GenerateTLBReadException(uint64_t VAddr, const char * function);
-    static void GenerateTLBWriteException(uint64_t VAddr, const char * function);
     static bool TestCop1UsableException(void);
     static bool CheckFPUInput32(const float & Value);
     static bool CheckFPUInput32Conv(const float & Value);

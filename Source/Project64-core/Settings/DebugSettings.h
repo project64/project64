@@ -32,10 +32,6 @@ public:
     {
         return m_bRecordRecompilerAsm;
     }
-    static inline bool bShowTLBMisses(void)
-    {
-        return m_bShowTLBMisses;
-    }
     static inline bool bRecordExecutionTimes(void)
     {
         return m_RecordExecutionTimes;
@@ -111,7 +107,6 @@ private:
     static bool m_SkipOp;
     static bool m_WaitingForStep;
     static bool m_bRecordRecompilerAsm;
-    static bool m_bShowTLBMisses;
     static bool m_RecordExecutionTimes;
     static bool m_HaveExecutionBP;
     static bool m_HaveWriteBP;

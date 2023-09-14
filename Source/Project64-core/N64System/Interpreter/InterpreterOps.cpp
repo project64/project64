@@ -1091,7 +1091,7 @@ void R4300iOp::SWL()
     }
     else
     {
-        GenerateTLBWriteException(Address, __FUNCTION__);
+        g_Reg->DoTLBWriteMiss(Address);
     }
 }
 
@@ -1124,7 +1124,7 @@ void R4300iOp::SDL()
     }
     else
     {
-        GenerateTLBWriteException(Address, __FUNCTION__);
+        g_Reg->DoTLBWriteMiss(Address);
     }
 }
 
@@ -1152,7 +1152,7 @@ void R4300iOp::SDR()
     }
     else
     {
-        GenerateTLBWriteException(Address, __FUNCTION__);
+        g_Reg->DoTLBWriteMiss(Address);
     }
 }
 
@@ -1170,7 +1170,7 @@ void R4300iOp::SWR()
     }
     else
     {
-        GenerateTLBWriteException(Address, __FUNCTION__);
+        g_Reg->DoTLBWriteMiss(Address);
     }
 }
 
@@ -3041,31 +3041,6 @@ bool R4300iOp::MemoryBreakpoint()
         return true;
     }
     return false;
-}
-
-void R4300iOp::GenerateAddressErrorException(uint64_t VAddr, bool FromRead)
-{
-    g_Reg->DoAddressError(VAddr, FromRead);
-}
-
-void R4300iOp::GenerateTLBReadException(uint64_t VAddr, const char * function)
-{
-    if (bShowTLBMisses())
-    {
-        g_Notify->DisplayError(stdstr_f("%s TLB: %X", function, (uint32_t)VAddr).c_str());
-    }
-    g_Reg->DoTLBReadMiss(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP, VAddr);
-}
-
-void R4300iOp::GenerateTLBWriteException(uint64_t VAddr, const char * function)
-{
-    if (bShowTLBMisses())
-    {
-        g_Notify->DisplayError(stdstr_f("%s TLB: %X", function, (uint32_t)VAddr).c_str());
-    }
-    g_Reg->DoTLBWriteMiss(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP, VAddr);
-    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
 }
 
 bool R4300iOp::TestCop1UsableException(void)

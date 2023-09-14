@@ -806,7 +806,7 @@ bool CRegisters::DoIntrException()
     return true;
 }
 
-void CRegisters::DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr)
+void CRegisters::DoTLBReadMiss(uint64_t BadVaddr)
 {
     CAUSE_REGISTER.ExceptionCode = EXC_RMISS;
     CAUSE_REGISTER.CoprocessorUnitNumber = 0;
@@ -815,7 +815,7 @@ void CRegisters::DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr)
     ENTRYHI_REGISTER = (BadVaddr & 0xFFFFE000);
     if ((STATUS_REGISTER.ExceptionLevel) == 0)
     {
-        if (DelaySlot)
+        if (m_System.m_PipelineStage == PIPELINE_STAGE_JUMP)
         {
             CAUSE_REGISTER.BranchDelay = 1;
             EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
@@ -837,16 +837,12 @@ void CRegisters::DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr)
     }
     else
     {
-        if (HaveDebugger())
-        {
-            g_Notify->DisplayError(stdstr_f("TLBMiss - EXL set\nBadVaddr = %X\nAddress defined: %s", (uint32_t)BadVaddr, g_TLB->AddressDefined((uint32_t)BadVaddr) ? "true" : "false").c_str());
-        }
         m_System.m_JumpToLocation = 0x80000180;
     }
     m_System.m_PipelineStage = PIPELINE_STAGE_JUMP;
 }
 
-void CRegisters::DoTLBWriteMiss(bool DelaySlot, uint64_t BadVaddr)
+void CRegisters::DoTLBWriteMiss(uint64_t BadVaddr)
 {
     CAUSE_REGISTER.ExceptionCode = EXC_WMISS;
     CAUSE_REGISTER.CoprocessorUnitNumber = 0;
@@ -855,7 +851,7 @@ void CRegisters::DoTLBWriteMiss(bool DelaySlot, uint64_t BadVaddr)
     ENTRYHI_REGISTER = (BadVaddr & 0xFFFFE000);
     if ((STATUS_REGISTER.ExceptionLevel) == 0)
     {
-        if (DelaySlot)
+        if (g_System->m_PipelineStage == PIPELINE_STAGE_JUMP)
         {
             CAUSE_REGISTER.BranchDelay = 1;
             EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - 4);
@@ -867,25 +863,22 @@ void CRegisters::DoTLBWriteMiss(bool DelaySlot, uint64_t BadVaddr)
         }
         if (g_TLB->AddressDefined((uint32_t)BadVaddr))
         {
-            m_PROGRAM_COUNTER = 0x80000180;
+            m_System.m_JumpToLocation = 0x80000180;
         }
         else
         {
-            m_PROGRAM_COUNTER = 0x80000000;
+            m_System.m_JumpToLocation = 0x80000000;
         }
         STATUS_REGISTER.ExceptionLevel = 1;
     }
     else
     {
-        if (HaveDebugger())
-        {
-            g_Notify->DisplayError(stdstr_f("TLBMiss - EXL set\nBadVaddr = %X\nAddress defined: %s", (uint32_t)BadVaddr, g_TLB->AddressDefined((uint32_t)BadVaddr) ? "true" : "false").c_str());
-        }
-        m_PROGRAM_COUNTER = 0x80000180;
+        m_System.m_JumpToLocation = 0x80000180;
     }
+    m_System.m_PipelineStage = PIPELINE_STAGE_JUMP;
 }
 
-void CRegisters::TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor)
+void CRegisters::TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor, bool SpecialOffset)
 {
     if (GenerateLog() && LogExceptions())
     {
@@ -899,11 +892,29 @@ void CRegisters::TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor)
         }
     }
 
+    uint32_t ExceptionBase = 0x80000000;
+    uint16_t ExceptionOffset = 0x0180;
+    if (SpecialOffset && STATUS_REGISTER.ExceptionLevel == 0)
+    {
+        switch (STATUS_REGISTER.PrivilegeMode)
+        {
+        case PrivilegeMode_Kernel:
+            ExceptionOffset = STATUS_REGISTER.KernelExtendedAddressing == 0 ? 0x0000 : 0x0080;
+            break;
+        case PrivilegeMode_Supervisor:
+            ExceptionOffset = STATUS_REGISTER.SupervisorExtendedAddressing == 0 ? 0x0000 : 0x0080;
+            break;
+        case PrivilegeMode_User:
+            ExceptionOffset = STATUS_REGISTER.UserExtendedAddressing == 0 ? 0x0000 : 0x0080;
+            break;
+        }
+    }
+
     CAUSE_REGISTER.ExceptionCode = ExceptionCode;
     CAUSE_REGISTER.CoprocessorUnitNumber = Coprocessor;
     CAUSE_REGISTER.BranchDelay = m_System.m_PipelineStage == PIPELINE_STAGE_JUMP;
     EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - (CAUSE_REGISTER.BranchDelay ? 4 : 0));
     STATUS_REGISTER.ExceptionLevel = 1;
     m_System.m_PipelineStage = PIPELINE_STAGE_JUMP;
-    m_System.m_JumpToLocation = 0x80000180;
+    m_System.m_JumpToLocation = ExceptionBase | ExceptionOffset;
 }

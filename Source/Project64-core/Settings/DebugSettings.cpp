@@ -12,7 +12,6 @@ bool CDebugSettings::m_Stepping = false;
 bool CDebugSettings::m_SkipOp = false;
 bool CDebugSettings::m_WaitingForStep = false;
 bool CDebugSettings::m_bRecordRecompilerAsm = false;
-bool CDebugSettings::m_bShowTLBMisses = false;
 bool CDebugSettings::m_RecordExecutionTimes = false;
 bool CDebugSettings::m_HaveExecutionBP = false;
 bool CDebugSettings::m_HaveWriteBP = false;

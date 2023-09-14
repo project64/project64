@@ -69,7 +69,7 @@ void CInterpreterCPU::ExecuteCPU()
         {
             if (!g_MMU->MemoryValue32(PROGRAM_COUNTER, Opcode.Value))
             {
-                g_Reg->DoTLBReadMiss(PipelineStage == PIPELINE_STAGE_JUMP, PROGRAM_COUNTER);
+                g_Reg->DoTLBReadMiss(PROGRAM_COUNTER);
                 PROGRAM_COUNTER = JumpToLocation;
                 PipelineStage = PIPELINE_STAGE_NORMAL;
                 continue;
@@ -133,7 +133,7 @@ void CInterpreterCPU::ExecuteCPU()
                 PipelineStage = PIPELINE_STAGE_NORMAL;
                 if ((PROGRAM_COUNTER & 0x3) != 0)
                 {
-                    GenerateAddressErrorException((int32_t)JumpToLocation, true);
+                    g_Reg->DoAddressError((int32_t)JumpToLocation, true);
                     PROGRAM_COUNTER = JumpToLocation;
                     PipelineStage = PIPELINE_STAGE_NORMAL;
                 }
@@ -281,7 +281,7 @@ void CInterpreterCPU::ExecuteOps(int32_t Cycles)
             }
             else
             {
-                g_Reg->DoTLBReadMiss(PipelineStage == PIPELINE_STAGE_JUMP, PROGRAM_COUNTER);
+                g_Reg->DoTLBReadMiss(PROGRAM_COUNTER);
                 PROGRAM_COUNTER = JumpToLocation;
                 PipelineStage = PIPELINE_STAGE_NORMAL;
             }
