@@ -450,7 +450,7 @@ public:
     CRegisters(CN64System * System, CSystemEvents * SystemEvents);
 
     void CheckInterrupts();
-    void DoAddressError(bool DelaySlot, uint64_t BadVaddr, bool FromRead);
+    void DoAddressError(uint64_t BadVaddr, bool FromRead);
     bool DoIntrException();
     void DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr);
     void DoTLBWriteMiss(bool DelaySlot, uint64_t BadVaddr);

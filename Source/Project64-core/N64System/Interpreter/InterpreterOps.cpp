@@ -3045,9 +3045,7 @@ bool R4300iOp::MemoryBreakpoint()
 
 void R4300iOp::GenerateAddressErrorException(uint64_t VAddr, bool FromRead)
 {
-    g_Reg->DoAddressError(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP, VAddr, FromRead);
-    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
+    g_Reg->DoAddressError(VAddr, FromRead);
 }
 
 void R4300iOp::GenerateTLBReadException(uint64_t VAddr, const char * function)

@@ -528,7 +528,7 @@ void CRegisters::CheckInterrupts()
     }
 }
 
-void CRegisters::DoAddressError(bool DelaySlot, uint64_t BadVaddr, bool FromRead)
+void CRegisters::DoAddressError(uint64_t BadVaddr, bool FromRead)
 {
     if (BreakOnAddressError())
     {
@@ -549,7 +549,7 @@ void CRegisters::DoAddressError(bool DelaySlot, uint64_t BadVaddr, bool FromRead
     XCONTEXT_REGISTER.BadVPN2 = BadVaddr >> 13;
     XCONTEXT_REGISTER.R = BadVaddr >> 61;
 
-    if (DelaySlot)
+    if (m_System->m_PipelineStage == PIPELINE_STAGE_JUMP)
     {
         CAUSE_REGISTER.BranchDelay = 1;
         EPC_REGISTER = (int32_t)(m_PROGRAM_COUNTER - 4);
@@ -560,7 +560,8 @@ void CRegisters::DoAddressError(bool DelaySlot, uint64_t BadVaddr, bool FromRead
         EPC_REGISTER = (int32_t)m_PROGRAM_COUNTER;
     }
     STATUS_REGISTER.ExceptionLevel = 1;
-    m_PROGRAM_COUNTER = 0x80000180;
+    m_System->m_JumpToLocation = 0x80000180;
+    m_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
 }
 
 void CRegisters::FixFpuLocations()

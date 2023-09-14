@@ -9659,7 +9659,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         ExitCodeBlock();
         break;
     case ExitReason_DoSysCall:
-        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", InDelaySlot ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
         m_Assembler.push(0);
         m_Assembler.PushImm32("EXC_SYSCALL", EXC_SYSCALL);
         m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::TriggerException), "CRegisters::TriggerException", 12);
@@ -9669,7 +9669,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         ExitCodeBlock();
         break;
     case ExitReason_Break:
-        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", InDelaySlot ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
         m_Assembler.push(0);
         m_Assembler.PushImm32("EXC_BREAK", EXC_BREAK);
         m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::TriggerException), "CRegisters::TriggerException", 12);
@@ -9679,7 +9679,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         ExitCodeBlock();
         break;
     case ExitReason_COP1Unuseable:
-        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", InDelaySlot ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
         m_Assembler.push(1);
         m_Assembler.PushImm32("EXC_CPU", EXC_CPU);
         m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::TriggerException), "CRegisters::TriggerException", 12);
@@ -9707,7 +9707,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         ExitCodeBlock();
         break;
     case ExitReason_ExceptionOverflow:
-        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", InDelaySlot ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
         m_Assembler.push(0);
         m_Assembler.PushImm32("EXC_OV", EXC_OV);
         m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::TriggerException), "CRegisters::TriggerException", 12);
@@ -9717,28 +9717,34 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         ExitCodeBlock();
         break;
     case ExitReason_AddressErrorExceptionRead32:
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", InDelaySlot ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
         m_Assembler.push(1);
         m_Assembler.MoveVariableToX86reg(asmjit::x86::edx, &m_TempValue32, "TempValue32");
         m_Assembler.mov(asmjit::x86::eax, asmjit::x86::edx);
         m_Assembler.sar(asmjit::x86::eax, 31);
         m_Assembler.push(asmjit::x86::eax);
         m_Assembler.push(asmjit::x86::edx);
-        m_Assembler.PushImm32(InDelaySlot ? "true" : "false", InDelaySlot);
         m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::DoAddressError), "CRegisters::DoAddressError", 12);
+        m_Assembler.MoveVariableToX86reg(asmjit::x86::edx, &g_System->m_JumpToLocation, "System->m_JumpToLocation");
+        m_Assembler.MoveX86regToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", asmjit::x86::edx);
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
         ExitCodeBlock();
         break;
     case ExitReason_AddressErrorExceptionRead64:
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", InDelaySlot ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
         m_Assembler.push(1);
         m_Assembler.MoveVariableToX86reg(asmjit::x86::edx, &m_TempValue64, "TempValue64");
         m_Assembler.MoveVariableToX86reg(asmjit::x86::eax, &m_TempValue64 + 4, "TempValue64+4");
         m_Assembler.push(asmjit::x86::eax);
         m_Assembler.push(asmjit::x86::edx);
-        m_Assembler.PushImm32(InDelaySlot ? "true" : "false", InDelaySlot);
         m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::DoAddressError), "CRegisters::DoAddressError", 12);
+        m_Assembler.MoveVariableToX86reg(asmjit::x86::edx, &g_System->m_JumpToLocation, "System->m_JumpToLocation");
+        m_Assembler.MoveX86regToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", asmjit::x86::edx);
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
         ExitCodeBlock();
         break;
     case ExitReason_IllegalInstruction:
-        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", InDelaySlot ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
         m_Assembler.push(0);
         m_Assembler.PushImm32("EXC_II", EXC_II);
         m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::TriggerException), "CRegisters::TriggerException", 12);

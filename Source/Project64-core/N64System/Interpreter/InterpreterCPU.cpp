@@ -134,6 +134,8 @@ void CInterpreterCPU::ExecuteCPU()
                 if ((PROGRAM_COUNTER & 0x3) != 0)
                 {
                     GenerateAddressErrorException((int32_t)JumpToLocation, true);
+                    PROGRAM_COUNTER = JumpToLocation;
+                    PipelineStage = PIPELINE_STAGE_NORMAL;
                 }
                 else if (CheckTimer)
                 {
