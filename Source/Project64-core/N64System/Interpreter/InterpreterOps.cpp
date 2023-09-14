@@ -3057,8 +3057,6 @@ void R4300iOp::GenerateTLBReadException(uint64_t VAddr, const char * function)
         g_Notify->DisplayError(stdstr_f("%s TLB: %X", function, (uint32_t)VAddr).c_str());
     }
     g_Reg->DoTLBReadMiss(g_System->m_PipelineStage == PIPELINE_STAGE_JUMP, VAddr);
-    g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-    g_System->m_JumpToLocation = (*_PROGRAM_COUNTER);
 }
 
 void R4300iOp::GenerateTLBWriteException(uint64_t VAddr, const char * function)

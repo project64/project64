@@ -614,11 +614,11 @@ void CRegisters::DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr)
         }
         if (g_TLB->AddressDefined((uint32_t)BadVaddr))
         {
-            m_PROGRAM_COUNTER = 0x80000180;
+            m_System->m_JumpToLocation = 0x80000180;
         }
         else
         {
-            m_PROGRAM_COUNTER = 0x80000000;
+            m_System->m_JumpToLocation = 0x80000000;
         }
         STATUS_REGISTER.ExceptionLevel = 1;
     }
@@ -628,8 +628,9 @@ void CRegisters::DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr)
         {
             g_Notify->DisplayError(stdstr_f("TLBMiss - EXL set\nBadVaddr = %X\nAddress defined: %s", (uint32_t)BadVaddr, g_TLB->AddressDefined((uint32_t)BadVaddr) ? "true" : "false").c_str());
         }
-        m_PROGRAM_COUNTER = 0x80000180;
+        m_System->m_JumpToLocation = 0x80000180;
     }
+    m_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
 }
 
 void CRegisters::DoTLBWriteMiss(bool DelaySlot, uint64_t BadVaddr)

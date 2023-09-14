@@ -286,6 +286,18 @@ private:
     void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo & ExitRegSet, ExitReason Reason, bool CompileNow, void (CX86Ops::*x86Jmp)(const char * LabelName, asmjit::Label & JumpLabel));
     void ResetMemoryStack();
 
+    static void x86CompilerBreakPoint();
+    static void x86BreakPointDelaySlot();
+    static void x86MemoryBreakPoint();
+    static void x86TestReadBreakPoint8();
+    static void x86TestReadBreakPoint16();
+    static void x86TestReadBreakPoint32();
+    static void x86TestReadBreakPoint64();
+    static void x86TestWriteBreakPoint8();
+    static void x86TestWriteBreakPoint16();
+    static void x86TestWriteBreakPoint32();
+    static void x86TestWriteBreakPoint64();
+
     EXIT_LIST m_ExitInfo;
     CX86Ops m_Assembler;
     PIPELINE_STAGE m_PipelineStage;

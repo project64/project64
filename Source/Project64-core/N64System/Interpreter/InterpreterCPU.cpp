@@ -70,6 +70,7 @@ void CInterpreterCPU::ExecuteCPU()
             if (!g_MMU->MemoryValue32(PROGRAM_COUNTER, Opcode.Value))
             {
                 g_Reg->DoTLBReadMiss(PipelineStage == PIPELINE_STAGE_JUMP, PROGRAM_COUNTER);
+                PROGRAM_COUNTER = JumpToLocation;
                 PipelineStage = PIPELINE_STAGE_NORMAL;
                 continue;
             }
@@ -279,6 +280,7 @@ void CInterpreterCPU::ExecuteOps(int32_t Cycles)
             else
             {
                 g_Reg->DoTLBReadMiss(PipelineStage == PIPELINE_STAGE_JUMP, PROGRAM_COUNTER);
+                PROGRAM_COUNTER = JumpToLocation;
                 PipelineStage = PIPELINE_STAGE_NORMAL;
             }
         }

@@ -35,7 +35,7 @@ g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 }*/
 
-static void x86_compiler_Break_Point()
+void CX86RecompilerOps::x86CompilerBreakPoint()
 {
     g_Settings->SaveBool(Debugger_SteppingOps, true);
     do
@@ -51,6 +51,8 @@ static void x86_compiler_Break_Point()
             if (!g_MMU->MemoryValue32(g_Reg->m_PROGRAM_COUNTER, OpcodeValue))
             {
                 g_Reg->DoTLBReadMiss(false, g_Reg->m_PROGRAM_COUNTER);
+                g_Reg->m_PROGRAM_COUNTER = g_System->JumpToLocation();
+                g_System->m_PipelineStage = PIPELINE_STAGE_NORMAL;
                 continue;
             }
             continue;
@@ -75,7 +77,7 @@ static void x86_compiler_Break_Point()
     }
 }
 
-static void x86_Break_Point_DelaySlot()
+void CX86RecompilerOps::x86BreakPointDelaySlot()
 {
     CInterpreterCPU::ExecuteOps(g_System->CountPerOp());
     if (g_SyncSystem)
@@ -85,7 +87,7 @@ static void x86_Break_Point_DelaySlot()
     }
     if (g_Debugger->ExecutionBP(g_Reg->m_PROGRAM_COUNTER))
     {
-        x86_compiler_Break_Point();
+        x86CompilerBreakPoint();
     }
     if (g_System->PipelineStage() != PIPELINE_STAGE_NORMAL)
     {
@@ -102,7 +104,7 @@ static uint32_t memory_access_address;
 static uint32_t memory_write_in_delayslot;
 static uint32_t memory_breakpoint_found = 0;
 
-static void x86MemoryBreakpoint()
+void CX86RecompilerOps::x86MemoryBreakPoint()
 {
     memory_breakpoint_found = 1;
     if (memory_write_in_delayslot)
@@ -111,70 +113,70 @@ static void x86MemoryBreakpoint()
         *g_NextTimer += g_System->CountPerOp();
         CInterpreterCPU::ExecuteOps(g_System->CountPerOp());
     }
-    x86_compiler_Break_Point();
+    x86CompilerBreakPoint();
 }
 
-static void x86TestReadBreakpoint8()
+void CX86RecompilerOps::x86TestReadBreakPoint8()
 {
     if (g_Debugger->ReadBP8(memory_access_address))
     {
-        x86MemoryBreakpoint();
+        x86MemoryBreakPoint();
     }
 }
 
-static void x86TestReadBreakpoint16()
+void CX86RecompilerOps::x86TestReadBreakPoint16()
 {
     if (g_Debugger->ReadBP16(memory_access_address))
     {
-        x86MemoryBreakpoint();
+        x86MemoryBreakPoint();
     }
 }
 
-static void x86TestReadBreakpoint32()
+void CX86RecompilerOps::x86TestReadBreakPoint32()
 {
     if (g_Debugger->ReadBP32(memory_access_address))
     {
-        x86MemoryBreakpoint();
+        x86MemoryBreakPoint();
     }
 }
 
-static void x86TestReadBreakpoint64()
+void CX86RecompilerOps::x86TestReadBreakPoint64()
 {
     if (g_Debugger->ReadBP64(memory_access_address))
     {
-        x86MemoryBreakpoint();
+        x86MemoryBreakPoint();
     }
 }
 
-static void x86TestWriteBreakpoint8()
+void CX86RecompilerOps::x86TestWriteBreakPoint8()
 {
     if (g_Debugger->WriteBP8(memory_access_address))
     {
-        x86MemoryBreakpoint();
+        x86MemoryBreakPoint();
     }
 }
 
-static void x86TestWriteBreakpoint16()
+void CX86RecompilerOps::x86TestWriteBreakPoint16()
 {
     if (g_Debugger->WriteBP16(memory_access_address))
     {
-        x86MemoryBreakpoint();
+        x86MemoryBreakPoint();
     }
 }
 
-static void x86TestWriteBreakpoint32()
+void CX86RecompilerOps::x86TestWriteBreakPoint32()
 {
     if (g_Debugger->WriteBP32(memory_access_address))
     {
-        x86MemoryBreakpoint();
+        x86MemoryBreakPoint();
     }
 }
 
-static void x86TestWriteBreakpoint64()
+void CX86RecompilerOps::x86TestWriteBreakPoint64()
 {
     if (g_Debugger->WriteBP64(memory_access_address))
     {
-        x86MemoryBreakpoint();
+        x86MemoryBreakPoint();
     }
 }
 
@@ -3215,7 +3217,7 @@ void CX86RecompilerOps::LWL()
         m_Assembler.mov(OffsetReg, AddressReg);
         m_Assembler.and_(OffsetReg, 3);
         m_Assembler.and_(AddressReg, (uint32_t)~3);
-        TestReadBreakpoint(AddressReg, (uint32_t)x86TestReadBreakpoint32, "x86TestReadBreakpoint32");
+        TestReadBreakpoint(AddressReg, (uint32_t)x86TestReadBreakPoint32, "x86TestReadBreakpoint32");
         CompileLoadMemoryValue(AddressReg, AddressReg, x86Reg_Unknown, 32, false);
         m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.rt);
         m_Assembler.AndVariableDispToX86Reg(m_RegWorkingSet.GetMipsRegMapLo(m_Opcode.rt), (void *)R4300iOp::LWL_MASK, "LWL_MASK", OffsetReg, CX86Ops::Multip_x4);
@@ -3595,7 +3597,7 @@ void CX86RecompilerOps::LWR()
         m_Assembler.mov(OffsetReg, AddressReg);
         m_Assembler.and_(OffsetReg, 3);
         m_Assembler.and_(AddressReg, (uint32_t)~3);
-        TestReadBreakpoint(AddressReg, (uint32_t)x86TestReadBreakpoint32, "x86TestReadBreakpoint32");
+        TestReadBreakpoint(AddressReg, (uint32_t)x86TestReadBreakPoint32, "x86TestReadBreakpoint32");
         CompileLoadMemoryValue(AddressReg, AddressReg, x86Reg_Unknown, 32, false);
         m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.rt);
         m_Assembler.AndVariableDispToX86Reg(m_RegWorkingSet.GetMipsRegMapLo(m_Opcode.rt), (void *)R4300iOp::LWR_MASK, "LWR_MASK", OffsetReg, CX86Ops::Multip_x4);
@@ -3719,7 +3721,7 @@ void CX86RecompilerOps::SWL()
     }
     PreWriteInstruction();
     asmjit::x86::Gp shift = m_RegWorkingSet.Map_TempReg(asmjit::x86::ecx, -1, false, false), AddressReg = BaseOffsetAddress(false);
-    TestWriteBreakpoint(AddressReg, (uint32_t)x86TestWriteBreakpoint32, "x86TestWriteBreakpoint32");
+    TestWriteBreakpoint(AddressReg, (uint32_t)x86TestWriteBreakPoint32, "x86TestWriteBreakpoint32");
 
     asmjit::x86::Gp TempReg2 = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
     asmjit::x86::Gp OffsetReg = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
@@ -3882,7 +3884,7 @@ void CX86RecompilerOps::SWR()
     PreWriteInstruction();
     asmjit::x86::Gp shift = m_RegWorkingSet.Map_TempReg(asmjit::x86::ecx, -1, false, false);
     asmjit::x86::Gp AddressReg = BaseOffsetAddress(false);
-    TestWriteBreakpoint(AddressReg, (uint32_t)x86TestWriteBreakpoint32, "x86TestWriteBreakpoint32");
+    TestWriteBreakpoint(AddressReg, (uint32_t)x86TestWriteBreakPoint32, "x86TestWriteBreakpoint32");
     asmjit::x86::Gp TempReg2 = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
     asmjit::x86::Gp OffsetReg = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
     asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
@@ -8453,7 +8455,7 @@ void CX86RecompilerOps::FoundMemoryBreakpoint()
 {
     ClearCachedInstructionInfo();
     m_Assembler.MoveConstToVariable(&memory_write_in_delayslot, "memory_write_in_delayslot", (m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT) ? 1 : 0);
-    m_Assembler.CallFunc((uint32_t)x86MemoryBreakpoint, "x86MemoryBreakpoint");
+    m_Assembler.CallFunc((uint32_t)x86MemoryBreakPoint, "x86MemoryBreakPoint");
     m_Assembler.MoveConstToVariable(&memory_breakpoint_found, "memory_breakpoint_found", 0);
     ExitCodeBlock();
     m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
@@ -9519,7 +9521,7 @@ void CX86RecompilerOps::CompileExecuteBP(void)
     {
         m_Assembler.CallThis((uint32_t)g_BaseSystem, AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem", 4);
     }
-    m_Assembler.CallFunc((uint32_t)x86_compiler_Break_Point, "x86_compiler_Break_Point");
+    m_Assembler.CallFunc((uint32_t)x86CompilerBreakPoint, "x86CompilerBreakPoint");
     ExitCodeBlock();
     m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
 }
@@ -9539,7 +9541,7 @@ void CX86RecompilerOps::CompileExecuteDelaySlotBP(void)
     {
         m_Assembler.CallThis((uint32_t)g_BaseSystem, AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem", 4);
     }
-    m_Assembler.CallFunc((uint32_t)x86_Break_Point_DelaySlot, "x86_Break_Point_DelaySlot");
+    m_Assembler.CallFunc((uint32_t)x86BreakPointDelaySlot, "x86BreakPointDelaySlot");
     ExitCodeBlock();
     m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
 }
@@ -9695,6 +9697,9 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         m_Assembler.push(asmjit::x86::edx);
         m_Assembler.PushImm32(InDelaySlot ? "true" : "false", InDelaySlot);
         m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::DoTLBReadMiss), "CRegisters::DoTLBReadMiss", 12);
+        m_Assembler.MoveVariableToX86reg(asmjit::x86::edx, &g_System->m_JumpToLocation, "System->m_JumpToLocation");
+        m_Assembler.MoveX86regToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", asmjit::x86::edx);
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
         ExitCodeBlock();
         break;
     case ExitReason_TLBWriteMiss:
@@ -9832,22 +9837,22 @@ void CX86RecompilerOps::CompileLoadMemoryValue(asmjit::x86::Gp AddressReg, asmji
         if (ValueSize == 8)
         {
             AddressReg = BaseOffsetAddress(false);
-            TestReadBreakpoint(AddressReg, (uint32_t)x86TestReadBreakpoint8, "x86TestReadBreakpoint8");
+            TestReadBreakpoint(AddressReg, (uint32_t)x86TestReadBreakPoint8, "x86TestReadBreakpoint8");
         }
         else if (ValueSize == 16)
         {
             AddressReg = BaseOffsetAddress(false);
-            TestReadBreakpoint(AddressReg, (uint32_t)x86TestReadBreakpoint16, "x86TestReadBreakpoint16");
+            TestReadBreakpoint(AddressReg, (uint32_t)x86TestReadBreakPoint16, "x86TestReadBreakpoint16");
         }
         else if (ValueSize == 32)
         {
             AddressReg = BaseOffsetAddress(true);
-            TestReadBreakpoint(AddressReg, (uint32_t)x86TestReadBreakpoint32, "x86TestReadBreakpoint32");
+            TestReadBreakpoint(AddressReg, (uint32_t)x86TestReadBreakPoint32, "x86TestReadBreakpoint32");
         }
         else if (ValueSize == 64)
         {
             AddressReg = BaseOffsetAddress(true);
-            TestReadBreakpoint(AddressReg, (uint32_t)x86TestReadBreakpoint64, "x86TestReadBreakpoint64");
+            TestReadBreakpoint(AddressReg, (uint32_t)x86TestReadBreakPoint64, "x86TestReadBreakpoint64");
         }
         else
         {
@@ -10018,19 +10023,19 @@ void CX86RecompilerOps::CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, asmj
         AddressReg = BaseOffsetAddress(ValueSize == 32);
         if (ValueSize == 8)
         {
-            TestWriteBreakpoint(AddressReg, (uint32_t)x86TestWriteBreakpoint8, "x86TestWriteBreakpoint8");
+            TestWriteBreakpoint(AddressReg, (uint32_t)x86TestWriteBreakPoint8, "x86TestWriteBreakpoint8");
         }
         else if (ValueSize == 16)
         {
-            TestWriteBreakpoint(AddressReg, (uint32_t)x86TestWriteBreakpoint16, "x86TestWriteBreakpoint16");
+            TestWriteBreakpoint(AddressReg, (uint32_t)x86TestWriteBreakPoint16, "x86TestWriteBreakpoint16");
         }
         else if (ValueSize == 32)
         {
-            TestWriteBreakpoint(AddressReg, (uint32_t)x86TestWriteBreakpoint32, "x86TestWriteBreakpoint32");
+            TestWriteBreakpoint(AddressReg, (uint32_t)x86TestWriteBreakPoint32, "x86TestWriteBreakpoint32");
         }
         else if (ValueSize == 64)
         {
-            TestWriteBreakpoint(AddressReg, (uint32_t)x86TestWriteBreakpoint64, "x86TestWriteBreakpoint64");
+            TestWriteBreakpoint(AddressReg, (uint32_t)x86TestWriteBreakPoint64, "x86TestWriteBreakpoint64");
         }
         else
         {
