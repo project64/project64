@@ -27,10 +27,10 @@ void CInterpreterCPU::BuildCPU()
 void CInterpreterCPU::InPermLoop()
 {
     if (EndOnPermLoop() &&
-        ((g_Reg->STATUS_REGISTER & STATUS_IE) == 0 ||
-         (g_Reg->STATUS_REGISTER & STATUS_EXL) != 0 ||
-         (g_Reg->STATUS_REGISTER & STATUS_ERL) != 0 ||
-         (g_Reg->STATUS_REGISTER & 0xFF00) == 0))
+        ((g_Reg->STATUS_REGISTER.InterruptEnable) == 0 ||
+         (g_Reg->STATUS_REGISTER.ExceptionLevel) != 0 ||
+         (g_Reg->STATUS_REGISTER.ErrorLevel) != 0 ||
+         (g_Reg->STATUS_REGISTER.InterruptMask) == 0))
     {
         if (g_Plugins->Gfx()->UpdateScreen != nullptr)
         {

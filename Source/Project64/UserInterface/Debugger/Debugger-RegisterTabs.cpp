@@ -143,7 +143,7 @@ void CRegisterTabs::RefreshEdits()
     m_COP0Edits[8].SetValue((uint32_t)g_Reg->COUNT_REGISTER, DisplayMode::ZeroExtend);
     m_COP0Edits[9].SetValue((uint32_t)g_Reg->ENTRYHI_REGISTER, DisplayMode::ZeroExtend);
     m_COP0Edits[10].SetValue((uint32_t)g_Reg->COMPARE_REGISTER, DisplayMode::ZeroExtend);
-    m_COP0Edits[11].SetValue((uint32_t)g_Reg->STATUS_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[11].SetValue((uint32_t)g_Reg->STATUS_REGISTER.Value, DisplayMode::ZeroExtend);
     m_COP0Edits[12].SetValue((uint32_t)g_Reg->CAUSE_REGISTER.Value, DisplayMode::ZeroExtend);
     m_COP0Edits[13].SetValue((uint32_t)g_Reg->EPC_REGISTER, DisplayMode::ZeroExtend);
     m_COP0Edits[14].SetValue((uint32_t)g_Reg->CONFIG_REGISTER, DisplayMode::ZeroExtend);
@@ -322,7 +322,7 @@ void CRegisterTabs::RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam)
     case IDC_COP0_8_EDIT: g_Reg->COUNT_REGISTER = value; break;
     case IDC_COP0_9_EDIT: g_Reg->ENTRYHI_REGISTER = value; break;
     case IDC_COP0_10_EDIT: g_Reg->COMPARE_REGISTER = value; break;
-    case IDC_COP0_11_EDIT: g_Reg->STATUS_REGISTER = value; break;
+    case IDC_COP0_11_EDIT: g_Reg->STATUS_REGISTER.Value = value; break;
     case IDC_COP0_12_EDIT: g_Reg->CAUSE_REGISTER.Value = value; break;
     case IDC_COP0_13_EDIT: g_Reg->EPC_REGISTER = value; break;
     case IDC_COP0_14_EDIT: g_Reg->CONFIG_REGISTER = value; break;

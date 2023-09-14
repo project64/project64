@@ -239,7 +239,7 @@ CP0registers::CP0registers(uint64_t * _CP0) :
     COUNT_REGISTER(_CP0[9]),
     ENTRYHI_REGISTER(_CP0[10]),
     COMPARE_REGISTER(_CP0[11]),
-    STATUS_REGISTER(_CP0[12]),
+    STATUS_REGISTER((COP0Status &)_CP0[12]),
     CAUSE_REGISTER((COP0Cause &)_CP0[13]),
     EPC_REGISTER(_CP0[14]),
     PREVID_REGISTER(_CP0[15]),
@@ -411,8 +411,8 @@ void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
         break;
     case COP0Reg_Status:
     {
-        bool FRBitChanged = (m_CP0[Reg] & STATUS_FR) != (Value & STATUS_FR);
-        m_CP0[Reg] = Value & 0xFFF7FFFF;
+        bool FRBitChanged = STATUS_REGISTER.FR != ((COP0Status &)Value).FR;
+        STATUS_REGISTER.Value = Value & 0xFFF7FFFF;
         if (FRBitChanged)
         {
             FixFpuLocations();
@@ -490,7 +490,7 @@ void CRegisters::Cop2_MT(uint32_t /*Reg*/, uint64_t Value)
 
 void CRegisters::CheckInterrupts()
 {
-    uint32_t mi_intr_reg = MI_INTR_REG, status_register;
+    uint32_t mi_intr_reg = MI_INTR_REG;
     if (!m_System->bFixedAudio() && CpuType() != CPU_SyncCores)
     {
         mi_intr_reg &= ~MI_INTR_AI;
@@ -507,22 +507,14 @@ void CRegisters::CheckInterrupts()
         CAUSE_REGISTER.PendingInterrupts &= ~CAUSE_IP2;
     }
     MI_INTR_REG = mi_intr_reg;
-    status_register = (uint32_t)STATUS_REGISTER;
+    COP0Status STATUS_REGISTER_Value = STATUS_REGISTER;
 
-    if ((status_register & STATUS_IE) == 0)
-    {
-        return;
-    }
-    if ((status_register & STATUS_EXL) != 0)
-    {
-        return;
-    }
-    if ((status_register & STATUS_ERL) != 0)
+    if (STATUS_REGISTER_Value.InterruptEnable == 0 || STATUS_REGISTER_Value.ExceptionLevel != 0 || STATUS_REGISTER_Value.ErrorLevel != 0)
     {
         return;
     }
 
-    if ((status_register & CAUSE_REGISTER.Value & 0xFF00) != 0)
+    if ((STATUS_REGISTER_Value.Value & CAUSE_REGISTER.Value & 0xFF00) != 0)
     {
         if (m_FirstInterupt)
         {
@@ -567,13 +559,13 @@ void CRegisters::DoAddressError(bool DelaySlot, uint64_t BadVaddr, bool FromRead
         CAUSE_REGISTER.BranchDelay = 0;
         EPC_REGISTER = (int32_t)m_PROGRAM_COUNTER;
     }
-    STATUS_REGISTER |= STATUS_EXL;
+    STATUS_REGISTER.ExceptionLevel = 1;
     m_PROGRAM_COUNTER = 0x80000180;
 }
 
 void CRegisters::FixFpuLocations()
 {
-    if ((STATUS_REGISTER & STATUS_FR) == 0)
+    if (STATUS_REGISTER.FR == 0)
     {
         for (int count = 0; count < 32; count++)
         {
@@ -593,7 +585,7 @@ void CRegisters::FixFpuLocations()
 
 bool CRegisters::DoIntrException()
 {
-    if ((STATUS_REGISTER & STATUS_IE) == 0 || (STATUS_REGISTER & STATUS_EXL) != 0 || (STATUS_REGISTER & STATUS_ERL) != 0)
+    if (STATUS_REGISTER.InterruptEnable == 0 || STATUS_REGISTER.ExceptionLevel != 0 || STATUS_REGISTER.ErrorLevel != 0)
     {
         return false;
     }
@@ -608,7 +600,7 @@ void CRegisters::DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr)
     BAD_VADDR_REGISTER = BadVaddr;
     CONTEXT_REGISTER.BadVPN2 = BadVaddr >> 13;
     ENTRYHI_REGISTER = (BadVaddr & 0xFFFFE000);
-    if ((STATUS_REGISTER & STATUS_EXL) == 0)
+    if ((STATUS_REGISTER.ExceptionLevel) == 0)
     {
         if (DelaySlot)
         {
@@ -628,7 +620,7 @@ void CRegisters::DoTLBReadMiss(bool DelaySlot, uint64_t BadVaddr)
         {
             m_PROGRAM_COUNTER = 0x80000000;
         }
-        STATUS_REGISTER |= STATUS_EXL;
+        STATUS_REGISTER.ExceptionLevel = 1;
     }
     else
     {
@@ -647,7 +639,7 @@ void CRegisters::DoTLBWriteMiss(bool DelaySlot, uint64_t BadVaddr)
     BAD_VADDR_REGISTER = BadVaddr;
     CONTEXT_REGISTER.BadVPN2 = BadVaddr >> 13;
     ENTRYHI_REGISTER = (BadVaddr & 0xFFFFE000);
-    if ((STATUS_REGISTER & STATUS_EXL) == 0)
+    if ((STATUS_REGISTER.ExceptionLevel) == 0)
     {
         if (DelaySlot)
         {
@@ -667,7 +659,7 @@ void CRegisters::DoTLBWriteMiss(bool DelaySlot, uint64_t BadVaddr)
         {
             m_PROGRAM_COUNTER = 0x80000000;
         }
-        STATUS_REGISTER |= STATUS_EXL;
+        STATUS_REGISTER.ExceptionLevel = 1;
     }
     else
     {
@@ -697,7 +689,7 @@ void CRegisters::TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor)
     CAUSE_REGISTER.CoprocessorUnitNumber = Coprocessor;
     CAUSE_REGISTER.BranchDelay = m_System->m_PipelineStage == PIPELINE_STAGE_JUMP;
     EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - (CAUSE_REGISTER.BranchDelay ? 4 : 0));
-    STATUS_REGISTER |= STATUS_EXL;
+    STATUS_REGISTER.ExceptionLevel = 1;
     m_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
     m_System->m_JumpToLocation = 0x80000180;
 }

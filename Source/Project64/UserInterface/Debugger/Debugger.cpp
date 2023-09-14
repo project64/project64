@@ -630,7 +630,7 @@ void CDebuggerUI::CPUStepStarted()
 
         if (pc == 0x80000000 || pc == 0x80000080 || pc == 0xA0000100 || pc == 0x80000180)
         {
-            if ((g_Reg->STATUS_REGISTER >> 1) & 3) // If EXL/ERL bits are set
+            if (g_Reg->STATUS_REGISTER.ExceptionLevel != 0 || g_Reg->STATUS_REGISTER.ErrorLevel != 0) // If EXL/ERL bits are set
             {
                 HandleCPUException();
             }

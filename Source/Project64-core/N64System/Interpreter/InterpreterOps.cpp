@@ -1869,15 +1869,15 @@ void R4300iOp::COP0_CO_TLBP()
 void R4300iOp::COP0_CO_ERET()
 {
     g_System->m_PipelineStage = PIPELINE_STAGE_JUMP;
-    if ((g_Reg->STATUS_REGISTER & STATUS_ERL) != 0)
+    if ((g_Reg->STATUS_REGISTER.ErrorLevel) != 0)
     {
         g_System->m_JumpToLocation = (uint32_t)g_Reg->ERROREPC_REGISTER;
-        g_Reg->STATUS_REGISTER &= ~STATUS_ERL;
+        g_Reg->STATUS_REGISTER.ErrorLevel = 0;
     }
     else
     {
         g_System->m_JumpToLocation = (uint32_t)g_Reg->EPC_REGISTER;
-        g_Reg->STATUS_REGISTER &= ~STATUS_EXL;
+        g_Reg->STATUS_REGISTER.ExceptionLevel = 0;
     }
     (*_LLBit) = 0;
     g_Reg->CheckInterrupts();
@@ -2928,12 +2928,12 @@ void R4300iOp::COP1_L_CVT_D()
 // COP2 functions
 void R4300iOp::CPO2_INVALID_OP(void)
 {
-    g_Reg->TriggerException((g_Reg->STATUS_REGISTER & STATUS_CU2) == 0 ? EXC_CPU : EXC_II, 2);
+    g_Reg->TriggerException(g_Reg->STATUS_REGISTER.CU2 == 0 ? EXC_CPU : EXC_II, 2);
 }
 
 void R4300iOp::COP2_MF()
 {
-    if ((g_Reg->STATUS_REGISTER & STATUS_CU2) == 0)
+    if (g_Reg->STATUS_REGISTER.CU2 == 0)
     {
         g_Reg->TriggerException(EXC_CPU, 2);
     }
@@ -2945,7 +2945,7 @@ void R4300iOp::COP2_MF()
 
 void R4300iOp::COP2_DMF()
 {
-    if ((g_Reg->STATUS_REGISTER & STATUS_CU2) == 0)
+    if (g_Reg->STATUS_REGISTER.CU2 == 0)
     {
         g_Reg->TriggerException(EXC_CPU, 2);
     }
@@ -2957,7 +2957,7 @@ void R4300iOp::COP2_DMF()
 
 void R4300iOp::COP2_CF()
 {
-    if ((g_Reg->STATUS_REGISTER & STATUS_CU2) == 0)
+    if (g_Reg->STATUS_REGISTER.CU2 == 0)
     {
         g_Reg->TriggerException(EXC_CPU, 2);
     }
@@ -2969,7 +2969,7 @@ void R4300iOp::COP2_CF()
 
 void R4300iOp::COP2_MT()
 {
-    if ((g_Reg->STATUS_REGISTER & STATUS_CU2) == 0)
+    if (g_Reg->STATUS_REGISTER.CU2 == 0)
     {
         g_Reg->TriggerException(EXC_CPU, 2);
     }
@@ -2981,7 +2981,7 @@ void R4300iOp::COP2_MT()
 
 void R4300iOp::COP2_DMT()
 {
-    if ((g_Reg->STATUS_REGISTER & STATUS_CU2) == 0)
+    if (g_Reg->STATUS_REGISTER.CU2 == 0)
     {
         g_Reg->TriggerException(EXC_CPU, 2);
     }
@@ -2993,7 +2993,7 @@ void R4300iOp::COP2_DMT()
 
 void R4300iOp::COP2_CT()
 {
-    if ((g_Reg->STATUS_REGISTER & STATUS_CU2) == 0)
+    if (g_Reg->STATUS_REGISTER.CU2 == 0)
     {
         g_Reg->TriggerException(EXC_CPU, 2);
     }
@@ -3074,7 +3074,7 @@ void R4300iOp::GenerateTLBWriteException(uint64_t VAddr, const char * function)
 
 bool R4300iOp::TestCop1UsableException(void)
 {
-    if ((g_Reg->STATUS_REGISTER & STATUS_CU1) == 0)
+    if (g_Reg->STATUS_REGISTER.CU1 == 0)
     {
         g_Reg->TriggerException(EXC_CPU, 1);
         return true;

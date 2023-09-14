@@ -19,6 +19,46 @@
 #pragma warning(push)
 #pragma warning(disable : 4201) // Non-standard extension used: nameless struct/union
 
+enum PRIVILEGE_MODE : unsigned
+{
+    PrivilegeMode_Kernel,
+    PrivilegeMode_Supervisor,
+    PrivilegeMode_User
+};
+
+union COP0Status
+{
+    uint64_t Value;
+
+    struct
+    {
+        unsigned InterruptEnable : 1;
+        unsigned ExceptionLevel : 1;
+        unsigned ErrorLevel : 1;
+        PRIVILEGE_MODE PrivilegeMode : 2;
+        unsigned UserExtendedAddressing : 1;
+        unsigned SupervisorExtendedAddressing : 1;
+        unsigned KernelExtendedAddressing : 1;
+        unsigned InterruptMask : 8;
+        unsigned DE : 1;
+        unsigned CE : 1;
+        unsigned CH : 1;
+        unsigned NMI : 1;
+        unsigned SR : 1;
+        unsigned TS : 1;
+        unsigned BEV : 1;
+        unsigned : 1;
+        unsigned : 1;
+        unsigned RE : 1;
+        unsigned FR : 1;
+        unsigned RP : 1;
+        unsigned CU0 : 1;
+        unsigned CU1 : 1;
+        unsigned CU2 : 1;
+        unsigned CU3 : 1;
+    };
+};
+
 union COP0Cause
 {
     uint64_t Value;
@@ -137,7 +177,7 @@ public:
     uint64_t & COUNT_REGISTER;
     uint64_t & ENTRYHI_REGISTER;
     uint64_t & COMPARE_REGISTER;
-    uint64_t & STATUS_REGISTER;
+    COP0Status & STATUS_REGISTER;
     COP0Cause & CAUSE_REGISTER;
     uint64_t & EPC_REGISTER;
     uint64_t & PREVID_REGISTER;

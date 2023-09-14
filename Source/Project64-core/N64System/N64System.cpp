@@ -897,7 +897,7 @@ void CN64System::PluginReset()
 
 void CN64System::ApplyGSButton(void)
 {
-    if ((m_Reg.STATUS_REGISTER & STATUS_IE) != 0)
+    if (m_Reg.STATUS_REGISTER.InterruptEnable != 0)
     {
         g_Enhancements->ApplyGSButton(m_MMU_VM, !m_SyncSystem);
     }
@@ -1037,7 +1037,7 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
     m_Reg.ERROREPC_REGISTER = 0xFFFFFFFFFFFFFFFF;
     m_Reg.PREVID_REGISTER = 0x00000B22;
     m_Reg.CONFIG_REGISTER = 0x7006E463;
-    m_Reg.STATUS_REGISTER = 0x34000000;
+    m_Reg.STATUS_REGISTER.Value = 0x34000000;
 
     // N64DD registers
 
@@ -1822,9 +1822,9 @@ bool CN64System::SaveState()
     WriteTrace(TraceN64System, TraceDebug, "Start");
 
     //    if (!m_SystemTimer.SaveAllowed()) { return false; }
-    if ((m_Reg.STATUS_REGISTER & STATUS_EXL) != 0)
+    if (m_Reg.STATUS_REGISTER.ExceptionLevel != 0)
     {
-        WriteTrace(TraceN64System, TraceDebug, "Done - STATUS_EXL set, can't save");
+        WriteTrace(TraceN64System, TraceDebug, "Done - ExceptionLevel set, can't save");
         return false;
     }
 
@@ -2639,7 +2639,7 @@ void CN64System::RefreshScreen()
         m_CPU_Usage.ShowCPU_Usage();
         m_CPU_Usage.StartTimer(CPU_UsageAddr != Timer_None ? CPU_UsageAddr : Timer_R4300);
     }
-    if ((m_Reg.STATUS_REGISTER & STATUS_IE) != 0)
+    if (m_Reg.STATUS_REGISTER.InterruptEnable != 0)
     {
         g_Enhancements->ApplyActive(m_MMU_VM, g_BaseSystem->m_Plugins, !m_SyncSystem);
     }

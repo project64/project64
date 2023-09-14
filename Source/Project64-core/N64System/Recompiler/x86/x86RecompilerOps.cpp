@@ -7409,15 +7409,15 @@ void CX86RecompilerOps::COP0_CO_TLBP(void)
 
 void x86_compiler_COP0_CO_ERET()
 {
-    if ((g_Reg->STATUS_REGISTER & STATUS_ERL) != 0)
+    if (g_Reg->STATUS_REGISTER.ErrorLevel != 0)
     {
         g_Reg->m_PROGRAM_COUNTER = (uint32_t)g_Reg->ERROREPC_REGISTER;
-        g_Reg->STATUS_REGISTER &= ~STATUS_ERL;
+        g_Reg->STATUS_REGISTER.ErrorLevel = 0;
     }
     else
     {
         g_Reg->m_PROGRAM_COUNTER = (uint32_t)g_Reg->EPC_REGISTER;
-        g_Reg->STATUS_REGISTER &= ~STATUS_EXL;
+        g_Reg->STATUS_REGISTER.ExceptionLevel = 0;
     }
     g_Reg->m_LLBit = 0;
     g_Reg->CheckInterrupts();
