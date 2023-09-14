@@ -1232,7 +1232,7 @@ void R4300iOp::LLD()
 {
     uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     if (g_MMU->LD_Memory(Address, _GPR[m_Opcode.rt].UDW))
-    {        
+    {
         (*_LLBit) = 1;
     }
 }
