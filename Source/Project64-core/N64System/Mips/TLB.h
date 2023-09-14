@@ -94,7 +94,7 @@ public:
     void WriteEntry(int32_t index, bool Random);
 
     // See if a VAddr has an entry to translate to a PAddr
-    bool AddressDefined(uint32_t VAddr);
+    bool AddressDefined(uint64_t VAddr);
 
     const TLB_ENTRY & TlbEntry(int32_t Entry) const
     {

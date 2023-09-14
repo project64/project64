@@ -279,7 +279,8 @@ CRegisters::CRegisters(CN64System & System, CSystemEvents & SystemEvents) :
     DiskInterfaceReg(m_DiskInterface),
     m_System(System),
     m_SystemEvents(SystemEvents),
-    m_SystemTimer(System.m_SystemTimer)
+    m_SystemTimer(System.m_SystemTimer),
+    m_TLB(System.m_TLB)
 {
     Init();
 }
@@ -784,13 +785,13 @@ bool CRegisters::DoIntrException()
 void CRegisters::DoTLBReadMiss(uint64_t BadVaddr)
 {
     AddressException(BadVaddr);
-    TriggerException(EXC_RMISS, 0, true);
+    TriggerException(EXC_RMISS, 0, !m_TLB.AddressDefined(BadVaddr));
 }
 
 void CRegisters::DoTLBWriteMiss(uint64_t BadVaddr)
 {
     AddressException(BadVaddr);
-    TriggerException(EXC_WMISS, 0, true);
+    TriggerException(EXC_WMISS, 0, !m_TLB.AddressDefined(BadVaddr));
 }
 
 void CRegisters::AddressException(uint64_t Address)
@@ -819,7 +820,7 @@ void CRegisters::TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor, 
 
     uint32_t ExceptionBase = 0x80000000;
     uint16_t ExceptionOffset = 0x0180;
-    if (SpecialOffset && STATUS_REGISTER.ExceptionLevel != 0)
+    if (SpecialOffset && STATUS_REGISTER.ExceptionLevel == 0)
     {
         switch (STATUS_REGISTER.PrivilegeMode)
         {

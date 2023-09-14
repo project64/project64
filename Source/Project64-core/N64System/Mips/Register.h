@@ -407,6 +407,7 @@ protected:
 
 class CN64System;
 class CSystemEvents;
+class CTLB;
 
 class CRegisters :
     public CLogging,
@@ -521,4 +522,5 @@ private:
     CN64System & m_System;
     CSystemEvents & m_SystemEvents;
     CSystemTimer & m_SystemTimer;
+    CTLB & m_TLB;
 };

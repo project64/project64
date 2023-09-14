@@ -45,16 +45,14 @@ void CTLB::Reset(bool InvalidateTLB)
     }
 }
 
-bool CTLB::AddressDefined(uint32_t VAddr)
+bool CTLB::AddressDefined(uint64_t VAddr)
 {
-    uint32_t i;
-
     if (VAddr >= 0x80000000 && VAddr <= 0xBFFFFFFF)
     {
         return true;
     }
 
-    for (i = 0; i < 64; i++)
+    for (uint32_t i = 0; i < 64; i++)
     {
         if (m_FastTlb[i].ValidEntry &&
             VAddr >= m_FastTlb[i].VSTART &&
