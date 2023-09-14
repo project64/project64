@@ -567,10 +567,10 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_CoP1_W[5] = UnknownOpcode;
     Jump_CoP1_W[6] = UnknownOpcode;
     Jump_CoP1_W[7] = UnknownOpcode;
-    Jump_CoP1_W[8] = UnknownOpcode;
-    Jump_CoP1_W[9] = UnknownOpcode;
-    Jump_CoP1_W[10] = UnknownOpcode;
-    Jump_CoP1_W[11] = UnknownOpcode;
+    Jump_CoP1_W[8] = CPO1_UNIMPLEMENTED_OP;
+    Jump_CoP1_W[9] = CPO1_UNIMPLEMENTED_OP;
+    Jump_CoP1_W[10] = CPO1_UNIMPLEMENTED_OP;
+    Jump_CoP1_W[11] = CPO1_UNIMPLEMENTED_OP;
     Jump_CoP1_W[12] = CPO1_UNIMPLEMENTED_OP;
     Jump_CoP1_W[13] = CPO1_UNIMPLEMENTED_OP;
     Jump_CoP1_W[14] = CPO1_UNIMPLEMENTED_OP;
@@ -596,7 +596,7 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_CoP1_W[34] = UnknownOpcode;
     Jump_CoP1_W[35] = UnknownOpcode;
     Jump_CoP1_W[36] = CPO1_UNIMPLEMENTED_OP;
-    Jump_CoP1_W[37] = UnknownOpcode;
+    Jump_CoP1_W[37] = CPO1_UNIMPLEMENTED_OP;
     Jump_CoP1_W[38] = UnknownOpcode;
     Jump_CoP1_W[39] = UnknownOpcode;
     Jump_CoP1_W[40] = UnknownOpcode;
