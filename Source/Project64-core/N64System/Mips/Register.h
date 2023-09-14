@@ -19,6 +19,20 @@
 #pragma warning(push)
 #pragma warning(disable : 4201) // Non-standard extension used: nameless struct/union
 
+union COP0EntryHi
+{
+    uint64_t Value;
+
+    struct
+    {
+        uint64_t ASID : 8;
+        uint64_t : 5;
+        uint64_t VPN2 : 31;
+        uint64_t FILL : 18;
+        uint64_t R : 2;
+    };
+};
+
 enum PRIVILEGE_MODE : unsigned
 {
     PrivilegeMode_Kernel,
@@ -175,7 +189,7 @@ public:
     uint64_t & WIRED_REGISTER;
     uint64_t & BAD_VADDR_REGISTER;
     uint64_t & COUNT_REGISTER;
-    uint64_t & ENTRYHI_REGISTER;
+    COP0EntryHi & ENTRYHI_REGISTER;
     uint64_t & COMPARE_REGISTER;
     COP0Status & STATUS_REGISTER;
     COP0Cause & CAUSE_REGISTER;
@@ -458,6 +472,7 @@ public:
     void FixFpuLocations();
     void Reset(bool bPostPif, CMipsMemoryVM & MMU);
     void SetAsCurrentSystem();
+    void AddressException(uint64_t Address);
     void TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor = 0, bool SpecialOffset = false);
 
     uint64_t Cop0_MF(COP0Reg Reg);

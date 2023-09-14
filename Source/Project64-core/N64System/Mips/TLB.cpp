@@ -82,12 +82,12 @@ void CTLB::Probe()
         uint32_t & TlbEntryHiValue = m_tlb[Counter].EntryHi.Value;
         uint32_t Mask = ~m_tlb[Counter].PageMask.Mask << 13;
         uint32_t TlbValueMasked = TlbEntryHiValue & Mask;
-        uint32_t EntryHiMasked = g_Reg->ENTRYHI_REGISTER & Mask;
+        uint32_t EntryHiMasked = g_Reg->ENTRYHI_REGISTER.Value & Mask;
 
         if (TlbValueMasked == EntryHiMasked)
         {
-            if ((TlbEntryHiValue & 0x100) != 0 ||                               // Global
-                ((TlbEntryHiValue & 0xFF) == (g_Reg->ENTRYHI_REGISTER & 0xFF))) // SameAsid
+            if ((TlbEntryHiValue & 0x100) != 0 ||                                     // Global
+                ((TlbEntryHiValue & 0xFF) == (g_Reg->ENTRYHI_REGISTER.Value & 0xFF))) // SameAsid
             {
                 g_Reg->INDEX_REGISTER = Counter;
                 int FastIndx = Counter << 1;
@@ -105,7 +105,7 @@ void CTLB::ReadEntry()
     uint32_t index = g_Reg->INDEX_REGISTER & 0x1F;
 
     g_Reg->PAGE_MASK_REGISTER = m_tlb[index].PageMask.Value;
-    g_Reg->ENTRYHI_REGISTER = (m_tlb[index].EntryHi.Value & ~m_tlb[index].PageMask.Value);
+    g_Reg->ENTRYHI_REGISTER.Value = (m_tlb[index].EntryHi.Value & ~m_tlb[index].PageMask.Value);
     g_Reg->ENTRYLO0_REGISTER = m_tlb[index].EntryLo0.Value;
     g_Reg->ENTRYLO1_REGISTER = m_tlb[index].EntryLo1.Value;
 }
@@ -150,7 +150,7 @@ void CTLB::WriteEntry(int index, bool Random)
                 continue;
             }
             if (m_tlb[index].PageMask.Value == g_Reg->PAGE_MASK_REGISTER &&
-                m_tlb[index].EntryHi.Value == g_Reg->ENTRYHI_REGISTER)
+                m_tlb[index].EntryHi.Value == g_Reg->ENTRYHI_REGISTER.Value)
             {
                 if (FastIndx == (index << 1) && m_tlb[index].EntryLo0.Value == g_Reg->ENTRYLO0_REGISTER)
                 {
@@ -167,7 +167,7 @@ void CTLB::WriteEntry(int index, bool Random)
 
     // Fill in m_tlb entry
     m_tlb[index].PageMask.Value = (uint32_t)g_Reg->PAGE_MASK_REGISTER;
-    m_tlb[index].EntryHi.Value = (uint32_t)g_Reg->ENTRYHI_REGISTER;
+    m_tlb[index].EntryHi.Value = (uint32_t)g_Reg->ENTRYHI_REGISTER.Value;
     m_tlb[index].EntryLo0.Value = (uint32_t)g_Reg->ENTRYLO0_REGISTER;
     m_tlb[index].EntryLo1.Value = (uint32_t)g_Reg->ENTRYLO1_REGISTER;
     m_tlb[index].EntryDefined = true;
