@@ -17,7 +17,7 @@ CRSP_Plugin::CRSP_Plugin(void) :
     m_EnableDebugging(nullptr),
     m_GetDebugInfo(nullptr),
     m_InitiateDebugger(nullptr),
-    m_Thread(stRspThread),
+    m_Thread((CThread::CTHREAD_START_ROUTINE)stRspThread),
     m_CycleCount(0),
     m_Plugins(nullptr),
     m_System(nullptr),
