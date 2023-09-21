@@ -21,7 +21,7 @@
 #include "trace.h"
 #include "SettingsID.h"
 #include <Settings/Settings.h>
-#include<Project64-plugin-spec\Video.h>
+#include <Project64-plugin-spec/Video.h>
 
 #ifdef _WIN32
 #include <Common/CriticalSection.h>

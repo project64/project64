@@ -14,7 +14,7 @@
 #else
 #include <Project64-audio/Driver/OpenSLES.h>
 #endif
-#include <Project64-plugin-spec\Audio.h>
+#include <Project64-plugin-spec/Audio.h>
 #include "Version.h"
 #include <stdio.h>
 #include <string.h>
