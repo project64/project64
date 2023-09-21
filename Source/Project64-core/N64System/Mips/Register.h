@@ -473,8 +473,8 @@ public:
     void FixFpuLocations();
     void Reset(bool bPostPif, CMipsMemoryVM & MMU);
     void SetAsCurrentSystem();
-    void AddressException(uint64_t Address);
-    void TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor = 0, bool SpecialOffset = false);
+    void TriggerAddressException(uint64_t Address, uint32_t ExceptionCode, bool SpecialOffset = false);
+    void TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor = 0);
 
     uint64_t Cop0_MF(COP0Reg Reg);
     void Cop0_MT(COP0Reg Reg, uint64_t Value);

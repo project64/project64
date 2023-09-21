@@ -748,8 +748,7 @@ void CRegisters::DoAddressError(uint64_t BadVaddr, bool FromRead)
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    AddressException(BadVaddr);
-    TriggerException(FromRead ? EXC_RADE : EXC_WADE);
+    TriggerAddressException(BadVaddr, FromRead ? EXC_RADE : EXC_WADE);
 }
 
 void CRegisters::FixFpuLocations()
@@ -784,17 +783,15 @@ bool CRegisters::DoIntrException()
 
 void CRegisters::DoTLBReadMiss(uint64_t BadVaddr)
 {
-    AddressException(BadVaddr);
-    TriggerException(EXC_RMISS, 0, !m_TLB.AddressDefined(BadVaddr));
+    TriggerAddressException(BadVaddr, EXC_RMISS, !m_TLB.AddressDefined(BadVaddr));
 }
 
 void CRegisters::DoTLBWriteMiss(uint64_t BadVaddr)
 {
-    AddressException(BadVaddr);
-    TriggerException(EXC_WMISS, 0, !m_TLB.AddressDefined(BadVaddr));
+    TriggerAddressException(BadVaddr, EXC_WMISS, !m_TLB.AddressDefined(BadVaddr));
 }
 
-void CRegisters::AddressException(uint64_t Address)
+void CRegisters::TriggerAddressException(uint64_t Address, uint32_t ExceptionCode, bool SpecialOffset)
 {
     BAD_VADDR_REGISTER = Address;
     ENTRYHI_REGISTER.VPN2 = Address >> 13;
@@ -802,9 +799,27 @@ void CRegisters::AddressException(uint64_t Address)
     CONTEXT_REGISTER.BadVPN2 = Address >> 13;
     XCONTEXT_REGISTER.BadVPN2 = Address >> 13;
     XCONTEXT_REGISTER.R = Address >> 62;
+
+    TriggerException(ExceptionCode, 0);
+    if (SpecialOffset && STATUS_REGISTER.ExceptionLevel == 0)
+    {
+        m_System.m_JumpToLocation = (m_System.m_JumpToLocation & 0xFFFF0000);
+        switch (STATUS_REGISTER.PrivilegeMode)
+        {
+        case PrivilegeMode_Kernel:
+            m_System.m_JumpToLocation |= STATUS_REGISTER.KernelExtendedAddressing == 0 ? 0x0000 : 0x0080;
+            break;
+        case PrivilegeMode_Supervisor:
+            m_System.m_JumpToLocation |= STATUS_REGISTER.SupervisorExtendedAddressing == 0 ? 0x0000 : 0x0080;
+            break;
+        case PrivilegeMode_User:
+            m_System.m_JumpToLocation |= STATUS_REGISTER.UserExtendedAddressing == 0 ? 0x0000 : 0x0080;
+            break;
+        }
+    }
 }
 
-void CRegisters::TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor, bool SpecialOffset)
+void CRegisters::TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor)
 {
     if (GenerateLog() && LogExceptions())
     {
@@ -818,29 +833,11 @@ void CRegisters::TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor, 
         }
     }
 
-    uint32_t ExceptionBase = 0x80000000;
-    uint16_t ExceptionOffset = 0x0180;
-    if (SpecialOffset && STATUS_REGISTER.ExceptionLevel == 0)
-    {
-        switch (STATUS_REGISTER.PrivilegeMode)
-        {
-        case PrivilegeMode_Kernel:
-            ExceptionOffset = STATUS_REGISTER.KernelExtendedAddressing == 0 ? 0x0000 : 0x0080;
-            break;
-        case PrivilegeMode_Supervisor:
-            ExceptionOffset = STATUS_REGISTER.SupervisorExtendedAddressing == 0 ? 0x0000 : 0x0080;
-            break;
-        case PrivilegeMode_User:
-            ExceptionOffset = STATUS_REGISTER.UserExtendedAddressing == 0 ? 0x0000 : 0x0080;
-            break;
-        }
-    }
-
     CAUSE_REGISTER.ExceptionCode = ExceptionCode;
     CAUSE_REGISTER.CoprocessorUnitNumber = Coprocessor;
     CAUSE_REGISTER.BranchDelay = m_System.m_PipelineStage == PIPELINE_STAGE_JUMP;
     EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - (CAUSE_REGISTER.BranchDelay ? 4 : 0));
     STATUS_REGISTER.ExceptionLevel = 1;
     m_System.m_PipelineStage = PIPELINE_STAGE_JUMP;
-    m_System.m_JumpToLocation = ExceptionBase | ExceptionOffset;
+    m_System.m_JumpToLocation = 0x80000180;
 }
