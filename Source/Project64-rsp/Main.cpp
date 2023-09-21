@@ -322,17 +322,8 @@ EXPORT void InitiateRSP(RSP_INFO Rsp_Info, uint32_t * CycleCount)
 {
     g_RSPDebuggerUI.reset(new RSPDebuggerUI);
     g_RSPDebugger = g_RSPDebuggerUI.get();
-    RSPInfo = Rsp_Info;
-    AudioHle = GetSystemSetting(Set_AudioHle) != 0;
-    GraphicsHle = GetSystemSetting(Set_GraphicsHle) != 0;
-
+    InitilizeRSP(Rsp_Info);
     *CycleCount = 0;
-    AllocateMemory();
-    InitilizeRSPRegisters();
-    Build_RSP();
-#ifdef GenerateLog
-    Start_Log();
-#endif
 }
 
 /*

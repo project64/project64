@@ -1,4 +1,5 @@
 #include "cpu/RspTypes.h"
+#include <string.h>
 
 // RSP registers
 UWORD32 RSP_GPR[32], RSP_Flags[4];
@@ -43,6 +44,15 @@ char * GPR_Strings[32] = {
     "S8",
     "RA",
 };
+
+void InitilizeRSPRegisters(void)
+{
+    memset(RSP_GPR, 0, sizeof(RSP_GPR));
+    for (size_t i = 0, n = sizeof(RSP_Vect) / sizeof(RSP_Vect[0]); i < n; i++)
+    {
+        RSP_Vect[i] = RSPVector();
+    }
+}
 
 int64_t AccumulatorGet(uint8_t el)
 {

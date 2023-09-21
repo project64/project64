@@ -111,15 +111,6 @@ void HideRSP_RegisterPanel(int Panel)
     }
 }
 
-void InitilizeRSPRegisters(void)
-{
-    memset(RSP_GPR, 0, sizeof(RSP_GPR));
-    for (size_t i = 0, n = sizeof(RSP_Vect) / sizeof(RSP_Vect[0]); i < n; i++)
-    {
-        RSP_Vect[i] = RSPVector();
-    }
-}
-
 void PaintRSP_HiddenPanel(HWND hWnd)
 {
     PAINTSTRUCT ps;
