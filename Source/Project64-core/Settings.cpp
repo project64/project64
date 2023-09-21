@@ -131,6 +131,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 
     AddHandler(Default_RDRamSizeUnknown, new CSettingTypeApplication("Defaults", "Unknown RDRAM Size", 0x800000u));
     AddHandler(Default_RDRamSizeKnown, new CSettingTypeApplication("Defaults", "Known RDRAM Size", 0x400000u));
+    AddHandler(Default_RspMultiThreaded, new CSettingTypeApplication("Defaults", "Rsp Multi Threaded Default", false));
     AddHandler(Default_UseHleGfx, new CSettingTypeApplication("Defaults", "HLE GFX Default", true));
     AddHandler(Default_ViRefreshRate, new CSettingTypeApplication("Defaults", "ViRefresh", 1500u));
     AddHandler(Default_AiCountPerBytes, new CSettingTypeApplication("Defaults", "AiCountPerBytes", 0u));
@@ -157,6 +158,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_TLB_VAddrStart, new CSettingTypeRomDatabase("TLB: Vaddr Start", (uint32_t)0));
     AddHandler(Rdb_TLB_VAddrLen, new CSettingTypeRomDatabase("TLB: Vaddr Len", (uint32_t)0));
     AddHandler(Rdb_TLB_PAddrStart, new CSettingTypeRomDatabase("TLB: PAddr Start", (uint32_t)0));
+    AddHandler(Rdb_RspMultiThreaded, new CSettingTypeRomDatabase("Rsp Multi Threaded", Plugin_RspMultiThreaded));
     AddHandler(Rdb_UseHleGfx, new CSettingTypeRomDatabase("HLE GFX RDB", Plugin_UseHleGfx));
     AddHandler(Rdb_UseHleAudio, new CSettingTypeRomDatabase("HLE Audio RDB", Plugin_UseHleAudio));
     AddHandler(Rdb_ScreenHertz, new CSettingTypeRomDatabase("ScreenHertz", (uint32_t)0));
@@ -217,6 +219,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 #endif
     AddHandler(Game_LastSaveTime, new CSettingTypeTempNumber(0));
     AddHandler(Game_SyncViaAudio, new CSettingTypeGame("Sync Audio", Rdb_SyncViaAudio));
+    AddHandler(Game_RspMultiThreaded, new CSettingTypeGame("Rsp Multi Threaded", Rdb_RspMultiThreaded));
     AddHandler(Game_UseHleGfx, new CSettingTypeGame("HLE GFX", Rdb_UseHleGfx));
     AddHandler(Game_UseHleAudio, new CSettingTypeGame("HLE Audio", Rdb_UseHleAudio));
     AddHandler(Game_ScreenHertz, new CSettingTypeGame("ScreenHertz", Rdb_ScreenHertz));
@@ -401,6 +404,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Plugin_AUDIO_CurVer, new CSettingTypeApplication("Plugin", "Audio Dll Ver", ""));
     AddHandler(Plugin_CONT_CurVer, new CSettingTypeApplication("Plugin", "Controller Dll Ver", ""));
 
+    AddHandler(Plugin_RspMultiThreaded, new CSettingTypeApplication("RSP", "Rsp Multi Threaded Plugin", Default_RspMultiThreaded));
     AddHandler(Plugin_UseHleGfx, new CSettingTypeApplication("RSP", "HLE GFX Plugin", Default_UseHleGfx));
     AddHandler(Plugin_UseHleAudio, new CSettingTypeApplication("RSP", "HLE Audio Plugin", false));
     AddHandler(Plugin_EnableAudio, new CSettingTypeApplication("Audio", "Enable Audio", true));

@@ -22,6 +22,7 @@ CPlugins::CPlugins(SettingID PluginDirSetting, bool SyncPlugins) :
     g_Settings->RegisterChangeCB(Plugin_GFX_Current, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->RegisterChangeCB(Plugin_AUDIO_Current, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->RegisterChangeCB(Plugin_CONT_Current, this, (CSettings::SettingChangedFunc)PluginChanged);
+    g_Settings->RegisterChangeCB(Plugin_RspMultiThreaded, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->RegisterChangeCB(Plugin_UseHleGfx, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->RegisterChangeCB(Plugin_UseHleAudio, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->RegisterChangeCB(Game_EditPlugin_Gfx, this, (CSettings::SettingChangedFunc)PluginChanged);
@@ -37,6 +38,7 @@ CPlugins::~CPlugins(void)
     g_Settings->UnregisterChangeCB(Plugin_GFX_Current, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->UnregisterChangeCB(Plugin_AUDIO_Current, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->UnregisterChangeCB(Plugin_CONT_Current, this, (CSettings::SettingChangedFunc)PluginChanged);
+    g_Settings->UnregisterChangeCB(Plugin_RspMultiThreaded, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->UnregisterChangeCB(Plugin_UseHleGfx, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->UnregisterChangeCB(Plugin_UseHleAudio, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->UnregisterChangeCB(Game_EditPlugin_Gfx, this, (CSettings::SettingChangedFunc)PluginChanged);
@@ -159,12 +161,9 @@ void CPlugins::CreatePlugins(void)
     LoadPlugin(Game_Plugin_RSP, Plugin_RSP_CurVer, m_RSP, m_PluginDir.c_str(), m_RSPFile, TraceRSPPlugin, "RSP", m_SyncPlugins);
     LoadPlugin(Game_Plugin_Controller, Plugin_CONT_CurVer, m_Control, m_PluginDir.c_str(), m_ControlFile, TraceControllerPlugin, "Control", m_SyncPlugins);
 
-    // Enable debugger
-    if (m_RSP != nullptr && m_RSP->EnableDebugging)
+    if (m_RSP != nullptr)
     {
-        WriteTrace(TraceRSPPlugin, TraceInfo, "EnableDebugging starting");
         m_RSP->EnableDebugging(HaveDebugger());
-        WriteTrace(TraceRSPPlugin, TraceInfo, "EnableDebugging done");
     }
     WriteTrace(TracePlugins, TraceInfo, "Done");
 }

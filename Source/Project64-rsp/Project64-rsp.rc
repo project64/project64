@@ -194,6 +194,7 @@ BEGIN
         MENUITEM "Break on start of task",      ID_BREAKONSTARTOFTASK
         MENUITEM "Log RDP Commands",            ID_LOGRDPCOMMANDS
         MENUITEM "Log X86 code",                ID_SETTINGS_LOGX86CODE
+        MENUITEM "Multithreaded",               ID_SETTINGS_MULTITHREADED
     END
 END
 

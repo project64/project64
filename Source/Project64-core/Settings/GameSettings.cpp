@@ -4,7 +4,9 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Settings/GameSettings.h>
 
+bool CGameSettings::m_RspMultiThreaded = false;
 bool CGameSettings::m_UseHleGfx = true;
+bool CGameSettings::m_UseHleAudio = false;
 bool CGameSettings::m_bSMM_StoreInstruc;
 bool CGameSettings::m_bSMM_Protect;
 bool CGameSettings::m_bSMM_ValidFunc;
@@ -60,7 +62,9 @@ CGameSettings::~CGameSettings()
 void CGameSettings::RefreshGameSettings()
 {
     WriteTrace(TraceN64System, TraceDebug, "start");
+    m_RspMultiThreaded = g_Settings->LoadBool(Game_RspMultiThreaded);
     m_UseHleGfx = g_Settings->LoadBool(Game_UseHleGfx);
+    m_UseHleAudio = g_Settings->LoadBool(Game_UseHleAudio);
     m_bSMM_StoreInstruc = g_Settings->LoadBool(Game_SMM_StoreInstruc);
     m_bSMM_Protect = g_Settings->LoadBool(Game_SMM_Protect);
     m_bSMM_ValidFunc = g_Settings->LoadBool(Game_SMM_ValidFunc);

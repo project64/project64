@@ -33,7 +33,7 @@
 #include <Project64-rsp-core/cpu/RspTypes.h>
 
 void ClearAllx86Code(void);
-void ProcessMenuItem(int ID);
+void ProcessMenuItem(int32_t ID);
 #ifdef _WIN32
 BOOL CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 HMENU hRSPMenu = NULL;
@@ -159,6 +159,9 @@ BOOL WINAPI DllMain(HINSTANCE hinst, DWORD /*fdwReason*/, LPVOID /*lpvReserved*/
 
 void FixMenuState(void)
 {
+    short Set_MultiThreadedDefault = FindSystemSettingId("Rsp Multi Threaded Default");
+    bool MultiThreadedDefault = Set_MultiThreadedDefault != 0 ? GetSystemSetting(Set_MultiThreadedDefault) != 0 : false;
+
     EnableMenuItem(hRSPMenu, ID_RSPCOMMANDS, MF_BYCOMMAND | (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
     EnableMenuItem(hRSPMenu, ID_RSPREGISTERS, MF_BYCOMMAND | (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
     EnableMenuItem(hRSPMenu, ID_PROFILING_RESETSTATS, MF_BYCOMMAND | (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
@@ -171,6 +174,7 @@ void FixMenuState(void)
     CheckMenuItem(hRSPMenu, ID_BREAKONSTARTOFTASK, MF_BYCOMMAND | (BreakOnStart ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_LOGRDPCOMMANDS, MF_BYCOMMAND | (LogRDP ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_SETTINGS_LOGX86CODE, MF_BYCOMMAND | (LogX86Code ? MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_SETTINGS_MULTITHREADED, MF_BYCOMMAND | (MultiThreadedDefault ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_PROFILING_ON, MF_BYCOMMAND | (Profiling ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_PROFILING_OFF, MF_BYCOMMAND | (Profiling ? MFS_UNCHECKED : MF_CHECKED));
     CheckMenuItem(hRSPMenu, ID_PROFILING_LOGINDIVIDUALBLOCKS, MF_BYCOMMAND | (IndvidualBlock ? MFS_CHECKED : MF_UNCHECKED));
@@ -348,7 +352,7 @@ EXPORT void InitiateRSPDebugger(DEBUG_INFO Debug_Info)
 }
 
 #ifdef _WIN32
-void ProcessMenuItem(int ID)
+void ProcessMenuItem(int32_t ID)
 {
     switch (ID)
     {
@@ -443,6 +447,17 @@ void ProcessMenuItem(int ID)
             {
                 StopCPULog();
             }
+        }
+        break;
+    }
+    case ID_SETTINGS_MULTITHREADED:
+    {
+        bool Checked = (GetMenuState(hRSPMenu, ID_SETTINGS_MULTITHREADED, MF_BYCOMMAND) & MFS_CHECKED) != 0;
+        CheckMenuItem(hRSPMenu, ID_SETTINGS_MULTITHREADED, MF_BYCOMMAND | (Checked ? MFS_UNCHECKED : MFS_CHECKED));
+        short Set_MultiThreadedDefault = FindSystemSettingId("Rsp Multi Threaded Default");
+        if (Set_MultiThreadedDefault != 0)
+        {
+            SetSystemSetting(Set_MultiThreadedDefault, !Checked);
         }
         break;
     }

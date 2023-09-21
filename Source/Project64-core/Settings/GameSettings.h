@@ -11,9 +11,17 @@ public:
 
     void RefreshGameSettings(void);
 
+    inline static bool RspMultiThreaded(void)
+    {
+        return m_RspMultiThreaded;
+    }
     inline static bool UseHleGfx(void)
     {
         return m_UseHleGfx;
+    }
+    inline static bool UseHleAudio(void)
+    {
+        return m_UseHleAudio;
     }
     inline static bool bFPURegCaching(void)
     {
@@ -141,8 +149,9 @@ private:
 
     static void EnableDiskChanged(void *);
 
-    // Settings that can be changed on the fly
+    static bool m_RspMultiThreaded;
     static bool m_UseHleGfx;
+    static bool m_UseHleAudio;
     static bool m_RegCaching;
     static bool m_FPURegCaching;
     static bool m_bLinkBlocks;

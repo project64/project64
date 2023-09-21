@@ -39,7 +39,6 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     m_NextTimer(0),
     m_SystemTimer(*this),
     m_bCleanFrameBox(true),
-    m_RspBroke(true),
     m_TestTimer(false),
     m_PipelineStage(PIPELINE_STAGE_NORMAL),
     m_JumpToLocation(0),
@@ -912,10 +911,6 @@ void CN64System::Reset(bool bInitReg, bool ClearMenory)
     m_MMU_VM.Reset(ClearMenory);
 
     m_CyclesToSkip = 0;
-    m_AlistCount = 0;
-    m_DlistCount = 0;
-    m_UnknownCount = 0;
-    m_RspBroke = true;
     m_SyncCount = 0;
 
     for (int i = 0, n = (sizeof(m_LastSuccessSyncPC) / sizeof(m_LastSuccessSyncPC[0])); i < n; i++)
@@ -2176,11 +2171,6 @@ uint32_t CN64System::GetButtons(int32_t Control) const
     return m_Buttons[Control];
 }
 
-void CN64System::DisplayRSPListCount()
-{
-    g_Notify->DisplayMessage(0, stdstr_f("Dlist: %d   Alist: %d   Unknown: %d", m_DlistCount, m_AlistCount, m_UnknownCount).c_str());
-}
-
 void CN64System::NotifyCallback(CN64SystemCB Type)
 {
     SETTING_CALLBACK::iterator Callback = m_Callback.find(Type);
@@ -2232,103 +2222,6 @@ void CN64System::DelayedRelativeJump(uint32_t RelativeLocation)
             m_PipelineStage = PIPELINE_STAGE_PERMLOOP_DO_DELAY;
         }
     }
-}
-
-void CN64System::RunRSP()
-{
-    WriteTrace(TraceRSP, TraceDebug, "Start (SP Status %X)", m_Reg.SP_STATUS_REG);
-
-    PROFILE_TIMERS CPU_UsageAddr = m_CPU_Usage.StopTimer();
-
-    if ((m_Reg.SP_STATUS_REG & SP_STATUS_HALT) == 0)
-    {
-        HighResTimeStamp StartTime;
-
-        uint32_t Task = 0;
-        if (m_RspBroke)
-        {
-            g_MMU->MemoryValue32(0xA4000FC0, Task);
-            if (Task == 1 && UseHleGfx() && (m_Reg.DPC_STATUS_REG & DPC_STATUS_FREEZE) != 0)
-            {
-                WriteTrace(TraceRSP, TraceDebug, "Dlist that is frozen");
-                return;
-            }
-
-            if (g_Debugger != NULL && HaveDebugger())
-            {
-                g_Debugger->RSPReceivedTask();
-            }
-
-            switch (Task)
-            {
-            case 1:
-                WriteTrace(TraceRSP, TraceDebug, "*** Display list ***");
-                m_DlistCount += 1;
-                m_FPS.UpdateDlCounter();
-                break;
-            case 2:
-                WriteTrace(TraceRSP, TraceDebug, "*** Audio list ***");
-                m_AlistCount += 1;
-                break;
-            default:
-                WriteTrace(TraceRSP, TraceDebug, "*** Unknown list ***");
-                m_UnknownCount += 1;
-                break;
-            }
-
-            if (bShowDListAListCount())
-            {
-                DisplayRSPListCount();
-            }
-            if (bRecordExecutionTimes() || bShowCPUPer())
-            {
-                StartTime.SetToNow();
-            }
-        }
-
-        WriteTrace(TraceRSP, TraceDebug, "Do cycles - starting");
-        m_Plugins->RSP()->DoRspCycles(100);
-        WriteTrace(TraceRSP, TraceDebug, "Do cycles - done");
-
-        if (Task == 1 && bDelayDP() && ((m_Reg.m_GfxIntrReg & MI_INTR_DP) != 0))
-        {
-            g_SystemTimer->SetTimer(CSystemTimer::RSPTimerDlist, 0x1000, false);
-            m_Reg.m_GfxIntrReg &= ~MI_INTR_DP;
-        }
-        if (bRecordExecutionTimes() || bShowCPUPer())
-        {
-            HighResTimeStamp EndTime;
-            EndTime.SetToNow();
-            uint32_t TimeTaken = (uint32_t)(EndTime.GetMicroSeconds() - StartTime.GetMicroSeconds());
-
-            switch (Task)
-            {
-            case 1: m_CPU_Usage.RecordTime(Timer_RSP_Dlist, TimeTaken); break;
-            case 2: m_CPU_Usage.RecordTime(Timer_RSP_Alist, TimeTaken); break;
-            default: m_CPU_Usage.RecordTime(Timer_RSP_Unknown, TimeTaken); break;
-            }
-        }
-
-        if ((m_Reg.SP_STATUS_REG & SP_STATUS_HALT) == 0 &&
-            (m_Reg.SP_STATUS_REG & SP_STATUS_BROKE) == 0 &&
-            m_Reg.m_RspIntrReg == 0)
-        {
-            g_SystemTimer->SetTimer(CSystemTimer::RspTimer, 0x200, false);
-            m_RspBroke = false;
-        }
-        else
-        {
-            m_RspBroke = true;
-        }
-        WriteTrace(TraceRSP, TraceDebug, "Check interrupts");
-        g_Reg->CheckInterrupts();
-    }
-    if (bShowCPUPer())
-    {
-        m_CPU_Usage.StartTimer(CPU_UsageAddr);
-    }
-
-    WriteTrace(TraceRSP, TraceDebug, "Done (SP Status %X)", m_Reg.SP_STATUS_REG);
 }
 
 void CN64System::RefreshScreen()

@@ -53,7 +53,8 @@ typedef struct {
     long left, top, right, bottom;
 } rectangle; // <windows.h> equivalent: RECT
 
-typedef struct {
+typedef struct 
+{
     void * hdc;
     int32_t fErase;
     rectangle rcPaint;
@@ -62,23 +63,24 @@ typedef struct {
     uint8_t rgbReserved[32];
 } window_paint; // <windows.h> equivalent: PAINTSTRUCT
 
-typedef struct {
+typedef struct 
+{
     // Menu
     // Items should have an ID between 5001 and 5100
     void * hRSPMenu;
-    void(*ProcessMenuItem) (int ID);
+    void(*ProcessMenuItem) (int32_t ID);
 
     // Breakpoints
     int UseBPoints;
     char BPPanelName[20];
-    void(*Add_BPoint)      (void);
-    void(*CreateBPPanel) (void * hDlg, rectangle rcBox);
-    void(*HideBPPanel)     (void);
-    void(*PaintBPPanel)  (window_paint ps);
-    void(*ShowBPPanel)     (void);
+    void(*Add_BPoint)(void);
+    void(*CreateBPPanel)(void * hDlg, rectangle rcBox);
+    void(*HideBPPanel)(void);
+    void(*PaintBPPanel)(window_paint ps);
+    void(*ShowBPPanel)(void);
     void(*RefreshBpoints)(void * hList);
-    void(*RemoveBpoint)  (void * hList, int index);
-    void(*RemoveAllBpoint) (void);
+    void(*RemoveBpoint)(void * hList, int index);
+    void(*RemoveAllBpoint)(void);
 
     // RSP command window
     void(*Enter_RSP_Commands_Window) (void);

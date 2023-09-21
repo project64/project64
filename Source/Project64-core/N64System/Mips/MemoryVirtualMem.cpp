@@ -1187,21 +1187,7 @@ void CMipsMemoryVM::ChangeSpStatus()
         g_Reg->MI_INTR_REG |= MI_INTR_SP;
         g_Reg->CheckInterrupts();
     }
-    //if (*( uint32_t *)(DMEM + 0xFC0) == 1)
-    //{
-    //    ChangeTimer(RspTimer,0x40000);
-    //}
-    //else
-    //{
-    try
-    {
-        g_System->RunRSP();
-    }
-    catch (...)
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-    //}
+    g_Plugins->RSP()->RunRSP();
 }
 
 void CMipsMemoryVM::ChangeMiIntrMask()

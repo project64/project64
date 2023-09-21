@@ -92,7 +92,6 @@ public:
     void ApplyGSButton(void);
 
     void Pause();
-    void RunRSP();
     bool SaveState();
     bool LoadState(const char * FileName);
     bool LoadState();
@@ -162,7 +161,6 @@ private:
     void DumpSyncErrors(CN64System * SecondCPU);
     void StartEmulation2(bool NewThread);
     bool SetActiveSystem(bool bActive = true);
-    void DisplayRSPListCount();
     void NotifyCallback(CN64SystemCB Type);
     void DelayedJump(uint32_t JumpLocation);
     void DelayedRelativeJump(uint32_t RelativeLocation);
@@ -196,7 +194,6 @@ private:
     int32_t m_NextTimer;
     CSystemTimer m_SystemTimer;
     bool m_bCleanFrameBox;
-    bool m_RspBroke;
     uint32_t m_Buttons[4];
     bool m_TestTimer;
     PIPELINE_STAGE m_PipelineStage;
@@ -217,9 +214,6 @@ private:
 
     // Handle to pause mutex
     SyncEvent m_hPauseEvent;
-
-    // Number of Alist and Dlist sent to the RSP
-    uint32_t m_AlistCount, m_DlistCount, m_UnknownCount;
 
     // List of function that have been called (used in profiling)
     FUNC_CALLS m_FunctionCalls;

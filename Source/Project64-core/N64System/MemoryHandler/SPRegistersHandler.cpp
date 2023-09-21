@@ -255,7 +255,7 @@ bool SPRegistersHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask
             MI_INTR_REG |= MI_INTR_SP;
             m_Reg.CheckInterrupts();
         }
-        m_System.RunRSP();
+        m_System.GetPlugins()->RSP()->RunRSP();
         break;
     case 0x0404001C: SP_SEMAPHORE_REG = 0; break;
     case 0x04080000: SP_PC_REG = MaskedValue & 0xFFC; break;

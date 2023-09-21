@@ -246,14 +246,7 @@ void CSystemTimer::TimerDone()
         break;
     case CSystemTimer::RspTimer:
         StopTimer(CSystemTimer::RspTimer);
-        try
-        {
-            m_System.RunRSP();
-        }
-        catch (...)
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
+        m_System.GetPlugins()->RSP()->RunRSP();
         break;
     case CSystemTimer::RSPTimerDlist:
         StopTimer(CSystemTimer::RSPTimerDlist);

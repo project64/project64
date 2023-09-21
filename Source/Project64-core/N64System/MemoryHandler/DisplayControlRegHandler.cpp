@@ -127,14 +127,7 @@ bool DisplayControlRegHandler::Write32(uint32_t Address, uint32_t Value, uint32_
             {
                 if ((SP_STATUS_REG & SP_STATUS_BROKE) == 0)
                 {
-                    __except_try()
-                    {
-                        m_System.RunRSP();
-                    }
-                    __except_catch()
-                    {
-                        g_Notify->BreakPoint(__FILE__, __LINE__);
-                    }
+                    m_Plugins->RSP()->RunRSP();
                 }
             }
         }

@@ -2,6 +2,8 @@
 
 #include "GFXPlugin.h"
 #include "RSPPlugin.h"
+#include <Common/Util.h>
+#include <Project64-core/Debugger.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/Register.h>
 #include <Project64-core/N64System/N64Disk.h>
@@ -10,17 +12,19 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Plugins/AudioPlugin.h>
 
-void DummyFunc1(int a)
-{
-    a += 1;
-}
-
 CRSP_Plugin::CRSP_Plugin(void) :
-    DoRspCycles(nullptr),
-    EnableDebugging(nullptr),
+    m_DoRspCycles(nullptr),
+    m_EnableDebugging(nullptr),
+    m_GetDebugInfo(nullptr),
+    m_InitiateDebugger(nullptr),
+    m_Thread(stRspThread),
     m_CycleCount(0),
-    GetDebugInfo(nullptr),
-    InitiateDebugger(nullptr)
+    m_Plugins(nullptr),
+    m_System(nullptr),
+    m_AlistCount(0),
+    m_DlistCount(0),
+    m_UnknownCount(0),
+    m_RomOpened(false)
 {
     memset(&m_RSPDebug, 0, sizeof(m_RSPDebug));
 }
@@ -33,20 +37,13 @@ CRSP_Plugin::~CRSP_Plugin()
 
 bool CRSP_Plugin::LoadFunctions(void)
 {
-    // Find entries for functions in DLL
-    void(CALL * InitiateRSP)(void);
-    LoadFunction(InitiateRSP);
-    LoadFunction(DoRspCycles);
-    _LoadFunction("GetRspDebugInfo", GetDebugInfo);
-    _LoadFunction("InitiateRSPDebugger", InitiateDebugger);
-    LoadFunction(EnableDebugging);
-    if (EnableDebugging == nullptr)
-    {
-        EnableDebugging = DummyFunc1;
-    }
+    void(CALL * InitiateRSP)(void) = (void(CALL *)(void))DynamicLibraryGetProc(m_LibHandle, "InitiateRSP");
+    m_DoRspCycles = (uint32_t(CALL *)(uint32_t))DynamicLibraryGetProc(m_LibHandle, "DoRspCycles");
+    m_GetDebugInfo = (void(CALL *)(RSPDEBUG_INFO * GFXDebugInfo)) DynamicLibraryGetProc(m_LibHandle, "GetRspDebugInfo");
+    m_InitiateDebugger = (void(CALL *)(DEBUG_INFO DebugInfo))DynamicLibraryGetProc(m_LibHandle, "InitiateRSPDebugger");
+    m_EnableDebugging = (void(CALL *)(int32_t Enable))DynamicLibraryGetProc(m_LibHandle, "EnableDebugging");
 
-    // Make sure DLL had all needed functions
-    if (DoRspCycles == nullptr)
+    if (m_DoRspCycles == nullptr)
     {
         UnloadPlugin();
         return false;
@@ -76,17 +73,49 @@ bool CRSP_Plugin::LoadFunctions(void)
         }
     }
 
-    // Get debug info if possible
-    if (GetDebugInfo != nullptr)
+    if (m_GetDebugInfo != nullptr)
     {
-        GetDebugInfo(&m_RSPDebug);
+        m_GetDebugInfo(&m_RSPDebug);
     }
     return true;
+}
+
+void CRSP_Plugin::RomOpened(RenderWindow * Render)
+{
+    CPlugin::RomOpened(Render);
+    m_AlistCount = 0;
+    m_DlistCount = 0;
+    m_UnknownCount = 0;
+    m_RomOpened = true;
+    m_Thread.Start(this);
+}
+
+void CRSP_Plugin::RomClose(RenderWindow * Render)
+{
+    m_RomOpened = false;
+    m_RunEvent.Trigger();
+    for (uint32_t i = 0; i < 300; i++)
+    {
+        if (!m_Thread.isRunning())
+        {
+            break;
+        }
+        pjutil::Sleep(10);
+    }
+    if (m_Thread.isRunning())
+    {
+        m_Thread.Terminate();
+    }
+    CPlugin::RomClose(Render);
+    m_Plugins = nullptr;
+    m_System = nullptr;
 }
 
 bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
 {
     WriteTrace(TraceRSPPlugin, TraceDebug, "Starting");
+    m_Plugins = Plugins;
+    m_System = System;
     if (m_PluginInfo.Version == 1 || m_PluginInfo.Version == 0x100)
     {
         WriteTrace(TraceRSPPlugin, TraceDebug, "Invalid version: %X", m_PluginInfo.Version);
@@ -192,21 +221,17 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
             Info.DPC__PIPEBUSY_REG = &Value;
             Info.DPC__TMEM_REG = &Value;
         }
-        // Send initialization information to the DLL
         else
         {
+            CMipsMemoryVM & MMU = System->m_MMU_VM;
+            CRegisters & Reg = System->m_Reg;
+
             Info.ProcessDlist = Plugins->Gfx()->ProcessDList;
             Info.ProcessRdpList = Plugins->Gfx()->ProcessRDPList;
             Info.ShowCFB = Plugins->Gfx()->ShowCFB;
             Info.ProcessAlist = Plugins->Audio()->ProcessAList;
 
-            CMipsMemoryVM & MMU = System->m_MMU_VM;
-            CRegisters & Reg = System->m_Reg;
-
-            if (g_Rom->IsLoadedRomDDIPL() && g_Disk != nullptr)
-                Info.HEADER = g_Disk->GetDiskHeader();
-            else
-                Info.HEADER = g_Rom->GetRomAddress();
+            Info.HEADER = g_Rom->IsLoadedRomDDIPL() && g_Disk != nullptr ? g_Disk->GetDiskHeader() : g_Rom->GetRomAddress();
             Info.RDRAM = MMU.Rdram();
             Info.DMEM = MMU.Dmem();
             Info.IMEM = MMU.Imem();
@@ -376,19 +401,209 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
     return m_Initialized;
 }
 
+void CRSP_Plugin::EnableDebugging(int32_t Enable)
+{
+    if (m_EnableDebugging != nullptr)
+    {
+        WriteTrace(TraceRSPPlugin, TraceInfo, "EnableDebugging starting");
+        m_EnableDebugging(Enable);
+        WriteTrace(TraceRSPPlugin, TraceInfo, "EnableDebugging done");
+    }
+}
+
+void CRSP_Plugin::RunRSP()
+{
+    CRegisters & Reg = m_System->m_Reg;
+    WriteTrace(TraceRSP, TraceDebug, "Start (SP Status %X)", Reg.SP_STATUS_REG);
+    if ((Reg.SP_STATUS_REG & SP_STATUS_HALT) != 0)
+    {
+        WriteTrace(TraceRSP, TraceDebug, "Done (SP Status %X)", Reg.SP_STATUS_REG);
+        return;
+    }
+    CProfiling & CPU_Usage = m_System->m_CPU_Usage;
+    PROFILE_TIMERS CPU_UsageAddr = CPU_Usage.StopTimer();
+    CMipsMemoryVM & Memory = m_System->m_MMU_VM;
+    HighResTimeStamp StartTime;
+    uint32_t TaskType = 0;
+
+    Memory.MemoryValue32(0xA4000FC0, TaskType);
+    if (TaskType == 1 && UseHleGfx() && (Reg.DPC_STATUS_REG & DPC_STATUS_FREEZE) != 0)
+    {
+        WriteTrace(TraceRSP, TraceDebug, "Dlist that is frozen");
+        WriteTrace(TraceRSP, TraceDebug, "Done (SP Status %X)", Reg.SP_STATUS_REG);
+        return;
+    }
+
+    if (g_Debugger != NULL && HaveDebugger())
+    {
+        g_Debugger->RSPReceivedTask();
+    }
+
+    switch (TaskType)
+    {
+    case 1:
+        WriteTrace(TraceRSP, TraceDebug, "*** Display list ***");
+        m_DlistCount += 1;
+        m_System->m_FPS.UpdateDlCounter();
+        break;
+    case 2:
+        WriteTrace(TraceRSP, TraceDebug, "*** Audio list ***");
+        m_AlistCount += 1;
+        break;
+    default:
+        WriteTrace(TraceRSP, TraceDebug, "*** Unknown list ***");
+        m_UnknownCount += 1;
+        break;
+    }
+
+    if (bShowDListAListCount())
+    {
+        g_Notify->DisplayMessage(0, stdstr_f("Dlist: %d   Alist: %d   Unknown: %d", m_DlistCount, m_AlistCount, m_UnknownCount).c_str());
+    }
+    if (bRecordExecutionTimes() || bShowCPUPer())
+    {
+        StartTime.SetToNow();
+    }
+
+    uint32_t DataPtr = 0;
+    Memory.MemoryValue32(0xA4000FC0, DataPtr);
+    bool ExecuteCycles = true;
+    if (TaskType == 1 && UseHleGfx() && DataPtr != 0)
+    {
+        Memory.MemoryValue32(0xA4000FF0, TaskType);
+        if (m_Plugins->Gfx()->ProcessDList != nullptr)
+        {
+            m_Plugins->Gfx()->ProcessDList();
+        }
+        Reg.SP_STATUS_REG |= (0x0203);
+        if ((Reg.SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0)
+        {
+            Reg.MI_INTR_REG |= MI_INTR_SP;
+        }
+
+        Reg.DPC_STATUS_REG &= ~0x0002;
+        if (bDelayDP() && ((Reg.m_GfxIntrReg & MI_INTR_DP) != 0))
+        {
+            g_SystemTimer->SetTimer(CSystemTimer::RSPTimerDlist, 0x1000, false);
+            Reg.m_GfxIntrReg &= ~MI_INTR_DP;
+        }
+        ExecuteCycles = false;
+    }
+    else if (TaskType == 2 && UseHleAudio())
+    {
+        if (m_Plugins->Audio()->ProcessAList != nullptr)
+        {
+            m_Plugins->Audio()->ProcessAList();
+        }
+        Reg.SP_STATUS_REG |= (0x0203);
+        if ((Reg.SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0)
+        {
+            Reg.MI_INTR_REG |= MI_INTR_SP;
+        }
+        ExecuteCycles = false;
+    }
+    else if (TaskType == 7 && UseHleGfx() && m_Plugins->Gfx()->ShowCFB != nullptr)
+    {
+        m_Plugins->Gfx()->ShowCFB();
+    }
+
+    if (ExecuteCycles)
+    {
+        if (RspMultiThreaded())
+        {
+            m_RunEvent.Trigger();
+        }
+        else
+        {
+            WriteTrace(TraceRSP, TraceDebug, "Do cycles - starting");
+            m_DoRspCycles(100);
+            WriteTrace(TraceRSP, TraceDebug, "Do cycles - done");
+        }
+    }
+    if (bRecordExecutionTimes() || bShowCPUPer())
+    {
+        HighResTimeStamp EndTime;
+        EndTime.SetToNow();
+        uint32_t TimeTaken = (uint32_t)(EndTime.GetMicroSeconds() - StartTime.GetMicroSeconds());
+
+        switch (TaskType)
+        {
+        case 1: CPU_Usage.RecordTime(Timer_RSP_Dlist, TimeTaken); break;
+        case 2: CPU_Usage.RecordTime(Timer_RSP_Alist, TimeTaken); break;
+        default: CPU_Usage.RecordTime(Timer_RSP_Unknown, TimeTaken); break;
+        }
+    }
+
+    if (ExecuteCycles && (Reg.SP_STATUS_REG & SP_STATUS_HALT) == 0 && Reg.m_RspIntrReg == 0)
+    {
+        g_SystemTimer->SetTimer(CSystemTimer::RspTimer, 0x200, false);
+    }
+    WriteTrace(TraceRSP, TraceDebug, "Check interrupts");
+    g_Reg->CheckInterrupts();
+    if (bShowCPUPer())
+    {
+        CPU_Usage.StartTimer(CPU_UsageAddr);
+    }
+    WriteTrace(TraceRSP, TraceDebug, "Done (SP Status %X)", Reg.SP_STATUS_REG);
+}
+
 void CRSP_Plugin::UnloadPluginDetails(void)
 {
     memset(&m_RSPDebug, 0, sizeof(m_RSPDebug));
-    DoRspCycles = nullptr;
-    EnableDebugging = nullptr;
-    GetDebugInfo = nullptr;
-    InitiateDebugger = nullptr;
+    m_DoRspCycles = nullptr;
+    m_EnableDebugging = nullptr;
+    m_GetDebugInfo = nullptr;
+    m_InitiateDebugger = nullptr;
 }
 
-void CRSP_Plugin::ProcessMenuItem(int id)
+uint32_t CRSP_Plugin::RspThread(void)
+{
+    CRegisters & Reg = m_System->m_Reg;
+    for (;;)
+    {
+        m_RunEvent.IsTriggered(SyncEvent::INFINITE_TIMEOUT);
+        if (!m_RomOpened)
+        {
+            break;
+        }
+        m_DoRspCycles(100);
+        if ((Reg.SP_STATUS_REG & SP_STATUS_HALT) != 0)
+        {
+            m_RunEvent.Reset();
+        }
+    }
+    return 0;
+}
+
+uint32_t CRSP_Plugin::stRspThread(void * lpThreadParameter)
+{
+    return ((CRSP_Plugin *)lpThreadParameter)->RspThread();
+}
+
+void * CRSP_Plugin::GetDebugMenu(void)
+{
+    return m_RSPDebug.hRSPMenu;
+}
+
+void CRSP_Plugin::ProcessMenuItem(int32_t id)
 {
     if (m_RSPDebug.ProcessMenuItem)
     {
         m_RSPDebug.ProcessMenuItem(id);
     }
+}
+
+PLUGIN_TYPE CRSP_Plugin::type()
+{
+    return PLUGIN_TYPE_RSP;
+}
+
+int32_t CRSP_Plugin::GetDefaultSettingStartRange() const
+{
+    return FirstRSPDefaultSet;
+}
+
+int32_t CRSP_Plugin::GetSettingStartRange() const
+{
+    return FirstRSPSettings;
 }

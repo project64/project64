@@ -74,6 +74,7 @@ CJniBridegSettings::CJniBridegSettings()
     // Default settings
     ADD_SETTING(Default_RDRamSizeUnknown);
     ADD_SETTING(Default_RDRamSizeKnown);
+    ADD_SETTING(Default_RspMultiThreaded);
     ADD_SETTING(Default_UseHleGfx);
     ADD_SETTING(Default_ViRefreshRate);
     ADD_SETTING(Default_AiCountPerBytes);
@@ -100,6 +101,7 @@ CJniBridegSettings::CJniBridegSettings()
     ADD_SETTING(Rdb_TLB_VAddrStart);
     ADD_SETTING(Rdb_TLB_VAddrLen);
     ADD_SETTING(Rdb_TLB_PAddrStart);
+    ADD_SETTING(Rdb_RspMultiThreaded);
     ADD_SETTING(Rdb_UseHleGfx);
     ADD_SETTING(Rdb_UseHleAudio);
     ADD_SETTING(Rdb_ScreenHertz);
@@ -162,6 +164,7 @@ CJniBridegSettings::CJniBridegSettings()
     ADD_SETTING(Game_BlockLinking);
     ADD_SETTING(Game_ScreenHertz);
     ADD_SETTING(Game_RspAudioSignal);
+    ADD_SETTING(Game_RspMultiThreaded);
     ADD_SETTING(Game_UseHleGfx);
     ADD_SETTING(Game_UseHleAudio);
     ADD_SETTING(Game_ViRefreshRate);
@@ -304,6 +307,7 @@ CJniBridegSettings::CJniBridegSettings()
     ADD_SETTING(Plugin_AUDIO_CurVer);
     ADD_SETTING(Plugin_CONT_Current);
     ADD_SETTING(Plugin_CONT_CurVer);
+    ADD_SETTING(Plugin_RspMultiThreaded);
     ADD_SETTING(Plugin_UseHleGfx);
     ADD_SETTING(Plugin_UseHleAudio);
     ADD_SETTING(Plugin_EnableAudio);

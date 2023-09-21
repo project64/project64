@@ -4,10 +4,10 @@
 #include <Project64-core/Plugins/Plugin.h>
 #include <Project64-core/Settings/DebugSettings.h>
 #include <Project64-core/TraceModulesProject64.h>
-#include <Project64-plugin-spec\Base.h>
+#include <Project64-plugin-spec/Base.h>
 
 class CPlugin :
-    private CDebugSettings
+    protected CDebugSettings
 {
 public:
     CPlugin();
