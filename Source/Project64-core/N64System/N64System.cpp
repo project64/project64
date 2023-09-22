@@ -1297,6 +1297,10 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
     {
         ErrorFound = true;
     }
+    if (m_PipelineStage != SecondCPU->m_PipelineStage)
+    {
+        ErrorFound = true;
+    }
 
     for (int i = 0, n = sizeof(m_Reg.m_Mips_Interface) / sizeof(m_Reg.m_Mips_Interface[0]); i < n; i++)
     {
@@ -1448,6 +1452,10 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
         if (m_NextTimer != SecondCPU->m_NextTimer)
         {
             Error.LogF("Current Time: %X %X\r\n", (uint32_t)m_NextTimer, (uint32_t)SecondCPU->m_NextTimer);
+        }
+        if (m_PipelineStage != SecondCPU->m_PipelineStage)
+        {
+            Error.LogF("Pipeline Stage: %X %X\r\n", (uint32_t)m_PipelineStage, (uint32_t)SecondCPU->m_PipelineStage);
         }
         m_TLB.RecordDifference(Error, SecondCPU->m_TLB);
         m_SystemTimer.RecordDifference(Error, SecondCPU->m_SystemTimer);

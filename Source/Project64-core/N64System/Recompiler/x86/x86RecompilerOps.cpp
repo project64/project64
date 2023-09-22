@@ -7276,6 +7276,11 @@ void CX86RecompilerOps::SPECIAL_DSRA32()
 // COP0 functions
 void CX86RecompilerOps::COP0_MF()
 {
+    if (m_Opcode.rd == CRegisters::COP0Reg_Count)
+    {
+        UpdateCounters(m_RegWorkingSet, false, true);
+    }
+
     m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, -1);
     m_RegWorkingSet.BeforeCallDirect();
     m_Assembler.push(m_Opcode.rd);
@@ -7287,6 +7292,11 @@ void CX86RecompilerOps::COP0_MF()
 
 void CX86RecompilerOps::COP0_DMF()
 {
+    if (m_Opcode.rd == CRegisters::COP0Reg_Count)
+    {
+        UpdateCounters(m_RegWorkingSet, false, true);
+    }
+
     m_RegWorkingSet.Map_GPR_64bit(m_Opcode.rt, -1);
     m_RegWorkingSet.BeforeCallDirect();
     m_Assembler.push(m_Opcode.rd);
@@ -9896,7 +9906,10 @@ void CX86RecompilerOps::CompileLoadMemoryValue(asmjit::x86::Gp AddressReg, asmji
         m_Assembler.SubConstFromVariable(OpsExecuted, g_NextTimer, "g_NextTimer");
     }
     m_Assembler.MoveConstToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", m_CompilePC);
-    m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
+    if (m_PipelineStage != PIPELINE_STAGE_NORMAL)
+    {
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_JUMP);
+    }
     if (ValueSize == 32)
     {
         m_RegWorkingSet.BeforeCallDirect();
@@ -9942,6 +9955,10 @@ void CX86RecompilerOps::CompileLoadMemoryValue(asmjit::x86::Gp AddressReg, asmji
     if (OpsExecuted != 0)
     {
         m_Assembler.AddConstToVariable(g_NextTimer, "g_NextTimer", OpsExecuted);
+    }
+    if (m_PipelineStage != PIPELINE_STAGE_NORMAL)
+    {
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
     }
     m_CodeBlock.Log("");
     m_Assembler.bind(JumpFound);
@@ -10057,7 +10074,10 @@ void CX86RecompilerOps::CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, asmj
     m_Assembler.JneLabel(stdstr_f("MemoryWriteMap_%X_Found", m_CompilePC).c_str(), JumpFound);
 
     m_Assembler.MoveConstToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", m_CompilePC);
-    m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", m_PipelineStage);
+    if (m_PipelineStage != PIPELINE_STAGE_NORMAL)
+    {
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", m_PipelineStage);
+    }
     uint32_t OpsExecuted = m_RegWorkingSet.GetBlockCycleCount();
     if (OpsExecuted != 0)
     {
@@ -10083,6 +10103,10 @@ void CX86RecompilerOps::CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, asmj
         m_Assembler.test(asmjit::x86::al, asmjit::x86::al);
         m_RegWorkingSet.AfterCallDirect();
         CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_NormalNoSysCheck, false, &CX86Ops::JeLabel);
+        if (m_PipelineStage != PIPELINE_STAGE_NORMAL)
+        {
+            m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
+        }
         MemoryWriteDone = m_Assembler.newLabel();
         m_Assembler.JmpLabel(stdstr_f("MemoryWrite_%X_Done:", m_CompilePC).c_str(), MemoryWriteDone);
     }
@@ -10106,6 +10130,10 @@ void CX86RecompilerOps::CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, asmj
         m_Assembler.test(asmjit::x86::al, asmjit::x86::al);
         m_RegWorkingSet.AfterCallDirect();
         CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_NormalNoSysCheck, false, &CX86Ops::JeLabel);
+        if (m_PipelineStage != PIPELINE_STAGE_NORMAL)
+        {
+            m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
+        }
         MemoryWriteDone = m_Assembler.newLabel();
         m_Assembler.JmpLabel(stdstr_f("MemoryWrite_%X_Done:", m_CompilePC).c_str(), MemoryWriteDone);
     }
@@ -10129,6 +10157,10 @@ void CX86RecompilerOps::CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, asmj
         m_Assembler.test(asmjit::x86::al, asmjit::x86::al);
         m_RegWorkingSet.AfterCallDirect();
         CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_NormalNoSysCheck, false, &CX86Ops::JeLabel);
+        if (m_PipelineStage != PIPELINE_STAGE_NORMAL)
+        {
+            m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
+        }
         MemoryWriteDone = m_Assembler.newLabel();
         m_Assembler.JmpLabel(stdstr_f("MemoryWrite_%X_Done:", m_CompilePC).c_str(), MemoryWriteDone);
     }
@@ -10154,6 +10186,10 @@ void CX86RecompilerOps::CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, asmj
         m_Assembler.test(asmjit::x86::al, asmjit::x86::al);
         m_RegWorkingSet.AfterCallDirect();
         CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_NormalNoSysCheck, false, &CX86Ops::JeLabel);
+        if (m_PipelineStage != PIPELINE_STAGE_NORMAL)
+        {
+            m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
+        }
         MemoryWriteDone = m_Assembler.newLabel();
         m_Assembler.JmpLabel(stdstr_f("MemoryWrite_%X_Done:", m_CompilePC).c_str(), MemoryWriteDone);
     }
@@ -10165,6 +10201,10 @@ void CX86RecompilerOps::CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, asmj
         m_Assembler.MoveVariableDispToX86Reg(TempReg, g_MMU->m_TLB_WriteMap, "MMU->TLB_WriteMap", TempReg, CX86Ops::Multip_x4);
         CompileWriteTLBMiss(AddressReg, TempReg);
         m_Assembler.AddConstToX86Reg(TempReg, (uint32_t)m_MMU.Rdram());
+        if (m_PipelineStage != PIPELINE_STAGE_NORMAL)
+        {
+            m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
+        }
     }
     m_CodeBlock.Log("");
     m_Assembler.bind(JumpFound);
