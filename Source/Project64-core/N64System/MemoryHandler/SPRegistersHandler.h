@@ -4,6 +4,7 @@
 #include <Project64-core\Logging.h>
 #include <Project64-core\Settings\DebugSettings.h>
 #include <Project64-core\Settings\GameSettings.h>
+#include <Project64-rsp-core/cpu/RSPRegisterHandler.h>
 #include <stdint.h>
 
 class SPRegistersReg
@@ -35,7 +36,7 @@ class CN64System;
 
 class SPRegistersHandler :
     public MemoryHandler,
-    public SPRegistersReg,
+    private RSPRegisterHandler,
     private CGameSettings,
     private MIPSInterfaceReg,
     private CDebugSettings,
@@ -65,21 +66,14 @@ private:
     {
         _this->SystemReset();
     }
-    static void stLoadedGameState(SPRegistersHandler * _this)
-    {
-        _this->LoadedGameState();
-    }
 
-    void SP_DMA_READ();
-    void SP_DMA_WRITE();
+    void ClearSPInterrupt(void);
+    void SetSPInterrupt(void);
+    void SetHalt(void);
     void SystemReset(void);
-    void LoadedGameState(void);
 
     uint8_t m_IMEM[0x1000];
     uint8_t m_DMEM[0x1000];
-    uint32_t m_SPMemAddrRegRead;
-    uint32_t m_SPDramAddrRegRead;
-    bool m_ExecutedDMARead;
     CN64System & m_System;
     CMipsMemoryVM & m_MMU;
     CRegisters & m_Reg;

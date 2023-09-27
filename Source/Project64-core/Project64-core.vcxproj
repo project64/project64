@@ -295,6 +295,9 @@
       <Project>{3326e128-33af-422c-bb7c-67cc6b915610}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Common\Common.vcxproj" />
+    <ProjectReference Include="..\Project64-rsp-core\Project64-rsp-core.vcxproj">
+      <Project>{7598f6b8-9da6-4897-b26f-f6865f824bf4}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\UpdateVersion\UpdateVersion.vcxproj">
       <Project>{1968162c-0793-491d-91a1-81645a24d399}</Project>
     </ProjectReference>

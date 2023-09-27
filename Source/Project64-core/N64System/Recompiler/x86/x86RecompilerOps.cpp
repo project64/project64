@@ -10599,8 +10599,8 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         {
             switch (PAddr)
             {
-            case 0x04040000: m_Assembler.MoveConstToVariable(&g_Reg->SP_MEM_ADDR_REG, "SP_MEM_ADDR_REG", Value); break;
-            case 0x04040004: m_Assembler.MoveConstToVariable(&g_Reg->SP_DRAM_ADDR_REG, "SP_DRAM_ADDR_REG", Value); break;
+            case 0x04040000:
+            case 0x04040004:
             case 0x04040008:
             case 0x0404000C:
                 m_RegWorkingSet.BeforeCallDirect();
@@ -11026,22 +11026,20 @@ void CX86RecompilerOps::SW_Register(const asmjit::x86::Gp & Reg, uint32_t VAddr)
     case 0x04000000:
         switch (PAddr)
         {
-        case 0x04040000: m_Assembler.MoveX86regToVariable(&g_Reg->SP_MEM_ADDR_REG, "SP_MEM_ADDR_REG", Reg); break;
-        case 0x04040004: m_Assembler.MoveX86regToVariable(&g_Reg->SP_DRAM_ADDR_REG, "SP_DRAM_ADDR_REG", Reg); break;
+        case 0x04040000:
+        case 0x04040004:
         case 0x04040008:
         case 0x0404000C:
+        case 0x04040010:
+            if (PAddr == 0x04040010)
+            {
+                UpdateCounters(m_RegWorkingSet, false, true, false);
+            }
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.push(0xFFFFFFFF);
             m_Assembler.push(Reg);
             m_Assembler.push(PAddr & 0x1FFFFFFF);
             m_Assembler.CallThis((uint32_t)(MemoryHandler *)&g_MMU->m_SPRegistersHandler, (uint32_t)((long **)(MemoryHandler *)&g_MMU->m_SPRegistersHandler)[0][1], "SPRegistersHandler::Write32", 16);
-            m_RegWorkingSet.AfterCallDirect();
-            break;
-        case 0x04040010:
-            UpdateCounters(m_RegWorkingSet, false, true, false);
-            m_Assembler.MoveX86regToVariable(&CMipsMemoryVM::RegModValue, "CMipsMemoryVM::RegModValue", Reg);
-            m_RegWorkingSet.BeforeCallDirect();
-            m_Assembler.CallFunc((uint32_t)CMipsMemoryVM::ChangeSpStatus, "CMipsMemoryVM::ChangeSpStatus");
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x0404001C: m_Assembler.MoveConstToVariable(&g_Reg->SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG", 0); break;

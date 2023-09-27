@@ -61,11 +61,11 @@ public:
     bool Initialize(bool SyncSystem);
     void Reset(bool EraseMemory);
 
-    uint8_t * Rdram() const
+    uint8_t *& Rdram()
     {
         return m_RDRAM;
     }
-    uint32_t RdramSize() const
+    const uint32_t & RdramSize() const
     {
         return m_AllocatedRdramSize;
     }
@@ -161,7 +161,6 @@ private:
 #endif
 
     static void RdramChanged(CMipsMemoryVM * _this);
-    static void ChangeSpStatus();
     static void ChangeMiIntrMask();
 
     bool LB_NonMemory(uint32_t VAddr, uint8_t & Value);

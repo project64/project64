@@ -8,7 +8,7 @@
 #include <map>
 #include <vector>
 
-class CProfiling
+class CRspProfiling
 {
     typedef std::map<uint32_t, __int64> PROFILE_ENRTIES;
     typedef PROFILE_ENRTIES::iterator PROFILE_ENRTY;
@@ -24,7 +24,7 @@ class CProfiling
     PROFILE_ENRTIES m_Entries;
 
 public:
-    CProfiling()
+    CRspProfiling()
     {
         m_CurrentTimerAddr = Timer_None;
     }
@@ -168,9 +168,9 @@ public:
     }
 };
 
-CProfiling & GetProfiler(void)
+CRspProfiling & GetProfiler(void)
 {
-    static CProfiling Profile;
+    static CRspProfiling Profile;
     return Profile;
 }
 

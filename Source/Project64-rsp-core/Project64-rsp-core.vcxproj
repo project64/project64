@@ -49,6 +49,7 @@
     <ClCompile Include="cpu\RspLog.cpp" />
     <ClCompile Include="cpu\RspMemory.cpp" />
     <ClCompile Include="cpu\RSPRegister.cpp" />
+    <ClCompile Include="cpu\RSPRegisterHandler.cpp" />
     <ClCompile Include="cpu\RspTypes.cpp" />
     <ClCompile Include="Recompiler\Mmx.cpp" />
     <ClCompile Include="Recompiler\RspProfiling.cpp" />
@@ -72,6 +73,7 @@
     <ClInclude Include="cpu\RspLog.h" />
     <ClInclude Include="cpu\RspMemory.h" />
     <ClInclude Include="cpu\RSPOpcode.h" />
+    <ClInclude Include="cpu\RSPRegisterHandler.h" />
     <ClInclude Include="cpu\RSPRegisters.h" />
     <ClInclude Include="cpu\RspTypes.h" />
     <ClInclude Include="Recompiler\RspProfiling.h" />

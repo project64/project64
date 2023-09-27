@@ -96,6 +96,9 @@
     <ClCompile Include="cpu\RspClamp.cpp">
       <Filter>Source Files\cpu</Filter>
     </ClCompile>
+    <ClCompile Include="cpu\RSPRegisterHandler.cpp">
+      <Filter>Source Files\cpu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cpu\RSPInstruction.h">
@@ -153,6 +156,9 @@
       <Filter>Header Files\cpu</Filter>
     </ClInclude>
     <ClInclude Include="cpu\RspClamp.h">
+      <Filter>Header Files\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu\RSPRegisterHandler.h">
       <Filter>Header Files\cpu</Filter>
     </ClInclude>
   </ItemGroup>
