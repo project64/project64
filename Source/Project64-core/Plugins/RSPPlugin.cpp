@@ -87,6 +87,7 @@ void CRSP_Plugin::RomOpened(RenderWindow * Render)
     m_DlistCount = 0;
     m_UnknownCount = 0;
     m_RomOpened = true;
+    m_RunEvent.Reset();
     m_Thread.Start(this);
 }
 
@@ -107,6 +108,7 @@ void CRSP_Plugin::RomClose(RenderWindow * Render)
         m_Thread.Terminate();
     }
     CPlugin::RomClose(Render);
+    m_RunEvent.Reset();
     m_Plugins = nullptr;
     m_System = nullptr;
 }
