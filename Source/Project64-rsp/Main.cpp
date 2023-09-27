@@ -485,6 +485,12 @@ EXPORT void RomOpen(void)
     JumpTableSize = GetSetting(Set_JumpTableSize);
     Mfc0Count = GetSetting(Set_Mfc0Count);
     SemaphoreExit = GetSetting(Set_SemaphoreExit);
+
+    RdramSize = Set_AllocatedRdramSize != 0 ? GetSystemSetting(Set_AllocatedRdramSize) : 0;
+    if (RdramSize == 0)
+    {
+        RdramSize = 0x00400000;
+    }
 }
 
 /*

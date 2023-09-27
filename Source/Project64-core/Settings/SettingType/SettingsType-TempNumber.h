@@ -6,7 +6,7 @@ class CSettingTypeTempNumber :
     public CSettingType
 {
 public:
-    CSettingTypeTempNumber(uint32_t initialValue);
+    CSettingTypeTempNumber(uint32_t initialValue, const char * Name = nullptr);
     ~CSettingTypeTempNumber();
 
     bool IndexBasedSetting(void) const
@@ -20,6 +20,10 @@ public:
     bool IsSettingSet(void) const
     {
         return false;
+    }
+    const char * GetName(void) const
+    {
+        return m_Name.c_str();
     }
 
     // Return the values
@@ -46,6 +50,7 @@ private:
     CSettingTypeTempNumber(const CSettingTypeTempNumber &);
     CSettingTypeTempNumber & operator=(const CSettingTypeTempNumber &);
 
-    uint32_t m_value;
-    uint32_t m_initialValue;
+    uint32_t m_Value;
+    uint32_t m_InitialValue;
+    std::string m_Name;
 };

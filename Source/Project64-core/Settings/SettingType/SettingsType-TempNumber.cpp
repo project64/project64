@@ -2,9 +2,10 @@
 
 #include "SettingsType-TempNumber.h"
 
-CSettingTypeTempNumber::CSettingTypeTempNumber(uint32_t initialValue) :
-    m_value(initialValue),
-    m_initialValue(initialValue)
+CSettingTypeTempNumber::CSettingTypeTempNumber(uint32_t initialValue, const char * Name) :
+    m_Value(initialValue),
+    m_InitialValue(initialValue),
+    m_Name(Name ? Name : "")
 {
 }
 
@@ -20,7 +21,7 @@ bool CSettingTypeTempNumber::Load(uint32_t /*Index*/, bool & /*Value*/) const
 
 bool CSettingTypeTempNumber::Load(uint32_t /*Index*/, uint32_t & Value) const
 {
-    Value = m_value;
+    Value = m_Value;
     return false;
 }
 
@@ -38,7 +39,7 @@ void CSettingTypeTempNumber::LoadDefault(uint32_t /*Index*/, bool & /*Value*/) c
 
 void CSettingTypeTempNumber::LoadDefault(uint32_t /*Index*/, uint32_t & Value) const
 {
-    Value = m_initialValue;
+    Value = m_InitialValue;
 }
 
 void CSettingTypeTempNumber::LoadDefault(uint32_t /*Index*/, std::string & /*Value*/) const
@@ -53,7 +54,7 @@ void CSettingTypeTempNumber::Save(uint32_t /*Index*/, bool /*Value*/)
 
 void CSettingTypeTempNumber::Save(uint32_t /*Index*/, uint32_t Value)
 {
-    m_value = Value;
+    m_Value = Value;
 }
 
 void CSettingTypeTempNumber::Save(uint32_t /*Index*/, const std::string & /*Value*/)

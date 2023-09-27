@@ -70,6 +70,8 @@ CJniBridegSettings::CJniBridegSettings()
     ADD_SETTING(Setting_SyncViaAudioEnabled);
     ADD_SETTING(Setting_Enhancement);
     ADD_SETTING(Setting_DiskSaveType);
+    ADD_SETTING(Setting_UpdateControllerOnRefresh);
+    ADD_SETTING(Setting_AllocatedRdramSize);
 
     // Default settings
     ADD_SETTING(Default_RDRamSizeUnknown);

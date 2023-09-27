@@ -172,6 +172,7 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
         FreeMemory();
         return false;
     }
+    g_Settings->SaveDword(Setting_AllocatedRdramSize, m_AllocatedRdramSize);
 
     m_MemoryReadMap = new size_t[0x100000];
     if (m_MemoryReadMap == nullptr)

@@ -7,6 +7,7 @@
 #include <Settings/Settings.h>
 
 RSP_INFO RSPInfo;
+uint32_t RdramSize = 0;
 
 void InitilizeRSP(RSP_INFO & Rsp_Info)
 {

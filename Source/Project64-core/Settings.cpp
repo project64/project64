@@ -128,6 +128,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Setting_SyncViaAudioEnabled, new CSettingTypeTempBool(false, "SyncViaAudioEnabled"));
     AddHandler(Setting_DiskSaveType, new CSettingTypeApplication("Settings", "Disk Save Type", (uint32_t)1));
     AddHandler(Setting_UpdateControllerOnRefresh, new CSettingTypeTempBool(false));
+    AddHandler(Setting_AllocatedRdramSize, new CSettingTypeTempNumber(0, "AllocatedRdramSize"));
 
     AddHandler(Default_RDRamSizeUnknown, new CSettingTypeApplication("Defaults", "Unknown RDRAM Size", 0x800000u));
     AddHandler(Default_RDRamSizeKnown, new CSettingTypeApplication("Defaults", "Known RDRAM Size", 0x400000u));
@@ -488,6 +489,19 @@ uint32_t CSettings::FindSetting(CSettings * _this, const char * Name)
         {
             CSettingTypeTempBool * BoolSetting = (CSettingTypeTempBool *)Setting;
             if (_stricmp(BoolSetting->GetName(), Name) != 0)
+            {
+                continue;
+            }
+            if (setting_id != 0)
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            setting_id = iter->first;
+        }
+        else if (Setting->GetSettingType() == SettingType_NumberVariable)
+        {
+            CSettingTypeTempNumber * NumberSetting = (CSettingTypeTempNumber *)Setting;
+            if (_stricmp(NumberSetting->GetName(), Name) != 0)
             {
                 continue;
             }

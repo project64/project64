@@ -62,6 +62,7 @@ enum SettingID
     Setting_Enhancement,
     Setting_DiskSaveType,
     Setting_UpdateControllerOnRefresh,
+    Setting_AllocatedRdramSize,
 
     // Default settings
     Default_RDRamSizeUnknown,

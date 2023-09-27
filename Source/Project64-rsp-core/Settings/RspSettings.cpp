@@ -4,7 +4,7 @@
 #include <Project64-rsp-core/cpu/RSPCpu.h>
 #include <Settings/Settings.h>
 
-uint16_t Set_AudioHle = 0, Set_GraphicsHle = 0;
+uint16_t Set_AudioHle = 0, Set_GraphicsHle = 0, Set_AllocatedRdramSize = 0;
 bool GraphicsHle = true, AudioHle, ConditionalMove;
 bool DebuggingEnabled = false, Profiling, IndvidualBlock, ShowErrors, BreakOnStart = false, LogRDP = false, LogX86Code = false;
 
@@ -13,6 +13,7 @@ void InitializeRspSetting(void)
     SetModuleName("RSP");
     Set_GraphicsHle = FindSystemSettingId("HLE GFX");
     Set_AudioHle = FindSystemSettingId("HLE Audio");
+    Set_AllocatedRdramSize = FindSystemSettingId("AllocatedRdramSize");
 
     RegisterSetting(Set_BreakOnStart, Data_DWORD_General, "Break on Start", NULL, BreakOnStart, NULL);
     RegisterSetting(Set_CPUCore, Data_DWORD_General, "CPU Method", NULL, g_CPUCore, NULL);
