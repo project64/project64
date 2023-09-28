@@ -152,9 +152,13 @@ EXPORT void DllAbout(void * hParent)
 }
 
 #ifdef _WIN32
-BOOL WINAPI DllMain(HINSTANCE hinst, DWORD /*fdwReason*/, LPVOID /*lpvReserved*/)
+BOOL WINAPI DllMain(HINSTANCE hinst, DWORD fdwReason, LPVOID /*lpvReserved*/)
 {
     hinstDLL = hinst;
+    if (fdwReason == DLL_PROCESS_DETACH)
+    {
+        StopCPULog();
+    }
     return true;
 }
 

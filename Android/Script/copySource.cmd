@@ -51,6 +51,10 @@ echo copy Project64-core
 xcopy "%base_dir%/Source/Project64-core" "%base_dir%/Android/jni/Project64-core/" /D /I /F /Y /E
 IF %ERRORLEVEL% NEQ 0 (exit /B 1)
 
+echo copy Project64-rsp-core
+xcopy "%base_dir%/Source/Project64-rsp-core" "%base_dir%/Android/jni/Project64-rsp-core/" /D /I /F /Y /E
+IF %ERRORLEVEL% NEQ 0 (exit /B 1)
+
 echo copy Project64-video
 xcopy "%base_dir%/Source/Project64-video" "%base_dir%/Android/jni/Project64-video/" /D /I /F /Y /E
 IF %ERRORLEVEL% NEQ 0 (exit /B 1)
