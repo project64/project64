@@ -95,9 +95,7 @@ extern char * GPR_Strings[32];
                                    : (Reg) == 15  ? "DP TMEM load counter"   \
                                                   : "Unknown Register"
 
-void Enter_RSP_Register_Window(void);
 void InitilizeRSPRegisters(void);
-void UpdateRSPRegistersScreen(void);
 
 int64_t AccumulatorGet(uint8_t el);
 void AccumulatorSet(uint8_t el, int64_t Accumulator);

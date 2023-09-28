@@ -16,6 +16,7 @@
 #include <stdint.h>
 
 #include "Debugger/RSPDebuggerUI.h"
+#include "Debugger/RSPRegistersUI.h"
 #include "RSP Command.h"
 #include "Rsp.h"
 #include "breakpoint.h"

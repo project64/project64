@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <windows.h>
 
+#include "Debugger/RSPRegistersUI.h"
 #include "RSP Command.h"
 #include "Rsp.h"
 #include "breakpoint.h"
