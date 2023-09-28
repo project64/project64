@@ -1,5 +1,6 @@
 #include <Common/MemoryManagement.h>
 #include <Project64-rsp-core/RSPInfo.h>
+#include <Project64-rsp-core/cpu/RSPCpu.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
 #include <Settings/Settings.h>
 #include <stdio.h>
@@ -85,7 +86,7 @@ void SetJumpTable(uint32_t End)
         End = 0x800;
     }
 
-    if (End == 0x1000 && ((*RSPInfo.SP_MEM_ADDR_REG & 0x0FFF) & ~7) == 0x80)
+    if (End == 0x1000 && ((g_RSPRegisterHandler->PendingSPMemAddr() & 0x0FFF) & ~7) == 0x80)
     {
         End = 0x800;
     }

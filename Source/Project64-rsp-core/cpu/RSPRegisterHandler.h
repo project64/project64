@@ -18,6 +18,7 @@ class RSPRegisterHandler
 {
 public:
     RSPRegisterHandler(uint32_t * SignalProcessorInterface, uint8_t *& Rdram, const uint32_t & RdramSize, uint8_t * IMEM, uint8_t * DMEM);
+    RSPRegisterHandler(_RSP_INFO & RSPInfo, const uint32_t & RdramSize);
 
     void SP_DMA_READ(void);
     void SP_DMA_WRITE(void);
@@ -29,6 +30,7 @@ protected:
     virtual void ClearSPInterrupt(void) = 0;
     virtual void SetSPInterrupt(void) = 0;
     virtual void SetHalt(void) = 0;
+    virtual void DmaReadDone(uint32_t End) = 0;
 
     uint32_t & SP_MEM_ADDR_REG;
     uint32_t & SP_DRAM_ADDR_REG;
@@ -45,5 +47,4 @@ protected:
     uint8_t * m_DMEM;
     uint32_t m_PendingSPMemAddr;
     uint32_t m_PendingSPDramAddr;
-    bool m_ExecutedDMARead;
 };

@@ -3320,3 +3320,15 @@ void XorX86RegToVariable(void * Variable, char * VariableName, int x86reg)
     }
     PUTDSTPTR(RecompPos, Variable);
 }
+
+void * GetAddressOf_(int value, ...)
+{
+    void * Address;
+
+    va_list ap;
+    va_start(ap, value);
+    Address = va_arg(ap, void *);
+    va_end(ap);
+
+    return Address;
+}

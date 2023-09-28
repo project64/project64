@@ -1,5 +1,7 @@
 #include "RSPOpcode.h"
+#include "RSPRegisterHandlerPlugin.h"
 #include "RspTypes.h"
+#include <memory>
 
 enum RSPCpuType
 {
@@ -27,3 +29,4 @@ void Build_RSP(void);
 
 extern uint32_t Mfc0Count, SemaphoreExit;
 extern RSPCpuType g_CPUCore;
+extern std::unique_ptr<RSPRegisterHandlerPlugin> g_RSPRegisterHandler;

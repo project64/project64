@@ -491,6 +491,7 @@ EXPORT void RomOpen(void)
     {
         RdramSize = 0x00400000;
     }
+    g_RSPRegisterHandler.reset(new RSPRegisterHandlerPlugin(RSPInfo, RdramSize));
 }
 
 /*
@@ -507,6 +508,7 @@ EXPORT void RomClosed(void)
         StopTimer();
         GenerateTimerResults();
     }
+    g_RSPRegisterHandler.reset(nullptr);
     ClearAllx86Code();
     StopRDPLog();
     StopCPULog();

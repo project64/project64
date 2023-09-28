@@ -268,3 +268,6 @@ void SseShuffleReg(int Dest, int Source, uint8_t Immed);
 
 void x86_SetBranch32b(void * Jumpuint8_t, void * Destination);
 void x86_SetBranch8b(void * Jumpuint8_t, void * Destination);
+
+void * GetAddressOf_(int32_t value, ...);
+#define AddressOf(Addr) GetAddressOf_(5, (Addr))

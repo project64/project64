@@ -1,7 +1,7 @@
 #pragma once
 #include "Base.h"
 
-typedef struct 
+typedef struct _RSP_INFO
 {
     void * hInst;
     int MemoryBswaped;    // If this is set to TRUE, then the memory has been pre-bswap'd on a DWORD (32-bit) boundary

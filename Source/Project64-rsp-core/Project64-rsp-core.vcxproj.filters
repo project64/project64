@@ -90,13 +90,13 @@
     <ClCompile Include="Recompiler\RspProfiling.cpp">
       <Filter>Source Files\Recompiler</Filter>
     </ClCompile>
-    <ClCompile Include="cpu\RspDma.cpp">
-      <Filter>Source Files\cpu</Filter>
-    </ClCompile>
     <ClCompile Include="cpu\RspClamp.cpp">
       <Filter>Source Files\cpu</Filter>
     </ClCompile>
     <ClCompile Include="cpu\RSPRegisterHandler.cpp">
+      <Filter>Source Files\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\RSPRegisterHandlerPlugin.cpp">
       <Filter>Source Files\cpu</Filter>
     </ClCompile>
   </ItemGroup>
@@ -152,13 +152,13 @@
     <ClInclude Include="Recompiler\RspProfiling.h">
       <Filter>Header Files\Recompiler</Filter>
     </ClInclude>
-    <ClInclude Include="cpu\RspDma.h">
-      <Filter>Header Files\cpu</Filter>
-    </ClInclude>
     <ClInclude Include="cpu\RspClamp.h">
       <Filter>Header Files\cpu</Filter>
     </ClInclude>
     <ClInclude Include="cpu\RSPRegisterHandler.h">
+      <Filter>Header Files\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu\RSPRegisterHandlerPlugin.h">
       <Filter>Header Files\cpu</Filter>
     </ClInclude>
   </ItemGroup>

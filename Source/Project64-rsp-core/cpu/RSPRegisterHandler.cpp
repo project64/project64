@@ -19,8 +19,26 @@ RSPRegisterHandler::RSPRegisterHandler(uint32_t * SignalProcessorInterface, uint
     m_IMEM(IMEM),
     m_DMEM(DMEM),
     m_PendingSPMemAddr(0),
-    m_PendingSPDramAddr(0),
-    m_ExecutedDMARead(false)
+    m_PendingSPDramAddr(0)
+{
+}
+
+RSPRegisterHandler::RSPRegisterHandler(_RSP_INFO & RSPInfo, const uint32_t & RdramSize) :
+    SP_MEM_ADDR_REG(*RSPInfo.SP_MEM_ADDR_REG),
+    SP_DRAM_ADDR_REG(*RSPInfo.SP_DRAM_ADDR_REG),
+    SP_RD_LEN_REG(*RSPInfo.SP_RD_LEN_REG),
+    SP_WR_LEN_REG(*RSPInfo.SP_WR_LEN_REG),
+    SP_STATUS_REG(*RSPInfo.SP_STATUS_REG),
+    SP_DMA_FULL_REG(*RSPInfo.SP_DMA_FULL_REG),
+    SP_DMA_BUSY_REG(*RSPInfo.SP_DMA_BUSY_REG),
+    SP_SEMAPHORE_REG(*RSPInfo.SP_SEMAPHORE_REG),
+    SP_PC_REG(*RSPInfo.SP_PC_REG),
+    m_Rdram(RSPInfo.RDRAM),
+    m_RdramSize(RdramSize),
+    m_IMEM(RSPInfo.IMEM),
+    m_DMEM(RSPInfo.DMEM),
+    m_PendingSPMemAddr(0),
+    m_PendingSPDramAddr(0)
 {
 }
 
@@ -109,11 +127,11 @@ void RSPRegisterHandler::SP_DMA_READ()
     SP_DMA_BUSY_REG = 0;
     SP_STATUS_REG &= ~SP_STATUS_DMA_BUSY;
 
-    m_ExecutedDMARead = true;
     SP_MEM_ADDR_REG = (Pos & 0xFFF) | (m_PendingSPMemAddr & 0x1000);
     SP_DRAM_ADDR_REG = ReadPos;
     SP_RD_LEN_REG = (SP_RD_LEN_REG & 0xFF800000) | 0x00000FF8;
     SP_WR_LEN_REG = (SP_RD_LEN_REG & 0xFF800000) | 0x00000FF8;
+    DmaReadDone(Pos);
 }
 
 void RSPRegisterHandler::SP_DMA_WRITE()
@@ -181,7 +199,6 @@ void RSPRegisterHandler::SP_DMA_WRITE()
     SP_DMA_BUSY_REG = 0;
     SP_STATUS_REG &= ~SP_STATUS_DMA_BUSY;
 
-    m_ExecutedDMARead = true;
     SP_MEM_ADDR_REG = (Pos & 0xFFF) | (m_PendingSPMemAddr & 0x1000);
     SP_DRAM_ADDR_REG = WritePos;
     SP_RD_LEN_REG = (SP_WR_LEN_REG & 0xFF800000) | 0x00000FF8;

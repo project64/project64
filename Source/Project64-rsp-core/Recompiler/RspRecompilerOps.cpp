@@ -9,7 +9,6 @@
 #include <Project64-rsp-core/cpu/RSPInterpreterCPU.h>
 #include <Project64-rsp-core/cpu/RSPInterpreterOps.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
-#include <Project64-rsp-core/cpu/RspDma.h>
 #include <Project64-rsp-core/cpu/RspLog.h>
 #include <Project64-rsp-core/cpu/RspMemory.h>
 #include <Project64-rsp-core/cpu/RspTypes.h>
@@ -2102,7 +2101,7 @@ void Compile_Cop0_MF(void)
     }
     else
     {
-        CompilerWarning("MF error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
+        CompilerWarning(stdstr_f("MF error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction).c_str());
         BreakPoint();
     }
     return;
@@ -2110,11 +2109,15 @@ void Compile_Cop0_MF(void)
     switch (RSPOpC.rd)
     {
     case 0:
-        MoveVariableToX86reg(RSPInfo.SP_MEM_ADDR_REG, "SP_MEM_ADDR_REG", x86_EAX);
+        MoveConstToX86reg((uint32_t)(g_RSPRegisterHandler.get()), x86_ECX);
+        PushImm32("RSPRegister_MEM_ADDR", RSPRegister_MEM_ADDR);
+        Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::ReadReg), "RSPRegisterHandlerPlugin::ReadReg");
         MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
         break;
     case 1:
-        MoveVariableToX86reg(RSPInfo.SP_DRAM_ADDR_REG, "SP_DRAM_ADDR_REG", x86_EAX);
+        MoveConstToX86reg((uint32_t)(g_RSPRegisterHandler.get()), x86_ECX);
+        PushImm32("RSPRegister_DRAM_ADDR", RSPRegister_DRAM_ADDR);
+        Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::ReadReg), "RSPRegisterHandlerPlugin::ReadReg");
         MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
         break;
     case 5:
@@ -2126,32 +2129,10 @@ void Compile_Cop0_MF(void)
         MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
         break;
     case 4:
-        MoveVariableToX86reg(&RSP_MfStatusCount, "RSP_MfStatusCount", x86_ECX);
-        MoveVariableToX86reg(RSPInfo.SP_STATUS_REG, "SP_STATUS_REG", x86_EAX);
-        if (Mfc0Count != 0)
-        {
-            CompConstToX86reg(x86_ECX, Mfc0Count);
-            JbLabel8("label", 10);
-            MoveConstToVariable(0, &RSP_Running, "RSP_Running");
-        }
-        IncX86reg(x86_ECX);
+        MoveConstToX86reg((uint32_t)(g_RSPRegisterHandler.get()), x86_ECX);
+        PushImm32("RSPRegister_STATUS", RSPRegister_STATUS);
+        Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::ReadReg), "RSPRegisterHandlerPlugin::ReadReg");
         MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
-        MoveX86regToVariable(x86_ECX, &RSP_MfStatusCount, "RSP_MfStatusCount");
-        if (NextInstruction == RSPPIPELINE_NORMAL)
-        {
-            MoveConstToVariable(CompilePC + 4, PrgCount, "RSP PC");
-            Ret();
-            NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
-        }
-        else if (NextInstruction == RSPPIPELINE_DELAY_SLOT)
-        {
-            NextInstruction = RSPPIPELINE_DELAY_SLOT_EXIT;
-        }
-        else
-        {
-            CompilerWarning(stdstr_f("MF error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction).c_str());
-            BreakPoint();
-        }
         break;
     case 7:
         if (AudioHle || GraphicsHle || SemaphoreExit == 0)
@@ -2242,7 +2223,7 @@ void Compile_Cop0_MT(void)
         }
         else
         {
-            CompilerWarning("MF error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction);
+            CompilerWarning(stdstr_f("MF error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction).c_str());
             BreakPoint();
         }
     }
@@ -2250,22 +2231,54 @@ void Compile_Cop0_MT(void)
     switch (RSPOpC.rd)
     {
     case 0:
+        MoveConstToX86reg((uint32_t)(g_RSPRegisterHandler.get()), x86_ECX);
         MoveVariableToX86reg(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
-        MoveX86regToVariable(x86_EAX, RSPInfo.SP_MEM_ADDR_REG, "SP_MEM_ADDR_REG");
+        Push(x86_EAX);
+        PushImm32("RSPRegister_MEM_ADDR", RSPRegister_MEM_ADDR);
+        Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::WriteReg), "RSPRegisterHandlerPlugin::WriteReg");
         break;
     case 1:
+        MoveConstToX86reg((uint32_t)(g_RSPRegisterHandler.get()), x86_ECX);
         MoveVariableToX86reg(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
-        MoveX86regToVariable(x86_EAX, RSPInfo.SP_DRAM_ADDR_REG, "SP_DRAM_ADDR_REG");
+        Push(x86_EAX);
+        PushImm32("RSPRegister_DRAM_ADDR", RSPRegister_DRAM_ADDR);
+        Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::WriteReg), "RSPRegisterHandlerPlugin::WriteReg");
         break;
     case 2:
+        MoveConstToX86reg((uint32_t)(g_RSPRegisterHandler.get()), x86_ECX);
         MoveVariableToX86reg(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
-        MoveX86regToVariable(x86_EAX, RSPInfo.SP_RD_LEN_REG, "SP_RD_LEN_REG");
-        Call_Direct(SP_DMA_READ, "SP_DMA_READ");
+        Push(x86_EAX);
+        PushImm32("RSPRegister_RD_LEN", RSPRegister_RD_LEN);
+        Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::WriteReg), "RSPRegisterHandlerPlugin::WriteReg");
         break;
     case 3:
+        MoveConstToX86reg((uint32_t)(g_RSPRegisterHandler.get()), x86_ECX);
         MoveVariableToX86reg(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
-        MoveX86regToVariable(x86_EAX, RSPInfo.SP_WR_LEN_REG, "SP_WR_LEN_REG");
-        Call_Direct(SP_DMA_WRITE, "SP_DMA_WRITE");
+        Push(x86_EAX);
+        PushImm32("RSPRegister_WR_LEN", RSPRegister_WR_LEN);
+        Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::WriteReg), "RSPRegisterHandlerPlugin::WriteReg");
+        break;
+    case 4:
+        MoveConstToX86reg((uint32_t)(g_RSPRegisterHandler.get()), x86_ECX);
+        MoveVariableToX86reg(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
+        Push(x86_EAX);
+        PushImm32("RSPRegister_STATUS", RSPRegister_STATUS);
+        Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::WriteReg), "RSPRegisterHandlerPlugin::WriteReg");
+        if (NextInstruction == RSPPIPELINE_NORMAL)
+        {
+            MoveConstToVariable(CompilePC + 4, PrgCount, "RSP PC");
+            Ret();
+            NextInstruction = RSPPIPELINE_FINISH_BLOCK;
+        }
+        else if (NextInstruction == RSPPIPELINE_DELAY_SLOT)
+        {
+            NextInstruction = RSPPIPELINE_DELAY_SLOT_EXIT;
+        }
+        else
+        {
+            CompilerWarning(stdstr_f("MF error\nWeird Delay Slot.\n\nNextInstruction = %X\nEmulation will now stop", NextInstruction).c_str());
+            BreakPoint();
+        }
         break;
     case 7:
         MoveConstToVariable(0, RSPInfo.SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG");

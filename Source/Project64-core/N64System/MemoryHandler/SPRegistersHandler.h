@@ -70,6 +70,7 @@ private:
     void ClearSPInterrupt(void);
     void SetSPInterrupt(void);
     void SetHalt(void);
+    void DmaReadDone(uint32_t End);
     void SystemReset(void);
 
     uint8_t m_IMEM[0x1000];

@@ -42,7 +42,6 @@
   <ItemGroup>
     <ClCompile Include="cpu\RspClamp.cpp" />
     <ClCompile Include="cpu\RSPCpu.cpp" />
-    <ClCompile Include="cpu\RspDma.cpp" />
     <ClCompile Include="cpu\RSPiInstruction.cpp" />
     <ClCompile Include="cpu\RSPInterpreterCPU.cpp" />
     <ClCompile Include="cpu\RSPInterpreterOps.cpp" />
@@ -50,6 +49,7 @@
     <ClCompile Include="cpu\RspMemory.cpp" />
     <ClCompile Include="cpu\RSPRegister.cpp" />
     <ClCompile Include="cpu\RSPRegisterHandler.cpp" />
+    <ClCompile Include="cpu\RSPRegisterHandlerPlugin.cpp" />
     <ClCompile Include="cpu\RspTypes.cpp" />
     <ClCompile Include="Recompiler\Mmx.cpp" />
     <ClCompile Include="Recompiler\RspProfiling.cpp" />
@@ -66,7 +66,6 @@
   <ItemGroup>
     <ClInclude Include="cpu\RspClamp.h" />
     <ClInclude Include="cpu\RSPCpu.h" />
-    <ClInclude Include="cpu\RspDma.h" />
     <ClInclude Include="cpu\RSPInstruction.h" />
     <ClInclude Include="cpu\RSPInterpreterCPU.h" />
     <ClInclude Include="cpu\RSPInterpreterOps.h" />
@@ -74,6 +73,7 @@
     <ClInclude Include="cpu\RspMemory.h" />
     <ClInclude Include="cpu\RSPOpcode.h" />
     <ClInclude Include="cpu\RSPRegisterHandler.h" />
+    <ClInclude Include="cpu\RSPRegisterHandlerPlugin.h" />
     <ClInclude Include="cpu\RSPRegisters.h" />
     <ClInclude Include="cpu\RspTypes.h" />
     <ClInclude Include="Recompiler\RspProfiling.h" />

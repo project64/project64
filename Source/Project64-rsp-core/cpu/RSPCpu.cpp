@@ -4,6 +4,9 @@
 #include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/Settings/RspSettings.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
+#include <memory>
+
+class RSPRegisterHandler;
 
 UDWORD EleSpec[16], Indx[16];
 RSPOpcode RSPOpC;
@@ -24,6 +27,7 @@ void BuildRecompilerCPU(void);
 CriticalSection g_CPUCriticalSection;
 uint32_t Mfc0Count, SemaphoreExit = 0;
 RSPCpuType g_CPUCore = InterpreterCPU;
+std::unique_ptr<RSPRegisterHandlerPlugin> g_RSPRegisterHandler;
 
 void SetCPU(RSPCpuType core)
 {

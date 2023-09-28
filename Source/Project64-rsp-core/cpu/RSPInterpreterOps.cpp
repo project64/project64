@@ -7,7 +7,6 @@
 #include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/Settings/RspSettings.h>
 #include <Project64-rsp-core/cpu/RspClamp.h>
-#include <Project64-rsp-core/cpu/RspDma.h>
 #include <Settings/Settings.h>
 #include <algorithm>
 #include <float.h>
@@ -376,11 +375,13 @@ void RSP_Cop0_MF(void)
     g_RSPDebugger->RDP_LogMF0(*PrgCount, RSPOpC.rd);
     switch (RSPOpC.rd)
     {
-    case 0: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_MEM_ADDR_REG; break;
-    case 1: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_DRAM_ADDR_REG; break;
+    case 0: RSP_GPR[RSPOpC.rt].UW = g_RSPRegisterHandler->ReadReg(RSPRegister_MEM_ADDR); break;
+    case 1: RSP_GPR[RSPOpC.rt].UW = g_RSPRegisterHandler->ReadReg(RSPRegister_DRAM_ADDR); break;
+    case 2: RSP_GPR[RSPOpC.rt].UW = g_RSPRegisterHandler->ReadReg(RSPRegister_RD_LEN); break;
+    case 3: RSP_GPR[RSPOpC.rt].UW = g_RSPRegisterHandler->ReadReg(RSPRegister_WR_LEN); break;
     case 4:
         RSP_MfStatusCount += 1;
-        RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_STATUS_REG;
+        RSP_GPR[RSPOpC.rt].UW = g_RSPRegisterHandler->ReadReg(RSPRegister_STATUS);
         if (Mfc0Count != 0 && RSP_MfStatusCount > Mfc0Count)
         {
             RSP_Running = false;
@@ -389,16 +390,8 @@ void RSP_Cop0_MF(void)
     case 5: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_DMA_FULL_REG; break;
     case 6: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_DMA_BUSY_REG; break;
     case 7:
-        if (AudioHle || GraphicsHle || SemaphoreExit == 0)
-        {
-            RSP_GPR[RSPOpC.rt].W = 0;
-        }
-        else
-        {
-            RSP_GPR[RSPOpC.rt].W = *RSPInfo.SP_SEMAPHORE_REG;
-            *RSPInfo.SP_SEMAPHORE_REG = 1;
-            RSP_Running = false;
-        }
+        RSP_GPR[RSPOpC.rt].W = *RSPInfo.SP_SEMAPHORE_REG;
+        *RSPInfo.SP_SEMAPHORE_REG = 1;
         break;
     case 8: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.DPC_START_REG; break;
     case 9: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.DPC_END_REG; break;
@@ -418,121 +411,11 @@ void RSP_Cop0_MT(void)
     }
     switch (RSPOpC.rd)
     {
-    case 0: *RSPInfo.SP_MEM_ADDR_REG = RSP_GPR[RSPOpC.rt].UW; break;
-    case 1: *RSPInfo.SP_DRAM_ADDR_REG = RSP_GPR[RSPOpC.rt].UW; break;
-    case 2:
-        *RSPInfo.SP_RD_LEN_REG = RSP_GPR[RSPOpC.rt].UW;
-        SP_DMA_READ();
-        break;
-    case 3:
-        *RSPInfo.SP_WR_LEN_REG = RSP_GPR[RSPOpC.rt].UW;
-        SP_DMA_WRITE();
-        break;
-    case 4:
-        if ((RSP_GPR[RSPOpC.rt].W & SP_CLR_HALT) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG &= ~SP_STATUS_HALT;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_SET_HALT) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG |= SP_STATUS_HALT;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_CLR_BROKE) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG &= ~SP_STATUS_BROKE;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_CLR_INTR) != 0)
-        {
-            *RSPInfo.MI_INTR_REG &= ~MI_INTR_SP;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_SET_INTR) != 0)
-        {
-            *RSPInfo.MI_INTR_REG |= MI_INTR_SP;
-            RSPInfo.CheckInterrupts();
-            RSP_Running = false;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_CLR_SSTEP) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG &= ~SP_STATUS_SSTEP;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_SET_SSTEP) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG |= SP_STATUS_SSTEP;
-            RSP_NextInstruction = RSPPIPELINE_SINGLE_STEP;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_CLR_INTR_BREAK) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_SET_INTR_BREAK) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG |= SP_STATUS_INTR_BREAK;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_CLR_SIG0) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG &= ~SP_STATUS_SIG0;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_SET_SIG0) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG |= SP_STATUS_SIG0;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_CLR_SIG1) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG &= ~SP_STATUS_SIG1;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_SET_SIG1) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG |= SP_STATUS_SIG1;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_CLR_SIG2) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG &= ~SP_STATUS_SIG2;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_SET_SIG2) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG |= SP_STATUS_SIG2;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_CLR_SIG3) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG &= ~SP_STATUS_SIG3;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_SET_SIG3) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG |= SP_STATUS_SIG3;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_CLR_SIG4) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG &= ~SP_STATUS_SIG4;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_SET_SIG4) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG |= SP_STATUS_SIG4;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_CLR_SIG5) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG &= ~SP_STATUS_SIG5;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_SET_SIG5) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG |= SP_STATUS_SIG5;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_CLR_SIG6) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG &= ~SP_STATUS_SIG6;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_SET_SIG6) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG |= SP_STATUS_SIG6;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_CLR_SIG7) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG &= ~SP_STATUS_SIG7;
-        }
-        if ((RSP_GPR[RSPOpC.rt].W & SP_SET_SIG7) != 0)
-        {
-            *RSPInfo.SP_STATUS_REG |= SP_STATUS_SIG7;
-        }
-        break;
+    case 0: g_RSPRegisterHandler->WriteReg(RSPRegister_MEM_ADDR, RSP_GPR[RSPOpC.rt].UW); break;
+    case 1: g_RSPRegisterHandler->WriteReg(RSPRegister_DRAM_ADDR, RSP_GPR[RSPOpC.rt].UW); break;
+    case 2: g_RSPRegisterHandler->WriteReg(RSPRegister_RD_LEN, RSP_GPR[RSPOpC.rt].UW); break;
+    case 3: g_RSPRegisterHandler->WriteReg(RSPRegister_WR_LEN, RSP_GPR[RSPOpC.rt].UW); break;
+    case 4: g_RSPRegisterHandler->WriteReg(RSPRegister_STATUS, RSP_GPR[RSPOpC.rt].UW); break;
     case 7: *RSPInfo.SP_SEMAPHORE_REG = 0; break;
     case 8:
         *RSPInfo.DPC_START_REG = RSP_GPR[RSPOpC.rt].UW;

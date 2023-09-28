@@ -172,6 +172,10 @@ void SPRegistersHandler::SetHalt(void)
 {
 }
 
+void SPRegistersHandler::DmaReadDone(uint32_t /*End*/)
+{
+}
+
 void SPRegistersHandler::SystemReset(void)
 {
     SP_RD_LEN_REG = 0x00000FF8;
