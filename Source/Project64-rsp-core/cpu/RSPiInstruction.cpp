@@ -552,6 +552,7 @@ void RSPInstruction::DecodeCop2Name(void)
         case RSP_VECTOR_VRCP:
             strcpy(m_Name, "VRCP");
             sprintf(m_Param, "$v%d[%d], $v%d%s", m_Instruction.sa, m_Instruction.rd & 0x7, m_Instruction.rt, ElementSpecifier(m_Instruction.e));
+            break;
         case RSP_VECTOR_VRCPL:
             strcpy(m_Name, "VRCPL");
             sprintf(m_Param, "$v%d[%d], $v%d%s", m_Instruction.sa, m_Instruction.rd & 0x7, m_Instruction.rt, ElementSpecifier(m_Instruction.e));
