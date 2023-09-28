@@ -551,15 +551,15 @@ void RSPInstruction::DecodeCop2Name(void)
             break;
         case RSP_VECTOR_VRCP:
             strcpy(m_Name, "VRCP");
-            sprintf(m_Param, "$v%d[%d], $v%d%s", m_Instruction.sa, m_Instruction.rd & 0x7, m_Instruction.rt, ElementSpecifier(m_Instruction.e));
+            sprintf(m_Param, "$v%d[%d], $v%d [%d]", m_Instruction.vd, m_Instruction.rd & 0x7, m_Instruction.vt, m_Instruction.e & 0x7);
             break;
         case RSP_VECTOR_VRCPL:
             strcpy(m_Name, "VRCPL");
-            sprintf(m_Param, "$v%d[%d], $v%d%s", m_Instruction.sa, m_Instruction.rd & 0x7, m_Instruction.rt, ElementSpecifier(m_Instruction.e));
+            sprintf(m_Param, "$v%d[%d], $v%d [%d]", m_Instruction.vd, m_Instruction.rd & 0x7, m_Instruction.vt, m_Instruction.e & 0x7);
             break;
         case RSP_VECTOR_VRCPH:
             strcpy(m_Name, "VRCPH");
-            sprintf(m_Param, "$v%d[%d], $v%d%s", m_Instruction.sa, m_Instruction.rd & 0x7, m_Instruction.rt, ElementSpecifier(m_Instruction.e));
+            sprintf(m_Param, "$v%d[%d], $v%d%s[%d]", m_Instruction.vd, m_Instruction.de & 0x7, m_Instruction.vt, ElementSpecifier(m_Instruction.e), (m_Instruction.de & 0x7));
             break;
         case RSP_VECTOR_VMOV:
             strcpy(m_Name, "VMOV");
@@ -567,15 +567,15 @@ void RSPInstruction::DecodeCop2Name(void)
             break;
         case RSP_VECTOR_VRSQ:
             strcpy(m_Name, "VRSQ");
-            sprintf(m_Param, "$v%d[%d], $v%d%s", m_Instruction.sa, m_Instruction.rd & 0x7, m_Instruction.rt, ElementSpecifier(m_Instruction.e));
+            sprintf(m_Param, "$v%d[%d], $v%d [%d]", m_Instruction.vd, m_Instruction.rd & 0x7, m_Instruction.vt, m_Instruction.e & 0x7);
             break;
         case RSP_VECTOR_VRSQL:
             strcpy(m_Name, "VRSQL");
-            sprintf(m_Param, "$v%d[%d], $v%d%s", m_Instruction.sa, m_Instruction.rd & 0x7, m_Instruction.rt, ElementSpecifier(m_Instruction.e));
+            sprintf(m_Param, "$v%d[%d], $v%d [%d]", m_Instruction.vd, m_Instruction.rd & 0x7, m_Instruction.vt, m_Instruction.e & 0x7);
             break;
         case RSP_VECTOR_VRSQH:
             strcpy(m_Name, "VRSQH");
-            sprintf(m_Param, "$v%d[%d], $v%d%s", m_Instruction.sa, m_Instruction.rd & 0x7, m_Instruction.rt, ElementSpecifier(m_Instruction.e));
+            sprintf(m_Param, "$v%d[%d], $v%d%s[%d]", m_Instruction.vd, m_Instruction.rd & 0x7, m_Instruction.vt, ElementSpecifier(m_Instruction.e), (m_Instruction.rd & 0x7));
             break;
         case RSP_VECTOR_VNOP:
             strcpy(m_Name, "VNOP");

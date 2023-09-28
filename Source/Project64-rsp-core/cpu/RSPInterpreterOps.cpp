@@ -15,6 +15,47 @@
 extern UWORD32 Recp, RecpResult, SQroot, SQrootResult;
 extern bool AudioHle, GraphicsHle;
 
+uint32_t clz32(uint32_t val)
+{
+#if defined(__GNUC__)
+    return val ? __builtin_clz(val) : 32;
+#else
+    /* Binary search for the leading one bit.  */
+    int cnt = 0;
+
+    if ((val & 0xFFFF0000U) == 0)
+    {
+        cnt += 16;
+        val <<= 16;
+    }
+    if ((val & 0xFF000000U) == 0)
+    {
+        cnt += 8;
+        val <<= 8;
+    }
+    if ((val & 0xF0000000U) == 0)
+    {
+        cnt += 4;
+        val <<= 4;
+    }
+    if ((val & 0xC0000000U) == 0)
+    {
+        cnt += 2;
+        val <<= 2;
+    }
+    if ((val & 0x80000000U) == 0)
+    {
+        cnt++;
+        val <<= 1;
+    }
+    if ((val & 0x80000000U) == 0)
+    {
+        cnt++;
+    }
+    return cnt;
+#endif
+}
+
 // Opcode functions
 
 void RSP_Opcode_SPECIAL(void)
@@ -1147,124 +1188,79 @@ void RSP_Vector_VNXOR(void)
 
 void RSP_Vector_VRCP(void)
 {
-    RecpResult.W = RSP_Vect[RSPOpC.vt].s16(EleSpec[RSPOpC.e].B[(RSPOpC.rd & 0x7)]);
-    if (RecpResult.UW == 0)
+    int32_t Input = RSP_Vect[RSPOpC.vt].s16(7 - (RSPOpC.e & 0x7));
+    int32_t Mask = Input >> 31;
+    int32_t Data = Input ^ Mask;
+    if (Input > -32768)
     {
-        RecpResult.UW = 0x7FFFFFFF;
+        Data -= Mask;
+    }
+    int32_t Result = 0;
+    if (Data == 0)
+    {
+        Result = 0x7fffffff;
+    }
+    else if (Input == 0xFFFF8000)
+    {
+        Result = 0xffff0000;
     }
     else
     {
-        bool neg = RecpResult.W < 0;
-        if (neg)
-        {
-            RecpResult.W = ~RecpResult.W + 1;
-        }
-        for (int count = 15; count > 0; count--)
-        {
-            if ((RecpResult.W & (1 << count)))
-            {
-                RecpResult.W &= (0xFFC0 >> (15 - count));
-                count = 0;
-            }
-        }
-        {
-            uint32_t RoundMethod = _RC_CHOP;
-            uint32_t OldModel = _controlfp(RoundMethod, _MCW_RC);
-            RecpResult.W = (long)((0x7FFFFFFF / (double)RecpResult.W));
-            OldModel = _controlfp(OldModel, _MCW_RC);
-        }
-        for (int count = 31; count > 0; count--)
-        {
-            if ((RecpResult.W & (1 << count)))
-            {
-                RecpResult.W &= (0xFFFF8000 >> (31 - count));
-                count = 0;
-            }
-        }
-        if (neg == true)
-        {
-            RecpResult.W = ~RecpResult.W;
-        }
+        uint32_t Shift = clz32(Data);
+        uint32_t Index = (uint64_t(Data) << Shift & 0x7fc0'0000) >> 22;
+        Result = (((0x10000 | Reciprocals[Index]) << 14) >> (31 - Shift)) ^ Mask;
     }
-    for (int count = 0; count < 8; count++)
+    RcpHigh = false;
+    RcpResult = Result >> 16;
+    for (uint8_t i = 0; i < 8; i++)
     {
-        RSP_ACCUM[count].HW[1] = RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[count]);
+        RSP_ACCUM[i].HW[1] = RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[i]);
     }
-    RSP_Vect[RSPOpC.vd].s16(7 - (RSPOpC.rd & 0x7)) = RecpResult.UHW[0];
+    RSP_Vect[RSPOpC.vd].s16(7 - (RSPOpC.rd & 0x7)) = (int16_t)Result;
 }
 
 void RSP_Vector_VRCPL(void)
 {
-    int count;
-    bool neg;
-
-    RecpResult.UW = RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[(RSPOpC.rd & 0x7)]) | Recp.W;
-    if (RecpResult.UW == 0)
+    int32_t Result = 0;
+    int32_t Input = RcpHigh ? (RcpIn << 16 | RSP_Vect[RSPOpC.vt].u16(7 - (RSPOpC.e & 0x7))) : RSP_Vect[RSPOpC.vt].s16(7 - (RSPOpC.e & 0x7));
+    int32_t Mask = Input >> 31;
+    int32_t Data = Input ^ Mask;
+    if (Input > -32768)
     {
-        RecpResult.UW = 0x7FFFFFFF;
+        Data -= Mask;
+    }
+    if (Data == 0)
+    {
+        Result = 0x7fffffff;
+    }
+    else if (Input == 0xFFFF8000)
+    {
+        Result = 0xffff0000;
     }
     else
     {
-        if (RecpResult.W < 0)
-        {
-            neg = true;
-            if (RecpResult.UHW[1] == 0xFFFF && RecpResult.HW[0] < 0)
-            {
-                RecpResult.W = ~RecpResult.W + 1;
-            }
-            else
-            {
-                RecpResult.W = ~RecpResult.W;
-            }
-        }
-        else
-        {
-            neg = false;
-        }
-        for (count = 31; count > 0; count--)
-        {
-            if ((RecpResult.W & (1 << count)))
-            {
-                RecpResult.W &= (0xFFC00000 >> (31 - count));
-                count = 0;
-            }
-        }
-        {
-            uint32_t OldModel = _controlfp(_RC_CHOP, _MCW_RC);
-            //RecpResult.W = 0x7FFFFFFF / RecpResult.W;
-            RecpResult.W = (long)((0x7FFFFFFF / (double)RecpResult.W));
-            OldModel = _controlfp(OldModel, _MCW_RC);
-        }
-        for (count = 31; count > 0; count--)
-        {
-            if ((RecpResult.W & (1 << count)))
-            {
-                RecpResult.W &= (0xFFFF8000 >> (31 - count));
-                count = 0;
-            }
-        }
-        if (neg == true)
-        {
-            RecpResult.W = ~RecpResult.W;
-        }
+        uint32_t Shift = clz32(Data);
+        uint32_t Index = (uint64_t(Data) << Shift & 0x7fc00000) >> 22;
+        Result = (((0x10000 | Reciprocals[Index]) << 14) >> (31 - Shift)) ^ Mask;
     }
-    for (count = 0; count < 8; count++)
+    RcpHigh = false;
+    RcpResult = Result >> 16;
+    for (uint8_t i = 0; i < 8; i++)
     {
-        RSP_ACCUM[count].HW[1] = RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[count]);
+        RSP_ACCUM[i].HW[1] = RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[i]);
     }
-    RSP_Vect[RSPOpC.vd].s16(7 - (RSPOpC.rd & 0x7)) = RecpResult.UHW[0];
+    RSP_Vect[RSPOpC.vd].s16(7 - (RSPOpC.rd & 0x7)) = (int16_t)Result;
 }
 
 void RSP_Vector_VRCPH(void)
 {
-    int count;
-
-    Recp.UHW[1] = RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[(RSPOpC.rd & 0x7)]);
-    for (count = 0; count < 8; count++)
+    RcpHigh = true;
+    RcpIn = RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[(RSPOpC.de & 0x7)]);
+    for (uint8_t i = 0; i < 8; i++)
     {
-        RSP_ACCUM[count].HW[1] = RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[count]);
+        RSP_ACCUM[i].HW[1] = RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[i]);
     }
-    RSP_Vect[RSPOpC.vd].u16(7 - (RSPOpC.rd & 0x7)) = RecpResult.UHW[1];
+    RSP_Vect[RSPOpC.vd].u16(7 - (RSPOpC.de & 0x7)) = RcpResult;
 }
 
 void RSP_Vector_VMOV(void)
@@ -1279,138 +1275,79 @@ void RSP_Vector_VMOV(void)
 
 void RSP_Vector_VRSQ(void)
 {
-    int count;
-    bool neg;
-
-    SQrootResult.W = RSP_Vect[RSPOpC.vt].s16(EleSpec[RSPOpC.e].B[(RSPOpC.rd & 0x7)]);
-    if (SQrootResult.UW == 0)
+    int64_t Result = 0;
+    int32_t Input = RSP_Vect[RSPOpC.vt].s16(7 - (RSPOpC.e & 0x7));
+    int32_t Mask = Input >> 31;
+    int32_t Data = Input ^ Mask;
+    if (Input > -32768)
     {
-        SQrootResult.UW = 0x7FFFFFFF;
+        Data -= Mask;
     }
-    else if (SQrootResult.UW == 0xFFFF8000)
+    if (Data == 0)
     {
-        SQrootResult.UW = 0xFFFF0000;
+        Result = 0x7fffffff;
+    }
+    else if (Input == 0xFFFF8000)
+    {
+        Result = 0xffff0000;
     }
     else
     {
-        if (SQrootResult.W < 0)
-        {
-            neg = true;
-            SQrootResult.W = ~SQrootResult.W + 1;
-        }
-        else
-        {
-            neg = false;
-        }
-        for (count = 15; count > 0; count--)
-        {
-            if ((SQrootResult.W & (1 << count)))
-            {
-                SQrootResult.W &= (0xFF80 >> (15 - count));
-                count = 0;
-            }
-        }
-        {
-            uint32_t RoundMethod = _RC_CHOP;
-            uint32_t OldModel = _controlfp(RoundMethod, _MCW_RC);
-            SQrootResult.W = (long)(0x7FFFFFFF / sqrt(SQrootResult.W));
-            OldModel = _controlfp(OldModel, _MCW_RC);
-        }
-        for (count = 31; count > 0; count--)
-        {
-            if ((SQrootResult.W & (1 << count)))
-            {
-                SQrootResult.W &= (0xFFFF8000 >> (31 - count));
-                count = 0;
-            }
-        }
-        if (neg == true)
-        {
-            SQrootResult.W = ~SQrootResult.W;
-        }
+        uint32_t Shift = clz32(Data);
+        uint32_t Index = (uint64_t(Data) << Shift & 0x7fc00000) >> 22;
+        Result = (((0x10000 | InverseSquareRoots[(Index & 0x1fe) | (Shift & 1)]) << 14) >> ((31 - Shift) >> 1)) ^ Mask;
     }
-    for (count = 0; count < 8; count++)
+    RcpHigh = false;
+    RcpResult = (int16_t)(Result >> 16);
+    for (uint8_t i = 0; i < 8; i++)
     {
-        RSP_ACCUM[count].HW[1] = RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[count]);
+        RSP_ACCUM[i].HW[1] = RSP_Vect[RSPOpC.vt].ue(i, RSPOpC.e);
     }
-    RSP_Vect[RSPOpC.vd].s16(7 - (RSPOpC.rd & 0x7)) = SQrootResult.UHW[0];
+    RSP_Vect[RSPOpC.vd].s16(7 - (RSPOpC.rd & 0x7)) = (int16_t)Result;
 }
 
 void RSP_Vector_VRSQL(void)
 {
-    int count;
-    bool neg;
-
-    SQrootResult.UW = RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[(RSPOpC.rd & 0x7)]) | SQroot.W;
-    if (SQrootResult.UW == 0)
+    int32_t Result = 0;
+    int32_t Input = RcpHigh ? RcpIn << 16 | RSP_Vect[RSPOpC.vt].u16(7 - (RSPOpC.e & 0x7)) : RSP_Vect[RSPOpC.vt].s16(7 - (RSPOpC.e & 0x7));
+    int32_t Mask = Input >> 31;
+    int32_t Data = Input ^ Mask;
+    if (Input > -32768)
     {
-        SQrootResult.UW = 0x7FFFFFFF;
+        Data -= Mask;
     }
-    else if (SQrootResult.UW == 0xFFFF8000)
+    if (Data == 0)
     {
-        SQrootResult.UW = 0xFFFF0000;
+        Result = 0x7fffffff;
+    }
+    else if (Input == 0xFFFF8000)
+    {
+        Result = 0xffff0000;
     }
     else
     {
-        if (SQrootResult.W < 0)
-        {
-            neg = true;
-            if (SQrootResult.UHW[1] == 0xFFFF && SQrootResult.HW[0] < 0)
-            {
-                SQrootResult.W = ~SQrootResult.W + 1;
-            }
-            else
-            {
-                SQrootResult.W = ~SQrootResult.W;
-            }
-        }
-        else
-        {
-            neg = false;
-        }
-        for (count = 31; count > 0; count--)
-        {
-            if ((SQrootResult.W & (1 << count)))
-            {
-                SQrootResult.W &= (0xFF800000 >> (31 - count));
-                count = 0;
-            }
-        }
-        {
-            uint32_t OldModel = _controlfp(_RC_CHOP, _MCW_RC);
-            SQrootResult.W = (long)(0x7FFFFFFF / sqrt(SQrootResult.W));
-            OldModel = _controlfp(OldModel, _MCW_RC);
-        }
-        for (count = 31; count > 0; count--)
-        {
-            if ((SQrootResult.W & (1 << count)))
-            {
-                SQrootResult.W &= (0xFFFF8000 >> (31 - count));
-                count = 0;
-            }
-        }
-        if (neg == true)
-        {
-            SQrootResult.W = ~SQrootResult.W;
-        }
+        uint32_t Shift = clz32(Data);
+        uint32_t Index = (uint64_t(Data) << Shift & 0x7fc00000) >> 22;
+        Result = (((0x10000 | InverseSquareRoots[(Index & 0x1fe) | (Shift & 1)]) << 14) >> ((31 - Shift) >> 1)) ^ Mask;
     }
-    for (count = 0; count < 8; count++)
+    RcpHigh = 0;
+    RcpResult = Result >> 16;
+    for (uint8_t i = 0; i < 8; i++)
     {
-        RSP_ACCUM[count].HW[1] = RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[count]);
+        RSP_ACCUM[i].HW[1] = RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[i]);
     }
-    RSP_Vect[RSPOpC.vd].s16(7 - (RSPOpC.rd & 0x7)) = SQrootResult.UHW[0];
+    RSP_Vect[RSPOpC.vd].s16(7 - (RSPOpC.rd & 0x7)) = (int16_t)Result;
 }
 
 void RSP_Vector_VRSQH(void)
 {
-    int count;
-
-    SQroot.UHW[1] = RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[(RSPOpC.rd & 0x7)]);
-    for (count = 0; count < 8; count++)
+    RcpHigh = 1;
+    RcpIn = RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[(RSPOpC.rd & 0x7)]);
+    for (uint8_t i = 0; i < 8; i++)
     {
-        RSP_ACCUM[count].HW[1] = RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[count]);
+        RSP_ACCUM[i].HW[1] = RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[i]);
     }
-    RSP_Vect[RSPOpC.vd].u16(7 - (RSPOpC.rd & 0x7)) = SQrootResult.UHW[1];
+    RSP_Vect[RSPOpC.vd].u16(7 - (RSPOpC.rd & 0x7)) = RcpResult;
 }
 
 void RSP_Vector_VNOOP(void)

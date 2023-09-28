@@ -105,6 +105,10 @@ uint16_t AccumulatorSaturate(uint8_t el, bool High);
 extern UWORD32 RSP_GPR[32], RSP_Flags[4];
 extern UDWORD RSP_ACCUM[8];
 extern RSPVector RSP_Vect[32];
+extern uint16_t Reciprocals[512];
+extern uint16_t InverseSquareRoots[512];
+extern uint16_t RcpResult, RcpIn;
+extern bool RcpHigh;
 
 extern RSPFlag VCOL, VCOH;
 extern RSPFlag VCCL, VCCH;

@@ -5,6 +5,10 @@
 UWORD32 RSP_GPR[32], RSP_Flags[4];
 UDWORD RSP_ACCUM[8];
 RSPVector RSP_Vect[32];
+uint16_t Reciprocals[512];
+uint16_t InverseSquareRoots[512];
+uint16_t RcpResult, RcpIn;
+bool RcpHigh;
 
 RSPFlag VCOL(RSP_Flags[0].UB[0]), VCOH(RSP_Flags[0].UB[1]);
 RSPFlag VCCL(RSP_Flags[1].UB[0]), VCCH(RSP_Flags[1].UB[1]);
@@ -52,6 +56,26 @@ void InitilizeRSPRegisters(void)
     {
         RSP_Vect[i] = RSPVector();
     }
+    Reciprocals[0] = 0xFFFF;
+    for (uint16_t i = 1; i < 512; i++)
+    {
+        Reciprocals[i] = uint16_t((((1ull << 34) / (uint64_t)(i + 512)) + 1) >> 8);
+    }
+
+    for (uint16_t i = 0; i < 512; i++)
+    {
+        uint64_t a = i + 512 >> (i % 2 == 1);
+        uint64_t b = 1 << 17;
+        while (a * (b + 1) * (b + 1) < (uint64_t(1) << 44))
+        {
+            b++;
+        }
+        InverseSquareRoots[i] = uint16_t(b >> 1);
+    }
+
+    RcpResult = 0;
+    RcpIn = 0;
+    RcpHigh = false;
 }
 
 int64_t AccumulatorGet(uint8_t el)
