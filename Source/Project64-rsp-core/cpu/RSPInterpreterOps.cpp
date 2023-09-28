@@ -420,14 +420,7 @@ void RSP_Cop0_MF(void)
     case 1: RSP_GPR[RSPOpC.rt].UW = g_RSPRegisterHandler->ReadReg(RSPRegister_DRAM_ADDR); break;
     case 2: RSP_GPR[RSPOpC.rt].UW = g_RSPRegisterHandler->ReadReg(RSPRegister_RD_LEN); break;
     case 3: RSP_GPR[RSPOpC.rt].UW = g_RSPRegisterHandler->ReadReg(RSPRegister_WR_LEN); break;
-    case 4:
-        RSP_MfStatusCount += 1;
-        RSP_GPR[RSPOpC.rt].UW = g_RSPRegisterHandler->ReadReg(RSPRegister_STATUS);
-        if (Mfc0Count != 0 && RSP_MfStatusCount > Mfc0Count)
-        {
-            RSP_Running = false;
-        }
-        break;
+    case 4: RSP_GPR[RSPOpC.rt].UW = g_RSPRegisterHandler->ReadReg(RSPRegister_STATUS); break;
     case 5: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_DMA_FULL_REG; break;
     case 6: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_DMA_BUSY_REG; break;
     case 7:

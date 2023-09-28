@@ -563,15 +563,18 @@ uint32_t CRSP_Plugin::RspThread(void)
     CRegisters & Reg = m_System->m_Reg;
     for (;;)
     {
-        m_RunEvent.IsTriggered(SyncEvent::INFINITE_TIMEOUT);
+        if ((Reg.SP_STATUS_REG & SP_STATUS_HALT) != 0)
+        {
+            m_RunEvent.Reset();
+            m_RunEvent.IsTriggered(SyncEvent::INFINITE_TIMEOUT);
+        }
         if (!m_RomOpened)
         {
             break;
         }
-        m_DoRspCycles(100);
-        if ((Reg.SP_STATUS_REG & SP_STATUS_HALT) != 0)
+        if ((Reg.SP_STATUS_REG & SP_STATUS_HALT) == 0)
         {
-            m_RunEvent.Reset();
+            m_DoRspCycles(100);
         }
     }
     return 0;

@@ -10,7 +10,7 @@ class RSPRegisterHandler;
 
 UDWORD EleSpec[16], Indx[16];
 RSPOpcode RSPOpC;
-uint32_t *PrgCount, NextInstruction, RSP_Running, RSP_MfStatusCount;
+uint32_t *PrgCount, NextInstruction, RSP_Running;
 
 p_func RSP_Opcode[64];
 p_func RSP_RegImm[32];
@@ -175,7 +175,6 @@ uint32_t DoRspCycles(uint32_t Cycles)
 
     g_RSPDebugger->RspCyclesStart();
     CGuard Guard(g_CPUCriticalSection);
-    RSP_MfStatusCount = 0;
 
     switch (g_CPUCore)
     {
