@@ -64,7 +64,7 @@ void InitilizeRSPRegisters(void)
 
     for (uint16_t i = 0; i < 512; i++)
     {
-        uint64_t a = i + 512 >> (i % 2 == 1);
+        uint64_t a = (i + 512) >> ((i % 2 == 1) ? 1 : 0);
         uint64_t b = 1 << 17;
         while (a * (b + 1) * (b + 1) < (uint64_t(1) << 44))
         {

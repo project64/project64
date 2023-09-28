@@ -40,7 +40,7 @@ public:
     uint64_t & u64(uint8_t Index);
 
 private:
-    uint64_t m_Reg[2] alignas(16);
+    uint64_t alignas(16) m_Reg[2];
 };
 
 class RSPFlag

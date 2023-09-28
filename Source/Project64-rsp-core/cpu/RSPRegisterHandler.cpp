@@ -335,7 +335,5 @@ void RSPRegisterHandler::WriteReg(RSPRegister Reg, uint32_t Value)
             SP_STATUS_REG |= SP_STATUS_SIG7;
         }
         break;
-    default:
-        __debugbreak();
     }
 }
