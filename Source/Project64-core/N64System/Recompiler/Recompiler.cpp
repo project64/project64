@@ -202,7 +202,6 @@ void CRecompiler::RecompilerMain_Lookup_validate()
     WriteTrace(TraceRecompiler, TraceInfo, "Start");
     bool & Done = m_EndEmulation;
     uint32_t & PC = PROGRAM_COUNTER;
-
     uint32_t PhysicalAddr;
 
     while (!Done)

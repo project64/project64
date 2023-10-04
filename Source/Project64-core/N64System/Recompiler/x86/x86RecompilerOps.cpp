@@ -3337,8 +3337,8 @@ void CX86RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
                 default:
                     m_RegWorkingSet.BeforeCallDirect();
                     m_Assembler.PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
-                    m_Assembler.push(PAddr | 0xA0000000);
-                    m_Assembler.CallThis((uint32_t)(g_MMU), AddressOf(&CMipsMemoryVM::LW_NonMemory), "CMipsMemoryVM::LW_NonMemory", 12);
+                    m_Assembler.push(PAddr);
+                    m_Assembler.CallThis((uint32_t)(g_MMU), AddressOf(&CMipsMemoryVM::LW_PhysicalAddress), "CMipsMemoryVM::LW_PhysicalAddress", 12);
                     m_RegWorkingSet.AfterCallDirect();
                     m_Assembler.MoveVariableToX86reg(Reg, &m_TempValue32, "m_TempValue32");
                     break;
@@ -3348,8 +3348,8 @@ void CX86RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
         case 0x04100000:
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
-            m_Assembler.push(PAddr | 0xA0000000);
-            m_Assembler.CallThis((uint32_t)(g_MMU), AddressOf(&CMipsMemoryVM::LW_NonMemory), "CMipsMemoryVM::LW_NonMemory", 12);
+            m_Assembler.push(PAddr);
+            m_Assembler.CallThis((uint32_t)(g_MMU), AddressOf(&CMipsMemoryVM::LW_PhysicalAddress), "CMipsMemoryVM::LW_PhysicalAddress", 12);
             m_RegWorkingSet.AfterCallDirect();
             m_Assembler.MoveVariableToX86reg(Reg, &m_TempValue32, "m_TempValue32");
             break;
@@ -9915,7 +9915,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(asmjit::x86::Gp AddressReg, asmji
         m_RegWorkingSet.BeforeCallDirect();
         m_Assembler.PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
         m_Assembler.push(AddressReg);
-        m_Assembler.CallThis((uint32_t)(&m_MMU), AddressOf(&CMipsMemoryVM::LW_NonMemory), "CMipsMemoryVM::LW_NonMemory", 12);
+        m_Assembler.CallThis((uint32_t)(&m_MMU), AddressOf(&CMipsMemoryVM::LW_VAddr32), "CMipsMemoryVM::LW_VAddr32", 12);
         m_Assembler.test(asmjit::x86::al, asmjit::x86::al);
         m_RegWorkingSet.AfterCallDirect();
         CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, ExitReason_NormalNoSysCheck, false, &CX86Ops::JeLabel);
@@ -9927,7 +9927,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(asmjit::x86::Gp AddressReg, asmji
         m_RegWorkingSet.BeforeCallDirect();
         m_Assembler.PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
         m_Assembler.push(AddressReg);
-        m_Assembler.CallThis((uint32_t)(&m_MMU), AddressOf(&CMipsMemoryVM::LH_NonMemory), "CMipsMemoryVM::LH_NonMemory", 12);
+        m_Assembler.CallThis((uint32_t)(&m_MMU), AddressOf(&CMipsMemoryVM::LH_VAddr32), "CMipsMemoryVM::LH_VAddr32", 12);
         m_Assembler.test(asmjit::x86::al, asmjit::x86::al);
         m_RegWorkingSet.AfterCallDirect();
         CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, ExitReason_NormalNoSysCheck, false, &CX86Ops::JeLabel);
@@ -9940,7 +9940,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(asmjit::x86::Gp AddressReg, asmji
         m_RegWorkingSet.BeforeCallDirect();
         m_Assembler.PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
         m_Assembler.push(AddressReg);
-        m_Assembler.CallThis((uint32_t)&m_MMU, AddressOf(&CMipsMemoryVM::LB_NonMemory), "CMipsMemoryVM::LB_NonMemory", 12);
+        m_Assembler.CallThis((uint32_t)&m_MMU, AddressOf(&CMipsMemoryVM::LB_VAddr32), "CMipsMemoryVM::LB_VAddr32", 12);
         m_Assembler.test(asmjit::x86::al, asmjit::x86::al);
         m_RegWorkingSet.AfterCallDirect();
         CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, ExitReason_NormalNoSysCheck, false, &CX86Ops::JeLabel);
@@ -10095,7 +10095,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, asmj
             m_Assembler.push(ValueReg);
         }
         m_Assembler.push(AddressReg);
-        m_Assembler.CallThis((uint32_t)&m_MMU, AddressOf(&CMipsMemoryVM::SB_NonMemory), "CMipsMemoryVM::SB_NonMemory", 12);
+        m_Assembler.CallThis((uint32_t)&m_MMU, AddressOf(&CMipsMemoryVM::SB_VAddr32), "CMipsMemoryVM::SB_VAddr32", 12);
         if (OpsExecuted != 0)
         {
             m_Assembler.AddConstToVariable(g_NextTimer, "g_NextTimer", OpsExecuted);
@@ -10122,7 +10122,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, asmj
             m_Assembler.push(ValueReg);
         }
         m_Assembler.push(AddressReg);
-        m_Assembler.CallThis((uint32_t)&m_MMU, AddressOf(&CMipsMemoryVM::SH_NonMemory), "CMipsMemoryVM::SH_NonMemory", 12);
+        m_Assembler.CallThis((uint32_t)&m_MMU, AddressOf(&CMipsMemoryVM::SH_VAddr32), "CMipsMemoryVM::SH_VAddr32", 12);
         if (OpsExecuted != 0)
         {
             m_Assembler.AddConstToVariable(g_NextTimer, "g_NextTimer", OpsExecuted);
@@ -10149,7 +10149,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, asmj
             m_Assembler.push(ValueReg);
         }
         m_Assembler.push(AddressReg);
-        m_Assembler.CallThis((uint32_t)&m_MMU, AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory", 12);
+        m_Assembler.CallThis((uint32_t)&m_MMU, AddressOf(&CMipsMemoryVM::SW_VAddr32), "CMipsMemoryVM::SW_VAddr32", 12);
         if (OpsExecuted != 0)
         {
             m_Assembler.AddConstToVariable(g_NextTimer, "g_NextTimer", OpsExecuted);
@@ -10178,7 +10178,7 @@ void CX86RecompilerOps::CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, asmj
             m_Assembler.push(ValueRegHi);
         }
         m_Assembler.push(AddressReg);
-        m_Assembler.CallThis((uint32_t)&m_MMU, AddressOf(&CMipsMemoryVM::SD_NonMemory), "CMipsMemoryVM::SD_NonMemory", 12);
+        m_Assembler.CallThis((uint32_t)&m_MMU, AddressOf(&CMipsMemoryVM::SD_VAddr32), "CMipsMemoryVM::SD_VAddr32", 12);
         if (OpsExecuted != 0)
         {
             m_Assembler.AddConstToVariable(g_NextTimer, "g_NextTimer", OpsExecuted);
@@ -10615,8 +10615,8 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
 
                 m_RegWorkingSet.BeforeCallDirect();
                 m_Assembler.push(Value);
-                m_Assembler.push(PAddr | 0xA0000000);
-                m_Assembler.CallThis((uint32_t)g_MMU, AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory", 12);
+                m_Assembler.push(PAddr);
+                m_Assembler.CallThis((uint32_t)g_MMU, AddressOf(&CMipsMemoryVM::SW_PhysicalAddress), "CMipsMemoryVM::SW_PhysicalAddress", 12);
                 m_RegWorkingSet.AfterCallDirect();
                 break;
             case 0x0404001C: m_Assembler.MoveConstToVariable(&g_Reg->SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG", 0); break;
@@ -10635,8 +10635,8 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x0410000C:
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.push(Value);
-            m_Assembler.push(PAddr | 0xA0000000);
-            m_Assembler.CallThis((uint32_t)g_MMU, AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory", 12);
+            m_Assembler.push(PAddr);
+            m_Assembler.CallThis((uint32_t)g_MMU, AddressOf(&CMipsMemoryVM::SW_PhysicalAddress), "CMipsMemoryVM::SW_PhysicalAddress", 12);
             m_RegWorkingSet.AfterCallDirect();
             break;
         default:
@@ -10972,8 +10972,8 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
 
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.push(Value);
-            m_Assembler.push(PAddr | 0xA0000000);
-            m_Assembler.CallThis((uint32_t)(g_MMU), AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory", 12);
+            m_Assembler.push(PAddr);
+            m_Assembler.CallThis((uint32_t)(g_MMU), AddressOf(&CMipsMemoryVM::SW_PhysicalAddress), "CMipsMemoryVM::SW_PhysicalAddress", 12);
             m_RegWorkingSet.AfterCallDirect();
         }
     }
@@ -11079,8 +11079,8 @@ void CX86RecompilerOps::SW_Register(const asmjit::x86::Gp & Reg, uint32_t VAddr)
         }
         m_RegWorkingSet.BeforeCallDirect();
         m_Assembler.push(Reg);
-        m_Assembler.push(PAddr | 0xA0000000);
-        m_Assembler.CallThis((uint32_t)(g_MMU), AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory", 12);
+        m_Assembler.push(PAddr);
+        m_Assembler.CallThis((uint32_t)(g_MMU), AddressOf(&CMipsMemoryVM::SW_PhysicalAddress), "CMipsMemoryVM::SW_PhysicalAddress", 12);
         m_RegWorkingSet.AfterCallDirect();
         break;
     case 0x04300000:

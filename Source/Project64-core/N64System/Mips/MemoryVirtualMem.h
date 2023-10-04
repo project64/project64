@@ -163,15 +163,25 @@ private:
     static void RdramChanged(CMipsMemoryVM * _this);
     static void ChangeMiIntrMask();
 
-    bool LB_NonMemory(uint32_t VAddr, uint8_t & Value);
-    bool LH_NonMemory(uint32_t VAddr, uint16_t & Value);
-    bool LW_NonMemory(uint32_t VAddr, uint32_t & Value);
-    bool LD_NonMemory(uint32_t VAddr, uint64_t & Value);
+    bool LB_VAddr32(uint32_t VAddr, uint8_t & Value);
+    bool LH_VAddr32(uint32_t VAddr, uint16_t & Value);
+    bool LW_VAddr32(uint32_t VAddr, uint32_t & Value);
+    bool LD_VAddr32(uint32_t VAddr, uint64_t & Value);
 
-    bool SB_NonMemory(uint32_t VAddr, uint32_t Value);
-    bool SH_NonMemory(uint32_t VAddr, uint32_t Value);
-    bool SW_NonMemory(uint32_t VAddr, uint32_t Value);
-    bool SD_NonMemory(uint32_t VAddr, uint64_t Value);
+    bool LB_PhysicalAddress(uint32_t PAddr, uint8_t & Value);
+    bool LH_PhysicalAddress(uint32_t PAddr, uint16_t & Value);
+    bool LW_PhysicalAddress(uint32_t PAddr, uint32_t & Value);
+    bool LD_PhysicalAddress(uint32_t PAddr, uint64_t & Value);
+
+    bool SB_VAddr32(uint32_t VAddr, uint32_t Value);
+    bool SH_VAddr32(uint32_t VAddr, uint32_t Value);
+    bool SW_VAddr32(uint32_t VAddr, uint32_t Value);
+    bool SD_VAddr32(uint32_t VAddr, uint64_t Value);
+
+    bool SB_PhysicalAddress(uint32_t PAddr, uint32_t Value);
+    bool SH_PhysicalAddress(uint32_t PAddr, uint32_t Value);
+    bool SW_PhysicalAddress(uint32_t PAddr, uint32_t Value);
+    bool SD_PhysicalAddress(uint32_t PAddr, uint64_t Value);
 
 #if defined(__i386__) || defined(_M_IX86)
 
