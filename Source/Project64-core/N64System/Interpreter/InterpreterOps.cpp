@@ -1091,7 +1091,7 @@ void R4300iOp::SWL()
     }
     else
     {
-        g_Reg->DoTLBWriteMiss(Address);
+        g_Reg->TriggerAddressException(Address, EXC_WMISS);
     }
 }
 
@@ -1124,7 +1124,7 @@ void R4300iOp::SDL()
     }
     else
     {
-        g_Reg->DoTLBWriteMiss(Address);
+        g_Reg->TriggerAddressException(Address, EXC_WMISS);
     }
 }
 
@@ -1152,7 +1152,7 @@ void R4300iOp::SDR()
     }
     else
     {
-        g_Reg->DoTLBWriteMiss(Address);
+        g_Reg->TriggerAddressException(Address, EXC_WMISS);
     }
 }
 
@@ -1170,7 +1170,7 @@ void R4300iOp::SWR()
     }
     else
     {
-        g_Reg->DoTLBWriteMiss(Address);
+        g_Reg->TriggerAddressException(Address, EXC_WMISS);
     }
 }
 

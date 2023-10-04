@@ -781,18 +781,14 @@ bool CRegisters::DoIntrException()
     return true;
 }
 
-void CRegisters::DoTLBReadMiss(uint64_t BadVaddr)
+void CRegisters::TriggerAddressException(uint64_t Address, uint32_t ExceptionCode)
 {
-    TriggerAddressException(BadVaddr, EXC_RMISS, !m_TLB.AddressDefined(BadVaddr));
-}
+    bool SpecialOffset = false;
+    if (ExceptionCode == EXC_RMISS || ExceptionCode == EXC_WMISS)
+    {
+        SpecialOffset = !m_TLB.AddressDefined(Address);
+    }
 
-void CRegisters::DoTLBWriteMiss(uint64_t BadVaddr)
-{
-    TriggerAddressException(BadVaddr, EXC_WMISS, !m_TLB.AddressDefined(BadVaddr));
-}
-
-void CRegisters::TriggerAddressException(uint64_t Address, uint32_t ExceptionCode, bool SpecialOffset)
-{
     BAD_VADDR_REGISTER = Address;
     ENTRYHI_REGISTER.VPN2 = Address >> 13;
     ENTRYHI_REGISTER.R = Address >> 62;
@@ -801,7 +797,7 @@ void CRegisters::TriggerAddressException(uint64_t Address, uint32_t ExceptionCod
     XCONTEXT_REGISTER.R = Address >> 62;
 
     TriggerException(ExceptionCode, 0);
-    if (SpecialOffset && STATUS_REGISTER.ExceptionLevel == 0)
+    if (SpecialOffset)
     {
         m_System.m_JumpToLocation = (m_System.m_JumpToLocation & 0xFFFF0000);
         switch (STATUS_REGISTER.PrivilegeMode)

@@ -588,7 +588,7 @@ bool CMipsMemoryVM::LB_VAddr32(uint32_t VAddr, uint8_t & Value)
     uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
     if (BaseAddress == -1)
     {
-        m_Reg.DoTLBReadMiss(VAddr);
+        m_Reg.TriggerAddressException(VAddr, EXC_RMISS);
         return false;
     }
     return LB_PhysicalAddress(BaseAddress + VAddr, Value);
@@ -599,7 +599,7 @@ bool CMipsMemoryVM::LH_VAddr32(uint32_t VAddr, uint16_t & Value)
     uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
     if (BaseAddress == -1)
     {
-        m_Reg.DoTLBReadMiss(VAddr);
+        m_Reg.TriggerAddressException(VAddr, EXC_RMISS);
         return false;
     }
     return LH_PhysicalAddress(BaseAddress + VAddr, Value);
@@ -742,7 +742,7 @@ bool CMipsMemoryVM::SB_VAddr32(uint32_t VAddr, uint32_t Value)
     uint32_t BaseAddress = m_TLB_WriteMap[VAddr >> 12];
     if (BaseAddress == -1)
     {
-        m_Reg.DoTLBWriteMiss(VAddr);
+        m_Reg.TriggerAddressException(VAddr, EXC_WMISS);
         return false;
     }
     return SB_PhysicalAddress(BaseAddress + VAddr, Value);
@@ -753,7 +753,7 @@ bool CMipsMemoryVM::SH_VAddr32(uint32_t VAddr, uint32_t Value)
     uint32_t BaseAddress = m_TLB_WriteMap[VAddr >> 12];
     if (BaseAddress == -1)
     {
-        m_Reg.DoTLBWriteMiss(VAddr);
+        m_Reg.TriggerAddressException(VAddr, EXC_WMISS);
         return false;
     }
     return SH_PhysicalAddress(BaseAddress + VAddr, Value);
@@ -764,7 +764,7 @@ bool CMipsMemoryVM::SW_VAddr32(uint32_t VAddr, uint32_t Value)
     uint32_t BaseAddress = m_TLB_WriteMap[VAddr >> 12];
     if (BaseAddress == -1)
     {
-        m_Reg.DoTLBWriteMiss(VAddr);
+        m_Reg.TriggerAddressException(VAddr, EXC_WMISS);
         return false;
     }
     return SW_PhysicalAddress(BaseAddress + VAddr, Value);
@@ -775,7 +775,7 @@ bool CMipsMemoryVM::SD_VAddr32(uint32_t VAddr, uint64_t Value)
     uint32_t BaseAddress = m_TLB_WriteMap[VAddr >> 12];
     if (BaseAddress == -1)
     {
-        m_Reg.DoTLBWriteMiss(VAddr);
+        m_Reg.TriggerAddressException(VAddr, EXC_WMISS);
         return false;
     }
     return SD_PhysicalAddress(BaseAddress + VAddr, Value);

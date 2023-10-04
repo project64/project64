@@ -50,7 +50,7 @@ void CX86RecompilerOps::x86CompilerBreakPoint()
             uint32_t OpcodeValue;
             if (!g_MMU->MemoryValue32(g_Reg->m_PROGRAM_COUNTER, OpcodeValue))
             {
-                g_Reg->DoTLBReadMiss(g_Reg->m_PROGRAM_COUNTER);
+                g_Reg->TriggerAddressException(g_Reg->m_PROGRAM_COUNTER, EXC_RMISS);
                 g_Reg->m_PROGRAM_COUNTER = g_System->JumpToLocation();
                 g_System->m_PipelineStage = PIPELINE_STAGE_NORMAL;
                 continue;
@@ -9704,9 +9704,10 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         break;
     case ExitReason_TLBReadMiss:
         m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", InDelaySlot ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
+        m_Assembler.PushImm32("EXC_RMISS", EXC_RMISS);
         m_Assembler.MoveVariableToX86reg(asmjit::x86::edx, g_TLBLoadAddress, "g_TLBLoadAddress");
         m_Assembler.push(asmjit::x86::edx);
-        m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::DoTLBReadMiss), "CRegisters::DoTLBReadMiss", 12);
+        m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::TriggerAddressException), "CRegisters::TriggerAddressException", 12);
         m_Assembler.MoveVariableToX86reg(asmjit::x86::edx, &g_System->m_JumpToLocation, "System->m_JumpToLocation");
         m_Assembler.MoveX86regToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", asmjit::x86::edx);
         m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_NORMAL);

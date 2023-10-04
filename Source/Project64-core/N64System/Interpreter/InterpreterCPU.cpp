@@ -69,7 +69,7 @@ void CInterpreterCPU::ExecuteCPU()
         {
             if (!g_MMU->MemoryValue32(PROGRAM_COUNTER, Opcode.Value))
             {
-                g_Reg->DoTLBReadMiss(PROGRAM_COUNTER);
+                g_Reg->TriggerAddressException(PROGRAM_COUNTER, EXC_RMISS);
                 PROGRAM_COUNTER = JumpToLocation;
                 PipelineStage = PIPELINE_STAGE_NORMAL;
                 continue;
@@ -281,7 +281,7 @@ void CInterpreterCPU::ExecuteOps(int32_t Cycles)
             }
             else
             {
-                g_Reg->DoTLBReadMiss(PROGRAM_COUNTER);
+                g_Reg->TriggerAddressException(PROGRAM_COUNTER, EXC_RMISS);
                 PROGRAM_COUNTER = JumpToLocation;
                 PipelineStage = PIPELINE_STAGE_NORMAL;
             }

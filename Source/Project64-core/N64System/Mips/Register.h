@@ -468,12 +468,10 @@ public:
     void CheckInterrupts();
     void DoAddressError(uint64_t BadVaddr, bool FromRead);
     bool DoIntrException();
-    void DoTLBReadMiss(uint64_t BadVaddr);
-    void DoTLBWriteMiss(uint64_t BadVaddr);
     void FixFpuLocations();
     void Reset(bool bPostPif, CMipsMemoryVM & MMU);
     void SetAsCurrentSystem();
-    void TriggerAddressException(uint64_t Address, uint32_t ExceptionCode, bool SpecialOffset = false);
+    void TriggerAddressException(uint64_t Address, uint32_t ExceptionCode);
     void TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor = 0);
 
     uint64_t Cop0_MF(COP0Reg Reg);

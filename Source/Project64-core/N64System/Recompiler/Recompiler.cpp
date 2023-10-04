@@ -87,7 +87,7 @@ void CRecompiler::RecompilerMain_VirtualTable()
     {
         if (!m_MMU.ValidVaddr(PC))
         {
-            m_Registers.DoTLBReadMiss(PC);
+            m_Registers.TriggerAddressException(PC, EXC_RMISS);
             PC = g_System->m_JumpToLocation;
             g_System->m_PipelineStage = PIPELINE_STAGE_NORMAL;
             if (!m_MMU.ValidVaddr(PC))
@@ -149,7 +149,7 @@ void CRecompiler::RecompilerMain_Lookup()
     {
         if (!m_MMU.VAddrToPAddr(PROGRAM_COUNTER, PhysicalAddr))
         {
-            m_Registers.DoTLBReadMiss(PROGRAM_COUNTER);
+            m_Registers.TriggerAddressException(PROGRAM_COUNTER, EXC_RMISS);
             if (!m_MMU.VAddrToPAddr(PROGRAM_COUNTER, PhysicalAddr))
             {
                 g_Notify->DisplayError(stdstr_f("Failed to translate PC to a PAddr: %X\n\nEmulation stopped", PROGRAM_COUNTER).c_str());
@@ -208,7 +208,7 @@ void CRecompiler::RecompilerMain_Lookup_validate()
     {
         if (!m_MMU.VAddrToPAddr(PC, PhysicalAddr))
         {
-            m_Registers.DoTLBReadMiss(PC);
+            m_Registers.TriggerAddressException(PC, EXC_RMISS);
             if (!m_MMU.VAddrToPAddr(PC, PhysicalAddr))
             {
                 g_Notify->DisplayError(stdstr_f("Failed to translate PC to a PAddr: %X\n\nEmulation stopped", PC).c_str());
