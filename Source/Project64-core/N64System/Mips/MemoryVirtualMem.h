@@ -122,8 +122,8 @@ public:
     void UnProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr);
 
     // Functions for TLB notification
-    void TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly);
-    void TLB_Unmaped(uint32_t Vaddr, uint32_t Len);
+    void TLB_Mapped(uint64_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly);
+    void TLB_Unmaped(uint64_t Vaddr, uint32_t Len);
 
     bool ValidVaddr(uint32_t VAddr) const;
     bool VAddrToPAddr(uint32_t VAddr, uint32_t & PAddr) const;

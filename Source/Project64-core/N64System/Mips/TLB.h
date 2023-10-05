@@ -26,8 +26,8 @@ class CTLB :
 
     struct FASTTLB
     {
-        uint32_t VSTART;
-        uint32_t VEND;
+        uint64_t VSTART;
+        uint64_t VEND;
         uint32_t PHYSSTART;
         uint32_t PHYSEND;
         uint32_t Length;
@@ -46,9 +46,10 @@ public:
     void Reset(bool InvalidateTLB);
     void Probe();
     void ReadEntry();
-    void WriteEntry(uint32_t index, bool Random);
+    void WriteEntry(uint32_t Index, bool Random);
     bool AddressDefined(uint64_t VAddr);
     TLB_ENTRY & TlbEntry(int32_t Entry);
+
     bool PAddrToVAddr(uint32_t PAddr, uint32_t & VAddr, uint32_t & Index);
     void RecordDifference(CLog & LogFile, const CTLB & rTLB);
 
@@ -60,7 +61,7 @@ private:
     CTLB(const CTLB &);
     CTLB & operator=(const CTLB &);
 
-    void SetupTLB_Entry(uint32_t index, bool Random);
+    void SetupTLB_Entry(uint32_t Index, bool Random);
     void TLB_Unmaped(uint32_t VAddr, uint32_t Len);
 
     CMipsMemoryVM & m_MMU;

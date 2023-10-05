@@ -232,10 +232,10 @@ uint32_t * CSystemRegisters::_LLBit = nullptr;
 CP0registers::CP0registers(uint64_t * _CP0) :
     INDEX_REGISTER(_CP0[0]),
     RANDOM_REGISTER(_CP0[1]),
-    ENTRYLO0_REGISTER(_CP0[2]),
-    ENTRYLO1_REGISTER(_CP0[3]),
+    ENTRYLO0_REGISTER((COP0EntryLo &)_CP0[2]),
+    ENTRYLO1_REGISTER((COP0EntryLo &)_CP0[3]),
     CONTEXT_REGISTER((COP0Context &)_CP0[4]),
-    PAGE_MASK_REGISTER(_CP0[5]),
+    PAGE_MASK_REGISTER((COP0PageMask &)_CP0[5]),
     WIRED_REGISTER(_CP0[6]),
     BAD_VADDR_REGISTER(_CP0[8]),
     COUNT_REGISTER(_CP0[9]),

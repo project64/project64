@@ -124,10 +124,10 @@ union COP0Context
 
     struct
     {
-        unsigned : 4;
-        unsigned BadVPN2 : 19;
-        unsigned PTEBaseHi : 9;
-        unsigned PTEBaseLo : 32;
+        uint64_t : 4;
+        uint64_t BadVPN2 : 19;
+        uint64_t PTEBaseHi : 9;
+        uint64_t PTEBaseLo : 32;
     };
 };
 
@@ -210,10 +210,10 @@ protected:
 public:
     uint64_t & INDEX_REGISTER;
     uint64_t & RANDOM_REGISTER;
-    uint64_t & ENTRYLO0_REGISTER;
-    uint64_t & ENTRYLO1_REGISTER;
+    COP0EntryLo & ENTRYLO0_REGISTER;
+    COP0EntryLo & ENTRYLO1_REGISTER;
     COP0Context & CONTEXT_REGISTER;
-    uint64_t & PAGE_MASK_REGISTER;
+    COP0PageMask & PAGE_MASK_REGISTER;
     uint64_t & WIRED_REGISTER;
     uint64_t & BAD_VADDR_REGISTER;
     uint64_t & COUNT_REGISTER;

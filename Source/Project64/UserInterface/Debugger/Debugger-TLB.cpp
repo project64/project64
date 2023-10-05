@@ -265,7 +265,7 @@ void CDebugTlb::RefreshTLBWindow(void)
 
         if (FastTlb[count].ValidEntry && FastTlb[count].VALID)
         {
-            swprintf(Output, sizeof(Output), L"%08X:%08X -> %08X:%08X", FastTlb[count].VSTART, FastTlb[count].VEND,
+            swprintf(Output, sizeof(Output), L"%I64X:%I64X -> %08X:%08X", FastTlb[count].VSTART, FastTlb[count].VEND,
                      FastTlb[count].PHYSSTART, FastTlb[count].PHYSEND);
         }
         else
