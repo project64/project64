@@ -98,7 +98,7 @@ void CTLB::Probe()
         uint64_t TlbValueMasked = TlbEntryHiValue.Value & Mask;
         uint64_t EntryHiMasked = m_Reg.ENTRYHI_REGISTER.Value & Mask;
 
-        if (TlbValueMasked != EntryHiMasked || 
+        if (TlbValueMasked != EntryHiMasked ||
             TlbEntryHiValue.R != m_Reg.ENTRYHI_REGISTER.R ||
             (m_tlb[i].EntryLo0.GLOBAL == 0 || m_tlb[i].EntryLo1.GLOBAL == 0) && TlbEntryHiValue.ASID != m_Reg.ENTRYHI_REGISTER.ASID)
         {
@@ -414,7 +414,7 @@ MemorySegment CTLB::VAddrMemorySegment(uint64_t VAddr)
         }
         if (VAddr <= 0x88000000ffffffffull)
         {
-            return MemorySegment_Cached32;  //xkphys*
+            return MemorySegment_Cached32; //xkphys*
         }
         if (VAddr <= 0x8fffffffffffffffull)
         {
@@ -505,7 +505,7 @@ MemorySegment CTLB::VAddrMemorySegment(uint64_t VAddr)
         }
         if (VAddr <= 0x400000ffffffffffull) //xsseg
         {
-            return MemorySegment_Mapped;  
+            return MemorySegment_Mapped;
         }
         if (VAddr <= 0xffffffffbfffffffull)
         {
@@ -513,7 +513,7 @@ MemorySegment CTLB::VAddrMemorySegment(uint64_t VAddr)
         }
         if (VAddr <= 0xffffffffdfffffffull) //csseg
         {
-            return MemorySegment_Mapped;  
+            return MemorySegment_Mapped;
         }
         if (VAddr <= 0xffffffffffffffffull)
         {
@@ -524,7 +524,7 @@ MemorySegment CTLB::VAddrMemorySegment(uint64_t VAddr)
     {
         if (VAddr <= 0x000000ffffffffffull)
         {
-            return MemorySegment_Mapped;  //xuseg
+            return MemorySegment_Mapped; //xuseg
         }
     }
     return MemorySegment_Unused;
