@@ -1,11 +1,16 @@
 #include "stdafx.h"
 
 #include "TLB.h"
+#include <Project64-core/Debugger.h>
+#include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/Register.h>
+#include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 
-CTLB::CTLB(CTLB_CB * CallBack) :
-    m_CB(CallBack)
+CTLB::CTLB(CMipsMemoryVM & MMU, CRegisters & Reg, CRecompiler *& Recomp) :
+    m_MMU(MMU),
+    m_Reg(Reg),
+    m_Recomp(Recomp)
 {
     WriteTrace(TraceTLB, TraceDebug, "Start");
     memset(m_tlb, 0, sizeof(m_tlb));
@@ -64,12 +69,17 @@ bool CTLB::AddressDefined(uint64_t VAddr)
     return false;
 }
 
+TLB_ENTRY & CTLB::TlbEntry(int32_t Entry)
+{
+    return m_tlb[Entry];
+}
+
 void CTLB::Probe()
 {
     int Counter;
 
     WriteTrace(TraceTLB, TraceDebug, "Start");
-    g_Reg->INDEX_REGISTER |= 0x80000000;
+    m_Reg.INDEX_REGISTER |= 0x80000000;
     for (Counter = 0; Counter < 32; Counter++)
     {
         if (!m_tlb[Counter].EntryDefined)
@@ -77,17 +87,17 @@ void CTLB::Probe()
             continue;
         }
 
-        uint32_t & TlbEntryHiValue = m_tlb[Counter].EntryHi.Value;
-        uint32_t Mask = ~m_tlb[Counter].PageMask.Mask << 13;
+        uint64_t & TlbEntryHiValue = m_tlb[Counter].EntryHi.Value;
+        uint32_t Mask = (uint32_t)(~m_tlb[Counter].PageMask.Mask << 13);
         uint32_t TlbValueMasked = TlbEntryHiValue & Mask;
-        uint32_t EntryHiMasked = g_Reg->ENTRYHI_REGISTER.Value & Mask;
+        uint32_t EntryHiMasked = m_Reg.ENTRYHI_REGISTER.Value & Mask;
 
         if (TlbValueMasked == EntryHiMasked)
         {
-            if ((TlbEntryHiValue & 0x100) != 0 ||                                     // Global
-                ((TlbEntryHiValue & 0xFF) == (g_Reg->ENTRYHI_REGISTER.Value & 0xFF))) // SameAsid
+            if ((TlbEntryHiValue & 0x100) != 0 ||                                    // Global
+                ((TlbEntryHiValue & 0xFF) == (m_Reg.ENTRYHI_REGISTER.Value & 0xFF))) // SameAsid
             {
-                g_Reg->INDEX_REGISTER = Counter;
+                m_Reg.INDEX_REGISTER = Counter;
                 int FastIndx = Counter << 1;
                 m_FastTlb[FastIndx].Probed = true;
                 m_FastTlb[FastIndx + 1].Probed = true;
@@ -100,24 +110,24 @@ void CTLB::Probe()
 
 void CTLB::ReadEntry()
 {
-    uint32_t index = g_Reg->INDEX_REGISTER & 0x1F;
+    uint32_t Index = m_Reg.INDEX_REGISTER & 0x1F;
 
-    g_Reg->PAGE_MASK_REGISTER = m_tlb[index].PageMask.Value;
-    g_Reg->ENTRYHI_REGISTER.Value = (m_tlb[index].EntryHi.Value & ~m_tlb[index].PageMask.Value);
-    g_Reg->ENTRYLO0_REGISTER = m_tlb[index].EntryLo0.Value;
-    g_Reg->ENTRYLO1_REGISTER = m_tlb[index].EntryLo1.Value;
+    m_Reg.PAGE_MASK_REGISTER = m_tlb[Index].PageMask.Value;
+    m_Reg.ENTRYHI_REGISTER.Value = (m_tlb[Index].EntryHi.Value & ~m_tlb[Index].PageMask.Value);
+    m_Reg.ENTRYLO0_REGISTER = m_tlb[Index].EntryLo0.Value;
+    m_Reg.ENTRYLO1_REGISTER = m_tlb[Index].EntryLo1.Value;
 }
 
-void CTLB::WriteEntry(int index, bool Random)
+void CTLB::WriteEntry(uint32_t Index, bool Random)
 {
-    int FastIndx;
+    uint32_t FastIndx;
 
-    WriteTrace(TraceTLB, TraceDebug, "%02d %d %08X %08X %08X %08X ", index, Random, g_Reg->PAGE_MASK_REGISTER, g_Reg->ENTRYHI_REGISTER, g_Reg->ENTRYLO0_REGISTER, g_Reg->ENTRYLO1_REGISTER);
+    WriteTrace(TraceTLB, TraceDebug, "%02d %d %08X %08X %08X %08X ", Index, Random, m_Reg.PAGE_MASK_REGISTER, m_Reg.ENTRYHI_REGISTER, m_Reg.ENTRYLO0_REGISTER, m_Reg.ENTRYLO1_REGISTER);
 
     // Check to see if entry is unmapping itself
-    if (m_tlb[index].EntryDefined)
+    if (m_tlb[Index].EntryDefined)
     {
-        FastIndx = index << 1;
+        FastIndx = Index << 1;
         if (*_PROGRAM_COUNTER >= m_FastTlb[FastIndx].VSTART &&
             *_PROGRAM_COUNTER < m_FastTlb[FastIndx].VEND &&
             m_FastTlb[FastIndx].ValidEntry && m_FastTlb[FastIndx].VALID)
@@ -135,9 +145,9 @@ void CTLB::WriteEntry(int index, bool Random)
     }
 
     // Reset old addresses
-    if (m_tlb[index].EntryDefined)
+    if (m_tlb[Index].EntryDefined)
     {
-        for (FastIndx = index << 1; FastIndx <= (index << 1) + 1; FastIndx++)
+        for (FastIndx = Index << 1; FastIndx <= (Index << 1) + 1; FastIndx++)
         {
             if (!m_FastTlb[FastIndx].ValidEntry)
             {
@@ -147,76 +157,79 @@ void CTLB::WriteEntry(int index, bool Random)
             {
                 continue;
             }
-            if (m_tlb[index].PageMask.Value == g_Reg->PAGE_MASK_REGISTER &&
-                m_tlb[index].EntryHi.Value == g_Reg->ENTRYHI_REGISTER.Value)
+            if (m_tlb[Index].PageMask.Value == m_Reg.PAGE_MASK_REGISTER &&
+                m_tlb[Index].EntryHi.Value == m_Reg.ENTRYHI_REGISTER.Value)
             {
-                if (FastIndx == (index << 1) && m_tlb[index].EntryLo0.Value == g_Reg->ENTRYLO0_REGISTER)
+                if (FastIndx == (Index << 1) && m_tlb[Index].EntryLo0.Value == m_Reg.ENTRYLO0_REGISTER)
                 {
                     continue;
                 }
-                if (FastIndx != (index << 1) && m_tlb[index].EntryLo1.Value == g_Reg->ENTRYLO1_REGISTER)
+                if (FastIndx != (Index << 1) && m_tlb[Index].EntryLo1.Value == m_Reg.ENTRYLO1_REGISTER)
                 {
                     continue;
                 }
             }
-            m_CB->TLB_Unmaped(m_FastTlb[FastIndx].VSTART, m_FastTlb[FastIndx].Length);
+            TLB_Unmaped(m_FastTlb[FastIndx].VSTART, m_FastTlb[FastIndx].Length);
         }
     }
 
     // Fill in m_tlb entry
-    m_tlb[index].PageMask.Value = (uint32_t)g_Reg->PAGE_MASK_REGISTER;
-    m_tlb[index].EntryHi.Value = (uint32_t)g_Reg->ENTRYHI_REGISTER.Value;
-    m_tlb[index].EntryLo0.Value = (uint32_t)g_Reg->ENTRYLO0_REGISTER;
-    m_tlb[index].EntryLo1.Value = (uint32_t)g_Reg->ENTRYLO1_REGISTER;
-    m_tlb[index].EntryDefined = true;
-    SetupTLB_Entry(index, Random);
-    m_CB->TLB_Changed();
+    m_tlb[Index].PageMask.Value = (uint32_t)m_Reg.PAGE_MASK_REGISTER;
+    m_tlb[Index].EntryHi.Value = (uint32_t)m_Reg.ENTRYHI_REGISTER.Value;
+    m_tlb[Index].EntryLo0.Value = (uint32_t)m_Reg.ENTRYLO0_REGISTER;
+    m_tlb[Index].EntryLo1.Value = (uint32_t)m_Reg.ENTRYLO1_REGISTER;
+    m_tlb[Index].EntryDefined = true;
+    SetupTLB_Entry(Index, Random);
+    if (g_Debugger != nullptr)
+    {
+        g_Debugger->TLBChanged();
+    }
 }
 
-void CTLB::SetupTLB_Entry(int index, bool Random)
+void CTLB::SetupTLB_Entry(uint32_t Index, bool Random)
 {
     // Fix up fast TLB entries
-    if (!m_tlb[index].EntryDefined)
+    if (!m_tlb[Index].EntryDefined)
     {
         return;
     }
 
-    int FastIndx = index << 1;
+    uint32_t FastIndx = Index << 1;
     if (m_FastTlb[FastIndx].VALID)
     {
-        m_CB->TLB_Unmaped(m_FastTlb[FastIndx].VSTART, m_FastTlb[FastIndx].Length);
+        TLB_Unmaped(m_FastTlb[FastIndx].VSTART, m_FastTlb[FastIndx].Length);
     }
-    m_FastTlb[FastIndx].Length = (m_tlb[index].PageMask.Mask << 12) + 0xFFF;
-    m_FastTlb[FastIndx].VSTART = m_tlb[index].EntryHi.VPN2 << 13;
+    m_FastTlb[FastIndx].Length = (uint32_t)((m_tlb[Index].PageMask.Mask << 12) + 0xFFF);
+    m_FastTlb[FastIndx].VSTART = (uint32_t)(m_tlb[Index].EntryHi.VPN2 << 13);
     m_FastTlb[FastIndx].VEND = m_FastTlb[FastIndx].VSTART + m_FastTlb[FastIndx].Length;
-    m_FastTlb[FastIndx].PHYSSTART = m_tlb[index].EntryLo0.PFN << 12;
+    m_FastTlb[FastIndx].PHYSSTART = (uint32_t)(m_tlb[Index].EntryLo0.PFN << 12);
     m_FastTlb[FastIndx].PHYSEND = m_FastTlb[FastIndx].PHYSSTART + m_FastTlb[FastIndx].Length;
-    m_FastTlb[FastIndx].VALID = m_tlb[index].EntryLo0.V;
-    m_FastTlb[FastIndx].DIRTY = m_tlb[index].EntryLo0.D;
-    m_FastTlb[FastIndx].GLOBAL = m_tlb[index].EntryLo0.GLOBAL & m_tlb[index].EntryLo1.GLOBAL;
+    m_FastTlb[FastIndx].VALID = m_tlb[Index].EntryLo0.V;
+    m_FastTlb[FastIndx].DIRTY = m_tlb[Index].EntryLo0.D;
+    m_FastTlb[FastIndx].GLOBAL = m_tlb[Index].EntryLo0.GLOBAL & m_tlb[Index].EntryLo1.GLOBAL;
     m_FastTlb[FastIndx].ValidEntry = false;
     m_FastTlb[FastIndx].Random = Random;
     m_FastTlb[FastIndx].Probed = false;
 
-    FastIndx = (index << 1) + 1;
+    FastIndx = (Index << 1) + 1;
     if (m_FastTlb[FastIndx].VALID)
     {
-        m_CB->TLB_Unmaped(m_FastTlb[FastIndx].VSTART, m_FastTlb[FastIndx].Length);
+        TLB_Unmaped(m_FastTlb[FastIndx].VSTART, m_FastTlb[FastIndx].Length);
     }
-    m_FastTlb[FastIndx].Length = (m_tlb[index].PageMask.Mask << 12) + 0xFFF;
-    m_FastTlb[FastIndx].VSTART = (m_tlb[index].EntryHi.VPN2 << 13) + (m_FastTlb[FastIndx].Length + 1);
+    m_FastTlb[FastIndx].Length = (uint32_t)((m_tlb[Index].PageMask.Mask << 12) + 0xFFF);
+    m_FastTlb[FastIndx].VSTART = (uint32_t)((m_tlb[Index].EntryHi.VPN2 << 13) + (m_FastTlb[FastIndx].Length + 1));
     m_FastTlb[FastIndx].VEND = m_FastTlb[FastIndx].VSTART + m_FastTlb[FastIndx].Length;
-    m_FastTlb[FastIndx].PHYSSTART = m_tlb[index].EntryLo1.PFN << 12;
+    m_FastTlb[FastIndx].PHYSSTART = (uint32_t)(m_tlb[Index].EntryLo1.PFN << 12);
     m_FastTlb[FastIndx].PHYSEND = m_FastTlb[FastIndx].PHYSSTART + m_FastTlb[FastIndx].Length;
-    m_FastTlb[FastIndx].VALID = m_tlb[index].EntryLo1.V;
-    m_FastTlb[FastIndx].DIRTY = m_tlb[index].EntryLo1.D;
-    m_FastTlb[FastIndx].GLOBAL = m_tlb[index].EntryLo0.GLOBAL & m_tlb[index].EntryLo1.GLOBAL;
+    m_FastTlb[FastIndx].VALID = m_tlb[Index].EntryLo1.V;
+    m_FastTlb[FastIndx].DIRTY = m_tlb[Index].EntryLo1.D;
+    m_FastTlb[FastIndx].GLOBAL = m_tlb[Index].EntryLo0.GLOBAL & m_tlb[Index].EntryLo1.GLOBAL;
     m_FastTlb[FastIndx].ValidEntry = false;
     m_FastTlb[FastIndx].Random = Random;
     m_FastTlb[FastIndx].Probed = false;
 
     // Test both entries to see if they are valid
-    for (FastIndx = index << 1; FastIndx <= (index << 1) + 1; FastIndx++)
+    for (FastIndx = Index << 1; FastIndx <= (Index << 1) + 1; FastIndx++)
     {
         if (!m_FastTlb[FastIndx].VALID)
         {
@@ -239,7 +252,16 @@ void CTLB::SetupTLB_Entry(int index, bool Random)
 
         // Map the new m_tlb entry for reading and writing
         m_FastTlb[FastIndx].ValidEntry = true;
-        m_CB->TLB_Mapped(m_FastTlb[FastIndx].VSTART, m_FastTlb[FastIndx].Length, m_FastTlb[FastIndx].PHYSSTART, !m_FastTlb[FastIndx].DIRTY);
+        m_MMU.TLB_Mapped(m_FastTlb[FastIndx].VSTART, m_FastTlb[FastIndx].Length, m_FastTlb[FastIndx].PHYSSTART, !m_FastTlb[FastIndx].DIRTY);
+    }
+}
+
+void CTLB::TLB_Unmaped(uint32_t VAddr, uint32_t Len)
+{
+    m_MMU.TLB_Unmaped(VAddr, Len);
+    if (m_Recomp && bSMM_TLB())
+    {
+        m_Recomp->ClearRecompCode_Virt(VAddr, Len, CRecompiler::Remove_TLB);
     }
 }
 

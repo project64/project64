@@ -19,6 +19,34 @@
 #pragma warning(push)
 #pragma warning(disable : 4201) // Non-standard extension used: nameless struct/union
 
+union COP0EntryLo
+{
+    uint64_t Value;
+
+    struct
+    {
+        uint64_t GLOBAL : 1;
+        uint64_t V : 1;
+        uint64_t D : 1;
+        uint64_t C : 3;
+        uint64_t PFN : 28;
+        uint64_t : 28;
+        uint64_t UC : 2;
+    };
+};
+
+union COP0PageMask
+{
+    uint64_t Value;
+
+    struct
+    {
+        uint64_t : 13;
+        uint64_t Mask : 12;
+        uint64_t : 39;
+    };
+};
+
 union COP0EntryHi
 {
     uint64_t Value;

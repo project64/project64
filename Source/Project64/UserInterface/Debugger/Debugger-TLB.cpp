@@ -110,7 +110,7 @@ void CDebugTlb::RefreshTLBWindow(void)
     LV_ITEM item, OldItem;
     int count;
 
-    CTLB::TLB_ENTRY * tlb = g_TLB->m_tlb;
+    TLB_ENTRY * tlb = g_TLB->m_tlb;
     for (count = 0; count < 32; count++)
     {
         swprintf(Output, sizeof(Output), L"0x%02X", count);
@@ -139,7 +139,7 @@ void CDebugTlb::RefreshTLBWindow(void)
         }
         if (tlb[count].EntryDefined)
         {
-            swprintf(Output, sizeof(Output), L"0x%08X", tlb[count].PageMask.Value);
+            swprintf(Output, sizeof(Output), L"0x%I64X", tlb[count].PageMask.Value);
         }
         else
         {
@@ -155,7 +155,7 @@ void CDebugTlb::RefreshTLBWindow(void)
 
         if (tlb[count].EntryDefined)
         {
-            swprintf(Output, sizeof(Output), L"0x%08X", tlb[count].EntryHi.Value);
+            swprintf(Output, sizeof(Output), L"0x%I64X", tlb[count].EntryHi.Value);
         }
         else
         {
@@ -171,7 +171,7 @@ void CDebugTlb::RefreshTLBWindow(void)
 
         if (tlb[count].EntryDefined)
         {
-            swprintf(Output, sizeof(Output), L"0x%08X", tlb[count].EntryLo0.Value);
+            swprintf(Output, sizeof(Output), L"0x%I64X", tlb[count].EntryLo0.Value);
         }
         else
         {
@@ -187,7 +187,7 @@ void CDebugTlb::RefreshTLBWindow(void)
 
         if (tlb[count].EntryDefined)
         {
-            swprintf(Output, sizeof(Output), L"0x%08X", tlb[count].EntryLo1.Value);
+            swprintf(Output, sizeof(Output), L"0x%I64X", tlb[count].EntryLo1.Value);
         }
         else
         {

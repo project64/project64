@@ -4,111 +4,26 @@
 #include <Project64-core/N64System/Mips/Register.h>
 
 class CDebugTlb;
-
-__interface CTLB_CB
-{
-    virtual void TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly) = 0;
-    virtual void TLB_Unmaped(uint32_t VAddr, uint32_t Len) = 0;
-    virtual void TLB_Changed() = 0;
-};
+class CRecompiler;
 
 #pragma warning(push)
 #pragma warning(disable : 4201) // warning C4201: nonstandard extension used : nameless struct/union
 
-class CTLB :
-    protected CSystemRegisters
+struct TLB_ENTRY
 {
-public:
-    struct TLB_ENTRY
-    {
-        bool EntryDefined;
-        union
-        {
-            uint32_t Value;
-            uint8_t A[4];
+    bool EntryDefined;
+    COP0PageMask PageMask;
+    COP0EntryHi EntryHi;
+    COP0EntryLo EntryLo0;
+    COP0EntryLo EntryLo1;
+};
 
-            struct
-            {
-                unsigned zero : 13;
-                unsigned Mask : 12;
-                unsigned zero2 : 7;
-            };
-        } PageMask;
+class CTLB :
+    protected CSystemRegisters,
+    private CGameSettings
+{
+    friend class CDebugTlb;
 
-        union
-        {
-            uint32_t Value;
-            uint8_t A[4];
-
-            struct
-            {
-                unsigned ASID : 8;
-                unsigned Zero : 4;
-                unsigned G : 1;
-                unsigned VPN2 : 19;
-            };
-        } EntryHi;
-
-        union
-        {
-            uint32_t Value;
-            uint8_t A[4];
-
-            struct
-            {
-                unsigned GLOBAL : 1;
-                unsigned V : 1;
-                unsigned D : 1;
-                unsigned C : 3;
-                unsigned PFN : 20;
-                unsigned ZERO : 6;
-            };
-        } EntryLo0;
-
-        union
-        {
-            uint32_t Value;
-            uint8_t A[4];
-
-            struct
-            {
-                unsigned GLOBAL : 1;
-                unsigned V : 1;
-                unsigned D : 1;
-                unsigned C : 3;
-                unsigned PFN : 20;
-                unsigned ZERO : 6;
-            };
-        } EntryLo1;
-    };
-
-public:
-    CTLB(CTLB_CB * CallBack);
-    ~CTLB();
-
-    void Reset(bool InvalidateTLB);
-
-    // Used by opcodes of the same name to manipulate the TLB (reads the registers)
-    void Probe();
-    void ReadEntry();
-    void WriteEntry(int32_t index, bool Random);
-
-    // See if a VAddr has an entry to translate to a PAddr
-    bool AddressDefined(uint64_t VAddr);
-
-    const TLB_ENTRY & TlbEntry(int32_t Entry) const
-    {
-        return m_tlb[Entry];
-    }
-
-    bool PAddrToVAddr(uint32_t PAddr, uint32_t & VAddr, uint32_t & Index);
-
-    void RecordDifference(CLog & LogFile, const CTLB & rTLB);
-
-    bool operator==(const CTLB & rTLB) const;
-    bool operator!=(const CTLB & rTLB) const;
-
-private:
     struct FASTTLB
     {
         uint32_t VSTART;
@@ -124,19 +39,35 @@ private:
         bool Probed;
     };
 
-    friend class CDebugTlb; // Enable debug window to read class
+public:
+    CTLB(CMipsMemoryVM & MMU, CRegisters & Reg, CRecompiler *& Recomp);
+    ~CTLB();
 
-    CTLB_CB * const m_CB;
+    void Reset(bool InvalidateTLB);
+    void Probe();
+    void ReadEntry();
+    void WriteEntry(uint32_t index, bool Random);
+    bool AddressDefined(uint64_t VAddr);
+    TLB_ENTRY & TlbEntry(int32_t Entry);
+    bool PAddrToVAddr(uint32_t PAddr, uint32_t & VAddr, uint32_t & Index);
+    void RecordDifference(CLog & LogFile, const CTLB & rTLB);
 
-    TLB_ENTRY m_tlb[32];
-    FASTTLB m_FastTlb[64];
-
-    void SetupTLB_Entry(int32_t index, bool Random);
+    bool operator==(const CTLB & rTLB) const;
+    bool operator!=(const CTLB & rTLB) const;
 
 private:
     CTLB();
     CTLB(const CTLB &);
     CTLB & operator=(const CTLB &);
+
+    void SetupTLB_Entry(uint32_t index, bool Random);
+    void TLB_Unmaped(uint32_t VAddr, uint32_t Len);
+
+    CMipsMemoryVM & m_MMU;
+    CRegisters & m_Reg;
+    CRecompiler *& m_Recomp;
+    TLB_ENTRY m_tlb[32];
+    FASTTLB m_FastTlb[64];
 };
 
 #pragma warning(pop)

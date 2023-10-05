@@ -37,7 +37,6 @@ enum CN64SystemCB
 
 class CN64System :
     public CLogging,
-    public CTLB_CB,
     private CSystemEvents,
     protected CN64SystemSettings,
     public CGameSettings,
@@ -174,9 +173,7 @@ private:
     void CpuStopped();
 
     // Functions in CTLB_CB
-    void TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly);
     void TLB_Unmaped(uint32_t VAddr, uint32_t Len);
-    void TLB_Changed();
 
     SETTING_CALLBACK m_Callback;
     CPlugins * const m_Plugins; // The plugin container
@@ -219,7 +216,8 @@ private:
     FUNC_CALLS m_FunctionCalls;
 
     // List of save state file IDs
-    const uint32_t SaveID_0 = 0x23D8A6C8; // Main save state info (*.pj)
-    const uint32_t SaveID_1 = 0x56D2CD23; // Extra data v1 (system timing) info (*.dat)
-    const uint32_t SaveID_2 = 0x750A6BEB; // Extra data v2 (timing + disk registers) (*.dat)
+    const uint32_t SaveID_0 = 0x23D8A6C8;   // Main save state info (*.pj)
+    const uint32_t SaveID_0_1 = 0x25EF3FAC; // Main save state info (*.pj)
+    const uint32_t SaveID_1 = 0x56D2CD23;   // Extra data v1 (system timing) info (*.dat)
+    const uint32_t SaveID_2 = 0x750A6BEB;   // Extra data v2 (timing + disk registers) (*.dat)
 };

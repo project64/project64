@@ -33,7 +33,7 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     m_MMU_VM(*this, SavesReadOnly),
     //m_Cheats(m_MMU_VM),
     m_Reg(*this, *this),
-    m_TLB(this),
+    m_TLB(m_MMU_VM, m_Reg, m_Recomp),
     m_Recomp(nullptr),
     m_InReset(false),
     m_NextTimer(0),
@@ -1672,7 +1672,7 @@ bool CN64System::SaveState()
         ZipFile.Delete();
         zipFile file = zipOpen(ZipFile, 0);
         zipOpenNewFileInZip(file, SaveFile.GetNameExtension().c_str(), nullptr, nullptr, 0, nullptr, 0, nullptr, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
-        zipWriteInFileInZip(file, &SaveID_0, sizeof(SaveID_0));
+        zipWriteInFileInZip(file, &SaveID_0_1, sizeof(SaveID_0_1));
         zipWriteInFileInZip(file, &RdramSize, sizeof(uint32_t));
         if (EnableDisk() && g_Disk)
         {
@@ -1685,7 +1685,8 @@ bool CN64System::SaveState()
             zipWriteInFileInZip(file, g_Rom->GetRomAddress(), 0x40);
         }
         zipWriteInFileInZip(file, &NextViTimer, sizeof(uint32_t));
-        zipWriteInFileInZip(file, &m_Reg.m_PROGRAM_COUNTER, sizeof(m_Reg.m_PROGRAM_COUNTER));
+        int32_t WriteProgramCounter = ((int32_t)m_Reg.m_PROGRAM_COUNTER);
+        zipWriteInFileInZip(file, &WriteProgramCounter, sizeof(int64_t));
         zipWriteInFileInZip(file, m_Reg.m_GPR, sizeof(int64_t) * 32);
         zipWriteInFileInZip(file, m_Reg.m_FPR, sizeof(int64_t) * 32);
         zipWriteInFileInZip(file, m_Reg.m_CP0, sizeof(uint32_t) * 32);
@@ -1701,7 +1702,7 @@ bool CN64System::SaveState()
         zipWriteInFileInZip(file, m_Reg.m_Peripheral_Interface, sizeof(uint32_t) * 13);
         zipWriteInFileInZip(file, m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8);
         zipWriteInFileInZip(file, m_Reg.m_SerialInterface, sizeof(uint32_t) * 4);
-        zipWriteInFileInZip(file, (void * const)&m_TLB.TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32);
+        zipWriteInFileInZip(file, (void * const)&m_TLB.TlbEntry(0), sizeof(TLB_ENTRY) * 32);
         zipWriteInFileInZip(file, m_MMU_VM.PifRam().PifRam(), 0x40);
         zipWriteInFileInZip(file, m_MMU_VM.Rdram(), RdramSize);
         zipWriteInFileInZip(file, m_MMU_VM.Dmem(), 0x1000);
@@ -1742,7 +1743,7 @@ bool CN64System::SaveState()
 
         // Write info to file
         hSaveFile.SeekToBegin();
-        hSaveFile.Write(&SaveID_0, sizeof(uint32_t));
+        hSaveFile.Write(&SaveID_0_1, sizeof(uint32_t));
         hSaveFile.Write(&RdramSize, sizeof(uint32_t));
         if (EnableDisk() && g_Disk)
         {
@@ -1755,10 +1756,11 @@ bool CN64System::SaveState()
             hSaveFile.Write(g_Rom->GetRomAddress(), 0x40);
         }
         hSaveFile.Write(&NextViTimer, sizeof(uint32_t));
-        hSaveFile.Write(&m_Reg.m_PROGRAM_COUNTER, sizeof(m_Reg.m_PROGRAM_COUNTER));
+        int32_t WriteProgramCounter = ((int32_t)m_Reg.m_PROGRAM_COUNTER);
+        hSaveFile.Write(&WriteProgramCounter, sizeof(int64_t));
         hSaveFile.Write(m_Reg.m_GPR, sizeof(int64_t) * 32);
         hSaveFile.Write(m_Reg.m_FPR, sizeof(int64_t) * 32);
-        hSaveFile.Write(m_Reg.m_CP0, sizeof(uint32_t) * 32);
+        hSaveFile.Write(m_Reg.m_CP0, sizeof(uint64_t) * 32);
         hSaveFile.Write(m_Reg.m_FPCR, sizeof(uint32_t) * 32);
         hSaveFile.Write(&m_Reg.m_HI, sizeof(int64_t));
         hSaveFile.Write(&m_Reg.m_LO, sizeof(int64_t));
@@ -1771,7 +1773,7 @@ bool CN64System::SaveState()
         hSaveFile.Write(m_Reg.m_Peripheral_Interface, sizeof(uint32_t) * 13);
         hSaveFile.Write(m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8);
         hSaveFile.Write(m_Reg.m_SerialInterface, sizeof(uint32_t) * 4);
-        hSaveFile.Write(&m_TLB.TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32);
+        hSaveFile.Write(&m_TLB.TlbEntry(0), sizeof(TLB_ENTRY) * 32);
         hSaveFile.Write(g_MMU->PifRam().PifRam(), 0x40);
         hSaveFile.Write(g_MMU->Rdram(), RdramSize);
         hSaveFile.Write(g_MMU->Dmem(), 0x1000);
@@ -1917,8 +1919,9 @@ bool CN64System::LoadState(const char * FileName)
                 port = -1;
                 continue;
             }
-            unzReadCurrentFile(file, &Value, 4);
-            if (!LoadedZipFile && Value == SaveID_0 && port == UNZ_OK)
+            uint32_t SaveID;
+            unzReadCurrentFile(file, &SaveID, 4);
+            if (!LoadedZipFile && (SaveID == SaveID_0 || SaveID == SaveID_0_1) && port == UNZ_OK)
             {
                 unzReadCurrentFile(file, &SaveRDRAMSize, sizeof(SaveRDRAMSize));
                 // Check header
@@ -1950,10 +1953,34 @@ bool CN64System::LoadState(const char * FileName)
                 m_MMU_VM.UnProtectMemory(0xA4001000, 0xA4001FFC);
                 g_Settings->SaveDword(Game_RDRamSize, SaveRDRAMSize);
                 unzReadCurrentFile(file, &NextVITimer, sizeof(NextVITimer));
-                unzReadCurrentFile(file, &m_Reg.m_PROGRAM_COUNTER, sizeof(m_Reg.m_PROGRAM_COUNTER));
+                if (SaveID == 0x23D8A6C8)
+                {
+                    uint32_t ReadProgramCounter;
+                    unzReadCurrentFile(file, &ReadProgramCounter, sizeof(ReadProgramCounter));
+                    m_Reg.m_PROGRAM_COUNTER = ReadProgramCounter;
+                }
+                else
+                {
+                    uint64_t ReadProgramCounter;
+                    unzReadCurrentFile(file, &ReadProgramCounter, sizeof(ReadProgramCounter));
+                    m_Reg.m_PROGRAM_COUNTER = (uint32_t)ReadProgramCounter;
+                }
                 unzReadCurrentFile(file, m_Reg.m_GPR, sizeof(int64_t) * 32);
                 unzReadCurrentFile(file, m_Reg.m_FPR, sizeof(int64_t) * 32);
-                unzReadCurrentFile(file, m_Reg.m_CP0, sizeof(uint32_t) * 32);
+                if (SaveID == 0x23D8A6C8)
+                {
+                    uint32_t ReadCP0[32];
+                    unzReadCurrentFile(file, &ReadCP0, sizeof(uint32_t) * 32);
+                    for (uint32_t i = 0; i < 32; i++)
+                    {
+                        m_Reg.m_CP0[i] = ReadCP0[i];
+                    }
+                }
+                else
+                {
+                    unzReadCurrentFile(file, m_Reg.m_CP0, sizeof(uint64_t) * 32);
+                }
+
                 unzReadCurrentFile(file, m_Reg.m_FPCR, sizeof(uint32_t) * 32);
                 unzReadCurrentFile(file, &m_Reg.m_HI, sizeof(int64_t));
                 unzReadCurrentFile(file, &m_Reg.m_LO, sizeof(int64_t));
@@ -1966,7 +1993,32 @@ bool CN64System::LoadState(const char * FileName)
                 unzReadCurrentFile(file, m_Reg.m_Peripheral_Interface, sizeof(uint32_t) * 13);
                 unzReadCurrentFile(file, m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8);
                 unzReadCurrentFile(file, m_Reg.m_SerialInterface, sizeof(uint32_t) * 4);
-                unzReadCurrentFile(file, (void * const)&m_TLB.TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32);
+                if (SaveID == 0x23D8A6C8)
+                {
+                    struct TLB_ENTRY_OLD
+                    {
+                        bool EntryDefined;
+                        uint32_t PageMask;
+                        uint32_t EntryHi;
+                        uint32_t EntryLo0;
+                        uint32_t EntryLo1;
+                    };
+                    TLB_ENTRY_OLD Tlb[32];
+                    unzReadCurrentFile(file, (void * const)&Tlb, sizeof(TLB_ENTRY_OLD) * 32);
+                    for (uint32_t i = 0; i < 32; i++)
+                    {
+                        TLB_ENTRY & Entry = m_TLB.TlbEntry(i);
+                        Entry.EntryDefined = Tlb[i].EntryDefined;
+                        Entry.PageMask.Value = Tlb[i].PageMask;
+                        Entry.EntryHi.Value = Tlb[i].EntryHi;
+                        Entry.EntryLo0.Value = Tlb[i].EntryLo0;
+                        Entry.EntryLo1.Value = Tlb[i].EntryLo1;
+                    }
+                }
+                else
+                {
+                    unzReadCurrentFile(file, (void * const)&m_TLB.TlbEntry(0), sizeof(TLB_ENTRY) * 32);
+                }
                 unzReadCurrentFile(file, m_MMU_VM.PifRam().PifRam(), 0x40);
                 unzReadCurrentFile(file, m_MMU_VM.Rdram(), SaveRDRAMSize);
                 unzReadCurrentFile(file, m_MMU_VM.Dmem(), 0x1000);
@@ -2010,8 +2062,9 @@ bool CN64System::LoadState(const char * FileName)
         }
         hSaveFile.SeekToBegin();
 
-        hSaveFile.Read(&Value, sizeof(Value));
-        if (Value != SaveID_0)
+        uint32_t SaveID;
+        hSaveFile.Read(&SaveID, sizeof(SaveID));
+        if (SaveID != SaveID_0 && SaveID != SaveID_0_1)
         {
             return false;
         }
@@ -2045,10 +2098,33 @@ bool CN64System::LoadState(const char * FileName)
         g_Settings->SaveDword(Game_RDRamSize, SaveRDRAMSize);
 
         hSaveFile.Read(&NextVITimer, sizeof(NextVITimer));
-        hSaveFile.Read(&m_Reg.m_PROGRAM_COUNTER, sizeof(m_Reg.m_PROGRAM_COUNTER));
+        if (SaveID == 0x23D8A6C8)
+        {
+            uint32_t ReadProgramCounter;
+            hSaveFile.Read(&ReadProgramCounter, sizeof(ReadProgramCounter));
+            m_Reg.m_PROGRAM_COUNTER = ReadProgramCounter;
+        }
+        else
+        {
+            uint64_t ReadProgramCounter;
+            hSaveFile.Read(&ReadProgramCounter, sizeof(ReadProgramCounter));
+            m_Reg.m_PROGRAM_COUNTER = (uint32_t)ReadProgramCounter;
+        }
         hSaveFile.Read(m_Reg.m_GPR, sizeof(int64_t) * 32);
         hSaveFile.Read(m_Reg.m_FPR, sizeof(int64_t) * 32);
-        hSaveFile.Read(m_Reg.m_CP0, sizeof(uint32_t) * 32);
+        if (SaveID == 0x23D8A6C8)
+        {
+            uint32_t ReadCP0[32];
+            hSaveFile.Read(&ReadCP0, sizeof(uint32_t) * 32);
+            for (uint32_t i = 0; i < 32; i++)
+            {
+                m_Reg.m_CP0[i] = ReadCP0[i];
+            }
+        }
+        else
+        {
+            hSaveFile.Read(m_Reg.m_CP0, sizeof(uint64_t) * 32);
+        }
         hSaveFile.Read(m_Reg.m_FPCR, sizeof(uint32_t) * 32);
         hSaveFile.Read(&m_Reg.m_HI, sizeof(int64_t));
         hSaveFile.Read(&m_Reg.m_LO, sizeof(int64_t));
@@ -2061,7 +2137,32 @@ bool CN64System::LoadState(const char * FileName)
         hSaveFile.Read(m_Reg.m_Peripheral_Interface, sizeof(uint32_t) * 13);
         hSaveFile.Read(m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8);
         hSaveFile.Read(m_Reg.m_SerialInterface, sizeof(uint32_t) * 4);
-        hSaveFile.Read((void * const)&m_TLB.TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32);
+        if (SaveID == 0x23D8A6C8)
+        {
+            struct TLB_ENTRY_OLD
+            {
+                bool EntryDefined;
+                uint32_t PageMask;
+                uint32_t EntryHi;
+                uint32_t EntryLo0;
+                uint32_t EntryLo1;
+            };
+            TLB_ENTRY_OLD Tlb[32];
+            hSaveFile.Read((void * const)&Tlb, sizeof(TLB_ENTRY_OLD) * 32);
+            for (uint32_t i = 0; i < 32; i++)
+            {
+                TLB_ENTRY & Entry = m_TLB.TlbEntry(i);
+                Entry.EntryDefined = Tlb[i].EntryDefined;
+                Entry.PageMask.Value = Tlb[i].PageMask;
+                Entry.EntryHi.Value = Tlb[i].EntryHi;
+                Entry.EntryLo0.Value = Tlb[i].EntryLo0;
+                Entry.EntryLo1.Value = Tlb[i].EntryLo1;
+            }
+        }
+        else
+        {
+            hSaveFile.Read((void *)&m_TLB.TlbEntry(0), sizeof(TLB_ENTRY) * 32);
+        }
         hSaveFile.Read(m_MMU_VM.PifRam().PifRam(), 0x40);
         hSaveFile.Read(m_MMU_VM.Rdram(), SaveRDRAMSize);
         hSaveFile.Read(m_MMU_VM.Dmem(), 0x1000);
@@ -2337,24 +2438,11 @@ void CN64System::RefreshScreen()
     //    if (bProfiling)    { m_Profile.StartTimer(ProfilingAddr != Timer_None ? ProfilingAddr : Timer_R4300); }
 }
 
-void CN64System::TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly)
-{
-    m_MMU_VM.TLB_Mapped(VAddr, Len, PAddr, bReadOnly);
-}
-
 void CN64System::TLB_Unmaped(uint32_t VAddr, uint32_t Len)
 {
     m_MMU_VM.TLB_Unmaped(VAddr, Len);
     if (m_Recomp && bSMM_TLB())
     {
         m_Recomp->ClearRecompCode_Virt(VAddr, Len, CRecompiler::Remove_TLB);
-    }
-}
-
-void CN64System::TLB_Changed()
-{
-    if (g_Debugger)
-    {
-        g_Debugger->TLBChanged();
     }
 }
