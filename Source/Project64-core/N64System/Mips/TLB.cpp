@@ -53,21 +53,26 @@ void CTLB::Reset(bool InvalidateTLB)
     COP0StatusChanged();
 }
 
-bool CTLB::AddressDefined(uint64_t VAddr)
+bool CTLB::AddressDefined(uint64_t VAddr, bool & Dirty)
 {
-    if (VAddr >= 0x80000000 && VAddr <= 0xBFFFFFFF)
+    Dirty = true;
+    MemorySegment Segment = VAddrMemorySegment(VAddr);
+    if (Segment == MemorySegment_Mapped)
     {
-        return true;
-    }
-
-    for (uint32_t i = 0; i < 64; i++)
-    {
-        if (m_FastTlb[i].ValidEntry &&
-            VAddr >= m_FastTlb[i].VSTART &&
-            VAddr <= m_FastTlb[i].VEND)
+        for (uint32_t i = 0; i < 64; i++)
         {
+            if (!m_FastTlb[i].GLOBAL || !m_FastTlb[i].ValidEntry || VAddr < m_FastTlb[i].VSTART || VAddr > m_FastTlb[i].VEND + 1)
+            {
+                continue;
+            }
+            if (!m_FastTlb[i].VALID)
+            {
+                return true;
+            }
+            Dirty = m_FastTlb[i].DIRTY;
             return true;
         }
+        return false;
     }
     return false;
 }
@@ -88,23 +93,22 @@ void CTLB::Probe()
             continue;
         }
 
-        uint64_t & TlbEntryHiValue = m_tlb[i].EntryHi.Value;
-        uint32_t Mask = (uint32_t)(~m_tlb[i].PageMask.Mask << 13);
-        uint32_t TlbValueMasked = TlbEntryHiValue & Mask;
-        uint32_t EntryHiMasked = m_Reg.ENTRYHI_REGISTER.Value & Mask;
+        const COP0EntryHi & TlbEntryHiValue = m_tlb[i].EntryHi;
+        uint64_t Mask = ~m_tlb[i].PageMask.Mask << 13;
+        uint64_t TlbValueMasked = TlbEntryHiValue.Value & Mask;
+        uint64_t EntryHiMasked = m_Reg.ENTRYHI_REGISTER.Value & Mask;
 
-        if (TlbValueMasked == EntryHiMasked)
+        if (TlbValueMasked != EntryHiMasked || 
+            TlbEntryHiValue.R != m_Reg.ENTRYHI_REGISTER.R ||
+            (m_tlb[i].EntryLo0.GLOBAL == 0 || m_tlb[i].EntryLo1.GLOBAL == 0) && TlbEntryHiValue.ASID != m_Reg.ENTRYHI_REGISTER.ASID)
         {
-            if ((TlbEntryHiValue & 0x100) != 0 ||                                    // Global
-                ((TlbEntryHiValue & 0xFF) == (m_Reg.ENTRYHI_REGISTER.Value & 0xFF))) // SameAsid
-            {
-                m_Reg.INDEX_REGISTER = i;
-                uint32_t FastIndx = i << 1;
-                m_FastTlb[FastIndx].Probed = true;
-                m_FastTlb[FastIndx + 1].Probed = true;
-                return;
-            }
+            continue;
         }
+        m_Reg.INDEX_REGISTER = i;
+        uint32_t FastIndx = i << 1;
+        m_FastTlb[FastIndx].Probed = true;
+        m_FastTlb[FastIndx + 1].Probed = true;
+        break;
     }
     WriteTrace(TraceTLB, TraceDebug, "Done");
 }

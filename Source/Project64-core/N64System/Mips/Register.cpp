@@ -788,7 +788,12 @@ void CRegisters::TriggerAddressException(uint64_t Address, uint32_t ExceptionCod
     bool SpecialOffset = false;
     if (ExceptionCode == EXC_RMISS || ExceptionCode == EXC_WMISS)
     {
-        SpecialOffset = !m_TLB.AddressDefined(Address);
+        bool Dirty;
+        SpecialOffset = !m_TLB.AddressDefined(Address, Dirty);
+        if (!Dirty)
+        {
+            ExceptionCode = EXC_MOD;
+        }
     }
 
     BAD_VADDR_REGISTER = Address;

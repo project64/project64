@@ -2028,13 +2028,13 @@ bool CN64System::LoadState(const char * FileName)
                 LoadedZipFile = true;
                 continue;
             }
-            if (LoadedZipFile && Value == SaveID_1 && port == UNZ_OK)
+            if (LoadedZipFile && SaveID == SaveID_1 && port == UNZ_OK)
             {
                 // Extra info v1
                 // System timers info
                 m_SystemTimer.LoadData(file);
             }
-            if (LoadedZipFile && Value == SaveID_2 && port == UNZ_OK)
+            if (LoadedZipFile && SaveID == SaveID_2 && port == UNZ_OK)
             {
                 // Extra info v2 (Project64 2.4)
                 // Disk interface info

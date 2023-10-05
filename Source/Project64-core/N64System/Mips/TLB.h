@@ -58,7 +58,7 @@ public:
     void ReadEntry();
     void WriteEntry(uint32_t Index, bool Random);
     void COP0StatusChanged(void);
-    bool AddressDefined(uint64_t VAddr);
+    bool AddressDefined(uint64_t VAddr, bool & Dirty); 
     TLB_ENTRY & TlbEntry(int32_t Entry);
 
     bool VAddrToPAddr(uint64_t VAddr, uint32_t & PAddr, bool & MemoryUnused);
