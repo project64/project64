@@ -9,6 +9,16 @@ class CRecompiler;
 #pragma warning(push)
 #pragma warning(disable : 4201) // warning C4201: nonstandard extension used : nameless struct/union
 
+enum MemorySegment
+{
+    MemorySegment_Mapped,
+    MemorySegment_Cached,
+    MemorySegment_Cached32,
+    MemorySegment_Direct,
+    MemorySegment_Direct32,
+    MemorySegment_Unused,
+};
+
 struct TLB_ENTRY
 {
     bool EntryDefined;
@@ -47,9 +57,11 @@ public:
     void Probe();
     void ReadEntry();
     void WriteEntry(uint32_t Index, bool Random);
+    void COP0StatusChanged(void);
     bool AddressDefined(uint64_t VAddr);
     TLB_ENTRY & TlbEntry(int32_t Entry);
 
+    bool VAddrToPAddr(uint64_t VAddr, uint32_t & PAddr, bool & MemoryUnused);
     bool PAddrToVAddr(uint32_t PAddr, uint32_t & VAddr, uint32_t & Index);
     void RecordDifference(CLog & LogFile, const CTLB & rTLB);
 
@@ -62,8 +74,11 @@ private:
     CTLB & operator=(const CTLB &);
 
     void SetupTLB_Entry(uint32_t Index, bool Random);
-    void TLB_Unmaped(uint32_t VAddr, uint32_t Len);
+    void TLB_Unmaped(uint64_t VAddr, uint32_t Len);
+    MemorySegment VAddrMemorySegment(uint64_t VAddr);
 
+    PRIVILEGE_MODE m_PrivilegeMode;
+    bool m_AddressSize32bit;
     CMipsMemoryVM & m_MMU;
     CRegisters & m_Reg;
     CRecompiler *& m_Recomp;

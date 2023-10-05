@@ -10,7 +10,9 @@
 CTLB::CTLB(CMipsMemoryVM & MMU, CRegisters & Reg, CRecompiler *& Recomp) :
     m_MMU(MMU),
     m_Reg(Reg),
-    m_Recomp(Recomp)
+    m_Recomp(Recomp),
+    m_PrivilegeMode(PrivilegeMode_Kernel),
+    m_AddressSize32bit(true)
 {
     WriteTrace(TraceTLB, TraceDebug, "Start");
     memset(m_tlb, 0, sizeof(m_tlb));
@@ -48,6 +50,7 @@ void CTLB::Reset(bool InvalidateTLB)
             SetupTLB_Entry(count, false);
         }
     }
+    COP0StatusChanged();
 }
 
 bool CTLB::AddressDefined(uint64_t VAddr)
@@ -188,6 +191,23 @@ void CTLB::WriteEntry(uint32_t Index, bool Random)
     }
 }
 
+void CTLB::COP0StatusChanged(void)
+{
+    m_PrivilegeMode = m_Reg.STATUS_REGISTER.PrivilegeMode;
+    switch (m_PrivilegeMode)
+    {
+    case PrivilegeMode_Kernel:
+        m_AddressSize32bit = m_Reg.STATUS_REGISTER.KernelExtendedAddressing == 0;
+        break;
+    case PrivilegeMode_Supervisor:
+        m_AddressSize32bit = m_Reg.STATUS_REGISTER.SupervisorExtendedAddressing == 0;
+        break;
+    case PrivilegeMode_User:
+        m_AddressSize32bit = m_Reg.STATUS_REGISTER.UserExtendedAddressing == 0;
+        break;
+    }
+}
+
 void CTLB::SetupTLB_Entry(uint32_t Index, bool Random)
 {
     // Fix up fast TLB entries
@@ -201,10 +221,10 @@ void CTLB::SetupTLB_Entry(uint32_t Index, bool Random)
     {
         TLB_Unmaped(m_FastTlb[FastIndx].VSTART, m_FastTlb[FastIndx].Length);
     }
-    m_FastTlb[FastIndx].Length = (m_tlb[Index].PageMask.Mask << 12) + 0xFFF;
+    m_FastTlb[FastIndx].Length = (uint32_t)((m_tlb[Index].PageMask.Mask << 12) + 0xFFF);
     m_FastTlb[FastIndx].VSTART = m_tlb[Index].EntryHi.R << 62 | m_tlb[Index].EntryHi.VPN2 << 13;
     m_FastTlb[FastIndx].VEND = m_FastTlb[FastIndx].VSTART + m_FastTlb[FastIndx].Length;
-    m_FastTlb[FastIndx].PHYSSTART = m_tlb[Index].EntryLo0.PFN << 12;
+    m_FastTlb[FastIndx].PHYSSTART = (uint32_t)(m_tlb[Index].EntryLo0.PFN << 12);
     m_FastTlb[FastIndx].PHYSEND = m_FastTlb[FastIndx].PHYSSTART + m_FastTlb[FastIndx].Length;
     m_FastTlb[FastIndx].VALID = m_tlb[Index].EntryLo0.V;
     m_FastTlb[FastIndx].DIRTY = m_tlb[Index].EntryLo0.D;
@@ -218,10 +238,10 @@ void CTLB::SetupTLB_Entry(uint32_t Index, bool Random)
     {
         TLB_Unmaped(m_FastTlb[FastIndx].VSTART, m_FastTlb[FastIndx].Length);
     }
-    m_FastTlb[FastIndx].Length = (m_tlb[Index].PageMask.Mask << 12) + 0xFFF;
+    m_FastTlb[FastIndx].Length = (uint32_t)((m_tlb[Index].PageMask.Mask << 12) + 0xFFF);
     m_FastTlb[FastIndx].VSTART = (m_tlb[Index].EntryHi.R << 62 | (m_tlb[Index].EntryHi.VPN2 << 13)) + (m_FastTlb[FastIndx].Length + 1);
     m_FastTlb[FastIndx].VEND = m_FastTlb[FastIndx].VSTART + m_FastTlb[FastIndx].Length;
-    m_FastTlb[FastIndx].PHYSSTART = m_tlb[Index].EntryLo1.PFN << 12;
+    m_FastTlb[FastIndx].PHYSSTART = (uint32_t)m_tlb[Index].EntryLo1.PFN << 12;
     m_FastTlb[FastIndx].PHYSEND = m_FastTlb[FastIndx].PHYSSTART + m_FastTlb[FastIndx].Length;
     m_FastTlb[FastIndx].VALID = m_tlb[Index].EntryLo1.V;
     m_FastTlb[FastIndx].DIRTY = m_tlb[Index].EntryLo1.D;
@@ -258,13 +278,252 @@ void CTLB::SetupTLB_Entry(uint32_t Index, bool Random)
     }
 }
 
-void CTLB::TLB_Unmaped(uint32_t VAddr, uint32_t Len)
+void CTLB::TLB_Unmaped(uint64_t VAddr, uint32_t Len)
 {
     m_MMU.TLB_Unmaped(VAddr, Len);
-    if (m_Recomp && bSMM_TLB())
+    if (m_Recomp && bSMM_TLB() && (uint64_t)((int32_t)VAddr) == VAddr)
     {
-        m_Recomp->ClearRecompCode_Virt(VAddr, Len, CRecompiler::Remove_TLB);
+        m_Recomp->ClearRecompCode_Virt((uint32_t)VAddr, Len, CRecompiler::Remove_TLB);
     }
+}
+
+bool CTLB::VAddrToPAddr(uint64_t VAddr, uint32_t & PAddr, bool & MemoryUnused)
+{
+    MemoryUnused = false;
+    if (b32BitCore() && (uint64_t)((int32_t)VAddr) != VAddr)
+    {
+        MemoryUnused = true;
+        return false;
+    }
+    MemorySegment Segment = VAddrMemorySegment(VAddr);
+    if (Segment == MemorySegment_Mapped)
+    {
+        for (int i = 0; i < 64; i++)
+        {
+            if (m_FastTlb[i].ValidEntry == false)
+            {
+                continue;
+            }
+            if (VAddr >= m_FastTlb[i].VSTART && VAddr < m_FastTlb[i].VEND)
+            {
+                PAddr = (uint32_t)(m_FastTlb[i].PHYSSTART + (VAddr - m_FastTlb[i].VSTART));
+                return true;
+            }
+        }
+        return false;
+    }
+    if (Segment == MemorySegment_Unused)
+    {
+        MemoryUnused = true;
+        return false;
+    }
+    if (Segment == MemorySegment_Direct32 || Segment == MemorySegment_Cached32)
+    {
+        PAddr = VAddr & 0x1FFFFFFF;
+        return true;
+    }
+    return false;
+}
+
+MemorySegment CTLB::VAddrMemorySegment(uint64_t VAddr)
+{
+    if (m_AddressSize32bit)
+    {
+        if ((uint64_t)((int32_t)VAddr) != VAddr)
+        {
+            return MemorySegment_Unused;
+        }
+        uint32_t VAddr32 = (uint32_t)VAddr;
+        if (m_PrivilegeMode == PrivilegeMode_Kernel)
+        {
+            if (VAddr32 <= 0x7fffffff) //kuseg
+            {
+                return MemorySegment_Mapped;
+            }
+            if (VAddr32 <= 0x9fffffff) //kseg0
+            {
+                return MemorySegment_Cached32;
+            }
+            if (VAddr32 <= 0xbfffffff) //kseg1
+            {
+                return MemorySegment_Direct32;
+            }
+            if (VAddr32 <= 0xdfffffff) //ksseg
+            {
+                return MemorySegment_Mapped;
+            }
+            if (VAddr32 <= 0xffffffff) //kseg3
+            {
+                return MemorySegment_Mapped;
+            }
+        }
+        else if (m_PrivilegeMode == PrivilegeMode_Supervisor)
+        {
+            if (VAddr32 <= 0x7fffffff) //suseg
+            {
+                return MemorySegment_Mapped;
+            }
+            if (VAddr32 <= 0xbfffffff)
+            {
+                return MemorySegment_Unused;
+            }
+            if (VAddr32 <= 0xdfffffff) //sseg
+            {
+                return MemorySegment_Mapped;
+            }
+        }
+        else if (m_PrivilegeMode == PrivilegeMode_User)
+        {
+            if (VAddr32 <= 0x7fffffff) //useg
+            {
+                return MemorySegment_Mapped;
+            }
+        }
+        return MemorySegment_Unused;
+    }
+
+    if (m_PrivilegeMode == PrivilegeMode_Kernel)
+    {
+        if (VAddr <= 0x000000ffffffffffull) //xkuseg
+        {
+            return MemorySegment_Mapped;
+        }
+        if (VAddr <= 0x3fffffffffffffffull)
+        {
+            return MemorySegment_Unused;
+        }
+        if (VAddr <= 0x400000ffffffffffull) //xksseg
+        {
+            return MemorySegment_Mapped;
+        }
+        if (VAddr <= 0x7fffffffffffffffull)
+        {
+            return MemorySegment_Unused;
+        }
+        if (VAddr <= 0x80000000ffffffffull) //xkphys*
+        {
+            return MemorySegment_Cached32;
+        }
+        if (VAddr <= 0x87ffffffffffffffull)
+        {
+            return MemorySegment_Unused;
+        }
+        if (VAddr <= 0x88000000ffffffffull)
+        {
+            return MemorySegment_Cached32;  //xkphys*
+        }
+        if (VAddr <= 0x8fffffffffffffffull)
+        {
+            return MemorySegment_Unused;
+        }
+        if (VAddr <= 0x90000000ffffffffull) //xkphys*
+        {
+            return MemorySegment_Direct32;
+        }
+        if (VAddr <= 0x97ffffffffffffffull)
+        {
+            return MemorySegment_Unused;
+        }
+        if (VAddr <= 0x98000000ffffffffull) //xkphys*
+        {
+            return MemorySegment_Cached32;
+        }
+        if (VAddr <= 0x9fffffffffffffffull)
+        {
+            return MemorySegment_Unused;
+        }
+        if (VAddr <= 0xa0000000ffffffffull) //xkphys*
+        {
+            return MemorySegment_Cached32;
+        }
+        if (VAddr <= 0xa7ffffffffffffffull)
+        {
+            return MemorySegment_Unused;
+        }
+        if (VAddr <= 0xa8000000ffffffffull) //xkphys*
+        {
+            return MemorySegment_Cached32;
+        }
+        if (VAddr <= 0xafffffffffffffffull)
+        {
+            return MemorySegment_Unused;
+        }
+        if (VAddr <= 0xb0000000ffffffffull) //xkphys*
+        {
+            return MemorySegment_Cached32;
+        }
+        if (VAddr <= 0xb7ffffffffffffffull)
+        {
+            return MemorySegment_Unused;
+        }
+        if (VAddr <= 0xb8000000ffffffffull) //xkphys*
+        {
+            return MemorySegment_Cached32;
+        }
+        if (VAddr <= 0xbfffffffffffffffull)
+        {
+            return MemorySegment_Unused;
+        }
+        if (VAddr <= 0xc00000ff7fffffffull) //xkseg
+        {
+            return MemorySegment_Mapped;
+        }
+        if (VAddr <= 0xffffffff7fffffffull)
+        {
+            return MemorySegment_Unused;
+        }
+        if (VAddr <= 0xffffffff9fffffffull) //ckseg0
+        {
+            return MemorySegment_Cached32;
+        }
+        if (VAddr <= 0xffffffffbfffffffull) //ckseg1
+        {
+            return MemorySegment_Direct32;
+        }
+        if (VAddr <= 0xffffffffdfffffffull) //ckseg2
+        {
+            return MemorySegment_Mapped;
+        }
+        if (VAddr <= 0xffffffffffffffffull) //ckseg3
+        {
+            return MemorySegment_Mapped;
+        }
+    }
+    else if (m_PrivilegeMode == PrivilegeMode_Kernel)
+    {
+        if (VAddr <= 0x000000ffffffffffull) //xsuseg
+        {
+            return MemorySegment_Mapped;
+        }
+        if (VAddr <= 0x3fffffffffffffffull)
+        {
+            return MemorySegment_Unused;
+        }
+        if (VAddr <= 0x400000ffffffffffull) //xsseg
+        {
+            return MemorySegment_Mapped;  
+        }
+        if (VAddr <= 0xffffffffbfffffffull)
+        {
+            return MemorySegment_Unused;
+        }
+        if (VAddr <= 0xffffffffdfffffffull) //csseg
+        {
+            return MemorySegment_Mapped;  
+        }
+        if (VAddr <= 0xffffffffffffffffull)
+        {
+            return MemorySegment_Unused;
+        }
+    }
+    else if (m_PrivilegeMode == PrivilegeMode_User)
+    {
+        if (VAddr <= 0x000000ffffffffffull)
+        {
+            return MemorySegment_Mapped;  //xuseg
+        }
+    }
+    return MemorySegment_Unused;
 }
 
 bool CTLB::PAddrToVAddr(uint32_t PAddr, uint32_t & VAddr, uint32_t & Index)
@@ -277,7 +536,7 @@ bool CTLB::PAddrToVAddr(uint32_t PAddr, uint32_t & VAddr, uint32_t & Index)
         }
         if (PAddr >= m_FastTlb[i].PHYSSTART && PAddr < m_FastTlb[i].PHYSEND)
         {
-            VAddr = m_FastTlb[i].VSTART + (PAddr - m_FastTlb[i].PHYSSTART);
+            VAddr = (uint32_t)(m_FastTlb[i].VSTART + (PAddr - m_FastTlb[i].PHYSSTART));
             Index = i + 1;
             return true;
         }

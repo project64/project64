@@ -526,6 +526,7 @@ void CRegisters::Reset(bool bPostPif, CMipsMemoryVM & MMU)
         case CIC_NUS_6106:    PIF_Ram[37] = 0x02; PIF_Ram[38] = 0x85; break;
         }*/
     }
+    m_System.m_TLB.COP0StatusChanged();
 }
 
 void CRegisters::SetAsCurrentSystem()
@@ -630,6 +631,7 @@ void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
         {
             FixFpuLocations();
         }
+        m_System.m_TLB.COP0StatusChanged();
         CheckInterrupts();
         break;
     }
@@ -790,7 +792,7 @@ void CRegisters::TriggerAddressException(uint64_t Address, uint32_t ExceptionCod
     }
 
     BAD_VADDR_REGISTER = Address;
-    ENTRYHI_REGISTER.VPN2 = Address >> 13;
+    ENTRYHI_REGISTER.VPN2 = ((Address >> 13) & 0x7FFFFFF);
     ENTRYHI_REGISTER.R = Address >> 62;
     CONTEXT_REGISTER.BadVPN2 = Address >> 13;
     XCONTEXT_REGISTER.BadVPN2 = Address >> 13;
@@ -831,7 +833,7 @@ void CRegisters::TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor)
 
     CAUSE_REGISTER.ExceptionCode = ExceptionCode;
     CAUSE_REGISTER.CoprocessorUnitNumber = Coprocessor;
-    CAUSE_REGISTER.BranchDelay = m_System.m_PipelineStage == PIPELINE_STAGE_JUMP;
+    CAUSE_REGISTER.BranchDelay = m_System.m_PipelineStage == PIPELINE_STAGE_JUMP || m_System.m_PipelineStage == PIPELINE_STAGE_PERMLOOP_DELAY_DONE;
     EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - (CAUSE_REGISTER.BranchDelay ? 4 : 0));
     STATUS_REGISTER.ExceptionLevel = 1;
     m_System.m_PipelineStage = PIPELINE_STAGE_JUMP;
