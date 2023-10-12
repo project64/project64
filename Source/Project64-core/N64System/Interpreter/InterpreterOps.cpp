@@ -2519,8 +2519,22 @@ void R4300iOp::COP1_D_DIV()
     *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
+#if defined(__i386__) || defined(_M_IX86)
+static double correct_sqrt(double a)
+{
+    __asm
+    {
+        fld QWORD PTR [a]
+        fsqrt
+    }
+}
+#endif
+
 void R4300iOp::COP1_D_SQRT()
 {
+#if defined(__i386__) || defined(_M_IX86)
+    _controlfp(_PC_53, _MCW_PC);
+#endif
     if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
     {
         return;
@@ -2530,7 +2544,11 @@ void R4300iOp::COP1_D_SQRT()
     {
         return;
     }
+#if defined(__i386__) || defined(_M_IX86)
+    double Result = (double)correct_sqrt(*(double *)_FPR_D[m_Opcode.fs]);
+#else
     double Result = (double)sqrt(*(double *)_FPR_D[m_Opcode.fs]);
+#endif
     if (CheckFPUResult64(Result))
     {
         return;
@@ -3345,7 +3363,6 @@ bool R4300iOp::InitFpuOperation(FPRoundingMode RoundingModel)
     case FPRoundingMode_RoundTowardPlusInfinity: fesetround(FE_UPWARD); break;
     case FPRoundingMode_RoundTowardMinusInfinity: fesetround(FE_DOWNWARD); break;
     }
-    fesetround(RoundingModel);
     feclearexcept(FE_ALL_EXCEPT);
     return false;
 }
