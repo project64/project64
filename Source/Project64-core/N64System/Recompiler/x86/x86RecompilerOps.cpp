@@ -4002,7 +4002,7 @@ void CX86RecompilerOps::LWC1()
         LW_KnownAddress(TempReg1, Address);
 
         asmjit::x86::Gp TempReg2 = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
-        m_Assembler.MoveVariableToX86reg(TempReg2, &m_Reg.m_FPR_S[m_Opcode.ft], stdstr_f("_FPR_S[%d]", m_Opcode.ft).c_str());
+        m_Assembler.MoveVariableToX86reg(TempReg2, &m_Reg.m_FPR_S[m_Opcode.ft], stdstr_f("m_FPR_S[%d]", m_Opcode.ft).c_str());
         m_Assembler.mov(asmjit::x86::dword_ptr(TempReg2), TempReg1);
         return;
     }
@@ -4010,7 +4010,7 @@ void CX86RecompilerOps::LWC1()
     asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
     CompileLoadMemoryValue(x86Reg_Unknown, ValueReg, x86Reg_Unknown, 32, false);
     asmjit::x86::Gp FPR_SPtr = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
-    m_Assembler.MoveVariableToX86reg(FPR_SPtr, &m_Reg.m_FPR_S[m_Opcode.ft], stdstr_f("_FPR_S[%d]", m_Opcode.ft).c_str());
+    m_Assembler.MoveVariableToX86reg(FPR_SPtr, &m_Reg.m_FPR_S[m_Opcode.ft], stdstr_f("m_FPR_S[%d]", m_Opcode.ft).c_str());
     m_Assembler.mov(asmjit::x86::dword_ptr(FPR_SPtr), ValueReg);
 }
 
@@ -4036,7 +4036,7 @@ void CX86RecompilerOps::LDC1()
         m_Assembler.mov(asmjit::x86::dword_ptr(TempReg2), TempReg1);
 
         LW_KnownAddress(TempReg1, Address + 4);
-        m_Assembler.MoveVariableToX86reg(TempReg2, &m_Reg.m_FPR_D[m_Opcode.ft], stdstr_f("_FPR_S[%d]", m_Opcode.ft).c_str());
+        m_Assembler.MoveVariableToX86reg(TempReg2, &m_Reg.m_FPR_D[m_Opcode.ft], stdstr_f("m_FPR_S[%d]", m_Opcode.ft).c_str());
         m_Assembler.mov(asmjit::x86::dword_ptr(TempReg2), TempReg1);
     }
     else
@@ -4123,7 +4123,7 @@ void CX86RecompilerOps::SWC1()
 
         m_RegWorkingSet.UnMap_FPR(m_Opcode.ft, true);
         asmjit::x86::Gp TempReg1 = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
-        m_Assembler.MoveVariableToX86reg(TempReg1, &m_Reg.m_FPR_S[m_Opcode.ft], stdstr_f("_FPR_S[%d]", m_Opcode.ft).c_str());
+        m_Assembler.MoveVariableToX86reg(TempReg1, &m_Reg.m_FPR_S[m_Opcode.ft], stdstr_f("m_FPR_S[%d]", m_Opcode.ft).c_str());
         m_Assembler.mov(TempReg1, asmjit::x86::dword_ptr(TempReg1));
         SW_Register(TempReg1, Address);
         return;
@@ -4131,7 +4131,7 @@ void CX86RecompilerOps::SWC1()
     PreWriteInstruction();
     m_RegWorkingSet.UnMap_FPR(m_Opcode.ft, true);
     asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
-    m_Assembler.MoveVariableToX86reg(ValueReg, &m_Reg.m_FPR_S[m_Opcode.ft], stdstr_f("_FPR_S[%d]", m_Opcode.ft).c_str());
+    m_Assembler.MoveVariableToX86reg(ValueReg, &m_Reg.m_FPR_S[m_Opcode.ft], stdstr_f("m_FPR_S[%d]", m_Opcode.ft).c_str());
     m_Assembler.mov(ValueReg, asmjit::x86::dword_ptr(ValueReg));
 
     CompileStoreMemoryValue(x86Reg_Unknown, ValueReg, x86Reg_Unknown, 0, 32);
@@ -7466,7 +7466,7 @@ void CX86RecompilerOps::COP1_MF()
     m_RegWorkingSet.UnMap_FPR(m_Opcode.fs, true);
     m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, -1);
     asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
-    m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[m_Opcode.fs], stdstr_f("_FPR_S[%d]", m_Opcode.fs).c_str());
+    m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[m_Opcode.fs], stdstr_f("m_FPR_S[%d]", m_Opcode.fs).c_str());
     m_Assembler.mov(m_RegWorkingSet.GetMipsRegMapLo(m_Opcode.rt), asmjit::x86::dword_ptr(TempReg));
 }
 
@@ -7511,7 +7511,7 @@ void CX86RecompilerOps::COP1_MT()
     }
     m_RegWorkingSet.UnMap_FPR(m_Opcode.fs, true);
     asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
-    m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[m_Opcode.fs], stdstr_f("_FPR_S[%d]", m_Opcode.fs).c_str());
+    m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[m_Opcode.fs], stdstr_f("m_FPR_S[%d]", m_Opcode.fs).c_str());
 
     if (m_RegWorkingSet.IsConst(m_Opcode.rt))
     {
@@ -7647,7 +7647,7 @@ void CX86RecompilerOps::COP1_S_ADD()
         {
             m_RegWorkingSet.UnMap_FPR(Reg2, true);
             asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
-            m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[Reg2], stdstr_f("_FPR_S[%d]", Reg2).c_str());
+            m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[Reg2], stdstr_f("m_FPR_S[%d]", Reg2).c_str());
             m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fd, CRegInfo::FPU_Float);
             m_Assembler.fadd(asmjit::x86::dword_ptr(TempReg));
         }
@@ -7693,7 +7693,7 @@ void CX86RecompilerOps::COP1_S_SUB()
             m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
 
             asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
-            m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[m_Opcode.ft], stdstr_f("_FPR_S[%d]", m_Opcode.ft).c_str());
+            m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[m_Opcode.ft], stdstr_f("m_FPR_S[%d]", m_Opcode.ft).c_str());
             m_Assembler.fsub(asmjit::x86::dword_ptr(TempReg));
         }
         else
@@ -7709,7 +7709,7 @@ void CX86RecompilerOps::COP1_S_SUB()
                 m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fd, CRegInfo::FPU_Float);
 
                 asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
-                m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[Reg2], stdstr_f("_FPR_S[%d]", Reg2).c_str());
+                m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[Reg2], stdstr_f("m_FPR_S[%d]", Reg2).c_str());
                 m_Assembler.fsub(asmjit::x86::dword_ptr(TempReg));
             }
         }
@@ -7760,7 +7760,7 @@ void CX86RecompilerOps::COP1_S_MUL()
             m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fd, CRegInfo::FPU_Float);
 
             asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
-            m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[Reg2], stdstr_f("_FPR_S[%d]", Reg2).c_str());
+            m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[Reg2], stdstr_f("m_FPR_S[%d]", Reg2).c_str());
             m_Assembler.fmul(asmjit::x86::dword_ptr(TempReg));
         }
         m_RegWorkingSet.UnMap_FPR(m_Opcode.fd, true);
@@ -7781,7 +7781,7 @@ void CX86RecompilerOps::COP1_S_DIV()
         m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
 
         asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
-        m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[m_Opcode.ft], stdstr_f("_FPR_S[%d]", m_Opcode.ft).c_str());
+        m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[m_Opcode.ft], stdstr_f("m_FPR_S[%d]", m_Opcode.ft).c_str());
         m_Assembler.fdiv(asmjit::x86::dword_ptr(TempReg));
     }
     else
@@ -7797,7 +7797,7 @@ void CX86RecompilerOps::COP1_S_DIV()
             m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fd, CRegInfo::FPU_Float);
 
             asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
-            m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[Reg2], stdstr_f("_FPR_S[%d]", Reg2).c_str());
+            m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[Reg2], stdstr_f("m_FPR_S[%d]", Reg2).c_str());
             m_Assembler.fdiv(asmjit::x86::dword_ptr(TempReg));
         }
     }
@@ -7987,7 +7987,7 @@ void CX86RecompilerOps::COP1_S_CMP()
         m_RegWorkingSet.Load_FPR_ToTop(Reg1, Reg1, CRegInfo::FPU_Float);
 
         asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
-        m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[Reg2], stdstr_f("_FPR_S[%d]", Reg2).c_str());
+        m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[Reg2], stdstr_f("m_FPR_S[%d]", Reg2).c_str());
         m_Assembler.fcom(asmjit::x86::dword_ptr(TempReg));
     }
     m_Assembler.AndConstToVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", (uint32_t)~FPCSR_C);
@@ -8646,7 +8646,7 @@ void CX86RecompilerOps::CompileCheckFPUResult32(int32_t DestReg)
     }
     m_Assembler.MoveVariableToX86reg(TempReg, &m_TempValue32, "TempValue32");
     asmjit::x86::Gp TempRegFPR_S = ExitRegSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
-    m_Assembler.MoveVariableToX86reg(TempRegFPR_S, &m_Reg.m_FPR_S[DestReg], stdstr_f("_FPR_S[%d]", DestReg).c_str());
+    m_Assembler.MoveVariableToX86reg(TempRegFPR_S, &m_Reg.m_FPR_S[DestReg], stdstr_f("m_FPR_S[%d]", DestReg).c_str());
     m_Assembler.mov(asmjit::x86::dword_ptr(TempRegFPR_S), TempReg);
     ExitRegSet.SetBlockCycleCount(ExitRegSet.GetBlockCycleCount() + g_System->CountPerOp());
     CompileExit(m_CompilePC + 4, m_CompilePC + 4, ExitRegSet, ExitReason_Normal, false, &CX86Ops::JmpLabel);

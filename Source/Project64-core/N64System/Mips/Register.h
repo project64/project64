@@ -427,7 +427,10 @@ protected:
     static uint64_t * _CP0;
     static MIPS_DWORD * _RegHI;
     static MIPS_DWORD * _RegLO;
+    static uint32_t ** _FPR_UW;
+    static uint64_t ** _FPR_UDW;
     static float ** _FPR_S;
+    static float ** _FPR_S_L;
     static double ** _FPR_D;
     static uint32_t * _FPCR;
     static uint32_t * _LLBit;
@@ -521,7 +524,10 @@ public:
     // Floating point registers/information
     uint32_t m_FPCR[32];
     MIPS_DWORD m_FPR[32];
+    uint32_t * m_FPR_UW[32];
+    uint64_t * m_FPR_UDW[32];
     float * m_FPR_S[32];
+    float * m_FPR_S_L[32];
     double * m_FPR_D[32];
 
     // Memory-mapped N64 registers

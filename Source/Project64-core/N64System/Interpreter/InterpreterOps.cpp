@@ -2039,16 +2039,16 @@ void R4300iOp::COP1_S_ADD()
         return;
     }
 
-    if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
+    if (CheckFPUInput32(*(float *)_FPR_S_L[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_UW[m_Opcode.ft]))
     {
         return;
     }
-    float Result = (*(float *)_FPR_S[m_Opcode.fs] + *(float *)_FPR_S[m_Opcode.ft]);
+    float Result = (*(float *)_FPR_S_L[m_Opcode.fs] + *(float *)_FPR_UW[m_Opcode.ft]);
     if (CheckFPUResult32(Result))
     {
         return;
     }
-    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_SUB()
@@ -2057,16 +2057,16 @@ void R4300iOp::COP1_S_SUB()
     {
         return;
     }
-    if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
+    if (CheckFPUInput32(*(float *)_FPR_S_L[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_UW[m_Opcode.ft]))
     {
         return;
     }
-    float Result = (*(float *)_FPR_S[m_Opcode.fs] - *(float *)_FPR_S[m_Opcode.ft]);
+    float Result = (*(float *)_FPR_S_L[m_Opcode.fs] - *(float *)_FPR_UW[m_Opcode.ft]);
     if (CheckFPUResult32(Result))
     {
         return;
     }
-    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_MUL()
@@ -2076,16 +2076,16 @@ void R4300iOp::COP1_S_MUL()
         return;
     }
 
-    if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
+    if (CheckFPUInput32(*(float *)_FPR_S_L[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_UW[m_Opcode.ft]))
     {
         return;
     }
-    float Result = (*(float *)_FPR_S[m_Opcode.fs] * *(float *)_FPR_S[m_Opcode.ft]);
+    float Result = (*(float *)_FPR_S_L[m_Opcode.fs] * *(float *)_FPR_UW[m_Opcode.ft]);
     if (CheckFPUResult32(Result))
     {
         return;
     }
-    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_DIV()
@@ -2095,16 +2095,16 @@ void R4300iOp::COP1_S_DIV()
         return;
     }
 
-    if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_S[m_Opcode.ft]))
+    if (CheckFPUInput32(*(float *)_FPR_S_L[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_UW[m_Opcode.ft]))
     {
         return;
     }
-    float Result = (*(float *)_FPR_S[m_Opcode.fs] / *(float *)_FPR_S[m_Opcode.ft]);
+    float Result = (*(float *)_FPR_S_L[m_Opcode.fs] / *(float *)_FPR_UW[m_Opcode.ft]);
     if (CheckFPUResult32(Result))
     {
         return;
     }
-    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_SQRT()
@@ -2114,16 +2114,16 @@ void R4300iOp::COP1_S_SQRT()
         return;
     }
 
-    if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
+    if (CheckFPUInput32(*(float *)_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    float Result = sqrtf(*(float *)(_FPR_S[m_Opcode.fs]));
+    float Result = sqrtf(*(float *)(_FPR_S_L[m_Opcode.fs]));
     if (CheckFPUResult32(Result))
     {
         return;
     }
-    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_ABS()
@@ -2133,16 +2133,16 @@ void R4300iOp::COP1_S_ABS()
         return;
     }
 
-    if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
+    if (CheckFPUInput32(*(float *)_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    float Result = (float)fabs(*(float *)_FPR_S[m_Opcode.fs]);
+    float Result = (float)fabs(*(float *)_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUResult32(Result))
     {
         return;
     }
-    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_MOV()
@@ -2151,14 +2151,7 @@ void R4300iOp::COP1_S_MOV()
     {
         return;
     }
-    switch (((FPStatusReg &)_FPCR[31]).RoundingMode)
-    {
-    case FPRoundingMode_RoundToNearest: fesetround(FE_TONEAREST); break;
-    case FPRoundingMode_RoundTowardZero: fesetround(FE_TOWARDZERO); break;
-    case FPRoundingMode_RoundTowardPlusInfinity: fesetround(FE_UPWARD); break;
-    case FPRoundingMode_RoundTowardMinusInfinity: fesetround(FE_DOWNWARD); break;
-    }
-    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)_FPR_S[m_Opcode.fs];
+    *_FPR_UDW[m_Opcode.fd] = (*(uint64_t *)_FPR_D[m_Opcode.fs] & 0xFFFFFFFF00000000ll)  | *(uint32_t *)_FPR_S_L[m_Opcode.fs];
 }
 
 void R4300iOp::COP1_S_NEG()
@@ -2168,16 +2161,16 @@ void R4300iOp::COP1_S_NEG()
         return;
     }
 
-    if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
+    if (CheckFPUInput32(*(float *)_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    float Result = (*(float *)_FPR_S[m_Opcode.fs] * -1.0f);
+    float Result = (*(float *)_FPR_S_L[m_Opcode.fs] * -1.0f);
     if (CheckFPUResult32(Result))
     {
         return;
     }
-    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_ROUND_L()
@@ -2187,16 +2180,16 @@ void R4300iOp::COP1_S_ROUND_L()
         return;
     }
 
-    if (CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
+    if (CheckFPUInput32Conv(*(float *)_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    int64_t Result = (int64_t)rint(*(float *)_FPR_S[m_Opcode.fs]);
+    int64_t Result = (int64_t)rint(*(float *)_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_S_TRUNC_L()
@@ -2205,16 +2198,16 @@ void R4300iOp::COP1_S_TRUNC_L()
     {
         return;
     }
-    if (CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
+    if (CheckFPUInput32Conv(*(float *)_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    int64_t Result = (int64_t)rint(*(float *)_FPR_S[m_Opcode.fs]);
+    int64_t Result = (int64_t)rint(*(float *)_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_S_CEIL_L()
@@ -2223,16 +2216,16 @@ void R4300iOp::COP1_S_CEIL_L()
     {
         return;
     }
-    if (CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
+    if (CheckFPUInput32Conv(*(float *)_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    int64_t Result = (int64_t)rint(*(float *)_FPR_S[m_Opcode.fs]);
+    int64_t Result = (int64_t)rint(*(float *)_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_S_FLOOR_L()
@@ -2241,16 +2234,16 @@ void R4300iOp::COP1_S_FLOOR_L()
     {
         return;
     }
-    if (CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
+    if (CheckFPUInput32Conv(*(float *)_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    int64_t Result = (int64_t)rint(*(float *)_FPR_S[m_Opcode.fs]);
+    int64_t Result = (int64_t)rint(*(float *)_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_S_ROUND_W()
@@ -2259,16 +2252,16 @@ void R4300iOp::COP1_S_ROUND_W()
     {
         return;
     }
-    if (CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
+    if (CheckFPUInput32Conv(*(float *)_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    int32_t Result = (int32_t)rint(*(float *)_FPR_S[m_Opcode.fs]);
+    int32_t Result = (int32_t)rint(*(float *)_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_TRUNC_W()
@@ -2277,16 +2270,16 @@ void R4300iOp::COP1_S_TRUNC_W()
     {
         return;
     }
-    if (CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
+    if (CheckFPUInput32Conv(*(float *)_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    int32_t Result = (int32_t)rint(*(float *)_FPR_S[m_Opcode.fs]);
+    int32_t Result = (int32_t)rint(*(float *)_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_CEIL_W()
@@ -2295,16 +2288,16 @@ void R4300iOp::COP1_S_CEIL_W()
     {
         return;
     }
-    if (CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
+    if (CheckFPUInput32Conv(*(float *)_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    int32_t Result = (int32_t)rint(*(float *)_FPR_S[m_Opcode.fs]);
+    int32_t Result = (int32_t)rint(*(float *)_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_FLOOR_W()
@@ -2313,16 +2306,16 @@ void R4300iOp::COP1_S_FLOOR_W()
     {
         return;
     }
-    if (CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
+    if (CheckFPUInput32Conv(*(float *)_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    int32_t Result = (int32_t)rint(*(float *)_FPR_S[m_Opcode.fs]);
+    int32_t Result = (int32_t)rint(*(float *)_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_CVT_D()
@@ -2331,16 +2324,16 @@ void R4300iOp::COP1_S_CVT_D()
     {
         return;
     }
-    if (CheckFPUInput32(*(float *)_FPR_S[m_Opcode.fs]))
+    if (CheckFPUInput32(*(float *)_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    double Result = (double)(*(float *)_FPR_S[m_Opcode.fs]);
+    double Result = (double)(*(float *)_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUResult64(Result))
     {
         return;
     }
-    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_S_CVT_W()
@@ -2349,16 +2342,16 @@ void R4300iOp::COP1_S_CVT_W()
     {
         return;
     }
-    if (CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
+    if (CheckFPUInput32Conv(*(float *)_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    int32_t Result = (int32_t)rint(*(float *)_FPR_S[m_Opcode.fs]);
+    int32_t Result = (int32_t)rint(*(float *)_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_CVT_L()
@@ -2367,16 +2360,16 @@ void R4300iOp::COP1_S_CVT_L()
     {
         return;
     }
-    if (CheckFPUInput32Conv(*(float *)_FPR_S[m_Opcode.fs]))
+    if (CheckFPUInput32Conv(*(float *)_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    int64_t Result = (int64_t)rint(*(float *)_FPR_S[m_Opcode.fs]);
+    int64_t Result = (int64_t)rint(*(float *)_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_S_CMP()
@@ -2385,8 +2378,8 @@ void R4300iOp::COP1_S_CMP()
     {
         return;
     }
-    float Temp0 = *(float *)_FPR_S[m_Opcode.fs];
-    float Temp1 = *(float *)_FPR_S[m_Opcode.ft];
+    float Temp0 = *(float *)_FPR_S_L[m_Opcode.fs];
+    float Temp1 = *(float *)_FPR_UW[m_Opcode.ft];
 
     bool less, equal, unorded;
     if (_isnan(Temp0) || _isnan(Temp1))
@@ -2396,13 +2389,13 @@ void R4300iOp::COP1_S_CMP()
         unorded = true;
 
         bool QuietNan = false;
-        if ((*(uint32_t *)_FPR_S[m_Opcode.fs] >= 0x7FC00000 && *(uint32_t *)_FPR_S[m_Opcode.fs] <= 0x7FFFFFFF) ||
-            (*(uint32_t *)_FPR_S[m_Opcode.fs] >= 0xFFC00000 && *(uint32_t *)_FPR_S[m_Opcode.fs] <= 0xFFFFFFFF))
+        if ((*(uint32_t *)_FPR_S_L[m_Opcode.fs] >= 0x7FC00000 && *(uint32_t *)_FPR_S_L[m_Opcode.fs] <= 0x7FFFFFFF) ||
+            (*(uint32_t *)_FPR_S_L[m_Opcode.fs] >= 0xFFC00000 && *(uint32_t *)_FPR_S_L[m_Opcode.fs] <= 0xFFFFFFFF))
         {
             QuietNan = true;
         }
-        else if ((*(uint32_t *)_FPR_S[m_Opcode.ft] >= 0x7FC00000 && *(uint32_t *)_FPR_S[m_Opcode.ft] <= 0x7FFFFFFF) ||
-                 (*(uint32_t *)_FPR_S[m_Opcode.ft] >= 0xFFC00000 && *(uint32_t *)_FPR_S[m_Opcode.ft] <= 0xFFFFFFFF))
+        else if ((*(uint32_t *)_FPR_UW[m_Opcode.ft] >= 0x7FC00000 && *(uint32_t *)_FPR_UW[m_Opcode.ft] <= 0x7FFFFFFF) ||
+                 (*(uint32_t *)_FPR_UW[m_Opcode.ft] >= 0xFFC00000 && *(uint32_t *)_FPR_UW[m_Opcode.ft] <= 0xFFFFFFFF))
         {
             QuietNan = true;
         }
@@ -2449,16 +2442,16 @@ void R4300iOp::COP1_D_ADD()
         return;
     }
 
-    if (CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]) || CheckFPUInput64(*(double *)_FPR_D[m_Opcode.ft]))
+    if (CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]) || CheckFPUInput64(*(double *)_FPR_UDW[m_Opcode.ft]))
     {
         return;
     }
-    double Result = (*(double *)_FPR_D[m_Opcode.fs] + *(double *)_FPR_D[m_Opcode.ft]);
+    double Result = (*(double *)_FPR_D[m_Opcode.fs] + *(double *)_FPR_UDW[m_Opcode.ft]);
     if (CheckFPUResult64(Result))
     {
         return;
     }
-    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_D_SUB()
@@ -2468,16 +2461,16 @@ void R4300iOp::COP1_D_SUB()
         return;
     }
 
-    if (CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]) || CheckFPUInput64(*(double *)_FPR_D[m_Opcode.ft]))
+    if (CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]) || CheckFPUInput64(*(double *)_FPR_UDW[m_Opcode.ft]))
     {
         return;
     }
-    double Result = (*(double *)_FPR_D[m_Opcode.fs] - *(double *)_FPR_D[m_Opcode.ft]);
+    double Result = (*(double *)_FPR_D[m_Opcode.fs] - *(double *)_FPR_UDW[m_Opcode.ft]);
     if (CheckFPUResult64(Result))
     {
         return;
     }
-    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_D_MUL()
@@ -2487,16 +2480,16 @@ void R4300iOp::COP1_D_MUL()
         return;
     }
 
-    if (CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]) || CheckFPUInput64(*(double *)_FPR_D[m_Opcode.ft]))
+    if (CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]) || CheckFPUInput64(*(double *)_FPR_UDW[m_Opcode.ft]))
     {
         return;
     }
-    double Result = (*(double *)_FPR_D[m_Opcode.fs] * *(double *)_FPR_D[m_Opcode.ft]);
+    double Result = (*(double *)_FPR_D[m_Opcode.fs] * *(double *)_FPR_UDW[m_Opcode.ft]);
     if (CheckFPUResult64(Result))
     {
         return;
     }
-    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_D_DIV()
@@ -2506,16 +2499,16 @@ void R4300iOp::COP1_D_DIV()
         return;
     }
 
-    if (CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]) || CheckFPUInput64(*(double *)_FPR_D[m_Opcode.ft]))
+    if (CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]) || CheckFPUInput64(*(double *)_FPR_UDW[m_Opcode.ft]))
     {
         return;
     }
-    double Result = (*(double *)_FPR_D[m_Opcode.fs] / *(double *)_FPR_D[m_Opcode.ft]);
+    double Result = (*(double *)_FPR_D[m_Opcode.fs] / *(double *)_FPR_UDW[m_Opcode.ft]);
     if (CheckFPUResult64(Result))
     {
         return;
     }
-    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_D_SQRT()
@@ -2534,7 +2527,7 @@ void R4300iOp::COP1_D_SQRT()
     {
         return;
     }
-    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_D_ABS()
@@ -2553,7 +2546,7 @@ void R4300iOp::COP1_D_ABS()
     {
         return;
     }
-    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_D_MOV()
@@ -2562,14 +2555,7 @@ void R4300iOp::COP1_D_MOV()
     {
         return;
     }
-    switch (((FPStatusReg &)_FPCR[31]).RoundingMode)
-    {
-    case FPRoundingMode_RoundToNearest: fesetround(FE_TONEAREST); break;
-    case FPRoundingMode_RoundTowardZero: fesetround(FE_TOWARDZERO); break;
-    case FPRoundingMode_RoundTowardPlusInfinity: fesetround(FE_UPWARD); break;
-    case FPRoundingMode_RoundTowardMinusInfinity: fesetround(FE_DOWNWARD); break;
-    }
-    *(int64_t *)_FPR_D[m_Opcode.fd] = *(int64_t *)_FPR_D[m_Opcode.fs];
+    *_FPR_UDW[m_Opcode.fd] = *(int64_t *)_FPR_D[m_Opcode.fs];
 }
 
 void R4300iOp::COP1_D_NEG()
@@ -2588,7 +2574,7 @@ void R4300iOp::COP1_D_NEG()
     {
         return;
     }
-    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_D_ROUND_L()
@@ -2607,7 +2593,7 @@ void R4300iOp::COP1_D_ROUND_L()
     {
         return;
     }
-    *(uint64_t *)_FPR_D[m_Opcode.fd] = (uint64_t)Result;
+    *_FPR_UDW[m_Opcode.fd] = (uint64_t)Result;
 }
 
 void R4300iOp::COP1_D_TRUNC_L()
@@ -2626,7 +2612,7 @@ void R4300iOp::COP1_D_TRUNC_L()
     {
         return;
     }
-    *(uint64_t *)_FPR_D[m_Opcode.fd] = (uint64_t)Result;
+    *_FPR_UDW[m_Opcode.fd] = (uint64_t)Result;
 }
 
 void R4300iOp::COP1_D_CEIL_L()
@@ -2645,7 +2631,7 @@ void R4300iOp::COP1_D_CEIL_L()
     {
         return;
     }
-    *(uint64_t *)_FPR_D[m_Opcode.fd] = (uint64_t)Result;
+    *_FPR_UDW[m_Opcode.fd] = (uint64_t)Result;
 }
 
 void R4300iOp::COP1_D_FLOOR_L()
@@ -2664,7 +2650,7 @@ void R4300iOp::COP1_D_FLOOR_L()
     {
         return;
     }
-    *(uint64_t *)_FPR_D[m_Opcode.fd] = (uint64_t)Result;
+    *_FPR_UDW[m_Opcode.fd] = (uint64_t)Result;
 }
 
 void R4300iOp::COP1_D_ROUND_W()
@@ -2682,7 +2668,7 @@ void R4300iOp::COP1_D_ROUND_W()
     {
         return;
     }
-    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_D_TRUNC_W()
@@ -2700,7 +2686,7 @@ void R4300iOp::COP1_D_TRUNC_W()
     {
         return;
     }
-    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_D_CEIL_W()
@@ -2718,7 +2704,7 @@ void R4300iOp::COP1_D_CEIL_W()
     {
         return;
     }
-    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_D_FLOOR_W()
@@ -2736,7 +2722,7 @@ void R4300iOp::COP1_D_FLOOR_W()
     {
         return;
     }
-    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_D_CVT_S()
@@ -2754,7 +2740,7 @@ void R4300iOp::COP1_D_CVT_S()
     {
         return;
     }
-    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_D_CVT_W()
@@ -2772,7 +2758,7 @@ void R4300iOp::COP1_D_CVT_W()
     {
         return;
     }
-    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_D_CVT_L()
@@ -2791,7 +2777,7 @@ void R4300iOp::COP1_D_CVT_L()
     {
         return;
     }
-    *(uint64_t *)_FPR_D[m_Opcode.fd] = (uint64_t)Result;
+    *_FPR_UDW[m_Opcode.fd] = (uint64_t)Result;
 }
 
 void R4300iOp::COP1_D_CMP()
@@ -2803,7 +2789,7 @@ void R4300iOp::COP1_D_CMP()
 
     MIPS_DWORD Temp0, Temp1;
     Temp0.DW = *(int64_t *)_FPR_D[m_Opcode.fs];
-    Temp1.DW = *(int64_t *)_FPR_D[m_Opcode.ft];
+    Temp1.DW = *(int64_t *)_FPR_UDW[m_Opcode.ft];
 
     bool less, equal, unorded;
     if (_isnan(Temp0.D) || _isnan(Temp1.D))
@@ -2818,8 +2804,8 @@ void R4300iOp::COP1_D_CMP()
         {
             QuietNan = true;
         }
-        else if ((*(uint64_t *)_FPR_D[m_Opcode.ft] >= 0x7FF8000000000000 && *(uint64_t *)_FPR_D[m_Opcode.ft] <= 0x7FFFFFFFFFFFFFFF) ||
-                 (*(uint64_t *)_FPR_D[m_Opcode.ft] >= 0xFFF8000000000000 && *(uint64_t *)_FPR_D[m_Opcode.ft] <= 0xFFFFFFFFFFFFFFFF))
+        else if ((*(uint64_t *)_FPR_UDW[m_Opcode.ft] >= 0x7FF8000000000000 && *(uint64_t *)_FPR_UDW[m_Opcode.ft] <= 0x7FFFFFFFFFFFFFFF) ||
+                 (*(uint64_t *)_FPR_UDW[m_Opcode.ft] >= 0xFFF8000000000000 && *(uint64_t *)_FPR_UDW[m_Opcode.ft] <= 0xFFFFFFFFFFFFFFFF))
         {
             QuietNan = true;
         }
@@ -2866,12 +2852,12 @@ void R4300iOp::COP1_W_CVT_S()
     {
         return;
     }
-    float Result = (float)*(int32_t *)_FPR_S[m_Opcode.fs];
+    float Result = (float)*(int32_t *)_FPR_S_L[m_Opcode.fs];
     if (CheckFPUResult32(Result))
     {
         return;
     }
-    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_W_CVT_D()
@@ -2880,12 +2866,12 @@ void R4300iOp::COP1_W_CVT_D()
     {
         return;
     }
-    double Result = (double)*(int32_t *)_FPR_S[m_Opcode.fs];
+    double Result = (double)*(int32_t *)_FPR_S_L[m_Opcode.fs];
     if (CheckFPUResult64(Result))
     {
         return;
     }
-    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 // COP1: L functions
@@ -2909,7 +2895,7 @@ void R4300iOp::COP1_L_CVT_S()
     {
         return;
     }
-    *(uint32_t *)_FPR_S[m_Opcode.fd] = *(uint32_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_L_CVT_D()
@@ -2931,7 +2917,7 @@ void R4300iOp::COP1_L_CVT_D()
     {
         return;
     }
-    *(uint64_t *)_FPR_D[m_Opcode.fd] = *(uint64_t *)&Result;
+    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 // COP2 functions

@@ -224,7 +224,10 @@ MIPS_DWORD * CSystemRegisters::_FPR = nullptr;
 uint64_t * CSystemRegisters::_CP0 = nullptr;
 MIPS_DWORD * CSystemRegisters::_RegHI = nullptr;
 MIPS_DWORD * CSystemRegisters::_RegLO = nullptr;
+uint32_t ** CSystemRegisters::_FPR_UW = nullptr;
+uint64_t ** CSystemRegisters::_FPR_UDW = nullptr;
 float ** CSystemRegisters::_FPR_S;
+float ** CSystemRegisters::_FPR_S_L;
 double ** CSystemRegisters::_FPR_D;
 uint32_t * CSystemRegisters::_FPCR = nullptr;
 uint32_t * CSystemRegisters::_LLBit = nullptr;
@@ -537,7 +540,10 @@ void CRegisters::SetAsCurrentSystem()
     _CP0 = m_CP0;
     _RegHI = &m_HI;
     _RegLO = &m_LO;
+    _FPR_UW = m_FPR_UW;
+    _FPR_UDW = m_FPR_UDW;
     _FPR_S = m_FPR_S;
+    _FPR_S_L = m_FPR_S_L;
     _FPR_D = m_FPR_D;
     _FPCR = m_FPCR;
     _LLBit = &m_LLBit;
@@ -755,22 +761,14 @@ void CRegisters::DoAddressError(uint64_t BadVaddr, bool FromRead)
 
 void CRegisters::FixFpuLocations()
 {
-    if (STATUS_REGISTER.FR == 0)
+    for (uint8_t i = 0; i < 32; i++)
     {
-        for (int count = 0; count < 32; count++)
-        {
-            m_FPR_S[count] = &m_FPR[count & ~1].F[count & 1];
-            m_FPR_D[count] = &m_FPR[count & ~1].D;
-        }
-    }
-    else
-    {
-        for (int count = 0; count < 32; count++)
-        {
-            m_FPR_S[count] = &m_FPR[count].F[0];
-            m_FPR_D[count] = &m_FPR[count].D;
-        }
-    }
+        m_FPR_UW[i] = &m_FPR[i].UW[0];
+        m_FPR_UDW[i] = &m_FPR[i].UDW;
+        m_FPR_S[i] = STATUS_REGISTER.FR == 0 ? &m_FPR[i & ~1].F[i & 1] : &m_FPR[i].F[0];
+        m_FPR_S_L[i] = STATUS_REGISTER.FR == 0 ? &m_FPR[i & ~1].F[0] : &m_FPR[i].F[0];
+        m_FPR_D[i] = STATUS_REGISTER.FR == 0 ? &m_FPR[i & ~1].D : &m_FPR[i].D;
+    }    
 }
 
 bool CRegisters::DoIntrException()
