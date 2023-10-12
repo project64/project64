@@ -768,7 +768,7 @@ void CRegisters::FixFpuLocations()
         m_FPR_S[i] = STATUS_REGISTER.FR == 0 ? &m_FPR[i & ~1].F[i & 1] : &m_FPR[i].F[0];
         m_FPR_S_L[i] = STATUS_REGISTER.FR == 0 ? &m_FPR[i & ~1].F[0] : &m_FPR[i].F[0];
         m_FPR_D[i] = STATUS_REGISTER.FR == 0 ? &m_FPR[i & ~1].D : &m_FPR[i].D;
-    }    
+    }
 }
 
 bool CRegisters::DoIntrException()

@@ -323,7 +323,7 @@ bool CTLB::VAddrToPAddr(uint64_t VAddr, uint32_t & PAddr, bool & MemoryUnused)
     }
     if (Segment == MemorySegment_Direct32 || Segment == MemorySegment_Cached32)
     {
-        PAddr = VAddr & 0x1FFFFFFF;
+        PAddr = VAddr & 0x7FFFFFFF;
         return true;
     }
     return false;

@@ -1192,6 +1192,10 @@ void R4300iOp::LL()
     {
         _GPR[m_Opcode.rt].DW = (int32_t)MemoryValue;
         (*_LLBit) = 1;
+        uint32_t PhysicalAddr;
+        bool MemoryUsed;
+        g_TLB->VAddrToPAddr(Address, PhysicalAddr, MemoryUsed);
+        _CP0[17] = PhysicalAddr >> 4;
     }
 }
 
@@ -1234,6 +1238,10 @@ void R4300iOp::LLD()
     if (g_MMU->LD_Memory(Address, _GPR[m_Opcode.rt].UDW))
     {
         (*_LLBit) = 1;
+        uint32_t PhysicalAddr;
+        bool MemoryUsed;
+        g_TLB->VAddrToPAddr(Address, PhysicalAddr, MemoryUsed);
+        _CP0[17] = PhysicalAddr >> 4;
     }
 }
 
@@ -2151,7 +2159,7 @@ void R4300iOp::COP1_S_MOV()
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = (*(uint64_t *)_FPR_D[m_Opcode.fs] & 0xFFFFFFFF00000000ll)  | *(uint32_t *)_FPR_S_L[m_Opcode.fs];
+    *_FPR_UDW[m_Opcode.fd] = (*(uint64_t *)_FPR_D[m_Opcode.fs] & 0xFFFFFFFF00000000ll) | *(uint32_t *)_FPR_S_L[m_Opcode.fs];
 }
 
 void R4300iOp::COP1_S_NEG()

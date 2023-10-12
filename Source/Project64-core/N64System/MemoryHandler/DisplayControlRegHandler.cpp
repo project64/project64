@@ -93,7 +93,7 @@ bool DisplayControlRegHandler::Write32(uint32_t Address, uint32_t Value, uint32_
         break;
     case 0x04100004:
         DPC_END_REG = MaskedValue & 0xFFFFF8;
-        if (DPC_STATUS_REG & DPC_STATUS_START_VALID) 
+        if (DPC_STATUS_REG & DPC_STATUS_START_VALID)
         {
             DPC_CURRENT_REG = DPC_START_REG;
             DPC_STATUS_REG &= ~DPC_STATUS_START_VALID;
