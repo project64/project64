@@ -85,11 +85,19 @@ bool DisplayControlRegHandler::Write32(uint32_t Address, uint32_t Value, uint32_
     switch (Address & 0x1FFFFFFF)
     {
     case 0x04100000:
-        DPC_START_REG = MaskedValue;
-        DPC_CURRENT_REG = MaskedValue;
+        if ((DPC_STATUS_REG & DPC_STATUS_START_VALID) == 0)
+        {
+            DPC_START_REG = MaskedValue & 0xFFFFF8;
+            DPC_STATUS_REG |= DPC_STATUS_START_VALID;
+        }
         break;
     case 0x04100004:
-        DPC_END_REG = MaskedValue;
+        DPC_END_REG = MaskedValue & 0xFFFFF8;
+        if (DPC_STATUS_REG & DPC_STATUS_START_VALID) 
+        {
+            DPC_CURRENT_REG = DPC_START_REG;
+            DPC_STATUS_REG &= ~DPC_STATUS_START_VALID;
+        }
         if (m_Plugins->Gfx()->ProcessRDPList)
         {
             m_Plugins->Gfx()->ProcessRDPList();
