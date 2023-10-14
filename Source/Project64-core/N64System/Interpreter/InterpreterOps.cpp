@@ -2519,7 +2519,7 @@ void R4300iOp::COP1_D_DIV()
     *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
-#if defined(__i386__) || defined(_M_IX86)
+#if defined(_MSC_VER) && (defined(__i386__) || defined(_M_IX86))
 static double correct_sqrt(double a)
 {
     __asm
@@ -2532,7 +2532,7 @@ static double correct_sqrt(double a)
 
 void R4300iOp::COP1_D_SQRT()
 {
-#if defined(__i386__) || defined(_M_IX86)
+#if defined(_MSC_VER) && (defined(__i386__) || defined(_M_IX86))
     _controlfp(_PC_53, _MCW_PC);
 #endif
     if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
@@ -2544,7 +2544,7 @@ void R4300iOp::COP1_D_SQRT()
     {
         return;
     }
-#if defined(__i386__) || defined(_M_IX86)
+#if defined(_MSC_VER) && (defined(__i386__) || defined(_M_IX86))
     double Result = (double)correct_sqrt(*(double *)_FPR_D[m_Opcode.fs]);
 #else
     double Result = (double)sqrt(*(double *)_FPR_D[m_Opcode.fs]);
