@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 #include <Project64-core/ExceptionHandler.h>
-#include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/N64System/SystemGlobals.h>
@@ -184,7 +183,7 @@ void CRecompiler::RecompilerMain_Lookup()
 
             while (m_MMU.VAddrToPAddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
             {
-                CInterpreterCPU::ExecuteOps(g_System->CountPerOp());
+                R4300iOp::ExecuteOps(g_System->CountPerOp());
                 opsExecuted += g_System->CountPerOp();
             }
 
@@ -297,7 +296,7 @@ void CRecompiler::RecompilerMain_Lookup_validate()
 
             while (m_MMU.VAddrToPAddr(PC, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
             {
-                CInterpreterCPU::ExecuteOps(g_System->CountPerOp());
+                R4300iOp::ExecuteOps(g_System->CountPerOp());
                 opsExecuted += g_System->CountPerOp();
             }
 

@@ -56,7 +56,6 @@
     <ClCompile Include="N64System\Enhancement\EnhancementList.cpp" />
     <ClCompile Include="N64System\Enhancement\Enhancements.cpp" />
     <ClCompile Include="N64System\FramePerSecond.cpp" />
-    <ClCompile Include="N64System\Interpreter\InterpreterCPU.cpp" />
     <ClCompile Include="N64System\Interpreter\InterpreterOps.cpp" />
     <ClCompile Include="N64System\MemoryHandler\AudioInterfaceHandler.cpp" />
     <ClCompile Include="N64System\MemoryHandler\CartridgeDomain1Address1Handler.cpp" />
@@ -176,7 +175,6 @@
     <ClInclude Include="N64System\Enhancement\EnhancementList.h" />
     <ClInclude Include="N64System\Enhancement\Enhancements.h" />
     <ClInclude Include="N64System\FramePerSecond.h" />
-    <ClInclude Include="N64System\Interpreter\InterpreterCPU.h" />
     <ClInclude Include="N64System\Interpreter\InterpreterOps.h" />
     <ClInclude Include="N64System\MemoryHandler\AudioInterfaceHandler.h" />
     <ClInclude Include="N64System\MemoryHandler\CartridgeDomain1Address1Handler.h" />

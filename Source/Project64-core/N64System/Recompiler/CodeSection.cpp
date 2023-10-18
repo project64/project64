@@ -2,7 +2,6 @@
 
 #include <Project64-core/Debugger.h>
 #include <Project64-core/ExceptionHandler.h>
-#include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/R4300iInstruction.h>
 #include <Project64-core/N64System/Mips/R4300iOpcode.h>

@@ -7,7 +7,6 @@
 #include <Project64-core/ExceptionHandler.h>
 #include <Project64-core/Logging.h>
 #include <Project64-core/N64System/Enhancement/Enhancements.h>
-#include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/N64System/Mips/Disk.h>
 #include <Project64-core/N64System/Mips/Mempak.h>
 #include <Project64-core/N64System/Mips/R4300iInstruction.h>
@@ -63,7 +62,7 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     m_Limiter.SetHertz(gameHertz);
     g_Settings->SaveDword(GameRunning_ScreenHertz, gameHertz);
     WriteTrace(TraceN64System, TraceDebug, "Setting up system");
-    CInterpreterCPU::BuildCPU();
+    R4300iOp::BuildCPU();
 
     if (!m_MMU_VM.Initialize(SyncSystem))
     {
@@ -1078,7 +1077,7 @@ void CN64System::ExecuteCPU()
 void CN64System::ExecuteInterpret()
 {
     SetActiveSystem();
-    CInterpreterCPU::ExecuteCPU();
+    R4300iOp::ExecuteCPU();
 }
 
 void CN64System::ExecuteRecompiler()
@@ -1124,7 +1123,7 @@ void CN64System::UpdateSyncCPU(CN64System * const SecondCPU, uint32_t const Cycl
     }
 
     SecondCPU->SetActiveSystem(true);
-    CInterpreterCPU::ExecuteOps(Cycles);
+    R4300iOp::ExecuteOps(Cycles);
     SetActiveSystem(true);
 }
 

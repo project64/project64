@@ -4,7 +4,6 @@
 
 #include <Project64-core/Debugger.h>
 #include <Project64-core/ExceptionHandler.h>
-#include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/N64System/Interpreter/InterpreterOps.h>
 #include <Project64-core/N64System/Mips/Disk.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
@@ -57,7 +56,7 @@ void CX86RecompilerOps::x86CompilerBreakPoint()
             }
             continue;
         }
-        CInterpreterCPU::ExecuteOps(g_System->CountPerOp());
+        R4300iOp::ExecuteOps(g_System->CountPerOp());
         if (g_SyncSystem)
         {
             g_System->UpdateSyncCPU(g_SyncSystem, g_System->CountPerOp());
@@ -68,7 +67,7 @@ void CX86RecompilerOps::x86CompilerBreakPoint()
 
     if (g_System->PipelineStage() != PIPELINE_STAGE_NORMAL)
     {
-        CInterpreterCPU::ExecuteOps(g_System->CountPerOp());
+        R4300iOp::ExecuteOps(g_System->CountPerOp());
         if (g_SyncSystem)
         {
             g_System->UpdateSyncCPU(g_SyncSystem, g_System->CountPerOp());
@@ -79,7 +78,7 @@ void CX86RecompilerOps::x86CompilerBreakPoint()
 
 void CX86RecompilerOps::x86BreakPointDelaySlot()
 {
-    CInterpreterCPU::ExecuteOps(g_System->CountPerOp());
+    R4300iOp::ExecuteOps(g_System->CountPerOp());
     if (g_SyncSystem)
     {
         g_System->UpdateSyncCPU(g_SyncSystem, g_System->CountPerOp());
@@ -91,7 +90,7 @@ void CX86RecompilerOps::x86BreakPointDelaySlot()
     }
     if (g_System->PipelineStage() != PIPELINE_STAGE_NORMAL)
     {
-        CInterpreterCPU::ExecuteOps(g_System->CountPerOp());
+        R4300iOp::ExecuteOps(g_System->CountPerOp());
         if (g_SyncSystem)
         {
             g_System->UpdateSyncCPU(g_SyncSystem, g_System->CountPerOp());
@@ -111,7 +110,7 @@ void CX86RecompilerOps::x86MemoryBreakPoint()
     {
         g_Reg->m_PROGRAM_COUNTER -= 4;
         *g_NextTimer += g_System->CountPerOp();
-        CInterpreterCPU::ExecuteOps(g_System->CountPerOp());
+        R4300iOp::ExecuteOps(g_System->CountPerOp());
     }
     x86CompilerBreakPoint();
 }
@@ -8689,7 +8688,7 @@ void CX86RecompilerOps::CompileInPermLoop(CRegInfo & RegSet, uint32_t ProgramCou
     m_Assembler.MoveConstToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", ProgramCounter);
     RegSet.WriteBackRegisters();
     UpdateCounters(RegSet, false, true, false);
-    m_Assembler.CallFunc(AddressOf(CInterpreterCPU::InPermLoop), "CInterpreterCPU::InPermLoop");
+    m_Assembler.CallFunc(AddressOf(R4300iOp::InPermLoop), "R4300iOp::InPermLoop");
     m_Assembler.CallThis((uint32_t)g_SystemTimer, AddressOf(&CSystemTimer::TimerDone), "CSystemTimer::TimerDone", 4);
     m_CodeBlock.Log("CompileSystemCheck 3");
     CompileSystemCheck((uint32_t)-1, RegSet);
@@ -9406,16 +9405,9 @@ void CX86RecompilerOps::JumpToUnknown(CJumpInfo * JumpInfo)
 void CX86RecompilerOps::SetCurrentPC(uint32_t ProgramCounter)
 {
     m_CompilePC = ProgramCounter;
-    __except_try()
+    if (!g_MMU->MemoryValue32(m_CompilePC, m_Opcode.Value))
     {
-        if (!g_MMU->MemoryValue32(m_CompilePC, m_Opcode.Value))
-        {
-            g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
-        }
-    }
-    __except_catch()
-    {
-        g_Notify->FatalError(GS(MSG_UNKNOWN_MEM_ACTION));
+        g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
     }
 }
 
@@ -9584,7 +9576,7 @@ void CX86RecompilerOps::OverflowDelaySlot(bool TestTimer)
     }
 
     m_Assembler.PushImm32("g_System->CountPerOp()", g_System->CountPerOp());
-    m_Assembler.CallFunc((uint32_t)CInterpreterCPU::ExecuteOps, "CInterpreterCPU::ExecuteOps");
+    m_Assembler.CallFunc((uint32_t)R4300iOp::ExecuteOps, "R4300iOp::ExecuteOps");
     m_Assembler.AddConstToX86Reg(asmjit::x86::esp, 4);
 
     if (g_System->bFastSP() && g_Recompiler)

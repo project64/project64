@@ -141,8 +141,6 @@ private:
     friend class CX86RecompilerOps;
     friend class CArmRecompilerOps;
     friend class CMipsMemoryVM;
-    friend class CInterpreterCPU;
-    friend class R4300iOp32;
     friend class R4300iOp;
     friend class CSystemEvents;
 

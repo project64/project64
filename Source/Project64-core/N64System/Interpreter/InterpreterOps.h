@@ -14,6 +14,11 @@ class R4300iOp :
     friend CX86RecompilerOps;
 
 public:
+    static void BuildCPU();
+    static void ExecuteCPU();
+    static void ExecuteOps(int32_t Cycles);
+    static void InPermLoop();
+
     typedef void (*Func)();
 
     // Opcode functions
@@ -274,4 +279,5 @@ protected:
 
     static const uint32_t SWL_MASK[4], SWR_MASK[4], LWL_MASK[4], LWR_MASK[4];
     static const int32_t SWL_SHIFT[4], SWR_SHIFT[4], LWL_SHIFT[4], LWR_SHIFT[4];
+    static R4300iOp::Func * m_R4300i_Opcode;
 };

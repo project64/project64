@@ -279,9 +279,6 @@
     <ClCompile Include="N64System\Mips\TLB.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\Interpreter\InterpreterCPU.cpp">
-      <Filter>Source Files\N64 System\Interpreter</Filter>
-    </ClCompile>
     <ClCompile Include="N64System\Interpreter\InterpreterOps.cpp">
       <Filter>Source Files\N64 System\Interpreter</Filter>
     </ClCompile>
@@ -640,9 +637,6 @@
     </ClInclude>
     <ClInclude Include="N64System\Mips\TLB.h">
       <Filter>Header Files\N64 System\Mips</Filter>
-    </ClInclude>
-    <ClInclude Include="N64System\Interpreter\InterpreterCPU.h">
-      <Filter>Header Files\N64 System\Interpreter</Filter>
     </ClInclude>
     <ClInclude Include="N64System\Interpreter\InterpreterOps.h">
       <Filter>Header Files\N64 System\Interpreter</Filter>
