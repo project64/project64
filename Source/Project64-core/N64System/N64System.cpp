@@ -61,9 +61,6 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     }
     m_Limiter.SetHertz(gameHertz);
     g_Settings->SaveDword(GameRunning_ScreenHertz, gameHertz);
-    WriteTrace(TraceN64System, TraceDebug, "Setting up system");
-    R4300iOp::BuildCPU();
-
     if (!m_MMU_VM.Initialize(SyncSystem))
     {
         WriteTrace(TraceN64System, TraceWarning, "MMU failed to initialize");
@@ -1077,7 +1074,7 @@ void CN64System::ExecuteCPU()
 void CN64System::ExecuteInterpret()
 {
     SetActiveSystem();
-    R4300iOp::ExecuteCPU();
+    m_OpCodes.ExecuteCPU();
 }
 
 void CN64System::ExecuteRecompiler()
@@ -1123,7 +1120,7 @@ void CN64System::UpdateSyncCPU(CN64System * const SecondCPU, uint32_t const Cycl
     }
 
     SecondCPU->SetActiveSystem(true);
-    R4300iOp::ExecuteOps(Cycles);
+    m_OpCodes.ExecuteOps(Cycles);
     SetActiveSystem(true);
 }
 

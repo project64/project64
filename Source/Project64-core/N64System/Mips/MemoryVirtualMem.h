@@ -48,8 +48,8 @@ class CArmRecompilerOps;
 #endif
 
 class CMipsMemoryVM :
-    private R4300iOp,
-    private CGameSettings
+    private CGameSettings,
+    private CDebugSettings
 {
 public:
     CMipsMemoryVM(CN64System & System, bool SavesReadOnly);
@@ -162,6 +162,8 @@ private:
 
     static void RdramChanged(CMipsMemoryVM * _this);
     static void ChangeMiIntrMask();
+
+    bool MemoryBreakpoint();
 
     bool LB_VAddr32(uint32_t VAddr, uint8_t & Value);
     bool LH_VAddr32(uint32_t VAddr, uint16_t & Value);

@@ -15,7 +15,6 @@
 #include <math.h>
 
 bool R4300iOp::m_TestTimer = false;
-R4300iOp::Func * R4300iOp::m_R4300i_Opcode = nullptr;
 R4300iOpcode R4300iOp::m_Opcode;
 
 R4300iOp::Func R4300iOp::Jump_Opcode[64];
@@ -41,10 +40,14 @@ const int32_t R4300iOp::SWR_SHIFT[4] = {24, 16, 8, 0};
 const int32_t R4300iOp::LWL_SHIFT[4] = {0, 8, 16, 24};
 const int32_t R4300iOp::LWR_SHIFT[4] = {24, 16, 8, 0};
 
-void R4300iOp::BuildCPU()
+R4300iOp::R4300iOp()
 {
-    R4300iOp::m_TestTimer = false;
-    m_R4300i_Opcode = R4300iOp::BuildInterpreter();
+    m_TestTimer = false;
+    BuildInterpreter();
+}
+
+R4300iOp::~R4300iOp()
+{
 }
 
 void R4300iOp::InPermLoop()
@@ -77,10 +80,9 @@ void R4300iOp::ExecuteCPU()
     bool & Done = g_System->m_EndEmulation;
     PIPELINE_STAGE & PipelineStage = g_System->m_PipelineStage;
     uint32_t & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
-    R4300iOpcode & Opcode = R4300iOp::m_Opcode;
     uint32_t & JumpToLocation = g_System->m_JumpToLocation;
     uint32_t & JumpDelayLocation = g_System->m_JumpDelayLocation;
-    bool & TestTimer = R4300iOp::m_TestTimer;
+    bool & TestTimer = m_TestTimer;
     const int32_t & bDoSomething = g_SystemEvents->DoSomething();
     uint32_t CountPerOp = g_System->CountPerOp();
     int32_t & NextTimer = *g_NextTimer;
@@ -90,7 +92,7 @@ void R4300iOp::ExecuteCPU()
     {
         while (!Done)
         {
-            if (!g_MMU->MemoryValue32(PROGRAM_COUNTER, Opcode.Value))
+            if (!g_MMU->MemoryValue32(PROGRAM_COUNTER, m_Opcode.Value))
             {
                 g_Reg->TriggerAddressException(PROGRAM_COUNTER, EXC_RMISS);
                 PROGRAM_COUNTER = JumpToLocation;
@@ -130,7 +132,7 @@ void R4300iOp::ExecuteCPU()
             // WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
             } */
 
-            m_R4300i_Opcode[Opcode.op]();
+            Jump_Opcode[m_Opcode.op]();
             _GPR[0].DW = 0; // MIPS $zero hard-wired to 0
             NextTimer -= CountPerOp;
 
@@ -237,7 +239,7 @@ void R4300iOp::ExecuteOps(int32_t Cycles)
                 //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iInstruction(*_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str(),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
                 //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
                 }*/
-                m_R4300i_Opcode[Opcode.op]();
+                Jump_Opcode[Opcode.op]();
                 _GPR[0].DW = 0; /* MIPS $zero hard-wired to 0 */
 
                 Cycles -= CountPerOp;
@@ -376,7 +378,7 @@ void R4300iOp::COP1_L()
     Jump_CoP1_L[m_Opcode.funct]();
 }
 
-R4300iOp::Func * R4300iOp::BuildInterpreter()
+void R4300iOp::BuildInterpreter()
 {
     Jump_Opcode[0] = SPECIAL;
     Jump_Opcode[1] = REGIMM;
@@ -996,8 +998,6 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_CoP2[29] = CPO2_INVALID_OP;
     Jump_CoP2[30] = CPO2_INVALID_OP;
     Jump_CoP2[31] = CPO2_INVALID_OP;
-
-    return Jump_Opcode;
 }
 
 // Opcode functions
@@ -3321,23 +3321,6 @@ void R4300iOp::UnknownOpcode()
 
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-}
-
-bool R4300iOp::MemoryBreakpoint()
-{
-    if (g_Settings->LoadBool(Debugger_SteppingOps))
-    {
-        return false;
-    }
-    g_Settings->SaveBool(Debugger_SteppingOps, true);
-    g_Debugger->WaitForStep();
-    if (SkipOp())
-    {
-        // Skip command if instructed by the debugger
-        g_Settings->SaveBool(Debugger_SkipOp, false);
-        return true;
-    }
-    return false;
 }
 
 bool R4300iOp::TestCop1UsableException(void)

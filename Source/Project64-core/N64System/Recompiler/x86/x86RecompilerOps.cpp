@@ -56,7 +56,7 @@ void CX86RecompilerOps::x86CompilerBreakPoint()
             }
             continue;
         }
-        R4300iOp::ExecuteOps(g_System->CountPerOp());
+        g_System->m_OpCodes.ExecuteOps(g_System->CountPerOp());
         if (g_SyncSystem)
         {
             g_System->UpdateSyncCPU(g_SyncSystem, g_System->CountPerOp());
@@ -67,7 +67,7 @@ void CX86RecompilerOps::x86CompilerBreakPoint()
 
     if (g_System->PipelineStage() != PIPELINE_STAGE_NORMAL)
     {
-        R4300iOp::ExecuteOps(g_System->CountPerOp());
+        g_System->m_OpCodes.ExecuteOps(g_System->CountPerOp());
         if (g_SyncSystem)
         {
             g_System->UpdateSyncCPU(g_SyncSystem, g_System->CountPerOp());
@@ -78,7 +78,7 @@ void CX86RecompilerOps::x86CompilerBreakPoint()
 
 void CX86RecompilerOps::x86BreakPointDelaySlot()
 {
-    R4300iOp::ExecuteOps(g_System->CountPerOp());
+    g_SyncSystem->m_OpCodes.ExecuteOps(g_System->CountPerOp());
     if (g_SyncSystem)
     {
         g_System->UpdateSyncCPU(g_SyncSystem, g_System->CountPerOp());
@@ -90,7 +90,7 @@ void CX86RecompilerOps::x86BreakPointDelaySlot()
     }
     if (g_System->PipelineStage() != PIPELINE_STAGE_NORMAL)
     {
-        R4300iOp::ExecuteOps(g_System->CountPerOp());
+        g_System->m_OpCodes.ExecuteOps(g_System->CountPerOp());
         if (g_SyncSystem)
         {
             g_System->UpdateSyncCPU(g_SyncSystem, g_System->CountPerOp());
@@ -110,7 +110,7 @@ void CX86RecompilerOps::x86MemoryBreakPoint()
     {
         g_Reg->m_PROGRAM_COUNTER -= 4;
         *g_NextTimer += g_System->CountPerOp();
-        R4300iOp::ExecuteOps(g_System->CountPerOp());
+        g_System->m_OpCodes.ExecuteOps(g_System->CountPerOp());
     }
     x86CompilerBreakPoint();
 }
@@ -9576,9 +9576,7 @@ void CX86RecompilerOps::OverflowDelaySlot(bool TestTimer)
     }
 
     m_Assembler.PushImm32("g_System->CountPerOp()", g_System->CountPerOp());
-    m_Assembler.CallFunc((uint32_t)R4300iOp::ExecuteOps, "R4300iOp::ExecuteOps");
-    m_Assembler.AddConstToX86Reg(asmjit::x86::esp, 4);
-
+    m_Assembler.CallThis((uint32_t)&g_System->m_OpCodes, AddressOf(&R4300iOp::ExecuteOps), "R4300iOp::ExecuteOps", 8);
     if (g_System->bFastSP() && g_Recompiler)
     {
         m_Assembler.CallThis((uint32_t)g_Recompiler, AddressOf(&CRecompiler::ResetMemoryStackPos), "CRecompiler::ResetMemoryStackPos", 4);

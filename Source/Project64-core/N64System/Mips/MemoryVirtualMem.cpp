@@ -625,6 +625,23 @@ bool CMipsMemoryVM::VAddrToPAddr(uint32_t VAddr, uint32_t & PAddr) const
     return true;
 }
 
+bool CMipsMemoryVM::MemoryBreakpoint()
+{
+    if (g_Settings->LoadBool(Debugger_SteppingOps))
+    {
+        return false;
+    }
+    g_Settings->SaveBool(Debugger_SteppingOps, true);
+    g_Debugger->WaitForStep();
+    if (SkipOp())
+    {
+        // Skip command if instructed by the debugger
+        g_Settings->SaveBool(Debugger_SkipOp, false);
+        return true;
+    }
+    return false;
+}
+
 bool CMipsMemoryVM::LB_VAddr32(uint32_t VAddr, uint8_t & Value)
 {
     uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];

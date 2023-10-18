@@ -24,4 +24,4 @@ CMempak * g_Mempak = nullptr;
 CRandom * g_Random = nullptr;
 CEnhancements * g_Enhancements = nullptr;
 
-int * g_NextTimer;
+int32_t * g_NextTimer;

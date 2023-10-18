@@ -183,7 +183,7 @@ void CRecompiler::RecompilerMain_Lookup()
 
             while (m_MMU.VAddrToPAddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
             {
-                R4300iOp::ExecuteOps(g_System->CountPerOp());
+                g_System->m_OpCodes.ExecuteOps(g_System->CountPerOp());
                 opsExecuted += g_System->CountPerOp();
             }
 
@@ -296,7 +296,7 @@ void CRecompiler::RecompilerMain_Lookup_validate()
 
             while (m_MMU.VAddrToPAddr(PC, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
             {
-                R4300iOp::ExecuteOps(g_System->CountPerOp());
+                g_System->m_OpCodes.ExecuteOps(g_System->CountPerOp());
                 opsExecuted += g_System->CountPerOp();
             }
 

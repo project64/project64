@@ -8,15 +8,17 @@ class CX86RecompilerOps;
 
 class R4300iOp :
     public CLogging,
-    protected CDebugSettings,
-    protected CSystemRegisters
+    private CDebugSettings,
+    private CSystemRegisters
 {
     friend CX86RecompilerOps;
 
 public:
-    static void BuildCPU();
-    static void ExecuteCPU();
-    static void ExecuteOps(int32_t Cycles);
+    R4300iOp();
+    ~R4300iOp(void);
+
+    void ExecuteCPU();
+    void ExecuteOps(int32_t Cycles);
     static void InPermLoop();
 
     typedef void (*Func)();
@@ -232,14 +234,15 @@ public:
     static void ReservedInstruction();
     static void UnknownOpcode();
 
-    static Func * BuildInterpreter();
-
     static bool m_TestTimer;
     static R4300iOpcode m_Opcode;
 
-    static bool MemoryBreakpoint();
+private:
+    R4300iOp(const R4300iOp &);
+    R4300iOp & operator=(const R4300iOp &);
 
-protected:
+    void BuildInterpreter(void);
+
     static void SPECIAL();
     static void REGIMM();
     static void COP0();
@@ -279,5 +282,4 @@ protected:
 
     static const uint32_t SWL_MASK[4], SWR_MASK[4], LWL_MASK[4], LWR_MASK[4];
     static const int32_t SWL_SHIFT[4], SWR_SHIFT[4], LWL_SHIFT[4], LWR_SHIFT[4];
-    static R4300iOp::Func * m_R4300i_Opcode;
 };

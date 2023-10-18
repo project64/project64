@@ -180,6 +180,7 @@ private:
     CMipsMemoryVM m_MMU_VM;
     CRegisters m_Reg;
     CTLB m_TLB;
+    R4300iOp m_OpCodes;
     CMempak m_Mempak;
     CFramePerSecond m_FPS;
     CProfiling m_CPU_Usage; // Used to track the CPU usage
