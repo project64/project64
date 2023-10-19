@@ -16,7 +16,6 @@ add_library(Project64-core STATIC
     N64System/Enhancement/Enhancements.cpp
     N64System/Enhancement/EnhancementFile.cpp
     N64System/Enhancement/EnhancementList.cpp
-    N64System/Interpreter/InterpreterCPU.cpp
     N64System/Interpreter/InterpreterOps.cpp
     N64System/MemoryHandler/AudioInterfaceHandler.cpp
     N64System/MemoryHandler/CartridgeDomain1Address1Handler.cpp
