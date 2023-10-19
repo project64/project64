@@ -74,6 +74,8 @@ private:
     DisplayControlRegHandler(const DisplayControlRegHandler &);
     DisplayControlRegHandler & operator=(const DisplayControlRegHandler &);
 
+    void ProcessRDPList(void);
+
     CN64System & m_System;
     CPlugins * m_Plugins;
     uint32_t & m_PC;

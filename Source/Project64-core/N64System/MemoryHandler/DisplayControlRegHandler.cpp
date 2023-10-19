@@ -98,36 +98,46 @@ bool DisplayControlRegHandler::Write32(uint32_t Address, uint32_t Value, uint32_
             DPC_CURRENT_REG = DPC_START_REG;
             DPC_STATUS_REG &= ~DPC_STATUS_START_VALID;
         }
-        if (m_Plugins->Gfx()->ProcessRDPList)
-        {
-            m_Plugins->Gfx()->ProcessRDPList();
-        }
+        ProcessRDPList();
         break;
         //case 0x04100008: g_Reg->DPC_CURRENT_REG = Value; break;
     case 0x0410000C:
-        if ((MaskedValue & DPC_CLR_XBUS_DMEM_DMA) != 0)
+        if ((MaskedValue & DPC_CLR_XBUS_DMEM_DMA) != 0 && (Value & DPC_SET_XBUS_DMEM_DMA) == 0)
         {
             DPC_STATUS_REG &= ~DPC_STATUS_XBUS_DMEM_DMA;
         }
-        if ((MaskedValue & DPC_SET_XBUS_DMEM_DMA) != 0)
+        if ((MaskedValue & DPC_SET_XBUS_DMEM_DMA) != 0 && (Value & DPC_CLR_XBUS_DMEM_DMA) == 0)
         {
             DPC_STATUS_REG |= DPC_STATUS_XBUS_DMEM_DMA;
         }
-        if ((MaskedValue & DPC_CLR_FREEZE) != 0)
+        if ((MaskedValue & DPC_CLR_FREEZE) != 0 && (Value & DPC_SET_FREEZE) == 0)
         {
             DPC_STATUS_REG &= ~DPC_STATUS_FREEZE;
+            ProcessRDPList();
         }
-        if ((MaskedValue & DPC_SET_FREEZE) != 0)
+        if ((MaskedValue & DPC_SET_FREEZE) != 0 && (Value & DPC_CLR_FREEZE) == 0)
         {
             DPC_STATUS_REG |= DPC_STATUS_FREEZE;
         }
-        if ((MaskedValue & DPC_CLR_FLUSH) != 0)
+        if ((MaskedValue & DPC_CLR_FLUSH) != 0 && (Value & DPC_SET_FLUSH) == 0)
         {
             DPC_STATUS_REG &= ~DPC_STATUS_FLUSH;
         }
-        if ((MaskedValue & DPC_SET_FLUSH) != 0)
+        if ((MaskedValue & DPC_SET_FLUSH) != 0 && (Value & DPC_CLR_FLUSH) == 0)
         {
             DPC_STATUS_REG |= DPC_STATUS_FLUSH;
+        }
+        if ((MaskedValue & DPC_CLR_TMEM_CTR) != 0)
+        {
+            DPC_STATUS_REG &= ~DPC_STATUS_TMEM_BUSY;
+        }
+        if ((MaskedValue & DPC_CLR_PIPE_CTR) != 0)
+        {
+            DPC_STATUS_REG &= ~DPC_STATUS_PIPE_BUSY;
+        }
+        if ((MaskedValue & DPC_CLR_CMD_CTR) != 0)
+        {
+            DPC_STATUS_REG &= ~DPC_STATUS_CMD_BUSY;
         }
         if ((MaskedValue & DPC_CLR_FREEZE) != 0)
         {
@@ -147,4 +157,18 @@ bool DisplayControlRegHandler::Write32(uint32_t Address, uint32_t Value, uint32_
         }
     }
     return true;
+}
+
+void DisplayControlRegHandler::ProcessRDPList(void)
+{
+    if ((DPC_STATUS_REG & DPC_STATUS_FREEZE) != 0)
+    {
+        return;
+    }
+    DPC_STATUS_REG |= DPC_STATUS_PIPE_BUSY | DPC_STATUS_START_GCLK;
+    if (DPC_END_REG > DPC_CURRENT_REG && m_Plugins->Gfx()->ProcessRDPList != nullptr)
+    {
+        m_Plugins->Gfx()->ProcessRDPList();
+    }
+    DPC_STATUS_REG |= DPC_STATUS_CBUF_READY;
 }
