@@ -746,7 +746,7 @@ LRESULT CDebugMemoryView::OnHxGetByteInfo(LPNMHDR lpNMHDR)
 
     if (g_Settings->LoadBool(Debugger_SteppingOps))
     {
-        COpInfo opInfo(R4300iOp::m_Opcode);
+        COpInfo opInfo(g_System->Opcode());
         if (opInfo.IsStoreCommand())
         {
             cpuReadWriteAddress = opInfo.GetLoadStoreAddress();

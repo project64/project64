@@ -78,7 +78,7 @@ void CX86RecompilerOps::x86CompilerBreakPoint()
 
 void CX86RecompilerOps::x86BreakPointDelaySlot()
 {
-    g_SyncSystem->m_OpCodes.ExecuteOps(g_System->CountPerOp());
+    g_System->m_OpCodes.ExecuteOps(g_System->CountPerOp());
     if (g_SyncSystem)
     {
         g_System->UpdateSyncCPU(g_SyncSystem, g_System->CountPerOp());
@@ -380,51 +380,51 @@ void CX86RecompilerOps::Compile_TrapCompare(RecompilerTrapCompare CompareType)
     switch (CompareType)
     {
     case RecompilerTrapCompare_TEQ:
-        FunctAddress = (uint32_t)R4300iOp::SPECIAL_TEQ;
+        FunctAddress = AddressOf(&R4300iOp::SPECIAL_TEQ);
         FunctName = "R4300iOp::SPECIAL_TEQ";
         break;
     case RecompilerTrapCompare_TNE:
-        FunctAddress = (uint32_t)R4300iOp::SPECIAL_TNE;
+        FunctAddress = AddressOf(&R4300iOp::SPECIAL_TNE);
         FunctName = "R4300iOp::SPECIAL_TNE";
         break;
     case RecompilerTrapCompare_TGE:
-        FunctAddress = (uint32_t)R4300iOp::SPECIAL_TGE;
+        FunctAddress = AddressOf(&R4300iOp::SPECIAL_TGE);
         FunctName = "R4300iOp::SPECIAL_TGE";
         break;
     case RecompilerTrapCompare_TGEU:
-        FunctAddress = (uint32_t)R4300iOp::SPECIAL_TGEU;
+        FunctAddress = AddressOf(&R4300iOp::SPECIAL_TGEU);
         FunctName = "R4300iOp::SPECIAL_TGEU";
         break;
     case RecompilerTrapCompare_TLT:
-        FunctAddress = (uint32_t)R4300iOp::SPECIAL_TLT;
+        FunctAddress = AddressOf(&R4300iOp::SPECIAL_TLT);
         FunctName = "R4300iOp::SPECIAL_TLT";
         break;
     case RecompilerTrapCompare_TLTU:
-        FunctAddress = (uint32_t)R4300iOp::SPECIAL_TLTU;
+        FunctAddress = AddressOf(&R4300iOp::SPECIAL_TLTU);
         FunctName = "R4300iOp::SPECIAL_TLTU";
         break;
     case RecompilerTrapCompare_TEQI:
-        FunctAddress = (uint32_t)R4300iOp::REGIMM_TEQI;
+        FunctAddress = AddressOf(&R4300iOp::REGIMM_TEQI);
         FunctName = "R4300iOp::REGIMM_TEQI";
         break;
     case RecompilerTrapCompare_TNEI:
-        FunctAddress = (uint32_t)R4300iOp::REGIMM_TNEI;
+        FunctAddress = AddressOf(&R4300iOp::REGIMM_TNEI);
         FunctName = "R4300iOp::REGIMM_TNEI";
         break;
     case RecompilerTrapCompare_TGEI:
-        FunctAddress = (uint32_t)R4300iOp::REGIMM_TGEI;
+        FunctAddress = AddressOf(&R4300iOp::REGIMM_TGEI);
         FunctName = "R4300iOp::REGIMM_TGEI";
         break;
     case RecompilerTrapCompare_TGEIU:
-        FunctAddress = (uint32_t)R4300iOp::REGIMM_TGEIU;
+        FunctAddress = AddressOf(&R4300iOp::REGIMM_TGEIU);
         FunctName = "R4300iOp::REGIMM_TGEIU";
         break;
     case RecompilerTrapCompare_TLTI:
-        FunctAddress = (uint32_t)R4300iOp::REGIMM_TLTI;
+        FunctAddress = AddressOf(&R4300iOp::REGIMM_TLTI);
         FunctName = "R4300iOp::REGIMM_TLTI";
         break;
     case RecompilerTrapCompare_TLTIU:
-        FunctAddress = (uint32_t)R4300iOp::REGIMM_TLTIU;
+        FunctAddress = AddressOf(&R4300iOp::REGIMM_TLTIU);
         FunctName = "R4300iOp::REGIMM_TLTIU";
         break;
     default:
@@ -442,7 +442,8 @@ void CX86RecompilerOps::Compile_TrapCompare(RecompilerTrapCompare CompareType)
             m_RegWorkingSet.UnMap_GPR(m_Opcode.rt, true);
         }
         m_RegWorkingSet.BeforeCallDirect();
-        m_Assembler.MoveConstToVariable(&R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value", m_Opcode.Value);
+        m_Assembler.MoveConstToVariable(&g_System->m_OpCodes.m_Opcode.Value, "R4300iOp::m_Opcode.Value", m_Opcode.Value);
+        m_Assembler.CallThis((uint32_t)&g_System->m_OpCodes, FunctAddress, FunctName, 4);
         m_Assembler.CallFunc(FunctAddress, FunctName);
         m_RegWorkingSet.AfterCallDirect();
     }
@@ -2908,8 +2909,8 @@ void CX86RecompilerOps::LDL()
     }
 
     m_RegWorkingSet.BeforeCallDirect();
-    m_Assembler.MoveConstToVariable(&R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value", m_Opcode.Value);
-    m_Assembler.CallFunc((uint32_t)R4300iOp::LDL, "R4300iOp::LDL");
+    m_Assembler.MoveConstToVariable(&g_System->m_OpCodes.m_Opcode.Value, "R4300iOp::m_Opcode.Value", m_Opcode.Value);
+    m_Assembler.CallThis((uint32_t)&g_System->m_OpCodes, AddressOf(&R4300iOp::LDL), "R4300iOp::LDL", 4);
     m_RegWorkingSet.AfterCallDirect();
 }
 
@@ -2926,8 +2927,8 @@ void CX86RecompilerOps::LDR()
     }
 
     m_RegWorkingSet.BeforeCallDirect();
-    m_Assembler.MoveConstToVariable(&R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value", m_Opcode.Value);
-    m_Assembler.CallFunc((uint32_t)R4300iOp::LDR, "R4300iOp::LDR");
+    m_Assembler.MoveConstToVariable(&g_System->m_OpCodes.m_Opcode.Value, "R4300iOp::m_Opcode.Value", m_Opcode.Value);
+    m_Assembler.CallThis((uint32_t)&g_System->m_OpCodes, AddressOf(&R4300iOp::LDR), "R4300iOp::LDR", 4);
     m_RegWorkingSet.AfterCallDirect();
 }
 
@@ -3943,8 +3944,8 @@ void CX86RecompilerOps::SDL()
     }
 
     m_RegWorkingSet.BeforeCallDirect();
-    m_Assembler.MoveConstToVariable(&R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value", m_Opcode.Value);
-    m_Assembler.CallFunc((uint32_t)R4300iOp::SDL, "R4300iOp::SDL");
+    m_Assembler.MoveConstToVariable(&g_System->m_OpCodes.m_Opcode.Value, "R4300iOp::m_Opcode.Value", m_Opcode.Value);
+    m_Assembler.CallThis((uint32_t)&g_System->m_OpCodes, AddressOf(&R4300iOp::SDL), "R4300iOp::SDL", 4);
     m_RegWorkingSet.AfterCallDirect();
 }
 
@@ -3961,8 +3962,8 @@ void CX86RecompilerOps::SDR()
     }
 
     m_RegWorkingSet.BeforeCallDirect();
-    m_Assembler.MoveConstToVariable(&R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value", m_Opcode.Value);
-    m_Assembler.CallFunc((uint32_t)R4300iOp::SDR, "R4300iOp::SDR");
+    m_Assembler.MoveConstToVariable(&g_System->m_OpCodes.m_Opcode.Value, "R4300iOp::m_Opcode.Value", m_Opcode.Value);
+    m_Assembler.CallThis((uint32_t)&g_System->m_OpCodes, AddressOf(&R4300iOp::SDR), "R4300iOp::SDR", 4);
     m_RegWorkingSet.AfterCallDirect();
 }
 
@@ -5197,8 +5198,8 @@ void CX86RecompilerOps::SPECIAL_DMULT()
     }
 
     m_RegWorkingSet.BeforeCallDirect();
-    m_Assembler.MoveConstToVariable(&R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value", m_Opcode.Value);
-    m_Assembler.CallFunc((uint32_t)R4300iOp::SPECIAL_DMULT, "R4300iOp::SPECIAL_DMULT");
+    m_Assembler.MoveConstToVariable(&g_System->m_OpCodes.m_Opcode.Value, "R4300iOp::m_Opcode.Value", m_Opcode.Value);
+    m_Assembler.CallThis((uint32_t)&g_System->m_OpCodes, AddressOf(&R4300iOp::SPECIAL_DMULT), "R4300iOp::SPECIAL_DMULT", 4);
     m_RegWorkingSet.AfterCallDirect();
 }
 
@@ -5207,8 +5208,8 @@ void CX86RecompilerOps::SPECIAL_DMULTU()
     m_RegWorkingSet.UnMap_GPR(m_Opcode.rs, true);
     m_RegWorkingSet.UnMap_GPR(m_Opcode.rt, true);
     m_RegWorkingSet.BeforeCallDirect();
-    m_Assembler.MoveConstToVariable(&R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value", m_Opcode.Value);
-    m_Assembler.CallFunc((uint32_t)R4300iOp::SPECIAL_DMULTU, "R4300iOp::SPECIAL_DMULTU");
+    m_Assembler.MoveConstToVariable(&g_System->m_OpCodes.m_Opcode.Value, "R4300iOp::m_Opcode.Value", m_Opcode.Value);
+    m_Assembler.CallThis((uint32_t)&g_System->m_OpCodes, AddressOf(&R4300iOp::SPECIAL_DMULTU), "R4300iOp::SPECIAL_DMULTU", 4);
     m_RegWorkingSet.AfterCallDirect();
 }
 
@@ -5217,8 +5218,8 @@ void CX86RecompilerOps::SPECIAL_DDIV()
     m_RegWorkingSet.UnMap_GPR(m_Opcode.rs, true);
     m_RegWorkingSet.UnMap_GPR(m_Opcode.rt, true);
     m_RegWorkingSet.BeforeCallDirect();
-    m_Assembler.MoveConstToVariable(&R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value", m_Opcode.Value);
-    m_Assembler.CallFunc((uint32_t)R4300iOp::SPECIAL_DDIV, "R4300iOp::SPECIAL_DDIV");
+    m_Assembler.MoveConstToVariable(&g_System->m_OpCodes.m_Opcode.Value, "R4300iOp::m_Opcode.Value", m_Opcode.Value);
+    m_Assembler.CallThis((uint32_t)&g_System->m_OpCodes, AddressOf(&R4300iOp::SPECIAL_DDIV), "R4300iOp::SPECIAL_DDIV", 4);
     m_RegWorkingSet.AfterCallDirect();
 }
 
@@ -5227,8 +5228,8 @@ void CX86RecompilerOps::SPECIAL_DDIVU()
     m_RegWorkingSet.UnMap_GPR(m_Opcode.rs, true);
     m_RegWorkingSet.UnMap_GPR(m_Opcode.rt, true);
     m_RegWorkingSet.BeforeCallDirect();
-    m_Assembler.MoveConstToVariable(&R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value", m_Opcode.Value);
-    m_Assembler.CallFunc((uint32_t)R4300iOp::SPECIAL_DDIVU, "R4300iOp::SPECIAL_DDIVU");
+    m_Assembler.MoveConstToVariable(&g_System->m_OpCodes.m_Opcode.Value, "R4300iOp::m_Opcode.Value", m_Opcode.Value);
+    m_Assembler.CallThis((uint32_t)&g_System->m_OpCodes, AddressOf(&R4300iOp::SPECIAL_DDIVU), "R4300iOp::SPECIAL_DDIVU", 4);
     m_RegWorkingSet.AfterCallDirect();
 }
 
@@ -8440,8 +8441,8 @@ void CX86RecompilerOps::UnknownOpcode()
     }
     m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
 
-    m_Assembler.MoveConstToVariable(&R4300iOp::m_Opcode.Value, "R4300iOp::m_Opcode.Value", m_Opcode.Value);
-    m_Assembler.CallFunc((uint32_t)R4300iOp::UnknownOpcode, "R4300iOp::UnknownOpcode");
+    m_Assembler.MoveConstToVariable(&g_System->m_OpCodes.m_Opcode.Value, "R4300iOp::m_Opcode.Value", m_Opcode.Value);
+    m_Assembler.CallThis((uint32_t)&g_System->m_OpCodes, AddressOf(&R4300iOp::UnknownOpcode), "R4300iOp::UnknownOpcode", 4);
     m_Assembler.ret();
     if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
@@ -8688,7 +8689,7 @@ void CX86RecompilerOps::CompileInPermLoop(CRegInfo & RegSet, uint32_t ProgramCou
     m_Assembler.MoveConstToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", ProgramCounter);
     RegSet.WriteBackRegisters();
     UpdateCounters(RegSet, false, true, false);
-    m_Assembler.CallFunc(AddressOf(R4300iOp::InPermLoop), "R4300iOp::InPermLoop");
+    m_Assembler.CallThis((uint32_t)&g_System->m_OpCodes, AddressOf(&R4300iOp::InPermLoop), "R4300iOp::InPermLoop", 4);
     m_Assembler.CallThis((uint32_t)g_SystemTimer, AddressOf(&CSystemTimer::TimerDone), "CSystemTimer::TimerDone", 4);
     m_CodeBlock.Log("CompileSystemCheck 3");
     CompileSystemCheck((uint32_t)-1, RegSet);
@@ -9572,11 +9573,13 @@ void CX86RecompilerOps::OverflowDelaySlot(bool TestTimer)
 
     if (TestTimer)
     {
-        m_Assembler.MoveConstToVariable(&R4300iOp::m_TestTimer, "R4300iOp::m_TestTimer", TestTimer);
+        m_Assembler.MoveConstToVariable(&g_System->m_TestTimer, "R4300iOp::m_TestTimer", TestTimer);
     }
 
     m_Assembler.PushImm32("g_System->CountPerOp()", g_System->CountPerOp());
     m_Assembler.CallThis((uint32_t)&g_System->m_OpCodes, AddressOf(&R4300iOp::ExecuteOps), "R4300iOp::ExecuteOps", 8);
+    m_Assembler.AddConstToX86Reg(asmjit::x86::esp, 4);
+
     if (g_System->bFastSP() && g_Recompiler)
     {
         m_Assembler.CallThis((uint32_t)g_Recompiler, AddressOf(&CRecompiler::ResetMemoryStackPos), "CRecompiler::ResetMemoryStackPos", 4);

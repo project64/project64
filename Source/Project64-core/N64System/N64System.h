@@ -85,6 +85,10 @@ public:
     {
         return m_Limiter.GetBaseSpeed();
     }
+    R4300iOpcode Opcode(void) const
+    {
+        return m_OpCodes.Opcode();
+    }
     void Reset(bool bInitReg, bool ClearMenory);
     void GameReset();
     void PluginReset();

@@ -562,7 +562,7 @@ have_bp:
 
 void CDebuggerUI::HandleCartToRamDMA(void)
 {
-    COpInfo opInfo(R4300iOp::m_Opcode);
+    COpInfo opInfo(g_System->Opcode());
 
     uint32_t dmaRomAddr = g_Reg->PI_CART_ADDR_REG & 0x0FFFFFFF;
     uint32_t dmaRamAddr = g_Reg->PI_DRAM_ADDR_REG | 0x80000000;
@@ -588,7 +588,7 @@ void CDebuggerUI::CPUStepStarted()
 
     if (m_Breakpoints->NumMemLocks() > 0)
     {
-        COpInfo opInfo(R4300iOp::m_Opcode);
+        COpInfo opInfo(g_System->Opcode());
         bool bStoreOp = opInfo.IsStoreCommand();
 
         if (bStoreOp)
@@ -607,7 +607,7 @@ void CDebuggerUI::CPUStepStarted()
     {
         JSHookCpuStepEnv hookEnv;
         hookEnv.pc = g_Reg->m_PROGRAM_COUNTER;
-        hookEnv.opInfo = COpInfo(R4300iOp::m_Opcode);
+        hookEnv.opInfo = COpInfo(g_System->Opcode());
 
         if (m_ScriptSystem->HaveCpuExecCallbacks(hookEnv.pc))
         {
@@ -639,7 +639,7 @@ void CDebuggerUI::CPUStepStarted()
 
     if (m_Breakpoints->HaveRegBP())
     {
-        R4300iInstruction opInfo(g_Reg->m_PROGRAM_COUNTER, R4300iOp::m_Opcode.Value);
+        R4300iInstruction opInfo(g_Reg->m_PROGRAM_COUNTER, g_System->Opcode().Value);
 
         if (m_Breakpoints->HaveAnyGPRWriteBP())
         {
@@ -687,7 +687,7 @@ void CDebuggerUI::CPUStepEnded()
         return;
     }
 
-    R4300iOpcode Opcode = R4300iOp::m_Opcode;
+    R4300iOpcode Opcode = g_System->Opcode();
     uint32_t op = Opcode.op;
     uint32_t funct = Opcode.funct;
 

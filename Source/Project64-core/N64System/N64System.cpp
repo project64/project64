@@ -964,11 +964,6 @@ bool CN64System::SetActiveSystem(bool bActive)
     {
         m_Reg.SetAsCurrentSystem();
 
-        if (g_System)
-        {
-            g_System->m_TestTimer = R4300iOp::m_TestTimer;
-        }
-
         g_System = this;
         if (g_BaseSystem == this)
         {
@@ -986,7 +981,6 @@ bool CN64System::SetActiveSystem(bool bActive)
         g_TLBLoadAddress = &m_TLBLoadAddress;
         g_TLBStoreAddress = &m_TLBStoreAddress;
         g_RecompPos = m_Recomp ? m_Recomp->RecompPos() : nullptr;
-        R4300iOp::m_TestTimer = m_TestTimer;
         g_Random = &m_Random;
     }
     else
@@ -2321,7 +2315,7 @@ void CN64System::DelayedRelativeJump(uint32_t RelativeLocation)
     if (m_Reg.m_PROGRAM_COUNTER == m_JumpToLocation)
     {
         R4300iOpcode DelaySlot;
-        if (m_MMU_VM.MemoryValue32(m_Reg.m_PROGRAM_COUNTER + 4, DelaySlot.Value) && !R4300iInstruction(m_Reg.m_PROGRAM_COUNTER, R4300iOp::m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
+        if (m_MMU_VM.MemoryValue32(m_Reg.m_PROGRAM_COUNTER + 4, DelaySlot.Value) && !R4300iInstruction(m_Reg.m_PROGRAM_COUNTER, m_OpCodes.Opcode().Value).DelaySlotEffectsCompare(DelaySlot.Value))
         {
             m_PipelineStage = PIPELINE_STAGE_PERMLOOP_DO_DELAY;
         }

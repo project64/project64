@@ -54,7 +54,7 @@ void CCPULog::PushState()
     CPUState * state = &m_Array[m_Index++];
 
     state->pc = g_Reg->m_PROGRAM_COUNTER;
-    state->opcode = R4300iOp::m_Opcode;
+    state->opcode = g_System->Opcode();
 
     memcpy(state->gpr, g_Reg->m_GPR, sizeof(g_Reg->m_GPR));
     state->gprHi = g_Reg->m_HI;
