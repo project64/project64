@@ -14,7 +14,7 @@ class R4300iOp :
     friend CX86RecompilerOps;
 
 public:
-    R4300iOp();
+    R4300iOp(CN64System & System);
     ~R4300iOp(void);
 
     void ExecuteCPU();
@@ -27,6 +27,7 @@ public:
     }
 
 private:
+    R4300iOp();
     R4300iOp(const R4300iOp &);
     R4300iOp & operator=(const R4300iOp &);
 
@@ -258,6 +259,9 @@ private:
     void ReservedInstruction();
     void UnknownOpcode();
 
+    CN64System & m_System;
+    CRegisters & m_Reg;
+    CMipsMemoryVM & m_MMU;
     R4300iOpcode m_Opcode;
 
     Func Jump_Opcode[64];
@@ -273,16 +277,16 @@ private:
     Func Jump_CoP1_L[64];
     Func Jump_CoP2[32];
 
-    static bool TestCop1UsableException(void);
-    static bool CheckFPUInput32(const float & Value);
-    static bool CheckFPUInput32Conv(const float & Value);
-    static bool CheckFPUInput64(const double & Value);
-    static bool CheckFPUInput64Conv(const double & Value);
-    static bool CheckFPUResult32(float & Result);
-    static bool CheckFPUResult64(double & Result);
-    static bool CheckFPUInvalidException(void);
-    static bool InitFpuOperation(FPRoundingMode RoundingModel);
-    static bool SetFPUException(void);
+    bool TestCop1UsableException(void);
+    bool CheckFPUInput32(const float & Value);
+    bool CheckFPUInput32Conv(const float & Value);
+    bool CheckFPUInput64(const double & Value);
+    bool CheckFPUInput64Conv(const double & Value);
+    bool CheckFPUResult32(float & Result);
+    bool CheckFPUResult64(double & Result);
+    bool CheckFPUInvalidException(void);
+    bool InitFpuOperation(FPRoundingMode RoundingModel);
+    bool SetFPUException(void);
 
     static const uint32_t SWL_MASK[4], SWR_MASK[4], LWL_MASK[4], LWR_MASK[4];
     static const int32_t SWL_SHIFT[4], SWR_SHIFT[4], LWL_SHIFT[4], LWR_SHIFT[4];
