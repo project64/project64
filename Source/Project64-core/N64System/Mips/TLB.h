@@ -29,7 +29,6 @@ struct TLB_ENTRY
 };
 
 class CTLB :
-    protected CSystemRegisters,
     private CGameSettings
 {
     friend class CDebugTlb;

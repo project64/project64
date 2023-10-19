@@ -131,18 +131,18 @@ void CTLB::WriteEntry(uint32_t Index, bool Random)
     if (m_tlb[Index].EntryDefined)
     {
         uint32_t FastIndx = Index << 1;
-        if (*_PROGRAM_COUNTER >= m_FastTlb[FastIndx].VSTART &&
-            *_PROGRAM_COUNTER < m_FastTlb[FastIndx].VEND &&
+        if (m_Reg.m_PROGRAM_COUNTER >= m_FastTlb[FastIndx].VSTART &&
+            m_Reg.m_PROGRAM_COUNTER < m_FastTlb[FastIndx].VEND &&
             m_FastTlb[FastIndx].ValidEntry && m_FastTlb[FastIndx].VALID)
         {
-            WriteTrace(TraceTLB, TraceDebug, "Ignored PC: %X VAddr Start: %I64X VEND: %I64X", *_PROGRAM_COUNTER, m_FastTlb[FastIndx].VSTART, m_FastTlb[FastIndx].VEND);
+            WriteTrace(TraceTLB, TraceDebug, "Ignored PC: %X VAddr Start: %I64X VEND: %I64X", m_Reg.m_PROGRAM_COUNTER, m_FastTlb[FastIndx].VSTART, m_FastTlb[FastIndx].VEND);
             return;
         }
-        if (*_PROGRAM_COUNTER >= m_FastTlb[FastIndx + 1].VSTART &&
-            *_PROGRAM_COUNTER < m_FastTlb[FastIndx + 1].VEND &&
+        if (m_Reg.m_PROGRAM_COUNTER >= m_FastTlb[FastIndx + 1].VSTART &&
+            m_Reg.m_PROGRAM_COUNTER < m_FastTlb[FastIndx + 1].VEND &&
             m_FastTlb[FastIndx + 1].ValidEntry && m_FastTlb[FastIndx + 1].VALID)
         {
-            WriteTrace(TraceTLB, TraceDebug, "Ignored PC: %X VAddr Start: %X VEND: %X", *_PROGRAM_COUNTER, m_FastTlb[FastIndx + 1].VSTART, m_FastTlb[FastIndx + 1].VEND);
+            WriteTrace(TraceTLB, TraceDebug, "Ignored PC: %X VAddr Start: %X VEND: %X", m_Reg.m_PROGRAM_COUNTER, m_FastTlb[FastIndx + 1].VSTART, m_FastTlb[FastIndx + 1].VEND);
             return;
         }
     }

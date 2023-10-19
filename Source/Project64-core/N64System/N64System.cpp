@@ -963,8 +963,6 @@ bool CN64System::SetActiveSystem(bool bActive)
 
     if (bActive)
     {
-        m_Reg.SetAsCurrentSystem();
-
         g_System = this;
         if (g_BaseSystem == this)
         {

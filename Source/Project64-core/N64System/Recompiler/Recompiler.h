@@ -14,8 +14,7 @@ class CRecompiler :
     protected CDebugSettings,
     public CRecompilerSettings,
     public CFunctionMap,
-    public CRecompMemory,
-    private CSystemRegisters
+    public CRecompMemory
 {
 public:
     enum REMOVE_REASON

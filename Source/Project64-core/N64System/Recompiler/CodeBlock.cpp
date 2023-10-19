@@ -15,6 +15,7 @@ extern "C" void __clear_cache_android(uint8_t * begin, uint8_t * end);
 
 CCodeBlock::CCodeBlock(CMipsMemoryVM & MMU, CRegisters & Reg, uint32_t VAddrEnter) :
     m_MMU(MMU),
+    m_Reg(Reg),
     m_VAddrEnter(VAddrEnter),
     m_VAddrFirst(VAddrEnter),
     m_VAddrLast(VAddrEnter),

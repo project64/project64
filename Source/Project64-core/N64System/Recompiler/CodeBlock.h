@@ -55,6 +55,10 @@ public:
     {
         return m_RecompilerOps;
     }
+    CRegisters & Registers()
+    {
+        return m_Reg;
+    }
     const std::string & CodeLog() const
     {
         return m_CodeLog;
@@ -116,6 +120,7 @@ private:
     typedef std::list<CCodeSection *> SectionList;
 
     CMipsMemoryVM & m_MMU;
+    CRegisters & m_Reg;
     SectionMap m_SectionMap;
     SectionList m_Sections;
     CCodeSection * m_EnterSection;

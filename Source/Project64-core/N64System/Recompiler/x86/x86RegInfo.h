@@ -41,8 +41,7 @@ asmjit::x86::St GetX86FpuRegFromIndex(x86RegFpuIndex Index);
 
 class CX86RegInfo :
     public CRegBase,
-    private CDebugSettings,
-    private CSystemRegisters
+    private CDebugSettings
 {
 public:
     // Enums
@@ -175,6 +174,7 @@ public:
 private:
     CX86RegInfo();
 
+    CRegisters & m_Reg;
     CCodeBlock & m_CodeBlock;
     CX86Ops & m_Assembler;
     asmjit::x86::Gp UnMap_8BitTempReg();

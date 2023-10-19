@@ -218,20 +218,6 @@ const char * CRegName::FPR_Ctrl[32] = {
     "FCSR",
 };
 
-uint32_t * CSystemRegisters::_PROGRAM_COUNTER = nullptr;
-MIPS_DWORD * CSystemRegisters::_GPR = nullptr;
-MIPS_DWORD * CSystemRegisters::_FPR = nullptr;
-uint64_t * CSystemRegisters::_CP0 = nullptr;
-MIPS_DWORD * CSystemRegisters::_RegHI = nullptr;
-MIPS_DWORD * CSystemRegisters::_RegLO = nullptr;
-uint32_t ** CSystemRegisters::_FPR_UW = nullptr;
-uint64_t ** CSystemRegisters::_FPR_UDW = nullptr;
-float ** CSystemRegisters::_FPR_S;
-float ** CSystemRegisters::_FPR_S_L;
-double ** CSystemRegisters::_FPR_D;
-uint32_t * CSystemRegisters::_FPCR = nullptr;
-uint32_t * CSystemRegisters::_LLBit = nullptr;
-
 CP0registers::CP0registers(uint64_t * _CP0) :
     INDEX_REGISTER(_CP0[0]),
     RANDOM_REGISTER(_CP0[1]),
@@ -532,28 +518,11 @@ void CRegisters::Reset(bool bPostPif, CMipsMemoryVM & MMU)
     m_System.m_TLB.COP0StatusChanged();
 }
 
-void CRegisters::SetAsCurrentSystem()
-{
-    _PROGRAM_COUNTER = &m_PROGRAM_COUNTER;
-    _GPR = m_GPR;
-    _FPR = m_FPR;
-    _CP0 = m_CP0;
-    _RegHI = &m_HI;
-    _RegLO = &m_LO;
-    _FPR_UW = m_FPR_UW;
-    _FPR_UDW = m_FPR_UDW;
-    _FPR_S = m_FPR_S;
-    _FPR_S_L = m_FPR_S_L;
-    _FPR_D = m_FPR_D;
-    _FPCR = m_FPCR;
-    _LLBit = &m_LLBit;
-}
-
 uint64_t CRegisters::Cop0_MF(COP0Reg Reg)
 {
     if (LogCP0reads() && Reg <= COP0Reg_31)
     {
-        LogMessage("%08X: R4300i read from %s (0x%08X)", (*_PROGRAM_COUNTER), CRegName::Cop0[Reg], m_CP0[Reg]);
+        LogMessage("%08X: R4300i read from %s (0x%08X)", m_PROGRAM_COUNTER, CRegName::Cop0[Reg], m_CP0[Reg]);
     }
 
     if (Reg == COP0Reg_Count || Reg == COP0Reg_Wired || Reg == COP0Reg_Random)
@@ -572,10 +541,10 @@ void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
 {
     if (LogCP0changes() && Reg <= COP0Reg_31)
     {
-        LogMessage("%08X: Writing 0x%I64U to %s register (originally: 0x%I64U)", (*_PROGRAM_COUNTER), Value, CRegName::Cop0[Reg], m_CP0[Reg]);
+        LogMessage("%08X: Writing 0x%I64U to %s register (originally: 0x%I64U)", m_PROGRAM_COUNTER, Value, CRegName::Cop0[Reg], m_CP0[Reg]);
         if (Reg == 11) // Compare
         {
-            LogMessage("%08X: Cause register changed from %08X to %08X", (*_PROGRAM_COUNTER), (uint32_t)CAUSE_REGISTER.Value, (uint32_t)(g_Reg->CAUSE_REGISTER.Value & ~CAUSE_IP7));
+            LogMessage("%08X: Cause register changed from %08X to %08X", m_PROGRAM_COUNTER, (uint32_t)CAUSE_REGISTER.Value, (uint32_t)(g_Reg->CAUSE_REGISTER.Value & ~CAUSE_IP7));
         }
     }
     m_CP0Latch = Value;
@@ -684,7 +653,7 @@ void CRegisters::Cop1_CT(uint32_t Reg, uint32_t Value)
 {
     if (Reg == 31)
     {
-        FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+        FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
         StatusReg.Value = (Value & 0x183FFFF);
 
         if (((StatusReg.Cause.Inexact & StatusReg.Enable.Inexact) != 0) ||

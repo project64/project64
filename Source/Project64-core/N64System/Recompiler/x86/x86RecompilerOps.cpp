@@ -9578,7 +9578,6 @@ void CX86RecompilerOps::OverflowDelaySlot(bool TestTimer)
 
     m_Assembler.PushImm32("g_System->CountPerOp()", g_System->CountPerOp());
     m_Assembler.CallThis((uint32_t)&g_System->m_OpCodes, AddressOf(&R4300iOp::ExecuteOps), "R4300iOp::ExecuteOps", 8);
-    m_Assembler.AddConstToX86Reg(asmjit::x86::esp, 4);
 
     if (g_System->bFastSP() && g_Recompiler)
     {

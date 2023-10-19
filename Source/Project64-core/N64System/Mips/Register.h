@@ -418,24 +418,6 @@ public:
     static const char * FPR_Ctrl[32];
 };
 
-class CSystemRegisters
-{
-protected:
-    static uint32_t * _PROGRAM_COUNTER;
-    static MIPS_DWORD * _GPR;
-    static MIPS_DWORD * _FPR;
-    static uint64_t * _CP0;
-    static MIPS_DWORD * _RegHI;
-    static MIPS_DWORD * _RegLO;
-    static uint32_t ** _FPR_UW;
-    static uint64_t ** _FPR_UDW;
-    static float ** _FPR_S;
-    static float ** _FPR_S_L;
-    static double ** _FPR_D;
-    static uint32_t * _FPCR;
-    static uint32_t * _LLBit;
-};
-
 class CN64System;
 class CSystemEvents;
 class CTLB;
@@ -444,7 +426,6 @@ class CRegisters :
     public CLogging,
     private CDebugSettings,
     private CGameSettings,
-    protected CSystemRegisters,
     public CP0registers,
     public RDRAMRegistersReg,
     public MIPSInterfaceReg,
@@ -501,7 +482,6 @@ public:
     bool DoIntrException();
     void FixFpuLocations();
     void Reset(bool bPostPif, CMipsMemoryVM & MMU);
-    void SetAsCurrentSystem();
     void TriggerAddressException(uint64_t Address, uint32_t ExceptionCode);
     void TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor = 0);
 
