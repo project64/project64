@@ -8,8 +8,7 @@ class CX86RecompilerOps;
 
 class R4300iOp :
     public CLogging,
-    private CDebugSettings,
-    private CSystemRegisters
+    private CDebugSettings
 {
     friend CX86RecompilerOps;
 
@@ -263,6 +262,19 @@ private:
     CRegisters & m_Reg;
     CMipsMemoryVM & m_MMU;
     R4300iOpcode m_Opcode;
+    uint32_t & m_PROGRAM_COUNTER;
+    MIPS_DWORD * m_GPR;
+    MIPS_DWORD * m_FPR;
+    uint64_t * m_CP0;
+    MIPS_DWORD & m_RegHI;
+    MIPS_DWORD & m_RegLO;
+    uint32_t ** m_FPR_UW;
+    uint64_t ** m_FPR_UDW;
+    float ** m_FPR_S;
+    float ** m_FPR_S_L;
+    double ** m_FPR_D;
+    uint32_t * m_FPCR;
+    uint32_t & m_LLBit;
 
     Func Jump_Opcode[64];
     Func Jump_Special[64];

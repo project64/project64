@@ -27,7 +27,20 @@ const int32_t R4300iOp::LWR_SHIFT[4] = {24, 16, 8, 0};
 R4300iOp::R4300iOp(CN64System & System) :
     m_System(System),
     m_Reg(System.m_Reg),
-    m_MMU(System.m_MMU_VM)
+    m_MMU(System.m_MMU_VM),
+    m_PROGRAM_COUNTER(System.m_Reg.m_PROGRAM_COUNTER),
+    m_GPR(System.m_Reg.m_GPR),
+    m_FPR(System.m_Reg.m_FPR),
+    m_CP0(System.m_Reg.m_CP0),
+    m_RegHI(System.m_Reg.m_HI),
+    m_RegLO(System.m_Reg.m_LO),
+    m_FPR_UW(System.m_Reg.m_FPR_UW),
+    m_FPR_UDW(System.m_Reg.m_FPR_UDW),
+    m_FPR_S(System.m_Reg.m_FPR_S),
+    m_FPR_S_L(System.m_Reg.m_FPR_S_L),
+    m_FPR_D(System.m_Reg.m_FPR_D),
+    m_FPCR(System.m_Reg.m_FPCR),
+    m_LLBit(System.m_Reg.m_LLBit)
 {
     m_Opcode.Value = 0;
     BuildInterpreter();
@@ -66,7 +79,6 @@ void R4300iOp::ExecuteCPU()
 
     bool & Done = m_System.m_EndEmulation;
     PIPELINE_STAGE & PipelineStage = m_System.m_PipelineStage;
-    uint32_t & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
     uint32_t & JumpToLocation = m_System.m_JumpToLocation;
     uint32_t & JumpDelayLocation = m_System.m_JumpDelayLocation;
     bool & TestTimer = m_System.m_TestTimer;
@@ -79,17 +91,17 @@ void R4300iOp::ExecuteCPU()
     {
         while (!Done)
         {
-            if (!m_MMU.MemoryValue32(PROGRAM_COUNTER, m_Opcode.Value))
+            if (!m_MMU.MemoryValue32(m_PROGRAM_COUNTER, m_Opcode.Value))
             {
-                m_Reg.TriggerAddressException(PROGRAM_COUNTER, EXC_RMISS);
-                PROGRAM_COUNTER = JumpToLocation;
+                m_Reg.TriggerAddressException(m_PROGRAM_COUNTER, EXC_RMISS);
+                m_PROGRAM_COUNTER = JumpToLocation;
                 PipelineStage = PIPELINE_STAGE_NORMAL;
                 continue;
             }
 
             if (HaveDebugger())
             {
-                if (HaveExecutionBP() && g_Debugger->ExecutionBP(PROGRAM_COUNTER))
+                if (HaveExecutionBP() && g_Debugger->ExecutionBP(m_PROGRAM_COUNTER))
                 {
                     g_Settings->SaveBool(Debugger_SteppingOps, true);
                 }
@@ -105,7 +117,7 @@ void R4300iOp::ExecuteCPU()
                 {
                     // Skip command if instructed by the debugger
                     g_Settings->SaveBool(Debugger_SkipOp, false);
-                    PROGRAM_COUNTER += 4;
+                    m_PROGRAM_COUNTER += 4;
                     continue;
                 }
 
@@ -114,13 +126,13 @@ void R4300iOp::ExecuteCPU()
 
             /* if (PROGRAM_COUNTER > 0x80000300 && PROGRAM_COUNTER < 0x80380000)
             {
-            WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",*_PROGRAM_COUNTER,R4300iInstruction(*_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str());
-            // WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iInstruction(*_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str(),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
-            // WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
+            WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",m_PROGRAM_COUNTER,R4300iInstruction(m_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str());
+            // WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",m_PROGRAM_COUNTER,R4300iInstruction(m_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str(),m_GPR[0x19].UW[0],m_GPR[0x03].UW[0]);
+            // WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",m_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
             } */
 
             (this->*Jump_Opcode[m_Opcode.op])();
-            _GPR[0].DW = 0; // MIPS $zero hard-wired to 0
+            m_GPR[0].DW = 0; // MIPS $zero hard-wired to 0
             NextTimer -= CountPerOp;
 
             if (CDebugSettings::HaveDebugger())
@@ -128,7 +140,7 @@ void R4300iOp::ExecuteCPU()
                 g_Debugger->CPUStepEnded();
             }
 
-            PROGRAM_COUNTER += 4;
+            m_PROGRAM_COUNTER += 4;
             switch (PipelineStage)
             {
             case PIPELINE_STAGE_NORMAL:
@@ -140,13 +152,13 @@ void R4300iOp::ExecuteCPU()
                 PipelineStage = PIPELINE_STAGE_PERMLOOP_DELAY_DONE;
                 break;
             case PIPELINE_STAGE_JUMP:
-                CheckTimer = (JumpToLocation < PROGRAM_COUNTER - 4 || TestTimer);
-                PROGRAM_COUNTER = JumpToLocation;
+                CheckTimer = (JumpToLocation < m_PROGRAM_COUNTER - 4 || TestTimer);
+                m_PROGRAM_COUNTER = JumpToLocation;
                 PipelineStage = PIPELINE_STAGE_NORMAL;
-                if ((PROGRAM_COUNTER & 0x3) != 0)
+                if ((m_PROGRAM_COUNTER & 0x3) != 0)
                 {
                     m_Reg.DoAddressError((int32_t)JumpToLocation, true);
-                    PROGRAM_COUNTER = JumpToLocation;
+                    m_PROGRAM_COUNTER = JumpToLocation;
                     PipelineStage = PIPELINE_STAGE_NORMAL;
                 }
                 else if (CheckTimer)
@@ -164,11 +176,11 @@ void R4300iOp::ExecuteCPU()
                 break;
             case PIPELINE_STAGE_JUMP_DELAY_SLOT:
                 PipelineStage = PIPELINE_STAGE_JUMP;
-                PROGRAM_COUNTER = JumpToLocation;
+                m_PROGRAM_COUNTER = JumpToLocation;
                 JumpToLocation = JumpDelayLocation;
                 break;
             case PIPELINE_STAGE_PERMLOOP_DELAY_DONE:
-                PROGRAM_COUNTER = JumpToLocation;
+                m_PROGRAM_COUNTER = JumpToLocation;
                 PipelineStage = PIPELINE_STAGE_NORMAL;
                 InPermLoop();
                 g_SystemTimer->TimerDone();
@@ -192,7 +204,6 @@ void R4300iOp::ExecuteCPU()
 void R4300iOp::ExecuteOps(int32_t Cycles)
 {
     bool & Done = m_System.m_EndEmulation;
-    uint32_t & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
     PIPELINE_STAGE & PipelineStage = m_System.m_PipelineStage;
     uint32_t & JumpDelayLocation = m_System.m_JumpDelayLocation;
     uint32_t & JumpToLocation = m_System.m_JumpToLocation;
@@ -211,22 +222,22 @@ void R4300iOp::ExecuteOps(int32_t Cycles)
                 return;
             }
 
-            if (m_MMU.MemoryValue32(PROGRAM_COUNTER, m_Opcode.Value))
+            if (m_MMU.MemoryValue32(m_PROGRAM_COUNTER, m_Opcode.Value))
             {
                 /*if (PROGRAM_COUNTER > 0x80000300 && PROGRAM_COUNTER< 0x80380000)
                 {
-                WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",*_PROGRAM_COUNTER,R4300iInstruction(*_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str());
-                //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iInstruction(*_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str(),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
-                //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
+                WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",m_PROGRAM_COUNTER,R4300iInstruction(m_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str());
+                //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",m_PROGRAM_COUNTER,R4300iInstruction(m_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str(),m_GPR[0x19].UW[0],m_GPR[0x03].UW[0]);
+                //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",m_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
                 }*/
                 /*if (PROGRAM_COUNTER > 0x80323000 && PROGRAM_COUNTER< 0x80380000)
                 {
-                WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",*_PROGRAM_COUNTER,R4300iInstruction(*_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str());
-                //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iInstruction(*_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str(),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
-                //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
+                WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",m_PROGRAM_COUNTER,R4300iInstruction(m_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str());
+                //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",m_PROGRAM_COUNTER,R4300iInstruction(m_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str(),m_GPR[0x19].UW[0],m_GPR[0x03].UW[0]);
+                //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",m_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
                 }*/
                 (this->*Jump_Opcode[m_Opcode.op])();
-                _GPR[0].DW = 0; /* MIPS $zero hard-wired to 0 */
+                m_GPR[0].DW = 0; /* MIPS $zero hard-wired to 0 */
 
                 Cycles -= CountPerOp;
                 *g_NextTimer -= CountPerOp;
@@ -244,19 +255,19 @@ void R4300iOp::ExecuteOps(int32_t Cycles)
                 switch (PipelineStage)
                 {
                 case PIPELINE_STAGE_NORMAL:
-                    PROGRAM_COUNTER += 4;
+                    m_PROGRAM_COUNTER += 4;
                     break;
                 case PIPELINE_STAGE_DELAY_SLOT:
                     PipelineStage = PIPELINE_STAGE_JUMP;
-                    PROGRAM_COUNTER += 4;
+                    m_PROGRAM_COUNTER += 4;
                     break;
                 case PIPELINE_STAGE_PERMLOOP_DO_DELAY:
                     PipelineStage = PIPELINE_STAGE_PERMLOOP_DELAY_DONE;
-                    PROGRAM_COUNTER += 4;
+                    m_PROGRAM_COUNTER += 4;
                     break;
                 case PIPELINE_STAGE_JUMP:
-                    CheckTimer = (JumpToLocation < PROGRAM_COUNTER || TestTimer);
-                    PROGRAM_COUNTER = JumpToLocation;
+                    CheckTimer = (JumpToLocation < m_PROGRAM_COUNTER || TestTimer);
+                    m_PROGRAM_COUNTER = JumpToLocation;
                     PipelineStage = PIPELINE_STAGE_NORMAL;
                     if (CheckTimer)
                     {
@@ -273,11 +284,11 @@ void R4300iOp::ExecuteOps(int32_t Cycles)
                     break;
                 case PIPELINE_STAGE_JUMP_DELAY_SLOT:
                     PipelineStage = PIPELINE_STAGE_JUMP;
-                    PROGRAM_COUNTER = JumpToLocation;
+                    m_PROGRAM_COUNTER = JumpToLocation;
                     JumpToLocation = JumpDelayLocation;
                     break;
                 case PIPELINE_STAGE_PERMLOOP_DELAY_DONE:
-                    PROGRAM_COUNTER = JumpToLocation;
+                    m_PROGRAM_COUNTER = JumpToLocation;
                     PipelineStage = PIPELINE_STAGE_NORMAL;
                     InPermLoop();
                     g_SystemTimer->TimerDone();
@@ -292,8 +303,8 @@ void R4300iOp::ExecuteOps(int32_t Cycles)
             }
             else
             {
-                m_Reg.TriggerAddressException(PROGRAM_COUNTER, EXC_RMISS);
-                PROGRAM_COUNTER = JumpToLocation;
+                m_Reg.TriggerAddressException(m_PROGRAM_COUNTER, EXC_RMISS);
+                m_PROGRAM_COUNTER = JumpToLocation;
                 PipelineStage = PIPELINE_STAGE_NORMAL;
             }
         }
@@ -990,60 +1001,60 @@ void R4300iOp::BuildInterpreter()
 
 void R4300iOp::J()
 {
-    m_System.DelayedJump((*_PROGRAM_COUNTER & 0xF0000000) + (m_Opcode.target << 2));
+    m_System.DelayedJump((m_PROGRAM_COUNTER & 0xF0000000) + (m_Opcode.target << 2));
 }
 
 void R4300iOp::JAL()
 {
-    m_System.DelayedJump((*_PROGRAM_COUNTER & 0xF0000000) + (m_Opcode.target << 2));
-    _GPR[31].DW = (int32_t)(m_System.m_PipelineStage == PIPELINE_STAGE_JUMP_DELAY_SLOT ? m_System.m_JumpToLocation + 4 : *_PROGRAM_COUNTER + 8);
+    m_System.DelayedJump((m_PROGRAM_COUNTER & 0xF0000000) + (m_Opcode.target << 2));
+    m_GPR[31].DW = (int32_t)(m_System.m_PipelineStage == PIPELINE_STAGE_JUMP_DELAY_SLOT ? m_System.m_JumpToLocation + 4 : m_PROGRAM_COUNTER + 8);
 }
 
 void R4300iOp::BEQ()
 {
-    if (_GPR[m_Opcode.rs].DW == _GPR[m_Opcode.rt].DW)
+    if (m_GPR[m_Opcode.rs].DW == m_GPR[m_Opcode.rt].DW)
     {
         m_System.DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
-        m_System.DelayedJump(*_PROGRAM_COUNTER + 8);
+        m_System.DelayedJump(m_PROGRAM_COUNTER + 8);
     }
 }
 
 void R4300iOp::BNE()
 {
-    if (_GPR[m_Opcode.rs].DW != _GPR[m_Opcode.rt].DW)
+    if (m_GPR[m_Opcode.rs].DW != m_GPR[m_Opcode.rt].DW)
     {
         m_System.DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
-        m_System.DelayedJump(*_PROGRAM_COUNTER + 8);
+        m_System.DelayedJump(m_PROGRAM_COUNTER + 8);
     }
 }
 
 void R4300iOp::BLEZ()
 {
-    if (_GPR[m_Opcode.rs].DW <= 0)
+    if (m_GPR[m_Opcode.rs].DW <= 0)
     {
         m_System.DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
-        m_System.DelayedJump(*_PROGRAM_COUNTER + 8);
+        m_System.DelayedJump(m_PROGRAM_COUNTER + 8);
     }
 }
 
 void R4300iOp::BGTZ()
 {
-    if (_GPR[m_Opcode.rs].DW > 0)
+    if (m_GPR[m_Opcode.rs].DW > 0)
     {
         m_System.DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
-        m_System.DelayedJump(*_PROGRAM_COUNTER + 8);
+        m_System.DelayedJump(m_PROGRAM_COUNTER + 8);
     }
 }
 
@@ -1055,7 +1066,7 @@ void R4300iOp::ADDI()
         StackValue += (int16_t)m_Opcode.immediate;
     }
 #endif
-    int32_t rs = _GPR[m_Opcode.rs].W[0];
+    int32_t rs = m_GPR[m_Opcode.rs].W[0];
     int32_t imm = (int16_t)m_Opcode.immediate;
     int32_t sum = rs + imm;
     if ((~(rs ^ imm) & (rs ^ sum)) & 0x80000000)
@@ -1063,11 +1074,11 @@ void R4300iOp::ADDI()
         m_Reg.TriggerException(EXC_OV);
         return;
     }
-    _GPR[m_Opcode.rt].DW = sum;
+    m_GPR[m_Opcode.rt].DW = sum;
 #ifdef Interpreter_StackTest
     if (m_Opcode.rt == 29 && m_Opcode.rs != 29)
     {
-        StackValue = _GPR[m_Opcode.rt].W[0];
+        StackValue = m_GPR[m_Opcode.rt].W[0];
     }
 #endif
 }
@@ -1080,24 +1091,24 @@ void R4300iOp::ADDIU()
         StackValue += (int16_t)m_Opcode.immediate;
     }
 #endif
-    _GPR[m_Opcode.rt].DW = (_GPR[m_Opcode.rs].W[0] + ((int16_t)m_Opcode.immediate));
+    m_GPR[m_Opcode.rt].DW = (m_GPR[m_Opcode.rs].W[0] + ((int16_t)m_Opcode.immediate));
 #ifdef Interpreter_StackTest
     if (m_Opcode.rt == 29 && m_Opcode.rs != 29)
     {
-        StackValue = _GPR[m_Opcode.rt].W[0];
+        StackValue = m_GPR[m_Opcode.rt].W[0];
     }
 #endif
 }
 
 void R4300iOp::SLTI()
 {
-    if (_GPR[m_Opcode.rs].DW < (int64_t)((int16_t)m_Opcode.immediate))
+    if (m_GPR[m_Opcode.rs].DW < (int64_t)((int16_t)m_Opcode.immediate))
     {
-        _GPR[m_Opcode.rt].DW = 1;
+        m_GPR[m_Opcode.rt].DW = 1;
     }
     else
     {
-        _GPR[m_Opcode.rt].DW = 0;
+        m_GPR[m_Opcode.rt].DW = 0;
     }
 }
 
@@ -1107,90 +1118,90 @@ void R4300iOp::SLTIU()
     int64_t imm64;
 
     imm64 = imm32;
-    _GPR[m_Opcode.rt].DW = _GPR[m_Opcode.rs].UDW < (uint64_t)imm64 ? 1 : 0;
+    m_GPR[m_Opcode.rt].DW = m_GPR[m_Opcode.rs].UDW < (uint64_t)imm64 ? 1 : 0;
 }
 
 void R4300iOp::ANDI()
 {
-    _GPR[m_Opcode.rt].DW = _GPR[m_Opcode.rs].DW & m_Opcode.immediate;
+    m_GPR[m_Opcode.rt].DW = m_GPR[m_Opcode.rs].DW & m_Opcode.immediate;
 }
 
 void R4300iOp::ORI()
 {
-    _GPR[m_Opcode.rt].DW = _GPR[m_Opcode.rs].DW | m_Opcode.immediate;
+    m_GPR[m_Opcode.rt].DW = m_GPR[m_Opcode.rs].DW | m_Opcode.immediate;
 }
 
 void R4300iOp::XORI()
 {
-    _GPR[m_Opcode.rt].DW = _GPR[m_Opcode.rs].DW ^ m_Opcode.immediate;
+    m_GPR[m_Opcode.rt].DW = m_GPR[m_Opcode.rs].DW ^ m_Opcode.immediate;
 }
 
 void R4300iOp::LUI()
 {
-    _GPR[m_Opcode.rt].DW = (int32_t)((int16_t)m_Opcode.offset << 16);
+    m_GPR[m_Opcode.rt].DW = (int32_t)((int16_t)m_Opcode.offset << 16);
 #ifdef Interpreter_StackTest
     if (m_Opcode.rt == 29)
     {
-        StackValue = _GPR[m_Opcode.rt].W[0];
+        StackValue = m_GPR[m_Opcode.rt].W[0];
     }
 #endif
 }
 
 void R4300iOp::BEQL()
 {
-    if (_GPR[m_Opcode.rs].DW == _GPR[m_Opcode.rt].DW)
+    if (m_GPR[m_Opcode.rs].DW == m_GPR[m_Opcode.rt].DW)
     {
         m_System.DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
         m_System.m_PipelineStage = PIPELINE_STAGE_JUMP;
-        m_System.m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
+        m_System.m_JumpToLocation = (m_PROGRAM_COUNTER) + 8;
     }
 }
 
 void R4300iOp::BNEL()
 {
-    if (_GPR[m_Opcode.rs].DW != _GPR[m_Opcode.rt].DW)
+    if (m_GPR[m_Opcode.rs].DW != m_GPR[m_Opcode.rt].DW)
     {
         m_System.DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
         m_System.m_PipelineStage = PIPELINE_STAGE_JUMP;
-        m_System.m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
+        m_System.m_JumpToLocation = (m_PROGRAM_COUNTER) + 8;
     }
 }
 
 void R4300iOp::BLEZL()
 {
-    if (_GPR[m_Opcode.rs].DW <= 0)
+    if (m_GPR[m_Opcode.rs].DW <= 0)
     {
         m_System.DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
         m_System.m_PipelineStage = PIPELINE_STAGE_JUMP;
-        m_System.m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
+        m_System.m_JumpToLocation = (m_PROGRAM_COUNTER) + 8;
     }
 }
 
 void R4300iOp::BGTZL()
 {
-    if (_GPR[m_Opcode.rs].DW > 0)
+    if (m_GPR[m_Opcode.rs].DW > 0)
     {
         m_System.DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
         m_System.m_PipelineStage = PIPELINE_STAGE_JUMP;
-        m_System.m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
+        m_System.m_JumpToLocation = (m_PROGRAM_COUNTER) + 8;
     }
 }
 
 void R4300iOp::DADDI()
 {
-    int64_t rs = _GPR[m_Opcode.rs].DW;
+    int64_t rs = m_GPR[m_Opcode.rs].DW;
     int64_t imm = (int64_t)((int16_t)m_Opcode.immediate);
     int64_t sum = rs + imm;
     if ((~(rs ^ imm) & (rs ^ sum)) & 0x8000000000000000)
@@ -1198,12 +1209,12 @@ void R4300iOp::DADDI()
         m_Reg.TriggerException(EXC_OV);
         return;
     }
-    _GPR[m_Opcode.rt].DW = sum;
+    m_GPR[m_Opcode.rt].DW = sum;
 }
 
 void R4300iOp::DADDIU()
 {
-    _GPR[m_Opcode.rt].DW = _GPR[m_Opcode.rs].DW + (int64_t)((int16_t)m_Opcode.immediate);
+    m_GPR[m_Opcode.rt].DW = m_GPR[m_Opcode.rs].DW + (int64_t)((int16_t)m_Opcode.immediate);
 }
 
 uint64_t LDL_MASK[8] = {0, 0xFF, 0xFFFF, 0xFFFFFF, 0xFFFFFFFF, 0xFFFFFFFFFF, 0xFFFFFFFFFFFF, 0xFFFFFFFFFFFFFF};
@@ -1211,13 +1222,13 @@ int32_t LDL_SHIFT[8] = {0, 8, 16, 24, 32, 40, 48, 56};
 
 void R4300iOp::LDL()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint64_t MemoryValue;
     if (m_MMU.LD_Memory((Address & ~7), MemoryValue))
     {
         uint32_t Offset = Address & 7;
-        _GPR[m_Opcode.rt].DW = _GPR[m_Opcode.rt].DW & LDL_MASK[Offset];
-        _GPR[m_Opcode.rt].DW += MemoryValue << LDL_SHIFT[Offset];
+        m_GPR[m_Opcode.rt].DW = m_GPR[m_Opcode.rt].DW & LDL_MASK[Offset];
+        m_GPR[m_Opcode.rt].DW += MemoryValue << LDL_SHIFT[Offset];
     }
 }
 
@@ -1229,126 +1240,126 @@ int32_t LDR_SHIFT[8] = {56, 48, 40, 32, 24, 16, 8, 0};
 
 void R4300iOp::LDR()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint64_t MemoryValue;
     if (m_MMU.LD_Memory((Address & ~7), MemoryValue))
     {
         uint32_t Offset = Address & 7;
-        _GPR[m_Opcode.rt].DW = _GPR[m_Opcode.rt].DW & LDR_MASK[Offset];
-        _GPR[m_Opcode.rt].DW += MemoryValue >> LDR_SHIFT[Offset];
+        m_GPR[m_Opcode.rt].DW = m_GPR[m_Opcode.rt].DW & LDR_MASK[Offset];
+        m_GPR[m_Opcode.rt].DW += MemoryValue >> LDR_SHIFT[Offset];
     }
 }
 
 void R4300iOp::LB()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint8_t MemoryValue;
     if (m_MMU.LB_Memory(Address, MemoryValue))
     {
-        _GPR[m_Opcode.rt].DW = (int8_t)MemoryValue;
+        m_GPR[m_Opcode.rt].DW = (int8_t)MemoryValue;
     }
 }
 
 void R4300iOp::LH()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint16_t MemoryValue;
     if (m_MMU.LH_Memory(Address, MemoryValue))
     {
-        _GPR[m_Opcode.rt].DW = (int16_t)MemoryValue;
+        m_GPR[m_Opcode.rt].DW = (int16_t)MemoryValue;
     }
 }
 
 void R4300iOp::LWL()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint32_t MemoryValue;
 
     if (m_MMU.LW_Memory((Address & ~3), MemoryValue))
     {
         uint32_t Offset = Address & 3;
-        _GPR[m_Opcode.rt].DW = (int32_t)(_GPR[m_Opcode.rt].W[0] & LWL_MASK[Offset]);
-        _GPR[m_Opcode.rt].DW += (int32_t)(MemoryValue << LWL_SHIFT[Offset]);
+        m_GPR[m_Opcode.rt].DW = (int32_t)(m_GPR[m_Opcode.rt].W[0] & LWL_MASK[Offset]);
+        m_GPR[m_Opcode.rt].DW += (int32_t)(MemoryValue << LWL_SHIFT[Offset]);
     }
 }
 
 void R4300iOp::LW()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint32_t MemoryValue;
 
     if (m_MMU.LW_Memory(Address, MemoryValue))
     {
-        _GPR[m_Opcode.rt].DW = (int32_t)MemoryValue;
+        m_GPR[m_Opcode.rt].DW = (int32_t)MemoryValue;
     }
 }
 
 void R4300iOp::LBU()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint8_t MemoryValue;
     if (m_MMU.LB_Memory(Address, MemoryValue))
     {
-        _GPR[m_Opcode.rt].UDW = MemoryValue;
+        m_GPR[m_Opcode.rt].UDW = MemoryValue;
     }
 }
 
 void R4300iOp::LHU()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint16_t MemoryValue;
     if (m_MMU.LH_Memory(Address, MemoryValue))
     {
-        _GPR[m_Opcode.rt].UDW = MemoryValue;
+        m_GPR[m_Opcode.rt].UDW = MemoryValue;
     }
 }
 
 void R4300iOp::LWR()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint32_t MemoryValue;
 
     if (m_MMU.LW_Memory((Address & ~3), MemoryValue))
     {
         uint32_t Offset = Address & 3;
-        _GPR[m_Opcode.rt].DW = (int32_t)(_GPR[m_Opcode.rt].W[0] & LWR_MASK[Offset]);
-        _GPR[m_Opcode.rt].DW += (int32_t)(MemoryValue >> LWR_SHIFT[Offset]);
+        m_GPR[m_Opcode.rt].DW = (int32_t)(m_GPR[m_Opcode.rt].W[0] & LWR_MASK[Offset]);
+        m_GPR[m_Opcode.rt].DW += (int32_t)(MemoryValue >> LWR_SHIFT[Offset]);
     }
 }
 
 void R4300iOp::LWU()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint32_t MemoryValue;
 
     if (m_MMU.LW_Memory(Address, MemoryValue))
     {
-        _GPR[m_Opcode.rt].UDW = MemoryValue;
+        m_GPR[m_Opcode.rt].UDW = MemoryValue;
     }
 }
 
 void R4300iOp::SB()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
-    m_MMU.SB_Memory(Address, _GPR[m_Opcode.rt].UW[0]);
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    m_MMU.SB_Memory(Address, m_GPR[m_Opcode.rt].UW[0]);
 }
 
 void R4300iOp::SH()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
-    m_MMU.SH_Memory(Address, _GPR[m_Opcode.rt].UW[0]);
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    m_MMU.SH_Memory(Address, m_GPR[m_Opcode.rt].UW[0]);
 }
 
 void R4300iOp::SWL()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint32_t MemoryValue;
 
     if (m_MMU.MemoryValue32(Address & ~3, MemoryValue))
     {
         uint32_t Offset = Address & 3;
         MemoryValue &= SWL_MASK[Offset];
-        MemoryValue += _GPR[m_Opcode.rt].UW[0] >> SWL_SHIFT[Offset];
+        MemoryValue += m_GPR[m_Opcode.rt].UW[0] >> SWL_SHIFT[Offset];
         m_MMU.SW_Memory(Address & ~3, MemoryValue);
     }
     else
@@ -1359,8 +1370,8 @@ void R4300iOp::SWL()
 
 void R4300iOp::SW()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
-    m_MMU.SW_Memory(Address, _GPR[m_Opcode.rt].UW[0]);
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    m_MMU.SW_Memory(Address, m_GPR[m_Opcode.rt].UW[0]);
 }
 
 uint64_t SDL_MASK[8] = {0, 0xFF00000000000000,
@@ -1375,13 +1386,13 @@ int32_t SDL_SHIFT[8] = {0, 8, 16, 24, 32, 40, 48, 56};
 
 void R4300iOp::SDL()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint64_t MemoryValue;
     if (m_MMU.MemoryValue64((Address & ~7), MemoryValue))
     {
         uint32_t Offset = Address & 7;
         MemoryValue &= SDL_MASK[Offset];
-        MemoryValue += _GPR[m_Opcode.rt].UDW >> SDL_SHIFT[Offset];
+        MemoryValue += m_GPR[m_Opcode.rt].UDW >> SDL_SHIFT[Offset];
         m_MMU.SD_Memory((Address & ~7), MemoryValue);
     }
     else
@@ -1403,13 +1414,13 @@ int32_t SDR_SHIFT[8] = {56, 48, 40, 32, 24, 16, 8, 0};
 
 void R4300iOp::SDR()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint64_t MemoryValue;
     if (m_MMU.MemoryValue64((Address & ~7), MemoryValue))
     {
         uint32_t Offset = Address & 7;
         MemoryValue &= SDR_MASK[Offset];
-        MemoryValue += _GPR[m_Opcode.rt].UDW << SDR_SHIFT[Offset];
+        MemoryValue += m_GPR[m_Opcode.rt].UDW << SDR_SHIFT[Offset];
         m_MMU.SD_Memory((Address & ~7), MemoryValue);
     }
     else
@@ -1420,14 +1431,14 @@ void R4300iOp::SDR()
 
 void R4300iOp::SWR()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint32_t MemoryValue;
 
     if (m_MMU.MemoryValue32((Address & ~3), MemoryValue))
     {
         uint32_t Offset = Address & 3;
         MemoryValue &= SWR_MASK[Offset];
-        MemoryValue += _GPR[m_Opcode.rt].UW[0] << SWR_SHIFT[Offset];
+        MemoryValue += m_GPR[m_Opcode.rt].UW[0] << SWR_SHIFT[Offset];
         m_MMU.SW_Memory((Address & ~0x03), MemoryValue);
     }
     else
@@ -1442,22 +1453,22 @@ void R4300iOp::CACHE()
     {
         return;
     }
-    LogMessage("%08X: Cache operation %d, 0x%08X", (*_PROGRAM_COUNTER), m_Opcode.rt, _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset);
+    LogMessage("%08X: Cache operation %d, 0x%08X", (m_PROGRAM_COUNTER), m_Opcode.rt, m_GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset);
 }
 
 void R4300iOp::LL()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint32_t MemoryValue;
 
     if (m_MMU.LW_Memory(Address, MemoryValue))
     {
-        _GPR[m_Opcode.rt].DW = (int32_t)MemoryValue;
-        (*_LLBit) = 1;
+        m_GPR[m_Opcode.rt].DW = (int32_t)MemoryValue;
+        m_LLBit = 1;
         uint32_t PhysicalAddr;
         bool MemoryUsed;
         g_TLB->VAddrToPAddr(Address, PhysicalAddr, MemoryUsed);
-        _CP0[17] = PhysicalAddr >> 4;
+        m_CP0[17] = PhysicalAddr >> 4;
     }
 }
 
@@ -1467,28 +1478,28 @@ void R4300iOp::LWC1()
     {
         return;
     }
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
-    m_MMU.LW_Memory(Address, *(uint32_t *)_FPR_S[m_Opcode.ft]);
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    m_MMU.LW_Memory(Address, *(uint32_t *)m_FPR_S[m_Opcode.ft]);
 }
 
 void R4300iOp::SC()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
-    if ((*_LLBit) != 1 || m_MMU.SW_Memory(Address, _GPR[m_Opcode.rt].UW[0]))
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    if (m_LLBit != 1 || m_MMU.SW_Memory(Address, m_GPR[m_Opcode.rt].UW[0]))
     {
-        _GPR[m_Opcode.rt].UW[0] = (*_LLBit);
+        m_GPR[m_Opcode.rt].UW[0] = m_LLBit;
     }
 }
 
 void R4300iOp::LD()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
-    if (m_MMU.LD_Memory(Address, _GPR[m_Opcode.rt].UDW))
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    if (m_MMU.LD_Memory(Address, m_GPR[m_Opcode.rt].UDW))
     {
 #ifdef Interpreter_StackTest
         if (m_Opcode.rt == 29)
         {
-            StackValue = _GPR[m_Opcode.rt].W[0];
+            StackValue = m_GPR[m_Opcode.rt].W[0];
         }
 #endif
     }
@@ -1496,14 +1507,14 @@ void R4300iOp::LD()
 
 void R4300iOp::LLD()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
-    if (m_MMU.LD_Memory(Address, _GPR[m_Opcode.rt].UDW))
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    if (m_MMU.LD_Memory(Address, m_GPR[m_Opcode.rt].UDW))
     {
-        (*_LLBit) = 1;
+        m_LLBit = 1;
         uint32_t PhysicalAddr;
         bool MemoryUsed;
         g_TLB->VAddrToPAddr(Address, PhysicalAddr, MemoryUsed);
-        _CP0[17] = PhysicalAddr >> 4;
+        m_CP0[17] = PhysicalAddr >> 4;
     }
 }
 
@@ -1513,8 +1524,8 @@ void R4300iOp::LDC1()
     {
         return;
     }
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
-    m_MMU.LD_Memory(Address, *(uint64_t *)_FPR_D[m_Opcode.ft]);
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    m_MMU.LD_Memory(Address, *(uint64_t *)m_FPR_D[m_Opcode.ft]);
 }
 
 void R4300iOp::SWC1()
@@ -1524,8 +1535,8 @@ void R4300iOp::SWC1()
         return;
     }
 
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
-    m_MMU.SW_Memory(Address, *(uint32_t *)_FPR_S[m_Opcode.ft]);
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    m_MMU.SW_Memory(Address, *(uint32_t *)m_FPR_S[m_Opcode.ft]);
 }
 
 void R4300iOp::SDC1()
@@ -1534,58 +1545,58 @@ void R4300iOp::SDC1()
     {
         return;
     }
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
-    m_MMU.SD_Memory(Address, *((uint64_t *)_FPR_D[m_Opcode.ft]));
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    m_MMU.SD_Memory(Address, *((uint64_t *)m_FPR_D[m_Opcode.ft]));
 }
 
 void R4300iOp::SD()
 {
-    uint64_t Address = _GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
-    m_MMU.SD_Memory(Address, _GPR[m_Opcode.rt].UDW);
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    m_MMU.SD_Memory(Address, m_GPR[m_Opcode.rt].UDW);
 }
 
 // R4300i opcodes: Special
 
 void R4300iOp::SPECIAL_SLL()
 {
-    _GPR[m_Opcode.rd].DW = (_GPR[m_Opcode.rt].W[0] << m_Opcode.sa);
+    m_GPR[m_Opcode.rd].DW = (m_GPR[m_Opcode.rt].W[0] << m_Opcode.sa);
 }
 
 void R4300iOp::SPECIAL_SRL()
 {
-    _GPR[m_Opcode.rd].DW = (int32_t)(_GPR[m_Opcode.rt].UW[0] >> m_Opcode.sa);
+    m_GPR[m_Opcode.rd].DW = (int32_t)(m_GPR[m_Opcode.rt].UW[0] >> m_Opcode.sa);
 }
 
 void R4300iOp::SPECIAL_SRA()
 {
-    _GPR[m_Opcode.rd].DW = (int32_t)(_GPR[m_Opcode.rt].DW >> m_Opcode.sa);
+    m_GPR[m_Opcode.rd].DW = (int32_t)(m_GPR[m_Opcode.rt].DW >> m_Opcode.sa);
 }
 
 void R4300iOp::SPECIAL_SLLV()
 {
-    _GPR[m_Opcode.rd].DW = (_GPR[m_Opcode.rt].W[0] << (_GPR[m_Opcode.rs].UW[0] & 0x1F));
+    m_GPR[m_Opcode.rd].DW = (m_GPR[m_Opcode.rt].W[0] << (m_GPR[m_Opcode.rs].UW[0] & 0x1F));
 }
 
 void R4300iOp::SPECIAL_SRLV()
 {
-    _GPR[m_Opcode.rd].DW = (int32_t)(_GPR[m_Opcode.rt].UW[0] >> (_GPR[m_Opcode.rs].UW[0] & 0x1F));
+    m_GPR[m_Opcode.rd].DW = (int32_t)(m_GPR[m_Opcode.rt].UW[0] >> (m_GPR[m_Opcode.rs].UW[0] & 0x1F));
 }
 
 void R4300iOp::SPECIAL_SRAV()
 {
-    _GPR[m_Opcode.rd].DW = (int32_t)(_GPR[m_Opcode.rt].DW >> (_GPR[m_Opcode.rs].UW[0] & 0x1F));
+    m_GPR[m_Opcode.rd].DW = (int32_t)(m_GPR[m_Opcode.rt].DW >> (m_GPR[m_Opcode.rs].UW[0] & 0x1F));
 }
 
 void R4300iOp::SPECIAL_JR()
 {
-    m_System.DelayedJump(_GPR[m_Opcode.rs].UW[0]);
+    m_System.DelayedJump(m_GPR[m_Opcode.rs].UW[0]);
     m_System.m_TestTimer = true;
 }
 
 void R4300iOp::SPECIAL_JALR()
 {
-    m_System.DelayedJump(_GPR[m_Opcode.rs].UW[0]);
-    _GPR[m_Opcode.rd].DW = (int32_t)(m_System.m_PipelineStage == PIPELINE_STAGE_JUMP_DELAY_SLOT ? m_System.m_JumpToLocation + 4 : *_PROGRAM_COUNTER + 8);
+    m_System.DelayedJump(m_GPR[m_Opcode.rs].UW[0]);
+    m_GPR[m_Opcode.rd].DW = (int32_t)(m_System.m_PipelineStage == PIPELINE_STAGE_JUMP_DELAY_SLOT ? m_System.m_JumpToLocation + 4 : m_PROGRAM_COUNTER + 8);
     m_System.m_TestTimer = true;
 }
 
@@ -1613,86 +1624,86 @@ void R4300iOp::SPECIAL_SYNC()
 
 void R4300iOp::SPECIAL_MFHI()
 {
-    _GPR[m_Opcode.rd].DW = _RegHI->DW;
+    m_GPR[m_Opcode.rd].DW = m_RegHI.DW;
 }
 
 void R4300iOp::SPECIAL_MTHI()
 {
-    _RegHI->DW = _GPR[m_Opcode.rs].DW;
+    m_RegHI.DW = m_GPR[m_Opcode.rs].DW;
 }
 
 void R4300iOp::SPECIAL_MFLO()
 {
-    _GPR[m_Opcode.rd].DW = _RegLO->DW;
+    m_GPR[m_Opcode.rd].DW = m_RegLO.DW;
 }
 
 void R4300iOp::SPECIAL_MTLO()
 {
-    _RegLO->DW = _GPR[m_Opcode.rs].DW;
+    m_RegLO.DW = m_GPR[m_Opcode.rs].DW;
 }
 
 void R4300iOp::SPECIAL_DSLLV()
 {
-    _GPR[m_Opcode.rd].DW = _GPR[m_Opcode.rt].DW << (_GPR[m_Opcode.rs].UW[0] & 0x3F);
+    m_GPR[m_Opcode.rd].DW = m_GPR[m_Opcode.rt].DW << (m_GPR[m_Opcode.rs].UW[0] & 0x3F);
 }
 
 void R4300iOp::SPECIAL_DSRLV()
 {
-    _GPR[m_Opcode.rd].UDW = _GPR[m_Opcode.rt].UDW >> (_GPR[m_Opcode.rs].UW[0] & 0x3F);
+    m_GPR[m_Opcode.rd].UDW = m_GPR[m_Opcode.rt].UDW >> (m_GPR[m_Opcode.rs].UW[0] & 0x3F);
 }
 
 void R4300iOp::SPECIAL_DSRAV()
 {
-    _GPR[m_Opcode.rd].DW = _GPR[m_Opcode.rt].DW >> (_GPR[m_Opcode.rs].UW[0] & 0x3F);
+    m_GPR[m_Opcode.rd].DW = m_GPR[m_Opcode.rt].DW >> (m_GPR[m_Opcode.rs].UW[0] & 0x3F);
 }
 
 void R4300iOp::SPECIAL_MULT()
 {
-    _RegHI->DW = (int64_t)(_GPR[m_Opcode.rs].W[0]) * (int64_t)(_GPR[m_Opcode.rt].W[0]);
-    _RegLO->DW = _RegHI->W[0];
-    _RegHI->DW = _RegHI->W[1];
+    m_RegHI.DW = (int64_t)(m_GPR[m_Opcode.rs].W[0]) * (int64_t)(m_GPR[m_Opcode.rt].W[0]);
+    m_RegLO.DW = m_RegHI.W[0];
+    m_RegHI.DW = m_RegHI.W[1];
 }
 
 void R4300iOp::SPECIAL_MULTU()
 {
-    _RegHI->DW = (uint64_t)(_GPR[m_Opcode.rs].UW[0]) * (uint64_t)(_GPR[m_Opcode.rt].UW[0]);
-    _RegLO->DW = _RegHI->W[0];
-    _RegHI->DW = _RegHI->W[1];
+    m_RegHI.DW = (uint64_t)(m_GPR[m_Opcode.rs].UW[0]) * (uint64_t)(m_GPR[m_Opcode.rt].UW[0]);
+    m_RegLO.DW = m_RegHI.W[0];
+    m_RegHI.DW = m_RegHI.W[1];
 }
 
 void R4300iOp::SPECIAL_DIV()
 {
-    if (_GPR[m_Opcode.rt].W[0] != 0)
+    if (m_GPR[m_Opcode.rt].W[0] != 0)
     {
-        if (_GPR[m_Opcode.rs].W[0] != 0x80000000 || _GPR[m_Opcode.rt].W[0] != -1)
+        if (m_GPR[m_Opcode.rs].W[0] != 0x80000000 || m_GPR[m_Opcode.rt].W[0] != -1)
         {
-            _RegLO->DW = _GPR[m_Opcode.rs].W[0] / _GPR[m_Opcode.rt].W[0];
-            _RegHI->DW = _GPR[m_Opcode.rs].W[0] % _GPR[m_Opcode.rt].W[0];
+            m_RegLO.DW = m_GPR[m_Opcode.rs].W[0] / m_GPR[m_Opcode.rt].W[0];
+            m_RegHI.DW = m_GPR[m_Opcode.rs].W[0] % m_GPR[m_Opcode.rt].W[0];
         }
         else
         {
-            _RegLO->DW = 0xFFFFFFFF80000000;
-            _RegHI->DW = 0x0000000000000000;
+            m_RegLO.DW = 0xFFFFFFFF80000000;
+            m_RegHI.DW = 0x0000000000000000;
         }
     }
     else
     {
-        _RegLO->DW = _GPR[m_Opcode.rs].W[0] < 0 ? 0x0000000000000001 : 0xFFFFFFFFFFFFFFFF;
-        _RegHI->DW = _GPR[m_Opcode.rs].W[0];
+        m_RegLO.DW = m_GPR[m_Opcode.rs].W[0] < 0 ? 0x0000000000000001 : 0xFFFFFFFFFFFFFFFF;
+        m_RegHI.DW = m_GPR[m_Opcode.rs].W[0];
     }
 }
 
 void R4300iOp::SPECIAL_DIVU()
 {
-    if (_GPR[m_Opcode.rt].UW[0] != 0)
+    if (m_GPR[m_Opcode.rt].UW[0] != 0)
     {
-        _RegLO->DW = (int32_t)(_GPR[m_Opcode.rs].UW[0] / _GPR[m_Opcode.rt].UW[0]);
-        _RegHI->DW = (int32_t)(_GPR[m_Opcode.rs].UW[0] % _GPR[m_Opcode.rt].UW[0]);
+        m_RegLO.DW = (int32_t)(m_GPR[m_Opcode.rs].UW[0] / m_GPR[m_Opcode.rt].UW[0]);
+        m_RegHI.DW = (int32_t)(m_GPR[m_Opcode.rs].UW[0] % m_GPR[m_Opcode.rt].UW[0]);
     }
     else
     {
-        _RegLO->DW = 0xFFFFFFFFFFFFFFFF;
-        _RegHI->DW = _GPR[m_Opcode.rs].W[0];
+        m_RegLO.DW = 0xFFFFFFFFFFFFFFFF;
+        m_RegHI.DW = m_GPR[m_Opcode.rs].W[0];
     }
 }
 
@@ -1700,80 +1711,80 @@ void R4300iOp::SPECIAL_DMULT()
 {
     MIPS_DWORD Tmp[3];
 
-    _RegLO->UDW = (uint64_t)_GPR[m_Opcode.rs].UW[0] * (uint64_t)_GPR[m_Opcode.rt].UW[0];
-    Tmp[0].UDW = (int64_t)_GPR[m_Opcode.rs].W[1] * (int64_t)(uint64_t)_GPR[m_Opcode.rt].UW[0];
-    Tmp[1].UDW = (int64_t)(uint64_t)_GPR[m_Opcode.rs].UW[0] * (int64_t)_GPR[m_Opcode.rt].W[1];
-    _RegHI->UDW = (int64_t)_GPR[m_Opcode.rs].W[1] * (int64_t)_GPR[m_Opcode.rt].W[1];
+    m_RegLO.UDW = (uint64_t)m_GPR[m_Opcode.rs].UW[0] * (uint64_t)m_GPR[m_Opcode.rt].UW[0];
+    Tmp[0].UDW = (int64_t)m_GPR[m_Opcode.rs].W[1] * (int64_t)(uint64_t)m_GPR[m_Opcode.rt].UW[0];
+    Tmp[1].UDW = (int64_t)(uint64_t)m_GPR[m_Opcode.rs].UW[0] * (int64_t)m_GPR[m_Opcode.rt].W[1];
+    m_RegHI.UDW = (int64_t)m_GPR[m_Opcode.rs].W[1] * (int64_t)m_GPR[m_Opcode.rt].W[1];
 
-    Tmp[2].UDW = (uint64_t)_RegLO->UW[1] + (uint64_t)Tmp[0].UW[0] + (uint64_t)Tmp[1].UW[0];
-    _RegLO->UDW += ((uint64_t)Tmp[0].UW[0] + (uint64_t)Tmp[1].UW[0]) << 32;
-    _RegHI->UDW += (uint64_t)Tmp[0].W[1] + (uint64_t)Tmp[1].W[1] + Tmp[2].UW[1];
+    Tmp[2].UDW = (uint64_t)m_RegLO.UW[1] + (uint64_t)Tmp[0].UW[0] + (uint64_t)Tmp[1].UW[0];
+    m_RegLO.UDW += ((uint64_t)Tmp[0].UW[0] + (uint64_t)Tmp[1].UW[0]) << 32;
+    m_RegHI.UDW += (uint64_t)Tmp[0].W[1] + (uint64_t)Tmp[1].W[1] + Tmp[2].UW[1];
 }
 
 void R4300iOp::SPECIAL_DMULTU()
 {
     MIPS_DWORD Tmp[3];
 
-    _RegLO->UDW = (uint64_t)_GPR[m_Opcode.rs].UW[0] * (uint64_t)_GPR[m_Opcode.rt].UW[0];
-    Tmp[0].UDW = (uint64_t)_GPR[m_Opcode.rs].UW[1] * (uint64_t)_GPR[m_Opcode.rt].UW[0];
-    Tmp[1].UDW = (uint64_t)_GPR[m_Opcode.rs].UW[0] * (uint64_t)_GPR[m_Opcode.rt].UW[1];
-    _RegHI->UDW = (uint64_t)_GPR[m_Opcode.rs].UW[1] * (uint64_t)_GPR[m_Opcode.rt].UW[1];
+    m_RegLO.UDW = (uint64_t)m_GPR[m_Opcode.rs].UW[0] * (uint64_t)m_GPR[m_Opcode.rt].UW[0];
+    Tmp[0].UDW = (uint64_t)m_GPR[m_Opcode.rs].UW[1] * (uint64_t)m_GPR[m_Opcode.rt].UW[0];
+    Tmp[1].UDW = (uint64_t)m_GPR[m_Opcode.rs].UW[0] * (uint64_t)m_GPR[m_Opcode.rt].UW[1];
+    m_RegHI.UDW = (uint64_t)m_GPR[m_Opcode.rs].UW[1] * (uint64_t)m_GPR[m_Opcode.rt].UW[1];
 
-    Tmp[2].UDW = (uint64_t)_RegLO->UW[1] + (uint64_t)Tmp[0].UW[0] + (uint64_t)Tmp[1].UW[0];
-    _RegLO->UDW += ((uint64_t)Tmp[0].UW[0] + (uint64_t)Tmp[1].UW[0]) << 32;
-    _RegHI->UDW += (uint64_t)Tmp[0].UW[1] + (uint64_t)Tmp[1].UW[1] + Tmp[2].UW[1];
+    Tmp[2].UDW = (uint64_t)m_RegLO.UW[1] + (uint64_t)Tmp[0].UW[0] + (uint64_t)Tmp[1].UW[0];
+    m_RegLO.UDW += ((uint64_t)Tmp[0].UW[0] + (uint64_t)Tmp[1].UW[0]) << 32;
+    m_RegHI.UDW += (uint64_t)Tmp[0].UW[1] + (uint64_t)Tmp[1].UW[1] + Tmp[2].UW[1];
 }
 
 void R4300iOp::SPECIAL_DDIV()
 {
-    if (_GPR[m_Opcode.rt].UDW != 0)
+    if (m_GPR[m_Opcode.rt].UDW != 0)
     {
-        _RegLO->DW = _GPR[m_Opcode.rs].DW / _GPR[m_Opcode.rt].DW;
-        _RegHI->DW = _GPR[m_Opcode.rs].DW % _GPR[m_Opcode.rt].DW;
+        m_RegLO.DW = m_GPR[m_Opcode.rs].DW / m_GPR[m_Opcode.rt].DW;
+        m_RegHI.DW = m_GPR[m_Opcode.rs].DW % m_GPR[m_Opcode.rt].DW;
     }
     else
     {
-        _RegLO->DW = _GPR[m_Opcode.rs].DW < 0 ? 0x0000000000000001 : 0xFFFFFFFFFFFFFFFF;
-        _RegHI->DW = _GPR[m_Opcode.rs].DW;
+        m_RegLO.DW = m_GPR[m_Opcode.rs].DW < 0 ? 0x0000000000000001 : 0xFFFFFFFFFFFFFFFF;
+        m_RegHI.DW = m_GPR[m_Opcode.rs].DW;
     }
 }
 
 void R4300iOp::SPECIAL_DDIVU()
 {
-    if (_GPR[m_Opcode.rt].UDW != 0)
+    if (m_GPR[m_Opcode.rt].UDW != 0)
     {
-        _RegLO->UDW = _GPR[m_Opcode.rs].UDW / _GPR[m_Opcode.rt].UDW;
-        _RegHI->UDW = _GPR[m_Opcode.rs].UDW % _GPR[m_Opcode.rt].UDW;
+        m_RegLO.UDW = m_GPR[m_Opcode.rs].UDW / m_GPR[m_Opcode.rt].UDW;
+        m_RegHI.UDW = m_GPR[m_Opcode.rs].UDW % m_GPR[m_Opcode.rt].UDW;
     }
     else
     {
-        _RegLO->DW = 0xFFFFFFFFFFFFFFFF;
-        _RegHI->DW = _GPR[m_Opcode.rs].DW;
+        m_RegLO.DW = 0xFFFFFFFFFFFFFFFF;
+        m_RegHI.DW = m_GPR[m_Opcode.rs].DW;
     }
 }
 
 void R4300iOp::SPECIAL_ADD()
 {
-    int32_t rs = _GPR[m_Opcode.rs].W[0];
-    int32_t rt = _GPR[m_Opcode.rt].W[0];
+    int32_t rs = m_GPR[m_Opcode.rs].W[0];
+    int32_t rt = m_GPR[m_Opcode.rt].W[0];
     int32_t sum = rs + rt;
     if ((~(rs ^ rt) & (rs ^ sum)) & 0x80000000)
     {
         m_Reg.TriggerException(EXC_OV);
         return;
     }
-    _GPR[m_Opcode.rd].DW = sum;
+    m_GPR[m_Opcode.rd].DW = sum;
 }
 
 void R4300iOp::SPECIAL_ADDU()
 {
-    _GPR[m_Opcode.rd].DW = _GPR[m_Opcode.rs].W[0] + _GPR[m_Opcode.rt].W[0];
+    m_GPR[m_Opcode.rd].DW = m_GPR[m_Opcode.rs].W[0] + m_GPR[m_Opcode.rt].W[0];
 }
 
 void R4300iOp::SPECIAL_SUB()
 {
-    int32_t rs = _GPR[m_Opcode.rs].W[0];
-    int32_t rt = _GPR[m_Opcode.rt].W[0];
+    int32_t rs = m_GPR[m_Opcode.rs].W[0];
+    int32_t rt = m_GPR[m_Opcode.rt].W[0];
     int32_t sub = rs - rt;
 
     if (((rs ^ rt) & (rs ^ sub)) & 0x80000000)
@@ -1781,86 +1792,86 @@ void R4300iOp::SPECIAL_SUB()
         m_Reg.TriggerException(EXC_OV);
         return;
     }
-    _GPR[m_Opcode.rd].DW = sub;
+    m_GPR[m_Opcode.rd].DW = sub;
 }
 
 void R4300iOp::SPECIAL_SUBU()
 {
-    _GPR[m_Opcode.rd].DW = _GPR[m_Opcode.rs].W[0] - _GPR[m_Opcode.rt].W[0];
+    m_GPR[m_Opcode.rd].DW = m_GPR[m_Opcode.rs].W[0] - m_GPR[m_Opcode.rt].W[0];
 }
 
 void R4300iOp::SPECIAL_AND()
 {
-    _GPR[m_Opcode.rd].DW = _GPR[m_Opcode.rs].DW & _GPR[m_Opcode.rt].DW;
+    m_GPR[m_Opcode.rd].DW = m_GPR[m_Opcode.rs].DW & m_GPR[m_Opcode.rt].DW;
 }
 
 void R4300iOp::SPECIAL_OR()
 {
-    _GPR[m_Opcode.rd].DW = _GPR[m_Opcode.rs].DW | _GPR[m_Opcode.rt].DW;
+    m_GPR[m_Opcode.rd].DW = m_GPR[m_Opcode.rs].DW | m_GPR[m_Opcode.rt].DW;
 #ifdef Interpreter_StackTest
     if (m_Opcode.rd == 29)
     {
-        StackValue = _GPR[m_Opcode.rd].W[0];
+        StackValue = m_GPR[m_Opcode.rd].W[0];
     }
 #endif
 }
 
 void R4300iOp::SPECIAL_XOR()
 {
-    _GPR[m_Opcode.rd].DW = _GPR[m_Opcode.rs].DW ^ _GPR[m_Opcode.rt].DW;
+    m_GPR[m_Opcode.rd].DW = m_GPR[m_Opcode.rs].DW ^ m_GPR[m_Opcode.rt].DW;
 }
 
 void R4300iOp::SPECIAL_NOR()
 {
-    _GPR[m_Opcode.rd].DW = ~(_GPR[m_Opcode.rs].DW | _GPR[m_Opcode.rt].DW);
+    m_GPR[m_Opcode.rd].DW = ~(m_GPR[m_Opcode.rs].DW | m_GPR[m_Opcode.rt].DW);
 }
 
 void R4300iOp::SPECIAL_SLT()
 {
-    if (_GPR[m_Opcode.rs].DW < _GPR[m_Opcode.rt].DW)
+    if (m_GPR[m_Opcode.rs].DW < m_GPR[m_Opcode.rt].DW)
     {
-        _GPR[m_Opcode.rd].DW = 1;
+        m_GPR[m_Opcode.rd].DW = 1;
     }
     else
     {
-        _GPR[m_Opcode.rd].DW = 0;
+        m_GPR[m_Opcode.rd].DW = 0;
     }
 }
 
 void R4300iOp::SPECIAL_SLTU()
 {
-    if (_GPR[m_Opcode.rs].UDW < _GPR[m_Opcode.rt].UDW)
+    if (m_GPR[m_Opcode.rs].UDW < m_GPR[m_Opcode.rt].UDW)
     {
-        _GPR[m_Opcode.rd].DW = 1;
+        m_GPR[m_Opcode.rd].DW = 1;
     }
     else
     {
-        _GPR[m_Opcode.rd].DW = 0;
+        m_GPR[m_Opcode.rd].DW = 0;
     }
 }
 
 void R4300iOp::SPECIAL_DADD()
 {
-    int64_t rs = _GPR[m_Opcode.rs].DW;
-    int64_t rt = _GPR[m_Opcode.rt].DW;
+    int64_t rs = m_GPR[m_Opcode.rs].DW;
+    int64_t rt = m_GPR[m_Opcode.rt].DW;
     int64_t sum = rs + rt;
     if ((~(rs ^ rt) & (rs ^ sum)) & 0x8000000000000000)
     {
         m_Reg.TriggerException(EXC_OV);
         return;
     }
-    _GPR[m_Opcode.rd].DW = sum;
+    m_GPR[m_Opcode.rd].DW = sum;
 }
 
 void R4300iOp::SPECIAL_DADDU()
 {
-    _GPR[m_Opcode.rd].DW = _GPR[m_Opcode.rs].DW + _GPR[m_Opcode.rt].DW;
+    m_GPR[m_Opcode.rd].DW = m_GPR[m_Opcode.rs].DW + m_GPR[m_Opcode.rt].DW;
 }
 
 void R4300iOp::SPECIAL_DSUB()
 {
-    int64_t rs = _GPR[m_Opcode.rs].DW;
-    int64_t rt = _GPR[m_Opcode.rt].DW;
+    int64_t rs = m_GPR[m_Opcode.rs].DW;
+    int64_t rt = m_GPR[m_Opcode.rt].DW;
     int64_t sub = rs - rt;
 
     if (((rs ^ rt) & (rs ^ sub)) & 0x8000000000000000)
@@ -1868,17 +1879,17 @@ void R4300iOp::SPECIAL_DSUB()
         m_Reg.TriggerException(EXC_OV);
         return;
     }
-    _GPR[m_Opcode.rd].DW = sub;
+    m_GPR[m_Opcode.rd].DW = sub;
 }
 
 void R4300iOp::SPECIAL_DSUBU()
 {
-    _GPR[m_Opcode.rd].DW = _GPR[m_Opcode.rs].DW - _GPR[m_Opcode.rt].DW;
+    m_GPR[m_Opcode.rd].DW = m_GPR[m_Opcode.rs].DW - m_GPR[m_Opcode.rt].DW;
 }
 
 void R4300iOp::SPECIAL_TEQ()
 {
-    if (_GPR[m_Opcode.rs].DW == _GPR[m_Opcode.rt].DW)
+    if (m_GPR[m_Opcode.rs].DW == m_GPR[m_Opcode.rt].DW)
     {
         m_Reg.TriggerException(EXC_TRAP);
     }
@@ -1886,7 +1897,7 @@ void R4300iOp::SPECIAL_TEQ()
 
 void R4300iOp::SPECIAL_TGE()
 {
-    if (_GPR[m_Opcode.rs].DW >= _GPR[m_Opcode.rt].DW)
+    if (m_GPR[m_Opcode.rs].DW >= m_GPR[m_Opcode.rt].DW)
     {
         m_Reg.TriggerException(EXC_TRAP);
     }
@@ -1894,7 +1905,7 @@ void R4300iOp::SPECIAL_TGE()
 
 void R4300iOp::SPECIAL_TGEU()
 {
-    if (_GPR[m_Opcode.rs].UDW >= _GPR[m_Opcode.rt].UDW)
+    if (m_GPR[m_Opcode.rs].UDW >= m_GPR[m_Opcode.rt].UDW)
     {
         m_Reg.TriggerException(EXC_TRAP);
     }
@@ -1902,7 +1913,7 @@ void R4300iOp::SPECIAL_TGEU()
 
 void R4300iOp::SPECIAL_TLT()
 {
-    if (_GPR[m_Opcode.rs].DW < _GPR[m_Opcode.rt].DW)
+    if (m_GPR[m_Opcode.rs].DW < m_GPR[m_Opcode.rt].DW)
     {
         m_Reg.TriggerException(EXC_TRAP);
     }
@@ -1910,7 +1921,7 @@ void R4300iOp::SPECIAL_TLT()
 
 void R4300iOp::SPECIAL_TLTU()
 {
-    if (_GPR[m_Opcode.rs].UDW < _GPR[m_Opcode.rt].UDW)
+    if (m_GPR[m_Opcode.rs].UDW < m_GPR[m_Opcode.rt].UDW)
     {
         m_Reg.TriggerException(EXC_TRAP);
     }
@@ -1918,7 +1929,7 @@ void R4300iOp::SPECIAL_TLTU()
 
 void R4300iOp::SPECIAL_TNE()
 {
-    if (_GPR[m_Opcode.rs].DW != _GPR[m_Opcode.rt].DW)
+    if (m_GPR[m_Opcode.rs].DW != m_GPR[m_Opcode.rt].DW)
     {
         m_Reg.TriggerException(EXC_TRAP);
     }
@@ -1926,129 +1937,129 @@ void R4300iOp::SPECIAL_TNE()
 
 void R4300iOp::SPECIAL_DSLL()
 {
-    _GPR[m_Opcode.rd].DW = (_GPR[m_Opcode.rt].DW << m_Opcode.sa);
+    m_GPR[m_Opcode.rd].DW = (m_GPR[m_Opcode.rt].DW << m_Opcode.sa);
 }
 
 void R4300iOp::SPECIAL_DSRL()
 {
-    _GPR[m_Opcode.rd].UDW = (_GPR[m_Opcode.rt].UDW >> m_Opcode.sa);
+    m_GPR[m_Opcode.rd].UDW = (m_GPR[m_Opcode.rt].UDW >> m_Opcode.sa);
 }
 
 void R4300iOp::SPECIAL_DSRA()
 {
-    _GPR[m_Opcode.rd].DW = (_GPR[m_Opcode.rt].DW >> m_Opcode.sa);
+    m_GPR[m_Opcode.rd].DW = (m_GPR[m_Opcode.rt].DW >> m_Opcode.sa);
 }
 
 void R4300iOp::SPECIAL_DSLL32()
 {
-    _GPR[m_Opcode.rd].DW = (_GPR[m_Opcode.rt].DW << (m_Opcode.sa + 32));
+    m_GPR[m_Opcode.rd].DW = (m_GPR[m_Opcode.rt].DW << (m_Opcode.sa + 32));
 }
 
 void R4300iOp::SPECIAL_DSRL32()
 {
-    _GPR[m_Opcode.rd].UDW = (_GPR[m_Opcode.rt].UDW >> (m_Opcode.sa + 32));
+    m_GPR[m_Opcode.rd].UDW = (m_GPR[m_Opcode.rt].UDW >> (m_Opcode.sa + 32));
 }
 
 void R4300iOp::SPECIAL_DSRA32()
 {
-    _GPR[m_Opcode.rd].DW = (_GPR[m_Opcode.rt].DW >> (m_Opcode.sa + 32));
+    m_GPR[m_Opcode.rd].DW = (m_GPR[m_Opcode.rt].DW >> (m_Opcode.sa + 32));
 }
 
 // R4300i opcodes: RegImm
 
 void R4300iOp::REGIMM_BLTZ()
 {
-    if (_GPR[m_Opcode.rs].DW < 0)
+    if (m_GPR[m_Opcode.rs].DW < 0)
     {
         m_System.DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
-        m_System.DelayedJump(*_PROGRAM_COUNTER + 8);
+        m_System.DelayedJump(m_PROGRAM_COUNTER + 8);
     }
 }
 
 void R4300iOp::REGIMM_BGEZ()
 {
-    if (_GPR[m_Opcode.rs].DW >= 0)
+    if (m_GPR[m_Opcode.rs].DW >= 0)
     {
         m_System.DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
-        m_System.DelayedJump(*_PROGRAM_COUNTER + 8);
+        m_System.DelayedJump(m_PROGRAM_COUNTER + 8);
     }
 }
 
 void R4300iOp::REGIMM_BLTZL()
 {
-    if (_GPR[m_Opcode.rs].DW < 0)
+    if (m_GPR[m_Opcode.rs].DW < 0)
     {
         m_System.DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
         m_System.m_PipelineStage = PIPELINE_STAGE_JUMP;
-        m_System.m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
+        m_System.m_JumpToLocation = (m_PROGRAM_COUNTER) + 8;
     }
 }
 
 void R4300iOp::REGIMM_BGEZL()
 {
-    if (_GPR[m_Opcode.rs].DW >= 0)
+    if (m_GPR[m_Opcode.rs].DW >= 0)
     {
         m_System.DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
         m_System.m_PipelineStage = PIPELINE_STAGE_JUMP;
-        m_System.m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
+        m_System.m_JumpToLocation = (m_PROGRAM_COUNTER) + 8;
     }
 }
 
 void R4300iOp::REGIMM_BLTZAL()
 {
-    if (_GPR[m_Opcode.rs].DW < 0)
+    if (m_GPR[m_Opcode.rs].DW < 0)
     {
         m_System.DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
-        m_System.DelayedJump(*_PROGRAM_COUNTER + 8);
+        m_System.DelayedJump(m_PROGRAM_COUNTER + 8);
     }
-    _GPR[31].DW = (int32_t)(m_System.m_PipelineStage == PIPELINE_STAGE_JUMP_DELAY_SLOT ? m_System.m_JumpToLocation + 4 : *_PROGRAM_COUNTER + 8);
+    m_GPR[31].DW = (int32_t)(m_System.m_PipelineStage == PIPELINE_STAGE_JUMP_DELAY_SLOT ? m_System.m_JumpToLocation + 4 : m_PROGRAM_COUNTER + 8);
 }
 
 void R4300iOp::REGIMM_BGEZAL()
 {
-    if (_GPR[m_Opcode.rs].DW >= 0)
+    if (m_GPR[m_Opcode.rs].DW >= 0)
     {
         m_System.DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
-        m_System.DelayedJump(*_PROGRAM_COUNTER + 8);
+        m_System.DelayedJump(m_PROGRAM_COUNTER + 8);
     }
-    _GPR[31].DW = (int32_t)(m_System.m_PipelineStage == PIPELINE_STAGE_JUMP_DELAY_SLOT ? m_System.m_JumpToLocation + 4 : *_PROGRAM_COUNTER + 8);
+    m_GPR[31].DW = (int32_t)(m_System.m_PipelineStage == PIPELINE_STAGE_JUMP_DELAY_SLOT ? m_System.m_JumpToLocation + 4 : m_PROGRAM_COUNTER + 8);
 }
 
 void R4300iOp::REGIMM_BGEZALL()
 {
-    if (_GPR[m_Opcode.rs].DW >= 0)
+    if (m_GPR[m_Opcode.rs].DW >= 0)
     {
         m_System.DelayedRelativeJump(((int16_t)m_Opcode.offset << 2) + 4);
     }
     else
     {
         m_System.m_PipelineStage = PIPELINE_STAGE_JUMP;
-        m_System.m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
+        m_System.m_JumpToLocation = (m_PROGRAM_COUNTER) + 8;
     }
-    _GPR[31].DW = (int32_t)(m_System.m_PipelineStage == PIPELINE_STAGE_JUMP_DELAY_SLOT ? m_System.m_JumpToLocation + 4 : *_PROGRAM_COUNTER + 8);
+    m_GPR[31].DW = (int32_t)(m_System.m_PipelineStage == PIPELINE_STAGE_JUMP_DELAY_SLOT ? m_System.m_JumpToLocation + 4 : m_PROGRAM_COUNTER + 8);
 }
 
 void R4300iOp::REGIMM_TEQI()
 {
-    if (_GPR[m_Opcode.rs].DW == (int64_t)((int16_t)m_Opcode.immediate))
+    if (m_GPR[m_Opcode.rs].DW == (int64_t)((int16_t)m_Opcode.immediate))
     {
         m_Reg.TriggerException(EXC_TRAP);
     }
@@ -2056,7 +2067,7 @@ void R4300iOp::REGIMM_TEQI()
 
 void R4300iOp::REGIMM_TGEI()
 {
-    if (_GPR[m_Opcode.rs].DW >= (int64_t)((int16_t)m_Opcode.immediate))
+    if (m_GPR[m_Opcode.rs].DW >= (int64_t)((int16_t)m_Opcode.immediate))
     {
         m_Reg.TriggerException(EXC_TRAP);
     }
@@ -2068,7 +2079,7 @@ void R4300iOp::REGIMM_TGEIU()
     int64_t imm64;
 
     imm64 = imm32;
-    if (_GPR[m_Opcode.rs].UDW >= (uint64_t)imm64)
+    if (m_GPR[m_Opcode.rs].UDW >= (uint64_t)imm64)
     {
         m_Reg.TriggerException(EXC_TRAP);
     }
@@ -2076,7 +2087,7 @@ void R4300iOp::REGIMM_TGEIU()
 
 void R4300iOp::REGIMM_TLTI()
 {
-    if (_GPR[m_Opcode.rs].DW < (int64_t)((int16_t)m_Opcode.immediate))
+    if (m_GPR[m_Opcode.rs].DW < (int64_t)((int16_t)m_Opcode.immediate))
     {
         m_Reg.TriggerException(EXC_TRAP);
     }
@@ -2088,7 +2099,7 @@ void R4300iOp::REGIMM_TLTIU()
     int64_t imm64;
 
     imm64 = imm32;
-    if (_GPR[m_Opcode.rs].UDW < (uint64_t)imm64)
+    if (m_GPR[m_Opcode.rs].UDW < (uint64_t)imm64)
     {
         m_Reg.TriggerException(EXC_TRAP);
     }
@@ -2096,7 +2107,7 @@ void R4300iOp::REGIMM_TLTIU()
 
 void R4300iOp::REGIMM_TNEI()
 {
-    if (_GPR[m_Opcode.rs].DW != (int64_t)((int16_t)m_Opcode.immediate))
+    if (m_GPR[m_Opcode.rs].DW != (int64_t)((int16_t)m_Opcode.immediate))
     {
         m_Reg.TriggerException(EXC_TRAP);
     }
@@ -2106,22 +2117,22 @@ void R4300iOp::REGIMM_TNEI()
 
 void R4300iOp::COP0_MF()
 {
-    _GPR[m_Opcode.rt].DW = (int32_t)m_Reg.Cop0_MF((CRegisters::COP0Reg)m_Opcode.rd);
+    m_GPR[m_Opcode.rt].DW = (int32_t)m_Reg.Cop0_MF((CRegisters::COP0Reg)m_Opcode.rd);
 }
 
 void R4300iOp::COP0_DMF()
 {
-    _GPR[m_Opcode.rt].DW = m_Reg.Cop0_MF((CRegisters::COP0Reg)m_Opcode.rd);
+    m_GPR[m_Opcode.rt].DW = m_Reg.Cop0_MF((CRegisters::COP0Reg)m_Opcode.rd);
 }
 
 void R4300iOp::COP0_MT()
 {
-    m_Reg.Cop0_MT((CRegisters::COP0Reg)m_Opcode.rd, (int64_t)_GPR[m_Opcode.rt].W[0]);
+    m_Reg.Cop0_MT((CRegisters::COP0Reg)m_Opcode.rd, (int64_t)m_GPR[m_Opcode.rt].W[0]);
 }
 
 void R4300iOp::COP0_DMT()
 {
-    m_Reg.Cop0_MT((CRegisters::COP0Reg)m_Opcode.rd, _GPR[m_Opcode.rt].UDW);
+    m_Reg.Cop0_MT((CRegisters::COP0Reg)m_Opcode.rd, m_GPR[m_Opcode.rt].UDW);
 }
 // COP0 CO functions
 
@@ -2158,7 +2169,7 @@ void R4300iOp::COP0_CO_ERET()
         m_System.m_JumpToLocation = (uint32_t)m_Reg.EPC_REGISTER;
         m_Reg.STATUS_REGISTER.ExceptionLevel = 0;
     }
-    (*_LLBit) = 0;
+    m_LLBit = 0;
     m_Reg.CheckInterrupts();
     m_System.m_TestTimer = true;
 }
@@ -2166,11 +2177,11 @@ void R4300iOp::COP0_CO_ERET()
 // COP1 functions
 void R4300iOp::CPO1_UNIMPLEMENTED_OP()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
-    FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+    FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
     StatusReg.Cause.UnimplementedOperation = 1;
     m_Reg.TriggerException(EXC_FPE);
 }
@@ -2181,7 +2192,7 @@ void R4300iOp::COP1_MF()
     {
         return;
     }
-    _GPR[m_Opcode.rt].DW = *(int32_t *)_FPR_S[m_Opcode.fs];
+    m_GPR[m_Opcode.rt].DW = *(int32_t *)m_FPR_S[m_Opcode.fs];
 }
 
 void R4300iOp::COP1_DMF()
@@ -2190,7 +2201,7 @@ void R4300iOp::COP1_DMF()
     {
         return;
     }
-    _GPR[m_Opcode.rt].DW = *(int64_t *)_FPR_D[m_Opcode.fs];
+    m_GPR[m_Opcode.rt].DW = *(int64_t *)m_FPR_D[m_Opcode.fs];
 }
 
 void R4300iOp::COP1_CF()
@@ -2199,7 +2210,7 @@ void R4300iOp::COP1_CF()
     {
         return;
     }
-    _GPR[m_Opcode.rt].DW = (int32_t)_FPCR[m_Opcode.fs];
+    m_GPR[m_Opcode.rt].DW = (int32_t)m_FPCR[m_Opcode.fs];
 }
 
 void R4300iOp::COP1_MT()
@@ -2208,7 +2219,7 @@ void R4300iOp::COP1_MT()
     {
         return;
     }
-    *(int32_t *)_FPR_S[m_Opcode.fs] = _GPR[m_Opcode.rt].W[0];
+    *(int32_t *)m_FPR_S[m_Opcode.fs] = m_GPR[m_Opcode.rt].W[0];
 }
 
 void R4300iOp::COP1_DMT()
@@ -2217,7 +2228,7 @@ void R4300iOp::COP1_DMT()
     {
         return;
     }
-    *(int64_t *)_FPR_D[m_Opcode.fs] = _GPR[m_Opcode.rt].DW;
+    *(int64_t *)m_FPR_D[m_Opcode.fs] = m_GPR[m_Opcode.rt].DW;
 }
 
 void R4300iOp::COP1_CT()
@@ -2226,193 +2237,193 @@ void R4300iOp::COP1_CT()
     {
         return;
     }
-    m_Reg.Cop1_CT(m_Opcode.fs, _GPR[m_Opcode.rt].W[0]);
+    m_Reg.Cop1_CT(m_Opcode.fs, m_GPR[m_Opcode.rt].W[0]);
 }
 
 // COP1: BC1 functions
 
 void R4300iOp::COP1_BCF()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
     m_System.m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
-    if ((_FPCR[31] & FPCSR_C) == 0)
+    if ((m_FPCR[31] & FPCSR_C) == 0)
     {
-        m_System.m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
+        m_System.m_JumpToLocation = (m_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
     }
     else
     {
-        m_System.m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
+        m_System.m_JumpToLocation = (m_PROGRAM_COUNTER) + 8;
     }
 }
 
 void R4300iOp::COP1_BCT()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
     m_System.m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
-    if ((_FPCR[31] & FPCSR_C) != 0)
+    if ((m_FPCR[31] & FPCSR_C) != 0)
     {
-        m_System.m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
+        m_System.m_JumpToLocation = (m_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
     }
     else
     {
-        m_System.m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
+        m_System.m_JumpToLocation = (m_PROGRAM_COUNTER) + 8;
     }
 }
 
 void R4300iOp::COP1_BCFL()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
-    if ((_FPCR[31] & FPCSR_C) == 0)
+    if ((m_FPCR[31] & FPCSR_C) == 0)
     {
         m_System.m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
-        m_System.m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
+        m_System.m_JumpToLocation = (m_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
     }
     else
     {
         m_System.m_PipelineStage = PIPELINE_STAGE_JUMP;
-        m_System.m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
+        m_System.m_JumpToLocation = (m_PROGRAM_COUNTER) + 8;
     }
 }
 
 void R4300iOp::COP1_BCTL()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
-    if ((_FPCR[31] & FPCSR_C) != 0)
+    if ((m_FPCR[31] & FPCSR_C) != 0)
     {
         m_System.m_PipelineStage = PIPELINE_STAGE_DELAY_SLOT;
-        m_System.m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
+        m_System.m_JumpToLocation = (m_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
     }
     else
     {
         m_System.m_PipelineStage = PIPELINE_STAGE_JUMP;
-        m_System.m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
+        m_System.m_JumpToLocation = (m_PROGRAM_COUNTER) + 8;
     }
 }
 
 // COP1: S functions
 void R4300iOp::COP1_S_ADD()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
 
-    if (CheckFPUInput32(*(float *)_FPR_S_L[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_UW[m_Opcode.ft]))
+    if (CheckFPUInput32(*(float *)m_FPR_S_L[m_Opcode.fs]) || CheckFPUInput32(*(float *)m_FPR_UW[m_Opcode.ft]))
     {
         return;
     }
-    float Result = (*(float *)_FPR_S_L[m_Opcode.fs] + *(float *)_FPR_UW[m_Opcode.ft]);
+    float Result = (*(float *)m_FPR_S_L[m_Opcode.fs] + *(float *)m_FPR_UW[m_Opcode.ft]);
     if (CheckFPUResult32(Result))
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_SUB()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
-    if (CheckFPUInput32(*(float *)_FPR_S_L[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_UW[m_Opcode.ft]))
+    if (CheckFPUInput32(*(float *)m_FPR_S_L[m_Opcode.fs]) || CheckFPUInput32(*(float *)m_FPR_UW[m_Opcode.ft]))
     {
         return;
     }
-    float Result = (*(float *)_FPR_S_L[m_Opcode.fs] - *(float *)_FPR_UW[m_Opcode.ft]);
+    float Result = (*(float *)m_FPR_S_L[m_Opcode.fs] - *(float *)m_FPR_UW[m_Opcode.ft]);
     if (CheckFPUResult32(Result))
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_MUL()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
 
-    if (CheckFPUInput32(*(float *)_FPR_S_L[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_UW[m_Opcode.ft]))
+    if (CheckFPUInput32(*(float *)m_FPR_S_L[m_Opcode.fs]) || CheckFPUInput32(*(float *)m_FPR_UW[m_Opcode.ft]))
     {
         return;
     }
-    float Result = (*(float *)_FPR_S_L[m_Opcode.fs] * *(float *)_FPR_UW[m_Opcode.ft]);
+    float Result = (*(float *)m_FPR_S_L[m_Opcode.fs] * *(float *)m_FPR_UW[m_Opcode.ft]);
     if (CheckFPUResult32(Result))
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_DIV()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
 
-    if (CheckFPUInput32(*(float *)_FPR_S_L[m_Opcode.fs]) || CheckFPUInput32(*(float *)_FPR_UW[m_Opcode.ft]))
+    if (CheckFPUInput32(*(float *)m_FPR_S_L[m_Opcode.fs]) || CheckFPUInput32(*(float *)m_FPR_UW[m_Opcode.ft]))
     {
         return;
     }
-    float Result = (*(float *)_FPR_S_L[m_Opcode.fs] / *(float *)_FPR_UW[m_Opcode.ft]);
+    float Result = (*(float *)m_FPR_S_L[m_Opcode.fs] / *(float *)m_FPR_UW[m_Opcode.ft]);
     if (CheckFPUResult32(Result))
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_SQRT()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
 
-    if (CheckFPUInput32(*(float *)_FPR_S_L[m_Opcode.fs]))
+    if (CheckFPUInput32(*(float *)m_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    float Result = sqrtf(*(float *)(_FPR_S_L[m_Opcode.fs]));
+    float Result = sqrtf(*(float *)(m_FPR_S_L[m_Opcode.fs]));
     if (CheckFPUResult32(Result))
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_ABS()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
 
-    if (CheckFPUInput32(*(float *)_FPR_S_L[m_Opcode.fs]))
+    if (CheckFPUInput32(*(float *)m_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    float Result = (float)fabs(*(float *)_FPR_S_L[m_Opcode.fs]);
+    float Result = (float)fabs(*(float *)m_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUResult32(Result))
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_MOV()
@@ -2421,26 +2432,26 @@ void R4300iOp::COP1_S_MOV()
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = (*(uint64_t *)_FPR_D[m_Opcode.fs] & 0xFFFFFFFF00000000ll) | *(uint32_t *)_FPR_S_L[m_Opcode.fs];
+    *m_FPR_UDW[m_Opcode.fd] = (*(uint64_t *)m_FPR_D[m_Opcode.fs] & 0xFFFFFFFF00000000ll) | *(uint32_t *)m_FPR_S_L[m_Opcode.fs];
 }
 
 void R4300iOp::COP1_S_NEG()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
 
-    if (CheckFPUInput32(*(float *)_FPR_S_L[m_Opcode.fs]))
+    if (CheckFPUInput32(*(float *)m_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    float Result = (*(float *)_FPR_S_L[m_Opcode.fs] * -1.0f);
+    float Result = (*(float *)m_FPR_S_L[m_Opcode.fs] * -1.0f);
     if (CheckFPUResult32(Result))
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_ROUND_L()
@@ -2450,16 +2461,16 @@ void R4300iOp::COP1_S_ROUND_L()
         return;
     }
 
-    if (CheckFPUInput32Conv(*(float *)_FPR_S_L[m_Opcode.fs]))
+    if (CheckFPUInput32Conv(*(float *)m_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    int64_t Result = (int64_t)rint(*(float *)_FPR_S_L[m_Opcode.fs]);
+    int64_t Result = (int64_t)rint(*(float *)m_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_S_TRUNC_L()
@@ -2468,16 +2479,16 @@ void R4300iOp::COP1_S_TRUNC_L()
     {
         return;
     }
-    if (CheckFPUInput32Conv(*(float *)_FPR_S_L[m_Opcode.fs]))
+    if (CheckFPUInput32Conv(*(float *)m_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    int64_t Result = (int64_t)rint(*(float *)_FPR_S_L[m_Opcode.fs]);
+    int64_t Result = (int64_t)rint(*(float *)m_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_S_CEIL_L()
@@ -2486,16 +2497,16 @@ void R4300iOp::COP1_S_CEIL_L()
     {
         return;
     }
-    if (CheckFPUInput32Conv(*(float *)_FPR_S_L[m_Opcode.fs]))
+    if (CheckFPUInput32Conv(*(float *)m_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    int64_t Result = (int64_t)rint(*(float *)_FPR_S_L[m_Opcode.fs]);
+    int64_t Result = (int64_t)rint(*(float *)m_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_S_FLOOR_L()
@@ -2504,16 +2515,16 @@ void R4300iOp::COP1_S_FLOOR_L()
     {
         return;
     }
-    if (CheckFPUInput32Conv(*(float *)_FPR_S_L[m_Opcode.fs]))
+    if (CheckFPUInput32Conv(*(float *)m_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    int64_t Result = (int64_t)rint(*(float *)_FPR_S_L[m_Opcode.fs]);
+    int64_t Result = (int64_t)rint(*(float *)m_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_S_ROUND_W()
@@ -2522,16 +2533,16 @@ void R4300iOp::COP1_S_ROUND_W()
     {
         return;
     }
-    if (CheckFPUInput32Conv(*(float *)_FPR_S_L[m_Opcode.fs]))
+    if (CheckFPUInput32Conv(*(float *)m_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    int32_t Result = (int32_t)rint(*(float *)_FPR_S_L[m_Opcode.fs]);
+    int32_t Result = (int32_t)rint(*(float *)m_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_TRUNC_W()
@@ -2540,16 +2551,16 @@ void R4300iOp::COP1_S_TRUNC_W()
     {
         return;
     }
-    if (CheckFPUInput32Conv(*(float *)_FPR_S_L[m_Opcode.fs]))
+    if (CheckFPUInput32Conv(*(float *)m_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    int32_t Result = (int32_t)rint(*(float *)_FPR_S_L[m_Opcode.fs]);
+    int32_t Result = (int32_t)rint(*(float *)m_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_CEIL_W()
@@ -2558,16 +2569,16 @@ void R4300iOp::COP1_S_CEIL_W()
     {
         return;
     }
-    if (CheckFPUInput32Conv(*(float *)_FPR_S_L[m_Opcode.fs]))
+    if (CheckFPUInput32Conv(*(float *)m_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    int32_t Result = (int32_t)rint(*(float *)_FPR_S_L[m_Opcode.fs]);
+    int32_t Result = (int32_t)rint(*(float *)m_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_FLOOR_W()
@@ -2576,80 +2587,80 @@ void R4300iOp::COP1_S_FLOOR_W()
     {
         return;
     }
-    if (CheckFPUInput32Conv(*(float *)_FPR_S_L[m_Opcode.fs]))
+    if (CheckFPUInput32Conv(*(float *)m_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    int32_t Result = (int32_t)rint(*(float *)_FPR_S_L[m_Opcode.fs]);
+    int32_t Result = (int32_t)rint(*(float *)m_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_CVT_D()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
-    if (CheckFPUInput32(*(float *)_FPR_S_L[m_Opcode.fs]))
+    if (CheckFPUInput32(*(float *)m_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    double Result = (double)(*(float *)_FPR_S_L[m_Opcode.fs]);
+    double Result = (double)(*(float *)m_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUResult64(Result))
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_S_CVT_W()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
-    if (CheckFPUInput32Conv(*(float *)_FPR_S_L[m_Opcode.fs]))
+    if (CheckFPUInput32Conv(*(float *)m_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    int32_t Result = (int32_t)rint(*(float *)_FPR_S_L[m_Opcode.fs]);
+    int32_t Result = (int32_t)rint(*(float *)m_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_S_CVT_L()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
-    if (CheckFPUInput32Conv(*(float *)_FPR_S_L[m_Opcode.fs]))
+    if (CheckFPUInput32Conv(*(float *)m_FPR_S_L[m_Opcode.fs]))
     {
         return;
     }
-    int64_t Result = (int64_t)rint(*(float *)_FPR_S_L[m_Opcode.fs]);
+    int64_t Result = (int64_t)rint(*(float *)m_FPR_S_L[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_S_CMP()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
-    float Temp0 = *(float *)_FPR_S_L[m_Opcode.fs];
-    float Temp1 = *(float *)_FPR_UW[m_Opcode.ft];
+    float Temp0 = *(float *)m_FPR_S_L[m_Opcode.fs];
+    float Temp1 = *(float *)m_FPR_UW[m_Opcode.ft];
 
     bool less, equal, unorded;
     if (_isnan(Temp0) || _isnan(Temp1))
@@ -2659,19 +2670,19 @@ void R4300iOp::COP1_S_CMP()
         unorded = true;
 
         bool QuietNan = false;
-        if ((*(uint32_t *)_FPR_S_L[m_Opcode.fs] >= 0x7FC00000 && *(uint32_t *)_FPR_S_L[m_Opcode.fs] <= 0x7FFFFFFF) ||
-            (*(uint32_t *)_FPR_S_L[m_Opcode.fs] >= 0xFFC00000 && *(uint32_t *)_FPR_S_L[m_Opcode.fs] <= 0xFFFFFFFF))
+        if ((*(uint32_t *)m_FPR_S_L[m_Opcode.fs] >= 0x7FC00000 && *(uint32_t *)m_FPR_S_L[m_Opcode.fs] <= 0x7FFFFFFF) ||
+            (*(uint32_t *)m_FPR_S_L[m_Opcode.fs] >= 0xFFC00000 && *(uint32_t *)m_FPR_S_L[m_Opcode.fs] <= 0xFFFFFFFF))
         {
             QuietNan = true;
         }
-        else if ((*(uint32_t *)_FPR_UW[m_Opcode.ft] >= 0x7FC00000 && *(uint32_t *)_FPR_UW[m_Opcode.ft] <= 0x7FFFFFFF) ||
-                 (*(uint32_t *)_FPR_UW[m_Opcode.ft] >= 0xFFC00000 && *(uint32_t *)_FPR_UW[m_Opcode.ft] <= 0xFFFFFFFF))
+        else if ((*(uint32_t *)m_FPR_UW[m_Opcode.ft] >= 0x7FC00000 && *(uint32_t *)m_FPR_UW[m_Opcode.ft] <= 0x7FFFFFFF) ||
+                 (*(uint32_t *)m_FPR_UW[m_Opcode.ft] >= 0xFFC00000 && *(uint32_t *)m_FPR_UW[m_Opcode.ft] <= 0xFFFFFFFF))
         {
             QuietNan = true;
         }
         if ((m_Opcode.funct & 8) != 0 || QuietNan)
         {
-            FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+            FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
             StatusReg.Cause.InvalidOperation = 1;
             if (StatusReg.Enable.InvalidOperation)
             {
@@ -2696,89 +2707,89 @@ void R4300iOp::COP1_S_CMP()
 
     if (condition != 0)
     {
-        _FPCR[31] |= FPCSR_C;
+        m_FPCR[31] |= FPCSR_C;
     }
     else
     {
-        _FPCR[31] &= ~FPCSR_C;
+        m_FPCR[31] &= ~FPCSR_C;
     }
 }
 
 // COP1: D functions
 void R4300iOp::COP1_D_ADD()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
 
-    if (CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]) || CheckFPUInput64(*(double *)_FPR_UDW[m_Opcode.ft]))
+    if (CheckFPUInput64(*(double *)m_FPR_D[m_Opcode.fs]) || CheckFPUInput64(*(double *)m_FPR_UDW[m_Opcode.ft]))
     {
         return;
     }
-    double Result = (*(double *)_FPR_D[m_Opcode.fs] + *(double *)_FPR_UDW[m_Opcode.ft]);
+    double Result = (*(double *)m_FPR_D[m_Opcode.fs] + *(double *)m_FPR_UDW[m_Opcode.ft]);
     if (CheckFPUResult64(Result))
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_D_SUB()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
 
-    if (CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]) || CheckFPUInput64(*(double *)_FPR_UDW[m_Opcode.ft]))
+    if (CheckFPUInput64(*(double *)m_FPR_D[m_Opcode.fs]) || CheckFPUInput64(*(double *)m_FPR_UDW[m_Opcode.ft]))
     {
         return;
     }
-    double Result = (*(double *)_FPR_D[m_Opcode.fs] - *(double *)_FPR_UDW[m_Opcode.ft]);
+    double Result = (*(double *)m_FPR_D[m_Opcode.fs] - *(double *)m_FPR_UDW[m_Opcode.ft]);
     if (CheckFPUResult64(Result))
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_D_MUL()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
 
-    if (CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]) || CheckFPUInput64(*(double *)_FPR_UDW[m_Opcode.ft]))
+    if (CheckFPUInput64(*(double *)m_FPR_D[m_Opcode.fs]) || CheckFPUInput64(*(double *)m_FPR_UDW[m_Opcode.ft]))
     {
         return;
     }
-    double Result = (*(double *)_FPR_D[m_Opcode.fs] * *(double *)_FPR_UDW[m_Opcode.ft]);
+    double Result = (*(double *)m_FPR_D[m_Opcode.fs] * *(double *)m_FPR_UDW[m_Opcode.ft]);
     if (CheckFPUResult64(Result))
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_D_DIV()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
 
-    if (CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]) || CheckFPUInput64(*(double *)_FPR_UDW[m_Opcode.ft]))
+    if (CheckFPUInput64(*(double *)m_FPR_D[m_Opcode.fs]) || CheckFPUInput64(*(double *)m_FPR_UDW[m_Opcode.ft]))
     {
         return;
     }
-    double Result = (*(double *)_FPR_D[m_Opcode.fs] / *(double *)_FPR_UDW[m_Opcode.ft]);
+    double Result = (*(double *)m_FPR_D[m_Opcode.fs] / *(double *)m_FPR_UDW[m_Opcode.ft]);
     if (CheckFPUResult64(Result))
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 #if defined(_MSC_VER) && (defined(__i386__) || defined(_M_IX86))
@@ -2797,44 +2808,44 @@ void R4300iOp::COP1_D_SQRT()
 #if defined(_MSC_VER) && (defined(__i386__) || defined(_M_IX86))
     _controlfp(_PC_53, _MCW_PC);
 #endif
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
 
-    if (CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]))
+    if (CheckFPUInput64(*(double *)m_FPR_D[m_Opcode.fs]))
     {
         return;
     }
 #if defined(_MSC_VER) && (defined(__i386__) || defined(_M_IX86))
-    double Result = (double)correct_sqrt(*(double *)_FPR_D[m_Opcode.fs]);
+    double Result = (double)correct_sqrt(*(double *)m_FPR_D[m_Opcode.fs]);
 #else
-    double Result = (double)sqrt(*(double *)_FPR_D[m_Opcode.fs]);
+    double Result = (double)sqrt(*(double *)m_FPR_D[m_Opcode.fs]);
 #endif
     if (CheckFPUResult64(Result))
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_D_ABS()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
 
-    if (CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]))
+    if (CheckFPUInput64(*(double *)m_FPR_D[m_Opcode.fs]))
     {
         return;
     }
-    double Result = fabs(*(double *)_FPR_D[m_Opcode.fs]);
+    double Result = fabs(*(double *)m_FPR_D[m_Opcode.fs]);
     if (CheckFPUResult64(Result))
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_D_MOV()
@@ -2843,26 +2854,26 @@ void R4300iOp::COP1_D_MOV()
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(int64_t *)_FPR_D[m_Opcode.fs];
+    *m_FPR_UDW[m_Opcode.fd] = *(int64_t *)m_FPR_D[m_Opcode.fs];
 }
 
 void R4300iOp::COP1_D_NEG()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
 
-    if (CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]))
+    if (CheckFPUInput64(*(double *)m_FPR_D[m_Opcode.fs]))
     {
         return;
     }
-    double Result = (*(double *)_FPR_D[m_Opcode.fs] * -1.0);
+    double Result = (*(double *)m_FPR_D[m_Opcode.fs] * -1.0);
     if (CheckFPUResult64(Result))
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 void R4300iOp::COP1_D_ROUND_L()
@@ -2871,7 +2882,7 @@ void R4300iOp::COP1_D_ROUND_L()
     {
         return;
     }
-    const double & fs = *(double *)_FPR_D[m_Opcode.fs];
+    const double & fs = *(double *)m_FPR_D[m_Opcode.fs];
     if (CheckFPUInput64Conv(fs))
     {
         return;
@@ -2881,7 +2892,7 @@ void R4300iOp::COP1_D_ROUND_L()
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = (uint64_t)Result;
+    *m_FPR_UDW[m_Opcode.fd] = (uint64_t)Result;
 }
 
 void R4300iOp::COP1_D_TRUNC_L()
@@ -2890,7 +2901,7 @@ void R4300iOp::COP1_D_TRUNC_L()
     {
         return;
     }
-    const double & fs = *(double *)_FPR_D[m_Opcode.fs];
+    const double & fs = *(double *)m_FPR_D[m_Opcode.fs];
     if (CheckFPUInput64Conv(fs))
     {
         return;
@@ -2900,7 +2911,7 @@ void R4300iOp::COP1_D_TRUNC_L()
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = (uint64_t)Result;
+    *m_FPR_UDW[m_Opcode.fd] = (uint64_t)Result;
 }
 
 void R4300iOp::COP1_D_CEIL_L()
@@ -2909,7 +2920,7 @@ void R4300iOp::COP1_D_CEIL_L()
     {
         return;
     }
-    const double & fs = *(double *)_FPR_D[m_Opcode.fs];
+    const double & fs = *(double *)m_FPR_D[m_Opcode.fs];
     if (CheckFPUInput64Conv(fs))
     {
         return;
@@ -2919,7 +2930,7 @@ void R4300iOp::COP1_D_CEIL_L()
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = (uint64_t)Result;
+    *m_FPR_UDW[m_Opcode.fd] = (uint64_t)Result;
 }
 
 void R4300iOp::COP1_D_FLOOR_L()
@@ -2928,7 +2939,7 @@ void R4300iOp::COP1_D_FLOOR_L()
     {
         return;
     }
-    const double & fs = *(double *)_FPR_D[m_Opcode.fs];
+    const double & fs = *(double *)m_FPR_D[m_Opcode.fs];
     if (CheckFPUInput64Conv(fs))
     {
         return;
@@ -2938,7 +2949,7 @@ void R4300iOp::COP1_D_FLOOR_L()
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = (uint64_t)Result;
+    *m_FPR_UDW[m_Opcode.fd] = (uint64_t)Result;
 }
 
 void R4300iOp::COP1_D_ROUND_W()
@@ -2947,16 +2958,16 @@ void R4300iOp::COP1_D_ROUND_W()
     {
         return;
     }
-    if (CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
+    if (CheckFPUInput64Conv(*(double *)m_FPR_D[m_Opcode.fs]))
     {
         return;
     }
-    int32_t Result = (int32_t)rint(*(double *)_FPR_D[m_Opcode.fs]);
+    int32_t Result = (int32_t)rint(*(double *)m_FPR_D[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_D_TRUNC_W()
@@ -2965,16 +2976,16 @@ void R4300iOp::COP1_D_TRUNC_W()
     {
         return;
     }
-    if (CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
+    if (CheckFPUInput64Conv(*(double *)m_FPR_D[m_Opcode.fs]))
     {
         return;
     }
-    int32_t Result = (int32_t)rint(*(double *)_FPR_D[m_Opcode.fs]);
+    int32_t Result = (int32_t)rint(*(double *)m_FPR_D[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_D_CEIL_W()
@@ -2983,16 +2994,16 @@ void R4300iOp::COP1_D_CEIL_W()
     {
         return;
     }
-    if (CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
+    if (CheckFPUInput64Conv(*(double *)m_FPR_D[m_Opcode.fs]))
     {
         return;
     }
-    int32_t Result = (int32_t)rint(*(double *)_FPR_D[m_Opcode.fs]);
+    int32_t Result = (int32_t)rint(*(double *)m_FPR_D[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_D_FLOOR_W()
@@ -3001,61 +3012,61 @@ void R4300iOp::COP1_D_FLOOR_W()
     {
         return;
     }
-    if (CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
+    if (CheckFPUInput64Conv(*(double *)m_FPR_D[m_Opcode.fs]))
     {
         return;
     }
-    int32_t Result = (int32_t)rint(*(double *)_FPR_D[m_Opcode.fs]);
+    int32_t Result = (int32_t)rint(*(double *)m_FPR_D[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_D_CVT_S()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
-    if (CheckFPUInput64(*(double *)_FPR_D[m_Opcode.fs]))
+    if (CheckFPUInput64(*(double *)m_FPR_D[m_Opcode.fs]))
     {
         return;
     }
-    float Result = (float)*(double *)_FPR_D[m_Opcode.fs];
+    float Result = (float)*(double *)m_FPR_D[m_Opcode.fs];
     if (CheckFPUResult32(Result))
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_D_CVT_W()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
-    if (CheckFPUInput64Conv(*(double *)_FPR_D[m_Opcode.fs]))
+    if (CheckFPUInput64Conv(*(double *)m_FPR_D[m_Opcode.fs]))
     {
         return;
     }
-    int32_t Result = (int32_t)rint(*(double *)_FPR_D[m_Opcode.fs]);
+    int32_t Result = (int32_t)rint(*(double *)m_FPR_D[m_Opcode.fs]);
     if (CheckFPUInvalidException())
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_D_CVT_L()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
-    const double & fs = *(double *)_FPR_D[m_Opcode.fs];
+    const double & fs = *(double *)m_FPR_D[m_Opcode.fs];
     if (CheckFPUInput64Conv(fs))
     {
         return;
@@ -3065,19 +3076,19 @@ void R4300iOp::COP1_D_CVT_L()
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = (uint64_t)Result;
+    *m_FPR_UDW[m_Opcode.fd] = (uint64_t)Result;
 }
 
 void R4300iOp::COP1_D_CMP()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
 
     MIPS_DWORD Temp0, Temp1;
-    Temp0.DW = *(int64_t *)_FPR_D[m_Opcode.fs];
-    Temp1.DW = *(int64_t *)_FPR_UDW[m_Opcode.ft];
+    Temp0.DW = *(int64_t *)m_FPR_D[m_Opcode.fs];
+    Temp1.DW = *(int64_t *)m_FPR_UDW[m_Opcode.ft];
 
     bool less, equal, unorded;
     if (_isnan(Temp0.D) || _isnan(Temp1.D))
@@ -3087,20 +3098,20 @@ void R4300iOp::COP1_D_CMP()
         unorded = true;
 
         bool QuietNan = false;
-        if ((*(uint64_t *)_FPR_D[m_Opcode.fs] >= 0x7FF8000000000000 && *(uint64_t *)_FPR_D[m_Opcode.fs] <= 0x7FFFFFFFFFFFFFFF) ||
-            (*(uint64_t *)_FPR_D[m_Opcode.fs] >= 0xFFF8000000000000 && *(uint64_t *)_FPR_D[m_Opcode.fs] <= 0xFFFFFFFFFFFFFFFF))
+        if ((*(uint64_t *)m_FPR_D[m_Opcode.fs] >= 0x7FF8000000000000 && *(uint64_t *)m_FPR_D[m_Opcode.fs] <= 0x7FFFFFFFFFFFFFFF) ||
+            (*(uint64_t *)m_FPR_D[m_Opcode.fs] >= 0xFFF8000000000000 && *(uint64_t *)m_FPR_D[m_Opcode.fs] <= 0xFFFFFFFFFFFFFFFF))
         {
             QuietNan = true;
         }
-        else if ((*(uint64_t *)_FPR_UDW[m_Opcode.ft] >= 0x7FF8000000000000 && *(uint64_t *)_FPR_UDW[m_Opcode.ft] <= 0x7FFFFFFFFFFFFFFF) ||
-                 (*(uint64_t *)_FPR_UDW[m_Opcode.ft] >= 0xFFF8000000000000 && *(uint64_t *)_FPR_UDW[m_Opcode.ft] <= 0xFFFFFFFFFFFFFFFF))
+        else if ((*(uint64_t *)m_FPR_UDW[m_Opcode.ft] >= 0x7FF8000000000000 && *(uint64_t *)m_FPR_UDW[m_Opcode.ft] <= 0x7FFFFFFFFFFFFFFF) ||
+                 (*(uint64_t *)m_FPR_UDW[m_Opcode.ft] >= 0xFFF8000000000000 && *(uint64_t *)m_FPR_UDW[m_Opcode.ft] <= 0xFFFFFFFFFFFFFFFF))
         {
             QuietNan = true;
         }
 
         if ((m_Opcode.funct & 8) != 0 || QuietNan)
         {
-            FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+            FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
             StatusReg.Cause.InvalidOperation = 1;
             if (StatusReg.Enable.InvalidOperation)
             {
@@ -3125,55 +3136,55 @@ void R4300iOp::COP1_D_CMP()
 
     if (condition != 0)
     {
-        _FPCR[31] |= FPCSR_C;
+        m_FPCR[31] |= FPCSR_C;
     }
     else
     {
-        _FPCR[31] &= ~FPCSR_C;
+        m_FPCR[31] &= ~FPCSR_C;
     }
 }
 
 // COP1: W functions
 void R4300iOp::COP1_W_CVT_S()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
-    float Result = (float)*(int32_t *)_FPR_S_L[m_Opcode.fs];
+    float Result = (float)*(int32_t *)m_FPR_S_L[m_Opcode.fs];
     if (CheckFPUResult32(Result))
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_W_CVT_D()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
-    double Result = (double)*(int32_t *)_FPR_S_L[m_Opcode.fs];
+    double Result = (double)*(int32_t *)m_FPR_S_L[m_Opcode.fs];
     if (CheckFPUResult64(Result))
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 // COP1: L functions
 
 void R4300iOp::COP1_L_CVT_S()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
-    int64_t fs = *(int64_t *)_FPR_D[m_Opcode.fs];
+    int64_t fs = *(int64_t *)m_FPR_D[m_Opcode.fs];
     if (fs >= (int64_t)0x0080000000000000ull || fs < (int64_t)0xff80000000000000ull)
     {
-        FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+        FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
         StatusReg.Cause.UnimplementedOperation = 1;
         m_Reg.TriggerException(EXC_FPE);
         return;
@@ -3183,19 +3194,19 @@ void R4300iOp::COP1_L_CVT_S()
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint32_t *)&Result;
 }
 
 void R4300iOp::COP1_L_CVT_D()
 {
-    if (InitFpuOperation(((FPStatusReg &)_FPCR[31]).RoundingMode))
+    if (InitFpuOperation(((FPStatusReg &)m_FPCR[31]).RoundingMode))
     {
         return;
     }
-    int64_t fs = *(int64_t *)_FPR_D[m_Opcode.fs];
+    int64_t fs = *(int64_t *)m_FPR_D[m_Opcode.fs];
     if (fs >= (int64_t)0x0080000000000000ull || fs < (int64_t)0xff80000000000000ull)
     {
-        FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+        FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
         StatusReg.Cause.UnimplementedOperation = 1;
         m_Reg.TriggerException(EXC_FPE);
         return;
@@ -3205,7 +3216,7 @@ void R4300iOp::COP1_L_CVT_D()
     {
         return;
     }
-    *_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
+    *m_FPR_UDW[m_Opcode.fd] = *(uint64_t *)&Result;
 }
 
 // COP2 functions
@@ -3222,7 +3233,7 @@ void R4300iOp::COP2_MF()
     }
     else
     {
-        _GPR[m_Opcode.rt].DW = (int32_t)m_Reg.Cop2_MF(m_Opcode.rd);
+        m_GPR[m_Opcode.rt].DW = (int32_t)m_Reg.Cop2_MF(m_Opcode.rd);
     }
 }
 
@@ -3234,7 +3245,7 @@ void R4300iOp::COP2_DMF()
     }
     else
     {
-        _GPR[m_Opcode.rt].DW = m_Reg.Cop2_MF(m_Opcode.rd);
+        m_GPR[m_Opcode.rt].DW = m_Reg.Cop2_MF(m_Opcode.rd);
     }
 }
 
@@ -3246,7 +3257,7 @@ void R4300iOp::COP2_CF()
     }
     else
     {
-        _GPR[m_Opcode.rt].DW = (int32_t)m_Reg.Cop2_MF(m_Opcode.rd);
+        m_GPR[m_Opcode.rt].DW = (int32_t)m_Reg.Cop2_MF(m_Opcode.rd);
     }
 }
 
@@ -3258,7 +3269,7 @@ void R4300iOp::COP2_MT()
     }
     else
     {
-        m_Reg.Cop2_MT((CRegisters::COP0Reg)m_Opcode.rd, _GPR[m_Opcode.rt].DW);
+        m_Reg.Cop2_MT((CRegisters::COP0Reg)m_Opcode.rd, m_GPR[m_Opcode.rt].DW);
     }
 }
 
@@ -3270,7 +3281,7 @@ void R4300iOp::COP2_DMT()
     }
     else
     {
-        m_Reg.Cop2_MT((CRegisters::COP0Reg)m_Opcode.rd, _GPR[m_Opcode.rt].DW);
+        m_Reg.Cop2_MT((CRegisters::COP0Reg)m_Opcode.rd, m_GPR[m_Opcode.rt].DW);
     }
 }
 
@@ -3282,7 +3293,7 @@ void R4300iOp::COP2_CT()
     }
     else
     {
-        m_Reg.Cop2_MT((CRegisters::COP0Reg)m_Opcode.rd, _GPR[m_Opcode.rt].DW);
+        m_Reg.Cop2_MT((CRegisters::COP0Reg)m_Opcode.rd, m_GPR[m_Opcode.rt].DW);
     }
 }
 
@@ -3301,8 +3312,8 @@ void R4300iOp::UnknownOpcode()
     }
     else
     {
-        R4300iInstruction Opcode(*_PROGRAM_COUNTER, m_Opcode.Value);
-        g_Notify->DisplayError(stdstr_f("%s: %08X\n%s %s\n\nStopping emulation", GS(MSG_UNHANDLED_OP), (*_PROGRAM_COUNTER), Opcode.Name(), Opcode.Param()).c_str());
+        R4300iInstruction Opcode(m_PROGRAM_COUNTER, m_Opcode.Value);
+        g_Notify->DisplayError(stdstr_f("%s: %08X\n%s %s\n\nStopping emulation", GS(MSG_UNHANDLED_OP), (m_PROGRAM_COUNTER), Opcode.Name(), Opcode.Param()).c_str());
         m_System.m_EndEmulation = true;
 
         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -3324,14 +3335,14 @@ bool R4300iOp::CheckFPUInput32(const float & Value)
     bool Exception = false;
     if ((*((uint32_t *)&Value) & 0x7F800000) == 0x00000000 && (*((uint32_t *)&Value) & 0x007FFFFF) != 0x00000000) // Sub Normal
     {
-        FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+        FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
         StatusReg.Cause.UnimplementedOperation = 1;
         Exception = true;
     }
     else if ((*((uint32_t *)&Value) & 0x7F800000) == 0x7F800000 && (*((uint32_t *)&Value) & 0x007FFFFF) != 0x00000000) // Nan
     {
         uint32_t Value32 = *(uint32_t *)&Value;
-        FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+        FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
         if ((Value32 >= 0x7F800001 && Value32 < 0x7FC00000) ||
             (Value32 >= 0xFF800001 && Value32 < 0xFFC00000))
         {
@@ -3367,7 +3378,7 @@ bool R4300iOp::CheckFPUInput32Conv(const float & Value)
     if (Type == FP_SUBNORMAL || Type == FP_INFINITE || Type == FP_NAN ||
         Value >= *(float *)&InvalidValueMax || Value <= *(float *)&InvalidMinValue)
     {
-        FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+        FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
         StatusReg.Cause.UnimplementedOperation = 1;
         m_Reg.TriggerException(EXC_FPE);
         return true;
@@ -3381,14 +3392,14 @@ bool R4300iOp::CheckFPUInput64(const double & Value)
     bool Exception = false;
     if (Type == FP_SUBNORMAL)
     {
-        FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+        FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
         StatusReg.Cause.UnimplementedOperation = 1;
         Exception = true;
     }
     else if (Type == FP_NAN)
     {
         uint64_t Value64 = *(uint64_t *)&Value;
-        FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+        FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
         if ((Value64 >= 0x7FF0000000000001 && Value64 <= 0x7FF7FFFFFFFFFFFF) ||
             (Value64 >= 0xFFF0000000000001 && Value64 <= 0xFFF7FFFFFFFFFFFF))
         {
@@ -3424,7 +3435,7 @@ bool R4300iOp::CheckFPUInput64Conv(const double & Value)
     if (Type == FP_SUBNORMAL || Type == FP_INFINITE || Type == FP_NAN ||
         Value >= *(double *)&InvalidValueMax || Value <= *(double *)&InvalidMinValue)
     {
-        FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+        FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
         StatusReg.Cause.UnimplementedOperation = 1;
         m_Reg.TriggerException(EXC_FPE);
         return true;
@@ -3450,7 +3461,7 @@ bool R4300iOp::CheckFPUResult32(float & Result)
     }
     else if ((*((uint32_t *)&Result) & 0x7F800000) == 0x00000000 && (*((uint32_t *)&Result) & 0x007FFFFF) != 0x00000000) // Sub Normal
     {
-        FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+        FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
         if (!StatusReg.FlushSubnormals || StatusReg.Enable.Underflow || StatusReg.Enable.Inexact)
         {
             StatusReg.Cause.UnimplementedOperation = 1;
@@ -3513,7 +3524,7 @@ bool R4300iOp::CheckFPUResult64(double & Result)
     }
     else if (fptype == FP_SUBNORMAL)
     {
-        FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+        FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
         if (!StatusReg.FlushSubnormals || StatusReg.Enable.Underflow || StatusReg.Enable.Inexact)
         {
             StatusReg.Cause.UnimplementedOperation = 1;
@@ -3566,7 +3577,7 @@ bool R4300iOp::CheckFPUInvalidException(void)
         return false;
     }
 
-    FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+    FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
     bool Res = false;
     if ((Except & FE_INVALID) != 0)
     {
@@ -3600,7 +3611,7 @@ bool R4300iOp::InitFpuOperation(FPRoundingMode RoundingModel)
     {
         return true;
     }
-    _FPCR[31] &= ~0x0003F000;
+    m_FPCR[31] &= ~0x0003F000;
     switch (RoundingModel)
     {
     case FPRoundingMode_RoundToNearest: fesetround(FE_TONEAREST); break;
@@ -3614,7 +3625,7 @@ bool R4300iOp::InitFpuOperation(FPRoundingMode RoundingModel)
 
 bool R4300iOp::SetFPUException(void)
 {
-    FPStatusReg & StatusReg = (FPStatusReg &)_FPCR[31];
+    FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
     int Except = fetestexcept(FE_ALL_EXCEPT);
     if ((Except & FE_UNDERFLOW) != 0)
     {
