@@ -112,10 +112,11 @@ public class SplashActivity extends AppCompatActivity implements ExtractAssetZip
         {
             return;
         }
-        mInit = true;
+        mInit = false;
         String ConfigFile = AndroidDevice.PACKAGE_DIRECTORY + "/Config/Project64.cfg";
         if((new File(ConfigFile)).exists())
         {
+            mInit = true;
             InitProject64();
         }
 

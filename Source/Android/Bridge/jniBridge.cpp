@@ -219,7 +219,6 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_appInit(JNIEnv * env, 
     __android_log_print(ANDROID_LOG_INFO, "Project64", "                /___/");
     __android_log_print(ANDROID_LOG_INFO, "Project64", "https://www.pj64-emu.com/");
     __android_log_print(ANDROID_LOG_INFO, "Project64", "%s", stdstr_f("%s Version %s", VER_FILE_DESCRIPTION_STR, VER_FILE_VERSION_STR).c_str());
-    __android_log_print(ANDROID_LOG_INFO, "Project64", "");
 
     if (g_Logger == NULL)
     {
@@ -235,6 +234,7 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_appInit(JNIEnv * env, 
 
     const char * baseDir = env->GetStringUTFChars(BaseDir, 0);
     bool res = AppInit(&Notify(), baseDir, 0, NULL);
+    __android_log_print(ANDROID_LOG_INFO, "Project64", "baseDir: %s", baseDir);
     env->ReleaseStringUTFChars(BaseDir, baseDir);
     if (res)
     {
@@ -251,6 +251,7 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_appInit(JNIEnv * env, 
     {
         AppCleanup();
     }
+    __android_log_print(ANDROID_LOG_INFO, "Project64", "");
     return res;
 }
 
