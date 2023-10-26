@@ -2997,7 +2997,7 @@ SMM-Protect=1
 SMM-TLB=0
 
 [8A6009B6-94ACE150-C:45]
-              Good Name=Jet Force Gemini (U)
+Good Name=Jet Force Gemini (U)
 Internal Name=JET FORCE GEMINI
 Status=Compatible
 Counter Factor=1
