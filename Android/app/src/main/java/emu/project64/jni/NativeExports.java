@@ -29,6 +29,10 @@ public class NativeExports
     public static native void RefreshRomDir(String RomDir, boolean Recursive);
     public static native void ExternalEvent(int Type);
     public static native byte[] GetString(int StringId);
+	
+    public static native void SetSpeed(int Speed);
+    public static native int GetSpeed();
+    public static native int GetBaseSpeed();
     
     public static native void onSurfaceCreated();    
     public static native void onSurfaceChanged(int width, int height); 
