@@ -5,7 +5,7 @@
 #include <Project64-core/N64System/Recompiler/Arm/ArmRecompilerOps.h>
 #include <Project64-core/Notification.h>
 
-CArmRecompilerOps::CArmRecompilerOps(CMipsMemoryVM & /*MMU*/, CCodeBlock & CodeBlock) :
+CArmRecompilerOps::CArmRecompilerOps(CN64System & System, CCodeBlock & CodeBlock) :
     m_Assembler(CodeBlock),
     m_RegWorkingSet(CodeBlock, m_Assembler)
 {

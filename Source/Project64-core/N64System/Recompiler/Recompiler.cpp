@@ -5,12 +5,13 @@
 #include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 
-CRecompiler::CRecompiler(CMipsMemoryVM & MMU, CRegisters & Registers, bool & EndEmulation) :
-    m_MMU(MMU),
-    m_Registers(Registers),
+CRecompiler::CRecompiler(CN64System & System, bool & EndEmulation) :
+    m_System(System),
+    m_MMU(System.m_MMU_VM),
+    m_Reg(System.m_Reg),
     m_EndEmulation(EndEmulation),
     m_MemoryStack(0),
-    PROGRAM_COUNTER(Registers.m_PROGRAM_COUNTER),
+    PROGRAM_COUNTER(System.m_Reg.m_PROGRAM_COUNTER),
     m_LogFile(nullptr)
 {
     CFunctionMap::AllocateMemory();
@@ -86,7 +87,7 @@ void CRecompiler::RecompilerMain_VirtualTable()
     {
         if (!m_MMU.ValidVaddr(PC))
         {
-            m_Registers.TriggerAddressException(PC, EXC_RMISS);
+            m_Reg.TriggerAddressException(PC, EXC_RMISS);
             PC = g_System->m_JumpToLocation;
             g_System->m_PipelineStage = PIPELINE_STAGE_NORMAL;
             if (!m_MMU.ValidVaddr(PC))
@@ -148,7 +149,7 @@ void CRecompiler::RecompilerMain_Lookup()
     {
         if (!m_MMU.VAddrToPAddr(PROGRAM_COUNTER, PhysicalAddr))
         {
-            m_Registers.TriggerAddressException(PROGRAM_COUNTER, EXC_RMISS);
+            m_Reg.TriggerAddressException(PROGRAM_COUNTER, EXC_RMISS);
             if (!m_MMU.VAddrToPAddr(PROGRAM_COUNTER, PhysicalAddr))
             {
                 g_Notify->DisplayError(stdstr_f("Failed to translate PC to a PAddr: %X\n\nEmulation stopped", PROGRAM_COUNTER).c_str());
@@ -207,7 +208,7 @@ void CRecompiler::RecompilerMain_Lookup_validate()
     {
         if (!m_MMU.VAddrToPAddr(PC, PhysicalAddr))
         {
-            m_Registers.TriggerAddressException(PC, EXC_RMISS);
+            m_Reg.TriggerAddressException(PC, EXC_RMISS);
             if (!m_MMU.VAddrToPAddr(PC, PhysicalAddr))
             {
                 g_Notify->DisplayError(stdstr_f("Failed to translate PC to a PAddr: %X\n\nEmulation stopped", PC).c_str());
@@ -378,7 +379,7 @@ CCompiledFunc * CRecompiler::CompileCode()
     CheckRecompMem();
     WriteTrace(TraceRecompiler, TraceDebug, "Compile Block-Start: Program Counter: %X pAddr: %X", PROGRAM_COUNTER, pAddr);
 
-    CCodeBlock CodeBlock(m_MMU, m_Registers, PROGRAM_COUNTER);
+    CCodeBlock CodeBlock(m_System, PROGRAM_COUNTER);
     if (!CodeBlock.Compile())
     {
         return nullptr;
@@ -530,14 +531,14 @@ void CRecompiler::ResetLog()
 
 void CRecompiler::ResetMemoryStackPos()
 {
-    if (m_Registers.m_GPR[29].UW[0] == 0)
+    if (m_Reg.m_GPR[29].UW[0] == 0)
     {
         m_MemoryStack = 0;
         return;
     }
 
     uint32_t pAddr = 0;
-    if (m_MMU.VAddrToPAddr(m_Registers.m_GPR[29].UW[0], pAddr))
+    if (m_MMU.VAddrToPAddr(m_Reg.m_GPR[29].UW[0], pAddr))
     {
         if (pAddr <= m_MMU.RdramSize())
         {
@@ -558,7 +559,7 @@ void CRecompiler::ResetMemoryStackPos()
     }
     else
     {
-        WriteTrace(TraceRecompiler, TraceError, "Failed to translate SP address (%s)", m_Registers.m_GPR[29].UW[0]);
+        WriteTrace(TraceRecompiler, TraceError, "Failed to translate SP address (%s)", m_Reg.m_GPR[29].UW[0]);
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 }

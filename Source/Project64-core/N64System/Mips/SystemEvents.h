@@ -51,23 +51,24 @@ enum SystemEvent
 const char * SystemEventName(SystemEvent event);
 
 class CN64System;
+class CRegisters;
 class CPlugins;
 
 class CSystemEvents
 {
     typedef std::vector<SystemEvent> EventList;
 
-protected:
-    CSystemEvents(CN64System * System, CPlugins * Plugins);
-    virtual ~CSystemEvents();
+public:
+    CSystemEvents(CN64System & System, CPlugins * Plugins);
+    ~CSystemEvents();
 
 public:
     void ExecuteEvents();
     void QueueEvent(SystemEvent action);
 
-    const int32_t & DoSomething() const
+    const bool & DoSomething() const
     {
-        return m_bDoSomething;
+        return m_DoSomething;
     }
 
 private:
@@ -77,9 +78,10 @@ private:
 
     void ChangePluginFunc();
 
-    CN64System * m_System;
+    CN64System & m_System;
+    CRegisters & m_Reg;
     CPlugins * m_Plugins;
     EventList m_Events;
-    int32_t m_bDoSomething;
+    bool m_DoSomething;
     CriticalSection m_CS;
 };

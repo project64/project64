@@ -26,7 +26,7 @@ class CX86RecompilerOps :
     friend CX86RegInfo;
 
 public:
-    CX86RecompilerOps(CMipsMemoryVM & MMU, CRegisters & Reg, CCodeBlock & CodeBlock);
+    CX86RecompilerOps(CN64System & m_System, CCodeBlock & CodeBlock);
     ~CX86RecompilerOps();
 
     // Trap functions

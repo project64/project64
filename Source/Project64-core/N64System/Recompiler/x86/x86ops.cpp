@@ -176,6 +176,21 @@ void CX86Ops::CallThis(uint32_t ThisPtr, uint32_t FunctPtr, const char * FunctNa
 }
 #endif
 
+void CX86Ops::CompConstByteToVariable(void * Variable, const char * VariableName, uint8_t Const)
+{
+    if (CDebugSettings::bRecordRecompilerAsm())
+    {
+        std::string SymbolKey = VariableSymbol(Variable);
+        AddSymbol(SymbolKey.c_str(), VariableName);
+        cmp(asmjit::x86::byte_ptr((uint64_t)Variable), Const);
+        RemoveSymbol(SymbolKey.c_str());
+    }
+    else
+    {
+        cmp(asmjit::x86::byte_ptr((uint64_t)Variable), Const);
+    }
+}
+
 void CX86Ops::CompConstToVariable(void * Variable, const char * VariableName, uint32_t Const)
 {
     if (CDebugSettings::bRecordRecompilerAsm())

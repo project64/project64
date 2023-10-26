@@ -55,10 +55,11 @@ const char * SystemEventName(SystemEvent event)
     return unknown;
 }
 
-CSystemEvents::CSystemEvents(CN64System * System, CPlugins * Plugins) :
+CSystemEvents::CSystemEvents(CN64System & System, CPlugins * Plugins) :
     m_System(System),
+    m_Reg(System.m_Reg),
     m_Plugins(Plugins),
-    m_bDoSomething(false)
+    m_DoSomething(false)
 {
 }
 
@@ -77,7 +78,7 @@ void CSystemEvents::QueueEvent(SystemEvent action)
         }
     }
     m_Events.push_back(action);
-    m_bDoSomething = true;
+    m_DoSomething = true;
 }
 
 void CSystemEvents::ExecuteEvents()
@@ -86,7 +87,7 @@ void CSystemEvents::ExecuteEvents()
     {
         CGuard Guard(m_CS);
 
-        m_bDoSomething = false;
+        m_DoSomething = false;
         if (m_Events.size() == 0)
         {
             return;
@@ -102,58 +103,58 @@ void CSystemEvents::ExecuteEvents()
         switch (*iter)
         {
         case SysEvent_CloseCPU:
-            m_System->m_EndEmulation = true;
+            m_System.m_EndEmulation = true;
             break;
         case SysEvent_ResetCPU_Soft:
-            m_System->GameReset();
+            m_System.GameReset();
             break;
         case SysEvent_ResetCPU_SoftDone:
-            m_System->Reset(true, false);
+            m_System.Reset(true, false);
             break;
         case SysEvent_ResetCPU_Hard:
-            m_System->Reset(true, true);
+            m_System.Reset(true, true);
             break;
         case SysEvent_ExecuteInterrupt:
-            if (g_Reg->DoIntrException())
+            if (m_Reg.DoIntrException())
             {
-                g_Reg->m_PROGRAM_COUNTER = m_System->JumpToLocation();
-                m_System->m_PipelineStage = PIPELINE_STAGE_NORMAL;
+                m_Reg.m_PROGRAM_COUNTER = m_System.JumpToLocation();
+                m_System.m_PipelineStage = PIPELINE_STAGE_NORMAL;
             }
             break;
         case SysEvent_Interrupt_SP:
-            g_Reg->MI_INTR_REG |= MI_INTR_SP;
-            g_Reg->DoIntrException();
+            m_Reg.MI_INTR_REG |= MI_INTR_SP;
+            m_Reg.DoIntrException();
             break;
         case SysEvent_Interrupt_SI:
-            g_Reg->MI_INTR_REG |= MI_INTR_SI;
-            g_Reg->DoIntrException();
+            m_Reg.MI_INTR_REG |= MI_INTR_SI;
+            m_Reg.DoIntrException();
             break;
         case SysEvent_Interrupt_AI:
-            g_Reg->MI_INTR_REG |= MI_INTR_AI;
-            g_Reg->DoIntrException();
+            m_Reg.MI_INTR_REG |= MI_INTR_AI;
+            m_Reg.DoIntrException();
             break;
         case SysEvent_Interrupt_VI:
-            g_Reg->MI_INTR_REG |= MI_INTR_VI;
-            g_Reg->DoIntrException();
+            m_Reg.MI_INTR_REG |= MI_INTR_VI;
+            m_Reg.DoIntrException();
             break;
         case SysEvent_Interrupt_PI:
-            g_Reg->PI_STATUS_REG |= PI_STATUS_INTERRUPT;
-            g_Reg->MI_INTR_REG |= MI_INTR_PI;
-            g_Reg->DoIntrException();
+            m_Reg.PI_STATUS_REG |= PI_STATUS_INTERRUPT;
+            m_Reg.MI_INTR_REG |= MI_INTR_PI;
+            m_Reg.DoIntrException();
             break;
         case SysEvent_Interrupt_DP:
-            g_Reg->MI_INTR_REG |= MI_INTR_DP;
-            g_Reg->DoIntrException();
+            m_Reg.MI_INTR_REG |= MI_INTR_DP;
+            m_Reg.DoIntrException();
             break;
         case SysEvent_SaveMachineState:
-            if (!m_System->SaveState())
+            if (!m_System.SaveState())
             {
                 m_Events.push_back(SysEvent_SaveMachineState);
-                m_bDoSomething = true;
+                m_DoSomething = true;
             }
             break;
         case SysEvent_LoadMachineState:
-            if (m_System->LoadState())
+            if (m_System.LoadState())
             {
                 bLoadedSave = true;
             }
@@ -177,7 +178,7 @@ void CSystemEvents::ExecuteEvents()
             g_Notify->ChangeFullScreen();
             break;
         case SysEvent_GSButtonPressed:
-            m_System->ApplyGSButton();
+            m_System.ApplyGSButton();
             break;
         case SysEvent_PauseCPU_FromMenu:
             if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
@@ -270,12 +271,12 @@ void CSystemEvents::ExecuteEvents()
 
     if (bPause)
     {
-        m_System->Pause();
+        m_System.Pause();
     }
 }
 
 void CSystemEvents::ChangePluginFunc()
 {
     g_Notify->DisplayMessage(0, MSG_PLUGIN_INIT);
-    m_System->PluginReset();
+    m_System.PluginReset();
 }

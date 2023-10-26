@@ -39,6 +39,8 @@ enum RecompilerTrapCompare
 
 class CCodeBlock;
 class CCodeSection;
+class CN64System;
+class CSystemEvents;
 class CMipsMemoryVM;
 class CRegisters;
 
@@ -46,9 +48,11 @@ class CRecompilerOpsBase :
     protected CDebugSettings
 {
 protected:
-    CRecompilerOpsBase(CMipsMemoryVM & MMU, CRegisters & Reg, CCodeBlock & CodeBlock);
+    CRecompilerOpsBase(CN64System & System, CCodeBlock & CodeBlock);
     ~CRecompilerOpsBase();
 
+    CN64System & m_System;
+    CSystemEvents & m_SystemEvents;
     CMipsMemoryVM & m_MMU;
     CRegisters & m_Reg;
     CCodeBlock & m_CodeBlock;

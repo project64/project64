@@ -33,7 +33,7 @@ public:
     typedef void (*DelayFunc)();
 
 public:
-    CRecompiler(CMipsMemoryVM & MMU, CRegisters & Registers, bool & EndEmulation);
+    CRecompiler(CN64System & System, bool & EndEmulation);
     ~CRecompiler();
 
     void Run();
@@ -80,8 +80,9 @@ private:
     void LogCodeBlock(const CCodeBlock & CodeBlock);
 
     CCompiledFuncList m_Functions;
+    CN64System & m_System;
     CMipsMemoryVM & m_MMU;
-    CRegisters & m_Registers;
+    CRegisters & m_Reg;
     bool & m_EndEmulation;
     uint8_t * m_MemoryStack;
     FUNCTION_PROFILE m_BlockProfile;

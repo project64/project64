@@ -15,7 +15,7 @@ struct CJumpInfo;
 class CArmRecompilerOps
 {
 public:
-    CArmRecompilerOps(CMipsMemoryVM & MMU, CCodeBlock & CodeBlock);
+    CArmRecompilerOps(CN64System & System, CCodeBlock & CodeBlock);
     ~CArmRecompilerOps();
 
     // Trap functions

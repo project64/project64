@@ -5,8 +5,8 @@
 #include <Project64-core\N64System\Recompiler\CodeSection.h>
 #include <Project64-core\N64System\Recompiler\x64-86\x64RecompilerOps.h>
 
-CX64RecompilerOps::CX64RecompilerOps(CMipsMemoryVM & MMU, CRegisters & Reg, CCodeBlock & CodeBlock) :
-    CRecompilerOpsBase(MMU, Reg, CodeBlock),
+CX64RecompilerOps::CX64RecompilerOps(CN64System & System, CCodeBlock & CodeBlock) :
+    CRecompilerOpsBase(System, CodeBlock),
     m_Assembler(CodeBlock),
     m_RegWorkingSet(CodeBlock, m_Assembler)
 {

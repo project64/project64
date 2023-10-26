@@ -13,7 +13,7 @@ class CX64RecompilerOps :
     public CRecompilerOpsBase
 {
 public:
-    CX64RecompilerOps(CMipsMemoryVM & MMU, CRegisters & Reg, CCodeBlock & CodeBlock);
+    CX64RecompilerOps(CN64System & System, CCodeBlock & CodeBlock);
     ~CX64RecompilerOps();
 
     // Trap functions

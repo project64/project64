@@ -13,9 +13,9 @@
 extern "C" void __clear_cache_android(uint8_t * begin, uint8_t * end);
 #endif
 
-CCodeBlock::CCodeBlock(CMipsMemoryVM & MMU, CRegisters & Reg, uint32_t VAddrEnter) :
-    m_MMU(MMU),
-    m_Reg(Reg),
+CCodeBlock::CCodeBlock(CN64System & System, uint32_t VAddrEnter) :
+    m_MMU(System.m_MMU_VM),
+    m_Reg(System.m_Reg),
     m_VAddrEnter(VAddrEnter),
     m_VAddrFirst(VAddrEnter),
     m_VAddrLast(VAddrEnter),
@@ -35,11 +35,11 @@ CCodeBlock::CCodeBlock(CMipsMemoryVM & MMU, CRegisters & Reg, uint32_t VAddrEnte
     }
 #endif
 #if defined(__i386__) || defined(_M_IX86)
-    m_RecompilerOps = new CX86RecompilerOps(MMU, Reg, *this);
+    m_RecompilerOps = new CX86RecompilerOps(System, *this);
 #elif defined(__amd64__) || defined(_M_X64)
-    m_RecompilerOps = new CX64RecompilerOps(MMU, Reg, *this);
+    m_RecompilerOps = new CX64RecompilerOps(System, *this);
 #elif defined(__arm__) || defined(_M_ARM)
-    m_RecompilerOps = new CArmRecompilerOps(MMU, *this);
+    m_RecompilerOps = new CArmRecompilerOps(System, *this);
 #else
     g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
@@ -74,7 +74,7 @@ CCodeBlock::CCodeBlock(CMipsMemoryVM & MMU, CRegisters & Reg, uint32_t VAddrEnte
     memset(m_MemLocation, 0, sizeof(m_MemLocation));
     memset(m_MemContents, 0, sizeof(m_MemContents));
 
-    m_MemLocation[0] = (uint64_t *)MMU.MemoryPtr(VAddrEnter, 16, true);
+    m_MemLocation[0] = (uint64_t *)m_MMU.MemoryPtr(VAddrEnter, 16, true);
     if (m_MemLocation[0] != 0)
     {
         m_MemLocation[1] = m_MemLocation[0] + 1;

@@ -37,7 +37,6 @@ enum CN64SystemCB
 
 class CN64System :
     public CLogging,
-    private CSystemEvents,
     protected CN64SystemSettings,
     public CGameSettings,
     protected CDebugSettings
@@ -139,15 +138,15 @@ private:
     friend class CRSP_Plugin;
     friend class CControl_Plugin;
 
-    // Recompiler has access to manipulate and call functions
     friend class CSystemTimer;
     friend class CRecompiler;
+    friend class CRecompilerOpsBase;
     friend class CX86RecompilerOps;
     friend class CArmRecompilerOps;
+    friend class CCodeBlock;
     friend class CMipsMemoryVM;
-    friend class R4300iOp;
+    friend class R4300iOp;    
     friend class CSystemEvents;
-
     friend class VideoInterfaceHandler;
     friend class PifRamHandler;
     friend class CRegisters;
@@ -181,6 +180,7 @@ private:
     CPlugins * const m_Plugins; // The plugin container
     CPlugins * m_SyncPlugins;
     CN64System * m_SyncCPU;
+    CSystemEvents m_SystemEvents;
     CMipsMemoryVM m_MMU_VM;
     CRegisters m_Reg;
     CTLB m_TLB;

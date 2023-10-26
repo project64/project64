@@ -23,15 +23,15 @@
 #pragma warning(disable : 4355) // Disable 'this' : used in base member initializer list
 
 CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesReadOnly, bool SyncSystem) :
-    CSystemEvents(this, Plugins),
     m_EndEmulation(false),
     m_SaveUsing((SAVE_CHIP_TYPE)g_Settings->LoadDword(Game_SaveChip)),
     m_Plugins(Plugins),
     m_SyncCPU(nullptr),
     m_SyncPlugins(nullptr),
+    m_SystemEvents(*this, Plugins),
     m_MMU_VM(*this, SavesReadOnly),
     //m_Cheats(m_MMU_VM),
-    m_Reg(*this, *this),
+    m_Reg(*this, m_SystemEvents),
     m_TLB(m_MMU_VM, m_Reg, m_Recomp),
     m_OpCodes(*this),
     m_Recomp(nullptr),
@@ -106,7 +106,7 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
 
         if (CpuType == CPU_Recompiler || CpuType == CPU_SyncCores)
         {
-            m_Recomp = new CRecompiler(m_MMU_VM, m_Reg, m_EndEmulation);
+            m_Recomp = new CRecompiler(*this, m_EndEmulation);
         }
 
         if (g_Settings->LoadBool(Game_LoadSaveAtStart))
@@ -242,7 +242,7 @@ void CN64System::ExternalEvent(SystemEvent action)
     case SysEvent_ResetFunctionTimes:
     case SysEvent_DumpFunctionTimes:
     case SysEvent_ResetRecompilerCode:
-        QueueEvent(action);
+        m_SystemEvents.QueueEvent(action);
         break;
     case SysEvent_PauseCPU_AppLostFocus:
     case SysEvent_PauseCPU_AppLostActive:
@@ -255,13 +255,13 @@ void CN64System::ExternalEvent(SystemEvent action)
     case SysEvent_PauseCPU_Enhancement:
         if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
         {
-            QueueEvent(action);
+            m_SystemEvents.QueueEvent(action);
         }
         break;
     case SysEvent_PauseCPU_ChangingBPs:
         if (!WaitingForStep() && !g_Settings->LoadBool(GameRunning_CPU_Paused))
         {
-            QueueEvent(action);
+            m_SystemEvents.QueueEvent(action);
             for (int i = 0; i < 100; i++)
             {
                 bool paused = g_Settings->LoadBool(GameRunning_CPU_Paused);
@@ -974,7 +974,6 @@ bool CN64System::SetActiveSystem(bool bActive)
         g_Reg = &m_Reg;
         g_Mempak = &m_Mempak;
         g_SystemTimer = &m_SystemTimer;
-        g_SystemEvents = this;
         g_NextTimer = &m_NextTimer;
         g_Plugins = m_Plugins;
         g_TLBLoadAddress = &m_TLBLoadAddress;
@@ -993,7 +992,6 @@ bool CN64System::SetActiveSystem(bool bActive)
             g_TLB = nullptr;
             g_Reg = nullptr;
             g_SystemTimer = nullptr;
-            g_SystemEvents = nullptr;
             g_NextTimer = nullptr;
             g_Plugins = m_Plugins;
             g_TLBLoadAddress = nullptr;

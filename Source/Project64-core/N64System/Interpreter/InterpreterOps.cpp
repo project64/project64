@@ -82,7 +82,8 @@ void R4300iOp::ExecuteCPU()
     uint32_t & JumpToLocation = m_System.m_JumpToLocation;
     uint32_t & JumpDelayLocation = m_System.m_JumpDelayLocation;
     bool & TestTimer = m_System.m_TestTimer;
-    const int32_t & bDoSomething = g_SystemEvents->DoSomething();
+    CSystemEvents & SystemEvents = m_System.m_SystemEvents;
+    const bool & DoSomething = SystemEvents.DoSomething();
     uint32_t CountPerOp = m_System.CountPerOp();
     int32_t & NextTimer = *g_NextTimer;
     bool CheckTimer = false;
@@ -168,9 +169,9 @@ void R4300iOp::ExecuteCPU()
                     {
                         g_SystemTimer->TimerDone();
                     }
-                    if (bDoSomething)
+                    if (DoSomething)
                     {
-                        g_SystemEvents->ExecuteEvents();
+                        SystemEvents.ExecuteEvents();
                     }
                 }
                 break;
@@ -184,9 +185,9 @@ void R4300iOp::ExecuteCPU()
                 PipelineStage = PIPELINE_STAGE_NORMAL;
                 InPermLoop();
                 g_SystemTimer->TimerDone();
-                if (bDoSomething)
+                if (DoSomething)
                 {
-                    g_SystemEvents->ExecuteEvents();
+                    SystemEvents.ExecuteEvents();
                 }
                 break;
             default:
@@ -208,7 +209,8 @@ void R4300iOp::ExecuteOps(int32_t Cycles)
     uint32_t & JumpDelayLocation = m_System.m_JumpDelayLocation;
     uint32_t & JumpToLocation = m_System.m_JumpToLocation;
     bool & TestTimer = m_System.m_TestTimer;
-    const int32_t & DoSomething = g_SystemEvents->DoSomething();
+    CSystemEvents & SystemEvents = m_System.m_SystemEvents;
+    const bool & DoSomething = SystemEvents.DoSomething();
     uint32_t CountPerOp = m_System.CountPerOp();
     bool CheckTimer = false;
 
@@ -278,7 +280,7 @@ void R4300iOp::ExecuteOps(int32_t Cycles)
                         }
                         if (DoSomething)
                         {
-                            g_SystemEvents->ExecuteEvents();
+                            SystemEvents.ExecuteEvents();
                         }
                     }
                     break;
@@ -294,7 +296,7 @@ void R4300iOp::ExecuteOps(int32_t Cycles)
                     g_SystemTimer->TimerDone();
                     if (DoSomething)
                     {
-                        g_SystemEvents->ExecuteEvents();
+                        SystemEvents.ExecuteEvents();
                     }
                     break;
                 default:

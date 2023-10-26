@@ -179,8 +179,8 @@ void CX86RecompilerOps::x86TestWriteBreakPoint64()
     }
 }
 
-CX86RecompilerOps::CX86RecompilerOps(CMipsMemoryVM & MMU, CRegisters & Reg, CCodeBlock & CodeBlock) :
-    CRecompilerOpsBase(MMU, Reg, CodeBlock),
+CX86RecompilerOps::CX86RecompilerOps(CN64System & m_System, CCodeBlock & CodeBlock) :
+    CRecompilerOpsBase(m_System, CodeBlock),
     m_Assembler(CodeBlock),
     m_RegWorkingSet(CodeBlock, m_Assembler),
     m_CompilePC(0),
@@ -9493,7 +9493,7 @@ void CX86RecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool 
 
 void CX86RecompilerOps::CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegSet)
 {
-    m_Assembler.CompConstToVariable((void *)&g_SystemEvents->DoSomething(), "g_SystemEvents->DoSomething()", 0);
+    m_Assembler.CompConstByteToVariable((void *)&m_SystemEvents.DoSomething(), "m_SystemEvents.DoSomething()", 0);
     asmjit::Label Jump = m_Assembler.newLabel();
     m_Assembler.JeLabel("Continue_From_Interrupt_Test", Jump);
     if (TargetPC != (uint32_t)-1)
@@ -9503,7 +9503,7 @@ void CX86RecompilerOps::CompileSystemCheck(uint32_t TargetPC, const CRegInfo & R
 
     CRegInfo RegSetCopy(RegSet);
     RegSetCopy.WriteBackRegisters();
-    m_Assembler.CallThis((uint32_t)g_SystemEvents, AddressOf(&CSystemEvents::ExecuteEvents), "CSystemEvents::ExecuteEvents", 4);
+    m_Assembler.CallThis((uint32_t)&m_SystemEvents, AddressOf(&CSystemEvents::ExecuteEvents), "CSystemEvents::ExecuteEvents", 4);
     ExitCodeBlock();
     m_CodeBlock.Log("");
     m_Assembler.bind(Jump);
@@ -9657,7 +9657,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         ExitCodeBlock();
         break;
     case ExitReason_DoCPUAction:
-        m_Assembler.CallThis((uint32_t)g_SystemEvents, AddressOf(&CSystemEvents::ExecuteEvents), "CSystemEvents::ExecuteEvents", 4);
+        m_Assembler.CallThis((uint32_t)&g_System->m_SystemEvents, AddressOf(&CSystemEvents::ExecuteEvents), "CSystemEvents::ExecuteEvents", 4);
         ExitCodeBlock();
         break;
     case ExitReason_DoSysCall:
