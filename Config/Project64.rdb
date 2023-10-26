@@ -6216,8 +6216,8 @@ RDRAM Size=8
 Good Name=Super Mario 64 - Shindou Edition (J)
 Internal Name=SUPERMARIO64
 Status=Compatible
-32bit=1
 Culling=1
+RDRAM Size=8
 
 [66572080-28E348E1-C:4A]
 Good Name=Super Robot Spirits (J)
@@ -11771,3 +11771,10 @@ SMM-FUNC=0
 SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
+
+[3114B9B3-05DCE9CA-C:4A]
+Good Name=Super Mario 64 - Shindou Improvement (v1.0) (English)
+Internal Name=SUPERMARIO64
+Status=Compatible
+Culling=1
+RDRAM Size=8
