@@ -14,13 +14,13 @@ CJniBridegSettings::CJniBridegSettings()
     m_RefCount += 1;
     if (m_RefCount == 1)
     {
-        g_Settings->RegisterChangeCB(GameRunning_CPU_Running,NULL,RefreshSettings);
+        g_Settings->RegisterChangeCB(GameRunning_CPU_Running, NULL, RefreshSettings);
         RefreshSettings(NULL);
     }
 
-#define ADD_SETTING(ID) m_SettingNameList.insert(SettingNameList::value_type("Core." #ID,ID));
-#define ADD_UI_SETTING(ID) m_SettingNameList.insert(SettingNameList::value_type("UISettingID." #ID,(SettingID)ID));
-#define ADD_VIDEO_SETTING(ID) m_SettingNameList.insert(SettingNameList::value_type("VideoSettingID." #ID,(SettingID)(FirstGfxSettings + ID)));
+#define ADD_SETTING(ID) m_SettingNameList.insert(SettingNameList::value_type("Core." #ID, ID));
+#define ADD_UI_SETTING(ID) m_SettingNameList.insert(SettingNameList::value_type("UISettingID." #ID, (SettingID)ID));
+#define ADD_VIDEO_SETTING(ID) m_SettingNameList.insert(SettingNameList::value_type("VideoSettingID." #ID, (SettingID)(FirstGfxSettings + ID)));
 
     ADD_SETTING(Cmd_BaseDirectory);
     ADD_SETTING(Cmd_RomFile);
@@ -472,13 +472,13 @@ CJniBridegSettings::~CJniBridegSettings()
     m_RefCount -= 1;
     if (m_RefCount == 0)
     {
-        g_Settings->UnregisterChangeCB(GameRunning_CPU_Running,NULL,RefreshSettings);
+        g_Settings->UnregisterChangeCB(GameRunning_CPU_Running, NULL, RefreshSettings);
     }
 }
 
 void CJniBridegSettings::RefreshSettings(void *)
 {
-    m_bCPURunning  = g_Settings->LoadBool(GameRunning_CPU_Running);
+    m_bCPURunning = g_Settings->LoadBool(GameRunning_CPU_Running);
 }
 
 SettingID CJniBridegSettings::TranslateSettingID(const char * SettingName)

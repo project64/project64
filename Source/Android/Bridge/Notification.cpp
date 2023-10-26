@@ -1,10 +1,10 @@
-#include <Common/StdString.h>
-#include <Common/Trace.h>
-#include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/Settings.h>
-#include <Project64-core/N64System/N64System.h>
 #include "Notification.h"
 #include "JavaBridge.h"
+#include <Common/StdString.h>
+#include <Common/Trace.h>
+#include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/SystemGlobals.h>
+#include <Project64-core/Settings.h>
 #if defined(ANDROID)
 #include <android/log.h>
 
@@ -87,7 +87,10 @@ void CNotificationImp::DisplayMessage(int DisplayTime, LanguageStringID StringID
 void CNotificationImp::DisplayMessage(int DisplayTime, const char * Message) const
 {
 #ifdef ANDROID
-    if (g_JavaBridge == NULL) { return; }
+    if (g_JavaBridge == NULL)
+    {
+        return;
+    }
     g_JavaBridge->DisplayMessage(Message, DisplayTime);
 #else
     // Ignore warning usage
@@ -99,7 +102,10 @@ void CNotificationImp::DisplayMessage(int DisplayTime, const char * Message) con
 void CNotificationImp::DisplayMessage2(const char * Message) const
 {
 #ifdef ANDROID
-    if (g_JavaBridge == NULL) { return; }
+    if (g_JavaBridge == NULL)
+    {
+        return;
+    }
 
     g_JavaBridge->DisplayMessage2(Message);
 #else

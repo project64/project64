@@ -1,11 +1,11 @@
+#include "UISettings.h"
 #include <Project64-core/Settings.h>
 #include <Project64-core/Settings/SettingType/SettingsType-Application.h>
 #include <Project64-core/Settings/SettingType/SettingsType-ApplicationIndex.h>
-#include <Project64-core/Settings/SettingType/SettingsType-RelativePath.h>
 #include <Project64-core/Settings/SettingType/SettingsType-GameSetting.h>
+#include <Project64-core/Settings/SettingType/SettingsType-RelativePath.h>
 #include <Project64-core/Settings/SettingType/SettingsType-TempNumber.h>
 #include <Project64-core/Version.h>
-#include "UISettings.h"
 
 void RegisterUISettings(void)
 {

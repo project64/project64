@@ -2,29 +2,29 @@
 #ifdef ANDROID
 #include <jni.h>
 #endif
-#include <Project64-core/AppInit.h>
-#include <Project64-core/Version.h>
-#include <Project64-core/TraceModulesProject64.h>
-#include <Project64-core/Settings.h>
-#include <Project64-core/Settings/SettingType/SettingsType-Application.h>
-#include <Project64-core/N64System/N64System.h>
-#include <Project64-core/N64System/SystemGlobals.h>
-#include <Common/Trace.h>
-#include <Common/Thread.h>
-#include <Common/StdString.h>
-#include "jniBridge.h"
-#include "jniBridgeSettings.h"
 #include "JavaBridge.h"
-#include "SyncBridge.h"
-#include "UISettings.h"
 #include "JavaRomList.h"
 #include "Notification.h"
+#include "SyncBridge.h"
+#include "UISettings.h"
+#include "jniBridge.h"
+#include "jniBridgeSettings.h"
+#include <Common/StdString.h>
+#include <Common/Thread.h>
+#include <Common/Trace.h>
+#include <Project64-core/AppInit.h>
+#include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/SystemGlobals.h>
+#include <Project64-core/Settings.h>
+#include <Project64-core/Settings/SettingType/SettingsType-Application.h>
+#include <Project64-core/TraceModulesProject64.h>
+#include <Project64-core/Version.h>
 
 #ifdef _WIN32
-#define EXPORT      extern "C" __declspec(dllexport)
-#define CALL        __cdecl
+#define EXPORT extern "C" __declspec(dllexport)
+#define CALL __cdecl
 #else
-#define EXPORT      extern "C" __attribute__((visibility("default")))
+#define EXPORT extern "C" __attribute__((visibility("default")))
 #define CALL
 #endif
 
@@ -38,7 +38,7 @@ class AndroidLogger : public CTraceModule
         switch (severity)
         {
         case TraceError: __android_log_print(ANDROID_LOG_ERROR, TraceModule(module), "%05d: %s: %s", CThread::GetCurrentThreadId(), function, Message); break;
-        case TraceWarning:  __android_log_print(ANDROID_LOG_WARN, TraceModule(module), "%05d: %s: %s", CThread::GetCurrentThreadId(), function, Message); break;
+        case TraceWarning: __android_log_print(ANDROID_LOG_WARN, TraceModule(module), "%05d: %s: %s", CThread::GetCurrentThreadId(), function, Message); break;
         case TraceNotice: __android_log_print(ANDROID_LOG_INFO, TraceModule(module), "%05d: %s: %s", CThread::GetCurrentThreadId(), function, Message); break;
         case TraceInfo: __android_log_print(ANDROID_LOG_INFO, TraceModule(module), "%05d: %s: %s", CThread::GetCurrentThreadId(), function, Message); break;
         case TraceDebug: __android_log_print(ANDROID_LOG_DEBUG, TraceModule(module), "%05d: %s: %s", CThread::GetCurrentThreadId(), function, Message); break;
@@ -55,21 +55,21 @@ std::unique_ptr<CJniBridegSettings> JniBridegSettings;
 CJavaRomList * g_JavaRomList = NULL;
 AndroidLogger * g_Logger = NULL;
 static pthread_key_t g_ThreadKey;
-static JavaVM* g_JavaVM = NULL;
+static JavaVM * g_JavaVM = NULL;
 JavaBridge * g_JavaBridge = NULL;
 SyncBridge * g_SyncBridge = NULL;
 jobject g_Activity = NULL;
 jobject g_GLThread = NULL;
 
-static void Android_JNI_ThreadDestroyed(void*);
+static void Android_JNI_ThreadDestroyed(void *);
 static void Android_JNI_SetupThread(void);
 
-EXPORT jint CALL JNI_OnLoad(JavaVM* vm, void* reserved)
+EXPORT jint CALL JNI_OnLoad(JavaVM * vm, void * reserved)
 {
     __android_log_print(ANDROID_LOG_INFO, "jniBridge", "JNI_OnLoad called");
     g_JavaVM = vm;
-    JNIEnv *env;
-    if (g_JavaVM->GetEnv((void**)&env, JNI_VERSION_1_4) != JNI_OK)
+    JNIEnv * env;
+    if (g_JavaVM->GetEnv((void **)&env, JNI_VERSION_1_4) != JNI_OK)
     {
         __android_log_print(ANDROID_LOG_ERROR, "jniBridge", "Failed to get the environment using GetEnv()");
         return -1;
@@ -89,7 +89,10 @@ EXPORT jint CALL JNI_OnLoad(JavaVM* vm, void* reserved)
 
 void AddRecentRom(const char * ImagePath)
 {
-    if (ImagePath == NULL) { return; }
+    if (ImagePath == NULL)
+    {
+        return;
+    }
     WriteTrace(TraceUserInterface, TraceDebug, "Start (ImagePath: %s)", ImagePath);
 
     // Get information about the stored ROM list
@@ -141,7 +144,7 @@ void GameCpuRunning(void * /*NotUsed*/)
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
     bool Running = g_Settings->LoadBool(GameRunning_CPU_Running);
     WriteTrace(TraceUserInterface, TraceDebug, Running ? "Game started" : "Game stopped");
-    JNIEnv *env = Android_JNI_GetEnv();
+    JNIEnv * env = Android_JNI_GetEnv();
     if (Running)
     {
         stdstr FileLoc = g_Settings->LoadStringVal(Game_File);
@@ -206,7 +209,7 @@ void GameCpuRunning(void * /*NotUsed*/)
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
-EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_appInit(JNIEnv* env, jclass cls, jstring BaseDir)
+EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_appInit(JNIEnv * env, jclass cls, jstring BaseDir)
 {
     __android_log_print(ANDROID_LOG_INFO, "Project64", "    ____               _           __  _____ __ __");
     __android_log_print(ANDROID_LOG_INFO, "Project64", "   / __ \\_________    (_)__  _____/ /_/ ___// // /");
@@ -230,7 +233,7 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_appInit(JNIEnv* env, j
         return false;
     }
 
-    const char *baseDir = env->GetStringUTFChars(BaseDir, 0);
+    const char * baseDir = env->GetStringUTFChars(BaseDir, 0);
     bool res = AppInit(&Notify(), baseDir, 0, NULL);
     env->ReleaseStringUTFChars(BaseDir, baseDir);
     if (res)
@@ -251,12 +254,12 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_appInit(JNIEnv* env, j
     return res;
 }
 
-EXPORT jstring CALL Java_emu_project64_jni_NativeExports_appVersion(JNIEnv* env, jclass cls)
+EXPORT jstring CALL Java_emu_project64_jni_NativeExports_appVersion(JNIEnv * env, jclass cls)
 {
     return env->NewStringUTF(VER_FILE_VERSION_STR);
 }
 
-EXPORT void CALL Java_emu_project64_jni_NativeExports_SettingsSaveBool(JNIEnv* env, jclass cls, jstring Type, jboolean Value)
+EXPORT void CALL Java_emu_project64_jni_NativeExports_SettingsSaveBool(JNIEnv * env, jclass cls, jstring Type, jboolean Value)
 {
     const char * szType = env->GetStringUTFChars(Type, 0);
     WriteTrace(TraceUserInterface, TraceDebug, "Saving %s value: %s", szType, Value ? "true" : "false");
@@ -269,7 +272,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_SettingsSaveBool(JNIEnv* e
     WriteTrace(TraceUserInterface, TraceDebug, "Saved");
 }
 
-EXPORT void CALL Java_emu_project64_jni_NativeExports_SettingsSaveDword(JNIEnv* env, jclass cls, jstring Type, int Value)
+EXPORT void CALL Java_emu_project64_jni_NativeExports_SettingsSaveDword(JNIEnv * env, jclass cls, jstring Type, int Value)
 {
     const char * szType = env->GetStringUTFChars(Type, 0);
     WriteTrace(TraceUserInterface, TraceDebug, "Saving %s value: 0x%X", szType, Value);
@@ -283,7 +286,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_SettingsSaveDword(JNIEnv* 
     env->ReleaseStringUTFChars(Type, szType);
 }
 
-EXPORT void CALL Java_emu_project64_jni_NativeExports_SettingsSaveString(JNIEnv* env, jclass cls, jstring Type, jstring Buffer)
+EXPORT void CALL Java_emu_project64_jni_NativeExports_SettingsSaveString(JNIEnv * env, jclass cls, jstring Type, jstring Buffer)
 {
     const char * szBuffer = env->GetStringUTFChars(Buffer, 0);
     const char * szType = env->GetStringUTFChars(Type, 0);
@@ -299,7 +302,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_SettingsSaveString(JNIEnv*
     WriteTrace(TraceUserInterface, TraceDebug, "Saved");
 }
 
-EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_SettingsLoadBool(JNIEnv* env, jclass cls, jstring Type)
+EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_SettingsLoadBool(JNIEnv * env, jclass cls, jstring Type)
 {
     const char * szType = env->GetStringUTFChars(Type, 0);
     SettingID Id = JniBridegSettings->TranslateSettingID(szType);
@@ -311,7 +314,7 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_SettingsLoadBool(JNIEn
     return false;
 }
 
-EXPORT jint CALL Java_emu_project64_jni_NativeExports_SettingsLoadDword(JNIEnv* env, jclass cls, jstring Type)
+EXPORT jint CALL Java_emu_project64_jni_NativeExports_SettingsLoadDword(JNIEnv * env, jclass cls, jstring Type)
 {
     const char * szType = env->GetStringUTFChars(Type, 0);
     SettingID Id = JniBridegSettings->TranslateSettingID(szType);
@@ -323,7 +326,7 @@ EXPORT jint CALL Java_emu_project64_jni_NativeExports_SettingsLoadDword(JNIEnv* 
     return 0;
 }
 
-EXPORT jstring CALL Java_emu_project64_jni_NativeExports_SettingsLoadString(JNIEnv* env, jclass cls, jstring Type)
+EXPORT jstring CALL Java_emu_project64_jni_NativeExports_SettingsLoadString(JNIEnv * env, jclass cls, jstring Type)
 {
     const char * szType = env->GetStringUTFChars(Type, 0);
     SettingID Id = JniBridegSettings->TranslateSettingID(szType);
@@ -335,19 +338,19 @@ EXPORT jstring CALL Java_emu_project64_jni_NativeExports_SettingsLoadString(JNIE
     return env->NewStringUTF("");
 }
 
-EXPORT jstring CALL Java_emu_project64_jni_NativeExports_SettingsLoadStringIndex(JNIEnv* env, jclass cls, jstring Type, int32_t Index)
+EXPORT jstring CALL Java_emu_project64_jni_NativeExports_SettingsLoadStringIndex(JNIEnv * env, jclass cls, jstring Type, int32_t Index)
 {
     const char * szType = env->GetStringUTFChars(Type, 0);
     SettingID Id = JniBridegSettings->TranslateSettingID(szType);
     env->ReleaseStringUTFChars(Type, szType);
     if (Id != Default_None)
     {
-        return env->NewStringUTF(g_Settings->LoadStringIndex(Id,Index).c_str());
+        return env->NewStringUTF(g_Settings->LoadStringIndex(Id, Index).c_str());
     }
     return env->NewStringUTF("");
 }
 
-EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_IsSettingSet(JNIEnv* env, jclass cls, jstring Type)
+EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_IsSettingSet(JNIEnv * env, jclass cls, jstring Type)
 {
     const char * szType = env->GetStringUTFChars(Type, 0);
     SettingID Id = JniBridegSettings->TranslateSettingID(szType);
@@ -359,7 +362,7 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_IsSettingSet(JNIEnv* e
     return false;
 }
 
-EXPORT void CALL Java_emu_project64_jni_NativeExports_LoadRomList(JNIEnv* env, jclass cls)
+EXPORT void CALL Java_emu_project64_jni_NativeExports_LoadRomList(JNIEnv * env, jclass cls)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
     if (g_JavaRomList == NULL)
@@ -371,25 +374,25 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_LoadRomList(JNIEnv* env, j
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
-EXPORT void CALL Java_emu_project64_jni_NativeExports_LoadGame(JNIEnv* env, jclass cls, jstring FileLoc)
+EXPORT void CALL Java_emu_project64_jni_NativeExports_LoadGame(JNIEnv * env, jclass cls, jstring FileLoc)
 {
-    const char *fileLoc = env->GetStringUTFChars(FileLoc, 0);
+    const char * fileLoc = env->GetStringUTFChars(FileLoc, 0);
     WriteTrace(TraceUserInterface, TraceDebug, "FileLoc: %s", fileLoc);
     CN64System::LoadFileImage(fileLoc);
     env->ReleaseStringUTFChars(FileLoc, fileLoc);
     WriteTrace(TraceUserInterface, TraceDebug, "Image loaded");
 }
 
-EXPORT void CALL Java_emu_project64_jni_NativeExports_StartGame(JNIEnv* env, jclass cls, jobject activity, jobject GLThread)
+EXPORT void CALL Java_emu_project64_jni_NativeExports_StartGame(JNIEnv * env, jclass cls, jobject activity, jobject GLThread)
 {
     g_Activity = env->NewGlobalRef(activity);
     g_GLThread = env->NewGlobalRef(GLThread);
     CN64System::RunLoadedImage();
 }
 
-EXPORT void CALL Java_emu_project64_jni_NativeExports_RefreshRomDir(JNIEnv* env, jclass cls, jstring RomDir, jboolean Recursive)
+EXPORT void CALL Java_emu_project64_jni_NativeExports_RefreshRomDir(JNIEnv * env, jclass cls, jstring RomDir, jboolean Recursive)
 {
-    const char *romDir = env->GetStringUTFChars(RomDir, 0);
+    const char * romDir = env->GetStringUTFChars(RomDir, 0);
     WriteTrace(TraceUserInterface, TraceDebug, "romDir = %s Recursive = %s", romDir, Recursive ? "true" : "false");
     g_Settings->SaveString(RomList_GameDir, romDir);
     g_Settings->SaveBool(RomList_GameDirRecursive, Recursive);
@@ -404,7 +407,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_RefreshRomDir(JNIEnv* env,
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
-EXPORT void CALL Java_emu_project64_jni_NativeExports_ExternalEvent(JNIEnv* env, jclass cls, int Type)
+EXPORT void CALL Java_emu_project64_jni_NativeExports_ExternalEvent(JNIEnv * env, jclass cls, int Type)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start (Type: %d)", Type);
     if (g_BaseSystem)
@@ -418,14 +421,14 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_ExternalEvent(JNIEnv* env,
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
-EXPORT void CALL Java_emu_project64_jni_NativeExports_ResetApplicationSettings(JNIEnv* env, jclass cls)
+EXPORT void CALL Java_emu_project64_jni_NativeExports_ResetApplicationSettings(JNIEnv * env, jclass cls)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
     CSettingTypeApplication::ResetAll();
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
-EXPORT jbyteArray CALL Java_emu_project64_jni_NativeExports_GetString(JNIEnv* env, jclass cls, int StringID)
+EXPORT jbyteArray CALL Java_emu_project64_jni_NativeExports_GetString(JNIEnv * env, jclass cls, int StringID)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start (StringID: %d)", StringID);
     jbyteArray result = NULL;
@@ -446,7 +449,7 @@ EXPORT jbyteArray CALL Java_emu_project64_jni_NativeExports_GetString(JNIEnv* en
     return result;
 }
 
-EXPORT void CALL Java_emu_project64_jni_NativeExports_SetSpeed(JNIEnv* env, jclass cls, int Speed)
+EXPORT void CALL Java_emu_project64_jni_NativeExports_SetSpeed(JNIEnv * env, jclass cls, int Speed)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start (Speed: %d)", Speed);
     if (g_BaseSystem)
@@ -456,7 +459,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_SetSpeed(JNIEnv* env, jcla
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
-EXPORT int CALL Java_emu_project64_jni_NativeExports_GetSpeed(JNIEnv* env, jclass cls)
+EXPORT int CALL Java_emu_project64_jni_NativeExports_GetSpeed(JNIEnv * env, jclass cls)
 {
     int speed = 0;
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
@@ -468,7 +471,7 @@ EXPORT int CALL Java_emu_project64_jni_NativeExports_GetSpeed(JNIEnv* env, jclas
     return speed;
 }
 
-EXPORT int CALL Java_emu_project64_jni_NativeExports_GetBaseSpeed(JNIEnv* env, jclass cls)
+EXPORT int CALL Java_emu_project64_jni_NativeExports_GetBaseSpeed(JNIEnv * env, jclass cls)
 {
     int speed = 0;
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
@@ -524,7 +527,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_onSurfaceChanged(JNIEnv * 
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
-EXPORT void CALL Java_emu_project64_jni_NativeExports_StopEmulation(JNIEnv* env, jclass cls)
+EXPORT void CALL Java_emu_project64_jni_NativeExports_StopEmulation(JNIEnv * env, jclass cls)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
     if (g_BaseSystem)
@@ -534,7 +537,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_StopEmulation(JNIEnv* env,
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
-EXPORT void CALL Java_emu_project64_jni_NativeExports_StartEmulation(JNIEnv* env, jclass cls)
+EXPORT void CALL Java_emu_project64_jni_NativeExports_StartEmulation(JNIEnv * env, jclass cls)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
     if (g_BaseSystem)
@@ -544,19 +547,19 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_StartEmulation(JNIEnv* env
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
-EXPORT void CALL Java_emu_project64_jni_NativeExports_CloseSystem(JNIEnv* env, jclass cls)
+EXPORT void CALL Java_emu_project64_jni_NativeExports_CloseSystem(JNIEnv * env, jclass cls)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
     g_BaseSystem->EndEmulation();
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
-static void Android_JNI_ThreadDestroyed(void* value)
+static void Android_JNI_ThreadDestroyed(void * value)
 {
     __android_log_print(ANDROID_LOG_ERROR, "Android_JNI_ThreadDestroyed", "start");
 
     // The thread is being destroyed, detach it from the Java VM and set the mThreadKey value to NULL as required
-    JNIEnv *env = (JNIEnv*)value;
+    JNIEnv * env = (JNIEnv *)value;
     if (env != NULL)
     {
         g_JavaVM->DetachCurrentThread();
@@ -565,7 +568,7 @@ static void Android_JNI_ThreadDestroyed(void* value)
     __android_log_print(ANDROID_LOG_ERROR, "Android_JNI_ThreadDestroyed", "Done");
 }
 
-JNIEnv* Android_JNI_GetEnv(void)
+JNIEnv * Android_JNI_GetEnv(void)
 {
     /*
     * From http://developer.android.com/guide/practices/jni.html
@@ -580,7 +583,7 @@ JNIEnv* Android_JNI_GetEnv(void)
     * Note: You can call this function any number of times for the same thread, there's no harm in it
     */
 
-    JNIEnv *env;
+    JNIEnv * env;
     int status = g_JavaVM->AttachCurrentThread(&env, NULL);
     if (status < 0)
     {
@@ -597,7 +600,7 @@ JNIEnv* Android_JNI_GetEnv(void)
     * Note: You can call this function any number of times for the same thread, there's no harm in it
     *       (except for some lost CPU cycles)
     */
-    pthread_setspecific(g_ThreadKey, (void*)env);
+    pthread_setspecific(g_ThreadKey, (void *)env);
     return env;
 }
 

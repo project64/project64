@@ -9,7 +9,7 @@ class JavaBridge :
     public RenderWindow
 {
 public:
-    JavaBridge(JavaVM* vm);
+    JavaBridge(JavaVM * vm);
 
     // Render window functions
     void GfxThreadInit();
@@ -31,10 +31,10 @@ public:
 
 private:
     JavaBridge(void);
-    JavaBridge(const JavaBridge&);
-    JavaBridge& operator=(const JavaBridge&);
+    JavaBridge(const JavaBridge &);
+    JavaBridge & operator=(const JavaBridge &);
 
-    JavaVM* m_vm;
+    JavaVM * m_vm;
     jclass m_GalleryActivityClass;
     jclass m_NotifierClass;
 };

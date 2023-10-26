@@ -1,11 +1,11 @@
 #pragma once
-#include <string>
-#include <stdint.h>
 #include <Project64-core\Settings\SettingsID.h>
+#include <stdint.h>
+#include <string>
 
 enum UISettingID
 {
-	StartUISetting = SettingID::FirstUISettings,
+    StartUISetting = SettingID::FirstUISettings,
 
     AssertsVersion,
     BuildVersion,

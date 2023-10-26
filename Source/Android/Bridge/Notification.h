@@ -7,7 +7,7 @@ class CNotificationImp :
 {
 public:
     CNotificationImp(void);
-	virtual ~CNotificationImp();
+    virtual ~CNotificationImp();
 
     // Error messages
     void DisplayError(const char * Message) const;
@@ -34,8 +34,8 @@ public:
     void ChangeFullScreen(void) const;
 
 private:
-    CNotificationImp(const CNotificationImp&);
-    CNotificationImp& operator=(const CNotificationImp&);
+    CNotificationImp(const CNotificationImp &);
+    CNotificationImp & operator=(const CNotificationImp &);
 
     mutable time_t m_NextMsg;
 };

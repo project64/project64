@@ -1,13 +1,13 @@
-#include <Project64-core/TraceModulesProject64.h>
-#include <Common/Trace.h>
 #include "JavaBridge.h"
 #include "jniBridge.h"
+#include <Common/Trace.h>
+#include <Project64-core/TraceModulesProject64.h>
 
 #ifdef ANDROID
-JavaBridge::JavaBridge(JavaVM* vm) :
-m_vm(vm)
+JavaBridge::JavaBridge(JavaVM * vm) :
+    m_vm(vm)
 {
-    JNIEnv *env = Android_JNI_GetEnv();
+    JNIEnv * env = Android_JNI_GetEnv();
     jclass GalleryActivityClass = env->FindClass("emu/project64/GalleryActivity");
     if (GalleryActivityClass != NULL)
     {
@@ -23,7 +23,7 @@ m_vm(vm)
 void JavaBridge::GfxThreadInit()
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
-    JNIEnv *env = Android_JNI_GetEnv();
+    JNIEnv * env = Android_JNI_GetEnv();
     if (g_GLThread != NULL && env != NULL)
     {
         jclass GLThreadClass = env->GetObjectClass(g_GLThread);
@@ -37,7 +37,7 @@ void JavaBridge::GfxThreadInit()
 void JavaBridge::GfxThreadDone()
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
-    JNIEnv *env = Android_JNI_GetEnv();
+    JNIEnv * env = Android_JNI_GetEnv();
     if (g_GLThread != NULL && env != NULL)
     {
         WriteTrace(TraceUserInterface, TraceDebug, "Calling java GLThread::ThreadExiting");
@@ -51,7 +51,7 @@ void JavaBridge::GfxThreadDone()
 
 void JavaBridge::SwapWindow()
 {
-    JNIEnv *env = Android_JNI_GetEnv();
+    JNIEnv * env = Android_JNI_GetEnv();
     if (g_GLThread != NULL && env != NULL)
     {
         jclass GLThreadClass = env->GetObjectClass(g_GLThread);
@@ -63,7 +63,7 @@ void JavaBridge::SwapWindow()
 
 void JavaBridge::RomListReset(void)
 {
-    JNIEnv *env = Android_JNI_GetEnv();
+    JNIEnv * env = Android_JNI_GetEnv();
     if (env)
     {
         jmethodID midRomListReset = env->GetStaticMethodID(m_GalleryActivityClass, "RomListReset", "()V");
@@ -73,7 +73,7 @@ void JavaBridge::RomListReset(void)
 
 void JavaBridge::RomListAddItem(const char * FullFileName, const char * FileName, const char * GoodName, uint32_t TextColor)
 {
-    JNIEnv *env = Android_JNI_GetEnv();
+    JNIEnv * env = Android_JNI_GetEnv();
     if (env)
     {
         jmethodID midRomListAddItem = env->GetStaticMethodID(m_GalleryActivityClass, "RomListAddItem", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)V");
@@ -92,7 +92,7 @@ void JavaBridge::RomListAddItem(const char * FullFileName, const char * FileName
 
 void JavaBridge::RomListLoaded(void)
 {
-    JNIEnv *env = Android_JNI_GetEnv();
+    JNIEnv * env = Android_JNI_GetEnv();
     if (env)
     {
         jmethodID midRomListLoadDone = env->GetStaticMethodID(m_GalleryActivityClass, "RomListLoadDone", "()V");
@@ -102,43 +102,43 @@ void JavaBridge::RomListLoaded(void)
 
 void JavaBridge::DisplayError(const char * Message)
 {
-    JNIEnv *env = Android_JNI_GetEnv();
+    JNIEnv * env = Android_JNI_GetEnv();
     if (env)
     {
         jstring j_Message = env->NewStringUTF(Message);
         jmethodID midDisplayError = env->GetStaticMethodID(m_NotifierClass, "DisplayError", "(Landroid/app/Activity;Ljava/lang/String;)V");
-        env->CallStaticVoidMethod(m_NotifierClass, midDisplayError,g_Activity,j_Message);
+        env->CallStaticVoidMethod(m_NotifierClass, midDisplayError, g_Activity, j_Message);
         env->DeleteLocalRef(j_Message);
     }
 }
 
 void JavaBridge::DisplayMessage(const char * Message, int DisplayTime)
 {
-    JNIEnv *env = Android_JNI_GetEnv();
+    JNIEnv * env = Android_JNI_GetEnv();
     if (env)
     {
         jstring j_Message = env->NewStringUTF(Message);
         jmethodID midshowMessage = env->GetStaticMethodID(m_NotifierClass, "showMessage", "(Landroid/app/Activity;Ljava/lang/String;I)V");
-        env->CallStaticVoidMethod(m_NotifierClass, midshowMessage,g_Activity,j_Message,DisplayTime);
+        env->CallStaticVoidMethod(m_NotifierClass, midshowMessage, g_Activity, j_Message, DisplayTime);
         env->DeleteLocalRef(j_Message);
     }
 }
 
 void JavaBridge::DisplayMessage2(const char * Message)
 {
-    JNIEnv *env = Android_JNI_GetEnv();
+    JNIEnv * env = Android_JNI_GetEnv();
     if (env)
     {
         jstring j_Message = env->NewStringUTF(Message);
         jmethodID midshowMessage2 = env->GetStaticMethodID(m_NotifierClass, "showMessage2", "(Landroid/app/Activity;Ljava/lang/String;)V");
-        env->CallStaticVoidMethod(m_NotifierClass, midshowMessage2,g_Activity,j_Message);
+        env->CallStaticVoidMethod(m_NotifierClass, midshowMessage2, g_Activity, j_Message);
         env->DeleteLocalRef(j_Message);
     }
 }
 
 void JavaBridge::EmulationStopped(void)
 {
-    JNIEnv *env = Android_JNI_GetEnv();
+    JNIEnv * env = Android_JNI_GetEnv();
     if (g_Activity != NULL && env != NULL)
     {
         jmethodID midEmulationStopped = env->GetStaticMethodID(m_NotifierClass, "EmulationStopped", "(Landroid/app/Activity;)V");
@@ -148,7 +148,7 @@ void JavaBridge::EmulationStopped(void)
 
 void JavaBridge::EmulationStarted(void)
 {
-    JNIEnv *env = Android_JNI_GetEnv();
+    JNIEnv * env = Android_JNI_GetEnv();
     if (g_Activity != NULL && env != NULL)
     {
         jmethodID midEmulationStarted = env->GetStaticMethodID(m_NotifierClass, "EmulationStarted", "(Landroid/app/Activity;)V");
@@ -158,7 +158,7 @@ void JavaBridge::EmulationStarted(void)
 
 void JavaBridge::RecentRomsUpdated(void)
 {
-    JNIEnv *env = Android_JNI_GetEnv();
+    JNIEnv * env = Android_JNI_GetEnv();
     if (env)
     {
         jmethodID midRRecentRomsUpdated = env->GetStaticMethodID(m_GalleryActivityClass, "RecentRomsUpdated", "()V");

@@ -1,7 +1,7 @@
 #pragma once
 #include <Project64-core\Settings\SettingsID.h>
-#include <string>
 #include <map>
+#include <string>
 
 class CJniBridegSettings
 {
@@ -12,12 +12,15 @@ public:
     ~CJniBridegSettings();
 
     SettingID TranslateSettingID(const char * SettingName);
-    static inline bool bCPURunning ( void) { return m_bCPURunning; }
+    static inline bool bCPURunning(void)
+    {
+        return m_bCPURunning;
+    }
 
 private:
     SettingNameList m_SettingNameList;
 
-    static void RefreshSettings (void *);
+    static void RefreshSettings(void *);
 
     static bool m_bCPURunning;
 
