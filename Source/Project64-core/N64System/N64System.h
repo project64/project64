@@ -145,7 +145,7 @@ private:
     friend class CArmRecompilerOps;
     friend class CCodeBlock;
     friend class CMipsMemoryVM;
-    friend class R4300iOp;    
+    friend class R4300iOp;
     friend class CSystemEvents;
     friend class VideoInterfaceHandler;
     friend class PifRamHandler;
