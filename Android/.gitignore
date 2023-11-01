@@ -1,9 +1,7 @@
-assets/project64_data/Config
-assets/project64_data/Lang
+assets/Config
+assets/Lang
 config/version.gradle
-
-app/src/main/assets/project64_data/Config
-app/src/main/assets/project64_data/Lang
+app/src/main/assets/assets.zip
 *.iml
 .gradle
 local.properties
