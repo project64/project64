@@ -14,8 +14,6 @@
 #include <memory.h>
 #include <stdint.h>
 
-aaa
-
 struct ramp_t
 {
     int64_t value;
