@@ -20,8 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B685BB34-D700-4FCC-8503-9B6AA1A0C95D}</ProjectGuid>
-    <Keyword>Win32Proj</Keyword>
-    <RootNamespace>RSPhle</RootNamespace>
+    <RootNamespace>RSPbasic</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -33,45 +32,34 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <PropertyGroup>
-    <TargetName>RSP-HLE</TargetName>
-    <TargetName Condition="'$(Configuration)'=='Debug'">RSP-HLE_d</TargetName>
+    <TargetName>Project64-RSP-Basic</TargetName>
+    <TargetName Condition="'$(Configuration)'=='Debug'">Project64-RSP-Basic_d</TargetName>
     <OutDir>$(SolutionDir)Plugin\RSP\</OutDir>
     <OutDir Condition="'$(Platform)'=='x64'">$(SolutionDir)Plugin64\RSP\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <DisableSpecificWarnings>4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="alist.cpp" />
-    <ClCompile Include="alist_audio.cpp" />
-    <ClCompile Include="alist_naudio.cpp" />
-    <ClCompile Include="alist_nead.cpp" />
-    <ClCompile Include="audio.cpp" />
-    <ClCompile Include="cicx105.cpp" />
-    <ClCompile Include="hle.cpp" />
-    <ClCompile Include="jpeg.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="mem.cpp" />
-    <ClCompile Include="mp3.cpp" />
-    <ClCompile Include="musyx.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader>Create</PrecompiledHeader>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="alist.h" />
-    <ClInclude Include="arithmetics.h" />
-    <ClInclude Include="audio.h" />
-    <ClInclude Include="common.h" />
-    <ClInclude Include="hle.h" />
-    <ClInclude Include="mem.h" />
-    <ClInclude Include="Rsp.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="ucodes.h" />
-    <ClInclude Include="Version.h" />
+    <ProjectReference Include="..\..\Common\Common.vcxproj">
+      <Project>{b4a4b994-9111-42b1-93c2-6f1ca8bc4421}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Project64-rsp-core\Project64-rsp-core.vcxproj">
+      <Project>{7598f6b8-9da6-4897-b26f-f6865f824bf4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Settings\Settings.vcxproj">
+      <Project>{8b9961b1-88d9-4ea3-a752-507a00dd9f3d}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Project64-rsp.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
 </Project>

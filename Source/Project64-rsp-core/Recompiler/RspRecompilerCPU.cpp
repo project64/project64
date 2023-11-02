@@ -27,6 +27,7 @@ bool ChangedPC;
 
 RSP_BLOCK CurrentBlock;
 RSP_CODE RspCode;
+RSP_COMPILER Compiler;
 
 uint8_t *pLastSecondary = NULL, *pLastPrimary = NULL;
 

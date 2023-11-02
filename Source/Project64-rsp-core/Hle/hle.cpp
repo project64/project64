@@ -6,19 +6,20 @@
 // Copyright(C) 2002 Hacktarux
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 
-#include "stdafx.h"
-#if defined (_WIN32) && defined(_DEBUG)
+#include "hle.h"
+#include <stdint.h>
+#if defined(_WIN32) && defined(_DEBUG)
 #include <Windows.h>
 #endif
 #include "mem.h"
 #include "ucodes.h"
 #include <memory.h>
 
-#define min(a,b) (((a) < (b)) ? (a) : (b))
+#define min(a, b) (((a) < (b)) ? (a) : (b))
 
 // Helper functions prototypes
 
-static unsigned int sum_bytes(const uint8_t *bytes, uint32_t size);
+static unsigned int sum_bytes(const uint8_t * bytes, uint32_t size);
 
 CHle::CHle(const RSP_INFO & Rsp_Info) :
     m_dram(Rsp_Info.RDRAM),
@@ -98,7 +99,7 @@ void CHle::hle_execute(void)
 static unsigned int sum_bytes(const uint8_t * bytes, unsigned int size)
 {
     unsigned int sum = 0;
-    const unsigned char *const bytes_end = bytes + size;
+    const unsigned char * const bytes_end = bytes + size;
 
     while (bytes != bytes_end)
     {
@@ -265,7 +266,8 @@ void CHle::normal_task_dispatching(void)
     const unsigned int sum =
         sum_bytes((const uint8_t *)dram_u32(this, *dmem_u32(this, TASK_UCODE)), min(*dmem_u32(this, TASK_UCODE_SIZE), 0xf80) >> 1);
 
-    switch (sum) {
+    switch (sum)
+    {
         // StoreVe12: found in Zelda Ocarina of Time [misleading task->type == 4]
     case 0x278:
         // Nothing to emulate
@@ -320,7 +322,7 @@ void CHle::non_task_dispatching(void)
 #endif
 }
 
-void CHle::VerboseMessage(const char *message, ...)
+void CHle::VerboseMessage(const char * /*message*/, ...)
 {
 #if defined(_WIN32) && defined(_DEBUG)
     // These can get annoying
@@ -330,7 +332,7 @@ void CHle::VerboseMessage(const char *message, ...)
 #endif
 }
 
-void CHle::WarnMessage(const char *message, ...)
+void CHle::WarnMessage(const char * message, ...)
 {
 #if defined(_WIN32) && defined(_DEBUG)
     MessageBoxA(NULL, message, "HLE warning message", MB_OK);

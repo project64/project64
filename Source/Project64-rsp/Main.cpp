@@ -33,7 +33,6 @@
 #include <Project64-rsp-core/cpu/RspMemory.h>
 #include <Project64-rsp-core/cpu/RspTypes.h>
 
-void ClearAllx86Code(void);
 void ProcessMenuItem(int32_t ID);
 #ifdef _WIN32
 BOOL CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -131,7 +130,7 @@ Output: None
 
 EXPORT void CloseDLL(void)
 {
-    FreeMemory();
+    FreeRSP();
 }
 
 /*
@@ -178,6 +177,7 @@ void FixMenuState(void)
     CheckMenuItem(hRSPMenu, ID_CPUMETHOD_INTERPT, MF_BYCOMMAND | (g_CPUCore == InterpreterCPU ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_BREAKONSTARTOFTASK, MF_BYCOMMAND | (BreakOnStart ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_LOGRDPCOMMANDS, MF_BYCOMMAND | (LogRDP ? MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_SETTINGS_HLEALISTTASK, MF_BYCOMMAND | (HleAlistTask ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_SETTINGS_LOGX86CODE, MF_BYCOMMAND | (LogX86Code ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_SETTINGS_MULTITHREADED, MF_BYCOMMAND | (MultiThreadedDefault ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_PROFILING_ON, MF_BYCOMMAND | (Profiling ? MFS_CHECKED : MF_UNCHECKED));
@@ -255,74 +255,6 @@ CycleCount is the number of cycles between switching
 control between the RSP and r4300i core.
 Output: None
 */
-
-RSP_COMPILER Compiler;
-
-void DetectCpuSpecs(void)
-{
-    DWORD Intel_Features = 0;
-    DWORD AMD_Features = 0;
-
-#if defined(_MSC_VER)
-    __try
-    {
-#ifdef _M_IX86
-        _asm {
-            // Intel features
-			mov eax, 1
-			cpuid
-			mov [Intel_Features], edx
-
-                // AMD features
-			mov eax, 80000001h
-			cpuid
-			or [AMD_Features], edx
-        }
-#else
-        int cpuInfo[4];
-        __cpuid(cpuInfo, 1);
-        Intel_Features = cpuInfo[3];
-        __cpuid(cpuInfo, 0x80000001);
-        AMD_Features = cpuInfo[3];
-#endif
-    }
-    __except (EXCEPTION_EXECUTE_HANDLER)
-    {
-        AMD_Features = Intel_Features = 0;
-    }
-#else
-
-    /*
-TODO: With GCC, there is <cpuid.h>, but __cpuid() there is a macro and
-needs five arguments, not two.  Also, GCC lacks SEH.
-*/
-
-    AMD_Features = Intel_Features = 0;
-#endif
-
-    if (Intel_Features & 0x02000000)
-    {
-        Compiler.mmx2 = true;
-        Compiler.sse = true;
-    }
-    if (Intel_Features & 0x00800000)
-    {
-        Compiler.mmx = true;
-    }
-    if (AMD_Features & 0x40000000)
-    {
-        Compiler.mmx2 = true;
-    }
-    if (Intel_Features & 0x00008000)
-    {
-        ConditionalMove = true;
-    }
-    else
-    {
-        ConditionalMove = false;
-    }
-}
-
 EXPORT void InitiateRSP(RSP_INFO Rsp_Info, uint32_t * CycleCount)
 {
     g_RSPDebuggerUI.reset(new RSPDebuggerUI);
@@ -446,6 +378,13 @@ void ProcessMenuItem(int32_t ID)
         }
         break;
     }
+    case ID_SETTINGS_HLEALISTTASK:
+    {
+        bool Checked = (GetMenuState(hRSPMenu, ID_SETTINGS_HLEALISTTASK, MF_BYCOMMAND) & MFS_CHECKED) != 0;
+        CheckMenuItem(hRSPMenu, ID_SETTINGS_HLEALISTTASK, MF_BYCOMMAND | (Checked ? MFS_UNCHECKED : MFS_CHECKED));
+        SetSetting(Set_HleAlistTask, !Checked);
+        break;
+    }
     case ID_SETTINGS_MULTITHREADED:
     {
         bool Checked = (GetMenuState(hRSPMenu, ID_SETTINGS_MULTITHREADED, MF_BYCOMMAND) & MFS_CHECKED) != 0;
@@ -482,21 +421,11 @@ Output: None
 
 EXPORT void RomOpen(void)
 {
-    ClearAllx86Code();
+    RspRomOpened();
     if (DebuggingEnabled)
     {
         EnableDebugging(true);
     }
-    JumpTableSize = GetSetting(Set_JumpTableSize);
-    Mfc0Count = GetSetting(Set_Mfc0Count);
-    SemaphoreExit = GetSetting(Set_SemaphoreExit);
-
-    RdramSize = Set_AllocatedRdramSize != 0 ? GetSystemSetting(Set_AllocatedRdramSize) : 0;
-    if (RdramSize == 0)
-    {
-        RdramSize = 0x00400000;
-    }
-    g_RSPRegisterHandler.reset(new RSPRegisterHandlerPlugin(RSPInfo, RdramSize));
 }
 
 /*
@@ -508,19 +437,7 @@ Output: None
 
 EXPORT void RomClosed(void)
 {
-    if (Profiling)
-    {
-        StopTimer();
-        GenerateTimerResults();
-    }
-    g_RSPRegisterHandler.reset(nullptr);
-    ClearAllx86Code();
-    StopRDPLog();
-    StopCPULog();
-
-#ifdef GenerateLog
-    Stop_Log();
-#endif
+    RspRomClosed();
 }
 
 #ifdef _WIN32
@@ -672,6 +589,7 @@ EXPORT void EnableDebugging(int Enabled)
         Profiling = GetSetting(Set_Profiling) != 0;
         IndvidualBlock = GetSetting(Set_IndvidualBlock) != 0;
         ShowErrors = GetSetting(Set_ShowErrors) != 0;
+        HleAlistTask = GetSetting(Set_HleAlistTask) != 0;
 
         Compiler.bDest = GetSetting(Set_CheckDest) != 0;
         Compiler.bAccum = GetSetting(Set_Accum) != 0;
@@ -702,31 +620,7 @@ EXPORT void EnableDebugging(int Enabled)
 
 EXPORT void PluginLoaded(void)
 {
-    BreakOnStart = false;
-#ifndef _M_X64
-    g_CPUCore = RecompilerCPU;
-#else
-    g_CPUCore = InterpreterCPU;
-#endif
-    LogRDP = false;
-    LogX86Code = false;
-    Profiling = false;
-    IndvidualBlock = false;
-    ShowErrors = false;
-
-    memset(&Compiler, 0, sizeof(Compiler));
-
-    Compiler.bDest = true;
-    Compiler.bAlignVector = false;
-    Compiler.bFlags = true;
-    Compiler.bReOrdering = true;
-    Compiler.bSections = true;
-    Compiler.bAccum = true;
-    Compiler.bGPRConstants = true;
-    DetectCpuSpecs();
-
-    InitializeRspSetting();
-    SetCPU(g_CPUCore);
+    RspPluginLoaded();
 }
 
 #ifdef _WIN32

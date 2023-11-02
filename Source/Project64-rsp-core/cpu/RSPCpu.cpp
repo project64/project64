@@ -1,5 +1,6 @@
 #include "RSPCpu.h"
 #include <Common/CriticalSection.h>
+#include <Project64-rsp-core/Hle/hle.h>
 #include <Project64-rsp-core/RSPDebugger.h>
 #include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/Settings/RspSettings.h>
@@ -54,7 +55,10 @@ void Build_RSP(void)
     SQrootResult.UW = 0;
 
     SetCPU(g_CPUCore);
-    g_RSPDebugger->ResetTimerList();
+    if (g_RSPDebugger != nullptr)
+    {
+        g_RSPDebugger->ResetTimerList();
+    }
 
     EleSpec[0].DW = 0x0001020304050607;  // None
     EleSpec[1].DW = 0x0001020304050607;  // None
@@ -144,13 +148,30 @@ uint32_t DoRspCycles(uint32_t Cycles)
         *RSPInfo.DPC_STATUS_REG &= ~0x0002;
         return Cycles;
     }
+    else if (TaskType == 2 && HleAlistTask)
+    {
+        if (g_hle == nullptr)
+        {
+            g_hle = new CHle(RSPInfo);
+        }
+        if (g_hle != nullptr)
+        {
+            g_hle->try_fast_audio_dispatching();
+            *RSPInfo.SP_STATUS_REG |= SP_STATUS_SIG2 | SP_STATUS_BROKE | SP_STATUS_HALT;
+            if ((*RSPInfo.SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0)
+            {
+                *RSPInfo.MI_INTR_REG |= MI_INTR_SP;
+                RSPInfo.CheckInterrupts();
+            }
+        }
+    }
     else if (TaskType == 2 && AudioHle)
     {
         if (RSPInfo.ProcessAList != NULL)
         {
             RSPInfo.ProcessAList();
         }
-        *RSPInfo.SP_STATUS_REG |= (0x0203);
+        *RSPInfo.SP_STATUS_REG |= SP_STATUS_SIG2 | SP_STATUS_BROKE | SP_STATUS_HALT;
         if ((*RSPInfo.SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0)
         {
             *RSPInfo.MI_INTR_REG |= MI_INTR_SP;
@@ -163,17 +184,10 @@ uint32_t DoRspCycles(uint32_t Cycles)
         RSPInfo.ShowCFB();
     }
 
-    /*
-	*RSPInfo.SP_STATUS_REG |= (0x0203 );
-	if ((*RSPInfo.SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0 )
-	{
-		*RSPInfo.MI_INTR_REG |= MI_INTR_SP;
-		RSPInfo.CheckInterrupts();
-	}
-	//return Cycles;
-*/
-
-    g_RSPDebugger->RspCyclesStart();
+    if (g_RSPDebugger != nullptr)
+    {
+        g_RSPDebugger->RspCyclesStart();
+    }
     CGuard Guard(g_CPUCriticalSection);
 
     switch (g_CPUCore)
@@ -185,6 +199,9 @@ uint32_t DoRspCycles(uint32_t Cycles)
         RunInterpreterCPU(Cycles);
         break;
     }
-    g_RSPDebugger->RspCyclesStop();
+    if (g_RSPDebugger != nullptr)
+    {
+        g_RSPDebugger->RspCyclesStop();
+    }
     return Cycles;
 }

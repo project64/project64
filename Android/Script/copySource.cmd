@@ -32,7 +32,7 @@ xcopy "%base_dir%/Source/Android/PluginInput" "%base_dir%/Android/jni/Plugin-Inp
 IF %ERRORLEVEL% NEQ 0 (exit /B 1)
 
 echo copy PluginRSP
-xcopy "%base_dir%/Source/Android/PluginRSP" "%base_dir%/Android/jni/Plugin-RspHle/" /D /I /F /Y /E
+xcopy "%base_dir%/Source/Android/PluginRSP" "%base_dir%/Android/jni/Plugin-Rsp/" /D /I /F /Y /E
 IF %ERRORLEVEL% NEQ 0 (exit /B 1)
 
 echo copy Project64-bridge

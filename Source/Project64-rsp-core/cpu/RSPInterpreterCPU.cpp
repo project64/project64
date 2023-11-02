@@ -375,13 +375,18 @@ uint32_t RunInterpreterCPU(uint32_t Cycles)
 {
     uint32_t CycleCount;
     RSP_Running = true;
-    g_RSPDebugger->StartingCPU();
+    if (g_RSPDebugger != nullptr)
+    {
+        g_RSPDebugger->StartingCPU();
+    }
     CycleCount = 0;
 
     while (RSP_Running)
     {
-        g_RSPDebugger->BeforeExecuteOp();
-
+        if (g_RSPDebugger != nullptr)
+        {
+            g_RSPDebugger->BeforeExecuteOp();
+        }
         RSPOpC.Value = *(uint32_t *)(RSPInfo.IMEM + (*PrgCount & 0xFFC));
         RSP_Opcode[RSPOpC.op]();
         RSP_GPR[0].W = 0x00000000; // MIPS $zero hard-wired to 0

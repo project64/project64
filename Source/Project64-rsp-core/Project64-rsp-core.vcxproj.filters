@@ -31,6 +31,12 @@
     <Filter Include="Source Files\Recompiler">
       <UniqueIdentifier>{bb961984-d173-4bd2-8a8b-f9a0416188f4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\hle">
+      <UniqueIdentifier>{77e5dadf-84ad-45b1-a66b-f88004e0fcea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\hle">
+      <UniqueIdentifier>{615a5abd-6592-4b84-8611-cc432c2148ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpu\RSPiInstruction.cpp">
@@ -99,6 +105,39 @@
     <ClCompile Include="cpu\RSPRegisterHandlerPlugin.cpp">
       <Filter>Source Files\cpu</Filter>
     </ClCompile>
+    <ClCompile Include="Hle\alist.cpp">
+      <Filter>Source Files\hle</Filter>
+    </ClCompile>
+    <ClCompile Include="Hle\audio.cpp">
+      <Filter>Source Files\hle</Filter>
+    </ClCompile>
+    <ClCompile Include="Hle\mem.cpp">
+      <Filter>Source Files\hle</Filter>
+    </ClCompile>
+    <ClCompile Include="Hle\hle.cpp">
+      <Filter>Source Files\hle</Filter>
+    </ClCompile>
+    <ClCompile Include="Hle\alist_audio.cpp">
+      <Filter>Source Files\hle</Filter>
+    </ClCompile>
+    <ClCompile Include="Hle\alist_naudio.cpp">
+      <Filter>Source Files\hle</Filter>
+    </ClCompile>
+    <ClCompile Include="Hle\alist_nead.cpp">
+      <Filter>Source Files\hle</Filter>
+    </ClCompile>
+    <ClCompile Include="Hle\cicx105.cpp">
+      <Filter>Source Files\hle</Filter>
+    </ClCompile>
+    <ClCompile Include="Hle\mp3.cpp">
+      <Filter>Source Files\hle</Filter>
+    </ClCompile>
+    <ClCompile Include="Hle\musyx.cpp">
+      <Filter>Source Files\hle</Filter>
+    </ClCompile>
+    <ClCompile Include="Hle\jpeg.cpp">
+      <Filter>Source Files\hle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cpu\RSPInstruction.h">
@@ -160,6 +199,24 @@
     </ClInclude>
     <ClInclude Include="cpu\RSPRegisterHandlerPlugin.h">
       <Filter>Header Files\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="Hle\alist.h">
+      <Filter>Header Files\hle</Filter>
+    </ClInclude>
+    <ClInclude Include="Hle\arithmetics.h">
+      <Filter>Header Files\hle</Filter>
+    </ClInclude>
+    <ClInclude Include="Hle\audio.h">
+      <Filter>Header Files\hle</Filter>
+    </ClInclude>
+    <ClInclude Include="Hle\mem.h">
+      <Filter>Header Files\hle</Filter>
+    </ClInclude>
+    <ClInclude Include="Hle\hle.h">
+      <Filter>Header Files\hle</Filter>
+    </ClInclude>
+    <ClInclude Include="Hle\ucodes.h">
+      <Filter>Header Files\hle</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

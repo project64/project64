@@ -5,6 +5,7 @@
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 
 #pragma once
+#include <stdint.h>
 
 class CHle;
 
@@ -14,7 +15,10 @@ void cicx105_ucode(CHle * hle);
 
 // Audio list microcodes
 
-enum { N_SEGMENTS = 16 };
+enum
+{
+    N_SEGMENTS = 16
+};
 
 struct alist_audio_t
 {

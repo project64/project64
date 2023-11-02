@@ -190,6 +190,7 @@ BEGIN
     END
     POPUP "Settings"
     BEGIN
+        MENUITEM "HLE alist task",              ID_SETTINGS_HLEALISTTASK
         MENUITEM "Show Compiler Errors",        ID_SHOWCOMPILERERRORS
         MENUITEM "Break on start of task",      ID_BREAKONSTARTOFTASK
         MENUITEM "Log RDP Commands",            ID_LOGRDPCOMMANDS

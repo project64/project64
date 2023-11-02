@@ -12,6 +12,7 @@ set ScanDir[2]="%base_dir%\Source\Project64-core"
 set ScanDir[3]="%base_dir%\Source\Project64-rsp"
 set ScanDir[4]="%base_dir%\Source\Project64-rsp-core"
 set ScanDir[5]="%base_dir%\Source\Android\Bridge"
+set ScanDir[6]="%base_dir%\Source\Android\PluginRSP"
 
 set ScanFiles[0]="*.cpp"
 set ScanFiles[1]="*.h"

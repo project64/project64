@@ -5,7 +5,7 @@
 typedef struct
 {
     void * hInst;
-    int32_t MemoryBswaped;    // If this is set to TRUE, then the memory has been pre-bswap'd on a DWORD (32-bits) boundary
+    int32_t MemoryBswaped; // If this is set to TRUE, then the memory has been pre-bswap'd on a DWORD (32-bits) boundary
     uint8_t * RDRAM;
     uint8_t * DMEM;
     uint8_t * IMEM;
@@ -31,11 +31,11 @@ typedef struct
     uint32_t * DPC_PIPEBUSY_REG;
     uint32_t * DPC_TMEM_REG;
 
-    void(*CheckInterrupts)(void);
-    void(*ProcessDList)(void);
-    void(*ProcessAList)(void);
-    void(*ProcessRdpList)(void);
-    void(*ShowCFB)(void);
+    void (*CheckInterrupts)(void);
+    void (*ProcessDList)(void);
+    void (*ProcessAList)(void);
+    void (*ProcessRdpList)(void);
+    void (*ShowCFB)(void);
 } RSP_INFO;
 
 EXPORT void CloseDLL(void);

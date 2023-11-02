@@ -6,7 +6,7 @@
 // Copyright(C) 2002 Hacktarux
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 
-#include "stdafx.h"
+#include <stdint.h>
 #include <stdlib.h>
 
 #include "arithmetics.h"
@@ -14,15 +14,15 @@
 
 #define SUBBLOCK_SIZE 64
 
-typedef void(*tile_line_emitter_t)(CHle * hle, const int16_t *y, const int16_t *u, uint32_t address);
-typedef void(*subblock_transform_t)(int16_t *dst, const int16_t *src);
+typedef void (*tile_line_emitter_t)(CHle * hle, const int16_t * y, const int16_t * u, uint32_t address);
+typedef void (*subblock_transform_t)(int16_t * dst, const int16_t * src);
 
 // Standard JPEG microcode decoder
 static void jpeg_decode_std(CHle * hle,
-    const char *const version,
-    const subblock_transform_t transform_luma,
-    const subblock_transform_t transform_chroma,
-    const tile_line_emitter_t emit_line);
+                            const char * const version,
+                            const subblock_transform_t transform_luma,
+                            const subblock_transform_t transform_chroma,
+                            const tile_line_emitter_t emit_line);
 
 // Helper functions
 static uint8_t clamp_u8(int16_t x);
@@ -34,30 +34,30 @@ static uint32_t GetUYVY(int16_t y1, int16_t y2, int16_t u, int16_t v);
 static uint16_t GetRGBA(int16_t y, int16_t u, int16_t v);
 
 // Tile line emitters
-static void EmitYUVTileLine(CHle * hle, const int16_t *y, const int16_t *u, uint32_t address);
-static void EmitRGBATileLine(CHle * hle, const int16_t *y, const int16_t *u, uint32_t address);
+static void EmitYUVTileLine(CHle * hle, const int16_t * y, const int16_t * u, uint32_t address);
+static void EmitRGBATileLine(CHle * hle, const int16_t * y, const int16_t * u, uint32_t address);
 
 // Macroblocks operations
-static void decode_macroblock_ob(int16_t *macroblock, int32_t *y_dc, int32_t *u_dc, int32_t *v_dc, const int16_t *qtable);
+static void decode_macroblock_ob(int16_t * macroblock, int32_t * y_dc, int32_t * u_dc, int32_t * v_dc, const int16_t * qtable);
 static void decode_macroblock_std(const subblock_transform_t transform_luma,
-    const subblock_transform_t transform_chroma,
-    int16_t *macroblock,
-    unsigned int subblock_count,
-    const int16_t qtables[3][SUBBLOCK_SIZE]);
-static void EmitTilesMode0(CHle * hle, const tile_line_emitter_t emit_line, const int16_t *macroblock, uint32_t address);
-static void EmitTilesMode2(CHle * hle, const tile_line_emitter_t emit_line, const int16_t *macroblock, uint32_t address);
+                                  const subblock_transform_t transform_chroma,
+                                  int16_t * macroblock,
+                                  unsigned int subblock_count,
+                                  const int16_t qtables[3][SUBBLOCK_SIZE]);
+static void EmitTilesMode0(CHle * hle, const tile_line_emitter_t emit_line, const int16_t * macroblock, uint32_t address);
+static void EmitTilesMode2(CHle * hle, const tile_line_emitter_t emit_line, const int16_t * macroblock, uint32_t address);
 
 // Sub blocks operations
-static void TransposeSubBlock(int16_t *dst, const int16_t *src);
-static void ZigZagSubBlock(int16_t *dst, const int16_t *src);
-static void ReorderSubBlock(int16_t *dst, const int16_t *src, const unsigned int *table);
-static void MultSubBlocks(int16_t *dst, const int16_t *src1, const int16_t *src2, unsigned int shift);
-static void ScaleSubBlock(int16_t *dst, const int16_t *src, int16_t scale);
-static void RShiftSubBlock(int16_t *dst, const int16_t *src, unsigned int shift);
-static void InverseDCT1D(const float *const x, float *dst, unsigned int stride);
-static void InverseDCTSubBlock(int16_t *dst, const int16_t *src);
-static void RescaleYSubBlock(int16_t *dst, const int16_t *src);
-static void RescaleUVSubBlock(int16_t *dst, const int16_t *src);
+static void TransposeSubBlock(int16_t * dst, const int16_t * src);
+static void ZigZagSubBlock(int16_t * dst, const int16_t * src);
+static void ReorderSubBlock(int16_t * dst, const int16_t * src, const unsigned int * table);
+static void MultSubBlocks(int16_t * dst, const int16_t * src1, const int16_t * src2, unsigned int shift);
+static void ScaleSubBlock(int16_t * dst, const int16_t * src, int16_t scale);
+static void RShiftSubBlock(int16_t * dst, const int16_t * src, unsigned int shift);
+static void InverseDCT1D(const float * const x, float * dst, unsigned int stride);
+static void InverseDCTSubBlock(int16_t * dst, const int16_t * src);
+static void RescaleYSubBlock(int16_t * dst, const int16_t * src);
+static void RescaleUVSubBlock(int16_t * dst, const int16_t * src);
 
 // Transposed dequantization table
 static const int16_t DEFAULT_QTABLE[SUBBLOCK_SIZE] = {
@@ -68,8 +68,7 @@ static const int16_t DEFAULT_QTABLE[SUBBLOCK_SIZE] = {
     24, 26, 40, 51, 68, 81, 103, 112,
     40, 58, 57, 87, 109, 104, 121, 100,
     51, 60, 69, 80, 103, 113, 120, 103,
-    61, 55, 56, 62, 77, 92, 101, 99
-};
+    61, 55, 56, 62, 77, 92, 101, 99};
 
 // Zig-zag indices
 static const unsigned int ZIGZAG_TABLE[SUBBLOCK_SIZE] = {
@@ -80,8 +79,7 @@ static const unsigned int ZIGZAG_TABLE[SUBBLOCK_SIZE] = {
     10, 19, 23, 32, 39, 45, 52, 54,
     20, 22, 33, 38, 46, 51, 55, 60,
     21, 34, 37, 47, 50, 56, 59, 61,
-    35, 36, 48, 49, 57, 58, 62, 63
-};
+    35, 36, 48, 49, 57, 58, 62, 63};
 
 // Transposition indices
 static const unsigned int TRANSPOSE_TABLE[SUBBLOCK_SIZE] = {
@@ -92,24 +90,23 @@ static const unsigned int TRANSPOSE_TABLE[SUBBLOCK_SIZE] = {
     4, 12, 20, 28, 36, 44, 52, 60,
     5, 13, 21, 29, 37, 45, 53, 61,
     6, 14, 22, 30, 38, 46, 54, 62,
-    7, 15, 23, 31, 39, 47, 55, 63
-};
+    7, 15, 23, 31, 39, 47, 55, 63};
 
 /* IDCT related constants
  * Cn = alpha * cos(n * PI / 16) (alpha is chosen such as C4 = 1) */
 static const float IDCT_C3 = 1.175875602f;
 static const float IDCT_C6 = 0.541196100f;
 static const float IDCT_K[10] = {
-    0.765366865f,   //  C2-C6
-    -1.847759065f,   // -C2-C6
-    -0.390180644f,   //  C5-C3
-    -1.961570561f,   // -C5-C3
-    1.501321110f,   //  C1+C3-C5-C7
-    2.053119869f,   //  C1+C3-C5+C7
-    3.072711027f,   //  C1+C3+C5-C7
-    0.298631336f,   // -C1+C3+C5-C7
-    -0.899976223f,   //  C7-C3
-    -2.562915448f    // -C1-C3
+    0.765366865f,  //  C2-C6
+    -1.847759065f, // -C2-C6
+    -0.390180644f, //  C5-C3
+    -1.961570561f, // -C5-C3
+    1.501321110f,  //  C1+C3-C5-C7
+    2.053119869f,  //  C1+C3-C5+C7
+    3.072711027f,  //  C1+C3+C5-C7
+    0.298631336f,  // -C1+C3+C5-C7
+    -0.899976223f, //  C7-C3
+    -2.562915448f  // -C1-C3
 };
 
 // Global functions
@@ -128,7 +125,6 @@ void jpeg_decode_PS(CHle * hle)
     jpeg_decode_std(hle, "PS", NULL, NULL, EmitRGBATileLine);
 }
 
-
 // JPEG decoding microcode found in Ogre Battle and Bottom of the 9th
 
 void jpeg_decode_OB(CHle * hle)
@@ -140,9 +136,9 @@ void jpeg_decode_OB(CHle * hle)
     int32_t u_dc = 0;
     int32_t v_dc = 0;
 
-    uint32_t           address = *dmem_u32(hle, TASK_DATA_PTR);
+    uint32_t address = *dmem_u32(hle, TASK_DATA_PTR);
     const unsigned int macroblock_count = *dmem_u32(hle, TASK_DATA_SIZE);
-    const int          qscale = *dmem_u32(hle, TASK_YIELD_DATA_SIZE);
+    const int qscale = *dmem_u32(hle, TASK_YIELD_DATA_SIZE);
 
     hle->VerboseMessage("jpeg_decode_OB: *buffer=%x, #MB=%d, qscale=%d", address, macroblock_count, qscale);
 
@@ -172,7 +168,7 @@ void jpeg_decode_OB(CHle * hle)
 
 // Local functions
 
-static void jpeg_decode_std(CHle * hle, const char *const version, const subblock_transform_t transform_luma, const subblock_transform_t transform_chroma, const tile_line_emitter_t emit_line)
+static void jpeg_decode_std(CHle * hle, const char * const version, const subblock_transform_t transform_luma, const subblock_transform_t transform_chroma, const tile_line_emitter_t emit_line)
 {
     int16_t qtables[3][SUBBLOCK_SIZE];
     unsigned int mb;
@@ -268,9 +264,9 @@ static uint16_t clamp_RGBA_component(int16_t x)
 static uint32_t GetUYVY(int16_t y1, int16_t y2, int16_t u, int16_t v)
 {
     return (uint32_t)clamp_u8(u) << 24 |
-        (uint32_t)clamp_u8(y1) << 16 |
-        (uint32_t)clamp_u8(v) << 8 |
-        (uint32_t)clamp_u8(y2);
+           (uint32_t)clamp_u8(y1) << 16 |
+           (uint32_t)clamp_u8(v) << 8 |
+           (uint32_t)clamp_u8(y2);
 }
 
 static uint16_t GetRGBA(int16_t y, int16_t u, int16_t v)
@@ -286,12 +282,12 @@ static uint16_t GetRGBA(int16_t y, int16_t u, int16_t v)
     return (r << 4) | (g >> 1) | (b >> 6) | 1;
 }
 
-static void EmitYUVTileLine(CHle * hle, const int16_t *y, const int16_t *u, uint32_t address)
+static void EmitYUVTileLine(CHle * hle, const int16_t * y, const int16_t * u, uint32_t address)
 {
     uint32_t uyvy[8];
 
-    const int16_t *const v = u + SUBBLOCK_SIZE;
-    const int16_t *const y2 = y + SUBBLOCK_SIZE;
+    const int16_t * const v = u + SUBBLOCK_SIZE;
+    const int16_t * const y2 = y + SUBBLOCK_SIZE;
 
     uyvy[0] = GetUYVY(y[0], y[1], u[0], v[0]);
     uyvy[1] = GetUYVY(y[2], y[3], u[1], v[1]);
@@ -305,12 +301,12 @@ static void EmitYUVTileLine(CHle * hle, const int16_t *y, const int16_t *u, uint
     dram_store_u32(hle, uyvy, address, 8);
 }
 
-static void EmitRGBATileLine(CHle * hle, const int16_t *y, const int16_t *u, uint32_t address)
+static void EmitRGBATileLine(CHle * hle, const int16_t * y, const int16_t * u, uint32_t address)
 {
     uint16_t rgba[16];
 
-    const int16_t *const v = u + SUBBLOCK_SIZE;
-    const int16_t *const y2 = y + SUBBLOCK_SIZE;
+    const int16_t * const v = u + SUBBLOCK_SIZE;
+    const int16_t * const y2 = y + SUBBLOCK_SIZE;
 
     rgba[0] = GetRGBA(y[0], u[0], v[0]);
     rgba[1] = GetRGBA(y[1], u[0], v[0]);
@@ -332,14 +328,15 @@ static void EmitRGBATileLine(CHle * hle, const int16_t *y, const int16_t *u, uin
     dram_store_u16(hle, rgba, address, 16);
 }
 
-static void EmitTilesMode0(CHle * hle, const tile_line_emitter_t emit_line, const int16_t *macroblock, uint32_t address)
+static void EmitTilesMode0(CHle * hle, const tile_line_emitter_t emit_line, const int16_t * macroblock, uint32_t address)
 {
     unsigned int i;
 
     unsigned int y_offset = 0;
     unsigned int u_offset = 2 * SUBBLOCK_SIZE;
 
-    for (i = 0; i < 8; ++i) {
+    for (i = 0; i < 8; ++i)
+    {
         emit_line(hle, &macroblock[y_offset], &macroblock[u_offset], address);
 
         y_offset += 8;
@@ -348,7 +345,7 @@ static void EmitTilesMode0(CHle * hle, const tile_line_emitter_t emit_line, cons
     }
 }
 
-static void EmitTilesMode2(CHle * hle, const tile_line_emitter_t emit_line, const int16_t *macroblock, uint32_t address)
+static void EmitTilesMode2(CHle * hle, const tile_line_emitter_t emit_line, const int16_t * macroblock, uint32_t address)
 {
     unsigned int i;
 
@@ -366,16 +363,18 @@ static void EmitTilesMode2(CHle * hle, const tile_line_emitter_t emit_line, cons
     }
 }
 
-static void decode_macroblock_ob(int16_t *macroblock, int32_t *y_dc, int32_t *u_dc, int32_t *v_dc, const int16_t *qtable)
+static void decode_macroblock_ob(int16_t * macroblock, int32_t * y_dc, int32_t * u_dc, int32_t * v_dc, const int16_t * qtable)
 {
     int sb;
 
-    for (sb = 0; sb < 6; ++sb) {
+    for (sb = 0; sb < 6; ++sb)
+    {
         int16_t tmp_sb[SUBBLOCK_SIZE];
 
         // Update decode
         int32_t dc = (int32_t)macroblock[0];
-        switch (sb) {
+        switch (sb)
+        {
         case 0:
         case 1:
         case 2:
@@ -406,10 +405,10 @@ static void decode_macroblock_ob(int16_t *macroblock, int32_t *y_dc, int32_t *u_
 }
 
 static void decode_macroblock_std(const subblock_transform_t transform_luma,
-    const subblock_transform_t transform_chroma,
-    int16_t *macroblock,
-    unsigned int subblock_count,
-    const int16_t qtables[3][SUBBLOCK_SIZE])
+                                  const subblock_transform_t transform_chroma,
+                                  int16_t * macroblock,
+                                  unsigned int subblock_count,
+                                  const int16_t qtables[3][SUBBLOCK_SIZE])
 {
     unsigned int sb;
     unsigned int q = 0;
@@ -446,17 +445,17 @@ static void decode_macroblock_std(const subblock_transform_t transform_luma,
     }
 }
 
-static void TransposeSubBlock(int16_t *dst, const int16_t *src)
+static void TransposeSubBlock(int16_t * dst, const int16_t * src)
 {
     ReorderSubBlock(dst, src, TRANSPOSE_TABLE);
 }
 
-static void ZigZagSubBlock(int16_t *dst, const int16_t *src)
+static void ZigZagSubBlock(int16_t * dst, const int16_t * src)
 {
     ReorderSubBlock(dst, src, ZIGZAG_TABLE);
 }
 
-static void ReorderSubBlock(int16_t *dst, const int16_t *src, const unsigned int *table)
+static void ReorderSubBlock(int16_t * dst, const int16_t * src, const unsigned int * table)
 {
     unsigned int i;
 
@@ -467,7 +466,7 @@ static void ReorderSubBlock(int16_t *dst, const int16_t *src, const unsigned int
         dst[i] = src[table[i]];
 }
 
-static void MultSubBlocks(int16_t *dst, const int16_t *src1, const int16_t *src2, unsigned int shift)
+static void MultSubBlocks(int16_t * dst, const int16_t * src1, const int16_t * src2, unsigned int shift)
 {
     unsigned int i;
 
@@ -478,17 +477,18 @@ static void MultSubBlocks(int16_t *dst, const int16_t *src1, const int16_t *src2
     }
 }
 
-static void ScaleSubBlock(int16_t *dst, const int16_t *src, int16_t scale)
+static void ScaleSubBlock(int16_t * dst, const int16_t * src, int16_t scale)
 {
     unsigned int i;
 
-    for (i = 0; i < SUBBLOCK_SIZE; ++i) {
+    for (i = 0; i < SUBBLOCK_SIZE; ++i)
+    {
         int32_t v = src[i] * scale;
         dst[i] = clamp_s16(v);
     }
 }
 
-static void RShiftSubBlock(int16_t *dst, const int16_t *src, unsigned int shift)
+static void RShiftSubBlock(int16_t * dst, const int16_t * src, unsigned int shift)
 {
     unsigned int i;
 
@@ -503,8 +503,8 @@ Computations use single precision floats
 Implementation based on Wikipedia:
 https://fr.wikipedia.org/wiki/Transform%C3%A9e_en_cosinus_discr%C3%A8te
 */
- 
-static void InverseDCT1D(const float *const x, float *dst, unsigned int stride)
+
+static void InverseDCT1D(const float * const x, float * dst, unsigned int stride)
 {
     float e[4];
     float f[4];
@@ -514,8 +514,8 @@ static void InverseDCT1D(const float *const x, float *dst, unsigned int stride)
     x37 = IDCT_K[3] * (x[3] + x[7]);
     x17 = IDCT_K[8] * (x[1] + x[7]);
     x35 = IDCT_K[9] * (x[3] + x[5]);
-    x1357 = IDCT_C3   * (x[1] + x[3] + x[5] + x[7]);
-    x26 = IDCT_C6   * (x[2] + x[6]);
+    x1357 = IDCT_C3 * (x[1] + x[3] + x[5] + x[7]);
+    x26 = IDCT_C6 * (x[2] + x[6]);
 
     f[0] = x[0] + x[4];
     f[1] = x[0] - x[4];
@@ -544,7 +544,7 @@ static void InverseDCT1D(const float *const x, float *dst, unsigned int stride)
     *dst = f[0] + f[2] - e[0];
 }
 
-static void InverseDCTSubBlock(int16_t *dst, const int16_t *src)
+static void InverseDCTSubBlock(int16_t * dst, const int16_t * src)
 {
     float x[8];
     float block[SUBBLOCK_SIZE];
@@ -572,7 +572,7 @@ static void InverseDCTSubBlock(int16_t *dst, const int16_t *src)
         }
     }
 }
-static void RescaleYSubBlock(int16_t *dst, const int16_t *src)
+static void RescaleYSubBlock(int16_t * dst, const int16_t * src)
 {
     unsigned int i;
 
@@ -581,7 +581,7 @@ static void RescaleYSubBlock(int16_t *dst, const int16_t *src)
         dst[i] = (((uint32_t)(clamp_s12(src[i]) + 0x800) * 0xdb0) >> 16) + 0x10;
     }
 }
-static void RescaleUVSubBlock(int16_t *dst, const int16_t *src)
+static void RescaleUVSubBlock(int16_t * dst, const int16_t * src)
 {
     unsigned int i;
 

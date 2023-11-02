@@ -6,16 +6,18 @@
 // Copyright(C) 2002 Hacktarux
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 
-#include "stdafx.h"
+#include <stdint.h>
 #include <string.h>
 
 #include "alist.h"
-#include "common.h"
 #include "hle.h"
 #include "mem.h"
 #include "ucodes.h"
 
-enum { DMEM_BASE = 0x5c0 };
+enum
+{
+    DMEM_BASE = 0x5c0
+};
 
 // Helper functions
 
@@ -31,7 +33,7 @@ static void set_address(CHle * hle, uint32_t so)
 
 static void clear_segments(CHle * hle)
 {
-    memset(hle->alist_audio().segments, 0, N_SEGMENTS*sizeof(hle->alist_audio().segments[0]));
+    memset(hle->alist_audio().segments, 0, N_SEGMENTS * sizeof(hle->alist_audio().segments[0]));
 }
 
 // Audio commands definition
@@ -53,7 +55,7 @@ static void CLEARBUFF(CHle * hle, uint32_t w1, uint32_t w2)
 
 static void ENVMIXER(CHle * hle, uint32_t w1, uint32_t w2)
 {
-    uint8_t  flags = (w1 >> 16) & 0xFF;
+    uint8_t flags = (w1 >> 16) & 0xFF;
     uint32_t address = get_address(hle, w2);
 
     alist_envmix_exp(
@@ -72,7 +74,7 @@ static void ENVMIXER(CHle * hle, uint32_t w1, uint32_t w2)
 
 static void ENVMIXER_GE(CHle * hle, uint32_t w1, uint32_t w2)
 {
-    uint8_t  flags = (w1 >> 16);
+    uint8_t flags = (w1 >> 16);
     uint32_t address = get_address(hle, w2);
 
     alist_envmix_ge(
@@ -91,7 +93,7 @@ static void ENVMIXER_GE(CHle * hle, uint32_t w1, uint32_t w2)
 
 static void RESAMPLE(CHle * hle, uint32_t w1, uint32_t w2)
 {
-    uint8_t  flags = (w1 >> 16) & 0xFF;
+    uint8_t flags = (w1 >> 16) & 0xFF;
     uint16_t pitch = w1 & 0xFFFF;
     uint32_t address = get_address(hle, w2);
 
@@ -138,14 +140,14 @@ static void SETLOOP(CHle * hle, uint32_t UNUSED(w1), uint32_t w2)
 
 static void ADPCM(CHle * hle, uint32_t w1, uint32_t w2)
 {
-    uint8_t  flags = (w1 >> 16) & 0xFF;
+    uint8_t flags = (w1 >> 16) & 0xFF;
     uint32_t address = get_address(hle, w2);
 
     alist_adpcm(
         hle,
         flags & 0x1,
         flags & 0x2,
-        false,          // Unsupported in this microcode
+        false, // Unsupported in this microcode
         hle->alist_audio().out,
         hle->alist_audio().in,
         align(hle->alist_audio().count, 32),
@@ -199,7 +201,7 @@ static void DMEMMOVE(CHle * hle, uint32_t w1, uint32_t w2)
 {
     uint16_t dmemi = (w1 + DMEM_BASE) & 0xFFFF;
     uint16_t dmemo = (w2 >> 16) + DMEM_BASE;
-    uint16_t count = (w2)& 0xFFFF;
+    uint16_t count = (w2)&0xFFFF;
 
     if (count == 0)
         return;
@@ -212,7 +214,7 @@ static void LOADADPCM(CHle * hle, uint32_t w1, uint32_t w2)
     uint16_t count = (w1 & 0xFFFF);
     uint32_t address = get_address(hle, w2);
 
-    dram_load_u16(hle, (uint16_t*)hle->alist_audio().table, address, align(count, 8) >> 1);
+    dram_load_u16(hle, (uint16_t *)hle->alist_audio().table, address, align(count, 8) >> 1);
 }
 
 static void INTERLEAVE(CHle * hle, uint32_t UNUSED(w1), uint32_t w2)
@@ -228,7 +230,7 @@ static void INTERLEAVE(CHle * hle, uint32_t UNUSED(w1), uint32_t w2)
 
 static void MIXER(CHle * hle, uint32_t w1, uint32_t w2)
 {
-    int16_t  gain = (w1)& 0xFFFF;
+    int16_t gain = (w1)&0xFFFF;
     uint16_t dmemi = ((w2 >> 16) + DMEM_BASE) & 0xFFFF;
     uint16_t dmemo = (w2 + DMEM_BASE) & 0xFFFF;
 
@@ -245,7 +247,7 @@ static void SEGMENT(CHle * hle, uint32_t UNUSED(w1), uint32_t w2)
 
 static void POLEF(CHle * hle, uint32_t w1, uint32_t w2)
 {
-    uint8_t  flags = (w1 >> 16);
+    uint8_t flags = (w1 >> 16);
     uint16_t gain = w1;
     uint32_t address = get_address(hle, w2);
 
@@ -271,8 +273,7 @@ void alist_process_audio(CHle * hle)
         SPNOOP, ADPCM, CLEARBUFF, ENVMIXER,
         LOADBUFF, RESAMPLE, SAVEBUFF, SEGMENT,
         SETBUFF, SETVOL, DMEMMOVE, LOADADPCM,
-        MIXER, INTERLEAVE, POLEF, SETLOOP
-    };
+        MIXER, INTERLEAVE, POLEF, SETLOOP};
 
     clear_segments(hle);
     alist_process(hle, ABI, 0x10);
@@ -281,12 +282,11 @@ void alist_process_audio(CHle * hle)
 void alist_process_audio_ge(CHle * hle)
 {
     static const acmd_callback_t ABI[0x10] =
-    {
-        SPNOOP, ADPCM, CLEARBUFF, ENVMIXER_GE,
-        LOADBUFF, RESAMPLE, SAVEBUFF, SEGMENT,
-        SETBUFF, SETVOL, DMEMMOVE, LOADADPCM,
-        MIXER, INTERLEAVE, POLEF, SETLOOP
-    };
+        {
+            SPNOOP, ADPCM, CLEARBUFF, ENVMIXER_GE,
+            LOADBUFF, RESAMPLE, SAVEBUFF, SEGMENT,
+            SETBUFF, SETVOL, DMEMMOVE, LOADADPCM,
+            MIXER, INTERLEAVE, POLEF, SETLOOP};
 
     clear_segments(hle);
     alist_process(hle, ABI, 0x10);
@@ -295,12 +295,11 @@ void alist_process_audio_ge(CHle * hle)
 void alist_process_audio_bc(CHle * hle)
 {
     static const acmd_callback_t ABI[0x10] =
-    {
-        SPNOOP, ADPCM, CLEARBUFF, ENVMIXER_GE,
-        LOADBUFF, RESAMPLE, SAVEBUFF, SEGMENT,
-        SETBUFF, SETVOL, DMEMMOVE, LOADADPCM,
-        MIXER, INTERLEAVE, POLEF, SETLOOP
-    };
+        {
+            SPNOOP, ADPCM, CLEARBUFF, ENVMIXER_GE,
+            LOADBUFF, RESAMPLE, SAVEBUFF, SEGMENT,
+            SETBUFF, SETVOL, DMEMMOVE, LOADADPCM,
+            MIXER, INTERLEAVE, POLEF, SETLOOP};
 
     clear_segments(hle);
     alist_process(hle, ABI, 0x10);

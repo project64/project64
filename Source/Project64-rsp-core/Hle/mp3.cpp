@@ -6,7 +6,7 @@
 // Copyright(C) 2002 Hacktarux
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 
-#include "stdafx.h"
+#include <stdint.h>
 #include <string.h>
 
 #include "arithmetics.h"
@@ -14,7 +14,7 @@
 
 static void InnerLoop(CHle * hle, uint32_t outPtr, uint32_t inPtr, uint32_t t6, uint32_t t5, uint32_t t4);
 
-static const uint16_t DeWindowLUT [0x420] = {
+static const uint16_t DeWindowLUT[0x420] = {
     0x0000, 0xFFF3, 0x005D, 0xFF38, 0x037A, 0xF736, 0x0B37, 0xC00E,
     0x7FFF, 0x3FF2, 0x0B37, 0x08CA, 0x037A, 0x00C8, 0x005D, 0x000D,
     0x0000, 0xFFF3, 0x005D, 0xFF38, 0x037A, 0xF736, 0x0B37, 0xC00E,
@@ -146,18 +146,16 @@ static const uint16_t DeWindowLUT [0x420] = {
     0x005D, 0x00C8, 0x037A, 0x08CA, 0x0B37, 0x3FF2, 0x7FFF, 0xC00E,
     0x0B37, 0xF736, 0x037A, 0xFF38, 0x005D, 0xFFF3, 0x0000, 0x000D,
     0x005D, 0x00C8, 0x037A, 0x08CA, 0x0B37, 0x3FF2, 0x7FFF, 0xC00E,
-    0x0B37, 0xF736, 0x037A, 0xFF38, 0x005D, 0xFFF3, 0x0000, 0x0000
-};
+    0x0B37, 0xF736, 0x037A, 0xFF38, 0x005D, 0xFFF3, 0x0000, 0x0000};
 
-static void MP3AB0(int32_t* v)
+static void MP3AB0(int32_t * v)
 {
     // Part 2 - 100% accurate
     static const uint16_t LUT2[8] =
-    {
-        0xFEC4, 0xF4FA, 0xC5E4, 0xE1C4,
-        0x1916, 0x4A50, 0xA268, 0x78AE
-    };
-    static const uint16_t LUT3[4] = { 0xFB14, 0xD4DC, 0x31F2, 0x8E3A };
+        {
+            0xFEC4, 0xF4FA, 0xC5E4, 0xE1C4,
+            0x1916, 0x4A50, 0xA268, 0x78AE};
+    static const uint16_t LUT3[4] = {0xFB14, 0xD4DC, 0x31F2, 0x8E3A};
     int i;
 
     for (i = 0; i < 8; i++)
@@ -170,10 +168,10 @@ static void MP3AB0(int32_t* v)
 
     for (i = 0; i < 4; i++)
     {
-        v[0 + i]  = v[16 + i] + v[20 + i];
-        v[4 + i]  = ((v[16 + i] - v[20 + i]) * LUT3[i]) >> 0x10;
+        v[0 + i] = v[16 + i] + v[20 + i];
+        v[4 + i] = ((v[16 + i] - v[20 + i]) * LUT3[i]) >> 0x10;
 
-        v[8 + i]  = v[24 + i] + v[28 + i];
+        v[8 + i] = v[24 + i] + v[28 + i];
         v[12 + i] = ((v[24 + i] - v[28 + i]) * LUT3[i]) >> 0x10;
     }
 
@@ -192,12 +190,12 @@ static void MP3AB0(int32_t* v)
 void mp3_task(CHle * hle, unsigned int index, uint32_t address)
 {
     uint32_t inPtr, outPtr;
-    uint32_t t6;// = 0x08A0; - I think these are temporary storage buffers
-    uint32_t t5;// = 0x0AC0;
-    uint32_t t4;// = (w1 & 0x1E);
+    uint32_t t6; // = 0x08A0; - I think these are temporary storage buffers
+    uint32_t t5; // = 0x0AC0;
+    uint32_t t4; // = (w1 & 0x1E);
 
     // Initialization code
-    uint32_t readPtr; // S5
+    uint32_t readPtr;  // S5
     uint32_t writePtr; // S6
     uint32_t tmp;
     int cnt, cnt2;
@@ -217,7 +215,7 @@ void mp3_task(CHle * hle, unsigned int index, uint32_t address)
     {
         // DMA: 0xCF0 <- RDRAM[s5] : 0x180
         memcpy(hle->mp3_buffer() + 0xCF0, hle->dram() + readPtr, 0x180);
-        inPtr  = 0xCF0; // S7
+        inPtr = 0xCF0;  // S7
         outPtr = 0xE70; // S3
         // Inner loop start
         for (cnt2 = 0; cnt2 < 0x180; cnt2 += 0x40)
@@ -237,7 +235,7 @@ void mp3_task(CHle * hle, unsigned int index, uint32_t address)
         // Inner loop end
         memcpy(hle->dram() + writePtr, hle->mp3_buffer() + 0xe70, 0x180);
         writePtr += 0x180;
-        readPtr  += 0x180;
+        readPtr += 0x180;
     }
 }
 
@@ -247,12 +245,11 @@ static void InnerLoop(CHle * hle, uint32_t outPtr, uint32_t inPtr, uint32_t t6, 
 
     // 0, 1, 3, 2, 7, 6, 4, 5, 7, 6, 4, 5, 0, 1, 3, 2
     static const uint16_t LUT6[16] =
-    {
-        0xFFB2, 0xFD3A, 0xF10A, 0xF854,
-        0xBDAE, 0xCDA0, 0xE76C, 0xDB94,
-        0x1920, 0x4B20, 0xAC7C, 0x7C68,
-        0xABEC, 0x9880, 0xDAE8, 0x839C
-    };
+        {
+            0xFFB2, 0xFD3A, 0xF10A, 0xF854,
+            0xBDAE, 0xCDA0, 0xE76C, 0xDB94,
+            0x1920, 0x4B20, 0xAC7C, 0x7C68,
+            0xABEC, 0x9880, 0xDAE8, 0x839C};
     int i;
     uint32_t t0;
     uint32_t t1;
@@ -351,7 +348,7 @@ static void InnerLoop(CHle * hle, uint32_t outPtr, uint32_t inPtr, uint32_t t6, 
     v[2] = -v[2];
     // ** Store v[2] -> (T2 + 0)**
     *(int16_t *)(hle->mp3_buffer() + ((t2 + (short)0x0))) = (short)v[2];
-    v[3]  = (((v[18] - v[19]) * 0x16A09) >> 0x10) + v[2];
+    v[3] = (((v[18] - v[19]) * 0x16A09) >> 0x10) + v[2];
     // ** Store v[3] -> (T0 + 0)**
     *(int16_t *)(hle->mp3_buffer() + ((t0 + (short)0x0))) = (short)v[3];
     // 0x1400 - Verified...
@@ -497,7 +494,7 @@ static void InnerLoop(CHle * hle, uint32_t outPtr, uint32_t inPtr, uint32_t t6, 
     v[7] = (((v[22] - v[23]) * 0x2D413) >> 0x10) + v[0] + v[1] + v[3];
     // 0x16A8
     // Save v[0] -> (T3 + 0xFFE0)
-    *(int16_t *)(hle->mp3_buffer() + ((t3 + (short)0xFFE0))) = (short) - v[0];
+    *(int16_t *)(hle->mp3_buffer() + ((t3 + (short)0xFFE0))) = (short)-v[0];
     v[8] = v[24] + v[25];
     v[9] = ((v[24] - v[25]) * 0x16A09) >> 0x10;
     v[10] = ((v[26] + v[27]) << 1) + v[8];
@@ -571,20 +568,20 @@ static void InnerLoop(CHle * hle, uint32_t outPtr, uint32_t inPtr, uint32_t t6, 
 
         for (i = 7; i >= 0; i--)
         {
-            v2 += ((int) * (int16_t *)(hle->mp3_buffer() + (addptr) + 0x00) * (short)DeWindowLUT[offset + 0x00] + 0x4000) >> 0xF;
-            v4 += ((int) * (int16_t *)(hle->mp3_buffer() + (addptr) + 0x10) * (short)DeWindowLUT[offset + 0x08] + 0x4000) >> 0xF;
-            v6 += ((int) * (int16_t *)(hle->mp3_buffer() + (addptr) + 0x20) * (short)DeWindowLUT[offset + 0x20] + 0x4000) >> 0xF;
-            v8 += ((int) * (int16_t *)(hle->mp3_buffer() + (addptr) + 0x30) * (short)DeWindowLUT[offset + 0x28] + 0x4000) >> 0xF;
+            v2 += ((int)*(int16_t *)(hle->mp3_buffer() + (addptr) + 0x00) * (short)DeWindowLUT[offset + 0x00] + 0x4000) >> 0xF;
+            v4 += ((int)*(int16_t *)(hle->mp3_buffer() + (addptr) + 0x10) * (short)DeWindowLUT[offset + 0x08] + 0x4000) >> 0xF;
+            v6 += ((int)*(int16_t *)(hle->mp3_buffer() + (addptr) + 0x20) * (short)DeWindowLUT[offset + 0x20] + 0x4000) >> 0xF;
+            v8 += ((int)*(int16_t *)(hle->mp3_buffer() + (addptr) + 0x30) * (short)DeWindowLUT[offset + 0x28] + 0x4000) >> 0xF;
             addptr += 2;
             offset++;
         }
-        v0  = v2 + v4;
+        v0 = v2 + v4;
         v18 = v6 + v8;
         // Clamp(v0);
         // Clamp(v18);
         // Clamp?
         *(int16_t *)(hle->mp3_buffer() + (outPtr ^ S16)) = v0;
-        *(int16_t *)(hle->mp3_buffer() + ((outPtr + 2)^S16)) = v18;
+        *(int16_t *)(hle->mp3_buffer() + ((outPtr + 2) ^ S16)) = v18;
         outPtr += 4;
         addptr += 0x30;
         offset += 0x38;
@@ -594,12 +591,12 @@ static void InnerLoop(CHle * hle, uint32_t outPtr, uint32_t inPtr, uint32_t t6, 
     v2 = v4 = 0;
     for (i = 0; i < 4; i++)
     {
-        v2 += ((int) * (int16_t *)(hle->mp3_buffer() + (addptr) + 0x00) * (short)DeWindowLUT[offset + 0x00] + 0x4000) >> 0xF;
-        v2 += ((int) * (int16_t *)(hle->mp3_buffer() + (addptr) + 0x10) * (short)DeWindowLUT[offset + 0x08] + 0x4000) >> 0xF;
+        v2 += ((int)*(int16_t *)(hle->mp3_buffer() + (addptr) + 0x00) * (short)DeWindowLUT[offset + 0x00] + 0x4000) >> 0xF;
+        v2 += ((int)*(int16_t *)(hle->mp3_buffer() + (addptr) + 0x10) * (short)DeWindowLUT[offset + 0x08] + 0x4000) >> 0xF;
         addptr += 2;
         offset++;
-        v4 += ((int) * (int16_t *)(hle->mp3_buffer() + (addptr) + 0x00) * (short)DeWindowLUT[offset + 0x00] + 0x4000) >> 0xF;
-        v4 += ((int) * (int16_t *)(hle->mp3_buffer() + (addptr) + 0x10) * (short)DeWindowLUT[offset + 0x08] + 0x4000) >> 0xF;
+        v4 += ((int)*(int16_t *)(hle->mp3_buffer() + (addptr) + 0x00) * (short)DeWindowLUT[offset + 0x00] + 0x4000) >> 0xF;
+        v4 += ((int)*(int16_t *)(hle->mp3_buffer() + (addptr) + 0x10) * (short)DeWindowLUT[offset + 0x08] + 0x4000) >> 0xF;
         addptr += 2;
         offset++;
     }
@@ -607,12 +604,12 @@ static void InnerLoop(CHle * hle, uint32_t outPtr, uint32_t inPtr, uint32_t t6, 
     mult4 = *(int32_t *)(hle->mp3_buffer() + 0xCEC);
     if (t4 & 0x2)
     {
-        v2 = (v2 **(uint32_t *)(hle->mp3_buffer() + 0xCE8)) >> 0x10;
+        v2 = (v2 * *(uint32_t *)(hle->mp3_buffer() + 0xCE8)) >> 0x10;
         *(int16_t *)(hle->mp3_buffer() + (outPtr ^ S16)) = v2;
     }
     else
     {
-        v4 = (v4 **(uint32_t *)(hle->mp3_buffer() + 0xCE8)) >> 0x10;
+        v4 = (v4 * *(uint32_t *)(hle->mp3_buffer() + 0xCE8)) >> 0x10;
         *(int16_t *)(hle->mp3_buffer() + (outPtr ^ S16)) = v4;
         mult4 = *(uint32_t *)(hle->mp3_buffer() + 0xCE8);
     }
@@ -628,24 +625,24 @@ static void InnerLoop(CHle * hle, uint32_t outPtr, uint32_t inPtr, uint32_t t6, 
 
         for (i = 0; i < 4; i++)
         {
-            v2 += ((int) * (int16_t *)(hle->mp3_buffer() + (addptr) + 0x20) * (short)DeWindowLUT[offset + 0x00] + 0x4000) >> 0xF;
-            v2 -= ((int) * (int16_t *)(hle->mp3_buffer() + ((addptr + 2)) + 0x20) * (short)DeWindowLUT[offset + 0x01] + 0x4000) >> 0xF;
-            v4 += ((int) * (int16_t *)(hle->mp3_buffer() + (addptr) + 0x30) * (short)DeWindowLUT[offset + 0x08] + 0x4000) >> 0xF;
-            v4 -= ((int) * (int16_t *)(hle->mp3_buffer() + ((addptr + 2)) + 0x30) * (short)DeWindowLUT[offset + 0x09] + 0x4000) >> 0xF;
-            v6 += ((int) * (int16_t *)(hle->mp3_buffer() + (addptr) + 0x00) * (short)DeWindowLUT[offset + 0x20] + 0x4000) >> 0xF;
-            v6 -= ((int) * (int16_t *)(hle->mp3_buffer() + ((addptr + 2)) + 0x00) * (short)DeWindowLUT[offset + 0x21] + 0x4000) >> 0xF;
-            v8 += ((int) * (int16_t *)(hle->mp3_buffer() + (addptr) + 0x10) * (short)DeWindowLUT[offset + 0x28] + 0x4000) >> 0xF;
-            v8 -= ((int) * (int16_t *)(hle->mp3_buffer() + ((addptr + 2)) + 0x10) * (short)DeWindowLUT[offset + 0x29] + 0x4000) >> 0xF;
+            v2 += ((int)*(int16_t *)(hle->mp3_buffer() + (addptr) + 0x20) * (short)DeWindowLUT[offset + 0x00] + 0x4000) >> 0xF;
+            v2 -= ((int)*(int16_t *)(hle->mp3_buffer() + ((addptr + 2)) + 0x20) * (short)DeWindowLUT[offset + 0x01] + 0x4000) >> 0xF;
+            v4 += ((int)*(int16_t *)(hle->mp3_buffer() + (addptr) + 0x30) * (short)DeWindowLUT[offset + 0x08] + 0x4000) >> 0xF;
+            v4 -= ((int)*(int16_t *)(hle->mp3_buffer() + ((addptr + 2)) + 0x30) * (short)DeWindowLUT[offset + 0x09] + 0x4000) >> 0xF;
+            v6 += ((int)*(int16_t *)(hle->mp3_buffer() + (addptr) + 0x00) * (short)DeWindowLUT[offset + 0x20] + 0x4000) >> 0xF;
+            v6 -= ((int)*(int16_t *)(hle->mp3_buffer() + ((addptr + 2)) + 0x00) * (short)DeWindowLUT[offset + 0x21] + 0x4000) >> 0xF;
+            v8 += ((int)*(int16_t *)(hle->mp3_buffer() + (addptr) + 0x10) * (short)DeWindowLUT[offset + 0x28] + 0x4000) >> 0xF;
+            v8 -= ((int)*(int16_t *)(hle->mp3_buffer() + ((addptr + 2)) + 0x10) * (short)DeWindowLUT[offset + 0x29] + 0x4000) >> 0xF;
             addptr += 4;
             offset += 2;
         }
-        v0  = v2 + v4;
+        v0 = v2 + v4;
         v18 = v6 + v8;
         // Clamp(v0);
         // Clamp(v18);
         // Clamp?
-        *(int16_t *)(hle->mp3_buffer() + ((outPtr + 2)^S16)) = v0;
-        *(int16_t *)(hle->mp3_buffer() + ((outPtr + 4)^S16)) = v18;
+        *(int16_t *)(hle->mp3_buffer() + ((outPtr + 2) ^ S16)) = v0;
+        *(int16_t *)(hle->mp3_buffer() + ((outPtr + 4) ^ S16)) = v18;
         outPtr += 4;
         addptr -= 0x50;
     }
@@ -659,20 +656,20 @@ static void InnerLoop(CHle * hle, uint32_t outPtr, uint32_t inPtr, uint32_t t6, 
     for (i = 0; i < 8; i++)
     {
         // v0
-        vt = (*(int16_t *)(hle->mp3_buffer() + ((tmp - 0x40)^S16)) * hi0);
-        *(int16_t *)((uint8_t *)hle->mp3_buffer() + ((tmp - 0x40)^S16)) = clamp_s16(vt);
+        vt = (*(int16_t *)(hle->mp3_buffer() + ((tmp - 0x40) ^ S16)) * hi0);
+        *(int16_t *)((uint8_t *)hle->mp3_buffer() + ((tmp - 0x40) ^ S16)) = clamp_s16(vt);
 
         // v17
-        vt = (*(int16_t *)(hle->mp3_buffer() + ((tmp - 0x30)^S16)) * hi0);
-        *(int16_t *)((uint8_t *)hle->mp3_buffer() + ((tmp - 0x30)^S16)) = clamp_s16(vt);
+        vt = (*(int16_t *)(hle->mp3_buffer() + ((tmp - 0x30) ^ S16)) * hi0);
+        *(int16_t *)((uint8_t *)hle->mp3_buffer() + ((tmp - 0x30) ^ S16)) = clamp_s16(vt);
 
         // v2
-        vt = (*(int16_t *)(hle->mp3_buffer() + ((tmp - 0x1E)^S16)) * hi1);
-        *(int16_t *)((uint8_t *)hle->mp3_buffer() + ((tmp - 0x1E)^S16)) = clamp_s16(vt);
+        vt = (*(int16_t *)(hle->mp3_buffer() + ((tmp - 0x1E) ^ S16)) * hi1);
+        *(int16_t *)((uint8_t *)hle->mp3_buffer() + ((tmp - 0x1E) ^ S16)) = clamp_s16(vt);
 
         // v4
-        vt = (*(int16_t *)(hle->mp3_buffer() + ((tmp - 0xE)^S16)) * hi1);
-        *(int16_t *)((uint8_t *)hle->mp3_buffer() + ((tmp - 0xE)^S16)) = clamp_s16(vt);
+        vt = (*(int16_t *)(hle->mp3_buffer() + ((tmp - 0xE) ^ S16)) * hi1);
+        *(int16_t *)((uint8_t *)hle->mp3_buffer() + ((tmp - 0xE) ^ S16)) = clamp_s16(vt);
 
         tmp += 2;
     }

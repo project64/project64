@@ -44,5 +44,4 @@ dependencies {
     implementation project(':jni:Project64-video')
     implementation project(':jni:Project64-audio')
     implementation project(':jni:Plugin-input')
-    implementation project(':jni:Plugin-RspHle')
 }

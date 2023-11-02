@@ -67,9 +67,6 @@
     <ProjectReference Include="..\Settings\Settings.vcxproj">
       <Project>{8b9961b1-88d9-4ea3-a752-507a00dd9f3d}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\UpdateVersion\UpdateVersion.vcxproj">
-      <Project>{1968162c-0793-491d-91a1-81645a24d399}</Project>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project64-rsp.rc" />

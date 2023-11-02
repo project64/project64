@@ -5,18 +5,19 @@
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 
 #pragma once
+#include <stdint.h>
 
 extern const int16_t RESAMPLE_LUT[64 * 4];
 
-int32_t rdot(size_t n, const int16_t *x, const int16_t *y);
+int32_t rdot(size_t n, const int16_t * x, const int16_t * y);
 
 static inline int16_t adpcm_predict_sample(uint8_t byte, uint8_t mask,
-    unsigned lshift, unsigned rshift)
+                                           unsigned lshift, unsigned rshift)
 {
     int16_t sample = (uint16_t)(byte & mask) << lshift;
     sample >>= rshift; // Signed
     return sample;
 }
 
-void adpcm_compute_residuals(int16_t* dst, const int16_t* src,
-    const int16_t* cb_entry, const int16_t* last_samples, size_t count);
+void adpcm_compute_residuals(int16_t * dst, const int16_t * src,
+                             const int16_t * cb_entry, const int16_t * last_samples, size_t count);

@@ -413,7 +413,10 @@ void RSP_Opcode_BGEZAL(void)
 
 void RSP_Cop0_MF(void)
 {
-    g_RSPDebugger->RDP_LogMF0(*PrgCount, RSPOpC.rd);
+    if (g_RSPDebugger != nullptr)
+    {
+        g_RSPDebugger->RDP_LogMF0(*PrgCount, RSPOpC.rd);
+    }
     switch (RSPOpC.rd)
     {
     case 0: RSP_GPR[RSPOpC.rt].UW = g_RSPRegisterHandler->ReadReg(RSPRegister_MEM_ADDR); break;
@@ -1678,5 +1681,8 @@ void RSP_Opcode_SWV(void)
 
 void rsp_UnknownOpcode(void)
 {
-    g_RSPDebugger->UnknownOpcode();
+    if (g_RSPDebugger != nullptr)
+    {
+        g_RSPDebugger->UnknownOpcode();
+    }
 }

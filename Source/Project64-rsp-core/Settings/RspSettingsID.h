@@ -9,6 +9,7 @@ enum
     Set_Profiling,
     Set_IndvidualBlock,
     Set_ShowErrors,
+    Set_HleAlistTask,
 
     // Compiler settings
     Set_CheckDest,
