@@ -88,7 +88,7 @@ void DetectCpuSpecs(void)
 void RspPluginLoaded(void)
 {
     BreakOnStart = false;
-#ifndef _M_X64
+#if defined(_M_IX86) && defined(_MSC_VER)
     g_CPUCore = RecompilerCPU;
 #else
     g_CPUCore = InterpreterCPU;
