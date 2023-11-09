@@ -2327,7 +2327,7 @@ void Compile_Cop0_MT(void)
         break;
     }
 #else
-g_Notify->BreakPoint(__FILE__, __LINE__); 
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
     if (RSPOpC.rd == 2 && !ChangedPC)
     {
