@@ -1,4 +1,4 @@
-#include "x86.h"
+#include "X86.h"
 #include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
 #include <Project64-rsp-core/cpu/RspLog.h>
@@ -30,7 +30,7 @@ char * sse_Strings[8] = {
 
 #define sse_Name(Reg) (sse_Strings[(Reg)])
 
-void SseMoveAlignedVariableToReg(void * Variable, char * VariableName, int sseReg)
+void SseMoveAlignedVariableToReg(void * Variable, const char * VariableName, int sseReg)
 {
     uint8_t x86Command = 0;
 
@@ -87,7 +87,7 @@ void SseMoveAlignedN64MemToReg(int sseReg, int AddrReg)
     PUTDSTPTR(RecompPos, RSPInfo.DMEM);
 }
 
-void SseMoveAlignedRegToVariable(int sseReg, void * Variable, char * VariableName)
+void SseMoveAlignedRegToVariable(int sseReg, void * Variable, const char * VariableName)
 {
     uint8_t x86Command = 0;
 
@@ -144,7 +144,7 @@ void SseMoveAlignedRegToN64Mem(int sseReg, int AddrReg)
     PUTDSTPTR(RecompPos, RSPInfo.DMEM);
 }
 
-void SseMoveUnalignedVariableToReg(void * Variable, char * VariableName, int sseReg)
+void SseMoveUnalignedVariableToReg(void * Variable, const char * VariableName, int sseReg)
 {
     uint8_t x86Command = 0;
 
@@ -201,7 +201,7 @@ void SseMoveUnalignedN64MemToReg(int sseReg, int AddrReg)
     PUTDSTPTR(RecompPos, RSPInfo.DMEM);
 }
 
-void SseMoveUnalignedRegToVariable(int sseReg, void * Variable, char * VariableName)
+void SseMoveUnalignedRegToVariable(int sseReg, void * Variable, const char * VariableName)
 {
     uint8_t x86Command = 0;
 

@@ -1,3 +1,5 @@
+/.cxx
+/build
 *.c
 *.cpp
 *.h

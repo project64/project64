@@ -1203,7 +1203,7 @@ void RSP_Vector_VRCP(void)
     else
     {
         uint32_t Shift = clz32(Data);
-        uint32_t Index = (uint64_t(Data) << Shift & 0x7fc0'0000) >> 22;
+        uint32_t Index = (uint64_t(Data) << Shift & 0x7fc00000) >> 22;
         Result = (((0x10000 | Reciprocals[Index]) << 14) >> (31 - Shift)) ^ Mask;
     }
     RcpHigh = false;

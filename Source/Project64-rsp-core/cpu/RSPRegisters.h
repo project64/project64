@@ -71,8 +71,8 @@ enum
     MI_INTR_SP = 0x01, // Bit 0: SP INTR
 };
 
-extern char * x86_Strings[8];
-extern char * GPR_Strings[32];
+extern const char * x86_Strings[8];
+extern const char * GPR_Strings[32];
 
 #define x86_Name(Reg) (x86_Strings[(Reg)])
 #define GPR_Name(Reg) (GPR_Strings[(Reg)])

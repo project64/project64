@@ -1,4 +1,4 @@
-#include "x86.h"
+#include "X86.h"
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
 #include <Project64-rsp-core/cpu/RspLog.h>
 #include <Project64-rsp-core/cpu/RspMemory.h>
@@ -60,7 +60,7 @@ void MmxMoveRegToReg(int Dest, int Source)
     PUTDST8(RecompPos, 0xC0 | x86Command);
 }
 
-void MmxMoveQwordVariableToReg(int Dest, void * Variable, char * VariableName)
+void MmxMoveQwordVariableToReg(int Dest, void * Variable, const char * VariableName)
 {
     uint8_t x86Command = 0;
 
@@ -83,7 +83,7 @@ void MmxMoveQwordVariableToReg(int Dest, void * Variable, char * VariableName)
     PUTDSTPTR(RecompPos, Variable);
 }
 
-void MmxMoveQwordRegToVariable(int Dest, void * Variable, char * VariableName)
+void MmxMoveQwordRegToVariable(int Dest, void * Variable, const char * VariableName)
 {
     uint8_t x86Command = 0;
 
@@ -138,7 +138,7 @@ void MmxPorRegToReg(int Dest, int Source)
     PUTDST8(RecompPos, 0xC0 | x86Command);
 }
 
-void MmxPorVariableToReg(void * Variable, char * VariableName, int Dest)
+void MmxPorVariableToReg(void * Variable, const char * VariableName, int Dest)
 {
     uint8_t x86Command = 0;
 
@@ -193,7 +193,7 @@ void MmxPandRegToReg(int Dest, int Source)
     PUTDST8(RecompPos, 0xC0 | x86Command);
 }
 
-void MmxPandVariableToReg(void * Variable, char * VariableName, int Dest)
+void MmxPandVariableToReg(void * Variable, const char * VariableName, int Dest)
 {
     uint8_t x86Command = 0;
 
@@ -280,7 +280,7 @@ void MmxXorRegToReg(int Dest, int Source)
     PUTDST8(RecompPos, 0xC0 | x86Command);
 }
 
-void MmxShuffleMemoryToReg(int Dest, void * Variable, char * VariableName, uint8_t Immed)
+void MmxShuffleMemoryToReg(int Dest, void * Variable, const char * VariableName, uint8_t Immed)
 {
     uint8_t x86Command = 0;
 
@@ -368,7 +368,7 @@ void MmxPmullwRegToReg(int Dest, int Source)
     PUTDST8(RecompPos, 0xC0 | x86Command);
 }
 
-void MmxPmullwVariableToReg(int Dest, void * Variable, char * VariableName)
+void MmxPmullwVariableToReg(int Dest, void * Variable, const char * VariableName)
 {
     uint8_t x86Command = 0;
 
@@ -454,7 +454,7 @@ void MmxPmulhwRegToReg(int Dest, int Source)
     PUTDST8(RecompPos, 0xC0 | x86Command);
 }
 
-void MmxPmulhwRegToVariable(int Dest, void * Variable, char * VariableName)
+void MmxPmulhwRegToVariable(int Dest, void * Variable, const char * VariableName)
 {
     uint8_t x86Command = 0;
 
@@ -609,7 +609,7 @@ void MmxPsubswRegToReg(int Dest, int Source)
     PUTDST8(RecompPos, 0xC0 | x86Command);
 }
 
-void MmxPaddswVariableToReg(int Dest, void * Variable, char * VariableName)
+void MmxPaddswVariableToReg(int Dest, void * Variable, const char * VariableName)
 {
     uint8_t x86Command = 0;
 
@@ -632,7 +632,7 @@ void MmxPaddswVariableToReg(int Dest, void * Variable, char * VariableName)
     PUTDSTPTR(RecompPos, Variable);
 }
 
-void MmxPsubswVariableToReg(int Dest, void * Variable, char * VariableName)
+void MmxPsubswVariableToReg(int Dest, void * Variable, const char * VariableName)
 {
     uint8_t x86Command = 0;
 

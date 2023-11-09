@@ -1,7 +1,7 @@
 #include "RspRecompilerCPU.h"
 #include "RspProfiling.h"
 #include "RspRecompilerOps.h"
-#include "x86.h"
+#include "X86.h"
 #include <Common/StdString.h>
 #include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/cpu/RSPCpu.h>
@@ -791,7 +791,7 @@ void CompilerRSPBlock(void)
     // Align the block to a boundary
     if (X86BaseAddress & 7)
     {
-        register size_t Count;
+        size_t Count;
         const size_t Padding = (8 - (X86BaseAddress & 7)) & 7;
 
         for (Count = 0; Count < Padding; Count++)
@@ -864,7 +864,7 @@ void CompilerRSPBlock(void)
             char str[40];
             sprintf(str, "%X", CompilePC);
             PushImm32(str, CompilePC);
-            Call_Direct(RDP_LogLoc, "RDP_LogLoc");
+            Call_Direct((void *)RDP_LogLoc, "RDP_LogLoc");
             AddConstToX86Reg(x86_ESP, 4);
         }
 
@@ -1003,7 +1003,7 @@ uint32_t RunRecompilerCPU(uint32_t Cycles)
 			popad
         }
 #else
-        __debugbreak();
+        g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
         if (Profiling && IndvidualBlock)
         {
@@ -1020,7 +1020,7 @@ uint32_t RunRecompilerCPU(uint32_t Cycles)
 #if defined(_M_IX86) && defined(_MSC_VER)
         _asm emms
 #else
-        __debugbreak();
+        g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
     }
     return Cycles;

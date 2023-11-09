@@ -5,6 +5,8 @@
 #include <Common/StdString.h>
 #include <Common/path.h>
 #include <Project64-rsp-core/RSPInfo.h>
+#include <Project64-rsp-core/Settings/RspSettings.h>
+#include <Settings/Settings.h>
 
 CLog * RDPLog = NULL;
 CLog * CPULog = NULL;
@@ -13,11 +15,10 @@ void StartCPULog(void)
 {
     if (CPULog == NULL)
     {
-        CPath LogFile(CPath::MODULE_DIRECTORY, "RSP_x86Log.txt");
-        LogFile.AppendDirectory("Logs");
-
+        char LogDir[260];
+        CPath LogFilePath(GetSystemSettingSz(Set_DirectoryLog, LogDir, sizeof(LogDir)), "RSP_x86Log.txt");
         CPULog = new CLog;
-        CPULog->Open(LogFile);
+        CPULog->Open(LogFilePath);
     }
 }
 
@@ -51,13 +52,12 @@ void CPU_Message(const char * Message, ...)
 
 void StartRDPLog(void)
 {
-    if (RDPLog == NULL)
+    if (RDPLog == nullptr && Set_DirectoryLog != 0)
     {
-        CPath LogFile(CPath::MODULE_DIRECTORY, "RDP_Log.txt");
-        LogFile.AppendDirectory("Logs");
-
+        char LogDir[260];
+        CPath LogFilePath(GetSystemSettingSz(Set_DirectoryLog, LogDir, sizeof(LogDir)), "RDP_Log.txt");
         RDPLog = new CLog;
-        RDPLog->Open(LogFile);
+        RDPLog->Open(LogFilePath);
         RDPLog->SetMaxFileSize(400 * 1024 * 1024);
         //		RDPLog->SetFlush(true);
     }

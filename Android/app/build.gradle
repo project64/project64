@@ -39,9 +39,11 @@ dependencies {
     implementation project(':jni:3rdParty:zlib')
     implementation project(':jni:Common')
     implementation project(':jni:Settings')
+    implementation project(':jni:Project64-rsp-core')
     implementation project(':jni:Project64-core')
     implementation project(':jni:Project64-bridge')
     implementation project(':jni:Project64-video')
     implementation project(':jni:Project64-audio')
     implementation project(':jni:Plugin-input')
+    implementation project(':jni:Plugin-rsp')
 }

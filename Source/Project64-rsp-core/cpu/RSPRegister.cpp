@@ -1,4 +1,4 @@
-#include "cpu/RspTypes.h"
+#include "RspTypes.h"
 #include <string.h>
 
 // RSP registers
@@ -14,7 +14,7 @@ RSPFlag VCOL(RSP_Flags[0].UB[0]), VCOH(RSP_Flags[0].UB[1]);
 RSPFlag VCCL(RSP_Flags[1].UB[0]), VCCH(RSP_Flags[1].UB[1]);
 RSPFlag VCE(RSP_Flags[2].UB[0]);
 
-char * GPR_Strings[32] = {
+const char * GPR_Strings[32] = {
     "R0",
     "AT",
     "V0",

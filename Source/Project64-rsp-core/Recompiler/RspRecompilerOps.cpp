@@ -1,7 +1,7 @@
 #include "Project64-rsp-core/Recompiler/RspRecompilerCPU.h"
 #include "RspProfiling.h"
 #include "RspRecompilerCPU.h"
-#include "x86.h"
+#include "X86.h"
 #include <Common/StdString.h>
 #include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/cpu/RSPCpu.h>
@@ -112,17 +112,17 @@ void Branch_AddRef(uint32_t Target, uint32_t * X86Loc)
     }
 }
 
-void Cheat_r4300iOpcode(p_func FunctAddress, char * FunctName)
+void Cheat_r4300iOpcode(p_func FunctAddress, const char * FunctName)
 {
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
     MoveConstToVariable(RSPOpC.Value, &RSPOpC.Value, "RSPOpC.Value");
-    Call_Direct(FunctAddress, FunctName);
+    Call_Direct((void *)FunctAddress, FunctName);
 }
 
-void Cheat_r4300iOpcodeNoMessage(p_func FunctAddress, char * FunctName)
+void Cheat_r4300iOpcodeNoMessage(p_func FunctAddress, const char * FunctName)
 {
     MoveConstToVariable(RSPOpC.Value, &RSPOpC.Value, "RSPOpC.Value");
-    Call_Direct(FunctAddress, FunctName);
+    Call_Direct((void *)FunctAddress, FunctName);
 }
 
 void x86_SetBranch8b(void * JumpByte, void * Destination)
@@ -225,7 +225,7 @@ void Compile_JAL(void)
             sprintf(Str, "%03X", (RSPOpC.target << 2) & 0xFFC);
             Push(x86_EAX);
             PushImm32(Str, *PrgCount);
-            Call_Direct(StartTimer, "StartTimer");
+            Call_Direct((void *)StartTimer, "StartTimer");
             AddConstToX86Reg(x86_ESP, 4);
             Pop(x86_EAX);
         }
@@ -1450,7 +1450,7 @@ void Compile_Special_JR(void)
         {
             Push(x86_EAX);
             Push(x86_EAX);
-            Call_Direct(StartTimer, "StartTimer");
+            Call_Direct((void *)StartTimer, "StartTimer");
             AddConstToX86Reg(x86_ESP, 4);
             Pop(x86_EAX);
         }
@@ -1464,7 +1464,7 @@ void Compile_Special_JR(void)
         // Before we branch quickly update our stats
         /*if (CompilePC == 0x080) {
 			Pushad();
-			Call_Direct(UpdateAudioTimer, "UpdateAudioTimer");
+			Call_Direct((void *)UpdateAudioTimer, "UpdateAudioTimer");
 			Popad();
 		}*/
         JumpX86Reg(x86_EAX);
@@ -2083,7 +2083,7 @@ void Compile_Cop0_MF(void)
         PushImm32(str, RSPOpC.rd);
         sprintf(str, "%X", CompilePC);
         PushImm32(str, CompilePC);
-        Call_Direct(RDP_LogMF0, "RDP_LogMF0");
+        Call_Direct((void *)RDP_LogMF0, "RDP_LogMF0");
         AddConstToX86Reg(x86_ESP, 8);
     }
 
@@ -2105,7 +2105,7 @@ void Compile_Cop0_MF(void)
         BreakPoint();
     }
     return;
-#else
+#elif defined(_M_IX86) && defined(_MSC_VER)
     switch (RSPOpC.rd)
     {
     case 0:
@@ -2186,6 +2186,8 @@ void Compile_Cop0_MF(void)
     default:
         g_Notify->DisplayError(stdstr_f("We have not implemented RSP MF CP0 reg %s (%d)", COP0_Name(RSPOpC.rd), RSPOpC.rd).c_str());
     }
+#else
+    g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
 }
 
@@ -2203,7 +2205,7 @@ void Compile_Cop0_MT(void)
         PushImm32(str, RSPOpC.rd);
         sprintf(str, "%X", CompilePC);
         PushImm32(str, CompilePC);
-        Call_Direct(RDP_LogMT0, "RDP_LogMT0");
+        Call_Direct((void *)RDP_LogMT0, "RDP_LogMT0");
         AddConstToX86Reg(x86_ESP, 12);
     }
 
@@ -2227,7 +2229,7 @@ void Compile_Cop0_MT(void)
             BreakPoint();
         }
     }
-#else
+#elif defined(_M_IX86) && defined(_MSC_VER)
     switch (RSPOpC.rd)
     {
     case 0:
@@ -2294,7 +2296,7 @@ void Compile_Cop0_MT(void)
 
         if (LogRDP)
         {
-            Call_Direct(RDP_LogDlist, "RDP_LogDlist");
+            Call_Direct((void *)RDP_LogDlist, "RDP_LogDlist");
         }
 
         if (RSPInfo.ProcessRdpList != NULL)
@@ -2302,14 +2304,14 @@ void Compile_Cop0_MT(void)
             if (Profiling)
             {
                 PushImm32("Timer_RDP_Running", (uint32_t)Timer_RDP_Running);
-                Call_Direct(StartTimer, "StartTimer");
+                Call_Direct((void *)StartTimer, "StartTimer");
                 AddConstToX86Reg(x86_ESP, 4);
                 Push(x86_EAX);
             }
-            Call_Direct(RSPInfo.ProcessRdpList, "ProcessRdpList");
+            Call_Direct((void *)RSPInfo.ProcessRdpList, "ProcessRdpList");
             if (Profiling)
             {
-                Call_Direct(StartTimer, "StartTimer");
+                Call_Direct((void *)StartTimer, "StartTimer");
                 AddConstToX86Reg(x86_ESP, 4);
             }
         }
@@ -2324,6 +2326,8 @@ void Compile_Cop0_MT(void)
         Cheat_r4300iOpcode(RSP_Cop0_MT, "RSP_Cop0_MT");
         break;
     }
+#else
+g_Notify->BreakPoint(__FILE__, __LINE__); 
 #endif
     if (RSPOpC.rd == 2 && !ChangedPC)
     {
@@ -4875,7 +4879,7 @@ void Compile_Vector_VGE(void)
 { /*
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
-	/* TODO: works ok, but needs careful flag analysis */
+	TODO: works ok, but needs careful flag analysis */
     /*	#if defined (DLIST)
 	if (bWriteToAccum == false && true == Compile_Vector_VGE_MMX()) {
 		return;
@@ -7178,6 +7182,6 @@ void Compile_UnknownOpcode(void)
     NextInstruction = RSPPIPELINE_FINISH_BLOCK;
     MoveConstToVariable(CompilePC, PrgCount, "RSP PC");
     MoveConstToVariable(RSPOpC.Value, &RSPOpC.Value, "RSPOpC.Value");
-    Call_Direct(rsp_UnknownOpcode, "rsp_UnknownOpcode");
+    Call_Direct((void *)rsp_UnknownOpcode, "rsp_UnknownOpcode");
     Ret();
 }

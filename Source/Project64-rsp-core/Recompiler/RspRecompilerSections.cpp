@@ -1,5 +1,5 @@
 #include "RspRecompilerCPU.h"
-#include "x86.h"
+#include "X86.h"
 #include <Project64-rsp-core/cpu/RSPCpu.h>
 #include <Project64-rsp-core/cpu/RSPInstruction.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
@@ -892,7 +892,7 @@ void Compile_Section_000(void)
         char str[40];
         sprintf(str, "%X", CompilePC);
         PushImm32(str, CompilePC);
-        Call_Direct(RDP_LogLoc, "RDP_LogLoc");
+        Call_Direct((void *)RDP_LogLoc, "RDP_LogLoc");
         AddConstToX86Reg(x86_ESP, 4);
     }
 
@@ -906,7 +906,7 @@ void Compile_Section_000(void)
             char str[40];
             sprintf(str, "%X", CompilePC + 0x04 + (i * 4));
             PushImm32(str, CompilePC + 0x04 + (i * 4));
-            Call_Direct(RDP_LogLoc, "RDP_LogLoc");
+            Call_Direct((void *)RDP_LogLoc, "RDP_LogLoc");
             AddConstToX86Reg(x86_ESP, 4);
         }
     }
@@ -1129,7 +1129,7 @@ void Compile_Section_002(void)
             char str[40];
             sprintf(str, "%X", CompilePC + (Count * 0x04));
             PushImm32(str, CompilePC + (Count * 0x04));
-            Call_Direct(RDP_LogLoc, "RDP_LogLoc");
+            Call_Direct((void *)RDP_LogLoc, "RDP_LogLoc");
             AddConstToX86Reg(x86_ESP, 4);
         }
     }
@@ -1192,10 +1192,10 @@ static void resampler_hle()
 {
     UDWORD accum, initial;
     uint32_t const2 = (uint32_t)RSP_Vect[18].u16(4 ^ 7);
-    __int64 const3 = (__int64)((int)RSP_Vect[30].s16(0 ^ 7)) << 16;
+    int64_t const3 = (int64_t)((int)RSP_Vect[30].s16(0 ^ 7)) << 16;
 
     // VMUDM $v23, $v31, $v23 [7]
-    initial.DW = (__int64)((uint32_t)RSP_Vect[23].u16(7 ^ 7)) << 16;
+    initial.DW = (int64_t)((uint32_t)RSP_Vect[23].u16(7 ^ 7)) << 16;
     // VMADH $v23, $v31, $v22 [7]
     initial.W[1] += (int)RSP_Vect[22].s16(7 ^ 7);
 
@@ -1204,7 +1204,7 @@ static void resampler_hle()
         accum.DW = initial.DW;
 
         // VMADM $v22, $v25, $v18 [4]
-        accum.DW += (__int64)((int)RSP_Vect[25].s16(i) * const2) << 16;
+        accum.DW += (int64_t)((int)RSP_Vect[25].s16(i) * const2) << 16;
         if (accum.W[1] > 0x7FFF)
         {
             RSP_Vect[22].s16(i) = 0x7FFF;
@@ -1238,7 +1238,7 @@ static void resampler_hle()
 void Compile_Section_003(void)
 {
     CPU_Message("Compiling: %X to ..., RSP optimization $003", CompilePC);
-    Call_Direct(resampler_hle, "Resampler_HLE");
+    Call_Direct((void *)resampler_hle, "Resampler_HLE");
     CompilePC += 4 * sizeof(RSPOpcode);
 }
 
