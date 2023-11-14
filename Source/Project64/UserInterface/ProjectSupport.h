@@ -22,7 +22,7 @@ public:
     bool RequestCode(const char * Email);
     bool ValidateCode(const char * Code);
     void IncrementRunCount();
-    bool ShowSuppotWindow();
+    bool ShowSupportWindow();
 
     inline uint32_t RunCount() const
     {
