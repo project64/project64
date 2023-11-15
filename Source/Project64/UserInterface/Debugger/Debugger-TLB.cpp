@@ -139,7 +139,7 @@ void CDebugTlb::RefreshTLBWindow(void)
         }
         if (tlb[count].EntryDefined)
         {
-            swprintf(Output, sizeof(Output), L"0x%I64X", tlb[count].PageMask.Value);
+            swprintf(Output, sizeof(Output), L"0x%llX", tlb[count].PageMask.Value);
         }
         else
         {
@@ -155,7 +155,7 @@ void CDebugTlb::RefreshTLBWindow(void)
 
         if (tlb[count].EntryDefined)
         {
-            swprintf(Output, sizeof(Output), L"0x%I64X", tlb[count].EntryHi.Value);
+            swprintf(Output, sizeof(Output), L"0x%llX", tlb[count].EntryHi.Value);
         }
         else
         {
@@ -171,7 +171,7 @@ void CDebugTlb::RefreshTLBWindow(void)
 
         if (tlb[count].EntryDefined)
         {
-            swprintf(Output, sizeof(Output), L"0x%I64X", tlb[count].EntryLo0.Value);
+            swprintf(Output, sizeof(Output), L"0x%llX", tlb[count].EntryLo0.Value);
         }
         else
         {
@@ -187,7 +187,7 @@ void CDebugTlb::RefreshTLBWindow(void)
 
         if (tlb[count].EntryDefined)
         {
-            swprintf(Output, sizeof(Output), L"0x%I64X", tlb[count].EntryLo1.Value);
+            swprintf(Output, sizeof(Output), L"0x%llX", tlb[count].EntryLo1.Value);
         }
         else
         {
@@ -265,7 +265,7 @@ void CDebugTlb::RefreshTLBWindow(void)
 
         if (FastTlb[count].ValidEntry && FastTlb[count].VALID)
         {
-            swprintf(Output, sizeof(Output), L"%I64X:%I64X -> %08X:%08X", FastTlb[count].VSTART, FastTlb[count].VEND,
+            swprintf(Output, sizeof(Output), L"%llX:%llX -> %08X:%08X", FastTlb[count].VSTART, FastTlb[count].VEND,
                      FastTlb[count].PHYSSTART, FastTlb[count].PHYSEND);
         }
         else

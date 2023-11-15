@@ -330,7 +330,7 @@ void CSymbolTable::GetValueString(char * dst, CSymbol * symbol)
         break;
     case SYM_U64:
         m_Debugger->DebugLoad_VAddr(address, value.u64);
-        sprintf(dst, "%I64u", value.u64);
+        sprintf(dst, "%lld", value.u64);
         break;
     case SYM_S8:
         m_Debugger->DebugLoad_VAddr(address, value.s8);

@@ -541,7 +541,7 @@ void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
 {
     if (LogCP0changes() && Reg <= COP0Reg_31)
     {
-        LogMessage("%08X: Writing 0x%I64U to %s register (originally: 0x%I64U)", m_PROGRAM_COUNTER, Value, CRegName::Cop0[Reg], m_CP0[Reg]);
+        LogMessage("%08X: Writing 0x%llX to %s register (originally: 0x%llX)", m_PROGRAM_COUNTER, Value, CRegName::Cop0[Reg], m_CP0[Reg]);
         if (Reg == 11) // Compare
         {
             LogMessage("%08X: Cause register changed from %08X to %08X", m_PROGRAM_COUNTER, (uint32_t)CAUSE_REGISTER.Value, (uint32_t)(g_Reg->CAUSE_REGISTER.Value & ~CAUSE_IP7));

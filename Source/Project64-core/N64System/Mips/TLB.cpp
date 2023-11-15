@@ -125,7 +125,7 @@ void CTLB::ReadEntry()
 
 void CTLB::WriteEntry(uint32_t Index, bool Random)
 {
-    WriteTrace(TraceTLB, TraceDebug, "%02d %d %I64X %I64X %I64X %I64X", Index, Random, m_Reg.PAGE_MASK_REGISTER, m_Reg.ENTRYHI_REGISTER, m_Reg.ENTRYLO0_REGISTER, m_Reg.ENTRYLO1_REGISTER);
+    WriteTrace(TraceTLB, TraceDebug, "%02d %d %llX %llX %llX %llX", Index, Random, m_Reg.PAGE_MASK_REGISTER, m_Reg.ENTRYHI_REGISTER, m_Reg.ENTRYLO0_REGISTER, m_Reg.ENTRYLO1_REGISTER);
 
     // Check to see if entry is unmapping itself
     if (m_tlb[Index].EntryDefined)
@@ -135,7 +135,7 @@ void CTLB::WriteEntry(uint32_t Index, bool Random)
             m_Reg.m_PROGRAM_COUNTER < m_FastTlb[FastIndx].VEND &&
             m_FastTlb[FastIndx].ValidEntry && m_FastTlb[FastIndx].VALID)
         {
-            WriteTrace(TraceTLB, TraceDebug, "Ignored PC: %X VAddr Start: %I64X VEND: %I64X", m_Reg.m_PROGRAM_COUNTER, m_FastTlb[FastIndx].VSTART, m_FastTlb[FastIndx].VEND);
+            WriteTrace(TraceTLB, TraceDebug, "Ignored PC: %X VAddr Start: %llX VEND: %llX", m_Reg.m_PROGRAM_COUNTER, m_FastTlb[FastIndx].VSTART, m_FastTlb[FastIndx].VEND);
             return;
         }
         if (m_Reg.m_PROGRAM_COUNTER >= m_FastTlb[FastIndx + 1].VSTART &&
