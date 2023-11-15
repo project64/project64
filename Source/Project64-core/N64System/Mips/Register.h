@@ -51,6 +51,14 @@ union COP0EntryHi
 {
     uint64_t Value;
 
+    uint32_t ASID() const;
+    uint32_t VPN2() const;
+    uint32_t FILL() const;
+    uint32_t R() const;
+
+    void SetVPN2(uint32_t VPN2);
+    void SetR(uint32_t R);
+
     struct
     {
         uint64_t ASID : 8;
@@ -58,7 +66,7 @@ union COP0EntryHi
         uint64_t VPN2 : 31;
         uint64_t FILL : 18;
         uint64_t R : 2;
-    };
+    } Raw;
 };
 
 enum PRIVILEGE_MODE : unsigned

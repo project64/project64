@@ -218,6 +218,38 @@ const char * CRegName::FPR_Ctrl[32] = {
     "FCSR",
 };
 
+uint32_t COP0EntryHi::ASID() const
+{
+    return (uint32_t)(Value & 0xFF);
+}
+
+uint32_t COP0EntryHi::VPN2() const
+{
+    return (uint32_t)((Value >> 13) & 0x7FFFFFFFll);
+}
+
+uint32_t COP0EntryHi::FILL() const
+{
+    return (uint32_t)((Value >> 44) & 0x3FFFF);
+}
+
+uint32_t COP0EntryHi::R() const
+{
+    return (uint32_t)((Value >> 62) & 0x3);
+}
+
+void COP0EntryHi::SetVPN2(uint32_t VPN2)
+{
+    Value &= ~(0x7FFFFFFFll << 13);
+    Value |= ((uint64_t)(VPN2 & 0x7FFFFFFF)) << 13;
+}
+
+void COP0EntryHi::SetR(uint32_t R)
+{
+    Value &= ~(0x3ll << 62ll);
+    Value |= ((uint64_t)(R & 0x3)) << 62;
+}
+
 CP0registers::CP0registers(uint64_t * _CP0) :
     INDEX_REGISTER(_CP0[0]),
     RANDOM_REGISTER(_CP0[1]),
@@ -764,8 +796,8 @@ void CRegisters::TriggerAddressException(uint64_t Address, uint32_t ExceptionCod
     }
 
     BAD_VADDR_REGISTER = Address;
-    ENTRYHI_REGISTER.VPN2 = ((Address >> 13) & 0x7FFFFFF);
-    ENTRYHI_REGISTER.R = Address >> 62;
+    ENTRYHI_REGISTER.SetVPN2((Address >> 13) & 0x7FFFFFF);
+    ENTRYHI_REGISTER.SetR(Address >> 62);
     CONTEXT_REGISTER.BadVPN2 = Address >> 13;
     XCONTEXT_REGISTER.BadVPN2 = Address >> 13;
     XCONTEXT_REGISTER.R = Address >> 62;

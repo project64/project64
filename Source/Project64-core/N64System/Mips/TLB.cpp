@@ -99,8 +99,8 @@ void CTLB::Probe()
         uint64_t EntryHiMasked = m_Reg.ENTRYHI_REGISTER.Value & Mask;
 
         if (TlbValueMasked != EntryHiMasked ||
-            TlbEntryHiValue.R != m_Reg.ENTRYHI_REGISTER.R ||
-            (m_tlb[i].EntryLo0.GLOBAL == 0 || m_tlb[i].EntryLo1.GLOBAL == 0) && TlbEntryHiValue.ASID != m_Reg.ENTRYHI_REGISTER.ASID)
+            TlbEntryHiValue.R() != m_Reg.ENTRYHI_REGISTER.R() ||
+            (m_tlb[i].EntryLo0.GLOBAL == 0 || m_tlb[i].EntryLo1.GLOBAL == 0) && TlbEntryHiValue.ASID() != m_Reg.ENTRYHI_REGISTER.ASID())
         {
             continue;
         }
@@ -226,7 +226,7 @@ void CTLB::SetupTLB_Entry(uint32_t Index, bool Random)
         TLB_Unmaped(m_FastTlb[FastIndx].VSTART, m_FastTlb[FastIndx].Length);
     }
     m_FastTlb[FastIndx].Length = (uint32_t)((m_tlb[Index].PageMask.Mask << 12) + 0xFFF);
-    m_FastTlb[FastIndx].VSTART = m_tlb[Index].EntryHi.R << 62 | m_tlb[Index].EntryHi.VPN2 << 13;
+    m_FastTlb[FastIndx].VSTART = ((uint64_t)m_tlb[Index].EntryHi.R() << 62) | ((uint64_t)m_tlb[Index].EntryHi.VPN2() << 13);
     m_FastTlb[FastIndx].VEND = m_FastTlb[FastIndx].VSTART + m_FastTlb[FastIndx].Length;
     m_FastTlb[FastIndx].PHYSSTART = (uint32_t)(m_tlb[Index].EntryLo0.PFN << 12);
     m_FastTlb[FastIndx].PHYSEND = m_FastTlb[FastIndx].PHYSSTART + m_FastTlb[FastIndx].Length;
@@ -243,7 +243,7 @@ void CTLB::SetupTLB_Entry(uint32_t Index, bool Random)
         TLB_Unmaped(m_FastTlb[FastIndx].VSTART, m_FastTlb[FastIndx].Length);
     }
     m_FastTlb[FastIndx].Length = (uint32_t)((m_tlb[Index].PageMask.Mask << 12) + 0xFFF);
-    m_FastTlb[FastIndx].VSTART = (m_tlb[Index].EntryHi.R << 62 | (m_tlb[Index].EntryHi.VPN2 << 13)) + (m_FastTlb[FastIndx].Length + 1);
+    m_FastTlb[FastIndx].VSTART = ((uint64_t)m_tlb[Index].EntryHi.R() << 62 | ((uint64_t)m_tlb[Index].EntryHi.VPN2() << 13)) + (m_FastTlb[FastIndx].Length + 1);
     m_FastTlb[FastIndx].VEND = m_FastTlb[FastIndx].VSTART + m_FastTlb[FastIndx].Length;
     m_FastTlb[FastIndx].PHYSSTART = (uint32_t)m_tlb[Index].EntryLo1.PFN << 12;
     m_FastTlb[FastIndx].PHYSEND = m_FastTlb[FastIndx].PHYSSTART + m_FastTlb[FastIndx].Length;
