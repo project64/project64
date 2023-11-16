@@ -1048,6 +1048,10 @@ void CMipsMemoryVM::ClearMemoryWriteMap(uint32_t VAddr, uint32_t Length)
     uint32_t PAddr = m_TLB_WriteMap[VAddr >> 12] + VAddr;
     for (uint32_t i = PAddr, n = (PAddr + (Length & ~0xFFF)) + 0x1000; i < n; i += 0x1000)
     {
+        if ((i + 0x80000000) >> 12 == 0x00080290)
+        {
+            __debugbreak();
+        }
         m_MemoryWriteMap[(i + 0x80000000) >> 12] = (size_t)-1;
         m_MemoryWriteMap[(i + 0xA0000000) >> 12] = (size_t)-1;
     }
@@ -1137,10 +1141,34 @@ void CMipsMemoryVM::TLB_Unmaped(uint32_t Vaddr, uint32_t Len)
     for (uint64_t Address = Vaddr; Address < End && Address >= Vaddr; Address += 0x1000)
     {
         size_t Index = (size_t)(Address >> 12);
-        m_MemoryReadMap[Index] = (size_t)-1;
-        m_MemoryWriteMap[Index] = (size_t)-1;
-        m_TLB_ReadMap[Index] = (uint32_t)-1;
-        m_TLB_WriteMap[Index] = (uint32_t)-1;
+        if (Address >= 0x80000000 && Address < 0x80000000 + m_AllocatedRdramSize)
+        {
+            m_MemoryReadMap[Address >> 12] = (size_t)((m_RDRAM + (Address & 0x1FFFFFFF)) - Address);
+            m_MemoryWriteMap[Address >> 12] = (size_t)((m_RDRAM + (Address & 0x1FFFFFFF)) - Address);
+            m_TLB_ReadMap[Address >> 12] = (uint32_t)((Address & 0x1FFFFFFF) - Address);
+            m_TLB_WriteMap[Address >> 12] = (uint32_t)((Address & 0x1FFFFFFF) - Address);
+        }
+        else if (Address >= 0xA0000000 && Address < 0xA0000000 + m_AllocatedRdramSize)
+        {
+            m_MemoryReadMap[Address >> 12] = (size_t)((m_RDRAM + (Address & 0x1FFFFFFF)) - Address);
+            m_MemoryWriteMap[Address >> 12] = (size_t)((m_RDRAM + (Address & 0x1FFFFFFF)) - Address);
+            m_TLB_ReadMap[Address >> 12] = (uint32_t)((Address & 0x1FFFFFFF) - Address);
+            m_TLB_WriteMap[Address >> 12] = (uint32_t)((Address & 0x1FFFFFFF) - Address);
+        }
+        else if (Address >= 0x80000000 && Address < 0xC0000000)
+        {
+            m_MemoryReadMap[Index] = (size_t)-1;
+            m_MemoryWriteMap[Index] = (size_t)-1;
+            m_TLB_ReadMap[Address >> 12] = (uint32_t)((Address & 0x1FFFFFFF) - Address);
+            m_TLB_WriteMap[Address >> 12] = (uint32_t)((Address & 0x1FFFFFFF) - Address);
+        }
+        else
+        {
+            m_MemoryReadMap[Index] = (size_t)-1;
+            m_MemoryWriteMap[Index] = (size_t)-1;
+            m_TLB_ReadMap[Index] = (uint32_t)-1;
+            m_TLB_WriteMap[Index] = (uint32_t)-1;
+        }
     }
 }
 
