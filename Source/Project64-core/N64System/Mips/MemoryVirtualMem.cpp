@@ -1048,10 +1048,6 @@ void CMipsMemoryVM::ClearMemoryWriteMap(uint32_t VAddr, uint32_t Length)
     uint32_t PAddr = m_TLB_WriteMap[VAddr >> 12] + VAddr;
     for (uint32_t i = PAddr, n = (PAddr + (Length & ~0xFFF)) + 0x1000; i < n; i += 0x1000)
     {
-        if ((i + 0x80000000) >> 12 == 0x00080290)
-        {
-            __debugbreak();
-        }
         m_MemoryWriteMap[(i + 0x80000000) >> 12] = (size_t)-1;
         m_MemoryWriteMap[(i + 0xA0000000) >> 12] = (size_t)-1;
     }
