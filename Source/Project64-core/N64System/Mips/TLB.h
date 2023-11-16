@@ -35,11 +35,12 @@ class CTLB :
 
     struct FASTTLB
     {
-        uint64_t VSTART;
-        uint64_t VEND;
+        uint32_t VSTART;
+        uint32_t VEND;
         uint32_t PHYSSTART;
         uint32_t PHYSEND;
         uint32_t Length;
+        uint8_t Region;
         bool VALID;
         bool DIRTY;
         bool GLOBAL;
@@ -73,7 +74,7 @@ private:
     CTLB & operator=(const CTLB &);
 
     void SetupTLB_Entry(uint32_t Index, bool Random);
-    void TLB_Unmaped(uint64_t VAddr, uint32_t Len);
+    void TLB_Unmaped(uint32_t VAddr, uint32_t Len);
     MemorySegment VAddrMemorySegment(uint64_t VAddr);
 
     PRIVILEGE_MODE m_PrivilegeMode;

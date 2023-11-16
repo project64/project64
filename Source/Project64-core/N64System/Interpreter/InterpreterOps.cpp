@@ -94,7 +94,7 @@ void R4300iOp::ExecuteCPU()
         {
             if (!m_MMU.MemoryValue32(m_PROGRAM_COUNTER, m_Opcode.Value))
             {
-                m_Reg.TriggerAddressException(m_PROGRAM_COUNTER, EXC_RMISS);
+                m_Reg.TriggerAddressException((int32_t)m_PROGRAM_COUNTER, EXC_RMISS);
                 m_PROGRAM_COUNTER = JumpToLocation;
                 PipelineStage = PIPELINE_STAGE_NORMAL;
                 continue;
@@ -305,7 +305,7 @@ void R4300iOp::ExecuteOps(int32_t Cycles)
             }
             else
             {
-                m_Reg.TriggerAddressException(m_PROGRAM_COUNTER, EXC_RMISS);
+                m_Reg.TriggerAddressException((int32_t)m_PROGRAM_COUNTER, EXC_RMISS);
                 m_PROGRAM_COUNTER = JumpToLocation;
                 PipelineStage = PIPELINE_STAGE_NORMAL;
             }

@@ -647,7 +647,7 @@ bool CMipsMemoryVM::LB_VAddr32(uint32_t VAddr, uint8_t & Value)
     uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
     if (BaseAddress == -1)
     {
-        m_Reg.TriggerAddressException(VAddr, EXC_RMISS);
+        m_Reg.TriggerAddressException((int32_t)VAddr, EXC_RMISS);
         return false;
     }
     return LB_PhysicalAddress(BaseAddress + VAddr, Value);
@@ -658,7 +658,7 @@ bool CMipsMemoryVM::LH_VAddr32(uint32_t VAddr, uint16_t & Value)
     uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
     if (BaseAddress == -1)
     {
-        m_Reg.TriggerAddressException(VAddr, EXC_RMISS);
+        m_Reg.TriggerAddressException((int32_t)VAddr, EXC_RMISS);
         return false;
     }
     return LH_PhysicalAddress(BaseAddress + VAddr, Value);
@@ -669,7 +669,7 @@ bool CMipsMemoryVM::LW_VAddr32(uint32_t VAddr, uint32_t & Value)
     uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
     if (BaseAddress == -1)
     {
-        m_Reg.TriggerAddressException(VAddr, EXC_RMISS);
+        m_Reg.TriggerAddressException((int32_t)VAddr, EXC_RMISS);
         return false;
     }
     return LW_PhysicalAddress(BaseAddress + VAddr, Value);
@@ -680,7 +680,7 @@ bool CMipsMemoryVM::LD_VAddr32(uint32_t VAddr, uint64_t & Value)
     uint32_t BaseAddress = m_TLB_ReadMap[VAddr >> 12];
     if (BaseAddress == -1)
     {
-        m_Reg.TriggerAddressException(VAddr, EXC_RMISS);
+        m_Reg.TriggerAddressException((int32_t)VAddr, EXC_RMISS);
         return false;
     }
     return LD_PhysicalAddress(BaseAddress + VAddr, Value);
@@ -821,7 +821,7 @@ bool CMipsMemoryVM::SB_VAddr32(uint32_t VAddr, uint32_t Value)
     uint32_t BaseAddress = m_TLB_WriteMap[VAddr >> 12];
     if (BaseAddress == -1)
     {
-        m_Reg.TriggerAddressException(VAddr, EXC_WMISS);
+        m_Reg.TriggerAddressException((int32_t)VAddr, EXC_WMISS);
         return false;
     }
     return SB_PhysicalAddress(BaseAddress + VAddr, Value);
@@ -832,7 +832,7 @@ bool CMipsMemoryVM::SH_VAddr32(uint32_t VAddr, uint32_t Value)
     uint32_t BaseAddress = m_TLB_WriteMap[VAddr >> 12];
     if (BaseAddress == -1)
     {
-        m_Reg.TriggerAddressException(VAddr, EXC_WMISS);
+        m_Reg.TriggerAddressException((int32_t)VAddr, EXC_WMISS);
         return false;
     }
     return SH_PhysicalAddress(BaseAddress + VAddr, Value);
@@ -843,7 +843,7 @@ bool CMipsMemoryVM::SW_VAddr32(uint32_t VAddr, uint32_t Value)
     uint32_t BaseAddress = m_TLB_WriteMap[VAddr >> 12];
     if (BaseAddress == -1)
     {
-        m_Reg.TriggerAddressException(VAddr, EXC_WMISS);
+        m_Reg.TriggerAddressException((int32_t)VAddr, EXC_WMISS);
         return false;
     }
     return SW_PhysicalAddress(BaseAddress + VAddr, Value);
@@ -854,7 +854,7 @@ bool CMipsMemoryVM::SD_VAddr32(uint32_t VAddr, uint64_t Value)
     uint32_t BaseAddress = m_TLB_WriteMap[VAddr >> 12];
     if (BaseAddress == -1)
     {
-        m_Reg.TriggerAddressException(VAddr, EXC_WMISS);
+        m_Reg.TriggerAddressException((int32_t)VAddr, EXC_WMISS);
         return false;
     }
     return SD_PhysicalAddress(BaseAddress + VAddr, Value);
@@ -1109,16 +1109,11 @@ const char * CMipsMemoryVM::LabelName(uint32_t Address) const
     return m_strLabelName;
 }
 
-void CMipsMemoryVM::TLB_Mapped(uint64_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly)
+void CMipsMemoryVM::TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly)
 {
     uint64_t VEnd = VAddr + Len;
     for (uint64_t Address = VAddr; Address < VEnd; Address += 0x1000)
     {
-        if ((uint64_t)((int32_t)Address) != Address)
-        {
-            break;
-        }
-
         size_t Index = (size_t)(Address >> 12);
         if ((Address - VAddr + PAddr) < m_AllocatedRdramSize)
         {
@@ -1136,15 +1131,11 @@ void CMipsMemoryVM::TLB_Mapped(uint64_t VAddr, uint32_t Len, uint32_t PAddr, boo
     }
 }
 
-void CMipsMemoryVM::TLB_Unmaped(uint64_t Vaddr, uint32_t Len)
+void CMipsMemoryVM::TLB_Unmaped(uint32_t Vaddr, uint32_t Len)
 {
     uint64_t End = Vaddr + Len;
     for (uint64_t Address = Vaddr; Address < End && Address >= Vaddr; Address += 0x1000)
     {
-        if ((uint64_t)((int32_t)Address) != Address)
-        {
-            continue;
-        }
         size_t Index = (size_t)(Address >> 12);
         m_MemoryReadMap[Index] = (size_t)-1;
         m_MemoryWriteMap[Index] = (size_t)-1;

@@ -226,12 +226,13 @@ void CTLB::SetupTLB_Entry(uint32_t Index, bool Random)
         TLB_Unmaped(m_FastTlb[FastIndx].VSTART, m_FastTlb[FastIndx].Length);
     }
     m_FastTlb[FastIndx].Length = (uint32_t)((m_tlb[Index].PageMask.Mask << 12) + 0xFFF);
-    m_FastTlb[FastIndx].VSTART = ((uint64_t)m_tlb[Index].EntryHi.R() << 62) | ((uint64_t)m_tlb[Index].EntryHi.VPN2() << 13);
+    m_FastTlb[FastIndx].Region = (uint8_t)m_tlb[Index].EntryHi.R();
+    m_FastTlb[FastIndx].VSTART = (uint32_t)(m_tlb[Index].EntryHi.VPN2() << 13);
     m_FastTlb[FastIndx].VEND = m_FastTlb[FastIndx].VSTART + m_FastTlb[FastIndx].Length;
     m_FastTlb[FastIndx].PHYSSTART = (uint32_t)(m_tlb[Index].EntryLo0.PFN << 12);
     m_FastTlb[FastIndx].PHYSEND = m_FastTlb[FastIndx].PHYSSTART + m_FastTlb[FastIndx].Length;
-    m_FastTlb[FastIndx].VALID = m_tlb[Index].EntryLo0.V;
-    m_FastTlb[FastIndx].DIRTY = m_tlb[Index].EntryLo0.D;
+    m_FastTlb[FastIndx].VALID = m_tlb[Index].EntryLo0.V != 0;
+    m_FastTlb[FastIndx].DIRTY = m_tlb[Index].EntryLo0.D != 0;
     m_FastTlb[FastIndx].GLOBAL = m_tlb[Index].EntryLo0.GLOBAL & m_tlb[Index].EntryLo1.GLOBAL;
     m_FastTlb[FastIndx].ValidEntry = false;
     m_FastTlb[FastIndx].Random = Random;
@@ -243,12 +244,13 @@ void CTLB::SetupTLB_Entry(uint32_t Index, bool Random)
         TLB_Unmaped(m_FastTlb[FastIndx].VSTART, m_FastTlb[FastIndx].Length);
     }
     m_FastTlb[FastIndx].Length = (uint32_t)((m_tlb[Index].PageMask.Mask << 12) + 0xFFF);
-    m_FastTlb[FastIndx].VSTART = ((uint64_t)m_tlb[Index].EntryHi.R() << 62 | ((uint64_t)m_tlb[Index].EntryHi.VPN2() << 13)) + (m_FastTlb[FastIndx].Length + 1);
+    m_FastTlb[FastIndx].Region = (uint8_t)m_tlb[Index].EntryHi.R();
+    m_FastTlb[FastIndx].VSTART = (uint32_t)(m_tlb[Index].EntryHi.VPN2() << 13) + (m_FastTlb[FastIndx].Length + 1);
     m_FastTlb[FastIndx].VEND = m_FastTlb[FastIndx].VSTART + m_FastTlb[FastIndx].Length;
     m_FastTlb[FastIndx].PHYSSTART = (uint32_t)m_tlb[Index].EntryLo1.PFN << 12;
     m_FastTlb[FastIndx].PHYSEND = m_FastTlb[FastIndx].PHYSSTART + m_FastTlb[FastIndx].Length;
-    m_FastTlb[FastIndx].VALID = m_tlb[Index].EntryLo1.V;
-    m_FastTlb[FastIndx].DIRTY = m_tlb[Index].EntryLo1.D;
+    m_FastTlb[FastIndx].VALID = m_tlb[Index].EntryLo1.V != 0;
+    m_FastTlb[FastIndx].DIRTY = m_tlb[Index].EntryLo1.D != 0;
     m_FastTlb[FastIndx].GLOBAL = m_tlb[Index].EntryLo0.GLOBAL & m_tlb[Index].EntryLo1.GLOBAL;
     m_FastTlb[FastIndx].ValidEntry = false;
     m_FastTlb[FastIndx].Random = Random;
@@ -260,6 +262,16 @@ void CTLB::SetupTLB_Entry(uint32_t Index, bool Random)
         if (!m_FastTlb[FastIndx].VALID)
         {
             m_FastTlb[FastIndx].ValidEntry = true;
+            continue;
+        }
+
+        if ((m_FastTlb[FastIndx].VSTART & 0x80000000) == 0 && m_FastTlb[FastIndx].Region != 0)
+        {
+            continue;
+        }
+
+        if ((m_FastTlb[FastIndx].VSTART & 0x80000000) != 0 && m_FastTlb[FastIndx].Region != 3)
+        {
             continue;
         }
 
@@ -282,10 +294,10 @@ void CTLB::SetupTLB_Entry(uint32_t Index, bool Random)
     }
 }
 
-void CTLB::TLB_Unmaped(uint64_t VAddr, uint32_t Len)
+void CTLB::TLB_Unmaped(uint32_t VAddr, uint32_t Len)
 {
     m_MMU.TLB_Unmaped(VAddr, Len);
-    if (m_Recomp && bSMM_TLB() && (uint64_t)((int32_t)VAddr) == VAddr)
+    if (m_Recomp && bSMM_TLB())
     {
         m_Recomp->ClearRecompCode_Virt((uint32_t)VAddr, Len, CRecompiler::Remove_TLB);
     }
@@ -302,17 +314,27 @@ bool CTLB::VAddrToPAddr(uint64_t VAddr, uint32_t & PAddr, bool & MemoryUnused)
     MemorySegment Segment = VAddrMemorySegment(VAddr);
     if (Segment == MemorySegment_Mapped)
     {
-        for (int i = 0; i < 64; i++)
+        for (uint32_t i = 0; i < 32; i++)
         {
-            if (m_FastTlb[i].ValidEntry == false)
+            if (m_tlb[i].EntryLo0.GLOBAL == 0)
             {
                 continue;
             }
-            if (VAddr >= m_FastTlb[i].VSTART && VAddr < m_FastTlb[i].VEND)
+            if ((VAddr & 0xE000000000000000) != ((uint64_t)m_tlb[i].EntryHi.R() << 62))
             {
-                PAddr = (uint32_t)(m_FastTlb[i].PHYSSTART + (VAddr - m_FastTlb[i].VSTART));
-                return true;
+                continue;
             }
+            uint64_t PageMask = (m_tlb[i].PageMask.Mask << 12);
+            uint64_t AddressMaskHi = ~(PageMask | 0x1fff) & 0xFFFFFFFFFF;
+            uint64_t AddressRegion = ((uint64_t)m_tlb[i].EntryHi.VPN2() << 13);
+            if ((VAddr & AddressMaskHi) != AddressRegion)
+            {
+                continue;
+            }  
+            uint64_t AddressSelect = ((m_tlb[i].PageMask.Mask << 12) | 0xfff) + 1;
+            COP0EntryLo EntryLo = (VAddr & AddressSelect) != 0 ? m_tlb[i].EntryLo1 : m_tlb[i].EntryLo0;
+            PAddr = (uint32_t)((EntryLo.PFN << 12) + (VAddr & (PageMask | 0x1fff)));
+            return true;
         }
         return false;
     }
