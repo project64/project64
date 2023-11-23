@@ -43,7 +43,7 @@ public class AndroidDevice
     public static final boolean IS_LOLLIPOP = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
 
     public final static String EXTERNAL_PUBLIC_DIRECTORY = Environment.getExternalStorageDirectory().getPath();
-    public final static String PACKAGE_DIRECTORY = EXTERNAL_PUBLIC_DIRECTORY + "/Android/data/" + AndroidDevice.class.getPackage().getName();
+    public final static String PACKAGE_DIRECTORY = Project64Application.getAppContext().getExternalFilesDir(null).getAbsolutePath();
 
     public static final boolean IS_ACTION_BAR_AVAILABLE = AndroidDevice.IS_HONEYCOMB;
 
