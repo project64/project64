@@ -120,7 +120,7 @@ void CProjectSupport::IncrementRunCount()
     SaveSupportInfo();
 }
 
-bool CProjectSupport::ShowSuppotWindow()
+bool CProjectSupport::ShowSupportWindow()
 {
     time_t now = time(nullptr);
     if (m_SupportInfo.LastShown <= now && ((now - m_SupportInfo.LastShown) / 60) < 60)

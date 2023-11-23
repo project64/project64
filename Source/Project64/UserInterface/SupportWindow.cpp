@@ -34,7 +34,7 @@ void CSupportWindow::Show(HWND hParent, bool Delay)
         }
 
         m_Support.IncrementRunCount();
-        if (m_Support.RunCount() < 7 || !m_Support.ShowSuppotWindow())
+        if (m_Support.RunCount() < 7 || !m_Support.ShowSupportWindow())
         {
             return;
         }
