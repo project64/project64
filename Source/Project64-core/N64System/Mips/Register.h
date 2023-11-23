@@ -56,8 +56,7 @@ union COP0EntryHi
     uint32_t FILL() const;
     uint32_t R() const;
 
-    void SetVPN2(uint32_t VPN2);
-    void SetR(uint32_t R);
+    void SetFromAddress(const uint64_t & Address);
 
     struct
     {

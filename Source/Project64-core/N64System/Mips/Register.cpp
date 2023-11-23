@@ -238,16 +238,10 @@ uint32_t COP0EntryHi::R() const
     return (uint32_t)((Value >> 62) & 0x3);
 }
 
-void COP0EntryHi::SetVPN2(uint32_t VPN2)
+void COP0EntryHi::SetFromAddress(const uint64_t & Address)
 {
-    Value &= ~(0x7FFFFFFFll << 13);
-    Value |= ((uint64_t)(VPN2 & 0x7FFFFFFF)) << 13;
-}
-
-void COP0EntryHi::SetR(uint32_t R)
-{
-    Value &= ~(0x3ll << 62ll);
-    Value |= ((uint64_t)(R & 0x3)) << 62;
+    Value &= ~0xC0000FFFFFFFE000;
+    Value |= Address & 0xC00000FFFFFFE000;
 }
 
 CP0registers::CP0registers(uint64_t * _CP0) :
@@ -794,10 +788,8 @@ void CRegisters::TriggerAddressException(uint64_t Address, uint32_t ExceptionCod
             ExceptionCode = EXC_MOD;
         }
     }
-
     BAD_VADDR_REGISTER = Address;
-    ENTRYHI_REGISTER.SetVPN2((Address >> 13) & 0x7FFFFFF);
-    ENTRYHI_REGISTER.SetR(Address >> 62);
+    ENTRYHI_REGISTER.SetFromAddress(Address);
     CONTEXT_REGISTER.BadVPN2 = Address >> 13;
     XCONTEXT_REGISTER.BadVPN2 = Address >> 13;
     XCONTEXT_REGISTER.R = Address >> 62;
