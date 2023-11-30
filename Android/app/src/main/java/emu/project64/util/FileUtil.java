@@ -20,36 +20,40 @@ public final class FileUtil
             boolean includeFiles, List<CharSequence> outNames, List<String> outPaths )
     {
         if( !startPath.exists() )
+        {
             return;
-        
-        if( startPath.isFile() )
+        }
+
+        if(startPath.isFile())
+        {
             startPath = startPath.getParentFile();
-        
-        if( startPath.getParentFile() == null )
+        }
+
+        if(startPath.getParentFile() == null)
+        {
             includeParent = false;
+        }
         
         outNames.clear();
         outPaths.clear();
         
         if( includeParent )
         {
-            
-        	outNames.add( Html.fromHtml( "<b>..</b>" ) );
-        	boolean BaseDir = false;
-        	ArrayList<String> StorageDirectories = AndroidDevice.getStorageDirectories();
+            outNames.add( Html.fromHtml( "<b>..</b>" ) );
+            boolean BaseDir = false;
+            ArrayList<String> StorageDirectories = AndroidDevice.getStorageDirectories();
             for( String directory : StorageDirectories )
             {
-            	if (TextUtils.equals(startPath.getPath(), directory))
-            	{
-            		BaseDir = true;
-            		break;
-            	}
+                if (TextUtils.equals(startPath.getPath(), directory))
+                {
+                    BaseDir = true;
+                    break;
+                }
             }
-            	
             outPaths.add( BaseDir ? null : startPath.getParentFile().getPath() );
         }
         
-        if( includeDirectories )
+        if(includeDirectories)
         {
             for( File directory : getContents( startPath, new VisibleDirectoryFilter() ) )
             {
@@ -58,7 +62,7 @@ public final class FileUtil
             }
         }
         
-        if( includeFiles )
+        if(includeFiles)
         {
             for( File file : getContents( startPath, new VisibleFileFilter() ) )
             {
@@ -71,9 +75,9 @@ public final class FileUtil
     public static List<File> getContents( File startPath, FileFilter fileFilter )
     {
         // Get a filtered, sorted list of files
-        List<File> results = new ArrayList<File>();
+        List<File> results = new ArrayList<>();
         File[] files = startPath.listFiles( fileFilter );
-        
+
         if( files != null )
         {
             Collections.addAll( results, files );
