@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:title="@string/preferences">
-
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto" app:title="@string/preferences">
     <PreferenceCategory app:title="@string/Hardware">
         <Preference
             app:key="settings_input"
@@ -34,7 +31,7 @@
             app:key="settings_advanced"
             app:title="@string/advanced_screen_title"
             app:summary="@string/advanced_screen_summary"
-            app:icon="@drawable/ic_debug"
+            app:icon="@drawable/ic_advanced"
             />
         <Preference
             app:key="settings_reset"

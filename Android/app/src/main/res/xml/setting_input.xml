@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto" app:title="@string/preferences">
     <Preference
-        android:summary="@string/touch_screen_summary"
-        android:title="@string/touch_screen_title"
-        android:key="settings_touch_screen" 
-        android:icon="@drawable/ic_phone"
-        />
+        style="@style/Theme.Project64.PreferenceNoIcon"
+        app:title="@string/AudioPlugin"
+        app:key="logging_audio" />
+	<Preference
+		app:key="settings_touch_screen"
+		app:title="@string/touch_screen_title"
+		app:summary="@string/touch_screen_summary"
+		app:icon="@drawable/ic_phone"
+		/>
     <Preference
-        android:summary="@string/gamepad_summary"
-        android:title="@string/gamepad_title"
-        android:key="settings_gamepad_screen" 
-        android:icon="@drawable/ic_gamepad"
+        app:summary="@string/gamepad_summary"
+        app:title="@string/gamepad_title"
+        app:key="settings_gamepad_screen" 
+        app:icon="@drawable/ic_gamepad"
         />
-</PreferenceScreen>
+</androidx.preference.PreferenceScreen>

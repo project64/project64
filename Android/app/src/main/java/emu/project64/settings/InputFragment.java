@@ -2,7 +2,7 @@ package emu.project64.settings;
 
 import emu.project64.R;
 
-public class InputFragment extends SettingsFragment
+public class InputFragment extends BaseSettingsFragment
 {
     @Override
     protected int getXml()

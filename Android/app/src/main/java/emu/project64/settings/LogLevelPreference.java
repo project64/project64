@@ -7,10 +7,8 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.text.TextUtils;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.res.TypedArrayUtils;
 import androidx.preference.Preference;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 
 public class LogLevelPreference extends Preference {
     private CharSequence[] mEntries;
