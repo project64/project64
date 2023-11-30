@@ -1780,7 +1780,7 @@ void R4300iOp::SPECIAL_ADD()
 
 void R4300iOp::SPECIAL_ADDU()
 {
-    m_GPR[m_Opcode.rd].DW = m_GPR[m_Opcode.rs].W[0] + m_GPR[m_Opcode.rt].W[0];
+    m_GPR[m_Opcode.rd].DW = (int32_t)(m_GPR[m_Opcode.rs].UW[0] + m_GPR[m_Opcode.rt].UW[0]);
 }
 
 void R4300iOp::SPECIAL_SUB()
