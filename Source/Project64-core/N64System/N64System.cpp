@@ -957,7 +957,6 @@ bool CN64System::SetActiveSystem(bool bActive)
 
     if (bActive && g_System == this)
     {
-        WriteTrace(TraceN64System, TraceDebug, "Done (Res: true)");
         return true;
     }
 
