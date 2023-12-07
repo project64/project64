@@ -59,6 +59,9 @@ public:
     void * GetDebugMenu(void);
     void ProcessMenuItem(int32_t id);
 
+    void PauseRSPThread(void);
+    void ResumeRSPThread(void);
+
 private:
     CRSP_Plugin(const CRSP_Plugin &);
     CRSP_Plugin & operator=(const CRSP_Plugin &);

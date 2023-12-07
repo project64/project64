@@ -1671,11 +1671,11 @@ bool CN64System::SaveState()
             zipWriteInFileInZip(file, g_Rom->GetRomAddress(), 0x40);
         }
         zipWriteInFileInZip(file, &NextViTimer, sizeof(uint32_t));
-        int32_t WriteProgramCounter = ((int32_t)m_Reg.m_PROGRAM_COUNTER);
+        int64_t WriteProgramCounter = ((int32_t)m_Reg.m_PROGRAM_COUNTER);
         zipWriteInFileInZip(file, &WriteProgramCounter, sizeof(int64_t));
         zipWriteInFileInZip(file, m_Reg.m_GPR, sizeof(int64_t) * 32);
         zipWriteInFileInZip(file, m_Reg.m_FPR, sizeof(int64_t) * 32);
-        zipWriteInFileInZip(file, m_Reg.m_CP0, sizeof(uint32_t) * 32);
+        zipWriteInFileInZip(file, m_Reg.m_CP0, sizeof(uint64_t) * 32);
         zipWriteInFileInZip(file, m_Reg.m_FPCR, sizeof(uint32_t) * 32);
         zipWriteInFileInZip(file, &m_Reg.m_HI, sizeof(int64_t));
         zipWriteInFileInZip(file, &m_Reg.m_LO, sizeof(int64_t));
@@ -1742,7 +1742,7 @@ bool CN64System::SaveState()
             hSaveFile.Write(g_Rom->GetRomAddress(), 0x40);
         }
         hSaveFile.Write(&NextViTimer, sizeof(uint32_t));
-        int32_t WriteProgramCounter = ((int32_t)m_Reg.m_PROGRAM_COUNTER);
+        int64_t WriteProgramCounter = ((int32_t)m_Reg.m_PROGRAM_COUNTER);
         hSaveFile.Write(&WriteProgramCounter, sizeof(int64_t));
         hSaveFile.Write(m_Reg.m_GPR, sizeof(int64_t) * 32);
         hSaveFile.Write(m_Reg.m_FPR, sizeof(int64_t) * 32);

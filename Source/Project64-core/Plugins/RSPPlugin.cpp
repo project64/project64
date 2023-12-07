@@ -109,8 +109,6 @@ void CRSP_Plugin::RomClose(RenderWindow * Render)
     }
     CPlugin::RomClose(Render);
     m_RunEvent.Reset();
-    m_Plugins = nullptr;
-    m_System = nullptr;
 }
 
 bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
@@ -563,7 +561,7 @@ uint32_t CRSP_Plugin::RspThread(void)
     CRegisters & Reg = m_System->m_Reg;
     for (;;)
     {
-        if ((Reg.SP_STATUS_REG & SP_STATUS_HALT) != 0)
+        if ((Reg.SP_STATUS_REG & SP_STATUS_HALT) != 0 || !RspMultiThreaded())
         {
             m_RunEvent.Reset();
             m_RunEvent.IsTriggered(SyncEvent::INFINITE_TIMEOUT);
