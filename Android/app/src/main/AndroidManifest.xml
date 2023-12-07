@@ -45,6 +45,11 @@
             android:theme="@style/Theme.Project64.Apearance" >
         </activity>
         <activity
+            android:name="emu.project64.profile.ControllerProfileActivity"
+            android:label="@string/ControllerProfileActivity_title"
+            android:theme="@style/Theme.Project64.Apearance" >
+        </activity>
+        <activity
             android:name="emu.project64.game.GameActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/GameActivity_title"

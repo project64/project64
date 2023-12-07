@@ -2,6 +2,7 @@ package emu.project64.settings;
 
 import emu.project64.R;
 import emu.project64.SplashActivity;
+import emu.project64.profile.ControllerProfileActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -61,6 +62,9 @@ public abstract class BaseSettingsFragment extends PreferenceFragmentCompat
             }
             else if (preference.getKey().equals("settings_gamepad_screen"))
             {
+                final AppCompatActivity activity = (AppCompatActivity)getActivity();
+                Intent intent = new Intent( activity, ControllerProfileActivity.class );
+                activity.startActivity( intent );
             }
             else if (preference.getKey().equals("settings_video"))
             {
