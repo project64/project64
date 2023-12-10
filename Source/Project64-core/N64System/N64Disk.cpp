@@ -191,7 +191,7 @@ bool CN64Disk::IsValidDiskImage(uint8_t Test[0x20])
 
     // IPL load address
     uint32_t ipl_load_addr = (Test[0x1C] << 24) | (Test[0x1D] << 16) | (Test[0x1E] << 8) | Test[0x1F];
-    if (ipl_load_addr < 0x80000000 && ipl_load_addr >= 0x80800000) return false;
+    if (ipl_load_addr < 0x80000000 || ipl_load_addr >= 0x80800000) return false;
 
     // Country code
     if (*((uint32_t *)&Test[0]) == 0x16D348E8)
