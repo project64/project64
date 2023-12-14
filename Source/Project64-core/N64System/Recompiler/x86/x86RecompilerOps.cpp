@@ -3237,9 +3237,7 @@ void CX86RecompilerOps::LW()
 
 void CX86RecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
 {
-    if (m_Opcode.rt == 0) return;
-
-    if (!HaveReadBP() && m_Opcode.base == 29 && g_System->bFastSP())
+    if (!HaveReadBP() && m_Opcode.base == 29 && g_System->bFastSP() && m_Opcode.rt != 0)
     {
         m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, ResultSigned, -1);
         asmjit::x86::Gp TempReg1 = m_RegWorkingSet.Map_MemoryStack(x86Reg_Unknown, true);
@@ -3252,6 +3250,16 @@ void CX86RecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
     else if (m_RegWorkingSet.IsConst(m_Opcode.base) && m_RegWorkingSet.Is32Bit(m_Opcode.base))
     {
         uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
+        if ((Address & 3) != 0)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            //m_Reg.TriggerAddressException(VAddr, EXC_RADE);
+            return;
+        }
+        if (m_Opcode.rt == 0)
+        {
+            return;
+        }
         if (HaveReadBP() && g_Debugger->ReadBP32(Address))
         {
             FoundMemoryBreakpoint();
@@ -3816,6 +3824,10 @@ void CX86RecompilerOps::SW(bool bCheckLLbit)
         if (m_RegWorkingSet.IsConst(m_Opcode.base))
         {
             uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
+            if ((Address & 3) != 0)
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);                
+            }
             if (HaveWriteBP() && g_Debugger->WriteBP32(Address))
             {
                 FoundMemoryBreakpoint();
@@ -10011,7 +10023,11 @@ void CX86RecompilerOps::CompileLoadMemoryValue(asmjit::x86::Gp & AddressReg, asm
     m_CodeBlock.Log("");
     m_Assembler.bind(JumpFound);
 
-    if (ValueSize == 8)
+    if (m_Opcode.rt == 0)
+    {
+        //ignore load to R0
+    }
+    else if (ValueSize == 8)
     {
         m_Assembler.xor_(AddressReg, 3);
         if (!ValueReg.isValid())
