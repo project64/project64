@@ -20,6 +20,7 @@ enum ExitReason
     ExitReason_ExceptionOverflow,
     ExitReason_AddressErrorExceptionRead32,
     ExitReason_AddressErrorExceptionRead64,
+    ExitReason_AddressErrorExceptionWrite32,
     ExitReason_IllegalInstruction,
     ExitReason_Exception,
 };

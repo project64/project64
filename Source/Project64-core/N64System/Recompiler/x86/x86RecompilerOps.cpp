@@ -3821,12 +3821,12 @@ void CX86RecompilerOps::SW(bool bCheckLLbit)
     }
     else
     {
-        if (m_RegWorkingSet.IsConst(m_Opcode.base))
+        if (m_RegWorkingSet.IsConst(m_Opcode.base) && m_RegWorkingSet.Is32Bit(m_Opcode.base))
         {
             uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
             if ((Address & 3) != 0)
             {
-                g_Notify->BreakPoint(__FILE__, __LINE__);                
+                g_Notify->BreakPoint(__FILE__, __LINE__);
             }
             if (HaveWriteBP() && g_Debugger->WriteBP32(Address))
             {
@@ -3852,6 +3852,10 @@ void CX86RecompilerOps::SW(bool bCheckLLbit)
                 SW_Register(m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, m_Opcode.rt, false, false), Address);
             }
             return;
+        }
+        else if (m_RegWorkingSet.IsConst(m_Opcode.base))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
 
         PreWriteInstruction();
@@ -9813,6 +9817,20 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
         ExitCodeBlock();
         break;
+    case ExitReason_AddressErrorExceptionWrite32:
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", InDelaySlot ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
+        m_Assembler.push(0);
+        m_Assembler.MoveVariableToX86reg(asmjit::x86::edx, &m_TempValue32, "TempValue32");
+        m_Assembler.mov(asmjit::x86::eax, asmjit::x86::edx);
+        m_Assembler.sar(asmjit::x86::eax, 31);
+        m_Assembler.push(asmjit::x86::eax);
+        m_Assembler.push(asmjit::x86::edx);
+        m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::DoAddressError), "CRegisters::DoAddressError", 12);
+        m_Assembler.MoveVariableToX86reg(asmjit::x86::edx, &g_System->m_JumpToLocation, "System->m_JumpToLocation");
+        m_Assembler.MoveX86regToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", asmjit::x86::edx);
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
+        ExitCodeBlock();
+        break;
     case ExitReason_IllegalInstruction:
         m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", InDelaySlot ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
         m_Assembler.push(0);
@@ -10129,6 +10147,24 @@ void CX86RecompilerOps::CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, asmj
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }
+
+    if (ValueSize == 16)
+    {
+        m_Assembler.MoveX86regToVariable(&m_TempValue32, "TempValue32", AddressReg);
+        m_Assembler.test(AddressReg, 1);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_AddressErrorExceptionWrite32, false, &CX86Ops::JneLabel);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+    }
+    else if (ValueSize == 32)
+    {
+        m_Assembler.MoveX86regToVariable(&m_TempValue32, "TempValue32", AddressReg);
+        m_Assembler.test(AddressReg, 3);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_AddressErrorExceptionWrite32, false, &CX86Ops::JneLabel);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+    }
+
     asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
     m_Assembler.mov(TempReg, AddressReg);
     m_Assembler.shr(TempReg, 12);
