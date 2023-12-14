@@ -172,7 +172,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_BlockLinking, new CSettingTypeRDBOnOff("Linking", true));
 #endif
     AddHandler(Rdb_SMM_Cache, new CSettingTypeRomDatabase("SMM-Cache", true));
-    AddHandler(Rdb_SMM_StoreInstruc, new CSettingTypeRomDatabase("SMM-StoreInstr", false));
+    AddHandler(Rdb_SMM_StoreInstruc, new CSettingTypeRomDatabase("SMM-StoreInst", false));
     AddHandler(Rdb_SMM_PIDMA, new CSettingTypeRomDatabase("SMM-PI DMA", true));
     AddHandler(Rdb_SMM_TLB, new CSettingTypeRomDatabase("SMM-TLB", true));
     AddHandler(Rdb_SMM_Protect, new CSettingTypeRomDatabase("SMM-Protect", Default_SMM_Protect_Memory));
