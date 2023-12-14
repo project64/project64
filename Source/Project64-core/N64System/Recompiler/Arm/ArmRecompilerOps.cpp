@@ -320,6 +320,11 @@ void CArmRecompilerOps::SPECIAL_BREAK()
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
+void CArmRecompilerOps::SPECIAL_SYNC()
+{
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+}
+
 void CArmRecompilerOps::SPECIAL_MFLO()
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);

@@ -97,6 +97,7 @@ public:
     void SPECIAL_JALR();
     void SPECIAL_SYSCALL();
     void SPECIAL_BREAK();
+    void SPECIAL_SYNC();
     void SPECIAL_MFLO();
     void SPECIAL_MTLO();
     void SPECIAL_MFHI();
@@ -209,6 +210,7 @@ public:
     // Other functions
     void UnknownOpcode();
 
+    void RecordLLAddress(const asmjit::x86::Gp & AddressReg);
     void RecordLLAddress(uint64_t Address);
     void ClearCachedInstructionInfo();
     void FoundMemoryBreakpoint();
@@ -270,7 +272,7 @@ private:
     CX86RecompilerOps & operator=(const CX86RecompilerOps &);
 
     asmjit::x86::Gp BaseOffsetAddress(bool UseBaseRegister);
-    void CompileLoadMemoryValue(asmjit::x86::Gp AddressReg, asmjit::x86::Gp ValueReg, const asmjit::x86::Gp & ValueRegHi, uint8_t ValueSize, bool SignExtend);
+    void CompileLoadMemoryValue(asmjit::x86::Gp & AddressReg, asmjit::x86::Gp ValueReg, const asmjit::x86::Gp & ValueRegHi, uint8_t ValueSize, bool SignExtend);
     void CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, asmjit::x86::Gp ValueReg, const asmjit::x86::Gp & ValueRegHi, uint64_t Value, uint8_t ValueSize);
 
     void SB_Const(uint32_t Value, uint32_t Addr);

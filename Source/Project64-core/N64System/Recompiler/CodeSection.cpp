@@ -429,6 +429,7 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             case R4300i_SPECIAL_MFLO: m_RecompilerOps->SPECIAL_MFLO(); break;
             case R4300i_SPECIAL_SYSCALL: m_RecompilerOps->SPECIAL_SYSCALL(); break;
             case R4300i_SPECIAL_BREAK: m_RecompilerOps->SPECIAL_BREAK(); break;
+            case R4300i_SPECIAL_SYNC: m_RecompilerOps->SPECIAL_SYNC(); break;
             case R4300i_SPECIAL_MTLO: m_RecompilerOps->SPECIAL_MTLO(); break;
             case R4300i_SPECIAL_MFHI: m_RecompilerOps->SPECIAL_MFHI(); break;
             case R4300i_SPECIAL_MTHI: m_RecompilerOps->SPECIAL_MTHI(); break;

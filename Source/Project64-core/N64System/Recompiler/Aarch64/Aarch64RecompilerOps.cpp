@@ -319,6 +319,11 @@ void CAarch64RecompilerOps::SPECIAL_BREAK()
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
+void CAarch64RecompilerOps::SPECIAL_SYNC()
+{
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+}
+
 void CAarch64RecompilerOps::SPECIAL_MFLO()
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
