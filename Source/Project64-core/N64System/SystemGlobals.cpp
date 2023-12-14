@@ -7,7 +7,6 @@ CN64System * g_BaseSystem = nullptr;
 CN64System * g_SyncSystem = nullptr;
 CRecompiler * g_Recompiler = nullptr;
 CMipsMemoryVM * g_MMU = nullptr; // Memory of the N64
-CTLB * g_TLB = nullptr;          // TLB unit
 CRegisters * g_Reg = nullptr;    // Current register set attached to the g_MMU
 CNotification * g_Notify = nullptr;
 CPlugins * g_Plugins = nullptr;

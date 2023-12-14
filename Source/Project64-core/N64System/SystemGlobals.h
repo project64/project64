@@ -14,9 +14,6 @@ extern CRecompiler * g_Recompiler;
 class CMipsMemoryVM;
 extern CMipsMemoryVM * g_MMU; // Memory of the N64
 
-class CTLB;
-extern CTLB * g_TLB; // TLB unit
-
 class CRegisters;
 extern CRegisters * g_Reg; // Current register set attached to the g_MMU
 

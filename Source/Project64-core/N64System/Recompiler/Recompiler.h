@@ -83,6 +83,7 @@ private:
     CN64System & m_System;
     CMipsMemoryVM & m_MMU;
     CRegisters & m_Reg;
+    CTLB & m_TLB;
     bool & m_EndEmulation;
     uint8_t * m_MemoryStack;
     FUNCTION_PROFILE m_BlockProfile;

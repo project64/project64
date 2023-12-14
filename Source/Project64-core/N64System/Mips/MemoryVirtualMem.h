@@ -211,6 +211,7 @@ private:
     static uint8_t *m_Reserve1, *m_Reserve2;
     CN64System & m_System;
     CRegisters & m_Reg;
+    CTLB & m_TLB;
     AudioInterfaceHandler m_AudioInterfaceHandler;
     CartridgeDomain1Address1Handler m_CartridgeDomain1Address1Handler;
     CartridgeDomain1Address3Handler m_CartridgeDomain1Address3Handler;

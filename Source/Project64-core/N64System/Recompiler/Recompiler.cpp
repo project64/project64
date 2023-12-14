@@ -9,6 +9,7 @@ CRecompiler::CRecompiler(CN64System & System, bool & EndEmulation) :
     m_System(System),
     m_MMU(System.m_MMU_VM),
     m_Reg(System.m_Reg),
+    m_TLB(System.m_TLB),
     m_EndEmulation(EndEmulation),
     m_MemoryStack(0),
     PROGRAM_COUNTER(System.m_Reg.m_PROGRAM_COUNTER),
@@ -447,7 +448,7 @@ void CRecompiler::ClearRecompCode_Phys(uint32_t Address, int length, REMOVE_REAS
         ClearRecompCode_Virt(Address + 0xA0000000, length, Reason);
 
         uint32_t VAddr, Index = 0;
-        while (g_TLB->PAddrToVAddr(Address, VAddr, Index))
+        while (m_TLB.PAddrToVAddr(Address, VAddr, Index))
         {
             WriteTrace(TraceRecompiler, TraceInfo, "ClearRecompCode Vaddr %X  len: %d", VAddr, length);
             ClearRecompCode_Virt(VAddr, length, Reason);

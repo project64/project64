@@ -88,6 +88,7 @@ public:
     {
         return m_OpCodes.Opcode();
     }
+    CTLB & TLB();
     void Reset(bool bInitReg, bool ClearMenory);
     void GameReset();
     void PluginReset();

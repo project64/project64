@@ -260,6 +260,7 @@ private:
 
     CN64System & m_System;
     CRegisters & m_Reg;
+    CTLB & m_TLB;
     CMipsMemoryVM & m_MMU;
     R4300iOpcode m_Opcode;
     uint32_t & m_PROGRAM_COUNTER;

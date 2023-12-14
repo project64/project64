@@ -7,6 +7,7 @@ CRecompilerOpsBase::CRecompilerOpsBase(CN64System & System, CCodeBlock & CodeBlo
     m_System(System),
     m_SystemEvents(System.m_SystemEvents),
     m_Reg(System.m_Reg),
+    m_TLB(System.m_TLB),
     m_MMU(System.m_MMU_VM),
     m_CodeBlock(CodeBlock),
     m_Section(nullptr)

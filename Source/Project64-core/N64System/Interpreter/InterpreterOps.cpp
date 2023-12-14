@@ -27,6 +27,7 @@ const int32_t R4300iOp::LWR_SHIFT[4] = {24, 16, 8, 0};
 R4300iOp::R4300iOp(CN64System & System) :
     m_System(System),
     m_Reg(System.m_Reg),
+    m_TLB(System.m_TLB),
     m_MMU(System.m_MMU_VM),
     m_PROGRAM_COUNTER(System.m_Reg.m_PROGRAM_COUNTER),
     m_GPR(System.m_Reg.m_GPR),
@@ -1462,7 +1463,7 @@ void R4300iOp::LL()
         m_LLBit = 1;
         uint32_t PhysicalAddr;
         bool MemoryUsed;
-        g_TLB->VAddrToPAddr(Address, PhysicalAddr, MemoryUsed);
+        m_TLB.VAddrToPAddr(Address, PhysicalAddr, MemoryUsed);
         m_CP0[17] = PhysicalAddr >> 4;
     }
 }
@@ -1508,7 +1509,7 @@ void R4300iOp::LLD()
         m_LLBit = 1;
         uint32_t PhysicalAddr;
         bool MemoryUsed;
-        g_TLB->VAddrToPAddr(Address, PhysicalAddr, MemoryUsed);
+        m_TLB.VAddrToPAddr(Address, PhysicalAddr, MemoryUsed);
         m_CP0[17] = PhysicalAddr >> 4;
     }
 }
@@ -2133,22 +2134,22 @@ void R4300iOp::COP0_DMT()
 
 void R4300iOp::COP0_CO_TLBR()
 {
-    g_TLB->ReadEntry();
+    m_TLB.ReadEntry();
 }
 
 void R4300iOp::COP0_CO_TLBWI()
 {
-    g_TLB->WriteEntry(m_Reg.INDEX_REGISTER & 0x1F, false);
+    m_TLB.WriteEntry(m_Reg.INDEX_REGISTER & 0x1F, false);
 }
 
 void R4300iOp::COP0_CO_TLBWR()
 {
-    g_TLB->WriteEntry(m_Reg.RANDOM_REGISTER & 0x1F, true);
+    m_TLB.WriteEntry(m_Reg.RANDOM_REGISTER & 0x1F, true);
 }
 
 void R4300iOp::COP0_CO_TLBP()
 {
-    g_TLB->Probe();
+    m_TLB.Probe();
 }
 
 void R4300iOp::COP0_CO_ERET()

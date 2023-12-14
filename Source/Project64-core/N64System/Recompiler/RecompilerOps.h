@@ -43,6 +43,7 @@ class CN64System;
 class CSystemEvents;
 class CMipsMemoryVM;
 class CRegisters;
+class CTLB;
 
 class CRecompilerOpsBase :
     protected CDebugSettings
@@ -55,6 +56,7 @@ protected:
     CSystemEvents & m_SystemEvents;
     CMipsMemoryVM & m_MMU;
     CRegisters & m_Reg;
+    CTLB & m_TLB;
     CCodeBlock & m_CodeBlock;
     R4300iOpcode m_Opcode;
     CCodeSection * m_Section;

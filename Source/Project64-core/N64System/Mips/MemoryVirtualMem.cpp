@@ -19,6 +19,7 @@ uint32_t CMipsMemoryVM::RegModValue;
 CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
     m_System(System),
     m_Reg(System.m_Reg),
+    m_TLB(System.m_TLB),
     m_AudioInterfaceHandler(System, System.m_Reg),
     m_CartridgeDomain1Address1Handler(System.m_Reg, g_DDRom),
     m_CartridgeDomain2Address1Handler(System.m_Reg),
@@ -368,7 +369,7 @@ bool CMipsMemoryVM::LB_Memory(uint64_t VAddr, uint8_t & Value)
     {
         uint32_t PAddr;
         bool MemoryUnused;
-        if (!g_TLB->VAddrToPAddr(VAddr, PAddr, MemoryUnused))
+        if (!m_TLB.VAddrToPAddr(VAddr, PAddr, MemoryUnused))
         {
             m_Reg.TriggerAddressException(VAddr, MemoryUnused ? EXC_RADE : EXC_RMISS);
             return false;
@@ -400,7 +401,7 @@ bool CMipsMemoryVM::LH_Memory(uint64_t VAddr, uint16_t & Value)
     {
         uint32_t PAddr;
         bool MemoryUnused;
-        if (!g_TLB->VAddrToPAddr(VAddr, PAddr, MemoryUnused))
+        if (!m_TLB.VAddrToPAddr(VAddr, PAddr, MemoryUnused))
         {
             m_Reg.TriggerAddressException(VAddr, MemoryUnused ? EXC_RADE : EXC_RMISS);
             return false;
@@ -432,7 +433,7 @@ bool CMipsMemoryVM::LW_Memory(uint64_t VAddr, uint32_t & Value)
     {
         uint32_t PAddr;
         bool MemoryUnused;
-        if (!g_TLB->VAddrToPAddr(VAddr, PAddr, MemoryUnused))
+        if (!m_TLB.VAddrToPAddr(VAddr, PAddr, MemoryUnused))
         {
             m_Reg.TriggerAddressException(VAddr, MemoryUnused ? EXC_RADE : EXC_RMISS);
             return false;
@@ -464,7 +465,7 @@ bool CMipsMemoryVM::LD_Memory(uint64_t VAddr, uint64_t & Value)
     {
         uint32_t PAddr;
         bool MemoryUnused;
-        if (!g_TLB->VAddrToPAddr(VAddr, PAddr, MemoryUnused))
+        if (!m_TLB.VAddrToPAddr(VAddr, PAddr, MemoryUnused))
         {
             m_Reg.TriggerAddressException(VAddr, MemoryUnused ? EXC_RADE : EXC_RMISS);
             return false;
@@ -492,7 +493,7 @@ bool CMipsMemoryVM::SB_Memory(uint64_t VAddr, uint32_t Value)
     {
         uint32_t PAddr;
         bool MemoryUnused;
-        if (!g_TLB->VAddrToPAddr(VAddr, PAddr, MemoryUnused))
+        if (!m_TLB.VAddrToPAddr(VAddr, PAddr, MemoryUnused))
         {
             m_Reg.TriggerAddressException(VAddr, MemoryUnused ? EXC_WADE : EXC_WMISS);
             return false;
@@ -524,7 +525,7 @@ bool CMipsMemoryVM::SH_Memory(uint64_t VAddr, uint32_t Value)
     {
         uint32_t PAddr;
         bool MemoryUnused;
-        if (!g_TLB->VAddrToPAddr(VAddr, PAddr, MemoryUnused))
+        if (!m_TLB.VAddrToPAddr(VAddr, PAddr, MemoryUnused))
         {
             m_Reg.TriggerAddressException(VAddr, MemoryUnused ? EXC_WADE : EXC_WMISS);
             return false;
@@ -556,7 +557,7 @@ bool CMipsMemoryVM::SW_Memory(uint64_t VAddr, uint32_t Value)
     {
         uint32_t PAddr;
         bool MemoryUnused;
-        if (!g_TLB->VAddrToPAddr(VAddr, PAddr, MemoryUnused))
+        if (!m_TLB.VAddrToPAddr(VAddr, PAddr, MemoryUnused))
         {
             m_Reg.TriggerAddressException(VAddr, MemoryUnused ? EXC_WADE : EXC_WMISS);
             return false;
@@ -588,7 +589,7 @@ bool CMipsMemoryVM::SD_Memory(uint64_t VAddr, uint64_t Value)
     {
         uint32_t PAddr;
         bool MemoryUnused;
-        if (!g_TLB->VAddrToPAddr(VAddr, PAddr, MemoryUnused))
+        if (!m_TLB.VAddrToPAddr(VAddr, PAddr, MemoryUnused))
         {
             m_Reg.TriggerAddressException(VAddr, MemoryUnused ? EXC_WADE : EXC_WMISS);
             return false;

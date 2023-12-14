@@ -899,6 +899,11 @@ void CN64System::ApplyGSButton(void)
     }
 }
 
+CTLB & CN64System::TLB()
+{
+    return m_TLB;
+}
+
 void CN64System::Reset(bool bInitReg, bool ClearMenory)
 {
     WriteTrace(TraceN64System, TraceDebug, "Start (bInitReg: %s, ClearMenory: %s)", bInitReg ? "true" : "false", ClearMenory ? "true" : "false");
@@ -969,7 +974,6 @@ bool CN64System::SetActiveSystem(bool bActive)
         }
         g_Recompiler = m_Recomp;
         g_MMU = &m_MMU_VM;
-        g_TLB = &m_TLB;
         g_Reg = &m_Reg;
         g_Mempak = &m_Mempak;
         g_SystemTimer = &m_SystemTimer;
@@ -988,7 +992,6 @@ bool CN64System::SetActiveSystem(bool bActive)
             g_SyncSystem = nullptr;
             g_Recompiler = nullptr;
             g_MMU = nullptr;
-            g_TLB = nullptr;
             g_Reg = nullptr;
             g_SystemTimer = nullptr;
             g_NextTimer = nullptr;

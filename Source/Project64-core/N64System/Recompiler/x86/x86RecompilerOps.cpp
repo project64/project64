@@ -7384,7 +7384,7 @@ void CX86RecompilerOps::COP0_DMT()
 void CX86RecompilerOps::COP0_CO_TLBR(void)
 {
     m_RegWorkingSet.BeforeCallDirect();
-    m_Assembler.CallThis((uint32_t)g_TLB, AddressOf(&CTLB::ReadEntry), "CTLB::ReadEntry", 4);
+    m_Assembler.CallThis((uint32_t)&m_TLB, AddressOf(&CTLB::ReadEntry), "CTLB::ReadEntry", 4);
     m_RegWorkingSet.AfterCallDirect();
 }
 
@@ -7395,7 +7395,7 @@ void CX86RecompilerOps::COP0_CO_TLBWI(void)
     m_Assembler.MoveVariableToX86reg(asmjit::x86::ecx, &g_Reg->INDEX_REGISTER, "INDEX_REGISTER");
     m_Assembler.and_(asmjit::x86::ecx, 0x1F);
     m_Assembler.push(asmjit::x86::ecx);
-    m_Assembler.CallThis((uint32_t)g_TLB, AddressOf(&CTLB::WriteEntry), "CTLB::WriteEntry", 12);
+    m_Assembler.CallThis((uint32_t)&m_TLB, AddressOf(&CTLB::WriteEntry), "CTLB::WriteEntry", 12);
     m_RegWorkingSet.AfterCallDirect();
 }
 
@@ -7408,14 +7408,14 @@ void CX86RecompilerOps::COP0_CO_TLBWR(void)
     m_Assembler.MoveVariableToX86reg(asmjit::x86::ecx, &g_Reg->RANDOM_REGISTER, "RANDOM_REGISTER");
     m_Assembler.and_(asmjit::x86::ecx, 0x1F);
     m_Assembler.push(asmjit::x86::ecx);
-    m_Assembler.CallThis((uint32_t)g_TLB, AddressOf(&CTLB::WriteEntry), "CTLB::WriteEntry", 12);
+    m_Assembler.CallThis((uint32_t)&m_TLB, AddressOf(&CTLB::WriteEntry), "CTLB::WriteEntry", 12);
     m_RegWorkingSet.AfterCallDirect();
 }
 
 void CX86RecompilerOps::COP0_CO_TLBP(void)
 {
     m_RegWorkingSet.BeforeCallDirect();
-    m_Assembler.CallThis((uint32_t)g_TLB, AddressOf(&CTLB::Probe), "CTLB::TLB_Probe", 4);
+    m_Assembler.CallThis((uint32_t)&m_TLB, AddressOf(&CTLB::Probe), "CTLB::TLB_Probe", 4);
     m_RegWorkingSet.AfterCallDirect();
 }
 
