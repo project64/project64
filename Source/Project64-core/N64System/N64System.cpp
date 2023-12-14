@@ -1092,8 +1092,12 @@ void CN64System::CpuStopped()
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
-void CN64System::UpdateSyncCPU(CN64System * const SecondCPU, uint32_t const Cycles)
+void CN64System::UpdateSyncCPU(uint32_t const Cycles)
 {
+    if (m_SyncCPU == nullptr)
+    {
+        return;
+    }
     int CyclesToExecute = Cycles - m_CyclesToSkip;
 
     // Update the number of cycles to skip
@@ -1109,37 +1113,41 @@ void CN64System::UpdateSyncCPU(CN64System * const SecondCPU, uint32_t const Cycl
         return;
     }
 
-    SecondCPU->SetActiveSystem(true);
-    m_OpCodes.ExecuteOps(Cycles);
+    m_SyncCPU->SetActiveSystem(true);
+    m_SyncCPU->m_OpCodes.ExecuteOps(Cycles);
     SetActiveSystem(true);
 }
 
-void CN64System::SyncCPUPC(CN64System * const SecondCPU)
+void CN64System::SyncSystemPC(void)
 {
+    if (m_SyncCPU == nullptr)
+    {
+        return;
+    }
     bool ErrorFound = false;
 
     g_SystemTimer->UpdateTimers();
-    if (m_Reg.m_PROGRAM_COUNTER != SecondCPU->m_Reg.m_PROGRAM_COUNTER)
+    if (m_Reg.m_PROGRAM_COUNTER != m_SyncCPU->m_Reg.m_PROGRAM_COUNTER)
     {
         ErrorFound = true;
     }
 
-    if (m_TLB != SecondCPU->m_TLB)
+    if (m_TLB != m_SyncCPU->m_TLB)
     {
         ErrorFound = true;
     }
-    if (m_SystemTimer != SecondCPU->m_SystemTimer)
+    if (m_SystemTimer != m_SyncCPU->m_SystemTimer)
     {
         ErrorFound = true;
     }
-    if (m_NextTimer != SecondCPU->m_NextTimer)
+    if (m_NextTimer != m_SyncCPU->m_NextTimer)
     {
         ErrorFound = true;
     }
 
     if (ErrorFound)
     {
-        DumpSyncErrors(SecondCPU);
+        DumpSyncErrors();
     }
 
     for (int i = (sizeof(m_LastSuccessSyncPC) / sizeof(m_LastSuccessSyncPC[0])) - 1; i > 0; i--)
@@ -1149,8 +1157,12 @@ void CN64System::SyncCPUPC(CN64System * const SecondCPU)
     m_LastSuccessSyncPC[0] = m_Reg.m_PROGRAM_COUNTER;
 }
 
-void CN64System::SyncCPU(CN64System * const SecondCPU)
+void CN64System::SyncSystem()
 {
+    if (m_SyncCPU == nullptr)
+    {
+        return;
+    }
     bool ErrorFound = false;
 
     m_SyncCount += 1;
@@ -1162,7 +1174,7 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
         ErrorFound = true;
     }
 #endif
-    if (m_Reg.m_PROGRAM_COUNTER != SecondCPU->m_Reg.m_PROGRAM_COUNTER)
+    if (m_Reg.m_PROGRAM_COUNTER != m_SyncCPU->m_Reg.m_PROGRAM_COUNTER)
     {
         ErrorFound = true;
     }
@@ -1170,15 +1182,15 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
     {
         for (int count = 0; count < 32; count++)
         {
-            if (m_Reg.m_GPR[count].W[0] != SecondCPU->m_Reg.m_GPR[count].W[0])
+            if (m_Reg.m_GPR[count].W[0] != m_SyncCPU->m_Reg.m_GPR[count].W[0])
             {
                 ErrorFound = true;
             }
-            if (m_Reg.m_FPR[count].DW != SecondCPU->m_Reg.m_FPR[count].DW)
+            if (m_Reg.m_FPR[count].DW != m_SyncCPU->m_Reg.m_FPR[count].DW)
             {
                 ErrorFound = true;
             }
-            if (m_Reg.m_CP0[count] != SecondCPU->m_Reg.m_CP0[count])
+            if (m_Reg.m_CP0[count] != m_SyncCPU->m_Reg.m_CP0[count])
             {
                 ErrorFound = true;
             }
@@ -1188,64 +1200,64 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
     {
         for (int count = 0; count < 32; count++)
         {
-            if (m_Reg.m_GPR[count].DW != SecondCPU->m_Reg.m_GPR[count].DW)
+            if (m_Reg.m_GPR[count].DW != m_SyncCPU->m_Reg.m_GPR[count].DW)
             {
                 ErrorFound = true;
             }
-            if (m_Reg.m_FPR[count].DW != SecondCPU->m_Reg.m_FPR[count].DW)
+            if (m_Reg.m_FPR[count].DW != m_SyncCPU->m_Reg.m_FPR[count].DW)
             {
                 ErrorFound = true;
             }
-            if (m_Reg.m_CP0[count] != SecondCPU->m_Reg.m_CP0[count])
+            if (m_Reg.m_CP0[count] != m_SyncCPU->m_Reg.m_CP0[count])
             {
                 ErrorFound = true;
             }
         }
     }
 
-    if (m_Random.get_state() != SecondCPU->m_Random.get_state())
+    if (m_Random.get_state() != m_SyncCPU->m_Random.get_state())
     {
         ErrorFound = true;
     }
-    if (m_TLB != SecondCPU->m_TLB)
+    if (m_TLB != m_SyncCPU->m_TLB)
     {
         ErrorFound = true;
     }
-    if (m_Reg.m_FPCR[0] != SecondCPU->m_Reg.m_FPCR[0])
+    if (m_Reg.m_FPCR[0] != m_SyncCPU->m_Reg.m_FPCR[0])
     {
         ErrorFound = true;
     }
-    if (m_Reg.m_FPCR[31] != SecondCPU->m_Reg.m_FPCR[31])
+    if (m_Reg.m_FPCR[31] != m_SyncCPU->m_Reg.m_FPCR[31])
     {
         ErrorFound = true;
     }
-    if (m_Reg.m_HI.DW != SecondCPU->m_Reg.m_HI.DW)
+    if (m_Reg.m_HI.DW != m_SyncCPU->m_Reg.m_HI.DW)
     {
         ErrorFound = true;
     }
-    if (m_Reg.m_LO.DW != SecondCPU->m_Reg.m_LO.DW)
+    if (m_Reg.m_LO.DW != m_SyncCPU->m_Reg.m_LO.DW)
     {
         ErrorFound = true;
     }
     /*if (m_SyncCount > 4788000)
     {
-    if (memcmp(m_MMU_VM.Rdram(),SecondCPU->m_MMU_VM.Rdram(),RdramSize()) != 0)
+    if (memcmp(m_MMU_VM.Rdram(),m_SyncCPU->m_MMU_VM.Rdram(),RdramSize()) != 0)
     {
     ErrorFound = true;
     }
     }
-    if (memcmp(m_MMU_VM.Imem(),SecondCPU->m_MMU_VM.Imem(),0x1000) != 0)
+    if (memcmp(m_MMU_VM.Imem(),m_SyncCPU->m_MMU_VM.Imem(),0x1000) != 0)
     {
     ErrorFound = true;
     }
-    if (memcmp(m_MMU_VM.Dmem(),SecondCPU->m_MMU_VM.Dmem(),0x1000) != 0)
+    if (memcmp(m_MMU_VM.Dmem(),m_SyncCPU->m_MMU_VM.Dmem(),0x1000) != 0)
     {
     ErrorFound = true;
     }*/
 
     /*for (int z = 0; z < 0x100; z++)
     {
-    if (m_MMU_VM.Rdram()[0x00206970 + z] !=  SecondCPU->m_MMU_VM.Rdram()[0x00206970 + z])
+    if (m_MMU_VM.Rdram()[0x00206970 + z] !=  m_SyncCPU->m_MMU_VM.Rdram()[0x00206970 + z])
     {
     ErrorFound = true;
     break;
@@ -1275,22 +1287,22 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
         }
     }
 
-    if (m_SystemTimer != SecondCPU->m_SystemTimer)
+    if (m_SystemTimer != m_SyncCPU->m_SystemTimer)
     {
         ErrorFound = true;
     }
-    if (m_NextTimer != SecondCPU->m_NextTimer)
+    if (m_NextTimer != m_SyncCPU->m_NextTimer)
     {
         ErrorFound = true;
     }
-    if (m_PipelineStage != SecondCPU->m_PipelineStage)
+    if (m_PipelineStage != m_SyncCPU->m_PipelineStage)
     {
         ErrorFound = true;
     }
 
     for (int i = 0, n = sizeof(m_Reg.m_Mips_Interface) / sizeof(m_Reg.m_Mips_Interface[0]); i < n; i++)
     {
-        if (m_Reg.m_Mips_Interface[i] != SecondCPU->m_Reg.m_Mips_Interface[i])
+        if (m_Reg.m_Mips_Interface[i] != m_SyncCPU->m_Reg.m_Mips_Interface[i])
         {
             ErrorFound = true;
         }
@@ -1298,7 +1310,7 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
 
     for (int i = 0, n = sizeof(m_Reg.m_SigProcessor_Interface) / sizeof(m_Reg.m_SigProcessor_Interface[0]); i < n; i++)
     {
-        if (m_Reg.m_SigProcessor_Interface[i] != SecondCPU->m_Reg.m_SigProcessor_Interface[i])
+        if (m_Reg.m_SigProcessor_Interface[i] != m_SyncCPU->m_Reg.m_SigProcessor_Interface[i])
         {
             ErrorFound = true;
         }
@@ -1306,7 +1318,7 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
 
     for (int i = 0, n = sizeof(m_Reg.m_Display_ControlReg) / sizeof(m_Reg.m_Display_ControlReg[0]); i < n; i++)
     {
-        if (m_Reg.m_Display_ControlReg[i] != SecondCPU->m_Reg.m_Display_ControlReg[i])
+        if (m_Reg.m_Display_ControlReg[i] != m_SyncCPU->m_Reg.m_Display_ControlReg[i])
         {
             ErrorFound = true;
         }
@@ -1314,7 +1326,7 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
 
     if (ErrorFound)
     {
-        DumpSyncErrors(SecondCPU);
+        DumpSyncErrors();
     }
 
     for (int i = (sizeof(m_LastSuccessSyncPC) / sizeof(m_LastSuccessSyncPC[0])) - 1; i > 0; i--)
@@ -1324,17 +1336,7 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
     m_LastSuccessSyncPC[0] = m_Reg.m_PROGRAM_COUNTER;
 }
 
-void CN64System::SyncSystem()
-{
-    SyncCPU(g_SyncSystem);
-}
-
-void CN64System::SyncSystemPC()
-{
-    SyncCPUPC(g_SyncSystem);
-}
-
-void CN64System::DumpSyncErrors(CN64System * SecondCPU)
+void CN64System::DumpSyncErrors()
 {
     int count;
 
@@ -1351,19 +1353,19 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
             Error.Log("m_CurrentSP,%X,%X\r\n", m_CurrentSP, GPR[29].UW[0]);
         }
 #endif
-        if (m_Reg.m_PROGRAM_COUNTER != SecondCPU->m_Reg.m_PROGRAM_COUNTER)
+        if (m_Reg.m_PROGRAM_COUNTER != m_SyncCPU->m_Reg.m_PROGRAM_COUNTER)
         {
-            Error.LogF("PROGRAM_COUNTER 0x%X,         0x%X\r\n", m_Reg.m_PROGRAM_COUNTER, SecondCPU->m_Reg.m_PROGRAM_COUNTER);
+            Error.LogF("PROGRAM_COUNTER 0x%X,         0x%X\r\n", m_Reg.m_PROGRAM_COUNTER, m_SyncCPU->m_Reg.m_PROGRAM_COUNTER);
         }
         if (b32BitCore())
         {
             for (count = 0; count < 32; count++)
             {
-                if (m_Reg.m_GPR[count].UW[0] != SecondCPU->m_Reg.m_GPR[count].UW[0])
+                if (m_Reg.m_GPR[count].UW[0] != m_SyncCPU->m_Reg.m_GPR[count].UW[0])
                 {
                     Error.LogF("GPR[%s] 0x%08X%08X, 0x%08X%08X\r\n", CRegName::GPR[count],
                                m_Reg.m_GPR[count].W[1], m_Reg.m_GPR[count].W[0],
-                               SecondCPU->m_Reg.m_GPR[count].W[1], SecondCPU->m_Reg.m_GPR[count].W[0]);
+                               m_SyncCPU->m_Reg.m_GPR[count].W[1], m_SyncCPU->m_Reg.m_GPR[count].W[0]);
                 }
             }
         }
@@ -1371,80 +1373,80 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
         {
             for (count = 0; count < 32; count++)
             {
-                if (m_Reg.m_GPR[count].DW != SecondCPU->m_Reg.m_GPR[count].DW)
+                if (m_Reg.m_GPR[count].DW != m_SyncCPU->m_Reg.m_GPR[count].DW)
                 {
                     Error.LogF("GPR[%s] 0x%08X%08X, 0x%08X%08X\r\n", CRegName::GPR[count],
                                m_Reg.m_GPR[count].W[1], m_Reg.m_GPR[count].W[0],
-                               SecondCPU->m_Reg.m_GPR[count].W[1], SecondCPU->m_Reg.m_GPR[count].W[0]);
+                               m_SyncCPU->m_Reg.m_GPR[count].W[1], m_SyncCPU->m_Reg.m_GPR[count].W[0]);
                 }
             }
         }
         for (count = 0; count < 32; count++)
         {
-            if (m_Reg.m_FPR[count].DW != SecondCPU->m_Reg.m_FPR[count].DW)
+            if (m_Reg.m_FPR[count].DW != m_SyncCPU->m_Reg.m_FPR[count].DW)
             {
                 Error.LogF("FPR[%s] 0x%08X%08X, 0x%08X%08X\r\n", CRegName::FPR[count],
                            m_Reg.m_FPR[count].W[1], m_Reg.m_FPR[count].W[0],
-                           SecondCPU->m_Reg.m_FPR[count].W[1], SecondCPU->m_Reg.m_FPR[count].W[0]);
+                           m_SyncCPU->m_Reg.m_FPR[count].W[1], m_SyncCPU->m_Reg.m_FPR[count].W[0]);
             }
         }
         for (count = 0; count < 32; count++)
         {
-            if (m_Reg.m_FPCR[count] != SecondCPU->m_Reg.m_FPCR[count])
+            if (m_Reg.m_FPCR[count] != m_SyncCPU->m_Reg.m_FPCR[count])
             {
                 Error.LogF("FPCR[%s] 0x%08X, 0x%08X\r\n", CRegName::FPR_Ctrl[count],
-                           m_Reg.m_FPCR[count], SecondCPU->m_Reg.m_FPCR[count]);
+                           m_Reg.m_FPCR[count], m_SyncCPU->m_Reg.m_FPCR[count]);
             }
         }
         for (count = 0; count < 32; count++)
         {
-            if (m_Reg.m_CP0[count] != SecondCPU->m_Reg.m_CP0[count])
+            if (m_Reg.m_CP0[count] != m_SyncCPU->m_Reg.m_CP0[count])
             {
                 Error.LogF("CP0[%s] 0x%08X%08X, 0x%08X%08X\r\n", CRegName::Cop0[count],
-                           (uint32_t)(m_Reg.m_CP0[count] >> 32), (uint32_t)m_Reg.m_CP0[count], (uint32_t)(SecondCPU->m_Reg.m_CP0[count] >> 32), (uint32_t)(SecondCPU->m_Reg.m_CP0[count]));
+                           (uint32_t)(m_Reg.m_CP0[count] >> 32), (uint32_t)m_Reg.m_CP0[count], (uint32_t)(m_SyncCPU->m_Reg.m_CP0[count] >> 32), (uint32_t)(m_SyncCPU->m_Reg.m_CP0[count]));
             }
         }
-        if (m_Reg.m_HI.DW != SecondCPU->m_Reg.m_HI.DW)
+        if (m_Reg.m_HI.DW != m_SyncCPU->m_Reg.m_HI.DW)
         {
-            Error.LogF("HI Reg 0x%08X%08X, 0x%08X%08X\r\n", m_Reg.m_HI.UW[1], m_Reg.m_HI.UW[0], SecondCPU->m_Reg.m_HI.UW[1], SecondCPU->m_Reg.m_HI.UW[0]);
+            Error.LogF("HI Reg 0x%08X%08X, 0x%08X%08X\r\n", m_Reg.m_HI.UW[1], m_Reg.m_HI.UW[0], m_SyncCPU->m_Reg.m_HI.UW[1], m_SyncCPU->m_Reg.m_HI.UW[0]);
         }
-        if (m_Reg.m_LO.DW != SecondCPU->m_Reg.m_LO.DW)
+        if (m_Reg.m_LO.DW != m_SyncCPU->m_Reg.m_LO.DW)
         {
-            Error.LogF("LO Reg 0x%08X%08X, 0x%08X%08X\r\n", m_Reg.m_LO.UW[1], m_Reg.m_LO.UW[0], SecondCPU->m_Reg.m_LO.UW[1], SecondCPU->m_Reg.m_LO.UW[0]);
+            Error.LogF("LO Reg 0x%08X%08X, 0x%08X%08X\r\n", m_Reg.m_LO.UW[1], m_Reg.m_LO.UW[0], m_SyncCPU->m_Reg.m_LO.UW[1], m_SyncCPU->m_Reg.m_LO.UW[0]);
         }
         for (int i = 0, n = sizeof(m_Reg.m_Mips_Interface) / sizeof(m_Reg.m_Mips_Interface[0]); i < n; i++)
         {
-            if (m_Reg.m_Mips_Interface[i] != SecondCPU->m_Reg.m_Mips_Interface[i])
+            if (m_Reg.m_Mips_Interface[i] != m_SyncCPU->m_Reg.m_Mips_Interface[i])
             {
-                Error.LogF("Mips_Interface[%d] 0x%08X, 0x%08X\r\n", i, m_Reg.m_Mips_Interface[i], SecondCPU->m_Reg.m_Mips_Interface[i]);
+                Error.LogF("Mips_Interface[%d] 0x%08X, 0x%08X\r\n", i, m_Reg.m_Mips_Interface[i], m_SyncCPU->m_Reg.m_Mips_Interface[i]);
             }
         }
 
         for (int i = 0, n = sizeof(m_Reg.m_SigProcessor_Interface) / sizeof(m_Reg.m_SigProcessor_Interface[0]); i < n; i++)
         {
-            if (m_Reg.m_SigProcessor_Interface[i] != SecondCPU->m_Reg.m_SigProcessor_Interface[i])
+            if (m_Reg.m_SigProcessor_Interface[i] != m_SyncCPU->m_Reg.m_SigProcessor_Interface[i])
             {
-                Error.LogF("SigProcessor_Interface[%d] 0x%08X, 0x%08X\r\n", i, m_Reg.m_SigProcessor_Interface[i], SecondCPU->m_Reg.m_SigProcessor_Interface[i]);
+                Error.LogF("SigProcessor_Interface[%d] 0x%08X, 0x%08X\r\n", i, m_Reg.m_SigProcessor_Interface[i], m_SyncCPU->m_Reg.m_SigProcessor_Interface[i]);
             }
         }
         for (int i = 0, n = sizeof(m_Reg.m_Display_ControlReg) / sizeof(m_Reg.m_Display_ControlReg[0]); i < n; i++)
         {
-            if (m_Reg.m_Display_ControlReg[i] != SecondCPU->m_Reg.m_Display_ControlReg[i])
+            if (m_Reg.m_Display_ControlReg[i] != m_SyncCPU->m_Reg.m_Display_ControlReg[i])
             {
-                Error.LogF("Display_ControlReg[%d] 0x%08X, 0x%08X\r\n", i, m_Reg.m_Display_ControlReg[i], SecondCPU->m_Reg.m_Display_ControlReg[i]);
+                Error.LogF("Display_ControlReg[%d] 0x%08X, 0x%08X\r\n", i, m_Reg.m_Display_ControlReg[i], m_SyncCPU->m_Reg.m_Display_ControlReg[i]);
             }
         }
 
-        if (m_NextTimer != SecondCPU->m_NextTimer)
+        if (m_NextTimer != m_SyncCPU->m_NextTimer)
         {
-            Error.LogF("Current Time: %X %X\r\n", (uint32_t)m_NextTimer, (uint32_t)SecondCPU->m_NextTimer);
+            Error.LogF("Current Time: %X %X\r\n", (uint32_t)m_NextTimer, (uint32_t)m_SyncCPU->m_NextTimer);
         }
-        if (m_PipelineStage != SecondCPU->m_PipelineStage)
+        if (m_PipelineStage != m_SyncCPU->m_PipelineStage)
         {
-            Error.LogF("Pipeline Stage: %X %X\r\n", (uint32_t)m_PipelineStage, (uint32_t)SecondCPU->m_PipelineStage);
+            Error.LogF("Pipeline Stage: %X %X\r\n", (uint32_t)m_PipelineStage, (uint32_t)m_SyncCPU->m_PipelineStage);
         }
-        m_TLB.RecordDifference(Error, SecondCPU->m_TLB);
-        m_SystemTimer.RecordDifference(Error, SecondCPU->m_SystemTimer);
+        m_TLB.RecordDifference(Error, m_SyncCPU->m_TLB);
+        m_SystemTimer.RecordDifference(Error, m_SyncCPU->m_SystemTimer);
         if (bFastSP() && m_Recomp)
         {
             uint32_t StackPointer = (m_Reg.m_GPR[29].W[0] & 0x1FFFFFFF);
@@ -1468,7 +1470,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
             }
         }
 
-        uint32_t *Rdram = (uint32_t *)m_MMU_VM.Rdram(), *Rdram2 = (uint32_t *)SecondCPU->m_MMU_VM.Rdram();
+        uint32_t *Rdram = (uint32_t *)m_MMU_VM.Rdram(), *Rdram2 = (uint32_t *)m_SyncCPU->m_MMU_VM.Rdram();
         for (int z = 0, n = (RdramSize() >> 2); z < n; z++)
         {
             if (Rdram[z] != Rdram2[z])
@@ -1477,7 +1479,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
             }
         }
 
-        uint32_t *Imem = (uint32_t *)m_MMU_VM.Imem(), *Imem2 = (uint32_t *)SecondCPU->m_MMU_VM.Imem();
+        uint32_t *Imem = (uint32_t *)m_MMU_VM.Imem(), *Imem2 = (uint32_t *)m_SyncCPU->m_MMU_VM.Imem();
         for (int z = 0; z < (0x1000 >> 2); z++)
         {
             if (Imem[z] != Imem2[z])
@@ -1485,7 +1487,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
                 Error.LogF("IMEM[%X]: %X %X\r\n", z << 2, Imem[z], Imem2[z]);
             }
         }
-        uint32_t *Dmem = (uint32_t *)m_MMU_VM.Dmem(), *Dmem2 = (uint32_t *)SecondCPU->m_MMU_VM.Dmem();
+        uint32_t *Dmem = (uint32_t *)m_MMU_VM.Dmem(), *Dmem2 = (uint32_t *)m_SyncCPU->m_MMU_VM.Dmem();
         for (int z = 0; z < (0x1000 >> 2); z++)
         {
             if (Dmem[z] != Dmem2[z])
@@ -1509,49 +1511,49 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
         {
             Error.LogF("GPR[%s],         0x%08X%08X, 0x%08X%08X\r\n", CRegName::GPR[count],
                        m_Reg.m_GPR[count].W[1], m_Reg.m_GPR[count].W[0],
-                       SecondCPU->m_Reg.m_GPR[count].W[1], SecondCPU->m_Reg.m_GPR[count].W[0]);
+                       m_SyncCPU->m_Reg.m_GPR[count].W[1], m_SyncCPU->m_Reg.m_GPR[count].W[0]);
         }
         Error.Log("\r\n");
         for (count = 0; count < 32; count++)
         {
             Error.LogF("FPR[%s],%*s0x%08X%08X, 0x%08X%08X\r\n", CRegName::FPR[count],
                        count < 10 ? 9 : 8, " ", m_Reg.m_FPR[count].W[1], m_Reg.m_FPR[count].W[0],
-                       SecondCPU->m_Reg.m_FPR[count].W[1], SecondCPU->m_Reg.m_FPR[count].W[0]);
+                       m_SyncCPU->m_Reg.m_FPR[count].W[1], m_SyncCPU->m_Reg.m_FPR[count].W[0]);
         }
         Error.Log("\r\n");
         for (count = 0; count < 32; count++)
         {
             Error.LogF("FPR_S[%s],%*s%f, %f\r\n", CRegName::FPR[count],
-                       count < 10 ? 7 : 6, " ", *(m_Reg.m_FPR_S[count]), *(SecondCPU->m_Reg.m_FPR_S[count]));
+                       count < 10 ? 7 : 6, " ", *(m_Reg.m_FPR_S[count]), *(m_SyncCPU->m_Reg.m_FPR_S[count]));
         }
         Error.Log("\r\n");
         for (count = 0; count < 32; count++)
         {
             Error.LogF("FPR_D[%s],%*s%f, %f\r\n", CRegName::FPR[count],
-                       count < 10 ? 7 : 6, " ", *(m_Reg.m_FPR_D[count]), *(SecondCPU->m_Reg.m_FPR_D[count]));
+                       count < 10 ? 7 : 6, " ", *(m_Reg.m_FPR_D[count]), *(m_SyncCPU->m_Reg.m_FPR_D[count]));
         }
         Error.Log("\r\n");
         for (count = 0; count < 32; count++)
         {
             Error.LogF("CP0[%s] %*s0x%08X%08X, 0x%08X%08X\r\n", CRegName::Cop0[count], 12 - strlen(CRegName::Cop0[count]), "",
-                       (uint32_t)(m_Reg.m_CP0[count] >> 32), (uint32_t)m_Reg.m_CP0[count], (uint32_t)(SecondCPU->m_Reg.m_CP0[count] >> 32), (uint32_t)(SecondCPU->m_Reg.m_CP0[count]));
+                       (uint32_t)(m_Reg.m_CP0[count] >> 32), (uint32_t)m_Reg.m_CP0[count], (uint32_t)(m_SyncCPU->m_Reg.m_CP0[count] >> 32), (uint32_t)(m_SyncCPU->m_Reg.m_CP0[count]));
         }
         Error.Log("\r\n");
         for (count = 0; count < 32; count++)
         {
             Error.LogF("FPR_Ctrl[%s],%*s0x%08X, 0x%08X\r\n", CRegName::FPR_Ctrl[count],
                        12 - strlen(CRegName::FPR_Ctrl[count]), "",
-                       m_Reg.m_FPCR[count], SecondCPU->m_Reg.m_FPCR[count]);
+                       m_Reg.m_FPCR[count], m_SyncCPU->m_Reg.m_FPCR[count]);
         }
         Error.Log("\r\n");
 
         Error.LogF("HI                0x%08X%08X, 0x%08X%08X\r\n", m_Reg.m_HI.UW[1], m_Reg.m_HI.UW[0],
-                   SecondCPU->m_Reg.m_HI.UW[1], SecondCPU->m_Reg.m_HI.UW[0]);
+                   m_SyncCPU->m_Reg.m_HI.UW[1], m_SyncCPU->m_Reg.m_HI.UW[0]);
         Error.LogF("LO                0x%08X%08X, 0x%08X%08X\r\n", m_Reg.m_LO.UW[1], m_Reg.m_LO.UW[0],
-                   SecondCPU->m_Reg.m_LO.UW[1], SecondCPU->m_Reg.m_LO.UW[0]);
+                   m_SyncCPU->m_Reg.m_LO.UW[1], m_SyncCPU->m_Reg.m_LO.UW[0]);
         Error.LogF("CP0[%s],%*s0x%08X, 0x%08X\r\n", CRegName::Cop0[count],
                    12 - strlen(CRegName::Cop0[count]), "",
-                   m_Reg.m_CP0[count], SecondCPU->m_Reg.m_CP0[count]);
+                   m_Reg.m_CP0[count], m_SyncCPU->m_Reg.m_CP0[count]);
 
         bool bHasTlb = false;
         for (count = 0; count < 32; count++)
@@ -1568,7 +1570,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
             }
             Error.LogF("TLB[%2d], %08X,  %08X, %08X,  %08X\r\n", count,
                        m_TLB.TlbEntry(count).EntryHi.Value, m_TLB.TlbEntry(count).PageMask.Value,
-                       SecondCPU->m_TLB.TlbEntry(count).EntryHi.Value, SecondCPU->m_TLB.TlbEntry(count).PageMask.Value);
+                       m_SyncCPU->m_TLB.TlbEntry(count).EntryHi.Value, m_SyncCPU->m_TLB.TlbEntry(count).PageMask.Value);
         }
         Error.Log("\r\n");
         Error.Log("Code at PC:\r\n");
@@ -2242,7 +2244,7 @@ bool CN64System::LoadState(const char * FileName)
             m_SyncCPU->SetActiveSystem(true);
             m_SyncCPU->LoadState(FileName);
             SetActiveSystem(true);
-            SyncCPU(m_SyncCPU);
+            SyncSystem();
         }
     }
     NotifyCallback(CN64SystemCB_LoadedGameState);

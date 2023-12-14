@@ -59,8 +59,8 @@ void CX86RecompilerOps::x86CompilerBreakPoint()
         g_System->m_OpCodes.ExecuteOps(g_System->CountPerOp());
         if (g_SyncSystem)
         {
-            g_System->UpdateSyncCPU(g_SyncSystem, g_System->CountPerOp());
-            g_System->SyncCPU(g_SyncSystem);
+            g_System->UpdateSyncCPU(g_System->CountPerOp());
+            g_System->SyncSystem();
         }
 
     } while (CDebugSettings::isStepping());
@@ -70,8 +70,8 @@ void CX86RecompilerOps::x86CompilerBreakPoint()
         g_System->m_OpCodes.ExecuteOps(g_System->CountPerOp());
         if (g_SyncSystem)
         {
-            g_System->UpdateSyncCPU(g_SyncSystem, g_System->CountPerOp());
-            g_System->SyncCPU(g_SyncSystem);
+            g_System->UpdateSyncCPU(g_System->CountPerOp());
+            g_System->SyncSystem();
         }
     }
 }
@@ -81,8 +81,8 @@ void CX86RecompilerOps::x86BreakPointDelaySlot()
     g_System->m_OpCodes.ExecuteOps(g_System->CountPerOp());
     if (g_SyncSystem)
     {
-        g_System->UpdateSyncCPU(g_SyncSystem, g_System->CountPerOp());
-        g_System->SyncCPU(g_SyncSystem);
+        g_System->UpdateSyncCPU(g_System->CountPerOp());
+        g_System->SyncSystem();
     }
     if (g_Debugger->ExecutionBP(g_Reg->m_PROGRAM_COUNTER))
     {
@@ -93,8 +93,8 @@ void CX86RecompilerOps::x86BreakPointDelaySlot()
         g_System->m_OpCodes.ExecuteOps(g_System->CountPerOp());
         if (g_SyncSystem)
         {
-            g_System->UpdateSyncCPU(g_SyncSystem, g_System->CountPerOp());
-            g_System->SyncCPU(g_SyncSystem);
+            g_System->UpdateSyncCPU(g_System->CountPerOp());
+            g_System->SyncSystem();
         }
     }
 }
@@ -9448,8 +9448,7 @@ void CX86RecompilerOps::UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles)
     m_CodeBlock.Log("      // Updating sync CPU");
     RegSet.BeforeCallDirect();
     m_Assembler.PushImm32(stdstr_f("%d", Cycles).c_str(), Cycles);
-    m_Assembler.PushImm32("g_SyncSystem", (uint32_t)g_SyncSystem);
-    m_Assembler.CallThis((uint32_t)g_System, AddressOf(&CN64System::UpdateSyncCPU), "CN64System::UpdateSyncCPU", 12);
+    m_Assembler.CallThis((uint32_t)g_System, AddressOf(&CN64System::UpdateSyncCPU), "CN64System::UpdateSyncCPU", 8);
     RegSet.AfterCallDirect();
 }
 

@@ -104,9 +104,7 @@ public:
     uint32_t m_CurrentSP;
 #endif
     // For sync CPU
-    void UpdateSyncCPU(CN64System * const SecondCPU, uint32_t const Cycles);
-    void SyncCPU(CN64System * const SecondCPU);
-    void SyncCPUPC(CN64System * const SecondCPU);
+    void UpdateSyncCPU(uint32_t const Cycles);
     void SyncSystem();
     void SyncSystemPC();
 
@@ -158,7 +156,7 @@ private:
 
     void ExecuteCPU();
     void RefreshScreen();
-    void DumpSyncErrors(CN64System * SecondCPU);
+    void DumpSyncErrors();
     void StartEmulation2(bool NewThread);
     bool SetActiveSystem(bool bActive = true);
     void NotifyCallback(CN64SystemCB Type);

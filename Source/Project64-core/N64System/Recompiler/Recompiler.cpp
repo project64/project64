@@ -43,9 +43,9 @@ void CRecompiler::Run()
 
     __except_try()
     {
-        if (g_System->LookUpMode() == FuncFind_VirtualLookup)
+        if (m_System.LookUpMode() == FuncFind_VirtualLookup)
         {
-            if (g_System->bSMM_ValidFunc())
+            if (m_System.bSMM_ValidFunc())
             {
                 RecompilerMain_VirtualTable_validate();
             }
@@ -54,13 +54,13 @@ void CRecompiler::Run()
                 RecompilerMain_VirtualTable();
             }
         }
-        else if (g_System->LookUpMode() == FuncFind_ChangeMemory)
+        else if (m_System.LookUpMode() == FuncFind_ChangeMemory)
         {
             RecompilerMain_ChangeMemory();
         }
         else
         {
-            if (g_System->bSMM_ValidFunc())
+            if (m_System.bSMM_ValidFunc())
             {
                 RecompilerMain_Lookup_validate();
             }
@@ -88,8 +88,8 @@ void CRecompiler::RecompilerMain_VirtualTable()
         if (!m_MMU.ValidVaddr(PC))
         {
             m_Reg.TriggerAddressException(PC, EXC_RMISS);
-            PC = g_System->m_JumpToLocation;
-            g_System->m_PipelineStage = PIPELINE_STAGE_NORMAL;
+            PC = m_System.m_JumpToLocation;
+            m_System.m_PipelineStage = PIPELINE_STAGE_NORMAL;
             if (!m_MMU.ValidVaddr(PC))
             {
                 g_Notify->DisplayError(stdstr_f("Failed to translate PC to a PAddr: %X\n\nEmulation stopped", PC).c_str());
@@ -124,7 +124,7 @@ void CRecompiler::RecompilerMain_VirtualTable()
                 g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
             }
             memset(table, 0, sizeof(PCCompiledFunc) * (0x1000 >> 2));
-            if (g_System->bSMM_Protect())
+            if (m_System.bSMM_Protect())
             {
                 WriteTrace(TraceRecompiler, TraceError, "Create Table (%X): Index = %d", table, PC >> 0xC);
                 m_MMU.ProtectMemory(PC & ~0xFFF, PC | 0xFFF);
@@ -155,11 +155,11 @@ void CRecompiler::RecompilerMain_Lookup()
                 g_Notify->DisplayError(stdstr_f("Failed to translate PC to a PAddr: %X\n\nEmulation stopped", PROGRAM_COUNTER).c_str());
                 m_EndEmulation = true;
             }
-            PROGRAM_COUNTER = g_System->m_JumpToLocation;
-            g_System->m_PipelineStage = PIPELINE_STAGE_NORMAL;
+            PROGRAM_COUNTER = m_System.m_JumpToLocation;
+            m_System.m_PipelineStage = PIPELINE_STAGE_NORMAL;
             continue;
         }
-        if (PhysicalAddr < g_System->RdramSize())
+        if (PhysicalAddr < m_System.RdramSize())
         {
             CCompiledFunc * info = JumpTable()[PhysicalAddr >> 2];
 
@@ -170,7 +170,7 @@ void CRecompiler::RecompilerMain_Lookup()
                 {
                     break;
                 }
-                if (g_System->bSMM_Protect())
+                if (m_System.bSMM_Protect())
                 {
                     m_MMU.ProtectMemory(PROGRAM_COUNTER & ~0xFFF, PROGRAM_COUNTER | 0xFFF);
                 }
@@ -182,16 +182,16 @@ void CRecompiler::RecompilerMain_Lookup()
         {
             uint32_t opsExecuted = 0;
 
-            while (m_MMU.VAddrToPAddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
+            while (m_MMU.VAddrToPAddr(PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= m_System.RdramSize())
             {
-                g_System->m_OpCodes.ExecuteOps(g_System->CountPerOp());
-                opsExecuted += g_System->CountPerOp();
+                m_System.m_OpCodes.ExecuteOps(m_System.CountPerOp());
+                opsExecuted += m_System.CountPerOp();
             }
 
             if (g_SyncSystem)
             {
-                g_System->UpdateSyncCPU(g_SyncSystem, opsExecuted);
-                g_System->SyncCPU(g_SyncSystem);
+                m_System.UpdateSyncCPU(opsExecuted);
+                m_System.SyncSystem();
             }
         }
     }
@@ -214,11 +214,11 @@ void CRecompiler::RecompilerMain_Lookup_validate()
                 g_Notify->DisplayError(stdstr_f("Failed to translate PC to a PAddr: %X\n\nEmulation stopped", PC).c_str());
                 Done = true;
             }
-            PROGRAM_COUNTER = g_System->m_JumpToLocation;
-            g_System->m_PipelineStage = PIPELINE_STAGE_NORMAL;
+            PROGRAM_COUNTER = m_System.m_JumpToLocation;
+            m_System.m_PipelineStage = PIPELINE_STAGE_NORMAL;
             continue;
         }
-        if (PhysicalAddr < g_System->RdramSize())
+        if (PhysicalAddr < m_System.RdramSize())
         {
             CCompiledFunc * info = JumpTable()[PhysicalAddr >> 2];
 
@@ -229,7 +229,7 @@ void CRecompiler::RecompilerMain_Lookup_validate()
                 {
                     break;
                 }
-                if (g_System->bSMM_Protect())
+                if (m_System.bSMM_Protect())
                 {
                     m_MMU.ProtectMemory(PC & ~0xFFF, PC | 0xFFF);
                 }
@@ -260,12 +260,12 @@ void CRecompiler::RecompilerMain_Lookup_validate()
 
             if (bRecordExecutionTimes())
             {
-                uint64_t PreNonCPUTime = g_System->m_CPU_Usage.NonCPUTime();
+                uint64_t PreNonCPUTime = m_System.m_CPU_Usage.NonCPUTime();
                 HighResTimeStamp StartTime, EndTime;
                 StartTime.SetToNow();
                 (info->Function())();
                 EndTime.SetToNow();
-                uint64_t PostNonCPUTime = g_System->m_CPU_Usage.NonCPUTime();
+                uint64_t PostNonCPUTime = m_System.m_CPU_Usage.NonCPUTime();
                 uint64_t TimeTaken = EndTime.GetMicroSeconds() - StartTime.GetMicroSeconds();
                 if (PostNonCPUTime >= PreNonCPUTime)
                 {
@@ -295,16 +295,16 @@ void CRecompiler::RecompilerMain_Lookup_validate()
         {
             uint32_t opsExecuted = 0;
 
-            while (m_MMU.VAddrToPAddr(PC, PhysicalAddr) && PhysicalAddr >= g_System->RdramSize())
+            while (m_MMU.VAddrToPAddr(PC, PhysicalAddr) && PhysicalAddr >= m_System.RdramSize())
             {
-                g_System->m_OpCodes.ExecuteOps(g_System->CountPerOp());
-                opsExecuted += g_System->CountPerOp();
+                m_System.m_OpCodes.ExecuteOps(m_System.CountPerOp());
+                opsExecuted += m_System.CountPerOp();
             }
 
             if (g_SyncSystem)
             {
-                g_System->UpdateSyncCPU(g_SyncSystem, opsExecuted);
-                g_System->SyncCPU(g_SyncSystem);
+                m_System.UpdateSyncCPU(opsExecuted);
+                m_System.SyncSystem();
             }
         }
     }
@@ -441,7 +441,7 @@ CCompiledFunc * CRecompiler::CompileCode()
 
 void CRecompiler::ClearRecompCode_Phys(uint32_t Address, int length, REMOVE_REASON Reason)
 {
-    if (g_System->LookUpMode() == FuncFind_VirtualLookup)
+    if (m_System.LookUpMode() == FuncFind_VirtualLookup)
     {
         ClearRecompCode_Virt(Address + 0x80000000, length, Reason);
         ClearRecompCode_Virt(Address + 0xA0000000, length, Reason);
@@ -453,19 +453,19 @@ void CRecompiler::ClearRecompCode_Phys(uint32_t Address, int length, REMOVE_REAS
             ClearRecompCode_Virt(VAddr, length, Reason);
         }
     }
-    else if (g_System->LookUpMode() == FuncFind_PhysicalLookup)
+    else if (m_System.LookUpMode() == FuncFind_PhysicalLookup)
     {
-        if (Address < g_System->RdramSize())
+        if (Address < m_System.RdramSize())
         {
             int ClearLen = ((length + 3) & ~3);
-            if (Address + ClearLen > g_System->RdramSize())
+            if (Address + ClearLen > m_System.RdramSize())
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
-                ClearLen = g_System->RdramSize() - Address;
+                ClearLen = m_System.RdramSize() - Address;
             }
             WriteTrace(TraceRecompiler, TraceInfo, "Resetting jump table, Addr: %X  len: %d", Address, ClearLen);
             memset((uint8_t *)JumpTable() + Address, 0, ClearLen);
-            if (g_System->bSMM_Protect())
+            if (m_System.bSMM_Protect())
             {
                 m_MMU.UnProtectMemory(Address + 0x80000000, Address + 0x80000004);
             }
@@ -482,7 +482,7 @@ void CRecompiler::ClearRecompCode_Virt(uint32_t Address, int length, REMOVE_REAS
     uint32_t AddressIndex, WriteStart;
     int DataInBlock, DataToWrite, DataLeft;
 
-    switch (g_System->LookUpMode())
+    switch (m_System.LookUpMode())
     {
     case FuncFind_VirtualLookup:
         AddressIndex = Address >> 0xC;
