@@ -20,6 +20,7 @@
 #include <stdio.h>
 
 uint32_t CX86RecompilerOps::m_RoundingModeValue = 0;
+bool CX86RecompilerOps::m_TempMemoryUsed = false;
 uint32_t CX86RecompilerOps::m_TempValue32 = 0;
 uint64_t CX86RecompilerOps::m_TempValue64 = 0;
 uint32_t CX86RecompilerOps::m_BranchCompare = 0;
@@ -3246,7 +3247,7 @@ void CX86RecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }
-    else if (m_RegWorkingSet.IsConst(m_Opcode.base))
+    else if (m_RegWorkingSet.IsConst(m_Opcode.base) && m_RegWorkingSet.Is32Bit(m_Opcode.base))
     {
         uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
         if (HaveReadBP() && g_Debugger->ReadBP32(Address))
@@ -3258,8 +3259,12 @@ void CX86RecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
         LW_KnownAddress(m_RegWorkingSet.GetMipsRegMapLo(m_Opcode.rt), Address);
         if (bRecordLLBit)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            RecordLLAddress((int64_t)((int32_t)Address));
         }
+    }
+    else if (m_RegWorkingSet.IsConst(m_Opcode.base))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     else
     {
@@ -3267,7 +3272,7 @@ void CX86RecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
         CompileLoadMemoryValue(x86Reg_Unknown, x86Reg_Unknown, x86Reg_Unknown, 32, false);
         if (bRecordLLBit)
         {
-            m_Assembler.MoveConstToVariable(&m_Reg.m_LLBit, "LLBit", 1);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }
     if (g_System->bFastSP() && m_Opcode.rt == 29)
@@ -8448,6 +8453,24 @@ void CX86RecompilerOps::UnknownOpcode()
     {
         m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
     }
+}
+
+void CX86RecompilerOps::RecordLLAddress(uint64_t Address)
+{
+    m_Assembler.MoveConstToVariable(&m_Reg.m_LLBit, "LLBit", 1);
+
+    m_RegWorkingSet.BeforeCallDirect();
+    m_Assembler.PushImm32("m_TempMemoryUsed", (uint32_t)&m_TempMemoryUsed);
+    m_Assembler.PushImm32("m_TempValue32", (uint32_t)&m_TempValue32);
+    m_Assembler.push((uint32_t)(Address >> 32));
+    m_Assembler.push((uint32_t)(Address & 0xFFFFFFFF));
+    m_Assembler.CallThis((uint32_t)&m_TLB, AddressOf(&CTLB::VAddrToPAddr), "CTLB::VAddrToPAddr", 20);
+    m_RegWorkingSet.AfterCallDirect();
+    asmjit::x86::Gp Reg = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
+    m_Assembler.MoveVariableToX86reg(Reg, &m_TempValue32, "m_TempValue32");
+    m_Assembler.shr(Reg, 4);
+    m_Assembler.MoveX86regToVariable(&g_Reg->m_CP0[17], "m_CP0[17]", Reg);
+    m_Assembler.MoveConstToVariable(((uint8_t *)&g_Reg->m_CP0[17]) + 4, "m_CP0[17] + 4", 0);
 }
 
 void CX86RecompilerOps::ClearCachedInstructionInfo()

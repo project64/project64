@@ -209,6 +209,7 @@ public:
     // Other functions
     void UnknownOpcode();
 
+    void RecordLLAddress(uint64_t Address);
     void ClearCachedInstructionInfo();
     void FoundMemoryBreakpoint();
     void PreReadInstruction();
@@ -306,6 +307,7 @@ private:
     CRegInfo m_RegBeforeDelay;
     bool m_EffectDelaySlot;
     static uint32_t m_RoundingModeValue;
+    static bool m_TempMemoryUsed;
     static uint32_t m_TempValue32;
     static uint64_t m_TempValue64;
     static uint32_t m_BranchCompare;
