@@ -97,9 +97,8 @@ bool R4300iInstruction::DelaySlotEffectsCompare(uint32_t DelayInstruction) const
         }
         return false;
     }
-    uint32_t WriteReg = 0, ReadReg1 = 0, ReadReg2 = 0;
+    uint32_t WriteReg = DelaySlot.WritesGPR(), ReadReg1 = 0, ReadReg2 = 0;
     ReadsGPR(ReadReg1, ReadReg2);
-    DelaySlot.WritesGPR(WriteReg);
     if (WriteReg != 0 && (WriteReg == ReadReg1 || WriteReg == ReadReg2))
     {
         return true;
@@ -176,7 +175,7 @@ void R4300iInstruction::ReadsGPR(uint32_t & Reg1, uint32_t & Reg2) const
     Reg2 = 0;
 }
 
-void R4300iInstruction::WritesGPR(uint32_t & nReg) const
+uint32_t R4300iInstruction::WritesGPR(void) const
 {
     uint32_t op = m_Instruction.op;
     if (op == R4300i_SPECIAL)
@@ -184,30 +183,26 @@ void R4300iInstruction::WritesGPR(uint32_t & nReg) const
         uint32_t fn = m_Instruction.funct;
         if (fn >= R4300i_SPECIAL_SLL && fn <= R4300i_SPECIAL_SRAV || fn >= R4300i_SPECIAL_DSLLV && fn <= R4300i_SPECIAL_DSRAV || fn >= R4300i_SPECIAL_DIVU && fn <= R4300i_SPECIAL_DSUBU || fn >= R4300i_SPECIAL_DSLL && fn <= R4300i_SPECIAL_DSRA32 || fn == R4300i_SPECIAL_JALR || fn == R4300i_SPECIAL_MFLO || fn == R4300i_SPECIAL_MFHI)
         {
-            nReg = m_Instruction.rd;
-            return;
+            return m_Instruction.rd;
         }
     }
     else if (op == R4300i_REGIMM)
     {
         if (op >= R4300i_REGIMM_BLTZAL && op <= R4300i_REGIMM_BGEZALL)
         {
-            nReg = 31; // RA
-            return;
+            return 31; // RA
         }
     }
     else if (op >= R4300i_DADDI && op <= R4300i_LWU || op >= R4300i_ADDI && op <= R4300i_LUI || op == R4300i_LL || op == R4300i_LD || (op == R4300i_CP0 && m_Instruction.fmt == R4300i_COP0_MF) || (op == R4300i_CP1 && m_Instruction.fmt == R4300i_COP1_MF) || (op == R4300i_CP1 && m_Instruction.fmt == R4300i_COP1_CF))
     {
-        nReg = m_Instruction.rt;
-        return;
+        return m_Instruction.rt;
     }
 
     if (op == R4300i_JAL)
     {
-        nReg = 31; // RA
-        return;
+        return 31; // RA
     }
-    nReg = 0;
+    return (uint32_t)-1;
 }
 
 bool R4300iInstruction::ReadsHI() const

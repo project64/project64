@@ -643,9 +643,7 @@ void CDebuggerUI::CPUStepStarted()
 
         if (m_Breakpoints->HaveAnyGPRWriteBP())
         {
-            uint32_t nReg = 0;
-            opInfo.WritesGPR(nReg);
-
+            uint32_t nReg = opInfo.WritesGPR();
             if (nReg != 0 && m_Breakpoints->HaveGPRWriteBP(nReg))
             {
                 g_Settings->SaveBool(Debugger_SteppingOps, true);

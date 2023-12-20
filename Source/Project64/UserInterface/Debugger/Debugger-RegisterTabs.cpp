@@ -508,10 +508,9 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
                 return (LRESULT)GetStockObject(DC_BRUSH);
             }
 
-            uint32_t nRegRead1, nRegRead2, nRegWrite;
+            uint32_t nRegRead1, nRegRead2, nRegWrite = opInfo.WritesGPR();
 
             opInfo.ReadsGPR(nRegRead1, nRegRead2);
-            opInfo.WritesGPR(nRegWrite);
 
             bOpReads = ((uint32_t)nReg == nRegRead1) || ((uint32_t)nReg == nRegRead2);
             bOpWrites = ((uint32_t)nReg == nRegWrite);
