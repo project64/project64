@@ -184,7 +184,7 @@ CX86RecompilerOps::CX86RecompilerOps(CN64System & m_System, CCodeBlock & CodeBlo
     CRecompilerOpsBase(m_System, CodeBlock),
     m_Assembler(CodeBlock),
     m_RegWorkingSet(CodeBlock, m_Assembler),
-    m_CompilePC(0),
+    m_CompilePC(m_Instruction.Address()),
     m_RegBeforeDelay(CodeBlock, m_Assembler),
     m_EffectDelaySlot(false)
 {
@@ -198,7 +198,7 @@ void CX86RecompilerOps::PreCompileOpcode(void)
 {
     if (m_PipelineStage != PIPELINE_STAGE_DELAY_SLOT_DONE)
     {
-        m_CodeBlock.Log("  %X %s", m_CompilePC, R4300iInstruction(m_CompilePC, m_Opcode.Value).NameAndParam().c_str());
+        m_CodeBlock.Log("  %X %s", m_CompilePC, m_Instruction.NameAndParam().c_str());
     }
     /*if (m_CompilePC == 0x803275F4 && m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
@@ -9477,11 +9477,12 @@ void CX86RecompilerOps::JumpToUnknown(CJumpInfo * JumpInfo)
 
 void CX86RecompilerOps::SetCurrentPC(uint32_t ProgramCounter)
 {
-    m_CompilePC = ProgramCounter;
-    if (!g_MMU->MemoryValue32(m_CompilePC, m_Opcode.Value))
+    uint32_t Value;
+    if (!g_MMU->MemoryValue32(ProgramCounter, Value))
     {
         g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
     }
+    m_Instruction = R4300iInstruction(ProgramCounter, Value);
 }
 
 uint32_t CX86RecompilerOps::GetCurrentPC(void)
@@ -9507,6 +9508,11 @@ PIPELINE_STAGE CX86RecompilerOps::GetNextStepType(void)
 const R4300iOpcode & CX86RecompilerOps::GetOpcode(void) const
 {
     return m_Opcode;
+}
+
+const R4300iInstruction & CX86RecompilerOps::GetInstruction(void) const
+{
+    return m_Instruction;
 }
 
 void CX86RecompilerOps::UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles)
@@ -9590,7 +9596,7 @@ void CX86RecompilerOps::CompileExecuteBP(void)
     m_RegWorkingSet.WriteBackRegisters();
 
     UpdateCounters(m_RegWorkingSet, true, true);
-    m_Assembler.MoveConstToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", CompilePC());
+    m_Assembler.MoveConstToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", m_CompilePC);
     if (g_SyncSystem)
     {
         m_Assembler.CallThis((uint32_t)g_BaseSystem, AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem", 4);
@@ -9610,7 +9616,7 @@ void CX86RecompilerOps::CompileExecuteDelaySlotBP(void)
     m_RegWorkingSet.WriteBackRegisters();
 
     UpdateCounters(m_RegWorkingSet, true, true);
-    m_Assembler.MoveConstToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", CompilePC());
+    m_Assembler.MoveConstToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", m_CompilePC);
     if (g_SyncSystem)
     {
         m_Assembler.CallThis((uint32_t)g_BaseSystem, AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem", 4);
@@ -9634,7 +9640,7 @@ void CX86RecompilerOps::OverflowDelaySlot(bool TestTimer)
     }
     else
     {
-        m_Assembler.MoveConstToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", CompilePC() + 4);
+        m_Assembler.MoveConstToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", m_CompilePC + 4);
     }
     m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", PIPELINE_STAGE_JUMP);
     if (g_SyncSystem)

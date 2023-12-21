@@ -1,6 +1,6 @@
 #pragma once
-#include <Project64-core\N64System\Mips\R4300iOpcode.h>
-#include <Project64-core\Settings\DebugSettings.h>
+#include <Project64-core/N64System/Mips/R4300iInstruction.h>
+#include <Project64-core/Settings/DebugSettings.h>
 
 enum RecompilerBranchType
 {
@@ -58,7 +58,8 @@ protected:
     CRegisters & m_Reg;
     CTLB & m_TLB;
     CCodeBlock & m_CodeBlock;
-    R4300iOpcode m_Opcode;
+    R4300iInstruction m_Instruction;
+    const R4300iOpcode & m_Opcode;
     CCodeSection * m_Section;
 
 private:

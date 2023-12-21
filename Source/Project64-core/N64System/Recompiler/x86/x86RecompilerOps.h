@@ -241,6 +241,7 @@ public:
     void SetNextStepType(PIPELINE_STAGE StepType);
     PIPELINE_STAGE GetNextStepType(void);
     const R4300iOpcode & GetOpcode(void) const;
+    const R4300iInstruction & GetInstruction(void) const;
     void PreCompileOpcode(void);
     void PostCompileOpcode(void);
     void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo & ExitRegSet, ExitReason Reason);
@@ -259,12 +260,6 @@ public:
     CX86Ops & Assembler()
     {
         return m_Assembler;
-    }
-
-public:
-    uint32_t CompilePC()
-    {
-        return m_CompilePC;
     }
 
 private:
@@ -304,7 +299,7 @@ private:
     EXIT_LIST m_ExitInfo;
     CX86Ops m_Assembler;
     PIPELINE_STAGE m_PipelineStage;
-    uint32_t m_CompilePC;
+    const uint32_t & m_CompilePC;
     CX86RegInfo m_RegWorkingSet;
     CRegInfo m_RegBeforeDelay;
     bool m_EffectDelaySlot;

@@ -11,6 +11,25 @@ R4300iInstruction::R4300iInstruction(uint32_t Address, uint32_t Instruction) :
     m_Instruction.Value = Instruction;
 }
 
+R4300iInstruction & R4300iInstruction::operator=(const R4300iInstruction & Instr)
+{
+    m_Address = Instr.m_Address;
+    m_Instruction.Value = Instr.m_Instruction.Value;
+    m_Name[0] = '\0';
+    m_Param[0] = '\0';
+    return *this;
+}
+
+const uint32_t & R4300iInstruction::Address() const
+{
+    return m_Address;
+}
+
+const R4300iOpcode & R4300iInstruction::Opcode() const
+{
+    return m_Instruction;
+}
+
 const char * R4300iInstruction::Name()
 {
     if (m_Name[0] == '\0')
