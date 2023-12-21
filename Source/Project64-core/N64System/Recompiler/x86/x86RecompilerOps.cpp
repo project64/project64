@@ -10020,7 +10020,7 @@ void CX86RecompilerOps::CompileLoadMemoryValue(asmjit::x86::Gp & AddressReg, asm
     m_CodeBlock.Log("");
     m_Assembler.bind(JumpFound);
 
-    if (m_Opcode.rt == 0)
+    if (m_Instruction.WritesGPR() == 0)
     {
         //ignore load to R0
     }
