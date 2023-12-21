@@ -8738,8 +8738,9 @@ void CX86RecompilerOps::CompileInitFpuOperation(CRegBase::FPU_ROUND RoundMethod)
     asmjit::x86::Gp StatusReg = m_RegWorkingSet.Map_FPStatusReg();
     m_Assembler.and_(StatusReg, (uint32_t)(~0x0003F000));
     m_RegWorkingSet.FixRoundModel(RoundMethod);
+
     m_Assembler.stmxcsr(asmjit::x86::dword_ptr((uint64_t)&StatusRegister));
-    m_Assembler.and_(asmjit::x86::dword_ptr((uint64_t)&StatusRegister), ~0x20);
+    m_Assembler.and_(asmjit::x86::dword_ptr((uint64_t)&StatusRegister), ~0x24);
     m_Assembler.ldmxcsr(asmjit::x86::dword_ptr((uint64_t)&StatusRegister));
     m_Assembler.fclex();
 }
