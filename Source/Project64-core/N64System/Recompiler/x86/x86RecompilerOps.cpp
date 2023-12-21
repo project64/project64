@@ -211,14 +211,7 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     UpdateCounters(m_RegWorkingSet, false, true);
     m_Assembler.MoveConstToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", m_CompilePC);
     if (g_SyncSystem) {
-    #ifdef _WIN32
-    m_Assembler.MoveConstToX86reg(asmjit::x86::ecx, (uint32_t)g_BaseSystem);
-    m_Assembler.CallFunc(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-    #else
-    m_Assembler.push((uint32_t)g_BaseSystem);
-    m_Assembler.CallFunc(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-    m_Assembler.AddConstToX86Reg(asmjit::x86::esp, 4);
-    #endif
+    m_Assembler.CallThis((uint32_t)g_BaseSystem, AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem", 4);
     }
     }*/
 
@@ -231,14 +224,7 @@ void CX86RecompilerOps::PreCompileOpcode(void)
         m_Assembler.MoveConstToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", m_CompilePC);
         if (g_SyncSystem)
         {
-#ifdef _WIN32
-            m_Assembler.MoveConstToX86reg(asmjit::x86::ecx, (uint32_t)g_BaseSystem);
-            m_Assembler.CallFunc(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-#else
-            m_Assembler.push((uint32_t)g_BaseSystem);
-            m_Assembler.CallFunc(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-            m_Assembler.AddConstToX86Reg(asmjit::x86::esp, 4);
-#endif
+            m_Assembler.CallThis((uint32_t)g_BaseSystem, AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem", 4);
         }
     }*/
 
@@ -260,14 +246,7 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     UpdateCounters(m_RegWorkingSet,false,true);
     m_Assembler.MoveConstToVariable(&g_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER",m_CompilePC);
     if (g_SyncSystem) {
-    #ifdef _WIN32
-    m_Assembler.MoveConstToX86reg(asmjit::x86::ecx, (uint32_t)g_BaseSystem);
-    m_Assembler.CallFunc(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-    #else
-    m_Assembler.push((uint32_t)g_BaseSystem);
-    m_Assembler.CallFunc(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-    m_Assembler.AddConstToX86Reg(asmjit::x86::esp, 4);
-    #endif
+    m_Assembler.CallThis((uint32_t)g_BaseSystem, AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem", 4);
     }
     }*/
     /*if ((m_CompilePC == 0x80324E14) && m_PipelineStage == PIPELINE_STAGE_NORMAL)
@@ -281,14 +260,7 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     UpdateCounters(m_RegWorkingSet,false,true);
     m_Assembler.MoveConstToVariable(&g_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER",m_CompilePC);
     if (g_SyncSystem) {
-    #ifdef _WIN32
-    m_Assembler.MoveConstToX86reg(asmjit::x86::ecx, (uint32_t)g_BaseSystem);
-    m_Assembler.CallFunc(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-    #else
-    m_Assembler.push((uint32_t)g_BaseSystem);
-    m_Assembler.CallFunc(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-    m_Assembler.AddConstToX86Reg(asmjit::x86::esp, 4);
-    #endif
+    m_Assembler.CallThis((uint32_t)g_BaseSystem, AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem", 4);
     }
     }*/
     /*if (m_CompilePC >= 0x80324E00 && m_CompilePC <= 0x80324E18 && m_PipelineStage == PIPELINE_STAGE_NORMAL)
@@ -297,14 +269,7 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     UpdateCounters(m_RegWorkingSet,false,true);
     m_Assembler.MoveConstToVariable(&g_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER",m_CompilePC);
     if (g_SyncSystem) {
-    #ifdef _WIN32
-    m_Assembler.MoveConstToX86reg(asmjit::x86::ecx, (uint32_t)g_BaseSystem);
-    m_Assembler.CallFunc(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-    #else
-    m_Assembler.push((uint32_t)g_BaseSystem);
-    m_Assembler.CallFunc(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-    m_Assembler.AddConstToX86Reg(asmjit::x86::esp, 4);
-    #endif
+    m_Assembler.CallThis((uint32_t)g_BaseSystem, AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem", 4);
     }
     }*/
     /*        if (m_CompilePC == 0x803245CC && m_PipelineStage == PIPELINE_STAGE_NORMAL)
