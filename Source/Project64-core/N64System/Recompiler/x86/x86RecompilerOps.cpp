@@ -8745,6 +8745,7 @@ void CX86RecompilerOps::CompileCheckFPUResult32(int32_t DestReg)
     CRegInfo ExitRegSet = m_RegWorkingSet;
     ExitRegSet.SetBlockCycleCount(ExitRegSet.GetBlockCycleCount() + g_System->CountPerOp());
     CompileExit((uint32_t)-1, (uint32_t)-1, ExitRegSet, ExitReason_Exception, false, &CX86Ops::JneLabel);
+    m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
     m_Assembler.cmp(TempReg, asmjit::x86::dword_ptr((uint64_t)&m_TempValue32));
     asmjit::Label ValueSame = m_Assembler.newLabel();
     m_Assembler.je(ValueSame);
