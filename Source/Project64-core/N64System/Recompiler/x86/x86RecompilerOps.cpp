@@ -8463,7 +8463,19 @@ void CX86RecompilerOps::COP1_D_CMP()
 // COP1: W functions
 void CX86RecompilerOps::COP1_W_CVT_S()
 {
-    CompileCop1Test();
+    if (FpuExceptionInRecompiler())
+    {
+        CompileInitFpuOperation(CRegBase::RoundUnknown);
+        if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Any) || m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Any))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+    }
+    else
+    {
+        CompileCop1Test();
+    }
     if (m_Opcode.fd != m_Opcode.fs || !m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Dword))
     {
         m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Dword);
