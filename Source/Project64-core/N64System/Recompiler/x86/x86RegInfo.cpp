@@ -12,7 +12,7 @@
 
 uint32_t CX86RegInfo::m_fpuControl = 0;
 
-const char * Format_Name[] = {"Unknown", "dword", "qword", "float", "double"};
+const char * Format_Name[] = {"Unknown", "dword", "qword", "float", "floatLow", "double", "double", "unsignedDoubleWord"};
 
 x86RegIndex GetIndexFromX86Reg(const asmjit::x86::Gp & Reg)
 {
