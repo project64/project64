@@ -1561,8 +1561,9 @@ void CX86RegInfo::UnMap_FPR(int32_t Reg, bool WriteBackValue)
                 m_Assembler.fpuStoreIntegerQwordFromX86Reg(StackTopPos(), TempReg, true);
                 break;
             case FPU_Float:
-                m_Assembler.MoveVariableToX86reg(TempReg, &m_Reg.m_FPR_S[m_x86fpu_MappedTo[StackTopPos()]], stdstr_f("_FPR_S[%d]", m_x86fpu_MappedTo[StackTopPos()]).c_str());
+                m_Assembler.MoveVariableToX86reg(TempReg, &m_Reg.m_FPR_UDW[m_x86fpu_MappedTo[StackTopPos()]], stdstr_f("m_FPR_UDW[%d]", m_x86fpu_MappedTo[StackTopPos()]).c_str());
                 m_Assembler.fpuStoreDwordFromX86Reg(StackTopPos(), TempReg, true);
+                m_Assembler.mov(asmjit::x86::dword_ptr(TempReg, 4), 0);
                 break;
             case FPU_Double:
                 m_Assembler.MoveVariableToX86reg(TempReg, &m_Reg.m_FPR_D[m_x86fpu_MappedTo[StackTopPos()]], stdstr_f("_FPR_D[%d]", m_x86fpu_MappedTo[StackTopPos()]).c_str());
