@@ -363,7 +363,7 @@ asmjit::x86::Gp CX86RegInfo::FPRValuePointer(int32_t Reg, FPU_STATE Format)
     switch (Format)
     {
     case FPU_Dword:
-        m_Assembler.MoveVariableToX86reg(TempReg, &g_Reg->m_FPR_S[Reg], stdstr_f("m_FPR_S[%d]", Reg).c_str());
+        m_Assembler.MoveVariableToX86reg(TempReg, &g_Reg->m_FPR_UW[Reg], stdstr_f("m_FPR_UW[%d]", Reg).c_str());
         break;
     case FPU_Qword:
         m_Assembler.MoveVariableToX86reg(TempReg, &g_Reg->m_FPR_D[Reg], stdstr_f("m_FPR_D[%d]", Reg).c_str());
