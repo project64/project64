@@ -529,12 +529,12 @@ void CX86Ops::OrConstToVariable(void * Variable, const char * VariableName, uint
     {
         stdstr_f SymbolKey("0x%X", Variable);
         AddSymbol(SymbolKey.c_str(), VariableName);
-        or_(asmjit::x86::word_ptr((uint64_t)Variable), Const);
+        or_(asmjit::x86::dword_ptr((uint64_t)Variable), Const);
         RemoveSymbol(SymbolKey.c_str());
     }
     else
     {
-        or_(asmjit::x86::word_ptr((uint64_t)Variable), Const);
+        or_(asmjit::x86::dword_ptr((uint64_t)Variable), Const);
     }
 }
 
