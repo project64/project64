@@ -781,6 +781,7 @@ asmjit::x86::Gp CX86RegInfo::Map_FPStatusReg()
     {
         if (GetX86Mapped((x86RegIndex)i) == FPStatusReg_Mapped)
         {
+            SetX86Protected((x86RegIndex)i, true);
             return GetX86RegFromIndex((x86RegIndex)i);
         }
     }
@@ -795,6 +796,7 @@ asmjit::x86::Gp CX86RegInfo::Map_FPStatusReg()
     SetX86Mapped(GetIndexFromX86Reg(Reg), CX86RegInfo::FPStatusReg_Mapped);
     m_CodeBlock.Log("    regcache: allocate %s as FP Status Reg", CX86Ops::x86_Name(Reg));
     m_Assembler.MoveVariableToX86reg(Reg, &g_Reg->m_FPCR[31], "FPCR[31]");
+    SetX86Protected(GetIndexFromX86Reg(Reg), true);
     return Reg;
 }
 

@@ -18,6 +18,7 @@ enum ExitReason
     ExitReason_TLBWriteMiss,
     ExitReason_ResetRecompCode,
     ExitReason_ExceptionOverflow,
+    ExitReason_ExceptionFloatingPoint,
     ExitReason_AddressErrorExceptionRead32,
     ExitReason_AddressErrorExceptionRead64,
     ExitReason_AddressErrorExceptionWrite32,
