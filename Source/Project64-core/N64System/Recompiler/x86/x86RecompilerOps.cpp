@@ -7494,7 +7494,14 @@ void CX86RecompilerOps::COP1_CF()
     }
 
     m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, -1);
-    m_Assembler.MoveVariableToX86reg(m_RegWorkingSet.GetMipsRegMapLo(m_Opcode.rt), &m_Reg.m_FPCR[m_Opcode.fs], CRegName::FPR_Ctrl[m_Opcode.fs]);
+    if (m_Opcode.fs == 31 && m_RegWorkingSet.IsFPStatusRegMapped())
+    {
+        m_Assembler.mov(m_RegWorkingSet.GetMipsRegMapLo(m_Opcode.rt), m_RegWorkingSet.Map_FPStatusReg());
+    }
+    else
+    {
+        m_Assembler.MoveVariableToX86reg(m_RegWorkingSet.GetMipsRegMapLo(m_Opcode.rt), &m_Reg.m_FPCR[m_Opcode.fs], CRegName::FPR_Ctrl[m_Opcode.fs]);
+    }
 }
 
 void CX86RecompilerOps::COP1_MT()

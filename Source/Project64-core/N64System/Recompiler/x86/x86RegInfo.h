@@ -91,6 +91,7 @@ public:
     void UnMap_FPR(int32_t Reg, bool WriteBackValue);
     const asmjit::x86::St & StackPosition(int32_t Reg);
 
+    bool IsFPStatusRegMapped();
     asmjit::x86::Gp FreeX86Reg();
     asmjit::x86::Gp Free8BitX86Reg();
     void Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsRegToLoad);
