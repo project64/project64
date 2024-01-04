@@ -299,6 +299,12 @@ void CX86Ops::JneLabel(const char * LabelName, asmjit::Label & JumpLabel)
     jne(JumpLabel);
 }
 
+void CX86Ops::JnpLabel(const char * LabelName, asmjit::Label & JumpLabel)
+{
+    AddSymbol(stdstr_f("L%d", JumpLabel.id()).c_str(), LabelName);
+    jnp(JumpLabel);
+}
+
 void CX86Ops::JnsLabel(const char * LabelName, asmjit::Label & JumpLabel)
 {
     AddSymbol(stdstr_f("L%d", JumpLabel.id()).c_str(), LabelName);
