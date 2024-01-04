@@ -377,6 +377,9 @@ asmjit::x86::Gp CX86RegInfo::FPRValuePointer(int32_t Reg, FPU_STATE Format)
     case FPU_UnsignedDoubleWord:
         m_Assembler.MoveVariableToX86reg(TempReg, &g_Reg->m_FPR_UDW[Reg], stdstr_f("m_FPR_UDW[%d]", Reg).c_str());
         break;
+    case FPU_FloatLow:
+        m_Assembler.MoveVariableToX86reg(TempReg, &g_Reg->m_FPR_S_L[Reg], stdstr_f("m_FPR_S_L[%d]", Reg).c_str());
+        break;
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }

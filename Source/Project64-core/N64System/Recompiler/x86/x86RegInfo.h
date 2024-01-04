@@ -61,8 +61,9 @@ public:
         FPU_Dword = 1,
         FPU_Qword = 2,
         FPU_Float = 3,
-        FPU_Double = 4,
-        FPU_UnsignedDoubleWord = 5,
+        FPU_FloatLow = 4,
+        FPU_Double = 5,
+        FPU_UnsignedDoubleWord = 6,
     };
 
     CX86RegInfo(CCodeBlock & CodeBlock, CX86Ops & Assembler);
