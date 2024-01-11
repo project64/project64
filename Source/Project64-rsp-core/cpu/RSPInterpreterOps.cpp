@@ -427,8 +427,15 @@ void RSP_Cop0_MF(void)
     case 5: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_DMA_FULL_REG; break;
     case 6: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_DMA_BUSY_REG; break;
     case 7:
-        RSP_GPR[RSPOpC.rt].W = *RSPInfo.SP_SEMAPHORE_REG;
-        *RSPInfo.SP_SEMAPHORE_REG = 1;
+        if (RspMultiThreaded)
+        {
+            RSP_GPR[RSPOpC.rt].W = *RSPInfo.SP_SEMAPHORE_REG;
+            *RSPInfo.SP_SEMAPHORE_REG = 1;
+        }
+        else
+        {
+            RSP_GPR[RSPOpC.rt].W = 0;
+        }
         break;
     case 8: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.DPC_START_REG; break;
     case 9: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.DPC_END_REG; break;

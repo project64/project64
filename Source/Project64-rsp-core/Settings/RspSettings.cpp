@@ -4,8 +4,8 @@
 #include <Project64-rsp-core/cpu/RSPCpu.h>
 #include <Settings/Settings.h>
 
-uint16_t Set_AudioHle = 0, Set_GraphicsHle = 0, Set_AllocatedRdramSize = 0, Set_DirectoryLog = 0;
-bool GraphicsHle = true, AudioHle, ConditionalMove, HleAlistTask = false;
+uint16_t Set_AudioHle = 0, Set_GraphicsHle = 0, Set_MultiThreaded = 0, Set_AllocatedRdramSize = 0, Set_DirectoryLog = 0;
+bool GraphicsHle = true, AudioHle, ConditionalMove, HleAlistTask = false, RspMultiThreaded = false;
 bool DebuggingEnabled = false, Profiling, IndvidualBlock, ShowErrors, BreakOnStart = false, LogRDP = false, LogX86Code = false;
 
 void InitializeRspSetting(void)
@@ -13,6 +13,7 @@ void InitializeRspSetting(void)
     SetModuleName("RSP");
     Set_GraphicsHle = FindSystemSettingId("HLE GFX");
     Set_AudioHle = FindSystemSettingId("HLE Audio");
+    Set_MultiThreaded = FindSystemSettingId("Rsp Multi Threaded");
     Set_AllocatedRdramSize = FindSystemSettingId("AllocatedRdramSize");
     Set_DirectoryLog = FindSystemSettingId("Dir:Log");
 
@@ -43,4 +44,5 @@ void InitializeRspSetting(void)
 
     AudioHle = Set_AudioHle != 0 ? GetSystemSetting(Set_AudioHle) != 0 : false;
     GraphicsHle = Set_GraphicsHle != 0 ? GetSystemSetting(Set_GraphicsHle) != 0 : true;
+    RspMultiThreaded = Set_MultiThreaded != 0 ? GetSystemSetting(Set_MultiThreaded) != 0 : false;
 }
