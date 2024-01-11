@@ -7,8 +7,8 @@
 RSPRegisterHandler::RSPRegisterHandler(uint32_t * SignalProcessorInterface, uint8_t *& Rdram, const uint32_t & RdramSize, uint8_t * IMEM, uint8_t * DMEM) :
     SP_MEM_ADDR_REG(SignalProcessorInterface[0]),
     SP_DRAM_ADDR_REG(SignalProcessorInterface[1]),
-    SP_RD_LEN_REG(SignalProcessorInterface[2]),
-    SP_WR_LEN_REG(SignalProcessorInterface[3]),
+    SP_RD_LEN_REG((LengthReg &)SignalProcessorInterface[2]),
+    SP_WR_LEN_REG((LengthReg &)SignalProcessorInterface[3]),
     SP_STATUS_REG(SignalProcessorInterface[4]),
     SP_DMA_FULL_REG(SignalProcessorInterface[5]),
     SP_DMA_BUSY_REG(SignalProcessorInterface[6]),
@@ -26,8 +26,8 @@ RSPRegisterHandler::RSPRegisterHandler(uint32_t * SignalProcessorInterface, uint
 RSPRegisterHandler::RSPRegisterHandler(_RSP_INFO & RSPInfo, const uint32_t & RdramSize) :
     SP_MEM_ADDR_REG(*RSPInfo.SP_MEM_ADDR_REG),
     SP_DRAM_ADDR_REG(*RSPInfo.SP_DRAM_ADDR_REG),
-    SP_RD_LEN_REG(*RSPInfo.SP_RD_LEN_REG),
-    SP_WR_LEN_REG(*RSPInfo.SP_WR_LEN_REG),
+    SP_RD_LEN_REG((LengthReg &)*RSPInfo.SP_RD_LEN_REG),
+    SP_WR_LEN_REG((LengthReg &)*RSPInfo.SP_WR_LEN_REG),
     SP_STATUS_REG(*RSPInfo.SP_STATUS_REG),
     SP_DMA_FULL_REG(*RSPInfo.SP_DMA_FULL_REG),
     SP_DMA_BUSY_REG(*RSPInfo.SP_DMA_BUSY_REG),
@@ -49,9 +49,9 @@ void RSPRegisterHandler::SP_DMA_READ()
     uint8_t * Dest = ((m_PendingSPMemAddr & 0x1000) != 0 ? m_IMEM : m_DMEM);
     uint8_t * Source = m_Rdram;
     uint32_t ReadPos = m_PendingSPDramAddr & 0x00FFFFF8;
-    int32_t Length = ((SP_RD_LEN_REG & 0xFFF) | 7) + 1;
-    int32_t Count = ((SP_RD_LEN_REG >> 12) & 0xFF) + 1;
-    int32_t Skip = (SP_RD_LEN_REG >> 20) & 0xF8;
+    int32_t Length = (SP_RD_LEN_REG.Length | 7) + 1;
+    int32_t Count = SP_RD_LEN_REG.Count + 1;
+    int32_t Skip = SP_RD_LEN_REG.Skip & 0xFF8;
     int32_t Pos = (m_PendingSPMemAddr & 0x0FF8);
 
     for (int32_t i = 0; i < Count; i++)
@@ -129,8 +129,8 @@ void RSPRegisterHandler::SP_DMA_READ()
 
     SP_MEM_ADDR_REG = (Pos & 0xFFF) | (m_PendingSPMemAddr & 0x1000);
     SP_DRAM_ADDR_REG = ReadPos;
-    SP_RD_LEN_REG = (SP_RD_LEN_REG & 0xFF800000) | 0x00000FF8;
-    SP_WR_LEN_REG = (SP_RD_LEN_REG & 0xFF800000) | 0x00000FF8;
+    SP_RD_LEN_REG.Value = (SP_RD_LEN_REG.Value & 0xFF800000) | 0x00000FF8;
+    SP_WR_LEN_REG.Value = (SP_WR_LEN_REG.Value & 0xFF800000) | 0x00000FF8;
     DmaReadDone(Pos);
 }
 
@@ -141,9 +141,9 @@ void RSPRegisterHandler::SP_DMA_WRITE()
     uint8_t * Source = ((m_PendingSPMemAddr & 0x1000) != 0 ? m_IMEM : m_DMEM);
     uint8_t * Dest = m_Rdram;
     uint32_t WritePos = m_PendingSPDramAddr & 0x00FFFFF8;
-    int32_t Length = ((SP_WR_LEN_REG & 0xFFF) | 7) + 1;
-    int32_t Count = ((SP_WR_LEN_REG >> 12) & 0xFF) + 1;
-    int32_t Skip = (SP_WR_LEN_REG >> 20) & 0xF8;
+    int32_t Length = (SP_WR_LEN_REG.Length | 7) + 1;
+    int32_t Count = SP_WR_LEN_REG.Count + 1;
+    int32_t Skip = SP_WR_LEN_REG.Skip & 0xFF8;
     int32_t Pos = (m_PendingSPMemAddr & 0x0FF8);
 
     for (int32_t i = 0; i < Count; i++)
@@ -201,8 +201,8 @@ void RSPRegisterHandler::SP_DMA_WRITE()
 
     SP_MEM_ADDR_REG = (Pos & 0xFFF) | (m_PendingSPMemAddr & 0x1000);
     SP_DRAM_ADDR_REG = WritePos;
-    SP_RD_LEN_REG = (SP_WR_LEN_REG & 0xFF800000) | 0x00000FF8;
-    SP_WR_LEN_REG = (SP_WR_LEN_REG & 0xFF800000) | 0x00000FF8;
+    SP_RD_LEN_REG.Value = (SP_RD_LEN_REG.Value & 0xFF800000) | 0x00000FF8;
+    SP_WR_LEN_REG.Value = (SP_WR_LEN_REG.Value & 0xFF800000) | 0x00000FF8;
 }
 
 uint32_t RSPRegisterHandler::ReadReg(RSPRegister Reg)
@@ -211,8 +211,8 @@ uint32_t RSPRegisterHandler::ReadReg(RSPRegister Reg)
     {
     case RSPRegister_MEM_ADDR: return SP_MEM_ADDR_REG;
     case RSPRegister_DRAM_ADDR: return SP_DRAM_ADDR_REG;
-    case RSPRegister_RD_LEN: return SP_RD_LEN_REG;
-    case RSPRegister_WR_LEN: return SP_WR_LEN_REG;
+    case RSPRegister_RD_LEN: return SP_RD_LEN_REG.Value;
+    case RSPRegister_WR_LEN: return SP_WR_LEN_REG.Value;
     case RSPRegister_STATUS: return SP_STATUS_REG;
     }
     return 0;
@@ -225,11 +225,11 @@ void RSPRegisterHandler::WriteReg(RSPRegister Reg, uint32_t Value)
     case RSPRegister_MEM_ADDR: m_PendingSPMemAddr = Value; break;
     case RSPRegister_DRAM_ADDR: m_PendingSPDramAddr = Value; break;
     case RSPRegister_RD_LEN:
-        SP_RD_LEN_REG = Value;
+        SP_RD_LEN_REG.Value = Value;
         SP_DMA_READ();
         break;
     case RSPRegister_WR_LEN:
-        SP_WR_LEN_REG = Value;
+        SP_WR_LEN_REG.Value = Value;
         SP_DMA_WRITE();
         break;
     case RSPRegister_STATUS:

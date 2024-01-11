@@ -51,8 +51,8 @@ bool SPRegistersHandler::Read32(uint32_t Address, uint32_t & Value)
     {
     case 0x04040000: Value = SP_MEM_ADDR_REG; break;
     case 0x04040004: Value = SP_DRAM_ADDR_REG; break;
-    case 0x04040008: Value = SP_RD_LEN_REG; break;
-    case 0x0404000C: Value = SP_WR_LEN_REG; break;
+    case 0x04040008: Value = SP_RD_LEN_REG.Value; break;
+    case 0x0404000C: Value = SP_WR_LEN_REG.Value; break;
     case 0x04040010: Value = SP_STATUS_REG; break;
     case 0x04040014: Value = SP_DMA_FULL_REG; break;
     case 0x04040018: Value = SP_DMA_BUSY_REG; break;
@@ -178,8 +178,8 @@ void SPRegistersHandler::DmaReadDone(uint32_t /*End*/)
 
 void SPRegistersHandler::SystemReset(void)
 {
-    SP_RD_LEN_REG = 0x00000FF8;
-    SP_WR_LEN_REG = 0x00000FF8;
+    SP_RD_LEN_REG.Value = 0x00000FF8;
+    SP_WR_LEN_REG.Value = 0x00000FF8;
 
     memset(m_IMEM, 0, sizeof(m_IMEM));
     memset(m_DMEM, 0, sizeof(m_DMEM));

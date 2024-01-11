@@ -16,6 +16,21 @@ struct _RSP_INFO;
 
 class RSPRegisterHandler
 {
+#pragma warning(push)
+#pragma warning(disable : 4201) // Non-standard extension used: nameless struct/union
+    union LengthReg
+    {
+        uint32_t Value;
+
+        struct
+        {
+            unsigned Length : 12;
+            unsigned Count : 8;
+            unsigned Skip : 12;
+        };
+    };
+#pragma warning(pop)
+
 public:
     RSPRegisterHandler(uint32_t * SignalProcessorInterface, uint8_t *& Rdram, const uint32_t & RdramSize, uint8_t * IMEM, uint8_t * DMEM);
     RSPRegisterHandler(_RSP_INFO & RSPInfo, const uint32_t & RdramSize);
@@ -34,8 +49,8 @@ protected:
 
     uint32_t & SP_MEM_ADDR_REG;
     uint32_t & SP_DRAM_ADDR_REG;
-    uint32_t & SP_RD_LEN_REG;
-    uint32_t & SP_WR_LEN_REG;
+    LengthReg & SP_RD_LEN_REG;
+    LengthReg & SP_WR_LEN_REG;
     uint32_t & SP_STATUS_REG;
     uint32_t & SP_DMA_FULL_REG;
     uint32_t & SP_DMA_BUSY_REG;
