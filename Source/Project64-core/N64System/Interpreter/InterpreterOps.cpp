@@ -3506,8 +3506,7 @@ bool R4300iOp::CheckFPUResult64(double & Result)
 {
     int Except = fetestexcept(FE_ALL_EXCEPT);
     bool DoException = false;
-    int fptype = fpclassify(Result);
-    if (fptype == FP_NAN)
+    if ((*((uint64_t *)&Result) & 0x7FF0000000000000ULL) == 0x7FF0000000000000ULL && (*((uint64_t *)&Result) & 0x000FFFFFFFFFFFFFULL) != 0x0000000000000000ULL) // NaN
     {
         if (Except == 0 || !SetFPUException())
         {
@@ -3518,7 +3517,7 @@ bool R4300iOp::CheckFPUResult64(double & Result)
             DoException = true;
         }
     }
-    else if (fptype == FP_SUBNORMAL)
+    else if ((*((uint64_t *)&Result) & 0x7FF0000000000000ULL) == 0x0000000000000000ULL && (*((uint64_t *)&Result) & 0x000FFFFFFFFFFFFFULL) != 0x0000000000000000ULL)
     {
         FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
         if (!StatusReg.FlushSubnormals || StatusReg.Enable.Underflow || StatusReg.Enable.Inexact)
