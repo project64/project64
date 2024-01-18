@@ -224,6 +224,7 @@ public:
     void CompileExitCode();
     void CompileCheckFPUInput32(asmjit::x86::Gp RegPointer, bool Conv = false);
     void CompileCheckFPUResult32(int32_t DestReg);
+    void CompileCheckFPUResult64(asmjit::x86::Gp RegPointer);
     void CompileCop1Test();
     void CompileInitFpuOperation(CRegBase::FPU_ROUND RoundMethod);
     void CompileInPermLoop(CRegInfo & RegSet, uint32_t ProgramCounter);
@@ -283,6 +284,7 @@ private:
     void SW(bool bCheckLLbit);
     void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo & ExitRegSet, ExitReason Reason, bool CompileNow, void (CX86Ops::*x86Jmp)(const char * LabelName, asmjit::Label & JumpLabel));
     void ResetMemoryStack();
+    void COP1_S_CVT(CRegBase::FPU_ROUND RoundMethod, CRegInfo::FPU_STATE OldFormat, CRegInfo::FPU_STATE NewFormat);
 
     static void x86CompilerBreakPoint();
     static void x86BreakPointDelaySlot();
