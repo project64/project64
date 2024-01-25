@@ -7888,8 +7888,27 @@ void CX86RecompilerOps::COP1_S_SQRT()
 void CX86RecompilerOps::COP1_S_MOV()
 {
     CompileCop1Test();
-    m_RegWorkingSet.FixRoundModel(CRegInfo::RoundDefault);
-    m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
+    if (FpuExceptionInRecompiler())
+    {
+        if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Any) || m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Any))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+        asmjit::x86::Gp TempRegValue = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
+        asmjit::x86::Gp FsPtr = m_RegWorkingSet.FPRValuePointer(m_Opcode.fs, CRegInfo::FPU_Double);
+        asmjit::x86::Gp FdPtr = m_RegWorkingSet.FPRValuePointer(m_Opcode.fd, CRegInfo::FPU_UnsignedDoubleWord);
+
+        m_Assembler.mov(TempRegValue, asmjit::x86::dword_ptr(FsPtr));
+        m_Assembler.mov(asmjit::x86::dword_ptr(FdPtr), TempRegValue);
+        m_Assembler.mov(TempRegValue, asmjit::x86::dword_ptr(FsPtr, 4));
+        m_Assembler.mov(asmjit::x86::dword_ptr(FdPtr, 4), TempRegValue);
+    }
+    else
+    {
+        m_RegWorkingSet.FixRoundModel(CRegInfo::RoundDefault);
+        m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
+    }
 }
 
 void CX86RecompilerOps::COP1_S_ROUND_L()
@@ -8305,8 +8324,27 @@ void CX86RecompilerOps::COP1_D_SQRT()
 
 void CX86RecompilerOps::COP1_D_MOV()
 {
-    CompileCop1Test();
-    m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
+    if (FpuExceptionInRecompiler())
+    {
+        if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Any) || m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Any))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+        asmjit::x86::Gp TempRegValue = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
+        asmjit::x86::Gp FsPtr = m_RegWorkingSet.FPRValuePointer(m_Opcode.fs, CRegInfo::FPU_Double);
+        asmjit::x86::Gp FdPtr = m_RegWorkingSet.FPRValuePointer(m_Opcode.fd, CRegInfo::FPU_UnsignedDoubleWord);
+
+        m_Assembler.mov(TempRegValue, asmjit::x86::dword_ptr(FsPtr));
+        m_Assembler.mov(asmjit::x86::dword_ptr(FdPtr), TempRegValue);
+        m_Assembler.mov(TempRegValue, asmjit::x86::dword_ptr(FsPtr, 4));
+        m_Assembler.mov(asmjit::x86::dword_ptr(FdPtr, 4), TempRegValue);
+    }
+    else
+    {
+        CompileCop1Test();
+        m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
+    }
 }
 
 void CX86RecompilerOps::COP1_D_ROUND_L()
