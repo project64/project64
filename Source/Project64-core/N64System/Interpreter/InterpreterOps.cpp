@@ -2428,7 +2428,7 @@ void R4300iOp::COP1_S_MOV()
     {
         return;
     }
-    *m_FPR_UDW[m_Opcode.fd] = (*(uint64_t *)m_FPR_D[m_Opcode.fs] & 0xFFFFFFFF00000000ll) | *(uint32_t *)m_FPR_S_L[m_Opcode.fs];
+    *m_FPR_UDW[m_Opcode.fd] = *(int64_t *)m_FPR_D[m_Opcode.fs];
 }
 
 void R4300iOp::COP1_S_NEG()
