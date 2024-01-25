@@ -9946,6 +9946,8 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         m_Assembler.MoveVariableToX86reg(asmjit::x86::edx, &g_System->m_JumpToLocation, "System->m_JumpToLocation");
         m_Assembler.MoveX86regToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", asmjit::x86::edx);
         m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
+        ExitRegSet.SetBlockCycleCount(0);
+        UpdateCounters(ExitRegSet, true, false, false);
         ExitCodeBlock();
         break;
     case ExitReason_ResetRecompCode:
