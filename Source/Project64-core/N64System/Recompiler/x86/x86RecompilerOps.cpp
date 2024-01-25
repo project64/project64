@@ -2157,7 +2157,14 @@ void CX86RecompilerOps::BGEZ_Compare()
 
 void CX86RecompilerOps::COP1_BCF_Compare()
 {
-    m_Assembler.TestVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", FPCSR_C);
+    if (m_RegWorkingSet.IsFPStatusRegMapped())
+    {
+        m_Assembler.test(m_RegWorkingSet.Map_FPStatusReg(), FPCSR_C);
+    }
+    else
+    {
+        m_Assembler.TestVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", FPCSR_C);
+    }
     if (m_Section->m_Cont.FallThrough)
     {
         m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
@@ -2179,7 +2186,14 @@ void CX86RecompilerOps::COP1_BCF_Compare()
 
 void CX86RecompilerOps::COP1_BCT_Compare()
 {
-    m_Assembler.TestVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", FPCSR_C);
+    if (m_RegWorkingSet.IsFPStatusRegMapped())
+    {
+        m_Assembler.test(m_RegWorkingSet.Map_FPStatusReg(), FPCSR_C);
+    }
+    else
+    {
+        m_Assembler.TestVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", FPCSR_C);
+    }
     if (m_Section->m_Cont.FallThrough)
     {
         m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
@@ -7593,6 +7607,7 @@ void CX86RecompilerOps::COP1_CT()
         return;
     }
 
+    m_RegWorkingSet.UnMap_FPStatusReg();
     if (m_RegWorkingSet.IsConst(m_Opcode.rt))
     {
         m_Assembler.MoveConstToVariable(&m_Reg.m_FPCR[m_Opcode.fs], CRegName::FPR_Ctrl[m_Opcode.fs], m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt) & 0x183FFFF);
@@ -8045,8 +8060,14 @@ void CX86RecompilerOps::COP1_S_CMP()
             g_Notify->BreakPoint(__FILE__, __LINE__);
             return;
         }
-
-        m_Assembler.AndConstToVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", (uint32_t)~FPCSR_C);
+        if (m_RegWorkingSet.IsFPStatusRegMapped())
+        {
+            m_Assembler.and_(m_RegWorkingSet.Map_FPStatusReg(), (uint32_t)~FPCSR_C);
+        }
+        else
+        {
+            m_Assembler.AndConstToVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", (uint32_t)~FPCSR_C);
+        }
         m_RegWorkingSet.Map_TempReg(asmjit::x86::eax, 0, false, false);
         asmjit::x86::Gp StatusReg = m_RegWorkingSet.Map_FPStatusReg();
         asmjit::x86::Gp TempRegValue = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, true);
@@ -8156,7 +8177,14 @@ void CX86RecompilerOps::COP1_S_CMP()
             m_Assembler.MoveVariableToX86reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[Reg2], stdstr_f("m_FPR_S[%d]", Reg2).c_str());
             m_Assembler.fcom(asmjit::x86::dword_ptr(TempReg));
         }
-        m_Assembler.AndConstToVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", (uint32_t)~FPCSR_C);
+        if (m_RegWorkingSet.IsFPStatusRegMapped())
+        {
+            m_Assembler.and_(m_RegWorkingSet.Map_FPStatusReg(), (uint32_t)~FPCSR_C);
+        }
+        else
+        {
+            m_Assembler.AndConstToVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", (uint32_t)~FPCSR_C);
+        }
         m_Assembler.fnstsw(asmjit::x86::ax);
         asmjit::x86::Gp Reg = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, 0, false, true);
         m_Assembler.test(asmjit::x86::eax, cmp);
@@ -8184,7 +8212,14 @@ void CX86RecompilerOps::COP1_S_CMP()
             m_Assembler.setz(Reg);
         }
         m_Assembler.shl(Reg, 23);
-        m_Assembler.OrX86RegToVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", Reg);
+        if (m_RegWorkingSet.IsFPStatusRegMapped())
+        {
+            m_Assembler.or_(m_RegWorkingSet.Map_FPStatusReg(), Reg);
+        }
+        else
+        {
+            m_Assembler.OrX86RegToVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", Reg);
+        }
     }
 }
 
@@ -8541,7 +8576,14 @@ void CX86RecompilerOps::COP1_D_CMP()
         m_RegWorkingSet.Load_FPR_ToTop(Reg1, Reg1, CRegInfo::FPU_Double);
         m_Assembler.fcom(asmjit::x86::qword_ptr(TempReg));
     }
-    m_Assembler.AndConstToVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", (uint32_t)~FPCSR_C);
+    if (m_RegWorkingSet.IsFPStatusRegMapped())
+    {
+        m_Assembler.and_(m_RegWorkingSet.Map_FPStatusReg(), (uint32_t)~FPCSR_C);
+    }
+    else
+    {
+        m_Assembler.AndConstToVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", (uint32_t)~FPCSR_C);
+    }
     m_Assembler.fnstsw(asmjit::x86::ax);
     asmjit::x86::Gp Reg = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, 0, false, true);
     m_Assembler.test(asmjit::x86::eax, cmp);
@@ -8568,7 +8610,14 @@ void CX86RecompilerOps::COP1_D_CMP()
         m_Assembler.setz(Reg);
     }
     m_Assembler.shl(Reg, 23);
-    m_Assembler.OrX86RegToVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", Reg);
+    if (m_RegWorkingSet.IsFPStatusRegMapped())
+    {
+        m_Assembler.or_(m_RegWorkingSet.Map_FPStatusReg(), Reg);
+    }
+    else
+    {
+        m_Assembler.OrX86RegToVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", Reg);
+    }
 }
 
 // COP1: W functions
