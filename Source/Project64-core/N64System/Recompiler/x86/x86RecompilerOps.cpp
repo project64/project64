@@ -8520,16 +8520,23 @@ void CX86RecompilerOps::COP1_D_ROUND_W()
 
 void CX86RecompilerOps::COP1_D_TRUNC_W()
 {
-    CompileCop1Test();
-    if (m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Double) || m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Qword))
+    if (FpuExceptionInRecompiler())
     {
-        m_RegWorkingSet.UnMap_FPR(m_Opcode.fd, true);
+        COP1_S_CVT(CRegInfo::RoundTruncate, CRegInfo::FPU_Double, CRegInfo::FPU_Dword);
     }
-    if (m_Opcode.fd != m_Opcode.fs || !m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Double))
+    else
     {
-        m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
+        CompileCop1Test();
+        if (m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Double) || m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Qword))
+        {
+            m_RegWorkingSet.UnMap_FPR(m_Opcode.fd, true);
+        }
+        if (m_Opcode.fd != m_Opcode.fs || !m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Double))
+        {
+            m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
+        }
+        m_RegWorkingSet.ChangeFPURegFormat(m_Opcode.fd, CRegInfo::FPU_Double, CRegInfo::FPU_Dword, CRegInfo::RoundTruncate);
     }
-    m_RegWorkingSet.ChangeFPURegFormat(m_Opcode.fd, CRegInfo::FPU_Double, CRegInfo::FPU_Dword, CRegInfo::RoundTruncate);
 }
 
 void CX86RecompilerOps::COP1_D_CEIL_W()
@@ -11896,10 +11903,21 @@ void CX86RecompilerOps::COP1_S_CVT(CRegBase::FPU_ROUND RoundMethod, CRegInfo::FP
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
-    m_RegWorkingSet.Map_TempReg(asmjit::x86::eax, 0, false, false);
     asmjit::x86::Gp fsRegPointer = m_RegWorkingSet.FPRValuePointer(m_Opcode.fs, OldFormat);
-    CompileCheckFPUInput32(fsRegPointer, NewFormat == CRegInfo::FPU_Dword);
-    m_Assembler.fpuLoadDwordFromX86Reg(m_RegWorkingSet.StackTopPos(), fsRegPointer);
+    if (OldFormat == CRegInfo::FPU_Float)
+    {
+        CompileCheckFPUInput(fsRegPointer, FpuOpSize_32bit, NewFormat == CRegInfo::FPU_Dword);
+        m_Assembler.fpuLoadDwordFromX86Reg(m_RegWorkingSet.StackTopPos(), fsRegPointer);
+    }
+    else if (OldFormat == CRegInfo::FPU_Double)
+    {
+        CompileCheckFPUInput(fsRegPointer, FpuOpSize_64bit, NewFormat == CRegInfo::FPU_Dword);
+        m_Assembler.fpuLoadQwordFromX86Reg(m_RegWorkingSet.StackTopPos(), fsRegPointer);
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 
     if (NewFormat == CRegInfo::FPU_Dword)
     {
