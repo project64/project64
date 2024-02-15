@@ -9116,7 +9116,7 @@ void CX86RecompilerOps::CompileInitFpuOperation(CRegBase::FPU_ROUND RoundMethod)
     }
 
     m_Assembler.stmxcsr(asmjit::x86::dword_ptr((uint64_t)&StatusRegister));
-    m_Assembler.and_(asmjit::x86::dword_ptr((uint64_t)&StatusRegister), ~0x24L);
+    m_Assembler.and_(asmjit::x86::dword_ptr((uint64_t)&StatusRegister), ~0x25L);
     m_Assembler.ldmxcsr(asmjit::x86::dword_ptr((uint64_t)&StatusRegister));
     m_Assembler.fclex();
 }
