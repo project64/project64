@@ -49,6 +49,12 @@ class CRecompilerOpsBase :
     protected CDebugSettings
 {
 protected:
+    enum FpuOpSize
+    {
+        FpuOpSize_32bit,
+        FpuOpSize_64bit,
+    };
+
     CRecompilerOpsBase(CN64System & System, CCodeBlock & CodeBlock);
     ~CRecompilerOpsBase();
 

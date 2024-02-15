@@ -222,7 +222,7 @@ public:
     void EnterCodeBlock();
     void ExitCodeBlock();
     void CompileExitCode();
-    void CompileCheckFPUInput32(asmjit::x86::Gp RegPointer, bool Conv = false);
+    void CompileCheckFPUInput(asmjit::x86::Gp RegPointer, FpuOpSize OpSize, bool Conv = false);
     void CompileCheckFPUResult32(int32_t DestReg);
     void CompileCheckFPUResult64(asmjit::x86::Gp RegPointer);
     void CompileCop1Test();
