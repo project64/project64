@@ -5065,6 +5065,7 @@ void CX86RecompilerOps::SPECIAL_DIV()
         }
     }
 
+    m_RegWorkingSet.SetX86Protected(x86RegIndex_EDX, false);
     m_RegWorkingSet.SetX86Protected(x86RegIndex_EAX, true);
     m_RegWorkingSet.UnMap_X86reg(asmjit::x86::edx);
     m_RegWorkingSet.Map_TempReg(asmjit::x86::edx, -1, false, false);
@@ -5154,6 +5155,7 @@ void CX86RecompilerOps::SPECIAL_DIVU()
         asmjit::x86::Gp RegRsLo = m_RegWorkingSet.IsMapped(m_Opcode.rs) ? m_RegWorkingSet.GetMipsRegMapLo(m_Opcode.rs) : m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, m_Opcode.rs, false, false);
         asmjit::x86::Gp RegRsHi = m_RegWorkingSet.IsMapped(m_Opcode.rs) ? m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, m_RegWorkingSet.IsMapped(m_Opcode.rs), true, false) : x86Reg_Unknown;
         m_RegWorkingSet.SetX86Protected(x86RegIndex_EAX, true);
+        m_RegWorkingSet.SetX86Protected(x86RegIndex_EDX, false);
         m_RegWorkingSet.Map_TempReg(asmjit::x86::edx, 0, false, false);
         m_RegWorkingSet.SetX86Protected(x86RegIndex_EAX, false);
 
@@ -8970,7 +8972,7 @@ void CX86RecompilerOps::CompileCheckFPUInput(asmjit::x86::Gp RegPointer, FpuOpSi
     }
     else if (OpSize == FpuOpSize_64bit)
     {
-        m_Assembler.PushImm32("m_TempValue64", (uint32_t)&m_TempValue64);
+        m_Assembler.PushImm32("&m_TempValue64", (uint32_t)&m_TempValue64);
         if (Conv)
         {
             m_Assembler.CallThis((uint32_t)&g_System->m_OpCodes, AddressOf(&R4300iOp::CheckFPUInput64Conv), "R4300iOp::CheckFPUInput64Conv", 8);
@@ -9060,6 +9062,12 @@ void CX86RecompilerOps::CompileCheckFPUResult64(asmjit::x86::Gp RegPointer)
 {
     m_RegWorkingSet.UnMap_FPStatusReg();
     asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::eax, -1, false, false);
+    if (RegPointer == TempReg)
+    {
+        asmjit::x86::Gp RegPointerValue = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
+        m_Assembler.mov(RegPointerValue, RegPointer);
+        RegPointer = RegPointerValue;
+    }
     m_Assembler.fnstsw(asmjit::x86::ax);
     m_Assembler.and_(asmjit::x86::ax, 0x3D);
     m_Assembler.cmp(asmjit::x86::ax, 0);
@@ -9123,7 +9131,7 @@ void CX86RecompilerOps::CompileInitFpuOperation(CRegBase::FPU_ROUND RoundMethod)
     }
 
     m_Assembler.stmxcsr(asmjit::x86::dword_ptr((uint64_t)&StatusRegister));
-    m_Assembler.and_(asmjit::x86::dword_ptr((uint64_t)&StatusRegister), ~0x25L);
+    m_Assembler.and_(asmjit::x86::dword_ptr((uint64_t)&StatusRegister), ~0x25);
     m_Assembler.ldmxcsr(asmjit::x86::dword_ptr((uint64_t)&StatusRegister));
     m_Assembler.fclex();
 }
@@ -11897,6 +11905,7 @@ void CX86RecompilerOps::COP1_S_CVT(CRegBase::FPU_ROUND RoundMethod, CRegInfo::FP
 {
     static uint32_t StatusRegister = 0;
 
+    m_RegWorkingSet.Map_TempReg(asmjit::x86::eax, 0, false, false);
     CompileInitFpuOperation(RoundMethod);
     if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Any) || m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Any))
     {
@@ -11904,7 +11913,7 @@ void CX86RecompilerOps::COP1_S_CVT(CRegBase::FPU_ROUND RoundMethod, CRegInfo::FP
         return;
     }
     asmjit::x86::Gp fsRegPointer = m_RegWorkingSet.FPRValuePointer(m_Opcode.fs, OldFormat);
-    if (OldFormat == CRegInfo::FPU_Float)
+    if (OldFormat == CRegInfo::FPU_Float || OldFormat == CRegInfo::FPU_FloatLow)
     {
         CompileCheckFPUInput(fsRegPointer, FpuOpSize_32bit, NewFormat == CRegInfo::FPU_Dword);
         m_Assembler.fpuLoadDwordFromX86Reg(m_RegWorkingSet.StackTopPos(), fsRegPointer);
