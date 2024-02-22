@@ -1215,7 +1215,32 @@ asmjit::x86::Gp CX86RegInfo::Map_TempReg(asmjit::x86::Gp Reg, int32_t MipsReg, b
     }
     else if (GetX86Mapped(GetIndexFromX86Reg(Reg)) == Stack_Mapped)
     {
+        if (GetX86Protected(GetIndexFromX86Reg(Reg)))
+        {
+            WriteTrace(TraceRegisterCache, TraceError, "Register is protected");
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return x86Reg_Unknown;
+        }
         UnMap_X86reg(Reg);
+    }
+    else if (GetX86Mapped(GetIndexFromX86Reg(Reg)) == NotMapped)
+    {
+        if (GetX86Protected(GetIndexFromX86Reg(Reg)))
+        {
+            WriteTrace(TraceRegisterCache, TraceError, "Register is protected");
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return x86Reg_Unknown;
+        }
+    }
+    else if (GetX86Mapped(GetIndexFromX86Reg(Reg)) == Temp_Mapped)
+    {
+        //Already mapped as temporary register
+    }
+    else
+    {
+        WriteTrace(TraceRegisterCache, TraceError, "Failed to map temp reg to %s", CX86Ops::x86_Name(Reg));
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return x86Reg_Unknown;
     }
     m_CodeBlock.Log("    regcache: allocate %s as temp storage", CX86Ops::x86_Name(Reg));
 
@@ -1782,6 +1807,7 @@ bool CX86RegInfo::UnMap_X86reg(const asmjit::x86::Gp & Reg)
         {
             m_CodeBlock.Log("    regcache: unallocate %s from temp storage", CX86Ops::x86_Name(Reg));
             SetX86Mapped(RegIndex, NotMapped);
+            SetX86Protected(RegIndex, false);
             return true;
         }
     }
@@ -1790,6 +1816,7 @@ bool CX86RegInfo::UnMap_X86reg(const asmjit::x86::Gp & Reg)
         m_CodeBlock.Log("    regcache: unallocate %s from memory stack", CX86Ops::x86_Name(Reg));
         m_Assembler.MoveX86regToVariable(&(g_Recompiler->MemoryStackPos()), "MemoryStack", Reg);
         SetX86Mapped(RegIndex, NotMapped);
+        SetX86Protected(RegIndex, false);
         return true;
     }
     else if (GetX86Mapped(RegIndex) == CX86RegInfo::FPStatusReg_Mapped)
@@ -1797,6 +1824,7 @@ bool CX86RegInfo::UnMap_X86reg(const asmjit::x86::Gp & Reg)
         m_CodeBlock.Log("    regcache: unallocate %s from FP Status Reg", CX86Ops::x86_Name(Reg));
         m_Assembler.MoveX86regToVariable(&g_Reg->m_FPCR[31], "FPCR[31]", Reg);
         SetX86Mapped(RegIndex, NotMapped);
+        SetX86Protected(RegIndex, false);
         return true;
     }
     else
