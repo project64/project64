@@ -34,18 +34,20 @@ AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/project
 
 ## Minimum requirements
 
-* Operating system (limited support for Windows 8.1 and below)
-  * Windows XP SP3, Windows 7 SP1, Windows 8.1, and the latest version of Windows 10
+* Operating system
+  * 64-bit Windows 10 and 11
 * CPU
-  * Intel or AMD processor with at least SSE2 support
+  * 1GHz or faster Intel or AMD processor with at least SSE2 support
 * RAM
-  * 512MB or more
+  * 2GB or more
 * Graphics card
   * DirectX 8 capable (Jabo's Direct3D8)
-  * OpenGL 2.0 capable (3.0+ recommended) (Project64 Video)
+  * OpenGL 3.3 capable (Project64 Video)
   * OpenGL 3.3 capable (GLideN64)
+  * OpenGL 3.3 capable (Angrylion's RDP Plus)
+  * Vulkan 1.1 capable (Parallel-RDP)
 
-<sub>Intel integrated graphics can have issues that are not present with Nvidia and AMD GPU's even when the requirements are met.</sub>
+<sub>Intel integrated graphics can have issues that are not present with Nvidia and AMD GPU's even when the requirements are met. Outdated drivers can also cause issues, so please update them!</sub>
 
 ## Support
 
