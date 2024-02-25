@@ -32,7 +32,7 @@ AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/project
 
 *Side note: 64-bit builds are considered experimental and aren't currently supported*
 
-## Minimum requirements
+## Supported requirements
 
 * Operating system
   * 64-bit Windows 10 and 11
