@@ -361,3 +361,12 @@ D05EC55A 0000
 9214 Zora Shop
 B214 Snowhead (Path to temple - warp in)
 D214 East Clock Down
+
+$Time Control
+Note=Control the speed of time with the D-pad. Up stops the time, left enables double time, and down restores the notmal speed.
+D01FBA40 0008
+811EF476 FFFD
+D01FBA40 0004
+811EF476 0000
+D01FBA40 0002
+811EF476 FFFE
