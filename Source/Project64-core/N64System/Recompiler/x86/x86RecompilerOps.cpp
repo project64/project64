@@ -8356,8 +8356,8 @@ void CX86RecompilerOps::COP1_D_MUL()
     if (FpuExceptionInRecompiler())
     {
         CompileInitFpuOperation(CRegInfo::RoundDefault);
-        if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Any) || 
-            m_RegWorkingSet.RegInStack(m_Opcode.ft, CRegInfo::FPU_Any) || 
+        if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Any) ||
+            m_RegWorkingSet.RegInStack(m_Opcode.ft, CRegInfo::FPU_Any) ||
             m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Any))
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
