@@ -783,7 +783,7 @@ void CRegisters::TriggerAddressException(uint64_t Address, uint32_t ExceptionCod
     {
         bool Dirty;
         SpecialOffset = !m_TLB.AddressDefined(Address, Dirty);
-        if (!Dirty)
+        if (ExceptionCode == EXC_WMISS && Dirty == false)
         {
             ExceptionCode = EXC_MOD;
         }
