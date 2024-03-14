@@ -233,6 +233,26 @@ void CX86Ops::CompX86regToVariable(const asmjit::x86::Gp & Reg, void * Variable,
     }
 }
 
+void CX86Ops::Fadd(const asmjit::x86::Mem & Mem)
+{
+    fadd(Mem);
+}
+
+void CX86Ops::Fdiv(const asmjit::x86::Mem & Mem)
+{
+    fdiv(Mem);
+}
+
+void CX86Ops::Fmul(const asmjit::x86::Mem & Mem)
+{
+    fmul(Mem);
+}
+
+void CX86Ops::Fsub(const asmjit::x86::Mem & Mem)
+{
+    fsub(Mem);
+}
+
 void CX86Ops::JaeLabel(const char * LabelName, asmjit::Label & JumpLabel)
 {
     AddSymbol(stdstr_f("L%d", JumpLabel.id()).c_str(), LabelName);

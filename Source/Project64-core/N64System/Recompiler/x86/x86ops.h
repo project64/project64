@@ -44,6 +44,10 @@ public:
     void CompConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
     void CompConstToX86reg(const asmjit::x86::Gp & Reg, uint32_t Const);
     void CompX86regToVariable(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
+    void Fadd(const asmjit::x86::Mem & Mem);
+    void Fdiv(const asmjit::x86::Mem & Mem);
+    void Fmul(const asmjit::x86::Mem & Mem);
+    void Fsub(const asmjit::x86::Mem & Mem);
     void JaeLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JaLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JbLabel(const char * LabelName, asmjit::Label & JumpLabel);
