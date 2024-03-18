@@ -333,6 +333,9 @@
     <ClCompile Include="UserInterface\Debugger\ScriptWorker.cpp">
       <Filter>Source Files\User Interface Source\Debugger Source</Filter>
     </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\Debugger-CopyCommands.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UserInterface\resource.h">
@@ -595,6 +598,9 @@
     </ClInclude>
     <ClInclude Include="UserInterface\Debugger\ScriptAPI\N64Image.h">
       <Filter>Header Files\User Interface Headers\Debugger Headers\ScriptAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\Debugger\Debugger-CopyCommands.h">
+      <Filter>Header Files\User Interface Headers\Debugger Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

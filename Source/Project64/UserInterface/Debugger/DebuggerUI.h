@@ -5,6 +5,7 @@
 #include "DebugDialog.h"
 #include "Debugger-AddBreakpoint.h"
 #include "Debugger-AddSymbol.h"
+#include "Debugger-CopyCommands.h"
 #include "Debugger-CPULogView.h"
 #include "Debugger-Commands.h"
 #include "Debugger-DMALogView.h"
