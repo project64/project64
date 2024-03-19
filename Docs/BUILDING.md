@@ -7,9 +7,10 @@ If you just want to run Project64 or its development builds, use the [Readme](ht
 
 ## Required software
 
-* Git
+* [Git](https://git-scm.com/downloads)
     * This is a hard requirement. It is used for the build step and requires the solution be a part of the Project64 git repository on disk.
-* Visual Studio 2015, 2017, or 2019 Community Edition
+* [Visual Studio 2015, 2017, or 2019 Community Edition](https://learn.microsoft.com/en-us/visualstudio/releases/2019/release-notes)
+    * Click on the Visual Studio year you want to use from the left dropdown, and follow the download process.
 * During installation, select the `Programming Languages/Visual C++` option in the Visual Studio 2015 installer, or
 * During installation, select the `Desktop development with C++` workload in Visual Studio 2017 and 2019 or newer
 

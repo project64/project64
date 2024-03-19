@@ -27,6 +27,8 @@ Installer for the latest stable releases are available [here](https://www.pj64-e
 
 Download nightly builds [here](https://www.pj64-emu.com/nightly-builds).
 
+If you want to contribute to this project, please click [here](https://github.com/project64/project64/blob/develop/Docs/BUILDING.md) to get more infromation on how to set up a local build environment.
+
 AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/projects/status/sbtwyhaexslyhgx3?svg=true
 )](https://ci.appveyor.com/project/project64/project64/branch/develop)
 
