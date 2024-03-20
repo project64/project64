@@ -127,7 +127,7 @@ body:
     id: PluginsUsed
     attributes: 
       label: Plugins used while the issue occurred
-      description: What plugins is the issue occuring with?
+      description: What plugins are the issues occuring with?
       value: |
         Graphics plugin (and HLE or LLE):
         Audio plugin:
@@ -135,6 +135,15 @@ body:
         RSP plugin:
     validations: 
       required: true
+  - type: textarea
+    id: RecompilerorInterpreter
+    attributes: 
+      label: Does the issue manifest with the Interpreter core?
+      description: You can change this setting in the Rom Configuration (Requires "hide advanced settings" unchechecked)
+      value: |
+        You can also specify here if certain Recompiler setting combinations allows the game to work as intended.
+    validations: 
+      required: true      
   - type: checkboxes
     id: Copyright_Compliance
     attributes: 
@@ -144,4 +153,13 @@ body:
         party.
       options:
         - label: There are no infringing files attached to this bug report.
+          required: true
+  - type: checkboxes
+    id: Latest_Nightly
+    attributes: 
+      label: Using Latest Nightly
+      description: >-
+        Are you using the [latest nightly build](https://www.pj64-emu.com/nightly-builds)?
+      options:
+        - label: I am using the latest nightly build.
           required: true
