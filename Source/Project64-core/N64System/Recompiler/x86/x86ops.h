@@ -44,6 +44,7 @@ public:
     void CompConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
     void CompConstToX86reg(const asmjit::x86::Gp & Reg, uint32_t Const);
     void CompX86regToVariable(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
+    void Fabs(void);
     void Fadd(const asmjit::x86::Mem & Mem);
     void Fdiv(const asmjit::x86::Mem & Mem);
     void Fmul(const asmjit::x86::Mem & Mem);

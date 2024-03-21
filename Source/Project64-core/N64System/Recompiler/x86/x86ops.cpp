@@ -233,6 +233,11 @@ void CX86Ops::CompX86regToVariable(const asmjit::x86::Gp & Reg, void * Variable,
     }
 }
 
+void CX86Ops::Fabs(void)
+{
+    fabs();
+}
+
 void CX86Ops::Fadd(const asmjit::x86::Mem & Mem)
 {
     fadd(Mem);
