@@ -243,6 +243,11 @@ void CX86Ops::Fadd(const asmjit::x86::Mem & Mem)
     fadd(Mem);
 }
 
+void CX86Ops::Fchs(void)
+{
+    fchs();
+}
+
 void CX86Ops::Fdiv(const asmjit::x86::Mem & Mem)
 {
     fdiv(Mem);
@@ -251,6 +256,11 @@ void CX86Ops::Fdiv(const asmjit::x86::Mem & Mem)
 void CX86Ops::Fmul(const asmjit::x86::Mem & Mem)
 {
     fmul(Mem);
+}
+
+void CX86Ops::Fsqrt(void)
+{
+    fsqrt();
 }
 
 void CX86Ops::Fsub(const asmjit::x86::Mem & Mem)
