@@ -8448,9 +8448,16 @@ void CX86RecompilerOps::COP1_D_ABS()
 
 void CX86RecompilerOps::COP1_D_NEG()
 {
-    CompileCop1Test();
-    m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
-    m_Assembler.fchs();
+    if (FpuExceptionInRecompiler())
+    {
+        COP1_D_Opcode(&CX86Ops::Fchs);
+    }
+    else
+    {
+        CompileCop1Test();
+        m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
+        m_Assembler.fchs();
+    }
 }
 
 void CX86RecompilerOps::COP1_D_SQRT()
