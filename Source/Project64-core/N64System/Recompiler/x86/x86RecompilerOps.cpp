@@ -9153,6 +9153,12 @@ void CX86RecompilerOps::CompileCheckFPUResult64(asmjit::x86::Gp RegPointer)
         m_Assembler.mov(RegPointerValue, RegPointer);
         RegPointer = RegPointerValue;
     }
+    bool RegPointerProtect = m_RegWorkingSet.GetX86Protected(GetIndexFromX86Reg(RegPointer));
+    if (!RegPointerProtect)
+    {
+        m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(RegPointer), true);
+    }
+
     asmjit::x86::Gp TempReg2 = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
     m_Assembler.fnstsw(asmjit::x86::ax);
     m_Assembler.and_(asmjit::x86::ax, 0x3D);
@@ -9207,6 +9213,11 @@ void CX86RecompilerOps::CompileCheckFPUResult64(asmjit::x86::Gp RegPointer)
     CompileExit(m_CompilePC + 4, m_CompilePC + 4, ExitRegSet, ExitReason_Normal, false, &CX86Ops::JmpLabel);
     m_Assembler.bind(ValueSame);
     m_Assembler.bind(DoNoModify);
+
+    if (!RegPointerProtect)
+    {
+        m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(RegPointer), false);
+    }
 }
 
 void CX86RecompilerOps::CompileCop1Test()
