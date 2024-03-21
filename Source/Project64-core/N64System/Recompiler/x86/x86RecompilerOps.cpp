@@ -8464,21 +8464,7 @@ void CX86RecompilerOps::COP1_D_SQRT()
 {
     if (FpuExceptionInRecompiler())
     {
-        CompileInitFpuOperation(CRegInfo::RoundDefault);
-        if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Any) ||
-            m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Any))
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            return;
-        }
-        asmjit::x86::Gp TempReg = m_RegWorkingSet.FPRValuePointer(m_Opcode.fs, CRegInfo::FPU_Double);
-        CompileCheckFPUInput(TempReg, FpuOpSize_64bit);
-        m_RegWorkingSet.PrepareFPTopToBe(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
-        m_Assembler.fsqrt();
-        m_Assembler.mov(TempReg, (uint64_t)&m_TempValue64);
-        m_Assembler.fpuStoreQwordFromX86Reg(m_RegWorkingSet.StackTopPos(), TempReg, false);
-        CompileCheckFPUResult64(TempReg);
-        m_RegWorkingSet.SetFPTopAs(m_Opcode.fd);
+        COP1_D_Opcode(&CX86Ops::Fsqrt);
     }
     else
     {
