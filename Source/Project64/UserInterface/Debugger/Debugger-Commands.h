@@ -77,6 +77,7 @@ public:
     virtual ~CDebugCommandsView(void);
 
     void ShowAddress(uint32_t address, bool top, bool bUserInput = false);
+    void CopyCommands(uint32_t address, uint32_t count);
     void ShowPIRegTab();
 
     void Reset();
@@ -110,6 +111,7 @@ private:
         COMMAND_HANDLER(IDCANCEL, BN_CLICKED, OnCancel);
         COMMAND_HANDLER(ID_POPUPMENU_EDIT, BN_CLICKED, OnPopupmenuEdit);
         COMMAND_HANDLER(ID_POPUPMENU_INSERTNOP, BN_CLICKED, OnPopupmenuInsertNOP);
+        COMMAND_HANDLER(ID_POPUPMENU_COPY_COMMANDS, BN_CLICKED, OnPopupmenuCopyCommands);
         COMMAND_HANDLER(ID_POPUPMENU_RESTORE, BN_CLICKED, OnPopupmenuRestore);
         COMMAND_HANDLER(ID_POPUPMENU_RESTOREALL, BN_CLICKED, OnPopupmenuRestoreAll);
         COMMAND_HANDLER(ID_POPUPMENU_ADDSYMBOL, BN_CLICKED, OnPopupmenuAddSymbol);
@@ -205,6 +207,7 @@ private:
     LRESULT OnCancel(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
     LRESULT OnPopupmenuEdit(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
     LRESULT OnPopupmenuInsertNOP(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
+    LRESULT OnPopupmenuCopyCommands(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
     LRESULT OnPopupmenuRestore(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
     LRESULT OnPopupmenuRestoreAll(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
     LRESULT OnPopupmenuAddSymbol(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL & bHandled);
@@ -265,6 +268,7 @@ private:
 
     CAddBreakpointDlg m_AddBreakpointDlg;
     CAddSymbolDlg m_AddSymbolDlg;
+    CCopyCommandsDlg m_CopyCommandsDlg;
 
     uint32_t m_StartAddress;
     CEditNumber32 m_PCEdit;

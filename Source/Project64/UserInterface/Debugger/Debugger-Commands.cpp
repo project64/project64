@@ -659,6 +659,133 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
     m_CommandList.SetRedraw(TRUE);
 }
 
+void CDebugCommandsView::CopyCommands(uint32_t address, uint32_t count)
+{
+    const int maximumMnemonicLength = 7 + 1; // The + 1 gets us a space after the mnemonic
+    std::string buffer;
+    std::string newline = "\r\n";
+    std::string noteBuffer = "         "; // Used to distance the note from the args visually
+    bool any = false;
+    for (int i = 0; i < count; i++)
+    {
+        uint32_t opAddr = address + i * 4;
+
+        COpInfo OpInfo;
+        R4300iOpcode & OpCode = OpInfo.m_OpCode;
+
+        if (!m_Debugger->DebugLoad_VAddr(opAddr, OpCode.Value))
+        {
+            // Not sure what to do with this
+            continue;
+        }
+
+        if (any) buffer.append(newline);
+        any = true;
+
+        char addrStr[10];
+        sprintf(addrStr, "%08X ", opAddr);
+
+        buffer.append(addrStr);
+
+        R4300iInstruction Instruction(opAddr, OpCode.Value);
+        std::string cmdArgs = Instruction.Param();
+
+        CSymbol jalSymbol;
+
+        // Show subroutine symbol name for JAL target
+        if (OpCode.op == R4300i_JAL)
+        {
+            uint32_t targetAddr = (m_StartAddress & 0xF0000000) | (OpCode.target << 2);
+
+            if (m_Debugger->SymbolTable()->GetSymbolByAddress(targetAddr, &jalSymbol))
+            {
+                cmdArgs = jalSymbol.m_Name;
+            }
+        }
+
+        // Detect reads and writes to mapped registers, cart header data, etc.
+        const char * annotation = nullptr;
+        bool bLoadStoreAnnotation = false;
+
+        CSymbol memSymbol;
+
+        if (OpInfo.IsLoadStoreCommand())
+        {
+            for (int offset = -4; offset > -24; offset -= 4)
+            {
+                R4300iOpcode OpCodeTest;
+
+                if (!m_Debugger->DebugLoad_VAddr(opAddr + offset, OpCodeTest.Value))
+                {
+                    break;
+                }
+
+                if (OpCodeTest.op != R4300i_LUI)
+                {
+                    continue;
+                }
+
+                if (OpCodeTest.rt != OpCode.rs)
+                {
+                    continue;
+                }
+
+                uint32_t memAddr = (OpCodeTest.immediate << 16) + (short)OpCode.offset;
+
+                if (m_Debugger->SymbolTable()->GetSymbolByAddress(memAddr, &memSymbol))
+                {
+                    annotation = memSymbol.m_Name;
+                }
+                else
+                {
+                    annotation = GetDataAddressNotes(memAddr);
+                }
+                break;
+            }
+        }
+
+        if (annotation == nullptr)
+        {
+            annotation = GetCodeAddressNotes(opAddr);
+        }
+        else
+        {
+            bLoadStoreAnnotation = true;
+        }
+
+        std::string instruction = Instruction.Name();
+        while (instruction.length() < maximumMnemonicLength)
+        {
+            instruction.append(" ");
+        }
+
+        buffer.append(instruction);
+        buffer.append(cmdArgs);
+
+        // Show routine symbol name for this address
+        CSymbol pcSymbol;
+        if (m_Debugger->SymbolTable()->GetSymbolByAddress(opAddr, &pcSymbol))
+        {
+            buffer.append(noteBuffer);
+            buffer.append(pcSymbol.m_Name);
+        }
+        else if (annotation != nullptr)
+        {
+            const char * annotationFormat = bLoadStoreAnnotation ? "// (%s)" : "// %s";
+            buffer.append(noteBuffer);
+            buffer.append(stdstr_f(annotationFormat, annotation));
+        }
+    }
+
+    HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, buffer.length() + 1);
+    strncpy((char *)GlobalLock(hMem), buffer.c_str(), buffer.length());
+    GlobalUnlock(hMem);
+    OpenClipboard();
+    EmptyClipboard();
+    SetClipboardData(CF_TEXT, hMem);
+    CloseClipboard();
+}
+
 // Highlight command list items and draw branch arrows
 LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR * pNMHDR)
 {
@@ -1196,6 +1323,12 @@ LRESULT CDebugCommandsView::OnPopupmenuInsertNOP(WORD /*wNotifyCode*/, WORD /*wI
 {
     EditOp(m_SelectedAddress, 0x00000000);
     ShowAddress(m_StartAddress, TRUE);
+    return FALSE;
+}
+
+LRESULT CDebugCommandsView::OnPopupmenuCopyCommands(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
+{
+    m_CopyCommandsDlg.DoModal(m_Debugger, m_SelectedAddress);
     return FALSE;
 }
 

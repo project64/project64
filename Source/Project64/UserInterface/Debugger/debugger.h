@@ -57,6 +57,7 @@ public:
     void OpenCPULogWindow(void);
     void Debug_RefreshCPULogWindow(void);
     void OpenExcBreakpointsWindow(void);
+    void CopyCommands(uint32_t address, uint32_t count);
 
     void StartAutorunScripts();
 

@@ -59,6 +59,7 @@
   <ItemGroup>
     <ClCompile Include="UserInterface\About.cpp" />
     <ClCompile Include="UserInterface\Debugger\CPULog.cpp" />
+    <ClCompile Include="UserInterface\Debugger\Debugger-CopyCommands.cpp" />
     <ClCompile Include="UserInterface\Debugger\Debugger-CPULogView.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Plugins\PluginList.cpp" />
@@ -156,6 +157,7 @@
   <ItemGroup>
     <ClInclude Include="UserInterface\About.h" />
     <ClInclude Include="UserInterface\Debugger\CPULog.h" />
+    <ClInclude Include="UserInterface\Debugger\Debugger-CopyCommands.h" />
     <ClInclude Include="UserInterface\Debugger\Debugger-CPULogView.h" />
     <ClInclude Include="N64System.h" />
     <ClInclude Include="Settings\GuiSettings.h" />

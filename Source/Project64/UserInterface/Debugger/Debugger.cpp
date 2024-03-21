@@ -786,6 +786,11 @@ void CDebuggerUI::WaitForStep(void)
     g_Settings->SaveBool(Debugger_WaitingForStep, false);
 }
 
+void CDebuggerUI::CopyCommands(uint32_t address, uint32_t count)
+{
+    m_CommandsView->CopyCommands(address, count);
+}
+
 void CDebuggerUI::StartAutorunScripts(void)
 {
     if (m_ScriptSystem == nullptr)
