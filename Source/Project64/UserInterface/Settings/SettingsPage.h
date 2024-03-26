@@ -13,6 +13,7 @@ public:
     virtual void ApplySettings(bool UpdateScreen) = 0;
     virtual bool EnableReset(void) = 0;
     virtual void ResetPage(void) = 0;
+    virtual bool PageAccessible(bool AdvancedMode) = 0;
 };
 
 template <class T>
@@ -532,6 +533,14 @@ public:
             SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
         }
     }
+
+#pragma warning(push)
+#pragma warning(disable : 4100) // warning C4100: 'AdvancedMode': unreferenced formal parameter
+    bool PageAccessible(bool AdvancedMode)
+    {
+        return true;
+    }
+#pragma warning(pop)
 
 protected:
     TextBoxList m_TxtBoxList;

@@ -1,7 +1,7 @@
 #pragma once
 
 class COptionsDirectoriesPage :
-    public CDialogImpl<COptionsDirectoriesPage>,
+    public CSettingsPageImpl<COptionsDirectoriesPage>,
     public CSettingsPage
 {
     BEGIN_MSG_MAP_EX(COptionsDirectoriesPage)
@@ -47,6 +47,11 @@ public:
     void ApplySettings(bool UpdateScreen);
     bool EnableReset(void);
     void ResetPage(void);
+
+    bool PageAccessible(bool AdvancedMode)
+    {
+        return CSettingsPageImpl<COptionsDirectoriesPage>::PageAccessible(AdvancedMode);
+    }
 
 private:
     void SelectPluginDir(UINT Code, int id, HWND ctl);
