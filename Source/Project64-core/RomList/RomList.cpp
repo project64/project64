@@ -44,6 +44,7 @@ CRomList::CRomList() :
         m_NotesIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_Notes).c_str());
         m_ExtIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_ExtInfo).c_str());
         m_RomIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
+        m_PlaytimeFile = std::make_unique<CIniFile>(g_Settings->LoadStringVal(SupportFile_Playtime).c_str());
 #ifdef _WIN32
         m_ZipIniFile = new CIniFile(g_Settings->LoadStringVal(RomList_7zipCache).c_str());
 #endif
@@ -87,6 +88,20 @@ CRomList::~CRomList()
         g_Settings->UnregisterChangeCB(RomList_GameDir, this, (CSettings::SettingChangedFunc)RefreshSettings);
     }
     WriteTrace(TraceRomList, TraceVerbose, "Done");
+}
+
+uint32_t CRomList::LoadPlaytime(const std::string & RomIniKey)
+{
+    return m_PlaytimeFile->GetNumber(RomIniKey.c_str(), "Playtime", 0);
+}
+
+void CRomList::SavePlaytime(uint32_t ElapsedPlaytime)
+{
+    auto RomIniKey = g_Settings->LoadStringVal(Game_IniKey);
+    auto CurrentPlaytime = LoadPlaytime(RomIniKey);
+    auto RomGoodName = g_Settings->LoadStringVal(Rdb_GoodName);
+    m_PlaytimeFile->SaveString(RomIniKey.c_str(), "Name", RomGoodName.c_str());
+    m_PlaytimeFile->SaveNumber(RomIniKey.c_str(), "Playtime", CurrentPlaytime + ElapsedPlaytime);
 }
 
 void CRomList::RefreshRomList(void)

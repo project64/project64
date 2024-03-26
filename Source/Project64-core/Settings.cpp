@@ -80,6 +80,8 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Cmd_ComboDiskFile, new CSettingTypeTempString(""));
 
     // Support files
+    AddHandler(SupportFile_Playtime, new CSettingTypeApplicationPath("Settings", "Playtime", SupportFile_PlaytimeDefault));
+    AddHandler(SupportFile_PlaytimeDefault, new CSettingTypeRelativePath("Config", "Playtime.rdn"));
     AddHandler(SupportFile_SettingsDirectory, new CSettingTypeTempString(""));
     AddHandler(SupportFile_Settings, new CSettingTypeApplicationPath("Settings", "ConfigFile", SupportFile_SettingsDefault));
     AddHandler(SupportFile_SettingsDefault, new CSettingTypeRelativePath("Config", "Project64.cfg"));

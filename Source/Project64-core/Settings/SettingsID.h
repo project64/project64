@@ -18,6 +18,8 @@ enum SettingID
     Cmd_ShowHelp,
 
     // Support files
+    SupportFile_Playtime,
+    SupportFile_PlaytimeDefault,
     SupportFile_SettingsDirectory,
     SupportFile_Settings,
     SupportFile_SettingsDefault,

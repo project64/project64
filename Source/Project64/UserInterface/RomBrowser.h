@@ -146,6 +146,7 @@ private:
         RB_Players = 18,
         RB_ForceFeedback = 19,
         RB_FileFormat = 20,
+        RB_Playtime = 21,
     };
 
     enum
