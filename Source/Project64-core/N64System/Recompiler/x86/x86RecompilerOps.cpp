@@ -8644,7 +8644,7 @@ void CX86RecompilerOps::COP1_D_CVT_S()
 {
     if (FpuExceptionInRecompiler())
     {
-        COP1_S_CVT(CRegInfo::RoundDefault, CRegInfo::FPU_Double, CRegInfo::FPU_FloatLow);
+        COP1_S_CVT(CRegInfo::RoundDefault, CRegInfo::FPU_Double, CRegInfo::FPU_Float);
     }
     else
     {
@@ -12118,6 +12118,12 @@ void CX86RecompilerOps::COP1_S_CVT(CRegBase::FPU_ROUND RoundMethod, CRegInfo::FP
 
         m_Assembler.bind(ExactLabel);
     }
+    else if (NewFormat == CRegInfo::FPU_Float)
+    {
+        m_Assembler.mov(fsRegPointer, (uint64_t)&m_TempValue32);
+        m_Assembler.fpuStoreDwordFromX86Reg(m_RegWorkingSet.StackTopPos(), fsRegPointer, false);
+        CompileCheckFPUResult32(m_Opcode.fd);
+    }
     else if (NewFormat == CRegInfo::FPU_Double)
     {
         m_Assembler.mov(fsRegPointer, (uint64_t)&m_TempValue64);
@@ -12131,7 +12137,7 @@ void CX86RecompilerOps::COP1_S_CVT(CRegBase::FPU_ROUND RoundMethod, CRegInfo::FP
     }
 
     asmjit::x86::Gp fdRegPointer = m_RegWorkingSet.FPRValuePointer(m_Opcode.fd, CRegInfo::FPU_UnsignedDoubleWord);
-    if (NewFormat == CRegInfo::FPU_Dword)
+    if (NewFormat == CRegInfo::FPU_Dword || NewFormat == CRegInfo::FPU_Float)
     {
         m_Assembler.MoveVariableToX86reg(fsRegPointer, &m_TempValue32, "m_TempValue32");
         m_Assembler.mov(asmjit::x86::dword_ptr(fdRegPointer), fsRegPointer);
