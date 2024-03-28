@@ -9134,8 +9134,9 @@ void CX86RecompilerOps::CompileCheckFPUResult32(int32_t DestReg)
     }
     m_Assembler.MoveVariableToX86reg(TempReg, &m_TempValue32, "TempValue32");
     asmjit::x86::Gp TempRegFPR_S = ExitRegSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
-    m_Assembler.MoveVariableToX86reg(TempRegFPR_S, &m_Reg.m_FPR_S[DestReg], stdstr_f("m_FPR_S[%d]", DestReg).c_str());
+    m_Assembler.MoveVariableToX86reg(TempRegFPR_S, &m_Reg.m_FPR_UDW[DestReg], stdstr_f("m_FPR_UDW[%d]", DestReg).c_str());
     m_Assembler.mov(asmjit::x86::dword_ptr(TempRegFPR_S), TempReg);
+    m_Assembler.and_(asmjit::x86::dword_ptr(TempRegFPR_S, 4), 0);
     ExitRegSet.SetBlockCycleCount(ExitRegSet.GetBlockCycleCount() + g_System->CountPerOp());
     CompileExit(m_CompilePC + 4, m_CompilePC + 4, ExitRegSet, ExitReason_Normal, false, &CX86Ops::JmpLabel);
 
