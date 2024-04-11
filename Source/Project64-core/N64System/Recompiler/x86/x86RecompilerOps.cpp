@@ -7629,33 +7629,15 @@ void CX86RecompilerOps::COP1_CT()
 // COP1: S functions
 void CX86RecompilerOps::COP1_S_ADD()
 {
-    uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
-    uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
-
     if (FpuExceptionInRecompiler())
     {
-        CompileInitFpuOperation(CRegInfo::RoundDefault);
-        if (m_RegWorkingSet.RegInStack(Reg2, CRegInfo::FPU_Float))
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            return;
-        }
-        else
-        {
-            asmjit::x86::Gp TempReg = m_RegWorkingSet.FPRValuePointer(Reg1, CRegInfo::FPU_Float);
-            CompileCheckFPUInput(TempReg, FpuOpSize_32bit);
-            m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(TempReg), false);
-            TempReg = m_RegWorkingSet.FPRValuePointer(Reg2, CRegInfo::FPU_Float);
-            CompileCheckFPUInput(TempReg, FpuOpSize_32bit);
-            m_RegWorkingSet.PrepareFPTopToBe(m_Opcode.fd, Reg1, CRegInfo::FPU_Float);
-            m_Assembler.fadd(asmjit::x86::dword_ptr(TempReg));
-            m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(TempReg), false);
-        }
-        CompileCheckFPUResult32(m_Opcode.fd);
-        m_RegWorkingSet.SetFPTopAs(m_Opcode.fd);
+        COP1_S_Opcode(&CX86Ops::Fadd);
     }
     else
     {
+        uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
+        uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
+
         CompileCop1Test();
         m_RegWorkingSet.FixRoundModel(CRegInfo::RoundDefault);
 
@@ -7680,33 +7662,15 @@ void CX86RecompilerOps::COP1_S_ADD()
 
 void CX86RecompilerOps::COP1_S_SUB()
 {
-    uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
-    uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
-
     if (FpuExceptionInRecompiler())
     {
-        CompileInitFpuOperation(CRegInfo::RoundDefault);
-        if (m_RegWorkingSet.RegInStack(Reg2, CRegInfo::FPU_Float))
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            return;
-        }
-        else
-        {
-            asmjit::x86::Gp TempReg = m_RegWorkingSet.FPRValuePointer(Reg1, CRegInfo::FPU_Float);
-            CompileCheckFPUInput(TempReg, FpuOpSize_32bit);
-            m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(TempReg), false);
-            TempReg = m_RegWorkingSet.FPRValuePointer(Reg2, CRegInfo::FPU_Float);
-            CompileCheckFPUInput(TempReg, FpuOpSize_32bit);
-            m_RegWorkingSet.PrepareFPTopToBe(m_Opcode.fd, Reg1, CRegInfo::FPU_Float);
-            m_Assembler.fsub(asmjit::x86::dword_ptr(TempReg));
-            m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(TempReg), false);
-        }
-        CompileCheckFPUResult32(m_Opcode.fd);
-        m_RegWorkingSet.SetFPTopAs(m_Opcode.fd);
+        COP1_S_Opcode(&CX86Ops::Fsub);
     }
     else
     {
+        uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
+        uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
+
         CompileCop1Test();
         m_RegWorkingSet.FixRoundModel(CRegInfo::RoundDefault);
 
@@ -7742,33 +7706,15 @@ void CX86RecompilerOps::COP1_S_SUB()
 
 void CX86RecompilerOps::COP1_S_MUL()
 {
-    uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
-    uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
-
     if (FpuExceptionInRecompiler())
     {
-        CompileInitFpuOperation(CRegInfo::RoundDefault);
-        if (m_RegWorkingSet.RegInStack(Reg2, CRegInfo::FPU_Float))
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            return;
-        }
-        else
-        {
-            asmjit::x86::Gp TempReg = m_RegWorkingSet.FPRValuePointer(Reg1, CRegInfo::FPU_Float);
-            CompileCheckFPUInput(TempReg, FpuOpSize_32bit);
-            m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(TempReg), false);
-            TempReg = m_RegWorkingSet.FPRValuePointer(Reg2, CRegInfo::FPU_Float);
-            CompileCheckFPUInput(TempReg, FpuOpSize_32bit);
-            m_RegWorkingSet.PrepareFPTopToBe(m_Opcode.fd, Reg1, CRegInfo::FPU_Float);
-            m_Assembler.fmul(asmjit::x86::dword_ptr(TempReg));
-            m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(TempReg), false);
-        }
-        CompileCheckFPUResult32(m_Opcode.fd);
-        m_RegWorkingSet.SetFPTopAs(m_Opcode.fd);
+        COP1_S_Opcode(&CX86Ops::Fmul);
     }
     else
     {
+        uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
+        uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
+
         CompileCop1Test();
         m_RegWorkingSet.FixRoundModel(CRegInfo::RoundDefault);
 
@@ -7794,25 +7740,7 @@ void CX86RecompilerOps::COP1_S_DIV()
 {
     if (FpuExceptionInRecompiler())
     {
-        CompileInitFpuOperation(CRegInfo::RoundDefault);
-        if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Float))
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            return;
-        }
-        else
-        {
-            asmjit::x86::Gp TempReg = m_RegWorkingSet.FPRValuePointer(m_Opcode.fs, CRegInfo::FPU_Float);
-            CompileCheckFPUInput(TempReg, FpuOpSize_32bit);
-            m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(TempReg), false);
-            TempReg = m_RegWorkingSet.FPRValuePointer(m_Opcode.ft, CRegInfo::FPU_Float);
-            CompileCheckFPUInput(TempReg, FpuOpSize_32bit);
-            m_RegWorkingSet.PrepareFPTopToBe(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
-            m_Assembler.fdiv(asmjit::x86::dword_ptr(TempReg));
-            m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(TempReg), false);
-        }
-        CompileCheckFPUResult32(m_Opcode.fd);
-        m_RegWorkingSet.SetFPTopAs(m_Opcode.fd);
+        COP1_S_Opcode(&CX86Ops::Fdiv);
     }
     else
     {
@@ -7857,19 +7785,7 @@ void CX86RecompilerOps::COP1_S_ABS()
 {
     if (FpuExceptionInRecompiler())
     {
-        CompileInitFpuOperation(CRegInfo::RoundUnknown);
-        if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Any))
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            return;
-        }
-        asmjit::x86::Gp TempReg = m_RegWorkingSet.FPRValuePointer(m_Opcode.fs, CRegInfo::FPU_FloatLow);
-        CompileCheckFPUInput(TempReg, FpuOpSize_32bit);
-        m_RegWorkingSet.PrepareFPTopToBe(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
-        m_Assembler.fabs();
-        m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(TempReg), false);
-        CompileCheckFPUResult32(m_Opcode.fd);
-        m_RegWorkingSet.SetFPTopAs(m_Opcode.fd);
+        COP1_S_Opcode(&CX86Ops::Fabs);
     }
     else
     {
@@ -7885,19 +7801,7 @@ void CX86RecompilerOps::COP1_S_NEG()
 {
     if (FpuExceptionInRecompiler())
     {
-        CompileInitFpuOperation(CRegInfo::RoundUnknown);
-        if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Any))
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            return;
-        }
-        asmjit::x86::Gp TempReg = m_RegWorkingSet.FPRValuePointer(m_Opcode.fs, CRegInfo::FPU_FloatLow);
-        CompileCheckFPUInput(TempReg, FpuOpSize_32bit);
-        m_RegWorkingSet.PrepareFPTopToBe(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
-        m_Assembler.fchs();
-        m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(TempReg), false);
-        CompileCheckFPUResult32(m_Opcode.fd);
-        m_RegWorkingSet.SetFPTopAs(m_Opcode.fd);
+        COP1_S_Opcode(&CX86Ops::Fchs);
     }
     else
     {
@@ -7913,22 +7817,7 @@ void CX86RecompilerOps::COP1_S_SQRT()
 {
     if (FpuExceptionInRecompiler())
     {
-        CompileInitFpuOperation(CRegInfo::RoundDefault);
-        if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Float))
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            return;
-        }
-        asmjit::x86::Gp TempReg = m_RegWorkingSet.FPRValuePointer(m_Opcode.fs, CRegInfo::FPU_Float);
-        CompileCheckFPUInput(TempReg, FpuOpSize_32bit);
-        m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(TempReg), false);
-        TempReg = m_RegWorkingSet.FPRValuePointer(m_Opcode.fs, CRegInfo::FPU_Float);
-        CompileCheckFPUInput(TempReg, FpuOpSize_32bit);
-        m_RegWorkingSet.PrepareFPTopToBe(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
-        m_Assembler.fsqrt();
-        m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(TempReg), false);
-        CompileCheckFPUResult32(m_Opcode.fd);
-        m_RegWorkingSet.SetFPTopAs(m_Opcode.fd);
+        COP1_S_Opcode(&CX86Ops::Fsqrt);
     }
     else
     {
@@ -10940,6 +10829,46 @@ void CX86RecompilerOps::COP1_D_Opcode(void (CX86Ops::*Instruction)(const asmjit:
     m_Assembler.mov(TempReg, (uint64_t)&m_TempValue64);
     m_Assembler.fpuStoreQwordFromX86Reg(m_RegWorkingSet.StackTopPos(), TempReg, false);
     CompileCheckFPUResult64(TempReg);
+    m_RegWorkingSet.SetFPTopAs(m_Opcode.fd);
+}
+
+void CX86RecompilerOps::COP1_S_Opcode(void (CX86Ops::*Instruction)(void))
+{
+    CompileInitFpuOperation(CRegInfo::RoundUnknown);
+    if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Any) ||
+        m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Any))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+    asmjit::x86::Gp TempReg = m_RegWorkingSet.FPRValuePointer(m_Opcode.fs, CRegInfo::FPU_FloatLow);
+    CompileCheckFPUInput(TempReg, FpuOpSize_32bit);
+    m_RegWorkingSet.PrepareFPTopToBe(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
+    (m_Assembler.*Instruction)();
+    m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(TempReg), false);
+    CompileCheckFPUResult32(m_Opcode.fd);
+    m_RegWorkingSet.SetFPTopAs(m_Opcode.fd);
+}
+
+void CX86RecompilerOps::COP1_S_Opcode(void (CX86Ops::*Instruction)(const asmjit::x86::Mem &))
+{
+    CompileInitFpuOperation(CRegInfo::RoundDefault);
+    if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Any) ||
+        m_RegWorkingSet.RegInStack(m_Opcode.ft, CRegInfo::FPU_Any) ||
+        m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Any))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+    asmjit::x86::Gp TempReg = m_RegWorkingSet.FPRValuePointer(m_Opcode.fs, CRegInfo::FPU_Float);
+    CompileCheckFPUInput(TempReg, FpuOpSize_32bit);
+    m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(TempReg), false);
+    TempReg = m_RegWorkingSet.FPRValuePointer(m_Opcode.ft, CRegInfo::FPU_Float);
+    CompileCheckFPUInput(TempReg, FpuOpSize_32bit);
+    m_RegWorkingSet.PrepareFPTopToBe(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
+    (m_Assembler.*Instruction)(asmjit::x86::dword_ptr(TempReg));
+    m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(TempReg), false);
+    CompileCheckFPUResult32(m_Opcode.fd);
     m_RegWorkingSet.SetFPTopAs(m_Opcode.fd);
 }
 

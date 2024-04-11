@@ -272,6 +272,8 @@ private:
     void CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, asmjit::x86::Gp ValueReg, const asmjit::x86::Gp & ValueRegHi, uint64_t Value, uint8_t ValueSize);
     void COP1_D_Opcode(void (CX86Ops::*Instruction)(void));
     void COP1_D_Opcode(void (CX86Ops::*Instruction)(const asmjit::x86::Mem &));
+    void COP1_S_Opcode(void (CX86Ops::*Instruction)(void));
+    void COP1_S_Opcode(void (CX86Ops::*Instruction)(const asmjit::x86::Mem &));
 
     void SB_Const(uint32_t Value, uint32_t Addr);
     void SB_Register(const asmjit::x86::Gp & Reg, uint32_t Addr);
