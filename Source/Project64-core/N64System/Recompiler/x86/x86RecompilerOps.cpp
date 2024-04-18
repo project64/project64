@@ -9022,21 +9022,24 @@ void CX86RecompilerOps::CompileCheckFPUInput(asmjit::x86::Gp RegPointer, FpuOpSi
     m_RegWorkingSet.UnMap_FPStatusReg();
     asmjit::x86::Gp TempPointerValue = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
     m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(TempPointerValue), false);
+    asmjit::Label PossiblySubNormal = m_Assembler.newLabel();
+    asmjit::Label PossiblyNanJump = m_Assembler.newLabel();
+    m_Assembler.mov(TempPointerValue, asmjit::x86::dword_ptr(RegPointer));
     if (OpSize == FpuOpSize_32bit)
     {
-        m_Assembler.mov(TempPointerValue, asmjit::x86::dword_ptr(RegPointer));
+        m_Assembler.and_(TempPointerValue, 0x7F800000);
+        m_Assembler.JzLabel("PossiblySubNormal", PossiblySubNormal);
+        m_Assembler.cmp(TempPointerValue, 0x7F800000);
+        m_Assembler.JeLabel("PossiblyNan", PossiblyNanJump);
     }
     else if (OpSize == FpuOpSize_64bit)
     {
-        m_Assembler.mov(TempPointerValue, asmjit::x86::dword_ptr(RegPointer, 4));
+        m_Assembler.and_(TempPointerValue, 0x7FF00000);
+        m_Assembler.JzLabel("PossiblySubNormal", PossiblySubNormal);
+        m_Assembler.cmp(TempPointerValue, 0x7FF00000);
+        m_Assembler.JeLabel("PossiblyNan", PossiblyNanJump);
     }
-    m_Assembler.and_(TempPointerValue, 0x7F800000);
-    asmjit::Label PossiblySubNormal = m_Assembler.newLabel();
-    m_Assembler.JzLabel("PossiblySubNormal", PossiblySubNormal);
-    m_Assembler.cmp(TempPointerValue, 0x7F800000);
-    asmjit::Label PossiblyNanJump = m_Assembler.newLabel();
     asmjit::Label ValidFpuValue = m_Assembler.newLabel();
-    m_Assembler.JeLabel("PossiblyNan", PossiblyNanJump);
     m_Assembler.JmpLabel("ValidFpuValue", ValidFpuValue);
     m_Assembler.bind(PossiblySubNormal);
     m_Assembler.bind(PossiblyNanJump);
@@ -9052,7 +9055,10 @@ void CX86RecompilerOps::CompileCheckFPUInput(asmjit::x86::Gp RegPointer, FpuOpSi
         m_Assembler.MoveX86regToVariable((uint8_t *)&m_TempValue64 + 4, "TempValue64", TempPointerValue);
     }
     m_RegWorkingSet.BeforeCallDirect();
-    m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
+    if (m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT)
+    {
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", PIPELINE_STAGE_JUMP);
+    }
     m_Assembler.MoveConstToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", m_CompilePC);
     if (OpSize == FpuOpSize_32bit)
     {
@@ -9084,6 +9090,10 @@ void CX86RecompilerOps::CompileCheckFPUInput(asmjit::x86::Gp RegPointer, FpuOpSi
     ExitRegSet.SetBlockCycleCount(ExitRegSet.GetBlockCycleCount() + g_System->CountPerOp());
     CompileExit((uint32_t)-1, (uint32_t)-1, ExitRegSet, ExitReason_Exception, false, &CX86Ops::JnzLabel);
     m_Assembler.bind(ValidFpuValue);
+    if (m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT)
+    {
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
+    }
 }
 
 void CX86RecompilerOps::CompileCheckFPUResult32(int32_t DestReg)
