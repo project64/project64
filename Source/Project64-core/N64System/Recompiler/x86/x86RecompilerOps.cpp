@@ -8391,58 +8391,86 @@ void CX86RecompilerOps::COP1_D_MOV()
 
 void CX86RecompilerOps::COP1_D_ROUND_L()
 {
-    CompileCop1Test();
-    if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Double) || m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Qword))
+    if (FpuExceptionInRecompiler())
     {
-        m_RegWorkingSet.UnMap_FPR(m_Opcode.fs, true);
+        COP1_S_CVT(CRegInfo::RoundNearest, CRegInfo::FPU_Double, CRegInfo::FPU_Qword);
     }
-    if (m_Opcode.fd != m_Opcode.fs || !m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Double))
+    else
     {
-        m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
+        CompileCop1Test();
+        if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Double) || m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Qword))
+        {
+            m_RegWorkingSet.UnMap_FPR(m_Opcode.fs, true);
+        }
+        if (m_Opcode.fd != m_Opcode.fs || !m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Double))
+        {
+            m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
+        }
+        m_RegWorkingSet.ChangeFPURegFormat(m_Opcode.fd, CRegInfo::FPU_Double, CRegInfo::FPU_Qword, CRegInfo::RoundNearest);
     }
-    m_RegWorkingSet.ChangeFPURegFormat(m_Opcode.fd, CRegInfo::FPU_Double, CRegInfo::FPU_Qword, CRegInfo::RoundNearest);
 }
 
 void CX86RecompilerOps::COP1_D_TRUNC_L()
 {
-    CompileCop1Test();
-    if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Double) || m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Qword))
+    if (FpuExceptionInRecompiler())
     {
-        m_RegWorkingSet.UnMap_FPR(m_Opcode.fs, true);
+        COP1_S_CVT(CRegInfo::RoundTruncate, CRegInfo::FPU_Double, CRegInfo::FPU_Qword);
     }
-    if (m_Opcode.fd != m_Opcode.fs || !m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Double))
+    else
     {
-        m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
+        CompileCop1Test();
+        if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Double) || m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Qword))
+        {
+            m_RegWorkingSet.UnMap_FPR(m_Opcode.fs, true);
+        }
+        if (m_Opcode.fd != m_Opcode.fs || !m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Double))
+        {
+            m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
+        }
+        m_RegWorkingSet.ChangeFPURegFormat(m_Opcode.fd, CRegInfo::FPU_Double, CRegInfo::FPU_Qword, CRegInfo::RoundTruncate);
     }
-    m_RegWorkingSet.ChangeFPURegFormat(m_Opcode.fd, CRegInfo::FPU_Double, CRegInfo::FPU_Qword, CRegInfo::RoundTruncate);
 }
 
 void CX86RecompilerOps::COP1_D_CEIL_L()
 {
-    CompileCop1Test();
-    if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Double) || m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Qword))
+    if (FpuExceptionInRecompiler())
     {
-        m_RegWorkingSet.UnMap_FPR(m_Opcode.fs, true);
+        COP1_S_CVT(CRegInfo::RoundUp, CRegInfo::FPU_Double, CRegInfo::FPU_Qword);
     }
-    if (m_Opcode.fd != m_Opcode.fs || !m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Double))
+    else
     {
-        m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
+        CompileCop1Test();
+        if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Double) || m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Qword))
+        {
+            m_RegWorkingSet.UnMap_FPR(m_Opcode.fs, true);
+        }
+        if (m_Opcode.fd != m_Opcode.fs || !m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Double))
+        {
+            m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
+        }
+        m_RegWorkingSet.ChangeFPURegFormat(m_Opcode.fd, CRegInfo::FPU_Double, CRegInfo::FPU_Qword, CRegInfo::RoundUp);
     }
-    m_RegWorkingSet.ChangeFPURegFormat(m_Opcode.fd, CRegInfo::FPU_Double, CRegInfo::FPU_Qword, CRegInfo::RoundUp);
 }
 
 void CX86RecompilerOps::COP1_D_FLOOR_L()
 {
-    CompileCop1Test();
-    if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Double) || m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Qword))
+    if (FpuExceptionInRecompiler())
     {
-        m_RegWorkingSet.UnMap_FPR(m_Opcode.fs, true);
+        COP1_S_CVT(CRegInfo::RoundDown, CRegInfo::FPU_Double, CRegInfo::FPU_Qword);
     }
-    if (m_Opcode.fd != m_Opcode.fs || !m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Double))
+    else
     {
-        m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
+        CompileCop1Test();
+        if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Double) || m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Qword))
+        {
+            m_RegWorkingSet.UnMap_FPR(m_Opcode.fs, true);
+        }
+        if (m_Opcode.fd != m_Opcode.fs || !m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Double))
+        {
+            m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
+        }
+        m_RegWorkingSet.ChangeFPURegFormat(m_Opcode.fd, CRegInfo::FPU_Double, CRegInfo::FPU_Qword, CRegInfo::RoundDown);
     }
-    m_RegWorkingSet.ChangeFPURegFormat(m_Opcode.fd, CRegInfo::FPU_Double, CRegInfo::FPU_Qword, CRegInfo::RoundDown);
 }
 
 void CX86RecompilerOps::COP1_D_ROUND_W()
