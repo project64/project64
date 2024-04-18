@@ -1808,15 +1808,16 @@ bool CX86RegInfo::UnMap_X86reg(const asmjit::x86::Gp & Reg)
             }
         }
     }
+    else if (GetX86Protected(RegIndex))
+    {
+        return false;
+    }
     else if (GetX86Mapped(RegIndex) == CX86RegInfo::Temp_Mapped)
     {
-        if (!GetX86Protected(RegIndex))
-        {
-            m_CodeBlock.Log("    regcache: unallocate %s from temp storage", CX86Ops::x86_Name(Reg));
-            SetX86Mapped(RegIndex, NotMapped);
-            SetX86Protected(RegIndex, false);
-            return true;
-        }
+        m_CodeBlock.Log("    regcache: unallocate %s from temp storage", CX86Ops::x86_Name(Reg));
+        SetX86Mapped(RegIndex, NotMapped);
+        SetX86Protected(RegIndex, false);
+        return true;
     }
     else if (GetX86Mapped(RegIndex) == CX86RegInfo::Stack_Mapped)
     {
