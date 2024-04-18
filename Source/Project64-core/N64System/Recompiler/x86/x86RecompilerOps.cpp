@@ -481,6 +481,8 @@ void CX86RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
         if (CompareType == RecompilerBranchCompare_COP1BCF || CompareType == RecompilerBranchCompare_COP1BCT)
         {
             CompileCop1Test();
+            asmjit::x86::Gp StatusReg = m_RegWorkingSet.Map_FPStatusReg();
+            m_Assembler.and_(StatusReg, (uint32_t)(~0x0003F000));
         }
         if (m_CompilePC + ((int16_t)m_Opcode.offset << 2) + 4 == m_CompilePC + 8 && (m_CompilePC & 0xFFC) != 0xFFC)
         {
