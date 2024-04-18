@@ -8011,6 +8011,7 @@ void CX86RecompilerOps::COP1_S_CMP()
 {
     if (FpuExceptionInRecompiler())
     {
+        m_RegWorkingSet.Map_TempReg(asmjit::x86::eax, 0, false, false);
         CompileInitFpuOperation(CRegBase::RoundUnknown);
         if (m_RegWorkingSet.RegInStack(m_Opcode.fs, CRegInfo::FPU_Any) || m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Any))
         {
@@ -8025,7 +8026,6 @@ void CX86RecompilerOps::COP1_S_CMP()
         {
             m_Assembler.AndConstToVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", (uint32_t)~FPCSR_C);
         }
-        m_RegWorkingSet.Map_TempReg(asmjit::x86::eax, 0, false, false);
         asmjit::x86::Gp StatusReg = m_RegWorkingSet.Map_FPStatusReg();
         asmjit::x86::Gp TempRegValue = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, true);
         asmjit::x86::Gp FsPtr = m_RegWorkingSet.FPRValuePointer(m_Opcode.fs, CRegInfo::FPU_FloatLow);
