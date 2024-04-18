@@ -11380,47 +11380,12 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         {
         case 0x04300000:
         {
-            uint32_t ModValue;
-            ModValue = 0x7F;
-            if ((Value & MI_CLR_INIT) != 0)
-            {
-                ModValue |= MI_MODE_INIT;
-            }
-            if ((Value & MI_CLR_EBUS) != 0)
-            {
-                ModValue |= MI_MODE_EBUS;
-            }
-            if ((Value & MI_CLR_RDRAM) != 0)
-            {
-                ModValue |= MI_MODE_RDRAM;
-            }
-            if (ModValue != 0)
-            {
-                m_Assembler.AndConstToVariable(&g_Reg->MI_MODE_REG, "MI_MODE_REG", ~ModValue);
-            }
-
-            ModValue = (Value & 0x7F);
-            if ((Value & MI_SET_INIT) != 0)
-            {
-                ModValue |= MI_MODE_INIT;
-            }
-            if ((Value & MI_SET_EBUS) != 0)
-            {
-                ModValue |= MI_MODE_EBUS;
-            }
-            if ((Value & MI_SET_RDRAM) != 0)
-            {
-                ModValue |= MI_MODE_RDRAM;
-            }
-            if (ModValue != 0)
-            {
-                m_Assembler.OrConstToVariable(&g_Reg->MI_MODE_REG, "MI_MODE_REG", ModValue);
-            }
-            if ((Value & MI_CLR_DP_INTR) != 0)
-            {
-                m_Assembler.AndConstToVariable(&g_Reg->MI_INTR_REG, "MI_INTR_REG", (uint32_t)~MI_INTR_DP);
-                m_Assembler.AndConstToVariable(&g_Reg->m_GfxIntrReg, "m_GfxIntrReg", (uint32_t)~MI_INTR_DP);
-            }
+            m_RegWorkingSet.BeforeCallDirect();
+            m_Assembler.push(0xFFFFFFFF);
+            m_Assembler.push(Value);
+            m_Assembler.push(PAddr & 0x1FFFFFFF);
+            m_Assembler.CallThis((uint32_t)(MemoryHandler *)&g_MMU->m_MIPSInterfaceHandler, (uint32_t)((long **)(MemoryHandler *)&g_MMU->m_MIPSInterfaceHandler)[0][1], "MIPSInterfaceHandler::Write32", 16);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         }
         case 0x0430000C:
