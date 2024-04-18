@@ -1624,11 +1624,16 @@ void CX86RegInfo::UnMap_FPStatusReg()
 {
     for (int32_t i = 0, n = x86RegIndex_Size; i < n; i++)
     {
-        if (GetX86Mapped((x86RegIndex)i) != CX86RegInfo::FPStatusReg_Mapped)
+        x86RegIndex RegIndex = (x86RegIndex)i;
+        if (GetX86Mapped(RegIndex) != CX86RegInfo::FPStatusReg_Mapped)
         {
             continue;
         }
-        UnMap_X86reg(GetX86RegFromIndex((x86RegIndex)i));
+        SetX86Protected(RegIndex, false);
+        if (!UnMap_X86reg(GetX86RegFromIndex(RegIndex)))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
         break;
     }
 }
