@@ -1215,7 +1215,8 @@ asmjit::x86::Gp CX86RegInfo::Map_TempReg(asmjit::x86::Gp Reg, int32_t MipsReg, b
             }
         }
     }
-    else if (GetX86Mapped(GetIndexFromX86Reg(Reg)) == Stack_Mapped)
+    else if (GetX86Mapped(GetIndexFromX86Reg(Reg)) == Stack_Mapped ||
+             GetX86Mapped(GetIndexFromX86Reg(Reg)) == FPStatusReg_Mapped)
     {
         if (GetX86Protected(GetIndexFromX86Reg(Reg)))
         {
@@ -1223,7 +1224,10 @@ asmjit::x86::Gp CX86RegInfo::Map_TempReg(asmjit::x86::Gp Reg, int32_t MipsReg, b
             g_Notify->BreakPoint(__FILE__, __LINE__);
             return x86Reg_Unknown;
         }
-        UnMap_X86reg(Reg);
+        if (!UnMap_X86reg(Reg))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
     }
     else if (GetX86Mapped(GetIndexFromX86Reg(Reg)) == NotMapped)
     {
