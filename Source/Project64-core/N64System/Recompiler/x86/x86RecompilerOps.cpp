@@ -9036,29 +9036,89 @@ void CX86RecompilerOps::CompileExitCode()
 void CX86RecompilerOps::CompileCheckFPUInput(asmjit::x86::Gp RegPointer, FpuOpSize OpSize, bool Conv)
 {
     m_RegWorkingSet.UnMap_FPStatusReg();
+    if (Conv)
+    {
+        CX86RegInfo::REG_MAPPED EaxMapping = m_RegWorkingSet.GetX86Mapped(GetIndexFromX86Reg(asmjit::x86::eax));
+        if (EaxMapping == CX86RegInfo::Temp_Mapped || EaxMapping == CX86RegInfo::NotMapped)
+        {
+            m_RegWorkingSet.Map_TempReg(asmjit::x86::eax, -1, false, false);
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+    }
     asmjit::x86::Gp TempPointerValue = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
     m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(TempPointerValue), false);
     asmjit::Label PossiblySubNormal = m_Assembler.newLabel();
     asmjit::Label PossiblyNanJump = m_Assembler.newLabel();
-    m_Assembler.mov(TempPointerValue, asmjit::x86::dword_ptr(RegPointer));
+    asmjit::Label InvalidValueMaxJump, InvalidMinValueJump;
     if (OpSize == FpuOpSize_32bit)
     {
+        m_Assembler.mov(TempPointerValue, asmjit::x86::dword_ptr(RegPointer));
         m_Assembler.and_(TempPointerValue, 0x7F800000);
         m_Assembler.JzLabel("PossiblySubNormal", PossiblySubNormal);
         m_Assembler.cmp(TempPointerValue, 0x7F800000);
         m_Assembler.JeLabel("PossiblyNan", PossiblyNanJump);
+        if (Conv)
+        {
+            InvalidValueMaxJump = m_Assembler.newLabel();
+            InvalidMinValueJump = m_Assembler.newLabel();
+
+            static uint32_t InvalidValueMax = 0x5a000000, InvalidMinValue = 0xda000000;
+            m_Assembler.fld(asmjit::x86::dword_ptr(RegPointer));
+            m_Assembler.fld(asmjit::x86::dword_ptr((uint64_t)&InvalidValueMax));
+            m_Assembler.fcompp();
+            m_Assembler.fnstsw(asmjit::x86::ax);
+            m_Assembler.test(asmjit::x86::ah, 0x41);
+            m_Assembler.jnp(InvalidValueMaxJump);
+            m_Assembler.fld(asmjit::x86::dword_ptr(RegPointer));
+            m_Assembler.fld(asmjit::x86::qword_ptr((uint64_t)&InvalidMinValue));
+            m_Assembler.fcompp();
+            m_Assembler.fnstsw(asmjit::x86::ax);
+            m_Assembler.test(asmjit::x86::ah, 0x1);
+            m_Assembler.je(InvalidMinValueJump);
+        }
     }
     else if (OpSize == FpuOpSize_64bit)
     {
+        m_Assembler.mov(TempPointerValue, asmjit::x86::dword_ptr(RegPointer, 4));
         m_Assembler.and_(TempPointerValue, 0x7FF00000);
         m_Assembler.JzLabel("PossiblySubNormal", PossiblySubNormal);
         m_Assembler.cmp(TempPointerValue, 0x7FF00000);
         m_Assembler.JeLabel("PossiblyNan", PossiblyNanJump);
+
+        if (Conv)
+        {
+            InvalidValueMaxJump = m_Assembler.newLabel();
+            InvalidMinValueJump = m_Assembler.newLabel();
+
+            static uint64_t InvalidValueMax = 0x4340000000000000, InvalidMinValue = 0xc340000000000000;
+            m_Assembler.fld(asmjit::x86::qword_ptr((uint64_t)&InvalidValueMax));
+            m_Assembler.fcomp(asmjit::x86::qword_ptr(RegPointer));
+            m_Assembler.fnstsw(asmjit::x86::ax);
+            m_Assembler.test(asmjit::x86::ah, 0x41);
+            m_Assembler.jnp(InvalidValueMaxJump);
+            m_Assembler.fld(asmjit::x86::qword_ptr((uint64_t)&InvalidMinValue));
+            m_Assembler.fcomp(asmjit::x86::qword_ptr(RegPointer));
+            m_Assembler.fnstsw(asmjit::x86::ax);
+            m_Assembler.test(asmjit::x86::ah, 0x1);
+            m_Assembler.je(InvalidMinValueJump);
+        }
     }
     asmjit::Label ValidFpuValue = m_Assembler.newLabel();
     m_Assembler.JmpLabel("ValidFpuValue", ValidFpuValue);
     m_Assembler.bind(PossiblySubNormal);
     m_Assembler.bind(PossiblyNanJump);
+    if (InvalidValueMaxJump.isValid())
+    {
+        m_Assembler.bind(InvalidValueMaxJump);
+    }
+    if (InvalidMinValueJump.isValid())
+    {
+        m_Assembler.bind(InvalidMinValueJump);
+    }
     m_Assembler.mov(TempPointerValue, asmjit::x86::dword_ptr(RegPointer));
     if (OpSize == FpuOpSize_32bit)
     {
