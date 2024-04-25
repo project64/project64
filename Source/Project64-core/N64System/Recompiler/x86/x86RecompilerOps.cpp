@@ -7859,12 +7859,19 @@ void CX86RecompilerOps::COP1_S_MOV()
 
 void CX86RecompilerOps::COP1_S_ROUND_L()
 {
-    CompileCop1Test();
-    if (m_Opcode.fd != m_Opcode.fs || !m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Float))
+    if (FpuExceptionInRecompiler())
     {
-        m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
+        COP1_S_CVT(CRegInfo::RoundNearest, CRegInfo::FPU_FloatLow, CRegInfo::FPU_Qword);
     }
-    m_RegWorkingSet.ChangeFPURegFormat(m_Opcode.fd, CRegInfo::FPU_Float, CRegInfo::FPU_Qword, CRegInfo::RoundNearest);
+    else
+    {
+        CompileCop1Test();
+        if (m_Opcode.fd != m_Opcode.fs || !m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Float))
+        {
+            m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
+        }
+        m_RegWorkingSet.ChangeFPURegFormat(m_Opcode.fd, CRegInfo::FPU_Float, CRegInfo::FPU_Qword, CRegInfo::RoundNearest);
+    }
 }
 
 void CX86RecompilerOps::COP1_S_TRUNC_L()
@@ -8001,12 +8008,19 @@ void CX86RecompilerOps::COP1_S_CVT_W()
 
 void CX86RecompilerOps::COP1_S_CVT_L()
 {
-    CompileCop1Test();
-    if (m_Opcode.fd != m_Opcode.fs || !m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Float))
+    if (FpuExceptionInRecompiler())
     {
-        m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
+        COP1_S_CVT(CRegInfo::RoundDefault, CRegInfo::FPU_FloatLow, CRegInfo::FPU_Qword);
     }
-    m_RegWorkingSet.ChangeFPURegFormat(m_Opcode.fd, CRegInfo::FPU_Float, CRegInfo::FPU_Qword, CRegInfo::RoundDefault);
+    else
+    {
+        CompileCop1Test();
+        if (m_Opcode.fd != m_Opcode.fs || !m_RegWorkingSet.RegInStack(m_Opcode.fd, CRegInfo::FPU_Float))
+        {
+            m_RegWorkingSet.Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
+        }
+        m_RegWorkingSet.ChangeFPURegFormat(m_Opcode.fd, CRegInfo::FPU_Float, CRegInfo::FPU_Qword, CRegInfo::RoundDefault);
+    }
 }
 
 void CX86RecompilerOps::COP1_S_CMP()
