@@ -12179,7 +12179,7 @@ void CX86RecompilerOps::COP1_S_CVT(CRegBase::FPU_ROUND RoundMethod, CRegInfo::FP
     asmjit::x86::Gp fsRegPointer = m_RegWorkingSet.FPRValuePointer(m_Opcode.fs, OldFormat);
     if (OldFormat == CRegInfo::FPU_Float || OldFormat == CRegInfo::FPU_FloatLow)
     {
-        CompileCheckFPUInput(fsRegPointer, FpuOpSize_32bit, NewFormat == CRegInfo::FPU_Dword);
+        CompileCheckFPUInput(fsRegPointer, FpuOpSize_32bit, NewFormat == CRegInfo::FPU_Dword || NewFormat == CRegInfo::FPU_Qword);
         m_Assembler.fpuLoadDwordFromX86Reg(m_RegWorkingSet.StackTopPos(), fsRegPointer);
     }
     else if (OldFormat == CRegInfo::FPU_Double)
@@ -12209,7 +12209,10 @@ void CX86RecompilerOps::COP1_S_CVT(CRegBase::FPU_ROUND RoundMethod, CRegInfo::FP
         m_Assembler.ldmxcsr(asmjit::x86::dword_ptr((uint64_t)&StatusRegister));
 
         m_RegWorkingSet.BeforeCallDirect();
-        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
+        if (m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT)
+        {
+            m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", PIPELINE_STAGE_JUMP);
+        }
         m_Assembler.MoveConstToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", m_CompilePC);
         m_Assembler.CallThis((uint32_t)&g_System->m_OpCodes, AddressOf(&R4300iOp::CheckFPUInvalidException), "R4300iOp::CheckFPUInvalidException", 8);
         m_Assembler.test(asmjit::x86::al, asmjit::x86::al);
@@ -12217,7 +12220,10 @@ void CX86RecompilerOps::COP1_S_CVT(CRegBase::FPU_ROUND RoundMethod, CRegInfo::FP
         CRegInfo ExitRegSet = m_RegWorkingSet;
         ExitRegSet.SetBlockCycleCount(ExitRegSet.GetBlockCycleCount() + g_System->CountPerOp());
         CompileExit((uint32_t)-1, (uint32_t)-1, ExitRegSet, ExitReason_Exception, false, &CX86Ops::JnzLabel);
-
+        if (m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT)
+        {
+            m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
+        }
         m_Assembler.bind(ExactLabel);
     }
     else if (NewFormat == CRegInfo::FPU_Qword)
@@ -12238,7 +12244,10 @@ void CX86RecompilerOps::COP1_S_CVT(CRegBase::FPU_ROUND RoundMethod, CRegInfo::FP
         m_Assembler.ldmxcsr(asmjit::x86::dword_ptr((uint64_t)&StatusRegister));
 
         m_RegWorkingSet.BeforeCallDirect();
-        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
+        if (m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT)
+        {
+            m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", PIPELINE_STAGE_JUMP);
+        }
         m_Assembler.MoveConstToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", m_CompilePC);
         m_Assembler.CallThis((uint32_t)&g_System->m_OpCodes, AddressOf(&R4300iOp::CheckFPUInvalidException), "R4300iOp::CheckFPUInvalidException", 8);
         m_Assembler.test(asmjit::x86::al, asmjit::x86::al);
@@ -12246,13 +12255,14 @@ void CX86RecompilerOps::COP1_S_CVT(CRegBase::FPU_ROUND RoundMethod, CRegInfo::FP
         CRegInfo ExitRegSet = m_RegWorkingSet;
         ExitRegSet.SetBlockCycleCount(ExitRegSet.GetBlockCycleCount() + g_System->CountPerOp());
         CompileExit((uint32_t)-1, (uint32_t)-1, ExitRegSet, ExitReason_Exception, false, &CX86Ops::JnzLabel);
-
+        if (m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT)
+        {
+            m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
+        }
         m_Assembler.bind(ExactLabel);
     }
     else if (NewFormat == CRegInfo::FPU_Float)
     {
-        m_Assembler.mov(fsRegPointer, (uint64_t)&m_TempValue32);
-        m_Assembler.fpuStoreDwordFromX86Reg(m_RegWorkingSet.StackTopPos(), fsRegPointer, false);
         CompileCheckFPUResult32(m_Opcode.fd);
     }
     else if (NewFormat == CRegInfo::FPU_Double)
@@ -12268,7 +12278,12 @@ void CX86RecompilerOps::COP1_S_CVT(CRegBase::FPU_ROUND RoundMethod, CRegInfo::FP
     }
 
     asmjit::x86::Gp fdRegPointer = m_RegWorkingSet.FPRValuePointer(m_Opcode.fd, CRegInfo::FPU_UnsignedDoubleWord);
-    if (NewFormat == CRegInfo::FPU_Dword || NewFormat == CRegInfo::FPU_Float)
+    if (NewFormat == CRegInfo::FPU_Float)
+    {
+        m_Assembler.fpuStoreDwordFromX86Reg(m_RegWorkingSet.StackTopPos(), fdRegPointer, true);
+        m_Assembler.and_(asmjit::x86::dword_ptr(fdRegPointer, 4), 0);
+    }
+    else if (NewFormat == CRegInfo::FPU_Dword)
     {
         m_Assembler.MoveVariableToX86reg(fsRegPointer, &m_TempValue32, "m_TempValue32");
         m_Assembler.mov(asmjit::x86::dword_ptr(fdRegPointer), fsRegPointer);
