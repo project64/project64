@@ -12187,6 +12187,36 @@ void CX86RecompilerOps::COP1_S_CVT(CRegBase::FPU_ROUND RoundMethod, CRegInfo::FP
         CompileCheckFPUInput(fsRegPointer, FpuOpSize_64bit, (NewFormat == CRegInfo::FPU_Dword || NewFormat == CRegInfo::FPU_Qword));
         m_Assembler.fpuLoadQwordFromX86Reg(m_RegWorkingSet.StackTopPos(), fsRegPointer);
     }
+    else if (OldFormat == CRegInfo::FPU_Dword)
+    {
+        m_Assembler.fpuLoadIntegerDwordFromX86Reg(m_RegWorkingSet.StackTopPos(), fsRegPointer);
+    }
+    else if (OldFormat == CRegInfo::FPU_Qword)
+    {
+        m_Assembler.mov(asmjit::x86::eax, asmjit::x86::dword_ptr(fsRegPointer, 4));
+        m_Assembler.adc(asmjit::x86::eax, 0x800000);
+        m_Assembler.cmp(asmjit::x86::eax, 0xFFFFFF);
+        asmjit::Label UnimplementedOperationLabel = m_Assembler.newLabel();
+        asmjit::Label ValidValueLabel = m_Assembler.newLabel();
+        m_Assembler.JaLabel("ValidValue", UnimplementedOperationLabel);
+        m_Assembler.JbLabel("UnimplementedOperationLabel", ValidValueLabel);
+        m_Assembler.cmp(asmjit::x86::eax, 0xFFFFFFFF);
+        m_Assembler.JbeLabel("ValidValue", ValidValueLabel);
+        m_Assembler.bind(UnimplementedOperationLabel);
+        CRegInfo ExitRegSet = m_RegWorkingSet;
+        if (ExitRegSet.IsFPStatusRegMapped())
+        {
+            m_Assembler.or_(m_RegWorkingSet.Map_FPStatusReg(), FPCSR_CE);
+        }
+        else
+        {
+            m_Assembler.OrConstToVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", FPCSR_CE);
+        }
+        ExitRegSet.SetBlockCycleCount(ExitRegSet.GetBlockCycleCount() + g_System->CountPerOp());
+        CompileExit(m_CompilePC, m_CompilePC, ExitRegSet, ExitReason_ExceptionFloatingPoint, false, &CX86Ops::JmpLabel);
+        m_Assembler.bind(ValidValueLabel);
+        m_Assembler.fpuLoadIntegerQwordFromX86Reg(m_RegWorkingSet.StackTopPos(), fsRegPointer);
+    }
     else
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
