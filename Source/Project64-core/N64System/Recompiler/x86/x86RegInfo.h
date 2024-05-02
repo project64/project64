@@ -81,9 +81,7 @@ public:
     void AfterCallDirect(void);
 
     void FixRoundModel(FPU_ROUND RoundMethod);
-    void ChangeFPURegFormat(int32_t Reg, FPU_STATE OldFormat, FPU_STATE NewFormat, FPU_ROUND RoundingModel);
     asmjit::x86::Gp FPRValuePointer(int32_t Reg, FPU_STATE Format);
-    void Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Format);
     void PrepareFPTopToBe(int32_t Reg, int32_t RegToLoad, FPU_STATE Format);
     void SetFPTopAs(int32_t Reg);
     bool RegInStack(int32_t Reg, FPU_STATE Format);
