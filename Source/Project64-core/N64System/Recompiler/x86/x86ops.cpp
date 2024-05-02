@@ -286,6 +286,12 @@ void CX86Ops::JbLabel(const char * LabelName, asmjit::Label & JumpLabel)
     jb(JumpLabel);
 }
 
+void CX86Ops::JbeLabel(const char * LabelName, asmjit::Label & JumpLabel)
+{
+    AddSymbol(stdstr_f("L%d", JumpLabel.id()).c_str(), LabelName);
+    jbe(JumpLabel);
+}
+
 void CX86Ops::JecxzLabel(const char * LabelName, asmjit::Label & JumpLabel)
 {
     AddSymbol(stdstr_f("L%d", JumpLabel.id()).c_str(), LabelName);

@@ -54,6 +54,7 @@ public:
     void JaeLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JaLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JbLabel(const char * LabelName, asmjit::Label & JumpLabel);
+    void JbeLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JecxzLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JeLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JgeLabel(const char * LabelName, asmjit::Label & JumpLabel);
