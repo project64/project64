@@ -246,7 +246,6 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ADVANCE_SMM_CACHE, "Cache");
     DEF_STR(ADVANCE_SMM_PIDMA, "PI DMA");
     DEF_STR(ADVANCE_SMM_VALIDATE, "Start changed");
-    DEF_STR(ADVANCE_SMM_PROTECT, "Protect memory");
     DEF_STR(ADVANCE_SMM_TLB, "TLB unmapping");
     DEF_STR(ADVANCE_ALWAYS_INTERPRETER, "Always use interpreter core");
 

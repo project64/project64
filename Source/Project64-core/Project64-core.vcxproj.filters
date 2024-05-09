@@ -647,9 +647,6 @@
     <ClInclude Include="TraceModulesProject64.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ExceptionHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="N64System\Mips\Disk.h">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>

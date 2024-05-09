@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 #include <Common/MemoryManagement.h>
-#include <Project64-core/ExceptionHandler.h>
 
 #include <UserInterface/WTLControls/HexEditCtrl.h>
 

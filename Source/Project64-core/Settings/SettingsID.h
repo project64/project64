@@ -75,7 +75,6 @@ enum SettingID
     Default_SyncViaAudio,
     Default_FixedAudio,
     Default_RandomizeSIPIInterrupts,
-    Default_SMM_Protect_Memory,
     Default_DiskSeekTiming,
 
     // RDB settings
@@ -106,7 +105,6 @@ enum SettingID
     Rdb_SMM_Cache,
     Rdb_SMM_PIDMA,
     Rdb_SMM_TLB,
-    Rdb_SMM_Protect,
     Rdb_SMM_ValidFunc,
     Rdb_ViRefreshRate,
     Rdb_AiCountPerBytes,
@@ -142,7 +140,6 @@ enum SettingID
     Game_SyncViaAudio,
     Game_32Bit,
     Game_SMM_Cache,
-    Game_SMM_Protect,
     Game_SMM_ValidFunc,
     Game_SMM_PIDMA,
     Game_SMM_TLB,
@@ -291,7 +288,6 @@ enum SettingID
     Debugger_TraceRegisterCache,
     Debugger_TraceRecompiler,
     Debugger_TraceTLB,
-    Debugger_TraceProtectedMEM,
     Debugger_TraceUserInterface,
     Debugger_TraceRomList,
     Debugger_TraceExceptionHandler,

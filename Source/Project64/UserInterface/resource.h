@@ -163,7 +163,6 @@
 #define IDC_S_CURRENT_ASSIGN            1040
 #define IDC_SMM_VALIDATE                1041
 #define IDC_ROM_HEADER                  1042
-#define IDC_SMM_PROTECT                 1042
 #define IDC_UNKOWN                      1043
 #define IDC_FUNCFIND                    1043
 #define IDC_RI_REG                      1044
@@ -335,7 +334,6 @@
 #define IDC_SYNC_AUDIO                  1156
 #define IDC_UNALIGNED_DMA               1158
 #define IDC_RANDOMIZE_SIPI_INTERRUPTS   1159
-#define IDC_PROTECT_MEMORY              1160
 #define IDC_R16_EDIT                    1165
 #define IDC_R17_EDIT                    1166
 #define IDC_R18_EDIT                    1167

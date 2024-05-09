@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 #include "SPRegistersHandler.h"
-#include <Project64-core\ExceptionHandler.h>
 #include <Project64-core\N64System\Mips\Register.h>
 #include <Project64-core\N64System\N64System.h>
 #include <Project64-core\N64System\SystemGlobals.h>

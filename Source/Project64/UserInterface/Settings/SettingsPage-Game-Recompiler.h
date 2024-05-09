@@ -18,7 +18,6 @@ class CGameRecompilePage :
         COMMAND_ID_HANDLER_EX(IDC_SMM_DMA, CheckBoxChanged);
         COMMAND_ID_HANDLER_EX(IDC_SMM_VALIDATE, CheckBoxChanged);
         COMMAND_ID_HANDLER_EX(IDC_SMM_TLB, CheckBoxChanged);
-        COMMAND_ID_HANDLER_EX(IDC_SMM_PROTECT, CheckBoxChanged);
         COMMAND_ID_HANDLER_EX(IDC_SMM_STORE, CheckBoxChanged);
     }
     END_MSG_MAP()

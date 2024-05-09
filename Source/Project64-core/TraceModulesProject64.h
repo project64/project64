@@ -18,7 +18,6 @@ enum TraceModuleProject64
     TraceRegisterCache,
     TraceRecompiler,
     TraceTLB,
-    TraceProtectedMem,
     TraceUserInterface,
     TraceRomList,
     TraceExceptionHandler,

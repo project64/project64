@@ -25,7 +25,6 @@ CGameRecompilePage::CGameRecompilePage(HWND hParent, const RECT & rcDispay)
     SetDlgItemText(IDC_SMM_DMA, wGS(ADVANCE_SMM_PIDMA).c_str());
     SetDlgItemText(IDC_SMM_VALIDATE, wGS(ADVANCE_SMM_VALIDATE).c_str());
     SetDlgItemText(IDC_SMM_TLB, wGS(ADVANCE_SMM_TLB).c_str());
-    SetDlgItemText(IDC_SMM_PROTECT, wGS(ADVANCE_SMM_PROTECT).c_str());
 
     m_SelfModGroup.Attach(GetDlgItem(IDC_SMM_FRAME));
 
@@ -36,7 +35,6 @@ CGameRecompilePage::CGameRecompilePage(HWND hParent, const RECT & rcDispay)
     AddModCheckBox(GetDlgItem(IDC_SMM_DMA), Game_SMM_PIDMA);
     AddModCheckBox(GetDlgItem(IDC_SMM_VALIDATE), Game_SMM_ValidFunc);
     AddModCheckBox(GetDlgItem(IDC_SMM_TLB), Game_SMM_TLB);
-    AddModCheckBox(GetDlgItem(IDC_SMM_PROTECT), Game_SMM_Protect);
     AddModCheckBox(GetDlgItem(IDC_SMM_STORE), Game_SMM_StoreInstruc);
     AddModCheckBox(GetDlgItem(IDC_ROM_FASTSP), Game_FastSP);
     AddModCheckBox(GetDlgItem(IDC_ROM_32BIT), Game_32Bit);

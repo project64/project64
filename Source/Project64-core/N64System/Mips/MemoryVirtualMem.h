@@ -117,10 +117,6 @@ public:
 
     void ClearMemoryWriteMap(uint32_t VAddr, uint32_t Length);
 
-    // Protect the memory from being written to
-    void ProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr);
-    void UnProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr);
-
     // Functions for TLB notification
     void TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly);
     void TLB_Unmaped(uint32_t Vaddr, uint32_t Len);

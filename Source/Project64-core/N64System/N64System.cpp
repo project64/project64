@@ -4,7 +4,6 @@
 #include <Common/Util.h>
 #include <Project64-core/3rdParty/zip.h>
 #include <Project64-core/Debugger.h>
-#include <Project64-core/ExceptionHandler.h>
 #include <Project64-core/Logging.h>
 #include <Project64-core/N64System/Enhancement/Enhancements.h>
 #include <Project64-core/N64System/Mips/Disk.h>
@@ -800,16 +799,7 @@ void CN64System::StartEmulation2(bool NewThread)
 void CN64System::StartEmulation(bool NewThread)
 {
     WriteTrace(TraceN64System, TraceDebug, "Start (NewThread: %s)", NewThread ? "true" : "false");
-    __except_try()
-    {
-        StartEmulation2(NewThread);
-    }
-    __except_catch()
-    {
-        char message[400];
-        sprintf(message, "Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__);
-        g_Notify->DisplayError(message);
-    }
+    StartEmulation2(NewThread);
     WriteTrace(TraceN64System, TraceDebug, "Done (NewThread: %s)", NewThread ? "true" : "false")
 }
 
@@ -1939,9 +1929,6 @@ bool CN64System::LoadState(const char * FileName)
                 }
                 Reset(false, true);
 
-                m_MMU_VM.UnProtectMemory(0x80000000, 0x80000000 + m_MMU_VM.RdramSize() - 4);
-                m_MMU_VM.UnProtectMemory(0xA4000000, 0xA4000FFC);
-                m_MMU_VM.UnProtectMemory(0xA4001000, 0xA4001FFC);
                 g_Settings->SaveDword(Game_RDRamSize, SaveRDRAMSize);
                 unzReadCurrentFile(file, &NextVITimer, sizeof(NextVITimer));
                 if (SaveID == 0x23D8A6C8)
@@ -2084,8 +2071,6 @@ bool CN64System::LoadState(const char * FileName)
             }
         }
         Reset(false, true);
-        m_MMU_VM.UnProtectMemory(0x80000000, 0x80000000 + m_MMU_VM.RdramSize() - 4);
-        m_MMU_VM.UnProtectMemory(0xA4000000, 0xA4001FFC);
         g_Settings->SaveDword(Game_RDRamSize, SaveRDRAMSize);
 
         hSaveFile.Read(&NextVITimer, sizeof(NextVITimer));
@@ -2368,20 +2353,13 @@ void CN64System::RefreshScreen()
         m_CPU_Usage.StartTimer(Timer_UpdateScreen);
     }
 
-    __except_try()
+    WriteTrace(TraceVideoPlugin, TraceDebug, "UpdateScreen starting");
+    m_Plugins->Gfx()->UpdateScreen();
+    if (g_Debugger != nullptr && HaveDebugger())
     {
-        WriteTrace(TraceVideoPlugin, TraceDebug, "UpdateScreen starting");
-        m_Plugins->Gfx()->UpdateScreen();
-        if (g_Debugger != nullptr && HaveDebugger())
-        {
-            g_Debugger->FrameDrawn();
-        }
-        WriteTrace(TraceVideoPlugin, TraceDebug, "UpdateScreen done");
+        g_Debugger->FrameDrawn();
     }
-    __except_catch()
-    {
-        WriteTrace(TraceVideoPlugin, TraceError, "Exception caught");
-    }
+    WriteTrace(TraceVideoPlugin, TraceDebug, "UpdateScreen done");
     g_MMU->VideoInterface().UpdateFieldSerration((m_Reg.VI_STATUS_REG & 0x40) != 0);
 
     if ((bBasicMode() || bLimitFPS()) && (!bSyncToAudio() || !FullSpeed()))

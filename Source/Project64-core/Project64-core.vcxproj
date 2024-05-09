@@ -166,7 +166,6 @@
     <ClInclude Include="3rdParty\zip.h" />
     <ClInclude Include="AppInit.h" />
     <ClInclude Include="Debugger.h" />
-    <ClInclude Include="ExceptionHandler.h" />
     <ClInclude Include="Logging.h" />
     <ClInclude Include="Multilanguage.h" />
     <ClInclude Include="Multilanguage\Language.h" />

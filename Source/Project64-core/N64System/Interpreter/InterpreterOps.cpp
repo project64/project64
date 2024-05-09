@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 #include <Project64-core/Debugger.h>
-#include <Project64-core/ExceptionHandler.h>
 #include <Project64-core/Logging.h>
 #include <Project64-core/N64System/Interpreter/InterpreterOps.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
@@ -208,106 +207,99 @@ void R4300iOp::ExecuteOps(int32_t Cycles)
     uint32_t CountPerOp = m_System.CountPerOp();
     bool CheckTimer = false;
 
-    __except_try()
+    while (!Done)
     {
-        while (!Done)
+        if (Cycles <= 0)
         {
-            if (Cycles <= 0)
+            g_SystemTimer->UpdateTimers();
+            return;
+        }
+
+        if (m_MMU.MemoryValue32(m_PROGRAM_COUNTER, m_Opcode.Value))
+        {
+            /*if (PROGRAM_COUNTER > 0x80000300 && PROGRAM_COUNTER< 0x80380000)
             {
-                g_SystemTimer->UpdateTimers();
-                return;
+            WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",m_PROGRAM_COUNTER,R4300iInstruction(m_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str());
+            //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",m_PROGRAM_COUNTER,R4300iInstruction(m_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str(),m_GPR[0x19].UW[0],m_GPR[0x03].UW[0]);
+            //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",m_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
+            }*/
+            /*if (PROGRAM_COUNTER > 0x80323000 && PROGRAM_COUNTER< 0x80380000)
+            {
+            WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",m_PROGRAM_COUNTER,R4300iInstruction(m_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str());
+            //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",m_PROGRAM_COUNTER,R4300iInstruction(m_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str(),m_GPR[0x19].UW[0],m_GPR[0x03].UW[0]);
+            //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",m_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
+            }*/
+            (this->*Jump_Opcode[m_Opcode.op])();
+            m_GPR[0].DW = 0; /* MIPS $zero hard-wired to 0 */
+
+            Cycles -= CountPerOp;
+            *g_NextTimer -= CountPerOp;
+
+            /*static uint32_t TestAddress = 0x80077B0C, TestValue = 0, CurrentValue = 0;
+            if (m_MMU.MemoryValue32(TestAddress, TestValue))
+            {
+            if (TestValue != CurrentValue)
+            {
+            WriteTraceF(TraceError,"%X: %X changed (%s)",PROGRAM_COUNTER,TestAddress,R4300iInstruction(PROGRAM_COUNTER, m_Opcode.Value).NameAndParam().c_str());
+            CurrentValue = TestValue;
             }
+            }*/
 
-            if (m_MMU.MemoryValue32(m_PROGRAM_COUNTER, m_Opcode.Value))
+            switch (PipelineStage)
             {
-                /*if (PROGRAM_COUNTER > 0x80000300 && PROGRAM_COUNTER< 0x80380000)
+            case PIPELINE_STAGE_NORMAL:
+                m_PROGRAM_COUNTER += 4;
+                break;
+            case PIPELINE_STAGE_DELAY_SLOT:
+                PipelineStage = PIPELINE_STAGE_JUMP;
+                m_PROGRAM_COUNTER += 4;
+                break;
+            case PIPELINE_STAGE_PERMLOOP_DO_DELAY:
+                PipelineStage = PIPELINE_STAGE_PERMLOOP_DELAY_DONE;
+                m_PROGRAM_COUNTER += 4;
+                break;
+            case PIPELINE_STAGE_JUMP:
+                CheckTimer = (JumpToLocation < m_PROGRAM_COUNTER || TestTimer);
+                m_PROGRAM_COUNTER = JumpToLocation;
+                PipelineStage = PIPELINE_STAGE_NORMAL;
+                if (CheckTimer)
                 {
-                WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",m_PROGRAM_COUNTER,R4300iInstruction(m_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str());
-                //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",m_PROGRAM_COUNTER,R4300iInstruction(m_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str(),m_GPR[0x19].UW[0],m_GPR[0x03].UW[0]);
-                //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",m_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
-                }*/
-                /*if (PROGRAM_COUNTER > 0x80323000 && PROGRAM_COUNTER< 0x80380000)
-                {
-                WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",m_PROGRAM_COUNTER,R4300iInstruction(m_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str());
-                //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",m_PROGRAM_COUNTER,R4300iInstruction(m_PROGRAM_COUNTER, Opcode.Value).NameAndParam().c_str(),m_GPR[0x19].UW[0],m_GPR[0x03].UW[0]);
-                //WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",m_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
-                }*/
-                (this->*Jump_Opcode[m_Opcode.op])();
-                m_GPR[0].DW = 0; /* MIPS $zero hard-wired to 0 */
-
-                Cycles -= CountPerOp;
-                *g_NextTimer -= CountPerOp;
-
-                /*static uint32_t TestAddress = 0x80077B0C, TestValue = 0, CurrentValue = 0;
-                if (m_MMU.MemoryValue32(TestAddress, TestValue))
-                {
-                if (TestValue != CurrentValue)
-                {
-                WriteTraceF(TraceError,"%X: %X changed (%s)",PROGRAM_COUNTER,TestAddress,R4300iInstruction(PROGRAM_COUNTER, m_Opcode.Value).NameAndParam().c_str());
-                CurrentValue = TestValue;
-                }
-                }*/
-
-                switch (PipelineStage)
-                {
-                case PIPELINE_STAGE_NORMAL:
-                    m_PROGRAM_COUNTER += 4;
-                    break;
-                case PIPELINE_STAGE_DELAY_SLOT:
-                    PipelineStage = PIPELINE_STAGE_JUMP;
-                    m_PROGRAM_COUNTER += 4;
-                    break;
-                case PIPELINE_STAGE_PERMLOOP_DO_DELAY:
-                    PipelineStage = PIPELINE_STAGE_PERMLOOP_DELAY_DONE;
-                    m_PROGRAM_COUNTER += 4;
-                    break;
-                case PIPELINE_STAGE_JUMP:
-                    CheckTimer = (JumpToLocation < m_PROGRAM_COUNTER || TestTimer);
-                    m_PROGRAM_COUNTER = JumpToLocation;
-                    PipelineStage = PIPELINE_STAGE_NORMAL;
-                    if (CheckTimer)
+                    TestTimer = false;
+                    if (*g_NextTimer < 0)
                     {
-                        TestTimer = false;
-                        if (*g_NextTimer < 0)
-                        {
-                            g_SystemTimer->TimerDone();
-                        }
-                        if (DoSomething)
-                        {
-                            SystemEvents.ExecuteEvents();
-                        }
+                        g_SystemTimer->TimerDone();
                     }
-                    break;
-                case PIPELINE_STAGE_JUMP_DELAY_SLOT:
-                    PipelineStage = PIPELINE_STAGE_JUMP;
-                    m_PROGRAM_COUNTER = JumpToLocation;
-                    JumpToLocation = JumpDelayLocation;
-                    break;
-                case PIPELINE_STAGE_PERMLOOP_DELAY_DONE:
-                    m_PROGRAM_COUNTER = JumpToLocation;
-                    PipelineStage = PIPELINE_STAGE_NORMAL;
-                    InPermLoop();
-                    g_SystemTimer->TimerDone();
                     if (DoSomething)
                     {
                         SystemEvents.ExecuteEvents();
                     }
-                    break;
-                default:
-                    g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
-            }
-            else
-            {
-                m_Reg.TriggerAddressException((int32_t)m_PROGRAM_COUNTER, EXC_RMISS);
+                break;
+            case PIPELINE_STAGE_JUMP_DELAY_SLOT:
+                PipelineStage = PIPELINE_STAGE_JUMP;
+                m_PROGRAM_COUNTER = JumpToLocation;
+                JumpToLocation = JumpDelayLocation;
+                break;
+            case PIPELINE_STAGE_PERMLOOP_DELAY_DONE:
                 m_PROGRAM_COUNTER = JumpToLocation;
                 PipelineStage = PIPELINE_STAGE_NORMAL;
+                InPermLoop();
+                g_SystemTimer->TimerDone();
+                if (DoSomething)
+                {
+                    SystemEvents.ExecuteEvents();
+                }
+                break;
+            default:
+                g_Notify->BreakPoint(__FILE__, __LINE__);
             }
         }
-    }
-    __except_catch()
-    {
-        g_Notify->FatalError(GS(MSG_UNKNOWN_MEM_ACTION));
+        else
+        {
+            m_Reg.TriggerAddressException((int32_t)m_PROGRAM_COUNTER, EXC_RMISS);
+            m_PROGRAM_COUNTER = JumpToLocation;
+            PipelineStage = PIPELINE_STAGE_NORMAL;
+        }
     }
 }
 

@@ -95,10 +95,6 @@ public:
     {
         return m_bSMM_StoreInstruc;
     }
-    inline static bool bSMM_Protect(void)
-    {
-        return m_bSMM_Protect;
-    }
     inline static bool bSMM_ValidFunc(void)
     {
         return m_bSMM_ValidFunc;
@@ -170,7 +166,6 @@ private:
     static bool m_b32Bit;
     static bool m_RspAudioSignal;
     static bool m_bSMM_StoreInstruc;
-    static bool m_bSMM_Protect;
     static bool m_bSMM_ValidFunc;
     static bool m_bSMM_PIDMA;
     static bool m_bSMM_TLB;

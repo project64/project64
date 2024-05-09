@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-#include <Project64-core/ExceptionHandler.h>
 #include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/N64System/SystemGlobals.h>
@@ -42,38 +41,31 @@ void CRecompiler::Run()
     }
     m_EndEmulation = false;
 
-    __except_try()
+    if (m_System.LookUpMode() == FuncFind_VirtualLookup)
     {
-        if (m_System.LookUpMode() == FuncFind_VirtualLookup)
+        if (m_System.bSMM_ValidFunc())
         {
-            if (m_System.bSMM_ValidFunc())
-            {
-                RecompilerMain_VirtualTable_validate();
-            }
-            else
-            {
-                RecompilerMain_VirtualTable();
-            }
-        }
-        else if (m_System.LookUpMode() == FuncFind_ChangeMemory)
-        {
-            RecompilerMain_ChangeMemory();
+            RecompilerMain_VirtualTable_validate();
         }
         else
         {
-            if (m_System.bSMM_ValidFunc())
-            {
-                RecompilerMain_Lookup_validate();
-            }
-            else
-            {
-                RecompilerMain_Lookup();
-            }
+            RecompilerMain_VirtualTable();
         }
     }
-    __except_catch()
+    else if (m_System.LookUpMode() == FuncFind_ChangeMemory)
     {
-        g_Notify->DisplayError(MSG_UNKNOWN_MEM_ACTION);
+        RecompilerMain_ChangeMemory();
+    }
+    else
+    {
+        if (m_System.bSMM_ValidFunc())
+        {
+            RecompilerMain_Lookup_validate();
+        }
+        else
+        {
+            RecompilerMain_Lookup();
+        }
     }
 
     WriteTrace(TraceRecompiler, TraceDebug, "Done");
@@ -125,11 +117,6 @@ void CRecompiler::RecompilerMain_VirtualTable()
                 g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
             }
             memset(table, 0, sizeof(PCCompiledFunc) * (0x1000 >> 2));
-            if (m_System.bSMM_Protect())
-            {
-                WriteTrace(TraceRecompiler, TraceError, "Create Table (%X): Index = %d", table, PC >> 0xC);
-                m_MMU.ProtectMemory(PC & ~0xFFF, PC | 0xFFF);
-            }
         }
 
         table[TableEntry] = info;
@@ -170,10 +157,6 @@ void CRecompiler::RecompilerMain_Lookup()
                 if (info == nullptr || m_EndEmulation)
                 {
                     break;
-                }
-                if (m_System.bSMM_Protect())
-                {
-                    m_MMU.ProtectMemory(PROGRAM_COUNTER & ~0xFFF, PROGRAM_COUNTER | 0xFFF);
                 }
                 JumpTable()[PhysicalAddr >> 2] = info;
             }
@@ -229,10 +212,6 @@ void CRecompiler::RecompilerMain_Lookup_validate()
                 if (info == nullptr || m_EndEmulation)
                 {
                     break;
-                }
-                if (m_System.bSMM_Protect())
-                {
-                    m_MMU.ProtectMemory(PC & ~0xFFF, PC | 0xFFF);
                 }
                 JumpTable()[PhysicalAddr >> 2] = info;
             }
@@ -466,10 +445,6 @@ void CRecompiler::ClearRecompCode_Phys(uint32_t Address, int length, REMOVE_REAS
             }
             WriteTrace(TraceRecompiler, TraceInfo, "Resetting jump table, Addr: %X  len: %d", Address, ClearLen);
             memset((uint8_t *)JumpTable() + Address, 0, ClearLen);
-            if (m_System.bSMM_Protect())
-            {
-                m_MMU.UnProtectMemory(Address + 0x80000000, Address + 0x80000004);
-            }
         }
         else
         {
@@ -501,7 +476,6 @@ void CRecompiler::ClearRecompCode_Virt(uint32_t Address, int length, REMOVE_REAS
                 WriteTrace(TraceRecompiler, TraceError, "Delete table (%X): Index = %d", table, AddressIndex);
                 delete table;
                 table = nullptr;
-                m_MMU.UnProtectMemory(Address, Address + length);
             }
 
             if (DataLeft > 0)

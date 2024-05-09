@@ -3,7 +3,6 @@
 #if defined(__i386__) || defined(_M_IX86)
 
 #include <Project64-core/Debugger.h>
-#include <Project64-core/ExceptionHandler.h>
 #include <Project64-core/N64System/Interpreter/InterpreterOps.h>
 #include <Project64-core/N64System/Mips/Disk.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
