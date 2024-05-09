@@ -458,7 +458,7 @@ Good Name=Animal Forest [T-90%]
 Status=Compatible
 32bit=1
 Save Type=FlashRam
-SMM-Protect=1
+SMM-StoreInst=1
 
 [0290AEB9-67A3B6C1-C:45]
 Good Name=Animal Forest [T-Eng-Zoinkity]
@@ -466,7 +466,7 @@ Status=Compatible
 32bit=1
 RDRAM Size=8
 Save Type=FlashRam
-SMM-Protect=1
+SMM-StoreInst=1
 
 [3CC77150-21CDB987-C:50]
 Good Name=Armorines - Project S.W.A.R.M. (E)
@@ -896,8 +896,7 @@ Status=Compatible
 RDRAM Size=8
 SMM-Cache=0
 SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [D85C4E29-88E276AF-C:50]
@@ -1050,8 +1049,7 @@ Status=Compatible
 RDRAM Size=8
 SMM-Cache=0
 SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 
 [F35D5F95-8AFE3D69-C:45]
 Good Name=Castlevania (U) (V1.0)
@@ -1063,8 +1061,7 @@ Primary Frame Buffer=1
 RDRAM Size=8
 SMM-Cache=0
 SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [F35D5335-B7667CB7-C:45]
@@ -1077,8 +1074,7 @@ Primary Frame Buffer=1
 RDRAM Size=8
 SMM-Cache=0
 SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [4BCDFF47-AAA3AF8F-C:45]
@@ -1091,8 +1087,7 @@ Primary Frame Buffer=1
 RDRAM Size=8
 SMM-Cache=0
 SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [A2C54BE7-6719CBB2-C:50]
@@ -1104,8 +1099,7 @@ Culling=1
 Primary Frame Buffer=1
 RDRAM Size=8
 SMM-Cache=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 
 [1CC06338-87388926-C:45]
 Good Name=Castlevania - Legacy of Darkness (U)
@@ -1117,8 +1111,7 @@ Primary Frame Buffer=1
 RDRAM Size=8
 SMM-Cache=0
 SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 
 [DCCF2134-9DD63578-C:50]
 Good Name=Centre Court Tennis (E)
@@ -1760,7 +1753,7 @@ Internal Name=DOUBUTSUNOMORI
 Status=Compatible
 32bit=1
 Save Type=FlashRam
-SMM-Protect=1
+SMM-StoreInst=1
 
 [769D4D13-DA233FFE-C:45]
 Good Name=Dr. Mario 64 (U)
@@ -2305,8 +2298,7 @@ Culling=1
 RDRAM Size=8
 SMM-Cache=0
 SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [AF8679B6-5E1011BF-C:4A]
@@ -2317,8 +2309,7 @@ Status=Compatible
 RDRAM Size=8
 SMM-Cache=0
 SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [457B9CD9-09C55352-C:4A]
@@ -2822,8 +2813,7 @@ Linking=Off
 RDRAM Size=8
 RSP-JumpTableSize=3584
 SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 ViRefresh=1800
 
@@ -2837,8 +2827,7 @@ Linking=Off
 RDRAM Size=8
 RSP-JumpTableSize=3584
 SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 ViRefresh=2050
 
@@ -2992,8 +2981,7 @@ Emulate Clear=1
 RDRAM Size=8
 SMM-Cache=0
 SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [8A6009B6-94ACE150-C:45]
@@ -3005,8 +2993,7 @@ Culling=1
 Emulate Clear=1
 SMM-Cache=0
 SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [DFD8AB47-3CDBEB89-C:45]
@@ -3016,8 +3003,7 @@ Status=Compatible
 Counter Factor=1
 SMM-Cache=0
 SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [AF19D9F5-B70223CC-C:4A]
@@ -3829,21 +3815,21 @@ Internal Name=MICKEY USA
 Status=Compatible
 32bit=1
 RDRAM Size=8
-SMM-Protect=1
+SMM-StoreInst=1
 
 [DED0DD9A-E78225A7-C:50]
 Good Name=Mickey's Speedway USA (E) (M5)
 Internal Name=MICKEY USA PAL
 Status=Compatible
 32bit=1
-SMM-Protect=1
+SMM-StoreInst=1
 
 [FA8C4571-BBE7F9C0-C:45]
 Good Name=Mickey's Speedway USA (U)
 Internal Name=MICKEY USA
 Status=Compatible
 32bit=1
-SMM-Protect=1
+SMM-StoreInst=1
 
 [2A49018D-D0034A02-C:50]
 Good Name=Micro Machines 64 Turbo (E) (M5)
@@ -4119,8 +4105,7 @@ Culling=1
 RDRAM Size=8
 SMM-Cache=0
 SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 //================  N  ================
@@ -4675,8 +4660,7 @@ RDRAM Size=8
 Save Type=16kbit Eeprom
 SMM-Cache=0
 SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [96747EB4-104BB243-C:4A]
@@ -4688,8 +4672,7 @@ RDRAM Size=8
 Save Type=16kbit Eeprom
 SMM-Cache=0
 SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [DDF460CC-3CA634C0-C:45]
@@ -5969,8 +5952,7 @@ Culling=1
 Emulate Clear=1
 SMM-Cache=0
 SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [7EE0E8BB-49E411AA-C:50]
@@ -6507,8 +6489,7 @@ RDRAM Size=8
 Self Texture=1
 SMM-Cache=0
 SMM-FUNC=1
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [EC7011B7-7616D72B-C:45]
@@ -6521,8 +6502,7 @@ Emulate Clear=1
 Self Texture=1
 SMM-Cache=0
 SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [D43DA81F-021E1E19-C:45]
@@ -6534,8 +6514,7 @@ Emulate Clear=1
 Self Texture=1
 SMM-Cache=0
 SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [693BA2AE-B7F14E9F-C:45]
@@ -6548,8 +6527,7 @@ RDRAM Size=8
 Self Texture=1
 SMM-Cache=0
 SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [1D4136F3-AF63EEA9-C:50]
@@ -7796,8 +7774,7 @@ Status=Compatible
 Culling=1
 Emulate Clear=1
 Self Texture=1
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [D43DA81F-021E1E19-C:4A]
@@ -7808,8 +7785,7 @@ Status=Compatible
 Culling=1
 Emulate Clear=1
 Self Texture=1
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [693BA2AE-B7F14E9F-C:4A]
@@ -7821,8 +7797,7 @@ Culling=1
 Emulate Clear=1
 RDRAM Size=8
 Self Texture=1
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [F7F52DB8-2195E636-C:4A]
@@ -9405,32 +9380,28 @@ RDRAM Size=8
 Good Name=Zelda 64 Dawn & Dusk - Expansion Disk (U)
 Status=Compatible
 RDRAM Size=8
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [002FE030-FFD01FCF-C:4A]
 Good Name=Zelda 64 Dawn & Dusk - Expansion Disk (J)
 Status=Compatible
 RDRAM Size=8
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [5582218A-AA7DDE75-C:45]
 Good Name=Zelda Ocarina of Time Expansion Disk (U)
 Status=Compatible
 RDRAM Size=8
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [5582218A-AA7DDE75-C:4A]
 Good Name=Zelda Ocarina of Time Expansion Disk (J)
 Status=Compatible
 RDRAM Size=8
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [32A47D0F-CD5B82F0-C:45]
@@ -10384,37 +10355,37 @@ Unaligned DMA=1
 Good Name=Zelda 64 Dawn & Dusk v1.0 (U) (1.0)
 Status=Compatible
 RDRAM Size=8
-SMM-Protect=1
+SMM-StoreInst=1
 
 [984CD1D2-EC61EED8-C:45]
 Good Name=Zelda 64 Dawn & Dusk v1.0 (U) (1.1)
 Status=Compatible
 RDRAM Size=8
-SMM-Protect=1
+SMM-StoreInst=1
 
 [5DCA1CB0-39C035A2-C:45]
 Good Name=Zelda 64 Dawn & Dusk v1.0 (U) (1.2)
 Status=Compatible
 RDRAM Size=8
-SMM-Protect=1
+SMM-StoreInst=1
 
 [05F2807D-615555AA-C:45]
 Good Name=Zelda 64 Dawn & Dusk v2.0 (JU) (1.0)
 Status=Compatible
 RDRAM Size=8
-SMM-Protect=1
+SMM-StoreInst=1
 
 [05BC6617-664E7CA9-C:45]
 Good Name=Zelda 64 Dawn & Dusk v2.0 (JU) (1.1)
 Status=Compatible
 RDRAM Size=8
-SMM-Protect=1
+SMM-StoreInst=1
 
 [3C1CA1D5-BE199CC1-C:45]
 Good Name=Zelda 64 Dawn & Dusk v2.0 (JU) (1.2)
 Status=Compatible
 RDRAM Size=8
-SMM-Protect=1
+SMM-StoreInst=1
 
 [46334441-3E256124-C:45]
 Good Name=Let's Plant A Tree 64
@@ -10765,7 +10736,7 @@ ViRefresh=2200
 Good Name=The Fate of the Bombiwa 1.0.3
 Status=Compatible
 RDRAM Size=8
-SMM-Protect=1
+SMM-StoreInst=1
 Unaligned DMA=1
 
 [69DB6088-5DF4A2E3-C:45]
@@ -10894,7 +10865,7 @@ RDRAM Size=8
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 Unaligned DMA=1
 
@@ -10946,7 +10917,7 @@ RDRAM Size=8
 SMM-Cache=0
 SMM-FUNC=0
 SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 Unaligned DMA=1
 
@@ -11087,7 +11058,7 @@ Good Name=The Legend of Zelda - Master Of Time
 Status=Compatible
 Counter Factor=1
 RDRAM Size=8
-SMM-Protect=1
+SMM-StoreInst=1
 Unaligned DMA=1
 
 [CEE7DD5F-4046AC23-C:45]
@@ -11123,7 +11094,7 @@ Good Name=Dark Hyrule Fantasy - Villa Muerti Demo Patch
 Status=Compatible
 Counter Factor=1
 RDRAM Size=8
-SMM-Protect=1
+SMM-StoreInst=1
 Unaligned DMA=1
 
 [859877D2-B8B01E1C-C:45]
@@ -11768,8 +11739,7 @@ Emulate Clear=1
 Self Texture=1
 SMM-Cache=0
 SMM-FUNC=0
-SMM-PI DMA=0
-SMM-Protect=1
+SMM-StoreInst=1
 SMM-TLB=0
 
 [3114B9B3-05DCE9CA-C:4A]
