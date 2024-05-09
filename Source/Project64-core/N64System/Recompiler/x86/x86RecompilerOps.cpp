@@ -785,6 +785,8 @@ void CX86RecompilerOps::Compile_BranchLikely(RecompilerBranchCompare CompareType
         if (CompareType == RecompilerBranchCompare_COP1BCF || CompareType == RecompilerBranchCompare_COP1BCT)
         {
             CompileCop1Test();
+            asmjit::x86::Gp StatusReg = m_RegWorkingSet.Map_FPStatusReg();
+            m_Assembler.and_(StatusReg, (uint32_t)(~0x0003F000));
         }
         if (!g_System->bLinkBlocks() || (m_CompilePC & 0xFFC) == 0xFFC)
         {
