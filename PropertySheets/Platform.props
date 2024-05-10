@@ -31,6 +31,17 @@
     </ClCompile>
   </ItemDefinitionGroup>
 
+  <ItemDefinitionGroup Condition="'$(NeedsVersioning)'=='true'">
+    <ClCompile>
+      <PreprocessorDefinitions>
+         %(PreprocessorDefinitions);
+         GIT_REVISION=$(GitRevision);
+         GIT_REVISION_SHORT=$(GitRevisionShort);
+         VERSION_BUILD=$(GitRevisionCount)
+      </PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
   <PropertyGroup Label="UserMacros">
     <ROOT>$(SolutionDir)</ROOT>
     <SRC>$(ROOT)Source\</SRC>
