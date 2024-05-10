@@ -15,6 +15,17 @@
     <Message Importance="High" Text="git rev:       [$(GitRevision)]" />
     <Message Importance="High" Text="git rev short: [$(GitRevisionShort)]" />
     <Message Importance="High" Text="git rev count: [$(GitRevisionCount)]" />
+    <ItemGroup>
+      <ClCompile>
+        <PreprocessorDefinitions>
+          %(PreprocessorDefinitions);
+          GIT_REVISION=$(GitRevision);
+          GIT_REVISION_SHORT=$(GitRevisionShort);
+          VERSION_BUILD=1234;
+          VERSION_BUILD_YEAR=$([System.DateTime]::Now.ToString(`yyyy`))
+       </PreprocessorDefinitions>
+      </ClCompile>
+    </ItemGroup>
   </Target>
 
 </Project>
