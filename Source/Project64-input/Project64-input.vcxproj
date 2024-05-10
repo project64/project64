@@ -43,7 +43,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <PreBuildEvent>
-      <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(Platform)" "$(SolutionDir)Source\Project64-input\Version.h.in" "$(SolutionDir)Source\Project64-input\Version.h"</Command>
+      <!-- <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(Platform)" "$(SolutionDir)Source\Project64-input\Version.h.in" "$(SolutionDir)Source\Project64-input\Version.h"</Command> -->
     </PreBuildEvent>
     <Link>
       <AdditionalDependencies>dinput8.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
