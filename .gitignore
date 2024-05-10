@@ -1,4 +1,5 @@
 *.aps
+*.binlog
 *.ncb
 *.opensdf
 *.sdf

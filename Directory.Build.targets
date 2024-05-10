@@ -25,6 +25,15 @@
           VERSION_BUILD_YEAR=$([System.DateTime]::Now.ToString(`yyyy`))
        </PreprocessorDefinitions>
       </ClCompile>
+      <ResourceCompile>
+        <PreprocessorDefinitions>
+          %(PreprocessorDefinitions);
+          GIT_REVISION=$(GitRevision);
+          GIT_REVISION_SHORT=$(GitRevisionShort);
+          VERSION_BUILD=$(GitRevisionCount);
+          VERSION_BUILD_YEAR=$([System.DateTime]::Now.ToString(`yyyy`))
+       </PreprocessorDefinitions>
+      </ResourceCompile>
     </ItemGroup>
   </Target>
 
