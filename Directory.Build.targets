@@ -38,13 +38,13 @@
       <ClCompile>
         <PreprocessorDefinitions>
           %(PreprocessorDefinitions);
-          $(GitPreprocessorDefinitions);
+          $(GitPreprocessorDefinitions)
        </PreprocessorDefinitions>
       </ClCompile>
       <ResourceCompile>
         <PreprocessorDefinitions>
           %(PreprocessorDefinitions);
-          $(GitPreprocessorDefinitions);
+          $(GitPreprocessorDefinitions)
         </PreprocessorDefinitions>
       </ResourceCompile>
     </ItemGroup>
