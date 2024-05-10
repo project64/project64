@@ -24,6 +24,7 @@
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
+    <NeedsVersioning>true</NeedsVersioning>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <ImportGroup Label="PropertySheets">
@@ -33,7 +34,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ItemDefinitionGroup>
     <PreBuildEvent>
-      <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(Platform)" "$(SolutionDir)Source\Project64-rsp-core\Version.h.in" "$(SolutionDir)Source\Project64-rsp-core\Version.h"</Command>
+      <!-- <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(Platform)" "$(SolutionDir)Source\Project64-rsp-core\Version.h.in" "$(SolutionDir)Source\Project64-rsp-core\Version.h"</Command> -->
     </PreBuildEvent>
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
