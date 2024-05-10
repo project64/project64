@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
 
-  <Target Name="GetGitVersion" BeforeTargets="PrepareForBuild" Condition="'$(NeedsVersioning)'=='true'">
+  <Target Name="GetGitVersion" BeforeTargets="PrepareForBuild" Condition="'$(GetGitVersionSet)'!='true'">
     <Exec Command="git rev-parse HEAD" ConsoleToMsBuild="true"  StandardOutputImportance="Low" EchoOff="true">
       <Output TaskParameter="ConsoleOutput" PropertyName="GitRevision" />
     </Exec>
@@ -15,6 +15,10 @@
     <Message Importance="High" Text="git rev:       [$(GitRevision)]" />
     <Message Importance="High" Text="git rev short: [$(GitRevisionShort)]" />
     <Message Importance="High" Text="git rev count: [$(GitRevisionCount)]" />
+    <PropertyGroup>
+      <!-- Call only once per MSBuild invocation. -->
+      <GetGitVersionSet>true</GetGitVersionSet>
+    </PropertyGroup>
     <ItemGroup>
       <ClCompile>
         <PreprocessorDefinitions>
