@@ -25,6 +25,7 @@
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <NeedsVersioning>true</NeedsVersioning>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <ImportGroup Label="PropertySheets">
@@ -47,7 +48,7 @@
       <AdditionalDependencies>dsound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(Platform)" "$(SolutionDir)Source\Project64-audio\Version.h.in" "$(SolutionDir)Source\Project64-audio\Version.h"</Command>
+      <!-- <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(Platform)" "$(SolutionDir)Source\Project64-audio\Version.h.in" "$(SolutionDir)Source\Project64-audio\Version.h"</Command> -->
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
