@@ -19,31 +19,31 @@
       <GetGitVersionSet>true</GetGitVersionSet>
       <GitVersion>$(GitRevisionShort)</GitVersion>
       <GitVersion Condition="'$(GitIsDirty)'!=''">$(GitRevisionShort)-Dirty</GitVersion>
+      <GitPreprocessorDefinitions>
+        GIT_REVISION=$(GitRevision);
+        GIT_REVISION_SHORT=$(GitRevisionShort);
+        VERSION_BUILD=$(GitRevisionCount);
+        VERSION_BUILD_YEAR=$([System.DateTime]::Now.ToString(`yyyy`))
+      </GitPreprocessorDefinitions>
     </PropertyGroup>
     <!-- TODO: Remove -->
     <Message Importance="High" Text="git rev:       [$(GitRevision)]" />
     <Message Importance="High" Text="git rev short: [$(GitRevisionShort)]" />
     <Message Importance="High" Text="git rev count: [$(GitRevisionCount)]" />
-    <Message Importance="High" Text="git dirty?:    [Dirty]" Condition="'$(GitIsDirty)'!=''" />
+    <Message Importance="High" Text="git dirty?:    [YES]" Condition="'$(GitIsDirty)'!=''" />
     <Message Importance="High" Text="git dirty?:    []" Condition="'$(GitIsDirty)'==''" />
     <Message Importance="High" Text="GitVersion:    [$(GitVersion)]" />
     <ItemGroup>
       <ClCompile>
         <PreprocessorDefinitions>
           %(PreprocessorDefinitions);
-          GIT_REVISION=$(GitRevision);
-          GIT_REVISION_SHORT=$(GitRevisionShort);
-          VERSION_BUILD=$(GitRevisionCount);
-          VERSION_BUILD_YEAR=$([System.DateTime]::Now.ToString(`yyyy`))
+          $(GitPreprocessorDefinitions)
        </PreprocessorDefinitions>
       </ClCompile>
       <ResourceCompile>
         <PreprocessorDefinitions>
           %(PreprocessorDefinitions);
-          GIT_REVISION=$(GitRevision);
-          GIT_REVISION_SHORT=$(GitRevisionShort);
-          VERSION_BUILD=$(GitRevisionCount);
-          VERSION_BUILD_YEAR=$([System.DateTime]::Now.ToString(`yyyy`))
+          $(GitPreprocessorDefinitions)
        </PreprocessorDefinitions>
       </ResourceCompile>
     </ItemGroup>
