@@ -21,7 +21,7 @@
           %(PreprocessorDefinitions);
           GIT_REVISION=$(GitRevision);
           GIT_REVISION_SHORT=$(GitRevisionShort);
-          VERSION_BUILD=1234;
+          VERSION_BUILD=$(GitRevisionCount);
           VERSION_BUILD_YEAR=$([System.DateTime]::Now.ToString(`yyyy`))
        </PreprocessorDefinitions>
       </ClCompile>
