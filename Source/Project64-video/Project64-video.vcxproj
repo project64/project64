@@ -47,7 +47,7 @@
       <DisableSpecificWarnings>4611</DisableSpecificWarnings>
     </ClCompile>
     <PreBuildEvent>
-      <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(Platform)" "$(SolutionDir)Source\Project64-video\Version.h.in" "$(SolutionDir)Source\Project64-video\Version.h"</Command>
+      <!-- <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(Platform)" "$(SolutionDir)Source\Project64-video\Version.h.in" "$(SolutionDir)Source\Project64-video\Version.h"</Command> -->
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
