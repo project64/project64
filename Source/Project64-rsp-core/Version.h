@@ -30,7 +30,7 @@
 #define GIT_DIRTY                   ""
 #endif
 #ifndef GIT_VERSION
-#define GIT_VERSION                 "Unknown"
+#define GIT_VERSION                 Unknown
 #endif
 
 #define VER_FILE_DESCRIPTION_STR    "Project64-RSP"
@@ -39,7 +39,7 @@
                                     "." STRINGIZE(VERSION_MINOR)    \
                                     "." STRINGIZE(VERSION_REVISION) \
                                     "." STRINGIZE(VERSION_BUILD)    \
-                                    "-" GIT_VERSION
+                                    "-" STRINGIZE(GIT_VERSION)
 
 #define VER_PRODUCTNAME_STR         "Project64-RSP"
 #define VER_PRODUCT_VERSION         VER_FILE_VERSION
