@@ -218,5 +218,8 @@
     <ClInclude Include="Hle\ucodes.h">
       <Filter>Header Files\hle</Filter>
     </ClInclude>
+    <ClInclude Include="Version.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

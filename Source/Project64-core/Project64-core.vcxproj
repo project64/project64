@@ -277,6 +277,7 @@
     <ClInclude Include="Settings\SettingType\SettingsType-RDBUser.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TraceModulesProject64.h" />
+    <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\3rdParty\asmjit\asmjit.vcxproj">

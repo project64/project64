@@ -99,5 +99,6 @@
     <ClInclude Include="RSPInfo.h" />
     <ClInclude Include="Settings\RspSettings.h" />
     <ClInclude Include="Settings\RspSettingsID.h" />
+    <ClInclude Include="Version.h" />
   </ItemGroup>
 </Project>

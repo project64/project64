@@ -74,6 +74,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Shortcuts.h" />
     <ClInclude Include="ShortcutsUI.h" />
+    <ClInclude Include="Version.h" />
     <ClInclude Include="wtl-BitmapPicture.h" />
     <ClInclude Include="wtl-ScanButton.h" />
     <ClInclude Include="wtl.h" />
