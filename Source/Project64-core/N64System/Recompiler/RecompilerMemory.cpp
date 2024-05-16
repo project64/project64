@@ -52,7 +52,7 @@ bool CRecompMemory::AllocateMemory()
 void CRecompMemory::CheckRecompMem()
 {
     uint32_t Size = (uint32_t)((uint8_t *)m_RecompPos - (uint8_t *)m_RecompCode);
-    if ((Size + 0x20000) < m_RecompSize)
+    if ((Size + 0x50000) < m_RecompSize)
     {
         return;
     }
