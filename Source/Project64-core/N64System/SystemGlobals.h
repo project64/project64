@@ -37,8 +37,6 @@ extern uint32_t * g_TLBStoreAddress;
 __interface CDebugger;
 extern CDebugger * g_Debugger;
 
-extern uint8_t ** g_RecompPos;
-
 class CMempak;
 extern CMempak * g_Mempak;
 

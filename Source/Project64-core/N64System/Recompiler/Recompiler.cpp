@@ -370,8 +370,8 @@ CCompiledFunc * CRecompiler::CompileCode()
         ShowMemUsed();
     }
 
-    uint32_t CodeLen = CodeBlock.Finilize(*g_RecompPos);
-    *g_RecompPos += CodeLen;
+    uint32_t CodeLen = CodeBlock.Finilize(*RecompPos());
+    *RecompPos() += CodeLen;
     LogCodeBlock(CodeBlock);
 
     if (bSMM_StoreInstruc())

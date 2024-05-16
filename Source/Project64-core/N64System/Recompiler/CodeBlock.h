@@ -8,6 +8,7 @@
 #endif
 
 class CMipsMemoryVM;
+class CRecompiler;
 
 class CCodeBlock :
     public asmjit::ErrorHandler
@@ -119,6 +120,7 @@ private:
     typedef std::map<uint32_t, CCodeSection *> SectionMap;
     typedef std::list<CCodeSection *> SectionList;
 
+    CRecompiler & m_Recompiler;
     CMipsMemoryVM & m_MMU;
     CRegisters & m_Reg;
     SectionMap m_SectionMap;

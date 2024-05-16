@@ -971,7 +971,6 @@ bool CN64System::SetActiveSystem(bool bActive)
         g_Plugins = m_Plugins;
         g_TLBLoadAddress = &m_TLBLoadAddress;
         g_TLBStoreAddress = &m_TLBStoreAddress;
-        g_RecompPos = m_Recomp ? m_Recomp->RecompPos() : nullptr;
         g_Random = &m_Random;
     }
     else
