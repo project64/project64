@@ -241,12 +241,17 @@ void CX86RecompilerOps::PreCompileOpcode(void)
 
     /*if ((m_CompilePC >= 0x80325D80 && m_CompilePC <= 0x80325DF0) && m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
-    m_RegWorkingSet.WriteBackRegisters();
-    UpdateCounters(m_RegWorkingSet,false,true);
-    m_Assembler.MoveConstToVariable(&g_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER",m_CompilePC);
-    if (g_SyncSystem) {
-    m_Assembler.CallThis((uint32_t)g_BaseSystem, AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem", 4);
-    }
+        CX86RegInfo TestRegSet = m_RegWorkingSet;
+        m_Assembler.pushad();
+        TestRegSet.WriteBackRegisters();
+        UpdateCounters(TestRegSet,false,true);
+        m_Assembler.MoveConstToVariable(&g_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER",m_CompilePC);
+        if (g_SyncSystem) 
+        {
+             m_Assembler.CallThis((uint32_t)g_BaseSystem, AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem", 4);
+        }
+        m_RegWorkingSet.SetBlockCycleCount(0);
+        m_Assembler.popad();
     }*/
     /*if ((m_CompilePC == 0x80324E14) && m_PipelineStage == PIPELINE_STAGE_NORMAL)
     {
@@ -8595,6 +8600,31 @@ void CX86RecompilerOps::SyncRegState(const CRegInfo & SyncTo)
             m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(TargetStackReg), CRegInfo::Stack_Mapped);
             m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(MemStackReg), CRegInfo::NotMapped);
             m_Assembler.mov(TargetStackReg, MemStackReg);
+        }
+    }
+
+    asmjit::x86::Gp TargetFPStatusReg = SyncTo.GetFPStatusReg();
+    asmjit::x86::Gp FPStatusReg = m_RegWorkingSet.GetFPStatusReg();
+    if (FPStatusReg != TargetFPStatusReg)
+    {
+        if (!TargetFPStatusReg.isValid())
+        {
+            m_RegWorkingSet.UnMap_X86reg(FPStatusReg);
+        }
+        else if (!FPStatusReg.isValid())
+        {
+            m_RegWorkingSet.UnMap_X86reg(TargetFPStatusReg);
+            m_CodeBlock.Log("    regcache: allocate %s as fp status reg", CX86Ops::x86_Name(TargetFPStatusReg));
+            m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(TargetFPStatusReg), CRegInfo::FPStatusReg_Mapped);
+            m_Assembler.MoveVariableToX86reg(TargetFPStatusReg, &g_Reg->m_FPCR[31], "FPCR[31]");
+        }
+        else
+        {
+            m_RegWorkingSet.UnMap_X86reg(TargetFPStatusReg);
+            m_CodeBlock.Log("    regcache: change allocation of fp status reg from %s to %s", CX86Ops::x86_Name(FPStatusReg), CX86Ops::x86_Name(TargetFPStatusReg));
+            m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(TargetFPStatusReg), CRegInfo::FPStatusReg_Mapped);
+            m_RegWorkingSet.SetX86Mapped(GetIndexFromX86Reg(FPStatusReg), CRegInfo::NotMapped);
+            m_Assembler.mov(TargetFPStatusReg, FPStatusReg);
         }
     }
 
