@@ -394,6 +394,18 @@ bool CX86RegInfo::IsFPStatusRegMapped()
     return false;
 }
 
+asmjit::x86::Gp CX86RegInfo::GetFPStatusReg() const
+{
+    for (int32_t i = 0, n = x86RegIndex_Size; i < n; i++)
+    {
+        if (GetX86Mapped((x86RegIndex)i) == FPStatusReg_Mapped)
+        {
+            return GetX86RegFromIndex((x86RegIndex)i);
+        }
+    }
+    return x86Reg_Unknown;
+}
+
 asmjit::x86::Gp CX86RegInfo::FreeX86Reg()
 {
     if (GetX86Mapped(x86RegIndex_EDI) == NotMapped && !GetX86Protected(x86RegIndex_EDI))
