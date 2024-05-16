@@ -969,8 +969,6 @@ bool CN64System::SetActiveSystem(bool bActive)
         g_SystemTimer = &m_SystemTimer;
         g_NextTimer = &m_NextTimer;
         g_Plugins = m_Plugins;
-        g_TLBLoadAddress = &m_TLBLoadAddress;
-        g_TLBStoreAddress = &m_TLBStoreAddress;
         g_Random = &m_Random;
     }
     else
@@ -985,8 +983,6 @@ bool CN64System::SetActiveSystem(bool bActive)
             g_SystemTimer = nullptr;
             g_NextTimer = nullptr;
             g_Plugins = m_Plugins;
-            g_TLBLoadAddress = nullptr;
-            g_TLBStoreAddress = nullptr;
             g_Random = nullptr;
         }
     }

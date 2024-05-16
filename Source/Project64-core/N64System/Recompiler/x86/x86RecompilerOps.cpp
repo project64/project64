@@ -323,21 +323,21 @@ void CX86RecompilerOps::PostCompileOpcode(void)
 
 void CX86RecompilerOps::CompileReadTLBMiss(uint32_t VirtualAddress, const asmjit::x86::Gp & LookUpReg)
 {
-    m_Assembler.MoveConstToVariable(g_TLBLoadAddress, "TLBLoadAddress", VirtualAddress);
+    m_Assembler.MoveConstToVariable(&m_System.m_TLBLoadAddress, "m_TLBLoadAddress", VirtualAddress);
     m_Assembler.CompConstToX86reg(LookUpReg, (uint32_t)-1);
     CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_TLBReadMiss, false, &CX86Ops::JeLabel);
 }
 
 void CX86RecompilerOps::CompileReadTLBMiss(const asmjit::x86::Gp & AddressReg, const asmjit::x86::Gp & LookUpReg)
 {
-    m_Assembler.MoveX86regToVariable(g_TLBLoadAddress, "TLBLoadAddress", AddressReg);
+    m_Assembler.MoveX86regToVariable(&m_System.m_TLBLoadAddress, "m_TLBLoadAddress", AddressReg);
     m_Assembler.CompConstToX86reg(LookUpReg, (uint32_t)-1);
     CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_TLBReadMiss, false, &CX86Ops::JeLabel);
 }
 
 void CX86RecompilerOps::CompileWriteTLBMiss(const asmjit::x86::Gp & AddressReg, const asmjit::x86::Gp & LookUpReg)
 {
-    m_Assembler.MoveX86regToVariable(&g_TLBStoreAddress, "g_TLBStoreAddress", AddressReg);
+    m_Assembler.MoveX86regToVariable(&m_System.m_TLBStoreAddress, "m_TLBStoreAddress", AddressReg);
     m_Assembler.CompConstToX86reg(LookUpReg, (uint32_t)-1);
     CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_TLBWriteMiss, false, &CX86Ops::JeLabel);
 }
@@ -9579,7 +9579,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
     case ExitReason_TLBReadMiss:
         m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", InDelaySlot ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
         m_Assembler.PushImm32("EXC_RMISS", EXC_RMISS);
-        m_Assembler.MoveVariableToX86reg(asmjit::x86::edx, g_TLBLoadAddress, "g_TLBLoadAddress");
+        m_Assembler.MoveVariableToX86reg(asmjit::x86::edx, &m_System.m_TLBLoadAddress, "m_TLBLoadAddress");
         m_Assembler.push(asmjit::x86::edx);
         m_Assembler.CallThis((uint32_t)g_Reg, AddressOf(&CRegisters::TriggerAddressException), "CRegisters::TriggerAddressException", 12);
         m_Assembler.MoveVariableToX86reg(asmjit::x86::edx, &g_System->m_JumpToLocation, "System->m_JumpToLocation");
