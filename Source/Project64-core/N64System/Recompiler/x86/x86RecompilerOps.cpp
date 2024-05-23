@@ -8427,17 +8427,17 @@ void CX86RecompilerOps::CompileCheckFPUResult32(int32_t DestReg)
 void CX86RecompilerOps::CompileCheckFPUResult64(asmjit::x86::Gp RegPointer)
 {
     m_RegWorkingSet.UnMap_FPStatusReg();
+    bool RegPointerProtect = m_RegWorkingSet.GetX86Protected(GetIndexFromX86Reg(RegPointer));
+    if (!RegPointerProtect)
+    {
+        m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(RegPointer), true);
+    }
     asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::eax, -1, false, false);
     if (RegPointer == TempReg)
     {
         asmjit::x86::Gp RegPointerValue = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
         m_Assembler.mov(RegPointerValue, RegPointer);
         RegPointer = RegPointerValue;
-    }
-    bool RegPointerProtect = m_RegWorkingSet.GetX86Protected(GetIndexFromX86Reg(RegPointer));
-    if (!RegPointerProtect)
-    {
-        m_RegWorkingSet.SetX86Protected(GetIndexFromX86Reg(RegPointer), true);
     }
 
     asmjit::x86::Gp TempReg2 = m_RegWorkingSet.Map_TempReg(x86Reg_Unknown, -1, false, false);
