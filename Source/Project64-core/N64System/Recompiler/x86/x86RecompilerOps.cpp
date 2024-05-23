@@ -302,6 +302,10 @@ void CX86RecompilerOps::PostCompileOpcode(void)
     if (!g_System->bFPURegCaching())
     {
         m_RegWorkingSet.UnMap_AllFPRs();
+        if (m_RegWorkingSet.StackTopPos() != 0)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
     }
     /*if (m_CompilePC >= 0x800933B4 && m_CompilePC <= 0x80093414 && (m_PipelineStage == PIPELINE_STAGE_NORMAL || m_PipelineStage == PIPELINE_STAGE_DO_DELAY_SLOT))
     {
@@ -7767,7 +7771,7 @@ void CX86RecompilerOps::COP1_S_CMP()
 
     m_Assembler.fpuLoadDwordFromX86Reg(m_RegWorkingSet.StackTopPos(), FtPtr);
     m_Assembler.fpuLoadDwordFromX86Reg(m_RegWorkingSet.StackTopPos(), FsPtr);
-    m_Assembler.fucompp();
+    m_Assembler.fpuCompp(m_RegWorkingSet.StackTopPos());
     m_Assembler.fstsw(asmjit::x86::ax);
     m_Assembler.sahf();
     asmjit::Label NotNanLabel = m_Assembler.newLabel();
@@ -7961,7 +7965,7 @@ void CX86RecompilerOps::COP1_D_CMP()
 
     m_Assembler.fpuLoadQwordFromX86Reg(m_RegWorkingSet.StackTopPos(), FtPtr);
     m_Assembler.fpuLoadQwordFromX86Reg(m_RegWorkingSet.StackTopPos(), FsPtr);
-    m_Assembler.fucompp();
+    m_Assembler.fpuCompp(m_RegWorkingSet.StackTopPos());
     m_Assembler.fstsw(asmjit::x86::ax);
     m_Assembler.sahf();
     asmjit::Label NotNanLabel = m_Assembler.newLabel();
@@ -8250,15 +8254,15 @@ void CX86RecompilerOps::CompileCheckFPUInput(asmjit::x86::Gp RegPointer, FpuOpSi
             InvalidMinValueJump = m_Assembler.newLabel();
 
             static uint32_t InvalidValueMax = 0x5a000000, InvalidMinValue = 0xda000000;
-            m_Assembler.fld(asmjit::x86::dword_ptr(RegPointer));
-            m_Assembler.fld(asmjit::x86::dword_ptr((uint64_t)&InvalidValueMax));
-            m_Assembler.fcompp();
+            m_Assembler.fpuLoadDwordFromX86Reg(m_RegWorkingSet.StackTopPos(), RegPointer);
+            m_Assembler.fpuLoadDwordFromPtr(m_RegWorkingSet.StackTopPos(), (uint64_t)&InvalidValueMax);
+            m_Assembler.fpuCompp(m_RegWorkingSet.StackTopPos());
             m_Assembler.fnstsw(asmjit::x86::ax);
             m_Assembler.test(asmjit::x86::ah, 0x41);
             m_Assembler.jnp(InvalidValueMaxJump);
-            m_Assembler.fld(asmjit::x86::dword_ptr(RegPointer));
-            m_Assembler.fld(asmjit::x86::qword_ptr((uint64_t)&InvalidMinValue));
-            m_Assembler.fcompp();
+            m_Assembler.fpuLoadDwordFromX86Reg(m_RegWorkingSet.StackTopPos(), RegPointer);
+            m_Assembler.fpuLoadDwordFromPtr(m_RegWorkingSet.StackTopPos(), (uint64_t)&InvalidMinValue);
+            m_Assembler.fpuCompp(m_RegWorkingSet.StackTopPos());
             m_Assembler.fnstsw(asmjit::x86::ax);
             m_Assembler.test(asmjit::x86::ah, 0x1);
             m_Assembler.je(InvalidMinValueJump);
@@ -11435,8 +11439,7 @@ void CX86RecompilerOps::COP1_S_CVT(CRegBase::FPU_ROUND RoundMethod, CRegInfo::FP
         m_Assembler.mov(fsRegPointer, (uint64_t)&m_TempValue32);
         m_Assembler.fpuStoreIntegerDwordFromX86Reg(m_RegWorkingSet.StackTopPos(), fsRegPointer, false);
         m_Assembler.fpuLoadIntegerDwordFromX86Reg(m_RegWorkingSet.StackTopPos(), fsRegPointer);
-        m_Assembler.fcompp();
-        m_RegWorkingSet.StackTopPos() = (m_RegWorkingSet.StackTopPos() - 2) & 7;
+        m_Assembler.fpuCompp(m_RegWorkingSet.StackTopPos());
         m_Assembler.fstsw(asmjit::x86::ax);
         m_Assembler.sahf();
         asmjit::Label ExactLabel = m_Assembler.newLabel();
@@ -11467,11 +11470,10 @@ void CX86RecompilerOps::COP1_S_CVT(CRegBase::FPU_ROUND RoundMethod, CRegInfo::FP
     else if (NewFormat == CRegInfo::FPU_Qword)
     {
         m_Assembler.mov(fsRegPointer, (uint64_t)&m_TempValue64);
-        m_Assembler.fld(asmjit::x86::st0);
+        m_Assembler.fpuLoadDwordFromStackReg(m_RegWorkingSet.StackTopPos(), asmjit::x86::st0);
         m_Assembler.fpuStoreIntegerQwordFromX86Reg(m_RegWorkingSet.StackTopPos(), fsRegPointer, true);
         m_Assembler.fpuLoadIntegerQwordFromX86Reg(m_RegWorkingSet.StackTopPos(), fsRegPointer);
-        m_Assembler.fcompp();
-        m_RegWorkingSet.StackTopPos() = (m_RegWorkingSet.StackTopPos() - 2) & 7;
+        m_Assembler.fpuCompp(m_RegWorkingSet.StackTopPos());
         m_Assembler.fstsw(asmjit::x86::ax);
         m_Assembler.sahf();
         asmjit::Label ExactLabel = m_Assembler.newLabel();
@@ -11506,7 +11508,7 @@ void CX86RecompilerOps::COP1_S_CVT(CRegBase::FPU_ROUND RoundMethod, CRegInfo::FP
     else if (NewFormat == CRegInfo::FPU_Double)
     {
         m_Assembler.mov(fsRegPointer, (uint64_t)&m_TempValue64);
-        m_Assembler.fpuStoreQwordFromX86Reg(m_RegWorkingSet.StackTopPos(), fsRegPointer, false);
+        m_Assembler.fpuStoreQwordFromX86Reg(m_RegWorkingSet.StackTopPos(), fsRegPointer, true);
         CompileCheckFPUResult64(fsRegPointer);
     }
     else

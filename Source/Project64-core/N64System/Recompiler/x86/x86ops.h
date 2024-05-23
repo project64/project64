@@ -96,9 +96,12 @@ public:
     void TestVariable(void * Variable, const char * VariableName, uint32_t Const);
     void XorVariableToX86reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
 
+    void fpuCompp(int32_t & StackPos);
     void fpuIncStack(int32_t & StackPos);
     void fpuLoadControl(void * Variable, const char * VariableName);
     void fpuLoadDwordFromX86Reg(int32_t & StackPos, const asmjit::x86::Gp & Reg);
+    void fpuLoadDwordFromStackReg(int32_t & StackPos, const asmjit::x86::St & Reg);
+    void fpuLoadDwordFromPtr(int32_t & StackPos, uint64_t Ptr);
     void fpuLoadIntegerDwordFromX86Reg(int32_t & StackPos, const asmjit::x86::Gp & Reg);
     void fpuLoadIntegerQwordFromX86Reg(int32_t & StackPos, const asmjit::x86::Gp & Reg);
     void fpuLoadQwordFromX86Reg(int32_t & StackPos, const asmjit::x86::Gp & Reg);

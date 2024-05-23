@@ -765,6 +765,12 @@ void CX86Ops::XorVariableToX86reg(const asmjit::x86::Gp & Reg, void * Variable, 
     }
 }
 
+void CX86Ops::fpuCompp(int32_t & StackPos)
+{
+    StackPos = (StackPos + 2) & 7;
+    fcompp();
+}
+
 void CX86Ops::fpuIncStack(int32_t & StackPos)
 {
     StackPos = (StackPos + 1) & 7;
@@ -789,6 +795,18 @@ void CX86Ops::fpuLoadControl(void * Variable, const char * VariableName)
 void CX86Ops::fpuLoadDwordFromX86Reg(int32_t & StackPos, const asmjit::x86::Gp & x86reg)
 {
     fld(asmjit::x86::dword_ptr(x86reg));
+    StackPos = (StackPos - 1) & 7;
+}
+
+void CX86Ops::fpuLoadDwordFromStackReg(int32_t & StackPos, const asmjit::x86::St & StackReg)
+{
+    fld(StackReg);
+    StackPos = (StackPos - 1) & 7;
+}
+
+void CX86Ops::fpuLoadDwordFromPtr(int32_t & StackPos, uint64_t Ptr)
+{
+    fld(asmjit::x86::dword_ptr(Ptr));
     StackPos = (StackPos - 1) & 7;
 }
 
