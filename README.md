@@ -6,6 +6,18 @@
 
 Project64 is a free and open-source emulator for the Nintendo 64 and Nintendo 64 Disk Drive written in C++ currently only for Windows (planned support for other platforms in the future).
 
+  * [Features](#features)
+  * [Screenshot](#screenshot)
+  * [Installation](#installation)
+  * [Supported requirements](#supported-requirements)
+  * [Support](#support)
+  * [Changelog](#changelog)
+  * [Dependencies](#dependencies)
+  * [Contributing](#contributing)
+  * [Maintainers and contributors](#maintainers-and-contributors)
+  * [🔗 Links](#---links)
+  * [License](#license)
+
 ## Features
 
 - Development and debugging tools
