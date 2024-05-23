@@ -85,6 +85,8 @@ If you would like to see a changelog that is available [here](./Docs/CHANGELOG.m
 
 Contributions are always welcome!
 
+If you want to contribute to this project, please click [here](https://github.com/project64/project64/blob/develop/Docs/BUILDING.md) to get more information on how to set up a local build environment.
+
 See the [contributing](./.github/CONTRIBUTING.md) file for ways to get started.
 
 ## Maintainers and contributors
