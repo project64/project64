@@ -3376,15 +3376,14 @@ bool R4300iOp::CheckFPUInput32Conv(const float & Value)
 
 bool R4300iOp::CheckFPUInput64(const double & Value)
 {
-    int Type = fpclassify(Value);
     bool Exception = false;
-    if (Type == FP_SUBNORMAL)
+    if ((*((uint64_t *)&Value) & 0x7FF0000000000000ULL) == 0x0000000000000000ULL && (*((uint64_t *)&Value) & 0x000FFFFFFFFFFFFFULL) != 0x0000000000000000ULL)
     {
         FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
         StatusReg.Cause.UnimplementedOperation = 1;
         Exception = true;
     }
-    else if (Type == FP_NAN)
+    else if ((*((uint64_t *)&Value) & 0x7FF0000000000000ULL) == 0x7FF0000000000000ULL && (*((uint64_t *)&Value) & 0x000FFFFFFFFFFFFFULL) != 0x0000000000000000ULL)
     {
         uint64_t Value64 = *(uint64_t *)&Value;
         FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
