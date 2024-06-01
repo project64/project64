@@ -76,6 +76,31 @@ void uc1_tri2()
     rsp_tri2(vtx);
 }
 
+void uc1_line3d()
+{
+    if (((rdp.cmd1 & 0xFF000000) == 0) && ((rdp.cmd0 & 0x00FFFFFF) == 0))
+    {
+        uint16_t width = (uint16_t)(rdp.cmd1 & 0xFF) + 3;
+
+        WriteTrace(TraceRDP, TraceDebug, "uc1:line3d width: %d #%d, #%d - %d, %d", width, rdp.tri_n, rdp.tri_n + 1,
+            (rdp.cmd1 >> 17) & 0x7F,
+            (rdp.cmd1 >> 9) & 0x7F);
+
+        gfxVERTEX *vtx[3] = {
+            &rdp.vtx((rdp.cmd1 >> 17) & 0x7F),
+            &rdp.vtx((rdp.cmd1 >> 9) & 0x7F),
+            &rdp.vtx((rdp.cmd1 >> 9) & 0x7F)
+        };
+        uint32_t cull_mode = (rdp.flags & CULLMASK) >> CULLSHIFT;
+        rdp.flags |= CULLMASK;
+        rdp.update |= UPDATE_CULL_MODE;
+        rsp_tri1(vtx, width);
+        rdp.flags ^= CULLMASK;
+        rdp.flags |= cull_mode << CULLSHIFT;
+        rdp.update |= UPDATE_CULL_MODE;
+    }
+}
+
 void uc1_quad3d()
 {
         WriteTrace(TraceRDP, TraceDebug, "uc1:quad3d #%d, #%d", rdp.tri_n, rdp.tri_n + 1);
