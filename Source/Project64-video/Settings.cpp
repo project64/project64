@@ -64,7 +64,6 @@ CSettings::CSettings() :
     m_stipple_mode(GFX_STIPPLE_DISABLE), //used for dithered alpha emulation
     m_stipple_pattern(0), //used for dithered alpha emulation
     m_force_microcheck(false), //check microcode each frame, for mixed F3DEX-S2DEX games
-    m_force_quad3d(false), //force 0xb5 command to be quad, not line 3d
     m_clip_zmin(false), //enable near z clipping
     m_clip_zmax(false), //enable far plane clipping;
     m_adjust_aspect(false), //adjust screen aspect for wide screen mode
@@ -748,7 +747,6 @@ void CSettings::ReadGameSettings(const char * name)
     int stipple_pattern = GetSetting(Set_stipple_pattern);
     m_stipple_pattern = stipple_pattern > 0 ? (uint32_t)stipple_pattern : 0x3E0F83E0;
     m_force_microcheck = GetSetting(Set_force_microcheck) != 0;
-    m_force_quad3d = GetSetting(Set_force_quad3d) != 0;
     m_clip_zmin = GetSetting(Set_clip_zmin) != 0;
     m_clip_zmax = GetSetting(Set_clip_zmax) != 0;
     m_fast_crc = GetSetting(Set_fast_crc) != 0;

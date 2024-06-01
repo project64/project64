@@ -76,7 +76,7 @@ void uc1_tri2()
     rsp_tri2(vtx);
 }
 
-void uc1_line3d()
+void uc1_quad3d()
 {
         WriteTrace(TraceRDP, TraceDebug, "uc1:quad3d #%d, #%d", rdp.tri_n, rdp.tri_n + 1);
 

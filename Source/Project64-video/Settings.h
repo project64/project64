@@ -237,7 +237,6 @@ public:
     inline gfxStippleMode_t stipple_mode(void) const { return m_stipple_mode; } //used for dithered alpha emulation
     inline uint32_t stipple_pattern(void) const { return m_stipple_pattern; } //used for dithered alpha emulation
     inline bool force_microcheck(void) const { return m_force_microcheck; } //check microcode each frame, for mixed F3DEX-S2DEX games
-    inline bool force_quad3d(void) const { return m_force_quad3d; } //force 0xb5 command to be quad, not line 3d
     inline bool clip_zmin(void) const { return m_clip_zmin; } //enable near z clipping
     inline bool clip_zmax(void) const { return m_clip_zmax; } //enable far plane clipping
     inline bool adjust_aspect(void) const { return m_adjust_aspect; } //adjust screen aspect for wide screen mode
@@ -383,7 +382,6 @@ private:
     gfxStippleMode_t m_stipple_mode;
     uint32_t m_stipple_pattern;
     bool m_force_microcheck;
-    bool m_force_quad3d;
     bool m_clip_zmin;
     bool m_clip_zmax;
     bool m_adjust_aspect;
