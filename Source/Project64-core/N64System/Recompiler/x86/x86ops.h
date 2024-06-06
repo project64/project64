@@ -72,6 +72,7 @@ public:
     void MoveConstByteToVariable(void * Variable, const char * VariableName, uint8_t Const);
     void MoveConstHalfToVariable(void * Variable, const char * VariableName, uint16_t Const);
     void MoveConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
+    void MoveConst64ToVariable(void * Variable, const char * VariableName, uint64_t Const);
     void MoveConstToX86reg(const asmjit::x86::Gp & Reg, uint32_t Const);
     void MoveSxVariableToX86regByte(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
     void MoveSxVariableToX86regHalf(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);

@@ -5,10 +5,10 @@
 class R4300iInstruction
 {
 public:
-    R4300iInstruction(uint32_t Address, uint32_t Instruction);
+    R4300iInstruction(uint64_t Address, uint32_t Instruction);
     R4300iInstruction & operator=(const R4300iInstruction &);
 
-    const uint32_t & Address() const;
+    const uint64_t & Address() const;
     const R4300iOpcode & Opcode() const;
     const char * Name();
     const char * Param();
@@ -35,7 +35,7 @@ private:
     void DecodeCop1Name(void);
     void DecodeCop2Name(void);
 
-    uint32_t m_Address;
+    uint64_t m_Address;
     R4300iOpcode m_Instruction;
     char m_Name[40];
     char m_Param[200];

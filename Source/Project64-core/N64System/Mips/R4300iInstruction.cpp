@@ -3,7 +3,7 @@
 #include "R4300iInstruction.h"
 #include <Project64-core/N64System/Mips/Register.h>
 
-R4300iInstruction::R4300iInstruction(uint32_t Address, uint32_t Instruction) :
+R4300iInstruction::R4300iInstruction(uint64_t Address, uint32_t Instruction) :
     m_Address(Address)
 {
     m_Name[0] = '\0';
@@ -20,7 +20,7 @@ R4300iInstruction & R4300iInstruction::operator=(const R4300iInstruction & Instr
     return *this;
 }
 
-const uint32_t & R4300iInstruction::Address() const
+const uint64_t & R4300iInstruction::Address() const
 {
     return m_Address;
 }
@@ -291,48 +291,48 @@ void R4300iInstruction::DecodeName(void)
         break;
     case R4300i_J:
         strcpy(m_Name, "J");
-        sprintf(m_Param, "0x%08X", (m_Address & 0xF0000000) + (m_Instruction.target << 2));
+        sprintf(m_Param, "0x%08X", (uint32_t)(m_Address & 0xF0000000) + (m_Instruction.target << 2));
         break;
     case R4300i_JAL:
         strcpy(m_Name, "JAL");
-        sprintf(m_Param, "0x%08X", (m_Address & 0xF0000000) + (m_Instruction.target << 2));
+        sprintf(m_Param, "0x%08X", (uint32_t)(m_Address & 0xF0000000) + (m_Instruction.target << 2));
         break;
     case R4300i_BEQ:
         if (m_Instruction.rs == 0 && m_Instruction.rt == 0)
         {
             strcpy(m_Name, "B");
-            sprintf(m_Param, "0x%08X", m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+            sprintf(m_Param, "0x%08X", (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         }
         else if (m_Instruction.rs == 0 || m_Instruction.rt == 0)
         {
             strcpy(m_Name, "BEQZ");
-            sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs == 0 ? m_Instruction.rt : m_Instruction.rs], m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+            sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs == 0 ? m_Instruction.rt : m_Instruction.rs], (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         }
         else
         {
             strcpy(m_Name, "BEQ");
-            sprintf(m_Param, "%s, %s, 0x%08X", CRegName::GPR[m_Instruction.rs], CRegName::GPR[m_Instruction.rt], m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+            sprintf(m_Param, "%s, %s, 0x%08X", CRegName::GPR[m_Instruction.rs], CRegName::GPR[m_Instruction.rt], (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         }
         break;
     case R4300i_BNE:
         if ((m_Instruction.rs == 0) ^ (m_Instruction.rt == 0))
         {
             strcpy(m_Name, "BNEZ");
-            sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs == 0 ? m_Instruction.rt : m_Instruction.rs], m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+            sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs == 0 ? m_Instruction.rt : m_Instruction.rs], (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         }
         else
         {
             strcpy(m_Name, "BNE");
-            sprintf(m_Param, "%s, %s, 0x%08X", CRegName::GPR[m_Instruction.rs], CRegName::GPR[m_Instruction.rt], m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+            sprintf(m_Param, "%s, %s, 0x%08X", CRegName::GPR[m_Instruction.rs], CRegName::GPR[m_Instruction.rt], (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         }
         break;
     case R4300i_BLEZ:
         strcpy(m_Name, "BLEZ");
-        sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+        sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         break;
     case R4300i_BGTZ:
         strcpy(m_Name, "BGTZ");
-        sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+        sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         break;
     case R4300i_ADDI:
         strcpy(m_Name, "ADDI");
@@ -431,38 +431,38 @@ void R4300iInstruction::DecodeName(void)
         if (m_Instruction.rs == m_Instruction.rt)
         {
             strcpy(m_Name, "B");
-            sprintf(m_Param, "0x%08X", m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+            sprintf(m_Param, "0x%08X", (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         }
         else if ((m_Instruction.rs == 0) ^ (m_Instruction.rt == 0))
         {
             strcpy(m_Name, "BEQZL");
-            sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs == 0 ? m_Instruction.rt : m_Instruction.rs], m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+            sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs == 0 ? m_Instruction.rt : m_Instruction.rs], (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         }
         else
         {
             strcpy(m_Name, "BEQL");
-            sprintf(m_Param, "%s, %s, 0x%08X", CRegName::GPR[m_Instruction.rs], CRegName::GPR[m_Instruction.rt], m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+            sprintf(m_Param, "%s, %s, 0x%08X", CRegName::GPR[m_Instruction.rs], CRegName::GPR[m_Instruction.rt], (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         }
         break;
     case R4300i_BNEL:
         if ((m_Instruction.rs == 0) ^ (m_Instruction.rt == 0))
         {
             strcpy(m_Name, "BNEZL");
-            sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs == 0 ? m_Instruction.rt : m_Instruction.rs], m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+            sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs == 0 ? m_Instruction.rt : m_Instruction.rs], (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         }
         else
         {
             strcpy(m_Name, "BNEL");
-            sprintf(m_Param, "%s, %s, 0x%08X", CRegName::GPR[m_Instruction.rs], CRegName::GPR[m_Instruction.rt], m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+            sprintf(m_Param, "%s, %s, 0x%08X", CRegName::GPR[m_Instruction.rs], CRegName::GPR[m_Instruction.rt], (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         }
         break;
     case R4300i_BLEZL:
         strcpy(m_Name, "BLEZL");
-        sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+        sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         break;
     case R4300i_BGTZL:
         strcpy(m_Name, "BGTZL");
-        sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+        sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         break;
     case R4300i_DADDI:
         strcpy(m_Name, "DADDI");
@@ -821,27 +821,27 @@ void R4300iInstruction::DecodeRegImmName(void)
     {
     case R4300i_REGIMM_BLTZ:
         strcpy(m_Name, "BLTZ");
-        sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+        sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         break;
     case R4300i_REGIMM_BGEZ:
         if (m_Instruction.rs == 0)
         {
             strcpy(m_Name, "B");
-            sprintf(m_Param, "0x%08X", m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+            sprintf(m_Param, "0x%08X", (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         }
         else
         {
             strcpy(m_Name, "BGEZ");
-            sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+            sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         }
         break;
     case R4300i_REGIMM_BLTZL:
         strcpy(m_Name, "BLTZL");
-        sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+        sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         break;
     case R4300i_REGIMM_BGEZL:
         strcpy(m_Name, "BGEZL");
-        sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+        sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         break;
     case R4300i_REGIMM_TGEI:
         strcpy(m_Name, "TGEI");
@@ -869,27 +869,27 @@ void R4300iInstruction::DecodeRegImmName(void)
         break;
     case R4300i_REGIMM_BLTZAL:
         strcpy(m_Name, "BLTZAL");
-        sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+        sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         break;
     case R4300i_REGIMM_BGEZAL:
         if (m_Instruction.rs == 0)
         {
             strcpy(m_Name, "BAL");
-            sprintf(m_Param, "0x%08X", m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+            sprintf(m_Param, "0x%08X", (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         }
         else
         {
             strcpy(m_Name, "BGEZAL");
-            sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+            sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         }
         break;
     case R4300i_REGIMM_BLTZALL:
         strcpy(m_Name, "BLTZALL");
-        sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+        sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         break;
     case R4300i_REGIMM_BGEZALL:
         strcpy(m_Name, "BGEZALL");
-        sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+        sprintf(m_Param, "%s, 0x%08X", CRegName::GPR[m_Instruction.rs], (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
         break;
     default:
         strcpy(m_Name, "UNKNOWN");
@@ -930,19 +930,19 @@ void R4300iInstruction::DecodeCop1Name(void)
         {
         case R4300i_COP1_BC_BCF:
             strcpy(m_Name, "BC1F");
-            sprintf(m_Param, "0x%08X", m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+            sprintf(m_Param, "0x%08X", (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
             break;
         case R4300i_COP1_BC_BCT:
             strcpy(m_Name, "BC1T");
-            sprintf(m_Param, "0x%08X", m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+            sprintf(m_Param, "0x%08X", (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
             break;
         case R4300i_COP1_BC_BCFL:
             strcpy(m_Name, "BC1FL");
-            sprintf(m_Param, "0x%08X", m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+            sprintf(m_Param, "0x%08X", (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
             break;
         case R4300i_COP1_BC_BCTL:
             strcpy(m_Name, "BC1TL");
-            sprintf(m_Param, "0x%08X", m_Address + ((int16_t)m_Instruction.offset << 2) + 4);
+            sprintf(m_Param, "0x%08X", (uint32_t)(m_Address + ((int16_t)m_Instruction.offset << 2) + 4));
             break;
         default:
             strcpy(m_Name, "UNKNOWN COP1");

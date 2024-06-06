@@ -47,14 +47,14 @@ bool RDRAMInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
     {
         switch (Address & 0x1FFFFFFF)
         {
-        case 0x04700000: LogMessage("%08X: read from RI_MODE_REG (%08X)", m_PC, Value); break;
-        case 0x04700004: LogMessage("%08X: read from RI_CONFIG_REG (%08X)", m_PC, Value); break;
-        case 0x04700008: LogMessage("%08X: read from RI_CURRENT_LOAD_REG (%08X)", m_PC, Value); break;
-        case 0x0470000C: LogMessage("%08X: read from RI_SELECT_REG (%08X)", m_PC, Value); break;
-        case 0x04700010: LogMessage("%08X: read from RI_REFRESH_REG/RI_COUNT_REG (%08X)", m_PC, Value); break;
-        case 0x04700014: LogMessage("%08X: read from RI_LATENCY_REG (%08X)", m_PC, Value); break;
-        case 0x04700018: LogMessage("%08X: read from RI_RERROR_REG (%08X)", m_PC, Value); break;
-        case 0x0470001C: LogMessage("%08X: read from RI_WERROR_REG (%08X)", m_PC, Value); break;
+        case 0x04700000: LogMessage("%016llX: read from RI_MODE_REG (%08X)", m_PC, Value); break;
+        case 0x04700004: LogMessage("%016llX: read from RI_CONFIG_REG (%08X)", m_PC, Value); break;
+        case 0x04700008: LogMessage("%016llX: read from RI_CURRENT_LOAD_REG (%08X)", m_PC, Value); break;
+        case 0x0470000C: LogMessage("%016llX: read from RI_SELECT_REG (%08X)", m_PC, Value); break;
+        case 0x04700010: LogMessage("%016llX: read from RI_REFRESH_REG/RI_COUNT_REG (%08X)", m_PC, Value); break;
+        case 0x04700014: LogMessage("%016llX: read from RI_LATENCY_REG (%08X)", m_PC, Value); break;
+        case 0x04700018: LogMessage("%016llX: read from RI_RERROR_REG (%08X)", m_PC, Value); break;
+        case 0x0470001C: LogMessage("%016llX: read from RI_WERROR_REG (%08X)", m_PC, Value); break;
         default:
             if (HaveDebugger())
             {
@@ -71,14 +71,14 @@ bool RDRAMInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t M
     {
         switch (Address & 0x1FFFFFFF)
         {
-        case 0x04700000: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to RI_MODE_REG", m_PC, Value, Mask); break;
-        case 0x04700004: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to RI_CONFIG_REG", m_PC, Value, Mask); break;
-        case 0x04700008: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to RI_CURRENT_LOAD_REG", m_PC, Value, Mask); break;
-        case 0x0470000C: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to RI_SELECT_REG", m_PC, Value, Mask); break;
-        case 0x04700010: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to RI_REFRESH_REG/RI_COUNT_REG", m_PC, Value, Mask); break;
-        case 0x04700014: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to RI_LATENCY_REG", m_PC, Value, Mask); break;
-        case 0x04700018: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to RI_RERROR_REG", m_PC, Value, Mask); break;
-        case 0x0470001C: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to RI_WERROR_REG", m_PC, Value, Mask); break;
+        case 0x04700000: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to RI_MODE_REG", m_PC, Value, Mask); break;
+        case 0x04700004: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to RI_CONFIG_REG", m_PC, Value, Mask); break;
+        case 0x04700008: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to RI_CURRENT_LOAD_REG", m_PC, Value, Mask); break;
+        case 0x0470000C: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to RI_SELECT_REG", m_PC, Value, Mask); break;
+        case 0x04700010: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to RI_REFRESH_REG/RI_COUNT_REG", m_PC, Value, Mask); break;
+        case 0x04700014: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to RI_LATENCY_REG", m_PC, Value, Mask); break;
+        case 0x04700018: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to RI_RERROR_REG", m_PC, Value, Mask); break;
+        case 0x0470001C: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to RI_WERROR_REG", m_PC, Value, Mask); break;
         default:
             if (HaveDebugger())
             {

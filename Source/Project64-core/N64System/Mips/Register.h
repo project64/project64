@@ -499,7 +499,7 @@ public:
     void Cop2_MT(uint32_t Reg, uint64_t Value);
 
     // General registers
-    uint32_t m_PROGRAM_COUNTER;
+    uint64_t m_PROGRAM_COUNTER;
     MIPS_DWORD m_GPR[32];
     uint64_t m_CP0[32];
     uint64_t m_CP0Latch;

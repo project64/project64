@@ -40,14 +40,14 @@ bool DisplayControlRegHandler::Read32(uint32_t Address, uint32_t & Value)
     {
         switch (Address & 0x1FFFFFFF)
         {
-        case 0x04100000: LogMessage("%08X: read from DPC_START_REG (%08X)", m_PC, Value); break;
-        case 0x04100004: LogMessage("%08X: read from DPC_END_REG (%08X)", m_PC, Value); break;
-        case 0x04100008: LogMessage("%08X: read from DPC_CURRENT_REG (%08X)", m_PC, Value); break;
-        case 0x0410000C: LogMessage("%08X: read from DPC_STATUS_REG (%08X)", m_PC, Value); break;
-        case 0x04100010: LogMessage("%08X: read from DPC_CLOCK_REG (%08X)", m_PC, Value); break;
-        case 0x04100014: LogMessage("%08X: read from DPC_BUFBUSY_REG (%08X)", m_PC, Value); break;
-        case 0x04100018: LogMessage("%08X: read from DPC_PIPEBUSY_REG (%08X)", m_PC, Value); break;
-        case 0x0410001C: LogMessage("%08X: read from DPC_TMEM_REG (%08X)", m_PC, Value); break;
+        case 0x04100000: LogMessage("%016llX: read from DPC_START_REG (%08X)", m_PC, Value); break;
+        case 0x04100004: LogMessage("%016llX: read from DPC_END_REG (%08X)", m_PC, Value); break;
+        case 0x04100008: LogMessage("%016llX: read from DPC_CURRENT_REG (%08X)", m_PC, Value); break;
+        case 0x0410000C: LogMessage("%016llX: read from DPC_STATUS_REG (%08X)", m_PC, Value); break;
+        case 0x04100010: LogMessage("%016llX: read from DPC_CLOCK_REG (%08X)", m_PC, Value); break;
+        case 0x04100014: LogMessage("%016llX: read from DPC_BUFBUSY_REG (%08X)", m_PC, Value); break;
+        case 0x04100018: LogMessage("%016llX: read from DPC_PIPEBUSY_REG (%08X)", m_PC, Value); break;
+        case 0x0410001C: LogMessage("%016llX: read from DPC_TMEM_REG (%08X)", m_PC, Value); break;
         default:
             if (HaveDebugger())
             {
@@ -64,14 +64,14 @@ bool DisplayControlRegHandler::Write32(uint32_t Address, uint32_t Value, uint32_
     {
         switch (Address & 0x1FFFFFFF)
         {
-        case 0x04100000: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to DPC_START_REG", m_PC, Value, Mask); break;
-        case 0x04100004: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to DPC_END_REG", m_PC, Value, Mask); break;
-        case 0x04100008: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to DPC_CURRENT_REG", m_PC, Value, Mask); break;
-        case 0x0410000C: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to DPC_STATUS_REG", m_PC, Value, Mask); break;
-        case 0x04100010: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to DPC_CLOCK_REG", m_PC, Value, Mask); break;
-        case 0x04100014: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to DPC_BUFBUSY_REG", m_PC, Value, Mask); break;
-        case 0x04100018: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to DPC_PIPEBUSY_REG", m_PC, Value, Mask); break;
-        case 0x0410001C: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to DPC_TMEM_REG", m_PC, Value, Mask); break;
+        case 0x04100000: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to DPC_START_REG", m_PC, Value, Mask); break;
+        case 0x04100004: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to DPC_END_REG", m_PC, Value, Mask); break;
+        case 0x04100008: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to DPC_CURRENT_REG", m_PC, Value, Mask); break;
+        case 0x0410000C: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to DPC_STATUS_REG", m_PC, Value, Mask); break;
+        case 0x04100010: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to DPC_CLOCK_REG", m_PC, Value, Mask); break;
+        case 0x04100014: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to DPC_BUFBUSY_REG", m_PC, Value, Mask); break;
+        case 0x04100018: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to DPC_PIPEBUSY_REG", m_PC, Value, Mask); break;
+        case 0x0410001C: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to DPC_TMEM_REG", m_PC, Value, Mask); break;
         default:
             if (HaveDebugger())
             {

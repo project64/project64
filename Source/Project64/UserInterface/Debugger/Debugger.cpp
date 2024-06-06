@@ -606,7 +606,7 @@ void CDebuggerUI::CPUStepStarted()
     if (m_ScriptSystem->HaveAppCallbacks())
     {
         JSHookCpuStepEnv hookEnv;
-        hookEnv.pc = g_Reg->m_PROGRAM_COUNTER;
+        hookEnv.pc = (uint32_t)g_Reg->m_PROGRAM_COUNTER;
         hookEnv.opInfo = COpInfo(g_System->Opcode());
 
         if (m_ScriptSystem->HaveCpuExecCallbacks(hookEnv.pc))
@@ -626,7 +626,7 @@ void CDebuggerUI::CPUStepStarted()
 
     if (CDebugSettings::ExceptionBreakpoints() != 0)
     {
-        uint32_t pc = g_Reg->m_PROGRAM_COUNTER;
+        uint32_t pc = (uint32_t)g_Reg->m_PROGRAM_COUNTER;
 
         if (pc == 0x80000000 || pc == 0x80000080 || pc == 0xA0000100 || pc == 0x80000180)
         {
@@ -691,7 +691,7 @@ void CDebuggerUI::CPUStepEnded()
 
     if (op == R4300i_JAL || ((op == R4300i_SPECIAL) && (funct == R4300i_SPECIAL_JALR) && (Opcode.rd == 31))) // JAL or JALR RA, x
     {
-        m_StackTrace->PushEntry(g_System->JumpToLocation(), g_Reg->m_PROGRAM_COUNTER);
+        m_StackTrace->PushEntry((uint32_t)g_System->JumpToLocation(), (uint32_t)g_Reg->m_PROGRAM_COUNTER);
     }
     else if (funct == R4300i_SPECIAL_JR && Opcode.rs == 31) // JR RA
     {

@@ -89,5 +89,5 @@ private:
     CRegisters & m_Reg;
     CSystemTimer & m_SystemTimer;
     int32_t & m_NextTimer;
-    uint32_t & m_PC;
+    uint64_t & m_PC;
 };

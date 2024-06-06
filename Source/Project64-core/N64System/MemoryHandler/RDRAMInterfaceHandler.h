@@ -44,5 +44,5 @@ private:
     RDRAMInterfaceHandler(const RDRAMInterfaceHandler &);
     RDRAMInterfaceHandler & operator=(const RDRAMInterfaceHandler &);
 
-    uint32_t & m_PC;
+    uint64_t & m_PC;
 };

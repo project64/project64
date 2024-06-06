@@ -1343,7 +1343,7 @@ void CN64System::DumpSyncErrors()
 #endif
         if (m_Reg.m_PROGRAM_COUNTER != m_SyncCPU->m_Reg.m_PROGRAM_COUNTER)
         {
-            Error.LogF("PROGRAM_COUNTER 0x%X,         0x%X\r\n", m_Reg.m_PROGRAM_COUNTER, m_SyncCPU->m_Reg.m_PROGRAM_COUNTER);
+            Error.LogF("PROGRAM_COUNTER 0x%016llX,         0x%016llX\r\n", m_Reg.m_PROGRAM_COUNTER, m_SyncCPU->m_Reg.m_PROGRAM_COUNTER);
         }
         if (b32BitCore())
         {
@@ -1564,20 +1564,22 @@ void CN64System::DumpSyncErrors()
         Error.Log("Code at PC:\r\n");
         for (count = -10; count < 10; count++)
         {
-            uint32_t OpcodeValue, Addr = m_Reg.m_PROGRAM_COUNTER + (count << 2);
-            if (g_MMU->MemoryValue32(Addr, OpcodeValue))
+            uint64_t Addr = m_Reg.m_PROGRAM_COUNTER + (count << 2);
+            uint32_t OpcodeValue;
+            if (g_MMU->MemoryValue32((uint32_t)Addr, OpcodeValue))
             {
-                Error.LogF("%X: %s\r\n", Addr, R4300iInstruction(Addr, OpcodeValue).NameAndParam().c_str());
+                Error.LogF("%X: %s\r\n", (uint32_t)Addr, R4300iInstruction(Addr, OpcodeValue).NameAndParam().c_str());
             }
         }
         Error.Log("\r\n");
         Error.Log("Code at last sync PC:\r\n");
         for (count = 0; count < 50; count++)
         {
-            uint32_t OpcodeValue, Addr = m_LastSuccessSyncPC[0] + (count << 2);
-            if (g_MMU->MemoryValue32(Addr, OpcodeValue))
+            uint64_t Addr = m_LastSuccessSyncPC[0] + (count << 2);
+            uint32_t OpcodeValue;
+            if (g_MMU->MemoryValue32((uint32_t)Addr, OpcodeValue))
             {
-                Error.LogF("%X: %s\r\n", Addr, R4300iInstruction(Addr, OpcodeValue).NameAndParam().c_str());
+                Error.LogF("%X: %s\r\n", (uint32_t)Addr, R4300iInstruction(Addr, OpcodeValue).NameAndParam().c_str());
             }
         }
     }
@@ -1661,8 +1663,7 @@ bool CN64System::SaveState()
             zipWriteInFileInZip(file, g_Rom->GetRomAddress(), 0x40);
         }
         zipWriteInFileInZip(file, &NextViTimer, sizeof(uint32_t));
-        int64_t WriteProgramCounter = ((int32_t)m_Reg.m_PROGRAM_COUNTER);
-        zipWriteInFileInZip(file, &WriteProgramCounter, sizeof(int64_t));
+        zipWriteInFileInZip(file, &m_Reg.m_PROGRAM_COUNTER, sizeof(int64_t));
         zipWriteInFileInZip(file, m_Reg.m_GPR, sizeof(int64_t) * 32);
         zipWriteInFileInZip(file, m_Reg.m_FPR, sizeof(int64_t) * 32);
         zipWriteInFileInZip(file, m_Reg.m_CP0, sizeof(uint64_t) * 32);
@@ -1732,8 +1733,7 @@ bool CN64System::SaveState()
             hSaveFile.Write(g_Rom->GetRomAddress(), 0x40);
         }
         hSaveFile.Write(&NextViTimer, sizeof(uint32_t));
-        int64_t WriteProgramCounter = ((int32_t)m_Reg.m_PROGRAM_COUNTER);
-        hSaveFile.Write(&WriteProgramCounter, sizeof(int64_t));
+        hSaveFile.Write(&m_Reg.m_PROGRAM_COUNTER, sizeof(int64_t));
         hSaveFile.Write(m_Reg.m_GPR, sizeof(int64_t) * 32);
         hSaveFile.Write(m_Reg.m_FPR, sizeof(int64_t) * 32);
         hSaveFile.Write(m_Reg.m_CP0, sizeof(uint64_t) * 32);
@@ -2263,7 +2263,7 @@ void CN64System::NotifyCallback(CN64SystemCB Type)
     }
 }
 
-void CN64System::DelayedJump(uint32_t JumpLocation)
+void CN64System::DelayedJump(uint64_t JumpLocation)
 {
     if (m_PipelineStage == PIPELINE_STAGE_JUMP)
     {
@@ -2281,7 +2281,7 @@ void CN64System::DelayedJump(uint32_t JumpLocation)
     }
 }
 
-void CN64System::DelayedRelativeJump(uint32_t RelativeLocation)
+void CN64System::DelayedRelativeJump(uint64_t RelativeLocation)
 {
     if (m_PipelineStage == PIPELINE_STAGE_JUMP)
     {
@@ -2296,7 +2296,7 @@ void CN64System::DelayedRelativeJump(uint32_t RelativeLocation)
     if (m_Reg.m_PROGRAM_COUNTER == m_JumpToLocation)
     {
         R4300iOpcode DelaySlot;
-        if (m_MMU_VM.MemoryValue32(m_Reg.m_PROGRAM_COUNTER + 4, DelaySlot.Value) && !R4300iInstruction(m_Reg.m_PROGRAM_COUNTER, m_OpCodes.Opcode().Value).DelaySlotEffectsCompare(DelaySlot.Value))
+        if (m_MMU_VM.MemoryValue32((uint32_t)(m_Reg.m_PROGRAM_COUNTER + 4), DelaySlot.Value) && !R4300iInstruction(m_Reg.m_PROGRAM_COUNTER, m_OpCodes.Opcode().Value).DelaySlotEffectsCompare(DelaySlot.Value))
         {
             m_PipelineStage = PIPELINE_STAGE_PERMLOOP_DO_DELAY;
         }

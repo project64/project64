@@ -62,7 +62,7 @@ CDebugCommandsView::~CDebugCommandsView()
 
 LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/)
 {
-    m_StartAddress = g_Reg ? g_Reg->m_PROGRAM_COUNTER : 0x80000000;
+    m_StartAddress = (uint32_t)(g_Reg ? g_Reg->m_PROGRAM_COUNTER : 0x80000000);
 
     g_Settings->RegisterChangeCB(Debugger_WaitingForStep, this, (CSettings::SettingChangedFunc)StaticWaitingForStepChanged);
     g_Settings->RegisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)StaticSteppingOpsChanged);
@@ -499,7 +499,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
         }
 
         m_bIgnorePCChange = true;
-        m_PCEdit.SetValue(g_Reg->m_PROGRAM_COUNTER, DisplayMode::ZeroExtend);
+        m_PCEdit.SetValue((uint32_t)g_Reg->m_PROGRAM_COUNTER, DisplayMode::ZeroExtend);
 
         // Enable buttons
         m_ViewPCButton.EnableWindow(TRUE);
@@ -681,7 +681,7 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR * pNMHDR)
     uint32_t nSubItem = pLVCD->iSubItem;
 
     uint32_t address = m_StartAddress + (nItem * 4);
-    uint32_t pc = (g_Reg != nullptr) ? g_Reg->m_PROGRAM_COUNTER : 0;
+    uint32_t pc = (g_Reg != nullptr) ? (uint32_t)g_Reg->m_PROGRAM_COUNTER : 0;
 
     R4300iOpcode pcOpcode;
     if (!m_Debugger->DebugLoad_VAddr(pc, pcOpcode.Value))
@@ -1051,7 +1051,7 @@ void CDebugCommandsView::CPUResume()
 void CDebugCommandsView::CPUStepOver()
 {
     COpInfo opInfo;
-    if (!m_Debugger->DebugLoad_VAddr(g_Reg->m_PROGRAM_COUNTER, opInfo.m_OpCode.Value))
+    if (!m_Debugger->DebugLoad_VAddr((uint32_t)g_Reg->m_PROGRAM_COUNTER, opInfo.m_OpCode.Value))
     {
         return;
     }
@@ -1059,7 +1059,7 @@ void CDebugCommandsView::CPUStepOver()
     if (opInfo.IsJAL())
     {
         // Put temp breakpoints on return address and resume
-        m_Breakpoints->AddExecution(g_Reg->m_PROGRAM_COUNTER + 8, true);
+        m_Breakpoints->AddExecution((uint32_t)g_Reg->m_PROGRAM_COUNTER + 8, true);
         CPUResume();
     }
     else
@@ -1098,7 +1098,7 @@ LRESULT CDebugCommandsView::OnViewPCButton(WORD /*wNotifyCode*/, WORD /*wID*/, H
 {
     if (g_Reg != nullptr && isStepping())
     {
-        ShowAddress(g_Reg->m_PROGRAM_COUNTER, TRUE);
+        ShowAddress((uint32_t)g_Reg->m_PROGRAM_COUNTER, TRUE);
     }
     return FALSE;
 }
@@ -1523,7 +1523,7 @@ void CDebugCommandsView::WaitingForStepChanged(void)
 {
     if (WaitingForStep())
     {
-        ShowAddress(g_Reg->m_PROGRAM_COUNTER, false);
+        ShowAddress((uint32_t)g_Reg->m_PROGRAM_COUNTER, false);
         m_Debugger->Debug_RefreshStackWindow();
         m_Debugger->Debug_RefreshStackTraceWindow();
         m_StepButton.EnableWindow(true);

@@ -72,19 +72,19 @@ bool PeripheralInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
     {
         switch (Address & 0x1FFFFFFF)
         {
-        case 0x04600000: LogMessage("%08X: read from PI_DRAM_ADDR_REG (%08X)", m_PC, Value); break;
-        case 0x04600004: LogMessage("%08X: read from PI_CART_ADDR_REG (%08X)", m_PC, Value); break;
-        case 0x04600008: LogMessage("%08X: read from PI_RD_LEN_REG (%08X)", m_PC, Value); break;
-        case 0x0460000C: LogMessage("%08X: read from PI_WR_LEN_REG (%08X)", m_PC, Value); break;
-        case 0x04600010: LogMessage("%08X: read from PI_STATUS_REG (%08X)", m_PC, Value); break;
-        case 0x04600014: LogMessage("%08X: read from PI_BSD_DOM1_LAT_REG/PI_DOMAIN1_REG (%08X)", m_PC, Value); break;
-        case 0x04600018: LogMessage("%08X: read from PI_BSD_DOM1_PWD_REG (%08X)", m_PC, Value); break;
-        case 0x0460001C: LogMessage("%08X: read from PI_BSD_DOM1_PGS_REG (%08X)", m_PC, Value); break;
-        case 0x04600020: LogMessage("%08X: read from PI_BSD_DOM1_RLS_REG (%08X)", m_PC, Value); break;
-        case 0x04600024: LogMessage("%08X: read from PI_BSD_DOM2_LAT_REG/PI_DOMAIN2_REG (%08X)", m_PC, Value); break;
-        case 0x04600028: LogMessage("%08X: read from PI_BSD_DOM2_PWD_REG (%08X)", m_PC, Value); break;
-        case 0x0460002C: LogMessage("%08X: read from PI_BSD_DOM2_PGS_REG (%08X)", m_PC, Value); break;
-        case 0x04600030: LogMessage("%08X: read from PI_BSD_DOM2_RLS_REG (%08X)", m_PC, Value); break;
+        case 0x04600000: LogMessage("%016llX: read from PI_DRAM_ADDR_REG (%08X)", m_PC, Value); break;
+        case 0x04600004: LogMessage("%016llX: read from PI_CART_ADDR_REG (%08X)", m_PC, Value); break;
+        case 0x04600008: LogMessage("%016llX: read from PI_RD_LEN_REG (%08X)", m_PC, Value); break;
+        case 0x0460000C: LogMessage("%016llX: read from PI_WR_LEN_REG (%08X)", m_PC, Value); break;
+        case 0x04600010: LogMessage("%016llX: read from PI_STATUS_REG (%08X)", m_PC, Value); break;
+        case 0x04600014: LogMessage("%016llX: read from PI_BSD_DOM1_LAT_REG/PI_DOMAIN1_REG (%08X)", m_PC, Value); break;
+        case 0x04600018: LogMessage("%016llX: read from PI_BSD_DOM1_PWD_REG (%08X)", m_PC, Value); break;
+        case 0x0460001C: LogMessage("%016llX: read from PI_BSD_DOM1_PGS_REG (%08X)", m_PC, Value); break;
+        case 0x04600020: LogMessage("%016llX: read from PI_BSD_DOM1_RLS_REG (%08X)", m_PC, Value); break;
+        case 0x04600024: LogMessage("%016llX: read from PI_BSD_DOM2_LAT_REG/PI_DOMAIN2_REG (%08X)", m_PC, Value); break;
+        case 0x04600028: LogMessage("%016llX: read from PI_BSD_DOM2_PWD_REG (%08X)", m_PC, Value); break;
+        case 0x0460002C: LogMessage("%016llX: read from PI_BSD_DOM2_PGS_REG (%08X)", m_PC, Value); break;
+        case 0x04600030: LogMessage("%016llX: read from PI_BSD_DOM2_RLS_REG (%08X)", m_PC, Value); break;
         default:
             if (HaveDebugger())
             {
@@ -101,19 +101,19 @@ bool PeripheralInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint3
     {
         switch (Address & 0x1FFFFFFF)
         {
-        case 0x04600000: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to PI_DRAM_ADDR_REG", m_PC, Value, Mask); break;
-        case 0x04600004: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to PI_CART_ADDR_REG", m_PC, Value, Mask); break;
-        case 0x04600008: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to PI_RD_LEN_REG", m_PC, Value, Mask); break;
-        case 0x0460000C: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to PI_WR_LEN_REG", m_PC, Value, Mask); break;
-        case 0x04600010: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to PI_STATUS_REG", m_PC, Value, Mask); break;
-        case 0x04600014: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to PI_BSD_DOM1_LAT_REG/PI_DOMAIN1_REG", m_PC, Value, Mask); break;
-        case 0x04600018: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to PI_BSD_DOM1_PWD_REG", m_PC, Value, Mask); break;
-        case 0x0460001C: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to PI_BSD_DOM1_PGS_REG", m_PC, Value, Mask); break;
-        case 0x04600020: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to PI_BSD_DOM1_RLS_REG", m_PC, Value, Mask); break;
-        case 0x04600024: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to PI_BSD_DOM2_LAT_REG/PI_DOMAIN2_REG", m_PC, Value, Mask); break;
-        case 0x04600028: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to PI_BSD_DOM2_PWD_REG", m_PC, Value, Mask); break;
-        case 0x0460002C: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to PI_BSD_DOM2_PGS_REG", m_PC, Value, Mask); break;
-        case 0x04600030: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to PI_BSD_DOM2_RLS_REG", m_PC, Value, Mask); break;
+        case 0x04600000: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to PI_DRAM_ADDR_REG", m_PC, Value, Mask); break;
+        case 0x04600004: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to PI_CART_ADDR_REG", m_PC, Value, Mask); break;
+        case 0x04600008: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to PI_RD_LEN_REG", m_PC, Value, Mask); break;
+        case 0x0460000C: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to PI_WR_LEN_REG", m_PC, Value, Mask); break;
+        case 0x04600010: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to PI_STATUS_REG", m_PC, Value, Mask); break;
+        case 0x04600014: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to PI_BSD_DOM1_LAT_REG/PI_DOMAIN1_REG", m_PC, Value, Mask); break;
+        case 0x04600018: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to PI_BSD_DOM1_PWD_REG", m_PC, Value, Mask); break;
+        case 0x0460001C: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to PI_BSD_DOM1_PGS_REG", m_PC, Value, Mask); break;
+        case 0x04600020: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to PI_BSD_DOM1_RLS_REG", m_PC, Value, Mask); break;
+        case 0x04600024: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to PI_BSD_DOM2_LAT_REG/PI_DOMAIN2_REG", m_PC, Value, Mask); break;
+        case 0x04600028: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to PI_BSD_DOM2_PWD_REG", m_PC, Value, Mask); break;
+        case 0x0460002C: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to PI_BSD_DOM2_PGS_REG", m_PC, Value, Mask); break;
+        case 0x04600030: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to PI_BSD_DOM2_RLS_REG", m_PC, Value, Mask); break;
         default:
             if (HaveDebugger())
             {

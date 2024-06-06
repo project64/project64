@@ -47,5 +47,5 @@ private:
     RDRAMRegistersHandler(const RDRAMRegistersHandler &);
     RDRAMRegistersHandler & operator=(const RDRAMRegistersHandler &);
 
-    uint32_t & m_PC;
+    uint64_t & m_PC;
 };

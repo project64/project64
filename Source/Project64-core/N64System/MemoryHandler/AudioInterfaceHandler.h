@@ -76,7 +76,7 @@ private:
     CN64System & m_System;
     CRegisters & m_Reg;
     CPlugins * m_Plugins;
-    uint32_t & m_PC;
+    uint64_t & m_PC;
     uint32_t m_Status;
     uint32_t m_SecondBuff;
     uint32_t m_BytesPerSecond;

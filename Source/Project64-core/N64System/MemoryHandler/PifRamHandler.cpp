@@ -46,7 +46,7 @@ bool PifRamHandler::Read32(uint32_t Address, uint32_t & Value)
 
     if (GenerateLog() && LogPRDirectMemLoads() && Address >= 0x1FC007C0 && Address <= 0x1FC007FC)
     {
-        LogMessage("%08X: read word from PIF RAM at 0x%X (%08X)", m_PC, Address - 0x1FC007C0, Value);
+        LogMessage("%016llX: read word from PIF RAM at 0x%X (%08X)", m_PC, Address - 0x1FC007C0, Value);
     }
     return true;
 }
@@ -56,7 +56,7 @@ bool PifRamHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask)
     Address &= 0x1FFFFFFF;
     if (GenerateLog() && LogPRDirectMemStores() && Address >= 0x1FC007C0 && Address <= 0x1FC007FC)
     {
-        LogMessage("%08X: Writing 0x%08X to PIF RAM at 0x%X", m_PC, Value, Address - 0x1FC007C0);
+        LogMessage("%016llX: Writing 0x%08X to PIF RAM at 0x%X", m_PC, Value, Address - 0x1FC007C0);
     }
 
     if (Address < 0x1FC007C0)

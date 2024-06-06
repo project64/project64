@@ -32,7 +32,7 @@ struct CExitInfo
 
     std::string Name;
     uint32_t ID;
-    uint32_t TargetPC;
+    uint64_t TargetPC;
     CRegInfo ExitRegSet;
     ExitReason Reason;
     PIPELINE_STAGE PipelineStage;

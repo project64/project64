@@ -40,10 +40,10 @@ bool SerialInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
     {
         switch (Address & 0x1FFFFFFF)
         {
-        case 0x04800000: LogMessage("%08X: read from SI_DRAM_ADDR_REG (%08X)", m_PC, Value); break;
-        case 0x04800004: LogMessage("%08X: read from SI_PIF_ADDR_RD64B_REG (%08X)", m_PC, Value); break;
-        case 0xA4800010: LogMessage("%08X: read from SI_PIF_ADDR_WR64B_REG (%08X)", m_PC, Value); break;
-        case 0x04800018: LogMessage("%08X: read from SI_STATUS_REG (%08X)", m_PC, Value); break;
+        case 0x04800000: LogMessage("%016llX: read from SI_DRAM_ADDR_REG (%08X)", m_PC, Value); break;
+        case 0x04800004: LogMessage("%016llX: read from SI_PIF_ADDR_RD64B_REG (%08X)", m_PC, Value); break;
+        case 0xA4800010: LogMessage("%016llX: read from SI_PIF_ADDR_WR64B_REG (%08X)", m_PC, Value); break;
+        case 0x04800018: LogMessage("%016llX: read from SI_STATUS_REG (%08X)", m_PC, Value); break;
         default:
             if (HaveDebugger())
             {
@@ -62,10 +62,10 @@ bool SerialInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t 
         {
             switch (Address & 0x1FFFFFFF)
             {
-            case 0x04800000: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to SI_DRAM_ADDR_REG", m_PC, Value, Mask); break;
-            case 0x04800004: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to SI_PIF_ADDR_RD64B_REG", m_PC, Value, Mask); break;
-            case 0x04800010: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to SI_PIF_ADDR_WR64B_REG", m_PC, Value, Mask); break;
-            case 0x04800018: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to SI_STATUS_REG", m_PC, Value, Mask); break;
+            case 0x04800000: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to SI_DRAM_ADDR_REG", m_PC, Value, Mask); break;
+            case 0x04800004: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to SI_PIF_ADDR_RD64B_REG", m_PC, Value, Mask); break;
+            case 0x04800010: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to SI_PIF_ADDR_WR64B_REG", m_PC, Value, Mask); break;
+            case 0x04800018: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to SI_STATUS_REG", m_PC, Value, Mask); break;
             default:
                 if (HaveDebugger())
                 {
@@ -77,8 +77,8 @@ bool SerialInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t 
         {
             switch (Address & 0x1FFFFFFF)
             {
-            case 0x04800004: LogMessage("%08X: A DMA transfer from the PIF RAM has occurred", m_PC); break;
-            case 0x04800010: LogMessage("%08X: A DMA transfer to the PIF RAM has occurred", m_PC); break;
+            case 0x04800004: LogMessage("%016llX: A DMA transfer from the PIF RAM has occurred", m_PC); break;
+            case 0x04800010: LogMessage("%016llX: A DMA transfer to the PIF RAM has occurred", m_PC); break;
             }
         }
     }

@@ -73,15 +73,15 @@ bool SPRegistersHandler::Read32(uint32_t Address, uint32_t & Value)
     {
         switch (Address & 0x1FFFFFFF)
         {
-        case 0x04040000: LogMessage("%08X: read from SP_MEM_ADDR_REG (%08X)", m_PC, Value); break;
-        case 0x04040004: LogMessage("%08X: read from SP_DRAM_ADDR_REG (%08X)", m_PC, Value); break;
-        case 0x04040008: LogMessage("%08X: read from SP_RD_LEN_REG (%08X)", m_PC, Value); break;
-        case 0x0404000C: LogMessage("%08X: read from SP_WR_LEN_REG (%08X)", m_PC, Value); break;
-        case 0x04040010: LogMessage("%08X: read from SP_STATUS_REG (%08X)", m_PC, Value); break;
-        case 0x04040014: LogMessage("%08X: read from SP_DMA_FULL_REG (%08X)", m_PC, Value); break;
-        case 0x04040018: LogMessage("%08X: read from SP_DMA_BUSY_REG (%08X)", m_PC, Value); break;
-        case 0x0404001C: LogMessage("%08X: read from SP_SEMAPHORE_REG (%08X)", m_PC, Value); break;
-        case 0x04080000: LogMessage("%08X: read from SP_PC (%08X)", m_PC, Value); break;
+        case 0x04040000: LogMessage("%016llX: read from SP_MEM_ADDR_REG (%08X)", m_PC, Value); break;
+        case 0x04040004: LogMessage("%016llX: read from SP_DRAM_ADDR_REG (%08X)", m_PC, Value); break;
+        case 0x04040008: LogMessage("%016llX: read from SP_RD_LEN_REG (%08X)", m_PC, Value); break;
+        case 0x0404000C: LogMessage("%016llX: read from SP_WR_LEN_REG (%08X)", m_PC, Value); break;
+        case 0x04040010: LogMessage("%016llX: read from SP_STATUS_REG (%08X)", m_PC, Value); break;
+        case 0x04040014: LogMessage("%016llX: read from SP_DMA_FULL_REG (%08X)", m_PC, Value); break;
+        case 0x04040018: LogMessage("%016llX: read from SP_DMA_BUSY_REG (%08X)", m_PC, Value); break;
+        case 0x0404001C: LogMessage("%016llX: read from SP_SEMAPHORE_REG (%08X)", m_PC, Value); break;
+        case 0x04080000: LogMessage("%016llX: read from SP_PC (%08X)", m_PC, Value); break;
         default:
             if (BreakOnUnhandledMemory())
             {
@@ -111,15 +111,15 @@ bool SPRegistersHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask
     {
         switch (Address & 0x1FFFFFFF)
         {
-        case 0x04040000: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to SP_MEM_ADDR_REG", m_PC, Value, Mask); break;
-        case 0x04040004: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to SP_DRAM_ADDR_REG", m_PC, Value, Mask); break;
-        case 0x04040008: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to SP_RD_LEN_REG", m_PC, Value, Mask); break;
-        case 0x0404000C: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to SP_WR_LEN_REG", m_PC, Value, Mask); break;
-        case 0x04040010: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to SP_STATUS_REG", m_PC, Value, Mask); break;
-        case 0x04040014: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to SP_DMA_FULL_REG", m_PC, Value, Mask); break;
-        case 0x04040018: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to SP_DMA_BUSY_REG", m_PC, Value, Mask); break;
-        case 0x0404001C: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to SP_SEMAPHORE_REG", m_PC, Value, Mask); break;
-        case 0x04080000: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to SP_PC", m_PC, Value, Mask); break;
+        case 0x04040000: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to SP_MEM_ADDR_REG", m_PC, Value, Mask); break;
+        case 0x04040004: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to SP_DRAM_ADDR_REG", m_PC, Value, Mask); break;
+        case 0x04040008: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to SP_RD_LEN_REG", m_PC, Value, Mask); break;
+        case 0x0404000C: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to SP_WR_LEN_REG", m_PC, Value, Mask); break;
+        case 0x04040010: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to SP_STATUS_REG", m_PC, Value, Mask); break;
+        case 0x04040014: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to SP_DMA_FULL_REG", m_PC, Value, Mask); break;
+        case 0x04040018: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to SP_DMA_BUSY_REG", m_PC, Value, Mask); break;
+        case 0x0404001C: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to SP_SEMAPHORE_REG", m_PC, Value, Mask); break;
+        case 0x04080000: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to SP_PC", m_PC, Value, Mask); break;
         default:
             if (BreakOnUnhandledMemory())
             {

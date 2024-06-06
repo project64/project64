@@ -421,6 +421,22 @@ void CX86Ops::MoveConstToVariable(void * Variable, const char * VariableName, ui
     }
 }
 
+void CX86Ops::MoveConst64ToVariable(void * Variable, const char * VariableName, uint64_t Const)
+{
+    if (CDebugSettings::bRecordRecompilerAsm())
+    {
+        std::string SymbolKey = VariableSymbol(Variable);
+        AddSymbol(SymbolKey.c_str(), VariableName);
+        mov(asmjit::x86::dword_ptr((uint64_t)Variable), (uint32_t)Const);
+        mov(asmjit::x86::dword_ptr(((uint64_t)Variable) + 4), (uint32_t)(Const >> 32));
+        RemoveSymbol(SymbolKey.c_str());
+    }
+    else
+    {
+        mov(asmjit::x86::dword_ptr((uint64_t)Variable), Const);
+    }
+}
+
 void CX86Ops::MoveConstToX86reg(const asmjit::x86::Gp & Reg, uint32_t Const)
 {
     if (Const == 0)

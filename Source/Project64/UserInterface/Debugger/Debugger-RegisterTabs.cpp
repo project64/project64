@@ -483,7 +483,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         WORD ctrlId = (WORD)::GetWindowLong(hWnd, GWL_ID);
 
         uint32_t Instruction;
-        m_Debugger->DebugLoad_VAddr(g_Reg->m_PROGRAM_COUNTER, Instruction);
+        m_Debugger->DebugLoad_VAddr((uint32_t)g_Reg->m_PROGRAM_COUNTER, Instruction);
         R4300iInstruction opInfo(g_Reg->m_PROGRAM_COUNTER, Instruction);
 
         bool bOpReads = false;

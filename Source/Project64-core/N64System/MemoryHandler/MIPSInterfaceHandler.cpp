@@ -41,10 +41,10 @@ bool MIPSInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
     {
         switch (Address & 0x1FFFFFFF)
         {
-        case 0x04300000: LogMessage("%08X: read from MI_INIT_MODE_REG/MI_MODE_REG (%08X)", m_PC, Value); break;
-        case 0x04300004: LogMessage("%08X: read from MI_VERSION_REG/MI_NOOP_REG (%08X)", m_PC, Value); break;
-        case 0x04300008: LogMessage("%08X: read from MI_INTR_REG (%08X)", m_PC, Value); break;
-        case 0x0430000C: LogMessage("%08X: read from MI_INTR_MASK_REG (%08X)", m_PC, Value); break;
+        case 0x04300000: LogMessage("%016llX: read from MI_INIT_MODE_REG/MI_MODE_REG (%08X)", m_PC, Value); break;
+        case 0x04300004: LogMessage("%016llX: read from MI_VERSION_REG/MI_NOOP_REG (%08X)", m_PC, Value); break;
+        case 0x04300008: LogMessage("%016llX: read from MI_INTR_REG (%08X)", m_PC, Value); break;
+        case 0x0430000C: LogMessage("%016llX: read from MI_INTR_MASK_REG (%08X)", m_PC, Value); break;
         default:
             if (HaveDebugger())
             {
@@ -61,10 +61,10 @@ bool MIPSInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Ma
     {
         switch (Address & 0x1FFFFFFF)
         {
-        case 0x04300000: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to MI_INIT_MODE_REG/MI_MODE_REG", m_PC, Value, Mask); break;
-        case 0x04300004: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to MI_VERSION_REG/MI_NOOP_REG", m_PC, Value, Mask); break;
-        case 0x04300008: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to MI_INTR_REG", m_PC, Value, Mask); break;
-        case 0x0430000C: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to MI_INTR_MASK_REG", m_PC, Value, Mask); break;
+        case 0x04300000: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to MI_INIT_MODE_REG/MI_MODE_REG", m_PC, Value, Mask); break;
+        case 0x04300004: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to MI_VERSION_REG/MI_NOOP_REG", m_PC, Value, Mask); break;
+        case 0x04300008: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to MI_INTR_REG", m_PC, Value, Mask); break;
+        case 0x0430000C: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to MI_INTR_MASK_REG", m_PC, Value, Mask); break;
         default:
             if (HaveDebugger())
             {

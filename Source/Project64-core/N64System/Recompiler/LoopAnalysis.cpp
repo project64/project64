@@ -194,7 +194,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
             g_Notify->BreakPoint(__FILE__, __LINE__);
             return false;
         }
-        m_CodeBlock.Log("  %08X: %s", m_PC, R4300iInstruction(m_PC, m_Command.Value).NameAndParam().c_str());
+        m_CodeBlock.Log("  %016llX: %s", m_PC, R4300iInstruction(m_PC, m_Command.Value).NameAndParam().c_str());
         switch (m_Command.op)
         {
         case R4300i_SPECIAL:

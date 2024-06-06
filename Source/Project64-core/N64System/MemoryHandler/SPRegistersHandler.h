@@ -79,5 +79,5 @@ private:
     CMipsMemoryVM & m_MMU;
     CRegisters & m_Reg;
     uint32_t & m_RspIntrReg;
-    uint32_t & m_PC;
+    uint64_t & m_PC;
 };

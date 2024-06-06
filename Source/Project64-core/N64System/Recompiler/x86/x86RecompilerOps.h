@@ -245,7 +245,7 @@ public:
     const R4300iInstruction & GetInstruction(void) const;
     void PreCompileOpcode(void);
     void PostCompileOpcode(void);
-    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo & ExitRegSet, ExitReason Reason);
+    void CompileExit(uint64_t JumpPC, uint64_t TargetPC, CRegInfo & ExitRegSet, ExitReason Reason);
 
     void CompileReadTLBMiss(uint32_t VirtualAddress, const asmjit::x86::Gp & LookUpReg);
     void CompileReadTLBMiss(const asmjit::x86::Gp & AddressReg, const asmjit::x86::Gp & LookUpReg);
@@ -286,7 +286,7 @@ private:
     void LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VAddr);
     void LW(bool ResultSigned, bool bRecordLLBit);
     void SW(bool bCheckLLbit);
-    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo & ExitRegSet, ExitReason Reason, bool CompileNow, void (CX86Ops::*x86Jmp)(const char * LabelName, asmjit::Label & JumpLabel));
+    void CompileExit(uint64_t JumpPC, uint64_t TargetPC, CRegInfo & ExitRegSet, ExitReason Reason, bool CompileNow, void (CX86Ops::*x86Jmp)(const char * LabelName, asmjit::Label & JumpLabel));
     void ResetMemoryStack();
     void COP1_S_CVT(CRegBase::FPU_ROUND RoundMethod, CRegInfo::FPU_STATE OldFormat, CRegInfo::FPU_STATE NewFormat);
 
@@ -305,7 +305,7 @@ private:
     EXIT_LIST m_ExitInfo;
     CX86Ops m_Assembler;
     PIPELINE_STAGE m_PipelineStage;
-    const uint32_t & m_CompilePC;
+    const uint64_t & m_CompilePC;
     CX86RegInfo m_RegWorkingSet;
     CRegInfo m_RegBeforeDelay;
     bool m_EffectDelaySlot;

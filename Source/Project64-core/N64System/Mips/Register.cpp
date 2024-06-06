@@ -365,7 +365,7 @@ void CRegisters::Reset(bool bPostPif, CMipsMemoryVM & MMU)
 
     if (bPostPif)
     {
-        m_PROGRAM_COUNTER = 0xA4000040;
+        m_PROGRAM_COUNTER = 0xFFFFFFFFA4000040;
 
         m_GPR[0].DW = 0x0000000000000000;
         m_GPR[6].DW = 0xFFFFFFFFA4001F0C;
@@ -529,7 +529,7 @@ void CRegisters::Reset(bool bPostPif, CMipsMemoryVM & MMU)
     }
     else
     {
-        m_PROGRAM_COUNTER = 0xBFC00000;
+        m_PROGRAM_COUNTER = 0xFFFFFFFFBFC00000;
         /*        PIF_Ram[36] = 0x00; PIF_Ram[39] = 0x3F; // Common PIF RAM start values
 
         switch (g_Rom->CicChipID()) {
@@ -548,7 +548,7 @@ uint64_t CRegisters::Cop0_MF(COP0Reg Reg)
 {
     if (LogCP0reads() && Reg <= COP0Reg_31)
     {
-        LogMessage("%08X: R4300i read from %s (0x%08X)", m_PROGRAM_COUNTER, CRegName::Cop0[Reg], m_CP0[Reg]);
+        LogMessage("%016llX: R4300i read from %s (0x%08X)", m_PROGRAM_COUNTER, CRegName::Cop0[Reg], m_CP0[Reg]);
     }
 
     if (Reg == COP0Reg_Count || Reg == COP0Reg_Wired || Reg == COP0Reg_Random)
@@ -567,10 +567,10 @@ void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
 {
     if (LogCP0changes() && Reg <= COP0Reg_31)
     {
-        LogMessage("%08X: Writing 0x%llX to %s register (originally: 0x%llX)", m_PROGRAM_COUNTER, Value, CRegName::Cop0[Reg], m_CP0[Reg]);
+        LogMessage("%016llX: Writing 0x%llX to %s register (originally: 0x%llX)", m_PROGRAM_COUNTER, Value, CRegName::Cop0[Reg], m_CP0[Reg]);
         if (Reg == 11) // Compare
         {
-            LogMessage("%08X: Cause register changed from %08X to %08X", m_PROGRAM_COUNTER, (uint32_t)CAUSE_REGISTER.Value, (uint32_t)(g_Reg->CAUSE_REGISTER.Value & ~CAUSE_IP7));
+            LogMessage("%016llX: Cause register changed from %08X to %08X", m_PROGRAM_COUNTER, (uint32_t)CAUSE_REGISTER.Value, (uint32_t)(g_Reg->CAUSE_REGISTER.Value & ~CAUSE_IP7));
         }
     }
     m_CP0Latch = Value;
@@ -797,7 +797,7 @@ void CRegisters::TriggerAddressException(uint64_t Address, uint32_t ExceptionCod
     TriggerException(ExceptionCode, 0);
     if (SpecialOffset)
     {
-        m_System.m_JumpToLocation = (m_System.m_JumpToLocation & 0xFFFF0000);
+        m_System.m_JumpToLocation = (m_System.m_JumpToLocation & 0xFFFFFFFFFFFF0000);
         switch (STATUS_REGISTER.PrivilegeMode)
         {
         case PrivilegeMode_Kernel:
@@ -819,11 +819,11 @@ void CRegisters::TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor)
     {
         if (ExceptionCode != EXC_INT)
         {
-            LogMessage("%08X: Exception %d", m_PROGRAM_COUNTER, ExceptionCode);
+            LogMessage("%016llX: Exception %d", m_PROGRAM_COUNTER, ExceptionCode);
         }
         else if (!LogNoInterrupts())
         {
-            LogMessage("%08X: Interrupt generated", m_PROGRAM_COUNTER);
+            LogMessage("%016llX: Interrupt generated", m_PROGRAM_COUNTER);
         }
     }
 
@@ -833,5 +833,5 @@ void CRegisters::TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor)
     EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - (CAUSE_REGISTER.BranchDelay ? 4 : 0));
     STATUS_REGISTER.ExceptionLevel = 1;
     m_System.m_PipelineStage = PIPELINE_STAGE_JUMP;
-    m_System.m_JumpToLocation = 0x80000180;
+    m_System.m_JumpToLocation = 0xFFFFFFFF80000180;
 }

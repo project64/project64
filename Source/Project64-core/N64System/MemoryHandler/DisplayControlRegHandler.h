@@ -78,5 +78,5 @@ private:
 
     CN64System & m_System;
     CPlugins * m_Plugins;
-    uint32_t & m_PC;
+    uint64_t & m_PC;
 };

@@ -515,7 +515,7 @@ static uint32_t * CPURegPtr(const char * key)
 
     if (strcmp(key, "pc") == 0)
     {
-        return &g_Reg->m_PROGRAM_COUNTER;
+        return (uint32_t *)&g_Reg->m_PROGRAM_COUNTER;
     }
     else if (strcmp(key, "hi") == 0)
     {

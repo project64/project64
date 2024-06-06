@@ -79,8 +79,8 @@ void R4300iOp::ExecuteCPU()
 
     bool & Done = m_System.m_EndEmulation;
     PIPELINE_STAGE & PipelineStage = m_System.m_PipelineStage;
-    uint32_t & JumpToLocation = m_System.m_JumpToLocation;
-    uint32_t & JumpDelayLocation = m_System.m_JumpDelayLocation;
+    uint64_t & JumpToLocation = m_System.m_JumpToLocation;
+    uint64_t & JumpDelayLocation = m_System.m_JumpDelayLocation;
     bool & TestTimer = m_System.m_TestTimer;
     CSystemEvents & SystemEvents = m_System.m_SystemEvents;
     const bool & DoSomething = SystemEvents.DoSomething();
@@ -90,7 +90,20 @@ void R4300iOp::ExecuteCPU()
 
     while (!Done)
     {
-        if (!m_MMU.MemoryValue32(m_PROGRAM_COUNTER, m_Opcode.Value))
+        if ((uint64_t)((int32_t)m_PROGRAM_COUNTER) != m_PROGRAM_COUNTER)
+        {
+            uint32_t PAddr;
+            bool MemoryUnused;
+            if (!m_TLB.VAddrToPAddr(m_PROGRAM_COUNTER, PAddr, MemoryUnused))
+            {
+                m_Reg.TriggerAddressException(m_PROGRAM_COUNTER, MemoryUnused ? EXC_RADE : EXC_RMISS);
+                m_PROGRAM_COUNTER = JumpToLocation;
+                PipelineStage = PIPELINE_STAGE_NORMAL;
+                continue;
+            }
+            m_MMU.LW_PhysicalAddress(PAddr, m_Opcode.Value);
+        }
+        else if (!m_MMU.MemoryValue32((uint32_t)m_PROGRAM_COUNTER, m_Opcode.Value))
         {
             m_Reg.TriggerAddressException((int32_t)m_PROGRAM_COUNTER, EXC_RMISS);
             m_PROGRAM_COUNTER = JumpToLocation;
@@ -100,7 +113,7 @@ void R4300iOp::ExecuteCPU()
 
         if (HaveDebugger())
         {
-            if (HaveExecutionBP() && g_Debugger->ExecutionBP(m_PROGRAM_COUNTER))
+            if (HaveExecutionBP() && g_Debugger->ExecutionBP((uint32_t)m_PROGRAM_COUNTER))
             {
                 g_Settings->SaveBool(Debugger_SteppingOps, true);
             }
@@ -199,8 +212,8 @@ void R4300iOp::ExecuteOps(int32_t Cycles)
 {
     bool & Done = m_System.m_EndEmulation;
     PIPELINE_STAGE & PipelineStage = m_System.m_PipelineStage;
-    uint32_t & JumpDelayLocation = m_System.m_JumpDelayLocation;
-    uint32_t & JumpToLocation = m_System.m_JumpToLocation;
+    uint64_t & JumpDelayLocation = m_System.m_JumpDelayLocation;
+    uint64_t & JumpToLocation = m_System.m_JumpToLocation;
     bool & TestTimer = m_System.m_TestTimer;
     CSystemEvents & SystemEvents = m_System.m_SystemEvents;
     const bool & DoSomething = SystemEvents.DoSomething();
@@ -215,7 +228,7 @@ void R4300iOp::ExecuteOps(int32_t Cycles)
             return;
         }
 
-        if (m_MMU.MemoryValue32(m_PROGRAM_COUNTER, m_Opcode.Value))
+        if (m_MMU.MemoryValue32((uint32_t)m_PROGRAM_COUNTER, m_Opcode.Value))
         {
             /*if (PROGRAM_COUNTER > 0x80000300 && PROGRAM_COUNTER< 0x80380000)
             {
@@ -989,12 +1002,12 @@ void R4300iOp::BuildInterpreter()
 
 void R4300iOp::J()
 {
-    m_System.DelayedJump((m_PROGRAM_COUNTER & 0xF0000000) + (m_Opcode.target << 2));
+    m_System.DelayedJump((m_PROGRAM_COUNTER & 0xFFFFFFFFF0000000) + (m_Opcode.target << 2));
 }
 
 void R4300iOp::JAL()
 {
-    m_System.DelayedJump((m_PROGRAM_COUNTER & 0xF0000000) + (m_Opcode.target << 2));
+    m_System.DelayedJump((m_PROGRAM_COUNTER & 0xFFFFFFFFF0000000) + (m_Opcode.target << 2));
     m_GPR[31].DW = (int32_t)(m_System.m_PipelineStage == PIPELINE_STAGE_JUMP_DELAY_SLOT ? m_System.m_JumpToLocation + 4 : m_PROGRAM_COUNTER + 8);
 }
 
@@ -1441,7 +1454,7 @@ void R4300iOp::CACHE()
     {
         return;
     }
-    LogMessage("%08X: Cache operation %d, 0x%08X", (m_PROGRAM_COUNTER), m_Opcode.rt, m_GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset);
+    LogMessage("%016llX: Cache operation %d, 0x%08X", (m_PROGRAM_COUNTER), m_Opcode.rt, m_GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset);
 }
 
 void R4300iOp::LL()
@@ -1577,13 +1590,13 @@ void R4300iOp::SPECIAL_SRAV()
 
 void R4300iOp::SPECIAL_JR()
 {
-    m_System.DelayedJump(m_GPR[m_Opcode.rs].UW[0]);
+    m_System.DelayedJump(m_GPR[m_Opcode.rs].DW);
     m_System.m_TestTimer = true;
 }
 
 void R4300iOp::SPECIAL_JALR()
 {
-    m_System.DelayedJump(m_GPR[m_Opcode.rs].UW[0]);
+    m_System.DelayedJump(m_GPR[m_Opcode.rs].DW);
     m_GPR[m_Opcode.rd].DW = (int32_t)(m_System.m_PipelineStage == PIPELINE_STAGE_JUMP_DELAY_SLOT ? m_System.m_JumpToLocation + 4 : m_PROGRAM_COUNTER + 8);
     m_System.m_TestTimer = true;
 }
@@ -2149,12 +2162,12 @@ void R4300iOp::COP0_CO_ERET()
     m_System.m_PipelineStage = PIPELINE_STAGE_JUMP;
     if ((m_Reg.STATUS_REGISTER.ErrorLevel) != 0)
     {
-        m_System.m_JumpToLocation = (uint32_t)m_Reg.ERROREPC_REGISTER;
+        m_System.m_JumpToLocation = m_Reg.ERROREPC_REGISTER;
         m_Reg.STATUS_REGISTER.ErrorLevel = 0;
     }
     else
     {
-        m_System.m_JumpToLocation = (uint32_t)m_Reg.EPC_REGISTER;
+        m_System.m_JumpToLocation = m_Reg.EPC_REGISTER;
         m_Reg.STATUS_REGISTER.ExceptionLevel = 0;
     }
     m_LLBit = 0;

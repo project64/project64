@@ -149,6 +149,7 @@ private:
     CMipsMemoryVM(const CMipsMemoryVM &);
     CMipsMemoryVM & operator=(const CMipsMemoryVM &);
 
+    friend class R4300iOp;
 #if defined(__i386__) || defined(_M_IX86)
     friend class CX86RecompilerOps;
 #elif defined(__arm__) || defined(_M_ARM)

@@ -43,5 +43,5 @@ private:
     MIPSInterfaceHandler & operator=(const MIPSInterfaceHandler &);
 
     CRegisters & m_Reg;
-    uint32_t & m_PC;
+    uint64_t & m_PC;
 };

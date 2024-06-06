@@ -117,7 +117,7 @@ public:
     {
         return m_PipelineStage;
     }
-    uint32_t JumpToLocation() const
+    uint64_t JumpToLocation() const
     {
         return m_JumpToLocation;
     }
@@ -161,8 +161,8 @@ private:
     void StartEmulation2(bool NewThread);
     bool SetActiveSystem(bool bActive = true);
     void NotifyCallback(CN64SystemCB Type);
-    void DelayedJump(uint32_t JumpLocation);
-    void DelayedRelativeJump(uint32_t RelativeLocation);
+    void DelayedJump(uint64_t JumpLocation);
+    void DelayedRelativeJump(uint64_t RelativeLocation);
 
     // CPU methods
     void ExecuteRecompiler();
@@ -196,8 +196,8 @@ private:
     uint32_t m_Buttons[4];
     bool m_TestTimer;
     PIPELINE_STAGE m_PipelineStage;
-    uint32_t m_JumpToLocation;
-    uint32_t m_JumpDelayLocation;
+    uint64_t m_JumpToLocation;
+    uint64_t m_JumpDelayLocation;
     uint32_t m_TLBLoadAddress;
     uint32_t m_TLBStoreAddress;
     uint32_t m_SyncCount;
@@ -205,7 +205,7 @@ private:
     CRandom m_Random;
 
     // When syncing cores this is the PC where it last synced correctly
-    uint32_t m_LastSuccessSyncPC[10];
+    uint64_t m_LastSuccessSyncPC[10];
     int32_t m_CyclesToSkip;
 
     // Handle to the CPU thread

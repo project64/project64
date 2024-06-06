@@ -263,7 +263,7 @@ private:
     CTLB & m_TLB;
     CMipsMemoryVM & m_MMU;
     R4300iOpcode m_Opcode;
-    uint32_t & m_PROGRAM_COUNTER;
+    uint64_t & m_PROGRAM_COUNTER;
     MIPS_DWORD * m_GPR;
     MIPS_DWORD * m_FPR;
     uint64_t * m_CP0;

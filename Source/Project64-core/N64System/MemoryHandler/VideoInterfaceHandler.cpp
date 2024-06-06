@@ -91,20 +91,20 @@ bool VideoInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
     {
         switch (Address & 0x1FFFFFFF)
         {
-        case 0x04400000: LogMessage("%08X: read from VI_STATUS_REG/VI_CONTROL_REG (%08X)", m_PC, Value); break;
-        case 0x04400004: LogMessage("%08X: read from VI_ORIGIN_REG/VI_DRAM_ADDR_REG (%08X)", m_PC, Value); break;
-        case 0x04400008: LogMessage("%08X: read from VI_WIDTH_REG/VI_H_WIDTH_REG (%08X)", m_PC, Value); break;
-        case 0x0440000C: LogMessage("%08X: read from VI_INTR_REG/VI_V_INTR_REG (%08X)", m_PC, Value); break;
-        case 0x04400010: LogMessage("%08X: read from VI_CURRENT_REG/VI_V_CURRENT_LINE_REG (%08X)", m_PC, Value); break;
-        case 0x04400014: LogMessage("%08X: read from VI_BURST_REG/VI_TIMING_REG (%08X)", m_PC, Value); break;
-        case 0x04400018: LogMessage("%08X: read from VI_V_SYNC_REG (%08X)", m_PC, Value); break;
-        case 0x0440001C: LogMessage("%08X: read from VI_H_SYNC_REG (%08X)", m_PC, Value); break;
-        case 0x04400020: LogMessage("%08X: read from VI_LEAP_REG/VI_H_SYNC_LEAP_REG (%08X)", m_PC, Value); break;
-        case 0x04400024: LogMessage("%08X: read from VI_H_START_REG/VI_H_VIDEO_REG (%08X)", m_PC, Value); break;
-        case 0x04400028: LogMessage("%08X: read from VI_V_START_REG/VI_V_VIDEO_REG (%08X)", m_PC, Value); break;
-        case 0x0440002C: LogMessage("%08X: read from VI_V_BURST_REG (%08X)", m_PC, Value); break;
-        case 0x04400030: LogMessage("%08X: read from VI_X_SCALE_REG (%08X)", m_PC, Value); break;
-        case 0x04400034: LogMessage("%08X: read from VI_Y_SCALE_REG (%08X)", m_PC, Value); break;
+        case 0x04400000: LogMessage("%016llX: read from VI_STATUS_REG/VI_CONTROL_REG (%08X)", m_PC, Value); break;
+        case 0x04400004: LogMessage("%016llX: read from VI_ORIGIN_REG/VI_DRAM_ADDR_REG (%08X)", m_PC, Value); break;
+        case 0x04400008: LogMessage("%016llX: read from VI_WIDTH_REG/VI_H_WIDTH_REG (%08X)", m_PC, Value); break;
+        case 0x0440000C: LogMessage("%016llX: read from VI_INTR_REG/VI_V_INTR_REG (%08X)", m_PC, Value); break;
+        case 0x04400010: LogMessage("%016llX: read from VI_CURRENT_REG/VI_V_CURRENT_LINE_REG (%08X)", m_PC, Value); break;
+        case 0x04400014: LogMessage("%016llX: read from VI_BURST_REG/VI_TIMING_REG (%08X)", m_PC, Value); break;
+        case 0x04400018: LogMessage("%016llX: read from VI_V_SYNC_REG (%08X)", m_PC, Value); break;
+        case 0x0440001C: LogMessage("%016llX: read from VI_H_SYNC_REG (%08X)", m_PC, Value); break;
+        case 0x04400020: LogMessage("%016llX: read from VI_LEAP_REG/VI_H_SYNC_LEAP_REG (%08X)", m_PC, Value); break;
+        case 0x04400024: LogMessage("%016llX: read from VI_H_START_REG/VI_H_VIDEO_REG (%08X)", m_PC, Value); break;
+        case 0x04400028: LogMessage("%016llX: read from VI_V_START_REG/VI_V_VIDEO_REG (%08X)", m_PC, Value); break;
+        case 0x0440002C: LogMessage("%016llX: read from VI_V_BURST_REG (%08X)", m_PC, Value); break;
+        case 0x04400030: LogMessage("%016llX: read from VI_X_SCALE_REG (%08X)", m_PC, Value); break;
+        case 0x04400034: LogMessage("%016llX: read from VI_Y_SCALE_REG (%08X)", m_PC, Value); break;
         default:
             if (HaveDebugger())
             {
@@ -121,20 +121,20 @@ bool VideoInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t M
     {
         switch (Address & 0x1FFFFFFF)
         {
-        case 0x04400000: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to VI_STATUS_REG/VI_CONTROL_REG", m_PC, Value, Mask); break;
-        case 0x04400004: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to VI_ORIGIN_REG/VI_DRAM_ADDR_REG", m_PC, Value, Mask); break;
-        case 0x04400008: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to VI_WIDTH_REG/VI_H_WIDTH_REG", m_PC, Value, Mask); break;
-        case 0x0440000C: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to VI_INTR_REG/VI_V_INTR_REG", m_PC, Value, Mask); break;
-        case 0x04400010: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to VI_CURRENT_REG/VI_V_CURRENT_LINE_REG", m_PC, Value, Mask); break;
-        case 0x04400014: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to VI_BURST_REG/VI_TIMING_REG", m_PC, Value, Mask); break;
-        case 0x04400018: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to VI_V_SYNC_REG", m_PC, Value, Mask); break;
-        case 0x0440001C: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to VI_H_SYNC_REG", m_PC, Value, Mask); break;
-        case 0x04400020: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to VI_LEAP_REG/VI_H_SYNC_LEAP_REG", m_PC, Value, Mask); break;
-        case 0x04400024: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to VI_H_START_REG/VI_H_VIDEO_REG", m_PC, Value, Mask); break;
-        case 0x04400028: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to VI_V_START_REG/VI_V_VIDEO_REG", m_PC, Value, Mask); break;
-        case 0x0440002C: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to VI_V_BURST_REG", m_PC, Value, Mask); break;
-        case 0x04400030: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to VI_X_SCALE_REG", m_PC, Value, Mask); break;
-        case 0x04400034: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to VI_Y_SCALE_REG", m_PC, Value, Mask); break;
+        case 0x04400000: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to VI_STATUS_REG/VI_CONTROL_REG", m_PC, Value, Mask); break;
+        case 0x04400004: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to VI_ORIGIN_REG/VI_DRAM_ADDR_REG", m_PC, Value, Mask); break;
+        case 0x04400008: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to VI_WIDTH_REG/VI_H_WIDTH_REG", m_PC, Value, Mask); break;
+        case 0x0440000C: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to VI_INTR_REG/VI_V_INTR_REG", m_PC, Value, Mask); break;
+        case 0x04400010: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to VI_CURRENT_REG/VI_V_CURRENT_LINE_REG", m_PC, Value, Mask); break;
+        case 0x04400014: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to VI_BURST_REG/VI_TIMING_REG", m_PC, Value, Mask); break;
+        case 0x04400018: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to VI_V_SYNC_REG", m_PC, Value, Mask); break;
+        case 0x0440001C: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to VI_H_SYNC_REG", m_PC, Value, Mask); break;
+        case 0x04400020: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to VI_LEAP_REG/VI_H_SYNC_LEAP_REG", m_PC, Value, Mask); break;
+        case 0x04400024: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to VI_H_START_REG/VI_H_VIDEO_REG", m_PC, Value, Mask); break;
+        case 0x04400028: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to VI_V_START_REG/VI_V_VIDEO_REG", m_PC, Value, Mask); break;
+        case 0x0440002C: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to VI_V_BURST_REG", m_PC, Value, Mask); break;
+        case 0x04400030: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to VI_X_SCALE_REG", m_PC, Value, Mask); break;
+        case 0x04400034: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to VI_Y_SCALE_REG", m_PC, Value, Mask); break;
         default:
             if (HaveDebugger())
             {

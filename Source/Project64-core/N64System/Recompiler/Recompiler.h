@@ -87,6 +87,6 @@ private:
     bool & m_EndEmulation;
     uint8_t * m_MemoryStack;
     FUNCTION_PROFILE m_BlockProfile;
-    uint32_t & PROGRAM_COUNTER;
+    uint64_t & PROGRAM_COUNTER;
     CLog * m_LogFile;
 };

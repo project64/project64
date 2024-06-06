@@ -81,12 +81,12 @@ bool AudioInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
     {
         switch (Address & 0x1FFFFFFF)
         {
-        case 0x04500000: LogMessage("%08X: read from AI_DRAM_ADDR_REG (%08X)", m_PC, Value); break;
-        case 0x04500004: LogMessage("%08X: read from AI_LEN_REG (%08X)", m_PC, Value); break;
-        case 0x04500008: LogMessage("%08X: read from AI_CONTROL_REG (%08X)", m_PC, Value); break;
-        case 0x0450000C: LogMessage("%08X: read from AI_STATUS_REG (%08X)", m_PC, Value); break;
-        case 0x04500010: LogMessage("%08X: read from AI_DACRATE_REG (%08X)", m_PC, Value); break;
-        case 0x04500014: LogMessage("%08X: read from AI_BITRATE_REG (%08X)", m_PC, Value); break;
+        case 0x04500000: LogMessage("%016llX: read from AI_DRAM_ADDR_REG (%08X)", m_PC, Value); break;
+        case 0x04500004: LogMessage("%016llX: read from AI_LEN_REG (%08X)", m_PC, Value); break;
+        case 0x04500008: LogMessage("%016llX: read from AI_CONTROL_REG (%08X)", m_PC, Value); break;
+        case 0x0450000C: LogMessage("%016llX: read from AI_STATUS_REG (%08X)", m_PC, Value); break;
+        case 0x04500010: LogMessage("%016llX: read from AI_DACRATE_REG (%08X)", m_PC, Value); break;
+        case 0x04500014: LogMessage("%016llX: read from AI_BITRATE_REG (%08X)", m_PC, Value); break;
         default:
             if (HaveDebugger())
             {
@@ -103,12 +103,12 @@ bool AudioInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t M
     {
         switch (Address & 0x1FFFFFFF)
         {
-        case 0x04500000: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to AI_DRAM_ADDR_REG", m_PC, Value, Mask); break;
-        case 0x04500004: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to AI_LEN_REG", m_PC, Value, Mask); break;
-        case 0x04500008: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to AI_CONTROL_REG", m_PC, Value, Mask); break;
-        case 0x0450000C: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to AI_STATUS_REG", m_PC, Value, Mask); break;
-        case 0x04500010: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to AI_DACRATE_REG", m_PC, Value, Mask); break;
-        case 0x04500014: LogMessage("%08X: Writing 0x%08X (Mask: 0x%08X) to AI_BITRATE_REG", m_PC, Value, Mask); break;
+        case 0x04500000: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to AI_DRAM_ADDR_REG", m_PC, Value, Mask); break;
+        case 0x04500004: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to AI_LEN_REG", m_PC, Value, Mask); break;
+        case 0x04500008: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to AI_CONTROL_REG", m_PC, Value, Mask); break;
+        case 0x0450000C: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to AI_STATUS_REG", m_PC, Value, Mask); break;
+        case 0x04500010: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to AI_DACRATE_REG", m_PC, Value, Mask); break;
+        case 0x04500014: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to AI_BITRATE_REG", m_PC, Value, Mask); break;
         default:
             if (HaveDebugger())
             {

@@ -50,6 +50,6 @@ private:
     CMipsMemoryVM & m_MMU;
     uint8_t m_PifRom[0x7C0];
     uint8_t m_PifRam[0x40];
-    uint32_t & m_PC;
+    uint64_t & m_PC;
     CEeprom m_Eeprom;
 };
