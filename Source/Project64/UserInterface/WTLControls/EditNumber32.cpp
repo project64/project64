@@ -35,9 +35,33 @@ bool CEditNumber32::IsHexConvertableText(LPTSTR _text)
     }
     // Check
     unsigned int i = 0;
-    if (wcslen(_text) >= 2)
+    unsigned int len = wcslen(_text);
+    if (len == 0)
     {
-        if (_text[0] == L'0' && (_text[1] == L'x' || _text[1] == L'X'))
+        return false;
+    }
+
+    wchar_t c;
+    do
+    {
+        c = _text[i];
+        if (c == L'\n' || c == L'\r' || c == L' ')
+        {
+            i++;
+            continue;
+        }
+
+        break;
+    } while (i < len);
+
+    if (i == len)
+    {
+        return false;
+    }
+
+    if ((len - i) >= 2)
+    {
+        if (_text[i] == L'0' && (_text[i + 1] == L'x' || _text[i + 1] == L'X'))
         {
             if ((second == L'x' || second == L'X') && (!(start == 0 && end >= 2)))
             {
@@ -53,14 +77,16 @@ bool CEditNumber32::IsHexConvertableText(LPTSTR _text)
             }
         }
     }
+
     if (!bPaste) return bPaste;
-    if (wcslen(_text) >= 1)
+    if ((len - i) >= 1)
     {
-        if (head == L'0' && (_text[0] == L'x' || _text[0] == L'X'))
+        bool bIsX = _text[i] == L'x' || _text[i] == L'X';
+        if (head == L'0' && bIsX)
         {
             i++;
         }
-        if ((_text[0] == L'x' || _text[0] == L'X'))
+        if (bIsX)
         {
             if (head != L'0' && start == 0)
             {
@@ -73,11 +99,28 @@ bool CEditNumber32::IsHexConvertableText(LPTSTR _text)
         }
     }
     if (!bPaste) return bPaste;
-    for (; i < wcslen(_text); i++)
+
+    for (; i < len; i++)
     {
-        wchar_t c = _text[i];
+        c = _text[i];
         if (!(c >= 48 && c <= 57 || c >= L'A' && c <= L'F' || c >= L'a' && c <= L'f' || c == L' '))
         {
+            if (c == L'\n' || c == L'\r')
+            {
+                i++;
+                while (i < len)
+                {
+                    c = _text[i];
+                    if (c != L'\n' && c != L'\r' && c != L' ')
+                    {
+                        bPaste = false;
+                        break;
+                    }
+                    i++;
+                }
+                // Effectively a trim, if all we have is newline, just ignore them
+                break;
+            }
             bPaste = false;
             break;
         }
@@ -97,29 +140,43 @@ void CEditNumber32::FormatClipboard()
     if (hglb != nullptr)
     {
         lptstr = (LPTSTR)GlobalLock(hglb);
-        for (unsigned int i = 0; i < wcslen(lptstr); i++)
+        unsigned int len = wcslen(lptstr);
+        unsigned int fullCopySize = 1; // Null terminator
+        for (unsigned int i = 0; i < len; i++)
         {
-            if (lptstr[i] != L'X' && lptstr[i] != L'x')
+            wchar_t c = lptstr[i];
+            if (c != L' ' && c != L'\n' && c != L'\r')
             {
-                lptstr[i] = (char)toupper(lptstr[i]);
-            }
-            if (lptstr[i] == L'X')
-            {
-                lptstr[i] = L'x';
-            }
-            if (lptstr[i] == ' ' && (i < wcslen(lptstr)))
-            {
-                wcscpy(&lptstr[i], &lptstr[i + 1]);
+                fullCopySize++;
             }
         }
-        hglb = GlobalAlloc(GMEM_MOVEABLE, (wcslen(lptstr) + 1) * sizeof(TCHAR));
+
+        hglb = GlobalAlloc(GMEM_MOVEABLE, fullCopySize * sizeof(TCHAR));
         if (hglb == nullptr)
         {
             CloseClipboard();
             return;
         }
         lptstrCopy = (LPTSTR)GlobalLock(hglb);
-        memcpy(lptstrCopy, lptstr, (wcslen(lptstr) + 1) * sizeof(TCHAR));
+
+        for (unsigned int src = 0, dst = 0; src < len; src++)
+        {
+            wchar_t c = lptstr[src];
+            if (c == L' ' || c == L'\n' || c == L'\r')
+            {
+                continue;
+            }
+
+            if (c == L'X' || c == L'x')
+            {
+                lptstrCopy[dst++] = L'x';
+            }
+            else
+            {
+                lptstrCopy[dst++] = (wchar_t)toupper(c);
+            }
+        }
+
         GlobalUnlock(lptstr);
         GlobalUnlock(hglb);
         SetClipboardData(CF_UNICODETEXT, hglb);
