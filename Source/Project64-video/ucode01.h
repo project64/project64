@@ -9,6 +9,7 @@
 void uc1_branch_z();
 void uc1_rdphalf_1();
 void uc1_line3d();
+void uc1_quad3d();
 void uc1_tri1();
 void uc1_tri2();
 void uc1_vertex();

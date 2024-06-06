@@ -78,7 +78,7 @@ void uc1_tri2()
 
 void uc1_line3d()
 {
-    if (!g_settings->force_quad3d() && ((rdp.cmd1 & 0xFF000000) == 0) && ((rdp.cmd0 & 0x00FFFFFF) == 0))
+    if (((rdp.cmd1 & 0xFF000000) == 0) && ((rdp.cmd0 & 0x00FFFFFF) == 0))
     {
         uint16_t width = (uint16_t)(rdp.cmd1 & 0xFF) + 3;
 
@@ -99,8 +99,10 @@ void uc1_line3d()
         rdp.flags |= cull_mode << CULLSHIFT;
         rdp.update |= UPDATE_CULL_MODE;
     }
-    else
-    {
+}
+
+void uc1_quad3d()
+{
         WriteTrace(TraceRDP, TraceDebug, "uc1:quad3d #%d, #%d", rdp.tri_n, rdp.tri_n + 1);
 
         gfxVERTEX *vtx[6] = {
@@ -113,7 +115,6 @@ void uc1_line3d()
         };
 
         rsp_tri2(vtx);
-    }
 }
 
 uint32_t branch_dl = 0;

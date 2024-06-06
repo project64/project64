@@ -96,7 +96,7 @@ rdp_instr gfx_instruction[11][256] =
         rdp_setcombine, rdp_settextureimage, rdp_setdepthimage, rdp_setcolorimage
     },
 
-    // uCode 1 - F3DEX 1.XX
+    // uCode 1 - F3DEX 0.95 & 1.XX
     // 00-3f
     // games: Mario Kart, Star Fox
     {
@@ -147,7 +147,7 @@ rdp_instr gfx_instruction[11][256] =
         undef, undef, undef, undef,
         undef, undef, undef, uc6_loaducode,
         uc1_branch_z, uc1_tri2, uc2_modifyvtx, rdphalf_2,
-        uc1_rdphalf_1, uc1_line3d, uc0_cleargeometrymode, uc0_setgeometrymode,
+        uc1_rdphalf_1, uc1_quad3d, uc0_cleargeometrymode, uc0_setgeometrymode,
         uc0_enddl, uc0_setothermode_l, uc0_setothermode_h, uc0_texture,
         uc0_moveword, uc0_popmatrix, uc2_culldl, uc1_tri1,
         // c0-ff: RDP commands
