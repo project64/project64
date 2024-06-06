@@ -32,9 +32,6 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ItemDefinitionGroup>
-    <PreBuildEvent>
-      <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(Platform)" "$(SolutionDir)Source\Project64-core\Version.h.in" "$(SolutionDir)Source\Project64-core\Version.h"</Command>
-    </PreBuildEvent>
     <Lib>
       <AdditionalOptions>/ignore:4221%(AdditionalOptions)</AdditionalOptions>
     </Lib>
@@ -280,6 +277,7 @@
     <ClInclude Include="Settings\SettingType\SettingsType-RDBUser.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TraceModulesProject64.h" />
+    <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\3rdParty\asmjit\asmjit.vcxproj">

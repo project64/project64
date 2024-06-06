@@ -32,9 +32,6 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ItemDefinitionGroup>
-    <PreBuildEvent>
-      <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(Platform)" "$(SolutionDir)Source\Project64-rsp-core\Version.h.in" "$(SolutionDir)Source\Project64-rsp-core\Version.h"</Command>
-    </PreBuildEvent>
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -101,5 +98,6 @@
     <ClInclude Include="RSPInfo.h" />
     <ClInclude Include="Settings\RspSettings.h" />
     <ClInclude Include="Settings\RspSettingsID.h" />
+    <ClInclude Include="Version.h" />
   </ItemGroup>
 </Project>

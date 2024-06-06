@@ -818,6 +818,9 @@
     <ClInclude Include="Settings\SettingType\SettingsType-RDB.h">
       <Filter>Header Files\Settings\SettingType</Filter>
     </ClInclude>
+    <ClInclude Include="Version.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Version.h.in">

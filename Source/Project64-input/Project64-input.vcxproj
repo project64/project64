@@ -42,9 +42,6 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
-    <PreBuildEvent>
-      <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(Platform)" "$(SolutionDir)Source\Project64-input\Version.h.in" "$(SolutionDir)Source\Project64-input\Version.h"</Command>
-    </PreBuildEvent>
     <Link>
       <AdditionalDependencies>dinput8.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories Condition="'$(Platform)'=='Win32'">$(Root)Source\3rdParty\directx\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -77,6 +74,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Shortcuts.h" />
     <ClInclude Include="ShortcutsUI.h" />
+    <ClInclude Include="Version.h" />
     <ClInclude Include="wtl-BitmapPicture.h" />
     <ClInclude Include="wtl-ScanButton.h" />
     <ClInclude Include="wtl.h" />

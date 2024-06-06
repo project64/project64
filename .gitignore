@@ -1,4 +1,5 @@
 *.aps
+*.binlog
 *.ncb
 *.opensdf
 *.sdf
@@ -94,9 +95,3 @@ Thumbs.db
 /Plugin64/RSP/RSP-HLE_d.dll
 /Plugin64/RSP/RSP-HLE.dll
 /Save
-/Source/nragev20/Version.h
-/Source/Project64-audio/Version.h
-/Source/Project64-core/Version.h
-/Source/Project64-input/Version.h
-/Source/Project64-video/Version.h
-/Source/Project64-rsp-core/Version.h
