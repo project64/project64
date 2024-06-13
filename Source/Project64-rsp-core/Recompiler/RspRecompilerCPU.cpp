@@ -816,6 +816,7 @@ void CompilerRSPBlock(void)
     // This is for the block about to be compiled
     *(JumpTable + (CompilePC >> 2)) = RecompPos;
 
+    uint32_t EndPC = 0x1000;
     do
     {
 
@@ -924,7 +925,13 @@ void CompilerRSPBlock(void)
             CompilePC += 4;
             break;
         }
-    } while (NextInstruction != RSPPIPELINE_FINISH_BLOCK && (CompilePC < 0x1000 || NextInstruction == RSPPIPELINE_DELAY_SLOT));
+
+        if (CompilePC >= EndPC && *PrgCount != 0 && EndPC != *PrgCount)
+        {
+            CompilePC = 0;
+            EndPC = *PrgCount;
+        }
+    } while (NextInstruction != RSPPIPELINE_FINISH_BLOCK && (CompilePC < EndPC || NextInstruction == RSPPIPELINE_DELAY_SLOT));
     CPU_Message("===== End of recompiled code =====");
 
     if (Compiler.bReOrdering)
