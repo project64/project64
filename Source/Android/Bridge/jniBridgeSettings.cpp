@@ -292,7 +292,6 @@ CJniBridegSettings::CJniBridegSettings()
     ADD_SETTING(Debugger_TraceTLB);
     ADD_SETTING(Debugger_TraceUserInterface);
     ADD_SETTING(Debugger_TraceRomList);
-    ADD_SETTING(Debugger_TraceExceptionHandler);
 
     // Plugins
     ADD_SETTING(Plugin_RSP_Current);

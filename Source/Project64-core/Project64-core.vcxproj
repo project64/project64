@@ -48,7 +48,6 @@
     </ClCompile>
     <ClCompile Include="AppInit.cpp" />
     <ClCompile Include="Logging.cpp" />
-    <ClCompile Include="MemoryExceptionFilter.cpp" />
     <ClCompile Include="Multilanguage\Language.cpp" />
     <ClCompile Include="N64System\EmulationThread.cpp" />
     <ClCompile Include="N64System\Enhancement\Enhancement.cpp" />

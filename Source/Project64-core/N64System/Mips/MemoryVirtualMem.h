@@ -55,10 +55,7 @@ public:
     CMipsMemoryVM(CN64System & System, bool SavesReadOnly);
     ~CMipsMemoryVM();
 
-    static void ReserveMemory();
-    static void FreeReservedMemory();
-
-    bool Initialize(bool SyncSystem);
+    bool Initialize(void);
     void Reset(bool EraseMemory);
 
     uint8_t *& Rdram()
@@ -109,11 +106,6 @@ public:
     bool SD_Memory(uint64_t VAddr, uint64_t Value);
 
     int32_t MemoryFilter(uint32_t dwExptCode, void * lpExceptionPointer);
-
-#ifndef _WIN32
-    static bool SetupSegvHandler(void);
-    static void segv_handler(int signal, siginfo_t * siginfo, void * sigcontext);
-#endif
 
     void ClearMemoryWriteMap(uint32_t VAddr, uint32_t Length);
 
@@ -205,7 +197,6 @@ private:
 #endif
     void FreeMemory();
 
-    static uint8_t *m_Reserve1, *m_Reserve2;
     CN64System & m_System;
     CRegisters & m_Reg;
     CTLB & m_TLB;

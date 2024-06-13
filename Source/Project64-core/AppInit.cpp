@@ -70,7 +70,6 @@ void SetTraceModuleNames(void)
     TraceSetModuleName(TraceTLB, "TLB");
     TraceSetModuleName(TraceUserInterface, "User Interface");
     TraceSetModuleName(TraceRomList, "Rom List");
-    TraceSetModuleName(TraceExceptionHandler, "Exception Handler");
 }
 
 void UpdateTraceLevel(void * /*NotUsed*/)
@@ -95,7 +94,6 @@ void UpdateTraceLevel(void * /*NotUsed*/)
     g_ModuleLogLevel[TraceTLB] = (uint8_t)g_Settings->LoadDword(Debugger_TraceTLB);
     g_ModuleLogLevel[TraceUserInterface] = (uint8_t)g_Settings->LoadDword(Debugger_TraceUserInterface);
     g_ModuleLogLevel[TraceRomList] = (uint8_t)g_Settings->LoadDword(Debugger_TraceRomList);
-    g_ModuleLogLevel[TraceExceptionHandler] = (uint8_t)g_Settings->LoadDword(Debugger_TraceExceptionHandler);
 }
 
 void SetupTrace(void)
@@ -122,7 +120,6 @@ void SetupTrace(void)
     g_Settings->RegisterChangeCB(Debugger_TraceTLB, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->RegisterChangeCB(Debugger_TraceUserInterface, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->RegisterChangeCB(Debugger_TraceRomList, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->RegisterChangeCB(Debugger_TraceExceptionHandler, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->RegisterChangeCB(Debugger_AppLogFlush, g_LogFile, (CSettings::SettingChangedFunc)LogFlushChanged);
     UpdateTraceLevel(nullptr);
 
@@ -153,7 +150,6 @@ void CleanupTrace(void)
     g_Settings->UnregisterChangeCB(Debugger_TraceTLB, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_TraceUserInterface, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_TraceRomList, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
-    g_Settings->UnregisterChangeCB(Debugger_TraceExceptionHandler, nullptr, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_AppLogFlush, g_LogFile, (CSettings::SettingChangedFunc)LogFlushChanged);
 }
 
@@ -248,15 +244,8 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
 
         SetupTrace();
         FixDirectories();
-        CMipsMemoryVM::ReserveMemory();
 #ifdef _WIN32
         IncreaseThreadPriority();
-#else
-        if (!CMipsMemoryVM::SetupSegvHandler())
-        {
-            WriteTrace(TraceAppInit, TraceDebug, "Setup SEGV handler failed");
-            return false;
-        }
 #endif
         g_Enhancements = new CEnhancements();
 
@@ -318,8 +307,6 @@ void AppCleanup(void)
         delete g_Lang;
         g_Lang = nullptr;
     }
-
-    CMipsMemoryVM::FreeReservedMemory();
     TraceDone();
 }
 

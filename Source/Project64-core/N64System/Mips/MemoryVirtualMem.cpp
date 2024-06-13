@@ -9,8 +9,6 @@
 #include <Project64-core\N64System\SystemGlobals.h>
 #include <stdio.h>
 
-uint8_t * CMipsMemoryVM::m_Reserve1 = nullptr;
-uint8_t * CMipsMemoryVM::m_Reserve2 = nullptr;
 uint32_t CMipsMemoryVM::RegModValue;
 
 #pragma warning(disable : 4355) // Disable 'this' : used in base member initializer list
@@ -109,54 +107,16 @@ void CMipsMemoryVM::Reset(bool /*EraseMemory*/)
     }
 }
 
-void CMipsMemoryVM::ReserveMemory()
-{
-#if defined(__i386__) || defined(_M_IX86)
-    m_Reserve1 = (uint8_t *)AllocateAddressSpace(0x20000000, (void *)g_Settings->LoadDword(Setting_FixedRdramAddress));
-#else
-    m_Reserve1 = (uint8_t *)AllocateAddressSpace(0x20000000);
-#endif
-    m_Reserve2 = (uint8_t *)AllocateAddressSpace(0x04002000);
-}
-
-void CMipsMemoryVM::FreeReservedMemory()
-{
-    if (m_Reserve1)
-    {
-        FreeAddressSpace(m_Reserve1, 0x20000000);
-        m_Reserve1 = nullptr;
-    }
-    if (m_Reserve2)
-    {
-        FreeAddressSpace(m_Reserve2, 0x20000000);
-        m_Reserve2 = nullptr;
-    }
-}
-
-bool CMipsMemoryVM::Initialize(bool SyncSystem)
+bool CMipsMemoryVM::Initialize(void)
 {
     if (m_RDRAM != nullptr)
     {
         return true;
     }
-
-    if (!SyncSystem && m_RDRAM == nullptr && m_Reserve1 != nullptr)
-    {
-        m_RDRAM = m_Reserve1;
-        m_Reserve1 = nullptr;
-    }
-    if (SyncSystem && m_RDRAM == nullptr && m_Reserve2 != nullptr)
-    {
-        m_RDRAM = m_Reserve2;
-        m_Reserve2 = nullptr;
-    }
+    m_RDRAM = (uint8_t *)AllocateAddressSpace(0x02000000, (void *)g_Settings->LoadDword(Setting_FixedRdramAddress));
     if (m_RDRAM == nullptr)
     {
-        m_RDRAM = (uint8_t *)AllocateAddressSpace(0x20000000);
-    }
-    if (m_RDRAM == nullptr)
-    {
-        WriteTrace(TraceN64System, TraceError, "Failed to reserve RDRAM (Size: 0x%X)", 0x20000000);
+        WriteTrace(TraceN64System, TraceError, "Failed to reserve RDRAM (Size: 0x%X)", 0x02000000);
         FreeMemory();
         return false;
     }
@@ -212,25 +172,8 @@ void CMipsMemoryVM::FreeMemory()
 {
     if (m_RDRAM)
     {
-        if (DecommitMemory(m_RDRAM, 0x20000000))
-        {
-            if (m_Reserve1 == nullptr)
-            {
-                m_Reserve1 = m_RDRAM;
-            }
-            else if (m_Reserve2 == nullptr)
-            {
-                m_Reserve2 = m_RDRAM;
-            }
-            else
-            {
-                FreeAddressSpace(m_RDRAM, 0x20000000);
-            }
-        }
-        else
-        {
-            FreeAddressSpace(m_RDRAM, 0x20000000);
-        }
+        DecommitMemory(m_RDRAM, 0x02000000);
+        FreeAddressSpace(m_RDRAM, 0x02000000);
         m_RDRAM = nullptr;
     }
     if (m_TLB_ReadMap)

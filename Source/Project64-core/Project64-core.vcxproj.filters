@@ -309,9 +309,6 @@
     <ClCompile Include="N64System\Recompiler\x86\x86RegInfo.cpp">
       <Filter>Source Files\N64 System\Recompiler\x86</Filter>
     </ClCompile>
-    <ClCompile Include="MemoryExceptionFilter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="N64System\Recompiler\RegBase.cpp">
       <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>

@@ -61,7 +61,7 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     }
     m_Limiter.SetHertz(gameHertz);
     g_Settings->SaveDword(GameRunning_ScreenHertz, gameHertz);
-    if (!m_MMU_VM.Initialize(SyncSystem))
+    if (!m_MMU_VM.Initialize())
     {
         WriteTrace(TraceN64System, TraceWarning, "MMU failed to initialize");
         WriteTrace(TraceN64System, TraceDebug, "Done");
