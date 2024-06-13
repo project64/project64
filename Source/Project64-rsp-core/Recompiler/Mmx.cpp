@@ -16,7 +16,7 @@
     *(void **)(dest) = (void *)(value); \
     dest += sizeof(void *);
 
-char * mmx_Strings[8] = {
+const char * mmx_Strings[8] = {
     "mm0", "mm1", "mm2", "mm3",
     "mm4", "mm5", "mm6", "mm7"};
 

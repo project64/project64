@@ -17,7 +17,7 @@
     *(void **)(dest) = (void *)(value); \
     dest += sizeof(void *);
 
-char * sse_Strings[8] = {
+const char * sse_Strings[8] = {
     "xmm0",
     "xmm1",
     "xmm2",
