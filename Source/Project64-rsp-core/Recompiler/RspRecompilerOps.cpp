@@ -256,6 +256,7 @@ void Compile_BEQ(void)
         if (RSPOpC.rs == 0 && RSPOpC.rt == 0)
         {
             NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
+            MoveConstByteToVariable(1, &BranchCompare, "BranchCompare");
             return;
         }
         bDelayAffect = DelaySlotAffectBranch(CompilePC);
@@ -338,6 +339,7 @@ void Compile_BNE(void)
         CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         if (RSPOpC.rs == 0 && RSPOpC.rt == 0)
         {
+            MoveConstByteToVariable(0, &BranchCompare, "BranchCompare");
             NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
             return;
         }
@@ -1543,6 +1545,10 @@ void Compile_Special_BREAK(void)
         MoveConstToVariable(CompilePC + 4, PrgCount, "RSP PC");
         Ret();
         NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
+    }
+    else if (NextInstruction == RSPPIPELINE_DELAY_SLOT)
+    {
+        NextInstruction = RSPPIPELINE_DELAY_SLOT_EXIT;
     }
     else
     {
