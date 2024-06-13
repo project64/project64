@@ -72,7 +72,7 @@ void BuildRecompilerCPU(void)
     RSP_Opcode[36] = Compile_LBU;
     RSP_Opcode[37] = Compile_LHU;
     RSP_Opcode[38] = Compile_UnknownOpcode;
-    RSP_Opcode[39] = Compile_UnknownOpcode;
+    RSP_Opcode[39] = Compile_LWU;
     RSP_Opcode[40] = Compile_SB;
     RSP_Opcode[41] = Compile_SH;
     RSP_Opcode[42] = Compile_UnknownOpcode;

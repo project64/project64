@@ -1072,6 +1072,12 @@ void Compile_LHU(void)
     x86_SetBranch32b(Jump[1], RecompPos);
 }
 
+void Compile_LWU(void)
+{
+    Cheat_r4300iOpcode(RSP_Opcode_LWU, "RSP_Opcode_LWU");
+    return;
+}
+
 void Compile_SB(void)
 {
     int Offset = (short)RSPOpC.offset;

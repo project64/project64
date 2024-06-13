@@ -23,6 +23,7 @@ void Compile_LH(void);
 void Compile_LW(void);
 void Compile_LBU(void);
 void Compile_LHU(void);
+void Compile_LWU(void);
 void Compile_SB(void);
 void Compile_SH(void);
 void Compile_SW(void);
