@@ -890,11 +890,11 @@ void CompilerRSPBlock(void)
             break;
         case RSPPIPELINE_DELAY_SLOT:
             NextInstruction = RSPPIPELINE_DELAY_SLOT_DONE;
-            CompilePC -= 4;
+            CompilePC = (CompilePC - 4 & 0xFFC);
             break;
         case RSPPIPELINE_DELAY_SLOT_EXIT:
             NextInstruction = RSPPIPELINE_DELAY_SLOT_EXIT_DONE;
-            CompilePC -= 4;
+            CompilePC = (CompilePC - 4 & 0xFFC);
             break;
         case RSPPIPELINE_FINISH_SUB_BLOCK:
             NextInstruction = RSPPIPELINE_NORMAL;
@@ -931,7 +931,7 @@ void CompilerRSPBlock(void)
             CompilePC = 0;
             EndPC = *PrgCount;
         }
-    } while (NextInstruction != RSPPIPELINE_FINISH_BLOCK && (CompilePC < EndPC || NextInstruction == RSPPIPELINE_DELAY_SLOT));
+    } while (NextInstruction != RSPPIPELINE_FINISH_BLOCK && (CompilePC < EndPC || NextInstruction == RSPPIPELINE_DELAY_SLOT || NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE));
     CPU_Message("===== End of recompiled code =====");
 
     if (Compiler.bReOrdering)
