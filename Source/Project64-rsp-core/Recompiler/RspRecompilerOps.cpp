@@ -533,7 +533,7 @@ void Compile_BGTZ(void)
 
 void Compile_ADDI(void)
 {
-    if (RSPOpC.rd == 0)
+    if (RSPOpC.rt == 0)
     {
         CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         return;
@@ -573,7 +573,7 @@ void Compile_ADDI(void)
 
 void Compile_ADDIU(void)
 {
-    if (RSPOpC.rd == 0)
+    if (RSPOpC.rt == 0)
     {
         CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         return;
@@ -610,7 +610,7 @@ void Compile_ADDIU(void)
 
 void Compile_SLTI(void)
 {
-    if (RSPOpC.rd == 0)
+    if (RSPOpC.rt == 0)
     {
         CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         return;
@@ -638,7 +638,7 @@ void Compile_SLTI(void)
 
 void Compile_SLTIU(void)
 {
-    if (RSPOpC.rd == 0)
+    if (RSPOpC.rt == 0)
     {
         CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         return;
@@ -660,7 +660,7 @@ void Compile_SLTIU(void)
 
 void Compile_ANDI(void)
 {
-    if (RSPOpC.rd == 0)
+    if (RSPOpC.rt == 0)
     {
         CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         return;
@@ -695,7 +695,7 @@ void Compile_ANDI(void)
 
 void Compile_ORI(void)
 {
-    if (RSPOpC.rd == 0)
+    if (RSPOpC.rt == 0)
     {
         CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         return;
@@ -728,7 +728,7 @@ void Compile_ORI(void)
 
 void Compile_XORI(void)
 {
-    if (RSPOpC.rd == 0)
+    if (RSPOpC.rt == 0)
     {
         CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         return;
@@ -761,7 +761,7 @@ void Compile_XORI(void)
 
 void Compile_LUI(void)
 {
-    if (RSPOpC.rd == 0)
+    if (RSPOpC.rt == 0)
     {
         CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         return;
