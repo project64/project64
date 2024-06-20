@@ -115,9 +115,9 @@ void Compile_Vector_VRSQ(void);
 void Compile_Vector_VRSQL(void);
 void Compile_Vector_VRSQH(void);
 void Compile_Vector_VNOOP(void);
+void Compile_Vector_Reserved(void);
 
 // LC2 functions
-
 void Compile_Opcode_LBV(void);
 void Compile_Opcode_LSV(void);
 void Compile_Opcode_LLV(void);
@@ -131,7 +131,6 @@ void Compile_Opcode_LFV(void);
 void Compile_Opcode_LTV(void);
 
 // SC2 functions
-
 void Compile_Opcode_SBV(void);
 void Compile_Opcode_SSV(void);
 void Compile_Opcode_SLV(void);

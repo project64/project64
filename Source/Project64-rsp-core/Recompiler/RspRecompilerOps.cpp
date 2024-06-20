@@ -6035,6 +6035,11 @@ void Compile_Vector_VNOOP(void)
 {
 }
 
+void Compile_Vector_Reserved(void)
+{
+    Cheat_r4300iOpcode(RSP_Vector_Reserved, "RSP_Vector_Reserved");
+}
+
 // LC2 functions
 
 void Compile_Opcode_LBV(void)
