@@ -583,7 +583,6 @@ void Compile_ADDIU(void)
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
-
     int Immediate = (short)RSPOpC.immediate;
 
     if (RSPOpC.rt == RSPOpC.rs)
@@ -651,7 +650,6 @@ void Compile_SLTIU(void)
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
-
     Immediate = (short)RSPOpC.immediate;
     XorX86RegToX86Reg(x86_ECX, x86_ECX);
     CompConstToVariable(Immediate, &RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs));
@@ -671,7 +669,6 @@ void Compile_ANDI(void)
     Cheat_r4300iOpcode(RSP_Opcode_ANDI, "RSP_Opcode_ANDI");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
-
 
     int Immediate = (unsigned short)RSPOpC.immediate;
     if (RSPOpC.rt == RSPOpC.rs)
@@ -2209,6 +2206,18 @@ void Compile_Cop0_MF(void)
         Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::ReadReg), "RSPRegisterHandlerPlugin::ReadReg");
         MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
         break;
+    case 2:
+        MoveConstToX86reg((uint32_t)(g_RSPRegisterHandler.get()), x86_ECX);
+        PushImm32("RSPRegister_RD_LEN", RSPRegister_RD_LEN);
+        Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::ReadReg), "RSPRegisterHandlerPlugin::ReadReg");
+        MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+        break;
+    case 3:
+        MoveConstToX86reg((uint32_t)(g_RSPRegisterHandler.get()), x86_ECX);
+        PushImm32("RSPRegister_WR_LEN", RSPRegister_WR_LEN);
+        Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::ReadReg), "RSPRegisterHandlerPlugin::ReadReg");
+        MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+        break;
     case 4:
         MoveConstToX86reg((uint32_t)(g_RSPRegisterHandler.get()), x86_ECX);
         PushImm32("RSPRegister_STATUS", RSPRegister_STATUS);
@@ -2861,6 +2870,16 @@ void Compile_Vector_VMULF(void)
 void Compile_Vector_VMULU(void)
 {
     Cheat_r4300iOpcode(RSP_Vector_VMULU, "RSP_Vector_VMULU");
+}
+
+void Compile_Vector_VRNDP(void)
+{
+    Cheat_r4300iOpcode(RSP_Vector_VRNDP, "RSP_Vector_VRNDP");
+}
+
+void Compile_Vector_VMULQ(void)
+{
+    Cheat_r4300iOpcode(RSP_Vector_VMULQ, "RSP_Vector_VMULQ");
 }
 
 bool Compile_Vector_VMUDL_MMX(void)
@@ -6070,12 +6089,6 @@ void Compile_Opcode_LSV(void)
     char Reg[256];
     int offset = (RSPOpC.voffset << 1);
 
-    if (RSPOpC.del > 14)
-    {
-        rsp_UnknownOpcode();
-        return;
-    }
-
 #ifndef CompileLsv
     Cheat_r4300iOpcode(RSP_Opcode_LSV, "RSP_Opcode_LSV");
     return;
@@ -6442,7 +6455,7 @@ void Compile_Opcode_LRV(void)
 
     if (RSPOpC.del != 0)
     {
-        rsp_UnknownOpcode();
+        Cheat_r4300iOpcode(RSP_Opcode_LRV, "RSP_Opcode_LRV");
         return;
     }
 
@@ -6838,6 +6851,11 @@ void Compile_Opcode_LHV(void)
 void Compile_Opcode_LFV(void)
 {
     Cheat_r4300iOpcode(RSP_Opcode_LFV, "RSP_Opcode_LFV");
+}
+
+void Compile_Opcode_LWV(void)
+{
+    Cheat_r4300iOpcode(RSP_Opcode_LWV, "RSP_Opcode_LWV");
 }
 
 void Compile_Opcode_LTV(void)

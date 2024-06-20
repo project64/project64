@@ -264,8 +264,8 @@ void BuildRecompilerCPU(void)
 
     RSP_Vector[0] = Compile_Vector_VMULF;
     RSP_Vector[1] = Compile_Vector_VMULU;
-    RSP_Vector[2] = Compile_UnknownOpcode;
-    RSP_Vector[3] = Compile_UnknownOpcode;
+    RSP_Vector[2] = Compile_Vector_VRNDP;
+    RSP_Vector[3] = Compile_Vector_VMULQ;
     RSP_Vector[4] = Compile_Vector_VMUDL;
     RSP_Vector[5] = Compile_Vector_VMUDM;
     RSP_Vector[6] = Compile_Vector_VMUDN;
@@ -337,7 +337,7 @@ void BuildRecompilerCPU(void)
     RSP_Lc2[7] = Compile_Opcode_LUV;
     RSP_Lc2[8] = Compile_Opcode_LHV;
     RSP_Lc2[9] = Compile_Opcode_LFV;
-    RSP_Lc2[10] = Compile_UnknownOpcode;
+    RSP_Lc2[10] = Compile_Opcode_LWV;
     RSP_Lc2[11] = Compile_Opcode_LTV;
     RSP_Lc2[12] = Compile_UnknownOpcode;
     RSP_Lc2[13] = Compile_UnknownOpcode;

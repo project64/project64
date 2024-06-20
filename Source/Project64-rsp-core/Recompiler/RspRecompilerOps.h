@@ -76,6 +76,8 @@ void Compile_COP2_VECTOR(void);
 
 void Compile_Vector_VMULF(void);
 void Compile_Vector_VMULU(void);
+void Compile_Vector_VRNDP(void);
+void Compile_Vector_VMULQ(void);
 void Compile_Vector_VMUDL(void);
 void Compile_Vector_VMUDM(void);
 void Compile_Vector_VMUDN(void);
@@ -128,6 +130,7 @@ void Compile_Opcode_LPV(void);
 void Compile_Opcode_LUV(void);
 void Compile_Opcode_LHV(void);
 void Compile_Opcode_LFV(void);
+void Compile_Opcode_LWV(void);
 void Compile_Opcode_LTV(void);
 
 // SC2 functions
