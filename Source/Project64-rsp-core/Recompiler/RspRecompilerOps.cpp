@@ -1549,10 +1549,10 @@ void Compile_Special_JALR(void)
     if (NextInstruction == RSPPIPELINE_NORMAL)
     {
         CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
-        MoveConstToVariable(Const, &RSP_GPR[RSPOpC.rd].W, GPR_Name(RSPOpC.rd));
         MoveVariableToX86reg(&RSP_GPR[RSPOpC.rs].W, GPR_Name(RSPOpC.rs), x86_EAX);
         AndConstToX86Reg(x86_EAX, 0xFFC);
         MoveX86regToVariable(x86_EAX, PrgCount, "RSP PC");
+        MoveConstToVariable(Const, &RSP_GPR[RSPOpC.rd].W, GPR_Name(RSPOpC.rd));
         NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
     }
     else if (NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE)

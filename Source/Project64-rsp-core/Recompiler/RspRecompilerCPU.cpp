@@ -819,7 +819,6 @@ void CompilerRSPBlock(void)
     uint32_t EndPC = 0x1000;
     do
     {
-
         // Reordering is setup to allow us to have loop labels
         // so here we see if this is one and put it in the jump table
 
@@ -857,7 +856,6 @@ void CompilerRSPBlock(void)
             CPU_Message("X86 Address: %08X", RecompPos);
         }
 #endif
-
         RSP_LW_IMEM(CompilePC, &RSPOpC.Value);
 
         if (LogRDP && NextInstruction != RSPPIPELINE_DELAY_SLOT_DONE)
