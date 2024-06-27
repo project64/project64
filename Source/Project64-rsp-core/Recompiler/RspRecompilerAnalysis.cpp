@@ -1835,22 +1835,22 @@ Input: PC
 
 bool DelaySlotAffectBranch(uint32_t PC)
 {
-    RSPOpcode Branch, Delay;
-    OPCODE_INFO infoBranch, infoDelay;
-
-    if (IsOpcodeNop(PC + 4) == true)
+    uint32_t DelayPC = (PC + 4) & 0xFFC;
+    if (IsOpcodeNop(DelayPC) == true)
     {
         return false;
     }
 
-    RSP_LW_IMEM(PC, &Branch.Value);
-    RSP_LW_IMEM(PC + 4, &Delay.Value);
+    RSPOpcode BranchOp, DelayOp;
+    RSP_LW_IMEM(PC, &BranchOp.Value);
+    RSP_LW_IMEM(DelayPC, &DelayOp.Value);
 
+    OPCODE_INFO infoBranch, infoDelay;
     memset(&infoDelay, 0, sizeof(infoDelay));
     memset(&infoBranch, 0, sizeof(infoBranch));
 
-    GetInstructionInfo(PC, &Branch, &infoBranch);
-    GetInstructionInfo(PC + 4, &Delay, &infoDelay);
+    GetInstructionInfo(PC, &BranchOp, &infoBranch);
+    GetInstructionInfo(DelayPC, &DelayOp, &infoDelay);
 
     if ((infoDelay.flags & COPO_MF_Instruction) == COPO_MF_Instruction)
     {
