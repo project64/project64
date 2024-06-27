@@ -38,7 +38,7 @@ void InitializeRspSetting(void)
     RegisterSetting(Set_Flags, Data_DWORD_General, "Check Flag Usage", NULL, Compiler.bFlags, NULL);
     RegisterSetting(Set_AlignVector, Data_DWORD_General, "Assume Vector loads align", NULL, Compiler.bAlignVector, NULL);
 
-    RegisterSetting(Set_JumpTableSize, Data_DWORD_Game, "JumpTableSize", NULL, 0x800, NULL);
+    RegisterSetting(Set_JumpTableSize, Data_DWORD_Game, "JumpTableSize", NULL, 0x1000, NULL);
     RegisterSetting(Set_Mfc0Count, Data_DWORD_Game, "Mfc0Count", NULL, 0x0, NULL);
     RegisterSetting(Set_SemaphoreExit, Data_DWORD_Game, "SemaphoreExit", NULL, 0x0, NULL);
 

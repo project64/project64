@@ -5,6 +5,7 @@
 #include <Settings/Settings.h>
 #include <stdio.h>
 #include <string.h>
+#include <zlib/zlib.h>
 
 enum
 {
@@ -78,9 +79,7 @@ void ResetJumpTables(void)
 
 void SetJumpTable(uint32_t End)
 {
-    uint32_t CRC, count;
-
-    CRC = 0;
+    uint32_t CRC = crc32(0L, Z_NULL, 0);
     if (End < 0x800)
     {
         End = 0x800;
@@ -91,17 +90,13 @@ void SetJumpTable(uint32_t End)
         End = 0x800;
     }
 
-    for (count = 0; count < End; count += 0x40)
+    CRC = crc32(CRC, RSPInfo.IMEM, End);
+    for (uint32_t i = 0; i < NoOfMaps; i++)
     {
-        CRC += *(uint32_t *)(RSPInfo.IMEM + count);
-    }
-
-    for (count = 0; count < NoOfMaps; count++)
-    {
-        if (CRC == MapsCRC[count])
+        if (CRC == MapsCRC[i])
         {
-            JumpTable = (void **)(JumpTables + count * 0x1000);
-            Table = count;
+            JumpTable = (void **)(JumpTables + i * 0x1000);
+            Table = i;
             return;
         }
     }
