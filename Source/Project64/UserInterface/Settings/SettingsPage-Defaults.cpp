@@ -20,6 +20,7 @@ CDefaultsOptionsPage::CDefaultsOptionsPage(HWND hParent, const RECT & rcDispay)
     SetDlgItemText(IDC_SYNC_AUDIO, wGS(ROM_SYNC_AUDIO).c_str());
     SetDlgItemText(IDC_RANDOMIZE_SIPI_INTERRUPTS, wGS(ROM_RANDOMIZE_SIPI_INTERRUPTS).c_str());
     SetDlgItemText(IDC_DISKSEEKTIMING_TEXT1, wGS(ROM_DISK_SEEK_TIMING).c_str());
+    SetDlgItemText(IDC_OVER_CLOCK_MODIFIER_TEXT2, wGS(ROM_OVER_CLOCK_MODIFIER).c_str());
 
     CModifiedComboBox * ComboBox;
     ComboBox = AddModComboBox(GetDlgItem(IDC_RDRAM_SIZE_KNOWN), Default_RDRamSizeUnknown);
@@ -54,6 +55,8 @@ CDefaultsOptionsPage::CDefaultsOptionsPage(HWND hParent, const RECT & rcDispay)
     TxtBox->SetTextField(GetDlgItem(IDC_VIREFESH_TEXT));
     TxtBox = AddModTextBox(GetDlgItem(IDC_COUNTPERBYTE), Default_AiCountPerBytes, false);
     TxtBox->SetTextField(GetDlgItem(IDC_COUNTPERBYTE_TEXT));
+    TxtBox = AddModTextBox(GetDlgItem(IDC_OVER_CLOCK_MODIFIER), Default_OverClockModifier, false);
+    TxtBox->SetTextField(GetDlgItem(IDC_OVER_CLOCK_MODIFIER_TEXT2));
 
     AddModCheckBox(GetDlgItem(IDC_HLE_GFX), Default_UseHleGfx);
     AddModCheckBox(GetDlgItem(IDC_SYNC_AUDIO), Default_SyncViaAudio);

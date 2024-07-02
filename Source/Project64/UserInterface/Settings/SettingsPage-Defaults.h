@@ -17,6 +17,7 @@ class CDefaultsOptionsPage :
         COMMAND_HANDLER_EX(IDC_VIREFRESH, EN_UPDATE, EditBoxChanged);
         COMMAND_HANDLER_EX(IDC_COUNTPERBYTE, EN_UPDATE, EditBoxChanged);
         COMMAND_HANDLER_EX(IDC_RDRAM_SIZE, EN_UPDATE, EditBoxChanged);
+        COMMAND_HANDLER_EX(IDC_OVER_CLOCK_MODIFIER, EN_UPDATE, EditBoxChanged);
     }
     END_MSG_MAP()
 
