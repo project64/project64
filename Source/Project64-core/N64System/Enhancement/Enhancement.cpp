@@ -363,10 +363,6 @@ void CEnhancement::SetOverClock(bool OverClock, uint32_t OverClockModifier)
     {
         m_OverClockModifier = 1;
     }
-    if (m_OverClockModifier > 20)
-    {
-        m_OverClockModifier = 20;
-    }
 }
 
 void CEnhancement::CheckValid(void)

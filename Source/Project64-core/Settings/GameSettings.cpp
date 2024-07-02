@@ -95,14 +95,7 @@ void CGameSettings::RefreshGameSettings()
     {
         m_CountPerOp = 2;
     }
-    if (m_OverClockModifier < 1)
-    {
-        m_OverClockModifier = 1;
-    }
-    if (m_OverClockModifier > 20)
-    {
-        m_OverClockModifier = 20;
-    }
+	if (m_OverClockModifier < 1) { m_OverClockModifier = 1; }
     m_DiskSeekTimingType = (DISK_SEEK_TYPE)g_Settings->LoadDword(Game_DiskSeekTiming);
     m_UnalignedDMA = g_Settings->LoadBool(Game_UnalignedDMA);
     RefreshSyncToAudio();
@@ -133,14 +126,7 @@ void CGameSettings::SetOverClockModifier(bool EnhancmentOverClock, uint32_t Enha
     {
         m_OverClockModifier = g_Settings->LoadDword(Game_OverClockModifier);
     }
-    if (m_OverClockModifier < 1)
-    {
-        m_OverClockModifier = 1;
-    }
-    if (m_OverClockModifier > 20)
-    {
-        m_OverClockModifier = 20;
-    }
+    if (m_OverClockModifier < 1) { m_OverClockModifier = 1; }
 }
 
 void CGameSettings::EnableDiskChanged(void *)
