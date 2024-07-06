@@ -3100,17 +3100,15 @@ bool Compile_Vector_VMUDM_MMX(void)
 
 void Compile_Vector_VMUDM(void)
 {
+#ifndef CompileVmudm
+    Cheat_r4300iOpcode(RSP_Vector_VMUDM, "RSP_Vector_VMUDM");
+#else
     char Reg[256];
     uint8_t count, el, del;
 
     bool bOptimize = (RSPOpC.rs & 8) ? true : false;
     bool bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
     bool bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
-
-#ifndef CompileVmudm
-    Cheat_r4300iOpcode(RSP_Vector_VMUDM, "RSP_Vector_VMUDM");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -3197,6 +3195,7 @@ void Compile_Vector_VMUDM(void)
     }
 
     Pop(x86_EBP);
+#endif
 }
 
 bool Compile_Vector_VMUDN_MMX(void)
@@ -3247,17 +3246,15 @@ bool Compile_Vector_VMUDN_MMX(void)
 
 void Compile_Vector_VMUDN(void)
 {
+#ifndef CompileVmudn
+    Cheat_r4300iOpcode(RSP_Vector_VMUDN, "RSP_Vector_VMUDN");
+#else
     char Reg[256];
     uint8_t count, el, del;
 
     bool bOptimize = (RSPOpC.rs & 8) ? true : false;
     bool bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
     bool bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
-
-#ifndef CompileVmudn
-    Cheat_r4300iOpcode(RSP_Vector_VMUDN, "RSP_Vector_VMUDN");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -3314,6 +3311,7 @@ void Compile_Vector_VMUDN(void)
         }
     }
     Pop(x86_EBP);
+#endif
 }
 
 bool Compile_Vector_VMUDH_MMX(void)
@@ -3402,17 +3400,15 @@ bool Compile_Vector_VMUDH_MMX(void)
 
 void Compile_Vector_VMUDH(void)
 {
+#ifndef CompileVmudh
+    Cheat_r4300iOpcode(RSP_Vector_VMUDH, "RSP_Vector_VMUDH");
+#else
     char Reg[256];
     uint8_t count, el, del;
 
     bool bOptimize = (RSPOpC.rs & 8) ? true : false;
     bool bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
     bool bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
-
-#ifndef CompileVmudh
-    Cheat_r4300iOpcode(RSP_Vector_VMUDH, "RSP_Vector_VMUDH");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -3539,20 +3535,19 @@ void Compile_Vector_VMUDH(void)
             }
         }
     }
+#endif
 }
 
 void Compile_Vector_VMACF(void)
 {
+#ifndef CompileVmacf
+    Cheat_r4300iOpcode(RSP_Vector_VMACF, "RSP_Vector_VMACF");
+#else
     char Reg[256];
     uint8_t count, el, del;
 
     bool bOptimize = (RSPOpC.rs & 8) ? true : false;
     bool bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-
-#ifndef CompileVmacf
-    Cheat_r4300iOpcode(RSP_Vector_VMACF, "RSP_Vector_VMACF");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -3609,6 +3604,7 @@ void Compile_Vector_VMACF(void)
             MoveX86regHalfToVariable(x86_EAX, &RSP_Vect[RSPOpC.vd].s16(el), Reg);
         }
     }
+#endif
 }
 
 void Compile_Vector_VMACU(void)
@@ -3623,16 +3619,14 @@ void Compile_Vector_VMACQ(void)
 
 void Compile_Vector_VMADL(void)
 {
+#ifndef CompileVmadl
+    Cheat_r4300iOpcode(RSP_Vector_VMADL, "RSP_Vector_VMADL");
+#else
     char Reg[256];
     uint8_t count, el, del;
 
     bool bOptimize = (RSPOpC.rs & 8) ? true : false;
     bool bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-
-#ifndef CompileVmadl
-    Cheat_r4300iOpcode(RSP_Vector_VMADL, "RSP_Vector_VMADL");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -3696,20 +3690,19 @@ void Compile_Vector_VMADL(void)
     {
         Pop(x86_EBP);
     }
+#endif
 }
 
 void Compile_Vector_VMADM(void)
 {
+#ifndef CompileVmadm
+    Cheat_r4300iOpcode(RSP_Vector_VMADM, "RSP_Vector_VMADM");
+#else
     char Reg[256];
     uint8_t count, el, del;
 
     bool bOptimize = (RSPOpC.rs & 8) ? true : false;
     bool bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-
-#ifndef CompileVmadm
-    Cheat_r4300iOpcode(RSP_Vector_VMADM, "RSP_Vector_VMADM");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -3792,20 +3785,19 @@ void Compile_Vector_VMADM(void)
     }
 
     Pop(x86_EBP);
+#endif
 }
 
 void Compile_Vector_VMADN(void)
 {
+#ifndef CompileVmadn
+    Cheat_r4300iOpcode(RSP_Vector_VMADN, "RSP_Vector_VMADN");
+#else
     char Reg[256];
     uint8_t count, el, del;
 
     bool bOptimize = (RSPOpC.rs & 8) ? true : false;
     bool bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-
-#ifndef CompileVmadn
-    Cheat_r4300iOpcode(RSP_Vector_VMADN, "RSP_Vector_VMADN");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -3873,20 +3865,19 @@ void Compile_Vector_VMADN(void)
         }
     }
     Pop(x86_EBP);
+#endif
 }
 
 void Compile_Vector_VMADH(void)
 {
+#ifndef CompileVmadh
+    Cheat_r4300iOpcode(RSP_Vector_VMADH, "RSP_Vector_VMADH");
+#else
     char Reg[256];
     uint8_t count, el, del;
 
     bool bOptimize = (RSPOpC.rs & 8) ? true : false;
     bool bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-
-#ifndef CompileVmadh
-    Cheat_r4300iOpcode(RSP_Vector_VMADH, "RSP_Vector_VMADH");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -4016,6 +4007,7 @@ void Compile_Vector_VMADH(void)
         }
         Pop(x86_EBP);
     }
+#endif
 }
 
 bool Compile_Vector_VADD_MMX(void)
@@ -4076,6 +4068,9 @@ bool Compile_Vector_VADD_MMX(void)
 
 void Compile_Vector_VADD(void)
 {
+#ifndef CompileVadd
+    Cheat_r4300iOpcode(RSP_Vector_VADD, "RSP_Vector_VADD");
+#else
     char Reg[256];
     uint8_t count, el, del;
 
@@ -4083,11 +4078,6 @@ void Compile_Vector_VADD(void)
     bool bElement = (RSPOpC.rs & 8) ? true : false;
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
     bool bFlagUseage = UseRspFlags(CompilePC);
-
-#ifndef CompileVadd
-    Cheat_r4300iOpcode(RSP_Vector_VADD, "RSP_Vector_VADD");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -4156,6 +4146,7 @@ void Compile_Vector_VADD(void)
     }
     MoveConstToVariable(0, &RSP_Flags[0].UW, "RSP_Flags[0].UW");
     Pop(x86_EBP);
+#endif
 }
 
 bool Compile_Vector_VSUB_MMX(void)
@@ -4215,6 +4206,9 @@ bool Compile_Vector_VSUB_MMX(void)
 
 void Compile_Vector_VSUB(void)
 {
+#ifndef CompileVsub
+    Cheat_r4300iOpcode(RSP_Vector_VSUB, "RSP_Vector_VSUB");
+#else
     char Reg[256];
     uint8_t count, el, del;
 
@@ -4222,11 +4216,6 @@ void Compile_Vector_VSUB(void)
     bool bOptimize = (RSPOpC.rs & 8) ? true : false;
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
     bool bFlagUseage = UseRspFlags(CompilePC);
-
-#ifndef CompileVsub
-    Cheat_r4300iOpcode(RSP_Vector_VSUB, "RSP_Vector_VSUB");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -4297,6 +4286,7 @@ void Compile_Vector_VSUB(void)
 
     MoveConstToVariable(0, &RSP_Flags[0].UW, "RSP_Flags[0].UW");
     Pop(x86_EBP);
+#endif
 }
 
 bool Compile_Vector_VABS_MMX(void)
@@ -4390,16 +4380,14 @@ bool Compile_Vector_VABS_MMX(void)
 
 void Compile_Vector_VABS(void)
 {
+#ifndef CompileVabs
+    Cheat_r4300iOpcode(RSP_Vector_VABS, "RSP_Vector_VABS");
+#else
     uint8_t count, el, del;
     char Reg[256];
 
     bool bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
-
-#ifndef CompileVabs
-    Cheat_r4300iOpcode(RSP_Vector_VABS, "RSP_Vector_VABS");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -4487,21 +4475,20 @@ void Compile_Vector_VABS(void)
             }
         }
     }
+#endif
 }
 
 void Compile_Vector_VADDC(void)
 {
+#ifndef CompileVaddc
+    Cheat_r4300iOpcode(RSP_Vector_VADDC, "RSP_Vector_VADDC");
+#else
     char Reg[256];
     uint8_t count, el, del;
 
     bool bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
     bool bElement = (RSPOpC.rs & 8) ? true : false;
-
-#ifndef CompileVaddc
-    Cheat_r4300iOpcode(RSP_Vector_VADDC, "RSP_Vector_VADDC");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -4560,21 +4547,20 @@ void Compile_Vector_VADDC(void)
     }
     MoveX86regToVariable(x86_ECX, &RSP_Flags[0].UW, "RSP_Flags[0].UW");
     Pop(x86_EBP);
+#endif
 }
 
 void Compile_Vector_VSUBC(void)
 {
+#ifndef CompileVsubc
+    Cheat_r4300iOpcode(RSP_Vector_VSUBC, "RSP_Vector_VSUBC");
+#else
     char Reg[256];
     uint8_t count, el, del;
 
     bool bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
     bool bElement = (RSPOpC.rs & 8) ? true : false;
-
-#ifndef CompileVsubc
-    Cheat_r4300iOpcode(RSP_Vector_VSUBC, "RSP_Vector_VSUBC");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -4629,17 +4615,16 @@ void Compile_Vector_VSUBC(void)
         }
     }
     MoveX86regToVariable(x86_ECX, &RSP_Flags[0].UW, "RSP_Flags[0].UW");
+#endif
 }
 
 void Compile_Vector_VSAW(void)
 {
-    char Reg[256];
-    uint32_t Word;
-
 #ifndef CompileVsaw
     Cheat_r4300iOpcode(RSP_Vector_VSAW, "RSP_Vector_VSAW");
-    return;
-#endif
+#else
+    char Reg[256];
+    uint32_t Word;
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -4685,21 +4670,20 @@ void Compile_Vector_VSAW(void)
     MoveX86regToVariable(x86_ECX, &RSP_Vect[RSPOpC.vd].s16(4), Reg);
     sprintf(Reg, "RSP_Vect[%i].HW[6]", RSPOpC.sa);
     MoveX86regToVariable(x86_EDX, &RSP_Vect[RSPOpC.vd].s16(6), Reg);
+#endif
 }
 
 void Compile_Vector_VLT(void)
 {
+#ifndef CompileVlt
+    Cheat_r4300iOpcode(RSP_Vector_VLT, "RSP_Vector_VLT");
+#else
     bool bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
     uint8_t * jump[3];
     uint32_t flag;
     char Reg[256];
     uint8_t el, del, last;
-
-#ifndef CompileVlt
-    Cheat_r4300iOpcode(RSP_Vector_VLT, "RSP_Vector_VLT");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
     last = (uint8_t)-1;
@@ -4787,20 +4771,19 @@ void Compile_Vector_VLT(void)
             MoveX86regHalfToVariable(x86_ECX, &RSP_Vect[RSPOpC.vd].s16(el + 1), Reg);
         }
     }
+#endif
 }
 
 void Compile_Vector_VEQ(void)
 {
+#ifndef CompileVeq
+    Cheat_r4300iOpcode(RSP_Vector_VEQ, "RSP_Vector_VEQ");
+#else
     bool bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
     uint32_t flag;
     char Reg[256];
     uint8_t count, el, del, last = (uint8_t)-1;
-
-#ifndef CompileVeq
-    Cheat_r4300iOpcode(RSP_Vector_VEQ, "RSP_Vector_VEQ");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -4864,20 +4847,19 @@ void Compile_Vector_VEQ(void)
             MoveX86regHalfToVariable(x86_EDX, &RSP_Vect[RSPOpC.vd].s16(count), Reg);
         }
     }
+#endif
 }
 
 void Compile_Vector_VNE(void)
 {
+#ifndef CompileVne
+    Cheat_r4300iOpcode(RSP_Vector_VNE, "RSP_Vector_VNE");
+#else
     bool bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
     uint32_t flag;
     char Reg[256];
     uint8_t el, del, last = (uint8_t)-1;
-
-#ifndef CompileVne
-    Cheat_r4300iOpcode(RSP_Vector_VNE, "RSP_Vector_VNE");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -4934,6 +4916,7 @@ void Compile_Vector_VNE(void)
             MoveX86regToVariable(x86_EDX, &RSP_Vect[RSPOpC.vd].s32(el), Reg);
         }
     }
+#endif
 }
 
 bool Compile_Vector_VGE_MMX(void)
@@ -4984,7 +4967,11 @@ bool Compile_Vector_VGE_MMX(void)
 }
 
 void Compile_Vector_VGE(void)
-{ /*
+{
+#ifndef CompileVge
+    Cheat_r4300iOpcode(RSP_Vector_VGE, "RSP_Vector_VGE");
+#else
+    /*
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
 	TODO: works ok, but needs careful flag analysis */
@@ -5000,11 +4987,6 @@ void Compile_Vector_VGE(void)
     uint32_t flag;
     char Reg[256];
     uint8_t el, del, last = (uint8_t)-1;
-
-#ifndef CompileVge
-    Cheat_r4300iOpcode(RSP_Vector_VGE, "RSP_Vector_VGE");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -5095,6 +5077,7 @@ void Compile_Vector_VGE(void)
             MoveX86regHalfToVariable(x86_ECX, &RSP_Vect[RSPOpC.vd].s16(el + 1), Reg);
         }
     }
+#endif
 }
 
 void Compile_Vector_VCL(void)
@@ -5114,14 +5097,12 @@ void Compile_Vector_VCR(void)
 
 void Compile_Vector_VMRG(void)
 {
+#ifndef CompileVmrg
+    Cheat_r4300iOpcode(RSP_Vector_VMRG, "RSP_Vector_VMRG");
+#else
     char Reg[256];
     uint8_t count, el, del;
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
-
-#ifndef CompileVmrg
-    Cheat_r4300iOpcode(RSP_Vector_VMRG, "RSP_Vector_VMRG");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
     MoveVariableToX86reg(&RSP_Flags[1].UW, "RSP_Flags[1].UW", x86_EDX);
@@ -5149,6 +5130,7 @@ void Compile_Vector_VMRG(void)
         sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.sa, el);
         MoveX86regHalfToVariable(x86_ECX, &RSP_Vect[RSPOpC.vd].s16(el), Reg);
     }
+#endif
 }
 
 bool Compile_Vector_VAND_MMX(void)
@@ -5199,16 +5181,14 @@ bool Compile_Vector_VAND_MMX(void)
 
 void Compile_Vector_VAND(void)
 {
+#ifndef CompileVand
+    Cheat_r4300iOpcode(RSP_Vector_VAND, "RSP_Vector_VAND");
+#else
     char Reg[256];
     uint8_t el, del, count;
     bool bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
     bool bElement = (RSPOpC.rs & 8) ? true : false;
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
-
-#ifndef CompileVand
-    Cheat_r4300iOpcode(RSP_Vector_VAND, "RSP_Vector_VAND");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -5257,6 +5237,7 @@ void Compile_Vector_VAND(void)
             MoveX86regHalfToVariable(x86_EAX, &RSP_ACCUM[el].HW[1], Reg);
         }
     }
+#endif
 }
 
 bool Compile_Vector_VNAND_MMX(void)
@@ -5310,16 +5291,14 @@ bool Compile_Vector_VNAND_MMX(void)
 
 void Compile_Vector_VNAND(void)
 {
+#ifndef CompileVnand
+    Cheat_r4300iOpcode(RSP_Vector_VNAND, "RSP_Vector_VNAND");
+#else
     char Reg[256];
     uint8_t el, del, count;
     bool bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
     bool bElement = (RSPOpC.rs & 8) ? true : false;
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
-
-#ifndef CompileVnand
-    Cheat_r4300iOpcode(RSP_Vector_VNAND, "RSP_Vector_VNAND");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -5370,6 +5349,7 @@ void Compile_Vector_VNAND(void)
             MoveX86regHalfToVariable(x86_EAX, &RSP_ACCUM[el].HW[1], Reg);
         }
     }
+#endif
 }
 
 bool Compile_Vector_VOR_MMX(void)
@@ -5423,15 +5403,13 @@ bool Compile_Vector_VOR_MMX(void)
 
 void Compile_Vector_VOR(void)
 {
+#ifndef CompileVor
+    Cheat_r4300iOpcode(RSP_Vector_VOR, "RSP_Vector_VOR");
+#else
     char Reg[256];
     uint8_t el, del, count;
     bool bElement = (RSPOpC.rs & 8) ? true : false;
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
-
-#ifndef CompileVor
-    Cheat_r4300iOpcode(RSP_Vector_VOR, "RSP_Vector_VOR");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -5476,6 +5454,7 @@ void Compile_Vector_VOR(void)
         sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.sa, el);
         MoveX86regHalfToVariable(x86_EAX, &RSP_Vect[RSPOpC.vd].s16(el), Reg);
     }
+#endif
 }
 
 bool Compile_Vector_VNOR_MMX(void)
@@ -5529,15 +5508,13 @@ bool Compile_Vector_VNOR_MMX(void)
 
 void Compile_Vector_VNOR(void)
 {
+#ifndef CompileVnor
+    Cheat_r4300iOpcode(RSP_Vector_VNOR, "RSP_Vector_VNOR");
+#else
     char Reg[256];
     uint8_t el, del, count;
     bool bElement = (RSPOpC.rs & 8) ? true : false;
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
-
-#ifndef CompileVnor
-    Cheat_r4300iOpcode(RSP_Vector_VNOR, "RSP_Vector_VNOR");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -5584,6 +5561,7 @@ void Compile_Vector_VNOR(void)
         sprintf(Reg, "RSP_Vect[%i].HW[%i]", RSPOpC.sa, el);
         MoveX86regHalfToVariable(x86_EAX, &RSP_Vect[RSPOpC.vd].s16(el), Reg);
     }
+#endif
 }
 
 bool Compile_Vector_VXOR_MMX(void)
@@ -5777,15 +5755,13 @@ void Compile_Vector_VNXOR(void)
 
 void Compile_Vector_VRCP(void)
 {
+#ifndef CompileVrcp
+    Cheat_r4300iOpcode(RSP_Vector_VRCP, "RSP_Vector_VRCP");
+#else
     char Reg[256];
     uint8_t count, el, last;
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
     uint32_t * end = NULL;
-
-#ifndef CompileVrcp
-    Cheat_r4300iOpcode(RSP_Vector_VRCP, "RSP_Vector_VRCP");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -5843,19 +5819,18 @@ void Compile_Vector_VRCP(void)
     sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.sa, el);
     MoveX86regHalfToVariable(x86_EAX, &RSP_Vect[RSPOpC.vd].s16(el), Reg);
     MoveX86regToVariable(x86_EAX, &RecpResult.W, "RecpResult.W");
+#endif
 }
 
 void Compile_Vector_VRCPL(void)
 {
+#ifndef CompileVrcpl
+    Cheat_r4300iOpcode(RSP_Vector_VRCPL, "RSP_Vector_VRCPL");
+#else
     char Reg[256];
     uint8_t count, el, last;
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
     uint32_t * end = NULL;
-
-#ifndef CompileVrcpl
-    Cheat_r4300iOpcode(RSP_Vector_VRCPL, "RSP_Vector_VRCPL");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -5920,18 +5895,17 @@ void Compile_Vector_VRCPL(void)
     sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.sa, el);
     MoveX86regHalfToVariable(x86_EAX, &RSP_Vect[RSPOpC.vd].s16(el), Reg);
     MoveX86regToVariable(x86_EAX, &RecpResult.W, "RecpResult.W");
+#endif
 }
 
 void Compile_Vector_VRCPH(void)
 {
+#ifndef CompileVrcph
+    Cheat_r4300iOpcode(RSP_Vector_VRCPH, "RSP_Vector_VRCPH");
+#else
     char Reg[256];
     uint8_t count, el, last;
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
-
-#ifndef CompileVrcph
-    Cheat_r4300iOpcode(RSP_Vector_VRCPH, "RSP_Vector_VRCPH");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -5964,17 +5938,17 @@ void Compile_Vector_VRCPH(void)
     el = 7 - (RSPOpC.rd & 0x7);
     sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.sa, el);
     MoveX86regHalfToVariable(x86_ECX, &RSP_Vect[RSPOpC.vd].u16(el), Reg);
+#endif
 }
 
 void Compile_Vector_VMOV(void)
 {
+#ifndef CompileVmov
+    Cheat_r4300iOpcode(RSP_Vector_VMOV, "RSP_Vector_VMOV");
+#else
     char Reg[256];
     uint8_t el, count;
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
-#ifndef CompileVmov
-    Cheat_r4300iOpcode(RSP_Vector_VMOV, "RSP_Vector_VMOV");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -5998,6 +5972,7 @@ void Compile_Vector_VMOV(void)
     sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.sa, el);
 
     MoveX86regHalfToVariable(x86_ECX, &RSP_Vect[RSPOpC.vd].u16(el), Reg);
+#endif
 }
 
 void Compile_Vector_VRSQ(void)
@@ -6014,14 +5989,12 @@ void Compile_Vector_VRSQL(void)
 
 void Compile_Vector_VRSQH(void)
 {
+#ifndef CompileVrsqh
+    Cheat_r4300iOpcode(RSP_Vector_VRSQH, "RSP_Vector_VRSQH");
+#else
     char Reg[256];
     uint8_t count, el, last;
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
-
-#ifndef CompileVrsqh
-    Cheat_r4300iOpcode(RSP_Vector_VRSQH, "RSP_Vector_VRSQH");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -6054,6 +6027,7 @@ void Compile_Vector_VRSQH(void)
     el = 7 - (RSPOpC.rd & 0x7);
     sprintf(Reg, "RSP_Vect[%i].UHW[%i]", RSPOpC.sa, el);
     MoveX86regHalfToVariable(x86_ECX, &RSP_Vect[RSPOpC.vd].u16(el), Reg);
+#endif
 }
 
 void Compile_Vector_VNOOP(void)
@@ -6069,13 +6043,11 @@ void Compile_Vector_Reserved(void)
 
 void Compile_Opcode_LBV(void)
 {
-    char Reg[256];
-    int offset = RSPOpC.voffset << 0;
-
 #ifndef CompileLbv
     Cheat_r4300iOpcode(RSP_Opcode_LBV, "RSP_Opcode_LBV");
-    return;
-#endif
+#else
+    char Reg[256];
+    int offset = RSPOpC.voffset << 0;
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -6088,20 +6060,18 @@ void Compile_Opcode_LBV(void)
     MoveN64MemToX86regByte(x86_ECX, x86_EBX);
     sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 15 - RSPOpC.del);
     MoveX86regByteToVariable(x86_ECX, &RSP_Vect[RSPOpC.vt].s8((uint8_t)(15 - RSPOpC.del)), Reg);
+#endif
 }
 
 void Compile_Opcode_LSV(void)
 {
-    char Reg[256];
-    int offset = (RSPOpC.voffset << 1);
-
 #ifndef CompileLsv
     Cheat_r4300iOpcode(RSP_Opcode_LSV, "RSP_Opcode_LSV");
-    return;
-#endif
-
+#else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
+    char Reg[256];
+    int offset = (RSPOpC.voffset << 1);
     if (IsRegConst(RSPOpC.base))
     {
         uint32_t Addr = (MipsRegConst(RSPOpC.base) + offset) & 0xfff;
@@ -6154,18 +6124,17 @@ void Compile_Opcode_LSV(void)
         sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 15 - (RSPOpC.del + 1));
         MoveX86regByteToVariable(x86_EDX, &RSP_Vect[RSPOpC.vt].s8((uint8_t)(15 - (RSPOpC.del + 1))), Reg);
     }
+#endif
 }
 
 void Compile_Opcode_LLV(void)
 {
+#ifndef CompileLlv
+    Cheat_r4300iOpcode(RSP_Opcode_LLV, "RSP_Opcode_LLV");
+#else
     char Reg[256];
     int offset = (RSPOpC.voffset << 2);
     uint8_t * Jump[2];
-
-#ifndef CompileLlv
-    Cheat_r4300iOpcode(RSP_Opcode_LLV, "RSP_Opcode_LLV");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -6223,18 +6192,17 @@ void Compile_Opcode_LLV(void)
 
     CPU_Message("   Done:");
     *((uint32_t *)(Jump[1])) = (uint32_t)(RecompPos - Jump[1] - 4);
+#endif
 }
 
 void Compile_Opcode_LDV(void)
 {
+#ifndef CompileLdv
+    Cheat_r4300iOpcode(RSP_Opcode_LDV, "RSP_Opcode_LDV");
+#else
     char Reg[256];
     int offset = (RSPOpC.voffset << 3), length;
     uint8_t *Jump[2], *LoopEntry;
-
-#ifndef CompileLdv
-    Cheat_r4300iOpcode(RSP_Opcode_LDV, "RSP_Opcode_LDV");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -6335,18 +6303,17 @@ void Compile_Opcode_LDV(void)
     }
     CPU_Message("   Done:");
     x86_SetBranch32b(Jump[1], RecompPos);
+#endif
 }
 
 void Compile_Opcode_LQV(void)
 {
+#ifndef CompileLqv
+    Cheat_r4300iOpcode(RSP_Opcode_LQV, "RSP_Opcode_LQV");
+#else
     char Reg[256];
     int offset = (RSPOpC.voffset << 4);
     uint8_t * Jump[2];
-
-#ifndef CompileLqv
-    Cheat_r4300iOpcode(RSP_Opcode_LQV, "RSP_Opcode_LQV");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -6445,17 +6412,16 @@ void Compile_Opcode_LQV(void)
     }
     CPU_Message("   Done:");
     x86_SetBranch32b((uint32_t *)Jump[1], (uint32_t *)RecompPos);
+#endif
 }
 
 void Compile_Opcode_LRV(void)
 {
-    int offset = (RSPOpC.voffset << 4);
-    uint8_t *Loop, *Jump[2];
-
 #ifndef CompileLrv
     Cheat_r4300iOpcode(RSP_Opcode_LRV, "RSP_Opcode_LRV");
-    return;
-#endif
+#else
+    int offset = (RSPOpC.voffset << 4);
+    uint8_t *Loop, *Jump[2];
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -6525,17 +6491,16 @@ void Compile_Opcode_LRV(void)
     }
 
     x86_SetBranch8b(Jump[0], RecompPos);
+#endif
 }
 
 void Compile_Opcode_LPV(void)
 {
-    char Reg[256];
-    int offset = (RSPOpC.voffset << 3);
-
 #ifndef CompileLpv
     Cheat_r4300iOpcode(RSP_Opcode_LPV, "RSP_Opcode_LPV");
-    return;
-#endif
+#else
+    char Reg[256];
+    int offset = (RSPOpC.voffset << 3);
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -6634,17 +6599,16 @@ void Compile_Opcode_LPV(void)
     MoveX86regHalfToVariable(x86_ECX, &RSP_Vect[RSPOpC.vt].s16(1), Reg);
     sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rt);
     MoveX86regHalfToVariable(x86_EDX, &RSP_Vect[RSPOpC.vt].s16(0), Reg);
+#endif
 }
 
 void Compile_Opcode_LUV(void)
 {
-    char Reg[256];
-    int offset = (RSPOpC.voffset << 3);
-
 #ifndef CompileLuv
     Cheat_r4300iOpcode(RSP_Opcode_LUV, "RSP_Opcode_LUV");
-    return;
-#endif
+#else
+    char Reg[256];
+    int offset = (RSPOpC.voffset << 3);
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -6743,17 +6707,16 @@ void Compile_Opcode_LUV(void)
     MoveX86regHalfToVariable(x86_ECX, &RSP_Vect[RSPOpC.vt].s16(1), Reg);
     sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rt);
     MoveX86regHalfToVariable(x86_EDX, &RSP_Vect[RSPOpC.vt].s16(0), Reg);
+#endif
 }
 
 void Compile_Opcode_LHV(void)
 {
-    char Reg[256];
-    int offset = (RSPOpC.voffset << 4);
-
 #ifndef CompileLhv
     Cheat_r4300iOpcode(RSP_Opcode_LHV, "RSP_Opcode_LHV");
-    return;
-#endif
+#else
+    char Reg[256];
+    int offset = (RSPOpC.voffset << 4);
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -6852,6 +6815,7 @@ void Compile_Opcode_LHV(void)
     MoveX86regHalfToVariable(x86_ECX, &RSP_Vect[RSPOpC.vt].s16(1), Reg);
     sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rt);
     MoveX86regHalfToVariable(x86_EDX, &RSP_Vect[RSPOpC.vt].s16(0), Reg);
+#endif
 }
 
 void Compile_Opcode_LFV(void)
@@ -6948,14 +6912,12 @@ void Compile_Opcode_SSV(void)
 
 void Compile_Opcode_SLV(void)
 {
+#ifndef CompileSlv
+    Cheat_r4300iOpcode(RSP_Opcode_SLV, "RSP_Opcode_SLV");
+#else
     char Reg[256];
     int offset = (RSPOpC.voffset << 2);
     uint8_t * Jump[2];
-
-#ifndef CompileSlv
-    Cheat_r4300iOpcode(RSP_Opcode_SLV, "RSP_Opcode_SLV");
-    return;
-#endif
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -7012,6 +6974,7 @@ void Compile_Opcode_SLV(void)
 
     CPU_Message("   Done:");
     *((uint32_t *)(Jump[1])) = (uint32_t)(RecompPos - Jump[1] - 4);
+#endif
 }
 
 void Compile_Opcode_SDV(void)
