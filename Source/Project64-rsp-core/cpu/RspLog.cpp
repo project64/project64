@@ -8,17 +8,28 @@
 #include <Project64-rsp-core/Settings/RspSettings.h>
 #include <Settings/Settings.h>
 
-CLog * RDPLog = NULL;
-CLog * CPULog = NULL;
+CLog * RDPLog = nullptr;
+CLog * CPULog = nullptr;
 
 void StartCPULog(void)
 {
-    if (CPULog == NULL)
+    if (CPULog != nullptr)
     {
-        char LogDir[260];
-        CPath LogFilePath(GetSystemSettingSz(Set_DirectoryLog, LogDir, sizeof(LogDir)), "RSP_x86Log.txt");
-        CPULog = new CLog;
-        CPULog->Open(LogFilePath);
+        return;
+    }
+    char LogDir[260];
+    CPath LogFilePath(GetSystemSettingSz(Set_DirectoryLog, LogDir, sizeof(LogDir)), "RSP_x86Log.txt");
+    CPULog = new CLog;
+    if (CPULog != nullptr)
+    {
+        if (CPULog->Open(LogFilePath))
+        {
+            CPULog->SetMaxFileSize(300 * CLog::MB);
+        }
+        else
+        {
+            StopCPULog();
+        }
     }
 }
 
