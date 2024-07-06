@@ -930,6 +930,11 @@ void CompilerRSPBlock(void)
             EndPC = *PrgCount;
         }
     } while (NextInstruction != RSPPIPELINE_FINISH_BLOCK && (CompilePC < EndPC || NextInstruction == RSPPIPELINE_DELAY_SLOT || NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE));
+    if (CompilePC >= EndPC)
+    {
+        MoveConstToVariable((CompilePC & 0xFFC), PrgCount, "RSP PC");
+        Ret();
+    }
     CPU_Message("===== End of recompiled code =====");
 
     if (Compiler.bReOrdering)
