@@ -213,7 +213,7 @@ void Compile_JAL(void)
     if (NextInstruction == RSPPIPELINE_NORMAL)
     {
         CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
-        MoveConstToVariable(CompilePC + 8, &RSP_GPR[31].UW, "RA.W");
+        MoveConstToVariable((CompilePC + 8) & 0xFFC, &RSP_GPR[31].UW, "RA.W");
         NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
     }
     else if (NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE)
@@ -2058,14 +2058,15 @@ void Compile_RegImm_BLTZAL(void)
     if (NextInstruction == RSPPIPELINE_NORMAL)
     {
         CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
-        MoveConstToVariable(CompilePC + 8, &RSP_GPR[31].UW, "RA.W");
         if (RSPOpC.rs == 0)
         {
+            MoveConstToVariable((CompilePC + 8) & 0xFFC, &RSP_GPR[31].UW, "RA.W");
             NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
             return;
         }
         CompConstToVariable(0, &RSP_GPR[RSPOpC.rs].W, GPR_Name(RSPOpC.rs));
         SetlVariable(&BranchCompare, "BranchCompare");
+        MoveConstToVariable((CompilePC + 8) & 0xFFC, &RSP_GPR[31].UW, "RA.W");
         NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
     }
     else if (NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE)
@@ -2103,9 +2104,9 @@ void Compile_RegImm_BGEZAL(void)
     if (NextInstruction == RSPPIPELINE_NORMAL)
     {
         CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
-        MoveConstToVariable(CompilePC + 8, &RSP_GPR[31].UW, "RA.W");
         if (RSPOpC.rs == 0)
         {
+            MoveConstToVariable((CompilePC + 8) & 0xFFC, &RSP_GPR[31].UW, "RA.W");
             NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
             return;
         }
@@ -2117,6 +2118,7 @@ void Compile_RegImm_BGEZAL(void)
         }
         CompConstToVariable(0, &RSP_GPR[RSPOpC.rs].W, GPR_Name(RSPOpC.rs));
         SetgeVariable(&BranchCompare, "BranchCompare");
+        MoveConstToVariable((CompilePC + 8) & 0xFFC, &RSP_GPR[31].UW, "RA.W");
         NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
     }
     else if (NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE)
@@ -2133,6 +2135,7 @@ void Compile_RegImm_BGEZAL(void)
         if (!bDelayAffect)
         {
             CompConstToVariable(0, &RSP_GPR[RSPOpC.rs].W, GPR_Name(RSPOpC.rs));
+            MoveConstToVariable((CompilePC + 8) & 0xFFC, &RSP_GPR[31].UW, "RA.W");
             JgeLabel32("BranchGreaterEqual", 0);
         }
         else
