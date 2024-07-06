@@ -2447,6 +2447,12 @@ void Compile_Cop0_MT(void)
 
 void Compile_Cop2_MF(void)
 {
+    if (RSPOpC.rt == 0)
+    {
+        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
+        return;
+    }
+
 #ifndef Compile_Cop2
     Cheat_r4300iOpcode(RSP_Cop2_MF, "RSP_Cop2_MF");
 #else
