@@ -272,7 +272,7 @@ void BuildRecompilerCPU(void)
     RSP_Vector[7] = Compile_Vector_VMUDH;
     RSP_Vector[8] = Compile_Vector_VMACF;
     RSP_Vector[9] = Compile_Vector_VMACU;
-    RSP_Vector[10] = Compile_UnknownOpcode;
+    RSP_Vector[10] = Compile_Vector_VRNDN;
     RSP_Vector[11] = Compile_Vector_VMACQ;
     RSP_Vector[12] = Compile_Vector_VMADL;
     RSP_Vector[13] = Compile_Vector_VMADM;
@@ -292,8 +292,8 @@ void BuildRecompilerCPU(void)
     RSP_Vector[27] = Compile_Vector_Reserved;
     RSP_Vector[28] = Compile_Vector_Reserved;
     RSP_Vector[29] = Compile_Vector_VSAW;
-    RSP_Vector[30] = Compile_UnknownOpcode;
-    RSP_Vector[31] = Compile_UnknownOpcode;
+    RSP_Vector[30] = Compile_Vector_Reserved;
+    RSP_Vector[31] = Compile_Vector_Reserved;
     RSP_Vector[32] = Compile_Vector_VLT;
     RSP_Vector[33] = Compile_Vector_VEQ;
     RSP_Vector[34] = Compile_Vector_VNE;
@@ -308,8 +308,8 @@ void BuildRecompilerCPU(void)
     RSP_Vector[43] = Compile_Vector_VNOR;
     RSP_Vector[44] = Compile_Vector_VXOR;
     RSP_Vector[45] = Compile_Vector_VNXOR;
-    RSP_Vector[46] = Compile_UnknownOpcode;
-    RSP_Vector[47] = Compile_UnknownOpcode;
+    RSP_Vector[46] = Compile_Vector_Reserved;
+    RSP_Vector[47] = Compile_Vector_Reserved;
     RSP_Vector[48] = Compile_Vector_VRCP;
     RSP_Vector[49] = Compile_Vector_VRCPL;
     RSP_Vector[50] = Compile_Vector_VRCPH;
@@ -318,14 +318,14 @@ void BuildRecompilerCPU(void)
     RSP_Vector[53] = Compile_Vector_VRSQL;
     RSP_Vector[54] = Compile_Vector_VRSQH;
     RSP_Vector[55] = Compile_Vector_VNOOP;
-    RSP_Vector[56] = Compile_UnknownOpcode;
-    RSP_Vector[57] = Compile_UnknownOpcode;
-    RSP_Vector[58] = Compile_UnknownOpcode;
-    RSP_Vector[59] = Compile_UnknownOpcode;
-    RSP_Vector[60] = Compile_UnknownOpcode;
-    RSP_Vector[61] = Compile_UnknownOpcode;
-    RSP_Vector[62] = Compile_UnknownOpcode;
-    RSP_Vector[63] = Compile_UnknownOpcode;
+    RSP_Vector[56] = Compile_Vector_Reserved;
+    RSP_Vector[57] = Compile_Vector_Reserved;
+    RSP_Vector[58] = Compile_Vector_Reserved;
+    RSP_Vector[59] = Compile_Vector_Reserved;
+    RSP_Vector[60] = Compile_Vector_Reserved;
+    RSP_Vector[61] = Compile_Vector_Reserved;
+    RSP_Vector[62] = Compile_Vector_Reserved;
+    RSP_Vector[63] = Compile_Vector_VNOOP;
 
     RSP_Lc2[0] = Compile_Opcode_LBV;
     RSP_Lc2[1] = Compile_Opcode_LSV;

@@ -2878,6 +2878,11 @@ void Compile_Vector_VMULU(void)
     Cheat_r4300iOpcode(RSP_Vector_VMULU, "RSP_Vector_VMULU");
 }
 
+void Compile_Vector_VRNDN(void)
+{
+    Cheat_r4300iOpcode(RSP_Vector_VRNDN, "RSP_Vector_VRNDN");
+}
+
 void Compile_Vector_VRNDP(void)
 {
     Cheat_r4300iOpcode(RSP_Vector_VRNDP, "RSP_Vector_VRNDP");

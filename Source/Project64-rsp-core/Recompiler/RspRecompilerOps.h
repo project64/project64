@@ -76,6 +76,7 @@ void Compile_COP2_VECTOR(void);
 
 void Compile_Vector_VMULF(void);
 void Compile_Vector_VMULU(void);
+void Compile_Vector_VRNDN(void);
 void Compile_Vector_VRNDP(void);
 void Compile_Vector_VMULQ(void);
 void Compile_Vector_VMUDL(void);
