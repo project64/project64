@@ -6858,7 +6858,7 @@ void Compile_Opcode_SSV(void)
 
     if (RSPOpC.del > 14)
     {
-        rsp_UnknownOpcode();
+        Cheat_r4300iOpcode(RSP_Opcode_SSV, "RSP_Opcode_SSV");
         return;
     }
 
