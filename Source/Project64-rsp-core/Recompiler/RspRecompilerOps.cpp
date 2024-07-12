@@ -1107,9 +1107,7 @@ void Compile_LWU(void)
         CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         return;
     }
-
     Cheat_r4300iOpcode(RSP_Opcode_LWU, "RSP_Opcode_LWU");
-    return;
 }
 
 void Compile_SB(void)
@@ -1261,14 +1259,14 @@ void Compile_SW(void)
                     return;
                 }
                 uint32_t Value = MipsRegConst(RSPOpC.rt);
-                sprintf(Address, "DMEM + %Xh", (Addr + 0) ^ 3);
-                MoveConstByteToVariable((Value >> 24) & 0xFF, RSPInfo.DMEM + ((Addr + 0) ^ 3), Address);
-                sprintf(Address, "DMEM + %Xh", (Addr + 1) ^ 3);
-                MoveConstByteToVariable((Value >> 16) & 0xFF, RSPInfo.DMEM + ((Addr + 1) ^ 3), Address);
-                sprintf(Address, "DMEM + %Xh", (Addr + 2) ^ 3);
-                MoveConstByteToVariable((Value >> 8) & 0xFF, RSPInfo.DMEM + ((Addr + 2) ^ 3), Address);
-                sprintf(Address, "DMEM + %Xh", (Addr + 3) ^ 3);
-                MoveConstByteToVariable((Value >> 0) & 0xFF, RSPInfo.DMEM + ((Addr + 3) ^ 3), Address);
+                sprintf(Address, "DMEM + %Xh", ((Addr + 0) ^ 3) & 0xFFF);
+                MoveConstByteToVariable((Value >> 24) & 0xFF, RSPInfo.DMEM + (((Addr + 0) ^ 3) & 0xFFF), Address);
+                sprintf(Address, "DMEM + %Xh", ((Addr + 1) ^ 3) & 0xFFF);
+                MoveConstByteToVariable((Value >> 16) & 0xFF, RSPInfo.DMEM + (((Addr + 1) ^ 3) & 0xFFF), Address);
+                sprintf(Address, "DMEM + %Xh", ((Addr + 2) ^ 3) & 0xFFF);
+                MoveConstByteToVariable((Value >> 8) & 0xFF, RSPInfo.DMEM + (((Addr + 2) ^ 3) & 0xFFF), Address);
+                sprintf(Address, "DMEM + %Xh", ((Addr + 3) ^ 3) & 0xFFF);
+                MoveConstByteToVariable((Value >> 0) & 0xFF, RSPInfo.DMEM + (((Addr + 3) ^ 3) & 0xFFF), Address);
             }
             else
             {
