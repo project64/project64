@@ -7075,17 +7075,17 @@ void Compile_Opcode_SQV(void)
 #ifndef CompileSqv
     Cheat_r4300iOpcode(RSP_Opcode_SQV, "RSP_Opcode_SQV");
 #else
+    if (RSPOpC.del != 0 && RSPOpC.del != 12)
+    {
+        Cheat_r4300iOpcode(RSP_Opcode_SQV, "RSP_Opcode_SQV");
+        return;
+    }
+
     char Reg[256];
     int offset = (RSPOpC.voffset << 4);
     uint8_t * Jump[2];
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
-
-    if (RSPOpC.del != 0 && RSPOpC.del != 12)
-    {
-        rsp_UnknownOpcode();
-        return;
-    }
 
     if (IsRegConst(RSPOpC.base))
     {
