@@ -1296,6 +1296,7 @@ bool IsRegisterConstant(uint32_t Reg, uint32_t * Constant)
         case RSP_LW:
         case RSP_LBU:
         case RSP_LHU:
+        case RSP_LWU:
             if (RspOp.rt == Reg)
             {
                 return false;
