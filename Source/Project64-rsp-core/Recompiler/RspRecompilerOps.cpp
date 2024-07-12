@@ -924,9 +924,9 @@ void Compile_LW(void)
         {
             char Address[32];
             sprintf(Address, "DMEM + %Xh", Addr - 2);
-            MoveVariableToX86regHalf(RSPInfo.DMEM + Addr - 2, Address, x86_EAX);
+            MoveVariableToX86regHalf(RSPInfo.DMEM + ((Addr - 2) & 0xFFF), Address, x86_EAX);
             sprintf(Address, "DMEM + %Xh", Addr);
-            MoveVariableToX86regHalf(RSPInfo.DMEM + Addr + 4, Address, x86_ECX);
+            MoveVariableToX86regHalf(RSPInfo.DMEM + ((Addr + 4) & 0xFFF), Address, x86_ECX);
 
             MoveX86regHalfToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UHW[1], GPR_Name(RSPOpC.rt));
             MoveX86regHalfToVariable(x86_ECX, &RSP_GPR[RSPOpC.rt].UHW[0], GPR_Name(RSPOpC.rt));
@@ -942,8 +942,10 @@ void Compile_LW(void)
     }
 
     MoveVariableToX86reg(&RSP_GPR[RSPOpC.base].UW, GPR_Name(RSPOpC.base), x86_EBX);
-    if (Offset != 0) AddConstToX86Reg(x86_EBX, Offset);
-
+    if (Offset != 0)
+    {
+        AddConstToX86Reg(x86_EBX, Offset);
+    }
     AndConstToX86Reg(x86_EBX, 0x0fff);
     TestConstToX86Reg(3, x86_EBX);
     JneLabel32("Unaligned", 0);
