@@ -21,8 +21,8 @@ int AllocateMemory(void)
 {
     if (RecompCode == nullptr)
     {
-        RecompCode = (uint8_t *)AllocateAddressSpace(0x00400004);
-        RecompCode = (uint8_t *)CommitMemory(RecompCode, 0x00400000, MEM_EXECUTE_READWRITE);
+        RecompCode = (uint8_t *)AllocateAddressSpace(0x00800004);
+        RecompCode = (uint8_t *)CommitMemory(RecompCode, 0x00800000, MEM_EXECUTE_READWRITE);
 
         if (RecompCode == nullptr)
         {
@@ -61,7 +61,7 @@ int AllocateMemory(void)
 
 void FreeMemory(void)
 {
-    FreeAddressSpace(RecompCode, 0x00400004);
+    FreeAddressSpace(RecompCode, 0x00800004);
     FreeAddressSpace(JumpTable, 0x1000 * MaxMaps);
     FreeAddressSpace(RecompCodeSecondary, 0x00200004);
 
@@ -74,6 +74,8 @@ void ResetJumpTables(void)
 {
     memset(JumpTables, 0, 0x1000 * MaxMaps);
     RecompPos = RecompCode;
+    pLastPrimary = nullptr;
+    pLastSecondary = nullptr;
     NoOfMaps = 0;
 }
 
