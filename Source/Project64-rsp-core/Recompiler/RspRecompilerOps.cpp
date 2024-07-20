@@ -36,54 +36,54 @@ uint32_t BranchCompare = 0;
 #define RSP_VectorMisc
 
 #ifdef RSP_VectorMuls
-#define CompileVmulf // Verified 12/17/2000 - Jabo
-#define CompileVmacf // Rewritten and verified 12/15/2000 - Jabo
-#define CompileVmudm // Verified 12/17/2000 - Jabo
-#define CompileVmudh // Verified 12/17/2000 - Jabo
-#define CompileVmudn // Verified 12/17/2000 - Jabo
-#define CompileVmudl // Verified 12/17/2000 - Jabo
-#define CompileVmadl
-#define CompileVmadm // Verified 12/17/2000 - Jabo
-#define CompileVmadh // Verified 12/15/2000 - Jabo
-#define CompileVmadn // Verified 12/17/2000 - Jabo
+//#define CompileVmulf
+//#define CompileVmacf
+#define CompileVmudm
+//#define CompileVmudh
+#define CompileVmudn
+//#define CompileVmudl
+//#define CompileVmadl
+//#define CompileVmadm
+#define CompileVmadh
+#define CompileVmadn
 #endif
 #ifdef RSP_VectorMisc
-#define CompileVne
-#define CompileVeq
-#define CompileVge
-#define CompileVlt
-#define CompileVrcp
-#define CompileVrcpl
-#define CompileVrsqh
-#define CompileVrcph
-#define CompileVsaw // Verified 12/17/2000 - Jabo
-#define CompileVabs // Verified 12/15/2000 - Jabo
-#define CompileVmov // Verified 12/17/2000 - Jabo
-#define CompileVxor // Verified 12/17/2000 - Jabo
-#define CompileVor  // Verified 12/17/2000 - Jabo
-#define CompileVand // Verified 12/17/2000 - Jabo
-#define CompileVsub // Verified 12/17/2000 - Jabo (watch flags)
-#define CompileVadd // Verified 12/17/2000 - Jabo (watch flags)
+//#define CompileVne
+//#define CompileVeq
+//#define CompileVge
+//#define CompileVlt
+//#define CompileVrcp
+//#define CompileVrcpl
+//#define CompileVrsqh
+//#define CompileVrcph
+//#define CompileVsaw
+//#define CompileVabs
+//#define CompileVmov
+#define CompileVxor
+#define CompileVor
+#define CompileVand
+#define CompileVsub
+#define CompileVadd
 #define CompileVaddc
 #define CompileVsubc
-#define CompileVmrg
+//#define CompileVmrg
 #define CompileVnxor
 #define CompileVnor
 #define CompileVnand
 #endif
 #ifdef RSP_VectorLoads
 #define CompileLbv
-#define CompileLpv
-#define CompileLuv
-#define CompileLhv
-#define CompileSqv // Verified 12/17/2000 - Jabo
-#define CompileSdv // Verified 12/17/2000 - Jabo
-#define CompileSsv // Verified 12/17/2000 - Jabo
-#define CompileLrv // Rewritten and verified 12/17/2000 - Jabo
-#define CompileLqv // Verified 12/17/2000 - Jabo
-#define CompileLdv // Verified 12/17/2000 - Jabo
-#define CompileLsv // Verified 12/17/2000 - Jabo
-#define CompileLlv // Verified 12/17/2000 - Jabo
+//#define CompileLpv
+//#define CompileLuv
+//#define CompileLhv
+#define CompileSqv 
+#define CompileSdv
+#define CompileSsv
+#define CompileLrv
+#define CompileLqv
+#define CompileLdv
+#define CompileLsv
+#define CompileLlv
 #define CompileSlv
 #endif
 

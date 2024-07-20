@@ -573,7 +573,7 @@ void CRecompiler::StartLog()
         StopLog();
     }
     m_LogFile = new CLog();
-    if (m_LogFile)
+    if (m_LogFile != nullptr)
     {
         if (m_LogFile->Open(LogFileName))
         {
