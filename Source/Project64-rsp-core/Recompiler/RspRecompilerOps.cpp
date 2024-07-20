@@ -6076,6 +6076,11 @@ void Compile_Opcode_LSV(void)
 #ifndef CompileLsv
     Cheat_r4300iOpcode(RSP_Opcode_LSV, "RSP_Opcode_LSV");
 #else
+    if (RSPOpC.del > 14)
+    {
+        Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LSV, "RSP_Opcode_LSV");
+        return;
+    }
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
     char Reg[256];
@@ -6107,7 +6112,10 @@ void Compile_Opcode_LSV(void)
     }
 
     MoveVariableToX86reg(&RSP_GPR[RSPOpC.base].UW, GPR_Name(RSPOpC.base), x86_EBX);
-    if (offset != 0) AddConstToX86Reg(x86_EBX, offset);
+    if (offset != 0)
+    {
+        AddConstToX86Reg(x86_EBX, offset);
+    }
     AndConstToX86Reg(x86_EBX, 0x0FFF);
 
     if (Compiler.bAlignVector == true)
@@ -6120,6 +6128,7 @@ void Compile_Opcode_LSV(void)
     else
     {
         LeaSourceAndOffset(x86_EAX, x86_EBX, 1);
+        AndConstToX86Reg(x86_EAX, 0x0FFF);
         XorConstToX86Reg(x86_EBX, 3);
         XorConstToX86Reg(x86_EAX, 3);
 
