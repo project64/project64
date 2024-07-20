@@ -17,6 +17,8 @@ uint32_t Table;
 uint8_t *RecompCode, *RecompCodeSecondary, *RecompPos, *JumpTables;
 void ** JumpTable;
 
+extern uint8_t *pLastSecondary, *pLastPrimary;
+
 int AllocateMemory(void)
 {
     if (RecompCode == nullptr)

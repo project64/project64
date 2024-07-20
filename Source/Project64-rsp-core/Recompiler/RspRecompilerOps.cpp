@@ -76,7 +76,7 @@ uint32_t BranchCompare = 0;
 //#define CompileLpv
 //#define CompileLuv
 //#define CompileLhv
-#define CompileSqv 
+#define CompileSqv
 #define CompileSdv
 #define CompileSsv
 #define CompileLrv
@@ -6159,7 +6159,6 @@ void Compile_Opcode_LLV(void)
     {
         Cheat_r4300iOpcode(RSP_Opcode_LLV, "RSP_Opcode_LLV");
         return;
-        return;
     }
 
     if (IsRegConst(RSPOpC.base))
@@ -6247,8 +6246,8 @@ void Compile_Opcode_LDV(void)
 
         sprintf(Reg, "DMEM + %Xh", Addr);
         MoveVariableToX86reg(RSPInfo.DMEM + Addr + 0, Reg, x86_EAX);
-        sprintf(Reg, "DMEM + %Xh", Addr + 4);
-        MoveVariableToX86reg(RSPInfo.DMEM + Addr + 4, Reg, x86_ECX);
+        sprintf(Reg, "DMEM + %Xh", ((Addr + 4) & 0xFFF));
+        MoveVariableToX86reg(RSPInfo.DMEM + ((Addr + 4) & 0xFFF), Reg, x86_ECX);
 
         sprintf(Reg, "RSP_Vect[%i].B[%i]", RSPOpC.rt, 16 - RSPOpC.del - 4);
         MoveX86regToVariable(x86_EAX, &RSP_Vect[RSPOpC.vt].s8((uint8_t)(16 - RSPOpC.del - 4)), Reg);
@@ -6259,50 +6258,20 @@ void Compile_Opcode_LDV(void)
         }
         return;
     }
-
     MoveVariableToX86reg(&RSP_GPR[RSPOpC.base].UW, GPR_Name(RSPOpC.base), x86_EBX);
     if (offset != 0)
     {
         AddConstToX86Reg(x86_EBX, offset);
     }
     AndConstToX86Reg(x86_EBX, 0x0fff);
-    TestConstToX86Reg(3, x86_EBX);
+    TestConstToX86Reg(7, x86_EBX);
     JneLabel32("Unaligned", 0);
     Jump[0] = RecompPos - 4;
 
     CompilerToggleBuffer();
     CPU_Message("   Unaligned:");
     x86_SetBranch32b(Jump[0], RecompPos);
-    sprintf(Reg, "RSP_Vect[%i].UB[%i]", RSPOpC.rt, 15 - RSPOpC.del);
-    MoveOffsetToX86reg((size_t)&RSP_Vect[RSPOpC.vt].u8((uint8_t)(15 - RSPOpC.del)), Reg, x86_EDI);
-    length = 8;
-    if (RSPOpC.del == 12)
-    {
-        length = 4;
-    }
-    MoveConstToX86reg(length, x86_ECX);
-
-    /*    mov eax, ebx
-      dec edi
-      xor eax, 3h
-      inc ebx
-      mov dl, byte ptr [eax+Dmem]
-      dec ecx
-      mov byte ptr [edi+1], dl      
-      jne $Loop */
-
-    LoopEntry = RecompPos;
-    CPU_Message("   Loop:");
-    MoveX86RegToX86Reg(x86_EBX, x86_EAX);
-    XorConstToX86Reg(x86_EAX, 3);
-    MoveN64MemToX86regByte(x86_EDX, x86_EAX);
-    MoveX86regByteToX86regPointer(x86_EDX, x86_EDI);
-    IncX86reg(x86_EBX); // Address constant
-    DecX86reg(x86_EDI); // Vector pointer
-    DecX86reg(x86_ECX); // Counter
-    JneLabel8("Loop", 0);
-    x86_SetBranch8b(RecompPos - 1, LoopEntry);
-
+    Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LDV, "RSP_Opcode_LDV");
     JmpLabel32("Done", 0);
     Jump[1] = RecompPos - 4;
     CompilerToggleBuffer();
@@ -6932,24 +6901,22 @@ void Compile_Opcode_SLV(void)
 #ifndef CompileSlv
     Cheat_r4300iOpcode(RSP_Opcode_SLV, "RSP_Opcode_SLV");
 #else
+    if (RSPOpC.del > 12)
+    {
+        Cheat_r4300iOpcodeNoMessage(RSP_Opcode_SLV, "RSP_Opcode_SLV");
+        return;
+    }
+
     char Reg[256];
     int offset = (RSPOpC.voffset << 2);
     uint8_t * Jump[2];
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
-
-    //	if ((RSPOpC.del & 0x3) != 0) {
-    //		rsp_UnknownOpcode();
-    //		return;
-    //	}
-
     if (IsRegConst(RSPOpC.base))
     {
         uint32_t Addr = (MipsRegConst(RSPOpC.base) + offset) & 0xfff;
-
-        if ((Addr & 3) != 0)
+        if ((Addr & 3) != 0 || RSPOpC.del > 12)
         {
-            CompilerWarning("Unaligned SLV at constant address");
             Cheat_r4300iOpcodeNoMessage(RSP_Opcode_SLV, "RSP_Opcode_SLV");
             return;
         }
@@ -6999,6 +6966,11 @@ void Compile_Opcode_SDV(void)
 #ifndef CompileSdv
     Cheat_r4300iOpcode(RSP_Opcode_SDV, "RSP_Opcode_SDV");
 #else
+    if (RSPOpC.del > 8)
+    {
+        Cheat_r4300iOpcodeNoMessage(RSP_Opcode_SDV, "RSP_Opcode_SDV");
+        return;
+    }
     char Reg[256];
     int offset = (RSPOpC.voffset << 3);
     uint8_t *Jump[2], *LoopEntry;
