@@ -2,7 +2,6 @@
 
 #include "Debugger/Breakpoints.h"
 #include "Debugger/ScriptSystem.h"
-#include "DiscordRPC.h"
 #include "RomInformation.h"
 #include <Project64-core/N64System/N64Disk.h>
 #include <Project64\UserInterface\About.h>
@@ -206,10 +205,6 @@ void CMainMenu::OnEndEmulation(void)
     }
     m_Gui->SaveWindowLoc();
 
-    if (UISettingsLoadBool(Setting_EnableDiscordRPC))
-    {
-        CDiscord::Update(false);
-    }
 }
 
 void CMainMenu::OnScreenShot(void)

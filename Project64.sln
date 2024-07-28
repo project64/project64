@@ -63,8 +63,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64", "Source\Project
 		{D3F979CE-8FA7-48C9-A2B3-A33594B48536} = {D3F979CE-8FA7-48C9-A2B3-A33594B48536}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "discord-rpc", "Source\3rdParty\discord-rpc\discord-rpc.vcxproj", "{DCC841B2-298A-40F0-84D1-ACBABD3B86E8}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64-input", "Source\Project64-input\Project64-input.vcxproj", "{D3F979CE-8FA7-48C9-A2B3-A33594B48536}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SortRdb", "Source\SortRdb\SortRdb.vcxproj", "{5788717F-E3D4-40CF-9637-3A2AEE85BB81}"

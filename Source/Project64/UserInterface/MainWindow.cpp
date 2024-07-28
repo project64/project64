@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-#include "DiscordRPC.h"
 #include "RomInformation.h"
 #include <Project64-core/N64System/Enhancement/Enhancements.h>
 #include <Project64-core/N64System/N64Disk.h>
@@ -41,7 +40,6 @@ CMainGui::CMainGui(bool bMainWindow, const char * WindowTitle) :
     {
         g_Settings->RegisterChangeCB((SettingID)RomBrowser_Enabled, this, (CSettings::SettingChangedFunc)RomBowserEnabledChanged);
         g_Settings->RegisterChangeCB((SettingID)RomBrowser_ColoumnsChanged, this, (CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
-        g_Settings->RegisterChangeCB((SettingID)Setting_EnableDiscordRPC, this, (CSettings::SettingChangedFunc)DiscordRPCChanged);
         g_Settings->RegisterChangeCB(RomList_GameDirRecursive, this, (CSettings::SettingChangedFunc)RomBrowserListChanged);
         g_Settings->RegisterChangeCB(RomList_ShowFileExtensions, this, (CSettings::SettingChangedFunc)RomBrowserListChanged);
         g_Settings->RegisterChangeCB(GameRunning_LoadingInProgress, this, (CSettings::SettingChangedFunc)LoadingInProgressChanged);
@@ -50,11 +48,6 @@ CMainGui::CMainGui(bool bMainWindow, const char * WindowTitle) :
         g_Settings->RegisterChangeCB(Game_File, this, (CSettings::SettingChangedFunc)GameLoaded);
         g_Settings->RegisterChangeCB((SettingID)UserInterface_ShowStatusBar, this, (CSettings::SettingChangedFunc)ShowStatusBarChanged);
 
-        if (UISettingsLoadBool(Setting_EnableDiscordRPC))
-        {
-            CDiscord::Init();
-            CDiscord::Update(false);
-        }
     }
 
     // If this fails then it has already been created
@@ -69,7 +62,6 @@ CMainGui::~CMainGui(void)
     {
         g_Settings->UnregisterChangeCB((SettingID)RomBrowser_Enabled, this, (CSettings::SettingChangedFunc)RomBowserEnabledChanged);
         g_Settings->UnregisterChangeCB((SettingID)RomBrowser_ColoumnsChanged, this, (CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
-        g_Settings->UnregisterChangeCB((SettingID)Setting_EnableDiscordRPC, this, (CSettings::SettingChangedFunc)DiscordRPCChanged);
         g_Settings->UnregisterChangeCB(RomList_GameDirRecursive, this, (CSettings::SettingChangedFunc)RomBrowserListChanged);
         g_Settings->UnregisterChangeCB(RomList_ShowFileExtensions, this, (CSettings::SettingChangedFunc)RomBrowserListChanged);
         g_Settings->UnregisterChangeCB(GameRunning_LoadingInProgress, this, (CSettings::SettingChangedFunc)LoadingInProgressChanged);
@@ -78,10 +70,6 @@ CMainGui::~CMainGui(void)
         g_Settings->UnregisterChangeCB(Game_File, this, (CSettings::SettingChangedFunc)GameLoaded);
         g_Settings->UnregisterChangeCB((SettingID)UserInterface_ShowStatusBar, this, (CSettings::SettingChangedFunc)ShowStatusBarChanged);
 
-        if (UISettingsLoadBool(Setting_EnableDiscordRPC))
-        {
-            CDiscord::Shutdown();
-        }
     }
     if (m_hMainWindow)
     {
@@ -215,10 +203,6 @@ void CMainGui::GameLoaded(CMainGui * Gui)
         Gui->AddRecentRom(FileLoc.c_str());
         Gui->SetWindowCaption(stdstr(g_Settings->LoadStringVal(Rdb_GoodName)).ToUTF16().c_str());
 
-        if (UISettingsLoadBool(Setting_EnableDiscordRPC))
-        {
-            CDiscord::Update();
-        }
     }
 }
 
@@ -280,19 +264,6 @@ void RomBrowserListChanged(CMainGui * Gui)
 {
     Gui->RefreshRomList();
     Gui->HighLightLastRom();
-}
-
-void DiscordRPCChanged(CMainGui *)
-{
-    if (UISettingsLoadBool(Setting_EnableDiscordRPC))
-    {
-        CDiscord::Init();
-        CDiscord::Update();
-    }
-    else
-    {
-        CDiscord::Shutdown();
-    }
 }
 
 void CMainGui::ChangeWinSize(long width, long height)
@@ -962,10 +933,6 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, WPARAM wParam, LP
                 g_BaseSystem->ExternalEvent(SysEvent_CloseCPU);
             }
 
-            if (UISettingsLoadBool(Setting_EnableDiscordRPC))
-            {
-                CDiscord::Update(false);
-            }
             break;
         case JSAPI_ACT_RESET:
             if (g_BaseSystem)

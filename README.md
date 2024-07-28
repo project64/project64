@@ -77,7 +77,6 @@ If you would like to see a changelog that is available [here](./Docs/CHANGELOG.m
 - [7-Zip](https://7-zip.org/): LGPL+unRAR license
 - [zlib](https://zlib.net/): zlib license
 - [libpng](http://libpng.org/pub/png/libpng.html): libpng license
-- [discord-rpc](https://github.com/discord/discord-rpc): MIT license
 - DirectX: Copyright (C) Microsoft
 - [Windows Template Library](https://wtl.sourceforge.io/): Common Public License
 

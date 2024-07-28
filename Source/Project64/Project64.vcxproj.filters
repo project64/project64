@@ -210,9 +210,6 @@
     <ClCompile Include="UserInterface\Settings\SettingsPage-DiskDrive.cpp">
       <Filter>Source Files\User Interface Source\Settings Source</Filter>
     </ClCompile>
-    <ClCompile Include="UserInterface\DiscordRPC.cpp">
-      <Filter>Source Files\User Interface Source</Filter>
-    </ClCompile>
     <ClCompile Include="UserInterface\WTLControls\HexEditCtrl.cpp">
       <Filter>Source Files\User Interface Source\WTL Controls Source</Filter>
     </ClCompile>

@@ -14,7 +14,6 @@ CGeneralOptionsPage::CGeneralOptionsPage(CSettingConfig * SettingsConfig, HWND h
     SetDlgItemText(IDC_AUTOSLEEP, wGS(OPTION_AUTO_SLEEP).c_str());
     SetDlgItemText(IDC_LOAD_FULLSCREEN, wGS(OPTION_AUTO_FULLSCREEN).c_str());
     SetDlgItemText(IDC_SCREEN_SAVER, wGS(OPTION_DISABLE_SS).c_str());
-    SetDlgItemText(IDC_DISCORD_RPC, wGS(OPTION_DISCORD_RPC).c_str());
     SetDlgItemText(IDC_BASIC_MODE, wGS(OPTION_BASIC_MODE).c_str());
     SetDlgItemText(IDC_MAXROMS_TXT, wGS(RB_MAX_ROMS).c_str());
     SetDlgItemText(IDC_ROMSEL_TEXT2, wGS(RB_ROMS).c_str());
@@ -24,7 +23,6 @@ CGeneralOptionsPage::CGeneralOptionsPage(CSettingConfig * SettingsConfig, HWND h
     AddModCheckBox(GetDlgItem(IDC_AUTOSLEEP), (SettingID)Setting_AutoSleep);
     AddModCheckBox(GetDlgItem(IDC_LOAD_FULLSCREEN), (SettingID)Setting_AutoFullscreen);
     AddModCheckBox(GetDlgItem(IDC_SCREEN_SAVER), (SettingID)Setting_DisableScrSaver);
-    AddModCheckBox(GetDlgItem(IDC_DISCORD_RPC), (SettingID)Setting_EnableDiscordRPC);
     AddModCheckBox(GetDlgItem(IDC_BASIC_MODE), UserInterface_BasicMode);
 
     CModifiedEditBox * TxtBox = AddModTextBox(GetDlgItem(IDC_REMEMBER), (SettingID)File_RecentGameFileCount, false);

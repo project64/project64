@@ -117,7 +117,6 @@
     <ClCompile Include="UserInterface\Debugger\ScriptSystem.cpp" />
     <ClCompile Include="UserInterface\Debugger\ScriptWorker.cpp" />
     <ClCompile Include="UserInterface\Debugger\Symbols.cpp" />
-    <ClCompile Include="UserInterface\DiscordRPC.cpp" />
     <ClCompile Include="UserInterface\EnhancementUI.cpp" />
     <ClCompile Include="UserInterface\MainWindow.cpp" />
     <ClCompile Include="UserInterface\LoggingUI.cpp" />
@@ -246,9 +245,6 @@
     <ProjectReference Include="..\3rdParty\7zip\7zip.vcxproj">
       <Project>{3326e128-33af-422c-bb7c-67cc6b915610}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\3rdParty\discord-rpc\discord-rpc.vcxproj">
-      <Project>{dcc841b2-298a-40f0-84d1-acbabd3b86e8}</Project>
     </ProjectReference>
     <ProjectReference Include="..\3rdParty\duktape\duktape.vcxproj">
       <Project>{e8d9a652-a354-4374-b6c5-a51ee62749fd}</Project>
