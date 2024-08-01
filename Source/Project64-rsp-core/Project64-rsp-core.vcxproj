@@ -50,6 +50,7 @@
     <ClCompile Include="cpu\RSPRegister.cpp" />
     <ClCompile Include="cpu\RSPRegisterHandler.cpp" />
     <ClCompile Include="cpu\RSPRegisterHandlerPlugin.cpp" />
+    <ClCompile Include="cpu\RspSystem.cpp" />
     <ClCompile Include="cpu\RspTypes.cpp" />
     <ClCompile Include="Hle\alist.cpp" />
     <ClCompile Include="Hle\alist_audio.cpp" />
@@ -86,6 +87,7 @@
     <ClInclude Include="cpu\RSPRegisterHandler.h" />
     <ClInclude Include="cpu\RSPRegisterHandlerPlugin.h" />
     <ClInclude Include="cpu\RSPRegisters.h" />
+    <ClInclude Include="cpu\RspSystem.h" />
     <ClInclude Include="cpu\RspTypes.h" />
     <ClInclude Include="Hle\alist.h" />
     <ClInclude Include="Hle\arithmetics.h" />

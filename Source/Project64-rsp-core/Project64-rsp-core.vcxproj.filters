@@ -138,6 +138,9 @@
     <ClCompile Include="Hle\jpeg.cpp">
       <Filter>Source Files\hle</Filter>
     </ClCompile>
+    <ClCompile Include="cpu\RspSystem.cpp">
+      <Filter>Source Files\cpu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cpu\RSPInstruction.h">
@@ -217,6 +220,9 @@
     </ClInclude>
     <ClInclude Include="Hle\ucodes.h">
       <Filter>Header Files\hle</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu\RspSystem.h">
+      <Filter>Header Files\cpu</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

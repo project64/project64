@@ -5,6 +5,7 @@
 #include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/Settings/RspSettings.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
+#include <Project64-rsp-core/cpu/RspSystem.h>
 #include <memory>
 
 class RSPRegisterHandler;
@@ -13,16 +14,6 @@ UDWORD EleSpec[16], Indx[16];
 RSPOpcode RSPOpC;
 uint32_t *PrgCount, NextInstruction, RSP_Running;
 
-p_func RSP_Opcode[64];
-p_func RSP_RegImm[32];
-p_func RSP_Special[64];
-p_func RSP_Cop0[32];
-p_func RSP_Cop2[32];
-p_func RSP_Vector[64];
-p_func RSP_Lc2[32];
-p_func RSP_Sc2[32];
-
-void BuildInterpreterCPU(void);
 void BuildRecompilerCPU(void);
 
 CriticalSection g_CPUCriticalSection;
@@ -40,7 +31,6 @@ void SetCPU(RSPCpuType core)
         BuildRecompilerCPU();
         break;
     case InterpreterCPU:
-        BuildInterpreterCPU();
         break;
     }
 }
@@ -196,7 +186,7 @@ uint32_t DoRspCycles(uint32_t Cycles)
         RunRecompilerCPU(Cycles);
         break;
     case InterpreterCPU:
-        RunInterpreterCPU(Cycles);
+        RSPSystem.RunInterpreterCPU(Cycles);
         break;
     }
     if (g_RSPDebugger != nullptr)

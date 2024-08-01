@@ -4,6 +4,7 @@
 #include "X86.h"
 #include <Common/StdString.h>
 #include <Project64-rsp-core/RSPInfo.h>
+#include <Project64-rsp-core/Recompiler/RspRecompilerOps.h>
 #include <Project64-rsp-core/cpu/RSPCpu.h>
 #include <Project64-rsp-core/cpu/RSPInstruction.h>
 #include <Project64-rsp-core/cpu/RSPInterpreterCPU.h>
@@ -11,6 +12,7 @@
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
 #include <Project64-rsp-core/cpu/RspLog.h>
 #include <Project64-rsp-core/cpu/RspMemory.h>
+#include <Project64-rsp-core/cpu/RspSystem.h>
 #include <Project64-rsp-core/cpu/RspTypes.h>
 
 #pragma warning(disable : 4152) // Non-standard extension, function/data pointer conversion in expression
@@ -87,6 +89,15 @@ uint32_t BranchCompare = 0;
 #define CompileSlv
 #endif
 
+p_Recompfunc RSP_Recomp_Opcode[64];
+p_Recompfunc RSP_Recomp_RegImm[32];
+p_Recompfunc RSP_Recomp_Special[64];
+p_Recompfunc RSP_Recomp_Cop0[32];
+p_Recompfunc RSP_Recomp_Cop2[32];
+p_Recompfunc RSP_Recomp_Vector[64];
+p_Recompfunc RSP_Recomp_Lc2[32];
+p_Recompfunc RSP_Recomp_Sc2[32];
+
 void Branch_AddRef(uint32_t Target, uint32_t * X86Loc)
 {
     if (CurrentBlock.ResolveCount >= 150)
@@ -112,17 +123,19 @@ void Branch_AddRef(uint32_t Target, uint32_t * X86Loc)
     }
 }
 
-void Cheat_r4300iOpcode(p_func FunctAddress, const char * FunctName)
+void Cheat_r4300iOpcode(RSPOp::Func FunctAddress, const char * FunctName)
 {
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
     MoveConstToVariable(RSPOpC.Value, &RSPOpC.Value, "RSPOpC.Value");
-    Call_Direct((void *)FunctAddress, FunctName);
+    MoveConstToX86reg((uint32_t)&RSPSystem, x86_ECX);
+    Call_Direct(AddressOf(FunctAddress), FunctName);
 }
 
-void Cheat_r4300iOpcodeNoMessage(p_func FunctAddress, const char * FunctName)
+void Cheat_r4300iOpcodeNoMessage(RSPOp::Func FunctAddress, const char * FunctName)
 {
     MoveConstToVariable(RSPOpC.Value, &RSPOpC.Value, "RSPOpC.Value");
-    Call_Direct((void *)FunctAddress, FunctName);
+    MoveConstToX86reg((uint32_t)&RSPSystem, x86_ECX);
+    Call_Direct(AddressOf(FunctAddress), FunctName);
 }
 
 void x86_SetBranch8b(void * JumpByte, void * Destination)
@@ -174,12 +187,12 @@ void CompileBranchExit(uint32_t TargetPC, uint32_t ContinuePC)
 
 void Compile_SPECIAL(void)
 {
-    RSP_Special[RSPOpC.funct]();
+    RSP_Recomp_Special[RSPOpC.funct]();
 }
 
 void Compile_REGIMM(void)
 {
-    RSP_RegImm[RSPOpC.rt]();
+    RSP_Recomp_RegImm[RSPOpC.rt]();
 }
 
 void Compile_J(void)
@@ -539,7 +552,7 @@ void Compile_ADDI(void)
         return;
     }
 #ifndef Compile_Immediates
-    Cheat_r4300iOpcode(RSP_Opcode_ADDI, "RSP_Opcode_ADDI");
+    Cheat_r4300iOpcode(&RSPOp::ADDI, "RSPOp::ADDI");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -579,7 +592,7 @@ void Compile_ADDIU(void)
         return;
     }
 #ifndef Compile_Immediates
-    Cheat_r4300iOpcode(RSP_Opcode_ADDIU, "RSP_Opcode_ADDIU");
+    Cheat_r4300iOpcode(&RSPOp::ADDIU, "RSPOp::ADDIU");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -616,7 +629,7 @@ void Compile_SLTI(void)
         return;
     }
 #ifndef Compile_Immediates
-    Cheat_r4300iOpcode(RSP_Opcode_SLTI, "RSP_Opcode_SLTI");
+    Cheat_r4300iOpcode(&RSPOp::SLTI, "&RSPOp::SLTI");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -644,7 +657,7 @@ void Compile_SLTIU(void)
         return;
     }
 #ifndef Compile_Immediates
-    Cheat_r4300iOpcode(RSP_Opcode_SLTIU, "RSP_Opcode_SLTIU");
+    Cheat_r4300iOpcode(&RSPOp::SLTIU, "RSPOp::SLTIU");
 #else
     int Immediate;
 
@@ -666,7 +679,7 @@ void Compile_ANDI(void)
         return;
     }
 #ifndef Compile_Immediates
-    Cheat_r4300iOpcode(RSP_Opcode_ANDI, "RSP_Opcode_ANDI");
+    Cheat_r4300iOpcode(&RSPOp::ANDI, "RSPOp::ANDI");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -701,7 +714,7 @@ void Compile_ORI(void)
         return;
     }
 #ifndef Compile_Immediates
-    Cheat_r4300iOpcode(RSP_Opcode_ORI, "RSP_Opcode_ORI");
+    Cheat_r4300iOpcode(&RSPOp::ORI, "RSPOp::ORI");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -734,7 +747,7 @@ void Compile_XORI(void)
         return;
     }
 #ifndef Compile_Immediates
-    Cheat_r4300iOpcode(RSP_Opcode_XORI, "RSP_Opcode_XORI");
+    Cheat_r4300iOpcode(&RSPOp::XORI, "RSPOp::XORI");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -767,7 +780,7 @@ void Compile_LUI(void)
         return;
     }
 #ifndef Compile_Immediates
-    Cheat_r4300iOpcode(RSP_Opcode_LUI, "RSP_Opcode_LUI");
+    Cheat_r4300iOpcode(&RSPOp::LUI, "RSPOp::LUI");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -778,12 +791,12 @@ void Compile_LUI(void)
 
 void Compile_COP0(void)
 {
-    RSP_Cop0[RSPOpC.rs]();
+    RSP_Recomp_Cop0[RSPOpC.rs]();
 }
 
 void Compile_COP2(void)
 {
-    RSP_Cop2[RSPOpC.rs]();
+    RSP_Recomp_Cop2[RSPOpC.rs]();
 }
 
 void Compile_LB(void)
@@ -794,7 +807,7 @@ void Compile_LB(void)
         return;
     }
 #ifndef Compile_GPRLoads
-    Cheat_r4300iOpcode(RSP_Opcode_LB, "RSP_Opcode_LB");
+    Cheat_r4300iOpcode(&RSPOp::LB, "RSPOp::LB");
 #else
     int Offset = (short)RSPOpC.offset;
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
@@ -830,7 +843,7 @@ void Compile_LH(void)
     }
 
 #ifndef Compile_GPRLoads
-    Cheat_r4300iOpcode(RSP_Opcode_LH, "RSP_Opcode_LH");
+    Cheat_r4300iOpcode(&RSPOp::LH, "RSPOp::LH");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -846,7 +859,7 @@ void Compile_LH(void)
             if ((Addr & 2) == 0)
             {
                 CompilerWarning(stdstr_f("Unaligned LH at constant address PC = %04X", CompilePC).c_str());
-                Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LH, "RSP_Opcode_LH");
+                Cheat_r4300iOpcodeNoMessage(&RSPOp::LH, "RSPOp::LH");
             }
             else
             {
@@ -879,7 +892,7 @@ void Compile_LH(void)
     CPU_Message("   Unaligned:");
     x86_SetBranch32b(Jump[0], RecompPos);
 
-    Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LH, "RSP_Opcode_LH");
+    Cheat_r4300iOpcodeNoMessage(&RSPOp::LH, "RSPOp::LH");
 
     JmpLabel32("Done", 0);
     Jump[1] = RecompPos - 4;
@@ -905,7 +918,7 @@ void Compile_LW(void)
     }
 
 #ifndef Compile_GPRLoads
-    Cheat_r4300iOpcode(RSP_Opcode_LW, "RSP_Opcode_LW");
+    Cheat_r4300iOpcode(&RSPOp::LW, "RSPOp::LW");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -918,7 +931,7 @@ void Compile_LW(void)
         if ((Addr & 1) != 0)
         {
             CompilerWarning(stdstr_f("Unaligned LW at constant address PC = %04X", CompilePC).c_str());
-            Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LW, "RSP_Opcode_LW");
+            Cheat_r4300iOpcodeNoMessage(&RSPOp::LW, "RSPOp::LW");
         }
         else if ((Addr & 2) != 0)
         {
@@ -995,7 +1008,7 @@ void Compile_LBU(void)
     }
 
 #ifndef Compile_GPRLoads
-    Cheat_r4300iOpcode(RSP_Opcode_LBU, "RSP_Opcode_LBU");
+    Cheat_r4300iOpcode(&RSPOp::LBU, "RSPOp::LBU");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -1033,7 +1046,7 @@ void Compile_LHU(void)
     }
 
 #ifndef Compile_GPRLoads
-    Cheat_r4300iOpcode(RSP_Opcode_LHU, "RSP_Opcode_LHU");
+    Cheat_r4300iOpcode(&RSPOp::LHU, "RSPOp::LHU");
 #else
 
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
@@ -1050,7 +1063,7 @@ void Compile_LHU(void)
             if ((Addr & 2) == 0)
             {
                 CompilerWarning(stdstr_f("Unaligned LHU at constant address PC = %04X", CompilePC).c_str());
-                Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LHU, "RSP_Opcode_LHU");
+                Cheat_r4300iOpcodeNoMessage(&RSPOp::LHU, "RSPOp::LHU");
             }
             else
             {
@@ -1085,7 +1098,7 @@ void Compile_LHU(void)
     CompilerToggleBuffer();
     CPU_Message("   Unaligned:");
     x86_SetBranch32b(Jump[0], RecompPos);
-    Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LHU, "RSP_Opcode_LHU");
+    Cheat_r4300iOpcodeNoMessage(&RSPOp::LHU, "RSPOp::LHU");
     JmpLabel32("Done", 0);
     Jump[1] = RecompPos - 4;
     CompilerToggleBuffer();
@@ -1107,13 +1120,13 @@ void Compile_LWU(void)
         CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         return;
     }
-    Cheat_r4300iOpcode(RSP_Opcode_LWU, "RSP_Opcode_LWU");
+    Cheat_r4300iOpcode(&RSPOp::LWU, "RSPOp::LWU");
 }
 
 void Compile_SB(void)
 {
 #ifndef Compile_GPRStores
-    Cheat_r4300iOpcode(RSP_Opcode_SB, "RSP_Opcode_SB");
+    Cheat_r4300iOpcode(&RSPOp::SB, "RSPOp::SB");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -1165,7 +1178,7 @@ void Compile_SB(void)
 void Compile_SH(void)
 {
 #ifndef Compile_GPRStores
-    Cheat_r4300iOpcode(RSP_Opcode_SH, "RSP_Opcode_SH");
+    Cheat_r4300iOpcode(&RSPOp::SH, "&RSPOp::SH");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -1179,7 +1192,7 @@ void Compile_SH(void)
         if ((Offset & 1) != 0)
         {
             CompilerWarning(stdstr_f("Unaligned SH at constant address PC = %04X", CompilePC).c_str());
-            Cheat_r4300iOpcodeNoMessage(RSP_Opcode_SH, "RSP_Opcode_SH");
+            Cheat_r4300iOpcodeNoMessage(&RSPOp::SH, "RSPOp::SH");
             return;
         }
         else
@@ -1238,7 +1251,7 @@ void Compile_SH(void)
 void Compile_SW(void)
 {
 #ifndef Compile_GPRStores
-    Cheat_r4300iOpcode(RSP_Opcode_SW, "RSP_Opcode_SW");
+    Cheat_r4300iOpcode(&RSPOp::SW, "&RSPOp::SW");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -1271,7 +1284,7 @@ void Compile_SW(void)
             else
             {
                 CompilerWarning(stdstr_f("Unaligned SW at constant address PC = %04X", CompilePC).c_str());
-                Cheat_r4300iOpcodeNoMessage(RSP_Opcode_SW, "RSP_Opcode_SW");
+                Cheat_r4300iOpcodeNoMessage(&RSPOp::SW, "RSPOp::SW");
             }
             return;
         }
@@ -1351,12 +1364,12 @@ void Compile_SW(void)
 
 void Compile_LC2(void)
 {
-    RSP_Lc2[RSPOpC.rd]();
+    RSP_Recomp_Lc2[RSPOpC.rd]();
 }
 
 void Compile_SC2(void)
 {
-    RSP_Sc2[RSPOpC.rd]();
+    RSP_Recomp_Sc2[RSPOpC.rd]();
 }
 
 // R4300i Opcodes: Special
@@ -1369,7 +1382,7 @@ void Compile_Special_SLL(void)
         return;
     }
 #ifndef Compile_Special
-    Cheat_r4300iOpcode(RSP_Special_SLL, "RSP_Special_SLL");
+    Cheat_r4300iOpcode(&RSPOp::Special_SLL, "RSPOp::Special_SLL");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -1394,7 +1407,7 @@ void Compile_Special_SRL(void)
         return;
     }
 #ifndef Compile_Special
-    Cheat_r4300iOpcode(RSP_Special_SRL, "RSP_Special_SRL");
+    Cheat_r4300iOpcode(&RSPOp::Special_SRL, "RSPOp::Special_SRL");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -1419,7 +1432,7 @@ void Compile_Special_SRA(void)
         return;
     }
 #ifndef Compile_Special
-    Cheat_r4300iOpcode(RSP_Special_SRA, "RSP_Special_SRA");
+    Cheat_r4300iOpcode(&RSPOp::Special_SRA, "RSPOp::Special_SRA");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -1443,7 +1456,7 @@ void Compile_Special_SLLV(void)
         CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         return;
     }
-    Cheat_r4300iOpcode(RSP_Special_SLLV, "RSP_Special_SLLV");
+    Cheat_r4300iOpcode(&RSPOp::Special_SLLV, "RSPOp::Special_SLLV");
 }
 
 void Compile_Special_SRLV(void)
@@ -1454,7 +1467,7 @@ void Compile_Special_SRLV(void)
         return;
     }
 #ifndef Compile_Special
-    Cheat_r4300iOpcode(RSP_Special_SRLV, "RSP_Special_SRLV");
+    Cheat_r4300iOpcode(&RSPOp::Special_SRLV, "RSPOp::Special_SRLV");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -1473,7 +1486,7 @@ void Compile_Special_SRAV(void)
         CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         return;
     }
-    Cheat_r4300iOpcode(RSP_Special_SRAV, "RSP_Special_SRAV");
+    Cheat_r4300iOpcode(&RSPOp::Special_SRAV, "RSPOp::Special_SRAV");
 }
 
 void UpdateAudioTimer()
@@ -1585,7 +1598,7 @@ void Compile_Special_JALR(void)
 
 void Compile_Special_BREAK(void)
 {
-    Cheat_r4300iOpcode(RSP_Special_BREAK, "RSP_Special_BREAK");
+    Cheat_r4300iOpcode(&RSPOp::Special_BREAK, "RSPOp::Special_BREAK");
     if (NextInstruction == RSPPIPELINE_NORMAL)
     {
         MoveConstToVariable(CompilePC + 4, PrgCount, "RSP PC");
@@ -1611,7 +1624,7 @@ void Compile_Special_ADD(void)
         return;
     }
 #ifndef Compile_Special
-    Cheat_r4300iOpcode(RSP_Special_ADD, "RSP_Special_ADD");
+    Cheat_r4300iOpcode(&RSPOp::Special_ADD, "RSPOp::Special_ADD");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -1658,7 +1671,7 @@ void Compile_Special_ADDU(void)
         return;
     }
 #ifndef Compile_Special
-    Cheat_r4300iOpcode(RSP_Special_ADDU, "RSP_Special_ADDU");
+    Cheat_r4300iOpcode(&RSPOp::Special_ADDU, "RSPOp::Special_ADDU");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -1706,7 +1719,7 @@ void Compile_Special_SUB(void)
     }
 
 #ifndef Compile_Special
-    Cheat_r4300iOpcode(RSP_Special_SUB, "RSP_Special_SUB");
+    Cheat_r4300iOpcode(&RSPOp::Special_SUB, "RSPOp::Special_SUB");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -1737,7 +1750,7 @@ void Compile_Special_SUBU(void)
     }
 
 #ifndef Compile_Special
-    Cheat_r4300iOpcode(RSP_Special_SUBU, "RSP_Special_SUBU");
+    Cheat_r4300iOpcode(&RSPOp::Special_SUBU, "RSPOp::Special_SUBU");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -1768,7 +1781,7 @@ void Compile_Special_AND(void)
     }
 
 #ifndef Compile_Special
-    Cheat_r4300iOpcode(RSP_Special_AND, "RSP_Special_AND");
+    Cheat_r4300iOpcode(&RSPOp::Special_AND, "RSPOp::Special_AND");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -1805,7 +1818,7 @@ void Compile_Special_OR(void)
     }
 
 #ifndef Compile_Special
-    Cheat_r4300iOpcode(RSP_Special_OR, "RSP_Special_OR");
+    Cheat_r4300iOpcode(RSPOp::Special_OR, "RSPOp::Special_OR");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -1847,7 +1860,7 @@ void Compile_Special_XOR(void)
     }
 
 #ifndef Compile_Special
-    Cheat_r4300iOpcode(RSP_Special_XOR, "RSP_Special_XOR");
+    Cheat_r4300iOpcode(&RSPOp::Special_XOR, "RSPOp::Special_XOR");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -1881,7 +1894,7 @@ void Compile_Special_NOR(void)
         CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         return;
     }
-    Cheat_r4300iOpcode(RSP_Special_NOR, "RSP_Special_NOR");
+    Cheat_r4300iOpcode(&RSPOp::Special_NOR, "RSPOp::Special_NOR");
 }
 
 void Compile_Special_SLT(void)
@@ -1892,7 +1905,7 @@ void Compile_Special_SLT(void)
         return;
     }
 #ifndef Compile_Special
-    Cheat_r4300iOpcode(RSP_Special_SLT, "RSP_Special_SLT");
+    Cheat_r4300iOpcode(&RSPOp::Special_SLT, "RSPOp::Special_SLT");
 #else
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -1933,7 +1946,7 @@ void Compile_Special_SLTU(void)
         CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
         return;
     }
-    Cheat_r4300iOpcode(RSP_Special_SLTU, "RSP_Special_SLTU");
+    Cheat_r4300iOpcode(&RSPOp::Special_SLTU, "RSPOp::Special_SLTU");
 }
 
 // R4300i Opcodes: RegImm
@@ -2424,7 +2437,7 @@ void Compile_Cop0_MT(void)
         break;
 
     default:
-        Cheat_r4300iOpcode(RSP_Cop0_MT, "RSP_Cop0_MT");
+        Cheat_r4300iOpcode(&RSPOp::Cop0_MT, "RSPOp::Cop0_MT");
         break;
     }
 #else
@@ -2596,7 +2609,7 @@ void Compile_Cop2_CT(void)
 
 void Compile_COP2_VECTOR(void)
 {
-    RSP_Vector[RSPOpC.funct]();
+    RSP_Recomp_Vector[RSPOpC.funct]();
 }
 
 // Vector functions
@@ -2791,7 +2804,7 @@ bool Compile_Vector_VMULF_MMX(void)
 void Compile_Vector_VMULF(void)
 {
 #ifndef CompileVmulf
-    Cheat_r4300iOpcode(RSP_Vector_VMULF, "RSP_Vector_VMULF");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VMULF, "&RSPOp::Vector_VMULF");
 #else
     char Reg[256];
     uint8_t count, el, del;
@@ -2878,22 +2891,22 @@ void Compile_Vector_VMULF(void)
 
 void Compile_Vector_VMULU(void)
 {
-    Cheat_r4300iOpcode(RSP_Vector_VMULU, "RSP_Vector_VMULU");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VMULU, "RSPOp::Vector_VMULU");
 }
 
 void Compile_Vector_VRNDN(void)
 {
-    Cheat_r4300iOpcode(RSP_Vector_VRNDN, "RSP_Vector_VRNDN");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VRNDN, "RSPOp::Vector_VRNDN");
 }
 
 void Compile_Vector_VRNDP(void)
 {
-    Cheat_r4300iOpcode(RSP_Vector_VRNDP, "RSP_Vector_VRNDP");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VRNDP, "RSPOp::Vector_VRNDP");
 }
 
 void Compile_Vector_VMULQ(void)
 {
-    Cheat_r4300iOpcode(RSP_Vector_VMULQ, "RSP_Vector_VMULQ");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VMULQ, "&RSPOp::Vector_VMULQ");
 }
 
 bool Compile_Vector_VMUDL_MMX(void)
@@ -2956,7 +2969,7 @@ bool Compile_Vector_VMUDL_MMX(void)
 void Compile_Vector_VMUDL(void)
 {
 #ifndef CompileVmudl
-    Cheat_r4300iOpcode(RSP_Vector_VMUDL, "RSP_Vector_VMUDL");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VMUDL, "&RSPOp::Vector_VMUDL");
 #else
     char Reg[256];
     uint8_t count, el, del;
@@ -3109,7 +3122,7 @@ bool Compile_Vector_VMUDM_MMX(void)
 void Compile_Vector_VMUDM(void)
 {
 #ifndef CompileVmudm
-    Cheat_r4300iOpcode(RSP_Vector_VMUDM, "RSP_Vector_VMUDM");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VMUDM, "&RSPOp::Vector_VMUDM");
 #else
     char Reg[256];
     uint8_t count, el, del;
@@ -3255,7 +3268,7 @@ bool Compile_Vector_VMUDN_MMX(void)
 void Compile_Vector_VMUDN(void)
 {
 #ifndef CompileVmudn
-    Cheat_r4300iOpcode(RSP_Vector_VMUDN, "RSP_Vector_VMUDN");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VMUDN, "RSPOp::Vector_VMUDN");
 #else
     char Reg[256];
     uint8_t count, el, del;
@@ -3409,7 +3422,7 @@ bool Compile_Vector_VMUDH_MMX(void)
 void Compile_Vector_VMUDH(void)
 {
 #ifndef CompileVmudh
-    Cheat_r4300iOpcode(RSP_Vector_VMUDH, "RSP_Vector_VMUDH");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VMUDH, "RSPOp::Vector_VMUDH");
 #else
     char Reg[256];
     uint8_t count, el, del;
@@ -3549,7 +3562,7 @@ void Compile_Vector_VMUDH(void)
 void Compile_Vector_VMACF(void)
 {
 #ifndef CompileVmacf
-    Cheat_r4300iOpcode(RSP_Vector_VMACF, "RSP_Vector_VMACF");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VMACF, "&RSPOp::Vector_VMACF");
 #else
     char Reg[256];
     uint8_t count, el, del;
@@ -3617,18 +3630,18 @@ void Compile_Vector_VMACF(void)
 
 void Compile_Vector_VMACU(void)
 {
-    Cheat_r4300iOpcode(RSP_Vector_VMACU, "RSP_Vector_VMACU");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VMACU, "&RSPOp::Vector_VMACU");
 }
 
 void Compile_Vector_VMACQ(void)
 {
-    Cheat_r4300iOpcode(RSP_Vector_VMACQ, "RSP_Vector_VMACQ");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VMACQ, "RSPOp::Vector_VMACQ");
 }
 
 void Compile_Vector_VMADL(void)
 {
 #ifndef CompileVmadl
-    Cheat_r4300iOpcode(RSP_Vector_VMADL, "RSP_Vector_VMADL");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VMADL, "&RSPOp::Vector_VMADL");
 #else
     char Reg[256];
     uint8_t count, el, del;
@@ -3704,7 +3717,7 @@ void Compile_Vector_VMADL(void)
 void Compile_Vector_VMADM(void)
 {
 #ifndef CompileVmadm
-    Cheat_r4300iOpcode(RSP_Vector_VMADM, "RSP_Vector_VMADM");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VMADM, "&RSPOp::Vector_VMADM");
 #else
     char Reg[256];
     uint8_t count, el, del;
@@ -3799,7 +3812,7 @@ void Compile_Vector_VMADM(void)
 void Compile_Vector_VMADN(void)
 {
 #ifndef CompileVmadn
-    Cheat_r4300iOpcode(RSP_Vector_VMADN, "RSP_Vector_VMADN");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VMADN, "RSPOp::Vector_VMADN");
 #else
     char Reg[256];
     uint8_t count, el, del;
@@ -3879,7 +3892,7 @@ void Compile_Vector_VMADN(void)
 void Compile_Vector_VMADH(void)
 {
 #ifndef CompileVmadh
-    Cheat_r4300iOpcode(RSP_Vector_VMADH, "RSP_Vector_VMADH");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VMADH, "RSPOp::Vector_VMADH");
 #else
     char Reg[256];
     uint8_t count, el, del;
@@ -4077,7 +4090,7 @@ bool Compile_Vector_VADD_MMX(void)
 void Compile_Vector_VADD(void)
 {
 #ifndef CompileVadd
-    Cheat_r4300iOpcode(RSP_Vector_VADD, "RSP_Vector_VADD");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VADD, "RSPOp::Vector_VADD");
 #else
     char Reg[256];
     uint8_t count, el, del;
@@ -4215,7 +4228,7 @@ bool Compile_Vector_VSUB_MMX(void)
 void Compile_Vector_VSUB(void)
 {
 #ifndef CompileVsub
-    Cheat_r4300iOpcode(RSP_Vector_VSUB, "RSP_Vector_VSUB");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VSUB, "&RSPOp::Vector_VSUB");
 #else
     char Reg[256];
     uint8_t count, el, del;
@@ -4389,7 +4402,7 @@ bool Compile_Vector_VABS_MMX(void)
 void Compile_Vector_VABS(void)
 {
 #ifndef CompileVabs
-    Cheat_r4300iOpcode(RSP_Vector_VABS, "RSP_Vector_VABS");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VABS, "RSPOp::Vector_VABS");
 #else
     uint8_t count, el, del;
     char Reg[256];
@@ -4489,7 +4502,7 @@ void Compile_Vector_VABS(void)
 void Compile_Vector_VADDC(void)
 {
 #ifndef CompileVaddc
-    Cheat_r4300iOpcode(RSP_Vector_VADDC, "RSP_Vector_VADDC");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VADDC, "&RSPOp::Vector_VADDC");
 #else
     char Reg[256];
     uint8_t count, el, del;
@@ -4561,7 +4574,7 @@ void Compile_Vector_VADDC(void)
 void Compile_Vector_VSUBC(void)
 {
 #ifndef CompileVsubc
-    Cheat_r4300iOpcode(RSP_Vector_VSUBC, "RSP_Vector_VSUBC");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VSUBC, "&RSPOp::Vector_VSUBC");
 #else
     char Reg[256];
     uint8_t count, el, del;
@@ -4629,7 +4642,7 @@ void Compile_Vector_VSUBC(void)
 void Compile_Vector_VSAW(void)
 {
 #ifndef CompileVsaw
-    Cheat_r4300iOpcode(RSP_Vector_VSAW, "RSP_Vector_VSAW");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VSAW, "RSPOp::Vector_VSAW");
 #else
     char Reg[256];
     uint32_t Word;
@@ -4684,7 +4697,7 @@ void Compile_Vector_VSAW(void)
 void Compile_Vector_VLT(void)
 {
 #ifndef CompileVlt
-    Cheat_r4300iOpcode(RSP_Vector_VLT, "RSP_Vector_VLT");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VLT, "&RSPOp::Vector_VLT");
 #else
     bool bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
@@ -4785,7 +4798,7 @@ void Compile_Vector_VLT(void)
 void Compile_Vector_VEQ(void)
 {
 #ifndef CompileVeq
-    Cheat_r4300iOpcode(RSP_Vector_VEQ, "RSP_Vector_VEQ");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VEQ, "&RSPOp::Vector_VEQ");
 #else
     bool bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
@@ -4861,7 +4874,7 @@ void Compile_Vector_VEQ(void)
 void Compile_Vector_VNE(void)
 {
 #ifndef CompileVne
-    Cheat_r4300iOpcode(RSP_Vector_VNE, "RSP_Vector_VNE");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VNE, "&RSPOp::Vector_VNE");
 #else
     bool bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
@@ -4977,7 +4990,7 @@ bool Compile_Vector_VGE_MMX(void)
 void Compile_Vector_VGE(void)
 {
 #ifndef CompileVge
-    Cheat_r4300iOpcode(RSP_Vector_VGE, "RSP_Vector_VGE");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VGE, "&RSPOp::Vector_VGE");
 #else
     /*
     bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
@@ -5090,23 +5103,23 @@ void Compile_Vector_VGE(void)
 
 void Compile_Vector_VCL(void)
 {
-    Cheat_r4300iOpcode(RSP_Vector_VCL, "RSP_Vector_VCL");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VCL, "RSPOp::Vector_VCL");
 }
 
 void Compile_Vector_VCH(void)
 {
-    Cheat_r4300iOpcode(RSP_Vector_VCH, "RSP_Vector_VCH");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VCH, "RSPOp::Vector_VCH");
 }
 
 void Compile_Vector_VCR(void)
 {
-    Cheat_r4300iOpcode(RSP_Vector_VCR, "RSP_Vector_VCR");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VCR, "RSPOp::Vector_VCR");
 }
 
 void Compile_Vector_VMRG(void)
 {
 #ifndef CompileVmrg
-    Cheat_r4300iOpcode(RSP_Vector_VMRG, "RSP_Vector_VMRG");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VMRG, "&RSPOp::Vector_VMRG");
 #else
     char Reg[256];
     uint8_t count, el, del;
@@ -5190,7 +5203,7 @@ bool Compile_Vector_VAND_MMX(void)
 void Compile_Vector_VAND(void)
 {
 #ifndef CompileVand
-    Cheat_r4300iOpcode(RSP_Vector_VAND, "RSP_Vector_VAND");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VAND, "RSPOp::Vector_VAND");
 #else
     char Reg[256];
     uint8_t el, del, count;
@@ -5300,7 +5313,7 @@ bool Compile_Vector_VNAND_MMX(void)
 void Compile_Vector_VNAND(void)
 {
 #ifndef CompileVnand
-    Cheat_r4300iOpcode(RSP_Vector_VNAND, "RSP_Vector_VNAND");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VNAND, "&RSPOp::Vector_VNAND");
 #else
     char Reg[256];
     uint8_t el, del, count;
@@ -5412,7 +5425,7 @@ bool Compile_Vector_VOR_MMX(void)
 void Compile_Vector_VOR(void)
 {
 #ifndef CompileVor
-    Cheat_r4300iOpcode(RSP_Vector_VOR, "RSP_Vector_VOR");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VOR, "RSPOp::Vector_VOR");
 #else
     char Reg[256];
     uint8_t el, del, count;
@@ -5517,7 +5530,7 @@ bool Compile_Vector_VNOR_MMX(void)
 void Compile_Vector_VNOR(void)
 {
 #ifndef CompileVnor
-    Cheat_r4300iOpcode(RSP_Vector_VNOR, "RSP_Vector_VNOR");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VNOR, "&RSPOp::Vector_VNOR");
 #else
     char Reg[256];
     uint8_t el, del, count;
@@ -5662,7 +5675,7 @@ void Compile_Vector_VXOR(void)
     }
 #endif
 
-    Cheat_r4300iOpcodeNoMessage(RSP_Vector_VXOR, "RSP_Vector_VXOR");
+    Cheat_r4300iOpcodeNoMessage(&RSPOp::Vector_VXOR, "RSPOp::Vector_VXOR");
 }
 
 bool Compile_Vector_VNXOR_MMX(void)
@@ -5758,13 +5771,13 @@ void Compile_Vector_VNXOR(void)
     }
 #endif
 
-    Cheat_r4300iOpcode(RSP_Vector_VNXOR, "RSP_Vector_VNXOR");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VNXOR, "RSPOp::Vector_VNXOR");
 }
 
 void Compile_Vector_VRCP(void)
 {
 #ifndef CompileVrcp
-    Cheat_r4300iOpcode(RSP_Vector_VRCP, "RSP_Vector_VRCP");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VRCP, "&RSPOp::Vector_VRCP");
 #else
     char Reg[256];
     uint8_t count, el, last;
@@ -5833,7 +5846,7 @@ void Compile_Vector_VRCP(void)
 void Compile_Vector_VRCPL(void)
 {
 #ifndef CompileVrcpl
-    Cheat_r4300iOpcode(RSP_Vector_VRCPL, "RSP_Vector_VRCPL");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VRCPL, "RSPOp::Vector_VRCPL");
 #else
     char Reg[256];
     uint8_t count, el, last;
@@ -5909,7 +5922,7 @@ void Compile_Vector_VRCPL(void)
 void Compile_Vector_VRCPH(void)
 {
 #ifndef CompileVrcph
-    Cheat_r4300iOpcode(RSP_Vector_VRCPH, "RSP_Vector_VRCPH");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VRCPH, "&RSPOp::Vector_VRCPH");
 #else
     char Reg[256];
     uint8_t count, el, last;
@@ -5952,7 +5965,7 @@ void Compile_Vector_VRCPH(void)
 void Compile_Vector_VMOV(void)
 {
 #ifndef CompileVmov
-    Cheat_r4300iOpcode(RSP_Vector_VMOV, "RSP_Vector_VMOV");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VMOV, "&RSPOp::Vector_VMOV");
 #else
     char Reg[256];
     uint8_t el, count;
@@ -5986,19 +5999,19 @@ void Compile_Vector_VMOV(void)
 void Compile_Vector_VRSQ(void)
 {
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
-    Cheat_r4300iOpcodeNoMessage(RSP_Vector_VRSQ, "RSP_Vector_VRSQ");
+    Cheat_r4300iOpcodeNoMessage(&RSPOp::Vector_VRSQ, "RSPOp::Vector_VRSQ");
 }
 
 void Compile_Vector_VRSQL(void)
 {
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
-    Cheat_r4300iOpcodeNoMessage(RSP_Vector_VRSQL, "RSP_Vector_VRSQL");
+    Cheat_r4300iOpcodeNoMessage(&RSPOp::Vector_VRSQL, "RSPOp::Vector_VRSQL");
 }
 
 void Compile_Vector_VRSQH(void)
 {
 #ifndef CompileVrsqh
-    Cheat_r4300iOpcode(RSP_Vector_VRSQH, "RSP_Vector_VRSQH");
+    Cheat_r4300iOpcode(&RSPOp::Vector_VRSQH, "RSPOp::Vector_VRSQH");
 #else
     char Reg[256];
     uint8_t count, el, last;
@@ -6044,7 +6057,7 @@ void Compile_Vector_VNOOP(void)
 
 void Compile_Vector_Reserved(void)
 {
-    Cheat_r4300iOpcode(RSP_Vector_Reserved, "RSP_Vector_Reserved");
+    Cheat_r4300iOpcode(&RSPOp::Vector_Reserved, "&RSPOp::Vector_Reserved");
 }
 
 // LC2 functions
@@ -6052,7 +6065,7 @@ void Compile_Vector_Reserved(void)
 void Compile_Opcode_LBV(void)
 {
 #ifndef CompileLbv
-    Cheat_r4300iOpcode(RSP_Opcode_LBV, "RSP_Opcode_LBV");
+    Cheat_r4300iOpcode(&RSPOp::LBV, "RSPOp::LBV");
 #else
     char Reg[256];
     int offset = RSPOpC.voffset << 0;
@@ -6074,11 +6087,11 @@ void Compile_Opcode_LBV(void)
 void Compile_Opcode_LSV(void)
 {
 #ifndef CompileLsv
-    Cheat_r4300iOpcode(RSP_Opcode_LSV, "RSP_Opcode_LSV");
+    Cheat_r4300iOpcode(&RSPOp::LSV, "RSPOp::LSV");
 #else
     if (RSPOpC.del > 14)
     {
-        Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LSV, "RSP_Opcode_LSV");
+        Cheat_r4300iOpcodeNoMessage(&RSPOp::LSV, "RSPOp::LSV");
         return;
     }
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
@@ -6147,7 +6160,7 @@ void Compile_Opcode_LSV(void)
 void Compile_Opcode_LLV(void)
 {
 #ifndef CompileLlv
-    Cheat_r4300iOpcode(RSP_Opcode_LLV, "RSP_Opcode_LLV");
+    Cheat_r4300iOpcode(&RSPOp::LLV, "RSPOp::LLV");
 #else
     char Reg[256];
     int offset = (RSPOpC.voffset << 2);
@@ -6157,7 +6170,7 @@ void Compile_Opcode_LLV(void)
 
     if ((RSPOpC.del & 0x3) != 0)
     {
-        Cheat_r4300iOpcode(RSP_Opcode_LLV, "RSP_Opcode_LLV");
+        Cheat_r4300iOpcode(&RSPOp::LLV, "RSPOp::LLV");
         return;
     }
 
@@ -6168,7 +6181,7 @@ void Compile_Opcode_LLV(void)
         if ((Addr & 3) != 0)
         {
             CompilerWarning("Unaligned LLV at constant address");
-            Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LLV, "RSP_Opcode_LLV");
+            Cheat_r4300iOpcodeNoMessage(&RSPOp::LLV, "RSPOp::LLV");
             return;
         }
 
@@ -6192,7 +6205,7 @@ void Compile_Opcode_LLV(void)
 
     CPU_Message("   Unaligned:");
     *((uint32_t *)(Jump[0])) = (uint32_t)(RecompPos - Jump[0] - 4);
-    Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LLV, "RSP_Opcode_LLV");
+    Cheat_r4300iOpcodeNoMessage(&RSPOp::LLV, "RSPOp::LLV");
     JmpLabel32("Done", 0);
     Jump[1] = RecompPos - 4;
 
@@ -6214,7 +6227,7 @@ void Compile_Opcode_LLV(void)
 void Compile_Opcode_LDV(void)
 {
 #ifndef CompileLdv
-    Cheat_r4300iOpcode(RSP_Opcode_LDV, "RSP_Opcode_LDV");
+    Cheat_r4300iOpcode(&RSPOp::LDV, "RSPOp::LDV");
 #else
     char Reg[256];
     int offset = (RSPOpC.voffset << 3), length;
@@ -6229,7 +6242,7 @@ void Compile_Opcode_LDV(void)
     if ((RSPOpC.del & 0x3) != 0)
     {
         CompilerWarning(stdstr_f("LDV's element = %X, PC = %04X", RSPOpC.del, CompilePC).c_str());
-        Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LDV, "RSP_Opcode_LDV");
+        Cheat_r4300iOpcodeNoMessage(&RSPOp::LDV, "RSPOp::LDV");
         return;
     }
 
@@ -6240,7 +6253,7 @@ void Compile_Opcode_LDV(void)
         if ((Addr & 3) != 0)
         {
             CompilerWarning(stdstr_f("Unaligned LDV at constant address PC = %04X", CompilePC).c_str());
-            Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LDV, "RSP_Opcode_LDV");
+            Cheat_r4300iOpcodeNoMessage(&RSPOp::LDV, "RSPOp::LDV");
             return;
         }
 
@@ -6271,7 +6284,7 @@ void Compile_Opcode_LDV(void)
     CompilerToggleBuffer();
     CPU_Message("   Unaligned:");
     x86_SetBranch32b(Jump[0], RecompPos);
-    Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LDV, "RSP_Opcode_LDV");
+    Cheat_r4300iOpcodeNoMessage(&RSPOp::LDV, "RSPOp::LDV");
     JmpLabel32("Done", 0);
     Jump[1] = RecompPos - 4;
     CompilerToggleBuffer();
@@ -6295,7 +6308,7 @@ void Compile_Opcode_LDV(void)
 void Compile_Opcode_LQV(void)
 {
 #ifndef CompileLqv
-    Cheat_r4300iOpcode(RSP_Opcode_LQV, "RSP_Opcode_LQV");
+    Cheat_r4300iOpcode(&RSPOp::LQV, "RSPOp::LQV");
 #else
     char Reg[256];
     int offset = (RSPOpC.voffset << 4);
@@ -6305,8 +6318,7 @@ void Compile_Opcode_LQV(void)
 
     if (RSPOpC.del != 0)
     {
-        Cheat_r4300iOpcode(RSP_Opcode_LQV, "RSP_Opcode_LQV");
-        return;
+        Cheat_r4300iOpcode(&RSPOp::LQV, "RSPOp::LQV");
         return;
     }
 
@@ -6317,7 +6329,7 @@ void Compile_Opcode_LQV(void)
         if (Addr & 15)
         {
             CompilerWarning(stdstr_f("Unaligned LQV at constant address PC = %04X", CompilePC).c_str());
-            Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LQV, "RSP_Opcode_LQV");
+            Cheat_r4300iOpcodeNoMessage(&RSPOp::LQV, "RSPOp::LQV");
             return;
         }
 
@@ -6367,7 +6379,7 @@ void Compile_Opcode_LQV(void)
     CPU_Message("   Unaligned:");
     x86_SetBranch32b(Jump[0], RecompPos);
 
-    Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LQV, "RSP_Opcode_LQV");
+    Cheat_r4300iOpcodeNoMessage(&RSPOp::LQV, "RSPOp::LQV");
     JmpLabel32("Done", 0);
     Jump[1] = RecompPos - 4;
     CompilerToggleBuffer();
@@ -6404,7 +6416,7 @@ void Compile_Opcode_LQV(void)
 void Compile_Opcode_LRV(void)
 {
 #ifndef CompileLrv
-    Cheat_r4300iOpcode(RSP_Opcode_LRV, "RSP_Opcode_LRV");
+    Cheat_r4300iOpcode(&RSPOp::LRV, "RSPOp::LRV");
 #else
     int offset = (RSPOpC.voffset << 4);
     uint8_t *Loop, *Jump[2];
@@ -6413,7 +6425,7 @@ void Compile_Opcode_LRV(void)
 
     if (RSPOpC.del != 0)
     {
-        Cheat_r4300iOpcode(RSP_Opcode_LRV, "RSP_Opcode_LRV");
+        Cheat_r4300iOpcode(&RSPOp::LRV, "RSPOp::LRV");
         return;
     }
 
@@ -6432,7 +6444,7 @@ void Compile_Opcode_LRV(void)
         CPU_Message(" Unaligned:");
         x86_SetBranch32b(Jump[0], RecompPos);
 
-        Cheat_r4300iOpcodeNoMessage(RSP_Opcode_LRV, "RSP_Opcode_LRV");
+        Cheat_r4300iOpcodeNoMessage(&RSPOp::LRV, "RSPOp::LRV");
         JmpLabel32("Done", 0);
         Jump[1] = RecompPos - 4;
 
@@ -6483,7 +6495,7 @@ void Compile_Opcode_LRV(void)
 void Compile_Opcode_LPV(void)
 {
 #ifndef CompileLpv
-    Cheat_r4300iOpcode(RSP_Opcode_LPV, "RSP_Opcode_LPV");
+    Cheat_r4300iOpcode(&RSPOp::LPV, "RSPOp::LPV");
 #else
     char Reg[256];
     int offset = (RSPOpC.voffset << 3);
@@ -6591,7 +6603,7 @@ void Compile_Opcode_LPV(void)
 void Compile_Opcode_LUV(void)
 {
 #ifndef CompileLuv
-    Cheat_r4300iOpcode(RSP_Opcode_LUV, "RSP_Opcode_LUV");
+    Cheat_r4300iOpcode(&RSPOp::LUV, "RSPOp::LUV");
 #else
     char Reg[256];
     int offset = (RSPOpC.voffset << 3);
@@ -6699,7 +6711,7 @@ void Compile_Opcode_LUV(void)
 void Compile_Opcode_LHV(void)
 {
 #ifndef CompileLhv
-    Cheat_r4300iOpcode(RSP_Opcode_LHV, "RSP_Opcode_LHV");
+    Cheat_r4300iOpcode(&RSPOp::LHV, "RSPOp::LHV");
 #else
     char Reg[256];
     int offset = (RSPOpC.voffset << 4);
@@ -6806,37 +6818,37 @@ void Compile_Opcode_LHV(void)
 
 void Compile_Opcode_LFV(void)
 {
-    Cheat_r4300iOpcode(RSP_Opcode_LFV, "RSP_Opcode_LFV");
+    Cheat_r4300iOpcode(&RSPOp::LFV, "RSPOp::LFV");
 }
 
 void Compile_Opcode_LWV(void)
 {
-    Cheat_r4300iOpcode(RSP_Opcode_LWV, "RSP_Opcode_LWV");
+    Cheat_r4300iOpcode(&RSPOp::LWV, "RSPOp::LWV");
 }
 
 void Compile_Opcode_LTV(void)
 {
-    Cheat_r4300iOpcode(RSP_Opcode_LTV, "RSP_Opcode_LTV");
+    Cheat_r4300iOpcode(&RSPOp::LTV, "RSPOp::LTV");
 }
 
 // SC2 functions
 
 void Compile_Opcode_SBV(void)
 {
-    Cheat_r4300iOpcode(RSP_Opcode_SBV, "RSP_Opcode_SBV");
+    Cheat_r4300iOpcode(&RSPOp::SBV, "RSPOp::SBV");
 }
 
 void Compile_Opcode_SSV(void)
 {
 #ifndef CompileSsv
-    Cheat_r4300iOpcode(RSP_Opcode_SSV, "RSP_Opcode_SSV");
+    Cheat_r4300iOpcode(&RSPOp::SSV, "RSPOp::SSV");
 #else
     char Reg[256];
     int offset = (RSPOpC.voffset << 1);
 
     if (RSPOpC.del > 14)
     {
-        Cheat_r4300iOpcode(RSP_Opcode_SSV, "RSP_Opcode_SSV");
+        Cheat_r4300iOpcode(&RSPOp::SSV, "RSPOp::SSV");
         return;
     }
 
@@ -6899,11 +6911,11 @@ void Compile_Opcode_SSV(void)
 void Compile_Opcode_SLV(void)
 {
 #ifndef CompileSlv
-    Cheat_r4300iOpcode(RSP_Opcode_SLV, "RSP_Opcode_SLV");
+    Cheat_r4300iOpcode(&RSPOp::SLV, "RSPOp::SLV");
 #else
     if (RSPOpC.del > 12)
     {
-        Cheat_r4300iOpcodeNoMessage(RSP_Opcode_SLV, "RSP_Opcode_SLV");
+        Cheat_r4300iOpcodeNoMessage(&RSPOp::SLV, "RSPOp::SLV");
         return;
     }
 
@@ -6917,7 +6929,7 @@ void Compile_Opcode_SLV(void)
         uint32_t Addr = (MipsRegConst(RSPOpC.base) + offset) & 0xfff;
         if ((Addr & 3) != 0 || RSPOpC.del > 12)
         {
-            Cheat_r4300iOpcodeNoMessage(RSP_Opcode_SLV, "RSP_Opcode_SLV");
+            Cheat_r4300iOpcodeNoMessage(&RSPOp::SLV, "RSPOp::SLV");
             return;
         }
 
@@ -6941,7 +6953,7 @@ void Compile_Opcode_SLV(void)
 
     CPU_Message("   Unaligned:");
     *((uint32_t *)(Jump[0])) = (uint32_t)(RecompPos - Jump[0] - 4);
-    Cheat_r4300iOpcodeNoMessage(RSP_Opcode_SLV, "RSP_Opcode_SLV");
+    Cheat_r4300iOpcodeNoMessage(&RSPOp::SLV, "RSPOp::SLV");
     JmpLabel32("Done", 0);
     Jump[1] = RecompPos - 4;
 
@@ -6964,11 +6976,11 @@ void Compile_Opcode_SLV(void)
 void Compile_Opcode_SDV(void)
 {
 #ifndef CompileSdv
-    Cheat_r4300iOpcode(RSP_Opcode_SDV, "RSP_Opcode_SDV");
+    Cheat_r4300iOpcode(&RSPOp::SDV, "RSPOp::SDV");
 #else
     if (RSPOpC.del > 8)
     {
-        Cheat_r4300iOpcodeNoMessage(RSP_Opcode_SDV, "RSP_Opcode_SDV");
+        Cheat_r4300iOpcodeNoMessage(&RSPOp::SDV, "RSPOp::SDV");
         return;
     }
     char Reg[256];
@@ -6989,7 +7001,7 @@ void Compile_Opcode_SDV(void)
         if ((Addr & 3) != 0)
         {
             CompilerWarning(stdstr_f("Unaligned SDV at constant address PC = %04X", CompilePC).c_str());
-            Cheat_r4300iOpcodeNoMessage(RSP_Opcode_SDV, "RSP_Opcode_SDV");
+            Cheat_r4300iOpcodeNoMessage(&RSPOp::SDV, "RSPOp::SDV");
             return;
         }
 
@@ -7054,11 +7066,11 @@ void Compile_Opcode_SDV(void)
 void Compile_Opcode_SQV(void)
 {
 #ifndef CompileSqv
-    Cheat_r4300iOpcode(RSP_Opcode_SQV, "RSP_Opcode_SQV");
+    Cheat_r4300iOpcode(&RSPOp::SQV, "RSPOp::SQV");
 #else
     if (RSPOpC.del != 0 && RSPOpC.del != 12)
     {
-        Cheat_r4300iOpcode(RSP_Opcode_SQV, "RSP_Opcode_SQV");
+        Cheat_r4300iOpcode(&RSPOp::SQV, "RSPOp::SQV");
         return;
     }
 
@@ -7075,7 +7087,7 @@ void Compile_Opcode_SQV(void)
         if (Addr & 15)
         {
             CompilerWarning(stdstr_f("Unaligned SQV at constant address %04X", CompilePC).c_str());
-            Cheat_r4300iOpcodeNoMessage(RSP_Opcode_SQV, "RSP_Opcode_SQV");
+            Cheat_r4300iOpcodeNoMessage(&RSPOp::SQV, "RSPOp::SQV");
             return;
         }
 
@@ -7145,7 +7157,7 @@ void Compile_Opcode_SQV(void)
     CompilerToggleBuffer();
     CPU_Message("   Unaligned:");
     x86_SetBranch32b((uint32_t *)Jump[0], (uint32_t *)RecompPos);
-    Cheat_r4300iOpcodeNoMessage(RSP_Opcode_SQV, "RSP_Opcode_SQV");
+    Cheat_r4300iOpcodeNoMessage(&RSPOp::SQV, "RSPOp::SQV");
     JmpLabel32("Done", 0);
     Jump[1] = RecompPos - 4;
     CompilerToggleBuffer();
@@ -7202,37 +7214,37 @@ void Compile_Opcode_SQV(void)
 
 void Compile_Opcode_SRV(void)
 {
-    Cheat_r4300iOpcode(RSP_Opcode_SRV, "RSP_Opcode_SRV");
+    Cheat_r4300iOpcode(&RSPOp::SRV, "RSPOp::SRV");
 }
 
 void Compile_Opcode_SPV(void)
 {
-    Cheat_r4300iOpcode(RSP_Opcode_SPV, "RSP_Opcode_SPV");
+    Cheat_r4300iOpcode(&RSPOp::SPV, "RSPOp::SPV");
 }
 
 void Compile_Opcode_SUV(void)
 {
-    Cheat_r4300iOpcode(RSP_Opcode_SUV, "RSP_Opcode_SUV");
+    Cheat_r4300iOpcode(&RSPOp::SUV, "RSPOp::SUV");
 }
 
 void Compile_Opcode_SHV(void)
 {
-    Cheat_r4300iOpcode(RSP_Opcode_SHV, "RSP_Opcode_SHV");
+    Cheat_r4300iOpcode(&RSPOp::SHV, "RSPOp::SHV");
 }
 
 void Compile_Opcode_SFV(void)
 {
-    Cheat_r4300iOpcode(RSP_Opcode_SFV, "RSP_Opcode_SFV");
+    Cheat_r4300iOpcode(&RSPOp::SFV, "RSPOp::SFV");
 }
 
 void Compile_Opcode_STV(void)
 {
-    Cheat_r4300iOpcode(RSP_Opcode_STV, "RSP_Opcode_STV");
+    Cheat_r4300iOpcode(&RSPOp::STV, "RSPOp::STV");
 }
 
 void Compile_Opcode_SWV(void)
 {
-    Cheat_r4300iOpcode(RSP_Opcode_SWV, "RSP_Opcode_SWV");
+    Cheat_r4300iOpcode(&RSPOp::SWV, "&RSPOp::SWV");
 }
 
 // Other functions
@@ -7243,6 +7255,7 @@ void Compile_UnknownOpcode(void)
     NextInstruction = RSPPIPELINE_FINISH_BLOCK;
     MoveConstToVariable(CompilePC, PrgCount, "RSP PC");
     MoveConstToVariable(RSPOpC.Value, &RSPOpC.Value, "RSPOpC.Value");
-    Call_Direct((void *)rsp_UnknownOpcode, "rsp_UnknownOpcode");
+    MoveConstToX86reg((uint32_t)&RSPSystem, x86_ECX);
+    Call_Direct(AddressOf(&RSPOp::UnknownOpcode), "&RSPOp::UnknownOpcode");
     Ret();
 }

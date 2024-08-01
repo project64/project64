@@ -6,6 +6,7 @@
 #include <Project64-rsp-core/RSPDebugger.h>
 #include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/Settings/RspSettings.h>
+#include <Project64-rsp-core/cpu/RSPInterpreterOps.h>
 #include <Project64-rsp-core/cpu/RspClamp.h>
 #include <Settings/Settings.h>
 #include <algorithm>
@@ -56,112 +57,485 @@ uint32_t clz32(uint32_t val)
 #endif
 }
 
+RSPOp::RSPOp(CRSPSystem & System) :
+    m_System(System)
+{
+    BuildInterpreter();
+}
+
+RSPOp::~RSPOp()
+{
+}
+
+void RSPOp::BuildInterpreter(void)
+{
+    Jump_Opcode[0] = &RSPOp::SPECIAL;
+    Jump_Opcode[1] = &RSPOp::REGIMM;
+    Jump_Opcode[2] = &RSPOp::J;
+    Jump_Opcode[3] = &RSPOp::JAL;
+    Jump_Opcode[4] = &RSPOp::BEQ;
+    Jump_Opcode[5] = &RSPOp::BNE;
+    Jump_Opcode[6] = &RSPOp::BLEZ;
+    Jump_Opcode[7] = &RSPOp::BGTZ;
+    Jump_Opcode[8] = &RSPOp::ADDI;
+    Jump_Opcode[9] = &RSPOp::ADDIU;
+    Jump_Opcode[10] = &RSPOp::SLTI;
+    Jump_Opcode[11] = &RSPOp::SLTIU;
+    Jump_Opcode[12] = &RSPOp::ANDI;
+    Jump_Opcode[13] = &RSPOp::ORI;
+    Jump_Opcode[14] = &RSPOp::XORI;
+    Jump_Opcode[15] = &RSPOp::LUI;
+    Jump_Opcode[16] = &RSPOp::COP0;
+    Jump_Opcode[17] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[18] = &RSPOp::COP2;
+    Jump_Opcode[19] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[20] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[21] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[22] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[23] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[24] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[25] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[26] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[27] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[28] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[29] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[30] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[31] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[32] = &RSPOp::LB;
+    Jump_Opcode[33] = &RSPOp::LH;
+    Jump_Opcode[34] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[35] = &RSPOp::LW;
+    Jump_Opcode[36] = &RSPOp::LBU;
+    Jump_Opcode[37] = &RSPOp::LHU;
+    Jump_Opcode[38] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[39] = &RSPOp::LWU;
+    Jump_Opcode[40] = &RSPOp::SB;
+    Jump_Opcode[41] = &RSPOp::SH;
+    Jump_Opcode[42] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[43] = &RSPOp::SW;
+    Jump_Opcode[44] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[45] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[46] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[47] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[48] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[49] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[50] = &RSPOp::LC2;
+    Jump_Opcode[51] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[52] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[53] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[54] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[55] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[56] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[57] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[58] = &RSPOp::SC2;
+    Jump_Opcode[59] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[60] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[61] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[62] = &RSPOp::UnknownOpcode;
+    Jump_Opcode[63] = &RSPOp::UnknownOpcode;
+
+    Jump_Special[0] = &RSPOp::Special_SLL;
+    Jump_Special[1] = &RSPOp::UnknownOpcode;
+    Jump_Special[2] = &RSPOp::Special_SRL;
+    Jump_Special[3] = &RSPOp::Special_SRA;
+    Jump_Special[4] = &RSPOp::Special_SLLV;
+    Jump_Special[5] = &RSPOp::UnknownOpcode;
+    Jump_Special[6] = &RSPOp::Special_SRLV;
+    Jump_Special[7] = &RSPOp::Special_SRAV;
+    Jump_Special[8] = &RSPOp::Special_JR;
+    Jump_Special[9] = &RSPOp::Special_JALR;
+    Jump_Special[10] = &RSPOp::UnknownOpcode;
+    Jump_Special[11] = &RSPOp::UnknownOpcode;
+    Jump_Special[12] = &RSPOp::UnknownOpcode;
+    Jump_Special[13] = &RSPOp::Special_BREAK;
+    Jump_Special[14] = &RSPOp::UnknownOpcode;
+    Jump_Special[15] = &RSPOp::UnknownOpcode;
+    Jump_Special[16] = &RSPOp::UnknownOpcode;
+    Jump_Special[17] = &RSPOp::UnknownOpcode;
+    Jump_Special[18] = &RSPOp::UnknownOpcode;
+    Jump_Special[19] = &RSPOp::UnknownOpcode;
+    Jump_Special[20] = &RSPOp::UnknownOpcode;
+    Jump_Special[21] = &RSPOp::UnknownOpcode;
+    Jump_Special[22] = &RSPOp::UnknownOpcode;
+    Jump_Special[23] = &RSPOp::UnknownOpcode;
+    Jump_Special[24] = &RSPOp::UnknownOpcode;
+    Jump_Special[25] = &RSPOp::UnknownOpcode;
+    Jump_Special[26] = &RSPOp::UnknownOpcode;
+    Jump_Special[27] = &RSPOp::UnknownOpcode;
+    Jump_Special[28] = &RSPOp::UnknownOpcode;
+    Jump_Special[29] = &RSPOp::UnknownOpcode;
+    Jump_Special[30] = &RSPOp::UnknownOpcode;
+    Jump_Special[31] = &RSPOp::UnknownOpcode;
+    Jump_Special[32] = &RSPOp::Special_ADD;
+    Jump_Special[33] = &RSPOp::Special_ADDU;
+    Jump_Special[34] = &RSPOp::Special_SUB;
+    Jump_Special[35] = &RSPOp::Special_SUBU;
+    Jump_Special[36] = &RSPOp::Special_AND;
+    Jump_Special[37] = &RSPOp::Special_OR;
+    Jump_Special[38] = &RSPOp::Special_XOR;
+    Jump_Special[39] = &RSPOp::Special_NOR;
+    Jump_Special[40] = &RSPOp::UnknownOpcode;
+    Jump_Special[41] = &RSPOp::UnknownOpcode;
+    Jump_Special[42] = &RSPOp::Special_SLT;
+    Jump_Special[43] = &RSPOp::Special_SLTU;
+    Jump_Special[44] = &RSPOp::UnknownOpcode;
+    Jump_Special[45] = &RSPOp::UnknownOpcode;
+    Jump_Special[46] = &RSPOp::UnknownOpcode;
+    Jump_Special[47] = &RSPOp::UnknownOpcode;
+    Jump_Special[48] = &RSPOp::UnknownOpcode;
+    Jump_Special[49] = &RSPOp::UnknownOpcode;
+    Jump_Special[50] = &RSPOp::UnknownOpcode;
+    Jump_Special[51] = &RSPOp::UnknownOpcode;
+    Jump_Special[52] = &RSPOp::UnknownOpcode;
+    Jump_Special[53] = &RSPOp::UnknownOpcode;
+    Jump_Special[54] = &RSPOp::UnknownOpcode;
+    Jump_Special[55] = &RSPOp::UnknownOpcode;
+    Jump_Special[56] = &RSPOp::UnknownOpcode;
+    Jump_Special[57] = &RSPOp::UnknownOpcode;
+    Jump_Special[58] = &RSPOp::UnknownOpcode;
+    Jump_Special[59] = &RSPOp::UnknownOpcode;
+    Jump_Special[60] = &RSPOp::UnknownOpcode;
+    Jump_Special[61] = &RSPOp::UnknownOpcode;
+    Jump_Special[62] = &RSPOp::UnknownOpcode;
+    Jump_Special[63] = &RSPOp::UnknownOpcode;
+
+    Jump_RegImm[0] = &RSPOp::BLTZ;
+    Jump_RegImm[1] = &RSPOp::BGEZ;
+    Jump_RegImm[2] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[3] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[4] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[5] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[6] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[7] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[8] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[9] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[10] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[11] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[12] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[13] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[14] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[15] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[16] = &RSPOp::BLTZAL;
+    Jump_RegImm[17] = &RSPOp::BGEZAL;
+    Jump_RegImm[18] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[19] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[20] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[21] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[22] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[23] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[24] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[25] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[26] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[27] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[28] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[29] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[30] = &RSPOp::UnknownOpcode;
+    Jump_RegImm[31] = &RSPOp::UnknownOpcode;
+
+    Jump_Cop0[0] = &RSPOp::Cop0_MF;
+    Jump_Cop0[1] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[2] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[3] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[4] = &RSPOp::Cop0_MT;
+    Jump_Cop0[5] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[6] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[7] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[8] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[9] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[10] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[11] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[12] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[13] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[14] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[15] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[16] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[17] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[18] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[19] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[20] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[21] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[22] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[23] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[24] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[25] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[26] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[27] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[28] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[29] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[30] = &RSPOp::UnknownOpcode;
+    Jump_Cop0[31] = &RSPOp::UnknownOpcode;
+
+    Jump_Cop2[0] = &RSPOp::Cop2_MF;
+    Jump_Cop2[1] = &RSPOp::UnknownOpcode;
+    Jump_Cop2[2] = &RSPOp::Cop2_CF;
+    Jump_Cop2[3] = &RSPOp::UnknownOpcode;
+    Jump_Cop2[4] = &RSPOp::Cop2_MT;
+    Jump_Cop2[5] = &RSPOp::UnknownOpcode;
+    Jump_Cop2[6] = &RSPOp::Cop2_CT;
+    Jump_Cop2[7] = &RSPOp::UnknownOpcode;
+    Jump_Cop2[8] = &RSPOp::UnknownOpcode;
+    Jump_Cop2[9] = &RSPOp::UnknownOpcode;
+    Jump_Cop2[10] = &RSPOp::UnknownOpcode;
+    Jump_Cop2[11] = &RSPOp::UnknownOpcode;
+    Jump_Cop2[12] = &RSPOp::UnknownOpcode;
+    Jump_Cop2[13] = &RSPOp::UnknownOpcode;
+    Jump_Cop2[14] = &RSPOp::UnknownOpcode;
+    Jump_Cop2[15] = &RSPOp::UnknownOpcode;
+    Jump_Cop2[16] = &RSPOp::Cop2_VECTOR;
+    Jump_Cop2[17] = &RSPOp::Cop2_VECTOR;
+    Jump_Cop2[18] = &RSPOp::Cop2_VECTOR;
+    Jump_Cop2[19] = &RSPOp::Cop2_VECTOR;
+    Jump_Cop2[20] = &RSPOp::Cop2_VECTOR;
+    Jump_Cop2[21] = &RSPOp::Cop2_VECTOR;
+    Jump_Cop2[22] = &RSPOp::Cop2_VECTOR;
+    Jump_Cop2[23] = &RSPOp::Cop2_VECTOR;
+    Jump_Cop2[24] = &RSPOp::Cop2_VECTOR;
+    Jump_Cop2[25] = &RSPOp::Cop2_VECTOR;
+    Jump_Cop2[26] = &RSPOp::Cop2_VECTOR;
+    Jump_Cop2[27] = &RSPOp::Cop2_VECTOR;
+    Jump_Cop2[28] = &RSPOp::Cop2_VECTOR;
+    Jump_Cop2[29] = &RSPOp::Cop2_VECTOR;
+    Jump_Cop2[30] = &RSPOp::Cop2_VECTOR;
+    Jump_Cop2[31] = &RSPOp::Cop2_VECTOR;
+
+    Jump_Vector[0] = &RSPOp::Vector_VMULF;
+    Jump_Vector[1] = &RSPOp::Vector_VMULU;
+    Jump_Vector[2] = &RSPOp::Vector_VRNDP;
+    Jump_Vector[3] = &RSPOp::Vector_VMULQ;
+    Jump_Vector[4] = &RSPOp::Vector_VMUDL;
+    Jump_Vector[5] = &RSPOp::Vector_VMUDM;
+    Jump_Vector[6] = &RSPOp::Vector_VMUDN;
+    Jump_Vector[7] = &RSPOp::Vector_VMUDH;
+    Jump_Vector[8] = &RSPOp::Vector_VMACF;
+    Jump_Vector[9] = &RSPOp::Vector_VMACU;
+    Jump_Vector[10] = &RSPOp::Vector_VRNDN;
+    Jump_Vector[11] = &RSPOp::Vector_VMACQ;
+    Jump_Vector[12] = &RSPOp::Vector_VMADL;
+    Jump_Vector[13] = &RSPOp::Vector_VMADM;
+    Jump_Vector[14] = &RSPOp::Vector_VMADN;
+    Jump_Vector[15] = &RSPOp::Vector_VMADH;
+    Jump_Vector[16] = &RSPOp::Vector_VADD;
+    Jump_Vector[17] = &RSPOp::Vector_VSUB;
+    Jump_Vector[18] = &RSPOp::Vector_Reserved;
+    Jump_Vector[19] = &RSPOp::Vector_VABS;
+    Jump_Vector[20] = &RSPOp::Vector_VADDC;
+    Jump_Vector[21] = &RSPOp::Vector_VSUBC;
+    Jump_Vector[22] = &RSPOp::Vector_Reserved;
+    Jump_Vector[23] = &RSPOp::Vector_Reserved;
+    Jump_Vector[24] = &RSPOp::Vector_Reserved;
+    Jump_Vector[25] = &RSPOp::Vector_Reserved;
+    Jump_Vector[26] = &RSPOp::Vector_Reserved;
+    Jump_Vector[27] = &RSPOp::Vector_Reserved;
+    Jump_Vector[28] = &RSPOp::Vector_Reserved;
+    Jump_Vector[29] = &RSPOp::Vector_VSAW;
+    Jump_Vector[30] = &RSPOp::Vector_Reserved;
+    Jump_Vector[31] = &RSPOp::Vector_Reserved;
+    Jump_Vector[32] = &RSPOp::Vector_VLT;
+    Jump_Vector[33] = &RSPOp::Vector_VEQ;
+    Jump_Vector[34] = &RSPOp::Vector_VNE;
+    Jump_Vector[35] = &RSPOp::Vector_VGE;
+    Jump_Vector[36] = &RSPOp::Vector_VCL;
+    Jump_Vector[37] = &RSPOp::Vector_VCH;
+    Jump_Vector[38] = &RSPOp::Vector_VCR;
+    Jump_Vector[39] = &RSPOp::Vector_VMRG;
+    Jump_Vector[40] = &RSPOp::Vector_VAND;
+    Jump_Vector[41] = &RSPOp::Vector_VNAND;
+    Jump_Vector[42] = &RSPOp::Vector_VOR;
+    Jump_Vector[43] = &RSPOp::Vector_VNOR;
+    Jump_Vector[44] = &RSPOp::Vector_VXOR;
+    Jump_Vector[45] = &RSPOp::Vector_VNXOR;
+    Jump_Vector[46] = &RSPOp::Vector_Reserved;
+    Jump_Vector[47] = &RSPOp::Vector_Reserved;
+    Jump_Vector[48] = &RSPOp::Vector_VRCP;
+    Jump_Vector[49] = &RSPOp::Vector_VRCPL;
+    Jump_Vector[50] = &RSPOp::Vector_VRCPH;
+    Jump_Vector[51] = &RSPOp::Vector_VMOV;
+    Jump_Vector[52] = &RSPOp::Vector_VRSQ;
+    Jump_Vector[53] = &RSPOp::Vector_VRSQL;
+    Jump_Vector[54] = &RSPOp::Vector_VRSQH;
+    Jump_Vector[55] = &RSPOp::Vector_VNOOP;
+    Jump_Vector[56] = &RSPOp::Vector_Reserved;
+    Jump_Vector[57] = &RSPOp::Vector_Reserved;
+    Jump_Vector[58] = &RSPOp::Vector_Reserved;
+    Jump_Vector[59] = &RSPOp::Vector_Reserved;
+    Jump_Vector[60] = &RSPOp::Vector_Reserved;
+    Jump_Vector[61] = &RSPOp::Vector_Reserved;
+    Jump_Vector[62] = &RSPOp::Vector_Reserved;
+    Jump_Vector[63] = &RSPOp::Vector_VNOOP;
+
+    Jump_Lc2[0] = &RSPOp::LBV;
+    Jump_Lc2[1] = &RSPOp::LSV;
+    Jump_Lc2[2] = &RSPOp::LLV;
+    Jump_Lc2[3] = &RSPOp::LDV;
+    Jump_Lc2[4] = &RSPOp::LQV;
+    Jump_Lc2[5] = &RSPOp::LRV;
+    Jump_Lc2[6] = &RSPOp::LPV;
+    Jump_Lc2[7] = &RSPOp::LUV;
+    Jump_Lc2[8] = &RSPOp::LHV;
+    Jump_Lc2[9] = &RSPOp::LFV;
+    Jump_Lc2[10] = &RSPOp::LWV;
+    Jump_Lc2[11] = &RSPOp::LTV;
+    Jump_Lc2[12] = &RSPOp::UnknownOpcode;
+    Jump_Lc2[13] = &RSPOp::UnknownOpcode;
+    Jump_Lc2[14] = &RSPOp::UnknownOpcode;
+    Jump_Lc2[15] = &RSPOp::UnknownOpcode;
+    Jump_Lc2[16] = &RSPOp::UnknownOpcode;
+    Jump_Lc2[17] = &RSPOp::UnknownOpcode;
+    Jump_Lc2[18] = &RSPOp::UnknownOpcode;
+    Jump_Lc2[19] = &RSPOp::UnknownOpcode;
+    Jump_Lc2[20] = &RSPOp::UnknownOpcode;
+    Jump_Lc2[21] = &RSPOp::UnknownOpcode;
+    Jump_Lc2[22] = &RSPOp::UnknownOpcode;
+    Jump_Lc2[23] = &RSPOp::UnknownOpcode;
+    Jump_Lc2[24] = &RSPOp::UnknownOpcode;
+    Jump_Lc2[25] = &RSPOp::UnknownOpcode;
+    Jump_Lc2[26] = &RSPOp::UnknownOpcode;
+    Jump_Lc2[27] = &RSPOp::UnknownOpcode;
+    Jump_Lc2[28] = &RSPOp::UnknownOpcode;
+    Jump_Lc2[29] = &RSPOp::UnknownOpcode;
+    Jump_Lc2[30] = &RSPOp::UnknownOpcode;
+    Jump_Lc2[31] = &RSPOp::UnknownOpcode;
+
+    Jump_Sc2[0] = &RSPOp::SBV;
+    Jump_Sc2[1] = &RSPOp::SSV;
+    Jump_Sc2[2] = &RSPOp::SLV;
+    Jump_Sc2[3] = &RSPOp::SDV;
+    Jump_Sc2[4] = &RSPOp::SQV;
+    Jump_Sc2[5] = &RSPOp::SRV;
+    Jump_Sc2[6] = &RSPOp::SPV;
+    Jump_Sc2[7] = &RSPOp::SUV;
+    Jump_Sc2[8] = &RSPOp::SHV;
+    Jump_Sc2[9] = &RSPOp::SFV;
+    Jump_Sc2[10] = &RSPOp::SWV;
+    Jump_Sc2[11] = &RSPOp::STV;
+    Jump_Sc2[12] = &RSPOp::UnknownOpcode;
+    Jump_Sc2[13] = &RSPOp::UnknownOpcode;
+    Jump_Sc2[14] = &RSPOp::UnknownOpcode;
+    Jump_Sc2[15] = &RSPOp::UnknownOpcode;
+    Jump_Sc2[16] = &RSPOp::UnknownOpcode;
+    Jump_Sc2[17] = &RSPOp::UnknownOpcode;
+    Jump_Sc2[18] = &RSPOp::UnknownOpcode;
+    Jump_Sc2[19] = &RSPOp::UnknownOpcode;
+    Jump_Sc2[20] = &RSPOp::UnknownOpcode;
+    Jump_Sc2[21] = &RSPOp::UnknownOpcode;
+    Jump_Sc2[22] = &RSPOp::UnknownOpcode;
+    Jump_Sc2[23] = &RSPOp::UnknownOpcode;
+    Jump_Sc2[24] = &RSPOp::UnknownOpcode;
+    Jump_Sc2[25] = &RSPOp::UnknownOpcode;
+    Jump_Sc2[26] = &RSPOp::UnknownOpcode;
+    Jump_Sc2[27] = &RSPOp::UnknownOpcode;
+    Jump_Sc2[28] = &RSPOp::UnknownOpcode;
+    Jump_Sc2[29] = &RSPOp::UnknownOpcode;
+    Jump_Sc2[30] = &RSPOp::UnknownOpcode;
+    Jump_Sc2[31] = &RSPOp::UnknownOpcode;
+}
+
 // Opcode functions
 
-void RSP_Opcode_SPECIAL(void)
+void RSPOp::SPECIAL(void)
 {
-    RSP_Special[RSPOpC.funct]();
+    (this->*Jump_Special[RSPOpC.funct])();
 }
 
-void RSP_Opcode_REGIMM(void)
+void RSPOp::REGIMM(void)
 {
-    RSP_RegImm[RSPOpC.rt]();
+    (this->*Jump_RegImm[RSPOpC.rt])();
 }
 
-void RSP_Opcode_J(void)
+void RSPOp::J(void)
 {
     RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = (RSPOpC.target << 2) & 0xFFC;
 }
 
-void RSP_Opcode_JAL(void)
+void RSPOp::JAL(void)
 {
     RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_GPR[31].UW = (*PrgCount + 8) & 0xFFC;
     RSP_JumpTo = (RSPOpC.target << 2) & 0xFFC;
 }
 
-void RSP_Opcode_BEQ(void)
+void RSPOp::BEQ(void)
 {
     RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W == RSP_GPR[RSPOpC.rt].W);
 }
 
-void RSP_Opcode_BNE(void)
+void RSPOp::BNE(void)
 {
     RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W != RSP_GPR[RSPOpC.rt].W);
 }
 
-void RSP_Opcode_BLEZ(void)
+void RSPOp::BLEZ(void)
 {
     RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W <= 0);
 }
 
-void RSP_Opcode_BGTZ(void)
+void RSPOp::BGTZ(void)
 {
     RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W > 0);
 }
 
-void RSP_Opcode_ADDI(void)
+void RSPOp::ADDI(void)
 {
     RSP_GPR[RSPOpC.rt].W = RSP_GPR[RSPOpC.rs].W + (int16_t)RSPOpC.immediate;
 }
 
-void RSP_Opcode_ADDIU(void)
+void RSPOp::ADDIU(void)
 {
     RSP_GPR[RSPOpC.rt].UW = RSP_GPR[RSPOpC.rs].UW + (uint32_t)((int16_t)RSPOpC.immediate);
 }
 
-void RSP_Opcode_SLTI(void)
+void RSPOp::SLTI(void)
 {
     RSP_GPR[RSPOpC.rt].W = (RSP_GPR[RSPOpC.rs].W < (int16_t)RSPOpC.immediate) ? 1 : 0;
 }
 
-void RSP_Opcode_SLTIU(void)
+void RSPOp::SLTIU(void)
 {
     RSP_GPR[RSPOpC.rt].W = (RSP_GPR[RSPOpC.rs].UW < (uint32_t)(int16_t)RSPOpC.immediate) ? 1 : 0;
 }
 
-void RSP_Opcode_ANDI(void)
+void RSPOp::ANDI(void)
 {
     RSP_GPR[RSPOpC.rt].W = RSP_GPR[RSPOpC.rs].W & RSPOpC.immediate;
 }
 
-void RSP_Opcode_ORI(void)
+void RSPOp::ORI(void)
 {
     RSP_GPR[RSPOpC.rt].W = RSP_GPR[RSPOpC.rs].W | RSPOpC.immediate;
 }
 
-void RSP_Opcode_XORI(void)
+void RSPOp::XORI(void)
 {
     RSP_GPR[RSPOpC.rt].W = RSP_GPR[RSPOpC.rs].W ^ RSPOpC.immediate;
 }
 
-void RSP_Opcode_LUI(void)
+void RSPOp::LUI(void)
 {
     RSP_GPR[RSPOpC.rt].W = RSPOpC.immediate << 16;
 }
 
-void RSP_Opcode_COP0(void)
+void RSPOp::COP0(void)
 {
-    RSP_Cop0[RSPOpC.rs]();
+    (this->*Jump_Cop0[RSPOpC.rs])();
 }
 
-void RSP_Opcode_COP2(void)
+void RSPOp::COP2(void)
 {
-    RSP_Cop2[RSPOpC.rs]();
+    (this->*Jump_Cop2[RSPOpC.rs])();
 }
 
-void RSP_Opcode_LB(void)
+void RSPOp::LB(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
     RSP_GPR[RSPOpC.rt].W = *(int8_t *)(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
 }
 
-void RSP_Opcode_LH(void)
+void RSPOp::LH(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
     if ((Address & 0x1) != 0)
@@ -176,7 +550,7 @@ void RSP_Opcode_LH(void)
     RSP_GPR[RSPOpC.rt].W = RSP_GPR[RSPOpC.rt].HW[0];
 }
 
-void RSP_Opcode_LW(void)
+void RSPOp::LW(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
     if ((Address & 0x3) != 0)
@@ -192,13 +566,13 @@ void RSP_Opcode_LW(void)
     }
 }
 
-void RSP_Opcode_LBU(void)
+void RSPOp::LBU(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
     RSP_GPR[RSPOpC.rt].UW = *(uint8_t *)(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
 }
 
-void RSP_Opcode_LHU(void)
+void RSPOp::LHU(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
     if ((Address & 0x1) != 0)
@@ -213,7 +587,7 @@ void RSP_Opcode_LHU(void)
     RSP_GPR[RSPOpC.rt].UW = RSP_GPR[RSPOpC.rt].UHW[0];
 }
 
-void RSP_Opcode_LWU(void)
+void RSPOp::LWU(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
     if ((Address & 0x3) != 0)
@@ -229,13 +603,13 @@ void RSP_Opcode_LWU(void)
     }
 }
 
-void RSP_Opcode_SB(void)
+void RSPOp::SB(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
     *(uint8_t *)(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF)) = RSP_GPR[RSPOpC.rt].UB[0];
 }
 
-void RSP_Opcode_SH(void)
+void RSPOp::SH(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
     if ((Address & 0x1) != 0)
@@ -249,7 +623,7 @@ void RSP_Opcode_SH(void)
     }
 }
 
-void RSP_Opcode_SW(void)
+void RSPOp::SW(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (short)RSPOpC.offset) & 0xFFF;
     if ((Address & 0x3) != 0)
@@ -265,62 +639,62 @@ void RSP_Opcode_SW(void)
     }
 }
 
-void RSP_Opcode_LC2(void)
+void RSPOp::LC2(void)
 {
-    RSP_Lc2[RSPOpC.rd]();
+    (this->*Jump_Lc2[RSPOpC.rd])();
 }
 
-void RSP_Opcode_SC2(void)
+void RSPOp::SC2(void)
 {
-    RSP_Sc2[RSPOpC.rd]();
+    (this->*Jump_Sc2[RSPOpC.rd])();
 }
 
 // R4300i Opcodes: Special
 
-void RSP_Special_SLL(void)
+void RSPOp::Special_SLL(void)
 {
     RSP_GPR[RSPOpC.rd].W = RSP_GPR[RSPOpC.rt].W << RSPOpC.sa;
 }
 
-void RSP_Special_SRL(void)
+void RSPOp::Special_SRL(void)
 {
     RSP_GPR[RSPOpC.rd].UW = RSP_GPR[RSPOpC.rt].UW >> RSPOpC.sa;
 }
 
-void RSP_Special_SRA(void)
+void RSPOp::Special_SRA(void)
 {
     RSP_GPR[RSPOpC.rd].W = RSP_GPR[RSPOpC.rt].W >> RSPOpC.sa;
 }
 
-void RSP_Special_SLLV(void)
+void RSPOp::Special_SLLV(void)
 {
     RSP_GPR[RSPOpC.rd].W = RSP_GPR[RSPOpC.rt].W << (RSP_GPR[RSPOpC.rs].W & 0x1F);
 }
 
-void RSP_Special_SRLV(void)
+void RSPOp::Special_SRLV(void)
 {
     RSP_GPR[RSPOpC.rd].UW = RSP_GPR[RSPOpC.rt].UW >> (RSP_GPR[RSPOpC.rs].W & 0x1F);
 }
 
-void RSP_Special_SRAV(void)
+void RSPOp::Special_SRAV(void)
 {
     RSP_GPR[RSPOpC.rd].W = RSP_GPR[RSPOpC.rt].W >> (RSP_GPR[RSPOpC.rs].W & 0x1F);
 }
 
-void RSP_Special_JR(void)
+void RSPOp::Special_JR(void)
 {
     RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = (RSP_GPR[RSPOpC.rs].W & 0xFFC);
 }
 
-void RSP_Special_JALR(void)
+void RSPOp::Special_JALR(void)
 {
     RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = (RSP_GPR[RSPOpC.rs].W & 0xFFC);
     RSP_GPR[RSPOpC.rd].W = (*PrgCount + 8) & 0xFFC;
 }
 
-void RSP_Special_BREAK(void)
+void RSPOp::Special_BREAK(void)
 {
     RSP_Running = false;
     *RSPInfo.SP_STATUS_REG |= (SP_STATUS_HALT | SP_STATUS_BROKE);
@@ -331,78 +705,78 @@ void RSP_Special_BREAK(void)
     }
 }
 
-void RSP_Special_ADD(void)
+void RSPOp::Special_ADD(void)
 {
     RSP_GPR[RSPOpC.rd].W = RSP_GPR[RSPOpC.rs].W + RSP_GPR[RSPOpC.rt].W;
 }
 
-void RSP_Special_ADDU(void)
+void RSPOp::Special_ADDU(void)
 {
     RSP_GPR[RSPOpC.rd].UW = RSP_GPR[RSPOpC.rs].UW + RSP_GPR[RSPOpC.rt].UW;
 }
 
-void RSP_Special_SUB(void)
+void RSPOp::Special_SUB(void)
 {
     RSP_GPR[RSPOpC.rd].W = RSP_GPR[RSPOpC.rs].W - RSP_GPR[RSPOpC.rt].W;
 }
 
-void RSP_Special_SUBU(void)
+void RSPOp::Special_SUBU(void)
 {
     RSP_GPR[RSPOpC.rd].UW = RSP_GPR[RSPOpC.rs].UW - RSP_GPR[RSPOpC.rt].UW;
 }
 
-void RSP_Special_AND(void)
+void RSPOp::Special_AND(void)
 {
     RSP_GPR[RSPOpC.rd].UW = RSP_GPR[RSPOpC.rs].UW & RSP_GPR[RSPOpC.rt].UW;
 }
 
-void RSP_Special_OR(void)
+void RSPOp::Special_OR(void)
 {
     RSP_GPR[RSPOpC.rd].UW = RSP_GPR[RSPOpC.rs].UW | RSP_GPR[RSPOpC.rt].UW;
 }
 
-void RSP_Special_XOR(void)
+void RSPOp::Special_XOR(void)
 {
     RSP_GPR[RSPOpC.rd].UW = RSP_GPR[RSPOpC.rs].UW ^ RSP_GPR[RSPOpC.rt].UW;
 }
 
-void RSP_Special_NOR(void)
+void RSPOp::Special_NOR(void)
 {
     RSP_GPR[RSPOpC.rd].UW = ~(RSP_GPR[RSPOpC.rs].UW | RSP_GPR[RSPOpC.rt].UW);
 }
 
-void RSP_Special_SLT(void)
+void RSPOp::Special_SLT(void)
 {
     RSP_GPR[RSPOpC.rd].UW = (RSP_GPR[RSPOpC.rs].W < RSP_GPR[RSPOpC.rt].W) ? 1 : 0;
 }
 
-void RSP_Special_SLTU(void)
+void RSPOp::Special_SLTU(void)
 {
     RSP_GPR[RSPOpC.rd].UW = (RSP_GPR[RSPOpC.rs].UW < RSP_GPR[RSPOpC.rt].UW) ? 1 : 0;
 }
 
 // R4300i Opcodes: RegImm
 
-void RSP_Opcode_BLTZ(void)
+void RSPOp::BLTZ(void)
 {
     RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W < 0);
 }
 
-void RSP_Opcode_BGEZ(void)
+void RSPOp::BGEZ(void)
 {
     RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W >= 0);
 }
 
-void RSP_Opcode_BLTZAL(void)
+void RSPOp::BLTZAL(void)
 {
     RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W < 0);
     RSP_GPR[31].UW = (*PrgCount + 8) & 0xFFC;
 }
 
-void RSP_Opcode_BGEZAL(void)
+void RSPOp::BGEZAL(void)
 {
     RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = RSP_branch_if(RSP_GPR[RSPOpC.rs].W >= 0);
@@ -411,7 +785,7 @@ void RSP_Opcode_BGEZAL(void)
 
 // COP0 functions
 
-void RSP_Cop0_MF(void)
+void RSPOp::Cop0_MF(void)
 {
     if (g_RSPDebugger != nullptr)
     {
@@ -447,7 +821,7 @@ void RSP_Cop0_MF(void)
     }
 }
 
-void RSP_Cop0_MT(void)
+void RSPOp::Cop0_MT(void)
 {
     if (LogRDP && g_CPUCore == InterpreterCPU)
     {
@@ -521,7 +895,7 @@ void RSP_Cop0_MT(void)
 
 // COP2 functions
 
-void RSP_Cop2_MF(void)
+void RSPOp::Cop2_MF(void)
 {
     uint8_t element = (uint8_t)(RSPOpC.sa >> 1);
     RSP_GPR[RSPOpC.rt].B[1] = RSP_Vect[RSPOpC.vs].s8(15 - element);
@@ -529,7 +903,7 @@ void RSP_Cop2_MF(void)
     RSP_GPR[RSPOpC.rt].W = RSP_GPR[RSPOpC.rt].HW[0];
 }
 
-void RSP_Cop2_CF(void)
+void RSPOp::Cop2_CF(void)
 {
     switch ((RSPOpC.rd & 0x03))
     {
@@ -540,7 +914,7 @@ void RSP_Cop2_CF(void)
     }
 }
 
-void RSP_Cop2_MT(void)
+void RSPOp::Cop2_MT(void)
 {
     uint8_t element = (uint8_t)(15 - (RSPOpC.sa >> 1));
     RSP_Vect[RSPOpC.vs].s8(element) = RSP_GPR[RSPOpC.rt].B[1];
@@ -550,7 +924,7 @@ void RSP_Cop2_MT(void)
     }
 }
 
-void RSP_Cop2_CT(void)
+void RSPOp::Cop2_CT(void)
 {
     switch ((RSPOpC.rd & 0x03))
     {
@@ -561,14 +935,14 @@ void RSP_Cop2_CT(void)
     }
 }
 
-void RSP_COP2_VECTOR(void)
+void RSPOp::Cop2_VECTOR(void)
 {
-    RSP_Vector[RSPOpC.funct]();
+    (this->*Jump_Vector[RSPOpC.funct])();
 }
 
 // Vector functions
 
-void RSP_Vector_VMULF(void)
+void RSPOp::Vector_VMULF(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -579,7 +953,7 @@ void RSP_Vector_VMULF(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VMULU(void)
+void RSPOp::Vector_VMULU(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -601,7 +975,7 @@ void RSP_Vector_VMULU(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VRNDP(void)
+void RSPOp::Vector_VRNDP(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -622,7 +996,7 @@ void RSP_Vector_VRNDP(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VMUDL(void)
+void RSPOp::Vector_VMUDL(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -633,7 +1007,7 @@ void RSP_Vector_VMUDL(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VMUDM(void)
+void RSPOp::Vector_VMUDM(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -644,7 +1018,7 @@ void RSP_Vector_VMUDM(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VMULQ(void)
+void RSPOp::Vector_VMULQ(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -663,7 +1037,7 @@ void RSP_Vector_VMULQ(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VMUDN(void)
+void RSPOp::Vector_VMUDN(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -674,7 +1048,7 @@ void RSP_Vector_VMUDN(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VMUDH(void)
+void RSPOp::Vector_VMUDH(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -686,7 +1060,7 @@ void RSP_Vector_VMUDH(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VMACF(void)
+void RSPOp::Vector_VMACF(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -697,7 +1071,7 @@ void RSP_Vector_VMACF(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VMACU(void)
+void RSPOp::Vector_VMACU(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -719,7 +1093,7 @@ void RSP_Vector_VMACU(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VMACQ(void)
+void RSPOp::Vector_VMACQ(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -740,7 +1114,7 @@ void RSP_Vector_VMACQ(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VRNDN(void)
+void RSPOp::Vector_VRNDN(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -761,7 +1135,7 @@ void RSP_Vector_VRNDN(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VMADL(void)
+void RSPOp::Vector_VMADL(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -772,7 +1146,7 @@ void RSP_Vector_VMADL(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VMADM(void)
+void RSPOp::Vector_VMADM(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -783,7 +1157,7 @@ void RSP_Vector_VMADM(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VMADN(void)
+void RSPOp::Vector_VMADN(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -794,7 +1168,7 @@ void RSP_Vector_VMADN(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VMADH(void)
+void RSPOp::Vector_VMADH(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -807,7 +1181,7 @@ void RSP_Vector_VMADH(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VADD(void)
+void RSPOp::Vector_VADD(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -821,7 +1195,7 @@ void RSP_Vector_VADD(void)
     VCOH.Clear();
 }
 
-void RSP_Vector_VSUB(void)
+void RSPOp::Vector_VSUB(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -835,7 +1209,7 @@ void RSP_Vector_VSUB(void)
     VCOH.Clear();
 }
 
-void RSP_Vector_VABS(void)
+void RSPOp::Vector_VABS(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -867,7 +1241,7 @@ void RSP_Vector_VABS(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VADDC(void)
+void RSPOp::Vector_VADDC(void)
 {
     RSPVector Result;
     VCOH.Clear();
@@ -881,7 +1255,7 @@ void RSP_Vector_VADDC(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VSUBC(void)
+void RSPOp::Vector_VSUBC(void)
 {
     RSPVector Result;
     VCOH.Clear();
@@ -896,7 +1270,7 @@ void RSP_Vector_VSUBC(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_Reserved(void)
+void RSPOp::Vector_Reserved(void)
 {
     for (uint8_t el = 0; el < 8; el++)
     {
@@ -905,7 +1279,7 @@ void RSP_Vector_Reserved(void)
     RSP_Vect[RSPOpC.vd] = RSPVector();
 }
 
-void RSP_Vector_VSAW(void)
+void RSPOp::Vector_VSAW(void)
 {
     RSPVector Result;
 
@@ -948,7 +1322,7 @@ void RSP_Vector_VSAW(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VLT(void)
+void RSPOp::Vector_VLT(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -971,7 +1345,7 @@ void RSP_Vector_VLT(void)
     VCOH.Clear();
 }
 
-void RSP_Vector_VEQ(void)
+void RSPOp::Vector_VEQ(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -985,7 +1359,7 @@ void RSP_Vector_VEQ(void)
     VCCH.Clear();
 }
 
-void RSP_Vector_VNE(void)
+void RSPOp::Vector_VNE(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -999,7 +1373,7 @@ void RSP_Vector_VNE(void)
     VCOH.Clear();
 }
 
-void RSP_Vector_VGE(void)
+void RSPOp::Vector_VGE(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -1022,7 +1396,7 @@ void RSP_Vector_VGE(void)
     VCOH.Clear();
 }
 
-void RSP_Vector_VCL(void)
+void RSPOp::Vector_VCL(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -1059,7 +1433,7 @@ void RSP_Vector_VCL(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VCH(void)
+void RSPOp::Vector_VCH(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -1087,7 +1461,7 @@ void RSP_Vector_VCH(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VCR(void)
+void RSPOp::Vector_VCR(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -1110,7 +1484,7 @@ void RSP_Vector_VCR(void)
     VCE.Clear();
 }
 
-void RSP_Vector_VMRG(void)
+void RSPOp::Vector_VMRG(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -1123,7 +1497,7 @@ void RSP_Vector_VMRG(void)
     VCOH.Clear();
 }
 
-void RSP_Vector_VAND(void)
+void RSPOp::Vector_VAND(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -1134,7 +1508,7 @@ void RSP_Vector_VAND(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VNAND(void)
+void RSPOp::Vector_VNAND(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -1145,7 +1519,7 @@ void RSP_Vector_VNAND(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VOR(void)
+void RSPOp::Vector_VOR(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -1156,7 +1530,7 @@ void RSP_Vector_VOR(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VNOR(void)
+void RSPOp::Vector_VNOR(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -1167,7 +1541,7 @@ void RSP_Vector_VNOR(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VXOR(void)
+void RSPOp::Vector_VXOR(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -1178,7 +1552,7 @@ void RSP_Vector_VXOR(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VNXOR(void)
+void RSPOp::Vector_VNXOR(void)
 {
     RSPVector Result;
     for (uint8_t el = 0; el < 8; el++)
@@ -1189,7 +1563,7 @@ void RSP_Vector_VNXOR(void)
     RSP_Vect[RSPOpC.vd] = Result;
 }
 
-void RSP_Vector_VRCP(void)
+void RSPOp::Vector_VRCP(void)
 {
     int32_t Input = RSP_Vect[RSPOpC.vt].s16(7 - (RSPOpC.e & 0x7));
     int32_t Mask = Input >> 31;
@@ -1222,7 +1596,7 @@ void RSP_Vector_VRCP(void)
     RSP_Vect[RSPOpC.vd].s16(7 - (RSPOpC.rd & 0x7)) = (int16_t)Result;
 }
 
-void RSP_Vector_VRCPL(void)
+void RSPOp::Vector_VRCPL(void)
 {
     int32_t Result = 0;
     int32_t Input = RcpHigh ? (RcpIn << 16 | RSP_Vect[RSPOpC.vt].u16(7 - (RSPOpC.e & 0x7))) : RSP_Vect[RSPOpC.vt].s16(7 - (RSPOpC.e & 0x7));
@@ -1255,7 +1629,7 @@ void RSP_Vector_VRCPL(void)
     RSP_Vect[RSPOpC.vd].s16(7 - (RSPOpC.rd & 0x7)) = (int16_t)Result;
 }
 
-void RSP_Vector_VRCPH(void)
+void RSPOp::Vector_VRCPH(void)
 {
     RcpHigh = true;
     RcpIn = RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[(RSPOpC.de & 0x7)]);
@@ -1266,7 +1640,7 @@ void RSP_Vector_VRCPH(void)
     RSP_Vect[RSPOpC.vd].u16(7 - (RSPOpC.de & 0x7)) = RcpResult;
 }
 
-void RSP_Vector_VMOV(void)
+void RSPOp::Vector_VMOV(void)
 {
     for (uint8_t i = 0; i < 8; i++)
     {
@@ -1276,7 +1650,7 @@ void RSP_Vector_VMOV(void)
     RSP_Vect[RSPOpC.vd].u16(Index) = RSP_Vect[RSPOpC.vt].se(Index, RSPOpC.e);
 }
 
-void RSP_Vector_VRSQ(void)
+void RSPOp::Vector_VRSQ(void)
 {
     int64_t Result = 0;
     int32_t Input = RSP_Vect[RSPOpC.vt].s16(7 - (RSPOpC.e & 0x7));
@@ -1309,7 +1683,7 @@ void RSP_Vector_VRSQ(void)
     RSP_Vect[RSPOpC.vd].s16(7 - (RSPOpC.rd & 0x7)) = (int16_t)Result;
 }
 
-void RSP_Vector_VRSQL(void)
+void RSPOp::Vector_VRSQL(void)
 {
     int32_t Result = 0;
     int32_t Input = RcpHigh ? RcpIn << 16 | RSP_Vect[RSPOpC.vt].u16(7 - (RSPOpC.e & 0x7)) : RSP_Vect[RSPOpC.vt].s16(7 - (RSPOpC.e & 0x7));
@@ -1342,7 +1716,7 @@ void RSP_Vector_VRSQL(void)
     RSP_Vect[RSPOpC.vd].s16(7 - (RSPOpC.rd & 0x7)) = (int16_t)Result;
 }
 
-void RSP_Vector_VRSQH(void)
+void RSPOp::Vector_VRSQH(void)
 {
     RcpHigh = 1;
     RcpIn = RSP_Vect[RSPOpC.vt].u16(EleSpec[RSPOpC.e].B[(RSPOpC.rd & 0x7)]);
@@ -1353,19 +1727,19 @@ void RSP_Vector_VRSQH(void)
     RSP_Vect[RSPOpC.vd].u16(7 - (RSPOpC.rd & 0x7)) = RcpResult;
 }
 
-void RSP_Vector_VNOOP(void)
+void RSPOp::Vector_VNOOP(void)
 {
 }
 
 // LC2 functions
 
-void RSP_Opcode_LBV(void)
+void RSPOp::LBV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 0)) & 0xFFF;
     RSP_Vect[RSPOpC.vt].u8((uint8_t)(15 - RSPOpC.del)) = *(RSPInfo.DMEM + (Address ^ 3));
 }
 
-void RSP_Opcode_LSV(void)
+void RSPOp::LSV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 1)) & 0xFFF;
     uint8_t Length = std::min((uint8_t)2, (uint8_t)(16 - RSPOpC.del));
@@ -1375,7 +1749,7 @@ void RSP_Opcode_LSV(void)
     }
 }
 
-void RSP_Opcode_LLV(void)
+void RSPOp::LLV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 2)) & 0xFFF;
     uint8_t Length = std::min((uint8_t)4, (uint8_t)(16 - RSPOpC.del));
@@ -1385,7 +1759,7 @@ void RSP_Opcode_LLV(void)
     }
 }
 
-void RSP_Opcode_LDV(void)
+void RSPOp::LDV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3)) & 0xFFF;
     uint8_t Length = std::min((uint8_t)8, (uint8_t)(16 - RSPOpC.del));
@@ -1395,7 +1769,7 @@ void RSP_Opcode_LDV(void)
     }
 }
 
-void RSP_Opcode_LQV(void)
+void RSPOp::LQV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
     uint8_t Length = std::min((uint8_t)(((Address + 0x10) & ~0xF) - Address), (uint8_t)(16 - RSPOpC.del));
@@ -1405,7 +1779,7 @@ void RSP_Opcode_LQV(void)
     }
 }
 
-void RSP_Opcode_LRV(void)
+void RSPOp::LRV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
     uint8_t Offset = (uint8_t)((0x10 - (Address & 0xF)) + RSPOpC.del);
@@ -1416,7 +1790,7 @@ void RSP_Opcode_LRV(void)
     }
 }
 
-void RSP_Opcode_LPV(void)
+void RSPOp::LPV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3));
     uint32_t Offset = ((Address & 7) - RSPOpC.del);
@@ -1428,7 +1802,7 @@ void RSP_Opcode_LPV(void)
     }
 }
 
-void RSP_Opcode_LUV(void)
+void RSPOp::LUV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3));
     uint32_t Offset = ((Address & 7) - RSPOpC.del);
@@ -1440,7 +1814,7 @@ void RSP_Opcode_LUV(void)
     }
 }
 
-void RSP_Opcode_LHV(void)
+void RSPOp::LHV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4));
     uint32_t Offset = ((Address & 7) - RSPOpC.del);
@@ -1452,7 +1826,7 @@ void RSP_Opcode_LHV(void)
     }
 }
 
-void RSP_Opcode_LFV(void)
+void RSPOp::LFV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4));
     uint8_t Length = std::min((uint8_t)(8 + RSPOpC.del), (uint8_t)16);
@@ -1472,11 +1846,11 @@ void RSP_Opcode_LFV(void)
     }
 }
 
-void RSP_Opcode_LWV(void)
+void RSPOp::LWV(void)
 {
 }
 
-void RSP_Opcode_LTV(void)
+void RSPOp::LTV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4));
     uint32_t Start = Address & ~7;
@@ -1500,13 +1874,13 @@ void RSP_Opcode_LTV(void)
 
 // SC2 functions
 
-void RSP_Opcode_SBV(void)
+void RSPOp::SBV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 0)) & 0xFFF;
     *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF)) = RSP_Vect[RSPOpC.vt].u8((uint8_t)(15 - RSPOpC.del));
 }
 
-void RSP_Opcode_SSV(void)
+void RSPOp::SSV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 1)) & 0xFFF;
     for (uint8_t i = RSPOpC.del, n = (uint8_t)(2 + RSPOpC.del); i < n; i++, Address++)
@@ -1515,7 +1889,7 @@ void RSP_Opcode_SSV(void)
     }
 }
 
-void RSP_Opcode_SLV(void)
+void RSPOp::SLV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 2)) & 0xFFF;
     for (uint8_t i = RSPOpC.del, n = (uint8_t)(4 + RSPOpC.del); i < n; i++, Address++)
@@ -1524,7 +1898,7 @@ void RSP_Opcode_SLV(void)
     }
 }
 
-void RSP_Opcode_SDV(void)
+void RSPOp::SDV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3)) & 0xFFF;
     for (uint8_t i = RSPOpC.del; i < (8 + RSPOpC.del); i++, Address++)
@@ -1533,7 +1907,7 @@ void RSP_Opcode_SDV(void)
     }
 }
 
-void RSP_Opcode_SQV(void)
+void RSPOp::SQV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
     uint8_t Length = (uint8_t)(((Address + 0x10) & ~0xF) - Address);
@@ -1543,7 +1917,7 @@ void RSP_Opcode_SQV(void)
     }
 }
 
-void RSP_Opcode_SRV(void)
+void RSPOp::SRV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
     uint8_t Length = (Address & 0xF);
@@ -1555,7 +1929,7 @@ void RSP_Opcode_SRV(void)
     }
 }
 
-void RSP_Opcode_SPV(void)
+void RSPOp::SPV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3)) & 0xFFF;
     for (uint8_t i = RSPOpC.del, n = (uint8_t)(8 + RSPOpC.del); i < n; i++, Address++)
@@ -1571,7 +1945,7 @@ void RSP_Opcode_SPV(void)
     }
 }
 
-void RSP_Opcode_SUV(void)
+void RSPOp::SUV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 3)) & 0xFFF;
     for (uint8_t Count = RSPOpC.del; Count < (8 + RSPOpC.del); Count++, Address++)
@@ -1587,7 +1961,7 @@ void RSP_Opcode_SUV(void)
     }
 }
 
-void RSP_Opcode_SHV(void)
+void RSPOp::SHV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4));
     uint8_t Offset = Address & 7;
@@ -1599,7 +1973,7 @@ void RSP_Opcode_SHV(void)
     }
 }
 
-void RSP_Opcode_SFV(void)
+void RSPOp::SFV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
     uint8_t Offset = Address & 7;
@@ -1659,7 +2033,7 @@ void RSP_Opcode_SFV(void)
     }
 }
 
-void RSP_Opcode_STV(void)
+void RSPOp::STV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4));
     uint8_t Element = 16 - (RSPOpC.del & ~1);
@@ -1673,7 +2047,7 @@ void RSP_Opcode_STV(void)
     }
 }
 
-void RSP_Opcode_SWV(void)
+void RSPOp::SWV(void)
 {
     uint32_t Address = (uint32_t)(RSP_GPR[RSPOpC.base].W + (RSPOpC.voffset << 4)) & 0xFFF;
     uint8_t Offset = Address & 7;
@@ -1686,7 +2060,7 @@ void RSP_Opcode_SWV(void)
 
 // Other functions
 
-void rsp_UnknownOpcode(void)
+void RSPOp::UnknownOpcode(void)
 {
     if (g_RSPDebugger != nullptr)
     {

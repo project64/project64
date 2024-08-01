@@ -151,3 +151,14 @@ void Compile_Opcode_STV(void);
 // Other functions
 
 void Compile_UnknownOpcode(void);
+
+typedef void (*p_Recompfunc)(void);
+
+extern p_Recompfunc RSP_Recomp_Opcode[64];
+extern p_Recompfunc RSP_Recomp_RegImm[32];
+extern p_Recompfunc RSP_Recomp_Special[64];
+extern p_Recompfunc RSP_Recomp_Cop0[32];
+extern p_Recompfunc RSP_Recomp_Cop2[32];
+extern p_Recompfunc RSP_Recomp_Vector[64];
+extern p_Recompfunc RSP_Recomp_Lc2[32];
+extern p_Recompfunc RSP_Recomp_Sc2[32];

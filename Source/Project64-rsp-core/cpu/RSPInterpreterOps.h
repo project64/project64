@@ -1,155 +1,178 @@
-// Opcode functions
+#pragma once
 
-void RSP_Opcode_SPECIAL(void);
-void RSP_Opcode_REGIMM(void);
-void RSP_Opcode_J(void);
-void RSP_Opcode_JAL(void);
-void RSP_Opcode_BEQ(void);
-void RSP_Opcode_BNE(void);
-void RSP_Opcode_BLEZ(void);
-void RSP_Opcode_BGTZ(void);
-void RSP_Opcode_ADDI(void);
-void RSP_Opcode_ADDIU(void);
-void RSP_Opcode_SLTI(void);
-void RSP_Opcode_SLTIU(void);
-void RSP_Opcode_ANDI(void);
-void RSP_Opcode_ORI(void);
-void RSP_Opcode_XORI(void);
-void RSP_Opcode_LUI(void);
-void RSP_Opcode_COP0(void);
-void RSP_Opcode_COP2(void);
-void RSP_Opcode_LB(void);
-void RSP_Opcode_LH(void);
-void RSP_Opcode_LW(void);
-void RSP_Opcode_LBU(void);
-void RSP_Opcode_LHU(void);
-void RSP_Opcode_LWU(void);
-void RSP_Opcode_SB(void);
-void RSP_Opcode_SH(void);
-void RSP_Opcode_SW(void);
-void RSP_Opcode_LC2(void);
-void RSP_Opcode_SC2(void);
+class CRSPSystem;
 
-// R4300i Opcodes: Special
+class RSPOp
+{
+public:
+    RSPOp(CRSPSystem & System);
+    ~RSPOp();
 
-void RSP_Special_SLL(void);
-void RSP_Special_SRL(void);
-void RSP_Special_SRA(void);
-void RSP_Special_SLLV(void);
-void RSP_Special_SRLV(void);
-void RSP_Special_SRAV(void);
-void RSP_Special_JR(void);
-void RSP_Special_JALR(void);
-void RSP_Special_BREAK(void);
-void RSP_Special_ADD(void);
-void RSP_Special_ADDU(void);
-void RSP_Special_SUB(void);
-void RSP_Special_SUBU(void);
-void RSP_Special_AND(void);
-void RSP_Special_OR(void);
-void RSP_Special_XOR(void);
-void RSP_Special_NOR(void);
-void RSP_Special_SLT(void);
-void RSP_Special_SLTU(void);
+public:
+    RSPOp();
+    RSPOp(const RSPOp &);
+    RSPOp & operator=(const RSPOp &);
 
-// R4300i Opcodes: RegImm
+    void BuildInterpreter(void);
 
-void RSP_Opcode_BLTZ(void);
-void RSP_Opcode_BGEZ(void);
-void RSP_Opcode_BLTZAL(void);
-void RSP_Opcode_BGEZAL(void);
+    typedef void (RSPOp::*Func)();
 
-// COP0 functions
+    void SPECIAL(void);
+    void REGIMM(void);
+    void J(void);
+    void JAL(void);
+    void BEQ(void);
+    void BNE(void);
+    void BLEZ(void);
+    void BGTZ(void);
+    void ADDI(void);
+    void ADDIU(void);
+    void SLTI(void);
+    void SLTIU(void);
+    void ANDI(void);
+    void ORI(void);
+    void XORI(void);
+    void LUI(void);
+    void COP0(void);
+    void COP2(void);
+    void LB(void);
+    void LH(void);
+    void LW(void);
+    void LBU(void);
+    void LHU(void);
+    void LWU(void);
+    void SB(void);
+    void SH(void);
+    void SW(void);
+    void LC2(void);
+    void SC2(void);
 
-void RSP_Cop0_MF(void);
-void RSP_Cop0_MT(void);
+    // R4300i Opcodes: Special
+    void Special_SLL(void);
+    void Special_SRL(void);
+    void Special_SRA(void);
+    void Special_SLLV(void);
+    void Special_SRLV(void);
+    void Special_SRAV(void);
+    void Special_JR(void);
+    void Special_JALR(void);
+    void Special_BREAK(void);
+    void Special_ADD(void);
+    void Special_ADDU(void);
+    void Special_SUB(void);
+    void Special_SUBU(void);
+    void Special_AND(void);
+    void Special_OR(void);
+    void Special_XOR(void);
+    void Special_NOR(void);
+    void Special_SLT(void);
+    void Special_SLTU(void);
 
-// COP2 functions
+    // R4300i Opcodes: RegImm
+    void BLTZ(void);
+    void BGEZ(void);
+    void BLTZAL(void);
+    void BGEZAL(void);
 
-void RSP_Cop2_MF(void);
-void RSP_Cop2_CF(void);
-void RSP_Cop2_MT(void);
-void RSP_Cop2_CT(void);
-void RSP_COP2_VECTOR(void);
+    // COP0 functions
+    void Cop0_MF(void);
+    void Cop0_MT(void);
 
-// Vector functions
+    // COP2 functions
+    void Cop2_MF(void);
+    void Cop2_CF(void);
+    void Cop2_MT(void);
+    void Cop2_CT(void);
+    void Cop2_VECTOR(void);
 
-void RSP_Vector_VMULF(void);
-void RSP_Vector_VMULU(void);
-void RSP_Vector_VRNDP(void);
-void RSP_Vector_VMULQ(void);
-void RSP_Vector_VMUDL(void);
-void RSP_Vector_VMUDM(void);
-void RSP_Vector_VMUDN(void);
-void RSP_Vector_VMUDH(void);
-void RSP_Vector_VMACF(void);
-void RSP_Vector_VMACU(void);
-void RSP_Vector_VMACQ(void);
-void RSP_Vector_VRNDN(void);
-void RSP_Vector_VMADL(void);
-void RSP_Vector_VMADM(void);
-void RSP_Vector_VMADN(void);
-void RSP_Vector_VMADH(void);
-void RSP_Vector_VADD(void);
-void RSP_Vector_VSUB(void);
-void RSP_Vector_VABS(void);
-void RSP_Vector_VADDC(void);
-void RSP_Vector_VSUBC(void);
-void RSP_Vector_Reserved(void);
-void RSP_Vector_VSAW(void);
-void RSP_Vector_VLT(void);
-void RSP_Vector_VEQ(void);
-void RSP_Vector_VNE(void);
-void RSP_Vector_VGE(void);
-void RSP_Vector_VCL(void);
-void RSP_Vector_VCH(void);
-void RSP_Vector_VCR(void);
-void RSP_Vector_VMRG(void);
-void RSP_Vector_VAND(void);
-void RSP_Vector_VNAND(void);
-void RSP_Vector_VOR(void);
-void RSP_Vector_VNOR(void);
-void RSP_Vector_VXOR(void);
-void RSP_Vector_VNXOR(void);
-void RSP_Vector_VRCP(void);
-void RSP_Vector_VRCPL(void);
-void RSP_Vector_VRCPH(void);
-void RSP_Vector_VMOV(void);
-void RSP_Vector_VRSQ(void);
-void RSP_Vector_VRSQL(void);
-void RSP_Vector_VRSQH(void);
-void RSP_Vector_VNOOP(void);
+    // Vector functions
+    void Vector_VMULF(void);
+    void Vector_VMULU(void);
+    void Vector_VRNDP(void);
+    void Vector_VMULQ(void);
+    void Vector_VMUDL(void);
+    void Vector_VMUDM(void);
+    void Vector_VMUDN(void);
+    void Vector_VMUDH(void);
+    void Vector_VMACF(void);
+    void Vector_VMACU(void);
+    void Vector_VMACQ(void);
+    void Vector_VRNDN(void);
+    void Vector_VMADL(void);
+    void Vector_VMADM(void);
+    void Vector_VMADN(void);
+    void Vector_VMADH(void);
+    void Vector_VADD(void);
+    void Vector_VSUB(void);
+    void Vector_VABS(void);
+    void Vector_VADDC(void);
+    void Vector_VSUBC(void);
+    void Vector_Reserved(void);
+    void Vector_VSAW(void);
+    void Vector_VLT(void);
+    void Vector_VEQ(void);
+    void Vector_VNE(void);
+    void Vector_VGE(void);
+    void Vector_VCL(void);
+    void Vector_VCH(void);
+    void Vector_VCR(void);
+    void Vector_VMRG(void);
+    void Vector_VAND(void);
+    void Vector_VNAND(void);
+    void Vector_VOR(void);
+    void Vector_VNOR(void);
+    void Vector_VXOR(void);
+    void Vector_VNXOR(void);
+    void Vector_VRCP(void);
+    void Vector_VRCPL(void);
+    void Vector_VRCPH(void);
+    void Vector_VMOV(void);
+    void Vector_VRSQ(void);
+    void Vector_VRSQL(void);
+    void Vector_VRSQH(void);
+    void Vector_VNOOP(void);
 
-// LC2 functions
+    // LC2 functions
+    void LBV(void);
+    void LSV(void);
+    void LLV(void);
+    void LDV(void);
+    void LQV(void);
+    void LRV(void);
+    void LPV(void);
+    void LUV(void);
+    void LHV(void);
+    void LFV(void);
+    void LWV(void);
+    void LTV(void);
 
-void RSP_Opcode_LBV(void);
-void RSP_Opcode_LSV(void);
-void RSP_Opcode_LLV(void);
-void RSP_Opcode_LDV(void);
-void RSP_Opcode_LQV(void);
-void RSP_Opcode_LRV(void);
-void RSP_Opcode_LPV(void);
-void RSP_Opcode_LUV(void);
-void RSP_Opcode_LHV(void);
-void RSP_Opcode_LFV(void);
-void RSP_Opcode_LWV(void);
-void RSP_Opcode_LTV(void);
+    // LC2 functions
+    void SBV(void);
+    void SSV(void);
+    void SLV(void);
+    void SDV(void);
+    void SQV(void);
+    void SRV(void);
+    void SPV(void);
+    void SUV(void);
+    void SHV(void);
+    void SFV(void);
+    void STV(void);
+    void SWV(void);
 
-// LC2 functions
+    // Other functions
+    void UnknownOpcode(void);
 
-void RSP_Opcode_SBV(void);
-void RSP_Opcode_SSV(void);
-void RSP_Opcode_SLV(void);
-void RSP_Opcode_SDV(void);
-void RSP_Opcode_SQV(void);
-void RSP_Opcode_SRV(void);
-void RSP_Opcode_SPV(void);
-void RSP_Opcode_SUV(void);
-void RSP_Opcode_SHV(void);
-void RSP_Opcode_SFV(void);
-void RSP_Opcode_STV(void);
-void RSP_Opcode_SWV(void);
+    CRSPSystem & m_System;
 
-// Other functions
+    typedef void (RSPOp::*Func)();
 
-void rsp_UnknownOpcode(void);
+    Func Jump_Opcode[64];
+    Func Jump_RegImm[32];
+    Func Jump_Special[64];
+    Func Jump_Cop0[32];
+    Func Jump_Cop2[32];
+    Func Jump_Vector[64];
+    Func Jump_Lc2[32];
+    Func Jump_Sc2[32];
+};
