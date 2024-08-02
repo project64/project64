@@ -89,14 +89,14 @@ uint32_t BranchCompare = 0;
 #define CompileSlv
 #endif
 
-p_Recompfunc RSP_Recomp_Opcode[64];
-p_Recompfunc RSP_Recomp_RegImm[32];
-p_Recompfunc RSP_Recomp_Special[64];
-p_Recompfunc RSP_Recomp_Cop0[32];
-p_Recompfunc RSP_Recomp_Cop2[32];
-p_Recompfunc RSP_Recomp_Vector[64];
-p_Recompfunc RSP_Recomp_Lc2[32];
-p_Recompfunc RSP_Recomp_Sc2[32];
+extern p_Recompfunc RSP_Recomp_Opcode[64];
+extern p_Recompfunc RSP_Recomp_RegImm[32];
+extern p_Recompfunc RSP_Recomp_Special[64];
+extern p_Recompfunc RSP_Recomp_Cop0[32];
+extern p_Recompfunc RSP_Recomp_Cop2[32];
+extern p_Recompfunc RSP_Recomp_Vector[64];
+extern p_Recompfunc RSP_Recomp_Lc2[32];
+extern p_Recompfunc RSP_Recomp_Sc2[32];
 
 void Branch_AddRef(uint32_t Target, uint32_t * X86Loc)
 {
@@ -183,19 +183,24 @@ void CompileBranchExit(uint32_t TargetPC, uint32_t ContinuePC)
     Ret();
 }
 
+CRSPRecompilerOps::CRSPRecompilerOps(CRSPSystem & System) :
+    m_System(System)
+{
+}
+
 // Opcode functions
 
-void Compile_SPECIAL(void)
+void CRSPRecompilerOps::SPECIAL(void)
 {
-    RSP_Recomp_Special[RSPOpC.funct]();
+    (this->*RSP_Recomp_Special[RSPOpC.funct])();
 }
 
-void Compile_REGIMM(void)
+void CRSPRecompilerOps::REGIMM(void)
 {
-    RSP_Recomp_RegImm[RSPOpC.rt]();
+    (this->*RSP_Recomp_RegImm[RSPOpC.rt])();
 }
 
-void Compile_J(void)
+void CRSPRecompilerOps::J(void)
 {
     if (NextInstruction == RSPPIPELINE_NORMAL)
     {
@@ -221,7 +226,7 @@ void Compile_J(void)
     }
 }
 
-void Compile_JAL(void)
+void CRSPRecompilerOps::JAL(void)
 {
     if (NextInstruction == RSPPIPELINE_NORMAL)
     {
@@ -259,7 +264,7 @@ void Compile_JAL(void)
     }
 }
 
-void Compile_BEQ(void)
+void CRSPRecompilerOps::BEQ(void)
 {
     static bool bDelayAffect;
 
@@ -343,7 +348,7 @@ void Compile_BEQ(void)
     }
 }
 
-void Compile_BNE(void)
+void CRSPRecompilerOps::BNE(void)
 {
     static bool bDelayAffect;
 
@@ -427,7 +432,7 @@ void Compile_BNE(void)
     }
 }
 
-void Compile_BLEZ(void)
+void CRSPRecompilerOps::BLEZ(void)
 {
     static bool bDelayAffect;
 
@@ -487,7 +492,7 @@ void Compile_BLEZ(void)
     }
 }
 
-void Compile_BGTZ(void)
+void CRSPRecompilerOps::BGTZ(void)
 {
     static bool bDelayAffect;
 
@@ -544,7 +549,7 @@ void Compile_BGTZ(void)
     }
 }
 
-void Compile_ADDI(void)
+void CRSPRecompilerOps::ADDI(void)
 {
     if (RSPOpC.rt == 0)
     {
@@ -584,7 +589,7 @@ void Compile_ADDI(void)
 #endif
 }
 
-void Compile_ADDIU(void)
+void CRSPRecompilerOps::ADDIU(void)
 {
     if (RSPOpC.rt == 0)
     {
@@ -621,7 +626,7 @@ void Compile_ADDIU(void)
 #endif
 }
 
-void Compile_SLTI(void)
+void CRSPRecompilerOps::SLTI(void)
 {
     if (RSPOpC.rt == 0)
     {
@@ -649,7 +654,7 @@ void Compile_SLTI(void)
 #endif
 }
 
-void Compile_SLTIU(void)
+void CRSPRecompilerOps::SLTIU(void)
 {
     if (RSPOpC.rt == 0)
     {
@@ -671,7 +676,7 @@ void Compile_SLTIU(void)
 #endif
 }
 
-void Compile_ANDI(void)
+void CRSPRecompilerOps::ANDI(void)
 {
     if (RSPOpC.rt == 0)
     {
@@ -706,7 +711,7 @@ void Compile_ANDI(void)
 #endif
 }
 
-void Compile_ORI(void)
+void CRSPRecompilerOps::ORI(void)
 {
     if (RSPOpC.rt == 0)
     {
@@ -739,7 +744,7 @@ void Compile_ORI(void)
 #endif
 }
 
-void Compile_XORI(void)
+void CRSPRecompilerOps::XORI(void)
 {
     if (RSPOpC.rt == 0)
     {
@@ -772,7 +777,7 @@ void Compile_XORI(void)
 #endif
 }
 
-void Compile_LUI(void)
+void CRSPRecompilerOps::LUI(void)
 {
     if (RSPOpC.rt == 0)
     {
@@ -789,17 +794,17 @@ void Compile_LUI(void)
 #endif
 }
 
-void Compile_COP0(void)
+void CRSPRecompilerOps::COP0(void)
 {
-    RSP_Recomp_Cop0[RSPOpC.rs]();
+    (this->*RSP_Recomp_Cop0[RSPOpC.rs])();
 }
 
-void Compile_COP2(void)
+void CRSPRecompilerOps::COP2(void)
 {
-    RSP_Recomp_Cop2[RSPOpC.rs]();
+    (this->*RSP_Recomp_Cop2[RSPOpC.rs])();
 }
 
-void Compile_LB(void)
+void CRSPRecompilerOps::LB(void)
 {
     if (RSPOpC.rt == 0)
     {
@@ -834,7 +839,7 @@ void Compile_LB(void)
 #endif
 }
 
-void Compile_LH(void)
+void CRSPRecompilerOps::LH(void)
 {
     if (RSPOpC.rt == 0)
     {
@@ -909,7 +914,7 @@ void Compile_LH(void)
 #endif
 }
 
-void Compile_LW(void)
+void CRSPRecompilerOps::LW(void)
 {
     if (RSPOpC.rt == 0)
     {
@@ -999,7 +1004,7 @@ void Compile_LW(void)
 #endif
 }
 
-void Compile_LBU(void)
+void CRSPRecompilerOps::LBU(void)
 {
     if (RSPOpC.rt == 0)
     {
@@ -1037,7 +1042,7 @@ void Compile_LBU(void)
 #endif
 }
 
-void Compile_LHU(void)
+void CRSPRecompilerOps::LHU(void)
 {
     if (RSPOpC.rt == 0)
     {
@@ -1113,7 +1118,7 @@ void Compile_LHU(void)
 #endif
 }
 
-void Compile_LWU(void)
+void CRSPRecompilerOps::LWU(void)
 {
     if (RSPOpC.rt == 0)
     {
@@ -1123,7 +1128,7 @@ void Compile_LWU(void)
     Cheat_r4300iOpcode(&RSPOp::LWU, "RSPOp::LWU");
 }
 
-void Compile_SB(void)
+void CRSPRecompilerOps::SB(void)
 {
 #ifndef Compile_GPRStores
     Cheat_r4300iOpcode(&RSPOp::SB, "RSPOp::SB");
@@ -1175,7 +1180,7 @@ void Compile_SB(void)
 #endif
 }
 
-void Compile_SH(void)
+void CRSPRecompilerOps::SH(void)
 {
 #ifndef Compile_GPRStores
     Cheat_r4300iOpcode(&RSPOp::SH, "&RSPOp::SH");
@@ -1248,7 +1253,7 @@ void Compile_SH(void)
 #endif
 }
 
-void Compile_SW(void)
+void CRSPRecompilerOps::SW(void)
 {
 #ifndef Compile_GPRStores
     Cheat_r4300iOpcode(&RSPOp::SW, "&RSPOp::SW");
@@ -1362,19 +1367,19 @@ void Compile_SW(void)
 #endif
 }
 
-void Compile_LC2(void)
+void CRSPRecompilerOps::LC2(void)
 {
-    RSP_Recomp_Lc2[RSPOpC.rd]();
+    (this->*RSP_Recomp_Lc2[RSPOpC.rd])();
 }
 
-void Compile_SC2(void)
+void CRSPRecompilerOps::SC2(void)
 {
-    RSP_Recomp_Sc2[RSPOpC.rd]();
+    (this->*RSP_Recomp_Sc2[RSPOpC.rd])();
 }
 
 // R4300i Opcodes: Special
 
-void Compile_Special_SLL(void)
+void CRSPRecompilerOps::Special_SLL(void)
 {
     if (RSPOpC.rd == 0)
     {
@@ -1399,7 +1404,7 @@ void Compile_Special_SLL(void)
 #endif
 }
 
-void Compile_Special_SRL(void)
+void CRSPRecompilerOps::Special_SRL(void)
 {
     if (RSPOpC.rd == 0)
     {
@@ -1424,7 +1429,7 @@ void Compile_Special_SRL(void)
 #endif
 }
 
-void Compile_Special_SRA(void)
+void CRSPRecompilerOps::Special_SRA(void)
 {
     if (RSPOpC.rd == 0)
     {
@@ -1449,7 +1454,7 @@ void Compile_Special_SRA(void)
 #endif
 }
 
-void Compile_Special_SLLV(void)
+void CRSPRecompilerOps::Special_SLLV(void)
 {
     if (RSPOpC.rd == 0)
     {
@@ -1459,7 +1464,7 @@ void Compile_Special_SLLV(void)
     Cheat_r4300iOpcode(&RSPOp::Special_SLLV, "RSPOp::Special_SLLV");
 }
 
-void Compile_Special_SRLV(void)
+void CRSPRecompilerOps::Special_SRLV(void)
 {
     if (RSPOpC.rd == 0)
     {
@@ -1479,7 +1484,7 @@ void Compile_Special_SRLV(void)
 #endif
 }
 
-void Compile_Special_SRAV(void)
+void CRSPRecompilerOps::Special_SRAV(void)
 {
     if (RSPOpC.rd == 0)
     {
@@ -1496,7 +1501,7 @@ void UpdateAudioTimer()
 	StartTimer(Label);*/
 }
 
-void Compile_Special_JR(void)
+void CRSPRecompilerOps::Special_JR(void)
 {
     uint8_t * Jump;
 
@@ -1554,7 +1559,7 @@ void Compile_Special_JR(void)
     }
 }
 
-void Compile_Special_JALR(void)
+void CRSPRecompilerOps::Special_JALR(void)
 {
     uint8_t * Jump;
     uint32_t Const = (CompilePC + 8) & 0xFFC;
@@ -1596,7 +1601,7 @@ void Compile_Special_JALR(void)
     }
 }
 
-void Compile_Special_BREAK(void)
+void CRSPRecompilerOps::Special_BREAK(void)
 {
     Cheat_r4300iOpcode(&RSPOp::Special_BREAK, "RSPOp::Special_BREAK");
     if (NextInstruction == RSPPIPELINE_NORMAL)
@@ -1616,7 +1621,7 @@ void Compile_Special_BREAK(void)
     }
 }
 
-void Compile_Special_ADD(void)
+void CRSPRecompilerOps::Special_ADD(void)
 {
     if (RSPOpC.rd == 0)
     {
@@ -1663,7 +1668,7 @@ void Compile_Special_ADD(void)
 #endif
 }
 
-void Compile_Special_ADDU(void)
+void CRSPRecompilerOps::Special_ADDU(void)
 {
     if (RSPOpC.rd == 0)
     {
@@ -1710,7 +1715,7 @@ void Compile_Special_ADDU(void)
 #endif
 }
 
-void Compile_Special_SUB(void)
+void CRSPRecompilerOps::Special_SUB(void)
 {
     if (RSPOpC.rd == 0)
     {
@@ -1741,7 +1746,7 @@ void Compile_Special_SUB(void)
 #endif
 }
 
-void Compile_Special_SUBU(void)
+void CRSPRecompilerOps::Special_SUBU(void)
 {
     if (RSPOpC.rd == 0)
     {
@@ -1772,7 +1777,7 @@ void Compile_Special_SUBU(void)
 #endif
 }
 
-void Compile_Special_AND(void)
+void CRSPRecompilerOps::Special_AND(void)
 {
     if (RSPOpC.rd == 0)
     {
@@ -1809,7 +1814,7 @@ void Compile_Special_AND(void)
 #endif
 }
 
-void Compile_Special_OR(void)
+void CRSPRecompilerOps::Special_OR(void)
 {
     if (RSPOpC.rd == 0)
     {
@@ -1851,7 +1856,7 @@ void Compile_Special_OR(void)
 #endif
 }
 
-void Compile_Special_XOR(void)
+void CRSPRecompilerOps::Special_XOR(void)
 {
     if (RSPOpC.rd == 0)
     {
@@ -1887,7 +1892,7 @@ void Compile_Special_XOR(void)
 #endif
 }
 
-void Compile_Special_NOR(void)
+void CRSPRecompilerOps::Special_NOR(void)
 {
     if (RSPOpC.rd == 0)
     {
@@ -1897,7 +1902,7 @@ void Compile_Special_NOR(void)
     Cheat_r4300iOpcode(&RSPOp::Special_NOR, "RSPOp::Special_NOR");
 }
 
-void Compile_Special_SLT(void)
+void CRSPRecompilerOps::Special_SLT(void)
 {
     if (RSPOpC.rd == 0)
     {
@@ -1939,7 +1944,7 @@ void Compile_Special_SLT(void)
 #endif
 }
 
-void Compile_Special_SLTU(void)
+void CRSPRecompilerOps::Special_SLTU(void)
 {
     if (RSPOpC.rd == 0)
     {
@@ -1950,7 +1955,7 @@ void Compile_Special_SLTU(void)
 }
 
 // R4300i Opcodes: RegImm
-void Compile_RegImm_BLTZ(void)
+void CRSPRecompilerOps::RegImm_BLTZ(void)
 {
     static bool bDelayAffect;
 
@@ -2007,7 +2012,7 @@ void Compile_RegImm_BLTZ(void)
     }
 }
 
-void Compile_RegImm_BGEZ(void)
+void CRSPRecompilerOps::RegImm_BGEZ(void)
 {
     static bool bDelayAffect;
 
@@ -2066,7 +2071,7 @@ void Compile_RegImm_BGEZ(void)
     }
 }
 
-void Compile_RegImm_BLTZAL(void)
+void CRSPRecompilerOps::RegImm_BLTZAL(void)
 {
     if (NextInstruction == RSPPIPELINE_NORMAL)
     {
@@ -2110,7 +2115,7 @@ void Compile_RegImm_BLTZAL(void)
     }
 }
 
-void Compile_RegImm_BGEZAL(void)
+void CRSPRecompilerOps::RegImm_BGEZAL(void)
 {
     static bool bDelayAffect;
 
@@ -2174,7 +2179,7 @@ void Compile_RegImm_BGEZAL(void)
 
 // COP0 functions
 
-void Compile_Cop0_MF(void)
+void CRSPRecompilerOps::Cop0_MF(void)
 {
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
     if (LogRDP)
@@ -2305,7 +2310,7 @@ void Compile_Cop0_MF(void)
 #endif
 }
 
-void Compile_Cop0_MT(void)
+void CRSPRecompilerOps::Cop0_MT(void)
 {
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
 
@@ -2461,7 +2466,7 @@ void Compile_Cop0_MT(void)
 
 // COP2 functions
 
-void Compile_Cop2_MF(void)
+void CRSPRecompilerOps::Cop2_MF(void)
 {
     if (RSPOpC.rt == 0)
     {
@@ -2507,7 +2512,7 @@ void Compile_Cop2_MF(void)
 #endif
 }
 
-void Compile_Cop2_CF(void)
+void CRSPRecompilerOps::Cop2_CF(void)
 {
 #ifndef Compile_Cop2
     Cheat_r4300iOpcode(RSP_Cop2_CF, "RSP_Cop2_CF");
@@ -2533,7 +2538,7 @@ void Compile_Cop2_CF(void)
 #endif
 }
 
-void Compile_Cop2_MT(void)
+void CRSPRecompilerOps::Cop2_MT(void)
 {
 #ifndef Compile_Cop2
     Cheat_r4300iOpcode(RSP_Cop2_MT, "RSP_Cop2_MT");
@@ -2562,7 +2567,7 @@ void Compile_Cop2_MT(void)
 #endif
 }
 
-void Compile_Cop2_CT(void)
+void CRSPRecompilerOps::Cop2_CT(void)
 {
 #ifndef Compile_Cop2
     Cheat_r4300iOpcode(RSP_Cop2_CT, "RSP_Cop2_CT");
@@ -2607,9 +2612,9 @@ void Compile_Cop2_CT(void)
 #endif
 }
 
-void Compile_COP2_VECTOR(void)
+void CRSPRecompilerOps::COP2_VECTOR(void)
 {
-    RSP_Recomp_Vector[RSPOpC.funct]();
+    (this->*RSP_Recomp_Vector[RSPOpC.funct])();
 }
 
 // Vector functions
@@ -2801,7 +2806,7 @@ bool Compile_Vector_VMULF_MMX(void)
     return true;
 }
 
-void Compile_Vector_VMULF(void)
+void CRSPRecompilerOps::Vector_VMULF(void)
 {
 #ifndef CompileVmulf
     Cheat_r4300iOpcode(&RSPOp::Vector_VMULF, "&RSPOp::Vector_VMULF");
@@ -2889,22 +2894,22 @@ void Compile_Vector_VMULF(void)
 #endif
 }
 
-void Compile_Vector_VMULU(void)
+void CRSPRecompilerOps::Vector_VMULU(void)
 {
     Cheat_r4300iOpcode(&RSPOp::Vector_VMULU, "RSPOp::Vector_VMULU");
 }
 
-void Compile_Vector_VRNDN(void)
+void CRSPRecompilerOps::Vector_VRNDN(void)
 {
     Cheat_r4300iOpcode(&RSPOp::Vector_VRNDN, "RSPOp::Vector_VRNDN");
 }
 
-void Compile_Vector_VRNDP(void)
+void CRSPRecompilerOps::Vector_VRNDP(void)
 {
     Cheat_r4300iOpcode(&RSPOp::Vector_VRNDP, "RSPOp::Vector_VRNDP");
 }
 
-void Compile_Vector_VMULQ(void)
+void CRSPRecompilerOps::Vector_VMULQ(void)
 {
     Cheat_r4300iOpcode(&RSPOp::Vector_VMULQ, "&RSPOp::Vector_VMULQ");
 }
@@ -2966,7 +2971,7 @@ bool Compile_Vector_VMUDL_MMX(void)
     return true;
 }
 
-void Compile_Vector_VMUDL(void)
+void CRSPRecompilerOps::Vector_VMUDL(void)
 {
 #ifndef CompileVmudl
     Cheat_r4300iOpcode(&RSPOp::Vector_VMUDL, "&RSPOp::Vector_VMUDL");
@@ -3119,7 +3124,7 @@ bool Compile_Vector_VMUDM_MMX(void)
     return true;
 }
 
-void Compile_Vector_VMUDM(void)
+void CRSPRecompilerOps::Vector_VMUDM(void)
 {
 #ifndef CompileVmudm
     Cheat_r4300iOpcode(&RSPOp::Vector_VMUDM, "&RSPOp::Vector_VMUDM");
@@ -3265,7 +3270,7 @@ bool Compile_Vector_VMUDN_MMX(void)
     return true;
 }
 
-void Compile_Vector_VMUDN(void)
+void CRSPRecompilerOps::Vector_VMUDN(void)
 {
 #ifndef CompileVmudn
     Cheat_r4300iOpcode(&RSPOp::Vector_VMUDN, "RSPOp::Vector_VMUDN");
@@ -3419,7 +3424,7 @@ bool Compile_Vector_VMUDH_MMX(void)
     return true;
 }
 
-void Compile_Vector_VMUDH(void)
+void CRSPRecompilerOps::Vector_VMUDH(void)
 {
 #ifndef CompileVmudh
     Cheat_r4300iOpcode(&RSPOp::Vector_VMUDH, "RSPOp::Vector_VMUDH");
@@ -3559,7 +3564,7 @@ void Compile_Vector_VMUDH(void)
 #endif
 }
 
-void Compile_Vector_VMACF(void)
+void CRSPRecompilerOps::Vector_VMACF(void)
 {
 #ifndef CompileVmacf
     Cheat_r4300iOpcode(&RSPOp::Vector_VMACF, "&RSPOp::Vector_VMACF");
@@ -3628,17 +3633,17 @@ void Compile_Vector_VMACF(void)
 #endif
 }
 
-void Compile_Vector_VMACU(void)
+void CRSPRecompilerOps::Vector_VMACU(void)
 {
     Cheat_r4300iOpcode(&RSPOp::Vector_VMACU, "&RSPOp::Vector_VMACU");
 }
 
-void Compile_Vector_VMACQ(void)
+void CRSPRecompilerOps::Vector_VMACQ(void)
 {
     Cheat_r4300iOpcode(&RSPOp::Vector_VMACQ, "RSPOp::Vector_VMACQ");
 }
 
-void Compile_Vector_VMADL(void)
+void CRSPRecompilerOps::Vector_VMADL(void)
 {
 #ifndef CompileVmadl
     Cheat_r4300iOpcode(&RSPOp::Vector_VMADL, "&RSPOp::Vector_VMADL");
@@ -3714,7 +3719,7 @@ void Compile_Vector_VMADL(void)
 #endif
 }
 
-void Compile_Vector_VMADM(void)
+void CRSPRecompilerOps::Vector_VMADM(void)
 {
 #ifndef CompileVmadm
     Cheat_r4300iOpcode(&RSPOp::Vector_VMADM, "&RSPOp::Vector_VMADM");
@@ -3809,7 +3814,7 @@ void Compile_Vector_VMADM(void)
 #endif
 }
 
-void Compile_Vector_VMADN(void)
+void CRSPRecompilerOps::Vector_VMADN(void)
 {
 #ifndef CompileVmadn
     Cheat_r4300iOpcode(&RSPOp::Vector_VMADN, "RSPOp::Vector_VMADN");
@@ -3889,7 +3894,7 @@ void Compile_Vector_VMADN(void)
 #endif
 }
 
-void Compile_Vector_VMADH(void)
+void CRSPRecompilerOps::Vector_VMADH(void)
 {
 #ifndef CompileVmadh
     Cheat_r4300iOpcode(&RSPOp::Vector_VMADH, "RSPOp::Vector_VMADH");
@@ -4087,7 +4092,7 @@ bool Compile_Vector_VADD_MMX(void)
     return true;
 }
 
-void Compile_Vector_VADD(void)
+void CRSPRecompilerOps::Vector_VADD(void)
 {
 #ifndef CompileVadd
     Cheat_r4300iOpcode(&RSPOp::Vector_VADD, "RSPOp::Vector_VADD");
@@ -4225,7 +4230,7 @@ bool Compile_Vector_VSUB_MMX(void)
     return true;
 }
 
-void Compile_Vector_VSUB(void)
+void CRSPRecompilerOps::Vector_VSUB(void)
 {
 #ifndef CompileVsub
     Cheat_r4300iOpcode(&RSPOp::Vector_VSUB, "&RSPOp::Vector_VSUB");
@@ -4399,7 +4404,7 @@ bool Compile_Vector_VABS_MMX(void)
     return true;
 }
 
-void Compile_Vector_VABS(void)
+void CRSPRecompilerOps::Vector_VABS(void)
 {
 #ifndef CompileVabs
     Cheat_r4300iOpcode(&RSPOp::Vector_VABS, "RSPOp::Vector_VABS");
@@ -4499,7 +4504,7 @@ void Compile_Vector_VABS(void)
 #endif
 }
 
-void Compile_Vector_VADDC(void)
+void CRSPRecompilerOps::Vector_VADDC(void)
 {
 #ifndef CompileVaddc
     Cheat_r4300iOpcode(&RSPOp::Vector_VADDC, "&RSPOp::Vector_VADDC");
@@ -4571,7 +4576,7 @@ void Compile_Vector_VADDC(void)
 #endif
 }
 
-void Compile_Vector_VSUBC(void)
+void CRSPRecompilerOps::Vector_VSUBC(void)
 {
 #ifndef CompileVsubc
     Cheat_r4300iOpcode(&RSPOp::Vector_VSUBC, "&RSPOp::Vector_VSUBC");
@@ -4639,7 +4644,7 @@ void Compile_Vector_VSUBC(void)
 #endif
 }
 
-void Compile_Vector_VSAW(void)
+void CRSPRecompilerOps::Vector_VSAW(void)
 {
 #ifndef CompileVsaw
     Cheat_r4300iOpcode(&RSPOp::Vector_VSAW, "RSPOp::Vector_VSAW");
@@ -4694,7 +4699,7 @@ void Compile_Vector_VSAW(void)
 #endif
 }
 
-void Compile_Vector_VLT(void)
+void CRSPRecompilerOps::Vector_VLT(void)
 {
 #ifndef CompileVlt
     Cheat_r4300iOpcode(&RSPOp::Vector_VLT, "&RSPOp::Vector_VLT");
@@ -4795,7 +4800,7 @@ void Compile_Vector_VLT(void)
 #endif
 }
 
-void Compile_Vector_VEQ(void)
+void CRSPRecompilerOps::Vector_VEQ(void)
 {
 #ifndef CompileVeq
     Cheat_r4300iOpcode(&RSPOp::Vector_VEQ, "&RSPOp::Vector_VEQ");
@@ -4871,7 +4876,7 @@ void Compile_Vector_VEQ(void)
 #endif
 }
 
-void Compile_Vector_VNE(void)
+void CRSPRecompilerOps::Vector_VNE(void)
 {
 #ifndef CompileVne
     Cheat_r4300iOpcode(&RSPOp::Vector_VNE, "&RSPOp::Vector_VNE");
@@ -4987,7 +4992,7 @@ bool Compile_Vector_VGE_MMX(void)
     return true;
 }
 
-void Compile_Vector_VGE(void)
+void CRSPRecompilerOps::Vector_VGE(void)
 {
 #ifndef CompileVge
     Cheat_r4300iOpcode(&RSPOp::Vector_VGE, "&RSPOp::Vector_VGE");
@@ -5101,22 +5106,22 @@ void Compile_Vector_VGE(void)
 #endif
 }
 
-void Compile_Vector_VCL(void)
+void CRSPRecompilerOps::Vector_VCL(void)
 {
     Cheat_r4300iOpcode(&RSPOp::Vector_VCL, "RSPOp::Vector_VCL");
 }
 
-void Compile_Vector_VCH(void)
+void CRSPRecompilerOps::Vector_VCH(void)
 {
     Cheat_r4300iOpcode(&RSPOp::Vector_VCH, "RSPOp::Vector_VCH");
 }
 
-void Compile_Vector_VCR(void)
+void CRSPRecompilerOps::Vector_VCR(void)
 {
     Cheat_r4300iOpcode(&RSPOp::Vector_VCR, "RSPOp::Vector_VCR");
 }
 
-void Compile_Vector_VMRG(void)
+void CRSPRecompilerOps::Vector_VMRG(void)
 {
 #ifndef CompileVmrg
     Cheat_r4300iOpcode(&RSPOp::Vector_VMRG, "&RSPOp::Vector_VMRG");
@@ -5200,7 +5205,7 @@ bool Compile_Vector_VAND_MMX(void)
     return true;
 }
 
-void Compile_Vector_VAND(void)
+void CRSPRecompilerOps::Vector_VAND(void)
 {
 #ifndef CompileVand
     Cheat_r4300iOpcode(&RSPOp::Vector_VAND, "RSPOp::Vector_VAND");
@@ -5310,7 +5315,7 @@ bool Compile_Vector_VNAND_MMX(void)
     return true;
 }
 
-void Compile_Vector_VNAND(void)
+void CRSPRecompilerOps::Vector_VNAND(void)
 {
 #ifndef CompileVnand
     Cheat_r4300iOpcode(&RSPOp::Vector_VNAND, "&RSPOp::Vector_VNAND");
@@ -5422,7 +5427,7 @@ bool Compile_Vector_VOR_MMX(void)
     return true;
 }
 
-void Compile_Vector_VOR(void)
+void CRSPRecompilerOps::Vector_VOR(void)
 {
 #ifndef CompileVor
     Cheat_r4300iOpcode(&RSPOp::Vector_VOR, "RSPOp::Vector_VOR");
@@ -5527,7 +5532,7 @@ bool Compile_Vector_VNOR_MMX(void)
     return true;
 }
 
-void Compile_Vector_VNOR(void)
+void CRSPRecompilerOps::Vector_VNOR(void)
 {
 #ifndef CompileVnor
     Cheat_r4300iOpcode(&RSPOp::Vector_VNOR, "&RSPOp::Vector_VNOR");
@@ -5648,7 +5653,7 @@ bool Compile_Vector_VXOR_MMX(void)
     return true;
 }
 
-void Compile_Vector_VXOR(void)
+void CRSPRecompilerOps::Vector_VXOR(void)
 {
 #ifdef CompileVxor
     char Reg[256];
@@ -5744,7 +5749,7 @@ bool Compile_Vector_VNXOR_MMX(void)
     return true;
 }
 
-void Compile_Vector_VNXOR(void)
+void CRSPRecompilerOps::Vector_VNXOR(void)
 {
 #ifdef CompileVnxor
     char Reg[256];
@@ -5774,7 +5779,7 @@ void Compile_Vector_VNXOR(void)
     Cheat_r4300iOpcode(&RSPOp::Vector_VNXOR, "RSPOp::Vector_VNXOR");
 }
 
-void Compile_Vector_VRCP(void)
+void CRSPRecompilerOps::Vector_VRCP(void)
 {
 #ifndef CompileVrcp
     Cheat_r4300iOpcode(&RSPOp::Vector_VRCP, "&RSPOp::Vector_VRCP");
@@ -5843,7 +5848,7 @@ void Compile_Vector_VRCP(void)
 #endif
 }
 
-void Compile_Vector_VRCPL(void)
+void CRSPRecompilerOps::Vector_VRCPL(void)
 {
 #ifndef CompileVrcpl
     Cheat_r4300iOpcode(&RSPOp::Vector_VRCPL, "RSPOp::Vector_VRCPL");
@@ -5919,7 +5924,7 @@ void Compile_Vector_VRCPL(void)
 #endif
 }
 
-void Compile_Vector_VRCPH(void)
+void CRSPRecompilerOps::Vector_VRCPH(void)
 {
 #ifndef CompileVrcph
     Cheat_r4300iOpcode(&RSPOp::Vector_VRCPH, "&RSPOp::Vector_VRCPH");
@@ -5962,7 +5967,7 @@ void Compile_Vector_VRCPH(void)
 #endif
 }
 
-void Compile_Vector_VMOV(void)
+void CRSPRecompilerOps::Vector_VMOV(void)
 {
 #ifndef CompileVmov
     Cheat_r4300iOpcode(&RSPOp::Vector_VMOV, "&RSPOp::Vector_VMOV");
@@ -5996,19 +6001,19 @@ void Compile_Vector_VMOV(void)
 #endif
 }
 
-void Compile_Vector_VRSQ(void)
+void CRSPRecompilerOps::Vector_VRSQ(void)
 {
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
     Cheat_r4300iOpcodeNoMessage(&RSPOp::Vector_VRSQ, "RSPOp::Vector_VRSQ");
 }
 
-void Compile_Vector_VRSQL(void)
+void CRSPRecompilerOps::Vector_VRSQL(void)
 {
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
     Cheat_r4300iOpcodeNoMessage(&RSPOp::Vector_VRSQL, "RSPOp::Vector_VRSQL");
 }
 
-void Compile_Vector_VRSQH(void)
+void CRSPRecompilerOps::Vector_VRSQH(void)
 {
 #ifndef CompileVrsqh
     Cheat_r4300iOpcode(&RSPOp::Vector_VRSQH, "RSPOp::Vector_VRSQH");
@@ -6051,18 +6056,18 @@ void Compile_Vector_VRSQH(void)
 #endif
 }
 
-void Compile_Vector_VNOOP(void)
+void CRSPRecompilerOps::Vector_VNOOP(void)
 {
 }
 
-void Compile_Vector_Reserved(void)
+void CRSPRecompilerOps::Vector_Reserved(void)
 {
     Cheat_r4300iOpcode(&RSPOp::Vector_Reserved, "&RSPOp::Vector_Reserved");
 }
 
 // LC2 functions
 
-void Compile_Opcode_LBV(void)
+void CRSPRecompilerOps::Opcode_LBV(void)
 {
 #ifndef CompileLbv
     Cheat_r4300iOpcode(&RSPOp::LBV, "RSPOp::LBV");
@@ -6084,7 +6089,7 @@ void Compile_Opcode_LBV(void)
 #endif
 }
 
-void Compile_Opcode_LSV(void)
+void CRSPRecompilerOps::Opcode_LSV(void)
 {
 #ifndef CompileLsv
     Cheat_r4300iOpcode(&RSPOp::LSV, "RSPOp::LSV");
@@ -6157,7 +6162,7 @@ void Compile_Opcode_LSV(void)
 #endif
 }
 
-void Compile_Opcode_LLV(void)
+void CRSPRecompilerOps::Opcode_LLV(void)
 {
 #ifndef CompileLlv
     Cheat_r4300iOpcode(&RSPOp::LLV, "RSPOp::LLV");
@@ -6224,7 +6229,7 @@ void Compile_Opcode_LLV(void)
 #endif
 }
 
-void Compile_Opcode_LDV(void)
+void CRSPRecompilerOps::Opcode_LDV(void)
 {
 #ifndef CompileLdv
     Cheat_r4300iOpcode(&RSPOp::LDV, "RSPOp::LDV");
@@ -6305,7 +6310,7 @@ void Compile_Opcode_LDV(void)
 #endif
 }
 
-void Compile_Opcode_LQV(void)
+void CRSPRecompilerOps::Opcode_LQV(void)
 {
 #ifndef CompileLqv
     Cheat_r4300iOpcode(&RSPOp::LQV, "RSPOp::LQV");
@@ -6413,7 +6418,7 @@ void Compile_Opcode_LQV(void)
 #endif
 }
 
-void Compile_Opcode_LRV(void)
+void CRSPRecompilerOps::Opcode_LRV(void)
 {
 #ifndef CompileLrv
     Cheat_r4300iOpcode(&RSPOp::LRV, "RSPOp::LRV");
@@ -6492,7 +6497,7 @@ void Compile_Opcode_LRV(void)
 #endif
 }
 
-void Compile_Opcode_LPV(void)
+void CRSPRecompilerOps::Opcode_LPV(void)
 {
 #ifndef CompileLpv
     Cheat_r4300iOpcode(&RSPOp::LPV, "RSPOp::LPV");
@@ -6600,7 +6605,7 @@ void Compile_Opcode_LPV(void)
 #endif
 }
 
-void Compile_Opcode_LUV(void)
+void CRSPRecompilerOps::Opcode_LUV(void)
 {
 #ifndef CompileLuv
     Cheat_r4300iOpcode(&RSPOp::LUV, "RSPOp::LUV");
@@ -6708,7 +6713,7 @@ void Compile_Opcode_LUV(void)
 #endif
 }
 
-void Compile_Opcode_LHV(void)
+void CRSPRecompilerOps::Opcode_LHV(void)
 {
 #ifndef CompileLhv
     Cheat_r4300iOpcode(&RSPOp::LHV, "RSPOp::LHV");
@@ -6816,29 +6821,29 @@ void Compile_Opcode_LHV(void)
 #endif
 }
 
-void Compile_Opcode_LFV(void)
+void CRSPRecompilerOps::Opcode_LFV(void)
 {
     Cheat_r4300iOpcode(&RSPOp::LFV, "RSPOp::LFV");
 }
 
-void Compile_Opcode_LWV(void)
+void CRSPRecompilerOps::Opcode_LWV(void)
 {
     Cheat_r4300iOpcode(&RSPOp::LWV, "RSPOp::LWV");
 }
 
-void Compile_Opcode_LTV(void)
+void CRSPRecompilerOps::Opcode_LTV(void)
 {
     Cheat_r4300iOpcode(&RSPOp::LTV, "RSPOp::LTV");
 }
 
 // SC2 functions
 
-void Compile_Opcode_SBV(void)
+void CRSPRecompilerOps::Opcode_SBV(void)
 {
     Cheat_r4300iOpcode(&RSPOp::SBV, "RSPOp::SBV");
 }
 
-void Compile_Opcode_SSV(void)
+void CRSPRecompilerOps::Opcode_SSV(void)
 {
 #ifndef CompileSsv
     Cheat_r4300iOpcode(&RSPOp::SSV, "RSPOp::SSV");
@@ -6908,7 +6913,7 @@ void Compile_Opcode_SSV(void)
 #endif
 }
 
-void Compile_Opcode_SLV(void)
+void CRSPRecompilerOps::Opcode_SLV(void)
 {
 #ifndef CompileSlv
     Cheat_r4300iOpcode(&RSPOp::SLV, "RSPOp::SLV");
@@ -6973,7 +6978,7 @@ void Compile_Opcode_SLV(void)
 #endif
 }
 
-void Compile_Opcode_SDV(void)
+void CRSPRecompilerOps::Opcode_SDV(void)
 {
 #ifndef CompileSdv
     Cheat_r4300iOpcode(&RSPOp::SDV, "RSPOp::SDV");
@@ -7063,7 +7068,7 @@ void Compile_Opcode_SDV(void)
 #endif
 }
 
-void Compile_Opcode_SQV(void)
+void CRSPRecompilerOps::Opcode_SQV(void)
 {
 #ifndef CompileSqv
     Cheat_r4300iOpcode(&RSPOp::SQV, "RSPOp::SQV");
@@ -7212,44 +7217,44 @@ void Compile_Opcode_SQV(void)
 #endif
 }
 
-void Compile_Opcode_SRV(void)
+void CRSPRecompilerOps::Opcode_SRV(void)
 {
     Cheat_r4300iOpcode(&RSPOp::SRV, "RSPOp::SRV");
 }
 
-void Compile_Opcode_SPV(void)
+void CRSPRecompilerOps::Opcode_SPV(void)
 {
     Cheat_r4300iOpcode(&RSPOp::SPV, "RSPOp::SPV");
 }
 
-void Compile_Opcode_SUV(void)
+void CRSPRecompilerOps::Opcode_SUV(void)
 {
     Cheat_r4300iOpcode(&RSPOp::SUV, "RSPOp::SUV");
 }
 
-void Compile_Opcode_SHV(void)
+void CRSPRecompilerOps::Opcode_SHV(void)
 {
     Cheat_r4300iOpcode(&RSPOp::SHV, "RSPOp::SHV");
 }
 
-void Compile_Opcode_SFV(void)
+void CRSPRecompilerOps::Opcode_SFV(void)
 {
     Cheat_r4300iOpcode(&RSPOp::SFV, "RSPOp::SFV");
 }
 
-void Compile_Opcode_STV(void)
+void CRSPRecompilerOps::Opcode_STV(void)
 {
     Cheat_r4300iOpcode(&RSPOp::STV, "RSPOp::STV");
 }
 
-void Compile_Opcode_SWV(void)
+void CRSPRecompilerOps::Opcode_SWV(void)
 {
     Cheat_r4300iOpcode(&RSPOp::SWV, "&RSPOp::SWV");
 }
 
 // Other functions
 
-void Compile_UnknownOpcode(void)
+void CRSPRecompilerOps::UnknownOpcode(void)
 {
     CPU_Message("  %X Unhandled Opcode: %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
     NextInstruction = RSPPIPELINE_FINISH_BLOCK;
