@@ -71,6 +71,31 @@ enum
     MI_INTR_SP = 0x01, // Bit 0: SP INTR
 };
 
+class CRSPRegisters
+{
+public:
+    CRSPRegisters();
+    void Reset(void);
+
+    int64_t AccumulatorGet(uint8_t el);
+    void AccumulatorSet(uint8_t el, int64_t Accumulator);
+    uint16_t AccumulatorSaturate(uint8_t el, bool High);
+
+    UWORD32 m_GPR[32];
+    UWORD32 m_Flags[4];
+    UDWORD m_ACCUM[8];
+    RSPVector m_Vect[32];
+    uint16_t m_Reciprocals[512];
+    uint16_t m_InverseSquareRoots[512];
+    uint16_t m_Result;
+    uint16_t m_In;
+    bool m_High;
+
+    RSPFlag VCOL, VCOH;
+    RSPFlag VCCL, VCCH;
+    RSPFlag VCE;
+};
+
 extern const char * x86_Strings[8];
 extern const char * GPR_Strings[32];
 
@@ -94,22 +119,3 @@ extern const char * GPR_Strings[32];
                                    : (Reg) == 14  ? "DP pipe busy counter"   \
                                    : (Reg) == 15  ? "DP TMEM load counter"   \
                                                   : "Unknown Register"
-
-void InitilizeRSPRegisters(void);
-
-int64_t AccumulatorGet(uint8_t el);
-void AccumulatorSet(uint8_t el, int64_t Accumulator);
-uint16_t AccumulatorSaturate(uint8_t el, bool High);
-
-// RSP registers
-extern UWORD32 RSP_GPR[32], RSP_Flags[4];
-extern UDWORD RSP_ACCUM[8];
-extern RSPVector RSP_Vect[32];
-extern uint16_t Reciprocals[512];
-extern uint16_t InverseSquareRoots[512];
-extern uint16_t RcpResult, RcpIn;
-extern bool RcpHigh;
-
-extern RSPFlag VCOL, VCOH;
-extern RSPFlag VCCL, VCCH;
-extern RSPFlag VCE;

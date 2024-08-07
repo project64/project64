@@ -8,6 +8,7 @@
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
 #include <Project64-rsp-core/cpu/RspLog.h>
 #include <Project64-rsp-core/cpu/RspMemory.h>
+#include <Project64-rsp-core/cpu/RspSystem.h>
 #include <Settings/Settings.h>
 
 #if defined(_MSC_VER)
@@ -122,7 +123,7 @@ void InitilizeRSP(RSP_INFO & Rsp_Info)
     GraphicsHle = Set_GraphicsHle != 0 ? GetSystemSetting(Set_GraphicsHle) != 0 : true;
 
     AllocateMemory();
-    InitilizeRSPRegisters();
+    RSPSystem.Reset();
     Build_RSP();
 #ifdef GenerateLog
     Start_Log();

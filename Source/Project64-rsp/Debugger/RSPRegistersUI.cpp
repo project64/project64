@@ -1,8 +1,9 @@
 #include <windows.h>
 
-#include <Project64-rsp-core\RSPInfo.h>
-#include <Project64-rsp-core\cpu\RSPRegisters.h>
-#include <Project64-rsp\Rsp.h>
+#include <Project64-rsp-core/RSPInfo.h>
+#include <Project64-rsp-core/cpu/RSPRegisters.h>
+#include <Project64-rsp-core/cpu/RspSystem.h>
+#include <Project64-rsp/Rsp.h>
 #include <commctrl.h>
 #include <stdio.h>
 
@@ -621,6 +622,7 @@ void ShowRSP_RegisterPanel(int Panel)
 
 void UpdateRSPRegistersScreen(void)
 {
+    CRSPRegisters & Reg = RSPSystem.m_Reg;
     char RegisterValue[100];
     int count, nSel;
     TC_ITEM item;
@@ -639,7 +641,7 @@ void UpdateRSPRegistersScreen(void)
         case GeneralPurpose:
             for (count = 0; count < 32; count++)
             {
-                sprintf(RegisterValue, " 0x%08X", RSP_GPR[count].UW);
+                sprintf(RegisterValue, " 0x%08X", Reg.m_GPR[count].UW);
                 SetWindowTextA(hGPR[count], RegisterValue);
             }
             break;
@@ -683,30 +685,30 @@ void UpdateRSPRegistersScreen(void)
         case HiddenRegisters:
             for (count = 0; count < 8; count++)
             {
-                sprintf(RegisterValue, " 0x%08X - %08X", RSP_ACCUM[count].W[1], RSP_ACCUM[count].W[0]);
+                sprintf(RegisterValue, " 0x%08X - %08X", Reg.m_ACCUM[count].W[1], Reg.m_ACCUM[count].W[0]);
                 SetWindowTextA(hHIDDEN[count], RegisterValue);
             }
             for (count = 0; count < 3; count++)
             {
-                sprintf(RegisterValue, " 0x%04X", RSP_Flags[count].UHW[0]);
+                sprintf(RegisterValue, " 0x%04X", Reg.m_Flags[count].UHW[0]);
                 SetWindowTextA(hHIDDEN[count + 8], RegisterValue);
             }
-            sprintf(RegisterValue, " 0x%04X", RSP_Flags[2].UHW[0]);
+            sprintf(RegisterValue, " 0x%04X", Reg.m_Flags[2].UHW[0]);
             SetWindowTextA(hHIDDEN[11], RegisterValue);
             break;
         case Vector1:
             for (count = 0; count < 16; count++)
             {
-                sprintf(RegisterValue, " 0x%08X - %08X - %08X - %08X", RSP_Vect[count].s32(3),
-                        RSP_Vect[count].s32(2), RSP_Vect[count].s32(1), RSP_Vect[count].s32(0));
+                sprintf(RegisterValue, " 0x%08X - %08X - %08X - %08X", Reg.m_Vect[count].s32(3),
+                        Reg.m_Vect[count].s32(2), Reg.m_Vect[count].s32(1), Reg.m_Vect[count].s32(0));
                 SetWindowTextA(hVECT1[count], RegisterValue);
             }
             break;
         case Vector2:
             for (count = 0; count < 16; count++)
             {
-                sprintf(RegisterValue, " 0x%08X - %08X - %08X - %08X", RSP_Vect[count + 16].s32(3),
-                        RSP_Vect[count + 16].s32(2), RSP_Vect[count + 16].s32(1), RSP_Vect[count + 16].s32(0));
+                sprintf(RegisterValue, " 0x%08X - %08X - %08X - %08X", Reg.m_Vect[count + 16].s32(3),
+                        Reg.m_Vect[count + 16].s32(2), Reg.m_Vect[count + 16].s32(1), Reg.m_Vect[count + 16].s32(0));
                 SetWindowTextA(hVECT2[count], RegisterValue);
             }
             break;

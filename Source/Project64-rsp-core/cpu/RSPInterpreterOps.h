@@ -1,6 +1,8 @@
 #pragma once
+#include <Project64-rsp-core/cpu/RspTypes.h>
 
 class CRSPSystem;
+class CRSPRegisters;
 
 class RSPOp
 {
@@ -163,8 +165,6 @@ public:
     // Other functions
     void UnknownOpcode(void);
 
-    CRSPSystem & m_System;
-
     typedef void (RSPOp::*Func)();
 
     Func Jump_Opcode[64];
@@ -175,4 +175,14 @@ public:
     Func Jump_Vector[64];
     Func Jump_Lc2[32];
     Func Jump_Sc2[32];
+
+    CRSPSystem & m_System;
+    CRSPRegisters & m_Reg;
+    UWORD32 * m_GPR;
+    UDWORD * m_ACCUM;
+    UWORD32 * m_Flags;
+    RSPVector * m_Vect;
+    RSPFlag &VCOL, &VCOH;
+    RSPFlag &VCCL, &VCCH;
+    RSPFlag & VCE;
 };

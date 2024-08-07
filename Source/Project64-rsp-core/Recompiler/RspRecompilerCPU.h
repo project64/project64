@@ -39,7 +39,6 @@ void BuildRecompilerCPU(void);
 
 void CompilerRSPBlock(void);
 void CompilerToggleBuffer(void);
-bool RSP_DoSections(void);
 
 typedef struct
 {

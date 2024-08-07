@@ -1,18 +1,6 @@
 #include "RspTypes.h"
+#include <Project64-rsp-core/cpu/RSPRegisters.h>
 #include <string.h>
-
-// RSP registers
-UWORD32 RSP_GPR[32], RSP_Flags[4];
-UDWORD RSP_ACCUM[8];
-RSPVector RSP_Vect[32];
-uint16_t Reciprocals[512];
-uint16_t InverseSquareRoots[512];
-uint16_t RcpResult, RcpIn;
-bool RcpHigh;
-
-RSPFlag VCOL(RSP_Flags[0].UB[0]), VCOH(RSP_Flags[0].UB[1]);
-RSPFlag VCCL(RSP_Flags[1].UB[0]), VCCH(RSP_Flags[1].UB[1]);
-RSPFlag VCE(RSP_Flags[2].UB[0]);
 
 const char * GPR_Strings[32] = {
     "R0",
@@ -49,17 +37,27 @@ const char * GPR_Strings[32] = {
     "RA",
 };
 
-void InitilizeRSPRegisters(void)
+CRSPRegisters::CRSPRegisters() :
+    VCOL(m_Flags[0].UB[0]),
+    VCOH(m_Flags[0].UB[1]),
+    VCCL(m_Flags[1].UB[0]),
+    VCCH(m_Flags[1].UB[1]),
+    VCE(m_Flags[2].UB[0])
 {
-    memset(RSP_GPR, 0, sizeof(RSP_GPR));
-    for (size_t i = 0, n = sizeof(RSP_Vect) / sizeof(RSP_Vect[0]); i < n; i++)
+    Reset();
+}
+
+void CRSPRegisters::Reset(void)
+{
+    memset(m_GPR, 0, sizeof(m_GPR));
+    for (size_t i = 0, n = sizeof(m_Vect) / sizeof(m_Vect[0]); i < n; i++)
     {
-        RSP_Vect[i] = RSPVector();
+        m_Vect[i] = RSPVector();
     }
-    Reciprocals[0] = 0xFFFF;
+    m_Reciprocals[0] = 0xFFFF;
     for (uint16_t i = 1; i < 512; i++)
     {
-        Reciprocals[i] = uint16_t((((1ull << 34) / (uint64_t)(i + 512)) + 1) >> 8);
+        m_Reciprocals[i] = uint16_t((((1ull << 34) / (uint64_t)(i + 512)) + 1) >> 8);
     }
 
     for (uint16_t i = 0; i < 512; i++)
@@ -70,42 +68,41 @@ void InitilizeRSPRegisters(void)
         {
             b++;
         }
-        InverseSquareRoots[i] = uint16_t(b >> 1);
+        m_InverseSquareRoots[i] = uint16_t(b >> 1);
     }
-
-    RcpResult = 0;
-    RcpIn = 0;
-    RcpHigh = false;
+    m_Result = 0;
+    m_In = 0;
+    m_High = false;
 }
 
-int64_t AccumulatorGet(uint8_t el)
+int64_t CRSPRegisters::AccumulatorGet(uint8_t el)
 {
-    return (((int64_t)RSP_ACCUM[el].HW[3]) << 32) | (((int64_t)RSP_ACCUM[el].UHW[2]) << 16) | RSP_ACCUM[el].UHW[1];
+    return (((int64_t)m_ACCUM[el].HW[3]) << 32) | (((int64_t)m_ACCUM[el].UHW[2]) << 16) | m_ACCUM[el].UHW[1];
 }
 
-void AccumulatorSet(uint8_t el, int64_t Accumulator)
+void CRSPRegisters::AccumulatorSet(uint8_t el, int64_t Accumulator)
 {
-    RSP_ACCUM[el].HW[3] = (int16_t)(Accumulator >> 32);
-    RSP_ACCUM[el].HW[2] = (int16_t)(Accumulator >> 16);
-    RSP_ACCUM[el].HW[1] = (int16_t)(Accumulator);
+    m_ACCUM[el].HW[3] = (int16_t)(Accumulator >> 32);
+    m_ACCUM[el].HW[2] = (int16_t)(Accumulator >> 16);
+    m_ACCUM[el].HW[1] = (int16_t)(Accumulator);
 }
 
-uint16_t AccumulatorSaturate(uint8_t el, bool High)
+uint16_t CRSPRegisters::AccumulatorSaturate(uint8_t el, bool High)
 {
-    if (RSP_ACCUM[el].HW[3] < 0)
+    if (m_ACCUM[el].HW[3] < 0)
     {
-        if (RSP_ACCUM[el].UHW[3] != 0xFFFF || RSP_ACCUM[el].HW[2] >= 0)
+        if (m_ACCUM[el].UHW[3] != 0xFFFF || m_ACCUM[el].HW[2] >= 0)
         {
             return High ? 0x8000 : 0x0000;
         }
         else
         {
-            return RSP_ACCUM[el].UHW[High ? 2 : 1];
+            return m_ACCUM[el].UHW[High ? 2 : 1];
         }
     }
-    if (RSP_ACCUM[el].UHW[3] != 0 || RSP_ACCUM[el].HW[2] < 0)
+    if (m_ACCUM[el].UHW[3] != 0 || m_ACCUM[el].HW[2] < 0)
     {
         return High ? 0x7fff : 0xffff;
     }
-    return RSP_ACCUM[el].UHW[High ? 2 : 1];
+    return m_ACCUM[el].UHW[High ? 2 : 1];
 }

@@ -855,7 +855,7 @@ void CompilerRSPBlock(void)
 
         if (Compiler.bSections)
         {
-            if (RSP_DoSections())
+            if (RecompilerOps.RSP_DoSections())
             {
                 continue;
             }

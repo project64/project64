@@ -1,6 +1,8 @@
 // Opcode functions
+#include <Project64-rsp-core/cpu/RSPInterpreterOps.h>
 
 class CRSPSystem;
+class CRSPRegisters;
 
 class CRSPRecompilerOps
 {
@@ -158,9 +160,53 @@ public:
     // Other functions
 
     void UnknownOpcode(void);
+    bool RSP_DoSections(void);
 
 private:
+    void Cheat_r4300iOpcode(RSPOp::Func FunctAddress, const char * FunctName);
+    void Cheat_r4300iOpcodeNoMessage(RSPOp::Func FunctAddress, const char * FunctName);
+
+    void RSP_Element2Mmx(int MmxReg);
+    void RSP_MultiElement2Mmx(int MmxReg1, int MmxReg2);
+    bool Compile_Vector_VMULF_MMX(void);
+    bool Compile_Vector_VMUDL_MMX(void);
+    bool Compile_Vector_VMUDM_MMX(void);
+    bool Compile_Vector_VMUDN_MMX(void);
+    bool Compile_Vector_VMUDH_MMX(void);
+    bool Compile_Vector_VADD_MMX(void);
+    bool Compile_Vector_VSUB_MMX(void);
+    bool Compile_Vector_VABS_MMX(void);
+    bool Compile_Vector_VGE_MMX(void);
+    bool Compile_Vector_VAND_MMX(void);
+    bool Compile_Vector_VNAND_MMX(void);
+    bool Compile_Vector_VOR_MMX(void);
+    bool Compile_Vector_VNOR_MMX(void);
+    bool Compile_Vector_VXOR_MMX(void);
+    bool Compile_Vector_VNXOR_MMX(void);
+
+    void RSP_Sections_VMUDH(RSPOpcode RspOp, uint32_t AccumStyle);
+    void RSP_Sections_VMADH(RSPOpcode RspOp, uint32_t AccumStyle);
+    void RSP_Sections_VMUDL(RSPOpcode RspOp, uint32_t AccumStyle);
+    void RSP_Sections_VMUDN(RSPOpcode RspOp, uint32_t AccumStyle);
+    void RSP_Sections_VMADN(RSPOpcode RspOp, uint32_t AccumStyle);
+    void RSP_Sections_VMULF(RSPOpcode RspOp, uint32_t AccumStyle);
+    void RSP_Sections_VMACF(RSPOpcode RspOp, uint32_t AccumStyle);
+    bool Check_Section_000(void);
+    bool Check_Section_001(void);
+    bool Check_Section_002(void);
+    bool Check_Section_003(void);
+    void Compile_Section_000(void);
+    void Compile_Section_001(void);
+    void Compile_Section_002(void);
+    void Compile_Section_003(void);
+    void resampler_hle();
+
     CRSPSystem & m_System;
+    CRSPRegisters & m_Reg;
+    UWORD32 * m_GPR;
+    UDWORD * m_ACCUM;
+    UWORD32 * m_Flags;
+    RSPVector * m_Vect;
 };
 
 typedef void (CRSPRecompilerOps::*p_Recompfunc)(void);

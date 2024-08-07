@@ -12,6 +12,11 @@ CRSPSystem::CRSPSystem() :
 {
 }
 
+void CRSPSystem::Reset()
+{
+    m_Reg.Reset();
+}
+
 uint32_t CRSPSystem::RunInterpreterCPU(uint32_t Cycles)
 {
     uint32_t CycleCount;
@@ -21,6 +26,7 @@ uint32_t CRSPSystem::RunInterpreterCPU(uint32_t Cycles)
         g_RSPDebugger->StartingCPU();
     }
     CycleCount = 0;
+    uint32_t & GprR0 = m_Reg.m_GPR[0].UW;
 
     while (RSP_Running)
     {
@@ -30,7 +36,7 @@ uint32_t CRSPSystem::RunInterpreterCPU(uint32_t Cycles)
         }
         RSPOpC.Value = *(uint32_t *)(RSPInfo.IMEM + (*PrgCount & 0xFFC));
         (m_OpCodes.*(m_OpCodes.Jump_Opcode[RSPOpC.op]))();
-        RSP_GPR[0].W = 0x00000000; // MIPS $zero hard-wired to 0
+        GprR0 = 0x00000000; // MIPS $zero hard-wired to 0
 
         switch (RSP_NextInstruction)
         {
