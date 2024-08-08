@@ -22,5 +22,3 @@ extern uint32_t RSP_JumpTo;
 // Returns the new PC, based on whether the condition passes
 
 unsigned int RSP_branch_if(int condition);
-
-uint32_t RunInterpreterCPU(uint32_t Cycles);

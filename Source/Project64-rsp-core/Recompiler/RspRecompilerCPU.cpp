@@ -26,7 +26,6 @@ uint32_t CompilePC, JumpTableSize, BlockID = 0;
 uint32_t dwBuffer = MainBuffer;
 bool ChangedPC;
 
-RSP_BLOCK CurrentBlock;
 RSP_CODE RspCode;
 RSP_COMPILER Compiler;
 
@@ -40,6 +39,11 @@ p_Recompfunc RSP_Recomp_Cop2[32];
 p_Recompfunc RSP_Recomp_Vector[64];
 p_Recompfunc RSP_Recomp_Lc2[32];
 p_Recompfunc RSP_Recomp_Sc2[32];
+
+CRSPRecompiler::CRSPRecompiler(CRSPSystem & System) :
+    m_System(System)
+{
+}
 
 void BuildRecompilerCPU(void)
 {
@@ -506,7 +510,7 @@ void ReOrderInstructions(uint32_t StartPC, uint32_t EndPC)
     CPU_Message("");
 }
 
-void ReOrderSubBlock(RSP_BLOCK * Block)
+void CRSPRecompiler::ReOrderSubBlock(RSP_BLOCK * Block)
 {
     uint32_t end = 0x0ffc;
     uint32_t count;
@@ -641,7 +645,7 @@ Description:
 Resolves all the collected branches, x86 style
 */
 
-void LinkBranches(RSP_BLOCK * Block)
+void CRSPRecompiler::LinkBranches(RSP_BLOCK * Block)
 {
     uint32_t OrigPrgCount = *PrgCount;
     uint32_t Count, Target;
@@ -649,15 +653,15 @@ void LinkBranches(RSP_BLOCK * Block)
     uint8_t * X86Code;
     RSP_BLOCK Save;
 
-    if (!CurrentBlock.ResolveCount)
+    if (!m_CurrentBlock.ResolveCount)
     {
         return;
     }
-    CPU_Message("***** Linking branches (%i) *****", CurrentBlock.ResolveCount);
+    CPU_Message("***** Linking branches (%i) *****", m_CurrentBlock.ResolveCount);
 
-    for (Count = 0; Count < CurrentBlock.ResolveCount; Count++)
+    for (Count = 0; Count < m_CurrentBlock.ResolveCount; Count++)
     {
-        Target = CurrentBlock.BranchesToResolve[Count].TargetPC;
+        Target = m_CurrentBlock.BranchesToResolve[Count].TargetPC;
         X86Code = (uint8_t *)*(JumpTable + (Target >> 2));
 
         if (!X86Code)
@@ -677,7 +681,7 @@ void LinkBranches(RSP_BLOCK * Block)
             X86Code = (uint8_t *)*(JumpTable + (Target >> 2));
         }
 
-        JumpWord = CurrentBlock.BranchesToResolve[Count].X86JumpLoc;
+        JumpWord = m_CurrentBlock.BranchesToResolve[Count].X86JumpLoc;
         x86_SetBranch32b(JumpWord, (uint32_t *)X86Code);
 
         CPU_Message("Linked RSP branch from x86: %08X, to RSP: %X / x86: %08X",
@@ -786,18 +790,18 @@ void CompilerLinkBlocks(void)
     x86_SetBranch32b(RecompPos - 4, KnownCode);
 }
 
-void CompilerRSPBlock(void)
+void CRSPRecompiler::CompilerRSPBlock(void)
 {
-    CRSPRecompilerOps RecompilerOps(RSPSystem);
+    CRSPRecompilerOps RecompilerOps(RSPSystem, *this);
 
     uint8_t * IMEM_SAVE = (uint8_t *)malloc(0x1000);
     const size_t X86BaseAddress = (size_t)RecompPos;
     NextInstruction = RSPPIPELINE_NORMAL;
     CompilePC = *PrgCount;
 
-    memset(&CurrentBlock, 0, sizeof(CurrentBlock));
-    CurrentBlock.StartPC = CompilePC;
-    CurrentBlock.CurrPC = CompilePC;
+    memset(&m_CurrentBlock, 0, sizeof(m_CurrentBlock));
+    m_CurrentBlock.StartPC = CompilePC;
+    m_CurrentBlock.CurrPC = CompilePC;
 
     // Align the block to a boundary
     if (X86BaseAddress & 7)
@@ -815,13 +819,13 @@ void CompilerRSPBlock(void)
     CPU_Message("====== Block %d ======", BlockID++);
     CPU_Message("x86 code at: %X", RecompPos);
     CPU_Message("Jump table: %X", Table);
-    CPU_Message("Start of block: %X", CurrentBlock.StartPC);
+    CPU_Message("Start of block: %X", m_CurrentBlock.StartPC);
     CPU_Message("====== Recompiled code ======");
 
     if (Compiler.bReOrdering)
     {
         memcpy(IMEM_SAVE, RSPInfo.IMEM, 0x1000);
-        ReOrderSubBlock(&CurrentBlock);
+        ReOrderSubBlock(&m_CurrentBlock);
     }
 
     // This is for the block about to be compiled
@@ -843,8 +847,8 @@ void CompilerRSPBlock(void)
                 *(JumpTable + (CompilePC >> 2)) = RecompPos;
 
                 // Reorder from here to next label or branch
-                CurrentBlock.CurrPC = CompilePC;
-                ReOrderSubBlock(&CurrentBlock);
+                m_CurrentBlock.CurrPC = CompilePC;
+                ReOrderSubBlock(&m_CurrentBlock);
             }
             else if (NextInstruction != RSPPIPELINE_DELAY_SLOT_DONE)
             {
@@ -918,9 +922,9 @@ void CompilerRSPBlock(void)
                 CPU_Message("***** Continuing static SubBlock (jump table entry added for PC: %04X at X86: %08X) *****", CompilePC, RecompPos);
                 *(JumpTable + (CompilePC >> 2)) = RecompPos;
 
-                CurrentBlock.CurrPC = CompilePC;
+                m_CurrentBlock.CurrPC = CompilePC;
                 // Reorder from after delay to next label or branch
-                ReOrderSubBlock(&CurrentBlock);
+                ReOrderSubBlock(&m_CurrentBlock);
             }
             else
             {
@@ -955,7 +959,7 @@ void CompilerRSPBlock(void)
     free(IMEM_SAVE);
 }
 
-uint32_t RunRecompilerCPU(uint32_t Cycles)
+uint32_t CRSPRecompiler::RunCPU(uint32_t Cycles)
 {
 #ifndef EXCEPTION_EXECUTE_HANDLER
 #define EXCEPTION_EXECUTE_HANDLER 1
@@ -1005,7 +1009,7 @@ uint32_t RunRecompilerCPU(uint32_t Cycles)
             // to fill in still either from this block, or jumps
             // that go out of it, let's rock
 
-            LinkBranches(&CurrentBlock);
+            LinkBranches(&m_CurrentBlock);
             if (Profiling && !IndvidualBlock)
             {
                 StopTimer();
@@ -1045,4 +1049,29 @@ uint32_t RunRecompilerCPU(uint32_t Cycles)
 #endif
     }
     return Cycles;
+}
+
+void CRSPRecompiler::Branch_AddRef(uint32_t Target, uint32_t * X86Loc)
+{
+    if (m_CurrentBlock.ResolveCount >= 150)
+    {
+        CompilerWarning("Out of branch reference space");
+    }
+    else
+    {
+        uint8_t * KnownCode = (uint8_t *)(*(JumpTable + (Target >> 2)));
+
+        if (KnownCode == NULL)
+        {
+            uint32_t i = m_CurrentBlock.ResolveCount;
+            m_CurrentBlock.BranchesToResolve[i].TargetPC = Target;
+            m_CurrentBlock.BranchesToResolve[i].X86JumpLoc = X86Loc;
+            m_CurrentBlock.ResolveCount += 1;
+        }
+        else
+        {
+            CPU_Message("      (static jump to %X)", KnownCode);
+            x86_SetBranch32b((uint32_t *)X86Loc, (uint32_t *)KnownCode);
+        }
+    }
 }

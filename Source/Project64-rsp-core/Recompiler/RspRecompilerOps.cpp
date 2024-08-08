@@ -98,31 +98,6 @@ extern p_Recompfunc RSP_Recomp_Vector[64];
 extern p_Recompfunc RSP_Recomp_Lc2[32];
 extern p_Recompfunc RSP_Recomp_Sc2[32];
 
-void Branch_AddRef(uint32_t Target, uint32_t * X86Loc)
-{
-    if (CurrentBlock.ResolveCount >= 150)
-    {
-        CompilerWarning("Out of branch reference space");
-    }
-    else
-    {
-        uint8_t * KnownCode = (uint8_t *)(*(JumpTable + (Target >> 2)));
-
-        if (KnownCode == NULL)
-        {
-            uint32_t i = CurrentBlock.ResolveCount;
-            CurrentBlock.BranchesToResolve[i].TargetPC = Target;
-            CurrentBlock.BranchesToResolve[i].X86JumpLoc = X86Loc;
-            CurrentBlock.ResolveCount += 1;
-        }
-        else
-        {
-            CPU_Message("      (static jump to %X)", KnownCode);
-            x86_SetBranch32b((uint32_t *)X86Loc, (uint32_t *)KnownCode);
-        }
-    }
-}
-
 void CRSPRecompilerOps::Cheat_r4300iOpcode(RSPOp::Func FunctAddress, const char * FunctName)
 {
     CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, RSPOpC.Value).NameAndParam().c_str());
@@ -183,8 +158,9 @@ void CompileBranchExit(uint32_t TargetPC, uint32_t ContinuePC)
     Ret();
 }
 
-CRSPRecompilerOps::CRSPRecompilerOps(CRSPSystem & System) :
+CRSPRecompilerOps::CRSPRecompilerOps(CRSPSystem & System, CRSPRecompiler & Recompiler) :
     m_System(System),
+    m_Recompiler(Recompiler),
     m_Reg(System.m_Reg),
     m_GPR(System.m_Reg.m_GPR),
     m_ACCUM(System.m_Reg.m_ACCUM),
@@ -215,7 +191,7 @@ void CRSPRecompilerOps::J(void)
     else if (NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE)
     {
         JmpLabel32("BranchToJump", 0);
-        Branch_AddRef((RSPOpC.target << 2) & 0xFFC, (uint32_t *)(RecompPos - 4));
+        m_Recompiler.Branch_AddRef((RSPOpC.target << 2) & 0xFFC, (uint32_t *)(RecompPos - 4));
         NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
     }
     else if (NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE)
@@ -253,7 +229,7 @@ void CRSPRecompilerOps::JAL(void)
             Pop(x86_EAX);
         }
         JmpLabel32("BranchToJump", 0);
-        Branch_AddRef((RSPOpC.target << 2) & 0xFFC, (uint32_t *)(RecompPos - 4));
+        m_Recompiler.Branch_AddRef((RSPOpC.target << 2) & 0xFFC, (uint32_t *)(RecompPos - 4));
         NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
     }
     else if (NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE)
@@ -311,7 +287,7 @@ void CRSPRecompilerOps::BEQ(void)
         if (RSPOpC.rs == 0 && RSPOpC.rt == 0)
         {
             JmpLabel32("BranchToJump", 0);
-            Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
+            m_Recompiler.Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
             NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
             return;
         }
@@ -338,7 +314,7 @@ void CRSPRecompilerOps::BEQ(void)
             CompConstToVariable(true, &BranchCompare, "BranchCompare");
             JeLabel32("BranchEqual", 0);
         }
-        Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
+        m_Recompiler.Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
         NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
     }
     else if (NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE)
@@ -422,7 +398,7 @@ void CRSPRecompilerOps::BNE(void)
             CompConstToVariable(true, &BranchCompare, "BranchCompare");
             JeLabel32("BranchNotEqual", 0);
         }
-        Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
+        m_Recompiler.Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
         NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
     }
     else if (NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE)
@@ -466,7 +442,7 @@ void CRSPRecompilerOps::BLEZ(void)
         if (RSPOpC.rs == 0)
         {
             JmpLabel32("BranchToJump", 0);
-            Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
+            m_Recompiler.Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
             NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
             return;
         }
@@ -482,7 +458,7 @@ void CRSPRecompilerOps::BLEZ(void)
             JeLabel32("BranchLessEqual", 0);
         }
 
-        Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
+        m_Recompiler.Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
         NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
     }
     else if (NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE)
@@ -539,7 +515,7 @@ void CRSPRecompilerOps::BGTZ(void)
             CompConstToVariable(true, &BranchCompare, "BranchCompare");
             JeLabel32("BranchGreater", 0);
         }
-        Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
+        m_Recompiler.Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
         NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
     }
     else if (NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE)
@@ -2002,7 +1978,7 @@ void CRSPRecompilerOps::RegImm_BLTZ(void)
             CompConstToVariable(true, &BranchCompare, "BranchCompare");
             JeLabel32("BranchLess", 0);
         }
-        Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
+        m_Recompiler.Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
         NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
     }
     else if (NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE)
@@ -2046,7 +2022,7 @@ void CRSPRecompilerOps::RegImm_BGEZ(void)
         if (RSPOpC.rs == 0)
         {
             JmpLabel32("BranchToJump", 0);
-            Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
+            m_Recompiler.Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
             NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
             return;
         }
@@ -2061,7 +2037,7 @@ void CRSPRecompilerOps::RegImm_BGEZ(void)
             CompConstToVariable(true, &BranchCompare, "BranchCompare");
             JeLabel32("BranchGreaterEqual", 0);
         }
-        Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
+        m_Recompiler.Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
         NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
     }
     else if (NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE)
@@ -2105,7 +2081,7 @@ void CRSPRecompilerOps::RegImm_BLTZAL(void)
         // Take a look at the branch compare variable
         CompConstToVariable(true, &BranchCompare, "BranchCompare");
         JeLabel32("BranchLessEqual", 0);
-        Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
+        m_Recompiler.Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
         NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
     }
     else if (NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE)
@@ -2151,7 +2127,7 @@ void CRSPRecompilerOps::RegImm_BGEZAL(void)
         if (RSPOpC.rs == 0)
         {
             JmpLabel32("BranchToJump", 0);
-            Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
+            m_Recompiler.Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
             NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
             return;
         }
@@ -2167,7 +2143,7 @@ void CRSPRecompilerOps::RegImm_BGEZAL(void)
             CompConstToVariable(true, &BranchCompare, "BranchCompare");
             JeLabel32("BranchGreaterEqual", 0);
         }
-        Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
+        m_Recompiler.Branch_AddRef(Target, (uint32_t *)(RecompPos - 4));
         NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
     }
     else if (NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE)

@@ -3,6 +3,7 @@
 #include <Project64-rsp-core/Hle/hle.h>
 #include <Project64-rsp-core/RSPDebugger.h>
 #include <Project64-rsp-core/RSPInfo.h>
+#include <Project64-rsp-core/Recompiler/RspRecompilerCPU.h>
 #include <Project64-rsp-core/Settings/RspSettings.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
 #include <Project64-rsp-core/cpu/RspSystem.h>
@@ -112,9 +113,6 @@ be greater than the number of cycles that the RSP should have performed.
 (this value is ignored if the RSP has been stopped)
 */
 
-uint32_t RunInterpreterCPU(uint32_t Cycles);
-uint32_t RunRecompilerCPU(uint32_t Cycles);
-
 #define MI_INTR_SP 0x01 /* Bit 0: SP intr */
 
 uint32_t DoRspCycles(uint32_t Cycles)
@@ -183,7 +181,7 @@ uint32_t DoRspCycles(uint32_t Cycles)
     switch (g_CPUCore)
     {
     case RecompilerCPU:
-        RunRecompilerCPU(Cycles);
+        CRSPRecompiler(RSPSystem).RunCPU(Cycles);
         break;
     case InterpreterCPU:
         RSPSystem.RunInterpreterCPU(Cycles);

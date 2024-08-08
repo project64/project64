@@ -5,6 +5,44 @@
 #include <Project64-rsp-core/cpu/RspTypes.h>
 #include <Settings/Settings.h>
 
+class CRSPSystem;
+
+class CRSPRecompiler
+{
+    friend class CRSPRecompilerOps;
+
+    typedef struct
+    {
+        uint32_t StartPC, CurrPC; // Block start
+
+        struct
+        {
+            uint32_t TargetPC;     // Target for this unknown branch
+            uint32_t * X86JumpLoc; // Our x86 uint32_t to fill
+        } BranchesToResolve[200];  // Branches inside or outside block
+
+        uint32_t ResolveCount; // Branches with NULL jump table
+    } RSP_BLOCK;
+
+public:
+    CRSPRecompiler(CRSPSystem & System);
+
+    uint32_t RunCPU(uint32_t Cycles);
+    void Branch_AddRef(uint32_t Target, uint32_t * X86Loc);
+
+private:
+    CRSPRecompiler();
+    CRSPRecompiler(const CRSPRecompiler &);
+    CRSPRecompiler & operator=(const CRSPRecompiler &);
+
+    void CompilerRSPBlock(void);
+    void LinkBranches(RSP_BLOCK * Block);
+    void ReOrderSubBlock(RSP_BLOCK * Block);
+
+    CRSPSystem & m_System;
+    RSP_BLOCK m_CurrentBlock;
+};
+
 extern uint32_t CompilePC, NextInstruction, JumpTableSize;
 extern bool ChangedPC;
 
@@ -28,32 +66,12 @@ bool IsOpcodeNop(uint32_t PC);
 bool IsNextInstructionMmx(uint32_t PC);
 bool IsRegisterConstant(uint32_t Reg, uint32_t * Constant);
 
-void RSP_Element2Mmx(int MmxReg);
-void RSP_MultiElement2Mmx(int MmxReg1, int MmxReg2);
-
 #define MainBuffer 0
 #define SecondaryBuffer 1
 
-uint32_t RunRecompilerCPU(uint32_t Cycles);
 void BuildRecompilerCPU(void);
 
-void CompilerRSPBlock(void);
 void CompilerToggleBuffer(void);
-
-typedef struct
-{
-    uint32_t StartPC, CurrPC; // Block start
-
-    struct
-    {
-        uint32_t TargetPC;     // Target for this unknown branch
-        uint32_t * X86JumpLoc; // Our x86 uint32_t to fill
-    } BranchesToResolve[200];  // Branches inside or outside block
-
-    uint32_t ResolveCount; // Branches with NULL jump table
-} RSP_BLOCK;
-
-extern RSP_BLOCK CurrentBlock;
 
 typedef struct
 {

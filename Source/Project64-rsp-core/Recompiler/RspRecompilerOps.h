@@ -7,7 +7,7 @@ class CRSPRegisters;
 class CRSPRecompilerOps
 {
 public:
-    CRSPRecompilerOps(CRSPSystem & System);
+    CRSPRecompilerOps(CRSPSystem & System, CRSPRecompiler & Recompiler);
 
     void SPECIAL(void);
     void REGIMM(void);
@@ -203,6 +203,7 @@ private:
 
     CRSPSystem & m_System;
     CRSPRegisters & m_Reg;
+    CRSPRecompiler & m_Recompiler;
     UWORD32 * m_GPR;
     UDWORD * m_ACCUM;
     UWORD32 * m_Flags;

@@ -6,11 +6,14 @@ class CRSPRegisters;
 
 class RSPOp
 {
+    friend class CRSPSystem;
+    friend class CRSPRecompilerOps;
+
 public:
     RSPOp(CRSPSystem & System);
     ~RSPOp();
 
-public:
+private:
     RSPOp();
     RSPOp(const RSPOp &);
     RSPOp & operator=(const RSPOp &);
