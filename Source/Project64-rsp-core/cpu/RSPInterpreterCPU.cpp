@@ -9,18 +9,3 @@
 
 RSPPIPELINE_STAGE RSP_NextInstruction;
 uint32_t RSP_JumpTo;
-
-unsigned int RSP_branch_if(int condition)
-{
-    unsigned int new_PC;
-
-    if (condition)
-    {
-        new_PC = *PrgCount + 4 + ((short)RSPOpC.offset << 2);
-    }
-    else
-    {
-        new_PC = *PrgCount + 4 + 4;
-    }
-    return (new_PC & 0xFFC);
-}

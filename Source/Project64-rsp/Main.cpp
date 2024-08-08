@@ -31,6 +31,7 @@
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
 #include <Project64-rsp-core/cpu/RspLog.h>
 #include <Project64-rsp-core/cpu/RspMemory.h>
+#include <Project64-rsp-core/cpu/RspSystem.h>
 #include <Project64-rsp-core/cpu/RspTypes.h>
 
 void ProcessMenuItem(int32_t ID);
@@ -257,7 +258,7 @@ Output: None
 */
 EXPORT void InitiateRSP(RSP_INFO Rsp_Info, uint32_t * CycleCount)
 {
-    g_RSPDebuggerUI.reset(new RSPDebuggerUI);
+    g_RSPDebuggerUI.reset(new RSPDebuggerUI(RSPSystem));
     g_RSPDebugger = g_RSPDebuggerUI.get();
     InitilizeRSP(Rsp_Info);
     *CycleCount = 0;

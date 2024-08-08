@@ -14,7 +14,6 @@ enum RSPCpuType
 extern UDWORD EleSpec[16], Indx[16];
 
 extern uint32_t *PrgCount, RSP_Running;
-extern RSPOpcode RSPOpC;
 
 void SetCPU(RSPCpuType core);
 void Build_RSP(void);

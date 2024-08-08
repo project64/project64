@@ -17,8 +17,3 @@ enum RSPPIPELINE_STAGE
 
 extern RSPPIPELINE_STAGE RSP_NextInstruction;
 extern uint32_t RSP_JumpTo;
-
-// Standard MIPS PC-relative branch
-// Returns the new PC, based on whether the condition passes
-
-unsigned int RSP_branch_if(int condition);

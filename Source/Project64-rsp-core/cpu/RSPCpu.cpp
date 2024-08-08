@@ -12,7 +12,6 @@
 class RSPRegisterHandler;
 
 UDWORD EleSpec[16], Indx[16];
-RSPOpcode RSPOpC;
 uint32_t *PrgCount, NextInstruction, RSP_Running;
 
 void BuildRecompilerCPU(void);

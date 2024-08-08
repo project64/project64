@@ -8,7 +8,7 @@
 CRSPSystem RSPSystem;
 
 CRSPSystem::CRSPSystem() :
-    m_OpCodes(*this)
+    m_Op(*this)
 {
 }
 
@@ -34,8 +34,8 @@ uint32_t CRSPSystem::RunInterpreterCPU(uint32_t Cycles)
         {
             g_RSPDebugger->BeforeExecuteOp();
         }
-        RSPOpC.Value = *(uint32_t *)(RSPInfo.IMEM + (*PrgCount & 0xFFC));
-        (m_OpCodes.*(m_OpCodes.Jump_Opcode[RSPOpC.op]))();
+        m_OpCode.Value = *(uint32_t *)(RSPInfo.IMEM + (*PrgCount & 0xFFC));
+        (m_Op.*(m_Op.Jump_Opcode[m_OpCode.op]))();
         GprR0 = 0x00000000; // MIPS $zero hard-wired to 0
 
         switch (RSP_NextInstruction)

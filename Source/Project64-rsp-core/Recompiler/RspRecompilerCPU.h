@@ -40,6 +40,7 @@ private:
     void ReOrderSubBlock(RSP_BLOCK * Block);
 
     CRSPSystem & m_System;
+    RSPOpcode & m_OpCode;
     RSP_BLOCK m_CurrentBlock;
 };
 

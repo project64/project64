@@ -1,4 +1,5 @@
 #pragma once
+#include <Project64-rsp-core/cpu/RSPOpcode.h>
 #include <Project64-rsp-core/cpu/RspTypes.h>
 
 class CRSPSystem;
@@ -167,6 +168,7 @@ private:
 
     // Other functions
     void UnknownOpcode(void);
+    uint32_t BranchIf(bool Condition);
 
     typedef void (RSPOp::*Func)();
 
@@ -180,6 +182,7 @@ private:
     Func Jump_Sc2[32];
 
     CRSPSystem & m_System;
+    RSPOpcode & m_OpCode;
     CRSPRegisters & m_Reg;
     UWORD32 * m_GPR;
     UDWORD * m_ACCUM;

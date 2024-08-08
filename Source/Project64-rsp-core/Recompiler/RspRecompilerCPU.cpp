@@ -41,7 +41,8 @@ p_Recompfunc RSP_Recomp_Lc2[32];
 p_Recompfunc RSP_Recomp_Sc2[32];
 
 CRSPRecompiler::CRSPRecompiler(CRSPSystem & System) :
-    m_System(System)
+    m_System(System),
+    m_OpCode(System.m_OpCode)
 {
 }
 
@@ -871,7 +872,7 @@ void CRSPRecompiler::CompilerRSPBlock(void)
             CPU_Message("X86 Address: %08X", RecompPos);
         }
 #endif
-        RSP_LW_IMEM(CompilePC, &RSPOpC.Value);
+        RSP_LW_IMEM(CompilePC, &m_OpCode.Value);
 
         if (LogRDP && NextInstruction != RSPPIPELINE_DELAY_SLOT_DONE)
         {
@@ -882,14 +883,14 @@ void CRSPRecompiler::CompilerRSPBlock(void)
             AddConstToX86Reg(x86_ESP, 4);
         }
 
-        if (RSPOpC.Value == 0xFFFFFFFF)
+        if (m_OpCode.Value == 0xFFFFFFFF)
         {
             // I think this pops up an unknown OP dialog
             // NextInstruction = RSPPIPELINE_FINISH_BLOCK;
         }
         else
         {
-            (RecompilerOps.*RSP_Recomp_Opcode[RSPOpC.op])();
+            (RecompilerOps.*RSP_Recomp_Opcode[m_OpCode.op])();
         }
 
         switch (NextInstruction)

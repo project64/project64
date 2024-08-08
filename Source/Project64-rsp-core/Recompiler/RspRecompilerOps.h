@@ -204,6 +204,7 @@ private:
     CRSPSystem & m_System;
     CRSPRegisters & m_Reg;
     CRSPRecompiler & m_Recompiler;
+    RSPOpcode & m_OpCode;
     UWORD32 * m_GPR;
     UDWORD * m_ACCUM;
     UWORD32 * m_Flags;
