@@ -123,7 +123,7 @@ void InitilizeRSP(RSP_INFO & Rsp_Info)
     GraphicsHle = Set_GraphicsHle != 0 ? GetSystemSetting(Set_GraphicsHle) != 0 : true;
 
     AllocateMemory();
-    RSPSystem.Reset();
+    RSPSystem.Reset(Rsp_Info);
     Build_RSP();
 #ifdef GenerateLog
     Start_Log();

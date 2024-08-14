@@ -4,7 +4,6 @@
 #include "RspLog.h"
 #include <Common/StdString.h>
 #include <Project64-rsp-core/RSPDebugger.h>
-#include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/Settings/RspSettings.h>
 #include <Project64-rsp-core/cpu/RSPInterpreterOps.h>
 #include <Project64-rsp-core/cpu/RspClamp.h>
@@ -61,6 +60,18 @@ RSPOp::RSPOp(CRSPSystem & System) :
     m_System(System),
     m_OpCode(System.m_OpCode),
     m_Reg(System.m_Reg),
+    m_MI_INTR_REG(System.m_MI_INTR_REG),
+    m_SP_PC_REG(System.m_SP_PC_REG),
+    m_SP_STATUS_REG(System.m_SP_STATUS_REG),
+    m_SP_DMA_FULL_REG(System.m_SP_DMA_FULL_REG),
+    m_SP_DMA_BUSY_REG(System.m_SP_DMA_BUSY_REG),
+    m_SP_SEMAPHORE_REG(System.m_SP_SEMAPHORE_REG),
+    m_DPC_START_REG(System.m_DPC_START_REG),
+    m_DPC_END_REG(System.m_DPC_END_REG),
+    m_DPC_CURRENT_REG(System.m_DPC_CURRENT_REG),
+    m_DPC_STATUS_REG(System.m_DPC_STATUS_REG),
+    m_DPC_CLOCK_REG(System.m_DPC_CLOCK_REG),
+    m_DMEM(System.m_DMEM),
     m_GPR(System.m_Reg.m_GPR),
     m_ACCUM(System.m_Reg.m_ACCUM),
     m_Flags(System.m_Reg.m_Flags),
@@ -69,7 +80,9 @@ RSPOp::RSPOp(CRSPSystem & System) :
     VCOH(System.m_Reg.VCOH),
     VCCL(System.m_Reg.VCCL),
     VCCH(System.m_Reg.VCCH),
-    VCE(System.m_Reg.VCE)
+    VCE(System.m_Reg.VCE),
+    CheckInterrupts(System.CheckInterrupts),
+    ProcessRdpList(System.ProcessRdpList)
 {
     BuildInterpreter();
 }
@@ -462,7 +475,7 @@ void RSPOp::J(void)
 void RSPOp::JAL(void)
 {
     RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
-    m_GPR[31].UW = (*PrgCount + 8) & 0xFFC;
+    m_GPR[31].UW = (*m_SP_PC_REG + 8) & 0xFFC;
     RSP_JumpTo = (m_OpCode.target << 2) & 0xFFC;
 }
 
@@ -543,7 +556,7 @@ void RSPOp::COP2(void)
 void RSPOp::LB(void)
 {
     uint32_t Address = (uint32_t)(m_GPR[m_OpCode.base].W + (short)m_OpCode.offset) & 0xFFF;
-    m_GPR[m_OpCode.rt].W = *(int8_t *)(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
+    m_GPR[m_OpCode.rt].W = *(int8_t *)(m_DMEM + ((Address ^ 3) & 0xFFF));
 }
 
 void RSPOp::LH(void)
@@ -551,12 +564,12 @@ void RSPOp::LH(void)
     uint32_t Address = (uint32_t)(m_GPR[m_OpCode.base].W + (short)m_OpCode.offset) & 0xFFF;
     if ((Address & 0x1) != 0)
     {
-        m_GPR[m_OpCode.rt].UHW[0] = *(uint8_t *)(RSPInfo.DMEM + (((Address + 0) & 0xFFF) ^ 3)) << 8;
-        m_GPR[m_OpCode.rt].UHW[0] += *(uint8_t *)(RSPInfo.DMEM + (((Address + 1) & 0xFFF) ^ 3)) << 0;
+        m_GPR[m_OpCode.rt].UHW[0] = *(uint8_t *)(m_DMEM + (((Address + 0) & 0xFFF) ^ 3)) << 8;
+        m_GPR[m_OpCode.rt].UHW[0] += *(uint8_t *)(m_DMEM + (((Address + 1) & 0xFFF) ^ 3)) << 0;
     }
     else
     {
-        m_GPR[m_OpCode.rt].UHW[0] = *(uint16_t *)(RSPInfo.DMEM + ((Address ^ 2) & 0xFFF));
+        m_GPR[m_OpCode.rt].UHW[0] = *(uint16_t *)(m_DMEM + ((Address ^ 2) & 0xFFF));
     }
     m_GPR[m_OpCode.rt].W = m_GPR[m_OpCode.rt].HW[0];
 }
@@ -566,21 +579,21 @@ void RSPOp::LW(void)
     uint32_t Address = (uint32_t)(m_GPR[m_OpCode.base].W + (short)m_OpCode.offset) & 0xFFF;
     if ((Address & 0x3) != 0)
     {
-        m_GPR[m_OpCode.rt].UW = *(uint8_t *)(RSPInfo.DMEM + (((Address + 0) & 0xFFF) ^ 3)) << 24;
-        m_GPR[m_OpCode.rt].UW += *(uint8_t *)(RSPInfo.DMEM + (((Address + 1) & 0xFFF) ^ 3)) << 16;
-        m_GPR[m_OpCode.rt].UW += *(uint8_t *)(RSPInfo.DMEM + (((Address + 2) & 0xFFF) ^ 3)) << 8;
-        m_GPR[m_OpCode.rt].UW += *(uint8_t *)(RSPInfo.DMEM + (((Address + 3) & 0xFFF) ^ 3)) << 0;
+        m_GPR[m_OpCode.rt].UW = *(uint8_t *)(m_DMEM + (((Address + 0) & 0xFFF) ^ 3)) << 24;
+        m_GPR[m_OpCode.rt].UW += *(uint8_t *)(m_DMEM + (((Address + 1) & 0xFFF) ^ 3)) << 16;
+        m_GPR[m_OpCode.rt].UW += *(uint8_t *)(m_DMEM + (((Address + 2) & 0xFFF) ^ 3)) << 8;
+        m_GPR[m_OpCode.rt].UW += *(uint8_t *)(m_DMEM + (((Address + 3) & 0xFFF) ^ 3)) << 0;
     }
     else
     {
-        m_GPR[m_OpCode.rt].UW = *(uint32_t *)(RSPInfo.DMEM + (Address & 0xFFF));
+        m_GPR[m_OpCode.rt].UW = *(uint32_t *)(m_DMEM + (Address & 0xFFF));
     }
 }
 
 void RSPOp::LBU(void)
 {
     uint32_t Address = (uint32_t)(m_GPR[m_OpCode.base].W + (short)m_OpCode.offset) & 0xFFF;
-    m_GPR[m_OpCode.rt].UW = *(uint8_t *)(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
+    m_GPR[m_OpCode.rt].UW = *(uint8_t *)(m_DMEM + ((Address ^ 3) & 0xFFF));
 }
 
 void RSPOp::LHU(void)
@@ -588,12 +601,12 @@ void RSPOp::LHU(void)
     uint32_t Address = (uint32_t)(m_GPR[m_OpCode.base].W + (short)m_OpCode.offset) & 0xFFF;
     if ((Address & 0x1) != 0)
     {
-        m_GPR[m_OpCode.rt].UHW[0] = *(uint8_t *)(RSPInfo.DMEM + (((Address + 0) & 0xFFF) ^ 3)) << 8;
-        m_GPR[m_OpCode.rt].UHW[0] += *(uint8_t *)(RSPInfo.DMEM + (((Address + 1) & 0xFFF) ^ 3)) << 0;
+        m_GPR[m_OpCode.rt].UHW[0] = *(uint8_t *)(m_DMEM + (((Address + 0) & 0xFFF) ^ 3)) << 8;
+        m_GPR[m_OpCode.rt].UHW[0] += *(uint8_t *)(m_DMEM + (((Address + 1) & 0xFFF) ^ 3)) << 0;
     }
     else
     {
-        m_GPR[m_OpCode.rt].UHW[0] = *(uint16_t *)(RSPInfo.DMEM + ((Address ^ 2) & 0xFFF));
+        m_GPR[m_OpCode.rt].UHW[0] = *(uint16_t *)(m_DMEM + ((Address ^ 2) & 0xFFF));
     }
     m_GPR[m_OpCode.rt].UW = m_GPR[m_OpCode.rt].UHW[0];
 }
@@ -603,21 +616,21 @@ void RSPOp::LWU(void)
     uint32_t Address = (uint32_t)(m_GPR[m_OpCode.base].W + (short)m_OpCode.offset) & 0xFFF;
     if ((Address & 0x3) != 0)
     {
-        m_GPR[m_OpCode.rt].UW = *(uint8_t *)(RSPInfo.DMEM + (((Address + 0) & 0xFFF) ^ 3)) << 24;
-        m_GPR[m_OpCode.rt].UW += *(uint8_t *)(RSPInfo.DMEM + (((Address + 1) & 0xFFF) ^ 3)) << 16;
-        m_GPR[m_OpCode.rt].UW += *(uint8_t *)(RSPInfo.DMEM + (((Address + 2) & 0xFFF) ^ 3)) << 8;
-        m_GPR[m_OpCode.rt].UW += *(uint8_t *)(RSPInfo.DMEM + (((Address + 3) & 0xFFF) ^ 3)) << 0;
+        m_GPR[m_OpCode.rt].UW = *(uint8_t *)(m_DMEM + (((Address + 0) & 0xFFF) ^ 3)) << 24;
+        m_GPR[m_OpCode.rt].UW += *(uint8_t *)(m_DMEM + (((Address + 1) & 0xFFF) ^ 3)) << 16;
+        m_GPR[m_OpCode.rt].UW += *(uint8_t *)(m_DMEM + (((Address + 2) & 0xFFF) ^ 3)) << 8;
+        m_GPR[m_OpCode.rt].UW += *(uint8_t *)(m_DMEM + (((Address + 3) & 0xFFF) ^ 3)) << 0;
     }
     else
     {
-        m_GPR[m_OpCode.rt].UW = *(uint32_t *)(RSPInfo.DMEM + (Address & 0xFFF));
+        m_GPR[m_OpCode.rt].UW = *(uint32_t *)(m_DMEM + (Address & 0xFFF));
     }
 }
 
 void RSPOp::SB(void)
 {
     uint32_t Address = (uint32_t)(m_GPR[m_OpCode.base].W + (short)m_OpCode.offset) & 0xFFF;
-    *(uint8_t *)(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF)) = m_GPR[m_OpCode.rt].UB[0];
+    *(uint8_t *)(m_DMEM + ((Address ^ 3) & 0xFFF)) = m_GPR[m_OpCode.rt].UB[0];
 }
 
 void RSPOp::SH(void)
@@ -625,12 +638,12 @@ void RSPOp::SH(void)
     uint32_t Address = (uint32_t)(m_GPR[m_OpCode.base].W + (short)m_OpCode.offset) & 0xFFF;
     if ((Address & 0x1) != 0)
     {
-        *(uint8_t *)(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF)) = (m_GPR[m_OpCode.rt].UHW[0] >> 8);
-        *(uint8_t *)(RSPInfo.DMEM + (((Address + 1) ^ 3) & 0xFFF)) = (m_GPR[m_OpCode.rt].UHW[0] & 0xFF);
+        *(uint8_t *)(m_DMEM + ((Address ^ 3) & 0xFFF)) = (m_GPR[m_OpCode.rt].UHW[0] >> 8);
+        *(uint8_t *)(m_DMEM + (((Address + 1) ^ 3) & 0xFFF)) = (m_GPR[m_OpCode.rt].UHW[0] & 0xFF);
     }
     else
     {
-        *(uint16_t *)(RSPInfo.DMEM + ((Address ^ 2) & 0xFFF)) = m_GPR[m_OpCode.rt].UHW[0];
+        *(uint16_t *)(m_DMEM + ((Address ^ 2) & 0xFFF)) = m_GPR[m_OpCode.rt].UHW[0];
     }
 }
 
@@ -639,14 +652,14 @@ void RSPOp::SW(void)
     uint32_t Address = (uint32_t)(m_GPR[m_OpCode.base].W + (short)m_OpCode.offset) & 0xFFF;
     if ((Address & 0x3) != 0)
     {
-        *(uint8_t *)(RSPInfo.DMEM + (((Address + 0) ^ 3) & 0xFFF)) = (m_GPR[m_OpCode.rt].UW >> 24) & 0xFF;
-        *(uint8_t *)(RSPInfo.DMEM + (((Address + 1) ^ 3) & 0xFFF)) = (m_GPR[m_OpCode.rt].UW >> 16) & 0xFF;
-        *(uint8_t *)(RSPInfo.DMEM + (((Address + 2) ^ 3) & 0xFFF)) = (m_GPR[m_OpCode.rt].UW >> 8) & 0xFF;
-        *(uint8_t *)(RSPInfo.DMEM + (((Address + 3) ^ 3) & 0xFFF)) = (m_GPR[m_OpCode.rt].UW >> 0) & 0xFF;
+        *(uint8_t *)(m_DMEM + (((Address + 0) ^ 3) & 0xFFF)) = (m_GPR[m_OpCode.rt].UW >> 24) & 0xFF;
+        *(uint8_t *)(m_DMEM + (((Address + 1) ^ 3) & 0xFFF)) = (m_GPR[m_OpCode.rt].UW >> 16) & 0xFF;
+        *(uint8_t *)(m_DMEM + (((Address + 2) ^ 3) & 0xFFF)) = (m_GPR[m_OpCode.rt].UW >> 8) & 0xFF;
+        *(uint8_t *)(m_DMEM + (((Address + 3) ^ 3) & 0xFFF)) = (m_GPR[m_OpCode.rt].UW >> 0) & 0xFF;
     }
     else
     {
-        *(uint32_t *)(RSPInfo.DMEM + (Address & 0xFFF)) = m_GPR[m_OpCode.rt].UW;
+        *(uint32_t *)(m_DMEM + (Address & 0xFFF)) = m_GPR[m_OpCode.rt].UW;
     }
 }
 
@@ -702,17 +715,17 @@ void RSPOp::Special_JALR(void)
 {
     RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = (m_GPR[m_OpCode.rs].W & 0xFFC);
-    m_GPR[m_OpCode.rd].W = (*PrgCount + 8) & 0xFFC;
+    m_GPR[m_OpCode.rd].W = (*m_SP_PC_REG + 8) & 0xFFC;
 }
 
 void RSPOp::Special_BREAK(void)
 {
     RSP_Running = false;
-    *RSPInfo.SP_STATUS_REG |= (SP_STATUS_HALT | SP_STATUS_BROKE);
-    if ((*RSPInfo.SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0)
+    *m_SP_STATUS_REG |= (SP_STATUS_HALT | SP_STATUS_BROKE);
+    if ((*m_SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0)
     {
-        *RSPInfo.MI_INTR_REG |= MI_INTR_SP;
-        RSPInfo.CheckInterrupts();
+        *m_MI_INTR_REG |= MI_INTR_SP;
+        CheckInterrupts();
     }
 }
 
@@ -784,14 +797,14 @@ void RSPOp::BLTZAL(void)
 {
     RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = BranchIf(m_GPR[m_OpCode.rs].W < 0);
-    m_GPR[31].UW = (*PrgCount + 8) & 0xFFC;
+    m_GPR[31].UW = (*m_SP_PC_REG + 8) & 0xFFC;
 }
 
 void RSPOp::BGEZAL(void)
 {
     RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     RSP_JumpTo = BranchIf(m_GPR[m_OpCode.rs].W >= 0);
-    m_GPR[31].UW = (*PrgCount + 8) & 0xFFC;
+    m_GPR[31].UW = (*m_SP_PC_REG + 8) & 0xFFC;
 }
 
 // COP0 functions
@@ -800,7 +813,7 @@ void RSPOp::Cop0_MF(void)
 {
     if (g_RSPDebugger != nullptr)
     {
-        g_RSPDebugger->RDP_LogMF0(*PrgCount, m_OpCode.rd);
+        g_RSPDebugger->RDP_LogMF0(*m_SP_PC_REG, m_OpCode.rd);
     }
     switch (m_OpCode.rd)
     {
@@ -809,24 +822,24 @@ void RSPOp::Cop0_MF(void)
     case 2: m_GPR[m_OpCode.rt].UW = g_RSPRegisterHandler->ReadReg(RSPRegister_RD_LEN); break;
     case 3: m_GPR[m_OpCode.rt].UW = g_RSPRegisterHandler->ReadReg(RSPRegister_WR_LEN); break;
     case 4: m_GPR[m_OpCode.rt].UW = g_RSPRegisterHandler->ReadReg(RSPRegister_STATUS); break;
-    case 5: m_GPR[m_OpCode.rt].UW = *RSPInfo.SP_DMA_FULL_REG; break;
-    case 6: m_GPR[m_OpCode.rt].UW = *RSPInfo.SP_DMA_BUSY_REG; break;
+    case 5: m_GPR[m_OpCode.rt].UW = *m_SP_DMA_FULL_REG; break;
+    case 6: m_GPR[m_OpCode.rt].UW = *m_SP_DMA_BUSY_REG; break;
     case 7:
         if (RspMultiThreaded)
         {
-            m_GPR[m_OpCode.rt].W = *RSPInfo.SP_SEMAPHORE_REG;
-            *RSPInfo.SP_SEMAPHORE_REG = 1;
+            m_GPR[m_OpCode.rt].W = *m_SP_SEMAPHORE_REG;
+            *m_SP_SEMAPHORE_REG = 1;
         }
         else
         {
             m_GPR[m_OpCode.rt].W = 0;
         }
         break;
-    case 8: m_GPR[m_OpCode.rt].UW = *RSPInfo.DPC_START_REG; break;
-    case 9: m_GPR[m_OpCode.rt].UW = *RSPInfo.DPC_END_REG; break;
-    case 10: m_GPR[m_OpCode.rt].UW = *RSPInfo.DPC_CURRENT_REG; break;
-    case 11: m_GPR[m_OpCode.rt].W = *RSPInfo.DPC_STATUS_REG; break;
-    case 12: m_GPR[m_OpCode.rt].W = *RSPInfo.DPC_CLOCK_REG; break;
+    case 8: m_GPR[m_OpCode.rt].UW = *m_DPC_START_REG; break;
+    case 9: m_GPR[m_OpCode.rt].UW = *m_DPC_END_REG; break;
+    case 10: m_GPR[m_OpCode.rt].UW = *m_DPC_CURRENT_REG; break;
+    case 11: m_GPR[m_OpCode.rt].W = *m_DPC_STATUS_REG; break;
+    case 12: m_GPR[m_OpCode.rt].W = *m_DPC_CLOCK_REG; break;
     default:
         g_Notify->DisplayError(stdstr_f("We have not implemented RSP MF CP0 reg %s (%d)", COP0_Name(m_OpCode.rd), m_OpCode.rd).c_str());
     }
@@ -836,7 +849,7 @@ void RSPOp::Cop0_MT(void)
 {
     if (LogRDP && g_CPUCore == InterpreterCPU)
     {
-        RDP_LogMT0(*PrgCount, m_OpCode.rd, m_GPR[m_OpCode.rt].UW);
+        RDP_LogMT0(*m_SP_PC_REG, m_OpCode.rd, m_GPR[m_OpCode.rt].UW);
     }
     switch (m_OpCode.rd)
     {
@@ -845,44 +858,44 @@ void RSPOp::Cop0_MT(void)
     case 2: g_RSPRegisterHandler->WriteReg(RSPRegister_RD_LEN, m_GPR[m_OpCode.rt].UW); break;
     case 3: g_RSPRegisterHandler->WriteReg(RSPRegister_WR_LEN, m_GPR[m_OpCode.rt].UW); break;
     case 4: g_RSPRegisterHandler->WriteReg(RSPRegister_STATUS, m_GPR[m_OpCode.rt].UW); break;
-    case 7: *RSPInfo.SP_SEMAPHORE_REG = 0; break;
+    case 7: *m_SP_SEMAPHORE_REG = 0; break;
     case 8:
-        *RSPInfo.DPC_START_REG = m_GPR[m_OpCode.rt].UW;
-        *RSPInfo.DPC_CURRENT_REG = m_GPR[m_OpCode.rt].UW;
+        *m_DPC_START_REG = m_GPR[m_OpCode.rt].UW;
+        *m_DPC_CURRENT_REG = m_GPR[m_OpCode.rt].UW;
         break;
     case 9:
-        *RSPInfo.DPC_END_REG = m_GPR[m_OpCode.rt].UW;
+        *m_DPC_END_REG = m_GPR[m_OpCode.rt].UW;
         RDP_LogDlist();
-        if (RSPInfo.ProcessRdpList != NULL)
+        if (ProcessRdpList != nullptr)
         {
-            RSPInfo.ProcessRdpList();
+            ProcessRdpList();
         }
         break;
-    case 10: *RSPInfo.DPC_CURRENT_REG = m_GPR[m_OpCode.rt].UW; break;
+    case 10: *m_DPC_CURRENT_REG = m_GPR[m_OpCode.rt].UW; break;
     case 11:
         if ((m_GPR[m_OpCode.rt].W & DPC_CLR_XBUS_DMEM_DMA) != 0)
         {
-            *RSPInfo.DPC_STATUS_REG &= ~DPC_STATUS_XBUS_DMEM_DMA;
+            *m_DPC_STATUS_REG &= ~DPC_STATUS_XBUS_DMEM_DMA;
         }
         if ((m_GPR[m_OpCode.rt].W & DPC_SET_XBUS_DMEM_DMA) != 0)
         {
-            *RSPInfo.DPC_STATUS_REG |= DPC_STATUS_XBUS_DMEM_DMA;
+            *m_DPC_STATUS_REG |= DPC_STATUS_XBUS_DMEM_DMA;
         }
         if ((m_GPR[m_OpCode.rt].W & DPC_CLR_FREEZE) != 0)
         {
-            *RSPInfo.DPC_STATUS_REG &= ~DPC_STATUS_FREEZE;
+            *m_DPC_STATUS_REG &= ~DPC_STATUS_FREEZE;
         }
         if ((m_GPR[m_OpCode.rt].W & DPC_SET_FREEZE) != 0)
         {
-            *RSPInfo.DPC_STATUS_REG |= DPC_STATUS_FREEZE;
+            *m_DPC_STATUS_REG |= DPC_STATUS_FREEZE;
         }
         if ((m_GPR[m_OpCode.rt].W & DPC_CLR_FLUSH) != 0)
         {
-            *RSPInfo.DPC_STATUS_REG &= ~DPC_STATUS_FLUSH;
+            *m_DPC_STATUS_REG &= ~DPC_STATUS_FLUSH;
         }
         if ((m_GPR[m_OpCode.rt].W & DPC_SET_FLUSH) != 0)
         {
-            *RSPInfo.DPC_STATUS_REG |= DPC_STATUS_FLUSH;
+            *m_DPC_STATUS_REG |= DPC_STATUS_FLUSH;
         }
         if ((m_GPR[m_OpCode.rt].W & DPC_CLR_TMEM_CTR) != 0)
         { /* DisplayError("RSP: DPC_STATUS_REG: DPC_CLR_TMEM_CTR"); */
@@ -1747,7 +1760,7 @@ void RSPOp::Vector_VNOOP(void)
 void RSPOp::LBV(void)
 {
     uint32_t Address = (uint32_t)(m_GPR[m_OpCode.base].W + (m_OpCode.voffset << 0)) & 0xFFF;
-    m_Vect[m_OpCode.vt].u8((uint8_t)(15 - m_OpCode.del)) = *(RSPInfo.DMEM + (Address ^ 3));
+    m_Vect[m_OpCode.vt].u8((uint8_t)(15 - m_OpCode.del)) = *(m_DMEM + (Address ^ 3));
 }
 
 void RSPOp::LSV(void)
@@ -1756,7 +1769,7 @@ void RSPOp::LSV(void)
     uint8_t Length = std::min((uint8_t)2, (uint8_t)(16 - m_OpCode.del));
     for (uint8_t i = m_OpCode.del, n = (uint8_t)(Length + m_OpCode.del); i < n; i++, Address++)
     {
-        m_Vect[m_OpCode.vt].u8(15 - i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
+        m_Vect[m_OpCode.vt].u8(15 - i) = *(m_DMEM + ((Address ^ 3) & 0xFFF));
     }
 }
 
@@ -1766,7 +1779,7 @@ void RSPOp::LLV(void)
     uint8_t Length = std::min((uint8_t)4, (uint8_t)(16 - m_OpCode.del));
     for (uint8_t i = m_OpCode.del, n = (uint8_t)(Length + m_OpCode.del); i < n; i++, Address++)
     {
-        m_Vect[m_OpCode.vt].u8(15 - i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
+        m_Vect[m_OpCode.vt].u8(15 - i) = *(m_DMEM + ((Address ^ 3) & 0xFFF));
     }
 }
 
@@ -1776,7 +1789,7 @@ void RSPOp::LDV(void)
     uint8_t Length = std::min((uint8_t)8, (uint8_t)(16 - m_OpCode.del));
     for (uint8_t i = m_OpCode.del, n = (uint8_t)(Length + m_OpCode.del); i < n; i++, Address++)
     {
-        m_Vect[m_OpCode.vt].u8(15 - i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
+        m_Vect[m_OpCode.vt].u8(15 - i) = *(m_DMEM + ((Address ^ 3) & 0xFFF));
     }
 }
 
@@ -1786,7 +1799,7 @@ void RSPOp::LQV(void)
     uint8_t Length = std::min((uint8_t)(((Address + 0x10) & ~0xF) - Address), (uint8_t)(16 - m_OpCode.del));
     for (uint8_t i = m_OpCode.del, n = (uint8_t)(Length + m_OpCode.del); i < n; i++, Address++)
     {
-        m_Vect[m_OpCode.vt].u8(15 - i) = *(RSPInfo.DMEM + (Address ^ 3));
+        m_Vect[m_OpCode.vt].u8(15 - i) = *(m_DMEM + (Address ^ 3));
     }
 }
 
@@ -1797,7 +1810,7 @@ void RSPOp::LRV(void)
     Address &= 0xFF0;
     for (uint8_t i = Offset; i < 16; i++, Address++)
     {
-        m_Vect[m_OpCode.vt].u8(15 - i) = *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF));
+        m_Vect[m_OpCode.vt].u8(15 - i) = *(m_DMEM + ((Address ^ 3) & 0xFFF));
     }
 }
 
@@ -1809,7 +1822,7 @@ void RSPOp::LPV(void)
 
     for (uint8_t i = 0; i < 8; i++)
     {
-        m_Vect[m_OpCode.vt].u16(7 - i) = *(RSPInfo.DMEM + ((Address + ((Offset + i) & 0xF) ^ 3) & 0xFFF)) << 8;
+        m_Vect[m_OpCode.vt].u16(7 - i) = *(m_DMEM + ((Address + ((Offset + i) & 0xF) ^ 3) & 0xFFF)) << 8;
     }
 }
 
@@ -1821,7 +1834,7 @@ void RSPOp::LUV(void)
 
     for (uint8_t i = 0; i < 8; i++)
     {
-        m_Vect[m_OpCode.vt].s16(7 - i) = *(RSPInfo.DMEM + ((Address + ((Offset + i) & 0xF) ^ 3) & 0xFFF)) << 7;
+        m_Vect[m_OpCode.vt].s16(7 - i) = *(m_DMEM + ((Address + ((Offset + i) & 0xF) ^ 3) & 0xFFF)) << 7;
     }
 }
 
@@ -1833,7 +1846,7 @@ void RSPOp::LHV(void)
 
     for (uint8_t i = 0; i < 8; i++)
     {
-        m_Vect[m_OpCode.vt].s16(7 - i) = *(RSPInfo.DMEM + ((Address + ((Offset + (i << 1)) & 0xF) ^ 3) & 0xFFF)) << 7;
+        m_Vect[m_OpCode.vt].s16(7 - i) = *(m_DMEM + ((Address + ((Offset + (i << 1)) & 0xF) ^ 3) & 0xFFF)) << 7;
     }
 }
 
@@ -1847,8 +1860,8 @@ void RSPOp::LFV(void)
     RSPVector Temp;
     for (uint8_t i = 0; i < 4; i++)
     {
-        Temp.s16(i) = *(RSPInfo.DMEM + ((Address + ((Offset + (i << 2)) & 0xF) ^ 3) & 0xFFF)) << 7;
-        Temp.s16(i + 4) = *(RSPInfo.DMEM + ((Address + ((Offset + (i << 2) + 8) & 0xF) ^ 3) & 0xFFF)) << 7;
+        Temp.s16(i) = *(m_DMEM + ((Address + ((Offset + (i << 2)) & 0xF) ^ 3) & 0xFFF)) << 7;
+        Temp.s16(i + 4) = *(m_DMEM + ((Address + ((Offset + (i << 2) + 8) & 0xF) ^ 3) & 0xFFF)) << 7;
     }
 
     for (uint8_t i = m_OpCode.del; i < Length; i++)
@@ -1870,12 +1883,12 @@ void RSPOp::LTV(void)
     for (uint8_t i = 0; i < 8; i++)
     {
         uint8_t del = (((m_OpCode.del >> 1) + i) & 7) + (m_OpCode.rt & ~7);
-        m_Vect[del].s8(15 - (i * 2 + 0)) = *(RSPInfo.DMEM + ((Address++ ^ 3) & 0xFFF));
+        m_Vect[del].s8(15 - (i * 2 + 0)) = *(m_DMEM + ((Address++ ^ 3) & 0xFFF));
         if (Address == End)
         {
             Address = Start;
         }
-        m_Vect[del].s8(15 - (i * 2 + 1)) = *(RSPInfo.DMEM + ((Address++ ^ 3) & 0xFFF));
+        m_Vect[del].s8(15 - (i * 2 + 1)) = *(m_DMEM + ((Address++ ^ 3) & 0xFFF));
         if (Address == End)
         {
             Address = Start;
@@ -1888,7 +1901,7 @@ void RSPOp::LTV(void)
 void RSPOp::SBV(void)
 {
     uint32_t Address = (uint32_t)(m_GPR[m_OpCode.base].W + (m_OpCode.voffset << 0)) & 0xFFF;
-    *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF)) = m_Vect[m_OpCode.vt].u8((uint8_t)(15 - m_OpCode.del));
+    *(m_DMEM + ((Address ^ 3) & 0xFFF)) = m_Vect[m_OpCode.vt].u8((uint8_t)(15 - m_OpCode.del));
 }
 
 void RSPOp::SSV(void)
@@ -1896,7 +1909,7 @@ void RSPOp::SSV(void)
     uint32_t Address = (uint32_t)(m_GPR[m_OpCode.base].W + (m_OpCode.voffset << 1)) & 0xFFF;
     for (uint8_t i = m_OpCode.del, n = (uint8_t)(2 + m_OpCode.del); i < n; i++, Address++)
     {
-        *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF)) = m_Vect[m_OpCode.vt].u8(15 - (i & 0xF));
+        *(m_DMEM + ((Address ^ 3) & 0xFFF)) = m_Vect[m_OpCode.vt].u8(15 - (i & 0xF));
     }
 }
 
@@ -1905,7 +1918,7 @@ void RSPOp::SLV(void)
     uint32_t Address = (uint32_t)(m_GPR[m_OpCode.base].W + (m_OpCode.voffset << 2)) & 0xFFF;
     for (uint8_t i = m_OpCode.del, n = (uint8_t)(4 + m_OpCode.del); i < n; i++, Address++)
     {
-        *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF)) = m_Vect[m_OpCode.vt].u8(15 - (i & 0xF));
+        *(m_DMEM + ((Address ^ 3) & 0xFFF)) = m_Vect[m_OpCode.vt].u8(15 - (i & 0xF));
     }
 }
 
@@ -1914,7 +1927,7 @@ void RSPOp::SDV(void)
     uint32_t Address = (uint32_t)(m_GPR[m_OpCode.base].W + (m_OpCode.voffset << 3)) & 0xFFF;
     for (uint8_t i = m_OpCode.del; i < (8 + m_OpCode.del); i++, Address++)
     {
-        *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF)) = m_Vect[m_OpCode.vt].u8(15 - (i & 0xF));
+        *(m_DMEM + ((Address ^ 3) & 0xFFF)) = m_Vect[m_OpCode.vt].u8(15 - (i & 0xF));
     }
 }
 
@@ -1924,7 +1937,7 @@ void RSPOp::SQV(void)
     uint8_t Length = (uint8_t)(((Address + 0x10) & ~0xF) - Address);
     for (uint8_t i = m_OpCode.del; i < (Length + m_OpCode.del); i++, Address++)
     {
-        *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF)) = m_Vect[m_OpCode.vt].u8(15 - (i & 0xF));
+        *(m_DMEM + ((Address ^ 3) & 0xFFF)) = m_Vect[m_OpCode.vt].u8(15 - (i & 0xF));
     }
 }
 
@@ -1936,7 +1949,7 @@ void RSPOp::SRV(void)
     Address &= 0xFF0;
     for (uint8_t i = m_OpCode.del, n = (uint8_t)(Length + m_OpCode.del); i < n; i++, Address++)
     {
-        *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF)) = m_Vect[m_OpCode.vt].u8(15 - ((i + Offset) & 0xF));
+        *(m_DMEM + ((Address ^ 3) & 0xFFF)) = m_Vect[m_OpCode.vt].u8(15 - ((i + Offset) & 0xF));
     }
 }
 
@@ -1947,11 +1960,11 @@ void RSPOp::SPV(void)
     {
         if (((i)&0xF) < 8)
         {
-            *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF)) = m_Vect[m_OpCode.vt].u8(15 - ((i & 0xF) << 1));
+            *(m_DMEM + ((Address ^ 3) & 0xFFF)) = m_Vect[m_OpCode.vt].u8(15 - ((i & 0xF) << 1));
         }
         else
         {
-            *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u8(15 - ((i & 0x7) << 1)) << 1) + (m_Vect[m_OpCode.vt].u8(14 - ((i & 0x7) << 1)) >> 7);
+            *(m_DMEM + ((Address ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u8(15 - ((i & 0x7) << 1)) << 1) + (m_Vect[m_OpCode.vt].u8(14 - ((i & 0x7) << 1)) >> 7);
         }
     }
 }
@@ -1963,11 +1976,11 @@ void RSPOp::SUV(void)
     {
         if (((Count)&0xF) < 8)
         {
-            *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF)) = ((m_Vect[m_OpCode.vt].u8(15 - ((Count & 0x7) << 1)) << 1) + (m_Vect[m_OpCode.vt].u8(14 - ((Count & 0x7) << 1)) >> 7)) & 0xFF;
+            *(m_DMEM + ((Address ^ 3) & 0xFFF)) = ((m_Vect[m_OpCode.vt].u8(15 - ((Count & 0x7) << 1)) << 1) + (m_Vect[m_OpCode.vt].u8(14 - ((Count & 0x7) << 1)) >> 7)) & 0xFF;
         }
         else
         {
-            *(RSPInfo.DMEM + ((Address ^ 3) & 0xFFF)) = m_Vect[m_OpCode.vt].u8(15 - ((Count & 0x7) << 1));
+            *(m_DMEM + ((Address ^ 3) & 0xFFF)) = m_Vect[m_OpCode.vt].u8(15 - ((Count & 0x7) << 1));
         }
     }
 }
@@ -1980,7 +1993,7 @@ void RSPOp::SHV(void)
     for (uint32_t i = 0; i < 16; i += 2)
     {
         uint8_t Value = (m_Vect[m_OpCode.vt].u8(15 - ((m_OpCode.del + i) & 15)) << 1) | (m_Vect[m_OpCode.vt].u8(15 - ((m_OpCode.del + i + 1) & 15)) >> 7);
-        *(RSPInfo.DMEM + ((Address + (Offset + i & 15) ^ 3) & 0xFFF)) = Value;
+        *(m_DMEM + ((Address + (Offset + i & 15) ^ 3) & 0xFFF)) = Value;
     }
 }
 
@@ -1994,52 +2007,52 @@ void RSPOp::SFV(void)
     {
     case 0:
     case 15:
-        *(RSPInfo.DMEM + (((Address + Offset) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(7) >> 7) & 0xFF;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 4) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(6) >> 7) & 0xFF;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 8) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(5) >> 7) & 0xFF;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 12) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(4) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + Offset) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(7) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + ((Offset + 4) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(6) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + ((Offset + 8) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(5) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + ((Offset + 12) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(4) >> 7) & 0xFF;
         break;
     case 1:
-        *(RSPInfo.DMEM + (((Address + Offset) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(1) >> 7) & 0xFF;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 4) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(0) >> 7) & 0xFF;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 8) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(3) >> 7) & 0xFF;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 12) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(2) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + Offset) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(1) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + ((Offset + 4) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(0) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + ((Offset + 8) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(3) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + ((Offset + 12) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(2) >> 7) & 0xFF;
         break;
     case 4:
-        *(RSPInfo.DMEM + (((Address + Offset) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(6) >> 7) & 0xFF;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 4) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(5) >> 7) & 0xFF;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 8) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(4) >> 7) & 0xFF;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 12) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(7) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + Offset) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(6) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + ((Offset + 4) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(5) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + ((Offset + 8) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(4) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + ((Offset + 12) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(7) >> 7) & 0xFF;
         break;
     case 5:
-        *(RSPInfo.DMEM + (((Address + Offset) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(0) >> 7) & 0xFF;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 4) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(3) >> 7) & 0xFF;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 8) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(2) >> 7) & 0xFF;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 12) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(1) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + Offset) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(0) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + ((Offset + 4) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(3) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + ((Offset + 8) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(2) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + ((Offset + 12) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(1) >> 7) & 0xFF;
         break;
     case 8:
-        *(RSPInfo.DMEM + (((Address + Offset) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(3) >> 7) & 0xFF;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 4) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(2) >> 7) & 0xFF;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 8) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(1) >> 7) & 0xFF;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 12) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(0) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + Offset) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(3) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + ((Offset + 4) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(2) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + ((Offset + 8) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(1) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + ((Offset + 12) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(0) >> 7) & 0xFF;
         break;
     case 11:
-        *(RSPInfo.DMEM + (((Address + Offset) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(4) >> 7) & 0xFF;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 4) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(7) >> 7) & 0xFF;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 8) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(6) >> 7) & 0xFF;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 12) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(5) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + Offset) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(4) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + ((Offset + 4) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(7) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + ((Offset + 8) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(6) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + ((Offset + 12) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(5) >> 7) & 0xFF;
         break;
     case 12:
-        *(RSPInfo.DMEM + (((Address + Offset) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(2) >> 7) & 0xFF;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 4) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(1) >> 7) & 0xFF;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 8) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(0) >> 7) & 0xFF;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 12) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(3) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + Offset) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(2) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + ((Offset + 4) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(1) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + ((Offset + 8) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(0) >> 7) & 0xFF;
+        *(m_DMEM + (((Address + ((Offset + 12) & 0xF)) ^ 3) & 0xFFF)) = (m_Vect[m_OpCode.vt].u16(3) >> 7) & 0xFF;
         break;
     default:
-        *(RSPInfo.DMEM + (((Address + Offset) ^ 3) & 0xFFF)) = 0;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 4) & 0xF)) ^ 3) & 0xFFF)) = 0;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 8) & 0xF) & 0xFFF)) ^ 3)) = 0;
-        *(RSPInfo.DMEM + (((Address + ((Offset + 12) & 0xF) & 0xFFF)) ^ 3)) = 0;
+        *(m_DMEM + (((Address + Offset) ^ 3) & 0xFFF)) = 0;
+        *(m_DMEM + (((Address + ((Offset + 4) & 0xF)) ^ 3) & 0xFFF)) = 0;
+        *(m_DMEM + (((Address + ((Offset + 8) & 0xF) & 0xFFF)) ^ 3)) = 0;
+        *(m_DMEM + (((Address + ((Offset + 12) & 0xF) & 0xFFF)) ^ 3)) = 0;
         break;
     }
 }
@@ -2053,8 +2066,8 @@ void RSPOp::STV(void)
     for (uint32_t i = 0; i < 16; i += 2)
     {
         uint8_t Del = (uint8_t)((m_OpCode.vt & ~7) + (i >> 1));
-        *(RSPInfo.DMEM + (((Address + (Offset + i & 15) ^ 3)) & 0xFFF)) = m_Vect[Del].s8(15 - ((Element + i) & 15));
-        *(RSPInfo.DMEM + (((Address + (Offset + i + 1 & 15) ^ 3)) & 0xFFF)) = m_Vect[Del].s8(15 - ((Element + i + 1) & 15));
+        *(m_DMEM + (((Address + (Offset + i & 15) ^ 3)) & 0xFFF)) = m_Vect[Del].s8(15 - ((Element + i) & 15));
+        *(m_DMEM + (((Address + (Offset + i + 1 & 15) ^ 3)) & 0xFFF)) = m_Vect[Del].s8(15 - ((Element + i + 1) & 15));
     }
 }
 
@@ -2065,7 +2078,7 @@ void RSPOp::SWV(void)
     Address &= 0xFF8;
     for (uint8_t i = m_OpCode.del, n = (uint8_t)(16 + m_OpCode.del); i < n; i++, Offset++)
     {
-        *(RSPInfo.DMEM + ((Address + (Offset & 0xF)) ^ 3)) = m_Vect[m_OpCode.vt].s8(15 - (i & 0xF));
+        *(m_DMEM + ((Address + (Offset & 0xF)) ^ 3)) = m_Vect[m_OpCode.vt].s8(15 - (i & 0xF));
     }
 }
 
@@ -2081,5 +2094,5 @@ void RSPOp::UnknownOpcode(void)
 
 uint32_t RSPOp::BranchIf(bool Condition)
 {
-    return (*PrgCount + 4 + (Condition ? ((short)m_OpCode.offset << 2) : 4)) & 0xFFC;
+    return (*m_SP_PC_REG + 4 + (Condition ? ((short)m_OpCode.offset << 2) : 4)) & 0xFFC;
 }

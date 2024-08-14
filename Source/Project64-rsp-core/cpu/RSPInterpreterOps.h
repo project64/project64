@@ -184,6 +184,18 @@ private:
     CRSPSystem & m_System;
     RSPOpcode & m_OpCode;
     CRSPRegisters & m_Reg;
+    uint32_t *& m_MI_INTR_REG;
+    uint32_t *& m_SP_PC_REG;
+    uint32_t *& m_SP_STATUS_REG;
+    uint32_t *& m_SP_DMA_FULL_REG;
+    uint32_t *& m_SP_DMA_BUSY_REG;
+    uint32_t *& m_SP_SEMAPHORE_REG;
+    uint32_t *& m_DPC_START_REG;
+    uint32_t *& m_DPC_END_REG;
+    uint32_t *& m_DPC_CURRENT_REG;
+    uint32_t *& m_DPC_STATUS_REG;
+    uint32_t *& m_DPC_CLOCK_REG;
+    uint8_t *& m_DMEM;
     UWORD32 * m_GPR;
     UDWORD * m_ACCUM;
     UWORD32 * m_Flags;
@@ -191,4 +203,7 @@ private:
     RSPFlag &VCOL, &VCOH;
     RSPFlag &VCCL, &VCCH;
     RSPFlag & VCE;
+
+    void (*&CheckInterrupts)(void);
+    void (*&ProcessRdpList)(void);
 };
