@@ -2172,8 +2172,8 @@ void CRSPRecompilerOps::Cop0_MF(void)
         PushImm32(str, m_OpCode.rd);
         sprintf(str, "%X", CompilePC);
         PushImm32(str, CompilePC);
-        Call_Direct((void *)RDP_LogMF0, "RDP_LogMF0");
-        AddConstToX86Reg(x86_ESP, 8);
+        MoveConstToX86reg((uint32_t)(&RDPLog), x86_ECX);
+        Call_Direct(AddressOf(&CRDPLog::LogMF0), "CRDPLog::LogMF0");
     }
 
 #ifndef Compile_Cop0
@@ -2306,8 +2306,8 @@ void CRSPRecompilerOps::Cop0_MT(void)
         PushImm32(str, m_OpCode.rd);
         sprintf(str, "%X", CompilePC);
         PushImm32(str, CompilePC);
-        Call_Direct((void *)RDP_LogMT0, "RDP_LogMT0");
-        AddConstToX86Reg(x86_ESP, 12);
+        MoveConstToX86reg((uint32_t)(&RDPLog), x86_ECX);
+        Call_Direct(AddressOf(&CRDPLog::LogMT0), "CRDPLog::LogMT0");
     }
 
 #ifndef Compile_Cop0
@@ -2397,7 +2397,8 @@ void CRSPRecompilerOps::Cop0_MT(void)
 
         if (LogRDP)
         {
-            Call_Direct((void *)RDP_LogDlist, "RDP_LogDlist");
+            MoveConstToX86reg((uint32_t)(&RDPLog), x86_ECX);
+            Call_Direct(AddressOf(&CRDPLog::LogDlist), "CRDPLog::LogDlist");
         }
 
         if (RSPInfo.ProcessRdpList != NULL)

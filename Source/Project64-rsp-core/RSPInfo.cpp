@@ -159,7 +159,7 @@ void RspRomClosed(void)
     }
     g_RSPRegisterHandler.reset(nullptr);
     ClearAllx86Code();
-    StopRDPLog();
+    RDPLog.StopLog();
     StopCPULog();
 
 #ifdef GenerateLog

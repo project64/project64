@@ -351,11 +351,11 @@ void ProcessMenuItem(int32_t ID)
             LogRDP = !Checked;
             if (LogRDP)
             {
-                StartRDPLog();
+                RDPLog.StartLog();
             }
             else
             {
-                StopRDPLog();
+                RDPLog.StopLog();
             }
         }
         break;
@@ -611,7 +611,7 @@ EXPORT void EnableDebugging(int Enabled)
 #endif
     if (LogRDP)
     {
-        StartRDPLog();
+        RDPLog.StartLog();
     }
     if (LogX86Code)
     {

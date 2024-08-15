@@ -6,9 +6,10 @@
 #include <Common/path.h>
 #include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/Settings/RspSettings.h>
+#include <Project64-rsp-core/cpu/RspSystem.h>
 #include <Settings/Settings.h>
 
-CLog * RDPLog = nullptr;
+CRDPLog RDPLog(RSPSystem);
 CLog * CPULog = nullptr;
 
 void StartCPULog(void)
@@ -61,31 +62,44 @@ void CPU_Message(const char * Message, ...)
     CPULog->Log(Msg.c_str());
 }
 
-void StartRDPLog(void)
+CRDPLog::CRDPLog(CRSPSystem & System) :
+    m_System(System),
+    m_Log(nullptr),
+    m_DPC_START_REG(System.m_DPC_START_REG),
+    m_DPC_END_REG(System.m_DPC_END_REG),
+    m_DPC_CURRENT_REG(System.m_DPC_CURRENT_REG),
+    m_DPC_STATUS_REG(System.m_DPC_STATUS_REG),
+    m_DPC_CLOCK_REG(System.m_DPC_CLOCK_REG),
+    m_RDRAM(System.m_RDRAM),
+    m_DMEM(System.m_DMEM)
 {
-    if (RDPLog == nullptr && Set_DirectoryLog != 0)
+}
+
+void CRDPLog::StartLog(void)
+{
+    if (m_Log == nullptr && Set_DirectoryLog != 0)
     {
         char LogDir[260];
         CPath LogFilePath(GetSystemSettingSz(Set_DirectoryLog, LogDir, sizeof(LogDir)), "RDP_Log.txt");
-        RDPLog = new CLog;
-        RDPLog->Open(LogFilePath);
-        RDPLog->SetMaxFileSize(400 * 1024 * 1024);
+        m_Log = new CLog;
+        m_Log->Open(LogFilePath);
+        m_Log->SetMaxFileSize(400 * 1024 * 1024);
         //		RDPLog->SetFlush(true);
     }
 }
 
-void StopRDPLog(void)
+void CRDPLog::StopLog(void)
 {
-    if (RDPLog != NULL)
+    if (m_Log != nullptr)
     {
-        delete RDPLog;
-        RDPLog = NULL;
+        delete m_Log;
+        m_Log = nullptr;
     }
 }
 
-void RDP_Message(const char * Message, ...)
+void CRDPLog::Message(const char * Message, ...)
 {
-    if (RDPLog == NULL)
+    if (m_Log == nullptr)
     {
         return;
     }
@@ -99,56 +113,56 @@ void RDP_Message(const char * Message, ...)
 
     Msg += "\r\n";
 
-    RDPLog->Log(Msg.c_str());
+    m_Log->Log(Msg.c_str());
 }
 
-void RDP_LogMT0(uint32_t PC, int Reg, uint32_t Value)
+void CRDPLog::LogMT0(uint32_t PC, int Reg, uint32_t Value)
 {
-    if (RDPLog == NULL)
+    if (m_Log == nullptr)
     {
         return;
     }
     switch (Reg)
     {
-    case 0: RDP_Message("%03X: Stored 0x%08X into SP_MEM_ADDR_REG", PC, Value); break;
-    case 1: RDP_Message("%03X: Stored 0x%08X into SP_DRAM_ADDR_REG", PC, Value); break;
-    case 2: RDP_Message("%03X: Stored 0x%08X into SP_RD_LEN_REG", PC, Value); break;
-    case 3: RDP_Message("%03X: Stored 0x%08X into SP_WR_LEN_REG", PC, Value); break;
-    case 4: RDP_Message("%03X: Stored 0x%08X into SP_STATUS_REG", PC, Value); break;
-    case 5: RDP_Message("%03X: Stored 0x%08X into Reg 5 ???", PC, Value); break;
-    case 6: RDP_Message("%03X: Stored 0x%08X into Reg 6 ???", PC, Value); break;
-    case 7: RDP_Message("%03X: Stored 0x%08X into SP_SEMAPHORE_REG", PC, Value); break;
-    case 8: RDP_Message("%03X: Stored 0x%08X into DPC_START_REG", PC, Value); break;
-    case 9: RDP_Message("%03X: Stored 0x%08X into DPC_END_REG", PC, Value); break;
-    case 10: RDP_Message("%03X: Stored 0x%08X into DPC_CURRENT_REG", PC, Value); break;
-    case 11: RDP_Message("%03X: Stored 0x%08X into DPC_STATUS_REG", PC, Value); break;
-    case 12: RDP_Message("%03X: Stored 0x%08X into DPC_CLOCK_REG", PC, Value); break;
+    case 0: Message("%03X: Stored 0x%08X into SP_MEM_ADDR_REG", PC, Value); break;
+    case 1: Message("%03X: Stored 0x%08X into SP_DRAM_ADDR_REG", PC, Value); break;
+    case 2: Message("%03X: Stored 0x%08X into SP_RD_LEN_REG", PC, Value); break;
+    case 3: Message("%03X: Stored 0x%08X into SP_WR_LEN_REG", PC, Value); break;
+    case 4: Message("%03X: Stored 0x%08X into SP_STATUS_REG", PC, Value); break;
+    case 5: Message("%03X: Stored 0x%08X into Reg 5 ???", PC, Value); break;
+    case 6: Message("%03X: Stored 0x%08X into Reg 6 ???", PC, Value); break;
+    case 7: Message("%03X: Stored 0x%08X into SP_SEMAPHORE_REG", PC, Value); break;
+    case 8: Message("%03X: Stored 0x%08X into DPC_START_REG", PC, Value); break;
+    case 9: Message("%03X: Stored 0x%08X into DPC_END_REG", PC, Value); break;
+    case 10: Message("%03X: Stored 0x%08X into DPC_CURRENT_REG", PC, Value); break;
+    case 11: Message("%03X: Stored 0x%08X into DPC_STATUS_REG", PC, Value); break;
+    case 12: Message("%03X: Stored 0x%08X into DPC_CLOCK_REG", PC, Value); break;
     }
 }
 
-void RDP_LogMF0(uint32_t PC, int Reg)
+void CRDPLog::LogMF0(uint32_t PC, int Reg)
 {
     switch (Reg)
     {
-    case 8: RDP_Message("%03X: Read 0x%08X from DPC_START_REG", PC, *RSPInfo.DPC_START_REG); break;
-    case 9: RDP_Message("%03X: Read 0x%08X from DPC_END_REG", PC, *RSPInfo.DPC_END_REG); break;
-    case 10: RDP_Message("%03X: Read 0x%08X from DPC_CURRENT_REG", PC, *RSPInfo.DPC_CURRENT_REG); break;
-    case 11: RDP_Message("%03X: Read 0x%08X from DPC_STATUS_REG", PC, *RSPInfo.DPC_STATUS_REG); break;
-    case 12: RDP_Message("%03X: Read 0x%08X from DPC_CLOCK_REG", PC, *RSPInfo.DPC_CLOCK_REG); break;
+    case 8: Message("%03X: Read 0x%08X from DPC_START_REG", PC, *m_DPC_START_REG); break;
+    case 9: Message("%03X: Read 0x%08X from DPC_END_REG", PC, *m_DPC_END_REG); break;
+    case 10: Message("%03X: Read 0x%08X from DPC_CURRENT_REG", PC, *m_DPC_CURRENT_REG); break;
+    case 11: Message("%03X: Read 0x%08X from DPC_STATUS_REG", PC, *m_DPC_STATUS_REG); break;
+    case 12: Message("%03X: Read 0x%08X from DPC_CLOCK_REG", PC, *m_DPC_CLOCK_REG); break;
     }
 }
 
-void RDP_LogDlist(void)
+void CRDPLog::LogDlist(void)
 {
-    if (RDPLog == NULL)
+    if (m_Log == nullptr)
     {
         return;
     }
-    uint32_t Length = *RSPInfo.DPC_END_REG - *RSPInfo.DPC_CURRENT_REG;
-    RDP_Message("    Dlist length = %d bytes", Length);
+    uint32_t Length = *m_DPC_END_REG - *m_DPC_CURRENT_REG;
+    Message("    Dlist length = %d bytes", Length);
 
-    uint32_t Pos = *RSPInfo.DPC_CURRENT_REG;
-    while (Pos < *RSPInfo.DPC_END_REG)
+    uint32_t Pos = *m_DPC_CURRENT_REG;
+    while (Pos < *m_DPC_END_REG)
     {
         char Hex[100], Ascii[30];
         uint32_t count;
@@ -156,10 +170,10 @@ void RDP_LogDlist(void)
         memset(&Hex, 0, sizeof(Hex));
         memset(&Ascii, 0, sizeof(Ascii));
 
-        uint8_t * Mem = RSPInfo.DMEM;
-        if ((*RSPInfo.DPC_STATUS_REG & DPC_STATUS_XBUS_DMEM_DMA) == 0)
+        uint8_t * Mem = m_DMEM;
+        if ((*m_DPC_STATUS_REG & DPC_STATUS_XBUS_DMEM_DMA) == 0)
         {
-            Mem = RSPInfo.RDRAM;
+            Mem = m_RDRAM;
         }
 
         for (count = 0; count < 0x10; count++, Pos++)
@@ -188,13 +202,6 @@ void RDP_LogDlist(void)
                 strcat(Ascii, tmp);
             }
         }
-        RDP_Message("   %s %s", Hex, Ascii);
+        Message("   %s %s", Hex, Ascii);
     }
-}
-
-void RDP_LogLoc(uint32_t /*PC*/)
-{
-    //	RDP_Message("%03X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X",PC, RSP_GPR[26].UW, *(uint32_t *)&RSPInfo.IMEM[0xDBC],
-    //		RSP_Flags[0].UW, RSP_Vect[0].UW[0],RSP_Vect[0].UW[1],RSP_Vect[0].UW[2],RSP_Vect[0].UW[3],
-    //		RSP_Vect[28].UW[0],RSP_Vect[28].UW[1],RSP_Vect[28].UW[2],RSP_Vect[28].UW[3],RSP_Vect[31].UW[0]);
 }

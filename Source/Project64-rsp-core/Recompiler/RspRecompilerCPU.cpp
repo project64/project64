@@ -874,15 +874,6 @@ void CRSPRecompiler::CompilerRSPBlock(void)
 #endif
         RSP_LW_IMEM(CompilePC, &m_OpCode.Value);
 
-        if (LogRDP && NextInstruction != RSPPIPELINE_DELAY_SLOT_DONE)
-        {
-            char str[40];
-            sprintf(str, "%X", CompilePC);
-            PushImm32(str, CompilePC);
-            Call_Direct((void *)RDP_LogLoc, "RDP_LogLoc");
-            AddConstToX86Reg(x86_ESP, 4);
-        }
-
         if (m_OpCode.Value == 0xFFFFFFFF)
         {
             // I think this pops up an unknown OP dialog

@@ -612,28 +612,11 @@ void CRSPRecompilerOps::Compile_Section_000(void)
 
     CPU_Message("Compiling: %X to ..., RSP optimization $000", CompilePC);
     CPU_Message("  %X %s", CompilePC + 0x00, RSPInstruction(CompilePC + 0x00, vmudn.Value).NameAndParam().c_str());
-    if (LogRDP)
-    {
-        char str[40];
-        sprintf(str, "%X", CompilePC);
-        PushImm32(str, CompilePC);
-        Call_Direct((void *)RDP_LogLoc, "RDP_LogLoc");
-        AddConstToX86Reg(x86_ESP, 4);
-    }
 
     for (i = 0; i < Section_000_VMADN; i++)
     {
         RSP_LW_IMEM(CompilePC + 0x04 + (i * 4), &vmadn.Value);
         CPU_Message("  %X %s", CompilePC + 0x04 + (i * 4), RSPInstruction(CompilePC + 0x04 + (i * 4), vmadn.Value).NameAndParam().c_str());
-
-        if (LogRDP)
-        {
-            char str[40];
-            sprintf(str, "%X", CompilePC + 0x04 + (i * 4));
-            PushImm32(str, CompilePC + 0x04 + (i * 4));
-            Call_Direct((void *)RDP_LogLoc, "RDP_LogLoc");
-            AddConstToX86Reg(x86_ESP, 4);
-        }
     }
 
     RSP_Sections_VMUDN(vmudn, Low16BitAccum);
@@ -849,14 +832,6 @@ void CRSPRecompilerOps::Compile_Section_002(void)
     {
         RSP_LW_IMEM(CompilePC + (Count * 0x04), &op[Count].Value);
         CPU_Message("  %X %s", CompilePC + (Count * 0x04), RSPInstruction(CompilePC + (Count * 0x04), op[Count].Value).NameAndParam().c_str());
-        if (LogRDP)
-        {
-            char str[40];
-            sprintf(str, "%X", CompilePC + (Count * 0x04));
-            PushImm32(str, CompilePC + (Count * 0x04));
-            Call_Direct((void *)RDP_LogLoc, "RDP_LogLoc");
-            AddConstToX86Reg(x86_ESP, 4);
-        }
     }
 
     vmudh = op[0];

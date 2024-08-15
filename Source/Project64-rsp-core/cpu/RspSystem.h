@@ -11,6 +11,7 @@ class CRSPSystem
     friend class CRSPRecompilerOps;
     friend class CRSPRecompiler;
     friend class RSPDebuggerUI;
+    friend class CRDPLog;
     friend void UpdateRSPRegistersScreen(void);
 
 public:

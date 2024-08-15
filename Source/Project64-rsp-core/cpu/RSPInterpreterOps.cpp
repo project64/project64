@@ -849,7 +849,7 @@ void RSPOp::Cop0_MT(void)
 {
     if (LogRDP && g_CPUCore == InterpreterCPU)
     {
-        RDP_LogMT0(*m_SP_PC_REG, m_OpCode.rd, m_GPR[m_OpCode.rt].UW);
+        RDPLog.LogMT0(*m_SP_PC_REG, m_OpCode.rd, m_GPR[m_OpCode.rt].UW);
     }
     switch (m_OpCode.rd)
     {
@@ -865,7 +865,7 @@ void RSPOp::Cop0_MT(void)
         break;
     case 9:
         *m_DPC_END_REG = m_GPR[m_OpCode.rt].UW;
-        RDP_LogDlist();
+        RDPLog.LogDlist();
         if (ProcessRdpList != nullptr)
         {
             ProcessRdpList();

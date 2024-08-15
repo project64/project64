@@ -11,7 +11,6 @@
 #include <Project64-rsp/breakpoint.h>
 
 void UpdateRSPRegistersScreen(void);
-void RDP_LogLoc(DWORD /*PC*/);
 
 RSPDebuggerUI::RSPDebuggerUI(CRSPSystem & System) :
     m_System(System),
@@ -93,8 +92,6 @@ void RSPDebuggerUI::BeforeExecuteOp(void)
             }
         }
     }
-
-    RDP_LogLoc(*PrgCount);
 }
 
 void RSPDebuggerUI::UnknownOpcode(void)
@@ -124,6 +121,6 @@ void RSPDebuggerUI::RDP_LogMF0(uint32_t PC, uint32_t Reg)
 {
     if (LogRDP && g_CPUCore == InterpreterCPU)
     {
-        ::RDP_LogMF0(PC, Reg);
+        RDPLog.LogMF0(PC, Reg);
     }
 }
