@@ -168,6 +168,7 @@ private:
 
     void RSP_Element2Mmx(int MmxReg);
     void RSP_MultiElement2Mmx(int MmxReg1, int MmxReg2);
+    void CompileBranchExit(uint32_t TargetPC, uint32_t ContinuePC);
     bool Compile_Vector_VMULF_MMX(void);
     bool Compile_Vector_VMUDL_MMX(void);
     bool Compile_Vector_VMUDM_MMX(void);

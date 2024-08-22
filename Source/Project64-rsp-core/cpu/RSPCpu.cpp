@@ -12,7 +12,7 @@
 class RSPRegisterHandler;
 
 UDWORD EleSpec[16], Indx[16];
-uint32_t *PrgCount, NextInstruction, RSP_Running;
+uint32_t NextInstruction, RSP_Running;
 
 void BuildRecompilerCPU(void);
 
@@ -97,7 +97,6 @@ void Build_RSP(void)
             Indx[i].B[7 - z] = Temp;
         }
     }
-    PrgCount = RSPInfo.SP_PC_REG;
 }
 
 /*

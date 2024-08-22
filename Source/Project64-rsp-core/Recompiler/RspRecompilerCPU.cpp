@@ -663,7 +663,7 @@ Resolves all the collected branches, x86 style
 
 void CRSPRecompiler::LinkBranches(RSP_BLOCK * Block)
 {
-    uint32_t OrigPrgCount = *PrgCount;
+    uint32_t OrigPrgCount = *m_System.m_SP_PC_REG;
     uint32_t Count, Target;
     uint32_t * JumpWord;
     uint8_t * X86Code;
@@ -682,7 +682,7 @@ void CRSPRecompiler::LinkBranches(RSP_BLOCK * Block)
 
         if (!X86Code)
         {
-            *PrgCount = Target;
+            *m_System.m_SP_PC_REG = Target;
             CPU_Message("");
             CPU_Message("===== (Generate code: %04X) =====", Target);
             Save = *Block;
@@ -703,7 +703,7 @@ void CRSPRecompiler::LinkBranches(RSP_BLOCK * Block)
         CPU_Message("Linked RSP branch from x86: %08X, to RSP: %X / x86: %08X",
                     JumpWord, Target, X86Code);
     }
-    *PrgCount = OrigPrgCount;
+    *m_System.m_SP_PC_REG = OrigPrgCount;
     CPU_Message("***** Done linking branches *****");
     CPU_Message("");
 }
@@ -813,7 +813,7 @@ void CRSPRecompiler::CompilerRSPBlock(void)
     uint8_t * IMEM_SAVE = (uint8_t *)malloc(0x1000);
     const size_t X86BaseAddress = (size_t)RecompPos;
     NextInstruction = RSPPIPELINE_NORMAL;
-    CompilePC = *PrgCount;
+    CompilePC = *m_System.m_SP_PC_REG;
 
     memset(&m_CurrentBlock, 0, sizeof(m_CurrentBlock));
     m_CurrentBlock.StartPC = CompilePC;
@@ -946,15 +946,15 @@ void CRSPRecompiler::CompilerRSPBlock(void)
             break;
         }
 
-        if (CompilePC >= EndPC && *PrgCount != 0 && EndPC != *PrgCount)
+        if (CompilePC >= EndPC && *m_System.m_SP_PC_REG != 0 && EndPC != *m_System.m_SP_PC_REG)
         {
             CompilePC = 0;
-            EndPC = *PrgCount;
+            EndPC = *m_System.m_SP_PC_REG;
         }
     } while (NextInstruction != RSPPIPELINE_FINISH_BLOCK && (CompilePC < EndPC || NextInstruction == RSPPIPELINE_DELAY_SLOT || NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE));
     if (CompilePC >= EndPC)
     {
-        MoveConstToVariable((CompilePC & 0xFFC), PrgCount, "RSP PC");
+        MoveConstToVariable((CompilePC & 0xFFC), m_System.m_SP_PC_REG, "RSP PC");
         Ret();
     }
     CPU_Message("===== End of recompiled code =====");
@@ -979,7 +979,7 @@ void CRSPRecompiler::RunCPU(void)
 
     while (RSP_Running)
     {
-        Block = (uint8_t *)*(JumpTable + (*PrgCount >> 2));
+        Block = (uint8_t *)*(JumpTable + (*m_System.m_SP_PC_REG >> 2));
 
         if (Block == NULL)
         {
@@ -1010,7 +1010,7 @@ void CRSPRecompiler::RunCPU(void)
             CompilerRSPBlock();
 #endif
 
-            Block = (uint8_t *)*(JumpTable + (*PrgCount >> 2));
+            Block = (uint8_t *)*(JumpTable + (*m_System.m_SP_PC_REG >> 2));
 
             // We are done compiling, but we may have references
             // to fill in still either from this block, or jumps
@@ -1025,7 +1025,7 @@ void CRSPRecompiler::RunCPU(void)
 
         if (Profiling && IndvidualBlock)
         {
-            StartTimer(*PrgCount);
+            StartTimer(*m_System.m_SP_PC_REG);
         }
 
 #if defined(_M_IX86) && defined(_MSC_VER)

@@ -123,7 +123,7 @@ int DisplayRSPCommand(DWORD location, int InsertPos)
     RSP_LW_IMEM(location, &OpCode);
 
     status = 0;
-    if (location == *PrgCount)
+    if (location == *RSPInfo.SP_PC_REG)
     {
         status = RSP_Status_PC;
     }
@@ -320,7 +320,7 @@ void DrawRSPCommand(LPARAM lParam)
         DisplayError("Failed to sprintf from item %u.", ditem->itemID);
     }
 
-    if (*PrgCount == RSPCommandLine[ditem->itemID].Location)
+    if (*RSPInfo.SP_PC_REG == RSPCommandLine[ditem->itemID].Location)
     {
         ResetColor = true;
         hBrush = (HBRUSH)(COLOR_HIGHLIGHT + 1);
@@ -335,7 +335,7 @@ void DrawRSPCommand(LPARAM lParam)
     if (CheckForRSPBPoint(RSPCommandLine[ditem->itemID].Location))
     {
         ResetColor = true;
-        if (*PrgCount == RSPCommandLine[ditem->itemID].Location)
+        if (*RSPInfo.SP_PC_REG == RSPCommandLine[ditem->itemID].Location)
         {
             SetTextColor(ditem->hDC, RGB(255, 0, 0));
         }
@@ -417,11 +417,11 @@ void Enable_RSP_Commands_Window(void)
         si.fMask = SIF_RANGE | SIF_POS | SIF_PAGE;
         si.nMin = 0;
         si.nMax = (0x1000 >> 2) - 1;
-        si.nPos = (*PrgCount >> 2);
+        si.nPos = (*RSPInfo.SP_PC_REG >> 2);
         si.nPage = 30;
         SetScrollInfo(hScrlBar, SB_CTL, &si, true);
 
-        SetRSPCommandViewto(*PrgCount);
+        SetRSPCommandViewto(*RSPInfo.SP_PC_REG);
         SetForegroundWindow(RSPCommandshWnd);
     }
 }
@@ -743,7 +743,7 @@ void RSP_Commands_Setup(HWND hDlg)
         SendMessage(hList, LB_SETITEMHEIGHT, (WPARAM)0, (LPARAM)MAKELPARAM(14, 0));
     }
 
-    sprintf(Location, "%03X", PrgCount ? *PrgCount : 0);
+    sprintf(Location, "%03X", RSPInfo.SP_PC_REG ? *RSPInfo.SP_PC_REG : 0);
     hAddress = CreateWindowExA(0, "EDIT", Location, WS_CHILD | ES_UPPERCASE | WS_VISIBLE | WS_BORDER | WS_TABSTOP, 375, 17, 36, 18, hDlg, (HMENU)IDC_ADDRESS, (HINSTANCE)hinstDLL, NULL);
     if (hAddress)
     {

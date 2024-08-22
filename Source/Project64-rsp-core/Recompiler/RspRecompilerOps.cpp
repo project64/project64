@@ -141,7 +141,7 @@ void BreakPoint()
     *(RecompPos++) = 0xCC;
 }
 
-void CompileBranchExit(uint32_t TargetPC, uint32_t ContinuePC)
+void CRSPRecompilerOps::CompileBranchExit(uint32_t TargetPC, uint32_t ContinuePC)
 {
     uint32_t * X86Loc = NULL;
 
@@ -149,12 +149,12 @@ void CompileBranchExit(uint32_t TargetPC, uint32_t ContinuePC)
     CompConstToVariable(true, &BranchCompare, "BranchCompare");
     JeLabel32("BranchEqual", 0);
     X86Loc = (uint32_t *)(RecompPos - 4);
-    MoveConstToVariable(ContinuePC, PrgCount, "RSP PC");
+    MoveConstToVariable(ContinuePC, m_System.m_SP_PC_REG, "RSP PC");
     Ret();
 
     CPU_Message("BranchEqual:");
     x86_SetBranch32b(X86Loc, RecompPos);
-    MoveConstToVariable(TargetPC, PrgCount, "RSP PC");
+    MoveConstToVariable(TargetPC, m_System.m_SP_PC_REG, "RSP PC");
     Ret();
 }
 
@@ -198,7 +198,7 @@ void CRSPRecompilerOps::J(void)
     }
     else if (NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE)
     {
-        MoveConstToVariable((m_OpCode.target << 2) & 0xFFC, PrgCount, "RSP PC");
+        MoveConstToVariable((m_OpCode.target << 2) & 0xFFC, m_System.m_SP_PC_REG, "RSP PC");
         NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
         Ret();
     }
@@ -225,7 +225,7 @@ void CRSPRecompilerOps::JAL(void)
             char Str[40];
             sprintf(Str, "%03X", (m_OpCode.target << 2) & 0xFFC);
             Push(x86_EAX);
-            PushImm32(Str, *PrgCount);
+            PushImm32(Str, *m_System.m_SP_PC_REG);
             Call_Direct((void *)StartTimer, "StartTimer");
             AddConstToX86Reg(x86_ESP, 4);
             Pop(x86_EAX);
@@ -236,7 +236,7 @@ void CRSPRecompilerOps::JAL(void)
     }
     else if (NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE)
     {
-        MoveConstToVariable((m_OpCode.target << 2) & 0xFFC, PrgCount, "RSP PC");
+        MoveConstToVariable((m_OpCode.target << 2) & 0xFFC, m_System.m_SP_PC_REG, "RSP PC");
         NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
         Ret();
     }
@@ -1480,7 +1480,7 @@ void CRSPRecompilerOps::Special_SRAV(void)
 void UpdateAudioTimer()
 {
     /*	char Label[100];
-	sprintf(Label,"COMMAND: %02X (PC = %08X)",m_GPR[1].UW >> 1, *PrgCount);
+	sprintf(Label,"COMMAND: %02X (PC = %08X)",m_GPR[1].UW >> 1, *m_System.m_SP_PC_REG);
 	StartTimer(Label);*/
 }
 
@@ -1491,16 +1491,16 @@ void CRSPRecompilerOps::Special_JR(void)
     if (NextInstruction == RSPPIPELINE_NORMAL)
     {
         CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
-        // Transfer destination to location pointed to by PrgCount
+        // Transfer destination to location pointed to by m_System.m_SP_PC_REG
         MoveVariableToX86reg(&m_GPR[m_OpCode.rs].W, GPR_Name(m_OpCode.rs), x86_EAX);
         AndConstToX86Reg(x86_EAX, 0xFFC);
-        MoveX86regToVariable(x86_EAX, PrgCount, "RSP PC");
+        MoveX86regToVariable(x86_EAX, m_System.m_SP_PC_REG, "RSP PC");
         ChangedPC = true;
         NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
     }
     else if (NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE)
     {
-        MoveVariableToX86reg(PrgCount, "RSP PC", x86_EAX);
+        MoveVariableToX86reg(m_System.m_SP_PC_REG, "RSP PC", x86_EAX);
         if (Profiling && IndvidualBlock)
         {
             Push(x86_EAX);
@@ -1552,13 +1552,13 @@ void CRSPRecompilerOps::Special_JALR(void)
         CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
         MoveVariableToX86reg(&m_GPR[m_OpCode.rs].W, GPR_Name(m_OpCode.rs), x86_EAX);
         AndConstToX86Reg(x86_EAX, 0xFFC);
-        MoveX86regToVariable(x86_EAX, PrgCount, "RSP PC");
+        MoveX86regToVariable(x86_EAX, m_System.m_SP_PC_REG, "RSP PC");
         MoveConstToVariable(Const, &m_GPR[m_OpCode.rd].W, GPR_Name(m_OpCode.rd));
         NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
     }
     else if (NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE)
     {
-        MoveVariableToX86reg(PrgCount, "RSP PC", x86_EAX);
+        MoveVariableToX86reg(m_System.m_SP_PC_REG, "RSP PC", x86_EAX);
         AddVariableToX86reg(x86_EAX, &JumpTable, "JumpTable");
         MoveX86regPointerToX86reg(x86_EAX, x86_EAX);
 
@@ -1589,7 +1589,7 @@ void CRSPRecompilerOps::Special_BREAK(void)
     Cheat_r4300iOpcode(&RSPOp::Special_BREAK, "RSPOp::Special_BREAK");
     if (NextInstruction == RSPPIPELINE_NORMAL)
     {
-        MoveConstToVariable(CompilePC + 4, PrgCount, "RSP PC");
+        MoveConstToVariable(CompilePC + 4, m_System.m_SP_PC_REG, "RSP PC");
         Ret();
         NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
     }
@@ -2181,7 +2181,7 @@ void CRSPRecompilerOps::Cop0_MF(void)
     Cheat_r4300iOpcode(RSP_Cop0_MF, "RSP_Cop0_MF");
     if (NextInstruction == RSPPIPELINE_NORMAL)
     {
-        MoveConstToVariable(CompilePC + 4, PrgCount, "RSP PC");
+        MoveConstToVariable(CompilePC + 4, m_System.m_SP_PC_REG, "RSP PC");
         Ret();
         NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
     }
@@ -2249,7 +2249,7 @@ void CRSPRecompilerOps::Cop0_MF(void)
             MoveX86regToVariable(x86_EAX, &m_GPR[m_OpCode.rt].W, GPR_Name(m_OpCode.rt));
             if (NextInstruction == RSPPIPELINE_NORMAL)
             {
-                MoveConstToVariable(CompilePC + 4, PrgCount, "RSP PC");
+                MoveConstToVariable(CompilePC + 4, m_System.m_SP_PC_REG, "RSP PC");
                 Ret();
                 NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
             }
@@ -2317,7 +2317,7 @@ void CRSPRecompilerOps::Cop0_MT(void)
     {
         if (NextInstruction == RSPPIPELINE_NORMAL)
         {
-            MoveConstToVariable(CompilePC + 4, PrgCount, "RSP PC");
+            MoveConstToVariable(CompilePC + 4, m_System.m_SP_PC_REG, "RSP PC");
             Ret();
             NextInstruction = RSPPIPELINE_FINISH_BLOCK;
         }
@@ -2370,7 +2370,7 @@ void CRSPRecompilerOps::Cop0_MT(void)
         Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::WriteReg), "RSPRegisterHandlerPlugin::WriteReg");
         if (NextInstruction == RSPPIPELINE_NORMAL)
         {
-            MoveConstToVariable(CompilePC + 4, PrgCount, "RSP PC");
+            MoveConstToVariable(CompilePC + 4, m_System.m_SP_PC_REG, "RSP PC");
             Ret();
             NextInstruction = RSPPIPELINE_FINISH_BLOCK;
         }
@@ -2440,7 +2440,7 @@ void CRSPRecompilerOps::Cop0_MT(void)
         JeLabel8("DontExit", 0);
         Jump = RecompPos - 1;
 
-        MoveConstToVariable(CompilePC + 4, PrgCount, "RSP PC");
+        MoveConstToVariable(CompilePC + 4, m_System.m_SP_PC_REG, "RSP PC");
         Ret();
 
         CPU_Message("DontExit:");
@@ -7242,7 +7242,7 @@ void CRSPRecompilerOps::UnknownOpcode(void)
 {
     CPU_Message("  %X Unhandled Opcode: %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
     NextInstruction = RSPPIPELINE_FINISH_BLOCK;
-    MoveConstToVariable(CompilePC, PrgCount, "RSP PC");
+    MoveConstToVariable(CompilePC, m_System.m_SP_PC_REG, "RSP PC");
     MoveConstToVariable(m_OpCode.Value, &m_OpCode.Value, "m_OpCode.Value");
     MoveConstToX86reg((uint32_t) & (RSPSystem.m_Op), x86_ECX);
     Call_Direct(AddressOf(&RSPOp::UnknownOpcode), "&RSPOp::UnknownOpcode");
