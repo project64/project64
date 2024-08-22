@@ -14,6 +14,7 @@
 #include <Project64-rsp-core/cpu/RspSystem.h>
 #include <Project64-rsp-core/cpu/RspTypes.h>
 #include <float.h>
+#include <zlib/zlib.h>
 
 #pragma warning(disable : 4152) // Non-standard extension, function/data pointer conversion in expression
 
@@ -42,7 +43,9 @@ p_Recompfunc RSP_Recomp_Sc2[32];
 
 CRSPRecompiler::CRSPRecompiler(CRSPSystem & System) :
     m_System(System),
-    m_OpCode(System.m_OpCode)
+    m_RSPRegisterHandler(System.m_RSPRegisterHandler),
+    m_OpCode(System.m_OpCode),
+    m_IMEM(System.m_IMEM)
 {
 }
 
@@ -423,13 +426,13 @@ between branches labels, and actual branches, whichever
 occurs first in code
 */
 
-void ReOrderInstructions(uint32_t StartPC, uint32_t EndPC)
+void CRSPRecompiler::ReOrderInstructions(uint32_t StartPC, uint32_t EndPC)
 {
     uint32_t InstructionCount = EndPC - StartPC;
     uint32_t Count, ReorderedOps, CurrentPC;
     RSPOpcode PreviousOp, CurrentOp, RspOp;
 
-    PreviousOp.Value = *(uint32_t *)(RSPInfo.IMEM + (StartPC & 0xFFC));
+    PreviousOp.Value = *(uint32_t *)(m_IMEM + (StartPC & 0xFFC));
 
     if (IsOpcodeBranch(StartPC, PreviousOp))
     {
@@ -464,7 +467,7 @@ void ReOrderInstructions(uint32_t StartPC, uint32_t EndPC)
     for (Count = 0; Count < InstructionCount; Count += 4)
     {
         CurrentPC = StartPC;
-        PreviousOp.Value = *(uint32_t *)(RSPInfo.IMEM + (CurrentPC & 0xFFC));
+        PreviousOp.Value = *(uint32_t *)(m_IMEM + (CurrentPC & 0xFFC));
         ReorderedOps = 0;
 
         for (;;)
@@ -474,13 +477,13 @@ void ReOrderInstructions(uint32_t StartPC, uint32_t EndPC)
             {
                 break;
             }
-            CurrentOp.Value = *(uint32_t *)(RSPInfo.IMEM + CurrentPC);
+            CurrentOp.Value = *(uint32_t *)(m_IMEM + CurrentPC);
 
             if (CompareInstructions(CurrentPC, &PreviousOp, &CurrentOp))
             {
                 // Move current opcode up
-                *(uint32_t *)(RSPInfo.IMEM + CurrentPC - 4) = CurrentOp.Value;
-                *(uint32_t *)(RSPInfo.IMEM + CurrentPC) = PreviousOp.Value;
+                *(uint32_t *)(m_IMEM + CurrentPC - 4) = CurrentOp.Value;
+                *(uint32_t *)(m_IMEM + CurrentPC) = PreviousOp.Value;
 
                 ReorderedOps++;
 
@@ -488,7 +491,7 @@ void ReOrderInstructions(uint32_t StartPC, uint32_t EndPC)
                 CPU_Message("Swapped %X and %X", CurrentPC - 4, CurrentPC);
 #endif
             }
-            PreviousOp.Value = *(uint32_t *)(RSPInfo.IMEM + (CurrentPC & 0xFFC));
+            PreviousOp.Value = *(uint32_t *)(m_IMEM + (CurrentPC & 0xFFC));
 
             if (IsOpcodeNop(CurrentPC) && IsOpcodeNop(CurrentPC + 4) && IsOpcodeNop(CurrentPC + 8))
             {
@@ -548,6 +551,18 @@ void CRSPRecompiler::ReOrderSubBlock(RSP_BLOCK * Block)
     }
     // It wont actually re-order the op at the end
     ReOrderInstructions(Block->CurrPC, end);
+}
+
+void CRSPRecompiler::ResetJumpTables(void)
+{
+    extern uint32_t NoOfMaps;
+    extern uint8_t * JumpTables;
+
+    memset(JumpTables, 0, 0x1000 * MaxMaps);
+    RecompPos = RecompCode;
+    pLastPrimary = nullptr;
+    pLastSecondary = nullptr;
+    NoOfMaps = 0;
 }
 
 /*
@@ -951,7 +966,7 @@ void CRSPRecompiler::CompilerRSPBlock(void)
     free(IMEM_SAVE);
 }
 
-uint32_t CRSPRecompiler::RunCPU(uint32_t Cycles)
+void CRSPRecompiler::RunCPU(void)
 {
 #ifndef EXCEPTION_EXECUTE_HANDLER
 #define EXCEPTION_EXECUTE_HANDLER 1
@@ -1040,7 +1055,6 @@ uint32_t CRSPRecompiler::RunCPU(uint32_t Cycles)
         g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
     }
-    return Cycles;
 }
 
 void CRSPRecompiler::Branch_AddRef(uint32_t Target, uint32_t * X86Loc)
@@ -1066,4 +1080,40 @@ void CRSPRecompiler::Branch_AddRef(uint32_t Target, uint32_t * X86Loc)
             x86_SetBranch32b((uint32_t *)X86Loc, (uint32_t *)KnownCode);
         }
     }
+}
+
+void CRSPRecompiler::SetJumpTable(uint32_t End)
+{
+    extern uint32_t NoOfMaps, MapsCRC[32];
+    extern uint8_t * JumpTables;
+
+    uint32_t CRC = crc32(0L, Z_NULL, 0);
+    if (End < 0x800)
+    {
+        End = 0x800;
+    }
+
+    if (End == 0x1000 && ((m_RSPRegisterHandler->PendingSPMemAddr() & 0x0FFF) & ~7) == 0x80)
+    {
+        End = 0x800;
+    }
+
+    CRC = crc32(CRC, RSPInfo.IMEM, End);
+    for (uint32_t i = 0; i < NoOfMaps; i++)
+    {
+        if (CRC == MapsCRC[i])
+        {
+            JumpTable = (void **)(JumpTables + i * 0x1000);
+            Table = i;
+            return;
+        }
+    }
+    if (NoOfMaps == MaxMaps)
+    {
+        ResetJumpTables();
+    }
+    MapsCRC[NoOfMaps] = CRC;
+    JumpTable = (void **)(JumpTables + NoOfMaps * 0x1000);
+    Table = NoOfMaps;
+    NoOfMaps += 1;
 }

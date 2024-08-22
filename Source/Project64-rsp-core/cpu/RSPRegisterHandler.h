@@ -13,6 +13,7 @@ enum RSPRegister
 };
 
 struct _RSP_INFO;
+class CRSPSystem;
 
 class RSPRegisterHandler
 {
@@ -33,7 +34,7 @@ class RSPRegisterHandler
 
 public:
     RSPRegisterHandler(uint32_t * SignalProcessorInterface, uint8_t *& Rdram, const uint32_t & RdramSize, uint8_t * IMEM, uint8_t * DMEM);
-    RSPRegisterHandler(_RSP_INFO & RSPInfo, const uint32_t & RdramSize);
+    RSPRegisterHandler(CRSPSystem & System);
 
     void SP_DMA_READ(void);
     void SP_DMA_WRITE(void);

@@ -1,13 +1,18 @@
 #include <Project64-rsp-core/RSPDebugger.h>
 #include <Project64-rsp-core/RSPInfo.h>
+#include <Project64-rsp-core/Recompiler/RspRecompilerCPU.h>
+#include <Project64-rsp-core/Settings/RspSettings.h>
 #include <Project64-rsp-core/cpu/RSPCpu.h>
 #include <Project64-rsp-core/cpu/RSPInterpreterCPU.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
 #include <Project64-rsp-core/cpu/RspSystem.h>
+#include <Settings/Settings.h>
 
 CRSPSystem RSPSystem;
 
 CRSPSystem::CRSPSystem() :
+    m_Recompiler(nullptr),
+    m_RSPRegisterHandler(nullptr),
     m_Op(*this),
     m_HEADER(nullptr),
     m_RDRAM(nullptr),
@@ -32,8 +37,19 @@ CRSPSystem::CRSPSystem() :
     m_DPC_PIPEBUSY_REG(nullptr),
     m_DPC_TMEM_REG(nullptr),
     CheckInterrupts(nullptr),
-    ProcessRdpList(nullptr)
+    ProcessRdpList(nullptr),
+    m_RdramSize(0)
 {
+    m_OpCode.Value = 0;
+}
+
+CRSPSystem::~CRSPSystem()
+{
+    if (m_RSPRegisterHandler != nullptr)
+    {
+        delete m_RSPRegisterHandler;
+        m_RSPRegisterHandler = nullptr;
+    }
 }
 
 void CRSPSystem::Reset(RSP_INFO & Info)
@@ -64,6 +80,30 @@ void CRSPSystem::Reset(RSP_INFO & Info)
     m_DPC_TMEM_REG = Info.DPC_TMEM_REG;
     CheckInterrupts = Info.CheckInterrupts;
     ProcessRdpList = Info.ProcessRdpList;
+
+    m_RdramSize = Set_AllocatedRdramSize != 0 ? GetSystemSetting(Set_AllocatedRdramSize) : 0;
+    if (m_RdramSize == 0)
+    {
+        m_RdramSize = 0x00400000;
+    }
+    m_RSPRegisterHandler = new RSPRegisterHandlerPlugin(*this);
+}
+
+void CRSPSystem::RomClosed(void)
+{
+    if (m_RSPRegisterHandler != nullptr)
+    {
+        delete m_RSPRegisterHandler;
+        m_RSPRegisterHandler = nullptr;
+    }
+}
+
+void CRSPSystem::RunRecompiler(void)
+{
+    CRSPRecompiler Recompiler(RSPSystem);
+    m_Recompiler = &Recompiler;
+    Recompiler.RunCPU();
+    m_Recompiler = nullptr;
 }
 
 uint32_t CRSPSystem::RunInterpreterCPU(uint32_t Cycles)

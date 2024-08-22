@@ -4,6 +4,7 @@
 
 class CRSPSystem;
 class CRSPRegisters;
+class RSPRegisterHandlerPlugin;
 
 class RSPOp
 {
@@ -182,6 +183,7 @@ private:
     Func Jump_Sc2[32];
 
     CRSPSystem & m_System;
+    RSPRegisterHandlerPlugin *& m_RSPRegisterHandler;
     RSPOpcode & m_OpCode;
     CRSPRegisters & m_Reg;
     uint32_t *& m_MI_INTR_REG;

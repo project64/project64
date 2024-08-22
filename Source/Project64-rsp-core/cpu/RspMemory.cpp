@@ -2,15 +2,11 @@
 #include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/cpu/RSPCpu.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
+#include <Project64-rsp-core/cpu/RspMemory.h>
 #include <Settings/Settings.h>
 #include <stdio.h>
 #include <string.h>
 #include <zlib/zlib.h>
-
-enum
-{
-    MaxMaps = 32
-};
 
 uint32_t NoOfMaps, MapsCRC[MaxMaps];
 uint32_t Table;
@@ -70,49 +66,6 @@ void FreeMemory(void)
     RecompCode = nullptr;
     JumpTables = nullptr;
     RecompCodeSecondary = nullptr;
-}
-
-void ResetJumpTables(void)
-{
-    memset(JumpTables, 0, 0x1000 * MaxMaps);
-    RecompPos = RecompCode;
-    pLastPrimary = nullptr;
-    pLastSecondary = nullptr;
-    NoOfMaps = 0;
-}
-
-void SetJumpTable(uint32_t End)
-{
-    uint32_t CRC = crc32(0L, Z_NULL, 0);
-    if (End < 0x800)
-    {
-        End = 0x800;
-    }
-
-    if (End == 0x1000 && ((g_RSPRegisterHandler->PendingSPMemAddr() & 0x0FFF) & ~7) == 0x80)
-    {
-        End = 0x800;
-    }
-
-    CRC = crc32(CRC, RSPInfo.IMEM, End);
-    for (uint32_t i = 0; i < NoOfMaps; i++)
-    {
-        if (CRC == MapsCRC[i])
-        {
-            JumpTable = (void **)(JumpTables + i * 0x1000);
-            Table = i;
-            return;
-        }
-    }
-    //DisplayError("%X %X",NoOfMaps,CRC);
-    if (NoOfMaps == MaxMaps)
-    {
-        ResetJumpTables();
-    }
-    MapsCRC[NoOfMaps] = CRC;
-    JumpTable = (void **)(JumpTables + NoOfMaps * 0x1000);
-    Table = NoOfMaps;
-    NoOfMaps += 1;
 }
 
 void RSP_LW_IMEM(uint32_t Addr, uint32_t * Value)

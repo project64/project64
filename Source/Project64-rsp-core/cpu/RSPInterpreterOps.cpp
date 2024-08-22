@@ -58,6 +58,7 @@ uint32_t clz32(uint32_t val)
 
 RSPOp::RSPOp(CRSPSystem & System) :
     m_System(System),
+    m_RSPRegisterHandler(System.m_RSPRegisterHandler),
     m_OpCode(System.m_OpCode),
     m_Reg(System.m_Reg),
     m_MI_INTR_REG(System.m_MI_INTR_REG),
@@ -817,11 +818,11 @@ void RSPOp::Cop0_MF(void)
     }
     switch (m_OpCode.rd)
     {
-    case 0: m_GPR[m_OpCode.rt].UW = g_RSPRegisterHandler->ReadReg(RSPRegister_MEM_ADDR); break;
-    case 1: m_GPR[m_OpCode.rt].UW = g_RSPRegisterHandler->ReadReg(RSPRegister_DRAM_ADDR); break;
-    case 2: m_GPR[m_OpCode.rt].UW = g_RSPRegisterHandler->ReadReg(RSPRegister_RD_LEN); break;
-    case 3: m_GPR[m_OpCode.rt].UW = g_RSPRegisterHandler->ReadReg(RSPRegister_WR_LEN); break;
-    case 4: m_GPR[m_OpCode.rt].UW = g_RSPRegisterHandler->ReadReg(RSPRegister_STATUS); break;
+    case 0: m_GPR[m_OpCode.rt].UW = m_RSPRegisterHandler->ReadReg(RSPRegister_MEM_ADDR); break;
+    case 1: m_GPR[m_OpCode.rt].UW = m_RSPRegisterHandler->ReadReg(RSPRegister_DRAM_ADDR); break;
+    case 2: m_GPR[m_OpCode.rt].UW = m_RSPRegisterHandler->ReadReg(RSPRegister_RD_LEN); break;
+    case 3: m_GPR[m_OpCode.rt].UW = m_RSPRegisterHandler->ReadReg(RSPRegister_WR_LEN); break;
+    case 4: m_GPR[m_OpCode.rt].UW = m_RSPRegisterHandler->ReadReg(RSPRegister_STATUS); break;
     case 5: m_GPR[m_OpCode.rt].UW = *m_SP_DMA_FULL_REG; break;
     case 6: m_GPR[m_OpCode.rt].UW = *m_SP_DMA_BUSY_REG; break;
     case 7:
@@ -853,11 +854,11 @@ void RSPOp::Cop0_MT(void)
     }
     switch (m_OpCode.rd)
     {
-    case 0: g_RSPRegisterHandler->WriteReg(RSPRegister_MEM_ADDR, m_GPR[m_OpCode.rt].UW); break;
-    case 1: g_RSPRegisterHandler->WriteReg(RSPRegister_DRAM_ADDR, m_GPR[m_OpCode.rt].UW); break;
-    case 2: g_RSPRegisterHandler->WriteReg(RSPRegister_RD_LEN, m_GPR[m_OpCode.rt].UW); break;
-    case 3: g_RSPRegisterHandler->WriteReg(RSPRegister_WR_LEN, m_GPR[m_OpCode.rt].UW); break;
-    case 4: g_RSPRegisterHandler->WriteReg(RSPRegister_STATUS, m_GPR[m_OpCode.rt].UW); break;
+    case 0: m_RSPRegisterHandler->WriteReg(RSPRegister_MEM_ADDR, m_GPR[m_OpCode.rt].UW); break;
+    case 1: m_RSPRegisterHandler->WriteReg(RSPRegister_DRAM_ADDR, m_GPR[m_OpCode.rt].UW); break;
+    case 2: m_RSPRegisterHandler->WriteReg(RSPRegister_RD_LEN, m_GPR[m_OpCode.rt].UW); break;
+    case 3: m_RSPRegisterHandler->WriteReg(RSPRegister_WR_LEN, m_GPR[m_OpCode.rt].UW); break;
+    case 4: m_RSPRegisterHandler->WriteReg(RSPRegister_STATUS, m_GPR[m_OpCode.rt].UW); break;
     case 7: *m_SP_SEMAPHORE_REG = 0; break;
     case 8:
         *m_DPC_START_REG = m_GPR[m_OpCode.rt].UW;

@@ -1,6 +1,7 @@
 #include "RSPRegisterHandler.h"
 #include "RSPRegisters.h"
 #include <Project64-plugin-spec/Rsp.h>
+#include <Project64-rsp-core/cpu/RspSystem.h>
 #include <Settings/Settings.h>
 #include <string.h>
 
@@ -23,20 +24,20 @@ RSPRegisterHandler::RSPRegisterHandler(uint32_t * SignalProcessorInterface, uint
 {
 }
 
-RSPRegisterHandler::RSPRegisterHandler(_RSP_INFO & RSPInfo, const uint32_t & RdramSize) :
-    SP_MEM_ADDR_REG(*RSPInfo.SP_MEM_ADDR_REG),
-    SP_DRAM_ADDR_REG(*RSPInfo.SP_DRAM_ADDR_REG),
-    SP_RD_LEN_REG((LengthReg &)*RSPInfo.SP_RD_LEN_REG),
-    SP_WR_LEN_REG((LengthReg &)*RSPInfo.SP_WR_LEN_REG),
-    SP_STATUS_REG(*RSPInfo.SP_STATUS_REG),
-    SP_DMA_FULL_REG(*RSPInfo.SP_DMA_FULL_REG),
-    SP_DMA_BUSY_REG(*RSPInfo.SP_DMA_BUSY_REG),
-    SP_SEMAPHORE_REG(*RSPInfo.SP_SEMAPHORE_REG),
-    SP_PC_REG(*RSPInfo.SP_PC_REG),
-    m_Rdram(RSPInfo.RDRAM),
-    m_RdramSize(RdramSize),
-    m_IMEM(RSPInfo.IMEM),
-    m_DMEM(RSPInfo.DMEM),
+RSPRegisterHandler::RSPRegisterHandler(CRSPSystem & System) :
+    SP_MEM_ADDR_REG(*System.m_SP_MEM_ADDR_REG),
+    SP_DRAM_ADDR_REG(*System.m_SP_DRAM_ADDR_REG),
+    SP_RD_LEN_REG((LengthReg &)*System.m_SP_RD_LEN_REG),
+    SP_WR_LEN_REG((LengthReg &)*System.m_SP_WR_LEN_REG),
+    SP_STATUS_REG(*System.m_SP_STATUS_REG),
+    SP_DMA_FULL_REG(*System.m_SP_DMA_FULL_REG),
+    SP_DMA_BUSY_REG(*System.m_SP_DMA_BUSY_REG),
+    SP_SEMAPHORE_REG(*System.m_SP_SEMAPHORE_REG),
+    SP_PC_REG(*System.m_SP_PC_REG),
+    m_Rdram(System.m_RDRAM),
+    m_RdramSize(System.m_RdramSize),
+    m_IMEM(System.m_IMEM),
+    m_DMEM(System.m_DMEM),
     m_PendingSPMemAddr(0),
     m_PendingSPDramAddr(0)
 {

@@ -2,10 +2,13 @@
 #include "RSPCpu.h"
 #include "RSPRegisters.h"
 #include <Project64-rsp-core/RSPInfo.h>
+#include <Project64-rsp-core/Recompiler/RspRecompilerCPU.h>
 #include <Project64-rsp-core/cpu/RspMemory.h>
+#include <Project64-rsp-core/cpu/RspSystem.h>
 
-RSPRegisterHandlerPlugin::RSPRegisterHandlerPlugin(_RSP_INFO & Info, const uint32_t & Size) :
-    RSPRegisterHandler(Info, Size)
+RSPRegisterHandlerPlugin::RSPRegisterHandlerPlugin(CRSPSystem & System) :
+    RSPRegisterHandler(System),
+    m_System(System)
 {
 }
 
@@ -38,8 +41,8 @@ void RSPRegisterHandlerPlugin::SetHalt(void)
 
 void RSPRegisterHandlerPlugin::DmaReadDone(uint32_t End)
 {
-    if (g_CPUCore == RecompilerCPU && (*RSPInfo.SP_MEM_ADDR_REG & 0x1000) != 0)
+    if (g_CPUCore == RecompilerCPU && (*RSPInfo.SP_MEM_ADDR_REG & 0x1000) != 0 && m_System.m_Recompiler != nullptr)
     {
-        SetJumpTable(End);
+        m_System.m_Recompiler->SetJumpTable(End);
     }
 }

@@ -160,6 +160,7 @@ void CompileBranchExit(uint32_t TargetPC, uint32_t ContinuePC)
 
 CRSPRecompilerOps::CRSPRecompilerOps(CRSPSystem & System, CRSPRecompiler & Recompiler) :
     m_System(System),
+    m_RSPRegisterHandler(System.m_RSPRegisterHandler),
     m_Recompiler(Recompiler),
     m_OpCode(System.m_OpCode),
     m_Reg(System.m_Reg),
@@ -2198,31 +2199,31 @@ void CRSPRecompilerOps::Cop0_MF(void)
     switch (m_OpCode.rd)
     {
     case 0:
-        MoveConstToX86reg((uint32_t)(g_RSPRegisterHandler.get()), x86_ECX);
+        MoveConstToX86reg((uint32_t)m_RSPRegisterHandler, x86_ECX);
         PushImm32("RSPRegister_MEM_ADDR", RSPRegister_MEM_ADDR);
         Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::ReadReg), "RSPRegisterHandlerPlugin::ReadReg");
         MoveX86regToVariable(x86_EAX, &m_GPR[m_OpCode.rt].UW, GPR_Name(m_OpCode.rt));
         break;
     case 1:
-        MoveConstToX86reg((uint32_t)(g_RSPRegisterHandler.get()), x86_ECX);
+        MoveConstToX86reg((uint32_t)m_RSPRegisterHandler, x86_ECX);
         PushImm32("RSPRegister_DRAM_ADDR", RSPRegister_DRAM_ADDR);
         Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::ReadReg), "RSPRegisterHandlerPlugin::ReadReg");
         MoveX86regToVariable(x86_EAX, &m_GPR[m_OpCode.rt].UW, GPR_Name(m_OpCode.rt));
         break;
     case 2:
-        MoveConstToX86reg((uint32_t)(g_RSPRegisterHandler.get()), x86_ECX);
+        MoveConstToX86reg((uint32_t)m_RSPRegisterHandler, x86_ECX);
         PushImm32("RSPRegister_RD_LEN", RSPRegister_RD_LEN);
         Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::ReadReg), "RSPRegisterHandlerPlugin::ReadReg");
         MoveX86regToVariable(x86_EAX, &m_GPR[m_OpCode.rt].UW, GPR_Name(m_OpCode.rt));
         break;
     case 3:
-        MoveConstToX86reg((uint32_t)(g_RSPRegisterHandler.get()), x86_ECX);
+        MoveConstToX86reg((uint32_t)m_RSPRegisterHandler, x86_ECX);
         PushImm32("RSPRegister_WR_LEN", RSPRegister_WR_LEN);
         Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::ReadReg), "RSPRegisterHandlerPlugin::ReadReg");
         MoveX86regToVariable(x86_EAX, &m_GPR[m_OpCode.rt].UW, GPR_Name(m_OpCode.rt));
         break;
     case 4:
-        MoveConstToX86reg((uint32_t)(g_RSPRegisterHandler.get()), x86_ECX);
+        MoveConstToX86reg((uint32_t)m_RSPRegisterHandler, x86_ECX);
         PushImm32("RSPRegister_STATUS", RSPRegister_STATUS);
         Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::ReadReg), "RSPRegisterHandlerPlugin::ReadReg");
         MoveX86regToVariable(x86_EAX, &m_GPR[m_OpCode.rt].UW, GPR_Name(m_OpCode.rt));
@@ -2334,35 +2335,35 @@ void CRSPRecompilerOps::Cop0_MT(void)
     switch (m_OpCode.rd)
     {
     case 0:
-        MoveConstToX86reg((uint32_t)(g_RSPRegisterHandler.get()), x86_ECX);
+        MoveConstToX86reg((uint32_t)m_RSPRegisterHandler, x86_ECX);
         MoveVariableToX86reg(&m_GPR[m_OpCode.rt].UW, GPR_Name(m_OpCode.rt), x86_EAX);
         Push(x86_EAX);
         PushImm32("RSPRegister_MEM_ADDR", RSPRegister_MEM_ADDR);
         Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::WriteReg), "RSPRegisterHandlerPlugin::WriteReg");
         break;
     case 1:
-        MoveConstToX86reg((uint32_t)(g_RSPRegisterHandler.get()), x86_ECX);
+        MoveConstToX86reg((uint32_t)m_RSPRegisterHandler, x86_ECX);
         MoveVariableToX86reg(&m_GPR[m_OpCode.rt].UW, GPR_Name(m_OpCode.rt), x86_EAX);
         Push(x86_EAX);
         PushImm32("RSPRegister_DRAM_ADDR", RSPRegister_DRAM_ADDR);
         Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::WriteReg), "RSPRegisterHandlerPlugin::WriteReg");
         break;
     case 2:
-        MoveConstToX86reg((uint32_t)(g_RSPRegisterHandler.get()), x86_ECX);
+        MoveConstToX86reg((uint32_t)m_RSPRegisterHandler, x86_ECX);
         MoveVariableToX86reg(&m_GPR[m_OpCode.rt].UW, GPR_Name(m_OpCode.rt), x86_EAX);
         Push(x86_EAX);
         PushImm32("RSPRegister_RD_LEN", RSPRegister_RD_LEN);
         Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::WriteReg), "RSPRegisterHandlerPlugin::WriteReg");
         break;
     case 3:
-        MoveConstToX86reg((uint32_t)(g_RSPRegisterHandler.get()), x86_ECX);
+        MoveConstToX86reg((uint32_t)m_RSPRegisterHandler, x86_ECX);
         MoveVariableToX86reg(&m_GPR[m_OpCode.rt].UW, GPR_Name(m_OpCode.rt), x86_EAX);
         Push(x86_EAX);
         PushImm32("RSPRegister_WR_LEN", RSPRegister_WR_LEN);
         Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::WriteReg), "RSPRegisterHandlerPlugin::WriteReg");
         break;
     case 4:
-        MoveConstToX86reg((uint32_t)(g_RSPRegisterHandler.get()), x86_ECX);
+        MoveConstToX86reg((uint32_t)m_RSPRegisterHandler, x86_ECX);
         MoveVariableToX86reg(&m_GPR[m_OpCode.rt].UW, GPR_Name(m_OpCode.rt), x86_EAX);
         Push(x86_EAX);
         PushImm32("RSPRegister_STATUS", RSPRegister_STATUS);

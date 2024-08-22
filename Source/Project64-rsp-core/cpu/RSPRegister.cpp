@@ -50,6 +50,8 @@ CRSPRegisters::CRSPRegisters() :
 void CRSPRegisters::Reset(void)
 {
     memset(m_GPR, 0, sizeof(m_GPR));
+    memset(m_Flags, 0, sizeof(m_Flags));
+    memset(m_ACCUM, 0, sizeof(m_ACCUM));
     for (size_t i = 0, n = sizeof(m_Vect) / sizeof(m_Vect[0]); i < n; i++)
     {
         m_Vect[i] = RSPVector();

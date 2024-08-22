@@ -19,7 +19,6 @@ void BuildRecompilerCPU(void);
 CriticalSection g_CPUCriticalSection;
 uint32_t Mfc0Count, SemaphoreExit = 0;
 RSPCpuType g_CPUCore = InterpreterCPU;
-std::unique_ptr<RSPRegisterHandlerPlugin> g_RSPRegisterHandler;
 
 void SetCPU(RSPCpuType core)
 {
@@ -180,7 +179,7 @@ uint32_t DoRspCycles(uint32_t Cycles)
     switch (g_CPUCore)
     {
     case RecompilerCPU:
-        CRSPRecompiler(RSPSystem).RunCPU(Cycles);
+        RSPSystem.RunRecompiler();
         break;
     case InterpreterCPU:
         RSPSystem.RunInterpreterCPU(Cycles);

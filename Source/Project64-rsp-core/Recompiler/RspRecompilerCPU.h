@@ -6,6 +6,7 @@
 #include <Settings/Settings.h>
 
 class CRSPSystem;
+class RSPRegisterHandlerPlugin;
 
 class CRSPRecompiler
 {
@@ -27,8 +28,9 @@ class CRSPRecompiler
 public:
     CRSPRecompiler(CRSPSystem & System);
 
-    uint32_t RunCPU(uint32_t Cycles);
+    void RunCPU(void);
     void Branch_AddRef(uint32_t Target, uint32_t * X86Loc);
+    void SetJumpTable(uint32_t End);
 
 private:
     CRSPRecompiler();
@@ -38,10 +40,14 @@ private:
     void CompilerRSPBlock(void);
     void LinkBranches(RSP_BLOCK * Block);
     void ReOrderSubBlock(RSP_BLOCK * Block);
+    void ReOrderInstructions(uint32_t StartPC, uint32_t EndPC);
+    void ResetJumpTables(void);
 
     CRSPSystem & m_System;
+    RSPRegisterHandlerPlugin *& m_RSPRegisterHandler;
     RSPOpcode & m_OpCode;
     RSP_BLOCK m_CurrentBlock;
+    uint8_t *& m_IMEM;
 };
 
 extern uint32_t CompilePC, NextInstruction, JumpTableSize;

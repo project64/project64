@@ -147,7 +147,6 @@ void RspRomOpened(void)
     {
         RdramSize = 0x00400000;
     }
-    g_RSPRegisterHandler.reset(new RSPRegisterHandlerPlugin(RSPInfo, RdramSize));
 }
 
 void RspRomClosed(void)
@@ -157,7 +156,7 @@ void RspRomClosed(void)
         StopTimer();
         GenerateTimerResults();
     }
-    g_RSPRegisterHandler.reset(nullptr);
+    RSPSystem.RomClosed();
     ClearAllx86Code();
     RDPLog.StopLog();
     StopCPULog();

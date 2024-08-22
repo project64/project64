@@ -202,6 +202,7 @@ private:
     void resampler_hle();
 
     CRSPSystem & m_System;
+    RSPRegisterHandlerPlugin *& m_RSPRegisterHandler;
     CRSPRegisters & m_Reg;
     CRSPRecompiler & m_Recompiler;
     RSPOpcode & m_OpCode;

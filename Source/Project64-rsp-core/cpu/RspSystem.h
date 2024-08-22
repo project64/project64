@@ -5,6 +5,8 @@
 #include <Project64-rsp-core/cpu/RspTypes.h>
 #include <stdint.h>
 
+class RSPRegisterHandlerPlugin;
+
 class CRSPSystem
 {
     friend class RSPOp;
@@ -12,16 +14,27 @@ class CRSPSystem
     friend class CRSPRecompiler;
     friend class RSPDebuggerUI;
     friend class CRDPLog;
+    friend class RSPRegisterHandler;
+    friend class RSPRegisterHandlerPlugin;
+
     friend void UpdateRSPRegistersScreen(void);
 
 public:
     CRSPSystem();
+    ~CRSPSystem();
 
     void Reset(RSP_INFO & Info);
+    void RomClosed(void);
 
+    void RunRecompiler(void);
     uint32_t RunInterpreterCPU(uint32_t Cycles);
 
 private:
+    CRSPSystem(const CRSPSystem &);
+    CRSPSystem & operator=(const CRSPSystem &);
+
+    CRSPRecompiler * m_Recompiler;
+    RSPRegisterHandlerPlugin * m_RSPRegisterHandler;
     CRSPRegisters m_Reg;
     RSPOp m_Op;
     RSPOpcode m_OpCode;
@@ -47,6 +60,7 @@ private:
     uint32_t * m_DPC_BUFBUSY_REG;
     uint32_t * m_DPC_PIPEBUSY_REG;
     uint32_t * m_DPC_TMEM_REG;
+    uint32_t m_RdramSize;
     void (*CheckInterrupts)(void);
     void (*ProcessRdpList)(void);
 };
