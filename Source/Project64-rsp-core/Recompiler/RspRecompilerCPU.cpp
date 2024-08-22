@@ -6,7 +6,6 @@
 #include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/cpu/RSPCpu.h>
 #include <Project64-rsp-core/cpu/RSPInstruction.h>
-#include <Project64-rsp-core/cpu/RSPInterpreterCPU.h>
 #include <Project64-rsp-core/cpu/RSPOpcode.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
 #include <Project64-rsp-core/cpu/RspLog.h>
@@ -45,6 +44,7 @@ CRSPRecompiler::CRSPRecompiler(CRSPSystem & System) :
     m_System(System),
     m_RSPRegisterHandler(System.m_RSPRegisterHandler),
     m_OpCode(System.m_OpCode),
+    m_NextInstruction(RSPPIPELINE_NORMAL),
     m_IMEM(System.m_IMEM)
 {
 }
@@ -794,12 +794,12 @@ bool IsJumpLabel(uint32_t PC)
     return false;
 }
 
-void CompilerLinkBlocks(void)
+void CRSPRecompiler::CompilerLinkBlocks(void)
 {
     uint8_t * KnownCode = (uint8_t *)*(JumpTable + (CompilePC >> 2));
 
     CPU_Message("***** Linking block to X86: %08X *****", KnownCode);
-    NextInstruction = RSPPIPELINE_FINISH_BLOCK;
+    m_NextInstruction = RSPPIPELINE_FINISH_BLOCK;
 
     // Block linking scenario
     JmpLabel32("Linked block", 0);
@@ -812,7 +812,7 @@ void CRSPRecompiler::CompilerRSPBlock(void)
 
     uint8_t * IMEM_SAVE = (uint8_t *)malloc(0x1000);
     const size_t X86BaseAddress = (size_t)RecompPos;
-    NextInstruction = RSPPIPELINE_NORMAL;
+    m_NextInstruction = RSPPIPELINE_NORMAL;
     CompilePC = *m_System.m_SP_PC_REG;
 
     memset(&m_CurrentBlock, 0, sizeof(m_CurrentBlock));
@@ -853,7 +853,7 @@ void CRSPRecompiler::CompilerRSPBlock(void)
         // Reordering is setup to allow us to have loop labels
         // so here we see if this is one and put it in the jump table
 
-        if (NextInstruction == RSPPIPELINE_NORMAL && IsJumpLabel(CompilePC))
+        if (m_NextInstruction == RSPPIPELINE_NORMAL && IsJumpLabel(CompilePC))
         {
             // Jumps come around twice
             if (NULL == *(JumpTable + (CompilePC >> 2)))
@@ -866,7 +866,7 @@ void CRSPRecompiler::CompilerRSPBlock(void)
                 m_CurrentBlock.CurrPC = CompilePC;
                 ReOrderSubBlock(&m_CurrentBlock);
             }
-            else if (NextInstruction != RSPPIPELINE_DELAY_SLOT_DONE)
+            else if (m_NextInstruction != RSPPIPELINE_DELAY_SLOT_DONE)
             {
 
                 // We could link the blocks here, but performance-wise it might be better to just let it run
@@ -892,36 +892,36 @@ void CRSPRecompiler::CompilerRSPBlock(void)
         if (m_OpCode.Value == 0xFFFFFFFF)
         {
             // I think this pops up an unknown OP dialog
-            // NextInstruction = RSPPIPELINE_FINISH_BLOCK;
+            // m_NextInstruction = RSPPIPELINE_FINISH_BLOCK;
         }
         else
         {
             (RecompilerOps.*RSP_Recomp_Opcode[m_OpCode.op])();
         }
 
-        switch (NextInstruction)
+        switch (m_NextInstruction)
         {
         case RSPPIPELINE_NORMAL:
             CompilePC += 4;
             break;
         case RSPPIPELINE_DO_DELAY_SLOT:
-            NextInstruction = RSPPIPELINE_DELAY_SLOT;
+            m_NextInstruction = RSPPIPELINE_DELAY_SLOT;
             CompilePC += 4;
             break;
         case RSPPIPELINE_DELAY_SLOT:
-            NextInstruction = RSPPIPELINE_DELAY_SLOT_DONE;
+            m_NextInstruction = RSPPIPELINE_DELAY_SLOT_DONE;
             CompilePC = (CompilePC - 4 & 0xFFC);
             break;
         case RSPPIPELINE_DELAY_SLOT_EXIT:
-            NextInstruction = RSPPIPELINE_DELAY_SLOT_EXIT_DONE;
+            m_NextInstruction = RSPPIPELINE_DELAY_SLOT_EXIT_DONE;
             CompilePC = (CompilePC - 4 & 0xFFC);
             break;
         case RSPPIPELINE_FINISH_SUB_BLOCK:
-            NextInstruction = RSPPIPELINE_NORMAL;
+            m_NextInstruction = RSPPIPELINE_NORMAL;
             CompilePC += 8;
             if (CompilePC >= 0x1000)
             {
-                NextInstruction = RSPPIPELINE_FINISH_BLOCK;
+                m_NextInstruction = RSPPIPELINE_FINISH_BLOCK;
             }
             else if (NULL == *(JumpTable + (CompilePC >> 2)))
             {
@@ -941,7 +941,7 @@ void CRSPRecompiler::CompilerRSPBlock(void)
 
         case RSPPIPELINE_FINISH_BLOCK: break;
         default:
-            g_Notify->DisplayError(stdstr_f("RSP main loop\n\nWTF NextInstruction = %d", NextInstruction).c_str());
+            g_Notify->DisplayError(stdstr_f("RSP main loop\n\nWTF m_NextInstruction = %d", m_NextInstruction).c_str());
             CompilePC += 4;
             break;
         }
@@ -951,7 +951,7 @@ void CRSPRecompiler::CompilerRSPBlock(void)
             CompilePC = 0;
             EndPC = *m_System.m_SP_PC_REG;
         }
-    } while (NextInstruction != RSPPIPELINE_FINISH_BLOCK && (CompilePC < EndPC || NextInstruction == RSPPIPELINE_DELAY_SLOT || NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE));
+    } while (m_NextInstruction != RSPPIPELINE_FINISH_BLOCK && (CompilePC < EndPC || m_NextInstruction == RSPPIPELINE_DELAY_SLOT || m_NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE));
     if (CompilePC >= EndPC)
     {
         MoveConstToVariable((CompilePC & 0xFFC), m_System.m_SP_PC_REG, "RSP PC");
@@ -1041,7 +1041,7 @@ void CRSPRecompiler::RunCPU(void)
         {
             StopTimer();
         }
-        if (RSP_NextInstruction == RSPPIPELINE_SINGLE_STEP)
+        if (m_System.m_NextInstruction == RSPPIPELINE_SINGLE_STEP)
         {
             RSP_Running = false;
         }

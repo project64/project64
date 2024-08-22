@@ -48,9 +48,6 @@
     <ClCompile Include="cpu\RSPRegister.cpp">
       <Filter>Source Files\cpu</Filter>
     </ClCompile>
-    <ClCompile Include="cpu\RSPInterpreterCPU.cpp">
-      <Filter>Source Files\cpu</Filter>
-    </ClCompile>
     <ClCompile Include="cpu\RSPInterpreterOps.cpp">
       <Filter>Source Files\cpu</Filter>
     </ClCompile>
@@ -155,9 +152,6 @@
     <ClInclude Include="cpu\RSPRegisters.h">
       <Filter>Header Files\cpu</Filter>
     </ClInclude>
-    <ClInclude Include="cpu\RSPInterpreterCPU.h">
-      <Filter>Header Files\cpu</Filter>
-    </ClInclude>
     <ClInclude Include="cpu\RSPInterpreterOps.h">
       <Filter>Header Files\cpu</Filter>
     </ClInclude>
@@ -222,6 +216,9 @@
       <Filter>Header Files\hle</Filter>
     </ClInclude>
     <ClInclude Include="cpu\RspSystem.h">
+      <Filter>Header Files\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu\RspPipelineStage.h">
       <Filter>Header Files\cpu</Filter>
     </ClInclude>
   </ItemGroup>

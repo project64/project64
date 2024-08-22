@@ -1,5 +1,4 @@
 #include "RSPCpu.h"
-#include "RSPInterpreterCPU.h"
 #include "RSPRegisters.h"
 #include "RspLog.h"
 #include <Common/StdString.h>
@@ -61,6 +60,8 @@ RSPOp::RSPOp(CRSPSystem & System) :
     m_RSPRegisterHandler(System.m_RSPRegisterHandler),
     m_OpCode(System.m_OpCode),
     m_Reg(System.m_Reg),
+    m_NextInstruction(System.m_NextInstruction),
+    m_JumpTo(System.m_JumpTo),
     m_MI_INTR_REG(System.m_MI_INTR_REG),
     m_SP_PC_REG(System.m_SP_PC_REG),
     m_SP_STATUS_REG(System.m_SP_STATUS_REG),
@@ -469,39 +470,39 @@ void RSPOp::REGIMM(void)
 
 void RSPOp::J(void)
 {
-    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
-    RSP_JumpTo = (m_OpCode.target << 2) & 0xFFC;
+    m_NextInstruction = RSPPIPELINE_DELAY_SLOT;
+    m_JumpTo = (m_OpCode.target << 2) & 0xFFC;
 }
 
 void RSPOp::JAL(void)
 {
-    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
+    m_NextInstruction = RSPPIPELINE_DELAY_SLOT;
     m_GPR[31].UW = (*m_SP_PC_REG + 8) & 0xFFC;
-    RSP_JumpTo = (m_OpCode.target << 2) & 0xFFC;
+    m_JumpTo = (m_OpCode.target << 2) & 0xFFC;
 }
 
 void RSPOp::BEQ(void)
 {
-    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
-    RSP_JumpTo = BranchIf(m_GPR[m_OpCode.rs].W == m_GPR[m_OpCode.rt].W);
+    m_NextInstruction = RSPPIPELINE_DELAY_SLOT;
+    m_JumpTo = BranchIf(m_GPR[m_OpCode.rs].W == m_GPR[m_OpCode.rt].W);
 }
 
 void RSPOp::BNE(void)
 {
-    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
-    RSP_JumpTo = BranchIf(m_GPR[m_OpCode.rs].W != m_GPR[m_OpCode.rt].W);
+    m_NextInstruction = RSPPIPELINE_DELAY_SLOT;
+    m_JumpTo = BranchIf(m_GPR[m_OpCode.rs].W != m_GPR[m_OpCode.rt].W);
 }
 
 void RSPOp::BLEZ(void)
 {
-    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
-    RSP_JumpTo = BranchIf(m_GPR[m_OpCode.rs].W <= 0);
+    m_NextInstruction = RSPPIPELINE_DELAY_SLOT;
+    m_JumpTo = BranchIf(m_GPR[m_OpCode.rs].W <= 0);
 }
 
 void RSPOp::BGTZ(void)
 {
-    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
-    RSP_JumpTo = BranchIf(m_GPR[m_OpCode.rs].W > 0);
+    m_NextInstruction = RSPPIPELINE_DELAY_SLOT;
+    m_JumpTo = BranchIf(m_GPR[m_OpCode.rs].W > 0);
 }
 
 void RSPOp::ADDI(void)
@@ -708,14 +709,14 @@ void RSPOp::Special_SRAV(void)
 
 void RSPOp::Special_JR(void)
 {
-    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
-    RSP_JumpTo = (m_GPR[m_OpCode.rs].W & 0xFFC);
+    m_NextInstruction = RSPPIPELINE_DELAY_SLOT;
+    m_JumpTo = (m_GPR[m_OpCode.rs].W & 0xFFC);
 }
 
 void RSPOp::Special_JALR(void)
 {
-    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
-    RSP_JumpTo = (m_GPR[m_OpCode.rs].W & 0xFFC);
+    m_NextInstruction = RSPPIPELINE_DELAY_SLOT;
+    m_JumpTo = (m_GPR[m_OpCode.rs].W & 0xFFC);
     m_GPR[m_OpCode.rd].W = (*m_SP_PC_REG + 8) & 0xFFC;
 }
 
@@ -784,27 +785,27 @@ void RSPOp::Special_SLTU(void)
 
 void RSPOp::BLTZ(void)
 {
-    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
-    RSP_JumpTo = BranchIf(m_GPR[m_OpCode.rs].W < 0);
+    m_NextInstruction = RSPPIPELINE_DELAY_SLOT;
+    m_JumpTo = BranchIf(m_GPR[m_OpCode.rs].W < 0);
 }
 
 void RSPOp::BGEZ(void)
 {
-    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
-    RSP_JumpTo = BranchIf(m_GPR[m_OpCode.rs].W >= 0);
+    m_NextInstruction = RSPPIPELINE_DELAY_SLOT;
+    m_JumpTo = BranchIf(m_GPR[m_OpCode.rs].W >= 0);
 }
 
 void RSPOp::BLTZAL(void)
 {
-    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
-    RSP_JumpTo = BranchIf(m_GPR[m_OpCode.rs].W < 0);
+    m_NextInstruction = RSPPIPELINE_DELAY_SLOT;
+    m_JumpTo = BranchIf(m_GPR[m_OpCode.rs].W < 0);
     m_GPR[31].UW = (*m_SP_PC_REG + 8) & 0xFFC;
 }
 
 void RSPOp::BGEZAL(void)
 {
-    RSP_NextInstruction = RSPPIPELINE_DELAY_SLOT;
-    RSP_JumpTo = BranchIf(m_GPR[m_OpCode.rs].W >= 0);
+    m_NextInstruction = RSPPIPELINE_DELAY_SLOT;
+    m_JumpTo = BranchIf(m_GPR[m_OpCode.rs].W >= 0);
     m_GPR[31].UW = (*m_SP_PC_REG + 8) & 0xFFC;
 }
 

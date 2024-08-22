@@ -6,6 +6,11 @@ class CRSPRegisters;
 
 class CRSPRecompilerOps
 {
+    enum
+    {
+        HIT_BRANCH = 0x2,
+    };
+
 public:
     CRSPRecompilerOps(CRSPSystem & System, CRSPRecompiler & Recompiler);
 
@@ -166,6 +171,12 @@ private:
     void Cheat_r4300iOpcode(RSPOp::Func FunctAddress, const char * FunctName);
     void Cheat_r4300iOpcodeNoMessage(RSPOp::Func FunctAddress, const char * FunctName);
 
+    bool IsNextInstructionMmx(uint32_t PC);
+    bool UseRspFlags(int PC);
+    bool WriteToAccum(int Location, int PC);
+    uint32_t WriteToAccum2(int Location, int PC, bool RecursiveCall);
+    bool WriteToVectorDest(uint32_t DestReg, int PC);
+    bool WriteToVectorDest2(uint32_t DestReg, int PC, bool RecursiveCall);
     void RSP_Element2Mmx(int MmxReg);
     void RSP_MultiElement2Mmx(int MmxReg1, int MmxReg2);
     void CompileBranchExit(uint32_t TargetPC, uint32_t ContinuePC);
@@ -206,6 +217,7 @@ private:
     RSPRegisterHandlerPlugin *& m_RSPRegisterHandler;
     CRSPRegisters & m_Reg;
     CRSPRecompiler & m_Recompiler;
+    RSPPIPELINE_STAGE & m_NextInstruction;
     RSPOpcode & m_OpCode;
     UWORD32 * m_GPR;
     UDWORD * m_ACCUM;

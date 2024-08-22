@@ -1,5 +1,6 @@
 #pragma once
 #include <Project64-rsp-core/cpu/RSPOpcode.h>
+#include <Project64-rsp-core/cpu/RspPipelineStage.h>
 #include <Project64-rsp-core/cpu/RspTypes.h>
 
 class CRSPSystem;
@@ -186,6 +187,8 @@ private:
     RSPRegisterHandlerPlugin *& m_RSPRegisterHandler;
     RSPOpcode & m_OpCode;
     CRSPRegisters & m_Reg;
+    RSPPIPELINE_STAGE & m_NextInstruction;
+    uint32_t & m_JumpTo;
     uint32_t *& m_MI_INTR_REG;
     uint32_t *& m_SP_PC_REG;
     uint32_t *& m_SP_STATUS_REG;

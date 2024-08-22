@@ -2,6 +2,7 @@
 
 #include <Project64-rsp-core/Settings/RspSettings.h>
 #include <Project64-rsp-core/cpu/RSPOpcode.h>
+#include <Project64-rsp-core/cpu/RspPipelineStage.h>
 #include <Project64-rsp-core/cpu/RspTypes.h>
 #include <Settings/Settings.h>
 
@@ -37,6 +38,7 @@ private:
     CRSPRecompiler(const CRSPRecompiler &);
     CRSPRecompiler & operator=(const CRSPRecompiler &);
 
+    void CompilerLinkBlocks(void);
     void CompilerRSPBlock(void);
     void LinkBranches(RSP_BLOCK * Block);
     void ReOrderSubBlock(RSP_BLOCK * Block);
@@ -47,10 +49,11 @@ private:
     RSPRegisterHandlerPlugin *& m_RSPRegisterHandler;
     RSPOpcode & m_OpCode;
     RSP_BLOCK m_CurrentBlock;
+    RSPPIPELINE_STAGE m_NextInstruction;
     uint8_t *& m_IMEM;
 };
 
-extern uint32_t CompilePC, NextInstruction, JumpTableSize;
+extern uint32_t CompilePC, JumpTableSize;
 extern bool ChangedPC;
 
 #define CompilerWarning \

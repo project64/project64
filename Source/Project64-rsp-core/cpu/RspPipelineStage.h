@@ -1,4 +1,4 @@
-#include <stdint.h>
+#pragma once
 
 enum RSPPIPELINE_STAGE
 {
@@ -14,6 +14,3 @@ enum RSPPIPELINE_STAGE
     RSPPIPELINE_FINISH_BLOCK = 9,
     RSPPIPELINE_FINISH_SUB_BLOCK = 10,
 };
-
-extern RSPPIPELINE_STAGE RSP_NextInstruction;
-extern uint32_t RSP_JumpTo;

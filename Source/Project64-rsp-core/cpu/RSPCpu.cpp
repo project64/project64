@@ -12,7 +12,7 @@
 class RSPRegisterHandler;
 
 UDWORD EleSpec[16], Indx[16];
-uint32_t NextInstruction, RSP_Running;
+uint32_t RSP_Running;
 
 void BuildRecompilerCPU(void);
 

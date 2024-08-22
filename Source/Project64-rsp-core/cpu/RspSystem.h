@@ -2,6 +2,7 @@
 #include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/cpu/RSPInterpreterOps.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
+#include <Project64-rsp-core/cpu/RspPipelineStage.h>
 #include <Project64-rsp-core/cpu/RspTypes.h>
 #include <stdint.h>
 
@@ -38,6 +39,8 @@ private:
     CRSPRegisters m_Reg;
     RSPOp m_Op;
     RSPOpcode m_OpCode;
+    RSPPIPELINE_STAGE m_NextInstruction;
+    uint32_t m_JumpTo;
     uint8_t * m_HEADER;
     uint8_t * m_RDRAM;
     uint8_t * m_DMEM;

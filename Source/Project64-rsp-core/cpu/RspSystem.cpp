@@ -3,7 +3,6 @@
 #include <Project64-rsp-core/Recompiler/RspRecompilerCPU.h>
 #include <Project64-rsp-core/Settings/RspSettings.h>
 #include <Project64-rsp-core/cpu/RSPCpu.h>
-#include <Project64-rsp-core/cpu/RSPInterpreterCPU.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
 #include <Project64-rsp-core/cpu/RspSystem.h>
 #include <Settings/Settings.h>
@@ -14,6 +13,8 @@ CRSPSystem::CRSPSystem() :
     m_Recompiler(nullptr),
     m_RSPRegisterHandler(nullptr),
     m_Op(*this),
+    m_NextInstruction(RSPPIPELINE_NORMAL),
+    m_JumpTo(0),
     m_HEADER(nullptr),
     m_RDRAM(nullptr),
     m_DMEM(nullptr),
@@ -127,22 +128,22 @@ uint32_t CRSPSystem::RunInterpreterCPU(uint32_t Cycles)
         (m_Op.*(m_Op.Jump_Opcode[m_OpCode.op]))();
         GprR0 = 0x00000000; // MIPS $zero hard-wired to 0
 
-        switch (RSP_NextInstruction)
+        switch (m_NextInstruction)
         {
         case RSPPIPELINE_NORMAL:
             ProgramCounter = (ProgramCounter + 4) & 0xFFC;
             break;
         case RSPPIPELINE_DELAY_SLOT:
-            RSP_NextInstruction = RSPPIPELINE_JUMP;
+            m_NextInstruction = RSPPIPELINE_JUMP;
             ProgramCounter = (ProgramCounter + 4) & 0xFFC;
             break;
         case RSPPIPELINE_JUMP:
-            RSP_NextInstruction = RSPPIPELINE_NORMAL;
-            ProgramCounter = RSP_JumpTo;
+            m_NextInstruction = RSPPIPELINE_NORMAL;
+            ProgramCounter = m_JumpTo;
             break;
         case RSPPIPELINE_SINGLE_STEP:
             ProgramCounter = (ProgramCounter + 4) & 0xFFC;
-            RSP_NextInstruction = RSPPIPELINE_SINGLE_STEP_DONE;
+            m_NextInstruction = RSPPIPELINE_SINGLE_STEP_DONE;
             break;
         case RSPPIPELINE_SINGLE_STEP_DONE:
             ProgramCounter = (ProgramCounter + 4) & 0xFFC;
