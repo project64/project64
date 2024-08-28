@@ -1,5 +1,6 @@
 #pragma once
 #include <Project64-rsp-core/RSPInfo.h>
+#include <Project64-rsp-core/Recompiler/RspRecompilerCPU.h>
 #include <Project64-rsp-core/cpu/RSPInterpreterOps.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
 #include <Project64-rsp-core/cpu/RspPipelineStage.h>
@@ -34,7 +35,7 @@ private:
     CRSPSystem(const CRSPSystem &);
     CRSPSystem & operator=(const CRSPSystem &);
 
-    CRSPRecompiler * m_Recompiler;
+    CRSPRecompiler m_Recompiler;
     RSPRegisterHandlerPlugin * m_RSPRegisterHandler;
     CRSPRegisters m_Reg;
     RSPOp m_Op;

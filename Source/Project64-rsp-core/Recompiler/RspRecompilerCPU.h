@@ -38,6 +38,7 @@ private:
     CRSPRecompiler(const CRSPRecompiler &);
     CRSPRecompiler & operator=(const CRSPRecompiler &);
 
+    void BuildRecompilerCPU(void);
     void CompilerLinkBlocks(void);
     void CompilerRSPBlock(void);
     void LinkBranches(RSP_BLOCK * Block);
@@ -64,22 +65,15 @@ extern bool ChangedPC;
 #define Low16BitAccum 4
 #define EntireAccum (Low16BitAccum | Middle16BitAccum | High16BitAccum)
 
-bool WriteToAccum(int Location, int PC);
-bool WriteToVectorDest(uint32_t DestReg, int PC);
-bool UseRspFlags(int PC);
-
 bool DelaySlotAffectBranch(uint32_t PC);
 bool CompareInstructions(uint32_t PC, RSPOpcode * Top, RSPOpcode * Bottom);
 bool IsOpcodeBranch(uint32_t PC, RSPOpcode RspOp);
 bool IsOpcodeNop(uint32_t PC);
 
-bool IsNextInstructionMmx(uint32_t PC);
 bool IsRegisterConstant(uint32_t Reg, uint32_t * Constant);
 
 #define MainBuffer 0
 #define SecondaryBuffer 1
-
-void BuildRecompilerCPU(void);
 
 void CompilerToggleBuffer(void);
 

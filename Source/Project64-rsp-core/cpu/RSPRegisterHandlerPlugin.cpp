@@ -41,8 +41,8 @@ void RSPRegisterHandlerPlugin::SetHalt(void)
 
 void RSPRegisterHandlerPlugin::DmaReadDone(uint32_t End)
 {
-    if (g_CPUCore == RecompilerCPU && (*RSPInfo.SP_MEM_ADDR_REG & 0x1000) != 0 && m_System.m_Recompiler != nullptr)
+    if (g_CPUCore == RecompilerCPU && (*RSPInfo.SP_MEM_ADDR_REG & 0x1000) != 0 && g_CPUCore == RecompilerCPU)
     {
-        m_System.m_Recompiler->SetJumpTable(End);
+        m_System.m_Recompiler.SetJumpTable(End);
     }
 }

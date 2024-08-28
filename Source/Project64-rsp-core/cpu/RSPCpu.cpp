@@ -14,8 +14,6 @@ class RSPRegisterHandler;
 UDWORD EleSpec[16], Indx[16];
 uint32_t RSP_Running;
 
-void BuildRecompilerCPU(void);
-
 CriticalSection g_CPUCriticalSection;
 uint32_t Mfc0Count, SemaphoreExit = 0;
 RSPCpuType g_CPUCore = InterpreterCPU;
@@ -24,14 +22,6 @@ void SetCPU(RSPCpuType core)
 {
     CGuard Guard(g_CPUCriticalSection);
     g_CPUCore = core;
-    switch (core)
-    {
-    case RecompilerCPU:
-        BuildRecompilerCPU();
-        break;
-    case InterpreterCPU:
-        break;
-    }
 }
 
 void Build_RSP(void)

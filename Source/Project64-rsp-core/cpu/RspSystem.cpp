@@ -10,7 +10,7 @@
 CRSPSystem RSPSystem;
 
 CRSPSystem::CRSPSystem() :
-    m_Recompiler(nullptr),
+    m_Recompiler(*this),
     m_RSPRegisterHandler(nullptr),
     m_Op(*this),
     m_NextInstruction(RSPPIPELINE_NORMAL),
@@ -101,10 +101,7 @@ void CRSPSystem::RomClosed(void)
 
 void CRSPSystem::RunRecompiler(void)
 {
-    CRSPRecompiler Recompiler(RSPSystem);
-    m_Recompiler = &Recompiler;
-    Recompiler.RunCPU();
-    m_Recompiler = nullptr;
+    m_Recompiler.RunCPU();
 }
 
 uint32_t CRSPSystem::RunInterpreterCPU(uint32_t Cycles)

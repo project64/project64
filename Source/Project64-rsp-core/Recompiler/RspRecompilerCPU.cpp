@@ -47,9 +47,10 @@ CRSPRecompiler::CRSPRecompiler(CRSPSystem & System) :
     m_NextInstruction(RSPPIPELINE_NORMAL),
     m_IMEM(System.m_IMEM)
 {
+    BuildRecompilerCPU();
 }
 
-void BuildRecompilerCPU(void)
+void CRSPRecompiler::BuildRecompilerCPU(void)
 {
     RSP_Recomp_Opcode[0] = &CRSPRecompilerOps::SPECIAL;
     RSP_Recomp_Opcode[1] = &CRSPRecompilerOps::REGIMM;
