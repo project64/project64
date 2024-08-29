@@ -89,11 +89,6 @@ void DetectCpuSpecs(void)
 void RspPluginLoaded(void)
 {
     BreakOnStart = false;
-#if defined(_M_IX86) && defined(_MSC_VER)
-    g_CPUCore = RecompilerCPU;
-#else
-    g_CPUCore = InterpreterCPU;
-#endif
     LogRDP = false;
     LogX86Code = false;
     Profiling = false;
@@ -111,8 +106,7 @@ void RspPluginLoaded(void)
     Compiler.bGPRConstants = true;
     DetectCpuSpecs();
 
-    InitializeRspSetting();
-    SetCPU(g_CPUCore);
+    CRSPSettings::InitializeRspSetting();
 }
 
 void InitilizeRSP(RSP_INFO & Rsp_Info)
@@ -138,7 +132,9 @@ void InitilizeRSP(RSP_INFO & Rsp_Info)
 
 void RspRomOpened(void)
 {
+    CRSPSettings::SetRomOpen(true);
     ClearAllx86Code();
+
     JumpTableSize = GetSetting(Set_JumpTableSize);
     Mfc0Count = GetSetting(Set_Mfc0Count);
     SemaphoreExit = GetSetting(Set_SemaphoreExit);
@@ -151,6 +147,7 @@ void RspRomOpened(void)
 
 void RspRomClosed(void)
 {
+    CRSPSettings::SetRomOpen(false);
     if (Profiling)
     {
         StopTimer();

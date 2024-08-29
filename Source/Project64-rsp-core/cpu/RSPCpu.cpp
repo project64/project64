@@ -16,13 +16,6 @@ uint32_t RSP_Running;
 
 CriticalSection g_CPUCriticalSection;
 uint32_t Mfc0Count, SemaphoreExit = 0;
-RSPCpuType g_CPUCore = InterpreterCPU;
-
-void SetCPU(RSPCpuType core)
-{
-    CGuard Guard(g_CPUCriticalSection);
-    g_CPUCore = core;
-}
 
 void Build_RSP(void)
 {
@@ -33,7 +26,6 @@ void Build_RSP(void)
     SQroot.UW = 0;
     SQrootResult.UW = 0;
 
-    SetCPU(g_CPUCore);
     if (g_RSPDebugger != nullptr)
     {
         g_RSPDebugger->ResetTimerList();
@@ -165,12 +157,12 @@ uint32_t DoRspCycles(uint32_t Cycles)
     }
     CGuard Guard(g_CPUCriticalSection);
 
-    switch (g_CPUCore)
+    switch (CRSPSettings::CPUMethod())
     {
-    case RecompilerCPU:
+    case RSPCpuMethod::Recompiler:
         RSPSystem.RunRecompiler();
         break;
-    case InterpreterCPU:
+    case RSPCpuMethod::Interpreter:
         RSPSystem.RunInterpreterCPU(Cycles);
         break;
     }

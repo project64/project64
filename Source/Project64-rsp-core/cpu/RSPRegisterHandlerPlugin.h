@@ -1,10 +1,12 @@
 #pragma once
 #include "RSPRegisterHandler.h"
+#include <Project64-rsp-core/Settings/RspSettings.h>
 
 class CRSPSystem;
 
 class RSPRegisterHandlerPlugin :
-    public RSPRegisterHandler
+    public RSPRegisterHandler,
+    private CRSPSettings
 {
 public:
     RSPRegisterHandlerPlugin(CRSPSystem & System);

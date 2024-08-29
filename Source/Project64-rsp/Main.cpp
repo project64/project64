@@ -173,9 +173,11 @@ void FixMenuState(void)
     EnableMenuItem(hRSPMenu, ID_PROFILING_GENERATELOG, MF_BYCOMMAND | (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
     EnableMenuItem(hRSPMenu, ID_DUMP_RSPCODE, MF_BYCOMMAND | (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
     EnableMenuItem(hRSPMenu, ID_DUMP_DMEM, MF_BYCOMMAND | (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
+    EnableMenuItem(hRSPMenu, ID_CPUMETHOD_RECOMPILER, MF_BYCOMMAND | (!CRSPSettings::RomOpen() ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
+    EnableMenuItem(hRSPMenu, ID_CPUMETHOD_INTERPT, MF_BYCOMMAND | (!CRSPSettings::RomOpen() ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
 
-    CheckMenuItem(hRSPMenu, ID_CPUMETHOD_RECOMPILER, MF_BYCOMMAND | (g_CPUCore == RecompilerCPU ? MFS_CHECKED : MF_UNCHECKED));
-    CheckMenuItem(hRSPMenu, ID_CPUMETHOD_INTERPT, MF_BYCOMMAND | (g_CPUCore == InterpreterCPU ? MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_CPUMETHOD_RECOMPILER, MF_BYCOMMAND | ((RSPCpuMethod)GetSetting(Set_CPUCore) == RSPCpuMethod::Recompiler ? MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_CPUMETHOD_INTERPT, MF_BYCOMMAND | ((RSPCpuMethod)GetSetting(Set_CPUCore) == RSPCpuMethod::Interpreter ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_BREAKONSTARTOFTASK, MF_BYCOMMAND | (BreakOnStart ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_LOGRDPCOMMANDS, MF_BYCOMMAND | (LogRDP ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_SETTINGS_HLEALISTTASK, MF_BYCOMMAND | (HleAlistTask ? MFS_CHECKED : MF_UNCHECKED));
@@ -226,6 +228,7 @@ EXPORT void GetRspDebugInfo(RSPDEBUG_INFO * _DebugInfo)
     if (hRSPMenu == NULL)
     {
         hRSPMenu = LoadMenu((HINSTANCE)hinstDLL, MAKEINTRESOURCE(RspMenu));
+        CRSPSettings::InitializeRspSetting();
         FixMenuState();
     }
     _DebugInfo->hRSPMenu = hRSPMenu;
@@ -398,16 +401,12 @@ void ProcessMenuItem(int32_t ID)
         break;
     }
     case ID_CPUMETHOD_RECOMPILER:
-        SetSetting(Set_CPUCore, RecompilerCPU);
-        g_CPUCore = RecompilerCPU;
+        SetSetting(Set_CPUCore, (int)RSPCpuMethod::Recompiler);
         FixMenuState();
-        SetCPU(RecompilerCPU);
         break;
     case ID_CPUMETHOD_INTERPT:
-        SetSetting(Set_CPUCore, InterpreterCPU);
-        g_CPUCore = InterpreterCPU;
+        SetSetting(Set_CPUCore, (int)RSPCpuMethod::Interpreter);
         FixMenuState();
-        SetCPU(InterpreterCPU);
         break;
     }
 }
@@ -439,6 +438,7 @@ Output: None
 EXPORT void RomClosed(void)
 {
     RspRomClosed();
+    FixMenuState();
 }
 
 #ifdef _WIN32
@@ -545,7 +545,7 @@ BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam
         hWndItem = GetDlgItem(hDlg, IDC_COMPILER_SELECT);
         ComboBox_AddString(hWndItem, "Interpreter");
         ComboBox_AddString(hWndItem, "Recompiler");
-        ComboBox_SetCurSel(hWndItem, g_CPUCore);
+        //ComboBox_SetCurSel(hWndItem, g_CPUCore);
         break;
     case WM_COMMAND:
         switch (GET_WM_COMMAND_ID(wParam, lParam))
@@ -553,7 +553,6 @@ BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam
         case IDOK:
             hWndItem = GetDlgItem(hDlg, IDC_COMPILER_SELECT);
             value = ComboBox_GetCurSel(hWndItem);
-            SetCPU((RSPCpuType)value);
 
             AudioHle = GetBooleanCheck(hDlg, IDC_AUDIOHLE);
             GraphicsHle = GetBooleanCheck(hDlg, IDC_GRAPHICSHLE);
@@ -580,11 +579,11 @@ BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam
 
 EXPORT void EnableDebugging(int Enabled)
 {
+    CRSPSettings::EnableDebugging(Enabled != 0);
     DebuggingEnabled = Enabled != 0;
     if (DebuggingEnabled)
     {
         BreakOnStart = GetSetting(Set_BreakOnStart) != 0;
-        g_CPUCore = (RSPCpuType)GetSetting(Set_CPUCore);
         LogRDP = GetSetting(Set_LogRDP) != 0;
         LogX86Code = GetSetting(Set_LogX86Code) != 0;
         Profiling = GetSetting(Set_Profiling) != 0;
@@ -602,7 +601,6 @@ EXPORT void EnableDebugging(int Enabled)
         Compiler.bGPRConstants = GetSetting(Set_GPRConstants) != 0;
         Compiler.bFlags = GetSetting(Set_Flags) != 0;
         Compiler.bAlignVector = GetSetting(Set_AlignVector) != 0;
-        SetCPU(g_CPUCore);
     }
 #ifdef _WIN32
     FixMenuState();

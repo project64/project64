@@ -7,7 +7,8 @@ class CRSPSystem;
 class CRSPRegisters;
 class RSPRegisterHandlerPlugin;
 
-class RSPOp
+class RSPOp :
+    private CRSPSettings
 {
     friend class CRSPSystem;
     friend class CRSPRecompilerOps;

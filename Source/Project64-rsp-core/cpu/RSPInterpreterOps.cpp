@@ -849,7 +849,7 @@ void RSPOp::Cop0_MF(void)
 
 void RSPOp::Cop0_MT(void)
 {
-    if (LogRDP && g_CPUCore == InterpreterCPU)
+    if (LogRDP && CPUMethod() == RSPCpuMethod::Interpreter)
     {
         RDPLog.LogMT0(*m_SP_PC_REG, m_OpCode.rd, m_GPR[m_OpCode.rt].UW);
     }

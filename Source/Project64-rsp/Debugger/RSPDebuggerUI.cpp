@@ -119,7 +119,7 @@ void RSPDebuggerUI::UnknownOpcode(void)
 
 void RSPDebuggerUI::RDP_LogMF0(uint32_t PC, uint32_t Reg)
 {
-    if (LogRDP && g_CPUCore == InterpreterCPU)
+    if (LogRDP && CRSPSettings::CPUMethod() == RSPCpuMethod::Interpreter)
     {
         RDPLog.LogMF0(PC, Reg);
     }
