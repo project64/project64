@@ -3,7 +3,6 @@
 class CHle;
 
 extern RSP_INFO RSPInfo;
-extern CHle * g_hle;
 
 void InitilizeRSP(RSP_INFO & Rsp_Info);
 void RspPluginLoaded(void);

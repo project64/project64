@@ -7,6 +7,7 @@
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 
 #include "hle.h"
+#include <Project64-rsp-core/cpu/RspSystem.h>
 #include <stdint.h>
 #if defined(_WIN32) && defined(_DEBUG)
 #include <Windows.h>
@@ -21,33 +22,31 @@
 
 static unsigned int sum_bytes(const uint8_t * bytes, uint32_t size);
 
-CHle::CHle(const RSP_INFO & Rsp_Info) :
-    m_dram(Rsp_Info.RDRAM),
-    m_dmem(Rsp_Info.DMEM),
-    m_imem(Rsp_Info.IMEM),
-    m_mi_intr(Rsp_Info.MI_INTR_REG),
-    m_sp_mem_addr(Rsp_Info.SP_MEM_ADDR_REG),
-    m_sp_dram_addr(Rsp_Info.SP_DRAM_ADDR_REG),
-    m_sp_rd_length(Rsp_Info.SP_RD_LEN_REG),
-    m_sp_wr_length(Rsp_Info.SP_WR_LEN_REG),
-    m_sp_status(Rsp_Info.SP_STATUS_REG),
-    m_sp_dma_full(Rsp_Info.SP_DMA_FULL_REG),
-    m_sp_dma_busy(Rsp_Info.SP_DMA_BUSY_REG),
-    m_sp_pc(Rsp_Info.SP_PC_REG),
-    m_sp_semaphore(Rsp_Info.SP_SEMAPHORE_REG),
-    m_dpc_start(Rsp_Info.DPC_START_REG),
-    m_dpc_end(Rsp_Info.DPC_END_REG),
-    m_dpc_current(Rsp_Info.DPC_CURRENT_REG),
-    m_dpc_status(Rsp_Info.DPC_STATUS_REG),
-    m_dpc_clock(Rsp_Info.DPC_CLOCK_REG),
-    m_dpc_bufbusy(Rsp_Info.DPC_BUFBUSY_REG),
-    m_dpc_pipebusy(Rsp_Info.DPC_PIPEBUSY_REG),
-    m_dpc_tmem(Rsp_Info.DPC_TMEM_REG),
-    m_CheckInterrupts(Rsp_Info.CheckInterrupts),
-    m_ProcessDList(Rsp_Info.ProcessDList),
-    m_ProcessAList(Rsp_Info.ProcessAList),
-    m_ProcessRdpList(Rsp_Info.ProcessRdpList),
-    m_ShowCFB(Rsp_Info.ShowCFB),
+CHle::CHle(CRSPSystem & System) :
+    m_dram(System.m_RDRAM),
+    m_dmem(System.m_DMEM),
+    m_imem(System.m_IMEM),
+    m_mi_intr(System.m_MI_INTR_REG),
+    m_sp_mem_addr(System.m_SP_MEM_ADDR_REG),
+    m_sp_dram_addr(System.m_SP_DRAM_ADDR_REG),
+    m_sp_rd_length(System.m_SP_RD_LEN_REG),
+    m_sp_wr_length(System.m_SP_WR_LEN_REG),
+    m_sp_status(System.m_SP_STATUS_REG),
+    m_sp_dma_full(System.m_SP_DMA_FULL_REG),
+    m_sp_dma_busy(System.m_SP_DMA_BUSY_REG),
+    m_sp_pc(System.m_SP_PC_REG),
+    m_sp_semaphore(System.m_SP_SEMAPHORE_REG),
+    m_dpc_start(System.m_DPC_START_REG),
+    m_dpc_end(System.m_DPC_END_REG),
+    m_dpc_current(System.m_DPC_CURRENT_REG),
+    m_dpc_status(System.m_DPC_STATUS_REG),
+    m_dpc_clock(System.m_DPC_CLOCK_REG),
+    m_dpc_bufbusy(System.m_DPC_BUFBUSY_REG),
+    m_dpc_pipebusy(System.m_DPC_PIPEBUSY_REG),
+    m_dpc_tmem(System.m_DPC_TMEM_REG),
+    m_CheckInterrupts(System.CheckInterrupts),
+    m_ProcessDList(System.ProcessDList),
+    m_ProcessRdpList(System.ProcessRdpList),
     m_AudioHle(false),
     m_GraphicsHle(true),
     m_ForwardAudio(false),
@@ -74,23 +73,6 @@ void CHle::rsp_break(unsigned int setbits)
     {
         *m_mi_intr |= MI_INTR_SP;
         m_CheckInterrupts();
-    }
-}
-
-void CHle::hle_execute(void)
-{
-    if (is_task())
-    {
-        if (!try_fast_task_dispatching())
-        {
-            normal_task_dispatching();
-        }
-        rsp_break(SP_STATUS_SIG2);
-    }
-    else
-    {
-        non_task_dispatching();
-        rsp_break(0);
     }
 }
 
@@ -124,36 +106,6 @@ Using ucode_boot_size should be more robust in this regard.
 bool CHle::is_task(void)
 {
     return (*dmem_u32(this, TASK_UCODE_BOOT_SIZE) <= 0x1000);
-}
-
-bool CHle::try_fast_task_dispatching(void)
-{
-    // Identify task microcode by its type
-    switch (*dmem_u32(this, TASK_TYPE))
-    {
-    case 1:
-        if (m_ForwardGFX)
-        {
-            m_ProcessDList();
-            return true;
-        }
-        break;
-    case 2:
-        if (m_AudioHle)
-        {
-            m_ProcessAList();
-            return true;
-        }
-        else if (try_fast_audio_dispatching())
-        {
-            return true;
-        }
-        break;
-    case 7:
-        m_ShowCFB();
-        return true;
-    }
-    return false;
 }
 
 bool CHle::try_fast_audio_dispatching(void)

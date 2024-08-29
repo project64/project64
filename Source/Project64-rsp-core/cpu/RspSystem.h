@@ -1,4 +1,5 @@
 #pragma once
+#include <Project64-rsp-core/Hle/HleTask.h>
 #include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/Recompiler/RspRecompilerCPU.h>
 #include <Project64-rsp-core/cpu/RSPInterpreterOps.h>
@@ -9,15 +10,18 @@
 
 class RSPRegisterHandlerPlugin;
 
-class CRSPSystem
+class CRSPSystem :
+    public CHleTask
 {
     friend class RSPOp;
     friend class CRSPRecompilerOps;
     friend class CRSPRecompiler;
+    friend class CHleTask;
     friend class RSPDebuggerUI;
     friend class CRDPLog;
     friend class RSPRegisterHandler;
     friend class RSPRegisterHandlerPlugin;
+    friend class CHle;
 
     friend void UpdateRSPRegistersScreen(void);
 
@@ -66,6 +70,7 @@ private:
     uint32_t * m_DPC_TMEM_REG;
     uint32_t m_RdramSize;
     void (*CheckInterrupts)(void);
+    void (*ProcessDList)(void);
     void (*ProcessRdpList)(void);
 };
 

@@ -9,6 +9,7 @@ enum class RSPCpuMethod
 {
     Interpreter = 0,
     Recompiler = 1,
+    HighLevelEmulation = 2,
 };
 
 class CRSPSettings

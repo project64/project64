@@ -1,6 +1,5 @@
 #include "RSPCpu.h"
 #include <Common/CriticalSection.h>
-#include <Project64-rsp-core/Hle/hle.h>
 #include <Project64-rsp-core/RSPDebugger.h>
 #include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/Recompiler/RspRecompilerCPU.h>
@@ -96,59 +95,9 @@ be greater than the number of cycles that the RSP should have performed.
 
 uint32_t DoRspCycles(uint32_t Cycles)
 {
-    extern bool AudioHle, GraphicsHle;
-    uint32_t TaskType = *(uint32_t *)(RSPInfo.DMEM + 0xFC0);
-
-    if (TaskType == 1 && GraphicsHle && *(uint32_t *)(RSPInfo.DMEM + 0x0ff0) != 0)
+    if (RSPSystem.IsHleTask() && RSPSystem.ProcessHleTask())
     {
-        if (RSPInfo.ProcessDList != NULL)
-        {
-            RSPInfo.ProcessDList();
-        }
-        *RSPInfo.SP_STATUS_REG |= (0x0203);
-        if ((*RSPInfo.SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0)
-        {
-            *RSPInfo.MI_INTR_REG |= MI_INTR_SP;
-            RSPInfo.CheckInterrupts();
-        }
-
-        *RSPInfo.DPC_STATUS_REG &= ~0x0002;
         return Cycles;
-    }
-    else if (TaskType == 2 && HleAlistTask)
-    {
-        if (g_hle == nullptr)
-        {
-            g_hle = new CHle(RSPInfo);
-        }
-        if (g_hle != nullptr)
-        {
-            g_hle->try_fast_audio_dispatching();
-            *RSPInfo.SP_STATUS_REG |= SP_STATUS_SIG2 | SP_STATUS_BROKE | SP_STATUS_HALT;
-            if ((*RSPInfo.SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0)
-            {
-                *RSPInfo.MI_INTR_REG |= MI_INTR_SP;
-                RSPInfo.CheckInterrupts();
-            }
-        }
-    }
-    else if (TaskType == 2 && AudioHle)
-    {
-        if (RSPInfo.ProcessAList != NULL)
-        {
-            RSPInfo.ProcessAList();
-        }
-        *RSPInfo.SP_STATUS_REG |= SP_STATUS_SIG2 | SP_STATUS_BROKE | SP_STATUS_HALT;
-        if ((*RSPInfo.SP_STATUS_REG & SP_STATUS_INTR_BREAK) != 0)
-        {
-            *RSPInfo.MI_INTR_REG |= MI_INTR_SP;
-            RSPInfo.CheckInterrupts();
-        }
-        return Cycles;
-    }
-    else if (TaskType == 7)
-    {
-        RSPInfo.ShowCFB();
     }
 
     if (g_RSPDebugger != nullptr)
@@ -163,6 +112,7 @@ uint32_t DoRspCycles(uint32_t Cycles)
         RSPSystem.RunRecompiler();
         break;
     case RSPCpuMethod::Interpreter:
+    case RSPCpuMethod::HighLevelEmulation:
         RSPSystem.RunInterpreterCPU(Cycles);
         break;
     }

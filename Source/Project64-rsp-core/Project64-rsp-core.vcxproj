@@ -58,6 +58,7 @@
     <ClCompile Include="Hle\audio.cpp" />
     <ClCompile Include="Hle\cicx105.cpp" />
     <ClCompile Include="Hle\hle.cpp" />
+    <ClCompile Include="Hle\HleTask.cpp" />
     <ClCompile Include="Hle\jpeg.cpp" />
     <ClCompile Include="Hle\mem.cpp" />
     <ClCompile Include="Hle\mp3.cpp" />
@@ -92,6 +93,7 @@
     <ClInclude Include="Hle\arithmetics.h" />
     <ClInclude Include="Hle\audio.h" />
     <ClInclude Include="Hle\hle.h" />
+    <ClInclude Include="Hle\HleTask.h" />
     <ClInclude Include="Hle\mem.h" />
     <ClInclude Include="Hle\ucodes.h" />
     <ClInclude Include="Recompiler\RspProfiling.h" />

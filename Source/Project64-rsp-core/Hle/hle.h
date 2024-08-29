@@ -17,10 +17,12 @@
 #define UNUSED(x) /* x */
 #endif
 
+class CRSPSystem;
+
 class CHle
 {
 public:
-    CHle(const RSP_INFO & Rsp_Info);
+    CHle(CRSPSystem & System);
     ~CHle();
 
     uint8_t * dram()
@@ -71,7 +73,6 @@ public:
     void ErrorMessage(const char * message, ...);
 
     void rsp_break(uint32_t setbits);
-    void hle_execute(void);
 
     bool try_fast_audio_dispatching(void);
 
@@ -81,40 +82,37 @@ private:
     CHle & operator=(const CHle &);
 
     bool is_task(void);
-    bool try_fast_task_dispatching(void);
     void normal_task_dispatching(void);
     void non_task_dispatching(void);
 
-    uint8_t * m_dram;
-    uint8_t * m_dmem;
-    uint8_t * m_imem;
+    uint8_t *& m_dram;
+    uint8_t *& m_dmem;
+    uint8_t *& m_imem;
 
-    uint32_t * m_mi_intr;
+    uint32_t *& m_mi_intr;
 
-    uint32_t * m_sp_mem_addr;
-    uint32_t * m_sp_dram_addr;
-    uint32_t * m_sp_rd_length;
-    uint32_t * m_sp_wr_length;
-    uint32_t * m_sp_status;
-    uint32_t * m_sp_dma_full;
-    uint32_t * m_sp_dma_busy;
-    uint32_t * m_sp_pc;
-    uint32_t * m_sp_semaphore;
+    uint32_t *& m_sp_mem_addr;
+    uint32_t *& m_sp_dram_addr;
+    uint32_t *& m_sp_rd_length;
+    uint32_t *& m_sp_wr_length;
+    uint32_t *& m_sp_status;
+    uint32_t *& m_sp_dma_full;
+    uint32_t *& m_sp_dma_busy;
+    uint32_t *& m_sp_pc;
+    uint32_t *& m_sp_semaphore;
 
-    uint32_t * m_dpc_start;
-    uint32_t * m_dpc_end;
-    uint32_t * m_dpc_current;
-    uint32_t * m_dpc_status;
-    uint32_t * m_dpc_clock;
-    uint32_t * m_dpc_bufbusy;
-    uint32_t * m_dpc_pipebusy;
-    uint32_t * m_dpc_tmem;
+    uint32_t *& m_dpc_start;
+    uint32_t *& m_dpc_end;
+    uint32_t *& m_dpc_current;
+    uint32_t *& m_dpc_status;
+    uint32_t *& m_dpc_clock;
+    uint32_t *& m_dpc_bufbusy;
+    uint32_t *& m_dpc_pipebusy;
+    uint32_t *& m_dpc_tmem;
 
-    void (*m_CheckInterrupts)(void);
-    void (*m_ProcessDList)(void);
-    void (*m_ProcessAList)(void);
-    void (*m_ProcessRdpList)(void);
-    void (*m_ShowCFB)(void);
+    void (*&m_CheckInterrupts)(void);
+    void (*&m_ProcessDList)(void);
+    void (*&m_ProcessRdpList)(void);
 
     // alist.cpp
     uint8_t m_alist_buffer[0x1000];

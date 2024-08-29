@@ -10,6 +10,7 @@
 CRSPSystem RSPSystem;
 
 CRSPSystem::CRSPSystem() :
+    CHleTask(*this),
     m_Recompiler(*this),
     m_RSPRegisterHandler(nullptr),
     m_Op(*this),
@@ -38,6 +39,7 @@ CRSPSystem::CRSPSystem() :
     m_DPC_PIPEBUSY_REG(nullptr),
     m_DPC_TMEM_REG(nullptr),
     CheckInterrupts(nullptr),
+    ProcessDList(nullptr),
     ProcessRdpList(nullptr),
     m_RdramSize(0)
 {
@@ -80,6 +82,7 @@ void CRSPSystem::Reset(RSP_INFO & Info)
     m_DPC_PIPEBUSY_REG = Info.DPC_PIPEBUSY_REG;
     m_DPC_TMEM_REG = Info.DPC_TMEM_REG;
     CheckInterrupts = Info.CheckInterrupts;
+    ProcessDList = Info.ProcessDList;
     ProcessRdpList = Info.ProcessRdpList;
 
     m_RdramSize = Set_AllocatedRdramSize != 0 ? GetSystemSetting(Set_AllocatedRdramSize) : 0;

@@ -1,5 +1,4 @@
 #include "RSPInfo.h"
-#include <Project64-rsp-core/Hle/hle.h>
 #include <Project64-rsp-core/Recompiler/RspProfiling.h>
 #include <Project64-rsp-core/Recompiler/RspRecompilerCPU.h>
 #include <Project64-rsp-core/Settings/RspSettings.h>
@@ -17,7 +16,6 @@
 
 RSP_INFO RSPInfo;
 uint32_t RdramSize = 0;
-CHle * g_hle = nullptr;
 
 void ClearAllx86Code(void);
 
@@ -122,12 +120,6 @@ void InitilizeRSP(RSP_INFO & Rsp_Info)
 #ifdef GenerateLog
     Start_Log();
 #endif
-
-    if (g_hle != nullptr)
-    {
-        delete g_hle;
-        g_hle = nullptr;
-    }
 }
 
 void RspRomOpened(void)
@@ -166,9 +158,4 @@ void RspRomClosed(void)
 void FreeRSP(void)
 {
     FreeMemory();
-    if (g_hle != nullptr)
-    {
-        delete g_hle;
-        g_hle = nullptr;
-    }
 }

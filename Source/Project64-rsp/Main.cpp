@@ -175,9 +175,11 @@ void FixMenuState(void)
     EnableMenuItem(hRSPMenu, ID_DUMP_DMEM, MF_BYCOMMAND | (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
     EnableMenuItem(hRSPMenu, ID_CPUMETHOD_RECOMPILER, MF_BYCOMMAND | (!CRSPSettings::RomOpen() ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
     EnableMenuItem(hRSPMenu, ID_CPUMETHOD_INTERPT, MF_BYCOMMAND | (!CRSPSettings::RomOpen() ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
+    EnableMenuItem(hRSPMenu, ID_CPUMETHOD_HLE, MF_BYCOMMAND | (!CRSPSettings::RomOpen() ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
 
     CheckMenuItem(hRSPMenu, ID_CPUMETHOD_RECOMPILER, MF_BYCOMMAND | ((RSPCpuMethod)GetSetting(Set_CPUCore) == RSPCpuMethod::Recompiler ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_CPUMETHOD_INTERPT, MF_BYCOMMAND | ((RSPCpuMethod)GetSetting(Set_CPUCore) == RSPCpuMethod::Interpreter ? MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_CPUMETHOD_HLE, MF_BYCOMMAND | ((RSPCpuMethod)GetSetting(Set_CPUCore) == RSPCpuMethod::HighLevelEmulation ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_BREAKONSTARTOFTASK, MF_BYCOMMAND | (BreakOnStart ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_LOGRDPCOMMANDS, MF_BYCOMMAND | (LogRDP ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_SETTINGS_HLEALISTTASK, MF_BYCOMMAND | (HleAlistTask ? MFS_CHECKED : MF_UNCHECKED));
@@ -406,6 +408,10 @@ void ProcessMenuItem(int32_t ID)
         break;
     case ID_CPUMETHOD_INTERPT:
         SetSetting(Set_CPUCore, (int)RSPCpuMethod::Interpreter);
+        FixMenuState();
+        break;
+    case ID_CPUMETHOD_HLE:
+        SetSetting(Set_CPUCore, (int)RSPCpuMethod::HighLevelEmulation);
         FixMenuState();
         break;
     }

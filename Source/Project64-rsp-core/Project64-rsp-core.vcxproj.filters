@@ -138,6 +138,9 @@
     <ClCompile Include="cpu\RspSystem.cpp">
       <Filter>Source Files\cpu</Filter>
     </ClCompile>
+    <ClCompile Include="Hle\HleTask.cpp">
+      <Filter>Source Files\hle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cpu\RSPInstruction.h">
@@ -220,6 +223,9 @@
     </ClInclude>
     <ClInclude Include="cpu\RspPipelineStage.h">
       <Filter>Header Files\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="Hle\HleTask.h">
+      <Filter>Header Files\hle</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

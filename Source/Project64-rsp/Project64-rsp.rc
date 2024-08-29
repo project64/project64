@@ -171,6 +171,7 @@ BEGIN
     BEGIN
         MENUITEM "Recompiler",                  ID_CPUMETHOD_RECOMPILER
         MENUITEM "Interpreter",                 ID_CPUMETHOD_INTERPT
+        MENUITEM "HLE",                         ID_CPUMETHOD_HLE
     END
     MENUITEM SEPARATOR
     POPUP "Pro&filing"
