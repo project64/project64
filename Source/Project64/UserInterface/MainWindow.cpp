@@ -227,10 +227,22 @@ void CMainGui::GamePaused(CMainGui * Gui)
     Gui->RefreshMenu();
 }
 
+void CMainGui::SavePlaytime()
+{
+    if (m_CurrentPlaytime.second)
+    {
+        auto Now = std::chrono::steady_clock::now();
+        auto ElapsedPlaytime = std::chrono::duration_cast<std::chrono::seconds>(Now - m_CurrentPlaytime.first).count();
+        CRomList::SavePlaytime(static_cast<uint32_t>(ElapsedPlaytime));
+        m_CurrentPlaytime.second = false;
+    }
+}
+
 void CMainGui::GameCpuRunning(CMainGui * Gui)
 {
     if (g_Settings->LoadBool(GameRunning_CPU_Running))
     {
+        Gui->m_CurrentPlaytime = {std::chrono::steady_clock::now(), true};
         Gui->MakeWindowOnTop(UISettingsLoadBool(UserInterface_AlwaysOnTop));
         Gui->HideRomList();
         if (UISettingsLoadBool(Setting_AutoFullscreen))
@@ -251,6 +263,7 @@ void CMainGui::GameCpuRunning(CMainGui * Gui)
     }
     else
     {
+        Gui->SavePlaytime();
         if (Gui->m_CheatsUI.m_hWnd != nullptr)
         {
             Gui->m_CheatsUI.SendMessage(WM_COMMAND, MAKELONG(IDCANCEL, 0));
