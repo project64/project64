@@ -35,8 +35,7 @@
   <PropertyGroup>
     <TargetName>Project64-Audio</TargetName>
     <TargetName Condition="'$(Configuration)'=='Debug'">Project64-Audio_d</TargetName>
-    <OutDir>$(SolutionDir)Plugin\Audio\</OutDir>
-    <OutDir Condition="'$(Platform)'=='x64'">$(SolutionDir)Plugin64\Audio\</OutDir>
+    <OutDir>$(SolutionDir)Plugin\$(Platform)\Audio\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>

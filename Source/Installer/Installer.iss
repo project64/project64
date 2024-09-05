@@ -5,11 +5,11 @@
 AppId={{BEB5FB69-4080-466F-96C4-F15DF271718B}
 AppName=Project64
 AppVersion={#AppVersion}
-DefaultDirName={pf32}\Project64 Dev 3.0
+DefaultDirName={pf32}\Project64 Dev 4.0
 VersionInfoVersion={#AppVersion}
 OutputDir={#BaseDir}\Bin\{#Configuration}
-OutputBaseFilename=Setup Project64 Dev 3.0
-VersionInfoDescription=Installation Setup of Project64 Dev 3.0
+OutputBaseFilename=Setup Project64 Dev 4.0
+VersionInfoDescription=Installation Setup of Project64 Dev 4.0
 Compression=lzma2/ultra64
 WizardImageFile=Installer-Sidebar.bmp
 WizardSmallImageFile=Pj64LogoSmallImage.bmp
@@ -31,14 +31,14 @@ Source: "{#BaseDir}\Config\Enhancements\*.enh"; DestDir: "{app}\Config\Enhanceme
 Source: "{#BaseDir}\Config\Project64.rdb"; DestDir: "{app}\Config"
 Source: "{#BaseDir}\Config\Project64.rdx"; DestDir: "{app}\Config"
 Source: "{#BaseDir}\Lang\*.pj.Lang"; DestDir: "{app}\Lang"
-Source: "{#BaseDir}\Plugin\Audio\Jabo_Dsound.dll"; DestDir: "{app}\Plugin\Audio"
-Source: "{#BaseDir}\Plugin\Audio\Project64-Audio.dll"; DestDir: "{app}\Plugin\Audio"
-Source: "{#BaseDir}\Plugin\GFX\Jabo_Direct3D8.dll"; DestDir: "{app}\Plugin\GFX"
-Source: "{#BaseDir}\Plugin\GFX\Project64-Video.dll"; DestDir: "{app}\Plugin\GFX"
-Source: "{#BaseDir}\Plugin\GFX\GLideN64\*"; DestDir: "{app}\Plugin\GFX\GLideN64"; Flags: recursesubdirs skipifsourcedoesntexist
-Source: "{#BaseDir}\Plugin\Input\PJ64_NRage.dll"; DestDir: "{app}\Plugin\Input"
-Source: "{#BaseDir}\Plugin\Input\Project64-Input.dll"; DestDir: "{app}\Plugin\Input"
-Source: "{#BaseDir}\Plugin\RSP\Project64-RSP.dll"; DestDir: "{app}\Plugin\RSP"
+Source: "{#BaseDir}\Plugin\{#Configuration}\Audio\Jabo_Dsound.dll"; DestDir: "{app}\Plugin\Audio"
+Source: "{#BaseDir}\Plugin\{#Configuration}\Audio\Project64-Audio.dll"; DestDir: "{app}\Plugin\Audio"
+Source: "{#BaseDir}\Plugin\{#Configuration}\GFX\Jabo_Direct3D8.dll"; DestDir: "{app}\Plugin\GFX"
+Source: "{#BaseDir}\Plugin\{#Configuration}\GFX\Project64-Video.dll"; DestDir: "{app}\Plugin\GFX"
+Source: "{#BaseDir}\Plugin\{#Configuration}\GFX\GLideN64\*"; DestDir: "{app}\Plugin\GFX\GLideN64"; Flags: recursesubdirs skipifsourcedoesntexist
+Source: "{#BaseDir}\Plugin\{#Configuration}\Input\PJ64_NRage.dll"; DestDir: "{app}\Plugin\Input"
+Source: "{#BaseDir}\Plugin\{#Configuration}\Input\Project64-Input.dll"; DestDir: "{app}\Plugin\Input"
+Source: "{#BaseDir}\Plugin\{#Configuration}\RSP\Project64-RSP.dll"; DestDir: "{app}\Plugin\RSP"
 Source: "{#BaseDir}\Scripts\example.js"; DestDir: "{app}\Scripts"
 Source: "{#BaseDir}\Scripts\api_documentation.js"; DestDir: "{app}\Scripts"
 Source: "{#BaseDir}\JS-API-Documentation.html"; DestDir: "{app}"

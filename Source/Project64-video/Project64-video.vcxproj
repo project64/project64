@@ -34,8 +34,7 @@
   <PropertyGroup>
     <TargetName>Project64-Video</TargetName>
     <TargetName Condition="'$(Configuration)'=='Debug'">Project64-Video_d</TargetName>
-    <OutDir>$(SolutionDir)Plugin\GFX\</OutDir>
-    <OutDir Condition="'$(Platform)'=='x64'">$(SolutionDir)Plugin64\GFX\</OutDir>
+    <OutDir>$(SolutionDir)Plugin\$(Platform)\GFX\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>

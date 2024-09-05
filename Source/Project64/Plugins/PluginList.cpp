@@ -7,6 +7,7 @@
 CPluginList::CPluginList(bool bAutoFill /* = true */) :
     m_PluginDir(g_Settings->LoadStringVal(Directory_Plugin), "")
 {
+    m_PluginDir.NormalizePath(CPath(CPath::MODULE_DIRECTORY));
     if (bAutoFill)
     {
         LoadList();

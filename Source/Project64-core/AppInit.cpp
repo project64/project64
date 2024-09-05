@@ -247,14 +247,14 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
 #ifdef _WIN32
         IncreaseThreadPriority();
 #endif
+        g_Lang = new CLanguage();
+        g_Lang->LoadCurrentStrings();
         g_Enhancements = new CEnhancements();
 
         //Create the plugin container
         WriteTrace(TraceAppInit, TraceInfo, "Create plugins");
         g_Plugins = new CPlugins(Directory_Plugin, false);
 
-        g_Lang = new CLanguage();
-        g_Lang->LoadCurrentStrings();
         g_Notify->AppInitDone();
         WriteTrace(TraceAppInit, TraceDebug, "Initialized successfully");
         return true;

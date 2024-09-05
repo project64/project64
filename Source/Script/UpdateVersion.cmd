@@ -16,7 +16,5 @@ if not "%~2" == "" set Platform=%~2
 if not "%~2" == "" set InFile="%~3"
 if not "%~3" == "" set OutFile="%~4"
 
-if %Platform%==x64 set BuildMode=%BuildMode%64
-
-echo "%base_dir%\Bin\%BuildMode%\UpdateVersion.exe" %InFile% %OutFile%
-"%base_dir%\Bin\%BuildMode%\UpdateVersion.exe" %InFile% %OutFile%
+echo "%base_dir%\Bin\%Platform%\%BuildMode%\UpdateVersion.exe" %InFile% %OutFile%
+"%base_dir%\Bin\%Platform%\%BuildMode%\UpdateVersion.exe" %InFile% %OutFile%

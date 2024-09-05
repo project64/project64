@@ -1,41 +1,38 @@
 ﻿[Settings]
-7zipCache=..\..\Config\Project64.zcache
-AudioRDB=..\..\Config\Audio.rdb
+7zipCache=..\..\..\Config\Project64.zcache
+AudioRDB=..\..\..\Config\Audio.rdb
 Auto Sleep=0
 Basic Mode=0
-CheatDir=..\..\Config\Cheats\
-EnhancementDir=..\..\Config\Enhancements\
-ExtInfo=..\..\Config\Project64.rdx
-Notes=..\..\Config\Project64.rdn
-RomDatabase=..\..\Config\Project64.rdb
-RomListCache=..\..\Config\Project64.cache3
-ShortCuts=..\..\Config\Project64.sc3
+CheatDir=..\..\..\Config\Cheats\
+EnhancementDir=..\..\..\Config\Enhancements\
+ExtInfo=..\..\..\Config\Project64.rdx
+Notes=..\..\..\Config\Project64.rdn
+RomDatabase=..\..\..\Config\Project64.rdb
+RomListCache=..\..\..\Config\Project64.cache3
+ShortCuts=..\..\..\Config\Project64.sc3
 UserCheatDir=..\..\Config\Cheats-User\
-UserEnhancementDir=..\..\Config\Enhancements-User\
-VideoRDB=..\..\Config\Video.rdb
+UserEnhancementDir=..\..\..\Config\Enhancements-User\
+VideoRDB=..\..\..\Config\Video.rdb
 
 [Debugger]
 Debugger=1
 
 [Plugin Directory]
-Directory=..\..\Plugin\
-Use Selected=1
-
-[Plugin64 Directory]
-Directory=..\..\Plugin64\
+Directory-x86=..\..\..\Plugin\Win32\
+Directory-x64=..\..\..\Plugin\x64\
 Use Selected=1
 
 [Native Save Directory]
-Directory=..\..\Save\
+Directory=..\..\..\Save\
 Use Selected=1
 
 [Instant Save Directory]
-Directory=..\..\Save\
+Directory=..\..\..\Save\
 Use Selected=1
 
 [Lang Directory]
-Directory=..\..\Lang
+Directory=..\..\..\Lang
 
 [Texture Directory]
-Directory=..\..\Textures\
+Directory=..\..\..\Textures\
 Use Selected=1

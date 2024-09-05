@@ -41,11 +41,17 @@ CRomList::CRomList() :
     WriteTrace(TraceRomList, TraceVerbose, "Start");
     if (g_Settings)
     {
-        m_NotesIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_Notes).c_str());
-        m_ExtIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_ExtInfo).c_str());
-        m_RomIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
+        CPath ModuleDir(CPath::MODULE_DIRECTORY);
+        CPath NotesFile = CPath(g_Settings->LoadStringVal(SupportFile_Notes)).NormalizePath(ModuleDir);
+        CPath ExtInfo = CPath(g_Settings->LoadStringVal(SupportFile_ExtInfo)).NormalizePath(ModuleDir);
+        CPath RomDatabase = CPath(g_Settings->LoadStringVal(SupportFile_RomDatabase)).NormalizePath(ModuleDir);
+        CPath ZipCache = CPath(g_Settings->LoadStringVal(RomList_7zipCache)).NormalizePath(ModuleDir);
+
+        m_NotesIniFile = new CIniFile(NotesFile);
+        m_ExtIniFile = new CIniFile(ExtInfo);
+        m_RomIniFile = new CIniFile(RomDatabase);
 #ifdef _WIN32
-        m_ZipIniFile = new CIniFile(g_Settings->LoadStringVal(RomList_7zipCache).c_str());
+        m_ZipIniFile = new CIniFile(ZipCache);
 #endif
         g_Settings->RegisterChangeCB(RomList_GameDir, this, (CSettings::SettingChangedFunc)RefreshSettings);
     }

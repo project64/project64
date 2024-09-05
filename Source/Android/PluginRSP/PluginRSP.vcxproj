@@ -34,8 +34,7 @@
   <PropertyGroup>
     <TargetName>Project64-RSP-Basic</TargetName>
     <TargetName Condition="'$(Configuration)'=='Debug'">Project64-RSP-Basic_d</TargetName>
-    <OutDir>$(SolutionDir)Plugin\RSP\</OutDir>
-    <OutDir Condition="'$(Platform)'=='x64'">$(SolutionDir)Plugin64\RSP\</OutDir>
+    <OutDir>$(SolutionDir)Plugin\$(Platform)\RSP\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>

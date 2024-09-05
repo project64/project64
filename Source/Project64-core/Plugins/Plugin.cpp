@@ -17,6 +17,7 @@ CPlugins::CPlugins(SettingID PluginDirSetting, bool SyncPlugins) :
     m_initilized(false),
     m_SyncPlugins(SyncPlugins)
 {
+    m_PluginDir = (const std::string &)((CPath(m_PluginDir, "").NormalizePath(CPath(CPath::MODULE_DIRECTORY))));
     CreatePlugins();
     g_Settings->RegisterChangeCB(Plugin_RSP_Current, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->RegisterChangeCB(Plugin_GFX_Current, this, (CSettings::SettingChangedFunc)PluginChanged);

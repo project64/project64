@@ -13,8 +13,8 @@
 
   <!-- All platforms settings -->
   <PropertyGroup>
-    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)build\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
     <ExtensionsToDeleteOnClean>*.obj;*.ilk;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;$(TargetPath);$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
     <IgnoreImportLibrary>false</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
@@ -22,7 +22,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(ConfigurationType)'=='StaticLibrary'">
-    <OutDir>$(SolutionDir)bin\$(Configuration)\lib\</OutDir>
+    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\lib\</OutDir>
   </PropertyGroup>
 
   <ItemDefinitionGroup>
@@ -206,15 +206,6 @@
   <!-- END Win32 -->
 
   <!-- x64 -->
-  <PropertyGroup Condition="'$(Platform)'=='x64'">
-    <OutDir>$(SolutionDir)bin\$(Configuration)64\</OutDir>
-    <IntDir>$(SolutionDir)build\$(Configuration)64\$(ProjectName)\</IntDir>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(ConfigurationType)|$(Platform)'=='StaticLibrary|x64'">
-    <OutDir>$(SolutionDir)bin\$(Configuration)64\lib\</OutDir>
-  </PropertyGroup>
-
   <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
     <Lib>
       <TargetMachine>MachineX64</TargetMachine>

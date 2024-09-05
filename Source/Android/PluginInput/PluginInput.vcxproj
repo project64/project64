@@ -27,8 +27,7 @@
   <PropertyGroup>
     <TargetName>AndroidInput</TargetName>
     <TargetName Condition="'$(Configuration)'=='Debug'">AndroidInput_d</TargetName>
-    <OutDir>$(SolutionDir)Plugin\Input\</OutDir>
-    <OutDir Condition="'$(Platform)'=='x64'">$(SolutionDir)Plugin64\Input\</OutDir>
+    <OutDir>$(SolutionDir)Plugin\$(Platform)\Input\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>

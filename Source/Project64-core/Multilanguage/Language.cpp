@@ -652,6 +652,7 @@ LanguageList & CLanguage::GetLangList(void)
     }
 
     CPath LanguageFiles(g_Settings->LoadStringVal(Setting_LanguageDir), "*.pj.Lang");
+    LanguageFiles.NormalizePath(CPath(CPath::MODULE_DIRECTORY, ""));
     if (LanguageFiles.FindFirst())
     {
         do
