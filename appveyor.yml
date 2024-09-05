@@ -12,6 +12,7 @@ before_build:
       $version = Source/Script/SetGitProperties.cmd
       appveyor UpdateBuild -Version $version
     }
+  - git submodule update --init --recursive
 build:
   project: Project64.sln
   parallel: true
