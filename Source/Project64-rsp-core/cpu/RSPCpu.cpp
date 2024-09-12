@@ -113,7 +113,7 @@ uint32_t DoRspCycles(uint32_t Cycles)
         break;
     case RSPCpuMethod::Interpreter:
     case RSPCpuMethod::HighLevelEmulation:
-        RSPSystem.RunInterpreterCPU(Cycles);
+        RSPSystem.ExecuteOps((uint32_t)-1, (uint32_t)-1);
         break;
     }
     if (g_RSPDebugger != nullptr)

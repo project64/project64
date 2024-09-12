@@ -107,26 +107,32 @@ void CRSPSystem::RunRecompiler(void)
     m_Recompiler.RunCPU();
 }
 
-uint32_t CRSPSystem::RunInterpreterCPU(uint32_t Cycles)
+void CRSPSystem::ExecuteOps(uint32_t Cycles, uint32_t TargetPC)
 {
-    uint32_t CycleCount;
     RSP_Running = true;
     if (g_RSPDebugger != nullptr)
     {
         g_RSPDebugger->StartingCPU();
     }
-    CycleCount = 0;
     uint32_t & GprR0 = m_Reg.m_GPR[0].UW;
     uint32_t & ProgramCounter = *m_SP_PC_REG;
-    while (RSP_Running)
+    while (RSP_Running && Cycles > 0)
     {
         if (g_RSPDebugger != nullptr)
         {
             g_RSPDebugger->BeforeExecuteOp();
         }
+        if (TargetPC != -1 && (ProgramCounter & 0xFFC) == TargetPC)
+        {
+            break;
+        }
         m_OpCode.Value = *(uint32_t *)(m_IMEM + (ProgramCounter & 0xFFC));
         (m_Op.*(m_Op.Jump_Opcode[m_OpCode.op]))();
         GprR0 = 0x00000000; // MIPS $zero hard-wired to 0
+        if (Cycles != (uint32_t)-1)
+        {
+            Cycles -= 1;
+        }
 
         switch (m_NextInstruction)
         {
@@ -152,5 +158,4 @@ uint32_t CRSPSystem::RunInterpreterCPU(uint32_t Cycles)
             break;
         }
     }
-    return Cycles;
 }

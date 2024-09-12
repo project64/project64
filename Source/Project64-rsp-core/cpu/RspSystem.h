@@ -33,7 +33,7 @@ public:
     void RomClosed(void);
 
     void RunRecompiler(void);
-    uint32_t RunInterpreterCPU(uint32_t Cycles);
+    void ExecuteOps(uint32_t Cycles, uint32_t TargetPC);
 
 private:
     CRSPSystem(const CRSPSystem &);
