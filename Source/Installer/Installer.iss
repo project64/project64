@@ -35,7 +35,7 @@ Source: "{#BaseDir}\Plugin\{#Platform}\Audio\Jabo_Dsound.dll"; DestDir: "{app}\P
 Source: "{#BaseDir}\Plugin\{#Platform}\Audio\Project64-Audio.dll"; DestDir: "{app}\Plugin\Audio"
 Source: "{#BaseDir}\Plugin\{#Platform}\GFX\Jabo_Direct3D8.dll"; DestDir: "{app}\Plugin\GFX"
 Source: "{#BaseDir}\Plugin\{#Platform}\GFX\Project64-Video.dll"; DestDir: "{app}\Plugin\GFX"
-Source: "{#BaseDir}\Plugin\{#Platform}\GFX\GLideN64\*"; DestDir: "{app}\Plugin\GFX\GLideN64"; Flags: recursesubdirs skipifsourcedoesntexist
+Source: "{#BaseDir}\Plugin\{#Platform}\GFX\GLideN64\*"; DestDir: "{app}\Plugin\GFX\GLideN64"; Flags: recursesubdirs
 Source: "{#BaseDir}\Plugin\{#Platform}\Input\PJ64_NRage.dll"; DestDir: "{app}\Plugin\Input"
 Source: "{#BaseDir}\Plugin\{#Platform}\Input\Project64-Input.dll"; DestDir: "{app}\Plugin\Input"
 Source: "{#BaseDir}\Plugin\{#Platform}\RSP\Project64-RSP.dll"; DestDir: "{app}\Plugin\RSP"

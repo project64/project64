@@ -1,0 +1,295 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\WTL">
+      <UniqueIdentifier>{b0c2b4e8-31f7-46e5-9b96-cfe8b94db5cf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\src\GLideNUI-wtl\About.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\config-debug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\ConfigDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\config-emulation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\config-framebuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\config-osd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\config-overscan.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\config-tab.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\config-texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\config-video.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\FileClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\FontInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\fullscreenresolutions_windows.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\GLideNUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\GlSettings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\IniFileClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\Settings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\util\util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\wtl-BitmapPicture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\wtl-ColorButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\wtl-OsdButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\wtl-OsdPreview.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\InputDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\Language.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\src\GLideNUI-wtl\util\StdString.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\src\GLideNUI-wtl\About.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\config-debug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\ConfigDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\config-emulation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\config-framebuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\config-osd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\config-overscan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\config-tab.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\config-texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\config-video.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\FileClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\FontInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\FullscreenResolutions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\GLideNUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\GlSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\IniFileClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\Settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\util\util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\wtl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\wtl-BitmapPicture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\wtl-ColorButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\wtl-OsdButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\wtl-OsdPreview.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\wtl-WindowFont.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlapp.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlcrack.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlctrls.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlctrlw.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlctrlx.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlddx.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atldlgs.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atldwm.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlfind.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlframe.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlgdi.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlmisc.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlprint.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlres.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlresce.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlribbon.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlscrl.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlsplit.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atltheme.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atluser.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlwince.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlwinx.h">
+      <Filter>Header Files\WTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\InputDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\Language.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\wtl-tooltip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\src\GLideNUI-wtl\util\StdString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Source\src\GLideNUI\Resources\BottomLeft.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Source\src\GLideNUI\Resources\BottomRight.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Source\src\GLideNUI\Resources\Down.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Source\src\GLideNUI\Resources\Icon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Source\src\GLideNUI\Resources\Icon-Original.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Source\src\GLideNUI\Resources\Info.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Source\src\GLideNUI\Resources\Left.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Source\src\GLideNUI\Resources\Right.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Source\src\GLideNUI\Resources\TopLeft.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Source\src\GLideNUI\Resources\TopRight.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Source\src\GLideNUI\Resources\Up.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Source\src\GLideNUI\Resources\Warning.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Source\src\GLideNUI-wtl\GLideNUI.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

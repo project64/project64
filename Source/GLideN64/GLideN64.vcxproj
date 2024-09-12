@@ -1,0 +1,357 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{37D31D7F-C4E7-45B0-AEF6-D6824A243CF7}</ProjectGuid>
+    <RootNamespace>GLideN64</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)PropertySheets\Platform.$(Configuration).props" />
+  </ImportGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <PropertyGroup>
+    <TargetName Condition="'$(Configuration)'=='Debug'">GLideN64_d</TargetName>
+    <OutDir>$(SolutionDir)Plugin\$(Platform)\GFX\GLideN64\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source\src;$(ProjectDir)Source\src\inc;$(ProjectDir)Source\src\osal;$(ProjectDir)Source\src\inc\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;OS_WINDOWS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <ForcedIncludeFiles>
+        cstdlib;
+        windows.h;
+      </ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies Condition="'$(Configuration)'=='Release'">freetype253MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)'=='Debug'">freetype253MT_D.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PreBuildEvent>
+      <Command>call Source\src\getRevision.bat</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32_ASM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)'=='Debug' And '$(MSBuildAssemblyVersion)'=='12.0'">Source/projects/msvc/lib/msvc12/dbg</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)'=='Debug' And '$(MSBuildAssemblyVersion)'!='12.0'">Source/projects/msvc/lib/dbg</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)'=='Release' And '$(MSBuildAssemblyVersion)'=='12.0'">Source/projects/msvc/lib/msvc12/rel</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)'=='Release' And '$(MSBuildAssemblyVersion)'!='12.0'">Source/projects/msvc/lib/rel</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy /y "$(ProjectDir)Source\ini\GLideN64.ini" "$(SolutionDir)Plugin\$(Platform)\GFX\GLideN64"
+copy /y "$(ProjectDir)Source\ini\GLideN64.custom.ini" "$(SolutionDir)Plugin\$(Platform)\GFX\GLideN64"
+</Command>
+    </PostBuildEvent>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WTL_UI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source\projects\msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
+    <Link>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)'=='Debug'">Source/projects/msvc/lib/x64/dbg</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)'=='Release'">Source/projects/msvc/lib/x64/rel</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\src\3DMath.cpp" />
+    <ClCompile Include="Source\src\BufferCopy\BlueNoiseTexture.cpp" />
+    <ClCompile Include="Source\src\BufferCopy\ColorBufferToRDRAM.cpp" />
+    <ClCompile Include="Source\src\BufferCopy\DepthBufferToRDRAM.cpp" />
+    <ClCompile Include="Source\src\BufferCopy\RDRAMtoColorBuffer.cpp" />
+    <ClCompile Include="Source\src\Combiner.cpp" />
+    <ClCompile Include="Source\src\CombinerKey.cpp" />
+    <ClCompile Include="Source\src\CommonPluginAPI.cpp" />
+    <ClCompile Include="Source\src\common\CommonAPIImpl_common.cpp" />
+    <ClCompile Include="Source\src\Config.cpp" />
+    <ClCompile Include="Source\src\convert.cpp" />
+    <ClCompile Include="Source\src\CRC_OPT.cpp" />
+    <ClCompile Include="Source\src\DebugDump.cpp" />
+    <ClCompile Include="Source\src\Debugger.cpp" />
+    <ClCompile Include="Source\src\DepthBuffer.cpp" />
+    <ClCompile Include="Source\src\DepthBufferRender\ClipPolygon.cpp" />
+    <ClCompile Include="Source\src\DepthBufferRender\DepthBufferRender.cpp" />
+    <ClCompile Include="Source\src\DisplayLoadProgress.cpp" />
+    <ClCompile Include="Source\src\DisplayWindow.cpp" />
+    <ClCompile Include="Source\src\FrameBuffer.cpp" />
+    <ClCompile Include="Source\src\FrameBufferInfo.cpp" />
+    <ClCompile Include="Source\src\GBI.cpp" />
+    <ClCompile Include="Source\src\gDP.cpp" />
+    <ClCompile Include="Source\src\GLideN64.cpp" />
+    <ClCompile Include="Source\src\Graphics\ColorBufferReader.cpp" />
+    <ClCompile Include="Source\src\Graphics\CombinerProgram.cpp" />
+    <ClCompile Include="Source\src\Graphics\Context.cpp" />
+    <ClCompile Include="Source\src\Graphics\ObjectHandle.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\GLFunctions.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_CombinerInputs.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_CombinerProgramBuilder.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_CombinerProgramBuilderCommon.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_CombinerProgramBuilderAccurate.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_CombinerProgramBuilderFast.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_CombinerProgramImpl.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_CombinerProgramUniformFactory.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_CombinerProgramUniformFactoryCommon.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_CombinerProgramUniformFactoryAccurate.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_CombinerProgramUniformFactoryFast.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_FXAA.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_ShaderStorage.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_SpecialShadersFactory.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_Utils.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\opengl_Attributes.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\opengl_BufferManipulationObjectFactory.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\opengl_CachedFunctions.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\opengl_ColorBufferReaderWithBufferStorage.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\opengl_ColorBufferReaderWithPixelBuffer.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\opengl_ColorBufferReaderWithReadPixels.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\opengl_ContextImpl.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\opengl_GLInfo.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\opengl_Parameters.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\opengl_TextureManipulationObjectFactory.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\opengl_UnbufferedDrawer.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\opengl_Utils.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\opengl_BufferedDrawer.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\ThreadedOpenGl\opengl_Wrapper.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\ThreadedOpenGl\opengl_WrappedFunctions.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\ThreadedOpenGl\opengl_Command.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\ThreadedOpenGl\opengl_ObjectPool.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\ThreadedOpenGl\RingBufferPool.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\windows\windows_DisplayWindow.cpp" />
+    <ClCompile Include="Source\src\Graphics\OpenGLContext\windows\WindowsWGL.cpp" />
+    <ClCompile Include="Source\src\gSP.cpp" />
+    <ClCompile Include="Source\src\iob.cpp">
+      <ExcludedFromBuild Condition="'$(Platform)'=='Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\src\Log.cpp" />
+    <ClCompile Include="Source\src\N64.cpp" />
+    <ClCompile Include="Source\src\PaletteTexture.cpp" />
+    <ClCompile Include="Source\src\Performance.cpp" />
+    <ClCompile Include="Source\src\PostProcessor.cpp" />
+    <ClCompile Include="Source\src\RDP.CPP" />
+    <ClCompile Include="Source\src\GraphicsDrawer.cpp" />
+    <ClCompile Include="Source\src\RSP.cpp" />
+    <ClCompile Include="Source\src\RSP_LoadMatrix.cpp">
+      <ExcludedFromBuild Condition="'$(Platform)'=='Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\src\RSP_LoadMatrixX86.cpp">
+      <ExcludedFromBuild Condition="'$(Platform)'=='x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\src\SoftwareRender.cpp" />
+    <ClCompile Include="Source\src\TexrectDrawer.cpp" />
+    <ClCompile Include="Source\src\TextDrawer.cpp" />
+    <ClCompile Include="Source\src\TextureFilterHandler.cpp" />
+    <ClCompile Include="Source\src\Textures.cpp" />
+    <ClCompile Include="Source\src\uCodes\F3D.cpp" />
+    <ClCompile Include="Source\src\uCodes\F3DAM.cpp" />
+    <ClCompile Include="Source\src\uCodes\F3DBETA.cpp" />
+    <ClCompile Include="Source\src\uCodes\F3DDKR.cpp" />
+    <ClCompile Include="Source\src\uCodes\F3DEX.cpp" />
+    <ClCompile Include="Source\src\uCodes\F3DEX095.cpp" />
+    <ClCompile Include="Source\src\uCodes\F3DEX2.cpp" />
+    <ClCompile Include="Source\src\uCodes\F3DEX2ACCLAIM.cpp" />
+    <ClCompile Include="Source\src\uCodes\F3DEX2CBFD.cpp" />
+    <ClCompile Include="Source\src\uCodes\F3DEX3.cpp" />
+    <ClCompile Include="Source\src\uCodes\F3DZEX2.cpp" />
+    <ClCompile Include="Source\src\uCodes\F3DFLX2.cpp" />
+    <ClCompile Include="Source\src\uCodes\F3DGOLDEN.cpp" />
+    <ClCompile Include="Source\src\uCodes\F3DPD.cpp" />
+    <ClCompile Include="Source\src\uCodes\F3DSETA.cpp" />
+    <ClCompile Include="Source\src\uCodes\F5Rogue.cpp" />
+    <ClCompile Include="Source\src\uCodes\F3DTEXA.cpp" />
+    <ClCompile Include="Source\src\uCodes\F5Indi_Naboo.cpp" />
+    <ClCompile Include="Source\src\uCodes\L3D.cpp" />
+    <ClCompile Include="Source\src\uCodes\L3DEX.cpp" />
+    <ClCompile Include="Source\src\uCodes\L3DEX2.cpp" />
+    <ClCompile Include="Source\src\uCodes\S2DEX.cpp" />
+    <ClCompile Include="Source\src\uCodes\S2DEX2.cpp" />
+    <ClCompile Include="Source\src\uCodes\T3DUX.cpp" />
+    <ClCompile Include="Source\src\uCodes\Turbo3D.cpp" />
+    <ClCompile Include="Source\src\uCodes\ZSort.cpp" />
+    <ClCompile Include="Source\src\uCodes\ZSortBOSS.cpp" />
+    <ClCompile Include="Source\src\VI.cpp" />
+    <ClCompile Include="Source\src\windows\CommonAPIImpl_windows.cpp" />
+    <ClCompile Include="Source\src\GLideNUI\Config_GLideNUI.cpp" />
+    <ClCompile Include="Source\src\windows\GLideN64_windows.cpp" />
+    <ClCompile Include="Source\src\windows\MemoryStatus_windows.cpp" />
+    <ClCompile Include="Source\src\windows\ZilmarAPIImpl_windows.cpp" />
+    <ClCompile Include="Source\src\windows\ScreenShot.cpp" />
+    <ClCompile Include="Source\src\ZilmarPluginAPI.cpp" />
+    <ClCompile Include="Source\src\ZlutTexture.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\src\3DMath.h" />
+    <ClInclude Include="Source\src\BufferCopy\BlueNoiseTexture.h" />
+    <ClInclude Include="Source\src\BufferCopy\ColorBufferToRDRAM.h" />
+    <ClInclude Include="Source\src\BufferCopy\DepthBufferToRDRAM.h" />
+    <ClInclude Include="Source\src\BufferCopy\RDRAMtoColorBuffer.h" />
+    <ClInclude Include="Source\src\BufferCopy\WriteToRDRAM.h" />
+    <ClInclude Include="Source\src\Combiner.h" />
+    <ClInclude Include="Source\src\CombinerKey.h" />
+    <ClInclude Include="Source\src\Config.h" />
+    <ClInclude Include="Source\src\convert.h" />
+    <ClInclude Include="Source\src\CRC.h" />
+    <ClInclude Include="Source\src\DebugDump.h" />
+    <ClInclude Include="Source\src\Debugger.h" />
+    <ClInclude Include="Source\src\DepthBuffer.h" />
+    <ClInclude Include="Source\src\DepthBufferRender\ClipPolygon.h" />
+    <ClInclude Include="Source\src\DepthBufferRender\DepthBufferRender.h" />
+    <ClInclude Include="Source\src\DisplayLoadProgress.h" />
+    <ClInclude Include="Source\src\DisplayWindow.h" />
+    <ClInclude Include="Source\src\FrameBuffer.h" />
+    <ClInclude Include="Source\src\FrameBufferInfo.h" />
+    <ClInclude Include="Source\src\FrameBufferInfoAPI.h" />
+    <ClInclude Include="Source\src\GBI.h" />
+    <ClInclude Include="Source\src\gDP.h" />
+    <ClInclude Include="Source\src\GLideN64.h" />
+    <ClInclude Include="Source\src\GLideNHQ\TxFilterExport.h" />
+    <ClInclude Include="Source\src\Graphics\ColorBufferReader.h" />
+    <ClInclude Include="Source\src\Graphics\CombinerProgram.h" />
+    <ClInclude Include="Source\src\Graphics\Context.h" />
+    <ClInclude Include="Source\src\Graphics\ContextImpl.h" />
+    <ClInclude Include="Source\src\Graphics\FramebufferTextureFormats.h" />
+    <ClInclude Include="Source\src\Graphics\ObjectHandle.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\GLFunctions.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_CombinerInputs.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_CombinerProgramBuilder.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_CombinerProgramBuilderCommon.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_CombinerProgramBuilderAccurate.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_CombinerProgramBuilderFast.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_CombinerProgramImpl.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_CombinerProgramUniformFactory.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_CombinerProgramUniformFactoryCommon.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_CombinerProgramUniformFactoryAccurate.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_CombinerProgramUniformFactoryFast.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_FXAA.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_ShaderPart.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_ShaderStorage.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_SpecialShadersFactory.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\GLSL\glsl_Utils.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\opengl_Attributes.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\opengl_BufferManipulationObjectFactory.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\opengl_CachedFunctions.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\opengl_ColorBufferReaderWithBufferStorage.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\opengl_ColorBufferReaderWithPixelBuffer.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\opengl_ColorBufferReaderWithReadPixels.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\opengl_ContextImpl.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\opengl_GLInfo.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\opengl_GraphicsDrawer.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\opengl_TextureManipulationObjectFactory.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\opengl_UnbufferedDrawer.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\opengl_Utils.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\opengl_BufferedDrawer.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\ThreadedOpenGl\atomicops.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\ThreadedOpenGl\opengl_Wrapper.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\ThreadedOpenGl\opengl_WrappedFunctions.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\ThreadedOpenGl\BlockingQueue.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\ThreadedOpenGl\opengl_Command.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\ThreadedOpenGl\opengl_ObjectPool.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\ThreadedOpenGl\readerwriterqueue.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\ThreadedOpenGl\RingBufferPool.h" />
+    <ClInclude Include="Source\src\Graphics\OpenGLContext\windows\WindowsWGL.h" />
+    <ClInclude Include="Source\src\Graphics\Parameter.h" />
+    <ClInclude Include="Source\src\Graphics\Parameters.h" />
+    <ClInclude Include="Source\src\Graphics\PixelBuffer.h" />
+    <ClInclude Include="Source\src\Graphics\ShaderProgram.h" />
+    <ClInclude Include="Source\src\gSP.h" />
+    <ClInclude Include="Source\src\inc\glext.h" />
+    <ClInclude Include="Source\src\Log.h" />
+    <ClInclude Include="Source\src\MemoryStatus.h" />
+    <ClInclude Include="Source\src\N64.h" />
+    <ClInclude Include="Source\src\PaletteTexture.h" />
+    <ClInclude Include="Source\src\Performance.h" />
+    <ClInclude Include="Source\src\Platform.h" />
+    <ClInclude Include="Source\src\PluginAPI.h" />
+    <ClInclude Include="Source\src\PostProcessor.h" />
+    <ClInclude Include="Source\src\RDP.h" />
+    <ClInclude Include="Source\src\GraphicsDrawer.h" />
+    <ClInclude Include="Source\src\resource.h" />
+    <ClInclude Include="Source\src\RSP.h" />
+    <ClInclude Include="Source\src\SoftwareRender.h" />
+    <ClInclude Include="Source\src\TexrectDrawer.h" />
+    <ClInclude Include="Source\src\TextDrawer.h" />
+    <ClInclude Include="Source\src\TextureFilterHandler.h" />
+    <ClInclude Include="Source\src\Textures.h" />
+    <ClInclude Include="Source\src\Types.h" />
+    <ClInclude Include="Source\src\uCodes\F3D.h" />
+    <ClInclude Include="Source\src\uCodes\F3DAM.h" />
+    <ClInclude Include="Source\src\uCodes\F3DBETA.h" />
+    <ClInclude Include="Source\src\uCodes\F3DDKR.h" />
+    <ClInclude Include="Source\src\uCodes\F3DEX.h" />
+    <ClInclude Include="Source\src\uCodes\F3DEX095.h" />
+    <ClInclude Include="Source\src\uCodes\F3DEX2.h" />
+    <ClInclude Include="Source\src\uCodes\F3DEX2ACCLAIM.h" />
+    <ClInclude Include="Source\src\uCodes\F3DEX2CBFD.h" />
+    <ClInclude Include="Source\src\uCodes\F3DEX3.h" />
+    <ClInclude Include="Source\src\uCodes\F3DZEX2.h" />
+    <ClInclude Include="Source\src\uCodes\F3DFLX2.h" />
+    <ClInclude Include="Source\src\uCodes\F3DGOLDEN.h" />
+    <ClInclude Include="Source\src\uCodes\F3DPD.h" />
+    <ClInclude Include="Source\src\uCodes\F3DSETA.h" />
+    <ClInclude Include="Source\src\uCodes\F5Rogue.h" />
+    <ClInclude Include="Source\src\uCodes\F3DTEXA.h" />
+    <ClInclude Include="Source\src\uCodes\F5Indi_Naboo.h" />
+    <ClInclude Include="Source\src\uCodes\L3D.h" />
+    <ClInclude Include="Source\src\uCodes\L3DEX.h" />
+    <ClInclude Include="Source\src\uCodes\L3DEX2.h" />
+    <ClInclude Include="Source\src\uCodes\S2DEX.h" />
+    <ClInclude Include="Source\src\uCodes\S2DEX2.h" />
+    <ClInclude Include="Source\src\uCodes\T3DUX.h" />
+    <ClInclude Include="Source\src\uCodes\Turbo3D.h" />
+    <ClInclude Include="Source\src\uCodes\ZSort.h" />
+    <ClInclude Include="Source\src\uCodes\ZSortBOSS.h" />
+    <ClInclude Include="Source\src\VI.h" />
+    <ClInclude Include="Source\src\windows\GLideN64_windows.h" />
+    <ClInclude Include="Source\src\wst.h" />
+    <ClInclude Include="Source\src\xxHash\xxhash.h" />
+    <ClInclude Include="Source\src\ZilmarGFX_1_3.h" />
+    <ClInclude Include="Source\src\ZlutTexture.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\3rdParty\png\png.vcxproj">
+      <Project>{17836496-31b0-46f2-b1b1-366d7df6f04c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rdParty\zlib\zlib.vcxproj">
+      <Project>{731bd205-2826-4631-b7af-117658e88dbc}</Project>
+    </ProjectReference>
+    <ProjectReference Include="GLideNUI-wtl.vcxproj">
+      <Project>{9e05b70f-a294-44a9-a151-b2cc95aa884e}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="libGLideNHQ.vcxproj">
+      <Project>{da965bcf-2219-47af-ace7-eaf76d5d4756}</Project>
+    </ProjectReference>
+    <ProjectReference Include="osal.vcxproj">
+      <Project>{7bf6f100-31db-44ae-a2a5-5ddeed9a909c}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Source\src\GLideN64.rc" />
+  </ItemGroup>
+</Project>

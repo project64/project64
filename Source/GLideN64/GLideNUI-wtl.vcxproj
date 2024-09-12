@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{9E05B70F-A294-44A9-A151-B2CC95AA884E}</ProjectGuid>
+    <RootNamespace>GLideNUIwtl</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)PropertySheets\Platform.$(Configuration).props" />
+  </ImportGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <ForcedIncludeFiles>
+        windows.h;
+        shellapi.h;
+        commdlg.h;
+      </ForcedIncludeFiles>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\src\GLideNUI-wtl\About.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\config-debug.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\config-emulation.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\config-framebuffer.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\config-osd.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\config-overscan.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\config-tab.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\config-texture.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\config-video.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\ConfigDlg.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\FileClass.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\FontInfo.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\fullscreenresolutions_windows.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\GLideNUI.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\GlSettings.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\IniFileClass.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\InputDialog.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\Language.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\Settings.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\util\StdString.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\util\util.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\wtl-BitmapPicture.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\wtl-ColorButton.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\wtl-OsdButton.cpp" />
+    <ClCompile Include="Source\src\GLideNUI-wtl\wtl-OsdPreview.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\src\GLideNUI-wtl\About.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\config-debug.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\config-emulation.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\config-framebuffer.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\config-osd.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\config-overscan.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\config-tab.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\config-texture.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\config-video.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\ConfigDlg.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\FileClass.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\FontInfo.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\FullscreenResolutions.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\GLideNUI.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\GlSettings.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\IniFileClass.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\InputDialog.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\Language.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\resource.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\Settings.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\util\StdString.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\util\util.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\wtl-BitmapPicture.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\wtl-ColorButton.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\wtl-OsdButton.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\wtl-OsdPreview.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\wtl-tooltip.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\wtl-WindowFont.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\wtl.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlapp.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlcrack.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlctrls.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlctrlw.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlctrlx.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlddx.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atldlgs.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atldwm.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlfind.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlframe.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlgdi.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlmisc.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlprint.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlres.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlresce.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlribbon.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlscrl.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlsplit.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atltheme.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atluser.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlwince.h" />
+    <ClInclude Include="Source\src\GLideNUI-wtl\WTL\atlwinx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Source\src\GLideNUI-wtl\GLideNUI.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Source\src\GLideNUI\Resources\BottomLeft.ico" />
+    <Image Include="Source\src\GLideNUI\Resources\BottomRight.ico" />
+    <Image Include="Source\src\GLideNUI\Resources\Down.ico" />
+    <Image Include="Source\src\GLideNUI\Resources\Icon-Original.ico" />
+    <Image Include="Source\src\GLideNUI\Resources\Icon.ico" />
+    <Image Include="Source\src\GLideNUI\Resources\Info.ico" />
+    <Image Include="Source\src\GLideNUI\Resources\Left.ico" />
+    <Image Include="Source\src\GLideNUI\Resources\Right.ico" />
+    <Image Include="Source\src\GLideNUI\Resources\TopLeft.ico" />
+    <Image Include="Source\src\GLideNUI\Resources\TopRight.ico" />
+    <Image Include="Source\src\GLideNUI\Resources\Up.ico" />
+    <Image Include="Source\src\GLideNUI\Resources\Warning.ico" />
+  </ItemGroup>
+</Project>
