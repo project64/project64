@@ -99,7 +99,7 @@ extern p_Recompfunc RSP_Recomp_Sc2[32];
 
 void CRSPRecompilerOps::Cheat_r4300iOpcode(RSPOp::Func FunctAddress, const char * FunctName)
 {
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
     MoveConstToVariable(m_OpCode.Value, &m_OpCode.Value, "m_OpCode.Value");
     MoveConstToX86reg((uint32_t) & (RSPSystem.m_Op), x86_ECX);
     Call_Direct(AddressOf(FunctAddress), FunctName);
@@ -110,28 +110,6 @@ void CRSPRecompilerOps::Cheat_r4300iOpcodeNoMessage(RSPOp::Func FunctAddress, co
     MoveConstToVariable(m_OpCode.Value, &m_OpCode.Value, "m_OpCode.Value");
     MoveConstToX86reg((uint32_t) & (RSPSystem.m_Op), x86_ECX);
     Call_Direct(AddressOf(FunctAddress), FunctName);
-}
-
-void x86_SetBranch8b(void * JumpByte, void * Destination)
-{
-    // Calculate 32-bit relative offset
-    size_t n = (uint8_t *)Destination - ((uint8_t *)JumpByte + 1);
-    intptr_t signed_n = (intptr_t)n;
-
-    // Check limits, no pun intended
-    if (signed_n > +128 || signed_n < -127)
-    {
-        CompilerWarning(stdstr_f("FATAL: Jump out of 8b range %i (PC = %04X)", n, CompilePC).c_str());
-    }
-    else
-    {
-        *(uint8_t *)(JumpByte) = (uint8_t)(n & 0xFF);
-    }
-}
-
-void x86_SetBranch32b(void * JumpByte, void * Destination)
-{
-    *(uint32_t *)(JumpByte) = (uint32_t)((uint8_t *)Destination - (uint8_t *)((uint32_t *)JumpByte + 1));
 }
 
 void BreakPoint()
@@ -163,6 +141,7 @@ CRSPRecompilerOps::CRSPRecompilerOps(CRSPSystem & System, CRSPRecompiler & Recom
     m_Recompiler(Recompiler),
     m_NextInstruction(Recompiler.m_NextInstruction),
     m_OpCode(System.m_OpCode),
+    m_CompilePC(Recompiler.m_CompilePC),
     m_Reg(System.m_Reg),
     m_GPR(System.m_Reg.m_GPR),
     m_ACCUM(System.m_Reg.m_ACCUM),
@@ -187,7 +166,7 @@ void CRSPRecompilerOps::J(void)
 {
     if (m_NextInstruction == RSPPIPELINE_NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         m_NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
     }
     else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE)
@@ -213,8 +192,8 @@ void CRSPRecompilerOps::JAL(void)
 {
     if (m_NextInstruction == RSPPIPELINE_NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
-        MoveConstToVariable((CompilePC + 8) & 0xFFC, &m_GPR[31].UW, "RA.W");
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        MoveConstToVariable((m_CompilePC + 8) & 0xFFC, &m_GPR[31].UW, "RA.W");
         m_NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
     }
     else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE)
@@ -253,14 +232,14 @@ void CRSPRecompilerOps::BEQ(void)
 
     if (m_NextInstruction == RSPPIPELINE_NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         if (m_OpCode.rs == 0 && m_OpCode.rt == 0)
         {
             m_NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
             MoveConstByteToVariable(1, &BranchCompare, "BranchCompare");
             return;
         }
-        bDelayAffect = DelaySlotAffectBranch(CompilePC);
+        bDelayAffect = DelaySlotAffectBranch(m_CompilePC);
         if (!bDelayAffect)
         {
             m_NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
@@ -284,7 +263,7 @@ void CRSPRecompilerOps::BEQ(void)
     }
     else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE)
     {
-        uint32_t Target = (CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
+        uint32_t Target = (m_CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
 
         if (m_OpCode.rs == 0 && m_OpCode.rt == 0)
         {
@@ -321,8 +300,8 @@ void CRSPRecompilerOps::BEQ(void)
     }
     else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE)
     {
-        uint32_t Target = (CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
-        CompileBranchExit(Target, CompilePC + 8);
+        uint32_t Target = (m_CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
+        CompileBranchExit(Target, m_CompilePC + 8);
     }
     else
     {
@@ -337,7 +316,7 @@ void CRSPRecompilerOps::BNE(void)
 
     if (m_NextInstruction == RSPPIPELINE_NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         if (m_OpCode.rs == 0 && m_OpCode.rt == 0)
         {
             MoveConstByteToVariable(0, &BranchCompare, "BranchCompare");
@@ -345,7 +324,7 @@ void CRSPRecompilerOps::BNE(void)
             return;
         }
 
-        bDelayAffect = DelaySlotAffectBranch(CompilePC);
+        bDelayAffect = DelaySlotAffectBranch(m_CompilePC);
         if (!bDelayAffect)
         {
             m_NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
@@ -369,7 +348,7 @@ void CRSPRecompilerOps::BNE(void)
     }
     else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE)
     {
-        uint32_t Target = (CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
+        uint32_t Target = (m_CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
 
         if (m_OpCode.rs == 0 && m_OpCode.rt == 0)
         {
@@ -405,8 +384,8 @@ void CRSPRecompilerOps::BNE(void)
     }
     else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE)
     {
-        uint32_t Target = (CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
-        CompileBranchExit(Target, CompilePC + 8);
+        uint32_t Target = (m_CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
+        CompileBranchExit(Target, m_CompilePC + 8);
     }
     else
     {
@@ -421,13 +400,13 @@ void CRSPRecompilerOps::BLEZ(void)
 
     if (m_NextInstruction == RSPPIPELINE_NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         if (m_OpCode.rs == 0)
         {
             m_NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
             return;
         }
-        bDelayAffect = DelaySlotAffectBranch(CompilePC);
+        bDelayAffect = DelaySlotAffectBranch(m_CompilePC);
         if (!bDelayAffect)
         {
             m_NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
@@ -439,7 +418,7 @@ void CRSPRecompilerOps::BLEZ(void)
     }
     else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE)
     {
-        uint32_t Target = (CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
+        uint32_t Target = (m_CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
 
         if (m_OpCode.rs == 0)
         {
@@ -465,8 +444,8 @@ void CRSPRecompilerOps::BLEZ(void)
     }
     else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE)
     {
-        uint32_t Target = (CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
-        CompileBranchExit(Target, CompilePC + 8);
+        uint32_t Target = (m_CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
+        CompileBranchExit(Target, m_CompilePC + 8);
     }
     else
     {
@@ -481,13 +460,13 @@ void CRSPRecompilerOps::BGTZ(void)
 
     if (m_NextInstruction == RSPPIPELINE_NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         if (m_OpCode.rs == 0)
         {
             m_NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
             return;
         }
-        bDelayAffect = DelaySlotAffectBranch(CompilePC);
+        bDelayAffect = DelaySlotAffectBranch(m_CompilePC);
         if (!bDelayAffect)
         {
             m_NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
@@ -499,7 +478,7 @@ void CRSPRecompilerOps::BGTZ(void)
     }
     else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE)
     {
-        uint32_t Target = (CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
+        uint32_t Target = (m_CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
 
         if (m_OpCode.rs == 0)
         {
@@ -522,8 +501,8 @@ void CRSPRecompilerOps::BGTZ(void)
     }
     else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE)
     {
-        uint32_t Target = (CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
-        CompileBranchExit(Target, CompilePC + 8);
+        uint32_t Target = (m_CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
+        CompileBranchExit(Target, m_CompilePC + 8);
     }
     else
     {
@@ -536,13 +515,13 @@ void CRSPRecompilerOps::ADDI(void)
 {
     if (m_OpCode.rt == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 #ifndef Compile_Immediates
     Cheat_r4300iOpcode(&RSPOp::ADDI, "RSPOp::ADDI");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     int Immediate = (short)m_OpCode.immediate;
     if (m_OpCode.rt == m_OpCode.rs)
@@ -576,13 +555,13 @@ void CRSPRecompilerOps::ADDIU(void)
 {
     if (m_OpCode.rt == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 #ifndef Compile_Immediates
     Cheat_r4300iOpcode(&RSPOp::ADDIU, "RSPOp::ADDIU");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     int Immediate = (short)m_OpCode.immediate;
 
@@ -613,13 +592,13 @@ void CRSPRecompilerOps::SLTI(void)
 {
     if (m_OpCode.rt == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 #ifndef Compile_Immediates
     Cheat_r4300iOpcode(&RSPOp::SLTI, "&RSPOp::SLTI");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     int Immediate = (short)m_OpCode.immediate;
     if (Immediate == 0)
@@ -641,7 +620,7 @@ void CRSPRecompilerOps::SLTIU(void)
 {
     if (m_OpCode.rt == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 #ifndef Compile_Immediates
@@ -649,7 +628,7 @@ void CRSPRecompilerOps::SLTIU(void)
 #else
     int Immediate;
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     Immediate = (short)m_OpCode.immediate;
     XorX86RegToX86Reg(x86_ECX, x86_ECX);
@@ -663,13 +642,13 @@ void CRSPRecompilerOps::ANDI(void)
 {
     if (m_OpCode.rt == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 #ifndef Compile_Immediates
     Cheat_r4300iOpcode(&RSPOp::ANDI, "RSPOp::ANDI");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     int Immediate = (unsigned short)m_OpCode.immediate;
     if (m_OpCode.rt == m_OpCode.rs)
@@ -698,13 +677,13 @@ void CRSPRecompilerOps::ORI(void)
 {
     if (m_OpCode.rt == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 #ifndef Compile_Immediates
     Cheat_r4300iOpcode(&RSPOp::ORI, "RSPOp::ORI");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     int Immediate = (unsigned short)m_OpCode.immediate;
     if (m_OpCode.rt == m_OpCode.rs)
@@ -731,13 +710,13 @@ void CRSPRecompilerOps::XORI(void)
 {
     if (m_OpCode.rt == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 #ifndef Compile_Immediates
     Cheat_r4300iOpcode(&RSPOp::XORI, "RSPOp::XORI");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     int Immediate = (unsigned short)m_OpCode.immediate;
     if (m_OpCode.rt == m_OpCode.rs)
@@ -764,13 +743,13 @@ void CRSPRecompilerOps::LUI(void)
 {
     if (m_OpCode.rt == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 #ifndef Compile_Immediates
     Cheat_r4300iOpcode(&RSPOp::LUI, "RSPOp::LUI");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     int constant = (short)m_OpCode.offset << 16;
     MoveConstToVariable(constant, &m_GPR[m_OpCode.rt].W, GPR_Name(m_OpCode.rt));
@@ -791,14 +770,14 @@ void CRSPRecompilerOps::LB(void)
 {
     if (m_OpCode.rt == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 #ifndef Compile_GPRLoads
     Cheat_r4300iOpcode(&RSPOp::LB, "RSPOp::LB");
 #else
     int Offset = (short)m_OpCode.offset;
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (IsRegConst(m_OpCode.base))
     {
@@ -826,14 +805,14 @@ void CRSPRecompilerOps::LH(void)
 {
     if (m_OpCode.rt == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 
 #ifndef Compile_GPRLoads
     Cheat_r4300iOpcode(&RSPOp::LH, "RSPOp::LH");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     int Offset = (short)m_OpCode.offset;
     uint8_t * Jump[2];
@@ -846,7 +825,7 @@ void CRSPRecompilerOps::LH(void)
         {
             if ((Addr & 2) == 0)
             {
-                CompilerWarning(stdstr_f("Unaligned LH at constant address PC = %04X", CompilePC).c_str());
+                CompilerWarning(stdstr_f("Unaligned LH at constant address PC = %04X", m_CompilePC).c_str());
                 Cheat_r4300iOpcodeNoMessage(&RSPOp::LH, "RSPOp::LH");
             }
             else
@@ -901,14 +880,14 @@ void CRSPRecompilerOps::LW(void)
 {
     if (m_OpCode.rt == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 
 #ifndef Compile_GPRLoads
     Cheat_r4300iOpcode(&RSPOp::LW, "RSPOp::LW");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     int Offset = (short)m_OpCode.offset;
     uint8_t * Jump[2];
@@ -918,7 +897,7 @@ void CRSPRecompilerOps::LW(void)
 
         if ((Addr & 1) != 0)
         {
-            CompilerWarning(stdstr_f("Unaligned LW at constant address PC = %04X", CompilePC).c_str());
+            CompilerWarning(stdstr_f("Unaligned LW at constant address PC = %04X", m_CompilePC).c_str());
             Cheat_r4300iOpcodeNoMessage(&RSPOp::LW, "RSPOp::LW");
         }
         else if ((Addr & 2) != 0)
@@ -991,14 +970,14 @@ void CRSPRecompilerOps::LBU(void)
 {
     if (m_OpCode.rt == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 
 #ifndef Compile_GPRLoads
     Cheat_r4300iOpcode(&RSPOp::LBU, "RSPOp::LBU");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     int Offset = (short)m_OpCode.offset;
     if (IsRegConst(m_OpCode.base))
@@ -1029,7 +1008,7 @@ void CRSPRecompilerOps::LHU(void)
 {
     if (m_OpCode.rt == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 
@@ -1037,7 +1016,7 @@ void CRSPRecompilerOps::LHU(void)
     Cheat_r4300iOpcode(&RSPOp::LHU, "RSPOp::LHU");
 #else
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     int Offset = (short)m_OpCode.offset;
     uint8_t * Jump[2];
@@ -1050,7 +1029,7 @@ void CRSPRecompilerOps::LHU(void)
         {
             if ((Addr & 2) == 0)
             {
-                CompilerWarning(stdstr_f("Unaligned LHU at constant address PC = %04X", CompilePC).c_str());
+                CompilerWarning(stdstr_f("Unaligned LHU at constant address PC = %04X", m_CompilePC).c_str());
                 Cheat_r4300iOpcodeNoMessage(&RSPOp::LHU, "RSPOp::LHU");
             }
             else
@@ -1105,7 +1084,7 @@ void CRSPRecompilerOps::LWU(void)
 {
     if (m_OpCode.rt == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
     Cheat_r4300iOpcode(&RSPOp::LWU, "RSPOp::LWU");
@@ -1116,7 +1095,7 @@ void CRSPRecompilerOps::SB(void)
 #ifndef Compile_GPRStores
     Cheat_r4300iOpcode(&RSPOp::SB, "RSPOp::SB");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     int Offset = (short)m_OpCode.offset;
     if (IsRegConst(m_OpCode.base))
@@ -1168,7 +1147,7 @@ void CRSPRecompilerOps::SH(void)
 #ifndef Compile_GPRStores
     Cheat_r4300iOpcode(&RSPOp::SH, "&RSPOp::SH");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     int Offset = (short)m_OpCode.offset;
     uint8_t * Jump[2];
@@ -1179,7 +1158,7 @@ void CRSPRecompilerOps::SH(void)
 
         if ((Offset & 1) != 0)
         {
-            CompilerWarning(stdstr_f("Unaligned SH at constant address PC = %04X", CompilePC).c_str());
+            CompilerWarning(stdstr_f("Unaligned SH at constant address PC = %04X", m_CompilePC).c_str());
             Cheat_r4300iOpcodeNoMessage(&RSPOp::SH, "RSPOp::SH");
             return;
         }
@@ -1241,7 +1220,7 @@ void CRSPRecompilerOps::SW(void)
 #ifndef Compile_GPRStores
     Cheat_r4300iOpcode(&RSPOp::SW, "&RSPOp::SW");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     int Offset = (short)m_OpCode.offset;
     uint8_t * Jump[2];
@@ -1271,7 +1250,7 @@ void CRSPRecompilerOps::SW(void)
             }
             else
             {
-                CompilerWarning(stdstr_f("Unaligned SW at constant address PC = %04X", CompilePC).c_str());
+                CompilerWarning(stdstr_f("Unaligned SW at constant address PC = %04X", m_CompilePC).c_str());
                 Cheat_r4300iOpcodeNoMessage(&RSPOp::SW, "RSPOp::SW");
             }
             return;
@@ -1366,13 +1345,13 @@ void CRSPRecompilerOps::Special_SLL(void)
 {
     if (m_OpCode.rd == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 #ifndef Compile_Special
     Cheat_r4300iOpcode(&RSPOp::Special_SLL, "RSPOp::Special_SLL");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (m_OpCode.rd == m_OpCode.rt)
     {
@@ -1391,13 +1370,13 @@ void CRSPRecompilerOps::Special_SRL(void)
 {
     if (m_OpCode.rd == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 #ifndef Compile_Special
     Cheat_r4300iOpcode(&RSPOp::Special_SRL, "RSPOp::Special_SRL");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (m_OpCode.rd == m_OpCode.rt)
     {
@@ -1416,13 +1395,13 @@ void CRSPRecompilerOps::Special_SRA(void)
 {
     if (m_OpCode.rd == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 #ifndef Compile_Special
     Cheat_r4300iOpcode(&RSPOp::Special_SRA, "RSPOp::Special_SRA");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (m_OpCode.rd == m_OpCode.rt)
     {
@@ -1441,7 +1420,7 @@ void CRSPRecompilerOps::Special_SLLV(void)
 {
     if (m_OpCode.rd == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
     Cheat_r4300iOpcode(&RSPOp::Special_SLLV, "RSPOp::Special_SLLV");
@@ -1451,13 +1430,13 @@ void CRSPRecompilerOps::Special_SRLV(void)
 {
     if (m_OpCode.rd == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 #ifndef Compile_Special
     Cheat_r4300iOpcode(&RSPOp::Special_SRLV, "RSPOp::Special_SRLV");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     MoveVariableToX86reg(&m_GPR[m_OpCode.rt].W, GPR_Name(m_OpCode.rt), x86_EAX);
     MoveVariableToX86reg(&m_GPR[m_OpCode.rs].W, GPR_Name(m_OpCode.rs), x86_ECX);
@@ -1471,7 +1450,7 @@ void CRSPRecompilerOps::Special_SRAV(void)
 {
     if (m_OpCode.rd == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
     Cheat_r4300iOpcode(&RSPOp::Special_SRAV, "RSPOp::Special_SRAV");
@@ -1490,7 +1469,7 @@ void CRSPRecompilerOps::Special_JR(void)
 
     if (m_NextInstruction == RSPPIPELINE_NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         // Transfer destination to location pointed to by m_System.m_SP_PC_REG
         MoveVariableToX86reg(&m_GPR[m_OpCode.rs].W, GPR_Name(m_OpCode.rs), x86_EAX);
         AndConstToX86Reg(x86_EAX, 0xFFC);
@@ -1517,7 +1496,7 @@ void CRSPRecompilerOps::Special_JR(void)
         Jump = RecompPos - 1;
 
         // Before we branch quickly update our stats
-        /*if (CompilePC == 0x080) {
+        /*if (m_CompilePC == 0x080) {
 			Pushad();
 			Call_Direct((void *)UpdateAudioTimer, "UpdateAudioTimer");
 			Popad();
@@ -1545,11 +1524,11 @@ void CRSPRecompilerOps::Special_JR(void)
 void CRSPRecompilerOps::Special_JALR(void)
 {
     uint8_t * Jump;
-    uint32_t Const = (CompilePC + 8) & 0xFFC;
+    uint32_t Const = (m_CompilePC + 8) & 0xFFC;
 
     if (m_NextInstruction == RSPPIPELINE_NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         MoveVariableToX86reg(&m_GPR[m_OpCode.rs].W, GPR_Name(m_OpCode.rs), x86_EAX);
         AndConstToX86Reg(x86_EAX, 0xFFC);
         MoveX86regToVariable(x86_EAX, m_System.m_SP_PC_REG, "RSP PC");
@@ -1589,7 +1568,7 @@ void CRSPRecompilerOps::Special_BREAK(void)
     Cheat_r4300iOpcode(&RSPOp::Special_BREAK, "RSPOp::Special_BREAK");
     if (m_NextInstruction == RSPPIPELINE_NORMAL)
     {
-        MoveConstToVariable(CompilePC + 4, m_System.m_SP_PC_REG, "RSP PC");
+        MoveConstToVariable(m_CompilePC + 4, m_System.m_SP_PC_REG, "RSP PC");
         Ret();
         m_NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
     }
@@ -1608,13 +1587,13 @@ void CRSPRecompilerOps::Special_ADD(void)
 {
     if (m_OpCode.rd == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 #ifndef Compile_Special
     Cheat_r4300iOpcode(&RSPOp::Special_ADD, "RSPOp::Special_ADD");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (m_OpCode.rd == m_OpCode.rs)
     {
@@ -1655,13 +1634,13 @@ void CRSPRecompilerOps::Special_ADDU(void)
 {
     if (m_OpCode.rd == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 #ifndef Compile_Special
     Cheat_r4300iOpcode(&RSPOp::Special_ADDU, "RSPOp::Special_ADDU");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (m_OpCode.rd == m_OpCode.rs)
     {
@@ -1702,14 +1681,14 @@ void CRSPRecompilerOps::Special_SUB(void)
 {
     if (m_OpCode.rd == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 
 #ifndef Compile_Special
     Cheat_r4300iOpcode(&RSPOp::Special_SUB, "RSPOp::Special_SUB");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (m_OpCode.rd == m_OpCode.rs)
     {
@@ -1733,14 +1712,14 @@ void CRSPRecompilerOps::Special_SUBU(void)
 {
     if (m_OpCode.rd == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 
 #ifndef Compile_Special
     Cheat_r4300iOpcode(&RSPOp::Special_SUBU, "RSPOp::Special_SUBU");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (m_OpCode.rd == m_OpCode.rs)
     {
@@ -1764,14 +1743,14 @@ void CRSPRecompilerOps::Special_AND(void)
 {
     if (m_OpCode.rd == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 
 #ifndef Compile_Special
     Cheat_r4300iOpcode(&RSPOp::Special_AND, "RSPOp::Special_AND");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (m_OpCode.rd == m_OpCode.rs)
     {
@@ -1801,14 +1780,14 @@ void CRSPRecompilerOps::Special_OR(void)
 {
     if (m_OpCode.rd == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 
 #ifndef Compile_Special
     Cheat_r4300iOpcode(RSPOp::Special_OR, "RSPOp::Special_OR");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (m_OpCode.rd == m_OpCode.rs)
     {
@@ -1843,14 +1822,14 @@ void CRSPRecompilerOps::Special_XOR(void)
 {
     if (m_OpCode.rd == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 
 #ifndef Compile_Special
     Cheat_r4300iOpcode(&RSPOp::Special_XOR, "RSPOp::Special_XOR");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (m_OpCode.rd == m_OpCode.rs)
     {
@@ -1879,7 +1858,7 @@ void CRSPRecompilerOps::Special_NOR(void)
 {
     if (m_OpCode.rd == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
     Cheat_r4300iOpcode(&RSPOp::Special_NOR, "RSPOp::Special_NOR");
@@ -1889,13 +1868,13 @@ void CRSPRecompilerOps::Special_SLT(void)
 {
     if (m_OpCode.rd == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 #ifndef Compile_Special
     Cheat_r4300iOpcode(&RSPOp::Special_SLT, "RSPOp::Special_SLT");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (m_OpCode.rt == m_OpCode.rs)
     {
@@ -1931,7 +1910,7 @@ void CRSPRecompilerOps::Special_SLTU(void)
 {
     if (m_OpCode.rd == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
     Cheat_r4300iOpcode(&RSPOp::Special_SLTU, "RSPOp::Special_SLTU");
@@ -1944,13 +1923,13 @@ void CRSPRecompilerOps::RegImm_BLTZ(void)
 
     if (m_NextInstruction == RSPPIPELINE_NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         if (m_OpCode.rs == 0)
         {
             m_NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
             return;
         }
-        bDelayAffect = DelaySlotAffectBranch(CompilePC);
+        bDelayAffect = DelaySlotAffectBranch(m_CompilePC);
         if (!bDelayAffect)
         {
             m_NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
@@ -1962,7 +1941,7 @@ void CRSPRecompilerOps::RegImm_BLTZ(void)
     }
     else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE)
     {
-        uint32_t Target = (CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
+        uint32_t Target = (m_CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
 
         if (m_OpCode.rs == 0)
         {
@@ -1985,12 +1964,12 @@ void CRSPRecompilerOps::RegImm_BLTZ(void)
     }
     else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE)
     {
-        uint32_t Target = (CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
-        CompileBranchExit(Target, CompilePC + 8);
+        uint32_t Target = (m_CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
+        CompileBranchExit(Target, m_CompilePC + 8);
     }
     else
     {
-        CompilerWarning(stdstr_f("BLTZ error\nWeird Delay Slot.\n\nNextInstruction = %X\nPC = %X\nEmulation will now stop", m_NextInstruction, CompilePC).c_str());
+        CompilerWarning(stdstr_f("BLTZ error\nWeird Delay Slot.\n\nNextInstruction = %X\nPC = %X\nEmulation will now stop", m_NextInstruction, m_CompilePC).c_str());
         BreakPoint();
     }
 }
@@ -2001,13 +1980,13 @@ void CRSPRecompilerOps::RegImm_BGEZ(void)
 
     if (m_NextInstruction == RSPPIPELINE_NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         if (m_OpCode.rs == 0)
         {
             m_NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
             return;
         }
-        bDelayAffect = DelaySlotAffectBranch(CompilePC);
+        bDelayAffect = DelaySlotAffectBranch(m_CompilePC);
         if (!bDelayAffect)
         {
             m_NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
@@ -2019,7 +1998,7 @@ void CRSPRecompilerOps::RegImm_BGEZ(void)
     }
     else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE)
     {
-        uint32_t Target = (CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
+        uint32_t Target = (m_CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
 
         if (m_OpCode.rs == 0)
         {
@@ -2044,8 +2023,8 @@ void CRSPRecompilerOps::RegImm_BGEZ(void)
     }
     else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE)
     {
-        uint32_t Target = (CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
-        CompileBranchExit(Target, CompilePC + 8);
+        uint32_t Target = (m_CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
+        CompileBranchExit(Target, m_CompilePC + 8);
     }
     else
     {
@@ -2058,21 +2037,21 @@ void CRSPRecompilerOps::RegImm_BLTZAL(void)
 {
     if (m_NextInstruction == RSPPIPELINE_NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         if (m_OpCode.rs == 0)
         {
-            MoveConstToVariable((CompilePC + 8) & 0xFFC, &m_GPR[31].UW, "RA.W");
+            MoveConstToVariable((m_CompilePC + 8) & 0xFFC, &m_GPR[31].UW, "RA.W");
             m_NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
             return;
         }
         CompConstToVariable(0, &m_GPR[m_OpCode.rs].W, GPR_Name(m_OpCode.rs));
         SetlVariable(&BranchCompare, "BranchCompare");
-        MoveConstToVariable((CompilePC + 8) & 0xFFC, &m_GPR[31].UW, "RA.W");
+        MoveConstToVariable((m_CompilePC + 8) & 0xFFC, &m_GPR[31].UW, "RA.W");
         m_NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
     }
     else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE)
     {
-        uint32_t Target = (CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
+        uint32_t Target = (m_CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
 
         if (m_OpCode.rs == 0)
         {
@@ -2088,8 +2067,8 @@ void CRSPRecompilerOps::RegImm_BLTZAL(void)
     }
     else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE)
     {
-        uint32_t Target = (CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
-        CompileBranchExit(Target, CompilePC + 8);
+        uint32_t Target = (m_CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
+        CompileBranchExit(Target, m_CompilePC + 8);
     }
     else
     {
@@ -2104,14 +2083,14 @@ void CRSPRecompilerOps::RegImm_BGEZAL(void)
 
     if (m_NextInstruction == RSPPIPELINE_NORMAL)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         if (m_OpCode.rs == 0)
         {
-            MoveConstToVariable((CompilePC + 8) & 0xFFC, &m_GPR[31].UW, "RA.W");
+            MoveConstToVariable((m_CompilePC + 8) & 0xFFC, &m_GPR[31].UW, "RA.W");
             m_NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
             return;
         }
-        bDelayAffect = DelaySlotAffectBranch(CompilePC);
+        bDelayAffect = DelaySlotAffectBranch(m_CompilePC);
         if (!bDelayAffect)
         {
             m_NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
@@ -2119,12 +2098,12 @@ void CRSPRecompilerOps::RegImm_BGEZAL(void)
         }
         CompConstToVariable(0, &m_GPR[m_OpCode.rs].W, GPR_Name(m_OpCode.rs));
         SetgeVariable(&BranchCompare, "BranchCompare");
-        MoveConstToVariable((CompilePC + 8) & 0xFFC, &m_GPR[31].UW, "RA.W");
+        MoveConstToVariable((m_CompilePC + 8) & 0xFFC, &m_GPR[31].UW, "RA.W");
         m_NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
     }
     else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE)
     {
-        uint32_t Target = (CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
+        uint32_t Target = (m_CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
 
         if (m_OpCode.rs == 0)
         {
@@ -2136,7 +2115,7 @@ void CRSPRecompilerOps::RegImm_BGEZAL(void)
         if (!bDelayAffect)
         {
             CompConstToVariable(0, &m_GPR[m_OpCode.rs].W, GPR_Name(m_OpCode.rs));
-            MoveConstToVariable((CompilePC + 8) & 0xFFC, &m_GPR[31].UW, "RA.W");
+            MoveConstToVariable((m_CompilePC + 8) & 0xFFC, &m_GPR[31].UW, "RA.W");
             JgeLabel32("BranchGreaterEqual", 0);
         }
         else
@@ -2150,8 +2129,8 @@ void CRSPRecompilerOps::RegImm_BGEZAL(void)
     }
     else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE)
     {
-        uint32_t Target = (CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
-        CompileBranchExit(Target, CompilePC + 8);
+        uint32_t Target = (m_CompilePC + ((short)m_OpCode.offset << 2) + 4) & 0xFFC;
+        CompileBranchExit(Target, m_CompilePC + 8);
     }
     else
     {
@@ -2164,15 +2143,15 @@ void CRSPRecompilerOps::RegImm_BGEZAL(void)
 
 void CRSPRecompilerOps::Cop0_MF(void)
 {
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
     if (LogRDP)
     {
         char str[40];
 
         sprintf(str, "%d", m_OpCode.rd);
         PushImm32(str, m_OpCode.rd);
-        sprintf(str, "%X", CompilePC);
-        PushImm32(str, CompilePC);
+        sprintf(str, "%X", m_CompilePC);
+        PushImm32(str, m_CompilePC);
         MoveConstToX86reg((uint32_t)(&RDPLog), x86_ECX);
         Call_Direct(AddressOf(&CRDPLog::LogMF0), "CRDPLog::LogMF0");
     }
@@ -2181,7 +2160,7 @@ void CRSPRecompilerOps::Cop0_MF(void)
     Cheat_r4300iOpcode(RSP_Cop0_MF, "RSP_Cop0_MF");
     if (m_NextInstruction == RSPPIPELINE_NORMAL)
     {
-        MoveConstToVariable(CompilePC + 4, m_System.m_SP_PC_REG, "RSP PC");
+        MoveConstToVariable(m_CompilePC + 4, m_System.m_SP_PC_REG, "RSP PC");
         Ret();
         m_NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
     }
@@ -2249,7 +2228,7 @@ void CRSPRecompilerOps::Cop0_MF(void)
             MoveX86regToVariable(x86_EAX, &m_GPR[m_OpCode.rt].W, GPR_Name(m_OpCode.rt));
             if (m_NextInstruction == RSPPIPELINE_NORMAL)
             {
-                MoveConstToVariable(CompilePC + 4, m_System.m_SP_PC_REG, "RSP PC");
+                MoveConstToVariable(m_CompilePC + 4, m_System.m_SP_PC_REG, "RSP PC");
                 Ret();
                 m_NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
             }
@@ -2295,7 +2274,7 @@ void CRSPRecompilerOps::Cop0_MF(void)
 
 void CRSPRecompilerOps::Cop0_MT(void)
 {
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (LogRDP)
     {
@@ -2305,8 +2284,8 @@ void CRSPRecompilerOps::Cop0_MT(void)
         Push(x86_EAX);
         sprintf(str, "%d", m_OpCode.rd);
         PushImm32(str, m_OpCode.rd);
-        sprintf(str, "%X", CompilePC);
-        PushImm32(str, CompilePC);
+        sprintf(str, "%X", m_CompilePC);
+        PushImm32(str, m_CompilePC);
         MoveConstToX86reg((uint32_t)(&RDPLog), x86_ECX);
         Call_Direct(AddressOf(&CRDPLog::LogMT0), "CRDPLog::LogMT0");
     }
@@ -2317,7 +2296,7 @@ void CRSPRecompilerOps::Cop0_MT(void)
     {
         if (m_NextInstruction == RSPPIPELINE_NORMAL)
         {
-            MoveConstToVariable(CompilePC + 4, m_System.m_SP_PC_REG, "RSP PC");
+            MoveConstToVariable(m_CompilePC + 4, m_System.m_SP_PC_REG, "RSP PC");
             Ret();
             m_NextInstruction = RSPPIPELINE_FINISH_BLOCK;
         }
@@ -2370,7 +2349,7 @@ void CRSPRecompilerOps::Cop0_MT(void)
         Call_Direct(AddressOf(&RSPRegisterHandlerPlugin::WriteReg), "RSPRegisterHandlerPlugin::WriteReg");
         if (m_NextInstruction == RSPPIPELINE_NORMAL)
         {
-            MoveConstToVariable(CompilePC + 4, m_System.m_SP_PC_REG, "RSP PC");
+            MoveConstToVariable(m_CompilePC + 4, m_System.m_SP_PC_REG, "RSP PC");
             Ret();
             m_NextInstruction = RSPPIPELINE_FINISH_BLOCK;
         }
@@ -2440,7 +2419,7 @@ void CRSPRecompilerOps::Cop0_MT(void)
         JeLabel8("DontExit", 0);
         Jump = RecompPos - 1;
 
-        MoveConstToVariable(CompilePC + 4, m_System.m_SP_PC_REG, "RSP PC");
+        MoveConstToVariable(m_CompilePC + 4, m_System.m_SP_PC_REG, "RSP PC");
         Ret();
 
         CPU_Message("DontExit:");
@@ -2454,7 +2433,7 @@ void CRSPRecompilerOps::Cop2_MF(void)
 {
     if (m_OpCode.rt == 0)
     {
-        CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+        CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         return;
     }
 
@@ -2467,7 +2446,7 @@ void CRSPRecompilerOps::Cop2_MF(void)
     uint8_t element1 = 15 - element;
     uint8_t element2 = 15 - ((element + 1) % 16);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (element2 != (element1 - 1))
     {
@@ -2501,7 +2480,7 @@ void CRSPRecompilerOps::Cop2_CF(void)
 #ifndef Compile_Cop2
     Cheat_r4300iOpcode(RSP_Cop2_CF, "RSP_Cop2_CF");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     switch ((m_OpCode.rd & 0x03))
     {
@@ -2527,7 +2506,7 @@ void CRSPRecompilerOps::Cop2_MT(void)
 #ifndef Compile_Cop2
     Cheat_r4300iOpcode(RSP_Cop2_MT, "RSP_Cop2_MT");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     char Reg[256];
     uint8_t element = (uint8_t)(15 - (m_OpCode.sa >> 1));
@@ -2556,7 +2535,7 @@ void CRSPRecompilerOps::Cop2_CT(void)
 #ifndef Compile_Cop2
     Cheat_r4300iOpcode(RSP_Cop2_CT, "RSP_Cop2_CT");
 #else
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (m_OpCode.rt == 0)
     {
@@ -3846,7 +3825,7 @@ bool CRSPRecompilerOps::Compile_Vector_VMULF_MMX(void)
     sprintf(Reg, "m_Vect[%i].UHW[4]", m_OpCode.sa);
     MmxMoveQwordRegToVariable(x86_MM1, &m_Vect[m_OpCode.vd].u16(4), Reg);
 
-    if (!IsNextInstructionMmx(CompilePC))
+    if (!IsNextInstructionMmx(m_CompilePC))
         MmxEmptyMultimediaState();
 
     return true;
@@ -3861,10 +3840,10 @@ void CRSPRecompilerOps::Vector_VMULF(void)
     uint8_t count, el, del;
 
     bool bOptimize = (m_OpCode.rs & 8) ? true : false;
-    bool bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
-    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, CompilePC);
+    bool bWriteToAccum = WriteToAccum(EntireAccum, m_CompilePC);
+    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (!bWriteToAccum)
     {
@@ -4011,7 +3990,7 @@ bool CRSPRecompilerOps::Compile_Vector_VMUDL_MMX(void)
     sprintf(Reg, "m_Vect[%i].UHW[4]", m_OpCode.sa);
     MmxMoveQwordRegToVariable(x86_MM1, &m_Vect[m_OpCode.vd].u16(4), Reg);
 
-    if (!IsNextInstructionMmx(CompilePC))
+    if (!IsNextInstructionMmx(m_CompilePC))
         MmxEmptyMultimediaState();
 
     return true;
@@ -4026,10 +4005,10 @@ void CRSPRecompilerOps::Vector_VMUDL(void)
     uint8_t count, el, del;
 
     bool bOptimize = (m_OpCode.rs & 8) ? true : false;
-    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, CompilePC);
-    bool bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
+    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, m_CompilePC);
+    bool bWriteToAccum = WriteToAccum(EntireAccum, m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (!bWriteToAccum)
     {
@@ -4164,7 +4143,7 @@ bool CRSPRecompilerOps::Compile_Vector_VMUDM_MMX(void)
     sprintf(Reg, "m_Vect[%i].UHW[4]", m_OpCode.sa);
     MmxMoveQwordRegToVariable(x86_MM1, &m_Vect[m_OpCode.vd].u16(4), Reg);
 
-    if (!IsNextInstructionMmx(CompilePC))
+    if (!IsNextInstructionMmx(m_CompilePC))
         MmxEmptyMultimediaState();
 
     return true;
@@ -4179,10 +4158,10 @@ void CRSPRecompilerOps::Vector_VMUDM(void)
     uint8_t count, el, del;
 
     bool bOptimize = (m_OpCode.rs & 8) ? true : false;
-    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, CompilePC);
-    bool bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
+    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, m_CompilePC);
+    bool bWriteToAccum = WriteToAccum(EntireAccum, m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (!bWriteToAccum)
     {
@@ -4310,7 +4289,7 @@ bool CRSPRecompilerOps::Compile_Vector_VMUDN_MMX(void)
     sprintf(Reg, "m_Vect[%i].UHW[4]", m_OpCode.sa);
     MmxMoveQwordRegToVariable(x86_MM1, &m_Vect[m_OpCode.vd].u16(4), Reg);
 
-    if (!IsNextInstructionMmx(CompilePC))
+    if (!IsNextInstructionMmx(m_CompilePC))
         MmxEmptyMultimediaState();
 
     return true;
@@ -4325,10 +4304,10 @@ void CRSPRecompilerOps::Vector_VMUDN(void)
     uint8_t count, el, del;
 
     bool bOptimize = (m_OpCode.rs & 8) ? true : false;
-    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, CompilePC);
-    bool bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
+    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, m_CompilePC);
+    bool bWriteToAccum = WriteToAccum(EntireAccum, m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (!bWriteToAccum)
     {
@@ -4464,7 +4443,7 @@ bool CRSPRecompilerOps::Compile_Vector_VMUDH_MMX(void)
     sprintf(Reg, "m_Vect[%i].HW[4]", m_OpCode.sa);
     MmxMoveQwordRegToVariable(x86_MM1, &m_Vect[m_OpCode.vd].s16(4), Reg);
 
-    if (!IsNextInstructionMmx(CompilePC))
+    if (!IsNextInstructionMmx(m_CompilePC))
         MmxEmptyMultimediaState();
 
     return true;
@@ -4479,10 +4458,10 @@ void CRSPRecompilerOps::Vector_VMUDH(void)
     uint8_t count, el, del;
 
     bool bOptimize = (m_OpCode.rs & 8) ? true : false;
-    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, CompilePC);
-    bool bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
+    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, m_CompilePC);
+    bool bWriteToAccum = WriteToAccum(EntireAccum, m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (!bWriteToAccum)
     {
@@ -4619,9 +4598,9 @@ void CRSPRecompilerOps::Vector_VMACF(void)
     uint8_t count, el, del;
 
     bool bOptimize = (m_OpCode.rs & 8) ? true : false;
-    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, CompilePC);
+    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (bWriteToDest)
     {
@@ -4698,9 +4677,9 @@ void CRSPRecompilerOps::Vector_VMADL(void)
     uint8_t count, el, del;
 
     bool bOptimize = (m_OpCode.rs & 8) ? true : false;
-    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, CompilePC);
+    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (bOptimize)
     {
@@ -4774,9 +4753,9 @@ void CRSPRecompilerOps::Vector_VMADM(void)
     uint8_t count, el, del;
 
     bool bOptimize = (m_OpCode.rs & 8) ? true : false;
-    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, CompilePC);
+    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (bOptimize)
     {
@@ -4869,9 +4848,9 @@ void CRSPRecompilerOps::Vector_VMADN(void)
     uint8_t count, el, del;
 
     bool bOptimize = (m_OpCode.rs & 8) ? true : false;
-    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, CompilePC);
+    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (bOptimize)
     {
@@ -4949,9 +4928,9 @@ void CRSPRecompilerOps::Vector_VMADH(void)
     uint8_t count, el, del;
 
     bool bOptimize = (m_OpCode.rs & 8) ? true : false;
-    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, CompilePC);
+    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (bOptimize)
     {
@@ -5130,7 +5109,7 @@ bool CRSPRecompilerOps::Compile_Vector_VADD_MMX(void)
     sprintf(Reg, "m_Vect[%i].UHW[4]", m_OpCode.sa);
     MmxMoveQwordRegToVariable(x86_MM1, &m_Vect[m_OpCode.vd].u16(4), Reg);
 
-    if (IsNextInstructionMmx(CompilePC) != true)
+    if (IsNextInstructionMmx(m_CompilePC) != true)
     {
         MmxEmptyMultimediaState();
     }
@@ -5146,12 +5125,12 @@ void CRSPRecompilerOps::Vector_VADD(void)
     char Reg[256];
     uint8_t count, el, del;
 
-    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, CompilePC);
+    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, m_CompilePC);
     bool bElement = (m_OpCode.rs & 8) ? true : false;
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
-    bool bFlagUseage = UseRspFlags(CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
+    bool bFlagUseage = UseRspFlags(m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (bWriteToAccum == false && bFlagUseage == false)
     {
@@ -5268,7 +5247,7 @@ bool CRSPRecompilerOps::Compile_Vector_VSUB_MMX(void)
     MmxMoveQwordRegToVariable(x86_MM0, &m_Vect[m_OpCode.vd].u16(0), Reg);
     sprintf(Reg, "m_Vect[%i].UHW[4]", m_OpCode.sa);
     MmxMoveQwordRegToVariable(x86_MM1, &m_Vect[m_OpCode.vd].u16(4), Reg);
-    if (IsNextInstructionMmx(CompilePC) != true)
+    if (IsNextInstructionMmx(m_CompilePC) != true)
     {
         MmxEmptyMultimediaState();
     }
@@ -5284,12 +5263,12 @@ void CRSPRecompilerOps::Vector_VSUB(void)
     char Reg[256];
     uint8_t count, el, del;
 
-    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, CompilePC);
+    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, m_CompilePC);
     bool bOptimize = (m_OpCode.rs & 8) ? true : false;
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
-    bool bFlagUseage = UseRspFlags(CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
+    bool bFlagUseage = UseRspFlags(m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (bWriteToAccum == false && bFlagUseage == false)
     {
@@ -5442,7 +5421,7 @@ bool CRSPRecompilerOps::Compile_Vector_VABS_MMX(void)
     sprintf(Reg, "m_Vect[%i].UHW[4]", m_OpCode.sa);
     MmxMoveQwordRegToVariable(x86_MM1, &m_Vect[m_OpCode.vd].u16(4), Reg);
 
-    if (IsNextInstructionMmx(CompilePC) != true)
+    if (IsNextInstructionMmx(m_CompilePC) != true)
     {
         MmxEmptyMultimediaState();
     }
@@ -5458,10 +5437,10 @@ void CRSPRecompilerOps::Vector_VABS(void)
     uint8_t count, el, del;
     char Reg[256];
 
-    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, CompilePC);
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, m_CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (!bWriteToAccum)
     {
@@ -5558,11 +5537,11 @@ void CRSPRecompilerOps::Vector_VADDC(void)
     char Reg[256];
     uint8_t count, el, del;
 
-    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, CompilePC);
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, m_CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
     bool bElement = (m_OpCode.rs & 8) ? true : false;
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (bElement == true)
     {
@@ -5630,11 +5609,11 @@ void CRSPRecompilerOps::Vector_VSUBC(void)
     char Reg[256];
     uint8_t count, el, del;
 
-    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, CompilePC);
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, m_CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
     bool bElement = (m_OpCode.rs & 8) ? true : false;
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (bElement == true)
     {
@@ -5698,7 +5677,7 @@ void CRSPRecompilerOps::Vector_VSAW(void)
     char Reg[256];
     uint32_t Word;
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     switch ((m_OpCode.rs & 0xF))
     {
@@ -5750,14 +5729,14 @@ void CRSPRecompilerOps::Vector_VLT(void)
 #ifndef CompileVlt
     Cheat_r4300iOpcode(&RSPOp::Vector_VLT, "&RSPOp::Vector_VLT");
 #else
-    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, CompilePC);
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, m_CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
     uint8_t * jump[3];
     uint32_t flag;
     char Reg[256];
     uint8_t el, del, last;
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
     last = (uint8_t)-1;
     XorX86RegToX86Reg(x86_EBX, x86_EBX);
     MoveVariableToX86reg(&m_Flags[0].UW, "&m_Flags[0].UW", x86_ESI);
@@ -5851,13 +5830,13 @@ void CRSPRecompilerOps::Vector_VEQ(void)
 #ifndef CompileVeq
     Cheat_r4300iOpcode(&RSPOp::Vector_VEQ, "&RSPOp::Vector_VEQ");
 #else
-    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, CompilePC);
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, m_CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
     uint32_t flag;
     char Reg[256];
     uint8_t count, el, del, last = (uint8_t)-1;
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     MoveZxVariableToX86regHalf(&m_Flags[0].UHW[1], "&m_Flags[0].UHW[1]", x86_EBX);
     XorConstToX86Reg(x86_EBX, 0xFFFF);
@@ -5927,13 +5906,13 @@ void CRSPRecompilerOps::Vector_VNE(void)
 #ifndef CompileVne
     Cheat_r4300iOpcode(&RSPOp::Vector_VNE, "&RSPOp::Vector_VNE");
 #else
-    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, CompilePC);
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, m_CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
     uint32_t flag;
     char Reg[256];
     uint8_t el, del, last = (uint8_t)-1;
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     MoveZxVariableToX86regHalf(&m_Flags[0].UHW[1], "&m_Flags[0].UHW[1]", x86_EBX);
 
@@ -5998,7 +5977,7 @@ bool CRSPRecompilerOps::Compile_Vector_VGE_MMX(void)
     if ((m_OpCode.rs & 0xF) >= 2 && !(m_OpCode.rs & 8) && IsMmx2Enabled == false)
         return false;
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
     MoveConstToVariable(0, &m_Flags[1].UW, "m_Flags[1].UW");
 
     sprintf(Reg, "m_Vect[%i].HW[0]", m_OpCode.rd);
@@ -6044,7 +6023,7 @@ void CRSPRecompilerOps::Vector_VGE(void)
     Cheat_r4300iOpcode(&RSPOp::Vector_VGE, "&RSPOp::Vector_VGE");
 #else
     /*
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
 
 	TODO: works ok, but needs careful flag analysis */
     /*	#if defined (DLIST)
@@ -6053,14 +6032,14 @@ void CRSPRecompilerOps::Vector_VGE(void)
 	}
 	#endif
 */
-    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, CompilePC);
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, m_CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
     uint8_t * jump[3];
     uint32_t flag;
     char Reg[256];
     uint8_t el, del, last = (uint8_t)-1;
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     XorX86RegToX86Reg(x86_EBX, x86_EBX);
     MoveVariableToX86reg(&m_Flags[0].UW, "&m_Flags[0].UW", x86_ESI);
@@ -6174,9 +6153,9 @@ void CRSPRecompilerOps::Vector_VMRG(void)
 #else
     char Reg[256];
     uint8_t count, el, del;
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
     MoveVariableToX86reg(&m_Flags[1].UW, "m_Flags[1].UW", x86_EDX);
 
     for (count = 0; count < 8; count++)
@@ -6245,7 +6224,7 @@ bool CRSPRecompilerOps::Compile_Vector_VAND_MMX(void)
     sprintf(Reg, "m_Vect[%i].UHW[4]", m_OpCode.sa);
     MmxMoveQwordRegToVariable(x86_MM1, &m_Vect[m_OpCode.vd].u16(4), Reg);
 
-    if (!IsNextInstructionMmx(CompilePC))
+    if (!IsNextInstructionMmx(m_CompilePC))
         MmxEmptyMultimediaState();
 
     return true;
@@ -6258,11 +6237,11 @@ void CRSPRecompilerOps::Vector_VAND(void)
 #else
     char Reg[256];
     uint8_t el, del, count;
-    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, CompilePC);
+    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, m_CompilePC);
     bool bElement = (m_OpCode.rs & 8) ? true : false;
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (!bWriteToAccum)
     {
@@ -6355,7 +6334,7 @@ bool CRSPRecompilerOps::Compile_Vector_VNAND_MMX(void)
     sprintf(Reg, "m_Vect[%i].UHW[4]", m_OpCode.sa);
     MmxMoveQwordRegToVariable(x86_MM1, &m_Vect[m_OpCode.vd].u16(4), Reg);
 
-    if (!IsNextInstructionMmx(CompilePC))
+    if (!IsNextInstructionMmx(m_CompilePC))
         MmxEmptyMultimediaState();
 
     return true;
@@ -6368,11 +6347,11 @@ void CRSPRecompilerOps::Vector_VNAND(void)
 #else
     char Reg[256];
     uint8_t el, del, count;
-    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, CompilePC);
+    bool bWriteToDest = WriteToVectorDest(m_OpCode.sa, m_CompilePC);
     bool bElement = (m_OpCode.rs & 8) ? true : false;
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (!bWriteToAccum)
     {
@@ -6467,7 +6446,7 @@ bool CRSPRecompilerOps::Compile_Vector_VOR_MMX(void)
     sprintf(Reg, "m_Vect[%i].UHW[4]", m_OpCode.sa);
     MmxMoveQwordRegToVariable(x86_MM1, &m_Vect[m_OpCode.vd].u16(4), Reg);
 
-    if (!IsNextInstructionMmx(CompilePC))
+    if (!IsNextInstructionMmx(m_CompilePC))
         MmxEmptyMultimediaState();
 
     return true;
@@ -6481,9 +6460,9 @@ void CRSPRecompilerOps::Vector_VOR(void)
     char Reg[256];
     uint8_t el, del, count;
     bool bElement = (m_OpCode.rs & 8) ? true : false;
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (!bWriteToAccum)
     {
@@ -6572,7 +6551,7 @@ bool CRSPRecompilerOps::Compile_Vector_VNOR_MMX(void)
     sprintf(Reg, "m_Vect[%i].UHW[4]", m_OpCode.sa);
     MmxMoveQwordRegToVariable(x86_MM1, &m_Vect[m_OpCode.vd].u16(4), Reg);
 
-    if (!IsNextInstructionMmx(CompilePC))
+    if (!IsNextInstructionMmx(m_CompilePC))
         MmxEmptyMultimediaState();
 
     return true;
@@ -6586,9 +6565,9 @@ void CRSPRecompilerOps::Vector_VNOR(void)
     char Reg[256];
     uint8_t el, del, count;
     bool bElement = (m_OpCode.rs & 8) ? true : false;
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (!bWriteToAccum)
     {
@@ -6693,7 +6672,7 @@ bool CRSPRecompilerOps::Compile_Vector_VXOR_MMX(void)
         MmxMoveQwordRegToVariable(x86_MM1, &m_Vect[m_OpCode.vd].u16(4), Reg);
     }
 
-    if (!IsNextInstructionMmx(CompilePC))
+    if (!IsNextInstructionMmx(m_CompilePC))
         MmxEmptyMultimediaState();
 
     return true;
@@ -6704,9 +6683,9 @@ void CRSPRecompilerOps::Vector_VXOR(void)
 #ifdef CompileVxor
     char Reg[256];
     uint32_t count;
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (!bWriteToAccum || ((m_OpCode.rs & 0xF) < 2 && m_OpCode.rd == m_OpCode.rt))
     {
@@ -6789,7 +6768,7 @@ bool CRSPRecompilerOps::Compile_Vector_VNXOR_MMX(void)
         MmxMoveQwordRegToVariable(x86_MM1, &m_Vect[m_OpCode.vd].u16(4), Reg);
     }
 
-    if (!IsNextInstructionMmx(CompilePC))
+    if (!IsNextInstructionMmx(m_CompilePC))
         MmxEmptyMultimediaState();
 
     return true;
@@ -6800,9 +6779,9 @@ void CRSPRecompilerOps::Vector_VNXOR(void)
 #ifdef CompileVnxor
     char Reg[256];
     uint32_t count;
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (!bWriteToAccum || ((m_OpCode.rs & 0xF) < 2 && m_OpCode.rd == m_OpCode.rt))
     {
@@ -6832,10 +6811,10 @@ void CRSPRecompilerOps::Vector_VRCP(void)
 #else
     char Reg[256];
     uint8_t count, el, last;
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
     uint32_t * end = NULL;
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     el = EleSpec[m_OpCode.e].B[(m_OpCode.rd & 0x7)];
     sprintf(Reg, "m_Vect[%i].UHW[%i]", m_OpCode.rt, el);
@@ -6901,10 +6880,10 @@ void CRSPRecompilerOps::Vector_VRCPL(void)
 #else
     char Reg[256];
     uint8_t count, el, last;
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
     uint32_t * end = NULL;
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     el = EleSpec[m_OpCode.e].B[(m_OpCode.rd & 0x7)];
     sprintf(Reg, "m_Vect[%i].UHW[%i]", m_OpCode.rt, el);
@@ -6977,9 +6956,9 @@ void CRSPRecompilerOps::Vector_VRCPH(void)
 #else
     char Reg[256];
     uint8_t count, el, last;
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     el = EleSpec[m_OpCode.e].B[(m_OpCode.rd & 0x7)];
     sprintf(Reg, "m_Vect[%i].UHW[%i]", m_OpCode.rt, el);
@@ -7020,9 +6999,9 @@ void CRSPRecompilerOps::Vector_VMOV(void)
 #else
     char Reg[256];
     uint8_t el, count;
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (bWriteToAccum)
     {
@@ -7049,13 +7028,13 @@ void CRSPRecompilerOps::Vector_VMOV(void)
 
 void CRSPRecompilerOps::Vector_VRSQ(void)
 {
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
     Cheat_r4300iOpcodeNoMessage(&RSPOp::Vector_VRSQ, "RSPOp::Vector_VRSQ");
 }
 
 void CRSPRecompilerOps::Vector_VRSQL(void)
 {
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
     Cheat_r4300iOpcodeNoMessage(&RSPOp::Vector_VRSQL, "RSPOp::Vector_VRSQL");
 }
 
@@ -7066,9 +7045,9 @@ void CRSPRecompilerOps::Vector_VRSQH(void)
 #else
     char Reg[256];
     uint8_t count, el, last;
-    bool bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    bool bWriteToAccum = WriteToAccum(Low16BitAccum, m_CompilePC);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     el = EleSpec[m_OpCode.e].B[(m_OpCode.rd & 0x7)];
     sprintf(Reg, "m_Vect[%i].UHW[%i]", m_OpCode.rt, el);
@@ -7121,7 +7100,7 @@ void CRSPRecompilerOps::Opcode_LBV(void)
     char Reg[256];
     int offset = m_OpCode.voffset << 0;
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     MoveVariableToX86reg(&m_GPR[m_OpCode.base].UW, GPR_Name(m_OpCode.base), x86_EBX);
     if (offset != 0)
@@ -7145,7 +7124,7 @@ void CRSPRecompilerOps::Opcode_LSV(void)
         Cheat_r4300iOpcodeNoMessage(&RSPOp::LSV, "RSPOp::LSV");
         return;
     }
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     char Reg[256];
     int offset = (m_OpCode.voffset << 1);
@@ -7217,7 +7196,7 @@ void CRSPRecompilerOps::Opcode_LLV(void)
     int offset = (m_OpCode.voffset << 2);
     uint8_t * Jump[2];
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if ((m_OpCode.del & 0x3) != 0)
     {
@@ -7284,7 +7263,7 @@ void CRSPRecompilerOps::Opcode_LDV(void)
     int offset = (m_OpCode.voffset << 3);
     uint8_t * Jump[2];
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     //if ((m_OpCode.del & 0x7) != 0) {
     //	rsp_UnknownOpcode();
@@ -7292,7 +7271,7 @@ void CRSPRecompilerOps::Opcode_LDV(void)
     //}
     if ((m_OpCode.del & 0x3) != 0)
     {
-        CompilerWarning(stdstr_f("LDV's element = %X, PC = %04X", m_OpCode.del, CompilePC).c_str());
+        CompilerWarning(stdstr_f("LDV's element = %X, PC = %04X", m_OpCode.del, m_CompilePC).c_str());
         Cheat_r4300iOpcodeNoMessage(&RSPOp::LDV, "RSPOp::LDV");
         return;
     }
@@ -7303,7 +7282,7 @@ void CRSPRecompilerOps::Opcode_LDV(void)
 
         if ((Addr & 3) != 0)
         {
-            CompilerWarning(stdstr_f("Unaligned LDV at constant address PC = %04X", CompilePC).c_str());
+            CompilerWarning(stdstr_f("Unaligned LDV at constant address PC = %04X", m_CompilePC).c_str());
             Cheat_r4300iOpcodeNoMessage(&RSPOp::LDV, "RSPOp::LDV");
             return;
         }
@@ -7365,7 +7344,7 @@ void CRSPRecompilerOps::Opcode_LQV(void)
     int offset = (m_OpCode.voffset << 4);
     uint8_t * Jump[2];
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (m_OpCode.del != 0)
     {
@@ -7379,7 +7358,7 @@ void CRSPRecompilerOps::Opcode_LQV(void)
 
         if (Addr & 15)
         {
-            CompilerWarning(stdstr_f("Unaligned LQV at constant address PC = %04X", CompilePC).c_str());
+            CompilerWarning(stdstr_f("Unaligned LQV at constant address PC = %04X", m_CompilePC).c_str());
             Cheat_r4300iOpcodeNoMessage(&RSPOp::LQV, "RSPOp::LQV");
             return;
         }
@@ -7472,7 +7451,7 @@ void CRSPRecompilerOps::Opcode_LRV(void)
     int offset = (m_OpCode.voffset << 4);
     uint8_t *Loop, *Jump[2];
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (m_OpCode.del != 0)
     {
@@ -7551,7 +7530,7 @@ void CRSPRecompilerOps::Opcode_LPV(void)
     char Reg[256];
     int offset = (m_OpCode.voffset << 3);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     MoveVariableToX86reg(&m_GPR[m_OpCode.base].UW, GPR_Name(m_OpCode.base), x86_EBX);
     if (offset != 0)
@@ -7659,7 +7638,7 @@ void CRSPRecompilerOps::Opcode_LUV(void)
     char Reg[256];
     int offset = (m_OpCode.voffset << 3);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     MoveVariableToX86reg(&m_GPR[m_OpCode.base].UW, GPR_Name(m_OpCode.base), x86_EBX);
     if (offset != 0)
@@ -7767,7 +7746,7 @@ void CRSPRecompilerOps::Opcode_LHV(void)
     char Reg[256];
     int offset = (m_OpCode.voffset << 4);
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     MoveVariableToX86reg(&m_GPR[m_OpCode.base].UW, GPR_Name(m_OpCode.base), x86_EBX);
     if (offset != 0)
@@ -7903,7 +7882,7 @@ void CRSPRecompilerOps::Opcode_SSV(void)
         return;
     }
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (IsRegConst(m_OpCode.base))
     {
@@ -7974,7 +7953,7 @@ void CRSPRecompilerOps::Opcode_SLV(void)
     int offset = (m_OpCode.voffset << 2);
     uint8_t * Jump[2];
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
     if (IsRegConst(m_OpCode.base))
     {
         uint32_t Addr = (MipsRegConst(m_OpCode.base) + offset) & 0xfff;
@@ -8043,7 +8022,7 @@ void CRSPRecompilerOps::Opcode_SDV(void)
     //	return;
     //}
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (IsRegConst(m_OpCode.base))
     {
@@ -8051,7 +8030,7 @@ void CRSPRecompilerOps::Opcode_SDV(void)
 
         if ((Addr & 3) != 0)
         {
-            CompilerWarning(stdstr_f("Unaligned SDV at constant address PC = %04X", CompilePC).c_str());
+            CompilerWarning(stdstr_f("Unaligned SDV at constant address PC = %04X", m_CompilePC).c_str());
             Cheat_r4300iOpcodeNoMessage(&RSPOp::SDV, "RSPOp::SDV");
             return;
         }
@@ -8129,7 +8108,7 @@ void CRSPRecompilerOps::Opcode_SQV(void)
     int offset = (m_OpCode.voffset << 4);
     uint8_t * Jump[2];
 
-    CPU_Message("  %X %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
     if (IsRegConst(m_OpCode.base))
     {
@@ -8137,7 +8116,7 @@ void CRSPRecompilerOps::Opcode_SQV(void)
 
         if (Addr & 15)
         {
-            CompilerWarning(stdstr_f("Unaligned SQV at constant address %04X", CompilePC).c_str());
+            CompilerWarning(stdstr_f("Unaligned SQV at constant address %04X", m_CompilePC).c_str());
             Cheat_r4300iOpcodeNoMessage(&RSPOp::SQV, "RSPOp::SQV");
             return;
         }
@@ -8302,9 +8281,9 @@ void CRSPRecompilerOps::Opcode_SWV(void)
 
 void CRSPRecompilerOps::UnknownOpcode(void)
 {
-    CPU_Message("  %X Unhandled Opcode: %s", CompilePC, RSPInstruction(CompilePC, m_OpCode.Value).NameAndParam().c_str());
+    CPU_Message("  %X Unhandled Opcode: %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
     m_NextInstruction = RSPPIPELINE_FINISH_BLOCK;
-    MoveConstToVariable(CompilePC, m_System.m_SP_PC_REG, "RSP PC");
+    MoveConstToVariable(m_CompilePC, m_System.m_SP_PC_REG, "RSP PC");
     MoveConstToVariable(m_OpCode.Value, &m_OpCode.Value, "m_OpCode.Value");
     MoveConstToX86reg((uint32_t) & (RSPSystem.m_Op), x86_ECX);
     Call_Direct(AddressOf(&RSPOp::UnknownOpcode), "&RSPOp::UnknownOpcode");

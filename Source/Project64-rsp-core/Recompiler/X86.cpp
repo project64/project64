@@ -3333,6 +3333,28 @@ void XorX86RegToVariable(void * Variable, const char * VariableName, int x86reg)
     PUTDSTPTR(RecompPos, Variable);
 }
 
+void x86_SetBranch8b(void * JumpByte, void * Destination)
+{
+    // Calculate 32-bit relative offset
+    size_t n = (uint8_t *)Destination - ((uint8_t *)JumpByte + 1);
+    intptr_t signed_n = (intptr_t)n;
+
+    // Check limits, no pun intended
+    if (signed_n > +128 || signed_n < -127)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else
+    {
+        *(uint8_t *)(JumpByte) = (uint8_t)(n & 0xFF);
+    }
+}
+
+void x86_SetBranch32b(void * JumpByte, void * Destination)
+{
+    *(uint32_t *)(JumpByte) = (uint32_t)((uint8_t *)Destination - (uint8_t *)((uint32_t *)JumpByte + 1));
+}
+
 void * GetAddressOf_(int value, ...)
 {
     void * Address;

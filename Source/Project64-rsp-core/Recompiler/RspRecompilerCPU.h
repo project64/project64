@@ -49,12 +49,13 @@ private:
     CRSPSystem & m_System;
     RSPRegisterHandlerPlugin *& m_RSPRegisterHandler;
     RSPOpcode & m_OpCode;
+    uint32_t m_CompilePC;
     RSP_BLOCK m_CurrentBlock;
     RSPPIPELINE_STAGE m_NextInstruction;
     uint8_t *& m_IMEM;
 };
 
-extern uint32_t CompilePC, JumpTableSize;
+extern uint32_t JumpTableSize;
 extern bool ChangedPC;
 
 #define CompilerWarning \

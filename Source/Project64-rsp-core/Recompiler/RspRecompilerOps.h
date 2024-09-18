@@ -219,6 +219,7 @@ private:
     CRSPRecompiler & m_Recompiler;
     RSPPIPELINE_STAGE & m_NextInstruction;
     RSPOpcode & m_OpCode;
+    uint32_t & m_CompilePC;
     UWORD32 * m_GPR;
     UDWORD * m_ACCUM;
     UWORD32 * m_Flags;
