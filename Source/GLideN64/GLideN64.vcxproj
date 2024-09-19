@@ -279,7 +279,6 @@ copy /y "$(ProjectDir)Source\ini\GLideN64.custom.ini" "$(SolutionDir)Plugin\$(Pl
     <ClInclude Include="Source\src\Graphics\PixelBuffer.h" />
     <ClInclude Include="Source\src\Graphics\ShaderProgram.h" />
     <ClInclude Include="Source\src\gSP.h" />
-    <ClInclude Include="Source\src\inc\glext.h" />
     <ClInclude Include="Source\src\Log.h" />
     <ClInclude Include="Source\src\MemoryStatus.h" />
     <ClInclude Include="Source\src\N64.h" />

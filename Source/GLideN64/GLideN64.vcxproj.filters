@@ -652,9 +652,6 @@
     <ClInclude Include="Source\src\gSP.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\src\inc\glext.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\src\Log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
