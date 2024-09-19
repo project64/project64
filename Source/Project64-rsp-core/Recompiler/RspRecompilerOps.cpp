@@ -168,6 +168,10 @@ void CRSPRecompilerOps::J(void)
     {
         CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
         m_NextInstruction = RSPPIPELINE_DO_DELAY_SLOT;
+        if (CRSPSettings::CPUMethod() == RSPCpuMethod::RecompilerTasks && m_OpCode.Value == EndHleTaskOp::J_0x1118)
+        {
+            m_NextInstruction = RSPPIPELINE_DO_DELAY_SLOT_TASK_EXIT;
+        }
     }
     else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE)
     {
@@ -175,10 +179,10 @@ void CRSPRecompilerOps::J(void)
         m_Recompiler.Branch_AddRef((m_OpCode.target << 2) & 0xFFC, (uint32_t *)(RecompPos - 4));
         m_NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
     }
-    else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE)
+    else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE || m_NextInstruction == RSPPIPELINE_DELAY_SLOT_TASK_EXIT_DONE)
     {
         MoveConstToVariable((m_OpCode.target << 2) & 0xFFC, m_System.m_SP_PC_REG, "RSP PC");
-        m_NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;
+        m_NextInstruction = m_NextInstruction == RSPPIPELINE_DELAY_SLOT_EXIT_DONE ? RSPPIPELINE_FINISH_SUB_BLOCK : RSPPIPELINE_FINISH_TASK_SUB_BLOCK;
         Ret();
     }
     else
@@ -1494,17 +1498,14 @@ void CRSPRecompilerOps::Special_JR(void)
         TestX86RegToX86Reg(x86_EAX, x86_EAX);
         JeLabel8("Null", 0);
         Jump = RecompPos - 1;
-
-        // Before we branch quickly update our stats
-        /*if (m_CompilePC == 0x080) {
-			Pushad();
-			Call_Direct((void *)UpdateAudioTimer, "UpdateAudioTimer");
-			Popad();
-		}*/
         JumpX86Reg(x86_EAX);
 
         x86_SetBranch8b(Jump, RecompPos);
         CPU_Message(" Null:");
+        if (CRSPSettings::CPUMethod() == RSPCpuMethod::HighLevelEmulation)
+        {
+            BreakPoint();
+        }
         Ret();
         ChangedPC = false;
         m_NextInstruction = RSPPIPELINE_FINISH_SUB_BLOCK;

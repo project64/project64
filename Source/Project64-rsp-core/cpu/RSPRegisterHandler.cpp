@@ -20,7 +20,8 @@ RSPRegisterHandler::RSPRegisterHandler(uint32_t * SignalProcessorInterface, uint
     m_IMEM(IMEM),
     m_DMEM(DMEM),
     m_PendingSPMemAddr(0),
-    m_PendingSPDramAddr(0)
+    m_PendingSPDramAddr(0),
+    m_IgnoreWrites(false)
 {
 }
 
@@ -39,7 +40,8 @@ RSPRegisterHandler::RSPRegisterHandler(CRSPSystem & System) :
     m_IMEM(System.m_IMEM),
     m_DMEM(System.m_DMEM),
     m_PendingSPMemAddr(0),
-    m_PendingSPDramAddr(0)
+    m_PendingSPDramAddr(0),
+    m_IgnoreWrites(System.m_BaseSystem != nullptr)
 {
 }
 
@@ -166,7 +168,7 @@ void RSPRegisterHandler::SP_DMA_WRITE()
             {
                 CopyAmount = CopyLength;
             }
-            if (CopyAmount > 0)
+            if (CopyAmount > 0 && !m_IgnoreWrites)
             {
                 memcpy(&Dest[WritePos], &Source[Pos], CopyAmount);
             }
@@ -183,7 +185,7 @@ void RSPRegisterHandler::SP_DMA_WRITE()
             {
                 CopyAmount = CopyLength;
             }
-            if (CopyAmount > 0)
+            if (CopyAmount > 0 && !m_IgnoreWrites)
             {
                 memcpy(&Dest[WritePos], &Source[Pos], CopyAmount);
             }

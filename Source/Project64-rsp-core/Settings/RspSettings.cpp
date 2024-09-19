@@ -14,7 +14,7 @@ RSPCpuMethod CRSPSettings::m_CPUMethod = RSPCpuMethod::Interpreter;
 #endif
 
 uint16_t Set_AudioHle = 0, Set_GraphicsHle = 0, Set_MultiThreaded = 0, Set_AllocatedRdramSize = 0, Set_DirectoryLog = 0;
-bool GraphicsHle = true, AudioHle, ConditionalMove, HleAlistTask = false, RspMultiThreaded = false;
+bool GraphicsHle = true, AudioHle, ConditionalMove, SyncCPU = false, HleAlistTask = false, RspMultiThreaded = false;
 bool DebuggingEnabled = false, Profiling, IndvidualBlock, ShowErrors, BreakOnStart = false, LogRDP = false, LogX86Code = false;
 
 void CRSPSettings::EnableDebugging(bool Enabled)
@@ -40,6 +40,7 @@ void CRSPSettings::InitializeRspSetting(void)
     RegisterSetting(Set_IndvidualBlock, Data_DWORD_General, "Individual Block", NULL, IndvidualBlock, NULL);
     RegisterSetting(Set_ShowErrors, Data_DWORD_General, "Show Errors", NULL, ShowErrors, NULL);
     RegisterSetting(Set_HleAlistTask, Data_DWORD_General, "Hle Alist Task", NULL, HleAlistTask, NULL);
+    RegisterSetting(Set_SyncCPU, Data_DWORD_General, "Sync CPU", NULL, SyncCPU, NULL);
 
     // Compiler settings
     RegisterSetting(Set_CheckDest, Data_DWORD_General, "Check Destination Vector", NULL, Compiler.bDest, NULL);

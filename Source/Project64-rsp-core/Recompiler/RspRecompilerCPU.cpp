@@ -42,6 +42,7 @@ p_Recompfunc RSP_Recomp_Sc2[32];
 
 CRSPRecompiler::CRSPRecompiler(CRSPSystem & System) :
     m_System(System),
+    m_RecompilerOps(System, *this),
     m_RSPRegisterHandler(System.m_RSPRegisterHandler),
     m_CompilePC(0),
     m_OpCode(System.m_OpCode),
@@ -718,7 +719,7 @@ sections as well as set the jump table to points
 within a block that are safe.
 */
 
-void BuildBranchLabels(void)
+void CRSPRecompiler::BuildBranchLabels(void)
 {
     RSPOpcode RspOp;
     uint32_t i, Dest;
@@ -810,8 +811,6 @@ void CRSPRecompiler::CompilerLinkBlocks(void)
 
 void CRSPRecompiler::CompilerRSPBlock(void)
 {
-    CRSPRecompilerOps RecompilerOps(RSPSystem, *this);
-
     uint8_t * IMEM_SAVE = (uint8_t *)malloc(0x1000);
     const size_t X86BaseAddress = (size_t)RecompPos;
     m_NextInstruction = RSPPIPELINE_NORMAL;
@@ -877,7 +876,7 @@ void CRSPRecompiler::CompilerRSPBlock(void)
 
         if (Compiler.bSections)
         {
-            if (RecompilerOps.RSP_DoSections())
+            if (m_RecompilerOps.RSP_DoSections())
             {
                 continue;
             }
@@ -898,7 +897,7 @@ void CRSPRecompiler::CompilerRSPBlock(void)
         }
         else
         {
-            (RecompilerOps.*RSP_Recomp_Opcode[m_OpCode.op])();
+            (m_RecompilerOps.*RSP_Recomp_Opcode[m_OpCode.op])();
         }
 
         switch (m_NextInstruction)
@@ -910,12 +909,20 @@ void CRSPRecompiler::CompilerRSPBlock(void)
             m_NextInstruction = RSPPIPELINE_DELAY_SLOT;
             m_CompilePC += 4;
             break;
+        case RSPPIPELINE_DO_DELAY_SLOT_TASK_EXIT:
+            m_NextInstruction = RSPPIPELINE_DELAY_SLOT_TASK_EXIT;
+            m_CompilePC += 4;
+            break;
         case RSPPIPELINE_DELAY_SLOT:
             m_NextInstruction = RSPPIPELINE_DELAY_SLOT_DONE;
             m_CompilePC = (m_CompilePC - 4 & 0xFFC);
             break;
         case RSPPIPELINE_DELAY_SLOT_EXIT:
             m_NextInstruction = RSPPIPELINE_DELAY_SLOT_EXIT_DONE;
+            m_CompilePC = (m_CompilePC - 4 & 0xFFC);
+            break;
+        case RSPPIPELINE_DELAY_SLOT_TASK_EXIT:
+            m_NextInstruction = RSPPIPELINE_DELAY_SLOT_TASK_EXIT_DONE;
             m_CompilePC = (m_CompilePC - 4 & 0xFFC);
             break;
         case RSPPIPELINE_FINISH_SUB_BLOCK:
@@ -940,7 +947,9 @@ void CRSPRecompiler::CompilerRSPBlock(void)
                 CompilerLinkBlocks();
             }
             break;
-
+        case RSPPIPELINE_FINISH_TASK_SUB_BLOCK:
+            m_NextInstruction = RSPPIPELINE_FINISH_BLOCK;
+            break;
         case RSPPIPELINE_FINISH_BLOCK: break;
         default:
             g_Notify->DisplayError(stdstr_f("RSP main loop\n\nWTF m_NextInstruction = %d", m_NextInstruction).c_str());
@@ -1057,6 +1066,126 @@ void CRSPRecompiler::RunCPU(void)
         g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
     }
+}
+
+void CRSPRecompiler::CompileHLETask(uint32_t Address)
+{
+    uint32_t EndPC = 0x1000;
+    m_CompilePC = (Address & 0xFFF);
+    m_NextInstruction = RSPPIPELINE_NORMAL;
+
+    m_CurrentBlock.StartPC = Address;
+    m_CurrentBlock.CurrPC = Address;
+
+    CPU_Message("====== Block %d ======", BlockID++);
+    CPU_Message("x86 code at: %X", RecompPos);
+    CPU_Message("Jump table: %X", Table);
+    CPU_Message("Start of block: %X", m_CurrentBlock.StartPC);
+    CPU_Message("====== Recompiled code ======");
+
+    *(JumpTable + (m_CompilePC >> 2)) = RecompPos;
+    do
+    {
+        if (m_NextInstruction == RSPPIPELINE_NORMAL && IsJumpLabel(m_CompilePC))
+        {
+            // Jumps come around twice
+            if (NULL == *(JumpTable + (m_CompilePC >> 2)))
+            {
+                CPU_Message("***** Adding jump table entry for PC: %04X at X86: %08X *****", m_CompilePC, RecompPos);
+                CPU_Message("");
+                *(JumpTable + (m_CompilePC >> 2)) = RecompPos;
+
+                // Reorder from here to next label or branch
+                m_CurrentBlock.CurrPC = m_CompilePC;
+                ReOrderSubBlock(&m_CurrentBlock);
+            }
+            else if (m_NextInstruction != RSPPIPELINE_DELAY_SLOT_DONE)
+            {
+
+                // We could link the blocks here, but performance-wise it might be better to just let it run
+            }
+        }
+#ifdef X86_RECOMP_VERBOSE
+        if (!IsOpcodeNop(m_CompilePC))
+        {
+            CPU_Message("X86 Address: %08X", RecompPos);
+        }
+#endif
+        RSP_LW_IMEM(m_CompilePC, &m_OpCode.Value);
+        (m_RecompilerOps.*RSP_Recomp_Opcode[m_OpCode.op])();
+
+        switch (m_NextInstruction)
+        {
+        case RSPPIPELINE_NORMAL:
+            m_CompilePC += 4;
+            break;
+        case RSPPIPELINE_DO_DELAY_SLOT:
+            m_NextInstruction = RSPPIPELINE_DELAY_SLOT;
+            m_CompilePC += 4;
+            break;
+        case RSPPIPELINE_DO_DELAY_SLOT_EXIT:
+            m_NextInstruction = RSPPIPELINE_DELAY_SLOT_EXIT;
+            m_CompilePC += 4;
+            break;
+        case RSPPIPELINE_DO_DELAY_SLOT_TASK_EXIT:
+            m_NextInstruction = RSPPIPELINE_DELAY_SLOT_TASK_EXIT;
+            m_CompilePC += 4;
+            break;
+        case RSPPIPELINE_DELAY_SLOT:
+            m_NextInstruction = RSPPIPELINE_DELAY_SLOT_DONE;
+            m_CompilePC = (m_CompilePC - 4 & 0xFFC);
+            break;
+        case RSPPIPELINE_DELAY_SLOT_EXIT:
+            m_NextInstruction = RSPPIPELINE_DELAY_SLOT_EXIT_DONE;
+            m_CompilePC = (m_CompilePC - 4 & 0xFFC);
+            break;
+        case RSPPIPELINE_DELAY_SLOT_TASK_EXIT:
+            m_NextInstruction = RSPPIPELINE_DELAY_SLOT_TASK_EXIT_DONE;
+            m_CompilePC = (m_CompilePC - 4 & 0xFFC);
+            break;
+        case RSPPIPELINE_FINISH_SUB_BLOCK:
+            m_NextInstruction = RSPPIPELINE_NORMAL;
+            m_CompilePC += 8;
+            if (m_CompilePC >= 0x1000)
+            {
+                m_NextInstruction = RSPPIPELINE_FINISH_BLOCK;
+            }
+            else if (NULL == *(JumpTable + (m_CompilePC >> 2)))
+            {
+                // This is for the new block being compiled now
+                CPU_Message("***** Continuing static SubBlock (jump table entry added for PC: %04X at X86: %08X) *****", m_CompilePC, RecompPos);
+                *(JumpTable + (m_CompilePC >> 2)) = RecompPos;
+
+                m_CurrentBlock.CurrPC = m_CompilePC;
+                // Reorder from after delay to next label or branch
+                ReOrderSubBlock(&m_CurrentBlock);
+            }
+            else
+            {
+                CompilerLinkBlocks();
+            }
+            break;
+        case RSPPIPELINE_FINISH_BLOCK: break;
+        case RSPPIPELINE_FINISH_TASK_SUB_BLOCK:
+            m_NextInstruction = RSPPIPELINE_FINISH_BLOCK;
+            break;
+        default:
+            g_Notify->DisplayError(stdstr_f("RSP main loop\n\nWTF m_NextInstruction = %d", m_NextInstruction).c_str());
+            m_CompilePC += 4;
+            break;
+        }
+
+        if (m_CompilePC >= EndPC && *m_System.m_SP_PC_REG != 0 && EndPC != *m_System.m_SP_PC_REG)
+        {
+            m_CompilePC = 0;
+            EndPC = *m_System.m_SP_PC_REG;
+        }
+    } while (m_NextInstruction != RSPPIPELINE_FINISH_BLOCK && (m_CompilePC < EndPC || m_NextInstruction == RSPPIPELINE_DELAY_SLOT || m_NextInstruction == RSPPIPELINE_DELAY_SLOT_DONE));
+    if (m_CompilePC >= EndPC)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    CPU_Message("===== End of recompiled code =====");
 }
 
 void CRSPRecompiler::Branch_AddRef(uint32_t Target, uint32_t * X86Loc)

@@ -12,8 +12,6 @@
 #include <float.h>
 #include <math.h>
 
-extern bool AudioHle, GraphicsHle;
-
 uint32_t clz32(uint32_t val)
 {
 #if defined(__GNUC__)

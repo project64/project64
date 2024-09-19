@@ -10,6 +10,7 @@ enum
     Set_IndvidualBlock,
     Set_ShowErrors,
     Set_HleAlistTask,
+    Set_SyncCPU,
 
     // Compiler settings
     Set_CheckDest,

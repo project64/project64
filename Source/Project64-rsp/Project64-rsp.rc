@@ -170,6 +170,7 @@ BEGIN
     POPUP "CPU Method"
     BEGIN
         MENUITEM "Recompiler",                  ID_CPUMETHOD_RECOMPILER
+        MENUITEM "Recompiler Tasks",            ID_CPUMETHOD_RECOMPILER_TASKS
         MENUITEM "Interpreter",                 ID_CPUMETHOD_INTERPT
         MENUITEM "HLE",                         ID_CPUMETHOD_HLE
     END
@@ -196,6 +197,7 @@ BEGIN
         MENUITEM "Break on start of task",      ID_BREAKONSTARTOFTASK
         MENUITEM "Log RDP Commands",            ID_LOGRDPCOMMANDS
         MENUITEM "Log X86 code",                ID_SETTINGS_LOGX86CODE
+        MENUITEM "Sync CPU",                    ID_SETTINGS_SYNCCPU
         MENUITEM "Multithreaded",               ID_SETTINGS_MULTITHREADED
     END
 END

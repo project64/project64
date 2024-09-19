@@ -63,4 +63,5 @@ protected:
     uint8_t * m_DMEM;
     uint32_t m_PendingSPMemAddr;
     uint32_t m_PendingSPDramAddr;
+    bool m_IgnoreWrites;
 };

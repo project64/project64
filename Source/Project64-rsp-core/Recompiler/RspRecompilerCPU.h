@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Project64-rsp-core/Recompiler/RspRecompilerOps.h>
 #include <Project64-rsp-core/Settings/RspSettings.h>
 #include <Project64-rsp-core/cpu/RSPOpcode.h>
 #include <Project64-rsp-core/cpu/RspPipelineStage.h>
@@ -12,6 +13,7 @@ class RSPRegisterHandlerPlugin;
 class CRSPRecompiler
 {
     friend class CRSPRecompilerOps;
+    friend class CHleTask;
 
     typedef struct
     {
@@ -38,15 +40,18 @@ private:
     CRSPRecompiler(const CRSPRecompiler &);
     CRSPRecompiler & operator=(const CRSPRecompiler &);
 
+    void BuildBranchLabels(void);
     void BuildRecompilerCPU(void);
     void CompilerLinkBlocks(void);
     void CompilerRSPBlock(void);
+    void CompileHLETask(uint32_t Address);
     void LinkBranches(RSP_BLOCK * Block);
     void ReOrderSubBlock(RSP_BLOCK * Block);
     void ReOrderInstructions(uint32_t StartPC, uint32_t EndPC);
     void ResetJumpTables(void);
 
     CRSPSystem & m_System;
+    CRSPRecompilerOps m_RecompilerOps;
     RSPRegisterHandlerPlugin *& m_RSPRegisterHandler;
     RSPOpcode & m_OpCode;
     uint32_t m_CompilePC;

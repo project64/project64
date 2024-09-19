@@ -1,4 +1,5 @@
 #pragma once
+#include <Project64-rsp-core/Settings/RspSettings.h>
 #include <Project64-rsp-core/cpu/RSPOpcode.h>
 #include <Project64-rsp-core/cpu/RspPipelineStage.h>
 #include <Project64-rsp-core/cpu/RspTypes.h>
@@ -12,6 +13,7 @@ class RSPOp :
 {
     friend class CRSPSystem;
     friend class CRSPRecompilerOps;
+    friend class CHleTask;
 
 public:
     RSPOp(CRSPSystem & System);

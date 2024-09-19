@@ -40,13 +40,15 @@
 #define ID_SETTINGS_MULTITHREADED       5020
 #define ID_SETTINGS_HLEALISTTASK        5021
 #define ID_CPUMETHOD_HLE                5022
+#define ID_CPUMETHOD_RECOMPILER_TASKS   5023
+#define ID_SETTINGS_SYNCCPU             5024
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        108
-#define _APS_NEXT_COMMAND_VALUE         5023
+#define _APS_NEXT_COMMAND_VALUE         5025
 #define _APS_NEXT_CONTROL_VALUE         1032
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

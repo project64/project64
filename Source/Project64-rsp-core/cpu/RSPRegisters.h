@@ -71,6 +71,49 @@ enum
     MI_INTR_SP = 0x01, // Bit 0: SP INTR
 };
 
+class CGPRRegisters
+{
+public:
+    CGPRRegisters(UWORD32 (&m_GPR)[32]);
+
+private:
+    CGPRRegisters();
+
+protected:
+    uint32_t & GPR_R0;
+    uint32_t & GPR_AT;
+    uint32_t & GPR_V0;
+    uint32_t & GPR_V1;
+    uint32_t & GPR_A0;
+    uint32_t & GPR_A1;
+    uint32_t & GPR_A2;
+    uint32_t & GPR_A3;
+    uint32_t & GPR_T0;
+    uint32_t & GPR_T1;
+    uint32_t & GPR_T2;
+    uint32_t & GPR_T3;
+    uint32_t & GPR_T4;
+    uint32_t & GPR_T5;
+    uint32_t & GPR_T6;
+    uint32_t & GPR_T7;
+    uint32_t & GPR_S0;
+    uint32_t & GPR_S1;
+    uint32_t & GPR_S2;
+    uint32_t & GPR_S3;
+    uint32_t & GPR_S4;
+    uint32_t & GPR_S5;
+    uint32_t & GPR_S6;
+    uint32_t & GPR_S7;
+    uint32_t & GPR_T8;
+    uint32_t & GPR_T9;
+    uint32_t & GPR_K0;
+    uint32_t & GPR_K1;
+    uint32_t & GPR_GP;
+    uint32_t & GPR_SP;
+    uint32_t & GPR_S8;
+    uint32_t & GPR_RA;
+};
+
 class CRSPRegisters
 {
 public:

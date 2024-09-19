@@ -34,11 +34,23 @@ public:
 
     void RunRecompiler(void);
     void ExecuteOps(uint32_t Cycles, uint32_t TargetPC);
+    void SetupSyncCPU();
+    bool IsSyncSystem(void);
+    CRSPSystem * SyncSystem(void);
+    void BasicSyncCheck(void);
+    void * operator new(size_t size);
+    void operator delete(void * ptr);
 
 private:
     CRSPSystem(const CRSPSystem &);
     CRSPSystem & operator=(const CRSPSystem &);
 
+    static void NullProcessDList(void);
+    static void NullProcessRdpList(void);
+    static void NullCheckInterrupts(void);
+
+    CRSPSystem * m_SyncSystem;
+    CRSPSystem * m_BaseSystem;
     CRSPRecompiler m_Recompiler;
     RSPRegisterHandlerPlugin * m_RSPRegisterHandler;
     CRSPRegisters m_Reg;
@@ -69,6 +81,7 @@ private:
     uint32_t * m_DPC_PIPEBUSY_REG;
     uint32_t * m_DPC_TMEM_REG;
     uint32_t m_RdramSize;
+    uint32_t * m_SyncReg;
     void (*CheckInterrupts)(void);
     void (*ProcessDList)(void);
     void (*ProcessRdpList)(void);

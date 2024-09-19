@@ -2,14 +2,15 @@
 #include <stdint.h>
 
 extern uint16_t Set_AudioHle, Set_GraphicsHle, Set_AllocatedRdramSize, Set_DirectoryLog;
-extern bool GraphicsHle, AudioHle, ConditionalMove, HleAlistTask, RspMultiThreaded;
+extern bool GraphicsHle, AudioHle, ConditionalMove, SyncCPU, HleAlistTask, RspMultiThreaded;
 extern bool DebuggingEnabled, Profiling, IndvidualBlock, ShowErrors, BreakOnStart, LogRDP, LogX86Code;
 
 enum class RSPCpuMethod
 {
     Interpreter = 0,
     Recompiler = 1,
-    HighLevelEmulation = 2,
+    RecompilerTasks = 2,
+    HighLevelEmulation = 3,
 };
 
 class CRSPSettings

@@ -179,9 +179,11 @@ void FixMenuState(void)
 
     CheckMenuItem(hRSPMenu, ID_CPUMETHOD_RECOMPILER, MF_BYCOMMAND | ((RSPCpuMethod)GetSetting(Set_CPUCore) == RSPCpuMethod::Recompiler ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_CPUMETHOD_INTERPT, MF_BYCOMMAND | ((RSPCpuMethod)GetSetting(Set_CPUCore) == RSPCpuMethod::Interpreter ? MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_CPUMETHOD_RECOMPILER_TASKS, MF_BYCOMMAND | ((RSPCpuMethod)GetSetting(Set_CPUCore) == RSPCpuMethod::RecompilerTasks ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_CPUMETHOD_HLE, MF_BYCOMMAND | ((RSPCpuMethod)GetSetting(Set_CPUCore) == RSPCpuMethod::HighLevelEmulation ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_BREAKONSTARTOFTASK, MF_BYCOMMAND | (BreakOnStart ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_LOGRDPCOMMANDS, MF_BYCOMMAND | (LogRDP ? MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_SETTINGS_SYNCCPU, MF_BYCOMMAND | (SyncCPU ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_SETTINGS_HLEALISTTASK, MF_BYCOMMAND | (HleAlistTask ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_SETTINGS_LOGX86CODE, MF_BYCOMMAND | (LogX86Code ? MFS_CHECKED : MF_UNCHECKED));
     CheckMenuItem(hRSPMenu, ID_SETTINGS_MULTITHREADED, MF_BYCOMMAND | (MultiThreadedDefault ? MFS_CHECKED : MF_UNCHECKED));
@@ -384,6 +386,13 @@ void ProcessMenuItem(int32_t ID)
         }
         break;
     }
+    case ID_SETTINGS_SYNCCPU:
+    {
+        bool Checked = (GetMenuState(hRSPMenu, ID_SETTINGS_SYNCCPU, MF_BYCOMMAND) & MFS_CHECKED) != 0;
+        CheckMenuItem(hRSPMenu, ID_SETTINGS_SYNCCPU, MF_BYCOMMAND | (Checked ? MFS_UNCHECKED : MFS_CHECKED));
+        SetSetting(Set_SyncCPU, !Checked);
+        break;
+    }
     case ID_SETTINGS_HLEALISTTASK:
     {
         bool Checked = (GetMenuState(hRSPMenu, ID_SETTINGS_HLEALISTTASK, MF_BYCOMMAND) & MFS_CHECKED) != 0;
@@ -408,6 +417,10 @@ void ProcessMenuItem(int32_t ID)
         break;
     case ID_CPUMETHOD_INTERPT:
         SetSetting(Set_CPUCore, (int)RSPCpuMethod::Interpreter);
+        FixMenuState();
+        break;
+    case ID_CPUMETHOD_RECOMPILER_TASKS:
+        SetSetting(Set_CPUCore, (int)RSPCpuMethod::RecompilerTasks);
         FixMenuState();
         break;
     case ID_CPUMETHOD_HLE:
@@ -551,7 +564,6 @@ BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam
         hWndItem = GetDlgItem(hDlg, IDC_COMPILER_SELECT);
         ComboBox_AddString(hWndItem, "Interpreter");
         ComboBox_AddString(hWndItem, "Recompiler");
-        //ComboBox_SetCurSel(hWndItem, g_CPUCore);
         break;
     case WM_COMMAND:
         switch (GET_WM_COMMAND_ID(wParam, lParam))
@@ -596,6 +608,7 @@ EXPORT void EnableDebugging(int Enabled)
         IndvidualBlock = GetSetting(Set_IndvidualBlock) != 0;
         ShowErrors = GetSetting(Set_ShowErrors) != 0;
         HleAlistTask = GetSetting(Set_HleAlistTask) != 0;
+        SyncCPU = GetSetting(Set_SyncCPU) != 0;
 
         Compiler.bDest = GetSetting(Set_CheckDest) != 0;
         Compiler.bAccum = GetSetting(Set_Accum) != 0;

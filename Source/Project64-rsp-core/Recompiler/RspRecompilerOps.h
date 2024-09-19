@@ -1,14 +1,20 @@
-// Opcode functions
+#pragma once
 #include <Project64-rsp-core/cpu/RSPInterpreterOps.h>
 
 class CRSPSystem;
 class CRSPRegisters;
+class CRSPRecompiler;
 
 class CRSPRecompilerOps
 {
     enum
     {
         HIT_BRANCH = 0x2,
+    };
+
+    enum EndHleTaskOp
+    {
+        J_0x1118 = 0x09000446
     };
 
 public:
