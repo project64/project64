@@ -299,6 +299,7 @@ CICChip CN64Rom::GetCicChipID(uint8_t * RomData, uint64_t * CRC)
     case 0x000000D2E53EF39F: return CIC_NUS_8401; // 64DD IPL tool
     case 0x000000D2E53E5DDA: return CIC_NUS_DDUS; // 64DD IPL US (different CIC)
     case 0x0000000AF3A34BC8: return CIC_MINI_IPL3;
+    case 0x0000007c56242373: return CIC_NUS_6102; // LibDragon IPL3
     default:
         //Aleck64 CIC
         if (crcAleck64 == 0x000000A5F80BF620)

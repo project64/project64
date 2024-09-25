@@ -1263,14 +1263,14 @@ bool CRomBrowser::RomDirNeedsRefresh(void)
     bool InWatchThread = (m_WatchThreadID == GetCurrentThreadId());
 
     // Get old MD5 of file names
-    stdstr FileName = g_Settings->LoadStringVal(RomList_RomListCache);
-    if (!CPath(FileName).Exists())
+    CPath FileName = CPath(g_Settings->LoadStringVal(RomList_RomListCache)).NormalizePath(CPath::MODULE_DIRECTORY);
+    if (!FileName.Exists())
     {
         // If file does not exist then refresh the data
         return true;
     }
 
-    CFile hFile(FileName.c_str(), CFileBase::modeRead);
+    CFile hFile(FileName, CFileBase::modeRead);
     if (!hFile.IsOpen())
     {
         // Could not validate, assume it is fine
@@ -1301,41 +1301,31 @@ void CRomBrowser::WatchRomDirChanged(CRomBrowser * _this)
 {
     try
     {
-        WriteTrace(TraceUserInterface, TraceDebug, "1");
         _this->m_WatchRomDir = g_Settings->LoadStringVal(RomList_GameDir);
-        WriteTrace(TraceUserInterface, TraceDebug, "2");
         if (_this->RomDirNeedsRefresh())
         {
-            WriteTrace(TraceUserInterface, TraceDebug, "2a");
             _this->RomDirChanged();
         }
-        WriteTrace(TraceUserInterface, TraceDebug, "3");
         HANDLE hChange[] = {
             _this->m_WatchStopEvent,
             FindFirstChangeNotificationA(_this->m_WatchRomDir.c_str(), g_Settings->LoadBool(RomList_GameDirRecursive), FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_SIZE),
         };
-        WriteTrace(TraceUserInterface, TraceDebug, "4");
         for (;;)
         {
-            WriteTrace(TraceUserInterface, TraceDebug, "5");
             if (WaitForMultipleObjects(sizeof(hChange) / sizeof(hChange[0]), hChange, false, INFINITE) == WAIT_OBJECT_0)
             {
-                WriteTrace(TraceUserInterface, TraceDebug, "5a");
                 FindCloseChangeNotification(hChange[1]);
                 return;
             }
-            WriteTrace(TraceUserInterface, TraceDebug, "5b");
             if (_this->RomDirNeedsRefresh())
             {
                 _this->RomDirChanged();
             }
-            WriteTrace(TraceUserInterface, TraceDebug, "5c");
             if (!FindNextChangeNotification(hChange[1]))
             {
                 FindCloseChangeNotification(hChange[1]);
                 return;
             }
-            WriteTrace(TraceUserInterface, TraceDebug, "5d");
         }
     }
     catch (...)
