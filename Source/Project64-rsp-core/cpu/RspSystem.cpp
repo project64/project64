@@ -51,7 +51,7 @@ CRSPSystem::CRSPSystem() :
 
 CRSPSystem::~CRSPSystem()
 {
-    if (m_SyncSystem->m_BaseSystem != nullptr)
+    if (m_SyncSystem != nullptr && m_SyncSystem->m_BaseSystem != nullptr)
     {
         if (m_IMEM != nullptr)
         {
