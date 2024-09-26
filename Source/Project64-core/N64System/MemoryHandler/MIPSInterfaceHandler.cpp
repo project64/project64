@@ -110,6 +110,9 @@ bool MIPSInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Ma
             MI_MODE_REG |= MI_MODE_RDRAM;
         }
         break;
+    case 0x04300008:
+        //read only
+        break;
     case 0x0430000C:
         if ((MaskedValue & MI_INTR_MASK_CLR_SP) != 0)
         {

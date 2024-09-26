@@ -292,8 +292,10 @@ private:
 
     bool TestCop1UsableException(void);
     bool CheckFPUInput32(const float & Value);
+    bool CheckFPUInputs32(const float & Value, const float & Value2);
     bool CheckFPUInput32Conv(const float & Value);
     bool CheckFPUInput64(const double & Value);
+    bool CheckFPUInputs64(const double & Value, const double & Value2);
     bool CheckFPUInput64Conv(const double & Value);
     bool CheckFPUResult32(float & Result);
     bool CheckFPUResult64(double & Result);

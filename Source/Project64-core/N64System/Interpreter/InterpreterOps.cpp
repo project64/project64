@@ -2321,7 +2321,7 @@ void R4300iOp::COP1_S_ADD()
         return;
     }
 
-    if (CheckFPUInput32(*(float *)m_FPR_S_L[m_Opcode.fs]) || CheckFPUInput32(*(float *)m_FPR_UW[m_Opcode.ft]))
+    if (CheckFPUInputs32(*(float *)m_FPR_S_L[m_Opcode.fs], *(float *)m_FPR_UW[m_Opcode.ft]))
     {
         return;
     }
@@ -2339,7 +2339,7 @@ void R4300iOp::COP1_S_SUB()
     {
         return;
     }
-    if (CheckFPUInput32(*(float *)m_FPR_S_L[m_Opcode.fs]) || CheckFPUInput32(*(float *)m_FPR_UW[m_Opcode.ft]))
+    if (CheckFPUInputs32(*(float *)m_FPR_S_L[m_Opcode.fs], *(float *)m_FPR_UW[m_Opcode.ft]))
     {
         return;
     }
@@ -2358,7 +2358,7 @@ void R4300iOp::COP1_S_MUL()
         return;
     }
 
-    if (CheckFPUInput32(*(float *)m_FPR_S_L[m_Opcode.fs]) || CheckFPUInput32(*(float *)m_FPR_UW[m_Opcode.ft]))
+    if (CheckFPUInputs32(*(float *)m_FPR_S_L[m_Opcode.fs], *(float *)m_FPR_UW[m_Opcode.ft]))
     {
         return;
     }
@@ -2377,7 +2377,7 @@ void R4300iOp::COP1_S_DIV()
         return;
     }
 
-    if (CheckFPUInput32(*(float *)m_FPR_S_L[m_Opcode.fs]) || CheckFPUInput32(*(float *)m_FPR_UW[m_Opcode.ft]))
+    if (CheckFPUInputs32(*(float *)m_FPR_S_L[m_Opcode.fs], *(float *)m_FPR_UW[m_Opcode.ft]))
     {
         return;
     }
@@ -2724,7 +2724,7 @@ void R4300iOp::COP1_D_ADD()
         return;
     }
 
-    if (CheckFPUInput64(*(double *)m_FPR_D[m_Opcode.fs]) || CheckFPUInput64(*(double *)m_FPR_UDW[m_Opcode.ft]))
+    if (CheckFPUInputs64(*(double *)m_FPR_D[m_Opcode.fs],*(double *)m_FPR_UDW[m_Opcode.ft]))
     {
         return;
     }
@@ -2743,7 +2743,7 @@ void R4300iOp::COP1_D_SUB()
         return;
     }
 
-    if (CheckFPUInput64(*(double *)m_FPR_D[m_Opcode.fs]) || CheckFPUInput64(*(double *)m_FPR_UDW[m_Opcode.ft]))
+    if (CheckFPUInputs64(*(double *)m_FPR_D[m_Opcode.fs],*(double *)m_FPR_UDW[m_Opcode.ft]))
     {
         return;
     }
@@ -2762,7 +2762,7 @@ void R4300iOp::COP1_D_MUL()
         return;
     }
 
-    if (CheckFPUInput64(*(double *)m_FPR_D[m_Opcode.fs]) || CheckFPUInput64(*(double *)m_FPR_UDW[m_Opcode.ft]))
+    if (CheckFPUInputs64(*(double *)m_FPR_D[m_Opcode.fs], *(double *)m_FPR_UDW[m_Opcode.ft]))
     {
         return;
     }
@@ -2781,7 +2781,7 @@ void R4300iOp::COP1_D_DIV()
         return;
     }
 
-    if (CheckFPUInput64(*(double *)m_FPR_D[m_Opcode.fs]) || CheckFPUInput64(*(double *)m_FPR_UDW[m_Opcode.ft]))
+    if (CheckFPUInputs64(*(double *)m_FPR_D[m_Opcode.fs], *(double *)m_FPR_UDW[m_Opcode.ft]))
     {
         return;
     }
@@ -3371,6 +3371,60 @@ bool R4300iOp::CheckFPUInput32(const float & Value)
     return false;
 }
 
+bool R4300iOp::CheckFPUInputs32(const float & Value, const float & Value2)
+{
+    bool Exception = false;
+    bool isNan[2] =
+    {
+        ((*((uint32_t *)&Value) & 0x7F800000) == 0x7F800000 && (*((uint32_t *)&Value) & 0x007FFFFF) != 0x00000000),
+        ((*((uint32_t *)&Value2) & 0x7F800000) == 0x7F800000 && (*((uint32_t *)&Value2) & 0x007FFFFF) != 0x00000000)
+    };
+    bool isQNan[2] =
+    {
+        ((*(uint32_t *)&Value >= 0x7F800001 && *(uint32_t *)&Value < 0x7FC00000) || (*(uint32_t *)&Value >= 0xFF800001 && *(uint32_t *)&Value < 0xFFC00000)),
+        ((*(uint32_t *)&Value2 >= 0x7F800001 && *(uint32_t *)&Value2 < 0x7FC00000) || (*(uint32_t *)&Value2 >= 0xFF800001 && *(uint32_t *)&Value2 < 0xFFC00000))
+    };
+    bool isSubNormal[2] =
+    {
+        ((*((uint32_t *)&Value) & 0x7F800000) == 0x00000000 && (*((uint32_t *)&Value) & 0x007FFFFF) != 0x00000000),
+        ((*((uint32_t *)&Value2) & 0x7F800000) == 0x00000000 && (*((uint32_t *)&Value2) & 0x007FFFFF) != 0x00000000)
+    };
+
+    if (isSubNormal[0] || isSubNormal[1])
+    {
+        FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
+        StatusReg.Cause.UnimplementedOperation = 1;
+        Exception = true;
+    }
+    else if (isNan[0] || isNan[1])
+    {
+        FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
+        if (isQNan[0] || isQNan[1])
+        {
+            StatusReg.Cause.UnimplementedOperation = 1;
+            Exception = true;
+        }
+        else
+        {
+            StatusReg.Cause.InvalidOperation = 1;
+            if (StatusReg.Enable.InvalidOperation)
+            {
+                Exception = true;
+            }
+            else
+            {
+                StatusReg.Flags.InvalidOperation = 1;
+            }
+        }
+    }
+    if (Exception)
+    {
+        m_Reg.TriggerException(EXC_FPE);
+        return true;
+    }
+    return false;
+}
+
 bool R4300iOp::CheckFPUInput32Conv(const float & Value)
 {
     uint32_t InvalidValueMax = 0x5a000000, InvalidMinValue = 0xda000000;
@@ -3402,6 +3456,60 @@ bool R4300iOp::CheckFPUInput64(const double & Value)
         FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
         if ((Value64 >= 0x7FF0000000000001 && Value64 <= 0x7FF7FFFFFFFFFFFF) ||
             (Value64 >= 0xFFF0000000000001 && Value64 <= 0xFFF7FFFFFFFFFFFF))
+        {
+            StatusReg.Cause.UnimplementedOperation = 1;
+            Exception = true;
+        }
+        else
+        {
+            StatusReg.Cause.InvalidOperation = 1;
+            if (StatusReg.Enable.InvalidOperation)
+            {
+                Exception = true;
+            }
+            else
+            {
+                StatusReg.Flags.InvalidOperation = 1;
+            }
+        }
+    }
+    if (Exception)
+    {
+        m_Reg.TriggerException(EXC_FPE);
+        return true;
+    }
+    return false;
+}
+
+bool R4300iOp::CheckFPUInputs64(const double & Value, const double & Value2)
+{
+    bool isNan[2] =
+    {
+        ((*((uint64_t *)&Value) & 0x7FF0000000000000ULL) == 0x7FF0000000000000ULL && (*((uint64_t *)&Value) & 0x000FFFFFFFFFFFFFULL) != 0x0000000000000000ULL),
+        ((*((uint64_t *)&Value2) & 0x7FF0000000000000ULL) == 0x7FF0000000000000ULL && (*((uint64_t *)&Value2) & 0x000FFFFFFFFFFFFFULL) != 0x0000000000000000ULL)
+    };
+    bool isQNan[2] =
+    {
+        ((*(uint64_t *)&Value >= 0x7FF0000000000001 && *(uint64_t *)&Value <= 0x7FF7FFFFFFFFFFFF) || (*(uint64_t *)&Value >= 0xFFF0000000000001 && *(uint64_t *)&Value <= 0xFFF7FFFFFFFFFFFF)),
+        ((*(uint64_t *)&Value2 >= 0x7FF0000000000001 && *(uint64_t *)&Value2 <= 0x7FF7FFFFFFFFFFFF) || (*(uint64_t *)&Value2 >= 0xFFF0000000000001 && *(uint64_t *)&Value2 <= 0xFFF7FFFFFFFFFFFF)),
+    };
+    bool isSubNormal[2] =
+    {
+        ((*((uint64_t *)&Value) & 0x7FF0000000000000ULL) == 0x0000000000000000ULL && (*((uint64_t *)&Value) & 0x000FFFFFFFFFFFFFULL) != 0x0000000000000000ULL),
+        ((*((uint64_t *)&Value2) & 0x7FF0000000000000ULL) == 0x0000000000000000ULL && (*((uint64_t *)&Value2) & 0x000FFFFFFFFFFFFFULL) != 0x0000000000000000ULL)
+    };
+
+    bool Exception = false;
+    if (isSubNormal[0] || isSubNormal[1])
+    {
+        FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
+        StatusReg.Cause.UnimplementedOperation = 1;
+        Exception = true;
+    }
+    else if (isNan[0] || isNan[1])
+    {
+        FPStatusReg & StatusReg = (FPStatusReg &)m_FPCR[31];
+        if (isQNan[0] || isQNan[1])
         {
             StatusReg.Cause.UnimplementedOperation = 1;
             Exception = true;
