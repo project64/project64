@@ -434,7 +434,7 @@ void PeripheralInterfaceHandler::PI_DMA_WRITE()
                     BlockLen = 0;
                 }
             }
-            for (int32_t i = 0; i < BlockLen ; i++)
+            for (int32_t i = 0; i < BlockLen; i++)
             {
                 Rdram[(PI_DRAM_ADDR_REG + i) ^ 3] = Block[i];
             }

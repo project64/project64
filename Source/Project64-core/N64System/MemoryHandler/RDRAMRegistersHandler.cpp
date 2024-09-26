@@ -87,15 +87,15 @@ bool RDRAMRegistersHandler::Write32(uint32_t Address, uint32_t Value, uint32_t M
         {
         case 0x00: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].DeviceType", m_PC, Value, Mask, DeviceID); break;
         case 0x04: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].DeviceId", m_PC, Value, Mask, DeviceID); break;
-        case 0x08: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].Delay", m_PC, Value, Mask, DeviceID); break; 
-        case 0x0C: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].Mode", m_PC, Value, Mask, DeviceID); break; 
-        case 0x10: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].RefreshInterval", m_PC, Value, Mask, DeviceID); break; 
-        case 0x14: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].RefreshRow", m_PC, Value, Mask, DeviceID); break; 
-        case 0x18: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].RasInterval", m_PC, Value, Mask, DeviceID); break; 
-        case 0x1C: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].MinInterval", m_PC, Value, Mask, DeviceID); break; 
-        case 0x20: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].AddressSelect", m_PC, Value, Mask, DeviceID); break; 
-        case 0x24: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].DeviceManufacturer", m_PC, Value, Mask, DeviceID); break; 
-        case 0x28: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].CurrentControl", m_PC, Value, Mask, DeviceID); break; 
+        case 0x08: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].Delay", m_PC, Value, Mask, DeviceID); break;
+        case 0x0C: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].Mode", m_PC, Value, Mask, DeviceID); break;
+        case 0x10: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].RefreshInterval", m_PC, Value, Mask, DeviceID); break;
+        case 0x14: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].RefreshRow", m_PC, Value, Mask, DeviceID); break;
+        case 0x18: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].RasInterval", m_PC, Value, Mask, DeviceID); break;
+        case 0x1C: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].MinInterval", m_PC, Value, Mask, DeviceID); break;
+        case 0x20: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].AddressSelect", m_PC, Value, Mask, DeviceID); break;
+        case 0x24: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].DeviceManufacturer", m_PC, Value, Mask, DeviceID); break;
+        case 0x28: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].CurrentControl", m_PC, Value, Mask, DeviceID); break;
         default:
             if (HaveDebugger())
             {

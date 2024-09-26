@@ -2724,7 +2724,7 @@ void R4300iOp::COP1_D_ADD()
         return;
     }
 
-    if (CheckFPUInputs64(*(double *)m_FPR_D[m_Opcode.fs],*(double *)m_FPR_UDW[m_Opcode.ft]))
+    if (CheckFPUInputs64(*(double *)m_FPR_D[m_Opcode.fs], *(double *)m_FPR_UDW[m_Opcode.ft]))
     {
         return;
     }
@@ -2743,7 +2743,7 @@ void R4300iOp::COP1_D_SUB()
         return;
     }
 
-    if (CheckFPUInputs64(*(double *)m_FPR_D[m_Opcode.fs],*(double *)m_FPR_UDW[m_Opcode.ft]))
+    if (CheckFPUInputs64(*(double *)m_FPR_D[m_Opcode.fs], *(double *)m_FPR_UDW[m_Opcode.ft]))
     {
         return;
     }
@@ -3374,20 +3374,17 @@ bool R4300iOp::CheckFPUInput32(const float & Value)
 bool R4300iOp::CheckFPUInputs32(const float & Value, const float & Value2)
 {
     bool Exception = false;
-    bool isNan[2] =
-    {
+    bool isNan[2] = {
         ((*((uint32_t *)&Value) & 0x7F800000) == 0x7F800000 && (*((uint32_t *)&Value) & 0x007FFFFF) != 0x00000000),
-        ((*((uint32_t *)&Value2) & 0x7F800000) == 0x7F800000 && (*((uint32_t *)&Value2) & 0x007FFFFF) != 0x00000000)
+        ((*((uint32_t *)&Value2) & 0x7F800000) == 0x7F800000 && (*((uint32_t *)&Value2) & 0x007FFFFF) != 0x00000000),
     };
-    bool isQNan[2] =
-    {
+    bool isQNan[2] = {
         ((*(uint32_t *)&Value >= 0x7F800001 && *(uint32_t *)&Value < 0x7FC00000) || (*(uint32_t *)&Value >= 0xFF800001 && *(uint32_t *)&Value < 0xFFC00000)),
-        ((*(uint32_t *)&Value2 >= 0x7F800001 && *(uint32_t *)&Value2 < 0x7FC00000) || (*(uint32_t *)&Value2 >= 0xFF800001 && *(uint32_t *)&Value2 < 0xFFC00000))
+        ((*(uint32_t *)&Value2 >= 0x7F800001 && *(uint32_t *)&Value2 < 0x7FC00000) || (*(uint32_t *)&Value2 >= 0xFF800001 && *(uint32_t *)&Value2 < 0xFFC00000)),
     };
-    bool isSubNormal[2] =
-    {
+    bool isSubNormal[2] = {
         ((*((uint32_t *)&Value) & 0x7F800000) == 0x00000000 && (*((uint32_t *)&Value) & 0x007FFFFF) != 0x00000000),
-        ((*((uint32_t *)&Value2) & 0x7F800000) == 0x00000000 && (*((uint32_t *)&Value2) & 0x007FFFFF) != 0x00000000)
+        ((*((uint32_t *)&Value2) & 0x7F800000) == 0x00000000 && (*((uint32_t *)&Value2) & 0x007FFFFF) != 0x00000000),
     };
 
     if (isSubNormal[0] || isSubNormal[1])
@@ -3483,20 +3480,17 @@ bool R4300iOp::CheckFPUInput64(const double & Value)
 
 bool R4300iOp::CheckFPUInputs64(const double & Value, const double & Value2)
 {
-    bool isNan[2] =
-    {
+    bool isNan[2] = {
         ((*((uint64_t *)&Value) & 0x7FF0000000000000ULL) == 0x7FF0000000000000ULL && (*((uint64_t *)&Value) & 0x000FFFFFFFFFFFFFULL) != 0x0000000000000000ULL),
-        ((*((uint64_t *)&Value2) & 0x7FF0000000000000ULL) == 0x7FF0000000000000ULL && (*((uint64_t *)&Value2) & 0x000FFFFFFFFFFFFFULL) != 0x0000000000000000ULL)
+        ((*((uint64_t *)&Value2) & 0x7FF0000000000000ULL) == 0x7FF0000000000000ULL && (*((uint64_t *)&Value2) & 0x000FFFFFFFFFFFFFULL) != 0x0000000000000000ULL),
     };
-    bool isQNan[2] =
-    {
+    bool isQNan[2] = {
         ((*(uint64_t *)&Value >= 0x7FF0000000000001 && *(uint64_t *)&Value <= 0x7FF7FFFFFFFFFFFF) || (*(uint64_t *)&Value >= 0xFFF0000000000001 && *(uint64_t *)&Value <= 0xFFF7FFFFFFFFFFFF)),
         ((*(uint64_t *)&Value2 >= 0x7FF0000000000001 && *(uint64_t *)&Value2 <= 0x7FF7FFFFFFFFFFFF) || (*(uint64_t *)&Value2 >= 0xFFF0000000000001 && *(uint64_t *)&Value2 <= 0xFFF7FFFFFFFFFFFF)),
     };
-    bool isSubNormal[2] =
-    {
+    bool isSubNormal[2] = {
         ((*((uint64_t *)&Value) & 0x7FF0000000000000ULL) == 0x0000000000000000ULL && (*((uint64_t *)&Value) & 0x000FFFFFFFFFFFFFULL) != 0x0000000000000000ULL),
-        ((*((uint64_t *)&Value2) & 0x7FF0000000000000ULL) == 0x0000000000000000ULL && (*((uint64_t *)&Value2) & 0x000FFFFFFFFFFFFFULL) != 0x0000000000000000ULL)
+        ((*((uint64_t *)&Value2) & 0x7FF0000000000000ULL) == 0x0000000000000000ULL && (*((uint64_t *)&Value2) & 0x000FFFFFFFFFFFFFULL) != 0x0000000000000000ULL),
     };
 
     bool Exception = false;

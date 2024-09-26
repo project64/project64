@@ -50,6 +50,7 @@ class RDRAMRegistersHandler :
         uint32_t DeviceManufacturer;
         uint32_t CurrentControl;
     };
+
 public:
     RDRAMRegistersHandler(CRegisters & Reg);
 
