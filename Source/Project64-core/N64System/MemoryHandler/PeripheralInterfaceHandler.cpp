@@ -388,6 +388,7 @@ void PeripheralInterfaceHandler::PI_DMA_WRITE()
         uint8_t Block[128];
         bool FirstBlock = true;
         uint8_t * Rdram = m_MMU.Rdram();
+        uint32_t RdramSize = m_MMU.RdramSize();
         uint32_t TransferLen = 0;
         while (Length > 0)
         {
@@ -425,7 +426,15 @@ void PeripheralInterfaceHandler::PI_DMA_WRITE()
                 BlockLen = ReadLen;
             }
 
-            for (int32_t i = 0; i < BlockLen; i++)
+            if ((PI_DRAM_ADDR_REG + BlockLen) >= RdramSize)
+            {
+                BlockLen = RdramSize - PI_DRAM_ADDR_REG;
+                if (BlockLen < 0)
+                {
+                    BlockLen = 0;
+                }
+            }
+            for (int32_t i = 0; i < BlockLen ; i++)
             {
                 Rdram[(PI_DRAM_ADDR_REG + i) ^ 3] = Block[i];
             }

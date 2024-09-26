@@ -331,6 +331,11 @@ void CRegisters::Init(void)
     m_GfxIntrReg = 0;
     m_RspIntrReg = 0;
 
+    RI_MODE_REG = 0x0e;
+    RI_CONFIG_REG = 0x40;
+    RI_SELECT_REG = 0x14;
+    RI_REFRESH_REG = 0x00063634;
+
     FixFpuLocations();
 }
 
