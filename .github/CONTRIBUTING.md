@@ -25,3 +25,4 @@ Save states and game saves do not fall under this category, so please post them 
   * Make sure that you **allow edits** by maintainers when making the Pull Request.
 7. Your changes should be reviewed and fixes may be made to your changes.
   * If fixes are made please make sure to address them.
+
