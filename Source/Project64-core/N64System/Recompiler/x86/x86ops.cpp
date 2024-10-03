@@ -10,7 +10,7 @@ CX86Ops::CX86Ops(CCodeBlock & CodeBlock) :
     asmjit::x86::Assembler(&CodeBlock.CodeHolder()),
     m_CodeBlock(CodeBlock)
 {
-    setLogger(this);
+    setLogger(CDebugSettings::bRecordRecompilerAsm() ? this : nullptr);
     setErrorHandler(&CodeBlock);
     addFlags(asmjit::FormatFlags::kHexOffsets);
     addFlags(asmjit::FormatFlags::kHexImms);
