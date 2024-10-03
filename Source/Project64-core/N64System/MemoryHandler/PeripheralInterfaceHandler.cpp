@@ -390,14 +390,20 @@ void PeripheralInterfaceHandler::PI_DMA_WRITE()
         uint8_t * Rdram = m_MMU.Rdram();
         uint32_t RdramSize = m_MMU.RdramSize();
         uint32_t TransferLen = 0;
+        int32_t MaxBlockSize = 128;
         while (Length > 0)
         {
-            int32_t BlockAlign = PI_DRAM_ADDR_REG & 6;
-            int32_t BlockSize = 128 - BlockAlign;
+            int32_t BlockAlign = PI_DRAM_ADDR_REG & 7;
+            int32_t BlockSize = MaxBlockSize - BlockAlign;
             int32_t BlockLen = BlockSize;
             if (Length < BlockLen)
             {
                 BlockLen = Length;
+            }
+            int32_t EndOfRow = 0x800 - (PI_DRAM_ADDR_REG & 0x7ff);
+            if (EndOfRow < BlockLen)
+            {
+                BlockLen = EndOfRow;
             }
             Length -= BlockLen;
             if (Length < 0)
@@ -440,6 +446,7 @@ void PeripheralInterfaceHandler::PI_DMA_WRITE()
             }
             PI_DRAM_ADDR_REG = (PI_DRAM_ADDR_REG + BlockLen + 7) & ~7;
             TransferLen += (BlockLen + 7) & ~7;
+            MaxBlockSize = EndOfRow < 8 ? 128 - BlockAlign : 128;
             FirstBlock = false;
         }
 
