@@ -261,6 +261,7 @@
 #define IDC_DIR_TEXTURE_FRAME           1102
 #define IDC_ENTER_CODE                  1102
 #define IDC_DESCRIPTION                 1102
+#define IDC_OVER_CLOCK_MODIFIER_TEXT2   1102
 #define IDC_DIR_FRAME3                  1103
 #define IDC_OVER_CLOCK_MODIFIER         1103
 #define IDC_REQUEST_DESCPTION           1103

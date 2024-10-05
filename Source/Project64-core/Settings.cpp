@@ -141,6 +141,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Default_FixedAudio, new CSettingTypeApplication("Defaults", "Fixed Audio", true));
     AddHandler(Default_RandomizeSIPIInterrupts, new CSettingTypeApplication("Defaults", "Randomize SI/PI Interrupts", true));
     AddHandler(Default_DiskSeekTiming, new CSettingTypeApplication("Defaults", "Disk Seek Timing", (uint32_t)DiskSeek_Turbo));
+    AddHandler(Default_OverClockModifier, new CSettingTypeApplication("Defaults", "OverClockModifier", (uint32_t)1));
 
     AddHandler(Rdb_GoodName, new CSettingTypeRomDatabase("Good Name", Game_GameName));
     AddHandler(Rdb_RPCKey, new CSettingTypeRomDatabase("RPC Key", Game_RPCKey));
@@ -183,6 +184,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_UnalignedDMA, new CSettingTypeRomDatabase("Unaligned DMA", false));
     AddHandler(Rdb_RandomizeSIPIInterrupts, new CSettingTypeRomDatabase("Randomize SI/PI Interrupts", Default_RandomizeSIPIInterrupts));
     AddHandler(Rdb_DiskSeekTiming, new CSettingTypeRomDatabase("DiskSeekTiming", Default_DiskSeekTiming));
+    AddHandler(Rdb_OverClockModifier, new CSettingTypeRomDatabase("OverClockModifier", Default_OverClockModifier));
 
     AddHandler(Game_IniKey, new CSettingTypeTempString(""));
     AddHandler(Game_File, new CSettingTypeTempString(""));
@@ -239,7 +241,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Game_Transferpak_ROM, new CSettingTypeGame("Tpak-ROM-dir", Default_None));
     AddHandler(Game_Transferpak_Sav, new CSettingTypeGame("Tpak-Sav-dir", Default_None));
     AddHandler(Game_LoadSaveAtStart, new CSettingTypeTempBool(false));
-    AddHandler(Game_OverClockModifier, new CSettingTypeGame("OverClockModifier", (uint32_t)1));
+    AddHandler(Game_OverClockModifier, new CSettingTypeGame("OverClockModifier", Rdb_OverClockModifier));
     AddHandler(Game_FullSpeed, new CSettingTypeTempBool(true, "Full Speed"));
     AddHandler(Game_UnalignedDMA, new CSettingTypeGame("Unaligned DMA", Rdb_UnalignedDMA));
     AddHandler(Game_RandomizeSIPIInterrupts, new CSettingTypeGame("Randomize SI/PI Interrupts", Rdb_RandomizeSIPIInterrupts));
