@@ -81,6 +81,7 @@
 #define IDD_Settings_GameDiskDrive      217
 #define IDD_Enhancement_Plugins         218
 #define IDD_Debugger_ScriptsAutorun     225
+#define IDD_Debugger_CopyCommands       230
 #define IDC_MENU_ITEM_TEXT              1000
 #define IDC_CLOSE_BUTTON                1001
 #define IDC_LIST2                       1003
@@ -859,6 +860,7 @@
 #define IDC_RDRAM_SIZE_KNOWN            1738
 #define IDC_MEMORY_SIZE_UNKOWN_TEXT     1739
 #define IDC_MEMORY_SIZE_KNOWN_TEXT      1740
+#define IDC_COUNT_EDIT                  1741
 #define ID_POPUPMENU_PLAYGAMEWITHDISK   40008
 #define ID_POPUPMENU_ADDSYMBOL          40013
 #define ID_POPUPMENU_VIEWDISASM         40017
@@ -869,6 +871,7 @@
 #define ID_POPUP_RUN                    40024
 #define ID_POPUP_STOP                   40025
 #define ID_POPUPMENU_INSERTNOP          40026
+#define ID_POPUPMENU_COPY_COMMANDS      40200
 #define ID_POPUPMENU_RESTORE            40027
 #define ID_POPUPMENU_RESTOREALL         40029
 #define ID_POPUPMENU_EDIT               40030
