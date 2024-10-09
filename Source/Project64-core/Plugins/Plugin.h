@@ -1,4 +1,5 @@
 #pragma once
+#include <Common/path.h>
 #include <Project64-core/Settings.h>
 #include <Project64-core/Settings/DebugSettings.h>
 #include <Project64-plugin-spec/Base.h>
@@ -156,7 +157,7 @@ private:
     RenderWindow * m_SyncWindow;
 
     SettingID m_PluginDirSetting;
-    stdstr m_PluginDir;
+    CPath m_PluginDir;
 
     // Plugins
     CGfxPlugin * m_Gfx;
