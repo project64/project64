@@ -222,41 +222,40 @@ void CMainMenu::OnScreenShot(void)
 
 void CMainMenu::OnSaveAs(HWND hWnd)
 {
-    char drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
-    char Directory[255], SaveFile[255];
-    OPENFILENAMEA openfilename;
+    char Directory[255];
+    wchar_t SaveFileString[255];
+    OPENFILENAME openfilename;
 
-    memset(&SaveFile, 0, sizeof(SaveFile));
+    memset(&SaveFileString, 0, sizeof(SaveFileString));
     memset(&openfilename, 0, sizeof(openfilename));
 
     UISettingsLoadStringVal(Directory_LastSave, Directory, sizeof(Directory));
+    std::wstring InitialDirectory = stdstr((const char *)(CPath(Directory,"").NormalizePath(CPath(CPath::MODULE_DIRECTORY)))).ToUTF16();
 
     openfilename.lStructSize = sizeof(openfilename);
     openfilename.hwndOwner = (HWND)hWnd;
-    openfilename.lpstrFilter = "Project64 saves (*.zip, *.pj)\0*.pj?;*.pj;*.zip;";
-    openfilename.lpstrFile = SaveFile;
-    openfilename.lpstrInitialDir = Directory;
+    openfilename.lpstrFilter = L"Project64 saves (*.zip, *.pj)\0*.pj?;*.pj;*.zip;";
+    openfilename.lpstrFile = SaveFileString;
+    openfilename.lpstrInitialDir = InitialDirectory.c_str();
     openfilename.nMaxFile = MAX_PATH;
     openfilename.Flags = OFN_HIDEREADONLY;
 
     g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_SaveGame);
-    if (GetSaveFileNameA(&openfilename))
+    if (GetSaveFileName(&openfilename))
     {
-        _splitpath(SaveFile, drive, dir, fname, ext);
-        if (_stricmp(ext, ".pj") == 0 || _stricmp(ext, ".zip") == 0)
+        CPath SaveFile(stdstr().FromUTF16(SaveFileString));
+        std::string ext = SaveFile.GetExtension();
+        if (_stricmp(ext.c_str(), "pj") == 0 || _stricmp(ext.c_str(), "zip") == 0)
         {
-            _makepath(SaveFile, drive, dir, fname, nullptr);
-            _splitpath(SaveFile, drive, dir, fname, ext);
-            if (_stricmp(ext, ".pj") == 0)
+            SaveFile.SetExtension("");
+            ext = SaveFile.GetExtension();
+            if (_stricmp(ext.c_str(), "pj") == 0)
             {
-                _makepath(SaveFile, drive, dir, fname, nullptr);
+                SaveFile.SetExtension("");
             }
         }
-        g_Settings->SaveString(GameRunning_InstantSaveFile, SaveFile);
-
-        char SaveDir[MAX_PATH];
-        _makepath(SaveDir, drive, dir, nullptr, nullptr);
-        UISettingsSaveString(Directory_LastSave, SaveDir);
+        g_Settings->SaveString(GameRunning_InstantSaveFile, (const char *)SaveFile);
+        UISettingsSaveString(Directory_LastSave, SaveFile.GetDriveDirectory());
         g_BaseSystem->ExternalEvent(SysEvent_SaveMachineState);
     }
     g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_SaveGame);

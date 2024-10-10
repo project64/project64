@@ -62,6 +62,7 @@ public:
     virtual uint32_t GetLength() const;
 
     virtual uint32_t Read(void * lpBuf, uint32_t nCount);
+    virtual bool ReadInterger(int32_t & Value);
     virtual bool Write(const void * lpBuf, uint32_t nCount);
 
     virtual bool Flush();

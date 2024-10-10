@@ -1,4 +1,5 @@
 #include "DynamicLibrary.h"
+#include "StdString.h"
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -15,7 +16,7 @@ DynLibHandle DynamicLibraryOpen(const char * pccLibraryPath, bool ShowErrors)
     }
 #ifdef _WIN32
     UINT LastErrorMode = SetErrorMode(ShowErrors ? 0 : SEM_FAILCRITICALERRORS);
-    DynLibHandle Lib = (DynLibHandle)LoadLibraryA(pccLibraryPath);
+    DynLibHandle Lib = (DynLibHandle)LoadLibrary(stdstr(pccLibraryPath).ToUTF16().c_str());
     SetErrorMode(LastErrorMode);
 #else
     DynLibHandle Lib = (DynLibHandle)dlopen(pccLibraryPath, RTLD_NOW);

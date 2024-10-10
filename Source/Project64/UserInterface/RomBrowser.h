@@ -198,5 +198,5 @@ private:
     static std::string m_UnknownGoodName;
     HBRUSH_MAP m_Brushes;
     std::string m_LastRom;
-    stdstr m_WatchRomDir;
+    std::wstring m_WatchRomDir;
 };

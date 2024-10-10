@@ -289,21 +289,15 @@ void CRomBrowser::RomAddedToList(int32_t ListPos)
 
 void CRomBrowser::RomListReset(void)
 {
-    WriteTrace(TraceUserInterface, TraceDebug, "1");
     ListView_DeleteAllItems(m_hRomList);
-    WriteTrace(TraceUserInterface, TraceDebug, "2");
     InvalidateRect(m_hRomList, nullptr, TRUE);
     Sleep(100);
-    WriteTrace(TraceUserInterface, TraceDebug, "3");
     m_LastRom = UISettingsLoadStringIndex(File_RecentGameFileIndex, 0);
 
-    if (m_WatchRomDir != g_Settings->LoadStringVal(RomList_GameDir))
+    if (m_WatchRomDir != stdstr(g_Settings->LoadStringVal(RomList_GameDir)).ToUTF16())
     {
-        WriteTrace(TraceUserInterface, TraceDebug, "4");
         WatchThreadStop();
-        WriteTrace(TraceUserInterface, TraceDebug, "5");
         WatchThreadStart();
-        WriteTrace(TraceUserInterface, TraceDebug, "6");
     }
 }
 
@@ -1301,14 +1295,14 @@ void CRomBrowser::WatchRomDirChanged(CRomBrowser * _this)
 {
     try
     {
-        _this->m_WatchRomDir = g_Settings->LoadStringVal(RomList_GameDir);
+        _this->m_WatchRomDir = stdstr(g_Settings->LoadStringVal(RomList_GameDir)).ToUTF16();
         if (_this->RomDirNeedsRefresh())
         {
             _this->RomDirChanged();
         }
         HANDLE hChange[] = {
             _this->m_WatchStopEvent,
-            FindFirstChangeNotificationA(_this->m_WatchRomDir.c_str(), g_Settings->LoadBool(RomList_GameDirRecursive), FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_SIZE),
+            FindFirstChangeNotification(_this->m_WatchRomDir.c_str(), g_Settings->LoadBool(RomList_GameDirRecursive), FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_SIZE),
         };
         for (;;)
         {

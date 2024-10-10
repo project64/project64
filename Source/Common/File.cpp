@@ -1,4 +1,5 @@
 #include "File.h"
+#include "StdString.h"
 #include "path.h"
 #include <stdio.h>
 #include <string.h>
@@ -122,7 +123,7 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
     }
 
     // Attempt file creation
-    HANDLE hFile = ::CreateFileA(lpszFileName, dwAccess, dwShareMode, &sa, dwCreateFlag, FILE_ATTRIBUTE_NORMAL, nullptr);
+    HANDLE hFile = ::CreateFile(stdstr(lpszFileName).ToUTF16().c_str(), dwAccess, dwShareMode, &sa, dwCreateFlag, FILE_ATTRIBUTE_NORMAL, nullptr);
     if (hFile == INVALID_HANDLE_VALUE)
     { //#define ERROR_PATH_NOT_FOUND             3L
         //ULONG err = GetLastError();
@@ -235,7 +236,9 @@ bool CFile::Flush()
     return ::FlushFileBuffers(m_hFile) != 0;
 #else
     fflush((FILE *)m_hFile);
+#ifndef WIN32
     fsync(fileno((FILE *)m_hFile));
+#endif
     return true;
 #endif
 }
@@ -266,6 +269,49 @@ bool CFile::Write(const void * lpBuf, uint32_t nCount)
     }
 #endif
     return true;
+}
+
+bool CFile::ReadInterger(int32_t & Value)
+{
+#ifdef USE_WINDOWS_API
+    LARGE_INTEGER CurrentPos;
+    LARGE_INTEGER Zero = {0};
+    if (!SetFilePointerEx(m_hFile, Zero, &CurrentPos, FILE_CURRENT))
+    {
+        return false;
+    }
+
+    char buffer[256];
+    DWORD bytesRead = 0;
+    if (!::ReadFile(m_hFile, buffer, sizeof(buffer) - 1, &bytesRead, nullptr) || bytesRead == 0)
+    {
+        return false;
+    }
+    buffer[bytesRead] = '\0';
+
+    int CharsRead = 0;
+    int Number;
+    sscanf(buffer, "%d%n", &Number, &CharsRead);
+
+    LARGE_INTEGER NewPos;
+    NewPos.QuadPart = CurrentPos.QuadPart + CharsRead;
+    if (!SetFilePointerEx(m_hFile, NewPos, NULL, FILE_BEGIN))
+    {
+        return false;
+    }
+    if (CharsRead == 0)
+    {
+        return false;
+    }
+    Value = Number;
+    return true;
+#else
+    va_list args;
+    va_start(args, Format);
+    int Result = vfscanf((FILE *)m_hFile, "%d", args);
+    va_end(args);
+    return Result != 0;
+#endif
 }
 
 uint32_t CFile::Read(void * lpBuf, uint32_t nCount)

@@ -589,7 +589,6 @@ CLanguage::~CLanguage()
 
 bool CLanguage::LoadCurrentStrings(void)
 {
-    // Clear all the current strings loaded
     m_CurrentStrings.clear();
 
     if (g_Settings->LoadBool(Debugger_DebugLanguage))
@@ -601,7 +600,6 @@ bool CLanguage::LoadCurrentStrings(void)
     LanguageList LangList = GetLangList();
     stdstr Filename;
 
-    // Find the file name of the current language
     for (LanguageList::iterator Language = LangList.begin(); Language != LangList.end(); Language++)
     {
         if (g_Lang->IsCurrentLang(*Language))
@@ -616,30 +614,31 @@ bool CLanguage::LoadCurrentStrings(void)
         return false;
     }
 
-    // Process the file
-    FILE * file = fopen(Filename.c_str(), "rb");
-    if (file == nullptr)
+    CFile File(Filename.c_str(), CFileBase::modeRead);
+    if (!File.IsOpen())
     {
         return false;
     }
 
-    // Search for UTF8 file marker
     uint8_t utf_bom[3];
-    if (fread(&utf_bom, sizeof(utf_bom), 1, file) != 1 ||
+    if (!File.Read(&utf_bom, sizeof(utf_bom)) ||
         utf_bom[0] != 0xEF ||
         utf_bom[1] != 0xBB ||
         utf_bom[2] != 0xBF)
     {
-        fclose(file);
         return false;
     }
 
-    // String
-    while (!feof(file))
+    for (;;)
     {
-        m_CurrentStrings.insert(GetNextLangString(file));
+        LANG_STR LangStr = GetNextLangString(File);
+        if (LangStr.first == 0)
+        {
+            break;
+        }
+        m_CurrentStrings.insert(LangStr);
     }
-    fclose(file);
+
     m_LanguageLoaded = true;
     return true;
 }
@@ -657,8 +656,7 @@ LanguageList & CLanguage::GetLangList(void)
     {
         do
         {
-            LanguageFile File; // We temporally store the values in here to add to the list
-
+            LanguageFile File;
             File.Filename = (const std::string &)LanguageFiles;
             File.LanguageName = GetLangString(LanguageFiles, LANGUAGE_NAME);
 
@@ -666,8 +664,6 @@ LanguageList & CLanguage::GetLangList(void)
             {
                 continue;
             }
-
-            // Get the name of the language from inside the file
             m_LanguageList.push_back(File);
         } while (LanguageFiles.FindNext());
     }
@@ -704,38 +700,38 @@ const std::string & CLanguage::GetString(LanguageStringID StringID)
 
 std::string CLanguage::GetLangString(const char * FileName, LanguageStringID ID)
 {
-    FILE * file = fopen(FileName, "rb");
-    if (file == nullptr)
+    CFile file;
+    if (!file.Open(FileName, CFileBase::modeRead))
     {
         return "";
     }
 
     // Search for UTF8 file marker
     uint8_t utf_bom[3];
-    if (fread(&utf_bom, sizeof(utf_bom), 1, file) != 1 ||
+    if (!file.Read(&utf_bom, sizeof(utf_bom)) ||
         utf_bom[0] != 0xEF ||
         utf_bom[1] != 0xBB ||
         utf_bom[2] != 0xBF)
     {
-        fclose(file);
         return "";
     }
 
-    // String
-    while (!feof(file))
+    for (;;)
     {
         LANG_STR String = GetNextLangString(file);
         if (String.first == ID)
         {
-            fclose(file);
             return String.second;
         }
+        if (String.first == 0)
+        {
+            break;
+        }
     }
-    fclose(file);
     return "";
 }
 
-LANG_STR CLanguage::GetNextLangString(void * OpenFile)
+LANG_STR CLanguage::GetNextLangString(CFile & File)
 {
     enum
     {
@@ -744,56 +740,47 @@ LANG_STR CLanguage::GetNextLangString(void * OpenFile)
     int32_t StringID;
     char szString[MAX_STRING_LEN]; // Temporarily store the string from the file
 
-    FILE * file = (FILE *)OpenFile;
-
-    //while(token!='#' && !feof(file)) { fread(&token, 1, 1, file); }
-    if (feof(file))
-    {
-        return LANG_STR(0, "");
-    }
-
-    // Search for token number
     char token = 0;
-    while (token != '#' && !feof(file))
+    while (token != '#')
     {
-        fread(&token, 1, 1, file);
+        if (!File.Read(&token, 1))
+        {
+            return LANG_STR(0, "");
+        }
     }
-    if (feof(file))
+    if (!File.ReadInterger(StringID))
     {
         return LANG_STR(0, "");
     }
-
-    // Get StringID after token
-    fscanf(file, "%d", &StringID);
-
-    // Search for token number
-    while (token != '#' && !feof(file))
+    token = 0;
+    while (token != '#')
     {
-        fread(&token, 1, 1, file);
-    }
-    if (feof(file))
-    {
-        StringID = EMPTY_STRING;
-        return LANG_STR(0, "");
+        if (!File.Read(&token, 1))
+        {
+            return LANG_STR(0, "");
+        }
     }
 
-    // Search for start of string '"'
-    while (token != '"' && !feof(file))
+    while (token != '"')
     {
-        fread(&token, 1, 1, file);
-    }
-    if (feof(file))
-    {
-        StringID = EMPTY_STRING;
-        return LANG_STR(0, "");
+        if (!File.Read(&token, 1))
+        {
+            return LANG_STR(0, "");
+        }
     }
 
     int32_t pos = 0;
-    fread(&token, 1, 1, file);
-    while (token != '"' && !feof(file))
+    if (!File.Read(&token, 1))
+    {
+        return LANG_STR(0, "");
+    }
+    while (token != '"')
     {
         szString[pos++] = token;
-        fread(&token, 1, 1, file);
+        if (!File.Read(&token, 1))
+        {
+            return LANG_STR(0, "");
+        }
         if (pos == MAX_STRING_LEN - 2)
         {
             token = '"';

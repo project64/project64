@@ -6,6 +6,8 @@
 #include <stdint.h>
 #include <string>
 
+class CFile;
+
 typedef std::map<int32_t, std::string, std::less<int32_t>> LANG_STRINGS;
 typedef LANG_STRINGS::value_type LANG_STR;
 
@@ -51,7 +53,7 @@ private:
     LanguageList m_LanguageList;
 
     std::string GetLangString(const char * FileName, LanguageStringID ID);
-    LANG_STR GetNextLangString(void * OpenFile);
+    LANG_STR GetNextLangString(CFile & File);
     void LoadDefaultStrings(void);
 
     bool m_LanguageLoaded;

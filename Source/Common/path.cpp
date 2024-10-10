@@ -871,15 +871,16 @@ void CPath::UpDirectory(std::string * pLastDirectory /*= nullptr*/)
 
 void CPath::CurrentDirectory()
 {
-    char buff_path[260];
-    memset(buff_path, 0, sizeof(buff_path));
-
     Empty();
 
 #ifdef _WIN32
-    ::GetCurrentDirectoryA(sizeof(buff_path), buff_path);
-    SetDriveDirectory(buff_path);
+    wchar_t buff_path[260];
+    memset(buff_path, 0, sizeof(buff_path));
+    ::GetCurrentDirectory(sizeof(buff_path), buff_path);
+    SetDriveDirectory(stdstr().FromUTF16(buff_path).c_str());
 #else
+    char buff_path[260];
+    memset(buff_path, 0, sizeof(buff_path));
     getcwd(buff_path, sizeof(buff_path));
     SetDirectory(buff_path);
 #endif
@@ -890,12 +891,10 @@ void CPath::CurrentDirectory()
 #ifdef _WIN32
 void CPath::Module(void * hInstance)
 {
-    char buff_path[MAX_PATH];
-
+    wchar_t buff_path[MAX_PATH];
     memset(buff_path, 0, sizeof(buff_path));
-
-    GetModuleFileNameA((HINSTANCE)hInstance, buff_path, MAX_PATH);
-    m_strPath = buff_path;
+    GetModuleFileName((HINSTANCE)hInstance, buff_path, MAX_PATH);
+    m_strPath = stdstr().FromUTF16(buff_path);
 }
 
 // Task: Set path to the name of current module
@@ -954,8 +953,8 @@ bool CPath::DirectoryExists() const
     TestPath.UpDirectory(&DirName);
     TestPath.SetNameExtension(DirName.c_str());
 
-    WIN32_FIND_DATAA FindData;
-    HANDLE hFindFile = FindFirstFileA((const char *)TestPath, &FindData); // Find anything
+    WIN32_FIND_DATA FindData;
+    HANDLE hFindFile = FindFirstFile(stdstr((const char *)TestPath).ToUTF16().c_str(), &FindData); // Find anything
     bool res = (hFindFile != INVALID_HANDLE_VALUE);
 
     if (hFindFile != nullptr) // Make sure we close the search
@@ -982,8 +981,8 @@ bool CPath::DirectoryExists() const
 bool CPath::Exists() const
 {
 #ifdef _WIN32
-    WIN32_FIND_DATAA FindData;
-    HANDLE hFindFile = FindFirstFileA(m_strPath.c_str(), &FindData);
+    WIN32_FIND_DATA FindData;
+    HANDLE hFindFile = FindFirstFile(stdstr(m_strPath).ToUTF16().c_str(), &FindData);
     bool bSuccess = (hFindFile != INVALID_HANDLE_VALUE);
 
     if (hFindFile != nullptr) // Make sure we close the search
@@ -1002,21 +1001,23 @@ bool CPath::Exists() const
 bool CPath::SelectFile(void * hwndOwner, const char * InitialDir, const char * FileFilter, bool FileMustExist)
 {
     CPath CurrentDir(CURRENT_DIRECTORY);
+    std::wstring FileFilterW = stdstr(FileFilter).ToUTF16();
+    std::wstring InitialDirW = stdstr(InitialDir).ToUTF16();
 
-    OPENFILENAMEA openfilename;
-    char FileName[MAX_PATH];
+    OPENFILENAME openfilename;
+    wchar_t FileName[MAX_PATH];
     memset(&FileName, 0, sizeof(FileName));
     memset(&openfilename, 0, sizeof(openfilename));
 
     openfilename.lStructSize = sizeof(openfilename);
     openfilename.hwndOwner = (HWND)hwndOwner;
-    openfilename.lpstrFilter = FileFilter;
+    openfilename.lpstrFilter = FileFilterW.c_str();
     openfilename.lpstrFile = FileName;
-    openfilename.lpstrInitialDir = InitialDir;
+    openfilename.lpstrInitialDir = InitialDirW.c_str();
     openfilename.nMaxFile = MAX_PATH;
     openfilename.Flags = OFN_HIDEREADONLY | (FileMustExist ? OFN_FILEMUSTEXIST : 0);
 
-    bool res = GetOpenFileNameA(&openfilename) != 0;
+    bool res = GetOpenFileName(&openfilename) != 0;
     if (CPath(CURRENT_DIRECTORY) != CurrentDir)
     {
         CurrentDir.ChangeDirectory();
@@ -1025,7 +1026,7 @@ bool CPath::SelectFile(void * hwndOwner, const char * InitialDir, const char * F
     {
         return false;
     }
-    m_strPath = FileName;
+    m_strPath = stdstr().FromUTF16(FileName);
     cleanPathString(m_strPath);
     return true;
 }
@@ -1037,7 +1038,8 @@ bool CPath::SelectFile(void * hwndOwner, const char * InitialDir, const char * F
 bool CPath::Delete(bool bEvenIfReadOnly) const
 {
 #ifdef _WIN32
-    uint32_t dwAttr = ::GetFileAttributesA(m_strPath.c_str());
+    std::wstring FilePath = stdstr(m_strPath).ToUTF16();
+    uint32_t dwAttr = ::GetFileAttributes(FilePath.c_str());
     if (dwAttr == (uint32_t)-1)
     {
         // File does not exist
@@ -1050,8 +1052,8 @@ bool CPath::Delete(bool bEvenIfReadOnly) const
         return false;
     }
 
-    SetFileAttributesA(m_strPath.c_str(), FILE_ATTRIBUTE_NORMAL);
-    return DeleteFileA(m_strPath.c_str()) != 0;
+    SetFileAttributes(FilePath.c_str(), FILE_ATTRIBUTE_NORMAL);
+    return DeleteFile(FilePath.c_str()) != 0;
 #else
     return unlink(m_strPath.c_str()) == 0;
 #endif
@@ -1093,7 +1095,7 @@ bool CPath::CopyTo(const char * lpcszTargetFile, bool bOverwrite)
 
     // CopyFile will set the target's attributes to the same as
     // the source after copying
-    return CopyFileA(m_strPath.c_str(), lpcszTargetFile, !bOverwrite) != 0;
+    return CopyFile(stdstr(m_strPath).ToUTF16().c_str(), stdstr(lpcszTargetFile).ToUTF16().c_str(), !bOverwrite) != 0;
 #else
 
     bool res = true;
@@ -1206,7 +1208,7 @@ bool CPath::MoveTo(const char * lpcszTargetFile, bool bOverwrite)
         }
     }
 
-    return MoveFileA(m_strPath.c_str(), lpcszTargetFile) != 0;
+    return MoveFile(stdstr(m_strPath).ToUTF16().c_str(), stdstr(lpcszTargetFile).ToUTF16().c_str()) != 0;
 #else
     return false;
 #endif
@@ -1261,8 +1263,8 @@ bool CPath::FindFirst(uint32_t dwAttributes /*= FIND_ATTRIBUTE_FILES*/)
     BOOL bWantSubdirectory = (BOOL)(FIND_ATTRIBUTE_SUBDIR & dwAttributes);
 
     // Finding first candidate file
-    WIN32_FIND_DATAA FindData;
-    m_hFindFile = FindFirstFileA(m_strPath.c_str(), &FindData);
+    WIN32_FIND_DATA FindData;
+    m_hFindFile = FindFirstFile(stdstr(m_strPath).ToUTF16().c_str(), &FindData);
     bGotFile = (m_hFindFile != INVALID_HANDLE_VALUE);
 
     while (bGotFile)
@@ -1277,7 +1279,7 @@ bool CPath::FindFirst(uint32_t dwAttributes /*= FIND_ATTRIBUTE_FILES*/)
         if ((FIND_ATTRIBUTE_SUBDIR & FindData.dwFileAttributes) != 0)
             StripTrailingBackslash(m_strPath);
 
-        SetNameExtension(FindData.cFileName);
+        SetNameExtension(stdstr().FromUTF16(FindData.cFileName).c_str());
 
         if ((FIND_ATTRIBUTE_SUBDIR & FindData.dwFileAttributes) != 0)
             EnsureTrailingBackslash(m_strPath);
@@ -1285,7 +1287,7 @@ bool CPath::FindFirst(uint32_t dwAttributes /*= FIND_ATTRIBUTE_FILES*/)
 
         // Not found a match, get another
     LABEL_GetAnother:
-        bGotFile = FindNextFileA(m_hFindFile, &FindData);
+        bGotFile = FindNextFile(m_hFindFile, &FindData);
     }
 #else
     std::string Directory, Name, Extension;
@@ -1316,8 +1318,8 @@ bool CPath::FindNext()
         return false;
     }
 
-    WIN32_FIND_DATAA FindData;
-    while (FindNextFileA(m_hFindFile, &FindData) != false)
+    WIN32_FIND_DATA FindData;
+    while (FindNextFile(m_hFindFile, &FindData) != false)
     { // while(FindNext(...))
         if (AttributesMatch(m_dwFindFileAttributes, FindData.dwFileAttributes))
         { // if(AttributesMatch(...)
@@ -1332,7 +1334,7 @@ bool CPath::FindNext()
                 {
                     SetNameExtension("");
                 }
-                AppendDirectory(FindData.cFileName);
+                AppendDirectory(stdstr().FromUTF16(FindData.cFileName).c_str());
             }
             else
             {
@@ -1342,7 +1344,7 @@ bool CPath::FindNext()
                     // Found a directory
                     UpDirectory();
                 }
-                SetNameExtension(FindData.cFileName);
+                SetNameExtension(stdstr().FromUTF16(FindData.cFileName).c_str());
             }
             if ((_A_SUBDIR & FindData.dwFileAttributes) == _A_SUBDIR)
             {
@@ -1413,7 +1415,7 @@ bool CPath::ChangeDirectory()
     std::string DriveDirectory;
     GetDriveDirectory(DriveDirectory);
 
-    return SetCurrentDirectoryA(DriveDirectory.c_str()) != 0;
+    return SetCurrentDirectory(stdstr(DriveDirectory).ToUTF16().c_str()) != 0;
 #else
     std::string Dir;
     GetDirectory(Dir);
@@ -1490,9 +1492,9 @@ bool CPath::DirectoryCreate(bool bCreateIntermediates /*= TRUE*/)
     GetDriveDirectory(PathText);
     StripTrailingBackslash(PathText);
     WriteTrace(TracePath, TraceDebug, "Create %s", PathText.c_str());
-    bSuccess = ::CreateDirectoryA(PathText.c_str(), nullptr) != 0;
+    bSuccess = ::CreateDirectory(stdstr(PathText).ToUTF16().c_str(), nullptr) != 0;
 #else
-    GetDirectory(PathText);
+    GetDirectory(PathText);7
     StripTrailingBackslash(PathText);
     WriteTrace(TracePath, TraceDebug, "Create %s", PathText.c_str());
     bSuccess = mkdir(PathText.c_str(), S_IRWXU) == 0;
