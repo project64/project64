@@ -230,7 +230,7 @@ void CMainMenu::OnSaveAs(HWND hWnd)
     memset(&openfilename, 0, sizeof(openfilename));
 
     UISettingsLoadStringVal(Directory_LastSave, Directory, sizeof(Directory));
-    std::wstring InitialDirectory = stdstr((const char *)(CPath(Directory,"").NormalizePath(CPath(CPath::MODULE_DIRECTORY)))).ToUTF16();
+    std::wstring InitialDirectory = stdstr((const char *)(CPath(Directory, "").NormalizePath(CPath(CPath::MODULE_DIRECTORY)))).ToUTF16();
 
     openfilename.lStructSize = sizeof(openfilename);
     openfilename.hwndOwner = (HWND)hWnd;

@@ -1494,7 +1494,7 @@ bool CPath::DirectoryCreate(bool bCreateIntermediates /*= TRUE*/)
     WriteTrace(TracePath, TraceDebug, "Create %s", PathText.c_str());
     bSuccess = ::CreateDirectory(stdstr(PathText).ToUTF16().c_str(), nullptr) != 0;
 #else
-    GetDirectory(PathText);7
+    GetDirectory(PathText);
     StripTrailingBackslash(PathText);
     WriteTrace(TracePath, TraceDebug, "Create %s", PathText.c_str());
     bSuccess = mkdir(PathText.c_str(), S_IRWXU) == 0;
