@@ -346,6 +346,12 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
     case 0x06:
         Cart->iNumRomBanks = 128;
         break;
+    case 0x07:
+        Cart->iNumRomBanks = 256;
+        break;
+    case 0x08:
+        Cart->iNumRomBanks = 512;
+        break;        
     case 0x52:
         Cart->iNumRomBanks = 72;
         break;
