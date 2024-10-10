@@ -5610,6 +5610,7 @@ Status=Compatible
 Counter Factor=1
 Linking=Off
 ViRefresh=3000
+RDRAM Size=8
 Core Note=Requires Parallel-RSP.
 
 [93A625B9-2D6022E6-C:42]
