@@ -280,6 +280,7 @@ void CRecompiler::RecompilerMain_Lookup_validate()
                 m_System.m_OpCodes.ExecuteOps(m_System.CountPerOp());
                 opsExecuted += m_System.CountPerOp();
             }
+            ResetMemoryStackPos();
 
             if (g_SyncSystem)
             {
