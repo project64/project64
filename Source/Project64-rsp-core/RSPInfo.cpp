@@ -10,6 +10,9 @@
 #include <Project64-rsp-core/cpu/RspSystem.h>
 #include <Settings/Settings.h>
 
+// https://learn.microsoft.com/en-us/cpp/intrinsics/cpuid-cpuidex
+#include <intrin.h>
+
 #if defined(_MSC_VER)
 #include <Windows.h>
 #endif
