@@ -4639,14 +4639,20 @@ void CX86RecompilerOps::SPECIAL_SYSCALL()
 {
     m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
     CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_DoSysCall, true, nullptr);
-    m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
+    if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
+    {
+        m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
+    }
 }
 
 void CX86RecompilerOps::SPECIAL_BREAK()
 {
     m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
     CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, ExitReason_Break, true, nullptr);
-    m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
+    if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
+    {
+        m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
+    }
 }
 
 void CX86RecompilerOps::SPECIAL_SYNC()
