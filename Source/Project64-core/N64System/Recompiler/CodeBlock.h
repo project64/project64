@@ -9,6 +9,7 @@
 
 class CMipsMemoryVM;
 class CRecompiler;
+class CRecompMemory;
 
 class CCodeBlock :
     public asmjit::ErrorHandler
@@ -18,7 +19,7 @@ public:
     ~CCodeBlock();
 
     bool Compile();
-    uint32_t Finilize(uint8_t * CompiledLocation);
+    uint32_t Finilize(CRecompMemory & RecompMem);
 
     asmjit::CodeHolder & CodeHolder(void)
     {

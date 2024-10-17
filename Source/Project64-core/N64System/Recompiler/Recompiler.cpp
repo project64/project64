@@ -356,7 +356,6 @@ CCompiledFunc * CRecompiler::CompileCode()
         }
     }
 
-    CheckRecompMem();
     WriteTrace(TraceRecompiler, TraceDebug, "Compile Block-Start: Program Counter: %016llX pAddr: %X", PROGRAM_COUNTER, pAddr);
 
     CCodeBlock CodeBlock(m_System, (uint32_t)PROGRAM_COUNTER);
@@ -364,15 +363,18 @@ CCompiledFunc * CRecompiler::CompileCode()
     {
         return nullptr;
     }
+    uint32_t CodeLen = CodeBlock.Finilize(*this);
+    if (CodeLen == 0)
+    {
+        return nullptr;
+    }
+    RecompPos() += CodeLen;
+    LogCodeBlock(CodeBlock);
 
     if (bShowRecompMemSize())
     {
         ShowMemUsed();
     }
-
-    uint32_t CodeLen = CodeBlock.Finilize(*RecompPos());
-    *RecompPos() += CodeLen;
-    LogCodeBlock(CodeBlock);
 
     if (bSMM_StoreInstruc())
     {

@@ -49,17 +49,25 @@ bool CRecompMemory::AllocateMemory()
     return true;
 }
 
-void CRecompMemory::CheckRecompMem()
+bool CRecompMemory::CheckRecompMem(uint32_t BlockSize)
 {
     uint32_t Size = (uint32_t)((uint8_t *)m_RecompPos - (uint8_t *)m_RecompCode);
-    if ((Size + 0x50000) < m_RecompSize)
+    if (BlockSize < 0x50000)
     {
-        return;
+        BlockSize = 0x50000;
+    }
+    if ((Size + BlockSize) < m_RecompSize)
+    {
+        return true;
     }
     if (m_RecompSize == MaxCompileBufferSize)
     {
         g_Recompiler->ResetRecompCode(true);
-        return;
+        return false;
+    }
+    if (BlockSize > IncreaseCompileBufferSize)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     void * MemAddr = CommitMemory(m_RecompCode + m_RecompSize, IncreaseCompileBufferSize, MEM_EXECUTE_READWRITE);
     if (MemAddr == nullptr)
@@ -68,6 +76,7 @@ void CRecompMemory::CheckRecompMem()
         g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
     }
     m_RecompSize += IncreaseCompileBufferSize;
+    return true;
 }
 
 void CRecompMemory::Reset()

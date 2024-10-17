@@ -8,15 +8,16 @@ protected:
     ~CRecompMemory();
 
     bool AllocateMemory();
-    void CheckRecompMem();
     void Reset();
     void ShowMemUsed();
 
 public:
-    uint8_t ** RecompPos()
+    uint8_t *& RecompPos()
     {
-        return &m_RecompPos;
+        return m_RecompPos;
     }
+
+    bool CheckRecompMem(uint32_t BlockSize);
 
 private:
     CRecompMemory(const CRecompMemory &);

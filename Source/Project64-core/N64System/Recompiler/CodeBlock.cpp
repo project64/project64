@@ -892,25 +892,28 @@ bool CCodeBlock::Compile()
     return true;
 }
 
-uint32_t CCodeBlock::Finilize(uint8_t * CompiledLocation)
+uint32_t CCodeBlock::Finilize(CRecompMemory & RecompMem)
 {
+    m_CompiledLocation = RecompMem.RecompPos();
+    m_CodeHolder.relocateToBase((uint64_t)m_CompiledLocation);
     if (CDebugSettings::bRecordRecompilerAsm())
     {
         std::string CodeLog = m_CodeLog;
         m_CodeLog.clear();
         Log("====== Code block ======");
-        Log("Native entry point: %X", CompiledLocation);
+        Log("Native entry point: %X", m_CompiledLocation);
         Log("Start of block: %X", VAddrEnter());
         Log("Number of sections: %d", NoOfSections());
         Log("====== Recompiled code ======");
         m_CodeLog += CodeLog;
     }
-
-    m_CompiledLocation = CompiledLocation;
-    m_CodeHolder.relocateToBase((uint64_t)m_CompiledLocation);
     size_t codeSize = m_CodeHolder.codeSize();
+    if (!RecompMem.CheckRecompMem(codeSize))
+    {
+        return 0;
+    }
     m_CodeHolder.copyFlattenedData(m_CompiledLocation, codeSize, asmjit::CopySectionFlags::kPadSectionBuffer);
-    *m_Recompiler.RecompPos() += codeSize;
+    m_Recompiler.RecompPos() += codeSize;
 
 #if defined(ANDROID) && (defined(__arm__) || defined(_M_ARM))
     __clear_cache((uint8_t *)((uint32_t)m_CompiledLocation & ~1), m_CompiledLocation + codeSize);
