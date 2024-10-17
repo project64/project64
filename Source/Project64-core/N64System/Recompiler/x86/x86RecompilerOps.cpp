@@ -5470,6 +5470,10 @@ void CX86RecompilerOps::SPECIAL_SUBU()
 
 void CX86RecompilerOps::SPECIAL_AND()
 {
+    if (m_Opcode.rd == 0)
+    {
+        return;
+    }
     if (m_RegWorkingSet.IsKnown(m_Opcode.rt) && m_RegWorkingSet.IsKnown(m_Opcode.rs))
     {
         if (m_RegWorkingSet.IsConst(m_Opcode.rt) && m_RegWorkingSet.IsConst(m_Opcode.rs))
