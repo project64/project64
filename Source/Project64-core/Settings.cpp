@@ -422,8 +422,8 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Logging_LogExceptions, new CSettingTypeApplication("Logging", "Log Exceptions", false));
     AddHandler(Logging_NoInterrupts, new CSettingTypeApplication("Logging", "No Interrupts", false));
     AddHandler(Logging_LogCache, new CSettingTypeApplication("Logging", "Log Cache", false));
-    AddHandler(Logging_LogRomHeader, new CSettingTypeApplication("Logging", "Generate Log Files", false));
-    AddHandler(Logging_LogUnknown, new CSettingTypeApplication("Logging", "Log Rom Header", false));
+    AddHandler(Logging_LogRomHeader, new CSettingTypeApplication("Logging", "Log Rom Header", false));
+    AddHandler(Logging_LogUnknown, new CSettingTypeApplication("Logging", "Log Unknown", false));
 
     WriteTrace(TraceAppInit, TraceDebug, "Done");
 }
