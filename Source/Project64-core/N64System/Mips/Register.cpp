@@ -448,7 +448,7 @@ void CRegisters::Reset(bool bPostPif, CMipsMemoryVM & MMU)
             case CIC_NUS_6104:
             case CIC_NUS_5167:
             case CIC_NUS_8303:
-            case CIC_NUS_DDUS:
+            case CIC_NUS_8501:
             case CIC_NUS_8401:
             case CIC_NUS_5101:
             default:
@@ -471,7 +471,7 @@ void CRegisters::Reset(bool bPostPif, CMipsMemoryVM & MMU)
         case CIC_NUS_5167: // 64DD conversion CIC
             m_GPR[22].DW = 0x00000000000000DD;
             break;
-        case CIC_NUS_DDUS: // 64DD US IPL CIC
+        case CIC_NUS_8501: // 64DD US IPL CIC
             m_GPR[22].DW = 0x00000000000000DE;
             break;
         case CIC_NUS_5101: // Aleck64 CIC

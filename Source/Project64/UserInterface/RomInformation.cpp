@@ -143,7 +143,7 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, WPARAM wParam, LPARAM lParam)
             switch (_this->m_pRomInfo->CicChipID())
             {
             case CIC_NUS_8303:
-            case CIC_NUS_DDUS:
+            case CIC_NUS_8501:
             case CIC_NUS_8401:
                 SetDlgItemText(hDlg, IDC_INFO_CRC1, stdstr_f("0x%08X", (*(uint16_t *)(RomHeader + 0x608) << 16) | *(uint16_t *)(RomHeader + 0x60C)).ToUTF16().c_str());
                 SetDlgItemText(hDlg, IDC_INFO_CRC2, stdstr_f("0x%08X", (*(uint16_t *)(RomHeader + 0x638) << 16) | *(uint16_t *)(RomHeader + 0x63C)).ToUTF16().c_str());
@@ -161,7 +161,7 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, WPARAM wParam, LPARAM lParam)
             case CIC_NUS_8303: CicChip = L"CIC-NUS-8303"; break;
             case CIC_NUS_5167: CicChip = L"CIC-NUS-5167"; break;
             case CIC_NUS_5101: CicChip = L"CIC-NUS-5101"; break;
-            case CIC_NUS_DDUS: CicChip = L"CIC-NUS-????"; break;
+            case CIC_NUS_8501: CicChip = L"CIC-NUS-8501"; break;
             case CIC_NUS_8401: CicChip = L"CIC-NUS-8401"; break;
             default: CicChip = stdstr_f("CIC-NUS-610%d", _this->m_pRomInfo->CicChipID()).ToUTF16(); break;
             }
@@ -230,7 +230,7 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, WPARAM wParam, LPARAM lParam)
             case CIC_UNKNOWN: CicChip = L"Unknown"; break;
             case CIC_NUS_8303: CicChip = L"CIC-NUS-8303"; break;
             case CIC_NUS_5167: CicChip = L"CIC-NUS-5167"; break;
-            case CIC_NUS_DDUS: CicChip = L"CIC-NUS-????"; break;
+            case CIC_NUS_8501: CicChip = L"CIC-NUS-8501"; break;
             default: CicChip = stdstr_f("CIC-NUS-610%d", _this->m_pRomInfo->CicChipID()).ToUTF16(); break;
             }
             SetDlgItemText(hDlg, IDC_INFO_CIC, CicChip.c_str());

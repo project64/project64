@@ -385,7 +385,7 @@ bool CN64System::LoadFileImage(const char * FileLoc)
             {
                 g_Settings->SaveString(File_DiskIPLPath, FileLoc);
             }
-            else if (g_DDRom->CicChipID() == CIC_NUS_DDUS)
+            else if (g_DDRom->CicChipID() == CIC_NUS_8501)
             {
                 g_Settings->SaveString(File_DiskIPLUSAPath, FileLoc);
             }
@@ -460,7 +460,7 @@ bool CN64System::LoadFileImageIPL(const char * FileLoc)
 
         if (g_DDRom->CicChipID() == CIC_NUS_8303)
             g_Settings->SaveString(File_DiskIPLPath, FileLoc);
-        else if (g_DDRom->CicChipID() == CIC_NUS_DDUS)
+        else if (g_DDRom->CicChipID() == CIC_NUS_8501)
             g_Settings->SaveString(File_DiskIPLUSAPath, FileLoc);
         else if (g_DDRom->CicChipID() == CIC_NUS_8401)
             g_Settings->SaveString(File_DiskIPLTOOLPath, FileLoc);
@@ -553,7 +553,7 @@ bool CN64System::RunFileImage(const char * FileLoc)
         {
             g_Settings->SaveString(File_DiskIPLPath, FileLoc);
         }
-        else if (g_Rom->CicChipID() == CIC_NUS_DDUS)
+        else if (g_Rom->CicChipID() == CIC_NUS_8501)
         {
             g_Settings->SaveString(File_DiskIPLUSAPath, FileLoc);
         }

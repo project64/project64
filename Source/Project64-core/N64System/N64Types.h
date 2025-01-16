@@ -92,7 +92,7 @@ enum CICChip
     CIC_NUS_6106 = 6,
     CIC_NUS_5167 = 7,
     CIC_NUS_8303 = 8,
-    CIC_NUS_DDUS = 9,
+    CIC_NUS_8501 = 9,
     CIC_NUS_8401 = 10,
     CIC_NUS_5101 = 11,
     CIC_MINI_IPL3 = 12,

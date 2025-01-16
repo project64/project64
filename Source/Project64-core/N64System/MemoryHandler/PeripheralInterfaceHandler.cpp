@@ -189,7 +189,7 @@ void PeripheralInterfaceHandler::OnFirstDMA()
     case CIC_NUS_6101:
     case CIC_NUS_5167:
     case CIC_NUS_8303:
-    case CIC_NUS_DDUS:
+    case CIC_NUS_8501:
     case CIC_NUS_8401:
     case CIC_UNKNOWN:
     case CIC_NUS_6102:
