@@ -283,12 +283,12 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 
     AddHandler(Directory_Texture, new CSettingTypeSelectedDirectory("Dir:Texture", Directory_TextureInitial, Directory_TextureSelected, Directory_TextureUseSelected, Directory_Texture));
     AddHandler(Directory_TextureInitial, new CSettingTypeRelativePath("Textures", ""));
-    AddHandler(Directory_TextureSelected, new CSettingTypeApplicationPath("Texture Directory", "Directory", Directory_InstantSaveInitial));
+    AddHandler(Directory_TextureSelected, new CSettingTypeApplicationPath("Texture Directory", "Directory", Directory_TextureInitial));
     AddHandler(Directory_TextureUseSelected, new CSettingTypeApplication("Texture Directory", "Use Selected", false));
 
     AddHandler(Directory_Log, new CSettingTypeSelectedDirectory("Dir:Log", Directory_LogInitial, Directory_LogSelected, Directory_LogUseSelected, Directory_Log));
     AddHandler(Directory_LogInitial, new CSettingTypeRelativePath("Logs", ""));
-    AddHandler(Directory_LogSelected, new CSettingTypeApplicationPath("Log Directory", "Directory", Directory_InstantSaveInitial));
+    AddHandler(Directory_LogSelected, new CSettingTypeApplicationPath("Log Directory", "Directory", Directory_LogInitial));
     AddHandler(Directory_LogUseSelected, new CSettingTypeApplication("Log Directory", "Use Selected", false));
 
     AddHandler(RomList_RomListCacheDefault, new CSettingTypeRelativePath("Config", "Project64.cache3"));
