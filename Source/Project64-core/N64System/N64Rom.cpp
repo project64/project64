@@ -292,6 +292,9 @@ CICChip CN64Rom::GetCicChipID(uint8_t * RomData, uint64_t * CRC)
     {
     case 0x000000D0027FDF31: return CIC_NUS_6101;
     case 0x000000CFFB631223: return CIC_NUS_6101;
+    case 0x000000C34B2826B8: return CIC_NUS_6101; // iQue
+    case 0x0000002F35CF0DE9: return CIC_NUS_6101; // iQue (Paper Mario)
+    case 0x000000C92ADFE50A: return CIC_NUS_6101; // iQue (Sin and Punishment)
     case 0x000000D057C85244: return CIC_NUS_6102;
     case 0x000000D6497E414B: return CIC_NUS_6103;
     case 0x0000011A49F60E96: return CIC_NUS_6105;
