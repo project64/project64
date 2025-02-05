@@ -464,6 +464,12 @@ D3371E60 0000
 81375658 3FC6
 8137565C 40B3
 
+$Ultra Widescreen
+Note=For 21:9 aspect ratios. Do not use with other widescreen enhancements.
+81277A0C 4334
+81277A10 4334
+81275D24 4019
+
 $Widescreen
 81277A0C 4334
 81277A10 4334
